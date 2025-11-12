@@ -21,6 +21,10 @@
 (declare-function writing/sinonimo "language/writing-dictionary")
 (declare-function powerthesaurus-lookup-dwim "powerthesaurus")
 (declare-function writing/capture-to-file "capture/writing-capture")
+(declare-function writing/capture-character "capture/writing-capture")
+(declare-function writing/capture-location "capture/writing-capture")
+(declare-function writing/capture-object "capture/writing-capture")
+(declare-function writing/capture-timeline "capture/writing-capture")
 (declare-function org-context-count-words "org-context-extended")
 (declare-function writing/ews-org-count-words "counting/writing-wordcount")
 (declare-function org-tracktable-write "org-tracktable")
@@ -37,13 +41,13 @@
 ;;;###autoload (autoload 'hydra-writing/body "ui/writing-hydra" nil t)
 (defhydra hydra-writing (:color blue :hint nil)
   "
-^Project^          ^Modes^            ^Writing Tools^       ^Count words^         ^Searches^
-^^^^^^^^--------------------------------------------------------------------------------------------
-_P_: New project   _p_: Project mode  _r_: RAE dictionary   _n_: Count words      _u_: Find POV
-_C_: New chapter   _w_: Writing mode  _s_: Synonyms         _m_: EWS Word count   _i_: Find character
-_S_: New scene     _f_: Focus mode    _d_: Thesaurus        _t_: Track table      _o_: Find plot
-_O_: Open file     _e_: Editing mode  _c_: writing note                         _y_: Find location
-                                                                            _a_: Find TODOs
+^Project^          ^Modes^            ^Capture^             ^Dictionary^          ^Count^            ^Search^
+^^^^^^^^------------------------------------------------------------------------------------------------------------------
+_P_: New project   _p_: Project mode  _c_: Note             _r_: RAE dictionary   _n_: Count words   _u_: Find POV
+_C_: New chapter   _w_: Writing mode  _h_: Character        _s_: Synonyms         _m_: Add WC props  _i_: Find character
+_S_: New scene     _f_: Focus mode    _l_: Location         _d_: Thesaurus        _t_: Track table   _o_: Find plot
+_O_: Open file     _e_: Editing mode  _j_: Object                                                _y_: Find location
+                                  _k_: Timeline                                              _a_: Find TODOs
 _q_: Quit
 "
   ;; Project management
@@ -58,20 +62,24 @@ _q_: Quit
   ("f" my-writing-env-mode-focus "focus mode")
   ("e" writing/editing-mode "editing mode")
 
-  ;; Writing tools
+  ;; Capture functions
+  ("c" writing/capture-to-file "capture note")
+  ("h" writing/capture-character "capture character")
+  ("l" writing/capture-location "capture location")
+  ("j" writing/capture-object "capture object")
+  ("k" writing/capture-timeline "capture timeline event")
+
+  ;; Dictionary tools
   ("r" writing/rae-api-lookup "RAE dictionary")
   ("s" writing/sinonimo "synonyms")
-  ;; Note: writing/translate function doesn't exist in the codebase
-  ;; ("l" writing/translate "translate")
   ("d" powerthesaurus-lookup-dwim "thesaurus")
-  ("c" writing/capture-to-file "capture writing note")
 
   ;; Count words
   ("n" org-context-count-words "count words")
   ("m" writing/ews-org-count-words "add word properties")
   ("t" org-tracktable-write "track table")
 
-  ;; Novel searches
+  ;; Searches
   ("u" writing/org-find-pov "find POV")
   ("i" writing/org-find-character "find character")
   ("o" writing/org-find-plot "find plot")
