@@ -99,7 +99,7 @@ Add to your Emacs configuration:
 
 1. Install the package and dependencies
 2. Open an org-mode file
-3. Press =C-c w= (or =<f8> <f8>=) to open the hydra menu
+3. Press =<f8> <f8>= to open the hydra menu
 4. Try a writing mode: press =w= for distraction-free mode
 5. Use =n= to count words in the current section
 
@@ -109,7 +109,7 @@ Add to your Emacs configuration:
 
 *** Distraction-Free Mode (=my-writing-env-mode=)
 
-Press =C-c w w= or use the hydra menu.
+Press =F8 F8 w= or use the hydra menu.
 
 Changes:
 - Switches to writing theme
@@ -119,7 +119,7 @@ Changes:
 
 *** Focus Mode (=my-writing-env-mode-focus=)
 
-Press =C-c w f= or use the hydra menu.
+Press =F8 F8 f= or use the hydra menu.
 
 Like distraction-free mode, but also narrows to the current org section.
 
@@ -138,11 +138,11 @@ Three-pane layout:
 
 *** Count Words in Selection
 
-=M-x org-context-count-words= or press =C-c w n= in hydra
+=M-x org-context-count-words= or press =F8 F8 n= in hydra
 
 *** Add Word Count Properties
 
-=M-x writing/ews-org-count-words= or press =C-c w m= in hydra
+=M-x writing/ews-org-count-words= or press =F8 F8 m= in hydra
 
 Adds a =WORDCOUNT= property to each heading.
 
@@ -159,7 +159,7 @@ Update with =C-c C-c= on the #+BEGIN line.
 
 ** Search Functions
 
-All search functions are available via the hydra menu (=C-c w=):
+All search functions are available via the hydra menu (=F8 F8=):
 
 - =u=: Find scenes by POV character
 - =i=: Find scenes with character
@@ -183,13 +183,13 @@ These searches use org properties. Example:
 
 *** Spanish RAE Dictionary
 
-=M-x writing/rae-api-lookup= or press =C-c w r= in hydra
+=M-x writing/rae-api-lookup= or press =F8 F8 r= in hydra
 
 Looks up Spanish words in the Real Academia Española dictionary.
 
 *** Synonyms
 
-=M-x writing/sinonimo= or press =C-c w s= in hydra
+=M-x writing/sinonimo= or press =F8 F8 s= in hydra
 
 Opens WordReference Spanish synonyms in a side window.
 
@@ -244,7 +244,7 @@ Key variables:
 
 Default keybindings when =emacs-writing-mode= is active:
 
-- =C-c w= - Open hydra menu
+- =F8 F8= - Open hydra menu
 - =C-c W= - Capture note
 
 Hydra menu provides quick access to all functions.

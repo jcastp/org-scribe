@@ -126,8 +126,8 @@ After installation, verify it works:
 
 1. Open an org file: =C-x C-f test.org=
 2. Check the mode line shows " Write"
-3. Try the hydra menu: =C-c w=
-4. Test a writing mode: =C-c w w= (distraction-free mode)
+3. Try the hydra menu: =F8 F8=
+4. Test a writing mode: =F8 F8 w= (distraction-free mode)
 
 * Troubleshooting
 
@@ -176,7 +176,7 @@ After installation:
 2. Try the quick start guide in README.org
 3. Customize settings: =M-x customize-group RET writing RET=
 4. Set up your first writing project
-5. Explore the hydra menu: =C-c w=
+5. Explore the hydra menu: =F8 F8=
 
 * Support
 
