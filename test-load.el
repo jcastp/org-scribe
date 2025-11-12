@@ -16,6 +16,7 @@
                           (or load-file-name buffer-file-name))))
   (add-to-list 'load-path default-directory)
   (add-to-list 'load-path (expand-file-name "core" default-directory))
+  (add-to-list 'load-path (expand-file-name "templates" default-directory))
   (add-to-list 'load-path (expand-file-name "counting" default-directory))
   (add-to-list 'load-path (expand-file-name "modes" default-directory))
   (add-to-list 'load-path (expand-file-name "search" default-directory))
@@ -34,6 +35,9 @@
 
       (require 'writing-config)
       (message "✓ writing-config loaded successfully")
+
+      (require 'writing-project)
+      (message "✓ writing-project loaded successfully")
 
       (require 'writing-wordcount)
       (message "✓ writing-wordcount loaded successfully")
@@ -70,10 +74,13 @@
       (message "\nVersion: %s" (writing-version))
       (message "\nAvailable commands:")
       (message "- M-x emacs-writing-mode")
+      (message "- M-x writing-create-project (NEW in 0.2.0)")
+      (message "- M-x writing-insert-scene (NEW in 0.2.0)")
+      (message "- M-x writing-insert-chapter (NEW in 0.2.0)")
       (message "- M-x my-writing-env-mode")
       (message "- M-x writing/ews-org-count-words")
       (when (featurep 'hydra)
-        (message "- M-x hydra-writing/body"))
+        (message "- M-x hydra-writing/body (includes project functions)"))
       (message "\nConfiguration variables:")
       (message "- M-x customize-group RET writing RET")
       (message "\n"))

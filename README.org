@@ -4,12 +4,23 @@
 
 * Overview
 
-=emacs-writing= is a comprehensive toolkit for novelists, short story writers, and creative writers working in Emacs Org-mode. It provides a complete writing environment with word counting, progress tracking, specialized writing modes, and powerful search capabilities.
+=emacs-writing= is a comprehensive, batteries-included toolkit for novelists, short story writers, and creative writers working in Emacs Org-mode. It provides everything you need from project creation to final export: templates, writing environments, word counting, progress tracking, and powerful search capabilities.
+
+*Version 0.2.0* merges the functionality of =emacs-writing-template=, providing a complete integrated writing environment in a single package.
 
 * Features
 
-** Core Features (v0.1.0)
+** Complete Workflow (v0.2.0)
 
+*** Project Creation & Templates
+- *Create Novel Projects*: Generate complete project structure from templates with a single command
+- *Scene Insertion*: Insert pre-formatted scene templates with metadata properties
+- *Chapter Insertion*: Add chapter templates with word count tracking
+- *Template Customization*: Edit templates to match your workflow
+- *Bilingual Support*: English and Spanish templates included
+- *Git Integration*: Projects automatically initialized with git
+
+*** Writing Tools
 - *Word Counting*: Accurate word counting that excludes Org-mode metadata (comments, properties, drawers)
 - *Progress Tracking*: Daily word count tracking with org-tracktable integration
 - *Writing Modes*: Four mutually exclusive modes for different workflows:
@@ -97,13 +108,73 @@ Add to your Emacs configuration:
 
 * Quick Start
 
+** Create Your First Novel Project
+
 1. Install the package and dependencies
-2. Open an org-mode file
-3. Press =<f8> <f8>= to open the hydra menu
-4. Try a writing mode: press =w= for distraction-free mode
-5. Use =n= to count words in the current section
+2. Run =M-x writing-create-project= (or =F8 F8 P= if using hydra)
+3. Choose a directory and enter your novel title
+4. Start writing in the generated =novel.org= file!
+
+** Working in an Existing Project
+
+1. Open an org-mode file in your project
+2. Press =<f8> <f8>= to open the hydra menu
+3. Try a writing mode: press =w= for distraction-free mode
+4. Use =n= to count words in the current section
+5. Insert scenes with =S= or chapters with =C=
 
 * Usage
+
+** Project Creation
+
+*** Create a New Novel Project
+
+=M-x writing-create-project= or press =F8 F8 P= in hydra
+
+This creates a complete project structure:
+
+#+begin_example
+MyNovel/
+├── README.org              # Project overview and status
+├── novel.org              # Main manuscript
+├── revision.org           # Revision tracking
+├── statistics.org         # Progress and time tracking
+├── plan/                  # Planning documents
+│   ├── characters.org
+│   ├── locations.org
+│   ├── plot.org
+│   ├── timeline.org
+│   └── objects.org
+└── notes/                 # Research and notes
+    ├── notes.org
+    └── research.org
+#+end_example
+
+The project includes:
+- Pre-configured word count tracking
+- Scene and chapter templates
+- Progress tracking tables
+- Export configurations for LaTeX, ODT, HTML, EPUB
+- Git repository initialization
+
+*** Insert Scene or Chapter
+
+While working in your manuscript:
+
+- =M-x writing-insert-scene= or =F8 F8 S=: Insert a scene with metadata properties (PoV, Characters, Plot, Location, etc.)
+- =M-x writing-insert-chapter= or =F8 F8 C=: Insert a chapter heading with word count property
+
+*** Quick Project File Access
+
+=M-x writing-open-project-file= or =F8 F8 O=
+
+Opens project files with completion (novel.org, plan/characters.org, notes/notes.org, etc.)
+
+*** Customize Templates
+
+=M-x writing-edit-templates=
+
+Opens the template directory for editing. Customize templates to match your workflow!
 
 ** Writing Modes
 
@@ -213,19 +284,27 @@ When exporting, scene breaks will be replaced with appropriate separators for ea
 
 * Project Structure
 
-=emacs-writing= works best with a structured project layout (compatible with [[https://codeberg.org/jcastp/emacs-writing-template][emacs-writing-template]]):
+=emacs-writing= creates and works with structured novel projects:
 
 #+begin_example
 project-root/
-├── novel.org (or novela.org)
-├── notes/
-│   └── notes.org (or notas/notas.org)
-├── characters/
-├── research/
-└── timeline.org
+├── .writing-project       # Project marker file
+├── README.org            # Project overview
+├── novel.org             # Main manuscript (or novela.org for Spanish)
+├── revision.org          # Revision tracking
+├── statistics.org        # Progress tracking
+├── plan/                 # Planning documents
+│   ├── characters.org    # Character profiles
+│   ├── locations.org     # World building
+│   ├── plot.org         # Story structure
+│   ├── timeline.org     # Chronology
+│   └── objects.org      # Important items
+└── notes/               # Notes and research
+    ├── notes.org        # General notes
+    └── research.org     # Research tracking
 #+end_example
 
-But it also works with any org-mode file structure.
+Projects can be created with =M-x writing-create-project= or the package works with any org-mode file structure.
 
 * Configuration
 
@@ -233,11 +312,18 @@ See =M-x customize-group RET writing RET= for all customization options.
 
 Key variables:
 
+** Project & Templates
+- =writing-template-directory= - Location of project templates (default: novel-en)
+- =writing-template-language= - Default language for templates ('en or 'es)
 - =writing-stories-directory= - Where writing exercise files are created
+
+** Writing Modes
 - =my-writing-env-work-theme= - Theme for writing modes
 - =my-writing-env-normal-theme= - Normal theme
 - =my-writing-env-work-font= - Font preset for writing
 - =my-writing-env-work-width= - Writeroom width
+
+** Export
 - =writing/scene-break-replacements= - Scene break strings for export backends
 
 * Keybindings
@@ -247,7 +333,39 @@ Default keybindings when =emacs-writing-mode= is active:
 - =F8 F8= - Open hydra menu
 - =C-c W= - Capture note
 
-Hydra menu provides quick access to all functions.
+** Hydra Menu (F8 F8)
+
+The hydra menu provides quick access to all functions:
+
+*** Project
+- =P= - Create new project
+- =C= - Insert chapter
+- =S= - Insert scene
+- =O= - Open project file
+
+*** Modes
+- =p= - Project navigation mode
+- =w= - Writing mode (distraction-free)
+- =f= - Focus mode
+- =e= - Editing mode
+
+*** Writing Tools
+- =r= - RAE dictionary
+- =s= - Synonyms
+- =d= - Thesaurus
+- =c= - Capture note
+
+*** Count Words
+- =n= - Count words
+- =m= - Add word count properties
+- =t= - Update tracking table
+
+*** Searches
+- =u= - Find scenes by POV
+- =i= - Find scenes with character
+- =o= - Find scenes by plot
+- =y= - Find scenes by location
+- =a= - Find TODOs in project
 
 * Contributing
 
@@ -266,9 +384,32 @@ GPL-3.0-or-later
 
 - Repository: https://codeberg.org/jcastp/emacs-writing
 - Issues: https://codeberg.org/jcastp/emacs-writing/issues
-- Related: [[https://codeberg.org/jcastp/emacs-writing-template][emacs-writing-template]] (project scaffolding)
-- Related: [[https://codeberg.org/jcastp/org-context-extended][org-context-extended]] (smart word counting)
-- Related: [[https://codeberg.org/jcastp/org-tracktable][org-tracktable]] (progress tracking)
+- Dependencies: [[https://codeberg.org/jcastp/org-context-extended][org-context-extended]] (smart word counting)
+- Dependencies: [[https://codeberg.org/jcastp/org-tracktable][org-tracktable]] (progress tracking)
+
+** Version 0.2.0 Changes
+
+Version 0.2.0 merges [[https://codeberg.org/jcastp/emacs-writing-template][emacs-writing-template]] into this package, providing:
+
+- Project creation with customizable templates
+- Scene and chapter insertion functions
+- Quick project file navigation
+- Integrated git initialization
+- Bilingual template support (English/Spanish)
+
+All =writing-project-*= functions from the old package are available as backward-compatible aliases.
+
+*** Migration from emacs-writing-template
+
+If you were using =emacs-writing-template= separately:
+
+1. Remove =emacs-writing-template= from your config
+2. Update to =emacs-writing= 0.2.0+
+3. Old function names still work (with deprecation warnings):
+   - =writing-project-create-novel-project= → =writing-create-project=
+   - =writing-project-insert-scene= → =writing-insert-scene=
+   - =writing-project-insert-chapter= → =writing-insert-chapter=
+   - =writing-project-open-novel-file= → =writing-open-project-file=
 
 * Acknowledgments
 

@@ -3,9 +3,9 @@
 ;; Copyright (C) 2025 Javier Castilla
 
 ;; Author: Javier Castilla <jcastp@pm.me>
-;; Version: 0.1.0
+;; Version: 0.2.0
 ;; Package-Requires: ((emacs "29.1") (org "9.6") (org-ql "0.8") (writeroom-mode "3.7"))
-;; Keywords: writing, org-mode, novel, fiction
+;; Keywords: writing, org-mode, novel, fiction, project
 ;; URL: https://codeberg.org/jcastp/emacs-writing
 
 ;; This file is not part of GNU Emacs.
@@ -28,18 +28,19 @@
 ;; emacs-writing provides a comprehensive toolkit for creative writers
 ;; working in Org-mode.  Features include:
 ;;
+;; - Project creation from customizable templates
 ;; - Word counting and progress tracking
 ;; - Character database and timeline management
 ;; - Writing modes (distraction-free, focus, editing, project)
 ;; - Dictionary integration (RAE, synonyms, translation)
-;; - Scene management and templates
+;; - Scene and chapter insertion templates
 ;; - Analysis tools (dialogue, tension, word frequency)
 ;; - Export presets for various formats
 ;; - Research linking and note capture
 ;; - Name generator and writing prompts
 ;;
-;; Designed to work seamlessly with emacs-writing-template for
-;; project scaffolding, but can be used independently.
+;; Version 0.2.0 merges the functionality of emacs-writing-template,
+;; providing a complete batteries-included writing environment.
 
 ;;; Code:
 
@@ -49,6 +50,9 @@
 ;; Core modules (always loaded)
 (require 'writing-core (expand-file-name "core/writing-core" (file-name-directory load-file-name)))
 (require 'writing-config (expand-file-name "core/writing-config" (file-name-directory load-file-name)))
+
+;; Project creation and templates (merged from emacs-writing-template)
+(require 'writing-project (expand-file-name "templates/writing-project" (file-name-directory load-file-name)))
 
 ;; Load all feature modules
 ;; main writing modes
@@ -67,15 +71,11 @@
 ;; hydra for better access to common functions
 (require 'writing-hydra (expand-file-name "ui/writing-hydra" (file-name-directory load-file-name)))
 
-;; Feature detection
-(defvar writing-template-available-p (featurep 'writing-template)
-  "Non-nil if emacs-writing-template is installed.")
-
 ;;;###autoload
 (defun writing-version ()
   "Display emacs-writing version."
   (interactive)
-  (message "emacs-writing version 0.1.0"))
+  (message "emacs-writing version 0.2.0 (includes project templates)"))
 
 ;;;###autoload
 (define-minor-mode emacs-writing-mode

@@ -1,0 +1,46 @@
+#+TITLE: ${TITLE} - Localizaciones
+#+AUTHOR: ${AUTHOR}
+#+STARTUP: overview
+
+* Localización Principal 1
+:PROPERTIES:
+:TIPO: Ciudad/Pueblo/etc.
+:NOMBRE:
+:CLIMA:
+:POBLACION:
+:END:
+
+** Descripción General
+
+** Geografía
+
+- Ubicación ::
+- Terreno ::
+- Clima ::
+- Recursos naturales ::
+
+** Aspectos Culturales
+
+- Idioma ::
+- Costumbres ::
+- Religión ::
+- Gobierno ::
+
+** Historia
+
+** Importancia en la Trama
+
+** Lugares Específicos
+
+*** Lugar 1
+:PROPERTIES:
+:TIPO: Casa/Edificio/etc.
+:END:
+
+Descripción detallada...
+
+** Mapa/Imagen de Referencia
+
+# [[file:../notas/imagenes/mapa.jpg]]
+
+* Localización Principal 2

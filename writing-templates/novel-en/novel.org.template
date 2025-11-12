@@ -1,0 +1,139 @@
+#+TITLE: ${TITLE}
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: en
+#+STARTUP: overview
+#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
+#+COLUMNS: %40ITEM(Task) %12WORDCOUNT %12PoV %20Plot %40Summary %40Comment
+#+MACRO: scene-break SCENE-BREAK
+
+* stats :ignore:noexport:
+:PROPERTIES:
+:WORDCOUNT: 0
+:END:
+# This shows your word count by sections:
+# Table to keep track of the words by section
+#+BEGIN: org-generate-wordcount-table
+| Heading       | Wordcount |
+|---------------+-----------|
+|               |           |
+#+END:
+
+# If you want to track here a daily word count, you can use the
+# =org-tracktable-insert-table= command with an empty line at point.
+# For more details, check the [[https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org][org-tracktable documentation]] at
+# https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
+#+NAME: tracktable
+|---+------------------+-------+-----+---------------+---------|
+| * | date             | start | end | total (today) | comment |
+|---+------------------+-------+-----+---------------+---------|
+|   | initial count    |     0 |   0 |             0 |         |
+|---+------------------+-------+-----+---------------+---------|
+#+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
+
+* Quick Navigation :ignore:noexport:
+- [[file:README.org][README - Project Overview]]
+- [[file:plan/characters.org][Characters]]
+- [[file:plan/locations.org][Locations]]
+- [[file:plan/objects.org][Objects]]
+- [[file:plan/plot.org][Plot]]
+- [[file:plan/timeline.org][Timeline]]
+- [[file:notes/notes.org][General Notes]]
+- [[file:notes/research.org][Research]]
+- [[file:revision.org][Revision and Feedback]]
+- [[file:statistics.org][Statistics]]
+
+* Act I :ignore:
+:PROPERTIES:
+:CUSTOM_ID: act-1
+:END:
+
+** TODO Chapter 1 :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:END:
+
+*** TODO Scene 1 :ignore:
+:PROPERTIES:
+:PoV:
+:Characters:
+:Plot:
+:Timeline:
+:Location:
+:Description:
+:Summary:
+:Scene-motivation:
+:Conflict-source:
+:What-is-at-stake:
+:Emotion:
+:Comment:
+:END:
+
+* Act II :ignore:
+:PROPERTIES:
+:CUSTOM_ID: act-2
+:END:
+
+* Act III :ignore:
+:PROPERTIES:
+:CUSTOM_ID: act-3
+:END:
+
+* Export config :ignore:noexport:
+# ############################
+# General options
+# ############################
+#+OPTIONS: ':t *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK")
+#+OPTIONS: date:t e:t email:nil f:t inline:t num:t p:nil pri:nil
+#+OPTIONS: prop:nil stat:t tags:t tasks:t tex:t timestamp:t title:t
+#+OPTIONS: toc:2 todo:t |:t
+
+#+EXCLUDE_TAGS: noexport
+#+EXPORT_FILE_NAME:
+
+# ######################
+# latex related options
+# ######################
+#+LATEX_CLASS: memoir_draft
+#+LATEX_HEADER:
+#+LATEX_HEADER_EXTRA:
+#+DESCRIPTION:
+#+KEYWORDS:
+#+SUBTITLE:
+
+# ######################
+# odt related options
+# ######################
+#+OPTIONS: tex:t
+#+ODT_STYLES_FILE: "~/Nextcloud/escritura/recursos/orgtemplate2odt.ott"
+#+DESCRIPTION:
+#+KEYWORDS:
+#+SUBTITLE:
+#+LATEX_HEADER:
+
+# ######################
+# HTML related options
+# ######################
+#+DESCRIPTION:
+#+HTML_DOCTYPE: html5
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="file:///home/jcastp/Nextcloud/config/org.css"/>
+#+HTML_HEAD_EXTRA:
+
+# ######################
+# epub related options
+# ######################
+#+UID:
+#+Subject:
+#+Description:
+#+Publisher:
+#+License:
+#+EPUBSTYLE:
+#+EPUBCOVER:
+#+HTML_DOCTYPE: xhtml
+
+# Local Variables:
+# eval: (progn
+# (setq ispell-local-dictionary "en_US")
+# (setq lexical-binding t))
+# End:

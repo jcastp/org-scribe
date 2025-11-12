@@ -1,0 +1,35 @@
+# Emacs backup files
+*~
+\#*\#
+.#*
+
+# Org-mode temporary files
+*.org~
+.org-id-locations
+*_archive
+
+# LaTeX build files
+*.aux
+*.log
+*.out
+*.toc
+*.pdf
+*.tex
+
+# ODT/Export temporary files
+*.odt
+*.docx
+ltximg/
+
+# EPUB files
+*.epub
+
+# HTML exports
+*.html
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Personal notes (optional - uncomment if needed)
+# notas/personal.org

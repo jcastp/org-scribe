@@ -1,0 +1,46 @@
+#+TITLE: ${TITLE} - Locations
+#+AUTHOR: ${AUTHOR}
+#+STARTUP: overview
+
+* Main Location 1
+:PROPERTIES:
+:TYPE: City/Town/etc.
+:NAME:
+:CLIMATE:
+:POPULATION:
+:END:
+
+** General Description
+
+** Geography
+
+- Location ::
+- Terrain ::
+- Climate ::
+- Natural resources ::
+
+** Cultural Aspects
+
+- Language ::
+- Customs ::
+- Religion ::
+- Government ::
+
+** History
+
+** Importance in the Plot
+
+** Specific Places
+
+*** Place 1
+:PROPERTIES:
+:TYPE: House/Building/etc.
+:END:
+
+Detailed description...
+
+** Map/Reference Image
+
+# [[file:../notes/images/map.jpg]]
+
+* Main Location 2

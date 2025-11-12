@@ -29,19 +29,29 @@
 (declare-function writing/org-find-plot "search/writing-search")
 (declare-function writing/org-find-location "search/writing-search")
 (declare-function writing/search-todos-recursive "search/writing-search")
+(declare-function writing-create-project "templates/writing-project")
+(declare-function writing-insert-scene "templates/writing-project")
+(declare-function writing-insert-chapter "templates/writing-project")
+(declare-function writing-open-project-file "templates/writing-project")
 
 ;;;###autoload (autoload 'hydra-writing/body "ui/writing-hydra" nil t)
 (defhydra hydra-writing (:color blue :hint nil)
   "
-^Modes^            ^Writing Tools^       ^Count words^         ^Searches^
-^^^^^^^^------------------------------------------------------------------------
-_p_: Project mode  _r_: RAE dictionary   _n_: Count words      _u_: Find POV
-_w_: Writing mode  _s_: Synonyms         _m_: EWS Word count   _i_: Find character
-_f_: Focus mode    _d_: Thesaurus        _t_: Track table      _o_: Find plot
-_e_: Editing mode  _c_: writing note                         _y_: Find location
-                                                         _a_: Find TODOs
+^Project^          ^Modes^            ^Writing Tools^       ^Count words^         ^Searches^
+^^^^^^^^--------------------------------------------------------------------------------------------
+_P_: New project   _p_: Project mode  _r_: RAE dictionary   _n_: Count words      _u_: Find POV
+_C_: New chapter   _w_: Writing mode  _s_: Synonyms         _m_: EWS Word count   _i_: Find character
+_S_: New scene     _f_: Focus mode    _d_: Thesaurus        _t_: Track table      _o_: Find plot
+_O_: Open file     _e_: Editing mode  _c_: writing note                         _y_: Find location
+                                                                            _a_: Find TODOs
 _q_: Quit
 "
+  ;; Project management
+  ("P" writing-create-project "new project")
+  ("C" writing-insert-chapter "insert chapter")
+  ("S" writing-insert-scene "insert scene")
+  ("O" writing-open-project-file "open project file")
+
   ;; Modes
   ("p" project-writing-mode "project mode")
   ("w" my-writing-env-mode "writing mode")

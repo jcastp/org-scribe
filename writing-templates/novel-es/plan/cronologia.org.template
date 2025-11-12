@@ -1,0 +1,36 @@
+#+TITLE: ${TITLE} - Cronología
+#+AUTHOR: ${AUTHOR}
+#+STARTUP: overview
+
+* Timeline Overview
+:PROPERTIES:
+:CUSTOM_ID: timeline-overview
+:END:
+
+** Story Timeline
+| Event | Date/Time | Characters | Location | Notes |
+|-------+-----------+------------+----------+-------|
+|       |           |            |          |       |
+
+* Detailed Events
+
+** Event 01
+:PROPERTIES:
+:DATE:
+:TIME:
+:DURATION:
+:CHARACTERS:
+:LOCATION:
+:CHAPTER:
+:END:
+
+*** Description
+
+*** Consequences
+
+* Backstory Timeline
+** Past Event 01
+:PROPERTIES:
+:DATE:
+:RELEVANCE:
+:END:

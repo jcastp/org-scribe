@@ -1,0 +1,86 @@
+#+TITLE: ${TITLE} - Personajes
+#+AUTHOR: ${AUTHOR}
+#+STARTUP: overview
+
+* Protagonista
+:PROPERTIES:
+:TIPO: Protagonista
+:NOMBRE:
+:EDAD:
+:GENERO:
+:END:
+
+** Descripción Física
+
+- Altura ::
+- Complexión ::
+- Cabello ::
+- Ojos ::
+- Rasgos distintivos ::
+
+** Personalidad
+
+- Rasgos principales ::
+- Fortalezas ::
+- Debilidades ::
+- Miedos ::
+- Deseos ::
+
+** Trasfondo
+
+- Familia ::
+- Educación ::
+- Ocupación ::
+- Eventos formativos ::
+
+** Motivación
+
+- Objetivo principal ::
+- Motivación interna ::
+- Motivación externa ::
+
+** Arco del Personaje
+
+- Estado inicial ::
+- Punto de inflexión ::
+- Transformación ::
+- Estado final ::
+
+** Relaciones
+
+- Con otros personajes ::
+
+* Antagonista
+:PROPERTIES:
+:TIPO: Antagonista
+:NOMBRE:
+:EDAD:
+:GENERO:
+:END:
+
+** Descripción Física
+
+** Personalidad
+
+** Trasfondo
+
+** Motivación
+
+Por qué se opone al protagonista...
+
+** Relaciones
+
+* Personajes Secundarios
+
+** Personaje Secundario 1
+:PROPERTIES:
+:TIPO: Secundario
+:NOMBRE:
+:ROL: Aliado/Mentor/etc.
+:END:
+
+*** Descripción
+
+*** Papel en la Historia
+
+*** Relación con Protagonista

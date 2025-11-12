@@ -1,0 +1,86 @@
+#+TITLE: ${TITLE} - Characters
+#+AUTHOR: ${AUTHOR}
+#+STARTUP: overview
+
+* Protagonist
+:PROPERTIES:
+:TYPE: Protagonist
+:NAME:
+:AGE:
+:GENDER:
+:END:
+
+** Physical Description
+
+- Height ::
+- Build ::
+- Hair ::
+- Eyes ::
+- Distinctive features ::
+
+** Personality
+
+- Main traits ::
+- Strengths ::
+- Weaknesses ::
+- Fears ::
+- Desires ::
+
+** Background
+
+- Family ::
+- Education ::
+- Occupation ::
+- Formative events ::
+
+** Motivation
+
+- Main goal ::
+- Internal motivation ::
+- External motivation ::
+
+** Character Arc
+
+- Initial state ::
+- Turning point ::
+- Transformation ::
+- Final state ::
+
+** Relationships
+
+- With other characters ::
+
+* Antagonist
+:PROPERTIES:
+:TYPE: Antagonist
+:NAME:
+:AGE:
+:GENDER:
+:END:
+
+** Physical Description
+
+** Personality
+
+** Background
+
+** Motivation
+
+Why they oppose the protagonist...
+
+** Relationships
+
+* Secondary Characters
+
+** Secondary Character 1
+:PROPERTIES:
+:TYPE: Secondary
+:NAME:
+:ROLE: Ally/Mentor/etc.
+:END:
+
+*** Description
+
+*** Role in the Story
+
+*** Relationship with Protagonist

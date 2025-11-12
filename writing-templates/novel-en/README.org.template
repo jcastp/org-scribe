@@ -1,0 +1,39 @@
+#+TITLE: ${TITLE} - Project Overview
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+STARTUP: overview
+
+* Project Information
+:PROPERTIES:
+:PROJECT_START: ${DATE}
+:GENRE:
+:TARGET-WORDCOUNT:
+:DEADLINE:
+:END:
+
+** Synopsis
+[Brief overview of the story]
+
+** Writing Goals
+- [ ] Complete first draft
+- [ ] Revision pass 1
+- [ ] Beta reader feedback
+- [ ] Final revision
+- [ ] Submission/Publication
+
+** Project Structure
+- [[file:novel.org][novel.org]] - Main manuscript file
+- [[file:revision.org][revision.org]] - Editing notes and feedback
+- [[file:statistics.org][statistics.org]] - Word count tracking
+- [[file:plan/characters.org][plan/characters.org]] - Character profiles
+- [[file:plan/locations.org][plan/locations.org]] - Location descriptions
+- [[file:plan/objects.org][plan/objects.org]] - Important objects
+- [[file:plan/plot.org][plan/plot.org]] - Plot structure
+- [[file:plan/timeline.org][plan/timeline.org]] - Timeline of events
+- [[file:notes/research.org][notes/research.org]] - Research notes
+- [[file:notes/notes.org][notes/notes.org]] - General notes
+
+** Current Status
+Status: Planning/Drafting/Revising/Complete
+Current Chapter:
+Last Updated: ${DATE}
