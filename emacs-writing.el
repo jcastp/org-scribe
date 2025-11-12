@@ -50,37 +50,19 @@
 (require 'writing-core (expand-file-name "core/writing-core" (file-name-directory load-file-name)))
 (require 'writing-config (expand-file-name "core/writing-config" (file-name-directory load-file-name)))
 
+;; Load all feature modules
+(require 'writing-wordcount (expand-file-name "counting/writing-wordcount" (file-name-directory load-file-name)))
+(require 'writing-tracking (expand-file-name "counting/writing-tracking" (file-name-directory load-file-name)))
+(require 'writing-modes (expand-file-name "modes/writing-modes" (file-name-directory load-file-name)))
+(require 'writing-search (expand-file-name "search/writing-search" (file-name-directory load-file-name)))
+(require 'writing-dictionary (expand-file-name "language/writing-dictionary" (file-name-directory load-file-name)))
+(require 'writing-capture (expand-file-name "capture/writing-capture" (file-name-directory load-file-name)))
+(require 'writing-hydra (expand-file-name "ui/writing-hydra" (file-name-directory load-file-name)))
+(require 'writing-export (expand-file-name "export/writing-export" (file-name-directory load-file-name)))
+
 ;; Feature detection
 (defvar writing-template-available-p (featurep 'writing-template)
   "Non-nil if emacs-writing-template is installed.")
-
-;; Autoloads for word counting
-;;;###autoload (autoload 'writing/ews-org-count-words "counting/writing-wordcount" nil t)
-;;;###autoload (autoload 'org-context-count-words "counting/writing-wordcount" nil t)
-
-;; Autoloads for writing modes
-;;;###autoload (autoload 'my-writing-env-mode "modes/writing-modes" nil t)
-;;;###autoload (autoload 'my-writing-env-mode-focus "modes/writing-modes" nil t)
-;;;###autoload (autoload 'project-writing-mode "modes/writing-modes" nil t)
-;;;###autoload (autoload 'writing/editing-mode "modes/writing-modes" nil t)
-
-;; Autoloads for search functions
-;;;###autoload (autoload 'writing/org-find-pov "search/writing-search" nil t)
-;;;###autoload (autoload 'writing/org-find-character "search/writing-search" nil t)
-;;;###autoload (autoload 'writing/org-find-plot "search/writing-search" nil t)
-;;;###autoload (autoload 'writing/org-find-location "search/writing-search" nil t)
-;;;###autoload (autoload 'writing/search-todos-recursive "search/writing-search" nil t)
-
-;; Autoloads for dictionary
-;;;###autoload (autoload 'writing/rae-api-lookup "language/writing-dictionary" nil t)
-;;;###autoload (autoload 'writing/rae-api-random "language/writing-dictionary" nil t)
-;;;###autoload (autoload 'writing/sinonimo "language/writing-dictionary" nil t)
-
-;; Autoloads for capture
-;;;###autoload (autoload 'writing/capture-to-file "capture/writing-capture" nil t)
-
-;; Autoloads for hydra
-;;;###autoload (autoload 'hydra-writing/body "ui/writing-hydra" nil t)
 
 ;;;###autoload
 (defun writing-version ()
