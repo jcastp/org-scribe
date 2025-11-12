@@ -127,13 +127,17 @@ Includes improved error handling for network issues."
            ;; Move past HTTP headers
            (goto-char (point-min))
            (re-search-forward "^$")
-           (condition-case err
-               (let* ((json-object-type 'hash-table)
-                      (json-array-type 'list)
-                      (json-key-type 'string)
-                      (json-data (json-read))
-                      (ok (gethash "ok" json-data))
-                      (output-buffer (get-buffer-create buffer-name)))
+           ;; Extract and decode the response body as UTF-8
+           (let* ((body-start (point))
+                  (raw-body (buffer-substring-no-properties body-start (point-max)))
+                  (decoded-body (decode-coding-string raw-body 'utf-8)))
+             (condition-case err
+                 (let* ((json-object-type 'hash-table)
+                        (json-array-type 'list)
+                        (json-key-type 'string)
+                        (json-data (json-read-from-string decoded-body))
+                        (ok (gethash "ok" json-data))
+                        (output-buffer (get-buffer-create buffer-name)))
                  (with-current-buffer output-buffer
                    (erase-buffer)
                    (org-mode)
@@ -146,9 +150,9 @@ Includes improved error handling for network issues."
                        (dolist (suggestion suggestions)
                          (insert (format "- %s\n" suggestion)))))
                    (goto-char (point-min)))
-                 (display-buffer output-buffer))
-             (json-error
-              (message "Error parsing RAE response: %s" err))))))
+                   (display-buffer output-buffer))
+               (json-error
+                (message "Error parsing RAE response: %s" err)))))))
      (list palabra buffer-name)
      nil   ; no SILENT
      t)))  ; INHIBIT-COOKIES
@@ -168,17 +172,21 @@ Includes improved error handling for network issues."
                       (plist-get status :error))
            (goto-char (point-min))
            (re-search-forward "^$")
-           (condition-case err
-               (let* ((json-object-type 'hash-table)
-                      (json-array-type 'list)
-                      (json-key-type 'string)
-                      (json-data (json-read))
-                      (palabra (gethash "word" (gethash "data" json-data))))
-                 (kill-buffer)
-                 (when palabra
-                   (writing/rae-api-lookup palabra)))
-             (json-error
-              (message "Error parsing random word response: %s" err)))))))))
+           ;; Extract and decode the response body as UTF-8
+           (let* ((body-start (point))
+                  (raw-body (buffer-substring-no-properties body-start (point-max)))
+                  (decoded-body (decode-coding-string raw-body 'utf-8)))
+             (condition-case err
+                 (let* ((json-object-type 'hash-table)
+                        (json-array-type 'list)
+                        (json-key-type 'string)
+                        (json-data (json-read-from-string decoded-body))
+                        (palabra (gethash "word" (gethash "data" json-data))))
+                   (kill-buffer)
+                   (when palabra
+                     (writing/rae-api-lookup palabra)))
+               (json-error
+                (message "Error parsing random word response: %s" err))))))))))
 
 ;;; Synonym Lookup (WordReference)
 
