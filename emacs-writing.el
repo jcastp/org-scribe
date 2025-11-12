@@ -76,7 +76,7 @@
 Provides keybindings and menu for all emacs-writing functions."
   :lighter " Write"
   :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "F8 F8") 'hydra-writing/body)
+            (define-key map (kbd "<f8> <f8>") 'hydra-writing/body)
             (define-key map (kbd "C-c W") 'writing/capture-to-file)
             map)
   :group 'writing)
