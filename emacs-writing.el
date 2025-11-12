@@ -51,14 +51,21 @@
 (require 'writing-config (expand-file-name "core/writing-config" (file-name-directory load-file-name)))
 
 ;; Load all feature modules
+;; main writing modes
+(require 'writing-modes (expand-file-name "modes/writing-modes" (file-name-directory load-file-name)))
+;; word counting and tracking
 (require 'writing-wordcount (expand-file-name "counting/writing-wordcount" (file-name-directory load-file-name)))
 (require 'writing-tracking (expand-file-name "counting/writing-tracking" (file-name-directory load-file-name)))
-(require 'writing-modes (expand-file-name "modes/writing-modes" (file-name-directory load-file-name)))
+;; novel related searches
 (require 'writing-search (expand-file-name "search/writing-search" (file-name-directory load-file-name)))
+;; dictionary searches
 (require 'writing-dictionary (expand-file-name "language/writing-dictionary" (file-name-directory load-file-name)))
+;; org capture to the writing project
 (require 'writing-capture (expand-file-name "capture/writing-capture" (file-name-directory load-file-name)))
-(require 'writing-hydra (expand-file-name "ui/writing-hydra" (file-name-directory load-file-name)))
+;; writing - export
 (require 'writing-export (expand-file-name "export/writing-export" (file-name-directory load-file-name)))
+;; hydra for better access to common functions
+(require 'writing-hydra (expand-file-name "ui/writing-hydra" (file-name-directory load-file-name)))
 
 ;; Feature detection
 (defvar writing-template-available-p (featurep 'writing-template)
