@@ -33,13 +33,13 @@
 ;;;###autoload (autoload 'hydra-writing/body "ui/writing-hydra" nil t)
 (defhydra hydra-writing (:color blue :hint nil)
   "
-^Modes^                   ^Writing Tools^       ^Count words^         ^Searches^
+^Modes^            ^Writing Tools^       ^Count words^         ^Searches^
 ^^^^^^^^------------------------------------------------------------------------
-_p_: Project mode         _r_: RAE dictionary   _n_: Count words      _u_: Find POV
-_w_: Writing mode         _s_: Synonyms         _m_: EWS Word count   _i_: Find character
-_f_: Focus writing mode   _d_: Thesaurus        _t_: Track table      _o_: Find plot
-_e_: Editing mode         _c_: writing note                           _y_: Find location
-                                                                      _a_: Find TODOs
+_p_: Project mode  _r_: RAE dictionary   _n_: Count words      _u_: Find POV
+_w_: Writing mode  _s_: Synonyms         _m_: EWS Word count   _i_: Find character
+_f_: Focus mode    _d_: Thesaurus        _t_: Track table      _o_: Find plot
+_e_: Editing mode  _c_: writing note                         _y_: Find location
+                                                         _a_: Find TODOs
 _q_: Quit
 "
   ;; Modes
