@@ -1,0 +1,275 @@
+#+TITLE: emacs-writing - Creative Writing Toolkit for Org-mode
+#+AUTHOR: Javier Castilla
+#+EMAIL: jcastp@pm.me
+
+* Overview
+
+=emacs-writing= is a comprehensive toolkit for novelists, short story writers, and creative writers working in Emacs Org-mode. It provides a complete writing environment with word counting, progress tracking, specialized writing modes, and powerful search capabilities.
+
+* Features
+
+** Core Features (v0.1.0)
+
+- *Word Counting*: Accurate word counting that excludes Org-mode metadata (comments, properties, drawers)
+- *Progress Tracking*: Daily word count tracking with org-tracktable integration
+- *Writing Modes*: Four mutually exclusive modes for different workflows:
+  - Distraction-free writing mode
+  - Focus mode with buffer narrowing
+  - Project navigation mode (with treemacs and imenu-list)
+  - Three-pane editing layout
+- *Search Functions*: Find scenes by POV, character, location, or plot keywords using org-ql
+- *Dictionary Tools*: Spanish RAE dictionary API, synonym lookup, and translation support
+- *Capture System*: Project-aware note capture that finds the right notes file
+- *Export Filters*: Scene break replacement for different export backends
+- *Hydra Menu*: Unified keyboard-driven menu for quick access to all functions
+
+** Bilingual Support
+
+Full support for English/Spanish bilingual writing:
+- Spanish RAE dictionary integration
+- WordReference synonym lookup
+- Automatic language detection
+- Bilingual project structure support (notes/notas directories)
+
+* Installation
+
+** Dependencies
+
+*** Required Packages
+
+- Emacs 29.1+
+- org-mode 9.6+
+- [[https://github.com/alphapapa/org-ql][org-ql]] (0.8+)
+- [[https://github.com/joostkremers/writeroom-mode][writeroom-mode]] (3.7+)
+- [[https://codeberg.org/jcastp/org-context-extended][org-context-extended]]
+- [[https://codeberg.org/jcastp/org-tracktable][org-tracktable]]
+
+*** Optional Packages
+
+- [[https://github.com/minad/consult][consult]] - For theme switching in writing modes
+- [[https://github.com/protesilaos/fontaine][fontaine]] - For font preset management
+- [[https://github.com/Alexander-Miller/treemacs][treemacs]] - For project navigation mode
+- [[https://github.com/bmag/imenu-list][imenu-list]] - For document outline in editing modes
+- [[https://github.com/guess-language/guess-language.el][guess-language]] - For automatic language detection
+- [[https://github.com/lorniu/gt.el][gt]] - For translation support
+- [[https://github.com/SavchenkoValeriy/emacs-powerthesaurus][powerthesaurus]] - For English thesaurus
+- [[https://github.com/nobiot/org-remark][org-remark]] - For text annotations
+
+** From Source
+
+Clone the repository:
+
+#+begin_src sh
+git clone https://codeberg.org/jcastp/emacs-writing ~/.emacs.d/emacs-writing
+#+end_src
+
+Add to your Emacs configuration:
+
+#+begin_src emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/emacs-writing")
+(require 'emacs-writing)
+
+;; Optional: Enable automatically in org-mode
+(add-hook 'org-mode-hook #'emacs-writing-mode)
+
+;; Optional: Set up recommended keybindings
+(emacs-writing-setup)
+#+end_src
+
+** Using use-package (Recommended)
+
+#+begin_src emacs-lisp
+(use-package emacs-writing
+  :vc (:url "https://codeberg.org/jcastp/emacs-writing"
+       :branch "main"
+       :rev :newest)
+  :after org
+  :hook (org-mode . emacs-writing-mode)
+  :config
+  ;; Customize settings
+  (setq my-writing-env-work-theme 'poet)
+  (setq my-writing-env-normal-theme 'ef-deuteranopia-dark)
+  (setq writing-stories-directory "~/writing/exercises")
+
+  ;; Keybindings
+  (global-set-key (kbd "<f8> <f8>") 'hydra-writing/body))
+#+end_src
+
+* Quick Start
+
+1. Install the package and dependencies
+2. Open an org-mode file
+3. Press =C-c w= (or =<f8> <f8>=) to open the hydra menu
+4. Try a writing mode: press =w= for distraction-free mode
+5. Use =n= to count words in the current section
+
+* Usage
+
+** Writing Modes
+
+*** Distraction-Free Mode (=my-writing-env-mode=)
+
+Press =C-c w w= or use the hydra menu.
+
+Changes:
+- Switches to writing theme
+- Changes font to writing preset
+- Activates writeroom-mode
+- Shows line numbers
+
+*** Focus Mode (=my-writing-env-mode-focus=)
+
+Press =C-c w f= or use the hydra menu.
+
+Like distraction-free mode, but also narrows to the current org section.
+
+*** Project Navigation Mode (=project-writing-mode=)
+
+Opens treemacs (file tree) and imenu-list (document outline) for easy navigation.
+
+*** Editing Mode (=writing/editing-mode=)
+
+Three-pane layout:
+- Left: Document outline (imenu-list)
+- Center: Main document
+- Right: Notes file (org-remark annotations)
+
+** Word Counting
+
+*** Count Words in Selection
+
+=M-x org-context-count-words= or press =C-c w n= in hydra
+
+*** Add Word Count Properties
+
+=M-x writing/ews-org-count-words= or press =C-c w m= in hydra
+
+Adds a =WORDCOUNT= property to each heading.
+
+*** Generate Word Count Table
+
+Add this to your org file:
+
+#+begin_example
+#+BEGIN: org-generate-wordcount-table
+#+END:
+#+end_example
+
+Update with =C-c C-c= on the #+BEGIN line.
+
+** Search Functions
+
+All search functions are available via the hydra menu (=C-c w=):
+
+- =u=: Find scenes by POV character
+- =i=: Find scenes with character
+- =o=: Find scenes by plot keyword
+- =y=: Find scenes by location
+- =a=: Find all TODO items in project
+
+These searches use org properties. Example:
+
+#+begin_example
+* Chapter 1
+:PROPERTIES:
+:POV: Alice
+:Characters: Alice, Bob, Carol
+:location: Coffee Shop
+:plot: First meeting
+:END:
+#+end_example
+
+** Dictionary Tools
+
+*** Spanish RAE Dictionary
+
+=M-x writing/rae-api-lookup= or press =C-c w r= in hydra
+
+Looks up Spanish words in the Real Academia Española dictionary.
+
+*** Synonyms
+
+=M-x writing/sinonimo= or press =C-c w s= in hydra
+
+Opens WordReference Spanish synonyms in a side window.
+
+** Capture Notes
+
+=M-x writing/capture-to-file= or press =C-c W=
+
+Automatically finds the right notes file in your project structure.
+
+** Export with Scene Breaks
+
+Add this macro to your org file:
+
+#+begin_example
+#+MACRO: scene-break SCENE-BREAK
+#+end_example
+
+Use ={{{scene-break}}}= where you want scene breaks.
+
+When exporting, scene breaks will be replaced with appropriate separators for each backend (HTML, LaTeX, Markdown, etc.).
+
+* Project Structure
+
+=emacs-writing= works best with a structured project layout (compatible with [[https://codeberg.org/jcastp/emacs-writing-template][emacs-writing-template]]):
+
+#+begin_example
+project-root/
+├── novel.org (or novela.org)
+├── notes/
+│   └── notes.org (or notas/notas.org)
+├── characters/
+├── research/
+└── timeline.org
+#+end_example
+
+But it also works with any org-mode file structure.
+
+* Configuration
+
+See =M-x customize-group RET writing RET= for all customization options.
+
+Key variables:
+
+- =writing-stories-directory= - Where writing exercise files are created
+- =my-writing-env-work-theme= - Theme for writing modes
+- =my-writing-env-normal-theme= - Normal theme
+- =my-writing-env-work-font= - Font preset for writing
+- =my-writing-env-work-width= - Writeroom width
+- =writing/scene-break-replacements= - Scene break strings for export backends
+
+* Keybindings
+
+Default keybindings when =emacs-writing-mode= is active:
+
+- =C-c w= - Open hydra menu
+- =C-c W= - Capture note
+
+Hydra menu provides quick access to all functions.
+
+* Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+* License
+
+GPL-3.0-or-later
+
+* Links
+
+- Repository: https://codeberg.org/jcastp/emacs-writing
+- Issues: https://codeberg.org/jcastp/emacs-writing/issues
+- Related: [[https://codeberg.org/jcastp/emacs-writing-template][emacs-writing-template]] (project scaffolding)
+- Related: [[https://codeberg.org/jcastp/org-context-extended][org-context-extended]] (smart word counting)
+- Related: [[https://codeberg.org/jcastp/org-tracktable][org-tracktable]] (progress tracking)
+
+* Acknowledgments
+
+This package was developed for bilingual (English/Spanish) creative writing workflows. It integrates many excellent Emacs packages to provide a comprehensive writing environment.

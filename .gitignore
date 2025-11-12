@@ -1,0 +1,19 @@
+# Emacs
+*~
+\#*\#
+.\#*
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Org mode
+.org-id-locations
+*.org_archive
+
+# Project
+*.log
+*.bak
+
+# Test data
+tests/data/temp*

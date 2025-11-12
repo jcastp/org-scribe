@@ -1,0 +1,185 @@
+#+TITLE: Installation Guide for emacs-writing
+#+AUTHOR: Javier Castilla
+
+* Quick Installation
+
+** Prerequisites
+
+- Emacs 29.1 or later
+- org-mode 9.6 or later
+
+** Using use-package (Recommended)
+
+Add this to your Emacs configuration:
+
+#+begin_src emacs-lisp
+(use-package emacs-writing
+  :vc (:url "https://codeberg.org/jcastp/emacs-writing"
+       :branch "main"
+       :rev :newest)
+  :after org
+  :hook (org-mode . emacs-writing-mode)
+  :config
+  ;; Optional: customize settings
+  (setq my-writing-env-work-theme 'poet)
+  (setq writing-stories-directory "~/writing/exercises")
+
+  ;; Optional: keybindings
+  (global-set-key (kbd "<f8> <f8>") 'hydra-writing/body))
+#+end_src
+
+** Manual Installation
+
+1. Clone the repository:
+
+#+begin_src sh
+cd ~/.emacs.d
+git clone https://codeberg.org/jcastp/emacs-writing
+#+end_src
+
+2. Add to your Emacs configuration:
+
+#+begin_src emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/emacs-writing")
+(require 'emacs-writing)
+
+;; Enable in org-mode
+(add-hook 'org-mode-hook #'emacs-writing-mode)
+
+;; Optional: set up keybindings
+(emacs-writing-setup)
+#+end_src
+
+3. Restart Emacs or evaluate the configuration.
+
+* Dependencies
+
+** Required Packages
+
+These must be installed for emacs-writing to work:
+
+#+begin_src emacs-lisp
+(use-package org-ql
+  :ensure t)
+
+(use-package writeroom-mode
+  :ensure t)
+
+(use-package wc-mode
+  :ensure t)
+
+(use-package org-context-extended
+  :vc (:url "https://codeberg.org/jcastp/org-context-extended"
+       :branch "main"
+       :rev :newest))
+
+(use-package org-tracktable
+  :vc (:url "https://codeberg.org/jcastp/org-tracktable"
+       :branch "main"
+       :rev :newest))
+#+end_src
+
+** Optional Packages
+
+These enhance functionality but are not required:
+
+#+begin_src emacs-lisp
+;; For theme switching in writing modes
+(use-package consult
+  :ensure t)
+
+;; For font preset management
+(use-package fontaine
+  :ensure t)
+
+;; For project navigation mode
+(use-package treemacs
+  :ensure t)
+
+(use-package imenu-list
+  :ensure t)
+
+;; For language detection
+(use-package guess-language
+  :ensure t)
+
+;; For translation
+(use-package gt
+  :ensure t)
+
+;; For English thesaurus
+(use-package powerthesaurus
+  :ensure t)
+
+;; For text annotations
+(use-package org-remark
+  :ensure t)
+
+;; For hydra menu (required for hydra-writing)
+(use-package hydra
+  :ensure t)
+#+end_src
+
+* Verification
+
+After installation, verify it works:
+
+1. Open an org file: =C-x C-f test.org=
+2. Check the mode line shows " Write"
+3. Try the hydra menu: =C-c w=
+4. Test a writing mode: =C-c w w= (distraction-free mode)
+
+* Troubleshooting
+
+** "Cannot find writing-core"
+
+Make sure the load-path includes the emacs-writing directory:
+
+#+begin_src emacs-lisp
+(add-to-list 'load-path "/path/to/emacs-writing")
+#+end_src
+
+** "org-context-extended not found"
+
+Install org-context-extended:
+
+#+begin_src emacs-lisp
+(use-package org-context-extended
+  :vc (:url "https://codeberg.org/jcastp/org-context-extended"
+       :branch "main"
+       :rev :newest))
+#+end_src
+
+** "writeroom-mode is required"
+
+Install writeroom-mode:
+
+#+begin_src emacs-lisp
+(use-package writeroom-mode
+  :ensure t)
+#+end_src
+
+** Hydra menu not working
+
+Install hydra package:
+
+#+begin_src emacs-lisp
+(use-package hydra
+  :ensure t)
+#+end_src
+
+* Next Steps
+
+After installation:
+
+1. Read the [[file:README.org][README.org]] for features overview
+2. Try the quick start guide in README.org
+3. Customize settings: =M-x customize-group RET writing RET=
+4. Set up your first writing project
+5. Explore the hydra menu: =C-c w=
+
+* Support
+
+- Repository: https://codeberg.org/jcastp/emacs-writing
+- Issues: https://codeberg.org/jcastp/emacs-writing/issues
+- Email: jcastp@pm.me
