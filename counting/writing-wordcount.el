@@ -69,8 +69,8 @@ sections tagged with 'noexport'."
            ;; Add the data in the table-data for each heading
            ;; Format with literal asterisks and org link
            (push (cons
-                  (format "=%s= %s"
-                          (make-string level 42)  ; 42 is asterisk in ASCII
+                  (format "%s %s"
+                          (make-string level 45)  ; 45 is the minus sign in ASCII
                           (org-link-make-string heading))
                   wordcount)
                  table-data)))))
