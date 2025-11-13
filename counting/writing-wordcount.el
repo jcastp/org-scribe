@@ -33,7 +33,9 @@ for each heading to enable linking."
   (org-map-entries
    (lambda ()
      (let* ((start (point))
-            (end (save-excursion (org-end-of-subtree)))
+            ;; Pass t (INVISIBLE-OK) to org-end-of-subtree to correctly find
+            ;; the end of THIS subtree (not the end of the document)
+            (end (save-excursion (org-end-of-subtree t)))
             (word-count (org-context-count-words start end t t t t t t
                                                   writing-wordcount-default-ignore-tags)))
        (org-set-property "WORDCOUNT" (number-to-string word-count)))
