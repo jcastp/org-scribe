@@ -1,0 +1,51 @@
+#+TITLE: The Morning Routine - Project Overview
+#+AUTHOR: Demo Author
+#+DATE: 2025-01-15
+#+STARTUP: overview
+
+* Project Information
+:PROPERTIES:
+:PROJECT_START: 2025-01-15
+:GENRE: Contemporary Fiction
+:TARGET-WORDCOUNT: 15000
+:DEADLINE: 2025-03-15
+:END:
+
+** Synopsis
+A simple story about Alex, who struggles with chaotic mornings and decides to
+establish a better morning routine. Through various challenges and with help
+from neighbor Sam, Alex learns to find balance between structure and flexibility.
+
+This demo project showcases the features of the emacs-writing package, including:
+- Scene and chapter organization with metadata
+- Character development tracking
+- Location and world-building
+- Plot structure planning
+- Word count tracking
+- Timeline management
+- And much more!
+
+** Writing Goals
+- [X] Complete project planning
+- [ ] Complete first draft
+- [ ] Revision pass 1
+- [ ] Beta reader feedback
+- [ ] Final revision
+- [ ] Submission/Publication
+
+** Project Structure
+- [[file:novel.org][novel.org]] - Main manuscript file
+- [[file:revision.org][revision.org]] - Editing notes and feedback
+- [[file:statistics.org][statistics.org]] - Word count tracking
+- [[file:plan/characters.org][plan/characters.org]] - Character profiles
+- [[file:plan/locations.org][plan/locations.org]] - Location descriptions
+- [[file:plan/objects.org][plan/objects.org]] - Important objects
+- [[file:plan/plot.org][plan/plot.org]] - Plot structure
+- [[file:plan/timeline.org][plan/timeline.org]] - Timeline of events
+- [[file:notes/research.org][notes/research.org]] - Research notes
+- [[file:notes/notes.org][notes/notes.org]] - General notes
+
+** Current Status
+Status: Drafting
+Current Chapter: Chapter 2
+Last Updated: 2025-01-15

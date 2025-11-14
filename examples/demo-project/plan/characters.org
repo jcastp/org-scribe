@@ -1,0 +1,150 @@
+#+TITLE: The Morning Routine - Characters
+#+AUTHOR: Demo Author
+#+STARTUP: overview
+
+* Protagonist
+:PROPERTIES:
+:TYPE: Protagonist
+:NAME: Alex Rivera
+:AGE: 28
+:GENDER: Non-binary (they/them)
+:END:
+
+** Physical Description
+
+- Height :: 5'7"
+- Build :: Average, slightly soft from too many desk hours
+- Hair :: Dark brown, medium length, often uncombed
+- Eyes :: Brown, with dark circles from poor sleep
+- Distinctive features :: Expressive eyebrows, slightly crooked smile, usually has coffee stains somewhere on their clothing
+
+** Personality
+
+- Main traits :: Creative, disorganized, well-meaning, adaptable, self-aware
+- Strengths :: Empathetic, intelligent, capable of growth, sense of humor about their flaws
+- Weaknesses :: Poor time management, avoidant, perfectionist tendencies, difficulty with routine
+- Fears :: Being mediocre, letting people down, being trapped in monotony
+- Desire :: To have their life "together" and feel in control
+- Need :: To learn that structure can create freedom, not limit it
+- Psychological Flaw :: Believes they work better in chaos (they don't)
+- Moral Flaw :: Can be self-centered when stressed, forgetting how their chaos affects others
+
+** Background
+
+- Family :: Raised by grandmother after parents divorced; grandmother passed 2 years ago
+- Education :: BFA in Graphic Design
+- Occupation :: Freelance graphic designer (works from home, which doesn't help the routine issue)
+- Formative events :: Grandmother's death left them adrift; losing a major client 6 months ago due to missed deadline; childhood of moving between parents' houses created instability
+
+** Goal, Motivation, Conflict
+*** Internal
+- Goal :: Find peace and stability in daily life
+- Motivation :: Tired of constant stress and feeling like a mess
+- Conflict :: Fear that structure will kill creativity; resistance to change; self-sabotage
+*** External
+- Goal :: Establish a sustainable morning routine
+- Motivation :: Keep making the same mistakes (late to meetings, forgot important things)
+- Conflict :: Old habits are deeply ingrained; life keeps throwing curveballs; no accountability
+
+** Character Arc
+
+- Initial state :: Chaotic, reactive, running on constant anxiety, blaming circumstances
+- Turning point :: Sam's kindness and the watch symbol plant a seed; hitting rock bottom with the meeting disaster
+- Transformation :: Learns that routines can be flexible; discovers morning peace; becomes someone who helps others
+- Final state :: Balanced, proactive, maintains routine while staying creative, pays forward Sam's kindness
+
+** Relationships
+
+- With Sam :: Starts as strangers, becomes mentor/mentee, evolves to genuine friendship
+- With Grandmother (deceased) :: Deep love and admiration; regrets not learning from her earlier; the watch keeps her memory alive
+- With themselves :: Journey from self-criticism to self-compassion
+
+* Secondary Characters
+
+** Sam Chen
+:PROPERTIES:
+:TYPE: Secondary
+:NAME: Sam Chen
+:ROLE: Mentor/Friend
+:AGE: 32
+:GENDER: Male (he/him)
+:END:
+
+*** Description
+Asian-American, 5'10", slim build, always looks put-together. Wears glasses, has neat short hair, calm demeanor. Works in tech (project manager). Gives off an air of quiet confidence.
+
+*** Personality
+- Patient, organized, genuine, non-judgmental
+- Strength: Emotional intelligence, consistency
+- Weakness: Can be too rigid sometimes, struggles with spontaneity
+- NOTE: Need to develop this more per beta reader feedback - give him a flaw!
+
+*** Role in the Story
+The mentor figure who shows Alex that change is possible. Provides guidance without being preachy. Represents what Alex could become, but importantly, isn't perfect himself.
+
+*** Relationship with Protagonist
+Neighborly acquaintance → mentor → friend. Sam sees potential in Alex and remembers his own struggles. Genuinely wants to help, not just prove how great his system is.
+
+*** Development Note
+BETA READER FEEDBACK: Sam feels too perfect. Need to:
+- Show him struggling with something (spontaneity? relationships? work stress?)
+- Have him admit his routine isn't always perfect
+- Maybe show a moment where his advice doesn't work for Alex
+- Give him personal stakes beyond just helping Alex
+
+*** Possible backstory
+Went through a quarter-life crisis himself 4 years ago. Used to be chaotic like Alex. Overcompensated with extreme routines. Now trying to find balance too.
+
+** The New Character (Chapter 5)
+:PROPERTIES:
+:TYPE: Minor
+:NAME: Casey (tentative)
+:ROLE: Symbol of cycle continuing
+:END:
+
+*** Description
+Young person (early 20s) clearly having a terrible morning. Reminds Alex of themselves at the beginning.
+
+*** Role in the Story
+Appears only in final scene. Gives Alex the chance to pay forward Sam's kindness. Shows that Alex has truly changed - they now notice and help others instead of being consumed by their own chaos.
+
+*** Relationship with Protagonist
+Complete stranger who Alex helps, mirroring the Sam/Alex first meeting.
+
+* Character Relationships Map
+
+#+BEGIN_SRC
+                Grandmother (deceased)
+                      |
+                   [legacy]
+                      |
+          [watch/inspiration/memory]
+                      |
+                    ALEX ←----[mentor/friend]---- SAM
+                      |                             |
+                   [helps]                   [was helped by]
+                      |                             |
+                      ↓                        [someone?]
+                  New Person              [needs development]
+#+END_SRC
+
+* Character Voice Notes
+
+** Alex's voice
+- Internal monologue: Self-deprecating, slightly sarcastic, observant
+- Dialogue: Honest, sometimes flustered, uses humor as defense
+- Example: "Close enough" about the socks - shows their resigned acceptance of chaos
+
+** Sam's voice
+- Calm, measured, uses questions instead of commands
+- Never condescending, speaks from experience not superiority
+- Example: "I used to be exactly like you" - establishes connection, not hierarchy
+
+* Names & Pronouns Quick Reference
+
+| Character     | Full Name    | Pronouns | Age | Role        |
+|---------------+--------------+----------+-----+-------------|
+| Alex          | Alex Rivera  | they/them | 28  | Protagonist |
+| Sam           | Sam Chen     | he/him    | 32  | Mentor      |
+| Casey         | Casey (TBD)  | TBD       | ~23 | Minor       |
+| Grandmother   | Maria Rivera | she/her   | -   | Deceased    |

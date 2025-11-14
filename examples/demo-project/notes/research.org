@@ -1,0 +1,293 @@
+#+TITLE: The Morning Routine - Research
+#+AUTHOR: Demo Author
+#+STARTUP: overview
+
+* Research Topics
+
+** Morning Routine Science
+:PROPERTIES:
+:CATEGORY: Psychology/Behavior
+:PRIORITY: High
+:STATUS: Completed
+:END:
+
+*** Questions to Answer
+- How long does it take to form a habit?
+- What makes routines sustainable vs. unsustainable?
+- Why do people hit snooze?
+- What's the psychology of morning people vs. night people?
+
+*** Sources
+- "Atomic Habits" by James Clear
+- "The Power of Habit" by Charles Duhigg
+- Various articles on habit formation (21 days is myth, 66 days average)
+- Sleep science articles
+
+*** Key Findings
+
+**** Habit Formation Timeline
+- Popular myth: 21 days
+- Research shows: Average 66 days (range 18-254)
+- 30 days is reasonable for story but acknowledge it's still forming
+- Complexity matters: Simple habits form faster
+
+**** What Makes Routines Stick
+- Small, achievable steps
+- Tied to existing habits (habit stacking)
+- Personalized, not prescribed
+- Flexible, not rigid
+- Identity-based ("I'm someone who...")
+
+**** The Snooze Button
+- Actually makes you more tired (sleep inertia)
+- Gives false sense of control
+- Multiple snoozes = decision fatigue before day starts
+- Breaking the habit: Alarm across room, immediate action
+
+**** Chronotypes
+- Morning people vs. night people is partly genetic
+- But can be shifted somewhat with consistent routine
+- Society favors morning people (work schedules)
+- Alex isn't trying to become a morning person, just function better
+
+*** How This Applies to Story
+- Alex's 30-day transformation is realistic but still in progress
+- Sam's advice should reflect actual research: personalize, start small, be flexible
+- The snooze battle in Scene 1 is scientifically grounded
+- Alex doesn't have to become a morning person to have a morning routine
+
+** Freelance Designer Lifestyle
+:PROPERTIES:
+:CATEGORY: Career/Work
+:PRIORITY: Medium
+:STATUS: Completed
+:END:
+
+*** Questions to Answer
+- What's the daily life of a freelance graphic designer?
+- How does working from home affect routine?
+- What kind of schedule flexibility do they have?
+- Common challenges?
+
+*** Sources
+- Interviews with freelance friends
+- Articles on freelance life
+- r/freelance and design subreddits
+
+*** Key Findings
+
+**** Typical Day
+- No set hours = blessing and curse
+- Clients in different time zones
+- Deadline-driven work
+- Mix of creative work and admin/communication
+- Easy to work in pajamas (Alex definitely does this)
+
+**** Challenges Relevant to Story
+- No external structure (no commute, no office hours)
+- Discipline is self-imposed
+- Home/work boundary blurred
+- Isolation
+- Feast or famine cycles
+
+**** Benefits for Story
+- Explains why Alex has flexibility to experiment with routine
+- Work-from-home means morning sets tone for whole day
+- Client meetings create external accountability
+- Creative work benefits from good mental state (routine helps)
+
+*** How This Applies to Story
+- Alex's job explains their flexibility but also their chaos
+- Missing client deadline makes stakes real
+- Working from home means morning routine directly affects work
+- Not having to commute = one less external forcing function
+
+** Coffee Shop Culture
+:PROPERTIES:
+:CATEGORY: Setting/Atmosphere
+:PRIORITY: Low
+:STATUS: Basic research done
+:END:
+
+*** Questions to Answer
+- What's a typical morning rush like?
+- How do regulars interact with baristas?
+- What's the vibe of independent vs. chain shops?
+
+*** Sources
+- Personal observation
+- Working in coffee shops myself
+- Conversations with baristas
+
+*** Key Findings
+
+**** Morning Rush Dynamics
+- 7-9 AM busiest
+- Mix of regulars (same time, same order) and one-offs
+- Commuters (grab and go) vs. sitters (work on laptops)
+- Baristas recognize faces even if not names
+- Rhythm and flow, almost choreographed
+
+**** Independent Shop Vibe
+- More community feel than chains
+- Bulletin board, local art, personality
+- Regulars might nod to each other
+- Slight premium on price
+- Quality matters to customers
+
+**** The Third Place Concept
+- Not home, not work, but third space
+- Neutral ground for connections
+- Public privacy (alone together)
+- Transitional space
+
+*** How This Applies to Story
+- Coffee shop is perfect setting for chance encounter
+- Regular timing (Sam) vs. chaotic timing (Alex) visible here
+- Neutral space for conversations
+- Represents community, connection
+- Transitional space literally (between home and work) and metaphorically (between old self and new)
+
+** Grief and Objects
+:PROPERTIES:
+:CATEGORY: Psychology/Emotion
+:PRIORITY: Medium
+:STATUS: Completed
+:END:
+
+*** Questions to Answer
+- How do people relate to inherited objects?
+- What makes something a meaningful keepsake?
+- How long does acute grief last?
+- When do people go through belongings after loss?
+
+*** Sources
+- Articles on grief and mourning
+- Personal experience and observation
+- "The Year of Magical Thinking" by Joan Didion
+
+*** Key Findings
+
+**** Timeline of Grief
+- No set timeline
+- 2 years (story timeline) is still processing
+- Waves and triggers, not linear
+- Objects can trigger memories
+
+**** Inherited Objects
+- Everyday items often more meaningful than "valuable" ones
+- Items deceased wore/used regularly feel most connected
+- Some people keep everything, some purge, most somewhere in between
+- Sometimes can't face going through things immediately
+
+**** Why a Watch Works
+- Worn daily by grandmother = intimate object
+- Functional = can be used, not just displayed
+- Keeps time = literal connection to time passing
+- Wearable = physical connection, kept close
+
+*** How This Applies to Story
+- 2 years since death = Alex still processing
+- Watch in pile of stuff = too painful to deal with initially
+- Finding it now = ready to reconnect
+- Using it daily = honoring grandmother's memory
+- Not making grief the focus but acknowledging it
+
+** The 30-Day Challenge Concept
+:PROPERTIES:
+:CATEGORY: Self-Improvement Culture
+:PRIORITY: Low
+:STATUS: Basic understanding
+:END:
+
+*** Questions to Answer
+- Why are 30-day challenges popular?
+- Do they work?
+- What's the psychology?
+
+*** Sources
+- Various 30-day challenge articles and apps
+- Behavioral psychology
+
+*** Key Findings
+- 30 days feels achievable (vs. "forever")
+- Month is natural time unit
+- Creates artificial deadline/finish line
+- Can work but only if followed by maintenance
+- Alex's 30 days is beginning, not end
+
+*** How This Applies to Story
+- Story span of 30 days is psychologically meaningful
+- But ending acknowledges this is ongoing, not "fixed"
+- Alex hasn't "completed" growth, just started sustainable path
+
+* Reference Materials
+
+** Books
+
+- "Atomic Habits" by James Clear :: Habit formation, systems thinking
+- "The Power of Habit" by Charles Duhigg :: Science of habits
+- "Daily Rituals" by Mason Currey :: How artists structure their days
+- "The Miracle Morning" by Hal Elrod :: Morning routine book (Alex might have read this and tried to copy it exactly - what NOT to do)
+
+** Articles/Websites
+
+- James Clear's blog on habit formation
+- Sleep Foundation articles on sleep inertia
+- Articles on chronotypes and circadian rhythms
+- Freelance lifestyle articles
+
+** Interviews/Consultations
+
+- Friend who's a freelance designer (work schedule questions)
+- Friend who transformed their morning routine (inspiration)
+- Local barista (coffee shop culture)
+
+** Visual References
+
+- Coffee shop photos for ambiance
+- Vintage women's watches (grandmother's watch reference)
+- Small apartment layouts (Alex's space)
+
+* Fact Checking
+
+| Fact                                  | Source          | Verified | Notes                           |
+|---------------------------------------+-----------------+----------+---------------------------------|
+| Habit formation ~66 days average      | Research study  | Yes      | Using 30 days as "in progress"  |
+| Sun rises ~7:00 AM in Feb (east coast)| Time and Date   | Yes      | Affects lighting in scenes      |
+| Sleep inertia from snoozing           | Sleep science   | Yes      | Alex's groggy state accurate    |
+| Freelancers work irregular hours      | Observation     | Yes      | Common experience               |
+| Watch mechanisms can last decades     | Watch articles  | Yes      | Grandmother's watch plausible   |
+| Coffee shops busiest 7-9 AM           | Observation     | Yes      | Setting timing accurate         |
+
+* Research Still Needed
+
+** None currently
+
+All essential research completed. Any additional research would be:
+- Deep dive into specific watch mechanisms (not necessary for story)
+- More detail on graphic design tools (not story focus)
+- Coffee roasting process (interesting but irrelevant)
+
+Story has enough factual grounding to feel real while staying focused on character and theme.
+
+* Research Notes for Revision
+
+** Be careful with:
+- Not making Alex's transformation seem too easy or fast
+- Not being prescriptive about "the right way" to do mornings
+- Acknowledging that what works for Sam doesn't automatically work for Alex
+- Respecting that some people genuinely are night people
+
+** Authenticity markers:
+- Specific details about the work of habit formation (not just results)
+- Alex's failures and struggles
+- The meditation scene in Ch 3 - make it feel real, not mocking
+- Coffee shop sensory details
+- Freelance designer specifics (client calls, deadlines, software)
+
+** Avoid:
+- Pseudoscience (the "manifest your routine" type stuff)
+- One-size-fits-all prescriptions
+- Making it seem like routine solves all problems
+- Toxic productivity culture messaging

@@ -1,0 +1,181 @@
+#+TITLE: The Morning Routine - Plot Structure
+#+AUTHOR: Demo Author
+#+STARTUP: overview
+
+* Premise
+
+Alex, a chronically disorganized young professional, struggles with chaotic mornings until a chance encounter with their put-together neighbor Sam inspires them to establish a sustainable morning routine and find peace in their daily life.
+
+* Themes
+What are the themes of the story?
+
+- Primary :: Structure creates freedom (not restriction)
+- Secondary :: Self-compassion over self-criticism
+- Tertiary :: Paying kindness forward, Connection with others, Honoring the past while living in the present
+
+* Three-Act Structure
+
+** Act I - Setup (25%)
+
+*** Ordinary world
+Alex's life is defined by morning chaos: hitting snooze repeatedly, rushing through getting ready, forgetting things, arriving everywhere frazzled and stressed. They've accepted this as "just how they are."
+
+*** Inciting incident
+While rushing to grab coffee before an important meeting, Alex encounters Sam, their neighbor from 4B, who seems impossibly calm and put-together. Sam gently suggests that a morning routine changed their life, and reveals they used to be "exactly like" Alex.
+
+*** First plot point
+That evening, after a particularly disastrous day, Alex finds their grandmother's old watch and decides to try establishing a morning routine. They commit to change.
+
+** Act II - Confrontation (50%)
+
+*** Rising action / First attempts
+Alex tries to implement a "perfect" morning routine based on articles and apps, but struggles. They wake up early but the meditation feels forced, the schedule is too rigid, and they end up more stressed than before.
+
+*** Midpoint
+Alex runs into Sam again at the coffee shop and admits their struggle. Sam shares that the key isn't following someone else's routine perfectly - it's creating one that works for you. "I track mine," Sam says, "but it's my routine, not the internet's."
+
+*** Trials and challenges
+Alex experiments with different approaches, fails, adjusts, and slowly finds what works for them. Some days go well, others don't. They learn to be flexible rather than perfect.
+
+*** Second plot point
+Alex realizes they've had several mornings in a row where they felt peaceful instead of chaotic. The routine is actually working - not because it's perfect, but because it's theirs.
+
+*** Darkest moment (optional/subtle)
+A disruption threatens the new routine (visitor, emergency, or just life happening). Old patterns tempt Alex to give up entirely. But they choose to adapt rather than abandon.
+
+** Act III - Resolution (25%)
+
+*** Climax
+30 days later, Alex's morning routine is established and sustainable. They walk into the coffee shop calm and on time, and encounter someone else having a rough morning.
+
+*** Falling action
+Alex offers the same kindness Sam showed them, sharing their story and suggesting that change is possible. They see themselves in this stranger.
+
+*** Resolution / New world
+Alex has become someone who helps others, not just someone struggling alone. The watch keeps ticking steadily on their wrist. They have time now - they always did, they just needed to learn how to use it. The cycle of kindness continues.
+
+* Main Plot
+
+** Central Conflict
+*External:* Alex vs. chaotic mornings / lack of routine
+*Internal:* Alex vs. resistance to structure / fear that routine kills creativity / need for self-compassion
+
+** Main Dramatic Question
+Will Alex be able to establish a sustainable morning routine and find peace in their daily life?
+
+** Conflict Resolution
+Yes, but not by becoming perfectly disciplined. By learning that structure can coexist with creativity, and that routines should be personalized, flexible, and rooted in self-compassion rather than self-criticism.
+
+* Subplots
+
+** Subplot 1: The Grandmother's Legacy
+*** Conflict
+Alex is still grieving their grandmother's death (2 years ago) and feeling disconnected from her wisdom.
+
+*** Resolution
+Finding and wearing the grandmother's watch reconnects Alex to her memory and her approach to life. Alex honors her by learning the lessons she tried to teach: time is precious, presence matters, routine creates space for what's important.
+
+*** Connection to Main Plot
+The watch is both symbol and catalyst. It represents steady, reliable time - the opposite of Alex's chaotic relationship with time. Wearing it daily reinforces the routine.
+
+** Subplot 2: Sam's Humanity
+*** Conflict
+Sam initially appears too perfect, which makes them less relatable and their advice less credible.
+
+*** Resolution
+Sam reveals their own struggles (past chaos, current areas where routine doesn't help, the balance between structure and spontaneity). This makes them a real person, not just a wise mentor figure.
+
+*** Connection to Main Plot
+Shows that there's no "perfect" way to live. Even Sam, who seems to have it all together, is still learning. This gives Alex permission to be imperfect in their progress.
+
+* Scene Beat Sheet
+
+| # | Chapter | Scene           | POV  | Location         | Goal                    | Conflict                 | Status   |
+|---+---------+-----------------+------+------------------+-------------------------+--------------------------+----------|
+| 1 | Ch 1    | The Alarm       | Alex | Apartment        | Wake up on time         | Snooze button addiction  | Finished |
+| 2 | Ch 1    | Coffee Shop     | Alex | Coffee Shop      | Get coffee fast         | Line + encounter w/Sam   | Finished |
+| 3 | Ch 2    | The Decision    | Alex | Apartment        | Decide to change        | Fear vs. desperation     | Finished |
+| 4 | Ch 3    | First Attempt   | Alex | Apartment        | Perfect morning routine | Too rigid, doesn't work  | Draft    |
+| 5 | Ch 4    | Coffee Talk     | Alex | Coffee Shop      | Get advice from Sam     | Admitting struggle       | Outlined |
+| 6 | Ch 4    | Finding Balance | Alex | Apartment        | Personalized routine    | Letting go of perfect    | Outlined |
+| 7 | Ch 5    | Full Circle     | Alex | Coffee Shop      | Help someone else       | None (resolution)        | Draft    |
+
+* Story Beats
+
+Key moments that must occur:
+
+1. Alex hits snooze 3 times - establishes the problem
+2. Sam says "I used to be exactly like you" - plants hope
+3. Alex finds the grandmother's watch - symbolic turning point
+4. First routine attempt fails - shows change is hard
+5. Sam shares that routines must be personal - key wisdom
+6. Alex wakes up peacefully - shows progress
+7. Alex helps the new person - demonstrates complete transformation
+8. Alex looks at the watch and realizes "they have time now" - thematic resolution
+
+* Plot Threads to Track
+
+** The Morning Routine Evolution
+- Day 1: Chaos (snooze x3, rushed, forgot things)
+- Day 2: Decision (finds watch, commits to change)
+- Day 3: Perfect attempt fails (too rigid)
+- Day 5-8: Experimentation (finding what works)
+- Day 30: Success (peaceful, sustainable, teaching others)
+
+** The Watch Symbol
+- Hidden under mail → found and worn
+- Ticking steadily throughout (in contrast to chaos)
+- Becomes a reminder of time's value, not time's pressure
+- Connects past (grandmother) to present (Alex) to future (new person)
+
+** The Coffee Shop as Threshold
+- First visit: Rushed, stressed, no time
+- Middle visits: Conversations with Sam, learning
+- Final visit: Calm, on time, helping others
+
+** Alex and Sam's Relationship
+- Strangers → Alex observes Sam → Sam reaches out → Mentorship → Friendship
+- Mirrors the final scene where Alex reaches out to new person
+
+* Themes
+
+- Main theme :: Structure creates freedom. Routines don't trap you; they free you to focus on what matters.
+
+- Secondary themes ::
+  - Self-compassion: Be kind to yourself in the process of change
+  - Progress over perfection: Growth isn't linear
+  - Honoring the past: The grandmother's wisdom lives on
+  - Paying it forward: Kindness creates cycles
+  - Time as gift: You don't find time, you make it
+
+* Narrative Arc Visual
+
+#+BEGIN_SRC
+Chaos Level
+
+High ┤    *
+     │   * *
+     │  *   *
+     │ *     *
+     │*       *              [disruption?]
+     │         *         *  /
+     │          *       * */
+     │           *     *  *
+     │            *   *
+Low  └─────*───────*────────*─────────
+     Day 1    Day 8    Day 15    Day 30
+
+     [alarm] [decision] [learning] [helping
+      chaos]  [found     [flexible  others]
+              watch]    routine]
+#+END_SRC
+
+* Questions to Answer in Story
+
+- [X] Why is Alex so chaotic? (Work from home, no external structure, grief, habits)
+- [X] Why does Sam help? (Remembers own struggle, genuinely kind)
+- [X] What makes the watch special? (Grandmother's, still ticking, symbol of time)
+- [ ] What's Sam's flaw/struggle? (Need to develop)
+- [X] How does routine not kill creativity? (Creates space/energy for creativity)
+- [X] Why 30 days? (Habit formation research suggests ~30 days)
+- [X] What's Alex's job? (Freelance graphic designer)

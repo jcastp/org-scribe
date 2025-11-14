@@ -1,0 +1,214 @@
+#+TITLE: The Morning Routine - Important Objects
+#+AUTHOR: Demo Author
+#+STARTUP: overview
+
+* Symbolic Objects
+
+** The Grandmother's Watch
+:PROPERTIES:
+:TYPE: Wristwatch
+:OWNER: Originally Maria Rivera (grandmother), now Alex
+:SYMBOLIC-WEIGHT: High
+:PLOT-IMPORTANCE: Critical
+:END:
+
+*** Physical Description
+
+- Style :: Classic women's wristwatch, small round face
+- Material :: Silver-tone metal case, leather band worn soft with age
+- Face :: White background, simple black numbers (not Roman numerals), thin black hands
+- Condition :: Well-worn but well-maintained, still ticking reliably
+- Size :: Small by modern standards, fits Alex's wrist perfectly
+- Details :: Slightly scratched crystal, leather band is cracked but supple, warm silver tone
+
+*** Origin
+
+The watch belonged to Alex's grandmother, Maria Rivera. She wore it every single day for decades - it was part of her daily uniform along with her apron and reading glasses. She received it as a gift (from whom is not specified - could be her husband, could have been a self-purchase, mystery adds to its meaning).
+
+After Maria's death two years ago, the watch ended up in Alex's possessions but was set aside, forgotten in the chaos of grief and life. It resurfaces at the perfect moment.
+
+*** Symbolism
+
+The watch carries multiple layers of meaning:
+
+**** Literal Time
+- Represents reliable, steady passage of time (in contrast to Alex's chaotic relationship with time)
+- Still ticking after all these years - constancy, endurance
+- Accurate timekeeping - you can't fool time, it just is
+
+**** Connection to Grandmother
+- Physical link to her memory and wisdom
+- Reminder of how she lived: present, unhurried, always had time for what mattered
+- Legacy passing from generation to generation
+- Love object - worn close to the body, intimate
+
+**** Transformation Symbol
+- Finding it marks the decision to change
+- Wearing it daily reinforces the commitment
+- Looking at it reminds Alex of their goal
+- By story's end, checking it is no longer about anxiety (am I late?) but peace (I have time)
+
+**** Circular Time
+- Watch face is circular, story is circular (ends where it began, in coffee shop)
+- Hands go round and round - cycles, routine
+- "The watch keeps ticking" - life goes on, time continues
+
+*** Importance in the Plot
+
+- First Plot Point :: Discovery of the watch triggers Alex's decision to change
+- Daily Reminder :: Alex wears it every day as commitment to the routine
+- Thematic Anchor :: Grounds abstract themes (time, legacy, presence) in concrete object
+- Final Image :: In last scene, Alex looks at watch and thinks "I have time" - thematic resolution
+
+*** Object History
+
+- Unknown origin → Grandmother's daily wear (decades) → Boxed after death → Alex's possession but unused → Hidden under mail → Discovered → Worn daily → Passed on (metaphorically, through helping Casey)
+
+*** Scenes Where It Appears
+
+| Scene              | Role                                           | Status   |
+|--------------------+------------------------------------------------+----------|
+| Chapter 2, Scene 1 | Discovered under mail pile, decision catalyst  | Written  |
+| Chapter 3, Scene 1 | Worn on first routine attempt, check time      | Written  |
+| Chapter 4 scenes   | Present but background, just part of Alex now  | Outlined |
+| Chapter 5, Scene 1 | Final image: "I have time" / watch still ticks | Written  |
+
+*** Writing Notes
+
+The watch should be described in detail when first found (Chapter 2) to establish its physical reality and emotional weight. After that, brief mentions are enough - just enough to remind reader it's there.
+
+Avoid being heavy-handed with symbolism. Let readers discover the meaning. The watch is first just a watch, then gradually accumulates significance.
+
+** Sam's Notebook
+:PROPERTIES:
+:TYPE: Paper notebook
+:OWNER: Sam Chen
+:SYMBOLIC-WEIGHT: Medium
+:PLOT-IMPORTANCE: Moderate
+:END:
+
+*** Description
+
+A small, neat notebook that Sam carries and uses to track their routine. Not fancy - maybe a Moleskine or similar, practical rather than precious. Represents Sam's organized approach.
+
+*** Symbolism
+
+- Tracking and accountability
+- Physical, analog approach (like the watch) vs digital chaos
+- Commitment and consistency
+- Personalization (it's Sam's unique system, not an app)
+
+*** Role in the Story
+
+Mentioned in first coffee shop scene when Sam pulls it out. Inspires Alex to start their own tracking. Contrast to Alex's initial scattered digital approach (apps, etc.).
+
+*** Writing Notes
+
+Don't show too much detail about what's in Sam's notebook - maintain some mystery. The point is that Sam has a system that works for them, not that Alex should copy it exactly.
+
+** Alex's Notebook
+:PROPERTIES:
+:TYPE: Paper notebook
+:OWNER: Alex Rivera
+:SYMBOLIC-WEIGHT: Low-Medium
+:PLOT-IMPORTANCE: Minor
+:END:
+
+*** Description
+
+A spare notebook from Alex's junk drawer. Nothing special - maybe graph paper, maybe lined. Starts empty. Represents Alex's commitment to try, even with imperfect tools.
+
+*** Symbolism
+
+You don't need perfect tools to make changes. Alex's notebook is nothing fancy compared to Sam's, but it works.
+
+*** Role in the Story
+
+First page: "Day 1" written at the end of Chapter 2.
+Used for tracking attempts, what works and doesn't.
+Physical representation of the journey.
+
+* Relevant Everyday Objects
+
+** The Alarm (Phone)
+*** Description
+Alex's phone alarm. Harsh, jarring sound. The enemy in Scene 1, eventually becomes a tool rather than a torment.
+
+*** Role
+Represents Alex's fractured relationship with time. By the end, they might still use an alarm, but they don't fight it anymore.
+
+** The Coffee Cup
+*** Description
+Warm ceramic mug from the coffee shop. Simple comfort object.
+
+*** Symbolism
+- Warmth, routine, small pleasures
+- The coffee shop as third place / community
+- Morning ritual
+
+*** Scenes
+Appears in every coffee shop scene. In Scene 1, Alex is too rushed to enjoy it. By final scene, they have time to savor it.
+
+** The Mail Pile
+*** Description
+Stack of unopened mail on Alex's coffee table. Represents clutter and avoidance.
+
+*** Role
+Where the watch is hiding. This pile of "I'll deal with it later" hides the very thing Alex needs. Metaphor for how our chaos obscures our solutions.
+
+** The Bed
+*** Description
+Rumpled, unmade, tangled sheets. Scene of the snooze button battles.
+
+*** Journey
+- Chapter 1: Messy, symbolic of chaos
+- Chapter 3: Alex makes it as "first accomplishment" (following advice)
+- Later: Made but not obsessively so, balanced
+
+** The Curtains
+*** Description
+Usually closed, keeping Alex's apartment dim even in morning light.
+
+*** Symbolism
+- Shutting out the day, avoiding morning
+- Darkness vs. light
+- By story's end, maybe they're open, letting light in
+
+*** Writing Notes
+Subtle detail. Only mention occasionally but creates atmosphere.
+
+* Object Symbolism Summary
+
+| Object              | Literal Function       | Symbolic Meaning                | Arc                           |
+|---------------------+------------------------+---------------------------------+-------------------------------|
+| Grandmother's Watch | Tells time             | Legacy, steady time, commitment | Hidden → found → worn → lived |
+| Sam's Notebook      | Tracks routine         | Accountability, system          | Inspires Alex                 |
+| Alex's Notebook     | Tracks attempts        | Journey, imperfect tools work   | Empty → filled with learning  |
+| Phone Alarm         | Wake up device         | Alex vs. Time conflict          | Enemy → neutral tool          |
+| Coffee Cup          | Holds coffee           | Ritual, comfort, community      | Rushed prop → savored moment  |
+| Mail Pile           | Unopened mail          | Chaos, avoidance                | Hides solution → cleared      |
+| The Bed             | Sleep/wake transition  | Chaos vs. order                 | Messy → made → balanced       |
+| Curtains            | Light blocking         | Avoiding day/light              | Closed → [maybe] open         |
+
+* Notes on Using Objects in Writing
+
+** Show Don't Tell
+Let objects demonstrate character and theme without explicit explanation.
+- Alex's apartment full of coffee mugs = scattered lifestyle
+- Watch still ticking = reliable despite being forgotten
+- Notebook starting to fill = progress being made
+
+** Sensory Details
+Objects ground scenes in physical reality:
+- Feel of smooth phone screen when hitting snooze
+- Weight of watch on wrist
+- Warmth of coffee cup in hands
+- Soft worn leather of watch band
+
+** Repetition and Variation
+Some objects (watch, coffee) appear repeatedly. Show them differently each time to demonstrate change:
+- Coffee: Chapter 1 (rushed, stressed), Chapter 5 (savored, peaceful)
+- Watch: Chapter 2 (discovery, emotion), Chapter 5 (glance, calm confidence)
+
+** Don't Overload
+Not every object needs symbolism. Sometimes a coffee cup is just a coffee cup. Use symbolic objects strategically.

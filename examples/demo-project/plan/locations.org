@@ -1,0 +1,220 @@
+#+TITLE: The Morning Routine - Locations
+#+AUTHOR: Demo Author
+#+STARTUP: overview
+
+* The City
+:PROPERTIES:
+:TYPE: City
+:NAME: Unnamed mid-sized city
+:CLIMATE: Temperate, four seasons
+:POPULATION: ~500,000
+:END:
+
+** General Description
+A modern mid-sized city with a mix of old and new architecture. Urban but not
+overwhelming. Has distinct neighborhoods with their own character. Public
+transportation exists but most people drive. The kind of place where you can
+find both chain coffee shops and local favorites.
+
+** Geography
+
+- Location :: East coast (implied but not specified)
+- Terrain :: Relatively flat, some hills, near water
+- Climate :: Four seasons, emphasis on crisp autumn mornings and harsh winter alarms
+- Natural resources :: Parks, waterfront area
+
+** Cultural Aspects
+
+- Language :: English (American)
+- Customs :: Contemporary American urban culture
+- Government :: City council (not relevant to story)
+
+** History
+Not relevant to this story - contemporary setting.
+
+** Importance in the Plot
+The city itself is more of a backdrop. It's deliberately generic so readers can
+project their own city onto it. The specific locations within the city (apartment,
+coffee shop) are more important than the city as a whole.
+
+* Alex's Apartment Building
+:PROPERTIES:
+:TYPE: Apartment Building
+:NAME: The building at corner of [Street Names TBD]
+:FLOORS: 5
+:BUILT: 1970s
+:END:
+
+** General Description
+Older apartment building, well-maintained but not luxury. Mix of young
+professionals and long-term residents. Sam lives in 4B, Alex in [TBD - 2A?].
+Has a small lobby, elevator that's often slow, mailboxes in the entrance hall.
+
+** Specific Places
+
+*** Alex's Apartment (2A)
+:PROPERTIES:
+:TYPE: Studio apartment
+:END:
+
+A small studio that's seen better organization. Creative chaos - art supplies,
+design books, multiple coffee mugs in various states of use. Big window with
+decent light (when Alex opens the curtains). Furniture is mismatched but
+comfortable.
+
+**** Layout
+- Main room :: Combined living/sleeping/working area
+- Kitchenette :: Along one wall, barely used beyond coffee maker
+- Bathroom :: Small but functional
+- Closet :: Overstuffed, source of the daily "what to wear" crisis
+
+**** Key Features
+- The Bed :: Scene of the snooze button battles
+- The Desk :: Where Alex works, usually cluttered
+- The Window :: Curtains usually closed, light barely gets in
+- Coffee Table :: Where the watch is discovered under mail pile
+- The Junk Drawer :: Source of the spare notebook
+
+**** Atmosphere
+Morning chaos. Afternoon creative energy. Evening exhaustion. By the end of the
+story, it becomes more organized but retains personality.
+
+**** Sensory Details
+- Sight :: Dim (curtains closed), cluttered but colorful (art/design materials)
+- Sound :: Traffic from street below, neighbor's TV through walls, alarm buzzing
+- Smell :: Stale coffee, sometimes takeout
+- Touch :: Rumpled sheets, smooth phone screen, worn carpet
+- Emotional feel :: Initially claustrophobic, gradually becomes cozy
+
+*** Sam's Apartment (4B)
+:PROPERTIES:
+:TYPE: One-bedroom apartment
+:END:
+
+Only seen briefly if at all in the story, but imagine it as organized, minimalist,
+lots of light. Plants on the windowsill. Morning sun streams in.
+
+Represents what Alex might aspire to, but ultimately Alex's place keeps its own
+character - organized chaos rather than minimalism.
+
+*** Building Lobby
+:PROPERTIES:
+:TYPE: Common area
+:END:
+
+Where Alex and Sam might occasionally pass each other. Mailboxes, elevator,
+bulletin board with community notices. Neutral space that facilitates their
+neighborly relationship.
+
+* Corner Coffee Shop
+:PROPERTIES:
+:TYPE: Local coffee shop
+:NAME: "Corner Coffee Shop" (generic, could have a name)
+:ESTABLISHED: ~10 years ago
+:END:
+
+** General Description
+Local independent coffee shop, not a chain. Cozy but busy in the mornings.
+Counter up front, seating in back. Mix of regulars and commuters grabbing
+coffee to go. The kind of place where baristas recognize regulars but there's
+also always someone new.
+
+** Layout
+- Front :: Counter, register, pastry case, coffee equipment
+- Back :: Small tables, a few comfortable chairs, corner booth
+- Side wall :: Community board, outlet bar for laptops
+- Window :: Front window with the shop name, looks out on street
+
+** Atmosphere & Role in Story
+This is where Alex and Sam's first real conversation happens. It's a transitional
+space - between home and work, between night and day, between chaos and order.
+
+The coffee shop represents routine for Sam (same time, same order every day) and
+chaos for Alex (rushed, line too long, never the same time).
+
+Later it becomes a neutral meeting ground where they talk. By the end, Alex
+experiences it the way Sam does - as a peaceful morning ritual, not a stressful
+rush.
+
+** Sensory Details
+- Sight :: Warm lighting, espresso machine gleaming, people in various states of awakeness
+- Sound :: Espresso machine hissing, milk steaming, low conversation, music barely audible
+- Smell :: Coffee beans, baked goods, slight burnt-sugar scent from caramel
+- Touch :: Smooth counter, warm cup in hand, cool door handle
+- Taste :: Quality coffee, better than what Alex makes at home
+
+** Characters Associated
+- Alex :: Initially rushed and stressed here
+- Sam :: Regular, orders same thing, calm and collected
+- Barista :: Minor character, efficient, knows Sam's order
+- New Character :: Appears here in final scene, completing the circle
+
+** Symbolic Meaning
+The coffee shop is where change begins (first encounter with Sam) and where it
+comes full circle (helping the new person). It's a threshold space.
+
+* Other Locations (Brief/Mentioned)
+
+** Alex's Workplace
+:PROPERTIES:
+:TYPE: Home office
+:END:
+Alex works from home (freelance designer), so workplace = apartment. But they
+might reference client meetings, which happen via video call or at clients'
+offices.
+
+** Sam's Workplace
+:PROPERTIES:
+:TYPE: Office building
+:END:
+Tech company office, not described in detail. Just establishes that Sam has
+a regular commute and office hours, contributing to his routine.
+
+** The Park
+:PROPERTIES:
+:TYPE: Public park
+:END:
+Mentioned as a possible location for expanded scenes. Could be where Sam goes
+for morning walks, or where Alex might eventually try morning walks.
+
+Could be useful for:
+- Act II scene showing Alex trying Sam's routine
+- Quiet reflection scene
+- Different setting to break up apartment/coffee shop rotation
+
+** The Waterfront
+:PROPERTIES:
+:TYPE: Natural setting
+:END:
+Could be visible from certain parts of the city. Potential location for future
+scenes. Represents openness, possibility.
+
+* Location Usage by Chapter
+
+| Chapter   | Primary Location        | Secondary Location | Notes                          |
+|-----------+-------------------------+--------------------+--------------------------------|
+| Chapter 1 | Alex's Apartment        | Coffee Shop        | Establishes chaos              |
+| Chapter 2 | Alex's Apartment        | -                  | The watch, decision to change  |
+| Chapter 3 | Alex's Apartment        | -                  | First attempt at routine       |
+| Chapter 4 | Coffee Shop             | -                  | Conversations with Sam         |
+| Chapter 5 | Coffee Shop             | -                  | Final scene, full circle       |
+
+* Setting Notes
+
+** Time Period
+Contemporary (2025). Technology exists (phones, apps) but isn't the focus.
+Could be set any time in the last 5 years.
+
+** Season
+Story seems to take place over about 30 days. Could be:
+- Late winter into early spring (cold mornings → warming)
+- Early fall (back-to-school energy, new beginnings)
+
+Either works. The changing season could parallel Alex's transformation.
+
+** Weather
+Not a major factor but could be used for:
+- Harsh winter alarm making it harder to get up
+- Spring light making mornings more appealing
+- Rain as obstacle to morning walks
+- Sunny morning as reward/motivation

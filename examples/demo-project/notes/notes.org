@@ -1,0 +1,231 @@
+#+TITLE: The Morning Routine - General Notes
+#+AUTHOR: Demo Author
+#+STARTUP: overview
+
+* Random Ideas
+
+** Potential Scenes
+
+*** Coffee shop busy morning
+During peak morning rush hour, showing contrast between different people's
+morning states. Some calm, some rushed. Could illustrate that everyone has
+different relationships with mornings.
+
+Status: Might use for Act II expansion
+
+*** Alex's work crisis
+A scene showing how morning chaos affects the rest of the day. Client video
+call where Alex is frazzled. Could make the stakes more concrete.
+
+Status: Consider for revision
+
+*** Sam's vulnerability moment
+IMPORTANT: Beta readers said Sam feels too perfect. Need a scene where Sam
+admits they struggle with something or that their routine isn't always perfect.
+
+Ideas:
+- Sam mentions they've been terrible at evening routines
+- Sam admits they sometimes skip their routine and feel off
+- Sam shares a moment when routine failed them (travel, emergency, etc.)
+
+Status: PRIORITY for next draft
+
+*** The watch stops
+Dramatic idea: what if the watch stops at some point? Alex panics but then
+realizes they've internalized the routine and don't need the external symbol
+anymore?
+
+Status: Maybe too heavy-handed. Could work if subtle.
+
+** Interesting Dialogues
+
+*** Alex to themselves (internal monologue)
+"Five more minutes wouldn't hurt." - Repeated lie Alex tells themselves
+
+"Close enough." - About the socks, about life, about everything
+
+"Tomorrow. I'll start tomorrow." - The eternal procrastination
+
+*** Sam's wisdom
+"I used to be exactly like you." - KEY LINE, establishes connection
+
+"It's not about perfection, it's about showing up." - Philosophy
+
+"Your routine should fit your life, not the other way around." - Main lesson
+
+*** Casey (new person) in final scene
+Possibilities:
+"Is it that obvious?" - Mirrors Alex's line from Scene 2
+"I'm always like this." - What Alex used to believe
+"I don't think I'm a morning person." - Common excuse
+
+** Descriptions
+
+*** The coffee shop morning light
+Golden early light streaming through front window, catching dust motes and
+steam from espresso machine. Creates that early morning cathedral feeling.
+
+*** Alex's apartment transformation
+Don't make it too dramatic, but subtle signs of change:
+- Curtains actually open
+- Bed made (but not military-perfect)
+- Coffee table cleared (watch was under mail, now on wrist, mail dealt with)
+- Morning light on the walls
+
+*** The watch catching light
+When Alex looks at it - catch the light, glint of silver, reminder of
+grandmother. Don't overdo but use occasionally for emotional beat.
+
+* Inspiration
+
+** Similar Works
+
+- Atomic Habits by James Clear :: Not fiction, but philosophy applies - small
+  changes, identity-based habits, systems over goals
+  - What I like: Practical, compassionate, sustainable approach
+  - What to avoid: Too prescriptive, my story should feel human not mechanical
+
+- groundhog Day (film) :: Character transformation through repetition, finding
+  meaning in routine
+  - What I like: Gradual change, from selfish to generous, full circle ending
+  - What to avoid: Magical elements (keeping this realistic)
+
+- Little Women by Louisa May Alcott :: Small domestic moments matter, character
+  growth, feminine/soft storytelling
+  - What I like: Finding meaning in ordinary life, character-driven
+  - What to avoid: Different era/context
+
+** Inspiring Quotes
+
+"How we spend our days is, of course, how we spend our lives." - Annie Dillard
+
+"You will never find time for anything. If you want time, you must make it."
+- Charles Buxton
+
+"The secret of your future is hidden in your daily routine." - Mike Murdock
+
+** Writing Music
+
+- Playlist :: Peaceful morning vibes - lo-fi, instrumental, coffee shop jazz
+- Specific: Anything that evokes early morning calm
+- Helps get into Alex's desired state, not their chaotic state
+
+* Problems to Solve
+
+** Detected Plot Holes
+
+*** FIXED: Timeline clarity
+Originally wasn't clear that days were passing. Fixed by being explicit:
+"Day 2," "Day 5," etc.
+
+*** TODO: The important meeting
+In Chapter 1, Scene 2, Alex mentions the 9:00 meeting. But we never see what
+happens. Should either:
+a) Show it briefly in Chapter 2 flashback
+b) Make the consequences clearer
+c) Cut the mention entirely
+
+Currently: Left vague but mentioned in reflection. Decide if this works.
+
+*** TODO: Where does Sam work?
+If Sam's leaving for work at 7:30/8:00, what kind of job and where? Need
+consistency. Current plan: tech company, project manager, office about 20
+minutes away.
+
+** Inconsistencies
+
+*** Alex's apartment number
+First draft said 2A, make sure this is consistent throughout. Sam is 4B.
+
+*** Coffee shop name
+Kept it generic as "Corner Coffee Shop" but should decide if it has a real
+name or if generic is the point (could represent any coffee shop).
+
+Decision: Keep generic for universality.
+
+*** Time zones/sunrise
+If setting is east coast in February, sun rises ~7:00 AM. When does it get
+light? Make sure 6:30 AM scenes have appropriate light levels.
+
+** Unanswered Questions
+
+*** What's Alex's exact freelance specialty?
+Graphic design, but what kind? Web? Print? Branding? Illustration?
+
+Current answer: Branding and web design. Enough to explain flexible schedule.
+
+*** Does Alex have friends besides Sam?
+Probably, but they're not relevant to this particular story. Could mention in
+passing to make Alex's life feel fuller.
+
+*** What happened to grandmother's watch between death and discovery?
+Assume: It was in a box of grandmother's things, Alex couldn't bear to go
+through them right after the death, box got absorbed into apartment chaos,
+watch eventually ended up in misc. stuff on coffee table.
+
+* Creative Decisions
+
+** Point of View
+
+- Narrator :: Third person limited (Alex's POV only)
+- Tense :: Past tense
+- Distance :: Close third - we're in Alex's head, experiencing their thoughts
+
+Why: Allows for internal monologue and irony (Alex's perception vs. reality) while maintaining slight distance for perspective.
+
+** Tone
+
+- Overall :: Gentle, hopeful, slightly humorous
+- Not :: Preachy, judgmental, sarcastic, dark
+- Balance :: Acknowledge real struggle but maintain hope
+- Humor :: Self-deprecating but not mean, observational
+
+Goal: Reader should feel encouraged, not lectured. "I could do this too."
+
+** Style
+
+- Sentences :: Mix of short and long, rhythm matters
+- Paragraphs :: Shorter for readability, white space
+- Dialogue :: Natural, not too polished, people interrupt themselves
+- Description :: Sensory, specific, but not purple prose
+- Pace :: Contemplative but not slow, moves forward
+
+** Verb choices
+Active voice primarily. Present-tense verbs in past-tense narration for
+immediacy: "The alarm buzzes" vs "The alarm buzzed."
+
+* Words/Phrases to Avoid
+
+List of filler words or words I use too much:
+
+- "just" - Filler word, weakens sentences
+- "really" - Another filler, rarely needed
+- "very" - Replace with stronger single word
+- "rushed/rushing" - Using this too much to describe Alex
+- "chaotic/chaos" - Good but varying the language
+- "somehow" - Vague, be more specific
+
+Alternatives to explore:
+- Instead of "rushed" - hurried, raced, flew, dashed, scrambled
+- Instead of "chaotic" - disorganized, scattered, frenzied, tumultuous
+
+* World Rules
+
+Not fantasy/sci-fi, but still have consistency rules:
+
+** Contemporary realism
+- Real world, current time (2025)
+- No magical solutions - change comes from character work
+- Technology exists but isn't the focus
+- Realistic timeframes for habit change (~30 days is reasonable)
+
+** Emotional realism
+- Change is hard
+- Progress isn't linear
+- People are complex
+- Routines help but aren't magic
+- Balance over perfection
+
+** The watch
+It's symbolic but NOT magical. It doesn't make Alex wake up easier. It's just
+a reminder and a connection. The change comes from Alex's choices.

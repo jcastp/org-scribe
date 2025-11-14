@@ -1,0 +1,207 @@
+#+TITLE: The Morning Routine - Revision and Feedback
+#+AUTHOR: Demo Author
+#+STARTUP: overview
+
+* Revision Passes
+
+** Draft 1 - Structural Edit
+:PROPERTIES:
+:START-DATE: 2025-02-01
+:END-DATE: 2025-02-15
+:STATUS: Planning
+:END:
+
+*** Issues to Address
+- [X] Plot holes - Fixed timeline inconsistency in Chapter 2
+- [ ] Pacing problems - Act II feels rushed
+- [X] Character consistency - Sam's personality is now consistent
+- [ ] Scene transitions - Need smoother transitions between coffee shop scenes
+
+*** Notes
+Need to slow down Act II to give Alex's transformation more breathing room.
+Consider adding another scene where Alex backtracks or has a setback.
+
+The watch could be introduced earlier - maybe a brief mention in Scene 1?
+
+** Draft 2 - Line Edit
+:PROPERTIES:
+:START-DATE:
+:END-DATE:
+:STATUS: Pending
+:END:
+
+*** Focus Areas
+- [ ] Dialogue polish - Make sure each character has distinct voice
+- [ ] Description refinement - Coffee shop needs more sensory details
+- [ ] Tone consistency - Balance humor with genuine emotion
+- [ ] Remove redundancies - Watch for repeated phrases like "rushed" and "chaotic"
+
+*** Notes
+
+** Draft 3 - Copy Edit
+:PROPERTIES:
+:START-DATE:
+:END-DATE:
+:STATUS: Pending
+:END:
+
+*** Checklist
+- [ ] Grammar
+- [ ] Punctuation
+- [ ] Spelling
+- [ ] Formatting
+
+*** Notes
+
+* Beta Reader Feedback
+
+** Beta Reader 1
+:PROPERTIES:
+:NAME: Sarah M.
+:DATE-SENT: 2025-03-01
+:DATE-RECEIVED: 2025-03-15
+:END:
+
+*** Overall Impression
+Really enjoyed the concept! The story feels very relatable. I especially loved
+the grandmother's watch as a symbol - it's subtle but powerful.
+
+*** Specific Comments
+- Opening scene is great - immediately hooked me
+- Sam feels a bit too perfect. Maybe give them a flaw or struggle?
+- The coffee shop scenes are my favorite
+- Would love to see more of Alex at work - what do they do?
+- The ending felt a little abrupt
+
+*** Action Items
+- [X] Add brief mentions of Alex's job (graphic designer)
+- [ ] Give Sam a flaw or vulnerability (maybe they struggle with something else?)
+- [ ] Expand the ending scene
+- [ ] Add one more scene showing Alex's work life
+
+** Beta Reader 2
+:PROPERTIES:
+:NAME: Marcus T.
+:DATE-SENT: 2025-03-01
+:DATE-RECEIVED:
+:END:
+
+*** Overall Impression
+[Waiting for feedback]
+
+*** Specific Comments
+
+*** Action Items
+- [ ]
+
+* Editor Feedback
+
+** Round 1
+:PROPERTIES:
+:EDITOR:
+:DATE:
+:END:
+
+*** Major Issues
+
+*** Minor Issues
+
+*** Action Items
+- [ ]
+
+* Self-Review Notes
+
+** Strengths
+- The watch symbol works really well
+- Alex feels authentic and relatable
+- The progression from chaos to calm feels earned
+- Coffee shop setting creates good atmosphere
+- Ending comes full circle nicely
+
+** Weaknesses
+- Act II pacing is too fast
+- Sam might be too one-dimensional
+- Not enough conflict in some scenes
+- Alex's job/life outside mornings is vague
+- Need more sensory details throughout
+
+** Questions for Beta Readers
+- Does Alex's transformation feel realistic?
+- Is Sam too perfect or preachy?
+- Does the ending satisfy you?
+- What scene was your favorite and why?
+- Did any part feel slow or boring?
+
+* Change Log
+| Date       | Section    | Change                                | Reason                         |
+|------------+------------+---------------------------------------+--------------------------------|
+| 2025-01-18 | Chapter 1  | Added mismatched socks detail         | Show Alex's chaos visually     |
+| 2025-01-19 | Chapter 2  | Changed watch from drawer to mail pile| More realistic/casual discovery|
+| 2025-01-20 | Chapter 1  | Polished Sam's dialogue               | Reduce preachiness             |
+| 2025-01-20 | All scenes | Added more scene break macros         | Better visual separation       |
+
+* Revision Checklist
+
+** Plot
+- [X] Is the main conflict clear?
+- [ ] Do secondary conflicts support the plot?
+- [X] Is there adequate tension in each scene?
+- [ ] Is the climax satisfying?
+- [ ] Does the resolution tie up all threads?
+
+** Characters
+- [X] Do characters have clear motivations?
+- [ ] Do they develop throughout the story?
+- [X] Are dialogues distinctive for each character?
+- [X] Are actions consistent with their personality?
+
+** Setting
+- [ ] Are location descriptions vivid?
+- [X] Is the world consistent?
+- [X] Does the setting support the story?
+
+** Style
+- [X] Is the point of view consistent?
+- [X] Is the tone appropriate?
+- [X] Are clichés avoided?
+- [ ] Is the pacing appropriate?
+
+* Identified Problems
+
+** Plot Problems
+*** Act II pacing
+Act II feels rushed. Alex goes from struggling to succeeding too quickly.
+Need to add at least one more scene showing setback or continued struggle.
+
+Possible addition: Scene where Alex tries to force Sam's exact routine and
+it completely fails, leading to the realization that routines must be personal.
+
+** Character Problems
+*** Sam's perfection
+Sam comes across as too perfect and wise. Need to humanize them more.
+
+Ideas:
+- Give them a struggle in another area of life
+- Show them being wrong about something
+- Have them admit their routine isn't always perfect
+
+*** Alex's backstory
+We know very little about Alex outside their morning struggles. Need to weave
+in more details about their work, family, past.
+
+** Style Problems
+*** Sensory details
+Coffee shop scenes need more sensory grounding - smells, sounds, textures.
+Alex's apartment needs more visual detail.
+
+*** Dialogue tags
+Overusing "said" and "asked". Need more variety and action beats.
+
+** Technical Problems
+*** Timeline clarity
+Make sure the 30-day progression is clear. Currently jumps from Day 1 to Day 2
+to Day 5 to Day 8 to Day 30 - this works but should be explicit.
+
+*** POV slips
+One or two places where the narration seems to know things Alex doesn't.
+Need to review for POV consistency.

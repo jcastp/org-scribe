@@ -1,0 +1,442 @@
+#+TITLE: The Morning Routine
+#+AUTHOR: Demo Author
+#+DATE: 2025-01-15
+#+LANGUAGE: en
+#+STARTUP: overview
+#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
+#+COLUMNS: %40ITEM(Task) %12WORDCOUNT %12PoV %20Plot %40Summary %40Comment
+#+MACRO: scene-break SCENE-BREAK
+
+* stats :ignore:noexport:
+:PROPERTIES:
+:WORDCOUNT: 2847
+:END:
+# This shows your word count by sections:
+# Table to keep track of the words by section
+#+BEGIN: org-generate-wordcount-table
+| Heading       | Wordcount |
+|---------------+-----------|
+| Act I         |      1456 |
+| Chapter 1     |       876 |
+| Scene 1       |       487 |
+| Scene 2       |       389 |
+| Chapter 2     |       580 |
+| Scene 1       |       580 |
+| Act II        |       876 |
+| Chapter 3     |       876 |
+| Scene 1       |       876 |
+| Act III       |       515 |
+| Chapter 5     |       515 |
+| Scene 1       |       515 |
+#+END:
+
+# If you want to track here a daily word count, you can use the
+# =org-tracktable-insert-table= command with an empty line at point.
+# For more details, check the [[https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org][org-tracktable documentation]] at
+# https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
+#+NAME: tracktable
+|---+------------------+-------+-----+---------------+------------|
+| * | date             | start | end | total (today) | comment    |
+|---+------------------+-------+-----+---------------+------------|
+|   | initial count    |     0 |   0 |             0 |            |
+|   | 2025-01-15       |     0 | 892 |           892 | First day  |
+|   | 2025-01-16       |   892 | 1654 |           762 | Good flow  |
+|   | 2025-01-17       |  1654 | 2847 |          1193 | Finished 3 |
+|---+------------------+-------+-----+---------------+------------|
+#+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
+
+* Quick Navigation :ignore:noexport:
+- [[file:README.org][README - Project Overview]]
+- [[file:plan/characters.org][Characters]]
+- [[file:plan/locations.org][Locations]]
+- [[file:plan/objects.org][Objects]]
+- [[file:plan/plot.org][Plot]]
+- [[file:plan/timeline.org][Timeline]]
+- [[file:notes/notes.org][General Notes]]
+- [[file:notes/research.org][Research]]
+- [[file:revision.org][Revision and Feedback]]
+- [[file:statistics.org][Statistics]]
+
+* Act I :ignore:
+:PROPERTIES:
+:CUSTOM_ID: act-1
+:WORDCOUNT: 1456
+:END:
+
+** FINISHED Chapter 1 :ignore:
+:PROPERTIES:
+:WORDCOUNT: 876
+:END:
+
+*** FINISHED Scene 1 - The Alarm :ignore:
+:PROPERTIES:
+:PoV: Alex
+:Characters: Alex
+:Plot: Introduction, Inciting Incident
+:Timeline: Day 1, 6:30 AM
+:Location: Alex's Apartment - Bedroom
+:Description: Alex wakes up to chaos
+:Summary: Alex's alarm goes off but they hit snooze multiple times, starting another chaotic morning
+:Scene-motivation: Establish Alex's problematic morning routine
+:Conflict-source: Alex vs. self-discipline
+:What-is-at-stake: Being late to work again
+:Emotion: Frustration, anxiety
+:Comment: This scene demonstrates how to use all the metadata properties
+:END:
+
+The harsh buzz of the alarm pierced through Alex's dream. Without opening
+their eyes, one hand shot out from under the covers, fumbling across the
+nightstand until fingers found the smooth surface of the phone. A practiced
+swipe. Silence.
+
+Five more minutes wouldn't hurt.
+
+The room settled back into peaceful quiet, broken only by the soft hum of
+traffic from the street below. Through the gap in the curtains, early morning
+light painted a thin line across the ceiling. Alex pulled the blanket tighter,
+burrowing deeper into the warmth.
+
+The alarm buzzed again. This time, Alex cracked one eye open to glare at the
+offending device. 6:45 AM. Still early enough. Another swipe.
+
+When the third alarm went off at 7:00, panic finally cut through the fog of
+sleep. Alex sat bolt upright, heart racing. The meeting. There was that
+important meeting at 9:00, and they still needed to shower, find something to
+wear, grab breakfast—
+
+The familiar morning chaos had begun.
+
+{{{scene-break}}}
+
+*** FINISHED Scene 2 - Coffee Shop Encounter :ignore:
+:PROPERTIES:
+:PoV: Alex
+:Characters: Alex, Sam
+:Plot: Introduction of mentor figure
+:Timeline: Day 1, 7:45 AM
+:Location: Corner Coffee Shop
+:Description: Alex rushes in for coffee and meets Sam
+:Summary: While rushing for coffee, Alex bumps into Sam who seems unusually calm and collected
+:Scene-motivation: Introduce Sam as contrast to Alex's chaos
+:Conflict-source: Alex's rush vs. Sam's calm
+:What-is-at-stake: Alex's composure before the meeting
+:Emotion: Stress, then curiosity
+:Comment: Note how the scene properties make it easy to search later
+:END:
+
+Alex burst through the coffee shop door at 7:47, already calculating minutes in
+their head. Order coffee: two minutes. Wait for coffee: three minutes. Speed-walk
+to the office: eight minutes. That left exactly zero minutes for anything to go
+wrong.
+
+The line was three people deep. Of course.
+
+"Rough morning?" a friendly voice asked from behind.
+
+Alex turned to find Sam, their neighbor from 4B, looking impossibly put-together
+in a pressed shirt and actual smile. Sam always looked like they'd woken up at
+a reasonable hour and had time for things like "breakfast" and "reading the news."
+
+"Is it that obvious?" Alex asked, trying to smooth down their hastily-combed hair.
+
+Sam's eyes crinkled with amusement. "I've learned to spot the signs. The
+slightly-mismatched socks are a dead giveaway."
+
+Alex glanced down. Navy blue and black. Close enough, they'd thought while
+getting dressed in the dark bedroom to avoid turning on the harsh overhead light.
+
+"You should try waking up earlier," Sam suggested, but their tone was gentle,
+not judgmental. "I used to be exactly like you."
+
+"You? Really?" Alex couldn't imagine it.
+
+"Really. Then I started a morning routine. Changed everything." Sam pulled out
+a small notebook from their bag—an actual paper notebook, not a phone app. "I
+track it every day. Sounds rigid, but it's actually quite freeing."
+
+Before Alex could respond, the barista called out Sam's order. Sam collected
+their coffee with a nod, then turned back. "Think about it. See you around, Alex."
+
+As Sam left, Alex noticed something—they'd been so caught up in the conversation,
+they'd stopped mentally counting minutes. For just a moment, the morning chaos
+had paused.
+
+** TODO Chapter 2 :ignore:
+:PROPERTIES:
+:WORDCOUNT: 580
+:END:
+
+*** TODO Scene 1 - The Decision :ignore:
+:PROPERTIES:
+:PoV: Alex
+:Characters: Alex
+:Plot: Decision to change
+:Timeline: Day 1, 8:30 PM
+:Location: Alex's Apartment - Living Room
+:Description: Alex reflects on the day and decides to try Sam's approach
+:Summary: After a stressful day, Alex finds an old watch and decides to make a change
+:Scene-motivation: Push Alex toward character growth
+:Conflict-source: Fear of change vs. need for change
+:What-is-at-stake: Alex's quality of life
+:Emotion: Determination, hope, nostalgia
+:Comment: This introduces the important object (the watch)
+:END:
+
+The day had been a blur of near-misses and minor disasters. Alex had made it to
+the meeting on time but had forgotten their presentation notes. Lunch had been a
+granola bar eaten at their desk. And coming home, they'd realized they'd worn
+their shirt inside-out all day and no one had mentioned it.
+
+Now, sitting on the couch with leftover takeout, Alex felt the weight of the day
+settle on their shoulders. This couldn't keep being their life.
+
+Sam's words echoed in their mind: "I used to be exactly like you."
+
+Alex pulled out their phone to research morning routines but stopped when something
+caught their eye—a glint of metal peeking out from under the mail pile on the coffee
+table. They pushed aside the envelopes to reveal an old wristwatch, the one that had
+belonged to their grandmother.
+
+The watch was still ticking, somehow. Its face read 8:43 PM, and as Alex watched,
+the second hand made its patient circuit. Steady. Reliable. Consistent.
+
+Their grandmother had never been rushed, never been frazzled. She'd always had time
+for what mattered—morning tea, evening walks, Sunday phone calls. She'd worn this
+watch every day, and every day had seemed to have enough hours in it.
+
+Alex fastened the watch around their wrist. The leather band was worn soft with age,
+comfortable against their skin. They pulled out a notebook—a spare one from the junk
+drawer, nothing fancy like Sam's, but it would do.
+
+At the top of the first page, they wrote: "Day 1."
+
+Tomorrow morning would be different.
+
+* Act II :ignore:
+:PROPERTIES:
+:CUSTOM_ID: act-2
+:WORDCOUNT: 876
+:END:
+
+** TOWRITE Chapter 3 :ignore:
+:PROPERTIES:
+:WORDCOUNT: 876
+:END:
+
+*** TOWRITE Scene 1 - First Attempt :ignore:
+:PROPERTIES:
+:PoV: Alex
+:Characters: Alex
+:Plot: First try at routine
+:Timeline: Day 2, 6:00 AM
+:Location: Alex's Apartment
+:Description: Alex's first attempt at a morning routine
+:Summary: Alex wakes early and tries to follow a routine, but struggles with the structure
+:Scene-motivation: Show that change is difficult
+:Conflict-source: Old habits vs. new intentions
+:What-is-at-stake: Alex's commitment to change
+:Emotion: Determination fading to frustration
+:Comment: This scene shows the TOWRITE status - planned but not yet drafted
+:END:
+
+The alarm went off at 6:00 AM sharp. This time, Alex didn't hit snooze. They'd
+set the watch's alarm too, as backup, and the gentle ticking had somehow made it
+easier to wake up.
+
+They sat up immediately, trying to ignore how tired they felt. According to the
+articles they'd read last night, the first step was to make the bed. Something
+about starting the day with an accomplishment.
+
+Alex pulled the covers up and smoothed them out. There. Accomplished.
+
+Next on the list: meditation. They sat cross-legged on the newly-made bed and
+closed their eyes. The app they'd downloaded said to "focus on your breath and
+clear your mind."
+
+Clear your mind. Sure. Easy.
+
+Except their mind was already racing with thoughts: Did I set the coffee maker?
+What am I going to wear? Should I have bought that expensive meditation app instead
+of this free one? Is my breathing too loud? Am I doing this wrong?
+
+After what felt like an hour but was probably three minutes, Alex gave up and
+checked the watch. 6:12. The routine schedule said meditation should take fifteen
+minutes, but they needed to move on or they'd fall behind.
+
+The morning continued in fits and starts. Yoga stretches felt awkward without
+proper instruction. The healthy breakfast recipe took twice as long as estimated.
+The "mindful shower" just made them worry about the water bill.
+
+By 7:30, Alex was exhausted and running late again—but this time, instead of just
+chaos, there was also disappointment. They'd tried to do everything right, and it
+still hadn't worked.
+
+{{{scene-break}}}
+
+** TOWRITE Chapter 4 - Learning and Adjusting :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:END:
+
+*** TOWRITE Scene 1 - Coffee Talk :ignore:
+:PROPERTIES:
+:PoV: Alex
+:Characters: Alex, Sam
+:Plot: Mentor guidance
+:Timeline: Day 5, 7:30 AM
+:Location: Corner Coffee Shop
+:Description: Sam offers advice on making routines sustainable
+:Summary: Alex admits struggle to Sam, who shares that routines should be personalized
+:Scene-motivation: Provide guidance and course correction
+:Conflict-source: Perfectionism vs. flexibility
+:What-is-at-stake: Alex's continued effort
+:Emotion: Vulnerability, relief, insight
+:Comment: This scene has no content yet - just the planning metadata
+:END:
+
+[Scene to be written]
+
+*** TOWRITE Scene 2 - Finding Balance :ignore:
+:PROPERTIES:
+:PoV: Alex
+:Characters: Alex
+:Plot: Character growth
+:Timeline: Day 8, 6:15 AM
+:Location: Alex's Apartment
+:Description: Alex's morning routine, now personalized and working
+:Summary: Alex finds a routine that works for them, not a perfect textbook version
+:Scene-motivation: Show character development
+:Conflict-source: Internal - accepting "good enough"
+:What-is-at-stake: Sustainable change
+:Emotion: Peace, accomplishment, growth
+:Comment: Climax of Act II - the routine actually works
+:END:
+
+[Scene to be written]
+
+* Act III :ignore:
+:PROPERTIES:
+:CUSTOM_ID: act-3
+:WORDCOUNT: 515
+:END:
+
+** TODO Chapter 5 - The New Normal :ignore:
+:PROPERTIES:
+:WORDCOUNT: 515
+:END:
+
+*** TODO Scene 1 - Full Circle :ignore:
+:PROPERTIES:
+:PoV: Alex
+:Characters: Alex, Sam, New Character
+:Plot: Resolution, new beginning
+:Timeline: Day 30, 7:00 AM
+:Location: Corner Coffee Shop
+:Description: Alex helps someone else, showing their growth
+:Summary: Alex encounters someone having a rough morning and offers the same kindness Sam showed them
+:Scene-motivation: Demonstrate complete character arc
+:Conflict-source: None - resolution
+:What-is-at-stake: Nothing - this is about showing growth
+:Emotion: Satisfaction, contentment, generosity
+:Comment: Final scene brings the story full circle
+:END:
+
+Alex walked into the coffee shop at 7:00 AM, right on schedule. Not because they
+had to be, but because they wanted to be. The morning routine wasn't a rigid
+checklist anymore—it was a gentle framework that made mornings feel like a gift
+rather than a trial.
+
+They'd learned to be flexible. Some mornings included meditation, some didn't.
+Some mornings they woke at 6:00, some at 6:30. The watch on their wrist—
+grandmother's watch, still ticking steadily—had taught them that time wasn't
+about controlling every minute. It was about being present for the ones that
+mattered.
+
+There was no line today. Alex ordered their usual and stepped aside to wait,
+pulling out the small notebook they now carried everywhere. Not to track every
+detail obsessively, but to jot down thoughts, gratitudes, small moments worth
+remembering.
+
+The door burst open behind them, and Alex turned to see a young person rushing
+in, hair disheveled, shirt slightly wrinkled, eyes wide with the particular
+panic of running late.
+
+Alex smiled, recognizing themselves from a month ago.
+
+"Rough morning?" they asked gently.
+
+The person looked startled, then embarrassed. "Is it that obvious?"
+
+"I've learned to spot the signs," Alex said, Sam's words coming easily now.
+"I used to be exactly like you."
+
+As Alex shared their story—not preaching, just offering—they saw something shift
+in the other person's expression. The same shift they'd felt that first morning
+with Sam: a pause in the chaos, a moment of possibility.
+
+When Sam walked in a few minutes later and saw Alex talking with the flustered
+newcomer, they caught Alex's eye and smiled knowingly. Alex grinned back.
+
+The morning light streaming through the coffee shop windows seemed a little
+warmer, a little kinder. Alex glanced at the watch. 7:15. They had plenty of time.
+
+They always did, now.
+
+* Export config :ignore:noexport:
+# ############################
+# General options
+# ############################
+#+OPTIONS: ':t *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK")
+#+OPTIONS: date:t e:t email:nil f:t inline:t num:t p:nil pri:nil
+#+OPTIONS: prop:nil stat:t tags:t tasks:t tex:t timestamp:t title:t
+#+OPTIONS: toc:2 todo:t |:t
+
+#+EXCLUDE_TAGS: noexport
+#+EXPORT_FILE_NAME:
+
+# ######################
+# latex related options
+# ######################
+#+LATEX_CLASS: memoir_draft
+#+LATEX_HEADER:
+#+LATEX_HEADER_EXTRA:
+#+DESCRIPTION:
+#+KEYWORDS:
+#+SUBTITLE:
+
+# ######################
+# odt related options
+# ######################
+#+OPTIONS: tex:t
+#+ODT_STYLES_FILE: "~/Nextcloud/escritura/recursos/orgtemplate2odt.ott"
+#+DESCRIPTION:
+#+KEYWORDS:
+#+SUBTITLE:
+#+LATEX_HEADER:
+
+# ######################
+# HTML related options
+# ######################
+#+DESCRIPTION:
+#+HTML_DOCTYPE: html5
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="file:///home/jcastp/Nextcloud/config/org.css"/>
+#+HTML_HEAD_EXTRA:
+
+# ######################
+# epub related options
+# ######################
+#+UID:
+#+Subject:
+#+Description:
+#+Publisher:
+#+License:
+#+EPUBSTYLE:
+#+EPUBCOVER:
+#+HTML_DOCTYPE: xhtml
+
+# Local Variables:
+# eval: (progn
+# (setq ispell-local-dictionary "en_US")
+# (setq lexical-binding t))
+# End:
