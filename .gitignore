@@ -17,3 +17,6 @@ tramp
 
 # Test data
 tests/data/temp*
+
+# Markdown files
+*.md
