@@ -1,0 +1,50 @@
+#+TITLE: ${TITLE} - Project Overview
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+STARTUP: overview
+
+* Story Information
+:PROPERTIES:
+:PROJECT_START: ${DATE}
+:GENRE:
+:TARGET_WORDCOUNT: 5000
+:CURRENT_WORDCOUNT: 0
+:STATUS: Planning
+:DEADLINE:
+:END:
+
+** Synopsis
+[2-3 sentence story summary - what's this story about?]
+
+** Logline
+[One sentence pitch - protagonist + goal + obstacle]
+
+* Writing Goals
+- [ ] Complete outline/planning
+- [ ] Write first draft
+- [ ] Revision pass
+- [ ] Beta reader feedback (optional)
+- [ ] Final polish
+- [ ] Submit to [market/publication]
+
+* Project Files
+- [[file:story.org][story.org]] - Main manuscript with word tracking
+- [[file:notes.org][notes.org]] - Character sketches, plot outline, research, and notes
+
+* Current Status
+- Status :: Planning
+- Current word count :: 0
+- Started :: ${DATE}
+- Last updated :: ${DATE}
+- Target completion ::
+
+* Milestones
+| Date | Milestone | Status |
+|------+-----------+--------|
+|      | Outline   | TODO   |
+|      | Draft     | TODO   |
+|      | Revision  | TODO   |
+|      | Complete  | TODO   |
+
+* Notes
+Quick notes about this project:

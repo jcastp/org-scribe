@@ -1,0 +1,122 @@
+#+TITLE: ${TITLE}
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: en
+#+STARTUP: overview
+#+TODO: TODO(t) DRAFT(d) REVISING(r) | DONE(x) SUBMITTED(s)
+#+COLUMNS: %40ITEM(Section) %12WORDCOUNT %12PoV %40Summary
+#+MACRO: scene-break SCENE-BREAK
+
+* Story Info :noexport:
+:PROPERTIES:
+:GENRE:
+:TARGET_WORDCOUNT: 5000
+:ACTUAL_WORDCOUNT: 0
+:STATUS: Draft
+:DEADLINE:
+:END:
+
+** Synopsis
+[One paragraph story summary]
+
+** Word Count Tracking
+
+# This shows your word count by sections:
+# Table to keep track of the words by section
+#+BEGIN: org-generate-wordcount-table
+| Heading       | Wordcount |
+|---------------+-----------|
+|               |           |
+#+END:
+
+To update word count, use:
+- =F8 F8 n= (org-context-count-words)
+- =F8 F8 m= (writing/ews-org-count-words)
+
+#+NAME: tracktable
+|---+---------------+-------+-----+---------------+---------|
+| * | date          | start | end | total (today) | comment |
+|---+---------------+-------+-----+---------------+---------|
+|   | initial count |     0 |   0 |             0 |         |
+|---+---------------+-------+-----+---------------+---------|
+#+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
+
+* Quick Links :noexport:
+- [[file:README.org][Project Overview]]
+- [[file:notes.org][Planning & Notes]]
+
+* Story Content
+
+** Opening
+:PROPERTIES:
+:PoV:
+:Location:
+:Timeline:
+:Summary:
+:WORDCOUNT: 0
+:END:
+
+Write your opening here...
+
+{{{scene-break}}}
+
+** Middle
+:PROPERTIES:
+:PoV:
+:Location:
+:Timeline:
+:Summary:
+:WORDCOUNT: 0
+:END:
+
+Continue the story...
+
+{{{scene-break}}}
+
+** Ending
+:PROPERTIES:
+:PoV:
+:Location:
+:Timeline:
+:Summary:
+:WORDCOUNT: 0
+:END:
+
+The resolution...
+
+* Export Configuration :noexport:
+# ############################
+# General options
+# ############################
+#+OPTIONS: ':t *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK")
+#+OPTIONS: date:t e:t email:nil f:t inline:t num:t p:nil pri:nil
+#+OPTIONS: prop:nil stat:t tags:t tasks:t tex:t timestamp:t title:t
+#+OPTIONS: toc:nil todo:t |:t
+
+#+EXCLUDE_TAGS: noexport
+#+EXPORT_FILE_NAME:
+
+# ######################
+# LaTeX related options
+# ######################
+#+LATEX_CLASS: article
+#+LATEX_HEADER:
+#+LATEX_HEADER_EXTRA:
+#+LATEX_CLASS_OPTIONS: [11pt,a4paper]
+
+# ######################
+# ODT related options
+# ######################
+#+ODT_STYLES_FILE:
+
+# ######################
+# HTML related options
+# ######################
+#+HTML_HEAD:
+#+HTML_HEAD_EXTRA:
+
+# ######################
+# EPUB related options
+# ######################
+#+EPUB_STYLESHEET:

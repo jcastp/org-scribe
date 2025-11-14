@@ -6,11 +6,12 @@
 
 ;;; Commentary:
 
-;; This module provides functions to create complete novel project
-;; structures from templates with variable substitution.
+;; This module provides functions to create complete novel and short story
+;; project structures from templates with variable substitution.
 ;;
 ;; Main functions:
-;;   - writing-create-project: Create new project from templates
+;;   - writing-create-project: Create new novel project from templates
+;;   - writing-create-short-story-project: Create new short story project
 ;;   - writing-insert-scene: Insert scene template
 ;;   - writing-insert-chapter: Insert chapter template
 ;;   - writing-open-project-file: Quick file navigation
@@ -57,6 +58,13 @@ This is used to automatically set the template directory."
                 (format "../writing-templates/novel-%s"
                         (if (eq value 'es) "es" "en"))
                 writing-project-package-directory))))
+
+(defcustom writing-short-story-template-directory
+  (expand-file-name "../writing-templates/short-story-en" writing-project-package-directory)
+  "Directory containing short story project templates.
+By default, uses the short-story-en (English) templates."
+  :type 'directory
+  :group 'writing)
 
 ;;; Project Creation
 
@@ -143,6 +151,80 @@ This function:
     ;; Open README.org
     (find-file (expand-file-name "README.org" project-dir))
     (message "Novel project '%s' created successfully at %s" title project-dir)))
+
+;;;###autoload
+(defun writing-create-short-story-project (base-dir title)
+  "Create a new short story project structure from templates.
+BASE-DIR is the parent directory where the project will be created.
+TITLE is the name of the short story/project.
+
+This function:
+1. Validates the title
+2. Creates the project directory
+3. Initializes a git repository
+4. Processes all template files with variable substitution
+5. Creates an initial git commit
+6. Registers the project with project.el
+7. Opens the story file (story.org or cuento.org)"
+  (interactive
+   (list
+    (read-directory-name "Base directory for short story: " "~/writing/")
+    (read-string "Short story title: ")))
+
+  ;; Determine template directory based on language
+  (let ((template-dir (expand-file-name
+                      (format "../writing-templates/short-story-%s"
+                              (if (eq writing-template-language 'es) "es" "en"))
+                      writing-project-package-directory)))
+
+    (unless (file-directory-p template-dir)
+      (user-error "Short story template directory not found: %s" template-dir))
+
+    ;; Validate title
+    (let ((validation-error (writing--validate-project-title title)))
+      (when validation-error
+        (user-error "%s" validation-error)))
+
+    (let* ((project-dir (expand-file-name title base-dir))
+           (variables `(("TITLE" . ,title)
+                       ("AUTHOR" . ,(if (boundp 'user-full-name) user-full-name "Author"))
+                       ("DATE" . ,(format-time-string "%Y-%m-%d"))))
+           (story-file (if (eq writing-template-language 'es) "cuento.org" "story.org")))
+
+      ;; Check if project already exists
+      (when (file-exists-p project-dir)
+        (user-error "Project directory '%s' already exists!" project-dir))
+
+      ;; Create project directory
+      (make-directory project-dir t)
+
+      ;; Create .writing-project marker file for project detection
+      (with-temp-file (expand-file-name ".writing-project" project-dir)
+        (insert (format "# Writing project: %s\n" title)
+                (format "# Type: short-story\n")
+                (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
+                (format "# Language: %s\n" writing-template-language)))
+
+      ;; Initialize git repository
+      (let ((default-directory project-dir))
+        (unless (zerop (call-process "git" nil nil nil "init"))
+          (warn "Failed to initialize git repository")))
+
+      ;; Process all templates
+      (writing--copy-templates template-dir project-dir variables)
+
+      ;; Create initial git commit
+      (let ((default-directory project-dir))
+        (when (zerop (call-process "git" nil nil nil "add" "."))
+          (call-process "git" nil nil nil "commit" "-m"
+                       (format "Initial commit: %s" title))))
+
+      ;; Register project with project.el
+      (project-remember-project (project-current nil project-dir))
+
+      ;; Open the story file
+      (find-file (expand-file-name story-file project-dir))
+      (message "Short story project '%s' created successfully at %s" title project-dir))))
 
 (defun writing--copy-templates (template-dir project-dir variables)
   "Copy and process templates from TEMPLATE-DIR to PROJECT-DIR.
@@ -259,12 +341,13 @@ If CHAPTER-NAME is empty, defaults to \"New chapter\"."
 
 ;;;###autoload
 (defun writing-open-project-file (filename)
-  "Quickly open a file in the current novel project.
+  "Quickly open a file in the current writing project (novel or short story).
 FILENAME should be relative to project root (e.g., 'plan/characters.org').
 Uses completion to help select from common project files."
   (interactive
    (list (completing-read "Open file: "
                           '("README.org"
+                            ;; Novel files
                             "novel.org"
                             "novela.org"
                             "revision.org"
@@ -283,7 +366,12 @@ Uses completion to help select from common project files."
                             "notes/notes.org"
                             "notas/notas.org"
                             "notes/research.org"
-                            "notas/investigacion.org"))))
+                            "notas/investigacion.org"
+                            ;; Short story files
+                            "story.org"
+                            "cuento.org"
+                            "notes.org"
+                            "notas.org"))))
   ;; Use writing-core's project detection if available
   (let ((project-root (if (fboundp 'writing-project-root)
                           (writing-project-root)

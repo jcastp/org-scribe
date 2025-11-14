@@ -1,0 +1,31 @@
+# Demo Short Story Project
+
+This is a demonstration short story project for emacs-writing.
+
+Type: Short Story (Science Fiction)
+Status: In Progress (Draft)
+Word Count: ~892 words (target: 5000)
+
+## Files
+
+- README.org - Project overview and metadata
+- story.org - The manuscript with integrated word tracking
+- notes.org - Character sketches, plot outline, and research
+
+## Features Demonstrated
+
+- Simple 3-section structure (Opening, Middle, Ending)
+- Scene properties (PoV, Location, Timeline, Summary)
+- Integrated word count tracking with org-tracktable
+- Character database with properties
+- Plot outline and themes
+- Research notes and references
+- Revision tracking
+- Style notes and writing guidelines
+
+## Story Summary
+
+"The Last Message" is a science fiction short story about Dr. Elena Chen, 
+a quantum physicist who receives a warning from her future self about a 
+catastrophic experiment. The story explores themes of determinism vs. free 
+will through a stable time loop paradox.

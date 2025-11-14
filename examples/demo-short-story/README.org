@@ -1,0 +1,54 @@
+#+TITLE: The Last Message - Project Overview
+#+AUTHOR: Demo Writer
+#+DATE: 2025-01-14
+#+STARTUP: overview
+
+* Story Information
+:PROPERTIES:
+:PROJECT_START: 2025-01-14
+:GENRE: Science Fiction
+:TARGET_WORDCOUNT: 5000
+:CURRENT_WORDCOUNT: 892
+:STATUS: Drafting
+:DEADLINE: 2025-02-14
+:END:
+
+** Synopsis
+A quantum physicist receives a message from her future self warning about a catastrophic experiment, but following the warning creates the very paradox she was meant to prevent.
+
+** Logline
+When Dr. Elena Chen receives a cryptic warning from her future self, she must choose between preventing a disaster or preserving the timeline that sent the message.
+
+* Writing Goals
+- [X] Complete outline/planning
+- [X] Write first draft
+- [ ] Revision pass
+- [ ] Beta reader feedback (optional)
+- [ ] Final polish
+- [ ] Submit to [Clarkesworld Magazine]
+
+* Project Files
+- [[file:story.org][story.org]] - Main manuscript with word tracking
+- [[file:notes.org][notes.org]] - Character sketches, plot outline, research, and notes
+
+* Current Status
+- Status :: Drafting
+- Current word count :: 892
+- Started :: 2025-01-14
+- Last updated :: 2025-01-14
+- Target completion :: 2025-02-14
+
+* Milestones
+| Date       | Milestone | Status   |
+|------------+-----------+----------|
+| 2025-01-14 | Outline   | DONE     |
+| 2025-01-21 | Draft     | PROGRESS |
+| 2025-01-28 | Revision  | TODO     |
+| 2025-02-14 | Complete  | TODO     |
+
+* Notes
+This is a demonstration short story project for emacs-writing. It showcases:
+- Simple 3-section structure (Opening, Middle, Ending)
+- Integrated word tracking
+- Character and plot planning in notes.org
+- Science fiction time paradox theme

@@ -34,6 +34,7 @@
 (declare-function writing/org-find-location "search/writing-search")
 (declare-function writing/search-todos-recursive "search/writing-search")
 (declare-function writing-create-project "templates/writing-project")
+(declare-function writing-create-short-story-project "templates/writing-project")
 (declare-function writing-insert-scene "templates/writing-project")
 (declare-function writing-insert-chapter "templates/writing-project")
 (declare-function writing-open-project-file "templates/writing-project")
@@ -43,15 +44,16 @@
   "
 ^Project^          ^Modes^            ^Capture^             ^Dictionary^          ^Count^            ^Search^
 ^^^^^^^^------------------------------------------------------------------------------------------------------------------
-_P_: New project   _p_: Project mode  _c_: Note             _r_: RAE dictionary   _n_: Count words   _u_: Find POV
-_C_: New chapter   _w_: Writing mode  _h_: Character        _s_: Synonyms         _m_: Add WC props  _i_: Find character
-_S_: New scene     _f_: Focus mode    _l_: Location         _d_: Thesaurus        _t_: Track table   _o_: Find plot
-_O_: Open file     _e_: Editing mode  _j_: Object                                                _y_: Find location
-                                  _k_: Timeline                                              _a_: Find TODOs
+_P_: New novel     _p_: Project mode  _c_: Note             _r_: RAE dictionary   _n_: Count words   _u_: Find POV
+_T_: New story     _w_: Writing mode  _h_: Character        _s_: Synonyms         _m_: Add WC props  _i_: Find character
+_C_: New chapter   _f_: Focus mode    _l_: Location         _d_: Thesaurus        _t_: Track table   _o_: Find plot
+_S_: New scene     _e_: Editing mode  _j_: Object                                                _y_: Find location
+_O_: Open file                        _k_: Timeline                                              _a_: Find TODOs
 _q_: Quit
 "
   ;; Project management
-  ("P" writing-create-project "new project")
+  ("P" writing-create-project "new novel project")
+  ("T" writing-create-short-story-project "new short story project")
   ("C" writing-insert-chapter "insert chapter")
   ("S" writing-insert-scene "insert scene")
   ("O" writing-open-project-file "open project file")

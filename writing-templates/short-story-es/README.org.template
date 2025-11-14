@@ -1,0 +1,50 @@
+#+TITLE: ${TITLE} - Resumen del Proyecto
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+STARTUP: overview
+
+* Información del Cuento
+:PROPERTIES:
+:INICIO_PROYECTO: ${DATE}
+:GENERO:
+:PALABRAS_OBJETIVO: 5000
+:PALABRAS_ACTUALES: 0
+:ESTADO: Planificación
+:FECHA_LIMITE:
+:END:
+
+** Sinopsis
+[Resumen del cuento en 2-3 frases - ¿de qué trata esta historia?]
+
+** Logline
+[Propuesta de una frase - protagonista + objetivo + obstáculo]
+
+* Objetivos de Escritura
+- [ ] Completar esquema/planificación
+- [ ] Escribir primer borrador
+- [ ] Revisión
+- [ ] Comentarios de lectores beta (opcional)
+- [ ] Pulido final
+- [ ] Enviar a [mercado/publicación]
+
+* Archivos del Proyecto
+- [[file:cuento.org][cuento.org]] - Manuscrito principal con seguimiento de palabras
+- [[file:notas.org][notas.org]] - Bocetos de personajes, esquema de la trama, investigación y notas
+
+* Estado Actual
+- Estado :: Planificación
+- Recuento de palabras actual :: 0
+- Iniciado :: ${DATE}
+- Última actualización :: ${DATE}
+- Fecha objetivo de finalización ::
+
+* Hitos
+| Fecha | Hito      | Estado |
+|-------+-----------+--------|
+|       | Esquema   | TODO   |
+|       | Borrador  | TODO   |
+|       | Revisión  | TODO   |
+|       | Completo  | TODO   |
+
+* Notas
+Notas rápidas sobre este proyecto:

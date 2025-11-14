@@ -1,0 +1,181 @@
+#+TITLE: The Last Message
+#+AUTHOR: Demo Writer
+#+DATE: 2025-01-14
+#+LANGUAGE: en
+#+STARTUP: overview
+#+TODO: TODO(t) DRAFT(d) REVISING(r) | DONE(x) SUBMITTED(s)
+#+COLUMNS: %40ITEM(Section) %12WORDCOUNT %12PoV %40Summary
+#+MACRO: scene-break SCENE-BREAK
+
+* Story Info :noexport:
+:PROPERTIES:
+:GENRE: Science Fiction
+:TARGET_WORDCOUNT: 5000
+:ACTUAL_WORDCOUNT: 892
+:STATUS: Draft
+:DEADLINE: 2025-02-14
+:WORDCOUNT: 0
+:ID:       46c62f86-3e5a-4e2a-b86c-8b171f299ee7
+:END:
+
+** Synopsis
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       7446cdf1-50c9-4f40-a13a-4ec94e9f9752
+:END:
+A quantum physicist receives a message from her future self warning about a catastrophic experiment, but following the warning creates the very paradox she was meant to prevent.
+
+** Word Count Tracking
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       217ace65-a313-4aa3-a4b2-ff68afdbc464
+:END:
+
+# This shows your word count by sections:
+# Table to keep track of the words by section
+#+BEGIN: org-generate-wordcount-table
+| Heading         | Wordcount |
+|-----------------+-----------|
+| - [[Story Content]] |       532 |
+| -- [[Opening]]      |       218 |
+| -- [[Middle]]       |       226 |
+| -- [[Ending]]       |        88 |
+
+#+END:
+
+
+To update word count, use:
+- =F8 F8 n= (org-context-count-words)
+- =F8 F8 m= (writing/ews-org-count-words)
+
+#+NAME: tracktable
+|---+---------------+-------+-----+---------------+--------------|
+| * | date          | start | end | total (today) | comment      |
+|---+---------------+-------+-----+---------------+--------------|
+|   | initial count |     0 |   0 |             0 |              |
+|   | 2025-01-14    |     0 | 892 |           892 | First draft  |
+|---+---------------+-------+-----+---------------+--------------|
+#+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
+
+* Quick Links :noexport:
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       c6b97f8b-2e9f-431f-b6d3-8f651eabd31e
+:END:
+- [[file:README.org][Project Overview]]
+- [[file:notes.org][Planning & Notes]]
+
+* Story Content
+:PROPERTIES:
+:WORDCOUNT: 532
+:ID:       5cb576d8-7976-4d56-8ef8-6c941dce8f54
+:END:
+
+** DONE Opening
+:PROPERTIES:
+:PoV: Elena Chen (Third person limited)
+:Location: CERN Quantum Research Lab, Geneva
+:Timeline: March 15, 2047, 3:47 AM
+:Summary: Elena discovers an encrypted quantum message on her lab computer that could only have been sent by someone with intimate knowledge of her work—herself.
+:WORDCOUNT: 218
+:ID:       b6f30a4f-64ae-454c-86db-76ba8e0c8c7e
+:END:
+
+The quantum entanglement chamber hummed its usual midnight frequency, a sound Elena Chen had grown to find comforting over the past three years. At 3:47 AM, the lab was hers alone—or so she thought until the computer terminal beside the chamber chimed with an incoming message.
+
+Not an email. Not a text. A direct quantum transmission through the very system she'd been building, a system that shouldn't be capable of receiving anything yet.
+
+The message was encrypted, but not with any standard protocol. The algorithm was familiar in a way that made her skin prickle. It was her own encryption method, the one she'd been developing privately, the one she hadn't shared with anyone.
+
+She typed in her private key with trembling fingers.
+
+The message decoded instantly:
+
+/DO NOT RUN TOMORROW'S TEST. THE CASCADE WILL BE IRREVERSIBLE. THERE IS NO UNDOING WHAT COMES NEXT. TRUST ME. YOU HAVE TO TRUST YOURSELF./
+
+/—E. Chen, March 16, 2047, 4:23 PM (Your timeline+12h39m)/
+
+Elena stared at the timestamp. Twelve hours and thirty-nine minutes from now. The message claimed to be from her own future—a future that, according to every law of physics she understood, shouldn't be able to send messages backward through time.
+
+Except she was about to test exactly that tomorrow morning.
+
+{{{scene-break}}}
+
+** DRAFT Middle
+:PROPERTIES:
+:PoV: Elena Chen (Third person limited)
+:Location: CERN Lab / Elena's apartment
+:Timeline: March 15, 2047, 4:15 AM - 11:30 AM
+:Summary: Elena debates whether to trust the message. She consults her notes, discovers the theoretical possibility of a causality loop, and makes her decision.
+:WORDCOUNT: 226
+:ID:       0dba07f3-bac7-4070-9965-f8ab66c80f61
+:END:
+
+Elena spent the next hour pulling up her experimental logs, cross-referencing every variable of tomorrow's planned test. The quantum field calibrations, the temporal displacement vectors, the entanglement coefficients—everything was exactly as she'd planned it for months.
+
+But what if the warning was real?
+
+If her future self had truly sent this message, it meant the experiment would succeed. It meant backward time communication was possible. It also meant something would go catastrophically wrong.
+
+She pulled up her theoretical models again, the ones she'd kept private because they bordered on impossible. There, buried in the mathematics, she found it: a causality loop. If the experiment succeeded and she sent a warning back, it would create a stable time loop—one where the warning itself became the catalyst for the very disaster it predicted.
+
+By 11 AM, Elena had made her decision. She archived all her experimental data, wrote a detailed explanation of her reasoning, and prepared to cancel the test.
+
+But as she reached for the cancellation protocol, a thought stopped her cold: if she didn't run the test, she would never send the warning. And if she never sent the warning, there would be no reason to cancel the test. The loop would break, causality would restore itself, and tomorrow's test would proceed exactly as originally planned.
+
+Either way, she was trapped.
+
+{{{scene-break}}}
+
+** TODO Ending
+:PROPERTIES:
+:PoV: Elena Chen (Third person limited)
+:Location: CERN Quantum Research Lab
+:Timeline: March 16, 2047, 9:00 AM - 4:23 PM
+:Summary: Elena runs the test despite the warning, discovers the cascade effect, and realizes she must send the message that started it all, completing the loop.
+:WORDCOUNT: 88
+:ID:       588afbaa-3e03-49e6-aa3e-dc8475c07a50
+:END:
+
+[To be written: Elena proceeds with the experiment. The cascade begins exactly as warned. She has 12 hours and 39 minutes to send the message before the temporal field collapses. She realizes that her decision to run the test despite the warning was not free will—it was determinism. The message didn't warn her to prevent the cascade; it ensured the cascade happened exactly as it needed to. She sends the message, completing the loop, understanding now that some events in time are fixed points that must occur.]
+
+* Export Configuration :noexport:
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       d0912d73-760c-4f24-9f09-65327fa905fe
+:END:
+# ############################
+# General options
+# ############################
+#+OPTIONS: ':t *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK")
+#+OPTIONS: date:t e:t email:nil f:t inline:t num:t p:nil pri:nil
+#+OPTIONS: prop:nil stat:t tags:t tasks:t tex:t timestamp:t title:t
+#+OPTIONS: toc:nil todo:t |:t
+
+#+EXCLUDE_TAGS: noexport
+#+EXPORT_FILE_NAME:
+
+# ######################
+# LaTeX related options
+# ######################
+#+LATEX_CLASS: article
+#+LATEX_HEADER:
+#+LATEX_HEADER_EXTRA:
+#+LATEX_CLASS_OPTIONS: [11pt,a4paper]
+
+# ######################
+# ODT related options
+# ######################
+#+ODT_STYLES_FILE:
+
+# ######################
+# HTML related options
+# ######################
+#+HTML_HEAD:
+#+HTML_HEAD_EXTRA:
+
+# ######################
+# EPUB related options
+# ######################
+#+EPUB_STYLESHEET:

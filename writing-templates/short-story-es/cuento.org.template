@@ -1,0 +1,114 @@
+#+TITLE: ${TITLE}
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: es
+#+STARTUP: overview
+#+TODO: TODO(t) BORRADOR(d) REVISANDO(r) | HECHO(x) ENVIADO(s)
+#+COLUMNS: %40ITEM(Sección) %12WORDCOUNT %12PoV %40Resumen
+#+MACRO: scene-break SCENE-BREAK
+
+* Información del Cuento :noexport:
+:PROPERTIES:
+:GENERO:
+:PALABRAS_OBJETIVO: 5000
+:PALABRAS_ACTUALES: 0
+:ESTADO: Borrador
+:FECHA_LIMITE:
+:END:
+
+** Sinopsis
+[Resumen del cuento en un párrafo]
+
+** Seguimiento de Palabras
+
+Para actualizar el recuento de palabras, usa:
+- =F8 F8 n= (org-context-count-words)
+- =F8 F8 m= (writing/ews-org-count-words)
+
+#+NAME: tracktable
+|---+---------------+--------+-----+---------------+---------------|
+| * | fecha         | inicio | fin | total (hoy)   | comentario    |
+|---+---------------+--------+-----+---------------+---------------|
+|   | cuenta inicial|      0 |   0 |             0 |               |
+|---+---------------+--------+-----+---------------+---------------|
+#+TBLFM: @2$2=cuenta inicial::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
+
+* Enlaces Rápidos :noexport:
+- [[file:README.org][Resumen del Proyecto]]
+- [[file:notas.org][Planificación y Notas]]
+
+* Contenido del Cuento
+
+** Inicio
+:PROPERTIES:
+:PdV:
+:Ubicacion:
+:Linea_temporal:
+:Resumen:
+:WORDCOUNT: 0
+:END:
+
+Escribe aquí el inicio...
+
+{{{scene-break}}}
+
+** Desarrollo
+:PROPERTIES:
+:PdV:
+:Ubicacion:
+:Linea_temporal:
+:Resumen:
+:WORDCOUNT: 0
+:END:
+
+Continúa la historia...
+
+{{{scene-break}}}
+
+** Final
+:PROPERTIES:
+:PdV:
+:Ubicacion:
+:Linea_temporal:
+:Resumen:
+:WORDCOUNT: 0
+:END:
+
+La resolución...
+
+* Configuración de Exportación :noexport:
+# ############################
+# Opciones generales
+# ############################
+#+OPTIONS: ':t *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK")
+#+OPTIONS: date:t e:t email:nil f:t inline:t num:t p:nil pri:nil
+#+OPTIONS: prop:nil stat:t tags:t tasks:t tex:t timestamp:t title:t
+#+OPTIONS: toc:nil todo:t |:t
+
+#+EXCLUDE_TAGS: noexport
+#+EXPORT_FILE_NAME:
+
+# ######################
+# Opciones LaTeX
+# ######################
+#+LATEX_CLASS: article
+#+LATEX_HEADER:
+#+LATEX_HEADER_EXTRA:
+#+LATEX_CLASS_OPTIONS: [11pt,a4paper]
+
+# ######################
+# Opciones ODT
+# ######################
+#+ODT_STYLES_FILE:
+
+# ######################
+# Opciones HTML
+# ######################
+#+HTML_HEAD:
+#+HTML_HEAD_EXTRA:
+
+# ######################
+# Opciones EPUB
+# ######################
+#+EPUB_STYLESHEET:
