@@ -251,14 +251,14 @@
 
 * Fact Checking
 
-| Fact                                  | Source          | Verified | Notes                           |
-|---------------------------------------+-----------------+----------+---------------------------------|
-| Habit formation ~66 days average      | Research study  | Yes      | Using 30 days as "in progress"  |
-| Sun rises ~7:00 AM in Feb (east coast)| Time and Date   | Yes      | Affects lighting in scenes      |
-| Sleep inertia from snoozing           | Sleep science   | Yes      | Alex's groggy state accurate    |
-| Freelancers work irregular hours      | Observation     | Yes      | Common experience               |
-| Watch mechanisms can last decades     | Watch articles  | Yes      | Grandmother's watch plausible   |
-| Coffee shops busiest 7-9 AM           | Observation     | Yes      | Setting timing accurate         |
+| Fact                                   | Source         | Verified | Notes                          |
+|----------------------------------------+----------------+----------+--------------------------------|
+| Habit formation ~66 days average       | Research study | Yes      | Using 30 days as "in progress" |
+| Sun rises ~7:00 AM in Feb (east coast) | Time and Date  | Yes      | Affects lighting in scenes     |
+| Sleep inertia from snoozing            | Sleep science  | Yes      | Alex's groggy state accurate   |
+| Freelancers work irregular hours       | Observation    | Yes      | Common experience              |
+| Watch mechanisms can last decades      | Watch articles | Yes      | Grandmother's watch plausible  |
+| Coffee shops busiest 7-9 AM            | Observation    | Yes      | Setting timing accurate        |
 
 * Research Still Needed
 

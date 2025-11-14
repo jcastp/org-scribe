@@ -4,30 +4,35 @@
 #+LANGUAGE: en
 #+STARTUP: overview
 #+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
-#+COLUMNS: %40ITEM(Task) %12WORDCOUNT %12PoV %20Plot %40Summary %40Comment
+#+COLUMNS: %40ITEM(Task) %12WORDCOUNT %12PoV %30Characters %20Plot %40Summary %40Comment
 #+MACRO: scene-break SCENE-BREAK
 
 * stats :ignore:noexport:
 :PROPERTIES:
-:WORDCOUNT: 2847
+:WORDCOUNT: 0
+:ID:       12629909-9619-4ea6-bcf6-ab6c437ecd32
 :END:
 # This shows your word count by sections:
 # Table to keep track of the words by section
 #+BEGIN: org-generate-wordcount-table
-| Heading       | Wordcount |
-|---------------+-----------|
-| Act I         |      1456 |
-| Chapter 1     |       876 |
-| Scene 1       |       487 |
-| Scene 2       |       389 |
-| Chapter 2     |       580 |
-| Scene 1       |       580 |
-| Act II        |       876 |
-| Chapter 3     |       876 |
-| Scene 1       |       876 |
-| Act III       |       515 |
-| Chapter 5     |       515 |
-| Scene 1       |       515 |
+| Heading                               | Wordcount |
+|---------------------------------------+-----------|
+| - [[Act I]]                               |       711 |
+| -- [[Chapter 1]]                          |       447 |
+| --- [[Scene 1 - The Alarm]]               |       167 |
+| --- [[Scene 2 - Coffee Shop Encounter]]   |       280 |
+| -- [[Chapter 2]]                          |       264 |
+| --- [[Scene 1 - The Decision]]            |       264 |
+| - [[Act II]]                              |       277 |
+| -- [[Chapter 3]]                          |       269 |
+| --- [[Scene 1 - First Attempt]]           |       269 |
+| -- [[Chapter 4 - Learning and Adjusting]] |         8 |
+| --- [[Scene 1 - Coffee Talk]]             |         4 |
+| --- [[Scene 2 - Finding Balance]]         |         4 |
+| - [[Act III]]                             |       308 |
+| -- [[Chapter 5 - The New Normal]]         |       308 |
+| --- [[Scene 1 - Full Circle]]             |       308 |
+
 #+END:
 
 # If you want to track here a daily word count, you can use the
@@ -35,17 +40,21 @@
 # For more details, check the [[https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org][org-tracktable documentation]] at
 # https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 #+NAME: tracktable
-|---+------------------+-------+-----+---------------+------------|
-| * | date             | start | end | total (today) | comment    |
-|---+------------------+-------+-----+---------------+------------|
-|   | initial count    |     0 |   0 |             0 |            |
-|   | 2025-01-15       |     0 | 892 |           892 | First day  |
-|   | 2025-01-16       |   892 | 1654 |           762 | Good flow  |
-|   | 2025-01-17       |  1654 | 2847 |          1193 | Finished 3 |
-|---+------------------+-------+-----+---------------+------------|
+|---+---------------+-------+------+---------------+------------|
+| * |          date | start |  end | total (today) | comment    |
+|---+---------------+-------+------+---------------+------------|
+|   | initial count |     0 |    0 |             0 |            |
+|   |    2025-01-15 |     0 |  892 |           892 | First day  |
+|   |    2025-01-16 |   892 | 1654 |           762 | Good flow  |
+|   |    2025-01-17 |  1654 | 2847 |          1193 | Finished 3 |
+|---+---------------+-------+------+---------------+------------|
 #+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
 
 * Quick Navigation :ignore:noexport:
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       fd87db0f-c696-4f58-ba85-5504eed23afe
+:END:
 - [[file:README.org][README - Project Overview]]
 - [[file:plan/characters.org][Characters]]
 - [[file:plan/locations.org][Locations]]
@@ -60,12 +69,14 @@
 * Act I :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-1
-:WORDCOUNT: 1456
+:WORDCOUNT: 711
+:ID:       25ed268e-9439-4397-af7b-3562113189dc
 :END:
 
 ** FINISHED Chapter 1 :ignore:
 :PROPERTIES:
-:WORDCOUNT: 876
+:WORDCOUNT: 447
+:ID:       3a99edcc-6972-4f98-9cf6-fef5d73fb0e9
 :END:
 
 *** FINISHED Scene 1 - The Alarm :ignore:
@@ -82,6 +93,8 @@
 :What-is-at-stake: Being late to work again
 :Emotion: Frustration, anxiety
 :Comment: This scene demonstrates how to use all the metadata properties
+:WORDCOUNT: 167
+:ID:       0ef78704-8216-424a-8a9c-1bd041b0e14c
 :END:
 
 The harsh buzz of the alarm pierced through Alex's dream. Without opening
@@ -122,6 +135,8 @@ The familiar morning chaos had begun.
 :What-is-at-stake: Alex's composure before the meeting
 :Emotion: Stress, then curiosity
 :Comment: Note how the scene properties make it easy to search later
+:WORDCOUNT: 280
+:ID:       ab00337f-0342-431c-a44d-b57ad5d4ace8
 :END:
 
 Alex burst through the coffee shop door at 7:47, already calculating minutes in
@@ -163,7 +178,8 @@ had paused.
 
 ** TODO Chapter 2 :ignore:
 :PROPERTIES:
-:WORDCOUNT: 580
+:WORDCOUNT: 264
+:ID:       64bc3a00-b0a2-4166-a58c-27a94682d171
 :END:
 
 *** TODO Scene 1 - The Decision :ignore:
@@ -180,6 +196,8 @@ had paused.
 :What-is-at-stake: Alex's quality of life
 :Emotion: Determination, hope, nostalgia
 :Comment: This introduces the important object (the watch)
+:WORDCOUNT: 264
+:ID:       df8c3837-4e85-4d8f-a775-a435e26cc1b5
 :END:
 
 The day had been a blur of near-misses and minor disasters. Alex had made it to
@@ -215,12 +233,14 @@ Tomorrow morning would be different.
 * Act II :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-2
-:WORDCOUNT: 876
+:WORDCOUNT: 277
+:ID:       cdad6212-34f1-4bf0-b226-3ddecf7ce70f
 :END:
 
 ** TOWRITE Chapter 3 :ignore:
 :PROPERTIES:
-:WORDCOUNT: 876
+:WORDCOUNT: 269
+:ID:       72c83287-21b6-4488-b2e6-83c9efa4bb74
 :END:
 
 *** TOWRITE Scene 1 - First Attempt :ignore:
@@ -237,6 +257,8 @@ Tomorrow morning would be different.
 :What-is-at-stake: Alex's commitment to change
 :Emotion: Determination fading to frustration
 :Comment: This scene shows the TOWRITE status - planned but not yet drafted
+:WORDCOUNT: 269
+:ID:       3920e12c-cbda-49a1-bfe3-04a92d4a94e9
 :END:
 
 The alarm went off at 6:00 AM sharp. This time, Alex didn't hit snooze. They'd
@@ -275,7 +297,8 @@ still hadn't worked.
 
 ** TOWRITE Chapter 4 - Learning and Adjusting :ignore:
 :PROPERTIES:
-:WORDCOUNT: 0
+:WORDCOUNT: 8
+:ID:       065f37ed-f95c-4a18-a8a0-d666dadb1b0d
 :END:
 
 *** TOWRITE Scene 1 - Coffee Talk :ignore:
@@ -292,6 +315,8 @@ still hadn't worked.
 :What-is-at-stake: Alex's continued effort
 :Emotion: Vulnerability, relief, insight
 :Comment: This scene has no content yet - just the planning metadata
+:WORDCOUNT: 4
+:ID:       8abad439-d477-41ff-9548-56db3532c1db
 :END:
 
 [Scene to be written]
@@ -310,6 +335,8 @@ still hadn't worked.
 :What-is-at-stake: Sustainable change
 :Emotion: Peace, accomplishment, growth
 :Comment: Climax of Act II - the routine actually works
+:WORDCOUNT: 4
+:ID:       691ff06f-b99a-4b6d-8c1a-bd1d2b5146b5
 :END:
 
 [Scene to be written]
@@ -317,12 +344,14 @@ still hadn't worked.
 * Act III :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-3
-:WORDCOUNT: 515
+:WORDCOUNT: 308
+:ID:       78daff4c-02bd-4990-a017-1b5a5678b62c
 :END:
 
 ** TODO Chapter 5 - The New Normal :ignore:
 :PROPERTIES:
-:WORDCOUNT: 515
+:WORDCOUNT: 308
+:ID:       79fdf66f-ef42-45c8-9c9c-b474f45c663e
 :END:
 
 *** TODO Scene 1 - Full Circle :ignore:
@@ -339,6 +368,8 @@ still hadn't worked.
 :What-is-at-stake: Nothing - this is about showing growth
 :Emotion: Satisfaction, contentment, generosity
 :Comment: Final scene brings the story full circle
+:WORDCOUNT: 308
+:ID:       0f6858e1-5014-45ec-b3cf-3dec85448e09
 :END:
 
 Alex walked into the coffee shop at 7:00 AM, right on schedule. Not because they
@@ -383,6 +414,10 @@ warmer, a little kinder. Alex glanced at the watch. 7:15. They had plenty of tim
 They always did, now.
 
 * Export config :ignore:noexport:
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       861a553c-2808-43b7-bbde-7d4ffc281c2e
+:END:
 # ############################
 # General options
 # ############################
@@ -398,7 +433,7 @@ They always did, now.
 # ######################
 # latex related options
 # ######################
-#+LATEX_CLASS: memoir_draft
+#+LATEX_CLASS: book
 #+LATEX_HEADER:
 #+LATEX_HEADER_EXTRA:
 #+DESCRIPTION:
@@ -409,7 +444,7 @@ They always did, now.
 # odt related options
 # ######################
 #+OPTIONS: tex:t
-#+ODT_STYLES_FILE: "~/Nextcloud/escritura/recursos/orgtemplate2odt.ott"
+#+ODT_STYLES_FILE: "<file>.ott"
 #+DESCRIPTION:
 #+KEYWORDS:
 #+SUBTITLE:
@@ -420,7 +455,7 @@ They always did, now.
 # ######################
 #+DESCRIPTION:
 #+HTML_DOCTYPE: html5
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="file:///home/jcastp/Nextcloud/config/org.css"/>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="file:org.css"/>
 #+HTML_HEAD_EXTRA:
 
 # ######################

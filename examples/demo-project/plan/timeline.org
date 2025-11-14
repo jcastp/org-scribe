@@ -10,18 +10,18 @@
 The story takes place over approximately 30 days in late winter/early spring (February-March 2025). The narrative doesn't show every day - it focuses on key moments in Alex's transformation.
 
 ** Story Timeline
-| Event                        | Story Day | Date       | Time        | Characters | Location         | Chapter   |
-|------------------------------+-----------+------------+-------------+------------+------------------+-----------|
-| The chaotic alarm morning    | Day 1     | 2025-02-15 | 6:30-7:00   | Alex       | Apartment        | Ch 1, Sc1 |
-| Coffee shop encounter        | Day 1     | 2025-02-15 | 7:45        | Alex, Sam  | Coffee Shop      | Ch 1, Sc2 |
-| Important meeting (disaster) | Day 1     | 2025-02-15 | 9:00        | Alex       | [off-page]       | [implied] |
-| Finding the watch            | Day 1     | 2025-02-15 | 8:30 PM     | Alex       | Apartment        | Ch 2, Sc1 |
-| Making the decision          | Day 1     | 2025-02-15 | 8:45 PM     | Alex       | Apartment        | Ch 2, Sc1 |
-| First routine attempt        | Day 2     | 2025-02-16 | 6:00-7:30   | Alex       | Apartment        | Ch 3, Sc1 |
-| Coffee talk with Sam         | Day 5     | 2025-02-19 | 7:30        | Alex, Sam  | Coffee Shop      | Ch 4, Sc1 |
-| Finding balance              | Day 8     | 2025-02-22 | 6:15-7:00   | Alex       | Apartment        | Ch 4, Sc2 |
-| Routine disruption [TBD]     | Day 15    | 2025-03-01 | Morning     | Alex       | Apartment        | [TBD]     |
-| Full circle - helping other  | Day 30    | 2025-03-16 | 7:00        | Alex, Sam, Casey | Coffee Shop  | Ch 5, Sc1 |
+| Event                        | Story Day |       Date |      Time | Characters       | Location    | Chapter   |
+|------------------------------+-----------+------------+-----------+------------------+-------------+-----------|
+| The chaotic alarm morning    | Day 1     | 2025-02-15 | 6:30-7:00 | Alex             | Apartment   | Ch 1, Sc1 |
+| Coffee shop encounter        | Day 1     | 2025-02-15 |      7:45 | Alex, Sam        | Coffee Shop | Ch 1, Sc2 |
+| Important meeting (disaster) | Day 1     | 2025-02-15 |      9:00 | Alex             | [off-page]  | [implied] |
+| Finding the watch            | Day 1     | 2025-02-15 |   8:30 PM | Alex             | Apartment   | Ch 2, Sc1 |
+| Making the decision          | Day 1     | 2025-02-15 |   8:45 PM | Alex             | Apartment   | Ch 2, Sc1 |
+| First routine attempt        | Day 2     | 2025-02-16 | 6:00-7:30 | Alex             | Apartment   | Ch 3, Sc1 |
+| Coffee talk with Sam         | Day 5     | 2025-02-19 |      7:30 | Alex, Sam        | Coffee Shop | Ch 4, Sc1 |
+| Finding balance              | Day 8     | 2025-02-22 | 6:15-7:00 | Alex             | Apartment   | Ch 4, Sc2 |
+| Routine disruption [TBD]     | Day 15    | 2025-03-01 |   Morning | Alex             | Apartment   | [TBD]     |
+| Full circle - helping other  | Day 30    | 2025-03-16 |      7:00 | Alex, Sam, Casey | Coffee Shop | Ch 5, Sc1 |
 
 * Detailed Events
 

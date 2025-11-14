@@ -12,13 +12,13 @@
 * Overall Progress
 
 #+NAME: total-progress
-| Section  | Target | Actual | Progress |
-|----------+--------+--------+----------|
-| Act I    |   5000 |   1456 |      29% |
-| Act II   |   6000 |    876 |      15% |
-| Act III  |   4000 |    515 |      13% |
-|----------+--------+--------+----------|
-| TOTAL    |  15000 |   2847 |      19% |
+| Section | Target | Actual | Progress |
+|---------+--------+--------+----------|
+| Act I   |   5000 |   1456 |      29% |
+| Act II  |   6000 |    876 |      15% |
+| Act III |   4000 |    515 |      13% |
+|---------+--------+--------+----------|
+| TOTAL   |  15000 |   2847 |      19% |
 #+TBLFM: $4='(format "%.0f%%" (* 100 (/ (float $3) $2)));N::@>$2=vsum(@2..@-1)::@>$3=vsum(@2..@-1)
 
 * Daily Word Log
@@ -41,19 +41,19 @@ To update word count, use:
 * Statistics by Chapter
 
 #+NAME: chapter-words
-| Chapter   | Target | Actual | Status        |
-|-----------+--------+--------+---------------|
-| Chapter 1 |   1500 |    876 | Finished      |
-| Chapter 2 |   1500 |    580 | In Progress   |
-| Chapter 3 |   2000 |    876 | To Write      |
-| Chapter 4 |   2000 |      0 | Pending       |
-| Chapter 5 |   1500 |    515 | Outlined      |
-| Chapter 6 |   1500 |      0 | Pending       |
-| Chapter 7 |   2000 |      0 | Pending       |
-| Chapter 8 |   1500 |      0 | Pending       |
-| Chapter 9 |   1500 |      0 | Pending       |
-|-----------+--------+--------+---------------|
-| TOTAL     |  15000 |   2847 | 19% Complete  |
+| Chapter   | Target | Actual | Status       |
+|-----------+--------+--------+--------------|
+| Chapter 1 |   1500 |    876 | Finished     |
+| Chapter 2 |   1500 |    580 | In Progress  |
+| Chapter 3 |   2000 |    876 | To Write     |
+| Chapter 4 |   2000 |      0 | Pending      |
+| Chapter 5 |   1500 |    515 | Outlined     |
+| Chapter 6 |   1500 |      0 | Pending      |
+| Chapter 7 |   2000 |      0 | Pending      |
+| Chapter 8 |   1500 |      0 | Pending      |
+| Chapter 9 |   1500 |      0 | Pending      |
+|-----------+--------+--------+--------------|
+| TOTAL     |  15000 |   2847 | 19% Complete |
 #+TBLFM: @>$2=vsum(@2..@-1)::@>$3=vsum(@2..@-1)
 
 * Time Spent
