@@ -84,6 +84,10 @@ The cascade stabilizes into a permanent quantum temporal field. She hasn't destr
 - Important details :: The lab is always humming—a specific frequency that becomes comforting. At night, it's isolated, several floors underground, perfect for secret experiments.
 - Atmosphere :: Initially scientific and calm, becomes claustrophobic as Elena realizes she's trapped in a predetermined sequence of events.
 
+** Locations
+
+<!-- Location captures go here as subheadings -->
+
 ** Time Period
 Near future—2047. Quantum computing is common, but quantum communication through time is still theoretical.
 
@@ -93,6 +97,14 @@ Near future—2047. Quantum computing is common, but quantum communication throu
 - Magic/Technology :: Quantum entanglement allows instantaneous communication across space. Backward time communication is theoretically possible but requires massive energy and perfect field calibration. The "cascade" is a runaway quantum field effect that destabilizes local spacetime.
 - Society/Culture :: Physics community is competitive but collaborative. CERN is still the premier research institution. Elena's work is cutting-edge enough that she keeps parts of it private.
 - Limitations :: You cannot change the past, only complete it. Stable time loops are possible, but paradoxes resolve themselves through determinism. Free will might be an illusion in a universe with backward causation.
+
+* Objects
+
+<!-- Important objects in the story - quantum entanglement chamber, encryption keys, etc. -->
+
+* Timeline
+
+<!-- Timeline of story events - March 15-16, 2047 -->
 
 * Research & References
 

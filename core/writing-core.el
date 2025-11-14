@@ -24,6 +24,66 @@ Looks for .writing-project file, then falls back to `project-current'."
         (project-root proj))
       default-directory))
 
+(defvar writing--project-type-cache nil
+  "Alist of (PROJECT-ROOT . PROJECT-TYPE) for caching project type detection.
+Cleared when changing directories or projects.")
+
+(defun writing-project-type ()
+  "Detect the type of writing project.
+Returns one of:
+  'novel - Novel project (plan/ directory with separate files)
+  'short-story - Short story project (consolidated notes.org)
+  'unknown - Cannot determine project type
+
+Detection strategy:
+1. Check cache for this project root
+2. Read .writing-project marker file if it exists (look for Type: line)
+3. Check for existence of plan/ directory structure (indicates novel)
+4. Check for story.org or cuento.org (indicates short story)
+5. Check for novel.org or novela.org (indicates novel)
+6. Return 'unknown if none of the above"
+  (let* ((root (writing-project-root))
+         (cached (alist-get root writing--project-type-cache nil nil #'string=)))
+    (if cached
+        cached
+      ;; Not cached, detect and cache
+      (let ((type
+             (let ((marker-file (expand-file-name ".writing-project" root)))
+               (cond
+                ;; Strategy 1: Read marker file
+                ((and (file-exists-p marker-file)
+                      (with-temp-buffer
+                        (insert-file-contents marker-file)
+                        (goto-char (point-min))
+                        (when (re-search-forward "^# Type: \\(.*\\)$" nil t)
+                          (let ((type-str (match-string 1)))
+                            (cond
+                             ((string= type-str "short-story") 'short-story)
+                             ((string= type-str "novel") 'novel)
+                             (t nil)))))))
+
+                ;; Strategy 2: Check for plan/ directory (novel indicator)
+                ((or (file-directory-p (expand-file-name "plan" root))
+                     (file-directory-p (expand-file-name "plan/" root)))
+                 'novel)
+
+                ;; Strategy 3: Check for story.org or cuento.org (short story indicator)
+                ((or (file-exists-p (expand-file-name "story.org" root))
+                     (file-exists-p (expand-file-name "cuento.org" root)))
+                 'short-story)
+
+                ;; Strategy 4: Check for novel.org or novela.org (novel indicator)
+                ((or (file-exists-p (expand-file-name "novel.org" root))
+                     (file-exists-p (expand-file-name "novela.org" root)))
+                 'novel)
+
+                ;; Unknown
+                (t 'unknown)))))
+        ;; Cache the result
+        (setq writing--project-type-cache
+              (cons (cons root type) writing--project-type-cache))
+        type))))
+
 (defun writing-project-structure ()
   "Detect project structure and return layout information.
 Returns plist with :novel-file :notes-dir :characters-dir etc."

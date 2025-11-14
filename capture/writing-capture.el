@@ -16,162 +16,254 @@
 (require 'writing-core)
 (require 'writing-config)
 
+;;; File Creation Helpers
+
+(defun writing--create-short-story-notes-file (filepath)
+  "Create a comprehensive notes.org file for short story projects.
+FILEPATH is the path where the file should be created."
+  (with-temp-file filepath
+    (insert "#+TITLE: " (file-name-base (directory-file-name (file-name-directory filepath))) " - Planning & Notes\n")
+    (insert "#+AUTHOR: " user-full-name "\n")
+    (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n")
+    (insert "#+STARTUP: overview\n\n")
+
+    ;; Standard headings for short story notes
+    (insert "* Characters\n\n")
+    (insert "** Protagonist: [Name]\n")
+    (insert ":PROPERTIES:\n:TYPE: Protagonist\n:NAME:\n:AGE:\n:GENDER:\n:END:\n\n")
+    (insert "- Personality ::\n- Goal ::\n- Conflict ::\n\n")
+
+    (insert "* Plot Outline\n\n")
+    (insert "** Premise\n\n** Setup\n\n** Central Conflict\n\n** Resolution\n\n")
+
+    (insert "* Setting\n\n")
+    (insert "** Main Location(s)\n\n")
+    (insert "** Locations\n\n")
+
+    (insert "* Objects\n\n")
+
+    (insert "* Timeline\n\n")
+
+    (insert "* Research & References\n\n")
+
+    (insert "* Revision Notes\n\n")
+
+    (insert "* Random Ideas & Inspiration\n\n")))
+
+(defun writing--create-novel-capture-file (filepath content-type)
+  "Create an individual capture file for novel projects.
+FILEPATH is the path where the file should be created.
+CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes."
+  (with-temp-file filepath
+    (pcase content-type
+      ('characters
+       (insert "#+TITLE: Character Database\n")
+       (insert "#+AUTHOR: " user-full-name "\n")
+       (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
+       (insert "* Characters\n\n"))
+      ('locations
+       (insert "#+TITLE: Locations & World Building\n")
+       (insert "#+AUTHOR: " user-full-name "\n")
+       (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
+       (insert "* Locations\n\n"))
+      ('objects
+       (insert "#+TITLE: Important Objects\n")
+       (insert "#+AUTHOR: " user-full-name "\n")
+       (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
+       (insert "* Objects\n\n"))
+      ('timeline
+       (insert "#+TITLE: Story Timeline\n")
+       (insert "#+AUTHOR: " user-full-name "\n")
+       (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
+       (insert "* Timeline\n\n"))
+      ('notes
+       (insert "#+TITLE: Writing Notes\n")
+       (insert "#+AUTHOR: " user-full-name "\n")
+       (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
+       (insert "* Notes\n\n")))))
+
+(defun writing--create-capture-file (filepath project-type content-type)
+  "Create a capture target file based on project type.
+FILEPATH is the path to create.
+PROJECT-TYPE is 'novel, 'short-story, or 'unknown.
+CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes.
+
+For short stories, creates notes.org with all standard headings.
+For novels, creates individual files."
+  (let ((target-dir (file-name-directory filepath)))
+    (unless (file-directory-p target-dir)
+      (make-directory target-dir t)))
+
+  (if (eq project-type 'short-story)
+      ;; Short story: create comprehensive notes.org
+      (writing--create-short-story-notes-file filepath)
+    ;; Novel or unknown: create individual file
+    (writing--create-novel-capture-file filepath content-type)))
+
 ;;; Capture Target File Detection
 
 (defun writing/capture-location-file (&optional create-if-missing)
-  "Determine the appropriate locations file for org-capture in writing environment.
-Uses `project-current' to find the project base directory as reference point.
-Returns the file path based on the following priority:
-1. plan/locations.org (relative to project root)
-2. plan/localizaciones.org - Spanish (relative to project root)
-3. locations.org (in project root)
-4. localizaciones.org (in project root)
-5. current buffer if none of the above exist
+  "Determine the appropriate file for location captures.
+For novels: Uses plan/locations.org (or localizaciones.org)
+For short stories: Uses notes.org (or notas.org)
+For unknown projects: Falls back to plan/locations.org
 
-If CREATE-IF-MISSING is non-nil, create the first priority locations
-file that doesn't exist."
+If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
                           (project-root project)
                         (file-name-directory (or (buffer-file-name) default-directory))))
-         (locations-subdir-en (expand-file-name "plan/locations.org" project-dir))
-         (locations-subdir-es (expand-file-name "plan/localizaciones.org" project-dir))
-         (locations-en (expand-file-name "locations.org" project-dir))
-         (locations-es (expand-file-name "localizaciones.org" project-dir))
-         (target (cond
-                  ((file-exists-p locations-subdir-en) locations-subdir-en)
-                  ((file-exists-p locations-subdir-es) locations-subdir-es)
-                  ((file-exists-p locations-en) locations-en)
-                  ((file-exists-p locations-es) locations-es)
-                  (t (or (buffer-file-name)
-                         (expand-file-name "plan/locations.org" project-dir))))))
-    (when (and create-if-missing
-               (not (file-exists-p target)))
-      (let ((target-dir (file-name-directory target)))
-        (unless (file-directory-p target-dir)
-          (make-directory target-dir t)))
-      (with-temp-file target
-        (insert "#+TITLE: Locations & World Building\n")
-        (insert (format "#+AUTHOR: %s\n" user-full-name))
-        (insert (format "#+DATE: %s\n\n" (format-time-string "%Y-%m-%d")))
-        (insert "* Locations\n\n")
-        (insert "This file contains location descriptions and world building details.\n\n")))
+         (project-type (writing-project-type))
+         (target
+          (cond
+           ;; Short story: use notes.org
+           ((eq project-type 'short-story)
+            (cond
+             ((file-exists-p (expand-file-name "notes.org" project-dir))
+              (expand-file-name "notes.org" project-dir))
+             ((file-exists-p (expand-file-name "notas.org" project-dir))
+              (expand-file-name "notas.org" project-dir))
+             (t (expand-file-name "notes.org" project-dir))))
+
+           ;; Novel or unknown: use plan/locations.org
+           (t
+            (cond
+             ((file-exists-p (expand-file-name "plan/locations.org" project-dir))
+              (expand-file-name "plan/locations.org" project-dir))
+             ((file-exists-p (expand-file-name "plan/localizaciones.org" project-dir))
+              (expand-file-name "plan/localizaciones.org" project-dir))
+             ((file-exists-p (expand-file-name "locations.org" project-dir))
+              (expand-file-name "locations.org" project-dir))
+             ((file-exists-p (expand-file-name "localizaciones.org" project-dir))
+              (expand-file-name "localizaciones.org" project-dir))
+             (t (expand-file-name "plan/locations.org" project-dir)))))))
+
+    ;; Create file if needed
+    (when (and create-if-missing (not (file-exists-p target)))
+      (writing--create-capture-file target project-type 'locations))
+
     target))
 
 (defun writing/capture-object-file (&optional create-if-missing)
-  "Determine the appropriate objects file for org-capture in writing environment.
-Uses `project-current' to find the project base directory as reference point.
-Returns the file path based on the following priority:
-1. plan/objects.org (relative to project root)
-2. plan/objetos.org - Spanish (relative to project root)
-3. objects.org (in project root)
-4. objetos.org (in project root)
-5. current buffer if none of the above exist
+  "Determine the appropriate file for object captures.
+For novels: Uses plan/objects.org (or objetos.org)
+For short stories: Uses notes.org (or notas.org)
+For unknown projects: Falls back to plan/objects.org
 
-If CREATE-IF-MISSING is non-nil, create the first priority objects
-file that doesn't exist."
+If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
                           (project-root project)
                         (file-name-directory (or (buffer-file-name) default-directory))))
-         (objects-subdir-en (expand-file-name "plan/objects.org" project-dir))
-         (objects-subdir-es (expand-file-name "plan/objetos.org" project-dir))
-         (objects-en (expand-file-name "objects.org" project-dir))
-         (objects-es (expand-file-name "objetos.org" project-dir))
-         (target (cond
-                  ((file-exists-p objects-subdir-en) objects-subdir-en)
-                  ((file-exists-p objects-subdir-es) objects-subdir-es)
-                  ((file-exists-p objects-en) objects-en)
-                  ((file-exists-p objects-es) objects-es)
-                  (t (or (buffer-file-name)
-                         (expand-file-name "plan/objects.org" project-dir))))))
-    (when (and create-if-missing
-               (not (file-exists-p target)))
-      (let ((target-dir (file-name-directory target)))
-        (unless (file-directory-p target-dir)
-          (make-directory target-dir t)))
-      (with-temp-file target
-        (insert "#+TITLE: Important Objects\n")
-        (insert (format "#+AUTHOR: %s\n" user-full-name))
-        (insert (format "#+DATE: %s\n\n" (format-time-string "%Y-%m-%d")))
-        (insert "* Objects\n\n")
-        (insert "This file contains descriptions of important objects, artifacts, and items.\n\n")))
+         (project-type (writing-project-type))
+         (target
+          (cond
+           ;; Short story: use notes.org
+           ((eq project-type 'short-story)
+            (cond
+             ((file-exists-p (expand-file-name "notes.org" project-dir))
+              (expand-file-name "notes.org" project-dir))
+             ((file-exists-p (expand-file-name "notas.org" project-dir))
+              (expand-file-name "notas.org" project-dir))
+             (t (expand-file-name "notes.org" project-dir))))
+
+           ;; Novel or unknown: use plan/objects.org
+           (t
+            (cond
+             ((file-exists-p (expand-file-name "plan/objects.org" project-dir))
+              (expand-file-name "plan/objects.org" project-dir))
+             ((file-exists-p (expand-file-name "plan/objetos.org" project-dir))
+              (expand-file-name "plan/objetos.org" project-dir))
+             ((file-exists-p (expand-file-name "objects.org" project-dir))
+              (expand-file-name "objects.org" project-dir))
+             ((file-exists-p (expand-file-name "objetos.org" project-dir))
+              (expand-file-name "objetos.org" project-dir))
+             (t (expand-file-name "plan/objects.org" project-dir)))))))
+
+    ;; Create file if needed
+    (when (and create-if-missing (not (file-exists-p target)))
+      (writing--create-capture-file target project-type 'objects))
+
     target))
 
 (defun writing/capture-timeline-file (&optional create-if-missing)
-  "Determine the appropriate timeline file for org-capture in writing environment.
-Uses `project-current' to find the project base directory as reference point.
-Returns the file path based on the following priority:
-1. plan/timeline.org (relative to project root)
-2. plan/cronologia.org - Spanish (relative to project root)
-3. timeline.org (in project root)
-4. cronologia.org (in project root)
-5. current buffer if none of the above exist
+  "Determine the appropriate file for timeline captures.
+For novels: Uses plan/timeline.org (or cronologia.org)
+For short stories: Uses notes.org (or notas.org)
+For unknown projects: Falls back to plan/timeline.org
 
-If CREATE-IF-MISSING is non-nil, create the first priority timeline
-file that doesn't exist."
+If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
                           (project-root project)
                         (file-name-directory (or (buffer-file-name) default-directory))))
-         (timeline-subdir-en (expand-file-name "plan/timeline.org" project-dir))
-         (timeline-subdir-es (expand-file-name "plan/cronologia.org" project-dir))
-         (timeline-en (expand-file-name "timeline.org" project-dir))
-         (timeline-es (expand-file-name "cronologia.org" project-dir))
-         (target (cond
-                  ((file-exists-p timeline-subdir-en) timeline-subdir-en)
-                  ((file-exists-p timeline-subdir-es) timeline-subdir-es)
-                  ((file-exists-p timeline-en) timeline-en)
-                  ((file-exists-p timeline-es) timeline-es)
-                  (t (or (buffer-file-name)
-                         (expand-file-name "plan/timeline.org" project-dir))))))
-    (when (and create-if-missing
-               (not (file-exists-p target)))
-      (let ((target-dir (file-name-directory target)))
-        (unless (file-directory-p target-dir)
-          (make-directory target-dir t)))
-      (with-temp-file target
-        (insert "#+TITLE: Story Timeline\n")
-        (insert (format "#+AUTHOR: %s\n" user-full-name))
-        (insert (format "#+DATE: %s\n\n" (format-time-string "%Y-%m-%d")))
-        (insert "* Timeline\n\n")
-        (insert "This file contains the chronological timeline of story events.\n\n")))
+         (project-type (writing-project-type))
+         (target
+          (cond
+           ;; Short story: use notes.org
+           ((eq project-type 'short-story)
+            (cond
+             ((file-exists-p (expand-file-name "notes.org" project-dir))
+              (expand-file-name "notes.org" project-dir))
+             ((file-exists-p (expand-file-name "notas.org" project-dir))
+              (expand-file-name "notas.org" project-dir))
+             (t (expand-file-name "notes.org" project-dir))))
+
+           ;; Novel or unknown: use plan/timeline.org
+           (t
+            (cond
+             ((file-exists-p (expand-file-name "plan/timeline.org" project-dir))
+              (expand-file-name "plan/timeline.org" project-dir))
+             ((file-exists-p (expand-file-name "plan/cronologia.org" project-dir))
+              (expand-file-name "plan/cronologia.org" project-dir))
+             ((file-exists-p (expand-file-name "timeline.org" project-dir))
+              (expand-file-name "timeline.org" project-dir))
+             ((file-exists-p (expand-file-name "cronologia.org" project-dir))
+              (expand-file-name "cronologia.org" project-dir))
+             (t (expand-file-name "plan/timeline.org" project-dir)))))))
+
+    ;; Create file if needed
+    (when (and create-if-missing (not (file-exists-p target)))
+      (writing--create-capture-file target project-type 'timeline))
+
     target))
 
 (defun writing/capture-character-file (&optional create-if-missing)
-  "Determine the appropriate characters file for org-capture in writing environment.
-Uses `project-current' to find the project base directory as reference point.
-Returns the file path based on the following priority:
-1. plan/characters.org (relative to project root)
-2. plan/personajes.org - Spanish (relative to project root)
-3. characters.org (in project root)
-4. personajes.org (in project root)
-5. current buffer if none of the above exist
+  "Determine the appropriate file for character captures.
+For novels: Uses plan/characters.org (or personajes.org)
+For short stories: Uses notes.org (or notas.org)
+For unknown projects: Falls back to plan/characters.org
 
-If CREATE-IF-MISSING is non-nil, create the first priority characters
-file that doesn't exist."
+If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
                           (project-root project)
                         (file-name-directory (or (buffer-file-name) default-directory))))
-         (characters-subdir-en (expand-file-name "plan/characters.org" project-dir))
-         (characters-subdir-es (expand-file-name "plan/personajes.org" project-dir))
-         (characters-en (expand-file-name "characters.org" project-dir))
-         (characters-es (expand-file-name "personajes.org" project-dir))
-         (target (cond
-                  ((file-exists-p characters-subdir-en) characters-subdir-en)
-                  ((file-exists-p characters-subdir-es) characters-subdir-es)
-                  ((file-exists-p characters-en) characters-en)
-                  ((file-exists-p characters-es) characters-es)
-                  (t (or (buffer-file-name)
-                         (expand-file-name "plan/characters.org" project-dir))))))
-    (when (and create-if-missing
-               (not (file-exists-p target)))
-      (let ((target-dir (file-name-directory target)))
-        (unless (file-directory-p target-dir)
-          (make-directory target-dir t)))
-      (with-temp-file target
-        (insert "#+TITLE: Character Database\n")
-        (insert (format "#+AUTHOR: %s\n" user-full-name))
-        (insert (format "#+DATE: %s\n\n" (format-time-string "%Y-%m-%d")))
-        (insert "* Characters\n\n")
-        (insert "This file contains character profiles for the novel.\n\n")))
+         (project-type (writing-project-type))
+         (target
+          (cond
+           ;; Short story: use notes.org
+           ((eq project-type 'short-story)
+            (cond
+             ((file-exists-p (expand-file-name "notes.org" project-dir))
+              (expand-file-name "notes.org" project-dir))
+             ((file-exists-p (expand-file-name "notas.org" project-dir))
+              (expand-file-name "notas.org" project-dir))
+             (t (expand-file-name "notes.org" project-dir))))
+
+           ;; Novel or unknown: use plan/characters.org
+           (t
+            (cond
+             ((file-exists-p (expand-file-name "plan/characters.org" project-dir))
+              (expand-file-name "plan/characters.org" project-dir))
+             ((file-exists-p (expand-file-name "plan/personajes.org" project-dir))
+              (expand-file-name "plan/personajes.org" project-dir))
+             ((file-exists-p (expand-file-name "characters.org" project-dir))
+              (expand-file-name "characters.org" project-dir))
+             ((file-exists-p (expand-file-name "personajes.org" project-dir))
+              (expand-file-name "personajes.org" project-dir))
+             (t (expand-file-name "plan/characters.org" project-dir)))))))
+
+    ;; Create file if needed
+    (when (and create-if-missing (not (file-exists-p target)))
+      (writing--create-capture-file target project-type 'characters))
+
     target))
 
 (defun writing/capture-target-file (&optional create-if-missing)

@@ -48,7 +48,7 @@ _P_: New novel     _p_: Project mode  _c_: Note             _r_: RAE dictionary 
 _T_: New story     _w_: Writing mode  _h_: Character        _s_: Synonyms         _m_: Add WC props  _i_: Find character
 _C_: New chapter   _f_: Focus mode    _l_: Location         _d_: Thesaurus        _t_: Track table   _o_: Find plot
 _S_: New scene     _e_: Editing mode  _j_: Object                                                _y_: Find location
-_O_: Open file                        _k_: Timeline                                              _a_: Find TODOs
+_O_: Open file                      _k_: Timeline                                              _a_: Find TODOs
 _q_: Quit
 "
   ;; Project management
