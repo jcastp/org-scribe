@@ -129,7 +129,7 @@ Add to your Emacs configuration:
 ** Create Your First Novel Project
 
 1. Install the package and dependencies
-2. Run =M-x writing-create-project= (or =F8 F8 P= if using hydra)
+2. Run =M-x writing-create-project=
 3. Choose a directory and enter your novel title
 4. Start writing in the generated =novel.org= file!
 
@@ -147,7 +147,7 @@ Add to your Emacs configuration:
 
 *** Create a New Novel Project
 
-=M-x writing-create-project= or press =F8 F8 P= in hydra
+=M-x writing-create-project=
 
 This creates a complete project structure:
 
@@ -179,12 +179,12 @@ The project includes:
 
 While working in your manuscript:
 
-- =M-x writing-insert-scene= or =F8 F8 S=: Insert a scene with metadata properties (PoV, Characters, Plot, Location, etc.)
-- =M-x writing-insert-chapter= or =F8 F8 C=: Insert a chapter heading with word count property
+- =M-x writing-insert-scene= or =F8 F8 s=: Insert a scene with metadata properties (PoV, Characters, Plot, Location, etc.)
+- =M-x writing-insert-chapter= or =F8 F8 c=: Insert a chapter heading with word count property
 
 *** Quick Project File Access
 
-=M-x writing-open-project-file= or =F8 F8 O=
+=M-x writing-open-project-file= or =F8 F8 o=
 
 Opens project files with completion (novel.org, plan/characters.org, notes/notes.org, etc.)
 
@@ -198,7 +198,7 @@ Opens the template directory for editing. Customize templates to match your work
 
 *** Distraction-Free Mode (=my-writing-env-mode=)
 
-Press =F8 F8 w= or use the hydra menu.
+Press =F8 F8 m= or use the hydra menu.
 
 Changes:
 - Switches to writing theme
@@ -227,11 +227,11 @@ Three-pane layout:
 
 *** Count Words in Selection
 
-=M-x org-context-count-words= or press =F8 F8 n= in hydra
+=M-x org-context-count-words= or press =F8 F8 w= in hydra
 
 *** Add Word Count Properties
 
-=M-x writing/ews-org-count-words= or press =F8 F8 m= in hydra
+=M-x writing/ews-org-count-words= or press =F8 F8 a= in hydra
 
 Adds a =WORDCOUNT= property to each heading.
 
@@ -286,7 +286,7 @@ Link character names in scene properties directly to their full profiles in =pla
 *** Quick Start
 
 For existing projects:
-1. =M-x writing/setup-character-links= or press =F8 F8 L s=
+1. =M-x writing/setup-character-links= or press =F8 F8 C s=
 2. Adds unique IDs to all characters
 3. Optionally converts existing scenes to use links
 
@@ -296,22 +296,22 @@ For new characters:
 
 *** Setting Scene Characters
 
-*Set PoV Character* (=F8 F8 L p=):
+*Set PoV Character* (=F8 F8 C p=):
 1. Position on scene heading
-2. Press =F8 F8 L p=
+2. Press =F8 F8 C p=
 3. Select character from menu
 4. PoV property updated with ID link
 
-*Set Scene Characters* (=F8 F8 L c=):
+*Set Scene Characters* (=F8 F8 C c=):
 1. Position on scene heading
-2. Press =F8 F8 L c=
+2. Press =F8 F8 C c=
 3. Select characters one by one
 4. Press RET to finish
 5. Characters property updated with ID links
 
 *** Navigation
 
-*Jump to PoV Character* (=F8 F8 L j=):
+*Jump to PoV Character* (=F8 F8 C j=):
 - Instantly jump from scene to PoV character's full profile
 - Press =C-c &= to return to scene
 
@@ -344,7 +344,7 @@ Benefits:
 
 *** Character Linking Hydra Menu
 
-Press =F8 F8 L= to access:
+Press =F8 F8 C= to access:
 - =p= - Set PoV character
 - =c= - Set scene characters
 - =j= - Jump to PoV character
@@ -364,7 +364,7 @@ Track your main plot and subplots across your novel using ID-based links. The pl
 *** Quick Start
 
 For existing projects:
-1. =M-x writing/setup-plot-thread-links= or press =F8 F8 T s=
+1. =M-x writing/setup-plot-thread-links= or press =F8 F8 P s=
 2. Adds unique IDs to all plot threads in =plan/plot.org=
 3. Optionally converts existing scenes to use links
 
@@ -374,14 +374,14 @@ For new plot threads:
 
 *** Setting Scene Plot Threads
 
-*Set Scene Plot Threads* (=F8 F8 T p=):
+*Set Scene Plot Threads* (=F8 F8 P p=):
 1. Position on scene heading
-2. Press =F8 F8 T p=
+2. Press =F8 F8 P p=
 3. Select plot threads one by one (main plot, subplots)
 4. Press RET to finish
 5. Plot property updated with ID links
 
-*Jump to Plot Thread* (=F8 F8 T j=):
+*Jump to Plot Thread* (=F8 F8 P j=):
 - Jump from scene to plot thread definition
 - Press =C-c &= to return to scene
 
@@ -417,7 +417,7 @@ The ● symbol shows where each plot thread appears, making it easy to spot:
 
 Generate a comprehensive health report for all plot threads:
 
-=M-x writing/plot-thread-report= or press =F8 F8 T r=
+=M-x writing/plot-thread-report= or press =F8 F8 P r=
 
 This generates a buffer showing:
 - Total plot threads and scenes
@@ -467,7 +467,7 @@ This generates a buffer showing:
 
 Get quick statistics in the minibuffer:
 
-=M-x writing/plot-thread-stats= or press =F8 F8 T S=
+=M-x writing/plot-thread-stats= or press =F8 F8 P S=
 
 Shows:
 - Total threads
@@ -497,7 +497,7 @@ Benefits:
 
 *** Plot Thread Linking Hydra Menu
 
-Press =F8 F8 T= to access:
+Press =F8 F8 P= to access:
 - =p= - Set scene plot threads
 - =j= - Jump to plot thread
 - =l= - Link current scene
@@ -650,11 +650,11 @@ If a character is PoV and also in Characters property, only ◆ is shown (PoV im
 
 All search functions are available via the hydra menu (=F8 F8=):
 
-- =u=: Find scenes by POV character
-- =i=: Find scenes with character
-- =o=: Find scenes by plot keyword
-- =y=: Find scenes by location
-- =a=: Find all TODO items in project
+- =1=: Find scenes by POV character
+- =2=: Find scenes with character
+- =3=: Find scenes by plot keyword
+- =4=: Find scenes by location
+- =5=: Find all TODO items in project
 
 These searches use org properties and work with both plain text and ID links:
 
@@ -674,13 +674,13 @@ Searching for "Alice" finds this scene even with ID links!
 
 *** Spanish RAE Dictionary
 
-=M-x writing/rae-api-lookup= or press =F8 F8 r= in hydra
+=M-x writing/rae-api-lookup= or press =F8 F8 d= in hydra
 
 Looks up Spanish words in the Real Academia Española dictionary.
 
 *** Synonyms
 
-=M-x writing/sinonimo= or press =F8 F8 s= in hydra
+=M-x writing/sinonimo= or press =F8 F8 y= in hydra
 
 Opens WordReference Spanish synonyms in a side window.
 
@@ -755,42 +755,46 @@ Default keybindings when =emacs-writing-mode= is active:
 
 ** Hydra Menu (F8 F8)
 
-The hydra menu provides quick access to all functions:
+The hydra menu provides quick access to all functions organized into 6 columns:
 
-*** Project
-- =P= - Create new project
-- =C= - Insert chapter
-- =S= - Insert scene
-- =O= - Open project file
+*** Insert (Most Frequent Actions)
+- =s= - Insert scene
+- =c= - Insert chapter
+- =o= - Open project file
 
 *** Modes
+- =m= - Writing mode (distraction-free)
 - =p= - Project navigation mode
-- =w= - Writing mode (distraction-free)
 - =f= - Focus mode
 - =e= - Editing mode
 
-*** Writing Tools
-- =r= - RAE dictionary
-- =s= - Synonyms
-- =d= - Thesaurus
-- =c= - Capture note
+*** Capture
+- =n= - Capture note
+- =h= - Capture character
+- =l= - Capture location
+- =b= - Capture object
+- =t= - Capture timeline event
 
-*** Count Words
-- =n= - Count words
-- =m= - Add word count properties
-- =t= - Update tracking table
+*** Tools
+- =w= - Count words
+- =r= - Update tracking table
+- =a= - Add word count properties
+- =d= - RAE dictionary
+- =y= - Synonyms
 
-*** Searches
-- =u= - Find scenes by POV
-- =i= - Find scenes with character
-- =o= - Find scenes by plot
-- =y= - Find scenes by location
-- =a= - Find TODOs in project
+*** Search (Numbered for Consistency)
+- =1= - Find scenes by POV
+- =2= - Find scenes with character
+- =3= - Find scenes by plot
+- =4= - Find scenes by location
+- =5= - Find TODOs in project
 
-*** Character Linking
-- =P= - Open character linking submenu
+*** Manage (Linking Submenus - Capitals Only)
+- =C= - Character linking submenu
+- =L= - Location linking submenu
+- =P= - Plot thread linking submenu
 
-From the character linking submenu (=F8 F8 P=):
+**** Character Linking Submenu (F8 F8 C)
 - =p= - Set PoV character
 - =c= - Set scene characters
 - =j= - Jump to PoV character
@@ -799,20 +803,14 @@ From the character linking submenu (=F8 F8 P=):
 - =i= - Add IDs to characters
 - =s= - Setup linking system
 
-*** Location Linking
-- =L= - Open location linking submenu
-
-From the location linking submenu (=F8 F8 L=):
+**** Location Linking Submenu (F8 F8 L)
 - =c= - Set scene locations
 - =l= - Link current scene
 - =L= - Link all scenes
 - =i= - Add IDs to locations
 - =s= - Setup linking system
 
-*** Plot Thread Linking
-- =T= - Open plot thread linking submenu
-
-From the plot thread linking submenu (=F8 F8 T=):
+**** Plot Thread Linking Submenu (F8 F8 P)
 - =p= - Set scene plot threads
 - =j= - Jump to plot thread
 - =l= - Link current scene
@@ -822,6 +820,15 @@ From the plot thread linking submenu (=F8 F8 T=):
 - =t= - Timeline table (insert instructions)
 - =r= - Health report
 - =S= - Statistics
+
+*** Key Changes from Previous Version
+
+*Proposal 1 Improvements* (v0.2.1):
+- *No Shift Keys*: Removed shift requirements from frequent actions (S→s, C→c, O→o)
+- *Home Row Optimization*: Best keys for most frequent actions (s=scene, c=chapter, w=words)
+- *Better Mnemonics*: Object (j→b), Timeline (k→t), Writing mode (w→m)
+- *Numbered Search*: Consistent 1-5 pattern instead of u/i/o/y/a
+- *Clear Hierarchy*: Lowercase for actions, capitals ONLY for submenus
 
 * Contributing
 

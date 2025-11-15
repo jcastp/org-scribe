@@ -126,57 +126,51 @@ _s_: Setup linking system     _q_: Back to main menu
 ;;;###autoload (autoload 'hydra-writing/body "ui/writing-hydra" nil t)
 (defhydra hydra-writing (:color blue :hint nil)
   "
-^Project^          ^Modes^            ^Capture^             ^Dictionary^          ^Count^            ^Search^
+^Insert^           ^Modes^            ^Capture^          ^Tools^            ^Search^           ^Manage^
 ^^^^^^^^------------------------------------------------------------------------------------------------------------------
-_C_: New chapter   _p_: Project mode  _c_: Note             _r_: RAE dictionary   _n_: Count words   _u_: Find POV
-_S_: New scene     _w_: Writing mode  _h_: Character        _s_: Synonyms         _m_: Add WC props  _i_: Find character
-_O_: Open file     _f_: Focus mode    _l_: Location         _d_: Thesaurus        _t_: Track table   _o_: Find plot
-_P_: Char links    _e_: Editing mode  _j_: Object                                                _y_: Find location
-_L_: Loc links                      _k_: Timeline                                              _a_: Find TODOs
-_T_: Plot threads
+_s_: Scene         _m_: Mode (write)  _n_: Note          _w_: Words count   _1_: POV           _C_: Characters
+_c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table   _2_: Character     _L_: Locations
+_o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_: Plot          _P_: Plot threads
+                   _e_: Editing mode  _b_: oBject        _d_: Dictionary    _4_: Location
+                                      _t_: Timeline      _y_: sYnonyms      _5_: TODOs
                                                                                _q_: Quit
 "
-  ;; Project management
-  ;;("P" writing-create-project "new novel project")
-  ;;("T" writing-create-short-story-project "new short story project")
-  ("C" writing-insert-chapter "insert chapter")
-  ("S" writing-insert-scene "insert scene")
-  ("O" writing-open-project-file "open project file")
+  ;; Insert (most frequent actions get best keys)
+  ("s" writing-insert-scene "insert scene")
+  ("c" writing-insert-chapter "insert chapter")
+  ("o" writing-open-project-file "open project file")
 
   ;; Modes
+  ("m" my-writing-env-mode "writing mode")
   ("p" project-writing-mode "project mode")
-  ("w" my-writing-env-mode "writing mode")
   ("f" my-writing-env-mode-focus "focus mode")
   ("e" writing/editing-mode "editing mode")
 
   ;; Capture functions
-  ("c" writing/capture-to-file "capture note")
+  ("n" writing/capture-to-file "capture note")
   ("h" writing/capture-character "capture character")
   ("l" writing/capture-location "capture location")
-  ("j" writing/capture-object "capture object")
-  ("k" writing/capture-timeline "capture timeline event")
+  ("b" writing/capture-object "capture object")
+  ("t" writing/capture-timeline "capture timeline event")
 
-  ;; Dictionary tools
-  ("r" writing/rae-api-lookup "RAE dictionary")
-  ("s" writing/sinonimo "synonyms")
-  ("d" powerthesaurus-lookup-dwim "thesaurus")
+  ;; Tools
+  ("w" org-context-count-words "count words")
+  ("r" org-tracktable-write "track table")
+  ("a" writing/ews-org-count-words "add word properties")
+  ("d" writing/rae-api-lookup "RAE dictionary")
+  ("y" writing/sinonimo "synonyms")
 
-  ;; Count words
-  ("n" org-context-count-words "count words")
-  ("m" writing/ews-org-count-words "add word properties")
-  ("t" org-tracktable-write "track table")
+  ;; Search (numbered for consistency)
+  ("1" writing/org-find-pov "find by POV")
+  ("2" writing/org-find-character "find by character")
+  ("3" writing/org-find-plot "find by plot")
+  ("4" writing/org-find-location "find by location")
+  ("5" writing/search-todos-recursive "find TODOs")
 
-  ;; Searches
-  ("u" writing/org-find-pov "find POV")
-  ("i" writing/org-find-character "find character")
-  ("o" writing/org-find-plot "find plot")
-  ("y" writing/org-find-location "find location")
-  ("a" writing/search-todos-recursive "find TODOs")
-
-  ;; Properties linking
-  ("P" hydra-writing-characters/body "character links")
+  ;; Manage (linking submenus - capitals only)
+  ("C" hydra-writing-characters/body "character links")
   ("L" hydra-writing-locations/body "location links")
-  ("T" hydra-writing-plot-threads/body "plot thread links")
+  ("P" hydra-writing-plot-threads/body "plot thread links")
 
   ;; Exit
   ("q" nil "quit"))
