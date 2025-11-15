@@ -50,7 +50,7 @@ location heading has a unique ID property."
                           ;; Or is under "Location" or similar heading
                           (save-excursion
                             (org-up-heading-safe)
-                            (string-match-p "Location\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
+                            (string-match-p "Location\\|Ubicación\\|Setting\\|Place\\|Lugar"
                                            (org-get-heading t t t t)))))))
            (when is-location-heading
              (unless (org-id-get)
@@ -96,7 +96,7 @@ Returns list of (NAME . (ID . HEADING-TEXT)) for all locations in the project."
                              (save-excursion
                                (ignore-errors
                                  (org-up-heading-safe)
-                                 (string-match-p "Location\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
+                                 (string-match-p "Location\\|Ubicación\\|Setting\\|Place\\|Lugar"
                                                 (org-get-heading t t t t))))))))
               (when is-location
                 (push (cons name (cons id heading)) result))))

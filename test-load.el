@@ -61,6 +61,9 @@
       (require 'writing-character-links)
       (message "✓ writing-character-links loaded successfully")
 
+      (require 'writing-location-links)
+      (message "✓ writing-location-links loaded successfully")
+
       (require 'writing-export)
       (message "✓ writing-export loaded successfully")
 
