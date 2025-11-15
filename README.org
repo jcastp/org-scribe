@@ -27,6 +27,18 @@
   - Menu-based character selection for scene properties
   - Searches work with both plain text and ID links
   - Stable links that survive character name changes
+- *Location Linking* (NEW in v0.2.1): ID-based links between scenes and location profiles
+  - Same linking system for locations/settings
+  - Jump from scene to detailed location descriptions
+- *Plot Thread Linking* (NEW in v0.2.1): ID-based links for plot threads and subplots
+  - Track main plot and subplots across your novel
+  - Timeline visualization showing plot distribution
+  - Health reports identify plot issues (gaps, low coverage, abandoned threads)
+  - Statistics showing plot thread presence across chapters
+- *Column View Enhancement* (NEW in v0.2.1): Clean property display in org-mode column view
+  - Automatically strips ID link syntax in column view
+  - Shows "Alex" instead of "[[id:abc123][Alex]]"
+  - Works with all linked properties (PoV, Characters, Plot, Location)
 - *Word Counting*: Accurate word counting that excludes Org-mode metadata (comments, properties, drawers)
 - *Progress Tracking*: Daily word count tracking with org-tracktable integration
 - *Writing Modes*: Four mutually exclusive modes for different workflows:
@@ -343,6 +355,167 @@ Press =F8 F8 L= to access:
 
 See [[file:CHARACTER-LINKING.org][Character Linking Guide]] for complete documentation.
 
+** Plot Thread Linking and Analysis
+
+*** Overview
+
+Track your main plot and subplots across your novel using ID-based links. The plot thread system provides visualization, health monitoring, and gap detection to ensure plot threads are properly developed throughout your story.
+
+*** Quick Start
+
+For existing projects:
+1. =M-x writing/setup-plot-thread-links= or press =F8 F8 T s=
+2. Adds unique IDs to all plot threads in =plan/plot.org=
+3. Optionally converts existing scenes to use links
+
+For new plot threads:
+- Plot threads created with =writing/capture-plot-thread= automatically get IDs
+- No manual setup needed!
+
+*** Setting Scene Plot Threads
+
+*Set Scene Plot Threads* (=F8 F8 T p=):
+1. Position on scene heading
+2. Press =F8 F8 T p=
+3. Select plot threads one by one (main plot, subplots)
+4. Press RET to finish
+5. Plot property updated with ID links
+
+*Jump to Plot Thread* (=F8 F8 T j=):
+- Jump from scene to plot thread definition
+- Press =C-c &= to return to scene
+
+*** Plot Thread Analysis
+
+**** Timeline Visualization
+
+Generate a timeline table showing which plot threads appear in which scenes:
+
+1. Add to your manuscript or a separate analysis file:
+   #+begin_example
+   #+BEGIN: plot-thread-timeline
+   #+END:
+   #+end_example
+
+2. Press =C-c C-c= on the #+BEGIN line to generate/update
+
+**Example output:**
+#+begin_example
+| Scene              | Chapter   | Main Plot | Romance Subplot | Mystery Subplot |
+|--------------------+-----------+-----------+-----------------+-----------------|
+| Scene 1 - Opening  | Chapter 1 | ●         |                 | ●               |
+| Scene 2 - Meeting  | Chapter 1 | ●         | ●               |                 |
+| Scene 3 - Discovery| Chapter 2 | ●         |                 | ●               |
+#+end_example
+
+The ● symbol shows where each plot thread appears, making it easy to spot:
+- Threads that appear too frequently (overwhelming)
+- Threads with large gaps (forgotten subplots)
+- Threads that only appear once (abandoned story lines)
+
+**** Health Report
+
+Generate a comprehensive health report for all plot threads:
+
+=M-x writing/plot-thread-report= or press =F8 F8 T r=
+
+This generates a buffer showing:
+- Total plot threads and scenes
+- Per-thread analysis:
+  - Scene count and coverage percentage
+  - First and last appearance
+  - Warnings for potential issues
+
+**Warning indicators:**
+- ⚠️ *Low coverage* (<30% of scenes) - thread may be underdeveloped
+- ⚠️ *Large gap* (>5 consecutive scenes) - thread may be forgotten
+- ⚠️ *Single scene* - thread appears only once, might need expansion
+
+**Example report:**
+#+begin_example
+* Summary
+- Total plot threads: 3
+- Total scenes: 12
+- Scenes with plot threads: 12
+
+* Thread Details
+
+** ✓ Main Plot
+:PROPERTIES:
+:ID: plot-main-001
+:END:
+
+- Scenes: 12 of 12 (100.0%)
+- First appearance: Scene 1 - Opening (Chapter: Chapter 1)
+- Last appearance: Scene 12 - Finale (Chapter: Chapter 4)
+
+** ⚠️ Romance Subplot
+:PROPERTIES:
+:ID: plot-romance-002
+:END:
+
+- Scenes: 3 of 12 (25.0%)
+- First appearance: Scene 2 (Chapter: Chapter 1)
+- Last appearance: Scene 10 (Chapter: Chapter 3)
+
+*Warnings:*
+- ⚠️ Low coverage (25.0%)
+- ⚠️ Gap of 6 scenes
+#+end_example
+
+**** Quick Statistics
+
+Get quick statistics in the minibuffer:
+
+=M-x writing/plot-thread-stats= or press =F8 F8 T S=
+
+Shows:
+- Total threads
+- Total scenes with plot thread tracking
+- Average thread coverage
+- Threads with warnings
+
+*** How It Works
+
+Scene properties change from plain text to ID links:
+
+Before:
+#+begin_example
+:Plot: Main Plot, Romance
+#+end_example
+
+After:
+#+begin_example
+:Plot: [[id:plot-main-001][Main Plot]], [[id:plot-romance-002][Romance]]
+#+end_example
+
+Benefits:
+- Click to navigate to plot thread details in =plan/plot.org=
+- Links survive plot thread renames
+- Timeline and health reports automatically track all scenes
+- Identify plot issues before they become problems
+
+*** Plot Thread Linking Hydra Menu
+
+Press =F8 F8 T= to access:
+- =p= - Set scene plot threads
+- =j= - Jump to plot thread
+- =l= - Link current scene
+- =L= - Link all scenes
+- =i= - Add IDs to threads
+- =s= - Setup linking system
+- =t= - Timeline table (shows how to insert)
+- =r= - Health report
+- =S= - Statistics
+
+*** Best Practices
+
+1. *Use Descriptive Names*: "Main Plot: Hero's Journey" instead of just "A-plot"
+2. *Review Health Reports Regularly*: Check for gaps and low coverage during revisions
+3. *Balance Plot Threads*: Aim for main plot in 80-100% of scenes, subplots in 30-60%
+4. *Track Timeline*: Update timeline table periodically to visualize distribution
+5. *Fix Gaps Early*: If a subplot has a gap >5 scenes, consider adding a scene or removing the thread
+
 ** Search Functions
 
 All search functions are available via the hydra menu (=F8 F8=):
@@ -485,9 +658,9 @@ The hydra menu provides quick access to all functions:
 - =a= - Find TODOs in project
 
 *** Character Linking
-- =L= - Open character linking submenu
+- =P= - Open character linking submenu
 
-From the character linking submenu (=F8 F8 L=):
+From the character linking submenu (=F8 F8 P=):
 - =p= - Set PoV character
 - =c= - Set scene characters
 - =j= - Jump to PoV character
@@ -495,6 +668,30 @@ From the character linking submenu (=F8 F8 L=):
 - =L= - Link all scenes
 - =i= - Add IDs to characters
 - =s= - Setup linking system
+
+*** Location Linking
+- =L= - Open location linking submenu
+
+From the location linking submenu (=F8 F8 L=):
+- =c= - Set scene locations
+- =l= - Link current scene
+- =L= - Link all scenes
+- =i= - Add IDs to locations
+- =s= - Setup linking system
+
+*** Plot Thread Linking
+- =T= - Open plot thread linking submenu
+
+From the plot thread linking submenu (=F8 F8 T=):
+- =p= - Set scene plot threads
+- =j= - Jump to plot thread
+- =l= - Link current scene
+- =L= - Link all scenes
+- =i= - Add IDs to threads
+- =s= - Setup linking system
+- =t= - Timeline table (insert instructions)
+- =r= - Health report
+- =S= - Statistics
 
 * Contributing
 
@@ -518,8 +715,9 @@ GPL-3.0-or-later
 
 ** Version 0.2.1 Changes (NEW)
 
-Version 0.2.1 introduces the *Character Linking System*:
+Version 0.2.1 introduces comprehensive *ID-Based Linking Systems* for characters, locations, and plot threads:
 
+*** Character Linking
 - *ID-Based Character Links*: Link scene properties to character profiles
 - *Automatic ID Creation*: New characters automatically get unique IDs
 - *Menu-Based Selection*: Select characters from completion menus
@@ -529,6 +727,30 @@ Version 0.2.1 introduces the *Character Linking System*:
 - *Backward Compatible*: Works with existing plain text properties
 
 See [[file:CHARACTER-LINKING.org][Character Linking Guide]] for complete documentation and [[file:examples/demo-novel/CHARACTER-LINKING-DEMO.org][Interactive Demo]].
+
+*** Location Linking
+- *ID-Based Location Links*: Link scenes to detailed location/setting descriptions
+- *Same Pattern*: Works identically to character linking
+- *Jump Navigation*: Click location names to jump to world-building details
+- *Menu Selection*: Choose locations from completion menus
+
+*** Plot Thread Linking and Analysis
+- *ID-Based Plot Links*: Track main plot and subplots across your novel
+- *Timeline Visualization*: Dynamic block showing plot distribution across scenes
+- *Health Reports*: Automated analysis identifying plot issues:
+  - Low coverage threads (<30% of scenes)
+  - Large gaps (>5 consecutive scenes without thread)
+  - Single-scene threads (potentially abandoned)
+- *Quick Statistics*: Overview of thread coverage and warnings
+- *Click Navigation*: Jump from scene to plot thread details
+- *Gap Detection*: Identify forgotten subplots before they become problems
+
+*** Column View Enhancement
+- *Clean Display*: Automatically strips ID link syntax in org-mode column view
+- *Transparent*: Shows "Alex" instead of "[[id:abc123][Alex]]"
+- *Universal*: Works for all linked properties (PoV, Characters, Plot, Location)
+- *Preserves Links*: Navigation still works with =C-c C-o=
+- *Optional*: Can be disabled via customization
 
 ** Version 0.2.0 Changes
 
