@@ -85,6 +85,114 @@ sections tagged with 'noexport'."
     ;; Align table once at the end for better performance
     (org-table-align)))
 
+;;; Dynamic Block for Progress Table
+
+;;;###autoload
+(defun org-dblock-write:progress-by-act (params)
+  "Generate a progress table from WORD-OBJECTIVE and WORDCOUNT properties.
+This dynamic block extracts data from headings and auto-calculates progress.
+
+PARAMS is a plist that can contain:
+  :match    - Org match expression (default: \"LEVEL=1+ignore\")
+              Examples: \"LEVEL=1+ignore\" for Acts
+                       \"LEVEL=2+ignore\" for Chapters
+                       \"LEVEL=3+ignore\" for Scenes
+  :title    - Label for the Section column (default: \"Section\")
+
+Usage:
+  #+BEGIN: progress-by-act
+  #+END:
+
+  #+BEGIN: progress-by-act :match \"LEVEL=2/ignore\" :title \"Chapter\"
+  #+END:
+
+The table shows:
+- Section name (extracted from heading)
+- Target (from WORD-OBJECTIVE property)
+- Actual (from WORDCOUNT property)
+- Progress (auto-calculated percentage)
+- TOTAL row with sums and overall progress
+
+Handles missing properties safely:
+- Missing WORD-OBJECTIVE defaults to 0
+- Missing WORDCOUNT defaults to 0
+- Division by zero returns N/A"
+  (interactive)
+
+  ;; Update word counts first
+  (when (featurep 'org-context-extended)
+    (writing/ews-org-count-words))
+
+  (let* ((match (or (plist-get params :match) "LEVEL=1+ignore"))
+         (title (or (plist-get params :title) "Section"))
+         (total-objective 0)
+         (total-actual 0)
+         table-data)
+
+    ;; Collect data from matching headings
+    (org-map-entries
+     (lambda ()
+       (let* ((heading (org-get-heading t t t t))
+              (objective-str (org-entry-get nil "WORD-OBJECTIVE"))
+              (wordcount-str (org-entry-get nil "WORDCOUNT")))
+
+         ;; Only process entries that have WORD-OBJECTIVE property
+         (when objective-str
+           (let* (;; Convert to numbers
+                  (objective (string-to-number objective-str))
+                  (wordcount (if wordcount-str
+                                (string-to-number wordcount-str)
+                                0)))
+
+             ;; Calculate progress percentage (safe division)
+             (let ((progress (if (> objective 0)
+                               (* 100.0 (/ (float wordcount) objective))
+                               nil)))  ; nil indicates N/A
+
+               ;; Accumulate totals
+               (setq total-objective (+ total-objective objective))
+               (setq total-actual (+ total-actual wordcount))
+
+               ;; Store row data
+               (push (list heading objective wordcount progress)
+                     table-data))))))
+     match)
+
+    ;; Calculate total progress (safe division)
+    (let ((total-progress (if (> total-objective 0)
+                             (* 100.0 (/ (float total-actual) total-objective))
+                             nil)))
+
+      ;; Insert table header
+      (insert (format "| %s | Target | Actual | Progress |\n" title))
+      (insert "|---------+--------+--------+----------|\n")
+
+      ;; Insert data rows (reversed to maintain document order)
+      (dolist (row (reverse table-data))
+        (let ((section (nth 0 row))
+              (target (nth 1 row))
+              (actual (nth 2 row))
+              (progress (nth 3 row)))
+          (insert (format "| %s | %6d | %6d | %8s |\n"
+                         section
+                         target
+                         actual
+                         (if progress
+                             (format "%5.0f%%" progress)
+                           "N/A")))))
+
+      ;; Insert total row
+      (insert "|---------+--------+--------+----------|\n")
+      (insert (format "| TOTAL   | %6d | %6d | %8s |\n"
+                     total-objective
+                     total-actual
+                     (if total-progress
+                         (format "%5.0f%%" total-progress)
+                       "N/A"))))
+
+    ;; Align table
+    (org-table-align)))
+
 (provide 'writing-wordcount)
 
 ;;; writing-wordcount.el ends here

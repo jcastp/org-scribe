@@ -60,15 +60,19 @@ Update it with =C-c C-c= on the #+BEGIN line.
 :ID:       54d69a76-1dfe-4595-94a3-6d2fa7ed3856
 :END:
 
-#+NAME: total-progress
+Update this table with =C-c C-c= on the #+BEGIN line.
+This table auto-calculates from WORD-OBJECTIVE and WORDCOUNT properties.
+
+#+BEGIN: progress-by-act :match "LEVEL=1+ignore"
 | Section | Target | Actual | Progress |
 |---------+--------+--------+----------|
 | Act I   |   5000 |    711 |      14% |
-| Act II  |   6000 |    876 |      15% |
-| Act III |   4000 |    515 |      13% |
+| Act II  |   6000 |    277 |       5% |
+| Act III |   4000 |    308 |       8% |
 |---------+--------+--------+----------|
-| TOTAL   |  15000 |   2102 |      19% |
-#+TBLFM: $4='(format "%.0f%%" (* 100 (/ (float $3) $2)));N::@>$2=vsum(@2..@-1)::@>$3=vsum(@2..@-1)
+| TOTAL   |  15000 |   1296 |       9% |
+
+#+END:
 
 ** Daily Word Tracking
 :PROPERTIES:
@@ -112,12 +116,14 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 :PROPERTIES:
 :CUSTOM_ID: act-1
 :WORDCOUNT: 711
+:WORD-OBJECTIVE: 5000
 :ID:       25ed268e-9439-4397-af7b-3562113189dc
 :END:
 
 ** FINISHED Chapter 1 :ignore:
 :PROPERTIES:
 :WORDCOUNT: 447
+:WORD-OBJECTIVE: 1500
 :ID:       3a99edcc-6972-4f98-9cf6-fef5d73fb0e9
 :END:
 
@@ -136,6 +142,7 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 :Emotion: Frustration, anxiety
 :Comment: This scene demonstrates how to use all the metadata properties
 :WORDCOUNT: 167
+:WORD-OBJECTIVE: 500
 :ID:       0ef78704-8216-424a-8a9c-1bd041b0e14c
 :END:
 
@@ -178,6 +185,7 @@ The familiar morning chaos had begun.
 :Emotion: Stress, then curiosity
 :Comment: Note how the scene properties make it easy to search later
 :WORDCOUNT: 280
+:WORD-OBJECTIVE: 500
 :ID:       ab00337f-0342-431c-a44d-b57ad5d4ace8
 :END:
 
@@ -221,6 +229,7 @@ had paused.
 ** TODO Chapter 2 :ignore:
 :PROPERTIES:
 :WORDCOUNT: 264
+:WORD-OBJECTIVE: 1500
 :ID:       64bc3a00-b0a2-4166-a58c-27a94682d171
 :END:
 
@@ -239,6 +248,7 @@ had paused.
 :Emotion: Determination, hope, nostalgia
 :Comment: This introduces the important object (the watch)
 :WORDCOUNT: 264
+:WORD-OBJECTIVE: 500
 :ID:       df8c3837-4e85-4d8f-a775-a435e26cc1b5
 :END:
 
@@ -276,12 +286,14 @@ Tomorrow morning would be different.
 :PROPERTIES:
 :CUSTOM_ID: act-2
 :WORDCOUNT: 277
+:WORD-OBJECTIVE: 6000
 :ID:       cdad6212-34f1-4bf0-b226-3ddecf7ce70f
 :END:
 
 ** TOWRITE Chapter 3 :ignore:
 :PROPERTIES:
 :WORDCOUNT: 269
+:WORD-OBJECTIVE: 1500
 :ID:       72c83287-21b6-4488-b2e6-83c9efa4bb74
 :END:
 
@@ -300,6 +312,7 @@ Tomorrow morning would be different.
 :Emotion: Determination fading to frustration
 :Comment: This scene shows the TOWRITE status - planned but not yet drafted
 :WORDCOUNT: 269
+:WORD-OBJECTIVE: 500
 :ID:       3920e12c-cbda-49a1-bfe3-04a92d4a94e9
 :END:
 
@@ -340,6 +353,7 @@ still hadn't worked.
 ** TOWRITE Chapter 4 - Learning and Adjusting :ignore:
 :PROPERTIES:
 :WORDCOUNT: 8
+:WORD-OBJECTIVE: 1500
 :ID:       065f37ed-f95c-4a18-a8a0-d666dadb1b0d
 :END:
 
@@ -358,6 +372,7 @@ still hadn't worked.
 :Emotion: Vulnerability, relief, insight
 :Comment: This scene has no content yet - just the planning metadata
 :WORDCOUNT: 4
+:WORD-OBJECTIVE: 500
 :ID:       8abad439-d477-41ff-9548-56db3532c1db
 :END:
 
@@ -378,6 +393,7 @@ still hadn't worked.
 :Emotion: Peace, accomplishment, growth
 :Comment: Climax of Act II - the routine actually works
 :WORDCOUNT: 4
+:WORD-OBJECTIVE: 500
 :ID:       691ff06f-b99a-4b6d-8c1a-bd1d2b5146b5
 :END:
 
@@ -387,12 +403,14 @@ still hadn't worked.
 :PROPERTIES:
 :CUSTOM_ID: act-3
 :WORDCOUNT: 308
+:WORD-OBJECTIVE: 4000
 :ID:       78daff4c-02bd-4990-a017-1b5a5678b62c
 :END:
 
 ** TODO Chapter 5 - The New Normal :ignore:
 :PROPERTIES:
 :WORDCOUNT: 308
+:WORD-OBJECTIVE: 1500
 :ID:       79fdf66f-ef42-45c8-9c9c-b474f45c663e
 :END:
 
@@ -411,6 +429,7 @@ still hadn't worked.
 :Emotion: Satisfaction, contentment, generosity
 :Comment: Final scene brings the story full circle
 :WORDCOUNT: 308
+:WORD-OBJECTIVE: 500
 :ID:       0f6858e1-5014-45ec-b3cf-3dec85448e09
 :END:
 

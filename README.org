@@ -228,6 +228,74 @@ Add this to your org file:
 
 Update with =C-c C-c= on the #+BEGIN line.
 
+*** Auto-Calculate Progress Tables
+
+The package can automatically generate progress tables from your word count objectives and actual word counts.
+
+**** Set Word Objectives
+
+Add the =WORD-OBJECTIVE= property to your Acts, Chapters, or Scenes:
+
+#+begin_example
+* Act I :ignore:
+:PROPERTIES:
+:WORDCOUNT: 711
+:WORD-OBJECTIVE: 5000
+:END:
+#+end_example
+
+**** Generate Progress Table
+
+Add this dynamic block to your org file:
+
+#+begin_example
+#+BEGIN: progress-by-act :match "LEVEL=1+ignore"
+#+END:
+#+end_example
+
+Update with =C-c C-c= on the #+BEGIN line.
+
+This generates a table showing:
+- Section name
+- Target (from =WORD-OBJECTIVE= property)
+- Actual (from =WORDCOUNT= property)
+- Progress (auto-calculated percentage)
+- TOTAL row with sums
+
+***** Parameters
+
+- =:match= - Org match expression (default: "LEVEL=1+ignore")
+  - "LEVEL=1+ignore" for Acts
+  - "LEVEL=2+ignore" for Chapters
+  - "LEVEL=3+ignore" for Scenes
+- =:title= - Label for the Section column (default: "Section")
+
+***** Example Output
+
+#+begin_example
+| Section | Target | Actual | Progress |
+|---------+--------+--------+----------|
+| Act I   |   5000 |    711 |      14% |
+| Act II  |   6000 |    876 |      15% |
+| Act III |   4000 |    515 |      13% |
+|---------+--------+--------+----------|
+| TOTAL   |  15000 |   2102 |      14% |
+#+end_example
+
+***** Multi-Level Tracking
+
+You can track progress at different levels:
+
+#+begin_example
+** Progress by Chapter
+#+BEGIN: progress-by-act :match "LEVEL=2+ignore" :title "Chapter"
+#+END:
+
+** Progress by Scene
+#+BEGIN: progress-by-act :match "LEVEL=3+ignore" :title "Scene"
+#+END:
+#+end_example
+
 ** Search Functions
 
 All search functions are available via the hydra menu (=F8 F8=):

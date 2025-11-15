@@ -32,15 +32,18 @@ Actualízala con =C-c C-c= en la línea #+BEGIN.
 
 ** Progreso General por Acto
 
-#+NAME: progreso-total
-| Sección  | Objetivo | Actual | Progreso |
-|----------+----------+--------+----------|
-| Acto I   |    25000 |      0 |       0% |
-| Acto II  |    30000 |      0 |       0% |
-| Acto III |    25000 |      0 |       0% |
-|----------+----------+--------+----------|
-| TOTAL    |    80000 |      0 |       0% |
-#+TBLFM: $4='(format "%.0f%%" (* 100 (/ (float $3) $2)));N::@>$2=vsum(@2..@-1)::@>$3=vsum(@2..@-1)
+Actualiza esta tabla con =C-c C-c= en la línea #+BEGIN.
+Esta tabla se auto-calcula desde las propiedades WORD-OBJECTIVE y WORDCOUNT.
+
+#+BEGIN: progress-by-act :match "LEVEL=1+ignore" :title "Sección"
+| Sección  | Target | Actual | Progress |
+|----------+--------+--------+----------|
+| Acto I   |  25000 |      0 |      N/A |
+| Acto II  |  30000 |      0 |      N/A |
+| Acto III |  25000 |      0 |      N/A |
+|----------+--------+--------+----------|
+| TOTAL    |  80000 |      0 |      N/A |
+#+END:
 
 ** Seguimiento Diario de Palabras
 
@@ -97,15 +100,20 @@ Para registrar tiempo de escritura, usa:
 * Acto I :ignore:
 :PROPERTIES:
 :CUSTOM_ID: acto-1
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 25000
 :END:
 
 ** TODO Capítulo 1 :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
 :END:
 
 *** TODO Escena 1 :ignore:
 :PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 500
 :PoV:
 :Personajes:
 :Trama:
@@ -123,11 +131,15 @@ Para registrar tiempo de escritura, usa:
 * Acto II :ignore:
 :PROPERTIES:
 :CUSTOM_ID: acto-2
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 30000
 :END:
 
 * Acto III :ignore:
 :PROPERTIES:
 :CUSTOM_ID: acto-3
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 25000
 :END:
 
 * Export config :ignore:noexport:

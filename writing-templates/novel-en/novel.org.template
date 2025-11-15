@@ -32,15 +32,18 @@ Update it with =C-c C-c= on the #+BEGIN line.
 
 ** Overall Progress by Act
 
-#+NAME: total-progress
-| Section  | Target | Actual | Progress |
-|----------+--------+--------+----------|
-| Act I    |  25000 |      0 |       0% |
-| Act II   |  30000 |      0 |       0% |
-| Act III  |  25000 |      0 |       0% |
-|----------+--------+--------+----------|
-| TOTAL    |  80000 |      0 |       0% |
-#+TBLFM: $4='(format "%.0f%%" (* 100 (/ (float $3) $2)));N::@>$2=vsum(@2..@-1)::@>$3=vsum(@2..@-1)
+Update this table with =C-c C-c= on the #+BEGIN line.
+This table auto-calculates from WORD-OBJECTIVE and WORDCOUNT properties.
+
+#+BEGIN: progress-by-act :match "LEVEL=1+ignore"
+| Section | Target | Actual | Progress |
+|---------+--------+--------+----------|
+| Act I   |  25000 |      0 |      N/A |
+| Act II  |  30000 |      0 |      N/A |
+| Act III |  25000 |      0 |      N/A |
+|---------+--------+--------+----------|
+| TOTAL   |  80000 |      0 |      N/A |
+#+END:
 
 ** Daily Word Tracking
 
@@ -72,15 +75,20 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 * Act I :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-1
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 25000
 :END:
 
 ** TODO Chapter 1 :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
 :END:
 
 *** TODO Scene 1 :ignore:
 :PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 500
 :PoV:
 :Characters:
 :Plot:
@@ -98,11 +106,15 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 * Act II :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-2
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 30000
 :END:
 
 * Act III :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-3
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 25000
 :END:
 
 * Export config :ignore:noexport:

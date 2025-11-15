@@ -294,7 +294,10 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 :What-is-at-stake:
 :Emotion:
 :Comment:
+:WORD-OBJECTIVE: 500
 :END:
+
+{{{scene-break}}}
 " scene-name))
         (start-pos (point)))
 
@@ -325,6 +328,7 @@ If CHAPTER-NAME is empty, defaults to \"New chapter\"."
   ;; Define and insert template
   (let ((template (format "** TODO %s :ignore:
 :PROPERTIES:
+:WORD-OBJECTIVE: 5000
 :WORDCOUNT: 0
 :END:
 " chapter-name))
