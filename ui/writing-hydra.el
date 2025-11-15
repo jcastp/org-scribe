@@ -52,6 +52,13 @@
 (declare-function writing/link-all-scene-locations "linking/writing-location-links")
 (declare-function writing/add-location-ids "linking/writing-location-links")
 (declare-function writing/setup-location-links "linking/writing-location-links")
+;; manage plot thread related links
+(declare-function writing/set-scene-plot-threads "linking/writing-plot-links")
+(declare-function writing/jump-to-plot-thread "linking/writing-plot-links")
+(declare-function writing/link-scene-plot-threads "linking/writing-plot-links")
+(declare-function writing/link-all-scene-plot-threads "linking/writing-plot-links")
+(declare-function writing/add-plot-thread-ids "linking/writing-plot-links")
+(declare-function writing/setup-plot-thread-links "linking/writing-plot-links")
 
 ;;;###autoload (autoload 'hydra-writing-characters/body "ui/writing-hydra" nil t)
 (defhydra hydra-writing-characters (:color blue :hint nil)
@@ -91,6 +98,25 @@ _q_: Back to main menu
   ("q" hydra-writing/body "back")
   ("Q" nil "quit"))
 
+;;;###autoload (autoload 'hydra-writing-plot-threads/body "ui/writing-hydra" nil t)
+(defhydra hydra-writing-plot-threads (:color blue :hint nil)
+  "
+^Plot Thread Linking^
+^^^^^^^^------------------------------------------------------------
+_p_: Set scene plot threads   _l_: Link scene plot threads
+_j_: Jump to plot thread      _L_: Link all scenes
+_i_: Add IDs to threads       _s_: Setup linking system
+_q_: Back to main menu
+"
+  ("p" writing/set-scene-plot-threads "set plot threads")
+  ("j" writing/jump-to-plot-thread "jump to thread")
+  ("l" writing/link-scene-plot-threads "link scene")
+  ("L" writing/link-all-scene-plot-threads "link all")
+  ("i" writing/add-plot-thread-ids "add IDs")
+  ("s" writing/setup-plot-thread-links "setup system")
+  ("q" hydra-writing/body "back")
+  ("Q" nil "quit"))
+
 ;;;###autoload (autoload 'hydra-writing/body "ui/writing-hydra" nil t)
 (defhydra hydra-writing (:color blue :hint nil)
   "
@@ -101,6 +127,7 @@ _S_: New scene     _w_: Writing mode  _h_: Character        _s_: Synonyms       
 _O_: Open file     _f_: Focus mode    _l_: Location         _d_: Thesaurus        _t_: Track table   _o_: Find plot
 _P_: Char links    _e_: Editing mode  _j_: Object                                                _y_: Find location
 _L_: Loc links                      _k_: Timeline                                              _a_: Find TODOs
+_T_: Plot threads
                                                                                _q_: Quit
 "
   ;; Project management
@@ -143,6 +170,7 @@ _L_: Loc links                      _k_: Timeline                               
   ;; Properties linking
   ("P" hydra-writing-characters/body "character links")
   ("L" hydra-writing-locations/body "location links")
+  ("T" hydra-writing-plot-threads/body "plot thread links")
 
   ;; Exit
   ("q" nil "quit"))

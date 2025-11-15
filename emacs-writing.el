@@ -69,6 +69,7 @@
 ;; character linking system
 (require 'writing-character-links (expand-file-name "linking/writing-character-links" (file-name-directory load-file-name)))
 (require 'writing-location-links (expand-file-name "linking/writing-location-links" (file-name-directory load-file-name)))
+(require 'writing-plot-links (expand-file-name "linking/writing-plot-links" (file-name-directory load-file-name)))
 ;; writing - export
 (require 'writing-export (expand-file-name "export/writing-export" (file-name-directory load-file-name)))
 ;; hydra for better access to common functions

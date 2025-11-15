@@ -1,0 +1,115 @@
+;;; test-plot-links.el --- Tests for plot thread linking system -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2025 Javier Castilla
+
+;;; Commentary:
+
+;; Tests for the plot thread linking module.
+;; Basic functionality tests to ensure the module loads
+;; and core functions are available.
+;;
+;; Note: The helper functions for extracting text from ID links
+;; are tested in test-search-links.el and work for all link types
+;; (characters, locations, and plot threads).
+
+;;; Code:
+
+(require 'ert)
+
+;;; Add paths
+(let ((default-directory (file-name-directory
+                          (or load-file-name buffer-file-name))))
+  (add-to-list 'load-path (expand-file-name "../core" default-directory))
+  (add-to-list 'load-path (expand-file-name "../search" default-directory))
+  (add-to-list 'load-path (expand-file-name "../linking" default-directory))
+  (add-to-list 'load-path (expand-file-name "../capture" default-directory)))
+
+(require 'writing-plot-links)
+
+;;; Module Loading Tests
+
+(ert-deftest test-plot-links-module-loads ()
+  "Test that writing-plot-links module loads without errors."
+  (should (featurep 'writing-plot-links)))
+
+;;; Function Availability Tests
+
+(ert-deftest test-plot-links-functions-defined ()
+  "Test that all public plot thread linking functions are defined."
+  ;; Core functions
+  (should (fboundp 'writing/add-plot-thread-ids))
+  (should (fboundp 'writing/insert-plot-thread-link))
+  (should (fboundp 'writing/insert-multiple-plot-thread-links))
+  (should (fboundp 'writing/set-scene-plot-threads))
+  (should (fboundp 'writing/jump-to-plot-thread))
+
+  ;; Batch operations
+  (should (fboundp 'writing/link-scene-plot-threads))
+  (should (fboundp 'writing/link-all-scene-plot-threads))
+
+  ;; Setup wizard
+  (should (fboundp 'writing/setup-plot-thread-links)))
+
+;;; Helper Function Tests
+
+(ert-deftest test-plot-thread-link-creation ()
+  "Test plot thread link creation with ID alist."
+  (let* ((id-alist '(("Main Plot" . ("plot-main-001" . "Main Plot"))
+                     ("Subplot" . ("plot-sub-001" . "Subplot: Romance"))))
+         (link1 (writing--create-plot-thread-link "Main Plot" id-alist))
+         (link2 (writing--create-plot-thread-link "Subplot" id-alist))
+         (link3 (writing--create-plot-thread-link "Unknown" id-alist)))
+
+    ;; Should create ID link for known thread
+    (should (string= link1 "[[id:plot-main-001][Main Plot]]"))
+    (should (string= link2 "[[id:plot-sub-001][Subplot]]"))
+
+    ;; Should return plain text for unknown thread (fallback)
+    (should (string= link3 "Unknown"))))
+
+(ert-deftest test-plot-thread-name-extraction ()
+  "Test extracting plot thread name from heading."
+  ;; This is a simple wrapper around org functions
+  ;; Just verify it's callable
+  (should (fboundp 'writing--get-plot-thread-name-at-point)))
+
+(ert-deftest test-plot-thread-file-detection ()
+  "Test plot thread file detection."
+  ;; Verify the function exists and is callable
+  (should (fboundp 'writing--get-plot-thread-file))
+
+  ;; The actual behavior depends on project structure
+  ;; which requires a full project setup, so we just
+  ;; verify the function is defined)
+  )
+
+;;; Integration Tests (require project structure)
+
+(ert-deftest test-plot-thread-database-structure ()
+  "Test that plot thread database returns correct structure."
+  ;; The function should return nil if no plot file exists
+  ;; or a list of (NAME . (ID . HEADING)) tuples
+  (let ((result (writing--get-all-plot-threads)))
+    ;; Result should be either nil or a list
+    (should (or (null result)
+                (listp result)))
+
+    ;; If not nil, each element should be a cons cell
+    (when result
+      (dolist (item result)
+        (should (consp item))
+        (should (stringp (car item)))  ; Name is a string
+        (should (consp (cdr item)))     ; (ID . HEADING) is a cons
+        (should (stringp (cadr item)))  ; ID is a string
+        ))))
+
+;;; Run tests
+
+(defun writing-plot-links-run-tests ()
+  "Run all plot thread linking tests."
+  (interactive)
+  (ert "^test-plot-"))
+
+(provide 'test-plot-links)
+
+;;; test-plot-links.el ends here

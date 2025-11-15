@@ -107,6 +107,7 @@ Requires org-ql package to be installed."
 ;;;###autoload
 (defun writing/org-find-plot (term)
   "Show sparse tree of scenes matching TERM in plot property.
+Handles both plain text and ID-link format in properties.
 Requires org-ql package to be installed."
   (interactive "sPlot term: ")
   (when (string-empty-p (string-trim term))
@@ -115,8 +116,8 @@ Requires org-ql package to be installed."
     (user-error "org-ql package is required for search functions"))
   (org-ql-search (current-buffer)
     `(and (heading)
-          (let ((plot (org-entry-get (point) "plot")))
-            (and plot (string-match-p ,term plot))))))
+          (let ((plot (org-entry-get (point) "Plot")))
+            (writing--property-contains-p plot ,term)))))
 
 ;;; Search by Location
 
