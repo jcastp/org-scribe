@@ -38,6 +38,33 @@
 (declare-function writing-insert-scene "templates/writing-project")
 (declare-function writing-insert-chapter "templates/writing-project")
 (declare-function writing-open-project-file "templates/writing-project")
+(declare-function writing/set-pov-character "linking/writing-character-links")
+(declare-function writing/set-scene-characters "linking/writing-character-links")
+(declare-function writing/jump-to-pov-character "linking/writing-character-links")
+(declare-function writing/link-scene-characters "linking/writing-character-links")
+(declare-function writing/link-all-scene-characters "linking/writing-character-links")
+(declare-function writing/add-character-ids "linking/writing-character-links")
+(declare-function writing/setup-character-links "linking/writing-character-links")
+
+;;;###autoload (autoload 'hydra-writing-characters/body "ui/writing-hydra" nil t)
+(defhydra hydra-writing-characters (:color blue :hint nil)
+  "
+^Character Linking^
+^^^^^^^^------------------------------------------------------------
+_p_: Set PoV character      _l_: Link scene characters
+_c_: Set scene characters   _L_: Link all scenes
+_j_: Jump to PoV char       _i_: Add IDs to characters
+_s_: Setup linking system   _q_: Back to main menu
+"
+  ("p" writing/set-pov-character "set PoV")
+  ("c" writing/set-scene-characters "set characters")
+  ("j" writing/jump-to-pov-character "jump to PoV")
+  ("l" writing/link-scene-characters "link scene")
+  ("L" writing/link-all-scene-characters "link all")
+  ("i" writing/add-character-ids "add IDs")
+  ("s" writing/setup-character-links "setup system")
+  ("q" hydra-writing/body "back")
+  ("Q" nil "quit"))
 
 ;;;###autoload (autoload 'hydra-writing/body "ui/writing-hydra" nil t)
 (defhydra hydra-writing (:color blue :hint nil)
@@ -49,7 +76,7 @@ _T_: New story     _w_: Writing mode  _h_: Character        _s_: Synonyms       
 _C_: New chapter   _f_: Focus mode    _l_: Location         _d_: Thesaurus        _t_: Track table   _o_: Find plot
 _S_: New scene     _e_: Editing mode  _j_: Object                                                _y_: Find location
 _O_: Open file                      _k_: Timeline                                              _a_: Find TODOs
-_q_: Quit
+_L_: Char links                                                                               _q_: Quit
 "
   ;; Project management
   ("P" writing-create-project "new novel project")
@@ -87,6 +114,9 @@ _q_: Quit
   ("o" writing/org-find-plot "find plot")
   ("y" writing/org-find-location "find location")
   ("a" writing/search-todos-recursive "find TODOs")
+
+  ;; Character linking
+  ("L" hydra-writing-characters/body "character links")
 
   ;; Exit
   ("q" nil "quit"))

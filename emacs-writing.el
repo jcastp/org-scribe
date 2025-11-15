@@ -66,6 +66,8 @@
 (require 'writing-dictionary (expand-file-name "language/writing-dictionary" (file-name-directory load-file-name)))
 ;; org capture to the writing project
 (require 'writing-capture (expand-file-name "capture/writing-capture" (file-name-directory load-file-name)))
+;; character linking system
+(require 'writing-character-links (expand-file-name "linking/writing-character-links" (file-name-directory load-file-name)))
 ;; writing - export
 (require 'writing-export (expand-file-name "export/writing-export" (file-name-directory load-file-name)))
 ;; hydra for better access to common functions

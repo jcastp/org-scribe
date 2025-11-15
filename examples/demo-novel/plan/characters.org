@@ -4,6 +4,7 @@
 
 * Protagonist
 :PROPERTIES:
+:ID: char-alex-rivera-20251115-001
 :TYPE: Protagonist
 :NAME: Alex Rivera
 :AGE: 28
@@ -63,6 +64,7 @@
 
 ** Sam Chen
 :PROPERTIES:
+:ID: char-sam-chen-20251115-002
 :TYPE: Secondary
 :NAME: Sam Chen
 :ROLE: Mentor/Friend
@@ -97,6 +99,7 @@ Went through a quarter-life crisis himself 4 years ago. Used to be chaotic like 
 
 ** The New Character (Chapter 5)
 :PROPERTIES:
+:ID: char-casey-20251115-003
 :TYPE: Minor
 :NAME: Casey (tentative)
 :ROLE: Symbol of cycle continuing

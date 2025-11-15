@@ -22,6 +22,7 @@
   (add-to-list 'load-path (expand-file-name "search" default-directory))
   (add-to-list 'load-path (expand-file-name "language" default-directory))
   (add-to-list 'load-path (expand-file-name "capture" default-directory))
+  (add-to-list 'load-path (expand-file-name "linking" default-directory))
   (add-to-list 'load-path (expand-file-name "export" default-directory))
   (add-to-list 'load-path (expand-file-name "ui" default-directory)))
 
@@ -56,6 +57,9 @@
 
       (require 'writing-capture)
       (message "✓ writing-capture loaded successfully")
+
+      (require 'writing-character-links)
+      (message "✓ writing-character-links loaded successfully")
 
       (require 'writing-export)
       (message "✓ writing-export loaded successfully")

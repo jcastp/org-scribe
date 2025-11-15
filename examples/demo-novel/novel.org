@@ -109,8 +109,8 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 
 *** FINISHED Scene 1 - The Alarm :ignore:
 :PROPERTIES:
-:PoV: Alex
-:Characters: Alex
+:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
+:Characters: [[id:char-alex-rivera-20251115-001][Alex]]
 :Plot: Introduction, Inciting Incident
 :Timeline: Day 1, 6:30 AM
 :Location: Alex's Apartment - Bedroom
@@ -120,7 +120,7 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 :Conflict-source: Alex vs. self-discipline
 :What-is-at-stake: Being late to work again
 :Emotion: Frustration, anxiety
-:Comment: This scene demonstrates how to use all the metadata properties
+:Comment: This scene demonstrates how to use all the metadata properties. Character links added for demo!
 :WORDCOUNT: 167
 :WORD-OBJECTIVE: 500
 :ID:       0ef78704-8216-424a-8a9c-1bd041b0e14c
@@ -152,8 +152,8 @@ The familiar morning chaos had begun.
 
 *** FINISHED Scene 2 - Coffee Shop Encounter :ignore:
 :PROPERTIES:
-:PoV: Alex
-:Characters: Alex, Sam
+:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
+:Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]]
 :Plot: Introduction of mentor figure
 :Timeline: Day 1, 7:45 AM
 :Location: Corner Coffee Shop
@@ -163,7 +163,7 @@ The familiar morning chaos had begun.
 :Conflict-source: Alex's rush vs. Sam's calm
 :What-is-at-stake: Alex's composure before the meeting
 :Emotion: Stress, then curiosity
-:Comment: Note how the scene properties make it easy to search later
+:Comment: Click on Alex or Sam to jump to their character profiles!
 :WORDCOUNT: 280
 :WORD-OBJECTIVE: 500
 :ID:       ab00337f-0342-431c-a44d-b57ad5d4ace8
@@ -279,8 +279,8 @@ Tomorrow morning would be different.
 
 *** TOWRITE Scene 1 - First Attempt :ignore:
 :PROPERTIES:
-:PoV: Alex
-:Characters: Alex
+:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
+:Characters: [[id:char-alex-rivera-20251115-001][Alex]]
 :Plot: First try at routine
 :Timeline: Day 2, 6:00 AM
 :Location: Alex's Apartment
@@ -290,7 +290,7 @@ Tomorrow morning would be different.
 :Conflict-source: Old habits vs. new intentions
 :What-is-at-stake: Alex's commitment to change
 :Emotion: Determination fading to frustration
-:Comment: This scene shows the TOWRITE status - planned but not yet drafted
+:Comment: Character linking works even for single-character scenes!
 :WORDCOUNT: 269
 :WORD-OBJECTIVE: 500
 :ID:       3920e12c-cbda-49a1-bfe3-04a92d4a94e9
@@ -396,8 +396,8 @@ still hadn't worked.
 
 *** TODO Scene 1 - Full Circle :ignore:
 :PROPERTIES:
-:PoV: Alex
-:Characters: Alex, Sam, New Character
+:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
+:Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]], [[id:char-casey-20251115-003][Casey]]
 :Plot: Resolution, new beginning
 :Timeline: Day 30, 7:00 AM
 :Location: Corner Coffee Shop
@@ -407,7 +407,7 @@ still hadn't worked.
 :Conflict-source: None - resolution
 :What-is-at-stake: Nothing - this is about showing growth
 :Emotion: Satisfaction, contentment, generosity
-:Comment: Final scene brings the story full circle
+:Comment: All three characters now have ID links - try clicking on them!
 :WORDCOUNT: 308
 :WORD-OBJECTIVE: 500
 :ID:       0f6858e1-5014-45ec-b3cf-3dec85448e09

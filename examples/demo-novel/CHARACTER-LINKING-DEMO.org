@@ -1,0 +1,550 @@
+#+TITLE: Character Linking Demo - Interactive Walkthrough
+#+AUTHOR: emacs-writing
+#+DATE: 2025-11-15
+#+STARTUP: overview
+
+* Welcome to the Character Linking Demo!
+
+This demo shows the ID-based character linking system in action using the "Morning Routine" demo novel.
+
+** What This Demo Demonstrates
+
+- Character profiles with unique IDs
+- Scenes with ID-based character links
+- How to navigate between scenes and character profiles
+- How to use the character linking functions
+
+** What Was Changed
+
+This demo project has been enhanced with character linking:
+
+1. **Characters file** (plan/characters.org):
+   - Added unique IDs to all three characters
+   - Alex Rivera: ~char-alex-rivera-20251115-001~
+   - Sam Chen: ~char-sam-chen-20251115-002~
+   - Casey: ~char-casey-20251115-003~
+
+2. **Novel file** (novel.org):
+   - Converted 4 scenes to use ID-based character links
+   - Scene 1-1: Alex alone
+   - Scene 1-2: Alex and Sam
+   - Scene 2-1: Alex alone
+   - Scene 3-1: Alex, Sam, and Casey
+
+* Quick Demo - Try These Now!
+
+** 1. Navigate from Scene to Character
+
+1. Open ~novel.org~
+2. Go to **Scene 2 - Coffee Shop Encounter** (around line 153)
+3. Look at the properties:
+   #+BEGIN_EXAMPLE
+   :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
+   :Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]]
+   #+END_EXAMPLE
+
+4. **Try clicking on a character link:**
+   - Position cursor on "Alex" or "Sam"
+   - Press ~C-c C-o~ (or click with mouse)
+   - You jump to their character profile!
+
+5. **Return to the scene:**
+   - Press ~C-c &~ to go back
+
+** 2. Jump to PoV Character
+
+1. In ~novel.org~, position on any scene heading
+2. Press ~F8 F8 L j~ (or ~M-x writing/jump-to-pov-character~)
+3. Instantly jumps to the PoV character's profile
+4. Press ~C-c &~ to return
+
+** 3. View All Scenes With a Character
+
+1. Open the main hydra: ~F8 F8~
+2. Press ~i~ for "Find character"
+3. Type "Sam" and press Enter
+4. See all scenes featuring Sam Chen
+5. Click on any result to jump to that scene
+
+* Interactive Tutorial
+
+** Tutorial 1: Understanding Character Links
+
+*** Step 1: View a Character Profile
+
+Open ~plan/characters.org~ and look at Sam Chen (around line 65):
+
+#+BEGIN_EXAMPLE
+** Sam Chen
+:PROPERTIES:
+:ID: char-sam-chen-20251115-002
+:TYPE: Secondary
+:NAME: Sam Chen
+:ROLE: Mentor/Friend
+:AGE: 32
+:GENDER: Male (he/him)
+:END:
+#+END_EXAMPLE
+
+The ~:ID:~ property is the unique identifier for this character.
+
+*** Step 2: See How It's Referenced
+
+Open ~novel.org~ and go to Scene 2 (around line 153). In the properties:
+
+#+BEGIN_EXAMPLE
+:Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]]
+#+END_EXAMPLE
+
+Notice:
+- ~[[id:char-sam-chen-20251115-002][Sam]]~ is an ID link
+- The ID matches Sam's ID in the characters file
+- "Sam" is just the display text
+- The actual link uses the ID (won't break if you rename the heading)
+
+*** Step 3: Test the Link
+
+1. Position cursor on "Sam" in the :Characters: property
+2. Press ~C-c C-o~
+3. You're taken to Sam's full character profile!
+4. Read about Sam's personality, role, backstory
+5. Press ~C-c &~ to return to the scene
+
+** Tutorial 2: Using the Hydra Menu
+
+*** Access the Character Linking Menu
+
+1. Press ~F8 F8~ to open the main hydra menu
+2. Press ~L~ to enter the Character Linking submenu
+
+You'll see:
+#+BEGIN_EXAMPLE
+^Character Linking^
+------------------------------------------------------------
+p: Set PoV character      l: Link scene characters
+c: Set scene characters   L: Link all scenes
+j: Jump to PoV char       i: Add IDs to characters
+s: Setup linking system   q: Back to main menu
+#+END_EXAMPLE
+
+*** Try Each Function
+
+**** Jump to PoV Character (j)
+
+1. In novel.org, position on "Scene 2 - Coffee Shop Encounter"
+2. Press ~F8 F8 L j~
+3. Jumps to Alex's character profile
+4. Press ~C-c &~ to return
+
+**** Set PoV Character (p)
+
+Let's add a PoV to one of the scenes that doesn't have links yet:
+
+1. Go to **Scene 1 - The Decision** (around line 217)
+2. Notice the properties currently show:
+   #+BEGIN_EXAMPLE
+   :PoV: Alex
+   #+END_EXAMPLE
+
+3. Position cursor on the scene heading
+4. Press ~F8 F8 L p~
+5. You get a menu: "Select PoV character:"
+6. Type "Alex" (you can use completion)
+7. Press Enter
+
+The PoV property is now updated to:
+#+BEGIN_EXAMPLE
+:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
+#+END_EXAMPLE
+
+**** Set Scene Characters (c)
+
+Let's add character links to the Characters property:
+
+1. Still on **Scene 1 - The Decision**
+2. Press ~F8 F8 L c~
+3. You get a menu: "Select character:"
+4. Type "Alex" and press Enter
+5. Menu appears again - you can add more
+6. Press RET (Enter) without typing to finish
+
+The Characters property is now updated with ID links!
+
+** Tutorial 3: Working with Multiple Characters
+
+*** Scene with Multiple Characters
+
+Go to **Scene 1 - Full Circle** (around line 397):
+
+#+BEGIN_EXAMPLE
+:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
+:Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]], [[id:char-casey-20251115-003][Casey]]
+#+END_EXAMPLE
+
+This scene has three characters!
+
+*** Navigate to Each Character
+
+Try clicking on each character name:
+1. Click on "Alex" → Alex's full profile
+2. ~C-c &~ to return
+3. Click on "Sam" → Sam's profile
+4. ~C-c &~ to return
+5. Click on "Casey" → Casey's profile
+6. ~C-c &~ to return
+
+*** Add Multiple Characters at Once
+
+Try the multi-select function on a different scene:
+
+1. Go to **Scene 1 - Coffee Talk** (around line 340)
+2. Currently shows: ~:Characters: Alex, Sam~
+3. Press ~F8 F8 L c~
+4. Select "Alex" → Enter
+5. Select "Sam" → Enter
+6. Press Enter to finish
+7. Both characters now have ID links!
+
+** Tutorial 4: Batch Operations
+
+*** Convert a Single Scene
+
+If you have a scene with plain text character names:
+
+1. Position on the scene heading
+2. Press ~F8 F8 L l~ (lowercase L)
+3. The function scans the PoV and Characters properties
+4. Converts plain text names to ID links
+5. Message: "Updated PoV and Characters properties"
+
+*** Convert All Scenes at Once
+
+To update your entire novel:
+
+1. Open ~novel.org~
+2. Press ~F8 F8 L L~ (uppercase L)
+3. Scans all scenes in the file
+4. Converts all character names to ID links
+5. Message shows how many scenes were updated
+
+* Understanding the Before and After
+
+** Before Character Linking
+
+Plain text character references:
+
+#+BEGIN_EXAMPLE
+*** Scene 2 - Coffee Shop Encounter
+:PROPERTIES:
+:PoV: Alex
+:Characters: Alex, Sam
+:END:
+#+END_EXAMPLE
+
+**Limitations:**
+- Can't click to navigate
+- No connection to character database
+- Breaks if you rename the character
+- Manual lookup required
+
+** After Character Linking
+
+ID-based links:
+
+#+BEGIN_EXAMPLE
+*** Scene 2 - Coffee Shop Encounter
+:PROPERTIES:
+:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
+:Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]]
+:END:
+#+END_EXAMPLE
+
+**Benefits:**
+- Click to navigate (C-c C-o)
+- Direct connection to character database
+- Survives character renames
+- Quick reference to all character info
+
+* Advanced Demo Features
+
+** Search Integration
+
+Character linking works with search functions:
+
+1. Press ~F8 F8 i~ - Find character
+2. Type "Sam"
+3. See all scenes with Sam
+4. Results show the linked scenes
+5. Click any result to jump there
+
+** Working with the Characters Database
+
+*** View All Characters
+
+Open ~plan/characters.org~ and explore:
+
+1. **Protagonist section** (line 5)
+   - Full character development for Alex
+   - Personality, background, arc, relationships
+
+2. **Secondary Characters** (line 63)
+   - Sam Chen with detailed profile
+   - Development notes from beta readers
+
+3. **Minor Characters** (line 100)
+   - Casey (The New Character)
+   - Placeholder for final scene
+
+*** Add a New Character
+
+Try adding a new character with automatic ID:
+
+1. Press ~F8 F8 h~ (Capture character)
+2. Fill in the prompts:
+   - Name: "Jordan Martinez"
+   - Role: "Supporting"
+   - Age: 30
+   - Gender: "she/her"
+3. Fill in the template sections
+4. Press ~C-c C-c~ to finalize
+
+An ID is **automatically created** via the capture template!
+
+When you view the character in plan/characters.org, you'll see:
+#+BEGIN_EXAMPLE
+** Jordan Martinez
+:PROPERTIES:
+:ID: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+:Role: Supporting
+:Age: 30
+:Gender: she/her
+:END:
+#+END_EXAMPLE
+
+The ~:ID:~ property is generated automatically - you never have to create IDs manually!
+
+*** Use the New Character in a Scene
+
+1. Go to any scene in novel.org
+2. Press ~F8 F8 L c~ (Set scene characters)
+3. Your new character "Jordan Martinez" appears in the menu!
+4. Select it to add the ID link
+
+** Cross-Reference Workflow
+
+Here's a complete workflow using character linking:
+
+1. **Planning Stage:**
+   - Create characters with ~F8 F8 h~
+   - IDs are auto-created
+
+2. **Writing Stage:**
+   - Insert scene with ~F8 F8 S~
+   - Set PoV with ~F8 F8 L p~
+   - Set characters with ~F8 F8 L c~
+   - Write the scene
+
+3. **Reference While Writing:**
+   - Need to check character voice?
+   - Press ~F8 F8 L j~
+   - Review character profile
+   - Press ~C-c &~ to return
+   - Continue writing
+
+4. **Revision Stage:**
+   - Find all scenes with character: ~F8 F8 i~
+   - Check consistency
+   - Jump between scenes and profiles
+
+* Comparison: With and Without Linking
+
+** Scenario: You Rename a Character
+
+*** Without Linking
+
+If you rename "Alex Rivera" to "Alex Chen":
+
+1. Change the heading in characters.org
+2. Manually search novel.org for "Alex"
+3. Update each scene property manually
+4. Miss some references
+5. Broken searches
+6. Inconsistent data
+
+*** With Linking
+
+If you rename "Alex Rivera" to "Alex Chen":
+
+1. Change the heading in characters.org
+2. **That's it!** All links still work
+3. The ID hasn't changed
+4. All scenes automatically reference the new name
+5. Searches still work
+6. Everything stays consistent
+
+** Scenario: Checking Character Consistency
+
+*** Without Linking
+
+You want to review all Alex scenes:
+
+1. Use search to find "Alex"
+2. Get false positives (words containing "alex")
+3. Manually check each result
+4. Try to remember character details
+5. Open characters.org separately
+6. Switch back and forth
+
+*** With Linking
+
+You want to review all Alex scenes:
+
+1. Press ~F8 F8 i~
+2. Type "Alex"
+3. See all scenes with Alex (precise)
+4. Click on scene to review
+5. Press ~F8 F8 L j~ to see character details
+6. Press ~C-c &~ to return
+7. Repeat for next scene
+
+* Tips and Best Practices
+
+** When to Use Character Linking
+
+✓ **Always link:**
+- PoV characters
+- Main characters in each scene
+- Recurring characters
+
+✗ **Don't need to link:**
+- Crowd members ("the barista", "a passerby")
+- Very minor one-time characters
+- Generic references
+
+** Keyboard Shortcuts to Remember
+
+| Keys | Action |
+|------+--------|
+| ~F8 F8 L~ | Character linking menu |
+| ~F8 F8 L p~ | Set PoV |
+| ~F8 F8 L c~ | Set characters |
+| ~F8 F8 L j~ | Jump to PoV |
+| ~C-c C-o~ | Follow link |
+| ~C-c &~ | Go back |
+| ~F8 F8 i~ | Find character |
+
+** Workflow Tips
+
+1. **Set up once:** Run ~F8 F8 L s~ on existing projects
+2. **Use menu selection:** Faster than typing IDs manually
+3. **Jump frequently:** Use ~F8 F8 L j~ while writing scenes
+4. **Batch convert:** Use ~F8 F8 L L~ after importing old scenes
+5. **Check consistency:** Use ~F8 F8 i~ during revision
+
+* Troubleshooting Demo
+
+** If Links Don't Work
+
+Try these in order:
+
+1. **Check the ID exists:**
+   - Open plan/characters.org
+   - Find the character
+   - Verify ~:ID:~ property exists
+
+2. **Update ID database:**
+   - Run ~M-x org-id-update-id-locations~
+   - Wait for completion
+   - Try the link again
+
+3. **Verify link format:**
+   - Link should look like: ~[[id:SOME-ID][Name]]~
+   - Check for typos in the ID
+
+** If Character Doesn't Appear in Menu
+
+1. Open plan/characters.org
+2. Find the character heading
+3. Run ~M-x org-id-get-create~
+4. Save the file
+5. Try the menu again
+
+* Next Steps
+
+** Explore the Demo
+
+- Open ~novel.org~ and try all the scenes
+- Click on every character link
+- Use ~F8 F8 L j~ on different scenes
+- Add a new character and use it
+
+** Apply to Your Projects
+
+1. **Existing project:**
+   - Run ~M-x writing/setup-character-links~
+   - Follow the prompts
+   - Your project is upgraded!
+
+2. **New project:**
+   - Create with ~F8 F8 P~
+   - Add characters with ~F8 F8 h~
+   - IDs are automatic!
+
+** Learn More
+
+- Read [[file:../../CHARACTER-LINKING.org][Character Linking Guide]] for complete documentation
+- Check [[file:../../character-links.org][Technical Analysis]] for implementation details
+- Review [[file:../../CLAUDE.md][CLAUDE.md]] for developer info
+
+* Demo Files Reference
+
+** Files Modified for This Demo
+
+1. **plan/characters.org**
+   - Line 7: Alex Rivera ID added
+   - Line 67: Sam Chen ID added
+   - Line 102: Casey ID added
+
+2. **novel.org**
+   - Line 112: Scene 1-1 - Alex link
+   - Line 155: Scene 1-2 - Alex & Sam links
+   - Line 282: Scene 2-1 - Alex link
+   - Line 399: Scene 3-1 - Alex, Sam & Casey links
+
+** Original vs. Demo
+
+You can compare:
+- **Original**: See ~examples/demo-short-story/~ for plain text version
+- **Demo**: This project (~examples/demo-novel/~) with character linking
+
+* Feedback and Support
+
+** Found a Bug?
+
+- Report at: https://codeberg.org/jcastp/emacs-writing/issues
+- Include: What you tried, what happened, what you expected
+
+** Feature Requests
+
+- Open an issue describing your use case
+- Explain how it would improve your workflow
+
+** Questions?
+
+- Check the main [[file:../../CHARACTER-LINKING.org][Character Linking Guide]]
+- Review the troubleshooting section
+- Ask in the issues if still stuck
+
+* Demo Summary
+
+You've learned:
+- ✓ How character IDs work
+- ✓ How to navigate with character links
+- ✓ How to use the hydra menu (F8 F8 L)
+- ✓ How to set PoV and Characters with menus
+- ✓ How to batch convert scenes
+- ✓ How character linking improves your workflow
+
+**Try it yourself!** Open ~novel.org~ and start clicking on character links. The best way to learn is by doing.
+
+Happy writing! 📝

@@ -318,6 +318,7 @@ file that doesn't exist."
      (file+headline writing/capture-character-file "Characters")
      "** %^{Character Name}
 :PROPERTIES:
+:ID: %(org-id-new)
 :Role: %^{Role|Protagonist|Antagonist|Supporting|Minor}
 :Age: %^{Age}
 :Gender: %^{Gender}

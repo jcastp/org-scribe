@@ -21,6 +21,12 @@
 - *Git Integration*: Projects automatically initialized with git
 
 *** Writing Tools
+- *Character Linking* (NEW in v0.2.1): ID-based links between scenes and character profiles
+  - Automatic ID creation for captured characters
+  - Click character names in scene properties to jump to full profiles
+  - Menu-based character selection for scene properties
+  - Searches work with both plain text and ID links
+  - Stable links that survive character name changes
 - *Word Counting*: Accurate word counting that excludes Org-mode metadata (comments, properties, drawers)
 - *Progress Tracking*: Daily word count tracking with org-tracktable integration
 - *Writing Modes*: Four mutually exclusive modes for different workflows:
@@ -28,7 +34,7 @@
   - Focus mode with buffer narrowing
   - Project navigation mode (with treemacs and imenu-list)
   - Three-pane editing layout
-- *Search Functions*: Find scenes by POV, character, location, or plot keywords using org-ql
+- *Search Functions*: Find scenes by POV, character, location, or plot keywords using org-ql (handles ID links)
 - *Dictionary Tools*: Spanish RAE dictionary API, synonym lookup, and translation support
 - *Capture System*: Project-aware note capture that finds the right notes file
 - *Export Filters*: Scene break replacement for different export backends
@@ -259,6 +265,84 @@ Add the =WORD-OBJECTIVE= property to your Acts, Chapters, or Scenes to enable au
 
 When you update the word count table (with =C-c C-c= on the #+BEGIN line), progress percentages will be automatically calculated for any section that has a =WORD-OBJECTIVE= property.
 
+** Character Linking
+
+*** Overview
+
+Link character names in scene properties directly to their full profiles in =plan/characters.org=. Click on character names to jump to detailed character information!
+
+*** Quick Start
+
+For existing projects:
+1. =M-x writing/setup-character-links= or press =F8 F8 L s=
+2. Adds unique IDs to all characters
+3. Optionally converts existing scenes to use links
+
+For new characters:
+- Characters created with =writing/capture-character= (F8 F8 h) automatically get IDs
+- No manual setup needed!
+
+*** Setting Scene Characters
+
+*Set PoV Character* (=F8 F8 L p=):
+1. Position on scene heading
+2. Press =F8 F8 L p=
+3. Select character from menu
+4. PoV property updated with ID link
+
+*Set Scene Characters* (=F8 F8 L c=):
+1. Position on scene heading
+2. Press =F8 F8 L c=
+3. Select characters one by one
+4. Press RET to finish
+5. Characters property updated with ID links
+
+*** Navigation
+
+*Jump to PoV Character* (=F8 F8 L j=):
+- Instantly jump from scene to PoV character's full profile
+- Press =C-c &= to return to scene
+
+*Click Any Character Link*:
+- Position cursor on character name in properties
+- Press =C-c C-o= (or click with mouse)
+- Jumps to character profile
+
+*** How It Works
+
+Scene properties change from plain text to ID links:
+
+Before:
+#+begin_example
+:PoV: Alex
+:Characters: Alex, Sam
+#+end_example
+
+After:
+#+begin_example
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-sam-chen-002][Sam]]
+#+end_example
+
+Benefits:
+- Click to navigate to character profiles
+- Links survive character renames
+- Searches still work (automatic extraction)
+- Quick reference while writing
+
+*** Character Linking Hydra Menu
+
+Press =F8 F8 L= to access:
+- =p= - Set PoV character
+- =c= - Set scene characters
+- =j= - Jump to PoV character
+- =l= - Link current scene
+- =L= - Link all scenes
+- =i= - Add IDs to characters
+- =s= - Setup linking system
+
+See [[file:CHARACTER-LINKING.org][Character Linking Guide]] for complete documentation.
+
 ** Search Functions
 
 All search functions are available via the hydra menu (=F8 F8=):
@@ -269,17 +353,19 @@ All search functions are available via the hydra menu (=F8 F8=):
 - =y=: Find scenes by location
 - =a=: Find all TODO items in project
 
-These searches use org properties. Example:
+These searches use org properties and work with both plain text and ID links:
 
 #+begin_example
 * Chapter 1
 :PROPERTIES:
-:POV: Alice
-:Characters: Alice, Bob, Carol
-:location: Coffee Shop
-:plot: First meeting
+:PoV: [[id:char-alice-001][Alice]]
+:Characters: [[id:char-alice-001][Alice]], [[id:char-bob-002][Bob]]
+:Location: Coffee Shop
+:Plot: First meeting
 :END:
 #+end_example
+
+Searching for "Alice" finds this scene even with ID links!
 
 ** Dictionary Tools
 
@@ -398,6 +484,18 @@ The hydra menu provides quick access to all functions:
 - =y= - Find scenes by location
 - =a= - Find TODOs in project
 
+*** Character Linking
+- =L= - Open character linking submenu
+
+From the character linking submenu (=F8 F8 L=):
+- =p= - Set PoV character
+- =c= - Set scene characters
+- =j= - Jump to PoV character
+- =l= - Link current scene
+- =L= - Link all scenes
+- =i= - Add IDs to characters
+- =s= - Setup linking system
+
 * Contributing
 
 Contributions are welcome! Please:
@@ -417,6 +515,20 @@ GPL-3.0-or-later
 - Issues: https://codeberg.org/jcastp/emacs-writing/issues
 - Dependencies: [[https://codeberg.org/jcastp/org-context-extended][org-context-extended]] (smart word counting)
 - Dependencies: [[https://codeberg.org/jcastp/org-tracktable][org-tracktable]] (progress tracking)
+
+** Version 0.2.1 Changes (NEW)
+
+Version 0.2.1 introduces the *Character Linking System*:
+
+- *ID-Based Character Links*: Link scene properties to character profiles
+- *Automatic ID Creation*: New characters automatically get unique IDs
+- *Menu-Based Selection*: Select characters from completion menus
+- *Click Navigation*: Click character names to jump to full profiles
+- *Smart Searches*: Search functions work with both plain text and ID links
+- *Batch Operations*: Convert entire projects at once
+- *Backward Compatible*: Works with existing plain text properties
+
+See [[file:CHARACTER-LINKING.org][Character Linking Guide]] for complete documentation and [[file:examples/demo-novel/CHARACTER-LINKING-DEMO.org][Interactive Demo]].
 
 ** Version 0.2.0 Changes
 

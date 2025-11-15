@@ -19,11 +19,23 @@ from neighbor Sam, Alex learns to find balance between structure and flexibility
 This demo project showcases the features of the emacs-writing package, including:
 - Scene and chapter organization with metadata
 - Character development tracking
+- **NEW! ID-based character linking** (see [[file:CHARACTER-LINKING-DEMO.org][Character Linking Demo]])
 - Location and world-building
 - Plot structure planning
 - Word count tracking
 - Timeline management
 - And much more!
+
+** 🆕 Character Linking Demo
+
+This project demonstrates the new **ID-based character linking system**!
+
+- Click on character names in scene properties to jump to their profiles
+- Navigate seamlessly between scenes and character database
+- Menu-based character selection for scene properties
+- Automatic ID creation for new characters
+
+👉 **[[file:CHARACTER-LINKING-DEMO.org][Try the Interactive Character Linking Demo]]** to learn how it works!
 
 ** Writing Goals
 - [X] Complete project planning
