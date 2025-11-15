@@ -38,6 +38,7 @@
 (declare-function writing-insert-scene "templates/writing-project")
 (declare-function writing-insert-chapter "templates/writing-project")
 (declare-function writing-open-project-file "templates/writing-project")
+;; manage character related links
 (declare-function writing/set-pov-character "linking/writing-character-links")
 (declare-function writing/set-scene-characters "linking/writing-character-links")
 (declare-function writing/jump-to-pov-character "linking/writing-character-links")
@@ -45,6 +46,12 @@
 (declare-function writing/link-all-scene-characters "linking/writing-character-links")
 (declare-function writing/add-character-ids "linking/writing-character-links")
 (declare-function writing/setup-character-links "linking/writing-character-links")
+;; manage location related links
+(declare-function writing/set-scene-locations "linking/writing-location-links")
+(declare-function writing/link-scene-locations "linking/writing-location-links")
+(declare-function writing/link-all-scene-locations "linking/writing-location-links")
+(declare-function writing/add-location-ids "linking/writing-location-links")
+(declare-function writing/setup-location-links "linking/writing-location-links")
 
 ;;;###autoload (autoload 'hydra-writing-characters/body "ui/writing-hydra" nil t)
 (defhydra hydra-writing-characters (:color blue :hint nil)
@@ -66,21 +73,39 @@ _s_: Setup linking system   _q_: Back to main menu
   ("q" hydra-writing/body "back")
   ("Q" nil "quit"))
 
+;;;###autoload (autoload 'hydra-writing-locations/body "ui/writing-hydra" nil t)
+(defhydra hydra-writing-locations (:color blue :hint nil)
+  "
+^Location Linking^
+^^^^^^^^------------------------------------------------------------
+_c_: Set scene locations   _l_: Link scene locations
+_i_: Add IDs to locations  _L_: Link all scenes
+_s_: Setup linking system
+_q_: Back to main menu
+"
+  ("c" writing/set-scene-locations "set locations")
+  ("l" writing/link-scene-locations "link scene")
+  ("L" writing/link-all-scene-locations "link all")
+  ("i" writing/add-location-ids "add IDs")
+  ("s" writing/setup-location-links "setup system")
+  ("q" hydra-writing/body "back")
+  ("Q" nil "quit"))
+
 ;;;###autoload (autoload 'hydra-writing/body "ui/writing-hydra" nil t)
 (defhydra hydra-writing (:color blue :hint nil)
   "
 ^Project^          ^Modes^            ^Capture^             ^Dictionary^          ^Count^            ^Search^
 ^^^^^^^^------------------------------------------------------------------------------------------------------------------
-_P_: New novel     _p_: Project mode  _c_: Note             _r_: RAE dictionary   _n_: Count words   _u_: Find POV
-_T_: New story     _w_: Writing mode  _h_: Character        _s_: Synonyms         _m_: Add WC props  _i_: Find character
-_C_: New chapter   _f_: Focus mode    _l_: Location         _d_: Thesaurus        _t_: Track table   _o_: Find plot
-_S_: New scene     _e_: Editing mode  _j_: Object                                                _y_: Find location
-_O_: Open file                      _k_: Timeline                                              _a_: Find TODOs
-_L_: Char links                                                                               _q_: Quit
+_C_: New chapter   _p_: Project mode  _c_: Note             _r_: RAE dictionary   _n_: Count words   _u_: Find POV
+_S_: New scene     _w_: Writing mode  _h_: Character        _s_: Synonyms         _m_: Add WC props  _i_: Find character
+_O_: Open file     _f_: Focus mode    _l_: Location         _d_: Thesaurus        _t_: Track table   _o_: Find plot
+_P_: Char links    _e_: Editing mode  _j_: Object                                                _y_: Find location
+_L_: Loc links                      _k_: Timeline                                              _a_: Find TODOs
+                                                                               _q_: Quit
 "
   ;; Project management
-  ("P" writing-create-project "new novel project")
-  ("T" writing-create-short-story-project "new short story project")
+  ;;("P" writing-create-project "new novel project")
+  ;;("T" writing-create-short-story-project "new short story project")
   ("C" writing-insert-chapter "insert chapter")
   ("S" writing-insert-scene "insert scene")
   ("O" writing-open-project-file "open project file")
@@ -115,8 +140,9 @@ _L_: Char links                                                                 
   ("y" writing/org-find-location "find location")
   ("a" writing/search-todos-recursive "find TODOs")
 
-  ;; Character linking
-  ("L" hydra-writing-characters/body "character links")
+  ;; Properties linking
+  ("P" hydra-writing-characters/body "character links")
+  ("L" hydra-writing-locations/body "location links")
 
   ;; Exit
   ("q" nil "quit"))

@@ -354,6 +354,7 @@ file that doesn't exist."
      (file+headline writing/capture-location-file "Locations")
      "** %^{Location Name}
 :PROPERTIES:
+:ID: %(org-id-new)
 :Type: %^{Type|City|Building|Room|Natural|Region|Country}
 :Importance: %^{Importance|Major|Supporting|Minor}
 :First-appearance: %^{First Appearance Chapter}
