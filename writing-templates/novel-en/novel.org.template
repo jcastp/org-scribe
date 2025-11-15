@@ -45,6 +45,13 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 |---+------------------+-------+-----+---------------+---------|
 #+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
 
+** Plot Thread Analysis
+*** Timeline
+#+BEGIN: plot-thread-timeline
+| Scene     | Chapter   | Main Plot | Subplot 1 |
+|-----------+-----------+-----------+-----------|
+#+END:
+
 * Quick Navigation :ignore:noexport:
 - [[file:README.org][README - Project Overview]]
 - [[file:plan/characters.org][Characters]]
