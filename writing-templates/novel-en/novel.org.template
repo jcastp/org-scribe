@@ -46,10 +46,27 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 #+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
 
 ** Plot Thread Analysis
-*** Timeline
+
+This table shows which plot threads appear in which scenes.
+Update with =C-c C-c= on the #+BEGIN line.
+
+For detailed health reports, use =M-x writing/plot-thread-report=.
+For quick statistics, use =M-x writing/plot-thread-stats=.
+
 #+BEGIN: plot-thread-timeline
-| Scene     | Chapter   | Main Plot | Subplot 1 |
-|-----------+-----------+-----------+-----------|
+#+END:
+
+** Character Timeline
+
+This table shows which characters appear in which scenes.
+
+Symbols:
+- ◆ = Point of View character
+- ● = Present in scene
+
+Update with =C-c C-c= on the #+BEGIN line.
+
+#+BEGIN: character-timeline
 #+END:
 
 * Quick Navigation :ignore:noexport:

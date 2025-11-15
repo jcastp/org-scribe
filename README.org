@@ -516,6 +516,136 @@ Press =F8 F8 T= to access:
 4. *Track Timeline*: Update timeline table periodically to visualize distribution
 5. *Fix Gaps Early*: If a subplot has a gap >5 scenes, consider adding a scene or removing the thread
 
+** Character Timeline
+
+*** Overview
+
+Track character appearances across your novel using a visual timeline. See at a glance which characters appear in which scenes, who has the PoV, and identify coverage gaps.
+
+*** Quick Start
+
+Character timeline uses the existing character properties you're already setting:
+
+1. Tag scenes with character information (using ID links or plain text):
+   #+begin_example
+   :PoV: [[id:char-alice-001][Alice]]
+   :Characters: [[id:char-alice-001][Alice]], [[id:char-bob-002][Bob]]
+   #+end_example
+
+2. Add timeline block to your =novel.org= (already in template):
+   #+begin_example
+   #+BEGIN: character-timeline
+   #+END:
+   #+end_example
+
+3. Press =C-c C-c= on the #+BEGIN line to generate/update
+
+*** Reading the Timeline
+
+**Symbols**:
+- ◆ = Character is the Point of View character (implies presence)
+- ● = Character is present in the scene (not PoV)
+- (blank) = Character is not present
+
+**Example**:
+#+begin_example
+| Scene              | Chapter   | Alice | Bob | Charlie |
+|--------------------+-----------+-------+-----+---------|
+| Scene 1 - Opening  | Chapter 1 | ◆     | ●   |         |
+| Scene 2 - Meeting  | Chapter 1 | ●     |     | ●       |
+| Scene 3 - Conflict | Chapter 2 | ◆     | ●   | ●       |
+#+end_example
+
+**Interpretation**:
+- Alice: PoV in scenes 1 and 3, present (not PoV) in scene 2
+- Bob: Present in scenes 1 and 3, absent from scene 2
+- Charlie: Appears in scenes 2 and 3, absent from scene 1
+
+*** Use Cases
+
+1. **Character Coverage**: "Is my protagonist appearing enough?"
+   - Check main character appears in 80-100% of scenes
+   - Identify extended absences
+
+2. **PoV Balance** (Multi-POV Novels): "Am I favoring one viewpoint too much?"
+   - Scan ◆ symbols across characters
+   - Ensure balanced distribution
+   - Verify alternating pattern (if desired)
+
+3. **Gap Detection**: "Did I forget about this character?"
+   - Spot large gaps (>10 scenes without appearance)
+   - Identify forgotten supporting characters
+   - Plan reintroduction scenes
+
+4. **Character Arc Tracking**: "Is the character development well-distributed?"
+   - See all scenes featuring specific character
+   - Verify arc scenes span appropriate chapters
+   - Check character appears in key moments
+
+5. **Relationship Tracking**: "When do these characters interact?"
+   - Find rows where both characters have symbols
+   - Frequency of joint appearances
+   - Last interaction
+
+*** How It Works
+
+The timeline automatically:
+- Extracts character names from `:PoV:` and `:Characters:` properties
+- Handles both plain text and ID links (extracts display text)
+- Shows only characters who appear in at least one scene
+- Sorts characters alphabetically for easy location
+- Distinguishes PoV from other appearances
+
+If a character is PoV and also in Characters property, only ◆ is shown (PoV implies presence).
+
+*** Best Practices
+
+1. **Consistent Tagging**: Always set both PoV and Characters properties for complete tracking
+
+2. **Main vs. Supporting**:
+   - Main characters: Should appear in 60-100% of scenes
+   - Supporting characters: 20-50% coverage is normal
+   - Minor characters: <20% is fine
+
+3. **Update Regularly**:
+   - After writing each chapter
+   - Before planning next chapter (identify gaps)
+   - During revision (overall balance check)
+
+4. **PoV Distribution** (Multi-POV):
+   - Aim for minimum scenes per PoV character per act
+   - Check PoV distribution is intentional
+   - Avoid accidental PoV dominance
+
+5. **Balance with Plot Timeline**:
+   - Character timeline shows *who*
+   - Plot timeline shows *what*
+   - Use both for complete picture
+
+*** Example Workflow
+
+**Scenario**: Revising Act II, checking supporting character "Eve"
+
+1. Open =novel.org= in Progress Tracking section
+2. Find Character Timeline table
+3. Press =C-c C-c= to update
+4. Scan Eve column:
+   #+begin_example
+   | Scene 5  | Ch 3 |   |   | ● |   |
+   | Scene 6  | Ch 3 |   |   |   |   |  ← Gap starts
+   | Scene 7  | Ch 4 |   |   |   |   |
+   | Scene 8  | Ch 4 |   |   | ● |   |  ← Gap ends (3 scenes)
+   #+end_example
+5. Notice: Eve has a 3-scene gap (scenes 6-7)
+6. Decision: Add Eve to Scene 7 for continuity
+7. Update Scene 7 properties:
+   #+begin_example
+   :Characters: Alice, Bob, Eve
+   #+end_example
+8. Re-generate timeline to verify
+
+**Result**: Eve's gap reduced, better presence continuity
+
 ** Search Functions
 
 All search functions are available via the hydra menu (=F8 F8=):

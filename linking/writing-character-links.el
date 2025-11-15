@@ -380,6 +380,129 @@ in an existing project."
 
   (message "Character linking system setup complete!"))
 
+;;; Character Timeline
+
+;;; Helper Functions for Timeline
+
+(defun writing--get-all-scenes-with-characters ()
+  "Return list of all scenes with PoV or Characters properties.
+Each entry is (SCENE-HEADING CHAPTER-HEADING POV-NAME CHARACTERS-LIST).
+POV-NAME is a string (or nil if no PoV).
+CHARACTERS-LIST is a list of character names (or nil if no Characters)."
+  (let ((novel-file (plist-get (writing-project-structure) :novel-file))
+        scenes)
+    (when (and novel-file (file-exists-p novel-file))
+      (with-current-buffer (find-file-noselect novel-file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (org-map-entries
+          (lambda ()
+            (when (= (org-current-level) 3)  ; Scenes are level 3
+              (let* ((heading (org-get-heading t t t t))
+                     (chapter (save-excursion
+                               (outline-up-heading 1)
+                               (org-get-heading t t t t)))
+                     (pov-prop (org-entry-get nil "PoV"))
+                     (chars-prop (org-entry-get nil "Characters")))
+                ;; Include scene if it has PoV OR Characters
+                (when (or pov-prop chars-prop)
+                  ;; Extract display text from ID links
+                  (require 'writing-search)
+                  (let ((pov-name (when pov-prop
+                                   (writing--extract-link-text pov-prop)))
+                        (chars-list (when chars-prop
+                                     (writing--property-to-list chars-prop))))
+                    (push (list heading chapter pov-name chars-list) scenes))))))
+          nil 'file))))
+    (nreverse scenes)))
+
+(defun writing--collect-unique-characters (scenes)
+  "Extract unique character names from SCENES list.
+SCENES format: ((SCENE CHAPTER POV CHARS-LIST) ...).
+Returns sorted list of unique character names."
+  (let ((characters (make-hash-table :test 'equal)))
+    (dolist (scene scenes)
+      (let ((pov (nth 2 scene))
+            (chars-list (nth 3 scene)))
+        ;; Add PoV character
+        (when (and pov (not (string-empty-p pov)))
+          (puthash pov t characters))
+        ;; Add all Characters
+        (when chars-list
+          (dolist (char chars-list)
+            (when (not (string-empty-p char))
+              (puthash char t characters))))))
+    ;; Return sorted list
+    (sort (hash-table-keys characters) #'string<)))
+
+(defun writing--character-symbol (char-name pov-name chars-list)
+  "Return symbol for CHAR-NAME in a scene.
+POV-NAME is the scene's PoV character (or nil).
+CHARS-LIST is list of other characters in scene.
+Returns:
+  ◆ if character is PoV (implies presence)
+  ● if character is in chars-list but not PoV
+  empty string if character not present"
+  (cond
+   ;; PoV character - show ◆ (diamond, implies presence)
+   ((and pov-name (string= char-name pov-name))
+    "◆")
+   ;; Present in Characters list - show ● (circle)
+   ((and chars-list (member char-name chars-list))
+    "●")
+   ;; Not present - empty
+   (t "")))
+
+;;; Dynamic Block: Character Timeline
+
+;;;###autoload
+(defun org-dblock-write:character-timeline (params)
+  "Generate timeline showing character appearances across scenes.
+Shows which characters appear in which scenes, with distinction
+between PoV characters and other appearances.
+
+Symbols:
+  ◆ = PoV character (implies presence)
+  ● = Present in scene (not PoV)
+  (blank) = Not present
+
+Character information is extracted from :PoV: and :Characters: properties.
+Character names are extracted from ID links like [[id:...][Name]].
+
+PARAMS are ignored (reserved for future filtering options)."
+  (let* ((scenes (writing--get-all-scenes-with-characters))
+         (characters (writing--collect-unique-characters scenes)))
+
+    (if (null scenes)
+        (insert "No scenes with character properties found.\n")
+      ;; Generate org table
+      ;; Header row
+      (insert "| Scene | Chapter |")
+      (dolist (char characters)
+        (insert (format " %s |" char)))
+      (insert "\n")
+
+      ;; Separator row
+      (insert "|-------+---------+")
+      (dolist (_ characters)
+        (insert "--------+"))
+      (insert "\n")
+
+      ;; Data rows
+      (dolist (scene scenes)
+        (let ((scene-name (nth 0 scene))
+              (chapter (nth 1 scene))
+              (pov-name (nth 2 scene))
+              (chars-list (nth 3 scene)))
+          (insert (format "| %s | %s |" scene-name chapter))
+          (dolist (char characters)
+            (let ((symbol (writing--character-symbol char pov-name chars-list)))
+              (insert (format " %s |" symbol))))
+          (insert "\n")))
+
+      ;; Align table
+      (org-table-align))))
+
 (provide 'writing-character-links)
 
 ;;; writing-character-links.el ends here

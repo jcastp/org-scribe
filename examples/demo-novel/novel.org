@@ -76,6 +76,48 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 |---+---------------+-------+------+---------------+------------|
 #+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
 
+** Plot Thread Analysis
+
+This table shows which plot threads appear in which scenes.
+Update with =C-c C-c= on the #+BEGIN line.
+
+For detailed health reports, use =M-x writing/plot-thread-report=.
+For quick statistics, use =M-x writing/plot-thread-stats=.
+
+#+BEGIN: plot-thread-timeline
+| Scene                     | Chapter   | Main Plot | Romance | Professional |
+|---------------------------+-----------+-----------+---------+--------------|
+| Scene 1 - The Alarm       | Chapter 1 | ●         |         | ●            |
+| Scene 2 - Coffee Shop Encounter | Chapter 1 | ●         | ●       | ●            |
+| Scene 1 - The Decision    | Chapter 2 | ●         |         | ●            |
+| Scene 1 - First Attempt   | Chapter 3 | ●         | ●       | ●            |
+| Scene 1 - Coffee Talk     | Chapter 4 | ●         | ●       |              |
+| Scene 2 - Finding Balance | Chapter 4 | ●         |         | ●            |
+| Scene 1 - Full Circle     | Chapter 5 | ●         | ●       | ●            |
+#+END:
+
+** Character Timeline
+
+This table shows which characters appear in which scenes.
+
+Symbols:
+- ◆ = Point of View character
+- ● = Present in scene
+
+Update with =C-c C-c= on the #+BEGIN line.
+
+#+BEGIN: character-timeline
+| Scene                     | Chapter   | Alex Rivera | Jordan Lee | Sam Chen |
+|---------------------------+-----------+-------------+------------+----------|
+| Scene 1 - The Alarm       | Chapter 1 | ◆           |            |          |
+| Scene 2 - Coffee Shop Encounter | Chapter 1 | ◆           |            | ●        |
+| Scene 1 - The Decision    | Chapter 2 | ◆           |            |          |
+| Scene 1 - First Attempt   | Chapter 3 | ◆           | ●          | ●        |
+| Scene 1 - Coffee Talk     | Chapter 4 | ◆           |            | ●        |
+| Scene 2 - Finding Balance | Chapter 4 | ◆           | ●          |          |
+| Scene 1 - Full Circle     | Chapter 5 | ◆           | ●          | ●        |
+#+END:
+
 * Quick Navigation :ignore:noexport:
 :PROPERTIES:
 :WORDCOUNT: 0

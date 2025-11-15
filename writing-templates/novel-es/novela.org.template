@@ -70,6 +70,30 @@ Para registrar tiempo de escritura, usa:
 *** Racha actual
 - Días consecutivos escribiendo :: 0
 
+** Análisis de Tramas
+
+Esta tabla muestra qué hilos argumentales aparecen en cada escena.
+Actualiza con =C-c C-c= en la línea #+BEGIN.
+
+Para reportes detallados de salud, usa =M-x writing/plot-thread-report=.
+Para estadísticas rápidas, usa =M-x writing/plot-thread-stats=.
+
+#+BEGIN: plot-thread-timeline
+#+END:
+
+** Línea Temporal de Personajes
+
+Esta tabla muestra qué personajes aparecen en cada escena.
+
+Símbolos:
+- ◆ = Personaje con Punto de Vista
+- ● = Presente en la escena
+
+Actualiza con =C-c C-c= en la línea #+BEGIN.
+
+#+BEGIN: character-timeline
+#+END:
+
 * Quick Navigation :ignore:noexport:
 - [[file:README.org][README - Project Overview]]
 - [[file:plan/personajes.org][Personajes]]
