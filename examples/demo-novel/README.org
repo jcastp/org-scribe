@@ -34,9 +34,9 @@ This demo project showcases the features of the emacs-writing package, including
 - [ ] Submission/Publication
 
 ** Project Structure
-- [[file:novel.org][novel.org]] - Main manuscript file
+- [[file:novel.org][novel.org]] - Main manuscript file with progress tracking
 - [[file:revision.org][revision.org]] - Editing notes and feedback
-- [[file:statistics.org][statistics.org]] - Word count tracking
+- [[file:writing-journal.org][writing-journal.org]] - Reflective writing journal
 - [[file:plan/characters.org][plan/characters.org]] - Character profiles
 - [[file:plan/locations.org][plan/locations.org]] - Location descriptions
 - [[file:plan/objects.org][plan/objects.org]] - Important objects

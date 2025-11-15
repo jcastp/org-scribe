@@ -136,9 +136,9 @@ This creates a complete project structure:
 #+begin_example
 MyNovel/
 ├── README.org              # Project overview and status
-├── novel.org              # Main manuscript
+├── novel.org              # Main manuscript with progress tracking
 ├── revision.org           # Revision tracking
-├── statistics.org         # Progress and time tracking
+├── writing-journal.org    # Reflective writing journal
 ├── plan/                  # Planning documents
 │   ├── characters.org
 │   ├── locations.org
@@ -290,9 +290,9 @@ When exporting, scene breaks will be replaced with appropriate separators for ea
 project-root/
 ├── .writing-project       # Project marker file
 ├── README.org            # Project overview
-├── novel.org             # Main manuscript (or novela.org for Spanish)
+├── novel.org             # Main manuscript with progress tracking (or novela.org for Spanish)
 ├── revision.org          # Revision tracking
-├── statistics.org        # Progress tracking
+├── writing-journal.org   # Reflective writing journal (or diario-escritura.org for Spanish)
 ├── plan/                 # Planning documents
 │   ├── characters.org    # Character profiles
 │   ├── locations.org     # World building

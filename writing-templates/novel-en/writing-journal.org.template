@@ -1,0 +1,75 @@
+#+TITLE: ${TITLE} - Writing Journal
+#+AUTHOR: ${AUTHOR}
+#+STARTUP: overview
+
+* About This Journal
+
+This journal is a space for qualitative reflections on your creative process.
+Use it to document insights, challenges, breakthroughs, and lessons learned.
+
+For quantitative tracking (word counts, daily progress), see [[file:novel.org][novel.org]].
+
+* Session Notes
+
+** ${DATE}
+:PROPERTIES:
+:SESSION-START:
+:SESSION-END:
+:WORDS-WRITTEN:
+:MOOD:
+:END:
+
+*** What I worked on
+
+*** Progress & Challenges
+
+*** Next Session Goals
+
+* Monthly Reviews
+
+** Month 1 - ${DATE}
+
+*** What went well
+
+*** What was difficult
+
+*** Lessons learned
+
+*** Goals for next month
+
+* Writing Experiments
+
+Track new techniques, styles, or approaches you're trying.
+
+** Experiment 1
+:PROPERTIES:
+:DATE: ${DATE}
+:TECHNIQUE:
+:RESULT:
+:END:
+
+*** Description
+
+*** Outcome
+
+*** Will I use this again?
+
+* Breakthroughs & Insights
+
+** ${DATE}
+
+* Challenges & How I Overcame Them
+
+** ${DATE}
+
+* Character Development Journey
+
+Notes on how your understanding of characters evolved during writing.
+
+* Plot Evolution
+
+How the plot changed from your initial plan.
+
+* Process Notes
+
+Reflections on your writing habits, productivity patterns, what works for you.

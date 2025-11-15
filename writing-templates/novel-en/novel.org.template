@@ -7,22 +7,48 @@
 #+COLUMNS: %40ITEM(Task) %12WORDCOUNT %12PoV %20Plot %40Summary %40Comment
 #+MACRO: scene-break SCENE-BREAK
 
-* stats :ignore:noexport:
+* Project Goals :ignore:noexport:
+
+- Total word target :: 80,000
+- Start date :: ${DATE}
+- Target completion date ::
+- Daily word target :: 1,000
+
+* Progress Tracking :ignore:noexport:
+
+** Word Count by Section
 :PROPERTIES:
 :WORDCOUNT: 0
 :END:
-# This shows your word count by sections:
-# Table to keep track of the words by section
+
+This table shows your word count by sections.
+Update it with =C-c C-c= on the #+BEGIN line.
+
 #+BEGIN: org-generate-wordcount-table
 | Heading       | Wordcount |
 |---------------+-----------|
 |               |           |
 #+END:
 
-# If you want to track here a daily word count, you can use the
-# =org-tracktable-insert-table= command with an empty line at point.
-# For more details, check the [[https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org][org-tracktable documentation]] at
-# https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
+** Overall Progress by Act
+
+#+NAME: total-progress
+| Section  | Target | Actual | Progress |
+|----------+--------+--------+----------|
+| Act I    |  25000 |      0 |       0% |
+| Act II   |  30000 |      0 |       0% |
+| Act III  |  25000 |      0 |       0% |
+|----------+--------+--------+----------|
+| TOTAL    |  80000 |      0 |       0% |
+#+TBLFM: $4='(format "%.0f%%" (* 100 (/ (float $3) $2)));N::@>$2=vsum(@2..@-1)::@>$3=vsum(@2..@-1)
+
+** Daily Word Tracking
+
+If you want to track here a daily word count, you can use the
+=org-tracktable-insert-table= command with an empty line at point.
+For more details, check the [[https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org][org-tracktable documentation]] at
+https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
+
 #+NAME: tracktable
 |---+------------------+-------+-----+---------------+---------|
 | * | date             | start | end | total (today) | comment |
@@ -41,7 +67,7 @@
 - [[file:notes/notes.org][General Notes]]
 - [[file:notes/research.org][Research]]
 - [[file:revision.org][Revision and Feedback]]
-- [[file:statistics.org][Statistics]]
+- [[file:writing-journal.org][Writing Journal]]
 
 * Act I :ignore:
 :PROPERTIES:

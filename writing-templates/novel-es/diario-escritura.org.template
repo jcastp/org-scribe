@@ -1,0 +1,75 @@
+#+TITLE: ${TITLE} - Diario de Escritura
+#+AUTHOR: ${AUTHOR}
+#+STARTUP: overview
+
+* Sobre Este Diario
+
+Este diario es un espacio para reflexiones cualitativas sobre tu proceso creativo.
+Úsalo para documentar ideas, desafíos, avances y lecciones aprendidas.
+
+Para el seguimiento cuantitativo (conteo de palabras, progreso diario), consulta [[file:novela.org][novela.org]].
+
+* Notas de Sesión
+
+** ${DATE}
+:PROPERTIES:
+:INICIO-SESION:
+:FIN-SESION:
+:PALABRAS-ESCRITAS:
+:ESTADO-ANIMO:
+:END:
+
+*** En qué trabajé
+
+*** Progreso y Desafíos
+
+*** Objetivos para la Próxima Sesión
+
+* Revisiones Mensuales
+
+** Mes 1 - ${DATE}
+
+*** Qué fue bien
+
+*** Qué fue difícil
+
+*** Lecciones aprendidas
+
+*** Objetivos para el próximo mes
+
+* Experimentos de Escritura
+
+Rastrea nuevas técnicas, estilos o enfoques que estás probando.
+
+** Experimento 1
+:PROPERTIES:
+:FECHA: ${DATE}
+:TECNICA:
+:RESULTADO:
+:END:
+
+*** Descripción
+
+*** Resultado
+
+*** ¿Lo volveré a usar?
+
+* Avances e Ideas
+
+** ${DATE}
+
+* Desafíos y Cómo Los Superé
+
+** ${DATE}
+
+* Viaje de Desarrollo de Personajes
+
+Notas sobre cómo evolucionó tu comprensión de los personajes durante la escritura.
+
+* Evolución de la Trama
+
+Cómo cambió la trama desde tu plan inicial.
+
+* Notas de Proceso
+
+Reflexiones sobre tus hábitos de escritura, patrones de productividad, qué funciona para ti.

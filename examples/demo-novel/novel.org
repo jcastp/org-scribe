@@ -7,13 +7,32 @@
 #+COLUMNS: %40ITEM(Task) %12WORDCOUNT %12PoV %30Characters %20Plot %40Summary %40Comment
 #+MACRO: scene-break SCENE-BREAK
 
-* stats :ignore:noexport:
+* Project Goals :ignore:noexport:
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       6de7cad2-cc97-479d-83fd-64e87b69770c
+:END:
+
+- Total word target :: 15,000
+- Start date :: 2025-01-15
+- Target completion date :: 2025-03-15
+- Daily word target :: 500
+
+* Progress Tracking :ignore:noexport:
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       17f232d0-e0e6-43bd-8bb8-997d57343808
+:END:
+
+** Word Count by Section
 :PROPERTIES:
 :WORDCOUNT: 0
 :ID:       12629909-9619-4ea6-bcf6-ab6c437ecd32
 :END:
-# This shows your word count by sections:
-# Table to keep track of the words by section
+
+This table shows your word count by sections.
+Update it with =C-c C-c= on the #+BEGIN line.
+
 #+BEGIN: org-generate-wordcount-table
 | Heading                               | Wordcount |
 |---------------------------------------+-----------|
@@ -35,10 +54,33 @@
 
 #+END:
 
-# If you want to track here a daily word count, you can use the
-# =org-tracktable-insert-table= command with an empty line at point.
-# For more details, check the [[https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org][org-tracktable documentation]] at
-# https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
+** Overall Progress by Act
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       54d69a76-1dfe-4595-94a3-6d2fa7ed3856
+:END:
+
+#+NAME: total-progress
+| Section | Target | Actual | Progress |
+|---------+--------+--------+----------|
+| Act I   |   5000 |    711 |      14% |
+| Act II  |   6000 |    876 |      15% |
+| Act III |   4000 |    515 |      13% |
+|---------+--------+--------+----------|
+| TOTAL   |  15000 |   2102 |      19% |
+#+TBLFM: $4='(format "%.0f%%" (* 100 (/ (float $3) $2)));N::@>$2=vsum(@2..@-1)::@>$3=vsum(@2..@-1)
+
+** Daily Word Tracking
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       9a871edc-d412-49bc-952a-c7fd1236630b
+:END:
+
+If you want to track here a daily word count, you can use the
+=org-tracktable-insert-table= command with an empty line at point.
+For more details, check the [[https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org][org-tracktable documentation]] at
+https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
+
 #+NAME: tracktable
 |---+---------------+-------+------+---------------+------------|
 | * |          date | start |  end | total (today) | comment    |
@@ -64,7 +106,7 @@
 - [[file:notes/notes.org][General Notes]]
 - [[file:notes/research.org][Research]]
 - [[file:revision.org][Revision and Feedback]]
-- [[file:statistics.org][Statistics]]
+- [[file:writing-journal.org][Writing Journal]]
 
 * Act I :ignore:
 :PROPERTIES:
