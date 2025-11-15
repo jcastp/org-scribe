@@ -67,6 +67,9 @@
       (require 'writing-plot-links)
       (message "✓ writing-plot-links loaded successfully")
 
+      (require 'writing-column-view)
+      (message "✓ writing-column-view loaded successfully")
+
       (require 'writing-export)
       (message "✓ writing-export loaded successfully")
 
