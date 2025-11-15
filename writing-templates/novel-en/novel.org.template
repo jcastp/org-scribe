@@ -61,7 +61,7 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 :PROPERTIES:
 :CUSTOM_ID: act-1
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 25000
+:WORD-OBJECTIVE: 20000
 :END:
 
 ** TODO Chapter 1 :ignore:
@@ -92,14 +92,14 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 :PROPERTIES:
 :CUSTOM_ID: act-2
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 30000
+:WORD-OBJECTIVE: 40000
 :END:
 
 * Act III :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-3
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 25000
+:WORD-OBJECTIVE: 20000
 :END:
 
 * Export config :ignore:noexport:

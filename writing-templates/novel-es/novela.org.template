@@ -86,7 +86,7 @@ Para registrar tiempo de escritura, usa:
 :PROPERTIES:
 :CUSTOM_ID: acto-1
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 25000
+:WORD-OBJECTIVE: 20000
 :END:
 
 ** TODO Capítulo 1 :ignore:
@@ -117,14 +117,14 @@ Para registrar tiempo de escritura, usa:
 :PROPERTIES:
 :CUSTOM_ID: acto-2
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 30000
+:WORD-OBJECTIVE: 40000
 :END:
 
 * Acto III :ignore:
 :PROPERTIES:
 :CUSTOM_ID: acto-3
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 25000
+:WORD-OBJECTIVE: 20000
 :END:
 
 * Export config :ignore:noexport:
