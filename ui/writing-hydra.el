@@ -59,6 +59,8 @@
 (declare-function writing/link-all-scene-plot-threads "linking/writing-plot-links")
 (declare-function writing/add-plot-thread-ids "linking/writing-plot-links")
 (declare-function writing/setup-plot-thread-links "linking/writing-plot-links")
+(declare-function writing/plot-thread-report "linking/writing-plot-links")
+(declare-function writing/plot-thread-stats "linking/writing-plot-links")
 
 ;;;###autoload (autoload 'hydra-writing-characters/body "ui/writing-hydra" nil t)
 (defhydra hydra-writing-characters (:color blue :hint nil)
@@ -101,12 +103,13 @@ _q_: Back to main menu
 ;;;###autoload (autoload 'hydra-writing-plot-threads/body "ui/writing-hydra" nil t)
 (defhydra hydra-writing-plot-threads (:color blue :hint nil)
   "
-^Plot Thread Linking^
+^Plot Thread Linking^       ^Analysis^
 ^^^^^^^^------------------------------------------------------------
-_p_: Set scene plot threads   _l_: Link scene plot threads
-_j_: Jump to plot thread      _L_: Link all scenes
-_i_: Add IDs to threads       _s_: Setup linking system
-_q_: Back to main menu
+_p_: Set scene plot threads   _t_: Timeline table
+_j_: Jump to plot thread      _r_: Health report
+_l_: Link scene plot threads  _S_: Statistics
+_L_: Link all scenes          _i_: Add IDs to threads
+_s_: Setup linking system     _q_: Back to main menu
 "
   ("p" writing/set-scene-plot-threads "set plot threads")
   ("j" writing/jump-to-plot-thread "jump to thread")
@@ -114,6 +117,9 @@ _q_: Back to main menu
   ("L" writing/link-all-scene-plot-threads "link all")
   ("i" writing/add-plot-thread-ids "add IDs")
   ("s" writing/setup-plot-thread-links "setup system")
+  ("t" (lambda () (interactive) (message "Insert '#+BEGIN: plot-thread-timeline' then press C-c C-c")) "timeline")
+  ("r" writing/plot-thread-report "health report")
+  ("S" writing/plot-thread-stats "statistics")
   ("q" hydra-writing/body "back")
   ("Q" nil "quit"))
 

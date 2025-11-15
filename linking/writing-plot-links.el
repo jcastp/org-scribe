@@ -382,6 +382,262 @@ in an existing project."
 
   (message "Plot thread linking system setup complete!"))
 
+;;; Phase 2: Timeline and Reporting Functions
+
+;;; Helper Functions for Analysis
+
+(defun writing--get-all-scenes-with-plots ()
+  "Return list of all scenes with Plot properties.
+Each entry is (SCENE-HEADING CHAPTER-HEADING PLOT-THREADS-LIST)."
+  (let ((novel-file (plist-get (writing-project-structure) :novel-file))
+        scenes)
+    (when (and novel-file (file-exists-p novel-file))
+      (with-current-buffer (find-file-noselect novel-file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (org-map-entries
+          (lambda ()
+            (when (= (org-current-level) 3)  ; Scenes are level 3
+              (let* ((heading (org-get-heading t t t t))
+                     (chapter (save-excursion
+                               (outline-up-heading 1)
+                               (org-get-heading t t t t)))
+                     (plot-prop (org-entry-get nil "Plot")))
+                (when plot-prop
+                  ;; Extract thread names from ID links
+                  (let ((thread-list (writing--property-to-list plot-prop)))
+                    (push (list heading chapter thread-list) scenes))))))
+          nil 'file))))
+    (nreverse scenes)))
+
+(defun writing--find-thread-in-scenes (thread-name scenes)
+  "Find all SCENES containing THREAD-NAME.
+Returns list of scene entries."
+  (seq-filter (lambda (scene)
+                (member thread-name (nth 2 scene)))
+              scenes))
+
+(defun writing--calculate-thread-gap (appearances all-scenes)
+  "Calculate largest gap in APPEARANCES across ALL-SCENES.
+Returns the maximum number of consecutive scenes where thread is absent."
+  (when appearances
+    (let ((scene-indices nil)
+          (max-gap 0))
+      ;; Get indices of scenes with this thread
+      (dotimes (i (length all-scenes))
+        (when (member (nth i all-scenes) appearances)
+          (push i scene-indices)))
+      (setq scene-indices (nreverse scene-indices))
+
+      ;; Calculate gaps between appearances
+      (when (> (length scene-indices) 1)
+        (dotimes (i (1- (length scene-indices)))
+          (let ((gap (- (nth (1+ i) scene-indices)
+                       (nth i scene-indices)
+                       1)))  ; Subtract 1 because we count scenes between
+            (setq max-gap (max max-gap gap)))))
+      max-gap)))
+
+;;; Dynamic Block: Plot Thread Timeline
+
+;;;###autoload
+(defun org-dblock-write:plot-thread-timeline (params)
+  "Generate timeline showing plot thread progression across scenes.
+Extracts display text from ID links in :Plot: properties.
+
+The timeline shows all scenes and indicates which threads are present
+using symbols:
+  ● = Thread is active in this scene
+  (blank) = Thread not present
+
+Thread information is extracted from the :Plot: property in scenes.
+Thread names are extracted from ID links like [[id:...][Name]]."
+  (let* ((threads nil)  ; Unique thread names
+         (scenes (writing--get-all-scenes-with-plots)))
+
+    ;; Collect unique thread names
+    (dolist (scene scenes)
+      (let ((thread-list (nth 2 scene)))
+        (dolist (thread thread-list)
+          (unless (member thread threads)
+            (push thread threads)))))
+
+    ;; Sort threads alphabetically
+    (setq threads (sort threads #'string<))
+
+    (if (null scenes)
+        (insert "No scenes with Plot properties found.\n")
+      ;; Generate org table
+      (insert "| Scene | Chapter |")
+      (dolist (thread threads)
+        (insert (format " %s |" thread)))
+      (insert "\n|-------+---------+")
+      (dolist (_ threads)
+        (insert "--------+"))
+      (insert "\n")
+
+      ;; Table rows
+      (dolist (scene scenes)
+        (let ((scene-name (nth 0 scene))
+              (chapter (nth 1 scene))
+              (scene-threads (nth 2 scene)))
+          (insert (format "| %s | %s |" scene-name chapter))
+          (dolist (thread threads)
+            (insert (format " %s |"
+                           (if (member thread scene-threads) "●" ""))))
+          (insert "\n")))
+
+      ;; Align table
+      (org-table-align))))
+
+;;; Plot Thread Health Report
+
+(defun writing--get-thread-status (thread-name appearances all-scenes)
+  "Get status symbol and warnings for THREAD-NAME.
+APPEARANCES is list of scenes containing thread.
+ALL-SCENES is list of all scenes.
+Returns (STATUS-SYMBOL . WARNINGS-LIST)."
+  (let ((warnings nil)
+        (status "✓")
+        (scene-count (length appearances))
+        (total-scenes (length all-scenes))
+        (coverage-pct (if (> (length all-scenes) 0)
+                         (/ (* 100.0 scene-count) (length all-scenes))
+                       0))
+        (gap (writing--calculate-thread-gap appearances all-scenes)))
+
+    ;; Check for issues
+    (when (< coverage-pct 30)
+      (setq status "⚠️")
+      (push (format "Low coverage (%.1f%%)" coverage-pct) warnings))
+
+    (when (and gap (> gap 5))
+      (setq status "⚠️")
+      (push (format "Gap of %d scenes" gap) warnings))
+
+    (when (= scene-count 1)
+      (setq status "⚠️")
+      (push "Only in 1 scene" warnings))
+
+    (cons status warnings)))
+
+;;;###autoload
+(defun writing/plot-thread-report ()
+  "Generate health report for plot threads.
+Analyzes thread coverage, gaps, and warnings.
+Opens a new buffer with the report."
+  (interactive)
+  (let ((report-buffer (get-buffer-create "*Plot Thread Health Report*"))
+        (threads (writing--get-all-plot-threads))
+        (scenes (writing--get-all-scenes-with-plots)))
+
+    (with-current-buffer report-buffer
+      (erase-buffer)
+      (org-mode)
+      (insert "#+TITLE: Plot Thread Health Report\n")
+      (insert "#+DATE: " (format-time-string "%Y-%m-%d %H:%M") "\n")
+      (insert "#+STARTUP: overview\n\n")
+
+      ;; Summary
+      (insert "* Summary\n\n")
+      (insert (format "- Total plot threads: %d\n" (length threads)))
+      (insert (format "- Total scenes: %d\n" (length scenes)))
+      (insert (format "- Scenes with plot threads: %d\n" (length scenes)))
+      (insert "\n")
+
+      (if (null scenes)
+          (insert "** No scenes with Plot properties found.\n\n")
+        ;; Per-thread analysis
+        (insert "* Thread Details\n\n")
+        (dolist (thread threads)
+          (let* ((thread-name (car thread))
+                 (thread-id (cadr thread))
+                 (appearances (writing--find-thread-in-scenes thread-name scenes))
+                 (scene-count (length appearances))
+                 (coverage-pct (if (> (length scenes) 0)
+                                  (/ (* 100.0 scene-count) (length scenes))
+                                0))
+                 (status-info (writing--get-thread-status thread-name appearances scenes))
+                 (status (car status-info))
+                 (warnings (cdr status-info)))
+
+            (insert (format "** %s %s\n" status thread-name))
+            (insert (format ":PROPERTIES:\n"))
+            (insert (format ":ID: %s\n" thread-id))
+            (insert (format ":END:\n\n"))
+            (insert (format "- Scenes: %d of %d (%.1f%%)\n"
+                           scene-count (length scenes) coverage-pct))
+
+            (when appearances
+              (insert (format "- First appearance: %s (Chapter: %s)\n"
+                             (nth 0 (car appearances))
+                             (nth 1 (car appearances))))
+              (insert (format "- Last appearance: %s (Chapter: %s)\n"
+                             (nth 0 (car (last appearances)))
+                             (nth 1 (car (last appearances))))))
+
+            (when warnings
+              (insert "\n*Warnings:*\n")
+              (dolist (warning warnings)
+                (insert (format "- ⚠️ %s\n" warning))))
+
+            (insert "\n"))))
+
+      ;; Scenes without plot threads
+      (insert "* Scenes Without Plot Threads\n\n")
+      (let ((novel-file (plist-get (writing-project-structure) :novel-file))
+            (scenes-without-plot nil))
+        (when (and novel-file (file-exists-p novel-file))
+          (with-current-buffer (find-file-noselect novel-file)
+            (org-map-entries
+             (lambda ()
+               (when (= (org-current-level) 3)  ; Scenes are level 3
+                 (unless (org-entry-get nil "Plot")
+                   (let ((heading (org-get-heading t t t t))
+                         (chapter (save-excursion
+                                   (outline-up-heading 1)
+                                   (org-get-heading t t t t))))
+                     (push (list heading chapter) scenes-without-plot)))))
+             nil 'file)))
+
+        (if scenes-without-plot
+            (progn
+              (setq scenes-without-plot (nreverse scenes-without-plot))
+              (insert (format "Found %d scene(s) without Plot property:\n\n"
+                             (length scenes-without-plot)))
+              (dolist (scene scenes-without-plot)
+                (insert (format "- %s (Chapter: %s)\n" (car scene) (cadr scene)))))
+          (insert "All scenes have Plot properties assigned.\n"))))
+
+    (pop-to-buffer report-buffer)
+    (goto-char (point-min))
+    (message "Plot thread health report generated")))
+
+;;; Plot Thread Statistics
+
+;;;###autoload
+(defun writing/plot-thread-stats ()
+  "Display quick statistics for plot threads.
+Shows one-line summary in the minibuffer."
+  (interactive)
+  (let* ((threads (writing--get-all-plot-threads))
+         (scenes (writing--get-all-scenes-with-plots))
+         (thread-count (length threads))
+         (scene-count (length scenes))
+         (warning-count 0))
+
+    ;; Count warnings
+    (dolist (thread threads)
+      (let* ((thread-name (car thread))
+             (appearances (writing--find-thread-in-scenes thread-name scenes))
+             (status-info (writing--get-thread-status thread-name appearances scenes))
+             (warnings (cdr status-info)))
+        (when warnings
+          (setq warning-count (1+ warning-count)))))
+
+    (message "Plot threads: %d | Scenes: %d | Threads with warnings: %d"
+             thread-count scene-count warning-count)))
+
 ;; Helper function needed from search module
 ;; This is a forward declaration - the actual function is in writing-search.el
 (declare-function writing--property-to-list "search/writing-search")

@@ -103,6 +103,42 @@
         (should (stringp (cadr item)))  ; ID is a string
         ))))
 
+;;; Phase 2 Function Tests
+
+(ert-deftest test-plot-thread-report-function-defined ()
+  "Test that plot thread report function is defined."
+  (should (fboundp 'writing/plot-thread-report)))
+
+(ert-deftest test-plot-thread-stats-function-defined ()
+  "Test that plot thread statistics function is defined."
+  (should (fboundp 'writing/plot-thread-stats)))
+
+(ert-deftest test-plot-thread-timeline-dblock-defined ()
+  "Test that timeline dynamic block function is defined."
+  (should (fboundp 'org-dblock-write:plot-thread-timeline)))
+
+(ert-deftest test-plot-thread-helper-functions ()
+  "Test that helper functions for analysis are defined."
+  (should (fboundp 'writing--get-all-scenes-with-plots))
+  (should (fboundp 'writing--find-thread-in-scenes))
+  (should (fboundp 'writing--calculate-thread-gap)))
+
+(ert-deftest test-calculate-thread-gap ()
+  "Test thread gap calculation."
+  (let* ((all-scenes '(("Scene 1" "Ch 1" ("A"))
+                       ("Scene 2" "Ch 1" ("A"))
+                       ("Scene 3" "Ch 2" ("B"))
+                       ("Scene 4" "Ch 2" ("B"))
+                       ("Scene 5" "Ch 3" ("A"))
+                       ("Scene 6" "Ch 3" ("A"))))
+         (appearances '(("Scene 1" "Ch 1" ("A"))
+                       ("Scene 2" "Ch 1" ("A"))
+                       ("Scene 5" "Ch 3" ("A"))
+                       ("Scene 6" "Ch 3" ("A"))))
+         (gap (writing--calculate-thread-gap appearances all-scenes)))
+    ;; Thread A appears in scenes 1,2,5,6 - gap of 2 scenes (3 and 4)
+    (should (= gap 2))))
+
 ;;; Run tests
 
 (defun writing-plot-links-run-tests ()
