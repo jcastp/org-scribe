@@ -16,33 +16,18 @@
 
 * Progress Tracking :ignore:noexport:
 
-** Word Count by Section
+** Word Count and Progress
 :PROPERTIES:
 :WORDCOUNT: 0
 :END:
 
-This table shows your word count by sections.
+This table shows your word count, objectives, and progress by section.
 Update it with =C-c C-c= on the #+BEGIN line.
 
 #+BEGIN: org-generate-wordcount-table
-| Heading       | Wordcount |
-|---------------+-----------|
-|               |           |
-#+END:
-
-** Overall Progress by Act
-
-Update this table with =C-c C-c= on the #+BEGIN line.
-This table auto-calculates from WORD-OBJECTIVE and WORDCOUNT properties.
-
-#+BEGIN: progress-by-act :match "LEVEL=1+ignore"
-| Section | Target | Actual | Progress |
-|---------+--------+--------+----------|
-| Act I   |  25000 |      0 |      N/A |
-| Act II  |  30000 |      0 |      N/A |
-| Act III |  25000 |      0 |      N/A |
-|---------+--------+--------+----------|
-| TOTAL   |  80000 |      0 |      N/A |
+| Heading       | Wordcount | Objective | Progress |
+|---------------+-----------+-----------+----------|
+|               |           |           |          |
 #+END:
 
 ** Daily Word Tracking

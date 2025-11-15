@@ -46,17 +46,23 @@ for each heading to enable linking."
 
 ;;;###autoload
 (defun org-dblock-write:org-generate-wordcount-table (params)
-  "Generate a table with heading names and their WORDCOUNT property in Org mode.
+  "Generate a table with heading names, word counts, objectives, and progress.
 This is a dynamic block function that can be inserted with:
   #+BEGIN: org-generate-wordcount-table
   #+END:
 
-The table will show all headings with their word counts, excluding
-sections tagged with 'noexport'."
+The table shows:
+- Hierarchical heading structure (with - -- --- prefixes)
+- Wordcount (from WORDCOUNT property)
+- Objective (from WORD-OBJECTIVE property, optional)
+- Progress (auto-calculated percentage when objective is set)
+
+Sections tagged with 'noexport' are excluded."
   (interactive)
   ;; Execute the function of counting words, add the WORDCOUNT property,
-  ;; and update the current word count.
-  (writing/ews-org-count-words)
+  ;; and update the current word count (if org-context-extended is available).
+  (when (featurep 'org-context-extended)
+    (writing/ews-org-count-words))
   (let (table-data)
     ;; Traverse each Org entry in the current buffer
     (org-map-entries
@@ -65,23 +71,52 @@ sections tagged with 'noexport'."
               (heading (nth 4 heading-components))  ; Extract heading text
               (level (car heading-components))      ; Extract level
               (tags (org-get-tags))
-              (wordcount (org-entry-get nil "WORDCOUNT")))
+              (wordcount-str (org-entry-get nil "WORDCOUNT"))
+              (objective-str (org-entry-get nil "WORD-OBJECTIVE")))
          ;; Check if we get tags, and if they don't contain the noexport
          (unless (and tags (member "noexport" tags))
-           ;; Add the data in the table-data for each heading
-           ;; Format with literal asterisks and org link
-           (push (cons
-                  (format "%s %s"
-                          (make-string level 45)  ; 45 is the minus sign in ASCII
-                          (org-link-make-string heading))
-                  wordcount)
-                 table-data)))))
+           ;; Convert properties to numbers
+           (let* ((wordcount (if wordcount-str
+                                (string-to-number wordcount-str)
+                                0))
+                  (objective (if objective-str
+                                (string-to-number objective-str)
+                                nil))  ; nil means no objective set
+                  ;; Calculate progress (safe division)
+                  (progress (when (and objective (> objective 0))
+                             (* 100.0 (/ (float wordcount) objective)))))
+
+             ;; Add the data in the table-data for each heading
+             ;; Format with literal asterisks and org link
+             (push (list
+                    (format "%s %s"
+                            (make-string level 45)  ; 45 is the minus sign in ASCII
+                            (org-link-make-string heading))
+                    wordcount
+                    objective
+                    progress)
+                   table-data))))))
+
     ;; Insert table header
-    (insert "| Heading         | Wordcount |\n"
-            "|-----------------+-----------|\n")
+    (insert "| Heading         | Wordcount | Objective | Progress |\n"
+            "|-----------------+-----------+-----------+----------|\n")
+
     ;; Insert table rows (reversed to maintain document order)
-    (dolist (pair (reverse table-data))
-      (insert (format "| %s | %s |\n" (car pair) (cdr pair))))
+    (dolist (row (reverse table-data))
+      (let ((heading-str (nth 0 row))
+            (wordcount (nth 1 row))
+            (objective (nth 2 row))
+            (progress (nth 3 row)))
+        (insert (format "| %s | %9d | %9s | %8s |\n"
+                       heading-str
+                       wordcount
+                       (if objective
+                           (format "%d" objective)
+                         "")  ; Empty if no objective
+                       (if progress
+                           (format "%5.0f%%" progress)
+                         "")))))  ; Empty if no progress
+
     ;; Align table once at the end for better performance
     (org-table-align)))
 

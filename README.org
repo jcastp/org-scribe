@@ -217,7 +217,7 @@ Three-pane layout:
 
 Adds a =WORDCOUNT= property to each heading.
 
-*** Generate Word Count Table
+*** Generate Word Count Table with Progress
 
 Add this to your org file:
 
@@ -228,13 +228,26 @@ Add this to your org file:
 
 Update with =C-c C-c= on the #+BEGIN line.
 
-*** Auto-Calculate Progress Tables
+This generates a comprehensive table showing:
+- Hierarchical heading structure (Acts, Chapters, Scenes)
+- Wordcount (from =WORDCOUNT= property)
+- Objective (from =WORD-OBJECTIVE= property, when set)
+- Progress (auto-calculated percentage)
 
-The package can automatically generate progress tables from your word count objectives and actual word counts.
+**Example output:**
 
-**** Set Word Objectives
+#+begin_example
+| Heading                     | Wordcount | Objective | Progress |
+|-----------------------------+-----------+-----------+----------|
+| - Act I                     |       711 |      5000 |      14% |
+| -- Chapter 1                |       447 |      1500 |      30% |
+| --- Scene 1 - The Alarm     |       167 |       500 |      33% |
+| --- Scene 2 - Coffee Shop   |       280 |       500 |      56% |
+#+end_example
 
-Add the =WORD-OBJECTIVE= property to your Acts, Chapters, or Scenes:
+*** Set Word Objectives for Progress Tracking
+
+Add the =WORD-OBJECTIVE= property to your Acts, Chapters, or Scenes to enable automatic progress calculation:
 
 #+begin_example
 * Act I :ignore:
@@ -244,57 +257,7 @@ Add the =WORD-OBJECTIVE= property to your Acts, Chapters, or Scenes:
 :END:
 #+end_example
 
-**** Generate Progress Table
-
-Add this dynamic block to your org file:
-
-#+begin_example
-#+BEGIN: progress-by-act :match "LEVEL=1+ignore"
-#+END:
-#+end_example
-
-Update with =C-c C-c= on the #+BEGIN line.
-
-This generates a table showing:
-- Section name
-- Target (from =WORD-OBJECTIVE= property)
-- Actual (from =WORDCOUNT= property)
-- Progress (auto-calculated percentage)
-- TOTAL row with sums
-
-***** Parameters
-
-- =:match= - Org match expression (default: "LEVEL=1+ignore")
-  - "LEVEL=1+ignore" for Acts
-  - "LEVEL=2+ignore" for Chapters
-  - "LEVEL=3+ignore" for Scenes
-- =:title= - Label for the Section column (default: "Section")
-
-***** Example Output
-
-#+begin_example
-| Section | Target | Actual | Progress |
-|---------+--------+--------+----------|
-| Act I   |   5000 |    711 |      14% |
-| Act II  |   6000 |    876 |      15% |
-| Act III |   4000 |    515 |      13% |
-|---------+--------+--------+----------|
-| TOTAL   |  15000 |   2102 |      14% |
-#+end_example
-
-***** Multi-Level Tracking
-
-You can track progress at different levels:
-
-#+begin_example
-** Progress by Chapter
-#+BEGIN: progress-by-act :match "LEVEL=2+ignore" :title "Chapter"
-#+END:
-
-** Progress by Scene
-#+BEGIN: progress-by-act :match "LEVEL=3+ignore" :title "Scene"
-#+END:
-#+end_example
+When you update the word count table (with =C-c C-c= on the #+BEGIN line), progress percentages will be automatically calculated for any section that has a =WORD-OBJECTIVE= property.
 
 ** Search Functions
 

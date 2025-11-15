@@ -16,33 +16,18 @@
 
 * Seguimiento del Progreso :ignore:noexport:
 
-** Conteo de Palabras por Sección
+** Conteo de Palabras y Progreso
 :PROPERTIES:
 :WORDCOUNT: 0
 :END:
 
-Esta tabla muestra tu conteo de palabras por secciones.
+Esta tabla muestra tu conteo de palabras, objetivos y progreso por sección.
 Actualízala con =C-c C-c= en la línea #+BEGIN.
 
 #+BEGIN: org-generate-wordcount-table
-| Heading       | Wordcount |
-|---------------+-----------|
-|               |           |
-#+END:
-
-** Progreso General por Acto
-
-Actualiza esta tabla con =C-c C-c= en la línea #+BEGIN.
-Esta tabla se auto-calcula desde las propiedades WORD-OBJECTIVE y WORDCOUNT.
-
-#+BEGIN: progress-by-act :match "LEVEL=1+ignore" :title "Sección"
-| Sección  | Target | Actual | Progress |
-|----------+--------+--------+----------|
-| Acto I   |  25000 |      0 |      N/A |
-| Acto II  |  30000 |      0 |      N/A |
-| Acto III |  25000 |      0 |      N/A |
-|----------+--------+--------+----------|
-| TOTAL    |  80000 |      0 |      N/A |
+| Heading       | Wordcount | Objective | Progress |
+|---------------+-----------+-----------+----------|
+|               |           |           |          |
 #+END:
 
 ** Seguimiento Diario de Palabras

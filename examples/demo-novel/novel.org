@@ -24,53 +24,33 @@
 :ID:       17f232d0-e0e6-43bd-8bb8-997d57343808
 :END:
 
-** Word Count by Section
+** Word Count and Progress
 :PROPERTIES:
 :WORDCOUNT: 0
 :ID:       12629909-9619-4ea6-bcf6-ab6c437ecd32
 :END:
 
-This table shows your word count by sections.
+This table shows your word count, objectives, and progress by section.
 Update it with =C-c C-c= on the #+BEGIN line.
 
 #+BEGIN: org-generate-wordcount-table
-| Heading                               | Wordcount |
-|---------------------------------------+-----------|
-| - [[Act I]]                               |       711 |
-| -- [[Chapter 1]]                          |       447 |
-| --- [[Scene 1 - The Alarm]]               |       167 |
-| --- [[Scene 2 - Coffee Shop Encounter]]   |       280 |
-| -- [[Chapter 2]]                          |       264 |
-| --- [[Scene 1 - The Decision]]            |       264 |
-| - [[Act II]]                              |       277 |
-| -- [[Chapter 3]]                          |       269 |
-| --- [[Scene 1 - First Attempt]]           |       269 |
-| -- [[Chapter 4 - Learning and Adjusting]] |         8 |
-| --- [[Scene 1 - Coffee Talk]]             |         4 |
-| --- [[Scene 2 - Finding Balance]]         |         4 |
-| - [[Act III]]                             |       308 |
-| -- [[Chapter 5 - The New Normal]]         |       308 |
-| --- [[Scene 1 - Full Circle]]             |       308 |
-
-#+END:
-
-** Overall Progress by Act
-:PROPERTIES:
-:WORDCOUNT: 0
-:ID:       54d69a76-1dfe-4595-94a3-6d2fa7ed3856
-:END:
-
-Update this table with =C-c C-c= on the #+BEGIN line.
-This table auto-calculates from WORD-OBJECTIVE and WORDCOUNT properties.
-
-#+BEGIN: progress-by-act :match "LEVEL=1+ignore"
-| Section | Target | Actual | Progress |
-|---------+--------+--------+----------|
-| Act I   |   5000 |    711 |      14% |
-| Act II  |   6000 |    277 |       5% |
-| Act III |   4000 |    308 |       8% |
-|---------+--------+--------+----------|
-| TOTAL   |  15000 |   1296 |       9% |
+| Heading                               | Wordcount | Objective | Progress |
+|---------------------------------------+-----------+-----------+----------|
+| - [[Act I]]                               |       711 |      5000 |      14% |
+| -- [[Chapter 1]]                          |       447 |      1500 |      30% |
+| --- [[Scene 1 - The Alarm]]               |       167 |       500 |      33% |
+| --- [[Scene 2 - Coffee Shop Encounter]]   |       280 |       500 |      56% |
+| -- [[Chapter 2]]                          |       264 |      1500 |      18% |
+| --- [[Scene 1 - The Decision]]            |       264 |       500 |      53% |
+| - [[Act II]]                              |       277 |      6000 |       5% |
+| -- [[Chapter 3]]                          |       269 |      1500 |      18% |
+| --- [[Scene 1 - First Attempt]]           |       269 |       500 |      54% |
+| -- [[Chapter 4 - Learning and Adjusting]] |         8 |      1500 |       1% |
+| --- [[Scene 1 - Coffee Talk]]             |         4 |       500 |       1% |
+| --- [[Scene 2 - Finding Balance]]         |         4 |       500 |       1% |
+| - [[Act III]]                             |       308 |      4000 |       8% |
+| -- [[Chapter 5 - The New Normal]]         |       308 |      1500 |      21% |
+| --- [[Scene 1 - Full Circle]]             |       308 |       500 |      62% |
 
 #+END:
 
