@@ -50,7 +50,7 @@ If you see this message, you're ready! If not, make sure you've installed the pa
 *What you get*:
 - 12-13 files organized in a structured hierarchy
 - Separate planning files for characters, locations, plot, timeline, objects
-- Statistics tracking file with word count tables
+- Statistics tracking section with word count tables
 - Revision notes file
 - Research and notes directories
 - Main manuscript file (novel.org or novela.org)
@@ -157,8 +157,7 @@ The Morning Routine/           (your project folder)
 This file provides:
 - Project overview
 - Quick navigation links to other files
-- Instructions for getting started
-- Package feature summary
+- Progress tracking and milestones
 
 *What to do*: Read through it now. It has helpful links and tips!
 
@@ -274,7 +273,8 @@ Choose the novel template if:
 
 *Recommendation*: Start with short story template to learn, then try novel template for your big project!
 
-* Bilingual Support (English/Spanish)
+* TODO Bilingual Support (English/Spanish)
+*NOTE:* This section is not yet implemented.
 
 The package supports both English and Spanish templates!
 

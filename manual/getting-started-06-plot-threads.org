@@ -150,7 +150,8 @@ For novels (50-70 scenes), a healthy structure might be:
 
 More than this risks overcomplexity and reader confusion.
 
-* The Plot Thread Capture Template
+* TODO The Plot Thread Capture Template
+*NOTE:* This is not implemented
 
 Let's explore what's in the plot thread capture template.
 
@@ -173,7 +174,8 @@ The template has 6 main sections:
 
 Let's examine each section in detail.
 
-* Section 1: Properties
+* TODO Section 1: Properties
+*NOTE:* This is not implemented
 
 When you capture a plot thread, you'll see these properties:
 
@@ -609,7 +611,8 @@ environmental crime, water treatment systems, investigative journalism.
 - Polish: verify water treatment details are accurate
 #+END_EXAMPLE
 
-* Capturing a Plot Thread: Step-by-Step
+* TODO Capturing a Plot Thread: Step-by-Step
+*NOTE:* This is not implemented
 
 Let's create a plot thread profile together.
 
@@ -882,7 +885,8 @@ Should appear in 10-30% of scenes, with:
 - ❌ Plots never intersect → Story feels like separate stories pasted together
 - ❌ Too many plots (>6 total) → Reader confusion
 
-* Plot Health Report
+* TODO Plot Health Report
+*NOTE:* This needs review
 
 Check the health of your plot thread development.
 

@@ -99,7 +99,8 @@ Subtree "Scene 1 - The Alarm": 347 words (excluding metadata)
 
 *That's it!* Quick and easy.
 
-** What Gets Counted
+** TODO What Gets Counted
+*NOTE:* This does not work as stated here. It counts all the words in the present window, and doesn't discriminate on headings or any of the information stated here.
 
 This command counts the current subtree:
 - If cursor is on a scene heading → counts that scene

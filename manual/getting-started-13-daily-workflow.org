@@ -1,0 +1,1158 @@
+#+TITLE: Lesson 13: Daily Writing Workflow
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 13!
+
+You've learned all the individual features of ~emacs-writing~. Now it's time to tie everything together into a cohesive daily workflow that maximizes your productivity and creativity.
+
+A good workflow is like a well-worn path through the forest - it gets you where you need to go efficiently, letting you focus on the journey (your writing) rather than navigation (the tools). This lesson shows you how to establish that path.
+
+By the end of this lesson, you'll have:
+- A structured morning routine to start your writing session
+- An efficient active writing workflow with minimal friction
+- An evening routine for tracking progress and planning
+- A weekly review process for big-picture perspective
+- Workflow variations for different writing styles
+- Strategies to maintain consistency
+
+*Estimated time*: 15-20 minutes
+
+* Before You Begin
+
+** What You Need
+
+✓ A writing project you're actively working on
+✓ Completion of Lessons 1-12 (or at least familiarity with the features)
+✓ 30-60 minutes available for a full writing session
+✓ Willingness to experiment and adjust to your preferences
+
+** Philosophy: Your Workflow is Personal
+
+The workflow presented here is a *recommended starting point*, not a rigid prescription. Every writer is different:
+
+- Some write in the morning, others at night
+- Some plan extensively, others discover while writing
+- Some write in long sessions, others in short bursts
+- Some need silence, others need music
+
+Use this lesson to find *your* optimal workflow, not to force yourself into someone else's pattern.
+
+** The Core Principle: Minimize Friction
+
+A good workflow removes obstacles between you and your writing:
+- ✓ Reduces decision fatigue (what do I do next?)
+- ✓ Automates repetitive tasks
+- ✓ Maintains focus and flow
+- ✓ Provides regular feedback (progress tracking)
+- ✓ Feels natural, not forced
+
+If part of this workflow feels awkward, skip it! The best workflow is the one you actually use.
+
+* The Three-Phase Daily Workflow
+
+Your writing day has three distinct phases:
+
+** Phase 1: Morning (Setup) - 5 minutes
+
+*Goal*: Prepare your environment and mindset for writing.
+
+*Activities*:
+- Open your project
+- Review yesterday's progress
+- Set today's goal
+- Activate writing mode
+
+** Phase 2: Active Writing - 30-120 minutes
+
+*Goal*: Write with minimal interruptions.
+
+*Activities*:
+- Write scenes
+- Quick captures (characters, locations, notes)
+- Occasional lookups (dictionary, synonyms)
+- Stay in flow
+
+** Phase 3: Evening (Wrap-up) - 10 minutes
+
+*Goal*: Track progress, plan tomorrow, feel accomplished.
+
+*Activities*:
+- Count words
+- Update tracking tables
+- Review what you wrote
+- Plan next session
+- Backup/commit
+
+Let's explore each phase in detail.
+
+* Phase 1: Morning Setup (5 Minutes)
+
+The morning routine prepares you mentally and technically for writing.
+
+** Step 1: Open Your Project (30 seconds)
+
+Start Emacs and open your manuscript:
+
+#+BEGIN_EXAMPLE
+# Quick method
+emacs ~/writing/my-novel/novel.org
+
+# Or from within Emacs
+C-x C-f ~/writing/my-novel/novel.org
+#+END_EXAMPLE
+
+*Tip*: Create a shell alias or Emacs bookmark for one-keystroke access:
+
+#+BEGIN_SRC bash
+# Add to ~/.bashrc or ~/.zshrc
+alias write="emacs ~/writing/my-novel/novel.org &"
+#+END_SRC
+
+Now typing `write` in your terminal opens your manuscript instantly!
+
+** Step 2: Review Yesterday's Work (2 minutes)
+
+Reconnect with your story:
+
+1. Open your manuscript (~novel.org~ or ~story.org~)
+2. Navigate to the last scene you wrote:
+   - Press ~C-s~ and search for "TODO" or your last heading
+   - Or jump to the end: ~M->~
+3. Read the last 1-2 paragraphs you wrote
+4. Recall where you were going with this scene
+
+*Why this matters*:
+- Refreshes your memory of the narrative
+- Triggers creative continuation
+- Identifies any notes you left yourself
+- Gets you emotionally back into the story
+
+** Step 3: Check Progress (1 minute)
+
+See where you stand:
+
+1. Open your statistics file (~statistics.org~ for novels, or tracking section in ~story.org~ for short stories)
+2. Look at your progress table
+3. Note your current total word count
+4. See how close you are to your milestone
+
+Example progress table you might see:
+
+#+BEGIN_EXAMPLE
+| Section   | Words | Goal  | Progress |
+|-----------+-------+-------+----------|
+| Act I     | 12500 | 15000 | 83%      |
+| Act II    | 3400  | 20000 | 17%      |
+| Act III   | 0     | 15000 | 0%       |
+|-----------+-------+-------+----------|
+| Total     | 15900 | 50000 | 32%      |
+#+END_EXAMPLE
+
+*Motivational boost*: "I'm at 32%! Almost a third done!"
+
+** Step 4: Set Today's Goal (30 seconds)
+
+Decide what you'll accomplish today:
+
+*Option A - Word Count Goal*:
+"I'll write 500 words today."
+
+*Option B - Scene Goal*:
+"I'll finish the coffee shop scene."
+
+*Option C - Time Goal*:
+"I'll write for 1 hour without stopping."
+
+*Write it down* somewhere visible (a sticky note, a comment in your file, or a dedicated TODO):
+
+#+BEGIN_EXAMPLE
+# At the top of your manuscript
+# TODO: Today's goal: Finish Scene 3 and start Scene 4 (500 words)
+#+END_EXAMPLE
+
+** Step 5: Activate Writing Mode (30 seconds)
+
+Enter your preferred distraction-free environment:
+
+Press ~F8 F8~ then ~m~ (for distraction-free writing mode)
+
+Your screen transforms:
+
+#+BEGIN_EXAMPLE
+Before:                          After:
+┌──────────────────────┐        ┌──────────────────────┐
+│ Menu Bar             │        │                      │
+│ Tool Bar             │        │                      │
+├──────────────────────┤        │                      │
+│ Your manuscript      │   →    │  Your manuscript     │
+│                      │        │  (centered, clean)   │
+│                      │        │                      │
+├──────────────────────┤        │                      │
+│ Mode line            │        │                      │
+│ Minibuffer           │        │                      │
+└──────────────────────┘        └──────────────────────┘
+#+END_EXAMPLE
+
+*Alternative modes*:
+- Focus mode (~F8 F8~ then ~f~) - Current scene only
+- Project mode (~F8 F8~ then ~j~) - With navigation panel
+- Normal mode - No special environment
+
+Choose what helps you concentrate best!
+
+** Quick Morning Checklist
+
+□ Open manuscript
+□ Read last 2 paragraphs written
+□ Check progress table
+□ Set today's goal
+□ Activate writing mode
+
+*Total time: 5 minutes*
+
+Now you're ready to write!
+
+* Phase 2: Active Writing (30-120 Minutes)
+
+This is where the magic happens. Your goal: stay in flow and minimize interruptions.
+
+** The Golden Rule: Don't Break Flow
+
+During active writing:
+- ✓ Write continuously
+- ✓ Accept imperfect first drafts
+- ✗ Don't edit what you wrote yesterday
+- ✗ Don't research extensively
+- ✗ Don't check email/social media
+
+Think of this as "creative mode" - editing comes later.
+
+** Core Writing Loop
+
+Your main activity is simple:
+
+1. *Write narrative text*
+   - Focus on the current scene
+   - Let the words flow
+   - Don't self-edit (yet)
+   - Trust your revision process
+
+2. *Finish scene*
+   - Reach a natural stopping point
+   - Leave a note if you know what comes next
+
+3. *Insert next scene* (~F8 F8~ then ~s~)
+   - Use the scene template
+   - Fill in quick properties (PoV, Location)
+   - Start writing immediately
+
+4. *Repeat*
+
+** Quick Captures: Your Flow Preservers
+
+When inspiration strikes mid-writing, capture it quickly without leaving your manuscript:
+
+*** Character Idea
+
+You're writing and think: "Sam needs a sister!"
+
+*Don't stop writing.* Just press ~F8 F8~ then ~h~:
+
+#+BEGIN_EXAMPLE
+Capture character template appears:
+
+** Sarah Chen
+:PROPERTIES:
+:TYPE: Secondary
+:NAME: Sarah Chen
+:AGE: 28
+:ROLE: Sam's older sister
+:PHYSICAL: [fill later]
+:PERSONALITY: Protective, lawyer
+:END:
+
+Quick description: Sam's sister, will appear in courthouse scene
+#+END_EXAMPLE
+
+Fill in the minimum (name, role), save (~C-c C-c~), and you're back to writing.
+
+*Time elapsed: 30 seconds*
+
+*** Location Note
+
+You're writing a scene in a coffee shop and realize you need more details:
+
+Press ~F8 F8~ then ~l~:
+
+#+BEGIN_EXAMPLE
+** Downtown Coffee Shop
+:PROPERTIES:
+:TYPE: Secondary
+:NAME: Downtown Coffee Shop
+:END:
+
+Interior: Check local coffee shops for authentic details - need to describe the espresso machine, wall art, seating arrangement
+#+END_EXAMPLE
+
+Save (~C-c C-c~) - back to writing.
+
+*Details can wait for research phase!*
+
+*** Plot Idea
+
+Mid-scene, you realize: "The mysterious package should contain her mother's old letters!"
+
+Press ~F8 F8~ then ~n~ (general note):
+
+#+BEGIN_EXAMPLE
+** Plot: Package Contents
+   :PROPERTIES:
+   :END:
+
+The package Sam receives in chapter 3 should contain letters from Alex's mother, written before she died. This ties into the mystery subplot.
+
+TODO: Revise chapter 2 to foreshadow the mother's letters
+#+END_EXAMPLE
+
+Captured! Now keep writing the current scene.
+
+*** Timeline Entry
+
+"Wait, what day is this scene happening?"
+
+Press ~F8 F8~ then ~t~:
+
+#+BEGIN_EXAMPLE
+** Tuesday Morning - Coffee Shop Meeting
+   :PROPERTIES:
+   :DATE: Day 3 of the story
+   :END:
+
+This is 2 days after the opening scene. Alex has been avoiding the office.
+#+END_EXAMPLE
+
+Noted. Continue writing.
+
+** Strategic Lookups: When to Use Language Tools
+
+During active writing, minimize lookups. But sometimes you need the right word *now*.
+
+*** When to Look Up Words
+
+*DO look up* during writing:
+- The exact word is on the tip of your tongue
+- You're choosing between two similar words
+- A wrong word will confuse the reader later
+
+*DON'T look up* during writing:
+- Minor word choice improvements (fix in revision)
+- Extensive research (mark with [CHECK] and continue)
+- Perfect synonyms (get close enough, polish later)
+
+*** Quick Lookup Pattern
+
+When you must look up a word:
+
+1. Type the approximate word: "She felt melancholic"
+2. Press ~F8 F8~ then ~d~ (dictionary)
+3. Read definition quickly: "Yes, that's right"
+4. Close lookup buffer: ~q~
+5. Continue writing
+
+*Time: 15 seconds*
+
+If you're not sure: "She felt melancholic [CHECK - or use different word?]" and keep going.
+
+** Managing TODO Markers
+
+As you write, leave breadcrumbs for revision:
+
+#+BEGIN_EXAMPLE
+Alex walked into the coffee shop. [CHECK: Is it raining? Continuity.]
+
+She saw Sam sitting in the corner booth. [TODO: Describe Sam's expression -
+nervous? eager? What emotion sets up the conflict?]
+
+"I found something," Sam said, sliding the envelope across the table.
+[RESEARCH: What do old letters look like when they've been stored for 20 years?]
+#+END_EXAMPLE
+
+Markers to use:
+- `[CHECK]` - Verify continuity or facts
+- `[TODO]` - Something to add/expand
+- `[RESEARCH]` - Need factual information
+- `[REVISE]` - This section needs rewriting
+
+These are gifts to your future editing self!
+
+** The Pomodoro Integration
+
+Many writers use the Pomodoro Technique (25 minutes writing, 5 minutes break):
+
+*Writing block (25 min)*:
+1. Start timer
+2. Write continuously
+3. Do quick captures only
+4. When timer rings, finish your sentence
+
+*Break (5 min)*:
+- Stand up, stretch
+- Refill water/coffee
+- Don't check social media (breaks flow)
+- Think about next scene
+
+*After 4 pomodoros*: Take a longer break (15-30 min)
+
+*Emacs Pomodoro*: Install ~org-pomodoro~ package for built-in timer
+
+** Dealing with Stuck Moments
+
+You're mid-scene and don't know what happens next:
+
+*Option 1 - Skip Ahead*:
+#+BEGIN_EXAMPLE
+[SCENE INCOMPLETE - Pick up after the confrontation]
+
+*** Next Scene - The Aftermath
+#+END_EXAMPLE
+
+Write what you *do* know, then return to the gap.
+
+*Option 2 - Write Terribly*:
+Give yourself permission to write badly. You can fix it later:
+
+#+BEGIN_EXAMPLE
+Sam tells Alex about the thing. [This is terrible dialogue, fix later]
+Alex reacts with surprise. [Describe this better in revision]
+#+END_EXAMPLE
+
+Bad writing is better than no writing. Revision fixes everything.
+
+*Option 3 - Quick Outline*:
+#+BEGIN_EXAMPLE
+# Outline for rest of scene:
+# - Sam reveals the secret about the letters
+# - Alex doesn't believe her at first
+# - Sam shows proof
+# - Alex realizes her whole understanding was wrong
+# - Scene ends with Alex leaving abruptly
+
+[Write the actual scene later]
+#+END_EXAMPLE
+
+Then move to the next scene you're excited about.
+
+** Active Writing Checklist
+
+During your session:
+
+□ Write continuously
+□ Use quick captures for ideas (~F8 F8~ + ~h~/~l~/~n~/~t~)
+□ Minimal lookups - mark [CHECK] instead
+□ Leave TODO markers for revision
+□ Don't edit yesterday's work
+□ Take short breaks (5 min per hour)
+□ Stop when you reach your goal OR time limit
+
+*Remember*: Momentum matters more than perfection!
+
+* Phase 3: Evening Wrap-Up (10 Minutes)
+
+End your session with a sense of accomplishment and preparation for tomorrow.
+
+** Step 1: Count Your Words (1 minute)
+
+See what you achieved today!
+
+1. Position cursor on today's section (the heading for the chapter or scene you worked on)
+2. Press ~F8 F8~ then ~w~ (word count)
+3. Read the result: "Subtree 'Chapter 3': 1,247 words"
+
+*Celebration moment*: You wrote over 1,000 words today!
+
+** Step 2: Update Tracking Tables (2 minutes)
+
+Update your project statistics:
+
+1. Open ~statistics.org~ (novels) or your story file (short stories)
+2. Navigate to the word count table
+3. Position cursor in the table
+4. Press ~C-c C-c~ to update
+
+The table recalculates:
+
+#+BEGIN_EXAMPLE
+Before:                         After:
+| Total | 15900 | 50000 | 32% | → | Total | 17147 | 50000 | 34% |
+#+END_EXAMPLE
+
+You went from 32% to 34% - progress!
+
+** Step 3: Update Daily Tracking (2 minutes)
+
+If using org-tracktable for daily logs:
+
+1. Navigate to your daily tracking table
+2. Add today's entry:
+
+#+BEGIN_EXAMPLE
+| Date       | Words | Total | Scene              |
+|------------+-------+-------+--------------------|
+| 2025-11-15 | 823   | 15900 | Chapter 3, Scene 1 |
+| 2025-11-16 | 1247  | 17147 | Chapter 3, Scene 2 | ← Today!
+#+END_EXAMPLE
+
+*Streak tracking*: "That's 7 days in a row!"
+
+** Step 4: Review and Plan (3 minutes)
+
+Read what you wrote and plan tomorrow:
+
+1. *Quick review*:
+   - Scroll through today's writing
+   - Don't edit (resist the urge!)
+   - Just read and appreciate
+   - Note any major issues for revision
+
+2. *Leave a note for tomorrow*:
+   At the end of your last scene:
+
+   #+BEGIN_EXAMPLE
+   [Stopped here on 2025-11-16. Next: Sam reveals the truth about
+   the letters. Alex's reaction should be disbelief first, then slowly
+   accepting. Good emotional tension. Remember to show, not tell.]
+   #+END_EXAMPLE
+
+3. *Plan tomorrow's session*:
+   #+BEGIN_EXAMPLE
+   # Tomorrow: Finish Scene 2, start Scene 3 (confrontation)
+   # Goal: 500 words minimum
+   #+END_EXAMPLE
+
+** Step 5: Save and Backup (2 minutes)
+
+Protect your work!
+
+*** Save Your Files
+
+Press ~C-x C-s~ to save.
+
+If you modified multiple files (manuscript + notes), save all:
+~C-x s~ (save some buffers) - press ~y~ for each
+
+*** Git Commit (Recommended)
+
+If your project uses git (created with ~writing-create-novel-project~):
+
+#+BEGIN_SRC bash
+# From the project directory
+cd ~/writing/my-novel
+
+git add .
+git commit -m "Chapter 3 Scene 2 - coffee shop confrontation (1,247 words)"
+
+# Optional: Push to remote backup
+git push
+#+END_SRC
+
+*Why commit daily*:
+- Complete history of your writing
+- Ability to see what changed each day
+- Easy recovery if you delete something important
+- Can revert experimental scenes that didn't work
+
+*** Alternative Backups
+
+If not using git:
+- Dropbox/Google Drive/OneDrive sync
+- Manual copy to external drive
+- Cloud backup service
+- Email yourself the manuscript
+
+*Rule*: Never end a day without your work in at least 2 places!
+
+** Step 6: Close Mindfully (30 seconds)
+
+Exit your writing environment:
+
+1. Press ~F8 F8~ then ~x~ (exit writing mode)
+2. Your normal Emacs appears
+3. Close Emacs or switch to other work
+
+*Mental transition*: You're done writing for today. Rest!
+
+** Evening Checklist
+
+□ Count today's words
+□ Update progress table
+□ Add daily tracking entry
+□ Review today's work (no editing!)
+□ Leave note for tomorrow
+□ Save all files
+□ Commit to git (or backup)
+□ Exit writing mode
+
+*Total time: 10 minutes*
+
+*Feeling: Accomplished!*
+
+* Weekly Review (30 Minutes, Once Per Week)
+
+Once a week, step back for big-picture perspective.
+
+** Best Time: Sunday Evening or Saturday Morning
+
+Choose a consistent time when you can reflect without rushing.
+
+** Weekly Review Checklist
+
+*** 1. Review Progress (5 minutes)
+
+Open ~statistics.org~ and assess:
+
+- *Word count*: "I wrote 3,500 words this week"
+- *Scenes completed*: "Finished 5 scenes"
+- *Streak*: "Wrote 6 out of 7 days"
+- *Pace*: "At this rate, I'll finish in 8 weeks"
+
+*** 2. Check Character Timeline (5 minutes)
+
+Open your manuscript and update the character timeline:
+
+1. Navigate to the Character Timeline section
+2. Position on the dynamic block: `#+BEGIN: character-timeline`
+3. Press ~C-c C-c~ to regenerate
+
+Review the table:
+
+#+BEGIN_EXAMPLE
+| Scene              | Alex | Sam | Jordan |
+|--------------------+------+-----+--------|
+| Scene 1 - Opening  | ◆    | ●   |        |
+| Scene 2 - Meeting  | ◆    | ●   | ●      |
+| Scene 3 - Reveal   | ◆    | ●   |        |
+#+END_EXAMPLE
+
+*Questions to ask*:
+- Is any character absent too long?
+- Do I need more variety in PoV?
+- Are secondary characters appearing regularly?
+
+*** 3. Check Plot Timeline (5 minutes)
+
+Update plot thread timeline:
+
+1. Navigate to Plot Timeline section
+2. Press ~C-c C-c~ on `#+BEGIN: plot-timeline`
+
+Review:
+
+#+BEGIN_EXAMPLE
+| Scene              | Main Plot | Romance | Mystery |
+|--------------------+-----------+---------+---------|
+| Scene 1 - Opening  | ●         |         | ●       |
+| Scene 2 - Meeting  | ●         | ●       |         |
+| Scene 3 - Reveal   | ●         |         | ●       |
+#+END_EXAMPLE
+
+*Questions to ask*:
+- Is each plot thread getting attention?
+- Are there long gaps in important plots?
+- Is one thread dominating unfairly?
+
+*** 4. Review Captured Notes (5 minutes)
+
+Look through notes you captured during the week:
+
+1. Open ~notes/notes.org~ or your notes file
+2. Read through new entries
+3. Act on urgent ones:
+   - Research needed? Add to research list
+   - Character development? Add to character file
+   - Plot change? Note in revision file
+
+*** 5. Plan Next Week (5 minutes)
+
+Set goals for the coming week:
+
+#+BEGIN_EXAMPLE
+* Week of 2025-11-17
+
+** Goals
+- Complete Chapter 3 (3 scenes remaining)
+- Start Chapter 4
+- Target: 2,500 words total
+- Focus: Develop Sam's backstory
+
+** Specific Tasks
+- [ ] Finish coffee shop confrontation scene
+- [ ] Write Sam's revelation scene
+- [ ] Write Alex's reaction scene
+- [ ] Research: 1990s letter writing customs
+- [ ] Review: Does the pacing feel right?
+#+END_EXAMPLE
+
+*** 6. Celebrate Wins (5 minutes)
+
+Take time to appreciate your progress:
+
+- Read your favorite paragraph from this week
+- Notice improvements in your writing
+- Acknowledge consistency (you showed up!)
+- Reward yourself (treat, break, whatever motivates you)
+
+*Self-compassion*: If you missed your weekly goal, that's okay. Progress over perfection!
+
+** Weekly Review Summary
+
+□ Review word count and progress
+□ Update character timeline
+□ Update plot timeline
+□ Review captured notes
+□ Plan next week's goals
+□ Celebrate wins
+
+*Time: 30 minutes, once per week*
+
+*Benefit: Big-picture perspective, course corrections, motivation*
+
+* Workflow Variations for Different Writers
+
+The standard workflow might not fit everyone. Here are variations:
+
+** The Pantser (Discovery Writer)
+
+*Minimal planning, maximum spontaneity*
+
+**Morning (3 min)**:
+- Open manuscript
+- Read last paragraph
+- Activate writing mode
+- Start writing (no goal setting, just write)
+
+**Active Writing**:
+- Write whatever comes
+- Capture characters/locations as they appear
+- Don't plan ahead
+- Follow the story where it leads
+
+**Evening (5 min)**:
+- Count words
+- Quick save/backup
+- That's it!
+
+**Weekly**: Brief check-in, less formal planning
+ 
+** The Plotter (Detailed Planner)
+
+*Extensive planning, structured execution*
+
+**Morning (10 min)**:
+- Review outline for today's scene
+- Check character notes
+- Review timeline
+- Set specific scene goals
+- Activate writing mode
+
+**Active Writing**:
+- Follow outline closely
+- Frequent captures for new details
+- Check character sheets often
+- Maintain timeline consistency
+
+**Evening (15 min)**:
+- Update all tracking tables
+- Review against outline
+- Adjust plan if needed
+- Update revision notes
+
+**Weekly**: Detailed review, adjust outline, plan next chapters
+
+** The Sprinter (Fast Drafter)
+
+*High volume, fast pace*
+
+**Morning (2 min)**:
+- Open manuscript
+- Activate writing mode
+- Start timer
+- GO!
+
+**Active Writing**:
+- Write as fast as possible
+- Minimal captures (just mark [TODO])
+- No lookups (just keep typing)
+- Don't reread anything
+- Multiple pomodoros back-to-back
+
+**Evening (5 min)**:
+- Count words (big numbers!)
+- Save
+- Done
+
+**Weekly**: Big picture review, but don't slow down
+
+** The Polisher (Careful Crafter)
+
+*Slow, deliberate, high quality first draft*
+
+**Morning (10 min)**:
+- Reread yesterday's work
+- Make minor edits
+- Set today's goal (may be just 200-300 words)
+- Activate focus mode
+
+**Active Writing**:
+- Write slowly and carefully
+- Frequent dictionary lookups
+- Crafted sentences
+- Multiple revision passes on each paragraph
+- Low word count, high quality
+
+**Evening (15 min)**:
+- Multiple reads of today's work
+- Polish and edit
+- Update tracking
+- Detailed notes
+
+**Weekly**: Less about quantity, more about quality review
+
+** The Part-Timer (Limited Time)
+
+*Only 30 minutes per day available*
+
+**Morning (0 min)**:
+- No morning routine
+- Jump straight in
+
+**Active Writing (25 min)**:
+- Every second counts
+- Minimal captures
+- Write in sentence fragments if needed
+- Stop mid-sentence if you must
+
+**Evening (5 min)**:
+- Quick count
+- One-line note for tomorrow
+- Save
+
+**Weekly (1 hour)**:
+- Do all the tracking/planning you skipped daily
+- Review and organize notes
+
+** The Binge Writer (Weekend Warrior)
+
+*Writes in long sessions, few days per week*
+
+**Session Start (10 min)**:
+- Full review of story so far
+- Check all timelines
+- Set ambitious session goal (2000+ words)
+- Prepare snacks and water
+
+**Active Writing (3-4 hours)**:
+- Multiple scenes in one session
+- Take breaks every hour
+- Quick captures
+- Momentum is key
+
+**Session End (20 min)**:
+- Count everything
+- Update all tables
+- Extensive notes for next session
+- Save and backup
+
+**Weekly**: Not applicable (sessions ARE the weekly review)
+
+* Common Workflow Challenges
+
+** Challenge 1: "I can't maintain consistency"
+
+*Solutions*:
+- Lower your daily goal (100 words is fine!)
+- Write at the same time every day (builds habit)
+- Track your streak (don't break the chain)
+- Remove friction (one-click project opening)
+- Forgive missed days (restart tomorrow)
+
+** Challenge 2: "I spend too much time planning/organizing"
+
+*Solutions*:
+- Set a timer for planning (max 5 minutes)
+- Skip morning review sometimes
+- Do captures AFTER writing session
+- Remember: Organized notes don't write the book
+
+** Challenge 3: "I keep editing yesterday's work"
+
+*Solutions*:
+- Use ~F8 F8 f~ (focus mode) - only see current scene
+- Jump to end immediately (~M->~)
+- Set a rule: No scrolling up!
+- Start each session with new scene
+- Save editing for designated revision time
+
+** Challenge 4: "I get distracted by research"
+
+*Solutions*:
+- Mark [RESEARCH] and keep writing
+- Set research time separate from writing time
+- Use placeholder text: "She used a [TOOL NAME]"
+- Remember: Fiction doesn't need perfect accuracy
+
+** Challenge 5: "Progress tracking feels demotivating"
+
+*Solutions*:
+- Track words written (not % of goal)
+- Celebrate small wins (any writing is good!)
+- Use time-based goals instead of word count
+- Skip tracking if it hurts more than helps
+- Remember: Every writer's pace is different
+
+** Challenge 6: "The workflow feels too rigid"
+
+*Solutions*:
+- Pick only the steps that work for you
+- Modify the workflow to fit your style
+- Some days, skip the whole workflow - just write!
+- Workflows serve you, not the other way around
+
+* Building Your Personal Workflow
+
+Let's design your custom workflow.
+
+** Exercise: Your Ideal Writing Day
+
+Imagine your perfect writing day. Answer these questions:
+
+1. *What time do I write best?*
+   - Early morning / Midday / Evening / Late night
+
+2. *How long can I focus?*
+   - 20-30 min / 1 hour / 2+ hours / All day
+
+3. *How much planning do I need?*
+   - None (pantser) / Some / Detailed (plotter)
+
+4. *What's my realistic daily goal?*
+   - 100-250 words / 250-500 / 500-1000 / 1000+
+
+5. *What motivates me?*
+   - Word count / Finished scenes / Time spent / Streak
+
+6. *What derails me?*
+   - Editing / Research / Social media / Self-doubt
+
+** Design Your Morning Routine
+
+Pick 3-5 elements that prepare you to write:
+
+#+BEGIN_EXAMPLE
+My Morning Routine (5 min):
+□ _________________________________
+□ _________________________________
+□ _________________________________
+□ _________________________________
+□ _________________________________
+#+END_EXAMPLE
+
+Examples:
+- Open manuscript and read last paragraph
+- Check yesterday's word count
+- Set today's goal
+- Activate writing mode
+- Make coffee
+- Close browser
+- Start timer
+
+** Design Your Evening Routine
+
+Pick 3-5 elements that wrap up your session:
+
+#+BEGIN_EXAMPLE
+My Evening Routine (10 min):
+□ _________________________________
+□ _________________________________
+□ _________________________________
+□ _________________________________
+□ _________________________________
+#+END_EXAMPLE
+
+Examples:
+- Count today's words
+- Update progress table
+- Save and backup
+- Leave note for tomorrow
+- Celebrate (check off calendar)
+- Close all writing-related programs
+
+** Commit to Your Workflow
+
+Write your custom workflow in your project's README or notes:
+
+#+BEGIN_EXAMPLE
+* My Writing Workflow
+
+** Morning (X minutes)
+- Step 1
+- Step 2
+- Step 3
+
+** Active Writing
+- Goal: X words OR X time
+- Tools to use: [list]
+- Things to avoid: [list]
+
+** Evening (X minutes)
+- Step 1
+- Step 2
+- Step 3
+
+** Weekly (if applicable)
+- Day: [when]
+- Activities: [what]
+#+END_EXAMPLE
+
+*Try it for one week*, then adjust!
+
+* Summary and Key Takeaways
+
+You now have a complete framework for daily writing productivity!
+
+** What You Learned
+
+✓ *Three-Phase Daily Workflow*
+  - Morning: Setup and preparation (5 min)
+  - Active writing: Focused creation (30-120 min)
+  - Evening: Tracking and planning (10 min)
+
+✓ *Weekly Review Process*
+  - Big-picture progress assessment
+  - Timeline checks
+  - Planning for the week ahead
+  - Celebrating accomplishments
+
+✓ *Workflow Variations*
+  - Pantser vs. Plotter
+  - Sprinter vs. Polisher
+  - Part-timer vs. Binge writer
+  - Customization for your style
+
+✓ *Tools Integration*
+  - Quick captures during writing
+  - Strategic lookups
+  - Progress tracking
+  - Backup and version control
+
+** The Core Workflow at a Glance
+
+| Phase   | Time   | Key Activities                                    |
+|---------+--------+---------------------------------------------------|
+| Morning | 5 min  | Open, review, set goal, activate mode             |
+| Writing | 30-120 | Write, quick captures, minimal interruptions      |
+| Evening | 10 min | Count words, update tables, plan, backup          |
+| Weekly  | 30 min | Review timelines, plan week, celebrate            |
+
+** Best Practices
+
+1. *Consistency Over Intensity*: 30 minutes every day beats 5 hours once a week
+2. *Minimize Friction*: Make starting effortless (aliases, bookmarks, routines)
+3. *Separate Creation from Editing*: Write now, fix later
+4. *Track Progress*: What gets measured gets improved
+5. *Celebrate Wins*: Acknowledge every writing session
+6. *Customize Freely*: Your workflow should feel natural
+7. *Forgive Yourself*: Missed days happen - just restart
+
+** Your Workflow Checklist
+
+Create a reference card for your desk:
+
+#+BEGIN_EXAMPLE
+═══════════════════════════════════════
+        MY WRITING WORKFLOW
+═══════════════════════════════════════
+
+MORNING (5 min)
+□ Open manuscript (write command)
+□ Read last paragraph
+□ Check progress
+□ Set goal: ____ words
+□ Activate mode (F8 F8 m)
+
+WRITING (__ min/hours)
+□ Write continuously
+□ Quick captures (F8 F8 h/l/n)
+□ Mark [TODO] for later
+□ No editing!
+
+EVENING (10 min)
+□ Count words (F8 F8 w)
+□ Update table (C-c C-c)
+□ Note for tomorrow
+□ Save + backup
+□ Exit mode (F8 F8 x)
+
+═══════════════════════════════════════
+Current streak: ___ days
+Total words: _____
+You've got this! ✍
+═══════════════════════════════════════
+#+END_EXAMPLE
+
+** Next Steps
+
+Now that you have a daily workflow, learn how to use these same tools for revision:
+
+Head to [[file:getting-started-14-revision-workflow.org][Lesson 14: Revision and Editing Workflow]] to discover how ~emacs-writing~ supports the editing phase of your work!
+
+* Additional Resources
+
+** Productivity Books for Writers
+
+- *"The War of Art"* by Steven Pressfield - Overcoming resistance
+- *"Bird by Bird"* by Anne Lamott - Daily writing practice
+- *"On Writing"* by Stephen King - Writer's routine and discipline
+- *"The Writing Life"* by Annie Dillard - Honest look at the writer's day
+
+** Time Management Techniques
+
+- *Pomodoro Technique*: 25 min work, 5 min break
+- *Time Blocking*: Dedicate specific hours to writing
+- *Morning Pages*: Julia Cameron's 3-page morning routine
+- *Don't Break the Chain*: Jerry Seinfeld's consistency method
+
+** Emacs Productivity Packages
+
+- ~org-pomodoro~ - Built-in timer for Pomodoro technique
+- ~org-habit~ - Track writing streaks
+- ~org-agenda~ - Plan writing sessions in advance
+- ~writeroom-mode~ - Already included in emacs-writing!
+
+** Backup and Version Control
+
+- *Git tutorials*: https://git-scm.com/book/
+- *GitHub for writers*: Free private repositories for your manuscripts
+- *Automated backups*: Dropbox, Google Drive, or rsync scripts
+- *Time Machine* (Mac) / *File History* (Windows) / *Timeshift* (Linux)
+
+** Writing Communities
+
+Share your workflow and learn from others:
+- r/writing on Reddit
+- NaNoWriMo forums (November and beyond)
+- Absolute Write forums
+- Local writing groups
+
+* About This Lesson
+
+- *Created*: 2025-11-16
+- *Last Updated*: 2025-11-16
+- *Lesson Number*: 13 of 15
+- *Part*: 5 - Workflows and Best Practices
+- *Estimated Time*: 15-20 minutes
+- *Difficulty*: Intermediate
+- *Prerequisites*: Familiarity with features from Lessons 1-12
+
+Remember: The best workflow is the one you actually use. Start simple, adjust as needed, and keep writing! 📝✨

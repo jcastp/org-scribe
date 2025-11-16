@@ -593,7 +593,8 @@ Press: ~F8 F8 4~ (search by location)
 
 Or use: ~M-x writing/org-find-location~
 
-** Process
+** TODO Process
+*NOTE:* This doesn't work as written here.
 
 1. You'll see: ~Search for location:~
 2. Start typing location name: ~Coffee~
@@ -702,7 +703,8 @@ This processes your entire manuscript, converting all matching location names to
 
 *Warning*: Review results! Ambiguous names might match incorrectly.
 
-* Location Timeline
+* TODO Location Timeline
+*NOTE:* This function doesn't exist. It's an hallucination.
 
 Like character timelines, you can visualize location usage.
 
@@ -717,7 +719,8 @@ In your novel.org file, find the "Location Timeline" section (or create one):
 #+BEGIN_EXAMPLE
 * Progress Tracking
 
-** Location Timeline
+** TODO Location Timeline
+*NOTE:* This function doesn't exist. It's an hallucination.
 
 #+BEGIN: location-timeline
 #+END:
@@ -725,7 +728,8 @@ In your novel.org file, find the "Location Timeline" section (or create one):
 
 Put cursor on ~#+BEGIN:~ line and press: ~C-c C-c~
 
-** Example Output
+** TODO Example Output
+*NOTE:* This function doesn't exist. It's an hallucination.
 
 #+BEGIN_EXAMPLE
 | Scene           | Chapter   | Coffee Shop | Apartment | Office | Park |

@@ -1,0 +1,1357 @@
+#+TITLE: Lesson 15: Customization and Configuration
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 15!
+
+Congratulations on completing all the core lessons! You now know how to use every feature of ~emacs-writing~. This final lesson helps you make the package truly yours by customizing it to match your personal preferences and workflow.
+
+The beauty of Emacs is its flexibility - every aspect can be tailored. ~emacs-writing~ follows this philosophy, providing dozens of customization options while maintaining sensible defaults.
+
+By the end of this lesson, you'll have:
+- Customized themes and fonts for each writing mode
+- Adjusted window layouts and text widths to your preferences
+- Modified project templates for your specific needs
+- Configured export settings for your target formats
+- Set language preferences (English/Spanish)
+- Created custom keybindings for faster access
+- Built your personal ~emacs-writing~ configuration
+
+*Estimated time*: 20-25 minutes
+
+* Before You Begin
+
+** What You Need
+
+✓ Completed Lessons 1-14 (or at least tried the features)
+✓ Basic understanding of Emacs Lisp (we'll explain as we go)
+✓ Your Emacs configuration file open (usually ~init.el~ or ~.emacs~)
+✓ Willingness to experiment
+
+** Understanding Emacs Configuration
+
+All customizations go in your Emacs configuration file:
+
+*Common locations*:
+- ~~/..emacs.d/init.el~ (most common)
+- ~~/..emacs~
+- ~~/.config/emacs/init.el~
+
+*To find yours*:
+1. In Emacs: ~C-h v user-init-file RET~
+2. The value shown is your config file
+3. Open it: ~C-x C-f~ then paste that path
+
+** Two Ways to Customize
+
+*Method 1: Customize Interface* (Beginner-friendly)
+- Press ~M-x customize-group RET writing RET~
+- Click options, change values
+- Click "Apply and Save"
+- No Emacs Lisp knowledge needed
+
+*Method 2: Direct Configuration* (More powerful)
+- Edit your init file directly
+- Add Emacs Lisp code
+- More control and documentation
+- Can be version-controlled
+
+*This lesson teaches both methods!*
+
+** Emacs Lisp Basics (Quick Primer)
+
+You'll see code like this:
+
+#+BEGIN_SRC emacs-lisp
+(setq my-writing-env-work-theme 'modus-vivendi)
+#+END_SRC
+
+*Reading this*:
+- ~setq~ = "set variable"
+- ~my-writing-env-work-theme~ = variable name
+- ~'modus-vivendi~ = value (the ~'~ means "symbol")
+
+*Types of values*:
+- Symbol: ~'poet~, ~'leuven~ (theme/preset names)
+- Number: ~80~, ~0.25~ (widths, percentages)
+- String: ~"hello"~ (text in quotes)
+- Boolean: ~t~ (true) or ~nil~ (false)
+
+Don't worry if this is confusing - just copy the examples!
+
+* Customizing Writing Modes
+
+The writing modes (distraction-free, focus, project, editing) are highly customizable.
+
+** Themes for Writing Modes
+
+Each mode can use a different theme to signal mode changes visually.
+
+*** Current Defaults
+
+#+BEGIN_SRC emacs-lisp
+;; Default themes
+(setq my-writing-env-normal-theme 'ef-deuteranopia-dark)  ; Your normal theme
+(setq my-writing-env-work-theme 'poet)                    ; Distraction-free mode
+(setq writing-editing-theme 'leuven)                       ; Editing mode
+#+END_SRC
+
+*** Changing Themes
+
+*Popular writing themes*:
+
+For distraction-free mode:
+- ~'poet~ - Minimalist, high contrast (default)
+- ~'writeroom~ - Very clean
+- ~'nord~ - Cool, calming colors
+- ~'zenburn~ - Low contrast, easy on eyes
+- ~'solarized-light~ - Classic, warm light theme
+- ~'modus-operandi~ - Accessible light theme
+
+For editing mode:
+- ~'leuven~ - Clean, organized (default)
+- ~'modus-operandi~ - Accessible, professional
+- ~'ef-light~ - Modern light theme
+- ~'spacemacs-light~ - Clean and colorful
+
+*How to change*:
+
+Add to your init file:
+
+#+BEGIN_SRC emacs-lisp
+;; Customize writing mode themes
+(setq my-writing-env-work-theme 'modus-vivendi)    ; Dark writing theme
+(setq my-writing-env-normal-theme 'modus-operandi) ; Light normal theme
+(setq writing-editing-theme 'ef-light)              ; Light editing theme
+#+END_SRC
+
+*Testing themes*:
+
+Before committing, test a theme:
+1. ~M-x load-theme RET modus-vivendi RET~
+2. See how it looks
+3. If you like it, add to config
+4. If not, try another: ~M-x load-theme RET zenburn RET~
+
+*** Using Different Themes for Day/Night
+
+Some writers prefer light themes during day, dark at night:
+
+#+BEGIN_SRC emacs-lisp
+;; Daytime (9 AM - 6 PM): Light themes
+(setq my-writing-env-work-theme 'modus-operandi)
+
+;; Nighttime (6 PM - 9 AM): Dark themes
+;; (You'd need to switch manually or use circadian-mode package)
+#+END_SRC
+
+Or install the ~circadian~ package for automatic switching:
+
+#+BEGIN_SRC emacs-lisp
+(use-package circadian
+  :ensure t
+  :config
+  (setq circadian-themes '(("9:00" . modus-operandi)
+                           ("18:00" . modus-vivendi)))
+  (circadian-setup))
+#+END_SRC
+
+** Fonts for Writing Modes
+
+Typography matters! Different fonts for different tasks.
+
+*** Font Presets with Fontaine
+
+~emacs-writing~ uses the ~fontaine~ package for font management.
+
+*Default presets*:
+
+#+BEGIN_SRC emacs-lisp
+(setq my-writing-env-normal-font 'regular)      ; Normal editing
+(setq my-writing-env-work-font 'writing-big)    ; Distraction-free mode
+(setq writing-editing-fontaine-preset 'editing)  ; Editing mode
+#+END_SRC
+
+*** Creating Custom Font Presets
+
+Define your own presets in your init file:
+
+#+BEGIN_SRC emacs-lisp
+(setq fontaine-presets
+  '((regular
+     :default-height 140)           ; Normal size
+
+    (writing-big
+     :default-family "iA Writer Mono"
+     :default-height 180             ; Larger for writing
+     :line-spacing 4)                ; More space between lines
+
+    (editing
+     :default-family "Fira Code"
+     :default-height 160
+     :variable-pitch-family "Libre Baskerville"
+     :variable-pitch-height 160)
+
+    (presentation
+     :default-height 220)))          ; Very large
+#+END_SRC
+
+*Popular writing fonts*:
+- **Monospace**: iA Writer Mono, Fira Code, JetBrains Mono, Source Code Pro
+- **Variable-pitch**: Libre Baskerville, Crimson Text, ET Book, Merriweather
+
+*Finding font names*:
+
+Run: ~M-x menu-set-font~ to see available fonts, or:
+
+#+BEGIN_SRC emacs-lisp
+;; List all available fonts
+M-x describe-font RET TAB
+#+END_SRC
+
+### Adjusting Font Size Only
+
+If you just want bigger/smaller text without changing fonts:
+
+#+BEGIN_SRC emacs-lisp
+;; Make writing mode font bigger
+(setq fontaine-presets
+  '((regular
+     :default-height 140)    ; Default
+    (writing-big
+     :default-height 200)))  ; 200 = larger (try 160, 180, 200, 220)
+#+END_SRC
+
+*Height scale*:
+- 120 = Small
+- 140 = Normal
+- 160 = Medium large
+- 180 = Large
+- 200 = Very large
+- 220+ = Presentation mode
+
+** Text Width (Column Width)
+
+Control how wide your text appears - crucial for comfortable reading.
+
+*** Writing Mode Width
+
+#+BEGIN_SRC emacs-lisp
+;; Default widths
+(setq my-writing-env-work-width 80)     ; Distraction-free: 80 columns
+(setq my-writing-env-normal-width 90)   ; Normal: 90 columns
+#+END_SRC
+
+*Adjusting*:
+
+#+BEGIN_SRC emacs-lisp
+;; Narrower for focused writing
+(setq my-writing-env-work-width 70)
+
+;; Wider if you have large monitor
+(setq my-writing-env-work-width 100)
+#+END_SRC
+
+*Guidelines*:
+- 60-70: Very focused, narrow column
+- 70-80: Standard comfortable reading (recommended)
+- 80-90: Slightly wider
+- 90-100: Wide (good for large monitors)
+- 100+: Very wide (loses focus)
+
+*Rule of thumb*: 60-90 characters per line is optimal for reading.
+
+*** Editing Mode Width
+
+Editing mode has a fill-column setting:
+
+#+BEGIN_SRC emacs-lisp
+;; Default
+(setq writing-editing-fill-column-width 90)
+
+;; Adjust to your preference
+(setq writing-editing-fill-column-width 100)  ; Wider for more context
+#+END_SRC
+
+** Window Panel Sizes (Editing Mode)
+
+Editing mode splits screen into three panels. Adjust their proportions:
+
+#+BEGIN_SRC emacs-lisp
+;; Defaults: 25% / 50% / 25%
+(setq writing-editing-left-width-percent 0.25)   ; Outline panel (left)
+(setq writing-editing-right-width-percent 0.25)  ; Notes panel (right)
+;; Center is automatic: 1.0 - left - right = 0.50 (50%)
+#+END_SRC
+
+*Alternative layouts*:
+
+Narrower outline, wider manuscript:
+#+BEGIN_SRC emacs-lisp
+(setq writing-editing-left-width-percent 0.20)   ; 20%
+(setq writing-editing-right-width-percent 0.25)  ; 25%
+;; Center: 55%
+#+END_SRC
+
+Narrower notes, more focus on manuscript:
+#+BEGIN_SRC emacs-lisp
+(setq writing-editing-left-width-percent 0.25)   ; 25%
+(setq writing-editing-right-width-percent 0.20)  ; 20%
+;; Center: 55%
+#+END_SRC
+
+Balanced three-column:
+#+BEGIN_SRC emacs-lisp
+(setq writing-editing-left-width-percent 0.33)   ; 33%
+(setq writing-editing-right-width-percent 0.33)  ; 33%
+;; Center: 34%
+#+END_SRC
+
+*Must sum to less than 1.0!*
+
+** Complete Writing Modes Configuration Example
+
+Put this in your init file:
+
+#+BEGIN_SRC emacs-lisp
+;;; Writing Modes Customization
+
+;; === THEMES ===
+(setq my-writing-env-normal-theme 'modus-operandi)  ; Light theme normally
+(setq my-writing-env-work-theme 'poet)              ; Clean theme for writing
+(setq writing-editing-theme 'leuven)                 ; Organized for editing
+
+;; === FONTS ===
+(setq my-writing-env-normal-font 'regular)
+(setq my-writing-env-work-font 'writing-big)
+(setq writing-editing-fontaine-preset 'editing)
+
+;; === TEXT WIDTHS ===
+(setq my-writing-env-work-width 75)                  ; Comfortable reading width
+(setq my-writing-env-normal-width 90)                ; Normal editing width
+(setq writing-editing-fill-column-width 90)          ; Editing mode width
+
+;; === EDITING MODE PANELS ===
+(setq writing-editing-left-width-percent 0.25)       ; Outline: 25%
+(setq writing-editing-right-width-percent 0.25)      ; Notes: 25%
+                                                      ; Manuscript: 50% (automatic)
+#+END_SRC
+
+* Customizing Language Tools
+
+Configure the dictionary and synonym tools.
+
+** Synonym Window Width
+
+The WordReference synonym window opens on the right. Adjust its width:
+
+#+BEGIN_SRC emacs-lisp
+;; Default
+(setq writing/sinonimo-window-width 80)
+
+;; Narrower (good for small screens)
+(setq writing/sinonimo-window-width 60)
+
+;; Wider (more content visible)
+(setq writing/sinonimo-window-width 100)
+#+END_SRC
+
+** Example Configuration
+
+#+BEGIN_SRC emacs-lisp
+;;; Language Tools Customization
+
+;; Synonym window width
+(setq writing/sinonimo-window-width 70)  ; Adjust to your screen
+#+END_SRC
+
+* Customizing Export Settings
+
+Control how your manuscript exports to different formats.
+
+** Scene Break Formatting
+
+The scene break macro (~{{{scene-break}}}~) outputs differently per format:
+
+#+BEGIN_SRC emacs-lisp
+;; Defaults
+(setq writing/scene-break-replacements
+  '((ascii . "\n***\n\n")
+    (md . "\n***\n\n")
+    (html . "<br><br><br>\n")
+    (latex . "\\vspace{\\baselineskip}\\vspace{\\baselineskip}\\vspace{\\baselineskip}\n")
+    (t . "\n\n\n")))  ; Default for other backends
+#+END_SRC
+
+### Customizing Scene Breaks
+
+*Want centered asterisks in LaTeX?*
+
+#+BEGIN_SRC emacs-lisp
+(setq writing/scene-break-replacements
+  '((latex . "\\begin{center}***\\end{center}\n")
+    (html . "<p style='text-align:center;'>***</p>\n")
+    (t . "\n***\n\n")))
+#+END_SRC
+
+*Want ornamental break*:
+
+#+BEGIN_SRC emacs-lisp
+(setq writing/scene-break-replacements
+  '((latex . "\\begin{center}\\text{\\Large ❦}\\end{center}\n")
+    (html . "<p style='text-align:center; font-size: 1.5em;'>❦</p>\n")
+    (t . "\n❦\n\n")))
+#+END_SRC
+
+*Want simple blank space*:
+
+#+BEGIN_SRC emacs-lisp
+(setq writing/scene-break-replacements
+  '((latex . "\\vspace{2\\baselineskip}\n")
+    (html . "<br><br>\n")
+    (t . "\n\n")))
+#+END_SRC
+
+** Example Export Configuration
+
+#+BEGIN_SRC emacs-lisp
+;;; Export Customization
+
+;; Scene breaks: Centered ornament
+(setq writing/scene-break-replacements
+  '((ascii . "\n***\n\n")
+    (latex . "\\begin{center}\\text{\\Large ❦}\\end{center}\n")
+    (html . "<p style='text-align:center;'>❦</p>\n")
+    (odt . "\n***\n\n")  ; ODT doesn't support fancy formatting well
+    (t . "\n\n\n")))
+#+END_SRC
+
+* Language Settings (English/Spanish)
+
+~emacs-writing~ supports both English and Spanish workflows.
+
+** Setting Template Language
+
+Controls which templates are used when creating projects:
+
+#+BEGIN_SRC emacs-lisp
+;; Default: English
+(setq writing-template-language 'en)
+
+;; For Spanish
+(setq writing-template-language 'es)
+#+END_SRC
+
+*What this affects*:
+- Template directory selection (~novel-en~ vs ~novel-es~)
+- File names (~novel.org~ vs ~novela.org~, ~notes~ vs ~notas~)
+- Template content language
+- Default scene/chapter templates
+
+** Bilingual Setup
+
+If you write in both languages, you can:
+
+*Option 1: Switch as needed*
+
+#+BEGIN_SRC emacs-lisp
+;; In init file, set default
+(setq writing-template-language 'en)
+
+;; When starting Spanish project, temporarily change:
+;; M-x set-variable RET writing-template-language RET 'es RET
+;; Then create project
+#+END_SRC
+
+*Option 2: Use both template sets*
+
+#+BEGIN_SRC emacs-lisp
+;; Define functions for each language
+(defun my-new-english-novel ()
+  "Create English novel project."
+  (interactive)
+  (let ((writing-template-language 'en))
+    (call-interactively 'writing-create-novel-project)))
+
+(defun my-new-spanish-novel ()
+  "Create Spanish novel project."
+  (interactive)
+  (let ((writing-template-language 'es))
+    (call-interactively 'writing-create-novel-project)))
+#+END_SRC
+
+Now you have dedicated commands for each language!
+
+** Custom Template Directories
+
+Use your own customized templates:
+
+#+BEGIN_SRC emacs-lisp
+;; Point to your custom template directory
+(setq writing-template-directory
+      (expand-file-name "~/my-writing-templates/novel/"))
+
+(setq writing-short-story-template-directory
+      (expand-file-name "~/my-writing-templates/short-story/"))
+#+END_SRC
+
+*How to create custom templates*:
+
+1. Copy existing templates:
+   #+BEGIN_SRC bash
+   cp -r ~/.emacs.d/elpa/emacs-writing-*/writing-templates/novel-en ~/my-templates/
+   #+END_SRC
+
+2. Modify files in ~~/my-templates/~
+
+3. Point ~writing-template-directory~ to your custom location
+
+4. Create projects - your templates are used!
+
+* Modifying Project Templates
+
+Customize the templates to match your specific needs.
+
+** Accessing Templates
+
+*Method 1: Via Command*
+
+#+BEGIN_EXAMPLE
+M-x writing-edit-templates
+#+END_EXAMPLE
+
+Opens the template directory in Dired.
+
+*Method 2: Direct Path*
+
+Templates are in the package directory:
+#+BEGIN_EXAMPLE
+~/.emacs.d/elpa/emacs-writing-VERSION/writing-templates/
+#+END_EXAMPLE
+
+** Template Structure
+
+Templates use variable substitution:
+
+#+BEGIN_EXAMPLE
+#+TITLE: ${TITLE}
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+END_EXAMPLE
+
+*Available variables*:
+- ~${TITLE}~ - Project title from user input
+- ~${AUTHOR}~ - From ~user-full-name~ variable
+- ~${DATE}~ - Current date (YYYY-MM-DD format)
+
+** Common Template Modifications
+
+*** Adding Your Writing Goals
+
+Edit ~novel.org.template~ or ~story.org.template~:
+
+#+BEGIN_EXAMPLE
+#+TITLE: ${TITLE}
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+STARTUP: overview
+
+* Project Goals
+
+- *Target word count*: 80,000 words
+- *Deadline*: [Add your deadline]
+- *Daily goal*: 1,000 words
+- *Genre*: [Your genre]
+
+* The Manuscript
+...
+#+END_EXAMPLE
+
+Now every project includes your goals section!
+
+*** Customizing Scene Template
+
+Edit the scene template in ~writing-capture.el~ by adding this to your init:
+
+#+BEGIN_SRC emacs-lisp
+;; Override default scene template
+(setq my-custom-scene-template
+  "*** %? - [Title]
+:PROPERTIES:
+:PoV:
+:Characters:
+:Plot:
+:Location:
+:Timeline:
+:Description:
+:Emotion:        ; ← Added this
+:Weather:        ; ← Added this
+:WORDCOUNT:
+:WORD-OBJECTIVE:
+:END:
+
+[Scene content here]
+")
+
+;; Use it with org-capture or scene insertion
+#+END_SRC
+
+*** Adding Custom Planning Files
+
+For novels, add a new planning file:
+
+1. Create ~motivations.org.template~ in template directory:
+
+#+BEGIN_EXAMPLE
+#+TITLE: Character Motivations - ${TITLE}
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+
+* Protagonist Motivations
+
+** External Goals
+What they want in the world
+
+** Internal Needs
+What they need to grow
+
+* Antagonist Motivations
+...
+#+END_EXAMPLE
+
+2. It will be included in new novel projects automatically!
+
+** Short Story vs Novel Templates
+
+Remember the differences:
+
+*Novel templates* (~writing-templates/novel-en/~):
+- 12-13 files
+- Separate plan/ directory
+- Complex structure
+
+*Short story templates* (~writing-templates/short-story-en/~):
+- 3 files
+- Simplified structure
+- Combined notes file
+
+Modify the appropriate set for your needs!
+
+* Creating Custom Keybindings
+
+Speed up your workflow with personalized keyboard shortcuts.
+
+## Global Keybindings
+
+Add to your init file:
+
+#+BEGIN_SRC emacs-lisp
+;;; Custom Keybindings for Writing
+
+;; Quick access to writing features
+(global-set-key (kbd "C-c w m") 'writing/distraction-free-mode)  ; Start writing
+(global-set-key (kbd "C-c w e") 'writing/editing-mode)           ; Start editing
+(global-set-key (kbd "C-c w w") 'writing-wordcount-subtree)      ; Count words
+(global-set-key (kbd "C-c w n") 'writing/capture-to-file)        ; Quick note
+
+;; Dictionary tools
+(global-set-key (kbd "C-c d") 'writing/rae-api-lookup)           ; RAE dictionary
+(global-set-key (kbd "C-c y") 'writing/sinonimo)                 ; Synonyms
+
+;; Character/plot tools
+(global-set-key (kbd "C-c l p") 'writing/set-pov-character)      ; Set PoV
+(global-set-key (kbd "C-c l c") 'writing/set-scene-characters)   ; Set characters
+(global-set-key (kbd "C-c l j") 'writing/jump-to-pov-character)  ; Jump to character
+
+;; Search functions
+(global-set-key (kbd "C-c s c") 'writing/org-find-character)     ; Find by character
+(global-set-key (kbd "C-c s p") 'writing/org-find-plot)          ; Find by plot
+(global-set-key (kbd "C-c s l") 'writing/org-find-location)      ; Find by location
+#+END_SRC
+
+*Choose keys that don't conflict!*
+
+Common prefixes available:
+- ~C-c LETTER~ (reserved for user)
+- ~C-c C-LETTER~ (reserved for major modes)
+- ~F5~ through ~F9~ (function keys)
+
+** Mode-Specific Keybindings
+
+Only active in org-mode:
+
+#+BEGIN_SRC emacs-lisp
+;; Add to org-mode-map
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c i s") 'writing-insert-scene)
+  (define-key org-mode-map (kbd "C-c i c") 'writing-insert-chapter))
+#+END_SRC
+
+** Alternative: Use the Hydra
+
+If you like the Hydra menu (~F8 F8~), you can rebind it:
+
+#+BEGIN_SRC emacs-lisp
+;; Change Hydra binding
+(global-set-key (kbd "C-c m") 'hydra-writing/body)  ; Instead of F8 F8
+
+;; Or add multiple bindings
+(global-set-key (kbd "<f9>") 'hydra-writing/body)   ; F9 also opens it
+#+END_SRC
+
+* Project Structure Customization
+
+Adjust how projects are organized.
+
+** Default Project Location
+
+Set where new projects are created:
+
+#+BEGIN_SRC emacs-lisp
+;; Currently prompts for location
+;; To set a default:
+(defun my-writing-create-novel ()
+  "Create novel in my default directory."
+  (interactive)
+  (let ((default-directory "~/Documents/my-novels/"))
+    (call-interactively 'writing-create-novel-project)))
+#+END_SRC
+
+** File Name Preferences
+
+The package looks for manuscripts with these names:
+
+#+BEGIN_SRC emacs-lisp
+;; Defaults
+(setq writing-novel-file-names '("novel.org" "novela.org" "manuscript.org"))
+
+;; Add your preferred names
+(setq writing-novel-file-names '("novel.org" "novela.org" "manuscript.org" "book.org" "draft.org"))
+#+END_SRC
+
+## Directory Name Preferences
+
+For notes directory:
+
+#+BEGIN_SRC emacs-lisp
+;; Defaults
+(setq writing-notes-dir-names '("notes" "notas"))
+
+;; Add alternatives
+(setq writing-notes-dir-names '("notes" "notas" "research" "ideas"))
+#+END_SRC
+
+* Word Counting Configuration
+
+Customize word counting behavior.
+
+** Tags to Ignore
+
+Exclude sections from word count using tags:
+
+#+BEGIN_SRC emacs-lisp
+;; Default
+(setq writing-wordcount-default-ignore-tags '("noexport"))
+
+;; Add more tags
+(setq writing-wordcount-default-ignore-tags '("noexport" "draft" "cut" "archive"))
+#+END_SRC
+
+Usage in manuscript:
+
+#+BEGIN_EXAMPLE
+*** Scene to Exclude    :noexport:
+This won't be counted!
+
+*** Alternate Version   :draft:
+Also not counted.
+#+END_EXAMPLE
+
+* Complete Configuration Example
+
+Here's a full, commented configuration you can adapt:
+
+#+BEGIN_SRC emacs-lisp
+;;; ============================================================================
+;;; MY EMACS-WRITING CONFIGURATION
+;;; ============================================================================
+
+;; -----------------------------------------------------------------------------
+;; VISUAL CUSTOMIZATION
+;; -----------------------------------------------------------------------------
+
+;; Themes
+(setq my-writing-env-normal-theme 'modus-operandi)     ; Light theme for day
+(setq my-writing-env-work-theme 'poet)                 ; Minimal for writing
+(setq writing-editing-theme 'leuven)                    ; Clear for editing
+
+;; Fonts (requires fontaine package)
+(setq my-writing-env-normal-font 'regular)
+(setq my-writing-env-work-font 'writing-big)
+(setq writing-editing-fontaine-preset 'editing)
+
+;; Text widths
+(setq my-writing-env-work-width 75)                    ; Comfortable reading
+(setq my-writing-env-normal-width 90)
+(setq writing-editing-fill-column-width 90)
+
+;; Editing mode panel sizes
+(setq writing-editing-left-width-percent 0.25)         ; Outline: 25%
+(setq writing-editing-right-width-percent 0.25)        ; Notes: 25%
+
+;; -----------------------------------------------------------------------------
+;; LANGUAGE & TEMPLATES
+;; -----------------------------------------------------------------------------
+
+;; Language (en or es)
+(setq writing-template-language 'en)                   ; English templates
+
+;; Custom template directories (optional)
+;; (setq writing-template-directory "~/my-templates/novel/")
+
+;; -----------------------------------------------------------------------------
+;; LANGUAGE TOOLS
+;; -----------------------------------------------------------------------------
+
+;; Synonym window width
+(setq writing/sinonimo-window-width 70)
+
+;; -----------------------------------------------------------------------------
+;; EXPORT SETTINGS
+;; -----------------------------------------------------------------------------
+
+;; Scene breaks - centered ornament
+(setq writing/scene-break-replacements
+  '((ascii . "\n***\n\n")
+    (latex . "\\begin{center}***\\end{center}\n")
+    (html . "<p style='text-align:center;'>***</p>\n")
+    (t . "\n\n\n")))
+
+;; -----------------------------------------------------------------------------
+;; WORD COUNTING
+;; -----------------------------------------------------------------------------
+
+;; Tags to ignore in word count
+(setq writing-wordcount-default-ignore-tags '("noexport" "draft" "archive"))
+
+;; -----------------------------------------------------------------------------
+;; PROJECT STRUCTURE
+;; -----------------------------------------------------------------------------
+
+;; Recognized manuscript file names
+(setq writing-novel-file-names '("novel.org" "novela.org" "manuscript.org"))
+
+;; Recognized notes directory names
+(setq writing-notes-dir-names '("notes" "notas"))
+
+;; -----------------------------------------------------------------------------
+;; KEYBINDINGS
+;; -----------------------------------------------------------------------------
+
+;; Writing modes
+(global-set-key (kbd "C-c w m") 'writing/distraction-free-mode)
+(global-set-key (kbd "C-c w e") 'writing/editing-mode)
+(global-set-key (kbd "C-c w w") 'writing-wordcount-subtree)
+
+;; Dictionary
+(global-set-key (kbd "C-c d") 'writing/rae-api-lookup)
+(global-set-key (kbd "C-c y") 'writing/sinonimo)
+
+;; Character linking
+(global-set-key (kbd "C-c l p") 'writing/set-pov-character)
+(global-set-key (kbd "C-c l j") 'writing/jump-to-pov-character)
+
+;; Hydra menu
+(global-set-key (kbd "<f9>") 'hydra-writing/body)
+
+;; Org-mode specific
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c i s") 'writing-insert-scene)
+  (define-key org-mode-map (kbd "C-c i c") 'writing-insert-chapter))
+
+;;; ============================================================================
+;;; END EMACS-WRITING CONFIGURATION
+;;; ============================================================================
+#+END_SRC
+
+* Using the Customize Interface
+
+For those who prefer a GUI approach.
+
+** Opening Customize
+
+1. ~M-x customize-group RET writing RET~
+2. You'll see all customization options
+3. Click to expand groups
+4. Change values
+5. Click "Apply and Save"
+
+** Main Customization Groups
+
+*Writing* - Main group
+- Project Structure
+- Template settings
+- Export settings
+
+*My Writing Env* - Writing mode settings
+- Themes
+- Fonts
+- Text widths
+
+## Customizing Individual Variables
+
+*For a specific variable*:
+
+1. ~M-x customize-variable RET my-writing-env-work-theme RET~
+2. Change value (dropdown or text field)
+3. Click "Apply and Save"
+
+*Advantage*: No need to know Emacs Lisp
+*Disadvantage*: Can't add comments, harder to share configuration
+
+* Testing Your Configuration
+
+After making changes, test them!
+
+** Reloading Configuration
+
+*Method 1: Restart Emacs*
+- Close Emacs
+- Open again
+- Changes are applied
+
+*Method 2: Reload config file*
+- ~M-x load-file RET ~/..emacs.d/init.el RET~
+- Changes applied without restart
+
+*Method 3: Evaluate region*
+- Select your new configuration code
+- ~M-x eval-region RET~
+- Just that section is applied
+
+** Testing Individual Changes
+
+Test a theme change:
+#+BEGIN_EXAMPLE
+M-x load-theme RET poet RET
+#+END_EXAMPLE
+
+Test a width change:
+#+BEGIN_EXAMPLE
+M-x set-variable RET my-writing-env-work-width RET 70 RET
+#+END_EXAMPLE
+
+Then activate writing mode (~F8 F8 m~) to see the effect.
+
+** Reverting Changes
+
+If something breaks:
+
+1. Open your init file
+2. Comment out the problematic line (add ~;;~ at the start):
+   #+BEGIN_SRC emacs-lisp
+   ;; (setq my-writing-env-work-theme 'broken-theme)  ; Disabled
+   #+END_SRC
+3. Reload configuration
+4. Problem should be gone
+
+** Version Controlling Your Config
+
+*Highly recommended*: Keep your Emacs config in git!
+
+#+BEGIN_SRC bash
+cd ~/.emacs.d
+git init
+git add init.el
+git commit -m "Initial emacs-writing configuration"
+#+END_SRC
+
+Now you can:
+- Try experimental changes safely
+- Revert if something breaks
+- Share configuration across machines
+- Track what changes you've made
+
+* Sharing and Backup
+
+## Backing Up Your Configuration
+
+*Essential files to backup*:
+- ~~/..emacs.d/init.el~ (your main config)
+- ~~/..emacs.d/custom.el~ (if using customize interface)
+- Any custom template directories
+
+*Backup methods*:
+1. Git (recommended)
+2. Dropbox/Google Drive
+3. Manual copies
+4. Dotfiles repository on GitHub
+
+** Sharing Configuration
+
+Many writers share their configs online:
+
+*Example dotfiles repositories*:
+- https://github.com/search?q=emacs+writing+config
+- https://github.com/search?q=emacs-writing-mode
+
+*Sharing your config*:
+
+1. Create a GitHub repository
+2. Add your init.el
+3. Add README explaining your setup
+4. Share with other writers!
+
+** Using Others' Configurations
+
+*Be careful!* Don't blindly copy entire configs.
+
+*Safe approach*:
+1. Read the code
+2. Understand what each section does
+3. Copy only relevant parts
+4. Test incrementally
+5. Adapt to your needs
+
+* Troubleshooting Customization
+
+** "My changes aren't working!"
+
+*Check*:
+1. Did you save the init file? (~C-x C-s~)
+2. Did you reload? (~M-x load-file~)
+3. Typos in variable names?
+4. Syntax errors? (missing quotes, parentheses)
+
+*Finding syntax errors*:
+
+Look in ~*Messages*~ buffer:
+- ~C-h e~ (view-echo-area-messages)
+- Look for error messages in red
+
+** "Theme/font not found"
+
+*Error*: "Cannot find theme 'my-theme'"
+
+*Solution*:
+1. Check theme is installed: ~M-x package-list-packages~
+2. Install if missing: ~M-x package-install RET theme-name RET~
+3. Or remove from config if you don't want it
+
+*Error*: "Font not available"
+
+*Solution*:
+1. Check font installed on system
+2. Use ~M-x menu-set-font~ to see available fonts
+3. Update config with available font name
+
+** "Configuration makes Emacs slow"
+
+*Possible causes*:
+- Too many packages loading at startup
+- Theme changes triggering expensive operations
+
+*Solutions*:
+1. Use ~use-package~ with ~:defer t~ for lazy loading
+2. Profile startup: ~M-x emacs-init-time~
+3. Simplify: disable customizations one by one
+
+** "I broke everything!"
+
+*Emergency recovery*:
+
+1. Start Emacs with: ~emacs -Q~ (ignores config)
+2. Open init file normally
+3. Find and fix/comment out problematic section
+4. Save
+5. Restart Emacs normally
+
+*Or*: Move init file temporarily:
+#+BEGIN_SRC bash
+mv ~/.emacs.d/init.el ~/.emacs.d/init.el.backup
+#+END_SRC
+
+Start Emacs, fix backup file, move back.
+
+* Practical Exercise (15 Minutes)
+
+Let's customize your setup right now!
+
+** Exercise: Create Your Personal Configuration
+
+*Goal*: Build a customized ~emacs-writing~ setup.
+
+### Step 1: Open Your Init File (1 min)
+
+1. ~C-x C-f~~/.emacs.d/init.el RET~
+2. Go to the end: ~M->~
+3. Add a comment:
+   #+BEGIN_SRC emacs-lisp
+   ;;; EMACS-WRITING CUSTOMIZATION
+   #+END_SRC
+
+** Step 2: Choose Your Writing Theme (3 min)
+
+1. Test a few themes:
+   - ~M-x load-theme RET poet RET~
+   - ~M-x load-theme RET modus-vivendi RET~
+   - ~M-x load-theme RET zenburn RET~
+
+2. Pick your favorite
+
+3. Add to init file:
+   #+BEGIN_SRC emacs-lisp
+   ;; My writing theme
+   (setq my-writing-env-work-theme 'poet)  ; Replace with your choice
+   #+END_SRC
+
+** Step 3: Set Text Width (2 min)
+
+1. Think about your monitor size
+2. Choose a width (60-90 recommended)
+3. Add to init file:
+   #+BEGIN_SRC emacs-lisp
+   ;; Comfortable reading width
+   (setq my-writing-env-work-width 75)  ; Adjust number
+   #+END_SRC
+
+** Step 4: Add Language Setting (1 min)
+
+#+BEGIN_SRC emacs-lisp
+;; Template language
+(setq writing-template-language 'en)  ; Or 'es for Spanish
+#+END_SRC
+
+** Step 5: Create Custom Keybindings (5 min)
+
+Pick 3-5 features you use most:
+
+#+BEGIN_SRC emacs-lisp
+;; My writing keybindings
+(global-set-key (kbd "C-c w m") 'writing/distraction-free-mode)
+(global-set-key (kbd "C-c w w") 'writing-wordcount-subtree)
+(global-set-key (kbd "C-c d") 'writing/rae-api-lookup)
+;; Add more based on what you use!
+#+END_SRC
+
+** Step 6: Save and Test (3 min)
+
+1. Save init file: ~C-x C-s~
+2. Reload: ~M-x load-file RET ~/..emacs.d/init.el RET~
+3. Open a writing project
+4. Test writing mode: ~F8 F8 m~
+5. Test keybindings: ~C-c w m~
+
+*Does everything work?*
+- ✓ Yes: Congratulations! Configuration successful!
+- ✗ No: Check ~*Messages*~ buffer for errors
+
+** Step 7: Document Your Config (Optional)
+
+Add comments explaining your choices:
+
+#+BEGIN_SRC emacs-lisp
+;;; EMACS-WRITING CUSTOMIZATION
+;;
+;; Personal configuration for emacs-writing package
+;; Author: Your Name
+;; Last updated: 2025-11-16
+;;
+;; Theme: Poet - Minimal and clean for focus
+;; Width: 75 - Comfortable on my 24" monitor
+;; Language: English
+;;
+
+(setq my-writing-env-work-theme 'poet)
+;; ... rest of config
+#+END_SRC
+
+*Future you will thank you!*
+
+* Summary and Key Takeaways
+
+You now know how to customize every aspect of ~emacs-writing~!
+
+** What You Learned
+
+✓ *Visual Customization*
+  - Themes for each writing mode
+  - Font presets and sizes
+  - Text widths and column settings
+  - Panel proportions in editing mode
+
+✓ *Language & Templates*
+  - English/Spanish template selection
+  - Custom template directories
+  - Modifying existing templates
+  - Adding custom planning files
+
+✓ *Export Settings*
+  - Scene break formatting per backend
+  - Custom export styles
+
+✓ *Keybindings*
+  - Global shortcuts for quick access
+  - Mode-specific bindings
+  - Custom Hydra bindings
+
+✓ *Project Structure*
+  - File name preferences
+  - Directory organization
+  - Default locations
+
+✓ *Configuration Methods*
+  - Direct Emacs Lisp editing
+  - Customize interface
+  - Testing and debugging
+  - Version control
+
+** Essential Configuration Template
+
+The minimal config most writers need:
+
+#+BEGIN_SRC emacs-lisp
+;;; Minimal emacs-writing config
+
+;; Visual
+(setq my-writing-env-work-theme 'poet)           ; Your preferred theme
+(setq my-writing-env-work-width 75)               ; Your comfortable width
+
+;; Language
+(setq writing-template-language 'en)              ; 'en or 'es
+
+;; Quick access
+(global-set-key (kbd "C-c w m") 'writing/distraction-free-mode)
+(global-set-key (kbd "C-c w w") 'writing-wordcount-subtree)
+#+END_SRC
+
+*That's all you need to get started!*
+
+** Customization Philosophy
+
+1. *Start simple* - Use defaults initially
+2. *Identify friction* - What bothers you?
+3. *Customize gradually* - One thing at a time
+4. *Test thoroughly* - Make sure it works
+5. *Document choices* - Future you needs context
+6. *Share what works* - Help other writers
+
+** Your Configuration Checklist
+
+#+BEGIN_EXAMPLE
+═══════════════════════════════════════
+  EMACS-WRITING CONFIGURATION CHECKLIST
+═══════════════════════════════════════
+
+VISUAL CUSTOMIZATION
+□ Writing mode theme chosen
+□ Normal theme chosen
+□ Editing mode theme chosen
+□ Text widths set comfortably
+□ Font sizes adjusted
+
+LANGUAGE & TEMPLATES
+□ Template language set (en/es)
+□ Template modifications (if any)
+□ Custom templates created (if desired)
+
+WORKFLOW
+□ Essential keybindings added
+□ Synonym window width set
+□ Export settings configured
+
+MAINTENANCE
+□ Configuration saved
+□ Configuration tested
+□ Configuration backed up
+□ Comments/documentation added
+
+═══════════════════════════════════════
+#+END_EXAMPLE
+
+** Next Steps
+
+*You've completed all 15 lessons!* 🎉
+
+*What's next*:
+1. **Write!** - Use what you've learned
+2. **Experiment** - Try different customizations
+3. **Share** - Help other writers
+4. **Contribute** - Report bugs, suggest features
+5. **Enjoy** - You have a powerful writing environment!
+
+*Keep learning*:
+- Read Emacs documentation: ~C-h i~
+- Explore Org-mode features: ~C-h i m org RET~
+- Check package updates regularly
+- Join Emacs writing communities
+
+* Additional Resources
+
+** Emacs Configuration Resources
+
+- *Emacs Manual*: ~C-h r~ (built-in)
+- *Emacs Wiki*: https://www.emacswiki.org/
+- *r/emacs*: https://www.reddit.com/r/emacs/
+- *Emacs StackExchange*: https://emacs.stackexchange.com/
+
+** Theme Collections
+
+- *MELPA*: https://melpa.org/#/?q=theme
+- *Emacs Themes*: https://emacsthemes.com/
+- *Doom Emacs Themes*: https://github.com/doomemacs/themes
+
+** Font Resources
+
+- *Programming Fonts*: https://www.programmingfonts.org/
+- *Google Fonts*: https://fonts.google.com/
+- *Font Library*: https://fontlibrary.org/
+
+** Org-Mode Resources
+
+- *Org-mode Manual*: https://orgmode.org/manual/
+- *Worg*: https://orgmode.org/worg/
+- *Org-mode for Writers*: https://blog.eadev.org/org-mode-for-writers/
+
+** Configuration Examples
+
+- *Awesome Emacs*: https://github.com/emacs-tw/awesome-emacs
+- *Emacs Configurations*: https://github.com/caisah/emacs.dz
+- *Dotfiles*: https://dotfiles.github.io/
+
+** Getting Help
+
+*Within Emacs*:
+- ~C-h f~ - Describe function
+- ~C-h v~ - Describe variable
+- ~C-h k~ - Describe key
+- ~C-h m~ - Describe mode
+- ~C-h i~ - Info documentation
+
+*Online*:
+- Emacs-writing issues: https://github.com/anthropics/claude-code/issues
+- r/emacs community
+- Emacs StackExchange
+- #emacs on IRC/Discord
+
+* About This Lesson
+
+- *Created*: 2025-11-16
+- *Last Updated*: 2025-11-16
+- *Lesson Number*: 15 of 15 (Final Lesson!)
+- *Part*: 5 - Workflows and Best Practices
+- *Estimated Time*: 20-25 minutes
+- *Difficulty*: Beginner to Intermediate
+- *Prerequisites*: Familiarity with features from Lessons 1-14
+
+---
+
+*Congratulations on completing the entire emacs-writing tutorial series!* 🎉
+
+You now have a complete, powerful, and personalized writing environment. Use it to write amazing stories! 📚✨
+
+*Previous*: [[file:getting-started-14-revision-workflow.org][Lesson 14: Revision and Editing Workflow]]
+*Back to Start*: [[file:getting-started-00-index.org][Getting Started Guide - Index]]
+
+*Tutorial Complete!* Happy writing! ✍️

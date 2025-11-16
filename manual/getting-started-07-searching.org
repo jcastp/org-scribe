@@ -72,12 +72,12 @@ The package provides four main search functions, each focusing on a different sc
 
 ** Overview Table
 
-| Search Type | Hydra Key | Command                     | Searches Property |
-|-------------+-----------+-----------------------------+-------------------|
-| PoV         | F8 F8 1   | ~writing/org-find-pov~        | ~:PoV:~             |
-| Character   | F8 F8 2   | ~writing/org-find-character~  | ~:Characters:~      |
-| Plot        | F8 F8 3   | ~writing/org-find-plot~       | ~:Plot:~            |
-| Location    | F8 F8 4   | ~writing/org-find-location~   | ~:Location:~        |
+| Search Type | Hydra Key | Command                    | Searches Property |
+|-------------+-----------+----------------------------+-------------------|
+| PoV         | F8 F8 1   | ~writing/org-find-pov~       | ~:PoV:~             |
+| Character   | F8 F8 2   | ~writing/org-find-character~ | ~:Characters:~      |
+| Plot        | F8 F8 3   | ~writing/org-find-plot~      | ~:Plot:~            |
+| Location    | F8 F8 4   | ~writing/org-find-location~  | ~:Location:~        |
 
 ** Common Pattern
 
@@ -115,7 +115,8 @@ Press: ~F8 F8 1~
 
 Or use: ~M-x writing/org-find-pov~
 
-** The Process
+** TODO The Process
+*NOTE:* This is not implemented as written
 
 1. You'll see a prompt: ~Search for PoV:~
 2. Start typing a character name: ~Alex~
@@ -123,7 +124,8 @@ Or use: ~M-x writing/org-find-pov~
 4. Select: ~Alex Rivera~
 5. Press: ~Enter~
 
-** Example Results
+** TODO Example Results
+*NOTE:* This is not implemented as shown below
 
 #+BEGIN_EXAMPLE
 Search results for PoV "Alex Rivera":
@@ -620,7 +622,8 @@ Or use: ~M-x writing/org-find-todos~
 
 Or Org's built-in: ~C-c a t~ (agenda todo list)
 
-** Example Results
+** TODO Example Results
+*NOTE:* This is not implemented as shown below.
 
 #+BEGIN_EXAMPLE
 TODO Items Across Project:
@@ -777,15 +780,15 @@ Search results appear in a special buffer: ~*org-ql-search*~
 
 ** Navigating Results
 
-| Key       | Action                           |
-|-----------+----------------------------------|
-| ~n~         | Next result                      |
-| ~p~         | Previous result                  |
-| ~RET~       | Jump to scene at point           |
-| ~C-c C-o~   | Follow link at point             |
-| ~g~         | Refresh/re-run search            |
-| ~q~         | Quit results buffer              |
-| ~C-x 1~     | Maximize results (hide other windows) |
+| Key     | Action                                |
+|---------+---------------------------------------|
+| ~n~       | Next result                           |
+| ~p~       | Previous result                       |
+| ~RET~     | Jump to scene at point                |
+| ~C-c C-o~ | Follow link at point                  |
+| ~g~       | Refresh/re-run search                 |
+| ~q~       | Quit results buffer                   |
+| ~C-x 1~   | Maximize results (hide other windows) |
 
 ** Workflow: Review and Edit
 

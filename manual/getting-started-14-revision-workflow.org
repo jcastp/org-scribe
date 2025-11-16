@@ -1,0 +1,1429 @@
+#+TITLE: Lesson 14: Revision and Editing Workflow
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 14!
+
+You've finished your first draft - congratulations! Now comes the critical work of revision. This is where good writing becomes great writing. Fortunately, ~emacs-writing~ provides powerful tools specifically designed for the revision process.
+
+Revision isn't just fixing typos. It's about:
+- Finding and fixing inconsistencies
+- Strengthening character development
+- Ensuring plot threads resolve properly
+- Improving pacing and structure
+- Polishing prose
+
+This lesson shows you how to use ~emacs-writing~'s features to make revision systematic, thorough, and even enjoyable.
+
+By the end of this lesson, you'll have:
+- Mastered editing mode for professional revision environment
+- Learned to find inconsistencies using search functions
+- Used timelines to check character development and plot balance
+- Created and managed revision TODO lists systematically
+- Developed a complete revision workflow
+- Understood multi-pass revision strategies
+
+*Estimated time*: 20-25 minutes
+
+* Before You Begin
+
+** What You Need
+
+✓ A completed first draft (or at least several chapters)
+✓ Familiarity with search functions (Lesson 7)
+✓ Understanding of timelines (Lesson 10)
+✓ Knowledge of editing mode (Lesson 9)
+✓ Willingness to be critical of your own work
+
+** The Revision Mindset
+
+Revision requires a different mindset than drafting:
+
+*Drafting mindset*:
+- Creative, expansive
+- "Yes, and..."
+- Don't stop, don't edit
+- Generate material
+
+*Revision mindset*:
+- Critical, selective
+- "Is this necessary?"
+- Slow down, examine closely
+- Refine material
+
+*Important*: These are different tasks requiring different mental states. Don't try to do both simultaneously!
+
+** Types of Revision
+
+This lesson covers three revision levels:
+
+1. **Structural Revision** (Act/Chapter level) - Plot, pacing, character arcs
+2. **Scene Revision** (Scene level) - Individual scenes, dialogue, description
+3. **Line Editing** (Sentence level) - Prose polish, word choice, rhythm
+
+We'll focus on how ~emacs-writing~ supports each level.
+
+* Setting Up Your Revision Environment
+
+** The Editing Mode Advantage
+
+Editing mode (~F8 F8 e~) creates a professional three-panel layout:
+
+#+BEGIN_EXAMPLE
+┌──────────────────────────────────────────────────────┐
+│                   EDITING MODE                       │
+├─────────────┬──────────────────────┬─────────────────┤
+│             │                      │                 │
+│  OUTLINE    │    MANUSCRIPT        │  NOTES          │
+│  (25%)      │    (50%)             │  (25%)          │
+│             │                      │                 │
+│ • Act I     │  *** Scene 1         │ * Revision      │
+│   - Ch 1    │                      │                 │
+│     - Sc 1  │  Alex woke up to     │ ** Scene 1      │
+│     - Sc 2  │  the sound of...     │ - [X] Fix pacing│
+│   - Ch 2    │                      │ - [ ] Add detail│
+│     - Sc 3  │  [Content of scene]  │                 │
+│     - Sc 4  │                      │ ** Scene 2      │
+│             │                      │ - [ ] Rewrite   │
+│             │                      │                 │
+└─────────────┴──────────────────────┴─────────────────┘
+#+END_EXAMPLE
+
+**Left panel** (imenu-list): Navigate your manuscript structure
+**Center panel**: Your manuscript for editing
+**Right panel**: Revision notes and checklists
+
+** Activating Editing Mode
+
+1. Open your manuscript (~novel.org~ or ~story.org~)
+2. Press ~F8 F8 e~
+3. Three-panel layout appears
+4. Notes file opens/creates automatically (e.g., ~novel-notes.org~)
+
+** Setting Up Your Revision Notes File
+
+The first time you use editing mode, the notes file is blank. Set it up:
+
+#+BEGIN_EXAMPLE
+#+TITLE: Novel Revision Notes
+#+STARTUP: overview
+
+* Revision Plan
+
+** Pass 1: Structural Review
+- [ ] Check plot thread resolution
+- [ ] Verify character arcs complete
+- [ ] Review pacing (use timeline)
+- [ ] Ensure all setups pay off
+
+** Pass 2: Scene-Level Work
+- [ ] Strengthen openings
+- [ ] Improve dialogue
+- [ ] Add sensory details
+- [ ] Cut unnecessary scenes
+
+** Pass 3: Line Editing
+- [ ] Polish prose
+- [ ] Fix weak words
+- [ ] Improve rhythm
+- [ ] Final consistency check
+
+* Scene Notes
+
+** Chapter 1
+
+*** Scene 1 - Opening
+- [ ] Slow pacing - cut first 2 paragraphs
+- [ ] Add more detail about apartment
+- [ ] Alex's motivation unclear - fix
+- [ ] Good dialogue - keep!
+
+*** Scene 2 - Meeting Sam
+- [ ] Sam appears too abruptly
+- [ ] Add foreshadowing in Scene 1
+- [ ] Expand their conversation
+- [ ] Check: what time of day is this?
+
+* Character Issues
+
+** Alex (Protagonist)
+- Arc: Isolated → Connected
+- Problem: Motivation weak in Act II
+- Fix: Add scene showing why she cares
+- Status: [ ] Not addressed yet
+
+** Sam (Secondary)
+- Problem: Disappears for 8 scenes (Ch 5-12)
+- Fix: Add brief appearance in Ch 8
+- Status: [ ] Planned, not written
+
+* Plot Threads
+
+** Main Plot
+- Resolution: Chapter 15, Scene 3
+- Status: ✓ Resolved
+- Notes: Strong ending
+
+** Romance Subplot
+- Resolution: Chapter 14, Scene 2
+- Status: ✗ PROBLEM - Feels rushed
+- Fix: Add romantic tension scene in Ch 12
+
+** Mystery Thread
+- Resolution: Chapter 15, Scene 1
+- Status: ✓ Resolved
+- Notes: Clues planted well
+
+* Global Issues
+- [ ] Timeline confusion: Day 3 vs Day 4 in Chapter 6
+- [ ] Weather inconsistency: Raining in Ch 2, sunny in same day Ch 3
+- [ ] Character name: Is it "Sarah" or "Sara"? (inconsistent)
+- [ ] Location: Coffee shop described differently in Ch 1 vs Ch 7
+#+END_EXAMPLE
+
+This becomes your revision command center!
+
+** Navigating in Editing Mode
+
+*Left panel (outline)*:
+- Click any heading → Center jumps to that location
+- See structure at a glance
+- Identify long/short chapters visually
+
+*Center panel (manuscript)*:
+- Edit your manuscript directly
+- Normal org-mode commands work
+- Save with ~C-x C-s~
+
+*Right panel (notes)*:
+- Add revision notes as you work
+- Check off completed tasks
+- Track global issues
+
+*Switching focus between panels*:
+- ~C-x o~ - Move to next window
+- Or click with mouse
+
+* Revision Pass 1: Structural Review
+
+The first pass is high-level. Don't edit prose yet - focus on big picture.
+
+** Step 1: Review Plot Thread Coverage
+
+Use the plot timeline to verify all threads are developed properly.
+
+1. In your manuscript, navigate to the Plot Timeline section
+2. Find the dynamic block: ~#+BEGIN: plot-timeline~
+3. Position cursor anywhere in the block
+4. Press ~C-c C-c~ to regenerate
+
+You'll see something like:
+
+#+BEGIN_EXAMPLE
+| Scene                  | Chapter   | Main Plot | Romance | Mystery |
+|------------------------+-----------+-----------+---------+---------|
+| Scene 1 - Opening      | Chapter 1 | ●         |         | ●       |
+| Scene 2 - Meeting Sam  | Chapter 1 | ●         | ●       |         |
+| Scene 3 - Discovery    | Chapter 2 | ●         |         | ●       |
+| Scene 4 - Dinner       | Chapter 2 |           | ●       |         |
+| Scene 5 - Revelation   | Chapter 3 | ●         | ●       | ●       |
+#+END_EXAMPLE
+
+**What to look for**:
+
+*Problem: Long gaps*
+#+BEGIN_EXAMPLE
+| Scene 10 - X | Romance | ●       |
+| Scene 11 - Y | Romance |         |  ← Gap starts
+| Scene 12 - Z | Romance |         |
+| Scene 13 - A | Romance |         |
+| Scene 14 - B | Romance |         |  ← 4 scenes without romance!
+| Scene 15 - C | Romance | ●       |  ← Resumes
+#+END_EXAMPLE
+
+*Action*: Add Romance subplot moment in Scene 12 or 13
+
+*Problem: Thread appears once then vanishes*
+#+BEGIN_EXAMPLE
+| Scene 2  | Mystery | ●       |  ← Introduced
+| Scene 3  | Mystery |         |
+| ...
+| Scene 15 | Mystery | ●       |  ← Resolved (12 scenes later!)
+#+END_EXAMPLE
+
+*Action*: Add Mystery clues/developments in middle scenes
+
+*Problem: Imbalanced thread coverage*
+#+BEGIN_EXAMPLE
+Main Plot: 15 scenes ✓
+Romance: 8 scenes ✓
+Mystery: 3 scenes ✗ (underserved!)
+#+END_EXAMPLE
+
+*Action*: Elevate Mystery thread or demote it to minor plot
+
+** Recording Structural Issues
+
+In your notes panel (right side), add findings:
+
+#+BEGIN_EXAMPLE
+* Plot Thread Issues
+
+** Romance Subplot
+- Gap: Scenes 11-14 (4 scenes without development)
+- Fix: Add romantic moment in Scene 12
+- Location to add: After coffee shop scene
+- Type: Brief exchange showing tension
+
+** Mystery Thread
+- Problem: Only 3 scenes total - feels underdeveloped
+- Options:
+  1. Add 2-3 mystery scenes (more work)
+  2. Combine with main plot (cleaner)
+  3. Cut mystery entirely (drastic)
+- Decision: Option 2 - weave into main plot
+- Action: Revise existing scenes to integrate mystery
+#+END_EXAMPLE
+
+Don't fix yet - just record!
+
+** Step 2: Check Character Development
+
+Use the character timeline to verify character appearances.
+
+1. Navigate to Character Timeline section
+2. Find ~#+BEGIN: character-timeline~
+3. Press ~C-c C-c~ to regenerate
+
+#+BEGIN_EXAMPLE
+| Scene                  | Chapter   | Alex | Sam | Jordan | Sarah |
+|------------------------+-----------+------+-----+--------+-------|
+| Scene 1 - Opening      | Chapter 1 | ◆    | ●   |        |       |
+| Scene 2 - Meeting      | Chapter 1 | ◆    | ●   | ●      |       |
+| Scene 3 - Conflict     | Chapter 2 | ◆    |     | ●      | ●     |
+| Scene 4 - Discovery    | Chapter 2 | ◆    | ●   |        |       |
+#+END_EXAMPLE
+
+**Symbols reminder**:
+- ◆ = Point of View character (this scene from their perspective)
+- ● = Character present (appears but not PoV)
+
+**What to look for**:
+
+*Problem: Secondary character vanishes*
+#+BEGIN_EXAMPLE
+| Scene 1  | Sam | ●       |
+| Scene 2  | Sam | ●       |
+| Scene 3  | Sam |         |  ← Disappears
+| Scene 4  | Sam |         |
+| ...
+| Scene 12 | Sam | ●       |  ← Reappears suddenly (8 scenes later!)
+#+END_EXAMPLE
+
+*Action*: Add Sam appearance or reference in Scene 6 or 7
+
+*Problem: PoV imbalance (multi-PoV novels)*
+#+BEGIN_EXAMPLE
+Alex PoV: 12 scenes ◆◆◆◆◆◆◆◆◆◆◆◆
+Jordan PoV: 2 scenes ◆◆
+#+END_EXAMPLE
+
+*Action*: Add more Jordan PoV scenes, or make Jordan non-PoV
+
+*Problem: Character introduced too late*
+#+BEGIN_EXAMPLE
+| Scene 1-7  | Sarah |     |  ← Not present
+| Scene 8    | Sarah | ●   |  ← Suddenly appears
+| Scene 9-15 | Sarah | ●●● |  ← Major role
+#+END_EXAMPLE
+
+If Sarah is important, introduce earlier!
+
+*Action*: Add Sarah mention/appearance in Scene 3 or 4
+
+** Recording Character Issues
+
+In notes panel:
+
+#+BEGIN_EXAMPLE
+* Character Development Issues
+
+** Sam (Secondary)
+- Problem: Absent Scenes 3-11 (8 scenes!)
+- Importance: Major secondary character
+- Fix: Add brief appearance in Scene 6
+- Type: Phone call or text message reference
+- Impact: Minimal (2 paragraphs)
+
+** Jordan (PoV)
+- Problem: Only 2 PoV scenes vs. Alex's 12
+- Options:
+  1. Add 3-4 Jordan PoV scenes
+  2. Make Jordan non-PoV (single PoV novel)
+- Decision: Option 2 - This is Alex's story
+- Action: Convert 2 Jordan scenes to Alex PoV
+- Status: [ ] Not done yet
+
+** Sarah (Late Introduction)
+- Appears: Scene 8
+- Role: Important in Act II & III
+- Problem: Feels sudden
+- Fix: Foreshadow in Scene 3
+- Method: Alex mentions her in dialogue
+- Lines needed: 1-2 sentences
+#+END_EXAMPLE
+
+** Step 3: Check Scene Distribution
+
+Look at your outline (left panel) for structural balance:
+
+*Chapter 1*:
+- Scene 1
+- Scene 2
+- Scene 3
+- Scene 4
+- Scene 5  ← 5 scenes
+
+*Chapter 2*:
+- Scene 6  ← 1 scene (!!)
+
+*Chapter 3*:
+- Scene 7
+- Scene 8
+- Scene 9  ← 3 scenes
+
+**Problem**: Chapter 2 has only 1 scene - feels short
+
+**Options**:
+1. Split Chapter 2 Scene 6 into 2 scenes
+2. Move Scene 7 from Chapter 3 to Chapter 2
+3. Combine Chapters 2 & 3
+4. Chapter 2 is intentionally short (bridge chapter) - keep it
+
+Record in notes:
+
+#+BEGIN_EXAMPLE
+* Structural Issues
+
+** Chapter Balance
+- Chapter 1: 5 scenes (good)
+- Chapter 2: 1 scene (too short!)
+- Chapter 3: 3 scenes (good)
+
+Decision: Move Scene 7 to Chapter 2
+Reason: Scene 7 is discovery; logically extends Chapter 2 conflict
+Action: [ ] Move heading "Scene 7" under "Chapter 2"
+#+END_EXAMPLE
+
+** Step 4: Verify Setups and Payoffs
+
+Search for elements that need resolution:
+
+*Search for Chekhov's Guns*:
+
+Use ~F8 F8~ then ~5~ (TODO search) to find:
+- ~[SETUP]~ markers
+- ~[FORESHADOW]~ markers
+- ~[PAYOFF]~ markers
+
+Example findings:
+
+#+BEGIN_EXAMPLE
+Scene 3: "Sam mentions the locked box in the attic. [SETUP: Box]"
+Scene 7: "Alex hears strange noises from above. [FORESHADOW: Box]"
+Scene 12: "Alex opens the box and finds... [PAYOFF: Box]"
+#+END_EXAMPLE
+
+**Check**: Every SETUP needs a PAYOFF!
+
+*Manual check list in notes*:
+
+#+BEGIN_EXAMPLE
+* Setups & Payoffs Checklist
+
+** Physical Objects
+- [ ] Mother's locket (Setup: Scene 1) → Payoff: ?
+- [X] Mysterious package (Setup: Scene 2) → Payoff: Scene 10 ✓
+- [ ] Strange phone number (Setup: Scene 5) → Payoff: ?
+
+** Promises to Reader
+- [X] Who sent the letters? → Resolved: Scene 12 ✓
+- [ ] What happened to Alex's mother? → Not resolved yet!
+- [ ] Will Sam betray Alex? → Not addressed!
+
+** Character Goals
+- [ ] Alex wants to find truth → Status: Abandoned in Act II?
+- [X] Sam needs to protect secret → Status: Revealed Act III ✓
+- [ ] Jordan seeks redemption → Status: Unresolved!
+#+END_EXAMPLE
+
+Items without checkmarks = Problems to fix!
+
+** Structural Pass Summary
+
+After Pass 1, your notes should have:
+- Plot thread gaps identified
+- Character appearance issues noted
+- Chapter balance problems recorded
+- Missing setups/payoffs listed
+
+*Don't fix anything yet* - just gather all issues first!
+
+* Revision Pass 2: Scene-Level Work
+
+Now drill down to individual scenes. This is where editing mode shines!
+
+** Using Editing Mode for Scene Revision
+
+Your workflow:
+
+1. *Left panel*: Click on a scene heading
+2. *Center panel*: Scene appears for editing
+3. *Right panel*: Read your notes for this scene
+4. *Edit in center*: Make improvements
+5. *Right panel*: Check off completed tasks
+6. *Repeat* for next scene
+
+** Scene Revision Checklist Template
+
+Add this to your notes file for each scene:
+
+#+BEGIN_EXAMPLE
+*** Scene 1 - Opening
+
+**** Opening Hook
+- [ ] First sentence grabs attention?
+- [ ] Clear genre/tone established?
+- [ ] Inciting incident clear?
+
+**** Character
+- [ ] PoV character's voice distinct?
+- [ ] Motivation clear?
+- [ ] Emotional state shown (not told)?
+
+**** Setting
+- [ ] Location established quickly?
+- [ ] Sensory details present (3+ senses)?
+- [ ] Time of day clear?
+
+**** Plot
+- [ ] Scene advances plot?
+- [ ] Conflict present?
+- [ ] Stakes clear?
+- [ ] Scene ends with forward momentum?
+
+**** Dialogue
+- [ ] Each character sounds different?
+- [ ] Dialogue tags necessary? (could cut?)
+- [ ] Subtext present?
+- [ ] Natural rhythm?
+
+**** Prose
+- [ ] Strong verbs (not weak "was/were")?
+- [ ] Active voice (not passive)?
+- [ ] Unnecessary words cut?
+- [ ] Sentence variety?
+
+**** Technical
+- [ ] POV consistent (no head-hopping)?
+- [ ] Tense consistent?
+- [ ] Timeline consistent with previous scenes?
+#+END_EXAMPLE
+
+** Scene Opening Improvements
+
+Search for weak scene openings:
+
+1. In center panel, position on a scene heading
+2. Read first paragraph
+3. Ask: Does this hook the reader?
+
+*Weak opening example*:
+
+#+BEGIN_EXAMPLE
+*** Scene 5 - The Discovery
+
+Alex woke up. She got out of bed. She went to the bathroom and brushed
+her teeth. Then she went downstairs.
+#+END_EXAMPLE
+
+*Problems*:
+- Boring routine activities
+- Weak verbs ("woke up", "went")
+- No conflict or tension
+- Nothing at stake
+
+*Improved opening*:
+
+#+BEGIN_EXAMPLE
+*** Scene 5 - The Discovery
+
+The scream woke Alex at 3 AM. She bolted upright, heart hammering. Not
+again. Not another nightmare about the accident.
+
+Except—the scream hadn't been in her dream.
+
+It came from downstairs.
+#+END_EXAMPLE
+
+*Better*:
+- Immediate tension (scream)
+- Character emotion (fear)
+- Mystery (what's downstairs?)
+- Forward momentum (reader must continue)
+
+** Strengthening Dialogue
+
+Use dictionary tools for dialogue improvement:
+
+1. Position cursor on dialogue
+2. ~F8 F8 d~ (dictionary) - Check word meanings
+3. ~F8 F8 y~ (synonyms) - Find better dialogue tags
+
+*Example revision*:
+
+Before:
+#+BEGIN_EXAMPLE
+"I don't believe you," Alex said.
+"It's true," Sam said.
+"Prove it," Alex said.
+#+END_EXAMPLE
+
+After using synonym lookup:
+#+BEGIN_EXAMPLE
+"I don't believe you," Alex snapped.
+"It's true." Sam's voice was barely a whisper.
+Alex leaned forward. "Prove it."
+#+END_EXAMPLE
+
+*Improvements*:
+- Varied dialogue tags
+- Body language added
+- Action breaks up dialogue
+- More dynamic exchange
+
+** Cutting Unnecessary Scenes
+
+Sometimes the best revision is deletion!
+
+*Scene to cut if*:
+- Doesn't advance plot
+- Doesn't develop character
+- Doesn't reveal information
+- Could be summarized in one sentence
+- Reader won't miss it
+
+*How to check*:
+
+Ask: "If I delete this scene, what's lost?"
+
+If answer is "Nothing important" → Cut it!
+
+*Process*:
+1. In outline (left panel), identify suspect scene
+2. In center, read scene critically
+3. In notes (right), record decision:
+
+#+BEGIN_EXAMPLE
+** Scene 4 - Lunch at Café
+- Purpose: Alex and Sam eat lunch
+- Advances plot? No
+- Character development? Minimal
+- New information? No
+- Decision: CUT
+- Replacement: Brief mention in Scene 5 ("After lunch...")
+- Status: [ ] Not cut yet
+#+END_EXAMPLE
+
+Mark scene with ~ARCHIVE~ tag to hide it without deleting:
+
+#+BEGIN_EXAMPLE
+*** Scene 4 - Lunch at Café    :ARCHIVE:
+#+END_EXAMPLE
+
+Then ~C-c C-x a~ (org-archive-subtree) moves it to archive file.
+
+** Adding Missing Scenes
+
+Sometimes you need to ADD scenes:
+
+*Checklist in notes*:
+
+#+BEGIN_EXAMPLE
+* Scenes to Add
+
+** New Scene: Sam's Backstory
+- Insert after: Scene 8
+- Purpose: Explain why Sam helps Alex
+- PoV: Sam
+- Location: Sam's apartment
+- Content: Flashback to Sam's sister
+- Length: ~800 words
+- Status: [ ] Not written
+
+** New Scene: Romantic Tension
+- Insert after: Scene 12
+- Purpose: Develop romance subplot
+- PoV: Alex
+- Location: Rooftop
+- Content: Conversation under stars
+- Length: ~600 words
+- Status: [ ] Not written
+#+END_EXAMPLE
+
+*To insert*:
+
+1. In center panel, go to insertion point
+2. ~F8 F8 s~ (insert scene template)
+3. Fill properties from your notes
+4. Write the scene
+5. Update word count (~F8 F8 w~)
+6. Check off in notes panel
+
+** Finding Inconsistencies with Search
+
+Use search functions to catch errors:
+
+*Search by character* (~F8 F8~ then ~2~):
+
+#+BEGIN_EXAMPLE
+Search for character: Sarah
+#+END_EXAMPLE
+
+Results show all Sarah scenes. Check:
+- Is she spelled "Sarah" or "Sara" consistently?
+- Does her description match across scenes?
+- Does her speech pattern stay consistent?
+
+*Search by location* (~F8 F8~ then ~4~):
+
+#+BEGIN_EXAMPLE
+Search for location: Coffee Shop
+#+END_EXAMPLE
+
+Results show all coffee shop scenes. Check:
+- Is layout described consistently?
+- Same ambient details?
+- Same time of day if same visit?
+
+*Recording fixes in notes*:
+
+#+BEGIN_EXAMPLE
+* Inconsistencies Found
+
+** Character Names
+- Scene 2: "Sarah" (correct)
+- Scene 7: "Sara" (typo!)
+- Scene 12: "Sarah" (correct)
+- Fix: Change "Sara" to "Sarah" in Scene 7
+- Status: [ ] Not fixed
+
+** Location: Coffee Shop
+- Scene 1: "...on the corner of Main and 5th"
+- Scene 7: "...on the corner of Main and 7th" (error!)
+- Fix: Decide which intersection (probably 5th)
+- Status: [ ] Not decided
+#+END_EXAMPLE
+
+** Scene Pass Summary
+
+After Pass 2, you should have:
+- Each scene checked against revision checklist
+- Weak openings strengthened
+- Dialogue improved
+- Unnecessary scenes marked for deletion
+- Missing scenes identified and listed
+- Inconsistencies cataloged
+
+* Revision Pass 3: Line Editing
+
+The final pass polishes prose at sentence level.
+
+** Line-by-Line Reading
+
+Read slowly, out loud if possible:
+
+1. *Left panel*: Select scene
+2. *Center panel*: Read every sentence
+3. Mark problems inline:
+
+#+BEGIN_EXAMPLE
+Alex walked [WEAK VERB: strode? hurried?] to the door and opened it.
+Sam was standing [WEAK: stood?] there with a package in his hands
+[REDUNDANT: "in his hands" implied]. He was [PASSIVE: "He looked"?]
+nervous.
+#+END_EXAMPLE
+
+** Common Prose Problems to Fix
+
+*** Weak Verbs
+
+*Find*: Search for "was", "were", "is", "are"
+
+#+BEGIN_EXAMPLE
+C-s was RET
+#+END_EXAMPLE
+
+Many instances need stronger verbs:
+
+Before: "She was angry"
+After: "She seethed"
+
+Before: "The door was open"
+After: "The door hung ajar"
+
+*** Passive Voice
+
+*Find*: Search for "was [verb]ed" pattern
+
+Before: "The letter was opened by Alex"
+After: "Alex tore open the letter"
+
+Before: "Dinner was being prepared"
+After: "The cook prepared dinner"
+
+*Note*: Sometimes passive voice is correct! Don't automatically change all instances.
+
+*** Filter Words
+
+These create distance between reader and character:
+
+- saw
+- heard
+- felt
+- thought
+- realized
+- wondered
+- seemed
+- appeared
+
+*Example*:
+
+Before: "Alex heard the door slam"
+After: "The door slammed"
+
+Before: "She felt her heart racing"
+After: "Her heart raced"
+
+We're in Alex's PoV - we know she hears/feels these things!
+
+*** Repetition
+
+Use search to find repeated words:
+
+#+BEGIN_EXAMPLE
+C-s suddenly RET
+(press C-s repeatedly to see all instances)
+#+END_EXAMPLE
+
+If "suddenly" appears 15 times in one chapter - cut most of them!
+
+*Tracking in notes*:
+
+#+BEGIN_EXAMPLE
+* Overused Words
+
+** Chapter 1
+- "suddenly": 8 times (cut to 2-3)
+- "just": 12 times (cut to 3-4)
+- "really": 6 times (cut all)
+
+** Chapter 2
+- "very": 9 times (replace with stronger adjectives)
+- "that": 23 times (try cutting, many unnecessary)
+#+END_EXAMPLE
+
+** Using Language Tools in Revision
+
+During line editing, use dictionary tools heavily:
+
+*Finding better words*:
+
+1. Spot weak word: "The house was big"
+2. ~F8 F8 y~ (synonyms)
+3. Search: "big"
+4. Find alternatives: enormous, vast, sprawling, cavernous
+5. Pick best fit: "The house sprawled across the lot"
+
+*Checking meanings*:
+
+1. Unsure about word choice: "melancholic"
+2. ~F8 F8 d~ (dictionary)
+3. Read definition
+4. Confirm it's the right emotional tone
+5. Keep or change based on nuance
+
+** Rhythm and Pacing
+
+Read sentences aloud:
+
+*Check for*:
+- Sentence variety (mix short and long)
+- Paragraph length (vary)
+- Repetitive structures
+
+*Before (monotonous)*:
+
+#+BEGIN_EXAMPLE
+Alex walked to the door. She opened it slowly. She saw Sam standing
+there. He looked nervous. She asked him what he wanted.
+#+END_EXAMPLE
+
+All sentences same length and structure!
+
+*After (varied)*:
+
+#+BEGIN_EXAMPLE
+Alex approached the door and eased it open. Sam stood there, fidgeting.
+
+"What do you want?" she asked.
+#+END_EXAMPLE
+
+Varied sentence structure, better rhythm.
+
+** Final Consistency Check
+
+Create master checklist in notes:
+
+#+BEGIN_EXAMPLE
+* Final Consistency Checklist
+
+** Character Details
+- [ ] Alex's age consistent (32 throughout)
+- [ ] Alex's hair color (dark brown in all scenes)
+- [ ] Alex's job title (same everywhere)
+- [ ] Sam's eye color (blue, not brown)
+
+** Timeline
+- [ ] Day 1: Monday (all references match)
+- [ ] Day 2: Tuesday (weather: rainy)
+- [ ] Day 3: Wednesday (weather: clearing)
+- [ ] Day 4: Thursday (all dated correctly)
+
+** Locations
+- [ ] Coffee shop: Main & 5th (not 7th)
+- [ ] Alex's apartment: Third floor (not second)
+- [ ] Office: Downtown (not midtown)
+
+** Plot Elements
+- [ ] Package arrives: Scene 2 (referenced correctly later)
+- [ ] Letters revealed: Scene 10 (timeline works)
+- [ ] Final confrontation: Scene 15 (all threads resolve)
+
+** Names & Terms
+- [ ] "Sarah" spelled consistently (not "Sara")
+- [ ] Company name: "TechCorp" (not "TechCo")
+- [ ] Device name: "analyzer" (not "analyser" - US spelling)
+#+END_EXAMPLE
+
+Work through this systematically!
+
+* Managing Revision TODOs
+
+Org-mode's TODO system is perfect for tracking revision work.
+
+** Setting Up TODO Keywords
+
+Add to top of your manuscript file:
+
+#+BEGIN_EXAMPLE
+#+TODO: DRAFT | REVISED POLISHED
+#+TODO: FIX EXPAND CUT | DONE
+#+END_EXAMPLE
+
+** Marking Scenes with TODO States
+
+As you work through revision:
+
+*Scene not yet revised*:
+#+BEGIN_EXAMPLE
+*** DRAFT Scene 1 - Opening
+#+END_EXAMPLE
+
+*Scene revised but needs polish*:
+#+BEGIN_EXAMPLE
+*** REVISED Scene 2 - Meeting
+#+END_EXAMPLE
+
+*Scene completely finished*:
+#+BEGIN_EXAMPLE
+*** POLISHED Scene 3 - Discovery
+#+END_EXAMPLE
+
+** Problem Markers
+
+Mark specific issues:
+
+#+BEGIN_EXAMPLE
+*** FIX Scene 4 - Backstory
+- Problem: Pacing too slow
+- Action: Cut first 3 paragraphs
+
+*** EXPAND Scene 5 - Confrontation
+- Problem: Dialogue too brief
+- Action: Add 200 words of argument
+
+*** CUT Scene 6 - Filler
+- Problem: Doesn't advance plot
+- Action: Archive this scene
+#+END_EXAMPLE
+
+## Using TODO Agenda
+
+View all revision work at once:
+
+1. ~C-c a t~ (org-agenda todo list)
+2. See all scenes by status:
+   - All DRAFT scenes (not revised yet)
+   - All FIX scenes (problems identified)
+   - All EXPAND scenes (need more content)
+   - All CUT scenes (to be deleted)
+
+3. Press ~RET~ on any item to jump to it
+4. Work through list systematically
+
+** Progress Tracking
+
+In notes file, track overall progress:
+
+#+BEGIN_EXAMPLE
+* Revision Progress
+
+** Pass 1: Structural (20%)
+- [X] Plot timeline reviewed
+- [X] Character timeline reviewed
+- [X] Structural issues identified
+- [ ] Structural issues fixed
+- [ ] Timeline verified again
+
+** Pass 2: Scene-Level (60%)
+- [5/15] Act I scenes revised
+- [0/12] Act II scenes revised
+- [0/8] Act III scenes revised
+
+** Pass 3: Line Editing (0%)
+- [ ] Chapter 1
+- [ ] Chapter 2
+- [ ] Chapter 3
+...
+
+** Overall Status
+- Total scenes: 35
+- Revised scenes: 5 (14%)
+- Remaining: 30 (86%)
+- Target completion: 2 weeks
+#+END_EXAMPLE
+
+Update this regularly to stay motivated!
+
+* Complete Revision Workflow
+
+Here's a systematic approach integrating all tools:
+
+** Week 1: Structural Pass
+
+*Monday*:
+1. Open manuscript
+2. ~F8 F8 e~ (activate editing mode)
+3. Generate plot timeline (~C-c C-c~)
+4. Record issues in notes panel
+5. Work time: 2 hours
+6. Exit mode (~F8 F8 e~)
+
+*Tuesday*:
+1. ~F8 F8 e~
+2. Generate character timeline (~C-c C-c~)
+3. Record issues in notes panel
+4. Work time: 2 hours
+
+*Wednesday*:
+1. ~F8 F8 e~
+2. Review chapter structure (outline panel)
+3. Identify scenes to cut/add
+4. Record in notes panel
+5. Work time: 2 hours
+
+*Thursday*:
+1. Review all structural notes
+2. Prioritize issues (high/medium/low)
+3. Create action plan
+4. Work time: 1 hour
+
+*Friday*:
+1. ~F8 F8 e~
+2. Begin fixing structural issues
+3. Add missing scenes
+4. Merge/split chapters as needed
+5. Work time: 3 hours
+
+** Week 2-3: Scene-Level Pass
+
+*Daily routine (Mon-Fri)*:
+
+Morning session (1-2 hours):
+1. ~F8 F8 e~
+2. Select next DRAFT scene (outline panel)
+3. Read scene against checklist (notes panel)
+4. Identify problems
+5. Don't fix yet - just mark issues
+
+Afternoon session (1-2 hours):
+1. Return to scenes marked in morning
+2. Make edits
+3. Strengthen openings
+4. Improve dialogue
+5. Add sensory details
+6. Mark scene as REVISED
+
+Target: 2-3 scenes per day
+
+** Week 4: Line Editing Pass
+
+*Daily routine (Mon-Fri)*:
+
+Full day session (4-6 hours):
+1. ~F8 F8 e~
+2. Read scene aloud
+3. Fix weak verbs
+4. Eliminate passive voice
+5. Cut filter words
+6. Improve rhythm
+7. Use ~F8 F8 y~ for synonym lookup
+8. Use ~F8 F8 d~ for word verification
+9. Mark scene as POLISHED
+
+Target: 3-5 scenes per day
+
+** Week 5: Final Check
+
+*Monday-Tuesday*: Full manuscript read-through
+- Read as a reader (not writer)
+- Mark remaining issues
+- Don't stop to fix (maintain flow)
+
+*Wednesday-Thursday*: Fix issues from read-through
+- Work through marked problems
+- Final consistency checks
+- Update tracking tables
+
+*Friday*: Completion
+- Verify all TODO items cleared
+- Generate final word count
+- Update progress to 100%
+- Celebrate!
+
+* Multi-Pass Strategy Examples
+
+Different writers use different revision approaches:
+
+** The Three-Pass Method
+
+*Pass 1 - Macro (1-2 weeks)*:
+- Plot structure
+- Character arcs
+- Pacing
+- Major additions/cuts
+
+*Pass 2 - Micro (2-3 weeks)*:
+- Scene by scene
+- Dialogue
+- Description
+- Individual paragraphs
+
+*Pass 3 - Polish (1 week)*:
+- Sentence level
+- Word choice
+- Rhythm
+- Final cleanup
+
+** The Five-Pass Method
+
+*Pass 1 - Plot*: Story structure only
+*Pass 2 - Character*: Character development only
+*Pass 3 - Scene*: Scene-level improvements
+*Pass 4 - Prose*: Line editing
+*Pass 5 - Consistency*: Final cleanup
+
+Each pass = 1 week
+
+** The Chapter-at-a-Time Method
+
+For each chapter:
+1. Structural review (1 day)
+2. Scene improvements (2-3 days)
+3. Line editing (1-2 days)
+4. Final check (1 day)
+
+Complete one chapter fully before moving to next.
+
+*Advantage*: Each chapter is fully finished as you go
+*Disadvantage*: Harder to maintain overall consistency
+
+** Choose Your Approach
+
+*Fast drafters*: Multi-pass (more rounds, faster)
+*Slow crafters*: Chapter-at-a-time (fewer rounds, thorough)
+*Plotters*: Separate passes for plot/character/prose
+*Pantsers*: All-in-one intensive revision
+
+*Experiment to find what works for you!*
+
+* Practical Exercise (20 Minutes)
+
+Let's practice the revision workflow with a sample scene.
+
+** Setup (2 minutes)
+
+1. Open your manuscript
+2. Find a scene you want to revise
+3. ~F8 F8 e~ (activate editing mode)
+4. In notes panel, create section for this scene
+
+** Structural Check (3 minutes)
+
+In notes panel, answer:
+
+#+BEGIN_EXAMPLE
+*** Scene [X] - [Title]
+
+Structural:
+- Advances plot? Yes / No / How: __________
+- Character development? Yes / No / How: __________
+- New information revealed? Yes / No / What: __________
+- Could be cut without loss? Yes / No
+- Timeline consistent? Yes / No / Issue: __________
+#+END_EXAMPLE
+
+## Scene-Level Review (10 minutes)
+
+Read the scene and check:
+
+#+BEGIN_EXAMPLE
+Opening:
+- First line hooks reader? Yes / No
+- Scene goal clear? Yes / No
+- Fix: __________
+
+Character:
+- PoV consistent? Yes / No
+- Voice distinct? Yes / No
+- Motivation clear? Yes / No
+- Fix: __________
+
+Dialogue:
+- Sounds natural? Yes / No
+- Tags necessary? Yes / No
+- Subtext present? Yes / No
+- Fix: __________
+
+Setting:
+- Location clear? Yes / No
+- Sensory details? (How many: _____)
+- Fix: __________
+
+Ending:
+- Forward momentum? Yes / No
+- Hook for next scene? Yes / No
+- Fix: __________
+#+END_EXAMPLE
+
+** Make One Improvement (5 minutes)
+
+Pick the biggest issue and fix it now:
+
+*If opening is weak*:
+- Rewrite first paragraph
+- Add conflict/tension
+- Cut throat-clearing
+
+*If dialogue is flat*:
+- Add subtext to one exchange
+- Use ~F8 F8 y~ to improve dialogue tags
+- Add action beats
+
+*If setting is sparse*:
+- Add 2-3 sensory details
+- What does character smell/hear/feel?
+
+** Mark Complete
+
+In notes:
+#+BEGIN_EXAMPLE
+- [X] Scene reviewed
+- [X] Primary issue fixed
+- Status: REVISED (ready for line editing later)
+#+END_EXAMPLE
+
+In manuscript, change TODO state:
+#+BEGIN_EXAMPLE
+*** REVISED Scene [X] - [Title]
+#+END_EXAMPLE
+
+*You just completed one revision cycle!*
+
+Repeat this process for every scene in your manuscript.
+
+* Summary and Key Takeaways
+
+Revision transforms your first draft into a polished manuscript using systematic tools and approaches.
+
+** What You Learned
+
+✓ *Editing Mode* (~F8 F8 e~)
+  - Three-panel professional layout
+  - Outline + Manuscript + Notes
+  - Navigate and edit simultaneously
+  - Track revision progress
+
+✓ *Three-Pass Revision Strategy*
+  - Pass 1: Structural (plot, character, pacing)
+  - Pass 2: Scene-level (openings, dialogue, details)
+  - Pass 3: Line editing (prose polish, consistency)
+
+✓ *Timeline Analysis*
+  - Plot timeline → Find thread gaps
+  - Character timeline → Find appearance issues
+  - Visual analysis reveals problems
+
+✓ *Search Functions for Consistency*
+  - Search by character (name consistency)
+  - Search by location (detail consistency)
+  - Search by plot (thread development)
+  - Find and fix inconsistencies
+
+✓ *TODO Management*
+  - Mark scenes by revision status
+  - Track problems (FIX, EXPAND, CUT)
+  - Use org-agenda for overview
+  - Systematic progress tracking
+
+✓ *Line Editing Techniques*
+  - Eliminate weak verbs
+  - Cut passive voice
+  - Remove filter words
+  - Improve rhythm and variety
+  - Use language tools (~F8 F8 d/y~)
+
+** The Revision Workflow at a Glance
+
+| Pass            | Focus              | Tools                      | Time    |
+|-----------------+--------------------+----------------------------+---------|
+| Structural      | Plot & character   | Timelines, notes           | 1 week  |
+| Scene-level     | Individual scenes  | Editing mode, checklists   | 2 weeks |
+| Line editing    | Prose polish       | Dictionary, search         | 1 week  |
+| Final check     | Consistency        | Search, notes checklist    | 3 days  |
+
+*Total revision time: ~4-5 weeks for a novel*
+
+** Best Practices
+
+1. *Separate creation from revision* - Don't revise while drafting
+2. *Use editing mode consistently* - Professional environment matters
+3. *Work systematically* - Don't jump around randomly
+4. *Record before fixing* - Identify all issues before solving any
+5. *Take breaks* - Fresh eyes catch more problems
+6. *Read aloud* - Ear catches what eye misses
+7. *Track progress* - Stay motivated with visible completion
+8. *Trust the process* - Revision makes good writing great
+
+** Your Revision Checklist
+
+Print this and keep it visible:
+
+#+BEGIN_EXAMPLE
+═══════════════════════════════════════
+     REVISION WORKFLOW CHECKLIST
+═══════════════════════════════════════
+
+PASS 1: STRUCTURAL
+□ Generate plot timeline (C-c C-c)
+□ Check thread coverage & gaps
+□ Generate character timeline (C-c C-c)
+□ Check character appearances
+□ Review chapter balance
+□ Verify setups & payoffs
+□ Record all issues in notes
+□ Prioritize fixes
+
+PASS 2: SCENE-LEVEL
+□ Activate editing mode (F8 F8 e)
+□ Review each scene against checklist
+□ Strengthen openings
+□ Improve dialogue
+□ Add sensory details
+□ Cut unnecessary scenes
+□ Add missing scenes
+□ Find inconsistencies (search)
+□ Mark scenes REVISED
+
+PASS 3: LINE EDITING
+□ Read aloud, sentence by sentence
+□ Fix weak verbs (search "was")
+□ Eliminate passive voice
+□ Remove filter words
+□ Check word repetition
+□ Use dictionary/synonyms (F8 F8 d/y)
+□ Improve rhythm & variety
+□ Mark scenes POLISHED
+
+FINAL CHECK
+□ Full manuscript read-through
+□ Consistency checklist
+□ All TODO items cleared
+□ Final word count
+□ Celebrate completion!
+
+═══════════════════════════════════════
+#+END_EXAMPLE
+
+** Next Steps
+
+Ready to customize the package to your personal preferences? Head to [[file:getting-started-15-customization.org][Lesson 15: Customization and Configuration]]!
+
+In the next lesson, you'll learn:
+- Customizing themes and fonts for writing modes
+- Adjusting window layouts and widths
+- Modifying templates for your needs
+- Configuring export settings
+- Creating custom keybindings
+
+* Additional Resources
+
+** Books on Revision
+
+- *"Self-Editing for Fiction Writers"* by Renni Browne & Dave King - Essential techniques
+- *"Revision and Self-Editing"* by James Scott Bell - Systematic approach
+- *"The First Five Pages"* by Noah Lukeman - What editors look for
+- *"Stein on Writing"* by Sol Stein - Line editing mastery
+
+** Online Resources
+
+- *Autocrit*: https://www.autocrit.com/ - Automated manuscript analysis
+- *ProWritingAid*: https://prowritingaid.com/ - Style checker
+- *Grammarly*: https://www.grammarly.com/ - Grammar and style
+
+** Emacs Tools for Revision
+
+- *org-remark*: Annotation system for revision notes
+- *writegood-mode*: Highlights passive voice, weasel words, duplicates
+- *flyspell-mode*: On-the-fly spell checking
+- *langtool*: Grammar checking integration
+
+** Revision Strategies
+
+- *Holly Lisle's One-Pass Revision*: https://hollylisle.com/one-pass-manuscript-revision/
+- *The Snowflake Method*: https://www.advancedfictionwriting.com/articles/snowflake-method/
+- *K.M. Weiland's Revision Process*: https://www.helpingwritersbecomeauthors.com/
+
+* About This Lesson
+
+- *Created*: 2025-11-16
+- *Last Updated*: 2025-11-16
+- *Lesson Number*: 14 of 15
+- *Part*: 5 - Workflows and Best Practices
+- *Estimated Time*: 20-25 minutes
+- *Difficulty*: Intermediate to Advanced
+- *Prerequisites*: Completed first draft, familiarity with Lessons 7, 9, 10
+
+The revision process is where good writing becomes great. Use these tools systematically, trust the process, and watch your manuscript transform! 📝✨

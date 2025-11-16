@@ -887,14 +887,15 @@ How to use character features while writing:
 - Converts plain text to ID links
 - One command, entire manuscript updated
 
-** "What if I change a character's name?"
+** TODO "What if I change a character's name?"
+*NOTE:* Point 4 doesn't happen automatically.
 
 *Easy!*
 
 1. Go to character profile
 2. Change the heading (the name)
 3. ID links still work (they use the ID, not the name!)
-4. All scenes automatically show new name
+4. (*NO*) All scenes automatically show new name
 
 *No need to update each scene manually!*
 
@@ -1066,11 +1067,11 @@ The more detailed your character profiles, the more consistent and vivid your ch
 
 ** Character Timeline Symbols
 
-| Symbol | Meaning                                       |
-|--------+-----------------------------------------------|
-| ◆      | PoV character (viewpoint in this scene)       |
-| ●      | Present (appears but not PoV)                 |
-| (blank) | Absent (doesn't appear in this scene)        |
+| Symbol  | Meaning                                 |
+|---------+-----------------------------------------|
+| ◆       | PoV character (viewpoint in this scene) |
+| ●       | Present (appears but not PoV)           |
+| (blank) | Absent (doesn't appear in this scene)   |
 
 * Tips for Character Success
 

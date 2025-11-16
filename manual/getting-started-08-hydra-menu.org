@@ -1,0 +1,806 @@
+#+TITLE: Lesson 8: The Hydra Menu
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 8!
+
+By now you've used the Hydra menu many times throughout the previous lessons. You've pressed ~F8 F8~ to insert scenes, count words, search for characters, and more. But you might not fully understand how the menu is organized or what all those options do.
+
+In this lesson, we'll take a comprehensive tour of the Hydra menu - your command center for all ~emacs-writing~ features.
+
+By the end of this lesson, you'll have:
+- Mastered opening and navigating the Hydra menu
+- Understood the six functional categories
+- Learned keyboard shortcuts for your most-used features
+- Discovered features you didn't know existed
+- Customized the menu keybinding to your preference
+
+*Estimated time*: 10-15 minutes
+
+* Before You Begin
+
+** What You Need
+
+✓ A writing project open (any project from previous lessons)
+✓ Basic familiarity with the Hydra menu from previous lessons
+✓ Curiosity about what other features are available!
+
+** Quick Check
+
+Can you open the Hydra menu?
+
+1. Press ~F8~ once
+2. Press ~F8~ again
+3. You should see the menu appear
+
+If you see the menu, you're ready! If not, make sure ~emacs-writing-mode~ is active.
+
+* What is the Hydra Menu?
+
+** The Problem It Solves
+
+~emacs-writing~ has dozens of features:
+- Insert scenes and chapters
+- Activate different writing modes
+- Capture characters, locations, plots
+- Count words and track progress
+- Search by character, plot, location, PoV
+- Manage ID-based links
+
+*How do you remember all those commands?*
+
+You don't need to! The Hydra menu provides a visual, organized interface to all features.
+
+** Hydra: Sticky Menus
+
+The menu is called a "Hydra" because:
+- It shows available options visually
+- You press single keys to activate features (no M-x needed)
+- Multiple related actions are grouped together
+- Submenus are available for complex features
+- The menu stays open until you quit or execute a command
+
+*Think of it as a quick-access toolbar* - but keyboard-driven!
+
+* Opening the Hydra Menu
+
+** The Default Keybinding
+
+Press: ~F8 F8~ (F8 twice)
+
+*Why F8 twice?*
+- F8 is easy to reach
+- Double-tap prevents accidental activation
+- Consistent with other Emacs conventions (like C-c C-c)
+
+** What You'll See
+
+When you open the menu, you'll see:
+
+#+BEGIN_EXAMPLE
+^Insert^           ^Modes^            ^Capture^          ^Tools^            ^Search^           ^Manage^
+^^^^^^^^------------------------------------------------------------------------------------------------------------------
+_s_: Scene         _m_: Mode (write)  _n_: Note          _w_: Words count   _1_: POV           _C_: Characters
+_c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table   _2_: Character     _L_: Locations
+_o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_: Plot          _P_: Plot threads
+                 _e_: Editing mode  _b_: oBject        _d_: Dictionary    _4_: Location
+                                  _t_: Timeline      _y_: sYnonyms      _5_: TODOs
+                                                                                     _q_: Quit
+#+END_EXAMPLE
+
+This is your command center!
+
+** Understanding the Layout
+
+The menu is organized into *six columns*:
+
+1. *Insert* - Add content (scenes, chapters)
+2. *Modes* - Change writing environment
+3. *Capture* - Quick entry for planning data
+4. *Tools* - Word counting and utilities
+5. *Search* - Find scenes by properties
+6. *Manage* - Link management (advanced)
+
+Each column groups related functions together.
+
+* The Six Functional Categories
+
+Let's explore each category in detail.
+
+** Column 1: Insert
+
+*Purpose*: Add new content to your manuscript
+
+| Key | Command      | What It Does                          |
+|-----+--------------+---------------------------------------|
+| ~s~   | Scene        | Insert a new scene with template      |
+| ~c~   | Chapter      | Insert a new chapter with template    |
+| ~o~   | Open file    | Quick navigation to project files     |
+
+*When to use*:
+- Starting a new scene (~s~)
+- Beginning a new chapter (~c~)
+- Switching between project files (~o~)
+
+*Most frequent*: ~s~ (scene) - you'll use this constantly!
+
+** Column 2: Modes
+
+*Purpose*: Change your writing environment for different tasks
+
+| Key | Command         | What It Does                              |
+|-----+-----------------+-------------------------------------------|
+| ~m~   | Mode (write)    | Distraction-free writing mode             |
+| ~p~   | Project mode    | Show project navigation panels            |
+| ~f~   | Focus mode      | Focus on current section (narrow)         |
+| ~e~   | Editing mode    | Three-panel editing layout                |
+
+*When to use*:
+- Starting writing session → ~m~ (distraction-free)
+- Need outline view → ~p~ (project mode with treemacs)
+- Revising one scene → ~f~ (focus mode)
+- Editing with notes → ~e~ (editing mode)
+
+*Most frequent*: ~m~ (writing mode) for daily writing
+
+*Tip*: Modes are mutually exclusive - activating one exits the others
+
+** Column 3: Capture
+
+*Purpose*: Quickly add planning information without leaving your manuscript
+
+| Key | Command   | What It Does                                  |
+|-----+-----------+-----------------------------------------------|
+| ~n~   | Note      | Capture a general note                        |
+| ~h~   | cHaracter | Add a new character profile                   |
+| ~l~   | Location  | Add a new location/setting                    |
+| ~b~   | oBject    | Add an important object (MacGuffin, artifact) |
+| ~t~   | Timeline  | Add a timeline event                          |
+
+*When to use*:
+- Mid-writing, capture a character → ~h~
+- Need to define a new location → ~l~
+- Tracking an important object → ~b~
+- Recording story timeline → ~t~
+- Quick idea you don't want to forget → ~n~
+
+*Most frequent*: ~h~ (character) and ~l~ (location)
+
+*Why "cHaracter" and "oBject"?*
+- The letter ~c~ was already taken (Chapter)
+- The letter ~o~ was already taken (Open file)
+- Hydra uses the uppercase letter in the name as a hint
+
+** Column 4: Tools
+
+*Purpose*: Writing utilities and reference tools
+
+| Key | Command        | What It Does                                 |
+|-----+----------------+----------------------------------------------|
+| ~w~   | Words count    | Count words in current section               |
+| ~r~   | tRack table    | Update progress tracking tables              |
+| ~a~   | Add WC props   | Add/update :WORDCOUNT: property              |
+| ~d~   | Dictionary     | Look up word in RAE dictionary (Spanish)     |
+| ~y~   | sYnonyms       | Find synonyms (Spanish/English)              |
+
+*When to use*:
+- After writing → ~w~ (check word count)
+- End of session → ~a~ (store word count)
+- Update progress table → ~r~
+- Writing in Spanish, need definition → ~d~
+- Need better word → ~y~ (synonyms)
+
+*Most frequent*: ~w~ (count), ~a~ (add properties), ~r~ (track)
+
+*Language note*: Dictionary and synonyms work best for Spanish, but synonyms supports English too
+
+** Column 5: Search
+
+*Purpose*: Find scenes by properties (character, plot, location, PoV)
+
+| Key | Command   | What It Does                             |
+|-----+-----------+------------------------------------------|
+| ~1~   | POV       | Find all scenes from a character's PoV   |
+| ~2~   | Character | Find all scenes featuring a character    |
+| ~3~   | Plot      | Find all scenes in a plot thread         |
+| ~4~   | Location  | Find all scenes in a location            |
+| ~5~   | TODOs     | Find all TODO items in project           |
+
+*When to use*:
+- "Where did Alex appear?" → ~2~ (character search)
+- "Which scenes have Alex's PoV?" → ~1~ (PoV search)
+- "Where's the romance subplot?" → ~3~ (plot search)
+- "All coffee shop scenes?" → ~4~ (location search)
+- "What needs fixing?" → ~5~ (TODO search)
+
+*Most frequent*: ~2~ (character) and ~3~ (plot)
+
+*Why numbers?*
+- Easy to remember: 1=PoV, 2=Character, 3=Plot, 4=Location, 5=TODOs
+- Quick to type
+- Consistent ordering
+
+** Column 6: Manage
+
+*Purpose*: Advanced linking features (ID-based links between scenes and planning)
+
+| Key | Command       | What It Does                         |
+|-----+---------------+--------------------------------------|
+| ~C~   | Characters    | Character linking submenu            |
+| ~L~   | Locations     | Location linking submenu             |
+| ~P~   | Plot threads  | Plot thread linking submenu          |
+
+*When to use*:
+- Setting up character links → ~C~
+- Setting up location links → ~L~
+- Setting up plot thread links → ~P~
+- Generating timelines and reports
+
+*Most frequent*: ~C~ (character linking)
+
+*Note*: These are SUBMENUS - they open additional menus with more options
+
+*Capitals are intentional*:
+- Lowercase letters are for main actions
+- Uppercase letters open submenus
+
+* Exploring the Submenus
+
+When you press ~C~, ~L~, or ~P~, you enter a submenu with more options.
+
+** Character Linking Submenu (F8 F8 C)
+
+#+BEGIN_EXAMPLE
+^Character Linking^
+^^^^^^^^------------------------------------------------------------
+_p_: Set PoV character      _l_: Link scene characters
+_c_: Set scene characters   _L_: Link all scenes
+_j_: Jump to PoV char       _i_: Add IDs to characters
+_s_: Setup linking system   _q_: Back to main menu
+#+END_EXAMPLE
+
+*What it does*:
+- ~p~ - Set PoV property using character menu (ID link)
+- ~c~ - Set Characters property using multi-select menu (ID links)
+- ~j~ - Jump to PoV character's profile
+- ~l~ - Convert current scene's character names to ID links
+- ~L~ - Convert ALL scenes' character names to ID links
+- ~i~ - Add unique IDs to all characters
+- ~s~ - Run setup wizard for character linking
+- ~q~ - Return to main Hydra menu
+
+** Location Linking Submenu (F8 F8 L)
+
+#+BEGIN_EXAMPLE
+^Location Linking^
+^^^^^^^^------------------------------------------------------------
+_c_: Set scene locations   _l_: Link scene locations
+_i_: Add IDs to locations  _L_: Link all scenes
+_s_: Setup linking system
+_q_: Back to main menu
+#+END_EXAMPLE
+
+*What it does*:
+- ~c~ - Set Location property using location menu (ID link)
+- ~l~ - Convert current scene's location names to ID links
+- ~L~ - Convert ALL scenes' location names to ID links
+- ~i~ - Add unique IDs to all locations
+- ~s~ - Run setup wizard for location linking
+- ~q~ - Return to main Hydra menu
+
+** Plot Thread Linking Submenu (F8 F8 P)
+
+#+BEGIN_EXAMPLE
+^Plot Thread Linking^       ^Analysis^
+^^^^^^^^------------------------------------------------------------
+_p_: Set scene plot threads   _t_: Timeline table
+_j_: Jump to plot thread      _r_: Health report
+_l_: Link scene plot threads  _S_: Statistics
+_L_: Link all scenes          _i_: Add IDs to threads
+_s_: Setup linking system     _q_: Back to main menu
+#+END_EXAMPLE
+
+*What it does*:
+- ~p~ - Set Plot property using plot thread menu (ID links)
+- ~j~ - Jump to plot thread's profile
+- ~l~ - Convert current scene's plot names to ID links
+- ~L~ - Convert ALL scenes' plot names to ID links
+- ~i~ - Add unique IDs to all plot threads
+- ~s~ - Run setup wizard for plot thread linking
+- ~t~ - Instructions for plot timeline table
+- ~r~ - Generate plot health report (finds gaps, issues)
+- ~S~ - Show plot statistics (scene counts, coverage)
+- ~q~ - Return to main Hydra menu
+
+*Bonus features*:
+- Plot submenu has analysis tools (~r~, ~S~)
+- These help check plot balance and coverage
+
+* Common Usage Patterns
+
+Here are the most frequent Hydra workflows you'll use.
+
+** Daily Writing Session
+
+1. ~F8 F8 m~ - Activate writing mode (distraction-free)
+2. Write your scene...
+3. ~F8 F8 m~ - Exit writing mode
+4. ~F8 F8 w~ - Check word count
+5. ~F8 F8 a~ - Add word count to properties
+
+*Muscle memory*: m → write → m → w → a
+
+** Starting a New Scene
+
+1. ~F8 F8 s~ - Insert scene template
+2. Fill in scene properties manually OR
+3. ~F8 F8 C p~ - Set PoV character (from menu)
+4. ~F8 F8 C c~ - Set scene characters (from menu)
+5. ~F8 F8 L c~ - Set location (from menu)
+6. ~F8 F8 P p~ - Set plot threads (from menu)
+7. ~F8 F8 m~ - Start writing!
+
+*Efficient workflow*: s → C p → C c → L c → P p → m
+
+** Tracking Progress
+
+1. ~F8 F8 a~ - Add word count properties to scenes
+2. Navigate to progress table
+3. ~C-c C-c~ - Update table (not Hydra, regular Org command)
+4. ~F8 F8 r~ - Update org-tracktable (if installed)
+
+*Quick check*: a → navigate → C-c C-c
+
+** Finding Character Scenes
+
+1. ~F8 F8 2~ - Search by character
+2. Select character from list
+3. Review results
+4. ~C-c C-o~ - Jump to a scene
+5. ~C-c &~ - Return from jump
+
+*Navigation*: 2 → select → C-c C-o → C-c &
+
+** Looking Up a Word (Spanish Writers)
+
+1. Place cursor on word
+2. ~F8 F8 d~ - RAE dictionary lookup
+3. Read definition
+4. OR ~F8 F8 y~ - Find synonyms
+5. Choose better word
+
+*Language tools*: d (definition) or y (synonyms)
+
+* Practical Exercise (10 minutes)
+
+Let's practice using the Hydra menu systematically.
+
+** Exercise 1: Menu Exploration
+
+1. *Open Hydra*: ~F8 F8~
+2. *Look at each column* - don't press anything yet
+3. *Identify*:
+   - Which key inserts a scene? (s)
+   - Which key activates writing mode? (m)
+   - Which key captures a character? (h)
+   - Which key counts words? (w)
+   - Which key searches by plot? (3)
+   - Which key opens character linking? (C)
+4. *Press* ~q~ to quit without executing anything
+
+** Exercise 2: Navigation Practice
+
+1. *Open Hydra*: ~F8 F8~
+2. *Enter character submenu*: ~C~
+3. *Look at options* - which key sets PoV? (p)
+4. *Return to main*: ~q~
+5. *Enter location submenu*: ~L~
+6. *Return to main*: ~q~
+7. *Enter plot submenu*: ~P~
+8. *Notice analysis options* - what does ~r~ do? (health report)
+9. *Return to main*: ~q~
+10. *Quit Hydra*: ~q~
+
+** Exercise 3: Common Actions
+
+1. *Insert a scene*: ~F8 F8 s~
+2. *Set PoV character*: ~F8 F8 C p~ → select character
+3. *Count words*: ~F8 F8 w~
+4. *Search for a character*: ~F8 F8 2~ → select character
+5. *Capture a quick note*: ~F8 F8 n~ → write note → complete capture
+
+** Exercise 4: Build Muscle Memory
+
+Repeat this sequence 3 times without looking at notes:
+
+1. ~F8 F8~ (open)
+2. ~m~ (writing mode)
+3. ~F8 F8~ (open again)
+4. ~m~ (exit writing mode)
+5. ~F8 F8~ (open)
+6. ~w~ (count words)
+
+*Goal*: Make "F8 F8" + single letter feel natural
+
+* Customizing the Hydra Keybinding
+
+The default keybinding is ~F8 F8~, but you can change it.
+
+** Why Customize?
+
+Reasons to change:
+- F8 conflicts with other packages
+- You want something faster
+- You prefer a specific key combination
+- Your keyboard layout makes F8 awkward
+
+** Common Alternative Keybindings
+
+Popular choices:
+
+| Keybinding | Pros                            | Cons                         |
+|------------+---------------------------------+------------------------------|
+| ~F8 F8~      | Default, unlikely to conflict   | Requires two presses         |
+| ~C-c w~      | Fast, single combo              | Might conflict with org      |
+| ~C-c C-w~    | Similar to other org commands   | Might conflict               |
+| ~s-w~        | Super key, unlikely to conflict | Not all keyboards have Super |
+| ~M-W~        | Fast, unlikely to conflict      | Might conflict with packages |
+| ~F5~         | Single press, easy to reach     | Often used for other things  |
+
+** How to Change the Keybinding
+
+Add to your Emacs configuration (~init.el~ or ~.emacs~):
+
+#+BEGIN_SRC emacs-lisp
+;; Example 1: Use C-c w instead
+(global-set-key (kbd "C-c w") 'hydra-writing/body)
+
+;; Example 2: Use F5 instead
+(global-set-key (kbd "<f5>") 'hydra-writing/body)
+
+;; Example 3: Use Super-w (Windows key + w)
+(global-set-key (kbd "s-w") 'hydra-writing/body)
+
+;; Example 4: Use C-c C-w
+(global-set-key (kbd "C-c C-w") 'hydra-writing/body)
+#+END_SRC
+
+*After adding*:
+1. Save your configuration
+2. Restart Emacs OR
+3. Evaluate the line: ~C-x C-e~ at end of line
+4. Test the new keybinding
+
+** Removing the Old Keybinding
+
+If you want to completely replace ~F8 F8~:
+
+#+BEGIN_SRC emacs-lisp
+;; Remove old binding
+(global-unset-key (kbd "<f8> <f8>"))
+
+;; Set new binding
+(global-set-key (kbd "C-c w") 'hydra-writing/body)
+#+END_SRC
+
+** Recommended Keybinding
+
+If you're unsure, stick with ~F8 F8~:
+- ✓ Unlikely to conflict
+- ✓ Easy to remember (double-tap)
+- ✓ Default in documentation
+- ✓ Consistent for all users
+
+Change only if you have a specific reason!
+
+* Tips for Hydra Mastery
+
+** Memory Aids
+
+*Mnemonic patterns*:
+- ~s~ = Scene
+- ~c~ = Chapter
+- ~m~ = Mode
+- ~w~ = Words
+- ~h~ = cHaracter (c was taken)
+- ~l~ = Location
+- ~n~ = Note
+
+*Numbers for searches*:
+- 1 = First person (PoV)
+- 2 = Secondary character search
+- 3 = Third plot search
+- 4 = Fourth location search
+- 5 = Five TODOs (okay, this one doesn't work...)
+
+*Capitals = Submenus*:
+- C = Character submenu
+- L = Location submenu
+- P = Plot submenu
+
+** Visual Learning
+
+Print this cheat sheet:
+
+#+BEGIN_EXAMPLE
+HYDRA QUICK REFERENCE (F8 F8)
+
+INSERT     MODES       CAPTURE     TOOLS       SEARCH      MANAGE
+s: Scene   m: Write    n: Note     w: Count    1: PoV      C: Chars
+c: Chapter p: Project  h: Char     r: Track    2: Char     L: Locs
+o: Open    f: Focus    l: Loc      a: Props    3: Plot     P: Plots
+           e: Edit     b: Obj      d: Dict     4: Loc
+                       t: Time     y: Syn      5: TODO
+#+END_EXAMPLE
+
+Tape it near your monitor until you memorize it!
+
+** Practice Deliberately
+
+*Week 1*: Use only Insert and Modes columns
+*Week 2*: Add Capture and Tools
+*Week 3*: Master Search
+*Week 4*: Explore Manage (submenus)
+
+Don't try to learn everything at once!
+
+** Common Mistakes
+
+1. *Forgetting to open Hydra first*
+   - Wrong: Just pressing ~m~
+   - Right: ~F8 F8~ then ~m~
+
+2. *Confusing columns*
+   - Character capture vs. Character search
+   - ~h~ (capture new) vs ~2~ (search existing)
+
+3. *Expecting actions to repeat*
+   - Hydra closes after one action (by design)
+   - Re-open for next action: ~F8 F8~
+
+4. *Not using submenus*
+   - Many powerful features are in ~C~, ~L~, ~P~
+   - Don't ignore the Manage column!
+
+** Speed Tips
+
+*Fastest workflows*:
+- Scene + writing: ~F8 F8 s ... F8 F8 m~
+- Quick count: ~F8 F8 w~
+- Save count: ~F8 F8 a~
+- Character search: ~F8 F8 2~
+
+*Batch operations*:
+- Open Hydra once
+- Execute action
+- Immediately press ~F8 F8~ again for next action
+- Build speed through repetition
+
+** Discovering Features
+
+*Try one new feature per week*:
+- Week 1: Master ~m~ (writing mode)
+- Week 2: Learn ~h~ (character capture)
+- Week 3: Try ~2~ (character search)
+- Week 4: Explore ~C~ (character linking submenu)
+- Week 5: Use ~3~ (plot search)
+- Week 6: Try ~P r~ (plot health report)
+
+Gradual exploration prevents overwhelm!
+
+* Troubleshooting
+
+** "F8 F8 doesn't do anything"
+
+*Possible causes*:
+1. ~emacs-writing-mode~ not active
+   - Check mode line for "Writing"
+   - Activate: ~M-x emacs-writing-mode~
+
+2. Keybinding not set
+   - Check if Hydra package is installed
+   - Verify keybinding: ~C-h k F8 F8~
+
+3. Conflict with another package
+   - Try ~M-x hydra-writing/body~ directly
+   - Set custom keybinding (see Customization section)
+
+** "Menu appears but keys don't work"
+
+*Check*:
+1. Are you pressing the right key?
+   - Look at the menu carefully
+   - Underscores show the exact letter: ~_s_~
+
+2. Is the function available?
+   - Some functions need dependencies
+   - Example: ~d~ needs RAE API package
+
+3. Are you in the right context?
+   - Some functions only work in manuscript files
+   - Some need cursor on specific heading types
+
+** "Submenu doesn't return to main menu"
+
+*Solution*:
+- Press ~q~ in submenu to go back
+- Press ~Q~ (capital Q) to quit completely
+- If stuck, press ~C-g~ to abort Hydra
+
+** "I pressed the wrong key!"
+
+*Don't panic*:
+1. Press ~C-g~ to cancel the command
+2. Press ~F8 F8~ to re-open Hydra
+3. Press the correct key
+
+*No harm done* - most commands are safe to cancel!
+
+** "Menu looks garbled or misaligned"
+
+*Causes*:
+1. Terminal width too narrow
+   - Resize Emacs window wider
+   - Hydra needs ~100 characters width
+
+2. Font size too large
+   - Reduce font size: ~C-x C--~
+   - Or use ~C-x C-0~ to reset
+
+3. Theme rendering issue
+   - Try different theme
+   - Or ignore - functionality still works!
+
+* What You've Learned
+
+Excellent work! You've completed Lesson 8. You now know:
+
+✓ What the Hydra menu is and why it's useful
+✓ How to open it (~F8 F8~)
+✓ The six functional categories (Insert, Modes, Capture, Tools, Search, Manage)
+✓ What each menu option does
+✓ How to navigate submenus
+✓ Common usage patterns and workflows
+✓ Keyboard shortcuts for frequent actions
+✓ How to customize the Hydra keybinding
+✓ Tips for memorizing menu structure
+✓ How to troubleshoot menu issues
+
+* Next Steps
+
+You've completed Part 3 (Navigating and Searching)! Next up: [[file:getting-started-09-writing-modes.org][Lesson 9: Writing Modes Deep Dive]]
+
+In the next lesson, you'll learn:
+- All four writing modes in detail
+- When to use each mode
+- How each mode changes your environment
+- Customizing modes to your preferences
+- Switching between modes efficiently
+
+** Practice Before Moving On
+
+Reinforce your Hydra skills:
+
+1. *Memorize the six columns*
+   - Insert, Modes, Capture, Tools, Search, Manage
+   - Close your eyes and recite them
+
+2. *Practice your daily workflow*
+   - F8 F8 s (scene)
+   - F8 F8 m (write mode)
+   - Write 100 words
+   - F8 F8 m (exit)
+   - F8 F8 w (count)
+   - F8 F8 a (save count)
+
+3. *Explore submenus*
+   - Visit all three submenus (C, L, P)
+   - Try at least one command from each
+   - Return to main menu with q
+
+4. *Test search functions*
+   - Use all five search options (1, 2, 3, 4, 5)
+   - See what results look like
+   - Navigate to results with C-c C-o
+
+5. *Capture something*
+   - Use all five capture options (n, h, l, b, t)
+   - Fill out templates completely
+   - See where data is stored
+
+Take your time! The Hydra menu is your primary interface to ~emacs-writing~ - mastering it makes everything else easier.
+
+* Quick Reference
+
+** Essential Hydra Commands
+
+| Category | Key | Command           | Frequency |
+|----------+-----+-------------------+-----------|
+| Insert   | ~s~   | Insert scene      | Daily     |
+| Insert   | ~c~   | Insert chapter    | Weekly    |
+| Modes    | ~m~   | Writing mode      | Daily     |
+| Capture  | ~h~   | Capture character | Weekly    |
+| Capture  | ~l~   | Capture location  | Weekly    |
+| Tools    | ~w~   | Count words       | Daily     |
+| Tools    | ~a~   | Add word props    | Daily     |
+| Search   | ~2~   | Find character    | Weekly    |
+| Search   | ~3~   | Find plot         | Weekly    |
+| Manage   | ~C~   | Character links   | Setup     |
+
+** Submenu Quick Reference
+
+*** Character Linking (~F8 F8 C~)
+
+| Key | Command                | Use When                         |
+|-----+------------------------+----------------------------------|
+| ~p~   | Set PoV                | Setting scene PoV from menu      |
+| ~c~   | Set characters         | Adding characters to scene       |
+| ~j~   | Jump to PoV            | Want to see PoV character profile|
+| ~s~   | Setup system           | First-time setup                 |
+
+*** Location Linking (~F8 F8 L~)
+
+| Key | Command          | Use When                      |
+|-----+------------------+-------------------------------|
+| ~c~   | Set location     | Setting scene location        |
+| ~s~   | Setup system     | First-time setup              |
+
+*** Plot Thread Linking (~F8 F8 P~)
+
+| Key | Command         | Use When                         |
+|-----+-----------------+----------------------------------|
+| ~p~   | Set plot threads| Adding plot threads to scene     |
+| ~j~   | Jump to thread  | Want to see plot thread profile  |
+| ~r~   | Health report   | Checking plot balance            |
+| ~S~   | Statistics      | Reviewing plot coverage          |
+| ~s~   | Setup system    | First-time setup                 |
+
+** Memory Tricks
+
+*First letter patterns*:
+- ~s~ Scene, ~c~ Chapter, ~m~ Mode, ~w~ Words, ~n~ Note, ~l~ Location
+
+*Numbers are searches*:
+- 1-5 all search for different things
+
+*Capitals are submenus*:
+- C, L, P open linking menus
+
+*q always means quit*:
+- Exit submenu or exit Hydra
+
+** Workflow Patterns
+
+#+BEGIN_EXAMPLE
+Daily Writing:
+  F8 F8 m → write → F8 F8 m → F8 F8 w → F8 F8 a
+
+New Scene:
+  F8 F8 s → F8 F8 C p → F8 F8 C c → F8 F8 m
+
+Progress Check:
+  F8 F8 a → navigate → C-c C-c → F8 F8 r
+
+Character Research:
+  F8 F8 2 → select → C-c C-o → read → C-c &
+#+END_EXAMPLE
+
+* Summary
+
+The Hydra menu is your command center for ~emacs-writing~. Instead of memorizing dozens of command names, you can press ~F8 F8~ and see all available options organized into six clear categories.
+
+The key to mastery is:
+1. Understand the six categories
+2. Learn your daily workflow keys (s, m, w, a)
+3. Gradually explore other features
+4. Practice until ~F8 F8~ becomes muscle memory
+
+Don't try to memorize everything at once. Start with the essentials and expand your knowledge as you need new features!
+
+---
+
+*Previous*: [[file:getting-started-07-searching.org][Lesson 7: Finding What You Need]]
+*Next*: [[file:getting-started-09-writing-modes.org][Lesson 9: Writing Modes Deep Dive]]
+
+*Lesson 8 Complete!*

@@ -1,0 +1,952 @@
+#+TITLE: Lesson 10: Character and Plot Timelines
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 10!
+
+You've been tracking characters and plot threads in your scenes using properties. Now it's time to visualize this data! Timelines show you which characters appear where and how plot threads develop throughout your story.
+
+These visual tables help you spot problems:
+- "Why hasn't my protagonist's best friend appeared in 10 scenes?"
+- "Is my romance subplot getting enough screen time?"
+- "Are all my plot threads properly resolved?"
+
+By the end of this lesson, you'll have:
+- Created character timeline tables showing who appears where
+- Created plot thread timeline tables showing story development
+- Understood timeline symbols (◆ for PoV, ● for presence)
+- Used timelines to identify gaps and imbalances
+- Generated plot health reports with warnings
+- Made your story stronger through visual analysis
+
+*Estimated time*: 20 minutes
+
+* Before You Begin
+
+** What You Need
+
+✓ A writing project with multiple scenes
+✓ Character properties set on scenes (~:PoV:~ and ~:Characters:~)
+✓ Plot thread properties set on scenes (~:Plot:~)
+✓ Character linking system set up (from Lesson 4)
+✓ Basic familiarity with org dynamic blocks
+
+** Quick Check
+
+Open your manuscript and verify:
+1. You have at least 3-5 scenes written
+2. Scenes have ~:PoV:~ properties set
+3. Scenes have ~:Characters:~ properties set
+4. Scenes have ~:Plot:~ properties set
+5. Character/plot links are using ID links (not plain text)
+
+If you're missing these, review Lesson 4 (Characters) and Lesson 6 (Plot Threads).
+
+** What Are Timelines?
+
+Timelines are automatically generated tables that show:
+- **Character Timeline**: Which characters appear in which scenes
+- **Plot Thread Timeline**: Which plot threads are active in which scenes
+
+They use org-mode's dynamic block feature (~#+BEGIN: ... #+END:~) to generate tables from your scene properties.
+
+* Understanding Timeline Symbols
+
+Before we create timelines, let's understand the symbols they use.
+
+** Character Timeline Symbols
+
+| Symbol | Meaning                         | Example                          |
+|--------+---------------------------------+----------------------------------|
+| ◆      | Point of View character         | Scene from Alice's perspective   |
+| ●      | Character present (not PoV)     | Bob appears but isn't PoV        |
+| (blank)| Character not in scene          | Charlie doesn't appear           |
+
+** Symbol Logic: PoV Takes Precedence
+
+*Important rule*: If a character is PoV, they're shown as ◆ even if they're also in the ~:Characters:~ property.
+
+Example scene properties:
+#+BEGIN_EXAMPLE
+:PoV: Alice
+:Characters: Alice, Bob, Charlie
+#+END_EXAMPLE
+
+Timeline shows:
+- Alice: ◆ (PoV, not ● even though in Characters list)
+- Bob: ●
+- Charlie: ●
+
+*Why?* PoV implies presence, so we don't need both symbols. The diamond (◆) is stronger/more important.
+
+** Plot Thread Timeline Symbols
+
+Plot threads use simpler symbols:
+
+| Symbol | Meaning                  | Example                      |
+|--------+--------------------------+------------------------------|
+| ●      | Thread active in scene   | Main plot progresses         |
+| (blank)| Thread not in scene      | Romance subplot not present  |
+
+*No PoV distinction* - threads are either present or not.
+
+** Visual Example
+
+Here's what a character timeline looks like:
+
+#+BEGIN_EXAMPLE
+| Scene                  | Chapter   | Alice | Bob | Charlie |
+|------------------------+-----------+-------+-----+---------|
+| Scene 1 - Morning      | Chapter 1 | ◆     | ●   |         |
+| Scene 2 - Coffee       | Chapter 1 | ●     |     | ●       |
+| Scene 3 - Office       | Chapter 1 | ◆     | ●   | ●       |
+| Scene 4 - Confrontation| Chapter 2 | ◆     | ●   |         |
+#+END_EXAMPLE
+
+Reading this table:
+- Scene 1: Alice is PoV (◆), Bob appears (●), Charlie absent
+- Scene 2: Alice appears (●), Charlie appears (●), Bob absent, no PoV
+- Scene 3: Alice is PoV (◆), Bob and Charlie both appear (●)
+- Scene 4: Alice is PoV (◆), Bob appears (●), Charlie absent
+
+* Creating Your First Character Timeline
+
+Let's generate a character timeline for your manuscript!
+
+** Step 1: Find the Timeline Location
+
+Your template already includes a timeline section!
+
+1. Open your manuscript (~novel.org~ or ~story.org~)
+2. Search for "Character Timeline" heading
+3. You should see:
+
+#+BEGIN_EXAMPLE
+** Character Timeline
+
+This table shows which characters appear in which scenes.
+
+Symbols:
+- ◆ = Point of View character
+- ● = Present in scene
+
+Update with =C-c C-c= on the #+BEGIN line.
+
+#+BEGIN: character-timeline
+#+END:
+#+END_EXAMPLE
+
+*If you don't see this section*: You can add it manually (see Customization section later).
+
+** Step 2: Generate the Timeline
+
+1. Position your cursor on the ~#+BEGIN: character-timeline~ line
+2. Press ~C-c C-c~
+3. Wait 1-2 seconds
+4. The table generates!
+
+You should now see:
+
+#+BEGIN_EXAMPLE
+#+BEGIN: character-timeline
+| Scene              | Chapter   | Alice | Bob | Charlie | Dana |
+|--------------------+-----------+-------+-----+---------+------|
+| Scene 1 - Opening  | Chapter 1 | ◆     | ●   |         |      |
+| Scene 2 - Meeting  | Chapter 1 | ●     |     | ●       |      |
+| Scene 3 - Conflict | Chapter 2 | ◆     | ●   | ●       | ●    |
+#+END:
+#+END_EXAMPLE
+
+*Congratulations!* You've created your first timeline!
+
+** Step 3: Understanding Your Timeline
+
+Look at your generated timeline and identify:
+
+1. **Character columns**: One column per character who appears anywhere
+2. **Scene rows**: One row per scene with character properties
+3. **Symbols**:
+   - ◆ = This character's PoV
+   - ● = Character present
+   - Blank = Character absent
+
+** Step 4: Analyze for Gaps
+
+Common patterns to look for:
+
+*** Protagonist Missing
+
+If your main character has blank cells:
+- *Problem*: Protagonist absent from too many scenes
+- *Solution*: Either they should appear, or you're showing too many subplots
+
+*** Supporting Character Overuse
+
+If a minor character appears everywhere (all ●):
+- *Problem*: Minor character getting too much screen time
+- *Solution*: Remove them from scenes where they're not essential
+
+*** Character Disappears
+
+If a character appears early, then has many blanks:
+- *Problem*: You forgot about this character
+- *Solution*: Add them back, or write them out properly
+
+*** No PoV Variety (Single PoV Novels)
+
+If only one character has ◆:
+- *Okay for*: First-person novels, single PoV stories
+- *Problem if*: You intended multi-PoV but forgot to switch
+
+*** PoV Switching Too Often
+
+If ◆ bounces between many characters rapidly:
+- *Problem*: Confusing PoV shifts, no character focus
+- *Solution*: Group PoV scenes together (3-4 consecutive scenes same PoV)
+
+** Step 5: Update After Changes
+
+As you write more scenes:
+
+1. Set ~:PoV:~ and ~:Characters:~ properties on new scenes
+2. Navigate to Character Timeline section
+3. Press ~C-c C-c~ on ~#+BEGIN: character-timeline~
+4. Table updates with new data!
+
+*Timeline is dynamic* - it always reflects current scene properties.
+
+** Try It Now! (5 minutes)
+
+1. Generate your character timeline (~C-c C-c~)
+2. Look for gaps (characters with many blanks)
+3. Identify your most/least used characters
+4. Check if PoV is balanced (or appropriately single)
+5. Make notes about what you discovered
+
+* Creating a Plot Thread Timeline
+
+Plot thread timelines work the same way but show story threads instead of characters.
+
+** Step 1: Find the Plot Timeline Location
+
+In your manuscript, search for "Plot Thread Timeline" or add:
+
+#+BEGIN_EXAMPLE
+** Plot Thread Timeline
+
+This table shows which plot threads are active in which scenes.
+
+Symbol:
+- ● = Thread active in this scene
+
+Update with =C-c C-c= on the #+BEGIN line.
+
+#+BEGIN: plot-thread-timeline
+#+END:
+#+END_EXAMPLE
+
+** Step 2: Generate the Timeline
+
+1. Position cursor on ~#+BEGIN: plot-thread-timeline~ line
+2. Press ~C-c C-c~
+3. Table generates!
+
+Example output:
+
+#+BEGIN_EXAMPLE
+#+BEGIN: plot-thread-timeline
+| Scene                  | Chapter   | Main Plot | Romance | Conspiracy |
+|------------------------+-----------+-----------+---------+------------|
+| Scene 1 - Discovery    | Chapter 1 | ●         |         | ●          |
+| Scene 2 - First Date   | Chapter 1 |           | ●       |            |
+| Scene 3 - Investigation| Chapter 2 | ●         |         | ●          |
+| Scene 4 - Dinner       | Chapter 2 |           | ●       |            |
+| Scene 5 - Revelation   | Chapter 3 | ●         | ●       | ●          |
+#+END:
+#+END_EXAMPLE
+
+** Step 3: Analyze Plot Balance
+
+Look for these patterns:
+
+*** Single-Scene Threads
+
+If a thread appears only once (one ●):
+- *Problem*: Thread mentioned but not developed
+- *Solution*: Either expand it (more scenes) or remove it
+
+*** Long Gaps
+
+If a thread has many blank scenes between ●:
+- *Problem*: Readers will forget this thread exists
+- *Solution*: Add reminder scenes every 5-7 scenes
+
+*** Unfinished Threads
+
+If a thread appears early but never appears near the end:
+- *Problem*: Unresolved plot thread (readers hate this!)
+- *Solution*: Add resolution scenes in Act III
+
+*** Clustering
+
+If all threads appear in same scenes:
+- *Problem*: Overcrowded scenes, unfocused narrative
+- *Solution*: Separate threads across different scenes
+
+*** Good Balance Example
+
+#+BEGIN_EXAMPLE
+| Scene     | Main | Romance | Mystery |
+|-----------+------+---------+---------|
+| Scene 1   | ●    |         |         |  ← Establishes main plot
+| Scene 2   | ●    | ●       |         |  ← Introduces romance
+| Scene 3   | ●    |         | ●       |  ← Introduces mystery
+| Scene 4   |      | ●       |         |  ← Romance develops
+| Scene 5   | ●    |         | ●       |  ← Main + mystery intersect
+| Scene 6   |      | ●       |         |  ← Romance continues
+| Scene 7   | ●    | ●       | ●       |  ← All converge (climax!)
+#+END_EXAMPLE
+
+*Why this is good*:
+- Each thread gets focus
+- Regular appearances (no thread disappears)
+- Threads separated until climax
+- Clear progression visible
+
+** Try It Now! (5 minutes)
+
+1. Generate plot thread timeline
+2. Count how many scenes each thread appears in
+3. Measure gaps (max blank scenes between appearances)
+4. Check if all threads resolve near the end
+5. Identify any threads that need more development
+
+* TODO The Plot Thread Health Report
+*NOTE:* This needs review
+
+For deeper analysis, ~emacs-writing~ includes an automated health report!
+
+** What It Does
+
+The health report analyzes your plot threads and finds:
+- **One-appearance threads**: Mentioned once, never developed
+- **Large gaps**: Thread disappears for 10+ scenes
+- **Low coverage**: Thread appears in <30% of scenes
+- **Unresolved threads**: No appearances in final act
+
+** Generating the Report
+
+Two ways to access:
+
+*** Via Hydra Menu
+
+1. Press ~F8 F8 P~ (plot thread submenu)
+2. Press ~r~ (health report)
+3. Report opens in new buffer
+
+*** Direct Command
+
+1. ~M-x writing/plot-thread-report~
+2. Report opens in new buffer
+
+** Understanding the Report
+
+The report looks like:
+
+#+BEGIN_EXAMPLE
+#+TITLE: Plot Thread Health Report
+#+DATE: 2025-11-16 14:30
+
+* Summary
+
+- Total plot threads: 3
+- Total scenes: 12
+- Scenes with plot threads: 12
+
+* Thread Details
+
+** Main Plot (Healthy ✓)
+
+- Appearances: 8/12 scenes (67%)
+- Coverage: Good
+- Max gap: 2 scenes
+- Status: Active throughout
+
+** Romance Subplot (⚠ Warning)
+
+- Appearances: 4/12 scenes (33%)
+- Coverage: Low (below 40%)
+- Max gap: 5 scenes
+- Status: ⚠ Long gap detected
+- Recommendation: Add 2-3 more scenes with this thread
+
+** Mystery Thread (⚠ Warning)
+
+- Appearances: 2/12 scenes (17%)
+- Coverage: Very low
+- Max gap: 8 scenes
+- Status: ⚠ Minimal development
+- Recommendation: Either expand (5+ scenes) or remove
+#+END_EXAMPLE
+
+** Warning Types
+
+| Warning            | Criteria              | Fix                           |
+|--------------------+-----------------------+-------------------------------|
+| One-appearance     | Only 1 scene          | Expand to 3+ or remove        |
+| Large gap          | 10+ scenes between    | Add reminder scenes           |
+| Low coverage       | <30% of scenes        | Add more development          |
+| Very low coverage  | <20% of scenes        | Major expansion or cut thread |
+
+** Using the Report
+
+1. **Read Summary**: Get overall thread count
+2. **Check each thread**: Look for ⚠ warnings
+3. **Prioritize fixes**: Start with "Very low coverage" threads
+4. **Make changes**: Add scenes or remove threads
+5. **Regenerate report**: Verify improvements
+
+** Try It Now! (3 minutes)
+
+1. Generate health report (~F8 F8 P r~)
+2. Read the summary
+3. Find any threads with warnings
+4. Make notes about needed fixes
+5. Close report buffer
+
+* TODO Quick Statistics
+*NOTE:* This needs review
+
+For a fast check without full report:
+
+** Command: Plot Thread Stats
+
+1. Press ~F8 F8 P S~ (capital S for Statistics)
+2. Or: ~M-x writing/plot-thread-stats~
+3. Message appears in minibuffer:
+
+#+BEGIN_EXAMPLE
+Plot threads: 3 | Scenes: 12 | Threads with warnings: 2
+#+END_EXAMPLE
+
+*Quick health check* - if warnings > 0, generate full report to investigate.
+
+** When to Use
+
+- **Statistics**: Quick daily check (F8 F8 P S)
+- **Full Report**: Weekly review, major editing sessions
+- **Timeline**: Visual planning, structural editing
+
+* Practical Timeline Workflows
+
+Here are real-world uses for timelines.
+
+** Workflow 1: Character Balance Check (Weekly)
+
+*Goal*: Ensure all main characters get screen time
+
+1. Generate character timeline
+2. Count ◆ symbols per character (PoV scenes)
+3. Count ● symbols per character (total appearances)
+4. Compare:
+   - Protagonist should have most ◆ (single PoV) or plurality (multi-PoV)
+   - Supporting cast should have regular ●
+   - Minor characters should have occasional ●
+5. Add scenes for under-represented characters
+
+*Example findings*:
+- Alice: 10 ◆, 2 ● = 12 appearances (good for protagonist)
+- Bob: 0 ◆, 8 ● = 8 appearances (good for sidekick)
+- Charlie: 0 ◆, 2 ● = only 2 appearances (need more!)
+
+** Workflow 2: Plot Thread Pacing (During Drafting)
+
+*Goal*: Maintain thread presence throughout story
+
+1. Generate plot thread timeline
+2. Look at each thread row
+3. Ensure no gaps > 5 scenes
+4. If gap found:
+   - Option A: Add bridging scene
+   - Option B: Add mention/reference in existing scene
+5. Update timeline to verify fix
+
+*Example*:
+- Romance thread: Scene 2 ● ... Scene 3 ● ... Scene 8 ● (5-scene gap!)
+- Fix: Add romantic moment in Scene 5 or 6
+
+** Workflow 3: Act Structure Verification
+
+*Goal*: Ensure each act contains all threads
+
+1. Generate plot thread timeline
+2. Visually divide by acts:
+   - Act I: Scenes 1-4
+   - Act II: Scenes 5-10
+   - Act III: Scenes 11-15
+3. Check each act has:
+   - Main plot: All acts (continuous)
+   - Subplots: At least one appearance per act
+4. Fix gaps
+
+*Example*:
+- Mystery subplot appears in Act I and II, but missing from Act III
+- Problem: No resolution!
+- Fix: Add resolution scene in Act III
+
+** Workflow 4: Multi-POV Balance (Multi-POV Novels)
+
+*Goal*: Balance PoV distribution across characters
+
+1. Generate character timeline
+2. Count ◆ per character
+3. Calculate percentages:
+   - Alice: 6/15 scenes = 40% PoV
+   - Bob: 5/15 scenes = 33% PoV
+   - Charlie: 4/15 scenes = 27% PoV
+4. Decide if balance is correct:
+   - Equal partners: Aim for ~33% each (achieved above!)
+   - Primary + secondary: 60%/40% split
+   - Primary + two secondary: 50%/25%/25%
+5. Adjust as needed
+
+** Workflow 5: Scene-by-Scene Planning (Before Writing)
+
+*Goal*: Plan character and plot distribution
+
+1. Create empty scenes with properties (no content yet)
+2. Set ~:PoV:~, ~:Characters:~, ~:Plot:~ for each planned scene
+3. Generate both timelines
+4. Review visually - does the pattern make sense?
+5. Adjust scene properties before writing
+6. Start writing with solid structure
+
+*Benefit*: Catch structural problems before writing thousands of words!
+
+** Try Different Workflows (5 minutes)
+
+Pick one workflow above and:
+1. Generate necessary timeline(s)
+2. Perform the analysis
+3. Identify at least one improvement
+4. Make notes about the fix
+
+* Customizing Timeline Sections
+
+If your template doesn't have timeline sections, add them manually.
+
+** Adding Character Timeline Section
+
+In your manuscript (~novel.org~), add:
+
+#+BEGIN_SRC org
+,** Character Timeline
+
+This table shows which characters appear in which scenes.
+
+Symbols:
+- ◆ = Point of View character (implies presence)
+- ● = Present in scene (not PoV)
+
+Update with =C-c C-c= on the #+BEGIN line.
+
+,#+BEGIN: character-timeline
+,#+END:
+#+END_SRC
+
+** Adding Plot Thread Timeline Section
+
+Similarly:
+
+#+BEGIN_SRC org
+,** Plot Thread Timeline
+
+This table shows which plot threads are active in which scenes.
+
+Symbol:
+- ● = Thread is active in this scene
+
+Update with =C-c C-c= on the #+BEGIN line.
+
+,#+BEGIN: plot-thread-timeline
+,#+END:
+#+END_SRC
+
+** Recommended Location
+
+Place timeline sections in your manuscript after:
+- Progress Tracking section
+- Word count tables
+- Before main manuscript content
+
+*Or* create separate ~timeline.org~ file in your project for detailed analysis.
+
+** Multiple Timelines
+
+You can have multiple timeline blocks:
+- One in ~novel.org~ (quick reference)
+- One in ~statistics.org~ (detailed tracking)
+- One per act (in separate files)
+
+All show same data - choose what fits your workflow!
+
+* Advanced Timeline Analysis
+
+Once comfortable with basic timelines, try these advanced techniques.
+
+** Color Coding (External Tool)
+
+Export timeline to CSV or HTML and use spreadsheet for color coding:
+1. ◆ = Green (PoV)
+2. ● = Blue (present)
+3. Blank = White (absent)
+
+Visual color patterns show balance instantly!
+
+** Scene Count Analysis
+
+Create a summary table manually:
+
+#+BEGIN_EXAMPLE
+| Character | PoV (◆) | Present (●) | Total | Percentage |
+|-----------+---------+-------------+-------+------------|
+| Alice     |      10 |           2 |    12 | 80%        |
+| Bob       |       0 |           8 |     8 | 53%        |
+| Charlie   |       0 |           3 |     3 | 20%        |
+|-----------+---------+-------------+-------+------------|
+| Total     |      15 |             |    15 |            |
+#+END_EXAMPLE
+
+** Gap Analysis Table
+
+Track longest gaps:
+
+#+BEGIN_EXAMPLE
+| Thread  | Last Seen | Next Appears | Gap (scenes) | Status |
+|---------+-----------+--------------+--------------|--------|
+| Romance | Scene 5   | Scene 11     |            6 | ⚠      |
+| Mystery | Scene 8   | Scene 12     |            4 | ✓      |
+| Main    | Scene 14  | Scene 15     |            1 | ✓      |
+#+END_EXAMPLE
+
+** Arc Completion Checklist
+
+For each thread, verify:
+
+#+BEGIN_EXAMPLE
+- [ ] Thread introduced in Act I
+- [ ] Thread develops in Act II (3+ scenes)
+- [ ] Thread has setback/complication
+- [ ] Thread resolves in Act III
+- [ ] No gaps > 7 scenes
+- [ ] Appears in final act
+#+END_EXAMPLE
+
+* Common Questions
+
+** "My timeline is empty / shows no characters"
+
+*Causes*:
+1. No scenes have ~:PoV:~ or ~:Characters:~ properties set
+2. Properties have plain text instead of ID links
+3. Cursor not on ~#+BEGIN~ line when pressing ~C-c C-c~
+
+*Solutions*:
+1. Set character properties on scenes (~F8 F8 C p~ and ~F8 F8 C c~)
+2. Run character linking setup (~F8 F8 C s~)
+3. Position cursor exactly on ~#+BEGIN: character-timeline~ line
+
+** "Timeline shows some characters but not all"
+
+*Cause*: Timeline only shows characters who appear in at least one scene.
+
+*This is correct!* If a character profile exists but they never appear in scenes, they won't be in the timeline.
+
+*Solution*: Add that character to scene properties where they should appear.
+
+** "How often should I update timelines?"
+
+*Recommendations*:
+
+- **While drafting**: After every 3-5 new scenes
+- **During revision**: Weekly
+- **Before submission**: Once, for final check
+- **Quick check**: Any time (press ~C-c C-c~, it's instant)
+
+** "Can I filter timeline to show only specific acts?"
+
+*Currently*: No automatic filtering in dynamic blocks
+
+*Workaround*:
+1. Manually create separate timeline sections for each act
+2. Or copy timeline to spreadsheet and filter there
+3. Or generate timeline, copy to new buffer, delete unwanted rows
+
+*Future feature*: Filtering parameters (~:act 1~, ~:chapter 2~) are planned!
+
+** "What's a good PoV distribution for my novel?"
+
+*Depends on story type*:
+
+- **Single PoV**: One character has 100% of ◆
+- **Dual PoV**: 50/50 split (or 60/40 if one is primary)
+- **Triple PoV**: 33/33/33 (or weighted like 50/30/20)
+- **Ensemble**: 4+ characters, distributed across acts
+
+*No wrong answer* - consistency matters more than exact percentages!
+
+** "Should every scene have a plot thread?"
+
+*Opinion varies*:
+
+- **Strict plotting**: Yes, every scene advances plot
+- **Character-driven**: Some scenes are just character development
+- **Balanced**: Most scenes have thread, occasional pure character scenes okay
+
+*Timeline helps you decide*: If you see many scenes with no threads, decide if that's intentional or a problem.
+
+** "Can I have multiple plot timelines for different thread types?"
+
+*Yes!* Create separate dynamic blocks:
+
+#+BEGIN_SRC org
+,** Main Story Threads
+,#+BEGIN: plot-thread-timeline
+,#+END:
+
+,** Character Development Threads
+[Manually create table tracking internal arcs]
+
+,** Worldbuilding Threads
+[Track mysteries, revelations, lore]
+#+END_SRC
+
+Only the first one auto-generates from ~:Plot:~ properties, but you can maintain others manually.
+
+* Troubleshooting
+
+** "C-c C-c doesn't generate the table"
+
+*Check*:
+1. Cursor is ON the ~#+BEGIN:~ line (not before, not after)
+2. The line says exactly ~#+BEGIN: character-timeline~ or ~#+BEGIN: plot-thread-timeline~
+3. You're in org-mode buffer (~M-x org-mode~ to verify)
+4. emacs-writing package is loaded (~M-x writing-version~)
+
+*Try*:
+- ~M-x org-dblock-update~ (manual update command)
+- Check ~*Messages*~ buffer for errors
+
+** "Timeline shows wrong information"
+
+*Causes*:
+1. Scene properties not updated after edits
+2. Viewing old cached version
+3. Properties have typos (":Pov:" instead of ":PoV:")
+
+*Solutions*:
+1. Verify scene properties are correct (case-sensitive!)
+2. Regenerate timeline (~C-c C-c~ on ~#+BEGIN~ line)
+3. Check property names match exactly: ~:PoV:~, ~:Characters:~, ~:Plot:~
+
+** "Table formatting looks broken"
+
+*Symptoms*:
+- Columns misaligned
+- Extra pipes (|)
+- Org table not recognized
+
+*Fix*:
+1. Put cursor anywhere in table
+2. Press ~C-c C-c~ to realign
+3. Or ~M-x org-table-align~
+
+*Prevention*: Let dynamic block generate table, don't edit manually!
+
+** "Character names are truncated or wrong"
+
+*Cause*: Link extraction issues
+
+*Check*:
+1. Are you using ID links? (~[[id:...][Name]]~)
+2. Or plain text? (~:Characters: Alice, Bob~)
+3. Timeline extracts display text from links
+
+*Solution*:
+- ID links (recommended): Shows link display text
+- Plain text: Shows text as-is
+- If wrong, verify link format or property value
+
+** "Some scenes don't appear in timeline"
+
+*Cause*: Timeline only includes scenes with relevant properties
+
+*Character timeline* shows scenes that have:
+- ~:PoV:~ property, OR
+- ~:Characters:~ property
+
+*Plot timeline* shows scenes that have:
+- ~:Plot:~ property
+
+*This is intentional* - scenes without character/plot tracking aren't included!
+
+* What You've Learned
+
+Excellent work! You've completed Lesson 10. You now know:
+
+✓ The two types of timelines (character and plot thread)
+✓ Timeline symbols (◆ for PoV, ● for presence)
+✓ How to generate character timelines with ~#+BEGIN: character-timeline~
+✓ How to generate plot thread timelines with ~#+BEGIN: plot-thread-timeline~
+✓ How to read and interpret timeline tables
+✓ Common problems timelines reveal (gaps, imbalance, unresolved threads)
+✓ How to use the plot thread health report (~F8 F8 P r~)
+✓ Quick statistics for fast checks (~F8 F8 P S~)
+✓ Practical workflows for different analysis needs
+✓ How to customize timeline sections in your manuscript
+✓ Advanced analysis techniques for deeper insights
+
+* Next Steps
+
+Ready to share your work? Head to [[file:getting-started-11-exporting.org][Lesson 11: Export Your Manuscript]]!
+
+In the next lesson, you'll learn:
+- Using the scene break macro for proper formatting
+- Exporting to LaTeX/PDF for print
+- Exporting to ODT (LibreOffice/Word)
+- Exporting to HTML/EPUB for digital reading
+- Customizing export settings
+- Preparing manuscripts for submission
+
+** Practice Before Moving On
+
+Reinforce your timeline skills:
+
+1. **Generate both timelines**
+   - Character timeline
+   - Plot thread timeline
+   - Study them for 10 minutes
+
+2. **Find three issues**
+   - Character gaps
+   - Plot thread problems
+   - PoV imbalances
+
+3. **Make improvements**
+   - Add scenes to fix gaps
+   - Adjust properties
+   - Regenerate timelines to verify
+
+4. **Run health report**
+   - ~F8 F8 P r~
+   - Read all warnings
+   - Make notes about fixes
+
+5. **Establish routine**
+   - Update timelines after every 5 scenes written
+   - Weekly health report check
+   - Monthly deep analysis
+
+6. **Export timeline**
+   - Copy timeline table
+   - Paste into spreadsheet
+   - Try color coding
+   - Print for reference
+
+Timelines are powerful diagnostic tools - use them regularly to keep your story balanced!
+
+* Quick Reference
+
+** Generating Timelines
+
+#+BEGIN_EXAMPLE
+Character Timeline:
+1. Find #+BEGIN: character-timeline
+2. Cursor on that line
+3. C-c C-c
+
+Plot Thread Timeline:
+1. Find #+BEGIN: plot-thread-timeline
+2. Cursor on that line
+3. C-c C-c
+#+END_EXAMPLE
+
+** Symbol Quick Guide
+
+#+BEGIN_EXAMPLE
+CHARACTER TIMELINE:
+  ◆ = PoV character (this character's perspective)
+  ● = Present in scene (but not PoV)
+  blank = Not in this scene
+
+PLOT THREAD TIMELINE:
+  ● = Thread active in this scene
+  blank = Thread not in this scene
+#+END_EXAMPLE
+
+** Health Report Commands
+
+| Command                    | Key       | What It Shows                  |
+|----------------------------+-----------+--------------------------------|
+| Plot thread health report  | ~F8 F8 P r~ | Full analysis with warnings    |
+| Plot thread statistics     | ~F8 F8 P S~ | Quick one-line summary         |
+| Timeline table             | ~C-c C-c~   | Visual timeline (on BEGIN line)|
+
+** Warning Thresholds
+
+| Warning        | Threshold       | Recommended Fix        |
+|----------------+-----------------+------------------------|
+| One-appearance | 1 scene only    | Expand to 3+ or remove |
+| Large gap      | 10+ scenes      | Add reminder scenes    |
+| Low coverage   | <30% of scenes  | Add development scenes |
+| Very low       | <20% of scenes  | Major rework or cut    |
+
+** Common Analysis Patterns
+
+#+BEGIN_EXAMPLE
+GOOD PATTERN:
+Main Plot:     ● ● ● ● ● ● ● ● ●  (continuous)
+Subplot A:     ●   ●   ●   ●   ●  (regular gaps)
+Subplot B:       ●   ●   ● ● ●    (builds toward end)
+
+BAD PATTERN:
+Main Plot:     ● ●         ● ● ●  (missing middle!)
+Subplot A:     ●                  (forgotten)
+Subplot B:     ● ● ● ● ●          (unresolved!)
+#+END_EXAMPLE
+
+** Analysis Checklist
+
+#+BEGIN_EXAMPLE
+□ All main characters appear regularly
+□ No character gaps > 8 scenes
+□ PoV distribution matches intent (single/multi)
+□ All plot threads appear in each act
+□ No thread gaps > 7 scenes
+□ All threads resolve by end
+□ No one-appearance threads (unless intentional)
+□ Plot health report shows 0 warnings
+□ Character appearances feel balanced
+□ Story progression visible in timeline
+#+END_EXAMPLE
+
+* Summary
+
+Character and plot timelines are visual tools that reveal your story's structure at a glance. They help you spot gaps, imbalances, and forgotten threads before readers do.
+
+The key to effective timeline use:
+1. Generate regularly (after every few scenes)
+2. Read critically (look for problems)
+3. Act on findings (fix gaps and imbalances)
+4. Use health reports (automated problem detection)
+5. Track progress (regenerate after fixes)
+
+Timelines transform invisible structure into visible patterns - use them to make your story stronger!
+
+---
+
+*Previous*: [[file:getting-started-09-writing-modes.org][Lesson 9: Writing Modes Deep Dive]]
+*Next*: [[file:getting-started-11-exporting.org][Lesson 11: Export Your Manuscript]]
+
+*Lesson 10 Complete!*

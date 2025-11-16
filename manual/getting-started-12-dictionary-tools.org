@@ -1,0 +1,746 @@
+#+TITLE: Lesson 12: Dictionary and Language Tools
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 12!
+
+You're deep into your writing when you encounter a word that doesn't feel quite right. Do you stop, open a browser, search for synonyms, lose your flow? Not anymore! This lesson shows you how to look up definitions, find synonyms, and get translations without ever leaving Emacs.
+
+By the end of this lesson, you'll have:
+- Learned to use the RAE (Real Academia Española) dictionary for Spanish definitions
+- Discovered how to find synonyms quickly in a side window
+- Understood translation integration options
+- Practiced quick lookups that maintain your writing flow
+- Customized dictionary tools for your workflow
+
+*Estimated time*: 10-15 minutes
+
+* Before You Begin
+
+** What You Need
+
+✓ A writing project open (any project will work)
+✓ Your manuscript file open
+✓ Internet connection (for API lookups)
+
+** Language Note
+
+These tools are particularly useful for:
+- *Spanish writers* using the RAE dictionary for authoritative definitions
+- *Bilingual writers* switching between languages
+- *English writers* using WordReference for synonyms
+- *Second language writers* checking word usage and meanings
+
+The tools work with both the English and Spanish templates in ~emacs-writing~.
+
+** Quick Check
+
+Let's verify the dictionary module is loaded:
+
+1. Press ~M-x~ (Alt+x or Option+x)
+2. Start typing: ~writing/rae-api-lookup~
+3. You should see it in the completion list
+
+If you see it, you're ready! The dictionary tools are part of the core package.
+
+* Understanding the Available Tools
+
+~emacs-writing~ integrates three types of language tools:
+
+** 1. RAE Dictionary API (Spanish)
+
+*What it is*:
+- Official dictionary of the Spanish Royal Academy
+- Authoritative source for Spanish word definitions
+- Includes etymology, multiple meanings, synonyms, and antonyms
+- Shows verb conjugations
+
+*Best for*:
+- Spanish language writing
+- Checking formal/correct usage
+- Understanding word origins
+- Finding synonyms and antonyms from authoritative source
+
+** 2. WordReference Synonyms
+
+*What it is*:
+- Web-based thesaurus
+- Available for both Spanish and English
+- Shows related words and usage examples
+- Opens in a side window within Emacs
+
+*Best for*:
+- Finding alternative words quickly
+- Avoiding repetition
+- Exploring word nuances
+- Browsing related vocabulary
+
+** 3. Translation (External)
+
+*What it is*:
+- Integration with the ~gt~ package (Google Translate for Emacs)
+- Not included in ~emacs-writing~ but works alongside it
+- Supports many languages and translation engines
+
+*Best for*:
+- Bilingual writers
+- Writing in a second language
+- Quick translation checks
+- Multi-language projects
+
+*Note*: Translation requires installing the separate ~gt~ package. We'll cover this at the end of the lesson.
+
+* Using the RAE Dictionary
+
+Let's look up a Spanish word using the official RAE dictionary API.
+
+** Step 1: Select or Type a Word
+
+You have two options:
+
+*Option A - Select a word in your text*:
+1. Position your cursor on a word in your manuscript
+2. Press ~M-@~ to select the word (or manually select it)
+
+*Option B - Look up any word*:
+Just have your cursor anywhere - you'll type the word when prompted.
+
+** Step 2: Invoke the Dictionary
+
+Press ~F8 F8~ to open the Hydra menu, then press ~d~ (for "Dictionary")
+
+You'll see a prompt:
+#+BEGIN_EXAMPLE
+Palabra a buscar en la RAE:
+#+END_EXAMPLE
+
+Type the Spanish word you want to look up and press ~Enter~.
+
+** Step 3: Review the Results
+
+A new buffer opens with the word definition formatted in Org-mode. You'll see:
+
+#+BEGIN_EXAMPLE
+#+TITLE: escribir
+
+* Etimología
+Del lat. scribĕre.
+
+* Definiciones
+
+** 1. /verbo transitivo/
+Representar las palabras o las ideas con letras u otros signos trazados en papel u otra superficie.
+
+*** Sinónimos: redactar, anotar, inscribir
+
+** 2. /verbo transitivo/
+Componer libros, discursos, etc.
+
+*** Sinónimos: componer, crear, redactar
+
+** 3. /verbo intransitivo/
+Comunicarse por carta con alguien.
+
+* Conjugaciones
+
+INDICATIVO:
+  presente:
+    yo: escribo
+    tú: escribes
+    él: escribe
+    nosotros: escribimos
+    vosotros: escribís
+    ellos: escriben
+  ...
+#+END_EXAMPLE
+
+** What You Get
+
+The RAE lookup provides:
+
+1. *Etymology* (~Etimología~) - Word origin and history
+2. *Definitions* - Numbered meanings with grammatical category
+3. *Synonyms* (~Sinónimos~) - Alternative words for each meaning
+4. *Antonyms* (~Antónimos~) - Opposite meanings (when available)
+5. *Conjugations* (~Conjugaciones~) - Full verb conjugation tables (for verbs)
+
+** Navigation Tips
+
+The results buffer is in Org-mode, so you can:
+- Press ~Tab~ on headings to fold/unfold sections
+- Press ~C-c C-n~ / ~C-c C-p~ to jump between headings
+- Press ~q~ to close the buffer
+- Copy definitions directly to your notes
+
+** Example: Try It Now!
+
+Let's practice:
+
+1. Press ~F8 F8~ then ~d~
+2. Type: ~buscar~
+3. Press ~Enter~
+4. Explore the definitions, synonyms, and conjugations
+5. Notice how the information is organized in Org-mode headings
+
+** Word Not Found?
+
+If the word isn't in the dictionary, you'll see:
+
+#+BEGIN_EXAMPLE
+* Palabra no encontrada: buskrar
+
+** Sugerencias:
+- buscar
+- busqué
+- buscará
+#+END_EXAMPLE
+
+The API provides suggestions for similarly-spelled words. Just close this buffer and try again with a suggested word.
+
+** Random Word Discovery
+
+Want inspiration or to expand your vocabulary?
+
+Press ~M-x~ and type ~writing/rae-api-random~ - this fetches a random word from the RAE dictionary and displays its definition. Great for:
+- Discovering new words
+- Breaking writer's block
+- Daily vocabulary practice
+- Finding unexpected inspiration
+
+* Finding Synonyms with WordReference
+
+Sometimes you need alternatives quickly. The synonym lookup opens a web-based thesaurus in a side window.
+
+** Step 1: Invoke Synonym Search
+
+Press ~F8 F8~ to open the Hydra menu, then press ~y~ (for "sYnonyms")
+
+You'll see a prompt:
+#+BEGIN_EXAMPLE
+¿Qué palabra quieres buscar?
+#+END_EXAMPLE
+
+Type your word and press ~Enter~.
+
+** Step 2: Browse in Side Window
+
+A side window opens on the right showing the WordReference synonym page.
+
+#+BEGIN_EXAMPLE
+┌────────────────────────────┬────────────────────┐
+│ Your manuscript            │ WordReference      │
+│                            │                    │
+│ Alex walked to the door.   │ buscar:            │
+│ Sam walked behind.         │                    │
+│                            │ Synonyms:          │
+│ "Walked" - need synonym!   │ - indagar          │
+│                            │ - investigar       │
+│                            │ - explorar         │
+│                            │ - rastrear         │
+│                            │                    │
+└────────────────────────────┴────────────────────┘
+#+END_EXAMPLE
+
+** Navigation in Side Window
+
+The synonym window is an Emacs web browser (eww):
+- *Scroll*: Use arrow keys or ~C-n~ / ~C-p~
+- *Click links*: Press ~Enter~ on a word to see its synonyms
+- *Close window*: Press ~q~
+- *Resize*: Use ~C-x }~ and ~C-x {~ to adjust width
+
+** Window Width Customization
+
+By default, the synonym window is 80 characters wide. To change this:
+
+#+BEGIN_SRC elisp
+;; Add to your Emacs config
+(setq writing/sinonimo-window-width 100)  ; Make it wider
+#+END_SRC
+
+Adjust the number to suit your screen size and preference.
+
+** Language Selection
+
+WordReference works for multiple languages:
+
+*Spanish synonyms*: Just type the Spanish word (default)
+
+*English synonyms*: The function works, but you might want to use WordReference's English site. You can manually visit:
+- Press ~M-x~ then ~eww~
+- Type: ~https://www.wordreference.com/synonyms/~ followed by your English word
+
+** Example: Try It Now!
+
+Let's find synonyms:
+
+1. Press ~F8 F8~ then ~y~
+2. Type: ~hermoso~ (beautiful)
+3. Press ~Enter~
+4. Browse the synonyms: precioso, bello, lindo, etc.
+5. Press ~q~ to close the window
+
+** Pro Tip: Keep It Open
+
+You can keep the synonym window open while you write:
+1. Look up a word (~F8 F8~ then ~y~)
+2. Click on your manuscript window to continue writing
+3. The synonym window stays visible on the right
+4. Look up more words as needed
+5. Close when done with ~C-x 0~ (while focused on the synonym window)
+
+This creates a permanent "thesaurus panel" for your writing session!
+
+* Translation Integration (Optional)
+
+If you write in multiple languages or in a second language, translation tools can be invaluable.
+
+** The gt Package
+
+~emacs-writing~ doesn't include translation functions, but it works seamlessly with the ~gt~ package (formerly google-translate).
+
+** Installing gt
+
+Add to your Emacs configuration:
+
+#+BEGIN_SRC elisp
+;; Using straight.el
+(straight-use-package 'gt)
+
+;; Or using use-package with MELPA
+(use-package gt
+  :ensure t
+  :config
+  (setq gt-default-translator
+        (gt-translator
+         :taker (gt-taker :text 'word :pick nil)
+         :engines (list (gt-google-engine))
+         :render (gt-buffer-render))))
+#+END_SRC
+
+Then restart Emacs or evaluate the configuration.
+
+** Using gt for Translation
+
+Once installed, you can use gt commands while writing:
+
+*Translate word at point*:
+#+BEGIN_EXAMPLE
+M-x gt-do-translate
+#+END_EXAMPLE
+
+*Translate selection*:
+1. Select text
+2. ~M-x gt-do-translate~
+3. Choose source and target languages
+
+*Direction examples*:
+- Spanish → English: Useful for checking if your Spanish prose translates clearly
+- English → Spanish: Helpful when writing in Spanish but thinking in English
+- Any language pair: gt supports many languages
+
+** Quick Translation Workflow
+
+Here's a practical workflow for bilingual writers:
+
+1. Write a paragraph in your target language
+2. Select the paragraph
+3. ~M-x gt-do-translate~ to translate back to your native language
+4. Check if the meaning is preserved
+5. Revise original text if translation reveals awkwardness
+
+This "back-translation" technique helps ensure clarity!
+
+** Creating a Keybinding
+
+To make translation faster, add a keybinding:
+
+#+BEGIN_SRC elisp
+;; Add to your config
+(global-set-key (kbd "C-c t") 'gt-do-translate)
+#+END_SRC
+
+Now ~C-c t~ translates the word at point or selected text.
+
+** Note About Performance
+
+Translation requires an internet connection and API calls. If you're working offline:
+- Use RAE dictionary (it will fail gracefully offline, but works online)
+- Use local synonym lists
+- Save commonly needed translations in your notes files
+
+* Practical Workflows
+
+Let's see how to integrate these tools into your writing process.
+
+** Workflow 1: The Vocabulary Check
+
+You're writing and unsure about a word:
+
+1. Select the word in your manuscript
+2. ~F8 F8~ then ~d~ - Check RAE definition
+3. Review meanings - is this the right sense?
+4. If not, ~F8 F8~ then ~y~ - Find synonyms
+5. Pick a better word from the synonym list
+6. Close the lookup windows and continue
+
+*Time*: 30 seconds. Flow maintained!
+
+** Workflow 2: The Repetition Fix
+
+You've used "said" five times in one page:
+
+1. Position cursor on the first "said"
+2. ~F8 F8~ then ~y~ - Look up synonyms
+3. Keep the synonym window open on the right
+4. Go through each "said" in your text
+5. Replace with variations: declaró, afirmó, comentó, expresó, señaló
+6. Close synonym window when done
+
+*Result*: More varied dialogue tags, more engaging prose.
+
+** Workflow 3: The Etymology Deep Dive
+
+You want to understand a word's deeper meaning:
+
+1. ~F8 F8~ then ~d~ - RAE lookup
+2. Read the *Etimología* section
+3. Understand the word's historical roots
+4. Note any related words or meanings
+5. Copy interesting etymology to your notes file
+6. Use the word with deeper understanding
+
+*Benefit*: Richer, more intentional word choices.
+
+** Workflow 4: The Bilingual Writer
+
+You're writing in Spanish but thinking in English:
+
+1. Think of the English word you want
+2. ~M-x gt-do-translate~ - Translate to Spanish
+3. See the Spanish translation
+4. ~F8 F8~ then ~d~ - Check RAE definition of the Spanish word
+5. Confirm it has the exact meaning you want
+6. Use it in your text
+
+*Accuracy*: Ensures you're using the right Spanish word, not just a literal translation.
+
+** Workflow 5: The Daily Vocabulary Builder
+
+As part of your daily writing routine:
+
+1. ~M-x writing/rae-api-random~ - Get a random word
+2. Read its definition and etymology
+3. Try to use it in your writing session
+4. Keep a "new words" note in your project
+
+*Growth*: Expand your vocabulary one word per day = 365 words per year!
+
+* Customization and Tips
+
+** Keyboard Shortcuts Summary
+
+From the Hydra menu (~F8 F8~):
+
+| Key | Tool                | Speed  |
+|-----+---------------------+--------|
+| d   | RAE dictionary      | Medium |
+| y   | Synonyms (WordRef)  | Fast   |
+
+*Tip*: After a while, ~F8 F8 d~ becomes muscle memory!
+
+** Creating Your Own Keybindings
+
+If you use these tools frequently, create dedicated keybindings:
+
+#+BEGIN_SRC elisp
+;; Add to your Emacs config
+(global-set-key (kbd "C-c d") 'writing/rae-api-lookup)
+(global-set-key (kbd "C-c y") 'writing/sinonimo)
+#+END_SRC
+
+Now:
+- ~C-c d~ = RAE dictionary
+- ~C-c y~ = Synonyms
+
+Choose keybindings that don't conflict with your other packages!
+
+** Adjusting Window Sizes
+
+The synonym window width can be customized:
+
+#+BEGIN_SRC elisp
+;; Narrower window (better for large screens)
+(setq writing/sinonimo-window-width 60)
+
+;; Wider window (better for reading full entries)
+(setq writing/sinonimo-window-width 100)
+#+END_SRC
+
+Experiment to find what works for your screen!
+
+** Offline Usage
+
+*RAE Dictionary*:
+- Requires internet connection
+- Fails gracefully if offline (shows error message)
+- Consider keeping a local Spanish dictionary package as backup
+
+*Synonyms*:
+- Requires internet connection (loads web page)
+- Alternative: Use Emacs' built-in ~M-x synonyms~ (requires local thesaurus file)
+
+*Translation*:
+- The ~gt~ package requires internet
+- Alternative: Install offline translation tools
+
+For offline writing sessions, prepare ahead:
+- Look up likely words before going offline
+- Keep synonym lists in your notes files
+- Use built-in spell-check for basic word validation
+
+** Language Switching
+
+If you write in multiple languages, organize your tools:
+
+*For Spanish*:
+- ~F8 F8 d~ - RAE dictionary
+- ~F8 F8 y~ - Spanish synonyms
+
+*For English*:
+- Manual WordReference: ~M-x eww~ → ~https://www.wordreference.com/synonyms/word~
+- Or install ~powerthesaurus~ package for English synonyms
+- Or use ~M-x synonyms~ with local thesaurus
+
+*For Translation*:
+- ~M-x gt-do-translate~ works between any language pairs
+
+** Integration with Notes
+
+Save useful lookups for later:
+
+1. Look up a word with ~F8 F8 d~
+2. Copy the definition (select text, ~M-w~)
+3. ~F8 F8 n~ - Capture a note
+4. Paste the definition
+5. Add your thoughts
+
+This builds a personal vocabulary database in your project!
+
+* Practical Exercise
+
+Let's practice using all three tools in a realistic scenario.
+
+** Exercise: Improve This Paragraph
+
+Here's a sample paragraph in Spanish with some weak word choices:
+
+#+BEGIN_EXAMPLE
+María caminó hasta la puerta. Estaba triste. Dijo "adiós" con voz triste.
+Juan también estaba triste. El día estaba malo.
+#+END_EXAMPLE
+
+*Problems*:
+- "Triste" repeated 3 times
+- "Estaba" repeated 3 times
+- "Malo" is vague
+- Overall vocabulary is bland
+
+** Step 1: Fix "triste" Repetition
+
+1. Position cursor on the first "triste"
+2. ~F8 F8~ then ~y~
+3. Type: ~triste~
+4. Browse synonyms: melancólica, apesadumbrada, apenada, afligida, desconsolada
+
+Replace the three instances of "triste" with variations:
+- "Estaba melancólica" (she was melancholic)
+- "Dijo 'adiós' con voz apesadumbrada" (with a sorrowful voice)
+- "Juan también estaba afligido" (afflicted)
+
+** Step 2: Check "melancólica" Meaning
+
+Let's make sure "melancólica" is right:
+
+1. ~F8 F8~ then ~d~
+2. Type: ~melancólico~
+3. Read definition: "Que padece melancolía, que denota o incluye este sentimiento"
+4. Perfect! It fits the emotional tone we want.
+
+** Step 3: Improve "malo"
+
+1. ~F8 F8~ then ~y~
+2. Type: ~malo~
+3. Synonyms for weather context: gris, nublado, sombrío, tormentoso
+4. Choose: "El día estaba sombrío" (the day was gloomy)
+
+** Step 4: Fix "dijo" with Better Dialogue Tag
+
+1. ~F8 F8~ then ~y~
+2. Type: ~dijo~
+3. Find alternatives: susurró, murmuró, pronunció
+4. Choose: "Susurró 'adiós'" (whispered goodbye)
+
+** Improved Paragraph
+
+#+BEGIN_EXAMPLE
+María caminó hasta la puerta. Estaba melancólica. Susurró "adiós"
+con voz apesadumbrada. Juan también estaba afligido. El día estaba sombrío.
+#+END_EXAMPLE
+
+*Much better!* Varied vocabulary, stronger emotional tone, more evocative.
+
+** Your Turn
+
+Try this exercise with your own writing:
+
+1. Find a paragraph you wrote today
+2. Identify repeated or weak words
+3. Use ~F8 F8 y~ to find synonyms
+4. Use ~F8 F8 d~ to verify meanings
+5. Replace weak words with stronger alternatives
+6. Read the paragraph again - notice the improvement?
+
+* Troubleshooting
+
+** "RAE lookup returns error"
+
+*Possible causes*:
+- No internet connection (check your network)
+- RAE API is temporarily down (try again later)
+- Word contains special characters (try simplified spelling)
+
+*Solution*: Use the synonym lookup as a backup, or check a different dictionary temporarily.
+
+** "Synonym window too narrow/wide"
+
+*Solution*:
+#+BEGIN_SRC elisp
+;; Adjust in your config
+(setq writing/sinonimo-window-width 80)  ; Change number as needed
+#+END_SRC
+
+Or resize manually with ~C-x }~ (grow) and ~C-x {~ (shrink).
+
+** "Translation not working"
+
+*Possible causes*:
+- ~gt~ package not installed
+- No internet connection
+- Translation service blocked in your region
+
+*Solution*:
+1. Verify gt installation: ~M-x package-list-packages~, search for "gt"
+2. Try manual web translation as fallback
+3. Consider VPN if service is blocked
+
+** "Too many lookups breaking my flow"
+
+*Solution*: Change your approach:
+- First draft: Write without stopping to look up words
+- Second draft: Go back and improve word choice with lookups
+- This maintains creative flow while still refining vocabulary
+
+* Summary and Key Takeaways
+
+Congratulations! You've learned how to use integrated language tools without leaving Emacs.
+
+** What You Learned
+
+✓ *RAE Dictionary* (~F8 F8 d~)
+  - Official Spanish definitions
+  - Etymology and word origins
+  - Synonyms and antonyms
+  - Verb conjugations
+  - Random word discovery
+
+✓ *WordReference Synonyms* (~F8 F8 y~)
+  - Quick synonym lookups
+  - Side window for easy reference
+  - Browse while writing
+  - Multiple language support
+
+✓ *Translation Integration*
+  - Optional ~gt~ package setup
+  - Bilingual writing support
+  - Back-translation for clarity checking
+  - Multi-language projects
+
+✓ *Practical Workflows*
+  - Vocabulary checking during writing
+  - Fixing word repetition
+  - Etymology deep dives
+  - Bilingual writing
+  - Daily vocabulary building
+
+** Best Practices
+
+1. *First Draft Freedom*: Don't lookup everything while drafting - maintain flow
+2. *Revision Enhancement*: Use lookups heavily during editing for precision
+3. *Build Vocabulary*: Keep notes on new words you discover
+4. *Verify Meanings*: Always check RAE definition when using a new synonym
+5. *Customize Keys*: Create keybindings for tools you use most
+
+** Quick Reference Card
+
+| Task                      | Command          | Hydra      |
+|---------------------------+------------------+------------|
+| Spanish definition        | writing/rae-api-lookup | F8 F8 d    |
+| Random word               | writing/rae-api-random | M-x command |
+| Synonyms                  | writing/sinonimo | F8 F8 y    |
+| Translation (if installed)| gt-do-translate  | (custom key) |
+| Close lookup window       | (in window) q    | -          |
+| Resize synonym window     | C-x } / C-x {    | -          |
+
+** Next Steps
+
+Now that you have language tools at your fingertips:
+
+1. Practice using them during your next writing session
+2. Create custom keybindings if you use them frequently
+3. Build a personal vocabulary list in your notes
+4. Consider installing ~gt~ if you write in multiple languages
+5. Experiment with the daily random word practice
+
+** Continue Your Learning
+
+Ready to establish a complete daily workflow? Head to [[file:getting-started-13-daily-workflow.org][Lesson 13: Daily Writing Workflow]] to learn how to tie all these features together into an efficient routine!
+
+* Additional Resources
+
+** For Spanish Writers
+
+- *RAE Online*: https://rae.es/ (official website)
+- *WordReference*: https://www.wordreference.com/sinonimos/ (synonyms)
+- *Fundéu*: https://www.fundeu.es/ (Spanish language foundation)
+
+** For English Writers
+
+- *WordReference*: https://www.wordreference.com/synonyms/ (English synonyms)
+- *Powerthesaurus*: Emacs package for English synonyms (install separately)
+- *Online Etymology Dictionary*: https://www.etymonline.com/
+
+** Translation Resources
+
+- *gt package*: https://github.com/lorniu/gt.el
+- *Google Translate*: https://translate.google.com/ (web fallback)
+- *DeepL*: https://www.deepl.com/ (alternative translator, generally more accurate)
+
+** Emacs Documentation
+
+- ~C-h f writing/rae-api-lookup~ - Function documentation
+- ~C-h f writing/sinonimo~ - Synonym function docs
+- ~C-h v writing/sinonimo-window-width~ - Variable documentation
+
+* About This Lesson
+
+- *Created*: 2025-11-16
+- *Last Updated*: 2025-11-16
+- *Lesson Number*: 12 of 15
+- *Part*: 4 - Advanced Features
+- *Estimated Time*: 10-15 minutes
+- *Difficulty*: Beginner to Intermediate
+- *Prerequisites*: Basic writing workflow, internet connection
+
+Happy writing, and may you always find the perfect word! 📖✨

@@ -1,0 +1,1233 @@
+#+TITLE: Lesson 9: Writing Modes Deep Dive
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 9!
+
+You've been using writing mode (~F8 F8 m~) throughout the previous lessons, but ~emacs-writing~ actually offers *four different modes* for different writing workflows. Each mode transforms your environment in unique ways to support specific tasks.
+
+In this lesson, we'll explore all four modes in detail and learn when to use each one.
+
+By the end of this lesson, you'll have:
+- Understood all four writing modes and their purposes
+- Learned the specific features each mode provides
+- Practiced switching between modes efficiently
+- Discovered which mode fits your personal writing style
+- Customized mode settings to your preferences
+
+*Estimated time*: 15-20 minutes
+
+* Before You Begin
+
+** What You Need
+
+✓ A writing project open with at least one scene
+✓ Some written content (200+ words recommended)
+✓ Familiarity with the Hydra menu (~F8 F8~)
+
+** Optional Dependencies
+
+Some modes work better with optional packages:
+- *All modes*: ~writeroom-mode~ (required for modes 1-2)
+- *Project mode*: ~treemacs~ and ~imenu-list~ (recommended)
+- *Editing mode*: ~imenu-list~ and ~visual-fill-column~ (recommended)
+- *Theming*: ~consult~ and ~fontaine~ (optional but nice)
+
+Don't worry if you don't have all of these - we'll explain which features need what!
+
+* The Four Writing Modes
+
+~emacs-writing~ provides four mutually exclusive modes:
+
+** Overview Table
+
+| Mode             | Key  | Purpose                       | Best For                      |
+|------------------+------+-------------------------------+-------------------------------|
+| Distraction-Free | ~m~    | Clean, focused writing        | Daily writing, first drafts   |
+| Focus Mode       | ~f~    | One section at a time         | Intensive scene work          |
+| Project Mode     | ~p~    | Navigation + writing          | Complex projects, jumping     |
+| Editing Mode     | ~e~    | Three-pane editing layout     | Revision, notes integration   |
+
+** Mutual Exclusivity
+
+*Important*: Only one mode can be active at a time!
+
+When you activate a mode:
+1. Any other active mode automatically deactivates
+2. Previous settings are restored before the new mode activates
+3. This prevents conflicts and maintains clean state
+
+*What this means*:
+- ~F8 F8 m~ when Focus Mode is active → Focus exits, Distraction-Free activates
+- ~F8 F8 p~ when Editing Mode is active → Editing exits, Project activates
+- Activating the same mode again → Exits that mode (toggle behavior)
+
+** Quick Summary
+
+Before we dive deep, here's the essence of each mode:
+
+1. *Distraction-Free* (~m~): Clean canvas, no distractions, just you and words
+2. *Focus* (~f~): Like Distraction-Free, but shows only current section
+3. *Project* (~p~): Two navigation panels + writing area (overview + detail)
+4. *Editing* (~e~): Three panels - outline + manuscript + notes (serious revision)
+
+* Mode 1: Distraction-Free Writing Mode
+
+** What It Does
+
+Activates: ~F8 F8 m~
+
+*Visual changes*:
+- Switches to clean, minimal theme (default: ~poet~)
+- Changes font to writing preset (larger, more readable)
+- Enables ~writeroom-mode~ (centers text, hides mode line)
+- Shows line numbers
+- Narrows text width to comfortable reading (default: 80 columns)
+
+*The result*: A clean, centered, distraction-free writing canvas
+
+** When to Use
+
+Perfect for:
+- Daily writing sessions (your default mode)
+- First draft writing (no distractions needed)
+- Getting into flow state
+- Timed writing sprints
+- When you want to focus purely on words
+
+*Not ideal for*:
+- Navigation between scenes (no outline visible)
+- Reference checking (can't see notes)
+- Structural editing (need broader view)
+
+** How It Works
+
+1. *Before activation*: Normal Emacs with your usual theme, windows, etc.
+2. *Press* ~F8 F8 m~
+3. *Screen changes*:
+   - Theme switches (dark/complex → light/minimal)
+   - Font increases (easier reading)
+   - Text centers on screen
+   - Mode line simplifies
+   - Everything but your text fades away
+4. *Write freely!*
+5. *Press* ~F8 F8 m~ again to exit
+6. *Everything restores*: Theme, font, windows - all back to normal
+
+** Visual Comparison
+
+#+BEGIN_EXAMPLE
+BEFORE DISTRACTION-FREE MODE:
+┌────────────────────────────────────────────────┐
+│ File Edit ... [menus] ...                      │
+├─────────┬──────────────────────────────────────┤
+│ Sidebar │ *** Chapter 1                        │
+│         │ Text text text text text text text   │
+│ - Files │ text text text text text text text   │
+│ - Buffs │ text text text text text text text   │
+│ - ...   │                                       │
+│         │ *** Chapter 2                         │
+│         │ More text...                          │
+├─────────┴──────────────────────────────────────┤
+│ [Mode indicators] [Battery] [Time] ...         │
+└────────────────────────────────────────────────┘
+
+AFTER DISTRACTION-FREE MODE (F8 F8 m):
+┌────────────────────────────────────────────────┐
+│                                                │
+│                                                │
+│            *** Chapter 1                       │
+│                                                │
+│            Text text text text                 │
+│            text text text text                 │
+│            text text text text                 │
+│            text text text text                 │
+│                                                │
+│            *** Chapter 2                       │
+│                                                │
+│            More text...                        │
+│                                                │
+│                                                │
+│                                                │
+└────────────────────────────────────────────────┘
+#+END_EXAMPLE
+
+** Customization Variables
+
+Control how Distraction-Free mode looks:
+
+#+BEGIN_SRC emacs-lisp
+;; Theme while writing
+(setq my-writing-env-work-theme 'poet)  ; or modus-operandi, etc.
+
+;; Normal theme (restored when exiting)
+(setq my-writing-env-normal-theme 'ef-deuteranopia-dark)
+
+;; Font preset while writing (requires fontaine)
+(setq my-writing-env-work-font 'writing-big)
+
+;; Normal font preset
+(setq my-writing-env-normal-font 'regular)
+
+;; Text width (columns)
+(setq my-writing-env-work-width 80)  ; narrower = more focused
+#+END_SRC
+
+** Try It Now!
+
+1. Open your manuscript
+2. Press ~F8 F8 m~
+3. Observe the transformation
+4. Write 100 words (experience the environment)
+5. Press ~F8 F8 m~ again
+6. Notice how everything restores
+
+* Mode 2: Focus Mode
+
+** What It Does
+
+Activates: ~F8 F8 f~
+
+*Everything from Distraction-Free mode, PLUS*:
+- Narrows buffer to current org section
+- Shows *only* the scene/chapter at point
+- Everything else disappears temporarily
+
+*The result*: Laser focus on a single section
+
+** When to Use
+
+Perfect for:
+- Intensive work on one scene
+- Rewriting a difficult section
+- When rest of manuscript is distracting
+- Final polish on specific scenes
+- Getting unstuck on a problem section
+
+*Not ideal for*:
+- First drafts (you might want to see context)
+- Jumping between scenes (must widen, navigate, narrow again)
+- Checking continuity (need to see other scenes)
+
+** The Difference from Distraction-Free
+
+| Aspect         | Distraction-Free      | Focus Mode                 |
+|----------------+-----------------------+----------------------------|
+| *Visibility*     | Entire manuscript     | Current section only       |
+| *Scrolling*      | Can scroll anywhere   | Scrolls within section     |
+| *Navigation*     | All headings visible  | Only current heading       |
+| *Mental Model*   | "Work on manuscript"  | "Work on THIS scene"       |
+| *When to Exit*   | After writing session | After finishing section    |
+
+** How It Works
+
+1. *Position cursor* on the scene/chapter you want to focus on
+2. *Press* ~F8 F8 f~
+3. *Buffer narrows*:
+   - Only current subtree visible
+   - Everything else hidden (not deleted!)
+   - Scrolling limited to visible content
+   - Plus all Distraction-Free mode effects
+4. *Work on that section*
+5. *Press* ~F8 F8 f~ again to exit
+6. *Buffer widens*: Full manuscript visible again + normal environment restored
+
+** Visual Comparison
+
+#+BEGIN_EXAMPLE
+FULL MANUSCRIPT (before Focus Mode):
+┌────────────────────────────────┐
+│ * Act I                        │
+│ ** Chapter 1                   │
+│ *** Scene 1 - Morning          │ ← Cursor here
+│ Text of scene 1...             │
+│                                │
+│ *** Scene 2 - Coffee           │
+│ Text of scene 2...             │
+│                                │
+│ ** Chapter 2                   │
+│ *** Scene 3 - Office           │
+│ Text of scene 3...             │
+└────────────────────────────────┘
+
+AFTER FOCUS MODE (F8 F8 f):
+┌────────────────────────────────┐
+│                                │
+│                                │
+│     *** Scene 1 - Morning      │
+│                                │
+│     Text of scene 1...         │
+│     Text of scene 1...         │
+│     Text of scene 1...         │
+│                                │
+│                                │
+│                                │
+│                                │
+└────────────────────────────────┘
+  Everything else temporarily hidden!
+#+END_EXAMPLE
+
+** Practical Workflow
+
+*Scenario*: Scene 3 needs rewriting, but seeing other scenes distracts you.
+
+1. Navigate to Scene 3 heading
+2. ~F8 F8 f~ (activate Focus mode)
+3. Now you see ONLY Scene 3
+4. Rewrite intensively
+5. ~F8 F8 f~ (exit)
+6. Full manuscript visible again
+7. Navigate to Scene 4
+8. ~F8 F8 f~ (focus on Scene 4)
+9. Repeat...
+
+** Customization
+
+Focus mode uses the same customization as Distraction-Free mode:
+- Same theme settings
+- Same font settings
+- Same width settings
+
+No separate configuration needed!
+
+** Try It Now!
+
+1. Open manuscript
+2. Navigate to a specific scene heading
+3. Press ~F8 F8 f~
+4. Notice: only that scene visible
+5. Try scrolling - you can't leave the scene
+6. Press ~F8 F8 f~ to exit
+7. Full manuscript visible again
+
+* Mode 3: Project Mode
+
+** What It Does
+
+Activates: ~F8 F8 p~
+
+*Layout changes*:
+- Opens ~treemacs~ on the left (project file tree)
+- Opens ~imenu-list~ on the right (current file outline)
+- Main buffer in center (your manuscript)
+- Three-panel layout for navigation + writing
+
+*The result*: Overview of project structure + document outline + writing area
+
+** When to Use
+
+Perfect for:
+- Complex projects with many files
+- Jumping between planning files and manuscript
+- Navigating large manuscripts quickly
+- When you need structural overview
+- Managing multiple chapters/sections
+
+*Not ideal for*:
+- Pure writing (panels are distracting)
+- Small screens (too cramped)
+- Short stories (unnecessary complexity)
+
+** Layout Diagram
+
+#+BEGIN_EXAMPLE
+┌─────────────────────────────────────────────────────────────┐
+│                          EMACS FRAME                        │
+├──────────────┬────────────────────────────┬─────────────────┤
+│              │                            │                 │
+│  TREEMACS    │    MAIN BUFFER            │   IMENU-LIST    │
+│  (left)      │    (center)                │   (right)       │
+│              │                            │                 │
+│ 📁 project/  │ #+TITLE: My Novel          │ * Contents      │
+│  📁 plan/    │                            │   ** Act I      │
+│   📄 chars   │ * Act I                    │     *** Ch 1    │
+│   📄 plot    │ ** Chapter 1               │     *** Ch 2    │
+│   📄 locs    │ *** Scene 1 - Morning      │   ** Act II     │
+│  📁 notes/   │                            │     *** Ch 3    │
+│   📄 notes   │ Alex woke up feeling...    │     *** Ch 4    │
+│   📄 research│                            │   ** Act III    │
+│  📄 novel    │ The coffee was cold.       │     *** Ch 5    │
+│  📄 README   │                            │                 │
+│              │ *** Scene 2 - Coffee       │ (Click to jump) │
+│              │                            │                 │
+│  (Click file│ Sam entered the shop...    │                 │
+│   to open)   │                            │                 │
+│              │                            │                 │
+└──────────────┴────────────────────────────┴─────────────────┘
+         ↑               ↑                           ↑
+    Project files   Your writing area      Document outline
+#+END_EXAMPLE
+
+** The Two Navigation Panels
+
+*** Left Panel: Treemacs (Project Files)
+
+*Shows*:
+- All files in your project
+- Directory structure
+- Icons for file types
+
+*Use for*:
+- Opening character profiles
+- Switching to plot document
+- Accessing notes files
+- Managing project files
+
+*Actions*:
+- Click file to open
+- Expand/collapse directories
+- See project at a glance
+
+*** Right Panel: Imenu-List (Document Outline)
+
+*Shows*:
+- Headings in current file
+- Hierarchical structure
+- Acts → Chapters → Scenes
+
+*Use for*:
+- Jumping to specific scene
+- Seeing manuscript structure
+- Quick navigation within file
+
+*Actions*:
+- Click heading to jump
+- See where you are in story
+- Navigate large documents
+
+** How It Works
+
+1. *Press* ~F8 F8 p~
+2. *Frame splits into three*:
+   - Treemacs opens (left)
+   - Imenu-list opens (right)
+   - Current buffer stays (center)
+   - Focus remains in center (ready to write)
+3. *Use navigation panels as needed*:
+   - Click treemacs to open files
+   - Click imenu-list to jump within file
+   - Keep working in center panel
+4. *Press* ~F8 F8 p~ again to exit
+5. *Panels close*: Back to normal single-buffer view
+
+** Workflow Example
+
+*Scenario*: Writing a scene, need to check character details.
+
+1. ~F8 F8 p~ (activate Project mode)
+2. Left panel (treemacs) → click ~plan/characters.org~
+3. Character file opens in center
+4. Read character details
+5. Left panel → click ~novel.org~
+6. Manuscript returns to center
+7. Continue writing with fresh details
+8. ~F8 F8 p~ (exit) when navigation not needed
+
+** Dependencies
+
+Project mode *requires*:
+- ~treemacs~ package
+- ~imenu-list~ package
+
+If not installed:
+- Mode still activates
+- Warning messages appear
+- Some features won't work
+
+*To install* (if using package.el):
+#+BEGIN_SRC emacs-lisp
+M-x package-install RET treemacs RET
+M-x package-install RET imenu-list RET
+#+END_SRC
+
+** Try It Now!
+
+1. Open your manuscript
+2. Press ~F8 F8 p~
+3. Look at the three panels
+4. Click a heading in imenu-list (right panel)
+5. See cursor jump in main buffer
+6. Click a file in treemacs (left panel) if available
+7. Press ~F8 F8 p~ to exit
+
+* Mode 4: Editing Mode
+
+** What It Does
+
+Activates: ~F8 F8 e~
+
+*Advanced three-panel layout*:
+- Left: ~imenu-list~ (document outline - 25% width)
+- Center: Current manuscript (50% width)
+- Right: Companion notes file (25% width)
+- Applies editing-optimized theme and fonts
+- Centers text with margins
+
+*The result*: Professional editing environment with notes side-by-side
+
+** When to Use
+
+Perfect for:
+- Revision sessions (second draft onward)
+- Editing with annotations
+- Working with ~org-remark~ notes
+- Comparing manuscript to planning notes
+- Serious structural editing
+
+*Not ideal for*:
+- First draft writing (too complex)
+- Small screens (needs width)
+- Quick edits (overkill)
+- Daily writing sessions (use Distraction-Free instead)
+
+** Layout Diagram
+
+#+BEGIN_EXAMPLE
+┌──────────────────────────────────────────────────────────────────────┐
+│                           EMACS FRAME                                │
+├─────────────┬──────────────────────────────┬──────────────────────────┤
+│             │                              │                          │
+│ IMENU-LIST  │    MANUSCRIPT                │    NOTES FILE            │
+│ (25%)       │    (50%)                     │    (25%)                 │
+│             │                              │                          │
+│ * Contents  │  #+TITLE: My Novel           │ #+TITLE: My Novel Notes  │
+│   ** Act I  │                              │                          │
+│   *** Ch 1  │    * Act I                   │ * Revision Notes         │
+│   *** Ch 2  │    ** Chapter 1              │                          │
+│   ** Act II │    *** Scene 1 - Morning     │ ** Scene 1               │
+│   *** Ch 3  │                              │ - Fix pacing here        │
+│             │    Alex woke up feeling...   │ - Add sensory details    │
+│ (outline)   │                              │ - Show don't tell        │
+│             │    The alarm had been...     │                          │
+│             │                              │ ** Chapter 1             │
+│             │    *** Scene 2 - Coffee      │ - Overall: too slow      │
+│             │                              │ - Cut 500 words          │
+│             │    Sam walked into...        │                          │
+│             │                              │ * Character Notes        │
+│             │                              │ - Alex motivation weak   │
+│             │                              │                          │
+└─────────────┴──────────────────────────────┴──────────────────────────┘
+      ↑                    ↑                              ↑
+  Navigation         Main editing area            Your revision notes
+#+END_EXAMPLE
+
+** The Three Panels Explained
+
+*** Left Panel: Imenu-List (Outline)
+
+*Purpose*: Navigate your manuscript structure
+
+*Shows*:
+- All headings in manuscript
+- Hierarchical organization
+
+*Use for*:
+- Jumping to scenes
+- Seeing structure
+- Quick navigation
+
+*** Center Panel: Main Buffer (Manuscript)
+
+*Purpose*: Your actual editing area
+
+*Shows*:
+- The manuscript you're editing
+- Centered with margins for readability
+
+*Use for*:
+- Making edits
+- Reading scenes
+- Main revision work
+
+*** Right Panel: Notes File
+
+*Purpose*: Companion notes for manuscript
+
+*Shows*:
+- File named ~[manuscript]-notes.org~
+- Example: ~novel.org~ → ~novel-notes.org~
+- Your revision notes, ideas, TODOs
+
+*Use for*:
+- Writing editing notes
+- Tracking issues to fix
+- Recording ideas
+- Managing revision checklist
+
+** Notes File Creation
+
+When you activate Editing mode:
+1. If ~novel-notes.org~ exists → opens it
+2. If it doesn't exist → creates it automatically
+3. New file is blank (ready for your notes)
+
+*Notes file naming*:
+- ~novel.org~ → ~novel-notes.org~
+- ~story.org~ → ~story-notes.org~
+- ~manuscript.org~ → ~manuscript-notes.org~
+
+** How It Works
+
+1. *Open your manuscript* (e.g., ~novel.org~)
+2. *Press* ~F8 F8 e~
+3. *Frame splits into three*:
+   - All other windows close
+   - Imenu-list appears (left, 25%)
+   - Your manuscript stays (center, 50%)
+   - Notes file opens/creates (right, 25%)
+4. *Visual profile applies*:
+   - Theme changes to editing theme (default: ~leuven~)
+   - Font changes to editing preset
+   - Text centering with margins
+5. *Edit freely*, jump between panels
+6. *Press* ~F8 F8 e~ to exit
+7. *Previous layout restores*: Windows, theme, font - all back
+
+** Workflow Example
+
+*Scenario*: Revising Chapter 3 with specific notes.
+
+1. Open ~novel.org~
+2. ~F8 F8 e~ (activate Editing mode)
+3. ~novel-notes.org~ opens automatically (right panel)
+4. In notes panel, write:
+   #+BEGIN_EXAMPLE
+   * Chapter 3 Revision
+   ** Scene 1
+   - [ ] Fix pacing (too slow)
+   - [ ] Add dialogue
+   - [ ] Show Alex's reaction
+   #+END_EXAMPLE
+5. Click "Scene 1" in left panel (imenu-list)
+6. Center panel jumps to Scene 1
+7. Read scene while referencing notes
+8. Make edits in center panel
+9. Check off items in right panel (notes)
+10. Navigate to next scene via left panel
+11. Repeat revision process
+12. ~F8 F8 e~ when done - layout closes, work saved
+
+** Integration with org-remark
+
+If you use ~org-remark~ for annotations:
+- Highlights in manuscript link to notes file
+- Notes file contains annotation details
+- Editing mode shows both simultaneously
+- Perfect for detailed revision work
+
+*Not required*: You can use Editing mode without org-remark!
+
+** Customization Variables
+
+#+BEGIN_SRC emacs-lisp
+;; Panel widths (percentages, must sum to < 1.0)
+(setq writing-editing-left-width-percent 0.25)   ; 25% for outline
+(setq writing-editing-right-width-percent 0.25)  ; 25% for notes
+
+;; Theme for editing mode
+(setq writing-editing-theme 'leuven)  ; or modus-operandi, etc.
+
+;; Column width for text centering
+(setq writing-editing-fill-column-width 90)
+
+;; Font preset (requires fontaine)
+(setq writing-editing-fontaine-preset 'editing)
+#+END_SRC
+
+** Try It Now!
+
+1. Open your manuscript
+2. Press ~F8 F8 e~
+3. Observe the three-panel layout
+4. Notice the notes file on the right
+5. Try typing a note in the right panel
+6. Click outline items on the left
+7. See cursor jump in center
+8. Press ~F8 F8 e~ to exit
+
+* Choosing the Right Mode
+
+Here's a decision guide for which mode to use when.
+
+** Decision Tree
+
+#+BEGIN_EXAMPLE
+START
+  |
+  ├─ First draft writing? ──→ YES ──→ Distraction-Free Mode (m)
+  │                          NO ↓
+  │
+  ├─ One scene needs intensive work? ──→ YES ──→ Focus Mode (f)
+  │                                     NO ↓
+  │
+  ├─ Jumping between files often? ──→ YES ──→ Project Mode (p)
+  │                                  NO ↓
+  │
+  └─ Serious revision with notes? ──→ YES ──→ Editing Mode (e)
+                                      NO ──→ No mode needed!
+#+END_EXAMPLE
+
+** By Task Type
+
+| Task                    | Best Mode          | Why                               |
+|-------------------------+--------------------+-----------------------------------|
+| Daily writing           | Distraction-Free   | Clean, focused, no distractions   |
+| Rewriting problem scene | Focus              | Laser focus on one section        |
+| Research while writing  | Project            | Easy file switching               |
+| Second draft revision   | Editing            | Notes + manuscript side-by-side   |
+| Outlining               | Project            | See structure clearly             |
+| Writing sprints         | Distraction-Free   | Minimal interface, max focus      |
+| Structural editing      | Editing            | Outline + text + notes            |
+| Character checking      | Project            | Jump to character files           |
+| Final polish            | Focus              | One scene at a time, perfecting   |
+
+** By Writer Preference
+
+*** "I like simplicity"
+→ Distraction-Free mode for everything
+→ Occasionally Focus mode for tough scenes
+
+*** "I need navigation"
+→ Project mode as default
+→ Switch to Distraction-Free when actually writing
+
+*** "I'm a serious editor"
+→ Editing mode for all revision work
+→ Distraction-Free for new material
+
+*** "I want it all"
+→ Learn to switch modes fluidly
+→ Use the right tool for each task
+
+** Combining Modes with Workflow
+
+*Morning routine*:
+1. ~F8 F8 p~ - Check what needs writing (project overview)
+2. Navigate to today's scene
+3. ~F8 F8 m~ - Switch to distraction-free
+4. Write for 1 hour
+5. ~F8 F8 m~ - Exit, check progress
+
+*Revision routine*:
+1. ~F8 F8 e~ - Activate editing mode
+2. Review notes in right panel
+3. Work through revision checklist
+4. Make edits in center panel
+5. Update notes as you go
+6. ~F8 F8 e~ - Exit when done
+
+* Practical Exercises (15 minutes)
+
+Let's practice using all four modes.
+
+** Exercise 1: Mode Tour (5 minutes)
+
+*Goal*: Experience each mode's unique environment
+
+1. *Distraction-Free*:
+   - Open manuscript
+   - ~F8 F8 m~
+   - Write 50 words
+   - Notice: clean, centered, minimal
+   - ~F8 F8 m~ (exit)
+
+2. *Focus*:
+   - Position on a scene heading
+   - ~F8 F8 f~
+   - Write 50 words
+   - Notice: only this scene visible
+   - Try scrolling past scene boundaries (you can't!)
+   - ~F8 F8 f~ (exit)
+
+3. *Project*:
+   - ~F8 F8 p~
+   - Click different headings in imenu-list
+   - See cursor jump
+   - Notice three-panel layout
+   - ~F8 F8 p~ (exit)
+
+4. *Editing*:
+   - ~F8 F8 e~
+   - Add a note in right panel: "* Test note"
+   - Click outline items on left
+   - Notice how notes file persists
+   - ~F8 F8 e~ (exit)
+
+** Exercise 2: Mode Switching (3 minutes)
+
+*Goal*: Practice smooth transitions
+
+1. ~F8 F8 m~ → Distraction-Free active
+2. ~F8 F8 p~ → Distraction-Free exits, Project activates
+3. ~F8 F8 f~ → Project exits, Focus activates
+4. ~F8 F8 e~ → Focus exits, Editing activates
+5. ~F8 F8 m~ → Editing exits, Distraction-Free activates
+6. ~F8 F8 m~ → Distraction-Free exits (toggle off)
+
+*Notice*: Each transition is clean - no leftover state!
+
+** Exercise 3: Task-Based Mode Selection (7 minutes)
+
+*Goal*: Choose mode based on task
+
+1. *Task*: Write 100 words in Scene 2
+   - *Mode choice*: ?
+   - *Answer*: Distraction-Free (~m~)
+   - Do it!
+
+2. *Task*: Rewrite Scene 3 opening (first paragraph only)
+   - *Mode choice*: ?
+   - *Answer*: Focus (~f~) - positioned on Scene 3
+   - Do it!
+
+3. *Task*: Check character profile, then continue writing
+   - *Mode choice*: ?
+   - *Answer*: Project (~p~) - use treemacs to open character file
+   - Do it!
+
+4. *Task*: Review Scene 1 with revision checklist
+   - *Mode choice*: ?
+   - *Answer*: Editing (~e~) - notes in right panel
+   - Do it!
+
+** Exercise 4: Create a Mode Cheat Sheet
+
+Make your own quick reference:
+
+#+BEGIN_EXAMPLE
+MY MODE PREFERENCES:
+
+Daily writing: ___________
+Quick edits: _____________
+Revision: ________________
+Research: ________________
+Navigation: ______________
+Problem scenes: __________
+Default mode: ____________
+#+END_EXAMPLE
+
+Fill this out based on your preferences!
+
+* Advanced Customization
+
+** Customizing Distraction-Free and Focus Modes
+
+Both modes use the same variables:
+
+#+BEGIN_SRC emacs-lisp
+;; In your init.el or .emacs:
+
+;; === THEMES ===
+;; Writing mode theme (clean, minimal)
+(setq my-writing-env-work-theme 'poet)
+;; Options: poet, modus-operandi, ef-light, leuven
+
+;; Normal theme (your regular Emacs theme)
+(setq my-writing-env-normal-theme 'modus-vivendi)
+;; Use whatever theme you normally use
+
+;; === FONTS (requires fontaine package) ===
+;; Writing mode font preset
+(setq my-writing-env-work-font 'writing-big)
+
+;; Normal font preset
+(setq my-writing-env-normal-font 'regular)
+
+;; === TEXT WIDTH ===
+;; Writing mode width (columns)
+(setq my-writing-env-work-width 80)
+;; 60-70: very narrow, intense focus
+;; 80: classic, comfortable
+;; 90-100: wider, more context
+
+;; Normal mode width (not used much)
+(setq my-writing-env-normal-width 90)
+#+END_SRC
+
+** Customizing Editing Mode
+
+Editing mode has separate settings:
+
+#+BEGIN_SRC emacs-lisp
+;; === PANEL SIZES ===
+;; Left panel (imenu-list) width
+(setq writing-editing-left-width-percent 0.25)  ; 25%
+
+;; Right panel (notes) width
+(setq writing-editing-right-width-percent 0.25) ; 25%
+
+;; (Center panel is automatic: 1.0 - left - right)
+
+;; === VISUAL STYLE ===
+;; Editing theme
+(setq writing-editing-theme 'leuven)
+;; Good options: leuven, modus-operandi, ef-light
+
+;; Text column width
+(setq writing-editing-fill-column-width 90)
+;; Wider than writing mode (more context for editing)
+
+;; Font preset (requires fontaine)
+(setq writing-editing-fontaine-preset 'editing)
+#+END_SRC
+
+** Example: Narrow Focus Configuration
+
+For intense, narrow focus:
+
+#+BEGIN_SRC emacs-lisp
+;; Very narrow, very minimal
+(setq my-writing-env-work-theme 'poet)
+(setq my-writing-env-work-width 60)  ; Very narrow!
+(setq my-writing-env-work-font 'writing-huge)
+#+END_SRC
+
+** Example: Wide Editing Configuration
+
+For more context during revision:
+
+#+BEGIN_SRC emacs-lisp
+;; Wider panels, more information
+(setq writing-editing-left-width-percent 0.20)   ; Narrower outline
+(setq writing-editing-right-width-percent 0.30)  ; Wider notes
+(setq writing-editing-fill-column-width 100)     ; Wide text
+#+END_SRC
+
+** Font Presets (Fontaine)
+
+If using Fontaine, define presets in your config:
+
+#+BEGIN_SRC emacs-lisp
+(setq fontaine-presets
+      '((regular
+         :default-height 120)
+        (writing-big
+         :default-family "iA Writer Quattro"  ; Or your preference
+         :default-height 160                  ; Larger for writing
+         :line-spacing 0.3)                  ; More space between lines
+        (writing-huge
+         :default-height 180)
+        (editing
+         :default-height 140                  ; Medium size
+         :line-spacing 0.2)))
+#+END_SRC
+
+** Theme Recommendations
+
+*** For Writing (Distraction-Free)
+- ~poet~ - Designed for prose, very clean
+- ~modus-operandi~ - Highly accessible, minimal
+- ~ef-light~ - Soft, easy on eyes
+- ~writeroom-mode~ default - Ultra minimal
+
+*** For Editing
+- ~leuven~ - Professional, clear structure
+- ~modus-operandi~ - Consistent, accessible
+- ~dichromacy~ - High contrast for editing
+- ~ef-light~ - Gentle but clear
+
+*** For Normal Work
+- Whatever you normally use!
+- The modes restore your normal theme automatically
+
+* Common Questions
+
+** "Which mode should I use for daily writing?"
+
+*Answer*: Distraction-Free mode (~F8 F8 m~)
+
+It's the most popular for daily writing because:
+- Clean, minimal interface
+- Easy to activate/deactivate
+- No navigation panels to distract
+- Full manuscript visible (can scroll to reference earlier scenes)
+- Fast toggle (same key enters and exits)
+
+** "Can I use writing modes outside of emacs-writing projects?"
+
+*Answer*: Technically yes, but some features require project structure.
+
+- Distraction-Free (~m~) works anywhere
+- Focus (~f~) works in any org-mode file
+- Project (~p~) needs a project (any project.el project)
+- Editing (~e~) works with any file (creates matching notes file)
+
+Best experience is within a proper writing project!
+
+** "Do modes save my theme/font permanently?"
+
+*Answer*: No, changes are temporary.
+
+- Modes change theme/font when activated
+- Original settings are saved
+- Exiting mode restores original settings
+- Your actual Emacs configuration is unchanged
+
+This is intentional - modes are temporary environments!
+
+** "Why can't I have Project mode AND Distraction-Free at once?"
+
+*Answer*: They conflict in their goals.
+
+- Distraction-Free hides everything → minimal
+- Project shows panels → maximal navigation
+- These are opposite approaches
+- Mutual exclusivity prevents confusion
+
+Choose the right tool for your current task!
+
+** "Can I customize which panels Editing mode shows?"
+
+*Answer*: Currently, the panels are fixed (imenu-list + notes).
+
+But you can:
+- Adjust panel widths (percentages)
+- Choose different theme
+- Change text width
+- Use different font
+
+*Future enhancement*: Customizable panel content is planned!
+
+** "What if I don't have treemacs/imenu-list installed?"
+
+*Answer*: Modes gracefully handle missing packages.
+
+- Project mode (~p~): Shows warning, some features missing
+- Editing mode (~e~): Works but no imenu-list panel
+- Distraction-Free/Focus (~m~/~f~): Require writeroom-mode (show error)
+
+Install recommended packages for full experience!
+
+** "Can I create my own custom mode?"
+
+*Answer*: Advanced users can!
+
+Study existing modes in ~modes/writing-modes.el~:
+1. Create a minor mode
+2. Add to ~my-writing-exclusive-modes~ list
+3. Call ~my-writing--deactivate-other-modes~ when activating
+4. Save/restore state appropriately
+
+This is advanced - stick with the four built-in modes initially!
+
+* Troubleshooting
+
+** "Mode activates but looks wrong/broken"
+
+*Check*:
+1. Do you have required packages installed?
+   - Distraction-Free/Focus need: ~writeroom-mode~
+   - Project needs: ~treemacs~ and ~imenu-list~
+   - Editing needs: ~imenu-list~
+
+2. Are themes installed?
+   - ~M-x customize-themes~ to see available
+   - Install missing themes via package manager
+
+3. Is your frame wide enough?
+   - Editing mode needs ~120+ columns
+   - Project mode needs ~100+ columns
+   - Narrow terminal? Modes may look cramped
+
+** "Exiting mode doesn't restore everything"
+
+*Try*:
+1. Activate the mode again: ~F8 F8 X~ (where X is the mode key)
+2. Exit properly: ~F8 F8 X~ again
+3. If still broken: ~M-x revert-buffer~ or close/reopen file
+
+*Prevention*:
+- Always exit modes with the same key that activated them
+- Don't kill buffers while mode is active
+- Don't force-quit Emacs while in a writing mode
+
+** "Focus mode won't narrow / stays wide"
+
+*Causes*:
+1. Cursor not on an org heading
+2. Not in org-mode buffer
+3. Already at top level (can't narrow to whole file)
+
+*Solution*:
+- Position cursor on a scene or chapter heading (*** or **)
+- Make sure buffer is in ~org-mode~
+- Try from a deeper heading (not the document title)
+
+** "Project mode panels are too wide/narrow"
+
+*Solution*:
+- Panels size is controlled by the packages themselves
+- For imenu-list: ~M-x customize-variable RET imenu-list-size~
+- For treemacs: ~M-x customize-variable RET treemacs-width~
+- Adjust and restart Project mode
+
+** "Editing mode notes file opens in wrong place"
+
+*Expected behavior*:
+- Notes file is always in same directory as manuscript
+- Named: ~[manuscript-name]-notes.org~
+
+If opening elsewhere:
+- Check current buffer's ~buffer-file-name~
+- Notes file derives from this name
+- Make sure manuscript is saved to disk (not unnamed buffer)
+
+** "Themes don't change when mode activates"
+
+*Possible causes*:
+1. Theme not installed
+2. Consult package not available (uses fallback)
+3. Custom theme variable not set
+
+*Solutions*:
+#+BEGIN_SRC emacs-lisp
+;; Check current theme
+(custom-enabled-themes)
+
+;; Manually test theme switching
+(load-theme 'poet t)
+
+;; Install consult for smoother theme switching
+M-x package-install RET consult RET
+#+END_SRC
+
+* What You've Learned
+
+Fantastic work! You've completed Lesson 9. You now know:
+
+✓ All four writing modes and their unique purposes
+✓ Distraction-Free mode (~m~) for daily writing
+✓ Focus mode (~f~) for intensive single-section work
+✓ Project mode (~p~) for navigation + writing
+✓ Editing mode (~e~) for revision with notes
+✓ How modes are mutually exclusive (only one at a time)
+✓ When to use each mode based on your task
+✓ How to switch modes smoothly
+✓ Customization options for each mode
+✓ Common workflows using multiple modes
+✓ How to troubleshoot mode issues
+
+* Next Steps
+
+Ready to visualize your story? Head to [[file:getting-started-10-timelines.org][Lesson 10: Character and Plot Timelines]]!
+
+In the next lesson, you'll learn:
+- Creating character timeline tables
+- Creating plot thread timeline tables
+- Understanding timeline symbols (◆ for PoV, ● for presence)
+- Using timelines to check story balance
+- Identifying gaps in character appearances
+- Analyzing plot thread coverage
+
+** Practice Before Moving On
+
+Reinforce your mode mastery:
+
+1. **Mode familiarization** (repeat 3 times)
+   - Activate each mode
+   - Observe visual changes
+   - Write in each mode
+   - Exit cleanly
+
+2. **Task-based practice**
+   - Write 200 words: use Distraction-Free
+   - Rewrite one scene: use Focus
+   - Check character notes: use Project
+   - Review with notes: use Editing
+
+3. **Speed switching**
+   - Activate → Exit → Activate different → Exit
+   - Build muscle memory
+   - Get comfortable with mode transitions
+
+4. **Customization**
+   - Try different themes
+   - Adjust text widths
+   - Find your perfect settings
+   - Update your config file
+
+5. **Daily integration**
+   - Use Distraction-Free for one week straight
+   - Build the habit
+   - Let it become natural
+
+The modes are powerful tools - the more you use them, the more natural they become!
+
+* Quick Reference
+
+** Mode Activation Keys
+
+| Key | Mode             | Mnemonic           |
+|-----+------------------+--------------------|
+| ~m~   | Distraction-Free | **M**ode           |
+| ~f~   | Focus            | **F**ocus          |
+| ~p~   | Project          | **P**roject        |
+| ~e~   | Editing          | **E**diting        |
+
+All accessed via: ~F8 F8~ then key
+
+** Mode Comparison Chart
+
+| Feature           | Dist-Free | Focus | Project | Editing |
+|-------------------+-----------+-------+---------+---------|
+| Text centering    | ✓         | ✓     | -       | ✓       |
+| Theme change      | ✓         | ✓     | -       | ✓       |
+| Font change       | ✓         | ✓     | -       | ✓       |
+| Narrowing         | -         | ✓     | -       | -       |
+| Navigation panels | -         | -     | ✓       | ✓       |
+| Notes panel       | -         | -     | -       | ✓       |
+| Distraction level | Minimal   | None  | Medium  | Medium  |
+| Best for          | Writing   | Focus | Nav     | Editing |
+
+** Quick Decision Guide
+
+#+BEGIN_EXAMPLE
+What do I want to do?
+
+WRITE → m (Distraction-Free)
+  └─ One scene needs work? → f (Focus)
+
+NAVIGATE → p (Project)
+  └─ Between files? → p
+  └─ Within file? → p (imenu-list panel)
+
+REVISE → e (Editing)
+  └─ With notes? → e
+  └─ Just reading? → m (cleaner)
+#+END_EXAMPLE
+
+** Essential Commands
+
+#+BEGIN_EXAMPLE
+Activate modes: F8 F8 + (m/f/p/e)
+Exit mode: F8 F8 + (same key) [toggles]
+Force exit all: (none needed - modes are well-behaved!)
+
+Navigation in Focus mode:
+  Widen: C-x n w (but this defeats the purpose!)
+  Better: Exit Focus, navigate, re-enter Focus
+
+Resize panels (Project/Editing):
+  Customize variables (see Customization section)
+#+END_EXAMPLE
+
+* Summary
+
+Writing modes transform your Emacs environment to support different writing tasks. Distraction-Free mode creates a clean canvas for daily writing. Focus mode laser-focuses on one section. Project mode adds navigation for complex projects. Editing mode provides a professional revision environment with notes.
+
+The key to mastery is:
+1. Understanding what each mode does
+2. Matching mode to task
+3. Practicing smooth transitions
+4. Finding your preferred mode for each task type
+5. Customizing to your personal taste
+
+Start simple (just Distraction-Free mode), then explore others as your needs grow!
+
+---
+
+*Previous*: [[file:getting-started-08-hydra-menu.org][Lesson 8: The Hydra Menu]]
+*Next*: [[file:getting-started-10-timelines.org][Lesson 10: Character and Plot Timelines]]
+
+*Lesson 9 Complete!*

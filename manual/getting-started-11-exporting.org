@@ -1,0 +1,1191 @@
+#+TITLE: Lesson 11: Export Your Manuscript
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 11!
+
+You've written your manuscript in org-mode, and now it's time to share it with the world! Whether you're submitting to publishers, sharing with beta readers, or self-publishing, you need to export your work to standard formats.
+
+Org-mode's powerful export system can transform your manuscript into professional documents in multiple formats, and ~emacs-writing~ adds special features for creative writing like proper scene break formatting.
+
+By the end of this lesson, you'll have:
+- Understood org-mode's export system
+- Learned to use the scene break macro for professional formatting
+- Exported your manuscript to PDF (via LaTeX)
+- Exported to Word-compatible format (ODT)
+- Created HTML and EPUB versions for digital reading
+- Customized export settings for different requirements
+- Prepared manuscripts for submission to publishers
+
+*Estimated time*: 15-20 minutes
+
+* Before You Begin
+
+** What You Need
+
+✓ A manuscript with at least one complete scene
+✓ Your writing project open
+✓ Understanding of your manuscript's structure (from previous lessons)
+
+** Optional Dependencies
+
+Different export formats need different tools installed:
+
+- **PDF (LaTeX)**: Requires LaTeX distribution
+  - Linux/Mac: TeX Live or MacTeX
+  - Windows: MiKTeX
+  - Check: ~pdflatex --version~
+
+- **ODT (OpenDocument)**: Built into Emacs (no extra tools needed!)
+
+- **HTML**: Built into Emacs (no extra tools needed!)
+
+- **EPUB**: Requires ~ox-epub~ package
+  - Install: ~M-x package-install RET ox-epub RET~
+
+Don't worry if you don't have everything - we'll indicate what's needed for each format.
+
+* Understanding Org-Mode Export
+
+Before we export, let's understand how it works.
+
+** The Export Dispatcher
+
+Org-mode has a unified export interface:
+
+1. Open your manuscript
+2. Press ~C-c C-e~ (org-export-dispatch)
+3. You'll see the export menu:
+
+#+BEGIN_EXAMPLE
+Org Export Dispatcher
+─────────────────────────────────────────────────────
+
+[b] Export to buffer       [l] Export to LaTeX
+[h] Export to HTML         [o] Export to ODT
+[p] Export to PDF          [t] Export to plain text
+[m] Export to Markdown     [e] Export to EPUB (if installed)
+
+[q] Quit
+#+END_EXAMPLE
+
+*This is your export command center!*
+
+** Understanding Export Options
+
+Each format has variations:
+
+| Key Sequence | What It Does                                      |
+|--------------+---------------------------------------------------|
+| ~C-c C-e l o~  | Export to LaTeX and open file                     |
+| ~C-c C-e l l~  | Export to LaTeX (don't open)                      |
+| ~C-c C-e l p~  | Export to PDF (LaTeX → PDF)                       |
+| ~C-c C-e h h~  | Export to HTML (single file)                      |
+| ~C-c C-e h o~  | Export to HTML and open in browser                |
+| ~C-c C-e o o~  | Export to ODT and open in LibreOffice/Word        |
+
+*Pattern*: First letter = format, second letter = action
+
+** Export Scope
+
+You can export:
+- **Whole buffer**: Default, exports everything
+- **Subtree**: Just current section (with ~C-c C-e C-s~ prefix)
+- **Visible only**: Only expanded headings (with ~C-c C-e C-v~ prefix)
+
+*For manuscripts*: Usually export whole buffer.
+
+** What Gets Exported?
+
+Org-mode respects:
+- ~:ignore:~ tag on headings → Heading excluded (but content included)
+- ~:noexport:~ tag on headings → Heading and content excluded
+- ~#+OPTIONS: toc:nil~ → No table of contents
+- ~#+EXCLUDE_TAGS: noexport~ → Tags to exclude
+
+*Your template already has these configured!*
+
+* The Scene Break Macro
+
+Scene breaks are crucial in fiction - they show time/location/POV changes within a chapter.
+
+** The Problem
+
+You write in your manuscript:
+#+BEGIN_EXAMPLE
+Alex walked out. The door closed behind them.
+
+[SCENE BREAK - Later that evening]
+
+Sam sat in the coffee shop, waiting.
+#+END_EXAMPLE
+
+But each export format needs different scene breaks:
+- **Print (PDF)**: Extra vertical space (3 blank lines)
+- **Word (ODT)**: Three asterisks centered (***) or vertical space
+- **HTML**: Multiple line breaks
+- **EPUB**: Proper structural break
+
+**Manually changing this for each format is tedious!**
+
+** The Solution: Scene Break Macro
+
+~emacs-writing~ provides a macro that automatically converts to the right format.
+
+*** How It Works
+
+1. Your template has this line at the top:
+   #+BEGIN_EXAMPLE
+   #+MACRO: scene-break SCENE-BREAK
+   #+END_EXAMPLE
+
+2. In your manuscript, use:
+   #+BEGIN_EXAMPLE
+   {{{scene-break}}}
+   #+END_EXAMPLE
+
+3. When exporting:
+   - LaTeX: Converts to ~\vspace{...}~ (vertical space)
+   - HTML: Converts to ~<br><br><br>~ (line breaks)
+   - ODT: Converts to line breaks
+   - ASCII/Markdown: Converts to ~***~
+
+** Using Scene Breaks
+
+Replace manual scene breaks with the macro:
+
+*** Before (Manual)
+#+BEGIN_EXAMPLE
+Alex walked out.
+
+***
+
+Sam sat waiting.
+#+END_EXAMPLE
+
+*** After (Macro)
+#+BEGIN_EXAMPLE
+Alex walked out.
+
+{{{scene-break}}}
+
+Sam sat waiting.
+#+END_EXAMPLE
+
+** Scene Break Example
+
+Here's a real manuscript snippet:
+
+#+BEGIN_EXAMPLE
+*** Scene 1 - Morning
+:PROPERTIES:
+:PoV: Alex
+:END:
+
+Alex stumbled into the kitchen, eyes half-closed. Coffee. Need coffee.
+
+The machine gurgled to life. While it worked, Alex stared out the window
+at the gray morning. Another Monday.
+
+{{{scene-break}}}
+
+Twenty minutes later, coffee in hand, Alex felt almost human. The first
+sip was always the best—that moment when the fog started to lift.
+
+{{{scene-break}}}
+
+By the second cup, Alex had a plan for the day. Well, the outline of a
+plan. More of a vague direction than an actual plan, but it was a start.
+#+END_EXAMPLE
+
+*Three scene breaks* showing:
+1. Time jump (20 minutes)
+2. Mood shift (foggy → clearer)
+
+When exported, each format gets appropriate breaks automatically!
+
+** Try It Now! (2 minutes)
+
+1. Open your manuscript
+2. Find a scene with a time/location jump
+3. Add: ~{{{scene-break}}}~ between sections
+4. Save the file
+5. We'll export it in the next sections!
+
+* Exporting to PDF (via LaTeX)
+
+PDF is the gold standard for print and submission to publishers.
+
+** Requirements
+
+- LaTeX distribution installed (TeX Live, MacTeX, or MiKTeX)
+- Verify: ~pdflatex --version~ in terminal
+
+** Step 1: Check LaTeX Configuration
+
+Your template has LaTeX settings:
+
+#+BEGIN_EXAMPLE
+#+LATEX_CLASS: book
+#+LATEX_HEADER:
+#+LATEX_HEADER_EXTRA:
+#+END_EXAMPLE
+
+*Default*: Uses "book" class (appropriate for novels)
+
+** Step 2: Export to PDF
+
+1. Open your manuscript (~novel.org~ or ~story.org~)
+2. Press ~C-c C-e~ (export dispatcher)
+3. Press ~l~ (LaTeX)
+4. Press ~p~ (PDF)
+5. Wait for compilation (10-30 seconds)
+6. PDF appears in same directory!
+
+*Full sequence*: ~C-c C-e l p~
+
+** What You Get
+
+The PDF includes:
+- Title page (from ~#+TITLE~ and ~#+AUTHOR~)
+- Automatically formatted chapters and scenes
+- Proper page breaks
+- Scene breaks as vertical space
+- Professional book-like appearance
+
+** Customizing PDF Output
+
+*** Removing Table of Contents
+
+Add to your manuscript:
+#+BEGIN_EXAMPLE
+#+OPTIONS: toc:nil
+#+END_EXAMPLE
+
+*** Changing Chapter Numbering
+
+Add:
+#+BEGIN_EXAMPLE
+#+OPTIONS: num:nil
+#+END_EXAMPLE
+
+Now chapters show as "Chapter 1" without numbers on sections.
+
+*** Custom LaTeX Class
+
+For specific publisher requirements:
+
+#+BEGIN_EXAMPLE
+#+LATEX_CLASS: article        (shorter works)
+#+LATEX_CLASS: book           (novels - default)
+#+LATEX_CLASS: memoir         (extensive customization)
+#+END_EXAMPLE
+
+*** Adding LaTeX Packages
+
+For special formatting:
+
+#+BEGIN_EXAMPLE
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{margin=1in}
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \doublespacing
+#+END_EXAMPLE
+
+This creates standard manuscript format (1-inch margins, double-spaced).
+
+** Common PDF Issues
+
+*** "LaTeX command not found"
+
+*Problem*: LaTeX not installed
+
+*Solution*: Install TeX Live (Linux/Mac) or MiKTeX (Windows)
+
+*** "PDF not created"
+
+*Problem*: LaTeX compilation error
+
+*Solution*:
+1. Check ~*Org PDF LaTeX Output*~ buffer for errors
+2. Look for ~! ~ in the output (error marker)
+3. Common issues: special characters, missing packages
+
+*** PDF Looks Wrong
+
+*Problem*: LaTeX class or settings mismatch
+
+*Solution*:
+1. Try ~#+LATEX_CLASS: article~ for simpler layout
+2. Remove custom LaTeX headers temporarily
+3. Export a minimal test document first
+
+** Try It Now! (3 minutes)
+
+1. Open your manuscript
+2. ~C-c C-e l p~ (export to PDF)
+3. Wait for compilation
+4. Open the PDF
+5. Check: title page, chapters, scene breaks
+6. Note any formatting you want to change
+
+* Exporting to ODT (Word Format)
+
+ODT (OpenDocument Text) opens in LibreOffice, Google Docs, and Microsoft Word.
+
+** Requirements
+
+- None! ODT export is built into Emacs
+- To open: LibreOffice (free) or Microsoft Word
+
+** Step 1: Export to ODT
+
+1. Open your manuscript
+2. ~C-c C-e~ (export dispatcher)
+3. ~o~ (ODT)
+4. ~o~ (export and open)
+5. File opens in your default ODT editor
+
+*Full sequence*: ~C-c C-e o o~
+
+** What You Get
+
+The ODT file includes:
+- Formatted headings (chapters as Heading 1, scenes as Heading 2)
+- Scene breaks (vertical space or ***)
+- Metadata (title, author)
+- Editable paragraphs
+
+*Important*: ODT is fully editable - you can make final tweaks in LibreOffice/Word!
+
+** Customizing ODT Output
+
+*** Using a Custom Style Template
+
+Professional publishers often require specific formatting. You can use an ODT template:
+
+1. Create your formatting in LibreOffice (fonts, margins, headers)
+2. Save as template: ~my-manuscript.ott~
+3. In your org file, add:
+   #+BEGIN_EXAMPLE
+   #+ODT_STYLES_FILE: "~/writing/templates/my-manuscript.ott"
+   #+END_EXAMPLE
+4. Export - your formatting is applied!
+
+*** Manuscript Format Template
+
+Standard manuscript format:
+- 12pt Courier or Times New Roman
+- Double-spaced
+- 1-inch margins
+- Header with page numbers
+
+Create this once in LibreOffice, save as .ott, reuse for all manuscripts!
+
+** Common ODT Uses
+
+*** Beta Reader Format
+
+Beta readers often prefer Word format:
+1. Export to ODT
+2. Add comments instructions
+3. Share via email/Google Drive
+4. They edit/comment in Word
+5. You incorporate feedback in org-mode
+
+*** Publisher Submission
+
+Many publishers accept .docx or .odt:
+1. Check publisher guidelines
+2. Export to ODT
+3. Open in LibreOffice/Word
+4. Final formatting tweaks
+5. Save as .docx if required
+6. Submit!
+
+*** Agent Submission
+
+Literary agents typically want:
+- Times New Roman, 12pt
+- Double-spaced
+- Header with name/title/page number
+
+Use ODT template for this!
+
+** Try It Now! (2 minutes)
+
+1. Open manuscript
+2. ~C-c C-e o o~ (export to ODT and open)
+3. File opens in LibreOffice/Word
+4. Check formatting
+5. Try editing a paragraph (it's fully editable!)
+6. Close without saving (we'll keep working in org)
+
+* Exporting to HTML
+
+HTML is perfect for web publishing, blogs, and digital sharing.
+
+** Requirements
+
+- None! HTML export is built into Emacs
+- To view: Any web browser
+
+** Step 1: Export to HTML
+
+1. Open manuscript
+2. ~C-c C-e~ (export dispatcher)
+3. ~h~ (HTML)
+4. ~h~ (export to file) OR ~o~ (export and open in browser)
+
+*Full sequence*: ~C-c C-e h o~ (open in browser)
+
+** What You Get
+
+The HTML file includes:
+- Formatted headings (<h1>, <h2>, etc.)
+- Paragraphs with proper spacing
+- Scene breaks as line breaks
+- Navigation (if table of contents enabled)
+- CSS-styled presentation
+
+** Customizing HTML Output
+
+*** Adding a Stylesheet
+
+For professional appearance:
+
+#+BEGIN_EXAMPLE
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css"/>
+#+END_EXAMPLE
+
+Create ~style.css~ with:
+#+BEGIN_SRC css
+body {
+    font-family: Georgia, serif;
+    line-height: 1.6;
+    max-width: 40em;
+    margin: 2em auto;
+    padding: 0 1em;
+}
+
+h1, h2 {
+    font-family: 'Helvetica Neue', sans-serif;
+}
+
+p {
+    text-align: justify;
+    margin-bottom: 1em;
+}
+#+END_SRC
+
+Now your HTML looks professional!
+
+*** HTML5 vs XHTML
+
+For modern browsers:
+#+BEGIN_EXAMPLE
+#+HTML_DOCTYPE: html5
+#+END_EXAMPLE
+
+For EPUB compatibility:
+#+BEGIN_EXAMPLE
+#+HTML_DOCTYPE: xhtml
+#+END_EXAMPLE
+
+*** Table of Contents
+
+Enable/disable TOC:
+#+BEGIN_EXAMPLE
+#+OPTIONS: toc:t      (show TOC)
+#+OPTIONS: toc:nil    (hide TOC)
+#+OPTIONS: toc:2      (TOC depth = 2 levels)
+#+END_EXAMPLE
+
+** Common HTML Uses
+
+*** Web Serial
+
+Publish your novel chapter-by-chapter online:
+1. Export each chapter to HTML
+2. Add navigation links
+3. Upload to website/blog
+4. Share links with readers
+
+*** Digital Preview
+
+Give readers a preview:
+1. Export first 3 chapters to HTML
+2. Add "buy the book" link at end
+3. Share via email/website
+4. Beautiful, accessible format
+
+*** Archive Version
+
+Keep a readable web version:
+- Export complete manuscript to HTML
+- Store in Dropbox/cloud
+- Accessible from any device
+- No special software needed
+
+** Try It Now! (2 minutes)
+
+1. Open manuscript
+2. ~C-c C-e h o~ (export and open in browser)
+3. Check appearance in browser
+4. Try scrolling through chapters
+5. Notice scene breaks (multiple line breaks)
+
+* Exporting to EPUB (E-books)
+
+EPUB is the standard format for e-readers (Kindle, Kobo, Apple Books).
+
+** Requirements
+
+- ~ox-epub~ package
+- Install: ~M-x package-install RET ox-epub RET~
+
+** Step 1: Check EPUB Configuration
+
+Your template has EPUB settings:
+
+#+BEGIN_EXAMPLE
+#+UID: unique-identifier
+#+Subject: Fiction
+#+Description: A novel about...
+#+Publisher: Your Name
+#+License: All Rights Reserved
+#+EPUBCOVER: cover.jpg
+#+HTML_DOCTYPE: xhtml
+#+END_EXAMPLE
+
+** Step 2: Export to EPUB
+
+1. Open manuscript
+2. ~C-c C-e~ (export dispatcher)
+3. ~e~ (EPUB - if ox-epub installed)
+4. ~e~ (export to file)
+
+*Full sequence*: ~C-c C-e e e~
+
+** What You Get
+
+An .epub file that:
+- Opens in any e-reader
+- Has proper chapter navigation
+- Includes metadata (author, title, description)
+- Supports scene breaks
+- Works on Kindle (after conversion)
+
+** EPUB Metadata
+
+Essential metadata for e-books:
+
+#+BEGIN_EXAMPLE
+#+TITLE: Your Novel Title
+#+AUTHOR: Your Name
+#+DATE: 2025
+#+DESCRIPTION: A gripping tale of...
+#+Subject: Fiction / Literary
+#+Publisher: Self-Published
+#+License: Copyright 2025 Your Name
+#+UID: your-novel-2025-01-01
+#+END_EXAMPLE
+
+** Adding a Cover Image
+
+1. Create cover image: ~cover.jpg~ (recommended: 1600x2400 pixels)
+2. Place in manuscript directory
+3. Add to manuscript:
+   #+BEGIN_EXAMPLE
+   #+EPUBCOVER: cover.jpg
+   #+END_EXAMPLE
+4. Export - cover included!
+
+** Converting EPUB to MOBI (Kindle)
+
+Kindle uses MOBI format, but you can convert:
+
+1. Export to EPUB
+2. Use Calibre (free software) to convert:
+   - Open Calibre
+   - Add book (your .epub)
+   - Click "Convert books"
+   - Choose MOBI format
+   - Convert!
+3. Upload to Kindle Direct Publishing
+
+** Common EPUB Issues
+
+*** "EPUB export not available"
+
+*Problem*: ox-epub package not installed
+
+*Solution*: ~M-x package-install RET ox-epub RET~
+
+*** EPUB validation errors
+
+*Problem*: Some readers are strict about EPUB format
+
+*Solution*:
+1. Use EPUBCheck tool (online or download)
+2. Fix reported errors
+3. Usually: proper HTML DOCTYPE, valid metadata
+
+*** Cover image not showing
+
+*Problem*: Image path incorrect or missing
+
+*Solution*:
+1. Check image exists: ~cover.jpg~ in manuscript directory
+2. Use relative path: ~#+EPUBCOVER: cover.jpg~
+3. Verify image format: JPG or PNG
+
+** Try It Now! (if ox-epub installed)
+
+1. Open manuscript
+2. Add cover image (optional)
+3. ~C-c C-e e e~ (export to EPUB)
+4. Open in Calibre or e-reader app
+5. Check: cover, chapters, navigation, scene breaks
+
+* Customizing Export Settings
+
+Your template includes extensive export configuration. Let's understand it!
+
+** Location of Export Settings
+
+In your manuscript, find the "Export config" section (usually at the bottom):
+
+#+BEGIN_EXAMPLE
+* Export config :ignore:noexport:
+#+END_EXAMPLE
+
+*Note*: This section is tagged ~:noexport:~ so it doesn't appear in exports!
+
+** General Export Options
+
+#+BEGIN_EXAMPLE
+#+OPTIONS: ':t *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK")
+#+OPTIONS: date:t e:t email:nil f:t inline:t num:t p:nil pri:nil
+#+OPTIONS: prop:nil stat:t tags:t tasks:t tex:t timestamp:t title:t
+#+OPTIONS: toc:2 todo:t |:t
+#+END_EXAMPLE
+
+*What these mean*:
+
+| Option      | Meaning                                |
+|-------------+----------------------------------------|
+| ~H:3~         | Heading depth (3 levels max)           |
+| ~num:t~       | Number headings                        |
+| ~toc:2~       | Table of contents (2 levels deep)      |
+| ~author:t~    | Include author name                    |
+| ~date:t~      | Include date                           |
+| ~email:nil~   | Don't include email                    |
+| ~tags:t~      | Include tags in export                 |
+| ~todo:t~      | Include TODO keywords                  |
+
+** Common Customizations
+
+*** Remove Table of Contents
+
+Change:
+#+BEGIN_EXAMPLE
+#+OPTIONS: toc:nil
+#+END_EXAMPLE
+
+*** Hide TODO Keywords
+
+Change:
+#+BEGIN_EXAMPLE
+#+OPTIONS: todo:nil
+#+END_EXAMPLE
+
+Now scenes marked ~*** TODO Scene 3~ export as ~*** Scene 3~
+
+*** Disable Section Numbers
+
+Change:
+#+BEGIN_EXAMPLE
+#+OPTIONS: num:nil
+#+END_EXAMPLE
+
+*** Include Email
+
+Change:
+#+BEGIN_EXAMPLE
+#+OPTIONS: email:t
+#+END_EXAMPLE
+
+** LaTeX-Specific Settings
+
+#+BEGIN_EXAMPLE
+#+LATEX_CLASS: book
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{margin=1in}
+#+END_EXAMPLE
+
+Add more headers for specific formatting needs!
+
+** ODT-Specific Settings
+
+#+BEGIN_EXAMPLE
+#+ODT_STYLES_FILE: "~/templates/manuscript.ott"
+#+END_EXAMPLE
+
+Point to your custom template.
+
+** HTML-Specific Settings
+
+#+BEGIN_EXAMPLE
+#+HTML_HEAD: <link rel="stylesheet" href="style.css"/>
+#+HTML_HEAD_EXTRA: <meta name="viewport" content="width=device-width">
+#+END_EXAMPLE
+
+Add custom CSS and meta tags.
+
+** EPUB-Specific Settings
+
+#+BEGIN_EXAMPLE
+#+EPUBCOVER: cover.jpg
+#+Subject: Fiction / Science Fiction
+#+Publisher: Your Publishing House
+#+License: CC-BY-SA 4.0
+#+END_EXAMPLE
+
+Complete metadata for professional e-books.
+
+* Preparing for Publisher Submission
+
+Different publishers have different requirements. Here's how to adapt.
+
+** Standard Manuscript Format (Shunn Format)
+
+Most publishers request:
+- Times New Roman or Courier, 12pt
+- Double-spaced
+- 1-inch margins all around
+- Header: Last Name / TITLE / Page #
+- First page: Contact info top left
+
+*** LaTeX Configuration for Shunn Format
+
+Add to your manuscript:
+
+#+BEGIN_SRC org
+,#+LATEX_HEADER: \usepackage{geometry}
+,#+LATEX_HEADER: \geometry{margin=1in}
+,#+LATEX_HEADER: \usepackage{setspace}
+,#+LATEX_HEADER: \doublespacing
+,#+LATEX_HEADER: \usepackage{fancyhdr}
+,#+LATEX_HEADER: \pagestyle{fancy}
+,#+LATEX_HEADER: \fancyhead[L]{Your Name}
+,#+LATEX_HEADER: \fancyhead[C]{NOVEL TITLE}
+,#+LATEX_HEADER: \fancyhead[R]{\thepage}
+#+END_SRC
+
+*** ODT Configuration for Shunn Format
+
+1. Export to ODT
+2. Open in LibreOffice
+3. Format → Page Style → Headers/Footers
+4. Add header with name/title/page number
+5. Format → Paragraph → Line spacing → Double
+6. Format → Page → Margins → 1 inch all
+7. Save as template (.ott)
+8. Reuse for all submissions!
+
+** Agent Submission
+
+Agents typically want:
+- Cover letter (separate file)
+- Synopsis (1-2 pages)
+- First 3 chapters or 50 pages
+- Standard manuscript format
+
+*Process*:
+1. Use subtree export for first 3 chapters:
+   - Position cursor on Chapter 1
+   - ~C-c C-e C-s~ (subtree scope)
+   - ~o o~ (export to ODT)
+2. Manually create cover letter
+3. Manually create synopsis
+4. Combine according to agent's instructions
+
+** Self-Publishing
+
+For Amazon KDP or similar:
+- EPUB or MOBI format
+- Proper cover image
+- Complete metadata
+- No manuscript format needed (readers don't care!)
+
+*Process*:
+1. Export to EPUB (~C-c C-e e e~)
+2. Validate with EPUBCheck
+3. Convert to MOBI with Calibre (if needed)
+4. Upload to KDP
+5. Preview with Kindle Previewer
+6. Publish!
+
+** Contest Submission
+
+Writing contests often have strict requirements:
+- Anonymous submission (no author name)
+- Specific format (usually PDF)
+- Page limits
+- Specific margins/spacing
+
+*Process*:
+1. Temporarily remove ~#+AUTHOR~
+2. Set ~#+OPTIONS: author:nil~
+3. Add contest-specific LaTeX settings
+4. Export to PDF
+5. Verify page count
+6. Submit!
+
+* Practical Export Workflows
+
+Here are complete workflows for common scenarios.
+
+** Workflow 1: Quick Beta Reader Copy (ODT)
+
+*Goal*: Share draft with beta readers
+
+1. Open manuscript
+2. Add at top:
+   #+BEGIN_EXAMPLE
+   #+OPTIONS: todo:nil toc:nil
+   #+END_EXAMPLE
+3. Add note:
+   #+BEGIN_EXAMPLE
+   * Beta Reader Instructions :ignore:
+   Thank you for reading! Please add comments and suggestions directly
+   in this document, then email it back to me.
+   #+END_EXAMPLE
+4. ~C-c C-e o o~ (export to ODT)
+5. Email file to beta readers
+6. They read in Word/LibreOffice and add comments
+7. You receive feedback
+
+** Workflow 2: Professional PDF for Agent
+
+*Goal*: Query package with sample chapters
+
+1. Verify Shunn format settings (see above)
+2. Position cursor on Act I heading
+3. ~C-c C-e C-s~ (enable subtree export)
+4. ~l p~ (export subtree to PDF)
+5. Check PDF: headers, spacing, margins
+6. Save as: ~YourName-NovelTitle-Sample.pdf~
+7. Attach to query email
+
+** Workflow 3: Web Serial Publication
+
+*Goal*: Publish chapters online weekly
+
+1. Create chapter template with navigation:
+   #+BEGIN_EXAMPLE
+   * Chapter Navigation :ignore:
+   [[file:chapter-01.html][← Previous]] | [[file:index.html][Table of Contents]] | [[file:chapter-03.html][Next →]]
+   #+END_EXAMPLE
+2. For each chapter:
+   - Position cursor on chapter heading
+   - ~C-c C-e C-s h h~ (export subtree to HTML)
+   - Rename: ~chapter-02.html~
+3. Create index.html (TOC)
+4. Upload all HTML files to website
+5. Share chapter links on social media
+
+** Workflow 4: Self-Publishing EPUB
+
+*Goal*: Publish on Amazon KDP
+
+1. Design cover (1600x2400px): ~cover.jpg~
+2. Add all EPUB metadata:
+   #+BEGIN_EXAMPLE
+   #+EPUBCOVER: cover.jpg
+   #+DESCRIPTION: A compelling novel about...
+   #+Subject: Fiction / Literary
+   #+Publisher: Your Name
+   #+LICENSE: Copyright 2025 Your Name
+   #+UID: your-novel-2025
+   #+END_EXAMPLE
+3. ~C-c C-e e e~ (export to EPUB)
+4. Validate with EPUBCheck (online tool)
+5. Convert to MOBI with Calibre
+6. Upload to Amazon KDP
+7. Use Kindle Previewer to check
+8. Publish!
+
+** Workflow 5: Anthology Submission
+
+*Goal*: Submit single story to anthology
+
+1. Write story in ~story.org~
+2. Check anthology guidelines (format, length)
+3. Export to required format (usually PDF or DOC)
+4. For PDF:
+   - ~C-c C-e l p~
+   - Check page count against limit
+5. For DOC:
+   - ~C-c C-e o o~ (ODT)
+   - Open in LibreOffice
+   - Save as .docx
+6. Follow submission instructions
+7. Submit!
+
+* Common Export Issues and Solutions
+
+** Problem: Export Creates Multiple Files
+
+*Symptom*: Exporting creates ~novel.tex~, ~novel.aux~, ~novel.log~, etc.
+
+*Cause*: LaTeX creates intermediate files
+
+*Solution*:
+- This is normal for PDF export
+- Only share the .pdf file
+- Delete intermediate files if desired: ~rm novel.{tex,aux,log}~
+
+** Problem: Special Characters Break Export
+
+*Symptom*: Export fails with error about "unknown character"
+
+*Cause*: Some characters need escaping in LaTeX
+
+*Solution*:
+- Use org entities: ~\tilde~ for ~, ~\nbsp~ for non-breaking space
+- For literal text: ~#+BEGIN_EXPORT latex~ blocks
+- Check encoding: save files as UTF-8
+
+** Problem: Scene Breaks Don't Appear
+
+*Symptom*: Scene breaks show as "SCENE-BREAK" literally
+
+*Cause*: Macro not defined or not working
+
+*Solution*:
+1. Check top of file has: ~#+MACRO: scene-break SCENE-BREAK~
+2. Verify using ~{{{scene-break}}}~ not ~{{{scene break}}}~ (no space!)
+3. Check ~writing-export.el~ is loaded: ~M-x writing-version~
+
+** Problem: Export Shows TODO Keywords
+
+*Symptom*: PDF/ODT shows "TODO Scene 3" instead of "Scene 3"
+
+*Cause*: TODO export enabled
+
+*Solution*: Add ~#+OPTIONS: todo:nil~
+
+** Problem: Chapters Not Numbered Correctly
+
+*Symptom*: Chapters show as "1.1" instead of "Chapter 1"
+
+*Cause*: Heading numbering style
+
+*Solution*:
+- For LaTeX: Use ~\chapter~ instead of ~\section~
+- Change heading levels: * = chapter, ** = scene
+- Or disable numbering: ~#+OPTIONS: num:nil~
+
+** Problem: Images Don't Appear in Export
+
+*Symptom*: Images show as broken links
+
+*Cause*: Image paths incorrect
+
+*Solution*:
+- Use relative paths: ~[[./images/map.png]]~
+- Or absolute paths: ~[[file:/full/path/to/image.png]]~
+- Verify images exist before exporting
+
+** Problem: EPUB Doesn't Validate
+
+*Symptom*: EPUBCheck reports errors
+
+*Cause*: Invalid XHTML or missing metadata
+
+*Solution*:
+1. Set ~#+HTML_DOCTYPE: xhtml~
+2. Add all required metadata (UID, Title, Author)
+3. Fix reported HTML errors
+4. Revalidate until clean
+
+* What You've Learned
+
+Fantastic work! You've completed Lesson 11. You now know:
+
+✓ How org-mode's export system works
+✓ The export dispatcher (~C-c C-e~) and format options
+✓ Using the scene break macro (~{{{scene-break}}}~)
+✓ Exporting to PDF via LaTeX (~C-c C-e l p~)
+✓ Exporting to ODT for Word (~C-c C-e o o~)
+✓ Exporting to HTML for web (~C-c C-e h h~)
+✓ Exporting to EPUB for e-readers (~C-c C-e e e~)
+✓ Customizing export settings for different needs
+✓ Preparing manuscripts for publisher/agent submission
+✓ Standard manuscript format (Shunn format)
+✓ Complete workflows for various export scenarios
+✓ Troubleshooting common export issues
+
+* Next Steps
+
+Ready to enhance your writing with language tools? Head to [[file:getting-started-12-dictionary.org][Lesson 12: Dictionary and Language Tools]]!
+
+In the next lesson, you'll learn:
+- RAE dictionary lookup for Spanish
+- Finding synonyms (Spanish and English)
+- Translation integration
+- Quick lookups without breaking flow
+- Thesaurus tools (PowerThesaurus)
+- Language detection and spell checking
+
+** Practice Before Moving On
+
+Reinforce your export skills:
+
+1. **Export to all formats**
+   - PDF: ~C-c C-e l p~
+   - ODT: ~C-c C-e o o~
+   - HTML: ~C-c C-e h o~
+   - EPUB: ~C-c C-e e e~ (if installed)
+   - Compare results
+
+2. **Add scene breaks**
+   - Find 3 places in manuscript
+   - Add ~{{{scene-break}}}~
+   - Export to PDF
+   - Verify breaks appear correctly
+
+3. **Create submission package**
+   - First 3 chapters to PDF
+   - Standard manuscript format
+   - Save as: ~YourName-Title-Sample.pdf~
+
+4. **Customize one format**
+   - Choose PDF or ODT
+   - Add custom formatting
+   - Create template for reuse
+   - Document settings
+
+5. **Beta reader workflow**
+   - Export manuscript to ODT
+   - Open in Word/LibreOffice
+   - Add sample comments
+   - Practice workflow
+
+6. **EPUB with cover**
+   - Create or find cover image
+   - Add to manuscript
+   - Export to EPUB
+   - Check in e-reader app
+
+Exporting is how you share your work - master these skills to present your writing professionally!
+
+* Quick Reference
+
+** Essential Export Commands
+
+| Key Sequence | Format | Action                     |
+|--------------+--------+----------------------------|
+| ~C-c C-e l p~  | PDF    | Export via LaTeX           |
+| ~C-c C-e o o~  | ODT    | Export and open in Word    |
+| ~C-c C-e h h~  | HTML   | Export to HTML file        |
+| ~C-c C-e h o~  | HTML   | Export and open in browser |
+| ~C-c C-e e e~  | EPUB   | Export to e-book format    |
+
+** Scene Break Usage
+
+#+BEGIN_EXAMPLE
+In manuscript:
+  {{{scene-break}}}
+
+In template (top of file):
+  #+MACRO: scene-break SCENE-BREAK
+
+Exports as:
+  LaTeX: \vspace{...}
+  HTML: <br><br><br>
+  ODT: Line breaks
+  ASCII: ***
+#+END_EXAMPLE
+
+** Common Export Options
+
+#+BEGIN_EXAMPLE
+#+OPTIONS: toc:nil          (no table of contents)
+#+OPTIONS: num:nil          (no section numbers)
+#+OPTIONS: todo:nil         (hide TODO keywords)
+#+OPTIONS: author:t         (include author)
+#+OPTIONS: date:t           (include date)
+#+OPTIONS: email:nil        (hide email)
+#+OPTIONS: H:3              (heading depth 3)
+#+END_EXAMPLE
+
+** Shunn Format Quick Setup
+
+#+BEGIN_EXAMPLE
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{margin=1in}
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \doublespacing
+#+LATEX_HEADER: \usepackage{courier}
+#+LATEX_HEADER: \renewcommand{\familydefault}{\ttdefault}
+#+END_EXAMPLE
+
+** Subtree Export
+
+#+BEGIN_EXAMPLE
+1. Position cursor on heading
+2. C-c C-e C-s (enable subtree scope)
+3. Choose format (l p, o o, h h, etc.)
+4. Only that section exports
+#+END_EXAMPLE
+
+** Export Scope Prefixes
+
+| Prefix       | Scope          | Example        |
+|--------------+----------------+----------------|
+| (none)       | Whole buffer   | ~C-c C-e l p~    |
+| ~C-s~          | Current subtree| ~C-c C-e C-s l p~|
+| ~C-v~          | Visible only   | ~C-c C-e C-v l p~|
+| ~C-b~          | Body only      | ~C-c C-e C-b l p~|
+
+** Format Decision Guide
+
+#+BEGIN_EXAMPLE
+Need to:                     → Use format:
+─────────────────────────────────────────────────
+Submit to publisher/agent    → PDF (LaTeX)
+Share with beta readers       → ODT
+Publish online/blog           → HTML
+Self-publish e-book           → EPUB
+Print book (CreateSpace/KDP)  → PDF (LaTeX)
+Share with writing group      → ODT or PDF
+Archive readable version      → HTML
+Submit to contest             → PDF (usually)
+Send to editor                → ODT (editable)
+#+END_EXAMPLE
+
+* Summary
+
+Exporting transforms your org-mode manuscript into professional documents in multiple formats. Each format serves different needs: PDF for print and submission, ODT for editing and beta readers, HTML for web, and EPUB for e-books.
+
+The key to successful exporting:
+1. Use the scene break macro for format-independent breaks
+2. Understand your target format's requirements
+3. Customize export settings in your manuscript
+4. Test exports early and often
+5. Create templates for repeated uses (Shunn format, etc.)
+6. Validate output before sharing
+
+Your manuscript is ready for the world - export with confidence!
+
+---
+
+*Previous*: [[file:getting-started-10-timelines.org][Lesson 10: Character and Plot Timelines]]
+*Next*: [[file:getting-started-12-dictionary-tools.org][Lesson 12: Dictionary and Language Tools]]
+
+*Lesson 11 Complete!*

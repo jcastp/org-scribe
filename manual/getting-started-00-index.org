@@ -137,7 +137,7 @@ Master the search functions to quickly locate scenes by character, plot, locatio
 - Searching by PoV (all scenes from Alex's perspective)
 - Finding TODOs across your entire project
 
-*** Lesson 8: The Hydra Menu
+*** [[file:getting-started-08-hydra-menu.org][Lesson 8: The Hydra Menu]]
 *Time: 10 minutes*
 
 Learn to access all features quickly using the unified keyboard menu.
@@ -150,7 +150,7 @@ Learn to access all features quickly using the unified keyboard menu.
 
 ** Part 4: Advanced Features
 
-*** Lesson 9: Writing Modes Deep Dive
+*** [[file:getting-started-09-writing-modes.org][Lesson 9: Writing Modes Deep Dive]]
 *Time: 15 minutes*
 
 Explore all four writing modes and when to use each one.
@@ -162,7 +162,7 @@ Explore all four writing modes and when to use each one.
 - Editing mode (three-panel layout)
 - Customizing modes for your preferences
 
-*** Lesson 10: Character and Plot Timelines
+*** [[file:getting-started-10-timelines.org][Lesson 10: Character and Plot Timelines]]
 *Time: 20 minutes*
 
 Generate visual timelines showing character appearances and plot development.
@@ -173,7 +173,7 @@ Generate visual timelines showing character appearances and plot development.
 - Interpreting timeline symbols (◆ for PoV, ● for presence)
 - Using timelines to check story balance
 
-*** Lesson 11: Export Your Manuscript
+*** [[file:getting-started-11-exporting.org][Lesson 11: Export Your Manuscript]]
 *Time: 15 minutes*
 
 Learn how to export your finished work to various formats with proper scene break formatting.
@@ -185,7 +185,7 @@ Learn how to export your finished work to various formats with proper scene brea
 - Exporting to HTML/EPUB
 - Customizing export settings
 
-*** Lesson 12: Dictionary and Language Tools
+*** [[file:getting-started-12-dictionary-tools.org][Lesson 12: Dictionary and Language Tools]]
 *Time: 10 minutes*
 
 Use integrated Spanish dictionary, synonyms, and translation tools while writing.
@@ -198,7 +198,7 @@ Use integrated Spanish dictionary, synonyms, and translation tools while writing
 
 ** Part 5: Workflows and Best Practices
 
-*** Lesson 13: Daily Writing Workflow
+*** [[file:getting-started-13-daily-workflow.org][Lesson 13: Daily Writing Workflow]]
 *Time: 15 minutes*
 
 Establish an efficient daily routine using the package's features.
@@ -210,7 +210,7 @@ Establish an efficient daily routine using the package's features.
 - Evening: Tracking progress and planning
 - Weekly: Review and maintenance
 
-*** Lesson 14: Revision and Editing Workflow
+*** [[file:getting-started-14-revision-workflow.org][Lesson 14: Revision and Editing Workflow]]
 *Time: 20 minutes*
 
 Use the package's features to support revision and editing work.
@@ -219,10 +219,10 @@ Use the package's features to support revision and editing work.
 - Using editing mode for revision
 - Finding inconsistencies with search functions
 - Checking character development with timelines
-- Using plot health reports for structural issues
+- Analyzing plot and character balance with timelines
 - Managing revision TODOs
 
-*** Lesson 15: Customization and Configuration
+*** [[file:getting-started-15-customization.org][Lesson 15: Customization and Configuration]]
 *Time: 20 minutes*
 
 Tailor the package to your personal preferences and workflow.
