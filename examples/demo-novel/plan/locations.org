@@ -2,19 +2,19 @@
 #+AUTHOR: Demo Author
 #+STARTUP: overview
 
-* The City
+* Mid-sized City (Unnamed)
 :PROPERTIES:
-:TYPE: City
-:NAME: Unnamed mid-sized city
-:CLIMATE: Temperate, four seasons
-:POPULATION: ~500,000
+:ID: loc-city-001
+:Type: City
+:Importance: Supporting
+:First-appearance: Chapter 1
+:Climate: Temperate, four seasons
+:Population: ~500,000
 :END:
 
 ** General Description
-A modern mid-sized city with a mix of old and new architecture. Urban but not
-overwhelming. Has distinct neighborhoods with their own character. Public
-transportation exists but most people drive. The kind of place where you can
-find both chain coffee shops and local favorites.
+
+A modern mid-sized city with a mix of old and new architecture. Urban but not overwhelming. Has distinct neighborhoods with their own character. Public transportation exists but most people drive. The kind of place where you can find both chain coffee shops and local favorites.
 
 ** Geography
 
@@ -23,171 +23,420 @@ find both chain coffee shops and local favorites.
 - Climate :: Four seasons, emphasis on crisp autumn mornings and harsh winter alarms
 - Natural resources :: Parks, waterfront area
 
-** Cultural Aspects
+** Cultural Aspects & Society
 
 - Language :: English (American)
 - Customs :: Contemporary American urban culture
+- Religion :: Not relevant to story
 - Government :: City council (not relevant to story)
 
 ** History
+
 Not relevant to this story - contemporary setting.
 
+** Notable Features
+
+Generic mid-sized city features: mix of old and new buildings, public transit, distinct neighborhoods.
+
 ** Importance in the Plot
-The city itself is more of a backdrop. It's deliberately generic so readers can
-project their own city onto it. The specific locations within the city (apartment,
-coffee shop) are more important than the city as a whole.
 
-* Alex's Apartment Building
-:PROPERTIES:
-:TYPE: Apartment Building
-:NAME: The building at corner of [Street Names TBD]
-:FLOORS: 5
-:BUILT: 1970s
-:END:
-
-** General Description
-Older apartment building, well-maintained but not luxury. Mix of young
-professionals and long-term residents. Sam lives in 4B, Alex in [TBD - 2A?].
-Has a small lobby, elevator that's often slow, mailboxes in the entrance hall.
+The city itself is more of a backdrop. It's deliberately generic so readers can project their own city onto it. The specific locations within the city (apartment, coffee shop) are more important than the city as a whole.
 
 ** Specific Places
 
-*** Alex's Apartment (2A)
+Listed as separate location entries below: Alex's Apartment Building, Corner Coffee Shop, The Park, The Waterfront.
+
+** Atmosphere & Mood
+
+Contemporary urban life. Busy but not overwhelming. The kind of place where neighbors can become friends, where local coffee shops coexist with chains.
+
+** Map/Reference Image
+
+Not specified - intentionally left vague for reader interpretation.
+
+** Notes
+
+Setting is deliberately generic to allow readers to project their own city experiences onto the story.
+
+* Alex's Apartment Building
 :PROPERTIES:
-:TYPE: Studio apartment
+:ID: loc-apartment-building-001
+:Type: Building
+:Importance: Major
+:First-appearance: Chapter 1, Scene 1
+:Climate: Indoor
+:Population: ~50 units
 :END:
 
-A small studio that's seen better organization. Creative chaos - art supplies,
-design books, multiple coffee mugs in various states of use. Big window with
-decent light (when Alex opens the curtains). Furniture is mismatched but
-comfortable.
+** General Description
 
-**** Layout
-- Main room :: Combined living/sleeping/working area
-- Kitchenette :: Along one wall, barely used beyond coffee maker
-- Bathroom :: Small but functional
-- Closet :: Overstuffed, source of the daily "what to wear" crisis
+Older apartment building at corner of [Street Names TBD], well-maintained but not luxury. Built in the 1970s. Five floors. Mix of young professionals and long-term residents. Has a small lobby, elevator that's often slow, mailboxes in the entrance hall. Sam lives in 4B, Alex in 2A.
 
-**** Key Features
-- The Bed :: Scene of the snooze button battles
-- The Desk :: Where Alex works, usually cluttered
-- The Window :: Curtains usually closed, light barely gets in
-- Coffee Table :: Where the watch is discovered under mail pile
-- The Junk Drawer :: Source of the spare notebook
+** Geography
 
-**** Atmosphere
-Morning chaos. Afternoon creative energy. Evening exhaustion. By the end of the
-story, it becomes more organized but retains personality.
+- Location :: Corner location in the city
+- Terrain :: Urban building
+- Climate :: Indoor, climate controlled
+- Natural resources :: N/A
 
-**** Sensory Details
+** Cultural Aspects & Society
+
+- Language :: English
+- Customs :: Typical urban apartment living
+- Religion :: N/A
+- Government :: Building management
+
+** History
+
+Built in 1970s. Has seen many residents come and go. Well-maintained over the years.
+
+** Notable Features
+
+- Small lobby with mailboxes
+- Slow but functional elevator
+- Mix of residents (young professionals and long-term tenants)
+- Alex's unit: 2A (studio)
+- Sam's unit: 4B (one-bedroom)
+
+** Importance in the Plot
+
+Primary setting for much of the story. Where Alex experiences their morning chaos. Where Sam lives, facilitating their neighborly relationship. The building's shared spaces (lobby, elevator) enable casual encounters between Alex and Sam.
+
+** Specific Places
+
+*** Alex's Apartment (2A) - See detailed entry below
+*** Sam's Apartment (4B) - See brief notes below
+*** Building Lobby - Common area with mailboxes, elevator, bulletin board
+
+** Atmosphere & Mood
+
+Lived-in, comfortable, not fancy. Morning sounds: elevator creaking, neighbors' TVs, traffic from street below. Community feeling but not intrusive.
+
+** Map/Reference Image
+
+-
+
+** Notes
+
+The building facilitates the Alex/Sam relationship through proximity. Not a luxury building - represents realistic young professional living.
+
+* Alex's Apartment (2A)
+:PROPERTIES:
+:ID: loc-alex-apartment-001
+:Type: Room
+:Importance: Major
+:First-appearance: Chapter 1, Scene 1
+:Climate: Indoor
+:Population: 1 resident
+:END:
+
+** General Description
+
+A small studio apartment that's seen better organization. Creative chaos - art supplies, design books, multiple coffee mugs in various states of use. Big window with decent light (when Alex opens the curtains). Furniture is mismatched but comfortable.
+
+** Geography
+
+- Location :: 2A in the apartment building
+- Terrain :: Studio apartment, single main room
+- Climate :: Indoor, occasionally stuffy from closed curtains
+- Natural resources :: Natural light from big window (when curtains open)
+
+** Cultural Aspects & Society
+
+- Language :: N/A
+- Customs :: Freelancer work-from-home lifestyle
+- Religion :: N/A
+- Government :: N/A
+
+** History
+
+Alex's home for several years. Has gradually become more chaotic, especially after grandmother's death 2 years ago.
+
+** Notable Features
+
+- **The Bed** :: Scene of the snooze button battles
+- **The Desk** :: Where Alex works, usually cluttered
+- **The Window** :: Curtains usually closed, light barely gets in
+- **Coffee Table** :: Where the watch is discovered under mail pile
+- **The Junk Drawer** :: Source of the spare notebook
+- **Kitchenette** :: Along one wall, barely used beyond coffee maker
+- **Closet** :: Overstuffed, source of the daily "what to wear" crisis
+
+** Importance in the Plot
+
+Primary setting. Where Alex's chaos is most visible. Where the transformation begins (finding the watch). By story's end, becomes more organized but retains personality. Represents Alex's internal state - chaotic at first, gradually finding balance.
+
+** Specific Places
+
+Main room (combined living/sleeping/working area), kitchenette, bathroom, closet.
+
+** Atmosphere & Mood
+
+**Morning**: Chaotic, dim (curtains closed), cluttered but colorful (art/design materials)
+**Afternoon**: Creative energy
+**Evening**: Exhaustion
+
+**By story end**: More organized but retains personality - organized chaos rather than sterile minimalism.
+
+**Sensory Details**:
 - Sight :: Dim (curtains closed), cluttered but colorful (art/design materials)
 - Sound :: Traffic from street below, neighbor's TV through walls, alarm buzzing
 - Smell :: Stale coffee, sometimes takeout
 - Touch :: Rumpled sheets, smooth phone screen, worn carpet
 - Emotional feel :: Initially claustrophobic, gradually becomes cozy
 
-*** Sam's Apartment (4B)
-:PROPERTIES:
-:TYPE: One-bedroom apartment
-:END:
+** Map/Reference Image
 
-Only seen briefly if at all in the story, but imagine it as organized, minimalist,
-lots of light. Plants on the windowsill. Morning sun streams in.
+-
 
-Represents what Alex might aspire to, but ultimately Alex's place keeps its own
-character - organized chaos rather than minimalism.
+** Notes
 
-*** Building Lobby
-:PROPERTIES:
-:TYPE: Common area
-:END:
-
-Where Alex and Sam might occasionally pass each other. Mailboxes, elevator,
-bulletin board with community notices. Neutral space that facilitates their
-neighborly relationship.
+The apartment should evolve with Alex. Start messy, gradually become organized, but never lose its creative personality. This isn't about becoming minimalist - it's about functional organization that works for Alex.
 
 * Corner Coffee Shop
 :PROPERTIES:
-:TYPE: Local coffee shop
-:NAME: "Corner Coffee Shop" (generic, could have a name)
-:ESTABLISHED: ~10 years ago
+:ID: loc-coffee-shop-001
+:Type: Building
+:Importance: Major
+:First-appearance: Chapter 1, Scene 2
+:Climate: Indoor, warm
+:Population: Varies, 10-30 customers during morning rush
 :END:
 
 ** General Description
-Local independent coffee shop, not a chain. Cozy but busy in the mornings.
-Counter up front, seating in back. Mix of regulars and commuters grabbing
-coffee to go. The kind of place where baristas recognize regulars but there's
-also always someone new.
 
-** Layout
+Local independent coffee shop (name TBD or keep generic "Corner Coffee Shop"). Not a chain. Cozy but busy in the mornings. Established about 10 years ago. Counter up front, seating in back. Mix of regulars and commuters grabbing coffee to go. The kind of place where baristas recognize regulars but there's also always someone new.
+
+** Geography
+
+- Location :: Near Alex's apartment building
+- Terrain :: Single-story building, corner location
+- Climate :: Warm, inviting interior
+- Natural resources :: Coffee, pastries
+
+** Cultural Aspects & Society
+
+- Language :: English
+- Customs :: Coffee shop culture, regulars have "their" orders
+- Religion :: N/A
+- Government :: Small business
+
+** History
+
+Established ~10 years ago. Has become a neighborhood fixture. Outlasted several nearby chain coffee shops.
+
+** Notable Features
+
+**Layout**:
 - Front :: Counter, register, pastry case, coffee equipment
 - Back :: Small tables, a few comfortable chairs, corner booth
 - Side wall :: Community board, outlet bar for laptops
 - Window :: Front window with the shop name, looks out on street
 
-** Atmosphere & Role in Story
-This is where Alex and Sam's first real conversation happens. It's a transitional
-space - between home and work, between night and day, between chaos and order.
-
-The coffee shop represents routine for Sam (same time, same order every day) and
-chaos for Alex (rushed, line too long, never the same time).
-
-Later it becomes a neutral meeting ground where they talk. By the end, Alex
-experiences it the way Sam does - as a peaceful morning ritual, not a stressful
-rush.
-
-** Sensory Details
+**Sensory Details**:
 - Sight :: Warm lighting, espresso machine gleaming, people in various states of awakeness
 - Sound :: Espresso machine hissing, milk steaming, low conversation, music barely audible
 - Smell :: Coffee beans, baked goods, slight burnt-sugar scent from caramel
 - Touch :: Smooth counter, warm cup in hand, cool door handle
 - Taste :: Quality coffee, better than what Alex makes at home
 
-** Characters Associated
-- Alex :: Initially rushed and stressed here
-- Sam :: Regular, orders same thing, calm and collected
-- Barista :: Minor character, efficient, knows Sam's order
-- New Character :: Appears here in final scene, completing the circle
+** Importance in the Plot
 
-** Symbolic Meaning
-The coffee shop is where change begins (first encounter with Sam) and where it
-comes full circle (helping the new person). It's a threshold space.
+**Threshold Space**: Where Alex and Sam's first real conversation happens. Between home and work, between night and day, between chaos and order.
 
-* Other Locations (Brief/Mentioned)
+**Character Contrast**:
+- For Sam :: Routine (same time, same order every day), peaceful morning ritual
+- For Alex (initially) :: Chaos (rushed, line too long, never the same time), stressful rush
+- For Alex (finally) :: Peaceful morning ritual like Sam, but on their own terms
 
-** Alex's Workplace
+**Story Bookends**: First encounter with Sam happens here (Chapter 1). Final scene happens here (Chapter 5), where Alex helps Casey, completing the circle.
+
+** Specific Places
+
+Counter area, seating area, corner booth (possible location for Alex/Sam conversations).
+
+** Atmosphere & Mood
+
+Morning energy. Mix of people waking up and people already energized. Warm, inviting, smells amazing. Background music, espresso machine sounds, low conversation. Comfortable third place.
+
+** Map/Reference Image
+
+-
+
+** Notes
+
+The coffee shop represents routine for Sam and chaos for Alex, then eventually becomes a peaceful ritual for Alex too. It's where change begins and where it comes full circle. Symbolic threshold space.
+
+* Sam's Apartment (4B)
 :PROPERTIES:
-:TYPE: Home office
+:ID: loc-sam-apartment-001
+:Type: Room
+:Importance: Minor
+:First-appearance: Mentioned Chapter 1
+:Climate: Indoor
+:Population: 1 resident
 :END:
-Alex works from home (freelance designer), so workplace = apartment. But they
-might reference client meetings, which happen via video call or at clients'
-offices.
 
-** Sam's Workplace
+** General Description
+
+One-bedroom apartment in the same building as Alex. Only seen briefly if at all in the story. Organized, minimalist, lots of light. Plants on the windowsill. Morning sun streams in.
+
+** Geography
+
+- Location :: 4B in the apartment building
+- Terrain :: One-bedroom apartment
+- Climate :: Indoor, bright with natural light
+- Natural resources :: Good natural light
+
+** Cultural Aspects & Society
+
+- Language :: N/A
+- Customs :: Organized, intentional living
+- Religion :: N/A
+- Government :: N/A
+
+** History
+
+Sam's home for several years. Reflects his organized approach to life.
+
+** Notable Features
+
+Organized, minimalist aesthetic, plants, good natural light, morning sun.
+
+** Importance in the Plot
+
+Minimal direct importance. Represents what Alex might aspire to, but ultimately Alex's place keeps its own character - organized chaos rather than minimalism.
+
+** Specific Places
+
+-
+
+** Atmosphere & Mood
+
+Calm, organized, bright, peaceful. Morning sun creates welcoming atmosphere.
+
+** Map/Reference Image
+
+-
+
+** Notes
+
+Contrast to Alex's apartment. But Alex doesn't need to become Sam - they find their own version of organization.
+
+* The Park
 :PROPERTIES:
-:TYPE: Office building
+:ID: loc-park-001
+:Type: Natural
+:Importance: Minor
+:First-appearance: Mentioned
+:Climate: Outdoor
+:Population: Varies
 :END:
-Tech company office, not described in detail. Just establishes that Sam has
-a regular commute and office hours, contributing to his routine.
 
-** The Park
-:PROPERTIES:
-:TYPE: Public park
-:END:
-Mentioned as a possible location for expanded scenes. Could be where Sam goes
-for morning walks, or where Alex might eventually try morning walks.
+** General Description
 
-Could be useful for:
+Public park in the city. Could be where Sam goes for morning walks, or where Alex might eventually try morning walks. Potential location for expanded scenes.
+
+** Geography
+
+- Location :: In the city
+- Terrain :: Park with paths, green spaces
+- Climate :: Outdoor, seasonal variations
+- Natural resources :: Trees, grass, paths
+
+** Cultural Aspects & Society
+
+- Language :: N/A
+- Customs :: Public park use
+- Religion :: N/A
+- Government :: City parks department
+
+** History
+
+City park, well-maintained.
+
+** Notable Features
+
+Paths for walking, green spaces, possible morning activity location.
+
+** Importance in the Plot
+
+Mentioned as possible location. Could be useful for:
 - Act II scene showing Alex trying Sam's routine
 - Quiet reflection scene
 - Different setting to break up apartment/coffee shop rotation
 
-** The Waterfront
+** Specific Places
+
+-
+
+** Atmosphere & Mood
+
+Peaceful, natural, morning fresh air, bird sounds.
+
+** Map/Reference Image
+
+-
+
+** Notes
+
+Optional location for future scenes or expansion.
+
+* The Waterfront
 :PROPERTIES:
-:TYPE: Natural setting
+:ID: loc-waterfront-001
+:Type: Natural
+:Importance: Minor
+:First-appearance: Mentioned
+:Climate: Outdoor
+:Population: Varies
 :END:
-Could be visible from certain parts of the city. Potential location for future
-scenes. Represents openness, possibility.
+
+** General Description
+
+Waterfront area visible from certain parts of the city. Potential location for future scenes.
+
+** Geography
+
+- Location :: Part of the city
+- Terrain :: Waterfront
+- Climate :: Outdoor
+- Natural resources :: Water, views
+
+** Cultural Aspects & Society
+
+- Language :: N/A
+- Customs :: Public waterfront access
+- Religion :: N/A
+- Government :: City property
+
+** History
+
+Natural feature of the city.
+
+** Notable Features
+
+Water, openness, views.
+
+** Importance in the Plot
+
+Represents openness, possibility. Potential for future scenes.
+
+** Specific Places
+
+-
+
+** Atmosphere & Mood
+
+Open, expansive, possibility.
+
+** Map/Reference Image
+
+-
+
+** Notes
+
+Symbolic potential - openness and possibility versus the enclosed apartment.
 
 * Location Usage by Chapter
 
@@ -196,14 +445,13 @@ scenes. Represents openness, possibility.
 | Chapter 1 | Alex's Apartment        | Coffee Shop        | Establishes chaos              |
 | Chapter 2 | Alex's Apartment        | -                  | The watch, decision to change  |
 | Chapter 3 | Alex's Apartment        | -                  | First attempt at routine       |
-| Chapter 4 | Coffee Shop             | -                  | Conversations with Sam         |
+| Chapter 4 | Coffee Shop             | Alex's Apartment   | Conversations with Sam         |
 | Chapter 5 | Coffee Shop             | -                  | Final scene, full circle       |
 
 * Setting Notes
 
 ** Time Period
-Contemporary (2025). Technology exists (phones, apps) but isn't the focus.
-Could be set any time in the last 5 years.
+Contemporary (2025). Technology exists (phones, apps) but isn't the focus. Could be set any time in the last 5 years.
 
 ** Season
 Story seems to take place over about 30 days. Could be:

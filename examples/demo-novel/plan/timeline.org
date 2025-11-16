@@ -3,222 +3,8 @@
 #+STARTUP: overview
 
 * Timeline Overview
-:PROPERTIES:
-:CUSTOM_ID: timeline-overview
-:END:
 
 The story takes place over approximately 30 days in late winter/early spring (February-March 2025). The narrative doesn't show every day - it focuses on key moments in Alex's transformation.
-
-** Story Timeline
-| Event                        | Story Day |       Date |      Time | Characters       | Location    | Chapter   |
-|------------------------------+-----------+------------+-----------+------------------+-------------+-----------|
-| The chaotic alarm morning    | Day 1     | 2025-02-15 | 6:30-7:00 | Alex             | Apartment   | Ch 1, Sc1 |
-| Coffee shop encounter        | Day 1     | 2025-02-15 |      7:45 | Alex, Sam        | Coffee Shop | Ch 1, Sc2 |
-| Important meeting (disaster) | Day 1     | 2025-02-15 |      9:00 | Alex             | [off-page]  | [implied] |
-| Finding the watch            | Day 1     | 2025-02-15 |   8:30 PM | Alex             | Apartment   | Ch 2, Sc1 |
-| Making the decision          | Day 1     | 2025-02-15 |   8:45 PM | Alex             | Apartment   | Ch 2, Sc1 |
-| First routine attempt        | Day 2     | 2025-02-16 | 6:00-7:30 | Alex             | Apartment   | Ch 3, Sc1 |
-| Coffee talk with Sam         | Day 5     | 2025-02-19 |      7:30 | Alex, Sam        | Coffee Shop | Ch 4, Sc1 |
-| Finding balance              | Day 8     | 2025-02-22 | 6:15-7:00 | Alex             | Apartment   | Ch 4, Sc2 |
-| Routine disruption [TBD]     | Day 15    | 2025-03-01 |   Morning | Alex             | Apartment   | [TBD]     |
-| Full circle - helping other  | Day 30    | 2025-03-16 |      7:00 | Alex, Sam, Casey | Coffee Shop | Ch 5, Sc1 |
-
-* Detailed Events
-
-** Event 01: The Alarm Goes Off
-:PROPERTIES:
-:DATE: 2025-02-15
-:TIME: 6:30 AM (first alarm)
-:DURATION: 30 minutes of snoozing
-:CHARACTERS: Alex
-:LOCATION: Alex's Apartment - Bedroom
-:CHAPTER: Chapter 1, Scene 1
-:END:
-
-*** Description
-Alex's alarm goes off at 6:30 but they hit snooze repeatedly (6:30, 6:45, 7:00). By the third alarm, panic sets in because they have an important meeting at 9:00 and are drastically behind schedule.
-
-*** Consequences
-- Establishes Alex's problematic relationship with mornings
-- Sets up the day's chaos
-- Creates sympathy for the character
-- Demonstrates the ordinary world before change
-
-** Event 02: Coffee Shop Encounter
-:PROPERTIES:
-:DATE: 2025-02-15
-:TIME: 7:45 AM
-:DURATION: ~5 minutes
-:CHARACTERS: Alex, Sam
-:LOCATION: Corner Coffee Shop
-:CHAPTER: Chapter 1, Scene 2
-:END:
-
-*** Description
-Alex rushes into the coffee shop, stressed and calculating minutes. Sam, standing in line behind them, gently comments on their rough morning and reveals they used to be the same way until they started a morning routine.
-
-*** Consequences
-- Inciting incident - plants seed of change
-- Introduces Sam as mentor figure
-- Establishes contrast between Alex's chaos and Sam's calm
-- Sam mentions tracking routine in a notebook (foreshadowing)
-
-** Event 03: The Important Meeting
-:PROPERTIES:
-:DATE: 2025-02-15
-:TIME: 9:00 AM
-:DURATION: ~1 hour
-:CHARACTERS: Alex, [clients/coworkers]
-:LOCATION: [Video call or client office]
-:CHAPTER: Mentioned in Chapter 2
-:END:
-
-*** Description
-Alex makes it to the meeting on time but forgot their presentation notes. This is the culmination of the chaotic morning - barely avoiding total disaster but still suffering consequences of poor preparation.
-
-*** Consequences
-- Demonstrates real-world cost of morning chaos
-- Motivates change (it's not just about being stressed, it affects work)
-- Adds to the day's accumulated frustration
-- Sets up evening decision
-
-** Event 04: Finding the Watch
-:PROPERTIES:
-:DATE: 2025-02-15
-:TIME: 8:30 PM
-:DURATION: 15 minutes
-:CHARACTERS: Alex
-:LOCATION: Alex's Apartment - Living Room
-:CHAPTER: Chapter 2, Scene 1
-:END:
-
-*** Description
-While sitting on the couch with takeout, reflecting on the terrible day, Alex notices something glinting under the mail pile - their grandmother's watch. It's still ticking. This becomes the symbolic catalyst for change.
-
-*** Consequences
-- First plot point - decision to change
-- Introduction of key symbolic object
-- Emotional connection to grandmother's memory
-- Tangible reminder of time's value
-- Alex writes "Day 1" in notebook
-
-** Event 05: First Routine Attempt
-:PROPERTIES:
-:DATE: 2025-02-16
-:TIME: 6:00 AM - 7:30 AM
-:DURATION: 1.5 hours
-:CHARACTERS: Alex
-:LOCATION: Alex's Apartment
-:CHAPTER: Chapter 3, Scene 1
-:END:
-
-*** Description
-Alex wakes at 6:00 without snoozing and attempts to follow a rigid routine: make bed, meditate 15 min, yoga, healthy breakfast, mindful shower. Everything takes longer than planned, meditation feels forced, and they end up exhausted and running late despite waking early.
-
-*** Consequences
-- Shows that change is difficult
-- Demonstrates wrong approach (too rigid, not personalized)
-- Alex feels discouraged but not defeated
-- Sets up need for Sam's guidance
-
-** Event 06: Coffee Talk with Sam
-:PROPERTIES:
-:DATE: 2025-02-19 (Day 5)
-:TIME: 7:30 AM
-:DURATION: 10 minutes
-:CHARACTERS: Alex, Sam
-:LOCATION: Corner Coffee Shop
-:CHAPTER: Chapter 4, Scene 1
-:END:
-
-*** Description
-Alex admits to Sam that they've been struggling with the routine. Sam shares the key wisdom: routines must be personalized, not perfect. They suggest Alex experiment to find what actually works for them, not what works for internet gurus.
-
-*** Consequences
-- Midpoint revelation
-- Course correction in Alex's approach
-- Deepens Alex-Sam relationship
-- Provides hope and new direction
-- Sam reveals they weren't always perfect either
-
-** Event 07: Finding Balance
-:PROPERTIES:
-:DATE: 2025-02-22 (Day 8)
-:TIME: 6:15 AM - 7:00 AM
-:DURATION: 45 minutes
-:CHARACTERS: Alex
-:LOCATION: Alex's Apartment
-:CHAPTER: Chapter 4, Scene 2
-:END:
-
-*** Description
-Alex's personalized routine in action. They wake at 6:15 (not 6:00), skip meditation for music instead, do simple stretches, have coffee while journaling, and actually feel peaceful. The routine works because it's theirs.
-
-*** Consequences
-- Demonstrates successful change
-- Shows flexibility over rigidity
-- Character growth milestone
-- Hope that sustainable change is possible
-
-** Event 08: Full Circle
-:PROPERTIES:
-:DATE: 2025-03-16 (Day 30)
-:TIME: 7:00 AM
-:DURATION: 15 minutes
-:CHARACTERS: Alex, Sam, Casey (new person)
-:LOCATION: Corner Coffee Shop
-:CHAPTER: Chapter 5, Scene 1
-:END:
-
-*** Description
-Alex arrives at coffee shop calm and on time. A flustered person rushes in, clearly having a rough morning. Alex recognizes themselves in this stranger and offers the same kindness Sam showed them. Sam witnesses this moment. The cycle continues.
-
-*** Consequences
-- Climax and resolution
-- Demonstrates complete character arc
-- Alex has become someone who helps, not just someone who struggles
-- Thematic payoff: kindness creates ripples
-- Full circle structure (starts and ends in coffee shop)
-
-* Backstory Timeline
-
-** Grandmother's Death
-:PROPERTIES:
-:DATE: ~2023-02 (2 years before story)
-:RELEVANCE: Major
-:END:
-
-Alex's grandmother Maria Rivera passed away two years before the story begins. She was a major influence in Alex's life, especially after their parents divorced. Her death left Alex feeling unmoored and contributed to the current state of disorganization.
-
-The watch was her daily wear item. Finding it reconnects Alex to her memory and her wisdom about time, presence, and what matters.
-
-** Parents' Divorce
-:PROPERTIES:
-:DATE: Alex's childhood (15-20 years ago)
-:RELEVANCE: Minor
-:END:
-
-Mentioned briefly as contributing to Alex's difficulty with routine and stability. Moving between parents' houses created instability in childhood. Grandmother provided the one constant.
-
-** Sam's Transformation
-:PROPERTIES:
-:DATE: ~2021 (4 years before story)
-:RELEVANCE: Moderate
-:END:
-
-Sam went through their own quarter-life crisis and chaotic period. They discovered morning routines and initially went too rigid, then learned balance. This makes them an effective mentor - they've been there.
-
-Not fully detailed in story but informs Sam's empathy and advice.
-
-** Lost Client
-:PROPERTIES:
-:DATE: ~2024-08 (6 months before story)
-:RELEVANCE: Minor
-:END:
-
-Alex lost a major client due to a missed deadline caused by morning chaos (overslept, forgot meeting). This was a wake-up call but not enough to create change on its own. Adds to accumulated frustration that makes Day 1 the tipping point.
-
-* Timeline Notes
 
 ** Story Pacing
 The 30-day span is condensed in the narrative:
@@ -241,3 +27,403 @@ Most scenes occur in the morning (6:00-8:00 AM) or early evening (8:00-9:00 PM).
 
 ** Real-Time vs Story-Time
 The story covers 30 days but the narrative probably only represents about 3-4 hours of actual scene time. Much is summarized or implied. This is appropriate for the scope.
+
+** Event Summary Table
+
+| Event                        | Story Day |       Date |      Time | Characters       | Location    | Chapter   |
+|------------------------------+-----------+------------+-----------+------------------+-------------+-----------|
+| The chaotic alarm morning    | Day 1     | 2025-02-15 | 6:30-7:00 | Alex             | Apartment   | Ch 1, Sc1 |
+| Coffee shop encounter        | Day 1     | 2025-02-15 |      7:45 | Alex, Sam        | Coffee Shop | Ch 1, Sc2 |
+| Important meeting (disaster) | Day 1     | 2025-02-15 |      9:00 | Alex             | [off-page]  | [implied] |
+| Finding the watch            | Day 1     | 2025-02-15 |   8:30 PM | Alex             | Apartment   | Ch 2, Sc1 |
+| Making the decision          | Day 1     | 2025-02-15 |   8:45 PM | Alex             | Apartment   | Ch 2, Sc1 |
+| First routine attempt        | Day 2     | 2025-02-16 | 6:00-7:30 | Alex             | Apartment   | Ch 3, Sc1 |
+| Coffee talk with Sam         | Day 5     | 2025-02-19 |      7:30 | Alex, Sam        | Coffee Shop | Ch 4, Sc1 |
+| Finding balance              | Day 8     | 2025-02-22 | 6:15-7:00 | Alex             | Apartment   | Ch 4, Sc2 |
+| Routine disruption [TBD]     | Day 15    | 2025-03-01 |   Morning | Alex             | Apartment   | [TBD]     |
+| Full circle - helping other  | Day 30    | 2025-03-16 |      7:00 | Alex, Sam, Casey | Coffee Shop | Ch 5, Sc1 |
+
+* The Alarm Goes Off
+:PROPERTIES:
+:ID: event-001-alarm
+:Type: Action
+:Relevance: High
+:Date: 2025-02-15
+:Time: 6:30 AM (first alarm)
+:Duration: 30 minutes of snoozing
+:Characters: Alex
+:Location: Alex's Apartment - Bedroom
+:Chapter: Chapter 1, Scene 1
+:END:
+
+** Description
+
+Alex's alarm goes off at 6:30 but they hit snooze repeatedly (6:30, 6:45, 7:00). By the third alarm, panic sets in because they have an important meeting at 9:00 and are drastically behind schedule.
+
+** Consequences
+
+- Establishes Alex's problematic relationship with mornings
+- Sets up the day's chaos
+- Creates sympathy for the character
+- Demonstrates the ordinary world before change
+
+** Connections
+
+- Links to: Coffee Shop Encounter (Day 1), Important Meeting
+
+* Coffee Shop Encounter
+:PROPERTIES:
+:ID: event-002-coffee-shop
+:Type: Character
+:Relevance: Critical
+:Date: 2025-02-15
+:Time: 7:45 AM
+:Duration: ~5 minutes
+:Characters: Alex, Sam
+:Location: Corner Coffee Shop
+:Chapter: Chapter 1, Scene 2
+:END:
+
+** Description
+
+Alex rushes into the coffee shop, stressed and calculating minutes. Sam, standing in line behind them, gently comments on their rough morning and reveals they used to be the same way until they started a morning routine.
+
+** Consequences
+
+- Inciting incident - plants seed of change
+- Introduces Sam as mentor figure
+- Establishes contrast between Alex's chaos and Sam's calm
+- Sam mentions tracking routine in a notebook (foreshadowing)
+
+** Connections
+
+- Links to: Finding the Watch, Coffee Talk with Sam
+
+** Notes
+
+This is the inciting incident - where the story really begins. Sam's kindness and the mention of routine planting the seed in Alex's mind.
+
+* Important Meeting
+:PROPERTIES:
+:ID: event-003-meeting
+:Type: Action
+:Relevance: Moderate
+:Date: 2025-02-15
+:Time: 9:00 AM
+:Duration: ~1 hour
+:Characters: Alex, [clients/coworkers]
+:Location: [Video call or client office]
+:Chapter: Mentioned in Chapter 2
+:END:
+
+** Description
+
+Alex makes it to the meeting on time but forgot their presentation notes. This is the culmination of the chaotic morning - barely avoiding total disaster but still suffering consequences of poor preparation.
+
+** Consequences
+
+- Demonstrates real-world cost of morning chaos
+- Motivates change (it's not just about being stressed, it affects work)
+- Adds to the day's accumulated frustration
+- Sets up evening decision
+
+** Connections
+
+- Links to: The Alarm Goes Off, Finding the Watch
+
+** Notes
+
+Shown off-page but referenced. The consequences of the morning chaos are real and professional.
+
+* Finding the Watch
+:PROPERTIES:
+:ID: event-004-watch
+:Type: Revelation
+:Relevance: Critical
+:Date: 2025-02-15
+:Time: 8:30 PM
+:Duration: 15 minutes
+:Characters: Alex
+:Location: Alex's Apartment - Living Room
+:Chapter: Chapter 2, Scene 1
+:END:
+
+** Description
+
+While sitting on the couch with takeout, reflecting on the terrible day, Alex notices something glinting under the mail pile - their grandmother's watch. It's still ticking. This becomes the symbolic catalyst for change.
+
+** Consequences
+
+- First plot point - decision to change
+- Introduction of key symbolic object
+- Emotional connection to grandmother's memory
+- Tangible reminder of time's value
+- Alex writes "Day 1" in notebook
+
+** Connections
+
+- Links to: Coffee Shop Encounter, First Routine Attempt
+- Connected to: Grandmother's Death (backstory)
+
+** Notes
+
+This is the first plot point - the moment Alex decides to change. The watch is both catalyst and symbol.
+
+* First Routine Attempt
+:PROPERTIES:
+:ID: event-005-first-attempt
+:Type: Action
+:Relevance: High
+:Date: 2025-02-16
+:Time: 6:00 AM - 7:30 AM
+:Duration: 1.5 hours
+:Characters: Alex
+:Location: Alex's Apartment
+:Chapter: Chapter 3, Scene 1
+:END:
+
+** Description
+
+Alex wakes at 6:00 without snoozing and attempts to follow a rigid routine: make bed, meditate 15 min, yoga, healthy breakfast, mindful shower. Everything takes longer than planned, meditation feels forced, and they end up exhausted and running late despite waking early.
+
+** Consequences
+
+- Shows that change is difficult
+- Demonstrates wrong approach (too rigid, not personalized)
+- Alex feels discouraged but not defeated
+- Sets up need for Sam's guidance
+
+** Connections
+
+- Links to: Finding the Watch, Coffee Talk with Sam
+
+** Notes
+
+The "wrong way" to build a routine - too rigid, not personalized. Sets up the need for Sam's wisdom about flexibility.
+
+* Coffee Talk with Sam
+:PROPERTIES:
+:ID: event-006-coffee-talk
+:Type: Character
+:Relevance: High
+:Date: 2025-02-19 (Day 5)
+:Time: 7:30 AM
+:Duration: 10 minutes
+:Characters: Alex, Sam
+:Location: Corner Coffee Shop
+:Chapter: Chapter 4, Scene 1
+:END:
+
+** Description
+
+Alex admits to Sam that they've been struggling with the routine. Sam shares the key wisdom: routines must be personalized, not perfect. They suggest Alex experiment to find what actually works for them, not what works for internet gurus.
+
+** Consequences
+
+- Midpoint revelation
+- Course correction in Alex's approach
+- Deepens Alex-Sam relationship
+- Provides hope and new direction
+- Sam reveals they weren't always perfect either
+
+** Connections
+
+- Links to: First Routine Attempt, Finding Balance
+
+** Notes
+
+Midpoint scene - where Alex gets the insight they need. Sam's vulnerability (admitting he wasn't always perfect) deepens their bond.
+
+* Finding Balance
+:PROPERTIES:
+:ID: event-007-balance
+:Type: Character
+:Relevance: High
+:Date: 2025-02-22 (Day 8)
+:Time: 6:15 AM - 7:00 AM
+:Duration: 45 minutes
+:Characters: Alex
+:Location: Alex's Apartment
+:Chapter: Chapter 4, Scene 2
+:END:
+
+** Description
+
+Alex's personalized routine in action. They wake at 6:15 (not 6:00), skip meditation for music instead, do simple stretches, have coffee while journaling, and actually feel peaceful. The routine works because it's theirs.
+
+** Consequences
+
+- Demonstrates successful change
+- Shows flexibility over rigidity
+- Character growth milestone
+- Hope that sustainable change is possible
+
+** Connections
+
+- Links to: Coffee Talk with Sam, Full Circle
+
+** Notes
+
+The "right way" - personalized, flexible, sustainable. Shows Alex has internalized Sam's lesson.
+
+* Full Circle
+:PROPERTIES:
+:ID: event-008-full-circle
+:Type: Character
+:Relevance: Critical
+:Date: 2025-03-16 (Day 30)
+:Time: 7:00 AM
+:Duration: 15 minutes
+:Characters: Alex, Sam, Casey (new person)
+:Location: Corner Coffee Shop
+:Chapter: Chapter 5, Scene 1
+:END:
+
+** Description
+
+Alex arrives at coffee shop calm and on time. A flustered person (Casey) rushes in, clearly having a rough morning. Alex recognizes themselves in this stranger and offers the same kindness Sam showed them. Sam witnesses this moment. The cycle continues.
+
+** Consequences
+
+- Climax and resolution
+- Demonstrates complete character arc
+- Alex has become someone who helps, not just someone who struggles
+- Thematic payoff: kindness creates ripples
+- Full circle structure (starts and ends in coffee shop)
+
+** Connections
+
+- Links to: Coffee Shop Encounter (mirrors Day 1)
+- Completes the story circle
+
+** Notes
+
+The ending. Alex has transformed from chaos to calm, from being helped to helping others. The watch moment: "I have time" - peace instead of panic.
+
+* Grandmother's Death (Backstory)
+:PROPERTIES:
+:ID: backstory-001-grandmother
+:Type: Backstory
+:Relevance: Major
+:Date: ~2023-02 (2 years before story)
+:Time:
+:Duration:
+:Characters: Maria Rivera (grandmother)
+:Location:
+:Chapter: Referenced in Chapter 2
+:END:
+
+** Description
+
+Alex's grandmother Maria Rivera passed away two years before the story begins. She was a major influence in Alex's life, especially after their parents divorced. Her death left Alex feeling unmoored and contributed to the current state of disorganization.
+
+** Consequences
+
+- Alex loses their emotional anchor
+- Contributes to current disorganized state
+- Watch becomes hidden and forgotten
+- Creates unresolved grief that adds to Alex's struggles
+
+** Connections
+
+- Links to: Finding the Watch
+- Connected character: Maria Rivera
+
+** Notes
+
+The watch was her daily wear item. Finding it reconnects Alex to her memory and her wisdom about time, presence, and what matters.
+
+* Parents' Divorce (Backstory)
+:PROPERTIES:
+:ID: backstory-002-divorce
+:Type: Backstory
+:Relevance: Minor
+:Date: Alex's childhood (15-20 years ago)
+:Time:
+:Duration:
+:Characters: Alex, parents
+:Location:
+:Chapter: Mentioned briefly
+:END:
+
+** Description
+
+Mentioned briefly as contributing to Alex's difficulty with routine and stability. Moving between parents' houses created instability in childhood. Grandmother provided the one constant.
+
+** Consequences
+
+- Childhood instability affects adult patterns
+- Created difficulty with routine and structure
+- Made grandmother even more important as constant figure
+
+** Connections
+
+- Links to: Grandmother's Death
+
+** Notes
+
+Minor backstory element that explains some of Alex's patterns but isn't dwelt on.
+
+* Sam's Transformation (Backstory)
+:PROPERTIES:
+:ID: backstory-003-sam
+:Type: Backstory
+:Relevance: Moderate
+:Date: ~2021 (4 years before story)
+:Time:
+:Duration: ~1 year transformation
+:Characters: Sam
+:Location:
+:Chapter: Referenced in Chapter 4
+:END:
+
+** Description
+
+Sam went through their own quarter-life crisis and chaotic period. They discovered morning routines and initially went too rigid, then learned balance. This makes them an effective mentor - they've been there.
+
+** Consequences
+
+- Sam develops empathy through lived experience
+- Creates his routine tracking system
+- Learns the lesson about flexibility vs rigidity
+- Positions him to help Alex effectively
+
+** Connections
+
+- Links to: Coffee Talk with Sam, Coffee Shop Encounter
+
+** Notes
+
+Not fully detailed in story but informs Sam's empathy and advice. Sam reveals bits of this in Chapter 4 to connect with Alex.
+
+* Lost Client (Backstory)
+:PROPERTIES:
+:ID: backstory-004-client
+:Type: Backstory
+:Relevance: Minor
+:Date: ~2024-08 (6 months before story)
+:Time:
+:Duration:
+:Characters: Alex
+:Location:
+:Chapter: Referenced
+:END:
+
+** Description
+
+Alex lost a major client due to a missed deadline caused by morning chaos (overslept, forgot meeting). This was a wake-up call but not enough to create change on its own. Adds to accumulated frustration that makes Day 1 the tipping point.
+
+** Consequences
+
+- Financial impact
+- Professional embarrassment
+- Wake-up call (but not enough alone)
+- Adds to frustration that builds to Day 1
+
+** Connections
+
+- Links to: The Alarm Goes Off, Important Meeting
+
+** Notes
+
+Referenced briefly. Shows this is a pattern, not a one-time problem. Day 1 is the final straw, not the first warning.

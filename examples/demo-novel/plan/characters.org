@@ -2,13 +2,14 @@
 #+AUTHOR: Demo Author
 #+STARTUP: overview
 
-* Protagonist
+* Alex Rivera
 :PROPERTIES:
 :ID: char-alex-rivera-20251115-001
-:TYPE: Protagonist
-:NAME: Alex Rivera
-:AGE: 28
-:GENDER: Non-binary (they/them)
+:Role: Protagonist
+:Age: 28
+:Gender: Non-binary (they/them)
+:Occupation: Freelance graphic designer
+:First-appearance: Chapter 1, Scene 1
 :END:
 
 ** Physical Description
@@ -60,59 +61,199 @@
 - With Grandmother (deceased) :: Deep love and admiration; regrets not learning from her earlier; the watch keeps her memory alive
 - With themselves :: Journey from self-criticism to self-compassion
 
-* Secondary Characters
+** Notes
 
-** Sam Chen
+Character voice: Internal monologue is self-deprecating, slightly sarcastic, observant. Dialogue is honest, sometimes flustered, uses humor as defense. Example: "Close enough" about the socks - shows their resigned acceptance of chaos.
+
+* Sam Chen
 :PROPERTIES:
 :ID: char-sam-chen-20251115-002
-:TYPE: Secondary
-:NAME: Sam Chen
-:ROLE: Mentor/Friend
-:AGE: 32
-:GENDER: Male (he/him)
+:Role: Supporting
+:Age: 32
+:Gender: Male (he/him)
+:Occupation: Project manager at tech company
+:First-appearance: Chapter 1, Scene 2
 :END:
 
-*** Description
-Asian-American, 5'10", slim build, always looks put-together. Wears glasses, has neat short hair, calm demeanor. Works in tech (project manager). Gives off an air of quiet confidence.
+** Physical Description
 
-*** Personality
-- Patient, organized, genuine, non-judgmental
-- Strength: Emotional intelligence, consistency
-- Weakness: Can be too rigid sometimes, struggles with spontaneity
-- NOTE: Need to develop this more per beta reader feedback - give him a flaw!
+- Height :: 5'10"
+- Build :: Slim, fit
+- Hair :: Black, neat short hair
+- Eyes :: Brown, behind glasses
+- Distinctive features :: Always looks put-together, calm demeanor, warm smile
 
-*** Role in the Story
-The mentor figure who shows Alex that change is possible. Provides guidance without being preachy. Represents what Alex could become, but importantly, isn't perfect himself.
+** Personality
 
-*** Relationship with Protagonist
-Neighborly acquaintance → mentor → friend. Sam sees potential in Alex and remembers his own struggles. Genuinely wants to help, not just prove how great his system is.
+- Main traits :: Patient, organized, genuine, non-judgmental, emotionally intelligent
+- Strengths :: Consistency, empathy, wisdom from experience
+- Weaknesses :: Can be too rigid sometimes, struggles with spontaneity
+- Fears :: Falling back into chaos, not being able to help
+- Desire :: To maintain balance and help others find theirs
+- Need :: To accept that not everyone needs the same level of structure he does
+- Psychological Flaw :: Sometimes projects his past struggles onto others
+- Moral Flaw :: Can be unintentionally preachy about routines
 
-*** Development Note
-BETA READER FEEDBACK: Sam feels too perfect. Need to:
-- Show him struggling with something (spontaneity? relationships? work stress?)
-- Have him admit his routine isn't always perfect
-- Maybe show a moment where his advice doesn't work for Alex
-- Give him personal stakes beyond just helping Alex
+** Background
 
-*** Possible backstory
-Went through a quarter-life crisis himself 4 years ago. Used to be chaotic like Alex. Overcompensated with extreme routines. Now trying to find balance too.
+- Family :: Not detailed in story
+- Education :: College degree (field unspecified)
+- Occupation :: Project manager at tech company
+- Formative events :: Quarter-life crisis 4 years ago; was chaotic like Alex; over-corrected with extreme routines; gradually found balance
 
-** The New Character (Chapter 5)
+** Goal, Motivation, Conflict
+*** Internal
+- Goal :: Maintain his hard-won balance
+- Motivation :: Remembers how difficult the transformation was
+- Conflict :: Fear of becoming rigid; tendency to over-structure
+*** External
+- Goal :: Help Alex without being pushy
+- Motivation :: Recognizes himself in Alex's struggles
+- Conflict :: Knows he can't force change; must let Alex find their own way
+
+** Character Arc
+
+- Initial state :: Already balanced, serves as mentor
+- Turning point :: Realizes Alex needs flexibility, not rigidity
+- Transformation :: Learns to adapt his advice to the individual
+- Final state :: More accepting of different approaches, witnesses Alex pay it forward
+
+** Relationships
+
+- With Alex :: Neighborly acquaintance → mentor → friend. Sees potential in Alex and genuinely wants to help
+- With his past self :: Has compassion for who he was, uses that to help Alex
+
+** Notes
+
+Voice: Calm, measured, uses questions instead of commands. Never condescending, speaks from experience not superiority. Example: "I used to be exactly like you" - establishes connection, not hierarchy.
+
+BETA READER FEEDBACK: Sam feels too perfect. Added flaws: can be too rigid, struggles with spontaneity, occasionally preachy. Backstory shows he overcompensated initially, making him more relatable.
+
+* Casey
 :PROPERTIES:
 :ID: char-casey-20251115-003
-:TYPE: Minor
-:NAME: Casey (tentative)
-:ROLE: Symbol of cycle continuing
+:Role: Minor
+:Age: 23
+:Gender: TBD
+:Occupation: Unknown (implied early career)
+:First-appearance: Chapter 5, Scene 1
 :END:
 
-*** Description
-Young person (early 20s) clearly having a terrible morning. Reminds Alex of themselves at the beginning.
+** Physical Description
 
-*** Role in the Story
-Appears only in final scene. Gives Alex the chance to pay forward Sam's kindness. Shows that Alex has truly changed - they now notice and help others instead of being consumed by their own chaos.
+- Height ::
+- Build ::
+- Hair ::
+- Eyes ::
+- Distinctive features :: Clearly disheveled from a rough morning
 
-*** Relationship with Protagonist
-Complete stranger who Alex helps, mirroring the Sam/Alex first meeting.
+** Personality
+
+- Main traits :: Stressed, overwhelmed, reminded of young Alex
+- Strengths ::
+- Weaknesses ::
+- Fears ::
+- Desire ::
+- Need ::
+- Psychological Flaw ::
+- Moral Flaw ::
+
+** Background
+
+- Family :: Unknown
+- Education :: Unknown
+- Occupation :: Unknown (early career stage implied)
+- Formative events ::
+
+** Goal, Motivation, Conflict
+*** Internal
+- Goal ::
+- Motivation ::
+- Conflict ::
+*** External
+- Goal ::
+- Motivation ::
+- Conflict ::
+
+** Character Arc
+
+- Initial state :: Having a terrible morning, like Alex at story start
+- Turning point :: Alex offers kindness
+- Transformation :: [Off-page, beyond this story]
+- Final state :: [Unknown, symbolic character]
+
+** Relationships
+
+- With other characters :: Complete stranger to Alex; receives the same kindness Alex got from Sam
+
+** Notes
+
+This is a symbolic character who appears only in the final scene. Gives Alex the chance to pay forward Sam's kindness. Shows that Alex has truly changed - they now notice and help others instead of being consumed by their own chaos.
+
+Intentionally underdeveloped - serves a thematic function rather than being a full character.
+
+* Maria Rivera (Grandmother)
+:PROPERTIES:
+:ID: char-maria-rivera-20251115-004
+:Role: Minor
+:Age: Deceased
+:Gender: Female (she/her)
+:Occupation: Unknown
+:First-appearance: Mentioned Chapter 2 (deceased)
+:END:
+
+** Physical Description
+
+- Height ::
+- Build ::
+- Hair ::
+- Eyes ::
+- Distinctive features :: Wore her watch every day, along with apron and reading glasses
+
+** Personality
+
+- Main traits :: Present, unhurried, always had time for what mattered
+- Strengths :: Wisdom, constancy, love
+- Weaknesses ::
+- Fears ::
+- Desire ::
+- Need ::
+- Psychological Flaw ::
+- Moral Flaw ::
+
+** Background
+
+- Family :: Alex's grandmother; raised Alex after parents divorced
+- Education :: Unknown
+- Occupation :: Unknown
+- Formative events ::
+
+** Goal, Motivation, Conflict
+*** Internal
+- Goal ::
+- Motivation ::
+- Conflict ::
+*** External
+- Goal ::
+- Motivation ::
+- Conflict ::
+
+** Character Arc
+
+- Initial state :: [Before story]
+- Turning point :: Death 2 years before story
+- Transformation :: Lives on through watch and memory
+- Final state :: Symbolic presence inspiring Alex
+
+** Relationships
+
+- With other characters :: Alex's grandmother; deep love and admiration; Alex regrets not learning from her earlier
+
+** Notes
+
+Deceased character who appears only through memory and the symbolic watch. Represents wisdom, constancy, and the value of being present. Her watch becomes the catalyst for Alex's transformation.
+
+Not a fully developed character - serves as symbolic touchstone and emotional anchor for Alex's journey.
 
 * Character Relationships Map
 
@@ -128,26 +269,14 @@ Complete stranger who Alex helps, mirroring the Sam/Alex first meeting.
                    [helps]                   [was helped by]
                       |                             |
                       ↓                        [someone?]
-                  New Person              [needs development]
+                   Casey                  [needs development]
 #+END_SRC
-
-* Character Voice Notes
-
-** Alex's voice
-- Internal monologue: Self-deprecating, slightly sarcastic, observant
-- Dialogue: Honest, sometimes flustered, uses humor as defense
-- Example: "Close enough" about the socks - shows their resigned acceptance of chaos
-
-** Sam's voice
-- Calm, measured, uses questions instead of commands
-- Never condescending, speaks from experience not superiority
-- Example: "I used to be exactly like you" - establishes connection, not hierarchy
 
 * Names & Pronouns Quick Reference
 
-| Character     | Full Name    | Pronouns | Age | Role        |
-|---------------+--------------+----------+-----+-------------|
-| Alex          | Alex Rivera  | they/them | 28  | Protagonist |
-| Sam           | Sam Chen     | he/him    | 32  | Mentor      |
-| Casey         | Casey (TBD)  | TBD       | ~23 | Minor       |
-| Grandmother   | Maria Rivera | she/her   | -   | Deceased    |
+| Character     | Full Name    | Pronouns  | Age | Role         |
+|---------------+--------------+-----------+-----+--------------|
+| Alex          | Alex Rivera  | they/them |  28 | Protagonist  |
+| Sam           | Sam Chen     | he/him    |  32 | Supporting   |
+| Casey         | Casey (TBD)  | TBD       | ~23 | Minor        |
+| Maria         | Maria Rivera | she/her   |   - | Deceased     |
