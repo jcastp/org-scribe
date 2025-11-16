@@ -4,10 +4,13 @@
 
 * Protagonist
 :PROPERTIES:
-:TYPE: Protagonist
-:NAME:
-:AGE:
-:GENDER:
+:ID:
+:Role: Protagonist
+:Name:
+:Age:
+:Gender:
+:Occupation:
+:First-appearance:
 :END:
 
 ** Physical Description
@@ -44,7 +47,8 @@
 *** External
 - Goal ::
 - Motivation ::
-- Conflict ::   
+- Conflict ::
+
 ** Character Arc
 
 - Initial state ::
@@ -56,37 +60,129 @@
 
 - With other characters ::
 
+** Notes
+- 
+
 * Antagonist
 :PROPERTIES:
-:TYPE: Antagonist
-:NAME:
-:AGE:
-:GENDER:
+:ID:
+:Role: Antagonist
+:Name:
+:Age:
+:Gender:
+:Occupation:
+:First-appearance:
 :END:
 
 ** Physical Description
 
+- Height ::
+- Build ::
+- Hair ::
+- Eyes ::
+- Distinctive features ::
+
 ** Personality
+
+- Main traits ::
+- Strengths ::
+- Weaknesses ::
+- Fears ::
+- Desire ::
+- Need ::
+- Psychological Flaw ::
+- Moral Flaw :: 
 
 ** Background
 
-** Motivation
+- Family ::
+- Education ::
+- Occupation ::
+- Formative events ::
 
-Why they oppose the protagonist...
+** Goal, Motivation, Conflict
+*** Internal
+- Goal ::
+- Motivation ::
+- Conflict ::
+*** External
+- Goal ::
+- Motivation ::
+- Conflict ::
+
+** Character Arc
+
+- Initial state ::
+- Turning point ::
+- Transformation ::
+- Final state ::
 
 ** Relationships
+
+- With other characters ::
+
+** Notes
+- 
 
 * Secondary Characters
 
 ** Secondary Character 1
 :PROPERTIES:
-:TYPE: Secondary
-:NAME:
-:ROLE: Ally/Mentor/etc.
+:ID:
+:Role: Secondary
+:Name:
+:Age:
+:Gender:
+:Occupation:
+:First-appearance:
 :END:
 
-*** Description
+** Physical Description
 
-*** Role in the Story
+- Height ::
+- Build ::
+- Hair ::
+- Eyes ::
+- Distinctive features ::
 
-*** Relationship with Protagonist
+** Personality
+
+- Main traits ::
+- Strengths ::
+- Weaknesses ::
+- Fears ::
+- Desire ::
+- Need ::
+- Psychological Flaw ::
+- Moral Flaw :: 
+
+** Background
+
+- Family ::
+- Education ::
+- Occupation ::
+- Formative events ::
+
+** Goal, Motivation, Conflict
+*** Internal
+- Goal ::
+- Motivation ::
+- Conflict ::
+*** External
+- Goal ::
+- Motivation ::
+- Conflict ::
+
+** Character Arc
+
+- Initial state ::
+- Turning point ::
+- Transformation ::
+- Final state ::
+
+** Relationships
+
+- With other characters ::
+
+** Notes
+- 

@@ -60,7 +60,8 @@ CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes."
        (insert "#+TITLE: Character Database\n")
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       (insert "* Characters\n\n"))
+       ;;(insert "* Characters\n\n")
+       )
       ('locations
        (insert "#+TITLE: Locations & World Building\n")
        (insert "#+AUTHOR: " user-full-name "\n")
@@ -315,8 +316,8 @@ file that doesn't exist."
 
 (defvar writing/character-capture-templates
   '(("c" "Character Profile" entry
-     (file+headline writing/capture-character-file "Characters")
-     "** %^{Character Name}
+     (file writing/capture-character-file)
+     "* %^{Character Name}
 :PROPERTIES:
 :ID: %(org-id-new)
 :Role: %^{Role|Protagonist|Antagonist|Supporting|Minor}
@@ -326,25 +327,54 @@ file that doesn't exist."
 :First-appearance: %^{First Appearance Chapter}
 :END:
 
-*** Physical Description
-%?
+** Physical Description
 
-*** Personality
--
+- Height ::
+- Build ::
+- Hair ::
+- Eyes ::
+- Distinctive features ::
 
-*** Background
--
+** Personality
 
-*** Motivation
--
+- Main traits ::
+- Strengths ::
+- Weaknesses ::
+- Fears ::
+- Desire ::
+- Need ::
+- Psychological Flaw ::
+- Moral Flaw :: 
 
-*** Character Arc
--
+** Background
 
-*** Relationships
--
+- Family ::
+- Education ::
+- Occupation ::
+- Formative events ::
 
-*** Notes
+** Goal, Motivation, Conflict
+*** Internal
+- Goal ::
+- Motivation ::
+- Conflict ::
+*** External
+- Goal ::
+- Motivation ::
+- Conflict ::
+
+** Character Arc
+
+- Initial state ::
+- Turning point ::
+- Transformation ::
+- Final state ::
+
+** Relationships
+
+- With other characters ::
+
+** Notes
 - "
      :empty-lines 1))
   "Capture templates for character profiles.")
