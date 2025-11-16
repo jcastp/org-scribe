@@ -1,0 +1,475 @@
+#+TITLE: Lesson 1: Creating Your First Project
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 1!
+
+In this lesson, you'll create your first writing project using ~emacs-writing~. This is the foundation for everything else - all other features work within a project structure.
+
+By the end of this lesson, you'll have:
+- Created a complete novel or short story project
+- Understood the project file structure
+- Opened and explored the template files
+- Written your first sentence in the manuscript
+
+*Estimated time*: 10-15 minutes
+
+* Before You Begin
+
+** Make Sure You're Ready
+
+Check that you have:
+- ✓ Emacs open and running
+- ✓ ~emacs-writing~ package installed and loaded
+- ✓ A directory where you want to store your writing projects (we'll use ~~/writing/~ in examples)
+
+** Quick Test
+
+Let's verify the package is loaded correctly:
+
+1. Press ~M-x~ (Alt+x or Option+x)
+2. Start typing: ~writing-version~
+3. Press Enter
+
+You should see a message like: *"emacs-writing version 0.2.0 (includes project templates)"*
+
+If you see this message, you're ready! If not, make sure you've installed the package correctly.
+
+* Understanding Project Types
+
+~emacs-writing~ offers two types of projects:
+
+** Novel Projects (Full Template)
+
+*Best for*:
+- Long-form fiction (50,000+ words)
+- Complex stories with multiple characters and plots
+- Stories requiring detailed planning and world-building
+
+*What you get*:
+- 12-13 files organized in a structured hierarchy
+- Separate planning files for characters, locations, plot, timeline, objects
+- Statistics tracking file with word count tables
+- Revision notes file
+- Research and notes directories
+- Main manuscript file (novel.org or novela.org)
+
+** Short Story Projects (Minimal Template)
+
+*Best for*:
+- Short fiction (1,000-20,000 words)
+- Single-sitting stories
+- Quick writing projects or exercises
+- Stories with fewer characters and simpler plots
+
+*What you get*:
+- 3 essential files
+- Main story file (story.org or cuento.org) with integrated word tracking
+- Consolidated notes file (combines characters, plot, locations in one place)
+- README file
+
+*Recommendation for beginners*: Start with a short story project to learn the basics. You can always create a novel project later!
+
+* Creating a Short Story Project
+
+Let's create your first project - a short story. We'll walk through every step.
+
+** Step 1: Invoke the Creation Function
+
+1. Press ~M-x~ (this opens the command prompt)
+2. Type: ~writing-create-short-story-project~
+3. Press ~Enter~
+
+*Tip*: You can use Tab completion! Type ~writing-cre~ and press Tab to see available commands.
+
+** Step 2: Choose the Base Directory
+
+You'll see a prompt:
+#+BEGIN_EXAMPLE
+Base directory for project: ~/writing/
+#+END_EXAMPLE
+
+This is where your project folder will be created.
+
+*What to do*:
+- Press ~Enter~ to accept the default (~~/writing/~)
+- OR type a different path (like ~~/Documents/writing/~ or ~~/my-stories/~)
+- Press ~Enter~
+
+The directory will be created if it doesn't exist.
+
+** Step 3: Enter Your Story Title
+
+You'll see a prompt:
+#+BEGIN_EXAMPLE
+Short story title:
+#+END_EXAMPLE
+
+*What to do*:
+- Type your story title (for example: ~The Morning Routine~)
+- Press ~Enter~
+
+*Title Guidelines*:
+- Use simple titles (letters, numbers, spaces, hyphens)
+- Avoid special characters: * ? < > | " ' : / \
+- Don't start with a dot (.)
+- The title will become the project folder name
+
+** Step 4: Wait for Creation
+
+The package will now:
+1. Create the project directory
+2. Copy and process template files
+3. Initialize a git repository
+4. Create an initial commit
+5. Open the README.org file
+
+You'll see messages in the minibuffer showing progress. This takes just a few seconds.
+
+** Step 5: Success!
+
+When complete, you'll see:
+- The README.org file opens in your buffer
+- A message: *"Project created successfully!"*
+- Your new project is ready!
+
+* Exploring Your Short Story Project
+
+Let's look at what was created. You should now be looking at the README.org file.
+
+** The Project Structure
+
+Your new project has this structure:
+
+#+BEGIN_EXAMPLE
+The Morning Routine/           (your project folder)
+├── .git/                      (version control - automatic!)
+├── .writing-project           (marker file - identifies this as a writing project)
+├── README.org                 (overview and quick links - YOU ARE HERE)
+├── story.org                  (your main manuscript)
+└── notes.org                  (planning: characters, plot, locations, etc.)
+#+END_EXAMPLE
+
+** Understanding Each File
+
+*** README.org (Currently Open)
+This file provides:
+- Project overview
+- Quick navigation links to other files
+- Instructions for getting started
+- Package feature summary
+
+*What to do*: Read through it now. It has helpful links and tips!
+
+*** story.org (Your Manuscript)
+This is where you'll write your actual story.
+
+*What it contains*:
+- Title and metadata (#+TITLE, #+AUTHOR, etc.)
+- Three-section structure (Opening, Middle, Ending)
+- Scene templates with properties (PoV, Characters, Location, etc.)
+- Integrated word count tracking table
+- Export configuration
+
+*What to do now*:
+1. Look at the README.org file (currently open)
+2. Find the link that says: ~[[file:story.org][Main Story File]]~
+3. Click it (or press ~C-c C-o~ while cursor is on the link)
+4. You'll jump to story.org!
+
+*** notes.org (Planning & Research)
+This is your planning hub, containing:
+- Characters section (with protagonist template)
+- Plot Outline section
+- Setting section (with locations subsection)
+- Objects section
+- Timeline section
+- Research & References section
+- Revision Notes section
+- Random Ideas & Inspiration section
+
+*What to do later*: We'll explore this in Lesson 4 (Capturing Characters).
+
+** The .writing-project Marker File
+
+This hidden file tells Emacs: "This directory is a writing project!"
+
+*What it does*:
+- Enables project detection
+- Allows capture functions to find the right files
+- Stores project type information (novel vs. short story)
+
+*Important*: Don't delete this file! The package needs it.
+
+** Git Integration
+
+Your project is automatically a git repository!
+
+*What this means*:
+- All changes are tracked
+- You can see your writing history
+- You can revert to earlier versions if needed
+- You can push to GitHub/GitLab for backup
+
+*Don't worry if you don't know git*: It works automatically. You can learn git later!
+
+* Creating a Novel Project
+
+If you want to create a full novel project instead, the process is almost identical:
+
+** Quick Steps
+
+1. Press ~M-x~
+2. Type: ~writing-create-novel-project~
+3. Press ~Enter~
+4. Choose base directory (e.g., ~~/writing/~)
+5. Enter novel title (e.g., ~My Fantasy Novel~)
+6. Wait for creation
+7. Explore!
+
+** Novel Project Structure
+
+A novel project has more files:
+
+#+BEGIN_EXAMPLE
+My Fantasy Novel/
+├── .git/
+├── .writing-project
+├── README.org                 (overview and navigation)
+├── novel.org                  (main manuscript - 3-act structure)
+├── statistics.org             (word count and progress tracking)
+├── revision.org               (revision notes and checklists)
+├── plan/                      (planning directory)
+│   ├── characters.org         (character database)
+│   ├── locations.org          (locations and world-building)
+│   ├── plot.org              (plot threads and structure)
+│   ├── timeline.org          (story timeline and events)
+│   └── objects.org           (important objects/MacGuffins)
+└── notes/                     (notes directory)
+    ├── notes.org             (general notes)
+    └── research.org          (research and references)
+#+END_EXAMPLE
+
+** When to Use Novel Template
+
+Choose the novel template if:
+- You're planning a work over 50,000 words
+- You have multiple characters with complex relationships
+- You need detailed world-building
+- You have multiple plot threads to track
+- You want separate files for different aspects of planning
+
+** Novel vs. Short Story: Which Should I Use?
+
+| Aspect         | Short Story Template     | Novel Template             |
+|----------------+--------------------------+----------------------------|
+| *Complexity*     | Simple, 3 files          | Complex, 12-13 files       |
+| *Word Count*     | 1,000-20,000             | 50,000+                    |
+| *Planning*       | Consolidated notes.org   | Separate plan/ files       |
+| *Best For*       | Quick projects, learning | Long-form, detailed novels |
+| *Word Tracking*  | In story.org             | Separate statistics.org    |
+| *Learning Curve* | Gentle                   | Steeper                    |
+| *Overhead*       | Minimal                  | More files to manage       |
+
+*Recommendation*: Start with short story template to learn, then try novel template for your big project!
+
+* Bilingual Support (English/Spanish)
+
+The package supports both English and Spanish templates!
+
+** How It Works
+
+The template language is controlled by a configuration variable: ~writing-template-language~
+
+*Default*: ~'en~ (English)
+
+** English Templates Create:
+- novel.org (main manuscript)
+- story.org (short story)
+- notes/ directory
+- characters.org, locations.org, plot.org, etc.
+
+** Spanish Templates Create:
+- novela.org (manuscrito principal)
+- cuento.org (cuento corto)
+- notas/ directorio
+- personajes.org, localizaciones.org, trama.org, etc.
+
+** Changing Template Language
+
+To use Spanish templates, add this to your Emacs configuration (~init.el~ or ~.emacs~):
+
+#+BEGIN_SRC emacs-lisp
+(setq writing-template-language 'es)
+#+END_SRC
+
+Then restart Emacs or evaluate the line with ~C-x C-e~.
+
+Now ~writing-create-novel-project~ will create Spanish-language templates!
+
+** Bilingual Projects
+
+*Important*: Choose your language before creating the project. The package detects language by checking which files exist (novel.org vs. novela.org), so mixing languages in one project may confuse the detection.
+
+* Common Issues and Solutions
+
+** "Template directory not found"
+
+*Problem*: The package can't find the template files.
+
+*Solution*:
+1. Make sure ~emacs-writing~ is properly installed
+2. Check that the templates/ directory exists in the package installation
+3. Try ~M-x package-reinstall RET emacs-writing RET~
+
+** "Project directory already exists"
+
+*Problem*: You're trying to create a project with a name that already exists.
+
+*Solution*:
+1. Choose a different title/name
+2. OR delete the existing directory if it was a test
+3. OR add a version number (e.g., "My Story v2")
+
+** "Invalid project title"
+
+*Problem*: Your title contains special characters.
+
+*Solution*:
+1. Use only letters, numbers, spaces, and hyphens
+2. Remove characters like: * ? < > | " ' : / \
+3. Don't start the title with a dot (.)
+
+** Can't find the created project
+
+*Problem*: Project was created but you don't know where.
+
+*Solution*:
+1. Look at the base directory you specified
+2. Default is ~~/writing/~
+3. Your project is in: ~~/writing/Your-Project-Title/~
+4. Use ~M-x dired~ to browse directories
+
+* Your First Writing Session
+
+Now that you have a project, let's write something!
+
+** Quick Exercise (5 minutes)
+
+1. *Open your manuscript*:
+   - If you created a short story: Open ~story.org~
+   - If you created a novel: Open ~novel.org~
+
+2. *Find the first scene*:
+   - Look for a heading like: ~*** Scene 1 - [Title]~
+   - Or create one (we'll learn this in Lesson 2)
+
+3. *Write one sentence*:
+   - Click below the scene heading
+   - Type anything! For example: "The alarm clock rang at 6:30 AM, as it did every morning."
+
+4. *Save the file*:
+   - Press ~C-x C-s~
+
+5. *Celebrate*!
+   - You've just written your first sentence in ~emacs-writing~!
+
+* What You've Learned
+
+Congratulations! You've completed Lesson 1. You now know:
+
+✓ The difference between novel and short story projects
+✓ How to create a project using ~writing-create-short-story-project~ or ~writing-create-novel-project~
+✓ What each template file is for
+✓ How to navigate between project files
+✓ How the project structure is organized
+✓ That your project is automatically a git repository
+✓ How to write your first sentence!
+
+* Next Steps
+
+You're ready for [[file:getting-started-02-first-scene.org][Lesson 2: Writing Your First Scene]]!
+
+In the next lesson, you'll learn:
+- How to use distraction-free writing mode
+- How to insert scene and chapter templates
+- What scene properties are and why they're useful
+- Your basic daily writing workflow
+
+** Quick Practice Before Moving On
+
+Before Lesson 2, try this:
+
+1. Create a second short story project (for practice)
+2. Explore all the template files
+3. Click the links in README.org to jump between files
+4. Read the comments and instructions in the template files
+5. Write a few sentences in different scenes
+
+Take your time! There's no rush. When you feel comfortable with project creation and navigation, move on to Lesson 2.
+
+* Reference: All Project Creation Commands
+
+** Interactive Commands
+
+| Command                            | What It Does                      |
+|------------------------------------+-----------------------------------|
+| ~writing-create-novel-project~       | Create a novel project            |
+| ~writing-create-short-story-project~ | Create a short story project      |
+| ~writing-open-project-file~          | Quick navigation to project files |
+
+** Configuration Variables
+
+| Variable                   | Default       | What It Controls           |
+|----------------------------+---------------+----------------------------|
+| ~writing-template-language~  | ~'en~           | Template language (en/es)  |
+| ~writing-template-directory~ | (package dir) | Where templates are stored |
+
+* Troubleshooting Tips
+
+** How to verify your project was created correctly
+
+1. Use ~M-x dired~ to open the project directory
+2. You should see:
+   - .writing-project file
+   - README.org
+   - story.org or novel.org
+   - notes.org (short story) or plan/ directory (novel)
+
+** How to delete a test project
+
+1. Close all files from that project
+2. Use ~M-x dired~ to navigate to the parent directory
+3. Mark the project folder with ~d~
+4. Execute deletion with ~x~
+5. Confirm with ~yes~
+
+** How to re-open a project later
+
+1. Use ~C-x C-f~ (find-file)
+2. Navigate to: ~~/writing/Your-Project-Title/~
+3. Open ~README.org~ or ~story.org~/~novel.org~
+4. The ~.writing-project~ marker ensures the package recognizes it
+
+* Getting Help
+
+If you're stuck:
+
+1. Check the [[file:getting-started-index.org][Tutorial Index]] for other lessons
+2. Refer to the [[file:00-feature-index.org][Feature Index]] for detailed feature documentation
+3. Use ~C-h f~ followed by a function name for help
+4. Ask in the Emacs community or file an issue
+
+* Summary
+
+You've taken your first big step into ~emacs-writing~! You now have a real project with a proper structure, version control, and template files ready for your story.
+
+In the next lessons, you'll learn how to actually use all these files effectively. But for now, pat yourself on the back - you're officially set up and ready to write!
+
+---
+
+*Previous*: [[file:getting-started-index.org][Tutorial Index]]
+*Next*: [[file:getting-started-02-first-scene.org][Lesson 2: Writing Your First Scene]]
+
+*Lesson 1 Complete!*

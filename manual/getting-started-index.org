@@ -1,0 +1,288 @@
+#+TITLE: Emacs Writing - Getting Started Guide
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Emacs Writing!
+
+Welcome to ~emacs-writing~, a comprehensive toolkit designed to help you write novels and short stories in Emacs using Org-mode. If you're seeing this for the first time, you might feel overwhelmed by all the features available. Don't worry! This guide will walk you through everything step by step, starting from the very beginning.
+
+** About This Guide
+
+This tutorial is designed for writers who:
+- Have just installed ~emacs-writing~
+- Want to start writing right away
+- Need a gentle introduction to the package's features
+- Prefer learning by doing rather than reading technical documentation
+
+You don't need to learn everything at once. This guide presents features in a logical order, starting with the essentials and gradually introducing more advanced capabilities.
+
+** What You'll Learn
+
+By the end of this tutorial, you'll know how to:
+- Create and organize novel or short story projects
+- Write in distraction-free environments
+- Track your characters, locations, and plot threads
+- Count words and monitor your progress
+- Search and navigate your manuscript efficiently
+- Use powerful linking features to connect your planning with your writing
+
+** Prerequisites
+
+Before starting, make sure you have:
+
+✓ Emacs 29.1 or higher installed
+✓ Org-mode 9.6 or higher (comes with Emacs)
+✓ The ~emacs-writing~ package installed
+✓ Basic familiarity with Emacs (opening files, basic navigation)
+✓ Basic familiarity with Org-mode (headings, properties - we'll explain as we go)
+
+** How to Use This Guide
+
+This guide is organized into progressive lessons. Each lesson builds on the previous ones, so we recommend following them in order:
+
+1. Start with Lesson 1 (Creating Your First Project)
+2. Complete the exercises in each lesson
+3. Move to the next lesson when you feel comfortable
+4. Come back to review specific topics as needed
+
+You can always refer to the [[file:00-feature-index.org][Feature Index]] for a complete list of available features.
+
+* Tutorial Lessons
+
+** Part 1: The Essentials (Start Here!)
+
+*** [[file:getting-started-01-creating-projects.org][Lesson 1: Creating Your First Project]]
+*Time: 10 minutes*
+
+Learn how to create a novel or short story project from templates. This is your first step - everything else builds on this foundation.
+
+*You'll learn:*
+- How to create a novel project (full template with planning files)
+- How to create a short story project (minimal template)
+- Understanding the project structure
+- Finding your way around the template files
+
+*** [[file:getting-started-02-first-scene.org][Lesson 2: Writing Your First Scene]]
+:PROPERTIES:
+:ID:       3f100618-1c6b-4286-883d-b1deddf063fd
+:END:
+*Time: 15 minutes*
+
+Start writing! Learn how to use the writing modes for distraction-free writing, and how to insert scenes and chapters using templates.
+
+*You'll learn:*
+- Activating distraction-free writing mode
+- Inserting scene and chapter templates
+- Understanding scene properties (PoV, Characters, Location, etc.)
+- Basic writing workflow
+
+*** [[file:getting-started-03-tracking-progress.org][Lesson 3: Tracking Your Progress]]
+*Time: 10 minutes*
+
+Learn to count words accurately and track your daily progress. See how close you are to your goals!
+
+*You'll learn:*
+- Accurate word counting (excluding org metadata)
+- Setting word count objectives
+- Generating progress tracking tables
+- Understanding the statistics dashboard
+
+** Part 2: Organizing Your Story
+
+*** [[file:getting-started-04-capturing-characters.org][Lesson 4: Capturing Characters]]
+*Time: 20 minutes*
+
+Create detailed character profiles quickly and learn to link them to your scenes.
+
+*You'll learn:*
+- Using the character capture template
+- Creating character profiles with all essential details
+- Understanding the character linking system
+- Setting PoV and scene characters with one click
+
+*** [[file:getting-started-05-locations-settings.org][Lesson 5: Locations and Settings]]
+*Time: 15 minutes*
+
+Build your story's world by capturing location details and linking them to scenes.
+
+*You'll learn:*
+- Creating location profiles
+- Linking locations to scenes
+- Finding all scenes in a specific location
+- Tracking setting variety
+
+*** [[file:getting-started-06-plot-threads.org][Lesson 6: Plot Threads and Timeline]]
+*Time: 20 minutes*
+
+Track multiple plot lines and ensure they're properly developed throughout your story.
+
+*You'll learn:*
+- Creating plot thread profiles
+- Linking plot threads to scenes
+- Generating plot timeline visualizations
+- Using the plot health report to find gaps
+
+** Part 3: Navigating and Searching
+
+*** [[file:getting-started-07-searching.org][Lesson 7: Finding What You Need]]
+*Time: 15 minutes*
+
+Master the search functions to quickly locate scenes by character, plot, location, or PoV.
+
+*You'll learn:*
+- Searching by character (who appears where?)
+- Searching by plot thread (where does this plot develop?)
+- Searching by location (all scenes in the coffee shop)
+- Searching by PoV (all scenes from Alex's perspective)
+- Finding TODOs across your entire project
+
+*** Lesson 8: The Hydra Menu
+*Time: 10 minutes*
+
+Learn to access all features quickly using the unified keyboard menu.
+
+*You'll learn:*
+- Opening the Hydra menu (F8 F8)
+- Understanding menu organization
+- Common keyboard shortcuts
+- Customizing keybindings
+
+** Part 4: Advanced Features
+
+*** Lesson 9: Writing Modes Deep Dive
+*Time: 15 minutes*
+
+Explore all four writing modes and when to use each one.
+
+*You'll learn:*
+- Distraction-free mode (full immersion)
+- Focus mode (one scene at a time)
+- Project mode (navigation panels)
+- Editing mode (three-panel layout)
+- Customizing modes for your preferences
+
+*** Lesson 10: Character and Plot Timelines
+*Time: 20 minutes*
+
+Generate visual timelines showing character appearances and plot development.
+
+*You'll learn:*
+- Creating character timeline tables
+- Creating plot thread timeline tables
+- Interpreting timeline symbols (◆ for PoV, ● for presence)
+- Using timelines to check story balance
+
+*** Lesson 11: Export Your Manuscript
+*Time: 15 minutes*
+
+Learn how to export your finished work to various formats with proper scene break formatting.
+
+*You'll learn:*
+- Using the scene break macro
+- Exporting to LaTeX/PDF
+- Exporting to ODT (LibreOffice/Word)
+- Exporting to HTML/EPUB
+- Customizing export settings
+
+*** Lesson 12: Dictionary and Language Tools
+*Time: 10 minutes*
+
+Use integrated Spanish dictionary, synonyms, and translation tools while writing.
+
+*You'll learn:*
+- RAE dictionary lookup for Spanish
+- Synonym search (Spanish and English)
+- Translation integration
+- Quick lookups without breaking flow
+
+** Part 5: Workflows and Best Practices
+
+*** Lesson 13: Daily Writing Workflow
+*Time: 15 minutes*
+
+Establish an efficient daily routine using the package's features.
+
+*You'll learn:*
+- Recommended daily workflow
+- Morning: Setting up for writing
+- During writing: Quick captures and searches
+- Evening: Tracking progress and planning
+- Weekly: Review and maintenance
+
+*** Lesson 14: Revision and Editing Workflow
+*Time: 20 minutes*
+
+Use the package's features to support revision and editing work.
+
+*You'll learn:*
+- Using editing mode for revision
+- Finding inconsistencies with search functions
+- Checking character development with timelines
+- Using plot health reports for structural issues
+- Managing revision TODOs
+
+*** Lesson 15: Customization and Configuration
+*Time: 20 minutes*
+
+Tailor the package to your personal preferences and workflow.
+
+*You'll learn:*
+- Customizing themes and fonts for writing modes
+- Adjusting window layouts and widths
+- Modifying templates for your needs
+- Configuring export settings
+- Language settings (English/Spanish)
+
+* Quick Reference
+
+** Essential Keybindings
+
+| Key     | Action                  |
+|---------+-------------------------|
+| F8 F8   | Open Hydra menu         |
+| C-c W   | Quick note capture      |
+| C-c C-o | Follow link at point    |
+| C-c &   | Return from link        |
+| C-c C-c | Update dynamic table    |
+| C-c C-x C-c | Toggle column view  |
+
+** Common Hydra Menu Keys
+
+From the Hydra menu (F8 F8):
+
+| Key | Action                    | Key | Action                  |
+|-----+---------------------------+-----+-------------------------|
+| s   | Insert scene              | m   | Writing mode            |
+| c   | Insert chapter            | f   | Focus mode              |
+| n   | Capture note              | w   | Count words             |
+| h   | Capture character         | 1   | Search by PoV           |
+| l   | Capture location          | 2   | Search by character     |
+| C   | Character linking menu    | 3   | Search by plot          |
+| L   | Location linking menu     | 4   | Search by location      |
+| P   | Plot thread linking menu  | q   | Quit menu               |
+
+** Getting Help
+
+If you get stuck or have questions:
+
+1. Check the [[file:00-feature-index.org][Feature Index]] for detailed feature descriptions
+2. Visit the specific lesson that covers your topic
+3. Use Emacs built-in help: ~C-h f~ (describe function) or ~C-h k~ (describe key)
+4. Report issues at: https://github.com/anthropics/claude-code/issues
+
+* Next Steps
+
+Ready to start? Head to [[file:getting-started-01-creating-projects.org][Lesson 1: Creating Your First Project]] and create your first novel or short story project!
+
+Don't feel pressured to complete all lessons at once. Take your time, experiment, and most importantly - write!
+
+* About This Tutorial
+
+- *Created*: 2025-11-16
+- *Last Updated*: 2025-11-16
+- *Package Version*: 0.2.0
+- *Estimated Total Time*: ~4 hours (at your own pace)
+- *Difficulty*: Beginner to Intermediate
+
+Happy writing! ✍

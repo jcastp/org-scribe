@@ -1,0 +1,753 @@
+#+TITLE: Lesson 2: Writing Your First Scene
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 2!
+
+Now that you have a project created, it's time to actually write! In this lesson, you'll learn how to write scenes using the package's powerful features.
+
+By the end of this lesson, you'll have:
+- Inserted your first scene using the template
+- Understood what scene properties are and why they're useful
+- Activated distraction-free writing mode
+- Written a complete scene
+- Learned the basic daily writing workflow
+
+*Estimated time*: 15-20 minutes
+
+* Before You Begin
+
+** What You Need
+
+✓ A project created in Lesson 1 (short story or novel)
+✓ Emacs open with your project
+✓ 15 minutes of uninterrupted time to write
+
+** Opening Your Manuscript
+
+If you don't have your manuscript open:
+
+1. Press ~C-x C-f~ (find file)
+2. Navigate to your project directory
+3. Open:
+   - *Short story*: ~story.org~
+   - *Novel*: ~novel.org~
+
+You should now see your manuscript file!
+
+* Understanding Your Manuscript Structure
+
+Before we insert scenes, let's understand the structure.
+
+** Short Story Structure
+
+Your ~story.org~ file has a simple three-part structure:
+
+#+BEGIN_EXAMPLE
+#+TITLE: The Morning Routine
+#+AUTHOR: Your Name
+
+* Opening
+** Scene 1 - [Title]
+   [Your writing goes here]
+
+* Middle
+** Scene 2 - [Title]
+   [Your writing goes here]
+
+* Ending
+** Scene 3 - [Title]
+   [Your writing goes here]
+#+END_EXAMPLE
+
+*The hierarchy*:
+- ~*~ (one asterisk) = Major section (Opening, Middle, Ending)
+- ~**~ (two asterisks) = Scene heading
+- Regular text = Your actual story content
+
+** Novel Structure
+
+Your ~novel.org~ file has a more complex three-act structure:
+
+#+BEGIN_EXAMPLE
+#+TITLE: My Fantasy Novel
+#+AUTHOR: Your Name
+
+* Act I - Setup
+** Chapter 1 - [Title]
+*** Scene 1 - [Title]
+    [Your writing goes here]
+*** Scene 2 - [Title]
+    [Your writing goes here]
+
+** Chapter 2 - [Title]
+*** Scene 3 - [Title]
+    [Your writing goes here]
+#+END_EXAMPLE
+
+*The hierarchy*:
+- ~*~ (one asterisk) = Act (Act I, Act II, Act III)
+- ~**~ (two asterisks) = Chapter heading
+- ~***~ (three asterisks) = Scene heading
+- Regular text = Your actual story content
+
+** Why This Structure?
+
+This hierarchical structure allows you to:
+- Fold/unfold sections to see only what you're working on
+- Track word counts at different levels (scene, chapter, act)
+- Navigate quickly through long manuscripts
+- Organize your story clearly
+- Use org-mode's powerful features (search, export, etc.)
+
+* Inserting Your First Scene
+
+Let's add a new scene to your manuscript using the scene template!
+
+** Step 1: Position Your Cursor
+
+*For short story*:
+1. Go to the ~* Opening~ section
+2. Move to the end of that line
+3. Press ~Enter~ to create a new line
+
+*For novel*:
+1. Go to ~** Chapter 1~ (or whichever chapter you want)
+2. Move to the end of that line
+3. Press ~Enter~ to create a new line
+
+** Step 2: Open the Hydra Menu
+
+Press ~F8 F8~ (press F8 twice quickly)
+
+You'll see the Hydra menu appear at the bottom of your screen:
+
+#+BEGIN_EXAMPLE
+^Insert^           ^Modes^            ^Capture^          ^Tools^            ^Search^           ^Manage^
+^^^^^^^^------------------------------------------------------------------------------------------------------------------
+_s_: Scene         _m_: Mode (write)  _n_: Note          _w_: Words count   _1_: POV           _C_: Characters
+_c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table   _2_: Character     _L_: Locations
+_o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_: Plot          _P_: Plot threads
+                 _e_: Editing mode  _b_: oBject        _d_: Dictionary    _4_: Location
+                                  _t_: Timeline      _y_: sYnonyms      _5_: TODOs
+                                                                                     _q_: Quit
+#+END_EXAMPLE
+
+*Don't panic!* This menu gives you quick access to all features. For now, we just need the "Insert" section.
+
+** Step 3: Insert a Scene
+
+1. Press ~s~ (for Scene)
+2. The menu will close
+3. You'll be prompted: ~Scene title:~
+4. Type a title for your scene (example: ~The Alarm Goes Off~)
+5. Press ~Enter~
+
+** Step 4: See What Was Created
+
+A complete scene template appears! It looks like this:
+
+#+BEGIN_EXAMPLE
+*** TODO Scene 1 - The Alarm Goes Off
+:PROPERTIES:
+:PoV:
+:Characters:
+:Plot:
+:Timeline:
+:Location:
+:Description:
+:Summary:
+:Scene-motivation:
+:Conflict-source:
+:What-is-at-stake:
+:Emotion:
+:Comment:
+:WORDCOUNT:
+:WORD-OBJECTIVE:
+:END:
+#+END_EXAMPLE
+
+*Congratulations!* You've inserted your first scene template!
+
+** Understanding the Template
+
+Let's break down what you're seeing:
+
+*** The Heading Line
+#+BEGIN_EXAMPLE
+*** TODO Scene 1 - The Alarm Goes Off
+#+END_EXAMPLE
+
+- ~***~ = Scene level (three asterisks for novels, two for short stories)
+- ~TODO~ = Scene status (you can change this to DONE when finished)
+- ~Scene 1~ = Scene number
+- ~The Alarm Goes Off~ = Your title
+
+*** The Properties Block
+Everything between ~:PROPERTIES:~ and ~:END:~ stores metadata about your scene.
+
+*Think of properties as index cards* attached to your scene with useful information.
+
+* Understanding Scene Properties
+
+Let's look at each property and what it's for:
+
+** Essential Properties (Use These!)
+
+*** ~:PoV:~ (Point of View)
+*What it is*: Which character's perspective is this scene from?
+
+*Example*: ~Alex Rivera~
+
+*Why it matters*:
+- Track PoV consistency
+- Search for all scenes from a character's perspective
+- Ensure PoV balance in multi-PoV stories
+- Generate character timelines
+
+*** ~:Characters:~
+*What it is*: Which characters appear in this scene?
+
+*Example*: ~Alex Rivera, Sam Chen~
+
+*Why it matters*:
+- Track character appearances
+- Find all scenes with specific characters
+- Ensure main characters appear regularly
+- Check for "forgotten" characters
+
+*** ~:Location:~
+*What it is*: Where does this scene take place?
+
+*Example*: ~Alex's Apartment - Bedroom~
+
+*Why it matters*:
+- Track setting variety
+- Find all scenes in a specific location
+- Ensure you're not overusing one location
+- Maintain setting consistency
+
+*** ~:Plot:~
+*What it is*: Which plot threads does this scene advance?
+
+*Example*: ~Main Plot, Character Development~
+
+*Why it matters*:
+- Track plot progression
+- Ensure all plot threads are developed
+- Find plot gaps
+- Balance multiple storylines
+
+** Planning Properties (Use During Revision!)
+
+These properties help you plan and revise scenes:
+
+*** ~:Description:~
+One-line description of what happens
+
+*Example*: ~Alex struggles with the alarm clock, hits snooze three times~
+
+*** ~:Summary:~
+Longer summary of the scene's events
+
+*Example*: ~Alex's alarm goes off at 6:30. They hit snooze repeatedly, struggling to wake up. Finally wake in a panic, realizing they're late for an important meeting.~
+
+*** ~:Scene-motivation:~
+What drives this scene forward?
+
+*Example*: ~Alex needs to get up for an important meeting~
+
+*** ~:Conflict-source:~
+What's the conflict or tension?
+
+*Example*: ~Internal conflict - wanting sleep vs. needing to wake up~
+
+*** ~:What-is-at-stake:~
+What does the character stand to lose?
+
+*Example*: ~Professional reputation if late to meeting~
+
+*** ~:Emotion:~
+The emotional tone of the scene
+
+*Example*: ~Anxious, rushed, frustrated~
+
+*** ~:Comment:~
+Your notes to yourself
+
+*Example*: ~Make sure to show Alex's personality through their reaction to the alarm~
+
+** Word Count Properties
+
+*** ~:WORDCOUNT:~
+*Auto-calculated* - The actual word count (you'll set this with a command)
+
+*** ~:WORD-OBJECTIVE:~
+*Manual* - Your target word count for this scene
+
+*Example*: ~1500~
+
+* Filling In Your Scene Properties
+
+Let's fill in properties for your scene! You don't have to fill them all now - start with the essentials.
+
+** Step 1: Add Point of View
+
+1. Find the ~:PoV:~ line
+2. Click at the end of the line (after the colon)
+3. Add a space and type your PoV character's name
+4. Example: ~:PoV: Alex~
+
+Result:
+#+BEGIN_EXAMPLE
+:PoV: Alex
+#+END_EXAMPLE
+
+** Step 2: Add Characters
+
+1. Find the ~:Characters:~ line
+2. Click at the end of the line
+3. Type character names separated by commas
+4. Example: ~:Characters: Alex, Sam~
+
+Result:
+#+BEGIN_EXAMPLE
+:Characters: Alex, Sam
+#+END_EXAMPLE
+
+** Step 3: Add Location
+
+1. Find the ~:Location:~ line
+2. Add your location
+3. Example: ~:Location: Alex's Apartment~
+
+Result:
+#+BEGIN_EXAMPLE
+:Location: Alex's Apartment
+#+END_EXAMPLE
+
+** Step 4: Set a Word Goal (Optional)
+
+1. Find the ~:WORD-OBJECTIVE:~ line
+2. Add your target (a scene is typically 1,000-2,000 words)
+3. Example: ~:WORD-OBJECTIVE: 1500~
+
+Result:
+#+BEGIN_EXAMPLE
+:WORD-OBJECTIVE: 1500
+#+END_EXAMPLE
+
+** Quick Tip: You Can Skip Properties
+
+*Don't feel pressured to fill everything!*
+
+Many writers:
+- Fill only PoV, Characters, and Location while drafting
+- Add other properties during revision
+- Use properties that match their planning style
+
+*Minimum recommended*: PoV and Location
+
+* Writing Your Scene Content
+
+Now comes the fun part - actually writing your story!
+
+** Where to Write
+
+1. Move your cursor *below* the ~:END:~ line
+2. Press ~Enter~ to create blank lines
+3. Start typing your scene
+
+Example:
+
+#+BEGIN_EXAMPLE
+*** TODO Scene 1 - The Alarm Goes Off
+:PROPERTIES:
+:PoV: Alex
+:Characters: Alex
+:Location: Alex's Apartment
+:WORD-OBJECTIVE: 1500
+:END:
+
+The alarm went off at 6:30 AM, its shrill beeping cutting through Alex's dreams like a knife. They reached out blindly, slapping at the phone until silence returned.
+
+Just five more minutes.
+
+But five minutes became ten, then fifteen. When Alex finally opened their eyes, panic set in. The important meeting was in two hours, and they weren't even out of bed yet.
+#+END_EXAMPLE
+
+** Writing Tips
+
+1. *Write below the properties block* - Never inside the ~:PROPERTIES:...END:~ section
+2. *Press Enter for new paragraphs* - Like any text editor
+3. *Don't worry about formatting* - Just write! We'll handle formatting later
+4. *Org-mode syntax is optional* - You can use /italics/, *bold*, etc., but plain text works fine
+5. *Save often* - Press ~C-x C-s~ to save
+
+* Activating Distraction-Free Writing Mode
+
+Now let's make your writing environment more focused!
+
+** What is Distraction-Free Mode?
+
+This mode:
+- Switches to a writing-optimized theme
+- Centers your text on the screen
+- Hides distractions (modeline, etc.)
+- Uses a larger, more readable font
+- Creates a calm, focused environment
+
+Think of it as "immersive mode" for writing!
+
+** Step 1: Activate Writing Mode
+
+1. Press ~F8 F8~ to open the Hydra menu
+2. Press ~m~ (for "Mode (write)")
+3. The menu closes and your environment transforms!
+
+You should now see:
+- A different theme (softer colors, usually)
+- Your text centered on screen
+- Larger, more readable font
+- A peaceful writing environment
+- A lighter in the modeline: ~" ✍"~
+
+** Step 2: Write in Peace
+
+Now write your scene! The distraction-free environment helps you focus on the story.
+
+Tips while writing:
+- The Hydra menu still works (~F8 F8~)
+- You can still save (~C-x C-s~)
+- All Emacs commands still work
+- The environment just looks different
+
+** Step 3: Exit Writing Mode
+
+When you're done writing:
+
+1. Press ~F8 F8~ to open Hydra
+2. Press ~m~ again (toggle off)
+3. Your normal environment returns
+
+*Note*: You can also exit by pressing ~M-x my-writing-env-mode~ and Enter.
+
+* Other Writing Modes
+
+The package has four different modes. Here's a quick overview:
+
+** Mode 1: Distraction-Free Mode (~F8 F8 m~)
+*What you just used!*
+- Theme change
+- Centered text
+- Larger font
+- Full document visible
+
+*Best for*: Normal writing sessions
+
+** Mode 2: Focus Mode (~F8 F8 f~)
+- Everything from distraction-free mode
+- *PLUS*: Narrows to current scene only
+- Shows only the scene you're working on
+- Everything else is hidden
+
+*Best for*: Deep focus on one scene, avoiding distractions from the rest of your manuscript
+
+** Mode 3: Project Mode (~F8 F8 p~)
+- Opens file tree (all project files) on the left
+- Opens outline (current file structure) on the right
+- Main document in center
+
+*Best for*: Navigating between files, seeing project structure, working on multiple scenes
+
+** Mode 4: Editing Mode (~F8 F8 e~)
+- Three-panel layout
+- Left panel: Reference file
+- Center: Main manuscript
+- Right panel: Another reference file
+- Bright editing theme
+
+*Best for*: Revision, editing, comparing scenes, referencing notes while writing
+
+** Which Mode Should I Use?
+
+| Mode             | When to Use                                   |
+|------------------+-----------------------------------------------|
+| Distraction-Free | Daily writing, drafting new scenes            |
+| Focus            | Deep writing, avoiding distraction, one scene |
+| Project          | Planning, navigating, organizing              |
+| Editing          | Revision, checking continuity, editing        |
+| *No mode (normal)* | Quick edits, working on properties, searching |
+
+*Recommendation for beginners*: Start with distraction-free mode (~F8 F8 m~). Try focus mode when you feel adventurous!
+
+* Inserting Chapters (Novel Projects Only)
+
+If you're working on a novel, you might want to add chapters.
+
+** Quick Chapter Insertion
+
+1. Go to your Act heading (e.g., ~* Act I - Setup~)
+2. Move to the end of the last chapter
+3. Press ~F8 F8~ (Hydra menu)
+4. Press ~c~ (for Chapter)
+5. Enter chapter title when prompted
+6. A chapter template appears!
+
+Example result:
+
+#+BEGIN_EXAMPLE
+** TODO Chapter 2 - The Discovery
+:PROPERTIES:
+:WORDCOUNT:
+:WORD-OBJECTIVE:
+:END:
+#+END_EXAMPLE
+
+Now you can insert scenes under this chapter using ~F8 F8 s~!
+
+* Your Basic Writing Workflow
+
+Here's a simple daily workflow using what you've learned:
+
+** Morning Writing Session
+
+1. *Open your manuscript* (~C-x C-f~ → story.org or novel.org)
+2. *Navigate to where you left off* (scroll or use ~C-s~ to search)
+3. *Activate writing mode* (~F8 F8 m~)
+4. *Write your scene*
+5. *Save your work* (~C-x C-s~)
+6. *Exit writing mode* (~F8 F8 m~)
+
+** Adding a New Scene Mid-Session
+
+1. *Position cursor* where the new scene should go
+2. *Open Hydra* (~F8 F8~)
+3. *Insert scene* (~s~)
+4. *Enter title*
+5. *Fill in essential properties* (PoV, Characters, Location)
+6. *Write the scene content*
+7. *Save* (~C-x C-s~)
+
+** After Writing
+
+1. *Count your words* (we'll learn this in Lesson 3!)
+2. *Commit to git* (optional, we'll cover this later)
+3. *Close or leave open* for tomorrow
+
+* Practical Exercise (15 minutes)
+
+Let's practice everything you've learned!
+
+** Exercise: Write Three Mini-Scenes
+
+Create three very short scenes (100-200 words each) with this structure:
+
+*** Scene 1: Morning
+- PoV: Your protagonist
+- Location: Bedroom or kitchen
+- What happens: Character wakes up or has breakfast
+- *Goal*: Practice inserting a scene and filling properties
+
+*** Scene 2: Encounter
+- PoV: Your protagonist
+- Location: Outside (street, coffee shop, park)
+- Characters: Protagonist + one other person
+- What happens: They meet someone or see something interesting
+- *Goal*: Practice multi-character scenes
+
+*** Scene 3: Evening
+- PoV: Your protagonist
+- Location: Different from Scene 1
+- What happens: Character reflects on the day
+- *Goal*: Practice writing in distraction-free mode
+
+** Steps:
+
+1. Insert Scene 1 (~F8 F8 s~)
+2. Fill properties
+3. Write 100-200 words
+4. Activate distraction-free mode (~F8 F8 m~)
+5. Insert Scene 2
+6. Fill properties
+7. Write 100-200 words (still in distraction-free mode)
+8. Insert Scene 3
+9. Fill properties
+10. Write 100-200 words
+11. Exit distraction-free mode (~F8 F8 m~)
+12. Save your work (~C-x C-s~)
+
+*Time limit*: 15 minutes total (5 minutes per scene)
+
+Don't worry about quality! This is practice. Write anything, even "Lorem ipsum" style placeholder text. The goal is to learn the workflow.
+
+* Common Questions
+
+** "Do I have to fill all properties?"
+
+*No!* Fill what's useful to you. Many writers only use:
+- PoV
+- Characters
+- Location
+
+Other properties are there if you need them, especially during revision.
+
+** "Can I write without using the template?"
+
+*Yes!* You can write plain text directly. The templates just provide structure and metadata that makes searching and tracking easier later.
+
+** "What if I make a mistake in properties?"
+
+Properties are easy to edit! Just click into the line and change the text. They're just text, not magic.
+
+** "Can I delete a scene?"
+
+Yes! Just delete the heading and everything under it (up to the next heading of the same or higher level). Use ~C-k~ to kill lines.
+
+** "Why are my scenes numbered 'Scene 1' even though it's my third scene?"
+
+The template doesn't auto-number. Feel free to change the numbers manually, or ignore them - they're just labels!
+
+** "Can I use other TODO states besides TODO and DONE?"
+
+Advanced users can configure custom TODO states, but TODO/DONE works perfectly for beginners.
+
+* Troubleshooting
+
+** "The Hydra menu won't open when I press F8 F8"
+
+*Solutions*:
+1. Make sure you're pressing F8 twice quickly
+2. Try ~M-x hydra-writing/body~ instead
+3. Check that emacs-writing-mode is enabled (look for ~" Write"~ in the modeline)
+4. If needed: ~M-x emacs-writing-mode~ to enable it
+
+** "The scene template looks weird/incomplete"
+
+*This might happen if*:
+- You're in the middle of the properties block when you insert
+- The cursor position wasn't right
+
+*Solution*:
+1. Press ~C-g~ to cancel
+2. Delete the incomplete template
+3. Position cursor correctly (at the end of a line, below the chapter/section heading)
+4. Try again
+
+** "I can't exit writing mode"
+
+*Solutions*:
+1. Try ~F8 F8 m~ again
+2. Or: ~M-x my-writing-env-mode~ to toggle it off
+3. Restart Emacs if stuck (your work is saved!)
+
+** "My text isn't centering in writing mode"
+
+*This is normal if*:
+- Your Emacs window is very wide
+- You don't have writeroom-mode installed
+
+*Solution*: The mode still works! The theme and font are the main features.
+
+** "Scene properties are showing as regular text"
+
+This is fine! Properties are text. When you fold the heading (using Tab on the heading line), they'll hide. This is normal org-mode behavior.
+
+* What You've Learned
+
+Excellent work! You've completed Lesson 2. You now know:
+
+✓ How manuscript structure works (Acts, Chapters, Scenes)
+✓ How to insert scenes using the template (~F8 F8 s~)
+✓ What scene properties are and why they're useful
+✓ How to fill in essential properties (PoV, Characters, Location)
+✓ How to write scene content below the properties
+✓ How to activate distraction-free writing mode (~F8 F8 m~)
+✓ The four different writing modes available
+✓ Basic daily writing workflow
+✓ How to insert chapters (novels)
+
+* Next Steps
+
+Ready to learn about tracking your progress? Head to [[file:getting-started-03-tracking-progress.org][Lesson 3: Tracking Your Progress]]!
+
+In the next lesson, you'll learn:
+- How to count words accurately
+- How to set word count goals
+- How to generate progress tracking tables
+- How to see your daily writing statistics
+- How to stay motivated with visual progress
+
+** Quick Practice Before Moving On
+
+Before Lesson 3, reinforce your learning:
+
+1. Write at least 500 words in your project
+2. Try all four writing modes (distraction-free, focus, project, editing)
+3. Insert 5 different scenes with complete properties
+4. Practice the daily workflow: open → activate mode → write → save → close
+5. Experiment with folding/unfolding headings (Tab key on heading line)
+
+The more you practice, the more natural it becomes!
+
+* Quick Reference
+
+** Essential Commands
+
+| Command         | Key     | What It Does               |
+|-----------------+---------+----------------------------|
+| Open Hydra menu | ~F8 F8~   | Access all features        |
+| Insert scene    | ~F8 F8 s~ | Add scene template         |
+| Insert chapter  | ~F8 F8 c~ | Add chapter (novels)       |
+| Writing mode    | ~F8 F8 m~ | Toggle distraction-free    |
+| Focus mode      | ~F8 F8 f~ | Toggle focus mode          |
+| Save file       | ~C-x C-s~ | Save your work             |
+| Fold heading    | ~Tab~     | Hide/show heading contents |
+
+** Scene Properties Cheat Sheet
+
+*Essential* (always use):
+- ~:PoV:~ - Whose perspective?
+- ~:Characters:~ - Who appears?
+- ~:Location:~ - Where is this?
+
+*Useful* (use during planning):
+- ~:Plot:~ - Which plot threads?
+- ~:Description:~ - One-line summary
+- ~:WORD-OBJECTIVE:~ - Target word count
+
+*Optional* (use during revision):
+- ~:Summary:~ - Longer description
+- ~:Scene-motivation:~ - Why this scene?
+- ~:Conflict-source:~ - What's the tension?
+- ~:What-is-at-stake:~ - What can they lose?
+- ~:Emotion:~ - Scene's emotional tone
+- ~:Comment:~ - Your notes
+
+** Writing Modes Quick Guide
+
+| Mode          | Hydra Key | Best For                  |
+|---------------+-----------+---------------------------|
+| Normal        | (none)    | Editing properties        |
+| Distraction   | ~m~       | Daily writing             |
+| Focus         | ~f~       | Deep focus, one scene     |
+| Project       | ~p~       | Navigation, organization  |
+| Editing       | ~e~       | Revision, reference files |
+
+* Tips for Success
+
+1. *Start small* - Write 250 words per day to build the habit
+2. *Use writing mode* - It really helps focus!
+3. *Don't over-plan properties* - Fill what's useful, skip the rest
+4. *Save often* - ~C-x C-s~ should be automatic
+5. *Fold completed scenes* - Press Tab on heading to hide content
+6. *One scene at a time* - Don't worry about the whole story yet
+7. *Properties can wait* - You can fill them during revision!
+
+---
+
+*Previous*: [[file:getting-started-01-creating-projects.org][Lesson 1: Creating Your First Project]]
+*Next*: [[file:getting-started-03-tracking-progress.org][Lesson 3: Tracking Your Progress]]
+
+*Lesson 2 Complete!* ✓

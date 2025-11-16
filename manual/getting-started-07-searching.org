@@ -1,0 +1,1289 @@
+#+TITLE: Lesson 7: Finding What You Need
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 7!
+
+In this lesson, you'll master the search functions that let you slice through your manuscript in any way you need. Whether you're checking continuity, planning your next scene, or doing deep revision, powerful searching makes the difference between hours of manual hunting and instant answers.
+
+By the end of this lesson, you'll be able to:
+- Search for all scenes from a specific character's point of view
+- Find every scene where a character appears (not just PoV)
+- Locate all scenes that develop a particular plot thread
+- Find all scenes set in a specific location
+- Search for TODO items across your entire project
+- Combine searches for complex queries
+- Use search results effectively during writing and revision
+
+*Estimated time*: 15 minutes
+
+* Prerequisites
+
+Before starting this lesson, you should have completed:
+- [[file:getting-started-01-creating-projects.org][Lesson 1: Creating Your First Project]]
+- [[file:getting-started-02-first-scene.org][Lesson 2: Writing Your First Scene]]
+- [[file:getting-started-04-capturing-characters.org][Lesson 4: Capturing Characters]] (recommended)
+- [[file:getting-started-05-locations-settings.org][Lesson 5: Locations and Settings]] (recommended)
+- [[file:getting-started-06-plot-threads.org][Lesson 6: Plot Threads and Timeline]] (recommended)
+
+You should have:
+- At least 3-5 scenes in your manuscript
+- Some scenes with PoV, Characters, Location, or Plot properties set
+- Basic understanding of scene properties
+
+* Why Searching Matters
+
+**Quick answer**: As your manuscript grows, searching becomes essential for finding scenes, checking consistency, and maintaining control over your story.
+
+** The Problem Without Search
+
+In a 50-scene novel (typical length: 50,000-80,000 words):
+- Finding all scenes with a character requires reading 50 scene headings manually
+- Checking how often a location appears means scrolling through the entire manuscript
+- Verifying PoV balance requires counting by hand
+- Tracking plot thread development needs a separate spreadsheet
+- Finding that TODO you left yourself weeks ago is a guessing game
+
+This is:
+- **Time-consuming**: 30+ minutes of manual searching
+- **Error-prone**: Easy to miss scenes while scrolling
+- **Frustrating**: Interrupts writing flow
+- **Limiting**: You avoid checking things because it's too much work
+
+** The Solution: Property-Based Search
+
+With the search functions, you can:
+- Find all scenes with a character in seconds
+- Check plot thread distribution instantly
+- Verify location usage with one command
+- Review all PoV scenes for a character
+- Locate TODOs across entire project
+
+This is:
+- **Fast**: 5-10 seconds per search
+- **Accurate**: Finds every match automatically
+- **Seamless**: Doesn't interrupt flow
+- **Empowering**: You check things because it's easy
+
+* The Four Core Searches
+
+The package provides four main search functions, each focusing on a different scene property.
+
+** Overview Table
+
+| Search Type | Hydra Key | Command                     | Searches Property |
+|-------------+-----------+-----------------------------+-------------------|
+| PoV         | F8 F8 1   | ~writing/org-find-pov~        | ~:PoV:~             |
+| Character   | F8 F8 2   | ~writing/org-find-character~  | ~:Characters:~      |
+| Plot        | F8 F8 3   | ~writing/org-find-plot~       | ~:Plot:~            |
+| Location    | F8 F8 4   | ~writing/org-find-location~   | ~:Location:~        |
+
+** Common Pattern
+
+All four searches work the same way:
+1. Invoke the search (press hydra key or run command)
+2. Enter search term (with completion)
+3. View results in dedicated buffer
+4. Navigate to scenes from results
+5. Close results when done
+
+** What They Search
+
+All searches scan your manuscript file (novel.org, novela.org, story.org, or cuento.org) for level-3 headings (scenes) with matching property values.
+
+They work with:
+- ✓ Plain text property values ("Alex Rivera")
+- ✓ ID-based links ([[id:char-alex-001][Alex Rivera]])
+- ✓ Multiple values in one property (comma-separated)
+
+* Search 1: By Point of View (PoV)
+
+Find all scenes narrated from a specific character's perspective.
+
+** When to Use
+
+- **PoV Balance**: Check how many scenes each PoV character gets
+- **Character Voice**: Review all scenes from one PoV to check voice consistency
+- **Arc Review**: See a character's journey from their own perspective
+- **Planning**: Decide which character should narrate the next scene
+- **Revision**: Ensure each PoV character has enough page time
+
+** How to Search
+
+Press: ~F8 F8 1~
+
+Or use: ~M-x writing/org-find-pov~
+
+** The Process
+
+1. You'll see a prompt: ~Search for PoV:~
+2. Start typing a character name: ~Alex~
+3. Matching names appear (with completion)
+4. Select: ~Alex Rivera~
+5. Press: ~Enter~
+
+** Example Results
+
+#+BEGIN_EXAMPLE
+Search results for PoV "Alex Rivera":
+Found 12 scenes
+
+╔═══════════════════════════════════════════════════════════════
+║ Act I
+║ ├─ Chapter 1: The Beginning
+║ │  └─ Scene 1 - Morning Routine
+║ │  └─ Scene 2 - Strange Readings
+║ │  └─ Scene 4 - First Victim
+║ ├─ Chapter 2: Complications
+║ │  └─ Scene 7 - Evidence of Tampering
+║ │  └─ Scene 9 - Meeting with Boss
+║
+║ Act II
+║ ├─ Chapter 3: Escalation
+║ │  └─ Scene 12 - Discovery at Second Site
+║ │  └─ Scene 15 - Following the Lead
+║ ├─ Chapter 4: Midpoint
+║ │  └─ Scene 18 - False Accusation
+║ │  └─ Scene 21 - Personal Cost
+║
+║ Act III
+║ ├─ Chapter 5: Resolution
+║ │  └─ Scene 38 - The Revelation
+║ │  └─ Scene 42 - Confrontation
+║ │  └─ Scene 46 - Aftermath
+╚═══════════════════════════════════════════════════════════════
+
+Total: 12 scenes with PoV "Alex Rivera"
+#+END_EXAMPLE
+
+** Interpreting Results
+
+The results show:
+- **Hierarchical structure**: Acts → Chapters → Scenes
+- **Scene titles**: Full scene headings
+- **Distribution**: Where PoV scenes cluster (early, middle, late)
+- **Total count**: How many scenes from this PoV
+
+** Using Results
+
+*** Check Balance
+If you have multiple PoV characters, search each one:
+- Alex: 12 scenes (60%)
+- Sam: 5 scenes (25%)
+- Jordan: 3 scenes (15%)
+
+Is this balanced? For a protagonist, 60% is good. For dual protagonists, aim for 40-60% each.
+
+*** Navigate to Scenes
+In the results buffer:
+- Click on a scene heading to jump to it
+- Or use: ~C-c C-o~ on a scene line
+- Or: Arrow keys + Enter
+
+*** Read Sequentially
+Read just Alex's scenes in order to:
+- Check voice consistency
+- Verify character arc progression
+- Ensure emotional continuity
+- Find contradictions
+
+** Common Use Cases
+
+*** Example 1: PoV Balance Check
+#+BEGIN_EXAMPLE
+You're writing a dual-protagonist novel. Search both PoVs:
+- Maya: 18 scenes
+- Chen: 8 scenes
+
+Problem: Imbalanced! Chen needs more scenes or Maya needs fewer.
+Action: Plan 4-5 more Chen PoV scenes.
+#+END_EXAMPLE
+
+*** Example 2: Voice Consistency
+#+BEGIN_EXAMPLE
+You search for Alex's PoV and read all 15 scenes sequentially.
+You notice: Scenes 1-7 have sarcastic inner voice, but Scenes 8-15 are serious.
+
+Problem: Voice shift without explanation.
+Action: Either add turning point justifying the change, or revise later scenes to restore sarcasm.
+#+END_EXAMPLE
+
+*** Example 3: Avoiding PoV Whiplash
+#+BEGIN_EXAMPLE
+You search Alex's PoV: Scenes 1, 2, 3, 4, 5, 15, 16...
+Gap from Scene 5 to Scene 15 = 9 scenes!
+
+Problem: Readers might forget Alex's situation after 9 scenes away.
+Action: Consider moving Scene 15 earlier or adding Alex PoV scene around Scene 10.
+#+END_EXAMPLE
+
+* Search 2: By Character Appearance
+
+Find all scenes where a character appears (regardless of whose PoV).
+
+** When to Use
+
+- **Character Coverage**: How often does this character appear?
+- **Relationship Tracking**: Find all scenes between two characters
+- **Arc Verification**: Does this character have enough presence?
+- **Continuity**: What has happened to this character so far?
+- **Planning**: When should this character reappear?
+
+** How to Search
+
+Press: ~F8 F8 2~
+
+Or use: ~M-x writing/org-find-character~
+
+** The Process
+
+1. You'll see a prompt: ~Search for character:~
+2. Start typing: ~Sam~
+3. Matching names appear
+4. Select: ~Sam Chen~
+5. Press: ~Enter~
+
+** Example Results
+
+#+BEGIN_EXAMPLE
+Search results for character "Sam Chen":
+Found 8 scenes
+
+╔═══════════════════════════════════════════════════════════════
+║ Act I
+║ ├─ Chapter 1: The Beginning
+║ │  └─ Scene 2 - Strange Readings (PoV: Alex)
+║ │  └─ Scene 3 - Coffee Shop Encounter (PoV: Alex)
+║
+║ Act II
+║ ├─ Chapter 2: Complications
+║ │  └─ Scene 12 - Discovery at Second Site (PoV: Alex)
+║ ├─ Chapter 3: Escalation
+║ │  └─ Scene 17 - Unexpected Help (PoV: Sam) ★
+║ │  └─ Scene 20 - Tension Rising (PoV: Alex)
+║
+║ Act III
+║ ├─ Chapter 4: Crisis
+║ │  └─ Scene 28 - Betrayal (PoV: Alex)
+║ ├─ Chapter 5: Resolution
+║ │  └─ Scene 43 - Reconciliation (PoV: Sam) ★
+║ │  └─ Scene 46 - New Beginning (PoV: Alex)
+╚═══════════════════════════════════════════════════════════════
+
+Total: 8 scenes with character "Sam Chen"
+Scenes where Sam is PoV character: 2 (marked with ★)
+Scenes where Sam appears but isn't PoV: 6
+#+END_EXAMPLE
+
+** What This Shows
+
+The character search finds scenes where the character appears in:
+- ~:PoV:~ property (they're the PoV character)
+- ~:Characters:~ property (they appear but aren't PoV)
+
+This gives you complete coverage of where a character appears in your story.
+
+** Interpreting Results
+
+*** Total Appearances
+8 scenes out of (say) 40 total = 20% presence.
+- Is this appropriate for a secondary character? Yes.
+- For a love interest? Maybe too low - should be 30-40%.
+- For a minor character? About right.
+
+*** Distribution
+Notice the gaps:
+- Scenes 3 to 12 = 8 scenes
+- Scenes 20 to 28 = 7 scenes
+
+If gaps are too long, readers forget about the character.
+
+*** PoV vs. Appearance
+Sam is PoV in only 2 scenes but appears in 8.
+- This is common for secondary characters
+- They participate in the story but mostly through the protagonist's eyes
+
+** Common Use Cases
+
+*** Example 1: Character Disappeared
+#+BEGIN_EXAMPLE
+You search for Jordan and find:
+- Scenes 4, 7, 9 (Act I)
+- Scene 35, 38, 40 (Act III)
+
+Problem: Jordan vanishes for 25 scenes (Scene 9 to 35)!
+Action: Either add Jordan appearances in Act II, or justify the absence in dialogue ("Jordan's been traveling").
+#+END_EXAMPLE
+
+*** Example 2: Love Interest Balance
+#+BEGIN_EXAMPLE
+Your romance subplot features Alex and Sam. You search both:
+- Alex: 25 scenes (protagonist)
+- Sam: 8 scenes
+
+For a romance subplot, Sam should appear in at least 12-15 scenes (30-40%).
+Action: Add Sam to 4-6 more scenes, or reconsider if this is a major romance.
+#+END_EXAMPLE
+
+*** Example 3: Continuity Check
+#+BEGIN_EXAMPLE
+You're writing Scene 30 and want to reference the last time Alex saw Sam.
+Search for Sam: Last appearance was Scene 20.
+
+You check Scene 20 notes: They argued about the investigation approach.
+Now you can write Scene 30 with correct continuity: "First time seeing Sam since the argument."
+#+END_EXAMPLE
+
+* Search 3: By Plot Thread
+
+Find all scenes that develop a specific plot thread.
+
+** When to Use
+
+- **Plot Distribution**: How often does this plot appear?
+- **Gap Detection**: Are there long stretches where this plot vanishes?
+- **Arc Review**: Read all scenes for one plot in sequence
+- **Pacing Check**: Does this plot escalate properly?
+- **Planning**: Where should this plot develop next?
+
+** How to Search
+
+Press: ~F8 F8 3~
+
+Or use: ~M-x writing/org-find-plot~
+
+** The Process
+
+1. You'll see a prompt: ~Search for plot thread:~
+2. Start typing: ~Mystery~
+3. Matching plot threads appear
+4. Select: ~Main Mystery - Water Sabotage~
+5. Press: ~Enter~
+
+** Example Results
+
+#+BEGIN_EXAMPLE
+Search results for plot thread "Main Mystery - Water Sabotage":
+Found 18 scenes
+
+╔═══════════════════════════════════════════════════════════════
+║ Act I
+║ ├─ Chapter 1: The Beginning
+║ │  └─ Scene 1 - Morning Routine (inciting incident)
+║ │  └─ Scene 4 - First Victim (stakes established)
+║ │  └─ Scene 7 - Evidence of Tampering (investigation begins)
+║ ├─ Chapter 2: Complications
+║ │  └─ Scene 9 - Lab Results (confirmation)
+║ │  └─ Scene 12 - Discovery at Second Site (pattern)
+║
+║ Act II
+║ ├─ Chapter 3: Escalation
+║ │  └─ Scene 15 - Following the Lead (clue)
+║ │  └─ Scene 18 - False Accusation (red herring)
+║ │  └─ Scene 21 - New Evidence (twist)
+║ ├─ Chapter 4: Midpoint
+║ │  └─ Scene 24 - Connection Revealed (breakthrough)
+║ │  └─ Scene 27 - Threat Escalates (personal danger)
+║ │  └─ Scene 29 - Setback (crisis)
+║ │  └─ Scene 33 - First Attack (stakes rise)
+║
+║ Act III
+║ ├─ Chapter 5: Crisis
+║ │  └─ Scene 35 - Narrowing In (closing in)
+║ │  └─ Scene 38 - The Revelation (major twist)
+║ │  └─ Scene 40 - Preparing for Confrontation (buildup)
+║ ├─ Chapter 6: Resolution
+║ │  └─ Scene 42 - Confrontation (climax)
+║ │  └─ Scene 45 - Aftermath (resolution)
+║ │  └─ Scene 46 - Reflection (denouement)
+╚═══════════════════════════════════════════════════════════════
+
+Total: 18 scenes developing "Main Mystery - Water Sabotage"
+Coverage: 18/40 scenes = 45%
+#+END_EXAMPLE
+
+** Interpreting Results
+
+*** Coverage Percentage
+18 out of 40 scenes = 45%.
+- For a main plot: Should be 60-80%. This is LOW!
+- For a major subplot: 30-50% is good. Would be OK for B-story.
+- For a minor subplot: This would be high (10-30% is typical).
+
+**Action**: If this is your main plot at 45%, you need to add it to 8-10 more scenes.
+
+*** Gap Analysis
+Look at scene numbers:
+- Scene 1, 4, 7, 9, 12, 15, 18, 21, 24...
+
+No gaps larger than 3 scenes until Act III. Good pacing!
+
+But if you see:
+- Scene 7... Scene 18 (10-scene gap) → Problem!
+
+*** Plot Beats
+The labels (inciting incident, breakthrough, climax, etc.) show whether major plot beats are present:
+- ✓ Inciting incident (Scene 1)
+- ✓ Midpoint twist (Scene 24)
+- ✓ Major revelation (Scene 38)
+- ✓ Climax (Scene 42)
+- ✓ Resolution (Scene 45)
+
+If any are missing, your plot structure may feel incomplete.
+
+** Common Use Cases
+
+*** Example 1: Forgotten Subplot
+#+BEGIN_EXAMPLE
+You search for "Romance subplot" and find:
+- Scenes 2, 5, 8 (Act I)
+- Scenes 43, 45 (Act III)
+
+Problem: Romance appears in Act I, vanishes for 30+ scenes, then reappears!
+Action: Add 4-6 romance scenes in Act II to maintain continuity.
+#+END_EXAMPLE
+
+*** Example 2: Plot Escalation Check
+#+BEGIN_EXAMPLE
+You search main plot and read all 18 scenes in sequence.
+You notice: Scenes 15-21 all feel similar - same intensity, same type of scene.
+
+Problem: Midpoint isn't escalating properly.
+Action: Raise stakes in Scene 21 - add personal danger or major setback.
+#+END_EXAMPLE
+
+*** Example 3: Planning Next Scene
+#+BEGIN_EXAMPLE
+You're about to write Scene 30. You search your political subplot:
+Last appearance was Scene 22.
+
+That's an 8-scene gap - time to bring it back!
+Action: Make Scene 30 develop the political subplot.
+#+END_EXAMPLE
+
+* Search 4: By Location
+
+Find all scenes set in a specific location.
+
+** When to Use
+
+- **Location Usage**: How often do you use this setting?
+- **Variety Check**: Are you overusing one location?
+- **Continuity**: What's happened at this location so far?
+- **Setting Balance**: Ensure diverse locations across story
+- **Planning**: When should you return to this location?
+
+** How to Search
+
+Press: ~F8 F8 4~
+
+Or use: ~M-x writing/org-find-location~
+
+** The Process
+
+1. You'll see a prompt: ~Search for location:~
+2. Start typing: ~Coffee~
+3. Matching locations appear
+4. Select: ~Downtown Coffee Collective~
+5. Press: ~Enter~
+
+** Example Results
+
+#+BEGIN_EXAMPLE
+Search results for location "Downtown Coffee Collective":
+Found 6 scenes
+
+╔═══════════════════════════════════════════════════════════════
+║ Act I
+║ ├─ Chapter 1: The Beginning
+║ │  └─ Scene 1 - Morning Routine
+║ │  └─ Scene 3 - Coffee Shop Encounter
+║
+║ Act II
+║ ├─ Chapter 2: Complications
+║ │  └─ Scene 11 - Regrouping
+║ ├─ Chapter 3: Escalation
+║ │  └─ Scene 23 - Safe Haven
+║
+║ Act III
+║ ├─ Chapter 5: Resolution
+║ │  └─ Scene 41 - Return to Normal
+║ │  └─ Scene 46 - New Beginning
+╚═══════════════════════════════════════════════════════════════
+
+Total: 6 scenes at "Downtown Coffee Collective"
+Coverage: 6/40 scenes = 15%
+First appearance: Scene 1
+Last appearance: Scene 46
+
+Note: This location appears in both opening and closing scenes (bookend structure).
+#+END_EXAMPLE
+
+** Interpreting Results
+
+*** Usage Frequency
+6 out of 40 scenes = 15%.
+- For a primary location: Reasonable (10-20%)
+- For a secondary location: High (5-10% typical)
+- For a minor location: Very high (should be 1-3 scenes)
+
+*** Distribution Pattern
+Notice the spread:
+- Act I: 2 scenes
+- Act II: 2 scenes
+- Act III: 2 scenes
+
+Good distribution! Location appears throughout story.
+
+But if you see:
+- Act I: 5 scenes
+- Act II: 1 scene
+- Act III: 0 scenes
+
+Problem: Location dominates early, vanishes later. Feels unbalanced.
+
+*** Bookend Structure
+First scene (Scene 1) and last scene (Scene 46) both at the coffee shop.
+This is intentional bookending - shows journey and return.
+
+** Common Use Cases
+
+*** Example 1: Location Overuse
+#+BEGIN_EXAMPLE
+You search "Alex's Apartment" and find 18 scenes (out of 40 total).
+
+Problem: 45% of your story happens in one location! This is too much.
+Action: Move 6-8 scenes to other locations OR combine multiple apartment scenes into fewer scenes.
+#+END_EXAMPLE
+
+*** Example 2: Variety Check
+#+BEGIN_EXAMPLE
+You search each primary location:
+- Apartment: 12 scenes
+- Office: 10 scenes
+- Coffee shop: 6 scenes
+Total: 28 scenes (out of 40)
+
+Problem: 70% of scenes happen in just 3 locations. Story feels repetitive.
+Action: Add 4-6 new locations for remaining scenes, or use existing secondary locations more.
+#+END_EXAMPLE
+
+*** Example 3: Continuity Check
+#+BEGIN_EXAMPLE
+You're writing Scene 30 at the coffee shop. You search "Coffee Shop":
+- Last appearance: Scene 23
+- In Scene 23: Alex had an argument with the barista
+
+Now you can write Scene 30 with continuity: "The barista looked away when Alex entered, still upset from last week."
+#+END_EXAMPLE
+
+*** Example 4: Symbolic Return
+#+BEGIN_EXAMPLE
+Your coffee shop represents "normal life." You search and find:
+- Scenes 1-3 (establishing normalcy)
+- Scene 23 (midpoint - Alex seeks comfort)
+- Scene 46 (resolution - return to peace)
+
+This structural pattern shows character's journey away from and back to normalcy. Intentional and effective!
+#+END_EXAMPLE
+
+* Search 5: Finding TODOs
+
+Find all TODO items across your entire project.
+
+** When to Use
+
+- **Before writing session**: What did I leave myself to fix?
+- **After drafting**: What notes did I leave during flow?
+- **Revision planning**: What needs attention?
+- **Project status**: How many loose ends remain?
+
+** What Are TODOs?
+
+In Org-mode, TODOs are special keywords at the start of headings:
+
+#+BEGIN_EXAMPLE
+** TODO Fix the timeline here - Alex arrives too quickly
+** FIXME This dialogue feels stilted
+** RESEARCH How long does DNA testing actually take?
+** REVISE Expand this scene - needs more emotion
+#+END_EXAMPLE
+
+Keywords include: TODO, DONE, FIXME, RESEARCH, REVISE, NOTE (customizable).
+
+** How to Search
+
+Press: ~F8 F8 T~ (capital T for TODO)
+
+Or use: ~M-x writing/org-find-todos~
+
+Or Org's built-in: ~C-c a t~ (agenda todo list)
+
+** Example Results
+
+#+BEGIN_EXAMPLE
+TODO Items Across Project:
+Found 12 items
+
+╔═══════════════════════════════════════════════════════════════
+║ MANUSCRIPT (novel.org)
+║
+║ Scene 7 - Evidence of Tampering
+║   → TODO Verify water treatment process is scientifically accurate
+║
+║ Scene 15 - Following the Lead
+║   → FIXME This transition is too abrupt
+║
+║ Scene 23 - Safe Haven
+║   → REVISE Add more sensory details to coffee shop
+║
+║ Scene 30 - Confronting Jordan
+║   → TODO Jordan's motivation unclear - beef this up
+║
+║ Scene 38 - The Revelation
+║   → RESEARCH Real cases of water contamination sabotage
+║
+║ ────────────────────────────────────────────────────────────
+║ CHARACTERS (plan/characters.org)
+║
+║ Marcus Chen (Antagonist)
+║   → TODO Add more backstory - why does he care so much?
+║   → REVISE Make his technical expertise more believable
+║
+║ ────────────────────────────────────────────────────────────
+║ PLOT (plan/plot.org)
+║
+║ Main Mystery - Water Sabotage
+║   → TODO Scene 33 needs to raise stakes higher
+║   → FIXME Resolution feels rushed - expand Scene 42
+║
+║ ────────────────────────────────────────────────────────────
+║ RESEARCH (notes/research.org)
+║
+║ Water Treatment Systems
+║   → RESEARCH Interview someone in water management
+║   → TODO Find diagrams of treatment plant layout
+╚═══════════════════════════════════════════════════════════════
+
+Total: 12 TODO items
+- TODO: 6
+- FIXME: 3
+- REVISE: 2
+- RESEARCH: 4
+#+END_EXAMPLE
+
+** Using TODO Results
+
+*** Prioritize by Type
+- **FIXME**: Structural problems - address before continuing
+- **RESEARCH**: Look these up in batch (dedicated research session)
+- **REVISE**: Save for revision pass
+- **TODO**: Address as you encounter them
+
+*** Clear Before Major Milestones
+Before finishing first draft: Clear all manuscript TODOs
+Before submitting: Clear all TODOs across entire project
+
+*** Daily Writing Ritual
+Start each session: Check TODOs, pick 1-2 to fix before writing new content.
+
+** Adding TODOs While Writing
+
+While in flow, don't stop to fix things - leave TODOs:
+
+#+BEGIN_EXAMPLE
+You're writing Scene 15 and realize Scene 7 has a timeline problem.
+Don't stop! Add a TODO:
+
+Navigate to Scene 7 heading:
+*** Scene 7 - Evidence of Tampering
+    :PROPERTIES:
+    ...
+    :END:
+
+Add below the heading:
+*** Scene 7 - Evidence of Tampering
+**** TODO Timeline issue - Alex arrives at 9 AM but lab doesn't open until 10
+    :PROPERTIES:
+    ...
+    :END:
+
+Continue writing Scene 15!
+#+END_EXAMPLE
+
+Later, when you search TODOs, you'll find this and fix it.
+
+* Combining Searches
+
+For advanced queries, combine multiple searches.
+
+** Pattern: Sequential Searches
+
+*** Example 1: Character in Specific Plot
+Want to find all scenes where Sam appears AND the romance plot develops?
+
+1. Search for character Sam (F8 F8 2) → Get 8 scenes
+2. Manually scan results for scenes that also mention romance
+3. Note scene numbers: Scenes 3, 8, 17, 20, 28, 43
+
+Result: 6 scenes where Sam AND romance both present.
+
+*** Example 2: PoV Character in Specific Location
+Want all scenes from Alex's PoV that happen at the coffee shop?
+
+1. Search for PoV Alex (F8 F8 1) → Get 25 scenes
+2. Scan results for scenes with "Downtown Coffee Collective"
+3. Note scene numbers: Scenes 1, 3, 23, 41
+
+Result: 4 scenes with Alex PoV at coffee shop.
+
+** Pattern: Comparison Searches
+
+*** Example 3: Two Characters' Coverage
+Compare how often two characters appear:
+
+1. Search for Maya (F8 F8 2) → 18 scenes
+2. Search for Chen (F8 F8 2) → 8 scenes
+3. Compare: Maya appears 2.25x more than Chen
+
+Result: Consider adding more Chen scenes for balance.
+
+*** Example 4: All PoV Characters
+Find all PoV characters and their coverage:
+
+1. Search for Alex PoV (F8 F8 1) → 25 scenes (63%)
+2. Search for Sam PoV (F8 F8 1) → 10 scenes (25%)
+3. Search for Jordan PoV (F8 F8 1) → 5 scenes (12%)
+
+Result: Good distribution for protagonist + two supporting PoVs.
+
+** Pattern: Gap Analysis
+
+*** Example 5: Subplot Absence
+Find where a subplot is missing:
+
+1. Search for "Family Conflict" plot (F8 F8 3) → Scenes 3, 7, 12, 28, 35
+2. Notice gaps: Scene 12 to 28 = 15-scene gap!
+3. Check those scenes (13-27) for opportunities to add family conflict
+
+Result: Add family reference in Scene 18 and full family scene around Scene 20.
+
+* Reading and Using Search Results
+
+** The Results Buffer
+
+Search results appear in a special buffer: ~*org-ql-search*~
+
+** Navigating Results
+
+| Key       | Action                           |
+|-----------+----------------------------------|
+| ~n~         | Next result                      |
+| ~p~         | Previous result                  |
+| ~RET~       | Jump to scene at point           |
+| ~C-c C-o~   | Follow link at point             |
+| ~g~         | Refresh/re-run search            |
+| ~q~         | Quit results buffer              |
+| ~C-x 1~     | Maximize results (hide other windows) |
+
+** Workflow: Review and Edit
+
+Common pattern:
+1. Run search (e.g., F8 F8 2 for character)
+2. Results appear in split window
+3. Press ~n~ to highlight first result
+4. Press ~RET~ to jump to that scene in manuscript
+5. Read/edit the scene
+6. Press ~C-x 0~ to close scene window (back to results)
+7. Press ~n~ for next result
+8. Repeat
+
+This lets you efficiently review all matching scenes.
+
+** Workflow: Take Notes
+
+For revision:
+1. Run search
+2. Open a notes buffer alongside results
+3. For each result:
+   - Review the scene
+   - Take notes about needed changes
+4. After reviewing all results:
+   - Close results
+   - Work through notes, fixing issues
+
+** Workflow: Count and Analyze
+
+For structural analysis:
+1. Run search
+2. Count results (shown at bottom of results buffer)
+3. Note scene numbers
+4. Calculate:
+   - Percentage of total scenes
+   - Gap sizes between appearances
+   - Distribution across acts
+5. Make planning decisions based on data
+
+* Practical Exercise (15 minutes)
+
+Let's practice all five search types.
+
+** Part 1: Run All Core Searches (5 minutes)
+
+*** Search 1: PoV
+1. Press: ~F8 F8 1~
+2. Search for your protagonist's PoV
+3. Count results (shown at bottom)
+4. Note: How many scenes from this PoV? _______
+5. Calculate percentage: _____ / total scenes = _____%
+6. Press ~q~ to close results
+
+*** Search 2: Character
+1. Press: ~F8 F8 2~
+2. Search for a secondary character
+3. Count results
+4. Note: How many scenes with this character? _______
+5. Look for large gaps between scene numbers
+6. Press ~q~ to close results
+
+*** Search 3: Plot
+1. Press: ~F8 F8 3~
+2. Search for your main plot
+3. Count results
+4. Note: How many scenes develop main plot? _______
+5. Calculate coverage: _____%
+6. Check for gaps larger than 5 scenes
+7. Press ~q~ to close results
+
+*** Search 4: Location
+1. Press: ~F8 F8 4~
+2. Search for your most-used location
+3. Count results
+4. Note: How many scenes at this location? _______
+5. Is this too many? (>20% might be)
+6. Press ~q~ to close results
+
+*** Search 5: TODO
+1. Press: ~F8 F8 T~
+2. View all TODO items
+3. Count them
+4. Note: How many TODOs? _______
+5. Identify which ones to address today
+6. Press ~q~ to close results
+
+** Part 2: Combined Analysis (5 minutes)
+
+*** Coverage Analysis
+1. For your main plot: ____% coverage
+   - Should be 60-80% for main plot
+   - Is yours in range? YES / NO
+   - If NO, how many scenes to add? _______
+
+2. For your protagonist PoV: ____% coverage
+   - Should be 50-80% for single protagonist
+   - Is yours in range? YES / NO
+
+*** Balance Check
+1. List all characters with their scene counts:
+   - Character 1: _____ scenes
+   - Character 2: _____ scenes
+   - Character 3: _____ scenes
+
+2. Is balance appropriate for their roles? YES / NO
+
+3. Any character appearing too much/little? _______
+
+*** Gap Analysis
+1. Check your main plot results
+2. Find the largest gap (consecutive scenes without this plot)
+3. Largest gap: _____ scenes (Scene ___ to Scene ___)
+4. Is this too large? (>5 scenes is concerning for main plot)
+5. If YES, plan to add scene: Scene _____ should develop this plot
+
+** Part 3: Navigation Practice (5 minutes)
+
+*** Workflow Drill
+1. Run any search (character, plot, or location)
+2. Results appear
+3. Press ~n~ to highlight first result
+4. Press ~RET~ to jump to that scene
+5. Read the scene heading and first paragraph
+6. Press ~C-x 0~ to close scene window (back to results)
+7. Press ~n~ for next result
+8. Press ~RET~ to jump
+9. Repeat 3-4 times
+10. Press ~q~ to close results
+
+*** Goal
+Get comfortable with the results navigation cycle:
+- Search → Results → Navigate → Review → Next → Repeat → Close
+
+** Success Criteria
+
+✓ You ran all 5 search types successfully
+✓ You can read and interpret result counts
+✓ You can identify coverage percentages
+✓ You can spot gaps in plot/character appearances
+✓ You can navigate from results to scenes and back
+✓ You understand what healthy distribution looks like
+
+* Integration with Your Daily Writing Workflow
+
+** Before Writing
+
+- **Review TODOs**: Check what you left yourself to fix (F8 F8 T)
+- **Check last appearance**: If writing Character X, search when they last appeared
+- **Verify plot status**: If developing Plot Y, search to see what's happened so far
+
+** During Writing
+
+- **Quick reference**: Jump to character/location profile without breaking flow
+- **Continuity check**: "When did they last meet?" → Search and find it
+- **Add TODOs**: Leave notes for later without stopping to fix
+
+** After Writing Session
+
+- **Update TODOs**: Mark completed items as DONE
+- **Quick audit**: Search the plot/character you just wrote to verify coverage
+- **Plan next session**: Identify gaps, decide what needs attention next
+
+** During Revision
+
+- **Systematic review**: Search each character and read all their scenes sequentially
+- **Plot coherence**: Search each plot thread and verify logical progression
+- **Consistency check**: Search location and ensure descriptions match
+- **Clean TODOs**: Work through all FIXME and REVISE items
+
+** Weekly Planning
+
+- **Coverage audit**: Run all searches, check percentages
+- **Balance adjustment**: Identify overused/underused characters, plots, locations
+- **Gap filling**: Find large gaps, plan scenes to fill them
+- **Structure check**: Use searches to verify act structure (balanced across acts?)
+
+* Common Questions
+
+** Q: Can I search for multiple characters at once?
+
+*A*: Not directly, but you can run sequential searches:
+1. Search Character A → 10 scenes
+2. Search Character B → 8 scenes
+3. Note which scene numbers overlap (scenes with both characters)
+
+For complex queries, consider exporting to spreadsheet or using org-ql directly (advanced).
+
+** Q: How do I search for partial names?
+
+*A*: The search uses completion, so partial typing works:
+- Type "Al" → Shows "Alex Rivera", "Alice", "Albert"
+- Type "Sam" → Shows "Sam Chen", "Samantha"
+
+Just type enough to uniquely identify the character/plot/location.
+
+** Q: Do searches work with plain text (non-linked) properties?
+
+*A*: Yes! Searches work with:
+- ✓ Plain text: ~:PoV: Alex Rivera~
+- ✓ ID links: ~:PoV: [[id:char-alex-001][Alex Rivera]]~
+- ✓ Mixed: Some scenes linked, some plain text
+
+The system extracts the display text from links automatically.
+
+** Q: What if a scene has multiple plots/characters?
+
+*A*: It works correctly! Example:
+#+BEGIN_EXAMPLE
+:Plot: [[id:plot-main-001][Mystery]], [[id:plot-romance-002][Romance]]
+#+END_EXAMPLE
+
+Searching for "Mystery" finds this scene.
+Searching for "Romance" also finds this scene.
+
+Each search finds all scenes where that value appears (even if other values are also present).
+
+** Q: Can I save search results?
+
+*A*: Yes, two methods:
+1. **Manual**: Copy results buffer content to a notes file
+2. **Org-ql**: Use ~C-c C-e~ in results to export to different formats (requires org-ql package)
+
+For recurring searches, consider creating custom org-ql queries (advanced).
+
+** Q: Why don't my searches find anything?
+
+*A*: Check:
+1. Are scene headings at level 3 (***)?
+2. Do scenes have the property you're searching (:PoV:, :Plot:, etc.)?
+3. Are property values spelled correctly?
+4. Are you running search from the manuscript file (novel.org / story.org)?
+
+Run ~M-x writing/debug-scene-properties~ (if available) to diagnose.
+
+* Troubleshooting
+
+** "Search returns 0 results but I know scenes have that property"
+
+*** Problem
+Search finds nothing despite scenes having the property.
+
+*** Solution
+1. Open a scene you expect to find
+2. Check the property name exactly:
+   - Is it ~:PoV:~ or ~:POV:~ ? (case matters!)
+   - Is it ~:Characters:~ or ~:Character:~? (plural vs. singular)
+3. Verify property value:
+   - Check spelling: "Alex Rivera" vs. "Alex River"
+   - Check link format: Does the link exist?
+4. Re-run search with exact property value
+
+** "Search finds scenes I don't expect"
+
+*** Problem
+Search returns scenes that don't seem to match.
+
+*** Solution
+1. Review the results carefully
+2. Check if property appears in:
+   - Main property drawer (expected)
+   - Sub-headings under the scene (might be unexpected)
+3. Check for partial matches:
+   - Searching "Alex" might find "Alex Rivera" AND "Alexandra"
+
+This is usually correct behavior, but verify your search term is specific enough.
+
+** "Results buffer shows garbled formatting"
+
+*** Problem
+Results don't display properly (weird characters, broken structure).
+
+*** Solution
+1. Ensure you have org-ql package installed
+2. Update org-ql to latest version
+3. Check Emacs version (need 29.1+)
+4. Try ~M-x org-ql-search-refresh~ in results buffer
+
+** "Navigation from results doesn't work"
+
+*** Problem
+Pressing RET or C-c C-o in results doesn't jump to scene.
+
+*** Solution
+1. Ensure cursor is on a scene line (not on the chapter/act heading)
+2. Try clicking directly on the scene title
+3. Check that the manuscript file still exists and scenes haven't moved
+4. If links are broken, try re-running the search (~g~ in results buffer)
+
+* Quick Reference
+
+** Search Keybindings
+
+| Key         | Search Type       | Searches Property |
+|-------------+-------------------+-------------------|
+| ~F8 F8 1~     | PoV               | ~:PoV:~             |
+| ~F8 F8 2~     | Character         | ~:Characters:~      |
+| ~F8 F8 3~     | Plot              | ~:Plot:~            |
+| ~F8 F8 4~     | Location          | ~:Location:~        |
+| ~F8 F8 T~     | TODO items        | TODO keywords     |
+
+** Results Buffer Navigation
+
+| Key       | Action                    |
+|-----------|---------------------------|
+| ~n~         | Next result               |
+| ~p~         | Previous result           |
+| ~RET~       | Jump to scene             |
+| ~C-c C-o~   | Follow link               |
+| ~g~         | Refresh search            |
+| ~q~         | Quit results              |
+| ~C-x 1~     | Maximize results          |
+
+** Healthy Coverage Targets
+
+| Element Type         | Recommended Coverage | Max Gap    |
+|----------------------+----------------------+------------|
+| Main Plot            | 60-80%               | 5 scenes   |
+| Major Subplot        | 30-50%               | 8 scenes   |
+| Minor Subplot        | 10-30%               | 10 scenes  |
+| Protagonist PoV      | 50-80%               | 8 scenes   |
+| Secondary PoV        | 20-40%               | 10 scenes  |
+| Love Interest Char   | 30-50%               | 8 scenes   |
+| Secondary Character  | 15-30%               | 10 scenes  |
+| Primary Location     | 10-20%               | N/A        |
+| Secondary Location   | 5-10%                | N/A        |
+
+** Common Commands
+
+| Command                      | What It Does             |
+|------------------------------+--------------------------|
+| ~writing/org-find-pov~         | Search by PoV            |
+| ~writing/org-find-character~   | Search by character      |
+| ~writing/org-find-plot~        | Search by plot thread    |
+| ~writing/org-find-location~    | Search by location       |
+| ~writing/org-find-todos~       | Find all TODO items      |
+
+* Tips for Better Searching
+
+** 1. Search Before You Write
+
+Before writing a scene featuring Character X:
+1. Search for X's last appearance
+2. Jump to that scene
+3. Review what happened
+4. Now write new scene with correct continuity
+
+** 2. Use Searches for Structural Editing
+
+During revision, systematically search each element:
+- Day 1: Search and review all PoV characters
+- Day 2: Search and review all plot threads
+- Day 3: Search and review all major characters
+- Day 4: Search and review all locations
+
+** 3. Create a Coverage Spreadsheet
+
+Run all searches and record:
+| Element           | Scenes | Percentage | Notes                    |
+|-------------------+--------+------------+--------------------------|
+| Main Plot         | 28     | 70%        | ✓ Good                   |
+| Romance Subplot   | 12     | 30%        | ✓ Good                   |
+| Family Subplot    | 8      | 20%        | ⚠ Large gap Sc 10-25     |
+| Alex PoV          | 25     | 63%        | ✓ Good                   |
+| Sam PoV           | 10     | 25%        | ✓ Good                   |
+| Alex (character)  | 30     | 75%        | ✓ Protagonist            |
+| Sam (character)   | 15     | 38%        | ✓ Love interest          |
+| Jordan (character)| 6      | 15%        | ⚠ Disappeared Act II     |
+
+This gives you a structural overview at a glance.
+
+** 4. Set Coverage Goals
+
+Before drafting, set targets:
+- Main plot: Appear in 30 scenes minimum (60%)
+- Romance subplot: Appear in 15 scenes (30%)
+- Alex PoV: 25 scenes (50%)
+- Sam PoV: 15 scenes (30%)
+
+As you write, periodically search and check if you're on track.
+
+** 5. Use TODO Types Consistently
+
+Develop a system:
+- ~TODO~: General tasks
+- ~FIXME~: Broken/wrong content
+- ~REVISE~: Working but needs improvement
+- ~RESEARCH~: Need to look something up
+- ~CONTINUITY~: Check against earlier scenes
+
+Then search by type: Find all RESEARCH items for a focused research session.
+
+** 6. Search for Pattern Recognition
+
+Search a character and look for patterns:
+- Do they always appear with the same other character?
+- Do they only appear in certain locations?
+- Are they only in certain plot threads?
+
+This reveals character roles and can suggest opportunities for variety.
+
+** 7. Combine Search with Timeline
+
+For deep analysis:
+1. Search for Character X
+2. Generate character timeline (F8 F8... character timeline)
+3. Compare: Does search match timeline? (should!)
+4. Use timeline for visual overview, search for detailed review
+
+** 8. Save Common Searches
+
+If you frequently search the same things, consider creating custom commands:
+#+BEGIN_SRC emacs-lisp
+(defun my/search-alex ()
+  "Quickly search for Alex PoV scenes."
+  (interactive)
+  (writing/org-find-pov "Alex Rivera"))
+#+END_SRC
+
+Bind to key: ~C-c a~ now runs Alex PoV search instantly.
+
+** 9. Search During Planning
+
+Use searches even while planning/outlining:
+- "I want to write a Sam PoV scene. When did Sam last have PoV?" → Search
+- "Should the next scene develop the mystery or romance?" → Search both, see which needs attention
+
+** 10. Trust the Data
+
+If searches show:
+- Main plot only in 40% of scenes → It's not functioning as main plot
+- Character appears once, vanishes for 30 scenes → Readers will forget them
+- Location used in 35% of scenes → Too repetitive
+
+Don't rationalize - adjust the story to match healthy patterns.
+
+* What You've Learned
+
+Congratulations! You've completed Lesson 7. You now know:
+
+✓ Why searching is essential for managing longer manuscripts
+✓ The four core search types (PoV, character, plot, location)
+✓ How to search for TODO items across your project
+✓ How to interpret search results (coverage %, gaps, distribution)
+✓ How to navigate results efficiently (next, jump, return)
+✓ What healthy coverage percentages look like for different elements
+✓ How to combine searches for complex analysis
+✓ How to integrate searching into daily writing workflow
+✓ How to use searches for structural editing during revision
+✓ Tips for better searching and pattern recognition
+
+* Next Steps
+
+You're ready for **Lesson 8: The Hydra Menu**!
+
+In the next lesson, you'll learn:
+- Accessing all features quickly via the unified keyboard menu
+- Understanding menu organization and sections
+- Common keyboard shortcuts and mnemonics
+- Customizing the hydra for your workflow
+- Creating your own quick-access commands
+
+** Quick Practice Before Moving On
+
+Before Lesson 8, try this:
+
+1. Run all 5 search types on your current manuscript
+2. Create a coverage spreadsheet (element, scene count, percentage)
+3. Identify one gap or imbalance
+4. Plan how to fix it (add scenes, move scenes, or cut scenes)
+5. Practice the search → navigate → review → next workflow
+6. Add 3-5 TODO items to your manuscript for practice
+7. Search for TODOs and address at least one
+
+Take your time! Searching is a skill that improves with practice. When you feel comfortable finding anything in your manuscript within seconds, move on to Lesson 8.
+
+* Summary
+
+Searching transforms how you work with your manuscript. Instead of manually scrolling through dozens of scenes hoping to find something, you can instantly locate:
+- All scenes from a specific PoV
+- All scenes featuring a character
+- All scenes developing a plot thread
+- All scenes in a location
+- All TODO items you've left yourself
+
+This enables:
+- **Fast continuity checks**: "When did they last meet?"
+- **Structural analysis**: "Does this plot appear often enough?"
+- **Balance verification**: "Is PoV distribution fair?"
+- **Efficient revision**: "Let me review all mystery plot scenes in sequence"
+- **Planning**: "Where should this character appear next?"
+
+The search functions are powered by org-ql and work seamlessly with both plain text properties and ID-based links. Combined with the linking system (characters, locations, plots), you have complete navigability through your manuscript.
+
+Mastering search is mastering your manuscript - you'll never lose track of any element again!
+
+---
+
+*Previous*: [[file:getting-started-06-plot-threads.org][Lesson 6: Plot Threads and Timeline]]
+*Next*: [[file:getting-started-08-hydra-menu.org][Lesson 8: The Hydra Menu]]
+
+*Lesson 7 Complete!*

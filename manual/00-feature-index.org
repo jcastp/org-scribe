@@ -1,0 +1,629 @@
+#+TITLE: Emacs Writing Feature Index
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Introduction
+
+This document provides a comprehensive index of all features in the ~emacs-writing~ package. Each feature is briefly described in a paragraph. Detailed documentation for each feature will be available in separate files linked from this index.
+
+*Version*: 0.2.0 (includes merged emacs-writing-template functionality)
+
+*Package Overview*: ~emacs-writing~ is a comprehensive toolkit for creative writers working in Org-mode, providing everything from project templates to export filters for novelists and short story writers.
+
+* Feature Categories
+
+This package organizes features into the following categories:
+
+1. [[#project-management][Project Management]] - Creating and organizing writing projects
+2. [[#writing-modes][Writing Modes]] - Distraction-free and specialized writing environments
+3. [[#word-counting-tracking][Word Counting & Tracking]] - Counting words and tracking progress
+4. [[#capture-system][Capture System]] - Quick capture of characters, locations, and notes
+5. [[#linking-system][Linking System]] - ID-based linking for characters, locations, and plot threads
+6. [[#search-tools][Search Tools]] - Find scenes by character, plot, location, or PoV
+7. [[#templates][Templates]] - Scene and chapter insertion templates
+8. [[#dictionary-language][Dictionary & Language Tools]] - Spanish dictionary, synonyms, translations
+9. [[#export-tools][Export Tools]] - Scene break filters and export presets
+10. [[#column-view][Column View Enhancements]] - Clean display of ID links in column view
+11. [[#ui-navigation][UI & Navigation]] - Hydra menu and keybindings
+12. [[#configuration][Configuration]] - Customization options
+
+* Project Management
+:PROPERTIES:
+:CUSTOM_ID: project-management
+:END:
+
+** Novel Project Creation (~writing-create-novel-project~)
+
+Creates a complete novel project structure from customizable templates. This function sets up a comprehensive 12-13 file project including the main manuscript (novel.org), statistics tracking, revision notes, and separate planning files for characters, locations, plot, timeline, and objects. The project is automatically initialized as a git repository with an initial commit, and all templates support variable substitution for title, author, and date. The structure supports both English and Spanish workflows.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~templates/writing-project.el~
+
+** Short Story Project Creation (~writing-create-short-story-project~)
+
+Creates a minimal short story project structure optimized for shorter works (1,000-20,000 words). Unlike novel projects, short story projects use only 3 files: README.org, story.org (or cuento.org for Spanish), and a consolidated notes.org file that combines character sketches, plot outline, and research. Word counting is integrated directly into the story file rather than maintained separately. This streamlined structure reduces overhead for quick projects while maintaining essential planning features.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~templates/writing-project.el~
+
+** Project Type Detection (~writing-project-type~)
+
+Automatically detects whether a project is a novel, short story, or unknown type by examining the directory structure and marker files. Detection checks for the .writing-project marker file first, then looks for characteristic indicators: the presence of a plan/ directory suggests a novel, while story.org/cuento.org indicates a short story. This detection is cached per project root for performance and enables other features (like capture functions) to adapt their behavior based on project type.
+
+*Status*: Fully implemented | *Hydra*: N/A (internal function) | *Module*: ~core/writing-core.el~
+
+** Project File Navigation (~writing-open-project-file~)
+
+Provides quick navigation to any file in the current writing project using completion. Detects the project root, scans for all org files in the project structure, and presents them in a searchable list. This works with both novel projects (with many specialized files) and short story projects (with fewer files). The function intelligently handles bilingual projects, showing both English and Spanish file names when present.
+
+*Status*: Fully implemented | *Hydra*: ~o~ (Insert section) | *Module*: ~templates/writing-project.el~
+
+** Template Language Selection (~writing-template-language~)
+
+Controls which language templates are used when creating new projects. Set to ~'en~ for English templates (novel.org, notes/, characters.org) or ~'es~ for Spanish templates (novela.org, notas/, personajes.org). This affects both novel and short story project creation. Template directories are structured as writing-templates/novel-en/, novel-es/, short-story-en/, and short-story-es/, allowing complete bilingual support throughout the package.
+
+*Status*: Fully implemented | *Hydra*: N/A (configuration) | *Module*: ~core/writing-config.el~
+
+** Git Integration
+
+Automatically initializes a git repository for new projects and creates an initial commit after template processing. This provides version control from the start of a project, enabling writers to track changes to their manuscript and planning documents. The .writing-project marker file is included in the initial commit. Projects can be easily pushed to remote repositories for backup and collaboration.
+
+*Status*: Fully implemented | *Hydra*: N/A (automatic) | *Module*: ~templates/writing-project.el~
+
+* Writing Modes
+:PROPERTIES:
+:CUSTOM_ID: writing-modes
+:END:
+
+** Distraction-Free Writing Mode (~my-writing-env-mode~)
+
+Activates a distraction-free writing environment optimized for focused writing sessions. This mode switches to a specialized writing theme (customizable via ~my-writing-env-work-theme~), applies a larger writing-optimized font preset, and enables writeroom-mode with centered text at a comfortable width (default 80 columns). The mode changes visual presentation without affecting file content, and all settings restore automatically when the mode is disabled. Only one writing mode can be active at a time for clean state management.
+
+*Status*: Fully implemented | *Hydra*: ~m~ (Modes section) | *Module*: ~modes/writing-modes.el~
+
+** Focus Writing Mode (~my-writing-env-mode-focus~)
+
+Extends the distraction-free writing mode by adding automatic narrowing to the current org section. This creates an ultra-focused environment where only the current scene or chapter is visible, eliminating distractions from other parts of the manuscript. The mode activates the full distraction-free environment (theme, font, writeroom) and then narrows the buffer to the org subtree at point. When disabled, it widens the buffer back to full view and restores the normal environment.
+
+*Status*: Fully implemented | *Hydra*: ~f~ (Modes section) | *Module*: ~modes/writing-modes.el~
+
+** Project Writing Mode (~project-writing-mode~)
+
+Opens a project navigation environment by displaying both treemacs (showing the project file tree) and imenu-list (showing the current file's outline) in side windows. This creates a three-panel layout: file tree on the left, main document in the center, and document outline on the right. Ideal for navigating large projects with many files and long documents. The mode gracefully handles missing dependencies (treemacs, imenu-list) with warnings if they're not available. Focus automatically returns to the original buffer after opening the side panels.
+
+*Status*: Fully implemented | *Hydra*: ~p~ (Modes section) | *Module*: ~modes/writing-modes.el~
+
+** Editing Mode (~writing/editing-mode~)
+
+Creates a specialized three-panel layout optimized for editing and revision work. The main document appears in the center with comfortable visual-fill-column formatting, while side panels on the left and right can display reference files (notes, character profiles, timeline, etc.). This mode uses a bright editing theme (default: leuven) for clear visibility of markup and structure. Panel widths are customizable via ~writing-editing-left-width-percent~ and ~writing-editing-right-width-percent~. The mode includes font preset support via fontaine for optimal editing clarity.
+
+*Status*: Fully implemented | *Hydra*: ~e~ (Modes section) | *Module*: ~modes/writing-modes.el~
+
+** Mode Mutual Exclusivity
+
+All four writing modes are mutually exclusive - activating one automatically deactivates any currently active mode. This prevents conflicting visual settings and state management issues. Each mode tracks its own state in buffer-local variables and provides clean activation/deactivation functions. When switching modes, the previous mode fully restores settings (theme, font, window configuration) before the new mode applies its configuration, ensuring smooth transitions without visual artifacts.
+
+*Status*: Fully implemented | *Hydra*: N/A (automatic behavior) | *Module*: ~modes/writing-modes.el~
+
+* Word Counting & Tracking
+:PROPERTIES:
+:CUSTOM_ID: word-counting-tracking
+:END:
+
+** Accurate Word Counting (~writing/ews-org-count-words~)
+
+Provides accurate word counting that excludes Org-mode metadata (properties, drawers, comments, keywords, tags) to count only actual narrative content. Delegates to ~org-context-extended~ for precise context-aware counting. Can count the current heading and add the word count as a ~:WORDCOUNT:~ property, count the entire buffer, or count from the current heading down through all subheadings. This feature populates properties that feed into progress tracking tables and ensures word count accuracy for writers who use extensive org metadata.
+
+*Status*: Fully implemented | *Hydra*: ~a~ (Tools section) | *Module*: ~counting/writing-wordcount.el~
+
+** Interactive Word Count Display (~org-context-count-words~)
+
+Displays an interactive word count for the current selection, heading, or entire buffer using ~org-context-extended~. Results are shown in the minibuffer with a breakdown of where words were counted (heading vs content, whether metadata was excluded, etc.). This is the quick-access counting function for immediate feedback without modifying properties. The function respects org context, so counting a heading includes its content and subheadings.
+
+*Status*: Fully implemented (via org-context-extended) | *Hydra*: ~w~ (Tools section) | *Module*: External dependency
+
+** Progress Tracking Tables (~org-tracktable~)
+
+Generates dynamic progress tracking tables that combine word counts from ~:WORDCOUNT:~ properties with target goals from ~:WORD-OBJECTIVE:~ properties to calculate completion percentages automatically. The tables show hierarchical structure (Acts → Chapters → Scenes) with columns for current wordcount, objective, and auto-calculated progress. Tables are created with ~#+BEGIN: org-generate-wordcount-table~ and updated by pressing ~C-c C-c~. The ~org-tracktable-write~ function from the org-tracktable package handles table generation.
+
+*Status*: Fully implemented (via org-tracktable) | *Hydra*: ~r~ (Tools section) | *Module*: External dependency
+
+** Daily Progress Tracking (~writing/track-progress~)
+
+Provides session-based writing progress tracking by recording word count changes over time. This feature complements the static wordcount tables by showing how many words were written each day. Uses org-tracktable's time-based tracking to maintain a history of progress, helping writers see momentum and maintain accountability. Daily tracking data can be displayed as tables or graphs to visualize writing habits and productivity patterns.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~counting/writing-tracking.el~
+
+** Word Count Properties
+
+The package uses two standard properties for word count management: ~:WORDCOUNT:~ (auto-calculated actual count) and ~:WORD-OBJECTIVE:~ (manually set target). These properties enable org-mode's powerful property-based features including columnview summaries, searches, and dynamic blocks. Properties can be added to any heading level (scene, chapter, act, or entire novel), creating flexible tracking granularity. The properties integrate with the linking system, appearing in search results and column view displays.
+
+*Status*: Fully implemented | *Hydra*: N/A (property standard) | *Module*: Multiple modules
+
+* Capture System
+:PROPERTIES:
+:CUSTOM_ID: capture-system
+:END:
+
+** Project-Aware Note Capture (~writing/capture-to-file~)
+
+Captures quick notes to the appropriate notes file for the current project type. For novel projects, notes go to notes/notes.org under a "Notes" heading. For short story projects, notes go to the consolidated notes.org file under its "Notes" heading. The capture template includes a timestamp and supports initial content from the region. Files are auto-created if missing with proper structure. This provides a quick way to capture ideas without leaving the writing flow.
+
+*Status*: Fully implemented | *Hydra*: ~n~ (Capture section) | *Module*: ~capture/writing-capture.el~
+
+** Character Profile Capture (~writing/capture-character~)
+
+Opens a comprehensive character capture template that prompts for all essential character information: name, role (protagonist/antagonist/supporting/minor), age, gender, occupation, and first appearance chapter. The template includes structured sections for physical description, personality traits, background, goals/motivation/conflict (both internal and external), character arc, and relationships. Characters are automatically assigned unique IDs via ~%(org-id-new)~ for the linking system. Captures go to plan/characters.org (novels) or notes.org under "Characters" (short stories).
+
+*Status*: Fully implemented | *Hydra*: ~h~ (Capture section) | *Module*: ~capture/writing-capture.el~
+
+** Location Profile Capture (~writing/capture-location~)
+
+Captures detailed location profiles with prompts for name, type (city/building/room/natural/region/country), importance (major/supporting/minor), first appearance, climate, and population. The template includes sections for general description, geography, cultural aspects & society, history, notable features, plot importance, specific places, atmosphere & mood, and map references. Locations receive automatic unique IDs for the linking system. Captures go to plan/locations.org (novels) or notes.org under "Setting → Locations" (short stories).
+
+*Status*: Fully implemented | *Hydra*: ~l~ (Capture section) | *Module*: ~capture/writing-capture.el~
+
+** Object Profile Capture (~writing/capture-object~)
+
+Captures important objects with prompts for name, type (magical/artifact/weapon/tool/symbolic/technology), owner, first appearance, and status (active/lost/destroyed/hidden). The template structures sections for physical description, origin, properties, plot importance, object history, symbolism, current location, and rules & limitations. Objects get unique IDs automatically. Particularly useful for tracking magical items, MacGuffins, symbolic objects, or important props. Captures go to plan/objects.org (novels) or notes.org under "Objects" (short stories).
+
+*Status*: Fully implemented | *Hydra*: ~b~ (Capture section, "oBject") | *Module*: ~capture/writing-capture.el~
+
+** Timeline Event Capture (~writing/capture-timeline~)
+
+Captures story timeline events with prompts for event name, type (action/revelation/character/world/backstory), relevance level, date/time in story, duration, characters involved, location, and chapter. The template includes sections for description, consequences, and connections to other events. Events receive automatic unique IDs. This is essential for tracking complex timelines, multiple plot threads, or stories with non-linear narratives. Captures go to plan/timeline.org (novels) or notes.org under "Timeline" (short stories).
+
+*Status*: Fully implemented | *Hydra*: ~t~ (Capture section) | *Module*: ~capture/writing-capture.el~
+
+** Auto-Creation of Target Files
+
+All capture functions automatically create their target files if they don't exist. For novel projects, separate plan/ files are created with appropriate structure. For short story projects, a comprehensive notes.org file is created with all necessary headings (Characters, Plot Outline, Setting → Locations, Objects, Timeline, Research, Revision Notes, Random Ideas). This ensures capture works even in brand new or minimal projects, reducing friction for writers who prefer to build structure as they write.
+
+*Status*: Fully implemented | *Hydra*: N/A (automatic) | *Module*: ~capture/writing-capture.el~
+
+** Bilingual Capture Support
+
+Capture functions automatically detect and work with both English and Spanish project structures. File names adapt: characters.org/personajes.org, locations.org/localizaciones.org, objects.org/objetos.org, timeline.org/cronologia.org, notes.org/notas.org. Templates are populated based on the ~writing-template-language~ setting. This allows Spanish-language writers to work in their native language while using all package features.
+
+*Status*: Fully implemented | *Hydra*: N/A (automatic) | *Module*: ~capture/writing-capture.el~
+
+* Linking System
+:PROPERTIES:
+:CUSTOM_ID: linking-system
+:END:
+
+** Character ID-Based Linking
+
+Provides ID-based links between scene properties and character profiles, allowing click-to-navigate from scene ~:PoV:~ and ~:Characters:~ properties directly to character profile headings. Characters captured via ~writing/capture-character~ automatically get unique IDs via ~%(org-id-new)~ in the template. Menu-based functions (~writing/set-pov-character~, ~writing/set-scene-characters~) allow selecting characters from a searchable list and auto-insert ID links. Links are stable across character name changes and work with org's native link following (~C-c C-o~).
+
+*Status*: Fully implemented | *Hydra*: ~C~ submenu | *Module*: ~linking/writing-character-links.el~
+
+** Set PoV Character (~writing/set-pov-character~)
+
+Scans the characters file for all character profiles (identified by ~:Role:~ or ~:TYPE:~ properties and unique IDs), presents them in a completion menu, and inserts the selected character as an ID link in the current scene's ~:PoV:~ property. The link format is ~[[id:unique-id][Character Name]]~, providing both human readability and stable navigation. This function saves time compared to manually typing character names and ensures consistency across the manuscript.
+
+*Status*: Fully implemented | *Hydra*: ~C p~ (Character submenu) | *Module*: ~linking/writing-character-links.el~
+
+** Set Scene Characters (~writing/set-scene-characters~)
+
+Similar to setting PoV, but allows multi-selection of characters for the ~:Characters:~ property. Characters are presented in a completion menu where you can select multiple names (one at a time, pressing RET between selections, empty input to finish). The function creates comma-separated ID links like ~[[id:id1][Alice]], [[id:id2][Bob]]~ in the Characters property. This tracks which characters appear in each scene, enabling character timeline generation and character-based searches.
+
+*Status*: Fully implemented | *Hydra*: ~C c~ (Character submenu) | *Module*: ~linking/writing-character-links.el~
+
+** Jump to PoV Character (~writing/jump-to-pov-character~)
+
+Reads the ~:PoV:~ property of the current scene heading, extracts the ID from the link, and navigates directly to that character's profile using org's ID-based navigation. Works in both the same file and across files. After jumping, you can return to the original location using ~C-c &~ (org-mark-ring-goto). This provides instant access to character details while writing scenes, eliminating manual searching through the characters file.
+
+*Status*: Fully implemented | *Hydra*: ~C j~ (Character submenu) | *Module*: ~linking/writing-character-links.el~
+
+** Location ID-Based Linking
+
+Provides the same ID-based linking infrastructure for locations as exists for characters. Location profiles captured via ~writing/capture-location~ get automatic unique IDs. The ~writing/set-scene-locations~ function presents a multi-select menu of all locations in the project and inserts ID links into the scene's ~:Location:~ property. This enables click-to-navigate to detailed location profiles and supports location-based searches to find all scenes set in a particular place.
+
+*Status*: Fully implemented | *Hydra*: ~L~ submenu | *Module*: ~linking/writing-location-links.el~
+
+** Set Scene Locations (~writing/set-scene-locations~)
+
+Scans plan/locations.org (or notes.org for short stories) for all location entries with ~:Type:~ properties and IDs, presents them in a multi-select completion menu, and inserts comma-separated ID links in the ~:Location:~ property. Locations can include cities, buildings, rooms, natural settings, regions, or countries. Multiple locations per scene are supported (useful for travel scenes or scenes that span locations). The menu shows location names extracted from heading text or ~:NAME:~ properties.
+
+*Status*: Fully implemented | *Hydra*: ~L c~ (Location submenu) | *Module*: ~linking/writing-location-links.el~
+
+** Plot Thread ID-Based Linking
+
+Provides ID-based linking for plot threads, enabling tracking of which plot lines appear in which scenes. Plot thread profiles in plan/plot.org receive automatic IDs. The ~writing/set-scene-plot-threads~ function presents a multi-select menu of all plot threads and inserts ID links into the scene's ~:Plot:~ property. This enables generating plot thread timelines (showing which scenes advance which plots), analyzing plot distribution, and identifying gaps in plot coverage.
+
+*Status*: Fully implemented | *Hydra*: ~P~ submenu | *Module*: ~linking/writing-plot-links.el~
+
+** Set Scene Plot Threads (~writing/set-scene-plot-threads~)
+
+Scans the plot file for all plot thread entries (headings with ~:Type:~ property set to "Main", "Subplot", "Arc", or similar, plus unique ID), presents them in a multi-select menu, and inserts ID links in the ~:Plot:~ property as ~[[id:id1][Main Plot]], [[id:id2][Romance Subplot]]~. Multiple plot threads per scene are common in complex narratives. This function helps writers ensure plot threads are advanced regularly and no plots are abandoned or forgotten.
+
+*Status*: Fully implemented | *Hydra*: ~P p~ (Plot submenu) | *Module*: ~linking/writing-plot-links.el~
+
+** Jump to Plot Thread (~writing/jump-to-plot-thread~)
+
+Reads the ~:Plot:~ property of the current scene, presents a menu if multiple plot threads are linked, and navigates to the selected plot thread's profile using ID-based navigation. This provides quick access to plot thread details, story beats, and planning notes while writing scenes that advance that plot. The jump works across files and supports returning via org-mark-ring (~C-c &~).
+
+*Status*: Fully implemented | *Hydra*: ~P j~ (Plot submenu) | *Module*: ~linking/writing-plot-links.el~
+
+** Character Timeline Generation
+
+Generates a dynamic table showing which characters appear in which scenes, with distinction between PoV characters (◆) and other appearances (●). The dynamic block ~#+BEGIN: character-timeline~ scans all scenes (level-3 headings) in the manuscript, extracts ~:PoV:~ and ~:Characters:~ properties, collects unique characters, and builds a presence matrix. PoV takes precedence (a character won't show both ◆ and ● in the same scene). Update the table by pressing ~C-c C-c~ on the block. Useful for checking character coverage and PoV balance.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (dynamic block) | *Module*: ~linking/writing-character-links.el~
+
+** Plot Thread Timeline Generation
+
+Generates a dynamic table showing which plot threads appear in which scenes using the symbol ● for presence. The dynamic block ~#+BEGIN: plot-thread-timeline~ scans all scenes for ~:Plot:~ properties, collects unique plot threads, and creates a visual timeline matrix. Each plot thread gets a column, each scene gets a row, and ● marks where they intersect. Update with ~C-c C-c~. This helps identify plot gaps (threads that disappear for many scenes), plot convergence (multiple threads in one scene), and overall plot pacing.
+
+*Status*: Fully implemented | *Hydra*: ~P t~ (Plot submenu) | *Module*: ~linking/writing-plot-links.el~
+
+** Plot Thread Health Report (~writing/plot-thread-report~)
+
+Analyzes all plot threads in the manuscript and generates a health report identifying potential problems: threads with low coverage (<30% of scenes), threads with large gaps (>10 scenes without appearance), threads that only appear once, and threads that appear in consecutive scenes (which might need better pacing). The report displays in a temporary buffer with color-coded warnings and recommendations. This helps writers identify neglected plot threads, over-used threads, and pacing issues before they become structural problems.
+
+*Status*: Fully implemented | *Hydra*: ~P r~ (Plot submenu) | *Module*: ~linking/writing-plot-links.el~
+
+** Plot Thread Statistics (~writing/plot-thread-stats~)
+
+Displays quick statistics about plot thread usage in the minibuffer: total number of unique plot threads in the manuscript, total number of scenes with plot thread tags, and per-thread appearance counts sorted by frequency. This provides a quick health check without opening a full report buffer. Useful for getting a snapshot of plot distribution during drafting or revision.
+
+*Status*: Fully implemented | *Hydra*: ~P S~ (Plot submenu) | *Module*: ~linking/writing-plot-links.el~
+
+** Batch Link Conversion
+
+Provides functions to convert existing plain-text character/location/plot references to ID links in bulk. ~writing/link-scene-characters~ converts the current scene, while ~writing/link-all-scene-characters~ processes the entire manuscript. For each property value, the function looks up the name in the database (characters/locations/plot files), finds the matching ID, and replaces plain text with ID links. Useful when migrating existing projects to the linking system or when writers initially use plain text and want to upgrade to linked references later.
+
+*Status*: Fully implemented | *Hydra*: ~C L~, ~L L~, ~P L~ (various submenus) | *Module*: All three linking modules
+
+** Setup Wizards
+
+Each linking system (characters, locations, plot threads) includes a one-time setup wizard (~writing/setup-character-links~, ~writing/setup-location-links~, ~writing/setup-plot-thread-links~). The wizard: (1) adds IDs to all existing profiles that lack them, (2) asks if you want to convert existing scene properties to links, and (3) confirms the setup is complete. Running the wizard on an existing project enables all linking features retroactively. Wizards are idempotent - running them multiple times is safe.
+
+*Status*: Fully implemented | *Hydra*: ~C s~, ~L s~, ~P s~ (various submenus) | *Module*: All three linking modules
+
+** Add IDs to Existing Entries
+
+Each linking module provides a function to add unique IDs to profiles that don't have them: ~writing/add-character-ids~, ~writing/add-location-ids~, ~writing/add-plot-thread-ids~. These scan the respective files for headings with identifying properties (~:Role:~ for characters, ~:Type:~ for locations and plots) and add ~:ID:~ properties using org-id-get-create. The functions report how many IDs were added. This is the first step in enabling linking in existing projects that were created before the linking system existed.
+
+*Status*: Fully implemented | *Hydra*: ~C i~, ~L i~, ~P i~ (various submenus) | *Module*: All three linking modules
+
+* Search Tools
+:PROPERTIES:
+:CUSTOM_ID: search-tools
+:END:
+
+** Find Scenes by PoV (~writing/org-find-pov~)
+
+Searches the entire manuscript for all scenes with a specific PoV character. Uses org-ql to find headings where the ~:PoV:~ property contains the specified character name (supports both plain text and ID link format via ~writing--property-contains-p~). Results display in an ~*org-ql-search*~ buffer with clickable links to each scene. The search is case-sensitive and partial matches work (searching "Alex" finds "Alex Rivera"). Useful for tracking PoV distribution, checking a character's arc, or finding all scenes written from a particular perspective.
+
+*Status*: Fully implemented | *Hydra*: ~1~ (Search section) | *Module*: ~search/writing-search.el~
+
+** Find Scenes by Character (~writing/org-find-character~)
+
+Searches for all scenes where a specific character appears (in either ~:PoV:~ or ~:Characters:~ properties). Uses org-ql with an OR query to check both properties. Handles both plain-text character names and ID links. Results show all scenes featuring the character, regardless of whether they're the PoV character or a supporting character in that scene. Essential for tracking character appearances, ensuring major characters appear regularly, and finding all scenes for character-arc revision.
+
+*Status*: Fully implemented | *Hydra*: ~2~ (Search section) | *Module*: ~search/writing-search.el~
+
+** Find Scenes by Plot Thread (~writing/org-find-plot~)
+
+Searches for all scenes tagged with a specific plot thread in the ~:Plot:~ property. Accepts partial matches, so searching "Romance" finds "Romance Subplot". Handles both plain text and ID links. Results display in chronological order (by position in manuscript), showing how a plot thread develops through the story. This helps writers check plot pacing, identify gaps in plot coverage, and ensure all plot threads are resolved by the end.
+
+*Status*: Fully implemented | *Hydra*: ~3~ (Search section) | *Module*: ~search/writing-search.el~
+
+** Find Scenes by Location (~writing/org-find-location~)
+
+Searches for all scenes set in a specific location using the ~:Location:~ property. Supports partial matches and handles both plain text and ID links. Results show all scenes at that location in manuscript order. Useful for checking setting variety (are too many scenes in the same location?), ensuring locations are used effectively, and finding all scenes to revise when location details change. Can search for broad locations (like "Paris") or specific ones (like "Coffee Shop").
+
+*Status*: Fully implemented | *Hydra*: ~4~ (Search section) | *Module*: ~search/writing-search.el~
+
+** Recursive TODO Search (~writing/search-todos-recursive~)
+
+Searches the entire project recursively for all TODO items, collecting them from the manuscript, planning files, notes, and any other org files in the project. Uses org-ql to find headings with TODO states and displays them in a consolidated searchable buffer. This provides project-wide TODO tracking without maintaining a separate task file. Useful for finding revision notes, plot holes to fix, research needed, or any other tagged tasks scattered across project files.
+
+*Status*: Fully implemented | *Hydra*: ~5~ (Search section) | *Module*: ~search/writing-search.el~
+
+** ID Link Text Extraction (~writing--extract-link-text~)
+
+Internal helper function that extracts display text from ID links, handling single links, multiple comma-separated links, and mixed plain-text-and-links. For ~[[id:abc123][Alex Rivera]]~ it returns "Alex Rivera". For ~[[id:abc][Alex]], [[id:def][Sam]]~ it returns "Alex, Sam". This function is used by search functions, column view, and timeline generation to present clean text to users while maintaining the link infrastructure under the hood. The function is bulletproof with whitespace handling and edge-case coverage.
+
+*Status*: Fully implemented | *Hydra*: N/A (internal helper) | *Module*: ~search/writing-search.el~
+
+* Templates
+:PROPERTIES:
+:CUSTOM_ID: templates
+:END:
+
+** Scene Template Insertion (~writing-insert-scene~)
+
+Inserts a complete scene template with TODO state, placeholder title, and comprehensive scene properties at the current heading. The template includes: ~:PoV:~, ~:Characters:~, ~:Plot:~, ~:Timeline:~, ~:Location:~, ~:Description:~, ~:Summary:~, ~:Scene-motivation:~, ~:Conflict-source:~, ~:What-is-at-stake:~, ~:Emotion:~, ~:Comment:~, ~:WORDCOUNT:~, and ~:WORD-OBJECTIVE:~. These properties integrate with search functions, linking system, word counting, and progress tracking. The function prompts for scene title and automatically creates the heading at the appropriate level (level 3 for novels, following the Act → Chapter → Scene hierarchy).
+
+*Status*: Fully implemented | *Hydra*: ~s~ (Insert section) | *Module*: ~templates/writing-project.el~
+
+** Chapter Template Insertion (~writing-insert-chapter~)
+
+Inserts a chapter template with TODO state, title prompt, and chapter-level properties (~:WORDCOUNT:~, ~:WORD-OBJECTIVE:~). Chapters are inserted at level 2 (under Act headings in the 3-act structure). The template provides a starting point that can be customized, and scenes can be inserted under chapters using ~writing-insert-scene~. The function detects the project structure to insert at the correct level.
+
+*Status*: Fully implemented | *Hydra*: ~c~ (Insert section) | *Module*: ~templates/writing-project.el~
+
+** Project Template System
+
+The template system processes directories of .template files recursively, performing variable substitution for ~${TITLE}~, ~${AUTHOR}~, and ~${DATE}~. Templates support both novels (12-13 files with separate planning documents) and short stories (3 files with consolidated structure). Template processing removes the .template extension, creates target directories as needed, and preserves file permissions. This system makes it trivial to add new project types or customize existing templates without code changes.
+
+*Status*: Fully implemented | *Hydra*: N/A (used by project creation) | *Module*: ~templates/writing-project.el~
+
+** Template Customization
+
+Users can customize templates by editing files in ~writing-template-directory~ (defaults to the package's writing-templates/ directory). Changes affect all new projects created after modification. Templates can include any org-mode features: dynamic blocks, formulas, custom properties, keywords, export settings, etc. The ~writing-edit-templates~ function provides quick access to the template directory for customization.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~templates/writing-project.el~
+
+* Dictionary & Language Tools
+:PROPERTIES:
+:CUSTOM_ID: dictionary-language
+:END:
+
+** RAE Dictionary Lookup (~writing/rae-api-lookup~)
+
+Queries the Real Academia Española (RAE) API for Spanish word definitions, displaying results in a side window. The function fetches complete dictionary entries including definitions, examples, etymology, and verb conjugations (for verbs). Results are formatted for readability with conjugation tables and multiple definition senses clearly separated. The lookup uses the official RAE API endpoints and handles Spanish-specific characters correctly. Ideal for Spanish-language writers who need authoritative dictionary references while writing.
+
+*Status*: Fully implemented | *Hydra*: ~d~ (Tools section) | *Module*: ~language/writing-dictionary.el~
+
+** RAE Random Word (~writing/rae-api-random~)
+
+Fetches a random word from the RAE dictionary, displaying its full definition in a side window. This can serve as a vocabulary-building exercise, a writing prompt, or a way to discover interesting words to incorporate into writing. The function uses the RAE's random word endpoint and presents the result in the same formatted display as ~writing/rae-api-lookup~. Useful during brainstorming or when seeking inspiration.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~language/writing-dictionary.el~
+
+** Spanish Synonym Lookup (~writing/sinonimo~)
+
+Queries WordReference.com's Spanish synonym database and displays results in a customizable-width side window (default 80 columns, configurable via ~writing/sinonimo-window-width~). The function extracts and formats synonym lists by part of speech, making it easy to find alternatives for nouns, verbs, adjectives, etc. separately. This is essential for Spanish writers avoiding repetition and finding the precise word for context. The window can be easily dismissed when done.
+
+*Status*: Fully implemented | *Hydra*: ~y~ (Tools section, "sYnonyms") | *Module*: ~language/writing-dictionary.el~
+
+** English Thesaurus (powerthesaurus)
+
+Integration with the powerthesaurus package provides English synonym and antonym lookup using the PowerThesaurus.org API. The function ~powerthesaurus-lookup-dwim~ looks up the word at point or prompts for a word, displaying alternatives in a searchable buffer. While not part of emacs-writing's code, the package declares this function for hydra integration, making it accessible alongside Spanish language tools for bilingual writers.
+
+*Status*: Optional (requires powerthesaurus package) | *Hydra*: Not in menu (available if installed) | *Module*: External dependency
+
+** Translation (gt)
+
+The package declares integration with the gt (Google Translate) package for on-the-fly translation between languages. While not providing its own translation code, emacs-writing ensures translation tools are available in the writing workflow. Useful for bilingual writers or those writing in a second language who need quick translation checks. The gt package supports many languages and multiple translation engines.
+
+*Status*: Optional (requires gt package) | *Hydra*: Not in menu (available if installed) | *Module*: External dependency
+
+* Export Tools
+:PROPERTIES:
+:CUSTOM_ID: export-tools
+:END:
+
+** Scene Break Filter (~org-export-replace-scene-breaks~)
+
+Automatically replaces ~SCENE-BREAK~ markers with backend-appropriate scene separators during org export. Writers add ~#+MACRO: scene-break SCENE-BREAK~ to their manuscript, then use ~{{{scene-break}}}~ wherever they want scene breaks. During export, the filter replaces these markers with: ~\n***\n~ for ASCII/Markdown/Man, ~<br><br><br>~ for HTML, ~\vspace~ commands for LaTeX, or custom strings defined in ~writing/scene-break-replacements~. This ensures consistent scene break formatting across all export formats without manually editing exports.
+
+*Status*: Fully implemented | *Hydra*: N/A (automatic on export) | *Module*: ~export/writing-export.el~
+
+** Scene Break Customization (~writing/scene-break-replacements~)
+
+An alist mapping export backend symbols to replacement strings: ~'((ascii . "\\n***\\n\\n") (html . "<br><br><br>\\n") (latex . "\\vspace{...}") (t . "\\n\\n\\n"))~. Users can customize this to match publisher requirements, personal preferences, or specific export needs. The key ~t~ serves as default for backends not explicitly listed. Advanced users can add entries for any org export backend (epub, odt, markdown, etc.).
+
+*Status*: Fully implemented | *Hydra*: N/A (configuration) | *Module*: ~core/writing-config.el~
+
+** Export Configurations in Templates
+
+Project templates include comprehensive export configuration blocks for LaTeX, ODT, HTML, and EPUB. These blocks set up professional manuscript formatting with appropriate fonts, spacing, margins, and styles. Novel templates include configurations optimized for long-form fiction, while short story templates include settings for shorter works. Writers can customize these configurations per-project or modify the templates for all new projects.
+
+*Status*: Fully implemented | *Hydra*: N/A (in templates) | *Module*: Template files
+
+* Column View Enhancements
+:PROPERTIES:
+:CUSTOM_ID: column-view
+:END:
+
+** Automatic Link Stripping in Column View
+
+When using org-mode's column view (~org-columns~), ID links in properties are automatically displayed as clean text instead of full link syntax. For example, ~[[id:char-alex-001][Alex Rivera]]~ displays as just "Alex Rivera" in the column. Multiple links are handled: ~[[id:char1][Alex]], [[id:char2][Sam]]~ displays as "Alex, Sam". This makes column view readable and professional-looking while preserving the underlying links for navigation. The feature works for all properties: PoV, Characters, Plot, Location.
+
+*Status*: Fully implemented | *Hydra*: N/A (automatic) | *Module*: ~linking/writing-column-view.el~
+
+** Column View Toggle (~writing-column-view-strip-links~)
+
+The link-stripping feature can be toggled via the customization variable ~writing-column-view-strip-links~ (default: t). Set to nil to see full link syntax in column view. Interactive commands ~writing-column-view-enable~, ~writing-column-view-disable~, and ~writing-column-view-toggle~ allow runtime control without restarting Emacs. Disabling shows full ~[[id:...][Text]]~ syntax, which can be useful for debugging link issues or verifying link structure.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~linking/writing-column-view.el~
+
+** Column View Configuration
+
+To use column view with writing projects, add a ~#+COLUMNS~ line to your manuscript file specifying which properties to display: ~#+COLUMNS: %25ITEM %TODO %PoV %Characters %Plot %Location~. Then press ~C-c C-x C-c~ to activate column view. The display shows a spreadsheet-like table of all headings with the specified properties as columns. Property values with ID links display cleanly thanks to the automatic link stripping. Column view is ideal for getting an overview of scene metadata or editing properties in bulk.
+
+*Status*: Fully implemented (org-mode feature, enhanced by package) | *Hydra*: N/A (native org-mode) | *Module*: Native org-mode + enhancement
+
+* UI & Navigation
+:PROPERTIES:
+:CUSTOM_ID: ui-navigation
+:END:
+
+** Unified Hydra Menu (~hydra-writing/body~)
+
+Provides a single-keystroke menu for accessing all emacs-writing features. Activated via ~F8 F8~ (default keybinding), the hydra displays a formatted menu organized into sections: Insert (scene/chapter), Modes (writing/focus/project/editing), Capture (notes/character/location/object/timeline), Tools (word count/tracking/dictionary), Search (by PoV/character/plot/location/TODOs), and Manage (character/location/plot linking submenus). Each function is accessible via a single key. The hydra uses color-coded hints and grouped layout for quick visual scanning.
+
+*Status*: Fully implemented | *Hydra*: ~F8 F8~ (global keybinding) | *Module*: ~ui/writing-hydra.el~
+
+** Character Linking Submenu (~hydra-writing-characters/body~)
+
+A specialized hydra submenu accessed via ~F8 F8 C~ providing access to all character linking functions: set PoV character (p), set scene characters (c), jump to PoV character (j), link scene characters (l), link all scene characters (L), add IDs to characters (i), and setup linking system (s). The submenu includes a back key (q) to return to the main hydra. This organization keeps the main hydra clean while providing deep access to specialized features.
+
+*Status*: Fully implemented | *Hydra*: ~F8 F8 C~ | *Module*: ~ui/writing-hydra.el~
+
+** Location Linking Submenu (~hydra-writing-locations/body~)
+
+Accessed via ~F8 F8 L~, this submenu provides: set scene locations (c), link scene locations (l), link all scenes (L), add IDs to locations (i), and setup linking system (s). Mirrors the character linking submenu structure for consistency. The menu is context-aware - functions operate on the current scene heading or the entire manuscript buffer as appropriate.
+
+*Status*: Fully implemented | *Hydra*: ~F8 F8 L~ | *Module*: ~ui/writing-hydra.el~
+
+** Plot Thread Linking Submenu (~hydra-writing-plot-threads/body~)
+
+Accessed via ~F8 F8 P~, this submenu provides plot thread management (p: set plot threads, j: jump to thread, l: link scene, L: link all, i: add IDs, s: setup) plus unique analysis features (t: timeline table instruction, r: health report, S: statistics). The inclusion of analysis tools in this submenu reflects the plot-thread system's advanced analytical capabilities not present in character/location linking.
+
+*Status*: Fully implemented | *Hydra*: ~F8 F8 P~ | *Module*: ~ui/writing-hydra.el~
+
+** Global Keybindings
+
+The package provides minimal global keybindings to avoid conflicts: ~F8 F8~ for the hydra menu and ~C-c W~ for quick note capture. These are set up via the ~emacs-writing-mode~ minor mode keybindings. Additional keybindings can be configured by users but the package defaults to hydra access to minimize namespace pollution. The function ~emacs-writing-setup~ adds an org-mode hook to enable the minor mode automatically in all org buffers.
+
+*Status*: Fully implemented | *Hydra*: N/A (core keybindings) | *Module*: ~emacs-writing.el~
+
+** Emacs Writing Mode (~emacs-writing-mode~)
+
+A minor mode that provides the package's keybindings and lighter (~" Write"~ in the modeline). When enabled in an org-mode buffer, it activates the hydra menu keybinding and capture keybinding. The mode can be enabled manually or automatically via ~emacs-writing-setup~ which adds it to ~org-mode-hook~. The mode is buffer-local and integrates cleanly with other org-mode configurations.
+
+*Status*: Fully implemented | *Hydra*: N/A (core mode) | *Module*: ~emacs-writing.el~
+
+* Configuration
+:PROPERTIES:
+:CUSTOM_ID: configuration
+:END:
+
+** Template Directory (~writing-template-directory~)
+
+Points to the directory containing project templates (novel-en/, novel-es/, short-story-en/, short-story-es/). Defaults to the package's bundled templates but can be customized to point to user templates. This allows writers to maintain custom project structures while still using the package's project creation functions. Templates are processed recursively with variable substitution for ${TITLE}, ${AUTHOR}, and ${DATE}.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~templates/writing-project.el~
+
+** Writing Stories Directory (~writing-stories-directory~)
+
+Specifies where writing exercise files will be created (default: ~/writing/exercises). This directory is used by functions that generate writing prompts or exercises. Writers who maintain separate directories for exercises vs. actual projects can point this elsewhere to keep exercises organized separately from main work.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/writing-config.el~
+
+** Writing Mode Themes
+
+Four theme customization variables control the visual environment of different writing modes: ~my-writing-env-normal-theme~ (default: ef-deuteranopia-dark), ~my-writing-env-work-theme~ (default: poet), and ~writing-editing-theme~ (default: leuven). These determine which theme is loaded when activating distraction-free mode, focus mode, or editing mode. Writers can customize these to their preferred themes for different work contexts.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/writing-config.el~
+
+** Writing Mode Fonts
+
+Font preset customization via fontaine: ~my-writing-env-normal-font~ (default: regular), ~my-writing-env-work-font~ (default: writing-big), and ~writing-editing-fontaine-preset~ (default: editing). These require the fontaine package for font preset management. Each mode switches to its configured preset, enabling different font sizes and families for drafting vs. editing vs. normal coding work.
+
+*Status*: Fully implemented (requires fontaine) | *Type*: defcustom | *Module*: ~core/writing-config.el~
+
+** Writeroom Width Settings
+
+Control the centered text width in writeroom-mode: ~my-writing-env-work-width~ (default: 80) for distraction-free mode and ~my-writing-env-normal-width~ (default: 90) for regular mode. Narrower widths (60-80) are often preferred for drafting to reduce eye movement and create a paper-like feel. Wider settings (85-100) suit editing mode where seeing more context helps. Values are in characters.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/writing-config.el~
+
+** Editing Mode Layout
+
+Three settings control editing mode's three-panel layout: ~writing-editing-left-width-percent~ (default: 0.25), ~writing-editing-right-width-percent~ (default: 0.25), and ~writing-editing-fill-column-width~ (default: 90). The percent values determine side panel widths as fractions of frame width, while fill-column-width sets the visual line wrapping in the center panel. Typical usage: 25% side panels for reference files, 50% center for the manuscript with comfortable 90-column lines.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/writing-config.el~
+
+** Scene Break Replacements
+
+The ~writing/scene-break-replacements~ alist maps export backends to scene separator strings. Customize this to match publisher requirements or personal preferences. Common customizations: different asterisk counts (~***~ vs ~* * *~), horizontal rules for HTML (~<hr>~), page breaks for LaTeX (~\\clearpage~), or custom graphics. The default key ~t~ provides fallback for unspecified backends.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/writing-config.el~
+
+** Synonym Window Width
+
+~writing/sinonimo-window-width~ (default: 80) controls the width of the side window displaying Spanish synonym results from WordReference. Narrower values (60-70) work well on smaller screens or when working in split windows. Wider values (90-100) provide more space for longer synonym lists and reduce line wrapping. The window appears on the right side by default.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/writing-config.el~
+
+** Novel File Names
+
+~writing-novel-file-names~ (default: '("novel.org" "novela.org" "manuscript.org")) defines which filenames to check when looking for the main manuscript. The project detection system tries each name in order. This allows flexibility in naming conventions - some writers prefer "manuscript.org", others "novel.org", and Spanish writers use "novela.org". Additional custom names can be added to the list.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/writing-config.el~
+
+** Notes Directory Names
+
+~writing-notes-dir-names~ (default: '("notes" "notas")) specifies directory names to try when looking for the notes directory. English projects use notes/, Spanish projects use notas/. Writers can add custom directory names to support their organizational preferences or non-English languages. The first existing directory from the list is used.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/writing-config.el~
+
+** Automatic Directory Creation
+
+~writing-create-dirs-automatically~ (default: t) controls whether the package automatically creates directories (like plan/, notes/, research/) when they're needed by capture functions or searches. When nil, functions will error if directories don't exist, giving writers full control over project structure. When t (default), convenience is prioritized - directories are created as needed.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/writing-config.el~
+
+** Word Count Ignore Tags
+
+~writing-wordcount-default-ignore-tags~ (default: '("noexport")) specifies org tags that mark headings to exclude from word counts. Headings tagged with these values (and their content) won't be counted. Useful for marking notes, meta-commentary, or cut scenes that are kept for reference but shouldn't contribute to word count targets. Additional tags can be added to customize what counts as "real" content.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/writing-config.el~
+
+** Column View Link Stripping
+
+~writing-column-view-strip-links~ (default: t) controls whether ID links are displayed as clean text in org column view. When t, ~[[id:abc][Name]]~ displays as "Name". When nil, full link syntax is shown. Disabling might be useful for debugging link structure or when working on the linking system itself, but most writers will want the clean display enabled.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~linking/writing-column-view.el~
+
+* Feature Statistics
+
+** Summary by Category
+
+| Category                  | Feature Count |
+|---------------------------+---------------|
+| Project Management        |             6 |
+| Writing Modes             |             5 |
+| Word Counting & Tracking  |             5 |
+| Capture System            |             7 |
+| Linking System            |            16 |
+| Search Tools              |             6 |
+| Templates                 |             4 |
+| Dictionary & Language     |             5 |
+| Export Tools              |             3 |
+| Column View               |             3 |
+| UI & Navigation           |             6 |
+| Configuration             |            14 |
+|---------------------------+---------------|
+| *Total Features*          |            80 |
+
+** Implementation Status
+
+All 80 features are fully implemented and tested. The package is in active use and stable (version 0.2.0).
+
+* Next Steps
+
+This feature index will serve as the foundation for detailed documentation. Each feature will receive its own dedicated documentation file with:
+
+- Complete usage instructions
+- Screenshots/examples
+- Configuration options
+- Common workflows
+- Tips and best practices
+- Troubleshooting
+
+Suggested documentation structure:
+
+#+BEGIN_SRC
+manual/
+├── 00-feature-index.org          (this file)
+├── 01-getting-started.org        (installation, basic setup)
+├── 02-project-management.org     (detailed project docs)
+├── 03-writing-modes.org          (mode documentation)
+├── 04-word-counting.org          (counting and tracking)
+├── 05-capture-system.org         (capture workflow)
+├── 06-linking-system.org         (ID-based linking guide)
+├── 07-search-tools.org           (search features)
+├── 08-templates.org              (template system)
+├── 09-language-tools.org         (dictionary features)
+├── 10-export-tools.org           (export configuration)
+├── 11-column-view.org            (column view usage)
+├── 12-ui-navigation.org          (hydra and keybindings)
+├── 13-configuration.org          (all settings)
+├── 14-workflows.org              (common workflows)
+└── 15-troubleshooting.org        (FAQ and fixes)
+#+END_SRC
+
+* Document Metadata
+
+- *Created*: 2025-11-16
+- *Last Updated*: 2025-11-16
+- *Package Version*: 0.2.0
+- *Total Features Documented*: 80
+- *Status*: Complete feature extraction, ready for detailed documentation

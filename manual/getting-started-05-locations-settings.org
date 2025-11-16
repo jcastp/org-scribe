@@ -1,0 +1,1193 @@
+#+TITLE: Lesson 5: Locations and Settings
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 5!
+
+In this lesson, you'll learn how to create and manage location profiles for your story's settings. Just like characters, locations can be captured, linked to scenes, and searched throughout your manuscript.
+
+By the end of this lesson, you'll be able to:
+- Create detailed location profiles using the capture template
+- Understand all location properties and when to use them
+- Link locations to scenes using ID-based links
+- Search for all scenes set in a specific location
+- Track setting variety across your story
+- Generate location timelines showing when and how locations are used
+
+*Estimated time*: 15-20 minutes
+
+* Prerequisites
+
+Before starting this lesson, you should have completed:
+- [[file:getting-started-01-creating-projects.org][Lesson 1: Creating Your First Project]]
+- [[file:getting-started-02-first-scene.org][Lesson 2: Writing Your First Scene]]
+- [[file:getting-started-04-capturing-characters.org][Lesson 4: Capturing Characters]] (recommended - same linking concepts)
+
+You should understand:
+- How to use the Hydra menu (F8 F8)
+- Basic Org-mode properties
+- ID-based linking (from character lesson)
+- Scene properties
+
+* Why Capture Locations?
+
+**Quick answer**: Locations ground your story in physical space and help maintain consistency.
+
+** The Problem Without Location Tracking
+
+When writing without location tracking, you might:
+- Describe a coffee shop as "small and cozy" in Chapter 1, then "spacious with high ceilings" in Chapter 5
+- Forget which scenes happen in the protagonist's apartment
+- Realize you've set 15 consecutive scenes in the same location (boring!)
+- Struggle to remember what details you've revealed about a location
+- Have inconsistent geography (the park that's sometimes downtown, sometimes uptown)
+
+** The Solution: Location Profiles
+
+Location profiles help you:
+1. **Maintain Consistency**: Reference your description instead of contradicting yourself
+2. **Track Usage**: See how often you use each setting
+3. **Balance Variety**: Ensure you're not overusing certain locations
+4. **Quick Reference**: Remember key details when writing a scene
+5. **World-Building**: Build a coherent fictional geography
+6. **Search**: Find all scenes in a specific location instantly
+
+* Understanding Location Types
+
+Before capturing locations, understand the different types:
+
+** Primary Locations
+
+Settings that appear frequently throughout your story.
+
+*Examples*:
+- Protagonist's home or apartment
+- Main workplace
+- School or university
+- Central gathering place (coffee shop, park, etc.)
+
+*When to create*: Before or during early drafting.
+
+** Secondary Locations
+
+Settings that appear multiple times but less frequently.
+
+*Examples*:
+- Friend's apartment
+- Favorite restaurant
+- Subway station
+- Library
+
+*When to create*: As you write scenes in these locations.
+
+** Minor Locations
+
+Settings that appear once or twice but are important to remember.
+
+*Examples*:
+- Hotel lobby for a key conversation
+- Rooftop where a crucial event happens
+- Specific street corner
+
+*When to create*: When consistency matters even for brief appearances.
+
+** Atmospheric Locations
+
+Settings that define your story's mood or world.
+
+*Examples*:
+- The haunted mansion (horror)
+- The starship bridge (sci-fi)
+- The medieval castle (fantasy)
+- The corporate office (contemporary drama)
+
+*When to create*: Early in planning - these shape your story's feel.
+
+* The Location Capture Template
+
+Let's explore what's in the location capture template.
+
+** Accessing the Template
+
+Press: ~F8 F8 l~ (that's F8 twice, then lowercase L for "location")
+
+Or use: ~M-x writing/capture-location~
+
+** Template Structure
+
+The template has 6 main sections:
+
+1. **Header with Properties** - Type, importance, first appearance
+2. **Physical Description** - What it looks like, sensory details
+3. **Atmosphere & Mood** - How it feels
+4. **Significance** - Why it matters to the story
+5. **Connections** - Related locations, characters who frequent it
+6. **Notes** - Writer notes and continuity details
+
+Let's examine each section in detail.
+
+* Section 1: Properties
+
+When you capture a location, you'll see these properties:
+
+#+BEGIN_EXAMPLE
+:PROPERTIES:
+:ID: location-unique-id-here
+:Type:
+:Importance:
+:First-appearance:
+:Setting:
+:Accessibility:
+:Owner:
+:Atmosphere:
+:END:
+#+END_EXAMPLE
+
+** :ID: (Automatic)
+
+A unique identifier for this location, created automatically.
+
+*Example*: ~loc-coffee-shop-20251116-001~
+
+*Purpose*: Enables clickable links from scenes to location profiles.
+
+*You don't set this* - it's automatic!
+
+** :Type:
+
+The category of location.
+
+*Common values*:
+- Residence (home, apartment)
+- Business (store, office, restaurant)
+- Public (park, library, street)
+- Institution (school, hospital, government)
+- Transportation (car, train, airport)
+- Natural (forest, beach, mountain)
+- Other (anything else)
+
+*Example*: ~Business~
+
+*Tip*: Use broad categories. You'll add specifics in the description.
+
+** :Importance:
+
+How central this location is to your story.
+
+*Values*:
+- Primary - Appears frequently, major story significance
+- Secondary - Appears multiple times, moderate importance
+- Minor - One or two appearances, but memorable
+
+*Example*: ~Primary~
+
+*Tip*: If unsure, start with Secondary. You can upgrade later.
+
+** :First-appearance:
+
+When readers first see this location.
+
+*Format*: ~Chapter X, Scene Y~ or ~Scene title~
+
+*Examples*:
+- ~Chapter 1, Scene 2~
+- ~Scene 3 - The Coffee Shop Encounter~
+- ~Opening scene~
+
+*Tip*: Fill this when you link the location to its first scene.
+
+** :Setting:
+
+Broader context - where is this location?
+
+*Examples*:
+- ~Downtown Manhattan~
+- ~Rural Ohio~
+- ~Mars Colony Alpha~
+- ~Victorian London~
+- ~The protagonist's neighborhood~
+
+*Purpose*: Shows geographic relationships between locations.
+
+** :Accessibility:
+
+Who can access this location and when?
+
+*Examples*:
+- ~Public, 24 hours~
+- ~Private residence~
+- ~Members only~
+- ~Business hours (9-5)~
+- ~Invitation required~
+
+*Tip*: This prevents plot holes (character shows up when location is closed).
+
+** :Owner:
+
+Who owns, manages, or controls this location?
+
+*Examples*:
+- ~Sarah Martinez~ (character link)
+- ~City Parks Department~
+- ~Abandoned~
+- ~Corporation XYZ~
+
+*Tip*: You can link to character profiles here if the owner is a character.
+
+** :Atmosphere:
+
+The overall feeling or mood.
+
+*Examples*:
+- ~Cozy, intimate~
+- ~Sterile, clinical~
+- ~Chaotic, energetic~
+- ~Peaceful, contemplative~
+- ~Threatening, oppressive~
+
+*Tip*: Use sensory language that evokes feeling.
+
+* Section 2: Physical Description
+
+This is the heart of your location profile.
+
+** What to Include
+
+*** Visual Details
+- Size and layout
+- Colors and lighting
+- Furniture and objects
+- Architectural features
+- View from windows
+
+*** Sensory Details
+- Sounds (traffic, music, silence)
+- Smells (coffee, flowers, exhaust)
+- Textures (smooth tables, rough brick)
+- Temperature (warm, drafty, humid)
+
+*** Time-Specific Details
+- How it changes throughout the day
+- Seasonal variations
+- Weather effects
+
+** Example: Coffee Shop
+
+#+BEGIN_EXAMPLE
+** Physical Description
+
+Downtown Coffee Collective is a narrow, deep space with exposed brick walls
+and reclaimed wood floors. Mismatched vintage chairs cluster around small
+round tables. The back wall is floor-to-ceiling bookshelves (customers leave
+books, take books). Large front windows flood the space with morning light
+but make it dim in the afternoon.
+
+The espresso machine dominates the counter - chrome and copper, always
+hissing. Smells: fresh coffee beans, cinnamon from pastries, sometimes rain
+from wet coats. Sound: indie music plays low, ceramic mugs clink, the door
+chime jingles.
+
+Busiest 7-9 AM (laptop crowd) and 3-5 PM (students). Empty 10 AM-2 PM.
+Temperature: too warm in summer (no AC), perfect in fall.
+#+END_EXAMPLE
+
+** How Much Detail?
+
+*** Minimum (5 minutes):
+- Size and basic layout
+- Key visual features
+- Dominant sensory impression
+
+*** Standard (15 minutes):
+- Above plus specific furniture/objects
+- Multiple senses (sight, sound, smell)
+- Lighting and atmosphere
+
+*** Comprehensive (30 minutes):
+- Above plus time variations
+- Weather and seasonal changes
+- Historical details or backstory
+
+*Recommendation*: Start with standard, expand when writing scenes there.
+
+* Section 3: Atmosphere & Mood
+
+How does this location *feel*?
+
+** Why This Matters
+
+The same physical space can have different atmospheres:
+- An empty church: reverent, peaceful, echoing
+- A crowded church during service: communal, joyful, energetic
+
+Atmosphere affects how characters behave and how readers feel.
+
+** What to Include
+
+- Emotional tone (welcoming, hostile, neutral, charged)
+- Energy level (frenetic, calm, tense, sleepy)
+- How it affects characters (relaxes them, puts them on edge, inspires them)
+- Cultural or social implications (formal, casual, exclusive, open)
+
+** Example: Coffee Shop
+
+#+BEGIN_EXAMPLE
+** Atmosphere & Mood
+
+Warm and welcoming but slightly bohemian - not for everyone. Regulars treat
+it like a second living room. Laptop workers claim tables for hours. The
+staff knows names and orders.
+
+There's an unspoken code: headphones mean don't talk to me, but book reading
+means you're open to chat. First-timers stand awkwardly at the counter,
+unsure of the ordering system.
+
+For Alex, this place means safety and routine. For corporate types, it's
+uncomfortably informal.
+#+END_EXAMPLE
+
+* Section 4: Significance
+
+Why does this location matter to your story?
+
+** Story Function
+
+- Plot significance (where key events happen)
+- Character significance (represents something to a character)
+- Thematic significance (symbolizes story themes)
+- Structural significance (recurring setting that frames story)
+
+** Example: Coffee Shop
+
+#+BEGIN_EXAMPLE
+** Significance
+
+This is Alex's anchor point - the story begins here and returns here
+repeatedly. It represents stability and normalcy, so when things go wrong
+elsewhere, Alex retreats here.
+
+Plot-wise:
+- Opening scene establishes daily routine
+- First meeting with Sam happens here (Chapter 1)
+- Major argument with Jordan (Chapter 8)
+- Final reconciliation scene (Chapter 15)
+
+Thematically: represents the "ordinary world" that's threatened by the
+main conflict.
+#+END_EXAMPLE
+
+* Section 5: Connections
+
+How does this location relate to others?
+
+** Geographic Connections
+
+- Adjacent locations
+- Same neighborhood or district
+- Travel time between locations
+
+** Social Connections
+
+- Characters who frequent this location
+- Events that happen here
+- Other locations with similar atmosphere
+
+** Example: Coffee Shop
+
+#+BEGIN_EXAMPLE
+** Connections
+
+*** Geographic
+- 2 blocks from Alex's apartment (5-minute walk)
+- Across from Washington Park
+- Same block as Sam's bookstore
+
+*** Frequent Visitors
+- Alex (daily morning regular)
+- Sam (occasional, afternoon)
+- Jordan (shows up twice, feels out of place)
+
+*** Similar Atmosphere
+- The bookstore (also cozy, browsing-friendly)
+- Washington Park (peaceful, contemplative)
+
+*** Contrasting Locations
+- Alex's office (sterile, corporate) - opposite feeling
+#+END_EXAMPLE
+
+* Section 6: Notes
+
+Writer notes for continuity and reminders.
+
+** What to Include
+
+- Continuity details (what's been revealed to readers)
+- Future plans (events to happen here)
+- Research needed
+- Real-world inspiration
+- Changes over time (if location evolves)
+
+** Example: Coffee Shop
+
+#+BEGIN_EXAMPLE
+** Notes
+
+*** Revealed to Reader
+- [Chapter 1] Front windows, espresso machine, brick walls
+- [Chapter 3] Bookshelf wall
+- [Chapter 5] Alex's usual table (back left corner)
+- [Chapter 8] Bathroom location (down narrow hallway)
+
+*** To Reveal Later
+- Owner's name (mention in Chapter 10)
+- Back alley entrance (needed for Chapter 12 escape scene)
+
+*** Research
+- Check typical coffee shop profit margins for owner's dialogue
+
+*** Inspiration
+Based on my local spot "Common Grounds" - but fictional version is narrower.
+
+*** Evolution
+In Chapter 14, they renovate: new paint, but keep same furniture (shows
+gentrification theme).
+#+END_EXAMPLE
+
+* Capturing a Location: Step-by-Step
+
+Let's create a location profile together.
+
+** Step 1: Invoke Capture
+
+Press: ~F8 F8 l~
+
+You'll see: ~Capture location name:~
+
+** Step 2: Enter Location Name
+
+Type: ~Downtown Coffee Collective~
+
+Press: ~Enter~
+
+The capture template opens in a new buffer.
+
+** Step 3: Fill Properties
+
+The template has property prompts:
+
+1. ~Type:~ → Type: ~Business~
+2. ~Importance:~ → Type: ~Primary~
+3. ~First-appearance:~ → Leave blank for now (fill when linking to scene)
+4. ~Setting:~ → Type: ~Downtown~
+5. ~Accessibility:~ → Type: ~Public, 6 AM - 8 PM~
+6. ~Owner:~ → Type: ~Independent~
+7. ~Atmosphere:~ → Type: ~Cozy, bohemian~
+
+Press ~Tab~ to move between prompts (or click with mouse).
+
+** Step 4: Fill Description Sections
+
+Navigate to each section and write:
+- Physical Description: 1-2 paragraphs
+- Atmosphere & Mood: 1 paragraph
+- Significance: 1 paragraph
+- Connections: List format
+- Notes: As needed
+
+** Step 5: Finalize Capture
+
+When done, press: ~C-c C-c~
+
+This saves the location profile to:
+- **Novel project**: ~plan/locations.org~
+- **Short story project**: ~notes.org~ (under "Setting → Locations")
+
+** Step 6: Verify It Saved
+
+Open your locations file and find your new location entry. It should be a level-1 heading with an ID.
+
+* Linking Locations to Scenes
+
+Once you have location profiles, link them to scenes.
+
+** Method 1: Set Location via Menu (Recommended)
+
+1. Open your manuscript (novel.org or story.org)
+2. Navigate to a scene heading
+3. Press: ~F8 F8 L L~ (capital L twice - Location menu, then Link)
+
+Or use: ~M-x writing/set-scene-location~
+
+4. You'll see a menu of all locations
+5. Select one: Press ~Enter~
+6. The scene's ~:Location:~ property is updated with an ID link
+
+** Method 2: Manual Linking
+
+If you prefer typing:
+
+1. Navigate to scene properties
+2. Find or add: ~:Location:~
+3. Type: ~[[id:location-id-here][Location Name]]~
+
+This requires knowing the location's ID. The menu method is easier!
+
+** Example
+
+Before:
+#+BEGIN_EXAMPLE
+*** Scene 1 - Morning Routine
+:PROPERTIES:
+:PoV: [[id:char-alex-001][Alex]]
+:Location: coffee shop
+:END:
+#+END_EXAMPLE
+
+After (with menu):
+#+BEGIN_EXAMPLE
+*** Scene 1 - Morning Routine
+:PROPERTIES:
+:PoV: [[id:char-alex-001][Alex]]
+:Location: [[id:loc-coffee-001][Downtown Coffee Collective]]
+:END:
+#+END_EXAMPLE
+
+* Navigating Between Scenes and Locations
+
+** Jump to Location Profile
+
+When in a scene with a linked location:
+
+1. Move cursor to the ~:Location:~ property line
+2. Press: ~C-c C-o~ (org-open-at-point)
+
+OR
+
+Press: ~F8 F8 L j~ (Location menu, jump)
+
+You jump to the full location profile!
+
+** Return to Scene
+
+After viewing the location profile:
+
+Press: ~C-c &~ (org-mark-ring-goto)
+
+You return to your original scene.
+
+** Why This Is Useful
+
+While writing:
+- "Wait, what color are the walls?" → Jump to profile, check, return
+- "How does this place smell again?" → Quick reference
+- "Who owns this place?" → Check property
+
+* Searching for Scenes by Location
+
+Find all scenes set in a specific location.
+
+** Command
+
+Press: ~F8 F8 4~ (search by location)
+
+Or use: ~M-x writing/org-find-location~
+
+** Process
+
+1. You'll see: ~Search for location:~
+2. Start typing location name: ~Coffee~
+3. Matching locations appear
+4. Select one: ~Downtown Coffee Collective~
+5. Press: ~Enter~
+
+** Results
+
+A buffer opens showing ALL scenes with that location:
+
+#+BEGIN_EXAMPLE
+Results for location "Downtown Coffee Collective":
+
+*** Scene 1 - Morning Routine
+    Chapter 1: The Beginning
+
+*** Scene 5 - Unexpected Meeting
+    Chapter 2: Complications
+
+*** Scene 12 - Confrontation
+    Chapter 4: Crisis Point
+
+Found 3 scenes.
+#+END_EXAMPLE
+
+** Use Cases
+
+- "Where have I used this location?" → See full list
+- "Am I overusing this setting?" → Count scenes
+- "What's happened here so far?" → Review all scenes
+- "Continuity check" → Ensure consistent descriptions
+
+* Tracking Setting Variety
+
+Avoid setting too many scenes in the same location.
+
+** The Problem
+
+It's easy to default to the same settings:
+- 10 scenes in Alex's apartment
+- 8 scenes in the coffee shop
+- 2 scenes everywhere else combined
+
+This gets boring for readers (and you!).
+
+** The Solution: Location Audit
+
+Periodically check location distribution:
+
+1. Search each primary location (F8 F8 4)
+2. Count scenes per location
+3. Identify overused settings
+4. Plan scenes in underused locations
+
+** Healthy Distribution (Novel)
+
+For a novel with 50-70 scenes:
+- 3-5 primary locations: 5-10 scenes each
+- 5-10 secondary locations: 2-4 scenes each
+- 10-20 minor locations: 1 scene each
+
+** Example Audit
+
+#+BEGIN_EXAMPLE
+Location Audit (30 scenes written):
+
+Primary:
+- Coffee shop: 6 scenes ✓ (balanced)
+- Alex's apartment: 11 scenes ⚠ (too many!)
+- Office: 4 scenes ✓ (balanced)
+
+Secondary:
+- Sam's bookstore: 3 scenes ✓
+- Washington Park: 2 scenes ✓
+- Subway: 1 scene ✓
+
+Minor:
+- Jordan's loft: 1 scene ✓
+- Art gallery: 1 scene ✓
+- Rooftop bar: 1 scene ✓
+
+Action: Write next 3 scenes outside Alex's apartment!
+#+END_EXAMPLE
+
+* Converting Existing Scenes
+
+Already have scenes with plain-text locations?
+
+** Convert Individual Scene
+
+1. Navigate to scene with plain-text location
+2. Press: ~F8 F8 L l~ (Location menu, link scene)
+
+Or use: ~M-x writing/link-scene-location~
+
+This finds the location name in your profiles and replaces it with an ID link.
+
+** Convert All Scenes (Batch)
+
+Press: ~F8 F8 L L~ (capital L - link all)
+
+Or use: ~M-x writing/link-all-scene-locations~
+
+This processes your entire manuscript, converting all matching location names to ID links.
+
+*Warning*: Review results! Ambiguous names might match incorrectly.
+
+* Location Timeline
+
+Like character timelines, you can visualize location usage.
+
+** What Is It?
+
+A table showing which locations appear in which scenes.
+
+** Generating Timeline
+
+In your novel.org file, find the "Location Timeline" section (or create one):
+
+#+BEGIN_EXAMPLE
+* Progress Tracking
+
+** Location Timeline
+
+#+BEGIN: location-timeline
+#+END:
+#+END_EXAMPLE
+
+Put cursor on ~#+BEGIN:~ line and press: ~C-c C-c~
+
+** Example Output
+
+#+BEGIN_EXAMPLE
+| Scene           | Chapter   | Coffee Shop | Apartment | Office | Park |
+|-----------------+-----------+-------------+-----------+--------|------|
+| Scene 1         | Chapter 1 | ●           |           |        |      |
+| Scene 2         | Chapter 1 |             | ●         |        |      |
+| Scene 3         | Chapter 1 | ●           |           |        | ●    |
+| Scene 4         | Chapter 2 |             |           | ●      |      |
+#+END_EXAMPLE
+
+** Interpreting Symbols
+
+- *●* = Scene takes place at this location
+- *(blank)* = Location not used
+
+** Use Cases
+
+1. **Visual Distribution**: See at a glance which locations dominate
+2. **Gap Detection**: Notice locations that appear once then disappear
+3. **Pattern Recognition**: See if certain locations cluster together
+4. **Variety Check**: Ensure you're moving between settings
+
+* Practical Exercise (15 minutes)
+
+Let's practice location management end-to-end.
+
+** Part 1: Capture Two Locations (7 minutes)
+
+*** Location 1: Home Setting
+
+1. Press: ~F8 F8 l~
+2. Name: ~[Protagonist's Apartment/House]~
+3. Fill properties:
+   - Type: Residence
+   - Importance: Primary
+   - Setting: [Your story's city/area]
+   - Accessibility: Private
+   - Owner: [Protagonist's name]
+   - Atmosphere: [Choose one: cozy/cramped/luxurious/messy]
+4. Write 1 paragraph of physical description
+5. Write 1 sentence about significance
+6. Press: ~C-c C-c~ to save
+
+*** Location 2: Public Setting
+
+1. Press: ~F8 F8 l~
+2. Name: ~[Park/Restaurant/Library/Store - your choice]~
+3. Fill properties:
+   - Type: Public or Business
+   - Importance: Secondary
+   - Setting: [Related to Location 1's setting]
+   - Accessibility: Public or business hours
+   - Atmosphere: [Contrasting with Location 1]
+4. Write 1 paragraph of physical description
+5. Write 1 sentence about significance
+6. Press: ~C-c C-c~ to save
+
+** Part 2: Link to Scenes (4 minutes)
+
+1. Open your manuscript
+2. Find or create a scene
+3. Press: ~F8 F8 L L~ (Location linking menu)
+4. Select Location 1
+5. Verify the ~:Location:~ property now has an ID link
+6. Navigate to another scene
+7. Repeat with Location 2
+
+** Part 3: Test Navigation and Search (4 minutes)
+
+*** Test Navigation:
+1. In a scene with linked location
+2. Press: ~C-c C-o~ on the Location property
+3. Jump to location profile → Success!
+4. Press: ~C-c &~ to return → Success!
+
+*** Test Search:
+1. Press: ~F8 F8 4~
+2. Search for one of your locations
+3. See results → Should show scene(s) you just linked
+4. Press ~q~ to close results
+
+** Success Criteria
+
+✓ You captured 2 location profiles with IDs
+✓ Location files (plan/locations.org or notes.org) contain your locations
+✓ At least 2 scenes have linked locations in their properties
+✓ You can jump from scene to location profile and back
+✓ Search finds scenes by location
+
+* Integration with Your Daily Writing Workflow
+
+** During Planning
+
+- Capture primary locations before drafting
+- Include sensory details for immersion
+- Note significance and connections
+- Reference when outlining scenes
+
+** During Drafting
+
+- Before writing a scene in a location:
+  1. Jump to location profile
+  2. Review sensory details
+  3. Check continuity notes
+  4. Return and write scene
+- After using a location for first time:
+  - Fill in ~:First-appearance:~ property
+- When introducing a new location mid-draft:
+  - Pause, press F8 F8 l
+  - Quick capture (5-minute version)
+  - Link to scene immediately
+
+** During Revision
+
+- Search each location to check consistency:
+  - Are descriptions consistent?
+  - Do sensory details match?
+  - Any contradictions?
+- Check variety:
+  - Audit location distribution
+  - Rewrite/move scenes if overusing a location
+- Update profiles:
+  - Add details revealed during drafting
+  - Update Notes section with what reader knows
+
+** Weekly Maintenance
+
+- Review location timeline
+- Note locations that need more development
+- Check for forgotten settings
+- Plan scenes in underused locations
+
+* Common Questions
+
+** Q: Do I need a profile for every location?
+
+*A*: No! Only locations that:
+- Appear more than once, OR
+- Have important story significance, OR
+- Need consistent description
+
+You don't need profiles for:
+- Brief mentions ("they walked past a hardware store")
+- Generic settings ("a restaurant" with no specific details)
+- One-line locations ("the sidewalk")
+
+** Q: How detailed should Physical Description be?
+
+*A*: Write enough that you can:
+1. Visualize the space clearly
+2. Write sensory details in scenes
+3. Maintain consistency
+
+For most locations, 1-2 paragraphs is sufficient. For critical locations (protagonist's home, key meeting places), go deeper.
+
+** Q: What if my location changes during the story?
+
+*A*: Update the profile! In the Notes section, track the evolution:
+
+#+BEGIN_EXAMPLE
+** Notes
+
+*** Evolution
+- [Chapter 1-5]: Messy, dishes in sink, laundry everywhere
+- [Chapter 6]: Alex cleans up (turning point)
+- [Chapter 7-12]: Tidy, plants on windowsill, organized
+#+END_EXAMPLE
+
+This helps you remember which version of the location exists at which point in the story.
+
+** Q: Can I have multiple scenes in "Apartment" without being more specific?
+
+*A*: Yes, but consider breaking it down:
+- Alex's Apartment - Living Room
+- Alex's Apartment - Bedroom
+- Alex's Apartment - Kitchen
+
+Each can have its own profile with specific details. This provides more variety and clearer staging for scenes.
+
+** Q: Should I link generic locations like "Street" or "Car"?
+
+*A*: Usually no. Link specific instances:
+- "Main Street" (if it's a recurring setting)
+- "Alex's Car" (if it's important and reappears)
+- "The Red Line Train" (if it's a regular location)
+
+Don't link generic "a street" or "a car" - those don't need consistency tracking.
+
+** Q: How do I handle locations that only exist in one scene but are important?
+
+*A*: Create a profile with:
+- Importance: Minor
+- Detailed description (since it's important)
+- Significance: Explain why this one scene matters
+
+Example: The rooftop where the protagonist makes a crucial decision - appears once, but needs vivid description and emotional weight.
+
+* Troubleshooting
+
+** "I captured a location but can't find it"
+
+*** Problem
+The location was captured but doesn't appear in the locations file.
+
+*** Solution
+1. Check the correct file:
+   - Novel: ~plan/locations.org~
+   - Short story: ~notes.org~ (under "Setting → Locations")
+2. Open the file and search: ~C-s~ then type location name
+3. If not found, the capture might have failed - try again
+
+** "Location linking menu shows no locations"
+
+*** Problem
+Pressing F8 F8 L L shows empty list.
+
+*** Solution
+1. Ensure you have captured at least one location
+2. Open plan/locations.org or notes.org
+3. Verify locations are level-1 headings with ~:ID:~ properties
+4. If IDs are missing, run: ~M-x writing/add-location-ids~
+
+** "Search finds no scenes for a location I know I linked"
+
+*** Problem
+Search returns 0 results despite linked scenes.
+
+*** Solution
+1. Open a scene that should have this location
+2. Check the ~:Location:~ property
+3. Verify it's an ID link: ~[[id:...][Name]]~
+4. If it's plain text, run: ~M-x writing/link-scene-location~
+5. Try search again
+
+** "Jump to location doesn't work"
+
+*** Problem
+~C-c C-o~ on Location property doesn't jump.
+
+*** Solution
+1. Ensure the location property is an ID link (has ~[[id:...]]~ syntax)
+2. Put cursor directly on the link text
+3. Verify the location profile still exists and has that ID
+4. If the ID is orphaned, re-link manually
+
+* Quick Reference
+
+** Keybindings
+
+| Key           | Action                          |
+|---------------+---------------------------------|
+| ~F8 F8 l~       | Capture new location            |
+| ~F8 F8 L L~     | Link location to scene (menu)   |
+| ~F8 F8 L j~     | Jump to scene's location        |
+| ~F8 F8 L l~     | Link current scene's location   |
+| ~F8 F8 L L~     | Link all scenes (batch)         |
+| ~F8 F8 4~       | Search scenes by location       |
+| ~C-c C-o~       | Follow link at point            |
+| ~C-c &~         | Return from link                |
+| ~C-c C-c~       | Finalize capture / update table |
+
+** Location Template Sections
+
+| Section              | Purpose                             | Time to Fill   |
+|----------------------+-------------------------------------+----------------|
+| Properties           | Metadata (type, importance, etc.)   | 2 minutes      |
+| Physical Description | Visual and sensory details          | 5-10 minutes   |
+| Atmosphere & Mood    | Emotional tone and feeling          | 2-3 minutes    |
+| Significance         | Why it matters to story             | 2-3 minutes    |
+| Connections          | Related locations and characters    | 2-3 minutes    |
+| Notes                | Continuity and writer reminders     | Ongoing        |
+
+** Location Profile Depth
+
+| Depth         | Time    | When to Use                                     |
+|---------------+---------+-------------------------------------------------|
+| Quick         | 5 min   | Minor locations, placeholder for later          |
+| Standard      | 15 min  | Secondary locations, initial primary locations  |
+| Comprehensive | 30+ min | Critical primary locations, world-building hubs |
+
+** Location Types
+
+| Type            | Examples                                 | Typical Importance |
+|-----------------+------------------------------------------+--------------------|
+| Residence       | Apartment, house, dorm                   | Primary/Secondary  |
+| Business        | Coffee shop, office, store               | Primary/Secondary  |
+| Public          | Park, street, library                    | Secondary/Minor    |
+| Institution     | School, hospital, government building    | Secondary          |
+| Transportation  | Car, train, bus, airplane                | Minor              |
+| Natural         | Forest, beach, mountain, river           | Secondary/Minor    |
+| Other           | Unique to your story                     | Varies             |
+
+** Common Commands
+
+| Command                              | What It Does                         |
+|--------------------------------------+--------------------------------------|
+| ~writing/capture-location~             | Capture new location profile         |
+| ~writing/set-scene-location~           | Set location via menu                |
+| ~writing/jump-to-scene-location~       | Jump to location from scene          |
+| ~writing/link-scene-location~          | Link current scene's location        |
+| ~writing/link-all-scene-locations~     | Batch link all scenes                |
+| ~writing/org-find-location~            | Search scenes by location            |
+| ~writing/add-location-ids~             | Add IDs to existing locations        |
+
+* Tips for Better Location Management
+
+** 1. Capture Early, Fill Later
+
+When a new location appears in your draft:
+- Immediately capture it (just name + basic properties)
+- Fill detailed description later during revision
+- This prevents forgetting about the location
+
+** 2. Use Real-World Inspiration
+
+Base fictional locations on real places:
+- Visit and take notes (or use memory)
+- Photograph details
+- Record sensory impressions
+- Change enough to make it yours
+
+Reference the real place in your Notes section.
+
+** 3. Create a Mental Map
+
+For complex settings (entire neighborhoods, buildings with multiple rooms):
+- List all related locations in Connections
+- Note spatial relationships ("upstairs from", "across the street from")
+- Consider sketching a map (store in Notes as image link)
+
+** 4. Balance Familiarity and Novelty
+
+- Familiar locations (home, workplace) → Less description, more emotion
+- Novel locations (first-time visits) → More description, character's reaction
+
+Update your profile to note which scenes establish vs. revisit the location.
+
+** 5. Leverage Sensory Details
+
+For each location, identify its signature sense:
+- Coffee shop → Smell (coffee, pastries)
+- Office → Sound (phones, keyboards, air conditioning)
+- Forest → Touch (rough bark, cool air)
+- Beach → Sound (waves, gulls) + Touch (sand, wind)
+
+Lead with that sense when writing scenes there.
+
+** 6. Track Revealed Details
+
+In the Notes section, maintain a list of what readers know:
+#+BEGIN_EXAMPLE
+*** Revealed to Reader
+- [Chapter 1] Front door is blue
+- [Chapter 3] Kitchen has large window
+- [Chapter 5] Creaky floorboard in hallway
+- [Chapter 8] Bookshelf in living room
+#+END_EXAMPLE
+
+This prevents:
+- Revealing the same detail twice ("As if for the first time")
+- Contradicting earlier descriptions
+
+** 7. Use Location as Character
+
+Important locations can function like characters:
+- They have personality (atmosphere)
+- They affect characters emotionally
+- They can change over time
+- They participate in the story
+
+Treat your protagonist's home or a central gathering place with the same care as a secondary character.
+
+** 8. Audit Regularly
+
+Every 10-15 scenes, run a location audit:
+- Which locations are dominating?
+- Which haven't been used in 20+ scenes?
+- Are there too many one-off locations?
+- Do you need to consolidate similar locations?
+
+** 9. Connect Locations Thematically
+
+Group locations by theme or function:
+- "Safe spaces" vs. "danger zones"
+- "Public" vs. "private"
+- "Past" (childhood locations) vs. "present"
+- "Work life" vs. "home life"
+
+Note these connections in the Connections section.
+
+** 10. Let Locations Surprise You
+
+Sometimes you'll invent a location for a single scene and it becomes important:
+- A background location becomes a key setting
+- A minor location reveals character depth
+- A throwaway scene in a new place sparks plot ideas
+
+When this happens, upgrade the location:
+- Change Importance: Minor → Secondary or Primary
+- Expand the profile
+- Plan additional scenes there
+
+* What You've Learned
+
+Congratulations! You've completed Lesson 5. You now know:
+
+✓ Why location tracking improves consistency and variety
+✓ The different types of locations (primary, secondary, minor, atmospheric)
+✓ How to use the location capture template (6 sections)
+✓ All location properties and when to use them
+✓ How to link locations to scenes using ID-based links
+✓ How to navigate between scenes and location profiles
+✓ How to search for all scenes in a specific location
+✓ How to track setting variety with location audits
+✓ How to generate location timelines
+✓ How to integrate location management into daily writing
+
+* Next Steps
+
+You're ready for **Lesson 6: Plot Threads and Timeline**!
+
+In the next lesson, you'll learn:
+- How to create plot thread profiles
+- Tracking multiple plot lines through your story
+- Linking plot threads to scenes
+- Generating plot timelines and health reports
+- Ensuring balanced plot development
+- Finding gaps in plot progression
+
+** Quick Practice Before Moving On
+
+Before Lesson 6, try this:
+
+1. Capture 3-5 locations for your project:
+   - At least one primary location
+   - At least two secondary locations
+2. Link each location to 1-2 scenes
+3. Test jumping from scene to profile and back
+4. Search for a location and review which scenes use it
+5. Do a location audit:
+   - Count scenes per location
+   - Identify your most-used setting
+   - Identify underused settings
+
+Take your time! Location work is foundational for immersive writing. When you feel comfortable with capturing, linking, and searching locations, move on to Lesson 6.
+
+* Summary
+
+Locations ground your story in physical space and help readers visualize your world. By creating location profiles, you:
+- Maintain consistency across multiple scenes
+- Track setting variety to avoid repetition
+- Quick-reference details while drafting
+- Build a coherent fictional geography
+- Search instantly for all scenes in a location
+
+The location linking system uses ID-based links, just like characters, allowing you to click from scene properties directly to full location profiles. This makes it easy to check details, ensure consistency, and manage complex settings.
+
+With location management in place, your story now has both *who* (characters) and *where* (locations) fully tracked. Next, you'll learn to track *what happens* with plot threads!
+
+---
+
+*Previous*: [[file:getting-started-04-capturing-characters.org][Lesson 4: Capturing Characters]]
+*Next*: [[file:getting-started-06-plot-threads.org][Lesson 6: Plot Threads and Timeline]]
+
+*Lesson 5 Complete!*

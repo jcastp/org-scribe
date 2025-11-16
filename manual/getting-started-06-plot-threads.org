@@ -1,0 +1,1491 @@
+#+TITLE: Lesson 6: Plot Threads and Timeline
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 6!
+
+In this lesson, you'll learn how to track multiple plot threads throughout your story. Whether you're writing a single-storyline short story or a complex novel with multiple interweaving plots, the plot tracking system helps you ensure balanced development and avoid forgotten storylines.
+
+By the end of this lesson, you'll be able to:
+- Create plot thread profiles for main and subplots
+- Understand plot properties and how to use them
+- Link plot threads to scenes using ID-based links
+- Search for all scenes that develop a specific plot thread
+- Generate plot timeline visualizations
+- Check plot health to find gaps and imbalances
+- Ensure all plot threads reach satisfying conclusions
+
+*Estimated time*: 20 minutes
+
+* Prerequisites
+
+Before starting this lesson, you should have completed:
+- [[file:getting-started-01-creating-projects.org][Lesson 1: Creating Your First Project]]
+- [[file:getting-started-02-first-scene.org][Lesson 2: Writing Your First Scene]]
+- [[file:getting-started-04-capturing-characters.org][Lesson 4: Capturing Characters]] (recommended - same linking system)
+
+You should understand:
+- How to use the Hydra menu (F8 F8)
+- Basic Org-mode properties
+- ID-based linking concepts
+- Scene properties
+
+* Why Track Plot Threads?
+
+**Quick answer**: Plot tracking prevents dropped storylines, ensures balanced development, and helps you see the big picture.
+
+** The Problem Without Plot Tracking
+
+When writing without plot thread tracking, you might:
+- Introduce a subplot in Chapter 2, then forget about it until Chapter 15
+- Realize your main plot only develops in 40% of scenes
+- Have a romance subplot that appears three times then vanishes
+- Struggle to remember which scenes advance which plots
+- Write 10 consecutive scenes all focused on the same plot (exhausting!)
+- Finish drafting and discover a major plot thread was never resolved
+
+** The Solution: Plot Thread Profiles
+
+Plot thread profiles help you:
+1. **Track Development**: See exactly where each plot advances
+2. **Balance Storylines**: Ensure all plots get appropriate attention
+3. **Find Gaps**: Identify long stretches where a plot disappears
+4. **Plan Resolution**: Track which plots are resolved vs. ongoing
+5. **Visualize Structure**: See how plots interweave across your story
+6. **Prevent Forgetting**: Never lose track of a subplot again
+
+* Understanding Plot Thread Types
+
+Before capturing plots, understand the different types:
+
+** Main Plot (A-Story)
+
+The primary storyline that drives your narrative.
+
+*Characteristics*:
+- Present in 60-80% of scenes
+- Directly relates to protagonist's main goal
+- Reaches climax near story's end
+- Determines the genre (thriller, romance, mystery, etc.)
+
+*Examples*:
+- Mystery: Solving the murder
+- Romance: Will they get together?
+- Thriller: Stopping the villain
+- Literary: Character's internal transformation
+
+*When to create*: Before drafting - this is your story's spine.
+
+** Major Subplot (B-Story)
+
+A significant secondary storyline.
+
+*Characteristics*:
+- Present in 30-50% of scenes
+- Often character-focused (relationship, personal growth)
+- Intersects with main plot
+- Has its own arc and resolution
+
+*Examples*:
+- Romance subplot in action story
+- Family conflict in mystery novel
+- Friendship development
+- Secondary character's journey
+
+*When to create*: During planning or early drafting.
+
+** Minor Subplot (C-Story)
+
+A smaller storyline that adds depth.
+
+*Characteristics*:
+- Present in 10-30% of scenes
+- May or may not resolve fully
+- Adds texture and complexity
+- Can be thematic or character-focused
+
+*Examples*:
+- Protagonist's hobby or side project
+- Background political situation
+- Minor character's small arc
+- Running gag or motif
+
+*When to create*: As they emerge during drafting.
+
+** Thematic Thread
+
+Not a plot in the traditional sense, but a recurring idea or motif.
+
+*Characteristics*:
+- Woven throughout story
+- Symbolic or philosophical
+- No resolution required (but can have payoff)
+- Enriches meaning
+
+*Examples*:
+- "The meaning of home"
+- "Nature vs. technology"
+- "Redemption and forgiveness"
+- Recurring symbol (bird, color, object)
+
+*When to create*: When you notice the theme emerging.
+
+** Short Story Plot Structure
+
+For short stories (1-10 scenes), you typically have:
+- **One main plot** (the story's focus)
+- **Optional: One subplot** (adds depth, often character-focused)
+- **No minor subplots** (not enough space)
+
+Keep it simple! Short stories thrive on focused narrative.
+
+** Novel Plot Structure
+
+For novels (50-70 scenes), a healthy structure might be:
+- **1 main plot** (the A-story)
+- **1-2 major subplots** (B-stories)
+- **2-4 minor subplots** (C-stories)
+- **1-2 thematic threads**
+
+More than this risks overcomplexity and reader confusion.
+
+* The Plot Thread Capture Template
+
+Let's explore what's in the plot thread capture template.
+
+** Accessing the Template
+
+Press: ~F8 F8 p~ (lowercase p for "plot")
+
+Or use: ~M-x writing/capture-plot~
+
+** Template Structure
+
+The template has 6 main sections:
+
+1. **Header with Properties** - Type, status, importance
+2. **Overview** - Premise and central question
+3. **Development Arc** - Beginning, middle, end progression
+4. **Key Scenes** - Major plot moments
+5. **Resolution** - How it concludes
+6. **Notes** - Tracking and reminders
+
+Let's examine each section in detail.
+
+* Section 1: Properties
+
+When you capture a plot thread, you'll see these properties:
+
+#+BEGIN_EXAMPLE
+:PROPERTIES:
+:ID: plot-unique-id-here
+:Type:
+:Status:
+:Importance:
+:Introduced:
+:Resolved:
+:Related-threads:
+:END:
+#+END_EXAMPLE
+
+** :ID: (Automatic)
+
+A unique identifier for this plot thread, created automatically.
+
+*Example*: ~plot-main-mystery-20251116-001~
+
+*Purpose*: Enables clickable links from scenes to plot profiles.
+
+*You don't set this* - it's automatic!
+
+** :Type:
+
+The category of plot thread.
+
+*Common values*:
+- Main (A-story, primary plot)
+- Major Subplot (B-story)
+- Minor Subplot (C-story)
+- Thematic Thread
+- Mystery/Question (unresolved question driving story)
+- Relationship (character relationship arc)
+- Internal (character's internal journey)
+
+*Example*: ~Main~
+
+*Tip*: Be honest about plot importance. Not everything can be "Main"!
+
+** :Status:
+
+Current state of the plot thread.
+
+*Values*:
+- Planned - Not yet introduced in manuscript
+- Active - Currently developing in story
+- Resolved - Concluded/answered
+- Abandoned - Decided not to pursue
+- On Hold - Paused temporarily
+
+*Example*: ~Active~
+
+*Tip*: Update this as you write! It helps during revision.
+
+** :Importance:
+
+How central this plot is to your story.
+
+*Values*:
+- Critical - Story doesn't work without it
+- High - Major impact on story
+- Medium - Adds depth and complexity
+- Low - Minor enhancement, could be cut
+
+*Example*: ~Critical~
+
+*Tip*: If all plots are "Critical," you might have too many plots!
+
+** :Introduced:
+
+When this plot thread first appears.
+
+*Format*: ~Chapter X, Scene Y~ or ~Scene title~
+
+*Examples*:
+- ~Chapter 1, Scene 1~
+- ~Scene 2 - The Discovery~
+- ~Opening scene~
+
+*Tip*: Fill this when you write the introduction scene.
+
+** :Resolved:
+
+When/how this plot thread concludes.
+
+*Format*: ~Chapter X, Scene Y~ or ~Description~
+
+*Examples*:
+- ~Chapter 12, Scene 45~
+- ~Climax scene~
+- ~Not yet resolved~
+- ~Left open-ended (intentional)~
+
+*Tip*: Plan this even if you haven't written it yet!
+
+** :Related-threads:
+
+Other plot threads that intersect with this one.
+
+*Format*: Comma-separated list (can be links)
+
+*Examples*:
+- ~Romance subplot, Family conflict~
+- ~[[id:plot-romance-001][Romance subplot]]~
+- ~Main plot~
+
+*Tip*: Helps visualize plot interactions and dependencies.
+
+* Section 2: Overview
+
+This section captures the essence of your plot thread.
+
+** What to Include
+
+*** Premise
+One-sentence description of what this plot thread is about.
+
+*Examples*:
+- "Alex must solve the murder before the killer strikes again."
+- "Will Sam and Jordan reconcile after their falling out?"
+- "Alex struggles to balance ambition with personal relationships."
+
+*** Central Question
+The question this plot thread poses (and eventually answers).
+
+*Examples*:
+- "Who killed the mayor?"
+- "Can Alex trust the new partner?"
+- "Will Alex choose career over family?"
+- "What is the meaning of the mysterious symbol?"
+
+*** Stakes
+What's at risk if this plot fails or isn't resolved?
+
+*Examples*:
+- "More people will die"
+- "Alex loses the only remaining family"
+- "The truth about Alex's past remains buried"
+- "Sam never finds closure"
+
+** Example: Main Plot
+
+#+BEGIN_EXAMPLE
+** Overview
+
+*** Premise
+Alex Rivera must uncover who's sabotaging the city's water supply before
+the contamination spreads citywide.
+
+*** Central Question
+Who is behind the sabotage, and why are they targeting the water supply?
+
+*** Stakes
+If Alex fails:
+- Thousands could be poisoned
+- The city descends into panic and chaos
+- Alex's credibility as an investigator is destroyed
+- The real conspiracy remains hidden
+#+END_EXAMPLE
+
+** Example: Romance Subplot
+
+#+BEGIN_EXAMPLE
+** Overview
+
+*** Premise
+Alex and Sam navigate a complicated relationship while working together
+on the investigation.
+
+*** Central Question
+Can Alex learn to trust and open up to Sam despite past betrayals?
+
+*** Stakes
+If this fails:
+- Alex remains emotionally isolated
+- Sam gets hurt again
+- They miss the chance at genuine connection
+- Alex's arc toward vulnerability doesn't complete
+#+END_EXAMPLE
+
+* Section 3: Development Arc
+
+How does this plot thread progress through your story?
+
+** The Three-Part Structure
+
+Most plot threads follow a beginning-middle-end arc:
+
+*** Beginning (Setup/Introduction)
+- When and how is the plot introduced?
+- What triggers this storyline?
+- Initial stakes and questions
+
+*** Middle (Development/Complications)
+- How does the plot develop?
+- What obstacles arise?
+- How do complications escalate?
+- Twists and revelations
+
+*** End (Climax/Resolution)
+- How does the plot reach its peak?
+- How is it resolved?
+- What's the outcome?
+- Loose ends tied up or intentionally left open
+
+** Example: Main Plot Arc
+
+#+BEGIN_EXAMPLE
+** Development Arc
+
+*** Beginning (Chapters 1-3)
+- Scene 1: Alex notices strange readings in water quality report (inciting incident)
+- Scene 4: First victim hospitalized with mysterious illness
+- Scene 7: Alex discovers tampering evidence at treatment plant
+- End of Act I: Alex realizes this is deliberate sabotage, not accident
+
+*** Middle (Chapters 4-9)
+- Scene 12: Second contamination site found - pattern emerges
+- Scene 18: Alex identifies possible suspect (red herring)
+- Scene 24: Suspect cleared, back to square one (midpoint crisis)
+- Scene 29: Discovers connection to old city development project
+- Scene 33: Alex's investigation puts them in danger - first attack
+- Scene 38: Major revelation: saboteur is someone Alex knows
+
+*** End (Chapters 10-12)
+- Scene 42: Alex confronts saboteur (climax)
+- Scene 44: Truth revealed: motivation was revenge for past injustice
+- Scene 45: Water supply secured, saboteur arrested
+- Scene 46: Alex reflects on gray areas - saboteur had valid grievance
+#+END_EXAMPLE
+
+** How Much Detail?
+
+*** Minimum (5 minutes):
+- One sentence per section (beginning/middle/end)
+
+*** Standard (10 minutes):
+- One paragraph per section
+- Key turning points noted
+
+*** Comprehensive (20-30 minutes):
+- Detailed scene-by-scene breakdown
+- All major beats and reversals
+- Thematic progression
+
+*Recommendation*: Start with standard, expand during drafting.
+
+* Section 4: Key Scenes
+
+List the most important scenes for this plot thread.
+
+** What Qualifies as a Key Scene?
+
+- Introduction of the plot
+- Major revelations or discoveries
+- Turning points and reversals
+- Escalation moments
+- Climax
+- Resolution
+
+** Format
+
+Simple list with scene references:
+
+#+BEGIN_EXAMPLE
+** Key Scenes
+
+*** Introduction
+- Scene 1 - Strange Readings (inciting incident)
+
+*** Rising Action
+- Scene 7 - Evidence of Tampering (confirmation)
+- Scene 18 - False Lead (red herring)
+- Scene 24 - Pattern Discovery (breakthrough)
+- Scene 33 - First Attack (personal stakes)
+
+*** Climax
+- Scene 38 - Identity Revealed (major twist)
+- Scene 42 - Confrontation (climax)
+
+*** Resolution
+- Scene 45 - Aftermath (resolution)
+- Scene 46 - Reflection (denouement)
+#+END_EXAMPLE
+
+** Use Cases
+
+- **Planning**: Map out key plot moments before drafting
+- **Tracking**: Check off scenes as you write them
+- **Revision**: Ensure these scenes are strong and well-paced
+- **Gap Analysis**: Notice missing beats (no midpoint twist? Add one!)
+
+* Section 5: Resolution
+
+How does this plot thread conclude?
+
+** What to Include
+
+*** Resolution Type
+- Definitive (clearly resolved)
+- Open-ended (intentionally ambiguous)
+- Unresolved (to be continued in sequel)
+- Transformed (question changes or becomes irrelevant)
+
+*** Outcome
+- What happens?
+- How is the central question answered?
+- Character state after resolution
+
+*** Timing
+- Which scene(s)?
+- Placement relative to main climax
+- Pacing notes
+
+*** Satisfaction Check
+- Does this feel earned?
+- Are readers likely to be satisfied?
+- Thematic resonance?
+
+** Example: Main Plot Resolution
+
+#+BEGIN_EXAMPLE
+** Resolution
+
+*** Type
+Definitive - the mystery is solved and saboteur caught.
+
+*** Outcome
+Saboteur is revealed to be Marcus Chen, whose family lost everything when
+Alex's agency approved the development project 10 years ago. The contamination
+was revenge, but also an attempt to expose ongoing corruption.
+
+Alex stops the sabotage and brings Marcus to justice, BUT also reopens
+investigation into the original development project, finding evidence of
+actual wrongdoing. Justice is served, but Alex realizes the system failed
+Marcus first.
+
+*** Timing
+- Revelation: Scene 38 (Chapter 10, end)
+- Confrontation: Scene 42 (Chapter 11, climax)
+- Legal resolution: Scene 45 (Chapter 12)
+- Emotional resolution: Scene 46 (final scene)
+
+*** Satisfaction
+- Mystery solved: YES (who, why, how all answered)
+- Stakes addressed: YES (water supply secured, truth exposed)
+- Thematic payoff: YES (justice isn't simple, systems need reform)
+- Emotional closure: YES (Alex's guilt addressed, growth shown)
+#+END_EXAMPLE
+
+** Example: Romance Subplot Resolution
+
+#+BEGIN_EXAMPLE
+** Resolution
+
+*** Type
+Definitive - relationship status clear, but future open.
+
+*** Outcome
+Alex and Sam confess their feelings (Scene 43) after the climax. They
+acknowledge the relationship won't be easy (both have trust issues), but
+commit to trying. Story ends with them together, hopeful but realistic.
+
+*** Timing
+- Emotional breakthrough: Scene 40 (Alex vulnerable moment)
+- Confession: Scene 43 (post-climax, Act III)
+- Final scene together: Scene 46 (hand-holding, looking forward)
+
+*** Satisfaction
+- Will-they-won't-they answered: YES (they will)
+- Character arcs complete: YES (Alex learned to trust, Sam learned patience)
+- Thematic resonance: YES (connection vs. isolation theme)
+- Feels earned: YES (developed across entire novel)
+#+END_EXAMPLE
+
+* Section 6: Notes
+
+Writer notes for tracking and continuity.
+
+** What to Include
+
+- Inspiration and references
+- Thematic connections
+- Challenges or concerns
+- Revision reminders
+- Scenes that develop this plot (track as you write)
+- Research needed
+- Alternative endings considered
+
+** Example
+
+#+BEGIN_EXAMPLE
+** Notes
+
+*** Inspiration
+Loosely inspired by Flint water crisis, but fictionalized. Research:
+environmental crime, water treatment systems, investigative journalism.
+
+*** Thematic Connections
+- Connects to "systems vs. individuals" theme
+- Parallels Alex's personal arc (trust in institutions broken)
+- Water as symbol: life, purity, contamination mirrors character corruption
+
+*** Challenges
+- Risk of being too preachy about environmental issues
+- Balance sympathy for saboteur without excusing harm
+- Make water treatment science clear but not boring
+
+*** Scenes Developing This Plot
+(Update as I write)
+- ✓ Scene 1 - Introduction
+- ✓ Scene 4 - First victim
+- ✓ Scene 7 - Evidence discovered
+- ⚠ Scene 12 - Second site (need more tension here)
+- ✓ Scene 18 - False lead
+- TODO: Scene 24 - Need midpoint twist
+- TODO: Scene 33 - First attack on Alex
+- TODO: Scene 38 - Identity reveal
+- TODO: Scene 42 - Climax confrontation
+
+*** Alternative Endings Considered
+1. Saboteur dies (too dark, no moral complexity)
+2. Saboteur escapes (unsatisfying, no closure)
+3. Alex joins saboteur (too extreme for character)
+4. CHOSEN: Alex brings to justice but validates grievance
+
+*** Revision Reminders
+- First draft: focus on mystery mechanics
+- Second draft: deepen saboteur's motivation (add flashback?)
+- Polish: verify water treatment details are accurate
+#+END_EXAMPLE
+
+* Capturing a Plot Thread: Step-by-Step
+
+Let's create a plot thread profile together.
+
+** Step 1: Invoke Capture
+
+Press: ~F8 F8 p~
+
+You'll see: ~Plot thread name:~
+
+** Step 2: Enter Plot Name
+
+Type: ~Main Mystery - Water Sabotage~
+
+Press: ~Enter~
+
+The capture template opens in a new buffer.
+
+** Step 3: Fill Properties
+
+The template has property prompts:
+
+1. ~Type:~ → Type: ~Main~
+2. ~Status:~ → Type: ~Active~
+3. ~Importance:~ → Type: ~Critical~
+4. ~Introduced:~ → Type: ~Chapter 1, Scene 1~
+5. ~Resolved:~ → Type: ~Chapter 12, Scene 42~ (even if not written yet!)
+6. ~Related-threads:~ → Type: ~Romance subplot, Political corruption~
+
+Press ~Tab~ to move between prompts.
+
+** Step 4: Fill Content Sections
+
+Navigate to each section and write:
+- Overview: Premise, central question, stakes (3 paragraphs)
+- Development Arc: Beginning, middle, end (3 paragraphs)
+- Key Scenes: Bulleted list
+- Resolution: Type, outcome, timing, satisfaction (4 short paragraphs)
+- Notes: As needed
+
+** Step 5: Finalize Capture
+
+When done, press: ~C-c C-c~
+
+This saves the plot thread profile to:
+- **Novel project**: ~plan/plot.org~
+- **Short story project**: ~notes.org~ (under "Plot Outline")
+
+** Step 6: Verify It Saved
+
+Open your plot file and find your new plot thread entry. It should be a level-1 heading with an ID.
+
+* Linking Plot Threads to Scenes
+
+Once you have plot thread profiles, link them to scenes.
+
+** Method 1: Set Plot via Menu (Recommended)
+
+1. Open your manuscript (novel.org or story.org)
+2. Navigate to a scene heading
+3. Press: ~F8 F8 P L~ (capital P for Plot menu, then L for Link)
+
+Or use: ~M-x writing/set-scene-plot~
+
+4. You'll see a menu of all plot threads
+5. Select one: Press ~Enter~
+6. The scene's ~:Plot:~ property is updated with an ID link
+
+** Method 2: Manual Linking
+
+If you prefer typing:
+
+1. Navigate to scene properties
+2. Find or add: ~:Plot:~
+3. Type: ~[[id:plot-id-here][Plot Name]]~
+
+This requires knowing the plot thread's ID. The menu method is easier!
+
+** Multiple Plot Threads in One Scene
+
+Many scenes develop multiple plots! Format:
+
+#+BEGIN_EXAMPLE
+:Plot: [[id:plot-main-001][Main Mystery]], [[id:plot-romance-002][Romance]]
+#+END_EXAMPLE
+
+Just separate with commas.
+
+** Example
+
+Before:
+#+BEGIN_EXAMPLE
+*** Scene 12 - Discovery at Second Site
+:PROPERTIES:
+:PoV: [[id:char-alex-001][Alex]]
+:Characters: [[id:char-alex-001][Alex]], [[id:char-sam-002][Sam]]
+:Location: [[id:loc-treatment-plant][Water Treatment Plant]]
+:Plot: investigation
+:END:
+#+END_EXAMPLE
+
+After (with menu):
+#+BEGIN_EXAMPLE
+*** Scene 12 - Discovery at Second Site
+:PROPERTIES:
+:PoV: [[id:char-alex-001][Alex]]
+:Characters: [[id:char-alex-001][Alex]], [[id:char-sam-002][Sam]]
+:Location: [[id:loc-treatment-plant][Water Treatment Plant]]
+:Plot: [[id:plot-main-001][Main Mystery]], [[id:plot-romance-002][Romance]]
+:END:
+#+END_EXAMPLE
+
+* Navigating Between Scenes and Plot Threads
+
+** Jump to Plot Thread Profile
+
+When in a scene with a linked plot thread:
+
+1. Move cursor to the ~:Plot:~ property line
+2. Press: ~C-c C-o~ (org-open-at-point)
+
+OR
+
+Press: ~F8 F8 P j~ (Plot menu, jump)
+
+You jump to the full plot thread profile!
+
+** Return to Scene
+
+After viewing the plot profile:
+
+Press: ~C-c &~ (org-mark-ring-goto)
+
+You return to your original scene.
+
+** Why This Is Useful
+
+While writing:
+- "What's the central question of this plot again?" → Jump to profile, check
+- "What should happen next in this storyline?" → Review development arc
+- "Have I addressed the stakes?" → Check overview section
+- "Which scenes are key for this plot?" → Review key scenes list
+
+* Searching for Scenes by Plot Thread
+
+Find all scenes that develop a specific plot thread.
+
+** Command
+
+Press: ~F8 F8 3~ (search by plot)
+
+Or use: ~M-x writing/org-find-plot~
+
+** Process
+
+1. You'll see: ~Search for plot thread:~
+2. Start typing plot name: ~Mystery~
+3. Matching plot threads appear
+4. Select one: ~Main Mystery - Water Sabotage~
+5. Press: ~Enter~
+
+** Results
+
+A buffer opens showing ALL scenes with that plot thread:
+
+#+BEGIN_EXAMPLE
+Results for plot thread "Main Mystery - Water Sabotage":
+
+*** Scene 1 - Strange Readings
+    Chapter 1: The Beginning
+
+*** Scene 4 - First Victim
+    Chapter 1: The Beginning
+
+*** Scene 7 - Evidence of Tampering
+    Chapter 2: Complications
+
+*** Scene 12 - Discovery at Second Site
+    Chapter 3: Escalation
+
+[... etc ...]
+
+Found 18 scenes.
+#+END_EXAMPLE
+
+** Use Cases
+
+- "How often does this plot appear?" → Count scenes
+- "Where does this plot develop?" → See scene distribution
+- "Is there a gap in this storyline?" → Check scene numbers (Scene 12 → Scene 24 = 11 scenes without this plot!)
+- "What have I written for this plot so far?" → Review all scenes
+- "Continuity check" → Ensure logical progression
+
+* Plot Timeline Visualization
+
+Generate a table showing which plot threads appear in which scenes.
+
+** What Is It?
+
+A visual representation of plot thread distribution across your story.
+
+** Creating the Timeline
+
+In your novel.org file, find the "Plot Timeline" section (or create one):
+
+#+BEGIN_EXAMPLE
+* Progress Tracking
+
+** Plot Timeline
+
+#+BEGIN: plot-timeline
+#+END:
+#+END_EXAMPLE
+
+Put cursor on ~#+BEGIN:~ line and press: ~C-c C-c~
+
+** Example Output
+
+#+BEGIN_EXAMPLE
+| Scene              | Chapter   | Main Mystery | Romance | Family Conflict | Political |
+|--------------------+-----------+--------------+---------+-----------------+-----------|
+| Scene 1 - Opening  | Chapter 1 | ●            |         |                 |           |
+| Scene 2 - Meeting  | Chapter 1 | ●            | ●       |                 |           |
+| Scene 3 - Home     | Chapter 1 |              |         | ●               |           |
+| Scene 4 - Victim   | Chapter 1 | ●            | ●       |                 | ●         |
+| Scene 5 - Office   | Chapter 2 | ●            |         |                 | ●         |
+| Scene 6 - Date     | Chapter 2 |              | ●       |                 |           |
+| Scene 7 - Evidence | Chapter 2 | ●            |         |                 |           |
+#+END_EXAMPLE
+
+** Interpreting Symbols
+
+- *●* = Plot thread develops in this scene
+- *(blank)* = Plot thread not present
+
+** What Good Distribution Looks Like
+
+*** Main Plot (A-Story)
+Should appear in 60-80% of scenes, with:
+- Consistent presence (no gaps >5 scenes)
+- Escalating frequency toward climax
+- Present in opening and closing
+
+*** Major Subplot (B-Story)
+Should appear in 30-50% of scenes, with:
+- Regular but not constant presence
+- Can have gaps of 3-5 scenes
+- Intersects with main plot periodically
+- Resolves before or with main plot
+
+*** Minor Subplot (C-Story)
+Should appear in 10-30% of scenes, with:
+- Intermittent presence (gaps of 5-10 scenes OK)
+- Clusters around specific story sections
+- May or may not fully resolve
+
+** Warning Signs
+
+*** Main Plot Issues
+- ❌ Missing from 5+ consecutive scenes → Readers forget what's happening
+- ❌ Present in <50% of scenes → Not actually the main plot
+- ❌ Missing from opening or ending → Structural problem
+
+*** Subplot Issues
+- ❌ Appears once, vanishes for 20 scenes, reappears → Feels disconnected
+- ❌ Present in >70% of scenes → Might be fighting main plot for dominance
+- ❌ Introduced too late (after 40% mark) → Won't have time to develop
+
+*** Overall Structure Issues
+- ❌ All plots in every scene → Overcrowded, unfocused
+- ❌ Plots never intersect → Story feels like separate stories pasted together
+- ❌ Too many plots (>6 total) → Reader confusion
+
+* Plot Health Report
+
+Check the health of your plot thread development.
+
+** What Is a Plot Health Report?
+
+An analysis showing:
+- Plot thread coverage (% of scenes)
+- Longest gaps between appearances
+- Balance between plots
+- Unresolved plot threads
+- Warnings about potential issues
+
+** Generating the Report
+
+Press: ~F8 F8 P h~ (Plot menu, health report)
+
+Or use: ~M-x writing/plot-health-report~
+
+** Example Report
+
+#+BEGIN_EXAMPLE
+=== PLOT HEALTH REPORT ===
+Total scenes analyzed: 42
+
+MAIN PLOT: Main Mystery - Water Sabotage
+  Coverage: 68% (29/42 scenes) ✓ GOOD
+  Longest gap: 4 scenes (Scene 15-19) ✓ OK
+  First appearance: Scene 1 ✓ GOOD
+  Last appearance: Scene 42 ✓ GOOD
+  Status: Active
+
+B-STORY: Romance Subplot
+  Coverage: 45% (19/42 scenes) ✓ GOOD
+  Longest gap: 7 scenes (Scene 22-29) ⚠ WARNING (long gap)
+  First appearance: Scene 2 ✓ GOOD
+  Last appearance: Scene 43 ✓ GOOD (resolved)
+  Status: Resolved
+
+C-STORY: Family Conflict
+  Coverage: 24% (10/42 scenes) ✓ OK for minor subplot
+  Longest gap: 12 scenes (Scene 8-20) ⚠ WARNING (very long gap)
+  First appearance: Scene 3 ✓ GOOD
+  Last appearance: Scene 35 ✓ OK
+  Status: Active ⚠ WARNING (not resolved, should resolve by Scene 42)
+
+C-STORY: Political Corruption Thread
+  Coverage: 31% (13/42 scenes) ✓ OK
+  Longest gap: 8 scenes (Scene 14-22) ⚠ WARNING
+  First appearance: Scene 4 ✓ GOOD
+  Last appearance: Scene 38 ⚠ WARNING (not resolved)
+  Status: On Hold ⚠ WARNING (needs resolution or explicit open ending)
+
+=== ISSUES FOUND ===
+❌ Family Conflict: 12-scene gap (Scene 8-20) - readers may forget
+❌ Family Conflict: Still active, not resolved - resolve by Scene 42
+❌ Political Corruption: Unresolved with no clear plan - resolve or mark intentional
+⚠ Romance: 7-scene gap (Scene 22-29) - consider adding scene
+⚠ Political Corruption: 8-scene gap - consider scene or reference
+
+=== RECOMMENDATIONS ===
+1. Add Family Conflict scene between Scenes 8-20 OR reference it in dialogue
+2. Plan Family Conflict resolution scene (Scene 40-42)
+3. Decide: Resolve Political Corruption OR mark as setup for sequel
+4. Consider adding Romance beat during Scene 22-29 gap (even brief reference)
+
+=== OVERALL HEALTH: GOOD (with minor issues) ===
+✓ Main plot well-distributed and strong
+✓ Good variety of plot threads (4 total)
+✓ Most plots introduced early
+⚠ Need to resolve 2 unresolved threads
+⚠ Some gaps longer than ideal
+#+END_EXAMPLE
+
+** How to Use the Report
+
+1. **Run periodically**: Every 10-15 scenes during drafting
+2. **Address warnings**: Fix gaps, plan resolutions
+3. **Adjust as you go**: Add scenes or combine plots to improve health
+4. **Final check**: Before revision, ensure all plots healthy
+
+* Practical Exercise (20 minutes)
+
+Let's practice plot thread management end-to-end.
+
+** Part 1: Capture Three Plot Threads (10 minutes)
+
+*** Plot Thread 1: Main Plot
+
+1. Press: ~F8 F8 p~
+2. Name: ~[Your main plot - what's your story about?]~
+3. Fill properties:
+   - Type: Main
+   - Status: Active
+   - Importance: Critical
+   - Introduced: Chapter 1, Scene 1
+   - Resolved: [Final chapter]
+4. Write overview (3 minutes):
+   - One-sentence premise
+   - Central question
+   - Stakes (what if it fails?)
+5. Write development arc (3 minutes):
+   - Beginning: How it starts
+   - Middle: Major complications
+   - End: How it resolves
+6. Press: ~C-c C-c~ to save
+
+*** Plot Thread 2: Subplot
+
+1. Press: ~F8 F8 p~
+2. Name: ~[A relationship, internal journey, or secondary goal]~
+3. Fill properties:
+   - Type: Major Subplot
+   - Status: Active
+   - Importance: High
+   - Introduced: [Early chapter]
+   - Resolved: [Near end]
+4. Write overview (2 minutes):
+   - Premise
+   - Central question
+5. Write development arc (2 minutes):
+   - Brief beginning/middle/end
+6. Press: ~C-c C-c~ to save
+
+*** Plot Thread 3: Minor Subplot or Theme
+
+1. Press: ~F8 F8 p~
+2. Name: ~[A smaller storyline or thematic thread]~
+3. Fill properties:
+   - Type: Minor Subplot or Thematic Thread
+   - Status: Active
+   - Importance: Medium
+4. Write overview (1 minute):
+   - One sentence premise
+   - What it adds to story
+5. Press: ~C-c C-c~ to save
+
+** Part 2: Link to Scenes (5 minutes)
+
+1. Open your manuscript
+2. Find or create 3 scenes
+3. For each scene:
+   - Navigate to scene properties
+   - Press: ~F8 F8 P L~ (Plot linking menu)
+   - Select which plot(s) develop in this scene
+   - Some scenes can have multiple plots!
+4. Verify: Check that ~:Plot:~ property now has ID links
+
+** Part 3: Test Tools (5 minutes)
+
+*** Test Navigation:
+1. In a scene with linked plot
+2. Press: ~C-c C-o~ on the Plot property
+3. Jump to plot profile → Success!
+4. Review the development arc
+5. Press: ~C-c &~ to return → Success!
+
+*** Test Search:
+1. Press: ~F8 F8 3~
+2. Search for your main plot
+3. See results → Should show scene(s) you linked
+4. Press ~q~ to close results
+
+*** Generate Timeline (if you have 5+ scenes):
+1. In novel.org, find or create "Plot Timeline" section
+2. Add:
+   #+BEGIN_EXAMPLE
+   ** Plot Timeline
+   #+BEGIN: plot-timeline
+   #+END:
+   #+END_EXAMPLE
+3. Put cursor on ~#+BEGIN:~ line
+4. Press: ~C-c C-c~
+5. View your plot distribution!
+
+*** Run Health Report (optional):
+1. Press: ~F8 F8 P h~
+2. Review plot coverage and gaps
+3. Note any warnings
+
+** Success Criteria
+
+✓ You captured 3 plot thread profiles with IDs
+✓ Plot files (plan/plot.org or notes.org) contain your plots
+✓ At least 3 scenes have linked plot threads
+✓ You can jump from scene to plot profile and back
+✓ Search finds scenes by plot thread
+✓ (Optional) Plot timeline shows your plot distribution
+✓ (Optional) Health report runs without errors
+
+* Integration with Your Daily Writing Workflow
+
+** During Planning
+
+- Capture all major plot threads before drafting
+- Map out key scenes for each plot
+- Identify where plots intersect
+- Plan resolution timing for each plot
+- Reference plot profiles when outlining
+
+** During Drafting
+
+- Before each scene:
+  1. Ask: "Which plot(s) develop in this scene?"
+  2. Review those plot profiles
+  3. Check development arc - what should happen next?
+  4. Link scene to appropriate plot threads
+- After writing a scene:
+  - Update plot Notes section (track which scenes written)
+  - Mark off key scenes as completed
+- Every 10 scenes:
+  - Run search for each plot thread
+  - Check for large gaps (>5 scenes for main plot, >8 for subplots)
+  - Adjust upcoming scenes to address gaps
+
+** During Revision
+
+- Search each plot thread:
+  - Read all scenes for just that plot
+  - Check logical progression
+  - Ensure escalation and pacing
+  - Verify resolution is satisfying
+- Run plot health report:
+  - Address all warnings
+  - Fill gaps or justify them
+  - Resolve unresolved threads or mark intentional
+- Check plot timeline:
+  - Visual audit of distribution
+  - Identify overused or underused plots
+  - Ensure good variety scene-to-scene
+- Update plot profiles:
+  - Note changes made during drafting
+  - Verify resolution section matches actual ending
+  - Add revision reminders for second pass
+
+** Weekly Maintenance
+
+- Review plot thread status (Active? Resolved? On Hold?)
+- Update development arc if story evolved
+- Check which key scenes are written vs. planned
+- Note any plot threads that need attention
+- Plan next week's scenes with plot balance in mind
+
+* Common Questions
+
+** Q: Do I need to capture every little storyline?
+
+*A*: No! Only capture plot threads that:
+- Span multiple scenes (3+), OR
+- Are thematically important, OR
+- Need careful tracking to avoid forgetting
+
+You don't need to capture:
+- Single-scene conflicts
+- Background events with no arc
+- Minor obstacles that resolve immediately
+
+** Q: How many plot threads is too many?
+
+*A*:
+- **Short story**: 1-2 plots maximum (usually just 1 main plot)
+- **Novella**: 2-3 plots (1 main, 1-2 subplots)
+- **Novel**: 3-6 plots (1 main, 1-2 major subplots, 1-3 minor subplots)
+- **Epic/Series**: Can have more, but not all active simultaneously
+
+If you have more than 6 active plot threads, consider:
+- Combining similar plots
+- Cutting less important plots
+- Resolving some plots midway to make room for new ones
+
+** Q: What if a plot thread changes completely during drafting?
+
+*A*: Update the profile! This is normal. In the Notes section, track the evolution:
+
+#+BEGIN_EXAMPLE
+** Notes
+
+*** Evolution
+- Original plan: Romance between Alex and Sam
+- Chapter 5: Realized better chemistry with Jordan
+- Changed to: Romance with Jordan, Sam becomes close friend
+- Updated: All properties, development arc, resolution plan
+#+END_EXAMPLE
+
+The profile should reflect your current story, not your original plan.
+
+** Q: Should subplots resolve at the same time as the main plot?
+
+*A*: Not necessarily! Common patterns:
+- **Main plot**: Resolves in climax (Scene 40-45 in 45-scene novel)
+- **Character-focused subplot**: Resolves just before or after main plot (Scene 38-43)
+- **Romance subplot**: Often resolves just after main plot (Scene 43-44)
+- **Minor subplot**: Can resolve earlier (Scene 30-35) or stay open-ended
+- **Thematic thread**: Often "resolves" in final reflection scene
+
+What matters: Each plot should feel complete (or intentionally incomplete) by story's end.
+
+** Q: Can I have scenes with no plot threads linked?
+
+*A*: Yes, but sparingly. Common examples:
+- Pure character development scenes (though these often advance internal journey plot)
+- World-building or atmosphere scenes
+- Transitional scenes (travel, setup for next scene)
+
+If >20% of scenes have no plot links, consider:
+- Are these scenes necessary?
+- Could they advance a subplot while doing their other work?
+- Should you create a "character arc" plot thread to link them to?
+
+** Q: What's the difference between a plot thread and a theme?
+
+*A*:
+- **Plot thread**: Events that happen, questions that get answered, conflicts that resolve
+- **Theme**: Ideas or messages that emerge from the plot
+
+Example:
+- Plot: Alex solves murder mystery
+- Theme: Justice isn't black and white
+
+You can track themes as "Thematic Threads" in the plot system if you want to ensure they develop throughout the story.
+
+* Troubleshooting
+
+** "I captured a plot thread but can't find it"
+
+*** Problem
+The plot thread was captured but doesn't appear in the plot file.
+
+*** Solution
+1. Check the correct file:
+   - Novel: ~plan/plot.org~
+   - Short story: ~notes.org~ (under "Plot Outline")
+2. Open the file and search: ~C-s~ then type plot name
+3. If not found, the capture might have failed - try again
+
+** "Plot linking menu shows no plot threads"
+
+*** Problem
+Pressing F8 F8 P L shows empty list.
+
+*** Solution
+1. Ensure you have captured at least one plot thread
+2. Open plan/plot.org or notes.org
+3. Verify plot threads are level-1 headings with ~:ID:~ properties
+4. If IDs are missing, run: ~M-x writing/add-plot-ids~
+
+** "Plot health report says 'No scenes found'"
+
+*** Problem
+Health report returns no data.
+
+*** Solution
+1. Ensure scenes have ~:Plot:~ properties
+2. Verify plot properties are ID links (not plain text)
+3. Check you're running the report from the manuscript file (novel.org or story.org)
+4. If plots are plain text, run: ~M-x writing/link-all-scene-plots~
+
+** "Plot timeline is blank"
+
+*** Problem
+Dynamic block generates but shows no data.
+
+*** Solution
+1. Verify at least one scene has a ~:Plot:~ property with ID link
+2. Check the plot profiles exist and have IDs
+3. Put cursor on ~#+BEGIN: plot-timeline~ and press ~C-c C-c~ again
+4. If still blank, check for errors in messages buffer (~*Messages*~)
+
+* Quick Reference
+
+** Keybindings
+
+| Key           | Action                          |
+|---------------+---------------------------------|
+| ~F8 F8 p~       | Capture new plot thread         |
+| ~F8 F8 P L~     | Link plot to scene (menu)       |
+| ~F8 F8 P j~     | Jump to scene's plot thread     |
+| ~F8 F8 P l~     | Link current scene's plots      |
+| ~F8 F8 P L~     | Link all scenes (batch)         |
+| ~F8 F8 P h~     | Plot health report              |
+| ~F8 F8 3~       | Search scenes by plot           |
+| ~C-c C-o~       | Follow link at point            |
+| ~C-c &~         | Return from link                |
+| ~C-c C-c~       | Finalize capture / update table |
+
+** Plot Template Sections
+
+| Section         | Purpose                            | Time to Fill   |
+|-----------------+------------------------------------+----------------|
+| Properties      | Metadata (type, status, etc.)      | 2 minutes      |
+| Overview        | Premise, question, stakes          | 3-5 minutes    |
+| Development Arc | Beginning, middle, end progression | 5-10 minutes   |
+| Key Scenes      | Major plot moments                 | 3-5 minutes    |
+| Resolution      | How it concludes                   | 3-5 minutes    |
+| Notes           | Tracking and reminders             | Ongoing        |
+
+** Plot Thread Types
+
+| Type              | Coverage     | Example                               |
+|-------------------+--------------+---------------------------------------|
+| Main (A-Story)    | 60-80%       | Solve the murder                      |
+| Major Sub (B)     | 30-50%       | Romance subplot                       |
+| Minor Sub (C)     | 10-30%       | Family conflict                       |
+| Thematic Thread   | Throughout   | "Meaning of home" motif               |
+
+** Healthy Plot Distribution
+
+| Plot Type    | Scenes (50-scene novel) | Max Gap   | Must Resolve? |
+|--------------+-------------------------|-----------|---------------|
+| Main Plot    | 30-40 scenes            | 5 scenes  | Yes           |
+| Major Sub    | 15-25 scenes            | 8 scenes  | Usually yes   |
+| Minor Sub    | 5-15 scenes             | 10 scenes | Optional      |
+| Theme        | Throughout              | N/A       | No            |
+
+** Common Commands
+
+| Command                          | What It Does                     |
+|----------------------------------+----------------------------------|
+| ~writing/capture-plot~             | Capture new plot thread          |
+| ~writing/set-scene-plot~           | Set plot via menu                |
+| ~writing/jump-to-scene-plot~       | Jump to plot from scene          |
+| ~writing/link-scene-plots~         | Link current scene's plots       |
+| ~writing/link-all-scene-plots~     | Batch link all scenes            |
+| ~writing/org-find-plot~            | Search scenes by plot            |
+| ~writing/plot-health-report~       | Generate plot health report      |
+| ~writing/add-plot-ids~             | Add IDs to existing plot threads |
+
+* Tips for Better Plot Management
+
+** 1. Capture Plot Threads Early
+
+Before you start drafting:
+- Identify your main plot (A-story)
+- Identify 1-2 major subplots (B-stories)
+- Create profiles for these core plots
+- Map out key scenes
+
+This provides a roadmap even if you deviate later.
+
+** 2. One Scene = 1-3 Plot Threads Maximum
+
+Each scene should advance:
+- Usually 1-2 plot threads
+- Occasionally 3 (high-energy scenes)
+- Never more than 3 (too much happening)
+
+If a scene tries to advance 4+ plots, split it into two scenes.
+
+** 3. Weave Plots Together
+
+The best scenes advance multiple plots simultaneously:
+- Scene develops main mystery AND deepens romance
+- Scene resolves minor subplot AND complicates main plot
+- Scene develops character arc AND introduces new plot thread
+
+Look for opportunities to make scenes do double duty.
+
+** 4. Use the Rule of Three
+
+For major plot points, use the "rule of three":
+- First mention: Plant the seed
+- Second mention: Develop it
+- Third mention: Payoff
+
+Example - mysterious symbol in mystery plot:
+- Scene 5: Alex notices symbol (plant)
+- Scene 15: Symbol appears again, Alex investigates (develop)
+- Scene 35: Symbol's meaning revealed (payoff)
+
+Track these in Key Scenes section.
+
+** 5. Balance Variety with Focus
+
+Good plot distribution has rhythm:
+- Scene 1: Plot A
+- Scene 2: Plot A + B
+- Scene 3: Plot B + C
+- Scene 4: Plot A
+- Scene 5: Plot A + B + C
+- Scene 6: Plot B
+
+Avoid:
+- Too much: A, A, A, A, A (monotonous)
+- Too scattered: A+B+C, A+B+C, A+B+C (exhausting)
+
+** 6. Front-Load Introduction
+
+Introduce all major plot threads in first 25% of story:
+- Main plot: Scene 1 (or very close)
+- Major subplots: Scenes 2-10
+- Minor subplots: Scenes 3-15
+
+Introducing new plots after the midpoint is risky - not enough time to develop.
+
+** 7. Escalate Before Resolving
+
+Each plot thread should escalate before resolution:
+- Complications increase
+- Stakes rise
+- Tension builds
+- Character struggles more
+
+If a plot just... ends without climax, it feels flat. Build to a peak!
+
+** 8. Resolve in Order of Importance
+
+Common resolution sequence:
+1. Minor subplots resolve first (70-80% through)
+2. Major subplots resolve next (80-90% through)
+3. Main plot resolves in climax (90-95% through)
+4. Emotional aftermath and theme in denouement (final 5%)
+
+This creates a cascade effect that feels satisfying.
+
+** 9. Track "Last Mention"
+
+In plot Notes, track when each plot last appeared:
+#+BEGIN_EXAMPLE
+*** Last Mentions
+- Scene 5: Main mystery developed
+- Scene 8: Romance subplot (Alex and Sam awkward conversation)
+- Scene 12: Main mystery (major discovery!)
+- Scene 13: Family conflict mentioned in dialogue
+- Scene 17: Main mystery advanced
+#+END_EXAMPLE
+
+When writing Scene 20, you can see: "Family conflict hasn't appeared since Scene 13 - maybe reference it?"
+
+** 10. Ask "What's at Stake?"
+
+For each plot thread, regularly check:
+- Are the stakes clear?
+- Are they high enough?
+- Do they escalate?
+- Are they personal to the protagonist?
+
+If stakes are unclear or low, the plot feels unimportant even if events happen.
+
+* What You've Learned
+
+Congratulations! You've completed Lesson 6. You now know:
+
+✓ Why plot tracking prevents dropped storylines and ensures balance
+✓ The different types of plot threads (main, major subplot, minor subplot, thematic)
+✓ How to use the plot thread capture template (6 sections)
+✓ All plot properties and when to use them (7 properties)
+✓ How to link plot threads to scenes using ID-based links
+✓ How to navigate between scenes and plot profiles
+✓ How to search for all scenes advancing a specific plot
+✓ How to generate plot timelines to visualize distribution
+✓ How to run plot health reports to find gaps and imbalances
+✓ What healthy plot distribution looks like
+✓ How to integrate plot management into daily writing
+
+* Next Steps
+
+You're ready for **Lesson 7: Finding What You Need**!
+
+In the next lesson, you'll learn:
+- Mastering all search functions (character, plot, location, PoV)
+- Advanced search techniques and filters
+- Finding TODOs across your project
+- Quick navigation workflows
+- Using search results effectively
+- Building your custom search workflows
+
+** Quick Practice Before Moving On
+
+Before Lesson 7, try this:
+
+1. Capture 2-4 plot threads for your project:
+   - One main plot (required)
+   - 1-2 subplots
+   - Optional: one thematic thread
+2. Link each plot to 2-3 scenes
+3. Test jumping from scene to plot profile and back
+4. Search for your main plot and review scene distribution
+5. Generate a plot timeline (if you have 5+ scenes)
+6. Run a plot health report and review warnings
+7. Plan: Where should each plot appear next?
+
+Take your time! Plot tracking is crucial for complex stories. When you feel comfortable with capturing, linking, searching, and analyzing plot threads, move on to Lesson 7.
+
+* Summary
+
+Plot threads are the "what happens" of your story - the events, questions, and conflicts that drive your narrative forward. By creating plot thread profiles, you:
+- Track where each plot develops across your manuscript
+- Ensure balanced development (no forgotten subplots)
+- Find gaps where plots disappear too long
+- Visualize how plots interweave
+- Check that all plots reach satisfying conclusions
+
+The plot linking system uses ID-based links (like characters and locations), allowing you to click from scene properties directly to full plot profiles. Combined with plot timelines and health reports, you have complete visibility into your story's structure.
+
+With plot thread management in place, you now have full tracking of:
+- **Who**: Characters
+- **Where**: Locations
+- **What**: Plot threads
+
+Next, you'll master the search tools that let you slice through your manuscript in any way you need!
+
+---
+
+*Previous*: [[file:getting-started-05-locations-settings.org][Lesson 5: Locations and Settings]]
+*Next*: [[file:getting-started-07-searching.org][Lesson 7: Finding What You Need]]
+
+*Lesson 6 Complete!*

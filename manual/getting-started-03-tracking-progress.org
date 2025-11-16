@@ -1,0 +1,727 @@
+#+TITLE: Lesson 3: Tracking Your Progress
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 3!
+
+You've created a project and written your first scenes. Now it's time to track your progress! Seeing your word count grow is one of the most motivating parts of writing, and this package makes it easy.
+
+By the end of this lesson, you'll have:
+- Learned how to count words accurately (excluding org metadata)
+- Set word count objectives for your scenes and chapters
+- Generated progress tracking tables that update automatically
+- Understood your writing statistics
+- Set up a daily tracking workflow
+
+*Estimated time*: 15-20 minutes
+
+* Before You Begin
+
+** What You Need
+
+✓ A project with at least one scene written (from Lesson 2)
+✓ At least 200 words of actual story content
+✓ Your manuscript file open (story.org or novel.org)
+
+** Quick Check
+
+Open your manuscript and make sure you have:
+- At least one scene heading
+- Some actual story text below the properties block
+- The file saved (~C-x C-s~)
+
+Ready? Let's track your progress!
+
+* Why Word Counting in Org-Mode is Special
+
+Before we count words, let's understand why this package's word counting is different.
+
+** The Problem with Regular Word Count
+
+If you use Emacs's built-in ~M-x count-words~, it counts *everything*:
+- Your story text ✓ (good!)
+- Scene headings ✗ (not story)
+- Property names ✗ (metadata)
+- Property values ✗ (metadata)
+- Org keywords ✗ (#+TITLE, etc.)
+- Comments ✗ (not story)
+
+This gives you an inflated, inaccurate count.
+
+** Example: What Gets Counted
+
+Look at this scene:
+
+#+BEGIN_EXAMPLE
+*** Scene 1 - The Alarm
+:PROPERTIES:
+:PoV: Alex
+:Characters: Alex, Sam
+:Location: Apartment
+:Description: Alex wakes up late
+:WORDCOUNT:
+:WORD-OBJECTIVE: 1500
+:END:
+
+The alarm rang at 6:30 AM. Alex groaned and hit snooze.
+Five more minutes wouldn't hurt.
+#+END_EXAMPLE
+
+*Regular word count*: ~40 words (includes all the metadata!)
+*Accurate word count*: ~17 words (just the story!)
+
+** The Solution: Context-Aware Counting
+
+This package uses ~org-context-extended~ to count only actual narrative content. It knows what's metadata and what's story, giving you accurate counts for:
+- Publisher requirements (need exactly 50,000 words for a novel)
+- Contest submissions (strict word limits)
+- Personal goals (write 500 words today)
+- Progress tracking (30% complete means actual story progress)
+
+* Quick Word Count (Interactive)
+
+Let's start with the fastest way to check your word count.
+
+** Step 1: Position Your Cursor
+
+Place your cursor anywhere in a scene (on the heading or in the content).
+
+** Step 2: Count Words
+
+Press ~F8 F8~ to open the Hydra menu, then press ~w~ (for "Words count")
+
+You'll see a message in the minibuffer like:
+
+#+BEGIN_EXAMPLE
+Subtree "Scene 1 - The Alarm": 347 words (excluding metadata)
+#+END_EXAMPLE
+
+*That's it!* Quick and easy.
+
+** What Gets Counted
+
+This command counts the current subtree:
+- If cursor is on a scene heading → counts that scene
+- If cursor is on a chapter heading → counts entire chapter (all scenes)
+- If cursor is on an act heading → counts entire act
+- If cursor is on the document title → counts entire manuscript
+
+** Try It Now!
+
+1. Put cursor on a scene heading
+2. Press ~F8 F8 w~
+3. Note the word count
+4. Put cursor on a chapter or act heading (novels)
+5. Press ~F8 F8 w~
+6. See the larger count!
+
+* Adding Word Count Properties
+
+Quick counts are great for checking progress, but we want to *store* word counts in properties for tracking and tables.
+
+** Understanding the Two Properties
+
+*** ~:WORDCOUNT:~
+- Auto-calculated actual word count
+- You set this with a command
+- Updates when you recount
+- Used in progress tables
+
+*** ~:WORD-OBJECTIVE:~
+- Your target/goal
+- You set this manually
+- Doesn't change unless you change it
+- Used to calculate percentage complete
+
+** Step 1: Set Your Objective (Manual)
+
+First, decide your target word count for a scene.
+
+*Typical scene lengths*:
+- Short scene: 500-1,000 words
+- Average scene: 1,000-1,500 words
+- Long scene: 1,500-2,500 words
+- Epic scene: 2,500+ words
+
+Let's say you want 1,500 words for your scene.
+
+1. Find the ~:WORD-OBJECTIVE:~ line in your scene properties
+2. Click at the end of the line
+3. Type: ~1500~
+
+Result:
+#+BEGIN_EXAMPLE
+:WORD-OBJECTIVE: 1500
+#+END_EXAMPLE
+
+Do this for each scene where you want to track progress.
+
+** Step 2: Calculate Actual Word Count (Automatic)
+
+Now let's add the actual word count.
+
+1. Place cursor on the scene heading
+2. Press ~F8 F8~ for Hydra
+3. Press ~a~ (for "Add WC props" - Word Count properties)
+
+The command scans your scene and adds the word count:
+
+#+BEGIN_EXAMPLE
+:WORDCOUNT: 347
+#+END_EXAMPLE
+
+*Magic!* The property is now populated.
+
+** Step 3: See Your Progress
+
+Look at your properties now:
+
+#+BEGIN_EXAMPLE
+:WORDCOUNT: 347
+:WORD-OBJECTIVE: 1500
+#+END_EXAMPLE
+
+Mental math: 347 ÷ 1500 = 23% complete!
+
+But we can do better - let's make tables that calculate this automatically!
+
+** Updating Word Counts
+
+As you write more, update your word count:
+
+1. Cursor on scene heading
+2. ~F8 F8 a~
+3. The ~:WORDCOUNT:~ property updates!
+
+Do this after each writing session or when you want to check progress.
+
+* Progress Tracking Tables
+
+Now for the really cool part - automatic progress tables!
+
+** Understanding Progress Tables
+
+Progress tables show:
+- Hierarchical structure (Act → Chapter → Scene)
+- Current word count (from ~:WORDCOUNT:~ properties)
+- Target word count (from ~:WORD-OBJECTIVE:~ properties)
+- Percentage complete (calculated automatically!)
+
+Tables update when you press ~C-c C-c~ on the block.
+
+** Where to Find the Progress Table
+
+*** Short Story Projects
+
+Open your ~story.org~ file and scroll to the "Progress Tracking" section near the bottom.
+
+You'll see:
+
+#+BEGIN_EXAMPLE
+* Progress Tracking
+
+#+BEGIN: org-generate-wordcount-table
+| Section | Wordcount | Objective | Progress |
+|---------+-----------+-----------+----------|
+#+END:
+#+END_EXAMPLE
+
+*** Novel Projects
+
+Open your ~novel.org~ file.
+
+Look for the "Progress Tracking" section with the same dynamic block.
+
+** Updating Your Progress Table
+
+1. Find the ~#+BEGIN: org-generate-wordcount-table~ line
+2. Put cursor anywhere on that line
+3. Press ~C-c C-c~
+
+The table regenerates with current data!
+
+** Understanding the Table
+
+After updating, you'll see something like:
+
+#+BEGIN_EXAMPLE
+#+BEGIN: org-generate-wordcount-table
+| Section              | Wordcount | Objective | Progress |
+|----------------------+-----------+-----------+----------|
+| Opening              |       847 |      3000 | 28%      |
+| Scene 1 - The Alarm  |       347 |      1500 | 23%      |
+| Scene 2 - Coffee     |       500 |      1500 | 33%      |
+| Middle               |         0 |      5000 | 0%       |
+| Ending               |         0 |      2000 | 0%       |
+|----------------------+-----------+-----------+----------|
+| *TOTAL*              |       847 |     10000 | 8%       |
+#+END_EXAMPLE
+
+Reading the table:
+- *Section*: Your manuscript structure (scenes, chapters, acts)
+- *Wordcount*: Current word count (from ~:WORDCOUNT:~ properties)
+- *Objective*: Target word count (from ~:WORD-OBJECTIVE:~ properties)
+- *Progress*: Percentage complete (calculated automatically)
+- *TOTAL*: Overall manuscript progress
+
+** The Table is Hierarchical
+
+Notice how scenes roll up into sections:
+- Scene 1 (347) + Scene 2 (500) = Opening (847)
+- Opening + Middle + Ending = TOTAL (847)
+
+This gives you both:
+- Detailed view (each scene)
+- Big picture (total progress)
+
+* Setting Up Objectives (Planning Your Story)
+
+To get meaningful progress percentages, you need objectives at each level.
+
+** Scene-Level Objectives
+
+For each scene, add ~:WORD-OBJECTIVE:~ based on importance:
+- Quick transition scene: 500
+- Standard scene: 1,000-1,500
+- Important scene: 2,000+
+
+** Chapter-Level Objectives (Novels)
+
+For each chapter, set an objective that's the sum of its scenes:
+- Chapter 1 has 3 scenes × 1,500 = 4,500
+- Set ~:WORD-OBJECTIVE: 4500~ on Chapter 1 heading
+
+** Section/Act Objectives
+
+For major sections:
+- Opening: ~3,000
+- Middle: ~5,000
+- Ending: ~2,000
+
+Or for novels:
+- Act I: ~20,000
+- Act II: ~40,000
+- Act III: ~20,000
+
+** Total Story Objective
+
+*Short story*: 2,000-15,000 words typical
+*Novella*: 15,000-50,000 words
+*Novel*: 50,000-120,000 words
+*Epic novel*: 120,000+ words
+
+Set objectives that match your target length!
+
+** Quick Setup Exercise
+
+Let's set objectives for your current project:
+
+1. Open your manuscript
+2. For each scene heading:
+   - Add ~:WORD-OBJECTIVE: 1500~ (or your target)
+3. For each section/chapter:
+   - Add ~:WORD-OBJECTIVE:~ (sum of scenes)
+4. Calculate your total target
+5. Save (~C-x C-s~)
+6. Update progress table (~C-c C-c~ on the table block)
+7. See your progress!
+
+* Daily Progress Tracking
+
+Beyond scene/chapter tracking, you can track daily writing sessions.
+
+** The Daily Tracking Table
+
+Your template includes a daily tracking section that looks like:
+
+#+BEGIN_EXAMPLE
+** Daily Writing Log
+
+| Date       | Words Written | Total Words | Notes          |
+|------------+---------------+-------------+----------------|
+| 2025-11-16 |           500 |         500 | Started novel  |
+| 2025-11-17 |           750 |        1250 | Chapter 1      |
+#+END_EXAMPLE
+
+** How to Use It
+
+*Manual method* (simple):
+
+1. At the end of your writing session
+2. Note your word count (~F8 F8 w~ or ~F8 F8 a~)
+3. Add a new row to the table:
+   - Date: Today's date
+   - Words Written: What you wrote today
+   - Total Words: Cumulative total
+   - Notes: What you worked on
+
+*Example*:
+
+After writing 500 words today:
+
+#+BEGIN_EXAMPLE
+| 2025-11-16 | 500 | 500 | First scene draft |
+#+END_EXAMPLE
+
+Tomorrow after writing 300 more:
+
+#+BEGIN_EXAMPLE
+| 2025-11-16 | 500 |  500 | First scene draft  |
+| 2025-11-17 | 300 |  800 | Continued scene 1  |
+#+END_EXAMPLE
+
+** Using org-tracktable (Advanced)
+
+The package integrates with ~org-tracktable~ for automated tracking.
+
+If you have org-tracktable installed:
+
+1. Press ~F8 F8 r~ (for "tRack table")
+2. It updates tracking tables automatically
+
+*Don't worry if you don't have it* - manual tracking works great!
+
+** Why Track Daily Progress?
+
+Benefits:
+- See momentum (writing streaks)
+- Identify productive days/times
+- Stay motivated by watching the total grow
+- Measure average daily output
+- Set realistic deadlines
+
+Psychology: Seeing the numbers go up is incredibly motivating!
+
+* Practical Exercise (15 minutes)
+
+Let's put everything together in a real tracking workflow.
+
+** Exercise: Write and Track
+
+1. *Write 200 words*
+   - Open your manuscript
+   - Find a scene that needs more content
+   - Activate writing mode (~F8 F8 m~)
+   - Write 200 words
+   - Exit writing mode (~F8 F8 m~)
+   - Save (~C-x C-s~)
+
+2. *Update word count*
+   - Cursor on scene heading
+   - ~F8 F8 a~ (adds/updates ~:WORDCOUNT:~)
+   - Check the property - your count increased!
+
+3. *Update progress table*
+   - Navigate to progress tracking section
+   - Find the ~#+BEGIN: org-generate-wordcount-table~ line
+   - Cursor on that line
+   - ~C-c C-c~
+   - Watch the table regenerate with new numbers!
+
+4. *Log your session*
+   - Go to Daily Writing Log table
+   - Add a row with today's date
+   - Fill in words written
+   - Add cumulative total
+   - Note what you worked on
+
+5. *Celebrate!*
+   - You just completed a full tracking cycle
+   - Your progress is now documented
+   - You can see your growth!
+
+* Understanding Your Statistics
+
+Let's interpret what your progress data means.
+
+** Progress Percentage Meanings
+
+| Progress | Meaning                                      |
+|----------+----------------------------------------------|
+| 0-10%    | Just started, lots of work ahead             |
+| 10-25%   | Early stages, finding your rhythm            |
+| 25-50%   | Making solid progress, story taking shape    |
+| 50-75%   | Past halfway! Momentum building              |
+| 75-90%   | Final push, can see the finish line          |
+| 90-100%  | Almost done! Final scenes                    |
+| 100%+    | First draft complete! (or exceeded target)   |
+
+** Realistic Writing Pace
+
+*Don't panic if progress seems slow!*
+
+Typical writing speeds:
+- Beginner: 250-500 words/hour
+- Intermediate: 500-1,000 words/hour
+- Experienced: 1,000-2,000 words/hour
+- Fast drafters: 2,000+ words/hour
+
+Quality matters more than speed!
+
+** Interpreting Daily Stats
+
+If you track daily:
+
+*Consistent writers*: 500 words/day = 15,000 words/month = novel in 3-4 months
+*Weekend writers*: 2,000 words/weekend = 8,000 words/month = novel in 6-7 months
+*Sporadic writers*: Variable, but tracking helps find patterns
+
+** Using Stats for Planning
+
+With your average daily word count, you can predict:
+
+*Completion date* = (Words remaining) ÷ (Average words per day)
+
+Example:
+- Target: 50,000 words
+- Current: 10,000 words
+- Remaining: 40,000 words
+- Average: 500 words/day
+- Days needed: 40,000 ÷ 500 = 80 days (~3 months)
+
+* Daily Tracking Workflow
+
+Here's a recommended daily routine that includes tracking.
+
+** Morning (Before Writing)
+
+1. Open manuscript
+2. Check yesterday's progress in the table
+3. Set today's goal (words or scenes)
+4. Activate writing mode (~F8 F8 m~)
+
+** During Writing
+
+1. Write without interruption
+2. Don't obsess over word count mid-session
+3. Focus on the story
+
+** After Writing (5 minutes)
+
+1. Exit writing mode (~F8 F8 m~)
+2. Save your work (~C-x C-s~)
+3. Quick count (~F8 F8 w~) to see session total
+4. Update scene properties (~F8 F8 a~)
+5. Update progress table (~C-c C-c~ on table)
+6. Log session in daily tracking table
+7. Note what went well/what's next
+
+** Weekly Review (10 minutes)
+
+1. Update all word count properties
+2. Regenerate progress table
+3. Review daily log - any patterns?
+4. Adjust objectives if needed
+5. Plan next week's scenes
+
+* Common Questions
+
+** "Why don't my word counts match Microsoft Word?"
+
+Different programs count differently:
+- Hyphenated words: one or two?
+- Contractions: one word or two?
+- Metadata: included or excluded?
+
+*Solution*: Be consistent. Use this package's count for tracking, other tools' counts for submission if required.
+
+** "My progress table shows 0% for everything!"
+
+*Causes*:
+- No ~:WORDCOUNT:~ properties set (use ~F8 F8 a~)
+- No ~:WORD-OBJECTIVE:~ properties set (add manually)
+- Table hasn't been updated (press ~C-c C-c~)
+
+*Solution*: Follow the setup exercise in this lesson!
+
+** "Can I change objectives mid-story?"
+
+*Yes!* Objectives are just targets:
+- Story getting longer? Increase objectives
+- Scene unnecessary? Lower or remove objective
+- Update the property and regenerate the table
+
+** "Should I track deleted words?"
+
+*Philosophy question!*
+
+- Some writers track gross (total written, including deleted)
+- Some track net (final manuscript count)
+- Progress tables show net (what's actually there)
+- Daily logs can track gross (what you wrote that day)
+
+Choose what motivates you!
+
+** "What's a realistic daily word count goal?"
+
+*Depends on your situation*:
+- Full-time writers: 1,000-2,000/day
+- Part-time (1-2 hours): 500-1,000/day
+- Busy schedule: 250-500/day
+- Weekends only: 2,000-3,000/session
+
+*Start small* - 250 words/day - and build up!
+
+** "How do I count words for the whole manuscript quickly?"
+
+1. Put cursor on the document title line (top of file)
+2. ~F8 F8 w~
+3. You'll get the total count
+
+Or check the TOTAL row in your progress table!
+
+* Troubleshooting
+
+** "C-c C-c on the table doesn't work"
+
+*Solutions*:
+1. Make sure cursor is *on* the ~#+BEGIN:~ line, not just near it
+2. Make sure you have org-tracktable installed
+3. Check that the line says ~org-generate-wordcount-table~ exactly
+4. Try ~M-x org-dblock-update~
+
+** "Word count seems wrong/too low"
+
+*Check*:
+1. You ran ~F8 F8 a~ on the scene heading (not inside content)
+2. The ~:WORDCOUNT:~ property is inside ~:PROPERTIES:...:END:~
+3. You have actual content below the properties block
+4. You saved the file (~C-x C-s~) and recounted
+
+** "Progress shows >100%"
+
+*This is fine!*
+- You exceeded your objective (great job!)
+- You can increase the objective
+- Or be happy you wrote more than planned
+
+** "Daily log table formatting breaks"
+
+*Org tables need*:
+- Pipes (~|~) aligned
+- Header separator (~|---|~)
+
+*Quick fix*:
+1. Put cursor in the table
+2. Press ~Tab~ to realign
+3. Or ~C-c C-c~ to reformat
+
+** "F8 F8 a doesn't add word count"
+
+*Possible causes*:
+1. Cursor not on a heading line
+2. No content below the properties
+3. Heading level wrong (should be scene level)
+
+*Solution*: Put cursor directly on the asterisks of scene heading and retry.
+
+* What You've Learned
+
+Fantastic work! You've completed Lesson 3. You now know:
+
+✓ Why accurate word counting matters (excludes metadata)
+✓ How to quick count (~F8 F8 w~)
+✓ How to add word count properties (~F8 F8 a~)
+✓ The difference between ~:WORDCOUNT:~ (actual) and ~:WORD-OBJECTIVE:~ (target)
+✓ How to set objectives for scenes, chapters, and your whole story
+✓ How to generate and update progress tracking tables
+✓ How to read and interpret progress percentages
+✓ How to maintain a daily writing log
+✓ Your complete daily tracking workflow
+✓ How to use statistics for planning and motivation
+
+* Next Steps
+
+Ready to organize your characters? Head to [[file:getting-started-04-capturing-characters.org][Lesson 4: Capturing Characters]]!
+
+In the next lesson, you'll learn:
+- How to create detailed character profiles quickly
+- The character capture template and all its sections
+- How to link characters to scenes (ID-based linking)
+- How to search for all scenes featuring a character
+- Character timeline generation
+- Managing your character database
+
+** Practice Before Moving On
+
+Reinforce your tracking skills:
+
+1. *Write 500 words* and track it end-to-end
+2. *Set objectives* for all your existing scenes
+3. *Generate progress table* and take a screenshot (motivation!)
+4. *Start daily logging* - commit to one week
+5. *Update counts* after every session
+6. *Calculate* when you'll finish your first draft (see if it motivates you!)
+7. *Review weekly* - what's your average words/day?
+
+Tracking progress is habit-forming - the more you do it, the more motivated you'll become!
+
+* Quick Reference
+
+** Essential Tracking Commands
+
+| Command                 | Key     | What It Does                    |
+|-------------------------+---------+---------------------------------|
+| Quick word count        | ~F8 F8 w~ | Count current subtree           |
+| Add word count property | ~F8 F8 a~ | Set :WORDCOUNT: property        |
+| Update progress table   | ~C-c C-c~ | Regenerate table (cursor on it) |
+| Update tracking         | ~F8 F8 r~ | org-tracktable update           |
+
+** Word Count Properties
+
+| Property         | Set By  | Purpose                  |
+|------------------+---------+--------------------------|
+| ~:WORDCOUNT:~      | Command | Actual count (automatic) |
+| ~:WORD-OBJECTIVE:~ | Manual  | Target count (your goal) |
+
+** Typical Word Count Targets
+
+| Level        | Typical Range        |
+|--------------+----------------------|
+| Scene        | 500-2,500 words      |
+| Chapter      | 3,000-6,000 words    |
+| Act (novels) | 20,000-40,000 words  |
+| Short story  | 2,000-15,000 words   |
+| Novella      | 15,000-50,000 words  |
+| Novel        | 50,000-120,000 words |
+
+** Daily Writing Goals
+
+| Writer Type     | Realistic Daily Goal |
+|-----------------+----------------------|
+| Beginner        | 250-500 words        |
+| Intermediate    | 500-1,000 words      |
+| Experienced     | 1,000-2,000 words    |
+| Full-time       | 2,000+ words         |
+| Weekend warrior | 2,000-3,000/session  |
+
+* Tips for Tracking Success
+
+1. *Track daily* - Even 100 words counts!
+2. *Celebrate milestones* - Every 5,000 words, every 25% progress
+3. *Don't obsess during writing* - Count after, not during
+4. *Be consistent* - Same counting method always
+5. *Review weekly* - Look for patterns in your productivity
+6. *Adjust goals* - Too easy? Increase. Too hard? Decrease.
+7. *Share progress* - Tell someone your milestones
+8. *Visualize completion* - Use the percentage to see the end
+9. *Track time too* - How long did 500 words take?
+10. *Forgive bad days* - Tomorrow is a new count!
+
+** Motivation Through Numbers
+
+"Don't break the chain" - Jerry Seinfeld's advice:
+- Write every day (even just 100 words)
+- Track it
+- Watch the streak grow
+- Don't break the chain!
+
+Your daily log is your chain - keep it going!
+
+---
+
+*Previous*: [[file:getting-started-02-first-scene.org][Lesson 2: Writing Your First Scene]]
+*Next*: [[file:getting-started-04-capturing-characters.org][Lesson 4: Capturing Characters]]
+
+*Lesson 3 Complete!* ✓

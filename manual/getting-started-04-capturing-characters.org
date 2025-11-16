@@ -1,0 +1,1097 @@
+#+TITLE: Lesson 4: Capturing Characters
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+STARTUP: overview
+
+* Welcome to Lesson 4!
+
+Your story is full of people (or aliens, or dragons, or talking furniture...). Keeping track of them all can be challenging! This lesson teaches you how to create detailed character profiles and link them to your scenes.
+
+By the end of this lesson, you'll have:
+- Created your first character profile using the capture template
+- Understood all sections of the character template
+- Learned how the ID-based linking system works
+- Set PoV and character properties with one click
+- Searched for all scenes featuring a character
+- Generated a character timeline showing who appears where
+
+*Estimated time*: 20 minutes
+
+* Before You Begin
+
+** What You Need
+
+✓ A project with at least one scene written
+✓ At least one character in your story
+✓ Your manuscript file and notes/plan files accessible
+
+** Quick Check
+
+Think about your main character:
+- What's their name?
+- What role do they play? (protagonist, antagonist, supporting)
+- What do they want?
+
+You don't need all the details yet - we'll develop them together!
+
+* Why Character Profiles Matter
+
+Before we start capturing characters, let's understand why this helps your writing.
+
+** The Problem Without Profiles
+
+When characters live only in your head or scattered through scenes:
+- "What color were Alex's eyes again?"
+- "Wait, is Sam 32 or 35?"
+- "Did I ever mention Jordan's backstory?"
+- "Which scenes actually feature Maria?"
+- "I haven't shown my antagonist in 10 chapters!"
+
+** The Solution: Centralized Profiles
+
+With character profiles:
+- ✓ All details in one place (no inconsistencies!)
+- ✓ Click from scenes to full character info
+- ✓ Search for all scenes featuring a character
+- ✓ Track character appearances across your story
+- ✓ Plan character arcs systematically
+- ✓ Never forget supporting characters
+
+** Real-World Benefits
+
+*During drafting*:
+- Quick reference: "What's Alex's occupation again?"
+- Consistency: Same eye color every time
+- Development: Arc planning keeps character growth on track
+
+*During revision*:
+- Find all Alex scenes (check PoV balance)
+- Find all scenes with Alex AND Sam (check relationship development)
+- Generate character timeline (ensure protagonists appear regularly)
+- Identify "forgotten" characters (only appear once?)
+
+* Understanding Character Files
+
+Before capturing, let's see where characters live.
+
+** Short Story Projects
+
+Characters go in ~notes.org~ under the "Characters" heading:
+
+#+BEGIN_EXAMPLE
+* Characters
+** Protagonist: [Name]
+   [Your character details]
+
+** Supporting Character: [Name]
+   [Your character details]
+#+END_EXAMPLE
+
+All characters in one file, organized by role.
+
+** Novel Projects
+
+Characters get their own file: ~plan/characters.org~
+
+#+BEGIN_EXAMPLE
+* [Character Name]
+  [All details]
+
+* [Another Character Name]
+  [All details]
+#+END_EXAMPLE
+
+Dedicated file for extensive character database.
+
+** Opening Your Character File
+
+*Quick navigation*:
+1. Press ~F8 F8~ (Hydra menu)
+2. Press ~o~ (Open file)
+3. Select ~characters.org~ or ~notes.org~
+4. Press Enter
+
+Or use ~C-x C-f~ and navigate manually.
+
+* Capturing Your First Character
+
+Let's create a character profile using the capture template!
+
+** Step 1: Activate Character Capture
+
+From anywhere in your project:
+
+1. Press ~F8 F8~ (Hydra menu)
+2. Press ~h~ (for "cHaracter" - yes, the 'h' is a bit weird, but 'c' was taken!)
+
+The menu closes and you see a prompt.
+
+** Step 2: Enter Character Name
+
+You'll see:
+#+BEGIN_EXAMPLE
+Character Name:
+#+END_EXAMPLE
+
+Type your character's name (example: ~Alex Rivera~) and press Enter.
+
+** Step 3: Fill in the Prompts
+
+The template asks for key information. Fill each prompt:
+
+1. *Role*: Choose from Protagonist, Antagonist, Supporting, Minor
+   - Example: ~Protagonist~
+
+2. *Age*: Character's age
+   - Example: ~28~
+
+3. *Gender*: Character's gender/pronouns
+   - Example: ~Non-binary (they/them)~
+
+4. *Occupation*: What they do for a living
+   - Example: ~Freelance graphic designer~
+
+5. *First Appearance Chapter*: When they first appear
+   - Example: ~Chapter 1~ or ~Opening~
+
+Press Enter after each prompt.
+
+** Step 4: The Template Appears!
+
+After the last prompt, you'll see a complete character profile template:
+
+#+BEGIN_EXAMPLE
+* Alex Rivera
+:PROPERTIES:
+:ID: char-alex-rivera-20251116-001
+:Role: Protagonist
+:Age: 28
+:Gender: Non-binary (they/them)
+:Occupation: Freelance graphic designer
+:First-appearance: Chapter 1
+:END:
+
+** Physical Description
+
+- Height ::
+- Build ::
+- Hair ::
+- Eyes ::
+- Distinctive features ::
+
+** Personality
+
+- Main traits ::
+- Strengths ::
+- Weaknesses ::
+- Fears ::
+- Desire ::
+- Need ::
+- Psychological Flaw ::
+- Moral Flaw ::
+
+** Background
+
+- Family ::
+- Education ::
+- Occupation ::
+- Formative events ::
+
+** Goal, Motivation, Conflict
+*** Internal
+- Goal ::
+- Motivation ::
+- Conflict ::
+*** External
+- Goal ::
+- Motivation ::
+- Conflict ::
+
+** Character Arc
+
+- Initial state ::
+- Turning point ::
+- Transformation ::
+- Final state ::
+
+** Relationships
+
+- With other characters ::
+
+** Notes
+-
+#+END_EXAMPLE
+
+*Wow!* That's a complete character profile structure!
+
+** Step 5: Save and File
+
+The capture is automatically filed to the correct location:
+- *Short story*: ~notes.org~ under "Characters"
+- *Novel*: ~plan/characters.org~ as a top-level heading
+
+Press ~C-c C-c~ to finalize the capture (or just save the file).
+
+* Understanding the Character Template
+
+Let's explore each section and what to put in it.
+
+** The Properties Block
+
+#+BEGIN_EXAMPLE
+:PROPERTIES:
+:ID: char-alex-rivera-20251116-001
+:Role: Protagonist
+:Age: 28
+:Gender: Non-binary (they/them)
+:Occupation: Freelance graphic designer
+:First-appearance: Chapter 1
+:END:
+#+END_EXAMPLE
+
+*** ~:ID:~ - The Magic Link (Auto-Generated!)
+
+This unique identifier is *automatically created* and is the key to the linking system.
+
+*What it does*:
+- Creates a unique ID for this character
+- Enables linking from scenes to this profile
+- Allows searching and navigation
+- Never changes even if you rename the character
+
+*Important*: Don't delete or modify this! The system generated it for you.
+
+*** ~:Role:~ - Character Function
+
+Your character's story role:
+- *Protagonist*: Main character, story is about them
+- *Antagonist*: Opposes the protagonist
+- *Supporting*: Important to the story, helps/hinders protagonist
+- *Minor*: Appears briefly, serves specific purpose
+
+*** Other Properties
+
+The template filled these from your prompts:
+- ~:Age:~ - Character's age
+- ~:Gender:~ - Gender/pronouns
+- ~:Occupation:~ - What they do
+- ~:First-appearance:~ - When they show up
+
+You can edit these anytime!
+
+** Physical Description Section
+
+#+BEGIN_EXAMPLE
+** Physical Description
+
+- Height ::
+- Build ::
+- Hair ::
+- Eyes ::
+- Distinctive features ::
+#+END_EXAMPLE
+
+*What to fill in*:
+
+- *Height*: "5'7"", "Tall", "Short", etc.
+- *Build*: "Athletic", "Stocky", "Slim", "Average"
+- *Hair*: Color, length, style ("Dark brown, shoulder-length, usually messy")
+- *Eyes*: Color, notable features ("Brown with dark circles from poor sleep")
+- *Distinctive features*: Scars, tattoos, unusual traits, mannerisms
+
+*Example*:
+#+BEGIN_EXAMPLE
+- Height :: 5'7"
+- Build :: Average, slightly soft from desk work
+- Hair :: Dark brown, medium length, often uncombed
+- Eyes :: Brown, with dark circles from poor sleep
+- Distinctive features :: Expressive eyebrows, crooked smile, usually has coffee stains on clothing
+#+END_EXAMPLE
+
+*Tip*: You don't need everything immediately. Fill what you know, add more later!
+
+** Personality Section
+
+#+BEGIN_EXAMPLE
+** Personality
+
+- Main traits ::
+- Strengths ::
+- Weaknesses ::
+- Fears ::
+- Desire ::
+- Need ::
+- Psychological Flaw ::
+- Moral Flaw ::
+#+END_EXAMPLE
+
+This is the heart of your character!
+
+*** Main Traits
+3-5 adjectives describing their personality
+- Example: "Creative, disorganized, well-meaning, adaptable, self-aware"
+
+*** Strengths
+What they're good at (skills, positive qualities)
+- Example: "Empathetic, intelligent, capable of growth, sense of humor"
+
+*** Weaknesses
+What they struggle with (flaws, limitations)
+- Example: "Poor time management, avoidant, perfectionist tendencies"
+
+*** Fears
+What scares them (drives their choices)
+- Example: "Being mediocre, letting people down, being trapped in monotony"
+
+*** Desire vs. Need
+
+*Desire* (what they think they want):
+- Example: "To have their life 'together' and feel in control"
+
+*Need* (what they actually need to grow):
+- Example: "To learn that structure can create freedom, not limit it"
+
+*The gap between desire and need creates character arc!*
+
+*** Psychological Flaw
+Mental/emotional obstacle
+- Example: "Believes they work better in chaos (they don't)"
+
+*** Moral Flaw
+Ethical weakness
+- Example: "Can be self-centered when stressed, forgetting how their chaos affects others"
+
+** Background Section
+
+#+BEGIN_EXAMPLE
+** Background
+
+- Family ::
+- Education ::
+- Occupation ::
+- Formative events ::
+#+END_EXAMPLE
+
+*What to include*:
+
+- *Family*: Parents, siblings, relationships, family dynamics
+- *Education*: Schooling, skills learned, influences
+- *Occupation*: Job history, current work, how it shapes them
+- *Formative events*: Key experiences that made them who they are
+
+*Example*:
+#+BEGIN_EXAMPLE
+- Family :: Raised by grandmother after parents divorced
+- Education :: BFA in Graphic Design
+- Occupation :: Freelance graphic designer (works from home)
+- Formative events :: Grandmother's death 2 years ago left them adrift; losing a major client 6 months ago due to missed deadline
+#+END_EXAMPLE
+
+** Goal, Motivation, Conflict Section
+
+This section uses the GMC framework (Debra Dixon's method):
+
+#+BEGIN_EXAMPLE
+** Goal, Motivation, Conflict
+*** Internal
+- Goal ::
+- Motivation ::
+- Conflict ::
+*** External
+- Goal ::
+- Motivation ::
+- Conflict ::
+#+END_EXAMPLE
+
+*** Internal GMC (Emotional/Psychological)
+
+*Goal*: What they want internally
+- Example: "Find peace and stability in daily life"
+
+*Motivation*: Why they want it
+- Example: "Tired of constant stress and feeling like a mess"
+
+*Conflict*: What prevents them
+- Example: "Fear that structure will kill creativity; resistance to change"
+
+*** External GMC (Physical/Plot)
+
+*Goal*: What they want externally
+- Example: "Establish a sustainable morning routine"
+
+*Motivation*: Why they want it
+- Example: "Keep making the same mistakes (late to meetings, forgot things)"
+
+*Conflict*: What prevents them
+- Example: "Old habits deeply ingrained; life keeps throwing curveballs"
+
+*Why GMC matters*: This framework ensures your character has clear goals and obstacles, creating natural conflict!
+
+** Character Arc Section
+
+#+BEGIN_EXAMPLE
+** Character Arc
+
+- Initial state ::
+- Turning point ::
+- Transformation ::
+- Final state ::
+#+END_EXAMPLE
+
+Track your character's journey:
+
+*Example*:
+#+BEGIN_EXAMPLE
+- Initial state :: Chaotic, reactive, running on constant anxiety
+- Turning point :: Hits rock bottom with meeting disaster; finds grandmother's watch
+- Transformation :: Learns that routines can be flexible; discovers morning peace
+- Final state :: Balanced, proactive, maintains routine while staying creative
+#+END_EXAMPLE
+
+** Relationships Section
+
+#+BEGIN_EXAMPLE
+** Relationships
+
+- With other characters ::
+#+END_EXAMPLE
+
+List important relationships:
+
+*Example*:
+#+BEGIN_EXAMPLE
+- With Sam :: Starts as strangers, becomes mentor/mentee, evolves to genuine friendship
+- With Grandmother (deceased) :: Deep love and admiration; regrets not learning from her earlier
+- With themselves :: Journey from self-criticism to self-compassion
+#+END_EXAMPLE
+
+** Notes Section
+
+#+BEGIN_EXAMPLE
+** Notes
+-
+#+END_EXAMPLE
+
+Your personal notes:
+- Voice and dialogue style
+- Things to remember
+- Revision notes
+- Ideas for development
+
+*Example*:
+#+BEGIN_EXAMPLE
+- Internal monologue: Self-deprecating, slightly sarcastic, observant
+- Dialogue: Honest, sometimes flustered, uses humor as defense
+- Remember: Alex says "close enough" about everything (catchphrase)
+- TODO: Develop their relationship with their parents more
+#+END_EXAMPLE
+
+* Filling Out Your Character Profile
+
+You don't have to fill everything immediately!
+
+** Minimum Profile (5 minutes)
+
+Essential information:
+- Name (heading)
+- Role, Age, Gender (properties - already filled!)
+- Main traits (3-5 adjectives)
+- Desire (what they want)
+- Initial state and final state (character arc endpoints)
+
+This is enough to start writing!
+
+** Full Profile (20-30 minutes)
+
+Complete all sections when:
+- Planning before drafting
+- Developing complex characters
+- During revision (understanding characters better)
+- For main characters only (supporting cast can have minimal profiles)
+
+** Practical Approach
+
+1. *Before writing*: Minimum profile
+2. *While writing*: Add details as they emerge
+3. *During revision*: Fill in gaps, ensure consistency
+
+The profile grows with your understanding of the character!
+
+* The ID-Based Linking System
+
+Now for the really cool part - linking characters to scenes!
+
+** What is ID-Based Linking?
+
+Remember that ~:ID:~ property? Here's what it enables:
+
+*Traditional approach*:
+- Type character name in ~:PoV:~ property
+- Type character names in ~:Characters:~ property
+- Hope you spelled consistently
+- Manual searching
+
+*ID-based linking*:
+- Select character from a menu
+- System inserts ID link automatically
+- Click the link to jump to character profile
+- Searches work even if you rename the character
+- Character timeline generation
+
+** How Links Look
+
+In your scene properties, instead of plain text:
+#+BEGIN_EXAMPLE
+:PoV: Alex Rivera
+:Characters: Alex Rivera, Sam Chen
+#+END_EXAMPLE
+
+You get clickable ID links:
+#+BEGIN_EXAMPLE
+:PoV: [[id:char-alex-rivera-001][Alex Rivera]]
+:Characters: [[id:char-alex-rivera-001][Alex Rivera]], [[id:char-sam-chen-002][Sam Chen]]
+#+END_EXAMPLE
+
+*What you see in the file*: ~[[id:...][Alex Rivera]]~
+*What you see in column view*: Just "Alex Rivera" (clean!)
+
+** Benefits of ID Links
+
+1. *Click to navigate*: Press ~C-c C-o~ on a character name → jump to their profile
+2. *Return easily*: Press ~C-c &~ to come back
+3. *Rename-safe*: Change "Alex" to "Alexander" in profile, all links still work
+4. *Smart searches*: Find all scenes with a character, even if link format
+5. *Timeline generation*: Automatic character appearance tracking
+6. *Consistency*: Can't misspell if you're clicking from a menu!
+
+* Setting PoV Characters (The Easy Way)
+
+Instead of typing character names, use the menu system!
+
+** Step 1: Position at Your Scene
+
+Open your manuscript (story.org or novel.org) and put cursor on a scene heading.
+
+** Step 2: Open Character Linking Menu
+
+1. Press ~F8 F8~ (Hydra menu)
+2. Press ~C~ (capital C - for Character submenu)
+
+You'll see the character linking submenu:
+#+BEGIN_EXAMPLE
+^Character Linking^
+_p_: Set PoV character      _l_: Link scene characters
+_c_: Set scene characters   _L_: Link all scenes
+_j_: Jump to PoV char       _i_: Add IDs to characters
+_s_: Setup linking system   _q_: Back to main menu
+#+END_EXAMPLE
+
+** Step 3: Set PoV Character
+
+Press ~p~ (for "Set PoV character")
+
+You'll see a completion menu with all your characters:
+#+BEGIN_EXAMPLE
+Set PoV character: [Alex Rivera] [Sam Chen] [Jordan Lee]
+#+END_EXAMPLE
+
+** Step 4: Select Character
+
+Start typing the name (e.g., "Alex") and press Tab or Enter to select.
+
+*Magic!* The ~:PoV:~ property is now:
+#+BEGIN_EXAMPLE
+:PoV: [[id:char-alex-rivera-001][Alex Rivera]]
+#+END_EXAMPLE
+
+Done! No typing, no typos, automatic linking!
+
+* Setting Scene Characters (Multiple Characters)
+
+For the ~:Characters:~ property (who appears in the scene):
+
+** Step 1: Open Character Linking Menu
+
+Same as before: ~F8 F8 C~
+
+** Step 2: Set Scene Characters
+
+Press ~c~ (for "Set scene characters")
+
+** Step 3: Multi-Select Characters
+
+You'll see the same character list, but now you can select multiple:
+
+1. Type/select first character (e.g., "Alex"), press Enter
+2. Type/select second character (e.g., "Sam"), press Enter
+3. Type/select third character if needed, press Enter
+4. Press Enter on empty prompt to finish
+
+** Step 4: Result
+
+The ~:Characters:~ property now has comma-separated ID links:
+#+BEGIN_EXAMPLE
+:Characters: [[id:char-alex-rivera-001][Alex Rivera]], [[id:char-sam-chen-002][Sam Chen]]
+#+END_EXAMPLE
+
+*Beautiful!* All characters linked with one command.
+
+* Jumping to Character Profiles
+
+Need to check a character detail while writing?
+
+** From Scene Property
+
+1. Put cursor on a character name in ~:PoV:~ or ~:Characters:~
+2. Press ~C-c C-o~ (org-open-at-point)
+3. *Boom!* You're at the character profile
+
+** Using the Menu
+
+1. Cursor on scene heading
+2. ~F8 F8 C~ (character submenu)
+3. Press ~j~ (jump to PoV character)
+4. *Boom!* At the PoV character's profile
+
+** Return to Scene
+
+After checking the character info:
+1. Press ~C-c &~ (org-mark-ring-goto)
+2. You're back at your scene!
+
+*Workflow*: Writing scene → need to check eye color → ~C-c C-o~ → see profile → ~C-c &~ → back to writing. Takes 3 seconds!
+
+* Searching for Character Appearances
+
+Find all scenes featuring a specific character!
+
+** Step 1: Open Search Menu
+
+Press ~F8 F8~ (main Hydra menu)
+
+Look at the "Search" section:
+#+BEGIN_EXAMPLE
+^Search^
+_1_: POV
+_2_: Character
+_3_: Plot
+_4_: Location
+_5_: TODOs
+#+END_EXAMPLE
+
+** Step 2: Search by Character
+
+Press ~2~ (for "Character")
+
+** Step 3: Enter Character Name
+
+You'll be prompted:
+#+BEGIN_EXAMPLE
+Character:
+#+END_EXAMPLE
+
+Type the character name (e.g., "Alex") and press Enter.
+
+** Step 4: See Results
+
+A buffer opens showing all scenes where Alex appears (either as PoV or in Characters property):
+
+#+BEGIN_EXAMPLE
+* Org QL Search: Character "Alex"
+
+** Scene 1 - The Alarm Goes Off
+   :PoV: Alex Rivera
+
+** Scene 2 - Coffee Shop Encounter
+   :Characters: Alex Rivera, Sam Chen
+
+** Scene 5 - The Decision
+   :PoV: Alex Rivera
+#+END_EXAMPLE
+
+*Click any scene* to jump to it!
+
+** Other Character Searches
+
+*Search by PoV only* (~F8 F8 1~):
+- Find all scenes from Alex's perspective
+- Useful for checking PoV balance in multi-PoV stories
+
+*The difference*:
+- Search "1" (PoV): Only scenes where Alex is the viewpoint
+- Search "2" (Character): All scenes where Alex appears (PoV or not)
+
+* Character Timeline Visualization
+
+See which characters appear in which scenes at a glance!
+
+** What is a Character Timeline?
+
+A table showing:
+- Rows: Your scenes (in story order)
+- Columns: Your characters
+- Symbols: ◆ (PoV character) or ● (appears in scene)
+
+Example:
+#+BEGIN_EXAMPLE
+| Scene                  | Chapter   | Alex | Sam | Jordan |
+|------------------------+-----------+------+-----+--------|
+| Scene 1 - Alarm        | Chapter 1 | ◆    |     |        |
+| Scene 2 - Coffee Shop  | Chapter 1 | ◆    | ●   |        |
+| Scene 3 - Work Meeting | Chapter 1 | ●    |     | ●      |
+| Scene 4 - Evening      | Chapter 2 | ◆    | ●   |        |
+#+END_EXAMPLE
+
+Reading the table:
+- ◆ = This character is the PoV
+- ● = This character appears (but isn't PoV)
+- (blank) = Character doesn't appear
+
+** Generating Character Timeline
+
+*** Step 1: Find the Timeline Block
+
+*Short story*: In ~story.org~, scroll to "Character Timeline" section
+*Novel*: In ~novel.org~, scroll to "Progress Tracking" or "Character Timeline" section
+
+You'll see:
+#+BEGIN_EXAMPLE
+** Character Timeline
+
+#+BEGIN: character-timeline
+#+END:
+#+END_EXAMPLE
+
+*** Step 2: Generate Timeline
+
+1. Put cursor on the ~#+BEGIN: character-timeline~ line
+2. Press ~C-c C-c~
+3. The table generates automatically!
+
+** Using the Timeline
+
+*What to look for*:
+
+1. *Character coverage*: Do main characters appear regularly?
+2. *PoV distribution*: Is PoV balanced (if multi-PoV)?
+3. *Forgotten characters*: Any character with only one ●?
+4. *Gap detection*: Long stretches without a character?
+5. *Relationship tracking*: When do two characters share scenes?
+
+*Example insights*:
+- "Jordan only appears in one scene - should I cut them or develop more?"
+- "Alex hasn't been PoV in 5 scenes - time to shift perspective!"
+- "Sam appears in every scene - am I overusing this character?"
+
+* Practical Exercise (20 minutes)
+
+Let's practice the complete character workflow!
+
+** Exercise: Create Three Characters and Link Them
+
+*** Part 1: Create Characters (10 minutes)
+
+1. *Create protagonist*:
+   - ~F8 F8 h~ (capture character)
+   - Enter name, fill prompts
+   - Fill minimum profile (5 minutes)
+
+2. *Create supporting character*:
+   - ~F8 F8 h~
+   - Different role (Supporting)
+   - Quick profile (3 minutes)
+
+3. *Create minor character*:
+   - ~F8 F8 h~
+   - Role: Minor
+   - Bare minimum info (2 minutes)
+
+*** Part 2: Link to Scenes (5 minutes)
+
+1. *Open manuscript*
+2. *Go to first scene*:
+   - ~F8 F8 C p~ (set PoV to protagonist)
+
+3. *Go to second scene*:
+   - ~F8 F8 C p~ (set PoV)
+   - ~F8 F8 C c~ (set scene characters to multiple)
+
+4. *Go to third scene*:
+   - Link different characters
+
+*** Part 3: Test Navigation and Search (5 minutes)
+
+1. *Jump to profile*:
+   - Cursor on character link
+   - ~C-c C-o~ (open)
+   - ~C-c &~ (return)
+
+2. *Search for character*:
+   - ~F8 F8 2~ (search by character)
+   - Enter protagonist's name
+   - See all their scenes!
+
+3. *Generate timeline*:
+   - Find character timeline section
+   - ~C-c C-c~ on the block
+   - See your character appearances visualized!
+
+* Integrating Characters into Daily Workflow
+
+How to use character features while writing:
+
+** During Planning (Before Writing)
+
+1. Create character profiles (even minimal ones)
+2. Fill GMC (goal, motivation, conflict)
+3. Plan character arcs (initial → final state)
+4. Note key relationships
+
+** While Drafting
+
+1. Insert scene (~F8 F8 s~)
+2. Set PoV (~F8 F8 C p~) - quick menu selection!
+3. Set characters (~F8 F8 C c~) - multi-select!
+4. Write scene
+5. Jump to profile if needed (~C-c C-o~)
+6. Return and continue writing (~C-c &~)
+
+** During Revision
+
+1. Search for character (~F8 F8 2~)
+2. Review all their scenes
+3. Check arc consistency
+4. Update character profile with new insights
+5. Generate character timeline
+6. Look for gaps or overuse
+7. Ensure all main characters appear regularly
+
+* Common Questions
+
+** "Do I need profiles for every character?"
+
+*No!* Priority levels:
+
+- *Protagonist(s)*: Full detailed profiles
+- *Antagonist*: Full profile
+- *Major supporting*: Medium profiles (main sections filled)
+- *Minor supporting*: Minimal (name, role, main trait)
+- *Background characters*: No profile needed (waiter, clerk, etc.)
+
+** "Can I link plain text character names later?"
+
+*Yes!* The package includes batch conversion:
+
+- ~F8 F8 C L~ (capital L) links all scenes automatically
+- Scans your manuscript for character names
+- Converts plain text to ID links
+- One command, entire manuscript updated
+
+** "What if I change a character's name?"
+
+*Easy!*
+
+1. Go to character profile
+2. Change the heading (the name)
+3. ID links still work (they use the ID, not the name!)
+4. All scenes automatically show new name
+
+*No need to update each scene manually!*
+
+** "Can I have multiple PoV characters?"
+
+*Yes!* Common patterns:
+
+- *Single PoV*: One character's perspective throughout
+- *Multi-PoV rotating*: Different PoV each scene/chapter
+- *Dual PoV*: Two main perspectives
+- *Ensemble*: Many PoV characters
+
+Just set ~:PoV:~ to whoever has the perspective in each scene.
+
+** "How do I handle characters without names yet?"
+
+*Strategies*:
+
+1. Use placeholder: "Mysterious Stranger", "The Detective"
+2. Use role: "Antagonist", "Love Interest"
+3. Use temporary name: "Bob" (change later)
+4. Create profile when you know the name
+
+The linking system works regardless!
+
+** "My character list in the menu is empty!"
+
+*Causes*:
+1. No characters captured yet (create one!)
+2. Characters lack IDs (run ~F8 F8 C i~ to add IDs)
+3. Wrong file open (must be in writing project)
+
+*Quick fix*: ~F8 F8 C s~ (setup linking system)
+
+* Troubleshooting
+
+** "Character capture puts character in wrong file"
+
+*Check*:
+1. Are you in a writing project? (look for .writing-project file)
+2. Is project type detected correctly?
+3. For short stories: Does notes.org exist?
+4. For novels: Does plan/ directory exist?
+
+*Solution*: Make sure you're in the project directory when capturing.
+
+** "Can't select character from menu - list is empty"
+
+*Causes*:
+1. Characters don't have IDs
+2. Characters file not formatted correctly
+
+*Solution*:
+1. ~F8 F8 C i~ (add IDs to all characters)
+2. Make sure characters have ~:Role:~ or ~:TYPE:~ property
+
+** "Link doesn't jump to character profile"
+
+*Check*:
+1. Does character profile have ~:ID:~ property?
+2. Is ~:ID:~ value unique?
+3. Is cursor directly on the link text?
+
+*Solution*:
+1. Click directly on character name in the link
+2. Or use ~F8 F8 C j~ to jump to PoV character
+
+** "Character timeline shows no characters"
+
+*Causes*:
+1. Scenes don't have ~:PoV:~ or ~:Characters:~ properties set
+2. Properties have plain text instead of ID links
+3. Need to update the dynamic block
+
+*Solution*:
+1. Set character properties in scenes (~F8 F8 C p~ and ~F8 F8 C c~)
+2. Update table (~C-c C-c~ on #+BEGIN line)
+
+** "Character profile template is incomplete"
+
+*If capture template looks wrong*:
+
+1. Make sure emacs-writing is up to date
+2. Try ~M-x writing/capture-character~ directly
+3. Check that capture finalized (~C-c C-c~)
+
+* What You've Learned
+
+Excellent work! You've completed Lesson 4. You now know:
+
+✓ Why character profiles matter (consistency, reference, tracking)
+✓ Where characters are stored (notes.org vs plan/characters.org)
+✓ How to capture characters (~F8 F8 h~)
+✓ All sections of the character template (physical, personality, GMC, arc, etc.)
+✓ What minimum vs. full profiles contain
+✓ How ID-based linking works (unique IDs enable smart features)
+✓ How to set PoV character (~F8 F8 C p~)
+✓ How to set scene characters (~F8 F8 C c~)
+✓ How to jump to character profiles (~C-c C-o~)
+✓ How to search for all scenes with a character (~F8 F8 2~)
+✓ How to generate character timelines (C-c C-c on block)
+✓ How to integrate characters into your daily workflow
+
+* Next Steps
+
+Ready to build your story's world? Head to [[file:getting-started-05-locations-settings.org][Lesson 5: Locations and Settings]]!
+
+In the next lesson, you'll learn:
+- Creating detailed location profiles
+- Linking locations to scenes
+- Searching scenes by location
+- Tracking setting variety
+- Using locations to enhance atmosphere
+- Managing your location database
+
+** Practice Before Moving On
+
+Reinforce your character skills:
+
+1. *Create profiles* for all major characters (even brief ones)
+2. *Link characters* to all existing scenes
+3. *Practice navigation*: Jump to profiles and back 10 times
+4. *Search practice*: Find all scenes for each main character
+5. *Generate timeline*: See character distribution
+6. *Fill out one complete profile*: Choose your protagonist, spend 30 minutes
+7. *Plan character arc*: Use the arc section to plot their journey
+
+The more detailed your character profiles, the more consistent and vivid your characters will be!
+
+* Quick Reference
+
+** Character Commands
+
+| Command                  | Key           | What It Does                    |
+|--------------------------+---------------+---------------------------------|
+| Capture character        | ~F8 F8 h~     | Create character profile        |
+| Character linking menu   | ~F8 F8 C~     | Open character submenu          |
+| Set PoV character        | ~F8 F8 C p~   | Select PoV from menu            |
+| Set scene characters     | ~F8 F8 C c~   | Multi-select characters         |
+| Jump to PoV character    | ~F8 F8 C j~   | Go to PoV profile               |
+| Search by character      | ~F8 F8 2~     | Find all scenes with character  |
+| Search by PoV            | ~F8 F8 1~     | Find scenes by PoV              |
+| Follow link              | ~C-c C-o~     | Jump to linked character        |
+| Return from link         | ~C-c &~       | Return to previous location     |
+| Generate char timeline   | ~C-c C-c~     | Update timeline (on block)      |
+
+** Character Template Sections
+
+| Section                 | Fill When       | Purpose                          |
+|-------------------------+-----------------+----------------------------------|
+| Properties              | During capture  | ID, role, age, gender, job       |
+| Physical Description    | Planning        | Appearance consistency           |
+| Personality             | Planning        | Core traits, strengths, flaws    |
+| Background              | Planning        | History, formative events        |
+| GMC                     | Planning        | Goals, motivation, conflict      |
+| Character Arc           | Planning        | Journey from start to end        |
+| Relationships           | While writing   | Connections to other characters  |
+| Notes                   | Anytime         | Voice, reminders, ideas          |
+
+** Profile Depth Guide
+
+| Character Type  | Profile Level | Time Needed    |
+|-----------------+---------------+----------------|
+| Protagonist     | Full          | 30-60 minutes  |
+| Antagonist      | Full          | 30-60 minutes  |
+| Major Support   | Medium        | 15-30 minutes  |
+| Minor Support   | Minimal       | 5-10 minutes   |
+| Background      | None          | 0 minutes      |
+
+** Character Timeline Symbols
+
+| Symbol | Meaning                                       |
+|--------+-----------------------------------------------|
+| ◆      | PoV character (viewpoint in this scene)       |
+| ●      | Present (appears but not PoV)                 |
+| (blank) | Absent (doesn't appear in this scene)        |
+
+* Tips for Character Success
+
+1. *Start minimal* - Don't spend hours on profiles before writing
+2. *Develop while writing* - Add details as characters reveal themselves
+3. *Use GMC* - Goal, Motivation, Conflict is the minimum for strong characters
+4. *Link always* - Use the menu (~F8 F8 C p~) instead of typing names
+5. *Check consistency* - Jump to profiles when describing characters
+6. *Track appearances* - Use timeline to ensure balanced screen time
+7. *Revise profiles* - Update after drafting when you know characters better
+8. *Distinguish voices* - Use Notes section for speech patterns/catchphrases
+9. *Plan relationships* - Note how characters see each other
+10. *Search often* - Review all scenes for a character during revision
+
+** Remember
+
+*Your characters are your story's heart.* The time you invest in understanding them - even with minimal profiles - will make your story richer, more consistent, and more emotionally resonant!
+
+---
+
+*Previous*: [[file:getting-started-03-tracking-progress.org][Lesson 3: Tracking Your Progress]]
+*Next*: [[file:getting-started-05-locations-settings.org][Lesson 5: Locations and Settings]]
+
+*Lesson 4 Complete!* ✓
