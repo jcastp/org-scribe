@@ -131,9 +131,9 @@ _s_: Setup linking system     _q_: Back to main menu
 _s_: Scene         _m_: Mode (write)  _n_: Note          _w_: Words count   _1_: POV           _C_: Characters
 _c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table   _2_: Character     _L_: Locations
 _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_: Plot          _P_: Plot threads
-                   _e_: Editing mode  _b_: oBject        _d_: Dictionary    _4_: Location
-                                      _t_: Timeline      _y_: sYnonyms      _5_: TODOs
-                                                                               _q_: Quit
+                 _e_: Editing mode  _b_: oBject        _d_: Dictionary    _4_: Location
+                                  _t_: Timeline      _y_: sYnonyms      _5_: TODOs
+                                                                                     _q_: Quit
 "
   ;; Insert (most frequent actions get best keys)
   ("s" writing-insert-scene "insert scene")
