@@ -446,14 +446,20 @@ file that doesn't exist."
 *** Physical Description
 %?
 
-*** Properties & Abilities
+*** Origin
 -
 
-*** Origin & History
+*** Properties
 -
 
-*** Significance to Plot
+*** Importance in the Plot
 -
+
+*** Object History
+-
+
+*** Symbolism
+- 
 
 *** Current Location
 -
