@@ -42,16 +42,18 @@ character heading has a unique ID property."
       (org-map-entries
        (lambda ()
          (let* ((level (org-current-level))
-                (parent-props (org-entry-properties nil "TYPE"))
-                (type (cdr (assoc "TYPE" parent-props)))
+                (role (org-entry-get nil "Role"))
+                (type (org-entry-get nil "TYPE"))
                 (is-character-heading
-                 (and (>= level 2)  ; Level 2 or deeper
-                      (or type  ; Has TYPE property
+                 (and (>= level 1)  ; Level 1 or deeper
+                      (or role  ; Has Role property (new template)
+                          type  ; Has TYPE property (old template)
                           ;; Or is under "Characters" or similar heading
                           (save-excursion
-                            (org-up-heading-safe)
-                            (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
-                                           (org-get-heading t t t t)))))))
+                            (ignore-errors
+                              (org-up-heading-safe)
+                              (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
+                                             (org-get-heading t t t t))))))))
            (when is-character-heading
              (unless (org-id-get)
                (org-id-get-create)
@@ -86,13 +88,16 @@ Returns list of (NAME . (ID . HEADING-TEXT)) for all characters in the project."
                    (id (org-id-get))
                    (name (writing--get-character-name-at-point))
                    (heading (org-get-heading t t t t))
+                   (role (org-entry-get nil "Role"))
+                   (type (org-entry-get nil "TYPE"))
                    ;; Check if this looks like a character heading
                    (is-character
-                    (and (>= level 2)  ; Level 2 or deeper
+                    (and (>= level 1)  ; Level 1 or deeper
                          id            ; Has an ID
                          name          ; Has a name
-                         ;; Either has TYPE property or is under Characters section
-                         (or (org-entry-get nil "TYPE")
+                         ;; Either has Role/TYPE property or is under Characters section
+                         (or role      ; Has Role property (new template)
+                             type      ; Has TYPE property (old template)
                              (save-excursion
                                (ignore-errors
                                  (org-up-heading-safe)

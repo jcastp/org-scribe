@@ -66,7 +66,8 @@ CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes."
        (insert "#+TITLE: Locations & World Building\n")
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       (insert "* Locations\n\n"))
+       ;;(insert "* Locations\n\n")
+       )
       ('objects
        (insert "#+TITLE: Important Objects\n")
        (insert "#+AUTHOR: " user-full-name "\n")

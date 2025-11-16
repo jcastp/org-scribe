@@ -45,20 +45,21 @@ location heading has a unique ID property."
                 (parent-props (org-entry-properties nil "TYPE"))
                 (type (cdr (assoc "TYPE" parent-props)))
                 (is-location-heading
-                 (and (>= level 2)  ; Level 2 or deeper
+                 (and (>= level 1)  ; Level 1 or deeper
                       (or type  ; Has TYPE property
                           ;; Or is under "Location" or similar heading
                           (save-excursion
-                            (org-up-heading-safe)
-                            (string-match-p "Location\\|Ubicación\\|Setting\\|Place\\|Lugar"
-                                           (org-get-heading t t t t)))))))
+                            (ignore-errors
+                              (org-up-heading-safe)
+                              (string-match-p "Location\\|Ubicación\\|Setting\\|Place\\|Lugar"
+                                             (org-get-heading t t t t)))))))))
            (when is-location-heading
              (unless (org-id-get)
                (org-id-get-create)
                (setq count (1+ count))))))
        nil 'file)
       (message "Added IDs to %d location heading%s"
-               count (if (= count 1) "" "s")))))
+               count (if (= count 1) "" "s"))))
 
 (defun writing--get-location-name-at-point ()
   "Get the location name from current heading or NAME property."
@@ -88,11 +89,12 @@ Returns list of (NAME . (ID . HEADING-TEXT)) for all locations in the project."
                    (heading (org-get-heading t t t t))
                    ;; Check if this looks like a location heading
                    (is-location
-                    (and (>= level 2)  ; Level 2 or deeper
+                    (and (>= level 1)  ; Level 1 or deeper
                          id            ; Has an ID
                          name          ; Has a name
-                         ;; Either has TYPE property or is under Location section
-                         (or (org-entry-get nil "TYPE")
+                         ;; Either has Type property or is under Location section
+                         (or (org-entry-get nil "Type")  ; New template uses Type
+                             (org-entry-get nil "TYPE")  ; Old template compatibility
                              (save-excursion
                                (ignore-errors
                                  (org-up-heading-safe)
