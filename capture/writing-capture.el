@@ -72,12 +72,14 @@ CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes."
        (insert "#+TITLE: Important Objects\n")
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       (insert "* Objects\n\n"))
+       ;;(insert "* Objects\n\n")
+       )
       ('timeline
        (insert "#+TITLE: Story Timeline\n")
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       (insert "* Timeline\n\n"))
+       ;;(insert "* Timeline\n\n")
+       )
       ('notes
        (insert "#+TITLE: Writing Notes\n")
        (insert "#+AUTHOR: " user-full-name "\n")
@@ -435,9 +437,10 @@ file that doesn't exist."
 
 (defvar writing/object-capture-templates
   '(("o" "Object" entry
-     (file+headline writing/capture-object-file "Objects")
-     "** %^{Object Name}
+     (file writing/capture-object-file)
+     "* %^{Object Name}
 :PROPERTIES:
+:ID: %(org-id-new)
 :Type: %^{Type|Magical|Artifact|Weapon|Tool|Symbolic|Technology}
 :Owner: %^{Current Owner}
 :First-appearance: %^{First Appearance Chapter}
@@ -475,8 +478,8 @@ file that doesn't exist."
 
 (defvar writing/timeline-capture-templates
   '(("t" "Timeline Event" entry
-     (file+headline writing/capture-timeline-file "Timeline")
-     "** %^{Event Name}
+     (file writing/capture-timeline-file)
+     "* %^{Event Name}
 :PROPERTIES:
 :ID: %(org-id-new)
 :Type: %^{Type|Action|Revelation|Character|World|Backstory}
