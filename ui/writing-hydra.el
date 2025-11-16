@@ -33,7 +33,7 @@
 (declare-function writing/org-find-plot "search/writing-search")
 (declare-function writing/org-find-location "search/writing-search")
 (declare-function writing/search-todos-recursive "search/writing-search")
-(declare-function writing-create-project "templates/writing-project")
+(declare-function writing-create-novel-project "templates/writing-project")
 (declare-function writing-create-short-story-project "templates/writing-project")
 (declare-function writing-insert-scene "templates/writing-project")
 (declare-function writing-insert-chapter "templates/writing-project")

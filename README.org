@@ -129,7 +129,7 @@ Add to your Emacs configuration:
 ** Create Your First Novel Project
 
 1. Install the package and dependencies
-2. Run =M-x writing-create-project=
+2. Run =M-x writing-create-novel-project=
 3. Choose a directory and enter your novel title
 4. Start writing in the generated =novel.org= file!
 
@@ -147,7 +147,7 @@ Add to your Emacs configuration:
 
 *** Create a New Novel Project
 
-=M-x writing-create-project=
+=M-x writing-create-novel-project=
 
 This creates a complete project structure:
 
@@ -724,7 +724,7 @@ project-root/
     └── research.org     # Research tracking
 #+end_example
 
-Projects can be created with =M-x writing-create-project= or the package works with any org-mode file structure.
+Projects can be created with =M-x writing-create-novel-project= or the package works with any org-mode file structure.
 
 * Configuration
 
@@ -908,7 +908,8 @@ If you were using =emacs-writing-template= separately:
 1. Remove =emacs-writing-template= from your config
 2. Update to =emacs-writing= 0.2.0+
 3. Old function names still work (with deprecation warnings):
-   - =writing-project-create-novel-project= → =writing-create-project=
+   - =writing-project-create-novel-project= → =writing-create-novel-project=
+   - =writing-create-project= → =writing-create-novel-project=
    - =writing-project-insert-scene= → =writing-insert-scene=
    - =writing-project-insert-chapter= → =writing-insert-chapter=
    - =writing-project-open-novel-file= → =writing-open-project-file=

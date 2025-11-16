@@ -10,7 +10,7 @@
 ;; project structures from templates with variable substitution.
 ;;
 ;; Main functions:
-;;   - writing-create-project: Create new novel project from templates
+;;   - writing-create-novel-project: Create new novel project from templates
 ;;   - writing-create-short-story-project: Create new short story project
 ;;   - writing-insert-scene: Insert scene template
 ;;   - writing-insert-chapter: Insert chapter template
@@ -87,7 +87,7 @@ Returns nil if valid, otherwise returns an error message."
    (t nil)))
 
 ;;;###autoload
-(defun writing-create-project (base-dir title)
+(defun writing-create-novel-project (base-dir title)
   "Create a new novel project structure from templates.
 BASE-DIR is the parent directory where the project will be created.
 TITLE is the name of the novel/project.
@@ -413,9 +413,14 @@ This is useful for adding novels created before project.el integration."
 
 ;; Provide old function names for backwards compatibility
 ;;;###autoload
-(defalias 'writing-project-create-novel-project #'writing-create-project
-  "Deprecated: Use `writing-create-project' instead.")
-(make-obsolete 'writing-project-create-novel-project 'writing-create-project "0.2.0")
+(defalias 'writing-project-create-novel-project #'writing-create-novel-project
+  "Deprecated: Use `writing-create-novel-project' instead.")
+(make-obsolete 'writing-project-create-novel-project 'writing-create-novel-project "0.2.0")
+
+;;;###autoload
+(defalias 'writing-create-project #'writing-create-novel-project
+  "Deprecated: Use `writing-create-novel-project' instead.")
+(make-obsolete 'writing-create-project 'writing-create-novel-project "0.2.1")
 
 ;;;###autoload
 (defalias 'writing-project-insert-scene #'writing-insert-scene

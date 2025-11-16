@@ -87,7 +87,7 @@
       (message "\nVersion: %s" (writing-version))
       (message "\nAvailable commands:")
       (message "- M-x emacs-writing-mode")
-      (message "- M-x writing-create-project (NEW in 0.2.0)")
+      (message "- M-x writing-create-novel-project (NEW in 0.2.0)")
       (message "- M-x writing-insert-scene (NEW in 0.2.0)")
       (message "- M-x writing-insert-chapter (NEW in 0.2.0)")
       (message "- M-x my-writing-env-mode")
