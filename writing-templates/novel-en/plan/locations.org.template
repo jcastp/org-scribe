@@ -4,10 +4,12 @@
 
 * Main Location 1
 :PROPERTIES:
-:TYPE: City/Town/etc.
-:NAME:
-:CLIMATE:
-:POPULATION:
+:ID:
+:Type: City/Town/etc.
+:Importance:
+:First-appearance:
+:Climate:
+:Population:
 :END:
 
 ** General Description
@@ -19,7 +21,7 @@
 - Climate ::
 - Natural resources ::
 
-** Cultural Aspects
+** Cultural Aspects & Society
 
 - Language ::
 - Customs ::
@@ -28,19 +30,18 @@
 
 ** History
 
+** Notable Features
+
 ** Importance in the Plot
 
 ** Specific Places
 
-*** Place 1
-:PROPERTIES:
-:TYPE: House/Building/etc.
-:END:
-
-Detailed description...
+** Atmosphere & Mood
 
 ** Map/Reference Image
 
 # [[file:../notes/images/map.jpg]]
+
+** Notes
 
 * Main Location 2

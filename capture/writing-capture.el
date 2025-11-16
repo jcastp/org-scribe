@@ -381,8 +381,8 @@ file that doesn't exist."
 
 (defvar writing/location-capture-templates
   '(("l" "Location" entry
-     (file+headline writing/capture-location-file "Locations")
-     "** %^{Location Name}
+     (file writing/capture-location-file)
+     "* %^{Location Name}
 :PROPERTIES:
 :ID: %(org-id-new)
 :Type: %^{Type|City|Building|Room|Natural|Region|Country}
@@ -392,28 +392,42 @@ file that doesn't exist."
 :Population: %^{Population}
 :END:
 
-*** Description
+** General Description
 %?
 
-*** Geography
+** Geography
+
+- Location ::
+- Terrain ::
+- Climate ::
+- Natural resources ::
+
+** Cultural Aspects & Society
+
+- Language ::
+- Customs ::
+- Religion ::
+- Government ::
+
+** History
 -
 
-*** Culture & Society
+** Notable Features
 -
 
-*** History
+** Importance in the Plot
 -
 
-*** Notable Features
+** Specific Places
 -
 
-*** Plot Significance
+** Atmosphere & Mood
 -
 
-*** Atmosphere & Mood
+** Map/Reference Image
 -
 
-*** Notes
+** Notes
 - "
      :empty-lines 1))
   "Capture templates for location profiles.")
