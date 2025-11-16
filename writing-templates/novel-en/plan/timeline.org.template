@@ -16,21 +16,35 @@
 
 ** Event 01
 :PROPERTIES:
-:DATE:
-:TIME:
-:DURATION:
-:CHARACTERS:
-:LOCATION:
-:CHAPTER:
+:ID:
+:Type:
+:Relevance:
+:Date:
+:Time:
+:Duration:
+:Characters:
+:Location:
+:Chapter:
 :END:
 
 *** Description
 
 *** Consequences
 
+*** Connections
+
+*** Notes
+
 * Backstory Timeline
 ** Past Event 01
 :PROPERTIES:
-:DATE:
-:RELEVANCE:
+:ID:
+:Type:
+:Relevance:
+:Date:
+:Time:
+:Duration:
+:Characters:
+:Location:
+:Chapter:
 :END:

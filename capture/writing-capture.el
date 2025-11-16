@@ -471,15 +471,18 @@ file that doesn't exist."
      (file+headline writing/capture-timeline-file "Timeline")
      "** %^{Event Name}
 :PROPERTIES:
-:Date: %^{Date/Time in Story}
-:Story-day: %^{Story Day (e.g., Day 1, Day 15)}
-:Chapter: %^{Chapter(s)}
-:Location: %^{Location}
-:Characters: %^{Characters Involved}
+:ID: %(org-id-new)
 :Type: %^{Type|Action|Revelation|Character|World|Backstory}
+:Relevance:
+:Date: %^{Date/Time in Story}
+:Time:
+:Duration:
+:Characters: %^{Characters Involved}
+:Location: %^{Location}
+:Chapter: %^{Chapter(s)}
 :END:
 
-*** Event Description
+*** Description
 %?
 
 *** Consequences
