@@ -724,7 +724,7 @@ Automatically determines the appropriate notes file based on project structure."
   (interactive)
   (let* ((target (org-scribe/capture-target-file t))
          (org-capture-templates
-          `(("w" "Writing Note" entry
+          `(("w" ,(org-scribe-i18n capture-menu-note) entry
              (file+headline ,target ,(org-scribe-i18n heading-notes))
              "** TODO %?\n  %U\n  %i"
              :empty-lines 1))))
@@ -745,7 +745,7 @@ Creates a comprehensive character template with prompts for:
   (let* ((target (org-scribe/capture-character-file t))
          (template (org-scribe--character-capture-template))
          (org-capture-templates
-          `(("c" "Character Profile" entry
+          `(("c" ,(org-scribe-i18n capture-menu-character) entry
              (file ,target)
              ,template
              :empty-lines 1))))
@@ -766,7 +766,7 @@ Creates a comprehensive location template with prompts for:
   (let* ((target (org-scribe/capture-location-file t))
          (template (org-scribe--location-capture-template))
          (org-capture-templates
-          `(("l" "Location" entry
+          `(("l" ,(org-scribe-i18n capture-menu-location) entry
              (file ,target)
              ,template
              :empty-lines 1))))
@@ -787,7 +787,7 @@ Creates a comprehensive object template with prompts for:
   (let* ((target (org-scribe/capture-object-file t))
          (template (org-scribe--object-capture-template))
          (org-capture-templates
-          `(("o" "Object" entry
+          `(("o" ,(org-scribe-i18n capture-menu-object) entry
              (file ,target)
              ,template
              :empty-lines 1))))
@@ -807,7 +807,7 @@ Creates a comprehensive timeline event template with prompts for:
   (let* ((target (org-scribe/capture-timeline-file t))
          (template (org-scribe--timeline-capture-template))
          (org-capture-templates
-          `(("t" "Timeline Event" entry
+          `(("t" ,(org-scribe-i18n capture-menu-timeline) entry
              (file ,target)
              ,template
              :empty-lines 1))))
@@ -837,7 +837,7 @@ then elaborate later during planning or revision."
   (let* ((target (org-scribe/capture-plot-thread-file t))
          (template (org-scribe--plot-thread-capture-template))
          (org-capture-templates
-          `(("p" "Plot Thread" entry
+          `(("p" ,(org-scribe-i18n capture-menu-plot) entry
              (file+headline ,target ,(org-scribe-i18n plot-threads-heading))
              ,template
              :empty-lines 1))))

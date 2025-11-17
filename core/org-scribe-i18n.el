@@ -105,6 +105,103 @@
      (capture-plot-type . "Type")
      (capture-plot-status . "Status")
 
+     ;; Capture menu descriptions
+     (capture-menu-note . "Writing Note")
+     (capture-menu-character . "Character Profile")
+     (capture-menu-location . "Location")
+     (capture-menu-object . "Object")
+     (capture-menu-timeline . "Timeline Event")
+     (capture-menu-plot . "Plot Thread")
+
+     ;; Hydra menu strings
+     ;; Main sections
+     (hydra-section-insert . "Insert")
+     (hydra-section-modes . "Modes")
+     (hydra-section-capture . "Capture")
+     (hydra-section-tools . "Tools")
+     (hydra-section-search . "Search")
+     (hydra-section-manage . "Manage")
+
+     ;; Insert items
+     (hydra-insert-scene . "Scene")
+     (hydra-insert-chapter . "Chapter")
+     (hydra-insert-open-file . "Open file")
+
+     ;; Mode items
+     (hydra-mode-write . "Mode (write)")
+     (hydra-mode-project . "Project mode")
+     (hydra-mode-focus . "Focus mode")
+     (hydra-mode-editing . "Editing mode")
+
+     ;; Capture items (short descriptions)
+     (hydra-capture-note . "Note")
+     (hydra-capture-character . "cHaracter")
+     (hydra-capture-location . "Location")
+     (hydra-capture-object . "oBject")
+     (hydra-capture-timeline . "Timeline")
+     (hydra-capture-plot . "plot thread")
+
+     ;; Tool items
+     (hydra-tool-wordcount . "Words count")
+     (hydra-tool-track . "tRack table")
+     (hydra-tool-add-wc . "Add WC props")
+     (hydra-tool-dictionary . "Dictionary")
+     (hydra-tool-synonyms . "sYnonyms")
+
+     ;; Search items
+     (hydra-search-pov . "POV")
+     (hydra-search-character . "Character")
+     (hydra-search-plot . "Plot")
+     (hydra-search-location . "Location")
+     (hydra-search-todos . "TODOs")
+
+     ;; Manage items
+     (hydra-manage-characters . "Characters")
+     (hydra-manage-locations . "Locations")
+     (hydra-manage-plot-threads . "Plot threads")
+     (hydra-manage-update-links . "Update links")
+
+     ;; Common
+     (hydra-quit . "Quit")
+     (hydra-back . "Back to main menu")
+
+     ;; Character linking submenu
+     (hydra-char-title . "Character Linking")
+     (hydra-char-set-pov . "Set PoV character")
+     (hydra-char-set-characters . "Set scene characters")
+     (hydra-char-jump-pov . "Jump to PoV char")
+     (hydra-char-update-names . "Update link names")
+     (hydra-char-update-all-names . "Update all link names")
+     (hydra-char-link-scene . "Link scene characters")
+     (hydra-char-link-all . "Link all scenes")
+     (hydra-char-add-ids . "Add IDs to characters")
+     (hydra-char-setup . "Setup linking system")
+
+     ;; Location linking submenu
+     (hydra-loc-title . "Location Linking")
+     (hydra-loc-set-locations . "Set scene locations")
+     (hydra-loc-link-scene . "Link scene locations")
+     (hydra-loc-link-all . "Link all scenes")
+     (hydra-loc-add-ids . "Add IDs to locations")
+     (hydra-loc-update-names . "Update link names")
+     (hydra-loc-update-all-names . "Update all link names")
+     (hydra-loc-setup . "Setup linking system")
+
+     ;; Plot thread linking submenu
+     (hydra-plot-title . "Plot Thread Linking")
+     (hydra-plot-analysis . "Analysis")
+     (hydra-plot-set-threads . "Set scene plot threads")
+     (hydra-plot-jump . "Jump to plot thread")
+     (hydra-plot-link-scene . "Link scene plot threads")
+     (hydra-plot-link-all . "Link all scenes")
+     (hydra-plot-update-names . "Update link names")
+     (hydra-plot-update-all-names . "Update all link names")
+     (hydra-plot-timeline . "Timeline table")
+     (hydra-plot-report . "Health report")
+     (hydra-plot-stats . "Statistics")
+     (hydra-plot-add-ids . "Add IDs to threads")
+     (hydra-plot-setup . "Setup linking system")
+
      ;; Capture role/type options
      (role-protagonist . "Protagonist")
      (role-antagonist . "Antagonist")
@@ -348,6 +445,103 @@
      (capture-plot-type . "Tipo")
      (capture-plot-status . "Estado")
 
+     ;; Descripciones de menú de captura
+     (capture-menu-note . "Nota de Escritura")
+     (capture-menu-character . "Perfil de Personaje")
+     (capture-menu-location . "Localización")
+     (capture-menu-object . "Objeto")
+     (capture-menu-timeline . "Evento de Cronología")
+     (capture-menu-plot . "Hilo de Trama")
+
+     ;; Cadenas del menú hydra
+     ;; Secciones principales
+     (hydra-section-insert . "Insertar")
+     (hydra-section-modes . "Modos")
+     (hydra-section-capture . "Captura")
+     (hydra-section-tools . "Herramientas")
+     (hydra-section-search . "Búsqueda")
+     (hydra-section-manage . "Gestión")
+
+     ;; Elementos de inserción
+     (hydra-insert-scene . "Escena")
+     (hydra-insert-chapter . "Capítulo")
+     (hydra-insert-open-file . "Abrir archivo")
+
+     ;; Elementos de modo
+     (hydra-mode-write . "Modo (escritura)")
+     (hydra-mode-project . "Modo proyecto")
+     (hydra-mode-focus . "Modo enfoque")
+     (hydra-mode-editing . "Modo edición")
+
+     ;; Elementos de captura (descripciones cortas)
+     (hydra-capture-note . "Nota")
+     (hydra-capture-character . "Personaje")
+     (hydra-capture-location . "Localización")
+     (hydra-capture-object . "oBjeto")
+     (hydra-capture-timeline . "Cronología")
+     (hydra-capture-plot . "hilo de trama")
+
+     ;; Elementos de herramientas
+     (hydra-tool-wordcount . "Contar palabras")
+     (hydra-tool-track . "Tabla progreso")
+     (hydra-tool-add-wc . "Añadir props PC")
+     (hydra-tool-dictionary . "Diccionario")
+     (hydra-tool-synonyms . "Sinónimos")
+
+     ;; Elementos de búsqueda
+     (hydra-search-pov . "PdV")
+     (hydra-search-character . "Personaje")
+     (hydra-search-plot . "Trama")
+     (hydra-search-location . "Localización")
+     (hydra-search-todos . "TODOs")
+
+     ;; Elementos de gestión
+     (hydra-manage-characters . "Personajes")
+     (hydra-manage-locations . "Localizaciones")
+     (hydra-manage-plot-threads . "Hilos de trama")
+     (hydra-manage-update-links . "Actualizar enlaces")
+
+     ;; Común
+     (hydra-quit . "Salir")
+     (hydra-back . "Volver al menú principal")
+
+     ;; Submenú de enlace de personajes
+     (hydra-char-title . "Enlace de Personajes")
+     (hydra-char-set-pov . "Establecer personaje PdV")
+     (hydra-char-set-characters . "Establecer personajes de escena")
+     (hydra-char-jump-pov . "Ir a personaje PdV")
+     (hydra-char-update-names . "Actualizar nombres de enlaces")
+     (hydra-char-update-all-names . "Actualizar todos los nombres")
+     (hydra-char-link-scene . "Enlazar personajes de escena")
+     (hydra-char-link-all . "Enlazar todas las escenas")
+     (hydra-char-add-ids . "Añadir IDs a personajes")
+     (hydra-char-setup . "Configurar sistema de enlaces")
+
+     ;; Submenú de enlace de localizaciones
+     (hydra-loc-title . "Enlace de Localizaciones")
+     (hydra-loc-set-locations . "Establecer localizaciones de escena")
+     (hydra-loc-link-scene . "Enlazar localizaciones de escena")
+     (hydra-loc-link-all . "Enlazar todas las escenas")
+     (hydra-loc-add-ids . "Añadir IDs a localizaciones")
+     (hydra-loc-update-names . "Actualizar nombres de enlaces")
+     (hydra-loc-update-all-names . "Actualizar todos los nombres")
+     (hydra-loc-setup . "Configurar sistema de enlaces")
+
+     ;; Submenú de enlace de hilos de trama
+     (hydra-plot-title . "Enlace de Hilos de Trama")
+     (hydra-plot-analysis . "Análisis")
+     (hydra-plot-set-threads . "Establecer hilos de trama de escena")
+     (hydra-plot-jump . "Ir a hilo de trama")
+     (hydra-plot-link-scene . "Enlazar hilos de trama de escena")
+     (hydra-plot-link-all . "Enlazar todas las escenas")
+     (hydra-plot-update-names . "Actualizar nombres de enlaces")
+     (hydra-plot-update-all-names . "Actualizar todos los nombres")
+     (hydra-plot-timeline . "Tabla de cronología")
+     (hydra-plot-report . "Informe de salud")
+     (hydra-plot-stats . "Estadísticas")
+     (hydra-plot-add-ids . "Añadir IDs a hilos")
+     (hydra-plot-setup . "Configurar sistema de enlaces")
+
      ;; Opciones de rol/tipo
      (role-protagonist . "Protagonista")
      (role-antagonist . "Antagonista")
@@ -555,7 +749,8 @@ Detection strategy:
         (with-temp-buffer
           (insert-file-contents marker-file)
           (goto-char (point-min))
-          (if (re-search-forward "^# Language: \\(en\\|es\\)$" nil t)
+          ;; Match both "Language:" (English) and "Idioma:" (Spanish) marker formats
+          (if (re-search-forward "^# \\(?:Language\\|Idioma\\): \\(en\\|es\\)$" nil t)
               (intern (match-string 1))
             default-lang))
       default-lang)))

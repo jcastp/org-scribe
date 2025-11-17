@@ -11,6 +11,8 @@
 ;;; Code:
 
 (require 'hydra)
+(require 'org-scribe-core)  ; Needed for org-scribe-project-root
+(require 'org-scribe-i18n)
 
 ;; Declare functions from other modules
 (declare-function org-scribe/project-mode "modes/org-scribe-modes")
@@ -63,17 +65,134 @@
 (declare-function org-scribe/plot-thread-report "linking/org-scribe-plot-links")
 (declare-function org-scribe/plot-thread-stats "linking/org-scribe-plot-links")
 
-;;;###autoload (autoload 'hydra-org-scribe-characters/body "ui/org-scribe-hydra" nil t)
-(defhydra hydra-org-scribe-characters (:color blue :hint nil)
-  "
-^Character Linking^
+;;; Helper functions for building i18n menu text
+
+(defun org-scribe-hydra--char-menu-text ()
+  "Build character linking submenu text with i18n."
+  (format "
+^%s^
 ^^^^^^^^------------------------------------------------------------
-_p_: Set PoV character      _l_: Link scene characters
-_c_: Set scene characters   _L_: Link all scenes
-_j_: Jump to PoV char       _i_: Add IDs to characters
-_u_: Update link names      _U_: Update all link names
-_s_: Setup linking system   _q_: Back to main menu
+_p_: %s      _l_: %s
+_c_: %s   _L_: %s
+_j_: %s       _i_: %s
+_u_: %s      _U_: %s
+_s_: %s   _q_: %s
 "
+          (org-scribe-i18n hydra-char-title)
+          (org-scribe-i18n hydra-char-set-pov)
+          (org-scribe-i18n hydra-char-link-scene)
+          (org-scribe-i18n hydra-char-set-characters)
+          (org-scribe-i18n hydra-char-link-all)
+          (org-scribe-i18n hydra-char-jump-pov)
+          (org-scribe-i18n hydra-char-add-ids)
+          (org-scribe-i18n hydra-char-update-names)
+          (org-scribe-i18n hydra-char-update-all-names)
+          (org-scribe-i18n hydra-char-setup)
+          (org-scribe-i18n hydra-back)))
+
+(defun org-scribe-hydra--loc-menu-text ()
+  "Build location linking submenu text with i18n."
+  (format "
+^%s^
+^^^^^^^^------------------------------------------------------------
+_c_: %s   _l_: %s
+_i_: %s  _L_: %s
+_u_: %s     _U_: %s
+_s_: %s  _q_: %s
+"
+          (org-scribe-i18n hydra-loc-title)
+          (org-scribe-i18n hydra-loc-set-locations)
+          (org-scribe-i18n hydra-loc-link-scene)
+          (org-scribe-i18n hydra-loc-add-ids)
+          (org-scribe-i18n hydra-loc-link-all)
+          (org-scribe-i18n hydra-loc-update-names)
+          (org-scribe-i18n hydra-loc-update-all-names)
+          (org-scribe-i18n hydra-loc-setup)
+          (org-scribe-i18n hydra-back)))
+
+(defun org-scribe-hydra--plot-menu-text ()
+  "Build plot thread linking submenu text with i18n."
+  (format "
+^%s^       ^%s^
+^^^^^^^^------------------------------------------------------------
+_p_: %s   _t_: %s
+_j_: %s      _r_: %s
+_l_: %s  _S_: %s
+_L_: %s          _i_: %s
+_u_: %s        _U_: %s
+_s_: %s     _q_: %s
+"
+          (org-scribe-i18n hydra-plot-title)
+          (org-scribe-i18n hydra-plot-analysis)
+          (org-scribe-i18n hydra-plot-set-threads)
+          (org-scribe-i18n hydra-plot-timeline)
+          (org-scribe-i18n hydra-plot-jump)
+          (org-scribe-i18n hydra-plot-report)
+          (org-scribe-i18n hydra-plot-link-scene)
+          (org-scribe-i18n hydra-plot-stats)
+          (org-scribe-i18n hydra-plot-link-all)
+          (org-scribe-i18n hydra-plot-add-ids)
+          (org-scribe-i18n hydra-plot-update-names)
+          (org-scribe-i18n hydra-plot-update-all-names)
+          (org-scribe-i18n hydra-plot-setup)
+          (org-scribe-i18n hydra-back)))
+
+(defun org-scribe-hydra--main-menu-text ()
+  "Build main hydra menu text with i18n."
+  (format "
+^%s^           ^%s^            ^%s^          ^%s^            ^%s^           ^%s^
+^^^^^^^^------------------------------------------------------------------------------------------------------------------
+_s_: %s         _m_: %s  _n_: %s          _w_: %s   _1_: %s           _C_: %s
+_c_: %s       _p_: %s  _h_: %s     _r_: %s   _2_: %s     _L_: %s
+_o_: %s     _f_: %s    _l_: %s      _a_: %s  _3_: %s          _P_: %s
+                 _e_: %s  _b_: %s        _d_: %s    _4_: %s      _U_: %s
+                                  _t_: %s      _y_: %s      _5_: %s
+                                  _g_: %s                                         _q_: %s
+"
+          (org-scribe-i18n hydra-section-insert)
+          (org-scribe-i18n hydra-section-modes)
+          (org-scribe-i18n hydra-section-capture)
+          (org-scribe-i18n hydra-section-tools)
+          (org-scribe-i18n hydra-section-search)
+          (org-scribe-i18n hydra-section-manage)
+          ;; Insert
+          (org-scribe-i18n hydra-insert-scene)
+          (org-scribe-i18n hydra-mode-write)
+          (org-scribe-i18n hydra-capture-note)
+          (org-scribe-i18n hydra-tool-wordcount)
+          (org-scribe-i18n hydra-search-pov)
+          (org-scribe-i18n hydra-manage-characters)
+          ;; Row 2
+          (org-scribe-i18n hydra-insert-chapter)
+          (org-scribe-i18n hydra-mode-project)
+          (org-scribe-i18n hydra-capture-character)
+          (org-scribe-i18n hydra-tool-track)
+          (org-scribe-i18n hydra-search-character)
+          (org-scribe-i18n hydra-manage-locations)
+          ;; Row 3
+          (org-scribe-i18n hydra-insert-open-file)
+          (org-scribe-i18n hydra-mode-focus)
+          (org-scribe-i18n hydra-capture-location)
+          (org-scribe-i18n hydra-tool-add-wc)
+          (org-scribe-i18n hydra-search-plot)
+          (org-scribe-i18n hydra-manage-plot-threads)
+          ;; Row 4
+          (org-scribe-i18n hydra-mode-editing)
+          (org-scribe-i18n hydra-capture-object)
+          (org-scribe-i18n hydra-tool-dictionary)
+          (org-scribe-i18n hydra-search-location)
+          (org-scribe-i18n hydra-manage-update-links)
+          ;; Row 5
+          (org-scribe-i18n hydra-capture-timeline)
+          (org-scribe-i18n hydra-tool-synonyms)
+          (org-scribe-i18n hydra-search-todos)
+          ;; Row 6
+          (org-scribe-i18n hydra-capture-plot)
+          (org-scribe-i18n hydra-quit)))
+
+;;;###autoload (autoload 'hydra-org-scribe-characters/body "ui/org-scribe-hydra" nil t)
+(defhydra hydra-org-scribe-characters (:color blue :hint nil
+                                        :body-pre (message "%s" (org-scribe-hydra--char-menu-text)))
   ("p" org-scribe/set-pov-character "set PoV")
   ("c" org-scribe/set-scene-characters "set characters")
   ("j" org-scribe/jump-to-pov-character "jump to PoV")
@@ -87,15 +206,8 @@ _s_: Setup linking system   _q_: Back to main menu
   ("Q" nil "quit"))
 
 ;;;###autoload (autoload 'hydra-org-scribe-locations/body "ui/org-scribe-hydra" nil t)
-(defhydra hydra-org-scribe-locations (:color blue :hint nil)
-  "
-^Location Linking^
-^^^^^^^^------------------------------------------------------------
-_c_: Set scene locations   _l_: Link scene locations
-_i_: Add IDs to locations  _L_: Link all scenes
-_u_: Update link names     _U_: Update all link names
-_s_: Setup linking system  _q_: Back to main menu
-"
+(defhydra hydra-org-scribe-locations (:color blue :hint nil
+                                       :body-pre (message "%s" (org-scribe-hydra--loc-menu-text)))
   ("c" org-scribe/set-scene-locations "set locations")
   ("l" org-scribe/link-scene-locations "link scene")
   ("L" org-scribe/link-all-scene-locations "link all")
@@ -107,17 +219,8 @@ _s_: Setup linking system  _q_: Back to main menu
   ("Q" nil "quit"))
 
 ;;;###autoload (autoload 'hydra-org-scribe-plot-threads/body "ui/org-scribe-hydra" nil t)
-(defhydra hydra-org-scribe-plot-threads (:color blue :hint nil)
-  "
-^Plot Thread Linking^       ^Analysis^
-^^^^^^^^------------------------------------------------------------
-_p_: Set scene plot threads   _t_: Timeline table
-_j_: Jump to plot thread      _r_: Health report
-_l_: Link scene plot threads  _S_: Statistics
-_L_: Link all scenes          _i_: Add IDs to threads
-_u_: Update link names        _U_: Update all link names
-_s_: Setup linking system     _q_: Back to main menu
-"
+(defhydra hydra-org-scribe-plot-threads (:color blue :hint nil
+                                          :body-pre (message "%s" (org-scribe-hydra--plot-menu-text)))
   ("p" org-scribe/set-scene-plot-threads "set plot threads")
   ("j" org-scribe/jump-to-plot-thread "jump to thread")
   ("l" org-scribe/link-scene-plot-threads "link scene")
@@ -133,17 +236,8 @@ _s_: Setup linking system     _q_: Back to main menu
   ("Q" nil "quit"))
 
 ;;;###autoload (autoload 'hydra-org-scribe/body "ui/org-scribe-hydra" nil t)
-(defhydra hydra-org-scribe (:color blue :hint nil)
-  "
-^Insert^           ^Modes^            ^Capture^          ^Tools^            ^Search^           ^Manage^
-^^^^^^^^------------------------------------------------------------------------------------------------------------------
-_s_: Scene         _m_: Mode (write)  _n_: Note          _w_: Words count   _1_: POV           _C_: Characters
-_c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table   _2_: Character     _L_: Locations
-_o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_: Plot          _P_: Plot threads
-                 _e_: Editing mode  _b_: oBject        _d_: Dictionary    _4_: Location      _U_: Update links
-                                  _t_: Timeline      _y_: sYnonyms      _5_: TODOs
-                                  _g_: plot thread                                         _q_: Quit
-"
+(defhydra hydra-org-scribe (:color blue :hint nil
+                             :body-pre (message "%s" (org-scribe-hydra--main-menu-text)))
   ;; Insert (most frequent actions get best keys)
   ("s" org-scribe-insert-scene "insert scene")
   ("c" org-scribe-insert-chapter "insert chapter")
