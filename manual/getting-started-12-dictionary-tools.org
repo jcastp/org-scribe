@@ -39,7 +39,7 @@ The tools work with both the English and Spanish templates in ~emacs-writing~.
 Let's verify the dictionary module is loaded:
 
 1. Press ~M-x~ (Alt+x or Option+x)
-2. Start typing: ~writing/rae-api-lookup~
+2. Start typing: ~org-scribe/rae-api-lookup~
 3. You should see it in the completion list
 
 If you see it, you're ready! The dictionary tools are part of the core package.
@@ -202,7 +202,7 @@ The API provides suggestions for similarly-spelled words. Just close this buffer
 
 Want inspiration or to expand your vocabulary?
 
-Press ~M-x~ and type ~writing/rae-api-random~ - this fetches a random word from the RAE dictionary and displays its definition. Great for:
+Press ~M-x~ and type ~org-scribe/rae-api-random~ - this fetches a random word from the RAE dictionary and displays its definition. Great for:
 - Discovering new words
 - Breaking writer's block
 - Daily vocabulary practice
@@ -256,7 +256,7 @@ By default, the synonym window is 80 characters wide. To change this:
 
 #+BEGIN_SRC elisp
 ;; Add to your Emacs config
-(setq writing/sinonimo-window-width 100)  ; Make it wider
+(setq org-scribe/sinonimo-window-width 100)  ; Make it wider
 #+END_SRC
 
 Adjust the number to suit your screen size and preference.
@@ -430,7 +430,7 @@ You're writing in Spanish but thinking in English:
 
 As part of your daily writing routine:
 
-1. ~M-x writing/rae-api-random~ - Get a random word
+1. ~M-x org-scribe/rae-api-random~ - Get a random word
 2. Read its definition and etymology
 3. Try to use it in your writing session
 4. Keep a "new words" note in your project
@@ -456,8 +456,8 @@ If you use these tools frequently, create dedicated keybindings:
 
 #+BEGIN_SRC elisp
 ;; Add to your Emacs config
-(global-set-key (kbd "C-c d") 'writing/rae-api-lookup)
-(global-set-key (kbd "C-c y") 'writing/sinonimo)
+(global-set-key (kbd "C-c d") 'org-scribe/rae-api-lookup)
+(global-set-key (kbd "C-c y") 'org-scribe/sinonimo)
 #+END_SRC
 
 Now:
@@ -472,10 +472,10 @@ The synonym window width can be customized:
 
 #+BEGIN_SRC elisp
 ;; Narrower window (better for large screens)
-(setq writing/sinonimo-window-width 60)
+(setq org-scribe/sinonimo-window-width 60)
 
 ;; Wider window (better for reading full entries)
-(setq writing/sinonimo-window-width 100)
+(setq org-scribe/sinonimo-window-width 100)
 #+END_SRC
 
 Experiment to find what works for your screen!
@@ -618,7 +618,7 @@ Try this exercise with your own writing:
 *Solution*:
 #+BEGIN_SRC elisp
 ;; Adjust in your config
-(setq writing/sinonimo-window-width 80)  ; Change number as needed
+(setq org-scribe/sinonimo-window-width 80)  ; Change number as needed
 #+END_SRC
 
 Or resize manually with ~C-x }~ (grow) and ~C-x {~ (shrink).
@@ -686,9 +686,9 @@ Congratulations! You've learned how to use integrated language tools without lea
 
 | Task                      | Command          | Hydra      |
 |---------------------------+------------------+------------|
-| Spanish definition        | writing/rae-api-lookup | F8 F8 d    |
-| Random word               | writing/rae-api-random | M-x command |
-| Synonyms                  | writing/sinonimo | F8 F8 y    |
+| Spanish definition        | org-scribe/rae-api-lookup | F8 F8 d    |
+| Random word               | org-scribe/rae-api-random | M-x command |
+| Synonyms                  | org-scribe/sinonimo | F8 F8 y    |
 | Translation (if installed)| gt-do-translate  | (custom key) |
 | Close lookup window       | (in window) q    | -          |
 | Resize synonym window     | C-x } / C-x {    | -          |
@@ -729,9 +729,9 @@ Ready to establish a complete daily workflow? Head to [[file:getting-started-13-
 
 ** Emacs Documentation
 
-- ~C-h f writing/rae-api-lookup~ - Function documentation
-- ~C-h f writing/sinonimo~ - Synonym function docs
-- ~C-h v writing/sinonimo-window-width~ - Variable documentation
+- ~C-h f org-scribe/rae-api-lookup~ - Function documentation
+- ~C-h f org-scribe/sinonimo~ - Synonym function docs
+- ~C-h v org-scribe/sinonimo-window-width~ - Variable documentation
 
 * About This Lesson
 

@@ -22,42 +22,42 @@
   (add-to-list 'load-path (expand-file-name "../linking" default-directory))
   (add-to-list 'load-path (expand-file-name "../capture" default-directory)))
 
-(require 'writing-location-links)
+(require 'org-scribe-location-links)
 
 ;;; Module Loading Tests
 
 (ert-deftest test-location-links-module-loads ()
-  "Test that writing-location-links module loads without errors."
-  (should (featurep 'writing-location-links)))
+  "Test that org-scribe-location-links module loads without errors."
+  (should (featurep 'org-scribe-location-links)))
 
 ;;; Function Availability Tests
 
 (ert-deftest test-location-links-functions-defined ()
   "Test that all public location linking functions are defined."
   ;; Core functions
-  (should (fboundp 'writing/add-location-ids))
-  (should (fboundp 'writing/insert-location-link))
-  (should (fboundp 'writing/insert-multiple-location-links))
-  (should (fboundp 'writing/set-scene-locations))
+  (should (fboundp 'org-scribe/add-location-ids))
+  (should (fboundp 'org-scribe/insert-location-link))
+  (should (fboundp 'org-scribe/insert-multiple-location-links))
+  (should (fboundp 'org-scribe/set-scene-locations))
 
   ;; Batch operations
-  (should (fboundp 'writing/link-scene-locations))
-  (should (fboundp 'writing/link-all-scene-locations))
+  (should (fboundp 'org-scribe/link-scene-locations))
+  (should (fboundp 'org-scribe/link-all-scene-locations))
 
   ;; Setup wizard
-  (should (fboundp 'writing/setup-location-links)))
+  (should (fboundp 'org-scribe/setup-location-links)))
 
 ;;; Helper Function Tests
 
 (ert-deftest test-location-links-helper-functions-defined ()
   "Test that helper functions are defined."
-  (should (fboundp 'writing--ensure-location-has-id))
-  (should (fboundp 'writing--add-id-to-all-locations))
-  (should (fboundp 'writing--get-location-name-at-point))
-  (should (fboundp 'writing--get-location-file))
-  (should (fboundp 'writing--get-all-locations))
-  (should (fboundp 'writing--create-location-link))
-  (should (fboundp 'writing--link-locations-in-property)))
+  (should (fboundp 'org-scribe--ensure-location-has-id))
+  (should (fboundp 'org-scribe--add-id-to-all-locations))
+  (should (fboundp 'org-scribe--get-location-name-at-point))
+  (should (fboundp 'org-scribe--get-location-file))
+  (should (fboundp 'org-scribe--get-all-locations))
+  (should (fboundp 'org-scribe--create-location-link))
+  (should (fboundp 'org-scribe--link-locations-in-property)))
 
 ;;; Location Link Creation Tests
 
@@ -65,9 +65,9 @@
   "Test location link creation with ID alist."
   (let* ((id-alist '(("Downtown" . ("loc-downtown-001" . "Downtown"))
                      ("Coffee Shop" . ("loc-coffee-shop-002" . "Coffee Shop: Central Perk"))))
-         (link1 (writing--create-location-link "Downtown" id-alist))
-         (link2 (writing--create-location-link "Coffee Shop" id-alist))
-         (link3 (writing--create-location-link "Unknown" id-alist)))
+         (link1 (org-scribe--create-location-link "Downtown" id-alist))
+         (link2 (org-scribe--create-location-link "Coffee Shop" id-alist))
+         (link3 (org-scribe--create-location-link "Unknown" id-alist)))
 
     ;; Should create ID link for known location
     (should (string= link1 "[[id:loc-downtown-001][Downtown]]"))
@@ -80,13 +80,13 @@
 
 (ert-deftest test-location-database-function-defined ()
   "Test that location database function is defined."
-  (should (fboundp 'writing--get-all-locations)))
+  (should (fboundp 'org-scribe--get-all-locations)))
 
 (ert-deftest test-location-database-structure ()
   "Test that location database returns correct structure."
   ;; The function should return nil if no location file exists
   ;; or a list of (NAME . (ID . HEADING)) tuples
-  (let ((result (writing--get-all-locations)))
+  (let ((result (org-scribe--get-all-locations)))
     ;; Result should be either nil or a list
     (should (or (null result)
                 (listp result)))
@@ -104,37 +104,37 @@
 
 (ert-deftest test-location-name-extraction-function-defined ()
   "Test that location name extraction function is defined."
-  (should (fboundp 'writing--get-location-name-at-point)))
+  (should (fboundp 'org-scribe--get-location-name-at-point)))
 
 ;;; ID Ensurement Tests
 
 (ert-deftest test-ensure-location-has-id ()
   "Test ensuring a location heading has an ID."
   ;; This function wraps org-id-get-create
-  (should (fboundp 'writing--ensure-location-has-id)))
+  (should (fboundp 'org-scribe--ensure-location-has-id)))
 
 ;;; Batch Update Tests
 
 (ert-deftest test-link-locations-in-property-function-defined ()
   "Test that property linking function is defined."
-  (should (fboundp 'writing--link-locations-in-property)))
+  (should (fboundp 'org-scribe--link-locations-in-property)))
 
 ;;; Hook Integration Tests
 
 (ert-deftest test-location-capture-hook-defined ()
   "Test that location capture hook function is defined."
-  (should (fboundp 'writing--capture-finalize-add-id)))
+  (should (fboundp 'org-scribe--capture-finalize-add-id)))
 
 (ert-deftest test-location-capture-hook-registered ()
   "Test that capture hook is registered."
-  (should (memq 'writing--capture-finalize-add-id
+  (should (memq 'org-scribe--capture-finalize-add-id
                 org-capture-before-finalize-hook)))
 
 ;;; Location File Detection Tests
 
 (ert-deftest test-location-file-detection ()
   "Test that location file detection works."
-  (let ((file (writing--get-location-file)))
+  (let ((file (org-scribe--get-location-file)))
     (should (stringp file))
     (should (or (string-match-p "locations\\.org$" file)
                 (string-match-p "localizaciones\\.org$" file)
@@ -145,19 +145,19 @@
 
 (ert-deftest test-location-file-uses-capture-system ()
   "Test that location file detection uses capture system."
-  ;; writing--get-location-file should delegate to writing/capture-location-file
-  (should (equal (writing--get-location-file)
-                 (writing/capture-location-file))))
+  ;; org-scribe--get-location-file should delegate to org-scribe/capture-location-file
+  (should (equal (org-scribe--get-location-file)
+                 (org-scribe/capture-location-file))))
 
 ;;; Setup Wizard Tests
 
 (ert-deftest test-setup-wizard-defined ()
   "Test that setup wizard function is defined."
-  (should (fboundp 'writing/setup-location-links)))
+  (should (fboundp 'org-scribe/setup-location-links)))
 
 ;;; Run tests
 
-(defun writing-location-links-run-tests ()
+(defun org-scribe-location-links-run-tests ()
   "Run all location linking tests."
   (interactive)
   (ert "^test-location-"))

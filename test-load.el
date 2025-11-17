@@ -1,4 +1,4 @@
-;;; test-load.el --- Quick test to verify emacs-writing loads correctly -*- lexical-binding: t; -*-
+;;; test-load.el --- Quick test to verify org-scribe loads correctly -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Javier Castilla
 
@@ -6,7 +6,7 @@
 
 ;;; Commentary:
 
-;; Quick test script to verify that emacs-writing can be loaded without errors.
+;; Quick test script to verify that org-scribe can be loaded without errors.
 ;; Run with: emacs -Q -l test-load.el
 
 ;;; Code:
@@ -27,75 +27,75 @@
   (add-to-list 'load-path (expand-file-name "ui" default-directory)))
 
 ;; Try to load the package
-(message "Testing emacs-writing package load...")
+(message "Testing org-scribe package load...")
 
 (condition-case err
     (progn
-      (require 'writing-core)
-      (message "✓ writing-core loaded successfully")
+      (require 'org-scribe-core)
+      (message "✓ org-scribe-core loaded successfully")
 
-      (require 'writing-config)
-      (message "✓ writing-config loaded successfully")
+      (require 'org-scribe-config)
+      (message "✓ org-scribe-config loaded successfully")
 
-      (require 'writing-project)
-      (message "✓ writing-project loaded successfully")
+      (require 'org-scribe-project)
+      (message "✓ org-scribe-project loaded successfully")
 
-      (require 'writing-wordcount)
-      (message "✓ writing-wordcount loaded successfully")
+      (require 'org-scribe-wordcount)
+      (message "✓ org-scribe-wordcount loaded successfully")
 
-      (require 'writing-tracking)
-      (message "✓ writing-tracking loaded successfully")
+      (require 'org-scribe-tracking)
+      (message "✓ org-scribe-tracking loaded successfully")
 
-      (require 'writing-modes)
-      (message "✓ writing-modes loaded successfully")
+      (require 'org-scribe-modes)
+      (message "✓ org-scribe-modes loaded successfully")
 
-      (require 'writing-search)
-      (message "✓ writing-search loaded successfully")
+      (require 'org-scribe-search)
+      (message "✓ org-scribe-search loaded successfully")
 
-      (require 'writing-dictionary)
-      (message "✓ writing-dictionary loaded successfully")
+      (require 'org-scribe-dictionary)
+      (message "✓ org-scribe-dictionary loaded successfully")
 
-      (require 'writing-capture)
-      (message "✓ writing-capture loaded successfully")
+      (require 'org-scribe-capture)
+      (message "✓ org-scribe-capture loaded successfully")
 
-      (require 'writing-character-links)
-      (message "✓ writing-character-links loaded successfully")
+      (require 'org-scribe-character-links)
+      (message "✓ org-scribe-character-links loaded successfully")
 
-      (require 'writing-location-links)
-      (message "✓ writing-location-links loaded successfully")
+      (require 'org-scribe-location-links)
+      (message "✓ org-scribe-location-links loaded successfully")
 
-      (require 'writing-plot-links)
-      (message "✓ writing-plot-links loaded successfully")
+      (require 'org-scribe-plot-links)
+      (message "✓ org-scribe-plot-links loaded successfully")
 
-      (require 'writing-column-view)
-      (message "✓ writing-column-view loaded successfully")
+      (require 'org-scribe-column-view)
+      (message "✓ org-scribe-column-view loaded successfully")
 
-      (require 'writing-export)
-      (message "✓ writing-export loaded successfully")
+      (require 'org-scribe-export)
+      (message "✓ org-scribe-export loaded successfully")
 
       ;; Hydra is optional
       (when (require 'hydra nil t)
-        (require 'writing-hydra)
-        (message "✓ writing-hydra loaded successfully"))
+        (require 'org-scribe-hydra)
+        (message "✓ org-scribe-hydra loaded successfully"))
 
-      (require 'emacs-writing)
-      (message "✓ emacs-writing loaded successfully")
+      (require 'org-scribe)
+      (message "✓ org-scribe loaded successfully")
 
       (message "\n=================================")
       (message "SUCCESS: All modules loaded!")
       (message "=================================")
-      (message "\nVersion: %s" (writing-version))
+      (message "\nVersion: %s" (org-scribe-version))
       (message "\nAvailable commands:")
-      (message "- M-x emacs-writing-mode")
-      (message "- M-x writing-create-novel-project (NEW in 0.2.0)")
-      (message "- M-x writing-insert-scene (NEW in 0.2.0)")
-      (message "- M-x writing-insert-chapter (NEW in 0.2.0)")
-      (message "- M-x my-writing-env-mode")
-      (message "- M-x writing/ews-org-count-words")
+      (message "- M-x org-scribe-mode")
+      (message "- M-x org-scribe-create-novel-project (NEW in 0.2.0)")
+      (message "- M-x org-scribe-insert-scene (NEW in 0.2.0)")
+      (message "- M-x org-scribe-insert-chapter (NEW in 0.2.0)")
+      (message "- M-x org-scribe/writing-env-mode")
+      (message "- M-x org-scribe/ews-org-count-words")
       (when (featurep 'hydra)
-        (message "- M-x hydra-writing/body (includes project functions)"))
+        (message "- M-x hydra-org-scribe/body (includes project functions)"))
       (message "\nConfiguration variables:")
-      (message "- M-x customize-group RET writing RET")
+      (message "- M-x customize-group RET org-scribe RET")
       (message "\n"))
 
   (error

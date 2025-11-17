@@ -1,4 +1,4 @@
-;;; writing-search.el --- Search functions for emacs-writing -*- lexical-binding: t; -*-
+;;; org-scribe-search.el --- Search functions for org-scribe -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Javier Castilla
 
@@ -18,17 +18,17 @@
 ;;; Code:
 
 (require 'org)
-(require 'writing-core)
+(require 'org-scribe-core)
 
 ;; Declare external functions
 (declare-function org-ql-search "org-ql")
-(declare-function writing--get-all-characters "linking/writing-character-links")
-(declare-function writing--get-all-locations "linking/writing-location-links")
-(declare-function writing--get-all-plot-threads "linking/writing-plot-links")
+(declare-function org-scribe--get-all-characters "linking/org-scribe-character-links")
+(declare-function org-scribe--get-all-locations "linking/org-scribe-location-links")
+(declare-function org-scribe--get-all-plot-threads "linking/org-scribe-plot-links")
 
 ;;; Helper Functions for ID Links
 
-(defun writing--extract-link-text (text)
+(defun org-scribe--extract-link-text (text)
   "Extract display text from Org ID links in TEXT.
 Handles both ID links and plain text for backward compatibility.
 
@@ -45,16 +45,16 @@ Examples:
         (setq result (replace-match "\\1" nil nil result)))
       result)))
 
-(defun writing--property-contains-p (property-value search-term)
+(defun org-scribe--property-contains-p (property-value search-term)
   "Check if PROPERTY-VALUE contains SEARCH-TERM.
 Handles both plain text and ID links.
 Case-insensitive search."
   (when property-value
-    (let ((clean-text (writing--extract-link-text property-value)))
+    (let ((clean-text (org-scribe--extract-link-text property-value)))
       (and clean-text
            (string-match-p (regexp-quote search-term) clean-text)))))
 
-(defun writing--property-to-list (property-value)
+(defun org-scribe--property-to-list (property-value)
   "Convert PROPERTY-VALUE to list of items.
 Handles both plain text and ID links.
 Splits on comma and extracts display text from links.
@@ -63,7 +63,7 @@ Examples:
   \"Alex, Sam\" → (\"Alex\" \"Sam\")
   \"[[id:abc][Alex]], [[id:def][Sam]]\" → (\"Alex\" \"Sam\")"
   (when property-value
-    (let ((clean-text (writing--extract-link-text property-value)))
+    (let ((clean-text (org-scribe--extract-link-text property-value)))
       (when clean-text
         (mapcar #'string-trim
                 (split-string clean-text ","))))))
@@ -71,7 +71,7 @@ Examples:
 ;;; Search by POV
 
 ;;;###autoload
-(defun writing/org-find-pov (char)
+(defun org-scribe/org-find-pov (char)
   "Show sparse tree of scenes with POV character.
 
 Input method:
@@ -85,8 +85,8 @@ Requires org-ql package to be installed."
    (list
     (let* ((chars (condition-case nil
                       (progn
-                        (require 'writing-character-links)
-                        (writing--get-all-characters))
+                        (require 'org-scribe-character-links)
+                        (org-scribe--get-all-characters))
                     (error nil)))
            (char-names (mapcar #'car chars)))
       (if (null char-names)
@@ -107,12 +107,12 @@ Requires org-ql package to be installed."
   (org-ql-search (current-buffer)
     `(and (heading)
           (let ((pov (org-entry-get (point) "PoV")))
-            (writing--property-contains-p pov ,char)))))
+            (org-scribe--property-contains-p pov ,char)))))
 
 ;;; Search by Character
 
 ;;;###autoload
-(defun writing/org-find-character (char)
+(defun org-scribe/org-find-character (char)
   "Show sparse tree of scenes with CHARACTER.
 
 Input method:
@@ -127,8 +127,8 @@ Requires org-ql package to be installed."
    (list
     (let* ((chars (condition-case nil
                       (progn
-                        (require 'writing-character-links)
-                        (writing--get-all-characters))
+                        (require 'org-scribe-character-links)
+                        (org-scribe--get-all-characters))
                     (error nil)))
            (char-names (mapcar #'car chars)))
       (if (null char-names)
@@ -148,16 +148,16 @@ Requires org-ql package to be installed."
     (user-error "org-ql package is required for search functions"))
   ;; IMPORTANT: Changed from exact list matching to substring matching
   ;; Old: (member ,char chars-list) - required exact match
-  ;; New: writing--property-contains-p - allows substring match
+  ;; New: org-scribe--property-contains-p - allows substring match
   (org-ql-search (current-buffer)
     `(and (heading)
           (let ((chars-prop (org-entry-get (point) "Characters")))
-            (writing--property-contains-p chars-prop ,char)))))
+            (org-scribe--property-contains-p chars-prop ,char)))))
 
 ;;; Search by Plot
 
 ;;;###autoload
-(defun writing/org-find-plot (term)
+(defun org-scribe/org-find-plot (term)
   "Show sparse tree of scenes matching TERM in plot property.
 
 Input method:
@@ -171,8 +171,8 @@ Requires org-ql package to be installed."
    (list
     (let* ((threads (condition-case nil
                         (progn
-                          (require 'writing-plot-links)
-                          (writing--get-all-plot-threads))
+                          (require 'org-scribe-plot-links)
+                          (org-scribe--get-all-plot-threads))
                       (error nil)))
            (thread-names (mapcar #'car threads)))
       (if (null thread-names)
@@ -193,12 +193,12 @@ Requires org-ql package to be installed."
   (org-ql-search (current-buffer)
     `(and (heading)
           (let ((plot (org-entry-get (point) "Plot")))
-            (writing--property-contains-p plot ,term)))))
+            (org-scribe--property-contains-p plot ,term)))))
 
 ;;; Search by Location
 
 ;;;###autoload
-(defun writing/org-find-location (loc)
+(defun org-scribe/org-find-location (loc)
   "Show sparse tree of scenes with LOCATION.
 
 Input method:
@@ -212,8 +212,8 @@ Requires org-ql package to be installed."
    (list
     (let* ((locations (condition-case nil
                           (progn
-                            (require 'writing-location-links)
-                            (writing--get-all-locations))
+                            (require 'org-scribe-location-links)
+                            (org-scribe--get-all-locations))
                         (error nil)))
            (location-names (mapcar #'car locations)))
       (if (null location-names)
@@ -234,12 +234,12 @@ Requires org-ql package to be installed."
   (org-ql-search (current-buffer)
     `(and (heading)
           (let ((location (org-entry-get (point) "Location")))
-            (writing--property-contains-p location ,loc)))))
+            (org-scribe--property-contains-p location ,loc)))))
 
 ;;; Recursive TODO Search
 
 ;;;###autoload
-(defun writing/search-todos-recursive ()
+(defun org-scribe/search-todos-recursive ()
   "Search for TODO items (not DONE) in current directory tree using org-ql.
 Finds all .org files recursively from the current buffer's directory
 and displays all TODO keywords with an active (non-DONE) status.
@@ -259,6 +259,6 @@ Requires org-ql package to be installed."
                                                (file-name-nondirectory (buffer-file-name)))))))
       (message "No .org files found in %s and subdirectories" current-dir))))
 
-(provide 'writing-search)
+(provide 'org-scribe-search)
 
-;;; writing-search.el ends here
+;;; org-scribe-search.el ends here

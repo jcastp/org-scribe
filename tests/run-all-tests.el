@@ -1,28 +1,28 @@
-;;; run-all-tests.el --- Master test runner for emacs-writing -*- lexical-binding: t; -*-
+;;; run-all-tests.el --- Master test runner for org-scribe -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Javier Castilla
 
 ;;; Commentary:
 
-;; Master test runner for the entire emacs-writing test suite.
+;; Master test runner for the entire org-scribe test suite.
 ;; This file loads all test modules and provides functions to run
 ;; all tests or specific test suites.
 ;;
 ;; Usage:
-;;   Interactive: M-x emacs-writing-run-all-tests
-;;   Batch mode: emacs -batch -l tests/run-all-tests.el -f emacs-writing-run-tests-batch
+;;   Interactive: M-x org-scribe-run-all-tests
+;;   Batch mode: emacs -batch -l tests/run-all-tests.el -f org-scribe-run-tests-batch
 ;;
 ;; Test Coverage:
-;;   - Core utilities (writing-core.el, writing-config.el)
-;;   - Project creation (writing-project.el)
-;;   - Capture system (writing-capture.el)
-;;   - Search functions (writing-search.el)
-;;   - Character linking (writing-character-links.el)
-;;   - Location linking (writing-location-links.el)
-;;   - Plot thread linking (writing-plot-links.el)
-;;   - Column view enhancement (writing-column-view.el)
-;;   - Export filters (writing-export.el)
-;;   - Word counting (writing-wordcount.el)
+;;   - Core utilities (org-scribe-core.el, org-scribe-config.el)
+;;   - Project creation (org-scribe-project.el)
+;;   - Capture system (org-scribe-capture.el)
+;;   - Search functions (org-scribe-search.el)
+;;   - Character linking (org-scribe-character-links.el)
+;;   - Location linking (org-scribe-location-links.el)
+;;   - Plot thread linking (org-scribe-plot-links.el)
+;;   - Column view enhancement (org-scribe-column-view.el)
+;;   - Export filters (org-scribe-export.el)
+;;   - Word counting (org-scribe-wordcount.el)
 
 ;;; Code:
 
@@ -40,8 +40,8 @@
 
 ;;; Load test files
 
-(defvar emacs-writing-test-files
-  '("writing-test"           ; Core utilities
+(defvar org-scribe-test-files
+  '("org-scribe-test"           ; Core utilities
     "test-wordcount"         ; Word counting
     "test-project"           ; Project creation
     "test-capture"           ; Capture system
@@ -54,11 +54,11 @@
     "test-export")           ; Export filters
   "List of test files (without .el extension).")
 
-(defun emacs-writing-load-tests ()
+(defun org-scribe-load-tests ()
   "Load all test files."
   (let ((tests-dir (file-name-directory
                     (or load-file-name buffer-file-name default-directory))))
-    (dolist (test-file emacs-writing-test-files)
+    (dolist (test-file org-scribe-test-files)
       (let ((full-path (expand-file-name (concat test-file ".el") tests-dir)))
         (if (file-exists-p full-path)
             (progn
@@ -69,32 +69,32 @@
 ;;; Test execution functions
 
 ;;;###autoload
-(defun emacs-writing-run-all-tests ()
-  "Load and run all emacs-writing tests interactively."
+(defun org-scribe-run-all-tests ()
+  "Load and run all org-scribe tests interactively."
   (interactive)
-  (emacs-writing-load-tests)
-  (message "Running all emacs-writing tests...")
+  (org-scribe-load-tests)
+  (message "Running all org-scribe tests...")
   (ert t))
 
 ;;;###autoload
-(defun emacs-writing-run-tests-batch ()
-  "Load and run all emacs-writing tests in batch mode.
+(defun org-scribe-run-tests-batch ()
+  "Load and run all org-scribe tests in batch mode.
 Suitable for CI/CD pipelines and automated testing."
-  (emacs-writing-load-tests)
+  (org-scribe-load-tests)
   (ert-run-tests-batch-and-exit t))
 
 ;;; Selective test running
 
 ;;;###autoload
-(defun emacs-writing-run-core-tests ()
+(defun org-scribe-run-core-tests ()
   "Run core utility tests only."
   (interactive)
-  (load-file (expand-file-name "writing-test.el"
+  (load-file (expand-file-name "org-scribe-test.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
-  (ert "^writing-test-"))
+  (ert "^org-scribe-test-"))
 
 ;;;###autoload
-(defun emacs-writing-run-project-tests ()
+(defun org-scribe-run-project-tests ()
   "Run project creation tests only."
   (interactive)
   (load-file (expand-file-name "test-project.el"
@@ -102,7 +102,7 @@ Suitable for CI/CD pipelines and automated testing."
   (ert "^test-project-\\|^test-validate-\\|^test-template-\\|^test-insert-"))
 
 ;;;###autoload
-(defun emacs-writing-run-capture-tests ()
+(defun org-scribe-run-capture-tests ()
   "Run capture system tests only."
   (interactive)
   (load-file (expand-file-name "test-capture.el"
@@ -110,7 +110,7 @@ Suitable for CI/CD pipelines and automated testing."
   (ert "^test-capture-\\|^test-create-\\|^test-character-\\|^test-location-\\|^test-object-\\|^test-timeline-"))
 
 ;;;###autoload
-(defun emacs-writing-run-search-tests ()
+(defun org-scribe-run-search-tests ()
   "Run search function tests only."
   (interactive)
   (load-file (expand-file-name "test-search.el"
@@ -120,7 +120,7 @@ Suitable for CI/CD pipelines and automated testing."
   (ert "^test-search-\\|^test-extract-\\|^test-property-"))
 
 ;;;###autoload
-(defun emacs-writing-run-linking-tests ()
+(defun org-scribe-run-linking-tests ()
   "Run all linking system tests (character, location, plot)."
   (interactive)
   (let ((tests-dir (file-name-directory (or load-file-name buffer-file-name))))
@@ -131,7 +131,7 @@ Suitable for CI/CD pipelines and automated testing."
   (ert "^test-character-\\|^test-location-\\|^test-plot-\\|^test-column-"))
 
 ;;;###autoload
-(defun emacs-writing-run-export-tests ()
+(defun org-scribe-run-export-tests ()
   "Run export filter tests only."
   (interactive)
   (load-file (expand-file-name "test-export.el"
@@ -139,32 +139,32 @@ Suitable for CI/CD pipelines and automated testing."
   (ert "^test-export-\\|^test-scene-break-"))
 
 ;;;###autoload
-(defun emacs-writing-run-wordcount-tests ()
+(defun org-scribe-run-wordcount-tests ()
   "Run word counting tests only.
 Note: Requires org-context-extended to be installed."
   (interactive)
   (load-file (expand-file-name "test-wordcount.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (if (featurep 'org-context-extended)
-      (ert "^writing-test-wordcount-")
+      (ert "^org-scribe-test-wordcount-")
     (message "Skipping wordcount tests - org-context-extended not available")))
 
 ;;; Test statistics
 
-(defun emacs-writing-test-statistics ()
+(defun org-scribe-test-statistics ()
   "Display statistics about the test suite."
   (interactive)
-  (emacs-writing-load-tests)
+  (org-scribe-load-tests)
   (let* ((all-tests (ert-select-tests t t))
          (test-count (length all-tests))
-         (test-files (length emacs-writing-test-files)))
-    (message "=== emacs-writing Test Suite Statistics ===")
+         (test-files (length org-scribe-test-files)))
+    (message "=== org-scribe Test Suite Statistics ===")
     (message "Test files: %d" test-files)
     (message "Total tests: %d" test-count)
     (message "")
     (message "Test coverage:")
     (message "  - Core utilities:      %d tests"
-             (length (ert-select-tests "^writing-test-" t)))
+             (length (ert-select-tests "^org-scribe-test-" t)))
     (message "  - Project creation:    %d tests"
              (length (ert-select-tests "^test-project-\\|^test-validate-\\|^test-template-\\|^test-insert-" t)))
     (message "  - Capture system:      %d tests"
@@ -182,15 +182,15 @@ Note: Requires org-context-extended to be installed."
     (message "  - Export filters:      %d tests"
              (length (ert-select-tests "^test-export-\\|^test-scene-break-" t)))
     (message "  - Word counting:       %d tests"
-             (length (ert-select-tests "^writing-test-wordcount-" t)))
+             (length (ert-select-tests "^org-scribe-test-wordcount-" t)))
     (message "=========================================")))
 
 ;;; Batch mode entry point
 
 ;; When loaded in batch mode, run tests automatically
 (when noninteractive
-  (message "Running emacs-writing tests in batch mode...")
-  (emacs-writing-run-tests-batch))
+  (message "Running org-scribe tests in batch mode...")
+  (org-scribe-run-tests-batch))
 
 (provide 'run-all-tests)
 

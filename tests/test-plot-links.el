@@ -24,31 +24,31 @@
   (add-to-list 'load-path (expand-file-name "../linking" default-directory))
   (add-to-list 'load-path (expand-file-name "../capture" default-directory)))
 
-(require 'writing-plot-links)
+(require 'org-scribe-plot-links)
 
 ;;; Module Loading Tests
 
 (ert-deftest test-plot-links-module-loads ()
-  "Test that writing-plot-links module loads without errors."
-  (should (featurep 'writing-plot-links)))
+  "Test that org-scribe-plot-links module loads without errors."
+  (should (featurep 'org-scribe-plot-links)))
 
 ;;; Function Availability Tests
 
 (ert-deftest test-plot-links-functions-defined ()
   "Test that all public plot thread linking functions are defined."
   ;; Core functions
-  (should (fboundp 'writing/add-plot-thread-ids))
-  (should (fboundp 'writing/insert-plot-thread-link))
-  (should (fboundp 'writing/insert-multiple-plot-thread-links))
-  (should (fboundp 'writing/set-scene-plot-threads))
-  (should (fboundp 'writing/jump-to-plot-thread))
+  (should (fboundp 'org-scribe/add-plot-thread-ids))
+  (should (fboundp 'org-scribe/insert-plot-thread-link))
+  (should (fboundp 'org-scribe/insert-multiple-plot-thread-links))
+  (should (fboundp 'org-scribe/set-scene-plot-threads))
+  (should (fboundp 'org-scribe/jump-to-plot-thread))
 
   ;; Batch operations
-  (should (fboundp 'writing/link-scene-plot-threads))
-  (should (fboundp 'writing/link-all-scene-plot-threads))
+  (should (fboundp 'org-scribe/link-scene-plot-threads))
+  (should (fboundp 'org-scribe/link-all-scene-plot-threads))
 
   ;; Setup wizard
-  (should (fboundp 'writing/setup-plot-thread-links)))
+  (should (fboundp 'org-scribe/setup-plot-thread-links)))
 
 ;;; Helper Function Tests
 
@@ -56,9 +56,9 @@
   "Test plot thread link creation with ID alist."
   (let* ((id-alist '(("Main Plot" . ("plot-main-001" . "Main Plot"))
                      ("Subplot" . ("plot-sub-001" . "Subplot: Romance"))))
-         (link1 (writing--create-plot-thread-link "Main Plot" id-alist))
-         (link2 (writing--create-plot-thread-link "Subplot" id-alist))
-         (link3 (writing--create-plot-thread-link "Unknown" id-alist)))
+         (link1 (org-scribe--create-plot-thread-link "Main Plot" id-alist))
+         (link2 (org-scribe--create-plot-thread-link "Subplot" id-alist))
+         (link3 (org-scribe--create-plot-thread-link "Unknown" id-alist)))
 
     ;; Should create ID link for known thread
     (should (string= link1 "[[id:plot-main-001][Main Plot]]"))
@@ -71,12 +71,12 @@
   "Test extracting plot thread name from heading."
   ;; This is a simple wrapper around org functions
   ;; Just verify it's callable
-  (should (fboundp 'writing--get-plot-thread-name-at-point)))
+  (should (fboundp 'org-scribe--get-plot-thread-name-at-point)))
 
 (ert-deftest test-plot-thread-file-detection ()
   "Test plot thread file detection."
   ;; Verify the function exists and is callable
-  (should (fboundp 'writing--get-plot-thread-file))
+  (should (fboundp 'org-scribe--get-plot-thread-file))
 
   ;; The actual behavior depends on project structure
   ;; which requires a full project setup, so we just
@@ -89,7 +89,7 @@
   "Test that plot thread database returns correct structure."
   ;; The function should return nil if no plot file exists
   ;; or a list of (NAME . (ID . HEADING)) tuples
-  (let ((result (writing--get-all-plot-threads)))
+  (let ((result (org-scribe--get-all-plot-threads)))
     ;; Result should be either nil or a list
     (should (or (null result)
                 (listp result)))
@@ -107,11 +107,11 @@
 
 (ert-deftest test-plot-thread-report-function-defined ()
   "Test that plot thread report function is defined."
-  (should (fboundp 'writing/plot-thread-report)))
+  (should (fboundp 'org-scribe/plot-thread-report)))
 
 (ert-deftest test-plot-thread-stats-function-defined ()
   "Test that plot thread statistics function is defined."
-  (should (fboundp 'writing/plot-thread-stats)))
+  (should (fboundp 'org-scribe/plot-thread-stats)))
 
 (ert-deftest test-plot-thread-timeline-dblock-defined ()
   "Test that timeline dynamic block function is defined."
@@ -119,9 +119,9 @@
 
 (ert-deftest test-plot-thread-helper-functions ()
   "Test that helper functions for analysis are defined."
-  (should (fboundp 'writing--get-all-scenes-with-plots))
-  (should (fboundp 'writing--find-thread-in-scenes))
-  (should (fboundp 'writing--calculate-thread-gap)))
+  (should (fboundp 'org-scribe--get-all-scenes-with-plots))
+  (should (fboundp 'org-scribe--find-thread-in-scenes))
+  (should (fboundp 'org-scribe--calculate-thread-gap)))
 
 (ert-deftest test-calculate-thread-gap ()
   "Test thread gap calculation."
@@ -135,13 +135,13 @@
                        ("Scene 2" "Ch 1" ("A"))
                        ("Scene 5" "Ch 3" ("A"))
                        ("Scene 6" "Ch 3" ("A"))))
-         (gap (writing--calculate-thread-gap appearances all-scenes)))
+         (gap (org-scribe--calculate-thread-gap appearances all-scenes)))
     ;; Thread A appears in scenes 1,2,5,6 - gap of 2 scenes (3 and 4)
     (should (= gap 2))))
 
 ;;; Run tests
 
-(defun writing-plot-links-run-tests ()
+(defun org-scribe-plot-links-run-tests ()
   "Run all plot thread linking tests."
   (interactive)
   (ert "^test-plot-"))

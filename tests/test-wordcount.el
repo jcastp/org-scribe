@@ -22,18 +22,20 @@
 
 ;; Only run tests if org-context-extended is available
 (when (require 'org-context-extended nil t)
-  (require 'writing-wordcount)
+  (require 'org-scribe-wordcount)
 
-  (ert-deftest writing-test-wordcount-property-added ()
+  (ert-deftest org-scribe-test-wordcount-property-added ()
     "Test that WORDCOUNT property is added to headings."
     (with-temp-buffer
       (org-mode)
+      ;; Set buffer-file-name so org-id-get-create works
+      (setq buffer-file-name (make-temp-name "/tmp/test-wordcount-"))
       (insert "* Heading One\n")
       (insert "This is some text with five words.\n")
       (insert "* Heading Two\n")
       (insert "More text here.\n")
       (goto-char (point-min))
-      (writing/ews-org-count-words)
+      (org-scribe/ews-org-count-words)
       ;; Check that WORDCOUNT properties were added
       (goto-char (point-min))
       (org-next-visible-heading 1)
@@ -41,7 +43,7 @@
       (org-next-visible-heading 1)
       (should (org-entry-get nil "WORDCOUNT"))))
 
-  (ert-deftest writing-test-wordcount-excludes-comments ()
+  (ert-deftest org-scribe-test-wordcount-excludes-comments ()
     "Test that word counting excludes comments."
     (with-temp-buffer
       (org-mode)
@@ -53,10 +55,10 @@
       ;; This is a placeholder test
       (should t)))
 
-  (defun writing-wordcount-run-tests ()
+  (defun org-scribe-wordcount-run-tests ()
     "Run word count tests."
     (interactive)
-    (ert-run-tests-interactively "^writing-test-wordcount-")))
+    (ert-run-tests-interactively "^org-scribe-test-wordcount-")))
 
 (provide 'test-wordcount)
 

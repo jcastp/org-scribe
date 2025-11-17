@@ -81,8 +81,8 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 This table shows which plot threads appear in which scenes.
 Update with =C-c C-c= on the #+BEGIN line.
 
-For detailed health reports, use =M-x writing/plot-thread-report=.
-For quick statistics, use =M-x writing/plot-thread-stats=.
+For detailed health reports, use =M-x org-scribe/plot-thread-report=.
+For quick statistics, use =M-x org-scribe/plot-thread-stats=.
 
 #+BEGIN: plot-thread-timeline
 | Scene                           | Chapter   | Main Plot | Romance | Professional |

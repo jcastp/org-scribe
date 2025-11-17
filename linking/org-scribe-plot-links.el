@@ -1,4 +1,4 @@
-;;; writing-plot-links.el --- Plot thread linking system for emacs-writing -*- lexical-binding: t; -*-
+;;; org-scribe-plot-links.el --- Plot thread linking system for org-scribe -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Javier Castilla
 
@@ -21,17 +21,17 @@
 
 (require 'org)
 (require 'org-id)
-(require 'writing-core)
-(require 'writing-capture)
+(require 'org-scribe-core)
+(require 'org-scribe-capture)
 
 ;;; Plot Thread ID Management
 
-(defun writing--ensure-plot-thread-has-id ()
+(defun org-scribe--ensure-plot-thread-has-id ()
   "Ensure the current plot thread heading has a unique ID.
 Creates an ID if one doesn't exist. Returns the ID."
   (org-id-get-create))
 
-(defun writing--add-id-to-all-plot-threads ()
+(defun org-scribe--add-id-to-all-plot-threads ()
   "Add IDs to all plot thread headings in current buffer.
 This function scans the plot file and ensures every
 plot thread heading has a unique ID property."
@@ -60,20 +60,20 @@ plot thread heading has a unique ID property."
       (message "Added IDs to %d plot thread heading%s"
                count (if (= count 1) "" "s")))))
 
-(defun writing--get-plot-thread-name-at-point ()
+(defun org-scribe--get-plot-thread-name-at-point ()
   "Get the plot thread name from current heading or NAME property."
   (or (org-entry-get nil "NAME")
       (org-get-heading t t t t)))
 
 ;;; Plot Thread Database Functions
 
-(defun writing--get-plot-thread-file ()
+(defun org-scribe--get-plot-thread-file ()
   "Get the path to the plot threads file for the current project.
 For novels, this is plan/plot.org.
 For short stories, this is notes.org (Plot section)."
-  (let* ((project-root (writing-project-root))
-         (project-type (writing-project-type))
-         (structure (writing-project-structure)))
+  (let* ((project-root (org-scribe-project-root))
+         (project-type (org-scribe-project-type))
+         (structure (org-scribe-project-structure)))
     (cond
      ;; Novel project - use plan/plot.org
      ((eq project-type 'novel)
@@ -89,10 +89,10 @@ For short stories, this is notes.org (Plot section)."
         (when (file-exists-p plot-file)
           plot-file))))))
 
-(defun writing--get-all-plot-threads ()
+(defun org-scribe--get-all-plot-threads ()
   "Return alist of (THREAD-NAME . (ID . HEADING)) from plot file.
 Returns list of (NAME . (ID . HEADING-TEXT)) for all plot threads in the project."
-  (let ((plot-file (writing--get-plot-thread-file))
+  (let ((plot-file (org-scribe--get-plot-thread-file))
         result)
     (when (and plot-file (file-exists-p plot-file))
       (with-current-buffer (find-file-noselect plot-file)
@@ -102,7 +102,7 @@ Returns list of (NAME . (ID . HEADING-TEXT)) for all plot threads in the project
           (lambda ()
             (let* ((level (org-current-level))
                    (id (org-id-get))
-                   (name (writing--get-plot-thread-name-at-point))
+                   (name (org-scribe--get-plot-thread-name-at-point))
                    (heading (org-get-heading t t t t))
                    ;; Check if this looks like a plot thread heading
                    (is-plot-thread
@@ -119,7 +119,7 @@ Returns list of (NAME . (ID . HEADING-TEXT)) for all plot threads in the project
           nil 'file))))
     (nreverse result)))
 
-(defun writing--create-plot-thread-link (thread-name id-alist)
+(defun org-scribe--create-plot-thread-link (thread-name id-alist)
   "Create an ID link for THREAD-NAME using ID-ALIST.
 ID-ALIST should be in format ((NAME . (ID . HEADING)) ...).
 Returns the link string or plain text if no ID found."
@@ -131,31 +131,31 @@ Returns the link string or plain text if no ID found."
 ;;; Interactive Functions
 
 ;;;###autoload
-(defun writing/add-plot-thread-ids ()
+(defun org-scribe/add-plot-thread-ids ()
   "Add unique IDs to all plot threads in the plot file.
 This should be run once on existing projects to set up
 the ID-based linking system."
   (interactive)
-  (let ((plot-file (writing--get-plot-thread-file)))
+  (let ((plot-file (org-scribe--get-plot-thread-file)))
     (if (not (file-exists-p plot-file))
         (message "No plot file found. Create plot threads first.")
       (with-current-buffer (find-file-noselect plot-file)
-        (writing--add-id-to-all-plot-threads)
+        (org-scribe--add-id-to-all-plot-threads)
         (save-buffer)
         (message "Plot thread IDs updated in %s" plot-file)))))
 
 ;;;###autoload
-(defun writing/insert-plot-thread-link ()
+(defun org-scribe/insert-plot-thread-link ()
   "Insert a plot thread link in the current property.
 Scans the plot file, presents a completion menu,
 and inserts the selected plot thread as an ID link.
 
 Use this function when adding plot threads to scene properties."
   (interactive)
-  (let* ((threads (writing--get-all-plot-threads))
+  (let* ((threads (org-scribe--get-all-plot-threads))
          (thread-names (mapcar #'car threads)))
     (if (null thread-names)
-        (message "No plot threads found. Create plot threads first or add IDs with writing/add-plot-thread-ids.")
+        (message "No plot threads found. Create plot threads first or add IDs with org-scribe/add-plot-thread-ids.")
       (let* ((selected (completing-read "Select plot thread: " thread-names nil t))
              (entry (assoc selected threads))
              (id (cadr entry)))
@@ -166,17 +166,17 @@ Use this function when adding plot threads to scene properties."
           (message "No ID found for %s" selected))))))
 
 ;;;###autoload
-(defun writing/insert-multiple-plot-thread-links ()
+(defun org-scribe/insert-multiple-plot-thread-links ()
   "Insert multiple plot thread links separated by commas.
 Useful for the :Plot: property which often lists
 multiple plot threads in a scene."
   (interactive)
-  (let* ((threads (writing--get-all-plot-threads))
+  (let* ((threads (org-scribe--get-all-plot-threads))
          (thread-names (mapcar #'car threads))
          selected-threads
          links)
     (if (null thread-names)
-        (message "No plot threads found. Create plot threads first or add IDs with writing/add-plot-thread-ids.")
+        (message "No plot threads found. Create plot threads first or add IDs with org-scribe/add-plot-thread-ids.")
       ;; Multiple selection loop
       (while (let ((choice (completing-read
                            "Select plot thread (RET to finish): "
@@ -203,18 +203,18 @@ multiple plot threads in a scene."
         (message "No plot threads selected")))))
 
 ;;;###autoload
-(defun writing/set-scene-plot-threads ()
+(defun org-scribe/set-scene-plot-threads ()
   "Set the Plot property to multiple plot thread ID links.
 Specifically designed for the :Plot: property in scene headings."
   (interactive)
   (unless (org-at-heading-p)
     (org-back-to-heading))
-  (let* ((threads (writing--get-all-plot-threads))
+  (let* ((threads (org-scribe--get-all-plot-threads))
          (thread-names (mapcar #'car threads))
          selected-threads
          links)
     (if (null thread-names)
-        (message "No plot threads found. Create plot threads first or add IDs with writing/add-plot-thread-ids.")
+        (message "No plot threads found. Create plot threads first or add IDs with org-scribe/add-plot-thread-ids.")
       ;; Multiple selection loop
       (while (let ((choice (completing-read
                            "Select plot thread (RET to finish): "
@@ -239,13 +239,13 @@ Specifically designed for the :Plot: property in scene headings."
         (message "No plot threads selected")))))
 
 ;;;###autoload
-(defun writing/jump-to-plot-thread ()
+(defun org-scribe/jump-to-plot-thread ()
   "Jump to plot thread definition from scene.
 If Plot property has multiple threads, prompts for selection."
   (interactive)
   (let* ((plot-prop (org-entry-get nil "Plot"))
          (thread-list (when plot-prop
-                       (writing--property-to-list plot-prop))))
+                       (org-scribe--property-to-list plot-prop))))
     (cond
      ((null plot-prop)
       (message "No Plot property in current heading"))
@@ -261,7 +261,7 @@ If Plot property has multiple threads, prompts for selection."
      (t
       ;; Multiple threads - prompt for selection
       (let* ((selected (completing-read "Jump to plot thread: " thread-list nil t))
-             (threads (writing--get-all-plot-threads))
+             (threads (org-scribe--get-all-plot-threads))
              (entry (assoc selected threads))
              (id (cadr entry)))
         (if id
@@ -270,17 +270,17 @@ If Plot property has multiple threads, prompts for selection."
 
 ;;; Batch Update Functions
 
-(defun writing--link-plot-threads-in-property (property-name)
+(defun org-scribe--link-plot-threads-in-property (property-name)
   "Convert plot thread names to ID links in PROPERTY-NAME of current heading.
 Handles both single threads and comma-separated lists."
   (when-let* ((prop-value (org-entry-get nil property-name)))
-    (let* ((id-alist (writing--get-all-plot-threads))
+    (let* ((id-alist (org-scribe--get-all-plot-threads))
            ;; Split on comma, trim whitespace
            (thread-list (mapcar #'string-trim
                                 (split-string prop-value "," t)))
            ;; Create links for each plot thread
            (linked-threads (mapcar (lambda (name)
-                                     (writing--create-plot-thread-link name id-alist))
+                                     (org-scribe--create-plot-thread-link name id-alist))
                                    thread-list))
            (linked-string (string-join linked-threads ", ")))
       ;; Only update if we actually created links
@@ -289,13 +289,13 @@ Handles both single threads and comma-separated lists."
         t))))
 
 ;;;###autoload
-(defun writing/link-scene-plot-threads ()
+(defun org-scribe/link-scene-plot-threads ()
   "Convert plot thread names to ID links in current scene.
 Updates :Plot: property."
   (interactive)
   (save-excursion
     (org-back-to-heading)
-    (let ((updated-plot (writing--link-plot-threads-in-property "Plot")))
+    (let ((updated-plot (org-scribe--link-plot-threads-in-property "Plot")))
       (cond
        (updated-plot
         (message "Updated Plot property"))
@@ -303,7 +303,7 @@ Updates :Plot: property."
         (message "No Plot property found or already linked"))))))
 
 ;;;###autoload
-(defun writing/link-all-scene-plot-threads ()
+(defun org-scribe/link-all-scene-plot-threads ()
   "Convert plot thread names to ID links in all scenes in current buffer.
 Processes all headings with :Plot: properties."
   (interactive)
@@ -314,7 +314,7 @@ Processes all headings with :Plot: properties."
        (lambda ()
          ;; Process if has Plot property
          (when (org-entry-get nil "Plot")
-           (let ((updated-plot (writing--link-plot-threads-in-property "Plot")))
+           (let ((updated-plot (org-scribe--link-plot-threads-in-property "Plot")))
              (when updated-plot
                (setq count (1+ count))))))
        nil 'file)
@@ -323,7 +323,7 @@ Processes all headings with :Plot: properties."
 
 ;;; Integration with Capture System
 
-(defun writing--capture-finalize-add-plot-id ()
+(defun org-scribe--capture-finalize-add-plot-id ()
   "Hook function to add ID to newly captured plot threads.
 This is called before a plot thread capture is finalized.
 Runs in the capture buffer before it's filed.
@@ -335,7 +335,7 @@ without an ID gets one automatically."
              org-capture-mode
              (buffer-file-name))
     ;; Check if we're capturing to a plot file
-    (let ((target (writing--get-plot-thread-file)))
+    (let ((target (org-scribe--get-plot-thread-file)))
       (when (and target
                  (file-exists-p target)
                  ;; Compare the target file with current buffer's file
@@ -354,10 +354,10 @@ without an ID gets one automatically."
 
 ;; Add the hook - use before-finalize to ensure we're still in capture buffer
 ;; Note: This is redundant with the template's %(org-id-new) but serves as a safety net
-(add-hook 'org-capture-before-finalize-hook #'writing--capture-finalize-add-plot-id)
+(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-plot-id)
 
 ;;;###autoload
-(defun writing/setup-plot-thread-links ()
+(defun org-scribe/setup-plot-thread-links ()
   "Set up plot thread linking system for current project.
 This function:
 1. Adds IDs to all existing plot threads
@@ -370,14 +370,14 @@ in an existing project."
   (message "Setting up plot thread linking system...")
 
   ;; Step 1: Add IDs to plot threads
-  (writing/add-plot-thread-ids)
+  (org-scribe/add-plot-thread-ids)
 
   ;; Step 2: Ask if user wants to link existing scenes
   (when (y-or-n-p "Link plot threads in existing scenes? ")
-    (let ((novel-file (plist-get (writing-project-structure) :novel-file)))
+    (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file)))
       (when (and novel-file (file-exists-p novel-file))
         (with-current-buffer (find-file-noselect novel-file)
-          (writing/link-all-scene-plot-threads)
+          (org-scribe/link-all-scene-plot-threads)
           (save-buffer)))))
 
   (message "Plot thread linking system setup complete!"))
@@ -386,10 +386,10 @@ in an existing project."
 
 ;;; Helper Functions for Analysis
 
-(defun writing--get-all-scenes-with-plots ()
+(defun org-scribe--get-all-scenes-with-plots ()
   "Return list of all scenes with Plot properties.
 Each entry is (SCENE-HEADING CHAPTER-HEADING PLOT-THREADS-LIST)."
-  (let ((novel-file (plist-get (writing-project-structure) :novel-file))
+  (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file))
         scenes)
     (when (and novel-file (file-exists-p novel-file))
       (with-current-buffer (find-file-noselect novel-file)
@@ -405,19 +405,19 @@ Each entry is (SCENE-HEADING CHAPTER-HEADING PLOT-THREADS-LIST)."
                      (plot-prop (org-entry-get nil "Plot")))
                 (when plot-prop
                   ;; Extract thread names from ID links
-                  (let ((thread-list (writing--property-to-list plot-prop)))
+                  (let ((thread-list (org-scribe--property-to-list plot-prop)))
                     (push (list heading chapter thread-list) scenes))))))
           nil 'file))))
     (nreverse scenes)))
 
-(defun writing--find-thread-in-scenes (thread-name scenes)
+(defun org-scribe--find-thread-in-scenes (thread-name scenes)
   "Find all SCENES containing THREAD-NAME.
 Returns list of scene entries."
   (seq-filter (lambda (scene)
                 (member thread-name (nth 2 scene)))
               scenes))
 
-(defun writing--calculate-thread-gap (appearances all-scenes)
+(defun org-scribe--calculate-thread-gap (appearances all-scenes)
   "Calculate largest gap in APPEARANCES across ALL-SCENES.
 Returns the maximum number of consecutive scenes where thread is absent."
   (when appearances
@@ -453,7 +453,7 @@ using symbols:
 Thread information is extracted from the :Plot: property in scenes.
 Thread names are extracted from ID links like [[id:...][Name]]."
   (let* ((threads nil)  ; Unique thread names
-         (scenes (writing--get-all-scenes-with-plots)))
+         (scenes (org-scribe--get-all-scenes-with-plots)))
 
     ;; Collect unique thread names
     (dolist (scene scenes)
@@ -492,7 +492,7 @@ Thread names are extracted from ID links like [[id:...][Name]]."
 
 ;;; Plot Thread Health Report
 
-(defun writing--get-thread-status (thread-name appearances all-scenes)
+(defun org-scribe--get-thread-status (thread-name appearances all-scenes)
   "Get status symbol and warnings for THREAD-NAME.
 APPEARANCES is list of scenes containing thread.
 ALL-SCENES is list of all scenes.
@@ -504,7 +504,7 @@ Returns (STATUS-SYMBOL . WARNINGS-LIST)."
         (coverage-pct (if (> (length all-scenes) 0)
                          (/ (* 100.0 scene-count) (length all-scenes))
                        0))
-        (gap (writing--calculate-thread-gap appearances all-scenes)))
+        (gap (org-scribe--calculate-thread-gap appearances all-scenes)))
 
     ;; Check for issues
     (when (< coverage-pct 30)
@@ -522,14 +522,14 @@ Returns (STATUS-SYMBOL . WARNINGS-LIST)."
     (cons status warnings)))
 
 ;;;###autoload
-(defun writing/plot-thread-report ()
+(defun org-scribe/plot-thread-report ()
   "Generate health report for plot threads.
 Analyzes thread coverage, gaps, and warnings.
 Opens a new buffer with the report."
   (interactive)
   (let ((report-buffer (get-buffer-create "*Plot Thread Health Report*"))
-        (threads (writing--get-all-plot-threads))
-        (scenes (writing--get-all-scenes-with-plots)))
+        (threads (org-scribe--get-all-plot-threads))
+        (scenes (org-scribe--get-all-scenes-with-plots)))
 
     (with-current-buffer report-buffer
       (erase-buffer)
@@ -552,12 +552,12 @@ Opens a new buffer with the report."
         (dolist (thread threads)
           (let* ((thread-name (car thread))
                  (thread-id (cadr thread))
-                 (appearances (writing--find-thread-in-scenes thread-name scenes))
+                 (appearances (org-scribe--find-thread-in-scenes thread-name scenes))
                  (scene-count (length appearances))
                  (coverage-pct (if (> (length scenes) 0)
                                   (/ (* 100.0 scene-count) (length scenes))
                                 0))
-                 (status-info (writing--get-thread-status thread-name appearances scenes))
+                 (status-info (org-scribe--get-thread-status thread-name appearances scenes))
                  (status (car status-info))
                  (warnings (cdr status-info)))
 
@@ -585,7 +585,7 @@ Opens a new buffer with the report."
 
       ;; Scenes without plot threads
       (insert "* Scenes Without Plot Threads\n\n")
-      (let ((novel-file (plist-get (writing-project-structure) :novel-file))
+      (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file))
             (scenes-without-plot nil))
         (when (and novel-file (file-exists-p novel-file))
           (with-current-buffer (find-file-noselect novel-file)
@@ -616,12 +616,12 @@ Opens a new buffer with the report."
 ;;; Plot Thread Statistics
 
 ;;;###autoload
-(defun writing/plot-thread-stats ()
+(defun org-scribe/plot-thread-stats ()
   "Display quick statistics for plot threads.
 Shows one-line summary in the minibuffer."
   (interactive)
-  (let* ((threads (writing--get-all-plot-threads))
-         (scenes (writing--get-all-scenes-with-plots))
+  (let* ((threads (org-scribe--get-all-plot-threads))
+         (scenes (org-scribe--get-all-scenes-with-plots))
          (thread-count (length threads))
          (scene-count (length scenes))
          (warning-count 0))
@@ -629,8 +629,8 @@ Shows one-line summary in the minibuffer."
     ;; Count warnings
     (dolist (thread threads)
       (let* ((thread-name (car thread))
-             (appearances (writing--find-thread-in-scenes thread-name scenes))
-             (status-info (writing--get-thread-status thread-name appearances scenes))
+             (appearances (org-scribe--find-thread-in-scenes thread-name scenes))
+             (status-info (org-scribe--get-thread-status thread-name appearances scenes))
              (warnings (cdr status-info)))
         (when warnings
           (setq warning-count (1+ warning-count)))))
@@ -639,15 +639,15 @@ Shows one-line summary in the minibuffer."
              thread-count scene-count warning-count)))
 
 ;; Helper function needed from search module
-;; This is a forward declaration - the actual function is in writing-search.el
-(declare-function writing--property-to-list "search/writing-search")
+;; This is a forward declaration - the actual function is in org-scribe-search.el
+(declare-function org-scribe--property-to-list "search/org-scribe-search")
 
 ;;; Update Link Display Names
 
-(require 'writing-link-update)
+(require 'org-scribe-link-update)
 
 ;;;###autoload
-(defun writing/update-plot-link-names ()
+(defun org-scribe/update-plot-link-names ()
   "Update plot thread link display names in current scene.
 
 Refreshes :Plot: property to show current plot thread names from
@@ -665,16 +665,16 @@ Returns t if any updates were made, nil otherwise."
   (interactive)
   (save-excursion
     (org-back-to-heading)
-    (let* ((plots-alist (writing--get-all-plot-threads))
-           (id-map (writing--build-id-to-name-map plots-alist))
-           (updated-plots (writing--update-links-in-property "Plot" id-map)))
+    (let* ((plots-alist (org-scribe--get-all-plot-threads))
+           (id-map (org-scribe--build-id-to-name-map plots-alist))
+           (updated-plots (org-scribe--update-links-in-property "Plot" id-map)))
       (if updated-plots
           (message "Updated Plot link names")
         (message "No plot link names needed updating"))
       updated-plots)))
 
 ;;;###autoload
-(defun writing/update-all-plot-link-names ()
+(defun org-scribe/update-all-plot-link-names ()
   "Update plot thread link display names in all scenes.
 
 Scans plot database for current names and updates the display
@@ -687,20 +687,20 @@ all display names to match the current database.
 
 Example workflow:
   1. Rename \"Main Plot\" to \"Primary Storyline\" in plot.org
-  2. Run this function (M-x writing/update-all-plot-link-names)
+  2. Run this function (M-x org-scribe/update-all-plot-link-names)
   3. All scenes updated automatically!
 
 Returns the number of scenes updated."
   (interactive)
   (save-excursion
     (goto-char (point-min))
-    (let* ((plots-alist (writing--get-all-plot-threads))
-           (id-map (writing--build-id-to-name-map plots-alist))
+    (let* ((plots-alist (org-scribe--get-all-plot-threads))
+           (id-map (org-scribe--build-id-to-name-map plots-alist))
            (count 0))
       (org-map-entries
        (lambda ()
          (when (org-entry-get nil "Plot")
-           (let ((updated-plots (writing--update-links-in-property "Plot" id-map)))
+           (let ((updated-plots (org-scribe--update-links-in-property "Plot" id-map)))
              (when updated-plots
                (setq count (1+ count))))))
        nil 'file)
@@ -708,6 +708,6 @@ Returns the number of scenes updated."
                count (if (= count 1) "" "s"))
       count)))
 
-(provide 'writing-plot-links)
+(provide 'org-scribe-plot-links)
 
-;;; writing-plot-links.el ends here
+;;; org-scribe-plot-links.el ends here

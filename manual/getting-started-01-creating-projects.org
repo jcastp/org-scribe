@@ -22,7 +22,7 @@ By the end of this lesson, you'll have:
 Check that you have:
 - ✓ Emacs open and running
 - ✓ ~emacs-writing~ package installed and loaded
-- ✓ A directory where you want to store your writing projects (we'll use ~~/writing/~ in examples)
+- ✓ A directory where you want to store your writing projects (we'll use ~~/org-scribe/~ in examples)
 
 ** Quick Test
 
@@ -87,14 +87,14 @@ Let's create your first project - a short story. We'll walk through every step.
 
 You'll see a prompt:
 #+BEGIN_EXAMPLE
-Base directory for project: ~/writing/
+Base directory for project: ~/org-scribe/
 #+END_EXAMPLE
 
 This is where your project folder will be created.
 
 *What to do*:
-- Press ~Enter~ to accept the default (~~/writing/~)
-- OR type a different path (like ~~/Documents/writing/~ or ~~/my-stories/~)
+- Press ~Enter~ to accept the default (~~/org-scribe/~)
+- OR type a different path (like ~~/Documents/org-scribe/~ or ~~/my-stories/~)
 - Press ~Enter~
 
 The directory will be created if it doesn't exist.
@@ -222,7 +222,7 @@ If you want to create a full novel project instead, the process is almost identi
 1. Press ~M-x~
 2. Type: ~writing-create-novel-project~
 3. Press ~Enter~
-4. Choose base directory (e.g., ~~/writing/~)
+4. Choose base directory (e.g., ~~/org-scribe/~)
 5. Enter novel title (e.g., ~My Fantasy Novel~)
 6. Wait for creation
 7. Explore!
@@ -347,8 +347,8 @@ Now ~writing-create-novel-project~ will create Spanish-language templates!
 
 *Solution*:
 1. Look at the base directory you specified
-2. Default is ~~/writing/~
-3. Your project is in: ~~/writing/Your-Project-Title/~
+2. Default is ~~/org-scribe/~
+3. Your project is in: ~~/org-scribe/Your-Project-Title/~
 4. Use ~M-x dired~ to browse directories
 
 * Your First Writing Session
@@ -448,7 +448,7 @@ Take your time! There's no rush. When you feel comfortable with project creation
 ** How to re-open a project later
 
 1. Use ~C-x C-f~ (find-file)
-2. Navigate to: ~~/writing/Your-Project-Title/~
+2. Navigate to: ~~/org-scribe/Your-Project-Title/~
 3. Open ~README.org~ or ~story.org~/~novel.org~
 4. The ~.writing-project~ marker ensures the package recognizes it
 

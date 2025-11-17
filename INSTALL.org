@@ -1,4 +1,4 @@
-#+TITLE: Installation Guide for emacs-writing
+#+TITLE: Installation Guide for org-scribe
 #+AUTHOR: Javier Castilla
 
 * Quick Installation
@@ -13,19 +13,19 @@
 Add this to your Emacs configuration:
 
 #+begin_src emacs-lisp
-(use-package emacs-writing
-  :vc (:url "https://codeberg.org/jcastp/emacs-writing"
+(use-package org-scribe
+  :vc (:url "https://codeberg.org/jcastp/org-scribe"
        :branch "main"
        :rev :newest)
   :after org
-  :hook (org-mode . emacs-writing-mode)
+  :hook (org-mode . org-scribe-mode)
   :config
   ;; Optional: customize settings
-  (setq my-writing-env-work-theme 'poet)
+  (setq my-org-scribe-env-work-theme 'poet)
   (setq writing-stories-directory "~/writing/exercises")
 
   ;; Optional: keybindings
-  (global-set-key (kbd "<f8> <f8>") 'hydra-writing/body))
+  (global-set-key (kbd "<f8> <f8>") 'hydra-org-scribe/body))
 #+end_src
 
 ** Manual Installation
@@ -34,20 +34,20 @@ Add this to your Emacs configuration:
 
 #+begin_src sh
 cd ~/.emacs.d
-git clone https://codeberg.org/jcastp/emacs-writing
+git clone https://codeberg.org/jcastp/org-scribe
 #+end_src
 
 2. Add to your Emacs configuration:
 
 #+begin_src emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/emacs-writing")
-(require 'emacs-writing)
+(add-to-list 'load-path "~/.emacs.d/org-scribe")
+(require 'org-scribe)
 
 ;; Enable in org-mode
-(add-hook 'org-mode-hook #'emacs-writing-mode)
+(add-hook 'org-mode-hook #'org-scribe-mode)
 
 ;; Optional: set up keybindings
-(emacs-writing-setup)
+(org-scribe-setup)
 #+end_src
 
 3. Restart Emacs or evaluate the configuration.
@@ -56,7 +56,7 @@ git clone https://codeberg.org/jcastp/emacs-writing
 
 ** Required Packages
 
-These must be installed for emacs-writing to work:
+These must be installed for org-scribe to work:
 
 #+begin_src emacs-lisp
 (use-package org-ql
@@ -115,7 +115,7 @@ These enhance functionality but are not required:
 (use-package org-remark
   :ensure t)
 
-;; For hydra menu (required for hydra-writing)
+;; For hydra menu (required for hydra-org-scribe)
 (use-package hydra
   :ensure t)
 #+end_src
@@ -131,12 +131,12 @@ After installation, verify it works:
 
 * Troubleshooting
 
-** "Cannot find writing-core"
+** "Cannot find org-scribe-core"
 
-Make sure the load-path includes the emacs-writing directory:
+Make sure the load-path includes the org-scribe directory:
 
 #+begin_src emacs-lisp
-(add-to-list 'load-path "/path/to/emacs-writing")
+(add-to-list 'load-path "/path/to/org-scribe")
 #+end_src
 
 ** "org-context-extended not found"
@@ -174,12 +174,12 @@ After installation:
 
 1. Read the [[file:README.org][README.org]] for features overview
 2. Try the quick start guide in README.org
-3. Customize settings: =M-x customize-group RET writing RET=
+3. Customize settings: =M-x customize-group RET org-scribe RET=
 4. Set up your first writing project
 5. Explore the hydra menu: =F8 F8=
 
 * Support
 
-- Repository: https://codeberg.org/jcastp/emacs-writing
-- Issues: https://codeberg.org/jcastp/emacs-writing/issues
+- Repository: https://codeberg.org/jcastp/org-scribe
+- Issues: https://codeberg.org/jcastp/org-scribe/issues
 - Email: jcastp@pm.me

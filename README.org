@@ -1,10 +1,10 @@
-#+TITLE: emacs-writing - Creative Writing Toolkit for Org-mode
+#+TITLE: org-scribe - Creative Writing Toolkit for Org-mode
 #+AUTHOR: Javier Castilla
 #+EMAIL: jcastp@pm.me
 
 * Overview
 
-=emacs-writing= is a comprehensive, batteries-included toolkit for novelists, short story writers, and creative writers working in Emacs Org-mode. It provides everything you need from project creation to final export: templates, writing environments, word counting, progress tracking, and powerful search capabilities.
+=org-scribe= is a comprehensive, batteries-included toolkit for novelists, short story writers, and creative writers working in Emacs Org-mode. It provides everything you need from project creation to final export: templates, writing environments, word counting, progress tracking, and powerful search capabilities.
 
 *Version 0.2.0* merges the functionality of =emacs-writing-template=, providing a complete integrated writing environment in a single package.
 
@@ -89,39 +89,39 @@ Full support for English/Spanish bilingual writing:
 Clone the repository:
 
 #+begin_src sh
-git clone https://codeberg.org/jcastp/emacs-writing ~/.emacs.d/emacs-writing
+git clone https://codeberg.org/jcastp/org-scribe ~/.emacs.d/org-scribe
 #+end_src
 
 Add to your Emacs configuration:
 
 #+begin_src emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/emacs-writing")
-(require 'emacs-writing)
+(add-to-list 'load-path "~/.emacs.d/org-scribe")
+(require 'org-scribe)
 
 ;; Optional: Enable automatically in org-mode
-(add-hook 'org-mode-hook #'emacs-writing-mode)
+(add-hook 'org-mode-hook #org-scribe-mode)
 
 ;; Optional: Set up recommended keybindings
-(emacs-writing-setup)
+(org-scribe-setup)
 #+end_src
 
 ** Using use-package (Recommended)
 
 #+begin_src emacs-lisp
-(use-package emacs-writing
-  :vc (:url "https://codeberg.org/jcastp/emacs-writing"
+(use-package org-scribe
+  :vc (:url "https://codeberg.org/jcastp/org-scribe"
        :branch "main"
        :rev :newest)
   :after org
-  :hook (org-mode . emacs-writing-mode)
+  :hook (org-mode . org-scribe-mode)
   :config
   ;; Customize settings
-  (setq my-writing-env-work-theme 'poet)
-  (setq my-writing-env-normal-theme 'ef-deuteranopia-dark)
+  (setq my-org-scribe-env-work-theme 'poet)
+  (setq my-org-scribe-env-normal-theme 'ef-deuteranopia-dark)
   (setq writing-stories-directory "~/writing/exercises")
 
   ;; Keybindings
-  (global-set-key (kbd "<f8> <f8>") 'hydra-writing/body))
+  (global-set-key (kbd "<f8> <f8>") 'hydra-org-scribe/body))
 #+end_src
 
 * Quick Start
@@ -129,7 +129,7 @@ Add to your Emacs configuration:
 ** Create Your First Novel Project
 
 1. Install the package and dependencies
-2. Run =M-x writing-create-novel-project=
+2. Run =M-x org-scribe-create-novel-project=
 3. Choose a directory and enter your novel title
 4. Start writing in the generated =novel.org= file!
 
@@ -147,7 +147,7 @@ Add to your Emacs configuration:
 
 *** Create a New Novel Project
 
-=M-x writing-create-novel-project=
+=M-x org-scribe-create-novel-project=
 
 This creates a complete project structure:
 
@@ -179,24 +179,24 @@ The project includes:
 
 While working in your manuscript:
 
-- =M-x writing-insert-scene= or =F8 F8 s=: Insert a scene with metadata properties (PoV, Characters, Plot, Location, etc.)
-- =M-x writing-insert-chapter= or =F8 F8 c=: Insert a chapter heading with word count property
+- =M-x org-scribe-insert-scene= or =F8 F8 s=: Insert a scene with metadata properties (PoV, Characters, Plot, Location, etc.)
+- =M-x org-scribe-insert-chapter= or =F8 F8 c=: Insert a chapter heading with word count property
 
 *** Quick Project File Access
 
-=M-x writing-open-project-file= or =F8 F8 o=
+=M-x org-scribe-open-project-file= or =F8 F8 o=
 
 Opens project files with completion (novel.org, plan/characters.org, notes/notes.org, etc.)
 
 *** Customize Templates
 
-=M-x writing-edit-templates=
+=M-x org-scribe-edit-templates=
 
 Opens the template directory for editing. Customize templates to match your workflow!
 
 ** Writing Modes
 
-*** Distraction-Free Mode (=my-writing-env-mode=)
+*** Distraction-Free Mode (=org-scribe/writing-env-mode=)
 
 Press =F8 F8 m= or use the hydra menu.
 
@@ -206,17 +206,17 @@ Changes:
 - Activates writeroom-mode
 - Shows line numbers
 
-*** Focus Mode (=my-writing-env-mode-focus=)
+*** Focus Mode (=org-scribe/writing-env-mode-focus=)
 
 Press =F8 F8 f= or use the hydra menu.
 
 Like distraction-free mode, but also narrows to the current org section.
 
-*** Project Navigation Mode (=project-writing-mode=)
+*** Project Navigation Mode (=org-scribe/project-mode=)
 
 Opens treemacs (file tree) and imenu-list (document outline) for easy navigation.
 
-*** Editing Mode (=writing/editing-mode=)
+*** Editing Mode (=org-scribe/editing-mode=)
 
 Three-pane layout:
 - Left: Document outline (imenu-list)
@@ -231,7 +231,7 @@ Three-pane layout:
 
 *** Add Word Count Properties
 
-=M-x writing/ews-org-count-words= or press =F8 F8 a= in hydra
+=M-x org-scribe/ews-org-count-words= or press =F8 F8 a= in hydra
 
 Adds a =WORDCOUNT= property to each heading.
 
@@ -286,12 +286,12 @@ Link character names in scene properties directly to their full profiles in =pla
 *** Quick Start
 
 For existing projects:
-1. =M-x writing/setup-character-links= or press =F8 F8 C s=
+1. =M-x org-scribe/setup-character-links= or press =F8 F8 C s=
 2. Adds unique IDs to all characters
 3. Optionally converts existing scenes to use links
 
 For new characters:
-- Characters created with =writing/capture-character= (F8 F8 h) automatically get IDs
+- Characters created with =org-scribe/capture-character= (F8 F8 h) automatically get IDs
 - No manual setup needed!
 
 *** Setting Scene Characters
@@ -355,7 +355,7 @@ When you rename a character in =plan/characters.org=, the ID links still work (t
 
 *Example Workflow*:
 1. Rename "Alex Rivera" to "Alexandra Rivera" in =plan/characters.org=
-2. Press =F8 F8 C U= (or =M-x writing/update-all-character-link-names=)
+2. Press =F8 F8 C U= (or =M-x org-scribe/update-all-character-link-names=)
 3. All scenes updated: =[[id:char-alex-001][Alexandra Rivera]]=
 4. Links still work, now with correct names!
 
@@ -388,12 +388,12 @@ Track your main plot and subplots across your novel using ID-based links. The pl
 *** Quick Start
 
 For existing projects:
-1. =M-x writing/setup-plot-thread-links= or press =F8 F8 P s=
+1. =M-x org-scribe/setup-plot-thread-links= or press =F8 F8 P s=
 2. Adds unique IDs to all plot threads in =plan/plot.org=
 3. Optionally converts existing scenes to use links
 
 For new plot threads:
-- Plot threads created with =writing/capture-plot-thread= automatically get IDs
+- Plot threads created with =org-scribe/capture-plot-thread= automatically get IDs
 - No manual setup needed!
 
 *** Setting Scene Plot Threads
@@ -441,7 +441,7 @@ The ● symbol shows where each plot thread appears, making it easy to spot:
 
 Generate a comprehensive health report for all plot threads:
 
-=M-x writing/plot-thread-report= or press =F8 F8 P r=
+=M-x org-scribe/plot-thread-report= or press =F8 F8 P r=
 
 This generates a buffer showing:
 - Total plot threads and scenes
@@ -491,7 +491,7 @@ This generates a buffer showing:
 
 Get quick statistics in the minibuffer:
 
-=M-x writing/plot-thread-stats= or press =F8 F8 P S=
+=M-x org-scribe/plot-thread-stats= or press =F8 F8 P S=
 
 Shows:
 - Total threads
@@ -702,19 +702,19 @@ Searching for "Alice" finds this scene even with ID links!
 
 *** Spanish RAE Dictionary
 
-=M-x writing/rae-api-lookup= or press =F8 F8 d= in hydra
+=M-x org-scribe/rae-api-lookup= or press =F8 F8 d= in hydra
 
 Looks up Spanish words in the Real Academia Española dictionary.
 
 *** Synonyms
 
-=M-x writing/sinonimo= or press =F8 F8 y= in hydra
+=M-x org-scribe/sinonimo= or press =F8 F8 y= in hydra
 
 Opens WordReference Spanish synonyms in a side window.
 
 ** Capture Notes
 
-=M-x writing/capture-to-file= or press =C-c W=
+=M-x org-scribe/capture-to-file= or press =C-c W=
 
 Automatically finds the right notes file in your project structure.
 
@@ -722,11 +722,11 @@ Automatically finds the right notes file in your project structure.
 
 The package provides specialized capture templates for different types of content:
 
-- =writing/capture-character= (F8 F8 h) - Capture character profiles with comprehensive templates
-- =writing/capture-location= (F8 F8 l) - Capture location details for world building
-- =writing/capture-object= (F8 F8 b) - Capture important objects in your story
-- =writing/capture-timeline= (F8 F8 t) - Capture timeline events for chronology tracking
-- =writing/capture-plot-thread= (F8 F8 g) - Capture plot threads as they emerge during writing
+- =org-scribe/capture-character= (F8 F8 h) - Capture character profiles with comprehensive templates
+- =org-scribe/capture-location= (F8 F8 l) - Capture location details for world building
+- =org-scribe/capture-object= (F8 F8 b) - Capture important objects in your story
+- =org-scribe/capture-timeline= (F8 F8 t) - Capture timeline events for chronology tracking
+- =org-scribe/capture-plot-thread= (F8 F8 g) - Capture plot threads as they emerge during writing
 
 These functions automatically route captures to the appropriate file based on project type:
 - **Novel projects**: Separate files in =plan/= directory (e.g., =plan/characters.org=, =plan/plot.org=)
@@ -748,7 +748,7 @@ When exporting, scene breaks will be replaced with appropriate separators for ea
 
 * Project Structure
 
-=emacs-writing= creates and works with structured novel projects:
+=org-scribe= creates and works with structured novel projects:
 
 #+begin_example
 project-root/
@@ -777,8 +777,8 @@ See =M-x customize-group RET writing RET= for all customization options.
 Key variables:
 
 ** Project & Templates
-- =writing-template-directory= - Location of project templates (default: novel-en)
-- =writing-template-language= - Default language for templates ('en or 'es)
+- =org-scribe-template-directory= - Location of project templates (default: novel-en)
+- =org-scribe-template-language= - Default language for templates ('en or 'es)
 - =writing-stories-directory= - Where writing exercise files are created
 
 ** Writing Modes
@@ -788,11 +788,11 @@ Key variables:
 - =my-writing-env-work-width= - Writeroom width
 
 ** Export
-- =writing/scene-break-replacements= - Scene break strings for export backends
+- =org-scribe/scene-break-replacements= - Scene break strings for export backends
 
 * Keybindings
 
-Default keybindings when =emacs-writing-mode= is active:
+Default keybindings when =org-scribe-mode= is active:
 
 - =F8 F8= - Open hydra menu
 - =C-c W= - Capture note
@@ -897,8 +897,8 @@ GPL-3.0-or-later
 
 * Links
 
-- Repository: https://codeberg.org/jcastp/emacs-writing
-- Issues: https://codeberg.org/jcastp/emacs-writing/issues
+- Repository: https://codeberg.org/jcastp/org-scribe
+- Issues: https://codeberg.org/jcastp/org-scribe/issues
 - Dependencies: [[https://codeberg.org/jcastp/org-context-extended][org-context-extended]] (smart word counting)
 - Dependencies: [[https://codeberg.org/jcastp/org-tracktable][org-tracktable]] (progress tracking)
 
@@ -951,14 +951,14 @@ Version 0.2.0 merges [[https://codeberg.org/jcastp/emacs-writing-template][emacs
 - Integrated git initialization
 - Bilingual template support (English/Spanish)
 
-All =writing-project-*= functions from the old package are available as backward-compatible aliases.
+All =org-scribe-project-*= functions from the old package are available as backward-compatible aliases.
 
 *** Migration from emacs-writing-template
 
 If you were using =emacs-writing-template= separately:
 
 1. Remove =emacs-writing-template= from your config
-2. Update to =emacs-writing= 0.2.0+
+2. Update to =org-scribe= 0.2.0+
 3. Old function names still work (with deprecation warnings):
    - =writing-project-create-novel-project= → =writing-create-novel-project=
    - =writing-create-project= → =writing-create-novel-project=

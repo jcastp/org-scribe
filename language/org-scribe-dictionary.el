@@ -1,4 +1,4 @@
-;;; writing-dictionary.el --- Dictionary and language tools for emacs-writing -*- lexical-binding: t; -*-
+;;; org-scribe-dictionary.el --- Dictionary and language tools for org-scribe -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Javier Castilla
 
@@ -17,12 +17,12 @@
 (require 'url)
 (require 'org)
 (require 'eww)
-(require 'writing-core)
-(require 'writing-config)
+(require 'org-scribe-core)
+(require 'org-scribe-config)
 
 ;;; RAE Dictionary API
 
-(defun writing/rae-format-conjugations (conjugations)
+(defun org-scribe/rae-format-conjugations (conjugations)
   "Format verb conjugations from the RAE API response."
   (when conjugations
     (insert "#+begin_example\n")
@@ -44,7 +44,7 @@
      conjugations)
     (insert "#+end_example\n\n")))
 
-(defun writing/rae-format-result (json-data palabra)
+(defun org-scribe/rae-format-result (json-data palabra)
   "Format the JSON-DATA response from RAE API into an org-mode buffer.
 PALABRA is the word that was looked up."
   (let* ((data (gethash "data" json-data))
@@ -103,10 +103,10 @@ PALABRA is the word that was looked up."
         ;; Conjugations (for verbs)
         (when conjugations
           (insert "* Conjugaciones\n\n")
-          (writing/rae-format-conjugations conjugations))))))
+          (org-scribe/rae-format-conjugations conjugations))))))
 
 ;;;###autoload
-(defun writing/rae-api-lookup (palabra)
+(defun org-scribe/rae-api-lookup (palabra)
   "Look up PALABRA in the RAE dictionary using the API.
 Displays the word definition, etymology, and meanings in a buffer.
 Includes improved error handling for network issues."
@@ -120,7 +120,7 @@ Includes improved error handling for network issues."
     (url-retrieve
      url
      (lambda (status palabra buffer-name)
-       (writing-with-error-handling "writing/rae-api-lookup"
+       (org-scribe-with-error-handling "org-scribe/rae-api-lookup"
          (if (plist-get status :error)
              (message "Error al buscar la palabra: %s"
                       (plist-get status :error))
@@ -142,7 +142,7 @@ Includes improved error handling for network issues."
                    (erase-buffer)
                    (org-mode)
                    (if ok
-                       (writing/rae-format-result json-data palabra)
+                       (org-scribe/rae-format-result json-data palabra)
                      ;; Word not found - show suggestions
                      (let ((suggestions (gethash "suggestions" json-data)))
                        (insert (format "* Palabra no encontrada: %s\n\n" palabra))
@@ -158,7 +158,7 @@ Includes improved error handling for network issues."
      t)))  ; INHIBIT-COOKIES
 
 ;;;###autoload
-(defun writing/rae-api-random ()
+(defun org-scribe/rae-api-random ()
   "Get a random word from the RAE dictionary."
   (interactive)
   (let* ((url "https://rae-api.com/api/random")
@@ -166,7 +166,7 @@ Includes improved error handling for network issues."
     (url-retrieve
      url
      (lambda (status)
-       (writing-with-error-handling "writing/rae-api-random"
+       (org-scribe-with-error-handling "org-scribe/rae-api-random"
          (if (plist-get status :error)
              (message "Error al obtener palabra aleatoria: %s"
                       (plist-get status :error))
@@ -184,14 +184,14 @@ Includes improved error handling for network issues."
                         (palabra (gethash "word" (gethash "data" json-data))))
                    (kill-buffer)
                    (when palabra
-                     (writing/rae-api-lookup palabra)))
+                     (org-scribe/rae-api-lookup palabra)))
                (json-error
                 (message "Error parsing random word response: %s" err))))))))))
 
 ;;; Synonym Lookup (WordReference)
 
 ;;;###autoload
-(defun writing/sinonimo (palabra)
+(defun org-scribe/sinonimo (palabra)
   "Busca una palabra en un diccionario de sinónimos en una ventana lateral.
 Opens WordReference Spanish synonym dictionary in a side window."
   (interactive "s¿Qué palabra quieres buscar? ")
@@ -204,7 +204,7 @@ Opens WordReference Spanish synonym dictionary in a side window."
       (let ((side-window (display-buffer-in-side-window
                           temp-buffer
                           `((side . right)
-                            (window-width . ,writing/sinonimo-window-width)
+                            (window-width . ,org-scribe/sinonimo-window-width)
                             (window-parameters . ((no-delete-other-windows . t)))))))
         ;; Select the side window and load eww there
         (with-selected-window side-window
@@ -216,6 +216,6 @@ Opens WordReference Spanish synonym dictionary in a side window."
           (use-local-map (copy-keymap (current-local-map)))
           (local-set-key (kbd "q") 'quit-window))))))
 
-(provide 'writing-dictionary)
+(provide 'org-scribe-dictionary)
 
-;;; writing-dictionary.el ends here
+;;; org-scribe-dictionary.el ends here

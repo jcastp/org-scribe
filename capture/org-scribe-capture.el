@@ -1,4 +1,4 @@
-;;; writing-capture.el --- Capture system for emacs-writing -*- lexical-binding: t; -*-
+;;; org-scribe-capture.el --- Capture system for org-scribe -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Javier Castilla
 
@@ -13,12 +13,12 @@
 
 (require 'org-capture)
 (require 'project)
-(require 'writing-core)
-(require 'writing-config)
+(require 'org-scribe-core)
+(require 'org-scribe-config)
 
 ;;; File Creation Helpers
 
-(defun writing--create-plot-file (filepath is-short-story)
+(defun org-scribe--create-plot-file (filepath is-short-story)
   "Create a basic plot file for captures.
 FILEPATH is the path where the file should be created.
 IS-SHORT-STORY determines the structure."
@@ -47,7 +47,7 @@ IS-SHORT-STORY determines the structure."
         (insert "* Plot Threads\n\n")
         (insert "Track your plot threads here. Use F8 F8 p to capture new threads.\n\n")))))
 
-(defun writing--create-short-story-notes-file (filepath)
+(defun org-scribe--create-short-story-notes-file (filepath)
   "Create a comprehensive notes.org file for short story projects.
 FILEPATH is the path where the file should be created."
   (with-temp-file filepath
@@ -79,7 +79,7 @@ FILEPATH is the path where the file should be created."
 
     (insert "* Random Ideas & Inspiration\n\n")))
 
-(defun writing--create-novel-capture-file (filepath content-type)
+(defun org-scribe--create-novel-capture-file (filepath content-type)
   "Create an individual capture file for novel projects.
 FILEPATH is the path where the file should be created.
 CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes."
@@ -115,7 +115,7 @@ CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes."
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
        (insert "* Notes\n\n")))))
 
-(defun writing--create-capture-file (filepath project-type content-type)
+(defun org-scribe--create-capture-file (filepath project-type content-type)
   "Create a capture target file based on project type.
 FILEPATH is the path to create.
 PROJECT-TYPE is 'novel, 'short-story, or 'unknown.
@@ -129,13 +129,13 @@ For novels, creates individual files."
 
   (if (eq project-type 'short-story)
       ;; Short story: create comprehensive notes.org
-      (writing--create-short-story-notes-file filepath)
+      (org-scribe--create-short-story-notes-file filepath)
     ;; Novel or unknown: create individual file
-    (writing--create-novel-capture-file filepath content-type)))
+    (org-scribe--create-novel-capture-file filepath content-type)))
 
 ;;; Capture Target File Detection
 
-(defun writing/capture-location-file (&optional create-if-missing)
+(defun org-scribe/capture-location-file (&optional create-if-missing)
   "Determine the appropriate file for location captures.
 For novels: Uses plan/locations.org (or localizaciones.org)
 For short stories: Uses notes.org (or notas.org)
@@ -145,7 +145,7 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
                           (project-root project)
                         (file-name-directory (or (buffer-file-name) default-directory))))
-         (project-type (writing-project-type))
+         (project-type (org-scribe-project-type))
          (target
           (cond
            ;; Short story: use notes.org
@@ -172,11 +172,11 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
 
     ;; Create file if needed
     (when (and create-if-missing (not (file-exists-p target)))
-      (writing--create-capture-file target project-type 'locations))
+      (org-scribe--create-capture-file target project-type 'locations))
 
     target))
 
-(defun writing/capture-object-file (&optional create-if-missing)
+(defun org-scribe/capture-object-file (&optional create-if-missing)
   "Determine the appropriate file for object captures.
 For novels: Uses plan/objects.org (or objetos.org)
 For short stories: Uses notes.org (or notas.org)
@@ -186,7 +186,7 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
                           (project-root project)
                         (file-name-directory (or (buffer-file-name) default-directory))))
-         (project-type (writing-project-type))
+         (project-type (org-scribe-project-type))
          (target
           (cond
            ;; Short story: use notes.org
@@ -213,11 +213,11 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
 
     ;; Create file if needed
     (when (and create-if-missing (not (file-exists-p target)))
-      (writing--create-capture-file target project-type 'objects))
+      (org-scribe--create-capture-file target project-type 'objects))
 
     target))
 
-(defun writing/capture-timeline-file (&optional create-if-missing)
+(defun org-scribe/capture-timeline-file (&optional create-if-missing)
   "Determine the appropriate file for timeline captures.
 For novels: Uses plan/timeline.org (or cronologia.org)
 For short stories: Uses notes.org (or notas.org)
@@ -227,7 +227,7 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
                           (project-root project)
                         (file-name-directory (or (buffer-file-name) default-directory))))
-         (project-type (writing-project-type))
+         (project-type (org-scribe-project-type))
          (target
           (cond
            ;; Short story: use notes.org
@@ -254,11 +254,11 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
 
     ;; Create file if needed
     (when (and create-if-missing (not (file-exists-p target)))
-      (writing--create-capture-file target project-type 'timeline))
+      (org-scribe--create-capture-file target project-type 'timeline))
 
     target))
 
-(defun writing/capture-character-file (&optional create-if-missing)
+(defun org-scribe/capture-character-file (&optional create-if-missing)
   "Determine the appropriate file for character captures.
 For novels: Uses plan/characters.org (or personajes.org)
 For short stories: Uses notes.org (or notas.org)
@@ -268,7 +268,7 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
                           (project-root project)
                         (file-name-directory (or (buffer-file-name) default-directory))))
-         (project-type (writing-project-type))
+         (project-type (org-scribe-project-type))
          (target
           (cond
            ;; Short story: use notes.org
@@ -295,11 +295,11 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
 
     ;; Create file if needed
     (when (and create-if-missing (not (file-exists-p target)))
-      (writing--create-capture-file target project-type 'characters))
+      (org-scribe--create-capture-file target project-type 'characters))
 
     target))
 
-(defun writing/capture-plot-thread-file (&optional create-if-missing)
+(defun org-scribe/capture-plot-thread-file (&optional create-if-missing)
   "Determine the appropriate file for plot thread captures.
 For novels: Uses plan/plot.org (or plan/trama.org)
 For short stories: Uses notes.org (or notas.org)
@@ -309,7 +309,7 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
                           (project-root project)
                         (file-name-directory (or (buffer-file-name) default-directory))))
-         (project-type (writing-project-type))
+         (project-type (org-scribe-project-type))
          (target
           (cond
            ;; Short story: use notes.org
@@ -337,11 +337,11 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
       (let ((dir (file-name-directory target)))
         (unless (file-directory-p dir)
           (make-directory dir t))
-        (writing--create-plot-file target (eq project-type 'short-story))))
+        (org-scribe--create-plot-file target (eq project-type 'short-story))))
 
     target))
 
-(defun writing/capture-target-file (&optional create-if-missing)
+(defun org-scribe/capture-target-file (&optional create-if-missing)
   "Determine the appropriate notes file for org-capture in writing environment.
 Uses `project-current' to find the project base directory as reference point.
 Returns the file path based on the following priority:
@@ -381,16 +381,16 @@ file that doesn't exist."
 
 ;;; Capture Templates
 
-(defvar writing/capture-templates
+(defvar org-scribe/capture-templates
   '(("w" "Writing Note" entry
-     (file+headline writing/capture-target-file "Notes")
+     (file+headline org-scribe/capture-target-file "Notes")
      "** TODO %?\n  %U\n  %i"
      :empty-lines 1))
   "Capture templates specific to the writing environment.")
 
-(defvar writing/character-capture-templates
+(defvar org-scribe/character-capture-templates
   '(("c" "Character Profile" entry
-     (file writing/capture-character-file)
+     (file org-scribe/capture-character-file)
      "* %^{Character Name}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -453,9 +453,9 @@ file that doesn't exist."
      :empty-lines 1))
   "Capture templates for character profiles.")
 
-(defvar writing/location-capture-templates
+(defvar org-scribe/location-capture-templates
   '(("l" "Location" entry
-     (file writing/capture-location-file)
+     (file org-scribe/capture-location-file)
      "* %^{Location Name}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -506,9 +506,9 @@ file that doesn't exist."
      :empty-lines 1))
   "Capture templates for location profiles.")
 
-(defvar writing/object-capture-templates
+(defvar org-scribe/object-capture-templates
   '(("o" "Object" entry
-     (file writing/capture-object-file)
+     (file org-scribe/capture-object-file)
      "* %^{Object Name}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -547,9 +547,9 @@ file that doesn't exist."
      :empty-lines 1))
   "Capture templates for important objects.")
 
-(defvar writing/timeline-capture-templates
+(defvar org-scribe/timeline-capture-templates
   '(("t" "Timeline Event" entry
-     (file writing/capture-timeline-file)
+     (file org-scribe/capture-timeline-file)
      "* %^{Event Name}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -577,9 +577,9 @@ file that doesn't exist."
      :empty-lines 1))
   "Capture templates for timeline events.")
 
-(defvar writing/plot-thread-capture-templates
+(defvar org-scribe/plot-thread-capture-templates
   '(("p" "Plot Thread" entry
-     (file+headline writing/capture-plot-thread-file "Plot Threads")
+     (file+headline org-scribe/capture-plot-thread-file "Plot Threads")
      "** %^{Thread Name} %^{Type|Subplot|Main Plot|B-Plot|C-Plot|Thematic Thread}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -614,20 +614,20 @@ file that doesn't exist."
 ;;; Capture Function
 
 ;;;###autoload
-(defun writing/capture-to-file ()
+(defun org-scribe/capture-to-file ()
   "Capture notes to writing project or file.
 Automatically determines the appropriate notes file based on project structure."
   (interactive)
   ;; Choose the destination that actually exists
-  (let ((target (writing/capture-target-file t)))  ; Create if missing
+  (let ((target (org-scribe/capture-target-file t)))  ; Create if missing
     ;; Build a temporary capture template that points at TARGET
     (let ((org-capture-templates
-           writing/capture-templates))
+           org-scribe/capture-templates))
       ;; Run the capture UI
       (org-capture))))
 
 ;;;###autoload
-(defun writing/capture-character ()
+(defun org-scribe/capture-character ()
   "Capture a character profile to the characters file.
 Automatically determines the appropriate characters file based on project structure.
 Creates a comprehensive character template with prompts for:
@@ -639,15 +639,15 @@ Creates a comprehensive character template with prompts for:
 - Relationships with other characters"
   (interactive)
   ;; Find or create the characters file
-  (let ((target (writing/capture-character-file t)))  ; Create if missing
+  (let ((target (org-scribe/capture-character-file t)))  ; Create if missing
     ;; Use the character capture template
     (let ((org-capture-templates
-           writing/character-capture-templates))
+           org-scribe/character-capture-templates))
       ;; Run the capture UI
       (org-capture nil "c"))))
 
 ;;;###autoload
-(defun writing/capture-location ()
+(defun org-scribe/capture-location ()
   "Capture a location profile to the locations file.
 Automatically determines the appropriate locations file based on project structure.
 Creates a comprehensive location template with prompts for:
@@ -659,15 +659,15 @@ Creates a comprehensive location template with prompts for:
 - Atmosphere and mood"
   (interactive)
   ;; Find or create the locations file
-  (let ((target (writing/capture-location-file t)))  ; Create if missing
+  (let ((target (org-scribe/capture-location-file t)))  ; Create if missing
     ;; Use the location capture template
     (let ((org-capture-templates
-           writing/location-capture-templates))
+           org-scribe/location-capture-templates))
       ;; Run the capture UI
       (org-capture nil "l"))))
 
 ;;;###autoload
-(defun writing/capture-object ()
+(defun org-scribe/capture-object ()
   "Capture an important object to the objects file.
 Automatically determines the appropriate objects file based on project structure.
 Creates a comprehensive object template with prompts for:
@@ -679,15 +679,15 @@ Creates a comprehensive object template with prompts for:
 - Current location and limitations"
   (interactive)
   ;; Find or create the objects file
-  (let ((target (writing/capture-object-file t)))  ; Create if missing
+  (let ((target (org-scribe/capture-object-file t)))  ; Create if missing
     ;; Use the object capture template
     (let ((org-capture-templates
-           writing/object-capture-templates))
+           org-scribe/object-capture-templates))
       ;; Run the capture UI
       (org-capture nil "o"))))
 
 ;;;###autoload
-(defun writing/capture-timeline ()
+(defun org-scribe/capture-timeline ()
   "Capture a timeline event to the timeline file.
 Automatically determines the appropriate timeline file based on project structure.
 Creates a comprehensive timeline event template with prompts for:
@@ -698,15 +698,15 @@ Creates a comprehensive timeline event template with prompts for:
 - Type of event (action, revelation, etc.)"
   (interactive)
   ;; Find or create the timeline file
-  (let ((target (writing/capture-timeline-file t)))  ; Create if missing
+  (let ((target (org-scribe/capture-timeline-file t)))  ; Create if missing
     ;; Use the timeline capture template
     (let ((org-capture-templates
-           writing/timeline-capture-templates))
+           org-scribe/timeline-capture-templates))
       ;; Run the capture UI
       (org-capture nil "t"))))
 
 ;;;###autoload
-(defun writing/capture-plot-thread ()
+(defun org-scribe/capture-plot-thread ()
   "Capture a plot thread to the plot file.
 
 Automatically determines the appropriate plot file based on project structure.
@@ -727,13 +727,13 @@ The template is intentionally minimal - capture the essence quickly,
 then elaborate later during planning or revision."
   (interactive)
   ;; Find or create the plot file
-  (let ((target (writing/capture-plot-thread-file t)))  ; Create if missing
+  (let ((target (org-scribe/capture-plot-thread-file t)))  ; Create if missing
     ;; Use the plot thread capture template
     (let ((org-capture-templates
-           writing/plot-thread-capture-templates))
+           org-scribe/plot-thread-capture-templates))
       ;; Run the capture UI
       (org-capture nil "p"))))
 
-(provide 'writing-capture)
+(provide 'org-scribe-capture)
 
-;;; writing-capture.el ends here
+;;; org-scribe-capture.el ends here

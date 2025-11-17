@@ -112,7 +112,7 @@ Let's explore what's in the location capture template.
 
 Press: ~F8 F8 l~ (that's F8 twice, then lowercase L for "location")
 
-Or use: ~M-x writing/capture-location~
+Or use: ~M-x org-scribe/capture-location~
 
 ** Template Structure
 
@@ -517,7 +517,7 @@ Once you have location profiles, link them to scenes.
 2. Navigate to a scene heading
 3. Press: ~F8 F8 L L~ (capital L twice - Location menu, then Link)
 
-Or use: ~M-x writing/set-scene-location~
+Or use: ~M-x org-scribe/set-scene-location~
 
 4. You'll see a menu of all locations
 5. Select one: Press ~Enter~
@@ -591,7 +591,7 @@ Find all scenes set in a specific location.
 
 Press: ~F8 F8 4~ (search by location)
 
-Or use: ~M-x writing/org-find-location~
+Or use: ~M-x org-scribe/org-find-location~
 
 ** TODO Process
 *NOTE:* This doesn't work as written here.
@@ -689,7 +689,7 @@ Already have scenes with plain-text locations?
 1. Navigate to scene with plain-text location
 2. Press: ~F8 F8 L l~ (Location menu, link scene)
 
-Or use: ~M-x writing/link-scene-location~
+Or use: ~M-x org-scribe/link-scene-location~
 
 This finds the location name in your profiles and replaces it with an ID link.
 
@@ -697,7 +697,7 @@ This finds the location name in your profiles and replaces it with an ID link.
 
 Press: ~F8 F8 L L~ (capital L - link all)
 
-Or use: ~M-x writing/link-all-scene-locations~
+Or use: ~M-x org-scribe/link-all-scene-locations~
 
 This processes your entire manuscript, converting all matching location names to ID links.
 
@@ -950,7 +950,7 @@ Pressing F8 F8 L L shows empty list.
 1. Ensure you have captured at least one location
 2. Open plan/locations.org or notes.org
 3. Verify locations are level-1 headings with ~:ID:~ properties
-4. If IDs are missing, run: ~M-x writing/add-location-ids~
+4. If IDs are missing, run: ~M-x org-scribe/add-location-ids~
 
 ** "Search finds no scenes for a location I know I linked"
 
@@ -961,7 +961,7 @@ Search returns 0 results despite linked scenes.
 1. Open a scene that should have this location
 2. Check the ~:Location:~ property
 3. Verify it's an ID link: ~[[id:...][Name]]~
-4. If it's plain text, run: ~M-x writing/link-scene-location~
+4. If it's plain text, run: ~M-x org-scribe/link-scene-location~
 5. Try search again
 
 ** "Jump to location doesn't work"
@@ -1026,13 +1026,13 @@ Search returns 0 results despite linked scenes.
 
 | Command                              | What It Does                         |
 |--------------------------------------+--------------------------------------|
-| ~writing/capture-location~             | Capture new location profile         |
-| ~writing/set-scene-location~           | Set location via menu                |
-| ~writing/jump-to-scene-location~       | Jump to location from scene          |
-| ~writing/link-scene-location~          | Link current scene's location        |
-| ~writing/link-all-scene-locations~     | Batch link all scenes                |
-| ~writing/org-find-location~            | Search scenes by location            |
-| ~writing/add-location-ids~             | Add IDs to existing locations        |
+| ~org-scribe/capture-location~             | Capture new location profile         |
+| ~org-scribe/set-scene-location~           | Set location via menu                |
+| ~org-scribe/jump-to-scene-location~       | Jump to location from scene          |
+| ~org-scribe/link-scene-location~          | Link current scene's location        |
+| ~org-scribe/link-all-scene-locations~     | Batch link all scenes                |
+| ~org-scribe/org-find-location~            | Search scenes by location            |
+| ~org-scribe/add-location-ids~             | Add IDs to existing locations        |
 
 * Tips for Better Location Management
 

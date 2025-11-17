@@ -1,4 +1,4 @@
-;;; writing-project.el --- Novel project structure generator -*- lexical-binding: t; -*-
+;;; org-scribe-project.el --- Novel project structure generator -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Javier Castilla
 
@@ -10,18 +10,18 @@
 ;; project structures from templates with variable substitution.
 ;;
 ;; Main functions:
-;;   - writing-create-novel-project: Create new novel project from templates
-;;   - writing-create-short-story-project: Create new short story project
-;;   - writing-insert-scene: Insert scene template
-;;   - writing-insert-chapter: Insert chapter template
-;;   - writing-open-project-file: Quick file navigation
+;;   - org-scribe-create-novel-project: Create new novel project from templates
+;;   - org-scribe-create-short-story-project: Create new short story project
+;;   - org-scribe-insert-scene: Insert scene template
+;;   - org-scribe-insert-chapter: Insert chapter template
+;;   - org-scribe-open-project-file: Quick file navigation
 ;;
 ;; Template Variables:
 ;;   ${TITLE}  - Project title
 ;;   ${AUTHOR} - User's full name
 ;;   ${DATE}   - Current date (YYYY-MM-DD format)
 ;;
-;; This was merged from emacs-writing-template package (v2.0).
+;; This was merged from org-scribe-template package (v2.0).
 
 ;;; Code:
 
@@ -29,46 +29,46 @@
 
 ;;; Configuration
 
-(defvar writing-project-package-directory
+(defvar org-scribe-project-package-directory
   (file-name-directory
    (or load-file-name
        (buffer-file-name)))
   "Directory where this file is located.")
 
-(defcustom writing-template-directory
-  (expand-file-name "../writing-templates/novel-en" writing-project-package-directory)
+(defcustom org-scribe-template-directory
+  (expand-file-name "../org-scribe-templates/novel-en" org-scribe-project-package-directory)
   "Directory containing novel project templates.
 By default, uses the novel-en (English) templates. Change to
 'novel-es' for Spanish templates, or provide a custom path."
   :type 'directory
-  :group 'writing)
+  :group 'org-scribe)
 
-(defcustom writing-template-language 'en
+(defcustom org-scribe-template-language 'en
   "Default language for novel templates.
 Can be 'en for English or 'es for Spanish.
 This is used to automatically set the template directory."
   :type '(choice (const :tag "English" en)
                  (const :tag "Spanish" es))
-  :group 'writing
+  :group 'org-scribe
   :set (lambda (symbol value)
          (set-default symbol value)
          ;; Update template directory when language changes
-         (setq writing-template-directory
+         (setq org-scribe-template-directory
                (expand-file-name
-                (format "../writing-templates/novel-%s"
+                (format "../org-scribe-templates/novel-%s"
                         (if (eq value 'es) "es" "en"))
-                writing-project-package-directory))))
+                org-scribe-project-package-directory))))
 
-(defcustom writing-short-story-template-directory
-  (expand-file-name "../writing-templates/short-story-en" writing-project-package-directory)
+(defcustom org-scribe-short-story-template-directory
+  (expand-file-name "../org-scribe-templates/short-story-en" org-scribe-project-package-directory)
   "Directory containing short story project templates.
 By default, uses the short-story-en (English) templates."
   :type 'directory
-  :group 'writing)
+  :group 'org-scribe)
 
 ;;; Project Creation
 
-(defun writing--validate-project-title (title)
+(defun org-scribe--validate-project-title (title)
   "Validate TITLE for use as a directory name.
 Returns nil if valid, otherwise returns an error message."
   (cond
@@ -87,7 +87,7 @@ Returns nil if valid, otherwise returns an error message."
    (t nil)))
 
 ;;;###autoload
-(defun writing-create-novel-project (base-dir title)
+(defun org-scribe-create-novel-project (base-dir title)
   "Create a new novel project structure from templates.
 BASE-DIR is the parent directory where the project will be created.
 TITLE is the name of the novel/project.
@@ -105,11 +105,11 @@ This function:
     (read-directory-name "Base directory for project: " "~/writing/")
     (read-string "Novel title: ")))
 
-  (unless (file-directory-p writing-template-directory)
-    (user-error "Template directory not found: %s" writing-template-directory))
+  (unless (file-directory-p org-scribe-template-directory)
+    (user-error "Template directory not found: %s" org-scribe-template-directory))
 
   ;; Validate title
-  (let ((validation-error (writing--validate-project-title title)))
+  (let ((validation-error (org-scribe--validate-project-title title)))
     (when validation-error
       (user-error "%s" validation-error)))
 
@@ -125,11 +125,11 @@ This function:
     ;; Create project directory
     (make-directory project-dir t)
 
-    ;; Create .writing-project marker file for project detection
-    (with-temp-file (expand-file-name ".writing-project" project-dir)
+    ;; Create .org-scribe-project marker file for project detection
+    (with-temp-file (expand-file-name ".org-scribe-project" project-dir)
       (insert (format "# Writing project: %s\n" title)
               (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
-              (format "# Language: %s\n" writing-template-language)))
+              (format "# Language: %s\n" org-scribe-template-language)))
 
     ;; Initialize git repository
     (let ((default-directory project-dir))
@@ -137,7 +137,7 @@ This function:
         (warn "Failed to initialize git repository")))
 
     ;; Process all templates
-    (writing--copy-templates writing-template-directory project-dir variables)
+    (org-scribe--copy-templates org-scribe-template-directory project-dir variables)
 
     ;; Create initial git commit
     (let ((default-directory project-dir))
@@ -153,7 +153,7 @@ This function:
     (message "Novel project '%s' created successfully at %s" title project-dir)))
 
 ;;;###autoload
-(defun writing-create-short-story-project (base-dir title)
+(defun org-scribe-create-short-story-project (base-dir title)
   "Create a new short story project structure from templates.
 BASE-DIR is the parent directory where the project will be created.
 TITLE is the name of the short story/project.
@@ -173,15 +173,15 @@ This function:
 
   ;; Determine template directory based on language
   (let ((template-dir (expand-file-name
-                      (format "../writing-templates/short-story-%s"
-                              (if (eq writing-template-language 'es) "es" "en"))
-                      writing-project-package-directory)))
+                      (format "../org-scribe-templates/short-story-%s"
+                              (if (eq org-scribe-template-language 'es) "es" "en"))
+                      org-scribe-project-package-directory)))
 
     (unless (file-directory-p template-dir)
       (user-error "Short story template directory not found: %s" template-dir))
 
     ;; Validate title
-    (let ((validation-error (writing--validate-project-title title)))
+    (let ((validation-error (org-scribe--validate-project-title title)))
       (when validation-error
         (user-error "%s" validation-error)))
 
@@ -189,7 +189,7 @@ This function:
            (variables `(("TITLE" . ,title)
                        ("AUTHOR" . ,(if (boundp 'user-full-name) user-full-name "Author"))
                        ("DATE" . ,(format-time-string "%Y-%m-%d"))))
-           (story-file (if (eq writing-template-language 'es) "cuento.org" "story.org")))
+           (story-file (if (eq org-scribe-template-language 'es) "cuento.org" "story.org")))
 
       ;; Check if project already exists
       (when (file-exists-p project-dir)
@@ -198,12 +198,12 @@ This function:
       ;; Create project directory
       (make-directory project-dir t)
 
-      ;; Create .writing-project marker file for project detection
-      (with-temp-file (expand-file-name ".writing-project" project-dir)
+      ;; Create .org-scribe-project marker file for project detection
+      (with-temp-file (expand-file-name ".org-scribe-project" project-dir)
         (insert (format "# Writing project: %s\n" title)
                 (format "# Type: short-story\n")
                 (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
-                (format "# Language: %s\n" writing-template-language)))
+                (format "# Language: %s\n" org-scribe-template-language)))
 
       ;; Initialize git repository
       (let ((default-directory project-dir))
@@ -211,7 +211,7 @@ This function:
           (warn "Failed to initialize git repository")))
 
       ;; Process all templates
-      (writing--copy-templates template-dir project-dir variables)
+      (org-scribe--copy-templates template-dir project-dir variables)
 
       ;; Create initial git commit
       (let ((default-directory project-dir))
@@ -226,7 +226,7 @@ This function:
       (find-file (expand-file-name story-file project-dir))
       (message "Short story project '%s' created successfully at %s" title project-dir))))
 
-(defun writing--copy-templates (template-dir project-dir variables)
+(defun org-scribe--copy-templates (template-dir project-dir variables)
   "Copy and process templates from TEMPLATE-DIR to PROJECT-DIR.
 VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
   (dolist (file (directory-files-recursively template-dir ".*"))
@@ -241,10 +241,10 @@ VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
 
       ;; Process template or copy file
       (if (string-match-p "\\.template$" file)
-          (writing--process-template file output-path variables)
+          (org-scribe--process-template file output-path variables)
         (copy-file file output-path)))))
 
-(defun writing--process-template (template-file output-file variables)
+(defun org-scribe--process-template (template-file output-file variables)
   "Process TEMPLATE-FILE replacing variables, save to OUTPUT-FILE.
 VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
   (with-temp-buffer
@@ -262,7 +262,7 @@ VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
 ;;; Template Insertion
 
 ;;;###autoload
-(defun writing-insert-scene (scene-name)
+(defun org-scribe-insert-scene (scene-name)
   "Insert a scene template at point with SCENE-NAME.
 The template includes a TODO heading with :ignore: tag and property
 drawer for scene metadata (PoV, Characters, Plot, Timeline, Location,
@@ -310,7 +310,7 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
     (end-of-line)))   ; Move to end of line (after :PoV:)
 
 ;;;###autoload
-(defun writing-insert-chapter (chapter-name)
+(defun org-scribe-insert-chapter (chapter-name)
   "Insert a chapter template at point with CHAPTER-NAME.
 The template includes a TODO heading with :ignore: tag and a property
 drawer with WORDCOUNT field initialized to 0.
@@ -344,7 +344,7 @@ If CHAPTER-NAME is empty, defaults to \"New chapter\"."
 ;;; Project Navigation
 
 ;;;###autoload
-(defun writing-open-project-file (filename)
+(defun org-scribe-open-project-file (filename)
   "Quickly open a file in the current writing project (novel or short story).
 FILENAME should be relative to project root (e.g., 'plan/characters.org').
 Uses completion to help select from common project files."
@@ -355,7 +355,7 @@ Uses completion to help select from common project files."
                             "novel.org"
                             "novela.org"
                             "revision.org"
-                            "writing-journal.org"
+                            "org-scribe-journal.org"
                             "diario-escritura.org"
                             "plan/characters.org"
                             "plan/personajes.org"
@@ -376,9 +376,9 @@ Uses completion to help select from common project files."
                             "cuento.org"
                             "notes.org"
                             "notas.org"))))
-  ;; Use writing-core's project detection if available
-  (let ((project-root (if (fboundp 'writing-project-root)
-                          (writing-project-root)
+  ;; Use org-scribe-core's project detection if available
+  (let ((project-root (if (fboundp 'org-scribe-project-root)
+                          (org-scribe-project-root)
                         (or (when-let ((project (project-current)))
                               (project-root project))
                             (locate-dominating-file default-directory "README.org")))))
@@ -393,16 +393,16 @@ Uses completion to help select from common project files."
 ;;; Utility Functions
 
 ;;;###autoload
-(defun writing-edit-templates ()
+(defun org-scribe-edit-templates ()
   "Open the novel template directory for editing.
 This allows you to customize the templates used for new projects."
   (interactive)
-  (if (file-directory-p writing-template-directory)
-      (dired writing-template-directory)
-    (user-error "Template directory not found: %s" writing-template-directory)))
+  (if (file-directory-p org-scribe-template-directory)
+      (dired org-scribe-template-directory)
+    (user-error "Template directory not found: %s" org-scribe-template-directory)))
 
 ;;;###autoload
-(defun writing-register-projects (directory)
+(defun org-scribe-register-projects (directory)
   "Register all existing novel projects under DIRECTORY with project.el.
 This is useful for adding novels created before project.el integration."
   (interactive "DBase directory containing novel projects: ")
@@ -413,43 +413,43 @@ This is useful for adding novels created before project.el integration."
 
 ;; Provide old function names for backwards compatibility
 ;;;###autoload
-(defalias 'writing-project-create-novel-project #'writing-create-novel-project
-  "Deprecated: Use `writing-create-novel-project' instead.")
-(make-obsolete 'writing-project-create-novel-project 'writing-create-novel-project "0.2.0")
+(defalias 'org-scribe-project-create-novel-project #'org-scribe-create-novel-project
+  "Deprecated: Use `org-scribe-create-novel-project' instead.")
+(make-obsolete 'org-scribe-project-create-novel-project 'org-scribe-create-novel-project "0.2.0")
 
 ;;;###autoload
-(defalias 'writing-create-project #'writing-create-novel-project
-  "Deprecated: Use `writing-create-novel-project' instead.")
-(make-obsolete 'writing-create-project 'writing-create-novel-project "0.2.1")
+(defalias 'org-scribe-create-project #'org-scribe-create-novel-project
+  "Deprecated: Use `org-scribe-create-novel-project' instead.")
+(make-obsolete 'org-scribe-create-project 'org-scribe-create-novel-project "0.2.1")
 
 ;;;###autoload
-(defalias 'writing-project-insert-scene #'writing-insert-scene
-  "Deprecated: Use `writing-insert-scene' instead.")
-(make-obsolete 'writing-project-insert-scene 'writing-insert-scene "0.2.0")
+(defalias 'org-scribe-project-insert-scene #'org-scribe-insert-scene
+  "Deprecated: Use `org-scribe-insert-scene' instead.")
+(make-obsolete 'org-scribe-project-insert-scene 'org-scribe-insert-scene "0.2.0")
 
 ;;;###autoload
-(defalias 'writing-project-insert-chapter #'writing-insert-chapter
-  "Deprecated: Use `writing-insert-chapter' instead.")
-(make-obsolete 'writing-project-insert-chapter 'writing-insert-chapter "0.2.0")
+(defalias 'org-scribe-project-insert-chapter #'org-scribe-insert-chapter
+  "Deprecated: Use `org-scribe-insert-chapter' instead.")
+(make-obsolete 'org-scribe-project-insert-chapter 'org-scribe-insert-chapter "0.2.0")
 
 ;;;###autoload
-(defalias 'writing-project-open-novel-file #'writing-open-project-file
-  "Deprecated: Use `writing-open-project-file' instead.")
-(make-obsolete 'writing-project-open-novel-file 'writing-open-project-file "0.2.0")
+(defalias 'org-scribe-project-open-novel-file #'org-scribe-open-project-file
+  "Deprecated: Use `org-scribe-open-project-file' instead.")
+(make-obsolete 'org-scribe-project-open-novel-file 'org-scribe-open-project-file "0.2.0")
 
 ;;;###autoload
-(defalias 'writing-project-edit-novel-templates #'writing-edit-templates
-  "Deprecated: Use `writing-edit-templates' instead.")
-(make-obsolete 'writing-project-edit-novel-templates 'writing-edit-templates "0.2.0")
+(defalias 'org-scribe-project-edit-novel-templates #'org-scribe-edit-templates
+  "Deprecated: Use `org-scribe-edit-templates' instead.")
+(make-obsolete 'org-scribe-project-edit-novel-templates 'org-scribe-edit-templates "0.2.0")
 
 ;;;###autoload
-(defalias 'writing-project-register-existing-projects #'writing-register-projects
-  "Deprecated: Use `writing-register-projects' instead.")
-(make-obsolete 'writing-project-register-existing-projects 'writing-register-projects "0.2.0")
+(defalias 'org-scribe-project-register-existing-projects #'org-scribe-register-projects
+  "Deprecated: Use `org-scribe-register-projects' instead.")
+(make-obsolete 'org-scribe-project-register-existing-projects 'org-scribe-register-projects "0.2.0")
 
 ;; Provide old feature name for old configs
 (provide 'writing_project)
-(provide 'writing-template)
-(provide 'writing-project)
+(provide 'org-scribe-template)
+(provide 'org-scribe-project)
 
-;;; writing-project.el ends here
+;;; org-scribe-project.el ends here

@@ -454,16 +454,16 @@ Add to your Emacs configuration (~init.el~ or ~.emacs~):
 
 #+BEGIN_SRC emacs-lisp
 ;; Example 1: Use C-c w instead
-(global-set-key (kbd "C-c w") 'hydra-writing/body)
+(global-set-key (kbd "C-c w") 'hydra-org-scribe/body)
 
 ;; Example 2: Use F5 instead
-(global-set-key (kbd "<f5>") 'hydra-writing/body)
+(global-set-key (kbd "<f5>") 'hydra-org-scribe/body)
 
 ;; Example 3: Use Super-w (Windows key + w)
-(global-set-key (kbd "s-w") 'hydra-writing/body)
+(global-set-key (kbd "s-w") 'hydra-org-scribe/body)
 
 ;; Example 4: Use C-c C-w
-(global-set-key (kbd "C-c C-w") 'hydra-writing/body)
+(global-set-key (kbd "C-c C-w") 'hydra-org-scribe/body)
 #+END_SRC
 
 *After adding*:
@@ -481,7 +481,7 @@ If you want to completely replace ~F8 F8~:
 (global-unset-key (kbd "<f8> <f8>"))
 
 ;; Set new binding
-(global-set-key (kbd "C-c w") 'hydra-writing/body)
+(global-set-key (kbd "C-c w") 'hydra-org-scribe/body)
 #+END_SRC
 
 ** Recommended Keybinding
@@ -603,7 +603,7 @@ Gradual exploration prevents overwhelm!
    - Verify keybinding: ~C-h k F8 F8~
 
 3. Conflict with another package
-   - Try ~M-x hydra-writing/body~ directly
+   - Try ~M-x hydra-org-scribe/body~ directly
    - Set custom keybinding (see Customization section)
 
 ** "Menu appears but keys don't work"

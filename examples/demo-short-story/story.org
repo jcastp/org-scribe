@@ -46,7 +46,7 @@ A quantum physicist receives a message from her future self warning about a cata
 
 To update word count, use:
 - =F8 F8 n= (org-context-count-words)
-- =F8 F8 m= (writing/ews-org-count-words)
+- =F8 F8 m= (org-scribe/ews-org-count-words)
 
 #+NAME: tracktable
 |---+---------------+-------+-----+---------------+--------------|

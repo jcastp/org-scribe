@@ -1,4 +1,4 @@
-;;; writing-link-update.el --- Link display name update functions -*- lexical-binding: t; -*-
+;;; org-scribe-link-update.el --- Link display name update functions -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Javier Castilla
 
@@ -24,11 +24,11 @@
 ;;; Code:
 
 (require 'org)
-(require 'writing-core)
+(require 'org-scribe-core)
 
 ;;; Core Helper Functions
 
-(defun writing--update-link-display-name (link-string id-to-name-map)
+(defun org-scribe--update-link-display-name (link-string id-to-name-map)
   "Update display name in LINK-STRING using ID-TO-NAME-MAP.
 
 LINK-STRING should be an org ID link like \"[[id:abc123][Old Name]]\".
@@ -59,11 +59,11 @@ Examples:
     ;; Not an ID link - return unchanged
     link-string))
 
-(defun writing--build-id-to-name-map (items-alist)
+(defun org-scribe--build-id-to-name-map (items-alist)
   "Build hash table mapping ID to NAME from ITEMS-ALIST.
 
 ITEMS-ALIST should be in format: ((NAME . (ID . HEADING)) ...)
-This is the format returned by writing--get-all-characters and similar.
+This is the format returned by org-scribe--get-all-characters and similar.
 
 Returns a hash table: {ID: NAME, ...}
 
@@ -80,7 +80,7 @@ Example:
           (puthash id name map))))
     map))
 
-(defun writing--update-links-in-property (property-name id-to-name-map)
+(defun org-scribe--update-links-in-property (property-name id-to-name-map)
   "Update link display names in PROPERTY-NAME of current heading.
 
 Handles both single links and comma-separated lists of links.
@@ -102,7 +102,7 @@ Example:
     (let* ((links (split-string prop-value "," t))
            (updated-links (mapcar
                            (lambda (link)
-                             (writing--update-link-display-name
+                             (org-scribe--update-link-display-name
                               (string-trim link)
                               id-to-name-map))
                            links))
@@ -115,7 +115,7 @@ Example:
 ;;; Unified Update Function
 
 ;;;###autoload
-(defun writing/update-all-link-names ()
+(defun org-scribe/update-all-link-names ()
   "Update display names for all ID links (characters, locations, plots).
 
 This function scans all database files (characters.org, locations.org,
@@ -141,18 +141,18 @@ Returns the number of scenes updated."
   (interactive)
   (let ((chars-map (condition-case nil
                        (progn
-                         (require 'writing-character-links)
-                         (writing--build-id-to-name-map (writing--get-all-characters)))
+                         (require 'org-scribe-character-links)
+                         (org-scribe--build-id-to-name-map (org-scribe--get-all-characters)))
                      (error (make-hash-table :test 'equal))))
         (locs-map (condition-case nil
                       (progn
-                        (require 'writing-location-links)
-                        (writing--build-id-to-name-map (writing--get-all-locations)))
+                        (require 'org-scribe-location-links)
+                        (org-scribe--build-id-to-name-map (org-scribe--get-all-locations)))
                     (error (make-hash-table :test 'equal))))
         (plots-map (condition-case nil
                        (progn
-                         (require 'writing-plot-links)
-                         (writing--build-id-to-name-map (writing--get-all-plot-threads)))
+                         (require 'org-scribe-plot-links)
+                         (org-scribe--build-id-to-name-map (org-scribe--get-all-plot-threads)))
                      (error (make-hash-table :test 'equal))))
         (count 0))
     (save-excursion
@@ -164,16 +164,16 @@ Returns the number of scenes updated."
                    (org-entry-get nil "Characters")
                    (org-entry-get nil "Location")
                    (org-entry-get nil "Plot"))
-           (let ((updated-pov (writing--update-links-in-property "PoV" chars-map))
-                 (updated-chars (writing--update-links-in-property "Characters" chars-map))
-                 (updated-loc (writing--update-links-in-property "Location" locs-map))
-                 (updated-plot (writing--update-links-in-property "Plot" plots-map)))
+           (let ((updated-pov (org-scribe--update-links-in-property "PoV" chars-map))
+                 (updated-chars (org-scribe--update-links-in-property "Characters" chars-map))
+                 (updated-loc (org-scribe--update-links-in-property "Location" locs-map))
+                 (updated-plot (org-scribe--update-links-in-property "Plot" plots-map)))
              (when (or updated-pov updated-chars updated-loc updated-plot)
                (setq count (1+ count))))))
        nil 'file))
     (message "Updated link names in %d scene%s" count (if (= count 1) "" "s"))
     count))
 
-(provide 'writing-link-update)
+(provide 'org-scribe-link-update)
 
-;;; writing-link-update.el ends here
+;;; org-scribe-link-update.el ends here

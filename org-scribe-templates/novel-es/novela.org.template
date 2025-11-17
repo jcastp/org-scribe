@@ -75,8 +75,8 @@ Para registrar tiempo de escritura, usa:
 Esta tabla muestra qué hilos argumentales aparecen en cada escena.
 Actualiza con =C-c C-c= en la línea #+BEGIN.
 
-Para reportes detallados de salud, usa =M-x writing/plot-thread-report=.
-Para estadísticas rápidas, usa =M-x writing/plot-thread-stats=.
+Para reportes detallados de salud, usa =M-x org-scribe/plot-thread-report=.
+Para estadísticas rápidas, usa =M-x org-scribe/plot-thread-stats=.
 
 #+BEGIN: plot-thread-timeline
 #+END:

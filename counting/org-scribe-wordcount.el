@@ -1,4 +1,4 @@
-;;; writing-wordcount.el --- Word counting functions for emacs-writing -*- lexical-binding: t; -*-
+;;; org-scribe-wordcount.el --- Word counting functions for org-scribe -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Javier Castilla
 
@@ -14,7 +14,7 @@
 
 (require 'org)
 (require 'org-element)
-(require 'writing-config)
+(require 'org-scribe-config)
 
 ;; Declare external functions to avoid compiler warnings
 (declare-function org-context-count-words "org-context-extended")
@@ -22,7 +22,7 @@
 ;;; Word Count Property Function
 
 ;;;###autoload
-(defun writing/ews-org-count-words ()
+(defun org-scribe/ews-org-count-words ()
   "Add word count to each heading property drawer in an Org mode buffer.
 Uses org-context-count-words for accurate counting that excludes
 comments, properties, drawers, etc.  Also creates a custom ID
@@ -37,7 +37,7 @@ for each heading to enable linking."
             ;; the end of THIS subtree (not the end of the document)
             (end (save-excursion (org-end-of-subtree t)))
             (word-count (org-context-count-words start end t t t t t t
-                                                  writing-wordcount-default-ignore-tags)))
+                                                  org-scribe-wordcount-default-ignore-tags)))
        (org-set-property "WORDCOUNT" (number-to-string word-count)))
      ;; Create the id to link the org heading
      (org-id-get-create))))
@@ -62,7 +62,7 @@ Sections tagged with 'noexport' are excluded."
   ;; Execute the function of counting words, add the WORDCOUNT property,
   ;; and update the current word count (if org-context-extended is available).
   (when (featurep 'org-context-extended)
-    (writing/ews-org-count-words))
+    (org-scribe/ews-org-count-words))
   (let (table-data)
     ;; Traverse each Org entry in the current buffer
     (org-map-entries
@@ -156,7 +156,7 @@ Handles missing properties safely:
 
   ;; Update word counts first
   (when (featurep 'org-context-extended)
-    (writing/ews-org-count-words))
+    (org-scribe/ews-org-count-words))
 
   (let* ((match (or (plist-get params :match) "LEVEL=1+ignore"))
          (title (or (plist-get params :title) "Section"))
@@ -228,6 +228,6 @@ Handles missing properties safely:
     ;; Align table
     (org-table-align)))
 
-(provide 'writing-wordcount)
+(provide 'org-scribe-wordcount)
 
-;;; writing-wordcount.el ends here
+;;; org-scribe-wordcount.el ends here

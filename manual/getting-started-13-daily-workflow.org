@@ -97,17 +97,17 @@ Start Emacs and open your manuscript:
 
 #+BEGIN_EXAMPLE
 # Quick method
-emacs ~/writing/my-novel/novel.org
+emacs ~/org-scribe/my-novel/novel.org
 
 # Or from within Emacs
-C-x C-f ~/writing/my-novel/novel.org
+C-x C-f ~/org-scribe/my-novel/novel.org
 #+END_EXAMPLE
 
 *Tip*: Create a shell alias or Emacs bookmark for one-keystroke access:
 
 #+BEGIN_SRC bash
 # Add to ~/.bashrc or ~/.zshrc
-alias write="emacs ~/writing/my-novel/novel.org &"
+alias write="emacs ~/org-scribe/my-novel/novel.org &"
 #+END_SRC
 
 Now typing `write` in your terminal opens your manuscript instantly!
@@ -548,7 +548,7 @@ If your project uses git (created with ~writing-create-novel-project~):
 
 #+BEGIN_SRC bash
 # From the project directory
-cd ~/writing/my-novel
+cd ~/org-scribe/my-novel
 
 git add .
 git commit -m "Chapter 3 Scene 2 - coffee shop confrontation (1,247 words)"

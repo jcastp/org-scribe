@@ -431,7 +431,7 @@ When you're done writing:
 2. Press ~m~ again (toggle off)
 3. Your normal environment returns
 
-*Note*: You can also exit by pressing ~M-x my-writing-env-mode~ and Enter.
+*Note*: You can also exit by pressing ~M-x org-scribe/writing-env-mode~ and Enter.
 
 * Other Writing Modes
 
@@ -619,7 +619,7 @@ Advanced users can configure custom TODO states, but TODO/DONE works perfectly f
 
 *Solutions*:
 1. Make sure you're pressing F8 twice quickly
-2. Try ~M-x hydra-writing/body~ instead
+2. Try ~M-x hydra-org-scribe/body~ instead
 3. Check that emacs-writing-mode is enabled (look for ~" Write"~ in the modeline)
 4. If needed: ~M-x emacs-writing-mode~ to enable it
 
@@ -639,7 +639,7 @@ Advanced users can configure custom TODO states, but TODO/DONE works perfectly f
 
 *Solutions*:
 1. Try ~F8 F8 m~ again
-2. Or: ~M-x my-writing-env-mode~ to toggle it off
+2. Or: ~M-x org-scribe/writing-env-mode~ to toggle it off
 3. Restart Emacs if stuck (your work is saved!)
 
 ** "My text isn't centering in writing mode"

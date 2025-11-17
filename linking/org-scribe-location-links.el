@@ -1,4 +1,4 @@
-;;; writing-location-links.el --- Location linking system for emacs-writing -*- lexical-binding: t; -*-
+;;; org-scribe-location-links.el --- Location linking system for org-scribe -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Javier Castilla
 
@@ -21,17 +21,17 @@
 
 (require 'org)
 (require 'org-id)
-(require 'writing-core)
-(require 'writing-capture)
+(require 'org-scribe-core)
+(require 'org-scribe-capture)
 
 ;;; Location ID Management
 
-(defun writing--ensure-location-has-id ()
+(defun org-scribe--ensure-location-has-id ()
   "Ensure the current location heading has a unique ID.
 Creates an ID if one doesn't exist. Returns the ID."
   (org-id-get-create))
 
-(defun writing--add-id-to-all-locations ()
+(defun org-scribe--add-id-to-all-locations ()
   "Add IDs to all location headings in current buffer.
 This function scans the locations file and ensures every
 location heading has a unique ID property."
@@ -61,21 +61,21 @@ location heading has a unique ID property."
       (message "Added IDs to %d location heading%s"
                count (if (= count 1) "" "s"))))
 
-(defun writing--get-location-name-at-point ()
+(defun org-scribe--get-location-name-at-point ()
   "Get the location name from current heading or NAME property."
   (or (org-entry-get nil "NAME")
       (org-get-heading t t t t)))
 
 ;;; Location Database Functions
 
-(defun writing--get-location-file ()
+(defun org-scribe--get-location-file ()
   "Get the path to the locations file for the current project."
-  (writing/capture-location-file))
+  (org-scribe/capture-location-file))
 
-(defun writing--get-all-locations ()
+(defun org-scribe--get-all-locations ()
   "Return alist of (LOCATION-NAME . (ID . HEADING)) from locations file.
 Returns list of (NAME . (ID . HEADING-TEXT)) for all locations in the project."
-  (let ((loc-file (writing--get-location-file))
+  (let ((loc-file (org-scribe--get-location-file))
         result)
     (when (and loc-file (file-exists-p loc-file))
       (with-current-buffer (find-file-noselect loc-file)
@@ -85,7 +85,7 @@ Returns list of (NAME . (ID . HEADING-TEXT)) for all locations in the project."
           (lambda ()
             (let* ((level (org-current-level))
                    (id (org-id-get))
-                   (name (writing--get-location-name-at-point))
+                   (name (org-scribe--get-location-name-at-point))
                    (heading (org-get-heading t t t t))
                    ;; Check if this looks like a location heading
                    (is-location
@@ -105,7 +105,7 @@ Returns list of (NAME . (ID . HEADING-TEXT)) for all locations in the project."
           nil 'file))))
     (nreverse result)))
 
-(defun writing--create-location-link (loc-name id-alist)
+(defun org-scribe--create-location-link (loc-name id-alist)
   "Create an ID link for LOC-NAME using ID-ALIST.
 ID-ALIST should be in format ((NAME . (ID . HEADING)) ...).
 Returns the link string or plain text if no ID found."
@@ -117,31 +117,31 @@ Returns the link string or plain text if no ID found."
 ;;; Interactive Functions
 
 ;;;###autoload
-(defun writing/add-location-ids ()
+(defun org-scribe/add-location-ids ()
   "Add unique IDs to all locations in the locations file.
 This should be run once on existing projects to set up
 the ID-based linking system."
   (interactive)
-  (let ((loc-file (writing--get-location-file)))
+  (let ((loc-file (org-scribe--get-location-file)))
     (if (not (file-exists-p loc-file))
         (message "No location file found. Create location first.")
       (with-current-buffer (find-file-noselect loc-file)
-        (writing--add-id-to-all-locations)
+        (org-scribe--add-id-to-all-locations)
         (save-buffer)
         (message "Location IDs updated in %s" loc-file)))))
 
 ;;;###autoload
-(defun writing/insert-location-link ()
+(defun org-scribe/insert-location-link ()
   "Insert a location link in the current property.
 Scans the locations file, presents a completion menu,
 and inserts the selected location as an ID link.
 
 Use this function when adding locations to scene properties."
   (interactive)
-  (let* ((locs (writing--get-all-locations))
+  (let* ((locs (org-scribe--get-all-locations))
          (loc-names (mapcar #'car locs)))
     (if (null loc-names)
-        (message "No locations found. Create locations first or add IDs with writing/add-location-ids.")
+        (message "No locations found. Create locations first or add IDs with org-scribe/add-location-ids.")
       (let* ((selected (completing-read "Select location: " loc-names nil t))
              (entry (assoc selected locs))
              (id (cadr entry)))
@@ -152,17 +152,17 @@ Use this function when adding locations to scene properties."
           (message "No ID found for %s" selected))))))
 
 ;;;###autoload
-(defun writing/insert-multiple-location-links ()
+(defun org-scribe/insert-multiple-location-links ()
   "Insert multiple location links separated by commas.
 Useful for the :Location: property which often lists
 multiple locations in a scene."
   (interactive)
-  (let* ((locs (writing--get-all-locations))
+  (let* ((locs (org-scribe--get-all-locations))
          (loc-names (mapcar #'car locs))
          selected-locs
          links)
     (if (null loc-names)
-        (message "No locations found. Create locations first or add IDs with writing/add-location-ids.")
+        (message "No locations found. Create locations first or add IDs with org-scribe/add-location-ids.")
       ;; Multiple selection loop
       (while (let ((choice (completing-read
                            "Select location (RET to finish): "
@@ -189,18 +189,18 @@ multiple locations in a scene."
         (message "No locations selected")))))
 
 ;;;###autoload
-(defun writing/set-scene-locations ()
+(defun org-scribe/set-scene-locations ()
   "Set the Locations property to multiple location ID links.
 Specifically designed for the :Location: property in scene headings."
   (interactive)
   (unless (org-at-heading-p)
     (org-back-to-heading))
-  (let* ((locs (writing--get-all-locations))
+  (let* ((locs (org-scribe--get-all-locations))
          (loc-names (mapcar #'car locs))
          selected-locs
          links)
     (if (null loc-names)
-        (message "No locations found. Create locations first or add IDs with writing/add-location-ids.")
+        (message "No locations found. Create locations first or add IDs with org-scribe/add-location-ids.")
       ;; Multiple selection loop
       (while (let ((choice (completing-read
                            "Select location (RET to finish): "
@@ -226,17 +226,17 @@ Specifically designed for the :Location: property in scene headings."
 
 ;;; Batch Update Functions
 
-(defun writing--link-locations-in-property (property-name)
+(defun org-scribe--link-locations-in-property (property-name)
   "Convert location names to ID links in PROPERTY-NAME of current heading.
 Handles both single locations and comma-separated lists."
   (when-let ((prop-value (org-entry-get nil property-name)))
-    (let* ((id-alist (writing--get-all-locations))
+    (let* ((id-alist (org-scribe--get-all-locations))
            ;; Split on comma, trim whitespace
            (loc-list (mapcar #'string-trim
                              (split-string prop-value "," t)))
            ;; Create links for each location
            (linked-locs (mapcar (lambda (name)
-                                  (writing--create-location-link name id-alist))
+                                  (org-scribe--create-location-link name id-alist))
                                 loc-list))
            (linked-string (string-join linked-locs ", ")))
       ;; Only update if we actually created links
@@ -245,13 +245,13 @@ Handles both single locations and comma-separated lists."
         t))))
 
 ;;;###autoload
-(defun writing/link-scene-locations ()
+(defun org-scribe/link-scene-locations ()
   "Convert location names to ID links in current scene.
 Updates :Location: properties."
   (interactive)
   (save-excursion
     (org-back-to-heading)
-    (let ((updated-locs (writing--link-locations-in-property "Location")))
+    (let ((updated-locs (org-scribe--link-locations-in-property "Location")))
       (cond
        (updated-locs
         (message "Updated Location property"))
@@ -259,7 +259,7 @@ Updates :Location: properties."
         (message "No location properties found or already linked"))))))
 
 ;;;###autoload
-(defun writing/link-all-scene-locations ()
+(defun org-scribe/link-all-scene-locations ()
   "Convert location names to ID links in all scenes in current buffer.
 Processes all headings with :Location: properties."
   (interactive)
@@ -270,7 +270,7 @@ Processes all headings with :Location: properties."
        (lambda ()
          ;; Process if has PoV or Locations property
          (when (org-entry-get nil "Location")
-           (let ((updated-locs (writing--link-locations-in-property "Location")))
+           (let ((updated-locs (org-scribe--link-locations-in-property "Location")))
              (when  updated-locs)
              (setq count (1+ count)))))
       nil 'file)
@@ -279,7 +279,7 @@ Processes all headings with :Location: properties."
 
 ;;; Integration with Capture System
 
-(defun writing--capture-finalize-add-id ()
+(defun org-scribe--capture-finalize-add-id ()
   "Hook function to add ID to newly captured locations.
 This is called before a location capture is finalized.
 Runs in the capture buffer before it's filed.
@@ -291,7 +291,7 @@ without an ID gets one automatically."
              org-capture-mode
              (buffer-file-name))
     ;; Check if we're capturing to a locations file
-    (let ((target (writing--get-location-file)))
+    (let ((target (org-scribe--get-location-file)))
       (when (and target
                  (file-exists-p target)
                  ;; Compare the target file with current buffer's file
@@ -310,10 +310,10 @@ without an ID gets one automatically."
 
 ;; Add the hook - use before-finalize to ensure we're still in capture buffer
 ;; Note: This is redundant with the template's %(org-id-new) but serves as a safety net
-(add-hook 'org-capture-before-finalize-hook #'writing--capture-finalize-add-id)
+(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-id)
 
 ;;;###autoload
-(defun writing/setup-location-links ()
+(defun org-scribe/setup-location-links ()
   "Set up location linking system for current project.
 This function:
 1. Adds IDs to all existing locations
@@ -326,24 +326,24 @@ in an existing project."
   (message "Setting up location linking system...")
 
   ;; Step 1: Add IDs to locations
-  (writing/add-location-ids)
+  (org-scribe/add-location-ids)
 
   ;; Step 2: Ask if user wants to link existing scenes
   (when (y-or-n-p "Link locations in existing scenes? ")
-    (let ((novel-file (plist-get (writing-project-structure) :novel-file)))
+    (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file)))
       (when (and novel-file (file-exists-p novel-file))
         (with-current-buffer (find-file-noselect novel-file)
-          (writing/link-all-scene-locations)
+          (org-scribe/link-all-scene-locations)
           (save-buffer)))))
 
   (message "Location linking system setup complete!"))
 
 ;;; Update Link Display Names
 
-(require 'writing-link-update)
+(require 'org-scribe-link-update)
 
 ;;;###autoload
-(defun writing/update-location-link-names ()
+(defun org-scribe/update-location-link-names ()
   "Update location link display names in current scene.
 
 Refreshes :Location: property to show current location names from
@@ -361,16 +361,16 @@ Returns t if any updates were made, nil otherwise."
   (interactive)
   (save-excursion
     (org-back-to-heading)
-    (let* ((locs-alist (writing--get-all-locations))
-           (id-map (writing--build-id-to-name-map locs-alist))
-           (updated-locs (writing--update-links-in-property "Location" id-map)))
+    (let* ((locs-alist (org-scribe--get-all-locations))
+           (id-map (org-scribe--build-id-to-name-map locs-alist))
+           (updated-locs (org-scribe--update-links-in-property "Location" id-map)))
       (if updated-locs
           (message "Updated Location link names")
         (message "No location link names needed updating"))
       updated-locs)))
 
 ;;;###autoload
-(defun writing/update-all-location-link-names ()
+(defun org-scribe/update-all-location-link-names ()
   "Update location link display names in all scenes.
 
 Scans locations database for current names and updates the display
@@ -383,20 +383,20 @@ all display names to match the current database.
 
 Example workflow:
   1. Rename \"Downtown Cafe\" to \"Downtown Coffee Shop\" in locations.org
-  2. Run this function (M-x writing/update-all-location-link-names)
+  2. Run this function (M-x org-scribe/update-all-location-link-names)
   3. All scenes updated automatically!
 
 Returns the number of scenes updated."
   (interactive)
   (save-excursion
     (goto-char (point-min))
-    (let* ((locs-alist (writing--get-all-locations))
-           (id-map (writing--build-id-to-name-map locs-alist))
+    (let* ((locs-alist (org-scribe--get-all-locations))
+           (id-map (org-scribe--build-id-to-name-map locs-alist))
            (count 0))
       (org-map-entries
        (lambda ()
          (when (org-entry-get nil "Location")
-           (let ((updated-locs (writing--update-links-in-property "Location" id-map)))
+           (let ((updated-locs (org-scribe--update-links-in-property "Location" id-map)))
              (when updated-locs
                (setq count (1+ count))))))
        nil 'file)
@@ -404,6 +404,6 @@ Returns the number of scenes updated."
                count (if (= count 1) "" "s"))
       count)))
 
-(provide 'writing-location-links)
+(provide 'org-scribe-location-links)
 
-;;; writing-location-links.el ends here
+;;; org-scribe-location-links.el ends here

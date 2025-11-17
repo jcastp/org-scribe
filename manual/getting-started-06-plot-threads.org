@@ -159,7 +159,7 @@ Let's explore what's in the plot thread capture template.
 
 Press: ~F8 F8 p~ (lowercase p for "plot")
 
-Or use: ~M-x writing/capture-plot~
+Or use: ~M-x org-scribe/capture-plot~
 
 ** Template Structure
 
@@ -674,7 +674,7 @@ Once you have plot thread profiles, link them to scenes.
 2. Navigate to a scene heading
 3. Press: ~F8 F8 P L~ (capital P for Plot menu, then L for Link)
 
-Or use: ~M-x writing/set-scene-plot~
+Or use: ~M-x org-scribe/set-scene-plot~
 
 4. You'll see a menu of all plot threads
 5. Select one: Press ~Enter~
@@ -763,7 +763,7 @@ Find all scenes that develop a specific plot thread.
 
 Press: ~F8 F8 3~ (search by plot)
 
-Or use: ~M-x writing/org-find-plot~
+Or use: ~M-x org-scribe/org-find-plot~
 
 ** Process
 
@@ -903,7 +903,7 @@ An analysis showing:
 
 Press: ~F8 F8 P h~ (Plot menu, health report)
 
-Or use: ~M-x writing/plot-health-report~
+Or use: ~M-x org-scribe/plot-health-report~
 
 ** Example Report
 
@@ -1230,7 +1230,7 @@ Pressing F8 F8 P L shows empty list.
 1. Ensure you have captured at least one plot thread
 2. Open plan/plot.org or notes.org
 3. Verify plot threads are level-1 headings with ~:ID:~ properties
-4. If IDs are missing, run: ~M-x writing/add-plot-ids~
+4. If IDs are missing, run: ~M-x org-scribe/add-plot-ids~
 
 ** "Plot health report says 'No scenes found'"
 
@@ -1241,7 +1241,7 @@ Health report returns no data.
 1. Ensure scenes have ~:Plot:~ properties
 2. Verify plot properties are ID links (not plain text)
 3. Check you're running the report from the manuscript file (novel.org or story.org)
-4. If plots are plain text, run: ~M-x writing/link-all-scene-plots~
+4. If plots are plain text, run: ~M-x org-scribe/link-all-scene-plots~
 
 ** "Plot timeline is blank"
 
@@ -1304,14 +1304,14 @@ Dynamic block generates but shows no data.
 
 | Command                          | What It Does                     |
 |----------------------------------+----------------------------------|
-| ~writing/capture-plot~             | Capture new plot thread          |
-| ~writing/set-scene-plot~           | Set plot via menu                |
-| ~writing/jump-to-scene-plot~       | Jump to plot from scene          |
-| ~writing/link-scene-plots~         | Link current scene's plots       |
-| ~writing/link-all-scene-plots~     | Batch link all scenes            |
-| ~writing/org-find-plot~            | Search scenes by plot            |
-| ~writing/plot-health-report~       | Generate plot health report      |
-| ~writing/add-plot-ids~             | Add IDs to existing plot threads |
+| ~org-scribe/capture-plot~             | Capture new plot thread          |
+| ~org-scribe/set-scene-plot~           | Set plot via menu                |
+| ~org-scribe/jump-to-scene-plot~       | Jump to plot from scene          |
+| ~org-scribe/link-scene-plots~         | Link current scene's plots       |
+| ~org-scribe/link-all-scene-plots~     | Batch link all scenes            |
+| ~org-scribe/org-find-plot~            | Search scenes by plot            |
+| ~org-scribe/plot-health-report~       | Generate plot health report      |
+| ~org-scribe/add-plot-ids~             | Add IDs to existing plot threads |
 
 * Tips for Better Plot Management
 

@@ -18,75 +18,75 @@
                           (or load-file-name buffer-file-name))))
   (add-to-list 'load-path (expand-file-name "../templates" default-directory)))
 
-(require 'writing-project)
+(require 'org-scribe-project)
 
 ;;; Module Loading Tests
 
 (ert-deftest test-project-module-loads ()
-  "Test that writing-project module loads without errors."
-  (should (featurep 'writing-project)))
+  "Test that org-scribe-project module loads without errors."
+  (should (featurep 'org-scribe-project)))
 
 ;;; Function Availability Tests
 
 (ert-deftest test-project-functions-defined ()
   "Test that all public project functions are defined."
   ;; Project creation
-  (should (fboundp 'writing-create-novel-project))
-  (should (fboundp 'writing-create-short-story-project))
+  (should (fboundp 'org-scribe-create-novel-project))
+  (should (fboundp 'org-scribe-create-short-story-project))
 
   ;; Template insertion
-  (should (fboundp 'writing-insert-scene))
-  (should (fboundp 'writing-insert-chapter))
+  (should (fboundp 'org-scribe-insert-scene))
+  (should (fboundp 'org-scribe-insert-chapter))
 
   ;; Navigation
-  (should (fboundp 'writing-open-project-file))
+  (should (fboundp 'org-scribe-open-project-file))
 
   ;; Utilities
-  (should (fboundp 'writing-edit-templates))
-  (should (fboundp 'writing-register-projects))
+  (should (fboundp 'org-scribe-edit-templates))
+  (should (fboundp 'org-scribe-register-projects))
 
   ;; Backward compatibility
-  (should (fboundp 'writing-project-create-novel-project))
-  (should (fboundp 'writing-create-project)))
+  (should (fboundp 'org-scribe-project-create-novel-project))
+  (should (fboundp 'org-scribe-create-project)))
 
 ;;; Title Validation Tests
 
 (ert-deftest test-validate-project-title-valid ()
   "Test that valid titles pass validation."
-  (should (null (writing--validate-project-title "My Novel")))
-  (should (null (writing--validate-project-title "Novel-2025")))
-  (should (null (writing--validate-project-title "SciFi_Project")))
-  (should (null (writing--validate-project-title "A"))))
+  (should (null (org-scribe--validate-project-title "My Novel")))
+  (should (null (org-scribe--validate-project-title "Novel-2025")))
+  (should (null (org-scribe--validate-project-title "SciFi_Project")))
+  (should (null (org-scribe--validate-project-title "A"))))
 
 (ert-deftest test-validate-project-title-empty ()
   "Test that empty titles fail validation."
-  (should (stringp (writing--validate-project-title "")))
-  (should (stringp (writing--validate-project-title "   ")))
-  (should (stringp (writing--validate-project-title "\t\n"))))
+  (should (stringp (org-scribe--validate-project-title "")))
+  (should (stringp (org-scribe--validate-project-title "   ")))
+  (should (stringp (org-scribe--validate-project-title "\t\n"))))
 
 (ert-deftest test-validate-project-title-path-separators ()
   "Test that titles with path separators fail validation."
-  (should (stringp (writing--validate-project-title "My/Novel")))
-  (should (stringp (writing--validate-project-title "My\\Novel")))
-  (should (stringp (writing--validate-project-title "Novel/Chapter/1"))))
+  (should (stringp (org-scribe--validate-project-title "My/Novel")))
+  (should (stringp (org-scribe--validate-project-title "My\\Novel")))
+  (should (stringp (org-scribe--validate-project-title "Novel/Chapter/1"))))
 
 (ert-deftest test-validate-project-title-special-chars ()
   "Test that titles with special characters fail validation."
-  (should (stringp (writing--validate-project-title "Novel:Draft")))
-  (should (stringp (writing--validate-project-title "Novel*")))
-  (should (stringp (writing--validate-project-title "Novel?")))
-  (should (stringp (writing--validate-project-title "Novel<>")))
-  (should (stringp (writing--validate-project-title "Novel|Pipe")))
-  (should (stringp (writing--validate-project-title "Novel\"Quote")))
-  (should (stringp (writing--validate-project-title "Novel'Quote"))))
+  (should (stringp (org-scribe--validate-project-title "Novel:Draft")))
+  (should (stringp (org-scribe--validate-project-title "Novel*")))
+  (should (stringp (org-scribe--validate-project-title "Novel?")))
+  (should (stringp (org-scribe--validate-project-title "Novel<>")))
+  (should (stringp (org-scribe--validate-project-title "Novel|Pipe")))
+  (should (stringp (org-scribe--validate-project-title "Novel\"Quote")))
+  (should (stringp (org-scribe--validate-project-title "Novel'Quote"))))
 
 (ert-deftest test-validate-project-title-dots ()
   "Test that titles with problematic dots fail validation."
-  (should (stringp (writing--validate-project-title ".hidden")))
-  (should (stringp (writing--validate-project-title "...dots")))
-  (should (stringp (writing--validate-project-title "Novel..Test")))
+  (should (stringp (org-scribe--validate-project-title ".hidden")))
+  (should (stringp (org-scribe--validate-project-title "...dots")))
+  (should (stringp (org-scribe--validate-project-title "Novel..Test")))
   ;; Single dot in middle should be OK
-  (should (null (writing--validate-project-title "Novel.Draft"))))
+  (should (null (org-scribe--validate-project-title "Novel.Draft"))))
 
 ;;; Template Variable Substitution Tests
 
@@ -108,7 +108,7 @@
             (insert "This is a test for ${TITLE} by ${AUTHOR}.\n"))
 
           ;; Process template
-          (writing--process-template temp-template temp-output variables)
+          (org-scribe--process-template temp-template temp-output variables)
 
           ;; Verify output
           (with-temp-buffer
@@ -140,7 +140,7 @@
             (insert "This is ${TITLE}.\n")
             (insert "Working on ${TITLE} today.\n"))
 
-          (writing--process-template temp-template temp-output variables)
+          (org-scribe--process-template temp-template temp-output variables)
 
           (with-temp-buffer
             (insert-file-contents temp-output)
@@ -160,7 +160,7 @@
   "Test scene template insertion."
   (with-temp-buffer
     (org-mode)
-    (writing-insert-scene "Opening Scene")
+    (org-scribe-insert-scene "Opening Scene")
 
     (let ((content (buffer-string)))
       ;; Check heading
@@ -188,7 +188,7 @@
   "Test scene template with empty name uses default."
   (with-temp-buffer
     (org-mode)
-    (writing-insert-scene "")
+    (org-scribe-insert-scene "")
 
     (let ((content (buffer-string)))
       (should (string-match-p "\\*\\*\\* TODO New scene :ignore:" content)))))
@@ -197,7 +197,7 @@
   "Test scene template with whitespace-only name uses default."
   (with-temp-buffer
     (org-mode)
-    (writing-insert-scene "   ")
+    (org-scribe-insert-scene "   ")
 
     (let ((content (buffer-string)))
       (should (string-match-p "\\*\\*\\* TODO New scene :ignore:" content)))))
@@ -208,7 +208,7 @@
   "Test chapter template insertion."
   (with-temp-buffer
     (org-mode)
-    (writing-insert-chapter "Chapter 1")
+    (org-scribe-insert-chapter "Chapter 1")
 
     (let ((content (buffer-string)))
       ;; Check heading
@@ -222,7 +222,7 @@
   "Test chapter template with empty name uses default."
   (with-temp-buffer
     (org-mode)
-    (writing-insert-chapter "")
+    (org-scribe-insert-chapter "")
 
     (let ((content (buffer-string)))
       (should (string-match-p "\\*\\* TODO New chapter :ignore:" content)))))
@@ -231,41 +231,41 @@
 
 (ert-deftest test-template-directory-configured ()
   "Test that template directory is configured."
-  (should (boundp 'writing-template-directory))
-  (should (stringp writing-template-directory)))
+  (should (boundp 'org-scribe-template-directory))
+  (should (stringp org-scribe-template-directory)))
 
 (ert-deftest test-template-language-configured ()
   "Test that template language is configured."
-  (should (boundp 'writing-template-language))
-  (should (memq writing-template-language '(en es))))
+  (should (boundp 'org-scribe-template-language))
+  (should (memq org-scribe-template-language '(en es))))
 
 (ert-deftest test-short-story-template-directory-configured ()
   "Test that short story template directory is configured."
-  (should (boundp 'writing-short-story-template-directory))
-  (should (stringp writing-short-story-template-directory)))
+  (should (boundp 'org-scribe-short-story-template-directory))
+  (should (stringp org-scribe-short-story-template-directory)))
 
 ;;; Backward Compatibility Tests
 
 (ert-deftest test-backward-compatibility-aliases ()
   "Test that old function names are still available."
   ;; Old function names should be callable
-  (should (fboundp 'writing-project-create-novel-project))
-  (should (fboundp 'writing-create-project))
-  (should (fboundp 'writing-project-insert-scene))
-  (should (fboundp 'writing-project-insert-chapter))
-  (should (fboundp 'writing-project-open-novel-file))
+  (should (fboundp 'org-scribe-project-create-novel-project))
+  (should (fboundp 'org-scribe-create-project))
+  (should (fboundp 'org-scribe-project-insert-scene))
+  (should (fboundp 'org-scribe-project-insert-chapter))
+  (should (fboundp 'org-scribe-project-open-novel-file))
 
   ;; And should be marked as aliases (indirect functions)
-  (should (symbolp (symbol-function 'writing-project-create-novel-project)))
-  (should (symbolp (symbol-function 'writing-create-project))))
+  (should (symbolp (symbol-function 'org-scribe-project-create-novel-project)))
+  (should (symbolp (symbol-function 'org-scribe-create-project))))
 
 (ert-deftest test-obsolete-functions-marked ()
   "Test that old functions are marked as obsolete."
-  (should (get 'writing-project-create-novel-project 'byte-obsolete-info))
-  (should (get 'writing-create-project 'byte-obsolete-info))
-  (should (get 'writing-project-insert-scene 'byte-obsolete-info))
-  (should (get 'writing-project-insert-chapter 'byte-obsolete-info))
-  (should (get 'writing-project-open-novel-file 'byte-obsolete-info)))
+  (should (get 'org-scribe-project-create-novel-project 'byte-obsolete-info))
+  (should (get 'org-scribe-create-project 'byte-obsolete-info))
+  (should (get 'org-scribe-project-insert-scene 'byte-obsolete-info))
+  (should (get 'org-scribe-project-insert-chapter 'byte-obsolete-info))
+  (should (get 'org-scribe-project-open-novel-file 'byte-obsolete-info)))
 
 ;;; Integration Tests (require actual template files)
 
@@ -273,14 +273,14 @@
   "Test that default template directory exists."
   ;; This test may fail if templates are not installed
   ;; but it's useful for catching installation issues
-  (when (boundp 'writing-template-directory)
-    (should (or (file-directory-p writing-template-directory)
+  (when (boundp 'org-scribe-template-directory)
+    (should (or (file-directory-p org-scribe-template-directory)
                 (message "Warning: Template directory not found at %s"
-                        writing-template-directory)))))
+                        org-scribe-template-directory)))))
 
 ;;; Run tests
 
-(defun writing-project-run-tests ()
+(defun org-scribe-project-run-tests ()
   "Run all project creation tests."
   (interactive)
   (ert "^test-project-\\|^test-validate-\\|^test-template-\\|^test-insert-\\|^test-backward-"))

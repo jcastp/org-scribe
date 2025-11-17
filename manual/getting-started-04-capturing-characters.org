@@ -979,7 +979,7 @@ The linking system works regardless!
 *If capture template looks wrong*:
 
 1. Make sure emacs-writing is up to date
-2. Try ~M-x writing/capture-character~ directly
+2. Try ~M-x org-scribe/capture-character~ directly
 3. Check that capture finalized (~C-c C-c~)
 
 * What You've Learned

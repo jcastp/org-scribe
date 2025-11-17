@@ -369,7 +369,7 @@ Professional publishers often require specific formatting. You can use an ODT te
 2. Save as template: ~my-manuscript.ott~
 3. In your org file, add:
    #+BEGIN_EXAMPLE
-   #+ODT_STYLES_FILE: "~/writing/templates/my-manuscript.ott"
+   #+ODT_STYLES_FILE: "~/org-scribe/templates/my-manuscript.ott"
    #+END_EXAMPLE
 4. Export - your formatting is applied!
 

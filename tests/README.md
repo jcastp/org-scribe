@@ -1,12 +1,12 @@
-# emacs-writing Test Suite
+# org-scribe Test Suite
 
-Comprehensive test suite for the emacs-writing package using Emacs Lisp Regression Testing (ERT).
+Comprehensive test suite for the org-scribe package using Emacs Lisp Regression Testing (ERT).
 
 ## Test Coverage
 
 The test suite covers all major modules:
 
-- **Core Utilities** (`writing-test.el`) - Project detection, utilities, feature detection
+- **Core Utilities** (`org-scribe-test.el`) - Project detection, utilities, feature detection
 - **Project Creation** (`test-project.el`) - Template processing, validation, project structure
 - **Capture System** (`test-capture.el`) - Capture templates, file creation, project-aware routing
 - **Search Functions** (`test-search.el`, `test-search-links.el`) - org-ql searches, link extraction helpers
@@ -23,31 +23,31 @@ The test suite covers all major modules:
 
 Run all tests:
 ```elisp
-M-x emacs-writing-run-all-tests
+M-x org-scribe-run-all-tests
 ```
 
 Run specific test suites:
 ```elisp
-M-x emacs-writing-run-core-tests
-M-x emacs-writing-run-project-tests
-M-x emacs-writing-run-capture-tests
-M-x emacs-writing-run-search-tests
-M-x emacs-writing-run-linking-tests
-M-x emacs-writing-run-export-tests
-M-x emacs-writing-run-wordcount-tests
+M-x org-scribe-run-core-tests
+M-x org-scribe-run-project-tests
+M-x org-scribe-run-capture-tests
+M-x org-scribe-run-search-tests
+M-x org-scribe-run-linking-tests
+M-x org-scribe-run-export-tests
+M-x org-scribe-run-wordcount-tests
 ```
 
 View test statistics:
 ```elisp
-M-x emacs-writing-test-statistics
+M-x org-scribe-test-statistics
 ```
 
 ### Batch Mode
 
 Run all tests from command line:
 ```sh
-cd /path/to/emacs-writing
-emacs -batch -l tests/run-all-tests.el -f emacs-writing-run-tests-batch
+cd /path/to/org-scribe
+emacs -batch -l tests/run-all-tests.el -f org-scribe-run-tests-batch
 ```
 
 Or simply:
@@ -61,7 +61,7 @@ emacs -batch -l tests/run-all-tests.el
 Run individual test files:
 ```sh
 # Core tests
-emacs -batch -l tests/writing-test.el -f ert-run-tests-batch-and-exit
+emacs -batch -l tests/org-scribe-test.el -f ert-run-tests-batch-and-exit
 
 # Project creation tests
 emacs -batch -l tests/test-project.el -f test-project-run-tests
@@ -76,7 +76,7 @@ emacs -batch -l tests/test-capture.el -f test-capture-run-tests
 
 ### Test Files
 
-- `writing-test.el` - Core utilities and configuration
+- `org-scribe-test.el` - Core utilities and configuration
 - `test-wordcount.el` - Word counting (optional dependency)
 - `test-project.el` - Project creation and templates
 - `test-capture.el` - Capture system
@@ -93,12 +93,12 @@ emacs -batch -l tests/test-capture.el -f test-capture-run-tests
 
 All test functions follow the pattern:
 - `test-MODULE-DESCRIPTION` for new test files
-- `writing-test-DESCRIPTION` for core tests
+- `org-scribe-test-DESCRIPTION` for core tests
 - `test-FEATURE-ASPECT` for specific features
 
 Examples:
 - `test-project-module-loads`
-- `writing-test-sanitize-filename`
+- `org-scribe-test-sanitize-filename`
 - `test-capture-character-file-detection`
 - `test-export-scene-break-replacement-html`
 
@@ -191,13 +191,13 @@ test-all:
 	emacs -batch -l tests/run-all-tests.el
 
 test-core:
-	emacs -batch -l tests/writing-test.el -f writing-run-tests
+	emacs -batch -l tests/org-scribe-test.el -f org-scribe-run-tests
 
 test-project:
-	emacs -batch -l tests/test-project.el -f writing-project-run-tests
+	emacs -batch -l tests/test-project.el -f org-scribe-project-run-tests
 
 test-interactive:
-	emacs -Q -l tests/run-all-tests.el --eval "(emacs-writing-run-all-tests)"
+	emacs -Q -l tests/run-all-tests.el --eval "(org-scribe-run-all-tests)"
 ```
 
 ## Test Statistics
@@ -207,7 +207,7 @@ As of the latest version:
 - **Total Tests:** 150+
 - **Coverage:** All major modules and features
 
-Run `M-x emacs-writing-test-statistics` for current statistics.
+Run `M-x org-scribe-test-statistics` for current statistics.
 
 ## Troubleshooting
 
@@ -215,7 +215,7 @@ Run `M-x emacs-writing-test-statistics` for current statistics.
 
 Ensure all paths are correctly set:
 ```elisp
-(let ((default-directory "/path/to/emacs-writing/"))
+(let ((default-directory "/path/to/org-scribe/"))
   (add-to-list 'load-path default-directory)
   (load-file "tests/run-all-tests.el"))
 ```
@@ -238,12 +238,12 @@ emacs -Q -batch -l tests/run-all-tests.el
 
 ## Contributing
 
-When adding new features to emacs-writing:
+When adding new features to org-scribe:
 
 1. Create corresponding test file in `tests/`
 2. Follow naming conventions
 3. Test both success and failure cases
-4. Add tests to `emacs-writing-test-files` in `run-all-tests.el`
+4. Add tests to `org-scribe-test-files` in `run-all-tests.el`
 5. Update this README if adding new test categories
 6. Run full test suite before committing
 
@@ -251,4 +251,4 @@ When adding new features to emacs-writing:
 
 Copyright (C) 2025 Javier Castilla
 
-Tests are part of the emacs-writing package and share the same license.
+Tests are part of the org-scribe package and share the same license.

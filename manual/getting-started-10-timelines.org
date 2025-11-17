@@ -347,7 +347,7 @@ Two ways to access:
 
 *** Direct Command
 
-1. ~M-x writing/plot-thread-report~
+1. ~M-x org-scribe/plot-thread-report~
 2. Report opens in new buffer
 
 ** Understanding the Report
@@ -423,7 +423,7 @@ For a fast check without full report:
 ** Command: Plot Thread Stats
 
 1. Press ~F8 F8 P S~ (capital S for Statistics)
-2. Or: ~M-x writing/plot-thread-stats~
+2. Or: ~M-x org-scribe/plot-thread-stats~
 3. Message appears in minibuffer:
 
 #+BEGIN_EXAMPLE
