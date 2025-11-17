@@ -22,6 +22,9 @@
 
 ;; Declare external functions
 (declare-function org-ql-search "org-ql")
+(declare-function writing--get-all-characters "linking/writing-character-links")
+(declare-function writing--get-all-locations "linking/writing-location-links")
+(declare-function writing--get-all-plot-threads "linking/writing-plot-links")
 
 ;;; Helper Functions for ID Links
 
@@ -70,10 +73,33 @@ Examples:
 ;;;###autoload
 (defun writing/org-find-pov (char)
   "Show sparse tree of scenes with POV character.
-Searches for CHAR in the POV property of org headings.
+
+Input method:
+- If characters.org exists: completion menu with fuzzy matching
+- Otherwise: free text input with substring matching
+
+Search uses substring matching in both cases.
 Handles both plain text and ID-link format in properties.
 Requires org-ql package to be installed."
-  (interactive "sCharacter (POV): ")
+  (interactive
+   (list
+    (let* ((chars (condition-case nil
+                      (progn
+                        (require 'writing-character-links)
+                        (writing--get-all-characters))
+                    (error nil)))
+           (char-names (mapcar #'car chars)))
+      (if (null char-names)
+          ;; No database - free text input
+          (read-string "Character (POV) [substring]: ")
+        ;; Database available - completion with fuzzy matching
+        (completing-read "Find PoV character [fuzzy]: "
+                        char-names
+                        nil      ; predicate
+                        nil      ; require-match = nil (allow free text)
+                        nil      ; initial-input
+                        nil      ; hist
+                        nil))))) ; def
   (when (string-empty-p (string-trim char))
     (user-error "Character name cannot be empty"))
   (unless (featurep 'org-ql)
@@ -88,28 +114,78 @@ Requires org-ql package to be installed."
 ;;;###autoload
 (defun writing/org-find-character (char)
   "Show sparse tree of scenes with CHARACTER.
-Searches for CHAR in the Characters property, which should contain
-a comma-separated list of character names (plain text or ID links).
+
+Input method:
+- If characters.org exists: completion menu with fuzzy matching
+- Otherwise: free text input with substring matching
+
+Search uses substring matching (not exact match) in the Characters property.
+This means searching for 'Alex' will find 'Alex Rivera, Sam Chen'.
+Handles both plain text and ID-link format in properties.
 Requires org-ql package to be installed."
-  (interactive "sCharacter name: ")
+  (interactive
+   (list
+    (let* ((chars (condition-case nil
+                      (progn
+                        (require 'writing-character-links)
+                        (writing--get-all-characters))
+                    (error nil)))
+           (char-names (mapcar #'car chars)))
+      (if (null char-names)
+          ;; No database - free text input
+          (read-string "Character name [substring]: ")
+        ;; Database available - completion with fuzzy matching
+        (completing-read "Find character [fuzzy]: "
+                        char-names
+                        nil      ; predicate
+                        nil      ; require-match = nil (allow free text)
+                        nil      ; initial-input
+                        nil      ; hist
+                        nil))))) ; def
   (when (string-empty-p (string-trim char))
     (user-error "Character name cannot be empty"))
   (unless (featurep 'org-ql)
     (user-error "org-ql package is required for search functions"))
+  ;; IMPORTANT: Changed from exact list matching to substring matching
+  ;; Old: (member ,char chars-list) - required exact match
+  ;; New: writing--property-contains-p - allows substring match
   (org-ql-search (current-buffer)
     `(and (heading)
-          (let* ((chars-prop (org-entry-get (point) "Characters"))
-                 (chars-list (writing--property-to-list chars-prop)))
-            (member ,char chars-list)))))
+          (let ((chars-prop (org-entry-get (point) "Characters")))
+            (writing--property-contains-p chars-prop ,char)))))
 
 ;;; Search by Plot
 
 ;;;###autoload
 (defun writing/org-find-plot (term)
   "Show sparse tree of scenes matching TERM in plot property.
+
+Input method:
+- If plot.org exists: completion menu with fuzzy matching
+- Otherwise: free text input with substring matching
+
+Search uses substring matching in both cases.
 Handles both plain text and ID-link format in properties.
 Requires org-ql package to be installed."
-  (interactive "sPlot term: ")
+  (interactive
+   (list
+    (let* ((threads (condition-case nil
+                        (progn
+                          (require 'writing-plot-links)
+                          (writing--get-all-plot-threads))
+                      (error nil)))
+           (thread-names (mapcar #'car threads)))
+      (if (null thread-names)
+          ;; No database - free text input
+          (read-string "Plot term [substring]: ")
+        ;; Database available - completion with fuzzy matching
+        (completing-read "Find plot thread [fuzzy]: "
+                        thread-names
+                        nil      ; predicate
+                        nil      ; require-match = nil (allow free text)
+                        nil      ; initial-input
+                        nil      ; hist
+                        nil))))) ; def
   (when (string-empty-p (string-trim term))
     (user-error "Plot term cannot be empty"))
   (unless (featurep 'org-ql)
@@ -124,9 +200,33 @@ Requires org-ql package to be installed."
 ;;;###autoload
 (defun writing/org-find-location (loc)
   "Show sparse tree of scenes with LOCATION.
+
+Input method:
+- If locations.org exists: completion menu with fuzzy matching
+- Otherwise: free text input with substring matching
+
+Search uses substring matching in both cases.
 Handles both plain text and ID-link format in properties.
 Requires org-ql package to be installed."
-  (interactive "sLocation: ")
+  (interactive
+   (list
+    (let* ((locations (condition-case nil
+                          (progn
+                            (require 'writing-location-links)
+                            (writing--get-all-locations))
+                        (error nil)))
+           (location-names (mapcar #'car locations)))
+      (if (null location-names)
+          ;; No database - free text input
+          (read-string "Location [substring]: ")
+        ;; Database available - completion with fuzzy matching
+        (completing-read "Find location [fuzzy]: "
+                        location-names
+                        nil      ; predicate
+                        nil      ; require-match = nil (allow free text)
+                        nil      ; initial-input
+                        nil      ; hist
+                        nil))))) ; def
   (when (string-empty-p (string-trim loc))
     (user-error "Location cannot be empty"))
   (unless (featurep 'org-ql)
