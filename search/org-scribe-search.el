@@ -91,9 +91,9 @@ Requires org-ql package to be installed."
            (char-names (mapcar #'car chars)))
       (if (null char-names)
           ;; No database - free text input
-          (read-string "Character (POV) [substring]: ")
+          (read-string (org-scribe-i18n search-pov-free))
         ;; Database available - completion with fuzzy matching
-        (completing-read "Find PoV character [fuzzy]: "
+        (completing-read (org-scribe-i18n search-pov-fuzzy)
                         char-names
                         nil      ; predicate
                         nil      ; require-match = nil (allow free text)
@@ -101,9 +101,9 @@ Requires org-ql package to be installed."
                         nil      ; hist
                         nil))))) ; def
   (when (string-empty-p (string-trim char))
-    (user-error "Character name cannot be empty"))
+    (user-error (org-scribe-i18n error-empty-character)))
   (unless (featurep 'org-ql)
-    (user-error "org-ql package is required for search functions"))
+    (user-error (org-scribe-i18n error-org-ql-required)))
   (org-ql-search (current-buffer)
     `(and (heading)
           (let ((pov (org-entry-get (point) "PoV")))
@@ -133,9 +133,9 @@ Requires org-ql package to be installed."
            (char-names (mapcar #'car chars)))
       (if (null char-names)
           ;; No database - free text input
-          (read-string "Character name [substring]: ")
+          (read-string (org-scribe-i18n search-char-free))
         ;; Database available - completion with fuzzy matching
-        (completing-read "Find character [fuzzy]: "
+        (completing-read (org-scribe-i18n search-char-fuzzy)
                         char-names
                         nil      ; predicate
                         nil      ; require-match = nil (allow free text)
@@ -143,9 +143,9 @@ Requires org-ql package to be installed."
                         nil      ; hist
                         nil))))) ; def
   (when (string-empty-p (string-trim char))
-    (user-error "Character name cannot be empty"))
+    (user-error (org-scribe-i18n error-empty-character)))
   (unless (featurep 'org-ql)
-    (user-error "org-ql package is required for search functions"))
+    (user-error (org-scribe-i18n error-org-ql-required)))
   ;; IMPORTANT: Changed from exact list matching to substring matching
   ;; Old: (member ,char chars-list) - required exact match
   ;; New: org-scribe--property-contains-p - allows substring match
@@ -177,9 +177,9 @@ Requires org-ql package to be installed."
            (thread-names (mapcar #'car threads)))
       (if (null thread-names)
           ;; No database - free text input
-          (read-string "Plot term [substring]: ")
+          (read-string (org-scribe-i18n search-plot-free))
         ;; Database available - completion with fuzzy matching
-        (completing-read "Find plot thread [fuzzy]: "
+        (completing-read (org-scribe-i18n search-plot-fuzzy)
                         thread-names
                         nil      ; predicate
                         nil      ; require-match = nil (allow free text)
@@ -187,9 +187,9 @@ Requires org-ql package to be installed."
                         nil      ; hist
                         nil))))) ; def
   (when (string-empty-p (string-trim term))
-    (user-error "Plot term cannot be empty"))
+    (user-error (org-scribe-i18n error-empty-plot)))
   (unless (featurep 'org-ql)
-    (user-error "org-ql package is required for search functions"))
+    (user-error (org-scribe-i18n error-org-ql-required)))
   (org-ql-search (current-buffer)
     `(and (heading)
           (let ((plot (org-entry-get (point) "Plot")))
@@ -218,9 +218,9 @@ Requires org-ql package to be installed."
            (location-names (mapcar #'car locations)))
       (if (null location-names)
           ;; No database - free text input
-          (read-string "Location [substring]: ")
+          (read-string (org-scribe-i18n search-loc-free))
         ;; Database available - completion with fuzzy matching
-        (completing-read "Find location [fuzzy]: "
+        (completing-read (org-scribe-i18n search-loc-fuzzy)
                         location-names
                         nil      ; predicate
                         nil      ; require-match = nil (allow free text)
@@ -228,9 +228,9 @@ Requires org-ql package to be installed."
                         nil      ; hist
                         nil))))) ; def
   (when (string-empty-p (string-trim loc))
-    (user-error "Location cannot be empty"))
+    (user-error (org-scribe-i18n error-empty-location)))
   (unless (featurep 'org-ql)
-    (user-error "org-ql package is required for search functions"))
+    (user-error (org-scribe-i18n error-org-ql-required)))
   (org-ql-search (current-buffer)
     `(and (heading)
           (let ((location (org-entry-get (point) "Location")))
@@ -247,17 +247,17 @@ Results are grouped by file for easy navigation.
 Requires org-ql package to be installed."
   (interactive)
   (unless (featurep 'org-ql)
-    (user-error "org-ql package is required for search functions"))
+    (user-error (org-scribe-i18n error-org-ql-required)))
   (let* ((current-dir (file-name-directory (or (buffer-file-name) default-directory)))
          (org-files (directory-files-recursively current-dir "\\.org$")))
     (if org-files
         (org-ql-search org-files
           '(and (todo) (not (done)))
-          :title "TODO items in writing project"
+          :title (org-scribe-i18n todo-search-title)
           :super-groups '((:auto-map (lambda (item)
                                        (concat "File: "
                                                (file-name-nondirectory (buffer-file-name)))))))
-      (message "No .org files found in %s and subdirectories" current-dir))))
+      (message (org-scribe-i18n msg-no-org-files current-dir)))))
 
 (provide 'org-scribe-search)
 
