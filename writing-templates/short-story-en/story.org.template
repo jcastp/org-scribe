@@ -4,7 +4,7 @@
 #+LANGUAGE: en
 #+STARTUP: overview
 #+TODO: TODO(t) DRAFT(d) REVISING(r) | DONE(x) SUBMITTED(s)
-#+COLUMNS: %40ITEM(Section) %12WORDCOUNT %12PoV %40Summary
+#+COLUMNS: %40ITEM(Section) %12WORDCOUNT %12PoV %30Characters %20Plot %40Summary %40Comment
 #+MACRO: scene-break SCENE-BREAK
 
 * Story Info :noexport:
@@ -49,11 +49,20 @@ To update word count, use:
 
 ** Opening
 :PROPERTIES:
-:PoV:
-:Location:
-:Timeline:
-:Summary:
 :WORDCOUNT: 0
+:WORD-OBJECTIVE: 1500
+:PoV:
+:Characters:
+:Plot:
+:Timeline:
+:Location:
+:Description:
+:Summary:
+:Scene-motivation:
+:Conflict-source:
+:What-is-at-stake:
+:Emotion:
+:Comment:
 :END:
 
 Write your opening here...
@@ -62,11 +71,20 @@ Write your opening here...
 
 ** Middle
 :PROPERTIES:
-:PoV:
-:Location:
-:Timeline:
-:Summary:
 :WORDCOUNT: 0
+:WORD-OBJECTIVE: 2000
+:PoV:
+:Characters:
+:Plot:
+:Timeline:
+:Location:
+:Description:
+:Summary:
+:Scene-motivation:
+:Conflict-source:
+:What-is-at-stake:
+:Emotion:
+:Comment:
 :END:
 
 Continue the story...
@@ -75,11 +93,20 @@ Continue the story...
 
 ** Ending
 :PROPERTIES:
-:PoV:
-:Location:
-:Timeline:
-:Summary:
 :WORDCOUNT: 0
+:WORD-OBJECTIVE: 1500
+:PoV:
+:Characters:
+:Plot:
+:Timeline:
+:Location:
+:Description:
+:Summary:
+:Scene-motivation:
+:Conflict-source:
+:What-is-at-stake:
+:Emotion:
+:Comment:
 :END:
 
 The resolution...

@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+TODO: TODO(t) BORRADOR(d) REVISANDO(r) | HECHO(x) ENVIADO(s)
-#+COLUMNS: %40ITEM(Sección) %12WORDCOUNT %12PoV %40Resumen
+#+COLUMNS: %40ITEM(Sección) %12WORDCOUNT %12PoV %30Personajes %20Trama %40Resumen %40Comentario
 #+MACRO: scene-break SCENE-BREAK
 
 * Información del Cuento :noexport:
@@ -41,11 +41,20 @@ Para actualizar el recuento de palabras, usa:
 
 ** Inicio
 :PROPERTIES:
-:PdV:
-:Ubicacion:
-:Linea_temporal:
-:Resumen:
 :WORDCOUNT: 0
+:WORD-OBJECTIVE: 1500
+:PoV:
+:Personajes:
+:Trama:
+:Linea-temporal:
+:Localizacion:
+:Descripcion:
+:Resumen:
+:Motivacion-escena:
+:Fuente-conflicto:
+:Que-esta-en-juego:
+:Emocion:
+:Comentario:
 :END:
 
 Escribe aquí el inicio...
@@ -54,11 +63,20 @@ Escribe aquí el inicio...
 
 ** Desarrollo
 :PROPERTIES:
-:PdV:
-:Ubicacion:
-:Linea_temporal:
-:Resumen:
 :WORDCOUNT: 0
+:WORD-OBJECTIVE: 2000
+:PoV:
+:Personajes:
+:Trama:
+:Linea-temporal:
+:Localizacion:
+:Descripcion:
+:Resumen:
+:Motivacion-escena:
+:Fuente-conflicto:
+:Que-esta-en-juego:
+:Emocion:
+:Comentario:
 :END:
 
 Continúa la historia...
@@ -67,11 +85,20 @@ Continúa la historia...
 
 ** Final
 :PROPERTIES:
-:PdV:
-:Ubicacion:
-:Linea_temporal:
-:Resumen:
 :WORDCOUNT: 0
+:WORD-OBJECTIVE: 1500
+:PoV:
+:Personajes:
+:Trama:
+:Linea-temporal:
+:Localizacion:
+:Descripcion:
+:Resumen:
+:Motivacion-escena:
+:Fuente-conflicto:
+:Que-esta-en-juego:
+:Emocion:
+:Comentario:
 :END:
 
 La resolución...
