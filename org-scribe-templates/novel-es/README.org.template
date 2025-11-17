@@ -3,7 +3,7 @@
 #+DATE: ${DATE}
 #+STARTUP: overview
 
-* Project Information
+* Información de proyecto
 :PROPERTIES:
 :PROJECT_START: ${DATE}
 :GENRE: 
@@ -11,29 +11,29 @@
 :DEADLINE:
 :END:
 
-** Synopsis
-[Brief overview of the story]
+** Sinopsis
+[Breve resumen de la historia]
 
-** Writing Goals
-- [ ] Complete first draft
-- [ ] Revision pass 1
-- [ ] Beta reader feedback
-- [ ] Final revision
-- [ ] Submission/Publication
+** Objetivos de escritura
+- [ ] Terminar el primer borrador
+- [ ] Revisión: pase 1
+- [ ] Comentarios de lectores Beta
+- [ ] Revisión Final
+- [ ] Envío / Publicación
 
-** Project Structure
-- [[file:novela.org][novela.org]] - Main manuscript file with progress tracking
-- [[file:revision.org][revision.org]] - Editing notes and feedback
-- [[file:diario-escritura.org][diario-escritura.org]] - Reflective writing journal
-- [[file:plan/personajes.org][plan/personajes.org]] - Character profiles
-- [[file:plan/localizaciones.org][plan/localizaciones.org]] - Location descriptions
-- [[file:plan/objetos.org][plan/objetos.org]] - Important objects
-- [[file:plan/trama.org][plan/trama.org]] - Plot structure
-- [[file:plan/cronologia.org][plan/cronologia.org]] - Timeline of events
-- [[file:notas/investigacion.org][notas/investigacion.org]] - Research notes
-- [[file:notas/notas.org][notas/notas.org]] - General notes
+** Estructura de proyecto
+- [[file:novela.org][novela.org]] - Manuscrito principal con seguimiento de progreso
+- [[file:revision.org][revision.org]] - Notas de edición y comentarios
+- [[file:diario-escritura.org][diario-escritura.org]] - Diario reflexivo de escritura
+- [[file:plan/personajes.org][plan/personajes.org]] - Perfiles de personajes
+- [[file:plan/localizaciones.org][plan/localizaciones.org]] - Descripción de localizaciones
+- [[file:plan/objetos.org][plan/objetos.org]] - Objetos importantes
+- [[file:plan/trama.org][plan/trama.org]] - Estructura de la trama
+- [[file:plan/cronologia.org][plan/cronologia.org]] - Línea temporal de sucesos
+- [[file:notas/investigacion.org][notas/investigacion.org]] - Notas de investigación
+- [[file:notas/notas.org][notas/notas.org]] - Notas generales
 
-** Current Status
-Status: Planning/Drafting/Revising/Complete
-Current Chapter:
-Last Updated: ${DATE}
+** Estado actual
+Estado: Plan/Borrador/Revisión/Completo
+Capítulo actual: 
+Última actualización: ${DATE}
