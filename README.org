@@ -50,13 +50,47 @@
 - *Export Filters*: Scene break replacement for different export backends
 - *Hydra Menu*: Unified keyboard-driven menu for quick access to all functions
 
-** Bilingual Support
+** Internationalization (i18n) Support
 
-Full support for English/Spanish bilingual writing:
+=org-scribe= provides comprehensive bilingual support for English and Spanish:
+
+*** Language Selection
+- *At Project Creation*: You're prompted to choose your project language (English or Spanish)
+- *Automatic Detection*: Language is stored in =.org-scribe-project= marker file
+- *Per-Project Settings*: Each project maintains its own language preference
+
+*** What's Translated
+- *All User Prompts*: Search prompts, capture field labels, file opening dialogs
+- *All Messages*: Success messages, error messages, status updates
+- *Capture Templates*: All field labels and dropdown options in capture forms
+- *File Creation*: Titles and section headings in auto-created files
+- *Search Functions*: Search prompts and result titles
+
+*** What Stays in English
+- *Property Names*: =:PoV:=, =:Characters:=, =:Plot:=, =:Location:= (for stability and interoperability)
+- *Org Keywords*: =TODO=, =DONE=, =:PROPERTIES:=, =:END:= (Org-mode standard)
+
+*** Examples
+
+**** English Project
+#+begin_example
+Scene name: [prompt in English]
+Select PoV character: [fuzzy search]
+Novel project 'My Story' created successfully at /path
+#+end_example
+
+**** Spanish Project
+#+begin_example
+Nombre de la escena: [prompt en español]
+Seleccionar personaje PdV: [búsqueda difusa]
+Proyecto de novela 'Mi Historia' creado exitosamente en /ruta
+#+end_example
+
+*** Dictionary Tools
 - Spanish RAE dictionary integration
 - WordReference synonym lookup
 - Automatic language detection
-- Bilingual project structure support (notes/notas directories)
+- Translation support (with gt.el)
 
 * Installation
 

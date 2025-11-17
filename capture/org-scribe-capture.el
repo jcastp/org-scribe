@@ -15,6 +15,7 @@
 (require 'project)
 (require 'org-scribe-core)
 (require 'org-scribe-config)
+(require 'org-scribe-i18n)
 
 ;;; File Creation Helpers
 
@@ -23,61 +24,69 @@
 FILEPATH is the path where the file should be created.
 IS-SHORT-STORY determines the structure."
   (with-temp-file filepath
-    (insert "#+TITLE: Plot Structure\n")
+    (insert (format "#+TITLE: %s\n" (org-scribe-i18n file-title-plot)))
     (insert "#+AUTHOR: " user-full-name "\n")
     (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n")
     (insert "#+STARTUP: overview\n\n")
 
     (if is-short-story
         (progn
-          (insert "* Plot Outline\n\n")
-          (insert "** Premise\n\n")
-          (insert "** Setup\n\n")
-          (insert "** Central Conflict\n\n")
-          (insert "** Resolution\n\n")
-          (insert "* Plot Threads\n\n")
+          (insert (format "* %s\n\n" (org-scribe-i18n plot-outline-heading)))
+          (insert (format "** %s\n\n" (org-scribe-i18n plot-premise-heading)))
+          (insert (format "** %s\n\n" (org-scribe-i18n plot-setup-heading)))
+          (insert (format "** %s\n\n" (org-scribe-i18n plot-central-conflict)))
+          (insert (format "** %s\n\n" (org-scribe-i18n section-resolution)))
+          (insert (format "* %s\n\n" (org-scribe-i18n plot-threads-heading)))
           (insert "[Plot threads will appear here when captured]\n\n"))
       ;; Novel structure
       (progn
-        (insert "* Premise\n\nWhat is the story about in one or two sentences?\n\n")
-        (insert "* Main Plot\n\n")
-        (insert "** Central Conflict\n\n")
-        (insert "** Main Dramatic Question\n\n")
-        (insert "* Subplots\n\n")
-        (insert "* Plot Threads\n\n")
-        (insert "Track your plot threads here. Use F8 F8 p to capture new threads.\n\n")))))
+        (insert (format "* %s\n\n%s\n\n"
+                        (org-scribe-i18n plot-premise-heading)
+                        (org-scribe-i18n plot-premise-question)))
+        (insert (format "* %s\n\n" (org-scribe-i18n plot-main-heading)))
+        (insert (format "** %s\n\n" (org-scribe-i18n plot-central-conflict)))
+        (insert (format "** %s\n\n" (org-scribe-i18n plot-dramatic-question)))
+        (insert (format "* %s\n\n" (org-scribe-i18n plot-subplots-heading)))
+        (insert (format "* %s\n\n" (org-scribe-i18n plot-threads-heading)))
+        (insert (format "%s\n\n" (org-scribe-i18n plot-threads-instruction)))))))
 
 (defun org-scribe--create-short-story-notes-file (filepath)
   "Create a comprehensive notes.org file for short story projects.
 FILEPATH is the path where the file should be created."
-  (with-temp-file filepath
-    (insert "#+TITLE: " (file-name-base (directory-file-name (file-name-directory filepath))) " - Planning & Notes\n")
-    (insert "#+AUTHOR: " user-full-name "\n")
-    (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n")
-    (insert "#+STARTUP: overview\n\n")
+  (let ((project-name (file-name-base (directory-file-name (file-name-directory filepath)))))
+    (with-temp-file filepath
+      (insert (format "#+TITLE: %s\n"
+                      (format (org-scribe-i18n file-title-planning) project-name)))
+      (insert "#+AUTHOR: " user-full-name "\n")
+      (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n")
+      (insert "#+STARTUP: overview\n\n")
 
-    ;; Standard headings for short story notes
-    (insert "* Characters\n\n")
-    (insert "** Protagonist: [Name]\n")
-    (insert ":PROPERTIES:\n:TYPE: Protagonist\n:NAME:\n:AGE:\n:GENDER:\n:END:\n\n")
-    (insert "- Personality ::\n- Goal ::\n- Conflict ::\n\n")
+      ;; Standard headings for short story notes
+      (insert (format "* %s\n\n" (org-scribe-i18n heading-characters)))
+      (insert (format "** %s\n" (org-scribe-i18n notes-protagonist-heading)))
+      (insert (format ":PROPERTIES:\n:TYPE: %s\n:NAME:\n:AGE:\n:GENDER:\n:END:\n\n"
+                      (org-scribe-i18n role-protagonist)))
+      (insert "- Personality ::\n- Goal ::\n- Conflict ::\n\n")
 
-    (insert "* Plot Outline\n\n")
-    (insert "** Premise\n\n** Setup\n\n** Central Conflict\n\n** Resolution\n\n")
+      (insert (format "* %s\n\n" (org-scribe-i18n plot-outline-heading)))
+      (insert (format "** %s\n\n" (org-scribe-i18n plot-premise-heading)))
+      (insert (format "** %s\n\n" (org-scribe-i18n plot-setup-heading)))
+      (insert (format "** %s\n\n" (org-scribe-i18n plot-central-conflict)))
+      (insert (format "** %s\n\n" (org-scribe-i18n section-resolution)))
 
-    (insert "* Setting\n\n")
-    (insert "** Main Location(s)\n\n")
-    (insert "** Locations\n\n")
+      (insert (format "* %s\n\n" (org-scribe-i18n notes-setting-heading)))
+      (insert (format "** %s\n\n" (org-scribe-i18n notes-main-location)))
+      (insert (format "** %s\n\n" (org-scribe-i18n heading-locations)))
 
-    (insert "* Objects\n\n")
+      (insert (format "* %s\n\n" (org-scribe-i18n heading-objects)))
 
-    (insert "* Timeline\n\n")
+      (insert (format "* %s\n\n" (org-scribe-i18n heading-timeline)))
 
-    (insert "* Research & References\n\n")
+      (insert (format "* %s\n\n" (org-scribe-i18n notes-research-heading)))
 
-    (insert "* Revision Notes\n\n")
+      (insert (format "* %s\n\n" (org-scribe-i18n notes-revision-heading)))
 
-    (insert "* Random Ideas & Inspiration\n\n")))
+      (insert (format "* %s\n\n" (org-scribe-i18n notes-ideas-heading))))))
 
 (defun org-scribe--create-novel-capture-file (filepath content-type)
   "Create an individual capture file for novel projects.
@@ -86,34 +95,34 @@ CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes."
   (with-temp-file filepath
     (pcase content-type
       ('characters
-       (insert "#+TITLE: Character Database\n")
+       (insert (format "#+TITLE: %s\n" (org-scribe-i18n file-title-characters)))
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       ;;(insert "* Characters\n\n")
+       ;;(insert (format "* %s\n\n" (org-scribe-i18n heading-characters)))
        )
       ('locations
-       (insert "#+TITLE: Locations & World Building\n")
+       (insert (format "#+TITLE: %s\n" (org-scribe-i18n file-title-locations)))
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       ;;(insert "* Locations\n\n")
+       ;;(insert (format "* %s\n\n" (org-scribe-i18n heading-locations)))
        )
       ('objects
-       (insert "#+TITLE: Important Objects\n")
+       (insert (format "#+TITLE: %s\n" (org-scribe-i18n file-title-objects)))
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       ;;(insert "* Objects\n\n")
+       ;;(insert (format "* %s\n\n" (org-scribe-i18n heading-objects)))
        )
       ('timeline
-       (insert "#+TITLE: Story Timeline\n")
+       (insert (format "#+TITLE: %s\n" (org-scribe-i18n file-title-timeline)))
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       ;;(insert "* Timeline\n\n")
+       ;;(insert (format "* %s\n\n" (org-scribe-i18n heading-timeline)))
        )
       ('notes
-       (insert "#+TITLE: Writing Notes\n")
+       (insert (format "#+TITLE: %s\n" (org-scribe-i18n file-title-notes)))
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       (insert "* Notes\n\n")))))
+       (insert (format "* %s\n\n" (org-scribe-i18n heading-notes)))))))
 
 (defun org-scribe--create-capture-file (filepath project-type content-type)
   "Create a capture target file based on project type.
@@ -379,29 +388,40 @@ file that doesn't exist."
         (insert "* Notes\n")))
     target))
 
-;;; Capture Templates
+;;; Capture Template Generation
 
-(defvar org-scribe/capture-templates
-  '(("w" "Writing Note" entry
-     (file+headline org-scribe/capture-target-file "Notes")
-     "** TODO %?\n  %U\n  %i"
-     :empty-lines 1))
-  "Capture templates specific to the writing environment.")
-
-(defvar org-scribe/character-capture-templates
-  '(("c" "Character Profile" entry
-     (file org-scribe/capture-character-file)
-     "* %^{Character Name}
+(defun org-scribe--character-capture-template ()
+  "Generate character capture template with i18n strings."
+  (let ((name (org-scribe-i18n capture-character-name))
+        (role (org-scribe-i18n capture-character-role))
+        (age (org-scribe-i18n capture-character-age))
+        (gender (org-scribe-i18n capture-character-gender))
+        (occupation (org-scribe-i18n capture-character-occupation))
+        (first-app (org-scribe-i18n capture-character-first-appearance))
+        (role-prot (org-scribe-i18n role-protagonist))
+        (role-antag (org-scribe-i18n role-antagonist))
+        (role-supp (org-scribe-i18n role-supporting))
+        (role-minor (org-scribe-i18n role-minor))
+        (phys-desc (org-scribe-i18n section-physical-description))
+        (pers (org-scribe-i18n section-personality))
+        (background (org-scribe-i18n section-background))
+        (gmc (org-scribe-i18n section-goal-motivation-conflict))
+        (internal (org-scribe-i18n section-internal))
+        (external (org-scribe-i18n section-external))
+        (arc (org-scribe-i18n section-character-arc))
+        (rels (org-scribe-i18n section-relationships))
+        (notes (org-scribe-i18n section-notes)))
+    (format "* %%^{%s}
 :PROPERTIES:
-:ID: %(org-id-new)
-:Role: %^{Role|Protagonist|Antagonist|Supporting|Minor}
-:Age: %^{Age}
-:Gender: %^{Gender}
-:Occupation: %^{Occupation}
-:First-appearance: %^{First Appearance Chapter}
+:ID: %%(org-id-new)
+:Role: %%^{%s|%s|%s|%s|%s}
+:Age: %%^{%s}
+:Gender: %%^{%s}
+:Occupation: %%^{%s}
+:First-appearance: %%^{%s}
 :END:
 
-** Physical Description
+** %s
 
 - Height ::
 - Build ::
@@ -409,7 +429,7 @@ file that doesn't exist."
 - Eyes ::
 - Distinctive features ::
 
-** Personality
+** %s
 
 - Main traits ::
 - Strengths ::
@@ -418,213 +438,297 @@ file that doesn't exist."
 - Desire ::
 - Need ::
 - Psychological Flaw ::
-- Moral Flaw :: 
+- Moral Flaw ::
 
-** Background
+** %s
 
 - Family ::
 - Education ::
 - Occupation ::
 - Formative events ::
 
-** Goal, Motivation, Conflict
-*** Internal
+** %s
+*** %s
 - Goal ::
 - Motivation ::
 - Conflict ::
-*** External
+*** %s
 - Goal ::
 - Motivation ::
 - Conflict ::
 
-** Character Arc
+** %s
 
 - Initial state ::
 - Turning point ::
 - Transformation ::
 - Final state ::
 
-** Relationships
+** %s
 
 - With other characters ::
 
-** Notes
+** %s
 - "
-     :empty-lines 1))
-  "Capture templates for character profiles.")
+            name role role-prot role-antag role-supp role-minor
+            age gender occupation first-app
+            phys-desc pers background
+            gmc internal external arc rels notes)))
 
-(defvar org-scribe/location-capture-templates
-  '(("l" "Location" entry
-     (file org-scribe/capture-location-file)
-     "* %^{Location Name}
+(defun org-scribe--location-capture-template ()
+  "Generate location capture template with i18n strings."
+  (let ((name (org-scribe-i18n capture-location-name))
+        (type-label (org-scribe-i18n capture-location-type))
+        (importance (org-scribe-i18n capture-location-importance))
+        (first-app (org-scribe-i18n capture-character-first-appearance))
+        (climate (org-scribe-i18n capture-location-climate))
+        (population (org-scribe-i18n capture-location-population))
+        (type-city (org-scribe-i18n type-city))
+        (type-building (org-scribe-i18n type-building))
+        (type-room (org-scribe-i18n type-room))
+        (type-natural (org-scribe-i18n type-natural))
+        (type-region (org-scribe-i18n type-region))
+        (type-country (org-scribe-i18n type-country))
+        (imp-major (org-scribe-i18n importance-major))
+        (imp-supp (org-scribe-i18n importance-supporting))
+        (imp-minor (org-scribe-i18n importance-minor))
+        (gen-desc (org-scribe-i18n section-general-description))
+        (geog (org-scribe-i18n section-geography))
+        (cultural (org-scribe-i18n section-cultural-aspects))
+        (history (org-scribe-i18n section-history))
+        (features (org-scribe-i18n section-notable-features))
+        (plot-imp (org-scribe-i18n section-plot-importance))
+        (places (org-scribe-i18n section-specific-places))
+        (atmos (org-scribe-i18n section-atmosphere))
+        (map (org-scribe-i18n section-map-reference))
+        (notes (org-scribe-i18n section-notes)))
+    (format "* %%^{%s}
 :PROPERTIES:
-:ID: %(org-id-new)
-:Type: %^{Type|City|Building|Room|Natural|Region|Country}
-:Importance: %^{Importance|Major|Supporting|Minor}
-:First-appearance: %^{First Appearance Chapter}
-:Climate: %^{Climate}
-:Population: %^{Population}
+:ID: %%(org-id-new)
+:Type: %%^{%s|%s|%s|%s|%s|%s|%s}
+:Importance: %%^{%s|%s|%s|%s}
+:First-appearance: %%^{%s}
+:Climate: %%^{%s}
+:Population: %%^{%s}
 :END:
 
-** General Description
-%?
+** %s
+%%?
 
-** Geography
+** %s
 
 - Location ::
 - Terrain ::
 - Climate ::
 - Natural resources ::
 
-** Cultural Aspects & Society
+** %s
 
 - Language ::
 - Customs ::
 - Religion ::
 - Government ::
 
-** History
+** %s
 -
 
-** Notable Features
+** %s
 -
 
-** Importance in the Plot
+** %s
 -
 
-** Specific Places
+** %s
 -
 
-** Atmosphere & Mood
+** %s
 -
 
-** Map/Reference Image
+** %s
 -
 
-** Notes
+** %s
 - "
-     :empty-lines 1))
-  "Capture templates for location profiles.")
+            name type-label type-city type-building type-room type-natural type-region type-country
+            importance imp-major imp-supp imp-minor first-app climate population
+            gen-desc geog cultural history features plot-imp places atmos map notes)))
 
-(defvar org-scribe/object-capture-templates
-  '(("o" "Object" entry
-     (file org-scribe/capture-object-file)
-     "* %^{Object Name}
+(defun org-scribe--object-capture-template ()
+  "Generate object capture template with i18n strings."
+  (let ((name (org-scribe-i18n capture-object-name))
+        (type-label (org-scribe-i18n capture-object-type))
+        (owner (org-scribe-i18n capture-object-owner))
+        (first-app (org-scribe-i18n capture-character-first-appearance))
+        (status-label (org-scribe-i18n capture-object-status))
+        (type-magical (org-scribe-i18n object-type-magical))
+        (type-artifact (org-scribe-i18n object-type-artifact))
+        (type-weapon (org-scribe-i18n object-type-weapon))
+        (type-tool (org-scribe-i18n object-type-tool))
+        (type-symbolic (org-scribe-i18n object-type-symbolic))
+        (type-tech (org-scribe-i18n object-type-technology))
+        (status-active (org-scribe-i18n status-active))
+        (status-lost (org-scribe-i18n status-lost))
+        (status-destroyed (org-scribe-i18n status-destroyed))
+        (status-hidden (org-scribe-i18n status-hidden))
+        (phys-desc (org-scribe-i18n section-physical-description))
+        (origin (org-scribe-i18n section-origin))
+        (properties (org-scribe-i18n section-properties))
+        (plot-imp (org-scribe-i18n section-plot-importance))
+        (obj-hist (org-scribe-i18n section-object-history))
+        (symbolism (org-scribe-i18n section-symbolism))
+        (curr-loc (org-scribe-i18n section-current-location))
+        (rules (org-scribe-i18n section-rules-limitations))
+        (notes (org-scribe-i18n section-notes)))
+    (format "* %%^{%s}
 :PROPERTIES:
-:ID: %(org-id-new)
-:Type: %^{Type|Magical|Artifact|Weapon|Tool|Symbolic|Technology}
-:Owner: %^{Current Owner}
-:First-appearance: %^{First Appearance Chapter}
-:Status: %^{Status|Active|Lost|Destroyed|Hidden}
+:ID: %%(org-id-new)
+:Type: %%^{%s|%s|%s|%s|%s|%s|%s}
+:Owner: %%^{%s}
+:First-appearance: %%^{%s}
+:Status: %%^{%s|%s|%s|%s|%s}
 :END:
 
-*** Physical Description
-%?
+*** %s
+%%?
 
-*** Origin
+*** %s
 -
 
-*** Properties
+*** %s
 -
 
-*** Importance in the Plot
+*** %s
 -
 
-*** Object History
+*** %s
 -
 
-*** Symbolism
-- 
-
-*** Current Location
+*** %s
 -
 
-*** Rules & Limitations
+*** %s
 -
 
-*** Notes
+*** %s
+-
+
+*** %s
 - "
-     :empty-lines 1))
-  "Capture templates for important objects.")
+            name type-label type-magical type-artifact type-weapon type-tool type-symbolic type-tech
+            owner first-app status-label status-active status-lost status-destroyed status-hidden
+            phys-desc origin properties plot-imp obj-hist symbolism curr-loc rules notes)))
 
-(defvar org-scribe/timeline-capture-templates
-  '(("t" "Timeline Event" entry
-     (file org-scribe/capture-timeline-file)
-     "* %^{Event Name}
+(defun org-scribe--timeline-capture-template ()
+  "Generate timeline capture template with i18n strings."
+  (let ((event (org-scribe-i18n capture-timeline-event))
+        (type-label (org-scribe-i18n capture-timeline-type))
+        (date (org-scribe-i18n capture-timeline-date))
+        (characters (org-scribe-i18n capture-timeline-characters))
+        (location (org-scribe-i18n capture-timeline-location))
+        (chapter (org-scribe-i18n capture-timeline-chapter))
+        (type-action (org-scribe-i18n timeline-type-action))
+        (type-revelation (org-scribe-i18n timeline-type-revelation))
+        (type-character (org-scribe-i18n timeline-type-character))
+        (type-world (org-scribe-i18n timeline-type-world))
+        (type-backstory (org-scribe-i18n timeline-type-backstory))
+        (desc (org-scribe-i18n section-description))
+        (conseq (org-scribe-i18n section-consequences))
+        (connect (org-scribe-i18n section-connections))
+        (notes (org-scribe-i18n section-notes)))
+    (format "* %%^{%s}
 :PROPERTIES:
-:ID: %(org-id-new)
-:Type: %^{Type|Action|Revelation|Character|World|Backstory}
+:ID: %%(org-id-new)
+:Type: %%^{%s|%s|%s|%s|%s|%s}
 :Relevance:
-:Date: %^{Date/Time in Story}
+:Date: %%^{%s}
 :Time:
 :Duration:
-:Characters: %^{Characters Involved}
-:Location: %^{Location}
-:Chapter: %^{Chapter(s)}
+:Characters: %%^{%s}
+:Location: %%^{%s}
+:Chapter: %%^{%s}
 :END:
 
-*** Description
-%?
+*** %s
+%%?
 
-*** Consequences
+*** %s
 -
 
-*** Connections
+*** %s
 - Links to:
 
-*** Notes
+*** %s
 - "
-     :empty-lines 1))
-  "Capture templates for timeline events.")
+            event type-label type-action type-revelation type-character type-world type-backstory
+            date characters location chapter
+            desc conseq connect notes)))
 
-(defvar org-scribe/plot-thread-capture-templates
-  '(("p" "Plot Thread" entry
-     (file+headline org-scribe/capture-plot-thread-file "Plot Threads")
-     "** %^{Thread Name} %^{Type|Subplot|Main Plot|B-Plot|C-Plot|Thematic Thread}
+(defun org-scribe--plot-thread-capture-template ()
+  "Generate plot thread capture template with i18n strings."
+  (let ((thread (org-scribe-i18n capture-plot-thread))
+        (type-label (org-scribe-i18n capture-plot-type))
+        (status-label (org-scribe-i18n capture-plot-status))
+        (type-subplot (org-scribe-i18n plot-type-subplot))
+        (type-main (org-scribe-i18n plot-type-main))
+        (type-b (org-scribe-i18n plot-type-b-plot))
+        (type-c (org-scribe-i18n plot-type-c-plot))
+        (type-thematic (org-scribe-i18n plot-type-thematic))
+        (status-emerging (org-scribe-i18n plot-status-emerging))
+        (status-planned (org-scribe-i18n plot-status-planned))
+        (status-progress (org-scribe-i18n plot-status-in-progress))
+        (status-needs (org-scribe-i18n plot-status-needs-dev))
+        (status-complete (org-scribe-i18n plot-status-complete))
+        (desc (org-scribe-i18n section-description))
+        (connection (org-scribe-i18n section-connection-main-plot))
+        (key-scenes (org-scribe-i18n section-key-scenes))
+        (resolution (org-scribe-i18n section-resolution))
+        (notes (org-scribe-i18n section-notes)))
+    (format "** %%^{%s} %%^{%s|%s|%s|%s|%s|%s}
 :PROPERTIES:
-:ID: %(org-id-new)
-:THREAD-TYPE: %\\2
-:STATUS: %^{Status|Emerging|Planned|In Progress|Needs Development|Complete}
+:ID: %%(org-id-new)
+:THREAD-TYPE: %%\\2
+:STATUS: %%^{%s|%s|%s|%s|%s|%s}
 :FIRST-APPEARANCE:
 :END:
 
-*** Description
+*** %s
 
-%^{Brief description of this plot thread}
+%%^{Brief description of this plot thread}
 
-*** Connection to Main Plot
+*** %s
 
-%^{How does this thread connect to or support the main plot?}
+%%^{How does this thread connect to or support the main plot?}
 
-*** Key Scenes
+*** %s
 
-- %?
+- %%?
 
-*** Resolution
+*** %s
 
 [How should this thread resolve?]
 
-*** Notes
+*** %s
 
 [Quick capture notes - can be messy]
 "
-     :empty-lines 1))
-  "Capture templates for plot threads.")
+            thread type-label type-subplot type-main type-b type-c type-thematic
+            status-label status-emerging status-planned status-progress status-needs status-complete
+            desc connection key-scenes resolution notes)))
 
-;;; Capture Function
+;;; Capture Functions
 
 ;;;###autoload
 (defun org-scribe/capture-to-file ()
   "Capture notes to writing project or file.
 Automatically determines the appropriate notes file based on project structure."
   (interactive)
-  ;; Choose the destination that actually exists
-  (let ((target (org-scribe/capture-target-file t)))  ; Create if missing
-    ;; Build a temporary capture template that points at TARGET
-    (let ((org-capture-templates
-           org-scribe/capture-templates))
-      ;; Run the capture UI
-      (org-capture))))
+  (let* ((target (org-scribe/capture-target-file t))
+         (org-capture-templates
+          `(("w" "Writing Note" entry
+             (file+headline ,target ,(org-scribe-i18n heading-notes))
+             "** TODO %?\n  %U\n  %i"
+             :empty-lines 1))))
+    (org-capture)))
 
 ;;;###autoload
 (defun org-scribe/capture-character ()
@@ -638,13 +742,14 @@ Creates a comprehensive character template with prompts for:
 - Motivation and character arc
 - Relationships with other characters"
   (interactive)
-  ;; Find or create the characters file
-  (let ((target (org-scribe/capture-character-file t)))  ; Create if missing
-    ;; Use the character capture template
-    (let ((org-capture-templates
-           org-scribe/character-capture-templates))
-      ;; Run the capture UI
-      (org-capture nil "c"))))
+  (let* ((target (org-scribe/capture-character-file t))
+         (template (org-scribe--character-capture-template))
+         (org-capture-templates
+          `(("c" "Character Profile" entry
+             (file ,target)
+             ,template
+             :empty-lines 1))))
+    (org-capture nil "c")))
 
 ;;;###autoload
 (defun org-scribe/capture-location ()
@@ -658,13 +763,14 @@ Creates a comprehensive location template with prompts for:
 - History and plot significance
 - Atmosphere and mood"
   (interactive)
-  ;; Find or create the locations file
-  (let ((target (org-scribe/capture-location-file t)))  ; Create if missing
-    ;; Use the location capture template
-    (let ((org-capture-templates
-           org-scribe/location-capture-templates))
-      ;; Run the capture UI
-      (org-capture nil "l"))))
+  (let* ((target (org-scribe/capture-location-file t))
+         (template (org-scribe--location-capture-template))
+         (org-capture-templates
+          `(("l" "Location" entry
+             (file ,target)
+             ,template
+             :empty-lines 1))))
+    (org-capture nil "l")))
 
 ;;;###autoload
 (defun org-scribe/capture-object ()
@@ -678,13 +784,14 @@ Creates a comprehensive object template with prompts for:
 - Plot significance
 - Current location and limitations"
   (interactive)
-  ;; Find or create the objects file
-  (let ((target (org-scribe/capture-object-file t)))  ; Create if missing
-    ;; Use the object capture template
-    (let ((org-capture-templates
-           org-scribe/object-capture-templates))
-      ;; Run the capture UI
-      (org-capture nil "o"))))
+  (let* ((target (org-scribe/capture-object-file t))
+         (template (org-scribe--object-capture-template))
+         (org-capture-templates
+          `(("o" "Object" entry
+             (file ,target)
+             ,template
+             :empty-lines 1))))
+    (org-capture nil "o")))
 
 ;;;###autoload
 (defun org-scribe/capture-timeline ()
@@ -697,13 +804,14 @@ Creates a comprehensive timeline event template with prompts for:
 - Consequences and connections
 - Type of event (action, revelation, etc.)"
   (interactive)
-  ;; Find or create the timeline file
-  (let ((target (org-scribe/capture-timeline-file t)))  ; Create if missing
-    ;; Use the timeline capture template
-    (let ((org-capture-templates
-           org-scribe/timeline-capture-templates))
-      ;; Run the capture UI
-      (org-capture nil "t"))))
+  (let* ((target (org-scribe/capture-timeline-file t))
+         (template (org-scribe--timeline-capture-template))
+         (org-capture-templates
+          `(("t" "Timeline Event" entry
+             (file ,target)
+             ,template
+             :empty-lines 1))))
+    (org-capture nil "t")))
 
 ;;;###autoload
 (defun org-scribe/capture-plot-thread ()
@@ -726,13 +834,14 @@ This is useful when:
 The template is intentionally minimal - capture the essence quickly,
 then elaborate later during planning or revision."
   (interactive)
-  ;; Find or create the plot file
-  (let ((target (org-scribe/capture-plot-thread-file t)))  ; Create if missing
-    ;; Use the plot thread capture template
-    (let ((org-capture-templates
-           org-scribe/plot-thread-capture-templates))
-      ;; Run the capture UI
-      (org-capture nil "p"))))
+  (let* ((target (org-scribe/capture-plot-thread-file t))
+         (template (org-scribe--plot-thread-capture-template))
+         (org-capture-templates
+          `(("p" "Plot Thread" entry
+             (file+headline ,target ,(org-scribe-i18n plot-threads-heading))
+             ,template
+             :empty-lines 1))))
+    (org-capture nil "p")))
 
 (provide 'org-scribe-capture)
 
