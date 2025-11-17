@@ -6,11 +6,9 @@
 
 =org-scribe= is a comprehensive, batteries-included toolkit for novelists, short story writers, and creative writers working in Emacs Org-mode. It provides everything you need from project creation to final export: templates, writing environments, word counting, progress tracking, and powerful search capabilities.
 
-*Version 0.2.0* merges the functionality of =emacs-writing-template=, providing a complete integrated writing environment in a single package.
-
 * Features
 
-** Complete Workflow (v0.2.0)
+** Complete Workflow
 
 *** Project Creation & Templates
 - *Create Novel Projects*: Generate complete project structure from templates with a single command
@@ -21,21 +19,21 @@
 - *Git Integration*: Projects automatically initialized with git
 
 *** Writing Tools
-- *Character Linking* (NEW in v0.2.1): ID-based links between scenes and character profiles
+- *Character Linking*: ID-based links between scenes and character profiles
   - Automatic ID creation for captured characters
   - Click character names in scene properties to jump to full profiles
   - Menu-based character selection for scene properties
   - Searches work with both plain text and ID links
   - Stable links that survive character name changes
-- *Location Linking* (NEW in v0.2.1): ID-based links between scenes and location profiles
+- *Location Linking*: ID-based links between scenes and location profiles
   - Same linking system for locations/settings
   - Jump from scene to detailed location descriptions
-- *Plot Thread Linking* (NEW in v0.2.1): ID-based links for plot threads and subplots
+- *Plot Thread Linking*: ID-based links for plot threads and subplots
   - Track main plot and subplots across your novel
   - Timeline visualization showing plot distribution
   - Health reports identify plot issues (gaps, low coverage, abandoned threads)
   - Statistics showing plot thread presence across chapters
-- *Column View Enhancement* (NEW in v0.2.1): Clean property display in org-mode column view
+- *Column View Enhancement*: Clean property display in org-mode column view
   - Automatically strips ID link syntax in column view
   - Shows "Alex" instead of "[[id:abc123][Alex]]"
   - Works with all linked properties (PoV, Characters, Plot, Location)
@@ -873,15 +871,6 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 - =r= - Health report
 - =S= - Statistics
 
-*** Key Changes from Previous Version
-
-*Proposal 1 Improvements* (v0.2.1):
-- *No Shift Keys*: Removed shift requirements from frequent actions (S→s, C→c, O→o)
-- *Home Row Optimization*: Best keys for most frequent actions (s=scene, c=chapter, w=words)
-- *Better Mnemonics*: Object (j→b), Timeline (k→t), Writing mode (w→m)
-- *Numbered Search*: Consistent 1-5 pattern instead of u/i/o/y/a
-- *Clear Hierarchy*: Lowercase for actions, capitals ONLY for submenus
-
 * Contributing
 
 Contributions are welcome! Please:
@@ -901,70 +890,6 @@ GPL-3.0-or-later
 - Issues: https://codeberg.org/jcastp/org-scribe/issues
 - Dependencies: [[https://codeberg.org/jcastp/org-context-extended][org-context-extended]] (smart word counting)
 - Dependencies: [[https://codeberg.org/jcastp/org-tracktable][org-tracktable]] (progress tracking)
-
-** Version 0.2.1 Changes (NEW)
-
-Version 0.2.1 introduces comprehensive *ID-Based Linking Systems* for characters, locations, and plot threads:
-
-*** Character Linking
-- *ID-Based Character Links*: Link scene properties to character profiles
-- *Automatic ID Creation*: New characters automatically get unique IDs
-- *Menu-Based Selection*: Select characters from completion menus
-- *Click Navigation*: Click character names to jump to full profiles
-- *Smart Searches*: Search functions work with both plain text and ID links
-- *Batch Operations*: Convert entire projects at once
-- *Backward Compatible*: Works with existing plain text properties
-
-See [[file:CHARACTER-LINKING.org][Character Linking Guide]] for complete documentation and [[file:examples/demo-novel/CHARACTER-LINKING-DEMO.org][Interactive Demo]].
-
-*** Location Linking
-- *ID-Based Location Links*: Link scenes to detailed location/setting descriptions
-- *Same Pattern*: Works identically to character linking
-- *Jump Navigation*: Click location names to jump to world-building details
-- *Menu Selection*: Choose locations from completion menus
-
-*** Plot Thread Linking and Analysis
-- *ID-Based Plot Links*: Track main plot and subplots across your novel
-- *Timeline Visualization*: Dynamic block showing plot distribution across scenes
-- *Health Reports*: Automated analysis identifying plot issues:
-  - Low coverage threads (<30% of scenes)
-  - Large gaps (>5 consecutive scenes without thread)
-  - Single-scene threads (potentially abandoned)
-- *Quick Statistics*: Overview of thread coverage and warnings
-- *Click Navigation*: Jump from scene to plot thread details
-- *Gap Detection*: Identify forgotten subplots before they become problems
-
-*** Column View Enhancement
-- *Clean Display*: Automatically strips ID link syntax in org-mode column view
-- *Transparent*: Shows "Alex" instead of "[[id:abc123][Alex]]"
-- *Universal*: Works for all linked properties (PoV, Characters, Plot, Location)
-- *Preserves Links*: Navigation still works with =C-c C-o=
-- *Optional*: Can be disabled via customization
-
-** Version 0.2.0 Changes
-
-Version 0.2.0 merges [[https://codeberg.org/jcastp/emacs-writing-template][emacs-writing-template]] into this package, providing:
-
-- Project creation with customizable templates
-- Scene and chapter insertion functions
-- Quick project file navigation
-- Integrated git initialization
-- Bilingual template support (English/Spanish)
-
-All =org-scribe-project-*= functions from the old package are available as backward-compatible aliases.
-
-*** Migration from emacs-writing-template
-
-If you were using =emacs-writing-template= separately:
-
-1. Remove =emacs-writing-template= from your config
-2. Update to =org-scribe= 0.2.0+
-3. Old function names still work (with deprecation warnings):
-   - =writing-project-create-novel-project= → =writing-create-novel-project=
-   - =writing-create-project= → =writing-create-novel-project=
-   - =writing-project-insert-scene= → =writing-insert-scene=
-   - =writing-project-insert-chapter= → =writing-insert-chapter=
-   - =writing-project-open-novel-file= → =writing-open-project-file=
 
 * Acknowledgments
 
