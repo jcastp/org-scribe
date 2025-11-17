@@ -50,6 +50,7 @@
 ;; Core modules (always loaded)
 (require 'org-scribe-core (expand-file-name "core/org-scribe-core" (file-name-directory load-file-name)))
 (require 'org-scribe-config (expand-file-name "core/org-scribe-config" (file-name-directory load-file-name)))
+(require 'org-scribe-i18n (expand-file-name "core/org-scribe-i18n" (file-name-directory load-file-name)))
 
 ;; Project creation and templates (merged from emacs-org-scribe-template)
 (require 'org-scribe-project (expand-file-name "templates/org-scribe-project" (file-name-directory load-file-name)))

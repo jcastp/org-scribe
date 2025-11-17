@@ -37,6 +37,9 @@
       (require 'org-scribe-config)
       (message "✓ org-scribe-config loaded successfully")
 
+      (require 'org-scribe-i18n)
+      (message "✓ org-scribe-i18n loaded successfully")
+
       (require 'org-scribe-project)
       (message "✓ org-scribe-project loaded successfully")
 
