@@ -508,6 +508,81 @@ PARAMS are ignored (reserved for future filtering options)."
       ;; Align table
       (org-table-align))))
 
+;;; Update Link Display Names
+
+(require 'writing-link-update)
+
+;;;###autoload
+(defun writing/update-character-link-names ()
+  "Update character link display names in current scene.
+
+Refreshes both :PoV: and :Characters: properties to show current
+character names from the characters database.
+
+Use this after renaming a character in characters.org. The ID links
+will still work, but this updates the display text to match the
+current name.
+
+Example:
+  Before: [[id:char-alex-001][Alex Rivera]]
+  After rename in database: [[id:char-alex-001][Alexandra Rivera]]
+
+Returns t if any updates were made, nil otherwise."
+  (interactive)
+  (save-excursion
+    (org-back-to-heading)
+    (let* ((chars-alist (writing--get-all-characters))
+           (id-map (writing--build-id-to-name-map chars-alist))
+           (updated-pov (writing--update-links-in-property "PoV" id-map))
+           (updated-chars (writing--update-links-in-property "Characters" id-map)))
+      (cond
+       ((and updated-pov updated-chars)
+        (message "Updated PoV and Characters link names"))
+       (updated-pov
+        (message "Updated PoV link names"))
+       (updated-chars
+        (message "Updated Characters link names"))
+       (t
+        (message "No character link names needed updating")))
+      (or updated-pov updated-chars))))
+
+;;;###autoload
+(defun writing/update-all-character-link-names ()
+  "Update character link display names in all scenes.
+
+Scans characters database for current names and updates the display
+text portion of ID links in :PoV: and :Characters: properties throughout
+the entire manuscript.
+
+This is useful after renaming characters in characters.org, as ID
+links will still work but show the old name. This function refreshes
+all display names to match the current database.
+
+Example workflow:
+  1. Rename \"Alex Rivera\" to \"Alexandra Rivera\" in characters.org
+  2. Run this function (M-x writing/update-all-character-link-names)
+  3. All 47 scenes updated automatically!
+
+Returns the number of scenes updated."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let* ((chars-alist (writing--get-all-characters))
+           (id-map (writing--build-id-to-name-map chars-alist))
+           (count 0))
+      (org-map-entries
+       (lambda ()
+         (when (or (org-entry-get nil "PoV")
+                   (org-entry-get nil "Characters"))
+           (let ((updated-pov (writing--update-links-in-property "PoV" id-map))
+                 (updated-chars (writing--update-links-in-property "Characters" id-map)))
+             (when (or updated-pov updated-chars)
+               (setq count (1+ count))))))
+       nil 'file)
+      (message "Updated character link names in %d scene%s"
+               count (if (= count 1) "" "s"))
+      count)))
+
 (provide 'writing-character-links)
 
 ;;; writing-character-links.el ends here

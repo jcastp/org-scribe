@@ -642,6 +642,72 @@ Shows one-line summary in the minibuffer."
 ;; This is a forward declaration - the actual function is in writing-search.el
 (declare-function writing--property-to-list "search/writing-search")
 
+;;; Update Link Display Names
+
+(require 'writing-link-update)
+
+;;;###autoload
+(defun writing/update-plot-link-names ()
+  "Update plot thread link display names in current scene.
+
+Refreshes :Plot: property to show current plot thread names from
+the plot database.
+
+Use this after renaming a plot thread in plot.org. The ID links
+will still work, but this updates the display text to match the
+current name.
+
+Example:
+  Before: [[id:plot-main-001][Main Plot]]
+  After rename in database: [[id:plot-main-001][Primary Storyline]]
+
+Returns t if any updates were made, nil otherwise."
+  (interactive)
+  (save-excursion
+    (org-back-to-heading)
+    (let* ((plots-alist (writing--get-all-plot-threads))
+           (id-map (writing--build-id-to-name-map plots-alist))
+           (updated-plots (writing--update-links-in-property "Plot" id-map)))
+      (if updated-plots
+          (message "Updated Plot link names")
+        (message "No plot link names needed updating"))
+      updated-plots)))
+
+;;;###autoload
+(defun writing/update-all-plot-link-names ()
+  "Update plot thread link display names in all scenes.
+
+Scans plot database for current names and updates the display
+text portion of ID links in :Plot: properties throughout
+the entire manuscript.
+
+This is useful after renaming plot threads in plot.org, as ID
+links will still work but show the old name. This function refreshes
+all display names to match the current database.
+
+Example workflow:
+  1. Rename \"Main Plot\" to \"Primary Storyline\" in plot.org
+  2. Run this function (M-x writing/update-all-plot-link-names)
+  3. All scenes updated automatically!
+
+Returns the number of scenes updated."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let* ((plots-alist (writing--get-all-plot-threads))
+           (id-map (writing--build-id-to-name-map plots-alist))
+           (count 0))
+      (org-map-entries
+       (lambda ()
+         (when (org-entry-get nil "Plot")
+           (let ((updated-plots (writing--update-links-in-property "Plot" id-map)))
+             (when updated-plots
+               (setq count (1+ count))))))
+       nil 'file)
+      (message "Updated plot link names in %d scene%s"
+               count (if (= count 1) "" "s"))
+      count)))
+
 (provide 'writing-plot-links)
 
 ;;; writing-plot-links.el ends here

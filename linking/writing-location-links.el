@@ -338,6 +338,72 @@ in an existing project."
 
   (message "Location linking system setup complete!"))
 
+;;; Update Link Display Names
+
+(require 'writing-link-update)
+
+;;;###autoload
+(defun writing/update-location-link-names ()
+  "Update location link display names in current scene.
+
+Refreshes :Location: property to show current location names from
+the locations database.
+
+Use this after renaming a location in locations.org. The ID links
+will still work, but this updates the display text to match the
+current name.
+
+Example:
+  Before: [[id:loc-downtown-001][Downtown Cafe]]
+  After rename in database: [[id:loc-downtown-001][Downtown Coffee Shop]]
+
+Returns t if any updates were made, nil otherwise."
+  (interactive)
+  (save-excursion
+    (org-back-to-heading)
+    (let* ((locs-alist (writing--get-all-locations))
+           (id-map (writing--build-id-to-name-map locs-alist))
+           (updated-locs (writing--update-links-in-property "Location" id-map)))
+      (if updated-locs
+          (message "Updated Location link names")
+        (message "No location link names needed updating"))
+      updated-locs)))
+
+;;;###autoload
+(defun writing/update-all-location-link-names ()
+  "Update location link display names in all scenes.
+
+Scans locations database for current names and updates the display
+text portion of ID links in :Location: properties throughout
+the entire manuscript.
+
+This is useful after renaming locations in locations.org, as ID
+links will still work but show the old name. This function refreshes
+all display names to match the current database.
+
+Example workflow:
+  1. Rename \"Downtown Cafe\" to \"Downtown Coffee Shop\" in locations.org
+  2. Run this function (M-x writing/update-all-location-link-names)
+  3. All scenes updated automatically!
+
+Returns the number of scenes updated."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let* ((locs-alist (writing--get-all-locations))
+           (id-map (writing--build-id-to-name-map locs-alist))
+           (count 0))
+      (org-map-entries
+       (lambda ()
+         (when (org-entry-get nil "Location")
+           (let ((updated-locs (writing--update-links-in-property "Location" id-map)))
+             (when updated-locs
+               (setq count (1+ count))))))
+       nil 'file)
+      (message "Updated location link names in %d scene%s"
+               count (if (= count 1) "" "s"))
+      count)))
+
 (provide 'writing-location-links)
 
 ;;; writing-location-links.el ends here

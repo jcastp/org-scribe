@@ -70,6 +70,7 @@
 _p_: Set PoV character      _l_: Link scene characters
 _c_: Set scene characters   _L_: Link all scenes
 _j_: Jump to PoV char       _i_: Add IDs to characters
+_u_: Update link names      _U_: Update all link names
 _s_: Setup linking system   _q_: Back to main menu
 "
   ("p" writing/set-pov-character "set PoV")
@@ -78,6 +79,8 @@ _s_: Setup linking system   _q_: Back to main menu
   ("l" writing/link-scene-characters "link scene")
   ("L" writing/link-all-scene-characters "link all")
   ("i" writing/add-character-ids "add IDs")
+  ("u" writing/update-character-link-names "update names")
+  ("U" writing/update-all-character-link-names "update all names")
   ("s" writing/setup-character-links "setup system")
   ("q" hydra-writing/body "back")
   ("Q" nil "quit"))
@@ -89,13 +92,15 @@ _s_: Setup linking system   _q_: Back to main menu
 ^^^^^^^^------------------------------------------------------------
 _c_: Set scene locations   _l_: Link scene locations
 _i_: Add IDs to locations  _L_: Link all scenes
-_s_: Setup linking system
-_q_: Back to main menu
+_u_: Update link names     _U_: Update all link names
+_s_: Setup linking system  _q_: Back to main menu
 "
   ("c" writing/set-scene-locations "set locations")
   ("l" writing/link-scene-locations "link scene")
   ("L" writing/link-all-scene-locations "link all")
   ("i" writing/add-location-ids "add IDs")
+  ("u" writing/update-location-link-names "update names")
+  ("U" writing/update-all-location-link-names "update all names")
   ("s" writing/setup-location-links "setup system")
   ("q" hydra-writing/body "back")
   ("Q" nil "quit"))
@@ -109,6 +114,7 @@ _p_: Set scene plot threads   _t_: Timeline table
 _j_: Jump to plot thread      _r_: Health report
 _l_: Link scene plot threads  _S_: Statistics
 _L_: Link all scenes          _i_: Add IDs to threads
+_u_: Update link names        _U_: Update all link names
 _s_: Setup linking system     _q_: Back to main menu
 "
   ("p" writing/set-scene-plot-threads "set plot threads")
@@ -116,6 +122,8 @@ _s_: Setup linking system     _q_: Back to main menu
   ("l" writing/link-scene-plot-threads "link scene")
   ("L" writing/link-all-scene-plot-threads "link all")
   ("i" writing/add-plot-thread-ids "add IDs")
+  ("u" writing/update-plot-link-names "update names")
+  ("U" writing/update-all-plot-link-names "update all names")
   ("s" writing/setup-plot-thread-links "setup system")
   ("t" (lambda () (interactive) (message "Insert '#+BEGIN: plot-thread-timeline' then press C-c C-c")) "timeline")
   ("r" writing/plot-thread-report "health report")
@@ -131,7 +139,7 @@ _s_: Setup linking system     _q_: Back to main menu
 _s_: Scene         _m_: Mode (write)  _n_: Note          _w_: Words count   _1_: POV           _C_: Characters
 _c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table   _2_: Character     _L_: Locations
 _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_: Plot          _P_: Plot threads
-                 _e_: Editing mode  _b_: oBject        _d_: Dictionary    _4_: Location
+                 _e_: Editing mode  _b_: oBject        _d_: Dictionary    _4_: Location      _U_: Update links
                                   _t_: Timeline      _y_: sYnonyms      _5_: TODOs
                                                                                      _q_: Quit
 "
@@ -171,6 +179,7 @@ _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_:
   ("C" hydra-writing-characters/body "character links")
   ("L" hydra-writing-locations/body "location links")
   ("P" hydra-writing-plot-threads/body "plot thread links")
+  ("U" writing/update-all-link-names "update all link names")
 
   ;; Exit
   ("q" nil "quit"))

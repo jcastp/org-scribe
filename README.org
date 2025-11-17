@@ -342,6 +342,28 @@ Benefits:
 - Searches still work (automatic extraction)
 - Quick reference while writing
 
+*** Updating Link Display Names
+
+When you rename a character in =plan/characters.org=, the ID links still work (they're ID-based), but the display text shows the old name. Update the display names to match your current database:
+
+*Update Current Scene* (=F8 F8 C u=):
+- Updates character link names in the current scene only
+
+*Update All Scenes* (=F8 F8 C U=):
+- Updates character link names throughout the entire manuscript
+- Scans all scenes and refreshes display text from database
+
+*Example Workflow*:
+1. Rename "Alex Rivera" to "Alexandra Rivera" in =plan/characters.org=
+2. Press =F8 F8 C U= (or =M-x writing/update-all-character-link-names=)
+3. All scenes updated: =[[id:char-alex-001][Alexandra Rivera]]=
+4. Links still work, now with correct names!
+
+*Update All Link Types* (=F8 F8 U=):
+- Updates characters, locations, AND plot threads all at once
+- Convenient after bulk renaming in planning files
+- Available from main menu (=F8 F8 U=)
+
 *** Character Linking Hydra Menu
 
 Press =F8 F8 C= to access:
@@ -351,6 +373,8 @@ Press =F8 F8 C= to access:
 - =l= - Link current scene
 - =L= - Link all scenes
 - =i= - Add IDs to characters
+- =u= - Update link names (current scene)
+- =U= - Update all link names
 - =s= - Setup linking system
 
 See [[file:CHARACTER-LINKING.org][Character Linking Guide]] for complete documentation.
@@ -503,10 +527,14 @@ Press =F8 F8 P= to access:
 - =l= - Link current scene
 - =L= - Link all scenes
 - =i= - Add IDs to threads
+- =u= - Update link names (current scene)
+- =U= - Update all link names
 - =s= - Setup linking system
 - =t= - Timeline table (shows how to insert)
 - =r= - Health report
 - =S= - Statistics
+
+Note: Like character links, you can update plot thread display names after renaming threads in =plan/plot.org= using =F8 F8 P U= or the unified =F8 F8 U=.
 
 *** Best Practices
 
@@ -793,6 +821,7 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 - =C= - Character linking submenu
 - =L= - Location linking submenu
 - =P= - Plot thread linking submenu
+- =U= - Update all link names (all types)
 
 **** Character Linking Submenu (F8 F8 C)
 - =p= - Set PoV character
@@ -801,6 +830,8 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 - =l= - Link current scene
 - =L= - Link all scenes
 - =i= - Add IDs to characters
+- =u= - Update link names (current scene)
+- =U= - Update all link names
 - =s= - Setup linking system
 
 **** Location Linking Submenu (F8 F8 L)
@@ -808,6 +839,8 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 - =l= - Link current scene
 - =L= - Link all scenes
 - =i= - Add IDs to locations
+- =u= - Update link names (current scene)
+- =U= - Update all link names
 - =s= - Setup linking system
 
 **** Plot Thread Linking Submenu (F8 F8 P)
@@ -816,6 +849,8 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 - =l= - Link current scene
 - =L= - Link all scenes
 - =i= - Add IDs to threads
+- =u= - Update link names (current scene)
+- =U= - Update all link names
 - =s= - Setup linking system
 - =t= - Timeline table (insert instructions)
 - =r= - Health report

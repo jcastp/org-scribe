@@ -67,6 +67,7 @@
 ;; org capture to the writing project
 (require 'writing-capture (expand-file-name "capture/writing-capture" (file-name-directory load-file-name)))
 ;; character linking system
+(require 'writing-link-update (expand-file-name "linking/writing-link-update" (file-name-directory load-file-name)))
 (require 'writing-character-links (expand-file-name "linking/writing-character-links" (file-name-directory load-file-name)))
 (require 'writing-location-links (expand-file-name "linking/writing-location-links" (file-name-directory load-file-name)))
 (require 'writing-plot-links (expand-file-name "linking/writing-plot-links" (file-name-directory load-file-name)))
