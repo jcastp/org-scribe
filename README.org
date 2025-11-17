@@ -718,6 +718,22 @@ Opens WordReference Spanish synonyms in a side window.
 
 Automatically finds the right notes file in your project structure.
 
+*** Specialized Capture Functions
+
+The package provides specialized capture templates for different types of content:
+
+- =writing/capture-character= (F8 F8 h) - Capture character profiles with comprehensive templates
+- =writing/capture-location= (F8 F8 l) - Capture location details for world building
+- =writing/capture-object= (F8 F8 b) - Capture important objects in your story
+- =writing/capture-timeline= (F8 F8 t) - Capture timeline events for chronology tracking
+- =writing/capture-plot-thread= (F8 F8 g) - Capture plot threads as they emerge during writing
+
+These functions automatically route captures to the appropriate file based on project type:
+- **Novel projects**: Separate files in =plan/= directory (e.g., =plan/characters.org=, =plan/plot.org=)
+- **Short story projects**: Consolidated =notes.org= file with appropriate sections
+
+All captured items automatically receive unique IDs for use with the linking system.
+
 ** Export with Scene Breaks
 
 Add this macro to your org file:
@@ -802,6 +818,7 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 - =l= - Capture location
 - =b= - Capture object
 - =t= - Capture timeline event
+- =g= - Capture plot thread
 
 *** Tools
 - =w= - Count words

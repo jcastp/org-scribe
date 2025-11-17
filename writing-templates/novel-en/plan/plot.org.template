@@ -77,3 +77,39 @@ Key moments that must occur:
 
 - Main theme ::
 - Secondary themes ::
+
+* Plot Threads
+
+Track your plot threads here. Each thread is a storyline that runs through your novel.
+
+Threads can be:
+- Main Plot: The primary storyline
+- Subplots: Secondary storylines (character arcs, romances, mysteries)
+- Thematic Threads: Recurring themes or symbols
+
+Use =F8 F8 p= to quickly add new plot threads as they emerge during writing.
+
+** Example: Main Plot
+:PROPERTIES:
+:ID: example-plot-main
+:THREAD-TYPE: Main Plot
+:STATUS: Planned
+:END:
+
+*** Description
+
+[What is this plot thread about?]
+
+*** Connection to Main Plot
+
+[How does this relate to the main story question?]
+
+*** Key Scenes
+
+- [List scenes where this thread appears]
+
+*** Resolution
+
+[How does this thread resolve?]
+
+[Delete this example when you add your own plot threads]

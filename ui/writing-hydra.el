@@ -25,6 +25,7 @@
 (declare-function writing/capture-location "capture/writing-capture")
 (declare-function writing/capture-object "capture/writing-capture")
 (declare-function writing/capture-timeline "capture/writing-capture")
+(declare-function writing/capture-plot-thread "capture/writing-capture")
 (declare-function org-context-count-words "org-context-extended")
 (declare-function writing/ews-org-count-words "counting/writing-wordcount")
 (declare-function org-tracktable-write "org-tracktable")
@@ -141,7 +142,7 @@ _c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table   _2_:
 _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_: Plot          _P_: Plot threads
                  _e_: Editing mode  _b_: oBject        _d_: Dictionary    _4_: Location      _U_: Update links
                                   _t_: Timeline      _y_: sYnonyms      _5_: TODOs
-                                                                                     _q_: Quit
+                                  _g_: plot thread                                         _q_: Quit
 "
   ;; Insert (most frequent actions get best keys)
   ("s" writing-insert-scene "insert scene")
@@ -160,6 +161,7 @@ _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_:
   ("l" writing/capture-location "capture location")
   ("b" writing/capture-object "capture object")
   ("t" writing/capture-timeline "capture timeline event")
+  ("g" writing/capture-plot-thread "capture plot thread")
 
   ;; Tools
   ("w" org-context-count-words "count words")

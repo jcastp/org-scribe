@@ -77,3 +77,39 @@ Momentos clave que deben ocurrir:
 
 - Tema principal ::
 - Temas secundarios ::
+
+* Hilos de la Trama
+
+Rastrea los hilos de tu trama aquí. Cada hilo es una línea narrativa que atraviesa tu novela.
+
+Los hilos pueden ser:
+- Trama Principal: La línea narrativa primaria
+- Tramas Secundarias: Líneas narrativas secundarias (arcos de personajes, romances, misterios)
+- Hilos Temáticos: Temas o símbolos recurrentes
+
+Usa =F8 F8 p= para añadir rápidamente nuevos hilos de trama mientras escribes.
+
+** Ejemplo: Trama Principal
+:PROPERTIES:
+:ID: ejemplo-trama-principal
+:THREAD-TYPE: Main Plot
+:STATUS: Planned
+:END:
+
+*** Descripción
+
+[¿De qué trata este hilo de la trama?]
+
+*** Conexión con la Trama Principal
+
+[¿Cómo se relaciona con la pregunta principal de la historia?]
+
+*** Escenas Clave
+
+- [Lista las escenas donde aparece este hilo]
+
+*** Resolución
+
+[¿Cómo se resuelve este hilo?]
+
+[Elimina este ejemplo cuando añadas tus propios hilos de trama]
