@@ -7,7 +7,7 @@
 
 You've written your manuscript in org-mode, and now it's time to share it with the world! Whether you're submitting to publishers, sharing with beta readers, or self-publishing, you need to export your work to standard formats.
 
-Org-mode's powerful export system can transform your manuscript into professional documents in multiple formats, and ~emacs-writing~ adds special features for creative writing like proper scene break formatting.
+Org-mode's powerful export system can transform your manuscript into professional documents in multiple formats, and ~org-scribe~ adds special features for creative writing like proper scene break formatting.
 
 By the end of this lesson, you'll have:
 - Understood org-mode's export system
@@ -131,7 +131,7 @@ But each export format needs different scene breaks:
 
 ** The Solution: Scene Break Macro
 
-~emacs-writing~ provides a macro that automatically converts to the right format.
+~org-scribe~ provides a macro that automatically converts to the right format.
 
 *** How It Works
 

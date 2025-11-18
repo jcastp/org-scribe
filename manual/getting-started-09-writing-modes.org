@@ -5,7 +5,7 @@
 
 * Welcome to Lesson 9!
 
-You've been using writing mode (~F8 F8 m~) throughout the previous lessons, but ~emacs-writing~ actually offers *four different modes* for different writing workflows. Each mode transforms your environment in unique ways to support specific tasks.
+You've been using writing mode (~F8 F8 m~) throughout the previous lessons, but ~org-scribe~ actually offers *four different modes* for different writing workflows. Each mode transforms your environment in unique ways to support specific tasks.
 
 In this lesson, we'll explore all four modes in detail and learn when to use each one.
 
@@ -38,7 +38,7 @@ Don't worry if you don't have all of these - we'll explain which features need w
 
 * The Four Writing Modes
 
-~emacs-writing~ provides four mutually exclusive modes:
+~org-scribe~ provides four mutually exclusive modes:
 
 ** Overview Table
 
@@ -944,7 +944,7 @@ It's the most popular for daily writing because:
 - Full manuscript visible (can scroll to reference earlier scenes)
 - Fast toggle (same key enters and exits)
 
-** "Can I use writing modes outside of emacs-writing projects?"
+** "Can I use writing modes outside of org-scribe projects?"
 
 *Answer*: Technically yes, but some features require project structure.
 

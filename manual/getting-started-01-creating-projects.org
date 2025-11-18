@@ -5,7 +5,7 @@
 
 * Welcome to Lesson 1!
 
-In this lesson, you'll create your first writing project using ~emacs-writing~. This is the foundation for everything else - all other features work within a project structure.
+In this lesson, you'll create your first writing project using ~org-scribe~. This is the foundation for everything else - all other features work within a project structure.
 
 By the end of this lesson, you'll have:
 - Created a complete novel or short story project
@@ -21,7 +21,7 @@ By the end of this lesson, you'll have:
 
 Check that you have:
 - ✓ Emacs open and running
-- ✓ ~emacs-writing~ package installed and loaded
+- ✓ ~org-scribe~ package installed and loaded
 - ✓ A directory where you want to store your writing projects (we'll use ~~/org-scribe/~ in examples)
 
 ** Quick Test
@@ -32,13 +32,13 @@ Let's verify the package is loaded correctly:
 2. Start typing: ~writing-version~
 3. Press Enter
 
-You should see a message like: *"emacs-writing version 0.2.0 (includes project templates)"*
+You should see a message like: *"org-scribe version 0.2.0 (includes project templates)"*
 
 If you see this message, you're ready! If not, make sure you've installed the package correctly.
 
 * Understanding Project Types
 
-~emacs-writing~ offers two types of projects:
+~org-scribe~ offers two types of projects:
 
 ** Novel Projects (Full Template)
 
@@ -319,9 +319,9 @@ Now ~writing-create-novel-project~ will create Spanish-language templates!
 *Problem*: The package can't find the template files.
 
 *Solution*:
-1. Make sure ~emacs-writing~ is properly installed
+1. Make sure ~org-scribe~ is properly installed
 2. Check that the templates/ directory exists in the package installation
-3. Try ~M-x package-reinstall RET emacs-writing RET~
+3. Try ~M-x package-reinstall RET org-scribe RET~
 
 ** "Project directory already exists"
 
@@ -373,7 +373,7 @@ Now that you have a project, let's write something!
    - Press ~C-x C-s~
 
 5. *Celebrate*!
-   - You've just written your first sentence in ~emacs-writing~!
+   - You've just written your first sentence in ~org-scribe~!
 
 * What You've Learned
 
@@ -463,7 +463,7 @@ If you're stuck:
 
 * Summary
 
-You've taken your first big step into ~emacs-writing~! You now have a real project with a proper structure, version control, and template files ready for your story.
+You've taken your first big step into ~org-scribe~! You now have a real project with a proper structure, version control, and template files ready for your story.
 
 In the next lessons, you'll learn how to actually use all these files effectively. But for now, pat yourself on the back - you're officially set up and ready to write!
 

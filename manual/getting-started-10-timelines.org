@@ -325,7 +325,7 @@ If all threads appear in same scenes:
 * TODO The Plot Thread Health Report
 *NOTE:* This needs review
 
-For deeper analysis, ~emacs-writing~ includes an automated health report!
+For deeper analysis, ~org-scribe~ includes an automated health report!
 
 ** What It Does
 
@@ -732,7 +732,7 @@ Only the first one auto-generates from ~:Plot:~ properties, but you can maintain
 1. Cursor is ON the ~#+BEGIN:~ line (not before, not after)
 2. The line says exactly ~#+BEGIN: character-timeline~ or ~#+BEGIN: plot-thread-timeline~
 3. You're in org-mode buffer (~M-x org-mode~ to verify)
-4. emacs-writing package is loaded (~M-x writing-version~)
+4. org-scribe package is loaded (~M-x org-scribe-version~)
 
 *Try*:
 - ~M-x org-dblock-update~ (manual update command)

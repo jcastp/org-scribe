@@ -16,7 +16,7 @@ A simple story about Alex, who struggles with chaotic mornings and decides to
 establish a better morning routine. Through various challenges and with help
 from neighbor Sam, Alex learns to find balance between structure and flexibility.
 
-This demo project showcases the features of the emacs-writing package, including:
+This demo project showcases the features of the org-scribe package, including:
 - Scene and chapter organization with metadata
 - Character development tracking
 - **NEW! ID-based character linking** (see [[file:CHARACTER-LINKING-DEMO.org][Character Linking Demo]])

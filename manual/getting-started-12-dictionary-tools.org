@@ -32,7 +32,7 @@ These tools are particularly useful for:
 - *English writers* using WordReference for synonyms
 - *Second language writers* checking word usage and meanings
 
-The tools work with both the English and Spanish templates in ~emacs-writing~.
+The tools work with both the English and Spanish templates in ~org-scribe~.
 
 ** Quick Check
 
@@ -46,7 +46,7 @@ If you see it, you're ready! The dictionary tools are part of the core package.
 
 * Understanding the Available Tools
 
-~emacs-writing~ integrates three types of language tools:
+~org-scribe~ integrates three types of language tools:
 
 ** 1. RAE Dictionary API (Spanish)
 
@@ -80,7 +80,7 @@ If you see it, you're ready! The dictionary tools are part of the core package.
 
 *What it is*:
 - Integration with the ~gt~ package (Google Translate for Emacs)
-- Not included in ~emacs-writing~ but works alongside it
+- Not included in ~org-scribe~ but works alongside it
 - Supports many languages and translation engines
 
 *Best for*:
@@ -298,7 +298,7 @@ If you write in multiple languages or in a second language, translation tools ca
 
 ** The gt Package
 
-~emacs-writing~ doesn't include translation functions, but it works seamlessly with the ~gt~ package (formerly google-translate).
+~org-scribe~ doesn't include translation functions, but it works seamlessly with the ~gt~ package (formerly google-translate).
 
 ** Installing gt
 

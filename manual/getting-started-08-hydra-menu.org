@@ -7,7 +7,7 @@
 
 By now you've used the Hydra menu many times throughout the previous lessons. You've pressed ~F8 F8~ to insert scenes, count words, search for characters, and more. But you might not fully understand how the menu is organized or what all those options do.
 
-In this lesson, we'll take a comprehensive tour of the Hydra menu - your command center for all ~emacs-writing~ features.
+In this lesson, we'll take a comprehensive tour of the Hydra menu - your command center for all ~org-scribe~ features.
 
 By the end of this lesson, you'll have:
 - Mastered opening and navigating the Hydra menu
@@ -34,13 +34,13 @@ Can you open the Hydra menu?
 2. Press ~F8~ again
 3. You should see the menu appear
 
-If you see the menu, you're ready! If not, make sure ~emacs-writing-mode~ is active.
+If you see the menu, you're ready! If not, make sure ~org-scribe-mode~ is active.
 
 * What is the Hydra Menu?
 
 ** The Problem It Solves
 
-~emacs-writing~ has dozens of features:
+~org-scribe~ has dozens of features:
 - Insert scenes and chapters
 - Activate different writing modes
 - Capture characters, locations, plots
@@ -594,9 +594,9 @@ Gradual exploration prevents overwhelm!
 ** "F8 F8 doesn't do anything"
 
 *Possible causes*:
-1. ~emacs-writing-mode~ not active
+1. ~org-scribe-mode~ not active
    - Check mode line for "Writing"
-   - Activate: ~M-x emacs-writing-mode~
+   - Activate: ~M-x org-scribe-mode~
 
 2. Keybinding not set
    - Check if Hydra package is installed
@@ -709,7 +709,7 @@ Reinforce your Hydra skills:
    - Fill out templates completely
    - See where data is stored
 
-Take your time! The Hydra menu is your primary interface to ~emacs-writing~ - mastering it makes everything else easier.
+Take your time! The Hydra menu is your primary interface to ~org-scribe~ - mastering it makes everything else easier.
 
 * Quick Reference
 
@@ -788,7 +788,7 @@ Character Research:
 
 * Summary
 
-The Hydra menu is your command center for ~emacs-writing~. Instead of memorizing dozens of command names, you can press ~F8 F8~ and see all available options organized into six clear categories.
+The Hydra menu is your command center for ~org-scribe~. Instead of memorizing dozens of command names, you can press ~F8 F8~ and see all available options organized into six clear categories.
 
 The key to mastery is:
 1. Understand the six categories

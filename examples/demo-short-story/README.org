@@ -47,7 +47,7 @@ When Dr. Elena Chen receives a cryptic warning from her future self, she must ch
 | 2025-02-14 | Complete  | TODO     |
 
 * Notes
-This is a demonstration short story project for emacs-writing. It showcases:
+This is a demonstration short story project for org-scribe. It showcases:
 - Simple 3-section structure (Opening, Middle, Ending)
 - Integrated word tracking
 - Character and plot planning in notes.org

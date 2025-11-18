@@ -5,7 +5,7 @@
 
 * Welcome to Lesson 13!
 
-You've learned all the individual features of ~emacs-writing~. Now it's time to tie everything together into a cohesive daily workflow that maximizes your productivity and creativity.
+You've learned all the individual features of ~org-scribe~. Now it's time to tie everything together into a cohesive daily workflow that maximizes your productivity and creativity.
 
 A good workflow is like a well-worn path through the forest - it gets you where you need to go efficiently, letting you focus on the journey (your writing) rather than navigation (the tools). This lesson shows you how to establish that path.
 
@@ -1105,7 +1105,7 @@ You've got this! ✍
 
 Now that you have a daily workflow, learn how to use these same tools for revision:
 
-Head to [[file:getting-started-14-revision-workflow.org][Lesson 14: Revision and Editing Workflow]] to discover how ~emacs-writing~ supports the editing phase of your work!
+Head to [[file:getting-started-14-revision-workflow.org][Lesson 14: Revision and Editing Workflow]] to discover how ~org-scribe~ supports the editing phase of your work!
 
 * Additional Resources
 
@@ -1128,7 +1128,7 @@ Head to [[file:getting-started-14-revision-workflow.org][Lesson 14: Revision and
 - ~org-pomodoro~ - Built-in timer for Pomodoro technique
 - ~org-habit~ - Track writing streaks
 - ~org-agenda~ - Plan writing sessions in advance
-- ~writeroom-mode~ - Already included in emacs-writing!
+- ~writeroom-mode~ - Already included in org-scribe!
 
 ** Backup and Version Control
 

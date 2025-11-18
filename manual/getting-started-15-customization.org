@@ -5,9 +5,10 @@
 
 * Welcome to Lesson 15!
 
-Congratulations on completing all the core lessons! You now know how to use every feature of ~emacs-writing~. This final lesson helps you make the package truly yours by customizing it to match your personal preferences and workflow.
+Congratulations on completing all the core lessons! You now know how to use every feature of ~
+org-scribe~. This final lesson helps you make the package truly yours by customizing it to match your personal preferences and workflow.
 
-The beauty of Emacs is its flexibility - every aspect can be tailored. ~emacs-writing~ follows this philosophy, providing dozens of customization options while maintaining sensible defaults.
+The beauty of Emacs is its flexibility - every aspect can be tailored. ~org-scribe~ follows this philosophy, providing dozens of customization options while maintaining sensible defaults.
 
 By the end of this lesson, you'll have:
 - Customized themes and fonts for each writing mode
@@ -16,7 +17,7 @@ By the end of this lesson, you'll have:
 - Configured export settings for your target formats
 - Set language preferences (English/Spanish)
 - Created custom keybindings for faster access
-- Built your personal ~emacs-writing~ configuration
+- Built your personal ~org-scribe~ configuration
 
 *Estimated time*: 20-25 minutes
 
@@ -163,7 +164,7 @@ Typography matters! Different fonts for different tasks.
 
 *** Font Presets with Fontaine
 
-~emacs-writing~ uses the ~fontaine~ package for font management.
+~org-scribe~ uses the ~fontaine~ package for font management.
 
 *Default presets*:
 
@@ -429,7 +430,7 @@ The scene break macro (~{{{scene-break}}}~) outputs differently per format:
 
 * Language Settings (English/Spanish)
 
-~emacs-writing~ supports both English and Spanish workflows.
+~org-scribe~ supports both English and Spanish workflows.
 
 ** Setting Template Language
 
@@ -500,7 +501,7 @@ Use your own customized templates:
 
 1. Copy existing templates:
    #+BEGIN_SRC bash
-   cp -r ~/.emacs.d/elpa/emacs-writing-*/writing-templates/novel-en ~/my-templates/
+   cp -r ~/.emacs.d/elpa/org-scribe-*/writing-templates/novel-en ~/my-templates/
    #+END_SRC
 
 2. Modify files in ~~/my-templates/~
@@ -527,7 +528,7 @@ Opens the template directory in Dired.
 
 Templates are in the package directory:
 #+BEGIN_EXAMPLE
-~/.emacs.d/elpa/emacs-writing-VERSION/writing-templates/
+~/.emacs.d/elpa/org-scribe-VERSION/writing-templates/
 #+END_EXAMPLE
 
 ** Template Structure
@@ -774,7 +775,7 @@ Here's a full, commented configuration you can adapt:
 
 #+BEGIN_SRC emacs-lisp
 ;;; ============================================================================
-;;; MY EMACS-WRITING CONFIGURATION
+;;; MY ORG-SCRIBE CONFIGURATION
 ;;; ============================================================================
 
 ;; -----------------------------------------------------------------------------
@@ -871,7 +872,7 @@ Here's a full, commented configuration you can adapt:
   (define-key org-mode-map (kbd "C-c i c") 'writing-insert-chapter))
 
 ;;; ============================================================================
-;;; END EMACS-WRITING CONFIGURATION
+;;; END ORG-SCRIBE CONFIGURATION
 ;;; ============================================================================
 #+END_SRC
 
@@ -964,7 +965,7 @@ If something breaks:
 cd ~/.emacs.d
 git init
 git add init.el
-git commit -m "Initial emacs-writing configuration"
+git commit -m "Initial org-scribe configuration"
 #+END_SRC
 
 Now you can:
@@ -994,7 +995,7 @@ Many writers share their configs online:
 
 *Example dotfiles repositories*:
 - https://github.com/search?q=emacs+writing+config
-- https://github.com/search?q=emacs-writing-mode
+- https://github.com/search?q=org-scribe-mode
 
 *Sharing your config*:
 
@@ -1080,7 +1081,7 @@ Let's customize your setup right now!
 
 ** Exercise: Create Your Personal Configuration
 
-*Goal*: Build a customized ~emacs-writing~ setup.
+*Goal*: Build a customized ~org-scribe~ setup.
 
 ### Step 1: Open Your Init File (1 min)
 
@@ -1088,7 +1089,7 @@ Let's customize your setup right now!
 2. Go to the end: ~M->~
 3. Add a comment:
    #+BEGIN_SRC emacs-lisp
-   ;;; EMACS-WRITING CUSTOMIZATION
+   ;;; ORG-SCRIBE CUSTOMIZATION
    #+END_SRC
 
 ** Step 2: Choose Your Writing Theme (3 min)
@@ -1152,9 +1153,9 @@ Pick 3-5 features you use most:
 Add comments explaining your choices:
 
 #+BEGIN_SRC emacs-lisp
-;;; EMACS-WRITING CUSTOMIZATION
+;;; ORG-SCRIBE CUSTOMIZATION
 ;;
-;; Personal configuration for emacs-writing package
+;; Personal configuration for org-scribe package
 ;; Author: Your Name
 ;; Last updated: 2025-11-16
 ;;
@@ -1171,7 +1172,7 @@ Add comments explaining your choices:
 
 * Summary and Key Takeaways
 
-You now know how to customize every aspect of ~emacs-writing~!
+You now know how to customize every aspect of ~org-scribe~!
 
 ** What You Learned
 
@@ -1212,7 +1213,7 @@ You now know how to customize every aspect of ~emacs-writing~!
 The minimal config most writers need:
 
 #+BEGIN_SRC emacs-lisp
-;;; Minimal emacs-writing config
+;;; Minimal org-scribe config
 
 ;; Visual
 (setq my-writing-env-work-theme 'poet)           ; Your preferred theme
@@ -1241,7 +1242,7 @@ The minimal config most writers need:
 
 #+BEGIN_EXAMPLE
 ═══════════════════════════════════════
-  EMACS-WRITING CONFIGURATION CHECKLIST
+  ORG-SCRIBE CONFIGURATION CHECKLIST
 ═══════════════════════════════════════
 
 VISUAL CUSTOMIZATION
@@ -1330,7 +1331,7 @@ MAINTENANCE
 - ~C-h i~ - Info documentation
 
 *Online*:
-- Emacs-writing issues: https://github.com/anthropics/claude-code/issues
+- org-scribe issues: https://github.com/anthropics/claude-code/issues
 - r/emacs community
 - Emacs StackExchange
 - #emacs on IRC/Discord
@@ -1347,7 +1348,7 @@ MAINTENANCE
 
 ---
 
-*Congratulations on completing the entire emacs-writing tutorial series!* 🎉
+*Congratulations on completing the entire org-scribe tutorial series!* 🎉
 
 You now have a complete, powerful, and personalized writing environment. Use it to write amazing stories! 📚✨
 

@@ -620,8 +620,8 @@ Advanced users can configure custom TODO states, but TODO/DONE works perfectly f
 *Solutions*:
 1. Make sure you're pressing F8 twice quickly
 2. Try ~M-x hydra-org-scribe/body~ instead
-3. Check that emacs-writing-mode is enabled (look for ~" Write"~ in the modeline)
-4. If needed: ~M-x emacs-writing-mode~ to enable it
+3. Check that org-scribe-mode is enabled (look for ~" Write"~ in the modeline)
+4. If needed: ~M-x org-scribe-mode~ to enable it
 
 ** "The scene template looks weird/incomplete"
 

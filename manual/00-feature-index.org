@@ -1,15 +1,15 @@
-#+TITLE: Emacs Writing Feature Index
+#+TITLE: org-scribe Feature Index
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
 #+STARTUP: overview
 
 * Introduction
 
-This document provides a comprehensive index of all features in the ~emacs-writing~ package. Each feature is briefly described in a paragraph. Detailed documentation for each feature will be available in separate files linked from this index.
+This document provides a comprehensive index of all features in the ~org-scribe~ package. Each feature is briefly described in a paragraph. Detailed documentation for each feature will be available in separate files linked from this index.
 
 *Version*: 0.2.0 (includes merged emacs-org-scribe-template functionality)
 
-*Package Overview*: ~emacs-writing~ is a comprehensive toolkit for creative writers working in Org-mode, providing everything from project templates to export filters for novelists and short story writers.
+*Package Overview*: ~org-scribe~ is a comprehensive toolkit for creative writers working in Org-mode, providing everything from project templates to export filters for novelists and short story writers.
 
 * Feature Categories
 
@@ -382,13 +382,13 @@ Queries WordReference.com's Spanish synonym database and displays results in a c
 
 ** English Thesaurus (powerthesaurus)
 
-Integration with the powerthesaurus package provides English synonym and antonym lookup using the PowerThesaurus.org API. The function ~powerthesaurus-lookup-dwim~ looks up the word at point or prompts for a word, displaying alternatives in a searchable buffer. While not part of emacs-writing's code, the package declares this function for hydra integration, making it accessible alongside Spanish language tools for bilingual writers.
+Integration with the powerthesaurus package provides English synonym and antonym lookup using the PowerThesaurus.org API. The function ~powerthesaurus-lookup-dwim~ looks up the word at point or prompts for a word, displaying alternatives in a searchable buffer. While not part of org-scribe's code, the package declares this function for hydra integration, making it accessible alongside Spanish language tools for bilingual writers.
 
 *Status*: Optional (requires powerthesaurus package) | *Hydra*: Not in menu (available if installed) | *Module*: External dependency
 
 ** Translation (gt)
 
-The package declares integration with the gt (Google Translate) package for on-the-fly translation between languages. While not providing its own translation code, emacs-writing ensures translation tools are available in the writing workflow. Useful for bilingual writers or those writing in a second language who need quick translation checks. The gt package supports many languages and multiple translation engines.
+The package declares integration with the gt (Google Translate) package for on-the-fly translation between languages. While not providing its own translation code, org-scribe ensures translation tools are available in the writing workflow. Useful for bilingual writers or those writing in a second language who need quick translation checks. The gt package supports many languages and multiple translation engines.
 
 *Status*: Optional (requires gt package) | *Hydra*: Not in menu (available if installed) | *Module*: External dependency
 
@@ -445,7 +445,7 @@ To use column view with writing projects, add a ~#+COLUMNS~ line to your manuscr
 
 ** Unified Hydra Menu (~hydra-org-scribe/body~)
 
-Provides a single-keystroke menu for accessing all emacs-writing features. Activated via ~F8 F8~ (default keybinding), the hydra displays a formatted menu organized into sections: Insert (scene/chapter), Modes (org-scribe/focus/project/editing), Capture (notes/character/location/object/timeline), Tools (word count/tracking/dictionary), Search (by PoV/character/plot/location/TODOs), and Manage (character/location/plot linking submenus). Each function is accessible via a single key. The hydra uses color-coded hints and grouped layout for quick visual scanning.
+Provides a single-keystroke menu for accessing all org-scribe features. Activated via ~F8 F8~ (default keybinding), the hydra displays a formatted menu organized into sections: Insert (scene/chapter), Modes (org-scribe/focus/project/editing), Capture (notes/character/location/object/timeline), Tools (word count/tracking/dictionary), Search (by PoV/character/plot/location/TODOs), and Manage (character/location/plot linking submenus). Each function is accessible via a single key. The hydra uses color-coded hints and grouped layout for quick visual scanning.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8~ (global keybinding) | *Module*: ~ui/org-scribe-hydra.el~
 
@@ -471,13 +471,13 @@ Accessed via ~F8 F8 P~, this submenu provides plot thread management (p: set plo
 
 The package provides minimal global keybindings to avoid conflicts: ~F8 F8~ for the hydra menu and ~C-c W~ for quick note capture. These are set up via the ~emacs-org-scribe-mode~ minor mode keybindings. Additional keybindings can be configured by users but the package defaults to hydra access to minimize namespace pollution. The function ~emacs-org-scribe-setup~ adds an org-mode hook to enable the minor mode automatically in all org buffers.
 
-*Status*: Fully implemented | *Hydra*: N/A (core keybindings) | *Module*: ~emacs-writing.el~
+*Status*: Fully implemented | *Hydra*: N/A (core keybindings) | *Module*: ~org-scribe.el~
 
 ** Emacs Writing Mode (~emacs-org-scribe-mode~)
 
 A minor mode that provides the package's keybindings and lighter (~" Write"~ in the modeline). When enabled in an org-mode buffer, it activates the hydra menu keybinding and capture keybinding. The mode can be enabled manually or automatically via ~emacs-org-scribe-setup~ which adds it to ~org-mode-hook~. The mode is buffer-local and integrates cleanly with other org-mode configurations.
 
-*Status*: Fully implemented | *Hydra*: N/A (core mode) | *Module*: ~emacs-writing.el~
+*Status*: Fully implemented | *Hydra*: N/A (core mode) | *Module*: ~org-scribe.el~
 
 * Configuration
 :PROPERTIES:

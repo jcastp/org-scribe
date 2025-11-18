@@ -1,16 +1,16 @@
-#+TITLE: Emacs Writing - Getting Started Guide
+#+TITLE: org-scribe - Getting Started Guide
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
 #+STARTUP: overview
 
 * Welcome to Emacs Writing!
 
-Welcome to ~emacs-writing~, a comprehensive toolkit designed to help you write novels and short stories in Emacs using Org-mode. If you're seeing this for the first time, you might feel overwhelmed by all the features available. Don't worry! This guide will walk you through everything step by step, starting from the very beginning.
+Welcome to ~org-scribe~, a comprehensive toolkit designed to help you write novels and short stories in Emacs using Org-mode. If you're seeing this for the first time, you might feel overwhelmed by all the features available. Don't worry! This guide will walk you through everything step by step, starting from the very beginning.
 
 ** About This Guide
 
 This tutorial is designed for writers who:
-- Have just installed ~emacs-writing~
+- Have just installed ~org-scribe~
 - Want to start writing right away
 - Need a gentle introduction to the package's features
 - Prefer learning by doing rather than reading technical documentation
@@ -33,7 +33,7 @@ Before starting, make sure you have:
 
 ✓ Emacs 29.1 or higher installed
 ✓ Org-mode 9.6 or higher (comes with Emacs)
-✓ The ~emacs-writing~ package installed
+✓ The ~org-scribe~ package installed
 ✓ Basic familiarity with Emacs (opening files, basic navigation)
 ✓ Basic familiarity with Org-mode (headings, properties - we'll explain as we go)
 
