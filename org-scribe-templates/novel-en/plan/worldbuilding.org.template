@@ -1,0 +1,535 @@
+#+TITLE: ${TITLE} - World Building
+#+AUTHOR: ${AUTHOR}
+#+STARTUP: overview
+
+* World Overview
+:PROPERTIES:
+:ID:
+:World-Name:
+:Genre: Fantasy/Sci-Fi/etc.
+:Tech-Level:
+:Magic-Level:
+:END:
+
+** Elevator Pitch
+
+Brief description of the world in 2-3 sentences.
+
+** Core Concept
+
+What makes this world unique? What is the central premise?
+
+** Tone & Atmosphere
+
+- Overall tone ::
+- Mood ::
+- Aesthetic ::
+
+* Magic/Technology System
+:PROPERTIES:
+:ID:
+:System-Type: Magic/Technology/Both
+:Hard-Soft: Hard/Soft
+:END:
+
+** Fundamental Rules
+
+*** How It Works
+
+- Source of power ::
+- How it's accessed ::
+- Who can use it ::
+- Limitations ::
+- Costs/consequences ::
+
+*** Laws and Principles
+
+1. First Law ::
+2. Second Law ::
+3. Third Law ::
+
+** Capabilities
+
+*** What It Can Do
+
+- Common applications ::
+- Advanced applications ::
+- Theoretical limits ::
+
+*** What It Cannot Do
+
+- Hard limitations ::
+- Practical limitations ::
+- Taboos ::
+
+** Learning & Mastery
+
+- How is it learned ::
+- Training duration ::
+- Skill levels ::
+- Masters/experts ::
+
+** Social Impact
+
+- How society uses it ::
+- Economic impact ::
+- Military applications ::
+- Everyday life ::
+
+** Exceptions & Anomalies
+
+Unique cases, artifacts, or individuals that break the rules.
+
+* Geography & Environment
+:PROPERTIES:
+:ID:
+:END:
+
+** World Type
+
+- Type :: Planet/Flat world/Multiple realms/etc.
+- Size ::
+- Moons/Suns ::
+- Day/Night cycle ::
+
+** Regions & Territories
+
+*** Region 1
+:PROPERTIES:
+:ID:
+:Region-Name:
+:Climate:
+:Terrain:
+:END:
+
+**** Geographic Features
+- Terrain ::
+- Climate ::
+- Natural resources ::
+- Dangers ::
+
+**** Inhabitants
+- Primary inhabitants ::
+- Population density ::
+- Major settlements ::
+
+**** Political Control
+- Governing power ::
+- Borders ::
+- Contested areas ::
+
+*** Region 2
+:PROPERTIES:
+:ID:
+:Region-Name:
+:Climate:
+:Terrain:
+:END:
+
+** Natural Laws
+
+- Physics differences ::
+- Atmospheric composition ::
+- Gravity ::
+- Seasons ::
+- Natural phenomena ::
+
+** Flora & Fauna
+
+*** Notable Plants
+- Magical/useful plants ::
+- Dangerous plants ::
+- Staple crops ::
+
+*** Notable Creatures
+- Sentient species ::
+- Dangerous creatures ::
+- Domesticated animals ::
+- Mythical beings ::
+
+** Maps & Visual References
+
+# [[file:../notes/images/world-map.jpg]]
+
+* History & Timeline
+:PROPERTIES:
+:ID:
+:END:
+
+** Major Historical Periods
+
+*** Ancient Era
+:PROPERTIES:
+:Period-Start:
+:Period-End:
+:END:
+
+- Key events ::
+- Dominant powers ::
+- Defining characteristics ::
+
+*** Classical Era
+:PROPERTIES:
+:Period-Start:
+:Period-End:
+:END:
+
+- Key events ::
+- Dominant powers ::
+- Defining characteristics ::
+
+*** Modern Era
+:PROPERTIES:
+:Period-Start:
+:Period-End:
+:END:
+
+- Key events ::
+- Dominant powers ::
+- Defining characteristics ::
+
+** Significant Events
+
+*** Event 1: [Event Name]
+:PROPERTIES:
+:ID:
+:Date:
+:Impact: High/Medium/Low
+:END:
+
+- What happened ::
+- Who was involved ::
+- Consequences ::
+- Long-term effects ::
+
+*** Event 2: [Event Name]
+:PROPERTIES:
+:ID:
+:Date:
+:Impact: High/Medium/Low
+:END:
+
+** Legends & Mythology
+
+- Creation myths ::
+- Cultural legends ::
+- Prophecies ::
+- Historical figures who became legends ::
+
+* Social Structures
+:PROPERTIES:
+:ID:
+:END:
+
+** Government & Politics
+
+*** Nation/Kingdom 1
+:PROPERTIES:
+:ID:
+:Gov-Type: Monarchy/Democracy/etc.
+:Leader:
+:Capital:
+:END:
+
+**** Type of Government
+- Structure ::
+- How leaders are chosen ::
+- Power distribution ::
+- Stability ::
+
+**** Key Political Figures
+- Current ruler ::
+- Opposition ::
+- Influential advisors ::
+
+**** Laws & Justice System
+- Legal code ::
+- Law enforcement ::
+- Punishment systems ::
+
+*** Nation/Kingdom 2
+:PROPERTIES:
+:ID:
+:Gov-Type:
+:Leader:
+:Capital:
+:END:
+
+** Social Classes & Hierarchy
+
+*** Upper Class
+- Composition ::
+- Privileges ::
+- Responsibilities ::
+- Population percentage ::
+
+*** Middle Class
+- Composition ::
+- Living conditions ::
+- Social mobility ::
+
+*** Lower Class
+- Composition ::
+- Living conditions ::
+- Rights and restrictions ::
+
+** Economy & Trade
+
+- Currency ::
+- Main industries ::
+- Trade routes ::
+- Economic system ::
+- Wealth distribution ::
+- Major trade goods ::
+
+** Military & Warfare
+
+- Military structure ::
+- Weapons technology ::
+- Magic in warfare ::
+- Major conflicts ::
+- Military traditions ::
+
+* Culture & Society
+:PROPERTIES:
+:ID:
+:END:
+
+** Languages
+
+*** Language 1
+:PROPERTIES:
+:ID:
+:Language-Name:
+:Speakers:
+:Writing-System:
+:END:
+
+- Origin ::
+- Speakers ::
+- Dialects ::
+- Writing system ::
+- Common phrases ::
+
+*** Language 2
+:PROPERTIES:
+:ID:
+:Language-Name:
+:Speakers:
+:Writing-System:
+:END:
+
+** Religion & Belief Systems
+
+*** Religion 1
+:PROPERTIES:
+:ID:
+:Religion-Name:
+:Followers:
+:Deity-Type: Monotheistic/Polytheistic/etc.
+:END:
+
+**** Deities/Divine Beings
+- Main deity/deities ::
+- Lesser deities ::
+- Divine hierarchy ::
+
+**** Beliefs & Practices
+- Core beliefs ::
+- Religious practices ::
+- Sacred texts ::
+- Holidays ::
+- Clergy structure ::
+
+**** Social Influence
+- Political power ::
+- Cultural impact ::
+- Conflicts with other religions ::
+
+*** Religion 2
+:PROPERTIES:
+:ID:
+:Religion-Name:
+:Followers:
+:Deity-Type:
+:END:
+
+** Customs & Traditions
+
+- Coming of age ::
+- Marriage ::
+- Death and burial ::
+- Festivals ::
+- Social etiquette ::
+
+** Values & Morality
+
+- Core values ::
+- Virtues ::
+- Sins/taboos ::
+- Honor codes ::
+- Controversial topics ::
+
+** Arts & Entertainment
+
+- Music ::
+- Visual arts ::
+- Literature ::
+- Theater/performance ::
+- Games and sports ::
+
+** Education
+
+- Education system ::
+- Literacy rate ::
+- Centers of learning ::
+- Access to education ::
+
+** Daily Life
+
+- Typical day ::
+- Food and cuisine ::
+- Clothing ::
+- Housing ::
+- Transportation ::
+- Communication ::
+
+* World Facts & Rules
+:PROPERTIES:
+:ID:
+:END:
+
+** Established Facts
+
+List of concrete, unchangeable facts about your world. This serves as your world bible.
+
+1. [Fact] :: [Explanation/Source]
+2. [Fact] :: [Explanation/Source]
+3. [Fact] :: [Explanation/Source]
+
+** Continuity Notes
+
+Important details to maintain consistency:
+
+- [Subject] :: [Details to remember]
+
+** Internal Logic
+
+Rules you must not violate:
+
+1. [Rule] :: [Why it matters]
+2. [Rule] :: [Why it matters]
+
+** Timeline Synchronization
+
+Track how different storylines align:
+
+- [Event] happens while [other event] is occurring in [location]
+
+* Quick Reference
+:PROPERTIES:
+:ID:
+:END:
+
+** At-a-Glance Facts
+
+- World name ::
+- Current year/era ::
+- Main nations ::
+- Magic/tech level ::
+- Primary conflict ::
+- Key themes ::
+
+** Important Numbers
+
+- World population ::
+- Major city populations ::
+- Military sizes ::
+- Time/calendar conversions ::
+
+** Key Dates
+
+| Date | Event | Significance |
+|------+-------+--------------|
+|      |       |              |
+
+** Pronunciation Guide
+
+| Name/Term | Pronunciation | Meaning |
+|-----------+---------------+---------|
+|           |               |         |
+
+** Naming Conventions
+
+Guidelines for creating consistent names:
+
+- Culture 1 :: [Pattern, sounds, structure]
+- Culture 2 :: [Pattern, sounds, structure]
+
+* Research & Inspiration
+:PROPERTIES:
+:ID:
+:END:
+
+** Real-World Inspirations
+
+- Historical periods ::
+- Cultures ::
+- Geographic locations ::
+- Scientific concepts ::
+
+** Source Materials
+
+- Books ::
+- Articles ::
+- Videos ::
+- Documentaries ::
+
+** Similar Worlds in Fiction
+
+What to emulate and what to avoid:
+
+- Similar work 1 :: [What works, what doesn't]
+
+* Development Notes
+:PROPERTIES:
+:ID:
+:END:
+
+** Questions to Resolve
+
+- [ ] Question 1
+- [ ] Question 2
+- [ ] Question 3
+
+** Ideas to Develop
+
+- Idea 1 ::
+- Idea 2 ::
+
+** Revision History
+
+Track major changes to your world:
+
+| Date | Change | Reason | Impact |
+|------+--------+--------+--------|
+|      |        |        |        |
+
+* Cross-References
+:PROPERTIES:
+:ID:
+:END:
+
+** Connections to Characters
+
+- How worldbuilding affects character development
+- [[file:characters.org][Characters]] influenced by world elements
+
+** Connections to Plot
+
+- How world rules create plot possibilities
+- [[file:plot.org][Plot]] elements derived from world
+
+** Connections to Locations
+
+- See detailed location descriptions in [[file:locations.org][Locations]]
