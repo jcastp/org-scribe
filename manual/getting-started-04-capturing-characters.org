@@ -887,15 +887,15 @@ How to use character features while writing:
 - Converts plain text to ID links
 - One command, entire manuscript updated
 
-** TODO "What if I change a character's name?"
-*NOTE:* Point 4 doesn't happen automatically.
+** "What if I change a character's name?"
 
 *Easy!*
 
 1. Go to character profile
 2. Change the heading (the name)
 3. ID links still work (they use the ID, not the name!)
-4. (*NO*) All scenes automatically show new name
+4. Press ~F8 F8 U~ to update the links.
+5. All scenes will show now the new name
 
 *No need to update each scene manually!*
 

@@ -94,28 +94,22 @@ Press ~F8 F8~ to open the Hydra menu, then press ~w~ (for "Words count")
 You'll see a message in the minibuffer like:
 
 #+BEGIN_EXAMPLE
-Subtree "Scene 1 - The Alarm": 347 words (excluding metadata)
+Word count: 2108
 #+END_EXAMPLE
 
 *That's it!* Quick and easy.
 
-** TODO What Gets Counted
-*NOTE:* This does not work as stated here. It counts all the words in the present window, and doesn't discriminate on headings or any of the information stated here.
+** What Gets Counted
 
-This command counts the current subtree:
-- If cursor is on a scene heading → counts that scene
-- If cursor is on a chapter heading → counts entire chapter (all scenes)
-- If cursor is on an act heading → counts entire act
-- If cursor is on the document title → counts entire manuscript
-
+This command counts the current window:
+- if the window shows the whole novel.org file, it will count everything.
+- if the window is in focus mode, or narrowed, you will get the word counting of the section focused.  
 ** Try It Now!
 
-1. Put cursor on a scene heading
-2. Press ~F8 F8 w~
-3. Note the word count
-4. Put cursor on a chapter or act heading (novels)
-5. Press ~F8 F8 w~
-6. See the larger count!
+1. With the writing mode enabled, press ~F8 F8 w~, for "Words count".
+2. This will count your whole manuscript count.
+3. With the focus mode enables, press ~F8 F8 w~, for "Words count".
+4. This will count your focused section.   
 
 * Adding Word Count Properties
 

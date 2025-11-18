@@ -115,7 +115,7 @@ Press: ~F8 F8 1~
 
 Or use: ~M-x org-scribe/org-find-pov~
 
-** TODO The Process
+** The Process
 *NOTE:* This is not implemented as written
 
 1. You'll see a prompt: ~Search for PoV:~
@@ -124,48 +124,22 @@ Or use: ~M-x org-scribe/org-find-pov~
 4. Select: ~Alex Rivera~
 5. Press: ~Enter~
 
-** TODO Example Results
-*NOTE:* This is not implemented as shown below
+** Example Results
 
 #+BEGIN_EXAMPLE
-Search results for PoV "Alex Rivera":
-Found 12 scenes
-
-╔═══════════════════════════════════════════════════════════════
-║ Act I
-║ ├─ Chapter 1: The Beginning
-║ │  └─ Scene 1 - Morning Routine
-║ │  └─ Scene 2 - Strange Readings
-║ │  └─ Scene 4 - First Victim
-║ ├─ Chapter 2: Complications
-║ │  └─ Scene 7 - Evidence of Tampering
-║ │  └─ Scene 9 - Meeting with Boss
-║
-║ Act II
-║ ├─ Chapter 3: Escalation
-║ │  └─ Scene 12 - Discovery at Second Site
-║ │  └─ Scene 15 - Following the Lead
-║ ├─ Chapter 4: Midpoint
-║ │  └─ Scene 18 - False Accusation
-║ │  └─ Scene 21 - Personal Cost
-║
-║ Act III
-║ ├─ Chapter 5: Resolution
-║ │  └─ Scene 38 - The Revelation
-║ │  └─ Scene 42 - Confrontation
-║ │  └─ Scene 46 - Aftermath
-╚═══════════════════════════════════════════════════════════════
-
-Total: 12 scenes with PoV "Alex Rivera"
+  FINISHED Scene 1 - The Alarm                                                        :ignore:
+  FINISHED Scene 2 - Coffee Shop Encounter                                            :ignore:
+  TODO Scene 1 - The Decision                                                         :ignore:
+  TOWRITE Scene 1 - First Attempt                                                     :ignore:
+  TOWRITE Scene 1 - Coffee Talk                                                       :ignore:
+  TOWRITE Scene 2 - Finding Balance                                                   :ignore:
+  TODO Scene 1 - Full Circle                                                          :ignore:
 #+END_EXAMPLE
 
 ** Interpreting Results
 
 The results show:
-- **Hierarchical structure**: Acts → Chapters → Scenes
 - **Scene titles**: Full scene headings
-- **Distribution**: Where PoV scenes cluster (early, middle, late)
-- **Total count**: How many scenes from this PoV
 
 ** Using Results
 
@@ -622,58 +596,19 @@ Or use: ~M-x org-scribe/org-find-todos~
 
 Or Org's built-in: ~C-c a t~ (agenda todo list)
 
-** TODO Example Results
-*NOTE:* This is not implemented as shown below.
+** Example Results
 
 #+BEGIN_EXAMPLE
-TODO Items Across Project:
-Found 12 items
-
-╔═══════════════════════════════════════════════════════════════
-║ MANUSCRIPT (novel.org)
-║
-║ Scene 7 - Evidence of Tampering
-║   → TODO Verify water treatment process is scientifically accurate
-║
-║ Scene 15 - Following the Lead
-║   → FIXME This transition is too abrupt
-║
-║ Scene 23 - Safe Haven
-║   → REVISE Add more sensory details to coffee shop
-║
-║ Scene 30 - Confronting Jordan
-║   → TODO Jordan's motivation unclear - beef this up
-║
-║ Scene 38 - The Revelation
-║   → RESEARCH Real cases of water contamination sabotage
-║
-║ ────────────────────────────────────────────────────────────
-║ CHARACTERS (plan/characters.org)
-║
-║ Marcus Chen (Antagonist)
-║   → TODO Add more backstory - why does he care so much?
-║   → REVISE Make his technical expertise more believable
-║
-║ ────────────────────────────────────────────────────────────
-║ PLOT (plan/plot.org)
-║
-║ Main Mystery - Water Sabotage
-║   → TODO Scene 33 needs to raise stakes higher
-║   → FIXME Resolution feels rushed - expand Scene 42
-║
-║ ────────────────────────────────────────────────────────────
-║ RESEARCH (notes/research.org)
-║
-║ Water Treatment Systems
-║   → RESEARCH Interview someone in water management
-║   → TODO Find diagrams of treatment plant layout
-╚═══════════════════════════════════════════════════════════════
-
-Total: 12 TODO items
-- TODO: 6
-- FIXME: 3
-- REVISE: 2
-- RESEARCH: 4
+ File: novel.org
+  TODO Chapter 2                                                                       :ignore:
+  TODO Scene 1 - The Decision                                                          :ignore:
+  TOWRITE Chapter 3                                                                    :ignore:
+  TOWRITE Scene 1 - First Attempt                                                      :ignore:
+  TOWRITE Chapter 4 - Learning and Adjusting                                           :ignore:
+  TOWRITE Scene 1 - Coffee Talk                                                        :ignore:
+  TOWRITE Scene 2 - Finding Balance                                                    :ignore:
+  TODO Chapter 5 - The New Normal                                                      :ignore:
+  TODO Scene 1 - Full Circle                                                           :ignore:
 #+END_EXAMPLE
 
 ** Using TODO Results

@@ -593,8 +593,7 @@ Press: ~F8 F8 4~ (search by location)
 
 Or use: ~M-x org-scribe/org-find-location~
 
-** TODO Process
-*NOTE:* This doesn't work as written here.
+** Process
 
 1. You'll see: ~Search for location:~
 2. Start typing location name: ~Coffee~
@@ -704,7 +703,7 @@ This processes your entire manuscript, converting all matching location names to
 *Warning*: Review results! Ambiguous names might match incorrectly.
 
 * TODO Location Timeline
-*NOTE:* This function doesn't exist. It's an hallucination.
+*NOTE:* This function doesn't exist yet. It's an hallucination.
 
 Like character timelines, you can visualize location usage.
 

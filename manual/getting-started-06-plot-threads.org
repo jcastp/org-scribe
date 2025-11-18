@@ -150,8 +150,7 @@ For novels (50-70 scenes), a healthy structure might be:
 
 More than this risks overcomplexity and reader confusion.
 
-* TODO The Plot Thread Capture Template
-*NOTE:* This is not implemented
+* The Plot Thread Capture Template
 
 Let's explore what's in the plot thread capture template.
 
