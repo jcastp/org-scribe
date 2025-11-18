@@ -394,10 +394,14 @@ file that doesn't exist."
      "* %^{Character Name}
 :PROPERTIES:
 :ID: %(org-id-new)
-:Role: %^{Role|Protagonist|Antagonist|Supporting|Minor}
+:Role: %^{Role|Protagonist|Opponent|Antagonist|Supporting|Minor|Ally|Mentor}
 :Age: %^{Age}
 :Gender: %^{Gender}
 :Occupation: %^{Occupation}
+:Goal:
+:Motivation:
+:Conflict:
+:Arc:
 :First-appearance: %^{First Appearance Chapter}
 :END:
 
