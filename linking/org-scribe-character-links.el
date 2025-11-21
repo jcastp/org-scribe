@@ -468,7 +468,7 @@ Shows which characters appear in which scenes, with distinction
 between PoV characters and other appearances.
 
 Symbols:
-  ◆ = PoV character (implies presence)
+  PoV = PoV character (implies presence)
   ● = Present in scene (not PoV)
   (blank) = Not present
 
