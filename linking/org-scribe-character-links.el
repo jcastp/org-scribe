@@ -451,7 +451,8 @@ Returns:
   (cond
    ;; PoV character - show ◆ (diamond, implies presence)
    ((and pov-name (string= char-name pov-name))
-    "◆")
+    ;;"◆")
+    "PoV")
    ;; Present in Characters list - show ● (circle)
    ((and chars-list (member char-name chars-list))
     "●")
