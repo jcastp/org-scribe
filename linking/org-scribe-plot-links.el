@@ -438,6 +438,43 @@ Returns the maximum number of consecutive scenes where thread is absent."
             (setq max-gap (max max-gap gap)))))
       max-gap)))
 
+(defun org-scribe--get-plot-thread-weight (thread-name)
+  "Get the Weight property for THREAD-NAME from plot file.
+Returns the weight as a float, or 999.0 if not found.
+
+THREAD-NAME is matched against the :NAME: property or heading text,
+using the same logic as org-scribe--get-plot-thread-name-at-point."
+  (let ((plot-file (org-scribe--get-plot-thread-file))
+        (weight 999.0))  ; Default for threads without Weight
+    (when (and plot-file (file-exists-p plot-file))
+      (with-current-buffer (find-file-noselect plot-file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         ;; Use org-map-entries to find the plot thread
+         (catch 'found
+           (org-map-entries
+            (lambda ()
+              (let* ((level (org-current-level))
+                     (id (org-id-get))
+                     (name (org-scribe--get-plot-thread-name-at-point))
+                     (heading (org-get-heading t t t t))
+                     ;; Check if this looks like a plot thread heading
+                     (is-plot-thread
+                      (and (>= level 1)
+                           id
+                           name
+                           (or (org-entry-get nil "TYPE")
+                               (org-entry-get nil "THREAD-TYPE")
+                               (string-match-p "\\(Main Plot\\|Subplot\\|Thread\\|A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\)"
+                                              heading)))))
+                ;; If this is a plot thread and the name matches
+                (when (and is-plot-thread (string= name thread-name))
+                  (when-let ((weight-str (org-entry-get nil "Weight")))
+                    (setq weight (string-to-number weight-str)))
+                  (throw 'found t))))
+            nil 'file)))))
+    weight))
+
 ;;; Dynamic Block: Plot Thread Timeline
 
 ;;;###autoload
@@ -450,24 +487,44 @@ using symbols:
   ● = Thread is active in this scene
   (blank) = Thread not present
 
+Thread columns are sorted by :Weight: property (ascending).
+Threads without a Weight property appear last, sorted alphabetically.
+
 Thread information is extracted from the :Plot: property in scenes.
 Thread names are extracted from ID links like [[id:...][Name]]."
-  (let* ((threads nil)  ; Unique thread names
+  (let* ((threads-set (make-hash-table :test 'equal))
          (scenes (org-scribe--get-all-scenes-with-plots)))
 
-    ;; Collect unique thread names
+    ;; Collect unique thread names (unchanged)
     (dolist (scene scenes)
       (let ((thread-list (nth 2 scene)))
         (dolist (thread thread-list)
-          (unless (member thread threads)
-            (push thread threads)))))
+          (puthash thread t threads-set))))
 
-    ;; Sort threads alphabetically
-    (setq threads (sort threads #'string<))
+    ;; Build list of (name . weight) pairs
+    (let ((thread-weights nil))
+      (dolist (thread-name (hash-table-keys threads-set))
+        (let ((weight (org-scribe--get-plot-thread-weight thread-name)))
+          (push (cons thread-name weight) thread-weights)))
+
+      ;; Sort by weight (ascending), then alphabetically for ties
+      (setq thread-weights
+            (sort thread-weights
+                  (lambda (a b)
+                    (let ((weight-a (cdr a))
+                          (weight-b (cdr b)))
+                      (if (= weight-a weight-b)
+                          ;; Weights equal - sort alphabetically
+                          (string< (car a) (car b))
+                        ;; Different weights - sort by weight
+                        (< weight-a weight-b))))))
+
+      ;; Extract sorted thread names
+      (setq threads (mapcar #'car thread-weights)))
 
     (if (null scenes)
         (insert "No scenes with Plot properties found.\n")
-      ;; Generate org table
+      ;; Generate org table (unchanged)
       (insert "| Scene | Chapter |")
       (dolist (thread threads)
         (insert (format " %s |" thread)))
@@ -476,7 +533,7 @@ Thread names are extracted from ID links like [[id:...][Name]]."
         (insert "--------+"))
       (insert "\n")
 
-      ;; Table rows
+      ;; Table rows (unchanged)
       (dolist (scene scenes)
         (let ((scene-name (nth 0 scene))
               (chapter (nth 1 scene))

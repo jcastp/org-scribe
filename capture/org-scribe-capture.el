@@ -591,6 +591,7 @@ file that doesn't exist."
 :ID: %(org-id-new)
 :THREAD-TYPE: %\\2
 :STATUS: %^{Status|Emerging|Planned|In Progress|Needs Development|Complete}
+:Weight: %^{Weight|1.0|2.0|3.0|4.0|5.0}
 :FIRST-APPEARANCE:
 :END:
 
