@@ -395,6 +395,7 @@ file that doesn't exist."
 :PROPERTIES:
 :ID: %(org-id-new)
 :Role: %^{Role|Protagonist|Opponent|Antagonist|Supporting|Minor|Ally|Mentor}
+:Weight: %^{Weight|1.0|2.0|3.0|4.0|5.0}
 :Age: %^{Age}
 :Gender: %^{Gender}
 :Occupation: %^{Occupation}
@@ -454,7 +455,8 @@ file that doesn't exist."
 
 ** Notes
 - "
-     :empty-lines 1))
+     :empty-lines 1
+     ))
   "Capture templates for character profiles.")
 
 (defvar org-scribe/location-capture-templates
