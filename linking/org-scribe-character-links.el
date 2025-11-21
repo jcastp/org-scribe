@@ -421,11 +421,50 @@ CHARACTERS-LIST is a list of character names (or nil if no Characters)."
           nil 'file))))
     (nreverse scenes)))
 
+(defun org-scribe--get-character-weight (char-name)
+  "Get the Weight property for CHAR-NAME from characters file.
+Returns the weight as a float, or 999.0 if not found.
+
+CHAR-NAME is matched against the :NAME: property or heading text,
+using the same logic as org-scribe--get-character-name-at-point."
+  (let ((char-file (org-scribe--get-character-file))
+        (weight 999.0))  ; Default for characters without Weight
+    (when (and char-file (file-exists-p char-file))
+      (with-current-buffer (find-file-noselect char-file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         ;; Use org-map-entries to find the character (same as org-scribe--get-all-characters)
+         (catch 'found
+           (org-map-entries
+            (lambda ()
+              (let* ((level (org-current-level))
+                     (name (org-scribe--get-character-name-at-point))
+                     (role (org-entry-get nil "Role"))
+                     (type (org-entry-get nil "TYPE"))
+                     (is-character
+                      (and (>= level 1)
+                           name
+                           (or role type
+                               (save-excursion
+                                 (ignore-errors
+                                   (org-up-heading-safe)
+                                   (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
+                                                  (org-get-heading t t t t))))))))
+                ;; If this is a character and the name matches
+                (when (and is-character (string= name char-name))
+                  (when-let ((weight-str (org-entry-get nil "Weight")))
+                    (setq weight (string-to-number weight-str)))
+                  (throw 'found t))))
+            nil 'file)))))
+    (message "%s" weight)
+    weight))
+
 (defun org-scribe--collect-unique-characters (scenes)
   "Extract unique character names from SCENES list.
 SCENES format: ((SCENE CHAPTER POV CHARS-LIST) ...).
-Returns sorted list of unique character names."
+Returns list of unique character names, sorted by Weight property (ascending)."
   (let ((characters (make-hash-table :test 'equal)))
+    ;; Collect unique character names (unchanged)
     (dolist (scene scenes)
       (let ((pov (nth 2 scene))
             (chars-list (nth 3 scene)))
@@ -437,8 +476,27 @@ Returns sorted list of unique character names."
           (dolist (char chars-list)
             (when (not (string-empty-p char))
               (puthash char t characters))))))
-    ;; Return sorted list
-    (sort (hash-table-keys characters) #'string<)))
+
+    ;; Build list of (name . weight) pairs
+    (let ((char-weights nil))
+      (dolist (char-name (hash-table-keys characters))
+        (let ((weight (org-scribe--get-character-weight char-name)))
+          (push (cons char-name weight) char-weights)))
+
+      ;; Sort by weight (ascending), then alphabetically for ties
+      (setq char-weights
+            (sort char-weights
+                  (lambda (a b)
+                    (let ((weight-a (cdr a))
+                          (weight-b (cdr b)))
+                      (if (= weight-a weight-b)
+                          ;; Weights equal - sort alphabetically
+                          (string< (car a) (car b))
+                        ;; Different weights - sort by weight
+                        (< weight-a weight-b))))))
+
+      ;; Extract just the names
+      (mapcar #'car char-weights))))
 
 (defun org-scribe--character-symbol (char-name pov-name chars-list)
   "Return symbol for CHAR-NAME in a scene.
@@ -463,7 +521,7 @@ Returns:
 
 ;;;###autoload
 (defun org-dblock-write:character-timeline (params)
-  "Generate timeline showing character appearances across scenes.
+    "Generate timeline showing character appearances across scenes.
 Shows which characters appear in which scenes, with distinction
 between PoV characters and other appearances.
 
@@ -471,6 +529,9 @@ Symbols:
   PoV = PoV character (implies presence)
   ● = Present in scene (not PoV)
   (blank) = Not present
+
+Character columns are sorted by :Weight: property (ascending).
+Characters without a Weight property appear last, sorted alphabetically.
 
 Character information is extracted from :PoV: and :Characters: properties.
 Character names are extracted from ID links like [[id:...][Name]].
