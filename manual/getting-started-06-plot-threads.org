@@ -173,22 +173,21 @@ The template has 6 main sections:
 
 Let's examine each section in detail.
 
-* TODO Section 1: Properties
-*NOTE:* This is not implemented
+* Section 1: Properties
 
-When you capture a plot thread, you'll see these properties:
+When you capture a plot thread using ~org-scribe/capture-plot-thread~, you'll see these properties:
 
 #+BEGIN_EXAMPLE
 :PROPERTIES:
-:ID: plot-unique-id-here
-:Type:
-:Status:
-:Importance:
-:Introduced:
-:Resolved:
-:Related-threads:
+:ID: plot-unique-id-here (automatically generated)
+:THREAD-TYPE: Main Plot|Subplot|B-Plot|C-Plot|Thematic Thread
+:STATUS: Emerging|Planned|In Progress|Needs Development|Complete
+:Weight: 1.0|2.0|3.0|4.0|5.0
+:FIRST-APPEARANCE:
 :END:
 #+END_EXAMPLE
+
+Note: The capture template uses properties optimized for tracking plot threads during the writing process. The template creates a structured entry with sections for Description, Connection to Main Plot, Key Scenes, Resolution, and Notes.
 
 ** :ID: (Automatic)
 
@@ -200,91 +199,63 @@ A unique identifier for this plot thread, created automatically.
 
 *You don't set this* - it's automatic!
 
-** :Type:
+** :THREAD-TYPE:
 
 The category of plot thread.
 
-*Common values*:
-- Main (A-story, primary plot)
-- Major Subplot (B-story)
-- Minor Subplot (C-story)
+*Values provided in template*:
+- Main Plot (A-story, primary plot)
+- Subplot (general subplot)
+- B-Plot (major subplot)
+- C-Plot (minor subplot)
 - Thematic Thread
-- Mystery/Question (unresolved question driving story)
-- Relationship (character relationship arc)
-- Internal (character's internal journey)
 
-*Example*: ~Main~
+*Example*: ~Main Plot~
 
-*Tip*: Be honest about plot importance. Not everything can be "Main"!
+*Tip*: Be honest about plot importance. Not everything can be "Main Plot"! The template prompts you to select the appropriate type when capturing.
 
-** :Status:
+** :STATUS:
 
 Current state of the plot thread.
 
-*Values*:
+*Values provided in template*:
+- Emerging - Just discovered while writing
 - Planned - Not yet introduced in manuscript
-- Active - Currently developing in story
-- Resolved - Concluded/answered
-- Abandoned - Decided not to pursue
-- On Hold - Paused temporarily
+- In Progress - Currently developing in story
+- Needs Development - Requires attention
+- Complete - Concluded/resolved
 
-*Example*: ~Active~
+*Example*: ~In Progress~
 
-*Tip*: Update this as you write! It helps during revision.
+*Tip*: Update this as you write! It helps during revision. The template uses a workflow-focused status system.
 
-** :Importance:
+** :Weight:
 
-How central this plot is to your story.
+Controls the display order of plot threads in timelines and reports.
 
 *Values*:
-- Critical - Story doesn't work without it
-- High - Major impact on story
-- Medium - Adds depth and complexity
-- Low - Minor enhancement, could be cut
+- 1.0 - Highest priority (leftmost in timeline)
+- 2.0 - High priority
+- 3.0 - Medium priority
+- 4.0 - Lower priority
+- 5.0 - Lowest priority
 
-*Example*: ~Critical~
+*Example*: ~1.0~ for main plot, ~3.0~ for subplots
 
-*Tip*: If all plots are "Critical," you might have too many plots!
+*Tip*: Plot threads are sorted by weight (ascending) in timeline displays. Threads without a Weight property appear last (weight 999.0), sorted alphabetically.
 
-** :Introduced:
+** :FIRST-APPEARANCE:
 
-When this plot thread first appears.
+When this plot thread first appears in the story.
 
-*Format*: ~Chapter X, Scene Y~ or ~Scene title~
+*Format*: Free text - chapter, scene, or description
 
 *Examples*:
 - ~Chapter 1, Scene 1~
-- ~Scene 2 - The Discovery~
 - ~Opening scene~
+- ~Scene 2 - The Discovery~
 
-*Tip*: Fill this when you write the introduction scene.
-
-** :Resolved:
-
-When/how this plot thread concludes.
-
-*Format*: ~Chapter X, Scene Y~ or ~Description~
-
-*Examples*:
-- ~Chapter 12, Scene 45~
-- ~Climax scene~
-- ~Not yet resolved~
-- ~Left open-ended (intentional)~
-
-*Tip*: Plan this even if you haven't written it yet!
-
-** :Related-threads:
-
-Other plot threads that intersect with this one.
-
-*Format*: Comma-separated list (can be links)
-
-*Examples*:
-- ~Romance subplot, Family conflict~
-- ~[[id:plot-romance-001][Romance subplot]]~
-- ~Main plot~
-
-*Tip*: Helps visualize plot interactions and dependencies.
+*Tip*: Fill this when you write the introduction scene. The template leaves this blank for you to fill in later.
 
 * Section 2: Overview
 
@@ -610,62 +581,165 @@ environmental crime, water treatment systems, investigative journalism.
 - Polish: verify water treatment details are accurate
 #+END_EXAMPLE
 
-* TODO Capturing a Plot Thread: Step-by-Step
-*NOTE:* This is not implemented
+* Capturing a Plot Thread: Step-by-Step
 
-Let's create a plot thread profile together.
+Let's create a plot thread profile together using the implemented capture system.
 
 ** Step 1: Invoke Capture
 
-Press: ~F8 F8 p~
+Press: ~F8 F8 p~ (lowercase p for "plot")
 
-You'll see: ~Plot thread name:~
+Or use: ~M-x org-scribe/capture-plot-thread~
 
-** Step 2: Enter Plot Name
+The capture template opens with prompts.
 
-Type: ~Main Mystery - Water Sabotage~
+** Step 2: Fill Template Prompts
 
-Press: ~Enter~
+The template will prompt you for:
 
-The capture template opens in a new buffer.
+1. *Thread Name*: ~Main Mystery - Water Sabotage~
+2. *Type*: Select from menu → ~Main Plot~
+3. *Status*: Select from menu → ~In Progress~
+4. *Weight*: Select from menu → ~1.0~ (for main plot)
 
-** Step 3: Fill Properties
+An ID is automatically generated using ~%(org-id-new)~ - you don't need to do anything!
 
-The template has property prompts:
+** Step 3: Fill Description
 
-1. ~Type:~ → Type: ~Main~
-2. ~Status:~ → Type: ~Active~
-3. ~Importance:~ → Type: ~Critical~
-4. ~Introduced:~ → Type: ~Chapter 1, Scene 1~
-5. ~Resolved:~ → Type: ~Chapter 12, Scene 42~ (even if not written yet!)
-6. ~Related-threads:~ → Type: ~Romance subplot, Political corruption~
+The template has a ~Description~ section. Write a brief description:
 
-Press ~Tab~ to move between prompts.
+#+BEGIN_EXAMPLE
+*** Description
 
-** Step 4: Fill Content Sections
+Alex Rivera must uncover who's sabotaging the city's water supply before
+the contamination spreads citywide. The investigation reveals corruption
+and forces Alex to question the system they've trusted.
+#+END_EXAMPLE
 
-Navigate to each section and write:
-- Overview: Premise, central question, stakes (3 paragraphs)
-- Development Arc: Beginning, middle, end (3 paragraphs)
-- Key Scenes: Bulleted list
-- Resolution: Type, outcome, timing, satisfaction (4 short paragraphs)
-- Notes: As needed
+** Step 4: Connection to Main Plot
 
-** Step 5: Finalize Capture
+Fill in how this thread connects to the main plot:
+
+#+BEGIN_EXAMPLE
+*** Connection to Main Plot
+
+This IS the main plot. All other threads intersect with or support this
+central mystery investigation.
+#+END_EXAMPLE
+
+** Step 5: Key Scenes
+
+List the scenes where this thread appears or will appear:
+
+#+BEGIN_EXAMPLE
+*** Key Scenes
+
+- Scene 1 - Strange readings (inciting incident)
+- Scene 7 - Evidence of tampering
+- Scene 12 - Second contamination site
+- Scene 24 - Pattern discovery
+- Scene 38 - Identity revealed
+- Scene 42 - Confrontation (climax)
+#+END_EXAMPLE
+
+** Step 6: Resolution
+
+Plan how the thread resolves:
+
+#+BEGIN_EXAMPLE
+*** Resolution
+
+Saboteur is caught and mystery solved. However, investigation reveals
+systemic corruption that led to the sabotage. Alex must decide whether
+to expose the system that failed the saboteur's family years ago.
+#+END_EXAMPLE
+
+** Step 7: Notes
+
+Add any quick notes:
+
+#+BEGIN_EXAMPLE
+*** Notes
+
+- Research water treatment systems
+- Make sure saboteur's motivation is sympathetic
+- Parallel Alex's trust issues with water purity theme
+#+END_EXAMPLE
+
+** Step 8: Finalize Capture
 
 When done, press: ~C-c C-c~
 
 This saves the plot thread profile to:
-- **Novel project**: ~plan/plot.org~
-- **Short story project**: ~notes.org~ (under "Plot Outline")
+- **Novel project**: ~plan/plot.org~ (under "Plot Threads" heading)
+- **Short story project**: ~notes.org~ (under "Plot Outline" heading)
 
-** Step 6: Verify It Saved
+The entry is automatically saved as a level-2 heading under "Plot Threads" with:
+- Auto-generated unique ID
+- All properties filled in
+- Structured sections ready for expansion
 
-Open your plot file and find your new plot thread entry. It should be a level-1 heading with an ID.
+** Step 9: Verify It Saved
+
+Open your plot file and find your new plot thread entry. It should be a level-2 heading with an ID property:
+
+#+BEGIN_EXAMPLE
+** Main Mystery - Water Sabotage Main Plot
+:PROPERTIES:
+:ID: 20251124-abcd1234
+:THREAD-TYPE: Main Plot
+:STATUS: In Progress
+:Weight: 1.0
+:FIRST-APPEARANCE:
+:END:
+#+END_EXAMPLE
+
+* Setting Up Plot Thread Linking
+
+If you have an existing project with plot threads but no IDs, use the setup wizard.
+
+** Setup Wizard: One-Command Setup
+
+Use: ~M-x org-scribe/setup-plot-thread-links~
+
+This wizard:
+1. Adds IDs to all plot threads in your plot file
+2. Ensures the capture hook is active for future plot threads
+3. Optionally links existing scenes (converts plain text to ID links)
+
+Run this once when setting up ID-based plot thread linking in an existing project.
+
+** Manual Setup Steps
+
+If you prefer to set up manually:
+
+*** Step 1: Add IDs to Plot Threads
+
+Use: ~M-x org-scribe/add-plot-thread-ids~
+
+Opens your plot file (~plan/plot.org~ or ~notes.org~) and adds unique IDs to all plot thread headings that don't have one.
+
+*** Step 2: Link Existing Scenes (Optional)
+
+If you have scenes with plain text plot references:
+
+Use: ~M-x org-scribe/link-all-scene-plot-threads~
+
+Converts all plain text plot references to ID links throughout your manuscript.
+
+Before:
+#+BEGIN_EXAMPLE
+:Plot: Main Mystery, Romance
+#+END_EXAMPLE
+
+After:
+#+BEGIN_EXAMPLE
+:Plot: [[id:abc123][Main Mystery]], [[id:def456][Romance]]
+#+END_EXAMPLE
 
 * Linking Plot Threads to Scenes
 
-Once you have plot thread profiles, link them to scenes.
+Once you have plot thread profiles with IDs, link them to scenes.
 
 ** Method 1: Set Plot via Menu (Recommended)
 
@@ -673,21 +747,52 @@ Once you have plot thread profiles, link them to scenes.
 2. Navigate to a scene heading
 3. Press: ~F8 F8 P L~ (capital P for Plot menu, then L for Link)
 
-Or use: ~M-x org-scribe/set-scene-plot~
+Or use: ~M-x org-scribe/set-scene-plot-threads~
 
-4. You'll see a menu of all plot threads
-5. Select one: Press ~Enter~
-6. The scene's ~:Plot:~ property is updated with an ID link
+4. You'll see a completion menu of all plot threads from your plot file
+5. Select plot threads (press ~RET~ on empty line when done)
+   - First thread: ~Main Mystery - Water Sabotage~ → ~Enter~
+   - Second thread: ~Romance~ → ~Enter~
+   - Finish: ~Enter~ (on empty line)
+6. The scene's ~:Plot:~ property is updated with ID links
 
-** Method 2: Manual Linking
+The function reads from:
+- Novel: ~plan/plot.org~
+- Short story: ~notes.org~ (Plot section)
 
-If you prefer typing:
+And automatically creates ID links in the format: ~[[id:abc123][Thread Name]]~
 
-1. Navigate to scene properties
-2. Find or add: ~:Plot:~
-3. Type: ~[[id:plot-id-here][Plot Name]]~
+** Method 2: Insert Link at Point
 
-This requires knowing the plot thread's ID. The menu method is easier!
+If you're in a property value and want to insert a link:
+
+Use: ~M-x org-scribe/insert-plot-thread-link~
+
+- Single thread selection with completion
+- Inserts ID link at cursor: ~[[id:plot-id-here][Plot Name]]~
+
+Or for multiple threads:
+
+Use: ~M-x org-scribe/insert-multiple-plot-thread-links~
+
+- Select multiple threads in sequence
+- Press ~RET~ on empty line to finish
+- Inserts comma-separated ID links
+
+** Method 3: Converting Existing Plain Text
+
+If you have plain text plot names already in properties:
+
+Use: ~M-x org-scribe/link-scene-plot-threads~
+
+This converts plain text to ID links in the current scene:
+
+Before: ~:Plot: Main Mystery, Romance~
+After: ~:Plot: [[id:abc][Main Mystery]], [[id:def][Romance]]~
+
+For all scenes in the buffer:
+
+Use: ~M-x org-scribe/link-all-scene-plot-threads~
 
 ** Multiple Plot Threads in One Scene
 
@@ -738,6 +843,17 @@ Press: ~F8 F8 P j~ (Plot menu, jump)
 
 You jump to the full plot thread profile!
 
+** Jump from Multiple Plot Threads
+
+If a scene has multiple plot threads in its ~:Plot:~ property:
+
+1. Press: ~M-x org-scribe/jump-to-plot-thread~
+2. You'll see a completion menu: ~Jump to plot thread:~
+3. Select which plot thread to jump to
+4. Press: ~Enter~
+
+The function automatically detects multiple threads and prompts for selection.
+
 ** Return to Scene
 
 After viewing the plot profile:
@@ -754,9 +870,54 @@ While writing:
 - "Have I addressed the stakes?" → Check overview section
 - "Which scenes are key for this plot?" → Review key scenes list
 
+The ID-based linking means you can rename plot threads in the database without breaking scene links!
+
+* Maintaining Plot Thread Links
+
+As your project evolves, you may need to update link display names.
+
+** When Link Names Get Out of Sync
+
+ID links have two parts:
+- *ID*: ~id:plot-main-001~ (never changes)
+- *Display text*: ~[Main Mystery]~ (what you see)
+
+If you rename a plot thread in ~plot.org~:
+- The ID still works (links don't break!)
+- But the display text shows the old name
+
+** Update Current Scene
+
+Use: ~M-x org-scribe/update-plot-link-names~
+
+Updates plot thread link display names in the current scene to match current names in plot database.
+
+Example:
+#+BEGIN_EXAMPLE
+Before: :Plot: [[id:plot-main-001][Main Plot]]
+        (you renamed "Main Plot" to "Primary Storyline" in plot.org)
+After:  :Plot: [[id:plot-main-001][Primary Storyline]]
+#+END_EXAMPLE
+
+** Update All Scenes
+
+Use: ~M-x org-scribe/update-all-plot-link-names~
+
+Updates plot thread link display names throughout the entire manuscript.
+
+This is useful after:
+- Renaming multiple plot threads in plot.org
+- Refactoring your plot structure
+- Merging or splitting plot threads
+
+The function:
+1. Scans plot database for current names
+2. Updates display text in all scene ~:Plot:~ properties
+3. Reports number of scenes updated
+
 * Searching for Scenes by Plot Thread
 
-Find all scenes that develop a specific plot thread.
+Find all scenes that develop a specific plot thread using the search system.
 
 ** Command
 
@@ -764,13 +925,28 @@ Press: ~F8 F8 3~ (search by plot)
 
 Or use: ~M-x org-scribe/org-find-plot~
 
+** Input Method
+
+The search function provides two input modes depending on your project setup:
+
+*** If plot.org exists (recommended):
+- Completion menu with fuzzy matching
+- Shows all plot threads from your plot database
+- Type partial name: ~myst~ matches ~Main Mystery - Water Sabotage~
+- Also accepts free text for ad-hoc searches
+
+*** If no plot file:
+- Free text input with substring matching
+- Type any text to search in Plot properties
+- Example: ~mystery~ finds scenes with "mystery" in Plot property
+
 ** Process
 
-1. You'll see: ~Search for plot thread:~
-2. Start typing plot name: ~Mystery~
-3. Matching plot threads appear
-4. Select one: ~Main Mystery - Water Sabotage~
-5. Press: ~Enter~
+1. Invoke: ~M-x org-scribe/org-find-plot~
+2. Start typing plot name: ~myst~
+3. Completion shows: ~Main Mystery - Water Sabotage~
+4. Select: ~Enter~
+5. Or type free text: ~investigation~ → ~Enter~
 
 ** Results
 
@@ -821,11 +997,13 @@ In your novel.org file, find the "Plot Timeline" section (or create one):
 
 ** Plot Timeline
 
-#+BEGIN: plot-timeline
+#+BEGIN: plot-thread-timeline
 #+END:
 #+END_EXAMPLE
 
 Put cursor on ~#+BEGIN:~ line and press: ~C-c C-c~
+
+The dynamic block uses ~org-dblock-write:plot-thread-timeline~ to generate the table. Plot threads are sorted by their ~:Weight:~ property (ascending), so your main plot (weight 1.0) appears leftmost, followed by subplots with higher weights.
 
 ** Example Output
 
@@ -884,10 +1062,9 @@ Should appear in 10-30% of scenes, with:
 - ❌ Plots never intersect → Story feels like separate stories pasted together
 - ❌ Too many plots (>6 total) → Reader confusion
 
-* TODO Plot Health Report
-*NOTE:* This needs review
+* Plot Health Report
 
-Check the health of your plot thread development.
+Check the health of your plot thread development using the implemented reporting system.
 
 ** What Is a Plot Health Report?
 
@@ -900,63 +1077,80 @@ An analysis showing:
 
 ** Generating the Report
 
-Press: ~F8 F8 P h~ (Plot menu, health report)
+Use: ~M-x org-scribe/plot-thread-report~
 
-Or use: ~M-x org-scribe/plot-health-report~
+This generates a comprehensive Org-mode report in a new buffer showing:
+- Summary statistics
+- Per-thread analysis with status symbols
+- Coverage percentages
+- First and last appearances
+- Warnings for issues
+- List of scenes without plot threads
+
+For quick statistics in the minibuffer:
+
+Use: ~M-x org-scribe/plot-thread-stats~
+
+Shows: ~Plot threads: 4 | Scenes: 42 | Threads with warnings: 2~
 
 ** Example Report
 
 #+BEGIN_EXAMPLE
-=== PLOT HEALTH REPORT ===
-Total scenes analyzed: 42
+#+TITLE: Plot Thread Health Report
+#+DATE: 2025-11-24 15:30
+#+STARTUP: overview
 
-MAIN PLOT: Main Mystery - Water Sabotage
-  Coverage: 68% (29/42 scenes) ✓ GOOD
-  Longest gap: 4 scenes (Scene 15-19) ✓ OK
-  First appearance: Scene 1 ✓ GOOD
-  Last appearance: Scene 42 ✓ GOOD
-  Status: Active
+* Summary
 
-B-STORY: Romance Subplot
-  Coverage: 45% (19/42 scenes) ✓ GOOD
-  Longest gap: 7 scenes (Scene 22-29) ⚠ WARNING (long gap)
-  First appearance: Scene 2 ✓ GOOD
-  Last appearance: Scene 43 ✓ GOOD (resolved)
-  Status: Resolved
+- Total plot threads: 4
+- Total scenes: 42
+- Scenes with plot threads: 42
 
-C-STORY: Family Conflict
-  Coverage: 24% (10/42 scenes) ✓ OK for minor subplot
-  Longest gap: 12 scenes (Scene 8-20) ⚠ WARNING (very long gap)
-  First appearance: Scene 3 ✓ GOOD
-  Last appearance: Scene 35 ✓ OK
-  Status: Active ⚠ WARNING (not resolved, should resolve by Scene 42)
+* Thread Details
 
-C-STORY: Political Corruption Thread
-  Coverage: 31% (13/42 scenes) ✓ OK
-  Longest gap: 8 scenes (Scene 14-22) ⚠ WARNING
-  First appearance: Scene 4 ✓ GOOD
-  Last appearance: Scene 38 ⚠ WARNING (not resolved)
-  Status: On Hold ⚠ WARNING (needs resolution or explicit open ending)
+** ✓ Main Mystery - Water Sabotage
+:PROPERTIES:
+:ID: 20251124-abcd1234
+:END:
 
-=== ISSUES FOUND ===
-❌ Family Conflict: 12-scene gap (Scene 8-20) - readers may forget
-❌ Family Conflict: Still active, not resolved - resolve by Scene 42
-❌ Political Corruption: Unresolved with no clear plan - resolve or mark intentional
-⚠ Romance: 7-scene gap (Scene 22-29) - consider adding scene
-⚠ Political Corruption: 8-scene gap - consider scene or reference
+- Scenes: 29 of 42 (69.0%)
+- First appearance: Scene 1 - Strange Readings (Chapter: Chapter 1)
+- Last appearance: Scene 42 - Confrontation (Chapter: Chapter 12)
 
-=== RECOMMENDATIONS ===
-1. Add Family Conflict scene between Scenes 8-20 OR reference it in dialogue
-2. Plan Family Conflict resolution scene (Scene 40-42)
-3. Decide: Resolve Political Corruption OR mark as setup for sequel
-4. Consider adding Romance beat during Scene 22-29 gap (even brief reference)
+** ✓ Romance Subplot
+:PROPERTIES:
+:ID: 20251124-efgh5678
+:END:
 
-=== OVERALL HEALTH: GOOD (with minor issues) ===
-✓ Main plot well-distributed and strong
-✓ Good variety of plot threads (4 total)
-✓ Most plots introduced early
-⚠ Need to resolve 2 unresolved threads
-⚠ Some gaps longer than ideal
+- Scenes: 19 of 42 (45.2%)
+- First appearance: Scene 2 - Meeting Sam (Chapter: Chapter 1)
+- Last appearance: Scene 41 - Confession (Chapter: Chapter 12)
+
+** ⚠️ Family Conflict
+:PROPERTIES:
+:ID: 20251124-ijkl9012
+:END:
+
+- Scenes: 10 of 42 (23.8%)
+- First appearance: Scene 3 - Home (Chapter: Chapter 1)
+- Last appearance: Scene 35 - Resolution (Chapter: Chapter 10)
+
+*Warnings:*
+- ⚠️ Low coverage (23.8%)
+- ⚠️ Gap of 12 scenes
+
+** ✓ Political Corruption
+:PROPERTIES:
+:ID: 20251124-mnop3456
+:END:
+
+- Scenes: 13 of 42 (31.0%)
+- First appearance: Scene 4 - City Hall (Chapter: Chapter 1)
+- Last appearance: Scene 38 - Evidence (Chapter: Chapter 11)
+
+* Scenes Without Plot Threads
+
+All scenes have Plot properties assigned.
 #+END_EXAMPLE
 
 ** How to Use the Report
@@ -965,6 +1159,12 @@ C-STORY: Political Corruption Thread
 2. **Address warnings**: Fix gaps, plan resolutions
 3. **Adjust as you go**: Add scenes or combine plots to improve health
 4. **Final check**: Before revision, ensure all plots healthy
+
+The report is generated as an Org-mode buffer, so you can:
+- Navigate between threads using Org commands
+- Click IDs to jump to thread definitions
+- Take notes directly in the report
+- Track progress over time by saving reports
 
 * Practical Exercise (20 minutes)
 
@@ -1223,35 +1423,49 @@ The plot thread was captured but doesn't appear in the plot file.
 ** "Plot linking menu shows no plot threads"
 
 *** Problem
-Pressing F8 F8 P L shows empty list.
+Using ~org-scribe/set-scene-plot-threads~ shows empty list.
 
 *** Solution
 1. Ensure you have captured at least one plot thread
 2. Open plan/plot.org or notes.org
-3. Verify plot threads are level-1 headings with ~:ID:~ properties
-4. If IDs are missing, run: ~M-x org-scribe/add-plot-ids~
+3. Verify plot threads have ~:ID:~ properties
+4. If IDs are missing, run: ~M-x org-scribe/add-plot-thread-ids~
+5. Or run the setup wizard: ~M-x org-scribe/setup-plot-thread-links~
 
 ** "Plot health report says 'No scenes found'"
 
 *** Problem
-Health report returns no data.
+~org-scribe/plot-thread-report~ returns no data or shows "No scenes with Plot properties found."
 
 *** Solution
-1. Ensure scenes have ~:Plot:~ properties
-2. Verify plot properties are ID links (not plain text)
+1. Ensure scenes have ~:Plot:~ properties set
+2. Verify plot properties use ID links (not plain text)
 3. Check you're running the report from the manuscript file (novel.org or story.org)
-4. If plots are plain text, run: ~M-x org-scribe/link-all-scene-plots~
+4. If plots are plain text, convert them: ~M-x org-scribe/link-all-scene-plot-threads~
 
 ** "Plot timeline is blank"
 
 *** Problem
-Dynamic block generates but shows no data.
+Dynamic block ~#+BEGIN: plot-thread-timeline~ generates but shows no data.
 
 *** Solution
 1. Verify at least one scene has a ~:Plot:~ property with ID link
-2. Check the plot profiles exist and have IDs
-3. Put cursor on ~#+BEGIN: plot-timeline~ and press ~C-c C-c~ again
+2. Check the plot profiles exist in plot.org and have ~:ID:~ properties
+3. Put cursor on ~#+BEGIN: plot-thread-timeline~ and press ~C-c C-c~ again
 4. If still blank, check for errors in messages buffer (~*Messages*~)
+5. Verify you're using ~plot-thread-timeline~ (not ~plot-timeline~)
+
+** "Search finds no results but I have plot threads"
+
+*** Problem
+~org-scribe/org-find-plot~ shows no results even though scenes have Plot properties.
+
+*** Solution
+1. Verify Plot properties use ID links: ~[[id:abc][Name]]~
+2. If using plain text, the search extracts names from links
+3. Try searching for exact plot thread name (case-insensitive)
+4. Check that plot threads have matching names in plot.org
+5. The search uses substring matching - partial names should work
 
 * Quick Reference
 
@@ -1301,16 +1515,22 @@ Dynamic block generates but shows no data.
 
 ** Common Commands
 
-| Command                          | What It Does                     |
-|----------------------------------+----------------------------------|
-| ~org-scribe/capture-plot~             | Capture new plot thread          |
-| ~org-scribe/set-scene-plot~           | Set plot via menu                |
-| ~org-scribe/jump-to-scene-plot~       | Jump to plot from scene          |
-| ~org-scribe/link-scene-plots~         | Link current scene's plots       |
-| ~org-scribe/link-all-scene-plots~     | Batch link all scenes            |
-| ~org-scribe/org-find-plot~            | Search scenes by plot            |
-| ~org-scribe/plot-health-report~       | Generate plot health report      |
-| ~org-scribe/add-plot-ids~             | Add IDs to existing plot threads |
+| Command                                  | What It Does                              |
+|------------------------------------------+-------------------------------------------|
+| ~org-scribe/capture-plot-thread~              | Capture new plot thread with template     |
+| ~org-scribe/set-scene-plot-threads~           | Set plot via menu (multiple selection)    |
+| ~org-scribe/insert-plot-thread-link~          | Insert single plot link at point          |
+| ~org-scribe/insert-multiple-plot-thread-links~ | Insert multiple plot links at point       |
+| ~org-scribe/jump-to-plot-thread~              | Jump to plot from scene                   |
+| ~org-scribe/link-scene-plot-threads~          | Convert plain text to links (one scene)   |
+| ~org-scribe/link-all-scene-plot-threads~      | Convert plain text to links (all scenes)  |
+| ~org-scribe/org-find-plot~                    | Search scenes by plot (fuzzy completion)  |
+| ~org-scribe/plot-thread-report~               | Generate comprehensive health report      |
+| ~org-scribe/plot-thread-stats~                | Quick statistics in minibuffer            |
+| ~org-scribe/add-plot-thread-ids~              | Add IDs to existing plot threads          |
+| ~org-scribe/setup-plot-thread-links~          | Setup wizard for linking system           |
+| ~org-scribe/update-plot-link-names~           | Update link names in current scene        |
+| ~org-scribe/update-all-plot-link-names~       | Update link names in all scenes           |
 
 * Tips for Better Plot Management
 

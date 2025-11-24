@@ -269,6 +269,21 @@ Your character's story role:
 - *Supporting*: Important to the story, helps/hinders protagonist
 - *Minor*: Appears briefly, serves specific purpose
 
+*** :Weight: - Display order
+
+Controls the display order of characters in timelines and reports.
+
+*Values*:
+- 1.0 - Highest priority (leftmost in timeline)
+- 2.0 - High priority
+- 3.0 - Medium priority
+- 4.0 - Lower priority
+- 5.0 - Lowest priority
+
+*Example*: ~1.0~ for the protagonist, ~2.0~ for the antagonist, and ~3.0~ for minor characters.
+
+*Tip*: Characters are sorted by weight (ascending) in timeline displays. Characters without a Weight property appear last (weight 999.0), sorted alphabetically.
+
 *** Other Properties
 
 The template filled these from your prompts:
