@@ -34,6 +34,7 @@
 (declare-function org-scribe/org-find-plot "search/org-scribe-search")
 (declare-function org-scribe/org-find-location "search/org-scribe-search")
 (declare-function org-scribe/search-todos-recursive "search/org-scribe-search")
+(declare-function org-scribe/search-edits-recursive "search/org-scribe-search")
 (declare-function org-scribe-create-novel-project "templates/org-scribe-project")
 (declare-function org-scribe-create-short-story-project "templates/org-scribe-project")
 (declare-function org-scribe-insert-scene "templates/org-scribe-project")
@@ -142,7 +143,7 @@ _c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table   _2_:
 _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_: Plot          _P_: Plot threads
                  _e_: Editing mode  _b_: oBject        _d_: Dictionary    _4_: Location      _U_: Update links
                                   _t_: Timeline      _y_: sYnonyms      _5_: TODOs
-                                  _g_: plot thread                                         _q_: Quit
+                                  _g_: plot thread                    _6_: Edit notes            _q_: Quit
 "
   ;; Insert (most frequent actions get best keys)
   ("s" org-scribe-insert-scene "insert scene")
@@ -176,6 +177,7 @@ _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_:
   ("3" org-scribe/org-find-plot "find by plot")
   ("4" org-scribe/org-find-location "find by location")
   ("5" org-scribe/search-todos-recursive "find TODOs")
+  ("6" org-scribe/search-edits-recursive "find edits and notes")
 
   ;; Manage (linking submenus - capitals only)
   ("C" hydra-org-scribe-characters/body "character links")

@@ -26,6 +26,13 @@
 (declare-function org-scribe--get-all-locations "linking/org-scribe-location-links")
 (declare-function org-scribe--get-all-plot-threads "linking/org-scribe-plot-links")
 
+;;; variables for the searches
+(defvar org-scribe--edit-string
+  "\*EDIT\*\\|\*NOTE\*"
+  "String to search for edit notes.
+In my case all he entries with *EDIT* or *NOTE*.
+Adapt it to your worflow.")
+
 ;;; Helper Functions for ID Links
 
 (defun org-scribe--extract-link-text (text)
@@ -258,6 +265,12 @@ Requires org-ql package to be installed."
                                        (concat "File: "
                                                (file-name-nondirectory (buffer-file-name)))))))
       (message "No .org files found in %s and subdirectories" current-dir))))
+
+;;;###autoload
+(defun org-scribe/search-edits-recursive ()
+  "Search for edition and notes items in current file tree using rgrep."
+  (interactive)
+    (rgrep org-scribe--edit-string "*.org" (project-root(project-current))))
 
 (provide 'org-scribe-search)
 
