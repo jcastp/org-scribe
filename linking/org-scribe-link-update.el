@@ -25,6 +25,7 @@
 
 (require 'org)
 (require 'org-scribe-core)
+(require 'org-scribe-messages)
 
 ;;; Core Helper Functions
 
@@ -171,7 +172,7 @@ Returns the number of scenes updated."
              (when (or updated-pov updated-chars updated-loc updated-plot)
                (setq count (1+ count))))))
        nil 'file))
-    (message "Updated link names in %d scene%s" count (if (= count 1) "" "s"))
+    (message (org-scribe-msg 'msg-updated-all-links-scene count (org-scribe-plural count "")))
     count))
 
 (provide 'org-scribe-link-update)

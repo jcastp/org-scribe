@@ -13,6 +13,7 @@
 
 (require 'org)
 (require 'project)
+(require 'org-scribe-messages)
 
 ;;; Project Detection
 
@@ -122,7 +123,7 @@ Returns plist with :novel-file :notes-dir :characters-dir etc."
   (declare (indent 1))
   `(if (org-scribe-check-feature ',feature)
        (progn ,@body)
-     (user-error "Feature %s not available. Install required package" ',feature)))
+     (user-error (org-scribe-msg 'error-feature-not-available ',feature))))
 
 ;;; Helper Functions
 
@@ -149,7 +150,7 @@ Returns t if directory exists or was created, nil otherwise."
   (cond
    ((file-directory-p directory) t)
    (create
-    (when (yes-or-no-p (format "Directory %s does not exist. Create it? " directory))
+    (when (yes-or-no-p (org-scribe-msg 'question-create-directory directory))
       (make-directory directory t)
       t))
    (t nil)))

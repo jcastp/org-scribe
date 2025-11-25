@@ -23,6 +23,7 @@
 (require 'org-id)
 (require 'org-scribe-core)
 (require 'org-scribe-capture)
+(require 'org-scribe-messages)
 
 ;;; Character ID Management
 
@@ -59,8 +60,8 @@ character heading has a unique ID property."
                (org-id-get-create)
                (setq count (1+ count))))))
        nil 'file)
-      (message "Added IDs to %d character heading%s"
-               count (if (= count 1) "" "s")))))
+      (message (org-scribe-msg 'msg-added-ids count
+                               (org-scribe-plural count ""))))))
 
 (defun org-scribe--get-character-name-at-point ()
   "Get the character name from current heading or NAME property."

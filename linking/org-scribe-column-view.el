@@ -25,6 +25,7 @@
 
 (require 'org)
 (require 'org-colview)
+(require 'org-scribe-messages)
 
 ;; Declare external functions
 (declare-function org-scribe--extract-link-text "org-scribe-search")
@@ -87,7 +88,7 @@ Adds advice to `org-columns--displayed-value' to strip link syntax."
   (interactive)
   (advice-add 'org-columns--displayed-value :filter-return
               #'org-scribe--column-view-advice)
-  (message "Column view link stripping enabled"))
+  (message (org-scribe-msg 'msg-column-view-enabled)))
 
 (defun org-scribe-column-view-disable ()
   "Disable ID link stripping in column view.
@@ -95,7 +96,7 @@ Removes advice from `org-columns--displayed-value'."
   (interactive)
   (advice-remove 'org-columns--displayed-value
                  #'org-scribe--column-view-advice)
-  (message "Column view link stripping disabled"))
+  (message (org-scribe-msg 'msg-column-view-disabled)))
 
 (defun org-scribe-column-view-toggle ()
   "Toggle ID link stripping in column view."

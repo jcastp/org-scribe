@@ -80,6 +80,7 @@
     (msg-added-location-ids . "Added IDs to %d location heading%s")
     (msg-location-ids-updated . "Location IDs updated in %s")
     (msg-no-locations-selected . "No locations selected")
+    (msg-inserted-location-links . "Inserted %d location link%s")
 
     ;; Plot linking
     (prompt-select-plot-thread . "Select plot thread: ")
@@ -130,6 +131,36 @@
     (error-feature-not-available . "Feature %s not available. Install required package")
     (error-no-org-file . "Current buffer is not visiting a file; cannot enable `org-scribe-editing-mode'")
 
+    ;; Dictionary/Language tools
+    (error-word-empty . "Word cannot be empty")
+    (error-word-lookup . "Error al buscar la palabra: %s")
+    (msg-word-not-found . "Palabra no encontrada: %s")
+    (msg-word-suggestions . "Sugerencias:")
+    (error-random-word . "Error al obtener palabra aleatoria: %s")
+    (error-word-parse . "Error parsing RAE response: %s")
+    (error-random-word-parse . "Error parsing random word response: %s")
+
+    ;; Column view
+    (msg-column-view-enabled . "Column view link stripping enabled")
+    (msg-column-view-disabled . "Column view link stripping disabled")
+
+    ;; Link updates (generic - all types)
+    (msg-updated-all-links-scene . "Updated link names in %d scene%s")
+
+    ;; Location linking (additional)
+    (msg-setting-up-location-links . "Setting up location linking system...")
+    (msg-location-setup-complete . "Location linking system setup complete!")
+
+    ;; Plot linking (additional)
+    (msg-setting-up-plot-links . "Setting up plot thread linking system...")
+    (msg-plot-setup-complete . "Plot thread linking system setup complete!")
+    (msg-plot-health-report . "Plot thread health report generated")
+    (msg-plot-stats . "Plot threads: %d | Scenes: %d | Threads with warnings: %d")
+    (msg-no-plot-property . "No Plot property in current heading")
+    (msg-no-plot-threads-in-property . "No plot threads found in Plot property")
+    (msg-plot-not-id-link . "Plot thread '%s' is not an ID link")
+    (prompt-jump-to-plot . "Jump to plot thread: ")
+
     ;; Capture
     (capture-character-name . "Character Name")
     (capture-location-type . "Location Type")
@@ -144,6 +175,12 @@
     (question-link-existing-locations . "Link locations in existing scenes? ")
     (question-link-existing-plots . "Link plot threads in existing scenes? ")
     (question-create-directory . "Directory %s does not exist. Create it? ")
+
+    ;; Project registration
+    (msg-projects-registered . "Scanned and registered %d project(s) under %s")
+
+    ;; Search results
+    (msg-no-org-files . "No .org files found in %s and subdirectories")
 
     ;; Pluralization helpers (used in code)
     (plural-empty . "")

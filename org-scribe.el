@@ -48,9 +48,10 @@
 (require 'org-element)
 
 ;; Core modules (always loaded)
+;; Load messages first - other modules depend on it
+(require 'org-scribe-messages (expand-file-name "core/org-scribe-messages" (file-name-directory load-file-name)))
 (require 'org-scribe-core (expand-file-name "core/org-scribe-core" (file-name-directory load-file-name)))
 (require 'org-scribe-config (expand-file-name "core/org-scribe-config" (file-name-directory load-file-name)))
-(require 'org-scribe-messages (expand-file-name "core/org-scribe-messages" (file-name-directory load-file-name)))
 
 ;; Project creation and templates (merged from emacs-org-scribe-template)
 (require 'org-scribe-project (expand-file-name "templates/org-scribe-project" (file-name-directory load-file-name)))

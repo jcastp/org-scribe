@@ -17,6 +17,7 @@
 (require 'org)
 (require 'org-scribe-core)
 (require 'org-scribe-config)
+(require 'org-scribe-messages)
 
 ;; Declare external functions
 (declare-function writeroom-mode "writeroom-mode")
@@ -65,7 +66,7 @@ writing modes to ensure only one is active at a time."
         (setq writeroom-width my-org-scribe-env-work-width)
         (writeroom-mode 1)
         (setq my-org-scribe-env--writeroom-active t))
-    (user-error "writeroom-mode is required for writing environment modes")))
+    (user-error (org-scribe-msg 'error-writeroom-required))))
 
 (defun my-org-scribe-env--deactivate ()
   "Deactivate writing environment and restore previous settings."
@@ -225,7 +226,7 @@ Applies theme, column width, and font preset."
          (right-perc  org-scribe-editing-right-width-percent)
          (src-file
           (or (buffer-file-name)
-              (user-error "Current buffer is not visiting a file; cannot enable `org-scribe-editing-mode'")))
+              (user-error (org-scribe-msg 'error-no-org-file))))
          (notes-file (org-scribe/file-notes-filename src-file))
          (frame-w    (frame-width))
          (right-w    (org-scribe/window-perc right-perc))

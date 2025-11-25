@@ -15,6 +15,7 @@
 (require 'org)
 (require 'org-element)
 (require 'org-scribe-config)
+(require 'org-scribe-messages)
 
 ;; Declare external functions to avoid compiler warnings
 (declare-function org-context-count-words "org-context-extended")
@@ -29,7 +30,7 @@ comments, properties, drawers, etc.  Also creates a custom ID
 for each heading to enable linking."
   (interactive)
   (unless (featurep 'org-context-extended)
-    (user-error "org-context-extended package is required for accurate word counting"))
+    (user-error (org-scribe-msg 'error-org-context-required)))
   (org-map-entries
    (lambda ()
      (let* ((start (point))

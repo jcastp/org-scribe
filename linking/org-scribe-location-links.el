@@ -23,6 +23,7 @@
 (require 'org-id)
 (require 'org-scribe-core)
 (require 'org-scribe-capture)
+(require 'org-scribe-messages)
 
 ;;; Location ID Management
 
@@ -58,8 +59,7 @@ location heading has a unique ID property."
                (org-id-get-create)
                (setq count (1+ count))))))
        nil 'file)
-      (message "Added IDs to %d location heading%s"
-               count (if (= count 1) "" "s"))))
+      (message (org-scribe-msg 'msg-added-location-ids count (org-scribe-plural count "")))))
 
 (defun org-scribe--get-location-name-at-point ()
   "Get the location name from current heading or NAME property."
@@ -124,11 +124,11 @@ the ID-based linking system."
   (interactive)
   (let ((loc-file (org-scribe--get-location-file)))
     (if (not (file-exists-p loc-file))
-        (message "No location file found. Create location first.")
+        (message (org-scribe-msg 'error-no-location-file))
       (with-current-buffer (find-file-noselect loc-file)
         (org-scribe--add-id-to-all-locations)
         (save-buffer)
-        (message "Location IDs updated in %s" loc-file)))))
+        (message (org-scribe-msg 'msg-location-ids-updated loc-file))))))
 
 ;;;###autoload
 (defun org-scribe/insert-location-link ()
@@ -141,15 +141,15 @@ Use this function when adding locations to scene properties."
   (let* ((locs (org-scribe--get-all-locations))
          (loc-names (mapcar #'car locs)))
     (if (null loc-names)
-        (message "No locations found. Create locations first or add IDs with org-scribe/add-location-ids.")
-      (let* ((selected (completing-read "Select location: " loc-names nil t))
+        (message (org-scribe-msg 'error-no-locations-found))
+      (let* ((selected (completing-read (org-scribe-msg 'prompt-select-location) loc-names nil t))
              (entry (assoc selected locs))
              (id (cadr entry)))
         (if id
             (progn
               (insert (format "[[id:%s][%s]]" id selected))
-              (message "Inserted link to %s" selected))
-          (message "No ID found for %s" selected))))))
+              (message (org-scribe-msg 'msg-inserted-link selected)))
+          (message (org-scribe-msg 'error-no-id-for-location selected)))))))
 
 ;;;###autoload
 (defun org-scribe/insert-multiple-location-links ()
@@ -162,10 +162,10 @@ multiple locations in a scene."
          selected-locs
          links)
     (if (null loc-names)
-        (message "No locations found. Create locations first or add IDs with org-scribe/add-location-ids.")
+        (message (org-scribe-msg 'error-no-locations-found))
       ;; Multiple selection loop
       (while (let ((choice (completing-read
-                           "Select location (RET to finish): "
+                           (org-scribe-msg 'prompt-select-locations-multi)
                            loc-names nil nil)))
                (when (and choice (not (string-empty-p choice)))
                  (push choice selected-locs)
@@ -183,10 +183,8 @@ multiple locations in a scene."
       (if links
           (progn
             (insert (string-join links ", "))
-            (message "Inserted %d location link%s"
-                    (length links)
-                    (if (= (length links) 1) "" "s")))
-        (message "No locations selected")))))
+            (message (org-scribe-msg 'msg-inserted-location-links (length links) (org-scribe-plural (length links) ""))))
+        (message (org-scribe-msg 'msg-no-locations-selected))))))
 
 ;;;###autoload
 (defun org-scribe/set-scene-locations ()
@@ -200,10 +198,10 @@ Specifically designed for the :Location: property in scene headings."
          selected-locs
          links)
     (if (null loc-names)
-        (message "No locations found. Create locations first or add IDs with org-scribe/add-location-ids.")
+        (message (org-scribe-msg 'error-no-locations-found))
       ;; Multiple selection loop
       (while (let ((choice (completing-read
-                           "Select location (RET to finish): "
+                           (org-scribe-msg 'prompt-select-locations-multi)
                            loc-names nil nil)))
                (when (and choice (not (string-empty-p choice)))
                  (push choice selected-locs)
@@ -221,8 +219,8 @@ Specifically designed for the :Location: property in scene headings."
       (if links
           (progn
             (org-set-property "Location" (string-join links ", "))
-            (message "Set Location to: %s" (string-join selected-locs ", ")))
-        (message "No locations selected")))))
+            (message (org-scribe-msg 'msg-set-locations (string-join selected-locs ", "))))
+        (message (org-scribe-msg 'msg-no-locations-selected))))))
 
 ;;; Batch Update Functions
 
@@ -254,9 +252,9 @@ Updates :Location: properties."
     (let ((updated-locs (org-scribe--link-locations-in-property "Location")))
       (cond
        (updated-locs
-        (message "Updated Location property"))
+        (message (org-scribe-msg 'msg-updated-location)))
        (t
-        (message "No location properties found or already linked"))))))
+        (message (org-scribe-msg 'msg-no-updates-needed)))))))
 
 ;;;###autoload
 (defun org-scribe/link-all-scene-locations ()
@@ -274,8 +272,7 @@ Processes all headings with :Location: properties."
              (when  updated-locs)
              (setq count (1+ count)))))
       nil 'file)
-    (message "Updated location links in %d scene%s"
-             count (if (= count 1) "" "s")))))
+    (message (org-scribe-msg 'msg-updated-location-links count (org-scribe-plural count ""))))))
 
 ;;; Integration with Capture System
 
@@ -323,20 +320,20 @@ This function:
 Run this once when setting up ID-based location linking
 in an existing project."
   (interactive)
-  (message "Setting up location linking system...")
+  (message (org-scribe-msg 'msg-setting-up-location-links))
 
   ;; Step 1: Add IDs to locations
   (org-scribe/add-location-ids)
 
   ;; Step 2: Ask if user wants to link existing scenes
-  (when (y-or-n-p "Link locations in existing scenes? ")
+  (when (y-or-n-p (org-scribe-msg 'question-link-existing-locations))
     (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file)))
       (when (and novel-file (file-exists-p novel-file))
         (with-current-buffer (find-file-noselect novel-file)
           (org-scribe/link-all-scene-locations)
           (save-buffer)))))
 
-  (message "Location linking system setup complete!"))
+  (message (org-scribe-msg 'msg-location-setup-complete)))
 
 ;;; Update Link Display Names
 

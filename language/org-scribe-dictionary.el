@@ -19,6 +19,7 @@
 (require 'eww)
 (require 'org-scribe-core)
 (require 'org-scribe-config)
+(require 'org-scribe-messages)
 
 ;;; RAE Dictionary API
 
@@ -112,7 +113,7 @@ Displays the word definition, etymology, and meanings in a buffer.
 Includes improved error handling for network issues."
   (interactive "sPalabra a buscar en la RAE: ")
   (when (string-empty-p (string-trim palabra))
-    (user-error "Word cannot be empty"))
+    (user-error (org-scribe-msg 'error-word-empty)))
   (let* ((url (format "https://rae-api.com/api/words/%s"
                       (url-hexify-string palabra)))
          (buffer-name (format "*RAE: %s*" palabra))
@@ -122,8 +123,7 @@ Includes improved error handling for network issues."
      (lambda (status palabra buffer-name)
        (org-scribe-with-error-handling "org-scribe/rae-api-lookup"
          (if (plist-get status :error)
-             (message "Error al buscar la palabra: %s"
-                      (plist-get status :error))
+             (message (org-scribe-msg 'error-word-lookup (plist-get status :error)))
            ;; Move past HTTP headers
            (goto-char (point-min))
            (re-search-forward "^$")
@@ -145,14 +145,14 @@ Includes improved error handling for network issues."
                        (org-scribe/rae-format-result json-data palabra)
                      ;; Word not found - show suggestions
                      (let ((suggestions (gethash "suggestions" json-data)))
-                       (insert (format "* Palabra no encontrada: %s\n\n" palabra))
-                       (insert "** Sugerencias:\n")
+                       (insert (format "* %s\n\n" (org-scribe-msg 'msg-word-not-found palabra)))
+                       (insert (format "** %s\n" (org-scribe-msg 'msg-word-suggestions)))
                        (dolist (suggestion suggestions)
                          (insert (format "- %s\n" suggestion)))))
                    (goto-char (point-min)))
-                   (display-buffer output-buffer))
+                 (display-buffer output-buffer))
                (json-error
-                (message "Error parsing RAE response: %s" err)))))))
+                (message (org-scribe-msg 'error-word-parse err)))))))
      (list palabra buffer-name)
      nil   ; no SILENT
      t)))  ; INHIBIT-COOKIES
@@ -168,8 +168,7 @@ Includes improved error handling for network issues."
      (lambda (status)
        (org-scribe-with-error-handling "org-scribe/rae-api-random"
          (if (plist-get status :error)
-             (message "Error al obtener palabra aleatoria: %s"
-                      (plist-get status :error))
+             (message (org-scribe-msg 'error-random-word (plist-get status :error)))
            (goto-char (point-min))
            (re-search-forward "^$")
            ;; Extract and decode the response body as UTF-8
@@ -186,7 +185,7 @@ Includes improved error handling for network issues."
                    (when palabra
                      (org-scribe/rae-api-lookup palabra)))
                (json-error
-                (message "Error parsing random word response: %s" err))))))))))
+                (message (org-scribe-msg 'error-random-word-parse err))))))))))
 
 ;;; Synonym Lookup (WordReference)
 
@@ -196,7 +195,7 @@ Includes improved error handling for network issues."
 Opens WordReference Spanish synonym dictionary in a side window."
   (interactive "s¿Qué palabra quieres buscar? ")
   (when (string-empty-p (string-trim palabra))
-    (user-error "Word cannot be empty"))
+    (user-error (org-scribe-msg 'error-word-empty)))
   (let ((url (concat "https://www.wordreference.com/sinonimos/" palabra)))
     ;; Create a temporary buffer for the side window
     (let ((temp-buffer (generate-new-buffer "*temp-sinonimos*")))
@@ -214,7 +213,7 @@ Opens WordReference Spanish synonym dictionary in a side window."
           ;; Set up the eww buffer
           (read-only-mode 1)
           (use-local-map (copy-keymap (current-local-map)))
-          (local-set-key (kbd "q") 'quit-window))))))
+          (local-set-key (kbd "q") 'quit-window))))))))
 
 (provide 'org-scribe-dictionary)
 

@@ -26,6 +26,7 @@
 ;;; Code:
 
 (require 'project)
+(require 'org-scribe-messages)
 
 ;;; Configuration
 
@@ -102,11 +103,11 @@ This function:
 7. Opens the README.org file"
   (interactive
    (list
-    (read-directory-name "Base directory for project: " "~/writing/")
-    (read-string "Novel title: ")))
+    (read-directory-name (org-scribe-msg 'project-creation-base-dir) "~/writing/")
+    (read-string (org-scribe-msg 'project-creation-novel-title))))
 
   (unless (file-directory-p org-scribe-template-directory)
-    (user-error "Template directory not found: %s" org-scribe-template-directory))
+    (user-error (org-scribe-msg 'error-template-not-found org-scribe-template-directory)))
 
   ;; Validate title
   (let ((validation-error (org-scribe--validate-project-title title)))
@@ -120,7 +121,7 @@ This function:
 
     ;; Check if project already exists
     (when (file-exists-p project-dir)
-      (user-error "Project directory '%s' already exists!" project-dir))
+      (user-error (org-scribe-msg 'project-already-exists project-dir)))
 
     ;; Create project directory
     (make-directory project-dir t)
@@ -150,7 +151,7 @@ This function:
 
     ;; Open README.org
     (find-file (expand-file-name "README.org" project-dir))
-    (message "Novel project '%s' created successfully at %s" title project-dir)))
+    (message (org-scribe-msg 'project-creation-success-novel title project-dir))))
 
 ;;;###autoload
 (defun org-scribe-create-short-story-project (base-dir title)
@@ -168,8 +169,8 @@ This function:
 7. Opens the story file (story.org or cuento.org)"
   (interactive
    (list
-    (read-directory-name "Base directory for short story: " "~/writing/")
-    (read-string "Short story title: ")))
+    (read-directory-name (org-scribe-msg 'project-creation-base-dir) "~/writing/")
+    (read-string (org-scribe-msg 'project-creation-short-story-title))))
 
   ;; Determine template directory based on language
   (let ((template-dir (expand-file-name
@@ -178,7 +179,7 @@ This function:
                       org-scribe-project-package-directory)))
 
     (unless (file-directory-p template-dir)
-      (user-error "Short story template directory not found: %s" template-dir))
+      (user-error (org-scribe-msg 'error-template-not-found template-dir)))
 
     ;; Validate title
     (let ((validation-error (org-scribe--validate-project-title title)))
@@ -193,7 +194,7 @@ This function:
 
       ;; Check if project already exists
       (when (file-exists-p project-dir)
-        (user-error "Project directory '%s' already exists!" project-dir))
+        (user-error (org-scribe-msg 'project-already-exists project-dir)))
 
       ;; Create project directory
       (make-directory project-dir t)
@@ -224,7 +225,7 @@ This function:
 
       ;; Open the story file
       (find-file (expand-file-name story-file project-dir))
-      (message "Short story project '%s' created successfully at %s" title project-dir))))
+      (message (org-scribe-msg 'project-creation-success-short-story title project-dir)))))
 
 (defun org-scribe--copy-templates (template-dir project-dir variables)
   "Copy and process templates from TEMPLATE-DIR to PROJECT-DIR.
@@ -269,15 +270,15 @@ drawer for scene metadata (PoV, Characters, Plot, Timeline, Location,
 Description, Summary, Scene-motivation, Conflict-source, What-is-at-stake,
 Emotion, and Comment).
 If SCENE-NAME is empty, defaults to \"New scene\"."
-  (interactive "sScene name: ")
+  (interactive (list (read-string (org-scribe-msg 'scene-name-prompt))))
 
   ;; Validate we're in org-mode
   (unless (derived-mode-p 'org-mode)
-    (user-error "This command can only be used in org-mode buffers"))
+    (user-error (org-scribe-msg 'not-in-org-mode)))
 
   ;; Use default title if scene-name is empty
   (when (string-empty-p (string-trim scene-name))
-    (setq scene-name "New scene"))
+    (setq scene-name (org-scribe-msg 'default-scene-name)))
 
   ;; Define and insert template
   (let ((template (format "*** TODO %s :ignore:
@@ -315,15 +316,15 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 The template includes a TODO heading with :ignore: tag and a property
 drawer with WORDCOUNT field initialized to 0.
 If CHAPTER-NAME is empty, defaults to \"New chapter\"."
-  (interactive "sChapter name: ")
+  (interactive (list (read-string (org-scribe-msg 'chapter-name-prompt))))
 
   ;; Validate we're in org-mode
   (unless (derived-mode-p 'org-mode)
-    (user-error "This command can only be used in org-mode buffers"))
+    (user-error (org-scribe-msg 'not-in-org-mode)))
 
   ;; Use default title if chapter-name is empty
   (when (string-empty-p (string-trim chapter-name))
-    (setq chapter-name "New chapter"))
+    (setq chapter-name (org-scribe-msg 'default-chapter-name)))
 
   ;; Define and insert template
   (let ((template (format "** TODO %s :ignore:
@@ -387,9 +388,9 @@ Uses completion to help select from common project files."
         (let ((full-path (expand-file-name filename project-root)))
           (if (file-exists-p full-path)
               (find-file full-path)
-            (when (yes-or-no-p (format "File %s doesn't exist. Create it? " filename))
+            (when (yes-or-no-p (org-scribe-msg 'file-not-found filename))
               (find-file full-path))))
-      (message "Not in a novel project directory"))))
+      (message (org-scribe-msg 'not-in-novel-project)))))
 
 ;;; Utility Functions
 
@@ -400,7 +401,7 @@ This allows you to customize the templates used for new projects."
   (interactive)
   (if (file-directory-p org-scribe-template-directory)
       (dired org-scribe-template-directory)
-    (user-error "Template directory not found: %s" org-scribe-template-directory)))
+    (user-error (org-scribe-msg 'error-template-not-found org-scribe-template-directory))))
 
 ;;;###autoload
 (defun org-scribe-register-projects (directory)
@@ -408,7 +409,7 @@ This allows you to customize the templates used for new projects."
 This is useful for adding novels created before project.el integration."
   (interactive "DBase directory containing novel projects: ")
   (let ((count (project-remember-projects-under directory t)))
-    (message "Scanned and registered %d project(s) under %s" count directory)))
+    (message (org-scribe-msg 'msg-projects-registered count directory))))
 
 ;;; Backwards Compatibility Aliases
 
