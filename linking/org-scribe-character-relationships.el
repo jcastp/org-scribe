@@ -37,7 +37,7 @@
 ;;; Relationship Type Definitions
 
 (defvar org-scribe-relationship-types
-  '("mentor" "mentee" "rival" "friend" "family" "lover" "enemy" "ally"
+  '("mentor" "mentee" "opponent" "rival" "friend" "family" "lover" "enemy" "ally"
     "partner" "colleague" "acquaintance" "subordinate" "superior"
     "student" "teacher" "sibling" "parent" "child" "spouse")
   "Common relationship types for character relationships.")
@@ -98,6 +98,51 @@ Returns list of (ID NAME TYPE STRENGTH SENTIMENT) tuples."
         (datos-rel (org-entry-get nil "DatosRelaciones"))) ; Spanish property name
     (org-scribe--parse-relationships (or rel-data datos-rel))))
 
+(defun org-scribe--find-character-by-name (char-name)
+  "Find character by CHAR-NAME in characters file.
+Returns the marker position of the character heading, or nil if not found."
+  (let ((char-file (org-scribe--get-character-file))
+        found-marker)
+    (when (and char-file (file-exists-p char-file))
+      (with-current-buffer (find-file-noselect char-file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (org-map-entries
+          (lambda ()
+            (when (and (not found-marker)
+                      (string= (org-scribe--get-character-name-at-point) char-name))
+              (setq found-marker (point-marker))))
+          nil 'file))))
+    found-marker))
+
+(defun org-scribe--update-character-relationships (char-name relationships)
+  "Update CHAR-NAME's relationships to RELATIONSHIPS.
+RELATIONSHIPS is a list of (ID NAME TYPE STRENGTH SENTIMENT) tuples."
+  (when-let ((marker (org-scribe--find-character-by-name char-name)))
+    (with-current-buffer (marker-buffer marker)
+      (org-with-wide-buffer
+       (goto-char marker)
+       (let* ((rel-string (if relationships
+                             (org-scribe--relationships-to-string relationships)
+                           ""))
+              (property-name (if (org-entry-get nil "DatosRelaciones")
+                               "DatosRelaciones"
+                             "RelationshipsData")))
+         (if (string-empty-p rel-string)
+             (org-entry-delete nil property-name)
+           (org-entry-put nil property-name rel-string))
+         (save-buffer))))
+    t))
+
+(defun org-scribe--get-character-relationships-by-name (char-name)
+  "Get relationships for CHAR-NAME.
+Returns list of (ID NAME TYPE STRENGTH SENTIMENT) tuples."
+  (when-let ((marker (org-scribe--find-character-by-name char-name)))
+    (with-current-buffer (marker-buffer marker)
+      (org-with-wide-buffer
+       (goto-char marker)
+       (org-scribe--get-character-relationships)))))
+
 (defun org-scribe--get-all-relationships ()
   "Return alist of all character relationships in the project.
 Format: ((CHAR-NAME . RELATIONSHIPS) ...) where RELATIONSHIPS is
@@ -122,80 +167,87 @@ list of (ID NAME TYPE STRENGTH SENTIMENT) tuples."
 
 ;;;###autoload
 (defun org-scribe/add-relationship ()
-  "Add a relationship to the character at point.
-Prompts for target character, relationship type, strength, and sentiment."
+  "Add a relationship between two characters.
+Prompts for source character, target character, relationship type, strength, and sentiment."
   (interactive)
-  (unless (org-before-first-heading-p)
-    (let* ((all-chars (org-scribe--get-all-characters))
-           (current-char (org-scribe--get-character-name-at-point))
-           (existing-rels (org-scribe--get-character-relationships))
-           ;; Filter out current character from selection
-           (other-chars (seq-remove (lambda (c) (string= (car c) current-char))
-                                   all-chars))
-           (char-names (mapcar #'car other-chars)))
+  (let* ((all-chars (org-scribe--get-all-characters))
+         (char-names (mapcar #'car all-chars)))
 
-      (if (null char-names)
-          (message (org-scribe-msg 'msg-no-other-characters))
-        (let* ((target-name (completing-read (org-scribe-msg 'prompt-relationship-character) char-names nil t))
-               (target-entry (assoc target-name other-chars))
-               (target-id (cadr target-entry))
-               (rel-type (completing-read (org-scribe-msg 'prompt-relationship-type)
-                                         org-scribe-relationship-types
-                                         nil nil))
-               (rel-strength (string-to-number
-                            (completing-read (org-scribe-msg 'prompt-relationship-strength)
-                                           '("1" "2" "3" "4" "5")
-                                           nil t)))
-               (rel-sentiment (completing-read (org-scribe-msg 'prompt-relationship-sentiment)
-                                             org-scribe-relationship-sentiments
-                                             nil t))
-               ;; Create new relationship tuple
-               (new-rel (list target-id target-name rel-type rel-strength rel-sentiment))
-               ;; Add to existing relationships
-               (all-rels (append existing-rels (list new-rel)))
-               ;; Convert to string
-               (rel-string (org-scribe--relationships-to-string all-rels))
-               ;; Determine which property name to use
-               (property-name (if (org-entry-get nil "DatosRelaciones")
-                                "DatosRelaciones"
-                              "RelationshipsData")))
+    (if (< (length char-names) 2)
+        (message (org-scribe-msg 'msg-no-other-characters))
+      ;; Ask for source character
+      (let* ((source-name (completing-read (org-scribe-msg 'prompt-relationship-from-character)
+                                          char-names nil t))
+             ;; Get existing relationships for source character
+             (existing-rels (org-scribe--get-character-relationships-by-name source-name))
+             ;; Filter out source character from target selection
+             (other-chars (seq-remove (lambda (c) (string= (car c) source-name))
+                                     all-chars))
+             (other-char-names (mapcar #'car other-chars)))
 
-          ;; Update the property
-          (org-entry-put nil property-name rel-string)
-          (message (org-scribe-msg 'msg-added-relationship
-                                  rel-type target-name rel-strength rel-sentiment)))))))
+        (if (null other-char-names)
+            (message (org-scribe-msg 'msg-no-other-characters))
+          ;; Ask for target character
+          (let* ((target-name (completing-read (org-scribe-msg 'prompt-relationship-to-character)
+                                              other-char-names nil t))
+                 (target-entry (assoc target-name all-chars))
+                 (target-id (cadr target-entry))
+                 ;; Ask for relationship details
+                 (rel-type (completing-read (org-scribe-msg 'prompt-relationship-type)
+                                           org-scribe-relationship-types
+                                           nil nil))
+                 (rel-strength (string-to-number
+                              (completing-read (org-scribe-msg 'prompt-relationship-strength)
+                                             '("1" "2" "3" "4" "5")
+                                             nil t)))
+                 (rel-sentiment (completing-read (org-scribe-msg 'prompt-relationship-sentiment)
+                                               org-scribe-relationship-sentiments
+                                               nil t))
+                 ;; Create new relationship tuple
+                 (new-rel (list target-id target-name rel-type rel-strength rel-sentiment))
+                 ;; Add to existing relationships
+                 (all-rels (append existing-rels (list new-rel))))
+
+            ;; Update the source character's relationships
+            (org-scribe--update-character-relationships source-name all-rels)
+            (message (org-scribe-msg 'msg-added-relationship
+                                    rel-type source-name target-name rel-strength rel-sentiment))))))))
 
 ;;;###autoload
 (defun org-scribe/remove-relationship ()
-  "Remove a relationship from the character at point.
-Prompts for which relationship to remove."
+  "Remove a relationship from a character.
+Prompts for source character, then which relationship to remove."
   (interactive)
-  (unless (org-before-first-heading-p)
-    (let* ((existing-rels (org-scribe--get-character-relationships))
-           (property-name (if (org-entry-get nil "DatosRelaciones")
-                            "DatosRelaciones"
-                          "RelationshipsData")))
+  (let* ((all-chars (org-scribe--get-all-characters))
+         (char-names (mapcar #'car all-chars)))
 
-      (if (null existing-rels)
-          (message (org-scribe-msg 'msg-no-relationships))
-        (let* ((rel-choices (mapcar (lambda (rel)
-                                     (format "%s (%s, %d, %s)"
-                                            (nth 1 rel)  ; Name
-                                            (nth 2 rel)  ; Type
-                                            (nth 3 rel)  ; Strength
-                                            (nth 4 rel))) ; Sentiment
-                                   existing-rels))
-               (selected (completing-read (org-scribe-msg 'prompt-remove-relationship) rel-choices nil t))
-               (selected-idx (cl-position selected rel-choices :test #'string=))
-               (remaining-rels (append (cl-subseq existing-rels 0 selected-idx)
-                                     (cl-subseq existing-rels (1+ selected-idx)))))
+    (if (null char-names)
+        (message (org-scribe-msg 'error-no-characters-found))
+      ;; Ask for source character
+      (let* ((source-name (completing-read (org-scribe-msg 'prompt-relationship-from-character)
+                                          char-names nil t))
+             ;; Get existing relationships for source character
+             (existing-rels (org-scribe--get-character-relationships-by-name source-name)))
 
-          (if (null remaining-rels)
-              (org-entry-delete nil property-name)
-            (org-entry-put nil property-name
-                          (org-scribe--relationships-to-string remaining-rels)))
+        (if (null existing-rels)
+            (message (org-scribe-msg 'msg-no-relationships))
+          ;; Ask which relationship to remove
+          (let* ((rel-choices (mapcar (lambda (rel)
+                                       (format "%s (%s, %d, %s)"
+                                              (nth 1 rel)  ; Name
+                                              (nth 2 rel)  ; Type
+                                              (nth 3 rel)  ; Strength
+                                              (nth 4 rel))) ; Sentiment
+                                     existing-rels))
+                 (selected (completing-read (org-scribe-msg 'prompt-remove-relationship)
+                                           rel-choices nil t))
+                 (selected-idx (cl-position selected rel-choices :test #'string=))
+                 (remaining-rels (append (cl-subseq existing-rels 0 selected-idx)
+                                       (cl-subseq existing-rels (1+ selected-idx)))))
 
-          (message (org-scribe-msg 'msg-removed-relationship selected)))))))
+            ;; Update the source character's relationships
+            (org-scribe--update-character-relationships source-name remaining-rels)
+            (message (org-scribe-msg 'msg-removed-relationship source-name selected))))))))
 
 ;;; ASCII Visualization
 
@@ -245,29 +297,35 @@ ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
 
 ;;;###autoload
 (defun org-scribe/show-character-relationships ()
-  "Display relationships for character at point in a temporary buffer."
+  "Display relationships for a selected character in a temporary buffer."
   (interactive)
-  (unless (org-before-first-heading-p)
-    (let* ((char-name (org-scribe--get-character-name-at-point))
-           (relationships (org-scribe--get-character-relationships)))
+  (let* ((all-chars (org-scribe--get-all-characters))
+         (char-names (mapcar #'car all-chars)))
 
-      (if (null relationships)
-          (message (org-scribe-msg 'error-no-relationships char-name))
-        (let ((tree (org-scribe--ascii-relationship-tree char-name relationships))
-              (buf-name (format "*Relationships: %s*" char-name)))
-          (with-current-buffer (get-buffer-create buf-name)
-            (erase-buffer)
-            (insert (format "Relationships for %s\n\n" char-name))
-            (insert tree)
-            (insert "\n\n")
-            (insert "Legend:\n")
-            (insert "  + = positive relationship\n")
-            (insert "  - = negative relationship\n")
-            (insert "  ~ = complex relationship\n")
-            (insert "  · = neutral relationship\n")
-            (goto-char (point-min))
-            (view-mode 1))
-          (display-buffer buf-name))))))
+    (if (null char-names)
+        (message (org-scribe-msg 'error-no-characters-found))
+      ;; Ask for which character to view
+      (let* ((char-name (completing-read (org-scribe-msg 'prompt-relationship-from-character)
+                                        char-names nil t))
+             (relationships (org-scribe--get-character-relationships-by-name char-name)))
+
+        (if (null relationships)
+            (message (org-scribe-msg 'error-no-relationships char-name))
+          (let ((tree (org-scribe--ascii-relationship-tree char-name relationships))
+                (buf-name (format "*Relationships: %s*" char-name)))
+            (with-current-buffer (get-buffer-create buf-name)
+              (erase-buffer)
+              (insert (format "Relationships for %s\n\n" char-name))
+              (insert tree)
+              (insert "\n\n")
+              (insert "Legend:\n")
+              (insert "  + = positive relationship\n")
+              (insert "  - = negative relationship\n")
+              (insert "  ~ = complex relationship\n")
+              (insert "  · = neutral relationship\n")
+              (goto-char (point-min))
+              (view-mode 1))
+            (display-buffer buf-name)))))))
 
 ;;;###autoload
 (defun org-scribe/show-all-relationships ()
