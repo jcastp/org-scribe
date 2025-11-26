@@ -91,7 +91,7 @@ Sections tagged with 'noexport' are excluded."
              ;; Format with literal asterisks and org link
              (push (list
                     (format "%s %s"
-                            (make-string level 45)  ; 45 is the minus sign in ASCII
+                            (concat "└" (make-string (- (* 2 level) 2) 45) ">")  ; 45 is the minus sign in ASCII
                             (org-link-make-string heading))
                     wordcount
                     objective
