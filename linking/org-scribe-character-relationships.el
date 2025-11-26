@@ -280,8 +280,8 @@ RELATIONSHIPS is list of (ID NAME TYPE STRENGTH SENTIMENT) tuples."
 (defun org-scribe--format-relationship-table (all-relationships)
   "Format ALL-RELATIONSHIPS as an org-mode table.
 ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
-  (let ((lines (list "| Character | Related To | Type | Strength | Sentiment |"
-                    "|-----------+------------+------+----------+-----------|")))
+  (let ((lines (list "|-----------+------------+------+----------+-----------|"
+                    "| Character | Related To | Type | Strength | Sentiment |")))
     (dolist (entry all-relationships)
       (let ((char-name (car entry))
             (rels (cdr entry)))
@@ -341,8 +341,11 @@ ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
           (org-mode)
           (insert "#+TITLE: Character Relationships\n\n")
           (insert table)
+          ;; Move to the table and align it
           (goto-char (point-min))
+          (re-search-forward "^|" nil t)  ; Find the first table line
           (org-table-align)
+          (goto-char (point-min))
           (view-mode 1))
         (display-buffer buf-name)))))
 
