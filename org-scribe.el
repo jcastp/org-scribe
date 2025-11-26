@@ -71,6 +71,7 @@
 ;; character linking system
 (require 'org-scribe-link-update (expand-file-name "linking/org-scribe-link-update" (file-name-directory load-file-name)))
 (require 'org-scribe-character-links (expand-file-name "linking/org-scribe-character-links" (file-name-directory load-file-name)))
+(require 'org-scribe-character-relationships (expand-file-name "linking/org-scribe-character-relationships" (file-name-directory load-file-name)))
 (require 'org-scribe-location-links (expand-file-name "linking/org-scribe-location-links" (file-name-directory load-file-name)))
 (require 'org-scribe-plot-links (expand-file-name "linking/org-scribe-plot-links" (file-name-directory load-file-name)))
 ;; column view enhancements for ID links

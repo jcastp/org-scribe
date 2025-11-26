@@ -48,6 +48,12 @@
 (declare-function org-scribe/link-all-scene-characters "linking/org-scribe-character-links")
 (declare-function org-scribe/add-character-ids "linking/org-scribe-character-links")
 (declare-function org-scribe/setup-character-links "linking/org-scribe-character-links")
+;; character relationships
+(declare-function org-scribe/add-relationship "linking/org-scribe-character-relationships")
+(declare-function org-scribe/remove-relationship "linking/org-scribe-character-relationships")
+(declare-function org-scribe/show-character-relationships "linking/org-scribe-character-relationships")
+(declare-function org-scribe/show-all-relationships "linking/org-scribe-character-relationships")
+(declare-function org-scribe/setup-character-relationships "linking/org-scribe-character-relationships")
 ;; manage location related links
 (declare-function org-scribe/set-scene-locations "linking/org-scribe-location-links")
 (declare-function org-scribe/link-scene-locations "linking/org-scribe-location-links")
@@ -67,13 +73,17 @@
 ;;;###autoload (autoload 'hydra-org-scribe-characters/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe-characters (:color blue :hint nil)
   "
-^Character Linking^
+^Character Linking^            ^Relationships^
 ^^^^^^^^------------------------------------------------------------
-_p_: Set PoV character      _l_: Link scene characters
-_c_: Set scene characters   _L_: Link all scenes
-_j_: Jump to PoV char       _i_: Add IDs to characters
-_u_: Update link names      _U_: Update all link names
-_s_: Setup linking system   _q_: Back to main menu
+_p_: Set PoV character         _a_: Add relationship
+_c_: Set scene characters      _r_: Remove relationship
+_j_: Jump to PoV char          _v_: View character relationships
+_l_: Link scene characters     _V_: View all relationships
+_L_: Link all scenes           _R_: Setup relationships
+_i_: Add IDs to characters
+_u_: Update link names         _q_: Back to main menu
+_U_: Update all link names     _Q_: Quit
+_s_: Setup linking system
 "
   ("p" org-scribe/set-pov-character "set PoV")
   ("c" org-scribe/set-scene-characters "set characters")
@@ -84,6 +94,11 @@ _s_: Setup linking system   _q_: Back to main menu
   ("u" org-scribe/update-character-link-names "update names")
   ("U" org-scribe/update-all-character-link-names "update all names")
   ("s" org-scribe/setup-character-links "setup system")
+  ("a" org-scribe/add-relationship "add relationship")
+  ("r" org-scribe/remove-relationship "remove relationship")
+  ("v" org-scribe/show-character-relationships "view relationships")
+  ("V" org-scribe/show-all-relationships "view all")
+  ("R" org-scribe/setup-character-relationships "setup relationships")
   ("q" hydra-org-scribe/body "back")
   ("Q" nil "quit"))
 

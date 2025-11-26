@@ -8,6 +8,7 @@
 :NOMBRE:
 :EDAD:
 :GENERO:
+:DatosRelaciones:
 :END:
 
 ** Descripción Física
@@ -56,6 +57,7 @@
 :NOMBRE:
 :EDAD:
 :GENERO:
+:DatosRelaciones:
 :END:
 
 ** Descripción Física
@@ -77,6 +79,7 @@ Por qué se opone al protagonista...
 :TIPO: Secundario
 :NOMBRE:
 :ROL: Aliado/Mentor/etc.
+:DatosRelaciones:
 :END:
 
 *** Descripción
