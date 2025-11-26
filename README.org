@@ -25,6 +25,13 @@
   - Menu-based character selection for scene properties
   - Searches work with both plain text and ID links
   - Stable links that survive character name changes
+- *Character Relationships*: Track and visualize character relationships
+  - Structured relationship data (type, strength, sentiment)
+  - Interactive relationship management
+  - Multiple visualization formats (DOT graphs, ASCII trees, tables)
+  - Graphviz integration for professional network graphs
+  - Filter by relationship strength
+  - Export relationship visualizations
 - *Location Linking*: ID-based links between scenes and location profiles
   - Same linking system for locations/settings
   - Jump from scene to detailed location descriptions
@@ -365,6 +372,8 @@ When you rename a character in =plan/characters.org=, the ID links still work (t
 *** Character Linking Hydra Menu
 
 Press =F8 F8 C= to access:
+
+*Character Linking:*
 - =p= - Set PoV character
 - =c= - Set scene characters
 - =j= - Jump to PoV character
@@ -375,7 +384,181 @@ Press =F8 F8 C= to access:
 - =U= - Update all link names
 - =s= - Setup linking system
 
+*Relationships:*
+- =a= - Add relationship
+- =r= - Remove relationship
+- =v= - View character relationships
+- =V= - View all relationships
+- =R= - Setup relationships
+
+*Visualization:*
+- =g= - Insert graph block
+
 See [[file:CHARACTER-LINKING.org][Character Linking Guide]] for complete documentation.
+
+** Character Relationships
+
+*** Overview
+
+Track and visualize the relationships between your characters. The relationship system uses structured data (type, strength, sentiment) stored in character properties, enabling powerful analysis and visualization of your character network.
+
+*** Quick Start
+
+For existing projects:
+1. =M-x org-scribe/setup-character-relationships= or press =F8 F8 C R=
+2. Adds =RelationshipsData= property to all characters
+3. Start adding relationships!
+
+*** Adding Relationships
+
+*Add a Relationship* (=F8 F8 C a= or =M-x org-scribe/add-relationship=):
+1. Select source character (the character who has the relationship)
+2. Select target character (the character they're related to)
+3. Choose relationship type (mentor, rival, friend, family, lover, enemy, ally, etc.)
+4. Set strength (1-5, where 1=acquaintance, 5=central to their life)
+5. Choose sentiment (positive, negative, neutral, complex)
+
+*Example*:
+- From: Alice
+- To: Bob
+- Type: mentor
+- Strength: 5
+- Sentiment: positive
+- Result: "Alice → Bob (mentor, strength 5, positive)"
+
+*Remove a Relationship* (=F8 F8 C r= or =M-x org-scribe/remove-relationship=):
+1. Select character to modify
+2. Choose which relationship to remove
+
+*** Viewing Relationships
+
+*View Single Character* (=F8 F8 C v= or =M-x org-scribe/show-character-relationships=):
+- Select a character
+- Displays ASCII tree showing all their relationships
+- Legend explains sentiment symbols (+/−/~/·)
+
+*View All Relationships* (=F8 F8 C V= or =M-x org-scribe/show-all-relationships=):
+- Shows complete relationship table for entire project
+- Sortable org-mode table format
+- See all connections at a glance
+
+*** Visualizing Relationships
+
+*Insert Relationship Graph* (=F8 F8 C g= or =M-x org-scribe/insert-relationship-block=):
+
+Creates a dynamic block that generates visualizations. Choose from three formats:
+
+*1. DOT Graph (Graphviz)*:
+#+begin_example
+#+BEGIN: character-relationships :format dot
+#+END:
+#+end_example
+
+Press =C-c C-c= to generate a professional network graph showing:
+- Nodes for each character
+- Directed edges showing relationship direction
+- Edge color indicates sentiment (green=positive, red=negative, purple=complex, gray=neutral)
+- Edge thickness indicates relationship strength
+- Labels show relationship type and strength
+
+Requires Graphviz installed: =sudo apt install graphviz=
+
+*2. ASCII Tree*:
+#+begin_example
+#+BEGIN: character-relationships :format ascii
+#+END:
+#+end_example
+
+Generates text-based visualization:
+#+begin_example
+Alice
+  ├─(mentor,+)─> Bob
+  ├─(rival,−)──> Charlie
+  └─(friend,+)─> Dana
+#+end_example
+
+*3. Table Format*:
+#+begin_example
+#+BEGIN: character-relationships :format table
+#+END:
+#+end_example
+
+Creates an org-mode table of all relationships.
+
+*** Advanced Visualization Options
+
+*Filter by Strength*:
+Only show strong relationships:
+#+begin_example
+#+BEGIN: character-relationships :format dot :filter-strength 4
+#+END:
+#+end_example
+
+*Single Character Network*:
+Show only one character's connections (ego network):
+#+begin_example
+#+BEGIN: character-relationships :format dot :character "Alice"
+#+END:
+#+end_example
+
+*Custom Output File*:
+Save graph to specific file:
+#+begin_example
+#+BEGIN: character-relationships :format dot :image-file "characters.svg" :image-format svg
+#+END:
+#+end_example
+
+Supported image formats: =png= (default), =svg=, =pdf=
+
+*** Relationship Data Structure
+
+Relationships are stored in the =:RelationshipsData:= property:
+
+#+begin_example
+* Alice Rivera
+:PROPERTIES:
+:ID: char-alice-001
+:RelationshipsData: [[id:char-bob-002][Bob]](mentor,5,positive); [[id:char-charlie-003][Charlie]](rival,3,negative)
+:END:
+#+end_example
+
+This format:
+- Uses ID links (stable across renames)
+- Stores type, strength, sentiment for each relationship
+- Semicolon-separated for multiple relationships
+- Human-readable and editable
+
+*** Relationship Types
+
+Common relationship types include:
+- =mentor/mentee= - Teaching/learning relationship
+- =friend= - Friendly relationship
+- =rival/opponent= - Competitive relationship
+- =family= - Family connections (parent, child, sibling)
+- =lover/spouse= - Romantic relationships
+- =ally= - Working together toward common goal
+- =enemy= - Active opposition
+- =colleague/partner= - Professional relationship
+- =superior/subordinate= - Hierarchical relationship
+
+Custom types are supported - use any text that describes the relationship!
+
+*** Use Cases
+
+*Character Network Analysis*:
+- Identify isolated characters (may need more connections)
+- Find central characters (hub of the network)
+- Visualize character clusters and groups
+
+*Story Planning*:
+- Ensure main character has sufficient relationships
+- Track relationship evolution throughout story
+- Identify relationship conflicts and alliances
+
+*Consistency Checking*:
+- View all relationships in table format
+- Ensure relationship strengths match their importance in story
+- Verify relationship symmetry (if Alice considers Bob a rival, does Bob reciprocate?)
 
 ** Plot Thread Linking and Analysis
 
@@ -839,6 +1022,8 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 - =U= - Update all link names (all types)
 
 **** Character Linking Submenu (F8 F8 C)
+
+*Character Linking:*
 - =p= - Set PoV character
 - =c= - Set scene characters
 - =j= - Jump to PoV character
@@ -848,6 +1033,16 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 - =u= - Update link names (current scene)
 - =U= - Update all link names
 - =s= - Setup linking system
+
+*Relationships:*
+- =a= - Add relationship
+- =r= - Remove relationship
+- =v= - View character relationships
+- =V= - View all relationships
+- =R= - Setup relationships
+
+*Visualization:*
+- =g= - Insert graph block
 
 **** Location Linking Submenu (F8 F8 L)
 - =c= - Set scene locations
