@@ -346,6 +346,258 @@ ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
           (view-mode 1))
         (display-buffer buf-name)))))
 
+;;; DOT Graph Visualization
+
+(defun org-scribe--filter-relationships-by-strength (all-relationships min-strength)
+  "Filter ALL-RELATIONSHIPS to only include those with strength >= MIN-STRENGTH.
+ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS).
+Returns filtered alist in same format."
+  (let (result)
+    (dolist (entry all-relationships)
+      (let* ((char-name (car entry))
+             (rels (cdr entry))
+             (filtered-rels (seq-filter (lambda (rel)
+                                         (>= (nth 3 rel) min-strength))
+                                       rels)))
+        (when filtered-rels
+          (push (cons char-name filtered-rels) result))))
+    (nreverse result)))
+
+(defun org-scribe--build-relationship-graph-data (&optional filter-strength)
+  "Build graph data structure from all character relationships.
+FILTER-STRENGTH if non-nil filters to relationships with strength >= value.
+Returns alist of (CHAR-NAME . RELATIONSHIPS)."
+  (let ((all-rels (org-scribe--get-all-relationships)))
+    (if filter-strength
+        (org-scribe--filter-relationships-by-strength all-rels filter-strength)
+      all-rels)))
+
+(defun org-scribe--sentiment-to-color (sentiment)
+  "Convert SENTIMENT to a DOT graph color.
+positive=green, negative=red, complex=purple, neutral=gray."
+  (pcase sentiment
+    ("positive" "forestgreen")
+    ("negative" "crimson")
+    ("complex" "purple")
+    (_ "gray50")))
+
+(defun org-scribe--generate-dot-code (graph-data &optional title)
+  "Generate Graphviz DOT code from GRAPH-DATA.
+GRAPH-DATA is alist of (CHAR-NAME . RELATIONSHIPS).
+TITLE is optional graph title."
+  (let ((dot-lines (list "  edge [fontsize=10];"
+                        "  node [shape=box, style=filled, fillcolor=lightblue];"
+                        "  rankdir=LR;"
+                        "digraph character_relationships {"))
+        (all-chars (make-hash-table :test 'equal)))
+
+    ;; Add title if provided
+    (when title
+      (push (format "  labelloc=\"t\";\n  label=\"%s\";" title) dot-lines))
+
+    ;; Collect all unique characters
+    (dolist (entry graph-data)
+      (let ((char-name (car entry))
+            (rels (cdr entry)))
+        (puthash char-name t all-chars)
+        (dolist (rel rels)
+          (puthash (nth 1 rel) t all-chars))))
+
+    ;; Add node declarations
+    (push "" dot-lines)
+    (push "  // Character nodes" dot-lines)
+    (maphash (lambda (char _)
+               (push (format "  \"%s\";" char) dot-lines))
+             all-chars)
+
+    ;; Add edges
+    (push "" dot-lines)
+    (push "  // Relationships" dot-lines)
+    (dolist (entry graph-data)
+      (let ((source-char (car entry))
+            (rels (cdr entry)))
+        (dolist (rel rels)
+          (let* ((target-char (nth 1 rel))
+                 (rel-type (nth 2 rel))
+                 (strength (nth 3 rel))
+                 (sentiment (nth 4 rel))
+                 (color (org-scribe--sentiment-to-color sentiment))
+                 (penwidth (format "%.1f" (+ 0.5 (* strength 0.5)))))
+            (push (format "  \"%s\" -> \"%s\" [label=\"%s (%d)\", color=\"%s\", penwidth=%s];"
+                         source-char target-char rel-type strength color penwidth)
+                  dot-lines)))))
+
+    ;; Close graph
+    (push "}" dot-lines)
+
+    ;; Return as string
+    (string-join (nreverse dot-lines) "\n")))
+
+(defun org-scribe--generate-dot-code-for-character (char-name &optional filter-strength)
+  "Generate DOT code showing CHAR-NAME's ego network.
+Shows only relationships directly connected to CHAR-NAME.
+FILTER-STRENGTH if non-nil filters to relationships with strength >= value."
+  (let* ((all-rels (org-scribe--get-all-relationships))
+         (filtered-rels (if filter-strength
+                           (org-scribe--filter-relationships-by-strength all-rels filter-strength)
+                         all-rels))
+         ;; Get outgoing relationships from this character
+         (char-rels-entry (assoc char-name filtered-rels))
+         (outgoing-rels (when char-rels-entry (cdr char-rels-entry)))
+         ;; Get incoming relationships to this character
+         (incoming-rels nil))
+
+    ;; Find all incoming relationships
+    (dolist (entry filtered-rels)
+      (let ((source (car entry))
+            (rels (cdr entry)))
+        (dolist (rel rels)
+          (when (string= (nth 1 rel) char-name)
+            (push (list source (nth 2 rel) (nth 3 rel) (nth 4 rel)) incoming-rels)))))
+
+    ;; Build graph data with just this character's network
+    (let ((graph-data (list (cons char-name outgoing-rels))))
+      ;; Add entries for characters that have relationships TO our character
+      (dolist (incoming incoming-rels)
+        (let* ((source-char (nth 0 incoming))
+               (rel-type (nth 1 incoming))
+               (strength (nth 2 incoming))
+               (sentiment (nth 3 incoming))
+               (source-entry (assoc source-char graph-data))
+               ;; Create relationship tuple for source -> char-name
+               (rel-tuple (list nil char-name rel-type strength sentiment)))
+          (if source-entry
+              ;; Add to existing entry
+              (setcdr source-entry (append (cdr source-entry) (list rel-tuple)))
+            ;; Create new entry
+            (push (cons source-char (list rel-tuple)) graph-data))))
+
+      (org-scribe--generate-dot-code graph-data
+                                     (format "%s's Relationship Network" char-name)))))
+
+(defun org-scribe--render-dot-to-image (dot-code output-format)
+  "Render DOT-CODE to image using Graphviz.
+OUTPUT-FORMAT can be 'png, 'svg, 'pdf, etc.
+Returns the path to the generated image file, or nil if rendering failed."
+  (let* ((dot-executable (executable-find "dot"))
+         (temp-dot (make-temp-file "org-scribe-graph" nil ".dot"))
+         (temp-output (concat (file-name-sans-extension temp-dot)
+                             "." (symbol-name output-format))))
+
+    (if (not dot-executable)
+        (progn
+          (message (org-scribe-msg 'error-graphviz-not-found))
+          nil)
+      ;; Write DOT code to temp file
+      (with-temp-file temp-dot
+        (insert dot-code))
+
+      ;; Render to image
+      (let ((exit-code (call-process dot-executable nil nil nil
+                                    (format "-T%s" (symbol-name output-format))
+                                    temp-dot
+                                    "-o" temp-output)))
+        (if (= exit-code 0)
+            temp-output
+          (message (org-scribe-msg 'error-graph-render-failed exit-code))
+          nil)))))
+
+;;; Dynamic Block
+
+;;;###autoload
+(defun org-dblock-write:character-relationships (params)
+  "Generate character relationship visualization as a dynamic block.
+PARAMS can include:
+  :format - Output format: 'dot (default), 'ascii, 'table
+  :filter-strength - Minimum relationship strength (1-5)
+  :character - Show only this character's ego network
+  :image-format - Image format when :format is 'dot: 'png (default), 'svg, 'pdf
+  :image-file - Save image to this file instead of temp file"
+  (let* ((format (or (plist-get params :format) 'dot))
+         (filter-strength (plist-get params :filter-strength))
+         (character (plist-get params :character))
+         (image-format (or (plist-get params :image-format) 'png))
+         (image-file (plist-get params :image-file)))
+
+    (cond
+     ;; DOT graph format
+     ((eq format 'dot)
+      (let* ((dot-code (if character
+                          (org-scribe--generate-dot-code-for-character character filter-strength)
+                        (org-scribe--generate-dot-code
+                         (org-scribe--build-relationship-graph-data filter-strength))))
+             ;; Determine output filename
+             (output-file (or image-file
+                             (format "character-relationships.%s" (symbol-name image-format))))
+             ;; Try to render the image
+             (image-path (org-scribe--render-dot-to-image dot-code image-format)))
+
+        ;; Always include :file parameter for org-babel export
+        (insert "#+BEGIN_SRC dot :file " output-file " :exports results\n")
+        (insert dot-code)
+        (insert "\n#+END_SRC\n\n")
+
+        ;; If we successfully rendered, copy to final location and show image
+        (when image-path
+          (when image-file
+            (copy-file image-path image-file t))
+          (insert "[[file:" output-file "]]\n"))))
+
+     ;; ASCII tree format
+     ((eq format 'ascii)
+      (let ((all-rels (org-scribe--build-relationship-graph-data filter-strength)))
+        (if character
+            ;; Show single character
+            (let ((char-rels (cdr (assoc character all-rels))))
+              (if char-rels
+                  (insert (org-scribe--ascii-relationship-tree character char-rels))
+                (insert (format "No relationships found for %s\n" character))))
+          ;; Show all characters
+          (insert "#+BEGIN_EXAMPLE\n")
+          (dolist (entry all-rels)
+            (let ((char-name (car entry))
+                  (rels (cdr entry)))
+              (insert (org-scribe--ascii-relationship-tree char-name rels))
+              (insert "\n\n")))
+          (insert "#+END_EXAMPLE\n"))))
+
+     ;; Table format
+     ((eq format 'table)
+      (let* ((all-rels (org-scribe--build-relationship-graph-data filter-strength))
+             (filtered-rels (if character
+                               (list (assoc character all-rels))
+                             all-rels)))
+        (insert (org-scribe--format-relationship-table filtered-rels))
+        (insert "\n")))
+
+     ;; Unknown format
+     (t
+      (insert (org-scribe-msg 'msg-graph-format-unknown format))
+      (insert "\n")))))
+
+;;;###autoload
+(defun org-scribe/insert-relationship-block ()
+  "Insert a character-relationships dynamic block at point."
+  (interactive)
+  (let* ((format (completing-read (org-scribe-msg 'prompt-graph-format)
+                                 '("dot" "ascii" "table") nil t "dot"))
+         (character (completing-read (org-scribe-msg 'prompt-graph-character)
+                                    (cons "" (mapcar #'car (org-scribe--get-all-characters)))
+                                    nil t))
+         (strength (completing-read (org-scribe-msg 'prompt-graph-min-strength)
+                                   '("" "1" "2" "3" "4" "5")
+                                   nil t)))
+    (insert "#+BEGIN: character-relationships")
+    (insert " :format " format)
+    (when (not (string-empty-p character))
+      (insert " :character \"" character "\""))
+    (when (not (string-empty-p strength))
+      (insert " :filter-strength " strength))
+    (insert "\n#+END:\n")
+    (forward-line -1)
+    (org-update-dblock)
+    (message (org-scribe-msg 'msg-graph-inserted))))
+
 ;;; Setup Function
 
 ;;;###autoload

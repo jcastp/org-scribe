@@ -54,6 +54,7 @@
 (declare-function org-scribe/show-character-relationships "linking/org-scribe-character-relationships")
 (declare-function org-scribe/show-all-relationships "linking/org-scribe-character-relationships")
 (declare-function org-scribe/setup-character-relationships "linking/org-scribe-character-relationships")
+(declare-function org-scribe/insert-relationship-block "linking/org-scribe-character-relationships")
 ;; manage location related links
 (declare-function org-scribe/set-scene-locations "linking/org-scribe-location-links")
 (declare-function org-scribe/link-scene-locations "linking/org-scribe-location-links")
@@ -73,16 +74,16 @@
 ;;;###autoload (autoload 'hydra-org-scribe-characters/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe-characters (:color blue :hint nil)
   "
-^Character Linking^            ^Relationships^
-^^^^^^^^------------------------------------------------------------
-_p_: Set PoV character         _a_: Add relationship
-_c_: Set scene characters      _r_: Remove relationship
-_j_: Jump to PoV char          _v_: View character relationships
-_l_: Link scene characters     _V_: View all relationships
-_L_: Link all scenes           _R_: Setup relationships
-_i_: Add IDs to characters
-_u_: Update link names         _q_: Back to main menu
-_U_: Update all link names     _Q_: Quit
+^Character Linking^            ^Relationships^             ^Visualization^
+^^^^^^^^------------------------------------------------------------------------------
+_p_: Set PoV character         _a_: Add relationship       _g_: Insert graph block
+_c_: Set scene characters      _r_: Remove relationship    _v_: View relationships
+_j_: Jump to PoV char          _V_: View all relationships _R_: Setup relationships
+_l_: Link scene characters
+_L_: Link all scenes           _q_: Back to main menu
+_i_: Add IDs to characters     _Q_: Quit
+_u_: Update link names
+_U_: Update all link names
 _s_: Setup linking system
 "
   ("p" org-scribe/set-pov-character "set PoV")
@@ -96,6 +97,7 @@ _s_: Setup linking system
   ("s" org-scribe/setup-character-links "setup system")
   ("a" org-scribe/add-relationship "add relationship")
   ("r" org-scribe/remove-relationship "remove relationship")
+  ("g" org-scribe/insert-relationship-block "insert graph block")
   ("v" org-scribe/show-character-relationships "view relationships")
   ("V" org-scribe/show-all-relationships "view all")
   ("R" org-scribe/setup-character-relationships "setup relationships")
