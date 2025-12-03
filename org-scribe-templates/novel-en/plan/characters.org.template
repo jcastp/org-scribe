@@ -1,86 +1,1516 @@
 #+TITLE: ${TITLE} - Characters
 #+AUTHOR: ${AUTHOR}
 #+STARTUP: overview
-#+COLUMNS: %20ITEM(Name) %12Role %15Occupation %20Goal %20Motivation %40Conflict %20Arc
+#+COLUMNS: %20ITEM(Name) %12Role %15Occupation %30Arc
 
-* Protagonist
+* {Name} - Protagonist
 :PROPERTIES:
 :ID:
 :Role: Protagonist
-:Name:
-:Age:
-:Gender:
-:Occupation:
-:Goal:
-:Motivation:
-:Conflict:
 :Arc:
 :First-appearance:
 :RelationshipsData:
 :END:
 
-** Physical Description
+** Character Overview
 
-- Height ::
-- Build ::
-- Hair ::
-- Eyes ::
-- Distinctive features ::
+*** Quick Reference
+| Element              | Description |
+|----------------------+-------------|
+| Name                 |             |
+| Age                  |             |
+| Role                 |             |
+| One-line description |             |
 
-** Personality
+** Basic Identity
 
-- Main traits ::
-- Strengths ::
-- Weaknesses ::
-- Fears ::
-- Desire ::
-- Need ::
-- Psychological Flaw ::
-- Moral Flaw :: 
+*** Name & Naming
+**** Full Name
 
-** Background
+**** Nicknames/Aliases
+- Called by friends:
+- Called by family:
+- Called by enemies:
+- Called by strangers:
 
-- Family ::
-- Education ::
-- Occupation ::
-- Formative events ::
+**** Name Significance
+# Why this name? What associations does it carry?
 
-** Goal, Motivation, Conflict
-*** Internal
-- Goal ::
-- Motivation ::
-- Conflict ::
-*** External
-- Goal ::
-- Motivation ::
-- Conflict ::
+*** Physical Appearance
+**** Essential Traits (Reader Must Know)
+Height:
+Build:
+Most distinctive feature:
 
-** Character Arc
+**** Detailed Description
+***** Face
+Eyes:
+Hair:
+Facial features:
+Expression they typically wear:
 
-- Initial state ::
-- Turning point ::
-- Transformation ::
-- Final state ::
+***** Body
+Build:
+Posture:
+Distinguishing marks (scars, tattoos):
+Physical mannerisms:
 
-** Relationships
+***** Style
+Typical clothing:
+Fashion sense:
+How they present themselves:
+What their appearance says about them:
 
-- With other characters ::
+**** First Impression
+What do people notice first?
 
-** Notes
+
+*** Demographics
+Age:
+Gender:
+Race/Ethnicity:
+Nationality:
+Socioeconomic background:
+Education level:
+Current occupation:
+Religion/Philosophy (if relevant):
+
+** Psychological & Emotional Makeup
+
+*** Core Personality
+**** Temperament
+- [ ] Introverted
+- [ ] Extroverted  
+- [ ] Ambivert
+
+**** Primary Personality Traits (Pick 3-5)
+1.
+2.
+3.
+4.
+5.
+
+**** How They See Themselves
+
+**** How Others See Them
+
+**** The Gap Between Self-Perception and Reality
+
+*** Strengths
+**** Top 3 Strengths
+1.
+2.
+3.
+
+**** How Strengths Manifest in Actions
+
+**** How Strengths Can Become Weaknesses
+
+*** Weaknesses & Flaws
+**** Fatal Flaw (For Major Characters)
+The character trait that could destroy them:
+
+
+How it manifests:
+
+
+**** Other Weaknesses
+1.
+2.
+3.
+
+**** Blind Spots
+What can't they see about themselves?
+
+
+What assumptions do they make?
+
+
+*** Fears & Phobias
+**** Deepest Fear
+
+
+**** Surface Fears/Anxieties
+
+
+**** What They're Running From
+
+
+*** Desires & Drives
+**** What They Want (Conscious Desire)
+
+
+**** What They NEED (Often Unconscious)
+
+
+**** What Motivates Them Day-to-Day
+
+
+**** Their Ambitions
+
+
+*** Values & Beliefs
+**** Core Values (Top 3)
+1.
+2.
+3.
+
+**** What They Believe About:
+- Themselves:
+- Other people:
+- The world:
+- Right and wrong:
+- Success and failure:
+
+**** Their Worldview/Philosophy
+
+
+**** What Would They Die For?
+
+
+**** What Would They Kill For?
+
+** History & Background
+
+*** The Ghost (Past Wound)
+**** The Event
+What happened in the past that wounded them?
+
+
+**** When It Occurred
+
+
+**** How It Affects Them Now
+- Beliefs shaped:
+- Fears created:
+- Behaviors influenced:
+- Relationships impacted:
+
+**** Connection to Story Theme
+
+
+*** Life History
+**** Childhood
+Where they grew up:
+Family situation:
+Formative experiences:
+Childhood wound:
+
+**** Adolescence
+Key events:
+Education:
+Friendships/relationships:
+Defining moments:
+
+**** Young Adulthood (if applicable)
+Career path:
+Relationships:
+Achievements and failures:
+How they became who they are:
+
+**** Recent Past (Just Before Story)
+Current situation:
+Recent changes:
+What brought them to this point:
+
+*** Family
+**** Parents
+Mother:
+Father:
+Relationship with parents:
+
+**** Siblings
+
+
+**** Extended Family
+
+
+**** Family Dynamics
+Their role in the family:
+Family wounds:
+Family strengths:
+
+*** Formative Experiences
+**** Top 3 Experiences That Made Them Who They Are
+1.
+2.
+3.
+
+**** Best Memory
+
+
+**** Worst Memory
+
+
+**** The Memory They Can't Let Go Of
+
+** Goals & Motivation
+*** External Goal (Plot)
+**** What They Want in the Story
+
+
+**** Why They Want It
+
+
+**** What Success Looks Like
+
+
+**** What They're Willing to Do to Get It
+
+
+**** What Lines They Won't Cross
+
+*** Internal Need (Character Arc)
+**** What They Actually Need (Often Different from Want)
+
+
+**** What They Need to Learn
+
+
+**** What They Need to Overcome
+
+
+**** Who They Need to Become
+
+*** Dual-GMC Framework (For Major Characters)
+| Aspect     | External (Plot) | Internal (Arc) |
+|------------+-----------------+----------------|
+| Goal       |                 |                |
+| Motivation |                 |                |
+| Conflict   |                 |                |
+
+*** Justification (Especially for Antagonists)
+**** Why They Believe They're Right
+
+
+**** Their Moral Framework
+
+
+**** What They're Trying to Protect/Achieve
+
+** Character Arc & Transformation
+
+*** Starting State
+Who they are at story's beginning:
+
+
+What they believe:
+
+
+How they behave:
+
+
+*** Ending State
+Who they become by story's end:
+
+
+What they learn:
+
+
+How they've changed:
+
+
+*** The Transformation Journey
+**** Key Moments of Change
+1. Scene X:
+2. Scene Y:
+3. Scene Z:
+
+**** Resistance to Change
+Why don't they change easily?
+
+
+**** What Forces Change
+
+
+**** The Moment of Realization
+When/how do they finally "get it"?
+
+
+*** Transformation Tracking Table
+| Story Point | Internal State | Beliefs | Behaviors | Scene |
+|-------------+----------------+---------+-----------+-------|
+| Opening     |                |         |           |       |
+| Catalyst    |                |         |           |       |
+| Midpoint    |                |         |           |       |
+| Crisis      |                |         |           |       |
+| Realization |                |         |           |       |
+| Resolution  |                |         |           |       |
+
+** Relationships & Connections
+
+*** Relationship to Protagonist (If Not Protagonist)
+**** How They're Connected
+
+
+**** What They Represent to Protagonist
+
+
+**** How They Compare/Contrast
+
+
+**** Their Function in Protagonist's Arc
+
+
+*** Key Relationships
+**** Relationship 1: [Character Name]
+***** Nature of Relationship
+
+
+***** History Together
+
+
+***** Current Dynamic
+
+
+***** Conflict/Tension
+
+
+***** How It Evolves
+
+
+**** Relationship 2: [Character Name]
+[Same structure]
+
+**** Relationship 3: [Character Name]
+[Same structure]
+
+*** Social Circle
+**** Friends
+
+
+**** Enemies
+
+
+**** Allies
+
+
+**** Mentors/Mentees
+
+
+*** Attitude Toward Other Characters
+- Protagonist:
+- Antagonist:
+- Ally:
+- Love interest:
+
+** Voice & Expression
+
+*** How They Speak
+**** Vocabulary Level
+- [ ] Highly educated
+- [ ] Average
+- [ ] Limited/street
+
+**** Speech Patterns
+- Formal or casual?
+- Complete sentences or fragments?
+- Long-winded or terse?
+- Direct or indirect?
+
+**** Verbal Tics/Catchphrases
+
+
+**** Topics They Talk About
+
+
+**** What They Avoid Discussing
+
+
+**** How They Express Emotion
+
+
+*** Characteristic Dialogue Examples
+**** When Happy
+
+
+**** When Angry
+
+
+**** When Scared
+
+
+**** When Lying
+
+
+**** When Comforting Someone
+
+
+*** Internal Voice (If POV Character)
+**** Stream of Consciousness Style
+
+
+**** How They Think vs. How They Speak
+
+
+**** Characteristic Thoughts
+
+** Behavior & Mannerisms
+
+*** Body Language
+**** Typical Posture
+
+
+**** Gestures They Make
+
+
+**** Facial Expressions
+
+
+**** Physical Habits
+
+
+*** Behavioral Patterns
+**** When Stressed
+
+
+**** When Comfortable
+
+
+**** Around Authority
+
+
+**** Around Subordinates
+
+
+**** In Conflict
+
+
+**** In Intimate Moments
+
+
+*** Quirks & Habits
+1.
+2.
+3.
+4.
+5.
+
+*** Skills & Competencies
+**** What They're Good At
+1.
+2.
+3.
+
+**** What They're Bad At
+1.
+2.
+3.
+
+**** Hidden Talents
+
+
+**** What They Wish They Could Do
+
+** Role in Story
+
+*** Function in Plot
+**** What They Do for the Story
+
+
+**** Key Plot Moments They're Involved In
+1.
+2.
+3.
+4.
+5.
+
+**** Their Plan (If Antagonist or Major Character)
+
+
+*** Function in Theme
+**** What They Represent Thematically
+
+
+**** Their Position on the Moral Question
+
+
+**** How They Embody or Challenge the Theme
+
+
+*** Character Type & Archetype
+**** Archetype (If Any)
+
+
+**** How They Subvert the Archetype
+
+
+**** Character Role
+- [ ] Protagonist
+- [ ] Antagonist
+- [ ] Mentor
+- [ ] Ally/Sidekick
+- [ ] Love Interest
+- [ ] Threshold Guardian
+- [ ] Herald
+- [ ] Shapeshifter
+- [ ] Shadow
+- [ ] Trickster
+
+** The Four-Corner Opposition (For Antagonists)
+| Dimension | Protagonist | This Character |
+|-----------+-------------+----------------|
+| Values    |             |                |
+| Methods   |             |                |
+| Purpose   |             |                |
+| Worldview |             |                |
+
+** Making Readers Care
+
+*** Sympathy Techniques (For Sympathetic Characters)
+- [ ] Undeserved suffering
+- [ ] Underdog status
+- [ ] Kind actions
+- [ ] Wit/humor
+- [ ] Competence
+- [ ] Relatable struggles
+- [ ] Vulnerability
+
+**** How Applied in Story
+
+
+*** Antipathy Techniques (For Antagonists)
+- [ ] Causing suffering
+- [ ] Bullying
+- [ ] Cruelty/selfishness
+- [ ] Dangerous incompetence
+- [ ] Grating habits
+
+**** How Applied in Story
+
+
+*** First Appearance Strategy
+**** First Scene
+
+
+**** First Action Readers See
+
+
+**** First Words They Speak
+
+
+**** Impression to Create
+
+** Character Consistency
+
+*** Core Traits That Never Change
+
+
+*** Contradictions (That Make Them Human)
+
+
+*** Decision-Making Process
+When faced with a choice, how do they decide?
+
+
+What factors matter most?
+
+
+*** Response to Pressure
+How do they behave under stress?
+
+
+*** Moral Boundaries
+What will they never do?
+
+
+What would they do only in extremis?
+
+** World Integration
+
+*** Occupation Details
+**** Job/Role
+
+
+**** How They Got There
+
+
+**** How They Feel About It
+
+
+**** Competence Level
+
+
+**** Work Relationships
+
+
+*** Social Status
+**** Where They Fit in Society
+
+
+**** How They Navigate Social Hierarchies
+
+
+**** Class Issues (If Relevant)
+
+
+*** Cultural Background
+**** How Culture Shapes Them
+
+
+**** Cultural Conflicts They Face
+
+
+**** Traditions They Uphold or Reject
+
+** Character Evolution Tracking
+
+*** Scene Appearances
+| Scene # | Purpose | Development | Status |
+|---------+---------+-------------+--------|
+|         |         |             | TODO   |
+|         |         |             | TODO   |
+|         |         |             | TODO   |
+
+*** Character Arc Checklist [0/8]
+- [ ] Character introduced memorably
+- [ ] Flaw clearly shown
+- [ ] Want/goal established
+- [ ] Relationships defined
+- [ ] Key transformation scene written
+- [ ] Realization moment powerful
+- [ ] Change demonstrated in action
+- [ ] Arc resolved satisfyingly
+
+** Writing Notes
+
+*** Character Secrets
+Things the character knows that reader doesn't (yet):
+1.
+2.
+3.
+
+*** Character Lies
+What do they lie about? To whom?
+
+
+*** What They Hide
+
+
+*** What They'd Never Admit
+
+** Research & References
+
+*** Research Needed
+- [ ]
+- [ ]
+- [ ]
+
+*** Visual References
+Images/actors/art that capture this character:
+-
+-
+
+*** Inspiration
+Real people, fictional characters, or concepts that inspired:
+-
+-
+
+** Quick Scene Reference
+
+*** Character's Essential Truth in One Sentence
+
+
+*** Their Core Conflict in One Sentence
+
+
+*** What They Want in One Sentence
+
+
+*** What They Need in One Sentence
+
+
+*** Go-To Reaction When Stressed
+
+
+*** Most Used Gesture/Expression
+
+
+*** Typical Opening Dialogue
+
+** Writer's Notes & Development
+
+*** Character Discoveries While Writing
+
+
+*** Surprises This Character Gave Me
+
+
+*** Challenges Writing This Character
+
+
+*** What I Love About This Character
+
+
+*** What Needs More Development
+
+
+*** Questions Still to Answer
+- 
+- 
 - 
 
-* Antagonist
+** Character Summary (For Reference)
+[Write a 100-word summary of this character that captures their essence]
+
+* {Name} - Antagonist
 :PROPERTIES:
 :ID:
 :Role: Antagonist
+:Occupation:
+:Arc:
+:First-appearance:
+:RelationshipsData:
+:END:
+** Character Overview
+
+*** Quick Reference
+| Element              | Description |
+|----------------------+-------------|
+| Name                 |             |
+| Age                  |             |
+| Role                 |             |
+| One-line description |             |
+
+** Basic Identity
+
+*** Name & Naming
+**** Full Name
+
+**** Nicknames/Aliases
+- Called by friends:
+- Called by family:
+- Called by enemies:
+- Called by strangers:
+
+**** Name Significance
+# Why this name? What associations does it carry?
+
+*** Physical Appearance
+**** Essential Traits (Reader Must Know)
+Height:
+Build:
+Most distinctive feature:
+
+**** Detailed Description
+***** Face
+Eyes:
+Hair:
+Facial features:
+Expression they typically wear:
+
+***** Body
+Build:
+Posture:
+Distinguishing marks (scars, tattoos):
+Physical mannerisms:
+
+***** Style
+Typical clothing:
+Fashion sense:
+How they present themselves:
+What their appearance says about them:
+
+**** First Impression
+What do people notice first?
+
+
+*** Demographics
+Age:
+Gender:
+Race/Ethnicity:
+Nationality:
+Socioeconomic background:
+Education level:
+Current occupation:
+Religion/Philosophy (if relevant):
+
+** Psychological & Emotional Makeup
+
+*** Core Personality
+**** Temperament
+- [ ] Introverted
+- [ ] Extroverted  
+- [ ] Ambivert
+
+**** Primary Personality Traits (Pick 3-5)
+1.
+2.
+3.
+4.
+5.
+
+**** How They See Themselves
+
+**** How Others See Them
+
+**** The Gap Between Self-Perception and Reality
+
+*** Strengths
+**** Top 3 Strengths
+1.
+2.
+3.
+
+**** How Strengths Manifest in Actions
+
+**** How Strengths Can Become Weaknesses
+
+*** Weaknesses & Flaws
+**** Fatal Flaw (For Major Characters)
+The character trait that could destroy them:
+
+
+How it manifests:
+
+
+**** Other Weaknesses
+1.
+2.
+3.
+
+**** Blind Spots
+What can't they see about themselves?
+
+
+What assumptions do they make?
+
+
+*** Fears & Phobias
+**** Deepest Fear
+
+
+**** Surface Fears/Anxieties
+
+
+**** What They're Running From
+
+
+*** Desires & Drives
+**** What They Want (Conscious Desire)
+
+
+**** What They NEED (Often Unconscious)
+
+
+**** What Motivates Them Day-to-Day
+
+
+**** Their Ambitions
+
+
+*** Values & Beliefs
+**** Core Values (Top 3)
+1.
+2.
+3.
+
+**** What They Believe About:
+- Themselves:
+- Other people:
+- The world:
+- Right and wrong:
+- Success and failure:
+
+**** Their Worldview/Philosophy
+
+
+**** What Would They Die For?
+
+
+**** What Would They Kill For?
+
+** History & Background
+
+*** The Ghost (Past Wound)
+**** The Event
+What happened in the past that wounded them?
+
+
+**** When It Occurred
+
+
+**** How It Affects Them Now
+- Beliefs shaped:
+- Fears created:
+- Behaviors influenced:
+- Relationships impacted:
+
+**** Connection to Story Theme
+
+
+*** Life History
+**** Childhood
+Where they grew up:
+Family situation:
+Formative experiences:
+Childhood wound:
+
+**** Adolescence
+Key events:
+Education:
+Friendships/relationships:
+Defining moments:
+
+**** Young Adulthood (if applicable)
+Career path:
+Relationships:
+Achievements and failures:
+How they became who they are:
+
+**** Recent Past (Just Before Story)
+Current situation:
+Recent changes:
+What brought them to this point:
+
+*** Family
+**** Parents
+Mother:
+Father:
+Relationship with parents:
+
+**** Siblings
+
+
+**** Extended Family
+
+
+**** Family Dynamics
+Their role in the family:
+Family wounds:
+Family strengths:
+
+*** Formative Experiences
+**** Top 3 Experiences That Made Them Who They Are
+1.
+2.
+3.
+
+**** Best Memory
+
+
+**** Worst Memory
+
+
+**** The Memory They Can't Let Go Of
+
+** Goals & Motivation
+*** External Goal (Plot)
+**** What They Want in the Story
+
+
+**** Why They Want It
+
+
+**** What Success Looks Like
+
+
+**** What They're Willing to Do to Get It
+
+
+**** What Lines They Won't Cross
+
+*** Internal Need (Character Arc)
+**** What They Actually Need (Often Different from Want)
+
+
+**** What They Need to Learn
+
+
+**** What They Need to Overcome
+
+
+**** Who They Need to Become
+
+*** Dual-GMC Framework (For Major Characters)
+| Aspect     | External (Plot) | Internal (Arc) |
+|------------+-----------------+----------------|
+| Goal       |                 |                |
+| Motivation |                 |                |
+| Conflict   |                 |                |
+
+*** Justification (Especially for Antagonists)
+**** Why They Believe They're Right
+
+
+**** Their Moral Framework
+
+
+**** What They're Trying to Protect/Achieve
+
+** Character Arc & Transformation
+
+*** Starting State
+Who they are at story's beginning:
+
+
+What they believe:
+
+
+How they behave:
+
+
+*** Ending State
+Who they become by story's end:
+
+
+What they learn:
+
+
+How they've changed:
+
+
+*** The Transformation Journey
+**** Key Moments of Change
+1. Scene X:
+2. Scene Y:
+3. Scene Z:
+
+**** Resistance to Change
+Why don't they change easily?
+
+
+**** What Forces Change
+
+
+**** The Moment of Realization
+When/how do they finally "get it"?
+
+
+*** Transformation Tracking Table
+| Story Point | Internal State | Beliefs | Behaviors | Scene |
+|-------------+----------------+---------+-----------+-------|
+| Opening     |                |         |           |       |
+| Catalyst    |                |         |           |       |
+| Midpoint    |                |         |           |       |
+| Crisis      |                |         |           |       |
+| Realization |                |         |           |       |
+| Resolution  |                |         |           |       |
+
+** Relationships & Connections
+
+*** Relationship to Protagonist (If Not Protagonist)
+**** How They're Connected
+
+
+**** What They Represent to Protagonist
+
+
+**** How They Compare/Contrast
+
+
+**** Their Function in Protagonist's Arc
+
+
+*** Key Relationships
+**** Relationship 1: [Character Name]
+***** Nature of Relationship
+
+
+***** History Together
+
+
+***** Current Dynamic
+
+
+***** Conflict/Tension
+
+
+***** How It Evolves
+
+
+**** Relationship 2: [Character Name]
+[Same structure]
+
+**** Relationship 3: [Character Name]
+[Same structure]
+
+*** Social Circle
+**** Friends
+
+
+**** Enemies
+
+
+**** Allies
+
+
+**** Mentors/Mentees
+
+
+*** Attitude Toward Other Characters
+- Protagonist:
+- Antagonist:
+- Ally:
+- Love interest:
+
+** Voice & Expression
+
+*** How They Speak
+**** Vocabulary Level
+- [ ] Highly educated
+- [ ] Average
+- [ ] Limited/street
+
+**** Speech Patterns
+- Formal or casual?
+- Complete sentences or fragments?
+- Long-winded or terse?
+- Direct or indirect?
+
+**** Verbal Tics/Catchphrases
+
+
+**** Topics They Talk About
+
+
+**** What They Avoid Discussing
+
+
+**** How They Express Emotion
+
+
+*** Characteristic Dialogue Examples
+**** When Happy
+
+
+**** When Angry
+
+
+**** When Scared
+
+
+**** When Lying
+
+
+**** When Comforting Someone
+
+
+*** Internal Voice (If POV Character)
+**** Stream of Consciousness Style
+
+
+**** How They Think vs. How They Speak
+
+
+**** Characteristic Thoughts
+
+** Behavior & Mannerisms
+
+*** Body Language
+**** Typical Posture
+
+
+**** Gestures They Make
+
+
+**** Facial Expressions
+
+
+**** Physical Habits
+
+
+*** Behavioral Patterns
+**** When Stressed
+
+
+**** When Comfortable
+
+
+**** Around Authority
+
+
+**** Around Subordinates
+
+
+**** In Conflict
+
+
+**** In Intimate Moments
+
+
+*** Quirks & Habits
+1.
+2.
+3.
+4.
+5.
+
+*** Skills & Competencies
+**** What They're Good At
+1.
+2.
+3.
+
+**** What They're Bad At
+1.
+2.
+3.
+
+**** Hidden Talents
+
+
+**** What They Wish They Could Do
+
+** Role in Story
+
+*** Function in Plot
+**** What They Do for the Story
+
+
+**** Key Plot Moments They're Involved In
+1.
+2.
+3.
+4.
+5.
+
+**** Their Plan (If Antagonist or Major Character)
+
+
+*** Function in Theme
+**** What They Represent Thematically
+
+
+**** Their Position on the Moral Question
+
+
+**** How They Embody or Challenge the Theme
+
+
+*** Character Type & Archetype
+**** Archetype (If Any)
+
+
+**** How They Subvert the Archetype
+
+
+**** Character Role
+- [ ] Protagonist
+- [ ] Antagonist
+- [ ] Mentor
+- [ ] Ally/Sidekick
+- [ ] Love Interest
+- [ ] Threshold Guardian
+- [ ] Herald
+- [ ] Shapeshifter
+- [ ] Shadow
+- [ ] Trickster
+
+** The Four-Corner Opposition (For Antagonists)
+| Dimension | Protagonist | This Character |
+|-----------+-------------+----------------|
+| Values    |             |                |
+| Methods   |             |                |
+| Purpose   |             |                |
+| Worldview |             |                |
+
+** Making Readers Care
+
+*** Sympathy Techniques (For Sympathetic Characters)
+- [ ] Undeserved suffering
+- [ ] Underdog status
+- [ ] Kind actions
+- [ ] Wit/humor
+- [ ] Competence
+- [ ] Relatable struggles
+- [ ] Vulnerability
+
+**** How Applied in Story
+
+
+*** Antipathy Techniques (For Antagonists)
+- [ ] Causing suffering
+- [ ] Bullying
+- [ ] Cruelty/selfishness
+- [ ] Dangerous incompetence
+- [ ] Grating habits
+
+**** How Applied in Story
+
+
+*** First Appearance Strategy
+**** First Scene
+
+
+**** First Action Readers See
+
+
+**** First Words They Speak
+
+
+**** Impression to Create
+
+** Character Consistency
+
+*** Core Traits That Never Change
+
+
+*** Contradictions (That Make Them Human)
+
+
+*** Decision-Making Process
+When faced with a choice, how do they decide?
+
+
+What factors matter most?
+
+
+*** Response to Pressure
+How do they behave under stress?
+
+
+*** Moral Boundaries
+What will they never do?
+
+
+What would they do only in extremis?
+
+** World Integration
+
+*** Occupation Details
+**** Job/Role
+
+
+**** How They Got There
+
+
+**** How They Feel About It
+
+
+**** Competence Level
+
+
+**** Work Relationships
+
+
+*** Social Status
+**** Where They Fit in Society
+
+
+**** How They Navigate Social Hierarchies
+
+
+**** Class Issues (If Relevant)
+
+
+*** Cultural Background
+**** How Culture Shapes Them
+
+
+**** Cultural Conflicts They Face
+
+
+**** Traditions They Uphold or Reject
+
+** Character Evolution Tracking
+
+*** Scene Appearances
+| Scene # | Purpose | Development | Status |
+|---------+---------+-------------+--------|
+|         |         |             | TODO   |
+|         |         |             | TODO   |
+|         |         |             | TODO   |
+
+*** Character Arc Checklist [0/8]
+- [ ] Character introduced memorably
+- [ ] Flaw clearly shown
+- [ ] Want/goal established
+- [ ] Relationships defined
+- [ ] Key transformation scene written
+- [ ] Realization moment powerful
+- [ ] Change demonstrated in action
+- [ ] Arc resolved satisfyingly
+
+** Writing Notes
+
+*** Character Secrets
+Things the character knows that reader doesn't (yet):
+1.
+2.
+3.
+
+*** Character Lies
+What do they lie about? To whom?
+
+
+*** What They Hide
+
+
+*** What They'd Never Admit
+
+** Research & References
+
+*** Research Needed
+- [ ]
+- [ ]
+- [ ]
+
+*** Visual References
+Images/actors/art that capture this character:
+-
+-
+
+*** Inspiration
+Real people, fictional characters, or concepts that inspired:
+-
+-
+
+** Quick Scene Reference
+
+*** Character's Essential Truth in One Sentence
+
+
+*** Their Core Conflict in One Sentence
+
+
+*** What They Want in One Sentence
+
+
+*** What They Need in One Sentence
+
+
+*** Go-To Reaction When Stressed
+
+
+*** Most Used Gesture/Expression
+
+
+*** Typical Opening Dialogue
+
+** Writer's Notes & Development
+
+*** Character Discoveries While Writing
+
+
+*** Surprises This Character Gave Me
+
+
+*** Challenges Writing This Character
+
+
+*** What I Love About This Character
+
+
+*** What Needs More Development
+
+
+*** Questions Still to Answer
+- 
+- 
+- 
+
+** Character Summary (For Reference)
+[Write a 100-word summary of this character that captures their essence]
+
+* {Name} - Secondary Character 1
+:PROPERTIES:
+:ID:
+:Role: Secondary
 :Name:
 :Age:
 :Gender:
 :Occupation:
-:Goal:
-:Motivation:
-:Conflict:
-:Arc:
 :First-appearance:
 :RelationshipsData:
 :END:
@@ -134,10 +1564,7 @@
 
 ** Notes
 - 
-
-* Secondary Characters
-
-** Secondary Character 1
+* {Name} - Secondary Character 2
 :PROPERTIES:
 :ID:
 :Role: Secondary

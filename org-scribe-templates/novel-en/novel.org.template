@@ -4,7 +4,7 @@
 #+LANGUAGE: en
 #+STARTUP: overview
 #+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
-#+COLUMNS: %40ITEM(Task) %12WORDCOUNT %12PoV %20Plot %40Summary %40Comment
+#+COLUMNS: %40ITEM(Task) %9WORDCOUNT %12PoV %20Beat %20Plot %40Summary %40Comment
 #+MACRO: scene-break SCENE-BREAK
 
 * Project Goals :ignore:noexport:
@@ -100,6 +100,7 @@ Update with =C-c C-c= on the #+BEGIN line.
 :WORD-OBJECTIVE: 500
 :PoV:
 :Characters:
+:Beat: Opening Image
 :Plot:
 :Timeline:
 :Location:
@@ -109,7 +110,10 @@ Update with =C-c C-c= on the #+BEGIN line.
 :Conflict-source:
 :What-is-at-stake:
 :Emotion:
+:Tension-level:
+:Outcome:
 :Comment:
+:WORD-OBJECTIVE: 500
 :END:
 
 

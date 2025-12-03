@@ -285,6 +285,7 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 :PROPERTIES:
 :PoV:
 :Characters:
+:Beat:
 :Plot:
 :Timeline:
 :Location:
@@ -294,6 +295,8 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 :Conflict-source:
 :What-is-at-stake:
 :Emotion:
+:Tension-level:
+:Outcome:
 :Comment:
 :WORD-OBJECTIVE: 500
 :END:
