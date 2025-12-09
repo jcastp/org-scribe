@@ -256,16 +256,15 @@ Requires org-ql package to be installed."
   (interactive)
   (unless (featurep 'org-ql)
     (user-error (org-scribe-msg 'error-org-ql-required)))
-  (let* ((current-dir (file-name-directory (or (buffer-file-name) default-directory)))
-         (org-files (directory-files-recursively current-dir "\\.org$")))
+  (let* ((project-root (or (org-scribe-project-root)
+                          (file-name-directory (or (buffer-file-name) default-directory))))
+         (org-files (directory-files-recursively project-root "\\.org$")))
     (if org-files
         (org-ql-search org-files
-          '(and (todo) (not (done)))
+          '(todo "TODO" "ONGOING" "WAITING" "TOWRITE" "TOREVIEW" "REDO" "RESTRUCTURE")
           :title "TODO items in writing project"
-          :super-groups '((:auto-map (lambda (item)
-                                       (concat "File: "
-                                               (file-name-nondirectory (buffer-file-name)))))))
-      (message (org-scribe-msg 'msg-no-org-files current-dir)))))
+          :super-groups '((:auto-category t)))
+      (message (org-scribe-msg 'msg-no-org-files project-root)))))
 
 ;;;###autoload
 (defun org-scribe/search-edits-recursive ()
