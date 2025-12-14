@@ -261,6 +261,7 @@ Requires org-ql package to be installed."
          (org-files (directory-files-recursively project-root "\\.org$")))
     (if org-files
         (org-ql-search org-files
+	  ;;'(and (todo) (not (done)))  ; ← fixed query
           '(todo "TODO" "ONGOING" "WAITING" "TOWRITE" "TOREVIEW" "REDO" "RESTRUCTURE")
           :title "TODO items in writing project"
           :super-groups '((:auto-category t)))
