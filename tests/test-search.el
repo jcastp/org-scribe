@@ -76,6 +76,44 @@
   (should-error (org-scribe/org-find-location "") :type 'user-error)
   (should-error (org-scribe/org-find-location "  ") :type 'user-error))
 
+;;; TODO Search Tests
+
+(ert-deftest test-search-todos-recursive-execution ()
+  "Test that search-todos-recursive executes without errors.
+This test verifies the function can handle the :auto-map super-group
+correctly by extracting file names from item text properties."
+  (skip-unless (featurep 'org-ql))
+
+  ;; Create temporary directory with test files
+  (let* ((temp-dir (make-temp-file "org-scribe-test-" t))
+         (test-file-1 (expand-file-name "test1.org" temp-dir))
+         (test-file-2 (expand-file-name "test2.org" temp-dir)))
+
+    (unwind-protect
+        (progn
+          ;; Create test org files with TODO items
+          (with-temp-file test-file-1
+            (insert "* TODO First task\n")
+            (insert "* DONE Completed task\n")
+            (insert "* TODO Second task\n"))
+
+          (with-temp-file test-file-2
+            (insert "* TODO Another task\n")
+            (insert "* Some heading\n"))
+
+          ;; Open one of the files and run the search
+          (with-current-buffer (find-file-noselect test-file-1)
+            ;; This should not raise an error
+            (should-not (condition-case err
+                           (progn
+                             (org-scribe/search-todos-recursive)
+                             nil) ; No error
+                         (error err)))))
+
+      ;; Cleanup
+      (when (file-exists-p temp-dir)
+        (delete-directory temp-dir t)))))
+
 ;;; Run tests
 
 (defun org-scribe-search-run-tests ()

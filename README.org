@@ -162,7 +162,7 @@ MyNovel/
 ├── novel.org              # Main manuscript with progress tracking
 ├── revision.org           # Revision tracking
 ├── writing-journal.org    # Reflective writing journal
-├── plan/                  # Planning documents
+├── objects/                  # Planning documents
 │   ├── characters.org
 │   ├── locations.org
 │   ├── plot.org
@@ -191,7 +191,7 @@ While working in your manuscript:
 
 =M-x org-scribe-open-project-file= or =F8 F8 o=
 
-Opens project files with completion (novel.org, plan/characters.org, notes/notes.org, etc.)
+Opens project files with completion (novel.org, objects/characters.org, notes/notes.org, etc.)
 
 *** Customize Templates
 
@@ -286,7 +286,7 @@ When you update the word count table (with =C-c C-c= on the #+BEGIN line), progr
 
 *** Overview
 
-Link character names in scene properties directly to their full profiles in =plan/characters.org=. Click on character names to jump to detailed character information!
+Link character names in scene properties directly to their full profiles in =objects/characters.org=. Click on character names to jump to detailed character information!
 
 *** Quick Start
 
@@ -349,7 +349,7 @@ Benefits:
 
 *** Updating Link Display Names
 
-When you rename a character in =plan/characters.org=, the ID links still work (they're ID-based), but the display text shows the old name. Update the display names to match your current database:
+When you rename a character in =objects/characters.org=, the ID links still work (they're ID-based), but the display text shows the old name. Update the display names to match your current database:
 
 *Update Current Scene* (=F8 F8 C u=):
 - Updates character link names in the current scene only
@@ -359,7 +359,7 @@ When you rename a character in =plan/characters.org=, the ID links still work (t
 - Scans all scenes and refreshes display text from database
 
 *Example Workflow*:
-1. Rename "Alex Rivera" to "Alexandra Rivera" in =plan/characters.org=
+1. Rename "Alex Rivera" to "Alexandra Rivera" in =objects/characters.org=
 2. Press =F8 F8 C U= (or =M-x org-scribe/update-all-character-link-names=)
 3. All scenes updated: =[[id:char-alex-001][Alexandra Rivera]]=
 4. Links still work, now with correct names!
@@ -570,7 +570,7 @@ Track your main plot and subplots across your novel using ID-based links. The pl
 
 For existing projects:
 1. =M-x org-scribe/setup-plot-thread-links= or press =F8 F8 P s=
-2. Adds unique IDs to all plot threads in =plan/plot.org=
+2. Adds unique IDs to all plot threads in =objects/plot.org=
 3. Optionally converts existing scenes to use links
 
 For new plot threads:
@@ -695,7 +695,7 @@ After:
 #+end_example
 
 Benefits:
-- Click to navigate to plot thread details in =plan/plot.org=
+- Click to navigate to plot thread details in =objects/plot.org=
 - Links survive plot thread renames
 - Timeline and health reports automatically track all scenes
 - Identify plot issues before they become problems
@@ -715,7 +715,7 @@ Press =F8 F8 P= to access:
 - =r= - Health report
 - =S= - Statistics
 
-Note: Like character links, you can update plot thread display names after renaming threads in =plan/plot.org= using =F8 F8 P U= or the unified =F8 F8 U=.
+Note: Like character links, you can update plot thread display names after renaming threads in =objects/plot.org= using =F8 F8 P U= or the unified =F8 F8 U=.
 
 *** Best Practices
 
@@ -910,7 +910,7 @@ The package provides specialized capture templates for different types of conten
 - =org-scribe/capture-plot-thread= (F8 F8 g) - Capture plot threads as they emerge during writing
 
 These functions automatically route captures to the appropriate file based on project type:
-- **Novel projects**: Separate files in =plan/= directory (e.g., =plan/characters.org=, =plan/plot.org=)
+- **Novel projects**: Separate files in =objects/= directory (e.g., =objects/characters.org=, =objects/plot.org=)
 - **Short story projects**: Consolidated =notes.org= file with appropriate sections
 
 All captured items automatically receive unique IDs for use with the linking system.
@@ -938,7 +938,7 @@ project-root/
 ├── novel.org             # Main manuscript with progress tracking (or novela.org for Spanish)
 ├── revision.org          # Revision tracking
 ├── writing-journal.org   # Reflective writing journal (or diario-escritura.org for Spanish)
-├── plan/                 # Planning documents
+├── objects/                 # Planning documents
 │   ├── characters.org    # Character profiles
 │   ├── locations.org     # World building
 │   ├── plot.org         # Story structure

@@ -671,7 +671,7 @@ Add any quick notes:
 When done, press: ~C-c C-c~
 
 This saves the plot thread profile to:
-- **Novel project**: ~plan/plot.org~ (under "Plot Threads" heading)
+- **Novel project**: ~objects/plot.org~ (under "Plot Threads" heading)
 - **Short story project**: ~notes.org~ (under "Plot Outline" heading)
 
 The entry is automatically saved as a level-2 heading under "Plot Threads" with:
@@ -717,7 +717,7 @@ If you prefer to set up manually:
 
 Use: ~M-x org-scribe/add-plot-thread-ids~
 
-Opens your plot file (~plan/plot.org~ or ~notes.org~) and adds unique IDs to all plot thread headings that don't have one.
+Opens your plot file (~objects/plot.org~ or ~notes.org~) and adds unique IDs to all plot thread headings that don't have one.
 
 *** Step 2: Link Existing Scenes (Optional)
 
@@ -757,7 +757,7 @@ Or use: ~M-x org-scribe/set-scene-plot-threads~
 6. The scene's ~:Plot:~ property is updated with ID links
 
 The function reads from:
-- Novel: ~plan/plot.org~
+- Novel: ~objects/plot.org~
 - Short story: ~notes.org~ (Plot section)
 
 And automatically creates ID links in the format: ~[[id:abc123][Thread Name]]~
@@ -1268,7 +1268,7 @@ Let's practice plot thread management end-to-end.
 ** Success Criteria
 
 ✓ You captured 3 plot thread profiles with IDs
-✓ Plot files (plan/plot.org or notes.org) contain your plots
+✓ Plot files (objects/plot.org or notes.org) contain your plots
 ✓ At least 3 scenes have linked plot threads
 ✓ You can jump from scene to plot profile and back
 ✓ Search finds scenes by plot thread
@@ -1415,7 +1415,7 @@ The plot thread was captured but doesn't appear in the plot file.
 
 *** Solution
 1. Check the correct file:
-   - Novel: ~plan/plot.org~
+   - Novel: ~objects/plot.org~
    - Short story: ~notes.org~ (under "Plot Outline")
 2. Open the file and search: ~C-s~ then type plot name
 3. If not found, the capture might have failed - try again
@@ -1427,7 +1427,7 @@ Using ~org-scribe/set-scene-plot-threads~ shows empty list.
 
 *** Solution
 1. Ensure you have captured at least one plot thread
-2. Open plan/plot.org or notes.org
+2. Open objects/plot.org or notes.org
 3. Verify plot threads have ~:ID:~ properties
 4. If IDs are missing, run: ~M-x org-scribe/add-plot-thread-ids~
 5. Or run the setup wizard: ~M-x org-scribe/setup-plot-thread-links~

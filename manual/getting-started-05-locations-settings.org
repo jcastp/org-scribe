@@ -500,7 +500,7 @@ Navigate to each section and write:
 When done, press: ~C-c C-c~
 
 This saves the location profile to:
-- **Novel project**: ~plan/locations.org~
+- **Novel project**: ~objects/locations.org~
 - **Short story project**: ~notes.org~ (under "Setting → Locations")
 
 ** Step 6: Verify It Saved
@@ -813,7 +813,7 @@ Let's practice location management end-to-end.
 ** Success Criteria
 
 ✓ You captured 2 location profiles with IDs
-✓ Location files (plan/locations.org or notes.org) contain your locations
+✓ Location files (objects/locations.org or notes.org) contain your locations
 ✓ At least 2 scenes have linked locations in their properties
 ✓ You can jump from scene to location profile and back
 ✓ Search finds scenes by location
@@ -935,7 +935,7 @@ The location was captured but doesn't appear in the locations file.
 
 *** Solution
 1. Check the correct file:
-   - Novel: ~plan/locations.org~
+   - Novel: ~objects/locations.org~
    - Short story: ~notes.org~ (under "Setting → Locations")
 2. Open the file and search: ~C-s~ then type location name
 3. If not found, the capture might have failed - try again
@@ -947,7 +947,7 @@ Pressing F8 F8 L L shows empty list.
 
 *** Solution
 1. Ensure you have captured at least one location
-2. Open plan/locations.org or notes.org
+2. Open objects/locations.org or notes.org
 3. Verify locations are level-1 headings with ~:ID:~ properties
 4. If IDs are missing, run: ~M-x org-scribe/add-location-ids~
 

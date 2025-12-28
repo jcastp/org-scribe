@@ -340,7 +340,7 @@ Perfect for:
 │  (left)      │    (center)                │   (right)       │
 │              │                            │                 │
 │ 📁 project/  │ #+TITLE: My Novel          │ * Contents      │
-│  📁 plan/    │                            │   ** Act I      │
+│  📁 objects/    │                            │   ** Act I      │
 │   📄 chars   │ * Act I                    │     *** Ch 1    │
 │   📄 plot    │ ** Chapter 1               │     *** Ch 2    │
 │   📄 locs    │ *** Scene 1 - Morning      │   ** Act II     │
@@ -416,7 +416,7 @@ Perfect for:
 *Scenario*: Writing a scene, need to check character details.
 
 1. ~F8 F8 p~ (activate Project mode)
-2. Left panel (treemacs) → click ~plan/characters.org~
+2. Left panel (treemacs) → click ~objects/characters.org~
 3. Character file opens in center
 4. Read character details
 5. Left panel → click ~novel.org~

@@ -47,7 +47,7 @@ Creates a minimal short story project structure optimized for shorter works (1,0
 
 ** Project Type Detection (~org-scribe-project-type~)
 
-Automatically detects whether a project is a novel, short story, or unknown type by examining the directory structure and marker files. Detection checks for the .org-scribe-project marker file first, then looks for characteristic indicators: the presence of a plan/ directory suggests a novel, while story.org/cuento.org indicates a short story. This detection is cached per project root for performance and enables other features (like capture functions) to adapt their behavior based on project type.
+Automatically detects whether a project is a novel, short story, or unknown type by examining the directory structure and marker files. Detection checks for the .org-scribe-project marker file first, then looks for characteristic indicators: the presence of a objects/ directory suggests a novel, while story.org/cuento.org indicates a short story. This detection is cached per project root for performance and enables other features (like capture functions) to adapt their behavior based on project type.
 
 *Status*: Fully implemented | *Hydra*: N/A (internal function) | *Module*: ~core/org-scribe-core.el~
 
@@ -152,31 +152,31 @@ Captures quick notes to the appropriate notes file for the current project type.
 
 ** Character Profile Capture (~org-scribe/capture-character~)
 
-Opens a comprehensive character capture template that prompts for all essential character information: name, role (protagonist/antagonist/supporting/minor), age, gender, occupation, and first appearance chapter. The template includes structured sections for physical description, personality traits, background, goals/motivation/conflict (both internal and external), character arc, and relationships. Characters are automatically assigned unique IDs via ~%(org-id-new)~ for the linking system. Captures go to plan/characters.org (novels) or notes.org under "Characters" (short stories).
+Opens a comprehensive character capture template that prompts for all essential character information: name, role (protagonist/antagonist/supporting/minor), age, gender, occupation, and first appearance chapter. The template includes structured sections for physical description, personality traits, background, goals/motivation/conflict (both internal and external), character arc, and relationships. Characters are automatically assigned unique IDs via ~%(org-id-new)~ for the linking system. Captures go to objects/characters.org (novels) or notes.org under "Characters" (short stories).
 
 *Status*: Fully implemented | *Hydra*: ~h~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
 
 ** Location Profile Capture (~org-scribe/capture-location~)
 
-Captures detailed location profiles with prompts for name, type (city/building/room/natural/region/country), importance (major/supporting/minor), first appearance, climate, and population. The template includes sections for general description, geography, cultural aspects & society, history, notable features, plot importance, specific places, atmosphere & mood, and map references. Locations receive automatic unique IDs for the linking system. Captures go to plan/locations.org (novels) or notes.org under "Setting → Locations" (short stories).
+Captures detailed location profiles with prompts for name, type (city/building/room/natural/region/country), importance (major/supporting/minor), first appearance, climate, and population. The template includes sections for general description, geography, cultural aspects & society, history, notable features, plot importance, specific places, atmosphere & mood, and map references. Locations receive automatic unique IDs for the linking system. Captures go to objects/locations.org (novels) or notes.org under "Setting → Locations" (short stories).
 
 *Status*: Fully implemented | *Hydra*: ~l~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
 
 ** Object Profile Capture (~org-scribe/capture-object~)
 
-Captures important objects with prompts for name, type (magical/artifact/weapon/tool/symbolic/technology), owner, first appearance, and status (active/lost/destroyed/hidden). The template structures sections for physical description, origin, properties, plot importance, object history, symbolism, current location, and rules & limitations. Objects get unique IDs automatically. Particularly useful for tracking magical items, MacGuffins, symbolic objects, or important props. Captures go to plan/objects.org (novels) or notes.org under "Objects" (short stories).
+Captures important objects with prompts for name, type (magical/artifact/weapon/tool/symbolic/technology), owner, first appearance, and status (active/lost/destroyed/hidden). The template structures sections for physical description, origin, properties, plot importance, object history, symbolism, current location, and rules & limitations. Objects get unique IDs automatically. Particularly useful for tracking magical items, MacGuffins, symbolic objects, or important props. Captures go to objects/objects.org (novels) or notes.org under "Objects" (short stories).
 
 *Status*: Fully implemented | *Hydra*: ~b~ (Capture section, "oBject") | *Module*: ~capture/org-scribe-capture.el~
 
 ** Timeline Event Capture (~org-scribe/capture-timeline~)
 
-Captures story timeline events with prompts for event name, type (action/revelation/character/world/backstory), relevance level, date/time in story, duration, characters involved, location, and chapter. The template includes sections for description, consequences, and connections to other events. Events receive automatic unique IDs. This is essential for tracking complex timelines, multiple plot threads, or stories with non-linear narratives. Captures go to plan/timeline.org (novels) or notes.org under "Timeline" (short stories).
+Captures story timeline events with prompts for event name, type (action/revelation/character/world/backstory), relevance level, date/time in story, duration, characters involved, location, and chapter. The template includes sections for description, consequences, and connections to other events. Events receive automatic unique IDs. This is essential for tracking complex timelines, multiple plot threads, or stories with non-linear narratives. Captures go to objects/timeline.org (novels) or notes.org under "Timeline" (short stories).
 
 *Status*: Fully implemented | *Hydra*: ~t~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
 
 ** Auto-Creation of Target Files
 
-All capture functions automatically create their target files if they don't exist. For novel projects, separate plan/ files are created with appropriate structure. For short story projects, a comprehensive notes.org file is created with all necessary headings (Characters, Plot Outline, Setting → Locations, Objects, Timeline, Research, Revision Notes, Random Ideas). This ensures capture works even in brand new or minimal projects, reducing friction for writers who prefer to build structure as they write.
+All capture functions automatically create their target files if they don't exist. For novel projects, separate objects/ files are created with appropriate structure. For short story projects, a comprehensive notes.org file is created with all necessary headings (Characters, Plot Outline, Setting → Locations, Objects, Timeline, Research, Revision Notes, Random Ideas). This ensures capture works even in brand new or minimal projects, reducing friction for writers who prefer to build structure as they write.
 
 *Status*: Fully implemented | *Hydra*: N/A (automatic) | *Module*: ~capture/org-scribe-capture.el~
 
@@ -223,13 +223,13 @@ Provides the same ID-based linking infrastructure for locations as exists for ch
 
 ** Set Scene Locations (~org-scribe/set-scene-locations~)
 
-Scans plan/locations.org (or notes.org for short stories) for all location entries with ~:Type:~ properties and IDs, presents them in a multi-select completion menu, and inserts comma-separated ID links in the ~:Location:~ property. Locations can include cities, buildings, rooms, natural settings, regions, or countries. Multiple locations per scene are supported (useful for travel scenes or scenes that span locations). The menu shows location names extracted from heading text or ~:NAME:~ properties.
+Scans objects/locations.org (or notes.org for short stories) for all location entries with ~:Type:~ properties and IDs, presents them in a multi-select completion menu, and inserts comma-separated ID links in the ~:Location:~ property. Locations can include cities, buildings, rooms, natural settings, regions, or countries. Multiple locations per scene are supported (useful for travel scenes or scenes that span locations). The menu shows location names extracted from heading text or ~:NAME:~ properties.
 
 *Status*: Fully implemented | *Hydra*: ~L c~ (Location submenu) | *Module*: ~linking/org-scribe-location-links.el~
 
 ** Plot Thread ID-Based Linking
 
-Provides ID-based linking for plot threads, enabling tracking of which plot lines appear in which scenes. Plot thread profiles in plan/plot.org receive automatic IDs. The ~org-scribe/set-scene-plot-threads~ function presents a multi-select menu of all plot threads and inserts ID links into the scene's ~:Plot:~ property. This enables generating plot thread timelines (showing which scenes advance which plots), analyzing plot distribution, and identifying gaps in plot coverage.
+Provides ID-based linking for plot threads, enabling tracking of which plot lines appear in which scenes. Plot thread profiles in objects/plot.org receive automatic IDs. The ~org-scribe/set-scene-plot-threads~ function presents a multi-select menu of all plot threads and inserts ID links into the scene's ~:Plot:~ property. This enables generating plot thread timelines (showing which scenes advance which plots), analyzing plot distribution, and identifying gaps in plot coverage.
 
 *Status*: Fully implemented | *Hydra*: ~P~ submenu | *Module*: ~linking/org-scribe-plot-links.el~
 
@@ -546,7 +546,7 @@ The ~org-scribe/scene-break-replacements~ alist maps export backends to scene se
 
 ** Automatic Directory Creation
 
-~org-scribe-create-dirs-automatically~ (default: t) controls whether the package automatically creates directories (like plan/, notes/, research/) when they're needed by capture functions or searches. When nil, functions will error if directories don't exist, giving writers full control over project structure. When t (default), convenience is prioritized - directories are created as needed.
+~org-scribe-create-dirs-automatically~ (default: t) controls whether the package automatically creates directories (like objects/, notes/, research/) when they're needed by capture functions or searches. When nil, functions will error if directories don't exist, giving writers full control over project structure. When t (default), convenience is prioritized - directories are created as needed.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 

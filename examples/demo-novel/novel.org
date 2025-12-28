@@ -124,11 +124,11 @@ Update with =C-c C-c= on the #+BEGIN line.
 :ID:       fd87db0f-c696-4f58-ba85-5504eed23afe
 :END:
 - [[file:README.org][README - Project Overview]]
-- [[file:plan/characters.org][Characters]]
-- [[file:plan/locations.org][Locations]]
-- [[file:plan/objects.org][Objects]]
-- [[file:plan/plot.org][Plot]]
-- [[file:plan/timeline.org][Timeline]]
+- [[file:objects/characters.org][Characters]]
+- [[file:objects/locations.org][Locations]]
+- [[file:objects/objects.org][Objects]]
+- [[file:objects/plot.org][Plot]]
+- [[file:objects/timeline.org][Timeline]]
 - [[file:notes/notes.org][General Notes]]
 - [[file:notes/research.org][Research]]
 - [[file:revision.org][Revision and Feedback]]

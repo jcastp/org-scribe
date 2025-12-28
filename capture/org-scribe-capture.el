@@ -137,9 +137,9 @@ For novels, creates individual files."
 
 (defun org-scribe/capture-location-file (&optional create-if-missing)
   "Determine the appropriate file for location captures.
-For novels: Uses plan/locations.org (or localizaciones.org)
+For novels: Uses objects/locations.org (or localizaciones.org)
 For short stories: Uses notes.org (or notas.org)
-For unknown projects: Falls back to plan/locations.org
+For unknown projects: Falls back to objects/locations.org
 
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
@@ -157,18 +157,18 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
               (expand-file-name "notas.org" project-dir))
              (t (expand-file-name "notes.org" project-dir))))
 
-           ;; Novel or unknown: use plan/locations.org
+           ;; Novel or unknown: use objects/locations.org
            (t
             (cond
-             ((file-exists-p (expand-file-name "plan/locations.org" project-dir))
-              (expand-file-name "plan/locations.org" project-dir))
-             ((file-exists-p (expand-file-name "plan/localizaciones.org" project-dir))
-              (expand-file-name "plan/localizaciones.org" project-dir))
+             ((file-exists-p (expand-file-name "objects/locations.org" project-dir))
+              (expand-file-name "objects/locations.org" project-dir))
+             ((file-exists-p (expand-file-name "objects/localizaciones.org" project-dir))
+              (expand-file-name "objects/localizaciones.org" project-dir))
              ((file-exists-p (expand-file-name "locations.org" project-dir))
               (expand-file-name "locations.org" project-dir))
              ((file-exists-p (expand-file-name "localizaciones.org" project-dir))
               (expand-file-name "localizaciones.org" project-dir))
-             (t (expand-file-name "plan/locations.org" project-dir)))))))
+             (t (expand-file-name "objects/locations.org" project-dir)))))))
 
     ;; Create file if needed
     (when (and create-if-missing (not (file-exists-p target)))
@@ -178,9 +178,9 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
 
 (defun org-scribe/capture-object-file (&optional create-if-missing)
   "Determine the appropriate file for object captures.
-For novels: Uses plan/objects.org (or objetos.org)
+For novels: Uses objects/objects.org (or objetos.org)
 For short stories: Uses notes.org (or notas.org)
-For unknown projects: Falls back to plan/objects.org
+For unknown projects: Falls back to objects/objects.org
 
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
@@ -198,18 +198,18 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
               (expand-file-name "notas.org" project-dir))
              (t (expand-file-name "notes.org" project-dir))))
 
-           ;; Novel or unknown: use plan/objects.org
+           ;; Novel or unknown: use objects/objects.org
            (t
             (cond
-             ((file-exists-p (expand-file-name "plan/objects.org" project-dir))
-              (expand-file-name "plan/objects.org" project-dir))
-             ((file-exists-p (expand-file-name "plan/objetos.org" project-dir))
-              (expand-file-name "plan/objetos.org" project-dir))
+             ((file-exists-p (expand-file-name "objects/objects.org" project-dir))
+              (expand-file-name "objects/objects.org" project-dir))
+             ((file-exists-p (expand-file-name "objects/objetos.org" project-dir))
+              (expand-file-name "objects/objetos.org" project-dir))
              ((file-exists-p (expand-file-name "objects.org" project-dir))
               (expand-file-name "objects.org" project-dir))
              ((file-exists-p (expand-file-name "objetos.org" project-dir))
               (expand-file-name "objetos.org" project-dir))
-             (t (expand-file-name "plan/objects.org" project-dir)))))))
+             (t (expand-file-name "objects/objects.org" project-dir)))))))
 
     ;; Create file if needed
     (when (and create-if-missing (not (file-exists-p target)))
@@ -219,9 +219,9 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
 
 (defun org-scribe/capture-timeline-file (&optional create-if-missing)
   "Determine the appropriate file for timeline captures.
-For novels: Uses plan/timeline.org (or cronologia.org)
+For novels: Uses objects/timeline.org (or cronologia.org)
 For short stories: Uses notes.org (or notas.org)
-For unknown projects: Falls back to plan/timeline.org
+For unknown projects: Falls back to objects/timeline.org
 
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
@@ -239,18 +239,18 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
               (expand-file-name "notas.org" project-dir))
              (t (expand-file-name "notes.org" project-dir))))
 
-           ;; Novel or unknown: use plan/timeline.org
+           ;; Novel or unknown: use objects/timeline.org
            (t
             (cond
-             ((file-exists-p (expand-file-name "plan/timeline.org" project-dir))
-              (expand-file-name "plan/timeline.org" project-dir))
-             ((file-exists-p (expand-file-name "plan/cronologia.org" project-dir))
-              (expand-file-name "plan/cronologia.org" project-dir))
+             ((file-exists-p (expand-file-name "objects/timeline.org" project-dir))
+              (expand-file-name "objects/timeline.org" project-dir))
+             ((file-exists-p (expand-file-name "objects/cronologia.org" project-dir))
+              (expand-file-name "objects/cronologia.org" project-dir))
              ((file-exists-p (expand-file-name "timeline.org" project-dir))
               (expand-file-name "timeline.org" project-dir))
              ((file-exists-p (expand-file-name "cronologia.org" project-dir))
               (expand-file-name "cronologia.org" project-dir))
-             (t (expand-file-name "plan/timeline.org" project-dir)))))))
+             (t (expand-file-name "objects/timeline.org" project-dir)))))))
 
     ;; Create file if needed
     (when (and create-if-missing (not (file-exists-p target)))
@@ -260,9 +260,9 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
 
 (defun org-scribe/capture-character-file (&optional create-if-missing)
   "Determine the appropriate file for character captures.
-For novels: Uses plan/characters.org (or personajes.org)
+For novels: Uses objects/characters.org (or personajes.org)
 For short stories: Uses notes.org (or notas.org)
-For unknown projects: Falls back to plan/characters.org
+For unknown projects: Falls back to objects/characters.org
 
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
@@ -280,18 +280,18 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
               (expand-file-name "notas.org" project-dir))
              (t (expand-file-name "notes.org" project-dir))))
 
-           ;; Novel or unknown: use plan/characters.org
+           ;; Novel or unknown: use objects/characters.org
            (t
             (cond
-             ((file-exists-p (expand-file-name "plan/characters.org" project-dir))
-              (expand-file-name "plan/characters.org" project-dir))
-             ((file-exists-p (expand-file-name "plan/personajes.org" project-dir))
-              (expand-file-name "plan/personajes.org" project-dir))
+             ((file-exists-p (expand-file-name "objects/characters.org" project-dir))
+              (expand-file-name "objects/characters.org" project-dir))
+             ((file-exists-p (expand-file-name "objects/personajes.org" project-dir))
+              (expand-file-name "objects/personajes.org" project-dir))
              ((file-exists-p (expand-file-name "characters.org" project-dir))
               (expand-file-name "characters.org" project-dir))
              ((file-exists-p (expand-file-name "personajes.org" project-dir))
               (expand-file-name "personajes.org" project-dir))
-             (t (expand-file-name "plan/characters.org" project-dir)))))))
+             (t (expand-file-name "objects/characters.org" project-dir)))))))
 
     ;; Create file if needed
     (when (and create-if-missing (not (file-exists-p target)))
@@ -301,9 +301,9 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
 
 (defun org-scribe/capture-plot-thread-file (&optional create-if-missing)
   "Determine the appropriate file for plot thread captures.
-For novels: Uses plan/plot.org (or plan/trama.org)
+For novels: Uses objects/plot.org (or objects/trama.org)
 For short stories: Uses notes.org (or notas.org)
-For unknown projects: Falls back to plan/plot.org
+For unknown projects: Falls back to objects/plot.org
 
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (let* ((project-dir (if-let ((project (project-current)))
@@ -321,16 +321,16 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
               (expand-file-name "notas.org" project-dir))
              (t (expand-file-name "notes.org" project-dir))))
 
-           ;; Novel or unknown: use plan/plot.org
+           ;; Novel or unknown: use objects/plot.org
            (t
             (cond
-             ((file-exists-p (expand-file-name "plan/plot.org" project-dir))
-              (expand-file-name "plan/plot.org" project-dir))
-             ((file-exists-p (expand-file-name "plan/trama.org" project-dir))
-              (expand-file-name "plan/trama.org" project-dir))
+             ((file-exists-p (expand-file-name "objects/plot.org" project-dir))
+              (expand-file-name "objects/plot.org" project-dir))
+             ((file-exists-p (expand-file-name "objects/trama.org" project-dir))
+              (expand-file-name "objects/trama.org" project-dir))
              ((file-exists-p (expand-file-name "plot.org" project-dir))
               (expand-file-name "plot.org" project-dir))
-             (t (expand-file-name "plan/plot.org" project-dir)))))))
+             (t (expand-file-name "objects/plot.org" project-dir)))))))
 
     ;; Create file if needed
     (when (and create-if-missing (not (file-exists-p target)))

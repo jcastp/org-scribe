@@ -629,7 +629,7 @@ Remember the differences:
 
 *Novel templates* (~writing-templates/novel-en/~):
 - 12-13 files
-- Separate plan/ directory
+- Separate objects/ directory
 - Complex structure
 
 *Short story templates* (~writing-templates/short-story-en/~):

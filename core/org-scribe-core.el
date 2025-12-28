@@ -32,14 +32,14 @@ Cleared when changing directories or projects.")
 (defun org-scribe-project-type ()
   "Detect the type of writing project.
 Returns one of:
-  'novel - Novel project (plan/ directory with separate files)
+  'novel - Novel project (objects/ directory with separate files)
   'short-story - Short story project (consolidated notes.org)
   'unknown - Cannot determine project type
 
 Detection strategy:
 1. Check cache for this project root
 2. Read .org-scribe-project marker file if it exists (look for Type: line)
-3. Check for existence of plan/ directory structure (indicates novel)
+3. Check for existence of objects/ directory structure (indicates novel)
 4. Check for story.org or cuento.org (indicates short story)
 5. Check for novel.org or novela.org (indicates novel)
 6. Return 'unknown if none of the above"
@@ -63,9 +63,9 @@ Detection strategy:
                              ((string= type-str "novel") 'novel)
                              (t nil)))))))
 
-                ;; Strategy 2: Check for plan/ directory (novel indicator)
-                ((or (file-directory-p (expand-file-name "plan" root))
-                     (file-directory-p (expand-file-name "plan/" root)))
+                ;; Strategy 2: Check for objects/ directory (novel indicator)
+                ((or (file-directory-p (expand-file-name "objects" root))
+                     (file-directory-p (expand-file-name "objects/" root)))
                  'novel)
 
                 ;; Strategy 3: Check for story.org or cuento.org (short story indicator)

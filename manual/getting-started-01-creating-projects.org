@@ -239,7 +239,7 @@ My Fantasy Novel/
 ├── novel.org                  (main manuscript - 3-act structure)
 ├── statistics.org             (word count and progress tracking)
 ├── revision.org               (revision notes and checklists)
-├── plan/                      (planning directory)
+├── objects/                      (planning directory)
 │   ├── characters.org         (character database)
 │   ├── locations.org          (locations and world-building)
 │   ├── plot.org              (plot threads and structure)
@@ -265,7 +265,7 @@ Choose the novel template if:
 |----------------+--------------------------+----------------------------|
 | *Complexity*     | Simple, 3 files          | Complex, 12-13 files       |
 | *Word Count*     | 1,000-20,000             | 50,000+                    |
-| *Planning*       | Consolidated notes.org   | Separate plan/ files       |
+| *Planning*       | Consolidated notes.org   | Separate objects/ files       |
 | *Best For*       | Quick projects, learning | Long-form, detailed novels |
 | *Word Tracking*  | In story.org             | Separate statistics.org    |
 | *Learning Curve* | Gentle                   | Steeper                    |
@@ -435,7 +435,7 @@ Take your time! There's no rush. When you feel comfortable with project creation
    - .writing-project file
    - README.org
    - story.org or novel.org
-   - notes.org (short story) or plan/ directory (novel)
+   - notes.org (short story) or objects/ directory (novel)
 
 ** How to delete a test project
 

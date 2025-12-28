@@ -69,23 +69,23 @@ plot thread heading has a unique ID property."
 
 (defun org-scribe--get-plot-thread-file ()
   "Get the path to the plot threads file for the current project.
-For novels, this is plan/plot.org.
+For novels, this is objects/plot.org.
 For short stories, this is notes.org (Plot section)."
   (let* ((project-root (org-scribe-project-root))
          (project-type (org-scribe-project-type))
          (structure (org-scribe-project-structure)))
     (cond
-     ;; Novel project - use plan/plot.org
+     ;; Novel project - use objects/plot.org
      ((eq project-type 'novel)
-      (let ((plot-file (expand-file-name "plan/plot.org" project-root)))
+      (let ((plot-file (expand-file-name "objects/plot.org" project-root)))
         (when (file-exists-p plot-file)
           plot-file)))
      ;; Short story - use notes.org
      ((eq project-type 'short-story)
       (plist-get structure :notes-file))
-     ;; Unknown - try plan/plot.org
+     ;; Unknown - try objects/plot.org
      (t
-      (let ((plot-file (expand-file-name "plan/plot.org" project-root)))
+      (let ((plot-file (expand-file-name "objects/plot.org" project-root)))
         (when (file-exists-p plot-file)
           plot-file))))))
 

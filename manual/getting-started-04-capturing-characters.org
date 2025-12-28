@@ -91,7 +91,7 @@ All characters in one file, organized by role.
 
 ** Novel Projects
 
-Characters get their own file: ~plan/characters.org~
+Characters get their own file: ~objects/characters.org~
 
 #+BEGIN_EXAMPLE
 * [Character Name]
@@ -228,7 +228,7 @@ After the last prompt, you'll see a complete character profile template:
 
 The capture is automatically filed to the correct location:
 - *Short story*: ~notes.org~ under "Characters"
-- *Novel*: ~plan/characters.org~ as a top-level heading
+- *Novel*: ~objects/characters.org~ as a top-level heading
 
 Press ~C-c C-c~ to finalize the capture (or just save the file).
 
@@ -1242,7 +1242,7 @@ The linking system works regardless!
 1. Are you in a writing project? (look for .writing-project file)
 2. Is project type detected correctly?
 3. For short stories: Does notes.org exist?
-4. For novels: Does plan/ directory exist?
+4. For novels: Does objects/ directory exist?
 
 *Solution*: Make sure you're in the project directory when capturing.
 
@@ -1291,7 +1291,7 @@ The linking system works regardless!
 Excellent work! You've completed Lesson 4. You now know:
 
 ✓ Why character profiles matter (consistency, reference, tracking)
-✓ Where characters are stored (notes.org vs plan/characters.org)
+✓ Where characters are stored (notes.org vs objects/characters.org)
 ✓ How to capture characters (~F8 F8 h~)
 ✓ All sections of the character template (physical, personality, GMC, arc, etc.)
 ✓ What minimum vs. full profiles contain
