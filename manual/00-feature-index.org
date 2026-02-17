@@ -397,7 +397,7 @@ The package declares integration with the gt (Google Translate) package for on-t
 :CUSTOM_ID: export-tools
 :END:
 
-** Scene Break Filter (~org-export-replace-scene-breaks~)
+** Scene Break Filter (~org-scribe--export-replace-scene-breaks~)
 
 Automatically replaces ~SCENE-BREAK~ markers with backend-appropriate scene separators during org export. Writers add ~#+MACRO: scene-break SCENE-BREAK~ to their manuscript, then use ~{{{scene-break}}}~ wherever they want scene breaks. During export, the filter replaces these markers with: ~\n***\n~ for ASCII/Markdown/Man, ~<br><br><br>~ for HTML, ~\vspace~ commands for LaTeX, or custom strings defined in ~org-scribe/scene-break-replacements~. This ensures consistent scene break formatting across all export formats without manually editing exports.
 

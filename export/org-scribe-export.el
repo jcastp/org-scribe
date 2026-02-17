@@ -16,7 +16,7 @@
 
 ;;; Scene Break Filter
 
-(defun org-export-replace-scene-breaks (text backend _info)
+(defun org-scribe--export-replace-scene-breaks (text backend _info)
   "Replace SCENE-BREAK markers with backend-appropriate scene separators.
 TEXT is the export output, BACKEND is the export backend symbol.
 Uses `org-scribe/scene-break-replacements' for customization.
@@ -31,7 +31,7 @@ Then use {{{scene-break}}} wherever you want a scene break."
 
 ;; Add to export filter list
 (add-to-list 'org-export-filter-final-output-functions
-             #'org-export-replace-scene-breaks)
+             #'org-scribe--export-replace-scene-breaks)
 
 (provide 'org-scribe-export)
 

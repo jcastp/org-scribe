@@ -30,7 +30,7 @@
 
 (ert-deftest test-export-functions-defined ()
   "Test that export functions are defined."
-  (should (fboundp 'org-export-replace-scene-breaks)))
+  (should (fboundp 'org-scribe--export-replace-scene-breaks)))
 
 ;;; Scene Break Configuration Tests
 
@@ -55,7 +55,7 @@
   (let ((text "Some text before.\nSCENE-BREAK\nSome text after.")
         (backend 'ascii)
         (expected-replacement (alist-get 'ascii org-scribe/scene-break-replacements)))
-    (let ((result (org-export-replace-scene-breaks text backend nil)))
+    (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string-match-p expected-replacement result))
       (should-not (string-match-p "SCENE-BREAK" result)))))
 
@@ -64,7 +64,7 @@
   (let ((text "Some text before.\nSCENE-BREAK\nSome text after.")
         (backend 'html)
         (expected-replacement (alist-get 'html org-scribe/scene-break-replacements)))
-    (let ((result (org-export-replace-scene-breaks text backend nil)))
+    (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string-match-p expected-replacement result))
       (should-not (string-match-p "SCENE-BREAK" result)))))
 
@@ -73,7 +73,7 @@
   (let ((text "Some text before.\nSCENE-BREAK\nSome text after.")
         (backend 'latex)
         (expected-replacement (alist-get 'latex org-scribe/scene-break-replacements)))
-    (let ((result (org-export-replace-scene-breaks text backend nil)))
+    (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string-match-p (regexp-quote expected-replacement) result))
       (should-not (string-match-p "SCENE-BREAK" result)))))
 
@@ -83,7 +83,7 @@
         (backend 'odt)
         (expected-replacement (or (alist-get 'odt org-scribe/scene-break-replacements)
                                  (alist-get t org-scribe/scene-break-replacements))))
-    (let ((result (org-export-replace-scene-breaks text backend nil)))
+    (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string-match-p (regexp-quote expected-replacement) result))
       (should-not (string-match-p "SCENE-BREAK" result)))))
 
@@ -92,7 +92,7 @@
   (let ((text "Some text before.\nSCENE-BREAK\nSome text after.")
         (backend 'unknown-backend)
         (expected-replacement (alist-get t org-scribe/scene-break-replacements)))
-    (let ((result (org-export-replace-scene-breaks text backend nil)))
+    (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string-match-p (regexp-quote expected-replacement) result))
       (should-not (string-match-p "SCENE-BREAK" result)))))
 
@@ -100,7 +100,7 @@
   "Test that multiple scene breaks are all replaced."
   (let ((text "Text 1.\nSCENE-BREAK\nText 2.\nSCENE-BREAK\nText 3.")
         (backend 'ascii))
-    (let ((result (org-export-replace-scene-breaks text backend nil)))
+    (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       ;; Should not contain any SCENE-BREAK markers
       (should-not (string-match-p "SCENE-BREAK" result)))))
 
@@ -108,14 +108,14 @@
   "Test that text without scene breaks is unchanged."
   (let ((text "Some text without any scene breaks.")
         (backend 'ascii))
-    (let ((result (org-export-replace-scene-breaks text backend nil)))
+    (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string= text result)))))
 
 (ert-deftest test-scene-break-empty-text ()
   "Test scene break replacement with empty text."
   (let ((text "")
         (backend 'ascii))
-    (let ((result (org-export-replace-scene-breaks text backend nil)))
+    (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string= "" result)))))
 
 ;;; Filter Integration Tests
@@ -123,7 +123,7 @@
 (ert-deftest test-scene-break-filter-registered ()
   "Test that scene break filter is registered in org-export."
   (should (boundp 'org-export-filter-final-output-functions))
-  (should (memq 'org-export-replace-scene-breaks
+  (should (memq 'org-scribe--export-replace-scene-breaks
                 org-export-filter-final-output-functions)))
 
 ;;; Configuration Customization Tests
@@ -141,7 +141,7 @@
 
           ;; Test custom replacement
           (let ((text "Before\nSCENE-BREAK\nAfter"))
-            (let ((result (org-export-replace-scene-breaks text 'test-backend nil)))
+            (let ((result (org-scribe--export-replace-scene-breaks text 'test-backend nil)))
               (should (string-match-p (regexp-quote custom-replacement) result))
               (should-not (string-match-p "SCENE-BREAK" result)))))
 
