@@ -89,25 +89,21 @@ CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes."
        (insert "#+TITLE: Character Database\n")
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       ;;(insert "* Characters\n\n")
        )
       ('locations
        (insert "#+TITLE: Locations & World Building\n")
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       ;;(insert "* Locations\n\n")
        )
       ('objects
        (insert "#+TITLE: Important Objects\n")
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       ;;(insert "* Objects\n\n")
        )
       ('timeline
        (insert "#+TITLE: Story Timeline\n")
        (insert "#+AUTHOR: " user-full-name "\n")
        (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       ;;(insert "* Timeline\n\n")
        )
       ('notes
        (insert "#+TITLE: Writing Notes\n")
