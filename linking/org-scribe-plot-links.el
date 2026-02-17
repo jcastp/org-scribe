@@ -321,41 +321,6 @@ Processes all headings with :Plot: properties."
       (message "Updated plot thread links in %d scene%s"
                count (if (= count 1) "" "s")))))
 
-;;; Integration with Capture System
-
-(defun org-scribe--capture-finalize-add-plot-thread-id ()
-  "Hook function to add ID to newly captured plot threads.
-This is called before a plot thread capture is finalized.
-Runs in the capture buffer before it's filed.
-
-This is a safety net - plot thread capture templates should include
-ID generation via %(org-id-new), but this ensures any plot thread heading
-without an ID gets one automatically."
-  (when (and (boundp 'org-capture-mode)
-             org-capture-mode
-             (buffer-file-name))
-    ;; Check if we're capturing to a plot file
-    (let ((target (org-scribe--get-plot-thread-file)))
-      (when (and target
-                 (file-exists-p target)
-                 ;; Compare the target file with current buffer's file
-                 ;; or the file we're capturing to
-                 (or (string= (buffer-file-name) target)
-                     (string= (buffer-file-name) (expand-file-name target))))
-        ;; We're capturing a plot thread, ensure it has an ID
-        (save-excursion
-          (goto-char (point-min))
-          ;; In capture buffer, find the heading we're creating
-          (when (re-search-forward "^\\*+ " nil t)
-            (org-back-to-heading)
-            (unless (org-entry-get nil "ID")
-              (org-id-get-create)
-              (message "Auto-created ID for new plot thread (via hook)"))))))))
-
-;; Add the hook - use before-finalize to ensure we're still in capture buffer
-;; Note: This is redundant with the template's %(org-id-new) but serves as a safety net
-(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-plot-thread-id)
-
 ;;;###autoload
 (defun org-scribe/setup-plot-thread-links ()
   "Set up plot thread linking system for current project.

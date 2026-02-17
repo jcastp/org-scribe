@@ -11,6 +11,7 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 (require 'org-capture)
 (require 'project)
 (require 'org-scribe-core)
@@ -737,6 +738,38 @@ then elaborate later during planning or revision."
            org-scribe/plot-thread-capture-templates))
       ;; Run the capture UI
       (org-capture nil "p"))))
+
+;;; Unified Capture Hook
+
+(defun org-scribe--capture-finalize-add-entity-id ()
+  "Hook to add ID to newly captured entities (characters, locations, plot threads).
+Runs before capture is finalized.  Checks if the capture target matches
+any known entity file and ensures the heading has an ID.
+
+This is a safety net - capture templates already include ID generation
+via %(org-id-new), but this ensures any entity heading without an ID
+gets one automatically."
+  (when (and (boundp 'org-capture-mode)
+             org-capture-mode
+             (buffer-file-name))
+    (let* ((buf-file (buffer-file-name))
+           (entity-files (delq nil
+                               (list (ignore-errors (org-scribe/capture-character-file))
+                                     (ignore-errors (org-scribe/capture-location-file))
+                                     (ignore-errors (org-scribe/capture-plot-thread-file)))))
+           (match (cl-some (lambda (target)
+                             (or (string= buf-file target)
+                                 (string= buf-file (expand-file-name target))))
+                           entity-files)))
+      (when match
+        (save-excursion
+          (goto-char (point-min))
+          (when (re-search-forward "^\\*+ " nil t)
+            (org-back-to-heading)
+            (unless (org-entry-get nil "ID")
+              (org-id-get-create))))))))
+
+(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-entity-id)
 
 (provide 'org-scribe-capture)
 

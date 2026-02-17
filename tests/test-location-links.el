@@ -122,12 +122,12 @@
 ;;; Hook Integration Tests
 
 (ert-deftest test-location-capture-hook-defined ()
-  "Test that location capture hook function is defined."
-  (should (fboundp 'org-scribe--capture-finalize-add-location-id)))
+  "Test that unified entity capture hook function is defined."
+  (should (fboundp 'org-scribe--capture-finalize-add-entity-id)))
 
 (ert-deftest test-location-capture-hook-registered ()
-  "Test that capture hook is registered."
-  (should (memq 'org-scribe--capture-finalize-add-location-id
+  "Test that unified entity capture hook is registered."
+  (should (memq 'org-scribe--capture-finalize-add-entity-id
                 org-capture-before-finalize-hook)))
 
 ;;; Location File Detection Tests

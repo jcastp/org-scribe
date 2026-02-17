@@ -325,41 +325,6 @@ Processes all headings with :PoV: or :Characters: properties."
       (message "Updated character links in %d scene%s"
                count (if (= count 1) "" "s")))))
 
-;;; Integration with Capture System
-
-(defun org-scribe--capture-finalize-add-character-id ()
-  "Hook function to add ID to newly captured characters.
-This is called before a character capture is finalized.
-Runs in the capture buffer before it's filed.
-
-This is a safety net - the character capture template already includes
-ID generation via %(org-id-new), but this ensures any character heading
-without an ID gets one automatically."
-  (when (and (boundp 'org-capture-mode)
-             org-capture-mode
-             (buffer-file-name))
-    ;; Check if we're capturing to a characters file
-    (let ((target (org-scribe--get-character-file)))
-      (when (and target
-                 (file-exists-p target)
-                 ;; Compare the target file with current buffer's file
-                 ;; or the file we're capturing to
-                 (or (string= (buffer-file-name) target)
-                     (string= (buffer-file-name) (expand-file-name target))))
-        ;; We're capturing a character, ensure it has an ID
-        (save-excursion
-          (goto-char (point-min))
-          ;; In capture buffer, find the heading we're creating
-          (when (re-search-forward "^\\*+ " nil t)
-            (org-back-to-heading)
-            (unless (org-entry-get nil "ID")
-              (org-id-get-create)
-              (message "Auto-created ID for new character (via hook)"))))))))
-
-;; Add the hook - use before-finalize to ensure we're still in capture buffer
-;; Note: This is redundant with the template's %(org-id-new) but serves as a safety net
-(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-character-id)
-
 ;;;###autoload
 (defun org-scribe/setup-character-links ()
   "Set up character linking system for current project.

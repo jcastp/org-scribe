@@ -274,41 +274,6 @@ Processes all headings with :Location: properties."
       nil 'file)
     (message (org-scribe-msg 'msg-updated-location-links count (org-scribe-plural count ""))))))
 
-;;; Integration with Capture System
-
-(defun org-scribe--capture-finalize-add-location-id ()
-  "Hook function to add ID to newly captured locations.
-This is called before a location capture is finalized.
-Runs in the capture buffer before it's filed.
-
-This is a safety net - the location capture template already includes
-ID generation via %(org-id-new), but this ensures any location heading
-without an ID gets one automatically."
-  (when (and (boundp 'org-capture-mode)
-             org-capture-mode
-             (buffer-file-name))
-    ;; Check if we're capturing to a locations file
-    (let ((target (org-scribe--get-location-file)))
-      (when (and target
-                 (file-exists-p target)
-                 ;; Compare the target file with current buffer's file
-                 ;; or the file we're capturing to
-                 (or (string= (buffer-file-name) target)
-                     (string= (buffer-file-name) (expand-file-name target))))
-        ;; We're capturing a location, ensure it has an ID
-        (save-excursion
-          (goto-char (point-min))
-          ;; In capture buffer, find the heading we're creating
-          (when (re-search-forward "^\\*+ " nil t)
-            (org-back-to-heading)
-            (unless (org-entry-get nil "ID")
-              (org-id-get-create)
-              (message "Auto-created ID for new location (via hook)"))))))))
-
-;; Add the hook - use before-finalize to ensure we're still in capture buffer
-;; Note: This is redundant with the template's %(org-id-new) but serves as a safety net
-(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-location-id)
-
 ;;;###autoload
 (defun org-scribe/setup-location-links ()
   "Set up location linking system for current project.
