@@ -453,8 +453,6 @@ This is useful for adding novels created before project.el integration."
 (make-obsolete 'org-scribe-project-register-existing-projects 'org-scribe-register-projects "0.2.0")
 
 ;; Provide old feature name for old configs
-(provide 'writing_project)
-(provide 'org-scribe-template)
 (provide 'org-scribe-project)
 
 ;;; org-scribe-project.el ends here
