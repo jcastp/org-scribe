@@ -327,7 +327,7 @@ Processes all headings with :PoV: or :Characters: properties."
 
 ;;; Integration with Capture System
 
-(defun org-scribe--capture-finalize-add-id ()
+(defun org-scribe--capture-finalize-add-character-id ()
   "Hook function to add ID to newly captured characters.
 This is called before a character capture is finalized.
 Runs in the capture buffer before it's filed.
@@ -358,7 +358,7 @@ without an ID gets one automatically."
 
 ;; Add the hook - use before-finalize to ensure we're still in capture buffer
 ;; Note: This is redundant with the template's %(org-id-new) but serves as a safety net
-(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-id)
+(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-character-id)
 
 ;;;###autoload
 (defun org-scribe/setup-character-links ()

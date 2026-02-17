@@ -123,11 +123,11 @@
 
 (ert-deftest test-location-capture-hook-defined ()
   "Test that location capture hook function is defined."
-  (should (fboundp 'org-scribe--capture-finalize-add-id)))
+  (should (fboundp 'org-scribe--capture-finalize-add-location-id)))
 
 (ert-deftest test-location-capture-hook-registered ()
   "Test that capture hook is registered."
-  (should (memq 'org-scribe--capture-finalize-add-id
+  (should (memq 'org-scribe--capture-finalize-add-location-id
                 org-capture-before-finalize-hook)))
 
 ;;; Location File Detection Tests

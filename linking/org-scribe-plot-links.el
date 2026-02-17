@@ -323,7 +323,7 @@ Processes all headings with :Plot: properties."
 
 ;;; Integration with Capture System
 
-(defun org-scribe--capture-finalize-add-plot-id ()
+(defun org-scribe--capture-finalize-add-plot-thread-id ()
   "Hook function to add ID to newly captured plot threads.
 This is called before a plot thread capture is finalized.
 Runs in the capture buffer before it's filed.
@@ -354,7 +354,7 @@ without an ID gets one automatically."
 
 ;; Add the hook - use before-finalize to ensure we're still in capture buffer
 ;; Note: This is redundant with the template's %(org-id-new) but serves as a safety net
-(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-plot-id)
+(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-plot-thread-id)
 
 ;;;###autoload
 (defun org-scribe/setup-plot-thread-links ()

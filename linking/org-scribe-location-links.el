@@ -276,7 +276,7 @@ Processes all headings with :Location: properties."
 
 ;;; Integration with Capture System
 
-(defun org-scribe--capture-finalize-add-id ()
+(defun org-scribe--capture-finalize-add-location-id ()
   "Hook function to add ID to newly captured locations.
 This is called before a location capture is finalized.
 Runs in the capture buffer before it's filed.
@@ -307,7 +307,7 @@ without an ID gets one automatically."
 
 ;; Add the hook - use before-finalize to ensure we're still in capture buffer
 ;; Note: This is redundant with the template's %(org-id-new) but serves as a safety net
-(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-id)
+(add-hook 'org-capture-before-finalize-hook #'org-scribe--capture-finalize-add-location-id)
 
 ;;;###autoload
 (defun org-scribe/setup-location-links ()
