@@ -7,15 +7,17 @@
 ;;; Commentary:
 
 ;; Provides ID-based linking system for characters in writing projects.
-;; Automatically creates unique IDs for characters and provides functions
-;; to insert character links in scene properties.
+;; Uses the generic linking framework from org-scribe-linking-core.el
+;; and adds character-specific functions (PoV handling, timeline).
 ;;
 ;; Features:
 ;; - Auto-create IDs when capturing new characters
 ;; - Insert character links with completion
 ;; - Link multiple characters at once
+;; - Set PoV character for scenes
 ;; - Jump to character definition from properties
 ;; - Update all character links in document
+;; - Character timeline visualization
 
 ;;; Code:
 
@@ -24,173 +26,67 @@
 (require 'org-scribe-core)
 (require 'org-scribe-capture)
 (require 'org-scribe-messages)
+(require 'org-scribe-linking-core)
 
-;;; Character ID Management
+;;; Character Heading Predicate
 
-(defun org-scribe--ensure-character-has-id ()
-  "Ensure the current character heading has a unique ID.
-Creates an ID if one doesn't exist. Returns the ID."
-  (org-id-get-create))
+(defun org-scribe--character-heading-p ()
+  "Return non-nil if the heading at point is a character heading."
+  (and (>= (org-current-level) 1)
+       (or (org-entry-get nil "Role")
+           (org-entry-get nil "TYPE")
+           (save-excursion
+             (ignore-errors
+               (org-up-heading-safe)
+               (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
+                              (org-get-heading t t t t)))))))
 
-(defun org-scribe--add-id-to-all-characters ()
-  "Add IDs to all character headings in current buffer.
-This function scans the characters file and ensures every
-character heading has a unique ID property."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (let ((count 0))
-      (org-map-entries
-       (lambda ()
-         (let* ((level (org-current-level))
-                (role (org-entry-get nil "Role"))
-                (type (org-entry-get nil "TYPE"))
-                (is-character-heading
-                 (and (>= level 1)  ; Level 1 or deeper
-                      (or role  ; Has Role property (new template)
-                          type  ; Has TYPE property (old template)
-                          ;; Or is under "Characters" or similar heading
-                          (save-excursion
-                            (ignore-errors
-                              (org-up-heading-safe)
-                              (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
-                                             (org-get-heading t t t t))))))))
-           (when is-character-heading
-             (unless (org-id-get)
-               (org-id-get-create)
-               (setq count (1+ count))))))
-       nil 'file)
-      (message (org-scribe-msg 'msg-added-ids count
-                               (org-scribe-plural count ""))))))
+;;; Entity Descriptor
 
-(defun org-scribe--get-character-name-at-point ()
-  "Get the character name from current heading or NAME property."
-  (or (org-entry-get nil "NAME")
-      (org-get-heading t t t t)))
+(defconst org-scribe--character-entity
+  '(:file-fn org-scribe/capture-character-file
+    :heading-predicate org-scribe--character-heading-p
+    :properties ("PoV" "Characters")
+    :msg-added-ids msg-added-ids
+    :msg-ids-updated msg-character-ids-updated
+    :error-no-file error-no-character-file
+    :error-none-found error-no-characters-found
+    :prompt-select prompt-select-character
+    :prompt-select-multi prompt-select-characters-multi
+    :error-no-id error-no-id-for-character
+    :msg-inserted-links msg-inserted-links
+    :msg-no-selected msg-no-characters-selected
+    :msg-set msg-set-characters
+    :msg-updated-single msg-updated-characters
+    :msg-no-updates msg-no-updates-needed
+    :msg-updated-links msg-updated-links
+    :msg-setting-up msg-setting-up-links
+    :question-link-existing question-link-existing-scenes
+    :msg-setup-complete msg-setup-complete
+    :msg-updated-link-names msg-updated-pov-and-chars-link-names
+    :msg-no-link-updates-type "character"
+    :msg-updated-all-type "character")
+  "Entity descriptor for characters.")
 
-;;; Character Database Functions
+;;; Generated API Functions
 
-(defun org-scribe--get-character-file ()
-  "Get the path to the characters file for the current project."
-  (org-scribe/capture-character-file))
+(org-scribe-define-entity org-scribe--character-entity
+  :get-file-name         org-scribe--get-character-file
+  :get-all-name          org-scribe--get-all-characters
+  :create-link-name      org-scribe--create-character-link
+  :add-ids-to-all-name   org-scribe--add-id-to-all-characters
+  :add-ids-name          org-scribe/add-character-ids
+  :insert-link-name      org-scribe/insert-character-link
+  :insert-multi-name     org-scribe/insert-multiple-character-links
+  :set-scene-name        org-scribe/set-scene-characters
+  :set-scene-property    "Characters"
+  :link-in-prop-name     org-scribe--link-characters-in-property
+  ;; link-scene, link-all, update-names, update-all are custom (handle PoV + Characters)
+  :setup-name            org-scribe/setup-character-links
+  :setup-add-ids-fn      org-scribe/add-character-ids
+  :setup-link-all-fn     org-scribe/link-all-scene-characters)
 
-(defun org-scribe--get-all-characters ()
-  "Return alist of (CHARACTER-NAME . (ID . HEADING)) from characters file.
-Returns list of (NAME . (ID . HEADING-TEXT)) for all characters in the project."
-  (let ((char-file (org-scribe--get-character-file))
-        result)
-    (when (and char-file (file-exists-p char-file))
-      (with-current-buffer (find-file-noselect char-file)
-        (org-with-wide-buffer
-         (goto-char (point-min))
-         (org-map-entries
-          (lambda ()
-            (let* ((level (org-current-level))
-                   (id (org-id-get))
-                   (name (org-scribe--get-character-name-at-point))
-                   (heading (org-get-heading t t t t))
-                   (role (org-entry-get nil "Role"))
-                   (type (org-entry-get nil "TYPE"))
-                   ;; Check if this looks like a character heading
-                   (is-character
-                    (and (>= level 1)  ; Level 1 or deeper
-                         id            ; Has an ID
-                         name          ; Has a name
-                         ;; Either has Role/TYPE property or is under Characters section
-                         (or role      ; Has Role property (new template)
-                             type      ; Has TYPE property (old template)
-                             (save-excursion
-                               (ignore-errors
-                                 (org-up-heading-safe)
-                                 (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
-                                                (org-get-heading t t t t))))))))
-              (when is-character
-                (push (cons name (cons id heading)) result))))
-          nil 'file))))
-    (nreverse result)))
-
-(defun org-scribe--create-character-link (char-name id-alist)
-  "Create an ID link for CHAR-NAME using ID-ALIST.
-ID-ALIST should be in format ((NAME . (ID . HEADING)) ...).
-Returns the link string or plain text if no ID found."
-  (if-let* ((entry (assoc char-name id-alist))
-            (id (cadr entry)))
-      (format "[[id:%s][%s]]" id char-name)
-    char-name)) ; Fallback to plain text if no ID found
-
-;;; Interactive Functions
-
-;;;###autoload
-(defun org-scribe/add-character-ids ()
-  "Add unique IDs to all characters in the characters file.
-This should be run once on existing projects to set up
-the ID-based linking system."
-  (interactive)
-  (let ((char-file (org-scribe--get-character-file)))
-    (if (not (file-exists-p char-file))
-        (message (org-scribe-msg 'error-no-character-file))
-      (with-current-buffer (find-file-noselect char-file)
-        (org-scribe--add-id-to-all-characters)
-        (save-buffer)
-        (message (org-scribe-msg 'msg-character-ids-updated char-file))))))
-
-;;;###autoload
-(defun org-scribe/insert-character-link ()
-  "Insert a character link in the current property.
-Scans the characters file, presents a completion menu,
-and inserts the selected character as an ID link.
-
-Use this function when adding characters to scene properties."
-  (interactive)
-  (let* ((chars (org-scribe--get-all-characters))
-         (char-names (mapcar #'car chars)))
-    (if (null char-names)
-        (message (org-scribe-msg 'error-no-characters-found))
-      (let* ((selected (completing-read (org-scribe-msg 'prompt-select-character) char-names nil t))
-             (entry (assoc selected chars))
-             (id (cadr entry)))
-        (if id
-            (progn
-              (insert (format "[[id:%s][%s]]" id selected))
-              (message (org-scribe-msg 'msg-inserted-link selected)))
-          (message (org-scribe-msg 'error-no-id-for-character selected)))))))
-
-;;;###autoload
-(defun org-scribe/insert-multiple-character-links ()
-  "Insert multiple character links separated by commas.
-Useful for the :Characters: property which often lists
-multiple characters in a scene."
-  (interactive)
-  (let* ((chars (org-scribe--get-all-characters))
-         (char-names (mapcar #'car chars))
-         selected-chars
-         links)
-    (if (null char-names)
-        (message (org-scribe-msg 'error-no-characters-found))
-      ;; Multiple selection loop
-      (while (let ((choice (completing-read
-                           (org-scribe-msg 'prompt-select-characters-multi)
-                           char-names nil nil)))
-               (when (and choice (not (string-empty-p choice)))
-                 (push choice selected-chars)
-                 t)))
-
-      ;; Create links for all selected characters
-      (setq selected-chars (nreverse selected-chars))
-      (dolist (name selected-chars)
-        (if-let* ((entry (assoc name chars))
-                  (id (cadr entry)))
-            (push (format "[[id:%s][%s]]" id name) links)
-          (push name links)))
-
-      (setq links (nreverse links))
-      (if links
-          (progn
-            (insert (string-join links ", "))
-            (message (org-scribe-msg 'msg-inserted-links
-                                     (length links)
-                                     (org-scribe-plural (length links) ""))))
-        (message (org-scribe-msg 'msg-no-characters-selected))))))
+;;; PoV-Specific Functions (no location/plot equivalent)
 
 ;;;###autoload
 (defun org-scribe/set-pov-character ()
@@ -213,42 +109,6 @@ Specifically designed for the :PoV: property in scene headings."
           (message (org-scribe-msg 'error-no-id-for-character selected)))))))
 
 ;;;###autoload
-(defun org-scribe/set-scene-characters ()
-  "Set the Characters property to multiple character ID links.
-Specifically designed for the :Characters: property in scene headings."
-  (interactive)
-  (unless (org-at-heading-p)
-    (org-back-to-heading))
-  (let* ((chars (org-scribe--get-all-characters))
-         (char-names (mapcar #'car chars))
-         selected-chars
-         links)
-    (if (null char-names)
-        (message (org-scribe-msg 'error-no-characters-found))
-      ;; Multiple selection loop
-      (while (let ((choice (completing-read
-                           (org-scribe-msg 'prompt-select-characters-multi)
-                           char-names nil nil)))
-               (when (and choice (not (string-empty-p choice)))
-                 (push choice selected-chars)
-                 t)))
-
-      ;; Create links for all selected characters
-      (setq selected-chars (nreverse selected-chars))
-      (dolist (name selected-chars)
-        (if-let* ((entry (assoc name chars))
-                  (id (cadr entry)))
-            (push (format "[[id:%s][%s]]" id name) links)
-          (push name links)))
-
-      (setq links (nreverse links))
-      (if links
-          (progn
-            (org-set-property "Characters" (string-join links ", "))
-            (message (org-scribe-msg 'msg-set-characters (string-join selected-chars ", "))))
-        (message (org-scribe-msg 'msg-no-characters-selected))))))
-
-;;;###autoload
 (defun org-scribe/jump-to-pov-character ()
   "Jump to the character definition for the PoV of current scene.
 Follows the ID link in the :PoV: property."
@@ -257,7 +117,6 @@ Follows the ID link in the :PoV: property."
     (org-back-to-heading))
   (if-let ((pov (org-entry-get nil "PoV")))
       (progn
-        ;; Extract ID from link if it's an ID link
         (if (string-match "\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]" pov)
             (let ((id (match-string 1 pov)))
               (org-id-goto id)
@@ -265,25 +124,7 @@ Follows the ID link in the :PoV: property."
           (message (org-scribe-msg 'error-pov-not-link))))
     (message (org-scribe-msg 'error-no-pov-property))))
 
-;;; Batch Update Functions
-
-(defun org-scribe--link-characters-in-property (property-name)
-  "Convert character names to ID links in PROPERTY-NAME of current heading.
-Handles both single characters and comma-separated lists."
-  (when-let ((prop-value (org-entry-get nil property-name)))
-    (let* ((id-alist (org-scribe--get-all-characters))
-           ;; Split on comma, trim whitespace
-           (char-list (mapcar #'string-trim
-                             (split-string prop-value "," t)))
-           ;; Create links for each character
-           (linked-chars (mapcar (lambda (name)
-                                  (org-scribe--create-character-link name id-alist))
-                                char-list))
-           (linked-string (string-join linked-chars ", ")))
-      ;; Only update if we actually created links
-      (unless (string= prop-value linked-string)
-        (org-set-property property-name linked-string)
-        t))))
+;;; Custom Link/Update Functions (handle both PoV + Characters)
 
 ;;;###autoload
 (defun org-scribe/link-scene-characters ()
@@ -314,7 +155,6 @@ Processes all headings with :PoV: or :Characters: properties."
     (let ((count 0))
       (org-map-entries
        (lambda ()
-         ;; Process if has PoV or Characters property
          (when (or (org-entry-get nil "PoV")
                    (org-entry-get nil "Characters"))
            (let ((updated-pov (org-scribe--link-characters-in-property "PoV"))
@@ -324,235 +164,14 @@ Processes all headings with :PoV: or :Characters: properties."
        nil 'file)
       (message (org-scribe-msg 'msg-updated-links count (org-scribe-plural count ""))))))
 
-;;;###autoload
-(defun org-scribe/setup-character-links ()
-  "Set up character linking system for current project.
-This function:
-1. Adds IDs to all existing characters
-2. Ensures the capture hook is active
-3. Optionally links existing scenes
-
-Run this once when setting up ID-based character linking
-in an existing project."
-  (interactive)
-  (message (org-scribe-msg 'msg-setting-up-links))
-
-  ;; Step 1: Add IDs to characters
-  (org-scribe/add-character-ids)
-
-  ;; Step 2: Ask if user wants to link existing scenes
-  (when (y-or-n-p (org-scribe-msg 'question-link-existing-scenes))
-    (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file)))
-      (when (and novel-file (file-exists-p novel-file))
-        (with-current-buffer (find-file-noselect novel-file)
-          (org-scribe/link-all-scene-characters)
-          (save-buffer)))))
-
-  (message (org-scribe-msg 'msg-setup-complete)))
-
-;;; Character Timeline
-
-;;; Helper Functions for Timeline
-
-(defun org-scribe--get-all-scenes-with-characters ()
-  "Return list of all scenes with PoV or Characters properties.
-Each entry is (SCENE-HEADING CHAPTER-HEADING POV-NAME CHARACTERS-LIST).
-POV-NAME is a string (or nil if no PoV).
-CHARACTERS-LIST is a list of character names (or nil if no Characters)."
-  (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file))
-        scenes)
-    (when (and novel-file (file-exists-p novel-file))
-      (with-current-buffer (find-file-noselect novel-file)
-        (org-with-wide-buffer
-         (goto-char (point-min))
-         (org-map-entries
-          (lambda ()
-            (when (= (org-current-level) 3)  ; Scenes are level 3
-              (let* ((heading (org-get-heading t t t t))
-                     (chapter (save-excursion
-                               (outline-up-heading 1)
-                               (org-get-heading t t t t)))
-                     (pov-prop (org-entry-get nil "PoV"))
-                     (chars-prop (org-entry-get nil "Characters")))
-                ;; Include scene if it has PoV OR Characters
-                (when (or pov-prop chars-prop)
-                  ;; Extract display text from ID links
-                  (require 'org-scribe-search)
-                  (let ((pov-name (when pov-prop
-                                   (org-scribe--extract-link-text pov-prop)))
-                        (chars-list (when chars-prop
-                                     (org-scribe--property-to-list chars-prop))))
-                    (push (list heading chapter pov-name chars-list) scenes))))))
-          nil 'file))))
-    (nreverse scenes)))
-
-(defun org-scribe--get-character-weight (char-name)
-  "Get the Weight property for CHAR-NAME from characters file.
-Returns the weight as a float, or 999.0 if not found.
-
-CHAR-NAME is matched against the :NAME: property or heading text,
-using the same logic as org-scribe--get-character-name-at-point."
-  (let ((char-file (org-scribe--get-character-file))
-        (weight 999.0))  ; Default for characters without Weight
-    (when (and char-file (file-exists-p char-file))
-      (with-current-buffer (find-file-noselect char-file)
-        (org-with-wide-buffer
-         (goto-char (point-min))
-         ;; Use org-map-entries to find the character (same as org-scribe--get-all-characters)
-         (catch 'found
-           (org-map-entries
-            (lambda ()
-              (let* ((level (org-current-level))
-                     (name (org-scribe--get-character-name-at-point))
-                     (role (org-entry-get nil "Role"))
-                     (type (org-entry-get nil "TYPE"))
-                     (is-character
-                      (and (>= level 1)
-                           name
-                           (or role type
-                               (save-excursion
-                                 (ignore-errors
-                                   (org-up-heading-safe)
-                                   (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
-                                                  (org-get-heading t t t t))))))))
-                ;; If this is a character and the name matches
-                (when (and is-character (string= name char-name))
-                  (when-let ((weight-str (org-entry-get nil "Weight")))
-                    (setq weight (string-to-number weight-str)))
-                  (throw 'found t))))
-            nil 'file)))))
-    weight))
-
-(defun org-scribe--collect-unique-characters (scenes)
-  "Extract unique character names from SCENES list.
-SCENES format: ((SCENE CHAPTER POV CHARS-LIST) ...).
-Returns list of unique character names, sorted by Weight property (ascending)."
-  (let ((characters (make-hash-table :test 'equal)))
-    ;; Collect unique character names (unchanged)
-    (dolist (scene scenes)
-      (let ((pov (nth 2 scene))
-            (chars-list (nth 3 scene)))
-        ;; Add PoV character
-        (when (and pov (not (string-empty-p pov)))
-          (puthash pov t characters))
-        ;; Add all Characters
-        (when chars-list
-          (dolist (char chars-list)
-            (when (not (string-empty-p char))
-              (puthash char t characters))))))
-
-    ;; Build list of (name . weight) pairs
-    (let ((char-weights nil))
-      (dolist (char-name (hash-table-keys characters))
-        (let ((weight (org-scribe--get-character-weight char-name)))
-          (push (cons char-name weight) char-weights)))
-
-      ;; Sort by weight (ascending), then alphabetically for ties
-      (setq char-weights
-            (sort char-weights
-                  (lambda (a b)
-                    (let ((weight-a (cdr a))
-                          (weight-b (cdr b)))
-                      (if (= weight-a weight-b)
-                          ;; Weights equal - sort alphabetically
-                          (string< (car a) (car b))
-                        ;; Different weights - sort by weight
-                        (< weight-a weight-b))))))
-
-      ;; Extract just the names
-      (mapcar #'car char-weights))))
-
-(defun org-scribe--character-symbol (char-name pov-name chars-list)
-  "Return symbol for CHAR-NAME in a scene.
-POV-NAME is the scene's PoV character (or nil).
-CHARS-LIST is list of other characters in scene.
-Returns:
-  ◆ if character is PoV (implies presence)
-  ● if character is in chars-list but not PoV
-  empty string if character not present"
-  (cond
-   ;; PoV character - show ◆ (diamond, implies presence)
-   ((and pov-name (string= char-name pov-name))
-    ;;"◆")
-    "PoV")
-   ;; Present in Characters list - show ● (circle)
-   ((and chars-list (member char-name chars-list))
-    "●")
-   ;; Not present - empty
-   (t "")))
-
-;;; Dynamic Block: Character Timeline
-
-;;;###autoload
-(defun org-dblock-write:character-timeline (params)
-    "Generate timeline showing character appearances across scenes.
-Shows which characters appear in which scenes, with distinction
-between PoV characters and other appearances.
-
-Symbols:
-  PoV = PoV character (implies presence)
-  ● = Present in scene (not PoV)
-  (blank) = Not present
-
-Character columns are sorted by :Weight: property (ascending).
-Characters without a Weight property appear last, sorted alphabetically.
-
-Character information is extracted from :PoV: and :Characters: properties.
-Character names are extracted from ID links like [[id:...][Name]].
-
-PARAMS are ignored (reserved for future filtering options)."
-  (let* ((scenes (org-scribe--get-all-scenes-with-characters))
-         (characters (org-scribe--collect-unique-characters scenes)))
-
-    (if (null scenes)
-        (insert "No scenes with character properties found.\n")
-      ;; Generate org table
-      ;; Header row
-      (insert "| Scene | Chapter |")
-      (dolist (char characters)
-        (insert (format " %s |" char)))
-      (insert "\n")
-
-      ;; Separator row
-      (insert "|-------+---------+")
-      (dolist (_ characters)
-        (insert "--------+"))
-      (insert "\n")
-
-      ;; Data rows
-      (dolist (scene scenes)
-        (let ((scene-name (nth 0 scene))
-              (chapter (nth 1 scene))
-              (pov-name (nth 2 scene))
-              (chars-list (nth 3 scene)))
-          (insert (format "| %s | %s |" scene-name chapter))
-          (dolist (char characters)
-            (let ((symbol (org-scribe--character-symbol char pov-name chars-list)))
-              (insert (format " %s |" symbol))))
-          (insert "\n")))
-
-      ;; Align table
-      (org-table-align))))
-
-;;; Update Link Display Names
+;;; Update Link Display Names (custom: handles PoV + Characters with 4-state messaging)
 
 (require 'org-scribe-link-update)
 
 ;;;###autoload
 (defun org-scribe/update-character-link-names ()
   "Update character link display names in current scene.
-
-Refreshes both :PoV: and :Characters: properties to show current
-character names from the characters database.
-
-Use this after renaming a character in characters.org. The ID links
-will still work, but this updates the display text to match the
-current name.
-
-Example:
-  Before: [[id:char-alex-001][Alex Rivera]]
-  After rename in database: [[id:char-alex-001][Alexandra Rivera]]
-
+Refreshes both :PoV: and :Characters: properties.
 Returns t if any updates were made, nil otherwise."
   (interactive)
   (save-excursion
@@ -575,20 +194,6 @@ Returns t if any updates were made, nil otherwise."
 ;;;###autoload
 (defun org-scribe/update-all-character-link-names ()
   "Update character link display names in all scenes.
-
-Scans characters database for current names and updates the display
-text portion of ID links in :PoV: and :Characters: properties throughout
-the entire manuscript.
-
-This is useful after renaming characters in characters.org, as ID
-links will still work but show the old name. This function refreshes
-all display names to match the current database.
-
-Example workflow:
-  1. Rename \"Alex Rivera\" to \"Alexandra Rivera\" in characters.org
-  2. Run this function (M-x org-scribe/update-all-character-link-names)
-  3. All 47 scenes updated automatically!
-
 Returns the number of scenes updated."
   (interactive)
   (save-excursion
@@ -608,6 +213,131 @@ Returns the number of scenes updated."
       (message (org-scribe-msg 'msg-updated-all-link-names "character"
                               count (org-scribe-plural count "")))
       count)))
+
+;;; Character Timeline
+
+(defun org-scribe--get-all-scenes-with-characters ()
+  "Return list of all scenes with PoV or Characters properties.
+Each entry is (SCENE-HEADING CHAPTER-HEADING POV-NAME CHARACTERS-LIST)."
+  (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file))
+        scenes)
+    (when (and novel-file (file-exists-p novel-file))
+      (with-current-buffer (find-file-noselect novel-file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (org-map-entries
+          (lambda ()
+            (when (= (org-current-level) 3)
+              (let* ((heading (org-get-heading t t t t))
+                     (chapter (save-excursion
+                               (outline-up-heading 1)
+                               (org-get-heading t t t t)))
+                     (pov-prop (org-entry-get nil "PoV"))
+                     (chars-prop (org-entry-get nil "Characters")))
+                (when (or pov-prop chars-prop)
+                  (require 'org-scribe-search)
+                  (let ((pov-name (when pov-prop
+                                   (org-scribe--extract-link-text pov-prop)))
+                        (chars-list (when chars-prop
+                                     (org-scribe--property-to-list chars-prop))))
+                    (push (list heading chapter pov-name chars-list) scenes))))))
+          nil 'file))))
+    (nreverse scenes)))
+
+(defun org-scribe--get-character-weight (char-name)
+  "Get the Weight property for CHAR-NAME from characters file.
+Returns the weight as a float, or 999.0 if not found."
+  (let ((char-file (org-scribe--get-character-file))
+        (weight 999.0))
+    (when (and char-file (file-exists-p char-file))
+      (with-current-buffer (find-file-noselect char-file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (catch 'found
+           (org-map-entries
+            (lambda ()
+              (let ((name (org-scribe--entity-name-at-point)))
+                (when (and (org-scribe--character-heading-p)
+                           (string= name char-name))
+                  (when-let ((weight-str (org-entry-get nil "Weight")))
+                    (setq weight (string-to-number weight-str)))
+                  (throw 'found t))))
+            nil 'file)))))
+    weight))
+
+(defun org-scribe--collect-unique-characters (scenes)
+  "Extract unique character names from SCENES list.
+Returns list of unique character names, sorted by Weight property (ascending)."
+  (let ((characters (make-hash-table :test 'equal)))
+    (dolist (scene scenes)
+      (let ((pov (nth 2 scene))
+            (chars-list (nth 3 scene)))
+        (when (and pov (not (string-empty-p pov)))
+          (puthash pov t characters))
+        (when chars-list
+          (dolist (char chars-list)
+            (when (not (string-empty-p char))
+              (puthash char t characters))))))
+    (let ((char-weights nil))
+      (dolist (char-name (hash-table-keys characters))
+        (let ((weight (org-scribe--get-character-weight char-name)))
+          (push (cons char-name weight) char-weights)))
+      (setq char-weights
+            (sort char-weights
+                  (lambda (a b)
+                    (let ((weight-a (cdr a))
+                          (weight-b (cdr b)))
+                      (if (= weight-a weight-b)
+                          (string< (car a) (car b))
+                        (< weight-a weight-b))))))
+      (mapcar #'car char-weights))))
+
+(defun org-scribe--character-symbol (char-name pov-name chars-list)
+  "Return symbol for CHAR-NAME in a scene.
+POV-NAME is the scene's PoV character (or nil).
+CHARS-LIST is list of other characters in scene."
+  (cond
+   ((and pov-name (string= char-name pov-name))
+    "PoV")
+   ((and chars-list (member char-name chars-list))
+    "●")
+   (t "")))
+
+;;;###autoload
+(defun org-dblock-write:character-timeline (params)
+  "Generate timeline showing character appearances across scenes.
+PARAMS are ignored (reserved for future filtering options)."
+  (let* ((scenes (org-scribe--get-all-scenes-with-characters))
+         (characters (org-scribe--collect-unique-characters scenes)))
+    (if (null scenes)
+        (insert "No scenes with character properties found.\n")
+      (insert "| Scene | Chapter |")
+      (dolist (char characters)
+        (insert (format " %s |" char)))
+      (insert "\n")
+      (insert "|-------+---------+")
+      (dolist (_ characters)
+        (insert "--------+"))
+      (insert "\n")
+      (dolist (scene scenes)
+        (let ((scene-name (nth 0 scene))
+              (chapter (nth 1 scene))
+              (pov-name (nth 2 scene))
+              (chars-list (nth 3 scene)))
+          (insert (format "| %s | %s |" scene-name chapter))
+          (dolist (char characters)
+            (let ((symbol (org-scribe--character-symbol char pov-name chars-list)))
+              (insert (format " %s |" symbol))))
+          (insert "\n")))
+      (org-table-align))))
+
+;;; Legacy Aliases
+
+(defun org-scribe--ensure-character-has-id ()
+  "Ensure the current character heading has a unique ID."
+  (org-id-get-create))
+
+(defalias 'org-scribe--get-character-name-at-point 'org-scribe--entity-name-at-point)
 
 (provide 'org-scribe-character-links)
 
