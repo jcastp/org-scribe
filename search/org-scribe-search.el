@@ -28,11 +28,12 @@
 (declare-function org-scribe--get-all-plot-threads "linking/org-scribe-plot-links")
 
 ;;; variables for the searches
-(defvar org-scribe--edit-string
+(defcustom org-scribe-edit-string
   "\*EDIT\*\\|\*NOTE\*"
-  "String to search for edit notes.
-In my case all he entries with *EDIT* or *NOTE*.
-Adapt it to your worflow.")
+  "Regexp to search for edit notes in the manuscript.
+The default matches headings or text containing *EDIT* or *NOTE*."
+  :type 'string
+  :group 'org-scribe)
 
 ;;; Helper Functions for ID Links
 
@@ -271,7 +272,7 @@ Requires org-ql package to be installed."
 (defun org-scribe/search-edits-recursive ()
   "Search for edition and notes items in current file tree using rgrep."
   (interactive)
-  (rgrep org-scribe--edit-string "*.org" (org-scribe-project-root)))
+  (rgrep org-scribe-edit-string "*.org" (org-scribe-project-root)))
 
 (provide 'org-scribe-search)
 
