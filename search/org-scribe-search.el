@@ -77,173 +77,89 @@ Examples:
         (mapcar #'string-trim
                 (split-string clean-text ","))))))
 
-;;; Search by POV
+;;; Shared Search Helpers
 
-;;;###autoload
-(defun org-scribe/org-find-pov (char)
-  "Show sparse tree of scenes with POV character.
+(defun org-scribe--read-search-term (feature-require get-all-fn prompt-completion prompt-free)
+  "Read a search term with optional completion from entity database.
+FEATURE-REQUIRE is the feature symbol to require (e.g. \\='org-scribe-character-links).
+GET-ALL-FN is the function to call to get the entity alist.
+PROMPT-COMPLETION is the message key for the completion prompt.
+PROMPT-FREE is the message key for the free-text prompt."
+  (let* ((items (condition-case nil
+                    (progn
+                      (require feature-require)
+                      (funcall get-all-fn))
+                  (error nil)))
+         (names (mapcar #'car items)))
+    (if (null names)
+        (read-string (org-scribe-msg prompt-free))
+      (completing-read (org-scribe-msg prompt-completion)
+                       names nil nil nil nil nil))))
 
-Input method:
-- If characters.org exists: completion menu with fuzzy matching
-- Otherwise: free text input with substring matching
-
-Search uses substring matching in both cases.
-Handles both plain text and ID-link format in properties.
-Requires org-ql package to be installed."
-  (interactive
-   (list
-    (let* ((chars (condition-case nil
-                      (progn
-                        (require 'org-scribe-character-links)
-                        (org-scribe--get-all-characters))
-                    (error nil)))
-           (char-names (mapcar #'car chars)))
-      (if (null char-names)
-          ;; No database - free text input
-          (read-string (org-scribe-msg 'search-pov-prompt-free))
-        ;; Database available - completion with fuzzy matching
-        (completing-read (org-scribe-msg 'search-pov-prompt)
-                        char-names
-                        nil      ; predicate
-                        nil      ; require-match = nil (allow free text)
-                        nil      ; initial-input
-                        nil      ; hist
-                        nil))))) ; def
-  (when (string-empty-p (string-trim char))
-    (user-error (org-scribe-msg 'error-empty-character)))
+(defun org-scribe--search-property (term error-key property)
+  "Search for TERM in PROPERTY across headings in current buffer.
+ERROR-KEY is the message key for empty input validation.
+PROPERTY is the org property name to search (e.g. \"PoV\")."
+  (when (string-empty-p (string-trim term))
+    (user-error (org-scribe-msg error-key)))
   (unless (featurep 'org-ql)
     (user-error (org-scribe-msg 'error-org-ql-required)))
   (org-ql-search (current-buffer)
     `(and (heading)
-          (let ((pov (org-entry-get (point) "PoV")))
-            (org-scribe--property-contains-p pov ,char)))))
+          (let ((val (org-entry-get (point) ,property)))
+            (org-scribe--property-contains-p val ,term)))))
+
+;;; Search by POV
+
+;;;###autoload
+(defun org-scribe/org-find-pov (char)
+  "Show sparse tree of scenes with POV character CHAR.
+Uses completion from characters database when available.
+Requires org-ql package."
+  (interactive
+   (list (org-scribe--read-search-term
+          'org-scribe-character-links #'org-scribe--get-all-characters
+          'search-pov-prompt 'search-pov-prompt-free)))
+  (org-scribe--search-property char 'error-empty-character "PoV"))
 
 ;;; Search by Character
 
 ;;;###autoload
 (defun org-scribe/org-find-character (char)
-  "Show sparse tree of scenes with CHARACTER.
-
-Input method:
-- If characters.org exists: completion menu with fuzzy matching
-- Otherwise: free text input with substring matching
-
-Search uses substring matching (not exact match) in the Characters property.
-This means searching for 'Alex' will find 'Alex Rivera, Sam Chen'.
-Handles both plain text and ID-link format in properties.
-Requires org-ql package to be installed."
+  "Show sparse tree of scenes with CHARACTER CHAR.
+Uses completion from characters database when available.
+Requires org-ql package."
   (interactive
-   (list
-    (let* ((chars (condition-case nil
-                      (progn
-                        (require 'org-scribe-character-links)
-                        (org-scribe--get-all-characters))
-                    (error nil)))
-           (char-names (mapcar #'car chars)))
-      (if (null char-names)
-          ;; No database - free text input
-          (read-string (org-scribe-msg 'search-char-prompt-free))
-        ;; Database available - completion with fuzzy matching
-        (completing-read (org-scribe-msg 'search-char-prompt)
-                        char-names
-                        nil      ; predicate
-                        nil      ; require-match = nil (allow free text)
-                        nil      ; initial-input
-                        nil      ; hist
-                        nil))))) ; def
-  (when (string-empty-p (string-trim char))
-    (user-error (org-scribe-msg 'error-empty-character)))
-  (unless (featurep 'org-ql)
-    (user-error (org-scribe-msg 'error-org-ql-required)))
-  ;; IMPORTANT: Changed from exact list matching to substring matching
-  ;; Old: (member ,char chars-list) - required exact match
-  ;; New: org-scribe--property-contains-p - allows substring match
-  (org-ql-search (current-buffer)
-    `(and (heading)
-          (let ((chars-prop (org-entry-get (point) "Characters")))
-            (org-scribe--property-contains-p chars-prop ,char)))))
+   (list (org-scribe--read-search-term
+          'org-scribe-character-links #'org-scribe--get-all-characters
+          'search-char-prompt 'search-char-prompt-free)))
+  (org-scribe--search-property char 'error-empty-character "Characters"))
 
 ;;; Search by Plot
 
 ;;;###autoload
 (defun org-scribe/org-find-plot (term)
   "Show sparse tree of scenes matching TERM in plot property.
-
-Input method:
-- If plot.org exists: completion menu with fuzzy matching
-- Otherwise: free text input with substring matching
-
-Search uses substring matching in both cases.
-Handles both plain text and ID-link format in properties.
-Requires org-ql package to be installed."
+Uses completion from plot database when available.
+Requires org-ql package."
   (interactive
-   (list
-    (let* ((threads (condition-case nil
-                        (progn
-                          (require 'org-scribe-plot-links)
-                          (org-scribe--get-all-plot-threads))
-                      (error nil)))
-           (thread-names (mapcar #'car threads)))
-      (if (null thread-names)
-          ;; No database - free text input
-          (read-string (org-scribe-msg 'search-plot-prompt-free))
-        ;; Database available - completion with fuzzy matching
-        (completing-read (org-scribe-msg 'search-plot-prompt)
-                        thread-names
-                        nil      ; predicate
-                        nil      ; require-match = nil (allow free text)
-                        nil      ; initial-input
-                        nil      ; hist
-                        nil))))) ; def
-  (when (string-empty-p (string-trim term))
-    (user-error (org-scribe-msg 'error-empty-plot)))
-  (unless (featurep 'org-ql)
-    (user-error (org-scribe-msg 'error-org-ql-required)))
-  (org-ql-search (current-buffer)
-    `(and (heading)
-          (let ((plot (org-entry-get (point) "Plot")))
-            (org-scribe--property-contains-p plot ,term)))))
+   (list (org-scribe--read-search-term
+          'org-scribe-plot-links #'org-scribe--get-all-plot-threads
+          'search-plot-prompt 'search-plot-prompt-free)))
+  (org-scribe--search-property term 'error-empty-plot "Plot"))
 
 ;;; Search by Location
 
 ;;;###autoload
 (defun org-scribe/org-find-location (loc)
-  "Show sparse tree of scenes with LOCATION.
-
-Input method:
-- If locations.org exists: completion menu with fuzzy matching
-- Otherwise: free text input with substring matching
-
-Search uses substring matching in both cases.
-Handles both plain text and ID-link format in properties.
-Requires org-ql package to be installed."
+  "Show sparse tree of scenes with LOCATION LOC.
+Uses completion from locations database when available.
+Requires org-ql package."
   (interactive
-   (list
-    (let* ((locations (condition-case nil
-                          (progn
-                            (require 'org-scribe-location-links)
-                            (org-scribe--get-all-locations))
-                        (error nil)))
-           (location-names (mapcar #'car locations)))
-      (if (null location-names)
-          ;; No database - free text input
-          (read-string (org-scribe-msg 'search-loc-prompt-free))
-        ;; Database available - completion with fuzzy matching
-        (completing-read (org-scribe-msg 'search-loc-prompt)
-                        location-names
-                        nil      ; predicate
-                        nil      ; require-match = nil (allow free text)
-                        nil      ; initial-input
-                        nil      ; hist
-                        nil))))) ; def
-  (when (string-empty-p (string-trim loc))
-    (user-error (org-scribe-msg 'error-empty-location)))
-  (unless (featurep 'org-ql)
-    (user-error (org-scribe-msg 'error-org-ql-required)))
-  (org-ql-search (current-buffer)
-    `(and (heading)
-          (let ((location (org-entry-get (point) "Location")))
-            (org-scribe--property-contains-p location ,loc)))))
+   (list (org-scribe--read-search-term
+          'org-scribe-location-links #'org-scribe--get-all-locations
+          'search-loc-prompt 'search-loc-prompt-free)))
+  (org-scribe--search-property loc 'error-empty-location "Location"))
 
 ;;; Recursive TODO Search
 
