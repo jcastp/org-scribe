@@ -457,7 +457,6 @@ using the same logic as org-scribe--get-character-name-at-point."
                     (setq weight (string-to-number weight-str)))
                   (throw 'found t))))
             nil 'file)))))
-    (message "%s" weight)
     weight))
 
 (defun org-scribe--collect-unique-characters (scenes)
