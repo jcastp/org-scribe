@@ -493,15 +493,16 @@ Threads without a Weight property appear last, sorted alphabetically.
 Thread information is extracted from the :Plot: property in scenes.
 Thread names are extracted from ID links like [[id:...][Name]]."
   (let* ((threads-set (make-hash-table :test 'equal))
-         (scenes (org-scribe--get-all-scenes-with-plots)))
+         (scenes (org-scribe--get-all-scenes-with-plots))
+         threads)
 
-    ;; Collect unique thread names (unchanged)
+    ;; Collect unique thread names
     (dolist (scene scenes)
       (let ((thread-list (nth 2 scene)))
         (dolist (thread thread-list)
           (puthash thread t threads-set))))
 
-    ;; Build list of (name . weight) pairs
+    ;; Build list of (name . weight) pairs, sort, and extract names
     (let ((thread-weights nil))
       (dolist (thread-name (hash-table-keys threads-set))
         (let ((weight (org-scribe--get-plot-thread-weight thread-name)))
