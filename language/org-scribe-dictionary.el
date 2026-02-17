@@ -185,7 +185,7 @@ Includes improved error handling for network issues."
                    (when palabra
                      (org-scribe/rae-api-lookup palabra)))
                (json-error
-                (message (org-scribe-msg 'error-random-word-parse err))))))))))
+                (message (org-scribe-msg 'error-random-word-parse err)))))))))))
 
 ;;; Synonym Lookup (WordReference)
 
@@ -213,7 +213,7 @@ Opens WordReference Spanish synonym dictionary in a side window."
           ;; Set up the eww buffer
           (read-only-mode 1)
           (use-local-map (copy-keymap (current-local-map)))
-          (local-set-key (kbd "q") 'quit-window))))))))
+          (local-set-key (kbd "q") 'quit-window))))))
 
 (provide 'org-scribe-dictionary)
 
