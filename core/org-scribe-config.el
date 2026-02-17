@@ -11,7 +11,7 @@
 
 ;;; Code:
 
-(defgroup writing nil
+(defgroup org-scribe nil
   "Creative writing in Org-mode."
   :group 'org
   :prefix "org-scribe-")
