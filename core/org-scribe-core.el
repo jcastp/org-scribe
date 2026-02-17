@@ -11,6 +11,7 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 (require 'org)
 (require 'project)
 (require 'org-scribe-messages)
@@ -85,26 +86,56 @@ Detection strategy:
               (cons (cons root type) org-scribe--project-type-cache))
         type))))
 
+(defun org-scribe--find-existing-file (root &rest relative-paths)
+  "Return the first existing file from RELATIVE-PATHS under ROOT, or nil."
+  (cl-loop for path in relative-paths
+           for full = (expand-file-name path root)
+           when (file-exists-p full) return full))
+
+(defun org-scribe--find-existing-dir (root &rest relative-paths)
+  "Return the first existing directory from RELATIVE-PATHS under ROOT, or nil."
+  (cl-loop for path in relative-paths
+           for full = (expand-file-name path root)
+           when (file-directory-p full) return full))
+
 (defun org-scribe-project-structure ()
   "Detect project structure and return layout information.
-Returns plist with :novel-file :notes-dir :characters-dir etc."
-  (let* ((root (org-scribe-project-root))
-         (novel-en (expand-file-name "novel.org" root))
-         (novel-es (expand-file-name "novela.org" root))
-         (notes-en (expand-file-name "notes/" root))
-         (notes-es (expand-file-name "notas/" root))
-         (novel (cond ((file-exists-p novel-en) novel-en)
-                      ((file-exists-p novel-es) novel-es)
-                      (t nil)))
-         (notes (cond ((file-directory-p notes-en) notes-en)
-                      ((file-directory-p notes-es) notes-es)
-                      (t nil))))
+Returns plist with:
+  :root          - project root directory
+  :novel-file    - main manuscript file (novel.org or novela.org)
+  :notes-dir     - notes directory (notes/ or notas/)
+  :notes-file    - notes file (notes/notes.org, notas/notas.org, notes.org, or notas.org)
+  :characters-file - characters file (objects/characters.org or objects/personajes.org)
+  :locations-file  - locations file (objects/locations.org or objects/localizaciones.org)
+  :plot-file       - plot file (objects/plot.org or objects/trama.org)
+  :timeline-file   - timeline file (objects/timeline.org or objects/cronologia.org)
+  :objects-file    - objects file (objects/objects.org or objects/objetos.org)
+
+All file/directory values are nil if the path does not exist."
+  (let* ((root (org-scribe-project-root)))
     (list :root root
-          :novel-file novel
-          :notes-dir notes
-          :characters-dir (expand-file-name "characters/" root)
-          :research-dir (expand-file-name "research/" root)
-          :timeline-file (expand-file-name "timeline.org" root))))
+          :novel-file (org-scribe--find-existing-file root
+                        "novel.org" "novela.org")
+          :notes-dir (org-scribe--find-existing-dir root
+                       "notes" "notas")
+          :notes-file (org-scribe--find-existing-file root
+                        "notes/notes.org" "notas/notas.org"
+                        "notes.org" "notas.org")
+          :characters-file (org-scribe--find-existing-file root
+                             "objects/characters.org" "objects/personajes.org"
+                             "characters.org" "personajes.org")
+          :locations-file (org-scribe--find-existing-file root
+                            "objects/locations.org" "objects/localizaciones.org"
+                            "locations.org" "localizaciones.org")
+          :plot-file (org-scribe--find-existing-file root
+                       "objects/plot.org" "objects/trama.org"
+                       "plot.org" "trama.org")
+          :timeline-file (org-scribe--find-existing-file root
+                           "objects/timeline.org" "objects/cronologia.org"
+                           "timeline.org" "cronologia.org")
+          :objects-file (org-scribe--find-existing-file root
+                          "objects/objects.org" "objects/objetos.org"
+                          "objects.org" "objetos.org"))))
 
 ;;; Feature Detection
 
