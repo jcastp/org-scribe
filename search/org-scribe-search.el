@@ -271,7 +271,7 @@ Requires org-ql package to be installed."
 (defun org-scribe/search-edits-recursive ()
   "Search for edition and notes items in current file tree using rgrep."
   (interactive)
-    (rgrep org-scribe--edit-string "*.org" (project-root(project-current))))
+  (rgrep org-scribe--edit-string "*.org" (org-scribe-project-root)))
 
 (provide 'org-scribe-search)
 
