@@ -93,12 +93,18 @@
     (msg-added-plot-ids . "Added IDs to %d plot thread heading%s")
     (msg-plot-ids-updated . "Plot thread IDs updated in %s")
     (msg-no-plot-threads-selected . "No plot threads selected")
+    (msg-inserted-plot-links . "Inserted %d plot thread link%s")
+    (msg-no-plot-updates-needed . "No Plot property found or already linked")
     (msg-jump-to-plot-thread . "Jumped to plot thread")
 
     ;; Link name updates
     (msg-updated-link-names . "Updated link names")
     (msg-updated-all-link-names . "Updated %s link names in %d scene%s")
     (msg-no-link-updates . "No %s link names needed updating")
+    (msg-updated-pov-link-names . "Updated PoV link names")
+    (msg-updated-characters-link-names . "Updated Characters link names")
+    (msg-updated-pov-and-chars-link-names . "Updated PoV and Characters link names")
+    (msg-updated-plot-link-names . "Updated Plot link names")
 
     ;; Errors - validation
     (error-empty-title . "Title cannot be empty or contain only whitespace")

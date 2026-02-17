@@ -23,6 +23,7 @@
 (require 'org-id)
 (require 'org-scribe-core)
 (require 'org-scribe-capture)
+(require 'org-scribe-messages)
 
 ;;; Plot Thread ID Management
 
@@ -57,8 +58,7 @@ plot thread heading has a unique ID property."
                (org-id-get-create)
                (setq count (1+ count))))))
        nil 'file)
-      (message "Added IDs to %d plot thread heading%s"
-               count (if (= count 1) "" "s")))))
+      (message (org-scribe-msg 'msg-added-plot-ids count (org-scribe-plural count ""))))))
 
 (defun org-scribe--get-plot-thread-name-at-point ()
   "Get the plot thread name from current heading or NAME property."
@@ -138,11 +138,11 @@ the ID-based linking system."
   (interactive)
   (let ((plot-file (org-scribe--get-plot-thread-file)))
     (if (not (file-exists-p plot-file))
-        (message "No plot file found. Create plot threads first.")
+        (message (org-scribe-msg 'error-no-plot-file))
       (with-current-buffer (find-file-noselect plot-file)
         (org-scribe--add-id-to-all-plot-threads)
         (save-buffer)
-        (message "Plot thread IDs updated in %s" plot-file)))))
+        (message (org-scribe-msg 'msg-plot-ids-updated plot-file))))))
 
 ;;;###autoload
 (defun org-scribe/insert-plot-thread-link ()
@@ -155,15 +155,15 @@ Use this function when adding plot threads to scene properties."
   (let* ((threads (org-scribe--get-all-plot-threads))
          (thread-names (mapcar #'car threads)))
     (if (null thread-names)
-        (message "No plot threads found. Create plot threads first or add IDs with org-scribe/add-plot-thread-ids.")
-      (let* ((selected (completing-read "Select plot thread: " thread-names nil t))
+        (message (org-scribe-msg 'error-no-plot-threads-found))
+      (let* ((selected (completing-read (org-scribe-msg 'prompt-select-plot-thread) thread-names nil t))
              (entry (assoc selected threads))
              (id (cadr entry)))
         (if id
             (progn
               (insert (format "[[id:%s][%s]]" id selected))
-              (message "Inserted link to %s" selected))
-          (message "No ID found for %s" selected))))))
+              (message (org-scribe-msg 'msg-inserted-link selected)))
+          (message (org-scribe-msg 'error-no-id-for-plot selected)))))))
 
 ;;;###autoload
 (defun org-scribe/insert-multiple-plot-thread-links ()
@@ -176,10 +176,10 @@ multiple plot threads in a scene."
          selected-threads
          links)
     (if (null thread-names)
-        (message "No plot threads found. Create plot threads first or add IDs with org-scribe/add-plot-thread-ids.")
+        (message (org-scribe-msg 'error-no-plot-threads-found))
       ;; Multiple selection loop
       (while (let ((choice (completing-read
-                           "Select plot thread (RET to finish): "
+                           (org-scribe-msg 'prompt-select-plot-threads-multi)
                            thread-names nil nil)))
                (when (and choice (not (string-empty-p choice)))
                  (push choice selected-threads)
@@ -197,10 +197,10 @@ multiple plot threads in a scene."
       (if links
           (progn
             (insert (string-join links ", "))
-            (message "Inserted %d plot thread link%s"
-                    (length links)
-                    (if (= (length links) 1) "" "s")))
-        (message "No plot threads selected")))))
+            (message (org-scribe-msg 'msg-inserted-plot-links
+                                     (length links)
+                                     (org-scribe-plural (length links) ""))))
+        (message (org-scribe-msg 'msg-no-plot-threads-selected))))))
 
 ;;;###autoload
 (defun org-scribe/set-scene-plot-threads ()
@@ -214,10 +214,10 @@ Specifically designed for the :Plot: property in scene headings."
          selected-threads
          links)
     (if (null thread-names)
-        (message "No plot threads found. Create plot threads first or add IDs with org-scribe/add-plot-thread-ids.")
+        (message (org-scribe-msg 'error-no-plot-threads-found))
       ;; Multiple selection loop
       (while (let ((choice (completing-read
-                           "Select plot thread (RET to finish): "
+                           (org-scribe-msg 'prompt-select-plot-threads-multi)
                            thread-names nil nil)))
                (when (and choice (not (string-empty-p choice)))
                  (push choice selected-threads)
@@ -235,8 +235,8 @@ Specifically designed for the :Plot: property in scene headings."
       (if links
           (progn
             (org-set-property "Plot" (string-join links ", "))
-            (message "Set Plot to: %s" (string-join selected-threads ", ")))
-        (message "No plot threads selected")))))
+            (message (org-scribe-msg 'msg-set-plot-threads (string-join selected-threads ", "))))
+        (message (org-scribe-msg 'msg-no-plot-threads-selected))))))
 
 ;;;###autoload
 (defun org-scribe/jump-to-plot-thread ()
@@ -248,25 +248,25 @@ If Plot property has multiple threads, prompts for selection."
                        (org-scribe--property-to-list plot-prop))))
     (cond
      ((null plot-prop)
-      (message "No Plot property in current heading"))
+      (message (org-scribe-msg 'msg-no-plot-property)))
      ((null thread-list)
-      (message "No plot threads found in Plot property"))
+      (message (org-scribe-msg 'msg-no-plot-threads-in-property)))
      ((= (length thread-list) 1)
       ;; Single thread - jump directly
       (let ((thread-name (car thread-list)))
         ;; Extract ID from the property if it's a link
         (if (string-match "\\[\\[id:\\([^]]+\\)\\]\\[" plot-prop)
             (org-id-goto (match-string 1 plot-prop))
-          (message "Plot thread '%s' is not an ID link" thread-name))))
+          (message (org-scribe-msg 'msg-plot-not-id-link thread-name)))))
      (t
       ;; Multiple threads - prompt for selection
-      (let* ((selected (completing-read "Jump to plot thread: " thread-list nil t))
+      (let* ((selected (completing-read (org-scribe-msg 'prompt-jump-to-plot) thread-list nil t))
              (threads (org-scribe--get-all-plot-threads))
              (entry (assoc selected threads))
              (id (cadr entry)))
         (if id
             (org-id-goto id)
-          (message "No ID found for plot thread '%s'" selected)))))))
+          (message (org-scribe-msg 'error-no-id-for-plot selected))))))))
 
 ;;; Batch Update Functions
 
@@ -298,9 +298,9 @@ Updates :Plot: property."
     (let ((updated-plot (org-scribe--link-plot-threads-in-property "Plot")))
       (cond
        (updated-plot
-        (message "Updated Plot property"))
+        (message (org-scribe-msg 'msg-updated-plot)))
        (t
-        (message "No Plot property found or already linked"))))))
+        (message (org-scribe-msg 'msg-no-plot-updates-needed)))))))
 
 ;;;###autoload
 (defun org-scribe/link-all-scene-plot-threads ()
@@ -318,8 +318,7 @@ Processes all headings with :Plot: properties."
              (when updated-plot
                (setq count (1+ count))))))
        nil 'file)
-      (message "Updated plot thread links in %d scene%s"
-               count (if (= count 1) "" "s")))))
+      (message (org-scribe-msg 'msg-updated-plot-links count (org-scribe-plural count ""))))))
 
 ;;;###autoload
 (defun org-scribe/setup-plot-thread-links ()
@@ -332,20 +331,20 @@ This function:
 Run this once when setting up ID-based plot thread linking
 in an existing project."
   (interactive)
-  (message "Setting up plot thread linking system...")
+  (message (org-scribe-msg 'msg-setting-up-plot-links))
 
   ;; Step 1: Add IDs to plot threads
   (org-scribe/add-plot-thread-ids)
 
   ;; Step 2: Ask if user wants to link existing scenes
-  (when (y-or-n-p "Link plot threads in existing scenes? ")
+  (when (y-or-n-p (org-scribe-msg 'question-link-existing-plots))
     (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file)))
       (when (and novel-file (file-exists-p novel-file))
         (with-current-buffer (find-file-noselect novel-file)
           (org-scribe/link-all-scene-plot-threads)
           (save-buffer)))))
 
-  (message "Plot thread linking system setup complete!"))
+  (message (org-scribe-msg 'msg-plot-setup-complete)))
 
 ;;; Phase 2: Timeline and Reporting Functions
 
@@ -634,7 +633,7 @@ Opens a new buffer with the report."
 
     (pop-to-buffer report-buffer)
     (goto-char (point-min))
-    (message "Plot thread health report generated")))
+    (message (org-scribe-msg 'msg-plot-health-report))))
 
 ;;; Plot Thread Statistics
 
@@ -658,8 +657,8 @@ Shows one-line summary in the minibuffer."
         (when warnings
           (setq warning-count (1+ warning-count)))))
 
-    (message "Plot threads: %d | Scenes: %d | Threads with warnings: %d"
-             thread-count scene-count warning-count)))
+    (message (org-scribe-msg 'msg-plot-stats
+                              thread-count scene-count warning-count))))
 
 ;; Helper function needed from search module
 ;; This is a forward declaration - the actual function is in org-scribe-search.el
@@ -692,8 +691,8 @@ Returns t if any updates were made, nil otherwise."
            (id-map (org-scribe--build-id-to-name-map plots-alist))
            (updated-plots (org-scribe--update-links-in-property "Plot" id-map)))
       (if updated-plots
-          (message "Updated Plot link names")
-        (message "No plot link names needed updating"))
+          (message (org-scribe-msg 'msg-updated-plot-link-names))
+        (message (org-scribe-msg 'msg-no-link-updates "plot")))
       updated-plots)))
 
 ;;;###autoload
@@ -727,8 +726,8 @@ Returns the number of scenes updated."
              (when updated-plots
                (setq count (1+ count))))))
        nil 'file)
-      (message "Updated plot link names in %d scene%s"
-               count (if (= count 1) "" "s"))
+      (message (org-scribe-msg 'msg-updated-all-link-names "plot"
+                              count (org-scribe-plural count "")))
       count)))
 
 (provide 'org-scribe-plot-links)

@@ -128,11 +128,11 @@ the ID-based linking system."
   (interactive)
   (let ((char-file (org-scribe--get-character-file)))
     (if (not (file-exists-p char-file))
-        (message "No character file found. Create characters first.")
+        (message (org-scribe-msg 'error-no-character-file))
       (with-current-buffer (find-file-noselect char-file)
         (org-scribe--add-id-to-all-characters)
         (save-buffer)
-        (message "Character IDs updated in %s" char-file)))))
+        (message (org-scribe-msg 'msg-character-ids-updated char-file))))))
 
 ;;;###autoload
 (defun org-scribe/insert-character-link ()
@@ -145,15 +145,15 @@ Use this function when adding characters to scene properties."
   (let* ((chars (org-scribe--get-all-characters))
          (char-names (mapcar #'car chars)))
     (if (null char-names)
-        (message "No characters found. Create characters first or add IDs with org-scribe/add-character-ids.")
-      (let* ((selected (completing-read "Select character: " char-names nil t))
+        (message (org-scribe-msg 'error-no-characters-found))
+      (let* ((selected (completing-read (org-scribe-msg 'prompt-select-character) char-names nil t))
              (entry (assoc selected chars))
              (id (cadr entry)))
         (if id
             (progn
               (insert (format "[[id:%s][%s]]" id selected))
-              (message "Inserted link to %s" selected))
-          (message "No ID found for %s" selected))))))
+              (message (org-scribe-msg 'msg-inserted-link selected)))
+          (message (org-scribe-msg 'error-no-id-for-character selected)))))))
 
 ;;;###autoload
 (defun org-scribe/insert-multiple-character-links ()
@@ -166,10 +166,10 @@ multiple characters in a scene."
          selected-chars
          links)
     (if (null char-names)
-        (message "No characters found. Create characters first or add IDs with org-scribe/add-character-ids.")
+        (message (org-scribe-msg 'error-no-characters-found))
       ;; Multiple selection loop
       (while (let ((choice (completing-read
-                           "Select character (RET to finish): "
+                           (org-scribe-msg 'prompt-select-characters-multi)
                            char-names nil nil)))
                (when (and choice (not (string-empty-p choice)))
                  (push choice selected-chars)
@@ -187,10 +187,10 @@ multiple characters in a scene."
       (if links
           (progn
             (insert (string-join links ", "))
-            (message "Inserted %d character link%s"
-                    (length links)
-                    (if (= (length links) 1) "" "s")))
-        (message "No characters selected")))))
+            (message (org-scribe-msg 'msg-inserted-links
+                                     (length links)
+                                     (org-scribe-plural (length links) ""))))
+        (message (org-scribe-msg 'msg-no-characters-selected))))))
 
 ;;;###autoload
 (defun org-scribe/set-pov-character ()
@@ -202,15 +202,15 @@ Specifically designed for the :PoV: property in scene headings."
   (let* ((chars (org-scribe--get-all-characters))
          (char-names (mapcar #'car chars)))
     (if (null char-names)
-        (message "No characters found. Create characters first or add IDs with org-scribe/add-character-ids.")
-      (let* ((selected (completing-read "Select PoV character: " char-names nil t))
+        (message (org-scribe-msg 'error-no-characters-found))
+      (let* ((selected (completing-read (org-scribe-msg 'prompt-select-pov) char-names nil t))
              (entry (assoc selected chars))
              (id (cadr entry)))
         (if id
             (progn
               (org-set-property "PoV" (format "[[id:%s][%s]]" id selected))
-              (message "Set PoV to %s" selected))
-          (message "No ID found for %s" selected))))))
+              (message (org-scribe-msg 'msg-set-pov selected)))
+          (message (org-scribe-msg 'error-no-id-for-character selected)))))))
 
 ;;;###autoload
 (defun org-scribe/set-scene-characters ()
@@ -224,10 +224,10 @@ Specifically designed for the :Characters: property in scene headings."
          selected-chars
          links)
     (if (null char-names)
-        (message "No characters found. Create characters first or add IDs with org-scribe/add-character-ids.")
+        (message (org-scribe-msg 'error-no-characters-found))
       ;; Multiple selection loop
       (while (let ((choice (completing-read
-                           "Select character (RET to finish): "
+                           (org-scribe-msg 'prompt-select-characters-multi)
                            char-names nil nil)))
                (when (and choice (not (string-empty-p choice)))
                  (push choice selected-chars)
@@ -245,8 +245,8 @@ Specifically designed for the :Characters: property in scene headings."
       (if links
           (progn
             (org-set-property "Characters" (string-join links ", "))
-            (message "Set Characters to: %s" (string-join selected-chars ", ")))
-        (message "No characters selected")))))
+            (message (org-scribe-msg 'msg-set-characters (string-join selected-chars ", "))))
+        (message (org-scribe-msg 'msg-no-characters-selected))))))
 
 ;;;###autoload
 (defun org-scribe/jump-to-pov-character ()
@@ -261,9 +261,9 @@ Follows the ID link in the :PoV: property."
         (if (string-match "\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]" pov)
             (let ((id (match-string 1 pov)))
               (org-id-goto id)
-              (message "Jumped to PoV character"))
-          (message "PoV property is not an ID link. Use org-scribe/set-pov-character to create a link.")))
-    (message "No PoV property found")))
+              (message (org-scribe-msg 'msg-jump-to-pov)))
+          (message (org-scribe-msg 'error-pov-not-link))))
+    (message (org-scribe-msg 'error-no-pov-property))))
 
 ;;; Batch Update Functions
 
@@ -296,13 +296,13 @@ Updates both :PoV: and :Characters: properties."
           (updated-chars (org-scribe--link-characters-in-property "Characters")))
       (cond
        ((and updated-pov updated-chars)
-        (message "Updated PoV and Characters properties"))
+        (message (org-scribe-msg 'msg-updated-pov-and-chars)))
        (updated-pov
-        (message "Updated PoV property"))
+        (message (org-scribe-msg 'msg-updated-pov)))
        (updated-chars
-        (message "Updated Characters property"))
+        (message (org-scribe-msg 'msg-updated-characters)))
        (t
-        (message "No character properties found or already linked"))))))
+        (message (org-scribe-msg 'msg-no-updates-needed)))))))
 
 ;;;###autoload
 (defun org-scribe/link-all-scene-characters ()
@@ -322,8 +322,7 @@ Processes all headings with :PoV: or :Characters: properties."
              (when (or updated-pov updated-chars)
                (setq count (1+ count))))))
        nil 'file)
-      (message "Updated character links in %d scene%s"
-               count (if (= count 1) "" "s")))))
+      (message (org-scribe-msg 'msg-updated-links count (org-scribe-plural count ""))))))
 
 ;;;###autoload
 (defun org-scribe/setup-character-links ()
@@ -336,20 +335,20 @@ This function:
 Run this once when setting up ID-based character linking
 in an existing project."
   (interactive)
-  (message "Setting up character linking system...")
+  (message (org-scribe-msg 'msg-setting-up-links))
 
   ;; Step 1: Add IDs to characters
   (org-scribe/add-character-ids)
 
   ;; Step 2: Ask if user wants to link existing scenes
-  (when (y-or-n-p "Link characters in existing scenes? ")
+  (when (y-or-n-p (org-scribe-msg 'question-link-existing-scenes))
     (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file)))
       (when (and novel-file (file-exists-p novel-file))
         (with-current-buffer (find-file-noselect novel-file)
           (org-scribe/link-all-scene-characters)
           (save-buffer)))))
 
-  (message "Character linking system setup complete!"))
+  (message (org-scribe-msg 'msg-setup-complete)))
 
 ;;; Character Timeline
 
@@ -564,13 +563,13 @@ Returns t if any updates were made, nil otherwise."
            (updated-chars (org-scribe--update-links-in-property "Characters" id-map)))
       (cond
        ((and updated-pov updated-chars)
-        (message "Updated PoV and Characters link names"))
+        (message (org-scribe-msg 'msg-updated-pov-and-chars-link-names)))
        (updated-pov
-        (message "Updated PoV link names"))
+        (message (org-scribe-msg 'msg-updated-pov-link-names)))
        (updated-chars
-        (message "Updated Characters link names"))
+        (message (org-scribe-msg 'msg-updated-characters-link-names)))
        (t
-        (message "No character link names needed updating")))
+        (message (org-scribe-msg 'msg-no-link-updates "character"))))
       (or updated-pov updated-chars))))
 
 ;;;###autoload
@@ -606,8 +605,8 @@ Returns the number of scenes updated."
              (when (or updated-pov updated-chars)
                (setq count (1+ count))))))
        nil 'file)
-      (message "Updated character link names in %d scene%s"
-               count (if (= count 1) "" "s"))
+      (message (org-scribe-msg 'msg-updated-all-link-names "character"
+                              count (org-scribe-plural count "")))
       count)))
 
 (provide 'org-scribe-character-links)
