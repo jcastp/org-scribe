@@ -189,24 +189,7 @@ Returns the maximum number of consecutive scenes where thread is absent."
 (defun org-scribe--get-plot-thread-weight (thread-name)
   "Get the Weight property for THREAD-NAME from plot file.
 Returns the weight as a float, or 999.0 if not found."
-  (let ((plot-file (org-scribe--get-plot-thread-file))
-        (weight 999.0))
-    (when (and plot-file (file-exists-p plot-file))
-      (with-current-buffer (find-file-noselect plot-file)
-        (org-with-wide-buffer
-         (goto-char (point-min))
-         (catch 'found
-           (org-map-entries
-            (lambda ()
-              (let ((name (org-scribe--entity-name-at-point)))
-                (when (and (org-scribe--plot-heading-p)
-                           (org-id-get)
-                           (string= name thread-name))
-                  (when-let ((weight-str (org-entry-get nil "Weight")))
-                    (setq weight (string-to-number weight-str)))
-                  (throw 'found t))))
-            nil 'file)))))
-    weight))
+  (org-scribe--get-entity-weight org-scribe--plot-entity thread-name))
 
 ;;;###autoload
 (defun org-dblock-write:plot-thread-timeline (params)

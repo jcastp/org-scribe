@@ -247,23 +247,7 @@ Each entry is (SCENE-HEADING CHAPTER-HEADING POV-NAME CHARACTERS-LIST)."
 (defun org-scribe--get-character-weight (char-name)
   "Get the Weight property for CHAR-NAME from characters file.
 Returns the weight as a float, or 999.0 if not found."
-  (let ((char-file (org-scribe--get-character-file))
-        (weight 999.0))
-    (when (and char-file (file-exists-p char-file))
-      (with-current-buffer (find-file-noselect char-file)
-        (org-with-wide-buffer
-         (goto-char (point-min))
-         (catch 'found
-           (org-map-entries
-            (lambda ()
-              (let ((name (org-scribe--entity-name-at-point)))
-                (when (and (org-scribe--character-heading-p)
-                           (string= name char-name))
-                  (when-let ((weight-str (org-entry-get nil "Weight")))
-                    (setq weight (string-to-number weight-str)))
-                  (throw 'found t))))
-            nil 'file)))))
-    weight))
+  (org-scribe--get-entity-weight org-scribe--character-entity char-name))
 
 (defun org-scribe--collect-unique-characters (scenes)
   "Extract unique character names from SCENES list.
