@@ -113,10 +113,12 @@ Returns plist with :novel-file :notes-dir :characters-dir etc."
 
 (defun org-scribe-check-feature (feature)
   "Check if FEATURE is available and cache result."
-  (or (alist-get feature org-scribe--available-features)
+  (let ((cached (assq feature org-scribe--available-features)))
+    (if cached
+        (cdr cached)
       (let ((available (featurep feature)))
         (push (cons feature available) org-scribe--available-features)
-        available)))
+        available))))
 
 (defmacro org-scribe-when-feature (feature &rest body)
   "Execute BODY if FEATURE is available, otherwise show message."
