@@ -269,8 +269,8 @@ Processes all headings with :Location: properties."
          ;; Process if has PoV or Locations property
          (when (org-entry-get nil "Location")
            (let ((updated-locs (org-scribe--link-locations-in-property "Location")))
-             (when  updated-locs)
-             (setq count (1+ count)))))
+             (when updated-locs
+               (setq count (1+ count))))))
       nil 'file)
     (message (org-scribe-msg 'msg-updated-location-links count (org-scribe-plural count ""))))))
 
