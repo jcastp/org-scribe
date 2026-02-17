@@ -21,7 +21,7 @@ Add this to your Emacs configuration:
   :hook (org-mode . org-scribe-mode)
   :config
   ;; Optional: customize settings
-  (setq my-org-scribe-env-work-theme 'poet)
+  (setq org-scribe-env-work-theme 'poet)
   (setq writing-stories-directory "~/writing/exercises")
 
   ;; Optional: keybindings

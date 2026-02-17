@@ -121,8 +121,8 @@ Add to your Emacs configuration:
   :hook (org-mode . org-scribe-mode)
   :config
   ;; Customize settings
-  (setq my-org-scribe-env-work-theme 'poet)
-  (setq my-org-scribe-env-normal-theme 'ef-deuteranopia-dark)
+  (setq org-scribe-env-work-theme 'poet)
+  (setq org-scribe-env-normal-theme 'ef-deuteranopia-dark)
   (setq writing-stories-directory "~/writing/exercises")
 
   ;; Keybindings

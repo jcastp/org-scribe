@@ -41,39 +41,39 @@
 
 ;;; Writing Modes Configuration
 
-(defgroup my-org-scribe-env nil
+(defgroup org-scribe-env nil
   "Customization group for writing environment modes."
   :group 'writing)
 
-(defcustom my-org-scribe-env-normal-theme 'ef-deuteranopia-dark
+(defcustom org-scribe-env-normal-theme 'ef-deuteranopia-dark
   "Theme for normal environment."
   :type 'symbol
-  :group 'my-org-scribe-env)
+  :group 'org-scribe-env)
 
-(defcustom my-org-scribe-env-work-theme 'poet
+(defcustom org-scribe-env-work-theme 'poet
   "Theme for writing environment."
   :type 'symbol
-  :group 'my-org-scribe-env)
+  :group 'org-scribe-env)
 
-(defcustom my-org-scribe-env-normal-font 'regular
+(defcustom org-scribe-env-normal-font 'regular
   "Fontaine preset for normal environment."
   :type 'symbol
-  :group 'my-org-scribe-env)
+  :group 'org-scribe-env)
 
-(defcustom my-org-scribe-env-work-font 'org-scribe-big
+(defcustom org-scribe-env-work-font 'org-scribe-big
   "Fontaine preset for writing environment."
   :type 'symbol
-  :group 'my-org-scribe-env)
+  :group 'org-scribe-env)
 
-(defcustom my-org-scribe-env-work-width 80
+(defcustom org-scribe-env-work-width 80
   "Writeroom width for writing mode."
   :type 'integer
-  :group 'my-org-scribe-env)
+  :group 'org-scribe-env)
 
-(defcustom my-org-scribe-env-normal-width 90
+(defcustom org-scribe-env-normal-width 90
   "Writeroom width for normal mode."
   :type 'integer
-  :group 'my-org-scribe-env)
+  :group 'org-scribe-env)
 
 ;;; Dictionary and Language Tools
 

@@ -76,7 +76,7 @@ Automatically initializes a git repository for new projects and creates an initi
 
 ** Distraction-Free Writing Mode (~org-scribe/writing-env-mode~)
 
-Activates a distraction-free writing environment optimized for focused writing sessions. This mode switches to a specialized writing theme (customizable via ~my-org-scribe-env-work-theme~), applies a larger org-scribe-optimized font preset, and enables writeroom-mode with centered text at a comfortable width (default 80 columns). The mode changes visual presentation without affecting file content, and all settings restore automatically when the mode is disabled. Only one writing mode can be active at a time for clean state management.
+Activates a distraction-free writing environment optimized for focused writing sessions. This mode switches to a specialized writing theme (customizable via ~org-scribe-env-work-theme~), applies a larger org-scribe-optimized font preset, and enables writeroom-mode with centered text at a comfortable width (default 80 columns). The mode changes visual presentation without affecting file content, and all settings restore automatically when the mode is disabled. Only one writing mode can be active at a time for clean state management.
 
 *Status*: Fully implemented | *Hydra*: ~m~ (Modes section) | *Module*: ~modes/org-scribe-modes.el~
 
@@ -498,19 +498,19 @@ Specifies where writing exercise files will be created (default: ~/org-scribe/ex
 
 ** Writing Mode Themes
 
-Four theme customization variables control the visual environment of different writing modes: ~my-org-scribe-env-normal-theme~ (default: ef-deuteranopia-dark), ~my-org-scribe-env-work-theme~ (default: poet), and ~org-scribe-editing-theme~ (default: leuven). These determine which theme is loaded when activating distraction-free mode, focus mode, or editing mode. Writers can customize these to their preferred themes for different work contexts.
+Four theme customization variables control the visual environment of different writing modes: ~org-scribe-env-normal-theme~ (default: ef-deuteranopia-dark), ~org-scribe-env-work-theme~ (default: poet), and ~org-scribe-editing-theme~ (default: leuven). These determine which theme is loaded when activating distraction-free mode, focus mode, or editing mode. Writers can customize these to their preferred themes for different work contexts.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
 ** Writing Mode Fonts
 
-Font preset customization via fontaine: ~my-org-scribe-env-normal-font~ (default: regular), ~my-org-scribe-env-work-font~ (default: org-scribe-big), and ~org-scribe-editing-fontaine-preset~ (default: editing). These require the fontaine package for font preset management. Each mode switches to its configured preset, enabling different font sizes and families for drafting vs. editing vs. normal coding work.
+Font preset customization via fontaine: ~org-scribe-env-normal-font~ (default: regular), ~org-scribe-env-work-font~ (default: org-scribe-big), and ~org-scribe-editing-fontaine-preset~ (default: editing). These require the fontaine package for font preset management. Each mode switches to its configured preset, enabling different font sizes and families for drafting vs. editing vs. normal coding work.
 
 *Status*: Fully implemented (requires fontaine) | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
 ** Writeroom Width Settings
 
-Control the centered text width in writeroom-mode: ~my-org-scribe-env-work-width~ (default: 80) for distraction-free mode and ~my-org-scribe-env-normal-width~ (default: 90) for regular mode. Narrower widths (60-80) are often preferred for drafting to reduce eye movement and create a paper-like feel. Wider settings (85-100) suit editing mode where seeing more context helps. Values are in characters.
+Control the centered text width in writeroom-mode: ~org-scribe-env-work-width~ (default: 80) for distraction-free mode and ~org-scribe-env-normal-width~ (default: 90) for regular mode. Narrower widths (60-80) are often preferred for drafting to reduce eye movement and create a paper-like feel. Wider settings (85-100) suit editing mode where seeing more context helps. Values are in characters.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 

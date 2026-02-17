@@ -29,59 +29,59 @@
 
 ;;; Mutual Exclusivity System
 
-(defvar my-org-scribe-exclusive-modes
+(defvar org-scribe-exclusive-modes
   '(org-scribe/writing-env-mode
     org-scribe/writing-env-mode-focus
     org-scribe/project-mode
     org-scribe/editing-mode)
   "List of writing minor modes that should be mutually exclusive.")
 
-(defun my-org-scribe--deactivate-other-modes (current-mode)
+(defun org-scribe--deactivate-other-modes (current-mode)
   "Deactivate all writing modes except CURRENT-MODE.
 This function is called when activating any of the mutually exclusive
 writing modes to ensure only one is active at a time."
-  (dolist (mode my-org-scribe-exclusive-modes)
+  (dolist (mode org-scribe-exclusive-modes)
     (unless (eq mode current-mode)
       (when (and (boundp mode) (symbol-value mode))
         (funcall mode -1)))))
 
 ;;; Writing Environment Mode (Base)
 
-(defvar-local my-org-scribe-env--writeroom-active nil
+(defvar-local org-scribe-env--writeroom-active nil
   "Track if writeroom was activated by org-scribe-env mode.")
 
-(defun my-org-scribe-env--activate ()
+(defun org-scribe-env--activate ()
   "Activate writing environment with theme, font, and writeroom."
   (display-line-numbers-mode 1)
   ;; Check if consult-theme is available
   (if (fboundp 'consult-theme)
-      (consult-theme my-org-scribe-env-work-theme)
-    (load-theme my-org-scribe-env-work-theme t))
+      (consult-theme org-scribe-env-work-theme)
+    (load-theme org-scribe-env-work-theme t))
   ;; Check if fontaine is available
   (when (fboundp 'fontaine-set-preset)
-    (fontaine-set-preset my-org-scribe-env-work-font))
+    (fontaine-set-preset org-scribe-env-work-font))
   ;; Check if writeroom-mode is available
   (if (fboundp 'writeroom-mode)
       (progn
-        (setq writeroom-width my-org-scribe-env-work-width)
+        (setq writeroom-width org-scribe-env-work-width)
         (writeroom-mode 1)
-        (setq my-org-scribe-env--writeroom-active t))
+        (setq org-scribe-env--writeroom-active t))
     (user-error (org-scribe-msg 'error-writeroom-required))))
 
-(defun my-org-scribe-env--deactivate ()
+(defun org-scribe-env--deactivate ()
   "Deactivate writing environment and restore previous settings."
   (display-line-numbers-mode -1)
   ;; Restore theme
   (if (fboundp 'consult-theme)
-      (consult-theme my-org-scribe-env-normal-theme)
-    (load-theme my-org-scribe-env-normal-theme t))
+      (consult-theme org-scribe-env-normal-theme)
+    (load-theme org-scribe-env-normal-theme t))
   ;; Restore font
   (when (fboundp 'fontaine-set-preset)
-    (fontaine-set-preset my-org-scribe-env-normal-font))
+    (fontaine-set-preset org-scribe-env-normal-font))
   ;; Deactivate writeroom if we activated it
-  (when my-org-scribe-env--writeroom-active
+  (when org-scribe-env--writeroom-active
     (writeroom-mode -1)
-    (setq my-org-scribe-env--writeroom-active nil)))
+    (setq org-scribe-env--writeroom-active nil)))
 
 ;;;###autoload
 (define-minor-mode org-scribe/writing-env-mode
@@ -93,32 +93,32 @@ with customized settings optimized for focused writing."
   :global nil
   (if org-scribe/writing-env-mode
       (progn
-        (my-org-scribe--deactivate-other-modes 'org-scribe/writing-env-mode)
-        (my-org-scribe-env--activate))
-    (my-org-scribe-env--deactivate)))
+        (org-scribe--deactivate-other-modes 'org-scribe/writing-env-mode)
+        (org-scribe-env--activate))
+    (org-scribe-env--deactivate)))
 
 ;;; Focus Writing Mode (with narrowing)
 
-(defvar-local my-org-scribe-env--narrowed nil
+(defvar-local org-scribe-env--narrowed nil
   "Track if buffer was narrowed by org-scribe-env-mode-focus.")
 
-(defun my-org-scribe-env-focus--activate ()
+(defun org-scribe-env-focus--activate ()
   "Activate writing environment and narrow to current org section."
   ;; First activate the base writing environment
-  (my-org-scribe-env--activate)
+  (org-scribe-env--activate)
   ;; Then add narrowing if in org-mode
   (when (derived-mode-p 'org-mode)
     (org-narrow-to-subtree)
-    (setq my-org-scribe-env--narrowed t)))
+    (setq org-scribe-env--narrowed t)))
 
-(defun my-org-scribe-env-focus--deactivate ()
+(defun org-scribe-env-focus--deactivate ()
   "Deactivate writing environment and restore buffer view."
   ;; First widen if we narrowed
-  (when my-org-scribe-env--narrowed
+  (when org-scribe-env--narrowed
     (widen)
-    (setq my-org-scribe-env--narrowed nil))
+    (setq org-scribe-env--narrowed nil))
   ;; Then deactivate the base writing environment
-  (my-org-scribe-env--deactivate))
+  (org-scribe-env--deactivate))
 
 ;;;###autoload
 (define-minor-mode org-scribe/writing-env-mode-focus
@@ -131,9 +131,9 @@ it narrows the buffer to the current org section at point."
   :global nil
   (if org-scribe/writing-env-mode-focus
       (progn
-        (my-org-scribe--deactivate-other-modes 'org-scribe/writing-env-mode-focus)
-        (my-org-scribe-env-focus--activate))
-    (my-org-scribe-env-focus--deactivate)))
+        (org-scribe--deactivate-other-modes 'org-scribe/writing-env-mode-focus)
+        (org-scribe-env-focus--activate))
+    (org-scribe-env-focus--deactivate)))
 
 ;;; Project Writing Mode (treemacs + imenu-list)
 
@@ -150,7 +150,7 @@ Focus always returns to the original buffer for seamless transitions."
     (if org-scribe/project-mode
         ;; Enable: Open both windows, then return focus
         (progn
-          (my-org-scribe--deactivate-other-modes 'org-scribe/project-mode)
+          (org-scribe--deactivate-other-modes 'org-scribe/project-mode)
           ;; Check for treemacs
           (if (fboundp 'treemacs-add-and-display-current-project-exclusively)
               (treemacs-add-and-display-current-project-exclusively)
@@ -309,20 +309,20 @@ visual settings (theme, column width, font preset)."
   :global nil
   (if org-scribe/editing-mode
       (progn
-        (my-org-scribe--deactivate-other-modes 'org-scribe/editing-mode)
+        (org-scribe--deactivate-other-modes 'org-scribe/editing-mode)
         (org-scribe-editing--setup))
     (org-scribe-editing--teardown)))
 
 ;;; Cleanup on kill buffer
 
-(defun my-org-scribe-env--cleanup ()
+(defun org-scribe-env--cleanup ()
   "Emergency cleanup of writing environment state.
 This is called on kill-buffer-hook to ensure state is cleaned up."
-  (setq my-org-scribe-env--writeroom-active nil
-        my-org-scribe-env--narrowed nil
+  (setq org-scribe-env--writeroom-active nil
+        org-scribe-env--narrowed nil
         org-scribe-editing--saved-config nil))
 
-(add-hook 'kill-buffer-hook #'my-org-scribe-env--cleanup)
+(add-hook 'kill-buffer-hook #'org-scribe-env--cleanup)
 
 (provide 'org-scribe-modes)
 
