@@ -3,8 +3,8 @@
 ;; Copyright (C) 2025 Javier Castilla
 
 ;; Author: Javier Castilla <jcastp@pm.me>
-;; Version: 0.2.0
-;; Package-Requires: ((emacs "29.1") (org "9.6") (org-ql "0.8") (writeroom-mode "3.7"))
+;; Version: 0.4.0
+;; Package-Requires: ((emacs "29.1") (org "9.6") (org-ql "0.8") (writeroom-mode "3.7") (hydra "0.15.0"))
 ;; Keywords: writing, org-mode, novel, fiction, project
 ;; URL: https://codeberg.org/jcastp/org-scribe
 
