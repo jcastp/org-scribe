@@ -25,11 +25,11 @@
 - [[file:novel.org][novel.org]] - Main manuscript file with progress tracking
 - [[file:revision.org][revision.org]] - Editing notes and feedback
 - [[file:writing-journal.org][writing-journal.org]] - Reflective writing journal
-- [[file:plan/characters.org][plan/characters.org]] - Character profiles
-- [[file:plan/locations.org][plan/locations.org]] - Location descriptions
-- [[file:plan/objects.org][plan/objects.org]] - Important objects
-- [[file:plan/plot.org][plan/plot.org]] - Plot structure
-- [[file:plan/timeline.org][plan/timeline.org]] - Timeline of events
+- [[file:objects/characters.org][objects/characters.org]] - Character profiles
+- [[file:objects/locations.org][objects/locations.org]] - Location descriptions
+- [[file:objects/objects.org][objects/objects.org]] - Important objects
+- [[file:objects/plot.org][objects/plot.org]] - Plot structure
+- [[file:objects/timeline.org][objects/timeline.org]] - Timeline of events
 - [[file:notes/research.org][notes/research.org]] - Research notes
 - [[file:notes/notes.org][notes/notes.org]] - General notes
 

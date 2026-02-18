@@ -96,11 +96,11 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 
 * Quick Navigation :ignore:noexport:
 - [[file:README.org][README - Project Overview]]
-- [[file:plan/personajes.org][Personajes]]
-- [[file:plan/localizaciones.org][Localizaciones]]
-- [[file:plan/objetos.org][Objetos]]
-- [[file:plan/trama.org][Trama]]
-- [[file:plan/cronologia.org][Cronología]]
+- [[file:objects/personajes.org][Personajes]]
+- [[file:objects/localizaciones.org][Localizaciones]]
+- [[file:objects/objetos.org][Objetos]]
+- [[file:objects/trama.org][Trama]]
+- [[file:objects/cronologia.org][Cronología]]
 - [[file:notas/notas.org][Notas Generales]]
 - [[file:notas/investigacion.org][Investigación]]
 - [[file:revision.org][Revisión y Feedback]]
