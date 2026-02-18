@@ -152,7 +152,7 @@ Includes improved error handling for network issues."
                    (goto-char (point-min)))
                  (display-buffer output-buffer))
                (json-error
-                (message (org-scribe-msg 'error-word-parse err)))))))
+                (message (org-scribe-msg 'error-word-parse err))))))))
      (list palabra buffer-name)
      nil   ; no SILENT
      t)))  ; INHIBIT-COOKIES
