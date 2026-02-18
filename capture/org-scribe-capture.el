@@ -491,18 +491,24 @@ file that doesn't exist."
 
 ;;; Capture Function
 
+(defun org-scribe--run-capture (file-fn templates &optional key)
+  "Ensure the capture target file exists, then run org-capture.
+FILE-FN is called with t to create the target file if missing.
+TEMPLATES is bound to `org-capture-templates' for the capture session.
+KEY is the template key to select directly; if nil, present the full menu."
+  (funcall file-fn t)
+  (let ((org-capture-templates templates))
+    (if key
+        (org-capture nil key)
+      (org-capture))))
+
 ;;;###autoload
 (defun org-scribe/capture-to-file ()
   "Capture notes to writing project or file.
 Automatically determines the appropriate notes file based on project structure."
   (interactive)
-  ;; Choose the destination that actually exists
-  (let ((target (org-scribe/capture-target-file t)))  ; Create if missing
-    ;; Build a temporary capture template that points at TARGET
-    (let ((org-capture-templates
-           org-scribe/capture-templates))
-      ;; Run the capture UI
-      (org-capture))))
+  (org-scribe--run-capture #'org-scribe/capture-target-file
+                           org-scribe/capture-templates))
 
 ;;;###autoload
 (defun org-scribe/capture-character ()
@@ -516,13 +522,8 @@ Creates a comprehensive character template with prompts for:
 - Motivation and character arc
 - Relationships with other characters"
   (interactive)
-  ;; Find or create the characters file
-  (let ((target (org-scribe/capture-character-file t)))  ; Create if missing
-    ;; Use the character capture template
-    (let ((org-capture-templates
-           org-scribe/character-capture-templates))
-      ;; Run the capture UI
-      (org-capture nil "c"))))
+  (org-scribe--run-capture #'org-scribe/capture-character-file
+                           org-scribe/character-capture-templates "c"))
 
 ;;;###autoload
 (defun org-scribe/capture-location ()
@@ -536,13 +537,8 @@ Creates a comprehensive location template with prompts for:
 - History and plot significance
 - Atmosphere and mood"
   (interactive)
-  ;; Find or create the locations file
-  (let ((target (org-scribe/capture-location-file t)))  ; Create if missing
-    ;; Use the location capture template
-    (let ((org-capture-templates
-           org-scribe/location-capture-templates))
-      ;; Run the capture UI
-      (org-capture nil "l"))))
+  (org-scribe--run-capture #'org-scribe/capture-location-file
+                           org-scribe/location-capture-templates "l"))
 
 ;;;###autoload
 (defun org-scribe/capture-object ()
@@ -556,13 +552,8 @@ Creates a comprehensive object template with prompts for:
 - Plot significance
 - Current location and limitations"
   (interactive)
-  ;; Find or create the objects file
-  (let ((target (org-scribe/capture-object-file t)))  ; Create if missing
-    ;; Use the object capture template
-    (let ((org-capture-templates
-           org-scribe/object-capture-templates))
-      ;; Run the capture UI
-      (org-capture nil "o"))))
+  (org-scribe--run-capture #'org-scribe/capture-object-file
+                           org-scribe/object-capture-templates "o"))
 
 ;;;###autoload
 (defun org-scribe/capture-timeline ()
@@ -575,18 +566,12 @@ Creates a comprehensive timeline event template with prompts for:
 - Consequences and connections
 - Type of event (action, revelation, etc.)"
   (interactive)
-  ;; Find or create the timeline file
-  (let ((target (org-scribe/capture-timeline-file t)))  ; Create if missing
-    ;; Use the timeline capture template
-    (let ((org-capture-templates
-           org-scribe/timeline-capture-templates))
-      ;; Run the capture UI
-      (org-capture nil "t"))))
+  (org-scribe--run-capture #'org-scribe/capture-timeline-file
+                           org-scribe/timeline-capture-templates "t"))
 
 ;;;###autoload
 (defun org-scribe/capture-plot-thread ()
   "Capture a plot thread to the plot file.
-
 Automatically determines the appropriate plot file based on project structure.
 Creates a plot thread entry with:
 - Name and Type (Main Plot, Subplot, etc.)
@@ -604,13 +589,8 @@ This is useful when:
 The template is intentionally minimal - capture the essence quickly,
 then elaborate later during planning or revision."
   (interactive)
-  ;; Find or create the plot file
-  (let ((target (org-scribe/capture-plot-thread-file t)))  ; Create if missing
-    ;; Use the plot thread capture template
-    (let ((org-capture-templates
-           org-scribe/plot-thread-capture-templates))
-      ;; Run the capture UI
-      (org-capture nil "p"))))
+  (org-scribe--run-capture #'org-scribe/capture-plot-thread-file
+                           org-scribe/plot-thread-capture-templates "p"))
 
 ;;; Unified Capture Hook
 
