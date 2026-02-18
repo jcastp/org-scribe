@@ -116,29 +116,39 @@ CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes."
   "Create a capture target file based on project type.
 FILEPATH is the path to create.
 PROJECT-TYPE is 'novel, 'short-story, or 'unknown.
-CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes.
+CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, 'plot, or 'notes.
 
+For plot threads, creates a plot-structured file regardless of project type.
 For short stories, creates notes.org with all standard headings.
 For novels, creates individual files."
   (let ((target-dir (file-name-directory filepath)))
     (unless (file-directory-p target-dir)
       (make-directory target-dir t)))
 
-  (if (eq project-type 'short-story)
-      ;; Short story: create comprehensive notes.org
-      (org-scribe--create-short-story-notes-file filepath)
-    ;; Novel or unknown: create individual file
-    (org-scribe--create-novel-capture-file filepath content-type)))
+  (cond
+   ;; Plot threads get their own structure regardless of project type
+   ((eq content-type 'plot)
+    (org-scribe--create-plot-file filepath (eq project-type 'short-story)))
+   ;; Short story: create comprehensive notes.org
+   ((eq project-type 'short-story)
+    (org-scribe--create-short-story-notes-file filepath))
+   ;; Novel or unknown: create individual file
+   (t
+    (org-scribe--create-novel-capture-file filepath content-type))))
 
 ;;; Capture Target File Detection
 
-(defun org-scribe/capture-location-file (&optional create-if-missing)
-  "Determine the appropriate file for location captures.
-For novels: Uses objects/locations.org (or localizaciones.org)
-For short stories: Uses notes.org (or notas.org)
-For unknown projects: Falls back to objects/locations.org
+(defun org-scribe--capture-entity-file (en-name es-name content-type &optional create-if-missing)
+  "Find the appropriate capture file for an entity type.
+EN-NAME is the English filename stem (without directory or extension).
+ES-NAME is the Spanish filename stem (without directory or extension).
+CONTENT-TYPE is used for file creation (passed to `org-scribe--create-capture-file').
+If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist.
 
-If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
+For short stories, returns notes.org (or notas.org) in the project root.
+For novels, searches objects/{en-name}.org, objects/{es-name}.org,
+{en-name}.org, and {es-name}.org in that order, defaulting to
+objects/{en-name}.org if none exist."
   (let* ((project-dir (if-let ((project (project-current)))
                           (project-root project)
                         (file-name-directory (or (buffer-file-name) default-directory))))
@@ -147,196 +157,59 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
           (cond
            ;; Short story: use notes.org
            ((eq project-type 'short-story)
-            (cond
-             ((file-exists-p (expand-file-name "notes.org" project-dir))
-              (expand-file-name "notes.org" project-dir))
-             ((file-exists-p (expand-file-name "notas.org" project-dir))
-              (expand-file-name "notas.org" project-dir))
-             (t (expand-file-name "notes.org" project-dir))))
-
-           ;; Novel or unknown: use objects/locations.org
+            (or (cl-find-if #'file-exists-p
+                            (mapcar (lambda (f) (expand-file-name f project-dir))
+                                    '("notes.org" "notas.org")))
+                (expand-file-name "notes.org" project-dir)))
+           ;; Novel or unknown: search objects/ first, then project root
            (t
-            (cond
-             ((file-exists-p (expand-file-name "objects/locations.org" project-dir))
-              (expand-file-name "objects/locations.org" project-dir))
-             ((file-exists-p (expand-file-name "objects/localizaciones.org" project-dir))
-              (expand-file-name "objects/localizaciones.org" project-dir))
-             ((file-exists-p (expand-file-name "locations.org" project-dir))
-              (expand-file-name "locations.org" project-dir))
-             ((file-exists-p (expand-file-name "localizaciones.org" project-dir))
-              (expand-file-name "localizaciones.org" project-dir))
-             (t (expand-file-name "objects/locations.org" project-dir)))))))
+            (or (cl-find-if #'file-exists-p
+                            (mapcar (lambda (f) (expand-file-name f project-dir))
+                                    (list (concat "objects/" en-name ".org")
+                                          (concat "objects/" es-name ".org")
+                                          (concat en-name ".org")
+                                          (concat es-name ".org"))))
+                (expand-file-name (concat "objects/" en-name ".org") project-dir))))))
 
-    ;; Create file if needed
     (when (and create-if-missing (not (file-exists-p target)))
-      (org-scribe--create-capture-file target project-type 'locations))
-
-    target))
-
-(defun org-scribe/capture-object-file (&optional create-if-missing)
-  "Determine the appropriate file for object captures.
-For novels: Uses objects/objects.org (or objetos.org)
-For short stories: Uses notes.org (or notas.org)
-For unknown projects: Falls back to objects/objects.org
-
-If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
-  (let* ((project-dir (if-let ((project (project-current)))
-                          (project-root project)
-                        (file-name-directory (or (buffer-file-name) default-directory))))
-         (project-type (org-scribe-project-type))
-         (target
-          (cond
-           ;; Short story: use notes.org
-           ((eq project-type 'short-story)
-            (cond
-             ((file-exists-p (expand-file-name "notes.org" project-dir))
-              (expand-file-name "notes.org" project-dir))
-             ((file-exists-p (expand-file-name "notas.org" project-dir))
-              (expand-file-name "notas.org" project-dir))
-             (t (expand-file-name "notes.org" project-dir))))
-
-           ;; Novel or unknown: use objects/objects.org
-           (t
-            (cond
-             ((file-exists-p (expand-file-name "objects/objects.org" project-dir))
-              (expand-file-name "objects/objects.org" project-dir))
-             ((file-exists-p (expand-file-name "objects/objetos.org" project-dir))
-              (expand-file-name "objects/objetos.org" project-dir))
-             ((file-exists-p (expand-file-name "objects.org" project-dir))
-              (expand-file-name "objects.org" project-dir))
-             ((file-exists-p (expand-file-name "objetos.org" project-dir))
-              (expand-file-name "objetos.org" project-dir))
-             (t (expand-file-name "objects/objects.org" project-dir)))))))
-
-    ;; Create file if needed
-    (when (and create-if-missing (not (file-exists-p target)))
-      (org-scribe--create-capture-file target project-type 'objects))
-
-    target))
-
-(defun org-scribe/capture-timeline-file (&optional create-if-missing)
-  "Determine the appropriate file for timeline captures.
-For novels: Uses objects/timeline.org (or cronologia.org)
-For short stories: Uses notes.org (or notas.org)
-For unknown projects: Falls back to objects/timeline.org
-
-If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
-  (let* ((project-dir (if-let ((project (project-current)))
-                          (project-root project)
-                        (file-name-directory (or (buffer-file-name) default-directory))))
-         (project-type (org-scribe-project-type))
-         (target
-          (cond
-           ;; Short story: use notes.org
-           ((eq project-type 'short-story)
-            (cond
-             ((file-exists-p (expand-file-name "notes.org" project-dir))
-              (expand-file-name "notes.org" project-dir))
-             ((file-exists-p (expand-file-name "notas.org" project-dir))
-              (expand-file-name "notas.org" project-dir))
-             (t (expand-file-name "notes.org" project-dir))))
-
-           ;; Novel or unknown: use objects/timeline.org
-           (t
-            (cond
-             ((file-exists-p (expand-file-name "objects/timeline.org" project-dir))
-              (expand-file-name "objects/timeline.org" project-dir))
-             ((file-exists-p (expand-file-name "objects/cronologia.org" project-dir))
-              (expand-file-name "objects/cronologia.org" project-dir))
-             ((file-exists-p (expand-file-name "timeline.org" project-dir))
-              (expand-file-name "timeline.org" project-dir))
-             ((file-exists-p (expand-file-name "cronologia.org" project-dir))
-              (expand-file-name "cronologia.org" project-dir))
-             (t (expand-file-name "objects/timeline.org" project-dir)))))))
-
-    ;; Create file if needed
-    (when (and create-if-missing (not (file-exists-p target)))
-      (org-scribe--create-capture-file target project-type 'timeline))
+      (org-scribe--create-capture-file target project-type content-type))
 
     target))
 
 (defun org-scribe/capture-character-file (&optional create-if-missing)
   "Determine the appropriate file for character captures.
-For novels: Uses objects/characters.org (or personajes.org)
-For short stories: Uses notes.org (or notas.org)
-For unknown projects: Falls back to objects/characters.org
-
+For novels: Uses objects/characters.org (or personajes.org).
+For short stories: Uses notes.org (or notas.org).
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
-  (let* ((project-dir (if-let ((project (project-current)))
-                          (project-root project)
-                        (file-name-directory (or (buffer-file-name) default-directory))))
-         (project-type (org-scribe-project-type))
-         (target
-          (cond
-           ;; Short story: use notes.org
-           ((eq project-type 'short-story)
-            (cond
-             ((file-exists-p (expand-file-name "notes.org" project-dir))
-              (expand-file-name "notes.org" project-dir))
-             ((file-exists-p (expand-file-name "notas.org" project-dir))
-              (expand-file-name "notas.org" project-dir))
-             (t (expand-file-name "notes.org" project-dir))))
+  (org-scribe--capture-entity-file "characters" "personajes" 'characters create-if-missing))
 
-           ;; Novel or unknown: use objects/characters.org
-           (t
-            (cond
-             ((file-exists-p (expand-file-name "objects/characters.org" project-dir))
-              (expand-file-name "objects/characters.org" project-dir))
-             ((file-exists-p (expand-file-name "objects/personajes.org" project-dir))
-              (expand-file-name "objects/personajes.org" project-dir))
-             ((file-exists-p (expand-file-name "characters.org" project-dir))
-              (expand-file-name "characters.org" project-dir))
-             ((file-exists-p (expand-file-name "personajes.org" project-dir))
-              (expand-file-name "personajes.org" project-dir))
-             (t (expand-file-name "objects/characters.org" project-dir)))))))
+(defun org-scribe/capture-location-file (&optional create-if-missing)
+  "Determine the appropriate file for location captures.
+For novels: Uses objects/locations.org (or localizaciones.org).
+For short stories: Uses notes.org (or notas.org).
+If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
+  (org-scribe--capture-entity-file "locations" "localizaciones" 'locations create-if-missing))
 
-    ;; Create file if needed
-    (when (and create-if-missing (not (file-exists-p target)))
-      (org-scribe--create-capture-file target project-type 'characters))
+(defun org-scribe/capture-object-file (&optional create-if-missing)
+  "Determine the appropriate file for object captures.
+For novels: Uses objects/objects.org (or objetos.org).
+For short stories: Uses notes.org (or notas.org).
+If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
+  (org-scribe--capture-entity-file "objects" "objetos" 'objects create-if-missing))
 
-    target))
+(defun org-scribe/capture-timeline-file (&optional create-if-missing)
+  "Determine the appropriate file for timeline captures.
+For novels: Uses objects/timeline.org (or cronologia.org).
+For short stories: Uses notes.org (or notas.org).
+If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
+  (org-scribe--capture-entity-file "timeline" "cronologia" 'timeline create-if-missing))
 
 (defun org-scribe/capture-plot-thread-file (&optional create-if-missing)
   "Determine the appropriate file for plot thread captures.
-For novels: Uses objects/plot.org (or objects/trama.org)
-For short stories: Uses notes.org (or notas.org)
-For unknown projects: Falls back to objects/plot.org
-
+For novels: Uses objects/plot.org (or trama.org).
+For short stories: Uses notes.org (or notas.org).
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
-  (let* ((project-dir (if-let ((project (project-current)))
-                          (project-root project)
-                        (file-name-directory (or (buffer-file-name) default-directory))))
-         (project-type (org-scribe-project-type))
-         (target
-          (cond
-           ;; Short story: use notes.org
-           ((eq project-type 'short-story)
-            (cond
-             ((file-exists-p (expand-file-name "notes.org" project-dir))
-              (expand-file-name "notes.org" project-dir))
-             ((file-exists-p (expand-file-name "notas.org" project-dir))
-              (expand-file-name "notas.org" project-dir))
-             (t (expand-file-name "notes.org" project-dir))))
-
-           ;; Novel or unknown: use objects/plot.org
-           (t
-            (cond
-             ((file-exists-p (expand-file-name "objects/plot.org" project-dir))
-              (expand-file-name "objects/plot.org" project-dir))
-             ((file-exists-p (expand-file-name "objects/trama.org" project-dir))
-              (expand-file-name "objects/trama.org" project-dir))
-             ((file-exists-p (expand-file-name "plot.org" project-dir))
-              (expand-file-name "plot.org" project-dir))
-             (t (expand-file-name "objects/plot.org" project-dir)))))))
-
-    ;; Create file if needed
-    (when (and create-if-missing (not (file-exists-p target)))
-      (let ((dir (file-name-directory target)))
-        (unless (file-directory-p dir)
-          (make-directory dir t))
-        (org-scribe--create-plot-file target (eq project-type 'short-story))))
-
-    target))
+  (org-scribe--capture-entity-file "plot" "trama" 'plot create-if-missing))
 
 (defun org-scribe/capture-target-file (&optional create-if-missing)
   "Determine the appropriate notes file for org-capture in writing environment.
