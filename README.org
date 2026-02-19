@@ -104,7 +104,7 @@ Add to your Emacs configuration:
 (require 'org-scribe)
 
 ;; Optional: Enable automatically in org-mode
-(add-hook 'org-mode-hook #org-scribe-mode)
+(add-hook 'org-mode-hook #'org-scribe-mode)
 
 ;; Optional: Set up recommended keybindings
 (org-scribe-setup)
@@ -123,7 +123,7 @@ Add to your Emacs configuration:
   ;; Customize settings
   (setq org-scribe-env-work-theme 'poet)
   (setq org-scribe-env-normal-theme 'ef-deuteranopia-dark)
-  (setq writing-stories-directory "~/writing/exercises")
+  (setq org-scribe-stories-directory "~/writing/exercises")
 
   ;; Keybindings
   (global-set-key (kbd "<f8> <f8>") 'hydra-org-scribe/body))
@@ -933,7 +933,7 @@ When exporting, scene breaks will be replaced with appropriate separators for ea
 
 #+begin_example
 project-root/
-├── .writing-project       # Project marker file
+├── .org-scribe-project    # Project marker file
 ├── README.org            # Project overview
 ├── novel.org             # Main manuscript with progress tracking (or novela.org for Spanish)
 ├── revision.org          # Revision tracking
@@ -949,24 +949,24 @@ project-root/
     └── research.org     # Research tracking
 #+end_example
 
-Projects can be created with =M-x writing-create-novel-project= or the package works with any org-mode file structure.
+Projects can be created with =M-x org-scribe-create-novel-project= or the package works with any org-mode file structure.
 
 * Configuration
 
-See =M-x customize-group RET writing RET= for all customization options.
+See =M-x customize-group RET org-scribe RET= for all customization options.
 
 Key variables:
 
 ** Project & Templates
 - =org-scribe-template-directory= - Location of project templates (default: novel-en)
 - =org-scribe-template-language= - Default language for templates ('en or 'es)
-- =writing-stories-directory= - Where writing exercise files are created
+- =org-scribe-stories-directory= - Where writing exercise files are created
 
 ** Writing Modes
-- =my-writing-env-work-theme= - Theme for writing modes
-- =my-writing-env-normal-theme= - Normal theme
-- =my-writing-env-work-font= - Font preset for writing
-- =my-writing-env-work-width= - Writeroom width
+- =org-scribe-env-work-theme= - Theme for writing modes
+- =org-scribe-env-normal-theme= - Normal theme
+- =org-scribe-env-work-font= - Font preset for writing
+- =org-scribe-env-work-width= - Writeroom width
 
 ** Export
 - =org-scribe/scene-break-replacements= - Scene break strings for export backends

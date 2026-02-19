@@ -65,9 +65,6 @@ These must be installed for org-scribe to work:
 (use-package writeroom-mode
   :ensure t)
 
-(use-package wc-mode
-  :ensure t)
-
 (use-package org-context-extended
   :vc (:url "https://codeberg.org/jcastp/org-context-extended"
        :branch "main"
@@ -77,6 +74,9 @@ These must be installed for org-scribe to work:
   :vc (:url "https://codeberg.org/jcastp/org-tracktable"
        :branch "main"
        :rev :newest))
+
+(use-package hydra
+  :ensure t)
 #+end_src
 
 ** Optional Packages
@@ -115,9 +115,6 @@ These enhance functionality but are not required:
 (use-package org-remark
   :ensure t)
 
-;; For hydra menu (required for hydra-org-scribe)
-(use-package hydra
-  :ensure t)
 #+end_src
 
 * Verification
