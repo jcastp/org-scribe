@@ -269,7 +269,7 @@ If you get stuck or have questions:
 1. Check the [[file:00-feature-index.org][Feature Index]] for detailed feature descriptions
 2. Visit the specific lesson that covers your topic
 3. Use Emacs built-in help: ~C-h f~ (describe function) or ~C-h k~ (describe key)
-4. Report issues at: https://github.com/anthropics/claude-code/issues
+4. Report issues at: https://codeberg.org/jcastp/org-scribe/issues
 
 * Next Steps
 
@@ -281,7 +281,7 @@ Don't feel pressured to complete all lessons at once. Take your time, experiment
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
-- *Package Version*: 0.2.0
+- *Package Version*: 0.4.0
 - *Estimated Total Time*: ~4 hours (at your own pace)
 - *Difficulty*: Beginner to Intermediate
 

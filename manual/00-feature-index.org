@@ -7,7 +7,7 @@
 
 This document provides a comprehensive index of all features in the ~org-scribe~ package. Each feature is briefly described in a paragraph. Detailed documentation for each feature will be available in separate files linked from this index.
 
-*Version*: 0.2.0 (includes merged emacs-org-scribe-template functionality)
+*Version*: 0.4.0 (includes merged emacs-org-scribe-template functionality)
 
 *Package Overview*: ~org-scribe~ is a comprehensive toolkit for creative writers working in Org-mode, providing everything from project templates to export filters for novelists and short story writers.
 
@@ -174,6 +174,12 @@ Captures story timeline events with prompts for event name, type (action/revelat
 
 *Status*: Fully implemented | *Hydra*: ~t~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
 
+** Plot Thread Profile Capture (~org-scribe/capture-plot-thread~)
+
+Captures plot thread profiles with prompts for name and type (Main Plot, Subplot, Arc, Theme, or Motif). The template includes sections for description, connection to the main plot, key scenes where the thread appears, and resolution notes. Plot threads receive automatic unique IDs for the linking system. This capture is intentionally minimal - designed to quickly record a new thread when you notice it emerging during writing, with the intention to elaborate during planning sessions. Captures go to objects/plot.org (novels) or notes.org under "Plot Outline" (short stories).
+
+*Status*: Fully implemented | *Hydra*: ~g~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
+
 ** Auto-Creation of Target Files
 
 All capture functions automatically create their target files if they don't exist. For novel projects, separate objects/ files are created with appropriate structure. For short story projects, a comprehensive notes.org file is created with all necessary headings (Characters, Plot Outline, Setting → Locations, Objects, Timeline, Research, Revision Notes, Random Ideas). This ensures capture works even in brand new or minimal projects, reducing friction for writers who prefer to build structure as they write.
@@ -287,6 +293,24 @@ Each linking module provides a function to add unique IDs to profiles that don't
 
 *Status*: Fully implemented | *Hydra*: ~C i~, ~L i~, ~P i~ (various submenus) | *Module*: All three linking modules
 
+** Link Display Name Updating (~org-scribe/update-all-link-names~)
+
+Refreshes the display text of all ID links in scene properties to match current entity names in the database files. When you rename a character, location, or plot thread in the planning files, the ID links still work (they're ID-based), but the visible display text shows the old name. This function scans characters.org, locations.org, and plot.org to get current names, then updates ~:PoV:~, ~:Characters:~, ~:Location:~, and ~:Plot:~ properties in all scenes throughout the manuscript in a single pass. Reports the number of scenes updated.
+
+*Status*: Fully implemented | *Hydra*: ~U~ (Manage section) | *Module*: ~linking/org-scribe-link-update.el~
+
+** Character Relationship Tracking (~org-scribe/add-relationship~)
+
+Provides structured tracking of relationships between characters, stored as structured data in the ~:RelationshipsData:~ property (or ~:DatosRelaciones:~ for Spanish projects). Each relationship records: target character (by ID link for stability across renaming), relationship type (mentor, rival, friend, family, lover, enemy, ally, colleague, etc.), strength (1-5 scale where 1=acquaintance, 5=central to their life), and sentiment (positive, negative, neutral, complex). The ~org-scribe/add-relationship~ function prompts for source character, target character, type, strength, and sentiment using completion menus. ~org-scribe/remove-relationship~ presents the character's existing relationships for selection and deletion.
+
+*Status*: Fully implemented | *Hydra*: ~C a~, ~C d~ (Character submenu) | *Module*: ~linking/org-scribe-character-relationships.el~
+
+** Character Relationship Visualization
+
+Displays character relationships in multiple formats for analysis and planning. ~org-scribe/show-character-relationships~ generates an ASCII relationship tree for a selected character, showing each connection with relationship type, sentiment symbol (+/-/~/·), and target character name. ~org-scribe/show-all-relationships~ presents all project relationships as a formatted org-mode table with columns for character, related-to, type, strength, and sentiment. ~org-scribe/insert-relationship-block~ inserts a ~#+BEGIN: character-relationships~ dynamic block at point, supporting three output formats: ~dot~ (GraphViz DOT language for graph rendering), ~ascii~ (tree display), or ~table~. Optional block parameters ~:character~ and ~:filter-strength~ focus on one character or filter by minimum relationship strength.
+
+*Status*: Fully implemented | *Hydra*: ~C v~, ~C V~, ~C g~ (Character submenu) | *Module*: ~linking/org-scribe-character-relationships.el~
+
 * Search Tools
 :PROPERTIES:
 :CUSTOM_ID: search-tools
@@ -321,6 +345,12 @@ Searches for all scenes set in a specific location using the ~:Location:~ proper
 Searches the entire project recursively for all TODO items, collecting them from the manuscript, planning files, notes, and any other org files in the project. Uses org-ql to find headings with TODO states and displays them in a consolidated searchable buffer. This provides project-wide TODO tracking without maintaining a separate task file. Useful for finding revision notes, plot holes to fix, research needed, or any other tagged tasks scattered across project files.
 
 *Status*: Fully implemented | *Hydra*: ~5~ (Search section) | *Module*: ~search/org-scribe-search.el~
+
+** Find Edit Notes (~org-scribe/search-edits-recursive~)
+
+Searches the entire project recursively for inline edit markers and revision notes using ~rgrep~. The search pattern is configured via ~org-scribe-edit-string~ (default regexp matches ~*EDIT*~ or ~*NOTE*~ strings anywhere in .org files). Results appear in a grep buffer with clickable file:line references. Writers use ~*EDIT*~ or ~*NOTE*~ inline while drafting to mark passages needing revision without interrupting flow; this function then collects all such markers across the entire project for a focused revision session.
+
+*Status*: Fully implemented | *Hydra*: ~6~ (Search section) | *Module*: ~search/org-scribe-search.el~
 
 ** ID Link Text Extraction (~org-scribe--extract-link-text~)
 
@@ -445,13 +475,13 @@ To use column view with writing projects, add a ~#+COLUMNS~ line to your manuscr
 
 ** Unified Hydra Menu (~hydra-org-scribe/body~)
 
-Provides a single-keystroke menu for accessing all org-scribe features. Activated via ~F8 F8~ (default keybinding), the hydra displays a formatted menu organized into sections: Insert (scene/chapter), Modes (org-scribe/focus/project/editing), Capture (notes/character/location/object/timeline), Tools (word count/tracking/dictionary), Search (by PoV/character/plot/location/TODOs), and Manage (character/location/plot linking submenus). Each function is accessible via a single key. The hydra uses color-coded hints and grouped layout for quick visual scanning.
+Provides a single-keystroke menu for accessing all org-scribe features. Activated via ~F8 F8~ (default keybinding), the hydra displays a formatted menu organized into sections: Insert (scene/chapter), Modes (distraction-free/focus/project/editing), Capture (notes/character/location/object/timeline/plot thread), Tools (word count/tracking/dictionary/powerthesaurus), Search (by PoV/character/plot/location/TODOs/edit notes), and Manage (character/location/plot linking submenus, update all link names). Each function is accessible via a single key. The hydra uses color-coded hints and grouped layout for quick visual scanning.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8~ (global keybinding) | *Module*: ~ui/org-scribe-hydra.el~
 
 ** Character Linking Submenu (~hydra-org-scribe-characters/body~)
 
-A specialized hydra submenu accessed via ~F8 F8 C~ providing access to all character linking functions: set PoV character (p), set scene characters (c), jump to PoV character (j), link scene characters (l), link all scene characters (L), add IDs to characters (i), and setup linking system (s). The submenu includes a back key (q) to return to the main hydra. This organization keeps the main hydra clean while providing deep access to specialized features.
+A specialized hydra submenu accessed via ~F8 F8 C~ providing access to all character linking and relationship functions: set PoV character (p), set scene characters (c), jump to PoV character (j), link scene characters (l), link all scene characters (L), add IDs to characters (i), setup linking system (s), update link names for current scene (u), update all link names in file (U), add relationship (a), remove relationship (d), view character relationships (v), view all relationships (V), insert relationship graph block (g), and setup relationship system (R). The submenu includes a back key (q) to return to the main hydra.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8 C~ | *Module*: ~ui/org-scribe-hydra.el~
 
@@ -562,6 +592,12 @@ The ~org-scribe/scene-break-replacements~ alist maps export backends to scene se
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~linking/org-scribe-column-view.el~
 
+** Edit Note Marker (~org-scribe-edit-string~)
+
+Defines the regexp pattern used by ~org-scribe/search-edits-recursive~ to find inline edit notes and revision markers throughout the manuscript. Default value is ~"\*EDIT\*\\|\*NOTE\*"~, matching ~*EDIT*~ or ~*NOTE*~ anywhere in .org files. Writers can customize this to match their personal convention: for example ~"FIXME\\|REVISION\\|TOFIX"~ or any other marker they use to flag places needing attention. The pattern is passed to ~rgrep~, so full regexp syntax is supported.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~search/org-scribe-search.el~
+
 * Feature Statistics
 
 ** Summary by Category
@@ -571,21 +607,21 @@ The ~org-scribe/scene-break-replacements~ alist maps export backends to scene se
 | Project Management        |             6 |
 | Writing Modes             |             5 |
 | Word Counting & Tracking  |             5 |
-| Capture System            |             7 |
-| Linking System            |            16 |
-| Search Tools              |             6 |
+| Capture System            |             8 |
+| Linking System            |            19 |
+| Search Tools              |             7 |
 | Templates                 |             4 |
 | Dictionary & Language     |             5 |
 | Export Tools              |             3 |
 | Column View               |             3 |
 | UI & Navigation           |             6 |
-| Configuration             |            14 |
+| Configuration             |            15 |
 |---------------------------+---------------|
-| *Total Features*          |            80 |
+| *Total Features*          |            86 |
 
 ** Implementation Status
 
-All 80 features are fully implemented and tested. The package is in active use and stable (version 0.2.0).
+All 86 features are fully implemented and tested. The package is in active use and stable (version 0.4.0).
 
 * Next Steps
 
@@ -624,6 +660,6 @@ manual/
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
-- *Package Version*: 0.2.0
-- *Total Features Documented*: 80
+- *Package Version*: 0.4.0
+- *Total Features Documented*: 86
 - *Status*: Complete feature extraction, ready for detailed documentation

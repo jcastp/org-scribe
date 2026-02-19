@@ -29,10 +29,10 @@ Check that you have:
 Let's verify the package is loaded correctly:
 
 1. Press ~M-x~ (Alt+x or Option+x)
-2. Start typing: ~writing-version~
+2. Start typing: ~org-scribe-version~
 3. Press Enter
 
-You should see a message like: *"org-scribe version 0.2.0 (includes project templates)"*
+You should see a message like: *"org-scribe version 0.4.0 (includes project templates)"*
 
 If you see this message, you're ready! If not, make sure you've installed the package correctly.
 
@@ -78,10 +78,10 @@ Let's create your first project - a short story. We'll walk through every step.
 ** Step 1: Invoke the Creation Function
 
 1. Press ~M-x~ (this opens the command prompt)
-2. Type: ~writing-create-short-story-project~
+2. Type: ~org-scribe-create-short-story-project~
 3. Press ~Enter~
 
-*Tip*: You can use Tab completion! Type ~writing-cre~ and press Tab to see available commands.
+*Tip*: You can use Tab completion! Type ~org-scribe-cre~ and press Tab to see available commands.
 
 ** Step 2: Choose the Base Directory
 
@@ -145,7 +145,7 @@ Your new project has this structure:
 #+BEGIN_EXAMPLE
 The Morning Routine/           (your project folder)
 ├── .git/                      (version control - automatic!)
-├── .writing-project           (marker file - identifies this as a writing project)
+├── .org-scribe-project           (marker file - identifies this as a writing project)
 ├── README.org                 (overview and quick links - YOU ARE HERE)
 ├── story.org                  (your main manuscript)
 └── notes.org                  (planning: characters, plot, locations, etc.)
@@ -190,7 +190,7 @@ This is your planning hub, containing:
 
 *What to do later*: We'll explore this in Lesson 4 (Capturing Characters).
 
-** The .writing-project Marker File
+** The .org-scribe-project Marker File
 
 This hidden file tells Emacs: "This directory is a writing project!"
 
@@ -220,7 +220,7 @@ If you want to create a full novel project instead, the process is almost identi
 ** Quick Steps
 
 1. Press ~M-x~
-2. Type: ~writing-create-novel-project~
+2. Type: ~org-scribe-create-novel-project~
 3. Press ~Enter~
 4. Choose base directory (e.g., ~~/org-scribe/~)
 5. Enter novel title (e.g., ~My Fantasy Novel~)
@@ -234,7 +234,7 @@ A novel project has more files:
 #+BEGIN_EXAMPLE
 My Fantasy Novel/
 ├── .git/
-├── .writing-project
+├── .org-scribe-project
 ├── README.org                 (overview and navigation)
 ├── novel.org                  (main manuscript - 3-act structure)
 ├── statistics.org             (word count and progress tracking)
@@ -280,7 +280,7 @@ The package supports both English and Spanish templates!
 
 ** How It Works
 
-The template language is controlled by a configuration variable: ~writing-template-language~
+The template language is controlled by a configuration variable: ~org-scribe-template-language~
 
 *Default*: ~'en~ (English)
 
@@ -301,12 +301,12 @@ The template language is controlled by a configuration variable: ~writing-templa
 To use Spanish templates, add this to your Emacs configuration (~init.el~ or ~.emacs~):
 
 #+BEGIN_SRC emacs-lisp
-(setq writing-template-language 'es)
+(setq org-scribe-template-language 'es)
 #+END_SRC
 
 Then restart Emacs or evaluate the line with ~C-x C-e~.
 
-Now ~writing-create-novel-project~ will create Spanish-language templates!
+Now ~org-scribe-create-novel-project~ will create Spanish-language templates!
 
 ** Bilingual Projects
 
@@ -380,7 +380,7 @@ Now that you have a project, let's write something!
 Congratulations! You've completed Lesson 1. You now know:
 
 ✓ The difference between novel and short story projects
-✓ How to create a project using ~writing-create-short-story-project~ or ~writing-create-novel-project~
+✓ How to create a project using ~org-scribe-create-short-story-project~ or ~org-scribe-create-novel-project~
 ✓ What each template file is for
 ✓ How to navigate between project files
 ✓ How the project structure is organized
@@ -415,16 +415,16 @@ Take your time! There's no rush. When you feel comfortable with project creation
 
 | Command                            | What It Does                      |
 |------------------------------------+-----------------------------------|
-| ~writing-create-novel-project~       | Create a novel project            |
-| ~writing-create-short-story-project~ | Create a short story project      |
-| ~writing-open-project-file~          | Quick navigation to project files |
+| ~org-scribe-create-novel-project~       | Create a novel project            |
+| ~org-scribe-create-short-story-project~ | Create a short story project      |
+| ~org-scribe-open-project-file~          | Quick navigation to project files |
 
 ** Configuration Variables
 
 | Variable                   | Default       | What It Controls           |
 |----------------------------+---------------+----------------------------|
-| ~writing-template-language~  | ~'en~           | Template language (en/es)  |
-| ~writing-template-directory~ | (package dir) | Where templates are stored |
+| ~org-scribe-template-language~  | ~'en~           | Template language (en/es)  |
+| ~org-scribe-template-directory~ | (package dir) | Where templates are stored |
 
 * Troubleshooting Tips
 
@@ -432,7 +432,7 @@ Take your time! There's no rush. When you feel comfortable with project creation
 
 1. Use ~M-x dired~ to open the project directory
 2. You should see:
-   - .writing-project file
+   - .org-scribe-project file
    - README.org
    - story.org or novel.org
    - notes.org (short story) or objects/ directory (novel)
@@ -450,7 +450,7 @@ Take your time! There's no rush. When you feel comfortable with project creation
 1. Use ~C-x C-f~ (find-file)
 2. Navigate to: ~~/org-scribe/Your-Project-Title/~
 3. Open ~README.org~ or ~story.org~/~novel.org~
-4. The ~.writing-project~ marker ensures the package recognizes it
+4. The ~.org-scribe-project~ marker ensures the package recognizes it
 
 * Getting Help
 

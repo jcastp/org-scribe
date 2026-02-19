@@ -79,14 +79,14 @@ Press: ~F8 F8~ (F8 twice)
 When you open the menu, you'll see:
 
 #+BEGIN_EXAMPLE
-^Insert^           ^Modes^            ^Capture^          ^Tools^            ^Search^           ^Manage^
+^Insert^           ^Modes^            ^Capture^          ^Tools^              ^Search^           ^Manage^
 ^^^^^^^^------------------------------------------------------------------------------------------------------------------
-_s_: Scene         _m_: Mode (write)  _n_: Note          _w_: Words count   _1_: POV           _C_: Characters
-_c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table   _2_: Character     _L_: Locations
-_o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props  _3_: Plot          _P_: Plot threads
-                 _e_: Editing mode  _b_: oBject        _d_: Dictionary    _4_: Location
-                                  _t_: Timeline      _y_: sYnonyms      _5_: TODOs
-                                                                                     _q_: Quit
+_s_: Scene         _m_: Mode (write)  _n_: Note          _w_: Words count     _1_: POV           _C_: Characters
+_c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table     _2_: Character     _L_: Locations
+_o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props    _3_: Plot          _P_: Plot threads
+                 _e_: Editing mode  _b_: oBject        _d_: Dictionary      _4_: Location      _U_: Update links
+                                  _t_: Timeline      _y_: sYnonyms        _5_: TODOs
+                                  _g_: plot thread   _k_: powerthesaurus  _6_: Edit notes            _q_: Quit
 #+END_EXAMPLE
 
 This is your command center!
@@ -152,11 +152,12 @@ Let's explore each category in detail.
 
 | Key | Command   | What It Does                                  |
 |-----+-----------+-----------------------------------------------|
-| ~n~   | Note      | Capture a general note                        |
-| ~h~   | cHaracter | Add a new character profile                   |
-| ~l~   | Location  | Add a new location/setting                    |
-| ~b~   | oBject    | Add an important object (MacGuffin, artifact) |
-| ~t~   | Timeline  | Add a timeline event                          |
+| ~n~   | Note       | Capture a general note                        |
+| ~h~   | cHaracter  | Add a new character profile                   |
+| ~l~   | Location   | Add a new location/setting                    |
+| ~b~   | oBject     | Add an important object (MacGuffin, artifact) |
+| ~t~   | Timeline   | Add a timeline event                          |
+| ~g~   | plot thread| Add a plot thread profile                     |
 
 *When to use*:
 - Mid-writing, capture a character → ~h~
@@ -183,6 +184,7 @@ Let's explore each category in detail.
 | ~a~   | Add WC props   | Add/update :WORDCOUNT: property              |
 | ~d~   | Dictionary     | Look up word in RAE dictionary (Spanish)     |
 | ~y~   | sYnonyms       | Find synonyms (Spanish/English)              |
+| ~k~   | powerthesaurus | English thesaurus lookup (requires package)  |
 
 *When to use*:
 - After writing → ~w~ (check word count)
@@ -201,11 +203,12 @@ Let's explore each category in detail.
 
 | Key | Command   | What It Does                             |
 |-----+-----------+------------------------------------------|
-| ~1~   | POV       | Find all scenes from a character's PoV   |
-| ~2~   | Character | Find all scenes featuring a character    |
-| ~3~   | Plot      | Find all scenes in a plot thread         |
-| ~4~   | Location  | Find all scenes in a location            |
-| ~5~   | TODOs     | Find all TODO items in project           |
+| ~1~   | POV        | Find all scenes from a character's PoV   |
+| ~2~   | Character  | Find all scenes featuring a character    |
+| ~3~   | Plot       | Find all scenes in a plot thread         |
+| ~4~   | Location   | Find all scenes in a location            |
+| ~5~   | TODOs      | Find all TODO items in project           |
+| ~6~   | Edit notes | Find all edit/revision notes in project  |
 
 *When to use*:
 - "Where did Alex appear?" → ~2~ (character search)
@@ -227,9 +230,10 @@ Let's explore each category in detail.
 
 | Key | Command       | What It Does                         |
 |-----+---------------+--------------------------------------|
-| ~C~   | Characters    | Character linking submenu            |
-| ~L~   | Locations     | Location linking submenu             |
-| ~P~   | Plot threads  | Plot thread linking submenu          |
+| ~C~   | Characters    | Character linking & relationships submenu |
+| ~L~   | Locations     | Location linking submenu                  |
+| ~P~   | Plot threads  | Plot thread linking submenu               |
+| ~U~   | Update links  | Update all link display names at once     |
 
 *When to use*:
 - Setting up character links → ~C~
@@ -252,12 +256,17 @@ When you press ~C~, ~L~, or ~P~, you enter a submenu with more options.
 ** Character Linking Submenu (F8 F8 C)
 
 #+BEGIN_EXAMPLE
-^Character Linking^
-^^^^^^^^------------------------------------------------------------
-_p_: Set PoV character      _l_: Link scene characters
-_c_: Set scene characters   _L_: Link all scenes
-_j_: Jump to PoV char       _i_: Add IDs to characters
-_s_: Setup linking system   _q_: Back to main menu
+^Character Linking^            ^Relationships^             ^Visualization^
+^^^^^^^^------------------------------------------------------------------------------
+_p_: Set PoV character         _a_: Add relationship       _g_: Insert graph block
+_c_: Set scene characters      _r_: Remove relationship    _v_: View relationships
+_j_: Jump to PoV char          _V_: View all relationships _R_: Setup relationships
+_l_: Link scene characters
+_L_: Link all scenes           _q_: Back to main menu
+_i_: Add IDs to characters
+_u_: Update link names
+_U_: Update all link names
+_s_: Setup linking system
 #+END_EXAMPLE
 
 *What it does*:
@@ -267,7 +276,15 @@ _s_: Setup linking system   _q_: Back to main menu
 - ~l~ - Convert current scene's character names to ID links
 - ~L~ - Convert ALL scenes' character names to ID links
 - ~i~ - Add unique IDs to all characters
+- ~u~ - Update link display names in current scene (after renaming)
+- ~U~ - Update link display names throughout entire manuscript
 - ~s~ - Run setup wizard for character linking
+- ~a~ - Add a relationship between two characters
+- ~r~ - Remove a relationship from a character
+- ~v~ - View relationships for one character (ASCII tree)
+- ~V~ - View all relationships in project (table)
+- ~g~ - Insert a relationship graph dynamic block
+- ~R~ - Setup character relationship system
 - ~q~ - Return to main Hydra menu
 
 ** Location Linking Submenu (F8 F8 L)
@@ -277,8 +294,8 @@ _s_: Setup linking system   _q_: Back to main menu
 ^^^^^^^^------------------------------------------------------------
 _c_: Set scene locations   _l_: Link scene locations
 _i_: Add IDs to locations  _L_: Link all scenes
-_s_: Setup linking system
-_q_: Back to main menu
+_u_: Update link names     _U_: Update all link names
+_s_: Setup linking system  _q_: Back to main menu
 #+END_EXAMPLE
 
 *What it does*:
@@ -286,6 +303,8 @@ _q_: Back to main menu
 - ~l~ - Convert current scene's location names to ID links
 - ~L~ - Convert ALL scenes' location names to ID links
 - ~i~ - Add unique IDs to all locations
+- ~u~ - Update link display names in current scene (after renaming)
+- ~U~ - Update link display names throughout entire manuscript
 - ~s~ - Run setup wizard for location linking
 - ~q~ - Return to main Hydra menu
 
@@ -298,6 +317,7 @@ _p_: Set scene plot threads   _t_: Timeline table
 _j_: Jump to plot thread      _r_: Health report
 _l_: Link scene plot threads  _S_: Statistics
 _L_: Link all scenes          _i_: Add IDs to threads
+_u_: Update link names        _U_: Update all link names
 _s_: Setup linking system     _q_: Back to main menu
 #+END_EXAMPLE
 
@@ -307,8 +327,10 @@ _s_: Setup linking system     _q_: Back to main menu
 - ~l~ - Convert current scene's plot names to ID links
 - ~L~ - Convert ALL scenes' plot names to ID links
 - ~i~ - Add unique IDs to all plot threads
+- ~u~ - Update link display names in current scene (after renaming)
+- ~U~ - Update link display names throughout entire manuscript
 - ~s~ - Run setup wizard for plot thread linking
-- ~t~ - Instructions for plot timeline table
+- ~t~ - Instructions for inserting plot timeline table
 - ~r~ - Generate plot health report (finds gaps, issues)
 - ~S~ - Show plot statistics (scene counts, coverage)
 - ~q~ - Return to main Hydra menu
@@ -530,8 +552,9 @@ INSERT     MODES       CAPTURE     TOOLS       SEARCH      MANAGE
 s: Scene   m: Write    n: Note     w: Count    1: PoV      C: Chars
 c: Chapter p: Project  h: Char     r: Track    2: Char     L: Locs
 o: Open    f: Focus    l: Loc      a: Props    3: Plot     P: Plots
-           e: Edit     b: Obj      d: Dict     4: Loc
+           e: Edit     b: Obj      d: Dict     4: Loc      U: Update
                        t: Time     y: Syn      5: TODO
+                       g: Plot     k: Thes     6: Edits
 #+END_EXAMPLE
 
 Tape it near your monitor until you memorize it!
@@ -732,29 +755,39 @@ Take your time! The Hydra menu is your primary interface to ~org-scribe~ - maste
 
 *** Character Linking (~F8 F8 C~)
 
-| Key | Command                | Use When                         |
-|-----+------------------------+----------------------------------|
-| ~p~   | Set PoV                | Setting scene PoV from menu      |
-| ~c~   | Set characters         | Adding characters to scene       |
-| ~j~   | Jump to PoV            | Want to see PoV character profile|
-| ~s~   | Setup system           | First-time setup                 |
+| Key | Command                | Use When                              |
+|-----+------------------------+---------------------------------------|
+| ~p~   | Set PoV                | Setting scene PoV from menu           |
+| ~c~   | Set characters         | Adding characters to scene            |
+| ~j~   | Jump to PoV            | Want to see PoV character profile     |
+| ~u~   | Update link names      | After renaming a character            |
+| ~U~   | Update all link names  | After bulk renaming                   |
+| ~s~   | Setup system           | First-time setup                      |
+| ~a~   | Add relationship       | Defining character relationships      |
+| ~v~   | View relationships     | Checking one character's connections  |
+| ~V~   | View all relationships | Overview of all character connections |
+| ~g~   | Insert graph block     | Generating relationship visualization |
 
 *** Location Linking (~F8 F8 L~)
 
-| Key | Command          | Use When                      |
-|-----+------------------+-------------------------------|
-| ~c~   | Set location     | Setting scene location        |
-| ~s~   | Setup system     | First-time setup              |
+| Key | Command               | Use When                      |
+|-----+-----------------------+-------------------------------|
+| ~c~   | Set location          | Setting scene location        |
+| ~u~   | Update link names     | After renaming a location     |
+| ~U~   | Update all link names | After bulk renaming           |
+| ~s~   | Setup system          | First-time setup              |
 
 *** Plot Thread Linking (~F8 F8 P~)
 
-| Key | Command         | Use When                         |
-|-----+-----------------+----------------------------------|
-| ~p~   | Set plot threads| Adding plot threads to scene     |
-| ~j~   | Jump to thread  | Want to see plot thread profile  |
-| ~r~   | Health report   | Checking plot balance            |
-| ~S~   | Statistics      | Reviewing plot coverage          |
-| ~s~   | Setup system    | First-time setup                 |
+| Key | Command               | Use When                         |
+|-----+-----------------------+----------------------------------|
+| ~p~   | Set plot threads      | Adding plot threads to scene     |
+| ~j~   | Jump to thread        | Want to see plot thread profile  |
+| ~u~   | Update link names     | After renaming a plot thread     |
+| ~U~   | Update all link names | After bulk renaming              |
+| ~r~   | Health report         | Checking plot balance            |
+| ~S~   | Statistics            | Reviewing plot coverage          |
+| ~s~   | Setup system          | First-time setup                 |
 
 ** Memory Tricks
 

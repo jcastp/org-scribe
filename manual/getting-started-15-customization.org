@@ -47,7 +47,7 @@ All customizations go in your Emacs configuration file:
 ** Two Ways to Customize
 
 *Method 1: Customize Interface* (Beginner-friendly)
-- Press ~M-x customize-group RET writing RET~
+- Press ~M-x customize-group RET org-scribe RET~
 - Click options, change values
 - Click "Apply and Save"
 - No Emacs Lisp knowledge needed
@@ -65,12 +65,12 @@ All customizations go in your Emacs configuration file:
 You'll see code like this:
 
 #+BEGIN_SRC emacs-lisp
-(setq my-writing-env-work-theme 'modus-vivendi)
+(setq org-scribe-env-work-theme 'modus-vivendi)
 #+END_SRC
 
 *Reading this*:
 - ~setq~ = "set variable"
-- ~my-writing-env-work-theme~ = variable name
+- ~org-scribe-env-work-theme~ = variable name
 - ~'modus-vivendi~ = value (the ~'~ means "symbol")
 
 *Types of values*:
@@ -93,9 +93,9 @@ Each mode can use a different theme to signal mode changes visually.
 
 #+BEGIN_SRC emacs-lisp
 ;; Default themes
-(setq my-writing-env-normal-theme 'ef-deuteranopia-dark)  ; Your normal theme
-(setq my-writing-env-work-theme 'poet)                    ; Distraction-free mode
-(setq writing-editing-theme 'leuven)                       ; Editing mode
+(setq org-scribe-env-normal-theme 'ef-deuteranopia-dark)  ; Your normal theme
+(setq org-scribe-env-work-theme 'poet)                    ; Distraction-free mode
+(setq org-scribe-editing-theme 'leuven)                       ; Editing mode
 #+END_SRC
 
 *** Changing Themes
@@ -122,9 +122,9 @@ Add to your init file:
 
 #+BEGIN_SRC emacs-lisp
 ;; Customize writing mode themes
-(setq my-writing-env-work-theme 'modus-vivendi)    ; Dark writing theme
-(setq my-writing-env-normal-theme 'modus-operandi) ; Light normal theme
-(setq writing-editing-theme 'ef-light)              ; Light editing theme
+(setq org-scribe-env-work-theme 'modus-vivendi)    ; Dark writing theme
+(setq org-scribe-env-normal-theme 'modus-operandi) ; Light normal theme
+(setq org-scribe-editing-theme 'ef-light)              ; Light editing theme
 #+END_SRC
 
 *Testing themes*:
@@ -141,7 +141,7 @@ Some writers prefer light themes during day, dark at night:
 
 #+BEGIN_SRC emacs-lisp
 ;; Daytime (9 AM - 6 PM): Light themes
-(setq my-writing-env-work-theme 'modus-operandi)
+(setq org-scribe-env-work-theme 'modus-operandi)
 
 ;; Nighttime (6 PM - 9 AM): Dark themes
 ;; (You'd need to switch manually or use circadian-mode package)
@@ -169,9 +169,9 @@ Typography matters! Different fonts for different tasks.
 *Default presets*:
 
 #+BEGIN_SRC emacs-lisp
-(setq my-writing-env-normal-font 'regular)      ; Normal editing
-(setq my-writing-env-work-font 'writing-big)    ; Distraction-free mode
-(setq writing-editing-fontaine-preset 'editing)  ; Editing mode
+(setq org-scribe-env-normal-font 'regular)      ; Normal editing
+(setq org-scribe-env-work-font 'writing-big)    ; Distraction-free mode
+(setq org-scribe-editing-fontaine-preset 'editing)  ; Editing mode
 #+END_SRC
 
 *** Creating Custom Font Presets
@@ -240,18 +240,18 @@ Control how wide your text appears - crucial for comfortable reading.
 
 #+BEGIN_SRC emacs-lisp
 ;; Default widths
-(setq my-writing-env-work-width 80)     ; Distraction-free: 80 columns
-(setq my-writing-env-normal-width 90)   ; Normal: 90 columns
+(setq org-scribe-env-work-width 80)     ; Distraction-free: 80 columns
+(setq org-scribe-env-normal-width 90)   ; Normal: 90 columns
 #+END_SRC
 
 *Adjusting*:
 
 #+BEGIN_SRC emacs-lisp
 ;; Narrower for focused writing
-(setq my-writing-env-work-width 70)
+(setq org-scribe-env-work-width 70)
 
 ;; Wider if you have large monitor
-(setq my-writing-env-work-width 100)
+(setq org-scribe-env-work-width 100)
 #+END_SRC
 
 *Guidelines*:
@@ -269,10 +269,10 @@ Editing mode has a fill-column setting:
 
 #+BEGIN_SRC emacs-lisp
 ;; Default
-(setq writing-editing-fill-column-width 90)
+(setq org-scribe-editing-fill-column-width 90)
 
 ;; Adjust to your preference
-(setq writing-editing-fill-column-width 100)  ; Wider for more context
+(setq org-scribe-editing-fill-column-width 100)  ; Wider for more context
 #+END_SRC
 
 ** Window Panel Sizes (Editing Mode)
@@ -281,8 +281,8 @@ Editing mode splits screen into three panels. Adjust their proportions:
 
 #+BEGIN_SRC emacs-lisp
 ;; Defaults: 25% / 50% / 25%
-(setq writing-editing-left-width-percent 0.25)   ; Outline panel (left)
-(setq writing-editing-right-width-percent 0.25)  ; Notes panel (right)
+(setq org-scribe-editing-left-width-percent 0.25)   ; Outline panel (left)
+(setq org-scribe-editing-right-width-percent 0.25)  ; Notes panel (right)
 ;; Center is automatic: 1.0 - left - right = 0.50 (50%)
 #+END_SRC
 
@@ -290,22 +290,22 @@ Editing mode splits screen into three panels. Adjust their proportions:
 
 Narrower outline, wider manuscript:
 #+BEGIN_SRC emacs-lisp
-(setq writing-editing-left-width-percent 0.20)   ; 20%
-(setq writing-editing-right-width-percent 0.25)  ; 25%
+(setq org-scribe-editing-left-width-percent 0.20)   ; 20%
+(setq org-scribe-editing-right-width-percent 0.25)  ; 25%
 ;; Center: 55%
 #+END_SRC
 
 Narrower notes, more focus on manuscript:
 #+BEGIN_SRC emacs-lisp
-(setq writing-editing-left-width-percent 0.25)   ; 25%
-(setq writing-editing-right-width-percent 0.20)  ; 20%
+(setq org-scribe-editing-left-width-percent 0.25)   ; 25%
+(setq org-scribe-editing-right-width-percent 0.20)  ; 20%
 ;; Center: 55%
 #+END_SRC
 
 Balanced three-column:
 #+BEGIN_SRC emacs-lisp
-(setq writing-editing-left-width-percent 0.33)   ; 33%
-(setq writing-editing-right-width-percent 0.33)  ; 33%
+(setq org-scribe-editing-left-width-percent 0.33)   ; 33%
+(setq org-scribe-editing-right-width-percent 0.33)  ; 33%
 ;; Center: 34%
 #+END_SRC
 
@@ -319,23 +319,23 @@ Put this in your init file:
 ;;; Writing Modes Customization
 
 ;; === THEMES ===
-(setq my-writing-env-normal-theme 'modus-operandi)  ; Light theme normally
-(setq my-writing-env-work-theme 'poet)              ; Clean theme for writing
-(setq writing-editing-theme 'leuven)                 ; Organized for editing
+(setq org-scribe-env-normal-theme 'modus-operandi)  ; Light theme normally
+(setq org-scribe-env-work-theme 'poet)              ; Clean theme for writing
+(setq org-scribe-editing-theme 'leuven)                 ; Organized for editing
 
 ;; === FONTS ===
-(setq my-writing-env-normal-font 'regular)
-(setq my-writing-env-work-font 'writing-big)
-(setq writing-editing-fontaine-preset 'editing)
+(setq org-scribe-env-normal-font 'regular)
+(setq org-scribe-env-work-font 'writing-big)
+(setq org-scribe-editing-fontaine-preset 'editing)
 
 ;; === TEXT WIDTHS ===
-(setq my-writing-env-work-width 75)                  ; Comfortable reading width
-(setq my-writing-env-normal-width 90)                ; Normal editing width
-(setq writing-editing-fill-column-width 90)          ; Editing mode width
+(setq org-scribe-env-work-width 75)                  ; Comfortable reading width
+(setq org-scribe-env-normal-width 90)                ; Normal editing width
+(setq org-scribe-editing-fill-column-width 90)          ; Editing mode width
 
 ;; === EDITING MODE PANELS ===
-(setq writing-editing-left-width-percent 0.25)       ; Outline: 25%
-(setq writing-editing-right-width-percent 0.25)      ; Notes: 25%
+(setq org-scribe-editing-left-width-percent 0.25)       ; Outline: 25%
+(setq org-scribe-editing-right-width-percent 0.25)      ; Notes: 25%
                                                       ; Manuscript: 50% (automatic)
 #+END_SRC
 
@@ -438,10 +438,10 @@ Controls which templates are used when creating projects:
 
 #+BEGIN_SRC emacs-lisp
 ;; Default: English
-(setq writing-template-language 'en)
+(setq org-scribe-template-language 'en)
 
 ;; For Spanish
-(setq writing-template-language 'es)
+(setq org-scribe-template-language 'es)
 #+END_SRC
 
 *What this affects*:
@@ -458,10 +458,10 @@ If you write in both languages, you can:
 
 #+BEGIN_SRC emacs-lisp
 ;; In init file, set default
-(setq writing-template-language 'en)
+(setq org-scribe-template-language 'en)
 
 ;; When starting Spanish project, temporarily change:
-;; M-x set-variable RET writing-template-language RET 'es RET
+;; M-x set-variable RET org-scribe-template-language RET 'es RET
 ;; Then create project
 #+END_SRC
 
@@ -472,14 +472,14 @@ If you write in both languages, you can:
 (defun my-new-english-novel ()
   "Create English novel project."
   (interactive)
-  (let ((writing-template-language 'en))
-    (call-interactively 'writing-create-novel-project)))
+  (let ((org-scribe-template-language 'en))
+    (call-interactively 'org-scribe-create-novel-project)))
 
 (defun my-new-spanish-novel ()
   "Create Spanish novel project."
   (interactive)
-  (let ((writing-template-language 'es))
-    (call-interactively 'writing-create-novel-project)))
+  (let ((org-scribe-template-language 'es))
+    (call-interactively 'org-scribe-create-novel-project)))
 #+END_SRC
 
 Now you have dedicated commands for each language!
@@ -490,23 +490,23 @@ Use your own customized templates:
 
 #+BEGIN_SRC emacs-lisp
 ;; Point to your custom template directory
-(setq writing-template-directory
-      (expand-file-name "~/my-writing-templates/novel/"))
+(setq org-scribe-template-directory
+      (expand-file-name "~/my-org-scribe-templates/novel/"))
 
-(setq writing-short-story-template-directory
-      (expand-file-name "~/my-writing-templates/short-story/"))
+(setq org-scribe-short-story-template-directory
+      (expand-file-name "~/my-org-scribe-templates/short-story/"))
 #+END_SRC
 
 *How to create custom templates*:
 
 1. Copy existing templates:
    #+BEGIN_SRC bash
-   cp -r ~/.emacs.d/elpa/org-scribe-*/writing-templates/novel-en ~/my-templates/
+   cp -r ~/.emacs.d/elpa/org-scribe-*/org-scribe-templates/novel-en ~/my-templates/
    #+END_SRC
 
 2. Modify files in ~~/my-templates/~
 
-3. Point ~writing-template-directory~ to your custom location
+3. Point ~org-scribe-template-directory~ to your custom location
 
 4. Create projects - your templates are used!
 
@@ -519,7 +519,7 @@ Customize the templates to match your specific needs.
 *Method 1: Via Command*
 
 #+BEGIN_EXAMPLE
-M-x writing-edit-templates
+M-x org-scribe-edit-templates
 #+END_EXAMPLE
 
 Opens the template directory in Dired.
@@ -528,7 +528,7 @@ Opens the template directory in Dired.
 
 Templates are in the package directory:
 #+BEGIN_EXAMPLE
-~/.emacs.d/elpa/org-scribe-VERSION/writing-templates/
+~/.emacs.d/elpa/org-scribe-VERSION/org-scribe-templates/
 #+END_EXAMPLE
 
 ** Template Structure
@@ -573,7 +573,7 @@ Now every project includes your goals section!
 
 *** Customizing Scene Template
 
-Edit the scene template in ~writing-capture.el~ by adding this to your init:
+Edit the scene template in ~org-scribe-capture.el~ by adding this to your init:
 
 #+BEGIN_SRC emacs-lisp
 ;; Override default scene template
@@ -627,12 +627,12 @@ What they need to grow
 
 Remember the differences:
 
-*Novel templates* (~writing-templates/novel-en/~):
+*Novel templates* (~org-scribe-templates/novel-en/~):
 - 12-13 files
 - Separate objects/ directory
 - Complex structure
 
-*Short story templates* (~writing-templates/short-story-en/~):
+*Short story templates* (~org-scribe-templates/short-story-en/~):
 - 3 files
 - Simplified structure
 - Combined notes file
@@ -653,7 +653,7 @@ Add to your init file:
 ;; Quick access to writing features
 (global-set-key (kbd "C-c w m") 'org-scribe/distraction-free-mode)  ; Start writing
 (global-set-key (kbd "C-c w e") 'org-scribe/editing-mode)           ; Start editing
-(global-set-key (kbd "C-c w w") 'writing-wordcount-subtree)      ; Count words
+(global-set-key (kbd "C-c w w") 'org-context-count-words)      ; Count words
 (global-set-key (kbd "C-c w n") 'org-scribe/capture-to-file)        ; Quick note
 
 ;; Dictionary tools
@@ -685,8 +685,8 @@ Only active in org-mode:
 #+BEGIN_SRC emacs-lisp
 ;; Add to org-mode-map
 (with-eval-after-load 'org
-  (define-key org-mode-map (kbd "C-c i s") 'writing-insert-scene)
-  (define-key org-mode-map (kbd "C-c i c") 'writing-insert-chapter))
+  (define-key org-mode-map (kbd "C-c i s") 'org-scribe-insert-scene)
+  (define-key org-mode-map (kbd "C-c i c") 'org-scribe-insert-chapter))
 #+END_SRC
 
 ** Alternative: Use the Hydra
@@ -716,7 +716,7 @@ Set where new projects are created:
   "Create novel in my default directory."
   (interactive)
   (let ((default-directory "~/Documents/my-novels/"))
-    (call-interactively 'writing-create-novel-project)))
+    (call-interactively 'org-scribe-create-novel-project)))
 #+END_SRC
 
 ** File Name Preferences
@@ -725,10 +725,10 @@ The package looks for manuscripts with these names:
 
 #+BEGIN_SRC emacs-lisp
 ;; Defaults
-(setq writing-novel-file-names '("novel.org" "novela.org" "manuscript.org"))
+(setq org-scribe-novel-file-names '("novel.org" "novela.org" "manuscript.org"))
 
 ;; Add your preferred names
-(setq writing-novel-file-names '("novel.org" "novela.org" "manuscript.org" "book.org" "draft.org"))
+(setq org-scribe-novel-file-names '("novel.org" "novela.org" "manuscript.org" "book.org" "draft.org"))
 #+END_SRC
 
 ## Directory Name Preferences
@@ -737,10 +737,10 @@ For notes directory:
 
 #+BEGIN_SRC emacs-lisp
 ;; Defaults
-(setq writing-notes-dir-names '("notes" "notas"))
+(setq org-scribe-notes-dir-names '("notes" "notas"))
 
 ;; Add alternatives
-(setq writing-notes-dir-names '("notes" "notas" "research" "ideas"))
+(setq org-scribe-notes-dir-names '("notes" "notas" "research" "ideas"))
 #+END_SRC
 
 * Word Counting Configuration
@@ -753,10 +753,10 @@ Exclude sections from word count using tags:
 
 #+BEGIN_SRC emacs-lisp
 ;; Default
-(setq writing-wordcount-default-ignore-tags '("noexport"))
+(setq org-scribe-wordcount-default-ignore-tags '("noexport"))
 
 ;; Add more tags
-(setq writing-wordcount-default-ignore-tags '("noexport" "draft" "cut" "archive"))
+(setq org-scribe-wordcount-default-ignore-tags '("noexport" "draft" "cut" "archive"))
 #+END_SRC
 
 Usage in manuscript:
@@ -783,33 +783,33 @@ Here's a full, commented configuration you can adapt:
 ;; -----------------------------------------------------------------------------
 
 ;; Themes
-(setq my-writing-env-normal-theme 'modus-operandi)     ; Light theme for day
-(setq my-writing-env-work-theme 'poet)                 ; Minimal for writing
-(setq writing-editing-theme 'leuven)                    ; Clear for editing
+(setq org-scribe-env-normal-theme 'modus-operandi)     ; Light theme for day
+(setq org-scribe-env-work-theme 'poet)                 ; Minimal for writing
+(setq org-scribe-editing-theme 'leuven)                    ; Clear for editing
 
 ;; Fonts (requires fontaine package)
-(setq my-writing-env-normal-font 'regular)
-(setq my-writing-env-work-font 'writing-big)
-(setq writing-editing-fontaine-preset 'editing)
+(setq org-scribe-env-normal-font 'regular)
+(setq org-scribe-env-work-font 'writing-big)
+(setq org-scribe-editing-fontaine-preset 'editing)
 
 ;; Text widths
-(setq my-writing-env-work-width 75)                    ; Comfortable reading
-(setq my-writing-env-normal-width 90)
-(setq writing-editing-fill-column-width 90)
+(setq org-scribe-env-work-width 75)                    ; Comfortable reading
+(setq org-scribe-env-normal-width 90)
+(setq org-scribe-editing-fill-column-width 90)
 
 ;; Editing mode panel sizes
-(setq writing-editing-left-width-percent 0.25)         ; Outline: 25%
-(setq writing-editing-right-width-percent 0.25)        ; Notes: 25%
+(setq org-scribe-editing-left-width-percent 0.25)         ; Outline: 25%
+(setq org-scribe-editing-right-width-percent 0.25)        ; Notes: 25%
 
 ;; -----------------------------------------------------------------------------
 ;; LANGUAGE & TEMPLATES
 ;; -----------------------------------------------------------------------------
 
 ;; Language (en or es)
-(setq writing-template-language 'en)                   ; English templates
+(setq org-scribe-template-language 'en)                   ; English templates
 
 ;; Custom template directories (optional)
-;; (setq writing-template-directory "~/my-templates/novel/")
+;; (setq org-scribe-template-directory "~/my-templates/novel/")
 
 ;; -----------------------------------------------------------------------------
 ;; LANGUAGE TOOLS
@@ -834,17 +834,17 @@ Here's a full, commented configuration you can adapt:
 ;; -----------------------------------------------------------------------------
 
 ;; Tags to ignore in word count
-(setq writing-wordcount-default-ignore-tags '("noexport" "draft" "archive"))
+(setq org-scribe-wordcount-default-ignore-tags '("noexport" "draft" "archive"))
 
 ;; -----------------------------------------------------------------------------
 ;; PROJECT STRUCTURE
 ;; -----------------------------------------------------------------------------
 
 ;; Recognized manuscript file names
-(setq writing-novel-file-names '("novel.org" "novela.org" "manuscript.org"))
+(setq org-scribe-novel-file-names '("novel.org" "novela.org" "manuscript.org"))
 
 ;; Recognized notes directory names
-(setq writing-notes-dir-names '("notes" "notas"))
+(setq org-scribe-notes-dir-names '("notes" "notas"))
 
 ;; -----------------------------------------------------------------------------
 ;; KEYBINDINGS
@@ -853,7 +853,7 @@ Here's a full, commented configuration you can adapt:
 ;; Writing modes
 (global-set-key (kbd "C-c w m") 'org-scribe/distraction-free-mode)
 (global-set-key (kbd "C-c w e") 'org-scribe/editing-mode)
-(global-set-key (kbd "C-c w w") 'writing-wordcount-subtree)
+(global-set-key (kbd "C-c w w") 'org-context-count-words)
 
 ;; Dictionary
 (global-set-key (kbd "C-c d") 'org-scribe/rae-api-lookup)
@@ -868,8 +868,8 @@ Here's a full, commented configuration you can adapt:
 
 ;; Org-mode specific
 (with-eval-after-load 'org
-  (define-key org-mode-map (kbd "C-c i s") 'writing-insert-scene)
-  (define-key org-mode-map (kbd "C-c i c") 'writing-insert-chapter))
+  (define-key org-mode-map (kbd "C-c i s") 'org-scribe-insert-scene)
+  (define-key org-mode-map (kbd "C-c i c") 'org-scribe-insert-chapter))
 
 ;;; ============================================================================
 ;;; END ORG-SCRIBE CONFIGURATION
@@ -882,7 +882,7 @@ For those who prefer a GUI approach.
 
 ** Opening Customize
 
-1. ~M-x customize-group RET writing RET~
+1. ~M-x customize-group RET org-scribe RET~
 2. You'll see all customization options
 3. Click to expand groups
 4. Change values
@@ -890,12 +890,12 @@ For those who prefer a GUI approach.
 
 ** Main Customization Groups
 
-*Writing* - Main group
+*org-scribe* - Main group
 - Project Structure
 - Template settings
 - Export settings
 
-*My Writing Env* - Writing mode settings
+*org-scribe-env* - Writing mode settings
 - Themes
 - Fonts
 - Text widths
@@ -904,7 +904,7 @@ For those who prefer a GUI approach.
 
 *For a specific variable*:
 
-1. ~M-x customize-variable RET my-writing-env-work-theme RET~
+1. ~M-x customize-variable RET org-scribe-env-work-theme RET~
 2. Change value (dropdown or text field)
 3. Click "Apply and Save"
 
@@ -940,7 +940,7 @@ M-x load-theme RET poet RET
 
 Test a width change:
 #+BEGIN_EXAMPLE
-M-x set-variable RET my-writing-env-work-width RET 70 RET
+M-x set-variable RET org-scribe-env-work-width RET 70 RET
 #+END_EXAMPLE
 
 Then activate writing mode (~F8 F8 m~) to see the effect.
@@ -952,7 +952,7 @@ If something breaks:
 1. Open your init file
 2. Comment out the problematic line (add ~;;~ at the start):
    #+BEGIN_SRC emacs-lisp
-   ;; (setq my-writing-env-work-theme 'broken-theme)  ; Disabled
+   ;; (setq org-scribe-env-work-theme 'broken-theme)  ; Disabled
    #+END_SRC
 3. Reload configuration
 4. Problem should be gone
@@ -1104,7 +1104,7 @@ Let's customize your setup right now!
 3. Add to init file:
    #+BEGIN_SRC emacs-lisp
    ;; My writing theme
-   (setq my-writing-env-work-theme 'poet)  ; Replace with your choice
+   (setq org-scribe-env-work-theme 'poet)  ; Replace with your choice
    #+END_SRC
 
 ** Step 3: Set Text Width (2 min)
@@ -1114,14 +1114,14 @@ Let's customize your setup right now!
 3. Add to init file:
    #+BEGIN_SRC emacs-lisp
    ;; Comfortable reading width
-   (setq my-writing-env-work-width 75)  ; Adjust number
+   (setq org-scribe-env-work-width 75)  ; Adjust number
    #+END_SRC
 
 ** Step 4: Add Language Setting (1 min)
 
 #+BEGIN_SRC emacs-lisp
 ;; Template language
-(setq writing-template-language 'en)  ; Or 'es for Spanish
+(setq org-scribe-template-language 'en)  ; Or 'es for Spanish
 #+END_SRC
 
 ** Step 5: Create Custom Keybindings (5 min)
@@ -1131,7 +1131,7 @@ Pick 3-5 features you use most:
 #+BEGIN_SRC emacs-lisp
 ;; My writing keybindings
 (global-set-key (kbd "C-c w m") 'org-scribe/distraction-free-mode)
-(global-set-key (kbd "C-c w w") 'writing-wordcount-subtree)
+(global-set-key (kbd "C-c w w") 'org-context-count-words)
 (global-set-key (kbd "C-c d") 'org-scribe/rae-api-lookup)
 ;; Add more based on what you use!
 #+END_SRC
@@ -1164,7 +1164,7 @@ Add comments explaining your choices:
 ;; Language: English
 ;;
 
-(setq my-writing-env-work-theme 'poet)
+(setq org-scribe-env-work-theme 'poet)
 ;; ... rest of config
 #+END_SRC
 
@@ -1216,15 +1216,15 @@ The minimal config most writers need:
 ;;; Minimal org-scribe config
 
 ;; Visual
-(setq my-writing-env-work-theme 'poet)           ; Your preferred theme
-(setq my-writing-env-work-width 75)               ; Your comfortable width
+(setq org-scribe-env-work-theme 'poet)           ; Your preferred theme
+(setq org-scribe-env-work-width 75)               ; Your comfortable width
 
 ;; Language
-(setq writing-template-language 'en)              ; 'en or 'es
+(setq org-scribe-template-language 'en)              ; 'en or 'es
 
 ;; Quick access
 (global-set-key (kbd "C-c w m") 'org-scribe/distraction-free-mode)
-(global-set-key (kbd "C-c w w") 'writing-wordcount-subtree)
+(global-set-key (kbd "C-c w w") 'org-context-count-words)
 #+END_SRC
 
 *That's all you need to get started!*
@@ -1331,7 +1331,7 @@ MAINTENANCE
 - ~C-h i~ - Info documentation
 
 *Online*:
-- org-scribe issues: https://github.com/anthropics/claude-code/issues
+- org-scribe issues: https://codeberg.org/jcastp/org-scribe/issues
 - r/emacs community
 - Emacs StackExchange
 - #emacs on IRC/Discord
