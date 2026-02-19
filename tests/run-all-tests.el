@@ -14,15 +14,20 @@
 ;;
 ;; Test Coverage:
 ;;   - Core utilities (org-scribe-core.el, org-scribe-config.el)
+;;   - Core utilities extended (org-scribe-core.el - project type/structure)
+;;   - Messages (org-scribe-messages.el)
 ;;   - Project creation (org-scribe-project.el)
 ;;   - Capture system (org-scribe-capture.el)
 ;;   - Search functions (org-scribe-search.el)
 ;;   - Character linking (org-scribe-character-links.el)
 ;;   - Location linking (org-scribe-location-links.el)
 ;;   - Plot thread linking (org-scribe-plot-links.el)
+;;   - Character relationships (org-scribe-character-relationships.el)
+;;   - Link display name updates (org-scribe-link-update.el)
 ;;   - Column view enhancement (org-scribe-column-view.el)
 ;;   - Export filters (org-scribe-export.el)
 ;;   - Word counting (org-scribe-wordcount.el)
+;;   - Dictionary and language tools (org-scribe-dictionary.el)
 
 ;;; Code:
 
@@ -41,17 +46,22 @@
 ;;; Load test files
 
 (defvar org-scribe-test-files
-  '("org-scribe-test"           ; Core utilities
-    "test-wordcount"         ; Word counting
-    "test-project"           ; Project creation
-    "test-capture"           ; Capture system
-    "test-search"            ; Search functions
-    "test-search-links"      ; Link extraction helpers
-    "test-character-links"   ; Character linking
-    "test-location-links"    ; Location linking
-    "test-plot-links"        ; Plot thread linking
-    "test-column-view"       ; Column view enhancement
-    "test-export")           ; Export filters
+  '("org-scribe-test"              ; Core utilities (basic)
+    "test-core-extended"           ; Core utilities (project type/structure)
+    "test-messages"                ; Message system
+    "test-wordcount"               ; Word counting
+    "test-project"                 ; Project creation
+    "test-capture"                 ; Capture system
+    "test-search"                  ; Search functions
+    "test-search-links"            ; Link extraction helpers
+    "test-character-links"         ; Character linking
+    "test-location-links"          ; Location linking
+    "test-plot-links"              ; Plot thread linking
+    "test-character-relationships" ; Character relationship system
+    "test-link-update"             ; Link display name updates
+    "test-column-view"             ; Column view enhancement
+    "test-export"                  ; Export filters
+    "test-dictionary")             ; Dictionary and language tools
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
@@ -121,14 +131,32 @@ Suitable for CI/CD pipelines and automated testing."
 
 ;;;###autoload
 (defun org-scribe-run-linking-tests ()
-  "Run all linking system tests (character, location, plot)."
+  "Run all linking system tests (character, location, plot, relationships, updates)."
   (interactive)
   (let ((tests-dir (file-name-directory (or load-file-name buffer-file-name))))
     (load-file (expand-file-name "test-character-links.el" tests-dir))
     (load-file (expand-file-name "test-location-links.el" tests-dir))
     (load-file (expand-file-name "test-plot-links.el" tests-dir))
+    (load-file (expand-file-name "test-character-relationships.el" tests-dir))
+    (load-file (expand-file-name "test-link-update.el" tests-dir))
     (load-file (expand-file-name "test-column-view.el" tests-dir)))
-  (ert "^test-character-\\|^test-location-\\|^test-plot-\\|^test-column-"))
+  (ert "^test-character-\\|^test-location-\\|^test-plot-\\|^test-relationships-\\|^test-link-update-\\|^test-column-"))
+
+;;;###autoload
+(defun org-scribe-run-messages-tests ()
+  "Run message system tests only."
+  (interactive)
+  (load-file (expand-file-name "test-messages.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-messages-"))
+
+;;;###autoload
+(defun org-scribe-run-dictionary-tests ()
+  "Run dictionary and language tool tests only."
+  (interactive)
+  (load-file (expand-file-name "test-dictionary.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-dictionary-"))
 
 ;;;###autoload
 (defun org-scribe-run-export-tests ()
@@ -165,6 +193,10 @@ Note: Requires org-context-extended to be installed."
     (message "Test coverage:")
     (message "  - Core utilities:      %d tests"
              (length (ert-select-tests "^org-scribe-test-" t)))
+    (message "  - Core extended:       %d tests"
+             (length (ert-select-tests "^test-core-" t)))
+    (message "  - Messages:            %d tests"
+             (length (ert-select-tests "^test-messages-" t)))
     (message "  - Project creation:    %d tests"
              (length (ert-select-tests "^test-project-\\|^test-validate-\\|^test-template-\\|^test-insert-" t)))
     (message "  - Capture system:      %d tests"
@@ -177,12 +209,18 @@ Note: Requires org-context-extended to be installed."
              (length (ert-select-tests "^test-location-" t)))
     (message "  - Plot linking:        %d tests"
              (length (ert-select-tests "^test-plot-" t)))
+    (message "  - Relationships:       %d tests"
+             (length (ert-select-tests "^test-relationships-" t)))
+    (message "  - Link updates:        %d tests"
+             (length (ert-select-tests "^test-link-update-" t)))
     (message "  - Column view:         %d tests"
              (length (ert-select-tests "^test-column-" t)))
     (message "  - Export filters:      %d tests"
              (length (ert-select-tests "^test-export-\\|^test-scene-break-" t)))
     (message "  - Word counting:       %d tests"
              (length (ert-select-tests "^org-scribe-test-wordcount-" t)))
+    (message "  - Dictionary:          %d tests"
+             (length (ert-select-tests "^test-dictionary-" t)))
     (message "=========================================")))
 
 ;;; Batch mode entry point
