@@ -21,29 +21,35 @@
 (defcustom org-scribe-novel-file-names '("novel.org" "novela.org" "manuscript.org")
   "List of filenames to try when looking for main manuscript."
   :type '(repeat string)
-  :group 'writing)
+  :group 'org-scribe)
 
 (defcustom org-scribe-notes-dir-names '("notes" "notas")
   "List of directory names to try when looking for notes directory."
   :type '(repeat string)
-  :group 'writing)
+  :group 'org-scribe)
 
 (defcustom org-scribe-create-dirs-automatically t
   "When non-nil, create directories (characters/, research/) automatically."
   :type 'boolean
-  :group 'writing)
+  :group 'org-scribe)
+
+(defcustom org-scribe-projects-directory
+  (expand-file-name "~/writing/")
+  "Default base directory proposed when creating a new novel or short story project."
+  :type 'directory
+  :group 'org-scribe)
 
 (defcustom org-scribe-stories-directory
   (expand-file-name "~/writing/exercises")
   "Directory where writing exercise files will be created."
   :type 'directory
-  :group 'writing)
+  :group 'org-scribe)
 
 ;;; Writing Modes Configuration
 
 (defgroup org-scribe-env nil
   "Customization group for writing environment modes."
-  :group 'writing)
+  :group 'org-scribe)
 
 (defcustom org-scribe-env-normal-theme 'ef-deuteranopia-dark
   "Theme for normal environment."
@@ -80,13 +86,13 @@
 (defcustom org-scribe/sinonimo-window-width 80
   "Width of the synonyms side window."
   :type 'integer
-  :group 'writing)
+  :group 'org-scribe)
 
 (defcustom org-scribe/python-script-path
   (expand-file-name "~/Nextcloud/escritura/software/writing_companion/writing_companion.py")
   "Path to writing companion Python script for exercise generation."
   :type 'file
-  :group 'writing)
+  :group 'org-scribe)
 
 (defcustom org-scribe/exercise-templates
   '(("all" . "all prompt")
@@ -96,7 +102,7 @@
 Each element is (NAME . SCRIPT-ARGS) where SCRIPT-ARGS are passed
 to the Python script."
   :type '(alist :key-type string :value-type string)
-  :group 'writing)
+  :group 'org-scribe)
 
 ;;; Export Configuration
 
@@ -110,41 +116,41 @@ to the Python script."
   "Alist of export backend symbols to scene break replacement strings.
 The key t serves as the default for unlisted backends."
   :type '(alist :key-type symbol :value-type string)
-  :group 'writing)
+  :group 'org-scribe)
 
 ;;; Word Counting
 
 (defcustom org-scribe-wordcount-default-ignore-tags '("noexport")
   "Default tags to ignore when counting words in org documents."
   :type '(repeat string)
-  :group 'writing)
+  :group 'org-scribe)
 
 ;;; Editing Mode Configuration
 
 (defcustom org-scribe-editing-left-width-percent 0.25
   "Percentage of frame width for left panel in editing mode."
   :type 'float
-  :group 'writing)
+  :group 'org-scribe)
 
 (defcustom org-scribe-editing-right-width-percent 0.25
   "Percentage of frame width for right panel in editing mode."
   :type 'float
-  :group 'writing)
+  :group 'org-scribe)
 
 (defcustom org-scribe-editing-theme 'leuven
   "Theme to use in editing mode."
   :type 'symbol
-  :group 'writing)
+  :group 'org-scribe)
 
 (defcustom org-scribe-editing-fill-column-width 90
   "Column width for visual-fill-column in editing mode."
   :type 'integer
-  :group 'writing)
+  :group 'org-scribe)
 
 (defcustom org-scribe-editing-fontaine-preset 'editing
   "Fontaine preset to use in editing mode."
   :type 'symbol
-  :group 'writing)
+  :group 'org-scribe)
 
 (provide 'org-scribe-config)
 

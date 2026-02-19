@@ -103,7 +103,7 @@ This function:
 7. Opens the README.org file"
   (interactive
    (list
-    (read-directory-name (org-scribe-msg 'project-creation-base-dir) "~/writing/")
+    (read-directory-name (org-scribe-msg 'project-creation-base-dir) org-scribe-projects-directory)
     (read-string (org-scribe-msg 'project-creation-novel-title))))
 
   (unless (file-directory-p org-scribe-template-directory)
@@ -169,7 +169,7 @@ This function:
 7. Opens the story file (story.org or cuento.org)"
   (interactive
    (list
-    (read-directory-name (org-scribe-msg 'project-creation-base-dir) "~/writing/")
+    (read-directory-name (org-scribe-msg 'project-creation-base-dir) org-scribe-projects-directory)
     (read-string (org-scribe-msg 'project-creation-short-story-title))))
 
   ;; Determine template directory based on language
