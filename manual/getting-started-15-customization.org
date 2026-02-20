@@ -1353,6 +1353,7 @@ MAINTENANCE
 You now have a complete, powerful, and personalized writing environment. Use it to write amazing stories! 📚✨
 
 *Previous*: [[file:getting-started-14-revision-workflow.org][Lesson 14: Revision and Editing Workflow]]
+*Next (Optional)*: [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with org-scribe-planner]]
 *Back to Start*: [[file:getting-started-00-index.org][Getting Started Guide - Index]]
 
 *Tutorial Complete!* Happy writing! ✍️

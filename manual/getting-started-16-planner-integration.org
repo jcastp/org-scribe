@@ -1,0 +1,437 @@
+#+TITLE: Lesson 16: Writing Goal Planning with org-scribe-planner
+#+AUTHOR: Javier Castilla
+#+DATE: 2026-02-20
+#+STARTUP: overview
+
+* Welcome to Lesson 16!
+
+You know how to count words, track progress tables, and log your daily sessions. But do you ever wish Emacs could tell you /how many words you need to write today/ to finish your manuscript on time? That's exactly what this lesson is about.
+
+~org-scribe-planner~ is a companion package that handles goal-oriented writing plans: target dates, milestones, daily targets, and progress dashboards. The integration module connects it seamlessly to your org-scribe project so that the two packages share word counts, project roots, and plan files automatically.
+
+By the end of this lesson, you'll have:
+- Installed org-scribe-planner and enabled the integration
+- Created a writing plan for your project
+- Seen your live word count pushed to the plan automatically
+- Understood the full planner submenu (~W~) in the Hydra
+- Learned how to disable individual features you don't want
+
+*Estimated time*: 20-30 minutes
+
+*Note*: This lesson covers an *optional integration*. You can skip it if you prefer to track goals manually.
+
+* Before You Begin
+
+** What You Need
+
+✓ ~org-scribe~ installed and working (you've completed Lessons 1-3)
+✓ ~org-scribe-planner~ installed (see next section)
+✓ A project with at least a few scenes and word count properties
+
+** Installing org-scribe-planner
+
+~org-scribe-planner~ is a separate package available at:
+
+  https://codeberg.org/jcastp/org-scribe-planner
+
+*Using use-package*:
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-scribe-planner
+  :vc (:url "https://codeberg.org/jcastp/org-scribe-planner"
+       :branch "main"
+       :rev :newest))
+#+END_SRC
+
+*From source*:
+
+#+BEGIN_SRC sh
+git clone https://codeberg.org/jcastp/org-scribe-planner ~/.emacs.d/org-scribe-planner
+#+END_SRC
+
+Then add to your init file:
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/org-scribe-planner")
+(require 'org-scribe-planner)
+#+END_SRC
+
+** Enabling the Integration
+
+The integration module lives inside the ~org-scribe~ package at
+~integration/org-scribe-planner-integration.el~. It is *not loaded automatically* — you opt in by adding this to your init file *after* both packages are loaded:
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'org-scribe-planner
+  (require 'org-scribe-planner-integration))
+#+END_SRC
+
+*If you use use-package for org-scribe*, a clean way to do it:
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-scribe-planner
+  :vc (:url "https://codeberg.org/jcastp/org-scribe-planner"
+       :branch "main"
+       :rev :newest)
+  :config
+  (require 'org-scribe-planner-integration))
+#+END_SRC
+
+Restart Emacs (or evaluate the expression) and you're ready.
+
+* What Does the Integration Do?
+
+Before diving into the hands-on steps, here is an overview of everything the integration enables. Each feature is independent and can be disabled individually (see [[*Disabling Individual Features][Disabling Individual Features]] at the end of this lesson).
+
+| Feature                        | What happens automatically                                |
+|--------------------------------+-----------------------------------------------------------|
+| Auto-load plan                 | Plan file loads when you open any project file            |
+| Word count bridge              | Plan reads word counts directly from your manuscript      |
+| Auto-update after counting     | ~F8 F8 a~ pushes new total to the plan silently           |
+| Project-aware file picker      | Load-plan dialog opens at your project root               |
+| Plan creation on new project   | Offered when you run ~org-scribe-create-novel-project~    |
+| Planner Hydra submenu (~W~)    | Full planner menu accessible from the main Hydra          |
+| Mode-line status               | Today's target/actual shown as ~[W:actual/target]~        |
+
+* Step 1: Create Your Writing Plan
+
+Let's create a plan for an existing project.
+
+** Open Your Project
+
+Open any file inside your org-scribe project (your ~novel.org~, a scene file, etc.).
+
+** Open the Planner Submenu
+
+Press ~F8 F8~ to open the Hydra menu. You'll see a new entry listed:
+~W~ — Writing plan.
+
+Press ~W~ to open the planner submenu:
+
+#+BEGIN_EXAMPLE
+  org-scribe-planner
+  ──────────────────────────────────────────────────
+  p: Show current plan calendar
+  n: New plan
+  l: Load plan
+  u: Update progress (from word count)
+  d: Update daily word count
+  r: Recalculate plan
+  a: Adjust remaining days
+  m: Milestones
+  D: Dashboards menu
+  q: Back to main menu
+#+END_EXAMPLE
+
+** Create a New Plan
+
+Press ~n~ (New plan).
+
+The planner will prompt you for:
+
+1. *Plan file location* — the dialog starts at your project root (that's the integration working already!). Accept the default (~plan.org~) or type a name like ~my-novel-plan.org~.
+2. *Total word count target* — e.g. ~80000~ for an 80,000-word novel.
+3. *Target completion date* — e.g. ~2026-12-31~.
+4. *Daily writing days* — which days of the week you plan to write (e.g. Mon–Fri).
+
+The planner creates ~plan.org~ in your project root and calculates your required daily word count automatically.
+
+** What the Plan File Looks Like
+
+Open ~plan.org~ to see it:
+
+#+BEGIN_EXAMPLE
+* My Novel — Writing Plan
+:PROPERTIES:
+:TOTAL_WORDS: 80000
+:CURRENT_WORDS: 12450
+:TARGET_DATE: 2026-12-31
+:DAILY_WORDS: 650
+:END:
+...
+#+END_EXAMPLE
+
+The key properties:
+- ~TOTAL_WORDS~ — your total manuscript target
+- ~CURRENT_WORDS~ — the latest word count (updated automatically)
+- ~TARGET_DATE~ — your finish-by date
+- ~DAILY_WORDS~ — how many words/day you need to stay on track
+
+* Step 2: Watch Word Counts Sync Automatically
+
+This is where the integration really shines.
+
+** Update Your Manuscript Word Counts
+
+Go to your manuscript (~novel.org~) and run the word count command:
+
+1. Press ~F8 F8 a~ (Add word count properties)
+2. Watch the ~:WORDCOUNT:~ properties update on each heading
+
+** Check the Plan
+
+Immediately after step 2, look at your minibuffer. You should see:
+
+#+BEGIN_EXAMPLE
+org-scribe-planner: progress updated to 12847 words.
+#+END_EXAMPLE
+
+The integration automatically:
+1. Summed all ~WORDCOUNT~ properties across your manuscript
+2. Wrote the new total to ~plan.org~
+3. Saved the plan silently
+
+No extra steps needed. Every time you run ~F8 F8 a~, your plan stays in sync.
+
+** Check the Mode Line
+
+Look at the right end of your mode line. You should see something like:
+
+#+BEGIN_EXAMPLE
+[W:450/650]
+#+END_EXAMPLE
+
+This means:
+- ~450~ — words written today (from your daily log entry)
+- ~650~ — today's target to stay on track
+
+Green days are satisfying. Make it a habit!
+
+* Step 3: View Your Plan Calendar
+
+Press ~F8 F8 W p~ (Show current plan calendar).
+
+The planner opens a visual calendar showing:
+- Each writing day with its target word count
+- Actual words written per day (once you log them)
+- Color indicators for ahead / on track / behind
+- Milestone markers at key word count thresholds
+
+This gives you an at-a-glance picture of your entire project arc.
+
+* Step 4: Log Your Daily Session
+
+After a writing session, update the daily count.
+
+Press ~F8 F8 W d~ (Update daily word count).
+
+The planner prompts for:
+1. The date (defaults to today)
+2. How many words you wrote this session
+
+It records the entry and the mode line updates immediately.
+
+*Tip*: Combine this with your existing daily writing log (from Lesson 3). The plan calendar gives you the goal-oriented view; your manuscript's progress table gives you the structural view. Both are valuable!
+
+* Step 5: Keep the Plan Healthy
+
+As you write, things change — you get ahead, fall behind, or adjust your target. Here are the tools for that.
+
+** Recalculate the Plan
+
+Press ~F8 F8 W r~ (Recalculate).
+
+Run this whenever you want to recalculate daily targets based on current progress and remaining days. Useful after a productive week (the target goes down!) or when you've been away for a while.
+
+** Adjust Remaining Days
+
+Press ~F8 F8 W a~ (Adjust remaining days).
+
+Use this when your schedule changes — vacation, deadline moved, days off. The planner redistributes the remaining word count across the new schedule.
+
+** Update Progress Manually
+
+Press ~F8 F8 W u~ (Update progress).
+
+This reads the current total directly from your manuscript (same as the automatic sync after ~F8 F8 a~), but you can trigger it any time without re-running the full word count command.
+
+** Milestones
+
+Press ~F8 F8 W m~ (Milestones).
+
+Milestones are named word count checkpoints — "Act I complete", "Halfway!", "First draft done". The planner lets you define them and marks them on the calendar.
+
+** Dashboards
+
+Press ~F8 F8 W D~ (Dashboards menu).
+
+The planner provides various progress dashboards: simple totals, daily averages, streak tracking, and projected completion dates based on your recent pace.
+
+* Step 6: Plan Creation on New Projects
+
+From now on, whenever you create a new project with ~M-x org-scribe-create-novel-project~ or ~M-x org-scribe-create-short-story-project~, the integration will offer:
+
+#+BEGIN_EXAMPLE
+Create a writing plan for "My New Novel" with org-scribe-planner? (yes or no)
+#+END_EXAMPLE
+
+Answer ~yes~ and the planner opens immediately, ready to set up the new project's plan. This is the smoothest way to start a project with goals from day one.
+
+* How Auto-Loading Works
+
+When you open any file inside an org-scribe project, the integration looks for a plan file automatically. It checks in this order:
+
+1. ~<project-root>/plan.org~
+2. ~<project-root>/<project-title>-plan.org~ (title read from ~.org-scribe-project~)
+3. Any ~.org~ file in the project root that contains a ~TOTAL_WORDS~ property
+
+If a matching file is found, the plan loads silently and you see:
+
+#+BEGIN_EXAMPLE
+org-scribe-planner: loaded plan "My Novel".
+#+END_EXAMPLE
+
+If no plan file exists yet, nothing happens — no error, no interruption.
+
+* Disabling Individual Features
+
+Every feature can be turned off independently. Add these to your init file after loading the integration:
+
+** Disable Auto-Loading Plans
+
+#+BEGIN_SRC emacs-lisp
+;; Don't load the plan automatically when opening a project file
+(remove-hook 'org-scribe-mode-hook
+             #'org-scribe-planner-integration--auto-load-plan)
+#+END_SRC
+
+** Disable Automatic Word Count Push
+
+#+BEGIN_SRC emacs-lisp
+;; Don't push word counts to the plan after F8 F8 a
+(advice-remove 'org-scribe/ews-org-count-words
+               #'org-scribe-planner-integration--after-wordcount)
+#+END_SRC
+
+** Revert to Manual Prompt in Update-Progress
+
+#+BEGIN_SRC emacs-lisp
+;; Make update-progress prompt for the count instead of reading the manuscript
+(setq org-scribe-planner-wordcount-function nil)
+#+END_SRC
+
+** Revert to Default Directory in File Picker
+
+#+BEGIN_SRC emacs-lisp
+;; Load-plan dialog opens at default-directory, not the project root
+(setq org-scribe-planner-project-root-function nil)
+#+END_SRC
+
+* Practical Exercise
+
+Let's do a complete write-and-track cycle using the integration.
+
+** Exercise: Your First Integrated Session
+
+1. *Open your project* — open ~novel.org~ in your project.
+2. *Check auto-load* — after a moment, does the minibuffer show ~org-scribe-planner: loaded plan~? If no plan exists yet, continue to step 3.
+3. *Create a plan* — press ~F8 F8 W n~ and follow the prompts.
+4. *Write something* — activate writing mode (~F8 F8 m~), write 200 words, exit mode, save (~C-x C-s~).
+5. *Update word counts* — press ~F8 F8 a~. Watch the minibuffer confirm the plan updated.
+6. *Check mode line* — is ~[W:actual/target]~ visible? Does the actual number match what you just wrote?
+7. *Log the session* — press ~F8 F8 W d~ and enter today's session word count.
+8. *View the calendar* — press ~F8 F8 W p~ to see your plan.
+
+Congratulations — you have a fully integrated writing tracking system!
+
+* Common Questions
+
+** "The W key doesn't appear in my Hydra menu hint."
+
+This is expected. The ~W~ binding is registered in the Hydra keymap but not shown in the hint (to keep the menu compact). Just press ~W~ — it works even though it's not listed. Press it and the planner submenu will open.
+
+** "Auto-load says 'loaded plan' but I didn't create one yet."
+
+The integration found an existing ~.org~ file in your project root that has a ~TOTAL_WORDS~ property (step 3 of the search order). If this is a false positive, rename the file or remove the ~TOTAL_WORDS~ property from it.
+
+** "The mode line shows [W:0/650] even though I wrote today."
+
+The daily entry doesn't come from the automatic word count sync — it comes from what you log via ~F8 F8 W d~. Run that command and enter how many words you wrote this session. The mode line will update immediately.
+
+** "I want to track words for multiple projects independently."
+
+Each project has its own ~plan.org~ at its root. When you switch between projects (open a file in a different project), the integration detects the new project root and loads that project's plan. The two plans remain separate.
+
+** "Can I use this with a short story project?"
+
+Yes! The integration works identically with short story projects. The plan file goes in the short story's project root (~story.org~'s parent directory).
+
+* Troubleshooting
+
+** "W in the Hydra does nothing."
+
+- Confirm the integration is loaded: ~M-x describe-function RET org-scribe-planner-integration--auto-load-plan~. If it says "not defined", the integration file wasn't loaded.
+- Check your init file has ~(require 'org-scribe-planner-integration)~ inside a ~with-eval-after-load 'org-scribe-planner~ block.
+- Make sure ~org-scribe-planner~ itself loaded first: ~M-x describe-feature RET org-scribe-planner~.
+
+** "Plan doesn't auto-load even though plan.org exists."
+
+- Confirm you're inside an org-scribe project (the directory must have a ~.org-scribe-project~ marker file).
+- Confirm ~org-scribe-mode~ is active in the buffer (check mode line for ~Write~).
+- Try loading manually: ~M-x org-scribe-planner-load-plan~.
+
+** "Word counts don't push to the plan after F8 F8 a."
+
+- A plan must be active. Check ~org-scribe-planner--current-plan~ is non-nil: ~M-: org-scribe-planner--current-plan RET~ in the scratch buffer.
+- Confirm the advice is in place: ~M-x describe-function RET org-scribe/ews-org-count-words~ — you should see advice listed.
+- Run ~F8 F8 W u~ (Update progress) manually to test the word count bridge independently.
+
+* What You've Learned
+
+You've completed Lesson 16!
+
+✓ What org-scribe-planner is and how to install it
+✓ How to enable the integration with a single ~require~ call
+✓ How to create a writing plan from inside your project (~F8 F8 W n~)
+✓ How word counts push to the plan automatically after ~F8 F8 a~
+✓ How the mode line shows today's target vs. actual (~[W:actual/target]~)
+✓ The full planner Hydra submenu (~W~) and what each key does
+✓ How to log daily sessions, recalculate, and adjust the plan
+✓ How the auto-load system finds plan files
+✓ How to disable individual features you don't need
+
+* Quick Reference
+
+** Planner Submenu Keys (F8 F8 W)
+
+| Key | Command                       | What It Does                              |
+|-----+-------------------------------+-------------------------------------------|
+| ~p~ | Show current plan calendar    | Visual calendar with daily targets/actuals |
+| ~n~ | New plan                      | Create a plan for the current project      |
+| ~l~ | Load plan                     | Open a plan file manually                  |
+| ~u~ | Update progress               | Push current manuscript total to plan      |
+| ~d~ | Update daily word count       | Log today's session words                  |
+| ~r~ | Recalculate plan              | Recompute daily targets from current state |
+| ~a~ | Adjust remaining days         | Reschedule around changes in availability  |
+| ~m~ | Milestones                    | View/set named word count checkpoints      |
+| ~D~ | Dashboards menu               | Progress dashboards and analytics          |
+| ~q~ | Back to main menu             | Return to main Hydra                       |
+
+** Integration Features Summary
+
+| Feature                    | Enabled by default | How to disable                                            |
+|----------------------------+--------------------+-----------------------------------------------------------|
+| Auto-load plan             | Yes                | ~remove-hook org-scribe-mode-hook auto-load-plan~         |
+| Auto-push after ~F8 F8 a~  | Yes                | ~advice-remove org-scribe/ews-org-count-words~            |
+| Manuscript word count read | Yes                | ~(setq org-scribe-planner-wordcount-function nil)~        |
+| Project-root file picker   | Yes                | ~(setq org-scribe-planner-project-root-function nil)~     |
+| Offer plan on new project  | Yes                | ~advice-remove org-scribe-create-novel-project~           |
+| Planner Hydra submenu ~W~  | Yes                | Remove key from ~hydra-org-scribe/keymap~                 |
+| Mode-line status           | Yes                | Remove entry from ~mode-line-misc-info~                   |
+
+** Daily Writing Workflow with Integration
+
+| Phase          | Action                               | Key       |
+|----------------+--------------------------------------+-----------|
+| Start session  | Check mode line for today's target   | —         |
+| Write          | Write in distraction-free mode       | ~F8 F8 m~ |
+| After writing  | Update word count properties         | ~F8 F8 a~ |
+|                | Plan updates automatically!          | —         |
+| Log session    | Log words written today              | ~F8 F8 W d~ |
+| Weekly review  | Recalculate if pace has changed      | ~F8 F8 W r~ |
+
+---
+
+*Previous*: [[file:getting-started-15-customization.org][Lesson 15: Customization and Configuration]]
+
+*Lesson 16 Complete!* ✓

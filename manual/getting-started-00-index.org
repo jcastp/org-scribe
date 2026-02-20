@@ -196,7 +196,7 @@ Use integrated Spanish dictionary, synonyms, and translation tools while writing
 - Translation integration
 - Quick lookups without breaking flow
 
-** Part 5: Workflows and Best Practices
+** Part 5: Workflows, Best Practices and Integrations
 
 *** [[file:getting-started-13-daily-workflow.org][Lesson 13: Daily Writing Workflow]]
 *Time: 15 minutes*
@@ -234,6 +234,19 @@ Tailor the package to your personal preferences and workflow.
 - Configuring export settings
 - Language settings (English/Spanish)
 
+*** [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with org-scribe-planner]] /(Optional)/
+*Time: 20-30 minutes*
+
+Connect ~org-scribe~ to the companion ~org-scribe-planner~ package for goal-oriented writing plans, daily targets, milestones, and progress dashboards.
+
+*You'll learn:*
+- Installing org-scribe-planner and enabling the integration
+- Creating a writing plan for your project
+- How word counts sync to the plan automatically after ~F8 F8 a~
+- Using the planner Hydra submenu (~W~) — calendar, milestones, dashboards
+- Logging daily sessions and adjusting the plan as you go
+- Disabling individual integration features
+
 * Quick Reference
 
 ** Essential Keybindings
@@ -261,6 +274,9 @@ From the Hydra menu (F8 F8):
 | C   | Character linking menu    | 3   | Search by plot          |
 | L   | Location linking menu     | 4   | Search by location      |
 | P   | Plot thread linking menu  | q   | Quit menu               |
+| W   | Writing plan menu (*)     |     |                         |
+
+(*) Requires the org-scribe-planner integration (see [[file:getting-started-16-planner-integration.org][Lesson 16]]).
 
 ** Getting Help
 
@@ -280,9 +296,9 @@ Don't feel pressured to complete all lessons at once. Take your time, experiment
 * About This Tutorial
 
 - *Created*: 2025-11-16
-- *Last Updated*: 2025-11-16
+- *Last Updated*: 2026-02-20
 - *Package Version*: 0.4.0
-- *Estimated Total Time*: ~4 hours (at your own pace)
+- *Estimated Total Time*: ~4.5 hours (at your own pace)
 - *Difficulty*: Beginner to Intermediate
 
 Happy writing! ✍

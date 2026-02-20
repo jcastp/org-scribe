@@ -27,6 +27,7 @@ This package organizes features into the following categories:
 10. [[#column-view][Column View Enhancements]] - Clean display of ID links in column view
 11. [[#ui-navigation][UI & Navigation]] - Hydra menu and keybindings
 12. [[#configuration][Configuration]] - Customization options
+13. [[#integrations][Third-Party Integrations]] - Optional connections to companion packages
 
 * Project Management
 :PROPERTIES:
@@ -598,6 +599,26 @@ Defines the regexp pattern used by ~org-scribe/search-edits-recursive~ to find i
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~search/org-scribe-search.el~
 
+* Third-Party Integrations
+:PROPERTIES:
+:CUSTOM_ID: integrations
+:END:
+
+** org-scribe-planner Integration (~org-scribe-planner-integration~)
+
+An optional bridge module that connects ~org-scribe~ to the companion ~org-scribe-planner~ package for goal-oriented writing plans. The module lives at ~integration/org-scribe-planner-integration.el~ and is *not loaded automatically*. Enable it with:
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'org-scribe-planner
+  (require 'org-scribe-planner-integration))
+#+END_SRC
+
+Features provided: (1) auto-load the project's plan file when any project file is opened; (2) push live word counts to the plan after running ~org-scribe/ews-org-count-words~; (3) wire the planner's word count function to read ~WORDCOUNT~ properties from the manuscript; (4) set the planner's project-root function so file pickers start at the current project root; (5) offer plan creation after ~org-scribe-create-novel-project~ / ~org-scribe-create-short-story-project~; (6) add a planner sub-hydra accessible via ~W~ in the main Hydra menu; (7) show today's target/actual in the mode line as ~[W:actual/target]~. Each feature is independently disabable.
+
+*Status*: Fully implemented (requires org-scribe-planner) | *Hydra*: ~W~ sub-menu (hidden from hint) | *Module*: ~integration/org-scribe-planner-integration.el~
+
+See [[file:getting-started-16-planner-integration.org][Lesson 16]] for a step-by-step tutorial.
+
 * Feature Statistics
 
 ** Summary by Category
@@ -659,7 +680,7 @@ manual/
 * Document Metadata
 
 - *Created*: 2025-11-16
-- *Last Updated*: 2025-11-16
+- *Last Updated*: 2026-02-20
 - *Package Version*: 0.4.0
-- *Total Features Documented*: 86
+- *Total Features Documented*: 87 (86 core + 1 optional integration)
 - *Status*: Complete feature extraction, ready for detailed documentation
