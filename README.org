@@ -1078,8 +1078,10 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 This module is *not loaded automatically*. To enable it, add the following to your init file after both packages are loaded:
 
 #+begin_src emacs-lisp
-(with-eval-after-load 'org-scribe-planner
-  (require 'org-scribe-planner-integration))
+  (with-eval-after-load 'org-scribe
+    (require 'org-scribe-planner-integration
+             (expand-file-name "integration/org-scribe-planner-integration"
+                               (file-name-directory (locate-library "org-scribe")))))
 #+end_src
 
 ** What It Does
