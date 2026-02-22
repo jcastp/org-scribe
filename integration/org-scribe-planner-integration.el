@@ -89,17 +89,30 @@
 Returns the path to the first candidate found, or nil if none exists.
 
 Search order:
+  0. Path recorded in .org-scribe-project (\"# Plan: <path>\")
   1. <root>/plan.org
   2. <root>/<title>-plan.org  (title derived from .org-scribe-project)
   3. Any single .org file in ROOT that has a TOTAL_WORDS property."
-  (let ((candidate-1 (expand-file-name "plan.org" root)))
+  (let ((candidate-1 (expand-file-name "plan.org" root))
+        (marker (expand-file-name ".org-scribe-project" root)))
     (cond
+     ;; 0. Path recorded in the .org-scribe-project marker file (fastest,
+     ;;    deterministic across sessions; written by --save-plan-path).
+     ((let ((recorded
+             (when (file-exists-p marker)
+               (with-temp-buffer
+                 (insert-file-contents marker)
+                 (goto-char (point-min))
+                 (when (re-search-forward "^# Plan: \\(.*\\)$" nil t)
+                   (match-string 1))))))
+        (when (and recorded (file-exists-p recorded))
+          recorded)))
+
      ;; 1. plain plan.org
      ((file-exists-p candidate-1) candidate-1)
 
      ;; 2. <title>-plan.org derived from the marker file
-     ((let* ((marker (expand-file-name ".org-scribe-project" root))
-             (title (when (file-exists-p marker)
+     ((let* ((title (when (file-exists-p marker)
                       (with-temp-buffer
                         (insert-file-contents marker)
                         (goto-char (point-min))
@@ -144,21 +157,79 @@ nothing if no candidate is found or if a plan is already active."
 
 (add-hook 'org-scribe-mode-hook #'org-scribe-planner-integration--auto-load-plan)
 
+;;; Persist plan path in .org-scribe-project (Fix 4)
+;;
+;; Stores a "# Plan: <path>" line in the project marker file so that
+;; plan discovery is O(1) and deterministic across Emacs restarts,
+;; renames, and moves.
+
+(defun org-scribe-planner-integration--save-plan-path (_plan plan-file)
+  "Record PLAN-FILE in the .org-scribe-project marker for the current project.
+This makes plan discovery deterministic across Emacs sessions.
+_PLAN is the plan structure passed by `org-scribe-planner-after-plan-load-hook';
+it is not used here."
+  (when-let* ((root (org-scribe-project-root))
+              (marker (expand-file-name ".org-scribe-project" root))
+              (_ (file-exists-p marker)))
+    (with-temp-buffer
+      (insert-file-contents marker)
+      (goto-char (point-min))
+      (if (re-search-forward "^# Plan: .*$" nil t)
+          (replace-match (format "# Plan: %s" plan-file))
+        (goto-char (point-max))
+        (unless (bolp) (insert "\n"))
+        (insert (format "# Plan: %s\n" plan-file)))
+      (write-region (point-min) (point-max) marker nil 'silent))))
+
+;; Persist plan path whenever a plan is loaded via the auto-load hook.
+(add-hook 'org-scribe-planner-after-plan-load-hook
+          #'org-scribe-planner-integration--save-plan-path)
+
+(defun org-scribe-planner-integration--after-external-plan-load (&rest _)
+  "Persist the plan path after a manual plan load or creation.
+Guards against `org-scribe-planner-after-plan-load-hook' not being
+run by the external package's `org-scribe-planner-load-plan' and
+`org-scribe-planner-new-plan' commands."
+  (when (and org-scribe-planner--current-plan
+             org-scribe-planner--current-plan-file)
+    (org-scribe-planner-integration--save-plan-path
+     org-scribe-planner--current-plan
+     org-scribe-planner--current-plan-file)))
+
+(advice-add 'org-scribe-planner-load-plan :after
+            #'org-scribe-planner-integration--after-external-plan-load)
+(advice-add 'org-scribe-planner-new-plan :after
+            #'org-scribe-planner-integration--after-external-plan-load)
+
 ;;; Feature 2 & 3: Word count bridge
 
 (defun org-scribe-planner-integration--sum-wordcounts (novel-file)
   "Sum all WORDCOUNT properties in NOVEL-FILE and return the total.
+Prefers reading from a live buffer visiting NOVEL-FILE so that unsaved
+WORDCOUNT changes written by `org-scribe/ews-org-count-words' are
+included.  Falls back to reading the saved file from disk when no live
+buffer exists.
 Returns nil if NOVEL-FILE is nil or unreadable."
   (when (and novel-file (file-readable-p novel-file))
-    (let ((total 0))
-      (with-temp-buffer
-        (insert-file-contents novel-file)
-        (org-mode)
-        (org-map-entries
-         (lambda ()
-           (let ((wc (org-entry-get nil "WORDCOUNT")))
-             (when wc
-               (setq total (+ total (string-to-number wc))))))))
+    (let ((total 0)
+          (live-buffer (find-buffer-visiting novel-file)))
+      (if live-buffer
+          ;; Read from the live buffer: captures unsaved property changes.
+          (with-current-buffer live-buffer
+            (org-map-entries
+             (lambda ()
+               (let ((wc (org-entry-get nil "WORDCOUNT")))
+                 (when wc
+                   (setq total (+ total (string-to-number wc))))))))
+        ;; No live buffer: fall back to the last saved state on disk.
+        (with-temp-buffer
+          (insert-file-contents novel-file)
+          (org-mode)
+          (org-map-entries
+           (lambda ()
+             (let ((wc (org-entry-get nil "WORDCOUNT")))
+               (when wc
+                 (setq total (+ total (string-to-number wc)))))))))
       total)))
 
 (defun org-scribe-planner-integration--wordcount ()
@@ -176,18 +247,27 @@ Returns nil if no count is available (falls back to manual prompt)."
 
 (defun org-scribe-planner-integration--after-wordcount (&rest _)
   "Update the active plan after org-scribe word counting finishes.
-Reads the new project total and saves it to the plan file silently."
-  (when (and org-scribe-planner--current-plan
-             org-scribe-planner--current-plan-file
-             org-scribe-planner-wordcount-function)
+If no plan is currently active, attempts a lazy auto-load first.
+Reports the outcome via the echo area instead of failing silently."
+  ;; Lazy load: attempt to find a plan if none is active yet.
+  (unless org-scribe-planner--current-plan
+    (org-scribe-planner-integration--auto-load-plan))
+  (cond
+   ((not (and org-scribe-planner--current-plan
+              org-scribe-planner--current-plan-file))
+    (message "org-scribe-planner: no active plan — word count not pushed to planner."))
+   ((not org-scribe-planner-wordcount-function)
+    (message "org-scribe-planner: wordcount function not set — plan not updated."))
+   (t
     (let ((total (funcall org-scribe-planner-wordcount-function)))
-      (when total
+      (if (not total)
+          (message "org-scribe-planner: could not read word count — plan not updated.")
         (setf (org-scribe-plan-current-words org-scribe-planner--current-plan) total)
         (org-scribe-planner--save-plan org-scribe-planner--current-plan
                                        org-scribe-planner--current-plan-file)
         (run-hook-with-args 'org-scribe-planner-after-progress-update-hook
                             org-scribe-planner--current-plan total nil)
-        (message "org-scribe-planner: progress updated to %d words." total)))))
+        (message "org-scribe-planner: progress updated to %d words." total))))))
 
 (advice-add 'org-scribe/ews-org-count-words :after
             #'org-scribe-planner-integration--after-wordcount)
