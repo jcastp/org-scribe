@@ -88,10 +88,15 @@
   :type 'integer
   :group 'org-scribe)
 
-(defcustom org-scribe/python-script-path
-  (expand-file-name "~/Nextcloud/escritura/software/writing_companion/writing_companion.py")
-  "Path to writing companion Python script for exercise generation."
-  :type 'file
+(defcustom org-scribe-writing-companion-script nil
+  "Path to writing companion Python script for exercise generation.
+Set this to the absolute path of writing_companion.py on your system.
+When nil, writing companion features that call this script are disabled.
+
+Example:
+  (setq org-scribe-writing-companion-script
+        \"/home/user/scripts/writing_companion.py\")"
+  :type '(choice (const :tag "Disabled" nil) file)
   :group 'org-scribe)
 
 (defcustom org-scribe/exercise-templates
@@ -116,6 +121,17 @@ to the Python script."
   "Alist of export backend symbols to scene break replacement strings.
 The key t serves as the default for unlisted backends."
   :type '(alist :key-type symbol :value-type string)
+  :group 'org-scribe)
+
+;;; Search Configuration
+
+(defcustom org-scribe-todo-keywords
+  '("TODO" "ONGOING" "WAITING" "TOWRITE" "TOREVIEW" "REDO" "RESTRUCTURE")
+  "TODO keywords recognised by org-scribe search functions.
+Used by `org-scribe/search-todos-recursive' to find in-progress items.
+Writers who use different TODO keyword sets can override this to match
+their workflow."
+  :type '(repeat string)
   :group 'org-scribe)
 
 ;;; Word Counting

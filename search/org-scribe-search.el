@@ -19,6 +19,7 @@
 
 (require 'org)
 (require 'org-scribe-core)
+(require 'org-scribe-config)
 (require 'org-scribe-messages)
 
 ;; Declare external functions
@@ -178,8 +179,7 @@ Requires org-ql package to be installed."
          (org-files (directory-files-recursively project-root "\\.org$")))
     (if org-files
         (org-ql-search org-files
-	  ;;'(and (todo) (not (done)))  ; ← fixed query
-          '(todo "TODO" "ONGOING" "WAITING" "TOWRITE" "TOREVIEW" "REDO" "RESTRUCTURE")
+          `(todo ,@org-scribe-todo-keywords)
           :title "TODO items in writing project"
           :super-groups '((:auto-category t)))
       (message (org-scribe-msg 'msg-no-org-files project-root)))))

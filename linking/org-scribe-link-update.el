@@ -175,6 +175,42 @@ Returns the number of scenes updated."
     (message (org-scribe-msg 'msg-updated-all-links-scene count (org-scribe-plural count "")))
     count))
 
+;;; Auto-propagation on entity file save
+
+(defun org-scribe--auto-update-links-after-save ()
+  "Update link display names in the manuscript when an entity file is saved.
+Runs via `after-save-hook'.  Only acts when all of the following are true:
+- The saved buffer visits a file in an org-scribe project.
+- That file is the characters, locations, or plot database for the project.
+- The manuscript (novel.org) is already open in another buffer.
+
+When the conditions are met, runs `org-scribe/update-all-link-names' in
+the manuscript buffer and reports the number of scenes updated.  The
+manuscript is NOT saved automatically; the message reminds the user to
+save if any changes were made."
+  (when (and buffer-file-name (derived-mode-p 'org-mode))
+    (ignore-errors
+      (when-let* ((struct (org-scribe-project-structure))
+                  (entity-files
+                   (delq nil (list (plist-get struct :characters-file)
+                                   (plist-get struct :locations-file)
+                                   (plist-get struct :plot-file))))
+                  ;; Only act when the saved file is an entity database file.
+                  ((member (expand-file-name buffer-file-name)
+                           (mapcar #'expand-file-name entity-files)))
+                  (novel-file (plist-get struct :novel-file))
+                  ((file-exists-p novel-file))
+                  ;; Only act when the manuscript is already open (never
+                  ;; open files unexpectedly as a side effect of saving).
+                  (novel-buf (find-buffer-visiting novel-file)))
+        (with-current-buffer novel-buf
+          (let ((count (org-scribe/update-all-link-names)))
+            (when (> count 0)
+              (message "org-scribe: updated link names in %d scene(s) in %s — save to persist."
+                       count (file-name-nondirectory novel-file)))))))))
+
+(add-hook 'after-save-hook #'org-scribe--auto-update-links-after-save)
+
 (provide 'org-scribe-link-update)
 
 ;;; org-scribe-link-update.el ends here

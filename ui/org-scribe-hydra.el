@@ -70,6 +70,8 @@
 (declare-function org-scribe/setup-plot-thread-links "linking/org-scribe-plot-links")
 (declare-function org-scribe/plot-thread-report "linking/org-scribe-plot-links")
 (declare-function org-scribe/plot-thread-stats "linking/org-scribe-plot-links")
+;; column view
+(declare-function org-scribe-column-view-toggle "linking/org-scribe-column-view")
 
 ;;;###autoload (autoload 'hydra-org-scribe-characters/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe-characters (:color blue :hint nil)
@@ -159,7 +161,7 @@ _s_: Scene         _m_: Mode (write)  _n_: Note          _w_: Words count     _1
 _c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table     _2_: Character     _L_: Locations
 _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props    _3_: Plot          _P_: Plot threads
                  _e_: Editing mode  _b_: oBject        _d_: Dictionary      _4_: Location      _U_: Update links
-                                  _t_: Timeline      _y_: sYnonyms        _5_: TODOs
+                                  _t_: Timeline      _y_: sYnonyms        _5_: TODOs         _V_: Col View toggle
                                   _g_: plot thread   _k_: powerthesaurus  _6_: Edit notes            _q_: Quit
 "
   ;; Insert (most frequent actions get best keys)
@@ -202,6 +204,7 @@ _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props    _3
   ("L" hydra-org-scribe-locations/body "location links")
   ("P" hydra-org-scribe-plot-threads/body "plot thread links")
   ("U" org-scribe/update-all-link-names "update all link names")
+  ("V" org-scribe-column-view-toggle "toggle column view links")
 
   ;; Exit
   ("q" nil "quit"))
