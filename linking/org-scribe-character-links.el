@@ -219,30 +219,16 @@ Returns the number of scenes updated."
 (defun org-scribe--get-all-scenes-with-characters ()
   "Return list of all scenes with PoV or Characters properties.
 Each entry is (SCENE-HEADING CHAPTER-HEADING POV-NAME CHARACTERS-LIST)."
-  (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file))
-        scenes)
-    (when (and novel-file (file-exists-p novel-file))
-      (with-current-buffer (find-file-noselect novel-file)
-        (org-with-wide-buffer
-         (goto-char (point-min))
-         (org-map-entries
-          (lambda ()
-            (when (= (org-current-level) 3)
-              (let* ((heading (org-get-heading t t t t))
-                     (chapter (save-excursion
-                               (outline-up-heading 1)
-                               (org-get-heading t t t t)))
-                     (pov-prop (org-entry-get nil "PoV"))
-                     (chars-prop (org-entry-get nil "Characters")))
-                (when (or pov-prop chars-prop)
-                  (require 'org-scribe-search)
-                  (let ((pov-name (when pov-prop
-                                   (org-scribe--extract-link-text pov-prop)))
-                        (chars-list (when chars-prop
-                                     (org-scribe--property-to-list chars-prop))))
-                    (push (list heading chapter pov-name chars-list) scenes))))))
-          nil 'file))))
-    (nreverse scenes)))
+  (require 'org-scribe-search)
+  (org-scribe--get-all-scenes
+   (lambda ()
+     (let ((pov-prop (org-entry-get nil "PoV"))
+           (chars-prop (org-entry-get nil "Characters")))
+       (when (or pov-prop chars-prop)
+         (list (org-get-heading t t t t)
+               (save-excursion (outline-up-heading 1) (org-get-heading t t t t))
+               (when pov-prop (org-scribe--extract-link-text pov-prop))
+               (when chars-prop (org-scribe--property-to-list chars-prop))))))))
 
 (defun org-scribe--get-character-weight (char-name)
   "Get the Weight property for CHAR-NAME from characters file.
@@ -252,29 +238,17 @@ Returns the weight as a float, or 999.0 if not found."
 (defun org-scribe--collect-unique-characters (scenes)
   "Extract unique character names from SCENES list.
 Returns list of unique character names, sorted by Weight property (ascending)."
-  (let ((characters (make-hash-table :test 'equal)))
+  (let ((chars (make-hash-table :test 'equal)))
     (dolist (scene scenes)
       (let ((pov (nth 2 scene))
             (chars-list (nth 3 scene)))
         (when (and pov (not (string-empty-p pov)))
-          (puthash pov t characters))
-        (when chars-list
-          (dolist (char chars-list)
-            (when (not (string-empty-p char))
-              (puthash char t characters))))))
-    (let ((char-weights nil))
-      (dolist (char-name (hash-table-keys characters))
-        (let ((weight (org-scribe--get-character-weight char-name)))
-          (push (cons char-name weight) char-weights)))
-      (setq char-weights
-            (sort char-weights
-                  (lambda (a b)
-                    (let ((weight-a (cdr a))
-                          (weight-b (cdr b)))
-                      (if (= weight-a weight-b)
-                          (string< (car a) (car b))
-                        (< weight-a weight-b))))))
-      (mapcar #'car char-weights))))
+          (puthash pov t chars))
+        (dolist (char (or chars-list '()))
+          (unless (string-empty-p char)
+            (puthash char t chars)))))
+    (org-scribe--sort-entities-by-weight (hash-table-keys chars)
+                                          #'org-scribe--get-character-weight)))
 
 (defun org-scribe--character-symbol (char-name pov-name chars-list)
   "Return symbol for CHAR-NAME in a scene.
@@ -295,25 +269,10 @@ PARAMS are ignored (reserved for future filtering options)."
          (characters (org-scribe--collect-unique-characters scenes)))
     (if (null scenes)
         (insert "No scenes with character properties found.\n")
-      (insert "| Scene | Chapter |")
-      (dolist (char characters)
-        (insert (format " %s |" char)))
-      (insert "\n")
-      (insert "|-------+---------+")
-      (dolist (_ characters)
-        (insert "--------+"))
-      (insert "\n")
-      (dolist (scene scenes)
-        (let ((scene-name (nth 0 scene))
-              (chapter (nth 1 scene))
-              (pov-name (nth 2 scene))
-              (chars-list (nth 3 scene)))
-          (insert (format "| %s | %s |" scene-name chapter))
-          (dolist (char characters)
-            (let ((symbol (org-scribe--character-symbol char pov-name chars-list)))
-              (insert (format " %s |" symbol))))
-          (insert "\n")))
-      (org-table-align))))
+      (org-scribe--render-presence-table
+       characters scenes
+       (lambda (char scene)
+         (org-scribe--character-symbol char (nth 2 scene) (nth 3 scene)))))))
 
 ;;; Legacy Aliases
 

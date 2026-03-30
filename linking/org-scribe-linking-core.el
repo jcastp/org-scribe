@@ -319,6 +319,57 @@ Returns the number of scenes updated."
                                count (org-scribe-plural count "")))
       count)))
 
+;;; Timeline Utilities
+
+(defun org-scribe--get-all-scenes (data-fn)
+  "Return list of scene data from the novel file.
+DATA-FN is called at each level-3 heading.  It should return scene data
+\(a list starting with heading and chapter) or nil to skip the heading."
+  (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file))
+        scenes)
+    (when (and novel-file (file-exists-p novel-file))
+      (with-current-buffer (find-file-noselect novel-file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (org-map-entries
+          (lambda ()
+            (when (= (org-current-level) 3)
+              (when-let ((data (funcall data-fn)))
+                (push data scenes))))
+          nil 'file))))
+    (nreverse scenes)))
+
+(defun org-scribe--sort-entities-by-weight (items weight-fn)
+  "Return ITEMS sorted by weight, then alphabetically.
+WEIGHT-FN takes a name string and returns its weight (float; lower = earlier)."
+  (let ((weighted (mapcar (lambda (name) (cons name (funcall weight-fn name)))
+                          items)))
+    (mapcar #'car
+            (sort weighted
+                  (lambda (a b)
+                    (if (= (cdr a) (cdr b))
+                        (string< (car a) (car b))
+                      (< (cdr a) (cdr b))))))))
+
+(defun org-scribe--render-presence-table (entities scenes cell-fn)
+  "Insert an org table showing ENTITIES across SCENES.
+ENTITIES is the list of column header strings.
+SCENES is a list where each entry is (heading chapter ...).
+CELL-FN is called with (entity-name scene) and should return the cell string."
+  (insert "| Scene | Chapter |")
+  (dolist (entity entities)
+    (insert (format " %s |" entity)))
+  (insert "\n|-------+---------+")
+  (dolist (_ entities)
+    (insert "--------+"))
+  (insert "\n")
+  (dolist (scene scenes)
+    (insert (format "| %s | %s |" (nth 0 scene) (nth 1 scene)))
+    (dolist (entity entities)
+      (insert (format " %s |" (funcall cell-fn entity scene))))
+    (insert "\n"))
+  (org-table-align))
+
 ;;; Entity Definition Macro
 
 (defmacro org-scribe-define-entity (entity-var &rest keys)

@@ -141,25 +141,12 @@ If Plot property has multiple threads, prompts for selection."
 (defun org-scribe--get-all-scenes-with-plots ()
   "Return list of all scenes with Plot properties.
 Each entry is (SCENE-HEADING CHAPTER-HEADING PLOT-THREADS-LIST)."
-  (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file))
-        scenes)
-    (when (and novel-file (file-exists-p novel-file))
-      (with-current-buffer (find-file-noselect novel-file)
-        (org-with-wide-buffer
-         (goto-char (point-min))
-         (org-map-entries
-          (lambda ()
-            (when (= (org-current-level) 3)
-              (let* ((heading (org-get-heading t t t t))
-                     (chapter (save-excursion
-                               (outline-up-heading 1)
-                               (org-get-heading t t t t)))
-                     (plot-prop (org-entry-get nil "Plot")))
-                (when plot-prop
-                  (let ((thread-list (org-scribe--property-to-list plot-prop)))
-                    (push (list heading chapter thread-list) scenes))))))
-          nil 'file))))
-    (nreverse scenes)))
+  (org-scribe--get-all-scenes
+   (lambda ()
+     (when-let ((plot-prop (org-entry-get nil "Plot")))
+       (list (org-get-heading t t t t)
+             (save-excursion (outline-up-heading 1) (org-get-heading t t t t))
+             (org-scribe--property-to-list plot-prop))))))
 
 (defun org-scribe--find-thread-in-scenes (thread-name scenes)
   "Find all SCENES containing THREAD-NAME.
@@ -195,45 +182,20 @@ Returns the weight as a float, or 999.0 if not found."
 (defun org-dblock-write:plot-thread-timeline (params)
   "Generate timeline showing plot thread progression across scenes.
 PARAMS are ignored (reserved for future options)."
-  (let* ((threads-set (make-hash-table :test 'equal))
-         (scenes (org-scribe--get-all-scenes-with-plots))
-         threads)
+  (let* ((scenes (org-scribe--get-all-scenes-with-plots))
+         (threads-set (make-hash-table :test 'equal)))
     (dolist (scene scenes)
-      (let ((thread-list (nth 2 scene)))
-        (dolist (thread thread-list)
-          (puthash thread t threads-set))))
-    (let ((thread-weights nil))
-      (dolist (thread-name (hash-table-keys threads-set))
-        (let ((weight (org-scribe--get-plot-thread-weight thread-name)))
-          (push (cons thread-name weight) thread-weights)))
-      (setq thread-weights
-            (sort thread-weights
-                  (lambda (a b)
-                    (let ((weight-a (cdr a))
-                          (weight-b (cdr b)))
-                      (if (= weight-a weight-b)
-                          (string< (car a) (car b))
-                        (< weight-a weight-b))))))
-      (setq threads (mapcar #'car thread-weights)))
-    (if (null scenes)
-        (insert "No scenes with Plot properties found.\n")
-      (insert "| Scene | Chapter |")
-      (dolist (thread threads)
-        (insert (format " %s |" thread)))
-      (insert "\n|-------+---------+")
-      (dolist (_ threads)
-        (insert "--------+"))
-      (insert "\n")
-      (dolist (scene scenes)
-        (let ((scene-name (nth 0 scene))
-              (chapter (nth 1 scene))
-              (scene-threads (nth 2 scene)))
-          (insert (format "| %s | %s |" scene-name chapter))
-          (dolist (thread threads)
-            (insert (format " %s |"
-                           (if (member thread scene-threads) "●" ""))))
-          (insert "\n")))
-      (org-table-align))))
+      (dolist (thread (nth 2 scene))
+        (puthash thread t threads-set)))
+    (let ((threads (org-scribe--sort-entities-by-weight
+                    (hash-table-keys threads-set)
+                    #'org-scribe--get-plot-thread-weight)))
+      (if (null scenes)
+          (insert "No scenes with Plot properties found.\n")
+        (org-scribe--render-presence-table
+         threads scenes
+         (lambda (thread scene)
+           (if (member thread (nth 2 scene)) "●" "")))))))
 
 ;;; Plot Thread Health Report
 

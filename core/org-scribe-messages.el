@@ -32,14 +32,20 @@
     (project-creation-success-novel . "Novel project '%s' created successfully at %s")
     (project-creation-success-short-story . "Short story project '%s' created successfully at %s")
     (project-already-exists . "Project directory '%s' already exists!")
+    (msg-projects-registered . "Scanned and registered %d project(s) under %s")
 
-    ;; Template insertion
+    ;; Writing templates
     (scene-name-prompt . "Scene name: ")
     (chapter-name-prompt . "Chapter name: ")
     (not-in-org-mode . "This command can only be used in org-mode buffers")
     (not-in-novel-project . "Not in a novel project directory")
 
-    ;; Search prompts
+    ;; Capture
+    (capture-character-name . "Character Name")
+    (capture-location-type . "Location Type")
+    (capture-object-type . "Object Type")
+
+    ;; Search
     (search-pov-prompt . "Find PoV character [fuzzy]: ")
     (search-pov-prompt-free . "Character (POV) [substring]: ")
     (search-char-prompt . "Find character [fuzzy]: ")
@@ -48,6 +54,7 @@
     (search-plot-prompt-free . "Plot term [substring]: ")
     (search-loc-prompt . "Find location [fuzzy]: ")
     (search-loc-prompt-free . "Location [substring]: ")
+    (msg-no-org-files . "No .org files found in %s and subdirectories")
 
     ;; Character linking
     (prompt-select-character . "Select character: ")
@@ -81,6 +88,8 @@
     (msg-location-ids-updated . "Location IDs updated in %s")
     (msg-no-locations-selected . "No locations selected")
     (msg-inserted-location-links . "Inserted %d location link%s")
+    (msg-setting-up-location-links . "Setting up location linking system...")
+    (msg-location-setup-complete . "Location linking system setup complete!")
 
     ;; Plot linking
     (prompt-select-plot-thread . "Select plot thread: ")
@@ -96,17 +105,73 @@
     (msg-inserted-plot-links . "Inserted %d plot thread link%s")
     (msg-no-plot-updates-needed . "No Plot property found or already linked")
     (msg-jump-to-plot-thread . "Jumped to plot thread")
+    (msg-setting-up-plot-links . "Setting up plot thread linking system...")
+    (msg-plot-setup-complete . "Plot thread linking system setup complete!")
+    (msg-plot-health-report . "Plot thread health report generated")
+    (msg-plot-stats . "Plot threads: %d | Scenes: %d | Threads with warnings: %d")
+    (msg-no-plot-property . "No Plot property in current heading")
+    (msg-no-plot-threads-in-property . "No plot threads found in Plot property")
+    (msg-plot-not-id-link . "Plot thread '%s' is not an ID link")
+    (prompt-jump-to-plot . "Jump to plot thread: ")
 
     ;; Link name updates
     (msg-updated-link-names . "Updated link names")
     (msg-updated-all-link-names . "Updated %s link names in %d scene%s")
+    (msg-updated-all-links-scene . "Updated link names in %d scene%s")
     (msg-no-link-updates . "No %s link names needed updating")
     (msg-updated-pov-link-names . "Updated PoV link names")
     (msg-updated-characters-link-names . "Updated Characters link names")
     (msg-updated-pov-and-chars-link-names . "Updated PoV and Characters link names")
     (msg-updated-plot-link-names . "Updated Plot link names")
 
-    ;; Errors - validation
+    ;; Character relationships
+    (prompt-relationship-from-character . "From character: ")
+    (prompt-relationship-to-character . "To character: ")
+    (prompt-relationship-type . "Relationship type: ")
+    (prompt-relationship-strength . "Strength (1-5): ")
+    (prompt-relationship-sentiment . "Sentiment: ")
+    (prompt-remove-relationship . "Remove relationship: ")
+    (msg-added-relationship . "Added %s relationship: %s → %s (strength: %d, %s)")
+    (msg-removed-relationship . "Removed %s's relationship: %s")
+    (msg-no-relationships . "No relationships found for this character.")
+    (msg-no-relationships-in-project . "No relationships found in project.")
+    (msg-relationship-setup-complete . "Added RelationshipsData property to %d character%s")
+    (msg-no-other-characters . "No other characters found. Create more characters first.")
+    (error-no-relationships . "No relationships defined for %s")
+
+    ;; Relationship visualization
+    (prompt-graph-format . "Format: ")
+    (prompt-graph-character . "Character (blank for all): ")
+    (prompt-graph-min-strength . "Minimum strength (blank for all): ")
+    (msg-graph-inserted . "Relationship graph block inserted. Press C-c C-c to update.")
+    (error-graphviz-not-found . "Graphviz 'dot' command not found. Install Graphviz to generate images.")
+    (error-graph-render-failed . "Error rendering graph: dot exited with code %d")
+    (msg-graph-format-unknown . "Unknown format: %s. Use 'dot, 'ascii, or 'table")
+
+    ;; Column view
+    (msg-column-view-enabled . "Column view link stripping enabled")
+    (msg-column-view-disabled . "Column view link stripping disabled")
+
+    ;; Dictionary / language tools
+    (error-word-empty . "Word cannot be empty")
+    (error-word-lookup . "Error al buscar la palabra: %s")
+    (msg-word-not-found . "Palabra no encontrada: %s")
+    (msg-word-suggestions . "Sugerencias:")
+    (error-random-word . "Error al obtener palabra aleatoria: %s")
+    (error-word-parse . "Error parsing RAE response: %s")
+    (error-random-word-parse . "Error parsing random word response: %s")
+
+    ;; File operations
+    (file-not-found . "File %s doesn't exist. Create it? ")
+    (file-open-prompt . "Open file: ")
+
+    ;; Questions / confirmations
+    (question-link-existing-scenes . "Link characters in existing scenes? ")
+    (question-link-existing-locations . "Link locations in existing scenes? ")
+    (question-link-existing-plots . "Link plot threads in existing scenes? ")
+    (question-create-directory . "Directory %s does not exist. Create it? ")
+
+    ;; Errors — input validation
     (error-empty-title . "Title cannot be empty or contain only whitespace")
     (error-path-separator . "Title cannot contain path separators (/ or \\)")
     (error-title-colon . "Title cannot contain colons (:)")
@@ -117,7 +182,7 @@
     (error-empty-location . "Location cannot be empty")
     (error-empty-plot . "Plot term cannot be empty")
 
-    ;; Errors - features/files
+    ;; Errors — missing features / files
     (error-no-characters-found . "No characters found. Create characters first or add IDs with org-scribe/add-character-ids.")
     (error-no-locations-found . "No locations found. Create locations first or add IDs with org-scribe/add-location-ids.")
     (error-no-plot-threads-found . "No plot threads found. Create plot threads first or add IDs with org-scribe/add-plot-thread-ids.")
@@ -136,81 +201,6 @@
     (error-writeroom-required . "writeroom-mode is required for writing environment modes")
     (error-feature-not-available . "Feature %s not available. Install required package")
     (error-no-org-file . "Current buffer is not visiting a file; cannot enable `org-scribe-editing-mode'")
-
-    ;; Dictionary/Language tools
-    (error-word-empty . "Word cannot be empty")
-    (error-word-lookup . "Error al buscar la palabra: %s")
-    (msg-word-not-found . "Palabra no encontrada: %s")
-    (msg-word-suggestions . "Sugerencias:")
-    (error-random-word . "Error al obtener palabra aleatoria: %s")
-    (error-word-parse . "Error parsing RAE response: %s")
-    (error-random-word-parse . "Error parsing random word response: %s")
-
-    ;; Column view
-    (msg-column-view-enabled . "Column view link stripping enabled")
-    (msg-column-view-disabled . "Column view link stripping disabled")
-
-    ;; Link updates (generic - all types)
-    (msg-updated-all-links-scene . "Updated link names in %d scene%s")
-
-    ;; Location linking (additional)
-    (msg-setting-up-location-links . "Setting up location linking system...")
-    (msg-location-setup-complete . "Location linking system setup complete!")
-
-    ;; Plot linking (additional)
-    (msg-setting-up-plot-links . "Setting up plot thread linking system...")
-    (msg-plot-setup-complete . "Plot thread linking system setup complete!")
-    (msg-plot-health-report . "Plot thread health report generated")
-    (msg-plot-stats . "Plot threads: %d | Scenes: %d | Threads with warnings: %d")
-    (msg-no-plot-property . "No Plot property in current heading")
-    (msg-no-plot-threads-in-property . "No plot threads found in Plot property")
-    (msg-plot-not-id-link . "Plot thread '%s' is not an ID link")
-    (prompt-jump-to-plot . "Jump to plot thread: ")
-
-    ;; Capture
-    (capture-character-name . "Character Name")
-    (capture-location-type . "Location Type")
-    (capture-object-type . "Object Type")
-
-    ;; Character Relationships
-    (prompt-relationship-from-character . "From character: ")
-    (prompt-relationship-to-character . "To character: ")
-    (prompt-relationship-type . "Relationship type: ")
-    (prompt-relationship-strength . "Strength (1-5): ")
-    (prompt-relationship-sentiment . "Sentiment: ")
-    (prompt-remove-relationship . "Remove relationship: ")
-    (msg-added-relationship . "Added %s relationship: %s → %s (strength: %d, %s)")
-    (msg-removed-relationship . "Removed %s's relationship: %s")
-    (msg-no-relationships . "No relationships found for this character.")
-    (msg-no-relationships-in-project . "No relationships found in project.")
-    (msg-relationship-setup-complete . "Added RelationshipsData property to %d character%s")
-    (msg-no-other-characters . "No other characters found. Create more characters first.")
-    (error-no-relationships . "No relationships defined for %s")
-
-    ;; Relationship Visualization
-    (prompt-graph-format . "Format: ")
-    (prompt-graph-character . "Character (blank for all): ")
-    (prompt-graph-min-strength . "Minimum strength (blank for all): ")
-    (msg-graph-inserted . "Relationship graph block inserted. Press C-c C-c to update.")
-    (error-graphviz-not-found . "Graphviz 'dot' command not found. Install Graphviz to generate images.")
-    (error-graph-render-failed . "Error rendering graph: dot exited with code %d")
-    (msg-graph-format-unknown . "Unknown format: %s. Use 'dot, 'ascii, or 'table")
-
-    ;; File operations
-    (file-not-found . "File %s doesn't exist. Create it? ")
-    (file-open-prompt . "Open file: ")
-
-    ;; Questions
-    (question-link-existing-scenes . "Link characters in existing scenes? ")
-    (question-link-existing-locations . "Link locations in existing scenes? ")
-    (question-link-existing-plots . "Link plot threads in existing scenes? ")
-    (question-create-directory . "Directory %s does not exist. Create it? ")
-
-    ;; Project registration
-    (msg-projects-registered . "Scanned and registered %d project(s) under %s")
-
-    ;; Search results
-    (msg-no-org-files . "No .org files found in %s and subdirectories")
 
     ;; Pluralization helpers (used in code)
     (plural-empty . "")
