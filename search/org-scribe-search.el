@@ -110,7 +110,10 @@ PROPERTY is the org property name to search (e.g. \"PoV\")."
           (let ((val (org-entry-get (point) ,property)))
             (org-scribe--property-contains-p val ,term)))))
 
-;;; Search by POV
+;;; Property-based scene search (PoV / Characters / Plot / Location)
+;;
+;; Each function is a thin wrapper: it reads a term (with completion from
+;; the entity database when available) then calls `org-scribe--search-property'.
 
 ;;;###autoload
 (defun org-scribe/org-find-pov (char)
@@ -123,8 +126,6 @@ Requires org-ql package."
           'search-pov-prompt 'search-pov-prompt-free)))
   (org-scribe--search-property char 'error-empty-character "PoV"))
 
-;;; Search by Character
-
 ;;;###autoload
 (defun org-scribe/org-find-character (char)
   "Show sparse tree of scenes with CHARACTER CHAR.
@@ -136,8 +137,6 @@ Requires org-ql package."
           'search-char-prompt 'search-char-prompt-free)))
   (org-scribe--search-property char 'error-empty-character "Characters"))
 
-;;; Search by Plot
-
 ;;;###autoload
 (defun org-scribe/org-find-plot (term)
   "Show sparse tree of scenes matching TERM in plot property.
@@ -148,8 +147,6 @@ Requires org-ql package."
           'org-scribe-plot-links #'org-scribe--get-all-plot-threads
           'search-plot-prompt 'search-plot-prompt-free)))
   (org-scribe--search-property term 'error-empty-plot "Plot"))
-
-;;; Search by Location
 
 ;;;###autoload
 (defun org-scribe/org-find-location (loc)

@@ -19,16 +19,23 @@
 
 ;;; File Creation Helpers
 
+(defun org-scribe--file-header (title &optional startup)
+  "Return a standard org file header string.
+Includes #+TITLE (TITLE), #+AUTHOR (current user), #+DATE (today).
+When STARTUP is a non-nil string, appends a #+STARTUP line."
+  (concat
+   (format "#+TITLE: %s\n" title)
+   (format "#+AUTHOR: %s\n" user-full-name)
+   (format "#+DATE: %s\n" (format-time-string "%Y-%m-%d"))
+   (when startup (format "#+STARTUP: %s\n" startup))
+   "\n"))
+
 (defun org-scribe--create-plot-file (filepath is-short-story)
   "Create a basic plot file for captures.
 FILEPATH is the path where the file should be created.
 IS-SHORT-STORY determines the structure."
   (with-temp-file filepath
-    (insert "#+TITLE: Plot Structure\n")
-    (insert "#+AUTHOR: " user-full-name "\n")
-    (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n")
-    (insert "#+STARTUP: overview\n\n")
-
+    (insert (org-scribe--file-header "Plot Structure" "overview"))
     (if is-short-story
         (progn
           (insert "* Plot Outline\n\n")
@@ -38,7 +45,6 @@ IS-SHORT-STORY determines the structure."
           (insert "** Resolution\n\n")
           (insert "* Plot Threads\n\n")
           (insert "[Plot threads will appear here when captured]\n\n"))
-      ;; Novel structure
       (progn
         (insert "* Premise\n\nWhat is the story about in one or two sentences?\n\n")
         (insert "* Main Plot\n\n")
@@ -51,66 +57,37 @@ IS-SHORT-STORY determines the structure."
 (defun org-scribe--create-short-story-notes-file (filepath)
   "Create a comprehensive notes.org file for short story projects.
 FILEPATH is the path where the file should be created."
-  (with-temp-file filepath
-    (insert "#+TITLE: " (file-name-base (directory-file-name (file-name-directory filepath))) " - Planning & Notes\n")
-    (insert "#+AUTHOR: " user-full-name "\n")
-    (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n")
-    (insert "#+STARTUP: overview\n\n")
-
-    ;; Standard headings for short story notes
-    (insert "* Characters\n\n")
-    (insert "** Protagonist: [Name]\n")
-    (insert ":PROPERTIES:\n:TYPE: Protagonist\n:NAME:\n:AGE:\n:GENDER:\n:END:\n\n")
-    (insert "- Personality ::\n- Goal ::\n- Conflict ::\n\n")
-
-    (insert "* Plot Outline\n\n")
-    (insert "** Premise\n\n** Setup\n\n** Central Conflict\n\n** Resolution\n\n")
-
-    (insert "* Setting\n\n")
-    (insert "** Main Location(s)\n\n")
-    (insert "** Locations\n\n")
-
-    (insert "* Objects\n\n")
-
-    (insert "* Timeline\n\n")
-
-    (insert "* Research & References\n\n")
-
-    (insert "* Revision Notes\n\n")
-
-    (insert "* Random Ideas & Inspiration\n\n")))
+  (let ((title (file-name-base (directory-file-name (file-name-directory filepath)))))
+    (with-temp-file filepath
+      (insert (org-scribe--file-header (format "%s - Planning & Notes" title) "overview"))
+      (insert "* Characters\n\n")
+      (insert "** Protagonist: [Name]\n")
+      (insert ":PROPERTIES:\n:TYPE: Protagonist\n:NAME:\n:AGE:\n:GENDER:\n:END:\n\n")
+      (insert "- Personality ::\n- Goal ::\n- Conflict ::\n\n")
+      (insert "* Plot Outline\n\n")
+      (insert "** Premise\n\n** Setup\n\n** Central Conflict\n\n** Resolution\n\n")
+      (insert "* Setting\n\n")
+      (insert "** Main Location(s)\n\n")
+      (insert "** Locations\n\n")
+      (insert "* Objects\n\n")
+      (insert "* Timeline\n\n")
+      (insert "* Research & References\n\n")
+      (insert "* Revision Notes\n\n")
+      (insert "* Random Ideas & Inspiration\n\n"))))
 
 (defun org-scribe--create-novel-capture-file (filepath content-type)
   "Create an individual capture file for novel projects.
 FILEPATH is the path where the file should be created.
-CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, or 'notes."
-  (with-temp-file filepath
-    (pcase content-type
-      ('characters
-       (insert "#+TITLE: Character Database\n")
-       (insert "#+AUTHOR: " user-full-name "\n")
-       (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       )
-      ('locations
-       (insert "#+TITLE: Locations & World Building\n")
-       (insert "#+AUTHOR: " user-full-name "\n")
-       (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       )
-      ('objects
-       (insert "#+TITLE: Important Objects\n")
-       (insert "#+AUTHOR: " user-full-name "\n")
-       (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       )
-      ('timeline
-       (insert "#+TITLE: Story Timeline\n")
-       (insert "#+AUTHOR: " user-full-name "\n")
-       (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       )
-      ('notes
-       (insert "#+TITLE: Writing Notes\n")
-       (insert "#+AUTHOR: " user-full-name "\n")
-       (insert "#+DATE: " (format-time-string "%Y-%m-%d") "\n\n")
-       (insert "* Notes\n\n")))))
+CONTENT-TYPE is \\='characters, \\='locations, \\='objects, \\='timeline, or \\='notes."
+  (let ((titles '((characters . "Character Database")
+                  (locations  . "Locations & World Building")
+                  (objects    . "Important Objects")
+                  (timeline   . "Story Timeline")
+                  (notes      . "Writing Notes"))))
+    (with-temp-file filepath
+      (insert (org-scribe--file-header (alist-get content-type titles "Notes")))
+      (when (eq content-type 'notes)
+        (insert "* Notes\n\n")))))
 
 (defun org-scribe--create-capture-file (filepath project-type content-type)
   "Create a capture target file based on project type.
