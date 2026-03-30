@@ -165,52 +165,58 @@ list of (ID NAME TYPE STRENGTH SENTIMENT) tuples."
 
 ;;; Interactive Relationship Management
 
+(defun org-scribe--with-source-character (min-chars action-fn)
+  "Select a source character and call ACTION-FN with the selection.
+ACTION-FN is called with (ALL-CHARS SOURCE-NAME EXISTING-RELS).
+If fewer than MIN-CHARS characters exist, displays a message and returns nil."
+  (let* ((all-chars (org-scribe--get-all-characters))
+         (char-names (mapcar #'car all-chars)))
+    (if (< (length char-names) min-chars)
+        (message (org-scribe-msg (if (zerop (length char-names))
+                                     'error-no-characters-found
+                                   'msg-no-other-characters)))
+      (let* ((source-name (completing-read (org-scribe-msg 'prompt-relationship-from-character)
+                                           char-names nil t))
+             (existing-rels (org-scribe--get-character-relationships-by-name source-name)))
+        (funcall action-fn all-chars source-name existing-rels)))))
+
 ;;;###autoload
 (defun org-scribe/add-relationship ()
   "Add a relationship between two characters.
 Prompts for source character, target character, relationship type, strength, and sentiment."
   (interactive)
-  (let* ((all-chars (org-scribe--get-all-characters))
-         (char-names (mapcar #'car all-chars)))
-
-    (if (< (length char-names) 2)
-        (message (org-scribe-msg 'msg-no-other-characters))
-      ;; Ask for source character
-      (let* ((source-name (completing-read (org-scribe-msg 'prompt-relationship-from-character)
-                                          char-names nil t))
-             ;; Get existing relationships for source character
-             (existing-rels (org-scribe--get-character-relationships-by-name source-name))
-             ;; Filter out source character from target selection
-             (other-chars (seq-remove (lambda (c) (string= (car c) source-name))
+  (org-scribe--with-source-character
+   2
+   (lambda (all-chars source-name existing-rels)
+     ;; Filter out source character from target selection
+     (let* ((other-chars (seq-remove (lambda (c) (string= (car c) source-name))
                                      all-chars))
-             (other-char-names (mapcar #'car other-chars)))
-
-        (if (null other-char-names)
-            (message (org-scribe-msg 'msg-no-other-characters))
-          ;; Ask for target character
-          (let* ((target-name (completing-read (org-scribe-msg 'prompt-relationship-to-character)
+            (other-char-names (mapcar #'car other-chars)))
+       (if (null other-char-names)
+           (message (org-scribe-msg 'msg-no-other-characters))
+         ;; Ask for target character
+         (let* ((target-name (completing-read (org-scribe-msg 'prompt-relationship-to-character)
                                               other-char-names nil t))
-                 (target-entry (assoc target-name all-chars))
-                 (target-id (cadr target-entry))
-                 ;; Ask for relationship details
-                 (rel-type (completing-read (org-scribe-msg 'prompt-relationship-type)
+                (target-entry (assoc target-name all-chars))
+                (target-id (cadr target-entry))
+                ;; Ask for relationship details
+                (rel-type (completing-read (org-scribe-msg 'prompt-relationship-type)
                                            org-scribe-relationship-types
                                            nil nil))
-                 (rel-strength (string-to-number
-                              (completing-read (org-scribe-msg 'prompt-relationship-strength)
-                                             '("1" "2" "3" "4" "5")
-                                             nil t)))
-                 (rel-sentiment (completing-read (org-scribe-msg 'prompt-relationship-sentiment)
+                (rel-strength (string-to-number
+                               (completing-read (org-scribe-msg 'prompt-relationship-strength)
+                                                '("1" "2" "3" "4" "5")
+                                                nil t)))
+                (rel-sentiment (completing-read (org-scribe-msg 'prompt-relationship-sentiment)
                                                org-scribe-relationship-sentiments
                                                nil t))
-                 ;; Create new relationship tuple
-                 (new-rel (list target-id target-name rel-type rel-strength rel-sentiment))
-                 ;; Add to existing relationships
-                 (all-rels (append existing-rels (list new-rel))))
-
-            ;; Update the source character's relationships
-            (org-scribe--update-character-relationships source-name all-rels)
-            (message (org-scribe-msg 'msg-added-relationship
+                ;; Create new relationship tuple
+                (new-rel (list target-id target-name rel-type rel-strength rel-sentiment))
+                ;; Add to existing relationships
+                (all-rels (append existing-rels (list new-rel))))
+           ;; Update the source character's relationships
+           (org-scribe--update-character-relationships source-name all-rels)
+           (message (org-scribe-msg 'msg-added-relationship
                                     rel-type source-name target-name rel-strength rel-sentiment))))))))
 
 ;;;###autoload
@@ -218,36 +224,27 @@ Prompts for source character, target character, relationship type, strength, and
   "Remove a relationship from a character.
 Prompts for source character, then which relationship to remove."
   (interactive)
-  (let* ((all-chars (org-scribe--get-all-characters))
-         (char-names (mapcar #'car all-chars)))
-
-    (if (null char-names)
-        (message (org-scribe-msg 'error-no-characters-found))
-      ;; Ask for source character
-      (let* ((source-name (completing-read (org-scribe-msg 'prompt-relationship-from-character)
-                                          char-names nil t))
-             ;; Get existing relationships for source character
-             (existing-rels (org-scribe--get-character-relationships-by-name source-name)))
-
-        (if (null existing-rels)
-            (message (org-scribe-msg 'msg-no-relationships))
-          ;; Ask which relationship to remove
-          (let* ((rel-choices (mapcar (lambda (rel)
-                                       (format "%s (%s, %d, %s)"
-                                              (nth 1 rel)  ; Name
-                                              (nth 2 rel)  ; Type
-                                              (nth 3 rel)  ; Strength
-                                              (nth 4 rel))) ; Sentiment
-                                     existing-rels))
-                 (selected (completing-read (org-scribe-msg 'prompt-remove-relationship)
-                                           rel-choices nil t))
-                 (selected-idx (cl-position selected rel-choices :test #'string=))
-                 (remaining-rels (append (cl-subseq existing-rels 0 selected-idx)
-                                       (cl-subseq existing-rels (1+ selected-idx)))))
-
-            ;; Update the source character's relationships
-            (org-scribe--update-character-relationships source-name remaining-rels)
-            (message (org-scribe-msg 'msg-removed-relationship source-name selected))))))))
+  (org-scribe--with-source-character
+   1
+   (lambda (_all-chars source-name existing-rels)
+     (if (null existing-rels)
+         (message (org-scribe-msg 'msg-no-relationships))
+       ;; Ask which relationship to remove
+       (let* ((rel-choices (mapcar (lambda (rel)
+                                     (format "%s (%s, %d, %s)"
+                                             (nth 1 rel)  ; Name
+                                             (nth 2 rel)  ; Type
+                                             (nth 3 rel)  ; Strength
+                                             (nth 4 rel))) ; Sentiment
+                                   existing-rels))
+              (selected (completing-read (org-scribe-msg 'prompt-remove-relationship)
+                                         rel-choices nil t))
+              (selected-idx (cl-position selected rel-choices :test #'string=))
+              (remaining-rels (append (cl-subseq existing-rels 0 selected-idx)
+                                      (cl-subseq existing-rels (1+ selected-idx)))))
+         ;; Update the source character's relationships
+         (org-scribe--update-character-relationships source-name remaining-rels)
+         (message (org-scribe-msg 'msg-removed-relationship source-name selected)))))))
 
 ;;; ASCII Visualization
 
