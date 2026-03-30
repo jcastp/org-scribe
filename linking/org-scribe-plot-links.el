@@ -60,52 +60,49 @@ For short stories, this is notes.org (Plot section)."
         (when (file-exists-p plot-file)
           plot-file))))))
 
-;;; Entity Descriptor
+;;; Entity Definition
 
-(defconst org-scribe--plot-entity
-  '(:file-fn org-scribe--get-plot-thread-file
-    :heading-predicate org-scribe--plot-heading-p
-    :properties ("Plot")
-    :msg-added-ids msg-added-plot-ids
-    :msg-ids-updated msg-plot-ids-updated
-    :error-no-file error-no-plot-file
-    :error-none-found error-no-plot-threads-found
-    :prompt-select prompt-select-plot-thread
-    :prompt-select-multi prompt-select-plot-threads-multi
-    :error-no-id error-no-id-for-plot
-    :msg-inserted-links msg-inserted-plot-links
-    :msg-no-selected msg-no-plot-threads-selected
-    :msg-set msg-set-plot-threads
-    :msg-updated-single msg-updated-plot
-    :msg-no-updates msg-no-plot-updates-needed
-    :msg-updated-links msg-updated-plot-links
-    :msg-setting-up msg-setting-up-plot-links
-    :question-link-existing question-link-existing-plots
-    :msg-setup-complete msg-plot-setup-complete
-    :msg-updated-link-names msg-updated-plot-link-names
-    :msg-no-link-updates-type "plot"
-    :msg-updated-all-type "plot")
-  "Entity descriptor for plot threads.")
-
-;;; Generated API Functions
-
-(org-scribe-define-entity org-scribe--plot-entity
-  :get-all-name          org-scribe--get-all-plot-threads
-  :create-link-name      org-scribe--create-plot-thread-link
-  :add-ids-to-all-name   org-scribe--add-id-to-all-plot-threads
-  :add-ids-name          org-scribe/add-plot-thread-ids
-  :insert-link-name      org-scribe/insert-plot-thread-link
-  :insert-multi-name     org-scribe/insert-multiple-plot-thread-links
-  :set-scene-name        org-scribe/set-scene-plot-threads
-  :set-scene-property    "Plot"
-  :link-in-prop-name     org-scribe--link-plot-threads-in-property
-  :link-scene-name       org-scribe/link-scene-plot-threads
-  :link-all-name         org-scribe/link-all-scene-plot-threads
-  :setup-name            org-scribe/setup-plot-thread-links
-  :setup-add-ids-fn      org-scribe/add-plot-thread-ids
-  :setup-link-all-fn     org-scribe/link-all-scene-plot-threads
-  :update-names-name     org-scribe/update-plot-link-names
-  :update-all-name       org-scribe/update-all-plot-link-names)
+(org-scribe-define-entity plot
+  ;; ── Config (entity descriptor) ──────────────────────────────────────
+  :file-fn                  org-scribe--get-plot-thread-file
+  :heading-predicate        org-scribe--plot-heading-p
+  :properties               ("Plot")
+  :msg-added-ids            msg-added-plot-ids
+  :msg-ids-updated          msg-plot-ids-updated
+  :error-no-file            error-no-plot-file
+  :error-none-found         error-no-plot-threads-found
+  :prompt-select            prompt-select-plot-thread
+  :prompt-select-multi      prompt-select-plot-threads-multi
+  :error-no-id              error-no-id-for-plot
+  :msg-inserted-links       msg-inserted-plot-links
+  :msg-no-selected          msg-no-plot-threads-selected
+  :msg-set                  msg-set-plot-threads
+  :msg-updated-single       msg-updated-plot
+  :msg-no-updates           msg-no-plot-updates-needed
+  :msg-updated-links        msg-updated-plot-links
+  :msg-setting-up           msg-setting-up-plot-links
+  :question-link-existing   question-link-existing-plots
+  :msg-setup-complete       msg-plot-setup-complete
+  :msg-updated-link-names   msg-updated-plot-link-names
+  :msg-no-link-updates-type "plot"
+  :msg-updated-all-type     "plot"
+  ;; ── Generated function names ─────────────────────────────────────
+  :get-all-name             org-scribe--get-all-plot-threads
+  :create-link-name         org-scribe--create-plot-thread-link
+  :add-ids-to-all-name      org-scribe--add-id-to-all-plot-threads
+  :add-ids-name             org-scribe/add-plot-thread-ids
+  :insert-link-name         org-scribe/insert-plot-thread-link
+  :insert-multi-name        org-scribe/insert-multiple-plot-thread-links
+  :set-scene-name           org-scribe/set-scene-plot-threads
+  :set-scene-property       "Plot"
+  :link-in-prop-name        org-scribe--link-plot-threads-in-property
+  :link-scene-name          org-scribe/link-scene-plot-threads
+  :link-all-name            org-scribe/link-all-scene-plot-threads
+  :setup-name               org-scribe/setup-plot-thread-links
+  :setup-add-ids-fn         org-scribe/add-plot-thread-ids
+  :setup-link-all-fn        org-scribe/link-all-scene-plot-threads
+  :update-names-name        org-scribe/update-plot-link-names
+  :update-all-name          org-scribe/update-all-plot-link-names)
 
 ;;; Plot-Specific Functions
 

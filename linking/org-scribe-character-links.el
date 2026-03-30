@@ -41,50 +41,48 @@
                (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
                               (org-get-heading t t t t)))))))
 
-;;; Entity Descriptor
+;;; Entity Definition
 
-(defconst org-scribe--character-entity
-  '(:file-fn org-scribe/capture-character-file
-    :heading-predicate org-scribe--character-heading-p
-    :properties ("PoV" "Characters")
-    :msg-added-ids msg-added-ids
-    :msg-ids-updated msg-character-ids-updated
-    :error-no-file error-no-character-file
-    :error-none-found error-no-characters-found
-    :prompt-select prompt-select-character
-    :prompt-select-multi prompt-select-characters-multi
-    :error-no-id error-no-id-for-character
-    :msg-inserted-links msg-inserted-links
-    :msg-no-selected msg-no-characters-selected
-    :msg-set msg-set-characters
-    :msg-updated-single msg-updated-characters
-    :msg-no-updates msg-no-updates-needed
-    :msg-updated-links msg-updated-links
-    :msg-setting-up msg-setting-up-links
-    :question-link-existing question-link-existing-scenes
-    :msg-setup-complete msg-setup-complete
-    :msg-updated-link-names msg-updated-pov-and-chars-link-names
-    :msg-no-link-updates-type "character"
-    :msg-updated-all-type "character")
-  "Entity descriptor for characters.")
-
-;;; Generated API Functions
-
-(org-scribe-define-entity org-scribe--character-entity
-  :get-file-name         org-scribe--get-character-file
-  :get-all-name          org-scribe--get-all-characters
-  :create-link-name      org-scribe--create-character-link
-  :add-ids-to-all-name   org-scribe--add-id-to-all-characters
-  :add-ids-name          org-scribe/add-character-ids
-  :insert-link-name      org-scribe/insert-character-link
-  :insert-multi-name     org-scribe/insert-multiple-character-links
-  :set-scene-name        org-scribe/set-scene-characters
-  :set-scene-property    "Characters"
-  :link-in-prop-name     org-scribe--link-characters-in-property
-  ;; link-scene, link-all, update-names, update-all are custom (handle PoV + Characters)
-  :setup-name            org-scribe/setup-character-links
-  :setup-add-ids-fn      org-scribe/add-character-ids
-  :setup-link-all-fn     org-scribe/link-all-scene-characters)
+(org-scribe-define-entity character
+  ;; ── Config (entity descriptor) ──────────────────────────────────────
+  :file-fn                  org-scribe/capture-character-file
+  :heading-predicate        org-scribe--character-heading-p
+  :properties               ("PoV" "Characters")
+  :msg-added-ids            msg-added-ids
+  :msg-ids-updated          msg-character-ids-updated
+  :error-no-file            error-no-character-file
+  :error-none-found         error-no-characters-found
+  :prompt-select            prompt-select-character
+  :prompt-select-multi      prompt-select-characters-multi
+  :error-no-id              error-no-id-for-character
+  :msg-inserted-links       msg-inserted-links
+  :msg-no-selected          msg-no-characters-selected
+  :msg-set                  msg-set-characters
+  :msg-updated-single       msg-updated-characters
+  :msg-no-updates           msg-no-updates-needed
+  :msg-updated-links        msg-updated-links
+  :msg-setting-up           msg-setting-up-links
+  :question-link-existing   question-link-existing-scenes
+  :msg-setup-complete       msg-setup-complete
+  :msg-updated-link-names   msg-updated-pov-and-chars-link-names
+  :msg-no-link-updates-type "character"
+  :msg-updated-all-type     "character"
+  ;; ── Generated function names ─────────────────────────────────────
+  :get-file-name            org-scribe--get-character-file
+  :get-all-name             org-scribe--get-all-characters
+  :create-link-name         org-scribe--create-character-link
+  :add-ids-to-all-name      org-scribe--add-id-to-all-characters
+  :add-ids-name             org-scribe/add-character-ids
+  :insert-link-name         org-scribe/insert-character-link
+  :insert-multi-name        org-scribe/insert-multiple-character-links
+  :set-scene-name           org-scribe/set-scene-characters
+  :set-scene-property       "Characters"
+  :link-in-prop-name        org-scribe--link-characters-in-property
+  ;; link-scene, link-all, update-names, update-all are custom below
+  ;; (they handle both PoV + Characters with four-state messaging)
+  :setup-name               org-scribe/setup-character-links
+  :setup-add-ids-fn         org-scribe/add-character-ids
+  :setup-link-all-fn        org-scribe/link-all-scene-characters)
 
 ;;; PoV-Specific Functions (no location/plot equivalent)
 

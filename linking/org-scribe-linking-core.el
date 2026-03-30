@@ -370,55 +370,99 @@ CELL-FN is called with (entity-name scene) and should return the cell string."
     (insert "\n"))
   (org-table-align))
 
+;;; Entity Registry
+
+(defvar org-scribe-entity-registry '()
+  "Alist of (entity-symbol . config-plist) for all registered entity types.
+Populated automatically by `org-scribe-define-entity'.
+Keys are bare symbols (e.g. \\='character, \\='location, \\='plot).
+Values are the entity config plists (without function-name directives).")
+
 ;;; Entity Definition Macro
 
-(defmacro org-scribe-define-entity (entity-var &rest keys)
-  "Generate linking functions for an entity type.
+(defmacro org-scribe-define-entity (entity-symbol &rest keys)
+  "Register an entity type and generate its named API functions.
 
-ENTITY-VAR is the symbol of the entity descriptor defconst.
+ENTITY-SYMBOL is an unquoted bare symbol (e.g. character, location, plot).
+A defconst named org-scribe--SYMBOL-entity is created from the config keys
+and ENTITY-SYMBOL is registered in `org-scribe-entity-registry'.
 
-KEYS are keyword-value pairs specifying function names to generate:
-  :get-file-name        - Private function returning the entity file path
-  :get-all-name         - Private function returning entity alist
-  :create-link-name     - Private function creating a link string
-  :add-ids-to-all-name  - Private/interactive function adding IDs in buffer
-  :add-ids-name         - Public interactive function adding IDs to file
-  :insert-link-name     - Public interactive function inserting a link
-  :insert-multi-name    - Public interactive function inserting multiple links
-  :set-scene-name       - Public interactive function setting scene property
-  :set-scene-property   - Property name string for set-scene (e.g. \"Characters\")
-  :link-in-prop-name    - Private function converting names to links in property
-  :link-scene-name      - Public interactive function linking current scene
-  :link-all-name        - Public interactive function linking all scenes
-  :setup-name           - Public interactive function for initial setup
-  :setup-add-ids-fn     - Symbol of add-ids function to call from setup
-  :setup-link-all-fn    - Symbol of link-all function to call from setup
-  :update-names-name    - Public interactive function updating link names
-  :update-all-name      - Public interactive function updating all link names
+KEYS are keyword/value pairs in two groups:
 
-Omit a keyword to skip generating that function."
-  (let ((get-file-name (plist-get keys :get-file-name))
-        (get-all-name (plist-get keys :get-all-name))
-        (create-link-name (plist-get keys :create-link-name))
-        (add-ids-to-all-name (plist-get keys :add-ids-to-all-name))
-        (add-ids-name (plist-get keys :add-ids-name))
-        (insert-link-name (plist-get keys :insert-link-name))
-        (insert-multi-name (plist-get keys :insert-multi-name))
-        (set-scene-name (plist-get keys :set-scene-name))
-        (set-scene-property (plist-get keys :set-scene-property))
-        (link-in-prop-name (plist-get keys :link-in-prop-name))
-        (link-scene-name (plist-get keys :link-scene-name))
-        (link-all-name (plist-get keys :link-all-name))
-        (setup-name (plist-get keys :setup-name))
-        (setup-add-ids-fn (plist-get keys :setup-add-ids-fn))
-        (setup-link-all-fn (plist-get keys :setup-link-all-fn))
-        (update-names-name (plist-get keys :update-names-name))
-        (update-all-name (plist-get keys :update-all-name))
-        (forms nil))
+Config keys — stored in the entity descriptor constant and registry:
+  :file-fn, :heading-predicate, :properties,
+  :msg-added-ids, :msg-ids-updated, :error-no-file, :error-none-found,
+  :prompt-select, :prompt-select-multi, :error-no-id, :msg-inserted-links,
+  :msg-no-selected, :msg-set, :msg-updated-single, :msg-no-updates,
+  :msg-updated-links, :msg-setting-up, :question-link-existing,
+  :msg-setup-complete, :msg-updated-link-names, :msg-no-link-updates-type,
+  :msg-updated-all-type
+
+Function-name keys — consumed at expansion time; each generates one function:
+  :get-file-name, :get-all-name, :create-link-name, :add-ids-to-all-name,
+  :add-ids-name, :insert-link-name, :insert-multi-name, :set-scene-name,
+  :set-scene-property, :link-in-prop-name, :link-scene-name, :link-all-name,
+  :setup-name, :setup-add-ids-fn, :setup-link-all-fn, :update-names-name,
+  :update-all-name
+
+Omit a function-name key to skip generating that function."
+  (let* ((entity-var (intern (format "org-scribe--%s-entity"
+                                     (symbol-name entity-symbol))))
+         ;; Function-name keys are consumed at expansion time only —
+         ;; they must not leak into the stored entity descriptor.
+         (fn-key-list '(:get-file-name :get-all-name :create-link-name
+                        :add-ids-to-all-name :add-ids-name :insert-link-name
+                        :insert-multi-name :set-scene-name :set-scene-property
+                        :link-in-prop-name :link-scene-name :link-all-name
+                        :setup-name :setup-add-ids-fn :setup-link-all-fn
+                        :update-names-name :update-all-name))
+         ;; Build config-only plist by filtering out function-name keys.
+         (config-plist
+          (let ((result nil) (rest keys))
+            (while rest
+              (let ((k (car rest)) (v (cadr rest)))
+                (unless (memq k fn-key-list)
+                  (setq result (append result (list k v))))
+                (setq rest (cddr rest))))
+            result))
+         ;; Extract function-name arguments for code generation below.
+         (get-file-name      (plist-get keys :get-file-name))
+         (get-all-name       (plist-get keys :get-all-name))
+         (create-link-name   (plist-get keys :create-link-name))
+         (add-ids-to-all-name (plist-get keys :add-ids-to-all-name))
+         (add-ids-name       (plist-get keys :add-ids-name))
+         (insert-link-name   (plist-get keys :insert-link-name))
+         (insert-multi-name  (plist-get keys :insert-multi-name))
+         (set-scene-name     (plist-get keys :set-scene-name))
+         (set-scene-property (plist-get keys :set-scene-property))
+         (link-in-prop-name  (plist-get keys :link-in-prop-name))
+         (link-scene-name    (plist-get keys :link-scene-name))
+         (link-all-name      (plist-get keys :link-all-name))
+         (setup-name         (plist-get keys :setup-name))
+         (setup-add-ids-fn   (plist-get keys :setup-add-ids-fn))
+         (setup-link-all-fn  (plist-get keys :setup-link-all-fn))
+         (update-names-name  (plist-get keys :update-names-name))
+         (update-all-name    (plist-get keys :update-all-name))
+         (forms nil))
+
+    ;; 1. Define entity config as a named constant (config keys only).
+    (push `(defconst ,entity-var
+             ',config-plist
+             ,(format "Entity descriptor for %s. Auto-generated by `org-scribe-define-entity'."
+                      entity-symbol))
+          forms)
+
+    ;; 2. Register entity in the global registry (replacing any prior entry).
+    (push `(setq org-scribe-entity-registry
+                 (cons (cons ',entity-symbol ,entity-var)
+                       (assq-delete-all ',entity-symbol org-scribe-entity-registry)))
+          forms)
+
+    ;; 3–19. Generate named API functions (same logic as before).
 
     (when get-file-name
       (push `(defun ,get-file-name ()
-               ,(format "Get the path to the entity file.\nAuto-generated wrapper for %s." entity-var)
+               ,(format "Get the path to the entity file.\nAuto-generated from %s." entity-var)
                (funcall (plist-get ,entity-var :file-fn)))
             forms))
 
