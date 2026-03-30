@@ -117,60 +117,45 @@ Example:
 
 ;;;###autoload
 (defun org-scribe/update-all-link-names ()
-  "Update display names for all ID links (characters, locations, plots).
+  "Update display names for all ID links in scene properties.
 
-This function scans all database files (characters.org, locations.org,
-plot.org) to get the current names, then updates the display text of
-all ID links in scene properties throughout the manuscript.
+Reads entity types from `org-scribe-entity-registry'; any entity type
+registered there (characters, locations, plot threads, and future types)
+is automatically included without changes to this function.
 
-Use this after renaming entities in your planning files. The ID links
-will still work (they're ID-based), but this refreshes the display
-text to show the current names.
-
-Example:
-  1. Rename \"Alex Rivera\" to \"Alexandra Rivera\" in characters.org
-  2. Run this function
-  3. All scenes updated: [[id:char-alex-001][Alexandra Rivera]]
-
-Processes these properties:
-  - :PoV: (character links)
-  - :Characters: (character links)
-  - :Location: (location links)
-  - :Plot: (plot thread links)
+Use this after renaming entities in planning files.  The ID links still
+work (they are ID-based), but this refreshes display text to show the
+current names.
 
 Returns the number of scenes updated."
   (interactive)
-  (let ((chars-map (condition-case nil
-                       (progn
-                         (require 'org-scribe-character-links)
-                         (org-scribe--build-id-to-name-map (org-scribe--get-all-characters)))
-                     (error (make-hash-table :test 'equal))))
-        (locs-map (condition-case nil
-                      (progn
-                        (require 'org-scribe-location-links)
-                        (org-scribe--build-id-to-name-map (org-scribe--get-all-locations)))
-                    (error (make-hash-table :test 'equal))))
-        (plots-map (condition-case nil
-                       (progn
-                         (require 'org-scribe-plot-links)
-                         (org-scribe--build-id-to-name-map (org-scribe--get-all-plot-threads)))
-                     (error (make-hash-table :test 'equal))))
+  (require 'org-scribe-linking-core)
+  ;; Build (property-name . id-map) alist from every registered entity.
+  ;; An entity may own several properties (e.g. character owns PoV + Characters);
+  ;; each gets its own entry pointing to the same id-map object.
+  (let ((prop-maps
+         (apply #'append
+                (mapcar
+                 (lambda (entry)
+                   (let* ((entity (cdr entry))
+                          (id-map (condition-case nil
+                                      (org-scribe--build-id-to-name-map
+                                       (org-scribe--get-all-entities entity))
+                                    (error (make-hash-table :test 'equal)))))
+                     (mapcar (lambda (prop) (cons prop id-map))
+                             (plist-get entity :properties))))
+                 org-scribe-entity-registry)))
         (count 0))
     (save-excursion
       (goto-char (point-min))
-      ;; Single pass through all scenes
       (org-map-entries
        (lambda ()
-         (when (or (org-entry-get nil "PoV")
-                   (org-entry-get nil "Characters")
-                   (org-entry-get nil "Location")
-                   (org-entry-get nil "Plot"))
-           (let ((updated-pov (org-scribe--update-links-in-property "PoV" chars-map))
-                 (updated-chars (org-scribe--update-links-in-property "Characters" chars-map))
-                 (updated-loc (org-scribe--update-links-in-property "Location" locs-map))
-                 (updated-plot (org-scribe--update-links-in-property "Plot" plots-map)))
-             (when (or updated-pov updated-chars updated-loc updated-plot)
-               (setq count (1+ count))))))
+         (let ((any-updated nil))
+           (dolist (pm prop-maps)
+             (when (org-scribe--update-links-in-property (car pm) (cdr pm))
+               (setq any-updated t)))
+           (when any-updated
+             (setq count (1+ count)))))
        nil 'file))
     (message (org-scribe-msg 'msg-updated-all-links-scene count (org-scribe-plural count "")))
     count))
