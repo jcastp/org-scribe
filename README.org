@@ -44,6 +44,10 @@
   - Automatically strips ID link syntax in column view
   - Shows "Alex" instead of "[[id:abc123][Alex]]"
   - Works with all linked properties (PoV, Characters, Plot, Location)
+- *Entity Tooltips* (opt-in): Inline character information without opening a new buffer
+  - Moving point onto any =[[id:...]]= link shows Role, Age, Goal, Motivation in the echo area
+  - Enabled with =(setq org-scribe-overlays-enable t)= — off by default
+  - Toggle manually with =M-x org-scribe-overlays-mode= or =F8 F8 C T=
 - *Word Counting*: Accurate word counting that excludes Org-mode metadata (comments, properties, drawers)
 - *Progress Tracking*: Daily word count tracking with org-tracktable integration
 - *Writing Modes*: Four mutually exclusive modes for different workflows:
@@ -395,6 +399,9 @@ Press =F8 F8 C= to access:
 
 *Visualization:*
 - =g= - Insert graph block
+
+*Tooltips:*
+- =T= - Toggle entity tooltips (=org-scribe-overlays-mode=)
 
 See [[file:CHARACTER-LINKING.org][Character Linking Guide]] for complete documentation.
 
@@ -857,6 +864,52 @@ If a character is PoV and also in Characters property, only ◆ is shown (PoV im
 
 **Result**: Eve's gap reduced, better presence continuity
 
+** Entity Tooltips (opt-in)
+
+*** Overview
+
+When =org-scribe-overlays-mode= is active, moving point onto any =[[id:...][Name]]= link
+inside a scene property displays a one-line tooltip in the echo area showing
+the entity's key properties — without opening a new buffer or leaving the scene.
+
+For character links the tooltip shows: Role, Age, Goal, and Motivation.
+For other entity types (location, plot thread) it shows the heading name.
+
+*** Enabling Tooltips
+
+This feature is *off by default*.  To enable it automatically whenever
+=org-scribe-mode= is active, add the following to your init file:
+
+#+begin_src emacs-lisp
+(setq org-scribe-overlays-enable t)
+#+end_src
+
+You can also toggle tooltips manually at any time:
+- =M-x org-scribe-overlays-mode= — toggle in the current buffer
+- =F8 F8 C T= — toggle via the characters hydra submenu
+
+*** What the Tooltip Shows
+
+#+begin_example
+[Alice Rivera]  Role: Protagonist  |  Age: 28  |  Goal: Recover the manuscript  |  Motivation: Redemption
+#+end_example
+
+The tooltip is drawn from properties in the character heading:
+| Property     | Shown as       |
+|--------------+----------------|
+| =:Role:=     | =Role: ...=    |
+| =:Age:=      | =Age: ...=     |
+| =:Goal:=     | =Goal: ...=    |
+| =:Motivation:= | =Motivation: ...= |
+
+Properties that are empty or not set are simply omitted.
+
+*** Debounce Behaviour
+
+The lookup is debounced: moving along a line inside the same link does not
+trigger repeated file reads.  A new tooltip only appears when point moves onto
+a /different/ ID.
+
 ** Search Functions
 
 All search functions are available via the hydra menu (=F8 F8=):
@@ -969,6 +1022,9 @@ Key variables:
 - =org-scribe-env-normal-theme= - Normal theme
 - =org-scribe-env-work-font= - Font preset for writing
 - =org-scribe-env-work-width= - Writeroom width
+
+** Entity Tooltips
+- =org-scribe-overlays-enable= - Set to =t= to enable tooltips automatically (default: =nil=)
 
 ** Export
 - =org-scribe/scene-break-replacements= - Scene break strings for export backends

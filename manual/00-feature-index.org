@@ -19,7 +19,7 @@ This package organizes features into the following categories:
 2. [[#writing-modes][Writing Modes]] - Distraction-free and specialized writing environments
 3. [[#word-counting-tracking][Word Counting & Tracking]] - Counting words and tracking progress
 4. [[#capture-system][Capture System]] - Quick capture of characters, locations, and notes
-5. [[#linking-system][Linking System]] - ID-based linking for characters, locations, and plot threads
+5. [[#linking-system][Linking System]] - ID-based linking for characters, locations, and plot threads; entity tooltips
 6. [[#search-tools][Search Tools]] - Find scenes by character, plot, location, or PoV
 7. [[#templates][Templates]] - Scene and chapter insertion templates
 8. [[#dictionary-language][Dictionary & Language Tools]] - Spanish dictionary, synonyms, translations
@@ -311,6 +311,14 @@ Provides structured tracking of relationships between characters, stored as stru
 Displays character relationships in multiple formats for analysis and planning. ~org-scribe/show-character-relationships~ generates an ASCII relationship tree for a selected character, showing each connection with relationship type, sentiment symbol (+/-/~/·), and target character name. ~org-scribe/show-all-relationships~ presents all project relationships as a formatted org-mode table with columns for character, related-to, type, strength, and sentiment. ~org-scribe/insert-relationship-block~ inserts a ~#+BEGIN: character-relationships~ dynamic block at point, supporting three output formats: ~dot~ (GraphViz DOT language for graph rendering), ~ascii~ (tree display), or ~table~. Optional block parameters ~:character~ and ~:filter-strength~ focus on one character or filter by minimum relationship strength.
 
 *Status*: Fully implemented | *Hydra*: ~C v~, ~C V~, ~C g~ (Character submenu) | *Module*: ~linking/org-scribe-character-relationships.el~
+
+** Entity Tooltips (~org-scribe-overlays-mode~)
+
+A buffer-local minor mode that displays entity information in the echo area when point moves onto any ~[[id:...][Name]]~ link in a scene property. For character links the tooltip shows the character's Role, Age, Goal, and Motivation from their profile heading; for other entity types it shows the heading name. The lookup is debounced via ~org-scribe--overlays-last-id~: moving along the same link does not trigger repeated file reads.
+
+This feature is *off by default*. To activate it automatically whenever ~org-scribe-mode~ is on, the user sets ~(setq org-scribe-overlays-enable t)~ in their init file. Individual buffers can be toggled at any time with ~M-x org-scribe-overlays-mode~ or the ~T~ key in the Characters hydra submenu (~F8 F8 C T~). The minor mode is always loaded (it is required by ~org-scribe.el~) but never activates unless explicitly enabled, so there is zero overhead for users who do not opt in.
+
+*Status*: Fully implemented (opt-in) | *Hydra*: ~C T~ (Character submenu, toggle) | *Module*: ~linking/org-scribe-overlays.el~
 
 * Search Tools
 :PROPERTIES:
