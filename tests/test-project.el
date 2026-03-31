@@ -205,18 +205,25 @@
 ;;; Chapter Template Insertion Tests
 
 (ert-deftest test-insert-chapter-template ()
-  "Test chapter template insertion."
+  "Test chapter template insertion includes chapter heading and first scene."
   (with-temp-buffer
     (org-mode)
     (org-scribe-insert-chapter "Chapter 1")
 
     (let ((content (buffer-string)))
-      ;; Check heading
+      ;; Check chapter heading
       (should (string-match-p "\\*\\* TODO Chapter 1 :ignore:" content))
 
-      ;; Check properties
+      ;; Check chapter properties
       (should (string-match-p ":WORD-OBJECTIVE: 5000" content))
-      (should (string-match-p ":WORDCOUNT: 0" content)))))
+      (should (string-match-p ":WORDCOUNT: 0" content))
+
+      ;; Check first scene is present
+      (should (string-match-p "\\*\\*\\* TODO .+ :ignore:" content))
+      (should (string-match-p ":PoV:" content))
+      (should (string-match-p ":Characters:" content))
+      (should (string-match-p ":WORD-OBJECTIVE: 500" content))
+      (should (string-match-p "{{{scene-break}}}" content)))))
 
 (ert-deftest test-insert-chapter-empty-name ()
   "Test chapter template with empty name uses default."

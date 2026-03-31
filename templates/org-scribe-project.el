@@ -316,8 +316,8 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 ;;;###autoload
 (defun org-scribe-insert-chapter (chapter-name)
   "Insert a chapter template at point with CHAPTER-NAME.
-The template includes a TODO heading with :ignore: tag and a property
-drawer with WORDCOUNT field initialized to 0.
+The template includes a TODO heading with :ignore: tag, a property
+drawer with WORDCOUNT field initialized to 0, and an empty first scene.
 If CHAPTER-NAME is empty, defaults to \"New chapter\"."
   (interactive (list (read-string (org-scribe-msg 'chapter-name-prompt))))
 
@@ -329,20 +329,43 @@ If CHAPTER-NAME is empty, defaults to \"New chapter\"."
   (when (string-empty-p (string-trim chapter-name))
     (setq chapter-name (org-scribe-msg 'default-chapter-name)))
 
-  ;; Define and insert template
+  ;; Define and insert combined chapter + first scene template
   (let ((template (format "** TODO %s :ignore:
 :PROPERTIES:
 :WORD-OBJECTIVE: 5000
 :WORDCOUNT: 0
 :END:
-" chapter-name))
+
+*** TODO %s :ignore:
+:PROPERTIES:
+:PoV:
+:Characters:
+:Beat:
+:Plot:
+:Timeline:
+:Location:
+:Description:
+:Summary:
+:Scene-motivation:
+:Conflict-source:
+:What-is-at-stake:
+:Emotion:
+:Tension-level:
+:Outcome:
+:Comment:
+:WORD-OBJECTIVE: 500
+:END:
+
+{{{scene-break}}}
+" chapter-name (org-scribe-msg 'default-scene-name)))
         (start-pos (point)))
 
     ;; Insert template
     (insert template)
 
-    ;; Position cursor at the end of the heading
+    ;; Position cursor at first scene's :PoV: property (line 8 from start)
     (goto-char start-pos)
+    (forward-line 8)
     (end-of-line)))
 
 ;;; Project Navigation
