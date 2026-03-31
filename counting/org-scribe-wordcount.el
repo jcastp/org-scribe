@@ -43,6 +43,33 @@ for each heading to enable linking."
      ;; Create the id to link the org heading
      (org-id-get-create))))
 
+;;; Scene-level Word Count Update
+
+;;;###autoload
+(defun org-scribe/update-scene-wordcounts ()
+  "Update WORDCOUNT property on scene headings in the current subtree.
+Scenes are identified as level-3 headings tagged with :ignore:.
+When point is on a heading, operates on that subtree only.
+When point is not on a heading, operates on the entire buffer.
+Requires org-context-extended for accurate word counting."
+  (interactive)
+  (unless (featurep 'org-context-extended)
+    (user-error (org-scribe-msg 'error-org-context-required)))
+  (let ((scope (if (org-at-heading-p) 'tree nil))
+        (count 0))
+    (org-map-entries
+     (lambda ()
+       (let* ((start (point))
+              (end (save-excursion (org-end-of-subtree t)))
+              (words (org-context-count-words start end t t t t t t
+                                              org-scribe-wordcount-default-ignore-tags)))
+         (org-set-property "WORDCOUNT" (number-to-string words))
+         (setq count (1+ count))))
+     "LEVEL=3+ignore"
+     scope)
+    (message (org-scribe-msg 'msg-scenes-wordcount-updated count
+                             (org-scribe-plural count "")))))
+
 ;;; Dynamic Block for Word Count Table
 
 ;;;###autoload

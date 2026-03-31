@@ -156,6 +156,9 @@
     (msg-overlays-enabled . "Entity tooltips enabled")
     (msg-overlays-disabled . "Entity tooltips disabled")
 
+    ;; Scene word counts
+    (msg-scenes-wordcount-updated . "Updated word count on %d scene%s")
+
     ;; Dictionary / language tools
     (error-word-empty . "Word cannot be empty")
     (error-word-lookup . "Error al buscar la palabra: %s")
