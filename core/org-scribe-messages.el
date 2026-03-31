@@ -152,6 +152,10 @@
     (msg-column-view-enabled . "Column view link stripping enabled")
     (msg-column-view-disabled . "Column view link stripping disabled")
 
+    ;; Overlay tooltips
+    (msg-overlays-enabled . "Entity tooltips enabled")
+    (msg-overlays-disabled . "Entity tooltips disabled")
+
     ;; Dictionary / language tools
     (error-word-empty . "Word cannot be empty")
     (error-word-lookup . "Error al buscar la palabra: %s")

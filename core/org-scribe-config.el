@@ -141,6 +141,20 @@ their workflow."
   :type '(repeat string)
   :group 'org-scribe)
 
+;;; Overlay Tooltips
+
+(defcustom org-scribe-overlays-enable nil
+  "When non-nil, enable entity tooltips automatically in org-scribe buffers.
+With this set to t, `org-scribe-overlays-mode' activates whenever
+`org-scribe-mode' is turned on.  Moving point onto any [[id:...]] link
+inside a scene property will then display a one-line tooltip in the echo
+area showing the entity's Role, Age, Goal, and Motivation.
+
+You can also toggle tooltips manually at any time with:
+  M-x org-scribe-overlays-mode"
+  :type 'boolean
+  :group 'org-scribe)
+
 ;;; Editing Mode Configuration
 
 (defcustom org-scribe-editing-left-width-percent 0.25

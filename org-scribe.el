@@ -77,6 +77,8 @@
 (require 'org-scribe-plot-links (expand-file-name "linking/org-scribe-plot-links" (file-name-directory load-file-name)))
 ;; column view enhancements for ID links
 (require 'org-scribe-column-view (expand-file-name "linking/org-scribe-column-view" (file-name-directory load-file-name)))
+;; overlay tooltips (opt-in via org-scribe-overlays-enable)
+(require 'org-scribe-overlays (expand-file-name "linking/org-scribe-overlays" (file-name-directory load-file-name)))
 ;; writing - export
 (require 'org-scribe-export (expand-file-name "export/org-scribe-export" (file-name-directory load-file-name)))
 ;; hydra for better access to common functions

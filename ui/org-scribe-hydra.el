@@ -72,6 +72,8 @@
 (declare-function org-scribe/plot-thread-stats "linking/org-scribe-plot-links")
 ;; column view
 (declare-function org-scribe-column-view-toggle "linking/org-scribe-column-view")
+;; overlay tooltips
+(declare-function org-scribe-overlays-mode "linking/org-scribe-overlays")
 
 ;;;###autoload (autoload 'hydra-org-scribe-characters/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe-characters (:color blue :hint nil)
@@ -82,7 +84,7 @@ _p_: Set PoV character         _a_: Add relationship       _g_: Insert graph blo
 _c_: Set scene characters      _r_: Remove relationship    _v_: View relationships
 _j_: Jump to PoV char          _V_: View all relationships _R_: Setup relationships
 _l_: Link scene characters
-_L_: Link all scenes           _q_: Back to main menu
+_L_: Link all scenes           _q_: Back to main menu      _T_: Toggle tooltips
 _i_: Add IDs to characters     _Q_: Quit
 _u_: Update link names
 _U_: Update all link names
@@ -103,6 +105,7 @@ _s_: Setup linking system
   ("v" org-scribe/show-character-relationships "view relationships")
   ("V" org-scribe/show-all-relationships "view all")
   ("R" org-scribe/setup-character-relationships "setup relationships")
+  ("T" org-scribe-overlays-mode "toggle tooltips")
   ("q" hydra-org-scribe/body "back")
   ("Q" nil "quit"))
 
