@@ -18,6 +18,7 @@
 ;;   - Messages (org-scribe-messages.el)
 ;;   - Project creation (org-scribe-project.el)
 ;;   - Capture system (org-scribe-capture.el)
+;;   - Writing modes (org-scribe-modes.el)
 ;;   - Search functions (org-scribe-search.el)
 ;;   - Character linking (org-scribe-character-links.el)
 ;;   - Location linking (org-scribe-location-links.el)
@@ -52,6 +53,7 @@
     "test-wordcount"               ; Word counting
     "test-project"                 ; Project creation
     "test-capture"                 ; Capture system
+    "test-modes"                   ; Writing environment modes
     "test-search"                  ; Search functions
     "test-search-links"            ; Link extraction helpers
     "test-character-links"         ; Character linking
@@ -118,6 +120,14 @@ Suitable for CI/CD pipelines and automated testing."
   (load-file (expand-file-name "test-capture.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (ert "^test-capture-\\|^test-create-\\|^test-character-\\|^test-location-\\|^test-object-\\|^test-timeline-"))
+
+;;;###autoload
+(defun org-scribe-run-modes-tests ()
+  "Run writing-modes tests only."
+  (interactive)
+  (load-file (expand-file-name "test-modes.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-modes-"))
 
 ;;;###autoload
 (defun org-scribe-run-search-tests ()
@@ -201,6 +211,8 @@ Note: Requires org-context-extended to be installed."
              (length (ert-select-tests "^test-project-\\|^test-validate-\\|^test-template-\\|^test-insert-" t)))
     (message "  - Capture system:      %d tests"
              (length (ert-select-tests "^test-capture-\\|^test-create-" t)))
+    (message "  - Writing modes:       %d tests"
+             (length (ert-select-tests "^test-modes-" t)))
     (message "  - Search functions:    %d tests"
              (length (ert-select-tests "^test-search-\\|^test-extract-\\|^test-property-" t)))
     (message "  - Character linking:   %d tests"

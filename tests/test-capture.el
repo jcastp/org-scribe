@@ -316,7 +316,208 @@
   (let ((template-string (nth 4 (car org-scribe/timeline-capture-templates))))
     (should (string-match-p ":ID: %(org-id-new)" template-string))))
 
+;;; ─────────────────────────────────────────────
+;;; File Creation Routing — both project types
+;;; ─────────────────────────────────────────────
+
+(ert-deftest test-capture-create-file-dispatcher-short-story ()
+  "Test that the file dispatcher creates a short-story notes file."
+  (let ((temp-file (make-temp-file "test-notes-ss-" nil ".org")))
+    (unwind-protect
+        (progn
+          (delete-file temp-file)  ; start clean
+          (org-scribe--create-capture-file temp-file 'short-story 'characters)
+          (should (file-exists-p temp-file))
+          (with-temp-buffer
+            (insert-file-contents temp-file)
+            ;; Short-story notes file contains Characters section
+            (should (string-match-p "Characters" (buffer-string)))
+            (should (string-match-p "Plot" (buffer-string)))
+            (should (string-match-p "Setting" (buffer-string)))))
+      (when (file-exists-p temp-file)
+        (delete-file temp-file)))))
+
+(ert-deftest test-capture-create-file-dispatcher-novel ()
+  "Test that the file dispatcher creates an individual novel capture file."
+  (let ((temp-file (make-temp-file "test-chars-novel-" nil ".org")))
+    (unwind-protect
+        (progn
+          (delete-file temp-file)
+          (org-scribe--create-capture-file temp-file 'novel 'characters)
+          (should (file-exists-p temp-file))
+          (with-temp-buffer
+            (insert-file-contents temp-file)
+            ;; Novel individual file has the entity-type title
+            (should (string-match-p "Character" (buffer-string)))
+            (should (string-match-p "TITLE" (buffer-string)))))
+      (when (file-exists-p temp-file)
+        (delete-file temp-file)))))
+
+(ert-deftest test-capture-create-file-dispatcher-plot-any-type ()
+  "Test that the plot dispatcher creates a plot file regardless of project type."
+  (let ((temp-file (make-temp-file "test-plot-" nil ".org")))
+    (unwind-protect
+        (progn
+          (delete-file temp-file)
+          ;; Plot gets its own structure even for short-story projects
+          (org-scribe--create-capture-file temp-file 'short-story 'plot)
+          (should (file-exists-p temp-file))
+          (with-temp-buffer
+            (insert-file-contents temp-file)
+            (should (string-match-p "Plot" (buffer-string)))))
+      (when (file-exists-p temp-file)
+        (delete-file temp-file)))))
+
+;;; ─────────────────────────────────────────────
+;;; create-if-missing — auto-creates target file
+;;; ─────────────────────────────────────────────
+
+(ert-deftest test-capture-create-if-missing-novel-creates-objects-dir ()
+  "Test that character-file with create-if-missing creates file for a novel project."
+  (let* ((temp-dir (make-temp-file "test-novel-proj-" t))
+         (expected-file (expand-file-name "objects/characters.org" temp-dir)))
+    (unwind-protect
+        (cl-letf (((symbol-function 'project-current)
+                   (lambda (&rest _) `(vc nil ,temp-dir)))
+                  ((symbol-function 'project-root)
+                   (lambda (_) temp-dir))
+                  ((symbol-function 'org-scribe-project-type)
+                   (lambda () 'novel)))
+          ;; File must not exist before the call
+          (should-not (file-exists-p expected-file))
+          (let ((result (org-scribe/capture-character-file t)))
+            (should (file-exists-p expected-file))
+            (should (string-match-p "characters\\.org$" result))))
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-capture-create-if-missing-short-story-creates-notes ()
+  "Test that character-file with create-if-missing creates notes.org for short stories."
+  (let* ((temp-dir (make-temp-file "test-ss-proj-" t))
+         (expected-file (expand-file-name "notes.org" temp-dir)))
+    (unwind-protect
+        (cl-letf (((symbol-function 'project-current)
+                   (lambda (&rest _) `(vc nil ,temp-dir)))
+                  ((symbol-function 'project-root)
+                   (lambda (_) temp-dir))
+                  ((symbol-function 'org-scribe-project-type)
+                   (lambda () 'short-story)))
+          (should-not (file-exists-p expected-file))
+          (let ((result (org-scribe/capture-character-file t)))
+            (should (file-exists-p expected-file))
+            (should (string-match-p "notes\\.org$" result))))
+      (delete-directory temp-dir t))))
+
+;;; ─────────────────────────────────────────────
+;;; Project-type routing — without filesystem
+;;; ─────────────────────────────────────────────
+
+(ert-deftest test-capture-character-file-routes-short-story ()
+  "Test that short-story projects route character capture to notes.org."
+  (let* ((temp-dir (make-temp-file "test-route-ss-" t)))
+    (unwind-protect
+        (cl-letf (((symbol-function 'project-current)
+                   (lambda (&rest _) `(vc nil ,temp-dir)))
+                  ((symbol-function 'project-root)
+                   (lambda (_) temp-dir))
+                  ((symbol-function 'org-scribe-project-type)
+                   (lambda () 'short-story)))
+          (let ((result (org-scribe/capture-character-file)))
+            ;; No notes.org exists yet, so it falls back to the default name
+            (should (string-match-p "notes\\.org$" result))))
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-capture-character-file-routes-novel ()
+  "Test that novel projects route character capture to objects/characters.org."
+  (let* ((temp-dir (make-temp-file "test-route-novel-" t))
+         (char-file (expand-file-name "objects/characters.org" temp-dir)))
+    (unwind-protect
+        (progn
+          ;; Pre-create the file so cl-find-if can find it
+          (make-directory (expand-file-name "objects" temp-dir) t)
+          (write-region "" nil char-file)
+          (cl-letf (((symbol-function 'project-current)
+                     (lambda (&rest _) `(vc nil ,temp-dir)))
+                    ((symbol-function 'project-root)
+                     (lambda (_) temp-dir))
+                    ((symbol-function 'org-scribe-project-type)
+                     (lambda () 'novel)))
+            (let ((result (org-scribe/capture-character-file)))
+              (should (string-match-p "characters\\.org$" result)))))
+      (delete-directory temp-dir t))))
+
+;;; ─────────────────────────────────────────────
+;;; ID assignment on finalisation
+;;; ─────────────────────────────────────────────
+
+(ert-deftest test-capture-finalize-hook-adds-id-to-heading ()
+  "Test that the finalize hook adds an ID to a heading that lacks one."
+  (let ((temp-file (make-temp-file "test-finalize-" nil ".org")))
+    (unwind-protect
+        (progn
+          ;; Create a minimal entity file with one heading and no ID
+          (with-temp-file temp-file
+            (insert "* Alice\n:PROPERTIES:\n:Role: Protagonist\n:END:\n\n"))
+          (with-current-buffer (find-file-noselect temp-file)
+            (unwind-protect
+                (let ((org-capture-mode t))
+                  (cl-letf (((symbol-function 'org-scribe/capture-character-file)
+                             (lambda (&rest _) temp-file))
+                            ((symbol-function 'org-scribe/capture-location-file)
+                             (lambda (&rest _) "/nonexistent-loc.org"))
+                            ((symbol-function 'org-scribe/capture-plot-thread-file)
+                             (lambda (&rest _) "/nonexistent-plot.org")))
+                    (org-scribe--capture-finalize-add-entity-id)
+                    ;; The hook must have added an :ID: property
+                    (should (string-match-p ":ID:" (buffer-string)))))
+              (kill-buffer (current-buffer)))))
+      (when (file-exists-p temp-file)
+        (delete-file temp-file)))))
+
+(ert-deftest test-capture-finalize-hook-skips-existing-id ()
+  "Test that the finalize hook does not overwrite an existing ID."
+  (let ((temp-file (make-temp-file "test-finalize-existing-" nil ".org"))
+        (fixed-id "test-existing-id-12345"))
+    (unwind-protect
+        (progn
+          (with-temp-file temp-file
+            (insert (format "* Bob\n:PROPERTIES:\n:ID: %s\n:Role: Mentor\n:END:\n\n"
+                            fixed-id)))
+          (with-current-buffer (find-file-noselect temp-file)
+            (unwind-protect
+                (let ((org-capture-mode t))
+                  (cl-letf (((symbol-function 'org-scribe/capture-character-file)
+                             (lambda (&rest _) temp-file))
+                            ((symbol-function 'org-scribe/capture-location-file)
+                             (lambda (&rest _) "/nonexistent-loc.org"))
+                            ((symbol-function 'org-scribe/capture-plot-thread-file)
+                             (lambda (&rest _) "/nonexistent-plot.org")))
+                    (org-scribe--capture-finalize-add-entity-id)
+                    ;; The original ID must still be present and unchanged
+                    (should (string-match-p fixed-id (buffer-string)))))
+              (kill-buffer (current-buffer)))))
+      (when (file-exists-p temp-file)
+        (delete-file temp-file)))))
+
+(ert-deftest test-capture-finalize-hook-inactive-outside-capture ()
+  "Test that the finalize hook is a no-op when org-capture-mode is nil."
+  (let ((temp-file (make-temp-file "test-finalize-noop-" nil ".org")))
+    (unwind-protect
+        (progn
+          (with-temp-file temp-file
+            (insert "* Charlie\n:PROPERTIES:\n:Role: Ally\n:END:\n\n"))
+          (with-current-buffer (find-file-noselect temp-file)
+            (unwind-protect
+                (let ((org-capture-mode nil))   ; simulate being outside capture
+                  (org-scribe--capture-finalize-add-entity-id)
+                  ;; No ID should have been added
+                  (should-not (string-match-p ":ID:" (buffer-string))))
+              (kill-buffer (current-buffer)))))
+      (when (file-exists-p temp-file)
+        (delete-file temp-file)))))
+
+;;; ─────────────────────────────────────────────
 ;;; Run tests
+;;; ─────────────────────────────────────────────
 
 (defun org-scribe-capture-run-tests ()
   "Run all capture system tests."
