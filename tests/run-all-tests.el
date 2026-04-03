@@ -29,6 +29,7 @@
 ;;   - Export filters (org-scribe-export.el)
 ;;   - Word counting (org-scribe-wordcount.el)
 ;;   - Dictionary and language tools (org-scribe-dictionary.el)
+;;   - Project health report (org-scribe-health.el)
 
 ;;; Code:
 
@@ -63,7 +64,8 @@
     "test-link-update"             ; Link display name updates
     "test-column-view"             ; Column view enhancement
     "test-export"                  ; Export filters
-    "test-dictionary")             ; Dictionary and language tools
+    "test-dictionary"              ; Dictionary and language tools
+    "test-health")                 ; Project health report
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
@@ -167,6 +169,14 @@ Suitable for CI/CD pipelines and automated testing."
   (load-file (expand-file-name "test-dictionary.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (ert "^test-dictionary-"))
+
+;;;###autoload
+(defun org-scribe-run-health-tests ()
+  "Run project health report tests only."
+  (interactive)
+  (load-file (expand-file-name "test-health.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-health-"))
 
 ;;;###autoload
 (defun org-scribe-run-export-tests ()

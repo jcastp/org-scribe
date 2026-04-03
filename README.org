@@ -13,7 +13,7 @@
 *** Project Creation & Templates
 - *Create Novel Projects*: Generate complete project structure from templates with a single command
 - *Scene Insertion*: Insert pre-formatted scene templates with metadata properties
-- *Chapter Insertion*: Add chapter templates with word count tracking
+- *Chapter Insertion*: Add chapter templates with word count tracking; automatically inserts a ready-to-fill first scene below the chapter heading
 - *Template Customization*: Edit templates to match your workflow
 - *Bilingual Support*: English and Spanish templates included
 - *Git Integration*: Projects automatically initialized with git
@@ -49,6 +49,7 @@
   - Enabled with =(setq org-scribe-overlays-enable t)= — off by default
   - Toggle manually with =M-x org-scribe-overlays-mode= or =F8 F8 C T=
 - *Word Counting*: Accurate word counting that excludes Org-mode metadata (comments, properties, drawers)
+- *Scene-level Word Count Update*: =org-scribe/update-scene-wordcounts= updates =:WORDCOUNT:= on every scene heading in the current subtree without touching chapter or act headings (=F8 F8 z=)
 - *Progress Tracking*: Daily word count tracking with org-tracktable integration
 - *Writing Modes*: Four mutually exclusive modes for different workflows:
   - Distraction-free writing mode
@@ -58,6 +59,7 @@
 - *Search Functions*: Find scenes by POV, character, location, or plot keywords using org-ql (handles ID links)
 - *Dictionary Tools*: Spanish RAE dictionary API, synonym lookup, and translation support
 - *Capture System*: Project-aware note capture that finds the right notes file
+- *Project Health Report*: =org-scribe/project-health= aggregates word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
 - *Hydra Menu*: Unified keyboard-driven menu for quick access to all functions
 - *org-scribe-planner Integration* (optional): Connect writing goal planning to your manuscript — auto-loads plans, pushes live word counts, and adds a planner sub-menu at =W=
@@ -191,7 +193,7 @@ The project includes:
 While working in your manuscript:
 
 - =M-x org-scribe-insert-scene= or =F8 F8 s=: Insert a scene with metadata properties (PoV, Characters, Plot, Location, etc.)
-- =M-x org-scribe-insert-chapter= or =F8 F8 c=: Insert a chapter heading with word count property
+- =M-x org-scribe-insert-chapter= or =F8 F8 c=: Insert a chapter heading with word count properties and an empty first scene; cursor lands at the scene's =:PoV:= line ready to fill in
 
 *** Quick Project File Access
 
@@ -240,11 +242,21 @@ Three-pane layout:
 
 =M-x org-context-count-words= or press =F8 F8 w= in hydra
 
-*** Add Word Count Properties
+*** Add Word Count Properties to All Headings
 
 =M-x org-scribe/ews-org-count-words= or press =F8 F8 a= in hydra
 
 Adds a =WORDCOUNT= property to each heading.
+
+*** Update Scene Word Counts (current subtree)
+
+=M-x org-scribe/update-scene-wordcounts= or press =F8 F8 z= in hydra
+
+Updates =:WORDCOUNT:= on every scene heading (level 3, =:ignore:= tagged) in the
+current subtree.  When point is on a chapter or act heading, only that
+chapter/act is updated; when point is not on a heading the entire buffer is
+processed.  Chapter and act headings are not touched.  Requires
+=org-context-extended=.
 
 *** Generate Word Count Table with Progress
 
@@ -910,6 +922,38 @@ The lookup is debounced: moving along a line inside the same link does not
 trigger repeated file reads.  A new tooltip only appears when point moves onto
 a /different/ ID.
 
+** Project Health Report
+
+=M-x org-scribe/project-health= or press =F8 F8 H= in hydra
+
+Generates an aggregated health snapshot of the current novel project and opens
+it in the =*org-scribe-health*= buffer as a browsable org file with clickable
+=[[id:...]]= links back to each scene.
+
+The report contains five sections:
+
+| Section                   | What it shows                                                       |
+|---------------------------+---------------------------------------------------------------------|
+| *Overview*                | Manuscript file, scene count, words written, chapter objectives, %  |
+| *Scenes by Status*        | Count of scenes per TODO state (TODO, DONE, custom keywords)        |
+| *Missing Properties*      | Scenes lacking =:PoV:=, =:Plot:=, or =:Location:= — linked         |
+| *Orphaned Entities*       | Characters/locations in their database but not linked in any scene  |
+| *Open TODO Scenes*        | Full list with state labels and clickable scene links               |
+
+*** Word count totals
+
+Actual words are summed from level-3 (scene) =:WORDCOUNT:= properties; the
+target is summed from level-2 (chapter) =:WORD-OBJECTIVE:= properties.  This
+avoids double-counting that would occur if both chapter and scene objectives
+were summed together.
+
+*** Orphan detection
+
+A character or location is considered /orphaned/ if its ID does not appear in
+any scene's =:PoV:=, =:Characters:=, =:Location:=, or =:Plot:= property.
+This catches entities added to the planning files but not yet woven into the
+story.
+
 ** Search Functions
 
 All search functions are available via the hydra menu (=F8 F8=):
@@ -1062,7 +1106,8 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 *** Tools
 - =w= - Count words
 - =r= - Update tracking table
-- =a= - Add word count properties
+- =a= - Add word count properties to all headings
+- =z= - Update scene word counts in current subtree
 - =d= - RAE dictionary
 - =y= - Synonyms
 
@@ -1078,6 +1123,7 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 - =L= - Location linking submenu
 - =P= - Plot thread linking submenu
 - =U= - Update all link names (all types)
+- =H= - Project health report
 - =W= - Writing plan submenu (requires org-scribe-planner integration)
 
 **** Character Linking Submenu (F8 F8 C)

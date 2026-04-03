@@ -75,6 +75,8 @@
 (declare-function org-scribe-column-view-toggle "linking/org-scribe-column-view")
 ;; overlay tooltips
 (declare-function org-scribe-overlays-mode "linking/org-scribe-overlays")
+;; project health report
+(declare-function org-scribe/project-health "core/org-scribe-health")
 
 ;;;###autoload (autoload 'hydra-org-scribe-characters/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe-characters (:color blue :hint nil)
@@ -167,6 +169,7 @@ _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props    _3
                  _e_: Editing mode  _b_: oBject        _d_: Dictionary      _4_: Location      _U_: Update links
                                   _t_: Timeline      _y_: sYnonyms        _5_: TODOs         _V_: Col View toggle
                                   _g_: plot thread   _k_: powerthesaurus  _6_: Edit notes            _q_: Quit
+                                                                                    _H_: Health report
 "
   ;; Insert (most frequent actions get best keys)
   ("s" org-scribe-insert-scene "insert scene")
@@ -210,6 +213,7 @@ _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props    _3
   ("P" hydra-org-scribe-plot-threads/body "plot thread links")
   ("U" org-scribe/update-all-link-names "update all link names")
   ("V" org-scribe-column-view-toggle "toggle column view links")
+  ("H" org-scribe/project-health "project health report")
 
   ;; Exit
   ("q" nil "quit"))

@@ -21,13 +21,14 @@ This package organizes features into the following categories:
 4. [[#capture-system][Capture System]] - Quick capture of characters, locations, and notes
 5. [[#linking-system][Linking System]] - ID-based linking for characters, locations, and plot threads; entity tooltips
 6. [[#search-tools][Search Tools]] - Find scenes by character, plot, location, or PoV
-7. [[#templates][Templates]] - Scene and chapter insertion templates
+7. [[#templates][Templates]] - Scene and chapter insertion templates; scene word-count update
 8. [[#dictionary-language][Dictionary & Language Tools]] - Spanish dictionary, synonyms, translations
 9. [[#export-tools][Export Tools]] - Scene break filters and export presets
 10. [[#column-view][Column View Enhancements]] - Clean display of ID links in column view
-11. [[#ui-navigation][UI & Navigation]] - Hydra menu and keybindings
-12. [[#configuration][Configuration]] - Customization options
-13. [[#integrations][Third-Party Integrations]] - Optional connections to companion packages
+11. [[#analysis-tools][Analysis Tools]] - Project health report and aggregated statistics
+12. [[#ui-navigation][UI & Navigation]] - Hydra menu and keybindings
+13. [[#configuration][Configuration]] - Customization options
+14. [[#integrations][Third-Party Integrations]] - Optional connections to companion packages
 
 * Project Management
 :PROPERTIES:
@@ -380,9 +381,15 @@ Inserts a complete scene template with TODO state, placeholder title, and compre
 
 ** Chapter Template Insertion (~org-scribe-insert-chapter~)
 
-Inserts a chapter template with TODO state, title prompt, and chapter-level properties (~:WORDCOUNT:~, ~:WORD-OBJECTIVE:~). Chapters are inserted at level 2 (under Act headings in the 3-act structure). The template provides a starting point that can be customized, and scenes can be inserted under chapters using ~org-scribe-insert-scene~. The function detects the project structure to insert at the correct level.
+Inserts a chapter template with TODO state, title prompt, and chapter-level properties (~:WORDCOUNT:~, ~:WORD-OBJECTIVE:~) followed immediately by a complete empty first scene (level-3 heading with all scene metadata properties and ~{{{scene-break}}}~). After insertion, point lands at the new scene's ~:PoV:~ property ready for input — the same landing position produced by ~org-scribe-insert-scene~. This means a single command both creates the chapter structure and opens a scene for writing without a second step.
 
 *Status*: Fully implemented | *Hydra*: ~c~ (Insert section) | *Module*: ~templates/org-scribe-project.el~
+
+** Scene-Level Word Count Update (~org-scribe/update-scene-wordcounts~)
+
+Updates the ~:WORDCOUNT:~ property on every scene heading (level 3, ~:ignore:~ tag) in the current subtree without modifying chapter or act headings.  When point is on a chapter or act heading, only that subtree is processed; when point is not on any heading, the entire buffer is updated.  The function delegates to ~org-context-count-words~ (from ~org-context-extended~) for metadata-aware counting, using the same counting logic as ~org-scribe/ews-org-count-words~ but scoped exclusively to scenes.  This makes it fast and safe to refresh scene word counts during a writing session without inadvertently overwriting chapter-level aggregates.
+
+*Status*: Fully implemented | *Hydra*: ~z~ (Tools section, hidden from hint) | *Module*: ~counting/org-scribe-wordcount.el~
 
 ** Project Template System
 
@@ -477,6 +484,29 @@ To use column view with writing projects, add a ~#+COLUMNS~ line to your manuscr
 
 *Status*: Fully implemented (org-mode feature, enhanced by package) | *Hydra*: N/A (native org-mode) | *Module*: Native org-mode + enhancement
 
+* Analysis Tools
+:PROPERTIES:
+:CUSTOM_ID: analysis-tools
+:END:
+
+** Project Health Report (~org-scribe/project-health~)
+
+Aggregates project-wide statistics into a single ~*org-scribe-health*~ buffer displayed as an org-mode file with clickable ~[[id:...]]~ links back to individual scenes.  The report is organised into five sections:
+
+1. *Overview* — manuscript filename (linked), total scene count, words written (summed from level-3 ~:WORDCOUNT:~), chapter objectives (summed from level-2 ~:WORD-OBJECTIVE:~), and progress percentage.  Using separate levels for actual vs. target avoids the double-counting that would occur if both chapter and scene objectives were totalled together.
+
+2. *Scenes by Status* — a count of scenes grouped by their org TODO keyword (TODO, DONE, or any custom keyword).  Shows at a glance how much of the draft is complete.
+
+3. *Missing Scene Properties* — three subsections listing scenes that lack a ~:PoV:~, ~:Plot:~, or ~:Location:~ value respectively.  Each entry is an ~[[id:...][Scene Heading]]~ link followed by the parent chapter name.
+
+4. *Orphaned Entities* — characters and locations defined in their database files whose IDs do not appear in any scene property.  An entity is considered orphaned if its org ID is absent from every ~:PoV:~, ~:Characters:~, ~:Location:~, and ~:Plot:~ property across all scenes.  Orphaned entities represent planning work not yet woven into the manuscript.
+
+5. *Open TODO Scenes* — a full list of scenes whose TODO state is not DONE, with the state keyword in square brackets and a clickable scene link.
+
+The function requires a novel project with a detectable manuscript file (novel.org / novela.org) and gracefully handles missing character or location database files.  Orphan detection is skipped for entity types whose linking module is not loaded.
+
+*Status*: Fully implemented | *Hydra*: ~H~ (Manage section, visible in hint) | *Module*: ~core/org-scribe-health.el~
+
 * UI & Navigation
 :PROPERTIES:
 :CUSTOM_ID: ui-navigation
@@ -484,7 +514,7 @@ To use column view with writing projects, add a ~#+COLUMNS~ line to your manuscr
 
 ** Unified Hydra Menu (~hydra-org-scribe/body~)
 
-Provides a single-keystroke menu for accessing all org-scribe features. Activated via ~F8 F8~ (default keybinding), the hydra displays a formatted menu organized into sections: Insert (scene/chapter), Modes (distraction-free/focus/project/editing), Capture (notes/character/location/object/timeline/plot thread), Tools (word count/tracking/dictionary/powerthesaurus), Search (by PoV/character/plot/location/TODOs/edit notes), and Manage (character/location/plot linking submenus, update all link names). Each function is accessible via a single key. The hydra uses color-coded hints and grouped layout for quick visual scanning.
+Provides a single-keystroke menu for accessing all org-scribe features. Activated via ~F8 F8~ (default keybinding), the hydra displays a formatted menu organized into sections: Insert (scene/chapter), Modes (distraction-free/focus/project/editing), Capture (notes/character/location/object/timeline/plot thread), Tools (word count/tracking/dictionary/powerthesaurus; ~z~ updates scene word counts), Search (by PoV/character/plot/location/TODOs/edit notes), and Manage (character/location/plot linking submenus, update all link names, ~H~ for project health report). Each function is accessible via a single key. The hydra uses color-coded hints and grouped layout for quick visual scanning.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8~ (global keybinding) | *Module*: ~ui/org-scribe-hydra.el~
 
@@ -639,18 +669,19 @@ See [[file:getting-started-16-planner-integration.org][Lesson 16]] for a step-by
 | Capture System            |             8 |
 | Linking System            |            19 |
 | Search Tools              |             7 |
-| Templates                 |             4 |
+| Templates                 |             5 |
 | Dictionary & Language     |             5 |
 | Export Tools              |             3 |
 | Column View               |             3 |
+| Analysis Tools            |             1 |
 | UI & Navigation           |             6 |
 | Configuration             |            15 |
 |---------------------------+---------------|
-| *Total Features*          |            86 |
+| *Total Features*          |            88 |
 
 ** Implementation Status
 
-All 86 features are fully implemented and tested. The package is in active use and stable (version 0.4.0).
+All 88 features are fully implemented and tested. The package is in active use and stable (version 0.4.0).
 
 * Next Steps
 
@@ -688,7 +719,7 @@ manual/
 * Document Metadata
 
 - *Created*: 2025-11-16
-- *Last Updated*: 2026-02-20
+- *Last Updated*: 2026-04-03
 - *Package Version*: 0.4.0
-- *Total Features Documented*: 87 (86 core + 1 optional integration)
+- *Total Features Documented*: 89 (88 core + 1 optional integration)
 - *Status*: Complete feature extraction, ready for detailed documentation
