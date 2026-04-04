@@ -49,42 +49,42 @@
 
 ;; Core modules (always loaded)
 ;; Load messages first - other modules depend on it
-(require 'org-scribe-messages (expand-file-name "core/org-scribe-messages" (file-name-directory load-file-name)))
-(require 'org-scribe-core (expand-file-name "core/org-scribe-core" (file-name-directory load-file-name)))
-(require 'org-scribe-config (expand-file-name "core/org-scribe-config" (file-name-directory load-file-name)))
+(require 'org-scribe-messages (expand-file-name "core/org-scribe-messages" (file-name-directory (or load-file-name buffer-file-name))))
+(require 'org-scribe-core (expand-file-name "core/org-scribe-core" (file-name-directory (or load-file-name buffer-file-name))))
+(require 'org-scribe-config (expand-file-name "core/org-scribe-config" (file-name-directory (or load-file-name buffer-file-name))))
 
 ;; Project creation and templates (merged from emacs-org-scribe-template)
-(require 'org-scribe-project (expand-file-name "templates/org-scribe-project" (file-name-directory load-file-name)))
+(require 'org-scribe-project (expand-file-name "templates/org-scribe-project" (file-name-directory (or load-file-name buffer-file-name))))
 
 ;; Load all feature modules
 ;; main writing modes
-(require 'org-scribe-modes (expand-file-name "modes/org-scribe-modes" (file-name-directory load-file-name)))
+(require 'org-scribe-modes (expand-file-name "modes/org-scribe-modes" (file-name-directory (or load-file-name buffer-file-name))))
 ;; word counting and tracking
-(require 'org-scribe-wordcount (expand-file-name "counting/org-scribe-wordcount" (file-name-directory load-file-name)))
-(require 'org-scribe-tracking (expand-file-name "counting/org-scribe-tracking" (file-name-directory load-file-name)))
+(require 'org-scribe-wordcount (expand-file-name "counting/org-scribe-wordcount" (file-name-directory (or load-file-name buffer-file-name))))
+(require 'org-scribe-tracking (expand-file-name "counting/org-scribe-tracking" (file-name-directory (or load-file-name buffer-file-name))))
 ;; novel related searches
-(require 'org-scribe-search (expand-file-name "search/org-scribe-search" (file-name-directory load-file-name)))
+(require 'org-scribe-search (expand-file-name "search/org-scribe-search" (file-name-directory (or load-file-name buffer-file-name))))
 ;; dictionary searches
-(require 'org-scribe-dictionary (expand-file-name "language/org-scribe-dictionary" (file-name-directory load-file-name)))
+(require 'org-scribe-dictionary (expand-file-name "language/org-scribe-dictionary" (file-name-directory (or load-file-name buffer-file-name))))
 ;; org capture to the writing project
-(require 'org-scribe-capture (expand-file-name "capture/org-scribe-capture" (file-name-directory load-file-name)))
+(require 'org-scribe-capture (expand-file-name "capture/org-scribe-capture" (file-name-directory (or load-file-name buffer-file-name))))
 ;; linking system (core framework + entity modules)
-(require 'org-scribe-linking-core (expand-file-name "linking/org-scribe-linking-core" (file-name-directory load-file-name)))
-(require 'org-scribe-link-update (expand-file-name "linking/org-scribe-link-update" (file-name-directory load-file-name)))
-(require 'org-scribe-character-links (expand-file-name "linking/org-scribe-character-links" (file-name-directory load-file-name)))
-(require 'org-scribe-character-relationships (expand-file-name "linking/org-scribe-character-relationships" (file-name-directory load-file-name)))
-(require 'org-scribe-location-links (expand-file-name "linking/org-scribe-location-links" (file-name-directory load-file-name)))
-(require 'org-scribe-plot-links (expand-file-name "linking/org-scribe-plot-links" (file-name-directory load-file-name)))
+(require 'org-scribe-linking-core (expand-file-name "linking/org-scribe-linking-core" (file-name-directory (or load-file-name buffer-file-name))))
+(require 'org-scribe-link-update (expand-file-name "linking/org-scribe-link-update" (file-name-directory (or load-file-name buffer-file-name))))
+(require 'org-scribe-character-links (expand-file-name "linking/org-scribe-character-links" (file-name-directory (or load-file-name buffer-file-name))))
+(require 'org-scribe-character-relationships (expand-file-name "linking/org-scribe-character-relationships" (file-name-directory (or load-file-name buffer-file-name))))
+(require 'org-scribe-location-links (expand-file-name "linking/org-scribe-location-links" (file-name-directory (or load-file-name buffer-file-name))))
+(require 'org-scribe-plot-links (expand-file-name "linking/org-scribe-plot-links" (file-name-directory (or load-file-name buffer-file-name))))
 ;; column view enhancements for ID links
-(require 'org-scribe-column-view (expand-file-name "linking/org-scribe-column-view" (file-name-directory load-file-name)))
+(require 'org-scribe-column-view (expand-file-name "linking/org-scribe-column-view" (file-name-directory (or load-file-name buffer-file-name))))
 ;; overlay tooltips (opt-in via org-scribe-overlays-enable)
-(require 'org-scribe-overlays (expand-file-name "linking/org-scribe-overlays" (file-name-directory load-file-name)))
+(require 'org-scribe-overlays (expand-file-name "linking/org-scribe-overlays" (file-name-directory (or load-file-name buffer-file-name))))
 ;; project health report (aggregates word counts, scene stats, orphan detection)
-(require 'org-scribe-health (expand-file-name "core/org-scribe-health" (file-name-directory load-file-name)))
+(require 'org-scribe-health (expand-file-name "core/org-scribe-health" (file-name-directory (or load-file-name buffer-file-name))))
 ;; writing - export
-(require 'org-scribe-export (expand-file-name "export/org-scribe-export" (file-name-directory load-file-name)))
+(require 'org-scribe-export (expand-file-name "export/org-scribe-export" (file-name-directory (or load-file-name buffer-file-name))))
 ;; hydra for better access to common functions
-(require 'org-scribe-hydra (expand-file-name "ui/org-scribe-hydra" (file-name-directory load-file-name)))
+(require 'org-scribe-hydra (expand-file-name "ui/org-scribe-hydra" (file-name-directory (or load-file-name buffer-file-name))))
 
 ;;;###autoload
 (defun org-scribe-version ()
