@@ -408,15 +408,69 @@ Function-name keys — consumed at expansion time; each generates one function:
 Omit a function-name key to skip generating that function."
   (let* ((entity-var (intern (format "org-scribe--%s-entity"
                                      (symbol-name entity-symbol))))
-         ;; Function-name keys are consumed at expansion time only —
-         ;; they must not leak into the stored entity descriptor.
-         (fn-key-list '(:get-file-name :get-all-name :create-link-name
-                        :add-ids-to-all-name :add-ids-name :insert-link-name
-                        :insert-multi-name :set-scene-name :set-scene-property
-                        :link-in-prop-name :link-scene-name :link-all-name
-                        :setup-name :setup-add-ids-fn :setup-link-all-fn
-                        :update-names-name :update-all-name))
-         ;; Build config-only plist by filtering out function-name keys.
+         ;; Auxiliary keys consumed at expansion time that are not themselves
+         ;; function-name directives (referenced by generated bodies/guards).
+         (set-scene-property (plist-get keys :set-scene-property))
+         (setup-add-ids-fn   (plist-get keys :setup-add-ids-fn))
+         (setup-link-all-fn  (plist-get keys :setup-link-all-fn))
+         ;; Generation table: one row per function the macro can emit.  Each row
+         ;; is (:key KEYWORD :args ARGLIST [:command t] :doc STRING :body FORM
+         ;; [:when GUARD]).  A function is emitted only when its :key is supplied
+         ;; in KEYS (and any :when guard is non-nil).  Bodies forward to the
+         ;; generic engine functions above, passing the entity descriptor.
+         (specs
+          (list
+           (list :key :get-file-name :args '()
+                 :doc "Get the path to the entity file."
+                 :body `(funcall (plist-get ,entity-var :file-fn)))
+           (list :key :get-all-name :args '()
+                 :doc "Return alist of (NAME . (ID . HEADING)) from entity file."
+                 :body `(org-scribe--get-all-entities ,entity-var))
+           (list :key :create-link-name :args '(name id-alist)
+                 :doc "Create an ID link for NAME using ID-ALIST."
+                 :body `(org-scribe--create-entity-link name id-alist))
+           (list :key :add-ids-to-all-name :args '() :command t
+                 :doc "Add IDs to all entity headings in current buffer."
+                 :body `(org-scribe--add-ids-to-all-entities ,entity-var))
+           (list :key :add-ids-name :args '() :command t
+                 :doc "Add unique IDs to all entities in the database file."
+                 :body `(org-scribe--add-entity-ids ,entity-var))
+           (list :key :insert-link-name :args '() :command t
+                 :doc "Insert an entity link at point with completion."
+                 :body `(org-scribe--insert-entity-link ,entity-var))
+           (list :key :insert-multi-name :args '() :command t
+                 :doc "Insert multiple entity links separated by commas."
+                 :body `(org-scribe--insert-multiple-entity-links ,entity-var))
+           (list :key :set-scene-name :args '() :command t
+                 :when set-scene-property
+                 :doc "Set scene property to multiple entity ID links."
+                 :body `(org-scribe--set-scene-entity ,entity-var ,set-scene-property))
+           (list :key :link-in-prop-name :args '(property-name)
+                 :doc "Convert entity names to ID links in PROPERTY-NAME."
+                 :body `(org-scribe--link-entity-in-property ,entity-var property-name))
+           (list :key :link-scene-name :args '() :command t
+                 :doc "Convert entity names to ID links in current scene."
+                 :body `(org-scribe--link-scene-entity ,entity-var))
+           (list :key :link-all-name :args '() :command t
+                 :doc "Convert entity names to ID links in all scenes."
+                 :body `(org-scribe--link-all-scene-entities ,entity-var))
+           (list :key :setup-name :args '() :command t
+                 :when (and setup-add-ids-fn setup-link-all-fn)
+                 :doc "Set up entity linking system for current project."
+                 :body `(org-scribe--setup-entity-links
+                         ,entity-var #',setup-add-ids-fn #',setup-link-all-fn))
+           (list :key :update-names-name :args '() :command t
+                 :doc "Update entity link display names in current scene."
+                 :body `(org-scribe--update-entity-link-names ,entity-var))
+           (list :key :update-all-name :args '() :command t
+                 :doc "Update entity link display names in all scenes."
+                 :body `(org-scribe--update-all-entity-link-names ,entity-var))))
+         ;; Keys consumed only at expansion time — derived from SPECS (plus the
+         ;; auxiliary keys) so the filter can never drift from what is emitted.
+         (fn-key-list (append (mapcar (lambda (s) (plist-get s :key)) specs)
+                              '(:set-scene-property :setup-add-ids-fn
+                                :setup-link-all-fn)))
+         ;; Build config-only plist by filtering out expansion-time keys.
          (config-plist
           (let ((result nil) (rest keys))
             (while rest
@@ -425,24 +479,6 @@ Omit a function-name key to skip generating that function."
                   (setq result (append result (list k v))))
                 (setq rest (cddr rest))))
             result))
-         ;; Extract function-name arguments for code generation below.
-         (get-file-name      (plist-get keys :get-file-name))
-         (get-all-name       (plist-get keys :get-all-name))
-         (create-link-name   (plist-get keys :create-link-name))
-         (add-ids-to-all-name (plist-get keys :add-ids-to-all-name))
-         (add-ids-name       (plist-get keys :add-ids-name))
-         (insert-link-name   (plist-get keys :insert-link-name))
-         (insert-multi-name  (plist-get keys :insert-multi-name))
-         (set-scene-name     (plist-get keys :set-scene-name))
-         (set-scene-property (plist-get keys :set-scene-property))
-         (link-in-prop-name  (plist-get keys :link-in-prop-name))
-         (link-scene-name    (plist-get keys :link-scene-name))
-         (link-all-name      (plist-get keys :link-all-name))
-         (setup-name         (plist-get keys :setup-name))
-         (setup-add-ids-fn   (plist-get keys :setup-add-ids-fn))
-         (setup-link-all-fn  (plist-get keys :setup-link-all-fn))
-         (update-names-name  (plist-get keys :update-names-name))
-         (update-all-name    (plist-get keys :update-all-name))
          (forms nil))
 
     ;; 1. Define entity config as a named constant (config keys only).
@@ -458,121 +494,19 @@ Omit a function-name key to skip generating that function."
                        (assq-delete-all ',entity-symbol org-scribe-entity-registry)))
           forms)
 
-    ;; 3–19. Generate named API functions (same logic as before).
-
-    (when get-file-name
-      (push `(defun ,get-file-name ()
-               ,(format "Get the path to the entity file.\nAuto-generated from %s." entity-var)
-               (funcall (plist-get ,entity-var :file-fn)))
-            forms))
-
-    (when get-all-name
-      (push `(defun ,get-all-name ()
-               ,(format "Return alist of (NAME . (ID . HEADING)) from entity file.\nAuto-generated from %s." entity-var)
-               (org-scribe--get-all-entities ,entity-var))
-            forms))
-
-    (when create-link-name
-      (push `(defun ,create-link-name (name id-alist)
-               ,(format "Create an ID link for NAME using ID-ALIST.\nAuto-generated from %s." entity-var)
-               (org-scribe--create-entity-link name id-alist))
-            forms))
-
-    (when add-ids-to-all-name
-      (push `(defun ,add-ids-to-all-name ()
-               ,(format "Add IDs to all entity headings in current buffer.\nAuto-generated from %s." entity-var)
-               (interactive)
-               (org-scribe--add-ids-to-all-entities ,entity-var))
-            forms))
-
-    (when add-ids-name
-      (push `(progn
-               ;;;###autoload
-               (defun ,add-ids-name ()
-                 ,(format "Add unique IDs to all entities in the database file.\nAuto-generated from %s." entity-var)
-                 (interactive)
-                 (org-scribe--add-entity-ids ,entity-var)))
-            forms))
-
-    (when insert-link-name
-      (push `(progn
-               ;;;###autoload
-               (defun ,insert-link-name ()
-                 ,(format "Insert an entity link at point with completion.\nAuto-generated from %s." entity-var)
-                 (interactive)
-                 (org-scribe--insert-entity-link ,entity-var)))
-            forms))
-
-    (when insert-multi-name
-      (push `(progn
-               ;;;###autoload
-               (defun ,insert-multi-name ()
-                 ,(format "Insert multiple entity links separated by commas.\nAuto-generated from %s." entity-var)
-                 (interactive)
-                 (org-scribe--insert-multiple-entity-links ,entity-var)))
-            forms))
-
-    (when (and set-scene-name set-scene-property)
-      (push `(progn
-               ;;;###autoload
-               (defun ,set-scene-name ()
-                 ,(format "Set scene property to multiple entity ID links.\nAuto-generated from %s." entity-var)
-                 (interactive)
-                 (org-scribe--set-scene-entity ,entity-var ,set-scene-property)))
-            forms))
-
-    (when link-in-prop-name
-      (push `(defun ,link-in-prop-name (property-name)
-               ,(format "Convert entity names to ID links in PROPERTY-NAME.\nAuto-generated from %s." entity-var)
-               (org-scribe--link-entity-in-property ,entity-var property-name))
-            forms))
-
-    (when link-scene-name
-      (push `(progn
-               ;;;###autoload
-               (defun ,link-scene-name ()
-                 ,(format "Convert entity names to ID links in current scene.\nAuto-generated from %s." entity-var)
-                 (interactive)
-                 (org-scribe--link-scene-entity ,entity-var)))
-            forms))
-
-    (when link-all-name
-      (push `(progn
-               ;;;###autoload
-               (defun ,link-all-name ()
-                 ,(format "Convert entity names to ID links in all scenes.\nAuto-generated from %s." entity-var)
-                 (interactive)
-                 (org-scribe--link-all-scene-entities ,entity-var)))
-            forms))
-
-    (when (and setup-name setup-add-ids-fn setup-link-all-fn)
-      (push `(progn
-               ;;;###autoload
-               (defun ,setup-name ()
-                 ,(format "Set up entity linking system for current project.\nAuto-generated from %s." entity-var)
-                 (interactive)
-                 (org-scribe--setup-entity-links ,entity-var
-                                                 #',setup-add-ids-fn
-                                                 #',setup-link-all-fn)))
-            forms))
-
-    (when update-names-name
-      (push `(progn
-               ;;;###autoload
-               (defun ,update-names-name ()
-                 ,(format "Update entity link display names in current scene.\nAuto-generated from %s." entity-var)
-                 (interactive)
-                 (org-scribe--update-entity-link-names ,entity-var)))
-            forms))
-
-    (when update-all-name
-      (push `(progn
-               ;;;###autoload
-               (defun ,update-all-name ()
-                 ,(format "Update entity link display names in all scenes.\nAuto-generated from %s." entity-var)
-                 (interactive)
-                 (org-scribe--update-all-entity-link-names ,entity-var)))
-            forms))
+    ;; 3. Emit each requested API function from the generation table.  A row is
+    ;;    materialised into a defun only when its :key was supplied in KEYS and
+    ;;    its optional :when guard holds.
+    (dolist (spec specs)
+      (let ((name  (plist-get keys (plist-get spec :key)))
+            (guard (if (plist-member spec :when) (plist-get spec :when) t)))
+        (when (and name guard)
+          (push `(defun ,name ,(plist-get spec :args)
+                   ,(format "%s\nAuto-generated from %s."
+                            (plist-get spec :doc) entity-var)
+                   ,@(when (plist-get spec :command) '((interactive)))
+                   ,(plist-get spec :body))
+                forms))))
 
     `(progn ,@(nreverse forms))))
 
