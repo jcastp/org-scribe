@@ -7,6 +7,23 @@
 ;;; Commentary:
 
 ;; Unified hydra menu providing quick access to all writing functions.
+;;
+;; The menu is organised in two tiers so the day-to-day writing surface
+;; stays small:
+;;
+;;   `hydra-org-scribe/body' (F8 F8) — the main menu.  Holds only frequent
+;;   actions: insert, writing modes, *tagging the current scene* with
+;;   characters/locations/plot (the everyday linking verbs), word counting,
+;;   search, capture-note, and health.
+;;
+;;   `hydra-org-scribe-capture/body' (k) — capture new entities.
+;;
+;;   `hydra-org-scribe-links/body' (L) — the linking *upkeep* menu.  The
+;;   headline command here is `org-scribe/relink-project', a single
+;;   registry-driven pass that adds missing IDs, links plain names, and
+;;   refreshes display names across every entity type — replacing the old
+;;   per-entity add-ids / link / update commands.  Set-up, relationships,
+;;   plot analysis, and display toggles live here too.
 
 ;;; Code:
 
@@ -26,9 +43,7 @@
 (declare-function org-scribe/capture-object "capture/org-scribe-capture")
 (declare-function org-scribe/capture-timeline "capture/org-scribe-capture")
 (declare-function org-scribe/capture-plot-thread "capture/org-scribe-capture")
-(declare-function org-context-count-words "org-context-extended")
-(declare-function org-scribe/ews-org-count-words "counting/org-scribe-wordcount")
-(declare-function org-scribe/update-scene-wordcounts "counting/org-scribe-wordcount")
+(declare-function org-scribe/wordcount "counting/org-scribe-wordcount")
 (declare-function org-tracktable-write "org-tracktable")
 (declare-function org-scribe/org-find-pov "search/org-scribe-search")
 (declare-function org-scribe/org-find-character "search/org-scribe-search")
@@ -41,14 +56,20 @@
 (declare-function org-scribe-insert-scene "templates/org-scribe-project")
 (declare-function org-scribe-insert-chapter "templates/org-scribe-project")
 (declare-function org-scribe-open-project-file "templates/org-scribe-project")
-;; manage character related links
+;; everyday scene-tagging verbs (promoted to the main menu)
 (declare-function org-scribe/set-pov-character "linking/org-scribe-character-links")
 (declare-function org-scribe/set-scene-characters "linking/org-scribe-character-links")
 (declare-function org-scribe/jump-to-pov-character "linking/org-scribe-character-links")
-(declare-function org-scribe/link-scene-characters "linking/org-scribe-character-links")
-(declare-function org-scribe/link-all-scene-characters "linking/org-scribe-character-links")
-(declare-function org-scribe/add-character-ids "linking/org-scribe-character-links")
+(declare-function org-scribe/set-scene-locations "linking/org-scribe-location-links")
+(declare-function org-scribe/set-scene-plot-threads "linking/org-scribe-plot-links")
+(declare-function org-scribe/jump-to-plot-thread "linking/org-scribe-plot-links")
+;; linking upkeep
+(declare-function org-scribe/relink-project "linking/org-scribe-link-update")
 (declare-function org-scribe/setup-character-links "linking/org-scribe-character-links")
+(declare-function org-scribe/setup-location-links "linking/org-scribe-location-links")
+(declare-function org-scribe/setup-plot-thread-links "linking/org-scribe-plot-links")
+(declare-function org-scribe/plot-thread-report "linking/org-scribe-plot-links")
+(declare-function org-scribe/plot-thread-stats "linking/org-scribe-plot-links")
 ;; character relationships
 (declare-function org-scribe/add-relationship "linking/org-scribe-character-relationships")
 (declare-function org-scribe/remove-relationship "linking/org-scribe-character-relationships")
@@ -56,166 +77,118 @@
 (declare-function org-scribe/show-all-relationships "linking/org-scribe-character-relationships")
 (declare-function org-scribe/setup-character-relationships "linking/org-scribe-character-relationships")
 (declare-function org-scribe/insert-relationship-block "linking/org-scribe-character-relationships")
-;; manage location related links
-(declare-function org-scribe/set-scene-locations "linking/org-scribe-location-links")
-(declare-function org-scribe/link-scene-locations "linking/org-scribe-location-links")
-(declare-function org-scribe/link-all-scene-locations "linking/org-scribe-location-links")
-(declare-function org-scribe/add-location-ids "linking/org-scribe-location-links")
-(declare-function org-scribe/setup-location-links "linking/org-scribe-location-links")
-;; manage plot thread related links
-(declare-function org-scribe/set-scene-plot-threads "linking/org-scribe-plot-links")
-(declare-function org-scribe/jump-to-plot-thread "linking/org-scribe-plot-links")
-(declare-function org-scribe/link-scene-plot-threads "linking/org-scribe-plot-links")
-(declare-function org-scribe/link-all-scene-plot-threads "linking/org-scribe-plot-links")
-(declare-function org-scribe/add-plot-thread-ids "linking/org-scribe-plot-links")
-(declare-function org-scribe/setup-plot-thread-links "linking/org-scribe-plot-links")
-(declare-function org-scribe/plot-thread-report "linking/org-scribe-plot-links")
-(declare-function org-scribe/plot-thread-stats "linking/org-scribe-plot-links")
-;; column view
+;; display toggles
 (declare-function org-scribe-column-view-toggle "linking/org-scribe-column-view")
-;; overlay tooltips
 (declare-function org-scribe-overlays-mode "linking/org-scribe-overlays")
 ;; project health report
 (declare-function org-scribe/project-health "reporting/org-scribe-health")
-(declare-function org-scribe/wordcount "counting/org-scribe-wordcount")
 
-;;;###autoload (autoload 'hydra-org-scribe-characters/body "ui/org-scribe-hydra" nil t)
-(defhydra hydra-org-scribe-characters (:color blue :hint nil)
+;;;###autoload (autoload 'hydra-org-scribe-capture/body "ui/org-scribe-hydra" nil t)
+(defhydra hydra-org-scribe-capture (:color blue :hint nil)
   "
-^Character Linking^            ^Relationships^             ^Visualization^
-^^^^^^^^------------------------------------------------------------------------------
-_p_: Set PoV character         _a_: Add relationship       _g_: Insert graph block
-_c_: Set scene characters      _r_: Remove relationship    _v_: View relationships
-_j_: Jump to PoV char          _V_: View all relationships _R_: Setup relationships
-_l_: Link scene characters
-_L_: Link all scenes           _q_: Back to main menu      _T_: Toggle tooltips
-_i_: Add IDs to characters     _Q_: Quit
-_u_: Update link names
-_U_: Update all link names
-_s_: Setup linking system
+^Capture into project^
+^^^^----------------------------------------------------------
+_h_: Character   _b_: Object      _g_: Plot thread
+_l_: Location    _t_: Timeline    _n_: Note
+
+_q_: Back to main menu            _Q_: Quit
 "
-  ("p" org-scribe/set-pov-character "set PoV")
-  ("c" org-scribe/set-scene-characters "set characters")
-  ("j" org-scribe/jump-to-pov-character "jump to PoV")
-  ("l" org-scribe/link-scene-characters "link scene")
-  ("L" org-scribe/link-all-scene-characters "link all")
-  ("i" org-scribe/add-character-ids "add IDs")
-  ("u" org-scribe/update-character-link-names "update names")
-  ("U" org-scribe/update-all-character-link-names "update all names")
-  ("s" org-scribe/setup-character-links "setup system")
+  ("h" org-scribe/capture-character "character")
+  ("l" org-scribe/capture-location "location")
+  ("b" org-scribe/capture-object "object")
+  ("t" org-scribe/capture-timeline "timeline")
+  ("g" org-scribe/capture-plot-thread "plot thread")
+  ("n" org-scribe/capture-to-file "note")
+  ("q" hydra-org-scribe/body "back")
+  ("Q" nil "quit"))
+
+;;;###autoload (autoload 'hydra-org-scribe-links/body "ui/org-scribe-hydra" nil t)
+(defhydra hydra-org-scribe-links (:color blue :hint nil)
+  "
+^Whole project^          ^Set up linking^       ^Relationships^             ^Analysis & Display^
+^^^^------------------------------------------------------------------------------------------------------------
+_R_: Relink everything    _c_: Characters        _a_: Add relationship       _t_: Plot health report
+_j_: Jump to plot thread  _o_: Locations         _x_: Remove relationship    _S_: Plot statistics
+^^                        _p_: Plot threads      _v_: View relationships     _C_: Column view toggle
+^^                        _r_: Relationships     _V_: View all relationships _T_: Tooltips toggle
+^^                        ^^                     _g_: Insert graph block
+_q_: Back to main menu    _Q_: Quit
+"
+  ;; Whole-project upkeep (the headline action)
+  ("R" org-scribe/relink-project "relink project")
+  ("j" org-scribe/jump-to-plot-thread "jump to plot")
+  ;; One-time set-up per entity type
+  ("c" org-scribe/setup-character-links "char setup")
+  ("o" org-scribe/setup-location-links "loc setup")
+  ("p" org-scribe/setup-plot-thread-links "plot setup")
+  ("r" org-scribe/setup-character-relationships "rel setup")
+  ;; Relationships
   ("a" org-scribe/add-relationship "add relationship")
-  ("r" org-scribe/remove-relationship "remove relationship")
-  ("g" org-scribe/insert-relationship-block "insert graph block")
+  ("x" org-scribe/remove-relationship "remove relationship")
   ("v" org-scribe/show-character-relationships "view relationships")
   ("V" org-scribe/show-all-relationships "view all")
-  ("R" org-scribe/setup-character-relationships "setup relationships")
-  ("T" org-scribe-overlays-mode "toggle tooltips")
-  ("q" hydra-org-scribe/body "back")
-  ("Q" nil "quit"))
-
-;;;###autoload (autoload 'hydra-org-scribe-locations/body "ui/org-scribe-hydra" nil t)
-(defhydra hydra-org-scribe-locations (:color blue :hint nil)
-  "
-^Location Linking^
-^^^^^^^^------------------------------------------------------------
-_c_: Set scene locations   _l_: Link scene locations
-_i_: Add IDs to locations  _L_: Link all scenes
-_u_: Update link names     _U_: Update all link names
-_s_: Setup linking system  _q_: Back to main menu
-"
-  ("c" org-scribe/set-scene-locations "set locations")
-  ("l" org-scribe/link-scene-locations "link scene")
-  ("L" org-scribe/link-all-scene-locations "link all")
-  ("i" org-scribe/add-location-ids "add IDs")
-  ("u" org-scribe/update-location-link-names "update names")
-  ("U" org-scribe/update-all-location-link-names "update all names")
-  ("s" org-scribe/setup-location-links "setup system")
-  ("q" hydra-org-scribe/body "back")
-  ("Q" nil "quit"))
-
-;;;###autoload (autoload 'hydra-org-scribe-plot-threads/body "ui/org-scribe-hydra" nil t)
-(defhydra hydra-org-scribe-plot-threads (:color blue :hint nil)
-  "
-^Plot Thread Linking^       ^Analysis^
-^^^^^^^^------------------------------------------------------------
-_p_: Set scene plot threads   _t_: Timeline table
-_j_: Jump to plot thread      _r_: Health report
-_l_: Link scene plot threads  _S_: Statistics
-_L_: Link all scenes          _i_: Add IDs to threads
-_u_: Update link names        _U_: Update all link names
-_s_: Setup linking system     _q_: Back to main menu
-"
-  ("p" org-scribe/set-scene-plot-threads "set plot threads")
-  ("j" org-scribe/jump-to-plot-thread "jump to thread")
-  ("l" org-scribe/link-scene-plot-threads "link scene")
-  ("L" org-scribe/link-all-scene-plot-threads "link all")
-  ("i" org-scribe/add-plot-thread-ids "add IDs")
-  ("u" org-scribe/update-plot-link-names "update names")
-  ("U" org-scribe/update-all-plot-link-names "update all names")
-  ("s" org-scribe/setup-plot-thread-links "setup system")
-  ("t" (lambda () (interactive) (message "Insert '#+BEGIN: plot-thread-timeline' then press C-c C-c")) "timeline")
-  ("r" org-scribe/plot-thread-report "health report")
-  ("S" org-scribe/plot-thread-stats "statistics")
+  ("g" org-scribe/insert-relationship-block "insert graph block")
+  ;; Analysis and display
+  ("t" org-scribe/plot-thread-report "plot report")
+  ("S" org-scribe/plot-thread-stats "plot stats")
+  ("C" org-scribe-column-view-toggle "column view")
+  ("T" org-scribe-overlays-mode "tooltips")
   ("q" hydra-org-scribe/body "back")
   ("Q" nil "quit"))
 
 ;;;###autoload (autoload 'hydra-org-scribe/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe (:color blue :hint nil)
   "
-^Insert^           ^Modes^            ^Capture^          ^Tools^              ^Search^           ^Manage^
-^^^^^^^^------------------------------------------------------------------------------------------------------------------
-_s_: Scene         _m_: Mode (write)  _n_: Note          _w_: Words count     _1_: POV           _C_: Characters
-_c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table     _2_: Character     _L_: Locations
-_o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props    _3_: Plot          _P_: Plot threads
-                 _e_: Editing mode  _b_: oBject        _d_: Dictionary      _4_: Location      _U_: Update links
-                                  _t_: Timeline      _y_: sYnonyms        _5_: TODOs         _V_: Col View toggle
-                                  _g_: plot thread   _k_: powerthesaurus  _6_: Edit notes            _q_: Quit
-                                                                                    _H_: Health report
+^Insert^        ^Modes^         ^Tag Scene^          ^Tools^            ^Search^         ^Manage^
+^^^^--------------------------------------------------------------------------------------------------------------
+_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words    _1_: by PoV       _n_: Capture note
+_c_: Chapter     _f_: Focus       _h_: Characters      _r_: Track table    _2_: Character    _k_: Capture entity…
+_o_: Open file   _e_: Editing     _l_: Locations       _d_: Dictionary     _3_: Plot         _L_: Links & upkeep…
+^^               _v_: Navigate    _g_: Plot threads    _y_: Synonyms       _4_: Location     _R_: Relink project
+^^               ^^               _j_: Jump to PoV     _x_: Thesaurus      _5_: TODOs        _H_: Health report
+^^               ^^               ^^                   ^^                  _6_: Edits        _q_: Quit
 "
-  ;; Insert (most frequent actions get best keys)
+  ;; Insert (most frequent)
   ("s" org-scribe-insert-scene "insert scene")
   ("c" org-scribe-insert-chapter "insert chapter")
   ("o" org-scribe-open-project-file "open project file")
 
-  ;; Modes
+  ;; Writing modes
   ("m" org-scribe/writing-env-mode "writing mode")
-  ("p" org-scribe/project-mode "project mode")
   ("f" org-scribe/writing-env-mode-focus "focus mode")
   ("e" org-scribe/editing-mode "editing mode")
+  ("v" org-scribe/project-mode "project navigation")
 
-  ;; Capture functions
-  ("n" org-scribe/capture-to-file "capture note")
-  ("h" org-scribe/capture-character "capture character")
-  ("l" org-scribe/capture-location "capture location")
-  ("b" org-scribe/capture-object "capture object")
-  ("t" org-scribe/capture-timeline "capture timeline event")
-  ("g" org-scribe/capture-plot-thread "capture plot thread")
+  ;; Tag the current scene (everyday linking verbs — these write proper
+  ;; ID links directly, so plain-name maintenance is rarely needed)
+  ("p" org-scribe/set-pov-character "set PoV")
+  ("h" org-scribe/set-scene-characters "set characters")
+  ("l" org-scribe/set-scene-locations "set locations")
+  ("g" org-scribe/set-scene-plot-threads "set plot threads")
+  ("j" org-scribe/jump-to-pov-character "jump to PoV")
 
   ;; Tools
   ;; "w" is the unified word-count dispatcher: plain = count now,
   ;; C-u = refresh all WORDCOUNT properties, C-u C-u = refresh scenes.
   ("w" org-scribe/wordcount "count words")
   ("r" org-tracktable-write "track table")
-  ("a" org-scribe/ews-org-count-words "add word properties")
-  ("z" org-scribe/update-scene-wordcounts "update scene wordcounts")
   ("d" org-scribe/rae-api-lookup "RAE dictionary")
   ("y" org-scribe/sinonimo "synonyms")
-  ("k" powerthesaurus-lookup-dwim "powerthesaurus")
+  ("x" powerthesaurus-lookup-dwim "thesaurus")
 
-  ;; Search (numbered for consistency)
-  ("1" org-scribe/org-find-pov "find by POV")
+  ;; Search
+  ("1" org-scribe/org-find-pov "find by PoV")
   ("2" org-scribe/org-find-character "find by character")
   ("3" org-scribe/org-find-plot "find by plot")
   ("4" org-scribe/org-find-location "find by location")
   ("5" org-scribe/search-todos-recursive "find TODOs")
   ("6" org-scribe/search-edits-recursive "find edits and notes")
 
-  ;; Manage (linking submenus - capitals only)
-  ("C" hydra-org-scribe-characters/body "character links")
-  ("L" hydra-org-scribe-locations/body "location links")
-  ("P" hydra-org-scribe-plot-threads/body "plot thread links")
-  ("U" org-scribe/update-all-link-names "update all link names")
-  ("V" org-scribe-column-view-toggle "toggle column view links")
+  ;; Manage
+  ("n" org-scribe/capture-to-file "capture note")
+  ("k" hydra-org-scribe-capture/body "capture entity")
+  ("L" hydra-org-scribe-links/body "links & upkeep")
+  ("R" org-scribe/relink-project "relink project")
   ("H" org-scribe/project-health "project health report")
 
   ;; Exit

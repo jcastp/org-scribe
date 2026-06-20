@@ -118,6 +118,8 @@
     (msg-updated-link-names . "Updated link names")
     (msg-updated-all-link-names . "Updated %s link names in %d scene%s")
     (msg-updated-all-links-scene . "Updated link names in %d scene%s")
+    (msg-relink-complete . "Relink complete: refreshed links in %d scene%s in %s")
+    (msg-relink-no-novel . "No manuscript file found in this project")
     (msg-no-link-updates . "No %s link names needed updating")
     (msg-updated-pov-link-names . "Updated PoV link names")
     (msg-updated-characters-link-names . "Updated Characters link names")

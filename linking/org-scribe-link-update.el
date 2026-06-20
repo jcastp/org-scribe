@@ -161,6 +161,51 @@ Returns the number of scenes updated."
     (message (org-scribe-msg 'msg-updated-all-links-scene count (org-scribe-plural count "")))
     count))
 
+;;; One-Shot Project Relink (registry-driven)
+
+(declare-function org-scribe--add-entity-ids "org-scribe-linking-core")
+(declare-function org-scribe--link-all-scene-entities "org-scribe-linking-core")
+
+;;;###autoload
+(defun org-scribe/relink-project ()
+  "Tidy every ID link in the project in a single pass.
+
+For each entity type registered in `org-scribe-entity-registry'
+\(characters, locations, plot threads, and any future types) this:
+
+1. ensures every entity heading in its database file has an ID
+   \(saving those files),
+2. converts plain-text entity names in scene properties to ID links, and
+3. refreshes the display text of existing links to match current names.
+
+This one command replaces the per-entity add-ids / link-all /
+update-names maintenance commands — and, being driven off the registry,
+automatically covers new entity types with no change here.  The
+manuscript buffer is saved when changes were made."
+  (interactive)
+  (require 'org-scribe-linking-core)
+  ;; Phase 1 — make sure every entity has an ID in its database file.
+  (dolist (entry org-scribe-entity-registry)
+    (let* ((entity (cdr entry))
+           (file (funcall (plist-get entity :file-fn))))
+      (when (and file (file-exists-p file))
+        (org-scribe--add-entity-ids entity))))
+  ;; Phases 2 & 3 operate on the manuscript.
+  (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file)))
+    (if (not (and novel-file (file-exists-p novel-file)))
+        (user-error (org-scribe-msg 'msg-relink-no-novel))
+      (with-current-buffer (find-file-noselect novel-file)
+        ;; Phase 2 — convert plain names to links for every entity type.
+        (dolist (entry org-scribe-entity-registry)
+          (org-scribe--link-all-scene-entities (cdr entry)))
+        ;; Phase 3 — refresh stale display names (already registry-driven).
+        (let ((count (org-scribe/update-all-link-names)))
+          (when (buffer-modified-p)
+            (save-buffer))
+          (message (org-scribe-msg 'msg-relink-complete
+                                   count (org-scribe-plural count "")
+                                   (file-name-nondirectory novel-file))))))))
+
 ;;; Auto-propagation on entity file save
 
 (defun org-scribe--auto-update-links-after-save ()
