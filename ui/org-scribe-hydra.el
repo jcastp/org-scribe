@@ -30,10 +30,7 @@
 (require 'hydra)
 
 ;; Declare functions from other modules
-(declare-function org-scribe/project-mode "modes/org-scribe-modes")
-(declare-function org-scribe/writing-env-mode "modes/org-scribe-modes")
-(declare-function org-scribe/writing-env-mode-focus "modes/org-scribe-modes")
-(declare-function org-scribe/editing-mode "modes/org-scribe-modes")
+(declare-function org-scribe/workspace "modes/org-scribe-modes")
 (declare-function org-scribe/rae-api-lookup "language/org-scribe-dictionary")
 (declare-function org-scribe/sinonimo "language/org-scribe-dictionary")
 (declare-function powerthesaurus-lookup-dwim "powerthesaurus")
@@ -139,13 +136,13 @@ _q_: Back to main menu    _Q_: Quit
 ;;;###autoload (autoload 'hydra-org-scribe/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe (:color blue :hint nil)
   "
-^Insert^        ^Modes^         ^Tag Scene^          ^Tools^            ^Search^         ^Manage^
+^Insert^        ^Workspace^     ^Tag Scene^          ^Tools^            ^Search^         ^Manage^
 ^^^^--------------------------------------------------------------------------------------------------------------
 _s_: Scene       _m_: Write       _p_: PoV             _w_: Count words    _1_: by PoV       _n_: Capture note
 _c_: Chapter     _f_: Focus       _h_: Characters      _r_: Track table    _2_: Character    _k_: Capture entity…
-_o_: Open file   _e_: Editing     _l_: Locations       _d_: Dictionary     _3_: Plot         _L_: Links & upkeep…
+_o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary     _3_: Plot         _L_: Links & upkeep…
 ^^               _v_: Navigate    _g_: Plot threads    _y_: Synonyms       _4_: Location     _R_: Relink project
-^^               ^^               _j_: Jump to PoV     _x_: Thesaurus      _5_: TODOs        _H_: Health report
+^^               _0_: Normal      _j_: Jump to PoV     _x_: Thesaurus      _5_: TODOs        _H_: Health report
 ^^               ^^               ^^                   ^^                  _6_: Edits        _q_: Quit
 "
   ;; Insert (most frequent)
@@ -153,11 +150,13 @@ _o_: Open file   _e_: Editing     _l_: Locations       _d_: Dictionary     _3_: 
   ("c" org-scribe-insert-chapter "insert chapter")
   ("o" org-scribe-open-project-file "open project file")
 
-  ;; Writing modes
-  ("m" org-scribe/writing-env-mode "writing mode")
-  ("f" org-scribe/writing-env-mode-focus "focus mode")
-  ("e" org-scribe/editing-mode "editing mode")
-  ("v" org-scribe/project-mode "project navigation")
+  ;; Workspace (one unified command; each key selects a named layout,
+  ;; re-selecting the active one turns it off)
+  ("m" (org-scribe/workspace 'write) "write")
+  ("f" (org-scribe/workspace 'focus) "focus")
+  ("e" (org-scribe/workspace 'edit) "edit")
+  ("v" (org-scribe/workspace 'navigate) "navigate")
+  ("0" (org-scribe/workspace 'normal) "normal")
 
   ;; Tag the current scene (everyday linking verbs — these write proper
   ;; ID links directly, so plain-name maintenance is rarely needed)

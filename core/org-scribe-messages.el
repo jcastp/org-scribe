@@ -213,6 +213,12 @@
     (error-feature-not-available . "Feature %s not available. Install required package")
     (error-no-org-file . "Current buffer is not visiting a file; cannot enable `org-scribe-editing-mode'")
 
+    ;; Workspace dispatcher
+    (prompt-select-workspace . "Workspace layout: ")
+    (msg-workspace-set . "Workspace: %s")
+    (msg-workspace-normal . "Workspace: normal editing")
+    (error-unknown-workspace . "Unknown workspace layout: %s")
+
     ;; Pluralization helpers (used in code)
     (plural-empty . "")
     (plural-s . "s")

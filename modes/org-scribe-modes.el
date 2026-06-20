@@ -6,15 +6,22 @@
 
 ;;; Commentary:
 
-;; Four mutually exclusive writing modes for different workflows:
-;; - org-scribe/writing-env-mode: Distraction-free writing environment
-;; - org-scribe/writing-env-mode-focus: Focus mode with narrowing to current section
-;; - org-scribe/project-mode: Project navigation with treemacs and imenu-list
-;; - org-scribe/editing-mode: Three-pane editing layout with notes
+;; Four mutually exclusive writing layouts for different workflows:
+;; - write    (org-scribe/writing-env-mode): Distraction-free writing environment
+;; - focus    (org-scribe/writing-env-mode-focus): Focus mode with narrowing
+;; - edit     (org-scribe/editing-mode): Three-pane editing layout with notes
+;; - navigate (org-scribe/project-mode): Project navigation (treemacs + imenu-list)
+;;
+;; `org-scribe/workspace' is the single unified entry point: it switches
+;; between the named layouts (with completion and toggle-off), driving the
+;; minor modes below.  The layouts are listed once in
+;; `org-scribe-workspace-layouts', from which the mutual-exclusivity list
+;; and the dispatcher are derived.
 
 ;;; Code:
 
 (require 'org)
+(require 'seq)
 (require 'org-scribe-core)
 (require 'org-scribe-config)
 (require 'org-scribe-messages)
@@ -27,14 +34,25 @@
 (declare-function treemacs-get-local-window "treemacs")
 (declare-function imenu-list-smart-toggle "imenu-list")
 
+;;; Workspace Layout Table (single source of truth)
+
+(defvar org-scribe-workspace-layouts
+  '((write    . org-scribe/writing-env-mode)
+    (focus    . org-scribe/writing-env-mode-focus)
+    (edit     . org-scribe/editing-mode)
+    (navigate . org-scribe/project-mode))
+  "Alist mapping a workspace layout name to the minor mode implementing it.
+This is the single source of truth for the writing environment: both
+`org-scribe-exclusive-modes' (mutual exclusivity) and the unified
+`org-scribe/workspace' command are derived from it.  Adding a layout here
+wires it into both with no other changes.")
+
 ;;; Mutual Exclusivity System
 
 (defvar org-scribe-exclusive-modes
-  '(org-scribe/writing-env-mode
-    org-scribe/writing-env-mode-focus
-    org-scribe/project-mode
-    org-scribe/editing-mode)
-  "List of writing minor modes that should be mutually exclusive.")
+  (mapcar #'cdr org-scribe-workspace-layouts)
+  "List of writing minor modes that should be mutually exclusive.
+Derived from `org-scribe-workspace-layouts'.")
 
 (defun org-scribe--deactivate-other-modes (current-mode)
   "Deactivate all writing modes except CURRENT-MODE.
@@ -44,6 +62,64 @@ writing modes to ensure only one is active at a time."
     (unless (eq mode current-mode)
       (when (and (boundp mode) (symbol-value mode))
         (funcall mode -1)))))
+
+;;; Unified Workspace Command
+
+(defun org-scribe--workspace-mode (layout)
+  "Return the minor-mode symbol implementing workspace LAYOUT, or nil."
+  (cdr (assq layout org-scribe-workspace-layouts)))
+
+(defun org-scribe-workspace-current ()
+  "Return the name of the active workspace layout, or nil if none is active."
+  (car (seq-find (lambda (cell)
+                   (let ((mode (cdr cell)))
+                     (and (boundp mode) (symbol-value mode))))
+                 org-scribe-workspace-layouts)))
+
+;;;###autoload
+(defun org-scribe/workspace (&optional layout)
+  "Switch the writing workspace to LAYOUT.
+
+LAYOUT is one of the names in `org-scribe-workspace-layouts' (by default
+`write', `focus', `edit', `navigate'), or `normal' / nil to turn the
+active layout off and return to the ordinary editing view.
+
+Interactively, prompt for the layout with completion, offering the
+currently active one (if any) as the default.  Choosing the layout that
+is already active turns it off.
+
+This single command is the recommended entry point; it replaces having to
+remember four separate toggles.  The underlying minor modes
+\(`org-scribe/writing-env-mode' and friends) remain available and are what
+this command drives."
+  (interactive
+   (list (let* ((current (org-scribe-workspace-current))
+                (names (append (mapcar (lambda (cell) (symbol-name (car cell)))
+                                       org-scribe-workspace-layouts)
+                               '("normal"))))
+           (intern (completing-read
+                    (org-scribe-msg 'prompt-select-workspace)
+                    names nil t nil nil
+                    (when current (symbol-name current)))))))
+  (let ((current (org-scribe-workspace-current))
+        (target  (unless (memq layout '(normal nil)) layout)))
+    (cond
+     ;; Turn the active layout (if any) off.
+     ((null target)
+      (when current (funcall (org-scribe--workspace-mode current) -1))
+      (message (org-scribe-msg 'msg-workspace-normal)))
+     ;; Reject unknown layout names.
+     ((not (org-scribe--workspace-mode target))
+      (user-error (org-scribe-msg 'error-unknown-workspace target)))
+     ;; Selecting the active layout toggles it off.
+     ((eq target current)
+      (funcall (org-scribe--workspace-mode target) -1)
+      (message (org-scribe-msg 'msg-workspace-normal)))
+     ;; Switch to the requested layout.  Activating it deactivates any
+     ;; other layout via `org-scribe--deactivate-other-modes'.
+     (t
+      (funcall (org-scribe--workspace-mode target) 1)
+      (message (org-scribe-msg 'msg-workspace-set (symbol-name target)))))))
 
 ;;; Writing Environment Mode (Base)
 
