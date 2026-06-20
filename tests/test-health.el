@@ -44,8 +44,8 @@ The path is available as `temp-novel'."
   (should (featurep 'org-scribe-health)))
 
 (ert-deftest test-health-function-defined ()
-  "Test that org-scribe/project-health is defined."
-  (should (fboundp 'org-scribe/project-health)))
+  "Test that org-scribe-project-health is defined."
+  (should (fboundp 'org-scribe-project-health)))
 
 (ert-deftest test-health-helper-functions-defined ()
   "Test that internal helper functions are defined."
@@ -173,7 +173,7 @@ The path is available as `temp-novel'."
   (let ((orig-fn (symbol-function 'org-scribe-project-structure)))
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda () (list :novel-file nil))))
-      (should-error (org-scribe/project-health) :type 'user-error))))
+      (should-error (org-scribe-project-health) :type 'user-error))))
 
 ;;; Integration: report buffer is created
 
@@ -186,7 +186,7 @@ The path is available as `temp-novel'."
                  (list :novel-file temp-novel
                        :characters-file nil
                        :locations-file nil))))
-      (org-scribe/project-health)
+      (org-scribe-project-health)
       (let ((buf (get-buffer "*org-scribe-health*")))
         (should buf)
         (with-current-buffer buf

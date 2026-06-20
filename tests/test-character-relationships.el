@@ -55,11 +55,11 @@
   (should (fboundp 'org-scribe--sentiment-to-color))
   (should (fboundp 'org-scribe--generate-dot-code))
   ;; Interactive
-  (should (fboundp 'org-scribe/add-relationship))
-  (should (fboundp 'org-scribe/remove-relationship))
-  (should (fboundp 'org-scribe/show-character-relationships))
-  (should (fboundp 'org-scribe/show-all-relationships))
-  (should (fboundp 'org-scribe/setup-character-relationships))
+  (should (fboundp 'org-scribe-add-relationship))
+  (should (fboundp 'org-scribe-remove-relationship))
+  (should (fboundp 'org-scribe-show-character-relationships))
+  (should (fboundp 'org-scribe-show-all-relationships))
+  (should (fboundp 'org-scribe-setup-character-relationships))
   (should (fboundp 'org-dblock-write:character-relationships)))
 
 (ert-deftest test-relationships-variables-defined ()

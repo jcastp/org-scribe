@@ -45,7 +45,7 @@
 
 (org-scribe-define-entity character
   ;; ── Config (entity descriptor) ──────────────────────────────────────
-  :file-fn                  org-scribe/capture-character-file
+  :file-fn                  org-scribe-capture-character-file
   :heading-predicate        org-scribe--character-heading-p
   :properties               ("PoV" "Characters")
   :msg-added-ids            msg-added-ids
@@ -72,22 +72,22 @@
   :get-all-name             org-scribe--get-all-characters
   :create-link-name         org-scribe--create-character-link
   :add-ids-to-all-name      org-scribe--add-id-to-all-characters
-  :add-ids-name             org-scribe/add-character-ids
-  :insert-link-name         org-scribe/insert-character-link
-  :insert-multi-name        org-scribe/insert-multiple-character-links
-  :set-scene-name           org-scribe/set-scene-characters
+  :add-ids-name             org-scribe-add-character-ids
+  :insert-link-name         org-scribe-insert-character-link
+  :insert-multi-name        org-scribe-insert-multiple-character-links
+  :set-scene-name           org-scribe-set-scene-characters
   :set-scene-property       "Characters"
   :link-in-prop-name        org-scribe--link-characters-in-property
   ;; link-scene, link-all, update-names, update-all are custom below
   ;; (they handle both PoV + Characters with four-state messaging)
-  :setup-name               org-scribe/setup-character-links
-  :setup-add-ids-fn         org-scribe/add-character-ids
-  :setup-link-all-fn        org-scribe/link-all-scene-characters)
+  :setup-name               org-scribe-setup-character-links
+  :setup-add-ids-fn         org-scribe-add-character-ids
+  :setup-link-all-fn        org-scribe-link-all-scene-characters)
 
 ;;; PoV-Specific Functions (no location/plot equivalent)
 
 ;;;###autoload
-(defun org-scribe/set-pov-character ()
+(defun org-scribe-set-pov-character ()
   "Set the PoV property to a character with ID link.
 Specifically designed for the :PoV: property in scene headings."
   (interactive)
@@ -107,7 +107,7 @@ Specifically designed for the :PoV: property in scene headings."
           (message (org-scribe-msg 'error-no-id-for-character selected)))))))
 
 ;;;###autoload
-(defun org-scribe/jump-to-pov-character ()
+(defun org-scribe-jump-to-pov-character ()
   "Jump to the character definition for the PoV of current scene.
 Follows the ID link in the :PoV: property."
   (interactive)
@@ -125,7 +125,7 @@ Follows the ID link in the :PoV: property."
 ;;; Custom Link/Update Functions (handle both PoV + Characters)
 
 ;;;###autoload
-(defun org-scribe/link-scene-characters ()
+(defun org-scribe-link-scene-characters ()
   "Convert character names to ID links in current scene.
 Updates both :PoV: and :Characters: properties."
   (interactive)
@@ -144,7 +144,7 @@ Updates both :PoV: and :Characters: properties."
         (message (org-scribe-msg 'msg-no-updates-needed)))))))
 
 ;;;###autoload
-(defun org-scribe/link-all-scene-characters ()
+(defun org-scribe-link-all-scene-characters ()
   "Convert character names to ID links in all scenes in current buffer.
 Processes all headings with :PoV: or :Characters: properties."
   (interactive)
@@ -167,7 +167,7 @@ Processes all headings with :PoV: or :Characters: properties."
 (require 'org-scribe-link-update)
 
 ;;;###autoload
-(defun org-scribe/update-character-link-names ()
+(defun org-scribe-update-character-link-names ()
   "Update character link display names in current scene.
 Refreshes both :PoV: and :Characters: properties.
 Returns t if any updates were made, nil otherwise."
@@ -190,7 +190,7 @@ Returns t if any updates were made, nil otherwise."
       (or updated-pov updated-chars))))
 
 ;;;###autoload
-(defun org-scribe/update-all-character-link-names ()
+(defun org-scribe-update-all-character-link-names ()
   "Update character link display names in all scenes.
 Returns the number of scenes updated."
   (interactive)

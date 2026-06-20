@@ -46,7 +46,7 @@ falling back to the plain `count-words' otherwise."
 ;;; Word Count Property Function
 
 ;;;###autoload
-(defun org-scribe/ews-org-count-words ()
+(defun org-scribe-ews-org-count-words ()
   "Add word count to each heading property drawer in an Org mode buffer.
 Uses `org-context-count-words' for accurate counting that excludes
 comments, properties, drawers, etc.  When `org-context-extended' is not
@@ -89,7 +89,7 @@ count."
     count))
 
 ;;;###autoload
-(defun org-scribe/update-scene-wordcounts ()
+(defun org-scribe-update-scene-wordcounts ()
   "Update WORDCOUNT property on scene headings in the current subtree.
 Scenes are identified as level-3 headings tagged with :ignore:.
 When point is on a heading, operates on that subtree only.
@@ -107,22 +107,22 @@ plain word count otherwise."
 ;;; Unified Word-Count Dispatcher
 
 ;;;###autoload
-(defun org-scribe/wordcount (&optional arg)
+(defun org-scribe-wordcount (&optional arg)
   "Unified word-count command.
 
 With no prefix ARG, report the word count of the active region, or of the
 whole buffer when no region is active.
 
 With one prefix argument (\\[universal-argument]), refresh the WORDCOUNT
-property of every heading in the buffer (`org-scribe/ews-org-count-words').
+property of every heading in the buffer (`org-scribe-ews-org-count-words').
 
 With two prefix arguments (\\[universal-argument] \\[universal-argument]),
 refresh WORDCOUNT on scene headings in the current subtree or buffer
-(`org-scribe/update-scene-wordcounts')."
+(`org-scribe-update-scene-wordcounts')."
   (interactive "P")
   (cond
-   ((equal arg '(16)) (org-scribe/update-scene-wordcounts))
-   ((equal arg '(4))  (org-scribe/ews-org-count-words))
+   ((equal arg '(16)) (org-scribe-update-scene-wordcounts))
+   ((equal arg '(4))  (org-scribe-ews-org-count-words))
    ((use-region-p)
     (message (org-scribe-msg 'msg-wordcount-region
                              (org-scribe--count-words-region
@@ -174,7 +174,7 @@ Sections tagged with 'noexport' are excluded."
   ;; Execute the function of counting words, add the WORDCOUNT property,
   ;; and update the current word count (accurately when org-context-extended
   ;; is available, otherwise with a plain fallback count).
-  (org-scribe/ews-org-count-words)
+  (org-scribe-ews-org-count-words)
   (let (table-data)
     ;; Traverse each Org entry in the current buffer
     (org-map-entries
@@ -268,7 +268,7 @@ Handles missing properties safely:
 
   ;; Update word counts first (accurate when org-context-extended is
   ;; available, otherwise a plain fallback count)
-  (org-scribe/ews-org-count-words)
+  (org-scribe-ews-org-count-words)
 
   (let* ((match (or (plist-get params :match) "LEVEL=1+ignore"))
          (title (or (plist-get params :title) "Section"))

@@ -18,7 +18,7 @@
 (declare-function org-tracktable-write "org-tracktable")
 
 ;;;###autoload
-(defun org-scribe/track-progress ()
+(defun org-scribe-track-progress ()
   "Update the writing progress track table.
 Requires org-tracktable package to be installed."
   (interactive)

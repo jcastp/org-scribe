@@ -42,7 +42,7 @@
 
 (org-scribe-define-entity location
   ;; ── Config (entity descriptor) ──────────────────────────────────────
-  :file-fn                  org-scribe/capture-location-file
+  :file-fn                  org-scribe-capture-location-file
   :heading-predicate        org-scribe--location-heading-p
   :properties               ("Location")
   :msg-added-ids            msg-added-location-ids
@@ -69,19 +69,19 @@
   :get-all-name             org-scribe--get-all-locations
   :create-link-name         org-scribe--create-location-link
   :add-ids-to-all-name      org-scribe--add-id-to-all-locations
-  :add-ids-name             org-scribe/add-location-ids
-  :insert-link-name         org-scribe/insert-location-link
-  :insert-multi-name        org-scribe/insert-multiple-location-links
-  :set-scene-name           org-scribe/set-scene-locations
+  :add-ids-name             org-scribe-add-location-ids
+  :insert-link-name         org-scribe-insert-location-link
+  :insert-multi-name        org-scribe-insert-multiple-location-links
+  :set-scene-name           org-scribe-set-scene-locations
   :set-scene-property       "Location"
   :link-in-prop-name        org-scribe--link-locations-in-property
-  :link-scene-name          org-scribe/link-scene-locations
-  :link-all-name            org-scribe/link-all-scene-locations
-  :setup-name               org-scribe/setup-location-links
-  :setup-add-ids-fn         org-scribe/add-location-ids
-  :setup-link-all-fn        org-scribe/link-all-scene-locations
-  :update-names-name        org-scribe/update-location-link-names
-  :update-all-name          org-scribe/update-all-location-link-names)
+  :link-scene-name          org-scribe-link-scene-locations
+  :link-all-name            org-scribe-link-all-scene-locations
+  :setup-name               org-scribe-setup-location-links
+  :setup-add-ids-fn         org-scribe-add-location-ids
+  :setup-link-all-fn        org-scribe-link-all-scene-locations
+  :update-names-name        org-scribe-update-location-link-names
+  :update-all-name          org-scribe-update-all-location-link-names)
 
 ;;; Legacy Aliases
 

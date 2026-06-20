@@ -42,10 +42,10 @@
 
 (ert-deftest test-modes-public-functions-defined ()
   "Test that all four public writing-mode toggles are defined."
-  (should (fboundp 'org-scribe/writing-env-mode))
-  (should (fboundp 'org-scribe/writing-env-mode-focus))
-  (should (fboundp 'org-scribe/project-mode))
-  (should (fboundp 'org-scribe/editing-mode)))
+  (should (fboundp 'org-scribe-writing-env-mode))
+  (should (fboundp 'org-scribe-writing-env-mode-focus))
+  (should (fboundp 'org-scribe-project-mode))
+  (should (fboundp 'org-scribe-editing-mode)))
 
 (ert-deftest test-modes-internal-functions-defined ()
   "Test that internal activate/deactivate helpers are defined."
@@ -57,9 +57,9 @@
   (should (fboundp 'org-scribe-editing--setup))
   (should (fboundp 'org-scribe-editing--teardown))
   (should (fboundp 'org-scribe-env--cleanup))
-  (should (fboundp 'org-scribe/file-notes-filename))
-  (should (fboundp 'org-scribe/editing-profile))
-  (should (fboundp 'org-scribe/resize-margins)))
+  (should (fboundp 'org-scribe-file-notes-filename))
+  (should (fboundp 'org-scribe-editing-profile))
+  (should (fboundp 'org-scribe-resize-margins)))
 
 ;;; ─────────────────────────────────────────────
 ;;; Variable Availability
@@ -114,10 +114,10 @@
 
 (ert-deftest test-modes-exclusive-list-contains-all-four-modes ()
   "Test that all four writing modes appear in the exclusive list."
-  (should (memq 'org-scribe/writing-env-mode      org-scribe-exclusive-modes))
-  (should (memq 'org-scribe/writing-env-mode-focus org-scribe-exclusive-modes))
-  (should (memq 'org-scribe/project-mode           org-scribe-exclusive-modes))
-  (should (memq 'org-scribe/editing-mode           org-scribe-exclusive-modes)))
+  (should (memq 'org-scribe-writing-env-mode      org-scribe-exclusive-modes))
+  (should (memq 'org-scribe-writing-env-mode-focus org-scribe-exclusive-modes))
+  (should (memq 'org-scribe-project-mode           org-scribe-exclusive-modes))
+  (should (memq 'org-scribe-editing-mode           org-scribe-exclusive-modes)))
 
 ;;; ─────────────────────────────────────────────
 ;;; Mode Conflict — Mutual Exclusivity
@@ -126,20 +126,20 @@
 (ert-deftest test-modes-deactivate-other-calls-active-modes-with-minus-one ()
   "Test that deactivate-other-modes passes -1 to all active modes except the current one."
   (let ((calls nil))
-    (cl-letf (((symbol-value 'org-scribe/writing-env-mode) t)
-              ((symbol-value 'org-scribe/writing-env-mode-focus) t)
-              ((symbol-value 'org-scribe/project-mode) t)
-              ((symbol-value 'org-scribe/editing-mode) t)
-              ((symbol-function 'org-scribe/writing-env-mode)
+    (cl-letf (((symbol-value 'org-scribe-writing-env-mode) t)
+              ((symbol-value 'org-scribe-writing-env-mode-focus) t)
+              ((symbol-value 'org-scribe-project-mode) t)
+              ((symbol-value 'org-scribe-editing-mode) t)
+              ((symbol-function 'org-scribe-writing-env-mode)
                (lambda (n) (push (cons 'writing-env n) calls)))
-              ((symbol-function 'org-scribe/writing-env-mode-focus)
+              ((symbol-function 'org-scribe-writing-env-mode-focus)
                (lambda (n) (push (cons 'focus n) calls)))
-              ((symbol-function 'org-scribe/project-mode)
+              ((symbol-function 'org-scribe-project-mode)
                (lambda (n) (push (cons 'project n) calls)))
-              ((symbol-function 'org-scribe/editing-mode)
+              ((symbol-function 'org-scribe-editing-mode)
                (lambda (n) (push (cons 'editing n) calls))))
       ;; Keep writing-env-mode, deactivate the rest
-      (org-scribe--deactivate-other-modes 'org-scribe/writing-env-mode)
+      (org-scribe--deactivate-other-modes 'org-scribe-writing-env-mode)
       ;; Current mode must NOT be in the call list
       (should-not (assq 'writing-env calls))
       ;; All others must have been called with -1
@@ -150,20 +150,20 @@
 (ert-deftest test-modes-deactivate-other-skips-already-inactive-modes ()
   "Test that deactivate-other-modes does not call modes that are already off."
   (let ((calls nil))
-    (cl-letf (((symbol-value 'org-scribe/writing-env-mode) nil)      ; already off
-              ((symbol-value 'org-scribe/writing-env-mode-focus) nil) ; already off
-              ((symbol-value 'org-scribe/project-mode) t)
-              ((symbol-value 'org-scribe/editing-mode) t)
-              ((symbol-function 'org-scribe/writing-env-mode)
+    (cl-letf (((symbol-value 'org-scribe-writing-env-mode) nil)      ; already off
+              ((symbol-value 'org-scribe-writing-env-mode-focus) nil) ; already off
+              ((symbol-value 'org-scribe-project-mode) t)
+              ((symbol-value 'org-scribe-editing-mode) t)
+              ((symbol-function 'org-scribe-writing-env-mode)
                (lambda (n) (push 'writing-env calls)))
-              ((symbol-function 'org-scribe/writing-env-mode-focus)
+              ((symbol-function 'org-scribe-writing-env-mode-focus)
                (lambda (n) (push 'focus calls)))
-              ((symbol-function 'org-scribe/project-mode)
+              ((symbol-function 'org-scribe-project-mode)
                (lambda (n) (push 'project calls)))
-              ((symbol-function 'org-scribe/editing-mode)
+              ((symbol-function 'org-scribe-editing-mode)
                (lambda (n) (push 'editing calls))))
       ;; Keep editing-mode; only project-mode should be deactivated
-      (org-scribe--deactivate-other-modes 'org-scribe/editing-mode)
+      (org-scribe--deactivate-other-modes 'org-scribe-editing-mode)
       (should-not (memq 'editing   calls))  ; current — not touched
       (should-not (memq 'writing-env calls)) ; was nil — not touched
       (should-not (memq 'focus     calls))   ; was nil — not touched
@@ -176,17 +176,17 @@
 (ert-deftest test-modes-file-notes-filename-simple ()
   "Test file-notes-filename with a bare filename."
   (should (string= "novel-notes.org"
-                   (org-scribe/file-notes-filename "novel.org"))))
+                   (org-scribe-file-notes-filename "novel.org"))))
 
 (ert-deftest test-modes-file-notes-filename-strips-directory ()
   "Test that file-notes-filename strips the directory component."
   (should (string= "story-notes.org"
-                   (org-scribe/file-notes-filename "/home/user/writing/story.org"))))
+                   (org-scribe-file-notes-filename "/home/user/writing/story.org"))))
 
 (ert-deftest test-modes-file-notes-filename-tilde-path ()
   "Test file-notes-filename with a ~ path."
   (should (string= "manuscript-notes.org"
-                   (org-scribe/file-notes-filename "~/projects/novel/manuscript.org"))))
+                   (org-scribe-file-notes-filename "~/projects/novel/manuscript.org"))))
 
 ;;; ─────────────────────────────────────────────
 ;;; Writing Environment: absence of writeroom

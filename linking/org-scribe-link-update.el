@@ -117,7 +117,7 @@ Example:
 ;;; Unified Update Function
 
 ;;;###autoload
-(defun org-scribe/update-all-link-names ()
+(defun org-scribe-update-all-link-names ()
   "Update display names for all ID links in scene properties.
 
 Reads entity types from `org-scribe-entity-registry'; any entity type
@@ -167,7 +167,7 @@ Returns the number of scenes updated."
 (declare-function org-scribe--link-all-scene-entities "org-scribe-linking-core")
 
 ;;;###autoload
-(defun org-scribe/relink-project ()
+(defun org-scribe-relink-project ()
   "Tidy every ID link in the project in a single pass.
 
 For each entity type registered in `org-scribe-entity-registry'
@@ -199,7 +199,7 @@ manuscript buffer is saved when changes were made."
         (dolist (entry org-scribe-entity-registry)
           (org-scribe--link-all-scene-entities (cdr entry)))
         ;; Phase 3 — refresh stale display names (already registry-driven).
-        (let ((count (org-scribe/update-all-link-names)))
+        (let ((count (org-scribe-update-all-link-names)))
           (when (buffer-modified-p)
             (save-buffer))
           (message (org-scribe-msg 'msg-relink-complete
@@ -216,7 +216,7 @@ non-nil.  Beyond that, it acts only when all of the following are true:
 - That file is the characters, locations, or plot database for the project.
 - The manuscript (novel.org) is already open in another buffer.
 
-When the conditions are met, runs `org-scribe/update-all-link-names' in
+When the conditions are met, runs `org-scribe-update-all-link-names' in
 the manuscript buffer and reports the number of scenes updated.  The
 manuscript is NOT saved automatically; the message reminds the user to
 save if any changes were made."
@@ -237,7 +237,7 @@ save if any changes were made."
                   ;; open files unexpectedly as a side effect of saving).
                   (novel-buf (find-buffer-visiting novel-file)))
         (with-current-buffer novel-buf
-          (let ((count (org-scribe/update-all-link-names)))
+          (let ((count (org-scribe-update-all-link-names)))
             (when (> count 0)
               (message "org-scribe: updated link names in %d scene(s) in %s — save to persist."
                        count (file-name-nondirectory novel-file)))))))))

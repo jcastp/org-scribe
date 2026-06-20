@@ -83,7 +83,7 @@
 
 ;;; Dictionary and Language Tools
 
-(defcustom org-scribe/sinonimo-window-width 80
+(defcustom org-scribe-sinonimo-window-width 80
   "Width of the synonyms side window."
   :type 'integer
   :group 'org-scribe)
@@ -99,7 +99,7 @@ Example:
   :type '(choice (const :tag "Disabled" nil) file)
   :group 'org-scribe)
 
-(defcustom org-scribe/exercise-templates
+(defcustom org-scribe-exercise-templates
   '(("all" . "all prompt")
     ("character" . "character prompt")
     ("setting" . "setting prompt"))
@@ -111,7 +111,7 @@ to the Python script."
 
 ;;; Export Configuration
 
-(defcustom org-scribe/scene-break-replacements
+(defcustom org-scribe-scene-break-replacements
   '((ascii . "\n***\n\n")
     (md . "\n***\n\n")
     (man . "\n***\n\n")
@@ -128,7 +128,7 @@ The key t serves as the default for unlisted backends."
 (defcustom org-scribe-todo-keywords
   '("TODO" "ONGOING" "WAITING" "TOWRITE" "TOREVIEW" "REDO" "RESTRUCTURE")
   "TODO keywords recognised by org-scribe search functions.
-Used by `org-scribe/search-todos-recursive' to find in-progress items.
+Used by `org-scribe-search-todos-recursive' to find in-progress items.
 Writers who use different TODO keyword sets can override this to match
 their workflow."
   :type '(repeat string)

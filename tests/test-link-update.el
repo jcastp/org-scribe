@@ -37,7 +37,7 @@
   (should (fboundp 'org-scribe--update-link-display-name))
   (should (fboundp 'org-scribe--build-id-to-name-map))
   (should (fboundp 'org-scribe--update-links-in-property))
-  (should (fboundp 'org-scribe/update-all-link-names)))
+  (should (fboundp 'org-scribe-update-all-link-names)))
 
 ;;; org-scribe--update-link-display-name Tests
 

@@ -90,24 +90,24 @@ For short stories, this is notes.org (Plot section)."
   :get-all-name             org-scribe--get-all-plot-threads
   :create-link-name         org-scribe--create-plot-thread-link
   :add-ids-to-all-name      org-scribe--add-id-to-all-plot-threads
-  :add-ids-name             org-scribe/add-plot-thread-ids
-  :insert-link-name         org-scribe/insert-plot-thread-link
-  :insert-multi-name        org-scribe/insert-multiple-plot-thread-links
-  :set-scene-name           org-scribe/set-scene-plot-threads
+  :add-ids-name             org-scribe-add-plot-thread-ids
+  :insert-link-name         org-scribe-insert-plot-thread-link
+  :insert-multi-name        org-scribe-insert-multiple-plot-thread-links
+  :set-scene-name           org-scribe-set-scene-plot-threads
   :set-scene-property       "Plot"
   :link-in-prop-name        org-scribe--link-plot-threads-in-property
-  :link-scene-name          org-scribe/link-scene-plot-threads
-  :link-all-name            org-scribe/link-all-scene-plot-threads
-  :setup-name               org-scribe/setup-plot-thread-links
-  :setup-add-ids-fn         org-scribe/add-plot-thread-ids
-  :setup-link-all-fn        org-scribe/link-all-scene-plot-threads
-  :update-names-name        org-scribe/update-plot-link-names
-  :update-all-name          org-scribe/update-all-plot-link-names)
+  :link-scene-name          org-scribe-link-scene-plot-threads
+  :link-all-name            org-scribe-link-all-scene-plot-threads
+  :setup-name               org-scribe-setup-plot-thread-links
+  :setup-add-ids-fn         org-scribe-add-plot-thread-ids
+  :setup-link-all-fn        org-scribe-link-all-scene-plot-threads
+  :update-names-name        org-scribe-update-plot-link-names
+  :update-all-name          org-scribe-update-all-plot-link-names)
 
 ;;; Plot-Specific Functions
 
 ;;;###autoload
-(defun org-scribe/jump-to-plot-thread ()
+(defun org-scribe-jump-to-plot-thread ()
   "Jump to plot thread definition from scene.
 If Plot property has multiple threads, prompts for selection."
   (interactive)
@@ -220,7 +220,7 @@ Returns (STATUS-SYMBOL . WARNINGS-LIST)."
     (cons status warnings)))
 
 ;;;###autoload
-(defun org-scribe/plot-thread-report ()
+(defun org-scribe-plot-thread-report ()
   "Generate health report for plot threads.
 Analyzes thread coverage, gaps, and warnings.
 Opens a new buffer with the report."
@@ -299,7 +299,7 @@ Opens a new buffer with the report."
     (message (org-scribe-msg 'msg-plot-health-report))))
 
 ;;;###autoload
-(defun org-scribe/plot-thread-stats ()
+(defun org-scribe-plot-thread-stats ()
   "Display quick statistics for plot threads."
   (interactive)
   (let* ((threads (org-scribe--get-all-plot-threads))

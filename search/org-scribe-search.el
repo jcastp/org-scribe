@@ -116,7 +116,7 @@ PROPERTY is the org property name to search (e.g. \"PoV\")."
 ;; the entity database when available) then calls `org-scribe--search-property'.
 
 ;;;###autoload
-(defun org-scribe/org-find-pov (char)
+(defun org-scribe-org-find-pov (char)
   "Show sparse tree of scenes with POV character CHAR.
 Uses completion from characters database when available.
 Requires org-ql package."
@@ -127,7 +127,7 @@ Requires org-ql package."
   (org-scribe--search-property char 'error-empty-character "PoV"))
 
 ;;;###autoload
-(defun org-scribe/org-find-character (char)
+(defun org-scribe-org-find-character (char)
   "Show sparse tree of scenes with CHARACTER CHAR.
 Uses completion from characters database when available.
 Requires org-ql package."
@@ -138,7 +138,7 @@ Requires org-ql package."
   (org-scribe--search-property char 'error-empty-character "Characters"))
 
 ;;;###autoload
-(defun org-scribe/org-find-plot (term)
+(defun org-scribe-org-find-plot (term)
   "Show sparse tree of scenes matching TERM in plot property.
 Uses completion from plot database when available.
 Requires org-ql package."
@@ -149,7 +149,7 @@ Requires org-ql package."
   (org-scribe--search-property term 'error-empty-plot "Plot"))
 
 ;;;###autoload
-(defun org-scribe/org-find-location (loc)
+(defun org-scribe-org-find-location (loc)
   "Show sparse tree of scenes with LOCATION LOC.
 Uses completion from locations database when available.
 Requires org-ql package."
@@ -162,7 +162,7 @@ Requires org-ql package."
 ;;; Recursive TODO Search
 
 ;;;###autoload
-(defun org-scribe/search-todos-recursive ()
+(defun org-scribe-search-todos-recursive ()
   "Search for TODO items (not DONE) in current directory tree using org-ql.
 Finds all .org files recursively from the current buffer's directory
 and displays all TODO keywords with an active (non-DONE) status.
@@ -182,7 +182,7 @@ Requires org-ql package to be installed."
       (message (org-scribe-msg 'msg-no-org-files project-root)))))
 
 ;;;###autoload
-(defun org-scribe/search-edits-recursive ()
+(defun org-scribe-search-edits-recursive ()
   "Search for edition and notes items in current file tree using rgrep."
   (interactive)
   (rgrep org-scribe-edit-string "*.org" (org-scribe-project-root)))

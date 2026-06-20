@@ -37,18 +37,18 @@
 (ert-deftest test-plot-links-functions-defined ()
   "Test that all public plot thread linking functions are defined."
   ;; Core functions
-  (should (fboundp 'org-scribe/add-plot-thread-ids))
-  (should (fboundp 'org-scribe/insert-plot-thread-link))
-  (should (fboundp 'org-scribe/insert-multiple-plot-thread-links))
-  (should (fboundp 'org-scribe/set-scene-plot-threads))
-  (should (fboundp 'org-scribe/jump-to-plot-thread))
+  (should (fboundp 'org-scribe-add-plot-thread-ids))
+  (should (fboundp 'org-scribe-insert-plot-thread-link))
+  (should (fboundp 'org-scribe-insert-multiple-plot-thread-links))
+  (should (fboundp 'org-scribe-set-scene-plot-threads))
+  (should (fboundp 'org-scribe-jump-to-plot-thread))
 
   ;; Batch operations
-  (should (fboundp 'org-scribe/link-scene-plot-threads))
-  (should (fboundp 'org-scribe/link-all-scene-plot-threads))
+  (should (fboundp 'org-scribe-link-scene-plot-threads))
+  (should (fboundp 'org-scribe-link-all-scene-plot-threads))
 
   ;; Setup wizard
-  (should (fboundp 'org-scribe/setup-plot-thread-links)))
+  (should (fboundp 'org-scribe-setup-plot-thread-links)))
 
 ;;; Helper Function Tests
 
@@ -107,11 +107,11 @@
 
 (ert-deftest test-plot-thread-report-function-defined ()
   "Test that plot thread report function is defined."
-  (should (fboundp 'org-scribe/plot-thread-report)))
+  (should (fboundp 'org-scribe-plot-thread-report)))
 
 (ert-deftest test-plot-thread-stats-function-defined ()
   "Test that plot thread statistics function is defined."
-  (should (fboundp 'org-scribe/plot-thread-stats)))
+  (should (fboundp 'org-scribe-plot-thread-stats)))
 
 (ert-deftest test-plot-thread-timeline-dblock-defined ()
   "Test that timeline dynamic block function is defined."

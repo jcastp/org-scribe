@@ -133,7 +133,7 @@ ENTITIES is an alist (NAME . (ID . HEADING)) as returned by
 ;;; Main Report Function
 
 ;;;###autoload
-(defun org-scribe/project-health ()
+(defun org-scribe-project-health ()
   "Generate a project health report for the current writing project.
 Displays an overview of word-count progress, scene completion by TODO
 state, scenes with missing critical properties, orphaned characters and

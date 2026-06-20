@@ -7,12 +7,12 @@
 ;;; Commentary:
 
 ;; Four mutually exclusive writing layouts for different workflows:
-;; - write    (org-scribe/writing-env-mode): Distraction-free writing environment
-;; - focus    (org-scribe/writing-env-mode-focus): Focus mode with narrowing
-;; - edit     (org-scribe/editing-mode): Three-pane editing layout with notes
-;; - navigate (org-scribe/project-mode): Project navigation (treemacs + imenu-list)
+;; - write    (org-scribe-writing-env-mode): Distraction-free writing environment
+;; - focus    (org-scribe-writing-env-mode-focus): Focus mode with narrowing
+;; - edit     (org-scribe-editing-mode): Three-pane editing layout with notes
+;; - navigate (org-scribe-project-mode): Project navigation (treemacs + imenu-list)
 ;;
-;; `org-scribe/workspace' is the single unified entry point: it switches
+;; `org-scribe-workspace' is the single unified entry point: it switches
 ;; between the named layouts (with completion and toggle-off), driving the
 ;; minor modes below.  The layouts are listed once in
 ;; `org-scribe-workspace-layouts', from which the mutual-exclusivity list
@@ -37,14 +37,14 @@
 ;;; Workspace Layout Table (single source of truth)
 
 (defvar org-scribe-workspace-layouts
-  '((write    . org-scribe/writing-env-mode)
-    (focus    . org-scribe/writing-env-mode-focus)
-    (edit     . org-scribe/editing-mode)
-    (navigate . org-scribe/project-mode))
+  '((write    . org-scribe-writing-env-mode)
+    (focus    . org-scribe-writing-env-mode-focus)
+    (edit     . org-scribe-editing-mode)
+    (navigate . org-scribe-project-mode))
   "Alist mapping a workspace layout name to the minor mode implementing it.
 This is the single source of truth for the writing environment: both
 `org-scribe-exclusive-modes' (mutual exclusivity) and the unified
-`org-scribe/workspace' command are derived from it.  Adding a layout here
+`org-scribe-workspace' command are derived from it.  Adding a layout here
 wires it into both with no other changes.")
 
 ;;; Mutual Exclusivity System
@@ -77,7 +77,7 @@ writing modes to ensure only one is active at a time."
                  org-scribe-workspace-layouts)))
 
 ;;;###autoload
-(defun org-scribe/workspace (&optional layout)
+(defun org-scribe-workspace (&optional layout)
   "Switch the writing workspace to LAYOUT.
 
 LAYOUT is one of the names in `org-scribe-workspace-layouts' (by default
@@ -90,7 +90,7 @@ is already active turns it off.
 
 This single command is the recommended entry point; it replaces having to
 remember four separate toggles.  The underlying minor modes
-\(`org-scribe/writing-env-mode' and friends) remain available and are what
+\(`org-scribe-writing-env-mode' and friends) remain available and are what
 this command drives."
   (interactive
    (list (let* ((current (org-scribe-workspace-current))
@@ -160,16 +160,16 @@ this command drives."
     (setq org-scribe-env--writeroom-active nil)))
 
 ;;;###autoload
-(define-minor-mode org-scribe/writing-env-mode
+(define-minor-mode org-scribe-writing-env-mode
   "Toggle a distraction-free writing environment.
 
 This mode changes the theme, font, and enables writeroom-mode
 with customized settings optimized for focused writing."
   :lighter " ✍"
   :global nil
-  (if org-scribe/writing-env-mode
+  (if org-scribe-writing-env-mode
       (progn
-        (org-scribe--deactivate-other-modes 'org-scribe/writing-env-mode)
+        (org-scribe--deactivate-other-modes 'org-scribe-writing-env-mode)
         (org-scribe-env--activate))
     (org-scribe-env--deactivate)))
 
@@ -197,7 +197,7 @@ with customized settings optimized for focused writing."
   (org-scribe-env--deactivate))
 
 ;;;###autoload
-(define-minor-mode org-scribe/writing-env-mode-focus
+(define-minor-mode org-scribe-writing-env-mode-focus
   "Toggle a distraction-free writing environment focused on current section.
 
 This mode changes the theme, font, and enables writeroom-mode
@@ -205,16 +205,16 @@ with customized settings optimized for focused writing.  Additionally,
 it narrows the buffer to the current org section at point."
   :lighter " ✍🔍"
   :global nil
-  (if org-scribe/writing-env-mode-focus
+  (if org-scribe-writing-env-mode-focus
       (progn
-        (org-scribe--deactivate-other-modes 'org-scribe/writing-env-mode-focus)
+        (org-scribe--deactivate-other-modes 'org-scribe-writing-env-mode-focus)
         (org-scribe-env-focus--activate))
     (org-scribe-env-focus--deactivate)))
 
 ;;; Project Writing Mode (treemacs + imenu-list)
 
 ;;;###autoload
-(define-minor-mode org-scribe/project-mode
+(define-minor-mode org-scribe-project-mode
   "Toggle treemacs and imenu-list together for a focused writing environment.
 
 When enabled, opens treemacs with the current project exclusively
@@ -223,10 +223,10 @@ Focus always returns to the original buffer for seamless transitions."
   :lighter " ProjWrt"
   :global nil
   (let ((original-window (selected-window)))
-    (if org-scribe/project-mode
+    (if org-scribe-project-mode
         ;; Enable: Open both windows, then return focus
         (progn
-          (org-scribe--deactivate-other-modes 'org-scribe/project-mode)
+          (org-scribe--deactivate-other-modes 'org-scribe-project-mode)
           ;; Check for treemacs
           (if (fboundp 'treemacs-add-and-display-current-project-exclusively)
               (treemacs-add-and-display-current-project-exclusively)
@@ -256,14 +256,14 @@ Focus always returns to the original buffer for seamless transitions."
 ;;; Editing Mode (three-pane layout)
 
 ;; Helper functions for editing mode
-(defun org-scribe/file-notes-filename (file)
+(defun org-scribe-file-notes-filename (file)
   "Return the org-remark notes filename for FILE.
 E.g., \"~/tmp/foo.org\" → \"foo-notes.org\"."
   (let* ((base (file-name-sans-extension (file-name-nondirectory file)))
          (ext  (file-name-extension (file-name-nondirectory file))))
     (concat base "-notes." ext)))
 
-(defun org-scribe/resize-margins ()
+(defun org-scribe-resize-margins ()
   "Center the current buffer according to `visual-fill-column-width'.
 If the desired column width exceeds the window width, do nothing
 instead of passing a negative margin to `set-window-margins'."
@@ -273,7 +273,7 @@ instead of passing a negative margin to `set-window-margins'."
     (let ((margin (/ (- (window-width) visual-fill-column-width) 2)))
       (set-window-margins (selected-window) margin margin))))
 
-(defun org-scribe/editing-profile ()
+(defun org-scribe-editing-profile ()
   "Apply the visual style for editing sessions.
 Applies theme, column width, and font preset."
   ;; Theme
@@ -303,10 +303,10 @@ Applies theme, column width, and font preset."
          (src-file
           (or (buffer-file-name)
               (user-error (org-scribe-msg 'error-no-org-file))))
-         (notes-file (org-scribe/file-notes-filename src-file))
+         (notes-file (org-scribe-file-notes-filename src-file))
          (frame-w    (frame-width))
-         (right-w    (org-scribe/window-perc right-perc))
-         (left-w     (org-scribe/window-perc left-perc)))
+         (right-w    (org-scribe-window-perc right-perc))
+         (left-w     (org-scribe-window-perc left-perc)))
 
     ;; Save visual state
     (setq org-scribe-editing--saved-config (current-window-configuration)
@@ -334,10 +334,10 @@ Applies theme, column width, and font preset."
     (other-window -1)
 
     ;; Apply visual profile
-    (org-scribe/editing-profile)
+    (org-scribe-editing-profile)
 
     ;; Resize margins if visual-fill-column is available
-    (org-scribe/resize-margins)))
+    (org-scribe-resize-margins)))
 
 (defun org-scribe-editing--teardown ()
   "Restore the previous window configuration and visual settings."
@@ -370,7 +370,7 @@ Applies theme, column width, and font preset."
         org-scribe-editing--saved-fontaine-preset nil))
 
 ;;;###autoload
-(define-minor-mode org-scribe/editing-mode
+(define-minor-mode org-scribe-editing-mode
   "Minor mode that sets up a three-pane editing layout for the current file.
 
 When enabled the current frame is split into:
@@ -383,9 +383,9 @@ visual settings (theme, column width, font preset)."
   :init-value nil
   :lighter " Edit"
   :global nil
-  (if org-scribe/editing-mode
+  (if org-scribe-editing-mode
       (progn
-        (org-scribe--deactivate-other-modes 'org-scribe/editing-mode)
+        (org-scribe--deactivate-other-modes 'org-scribe-editing-mode)
         (org-scribe-editing--setup))
     (org-scribe-editing--teardown)))
 

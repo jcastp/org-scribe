@@ -33,18 +33,18 @@
 (ert-deftest test-capture-functions-defined ()
   "Test that all public capture functions are defined."
   ;; Main capture functions
-  (should (fboundp 'org-scribe/capture-to-file))
-  (should (fboundp 'org-scribe/capture-character))
-  (should (fboundp 'org-scribe/capture-location))
-  (should (fboundp 'org-scribe/capture-object))
-  (should (fboundp 'org-scribe/capture-timeline))
+  (should (fboundp 'org-scribe-capture-to-file))
+  (should (fboundp 'org-scribe-capture-character))
+  (should (fboundp 'org-scribe-capture-location))
+  (should (fboundp 'org-scribe-capture-object))
+  (should (fboundp 'org-scribe-capture-timeline))
 
   ;; Target file detection functions
-  (should (fboundp 'org-scribe/capture-target-file))
-  (should (fboundp 'org-scribe/capture-character-file))
-  (should (fboundp 'org-scribe/capture-location-file))
-  (should (fboundp 'org-scribe/capture-object-file))
-  (should (fboundp 'org-scribe/capture-timeline-file)))
+  (should (fboundp 'org-scribe-capture-target-file))
+  (should (fboundp 'org-scribe-capture-character-file))
+  (should (fboundp 'org-scribe-capture-location-file))
+  (should (fboundp 'org-scribe-capture-object-file))
+  (should (fboundp 'org-scribe-capture-timeline-file)))
 
 ;;; Helper Function Tests
 
@@ -58,33 +58,33 @@
 
 (ert-deftest test-capture-templates-defined ()
   "Test that capture templates are defined."
-  (should (boundp 'org-scribe/capture-templates))
-  (should (listp org-scribe/capture-templates))
-  (should (> (length org-scribe/capture-templates) 0)))
+  (should (boundp 'org-scribe-capture-templates))
+  (should (listp org-scribe-capture-templates))
+  (should (> (length org-scribe-capture-templates) 0)))
 
 (ert-deftest test-character-capture-templates-defined ()
   "Test that character capture templates are defined."
-  (should (boundp 'org-scribe/character-capture-templates))
-  (should (listp org-scribe/character-capture-templates))
-  (should (> (length org-scribe/character-capture-templates) 0)))
+  (should (boundp 'org-scribe-character-capture-templates))
+  (should (listp org-scribe-character-capture-templates))
+  (should (> (length org-scribe-character-capture-templates) 0)))
 
 (ert-deftest test-location-capture-templates-defined ()
   "Test that location capture templates are defined."
-  (should (boundp 'org-scribe/location-capture-templates))
-  (should (listp org-scribe/location-capture-templates))
-  (should (> (length org-scribe/location-capture-templates) 0)))
+  (should (boundp 'org-scribe-location-capture-templates))
+  (should (listp org-scribe-location-capture-templates))
+  (should (> (length org-scribe-location-capture-templates) 0)))
 
 (ert-deftest test-object-capture-templates-defined ()
   "Test that object capture templates are defined."
-  (should (boundp 'org-scribe/object-capture-templates))
-  (should (listp org-scribe/object-capture-templates))
-  (should (> (length org-scribe/object-capture-templates) 0)))
+  (should (boundp 'org-scribe-object-capture-templates))
+  (should (listp org-scribe-object-capture-templates))
+  (should (> (length org-scribe-object-capture-templates) 0)))
 
 (ert-deftest test-timeline-capture-templates-defined ()
   "Test that timeline capture templates are defined."
-  (should (boundp 'org-scribe/timeline-capture-templates))
-  (should (listp org-scribe/timeline-capture-templates))
-  (should (> (length org-scribe/timeline-capture-templates) 0)))
+  (should (boundp 'org-scribe-timeline-capture-templates))
+  (should (listp org-scribe-timeline-capture-templates))
+  (should (> (length org-scribe-timeline-capture-templates) 0)))
 
 ;;; File Creation Tests
 
@@ -205,13 +205,13 @@
 (ert-deftest test-capture-target-file-detection ()
   "Test that capture target file detection works."
   ;; Without a proper project structure, should return current buffer or default
-  (let ((target (org-scribe/capture-target-file)))
+  (let ((target (org-scribe-capture-target-file)))
     (should (stringp target))
     (should (string-match-p "\\.org$" target))))
 
 (ert-deftest test-capture-character-file-detection ()
   "Test that character file detection works."
-  (let ((target (org-scribe/capture-character-file)))
+  (let ((target (org-scribe-capture-character-file)))
     (should (stringp target))
     (should (or (string-match-p "characters\\.org$" target)
                 (string-match-p "personajes\\.org$" target)
@@ -220,7 +220,7 @@
 
 (ert-deftest test-capture-location-file-detection ()
   "Test that location file detection works."
-  (let ((target (org-scribe/capture-location-file)))
+  (let ((target (org-scribe-capture-location-file)))
     (should (stringp target))
     (should (or (string-match-p "locations\\.org$" target)
                 (string-match-p "localizaciones\\.org$" target)
@@ -229,7 +229,7 @@
 
 (ert-deftest test-capture-object-file-detection ()
   "Test that object file detection works."
-  (let ((target (org-scribe/capture-object-file)))
+  (let ((target (org-scribe-capture-object-file)))
     (should (stringp target))
     (should (or (string-match-p "objects\\.org$" target)
                 (string-match-p "objetos\\.org$" target)
@@ -238,7 +238,7 @@
 
 (ert-deftest test-capture-timeline-file-detection ()
   "Test that timeline file detection works."
-  (let ((target (org-scribe/capture-timeline-file)))
+  (let ((target (org-scribe-capture-timeline-file)))
     (should (stringp target))
     (should (or (string-match-p "timeline\\.org$" target)
                 (string-match-p "cronologia\\.org$" target)
@@ -249,7 +249,7 @@
 
 (ert-deftest test-character-template-has-required-fields ()
   "Test that character template includes all required fields."
-  (let ((template-string (nth 4 (car org-scribe/character-capture-templates))))
+  (let ((template-string (nth 4 (car org-scribe-character-capture-templates))))
     (should (string-match-p ":ID:" template-string))
     (should (string-match-p ":Role:" template-string))
     (should (string-match-p ":Age:" template-string))
@@ -263,7 +263,7 @@
 
 (ert-deftest test-location-template-has-required-fields ()
   "Test that location template includes all required fields."
-  (let ((template-string (nth 4 (car org-scribe/location-capture-templates))))
+  (let ((template-string (nth 4 (car org-scribe-location-capture-templates))))
     (should (string-match-p ":ID:" template-string))
     (should (string-match-p ":Type:" template-string))
     (should (string-match-p ":Importance:" template-string))
@@ -276,7 +276,7 @@
 
 (ert-deftest test-object-template-has-required-fields ()
   "Test that object template includes all required fields."
-  (let ((template-string (nth 4 (car org-scribe/object-capture-templates))))
+  (let ((template-string (nth 4 (car org-scribe-object-capture-templates))))
     (should (string-match-p ":Type:" template-string))
     (should (string-match-p ":Owner:" template-string))
     (should (string-match-p ":Status:" template-string))
@@ -288,7 +288,7 @@
 
 (ert-deftest test-timeline-template-has-required-fields ()
   "Test that timeline template includes all required fields."
-  (let ((template-string (nth 4 (car org-scribe/timeline-capture-templates))))
+  (let ((template-string (nth 4 (car org-scribe-timeline-capture-templates))))
     (should (string-match-p ":ID:" template-string))
     (should (string-match-p ":Type:" template-string))
     (should (string-match-p ":Date:" template-string))
@@ -302,18 +302,18 @@
 
 (ert-deftest test-character-template-generates-id ()
   "Test that character template includes auto-ID generation."
-  (let ((template-string (nth 4 (car org-scribe/character-capture-templates))))
+  (let ((template-string (nth 4 (car org-scribe-character-capture-templates))))
     ;; Should have %(org-id-new) in ID property
     (should (string-match-p ":ID: %(org-id-new)" template-string))))
 
 (ert-deftest test-location-template-generates-id ()
   "Test that location template includes auto-ID generation."
-  (let ((template-string (nth 4 (car org-scribe/location-capture-templates))))
+  (let ((template-string (nth 4 (car org-scribe-location-capture-templates))))
     (should (string-match-p ":ID: %(org-id-new)" template-string))))
 
 (ert-deftest test-timeline-template-generates-id ()
   "Test that timeline template includes auto-ID generation."
-  (let ((template-string (nth 4 (car org-scribe/timeline-capture-templates))))
+  (let ((template-string (nth 4 (car org-scribe-timeline-capture-templates))))
     (should (string-match-p ":ID: %(org-id-new)" template-string))))
 
 ;;; ─────────────────────────────────────────────
@@ -385,7 +385,7 @@
                    (lambda () 'novel)))
           ;; File must not exist before the call
           (should-not (file-exists-p expected-file))
-          (let ((result (org-scribe/capture-character-file t)))
+          (let ((result (org-scribe-capture-character-file t)))
             (should (file-exists-p expected-file))
             (should (string-match-p "characters\\.org$" result))))
       (delete-directory temp-dir t))))
@@ -402,7 +402,7 @@
                   ((symbol-function 'org-scribe-project-type)
                    (lambda () 'short-story)))
           (should-not (file-exists-p expected-file))
-          (let ((result (org-scribe/capture-character-file t)))
+          (let ((result (org-scribe-capture-character-file t)))
             (should (file-exists-p expected-file))
             (should (string-match-p "notes\\.org$" result))))
       (delete-directory temp-dir t))))
@@ -421,7 +421,7 @@
                    (lambda (_) temp-dir))
                   ((symbol-function 'org-scribe-project-type)
                    (lambda () 'short-story)))
-          (let ((result (org-scribe/capture-character-file)))
+          (let ((result (org-scribe-capture-character-file)))
             ;; No notes.org exists yet, so it falls back to the default name
             (should (string-match-p "notes\\.org$" result))))
       (delete-directory temp-dir t))))
@@ -441,7 +441,7 @@
                      (lambda (_) temp-dir))
                     ((symbol-function 'org-scribe-project-type)
                      (lambda () 'novel)))
-            (let ((result (org-scribe/capture-character-file)))
+            (let ((result (org-scribe-capture-character-file)))
               (should (string-match-p "characters\\.org$" result)))))
       (delete-directory temp-dir t))))
 
@@ -460,11 +460,11 @@
           (with-current-buffer (find-file-noselect temp-file)
             (unwind-protect
                 (let ((org-capture-mode t))
-                  (cl-letf (((symbol-function 'org-scribe/capture-character-file)
+                  (cl-letf (((symbol-function 'org-scribe-capture-character-file)
                              (lambda (&rest _) temp-file))
-                            ((symbol-function 'org-scribe/capture-location-file)
+                            ((symbol-function 'org-scribe-capture-location-file)
                              (lambda (&rest _) "/nonexistent-loc.org"))
-                            ((symbol-function 'org-scribe/capture-plot-thread-file)
+                            ((symbol-function 'org-scribe-capture-plot-thread-file)
                              (lambda (&rest _) "/nonexistent-plot.org")))
                     (org-scribe--capture-finalize-add-entity-id)
                     ;; The hook must have added an :ID: property
@@ -485,11 +485,11 @@
           (with-current-buffer (find-file-noselect temp-file)
             (unwind-protect
                 (let ((org-capture-mode t))
-                  (cl-letf (((symbol-function 'org-scribe/capture-character-file)
+                  (cl-letf (((symbol-function 'org-scribe-capture-character-file)
                              (lambda (&rest _) temp-file))
-                            ((symbol-function 'org-scribe/capture-location-file)
+                            ((symbol-function 'org-scribe-capture-location-file)
                              (lambda (&rest _) "/nonexistent-loc.org"))
-                            ((symbol-function 'org-scribe/capture-plot-thread-file)
+                            ((symbol-function 'org-scribe-capture-plot-thread-file)
                              (lambda (&rest _) "/nonexistent-plot.org")))
                     (org-scribe--capture-finalize-add-entity-id)
                     ;; The original ID must still be present and unchanged

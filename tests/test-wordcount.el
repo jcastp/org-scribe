@@ -40,7 +40,7 @@
       (insert "* Heading Two\n")
       (insert "More text here.\n")
       (goto-char (point-min))
-      (org-scribe/ews-org-count-words)
+      (org-scribe-ews-org-count-words)
       ;; Check that WORDCOUNT properties were added
       (goto-char (point-min))
       (org-next-visible-heading 1)
@@ -70,8 +70,8 @@
 (require 'org-scribe-wordcount)
 
 (ert-deftest test-wordcount-update-scene-wordcounts-defined ()
-  "Test that org-scribe/update-scene-wordcounts is defined."
-  (should (fboundp 'org-scribe/update-scene-wordcounts)))
+  "Test that org-scribe-update-scene-wordcounts is defined."
+  (should (fboundp 'org-scribe-update-scene-wordcounts)))
 
 (ert-deftest test-wordcount-update-scene-wordcounts-degrades-without-org-context ()
   "Without org-context-extended, update-scene-wordcounts still counts (A6).
@@ -88,7 +88,7 @@ sets the WORDCOUNT property using `count-words'."
         (insert "*** TODO Scene One :ignore:\n:PROPERTIES:\n:PoV:\n:END:\n\nOne two three four.\n")
         (goto-char (point-min))
         ;; Should not error, and should set a numeric WORDCOUNT.
-        (org-scribe/update-scene-wordcounts)
+        (org-scribe-update-scene-wordcounts)
         (goto-char (point-min))
         (org-next-visible-heading 1)
         (let ((wc (org-entry-get nil "WORDCOUNT")))
@@ -110,7 +110,7 @@ sets the WORDCOUNT property using `count-words'."
         (insert "** TODO Chapter One :ignore:\n:PROPERTIES:\n:WORDCOUNT: 0\n:END:\n\n")
         (insert "*** TODO Scene One :ignore:\n:PROPERTIES:\n:PoV:\n:END:\n\nSome prose here.\n")
         (goto-char (point-min))
-        (org-scribe/update-scene-wordcounts)
+        (org-scribe-update-scene-wordcounts)
         ;; Navigate to scene heading and check WORDCOUNT
         (goto-char (point-min))
         (org-next-visible-heading 1)  ; chapter
@@ -133,7 +133,7 @@ sets the WORDCOUNT property using `count-words'."
         (insert "** TODO Chapter :ignore:\n:PROPERTIES:\n:WORDCOUNT: 0\n:END:\n\n")
         (insert "*** TODO Scene :ignore:\n:PROPERTIES:\n:PoV:\n:END:\n")
         (goto-char (point-min))
-        (org-scribe/update-scene-wordcounts)
+        (org-scribe-update-scene-wordcounts)
         ;; Collect WORDCOUNT by level to avoid navigation subtleties
         (let (results)
           (org-map-entries
@@ -167,7 +167,7 @@ sets the WORDCOUNT property using `count-words'."
         (goto-char (point-min))
         (re-search-forward "^\\*\\* TODO Chapter One")
         (beginning-of-line)
-        (org-scribe/update-scene-wordcounts)
+        (org-scribe-update-scene-wordcounts)
         ;; Scene A (inside chapter one) should be updated
         (goto-char (point-min))
         (re-search-forward "^\\*\\*\\* TODO Scene A")

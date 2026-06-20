@@ -35,35 +35,35 @@
 
 (ert-deftest test-dictionary-functions-defined ()
   "Test that all dictionary functions are defined."
-  (should (fboundp 'org-scribe/rae-api-lookup))
-  (should (fboundp 'org-scribe/rae-api-random))
-  (should (fboundp 'org-scribe/sinonimo))
-  (should (fboundp 'org-scribe/rae-format-result))
-  (should (fboundp 'org-scribe/rae-format-conjugations)))
+  (should (fboundp 'org-scribe-rae-api-lookup))
+  (should (fboundp 'org-scribe-rae-api-random))
+  (should (fboundp 'org-scribe-sinonimo))
+  (should (fboundp 'org-scribe-rae-format-result))
+  (should (fboundp 'org-scribe-rae-format-conjugations)))
 
 ;;; Input Validation Tests
 
 (ert-deftest test-dictionary-rae-lookup-empty-word ()
   "Test that empty word raises a user-error."
-  (should-error (org-scribe/rae-api-lookup "")
+  (should-error (org-scribe-rae-api-lookup "")
                 :type 'user-error))
 
 (ert-deftest test-dictionary-rae-lookup-whitespace-word ()
   "Test that whitespace-only word raises a user-error."
-  (should-error (org-scribe/rae-api-lookup "   ")
+  (should-error (org-scribe-rae-api-lookup "   ")
                 :type 'user-error))
 
 (ert-deftest test-dictionary-sinonimo-empty-word ()
   "Test that empty word raises a user-error in synonym lookup."
-  (should-error (org-scribe/sinonimo "")
+  (should-error (org-scribe-sinonimo "")
                 :type 'user-error))
 
 (ert-deftest test-dictionary-sinonimo-whitespace-word ()
   "Test that whitespace-only word raises user-error in synonym lookup."
-  (should-error (org-scribe/sinonimo "  ")
+  (should-error (org-scribe-sinonimo "  ")
                 :type 'user-error))
 
-;;; org-scribe/rae-format-result Tests (with mock data)
+;;; org-scribe-rae-format-result Tests (with mock data)
 
 (defun test-dictionary--make-mock-json ()
   "Create a mock JSON data hash table for testing rae-format-result."
@@ -92,7 +92,7 @@
   "Test that rae-format-result inserts word as title."
   (with-temp-buffer
     (org-mode)
-    (org-scribe/rae-format-result (test-dictionary--make-mock-json) "azul")
+    (org-scribe-rae-format-result (test-dictionary--make-mock-json) "azul")
     (goto-char (point-min))
     (should (search-forward "azul" nil t))))
 
@@ -100,7 +100,7 @@
   "Test that rae-format-result inserts definitions section."
   (with-temp-buffer
     (org-mode)
-    (org-scribe/rae-format-result (test-dictionary--make-mock-json) "azul")
+    (org-scribe-rae-format-result (test-dictionary--make-mock-json) "azul")
     (goto-char (point-min))
     (should (search-forward "Definiciones" nil t))))
 
@@ -108,7 +108,7 @@
   "Test that rae-format-result inserts the sense description."
   (with-temp-buffer
     (org-mode)
-    (org-scribe/rae-format-result (test-dictionary--make-mock-json) "azul")
+    (org-scribe-rae-format-result (test-dictionary--make-mock-json) "azul")
     (goto-char (point-min))
     (should (search-forward "De color azul." nil t))))
 
@@ -130,7 +130,7 @@
     (puthash "data" data json)
     (with-temp-buffer
       (org-mode)
-      (org-scribe/rae-format-result json "azul")
+      (org-scribe-rae-format-result json "azul")
       (goto-char (point-min))
       (should (search-forward "celeste" nil t)))))
 
@@ -154,12 +154,12 @@
     (puthash "data" data json)
     (with-temp-buffer
       (org-mode)
-      (org-scribe/rae-format-result json "azul")
+      (org-scribe-rae-format-result json "azul")
       (goto-char (point-min))
       (should (search-forward "Etimología" nil t))
       (should (search-forward "árabe" nil t)))))
 
-;;; org-scribe/rae-format-conjugations Tests (with mock data)
+;;; org-scribe-rae-format-conjugations Tests (with mock data)
 
 (ert-deftest test-dictionary-format-conjugations-inserts-example-block ()
   "Test that rae-format-conjugations wraps content in #+begin_example."
@@ -171,7 +171,7 @@
       (puthash "presente" persons tenses)
       (puthash "indicativo" tenses conjugations))
     (with-temp-buffer
-      (org-scribe/rae-format-conjugations conjugations)
+      (org-scribe-rae-format-conjugations conjugations)
       (let ((content (buffer-string)))
         (should (string-match-p "begin_example" content))
         (should (string-match-p "end_example" content))
@@ -180,7 +180,7 @@
 (ert-deftest test-dictionary-format-conjugations-nil ()
   "Test that nil conjugations are handled gracefully."
   (with-temp-buffer
-    (org-scribe/rae-format-conjugations nil)
+    (org-scribe-rae-format-conjugations nil)
     ;; Should not insert anything for nil
     (should (= 0 (buffer-size)))))
 

@@ -36,17 +36,17 @@
 
 (ert-deftest test-scene-break-replacements-configured ()
   "Test that scene break replacements are configured."
-  (should (boundp 'org-scribe/scene-break-replacements))
-  (should (listp org-scribe/scene-break-replacements))
-  (should (> (length org-scribe/scene-break-replacements) 0)))
+  (should (boundp 'org-scribe-scene-break-replacements))
+  (should (listp org-scribe-scene-break-replacements))
+  (should (> (length org-scribe-scene-break-replacements) 0)))
 
 (ert-deftest test-scene-break-has-backends ()
   "Test that scene break replacements include common backends."
   ;; Should have at least ascii, html, latex, and default (t)
-  (should (assoc 'ascii org-scribe/scene-break-replacements))
-  (should (assoc 'html org-scribe/scene-break-replacements))
-  (should (assoc 'latex org-scribe/scene-break-replacements))
-  (should (assoc t org-scribe/scene-break-replacements)))
+  (should (assoc 'ascii org-scribe-scene-break-replacements))
+  (should (assoc 'html org-scribe-scene-break-replacements))
+  (should (assoc 'latex org-scribe-scene-break-replacements))
+  (should (assoc t org-scribe-scene-break-replacements)))
 
 ;;; Scene Break Replacement Tests
 
@@ -54,7 +54,7 @@
   "Test scene break replacement for ASCII backend."
   (let ((text "Some text before.\nSCENE-BREAK\nSome text after.")
         (backend 'ascii)
-        (expected-replacement (alist-get 'ascii org-scribe/scene-break-replacements)))
+        (expected-replacement (alist-get 'ascii org-scribe-scene-break-replacements)))
     (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string-match-p expected-replacement result))
       (should-not (string-match-p "SCENE-BREAK" result)))))
@@ -63,7 +63,7 @@
   "Test scene break replacement for HTML backend."
   (let ((text "Some text before.\nSCENE-BREAK\nSome text after.")
         (backend 'html)
-        (expected-replacement (alist-get 'html org-scribe/scene-break-replacements)))
+        (expected-replacement (alist-get 'html org-scribe-scene-break-replacements)))
     (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string-match-p expected-replacement result))
       (should-not (string-match-p "SCENE-BREAK" result)))))
@@ -72,7 +72,7 @@
   "Test scene break replacement for LaTeX backend."
   (let ((text "Some text before.\nSCENE-BREAK\nSome text after.")
         (backend 'latex)
-        (expected-replacement (alist-get 'latex org-scribe/scene-break-replacements)))
+        (expected-replacement (alist-get 'latex org-scribe-scene-break-replacements)))
     (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string-match-p (regexp-quote expected-replacement) result))
       (should-not (string-match-p "SCENE-BREAK" result)))))
@@ -81,8 +81,8 @@
   "Test scene break replacement for ODT backend."
   (let ((text "Some text before.\nSCENE-BREAK\nSome text after.")
         (backend 'odt)
-        (expected-replacement (or (alist-get 'odt org-scribe/scene-break-replacements)
-                                 (alist-get t org-scribe/scene-break-replacements))))
+        (expected-replacement (or (alist-get 'odt org-scribe-scene-break-replacements)
+                                 (alist-get t org-scribe-scene-break-replacements))))
     (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string-match-p (regexp-quote expected-replacement) result))
       (should-not (string-match-p "SCENE-BREAK" result)))))
@@ -91,7 +91,7 @@
   "Test scene break replacement for unknown backend uses default."
   (let ((text "Some text before.\nSCENE-BREAK\nSome text after.")
         (backend 'unknown-backend)
-        (expected-replacement (alist-get t org-scribe/scene-break-replacements)))
+        (expected-replacement (alist-get t org-scribe-scene-break-replacements)))
     (let ((result (org-scribe--export-replace-scene-breaks text backend nil)))
       (should (string-match-p (regexp-quote expected-replacement) result))
       (should-not (string-match-p "SCENE-BREAK" result)))))
@@ -130,14 +130,14 @@
 
 (ert-deftest test-scene-break-customization ()
   "Test that scene break replacements can be customized."
-  (let ((original-replacements org-scribe/scene-break-replacements)
+  (let ((original-replacements org-scribe-scene-break-replacements)
         (custom-replacement "*** CUSTOM BREAK ***"))
     (unwind-protect
         (progn
           ;; Temporarily customize
-          (setq org-scribe/scene-break-replacements
+          (setq org-scribe-scene-break-replacements
                 (cons (cons 'test-backend custom-replacement)
-                      org-scribe/scene-break-replacements))
+                      org-scribe-scene-break-replacements))
 
           ;; Test custom replacement
           (let ((text "Before\nSCENE-BREAK\nAfter"))
@@ -146,7 +146,7 @@
               (should-not (string-match-p "SCENE-BREAK" result)))))
 
       ;; Restore original
-      (setq org-scribe/scene-break-replacements original-replacements))))
+      (setq org-scribe-scene-break-replacements original-replacements))))
 
 ;;; Run tests
 

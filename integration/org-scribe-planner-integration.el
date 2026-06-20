@@ -48,7 +48,7 @@
 ;;                #'org-scribe-planner-integration--auto-load-plan)
 ;;
 ;;   ;; Disable automatic progress update after word counting:
-;;   (advice-remove 'org-scribe/ews-org-count-words
+;;   (advice-remove 'org-scribe-ews-org-count-words
 ;;                  #'org-scribe-planner-integration--after-wordcount)
 ;;
 ;;   ;; Revert to manual prompt in update-progress:
@@ -67,7 +67,7 @@
 ;; Silence byte-compiler for org-scribe symbols used here
 (declare-function org-scribe-project-root "core/org-scribe-core")
 (declare-function org-scribe-project-structure "core/org-scribe-core")
-(declare-function org-scribe/ews-org-count-words "counting/org-scribe-wordcount")
+(declare-function org-scribe-ews-org-count-words "counting/org-scribe-wordcount")
 (declare-function org-scribe-create-novel-project "templates/org-scribe-project")
 (declare-function org-scribe-create-short-story-project "templates/org-scribe-project")
 (declare-function hydra-org-scribe/body "ui/org-scribe-hydra")
@@ -206,7 +206,7 @@ run by the external package's `org-scribe-planner-load-plan' and
 (defun org-scribe-planner-integration--sum-wordcounts (novel-file)
   "Sum all WORDCOUNT properties in NOVEL-FILE and return the total.
 Prefers reading from a live buffer visiting NOVEL-FILE so that unsaved
-WORDCOUNT changes written by `org-scribe/ews-org-count-words' are
+WORDCOUNT changes written by `org-scribe-ews-org-count-words' are
 included.  Falls back to reading the saved file from disk when no live
 buffer exists.
 Returns nil if NOVEL-FILE is nil or unreadable."
@@ -269,7 +269,7 @@ Reports the outcome via the echo area instead of failing silently."
                             org-scribe-planner--current-plan total nil)
         (message "org-scribe-planner: progress updated to %d words." total))))))
 
-(advice-add 'org-scribe/ews-org-count-words :after
+(advice-add 'org-scribe-ews-org-count-words :after
             #'org-scribe-planner-integration--after-wordcount)
 
 ;;; Feature 4: Project root → plan file picker

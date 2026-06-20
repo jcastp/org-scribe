@@ -160,23 +160,23 @@ All file/directory values are nil if the path does not exist."
 
 ;;; Helper Functions
 
-(defun org-scribe/window-perc (pct)
+(defun org-scribe-window-perc (pct)
   "Calculate window width as percentage of frame.
 
 PCT should be a float between 0.0 and 1.0 representing the desired
 percentage of `frame-width'.  Returns the floor of the calculation
 as an integer suitable for window sizing functions.
 
-Example: (org-scribe/window-perc 0.25) with a 200-char frame returns 50."
+Example: (org-scribe-window-perc 0.25) with a 200-char frame returns 50."
   (floor (* (frame-width) pct)))
 
-(defun org-scribe/sanitize-filename (title)
+(defun org-scribe-sanitize-filename (title)
   "Sanitize TITLE for safe use as filename component.
 Removes path separators and other problematic characters."
   (let ((safe-title (replace-regexp-in-string "[/\\:]" "_" title)))
     (replace-regexp-in-string "^\\.+" "" safe-title)))
 
-(defun org-scribe/validate-directory (directory &optional create)
+(defun org-scribe-validate-directory (directory &optional create)
   "Validate that DIRECTORY exists.
 If CREATE is non-nil and directory doesn't exist, ask user to create it.
 Returns t if directory exists or was created, nil otherwise."

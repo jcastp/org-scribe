@@ -35,17 +35,17 @@
 (ert-deftest test-location-links-functions-defined ()
   "Test that all public location linking functions are defined."
   ;; Core functions
-  (should (fboundp 'org-scribe/add-location-ids))
-  (should (fboundp 'org-scribe/insert-location-link))
-  (should (fboundp 'org-scribe/insert-multiple-location-links))
-  (should (fboundp 'org-scribe/set-scene-locations))
+  (should (fboundp 'org-scribe-add-location-ids))
+  (should (fboundp 'org-scribe-insert-location-link))
+  (should (fboundp 'org-scribe-insert-multiple-location-links))
+  (should (fboundp 'org-scribe-set-scene-locations))
 
   ;; Batch operations
-  (should (fboundp 'org-scribe/link-scene-locations))
-  (should (fboundp 'org-scribe/link-all-scene-locations))
+  (should (fboundp 'org-scribe-link-scene-locations))
+  (should (fboundp 'org-scribe-link-all-scene-locations))
 
   ;; Setup wizard
-  (should (fboundp 'org-scribe/setup-location-links)))
+  (should (fboundp 'org-scribe-setup-location-links)))
 
 ;;; Helper Function Tests
 
@@ -145,15 +145,15 @@
 
 (ert-deftest test-location-file-uses-capture-system ()
   "Test that location file detection uses capture system."
-  ;; org-scribe--get-location-file should delegate to org-scribe/capture-location-file
+  ;; org-scribe--get-location-file should delegate to org-scribe-capture-location-file
   (should (equal (org-scribe--get-location-file)
-                 (org-scribe/capture-location-file))))
+                 (org-scribe-capture-location-file))))
 
 ;;; Setup Wizard Tests
 
 (ert-deftest test-setup-wizard-defined ()
   "Test that setup wizard function is defined."
-  (should (fboundp 'org-scribe/setup-location-links)))
+  (should (fboundp 'org-scribe-setup-location-links)))
 
 ;;; Run tests
 

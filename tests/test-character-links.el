@@ -37,19 +37,19 @@
 (ert-deftest test-character-links-functions-defined ()
   "Test that all public character linking functions are defined."
   ;; Core functions
-  (should (fboundp 'org-scribe/add-character-ids))
-  (should (fboundp 'org-scribe/set-pov-character))
-  (should (fboundp 'org-scribe/set-scene-characters))
-  (should (fboundp 'org-scribe/insert-character-link))
-  (should (fboundp 'org-scribe/insert-multiple-character-links))
-  (should (fboundp 'org-scribe/jump-to-pov-character))
+  (should (fboundp 'org-scribe-add-character-ids))
+  (should (fboundp 'org-scribe-set-pov-character))
+  (should (fboundp 'org-scribe-set-scene-characters))
+  (should (fboundp 'org-scribe-insert-character-link))
+  (should (fboundp 'org-scribe-insert-multiple-character-links))
+  (should (fboundp 'org-scribe-jump-to-pov-character))
 
   ;; Batch operations
-  (should (fboundp 'org-scribe/link-scene-characters))
-  (should (fboundp 'org-scribe/link-all-scene-characters))
+  (should (fboundp 'org-scribe-link-scene-characters))
+  (should (fboundp 'org-scribe-link-all-scene-characters))
 
   ;; Setup wizard
-  (should (fboundp 'org-scribe/setup-character-links)))
+  (should (fboundp 'org-scribe-setup-character-links)))
 
 ;;; Character Timeline Tests
 

@@ -35,13 +35,13 @@
 (ert-deftest test-search-functions-defined ()
   "Test that all public search functions are defined."
   ;; Search by property
-  (should (fboundp 'org-scribe/org-find-pov))
-  (should (fboundp 'org-scribe/org-find-character))
-  (should (fboundp 'org-scribe/org-find-plot))
-  (should (fboundp 'org-scribe/org-find-location))
+  (should (fboundp 'org-scribe-org-find-pov))
+  (should (fboundp 'org-scribe-org-find-character))
+  (should (fboundp 'org-scribe-org-find-plot))
+  (should (fboundp 'org-scribe-org-find-location))
 
   ;; Search TODO items
-  (should (fboundp 'org-scribe/search-todos-recursive)))
+  (should (fboundp 'org-scribe-search-todos-recursive)))
 
 ;;; Helper Function Tests
 ;; Note: Detailed tests for helper functions are in test-search-links.el
@@ -58,23 +58,23 @@
 (ert-deftest test-search-pov-requires-char ()
   "Test that POV search requires a character name."
   ;; These should raise user-error when given empty string
-  (should-error (org-scribe/org-find-pov "") :type 'user-error)
-  (should-error (org-scribe/org-find-pov "  ") :type 'user-error))
+  (should-error (org-scribe-org-find-pov "") :type 'user-error)
+  (should-error (org-scribe-org-find-pov "  ") :type 'user-error))
 
 (ert-deftest test-search-character-requires-name ()
   "Test that character search requires a name."
-  (should-error (org-scribe/org-find-character "") :type 'user-error)
-  (should-error (org-scribe/org-find-character "  ") :type 'user-error))
+  (should-error (org-scribe-org-find-character "") :type 'user-error)
+  (should-error (org-scribe-org-find-character "  ") :type 'user-error))
 
 (ert-deftest test-search-plot-requires-keyword ()
   "Test that plot search requires a keyword."
-  (should-error (org-scribe/org-find-plot "") :type 'user-error)
-  (should-error (org-scribe/org-find-plot "  ") :type 'user-error))
+  (should-error (org-scribe-org-find-plot "") :type 'user-error)
+  (should-error (org-scribe-org-find-plot "  ") :type 'user-error))
 
 (ert-deftest test-search-location-requires-name ()
   "Test that location search requires a name."
-  (should-error (org-scribe/org-find-location "") :type 'user-error)
-  (should-error (org-scribe/org-find-location "  ") :type 'user-error))
+  (should-error (org-scribe-org-find-location "") :type 'user-error)
+  (should-error (org-scribe-org-find-location "  ") :type 'user-error))
 
 ;;; TODO Search Tests
 
@@ -106,7 +106,7 @@ correctly by extracting file names from item text properties."
             ;; This should not raise an error
             (should-not (condition-case err
                            (progn
-                             (org-scribe/search-todos-recursive)
+                             (org-scribe-search-todos-recursive)
                              nil) ; No error
                          (error err)))))
 

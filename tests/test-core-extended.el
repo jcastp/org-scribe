@@ -70,9 +70,9 @@ Clears the project type cache before and after."
   (should (fboundp 'org-scribe-project-type))
   (should (fboundp 'org-scribe-project-structure))
   (should (fboundp 'org-scribe-check-feature))
-  (should (fboundp 'org-scribe/window-perc))
-  (should (fboundp 'org-scribe/sanitize-filename))
-  (should (fboundp 'org-scribe/validate-directory))
+  (should (fboundp 'org-scribe-window-perc))
+  (should (fboundp 'org-scribe-sanitize-filename))
+  (should (fboundp 'org-scribe-validate-directory))
   (should (fboundp 'org-scribe--find-existing-file))
   (should (fboundp 'org-scribe--find-existing-dir)))
 
@@ -246,20 +246,20 @@ Clears the project type cache before and after."
     (should (null (org-scribe--find-existing-dir
                    temp-dir "notes" "notas")))))
 
-;;; org-scribe/validate-directory Tests
+;;; org-scribe-validate-directory Tests
 
 (ert-deftest test-core-validate-directory-existing ()
   "Test validate-directory returns t for existing directory."
   (test-core--with-temp-project
       '("notes/")
-    (should (eq t (org-scribe/validate-directory
+    (should (eq t (org-scribe-validate-directory
                    (expand-file-name "notes" temp-dir))))))
 
 (ert-deftest test-core-validate-directory-nonexistent ()
   "Test validate-directory returns nil for non-existent directory."
   (test-core--with-temp-project
       '()
-    (should (null (org-scribe/validate-directory
+    (should (null (org-scribe-validate-directory
                    (expand-file-name "nonexistent" temp-dir))))))
 
 ;;; org-scribe-with-error-handling Tests

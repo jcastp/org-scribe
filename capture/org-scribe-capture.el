@@ -153,42 +153,42 @@ objects/{en-name}.org if none exist."
 
     target))
 
-(defun org-scribe/capture-character-file (&optional create-if-missing)
+(defun org-scribe-capture-character-file (&optional create-if-missing)
   "Determine the appropriate file for character captures.
 For novels: Uses objects/characters.org (or personajes.org).
 For short stories: Uses notes.org (or notas.org).
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (org-scribe--capture-entity-file "characters" "personajes" 'characters create-if-missing))
 
-(defun org-scribe/capture-location-file (&optional create-if-missing)
+(defun org-scribe-capture-location-file (&optional create-if-missing)
   "Determine the appropriate file for location captures.
 For novels: Uses objects/locations.org (or localizaciones.org).
 For short stories: Uses notes.org (or notas.org).
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (org-scribe--capture-entity-file "locations" "localizaciones" 'locations create-if-missing))
 
-(defun org-scribe/capture-object-file (&optional create-if-missing)
+(defun org-scribe-capture-object-file (&optional create-if-missing)
   "Determine the appropriate file for object captures.
 For novels: Uses objects/objects.org (or objetos.org).
 For short stories: Uses notes.org (or notas.org).
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (org-scribe--capture-entity-file "objects" "objetos" 'objects create-if-missing))
 
-(defun org-scribe/capture-timeline-file (&optional create-if-missing)
+(defun org-scribe-capture-timeline-file (&optional create-if-missing)
   "Determine the appropriate file for timeline captures.
 For novels: Uses objects/timeline.org (or cronologia.org).
 For short stories: Uses notes.org (or notas.org).
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (org-scribe--capture-entity-file "timeline" "cronologia" 'timeline create-if-missing))
 
-(defun org-scribe/capture-plot-thread-file (&optional create-if-missing)
+(defun org-scribe-capture-plot-thread-file (&optional create-if-missing)
   "Determine the appropriate file for plot thread captures.
 For novels: Uses objects/plot.org (or trama.org).
 For short stories: Uses notes.org (or notas.org).
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (org-scribe--capture-entity-file "plot" "trama" 'plot create-if-missing))
 
-(defun org-scribe/capture-target-file (&optional create-if-missing)
+(defun org-scribe-capture-target-file (&optional create-if-missing)
   "Determine the appropriate notes file for org-capture in writing environment.
 Uses `project-current' to find the project base directory as reference point.
 Returns the file path based on the following priority:
@@ -228,16 +228,16 @@ file that doesn't exist."
 
 ;;; Capture Templates
 
-(defvar org-scribe/capture-templates
+(defvar org-scribe-capture-templates
   '(("w" "Writing Note" entry
-     (file+headline org-scribe/capture-target-file "Notes")
+     (file+headline org-scribe-capture-target-file "Notes")
      "** TODO %?\n  %U\n  %i"
      :empty-lines 1))
   "Capture templates specific to the writing environment.")
 
-(defvar org-scribe/character-capture-templates
+(defvar org-scribe-character-capture-templates
   '(("c" "Character Profile" entry
-     (file org-scribe/capture-character-file)
+     (file org-scribe-capture-character-file)
      "* %^{Character Name}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -307,9 +307,9 @@ file that doesn't exist."
      ))
   "Capture templates for character profiles.")
 
-(defvar org-scribe/location-capture-templates
+(defvar org-scribe-location-capture-templates
   '(("l" "Location" entry
-     (file org-scribe/capture-location-file)
+     (file org-scribe-capture-location-file)
      "* %^{Location Name}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -360,9 +360,9 @@ file that doesn't exist."
      :empty-lines 1))
   "Capture templates for location profiles.")
 
-(defvar org-scribe/object-capture-templates
+(defvar org-scribe-object-capture-templates
   '(("o" "Object" entry
-     (file org-scribe/capture-object-file)
+     (file org-scribe-capture-object-file)
      "* %^{Object Name}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -401,9 +401,9 @@ file that doesn't exist."
      :empty-lines 1))
   "Capture templates for important objects.")
 
-(defvar org-scribe/timeline-capture-templates
+(defvar org-scribe-timeline-capture-templates
   '(("t" "Timeline Event" entry
-     (file org-scribe/capture-timeline-file)
+     (file org-scribe-capture-timeline-file)
      "* %^{Event Name}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -431,9 +431,9 @@ file that doesn't exist."
      :empty-lines 1))
   "Capture templates for timeline events.")
 
-(defvar org-scribe/plot-thread-capture-templates
+(defvar org-scribe-plot-thread-capture-templates
   '(("p" "Plot Thread" entry
-     (file+headline org-scribe/capture-plot-thread-file "Plot Threads")
+     (file+headline org-scribe-capture-plot-thread-file "Plot Threads")
      "** %^{Thread Name} %^{Type|Subplot|Main Plot|B-Plot|C-Plot|Thematic Thread}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -480,15 +480,15 @@ KEY is the template key to select directly; if nil, present the full menu."
       (org-capture))))
 
 ;;;###autoload
-(defun org-scribe/capture-to-file ()
+(defun org-scribe-capture-to-file ()
   "Capture notes to writing project or file.
 Automatically determines the appropriate notes file based on project structure."
   (interactive)
-  (org-scribe--run-capture #'org-scribe/capture-target-file
-                           org-scribe/capture-templates))
+  (org-scribe--run-capture #'org-scribe-capture-target-file
+                           org-scribe-capture-templates))
 
 ;;;###autoload
-(defun org-scribe/capture-character ()
+(defun org-scribe-capture-character ()
   "Capture a character profile to the characters file.
 Automatically determines the appropriate characters file based on project structure.
 Creates a comprehensive character template with prompts for:
@@ -499,11 +499,11 @@ Creates a comprehensive character template with prompts for:
 - Motivation and character arc
 - Relationships with other characters"
   (interactive)
-  (org-scribe--run-capture #'org-scribe/capture-character-file
-                           org-scribe/character-capture-templates "c"))
+  (org-scribe--run-capture #'org-scribe-capture-character-file
+                           org-scribe-character-capture-templates "c"))
 
 ;;;###autoload
-(defun org-scribe/capture-location ()
+(defun org-scribe-capture-location ()
   "Capture a location profile to the locations file.
 Automatically determines the appropriate locations file based on project structure.
 Creates a comprehensive location template with prompts for:
@@ -514,11 +514,11 @@ Creates a comprehensive location template with prompts for:
 - History and plot significance
 - Atmosphere and mood"
   (interactive)
-  (org-scribe--run-capture #'org-scribe/capture-location-file
-                           org-scribe/location-capture-templates "l"))
+  (org-scribe--run-capture #'org-scribe-capture-location-file
+                           org-scribe-location-capture-templates "l"))
 
 ;;;###autoload
-(defun org-scribe/capture-object ()
+(defun org-scribe-capture-object ()
   "Capture an important object to the objects file.
 Automatically determines the appropriate objects file based on project structure.
 Creates a comprehensive object template with prompts for:
@@ -529,11 +529,11 @@ Creates a comprehensive object template with prompts for:
 - Plot significance
 - Current location and limitations"
   (interactive)
-  (org-scribe--run-capture #'org-scribe/capture-object-file
-                           org-scribe/object-capture-templates "o"))
+  (org-scribe--run-capture #'org-scribe-capture-object-file
+                           org-scribe-object-capture-templates "o"))
 
 ;;;###autoload
-(defun org-scribe/capture-timeline ()
+(defun org-scribe-capture-timeline ()
   "Capture a timeline event to the timeline file.
 Automatically determines the appropriate timeline file based on project structure.
 Creates a comprehensive timeline event template with prompts for:
@@ -543,11 +543,11 @@ Creates a comprehensive timeline event template with prompts for:
 - Consequences and connections
 - Type of event (action, revelation, etc.)"
   (interactive)
-  (org-scribe--run-capture #'org-scribe/capture-timeline-file
-                           org-scribe/timeline-capture-templates "t"))
+  (org-scribe--run-capture #'org-scribe-capture-timeline-file
+                           org-scribe-timeline-capture-templates "t"))
 
 ;;;###autoload
-(defun org-scribe/capture-plot-thread ()
+(defun org-scribe-capture-plot-thread ()
   "Capture a plot thread to the plot file.
 Automatically determines the appropriate plot file based on project structure.
 Creates a plot thread entry with:
@@ -566,8 +566,8 @@ This is useful when:
 The template is intentionally minimal - capture the essence quickly,
 then elaborate later during planning or revision."
   (interactive)
-  (org-scribe--run-capture #'org-scribe/capture-plot-thread-file
-                           org-scribe/plot-thread-capture-templates "p"))
+  (org-scribe--run-capture #'org-scribe-capture-plot-thread-file
+                           org-scribe-plot-thread-capture-templates "p"))
 
 ;;; Unified Capture Hook
 
@@ -584,9 +584,9 @@ gets one automatically."
              (buffer-file-name))
     (let* ((buf-file (buffer-file-name))
            (entity-files (delq nil
-                               (list (ignore-errors (org-scribe/capture-character-file))
-                                     (ignore-errors (org-scribe/capture-location-file))
-                                     (ignore-errors (org-scribe/capture-plot-thread-file)))))
+                               (list (ignore-errors (org-scribe-capture-character-file))
+                                     (ignore-errors (org-scribe-capture-location-file))
+                                     (ignore-errors (org-scribe-capture-plot-thread-file)))))
            (match (cl-some (lambda (target)
                              (or (string= buf-file target)
                                  (string= buf-file (expand-file-name target))))

@@ -22,9 +22,9 @@
 ;; - Relationship strength and type tracking
 ;;
 ;; Usage:
-;;   M-x org-scribe/add-relationship     - Add a relationship to current character
-;;   M-x org-scribe/remove-relationship  - Remove a relationship
-;;   M-x org-scribe/show-character-relationships - Display relationship tree
+;;   M-x org-scribe-add-relationship     - Add a relationship to current character
+;;   M-x org-scribe-remove-relationship  - Remove a relationship
+;;   M-x org-scribe-show-character-relationships - Display relationship tree
 
 ;;; Code:
 
@@ -181,7 +181,7 @@ If fewer than MIN-CHARS characters exist, displays a message and returns nil."
         (funcall action-fn all-chars source-name existing-rels)))))
 
 ;;;###autoload
-(defun org-scribe/add-relationship ()
+(defun org-scribe-add-relationship ()
   "Add a relationship between two characters.
 Prompts for source character, target character, relationship type, strength, and sentiment."
   (interactive)
@@ -220,7 +220,7 @@ Prompts for source character, target character, relationship type, strength, and
                                     rel-type source-name target-name rel-strength rel-sentiment))))))))
 
 ;;;###autoload
-(defun org-scribe/remove-relationship ()
+(defun org-scribe-remove-relationship ()
   "Remove a relationship from a character.
 Prompts for source character, then which relationship to remove."
   (interactive)
@@ -293,7 +293,7 @@ ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
     (string-join (nreverse lines) "\n")))
 
 ;;;###autoload
-(defun org-scribe/show-character-relationships ()
+(defun org-scribe-show-character-relationships ()
   "Display relationships for a selected character in a temporary buffer."
   (interactive)
   (let* ((all-chars (org-scribe--get-all-characters))
@@ -325,7 +325,7 @@ ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
             (display-buffer buf-name)))))))
 
 ;;;###autoload
-(defun org-scribe/show-all-relationships ()
+(defun org-scribe-show-all-relationships ()
   "Display all character relationships in the project as a table."
   (interactive)
   (let ((all-rels (org-scribe--get-all-relationships)))
@@ -576,7 +576,7 @@ PARAMS can include:
       (insert "\n")))))
 
 ;;;###autoload
-(defun org-scribe/insert-relationship-block ()
+(defun org-scribe-insert-relationship-block ()
   "Insert a character-relationships dynamic block at point."
   (interactive)
   (let* ((format (completing-read (org-scribe-msg 'prompt-graph-format)
@@ -601,7 +601,7 @@ PARAMS can include:
 ;;; Setup Function
 
 ;;;###autoload
-(defun org-scribe/setup-character-relationships ()
+(defun org-scribe-setup-character-relationships ()
   "Initialize character relationship system for current project.
 Ensures all characters have IDs and adds empty RelationshipsData properties."
   (interactive)

@@ -29,19 +29,19 @@
 
 (ert-deftest org-scribe-test-sanitize-filename ()
   "Test that filename sanitization works correctly."
-  (should (string= "test_file" (org-scribe/sanitize-filename "test/file")))
-  (should (string= "test_file" (org-scribe/sanitize-filename "test\\file")))
-  (should (string= "test_file" (org-scribe/sanitize-filename "test:file")))
-  (should (string= "file" (org-scribe/sanitize-filename ".file")))
-  (should (string= "file" (org-scribe/sanitize-filename "...file"))))
+  (should (string= "test_file" (org-scribe-sanitize-filename "test/file")))
+  (should (string= "test_file" (org-scribe-sanitize-filename "test\\file")))
+  (should (string= "test_file" (org-scribe-sanitize-filename "test:file")))
+  (should (string= "file" (org-scribe-sanitize-filename ".file")))
+  (should (string= "file" (org-scribe-sanitize-filename "...file"))))
 
 (ert-deftest org-scribe-test-window-perc ()
   "Test window percentage calculation."
   (let ((frame-width 200))
     (cl-letf (((symbol-function 'frame-width) (lambda () frame-width)))
-      (should (= 50 (org-scribe/window-perc 0.25)))
-      (should (= 100 (org-scribe/window-perc 0.5)))
-      (should (= 200 (org-scribe/window-perc 1.0))))))
+      (should (= 50 (org-scribe-window-perc 0.25)))
+      (should (= 100 (org-scribe-window-perc 0.5)))
+      (should (= 200 (org-scribe-window-perc 1.0))))))
 
 (ert-deftest org-scribe-test-project-root ()
   "Test project root detection."
@@ -63,14 +63,14 @@
   (should (boundp 'org-scribe-notes-dir-names))
   (should (boundp 'org-scribe-env-work-theme))
   (should (boundp 'org-scribe-env-normal-theme))
-  (should (boundp 'org-scribe/scene-break-replacements)))
+  (should (boundp 'org-scribe-scene-break-replacements)))
 
 (ert-deftest org-scribe-test-scene-break-replacements ()
   "Test scene break replacement configuration."
-  (should (alist-get 'ascii org-scribe/scene-break-replacements))
-  (should (alist-get 'html org-scribe/scene-break-replacements))
-  (should (alist-get 'latex org-scribe/scene-break-replacements))
-  (should (alist-get t org-scribe/scene-break-replacements)))
+  (should (alist-get 'ascii org-scribe-scene-break-replacements))
+  (should (alist-get 'html org-scribe-scene-break-replacements))
+  (should (alist-get 'latex org-scribe-scene-break-replacements))
+  (should (alist-get t org-scribe-scene-break-replacements)))
 
 ;;; Utility Tests
 
