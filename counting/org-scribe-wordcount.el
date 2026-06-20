@@ -21,28 +21,51 @@
 ;; Declare external functions to avoid compiler warnings
 (declare-function org-context-count-words "org-context-extended")
 
+;;; Counting primitive (graceful degradation)
+
+;; `org-context-extended' is a *soft* dependency.  When present, word
+;; counts exclude Org metadata (comments, property drawers, ignored tags);
+;; when absent, every counting command still works by falling back to the
+;; built-in `count-words', which simply counts everything in the region.
+;; This single primitive keeps that fallback in one place.
+
+(defun org-scribe-accurate-wordcount-p ()
+  "Return non-nil when accurate (metadata-excluding) counting is available.
+That is the case when `org-context-extended' is installed."
+  (featurep 'org-context-extended))
+
+(defun org-scribe--count-words-region (start end)
+  "Return the word count between START and END.
+Uses `org-context-count-words' when available (excludes Org metadata),
+falling back to the plain `count-words' otherwise."
+  (if (org-scribe-accurate-wordcount-p)
+      (org-context-count-words start end t t t t t t
+                               org-scribe-wordcount-default-ignore-tags)
+    (count-words start end)))
+
 ;;; Word Count Property Function
 
 ;;;###autoload
 (defun org-scribe/ews-org-count-words ()
   "Add word count to each heading property drawer in an Org mode buffer.
-Uses org-context-count-words for accurate counting that excludes
-comments, properties, drawers, etc.  Also creates a custom ID
-for each heading to enable linking."
+Uses `org-context-count-words' for accurate counting that excludes
+comments, properties, drawers, etc.  When `org-context-extended' is not
+installed, falls back to a plain word count (which cannot exclude Org
+metadata) so the command still works.  Also creates a custom ID for each
+heading to enable linking."
   (interactive)
-  (unless (featurep 'org-context-extended)
-    (user-error (org-scribe-msg 'error-org-context-required)))
   (org-map-entries
    (lambda ()
      (let* ((start (point))
             ;; Pass t (INVISIBLE-OK) to org-end-of-subtree to correctly find
             ;; the end of THIS subtree (not the end of the document)
             (end (save-excursion (org-end-of-subtree t)))
-            (word-count (org-context-count-words start end t t t t t t
-                                                  org-scribe-wordcount-default-ignore-tags)))
+            (word-count (org-scribe--count-words-region start end)))
        (org-set-property "WORDCOUNT" (number-to-string word-count)))
      ;; Create the id to link the org heading
-     (org-id-get-create))))
+     (org-id-get-create)))
+  (unless (org-scribe-accurate-wordcount-p)
+    (message (org-scribe-msg 'msg-wordcount-degraded))))
 
 ;;; Scene-level Word Count Update
 
@@ -50,15 +73,15 @@ for each heading to enable linking."
   "Recompute the WORDCOUNT property on scene headings within SCOPE.
 Scenes are level-3 headings tagged with :ignore:.  SCOPE is passed to
 `org-map-entries' (nil for the whole buffer, \\='tree for the current
-subtree).  Returns the number of scenes updated.  The caller must ensure
-`org-context-extended' is available."
+subtree).  Returns the number of scenes updated.  Counts accurately when
+`org-context-extended' is available, otherwise falls back to a plain
+count."
   (let ((count 0))
     (org-map-entries
      (lambda ()
        (let* ((start (point))
               (end (save-excursion (org-end-of-subtree t)))
-              (words (org-context-count-words start end t t t t t t
-                                              org-scribe-wordcount-default-ignore-tags)))
+              (words (org-scribe--count-words-region start end)))
          (org-set-property "WORDCOUNT" (number-to-string words))
          (setq count (1+ count))))
      "LEVEL=3+ignore"
@@ -71,25 +94,17 @@ subtree).  Returns the number of scenes updated.  The caller must ensure
 Scenes are identified as level-3 headings tagged with :ignore:.
 When point is on a heading, operates on that subtree only.
 When point is not on a heading, operates on the entire buffer.
-Requires org-context-extended for accurate word counting."
+Uses `org-context-extended' for accurate counting when installed, and a
+plain word count otherwise."
   (interactive)
-  (unless (featurep 'org-context-extended)
-    (user-error (org-scribe-msg 'error-org-context-required)))
   (let* ((scope (if (org-at-heading-p) 'tree nil))
          (count (org-scribe--refresh-scene-wordcounts scope)))
     (message (org-scribe-msg 'msg-scenes-wordcount-updated count
-                             (org-scribe-plural count "")))))
+                             (org-scribe-plural count "")))
+    (unless (org-scribe-accurate-wordcount-p)
+      (message (org-scribe-msg 'msg-wordcount-degraded)))))
 
 ;;; Unified Word-Count Dispatcher
-
-(defun org-scribe--count-words-region (start end)
-  "Return the word count between START and END.
-Uses `org-context-count-words' when available (excludes Org metadata),
-falling back to the plain `count-words' otherwise."
-  (if (featurep 'org-context-extended)
-      (org-context-count-words start end t t t t t t
-                               org-scribe-wordcount-default-ignore-tags)
-    (count-words start end)))
 
 ;;;###autoload
 (defun org-scribe/wordcount (&optional arg)
@@ -127,7 +142,9 @@ available.  Runs quietly (no echo-area message, no ID creation)."
   (when (and org-scribe-auto-wordcount
              buffer-file-name
              (derived-mode-p 'org-mode)
-             (featurep 'org-context-extended))
+             ;; Only auto-write counts silently when they are accurate; a
+             ;; degraded count on every save would be misleading.
+             (org-scribe-accurate-wordcount-p))
     (ignore-errors
       (when-let* ((struct (org-scribe-project-structure))
                   (novel-file (plist-get struct :novel-file))
@@ -155,9 +172,9 @@ The table shows:
 Sections tagged with 'noexport' are excluded."
   (interactive)
   ;; Execute the function of counting words, add the WORDCOUNT property,
-  ;; and update the current word count (if org-context-extended is available).
-  (when (featurep 'org-context-extended)
-    (org-scribe/ews-org-count-words))
+  ;; and update the current word count (accurately when org-context-extended
+  ;; is available, otherwise with a plain fallback count).
+  (org-scribe/ews-org-count-words)
   (let (table-data)
     ;; Traverse each Org entry in the current buffer
     (org-map-entries
@@ -249,9 +266,9 @@ Handles missing properties safely:
 - Division by zero returns N/A"
   (interactive)
 
-  ;; Update word counts first
-  (when (featurep 'org-context-extended)
-    (org-scribe/ews-org-count-words))
+  ;; Update word counts first (accurate when org-context-extended is
+  ;; available, otherwise a plain fallback count)
+  (org-scribe/ews-org-count-words)
 
   (let* ((match (or (plist-get params :match) "LEVEL=1+ignore"))
          (title (or (plist-get params :title) "Section"))

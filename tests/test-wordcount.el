@@ -73,8 +73,10 @@
   "Test that org-scribe/update-scene-wordcounts is defined."
   (should (fboundp 'org-scribe/update-scene-wordcounts)))
 
-(ert-deftest test-wordcount-update-scene-wordcounts-errors-without-org-context ()
-  "Test that update-scene-wordcounts signals user-error without org-context-extended."
+(ert-deftest test-wordcount-update-scene-wordcounts-degrades-without-org-context ()
+  "Without org-context-extended, update-scene-wordcounts still counts (A6).
+It must not signal an error; instead it falls back to a plain count and
+sets the WORDCOUNT property using `count-words'."
   (let ((orig-featurep (symbol-function 'featurep)))
     (cl-letf (((symbol-function 'featurep)
                (lambda (feature &rest args)
@@ -83,7 +85,15 @@
                    (apply orig-featurep feature args)))))
       (with-temp-buffer
         (org-mode)
-        (should-error (org-scribe/update-scene-wordcounts) :type 'user-error)))))
+        (insert "*** TODO Scene One :ignore:\n:PROPERTIES:\n:PoV:\n:END:\n\nOne two three four.\n")
+        (goto-char (point-min))
+        ;; Should not error, and should set a numeric WORDCOUNT.
+        (org-scribe/update-scene-wordcounts)
+        (goto-char (point-min))
+        (org-next-visible-heading 1)
+        (let ((wc (org-entry-get nil "WORDCOUNT")))
+          (should wc)
+          (should (> (string-to-number wc) 0)))))))
 
 (ert-deftest test-wordcount-update-scene-wordcounts-sets-property ()
   "Test that WORDCOUNT is set on level-3 :ignore: scene headings."

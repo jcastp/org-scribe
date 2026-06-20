@@ -78,12 +78,26 @@ Full support for English/Spanish bilingual writing:
 
 *** Required Packages
 
+These are the only packages org-scribe needs to load:
+
 - Emacs 29.1+
 - org-mode 9.6+
 - [[https://github.com/alphapapa/org-ql][org-ql]] (0.8+)
 - [[https://github.com/joostkremers/writeroom-mode][writeroom-mode]] (3.7+)
-- [[https://codeberg.org/jcastp/org-context-extended][org-context-extended]]
-- [[https://codeberg.org/jcastp/org-tracktable][org-tracktable]]
+- [[https://github.com/abo-abo/hydra][hydra]] (0.15+)
+
+*** Recommended Packages (graceful fallback)
+
+org-scribe works without these, degrading gracefully — but they make two
+core features noticeably better:
+
+- [[https://codeberg.org/jcastp/org-context-extended][org-context-extended]] — accurate word counts that exclude Org metadata
+  (comments, property drawers, ignored tags). Without it, word counting
+  falls back to a plain count that includes metadata.
+- [[https://codeberg.org/jcastp/org-tracktable][org-tracktable]] — daily writing-progress tracking.
+
+Run =M-x org-scribe-setup-check= at any time to see which features are
+active and which are missing, with install hints.
 
 *** Optional Packages
 
@@ -120,7 +134,18 @@ Add to your Emacs configuration:
 
 ** Using use-package (Recommended)
 
+A single, batteries-included block. The required packages are pulled in
+automatically; the two recommended packages are added explicitly because
+they live on Codeberg rather than a package archive. Drop them if you
+prefer the graceful fallback.
+
 #+begin_src emacs-lisp
+;; Recommended companions (Codeberg sources). Omit for graceful fallback.
+(use-package org-context-extended
+  :vc (:url "https://codeberg.org/jcastp/org-context-extended" :rev :newest))
+(use-package org-tracktable
+  :vc (:url "https://codeberg.org/jcastp/org-tracktable" :rev :newest))
+
 (use-package org-scribe
   :vc (:url "https://codeberg.org/jcastp/org-scribe"
        :branch "main"
@@ -128,14 +153,16 @@ Add to your Emacs configuration:
   :after org
   :hook (org-mode . org-scribe-mode)
   :config
-  ;; Customize settings
+  ;; Optional appearance tweaks
   (setq org-scribe-env-work-theme 'poet)
   (setq org-scribe-env-normal-theme 'ef-deuteranopia-dark)
   (setq org-scribe-stories-directory "~/writing/exercises")
 
-  ;; Keybindings
+  ;; The one keybinding you need — everything hangs off this menu
   (global-set-key (kbd "<f8> <f8>") 'hydra-org-scribe/body))
 #+end_src
+
+After loading, run =M-x org-scribe-setup-check= to confirm what is active.
 
 * Quick Start
 
@@ -150,9 +177,15 @@ Add to your Emacs configuration:
 
 1. Open an org-mode file in your project
 2. Press =<f8> <f8>= to open the hydra menu
-3. Try a writing mode: press =w= for distraction-free mode
-4. Use =n= to count words in the current section
-5. Insert scenes with =S= or chapters with =C=
+3. Try a writing workspace: press =m= for the distraction-free "write" workspace
+4. Use =w= to count words in the current section
+5. Insert scenes with =s= or chapters with =c=
+
+Linking is automatic: characters, locations, and plot threads created in
+your project already carry stable IDs, and tagging a scene (=p= PoV, =h=
+characters, =l= locations, =g= plot threads) writes proper ID links for
+you. You never need to "set up" linking by hand — the one-shot
+=R= (relink project) under =L= is only there for tidying after bulk edits.
 
 * Usage
 
@@ -304,39 +337,42 @@ When you update the word count table (with =C-c C-c= on the #+BEGIN line), progr
 
 *** Overview
 
-Link character names in scene properties directly to their full profiles in =objects/characters.org=. Click on character names to jump to detailed character information!
+Scene properties link character names directly to their full profiles in
+=objects/characters.org=. Click a character name in a scene to jump to its
+detailed profile.
 
-*** Quick Start
+This works *automatically* — you do not opt into or maintain a "linking
+system." When you create a project, every character the templates ship
+with already carries a stable ID; characters you add later via capture get
+one too; and tagging a scene writes the ID links for you. The words "ID"
+and "setup" below are implementation detail you can ignore in day-to-day
+writing.
 
-For existing projects:
-1. =M-x org-scribe/setup-character-links= or press =F8 F8 C s=
-2. Adds unique IDs to all characters
-3. Optionally converts existing scenes to use links
+*** Tagging a Scene (the everyday flow)
 
-For new characters:
-- Characters created with =org-scribe/capture-character= (F8 F8 h) automatically get IDs
-- No manual setup needed!
+From the main menu (=F8 F8=), with point on a scene heading:
 
-*** Setting Scene Characters
+- =p= — *set PoV character*: pick one character; the =:PoV:= property gets
+  an ID link.
+- =h= — *set characters*: pick several characters; the =:Characters:=
+  property gets ID links.
+- =j= — *jump to PoV character*: open the PoV character's profile. Press
+  =C-c &= to jump back to the scene.
 
-*Set PoV Character* (=F8 F8 C p=):
-1. Position on scene heading
-2. Press =F8 F8 C p=
-3. Select character from menu
-4. PoV property updated with ID link
+That is all most writers ever need. There is no separate "link" step.
 
-*Set Scene Characters* (=F8 F8 C c=):
-1. Position on scene heading
-2. Press =F8 F8 C c=
-3. Select characters one by one
-4. Press RET to finish
-5. Characters property updated with ID links
+*** Retrofitting an Existing Manuscript
 
-*** Navigation
+If you wrote scenes with plain character names (not via the tagging
+commands above), one command upgrades the whole project in a single pass:
 
-*Jump to PoV Character* (=F8 F8 C j=):
-- Instantly jump from scene to PoV character's full profile
-- Press =C-c &= to return to scene
+- =F8 F8 L R= (=M-x org-scribe/relink-project=) — mints any missing IDs,
+  converts plain names to ID links, and refreshes display names across
+  *every* entity type (characters, locations, plot threads) at once.
+
+The older per-type =setup= commands (=org-scribe/setup-character-links=
+etc.) still exist under the =L= (Links & upkeep) menu, but =relink-project=
+supersedes them for everyday use.
 
 *Click Any Character Link*:
 - Position cursor on character name in properties

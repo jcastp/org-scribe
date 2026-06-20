@@ -162,6 +162,7 @@
     (msg-scenes-wordcount-updated . "Updated word count on %d scene%s")
     (msg-wordcount-region . "%d words in region")
     (msg-wordcount-buffer . "%d words in buffer")
+    (msg-wordcount-degraded . "Counted without org-context-extended: totals include Org metadata. Install it for accurate counts (M-x org-scribe-setup-check).")
 
     ;; Dictionary / language tools
     (error-word-empty . "Word cannot be empty")

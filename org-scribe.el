@@ -116,6 +116,73 @@ recommended keybindings and hooks."
   ;; Add hook to enable in org-mode
   (add-hook 'org-mode-hook #'org-scribe-mode))
 
+;;; Setup self-check (onboarding)
+
+(defconst org-scribe--dependencies
+  '((:required
+     (org            . "Org mode (built in)")
+     (org-ql         . "Searches: find scenes by PoV / character / plot / location")
+     (writeroom-mode . "Distraction-free writing workspaces")
+     (hydra          . "The F8 F8 command menu"))
+    (:recommended
+     (org-context-extended . "Accurate word counts that exclude Org metadata")
+     (org-tracktable       . "Daily writing-progress tracking"))
+    (:optional
+     (consult        . "Theme switching in writing workspaces")
+     (fontaine       . "Font preset management")
+     (treemacs       . "File tree in the navigate workspace")
+     (imenu-list     . "Document outline in the edit workspace")
+     (guess-language . "Automatic language detection")
+     (gt             . "Translation support")
+     (powerthesaurus . "English thesaurus")
+     (org-remark     . "Text annotations")))
+  "org-scribe dependencies grouped by importance, each with a description.
+Only the `:required' group is needed for the package to load; the
+`:recommended' group degrades gracefully when absent and the `:optional'
+group simply leaves the corresponding feature inert.")
+
+(defconst org-scribe--package-urls
+  '((org-context-extended . "https://codeberg.org/jcastp/org-context-extended")
+    (org-tracktable       . "https://codeberg.org/jcastp/org-tracktable"))
+  "Source URLs for dependencies that are not on a package archive.")
+
+(defun org-scribe--feature-available-p (feature)
+  "Return non-nil when FEATURE is loaded or installed on the `load-path'."
+  (or (featurep feature)
+      (and (locate-library (symbol-name feature)) t)))
+
+;;;###autoload
+(defun org-scribe-setup-check ()
+  "Report which org-scribe features are active and which are missing.
+Opens a buffer listing every dependency grouped by importance, marking
+each as available or missing, with a one-line description of what it
+enables and an install hint for missing non-archive packages.  Nothing is
+installed or changed — this is purely a diagnostic report to make
+onboarding a single, self-explanatory step."
+  (interactive)
+  (with-current-buffer (get-buffer-create "*org-scribe setup*")
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (when (fboundp 'org-mode) (org-mode))
+      (insert "#+TITLE: org-scribe setup check\n"
+              "# [X] available   [ ] missing\n\n")
+      (dolist (group '((:required    . "Required (must be present)")
+                       (:recommended . "Recommended (graceful fallback if missing)")
+                       (:optional    . "Optional (feature inert if missing)")))
+        (insert (format "* %s\n" (cdr group)))
+        (dolist (cell (cdr (assq (car group) org-scribe--dependencies)))
+          (let* ((feature (car cell))
+                 (desc (cdr cell))
+                 (ok (org-scribe--feature-available-p feature)))
+            (insert (format "- [%s] =%s= — %s\n"
+                            (if ok "X" " ") feature desc))
+            (when-let* (((not ok))
+                        (url (alist-get feature org-scribe--package-urls)))
+              (insert (format "  install: %s\n" url)))))
+        (insert "\n"))
+      (goto-char (point-min)))
+    (display-buffer (current-buffer))))
+
 (provide 'org-scribe)
 
 ;;; org-scribe.el ends here

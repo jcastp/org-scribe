@@ -28,6 +28,13 @@
 (require 'project)
 (require 'org-scribe-messages)
 
+;; Linking is loaded after this module; these are resolved at runtime when
+;; `org-scribe--auto-setup-links' runs during project creation.
+(defvar org-scribe-entity-registry)
+(defvar org-scribe--project-type-cache)
+(declare-function org-scribe--add-entity-ids "org-scribe-linking-core")
+(declare-function org-scribe-project-structure "org-scribe-core")
+
 ;;; Configuration
 
 (defvar org-scribe-project-package-directory
@@ -87,6 +94,29 @@ Returns nil if valid, otherwise returns an error message."
     "Title cannot contain double dots (..)")
    (t nil)))
 
+(defun org-scribe--auto-setup-links (project-dir)
+  "Give every template entity in PROJECT-DIR a stable ID.
+
+Linking is on by default: the user should never run a separate \"setup\"
+step.  Right after a project is created, this mints an ID for every
+character, location, and plot-thread heading shipped in the planning
+files, so scene links stay stable even as those entities are renamed.
+
+Works off `org-scribe-entity-registry', so any future entity type is
+covered automatically.  Errors are swallowed — this is a convenience and
+must never make project creation fail."
+  (require 'org-scribe-linking-core)
+  (ignore-errors
+    (let ((default-directory (file-name-as-directory project-dir))
+          ;; The marker file already exists, so project detection resolves
+          ;; to the new project; clear any cached type for a clean read.
+          (org-scribe--project-type-cache nil))
+      (dolist (entry org-scribe-entity-registry)
+        (let* ((entity (cdr entry))
+               (file (funcall (plist-get entity :file-fn))))
+          (when (and file (file-exists-p file))
+            (org-scribe--add-entity-ids entity)))))))
+
 ;;;###autoload
 (defun org-scribe-create-novel-project (base-dir title)
   "Create a new novel project structure from templates.
@@ -139,6 +169,10 @@ This function:
 
     ;; Process all templates
     (org-scribe--copy-templates org-scribe-template-directory project-dir variables)
+
+    ;; Linking on by default: mint IDs for the template's entities so the
+    ;; user never has to run a separate "setup" step (A7).
+    (org-scribe--auto-setup-links project-dir)
 
     ;; Create initial git commit
     (let ((default-directory project-dir))
