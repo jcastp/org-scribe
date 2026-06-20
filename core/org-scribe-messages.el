@@ -158,6 +158,8 @@
 
     ;; Scene word counts
     (msg-scenes-wordcount-updated . "Updated word count on %d scene%s")
+    (msg-wordcount-region . "%d words in region")
+    (msg-wordcount-buffer . "%d words in buffer")
 
     ;; Dictionary / language tools
     (error-word-empty . "Word cannot be empty")

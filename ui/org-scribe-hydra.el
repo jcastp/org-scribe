@@ -76,7 +76,8 @@
 ;; overlay tooltips
 (declare-function org-scribe-overlays-mode "linking/org-scribe-overlays")
 ;; project health report
-(declare-function org-scribe/project-health "core/org-scribe-health")
+(declare-function org-scribe/project-health "reporting/org-scribe-health")
+(declare-function org-scribe/wordcount "counting/org-scribe-wordcount")
 
 ;;;###autoload (autoload 'hydra-org-scribe-characters/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe-characters (:color blue :hint nil)
@@ -191,7 +192,9 @@ _o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props    _3
   ("g" org-scribe/capture-plot-thread "capture plot thread")
 
   ;; Tools
-  ("w" org-context-count-words "count words")
+  ;; "w" is the unified word-count dispatcher: plain = count now,
+  ;; C-u = refresh all WORDCOUNT properties, C-u C-u = refresh scenes.
+  ("w" org-scribe/wordcount "count words")
   ("r" org-tracktable-write "track table")
   ("a" org-scribe/ews-org-count-words "add word properties")
   ("z" org-scribe/update-scene-wordcounts "update scene wordcounts")

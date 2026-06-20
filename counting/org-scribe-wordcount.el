@@ -14,6 +14,7 @@
 
 (require 'org)
 (require 'org-element)
+(require 'org-scribe-core)
 (require 'org-scribe-config)
 (require 'org-scribe-messages)
 
@@ -45,18 +46,13 @@ for each heading to enable linking."
 
 ;;; Scene-level Word Count Update
 
-;;;###autoload
-(defun org-scribe/update-scene-wordcounts ()
-  "Update WORDCOUNT property on scene headings in the current subtree.
-Scenes are identified as level-3 headings tagged with :ignore:.
-When point is on a heading, operates on that subtree only.
-When point is not on a heading, operates on the entire buffer.
-Requires org-context-extended for accurate word counting."
-  (interactive)
-  (unless (featurep 'org-context-extended)
-    (user-error (org-scribe-msg 'error-org-context-required)))
-  (let ((scope (if (org-at-heading-p) 'tree nil))
-        (count 0))
+(defun org-scribe--refresh-scene-wordcounts (scope)
+  "Recompute the WORDCOUNT property on scene headings within SCOPE.
+Scenes are level-3 headings tagged with :ignore:.  SCOPE is passed to
+`org-map-entries' (nil for the whole buffer, \\='tree for the current
+subtree).  Returns the number of scenes updated.  The caller must ensure
+`org-context-extended' is available."
+  (let ((count 0))
     (org-map-entries
      (lambda ()
        (let* ((start (point))
@@ -67,8 +63,79 @@ Requires org-context-extended for accurate word counting."
          (setq count (1+ count))))
      "LEVEL=3+ignore"
      scope)
+    count))
+
+;;;###autoload
+(defun org-scribe/update-scene-wordcounts ()
+  "Update WORDCOUNT property on scene headings in the current subtree.
+Scenes are identified as level-3 headings tagged with :ignore:.
+When point is on a heading, operates on that subtree only.
+When point is not on a heading, operates on the entire buffer.
+Requires org-context-extended for accurate word counting."
+  (interactive)
+  (unless (featurep 'org-context-extended)
+    (user-error (org-scribe-msg 'error-org-context-required)))
+  (let* ((scope (if (org-at-heading-p) 'tree nil))
+         (count (org-scribe--refresh-scene-wordcounts scope)))
     (message (org-scribe-msg 'msg-scenes-wordcount-updated count
                              (org-scribe-plural count "")))))
+
+;;; Unified Word-Count Dispatcher
+
+(defun org-scribe--count-words-region (start end)
+  "Return the word count between START and END.
+Uses `org-context-count-words' when available (excludes Org metadata),
+falling back to the plain `count-words' otherwise."
+  (if (featurep 'org-context-extended)
+      (org-context-count-words start end t t t t t t
+                               org-scribe-wordcount-default-ignore-tags)
+    (count-words start end)))
+
+;;;###autoload
+(defun org-scribe/wordcount (&optional arg)
+  "Unified word-count command.
+
+With no prefix ARG, report the word count of the active region, or of the
+whole buffer when no region is active.
+
+With one prefix argument (\\[universal-argument]), refresh the WORDCOUNT
+property of every heading in the buffer (`org-scribe/ews-org-count-words').
+
+With two prefix arguments (\\[universal-argument] \\[universal-argument]),
+refresh WORDCOUNT on scene headings in the current subtree or buffer
+(`org-scribe/update-scene-wordcounts')."
+  (interactive "P")
+  (cond
+   ((equal arg '(16)) (org-scribe/update-scene-wordcounts))
+   ((equal arg '(4))  (org-scribe/ews-org-count-words))
+   ((use-region-p)
+    (message (org-scribe-msg 'msg-wordcount-region
+                             (org-scribe--count-words-region
+                              (region-beginning) (region-end)))))
+   (t
+    (message (org-scribe-msg 'msg-wordcount-buffer
+                             (org-scribe--count-words-region
+                              (point-min) (point-max)))))))
+
+;;; Optional refresh on save (opt-in via `org-scribe-auto-wordcount')
+
+(defun org-scribe--auto-wordcount-before-save ()
+  "Refresh scene WORDCOUNT properties before saving, when enabled.
+Acts only when `org-scribe-auto-wordcount' is non-nil, the saved buffer is
+the manuscript of an org-scribe project, and `org-context-extended' is
+available.  Runs quietly (no echo-area message, no ID creation)."
+  (when (and org-scribe-auto-wordcount
+             buffer-file-name
+             (derived-mode-p 'org-mode)
+             (featurep 'org-context-extended))
+    (ignore-errors
+      (when-let* ((struct (org-scribe-project-structure))
+                  (novel-file (plist-get struct :novel-file))
+                  ((file-exists-p novel-file))
+                  ((file-equal-p buffer-file-name novel-file)))
+        (org-scribe--refresh-scene-wordcounts nil)))))
+
+(add-hook 'before-save-hook #'org-scribe--auto-wordcount-before-save)
 
 ;;; Dynamic Block for Word Count Table
 

@@ -47,44 +47,48 @@
 (require 'org)
 (require 'org-element)
 
-;; Core modules (always loaded)
-;; Load messages first - other modules depend on it
-(require 'org-scribe-messages (expand-file-name "core/org-scribe-messages" (file-name-directory (or load-file-name buffer-file-name))))
-(require 'org-scribe-core (expand-file-name "core/org-scribe-core" (file-name-directory (or load-file-name buffer-file-name))))
-(require 'org-scribe-config (expand-file-name "core/org-scribe-config" (file-name-directory (or load-file-name buffer-file-name))))
+(defconst org-scribe--source-directory
+  (file-name-directory (or load-file-name buffer-file-name))
+  "Directory holding the org-scribe source tree.")
 
-;; Project creation and templates (merged from emacs-org-scribe-template)
-(require 'org-scribe-project (expand-file-name "templates/org-scribe-project" (file-name-directory (or load-file-name buffer-file-name))))
+(defun org-scribe--require (feature relative-path)
+  "Require FEATURE, loading it from RELATIVE-PATH under the source tree.
+RELATIVE-PATH is resolved against `org-scribe--source-directory'."
+  (require feature (expand-file-name relative-path org-scribe--source-directory)))
 
-;; Load all feature modules
-;; main writing modes
-(require 'org-scribe-modes (expand-file-name "modes/org-scribe-modes" (file-name-directory (or load-file-name buffer-file-name))))
-;; word counting and tracking
-(require 'org-scribe-wordcount (expand-file-name "counting/org-scribe-wordcount" (file-name-directory (or load-file-name buffer-file-name))))
-(require 'org-scribe-tracking (expand-file-name "counting/org-scribe-tracking" (file-name-directory (or load-file-name buffer-file-name))))
-;; novel related searches
-(require 'org-scribe-search (expand-file-name "search/org-scribe-search" (file-name-directory (or load-file-name buffer-file-name))))
-;; dictionary searches
-(require 'org-scribe-dictionary (expand-file-name "language/org-scribe-dictionary" (file-name-directory (or load-file-name buffer-file-name))))
-;; org capture to the writing project
-(require 'org-scribe-capture (expand-file-name "capture/org-scribe-capture" (file-name-directory (or load-file-name buffer-file-name))))
-;; linking system (core framework + entity modules)
-(require 'org-scribe-linking-core (expand-file-name "linking/org-scribe-linking-core" (file-name-directory (or load-file-name buffer-file-name))))
-(require 'org-scribe-link-update (expand-file-name "linking/org-scribe-link-update" (file-name-directory (or load-file-name buffer-file-name))))
-(require 'org-scribe-character-links (expand-file-name "linking/org-scribe-character-links" (file-name-directory (or load-file-name buffer-file-name))))
-(require 'org-scribe-character-relationships (expand-file-name "linking/org-scribe-character-relationships" (file-name-directory (or load-file-name buffer-file-name))))
-(require 'org-scribe-location-links (expand-file-name "linking/org-scribe-location-links" (file-name-directory (or load-file-name buffer-file-name))))
-(require 'org-scribe-plot-links (expand-file-name "linking/org-scribe-plot-links" (file-name-directory (or load-file-name buffer-file-name))))
-;; column view enhancements for ID links
-(require 'org-scribe-column-view (expand-file-name "linking/org-scribe-column-view" (file-name-directory (or load-file-name buffer-file-name))))
-;; overlay tooltips (opt-in via org-scribe-overlays-enable)
-(require 'org-scribe-overlays (expand-file-name "linking/org-scribe-overlays" (file-name-directory (or load-file-name buffer-file-name))))
-;; project health report (aggregates word counts, scene stats, orphan detection)
-(require 'org-scribe-health (expand-file-name "core/org-scribe-health" (file-name-directory (or load-file-name buffer-file-name))))
-;; writing - export
-(require 'org-scribe-export (expand-file-name "export/org-scribe-export" (file-name-directory (or load-file-name buffer-file-name))))
-;; hydra for better access to common functions
-(require 'org-scribe-hydra (expand-file-name "ui/org-scribe-hydra" (file-name-directory (or load-file-name buffer-file-name))))
+;; Modules are loaded in dependency order.  Each entry is
+;; (FEATURE . RELATIVE-PATH); see CLAUDE.md for the rationale behind the
+;; ordering.  Keep this list grouped by concern.
+(dolist (module
+         '(;; Core (always first — everything else depends on messages/core/config)
+           (org-scribe-messages    . "core/org-scribe-messages")
+           (org-scribe-core        . "core/org-scribe-core")
+           (org-scribe-config      . "core/org-scribe-config")
+           ;; Project creation and templates
+           (org-scribe-project     . "templates/org-scribe-project")
+           ;; Feature modules
+           (org-scribe-modes       . "modes/org-scribe-modes")
+           (org-scribe-wordcount   . "counting/org-scribe-wordcount")
+           (org-scribe-tracking    . "counting/org-scribe-tracking")
+           (org-scribe-search      . "search/org-scribe-search")
+           (org-scribe-dictionary  . "language/org-scribe-dictionary")
+           (org-scribe-capture     . "capture/org-scribe-capture")
+           ;; Linking system (core framework + entity modules)
+           (org-scribe-linking-core          . "linking/org-scribe-linking-core")
+           (org-scribe-link-update           . "linking/org-scribe-link-update")
+           (org-scribe-character-links       . "linking/org-scribe-character-links")
+           (org-scribe-character-relationships . "linking/org-scribe-character-relationships")
+           (org-scribe-location-links        . "linking/org-scribe-location-links")
+           (org-scribe-plot-links            . "linking/org-scribe-plot-links")
+           (org-scribe-column-view           . "linking/org-scribe-column-view")
+           ;; Overlay tooltips (opt-in via org-scribe-overlays-enable)
+           (org-scribe-overlays    . "linking/org-scribe-overlays")
+           ;; Project health report (depends on the linking getters above)
+           (org-scribe-health      . "reporting/org-scribe-health")
+           ;; Export and UI
+           (org-scribe-export      . "export/org-scribe-export")
+           (org-scribe-hydra       . "ui/org-scribe-hydra")))
+  (org-scribe--require (car module) (cdr module)))
 
 ;;;###autoload
 (defun org-scribe-version ()

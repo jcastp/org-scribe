@@ -155,6 +155,30 @@ You can also toggle tooltips manually at any time with:
   :type 'boolean
   :group 'org-scribe)
 
+;;; Automation (opt-in save-time bookkeeping)
+
+(defcustom org-scribe-auto-relink nil
+  "When non-nil, refresh ID-link display names automatically on save.
+When an entity database file (characters/locations/plot) is saved and the
+manuscript is open, stale display names in scene properties are refreshed
+to match the current entity names.  The manuscript buffer is modified but
+NOT saved automatically; a message reminds you to save.
+
+This replaces the need to run the `update-*-link-names' commands by hand.
+Disabled by default so saving never edits another buffer unexpectedly."
+  :type 'boolean
+  :group 'org-scribe)
+
+(defcustom org-scribe-auto-wordcount nil
+  "When non-nil, refresh scene WORDCOUNT properties on save.
+On saving a manuscript buffer in an org-scribe project, the WORDCOUNT
+property of each scene heading is recomputed quietly (no IDs are created,
+no echo-area noise).  Requires `org-context-extended'.
+
+Disabled by default to keep saving fast and side-effect-free."
+  :type 'boolean
+  :group 'org-scribe)
+
 ;;; Editing Mode Configuration
 
 (defcustom org-scribe-editing-left-width-percent 0.25

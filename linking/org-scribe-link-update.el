@@ -25,6 +25,7 @@
 
 (require 'org)
 (require 'org-scribe-core)
+(require 'org-scribe-config)
 (require 'org-scribe-messages)
 
 ;;; Core Helper Functions
@@ -164,7 +165,8 @@ Returns the number of scenes updated."
 
 (defun org-scribe--auto-update-links-after-save ()
   "Update link display names in the manuscript when an entity file is saved.
-Runs via `after-save-hook'.  Only acts when all of the following are true:
+Runs via `after-save-hook', but only when `org-scribe-auto-relink' is
+non-nil.  Beyond that, it acts only when all of the following are true:
 - The saved buffer visits a file in an org-scribe project.
 - That file is the characters, locations, or plot database for the project.
 - The manuscript (novel.org) is already open in another buffer.
@@ -173,7 +175,8 @@ When the conditions are met, runs `org-scribe/update-all-link-names' in
 the manuscript buffer and reports the number of scenes updated.  The
 manuscript is NOT saved automatically; the message reminds the user to
 save if any changes were made."
-  (when (and buffer-file-name (derived-mode-p 'org-mode))
+  (when (and org-scribe-auto-relink
+             buffer-file-name (derived-mode-p 'org-mode))
     (ignore-errors
       (when-let* ((struct (org-scribe-project-structure))
                   (entity-files

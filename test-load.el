@@ -24,6 +24,7 @@
   (add-to-list 'load-path (expand-file-name "capture" default-directory))
   (add-to-list 'load-path (expand-file-name "linking" default-directory))
   (add-to-list 'load-path (expand-file-name "export" default-directory))
+  (add-to-list 'load-path (expand-file-name "reporting" default-directory))
   (add-to-list 'load-path (expand-file-name "ui" default-directory)))
 
 ;; Try to load the package

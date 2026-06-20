@@ -42,7 +42,7 @@
   (let ((default-directory (file-name-directory (directory-file-name tests-dir))))
     ;; Add all module directories to load path
     (dolist (dir '("." "core" "counting" "templates" "modes" "search"
-                   "language" "capture" "linking" "export" "ui"))
+                   "language" "capture" "linking" "export" "reporting" "ui"))
       (add-to-list 'load-path (expand-file-name dir default-directory)))))
 
 ;;; Load test files
