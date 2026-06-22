@@ -142,7 +142,7 @@ Each entry is (SCENE-HEADING CHAPTER-HEADING PLOT-THREADS-LIST)."
    (lambda ()
      (when-let ((plot-prop (org-entry-get nil "Plot")))
        (list (org-get-heading t t t t)
-             (save-excursion (outline-up-heading 1) (org-get-heading t t t t))
+             (save-excursion (org-up-heading-safe) (org-get-heading t t t t))
              (org-scribe--property-to-list plot-prop))))))
 
 (defun org-scribe--find-thread-in-scenes (thread-name scenes)
@@ -282,7 +282,7 @@ Opens a new buffer with the report."
                  (unless (org-entry-get nil "Plot")
                    (let ((heading (org-get-heading t t t t))
                          (chapter (save-excursion
-                                   (outline-up-heading 1)
+                                   (org-up-heading-safe)
                                    (org-get-heading t t t t))))
                      (push (list heading chapter) scenes-without-plot)))))
              nil 'file)))

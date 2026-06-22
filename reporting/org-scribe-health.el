@@ -49,7 +49,7 @@ Each element is a list:
                      (id (org-id-get))
                      (todo (org-get-todo-state))
                      (chapter (save-excursion
-                                (outline-up-heading 1)
+                                (org-up-heading-safe)
                                 (org-get-heading t t t t)))
                      (pov (org-entry-get nil "PoV"))
                      (chars (org-entry-get nil "Characters"))

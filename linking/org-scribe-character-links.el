@@ -224,7 +224,7 @@ Each entry is (SCENE-HEADING CHAPTER-HEADING POV-NAME CHARACTERS-LIST)."
            (chars-prop (org-entry-get nil "Characters")))
        (when (or pov-prop chars-prop)
          (list (org-get-heading t t t t)
-               (save-excursion (outline-up-heading 1) (org-get-heading t t t t))
+               (save-excursion (org-up-heading-safe) (org-get-heading t t t t))
                (when pov-prop (org-scribe--extract-link-text pov-prop))
                (when chars-prop (org-scribe--property-to-list chars-prop))))))))
 
