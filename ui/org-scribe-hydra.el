@@ -136,7 +136,7 @@ _q_: Back to main menu    _Q_: Quit
 ;;;###autoload (autoload 'hydra-org-scribe/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe (:color blue :hint nil)
   "
-^Insert^        ^Workspace^     ^Tag Scene^          ^Tools^            ^Search^         ^Manage^
+^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^             ^Search^          ^Manage^
 ^^^^--------------------------------------------------------------------------------------------------------------
 _s_: Scene       _m_: Write       _p_: PoV             _w_: Count words    _1_: by PoV       _n_: Capture note
 _c_: Chapter     _f_: Focus       _h_: Characters      _r_: Track table    _2_: Character    _k_: Capture entity…
