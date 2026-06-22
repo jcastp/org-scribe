@@ -11,6 +11,12 @@
 
 ;;; Code:
 
+;; `emacs -Q` skips the init file, so package.el is never initialized and
+;; installed dependencies (org-ql, writeroom-mode, hydra, ...) are absent
+;; from `load-path'.  Initialize it explicitly so those packages are found.
+(require 'package)
+(package-initialize)
+
 ;; Add current directory to load path
 (let ((default-directory (file-name-directory
                           (or load-file-name buffer-file-name))))

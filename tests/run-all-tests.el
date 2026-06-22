@@ -35,6 +35,12 @@
 
 (require 'ert)
 
+;; `emacs -Q` / `emacs -batch` skip the init file, so package.el is never
+;; initialized and installed dependencies (org-ql, writeroom-mode, hydra,
+;; ...) are absent from `load-path'.  Initialize it explicitly.
+(require 'package)
+(package-initialize)
+
 ;;; Setup load paths
 
 (let ((tests-dir (file-name-directory

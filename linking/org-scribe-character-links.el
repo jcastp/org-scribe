@@ -254,7 +254,7 @@ POV-NAME is the scene's PoV character (or nil).
 CHARS-LIST is list of other characters in scene."
   (cond
    ((and pov-name (string= char-name pov-name))
-    "PoV")
+    "◆")
    ((and chars-list (member char-name chars-list))
     "●")
    (t "")))
