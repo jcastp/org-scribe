@@ -234,6 +234,82 @@ so the regex fallback path must handle this case."
               (should-not (string-match-p " | " result)))))
       (when (file-exists-p temp-file) (delete-file temp-file)))))
 
+(ert-deftest test-overlays-format-tooltip-plot-thread-full ()
+  "format-tooltip returns thread-type, Status, Weight, and From for a plot thread."
+  (let ((temp-file (make-temp-file "test-overlays-plot-" nil ".org"))
+        heading-pos)
+    (unwind-protect
+        (progn
+          (with-current-buffer (find-file-noselect temp-file)
+            (erase-buffer)
+            (insert (concat "* Romance Subplot\n"
+                            ":PROPERTIES:\n"
+                            ":ID: plot-test-001\n"
+                            ":THREAD-TYPE: B-plot\n"
+                            ":STATUS: In Progress\n"
+                            ":Weight: 3.0\n"
+                            ":FIRST-APPEARANCE: Ch. 2\n"
+                            ":END:\n\n"))
+            (save-buffer)
+            (setq heading-pos (point-min)))
+          (cl-letf (((symbol-function 'org-id-find)
+                     (lambda (_id) (cons temp-file heading-pos))))
+            (let ((result (org-scribe--overlays-format-tooltip "plot-test-001")))
+              (should (string-match-p "Romance Subplot" result))
+              (should (string-match-p "B-plot" result))
+              (should (string-match-p "Status: In Progress" result))
+              (should (string-match-p "Weight: 3.0" result))
+              (should (string-match-p "From: Ch. 2" result)))))
+      (when (file-exists-p temp-file) (delete-file temp-file)))))
+
+(ert-deftest test-overlays-format-tooltip-plot-thread-type-property ()
+  "format-tooltip handles plot threads that use :TYPE: instead of :THREAD-TYPE:."
+  (let ((temp-file (make-temp-file "test-overlays-plot-type-" nil ".org"))
+        heading-pos)
+    (unwind-protect
+        (progn
+          (with-current-buffer (find-file-noselect temp-file)
+            (erase-buffer)
+            (insert (concat "* Main Plot Thread\n"
+                            ":PROPERTIES:\n"
+                            ":ID: plot-test-002\n"
+                            ":TYPE: A-plot\n"
+                            ":STATUS: Complete\n"
+                            ":END:\n\n"))
+            (save-buffer)
+            (setq heading-pos (point-min)))
+          (cl-letf (((symbol-function 'org-id-find)
+                     (lambda (_id) (cons temp-file heading-pos))))
+            (let ((result (org-scribe--overlays-format-tooltip "plot-test-002")))
+              (should (string-match-p "Main Plot Thread" result))
+              (should (string-match-p "A-plot" result))
+              (should (string-match-p "Status: Complete" result)))))
+      (when (file-exists-p temp-file) (delete-file temp-file)))))
+
+(ert-deftest test-overlays-format-tooltip-location-not-confused-with-plot ()
+  "format-tooltip does not treat a location's :Type: City as a plot thread."
+  (let ((temp-file (make-temp-file "test-overlays-loc-type-" nil ".org"))
+        heading-pos)
+    (unwind-protect
+        (progn
+          (with-current-buffer (find-file-noselect temp-file)
+            (erase-buffer)
+            (insert (concat "* Corner Coffee Shop\n"
+                            ":PROPERTIES:\n"
+                            ":ID: loc-test-002\n"
+                            ":Type: Café\n"
+                            ":END:\n\n"))
+            (save-buffer)
+            (setq heading-pos (point-min)))
+          (cl-letf (((symbol-function 'org-id-find)
+                     (lambda (_id) (cons temp-file heading-pos))))
+            (let ((result (org-scribe--overlays-format-tooltip "loc-test-002")))
+              ;; Should be name-only, not mis-identified as a plot thread
+              (should (string-match-p "Corner Coffee Shop" result))
+              (should-not (string-match-p "Status:" result))
+              (should-not (string-match-p "Weight:" result)))))
+      (when (file-exists-p temp-file) (delete-file temp-file)))))
+
 (ert-deftest test-overlays-format-tooltip-returns-nil-for-unknown-id ()
   "format-tooltip returns nil when org-id-find cannot locate the entity."
   (cl-letf (((symbol-function 'org-id-find) (lambda (_id) nil)))

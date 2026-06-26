@@ -93,33 +93,67 @@ Convenience wrapper around `org-scribe--overlays-link-at-point'."
 
 ;;; Tooltip formatting
 
+(defconst org-scribe--overlays-plot-type-re
+  "A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\|Subplot\\|Main.*[Pp]lot\\|Thread"
+  "Regexp matching known plot-thread TYPE values.
+Used to distinguish plot headings (TYPE: A-plot) from location headings
+that also carry a :Type: property (e.g. Type: City).")
+
 (defun org-scribe--overlays-format-tooltip (id)
   "Return a tooltip string for the entity with ID, or nil if not found.
-Reads Role, Age, Occupation, Goal, Motivation, and Conflict from the entity
-heading's properties."
+Dispatches on entity type detected from heading properties:
+  - Plot thread (THREAD-TYPE, or TYPE matching a plot pattern):
+      thread-type  |  Status  |  Weight  |  From
+  - Character (Role property):
+      Role  |  Age  |  Occupation  |  Goal  |  Motivation  |  Conflict
+  - Location / other:
+      heading name only"
   (when-let* ((location (org-id-find id))
               (file (car location))
               (pos  (cdr location)))
     (with-current-buffer (find-file-noselect file)
       (save-excursion
         (goto-char pos)
-        (let* ((name       (org-get-heading t t t t))
-               (role       (org-entry-get nil "Role"))
-               (age        (org-entry-get nil "Age"))
-               (occupation (org-entry-get nil "Occupation"))
-               (goal       (org-entry-get nil "Goal"))
-               (motivation (org-entry-get nil "Motivation"))
-               (conflict   (org-entry-get nil "Conflict"))
-               (parts      (delq nil
-                                 (list (when role       (format "Role: %s" role))
-                                       (when age        (format "Age: %s" age))
-                                       (when occupation (format "Occupation: %s" occupation))
-                                       (when goal       (format "Goal: %s" goal))
-                                       (when motivation (format "Motivation: %s" motivation))
-                                       (when conflict   (format "Conflict: %s" conflict))))))
-          (if parts
-              (format "[%s]  %s" name (string-join parts "  |  "))
-            (format "[%s]" name)))))))
+        (let* ((name        (org-get-heading t t t t))
+               ;; Plot thread: explicit THREAD-TYPE, or TYPE whose value looks
+               ;; like a plot category (guards against location :Type: City).
+               (thread-type (or (org-entry-get nil "THREAD-TYPE")
+                                (let ((tp (org-entry-get nil "TYPE")))
+                                  (when (and tp (string-match-p
+                                                 org-scribe--overlays-plot-type-re tp))
+                                    tp)))))
+          (cond
+           ;; ── Plot thread ──────────────────────────────────────────────────
+           (thread-type
+            (let* ((status       (org-entry-get nil "STATUS"))
+                   (weight       (org-entry-get nil "Weight"))
+                   (first-appear (org-entry-get nil "FIRST-APPEARANCE"))
+                   (parts        (delq nil
+                                       (list thread-type
+                                             (when status       (format "Status: %s" status))
+                                             (when weight       (format "Weight: %s" weight))
+                                             (when first-appear (format "From: %s" first-appear))))))
+              (format "[%s]  %s" name (string-join parts "  |  "))))
+           ;; ── Character ───────────────────────────────────────────────────
+           ((org-entry-get nil "Role")
+            (let* ((role       (org-entry-get nil "Role"))
+                   (age        (org-entry-get nil "Age"))
+                   (occupation (org-entry-get nil "Occupation"))
+                   (goal       (org-entry-get nil "Goal"))
+                   (motivation (org-entry-get nil "Motivation"))
+                   (conflict   (org-entry-get nil "Conflict"))
+                   (parts      (delq nil
+                                     (list (when role       (format "Role: %s" role))
+                                           (when age        (format "Age: %s" age))
+                                           (when occupation (format "Occupation: %s" occupation))
+                                           (when goal       (format "Goal: %s" goal))
+                                           (when motivation (format "Motivation: %s" motivation))
+                                           (when conflict   (format "Conflict: %s" conflict))))))
+              (if parts
+                  (format "[%s]  %s" name (string-join parts "  |  "))
+                (format "[%s]" name))))
+           ;; ── Location / other ────────────────────────────────────────────
+           (t (format "[%s]" name))))))))
 
 ;;; Inline display
 
