@@ -175,6 +175,50 @@ The path is available as `temp-novel'."
                (lambda () (list :novel-file nil))))
       (should-error (org-scribe-project-health) :type 'user-error))))
 
+;;; Regression: custom done-state keywords
+
+(ert-deftest test-health-done-keywords-read-from-custom-todo-line ()
+  "org-done-keywords is populated from the manuscript's #+TODO: line.
+This is the mechanism that open-todos filtering depends on."
+  (test-health--with-novel-file
+      "#+TODO: TODO TOWRITE | FINISHED PURGE\n** Chapter :ignore:\n*** TODO Scene :ignore:\n\n"
+    (let ((kws (with-current-buffer (find-file-noselect temp-novel)
+                 org-done-keywords)))
+      (should (member "FINISHED" kws))
+      (should (member "PURGE" kws))
+      (should-not (member "TODO" kws))
+      (should-not (member "TOWRITE" kws)))))
+
+(ert-deftest test-health-open-todos-excludes-custom-done-states ()
+  "FINISHED and PURGE scenes are excluded from the Open TODO Scenes section.
+Regression: previously the filter only removed the literal keyword \"DONE\",
+so custom done-state keywords like FINISHED were incorrectly listed as pending."
+  (test-health--with-novel-file
+      (concat "#+TODO: TODO TOWRITE | FINISHED PURGE\n"
+              "** TODO Chapter One :ignore:\n"
+              "*** TODO Pending Scene :ignore:\n"
+              ":PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 100\n:END:\n\n"
+              "*** FINISHED Done Scene :ignore:\n"
+              ":PROPERTIES:\n:PoV: Bob\n:WORDCOUNT: 200\n:END:\n\n"
+              "*** PURGE Purged Scene :ignore:\n"
+              ":PROPERTIES:\n:PoV: Carol\n:WORDCOUNT: 50\n:END:\n\n")
+    (cl-letf (((symbol-function 'org-scribe-project-structure)
+               (lambda ()
+                 (list :novel-file temp-novel
+                       :characters-file nil
+                       :locations-file nil))))
+      (org-scribe-project-health)
+      (with-current-buffer (get-buffer "*org-scribe-health*")
+        (let ((content (buffer-string)))
+          ;; Section header shows exactly 1 pending scene
+          (should (string-match-p "Open TODO Scenes (1)" content))
+          ;; The pending scene's heading appears in the list
+          (should (string-match-p "Pending Scene" content))
+          ;; FINISHED and PURGE appear in the status table (informational)
+          ;; but are not counted as open todos — verified by the count above
+          (should (string-match-p "FINISHED" content))
+          (should (string-match-p "PURGE" content)))))))
+
 ;;; Integration: report buffer is created
 
 (ert-deftest test-health-report-buffer-created ()

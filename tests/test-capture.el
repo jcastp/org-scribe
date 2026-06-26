@@ -438,6 +438,34 @@
       (delete-directory temp-dir t))))
 
 ;;; ─────────────────────────────────────────────
+;;; Regression: project root resolution
+;;; ─────────────────────────────────────────────
+
+(ert-deftest test-capture-uses-org-scribe-root-not-project-current ()
+  "Entity file resolution uses org-scribe-project-root, not project-current.
+Regression: previously used project-current, which returns the git repo root
+when the writing project lives inside a larger repository.  The fix replaces
+that call with org-scribe-project-root, which finds the .org-scribe-project
+marker and returns the actual writing project directory."
+  (let* ((project-root (make-temp-file "test-capture-project-" t))
+         (git-root     (make-temp-file "test-capture-git-" t)))
+    (unwind-protect
+        (cl-letf (((symbol-function 'org-scribe-project-root)
+                   (lambda () project-root))
+                  ((symbol-function 'org-scribe-project-type)
+                   (lambda () 'novel))
+                  ;; Simulate project-current pointing at a *different* (wrong) root
+                  ((symbol-function 'project-current)
+                   (lambda (&rest _) `(vc Git . ,git-root))))
+          (let ((result (org-scribe--capture-entity-file "characters" "personajes" 'characters)))
+            ;; Must resolve under the org-scribe writing-project root
+            (should (string-prefix-p project-root result))
+            ;; Must NOT resolve under the git repo root
+            (should-not (string-prefix-p git-root result))))
+      (delete-directory project-root t)
+      (delete-directory git-root t))))
+
+;;; ─────────────────────────────────────────────
 ;;; ID assignment on finalisation
 ;;; ─────────────────────────────────────────────
 

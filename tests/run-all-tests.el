@@ -71,7 +71,8 @@
     "test-column-view"             ; Column view enhancement
     "test-export"                  ; Export filters
     "test-dictionary"              ; Dictionary and language tools
-    "test-health")                 ; Project health report
+    "test-health"                  ; Project health report
+    "test-overlays")               ; Entity tooltip system
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
