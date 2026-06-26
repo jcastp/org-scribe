@@ -150,6 +150,8 @@ with clickable ID links back to each scene."
 
     ;; Collect all data before opening the buffer
     (let* ((scenes         (org-scribe--health-collect-scene-data novel-file))
+           (done-keywords  (with-current-buffer (find-file-noselect novel-file)
+                             org-done-keywords))
            (word-totals    (org-scribe--health-word-totals novel-file))
            (total-words    (car word-totals))
            (total-obj      (cdr word-totals))
@@ -170,14 +172,15 @@ with clickable ID links back to each scene."
                                (let ((state (or (nth 3 s) "(none)")))
                                  (puthash state (1+ (gethash state ht 0)) ht)))
                              ht))
-           ;; Scenes missing specific properties
-           (miss-pov       (cl-remove-if (lambda (s) (nth 4 s)) scenes))
-           (miss-plot      (cl-remove-if (lambda (s) (nth 6 s)) scenes))
-           (miss-location  (cl-remove-if (lambda (s) (nth 7 s)) scenes))
-           ;; Open (not DONE) scenes
-           (open-todos     (cl-remove-if
-                            (lambda (s) (equal (nth 3 s) "DONE"))
-                            scenes)))
+           ;; Scenes missing specific properties (only pending scenes)
+           (pending        (cl-remove-if
+                            (lambda (s) (member (nth 3 s) done-keywords))
+                            scenes))
+           (miss-pov       (cl-remove-if (lambda (s) (nth 4 s)) pending))
+           (miss-plot      (cl-remove-if (lambda (s) (nth 6 s)) pending))
+           (miss-location  (cl-remove-if (lambda (s) (nth 7 s)) pending))
+           ;; Open (not done) scenes — uses done keywords read from the file
+           (open-todos     pending))
 
       (with-current-buffer (get-buffer-create "*org-scribe-health*")
         (erase-buffer)
