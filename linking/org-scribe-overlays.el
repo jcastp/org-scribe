@@ -58,17 +58,42 @@ Reads Role, Age, Goal, and Motivation from the entity heading's properties."
               (format "[%s]  %s" name (string-join parts "  |  "))
             (format "[%s]" name)))))))
 
+;;; ID detection
+
+(defun org-scribe--overlays-id-at-point ()
+  "Return the ID of an [[id:...]] link at point, or nil.
+Tries the org-element API first (works for links in body text / paragraphs).
+Falls back to a regex scan of the current line for links inside property
+values, where org-element-context returns \\='node-property rather than
+\\='link and the element API therefore misses the link."
+  (or
+   ;; Primary: element API — reliable for links in paragraphs and headings
+   (let ((context (ignore-errors (org-element-context))))
+     (when (and context
+                (eq (org-element-type context) 'link)
+                (string= (org-element-property :type context) "id"))
+       (org-element-property :path context)))
+   ;; Fallback: regex — catches [[id:...]] inside property drawer values
+   (let* ((col  (- (point) (line-beginning-position)))
+          (line (buffer-substring-no-properties
+                 (line-beginning-position) (line-end-position)))
+          (pos 0)
+          found)
+     (while (and (not found)
+                 (string-match "\\[\\[id:\\([^]\n]+\\)\\]\\[[^]\n]*\\]\\]" line pos))
+       (when (and (>= col (match-beginning 0))
+                  (<= col (match-end 0)))
+         (setq found (match-string 1 line)))
+       (setq pos (match-end 0)))
+     found)))
+
 ;;; Post-command hook
 
 (defun org-scribe--overlays-post-command ()
   "Show an entity tooltip in the echo area when point is on an ID link.
 Registered on `post-command-hook' by `org-scribe-overlays-mode'."
   (when (derived-mode-p 'org-mode)
-    (let* ((context (ignore-errors (org-element-context)))
-           (id (when (and context
-                          (eq (org-element-type context) 'link)
-                          (string= (org-element-property :type context) "id"))
-                 (org-element-property :path context))))
+    (let ((id (org-scribe--overlays-id-at-point)))
       (cond
        ((null id)
         (setq org-scribe--overlays-last-id nil))

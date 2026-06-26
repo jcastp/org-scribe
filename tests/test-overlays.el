@@ -34,6 +34,7 @@
 (ert-deftest test-overlays-functions-defined ()
   "All public and internal functions are defined."
   (should (fboundp 'org-scribe-overlays-mode))
+  (should (fboundp 'org-scribe--overlays-id-at-point))
   (should (fboundp 'org-scribe--overlays-format-tooltip))
   (should (fboundp 'org-scribe--overlays-post-command))
   (should (fboundp 'org-scribe--overlays-maybe-enable)))
@@ -154,6 +155,56 @@
     (org-scribe-overlays-mode -1)
     (should (null org-scribe--overlays-last-id))))
 
+;;; ID-at-point detection
+
+(ert-deftest test-overlays-id-at-point-in-body-text ()
+  "id-at-point returns the ID for a link in paragraph body text (element API path)."
+  (with-temp-buffer
+    (org-mode)
+    (insert "See [[id:entity-body-001][Alice]] for details.\n")
+    (goto-char (point-min))
+    (forward-char 7)  ; inside the link
+    (should (equal (org-scribe--overlays-id-at-point) "entity-body-001"))))
+
+(ert-deftest test-overlays-id-at-point-in-property-value ()
+  "id-at-point returns the ID for a link inside a property value (regex fallback).
+This is the primary use-case for org-scribe: the PoV/Characters/Location
+properties in scene headings all contain [[id:...]] links.  The element
+API cannot detect them there because org-mode does not parse property values
+for link objects — org-element-context returns \\='node-property, not \\='link."
+  (with-temp-buffer
+    (org-mode)
+    (insert (concat "* Scene One\n"
+                    ":PROPERTIES:\n"
+                    ":PoV: [[id:char-pov-001][Alex]]\n"
+                    ":END:\n\n"))
+    (goto-char (point-min))
+    (re-search-forward ":PoV:")
+    (forward-char 5)  ; now inside [[id:char-pov-001][Alex]]
+    (should (equal (org-scribe--overlays-id-at-point) "char-pov-001"))))
+
+(ert-deftest test-overlays-id-at-point-multiple-links-in-property ()
+  "id-at-point correctly identifies which ID the cursor is on among several."
+  (with-temp-buffer
+    (org-mode)
+    (insert (concat "* Scene\n"
+                    ":PROPERTIES:\n"
+                    ":Characters: [[id:char-aaa][Alice]], [[id:char-bbb][Bob]]\n"
+                    ":END:\n\n"))
+    (goto-char (point-min))
+    ;; Position on the second link (Bob)
+    (re-search-forward "\\[\\[id:char-bbb\\]")
+    (forward-char 2)
+    (should (equal (org-scribe--overlays-id-at-point) "char-bbb"))))
+
+(ert-deftest test-overlays-id-at-point-returns-nil-outside-link ()
+  "id-at-point returns nil when point is on plain text."
+  (with-temp-buffer
+    (org-mode)
+    (insert "Just some plain text here.\n")
+    (goto-char (point-min))
+    (should (null (org-scribe--overlays-id-at-point)))))
+
 ;;; Post-command hook behaviour
 
 (ert-deftest test-overlays-post-command-sets-last-id-on-id-link ()
@@ -182,6 +233,24 @@
         (should (= calls 1))
         (org-scribe--overlays-post-command)   ; second: same ID — no re-call
         (should (= calls 1))))))
+
+(ert-deftest test-overlays-post-command-sets-last-id-in-property-drawer ()
+  "post-command works for links inside property values, not only body text.
+Regression: previously the element API returned \\='node-property instead of
+\\='link for property values, so no tooltip was ever shown for scene properties."
+  (cl-letf (((symbol-function 'org-scribe--overlays-format-tooltip)
+             (lambda (_id) nil)))
+    (with-temp-buffer
+      (org-mode)
+      (insert (concat "* Scene\n"
+                      ":PROPERTIES:\n"
+                      ":PoV: [[id:char-prop-test][Alex]]\n"
+                      ":END:\n\n"))
+      (goto-char (point-min))
+      (re-search-forward ":PoV:")
+      (forward-char 5)
+      (org-scribe--overlays-post-command)
+      (should (equal org-scribe--overlays-last-id "char-prop-test")))))
 
 (ert-deftest test-overlays-post-command-clears-last-id-when-not-on-link ()
   "post-command resets last-id when point is not on an ID link."
