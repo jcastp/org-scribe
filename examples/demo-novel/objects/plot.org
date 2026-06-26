@@ -3,6 +3,9 @@
 #+STARTUP: overview
 
 * Plot Threads
+:PROPERTIES:
+:ID:       8b5c4196-a2eb-4f7c-af72-1f85dfb183d1
+:END:
 
 These headings are the linkable plot thread entries. Scene properties in
 novel.org reference them with [[id:...][Name]] links.

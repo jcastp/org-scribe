@@ -163,7 +163,7 @@ Update with =C-c C-c= on the #+BEGIN line.
 :PROPERTIES:
 :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
 :Characters: [[id:char-alex-rivera-20251115-001][Alex]]
-:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-professional-subplot-001][Professional Life]]
+:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
 :Timeline: Day 1, 6:30 AM
 :Location: [[id:loc-alex-apartment-001][Alex's Apartment - Bedroom]]
 :Description: Alex wakes up to chaos
@@ -206,7 +206,7 @@ The familiar morning chaos had begun.
 :PROPERTIES:
 :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
 :Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]]
-:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-romance-subplot-001][Romance]], [[id:plot-professional-subplot-001][Professional Life]]
+:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-romance-subplot-001][Romance Subplot]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
 :Timeline: Day 1, 7:45 AM
 :Location: [[id:loc-coffee-shop-001][Corner Coffee Shop]]
 :Description: Alex rushes in for coffee and meets Sam
@@ -269,7 +269,7 @@ had paused.
 :PROPERTIES:
 :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
 :Characters: [[id:char-alex-rivera-20251115-001][Alex]]
-:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-professional-subplot-001][Professional Life]]
+:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
 :Timeline: Day 1, 8:30 PM
 :Location: [[id:loc-alex-apartment-001][Alex's Apartment - Living Room]]
 :Description: Alex reflects on the day and decides to try Sam's approach
@@ -333,7 +333,7 @@ Tomorrow morning would be different.
 :PROPERTIES:
 :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
 :Characters: [[id:char-alex-rivera-20251115-001][Alex]]
-:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-romance-subplot-001][Romance]], [[id:plot-professional-subplot-001][Professional Life]]
+:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-romance-subplot-001][Romance Subplot]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
 :Timeline: Day 2, 6:00 AM
 :Location: [[id:loc-alex-apartment-001][Alex's Apartment]]
 :Description: Alex's first attempt at a morning routine
@@ -393,7 +393,7 @@ still hadn't worked.
 :PROPERTIES:
 :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
 :Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]]
-:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-romance-subplot-001][Romance]]
+:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-romance-subplot-001][Romance Subplot]]
 :Timeline: Day 5, 7:30 AM
 :Location: [[id:loc-coffee-shop-001][Corner Coffee Shop]]
 :Description: Sam offers advice on making routines sustainable
@@ -414,7 +414,7 @@ still hadn't worked.
 :PROPERTIES:
 :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
 :Characters: [[id:char-alex-rivera-20251115-001][Alex]]
-:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-professional-subplot-001][Professional Life]]
+:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
 :Timeline: Day 8, 6:15 AM
 :Location: [[id:loc-alex-apartment-001][Alex's Apartment]]
 :Description: Alex's morning routine, now personalized and working
@@ -450,7 +450,7 @@ still hadn't worked.
 :PROPERTIES:
 :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
 :Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]], [[id:char-casey-20251115-003][Casey]]
-:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-romance-subplot-001][Romance]], [[id:plot-professional-subplot-001][Professional Life]]
+:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-romance-subplot-001][Romance Subplot]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
 :Timeline: Day 30, 7:00 AM
 :Location: [[id:loc-coffee-shop-001][Corner Coffee Shop]]
 :Description: Alex helps someone else, showing their growth
