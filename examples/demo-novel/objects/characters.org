@@ -10,6 +10,7 @@
 :Gender: Non-binary (they/them)
 :Occupation: Freelance graphic designer
 :First-appearance: Chapter 1, Scene 1
+:RelationshipsData: [[id:char-sam-chen-20251115-002][Sam]](mentor,7,positive); [[id:char-maria-rivera-20251115-004][Maria]](family,9,positive)
 :END:
 
 ** Physical Description
@@ -73,6 +74,7 @@ Character voice: Internal monologue is self-deprecating, slightly sarcastic, obs
 :Gender: Male (he/him)
 :Occupation: Project manager at tech company
 :First-appearance: Chapter 1, Scene 2
+:RelationshipsData: [[id:char-alex-rivera-20251115-001][Alex]](mentee,6,positive)
 :END:
 
 ** Physical Description
@@ -137,6 +139,7 @@ BETA READER FEEDBACK: Sam feels too perfect. Added flaws: can be too rigid, stru
 :Gender: TBD
 :Occupation: Unknown (implied early career)
 :First-appearance: Chapter 5, Scene 1
+:RelationshipsData: [[id:char-alex-rivera-20251115-001][Alex]](acquaintance,2,positive)
 :END:
 
 ** Physical Description
@@ -200,6 +203,7 @@ Intentionally underdeveloped - serves a thematic function rather than being a fu
 :Gender: Female (she/her)
 :Occupation: Unknown
 :First-appearance: Mentioned Chapter 2 (deceased)
+:RelationshipsData: [[id:char-alex-rivera-20251115-001][Alex]](family,9,positive)
 :END:
 
 ** Physical Description

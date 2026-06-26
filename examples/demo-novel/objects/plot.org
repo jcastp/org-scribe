@@ -2,6 +2,44 @@
 #+AUTHOR: Demo Author
 #+STARTUP: overview
 
+* Plot Threads
+
+These headings are the linkable plot thread entries. Scene properties in
+novel.org reference them with [[id:...][Name]] links.
+Use =F8 F8 g= (org-scribe-set-scene-plot-threads) to assign threads to a scene,
+or =F8 F8 L j= (org-scribe-jump-to-plot-thread) to navigate here from a scene.
+
+** Main Plot Thread
+:PROPERTIES:
+:ID:       plot-main-thread-001
+:TYPE:     A-plot
+:END:
+
+Alex establishes a sustainable morning routine over 30 days. The central
+conflict (chaos vs. structure) and the transformation arc (reactive →
+proactive) run through every chapter.
+
+** Romance Subplot
+:PROPERTIES:
+:ID:       plot-romance-subplot-001
+:TYPE:     B-plot
+:END:
+
+The developing connection between Alex and Sam. Begins as a momentary
+neighbourly encounter, evolves into mentorship, and carries an undertone
+of genuine friendship (and possible romance) that the author can develop
+further.
+
+** Professional Life Subplot
+:PROPERTIES:
+:ID:       plot-professional-subplot-001
+:TYPE:     C-plot
+:END:
+
+Alex's work as a freelance graphic designer and the real cost of morning
+chaos on their career (missed deadlines, forgotten presentation notes).
+Resolved quietly once the routine takes hold.
+
 * Premise
 
 Alex, a chronically disorganized young professional, struggles with chaotic mornings until a chance encounter with their put-together neighbor Sam inspires them to establish a sustainable morning routine and find peace in their daily life.
@@ -55,6 +93,9 @@ Alex offers the same kindness Sam showed them, sharing their story and suggestin
 Alex has become someone who helps others, not just someone struggling alone. The watch keeps ticking steadily on their wrist. They have time now - they always did, they just needed to learn how to use it. The cycle of kindness continues.
 
 * Main Plot
+:PROPERTIES:
+:ID:       14c9f719-4da4-4521-856d-28b5d16e06b2
+:END:
 
 ** Central Conflict
 *External:* Alex vs. chaotic mornings / lack of routine
@@ -67,8 +108,14 @@ Will Alex be able to establish a sustainable morning routine and find peace in t
 Yes, but not by becoming perfectly disciplined. By learning that structure can coexist with creativity, and that routines should be personalized, flexible, and rooted in self-compassion rather than self-criticism.
 
 * Subplots
+:PROPERTIES:
+:ID:       07e5232d-09d5-478c-b089-28399f39a203
+:END:
 
 ** Subplot 1: The Grandmother's Legacy
+:PROPERTIES:
+:ID:       79746111-1ef9-48bd-a313-31ff2f1da090
+:END:
 *** Conflict
 Alex is still grieving their grandmother's death (2 years ago) and feeling disconnected from her wisdom.
 
@@ -76,9 +123,15 @@ Alex is still grieving their grandmother's death (2 years ago) and feeling disco
 Finding and wearing the grandmother's watch reconnects Alex to her memory and her approach to life. Alex honors her by learning the lessons she tried to teach: time is precious, presence matters, routine creates space for what's important.
 
 *** Connection to Main Plot
+:PROPERTIES:
+:ID:       e695eab1-f378-48b5-9216-d7dedd8bf6d0
+:END:
 The watch is both symbol and catalyst. It represents steady, reliable time - the opposite of Alex's chaotic relationship with time. Wearing it daily reinforces the routine.
 
 ** Subplot 2: Sam's Humanity
+:PROPERTIES:
+:ID:       d9ec40fb-2a3b-4c2e-9b08-d743f4f82e53
+:END:
 *** Conflict
 Sam initially appears too perfect, which makes them less relatable and their advice less credible.
 
@@ -86,6 +139,9 @@ Sam initially appears too perfect, which makes them less relatable and their adv
 Sam reveals their own struggles (past chaos, current areas where routine doesn't help, the balance between structure and spontaneity). This makes them a real person, not just a wise mentor figure.
 
 *** Connection to Main Plot
+:PROPERTIES:
+:ID:       9f4598b1-2fbd-4de9-b02e-349bf2c32e44
+:END:
 Shows that there's no "perfect" way to live. Even Sam, who seems to have it all together, is still learning. This gives Alex permission to be imperfect in their progress.
 
 * Scene Beat Sheet
@@ -114,6 +170,9 @@ Key moments that must occur:
 8. Alex looks at the watch and realizes "they have time now" - thematic resolution
 
 * Plot Threads to Track
+:PROPERTIES:
+:ID:       c6107f21-21e9-41f6-a869-bbd0ffbb1c95
+:END:
 
 ** The Morning Routine Evolution
 - Day 1: Chaos (snooze x3, rushed, forgot things)

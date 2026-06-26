@@ -7,10 +7,13 @@
 
 ** Protagonist: Dr. Elena Chen
 :PROPERTIES:
+:ID:       char-elena-chen-20250114-001
 :TYPE: Protagonist
 :NAME: Dr. Elena Chen
 :AGE: 34
 :GENDER: Female
+:Role: Protagonist
+:RelationshipsData: [[id:char-marcus-webb-20250114-002][Dr. Webb]](superior,6,positive)
 :END:
 
 - Personality :: Brilliant, methodical, slightly obsessive about her work. Struggles with the weight of responsibility for her discoveries.
@@ -21,8 +24,11 @@
 
 ** Supporting Character: Dr. Marcus Webb
 :PROPERTIES:
+:ID:       char-marcus-webb-20250114-002
 :TYPE: Supporting
 :NAME: Dr. Marcus Webb
+:Role: Supporting
+:RelationshipsData: [[id:char-elena-chen-20250114-001][Dr. Chen]](subordinate,6,positive)
 :END:
 
 - Role :: Lab director, Elena's supervisor and mentor
@@ -76,6 +82,7 @@ The cascade stabilizes into a permanent quantum temporal field. She hasn't destr
 
 ** Main Location(s)
 :PROPERTIES:
+:ID:       loc-cern-lab-20250114-001
 :LOCATION_NAME: CERN Quantum Research Laboratory
 :TIME_PERIOD: 2047
 :END:

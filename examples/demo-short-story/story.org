@@ -73,8 +73,8 @@ To update word count, use:
 
 ** DONE Opening
 :PROPERTIES:
-:PoV: Elena Chen (Third person limited)
-:Location: CERN Quantum Research Lab, Geneva
+:PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
+:Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
 :Timeline: March 15, 2047, 3:47 AM
 :Summary: Elena discovers an encrypted quantum message on her lab computer that could only have been sent by someone with intimate knowledge of her work—herself.
 :WORDCOUNT: 218
@@ -103,8 +103,8 @@ Except she was about to test exactly that tomorrow morning.
 
 ** DRAFT Middle
 :PROPERTIES:
-:PoV: Elena Chen (Third person limited)
-:Location: CERN Lab / Elena's apartment
+:PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
+:Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
 :Timeline: March 15, 2047, 4:15 AM - 11:30 AM
 :Summary: Elena debates whether to trust the message. She consults her notes, discovers the theoretical possibility of a causality loop, and makes her decision.
 :WORDCOUNT: 226
@@ -129,8 +129,8 @@ Either way, she was trapped.
 
 ** TODO Ending
 :PROPERTIES:
-:PoV: Elena Chen (Third person limited)
-:Location: CERN Quantum Research Lab
+:PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
+:Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
 :Timeline: March 16, 2047, 9:00 AM - 4:23 PM
 :Summary: Elena runs the test despite the warning, discovers the cascade effect, and realizes she must send the message that started it all, completing the loop.
 :WORDCOUNT: 88

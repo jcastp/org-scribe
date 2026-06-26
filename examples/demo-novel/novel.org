@@ -34,23 +34,23 @@ This table shows your word count, objectives, and progress by section.
 Update it with =C-c C-c= on the #+BEGIN line.
 
 #+BEGIN: org-generate-wordcount-table
-| Heading                               | Wordcount | Objective | Progress |
-|---------------------------------------+-----------+-----------+----------|
-| - [[Act I]]                               |       711 |      5000 |      14% |
-| -- [[Chapter 1]]                          |       447 |      1500 |      30% |
-| --- [[Scene 1 - The Alarm]]               |       167 |       500 |      33% |
-| --- [[Scene 2 - Coffee Shop Encounter]]   |       280 |       500 |      56% |
-| -- [[Chapter 2]]                          |       264 |      1500 |      18% |
-| --- [[Scene 1 - The Decision]]            |       264 |       500 |      53% |
-| - [[Act II]]                              |       277 |      6000 |       5% |
-| -- [[Chapter 3]]                          |       269 |      1500 |      18% |
-| --- [[Scene 1 - First Attempt]]           |       269 |       500 |      54% |
-| -- [[Chapter 4 - Learning and Adjusting]] |         8 |      1500 |       1% |
-| --- [[Scene 1 - Coffee Talk]]             |         4 |       500 |       1% |
-| --- [[Scene 2 - Finding Balance]]         |         4 |       500 |       1% |
-| - [[Act III]]                             |       308 |      4000 |       8% |
-| -- [[Chapter 5 - The New Normal]]         |       308 |      1500 |      21% |
-| --- [[Scene 1 - Full Circle]]             |       308 |       500 |      62% |
+| Heading                                 | Wordcount | Objective | Progress |
+|-----------------------------------------+-----------+-----------+----------|
+| └> [[Act I]]                                |       711 |      5000 |      14% |
+| └--> [[Chapter 1]]                          |       447 |      1500 |      30% |
+| └----> [[Scene 1 - The Alarm]]              |       167 |       500 |      33% |
+| └----> [[Scene 2 - Coffee Shop Encounter]]  |       280 |       500 |      56% |
+| └--> [[Chapter 2]]                          |       264 |      1500 |      18% |
+| └----> [[Scene 1 - The Decision]]           |       264 |       500 |      53% |
+| └> [[Act II]]                               |       277 |      6000 |       5% |
+| └--> [[Chapter 3]]                          |       269 |      1500 |      18% |
+| └----> [[Scene 1 - First Attempt]]          |       269 |       500 |      54% |
+| └--> [[Chapter 4 - Learning and Adjusting]] |         8 |      1500 |       1% |
+| └----> [[Scene 1 - Coffee Talk]]            |         4 |       500 |       1% |
+| └----> [[Scene 2 - Finding Balance]]        |         4 |       500 |       1% |
+| └> [[Act III]]                              |       308 |      4000 |       8% |
+| └--> [[Chapter 5 - The New Normal]]         |       308 |      1500 |      21% |
+| └----> [[Scene 1 - Full Circle]]            |       308 |       500 |      62% |
 
 #+END:
 
@@ -77,6 +77,10 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 #+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
 
 ** Plot Thread Analysis
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       ac9493e9-575c-4e41-bbbc-4dd320f602fb
+:END:
 
 This table shows which plot threads appear in which scenes.
 Update with =C-c C-c= on the #+BEGIN line.
@@ -85,18 +89,23 @@ For detailed health reports, use =M-x org-scribe/plot-thread-report=.
 For quick statistics, use =M-x org-scribe/plot-thread-stats=.
 
 #+BEGIN: plot-thread-timeline
-| Scene                           | Chapter   | Main Plot | Romance | Professional |
-|---------------------------------+-----------+-----------+---------+--------------|
-| Scene 1 - The Alarm             | Chapter 1 | ●         |         | ●            |
-| Scene 2 - Coffee Shop Encounter | Chapter 1 | ●         | ●       | ●            |
-| Scene 1 - The Decision          | Chapter 2 | ●         |         | ●            |
-| Scene 1 - First Attempt         | Chapter 3 | ●         | ●       | ●            |
-| Scene 1 - Coffee Talk           | Chapter 4 | ●         | ●       |              |
-| Scene 2 - Finding Balance       | Chapter 4 | ●         |         | ●            |
-| Scene 1 - Full Circle           | Chapter 5 | ●         | ●       | ●            |
+| Scene                           | Chapter                            | Character growth | Decision to change | First try at routine | Inciting Incident | Introduction | Introduction of mentor figure | Mentor guidance | Resolution | new beginning |
+|---------------------------------+------------------------------------+------------------+--------------------+----------------------+-------------------+--------------+-------------------------------+-----------------+------------+---------------|
+| Scene 1 - The Alarm             | Chapter 1                          |                  |                    |                      | ●                 | ●            |                               |                 |            |               |
+| Scene 2 - Coffee Shop Encounter | Chapter 1                          |                  |                    |                      |                   |              | ●                             |                 |            |               |
+| Scene 1 - The Decision          | Chapter 2                          |                  | ●                  |                      |                   |              |                               |                 |            |               |
+| Scene 1 - First Attempt         | Chapter 3                          |                  |                    | ●                    |                   |              |                               |                 |            |               |
+| Scene 1 - Coffee Talk           | Chapter 4 - Learning and Adjusting |                  |                    |                      |                   |              |                               | ●               |            |               |
+| Scene 2 - Finding Balance       | Chapter 4 - Learning and Adjusting | ●                |                    |                      |                   |              |                               |                 |            |               |
+| Scene 1 - Full Circle           | Chapter 5 - The New Normal         |                  |                    |                      |                   |              |                               |                 | ●          | ●             |
+
 #+END:
 
 ** Character Timeline
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       3e7a2d0a-2b7e-4f4a-a056-b6cae8d8a877
+:END:
 
 This table shows which characters appear in which scenes.
 
@@ -107,15 +116,16 @@ Symbols:
 Update with =C-c C-c= on the #+BEGIN line.
 
 #+BEGIN: character-timeline
-| Scene                           | Chapter   | Alex Rivera | Jordan Lee | Sam Chen |
-|---------------------------------+-----------+-------------+------------+----------|
-| Scene 1 - The Alarm             | Chapter 1 | ◆           |            |          |
-| Scene 2 - Coffee Shop Encounter | Chapter 1 | ◆           |            | ●        |
-| Scene 1 - The Decision          | Chapter 2 | ◆           |            |          |
-| Scene 1 - First Attempt         | Chapter 3 | ◆           | ●          | ●        |
-| Scene 1 - Coffee Talk           | Chapter 4 | ◆           |            | ●        |
-| Scene 2 - Finding Balance       | Chapter 4 | ◆           | ●          |          |
-| Scene 1 - Full Circle           | Chapter 5 | ◆           | ●          | ●        |
+| Scene                           | Chapter                            | Alex | Casey | Sam |
+|---------------------------------+------------------------------------+------+-------+-----|
+| Scene 1 - The Alarm             | Chapter 1                          | ◆    |       |     |
+| Scene 2 - Coffee Shop Encounter | Chapter 1                          | ◆    |       | ●   |
+| Scene 1 - The Decision          | Chapter 2                          | ◆    |       |     |
+| Scene 1 - First Attempt         | Chapter 3                          | ◆    |       |     |
+| Scene 1 - Coffee Talk           | Chapter 4 - Learning and Adjusting | ◆    |       | ●   |
+| Scene 2 - Finding Balance       | Chapter 4 - Learning and Adjusting | ◆    |       |     |
+| Scene 1 - Full Circle           | Chapter 5 - The New Normal         | ◆    | ●     | ●   |
+
 #+END:
 
 * Quick Navigation :ignore:noexport:
@@ -153,9 +163,9 @@ Update with =C-c C-c= on the #+BEGIN line.
 :PROPERTIES:
 :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
 :Characters: [[id:char-alex-rivera-20251115-001][Alex]]
-:Plot: Introduction, Inciting Incident
+:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-professional-subplot-001][Professional Life]]
 :Timeline: Day 1, 6:30 AM
-:Location: Alex's Apartment - Bedroom
+:Location: [[id:loc-alex-apartment-001][Alex's Apartment - Bedroom]]
 :Description: Alex wakes up to chaos
 :Summary: Alex's alarm goes off but they hit snooze multiple times, starting another chaotic morning
 :Scene-motivation: Establish Alex's problematic morning routine
@@ -196,9 +206,9 @@ The familiar morning chaos had begun.
 :PROPERTIES:
 :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
 :Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]]
-:Plot: Introduction of mentor figure
+:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-romance-subplot-001][Romance]], [[id:plot-professional-subplot-001][Professional Life]]
 :Timeline: Day 1, 7:45 AM
-:Location: Corner Coffee Shop
+:Location: [[id:loc-coffee-shop-001][Corner Coffee Shop]]
 :Description: Alex rushes in for coffee and meets Sam
 :Summary: While rushing for coffee, Alex bumps into Sam who seems unusually calm and collected
 :Scene-motivation: Introduce Sam as contrast to Alex's chaos
@@ -257,11 +267,11 @@ had paused.
 
 *** TODO Scene 1 - The Decision :ignore:
 :PROPERTIES:
-:PoV: Alex
-:Characters: Alex
-:Plot: Decision to change
+:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
+:Characters: [[id:char-alex-rivera-20251115-001][Alex]]
+:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-professional-subplot-001][Professional Life]]
 :Timeline: Day 1, 8:30 PM
-:Location: Alex's Apartment - Living Room
+:Location: [[id:loc-alex-apartment-001][Alex's Apartment - Living Room]]
 :Description: Alex reflects on the day and decides to try Sam's approach
 :Summary: After a stressful day, Alex finds an old watch and decides to make a change
 :Scene-motivation: Push Alex toward character growth
@@ -323,9 +333,9 @@ Tomorrow morning would be different.
 :PROPERTIES:
 :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
 :Characters: [[id:char-alex-rivera-20251115-001][Alex]]
-:Plot: First try at routine
+:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-romance-subplot-001][Romance]], [[id:plot-professional-subplot-001][Professional Life]]
 :Timeline: Day 2, 6:00 AM
-:Location: Alex's Apartment
+:Location: [[id:loc-alex-apartment-001][Alex's Apartment]]
 :Description: Alex's first attempt at a morning routine
 :Summary: Alex wakes early and tries to follow a routine, but struggles with the structure
 :Scene-motivation: Show that change is difficult
@@ -381,11 +391,11 @@ still hadn't worked.
 
 *** TOWRITE Scene 1 - Coffee Talk :ignore:
 :PROPERTIES:
-:PoV: Alex
-:Characters: Alex, Sam
-:Plot: Mentor guidance
+:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
+:Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]]
+:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-romance-subplot-001][Romance]]
 :Timeline: Day 5, 7:30 AM
-:Location: Corner Coffee Shop
+:Location: [[id:loc-coffee-shop-001][Corner Coffee Shop]]
 :Description: Sam offers advice on making routines sustainable
 :Summary: Alex admits struggle to Sam, who shares that routines should be personalized
 :Scene-motivation: Provide guidance and course correction
@@ -402,11 +412,11 @@ still hadn't worked.
 
 *** TOWRITE Scene 2 - Finding Balance :ignore:
 :PROPERTIES:
-:PoV: Alex
-:Characters: Alex
-:Plot: Character growth
+:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
+:Characters: [[id:char-alex-rivera-20251115-001][Alex]]
+:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-professional-subplot-001][Professional Life]]
 :Timeline: Day 8, 6:15 AM
-:Location: Alex's Apartment
+:Location: [[id:loc-alex-apartment-001][Alex's Apartment]]
 :Description: Alex's morning routine, now personalized and working
 :Summary: Alex finds a routine that works for them, not a perfect textbook version
 :Scene-motivation: Show character development
@@ -440,9 +450,9 @@ still hadn't worked.
 :PROPERTIES:
 :PoV: [[id:char-alex-rivera-20251115-001][Alex]]
 :Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]], [[id:char-casey-20251115-003][Casey]]
-:Plot: Resolution, new beginning
+:Plot: [[id:plot-main-thread-001][Main Plot]], [[id:plot-romance-subplot-001][Romance]], [[id:plot-professional-subplot-001][Professional Life]]
 :Timeline: Day 30, 7:00 AM
-:Location: Corner Coffee Shop
+:Location: [[id:loc-coffee-shop-001][Corner Coffee Shop]]
 :Description: Alex helps someone else, showing their growth
 :Summary: Alex encounters someone having a rough morning and offers the same kindness Sam showed them
 :Scene-motivation: Demonstrate complete character arc
