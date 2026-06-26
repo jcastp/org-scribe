@@ -126,9 +126,8 @@ For short stories, returns notes.org (or notas.org) in the project root.
 For novels, searches objects/{en-name}.org, objects/{es-name}.org,
 {en-name}.org, and {es-name}.org in that order, defaulting to
 objects/{en-name}.org if none exist."
-  (let* ((project-dir (if-let ((project (project-current)))
-                          (project-root project)
-                        (file-name-directory (or (buffer-file-name) default-directory))))
+  (let* ((project-dir (or (org-scribe-project-root)
+                         (file-name-directory (or (buffer-file-name) default-directory))))
          (project-type (org-scribe-project-type))
          (target
           (cond
@@ -190,7 +189,7 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
 
 (defun org-scribe-capture-target-file (&optional create-if-missing)
   "Determine the appropriate notes file for org-capture in writing environment.
-Uses `project-current' to find the project base directory as reference point.
+Uses `org-scribe-project-root' to find the project base directory.
 Returns the file path based on the following priority:
 1. notes/notes.org (relative to project root)
 2. notas/notas.org - Spanish (relative to project root)
@@ -200,9 +199,8 @@ Returns the file path based on the following priority:
 
 If CREATE-IF-MISSING is non-nil, create the first priority notes
 file that doesn't exist."
-  (let* ((project-dir (if-let ((project (project-current)))
-                          (project-root project)
-                        (file-name-directory (or (buffer-file-name) default-directory))))
+  (let* ((project-dir (or (org-scribe-project-root)
+                         (file-name-directory (or (buffer-file-name) default-directory))))
          (notes-subdir-en (expand-file-name "notes/notes.org" project-dir))
          (notes-subdir-es (expand-file-name "notas/notas.org" project-dir))
          (novel-notes (expand-file-name "novel-notes.org" project-dir))

@@ -377,10 +377,8 @@
   (let* ((temp-dir (make-temp-file "test-novel-proj-" t))
          (expected-file (expand-file-name "objects/characters.org" temp-dir)))
     (unwind-protect
-        (cl-letf (((symbol-function 'project-current)
-                   (lambda (&rest _) `(vc nil ,temp-dir)))
-                  ((symbol-function 'project-root)
-                   (lambda (_) temp-dir))
+        (cl-letf (((symbol-function 'org-scribe-project-root)
+                   (lambda () temp-dir))
                   ((symbol-function 'org-scribe-project-type)
                    (lambda () 'novel)))
           ;; File must not exist before the call
@@ -395,10 +393,8 @@
   (let* ((temp-dir (make-temp-file "test-ss-proj-" t))
          (expected-file (expand-file-name "notes.org" temp-dir)))
     (unwind-protect
-        (cl-letf (((symbol-function 'project-current)
-                   (lambda (&rest _) `(vc nil ,temp-dir)))
-                  ((symbol-function 'project-root)
-                   (lambda (_) temp-dir))
+        (cl-letf (((symbol-function 'org-scribe-project-root)
+                   (lambda () temp-dir))
                   ((symbol-function 'org-scribe-project-type)
                    (lambda () 'short-story)))
           (should-not (file-exists-p expected-file))
@@ -415,10 +411,8 @@
   "Test that short-story projects route character capture to notes.org."
   (let* ((temp-dir (make-temp-file "test-route-ss-" t)))
     (unwind-protect
-        (cl-letf (((symbol-function 'project-current)
-                   (lambda (&rest _) `(vc nil ,temp-dir)))
-                  ((symbol-function 'project-root)
-                   (lambda (_) temp-dir))
+        (cl-letf (((symbol-function 'org-scribe-project-root)
+                   (lambda () temp-dir))
                   ((symbol-function 'org-scribe-project-type)
                    (lambda () 'short-story)))
           (let ((result (org-scribe-capture-character-file)))
@@ -435,10 +429,8 @@
           ;; Pre-create the file so cl-find-if can find it
           (make-directory (expand-file-name "objects" temp-dir) t)
           (write-region "" nil char-file)
-          (cl-letf (((symbol-function 'project-current)
-                     (lambda (&rest _) `(vc nil ,temp-dir)))
-                    ((symbol-function 'project-root)
-                     (lambda (_) temp-dir))
+          (cl-letf (((symbol-function 'org-scribe-project-root)
+                     (lambda () temp-dir))
                     ((symbol-function 'org-scribe-project-type)
                      (lambda () 'novel)))
             (let ((result (org-scribe-capture-character-file)))
