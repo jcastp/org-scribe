@@ -147,12 +147,30 @@ their workflow."
   "When non-nil, enable entity tooltips automatically in org-scribe buffers.
 With this set to t, `org-scribe-overlays-mode' activates whenever
 `org-scribe-mode' is turned on.  Moving point onto any [[id:...]] link
-inside a scene property will then display a one-line tooltip in the echo
-area showing the entity's Role, Age, Goal, and Motivation.
+inside a scene property will display a tooltip showing the entity's
+Role, Age, Occupation, Goal, Motivation, and Conflict.
 
 You can also toggle tooltips manually at any time with:
   M-x org-scribe-overlays-mode"
   :type 'boolean
+  :group 'org-scribe)
+
+(defcustom org-scribe-overlays-display 'inline
+  "How entity tooltips are displayed when `org-scribe-overlays-mode' is active.
+
+\\='inline   — show the tooltip as styled text immediately after the ID link
+               in the buffer (default).  No extra packages needed; works in
+               both terminal and GUI Emacs.
+
+\\='posframe  — show the tooltip in a posframe child frame near point.
+               Requires the `posframe' package.  Falls back to \\='inline when
+               posframe is unavailable or the display cannot support child
+               frames (e.g. terminal sessions).
+
+\\='echo      — show the tooltip in the echo area (original behaviour)."
+  :type '(choice (const :tag "Inline after the link (default)" inline)
+                 (const :tag "Posframe near point (requires posframe)" posframe)
+                 (const :tag "Echo area" echo))
   :group 'org-scribe)
 
 ;;; Automation (opt-in save-time bookkeeping)

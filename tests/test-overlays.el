@@ -7,8 +7,9 @@
 ;;; Commentary:
 
 ;; Tests for linking/org-scribe-overlays.el.
-;; Covers tooltip formatting, the post-command deduplication logic,
-;; minor-mode hook registration, and the auto-enable guard.
+;; Covers link detection (body text + property values), tooltip formatting,
+;; inline overlay lifecycle, post-command deduplication, minor-mode hook
+;; registration, and the auto-enable guard.
 
 ;;; Code:
 
@@ -34,19 +35,125 @@
 (ert-deftest test-overlays-functions-defined ()
   "All public and internal functions are defined."
   (should (fboundp 'org-scribe-overlays-mode))
+  (should (fboundp 'org-scribe--overlays-link-at-point))
   (should (fboundp 'org-scribe--overlays-id-at-point))
   (should (fboundp 'org-scribe--overlays-format-tooltip))
+  (should (fboundp 'org-scribe--overlays-show-inline))
+  (should (fboundp 'org-scribe--overlays-hide-inline))
+  (should (fboundp 'org-scribe--overlays-show))
+  (should (fboundp 'org-scribe--overlays-clear))
   (should (fboundp 'org-scribe--overlays-post-command))
   (should (fboundp 'org-scribe--overlays-maybe-enable)))
 
 (ert-deftest test-overlays-variables-defined ()
-  "Buffer-local state variable is defined."
-  (should (boundp 'org-scribe--overlays-last-id)))
+  "Buffer-local state variables and constants are defined."
+  (should (boundp 'org-scribe--overlays-last-id))
+  (should (boundp 'org-scribe--overlays-overlay))
+  (should (boundp 'org-scribe--overlays-posframe-buffer)))
+
+;;; link-at-point detection
+
+(ert-deftest test-overlays-link-at-point-body-text ()
+  "link-at-point returns (id . end-pos) for a link in paragraph body text."
+  (with-temp-buffer
+    (org-mode)
+    (insert "See [[id:entity-body-001][Alice]] for details.\n")
+    (goto-char (point-min))
+    (forward-char 7)
+    (let ((result (org-scribe--overlays-link-at-point)))
+      (should (consp result))
+      (should (equal (car result) "entity-body-001"))
+      (should (integerp (cdr result)))
+      (should (> (cdr result) (point-min))))))
+
+(ert-deftest test-overlays-link-at-point-property-value ()
+  "link-at-point returns (id . end-pos) for a link inside a property value.
+Regression: org-element-context returns \\='node-property there, not \\='link,
+so the regex fallback path must handle this case."
+  (with-temp-buffer
+    (org-mode)
+    (insert (concat "* Scene One\n"
+                    ":PROPERTIES:\n"
+                    ":PoV: [[id:char-pov-001][Alex]]\n"
+                    ":END:\n\n"))
+    (goto-char (point-min))
+    (re-search-forward ":PoV:")
+    (forward-char 5)
+    (let ((result (org-scribe--overlays-link-at-point)))
+      (should (consp result))
+      (should (equal (car result) "char-pov-001"))
+      (should (integerp (cdr result))))))
+
+(ert-deftest test-overlays-link-at-point-multiple-in-property ()
+  "link-at-point identifies the correct link when several appear on one line."
+  (with-temp-buffer
+    (org-mode)
+    (insert (concat "* Scene\n"
+                    ":PROPERTIES:\n"
+                    ":Characters: [[id:char-aaa][Alice]], [[id:char-bbb][Bob]]\n"
+                    ":END:\n\n"))
+    (goto-char (point-min))
+    (re-search-forward "\\[\\[id:char-bbb\\]")
+    (forward-char 2)
+    (should (equal (car (org-scribe--overlays-link-at-point)) "char-bbb"))))
+
+(ert-deftest test-overlays-link-at-point-nil-on-plain-text ()
+  "link-at-point returns nil when point is on plain text."
+  (with-temp-buffer
+    (org-mode)
+    (insert "Just some plain text here.\n")
+    (goto-char (point-min))
+    (should (null (org-scribe--overlays-link-at-point)))))
+
+;;; id-at-point (thin wrapper)
+
+(ert-deftest test-overlays-id-at-point-in-body-text ()
+  "id-at-point returns the ID string for a link in body text."
+  (with-temp-buffer
+    (org-mode)
+    (insert "See [[id:entity-body-001][Alice]] for details.\n")
+    (goto-char (point-min))
+    (forward-char 7)
+    (should (equal (org-scribe--overlays-id-at-point) "entity-body-001"))))
+
+(ert-deftest test-overlays-id-at-point-in-property-value ()
+  "id-at-point returns the ID for a link inside a property value."
+  (with-temp-buffer
+    (org-mode)
+    (insert (concat "* Scene One\n"
+                    ":PROPERTIES:\n"
+                    ":PoV: [[id:char-pov-001][Alex]]\n"
+                    ":END:\n\n"))
+    (goto-char (point-min))
+    (re-search-forward ":PoV:")
+    (forward-char 5)
+    (should (equal (org-scribe--overlays-id-at-point) "char-pov-001"))))
+
+(ert-deftest test-overlays-id-at-point-multiple-links-in-property ()
+  "id-at-point correctly identifies which ID the cursor is on among several."
+  (with-temp-buffer
+    (org-mode)
+    (insert (concat "* Scene\n"
+                    ":PROPERTIES:\n"
+                    ":Characters: [[id:char-aaa][Alice]], [[id:char-bbb][Bob]]\n"
+                    ":END:\n\n"))
+    (goto-char (point-min))
+    (re-search-forward "\\[\\[id:char-bbb\\]")
+    (forward-char 2)
+    (should (equal (org-scribe--overlays-id-at-point) "char-bbb"))))
+
+(ert-deftest test-overlays-id-at-point-returns-nil-outside-link ()
+  "id-at-point returns nil when point is on plain text."
+  (with-temp-buffer
+    (org-mode)
+    (insert "Just some plain text here.\n")
+    (goto-char (point-min))
+    (should (null (org-scribe--overlays-id-at-point)))))
 
 ;;; Tooltip formatting
 
 (ert-deftest test-overlays-format-tooltip-full-properties ()
-  "format-tooltip returns name + all four character properties when all are set."
+  "format-tooltip returns name + all six character properties when all are set."
   (let ((temp-file (make-temp-file "test-overlays-char-" nil ".org"))
         heading-pos)
     (unwind-protect
@@ -58,8 +165,10 @@
                             ":ID: char-test-001\n"
                             ":Role: Protagonist\n"
                             ":Age: 28\n"
+                            ":Occupation: Freelance designer\n"
                             ":Goal: Find peace\n"
                             ":Motivation: Family\n"
+                            ":Conflict: Fears intimacy\n"
                             ":END:\n\n"))
             (save-buffer)
             (setq heading-pos (point-min)))
@@ -70,8 +179,10 @@
               (should (string-match-p "Alice" result))
               (should (string-match-p "Role: Protagonist" result))
               (should (string-match-p "Age: 28" result))
+              (should (string-match-p "Occupation: Freelance designer" result))
               (should (string-match-p "Goal: Find peace" result))
-              (should (string-match-p "Motivation: Family" result)))))
+              (should (string-match-p "Motivation: Family" result))
+              (should (string-match-p "Conflict: Fears intimacy" result)))))
       (when (file-exists-p temp-file) (delete-file temp-file)))))
 
 (ert-deftest test-overlays-format-tooltip-partial-properties ()
@@ -95,7 +206,8 @@
               (should (string-match-p "Bob" result))
               (should (string-match-p "Role: Antagonist" result))
               (should-not (string-match-p "Age:" result))
-              (should-not (string-match-p "Goal:" result)))))
+              (should-not (string-match-p "Occupation:" result))
+              (should-not (string-match-p "Conflict:" result)))))
       (when (file-exists-p temp-file) (delete-file temp-file)))))
 
 (ert-deftest test-overlays-format-tooltip-name-only ()
@@ -119,7 +231,6 @@
               (should (stringp result))
               (should (string-match-p "London" result))
               (should-not (string-match-p "Role:" result))
-              ;; Name-only format has no "|" separator
               (should-not (string-match-p " | " result)))))
       (when (file-exists-p temp-file) (delete-file temp-file)))))
 
@@ -128,7 +239,58 @@
   (cl-letf (((symbol-function 'org-id-find) (lambda (_id) nil)))
     (should (null (org-scribe--overlays-format-tooltip "nonexistent-id")))))
 
-;;; Minor-mode hook registration
+;;; Inline display
+
+(ert-deftest test-overlays-show-inline-creates-overlay ()
+  "show-inline creates an overlay with the tooltip as after-string."
+  (with-temp-buffer
+    (org-mode)
+    (insert "[[id:test-entity][Alice]]\n")
+    (org-scribe--overlays-show-inline "Test Tooltip" 10)
+    (unwind-protect
+        (progn
+          (should org-scribe--overlays-overlay)
+          (let ((after (overlay-get org-scribe--overlays-overlay 'after-string)))
+            (should (stringp after))
+            (should (string-match-p "Test Tooltip" after))))
+      (org-scribe--overlays-hide-inline))))
+
+(ert-deftest test-overlays-show-inline-uses-face ()
+  "show-inline applies org-scribe-overlays-face to the after-string."
+  (with-temp-buffer
+    (org-mode)
+    (insert "Some text.\n")
+    (org-scribe--overlays-show-inline "Tooltip" 5)
+    (unwind-protect
+        (let* ((after (overlay-get org-scribe--overlays-overlay 'after-string))
+               (face  (get-text-property 0 'face after)))
+          (should (eq face 'org-scribe-overlays-face)))
+      (org-scribe--overlays-hide-inline))))
+
+(ert-deftest test-overlays-hide-inline-removes-overlay ()
+  "hide-inline removes the active overlay and resets the state variable."
+  (with-temp-buffer
+    (org-mode)
+    (insert "Some text.\n")
+    (org-scribe--overlays-show-inline "Tooltip" 5)
+    (should org-scribe--overlays-overlay)
+    (org-scribe--overlays-hide-inline)
+    (should (null org-scribe--overlays-overlay))))
+
+(ert-deftest test-overlays-show-inline-replaces-previous ()
+  "show-inline replaces any existing overlay rather than stacking."
+  (with-temp-buffer
+    (org-mode)
+    (insert "Some text.\n")
+    (org-scribe--overlays-show-inline "First" 3)
+    (let ((first-ov org-scribe--overlays-overlay))
+      (org-scribe--overlays-show-inline "Second" 5)
+      (should (not (eq first-ov org-scribe--overlays-overlay)))
+      (should (string-match-p "Second"
+               (overlay-get org-scribe--overlays-overlay 'after-string))))
+    (org-scribe--overlays-hide-inline)))
+
+;;; Minor-mode lifecycle
 
 (ert-deftest test-overlays-mode-adds-hook-on-enable ()
   "Enabling org-scribe-overlays-mode registers the post-command hook buffer-locally."
@@ -155,55 +317,16 @@
     (org-scribe-overlays-mode -1)
     (should (null org-scribe--overlays-last-id))))
 
-;;; ID-at-point detection
-
-(ert-deftest test-overlays-id-at-point-in-body-text ()
-  "id-at-point returns the ID for a link in paragraph body text (element API path)."
+(ert-deftest test-overlays-mode-clears-inline-overlay-on-disable ()
+  "Disabling the mode removes any active inline overlay."
   (with-temp-buffer
     (org-mode)
-    (insert "See [[id:entity-body-001][Alice]] for details.\n")
-    (goto-char (point-min))
-    (forward-char 7)  ; inside the link
-    (should (equal (org-scribe--overlays-id-at-point) "entity-body-001"))))
-
-(ert-deftest test-overlays-id-at-point-in-property-value ()
-  "id-at-point returns the ID for a link inside a property value (regex fallback).
-This is the primary use-case for org-scribe: the PoV/Characters/Location
-properties in scene headings all contain [[id:...]] links.  The element
-API cannot detect them there because org-mode does not parse property values
-for link objects — org-element-context returns \\='node-property, not \\='link."
-  (with-temp-buffer
-    (org-mode)
-    (insert (concat "* Scene One\n"
-                    ":PROPERTIES:\n"
-                    ":PoV: [[id:char-pov-001][Alex]]\n"
-                    ":END:\n\n"))
-    (goto-char (point-min))
-    (re-search-forward ":PoV:")
-    (forward-char 5)  ; now inside [[id:char-pov-001][Alex]]
-    (should (equal (org-scribe--overlays-id-at-point) "char-pov-001"))))
-
-(ert-deftest test-overlays-id-at-point-multiple-links-in-property ()
-  "id-at-point correctly identifies which ID the cursor is on among several."
-  (with-temp-buffer
-    (org-mode)
-    (insert (concat "* Scene\n"
-                    ":PROPERTIES:\n"
-                    ":Characters: [[id:char-aaa][Alice]], [[id:char-bbb][Bob]]\n"
-                    ":END:\n\n"))
-    (goto-char (point-min))
-    ;; Position on the second link (Bob)
-    (re-search-forward "\\[\\[id:char-bbb\\]")
-    (forward-char 2)
-    (should (equal (org-scribe--overlays-id-at-point) "char-bbb"))))
-
-(ert-deftest test-overlays-id-at-point-returns-nil-outside-link ()
-  "id-at-point returns nil when point is on plain text."
-  (with-temp-buffer
-    (org-mode)
-    (insert "Just some plain text here.\n")
-    (goto-char (point-min))
-    (should (null (org-scribe--overlays-id-at-point)))))
+    (org-scribe-overlays-mode 1)
+    (insert "Some text.\n")
+    (org-scribe--overlays-show-inline "Tooltip" 5)
+    (should org-scribe--overlays-overlay)
+    (org-scribe-overlays-mode -1)
+    (should (null org-scribe--overlays-overlay))))
 
 ;;; Post-command hook behaviour
 
@@ -218,21 +341,6 @@ for link objects — org-element-context returns \\='node-property, not \\='link
       (forward-char 5)
       (org-scribe--overlays-post-command)
       (should (equal org-scribe--overlays-last-id "test-entity-001")))))
-
-(ert-deftest test-overlays-post-command-skips-duplicate-id ()
-  "post-command does not call format-tooltip again when the ID hasn't changed."
-  (let ((calls 0))
-    (cl-letf (((symbol-function 'org-scribe--overlays-format-tooltip)
-               (lambda (_id) (cl-incf calls) "tooltip")))
-      (with-temp-buffer
-        (org-mode)
-        (insert "[[id:test-entity-002][Bob]]\n")
-        (goto-char (point-min))
-        (forward-char 5)
-        (org-scribe--overlays-post-command)   ; first: sets last-id, calls format-tooltip
-        (should (= calls 1))
-        (org-scribe--overlays-post-command)   ; second: same ID — no re-call
-        (should (= calls 1))))))
 
 (ert-deftest test-overlays-post-command-sets-last-id-in-property-drawer ()
   "post-command works for links inside property values, not only body text.
@@ -251,6 +359,21 @@ Regression: previously the element API returned \\='node-property instead of
       (forward-char 5)
       (org-scribe--overlays-post-command)
       (should (equal org-scribe--overlays-last-id "char-prop-test")))))
+
+(ert-deftest test-overlays-post-command-skips-duplicate-id ()
+  "post-command does not call format-tooltip again when the ID hasn't changed."
+  (let ((calls 0))
+    (cl-letf (((symbol-function 'org-scribe--overlays-format-tooltip)
+               (lambda (_id) (cl-incf calls) "tooltip")))
+      (with-temp-buffer
+        (org-mode)
+        (insert "[[id:test-entity-002][Bob]]\n")
+        (goto-char (point-min))
+        (forward-char 5)
+        (org-scribe--overlays-post-command)
+        (should (= calls 1))
+        (org-scribe--overlays-post-command)   ; same ID — no re-call
+        (should (= calls 1))))))
 
 (ert-deftest test-overlays-post-command-clears-last-id-when-not-on-link ()
   "post-command resets last-id when point is not on an ID link."
