@@ -286,4 +286,250 @@ Cleans up the temp file unconditionally."
         (org-scribe-planner-today))
       (should-not y-or-n-called))))
 
+;;; Tests for org-scribe-planner--load-plan-project-aware
+
+(ert-deftest test-planner-hooks-load-plan-skips-picker-in-project ()
+  "load-plan loads plan.org directly when inside a project — no file picker."
+  (test-hooks--with-plan-file plan plan-file
+    (let* ((temp-dir (make-temp-file "test-planner-lp-" t))
+           (project-plan (expand-file-name "plan.org" temp-dir))
+           (picker-called nil)
+           (org-scribe-planner--current-plan nil)
+           (org-scribe-planner--current-plan-file nil)
+           (org-scribe-planner-after-plan-load-hook nil))
+      (unwind-protect
+          (progn
+            ;; Write marker file and copy the plan into the project dir
+            (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+              (insert "# Writing project: Test Novel\n# Type: novel\n"))
+            (copy-file plan-file project-plan)
+            (cl-letf (((symbol-function 'org-scribe-project-root)
+                       (lambda () temp-dir))
+                      ((symbol-function 'org-scribe-planner--select-plan-file)
+                       (lambda (&rest _) (setq picker-called t) nil))
+                      ((symbol-function 'org-scribe-planner-show-calendar)
+                       (lambda (&rest _) nil)))
+              (org-scribe-planner-load-plan))
+            ;; The advice must have intercepted --select-plan-file
+            (should-not picker-called)
+            ;; The plan must now be active
+            (should org-scribe-planner--current-plan)
+            (should (string= org-scribe-planner--current-plan-file project-plan)))
+        (delete-directory temp-dir t)))))
+
+(ert-deftest test-planner-hooks-load-plan-uses-picker-outside-project ()
+  "load-plan uses the file picker when not inside an org-scribe project."
+  (test-hooks--with-plan-file _plan plan-file
+    (let ((picker-called nil)
+          (org-scribe-planner--current-plan nil)
+          (org-scribe-planner--current-plan-file nil)
+          (org-scribe-planner-after-plan-load-hook nil))
+      (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () nil))
+                ((symbol-function 'org-scribe-planner--select-plan-file)
+                 (lambda (&rest _) (setq picker-called t) nil))
+                ((symbol-function 'org-scribe-planner-show-calendar)
+                 (lambda (&rest _) nil)))
+        (org-scribe-planner-load-plan))
+      (should picker-called))))
+
+(ert-deftest test-planner-hooks-load-plan-uses-picker-when-no-plan-file ()
+  "load-plan uses the file picker when in a project that has no plan.org."
+  (let* ((temp-dir (make-temp-file "test-planner-lp-nf-" t))
+         (picker-called nil)
+         (org-scribe-planner--current-plan nil)
+         (org-scribe-planner--current-plan-file nil)
+         (org-scribe-planner-after-plan-load-hook nil))
+    (unwind-protect
+        (progn
+          ;; Marker file present but no plan.org
+          (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+            (insert "# Writing project: Test Novel\n# Type: novel\n"))
+          (cl-letf (((symbol-function 'org-scribe-project-root)
+                     (lambda () temp-dir))
+                    ((symbol-function 'org-scribe-planner--select-plan-file)
+                     (lambda (&rest _) (setq picker-called t) nil))
+                    ((symbol-function 'org-scribe-planner-show-calendar)
+                     (lambda (&rest _) nil)))
+            (org-scribe-planner-load-plan))
+          (should picker-called))
+      (delete-directory temp-dir t))))
+
+;;; Tests for org-scribe-planner--plan-file-valid-p
+
+(ert-deftest test-planner-hooks-plan-file-valid-p-nil-for-comment-placeholder ()
+  "plan-file-valid-p returns nil for a comment-only placeholder."
+  (let ((f (make-temp-file "test-plan-valid-" nil ".org")))
+    (unwind-protect
+        (progn
+          (with-temp-file f
+            (insert "# plan.org — writing plan placeholder\n")
+            (insert "# Run M-x org-scribe-plan to create your plan.\n"))
+          (should-not (org-scribe-planner--plan-file-valid-p f)))
+      (delete-file f))))
+
+(ert-deftest test-planner-hooks-plan-file-valid-p-nil-for-empty-file ()
+  "plan-file-valid-p returns nil for an empty file."
+  (let ((f (make-temp-file "test-plan-valid-" nil ".org")))
+    (unwind-protect
+        (should-not (org-scribe-planner--plan-file-valid-p f))
+      (delete-file f))))
+
+(ert-deftest test-planner-hooks-plan-file-valid-p-nil-for-missing-file ()
+  "plan-file-valid-p returns nil when the file does not exist."
+  (should-not (org-scribe-planner--plan-file-valid-p "/nonexistent/plan.org")))
+
+(ert-deftest test-planner-hooks-plan-file-valid-p-t-for-real-plan ()
+  "plan-file-valid-p returns t for a file saved by the planner."
+  (test-hooks--with-plan-file plan file
+    (should (org-scribe-planner--plan-file-valid-p file))))
+
+;;; Tests for org-scribe-planner--project-title
+
+(ert-deftest test-planner-hooks-project-title-reads-from-marker ()
+  "org-scribe-planner--project-title returns title from .org-scribe-project."
+  (let ((temp-dir (make-temp-file "test-planner-title-" t)))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+            (insert "# Writing project: My Test Novel\n# Type: novel\n"))
+          (should (string= (org-scribe-planner--project-title temp-dir)
+                           "My Test Novel")))
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-planner-hooks-project-title-nil-without-marker ()
+  "org-scribe-planner--project-title returns nil when no marker file exists."
+  (let ((temp-dir (make-temp-file "test-planner-title-" t)))
+    (unwind-protect
+        (should (null (org-scribe-planner--project-title temp-dir)))
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-planner-hooks-project-title-nil-without-title-line ()
+  "org-scribe-planner--project-title returns nil when marker has no title line."
+  (let ((temp-dir (make-temp-file "test-planner-title-" t)))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+            (insert "# Type: novel\n# Created: 2026-01-01\n"))
+          (should (null (org-scribe-planner--project-title temp-dir))))
+      (delete-directory temp-dir t))))
+
+;;; Tests for org-scribe-plan
+
+(ert-deftest test-planner-hooks-org-scribe-plan-shows-active-plan ()
+  "org-scribe-plan shows calendar when a plan is already active."
+  (test-hooks--with-plan-file plan file
+    (let ((calendar-called nil)
+          (org-scribe-planner--current-plan plan)
+          (org-scribe-planner--current-plan-file file))
+      (cl-letf (((symbol-function 'org-scribe-planner-show-calendar)
+                 (lambda (&rest _) (setq calendar-called t))))
+        (org-scribe-plan))
+      (should calendar-called))))
+
+(ert-deftest test-planner-hooks-org-scribe-plan-loads-and-shows-existing-plan ()
+  "org-scribe-plan silently loads plan.org and shows calendar when no plan is active."
+  (test-hooks--with-plan-file plan plan-file
+    (let* ((temp-dir (make-temp-file "test-planner-ep-" t))
+           (project-plan (expand-file-name "plan.org" temp-dir))
+           (calendar-called nil)
+           (hook-calls 0)
+           (org-scribe-planner--current-plan nil)
+           (org-scribe-planner--current-plan-file nil)
+           (org-scribe-planner-after-plan-load-hook
+            (list (lambda (&rest _) (setq hook-calls (1+ hook-calls))))))
+      (unwind-protect
+          (progn
+            (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+              (insert "# Writing project: Test Novel\n# Type: novel\n"))
+            (copy-file plan-file project-plan)
+            (cl-letf (((symbol-function 'org-scribe-project-root)
+                       (lambda () temp-dir))
+                      ((symbol-function 'org-scribe-planner-show-calendar)
+                       (lambda (&rest _) (setq calendar-called t))))
+              (org-scribe-plan))
+            (should calendar-called)
+            (should (= hook-calls 1))
+            (should org-scribe-planner--current-plan)
+            (should (string= org-scribe-planner--current-plan-file project-plan)))
+        (delete-directory temp-dir t)))))
+
+(ert-deftest test-planner-hooks-org-scribe-plan-offers-create-when-no-plan ()
+  "org-scribe-plan offers to create a plan when in project with no plan file."
+  (let* ((temp-dir (make-temp-file "test-planner-ep-np-" t))
+         (new-plan-called nil)
+         (org-scribe-planner--current-plan nil)
+         (org-scribe-planner--current-plan-file nil))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+            (insert "# Writing project: Test Novel\n# Type: novel\n"))
+          (cl-letf (((symbol-function 'org-scribe-project-root)
+                     (lambda () temp-dir))
+                    ((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
+                    ((symbol-function 'org-scribe-planner-new-plan)
+                     (lambda () (setq new-plan-called t))))
+            (org-scribe-plan))
+          (should new-plan-called))
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-planner-hooks-org-scribe-plan-falls-back-outside-project ()
+  "org-scribe-plan falls back to show-current-plan when not in a project."
+  (let ((show-called nil)
+        (org-scribe-planner--current-plan nil)
+        (org-scribe-planner--current-plan-file nil))
+    (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () nil))
+              ((symbol-function 'org-scribe-planner-show-current-plan)
+               (lambda () (setq show-called t))))
+      (org-scribe-plan))
+    (should show-called)))
+
+;;; Regression: placeholder plan.org does not cause load errors
+
+(ert-deftest test-planner-hooks-org-scribe-plan-treats-placeholder-as-no-plan ()
+  "org-scribe-plan offers to create when plan.org is a comment-only placeholder."
+  (let* ((temp-dir (make-temp-file "test-planner-stub-" t))
+         (new-plan-called nil)
+         (org-scribe-planner--current-plan nil)
+         (org-scribe-planner--current-plan-file nil))
+    (unwind-protect
+        (progn
+          ;; Create project marker and a comment-only placeholder
+          (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+            (insert "# Writing project: Stub Test\n# Type: novel\n"))
+          (with-temp-file (expand-file-name "plan.org" temp-dir)
+            (insert "# plan.org — placeholder\n"))
+          (cl-letf (((symbol-function 'org-scribe-project-root)
+                     (lambda () temp-dir))
+                    ((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
+                    ((symbol-function 'org-scribe-planner-new-plan)
+                     (lambda () (setq new-plan-called t))))
+            (org-scribe-plan))
+          ;; new-plan must have been called, not a load attempt
+          (should new-plan-called))
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-planner-hooks-load-plan-falls-through-for-placeholder ()
+  "load-plan uses the file picker when plan.org is a comment-only placeholder."
+  (let* ((temp-dir (make-temp-file "test-planner-stub-lp-" t))
+         (picker-called nil)
+         (org-scribe-planner--current-plan nil)
+         (org-scribe-planner--current-plan-file nil)
+         (org-scribe-planner-after-plan-load-hook nil))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+            (insert "# Writing project: Stub Test\n# Type: novel\n"))
+          (with-temp-file (expand-file-name "plan.org" temp-dir)
+            (insert "# plan.org — placeholder\n"))
+          (cl-letf (((symbol-function 'org-scribe-project-root)
+                     (lambda () temp-dir))
+                    ((symbol-function 'org-scribe-planner--select-plan-file)
+                     (lambda (&rest _) (setq picker-called t) nil))
+                    ((symbol-function 'org-scribe-planner-show-calendar)
+                     (lambda (&rest _) nil)))
+            (org-scribe-planner-load-plan))
+          ;; Picker must have been shown (advice fell through)
+          (should picker-called))
+      (delete-directory temp-dir t))))
+
 ;;; test-hooks.el ends here

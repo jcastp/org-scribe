@@ -863,12 +863,29 @@ Also checks for unsaved changes and prompts user if needed."
        ((not has-content)
         t)
 
+       ;; File has content but no org headings (e.g. a comment-only placeholder
+       ;; like the plan.org stub shipped in project templates) - safe to overwrite
+       ((not (save-excursion
+               (goto-char (point-min))
+               (re-search-forward "^\\* " nil t)))
+        t)
+
        ;; Existing file with content - check if it's our plan file
        (file-exists
         (org-scribe-planner--is-single-plan-file-p buffer))
 
        ;; Default to safe (new buffer, no file)
        (t t)))))
+
+(defun org-scribe-planner--plan-file-valid-p (filepath)
+  "Return t if FILEPATH contains a saved plan (has a heading with TOTAL_WORDS).
+Returns nil for empty files, comment-only placeholders, or non-plan org files."
+  (when (and filepath (file-exists-p filepath))
+    (with-temp-buffer
+      (insert-file-contents filepath)
+      (goto-char (point-min))
+      (and (re-search-forward "^\\* " nil t)
+           (re-search-forward "^:TOTAL_WORDS:" nil t)))))
 
 (defun org-scribe-planner--is-single-plan-file-p (buffer)
   "Check if BUFFER contains a single org-scribe-planner plan.
@@ -2174,6 +2191,57 @@ Attempts a lazy auto-load first if no plan is currently active."
               (actual (org-scribe-planner--get-entry-words entry)))
     (format " [W:%d/%d]" actual target)))
 
+;;; Project-aware new-plan
+
+(defun org-scribe-planner--project-title (root)
+  "Return the project title recorded in ROOT/.org-scribe-project, or nil."
+  (let ((marker (expand-file-name ".org-scribe-project" root)))
+    (when (file-exists-p marker)
+      (with-temp-buffer
+        (insert-file-contents marker)
+        (goto-char (point-min))
+        (when (re-search-forward "^# Writing project: \\(.*\\)$" nil t)
+          (match-string 1))))))
+
+(defun org-scribe-planner--new-plan-project-aware (orig &rest args)
+  "Around-advice for `org-scribe-planner-new-plan' that pre-fills project context.
+When inside an org-scribe project the title is taken from .org-scribe-project
+and the save path is fixed to <project-root>/plan.org, so neither prompt
+appears.  Falls through to the unmodified command when not in a project."
+  (if-let* ((root (ignore-errors (org-scribe-project-root)))
+            (_ (file-exists-p (expand-file-name ".org-scribe-project" root)))
+            (title (org-scribe-planner--project-title root))
+            (plan-path (expand-file-name "plan.org" root)))
+      (let ((real-read-string (symbol-function 'read-string)))
+        (cl-letf (((symbol-function 'read-string)
+                   (lambda (prompt &optional initial &rest rest)
+                     (if (string-match-p "[Tt]itle" prompt)
+                         title
+                       (apply real-read-string prompt initial rest))))
+                  ((symbol-function 'read-file-name)
+                   (lambda (&rest _) plan-path)))
+          (apply orig args)))
+    (apply orig args)))
+
+;;; Project-aware load-plan
+
+(defun org-scribe-planner--load-plan-project-aware (orig &rest args)
+  "Around-advice for `org-scribe-planner-load-plan' that skips the file picker.
+When the current org-scribe project already has a valid saved plan file (found
+via `org-scribe-planner--find-plan-file' and confirmed by
+`org-scribe-planner--plan-file-valid-p'), that file is loaded directly without
+showing the interactive file-selection prompt.  Falls through to the
+unmodified command when not in a project, when no plan file is found, or when
+the found file is a placeholder with no plan content."
+  (if-let* ((root (ignore-errors (org-scribe-project-root)))
+            (_ (file-exists-p (expand-file-name ".org-scribe-project" root)))
+            (plan-file (org-scribe-planner--find-plan-file root))
+            (_ (org-scribe-planner--plan-file-valid-p plan-file)))
+      (cl-letf (((symbol-function 'org-scribe-planner--select-plan-file)
+                 (lambda (&rest _) plan-file)))
+        (apply orig args))
+    (apply orig args)))
+
 ;;; Offer plan creation on project creation
 
 (defun org-scribe-planner--offer-plan-on-create (project-dir title &rest _)
@@ -2204,6 +2272,14 @@ TITLE is the project title passed by the creation command."
   (when org-scribe-planner-auto-push-wordcount
     (advice-add 'org-scribe-ews-org-count-words :after #'org-scribe-planner--after-wordcount))
 
+  ;; Project-aware new-plan: skip title and file-path prompts inside a project.
+  (advice-add 'org-scribe-planner-new-plan :around
+              #'org-scribe-planner--new-plan-project-aware)
+
+  ;; Project-aware load-plan: skip file picker when plan.org exists in project.
+  (advice-add 'org-scribe-planner-load-plan :around
+              #'org-scribe-planner--load-plan-project-aware)
+
   ;; Offer to create a plan when a new project is created.
   (when org-scribe-planner-offer-plan-on-create
     (advice-add 'org-scribe-create-novel-project :after #'org-scribe-planner--offer-plan-on-create)
@@ -2212,6 +2288,43 @@ TITLE is the project title passed by the creation command."
   ;; Mode-line status indicator.
   (when org-scribe-planner-show-mode-line
     (add-to-list 'mode-line-misc-info '(:eval (org-scribe-planner--mode-line)))))
+
+;;; Unified project plan entry point
+
+;;;###autoload
+(defun org-scribe-plan ()
+  "Open the writing plan for the current org-scribe project.
+If a plan is already active, show its calendar.  If a plan file exists
+for the current project but is not yet loaded, load it silently first.
+If no plan file exists, offer to create one.  Falls back to
+`org-scribe-planner-show-current-plan' when not inside an org-scribe project."
+  (interactive)
+  (let* ((root (ignore-errors (org-scribe-project-root)))
+         (in-project (and root
+                          (file-exists-p
+                           (expand-file-name ".org-scribe-project" root)))))
+    (cond
+     ;; Plan already active — show it
+     (org-scribe-planner--current-plan
+      (org-scribe-planner-show-calendar org-scribe-planner--current-plan
+                                        org-scribe-planner--current-plan-file))
+     ;; In project with a valid saved plan file — load silently, then show
+     ((and in-project
+           (org-scribe-planner--plan-file-valid-p
+            (org-scribe-planner--find-plan-file root)))
+      (let* ((plan-file (org-scribe-planner--find-plan-file root))
+             (plan (org-scribe-planner--load-plan plan-file)))
+        (setq org-scribe-planner--current-plan plan)
+        (setq org-scribe-planner--current-plan-file plan-file)
+        (run-hook-with-args 'org-scribe-planner-after-plan-load-hook plan plan-file)
+        (org-scribe-planner-show-calendar plan plan-file)))
+     ;; In project but no valid plan — offer to create one
+     (in-project
+      (when (yes-or-no-p "No writing plan found for this project.  Create one? ")
+        (org-scribe-planner-new-plan)))
+     ;; Not in an org-scribe project — standard show-or-load flow
+     (t
+      (org-scribe-planner-show-current-plan)))))
 
 ;;; Planner hydra submenu
 
@@ -2223,7 +2336,7 @@ TITLE is the project title passed by the creation command."
     "
   org-scribe-planner
   ──────────────────────────────────────────────────
-  _p_: Show current plan calendar
+  _p_: Open project plan (load or create)
   _n_: New plan
   _l_: Load plan
   _u_: Update progress (from word count)
@@ -2234,7 +2347,7 @@ TITLE is the project title passed by the creation command."
   _D_: Dashboards menu
   _q_: Back to main menu
   "
-    ("p" org-scribe-planner-show-current-plan "show calendar")
+    ("p" org-scribe-plan "open project plan")
     ("n" org-scribe-planner-new-plan "new plan")
     ("l" org-scribe-planner-load-plan "load plan")
     ("u" org-scribe-planner-update-progress "update progress")

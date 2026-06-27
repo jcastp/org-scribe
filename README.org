@@ -1230,9 +1230,22 @@ When you enter an org-scribe project, the planner silently looks for a matching 
 - =org-scribe-planner-update-progress= reads totals directly from =WORDCOUNT= properties in the manuscript — no manual prompt.
 - After running =org-scribe-ews-org-count-words= (=F8 F8 a=), the active plan is updated and saved silently.
 
-*** 3. Project-Aware File Picker
+*** 3. Project-Aware Commands
 
-When loading a plan via =org-scribe-planner-load-plan=, the file picker opens at the current project root.
+Inside an org-scribe project, planner commands require no file-path decisions:
+
+- =org-scribe-planner-new-plan= pre-fills the project title and saves to =<root>/plan.org= automatically — no title prompt, no save-path picker.
+- =org-scribe-planner-load-plan= loads =plan.org= from the project root directly — no file picker.
+- Both commands fall back to their normal interactive prompts when run outside a project.
+
+The primary way to open your plan is =M-x org-scribe-plan= (or =F8 F8 W p=):
+
+- *Plan already active* → shows the calendar immediately.
+- *Plan file exists but not loaded* → loads it silently, then shows the calendar.
+- *No plan file found* → offers to create one (project-aware, no prompts).
+- *Not in a project* → falls back to =org-scribe-planner-show-current-plan=.
+
+Every new project includes a =plan.org= placeholder so the planner can find it at step 1 of its search without scanning.
 
 *** 4. Plan Creation on Project Creation
 
@@ -1242,7 +1255,7 @@ After creating a new novel or short story project, you are offered the option to
 
 Press =F8 F8 W= to open the planner sub-menu (available once the planner has loaded):
 
-- =p= - Show current plan calendar
+- =p= - Open project plan (load or create)
 - =n= - New plan
 - =l= - Load plan
 - =u= - Update progress (from word count)
@@ -1256,6 +1269,10 @@ Press =F8 F8 W= to open the planner sub-menu (available once the planner has loa
 *** 6. Mode-Line Status
 
 When a plan is active, the mode line shows today's progress: =[W:actual/target]=.
+
+*** 7. Project Health Integration
+
+=M-x org-scribe-project-health= includes a =* Writing Plan= section when the planner is loaded, showing title, target, current word count and percentage, daily target, end date, days remaining, and whether you are on track or behind. When no plan is active a hint to run =M-x org-scribe-plan= is shown instead.
 
 ** Opting Out of Individual Features
 

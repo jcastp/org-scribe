@@ -110,6 +110,7 @@ Returns plist with:
   :plot-file       - plot file (objects/plot.org or objects/trama.org)
   :timeline-file   - timeline file (objects/timeline.org or objects/cronologia.org)
   :objects-file    - objects file (objects/objects.org or objects/objetos.org)
+  :plan-file       - writing plan file (plan.org in the project root), or nil
 
 All file/directory values are nil if the path does not exist."
   (let* ((root (org-scribe-project-root)))
@@ -135,7 +136,8 @@ All file/directory values are nil if the path does not exist."
                            "timeline.org" "cronologia.org")
           :objects-file (org-scribe--find-existing-file root
                           "objects/objects.org" "objects/objetos.org"
-                          "objects.org" "objetos.org"))))
+                          "objects.org" "objetos.org")
+          :plan-file (org-scribe--find-existing-file root "plan.org"))))
 
 ;;; Feature Detection
 

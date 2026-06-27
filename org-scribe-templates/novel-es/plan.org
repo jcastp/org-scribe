@@ -1,0 +1,2 @@
+# plan.org — archivo de plan de escritura para org-scribe-planner
+# Ejecuta M-x org-scribe-plan para crear o abrir tu plan de escritura.

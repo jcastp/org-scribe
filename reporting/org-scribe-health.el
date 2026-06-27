@@ -24,6 +24,42 @@
 (declare-function org-scribe--get-all-locations "linking/org-scribe-location-links")
 (declare-function org-scribe--get-all-plot-threads "linking/org-scribe-plot-links")
 
+;; Planner struct accessors — only called when (featurep 'org-scribe-planner)
+(declare-function org-scribe-plan-title         "planning/org-scribe-planner")
+(declare-function org-scribe-plan-total-words   "planning/org-scribe-planner")
+(declare-function org-scribe-plan-current-words "planning/org-scribe-planner")
+(declare-function org-scribe-plan-daily-words   "planning/org-scribe-planner")
+(declare-function org-scribe-plan-start-date    "planning/org-scribe-planner")
+(declare-function org-scribe-plan-end-date      "planning/org-scribe-planner")
+(defvar org-scribe-planner--current-plan)
+
+;;; Date Helpers (used by Writing Plan section)
+
+(defun org-scribe--health-days-until (date-string)
+  "Return days from today to DATE-STRING (YYYY-MM-DD), minimum 0."
+  (let* ((d (parse-time-string date-string))
+         (target (encode-time 0 0 0 (nth 3 d) (nth 4 d) (nth 5 d)))
+         (now (decode-time))
+         (today (encode-time 0 0 0 (nth 3 now) (nth 4 now) (nth 5 now))))
+    (max 0 (round (/ (float-time (time-subtract target today)) 86400)))))
+
+(defun org-scribe--health-days-since (date-string)
+  "Return days from DATE-STRING (YYYY-MM-DD) to today, minimum 0."
+  (let* ((d (parse-time-string date-string))
+         (start (encode-time 0 0 0 (nth 3 d) (nth 4 d) (nth 5 d)))
+         (now (decode-time))
+         (today (encode-time 0 0 0 (nth 3 now) (nth 4 now) (nth 5 now))))
+    (max 0 (round (/ (float-time (time-subtract today start)) 86400)))))
+
+(defun org-scribe--health-plan-status (plan)
+  "Return 'On track' or 'Behind by N words' for PLAN."
+  (let* ((elapsed (org-scribe--health-days-since (org-scribe-plan-start-date plan)))
+         (expected (* elapsed (org-scribe-plan-daily-words plan)))
+         (delta (- expected (org-scribe-plan-current-words plan))))
+    (if (<= delta 0)
+        "On track"
+      (format "Behind by %d words" delta))))
+
 ;;; Internal Helpers
 
 (defun org-scribe--health-scene-link (heading id)
@@ -203,6 +239,40 @@ with clickable ID links back to each scene."
               (insert (format "- Progress :: %.1f%%\n" progress)))
           (insert "- Word objective :: /not set/\n"))
         (insert "\n")
+
+        ;; ── Writing Plan ─────────────────────────────────────────────────────
+        (when (featurep 'org-scribe-planner)
+          (insert "* Writing Plan\n\n")
+          (cond
+           ;; Plan is active in memory
+           (org-scribe-planner--current-plan
+            (let* ((plan  org-scribe-planner--current-plan)
+                   (title   (org-scribe-plan-title plan))
+                   (target  (org-scribe-plan-total-words plan))
+                   (current (org-scribe-plan-current-words plan))
+                   (daily   (org-scribe-plan-daily-words plan))
+                   (end     (org-scribe-plan-end-date plan))
+                   (pct     (if (> target 0)
+                                (* 100.0 (/ (float current) target))
+                              0.0))
+                   (days-rem (org-scribe--health-days-until end))
+                   (status  (org-scribe--health-plan-status plan)))
+              (insert (format "- Title :: %s\n" title))
+              (insert (format "- Target :: %d words\n" target))
+              (insert (format "- Current :: %d words (%.1f%%)\n" current pct))
+              (insert (format "- Daily target :: %d words\n" daily))
+              (insert (format "- End date :: %s\n" end))
+              (insert (format "- Days remaining :: %d\n" days-rem))
+              (insert (format "- Status :: %s\n" status))))
+           ;; Plan file exists but has not been loaded yet
+           ((plist-get structure :plan-file)
+            (insert (format "Plan file found at =%s= but not loaded.\n"
+                            (file-name-nondirectory (plist-get structure :plan-file))))
+            (insert "Run =M-x org-scribe-plan= to load it.\n"))
+           ;; No plan at all
+           (t
+            (insert "No active plan.  Create one with =M-x org-scribe-plan=.\n")))
+          (insert "\n"))
 
         ;; ── Scene status breakdown ────────────────────────────────────────────
         (insert "* Scenes by Status\n\n")

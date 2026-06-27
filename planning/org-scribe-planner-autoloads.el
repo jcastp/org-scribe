@@ -38,6 +38,12 @@ cumulative progress so far." t)
 If no plan is active, prompt to load one." t)
 (autoload 'org-scribe-planner-current-plan-info "org-scribe-planner"
 "Show information about the currently active plan." t)
+(autoload 'org-scribe-plan "org-scribe-planner"
+"Open the writing plan for the current org-scribe project.
+If a plan is already active, show its calendar.  If a plan file exists
+for the current project but is not yet loaded, load it silently first.
+If no plan file exists, offer to create one.  Falls back to
+`org-scribe-planner-show-current-plan' when not inside an org-scribe project." t)
 (register-definition-prefixes "org-scribe-planner" '("org-scribe-planner-"))
 
 

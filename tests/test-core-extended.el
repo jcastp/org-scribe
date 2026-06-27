@@ -196,6 +196,21 @@ Clears the project type cache before and after."
       (should (string-suffix-p "objects/localizaciones.org"
                                (plist-get structure :locations-file))))))
 
+(ert-deftest test-core-project-structure-plan-file-present ()
+  "Test that :plan-file is non-nil when plan.org exists."
+  (test-core--with-temp-project
+      '(("plan.org" . "# Writing plan\n"))
+    (let ((structure (org-scribe-project-structure)))
+      (should (plist-get structure :plan-file))
+      (should (string-suffix-p "plan.org" (plist-get structure :plan-file))))))
+
+(ert-deftest test-core-project-structure-plan-file-absent ()
+  "Test that :plan-file is nil when plan.org does not exist."
+  (test-core--with-temp-project
+      '(("novel.org" . "#+TITLE: Test\n"))
+    (let ((structure (org-scribe-project-structure)))
+      (should (null (plist-get structure :plan-file))))))
+
 ;;; org-scribe--find-existing-file Tests
 
 (ert-deftest test-core-find-existing-file-first ()

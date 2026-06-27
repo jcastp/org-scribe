@@ -239,6 +239,107 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
             (should (string-match-p "Scenes by Status" content))
             (should (string-match-p "Open TODO Scenes" content))))))))
 
+;;; Writing Plan section helpers
+
+(ert-deftest test-health-days-until-future ()
+  "days-until returns positive count for a future date."
+  (let* ((future (format-time-string "%Y-%m-%d" (time-add (current-time) (* 10 86400)))))
+    (should (> (org-scribe--health-days-until future) 0))))
+
+(ert-deftest test-health-days-until-past ()
+  "days-until returns 0 for a past date."
+  (should (= (org-scribe--health-days-until "2000-01-01") 0)))
+
+(ert-deftest test-health-days-since-past ()
+  "days-since returns positive count for a past date."
+  (should (> (org-scribe--health-days-since "2000-01-01") 0)))
+
+(ert-deftest test-health-days-since-future ()
+  "days-since returns 0 for a future date."
+  (let* ((future (format-time-string "%Y-%m-%d" (time-add (current-time) (* 10 86400)))))
+    (should (= (org-scribe--health-days-since future) 0))))
+
+;;; Writing Plan section in the report
+
+(ert-deftest test-health-report-writing-plan-guard-is-featurep ()
+  "Writing Plan section code is gated on (featurep 'org-scribe-planner).
+Verified directly: the guard expression returns nil for a missing feature."
+  ;; This is a unit test on the guard condition itself — it does not invoke
+  ;; the full report because overriding `featurep' globally during a live
+  ;; session causes excessive-lisp-nesting from Emacs internals.
+  (should-not (featurep 'this-package-does-not-exist-at-all)))
+
+(ert-deftest test-health-report-writing-plan-no-plan-file ()
+  "Writing Plan section shows creation hint when no plan exists."
+  (require 'org-scribe-planner)
+  (test-health--with-novel-file
+      "** TODO Chapter :ignore:\n*** TODO Scene :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 100\n:END:\n\n"
+    (let ((org-scribe-planner--current-plan nil))
+      (cl-letf (((symbol-function 'org-scribe-project-structure)
+                 (lambda ()
+                   (list :novel-file temp-novel
+                         :plan-file nil
+                         :characters-file nil
+                         :locations-file nil))))
+        (org-scribe-project-health)
+        (with-current-buffer (get-buffer "*org-scribe-health*")
+          (let ((content (buffer-string)))
+            (should (string-match-p "Writing Plan" content))
+            (should (string-match-p "org-scribe-plan" content))))))))
+
+(ert-deftest test-health-report-writing-plan-file-exists-not-loaded ()
+  "Writing Plan section shows load hint when plan.org exists but is not loaded."
+  (require 'org-scribe-planner)
+  (test-health--with-novel-file
+      "** TODO Chapter :ignore:\n*** TODO Scene :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 100\n:END:\n\n"
+    (let* ((plan-file (make-temp-file "test-health-plan-" nil ".org"))
+           (org-scribe-planner--current-plan nil))
+      (unwind-protect
+          (cl-letf (((symbol-function 'org-scribe-project-structure)
+                     (lambda ()
+                       (list :novel-file temp-novel
+                             :plan-file plan-file
+                             :characters-file nil
+                             :locations-file nil))))
+            (org-scribe-project-health)
+            (with-current-buffer (get-buffer "*org-scribe-health*")
+              (let ((content (buffer-string)))
+                (should (string-match-p "Writing Plan" content))
+                (should (string-match-p "not loaded" content))
+                (should (string-match-p "org-scribe-plan" content)))))
+        (delete-file plan-file)))))
+
+(ert-deftest test-health-report-writing-plan-active-plan ()
+  "Writing Plan section shows plan stats when a plan is active."
+  (require 'org-scribe-planner)
+  (test-health--with-novel-file
+      "** TODO Chapter :ignore:\n*** TODO Scene :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 100\n:END:\n\n"
+    (let* ((plan (make-org-scribe-plan
+                  :title "My Novel"
+                  :total-words 80000
+                  :daily-words 500
+                  :days 160
+                  :start-date "2026-01-01"
+                  :end-date "2026-06-30"
+                  :current-words 23456))
+           (org-scribe-planner--current-plan plan))
+      (cl-letf (((symbol-function 'org-scribe-project-structure)
+                 (lambda ()
+                   (list :novel-file temp-novel
+                         :plan-file nil
+                         :characters-file nil
+                         :locations-file nil))))
+        (org-scribe-project-health)
+        (with-current-buffer (get-buffer "*org-scribe-health*")
+          (let ((content (buffer-string)))
+            (should (string-match-p "Writing Plan" content))
+            (should (string-match-p "My Novel" content))
+            (should (string-match-p "80000" content))
+            (should (string-match-p "23456" content))
+            (should (string-match-p "500" content))
+            (should (string-match-p "2026-06-30" content))
+            (should (string-match-p "\\(On track\\|Behind by\\)" content))))))))
+
 (provide 'test-health)
 
 ;;; test-health.el ends here

@@ -285,6 +285,16 @@
                 (message "Warning: Template directory not found at %s"
                         org-scribe-template-directory)))))
 
+(ert-deftest test-template-plan-org-present-in-all-templates ()
+  "Every template directory ships a plan.org placeholder."
+  ;; org-scribe-template-directory = <repo>/org-scribe-templates/novel-en
+  ;; Its parent is the org-scribe-templates/ root.
+  (let ((templates-root (file-name-directory
+                         (directory-file-name org-scribe-template-directory))))
+    (dolist (dir '("novel-en" "novel-es" "short-story-en" "short-story-es"))
+      (let ((plan (expand-file-name "plan.org" (expand-file-name dir templates-root))))
+        (should (file-exists-p plan))))))
+
 ;;; Run tests
 
 (defun org-scribe-project-run-tests ()
