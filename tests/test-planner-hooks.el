@@ -532,4 +532,51 @@ Cleans up the temp file unconditionally."
           (should picker-called))
       (delete-directory temp-dir t))))
 
+;;; Regression: update-daily-word-count refreshes calendar even when user declines recalculation
+
+(ert-deftest test-planner-hooks-update-daily-count-shows-calendar-on-no ()
+  "update-daily-word-count refreshes the calendar even when user declines recalculation.
+Regression: count was saved but calendar not refreshed, making it appear lost."
+  (test-hooks--with-plan-file plan file
+    (let ((calendar-calls 0)
+          (recalc-calls 0)
+          (org-scribe-planner--current-plan plan)
+          (org-scribe-planner--current-plan-file file))
+      (cl-letf (((symbol-function 'completing-read)
+                 (lambda (&rest _) "2026-01-05"))
+                ((symbol-function 'org-scribe-planner--read-non-negative-number)
+                 (lambda (&rest _) 300))
+                ((symbol-function 'read-string) (lambda (&rest _) ""))
+                ((symbol-function 'y-or-n-p) (lambda (&rest _) nil)) ; user says NO
+                ((symbol-function 'org-scribe-planner-recalculate-remaining-days)
+                 (lambda (&rest _) (cl-incf recalc-calls)))
+                ((symbol-function 'org-scribe-planner-show-calendar)
+                 (lambda (&rest _) (cl-incf calendar-calls))))
+        (org-scribe-planner-update-daily-word-count))
+      ;; Count must be registered
+      (should (assoc "2026-01-05" (org-scribe-plan-daily-word-counts
+                                   org-scribe-planner--current-plan)))
+      ;; Calendar must refresh even though recalculation was declined
+      (should (= 1 calendar-calls))
+      (should (= 0 recalc-calls)))))
+
+(ert-deftest test-planner-hooks-update-daily-count-recalculates-on-yes ()
+  "update-daily-word-count calls recalculate-remaining-days when user confirms."
+  (test-hooks--with-plan-file plan file
+    (let ((recalc-calls 0)
+          (org-scribe-planner--current-plan plan)
+          (org-scribe-planner--current-plan-file file))
+      (cl-letf (((symbol-function 'completing-read)
+                 (lambda (&rest _) "2026-01-05"))
+                ((symbol-function 'org-scribe-planner--read-non-negative-number)
+                 (lambda (&rest _) 300))
+                ((symbol-function 'read-string) (lambda (&rest _) ""))
+                ((symbol-function 'y-or-n-p) (lambda (&rest _) t)) ; user says YES
+                ((symbol-function 'org-scribe-planner-recalculate-remaining-days)
+                 (lambda (&rest _) (cl-incf recalc-calls)))
+                ((symbol-function 'org-scribe-planner-show-calendar)
+                 (lambda (&rest _) nil)))
+        (org-scribe-planner-update-daily-word-count))
+      (should (= 1 recalc-calls)))))
+
 ;;; test-hooks.el ends here

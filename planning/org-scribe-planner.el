@@ -1552,9 +1552,11 @@ intact so real progress data is never discarded."
       ;; Run hook with plan, daily count, and date
       (run-hook-with-args 'org-scribe-planner-after-progress-update-hook plan word-count date)
 
-      ;; Ask if user wants to recalculate future targets based on cumulative progress
-      (when (y-or-n-p "Would you like to recalculate the remaining plan based on your progress? ")
-        (org-scribe-planner-recalculate-remaining-days plan file)))))
+      ;; Ask if user wants to recalculate future targets based on cumulative progress.
+      ;; Either way, refresh the calendar so the new count is immediately visible.
+      (if (y-or-n-p "Would you like to recalculate the remaining plan based on your progress? ")
+          (org-scribe-planner-recalculate-remaining-days plan file)
+        (org-scribe-planner-show-calendar plan file)))))
 
 ;;;###autoload
 (defun org-scribe-planner-today ()
