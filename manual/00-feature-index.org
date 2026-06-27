@@ -28,7 +28,7 @@ This package organizes features into the following categories:
 11. [[#analysis-tools][Analysis Tools]] - Project health report and aggregated statistics
 12. [[#ui-navigation][UI & Navigation]] - Hydra menu and keybindings
 13. [[#configuration][Configuration]] - Customization options
-14. [[#integrations][Third-Party Integrations]] - Optional connections to companion packages
+14. [[#integrations][Writing Planner]] - Bundled goal-oriented writing plan module
 
 * Project Management
 :PROPERTIES:
@@ -637,25 +637,59 @@ Defines the regexp pattern used by ~org-scribe/search-edits-recursive~ to find i
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~search/org-scribe-search.el~
 
-* Third-Party Integrations
+* Writing Planner
 :PROPERTIES:
 :CUSTOM_ID: integrations
 :END:
 
-** org-scribe-planner Integration (~org-scribe-planner-integration~)
+** Bundled Writing Planner (~org-scribe-planner~)
 
-An optional bridge module that connects ~org-scribe~ to the companion ~org-scribe-planner~ package for goal-oriented writing plans. The module lives at ~integration/org-scribe-planner-integration.el~ and is *not loaded automatically*. Enable it with:
+A complete goal-oriented writing planner bundled directly inside ~org-scribe~ at ~planning/org-scribe-planner.el~. No separate installation is required. All public commands carry ~;;;###autoload~ cookies, so they are available as soon as the package is installed without any extra ~require~ in the user's init file. When first invoked, the planner loads on demand and wires itself into org-scribe automatically.
+
+Features provided: (1) auto-load the project's plan file when any project file is opened; (2) push live word counts to the plan after running ~org-scribe-ews-org-count-words~; (3) wire the planner's word count function to read ~WORDCOUNT~ properties from the manuscript; (4) set the planner's project-root function so file pickers start at the current project root; (5) offer plan creation after ~org-scribe-create-novel-project~ / ~org-scribe-create-short-story-project~; (6) add a planner sub-hydra accessible via ~W~ in the main Hydra menu; (7) show today's target/actual in the mode line as ~[W:actual/target]~.
+
+Integration features are on by default. To opt out, set any of the following variables *before* the planner first loads (e.g. in ~early-init.el~):
 
 #+BEGIN_SRC emacs-lisp
+(setq org-scribe-planner-auto-load-plan nil)
+(setq org-scribe-planner-auto-push-wordcount nil)
+(setq org-scribe-planner-offer-plan-on-create nil)
+(setq org-scribe-planner-show-mode-line nil)
+#+END_SRC
+
+*Status*: Fully implemented | *Hydra*: ~W~ sub-menu (hidden from hint) | *Module*: ~planning/org-scribe-planner.el~
+
+See [[file:getting-started-16-planner-integration.org][Lesson 16]] for a step-by-step tutorial.
+
+** Unified Plan Entry Point (~org-scribe-plan~)
+
+A single autoloaded command that dispatches based on project state: shows the plan calendar if a plan is already active; loads the plan file silently and shows the calendar if a valid plan file exists for the current project but is not yet loaded; offers to create a plan if none exists; falls back to ~org-scribe-planner-show-current-plan~ when not inside an org-scribe project. Accessible via ~F8 F8 W p~.
+
+*Status*: Fully implemented | *Hydra*: ~W p~ | *Module*: ~planning/org-scribe-planner.el~
+
+** Plan File Auto-Discovery
+
+When any project file is opened, the planner locates the plan file using a four-step search: (0) path cached in ~.org-scribe-project~ as a ~# Plan:~ line — written automatically after the first load, making subsequent lookups instant; (1) ~<root>/plan.org~; (2) ~<root>/<project-title>-plan.org~; (3) any ~.org~ file in the root containing a ~TOTAL_WORDS~ property. Once found via steps 1-3, the path is persisted back to ~.org-scribe-project~ so future lookups use step 0.
+
+*Status*: Fully implemented | *Hydra*: N/A (automatic) | *Module*: ~planning/org-scribe-planner.el~
+
+** Plan Dashboards (~org-scribe-planner-dashboards~)
+
+Progress visualisations loaded on demand from ~planning/org-scribe-planner-dashboards.el~. Provides progress charts, burndown graphs (ASCII, SVG, gnuplot), velocity analysis, cumulative progress, performance analytics, multi-metric dashboards, and heatmaps. Accessible via ~F8 F8 W D~ (Dashboards menu). Has no startup cost when unused.
+
+*Status*: Fully implemented | *Hydra*: ~W D~ | *Module*: ~planning/org-scribe-planner-dashboards.el~
+
+** Deprecated: org-scribe-planner-integration (~integration/org-scribe-planner-integration.el~)
+
+A no-op compatibility shim retained for users who previously loaded the integration module explicitly. Loading it prints a deprecation message and exits immediately. Users should remove the following snippet from their init files:
+
+#+BEGIN_SRC emacs-lisp
+;; Remove this — the integration is now built into the planner module
 (with-eval-after-load 'org-scribe-planner
   (require 'org-scribe-planner-integration))
 #+END_SRC
 
-Features provided: (1) auto-load the project's plan file when any project file is opened; (2) push live word counts to the plan after running ~org-scribe/ews-org-count-words~; (3) wire the planner's word count function to read ~WORDCOUNT~ properties from the manuscript; (4) set the planner's project-root function so file pickers start at the current project root; (5) offer plan creation after ~org-scribe-create-novel-project~ / ~org-scribe-create-short-story-project~; (6) add a planner sub-hydra accessible via ~W~ in the main Hydra menu; (7) show today's target/actual in the mode line as ~[W:actual/target]~. Each feature is independently disabable.
-
-*Status*: Fully implemented (requires org-scribe-planner) | *Hydra*: ~W~ sub-menu (hidden from hint) | *Module*: ~integration/org-scribe-planner-integration.el~
-
-See [[file:getting-started-16-planner-integration.org][Lesson 16]] for a step-by-step tutorial.
+*Status*: Deprecated (no-op shim, will be removed in next major release) | *Module*: ~integration/org-scribe-planner-integration.el~
 
 * Feature Statistics
 
@@ -676,12 +710,13 @@ See [[file:getting-started-16-planner-integration.org][Lesson 16]] for a step-by
 | Analysis Tools            |             1 |
 | UI & Navigation           |             6 |
 | Configuration             |            15 |
+| Writing Planner           |             4 |
 |---------------------------+---------------|
-| *Total Features*          |            88 |
+| *Total Features*          |            92 |
 
 ** Implementation Status
 
-All 88 features are fully implemented and tested. The package is in active use and stable (version 0.4.0).
+All 92 features are fully implemented and tested. The package is in active use and stable (version 0.4.0).
 
 * Next Steps
 
@@ -719,7 +754,7 @@ manual/
 * Document Metadata
 
 - *Created*: 2025-11-16
-- *Last Updated*: 2026-04-03
+- *Last Updated*: 2026-06-28
 - *Package Version*: 0.4.0
-- *Total Features Documented*: 89 (88 core + 1 optional integration)
+- *Total Features Documented*: 92 (88 core + 4 bundled planner)
 - *Status*: Complete feature extraction, ready for detailed documentation
