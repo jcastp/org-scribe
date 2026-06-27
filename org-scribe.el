@@ -93,6 +93,17 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            (org-scribe-compat      . "core/org-scribe-compat")))
   (org-scribe--require (car module) (cdr module)))
 
+;; The writing planner (planning/org-scribe-planner.el) is NOT loaded here.
+;; All its public commands carry ;;;###autoload cookies and are available
+;; immediately after install without any explicit require.  When called,
+;; they load planning/org-scribe-planner.el on demand, which in turn wires
+;; itself into org-scribe via (with-eval-after-load 'org-scribe ...).
+;; To disable individual integration features before the planner loads:
+;;   (setq org-scribe-planner-auto-load-plan nil)   ; no auto-load on project open
+;;   (setq org-scribe-planner-auto-push-wordcount nil) ; no push after word count
+;;   (setq org-scribe-planner-offer-plan-on-create nil) ; no prompt on new project
+;;   (setq org-scribe-planner-show-mode-line nil)   ; no [W:n/n] in mode line
+
 ;;;###autoload
 (defun org-scribe-version ()
   "Display org-scribe version."

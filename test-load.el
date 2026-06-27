@@ -31,7 +31,8 @@
   (add-to-list 'load-path (expand-file-name "linking" default-directory))
   (add-to-list 'load-path (expand-file-name "export" default-directory))
   (add-to-list 'load-path (expand-file-name "reporting" default-directory))
-  (add-to-list 'load-path (expand-file-name "ui" default-directory)))
+  (add-to-list 'load-path (expand-file-name "ui" default-directory))
+  (add-to-list 'load-path (expand-file-name "planning" default-directory)))
 
 ;; Try to load the package
 (message "Testing org-scribe package load...")

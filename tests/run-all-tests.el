@@ -48,7 +48,8 @@
   (let ((default-directory (file-name-directory (directory-file-name tests-dir))))
     ;; Add all module directories to load path
     (dolist (dir '("." "core" "counting" "templates" "modes" "search"
-                   "language" "capture" "linking" "export" "reporting" "ui"))
+                   "language" "capture" "linking" "export" "reporting" "ui"
+                   "planning"))
       (add-to-list 'load-path (expand-file-name dir default-directory)))))
 
 ;;; Load test files
@@ -72,7 +73,16 @@
     "test-export"                  ; Export filters
     "test-dictionary"              ; Dictionary and language tools
     "test-health"                  ; Project health report
-    "test-overlays")               ; Entity tooltip system
+    "test-overlays"                ; Entity tooltip system
+    ;; Writing planner (planning/org-scribe-planner.el)
+    "test-planner-calculation"     ; Calculation engine
+    "test-planner-io"              ; Plan save/load round-trips
+    "test-planner-schedule"        ; Schedule generation and date helpers
+    "test-planner-milestones"      ; Milestone tracking
+    "test-planner-data-helpers"    ; Daily-count data helpers
+    "test-planner-dates"           ; Date validation
+    "test-planner-buffer-safety"   ; Buffer erase safety
+    "test-planner-hooks")          ; Integration hooks and pluggable fn-vars
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
@@ -194,6 +204,22 @@ Suitable for CI/CD pipelines and automated testing."
   (ert "^test-export-\\|^test-scene-break-"))
 
 ;;;###autoload
+(defun org-scribe-run-planner-tests ()
+  "Run all writing planner tests."
+  (interactive)
+  (let ((tests-dir (file-name-directory (or load-file-name buffer-file-name))))
+    (dolist (file '("test-planner-calculation"
+                    "test-planner-io"
+                    "test-planner-schedule"
+                    "test-planner-milestones"
+                    "test-planner-data-helpers"
+                    "test-planner-dates"
+                    "test-planner-buffer-safety"
+                    "test-planner-hooks"))
+      (load-file (expand-file-name (concat file ".el") tests-dir))))
+  (ert "^test-planner-"))
+
+;;;###autoload
 (defun org-scribe-run-wordcount-tests ()
   "Run word counting tests only.
 Note: Requires org-context-extended to be installed."
@@ -250,6 +276,8 @@ Note: Requires org-context-extended to be installed."
              (length (ert-select-tests "^org-scribe-test-wordcount-" t)))
     (message "  - Dictionary:          %d tests"
              (length (ert-select-tests "^test-dictionary-" t)))
+    (message "  - Writing planner:     %d tests"
+             (length (ert-select-tests "^test-planner-" t)))
     (message "=========================================")))
 
 ;;; Batch mode entry point

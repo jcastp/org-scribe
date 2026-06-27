@@ -79,6 +79,8 @@
 (declare-function org-scribe-overlays-mode "linking/org-scribe-overlays")
 ;; project health report
 (declare-function org-scribe-project-health "reporting/org-scribe-health")
+;; planner submenu (optional — only present when org-scribe-planner is loaded)
+(declare-function hydra-org-scribe-planner/body "planning/org-scribe-planner")
 
 ;;;###autoload (autoload 'hydra-org-scribe-capture/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe-capture (:color blue :hint nil)
@@ -192,6 +194,13 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary     _3_: 
 
   ;; Exit
   ("q" nil "quit"))
+
+;; Wire W → planner submenu once the planner module is loaded.
+;; The binding is not shown in the main hydra hint; press W to access it.
+(with-eval-after-load 'org-scribe-planner
+  (when (boundp 'hydra-org-scribe/keymap)
+    (define-key hydra-org-scribe/keymap (kbd "W")
+      #'hydra-org-scribe-planner/body)))
 
 (provide 'org-scribe-hydra)
 

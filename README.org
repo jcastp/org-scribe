@@ -62,7 +62,7 @@
 - *Project Health Report*: =org-scribe-project-health= aggregates word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
 - *Hydra Menu*: Unified keyboard-driven menu for quick access to all functions
-- *org-scribe-planner Integration* (optional): Connect writing goal planning to your manuscript — auto-loads plans, pushes live word counts, and adds a planner sub-menu at =W=
+- *Writing Planner* (bundled): Connect writing goal planning to your manuscript — auto-loads plans, pushes live word counts, shows daily progress in the mode line, and adds a planner sub-menu at =W=. Available automatically; no separate install needed.
 
 ** Bilingual Support
 
@@ -109,7 +109,6 @@ active and which are missing, with install hints.
 - [[https://github.com/lorniu/gt.el][gt]] - For translation support
 - [[https://github.com/SavchenkoValeriy/emacs-powerthesaurus][powerthesaurus]] - For English thesaurus
 - [[https://github.com/nobiot/org-remark][org-remark]] - For text annotations
-- [[https://codeberg.org/jcastp/org-scribe-planner][org-scribe-planner]] - For writing goal planning (see [[*org-scribe-planner Integration][Integration section]])
 
 ** From Source
 
@@ -1160,7 +1159,7 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 - =P= - Plot thread linking submenu
 - =U= - Update all link names (all types)
 - =H= - Project health report
-- =W= - Writing plan submenu (requires org-scribe-planner integration)
+- =W= - Writing plan submenu (available once the planner loads on first use)
 
 **** Character Linking Submenu (F8 F8 C)
 
@@ -1207,47 +1206,41 @@ The hydra menu provides quick access to all functions organized into 6 columns:
 - =r= - Health report
 - =S= - Statistics
 
-* org-scribe-planner Integration
+* Writing Planner
 
 ** Overview
 
-[[https://codeberg.org/jcastp/org-scribe-planner][org-scribe-planner]] is a companion package for writing goal planning (daily targets, milestones, progress dashboards). The integration module =integration/org-scribe-planner-integration.el= bridges the two packages so that word counts, project roots, and plan files are shared automatically.
+org-scribe includes a full writing planner in =planning/org-scribe-planner.el=. It is *bundled and available automatically* — no separate install, no init.el glue required. All planner commands carry autoload cookies, so they load on first use with zero startup cost when unused.
 
-This module is *not loaded automatically*. To enable it, add the following to your init file after both packages are loaded:
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org-scribe
-    (require 'org-scribe-planner-integration
-             (expand-file-name "integration/org-scribe-planner-integration"
-                               (file-name-directory (locate-library "org-scribe")))))
-#+end_src
+If you previously installed [[https://codeberg.org/jcastp/org-scribe-planner][org-scribe-planner]] as a standalone package and loaded =integration/org-scribe-planner-integration.el=, you can remove that snippet from your init file. Loading it is harmless (it became a no-op shim), but unnecessary.
 
 ** What It Does
 
 *** 1. Auto-load the Plan on Project Open
 
-When you open any file inside an org-scribe project, the integration looks for a matching plan file and loads it silently. Search order:
+When you enter an org-scribe project, the planner silently looks for a matching plan file and loads it. Search order:
 
+0. Path recorded in =.org-scribe-project= (written automatically after the first load — fastest)
 1. =<project-root>/plan.org=
 2. =<project-root>/<title>-plan.org= (title read from =.org-scribe-project=)
-3. Any single =.org= file in the project root that contains a =TOTAL_WORDS= property
+3. Any =.org= file in the project root that contains a =TOTAL_WORDS= property
 
 *** 2. Live Word Count Bridge
 
 - =org-scribe-planner-update-progress= reads totals directly from =WORDCOUNT= properties in the manuscript — no manual prompt.
-- After running =org-scribe-ews-org-count-words= (=F8 F8 a=), the active plan is updated automatically and saved silently.
+- After running =org-scribe-ews-org-count-words= (=F8 F8 a=), the active plan is updated and saved silently.
 
 *** 3. Project-Aware File Picker
 
-When loading a plan via =org-scribe-planner-load-plan=, the file picker opens at the current project root instead of the default directory.
+When loading a plan via =org-scribe-planner-load-plan=, the file picker opens at the current project root.
 
 *** 4. Plan Creation on Project Creation
 
-After creating a new novel or short story project, you are offered the option to create a matching writing plan immediately via =org-scribe-planner-new-plan=.
+After creating a new novel or short story project, you are offered the option to create a matching writing plan immediately.
 
 *** 5. Planner Hydra Sub-menu (=W=)
 
-Press =F8 F8 W= to open the planner sub-menu:
+Press =F8 F8 W= to open the planner sub-menu (available once the planner has loaded):
 
 - =p= - Show current plan calendar
 - =n= - New plan
@@ -1264,24 +1257,15 @@ Press =F8 F8 W= to open the planner sub-menu:
 
 When a plan is active, the mode line shows today's progress: =[W:actual/target]=.
 
-** Disabling Individual Features
+** Opting Out of Individual Features
 
-Each feature is independent. To turn one off:
+Set these variables before the planner first loads (e.g., in =early-init.el=):
 
 #+begin_src emacs-lisp
-;; Stop auto-loading plans on project open:
-(remove-hook 'org-scribe-mode-hook
-             #'org-scribe-planner-integration--auto-load-plan)
-
-;; Disable automatic progress update after word counting:
-(advice-remove 'org-scribe-ews-org-count-words
-               #'org-scribe-planner-integration--after-wordcount)
-
-;; Revert to manual prompt in update-progress:
-(setq org-scribe-planner-wordcount-function nil)
-
-;; Revert to default directory in load-plan file picker:
-(setq org-scribe-planner-project-root-function nil)
+(setq org-scribe-planner-auto-load-plan nil)      ; no auto-load on project open
+(setq org-scribe-planner-auto-push-wordcount nil) ; no push after word count
+(setq org-scribe-planner-offer-plan-on-create nil); no prompt on new project
+(setq org-scribe-planner-show-mode-line nil)      ; no [W:n/n] in mode line
 #+end_src
 
 * Contributing
