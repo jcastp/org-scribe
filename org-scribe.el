@@ -93,11 +93,14 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            (org-scribe-compat      . "core/org-scribe-compat")))
   (org-scribe--require (car module) (cdr module)))
 
-;; The writing planner (planning/org-scribe-planner.el) is NOT loaded here.
-;; All its public commands carry ;;;###autoload cookies and are available
-;; immediately after install without any explicit require.  When called,
-;; they load planning/org-scribe-planner.el on demand, which in turn wires
-;; itself into org-scribe via (with-eval-after-load 'org-scribe ...).
+;; Writing planner (planning/org-scribe-planner.el) — lazy-loaded via autoloads.
+;; Adding planning/ to load-path lets the autoload entries (which use bare
+;; feature names like "org-scribe-planner") resolve correctly.  Loading the
+;; autoloads file registers every ;;;###autoload command so they appear in
+;; M-x and are callable without an explicit (require 'org-scribe-planner).
+(let ((planning-dir (expand-file-name "planning" org-scribe--source-directory)))
+  (add-to-list 'load-path planning-dir)
+  (load (expand-file-name "org-scribe-planner-autoloads" planning-dir) nil :nomessage))
 ;; To disable individual integration features before the planner loads:
 ;;   (setq org-scribe-planner-auto-load-plan nil)   ; no auto-load on project open
 ;;   (setq org-scribe-planner-auto-push-wordcount nil) ; no push after word count
