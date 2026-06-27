@@ -145,7 +145,8 @@ _c_: Chapter     _f_: Focus       _h_: Characters      _r_: Track table    _2_: 
 _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary     _3_: Plot         _L_: Links & upkeep…
 ^^               _v_: Navigate    _g_: Plot threads    _y_: Synonyms       _4_: Location     _R_: Relink project
 ^^               _0_: Normal      _j_: Jump to PoV     _x_: Thesaurus      _5_: TODOs        _H_: Health report
-^^               ^^               ^^                   ^^                  _6_: Edits        _q_: Quit
+^^               ^^               ^^                   ^^                  _6_: Edits        _W_: Planner…
+^^               ^^               ^^                   ^^                  ^^                _q_: Quit
 "
   ;; Insert (most frequent)
   ("s" org-scribe-insert-scene "insert scene")
@@ -191,16 +192,14 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary     _3_: 
   ("L" hydra-org-scribe-links/body "links & upkeep")
   ("R" org-scribe-relink-project "relink project")
   ("H" org-scribe-project-health "project health report")
+  ("W" (lambda ()
+         (interactive)
+         (require 'org-scribe-planner)
+         (hydra-org-scribe-planner/body))
+   "planner")
 
   ;; Exit
   ("q" nil "quit"))
-
-;; Wire W → planner submenu once the planner module is loaded.
-;; The binding is not shown in the main hydra hint; press W to access it.
-(with-eval-after-load 'org-scribe-planner
-  (when (boundp 'hydra-org-scribe/keymap)
-    (define-key hydra-org-scribe/keymap (kbd "W")
-      #'hydra-org-scribe-planner/body)))
 
 (provide 'org-scribe-hydra)
 
