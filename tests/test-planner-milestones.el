@@ -12,41 +12,50 @@
 ;;; --compute-recalculation-data
 
 (ert-deftest test-planner-recalc-data-no-entries ()
-  "With no daily entries, cumulative-actual is 0 and all days are remaining."
-  (let* ((plan (make-org-scribe-plan
-                :total-words 4000 :daily-words 1000 :days 4
-                :start-date "2024-11-01" :end-date "2024-11-04"
-                :spare-days nil :daily-word-counts nil))
-         (data (org-scribe-planner--compute-recalculation-data plan)))
-    (should (= (plist-get data :cumulative-actual) 0))
-    (should (= (plist-get data :remaining-words) 4000))
-    (should (= (plist-get data :remaining-days) 4))))
+  "With no daily entries, cumulative-actual is 0 and all days are remaining.
+Stubs today to a date before the plan so all plan days count as future."
+  (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
+             (lambda () "2024-10-31")))
+    (let* ((plan (make-org-scribe-plan
+                  :total-words 4000 :daily-words 1000 :days 4
+                  :start-date "2024-11-01" :end-date "2024-11-04"
+                  :spare-days nil :daily-word-counts nil))
+           (data (org-scribe-planner--compute-recalculation-data plan)))
+      (should (= (plist-get data :cumulative-actual) 0))
+      (should (= (plist-get data :remaining-words) 4000))
+      (should (= (plist-get data :remaining-days) 4)))))
 
 (ert-deftest test-planner-recalc-data-with-entries ()
-  "Entries for 2 of 4 days yield correct cumulative, remaining, and remaining-days."
-  (let* ((plan (make-org-scribe-plan
-                :total-words 4000 :daily-words 1000 :days 4
-                :start-date "2024-11-01" :end-date "2024-11-04"
-                :spare-days nil
-                :daily-word-counts
-                '(("2024-11-01" . (:words 800 :note "" :target 1000))
-                  ("2024-11-02" . (:words 1200 :note "" :target 1000)))))
-         (data (org-scribe-planner--compute-recalculation-data plan)))
-    (should (= (plist-get data :cumulative-actual) 2000))
-    (should (= (plist-get data :remaining-words) 2000))
-    ;; Nov 3 and Nov 4 have no entries and are not spare days
-    (should (= (plist-get data :remaining-days) 2))))
+  "Entries for 2 of 4 days yield correct cumulative, remaining, and remaining-days.
+Stubs today to a date before the plan so Nov 3 and 4 count as future."
+  (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
+             (lambda () "2024-10-31")))
+    (let* ((plan (make-org-scribe-plan
+                  :total-words 4000 :daily-words 1000 :days 4
+                  :start-date "2024-11-01" :end-date "2024-11-04"
+                  :spare-days nil
+                  :daily-word-counts
+                  '(("2024-11-01" . (:words 800 :note "" :target 1000))
+                    ("2024-11-02" . (:words 1200 :note "" :target 1000)))))
+           (data (org-scribe-planner--compute-recalculation-data plan)))
+      (should (= (plist-get data :cumulative-actual) 2000))
+      (should (= (plist-get data :remaining-words) 2000))
+      ;; Nov 3 and Nov 4 have no entries and are not spare days
+      (should (= (plist-get data :remaining-days) 2)))))
 
 (ert-deftest test-planner-recalc-data-spare-days-not-counted-as-remaining ()
-  "Spare days without entries are excluded from remaining-days."
-  (let* ((plan (make-org-scribe-plan
-                :total-words 3000 :daily-words 1000 :days 4
-                :start-date "2024-11-01" :end-date "2024-11-04"
-                :spare-days '("2024-11-02")  ; Nov 2 is spare
-                :daily-word-counts nil))
-         (data (org-scribe-planner--compute-recalculation-data plan)))
-    ;; Nov 1, 3, 4 are working days with no entries → 3 remaining
-    (should (= (plist-get data :remaining-days) 3))))
+  "Spare days without entries are excluded from remaining-days.
+Stubs today to a date before the plan so all working days count as future."
+  (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
+             (lambda () "2024-10-31")))
+    (let* ((plan (make-org-scribe-plan
+                  :total-words 3000 :daily-words 1000 :days 4
+                  :start-date "2024-11-01" :end-date "2024-11-04"
+                  :spare-days '("2024-11-02")  ; Nov 2 is spare
+                  :daily-word-counts nil))
+           (data (org-scribe-planner--compute-recalculation-data plan)))
+      ;; Nov 1, 3, 4 are working days with no entries → 3 remaining
+      (should (= (plist-get data :remaining-days) 3)))))
 
 (ert-deftest test-planner-recalc-data-note-only-entries-not-counted ()
   "Note-only spare day entries (no :words) do not contribute to cumulative-actual."

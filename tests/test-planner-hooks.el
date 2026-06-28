@@ -560,10 +560,12 @@ Regression: count was saved but calendar not refreshed, making it appear lost."
       (should (= 1 calendar-calls))
       (should (= 0 recalc-calls)))))
 
-(ert-deftest test-planner-hooks-update-daily-count-recalculates-on-yes ()
-  "update-daily-word-count calls recalculate-remaining-days when user confirms."
+(ert-deftest test-planner-hooks-add-session-note-never-recalculates ()
+  "add-session-note always shows the calendar; it has no recalculation prompt.
+The old update-daily-word-count alias must exhibit the same behaviour."
   (test-hooks--with-plan-file plan file
     (let ((recalc-calls 0)
+          (calendar-calls 0)
           (org-scribe-planner--current-plan plan)
           (org-scribe-planner--current-plan-file file))
       (cl-letf (((symbol-function 'completing-read)
@@ -571,13 +573,15 @@ Regression: count was saved but calendar not refreshed, making it appear lost."
                 ((symbol-function 'org-scribe-planner--read-non-negative-number)
                  (lambda (&rest _) 300))
                 ((symbol-function 'read-string) (lambda (&rest _) ""))
-                ((symbol-function 'y-or-n-p) (lambda (&rest _) t)) ; user says YES
                 ((symbol-function 'org-scribe-planner-recalculate-remaining-days)
                  (lambda (&rest _) (cl-incf recalc-calls)))
                 ((symbol-function 'org-scribe-planner-show-calendar)
-                 (lambda (&rest _) nil)))
-        (org-scribe-planner-update-daily-word-count))
-      (should (= 1 recalc-calls)))))
+                 (lambda (&rest _) (cl-incf calendar-calls))))
+        (org-scribe-planner-add-session-note))
+      ;; No recalculation prompt — always zero
+      (should (= 0 recalc-calls))
+      ;; Calendar is always refreshed
+      (should (= 1 calendar-calls)))))
 
 ;;; Tests for --sum-wordcounts (double-counting regression)
 
