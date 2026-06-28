@@ -84,6 +84,15 @@
   :type 'string
   :group 'org-scribe-planner)
 
+(defcustom org-scribe-planner-auto-track-daily t
+  "When non-nil, automatically populate DAILY_WORD_COUNTS on every manuscript save.
+The first save of each day seeds the day baseline; subsequent saves for that
+day accumulate the net word delta.  Set to nil to keep the old behaviour where
+only CURRENT_WORDS is updated automatically and daily entries must be entered
+by hand with `org-scribe-planner-today'."
+  :type 'boolean
+  :group 'org-scribe-planner)
+
 (defcustom org-scribe-planner-streak-grace-days 2
   "Number of days without a new entry before a writing streak is broken.
 A value of 2 means the streak survives if the last logged entry was
@@ -145,7 +154,9 @@ or nil if no project is active.")
   (spare-days nil :type list)    ; List of dates in "YYYY-MM-DD" format
   (current-words 0 :type number)
   (org-heading-marker nil)       ; Marker to org heading
-  (daily-word-counts nil :type list)) ; Alist of (date . plist) where plist has :words :note :target
+  (daily-word-counts nil :type list) ; Alist of (date . plist) where plist has :words :note :target
+  (sync-date nil :type string)   ; "YYYY-MM-DD" — manuscript total at day-start was set on this date
+  (sync-words 0 :type number))   ; Manuscript total when today's baseline was seeded
 
 ;;; Core Calculation Functions
 
@@ -812,6 +823,20 @@ the cached schedule without re-iterating the date range."
 
 ;;; Org-mode Integration
 
+(defun org-scribe-planner--split-daily-counts-str (str)
+  "Split STR into individual daily-count entry strings.
+Splits only on commas that are immediately followed by a date pattern
+\\(YYYY-MM-DD:DIGIT\\), so commas inside note text are preserved."
+  (let ((result nil)
+        (start 0))
+    (while (string-match ",\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}:[0-9]\\)" str start)
+      (let ((comma-pos (match-beginning 0))
+            (date-pos  (match-beginning 1)))
+        (push (string-trim (substring str start comma-pos)) result)
+        (setq start date-pos)))
+    (push (string-trim (substring str start)) result)
+    (nreverse (cl-remove-if #'string-empty-p result))))
+
 (defun org-scribe-planner--parse-schedule-table ()
   "Parse the Schedule table in the current buffer and extract notes.
 Returns an alist of (date . note) pairs for entries with notes."
@@ -953,6 +978,10 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
         (org-set-property "END_DATE" (org-scribe-plan-end-date plan))
         (org-set-property "CURRENT_WORDS" (number-to-string (org-scribe-plan-current-words plan)))
 
+        (when (org-scribe-plan-sync-date plan)
+          (org-set-property "SYNC_DATE" (org-scribe-plan-sync-date plan))
+          (org-set-property "SYNC_WORDS" (number-to-string (org-scribe-plan-sync-words plan))))
+
         (when (org-scribe-plan-spare-days plan)
           (org-set-property "SPARE_DAYS" (mapconcat #'identity (org-scribe-plan-spare-days plan) ",")))
 
@@ -1050,6 +1079,11 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
       (setf (org-scribe-plan-current-words plan)
             (string-to-number (or (org-entry-get nil "CURRENT_WORDS") "0")))
 
+      (setf (org-scribe-plan-sync-date plan)
+            (org-entry-get nil "SYNC_DATE"))
+      (setf (org-scribe-plan-sync-words plan)
+            (string-to-number (or (org-entry-get nil "SYNC_WORDS") "0")))
+
       (let ((spare-days-str (org-entry-get nil "SPARE_DAYS")))
         (when spare-days-str
           (setf (org-scribe-plan-spare-days plan)
@@ -1077,7 +1111,7 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                                 (cons date (list :words word-count :note note :target target))
                               ;; Old format - convert to new format (no target stored)
                               (cons date (list :words word-count :note note)))))
-                        (split-string daily-counts-str "," t " "))))
+                        (org-scribe-planner--split-daily-counts-str daily-counts-str))))
             ;; Migrate all entries to ensure consistent format
             (setf (org-scribe-plan-daily-word-counts plan)
                   (org-scribe-planner--migrate-daily-counts parsed-counts)))))
@@ -2131,8 +2165,19 @@ _PLAN is the plan struct passed by the hook; it is not used here."
 
 ;;; Word-count wiring
 
+(defun org-scribe-planner--parent-has-wordcount-p ()
+  "Return non-nil if the immediate parent heading of point has a WORDCOUNT property.
+Used to avoid double-counting when WORDCOUNT is set on both parent and child headings
+\(e.g. act → chapter → scene, where parent totals aggregate their children)."
+  (save-excursion
+    (when (org-up-heading-safe)
+      (org-entry-get nil "WORDCOUNT"))))
+
 (defun org-scribe-planner--sum-wordcounts (novel-file)
-  "Sum all WORDCOUNT properties in NOVEL-FILE and return the total.
+  "Sum WORDCOUNT properties in NOVEL-FILE, counting only the highest level in each subtree.
+A heading is included only when its immediate parent heading does not already carry a
+WORDCOUNT property.  This prevents double-counting in hierarchical manuscripts where
+WORDCOUNT on a chapter or act is the aggregate of its scene children.
 Prefers a live buffer so unsaved changes are included."
   (when (and novel-file (file-readable-p novel-file))
     (let ((total 0)
@@ -2142,14 +2187,16 @@ Prefers a live buffer so unsaved changes are included."
             (org-map-entries
              (lambda ()
                (let ((wc (org-entry-get nil "WORDCOUNT")))
-                 (when wc (setq total (+ total (string-to-number wc))))))))
+                 (when (and wc (not (org-scribe-planner--parent-has-wordcount-p)))
+                   (setq total (+ total (string-to-number wc))))))))
         (with-temp-buffer
           (insert-file-contents novel-file)
           (org-mode)
           (org-map-entries
            (lambda ()
              (let ((wc (org-entry-get nil "WORDCOUNT")))
-               (when wc (setq total (+ total (string-to-number wc)))))))))
+               (when (and wc (not (org-scribe-planner--parent-has-wordcount-p)))
+                 (setq total (+ total (string-to-number wc)))))))))
       total)))
 
 (defun org-scribe-planner--wordcount-from-manuscript ()
@@ -2160,27 +2207,55 @@ Returns nil when no count is available, causing the planner to prompt instead."
                 (novel-file (plist-get struct :novel-file)))
       (org-scribe-planner--sum-wordcounts novel-file))))
 
+(defun org-scribe-planner--sync-daily-from-manuscript ()
+  "Silently record today's net word delta into the active plan.
+Uses SYNC_DATE / SYNC_WORDS as a per-day baseline.  The first call on a
+new calendar day seeds the baseline (delta = 0).  Subsequent calls on the
+same day compute delta = total - sync-words and upsert today's entry in
+DAILY_WORD_COUNTS, preserving any existing note.
+Idempotent: calling many times with the same total produces the same entry.
+No-op when `org-scribe-planner-auto-track-daily' is nil, when there is no
+active plan, or when the word count function returns nil."
+  (when (and org-scribe-planner-auto-track-daily
+             org-scribe-planner-wordcount-function)
+    (unless (and org-scribe-planner--current-plan
+                 org-scribe-planner--current-plan-file)
+      (org-scribe-planner--auto-load-plan))
+    (when (and org-scribe-planner--current-plan
+               org-scribe-planner--current-plan-file)
+      (let ((total (funcall org-scribe-planner-wordcount-function)))
+        (when (and total (> total 0))
+          (let* ((plan org-scribe-planner--current-plan)
+                 (file org-scribe-planner--current-plan-file)
+                 (today (org-scribe-planner--get-today-date))
+                 (sync-date (org-scribe-plan-sync-date plan))
+                 (sync-words (or (org-scribe-plan-sync-words plan) 0)))
+            ;; Roll the baseline when a new day begins (or on first ever call)
+            (when (not (equal sync-date today))
+              (setf (org-scribe-plan-sync-date plan) today)
+              (setf (org-scribe-plan-sync-words plan) total)
+              (setq sync-words total))
+            (let* ((delta (- total sync-words))
+                   (existing (assoc today (org-scribe-plan-daily-word-counts plan)))
+                   (existing-note (when existing
+                                    (org-scribe-planner--get-entry-note existing)))
+                   (entry-data (list :words delta :note (or existing-note ""))))
+              ;; Upsert today's entry, preserving any hand-written note
+              (if existing
+                  (setcdr existing entry-data)
+                (setf (org-scribe-plan-daily-word-counts plan)
+                      (cons (cons today entry-data)
+                            (org-scribe-plan-daily-word-counts plan))))
+              (setf (org-scribe-plan-current-words plan) total)
+              (org-scribe-planner--save-plan plan file)
+              (setq org-scribe-planner--current-plan plan)
+              (run-hook-with-args 'org-scribe-planner-after-progress-update-hook
+                                  plan delta today))))))))
+
 (defun org-scribe-planner--after-wordcount (&rest _)
-  "Push the manuscript word count to the active plan after word counting.
-Attempts a lazy auto-load first if no plan is currently active."
-  (unless org-scribe-planner--current-plan
-    (org-scribe-planner--auto-load-plan))
-  (cond
-   ((not (and org-scribe-planner--current-plan
-              org-scribe-planner--current-plan-file))
-    (message "org-scribe-planner: no active plan — word count not pushed."))
-   ((not org-scribe-planner-wordcount-function)
-    (message "org-scribe-planner: wordcount function not set — plan not updated."))
-   (t
-    (let ((total (funcall org-scribe-planner-wordcount-function)))
-      (if (not total)
-          (message "org-scribe-planner: could not read word count — plan not updated.")
-        (setf (org-scribe-plan-current-words org-scribe-planner--current-plan) total)
-        (org-scribe-planner--save-plan org-scribe-planner--current-plan
-                                       org-scribe-planner--current-plan-file)
-        (run-hook-with-args 'org-scribe-planner-after-progress-update-hook
-                            org-scribe-planner--current-plan total nil)
-        (message "org-scribe-planner: progress updated to %d words." total))))))
+  "Record today's net word delta after an explicit word count.
+Delegates to `org-scribe-planner--sync-daily-from-manuscript'."
+  (org-scribe-planner--sync-daily-from-manuscript))
 
 ;;; Mode-line status
 

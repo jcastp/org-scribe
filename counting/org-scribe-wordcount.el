@@ -150,7 +150,9 @@ available.  Runs quietly (no echo-area message, no ID creation)."
                   (novel-file (plist-get struct :novel-file))
                   ((file-exists-p novel-file))
                   ((file-equal-p buffer-file-name novel-file)))
-        (org-scribe--refresh-scene-wordcounts nil)))))
+        (org-scribe--refresh-scene-wordcounts nil)
+        (when (fboundp 'org-scribe-planner--sync-daily-from-manuscript)
+          (org-scribe-planner--sync-daily-from-manuscript))))))
 
 (add-hook 'before-save-hook #'org-scribe--auto-wordcount-before-save)
 

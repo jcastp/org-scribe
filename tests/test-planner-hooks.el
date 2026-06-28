@@ -579,4 +579,62 @@ Regression: count was saved but calendar not refreshed, making it appear lost."
         (org-scribe-planner-update-daily-word-count))
       (should (= 1 recalc-calls)))))
 
+;;; Tests for --sum-wordcounts (double-counting regression)
+
+(defun test-hooks--make-org-with-wordcounts (content)
+  "Write CONTENT to a temp file and return the file path."
+  (let ((f (make-temp-file "test-wc-" nil ".org")))
+    (with-temp-file f (insert content))
+    f))
+
+(ert-deftest test-planner-sum-wordcounts-flat ()
+  "sum-wordcounts returns the correct total when every heading is a leaf."
+  (let ((f (test-hooks--make-org-with-wordcounts
+            "* Scene 1\n:PROPERTIES:\n:WORDCOUNT: 300\n:END:\n\n* Scene 2\n:PROPERTIES:\n:WORDCOUNT: 200\n:END:\n")))
+    (unwind-protect
+        (should (= 500 (org-scribe-planner--sum-wordcounts f)))
+      (delete-file f))))
+
+(ert-deftest test-planner-sum-wordcounts-hierarchical-no-double-count ()
+  "sum-wordcounts counts only the topmost WORDCOUNT in each subtree.
+Regression: previously summed every level, giving 3× the real count when
+WORDCOUNT is set on act, chapter, and scene headings simultaneously."
+  (let ((f (test-hooks--make-org-with-wordcounts
+            (concat "* Act I\n:PROPERTIES:\n:WORDCOUNT: 500\n:END:\n"
+                    "** Chapter 1\n:PROPERTIES:\n:WORDCOUNT: 300\n:END:\n"
+                    "*** Scene 1\n:PROPERTIES:\n:WORDCOUNT: 300\n:END:\n"
+                    "** Chapter 2\n:PROPERTIES:\n:WORDCOUNT: 200\n:END:\n"
+                    "*** Scene 2\n:PROPERTIES:\n:WORDCOUNT: 200\n:END:\n"
+                    "* Act II\n:PROPERTIES:\n:WORDCOUNT: 400\n:END:\n"
+                    "** Chapter 3\n:PROPERTIES:\n:WORDCOUNT: 400\n:END:\n"))))
+    (unwind-protect
+        ;; Only Act I (500) and Act II (400) should be counted, not their children.
+        (should (= 900 (org-scribe-planner--sum-wordcounts f)))
+      (delete-file f))))
+
+(ert-deftest test-planner-sum-wordcounts-mixed-levels ()
+  "sum-wordcounts handles subtrees where only some levels have WORDCOUNT."
+  (let ((f (test-hooks--make-org-with-wordcounts
+            (concat "* Act I\n:PROPERTIES:\n:WORDCOUNT: 600\n:END:\n"
+                    "** Chapter 1\n:PROPERTIES:\n:WORDCOUNT: 600\n:END:\n"
+                    ;; No WORDCOUNT on Act II — leaf chapters counted directly
+                    "* Act II\n"
+                    "** Chapter 2\n:PROPERTIES:\n:WORDCOUNT: 350\n:END:\n"
+                    "** Chapter 3\n:PROPERTIES:\n:WORDCOUNT: 250\n:END:\n"))))
+    (unwind-protect
+        ;; Act I (600) + Chapter 2 (350) + Chapter 3 (250) = 1200
+        (should (= 1200 (org-scribe-planner--sum-wordcounts f)))
+      (delete-file f))))
+
+(ert-deftest test-planner-sum-wordcounts-zero-parents-skipped ()
+  "sum-wordcounts skips child headings even when the parent WORDCOUNT is zero."
+  (let ((f (test-hooks--make-org-with-wordcounts
+            (concat "* Meta\n:PROPERTIES:\n:WORDCOUNT: 0\n:END:\n"
+                    "** Notes\n:PROPERTIES:\n:WORDCOUNT: 0\n:END:\n"
+                    "* Content\n:PROPERTIES:\n:WORDCOUNT: 800\n:END:\n"))))
+    (unwind-protect
+        ;; Meta (0) + Content (800); Notes is skipped (parent Meta has WORDCOUNT).
+        (should (= 800 (org-scribe-planner--sum-wordcounts f)))
+      (delete-file f))))
+
 ;;; test-hooks.el ends here
