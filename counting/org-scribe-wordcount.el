@@ -134,13 +134,27 @@ refresh WORDCOUNT on scene headings in the current subtree or buffer
 
 ;;; Optional refresh on save (opt-in via `org-scribe-auto-wordcount')
 
+(defun org-scribe--update-wordcount-dblocks ()
+  "Refresh every org-generate-wordcount-table dynamic block in the current buffer.
+Called after WORDCOUNT properties have been updated so the table reads
+fresh data.  Only updates that specific block type to avoid side-effects
+on timeline or relationship blocks."
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward
+            "^[ \t]*#\\+BEGIN:[ \t]+org-generate-wordcount-table" nil t)
+      (beginning-of-line)
+      (ignore-errors (org-update-dblock))
+      (forward-line 1))))
+
 (defun org-scribe--auto-wordcount-before-save ()
   "Refresh all WORDCOUNT properties and update the writing plan before saving.
 Acts only when `org-scribe-auto-wordcount' is non-nil, the saved buffer is
 the manuscript of an org-scribe project, and `org-context-extended' is
 available (degraded counts are suppressed to avoid misleading data).
 Calls `org-scribe-ews-org-count-words' silently; the planner sync fires
-automatically via the advice on that function."
+automatically via the advice on that function.
+Also refreshes any org-generate-wordcount-table dynamic blocks in the buffer."
   (when (and org-scribe-auto-wordcount
              buffer-file-name
              (derived-mode-p 'org-mode)
@@ -153,7 +167,8 @@ automatically via the advice on that function."
                   ((file-exists-p novel-file))
                   ((file-equal-p buffer-file-name novel-file)))
         (let ((inhibit-message t))
-          (org-scribe-ews-org-count-words))))))
+          (org-scribe-ews-org-count-words)
+          (org-scribe--update-wordcount-dblocks))))))
 
 (add-hook 'before-save-hook #'org-scribe--auto-wordcount-before-save)
 

@@ -1347,7 +1347,7 @@ Optional FILEPATH shows the location of the plan file."
           (insert (propertize "[ACTIVE PLAN]\n" 'face 'org-done)))
         (insert (make-string 80 ?=) "\n")
         (insert "Commands:\n")
-        (insert "  [q] quit  [d] daily word count  [u] update progress\n")
+        (insert "  [q] quit  [G] refresh view  [u] sync word count  [d] daily word count\n")
         (insert "  [r] recalculate plan  [a] adjust remaining days\n")
         (insert "  [D] dashboards menu  [p] progress  [b] burndown  [g] cumulative\n")
         (insert "  [v] velocity  [h] heatmap\n")
@@ -1486,7 +1486,7 @@ Optional FILEPATH shows the location of the plan file."
 
         (insert "\n" (make-string 80 ?=) "\n")
         (insert "\nCommands:\n")
-        (insert "  [q] quit  [d] daily word count  [u] update progress\n")
+        (insert "  [q] quit  [G] refresh view  [u] sync word count  [d] daily word count\n")
         (insert "  [r] recalculate plan  [a] adjust remaining days\n")
         (insert "  [D] dashboards menu  [p] progress  [b] burndown  [g] cumulative\n")
         (insert "  [v] velocity  [h] heatmap\n"))
@@ -1497,6 +1497,7 @@ Optional FILEPATH shows the location of the plan file."
 (defvar org-scribe-planner-calendar-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "q") #'quit-window)
+    (define-key map (kbd "G") #'org-scribe-planner-refresh-calendar)
     (define-key map (kbd "r") #'org-scribe-planner-recalculate)
     (define-key map (kbd "u") #'org-scribe-planner-update-progress)
     (define-key map (kbd "d") #'org-scribe-planner-add-session-note)
@@ -1514,6 +1515,15 @@ Optional FILEPATH shows the location of the plan file."
     (define-key map (kbd "h") #'org-scribe-planner-show-heatmap)
     map)
   "Keymap for `org-scribe-planner-calendar-mode'.")
+
+(defun org-scribe-planner-refresh-calendar ()
+  "Re-render the plan calendar from the current in-memory plan.
+Unlike `org-scribe-planner-update-progress', this does no file I/O and
+fires no hooks — it just redraws the view with whatever data is already
+loaded."
+  (interactive)
+  (org-scribe-planner--with-current-plan (plan file)
+    (org-scribe-planner-show-calendar plan file)))
 
 (define-derived-mode org-scribe-planner-calendar-mode special-mode "Writing-Plan"
   "Major mode for displaying writing plan calendars."
@@ -1676,10 +1686,33 @@ intact so real progress data is never discarded."
 
 ;;; Plan Modification and Recalculation
 
-;;;###autoload
+(defun org-scribe-planner--recount-manuscript-if-live ()
+  "Run a fresh word count on the manuscript buffer when it is already open.
+Only fires when `org-scribe-planner-wordcount-function' is set (planner
+integration active), `org-context-extended' is available (so counts are
+accurate), and the manuscript file is currently visited in a live buffer.
+Skips silently when any of those conditions is not met."
+  (when (and org-scribe-planner-wordcount-function
+             (fboundp 'org-scribe-accurate-wordcount-p)
+             (org-scribe-accurate-wordcount-p))
+    (when-let* ((struct (ignore-errors (org-scribe-project-structure)))
+                (novel-file (plist-get struct :novel-file))
+                (live-buf (find-buffer-visiting novel-file)))
+      (with-current-buffer live-buf
+        (let ((inhibit-message t))
+          (org-scribe-ews-org-count-words))))))
+
 (defun org-scribe-planner-update-progress ()
-  "Update the current word count for the active writing plan."
+  "Sync the word count from the manuscript into the active writing plan.
+First refreshes WORDCOUNT properties on every heading in the manuscript
+buffer (when it is live and `org-context-extended' is available), so the
+numbers are always current rather than reflecting the last explicit count.
+Reads the total via `org-scribe-planner-wordcount-function' when set
+(i.e. when the planner integration is active); otherwise prompts for a
+number.  Saves the new count to the plan file, updates the in-memory
+plan, fires progress hooks, and re-renders the calendar view."
   (interactive)
+  (org-scribe-planner--recount-manuscript-if-live)
   (org-scribe-planner--with-current-plan (plan file)
     (let ((new-count (or (and org-scribe-planner-wordcount-function
                               (funcall org-scribe-planner-wordcount-function))
@@ -2189,7 +2222,7 @@ Tracks actual progress and calculates expected dates for unreached milestones."
                         'face 'org-warning))))))
 
           (insert "\n")
-          (insert (propertize "Press 'q' to close | 'r' to refresh | 'c' to view calendar\n"
+          (insert (propertize "Press 'q' to close | 'r' to refresh | 'c' to calendar view\n"
                             'face 'shadow))
           (goto-char (point-min))
           (org-scribe-planner-dashboard-mode)
@@ -2592,7 +2625,7 @@ If no plan file exists, offer to create one.  Falls back to
   _n_: New plan (fresh start)
   _o_: Onboard existing project
   _l_: Load plan
-  _u_: Update progress (from word count)
+  _u_: Sync word count (from manuscript)
   _d_: Add session note
   _r_: Recalculate plan
   _a_: Adjust remaining days
@@ -2604,7 +2637,7 @@ If no plan file exists, offer to create one.  Falls back to
     ("n" org-scribe-planner-new-plan "new plan")
     ("o" org-scribe-planner-onboard-existing-project "onboard existing")
     ("l" org-scribe-planner-load-plan "load plan")
-    ("u" org-scribe-planner-update-progress "update progress")
+    ("u" org-scribe-planner-update-progress "sync word count")
     ("d" org-scribe-planner-add-session-note "session note")
     ("r" org-scribe-planner-recalculate "recalculate")
     ("a" org-scribe-planner-adjust-remaining-plan "adjust remaining")
