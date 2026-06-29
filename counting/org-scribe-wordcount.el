@@ -135,24 +135,25 @@ refresh WORDCOUNT on scene headings in the current subtree or buffer
 ;;; Optional refresh on save (opt-in via `org-scribe-auto-wordcount')
 
 (defun org-scribe--auto-wordcount-before-save ()
-  "Refresh scene WORDCOUNT properties before saving, when enabled.
+  "Refresh all WORDCOUNT properties and update the writing plan before saving.
 Acts only when `org-scribe-auto-wordcount' is non-nil, the saved buffer is
 the manuscript of an org-scribe project, and `org-context-extended' is
-available.  Runs quietly (no echo-area message, no ID creation)."
+available (degraded counts are suppressed to avoid misleading data).
+Calls `org-scribe-ews-org-count-words' silently; the planner sync fires
+automatically via the advice on that function."
   (when (and org-scribe-auto-wordcount
              buffer-file-name
              (derived-mode-p 'org-mode)
-             ;; Only auto-write counts silently when they are accurate; a
-             ;; degraded count on every save would be misleading.
+             ;; Only auto-write counts when they are accurate; writing
+             ;; metadata-inclusive counts on every save would be misleading.
              (org-scribe-accurate-wordcount-p))
     (ignore-errors
       (when-let* ((struct (org-scribe-project-structure))
                   (novel-file (plist-get struct :novel-file))
                   ((file-exists-p novel-file))
                   ((file-equal-p buffer-file-name novel-file)))
-        (org-scribe--refresh-scene-wordcounts nil)
-        (when (fboundp 'org-scribe-planner--sync-daily-from-manuscript)
-          (org-scribe-planner--sync-daily-from-manuscript))))))
+        (let ((inhibit-message t))
+          (org-scribe-ews-org-count-words))))))
 
 (add-hook 'before-save-hook #'org-scribe--auto-wordcount-before-save)
 

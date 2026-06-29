@@ -188,10 +188,13 @@ Disabled by default so saving never edits another buffer unexpectedly."
   :group 'org-scribe)
 
 (defcustom org-scribe-auto-wordcount nil
-  "When non-nil, refresh scene WORDCOUNT properties on save.
-On saving a manuscript buffer in an org-scribe project, the WORDCOUNT
-property of each scene heading is recomputed quietly (no IDs are created,
-no echo-area noise).  Requires `org-context-extended'.
+  "When non-nil, update all WORDCOUNT properties and the writing plan on save.
+On saving the manuscript buffer of an org-scribe project,
+`org-scribe-ews-org-count-words' runs silently: it recomputes the WORDCOUNT
+property on every heading in the buffer and, when the writing planner is
+active, syncs today's word delta to the plan automatically.
+Requires `org-context-extended' (no-op when that package is absent, to
+avoid writing metadata-inclusive counts silently).
 
 Disabled by default to keep saving fast and side-effect-free."
   :type 'boolean
