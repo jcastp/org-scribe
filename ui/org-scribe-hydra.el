@@ -41,6 +41,7 @@
 (declare-function org-scribe-capture-timeline "capture/org-scribe-capture")
 (declare-function org-scribe-capture-plot-thread "capture/org-scribe-capture")
 (declare-function org-scribe-wordcount "counting/org-scribe-wordcount")
+(declare-function org-scribe-ews-org-count-words "counting/org-scribe-wordcount")
 (declare-function org-tracktable-write "org-tracktable")
 (declare-function org-scribe-org-find-pov "search/org-scribe-search")
 (declare-function org-scribe-org-find-character "search/org-scribe-search")
@@ -138,15 +139,15 @@ _q_: Back to main menu    _Q_: Quit
 ;;;###autoload (autoload 'hydra-org-scribe/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe (:color blue :hint nil)
   "
-^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^             ^Search^          ^Manage^
-^^^^--------------------------------------------------------------------------------------------------------------
-_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words    _1_: by PoV       _n_: Capture note
-_c_: Chapter     _f_: Focus       _h_: Characters      _r_: Track table    _2_: Character    _k_: Capture entity…
-_o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary     _3_: Plot         _L_: Links & upkeep…
-^^               _v_: Navigate    _g_: Plot threads    _y_: Synonyms       _4_: Location     _R_: Relink project
-^^               _0_: Normal      _j_: Jump to PoV     _x_: Thesaurus      _5_: TODOs        _H_: Health report
-^^               ^^               ^^                   ^^                  _6_: Edits        _W_: Planner…
-^^               ^^               ^^                   ^^                  ^^                _q_: Quit
+^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^              ^Search^          ^Manage^
+^^^^---------------------------------------------------------------------------------------------------------------
+_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words     _1_: by PoV       _n_: Capture note
+_c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all      _2_: Character    _k_: Capture entity…
+_o_: Open file   _e_: Edit        _l_: Locations       _r_: Track table     _3_: Plot         _L_: Links & upkeep…
+^^               _v_: Navigate    _g_: Plot threads    _d_: Dictionary      _4_: Location     _R_: Relink project
+^^               _0_: Normal      _j_: Jump to PoV     _y_: Synonyms        _5_: TODOs        _H_: Health report
+^^               ^^               ^^                   _x_: Thesaurus       _6_: Edits        _W_: Planner…
+^^               ^^               ^^                   ^^                   ^^                _q_: Quit
 "
   ;; Insert (most frequent)
   ("s" org-scribe-insert-scene "insert scene")
@@ -172,7 +173,9 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary     _3_: 
   ;; Tools
   ;; "w" is the unified word-count dispatcher: plain = count now,
   ;; C-u = refresh all WORDCOUNT properties, C-u C-u = refresh scenes.
+  ;; "a" refreshes WORDCOUNT on every heading in the buffer (and updates the plan).
   ("w" org-scribe-wordcount "count words")
+  ("a" org-scribe-ews-org-count-words "update all counts")
   ("r" org-tracktable-write "track table")
   ("d" org-scribe-rae-api-lookup "RAE dictionary")
   ("y" org-scribe-sinonimo "synonyms")

@@ -212,6 +212,29 @@ Cleans up the temp file unconditionally."
     (let ((p org-scribe-planner--current-plan))
       (should (null (org-scribe-plan-sync-date p))))))
 
+;;; Plan created on day 1 (regression: words before first sync were lost)
+
+(ert-deftest test-planner-daily-sync-counts-all-words-when-plan-starts-today ()
+  "All words count toward today when a plan is created on the same day.
+Regression: new-plan used to seed sync-words = current-words, so any words
+already in the manuscript at plan-creation time were used as the baseline and
+never credited to today's daily delta."
+  (test-daily-sync--with-plan plan file total-cell today-cell
+    ;; Simulate what new-plan now does when start-date == today:
+    ;; sync-date is set to today, sync-words is 0 (not current-words).
+    (setf (org-scribe-plan-sync-date plan) "2026-06-28")
+    (setf (org-scribe-plan-sync-words plan) 0)
+    (setq org-scribe-planner--current-plan plan)
+    (setcar today-cell "2026-06-28")
+    ;; Writer had 9 words at plan creation, then added 14 more → total 23.
+    (setcar total-cell 23)
+    (org-scribe-planner--sync-daily-from-manuscript)
+    (let* ((p org-scribe-planner--current-plan)
+           (entry (assoc "2026-06-28" (org-scribe-plan-daily-word-counts p))))
+      (should entry)
+      ;; All 23 words must be credited, not just the 14 added post-creation.
+      (should (= (plist-get (cdr entry) :words) 23)))))
+
 ;;; Persistence
 
 (ert-deftest test-planner-daily-sync-saves-sync-slots-to-file ()

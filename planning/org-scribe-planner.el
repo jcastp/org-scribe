@@ -786,15 +786,29 @@ the *remaining* words over the *remaining* working days, not the total."
 
           ;; 6. Populate the plan state
           (setf (org-scribe-plan-current-words plan) current-words)
-          (setf (org-scribe-plan-sync-date plan) today)
-          (setf (org-scribe-plan-sync-words plan) current-words)
-          ;; Lump-sum historical entry: all existing words attributed to the start date.
-          ;; This lets --compute-recalculation-data see the right cumulative-actual.
-          (setf (org-scribe-plan-daily-word-counts plan)
-                (list (cons (org-scribe-plan-start-date plan)
-                            (list :words current-words
-                                  :note "Existing manuscript"
-                                  :target nil))))
+          (let ((start-date (org-scribe-plan-start-date plan)))
+            (cond
+             ;; Plan starts today: seed the baseline at 0 so the daily delta
+             ;; equals the full manuscript total (all words written today count).
+             ;; --sync-daily will overwrite the initial entry on the next sync.
+             ((string= start-date today)
+              (setf (org-scribe-plan-sync-date plan) today)
+              (setf (org-scribe-plan-sync-words plan) 0)
+              (when (> current-words 0)
+                (setf (org-scribe-plan-daily-word-counts plan)
+                      (list (cons today (list :words current-words
+                                              :note "" :target nil))))))
+             ;; Plan starts before today: attribute existing words to the start
+             ;; date as a lump-sum historical entry and hold the baseline at
+             ;; current-words so only new words count from here on.
+             (t
+              (setf (org-scribe-plan-sync-date plan) today)
+              (setf (org-scribe-plan-sync-words plan) current-words)
+              (setf (org-scribe-plan-daily-word-counts plan)
+                    (list (cons start-date
+                                (list :words current-words
+                                      :note "Existing manuscript"
+                                      :target nil)))))))
 
           ;; 7. Save
           (let* ((default-filename
