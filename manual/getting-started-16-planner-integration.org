@@ -48,6 +48,7 @@ Here is an overview of everything the planner provides out of the box. Each feat
 | Auto-load plan                 | Plan file loads when you open any project file               |
 | Word count bridge              | Plan reads word counts directly from your manuscript         |
 | Auto-update after counting     | ~F8 F8 a~ pushes new total to the plan silently              |
+| Auto-update on save            | Saving the manuscript updates all counts and the plan        |
 | Project-aware file picker      | Load-plan dialog opens at your project root                  |
 | Plan creation on new project   | Offered when you run ~org-scribe-create-novel-project~       |
 | Planner Hydra submenu (~W~)    | Full planner menu accessible from the main Hydra             |
@@ -136,7 +137,7 @@ This is where the integration really shines.
 
 Go to your manuscript (~novel.org~) and run the word count command:
 
-1. Press ~F8 F8 a~ (Add word count properties)
+1. Press ~F8 F8 a~ (Update all word count properties)
 2. Watch the ~:WORDCOUNT:~ properties update on each heading
 
 ** Check the Plan
@@ -153,6 +154,21 @@ The planner automatically:
 3. Saved the plan silently
 
 No extra steps needed. Every time you run ~F8 F8 a~, your plan stays in sync.
+
+** Optional: Automatic Update on Every Save
+
+If you prefer to have word counts and plan sync happen automatically on every
+save, add this to your Emacs init file:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-auto-wordcount t)
+#+END_SRC
+
+With this enabled, saving ~novel.org~ (or ~novela.org~) runs the full word
+count update and syncs the plan silently — no extra key needed.  The trade-off
+is a slightly slower save (the word count runs on every heading in the buffer).
+Requires ~org-context-extended~; if that package is absent the setting is
+ignored.
 
 ** Check the Mode Line
 
@@ -289,14 +305,23 @@ Every integration feature can be turned off independently. Set these variables *
 (setq org-scribe-planner-show-mode-line nil)
 #+END_SRC
 
-All four can be combined in one block:
+** Disable Auto Word Count on Save
 
 #+BEGIN_SRC emacs-lisp
-;; Opt out of all planner integration features
+;; Keep saves fast — don't run the full word count on every save
+;; (This is the default; only set it if you previously enabled it.)
+(setq org-scribe-auto-wordcount nil)
+#+END_SRC
+
+All settings can be combined in one block:
+
+#+BEGIN_SRC emacs-lisp
+;; Opt out of all automatic tracking features
 (setq org-scribe-planner-auto-load-plan nil
       org-scribe-planner-auto-push-wordcount nil
       org-scribe-planner-offer-plan-on-create nil
-      org-scribe-planner-show-mode-line nil)
+      org-scribe-planner-show-mode-line nil
+      org-scribe-auto-wordcount nil)
 #+END_SRC
 
 * Practical Exercise
@@ -318,9 +343,9 @@ Congratulations — you have a fully integrated writing tracking system!
 
 * Common Questions
 
-** "The W key doesn't appear in my Hydra menu hint."
+** "I don't see the planner submenu in the Hydra hint."
 
-This is expected. The ~W~ binding is registered in the Hydra keymap but not shown in the hint (to keep the menu compact). Just press ~W~ — it works even though it's not listed.
+The ~W~ key appears in the *Manage* column of the main Hydra hint as ~_W_: Planner…~. If you don't see it, confirm that ~org-scribe-mode~ is active (check the mode line). The planner commands load on first use — press ~F8 F8 W~ once to trigger the load, after which all planner keys are available.
 
 ** "Auto-load says 'loaded plan' but I didn't create one yet."
 
@@ -398,14 +423,16 @@ You've completed Lesson 16!
 
 ** Integration Features Summary
 
-| Feature                    | Enabled by default | Variable to disable                              |
-|----------------------------+--------------------+--------------------------------------------------|
-| Auto-load plan             | Yes                | ~(setq org-scribe-planner-auto-load-plan nil)~   |
-| Auto-push after ~F8 F8 a~  | Yes                | ~(setq org-scribe-planner-auto-push-wordcount nil)~ |
-| Offer plan on new project  | Yes                | ~(setq org-scribe-planner-offer-plan-on-create nil)~ |
-| Mode-line status           | Yes                | ~(setq org-scribe-planner-show-mode-line nil)~   |
+| Feature                     | Enabled by default | Variable to disable / enable                        |
+|-----------------------------+--------------------+-----------------------------------------------------|
+| Auto-load plan              | Yes                | ~(setq org-scribe-planner-auto-load-plan nil)~      |
+| Auto-push after ~F8 F8 a~   | Yes                | ~(setq org-scribe-planner-auto-push-wordcount nil)~ |
+| Offer plan on new project   | Yes                | ~(setq org-scribe-planner-offer-plan-on-create nil)~ |
+| Mode-line status            | Yes                | ~(setq org-scribe-planner-show-mode-line nil)~      |
+| Auto word count on save     | *No* (opt-in)      | ~(setq org-scribe-auto-wordcount t)~                |
 
-All variables must be set *before* the planner first loads (e.g. in ~early-init.el~).
+All planner variables must be set *before* the planner first loads (e.g. in ~early-init.el~).
+~org-scribe-auto-wordcount~ can be set anywhere in your init file.
 
 ** Daily Writing Workflow with Integration
 

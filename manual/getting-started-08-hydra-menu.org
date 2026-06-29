@@ -42,7 +42,7 @@ If you see the menu, you're ready! If not, make sure ~org-scribe-mode~ is active
 
 ~org-scribe~ has dozens of features:
 - Insert scenes and chapters
-- Activate different writing modes
+- Activate different writing workspaces
 - Capture characters, locations, plots
 - Count words and track progress
 - Search by character, plot, location, PoV
@@ -79,14 +79,14 @@ Press: ~F8 F8~ (F8 twice)
 When you open the menu, you'll see:
 
 #+BEGIN_EXAMPLE
-^Insert^           ^Modes^            ^Capture^          ^Tools^              ^Search^           ^Manage^
-^^^^^^^^------------------------------------------------------------------------------------------------------------------
-_s_: Scene         _m_: Mode (write)  _n_: Note          _w_: Words count     _1_: POV           _C_: Characters
-_c_: Chapter       _p_: Project mode  _h_: cHaracter     _r_: tRack table     _2_: Character     _L_: Locations
-_o_: Open file     _f_: Focus mode    _l_: Location      _a_: Add WC props    _3_: Plot          _P_: Plot threads
-                 _e_: Editing mode  _b_: oBject        _d_: Dictionary      _4_: Location      _U_: Update links
-                                  _t_: Timeline      _y_: sYnonyms        _5_: TODOs
-                                  _g_: plot thread   _k_: powerthesaurus  _6_: Edit notes            _q_: Quit
+^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^              ^Search^          ^Manage^
+_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words     _1_: by PoV       _n_: Capture note
+_c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all      _2_: Character    _k_: Capture entity…
+_o_: Open file   _e_: Edit        _l_: Locations       _r_: Track table     _3_: Plot         _L_: Links & upkeep…
+                 _v_: Navigate    _g_: Plot threads    _d_: Dictionary      _4_: Location     _R_: Relink project
+                 _0_: Normal      _j_: Jump to PoV     _y_: Synonyms        _5_: TODOs        _H_: Health report
+                                                       _x_: Thesaurus       _6_: Edits        _W_: Planner…
+                                                                                              _q_: Quit
 #+END_EXAMPLE
 
 This is your command center!
@@ -96,11 +96,11 @@ This is your command center!
 The menu is organized into *six columns*:
 
 1. *Insert* - Add content (scenes, chapters)
-2. *Modes* - Change writing environment
-3. *Capture* - Quick entry for planning data
+2. *Workspace* - Change writing environment
+3. *Tag Scene* - Link the current scene to characters, locations, plot
 4. *Tools* - Word counting and utilities
 5. *Search* - Find scenes by properties
-6. *Manage* - Link management (advanced)
+6. *Manage* - Capture, links, health, planner
 
 Each column groups related functions together.
 
@@ -125,75 +125,75 @@ Let's explore each category in detail.
 
 *Most frequent*: ~s~ (scene) - you'll use this constantly!
 
-** Column 2: Modes
+** Column 2: Workspace
 
 *Purpose*: Change your writing environment for different tasks
 
-| Key | Command         | What It Does                              |
-|-----+-----------------+-------------------------------------------|
-| ~m~   | Mode (write)    | Distraction-free writing mode             |
-| ~p~   | Project mode    | Show project navigation panels            |
-| ~f~   | Focus mode      | Focus on current section (narrow)         |
-| ~e~   | Editing mode    | Three-panel editing layout                |
+| Key | Command     | What It Does                              |
+|-----+-------------+-------------------------------------------|
+| ~m~   | Write       | Distraction-free writing mode             |
+| ~f~   | Focus       | Narrow to current section                 |
+| ~e~   | Edit        | Three-panel editing layout                |
+| ~v~   | Navigate    | Project navigation panels (treemacs)      |
+| ~0~   | Normal      | Return to normal layout                   |
 
 *When to use*:
 - Starting writing session → ~m~ (distraction-free)
-- Need outline view → ~p~ (project mode with treemacs)
 - Revising one scene → ~f~ (focus mode)
 - Editing with notes → ~e~ (editing mode)
+- Need outline view → ~v~ (navigation mode)
+- Done with any mode → ~0~ (back to normal)
 
-*Most frequent*: ~m~ (writing mode) for daily writing
+*Most frequent*: ~m~ (write mode) for daily writing
 
-*Tip*: Modes are mutually exclusive - activating one exits the others
+*Tip*: Re-pressing the active mode key (~m~ while in write mode) exits it. ~0~ always returns to normal regardless of which mode is active.
 
-** Column 3: Capture
+** Column 3: Tag Scene
 
-*Purpose*: Quickly add planning information without leaving your manuscript
+*Purpose*: Link the current scene to characters, locations, and plot threads using stable ID-based links
 
-| Key | Command   | What It Does                                  |
-|-----+-----------+-----------------------------------------------|
-| ~n~   | Note       | Capture a general note                        |
-| ~h~   | cHaracter  | Add a new character profile                   |
-| ~l~   | Location   | Add a new location/setting                    |
-| ~b~   | oBject     | Add an important object (MacGuffin, artifact) |
-| ~t~   | Timeline   | Add a timeline event                          |
-| ~g~   | plot thread| Add a plot thread profile                     |
+| Key | Command         | What It Does                              |
+|-----+-----------------+-------------------------------------------|
+| ~p~   | PoV             | Set the PoV character for this scene      |
+| ~h~   | Characters      | Set all characters present in this scene  |
+| ~l~   | Locations       | Set the location(s) for this scene        |
+| ~g~   | Plot threads    | Set plot threads active in this scene     |
+| ~j~   | Jump to PoV     | Jump to the PoV character's profile       |
 
 *When to use*:
-- Mid-writing, capture a character → ~h~
-- Need to define a new location → ~l~
-- Tracking an important object → ~b~
-- Recording story timeline → ~t~
-- Quick idea you don't want to forget → ~n~
+- After writing a scene → tag it so search functions can find it
+- Use ~p~ first (PoV), then ~h~ (characters), ~l~ (location), ~g~ (plot)
+- Use ~j~ to quickly check who your PoV character is
 
-*Most frequent*: ~h~ (character) and ~l~ (location)
-
-*Why "cHaracter" and "oBject"?*
-- The letter ~c~ was already taken (Chapter)
-- The letter ~o~ was already taken (Open file)
-- Hydra uses the uppercase letter in the name as a hint
+*Why this matters*: Once scenes are tagged, search keys ~1~–~4~ can find all scenes for any character, location, or plot thread instantly.
 
 ** Column 4: Tools
 
 *Purpose*: Writing utilities and reference tools
 
-| Key | Command        | What It Does                                 |
-|-----+----------------+----------------------------------------------|
-| ~w~   | Words count    | Count words in current section               |
-| ~r~   | tRack table    | Update progress tracking tables              |
-| ~a~   | Add WC props   | Add/update :WORDCOUNT: property              |
-| ~d~   | Dictionary     | Look up word in RAE dictionary (Spanish)     |
-| ~y~   | sYnonyms       | Find synonyms (Spanish/English)              |
-| ~k~   | powerthesaurus | English thesaurus lookup (requires package)  |
+| Key | Command        | What It Does                                              |
+|-----+----------------+-----------------------------------------------------------|
+| ~w~   | Count words    | Count words in region or buffer; ~C-u w~ = full update    |
+| ~a~   | Update all     | Refresh all heading =WORDCOUNT= properties + sync plan    |
+| ~r~   | Track table    | Update progress tracking table (org-tracktable)           |
+| ~d~   | Dictionary     | Look up word in RAE dictionary (Spanish)                  |
+| ~y~   | Synonyms       | Find synonyms (Spanish/English)                           |
+| ~x~   | Thesaurus      | English thesaurus lookup (requires powerthesaurus)        |
 
 *When to use*:
-- After writing → ~w~ (check word count)
-- End of session → ~a~ (store word count)
-- Update progress table → ~r~
+- After writing → ~w~ (check word count quickly)
+- After writing → ~a~ (store word counts in headings, sync plan)
+- End of session → ~r~ (update progress table)
 - Writing in Spanish, need definition → ~d~
-- Need better word → ~y~ (synonyms)
+- Need a better word → ~y~ (synonyms) or ~x~ (thesaurus)
 
-*Most frequent*: ~w~ (count), ~a~ (add properties), ~r~ (track)
+*Most frequent*: ~w~ (quick count) and ~a~ (full update)
+
+*Key difference between ~w~ and ~a~*:
+- ~w~ reports the count; ~a~ updates all =:WORDCOUNT:= properties in the file (and syncs the writing plan if active)
+- ~a~ is what you want at the end of a writing session
+
+*Tip*: If you set =(setq org-scribe-auto-wordcount t)= in your init file, ~a~ runs automatically every time you save — no need to press it manually.
 
 *Language note*: Dictionary and synonyms work best for Spanish, but synonyms supports English too
 
@@ -203,12 +203,12 @@ Let's explore each category in detail.
 
 | Key | Command   | What It Does                             |
 |-----+-----------+------------------------------------------|
-| ~1~   | POV        | Find all scenes from a character's PoV   |
+| ~1~   | by PoV     | Find all scenes from a character's PoV   |
 | ~2~   | Character  | Find all scenes featuring a character    |
 | ~3~   | Plot       | Find all scenes in a plot thread         |
 | ~4~   | Location   | Find all scenes in a location            |
 | ~5~   | TODOs      | Find all TODO items in project           |
-| ~6~   | Edit notes | Find all edit/revision notes in project  |
+| ~6~   | Edits      | Find all edit/revision notes in project  |
 
 *When to use*:
 - "Where did Alex appear?" → ~2~ (character search)
@@ -216,128 +216,113 @@ Let's explore each category in detail.
 - "Where's the romance subplot?" → ~3~ (plot search)
 - "All coffee shop scenes?" → ~4~ (location search)
 - "What needs fixing?" → ~5~ (TODO search)
+- "What edits are flagged?" → ~6~ (edit notes)
 
 *Most frequent*: ~2~ (character) and ~3~ (plot)
 
 *Why numbers?*
-- Easy to remember: 1=PoV, 2=Character, 3=Plot, 4=Location, 5=TODOs
+- Easy to remember: 1=PoV, 2=Character, 3=Plot, 4=Location
 - Quick to type
 - Consistent ordering
 
+*Note*: Search works best when scenes are tagged (Column 3). Tag first, search later!
+
 ** Column 6: Manage
 
-*Purpose*: Advanced linking features (ID-based links between scenes and planning)
+*Purpose*: Capture notes, manage links, run health checks, open the planner
 
-| Key | Command       | What It Does                         |
-|-----+---------------+--------------------------------------|
-| ~C~   | Characters    | Character linking & relationships submenu |
-| ~L~   | Locations     | Location linking submenu                  |
-| ~P~   | Plot threads  | Plot thread linking submenu               |
-| ~U~   | Update links  | Update all link display names at once     |
+| Key | Command           | What It Does                                  |
+|-----+-------------------+-----------------------------------------------|
+| ~n~   | Capture note      | Quick note into the project notes file        |
+| ~k~   | Capture entity…   | Open capture submenu (character, location…)   |
+| ~L~   | Links & upkeep…   | Open linking and relationship submenu         |
+| ~R~   | Relink project    | Add IDs, link names, refresh display names    |
+| ~H~   | Health report     | Project health: counts, missing props, orphans |
+| ~W~   | Planner…          | Open writing plan submenu                     |
+| ~q~   | Quit              | Close the Hydra menu                          |
 
 *When to use*:
-- Setting up character links → ~C~
-- Setting up location links → ~L~
-- Setting up plot thread links → ~P~
-- Generating timelines and reports
+- Quick thought mid-writing → ~n~ (capture note)
+- Adding a new character → ~k h~ (capture entity → character)
+- First-time link setup, relationships → ~L~
+- Batch cleanup of links → ~R~ (relink entire project)
+- Periodic project review → ~H~ (health report)
+- Check writing plan → ~W p~
 
-*Most frequent*: ~C~ (character linking)
-
-*Note*: These are SUBMENUS - they open additional menus with more options
-
-*Capitals are intentional*:
-- Lowercase letters are for main actions
-- Uppercase letters open submenus
+*Capitals = Submenus*:
+- ~k~ → Capture submenu
+- ~L~ → Links & upkeep submenu
+- ~W~ → Planner submenu
 
 * Exploring the Submenus
 
-When you press ~C~, ~L~, or ~P~, you enter a submenu with more options.
+When you press ~k~, ~L~, or ~W~, you enter a submenu with more options.
 
-** Character Linking Submenu (F8 F8 C)
+** Capture Entity Submenu (F8 F8 k)
 
 #+BEGIN_EXAMPLE
-^Character Linking^            ^Relationships^             ^Visualization^
-^^^^^^^^------------------------------------------------------------------------------
-_p_: Set PoV character         _a_: Add relationship       _g_: Insert graph block
-_c_: Set scene characters      _r_: Remove relationship    _v_: View relationships
-_j_: Jump to PoV char          _V_: View all relationships _R_: Setup relationships
-_l_: Link scene characters
-_L_: Link all scenes           _q_: Back to main menu
-_i_: Add IDs to characters
-_u_: Update link names
-_U_: Update all link names
-_s_: Setup linking system
+^Capture into project^
+_h_: Character   _b_: Object      _g_: Plot thread
+_l_: Location    _t_: Timeline    _n_: Note
+
+_q_: Back to main menu            _Q_: Quit
 #+END_EXAMPLE
 
 *What it does*:
-- ~p~ - Set PoV property using character menu (ID link)
-- ~c~ - Set Characters property using multi-select menu (ID links)
-- ~j~ - Jump to PoV character's profile
-- ~l~ - Convert current scene's character names to ID links
-- ~L~ - Convert ALL scenes' character names to ID links
-- ~i~ - Add unique IDs to all characters
-- ~u~ - Update link display names in current scene (after renaming)
-- ~U~ - Update link display names throughout entire manuscript
-- ~s~ - Run setup wizard for character linking
-- ~a~ - Add a relationship between two characters
-- ~r~ - Remove a relationship from a character
-- ~v~ - View relationships for one character (ASCII tree)
-- ~V~ - View all relationships in project (table)
+- ~h~ - Capture a new character with a comprehensive profile template
+- ~l~ - Capture a new location/setting
+- ~b~ - Capture an important object (MacGuffin, artifact)
+- ~t~ - Capture a timeline event
+- ~g~ - Capture a plot thread
+- ~n~ - Capture a general project note
+- ~q~ - Return to main Hydra menu
+- ~Q~ - Quit Hydra entirely
+
+*When to use*: Mid-writing, when you invent a new character or place and want to record it without losing your flow.
+
+** Links & Upkeep Submenu (F8 F8 L)
+
+#+BEGIN_EXAMPLE
+^Whole project^          ^Set up linking^       ^Relationships^             ^Analysis & Display^
+_R_: Relink everything    _c_: Characters        _a_: Add relationship       _t_: Plot health report
+_j_: Jump to plot thread  _o_: Locations         _x_: Remove relationship    _S_: Plot statistics
+                          _p_: Plot threads      _v_: View relationships     _C_: Column view toggle
+                          _r_: Relationships     _V_: View all relationships _T_: Tooltips toggle
+                                                 _g_: Insert graph block
+_q_: Back to main menu    _Q_: Quit
+#+END_EXAMPLE
+
+*What it does*:
+- ~R~ - Relink project: the headline command. Runs one pass across the entire project — adds any missing IDs, converts plain character/location/plot names to ID links, and refreshes all display names. This replaces the old per-entity "add IDs / link / update" commands.
+- ~j~ - Jump to a plot thread's profile
+- ~c~ / ~o~ / ~p~ - One-time setup wizard for character / location / plot linking
+- ~r~ - Setup character relationship tracking
+- ~a~ / ~x~ - Add or remove a relationship between two characters
+- ~v~ / ~V~ - View relationships (one character / all characters)
 - ~g~ - Insert a relationship graph dynamic block
-- ~R~ - Setup character relationship system
-- ~q~ - Return to main Hydra menu
+- ~t~ / ~S~ - Plot thread health report / statistics
+- ~C~ - Toggle clean display in org-column-view (strips =[[id:...]]= syntax)
+- ~T~ - Toggle entity tooltips (shows character info in echo area when point is on an ID link)
+- ~q~ / ~Q~ - Back to main / Quit
 
-** Location Linking Submenu (F8 F8 L)
-
-#+BEGIN_EXAMPLE
-^Location Linking^
-^^^^^^^^------------------------------------------------------------
-_c_: Set scene locations   _l_: Link scene locations
-_i_: Add IDs to locations  _L_: Link all scenes
-_u_: Update link names     _U_: Update all link names
-_s_: Setup linking system  _q_: Back to main menu
-#+END_EXAMPLE
-
-*What it does*:
-- ~c~ - Set Location property using location menu (ID link)
-- ~l~ - Convert current scene's location names to ID links
-- ~L~ - Convert ALL scenes' location names to ID links
-- ~i~ - Add unique IDs to all locations
-- ~u~ - Update link display names in current scene (after renaming)
-- ~U~ - Update link display names throughout entire manuscript
-- ~s~ - Run setup wizard for location linking
-- ~q~ - Return to main Hydra menu
-
-** Plot Thread Linking Submenu (F8 F8 P)
+** Planner Submenu (F8 F8 W)
 
 #+BEGIN_EXAMPLE
-^Plot Thread Linking^       ^Analysis^
-^^^^^^^^------------------------------------------------------------
-_p_: Set scene plot threads   _t_: Timeline table
-_j_: Jump to plot thread      _r_: Health report
-_l_: Link scene plot threads  _S_: Statistics
-_L_: Link all scenes          _i_: Add IDs to threads
-_u_: Update link names        _U_: Update all link names
-_s_: Setup linking system     _q_: Back to main menu
+  org-scribe-planner
+  ──────────────────────────────────────────────────
+  p: Open project plan (load or create)
+  n: New plan
+  l: Load plan
+  u: Update progress (from word count)
+  d: Update daily word count
+  r: Recalculate plan
+  a: Adjust remaining days
+  m: Milestones
+  D: Dashboards menu
+  q: Back to main menu
 #+END_EXAMPLE
 
-*What it does*:
-- ~p~ - Set Plot property using plot thread menu (ID links)
-- ~j~ - Jump to plot thread's profile
-- ~l~ - Convert current scene's plot names to ID links
-- ~L~ - Convert ALL scenes' plot names to ID links
-- ~i~ - Add unique IDs to all plot threads
-- ~u~ - Update link display names in current scene (after renaming)
-- ~U~ - Update link display names throughout entire manuscript
-- ~s~ - Run setup wizard for plot thread linking
-- ~t~ - Instructions for inserting plot timeline table
-- ~r~ - Generate plot health report (finds gaps, issues)
-- ~S~ - Show plot statistics (scene counts, coverage)
-- ~q~ - Return to main Hydra menu
-
-*Bonus features*:
-- Plot submenu has analysis tools (~r~, ~S~)
-- These help check plot balance and coverage
+See [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning]] for a full walkthrough of the planner.
 
 * Common Usage Patterns
 
@@ -347,29 +332,28 @@ Here are the most frequent Hydra workflows you'll use.
 
 1. ~F8 F8 m~ - Activate writing mode (distraction-free)
 2. Write your scene...
-3. ~F8 F8 m~ - Exit writing mode
-4. ~F8 F8 w~ - Check word count
-5. ~F8 F8 a~ - Add word count to properties
+3. ~F8 F8 m~ - Exit writing mode (or ~F8 F8 0~)
+4. ~F8 F8 w~ - Quick word count check
+5. ~F8 F8 a~ - Update all word count properties (syncs plan too)
 
 *Muscle memory*: m → write → m → w → a
 
 ** Starting a New Scene
 
 1. ~F8 F8 s~ - Insert scene template
-2. Fill in scene properties manually OR
-3. ~F8 F8 C p~ - Set PoV character (from menu)
-4. ~F8 F8 C c~ - Set scene characters (from menu)
-5. ~F8 F8 L c~ - Set location (from menu)
-6. ~F8 F8 P p~ - Set plot threads (from menu)
-7. ~F8 F8 m~ - Start writing!
+2. ~F8 F8 p~ - Set PoV character (from menu)
+3. ~F8 F8 h~ - Set scene characters (multi-select)
+4. ~F8 F8 l~ - Set location (from menu)
+5. ~F8 F8 g~ - Set plot threads (from menu)
+6. ~F8 F8 m~ - Start writing!
 
-*Efficient workflow*: s → C p → C c → L c → P p → m
+*Efficient workflow*: s → p → h → l → g → m
 
 ** Tracking Progress
 
-1. ~F8 F8 a~ - Add word count properties to scenes
-2. Navigate to progress table
-3. ~C-c C-c~ - Update table (not Hydra, regular Org command)
+1. ~F8 F8 a~ - Update all heading word count properties
+2. Navigate to the word count table
+3. ~C-c C-c~ - Refresh the table (regular Org command, not Hydra)
 4. ~F8 F8 r~ - Update org-tracktable (if installed)
 
 *Quick check*: a → navigate → C-c C-c
@@ -403,34 +387,34 @@ Let's practice using the Hydra menu systematically.
 1. *Open Hydra*: ~F8 F8~
 2. *Look at each column* - don't press anything yet
 3. *Identify*:
-   - Which key inserts a scene? (s)
-   - Which key activates writing mode? (m)
-   - Which key captures a character? (h)
-   - Which key counts words? (w)
-   - Which key searches by plot? (3)
-   - Which key opens character linking? (C)
+   - Which key inserts a scene? (~s~)
+   - Which key activates writing mode? (~m~)
+   - Which key captures a character? (~k~, then ~h~)
+   - Which key counts words? (~w~)
+   - Which key searches by plot? (~3~)
+   - Which key opens the planner? (~W~)
 4. *Press* ~q~ to quit without executing anything
 
 ** Exercise 2: Navigation Practice
 
 1. *Open Hydra*: ~F8 F8~
-2. *Enter character submenu*: ~C~
-3. *Look at options* - which key sets PoV? (p)
-4. *Return to main*: ~q~
-5. *Enter location submenu*: ~L~
-6. *Return to main*: ~q~
-7. *Enter plot submenu*: ~P~
-8. *Notice analysis options* - what does ~r~ do? (health report)
-9. *Return to main*: ~q~
-10. *Quit Hydra*: ~q~
+2. *Enter capture submenu*: ~k~
+3. *Look at options* - which key captures a character? (~h~)
+4. *Quit submenu*: ~Q~
+5. *Open Hydra*: ~F8 F8~
+6. *Enter links submenu*: ~L~
+7. *Notice the Relink command* - what does ~R~ do? (relink whole project)
+8. *Return to main*: ~q~
+9. *Open planner*: ~F8 F8 W~
+10. *Quit*: ~q~
 
 ** Exercise 3: Common Actions
 
 1. *Insert a scene*: ~F8 F8 s~
-2. *Set PoV character*: ~F8 F8 C p~ → select character
+2. *Set PoV character*: ~F8 F8 p~ → select character
 3. *Count words*: ~F8 F8 w~
-4. *Search for a character*: ~F8 F8 2~ → select character
-5. *Capture a quick note*: ~F8 F8 n~ → write note → complete capture
+4. *Update all counts*: ~F8 F8 a~
+5. *Search for a character*: ~F8 F8 2~ → select character
 
 ** Exercise 4: Build Muscle Memory
 
@@ -494,18 +478,6 @@ Add to your Emacs configuration (~init.el~ or ~.emacs~):
 3. Evaluate the line: ~C-x C-e~ at end of line
 4. Test the new keybinding
 
-** Removing the Old Keybinding
-
-If you want to completely replace ~F8 F8~:
-
-#+BEGIN_SRC emacs-lisp
-;; Remove old binding
-(global-unset-key (kbd "<f8> <f8>"))
-
-;; Set new binding
-(global-set-key (kbd "C-c w") 'hydra-org-scribe/body)
-#+END_SRC
-
 ** Recommended Keybinding
 
 If you're unsure, stick with ~F8 F8~:
@@ -521,25 +493,23 @@ Change only if you have a specific reason!
 ** Memory Aids
 
 *Mnemonic patterns*:
-- ~s~ = Scene
-- ~c~ = Chapter
-- ~m~ = Mode
-- ~w~ = Words
-- ~h~ = cHaracter (c was taken)
-- ~l~ = Location
-- ~n~ = Note
+- ~s~ = Scene, ~c~ = Chapter, ~o~ = Open
+- ~m~ = Mode (write), ~f~ = Focus, ~e~ = Edit, ~v~ = naVigate, ~0~ = zero/reset
+- ~p~ = PoV, ~h~ = cHaracters, ~l~ = Locations, ~g~ = plot threads (Graph), ~j~ = Jump
+- ~w~ = Words, ~a~ = All counts, ~r~ = tRack, ~d~ = Dictionary, ~y~ = sYnonyms, ~x~ = thesaurus
+- ~n~ = Note, ~k~ = (capture) entity (K), ~L~ = Links, ~R~ = Relink, ~H~ = Health, ~W~ = Writing plan
 
-*Numbers for searches*:
-- 1 = First person (PoV)
-- 2 = Secondary character search
-- 3 = Third plot search
-- 4 = Fourth location search
-- 5 = Five TODOs (okay, this one doesn't work...)
+*Numbers are searches*:
+- 1=PoV, 2=Character, 3=Plot, 4=Location, 5=TODOs, 6=Edits
 
-*Capitals = Submenus*:
-- C = Character submenu
-- L = Location submenu
-- P = Plot submenu
+*Lower case = direct action, Upper case = submenu*:
+- ~k~ → Capture entity submenu
+- ~L~ → Links submenu
+- ~W~ → Planner submenu
+
+*q always means quit or back*:
+- In submenu: returns to main Hydra
+- In main Hydra: closes Hydra
 
 ** Visual Learning
 
@@ -548,21 +518,21 @@ Print this cheat sheet:
 #+BEGIN_EXAMPLE
 HYDRA QUICK REFERENCE (F8 F8)
 
-INSERT     MODES       CAPTURE     TOOLS       SEARCH      MANAGE
-s: Scene   m: Write    n: Note     w: Count    1: PoV      C: Chars
-c: Chapter p: Project  h: Char     r: Track    2: Char     L: Locs
-o: Open    f: Focus    l: Loc      a: Props    3: Plot     P: Plots
-           e: Edit     b: Obj      d: Dict     4: Loc      U: Update
-                       t: Time     y: Syn      5: TODO
-                       g: Plot     k: Thes     6: Edits
+INSERT     WORKSPACE   TAG SCENE   TOOLS       SEARCH      MANAGE
+s: Scene   m: Write    p: PoV      w: Count    1: PoV      n: Note
+c: Chapter f: Focus    h: Chars    a: All WC   2: Char     k: Capture…
+o: Open    e: Edit     l: Locs     r: Track    3: Plot     L: Links…
+           v: Nav      g: Plot     d: Dict     4: Loc      R: Relink
+           0: Normal   j: Jump     y: Syn      5: TODO     H: Health
+                                   x: Thes     6: Edits    W: Planner…
 #+END_EXAMPLE
 
 Tape it near your monitor until you memorize it!
 
 ** Practice Deliberately
 
-*Week 1*: Use only Insert and Modes columns
-*Week 2*: Add Capture and Tools
+*Week 1*: Use only Insert and Workspace columns
+*Week 2*: Add Tag Scene and Tools
 *Week 3*: Master Search
 *Week 4*: Explore Manage (submenus)
 
@@ -574,16 +544,20 @@ Don't try to learn everything at once!
    - Wrong: Just pressing ~m~
    - Right: ~F8 F8~ then ~m~
 
-2. *Confusing columns*
-   - Character capture vs. Character search
-   - ~h~ (capture new) vs ~2~ (search existing)
+2. *Using ~w~ when you meant ~a~*
+   - ~w~ only reports — it does not update heading properties
+   - ~a~ is what actually stores the count and syncs the plan
 
-3. *Expecting actions to repeat*
+3. *Confusing ~n~ and ~k~*
+   - ~n~ = capture a free-text note
+   - ~k~ = open the entity capture submenu (character, location, etc.)
+
+4. *Expecting actions to repeat*
    - Hydra closes after one action (by design)
    - Re-open for next action: ~F8 F8~
 
-4. *Not using submenus*
-   - Many powerful features are in ~C~, ~L~, ~P~
+5. *Not using submenus*
+   - Many powerful features are in ~k~, ~L~, ~W~
    - Don't ignore the Manage column!
 
 ** Speed Tips
@@ -591,24 +565,21 @@ Don't try to learn everything at once!
 *Fastest workflows*:
 - Scene + writing: ~F8 F8 s ... F8 F8 m~
 - Quick count: ~F8 F8 w~
-- Save count: ~F8 F8 a~
+- Full update: ~F8 F8 a~
 - Character search: ~F8 F8 2~
 
-*Batch operations*:
-- Open Hydra once
-- Execute action
-- Immediately press ~F8 F8~ again for next action
-- Build speed through repetition
+*Auto-update shortcut*:
+- Add =(setq org-scribe-auto-wordcount t)= to your init file so word counts (and the plan) update silently every time you save — then you never need to press ~a~ manually again.
 
 ** Discovering Features
 
 *Try one new feature per week*:
 - Week 1: Master ~m~ (writing mode)
-- Week 2: Learn ~h~ (character capture)
+- Week 2: Learn Tag Scene keys (p, h, l, g)
 - Week 3: Try ~2~ (character search)
-- Week 4: Explore ~C~ (character linking submenu)
+- Week 4: Explore ~L~ (links submenu, run ~R~ to relink project)
 - Week 5: Use ~3~ (plot search)
-- Week 6: Try ~P r~ (plot health report)
+- Week 6: Try ~W~ (writing planner)
 
 Gradual exploration prevents overwhelm!
 
@@ -638,7 +609,7 @@ Gradual exploration prevents overwhelm!
 
 2. Is the function available?
    - Some functions need dependencies
-   - Example: ~d~ needs RAE API package
+   - Example: ~d~ needs the RAE API; ~x~ needs =powerthesaurus=
 
 3. Are you in the right context?
    - Some functions only work in manuscript files
@@ -681,9 +652,9 @@ Excellent work! You've completed Lesson 8. You now know:
 
 ✓ What the Hydra menu is and why it's useful
 ✓ How to open it (~F8 F8~)
-✓ The six functional categories (Insert, Modes, Capture, Tools, Search, Manage)
+✓ The six functional categories (Insert, Workspace, Tag Scene, Tools, Search, Manage)
 ✓ What each menu option does
-✓ How to navigate submenus
+✓ How to navigate submenus (Capture, Links & upkeep, Planner)
 ✓ Common usage patterns and workflows
 ✓ Keyboard shortcuts for frequent actions
 ✓ How to customize the Hydra keybinding
@@ -695,7 +666,7 @@ Excellent work! You've completed Lesson 8. You now know:
 You've completed Part 3 (Navigating and Searching)! Next up: [[file:getting-started-09-writing-modes.org][Lesson 9: Writing Modes Deep Dive]]
 
 In the next lesson, you'll learn:
-- All four writing modes in detail
+- All writing modes in detail
 - When to use each mode
 - How each mode changes your environment
 - Customizing modes to your preferences
@@ -706,7 +677,7 @@ In the next lesson, you'll learn:
 Reinforce your Hydra skills:
 
 1. *Memorize the six columns*
-   - Insert, Modes, Capture, Tools, Search, Manage
+   - Insert, Workspace, Tag Scene, Tools, Search, Manage
    - Close your eyes and recite them
 
 2. *Practice your daily workflow*
@@ -715,22 +686,22 @@ Reinforce your Hydra skills:
    - Write 100 words
    - F8 F8 m (exit)
    - F8 F8 w (count)
-   - F8 F8 a (save count)
+   - F8 F8 a (update all / save count)
 
 3. *Explore submenus*
-   - Visit all three submenus (C, L, P)
+   - Visit all three submenus (k, L, W)
    - Try at least one command from each
    - Return to main menu with q
 
 4. *Test search functions*
-   - Use all five search options (1, 2, 3, 4, 5)
+   - Use search options 1–4
    - See what results look like
    - Navigate to results with C-c C-o
 
 5. *Capture something*
-   - Use all five capture options (n, h, l, b, t)
-   - Fill out templates completely
-   - See where data is stored
+   - Open capture submenu (k)
+   - Try capturing a character (h) or note (n)
+   - Fill out the template and complete
 
 Take your time! The Hydra menu is your primary interface to ~org-scribe~ - mastering it makes everything else easier.
 
@@ -738,70 +709,56 @@ Take your time! The Hydra menu is your primary interface to ~org-scribe~ - maste
 
 ** Essential Hydra Commands
 
-| Category | Key | Command           | Frequency |
-|----------+-----+-------------------+-----------|
-| Insert   | ~s~   | Insert scene      | Daily     |
-| Insert   | ~c~   | Insert chapter    | Weekly    |
-| Modes    | ~m~   | Writing mode      | Daily     |
-| Capture  | ~h~   | Capture character | Weekly    |
-| Capture  | ~l~   | Capture location  | Weekly    |
-| Tools    | ~w~   | Count words       | Daily     |
-| Tools    | ~a~   | Add word props    | Daily     |
-| Search   | ~2~   | Find character    | Weekly    |
-| Search   | ~3~   | Find plot         | Weekly    |
-| Manage   | ~C~   | Character links   | Setup     |
+| Category  | Key | Command            | Frequency |
+|-----------+-----+--------------------+-----------|
+| Insert    | ~s~   | Insert scene       | Daily     |
+| Insert    | ~c~   | Insert chapter     | Weekly    |
+| Workspace | ~m~   | Writing mode       | Daily     |
+| Tag Scene | ~p~   | Set PoV            | Per scene |
+| Tag Scene | ~h~   | Set characters     | Per scene |
+| Tag Scene | ~l~   | Set location       | Per scene |
+| Tools     | ~w~   | Count words        | Daily     |
+| Tools     | ~a~   | Update all counts  | Daily     |
+| Search    | ~2~   | Find by character  | Weekly    |
+| Search    | ~3~   | Find by plot       | Weekly    |
+| Manage    | ~k~   | Capture entity     | As needed |
+| Manage    | ~W~   | Planner            | Daily     |
 
 ** Submenu Quick Reference
 
-*** Character Linking (~F8 F8 C~)
+*** Capture Entity (~F8 F8 k~)
 
-| Key | Command                | Use When                              |
-|-----+------------------------+---------------------------------------|
-| ~p~   | Set PoV                | Setting scene PoV from menu           |
-| ~c~   | Set characters         | Adding characters to scene            |
-| ~j~   | Jump to PoV            | Want to see PoV character profile     |
-| ~u~   | Update link names      | After renaming a character            |
-| ~U~   | Update all link names  | After bulk renaming                   |
-| ~s~   | Setup system           | First-time setup                      |
-| ~a~   | Add relationship       | Defining character relationships      |
-| ~v~   | View relationships     | Checking one character's connections  |
-| ~V~   | View all relationships | Overview of all character connections |
-| ~g~   | Insert graph block     | Generating relationship visualization |
+| Key | Command         | Use When                           |
+|-----+-----------------+------------------------------------|
+| ~h~   | Character       | Inventing a new character          |
+| ~l~   | Location        | Adding a new location              |
+| ~b~   | Object          | Tracking an important story object |
+| ~t~   | Timeline event  | Recording a plot timeline event    |
+| ~g~   | Plot thread     | Defining a new plot thread         |
+| ~n~   | Note            | Quick free-text project note       |
 
-*** Location Linking (~F8 F8 L~)
+*** Links & Upkeep (~F8 F8 L~)
 
-| Key | Command               | Use When                      |
-|-----+-----------------------+-------------------------------|
-| ~c~   | Set location          | Setting scene location        |
-| ~u~   | Update link names     | After renaming a location     |
-| ~U~   | Update all link names | After bulk renaming           |
-| ~s~   | Setup system          | First-time setup              |
+| Key | Command               | Use When                               |
+|-----+-----------------------+----------------------------------------|
+| ~R~   | Relink project        | Batch update all links and IDs         |
+| ~j~   | Jump to plot thread   | Navigate to a plot thread profile      |
+| ~a~   | Add relationship      | Defining a character relationship      |
+| ~v~   | View relationships    | Checking one character's connections   |
+| ~V~   | View all              | Overview of all character connections  |
+| ~t~   | Plot health report    | Checking plot balance and coverage     |
+| ~C~   | Column view toggle    | Clean display of ID links in columns   |
+| ~T~   | Tooltips toggle       | Show entity info in echo area          |
 
-*** Plot Thread Linking (~F8 F8 P~)
+*** Planner (~F8 F8 W~)
 
-| Key | Command               | Use When                         |
-|-----+-----------------------+----------------------------------|
-| ~p~   | Set plot threads      | Adding plot threads to scene     |
-| ~j~   | Jump to thread        | Want to see plot thread profile  |
-| ~u~   | Update link names     | After renaming a plot thread     |
-| ~U~   | Update all link names | After bulk renaming              |
-| ~r~   | Health report         | Checking plot balance            |
-| ~S~   | Statistics            | Reviewing plot coverage          |
-| ~s~   | Setup system          | First-time setup                 |
-
-** Memory Tricks
-
-*First letter patterns*:
-- ~s~ Scene, ~c~ Chapter, ~m~ Mode, ~w~ Words, ~n~ Note, ~l~ Location
-
-*Numbers are searches*:
-- 1-5 all search for different things
-
-*Capitals are submenus*:
-- C, L, P open linking menus
-
-*q always means quit*:
-- Exit submenu or exit Hydra
+| Key | Command               | Use When                              |
+|-----+-----------------------+---------------------------------------|
+| ~p~   | Open project plan     | Start/continue daily planning session |
+| ~u~   | Update progress       | Push current total to plan manually   |
+| ~r~   | Recalculate plan      | After a productive or unproductive week |
+| ~m~   | Milestones            | Viewing/setting word count checkpoints |
+| ~D~   | Dashboards menu       | Progress charts and analytics          |
 
 ** Workflow Patterns
 
@@ -810,7 +767,7 @@ Daily Writing:
   F8 F8 m → write → F8 F8 m → F8 F8 w → F8 F8 a
 
 New Scene:
-  F8 F8 s → F8 F8 C p → F8 F8 C c → F8 F8 m
+  F8 F8 s → F8 F8 p → F8 F8 h → F8 F8 l → F8 F8 g → F8 F8 m
 
 Progress Check:
   F8 F8 a → navigate → C-c C-c → F8 F8 r
@@ -825,8 +782,8 @@ The Hydra menu is your command center for ~org-scribe~. Instead of memorizing do
 
 The key to mastery is:
 1. Understand the six categories
-2. Learn your daily workflow keys (s, m, w, a)
-3. Gradually explore other features
+2. Learn your daily workflow keys (s, m, p/h/l/g, w, a)
+3. Gradually explore submenus (k, L, W)
 4. Practice until ~F8 F8~ becomes muscle memory
 
 Don't try to memorize everything at once. Start with the essentials and expand your knowledge as you need new features!
