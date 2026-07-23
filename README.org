@@ -342,7 +342,7 @@ This generates a comprehensive table showing:
 Add the =WORD-OBJECTIVE= property to your Acts, Chapters, or Scenes to enable automatic progress calculation:
 
 #+begin_example
-* Act I :ignore:
+ * Act I :ignore:
 :PROPERTIES:
 :WORDCOUNT: 711
 :WORD-OBJECTIVE: 5000
@@ -571,7 +571,7 @@ Supported image formats: =png= (default), =svg=, =pdf=
 Relationships are stored in the =:RelationshipsData:= property:
 
 #+begin_example
-* Alice Rivera
+ * Alice Rivera
 :PROPERTIES:
 :ID: char-alice-001
 :RelationshipsData: [[id:char-bob-002][Bob]](mentor,5,positive); [[id:char-charlie-003][Charlie]](rival,3,negative)
@@ -694,14 +694,14 @@ This generates a buffer showing:
 
 **Example report:**
 #+begin_example
-* Summary
+ * Summary
 - Total plot threads: 3
 - Total scenes: 12
 - Scenes with plot threads: 12
 
-* Thread Details
+ * Thread Details
 
-** ✓ Main Plot
+ ** ✓ Main Plot
 :PROPERTIES:
 :ID: plot-main-001
 :END:
@@ -710,7 +710,7 @@ This generates a buffer showing:
 - First appearance: Scene 1 - Opening (Chapter: Chapter 1)
 - Last appearance: Scene 12 - Finale (Chapter: Chapter 4)
 
-** ⚠️ Romance Subplot
+ ** ⚠️ Romance Subplot
 :PROPERTIES:
 :ID: plot-romance-002
 :END:
@@ -1000,7 +1000,7 @@ All search functions are available via the hydra menu (=F8 F8=):
 These searches use org properties and work with both plain text and ID links:
 
 #+begin_example
-* Chapter 1
+ * Chapter 1
 :PROPERTIES:
 :PoV: [[id:char-alice-001][Alice]]
 :Characters: [[id:char-alice-001][Alice]], [[id:char-bob-002][Bob]]
