@@ -184,6 +184,27 @@
       ;; Check scene break macro
       (should (string-match-p "{{{scene-break}}}" content)))))
 
+(ert-deftest test-insert-scene-template-spanish-project ()
+  "Inside a Spanish project, inserted scenes use localized property names."
+  (let* ((temp-dir (make-temp-file "org-scribe-insert-scene-es-" t)))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+            (insert "# Writing project: Test\n# Language: es\n"))
+          (with-temp-buffer
+            (let ((default-directory temp-dir))
+              (org-mode)
+              (org-scribe-insert-scene "Escena de apertura")
+              (let ((content (buffer-string)))
+                ;; PoV has no Spanish alias, stays as-is.
+                (should (string-match-p ":PoV:" content))
+                (should (string-match-p ":Personajes:" content))
+                (should (string-match-p ":Trama:" content))
+                (should (string-match-p ":Localizacion:" content))
+                (should-not (string-match-p ":Characters:" content))
+                (should-not (string-match-p ":Plot:" content))))))
+      (delete-directory temp-dir t))))
+
 (ert-deftest test-insert-scene-empty-name ()
   "Test scene template with empty name uses default."
   (with-temp-buffer

@@ -1,39 +1,39 @@
-#+TITLE: ${TITLE} - Project Overview
+#+TITLE: ${TITLE} - Resumen del Proyecto
 #+AUTHOR: ${AUTHOR}
 #+DATE: ${DATE}
 #+STARTUP: overview
 
-* Project Information
+* Información del Proyecto
 :PROPERTIES:
 :PROJECT_START: ${DATE}
-:GENRE: 
-:TARGET-WORDCOUNT: 
+:GENRE:
+:TARGET-WORDCOUNT:
 :DEADLINE:
 :END:
 
-** Synopsis
-[Brief overview of the story]
+** Sinopsis
+[Breve resumen de la historia]
 
-** Writing Goals
-- [ ] Complete first draft
-- [ ] Revision pass 1
-- [ ] Beta reader feedback
-- [ ] Final revision
-- [ ] Submission/Publication
+** Objetivos de Escritura
+- [ ] Completar primer borrador
+- [ ] Primera pasada de revisión
+- [ ] Comentarios de lectores beta
+- [ ] Revisión final
+- [ ] Envío/Publicación
 
-** Project Structure
-- [[file:novela.org][novela.org]] - Main manuscript file with progress tracking
-- [[file:revision.org][revision.org]] - Editing notes and feedback
-- [[file:diario-escritura.org][diario-escritura.org]] - Reflective writing journal
-- [[file:objects/personajes.org][objects/personajes.org]] - Character profiles
-- [[file:objects/localizaciones.org][objects/localizaciones.org]] - Location descriptions
-- [[file:objects/objetos.org][objects/objetos.org]] - Important objects
-- [[file:objects/trama.org][objects/trama.org]] - Plot structure
-- [[file:objects/cronologia.org][objects/cronologia.org]] - Timeline of events
-- [[file:notas/investigacion.org][notas/investigacion.org]] - Research notes
-- [[file:notas/notas.org][notas/notas.org]] - General notes
+** Estructura del Proyecto
+- [[file:novela.org][novela.org]] - Manuscrito principal con seguimiento de progreso
+- [[file:revision.org][revision.org]] - Notas de edición y comentarios
+- [[file:diario-escritura.org][diario-escritura.org]] - Diario reflexivo de escritura
+- [[file:objects/personajes.org][objects/personajes.org]] - Perfiles de personajes
+- [[file:objects/localizaciones.org][objects/localizaciones.org]] - Descripciones de localizaciones
+- [[file:objects/objetos.org][objects/objetos.org]] - Objetos importantes
+- [[file:objects/trama.org][objects/trama.org]] - Estructura de la trama
+- [[file:objects/cronologia.org][objects/cronologia.org]] - Cronología de eventos
+- [[file:notas/investigacion.org][notas/investigacion.org]] - Notas de investigación
+- [[file:notas/notas.org][notas/notas.org]] - Notas generales
 
-** Current Status
-Status: Planning/Drafting/Revising/Complete
-Current Chapter:
-Last Updated: ${DATE}
+** Estado Actual
+Estado: Planificación/Redacción/Revisión/Completo
+Capítulo actual:
+Última actualización: ${DATE}

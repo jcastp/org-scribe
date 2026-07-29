@@ -35,7 +35,7 @@
            (save-excursion
              (ignore-errors
                (org-up-heading-safe)
-               (string-match-p "Location\\|Ubicación\\|Setting\\|Place\\|Lugar"
+               (string-match-p "Location\\|Ubicación\\|Localización\\|Setting\\|Place\\|Lugar"
                               (org-get-heading t t t t)))))))
 
 ;;; Entity Definition
@@ -44,7 +44,7 @@
   ;; ── Config (entity descriptor) ──────────────────────────────────────
   :file-fn                  org-scribe-capture-location-file
   :heading-predicate        org-scribe--location-heading-p
-  :properties               ("Location")
+  :properties               (location)
   :msg-added-ids            msg-added-location-ids
   :msg-ids-updated          msg-location-ids-updated
   :error-no-file            error-no-location-file
@@ -73,7 +73,7 @@
   :insert-link-name         org-scribe-insert-location-link
   :insert-multi-name        org-scribe-insert-multiple-location-links
   :set-scene-name           org-scribe-set-scene-locations
-  :set-scene-property       "Location"
+  :set-scene-property       location
   :link-in-prop-name        org-scribe--link-locations-in-property
   :link-scene-name          org-scribe-link-scene-locations
   :link-all-name            org-scribe-link-all-scene-locations

@@ -27,6 +27,7 @@
 
 (require 'project)
 (require 'org-scribe-messages)
+(require 'org-scribe-core)
 
 ;; Linking is loaded after this module; these are resolved at runtime when
 ;; `org-scribe--auto-setup-links' runs during project creation.
@@ -315,6 +316,18 @@ VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
 
 ;;; Template Insertion
 
+(defconst org-scribe--scene-property-keys
+  '(pov characters beat plot timeline location description summary
+    scene-motivation conflict-source what-is-at-stake emotion
+    tension-level outcome comment)
+  "Canonical scene property keys, in the order they appear in a scene drawer.")
+
+(defun org-scribe--scene-property-drawer-lines ()
+  "Return the scene property drawer lines, localized to the current project."
+  (mapconcat (lambda (key) (format ":%s:" (org-scribe-scene-property-name key)))
+             org-scribe--scene-property-keys
+             "\n"))
+
 ;;;###autoload
 (defun org-scribe-insert-scene (scene-name)
   "Insert a scene template at point with SCENE-NAME.
@@ -336,26 +349,12 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
   ;; Define and insert template
   (let ((template (format "*** TODO %s :ignore:
 :PROPERTIES:
-:PoV:
-:Characters:
-:Beat:
-:Plot:
-:Timeline:
-:Location:
-:Description:
-:Summary:
-:Scene-motivation:
-:Conflict-source:
-:What-is-at-stake:
-:Emotion:
-:Tension-level:
-:Outcome:
-:Comment:
+%s
 :WORD-OBJECTIVE: 500
 :END:
 
 {{{scene-break}}}
-" scene-name))
+" scene-name (org-scribe--scene-property-drawer-lines)))
         (start-pos (point)))
 
     ;; Insert template
@@ -391,26 +390,12 @@ If CHAPTER-NAME is empty, defaults to \"New chapter\"."
 
 *** TODO %s :ignore:
 :PROPERTIES:
-:PoV:
-:Characters:
-:Beat:
-:Plot:
-:Timeline:
-:Location:
-:Description:
-:Summary:
-:Scene-motivation:
-:Conflict-source:
-:What-is-at-stake:
-:Emotion:
-:Tension-level:
-:Outcome:
-:Comment:
+%s
 :WORD-OBJECTIVE: 500
 :END:
 
 {{{scene-break}}}
-" chapter-name (org-scribe-msg 'default-scene-name)))
+" chapter-name (org-scribe-msg 'default-scene-name) (org-scribe--scene-property-drawer-lines)))
         (start-pos (point)))
 
     ;; Insert template

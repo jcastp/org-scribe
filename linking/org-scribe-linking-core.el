@@ -179,7 +179,7 @@ ENTITY is an entity descriptor plist."
 (defun org-scribe--set-scene-entity (entity property)
   "Set PROPERTY to multiple entity ID links via completion.
 ENTITY is an entity descriptor plist.
-PROPERTY is the org property name to set (e.g. \"Characters\")."
+PROPERTY is a canonical scene property key (e.g. \\='characters)."
   (unless (org-at-heading-p)
     (org-back-to-heading))
   (let* ((items (org-scribe--get-all-entities entity))
@@ -203,7 +203,7 @@ PROPERTY is the org property name to set (e.g. \"Characters\")."
       (setq links (nreverse links))
       (if links
           (progn
-            (org-set-property property (string-join links ", "))
+            (org-scribe-scene-property-set property (string-join links ", "))
             (message (org-scribe-msg (plist-get entity :msg-set)
                                      (string-join selected-items ", "))))
         (message (org-scribe-msg (plist-get entity :msg-no-selected)))))))
@@ -211,8 +211,9 @@ PROPERTY is the org property name to set (e.g. \"Characters\")."
 (defun org-scribe--link-entity-in-property (entity property)
   "Convert entity names to ID links in PROPERTY of current heading.
 ENTITY is an entity descriptor plist.
+PROPERTY is a canonical scene property key (e.g. \\='characters).
 Handles both single entities and comma-separated lists."
-  (when-let ((prop-value (org-entry-get nil property)))
+  (when-let ((prop-value (org-scribe-scene-property-get property)))
     (let* ((id-alist (org-scribe--get-all-entities entity))
            (name-list (mapcar #'string-trim
                               (split-string prop-value "," t)))
@@ -221,7 +222,7 @@ Handles both single entities and comma-separated lists."
                            name-list))
            (linked-string (string-join linked ", ")))
       (unless (string= prop-value linked-string)
-        (org-set-property property linked-string)
+        (org-scribe-scene-property-set property linked-string)
         t))))
 
 (defun org-scribe--link-scene-entity (entity)
@@ -247,7 +248,7 @@ ENTITY is an entity descriptor plist."
           (properties (plist-get entity :properties)))
       (org-map-entries
        (lambda ()
-         (when (cl-some (lambda (prop) (org-entry-get nil prop)) properties)
+         (when (cl-some (lambda (prop) (org-scribe-scene-property-get prop)) properties)
            (let ((any-updated nil))
              (dolist (prop properties)
                (when (org-scribe--link-entity-in-property entity prop)
@@ -306,7 +307,7 @@ Returns the number of scenes updated."
            (count 0))
       (org-map-entries
        (lambda ()
-         (when (cl-some (lambda (prop) (org-entry-get nil prop)) properties)
+         (when (cl-some (lambda (prop) (org-scribe-scene-property-get prop)) properties)
            (let ((any-updated nil))
              (dolist (prop properties)
                (when (org-scribe--update-links-in-property prop id-map)

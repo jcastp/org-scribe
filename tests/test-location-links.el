@@ -149,6 +149,18 @@
   (should (equal (org-scribe--get-location-file)
                  (org-scribe-capture-location-file))))
 
+;;; Spanish Heading Detection Tests
+
+(ert-deftest test-location-heading-p-detects-spanish-localizacion ()
+  "org-scribe--location-heading-p recognizes the Spanish \"Localización\" heading."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Localización Principal 1\n** Descripción General\n")
+    (goto-char (point-min))
+    (search-forward "Descripción General")
+    (org-back-to-heading)
+    (should (org-scribe--location-heading-p))))
+
 ;;; Setup Wizard Tests
 
 (ert-deftest test-setup-wizard-defined ()

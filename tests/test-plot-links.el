@@ -139,6 +139,36 @@
     ;; Thread A appears in scenes 1,2,5,6 - gap of 2 scenes (3 and 4)
     (should (= gap 2))))
 
+;;; Plot Thread File Resolution Tests
+
+(ert-deftest test-get-plot-thread-file-resolves-spanish-trama-file ()
+  "org-scribe--get-plot-thread-file finds objects/trama.org in Spanish projects."
+  (let* ((temp-dir (make-temp-file "org-scribe-plot-file-es-" t))
+         (org-scribe--project-type-cache nil))
+    (unwind-protect
+        (let ((default-directory temp-dir))
+          (make-directory (expand-file-name "objects" temp-dir) t)
+          (with-temp-file (expand-file-name "objects/trama.org" temp-dir)
+            (insert "* Trama\n"))
+          (should (equal (file-truename (org-scribe--get-plot-thread-file))
+                         (file-truename (expand-file-name "objects/trama.org" temp-dir)))))
+      (setq org-scribe--project-type-cache nil)
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-get-plot-thread-file-resolves-english-plot-file ()
+  "org-scribe--get-plot-thread-file finds objects/plot.org in English projects."
+  (let* ((temp-dir (make-temp-file "org-scribe-plot-file-en-" t))
+         (org-scribe--project-type-cache nil))
+    (unwind-protect
+        (let ((default-directory temp-dir))
+          (make-directory (expand-file-name "objects" temp-dir) t)
+          (with-temp-file (expand-file-name "objects/plot.org" temp-dir)
+            (insert "* Plot\n"))
+          (should (equal (file-truename (org-scribe--get-plot-thread-file))
+                         (file-truename (expand-file-name "objects/plot.org" temp-dir)))))
+      (setq org-scribe--project-type-cache nil)
+      (delete-directory temp-dir t))))
+
 ;;; Run tests
 
 (defun org-scribe-plot-links-run-tests ()

@@ -47,7 +47,7 @@
   ;; ── Config (entity descriptor) ──────────────────────────────────────
   :file-fn                  org-scribe-capture-character-file
   :heading-predicate        org-scribe--character-heading-p
-  :properties               ("PoV" "Characters")
+  :properties               (pov characters)
   :msg-added-ids            msg-added-ids
   :msg-ids-updated          msg-character-ids-updated
   :error-no-file            error-no-character-file
@@ -76,7 +76,7 @@
   :insert-link-name         org-scribe-insert-character-link
   :insert-multi-name        org-scribe-insert-multiple-character-links
   :set-scene-name           org-scribe-set-scene-characters
-  :set-scene-property       "Characters"
+  :set-scene-property       characters
   :link-in-prop-name        org-scribe--link-characters-in-property
   ;; link-scene, link-all, update-names, update-all are custom below
   ;; (they handle both PoV + Characters with four-state messaging)
@@ -102,7 +102,7 @@ Specifically designed for the :PoV: property in scene headings."
              (id (cadr entry)))
         (if id
             (progn
-              (org-set-property "PoV" (format "[[id:%s][%s]]" id selected))
+              (org-scribe-scene-property-set 'pov (format "[[id:%s][%s]]" id selected))
               (message (org-scribe-msg 'msg-set-pov selected)))
           (message (org-scribe-msg 'error-no-id-for-character selected)))))))
 
@@ -113,7 +113,7 @@ Follows the ID link in the :PoV: property."
   (interactive)
   (unless (org-at-heading-p)
     (org-back-to-heading))
-  (if-let ((pov (org-entry-get nil "PoV")))
+  (if-let ((pov (org-scribe-scene-property-get 'pov)))
       (progn
         (if (string-match "\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]" pov)
             (let ((id (match-string 1 pov)))
@@ -131,8 +131,8 @@ Updates both :PoV: and :Characters: properties."
   (interactive)
   (save-excursion
     (org-back-to-heading)
-    (let ((updated-pov (org-scribe--link-characters-in-property "PoV"))
-          (updated-chars (org-scribe--link-characters-in-property "Characters")))
+    (let ((updated-pov (org-scribe--link-characters-in-property 'pov))
+          (updated-chars (org-scribe--link-characters-in-property 'characters)))
       (cond
        ((and updated-pov updated-chars)
         (message (org-scribe-msg 'msg-updated-pov-and-chars)))
@@ -153,10 +153,10 @@ Processes all headings with :PoV: or :Characters: properties."
     (let ((count 0))
       (org-map-entries
        (lambda ()
-         (when (or (org-entry-get nil "PoV")
-                   (org-entry-get nil "Characters"))
-           (let ((updated-pov (org-scribe--link-characters-in-property "PoV"))
-                 (updated-chars (org-scribe--link-characters-in-property "Characters")))
+         (when (or (org-scribe-scene-property-get 'pov)
+                   (org-scribe-scene-property-get 'characters))
+           (let ((updated-pov (org-scribe--link-characters-in-property 'pov))
+                 (updated-chars (org-scribe--link-characters-in-property 'characters)))
              (when (or updated-pov updated-chars)
                (setq count (1+ count))))))
        nil 'file)
@@ -176,8 +176,8 @@ Returns t if any updates were made, nil otherwise."
     (org-back-to-heading)
     (let* ((chars-alist (org-scribe--get-all-characters))
            (id-map (org-scribe--build-id-to-name-map chars-alist))
-           (updated-pov (org-scribe--update-links-in-property "PoV" id-map))
-           (updated-chars (org-scribe--update-links-in-property "Characters" id-map)))
+           (updated-pov (org-scribe--update-links-in-property 'pov id-map))
+           (updated-chars (org-scribe--update-links-in-property 'characters id-map)))
       (cond
        ((and updated-pov updated-chars)
         (message (org-scribe-msg 'msg-updated-pov-and-chars-link-names)))
@@ -201,10 +201,10 @@ Returns the number of scenes updated."
            (count 0))
       (org-map-entries
        (lambda ()
-         (when (or (org-entry-get nil "PoV")
-                   (org-entry-get nil "Characters"))
-           (let ((updated-pov (org-scribe--update-links-in-property "PoV" id-map))
-                 (updated-chars (org-scribe--update-links-in-property "Characters" id-map)))
+         (when (or (org-scribe-scene-property-get 'pov)
+                   (org-scribe-scene-property-get 'characters))
+           (let ((updated-pov (org-scribe--update-links-in-property 'pov id-map))
+                 (updated-chars (org-scribe--update-links-in-property 'characters id-map)))
              (when (or updated-pov updated-chars)
                (setq count (1+ count))))))
        nil 'file)
@@ -220,8 +220,8 @@ Each entry is (SCENE-HEADING CHAPTER-HEADING POV-NAME CHARACTERS-LIST)."
   (require 'org-scribe-search)
   (org-scribe--get-all-scenes
    (lambda ()
-     (let ((pov-prop (org-entry-get nil "PoV"))
-           (chars-prop (org-entry-get nil "Characters")))
+     (let ((pov-prop (org-scribe-scene-property-get 'pov))
+           (chars-prop (org-scribe-scene-property-get 'characters)))
        (when (or pov-prop chars-prop)
          (list (org-get-heading t t t t)
                (save-excursion (org-up-heading-safe) (org-get-heading t t t t))

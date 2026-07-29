@@ -59,6 +59,7 @@
     "test-core-extended"           ; Core utilities (project type/structure)
     "test-messages"                ; Message system
     "test-wordcount"               ; Word counting
+    "test-scene-property-localization" ; Localized scene property aliases
     "test-project"                 ; Project creation
     "test-capture"                 ; Capture system
     "test-modes"                   ; Writing environment modes

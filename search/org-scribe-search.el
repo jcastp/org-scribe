@@ -100,14 +100,16 @@ PROMPT-FREE is the message key for the free-text prompt."
 (defun org-scribe--search-property (term error-key property)
   "Search for TERM in PROPERTY across headings in current buffer.
 ERROR-KEY is the message key for empty input validation.
-PROPERTY is the org property name to search (e.g. \"PoV\")."
+PROPERTY is a canonical scene property key (e.g. \\='pov); every
+localized alias for it (see `org-scribe-scene-property-aliases') is
+checked so the search works regardless of the project's language."
   (when (string-empty-p (string-trim term))
     (user-error (org-scribe-msg error-key)))
   (unless (featurep 'org-ql)
     (user-error (org-scribe-msg 'error-org-ql-required)))
   (org-ql-search (current-buffer)
     `(and (heading)
-          (let ((val (org-entry-get (point) ,property)))
+          (let ((val (org-scribe-scene-property-get ',property)))
             (org-scribe--property-contains-p val ,term)))))
 
 ;;; Property-based scene search (PoV / Characters / Plot / Location)
@@ -124,7 +126,7 @@ Requires org-ql package."
    (list (org-scribe--read-search-term
           'org-scribe-character-links #'org-scribe--get-all-characters
           'search-pov-prompt 'search-pov-prompt-free)))
-  (org-scribe--search-property char 'error-empty-character "PoV"))
+  (org-scribe--search-property char 'error-empty-character 'pov))
 
 ;;;###autoload
 (defun org-scribe-org-find-character (char)
@@ -135,7 +137,7 @@ Requires org-ql package."
    (list (org-scribe--read-search-term
           'org-scribe-character-links #'org-scribe--get-all-characters
           'search-char-prompt 'search-char-prompt-free)))
-  (org-scribe--search-property char 'error-empty-character "Characters"))
+  (org-scribe--search-property char 'error-empty-character 'characters))
 
 ;;;###autoload
 (defun org-scribe-org-find-plot (term)
@@ -146,7 +148,7 @@ Requires org-ql package."
    (list (org-scribe--read-search-term
           'org-scribe-plot-links #'org-scribe--get-all-plot-threads
           'search-plot-prompt 'search-plot-prompt-free)))
-  (org-scribe--search-property term 'error-empty-plot "Plot"))
+  (org-scribe--search-property term 'error-empty-plot 'plot))
 
 ;;;###autoload
 (defun org-scribe-org-find-location (loc)
@@ -157,7 +159,7 @@ Requires org-ql package."
    (list (org-scribe--read-search-term
           'org-scribe-location-links #'org-scribe--get-all-locations
           'search-loc-prompt 'search-loc-prompt-free)))
-  (org-scribe--search-property loc 'error-empty-location "Location"))
+  (org-scribe--search-property loc 'error-empty-location 'location))
 
 ;;; Recursive TODO Search
 

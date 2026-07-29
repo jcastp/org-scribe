@@ -43,22 +43,13 @@
 
 (defun org-scribe--get-plot-thread-file ()
   "Get the path to the plot threads file for the current project.
-For novels, this is objects/plot.org.
+For novels, this is objects/plot.org (or objects/trama.org).
 For short stories, this is notes.org (Plot section)."
-  (let* ((project-root (org-scribe-project-root))
-         (project-type (org-scribe-project-type))
+  (let* ((project-type (org-scribe-project-type))
          (structure (org-scribe-project-structure)))
-    (cond
-     ((eq project-type 'novel)
-      (let ((plot-file (expand-file-name "objects/plot.org" project-root)))
-        (when (file-exists-p plot-file)
-          plot-file)))
-     ((eq project-type 'short-story)
-      (plist-get structure :notes-file))
-     (t
-      (let ((plot-file (expand-file-name "objects/plot.org" project-root)))
-        (when (file-exists-p plot-file)
-          plot-file))))))
+    (if (eq project-type 'short-story)
+        (plist-get structure :notes-file)
+      (plist-get structure :plot-file))))
 
 ;;; Entity Definition
 
@@ -66,7 +57,7 @@ For short stories, this is notes.org (Plot section)."
   ;; ── Config (entity descriptor) ──────────────────────────────────────
   :file-fn                  org-scribe--get-plot-thread-file
   :heading-predicate        org-scribe--plot-heading-p
-  :properties               ("Plot")
+  :properties               (plot)
   :msg-added-ids            msg-added-plot-ids
   :msg-ids-updated          msg-plot-ids-updated
   :error-no-file            error-no-plot-file
@@ -94,7 +85,7 @@ For short stories, this is notes.org (Plot section)."
   :insert-link-name         org-scribe-insert-plot-thread-link
   :insert-multi-name        org-scribe-insert-multiple-plot-thread-links
   :set-scene-name           org-scribe-set-scene-plot-threads
-  :set-scene-property       "Plot"
+  :set-scene-property       plot
   :link-in-prop-name        org-scribe--link-plot-threads-in-property
   :link-scene-name          org-scribe-link-scene-plot-threads
   :link-all-name            org-scribe-link-all-scene-plot-threads
@@ -111,7 +102,7 @@ For short stories, this is notes.org (Plot section)."
   "Jump to plot thread definition from scene.
 If Plot property has multiple threads, prompts for selection."
   (interactive)
-  (let* ((plot-prop (org-entry-get nil "Plot"))
+  (let* ((plot-prop (org-scribe-scene-property-get 'plot))
          (thread-list (when plot-prop
                        (org-scribe--property-to-list plot-prop))))
     (cond
@@ -140,7 +131,7 @@ If Plot property has multiple threads, prompts for selection."
 Each entry is (SCENE-HEADING CHAPTER-HEADING PLOT-THREADS-LIST)."
   (org-scribe--get-all-scenes
    (lambda ()
-     (when-let ((plot-prop (org-entry-get nil "Plot")))
+     (when-let ((plot-prop (org-scribe-scene-property-get 'plot)))
        (list (org-get-heading t t t t)
              (save-excursion (org-up-heading-safe) (org-get-heading t t t t))
              (org-scribe--property-to-list plot-prop))))))
@@ -279,7 +270,7 @@ Opens a new buffer with the report."
             (org-map-entries
              (lambda ()
                (when (= (org-current-level) 3)
-                 (unless (org-entry-get nil "Plot")
+                 (unless (org-scribe-scene-property-get 'plot)
                    (let ((heading (org-get-heading t t t t))
                          (chapter (save-excursion
                                    (org-up-heading-safe)

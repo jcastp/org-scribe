@@ -2,19 +2,19 @@
 #+AUTHOR: ${AUTHOR}
 #+STARTUP: overview
 
-* Timeline Overview
+* Resumen de la Cronología
 :PROPERTIES:
 :CUSTOM_ID: timeline-overview
 :END:
 
-** Story Timeline
-| Event | Date/Time | Characters | Location | Notes |
-|-------+-----------+------------+----------+-------|
-|       |           |            |          |       |
+** Cronología de la Historia
+| Evento | Fecha/Hora | Personajes | Localización | Notas |
+|--------+------------+------------+--------------+-------|
+|        |            |            |              |       |
 
-* Detailed Events
+* Eventos Detallados
 
-** Event 01
+** Evento 01
 :PROPERTIES:
 :DATE:
 :TIME:
@@ -24,12 +24,12 @@
 :CHAPTER:
 :END:
 
-*** Description
+*** Descripción
 
-*** Consequences
+*** Consecuencias
 
-* Backstory Timeline
-** Past Event 01
+* Cronología del Trasfondo
+** Evento Pasado 01
 :PROPERTIES:
 :DATE:
 :RELEVANCE:

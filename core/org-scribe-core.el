@@ -139,6 +139,86 @@ All file/directory values are nil if the path does not exist."
                           "objects.org" "objetos.org")
           :plan-file (org-scribe--find-existing-file root "plan.org"))))
 
+;;; Scene Property Localization
+;;
+;; Scene metadata properties (PoV, Characters, Plot, ...) are stored as
+;; literal Org property names.  English project templates and Spanish
+;; project templates use different literal names for the same logical
+;; property (e.g. "Characters" vs "Personajes"), so every reader/writer
+;; of these properties must go through the alias table below instead of
+;; hardcoding one literal name.
+
+(defconst org-scribe--scene-property-aliases
+  '((pov               . ("PoV"))
+    (characters        . ("Characters" "Personajes"))
+    (beat              . ("Beat" "Ritmo"))
+    (plot              . ("Plot" "Trama"))
+    (timeline          . ("Timeline" "Linea-temporal"))
+    (location          . ("Location" "Localizacion"))
+    (description       . ("Description" "Descripcion"))
+    (summary           . ("Summary" "Resumen"))
+    (scene-motivation  . ("Scene-motivation" "Motivacion-escena"))
+    (conflict-source   . ("Conflict-source" "Fuente-conflicto"))
+    (what-is-at-stake  . ("What-is-at-stake" "Que-esta-en-juego"))
+    (emotion           . ("Emotion" "Emocion"))
+    (tension-level     . ("Tension-level" "Nivel-tension"))
+    (outcome           . ("Outcome" "Resultado"))
+    (comment           . ("Comment" "Comentario")))
+  "Canonical scene property key -> localized property name aliases.
+Each value lists every literal Org property name known to be used for
+that logical property, English first, then Spanish.")
+
+(defun org-scribe-project-language ()
+  "Return the language symbol (\\='en or \\='es) for the current project.
+Reads the \"# Language:\" line from the project's .org-scribe-project
+marker file.  Falls back to `org-scribe-template-language' (or \\='en
+if that is unbound) when no marker file or line is found."
+  (let ((marker-file (expand-file-name ".org-scribe-project" (org-scribe-project-root))))
+    (or (when (file-exists-p marker-file)
+          (with-temp-buffer
+            (insert-file-contents marker-file)
+            (goto-char (point-min))
+            (when (re-search-forward "^# Language: \\(.*\\)$" nil t)
+              (let ((lang (match-string 1)))
+                (cond ((string= lang "es") 'es)
+                      ((string= lang "en") 'en))))))
+        (and (boundp 'org-scribe-template-language)
+             (default-value 'org-scribe-template-language))
+        'en)))
+
+(defun org-scribe-scene-property-aliases (canonical-key)
+  "Return the list of literal property name aliases for CANONICAL-KEY.
+CANONICAL-KEY is a symbol such as \\='characters or \\='plot (see
+`org-scribe--scene-property-aliases').  If CANONICAL-KEY is not found
+in the alias table, it is returned as a single-element list unchanged,
+so callers may also pass a literal property name directly."
+  (or (alist-get canonical-key org-scribe--scene-property-aliases)
+      (list canonical-key)))
+
+(defun org-scribe-scene-property-name (canonical-key &optional language)
+  "Return the literal property name to write for CANONICAL-KEY.
+LANGUAGE defaults to `org-scribe-project-language'."
+  (let* ((aliases (org-scribe-scene-property-aliases canonical-key))
+         (language (or language (org-scribe-project-language))))
+    (or (and (eq language 'es) (nth 1 aliases))
+        (car aliases))))
+
+(defun org-scribe-scene-property-get (canonical-key)
+  "Return the value of scene property CANONICAL-KEY at point.
+Tries every known localized alias for CANONICAL-KEY and returns the
+first non-nil value found via `org-entry-get'."
+  (cl-some (lambda (prop) (org-entry-get nil prop))
+           (org-scribe-scene-property-aliases canonical-key)))
+
+(defun org-scribe-scene-property-set (canonical-key value)
+  "Set scene property CANONICAL-KEY to VALUE at point.
+Writes to whichever localized alias is already present on the heading;
+if none is set yet, writes the alias matching the current project's
+language (see `org-scribe-scene-property-name')."
+  (let* ((aliases (org-scribe-scene-property-aliases canonical-key))
+         (existing (cl-find-if (lambda (prop) (org-entry-get nil prop)) aliases)))
+    (org-set-property (or existing (org-scribe-scene-property-name canonical-key)) value)))
+
 ;;; Feature Detection
 
 (defvar org-scribe--available-features nil

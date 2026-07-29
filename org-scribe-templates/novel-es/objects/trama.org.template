@@ -92,8 +92,8 @@ Usa =F8 F8 p= para añadir rápidamente nuevos hilos de trama mientras escribes.
 ** Ejemplo: Trama Principal
 :PROPERTIES:
 :ID: ejemplo-trama-principal
-:THREAD-TYPE: Main Plot
-:STATUS: Planned
+:THREAD-TYPE: Trama Principal
+:STATUS: Planificado
 :END:
 
 *** Descripción

@@ -1,114 +1,114 @@
-#+TITLE: ${TITLE} - Revisión y Feedback
+#+TITLE: ${TITLE} - Revisión y Comentarios
 #+AUTHOR: ${AUTHOR}
 #+STARTUP: overview
 
-* Revision Passes
+* Pasadas de Revisión
 
-** Draft 1 - Structural Edit
+** Borrador 1 - Edición Estructural
 :PROPERTIES:
 :START-DATE:
 :END-DATE:
 :STATUS:
 :END:
 
-*** Issues to Address
-- [ ] Plot holes
-- [ ] Pacing problems
-- [ ] Character consistency
-- [ ] Scene transitions
+*** Problemas a Resolver
+- [ ] Agujeros de trama
+- [ ] Problemas de ritmo
+- [ ] Consistencia de personajes
+- [ ] Transiciones de escena
 
-*** Notes
+*** Notas
 
-** Draft 2 - Line Edit
+** Borrador 2 - Edición de Línea
 :PROPERTIES:
 :START-DATE:
 :END-DATE:
 :STATUS:
 :END:
 
-*** Focus Areas
-- [ ] Dialogue polish
-- [ ] Description refinement
-- [ ] Tone consistency
-- [ ] Remove redundancies
+*** Áreas de Enfoque
+- [ ] Pulido de diálogos
+- [ ] Refinamiento de descripciones
+- [ ] Consistencia de tono
+- [ ] Eliminar redundancias
 
-*** Notes
+*** Notas
 
-** Draft 3 - Copy Edit
+** Borrador 3 - Corrección de Estilo
 :PROPERTIES:
 :START-DATE:
 :END-DATE:
 :STATUS:
 :END:
 
-*** Checklist
-- [ ] Grammar
-- [ ] Punctuation
-- [ ] Spelling
-- [ ] Formatting
+*** Lista de Verificación
+- [ ] Gramática
+- [ ] Puntuación
+- [ ] Ortografía
+- [ ] Formato
 
-*** Notes
+*** Notas
 
-* Beta Reader Feedback
+* Comentarios de Lectores Beta
 
-** Beta Reader 1
+** Lector Beta 1
 :PROPERTIES:
 :NAME:
 :DATE-SENT:
 :DATE-RECEIVED:
 :END:
 
-*** Overall Impression
+*** Impresión General
 
-*** Specific Comments
+*** Comentarios Específicos
 
-*** Action Items
+*** Acciones a Realizar
 - [ ]
 
-** Beta Reader 2
+** Lector Beta 2
 :PROPERTIES:
 :NAME:
 :DATE-SENT:
 :DATE-RECEIVED:
 :END:
 
-*** Overall Impression
+*** Impresión General
 
-*** Specific Comments
+*** Comentarios Específicos
 
-*** Action Items
+*** Acciones a Realizar
 - [ ]
 
-* Editor Feedback
+* Comentarios del Editor
 
-** Round 1
+** Ronda 1
 :PROPERTIES:
 :EDITOR:
 :DATE:
 :END:
 
-*** Major Issues
+*** Problemas Mayores
 
-*** Minor Issues
+*** Problemas Menores
 
-*** Action Items
+*** Acciones a Realizar
 - [ ]
 
-* Self-Review Notes
+* Notas de Autoevaluación
 
-** Strengths
+** Fortalezas
 
-** Weaknesses
+** Debilidades
 
-** Questions for Beta Readers
+** Preguntas para los Lectores Beta
 -
 
-* Change Log
-| Date | Section | Change | Reason |
-|------+---------+--------+--------|
-|      |         |        |        |
+* Registro de Cambios
+| Fecha | Sección | Cambio | Motivo |
+|-------+---------+--------+--------|
+|       |         |        |        |
 
-* Checklist de Revisión
+* Lista de Verificación de Revisión
 
 ** Trama
 - [ ] ¿El conflicto principal está claro?

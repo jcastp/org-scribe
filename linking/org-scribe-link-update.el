@@ -83,7 +83,8 @@ Example:
     map))
 
 (defun org-scribe--update-links-in-property (property-name id-to-name-map)
-  "Update link display names in PROPERTY-NAME of current heading.
+  "Update link display names in scene property PROPERTY-NAME of current heading.
+PROPERTY-NAME is a canonical scene property key (e.g. \\='characters).
 
 Handles both single links and comma-separated lists of links.
 Uses ID-TO-NAME-MAP to look up current names for each ID.
@@ -100,7 +101,7 @@ This function:
 Example:
   Property: \":Characters: [[id:abc][Alex]], [[id:def][Sam]]\"
   After rename: \":Characters: [[id:abc][Alexandra]], [[id:def][Samuel]]\""
-  (when-let ((prop-value (org-entry-get nil property-name)))
+  (when-let ((prop-value (org-scribe-scene-property-get property-name)))
     (let* ((links (split-string prop-value "," t))
            (updated-links (mapcar
                            (lambda (link)
@@ -111,7 +112,7 @@ Example:
            (updated-string (string-join updated-links ", ")))
       ;; Only update if something changed
       (unless (string= prop-value updated-string)
-        (org-set-property property-name updated-string)
+        (org-scribe-scene-property-set property-name updated-string)
         t))))
 
 ;;; Unified Update Function

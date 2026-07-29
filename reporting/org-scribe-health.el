@@ -87,10 +87,10 @@ Each element is a list:
                      (chapter (save-excursion
                                 (org-up-heading-safe)
                                 (org-get-heading t t t t)))
-                     (pov (org-entry-get nil "PoV"))
-                     (chars (org-entry-get nil "Characters"))
-                     (plot (org-entry-get nil "Plot"))
-                     (loc (org-entry-get nil "Location")))
+                     (pov (org-scribe-scene-property-get 'pov))
+                     (chars (org-scribe-scene-property-get 'characters))
+                     (plot (org-scribe-scene-property-get 'plot))
+                     (loc (org-scribe-scene-property-get 'location)))
                 (push (list heading chapter id todo
                             (and pov (not (string-empty-p (string-trim pov))))
                             (and chars (not (string-empty-p (string-trim chars))))
@@ -133,8 +133,8 @@ headings in NOVEL-FILE for [[id:...]] link patterns."
          (org-map-entries
           (lambda ()
             (when (= (org-current-level) 3)
-              (dolist (prop '("PoV" "Characters" "Location" "Plot"))
-                (when-let ((val (org-entry-get nil prop)))
+              (dolist (prop '(pov characters location plot))
+                (when-let ((val (org-scribe-scene-property-get prop)))
                   (let ((pos 0))
                     (while (string-match "\\[\\[id:\\([^]]+\\)\\]" val pos)
                       (puthash (match-string 1 val) t ids)

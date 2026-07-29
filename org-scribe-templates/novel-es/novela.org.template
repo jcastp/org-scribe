@@ -94,8 +94,8 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 #+BEGIN: character-timeline
 #+END:
 
-* Quick Navigation :ignore:noexport:
-- [[file:README.org][README - Project Overview]]
+* Navegación Rápida :ignore:noexport:
+- [[file:README.org][README - Resumen del Proyecto]]
 - [[file:objects/personajes.org][Personajes]]
 - [[file:objects/localizaciones.org][Localizaciones]]
 - [[file:objects/objetos.org][Objetos]]
@@ -103,7 +103,7 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 - [[file:objects/cronologia.org][Cronología]]
 - [[file:notas/notas.org][Notas Generales]]
 - [[file:notas/investigacion.org][Investigación]]
-- [[file:revision.org][Revisión y Feedback]]
+- [[file:revision.org][Revisión y Comentarios]]
 - [[file:diario-escritura.org][Diario de Escritura]]
 
 * Acto I :ignore:
@@ -125,6 +125,7 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :WORD-OBJECTIVE: 500
 :PoV:
 :Personajes:
+:Ritmo: Imagen inicial
 :Trama:
 :Linea-temporal:
 :Localizacion:
@@ -134,6 +135,8 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :Fuente-conflicto:
 :Que-esta-en-juego:
 :Emocion:
+:Nivel-tension:
+:Resultado:
 :Comentario:
 :END:
 
