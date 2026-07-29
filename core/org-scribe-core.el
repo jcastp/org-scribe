@@ -225,12 +225,19 @@ language (see `org-scribe-scene-property-name')."
   "Alist of (FEATURE . AVAILABLE-P) for optional dependencies.")
 
 (defun org-scribe-check-feature (feature)
-  "Check if FEATURE is available and cache result."
+  "Check if FEATURE is available and cache result.
+Uses `require' rather than a bare `featurep' check so that an installed
+but not-yet-loaded FEATURE is detected instead of reporting unavailable
+just because nothing has loaded it yet.  Only positive results are
+cached; a negative result is rechecked on the next call so that a
+package installed later in the session (or made loadable via a
+load-path change) is picked up without restarting Emacs."
   (let ((cached (assq feature org-scribe--available-features)))
     (if cached
         (cdr cached)
-      (let ((available (featurep feature)))
-        (push (cons feature available) org-scribe--available-features)
+      (let ((available (and (require feature nil t) t)))
+        (when available
+          (push (cons feature available) org-scribe--available-features))
         available))))
 
 (defmacro org-scribe-when-feature (feature &rest body)

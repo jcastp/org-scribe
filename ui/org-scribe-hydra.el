@@ -42,7 +42,7 @@
 (declare-function org-scribe-capture-plot-thread "capture/org-scribe-capture")
 (declare-function org-scribe-wordcount "counting/org-scribe-wordcount")
 (declare-function org-scribe-ews-org-count-words "counting/org-scribe-wordcount")
-(declare-function org-tracktable-write "org-tracktable")
+(declare-function org-scribe-track-progress "counting/org-scribe-tracking")
 (declare-function org-scribe-org-find-pov "search/org-scribe-search")
 (declare-function org-scribe-org-find-character "search/org-scribe-search")
 (declare-function org-scribe-org-find-plot "search/org-scribe-search")
@@ -176,7 +176,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _r_: Track table     _3_:
   ;; "a" refreshes WORDCOUNT on every heading in the buffer (and updates the plan).
   ("w" org-scribe-wordcount "count words")
   ("a" org-scribe-ews-org-count-words "update all counts")
-  ("r" org-tracktable-write "track table")
+  ("r" org-scribe-track-progress "track table")
   ("d" org-scribe-rae-api-lookup "RAE dictionary")
   ("y" org-scribe-sinonimo "synonyms")
   ("x" powerthesaurus-lookup-dwim "thesaurus")
