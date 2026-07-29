@@ -128,10 +128,36 @@ ENTITY is an entity descriptor plist."
         (save-buffer)
         (message (org-scribe-msg (plist-get entity :msg-ids-updated) file))))))
 
+(defun org-scribe--entity-completion-items (items)
+  "Return ITEMS relabeled for completion, disambiguating duplicate names.
+ITEMS is an alist of (NAME . (ID . HEADING)) as returned by
+`org-scribe--get-all-entities'.  When two or more entities share the same
+NAME, plain `completing-read' plus `assoc' cannot tell them apart and
+always resolves to whichever entry happens to come first in ITEMS —
+silently linking to the wrong entity.
+
+Returns a new alist of (LABEL . (ID . NAME)): LABEL is NAME unchanged when
+it is unique among ITEMS, or NAME suffixed with its ID when it is not, so
+duplicates are distinguishable in the completion UI while the ID and the
+true display NAME (not the disambiguated label) remain available for
+insertion."
+  (let ((counts (make-hash-table :test 'equal)))
+    (dolist (item items)
+      (puthash (car item) (1+ (gethash (car item) counts 0)) counts))
+    (mapcar (lambda (item)
+              (let* ((name (car item))
+                     (id (cadr item))
+                     (label (if (> (gethash name counts) 1)
+                                (format "%s (%s)" name id)
+                              name)))
+                (cons label (cons id name))))
+            items)))
+
 (defun org-scribe--insert-entity-link (entity)
   "Insert an entity link at point with completion.
 ENTITY is an entity descriptor plist."
-  (let* ((items (org-scribe--get-all-entities entity))
+  (let* ((items (org-scribe--entity-completion-items
+                (org-scribe--get-all-entities entity)))
          (names (mapcar #'car items)))
     (if (null names)
         (message (org-scribe-msg (plist-get entity :error-none-found)))
@@ -139,19 +165,21 @@ ENTITY is an entity descriptor plist."
                         (org-scribe-msg (plist-get entity :prompt-select))
                         names nil t))
              (entry (assoc selected items))
-             (id (cadr entry)))
+             (id (cadr entry))
+             (name (cddr entry)))
         (if id
             (progn
-              (insert (format "[[id:%s][%s]]" id selected))
-              (message (org-scribe-msg 'msg-inserted-link selected)))
+              (insert (format "[[id:%s][%s]]" id name))
+              (message (org-scribe-msg 'msg-inserted-link name)))
           (message (org-scribe-msg (plist-get entity :error-no-id) selected)))))))
 
 (defun org-scribe--insert-multiple-entity-links (entity)
   "Insert multiple entity links separated by commas.
 ENTITY is an entity descriptor plist."
-  (let* ((items (org-scribe--get-all-entities entity))
+  (let* ((items (org-scribe--entity-completion-items
+                (org-scribe--get-all-entities entity)))
          (names (mapcar #'car items))
-         selected-items
+         selected-labels
          links)
     (if (null names)
         (message (org-scribe-msg (plist-get entity :error-none-found)))
@@ -159,14 +187,15 @@ ENTITY is an entity descriptor plist."
                             (org-scribe-msg (plist-get entity :prompt-select-multi))
                             names nil nil)))
                (when (and choice (not (string-empty-p choice)))
-                 (push choice selected-items)
+                 (push choice selected-labels)
                  t)))
-      (setq selected-items (nreverse selected-items))
-      (dolist (name selected-items)
-        (if-let* ((entry (assoc name items))
-                  (id (cadr entry)))
+      (setq selected-labels (nreverse selected-labels))
+      (dolist (label selected-labels)
+        (if-let* ((entry (assoc label items))
+                  (id (cadr entry))
+                  (name (cddr entry)))
             (push (format "[[id:%s][%s]]" id name) links)
-          (push name links)))
+          (push label links)))
       (setq links (nreverse links))
       (if links
           (progn
@@ -182,30 +211,37 @@ ENTITY is an entity descriptor plist.
 PROPERTY is a canonical scene property key (e.g. \\='characters)."
   (unless (org-at-heading-p)
     (org-back-to-heading))
-  (let* ((items (org-scribe--get-all-entities entity))
+  (let* ((items (org-scribe--entity-completion-items
+                (org-scribe--get-all-entities entity)))
          (names (mapcar #'car items))
-         selected-items
-         links)
+         selected-labels
+         links
+         selected-names)
     (if (null names)
         (message (org-scribe-msg (plist-get entity :error-none-found)))
       (while (let ((choice (completing-read
                             (org-scribe-msg (plist-get entity :prompt-select-multi))
                             names nil nil)))
                (when (and choice (not (string-empty-p choice)))
-                 (push choice selected-items)
+                 (push choice selected-labels)
                  t)))
-      (setq selected-items (nreverse selected-items))
-      (dolist (name selected-items)
-        (if-let* ((entry (assoc name items))
-                  (id (cadr entry)))
-            (push (format "[[id:%s][%s]]" id name) links)
-          (push name links)))
+      (setq selected-labels (nreverse selected-labels))
+      (dolist (label selected-labels)
+        (if-let* ((entry (assoc label items))
+                  (id (cadr entry))
+                  (name (cddr entry)))
+            (progn
+              (push (format "[[id:%s][%s]]" id name) links)
+              (push name selected-names))
+          (push label links)
+          (push label selected-names)))
       (setq links (nreverse links))
+      (setq selected-names (nreverse selected-names))
       (if links
           (progn
             (org-scribe-scene-property-set property (string-join links ", "))
             (message (org-scribe-msg (plist-get entity :msg-set)
-                                     (string-join selected-items ", "))))
+                                     (string-join selected-names ", "))))
         (message (org-scribe-msg (plist-get entity :msg-no-selected)))))))
 
 (defun org-scribe--link-entity-in-property (entity property)

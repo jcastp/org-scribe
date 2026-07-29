@@ -72,6 +72,52 @@
             (should (string-match-p (regexp-quote "[[id:char-smith-001][Smith, John]]") updated))
             (should (string-match-p (regexp-quote "[[id:char-sam-002][Sam]]") updated))))))))
 
+;;; org-scribe--entity-completion-items Tests (L5)
+
+(ert-deftest test-entity-completion-items-unique-names-unchanged ()
+  "Unique names are used as-is for the completion label."
+  (let* ((items '(("Alex" . ("char-alex-001" . "Alex"))
+                  ("Sam" . ("char-sam-002" . "Sam"))))
+         (result (org-scribe--entity-completion-items items)))
+    (should (equal (mapcar #'car result) '("Alex" "Sam")))
+    (should (equal (assoc "Alex" result) '("Alex" "char-alex-001" . "Alex")))))
+
+(ert-deftest test-entity-completion-items-duplicate-names-disambiguated ()
+  "Duplicate names get an ID suffix so completion can tell them apart (L5)."
+  (let* ((items '(("Alex" . ("char-alex-001" . "Alex"))
+                  ("Alex" . ("char-alex-002" . "Alex"))
+                  ("Sam" . ("char-sam-003" . "Sam"))))
+         (result (org-scribe--entity-completion-items items)))
+    ;; Labels are now unique.
+    (should (= (length (delete-dups (mapcar #'car result))) 3))
+    ;; Each disambiguated label still resolves to its own ID and the true name.
+    (should (equal (assoc "Alex (char-alex-001)" result)
+                   '("Alex (char-alex-001)" "char-alex-001" . "Alex")))
+    (should (equal (assoc "Alex (char-alex-002)" result)
+                   '("Alex (char-alex-002)" "char-alex-002" . "Alex")))
+    ;; The unrelated unique name is untouched.
+    (should (equal (assoc "Sam" result) '("Sam" "char-sam-003" . "Sam")))))
+
+;;; org-scribe--insert-entity-link Tests (L5)
+
+(ert-deftest test-insert-entity-link-picks-correct-duplicate ()
+  "Selecting a disambiguated label inserts a link to that entity's own ID (L5).
+Regression: previously `assoc' on the raw (possibly duplicate) name always
+resolved to whichever entry came first, so picking the second \"Alex\"
+still linked to the first Alex's ID."
+  (let ((entity (list :error-none-found 'error-none-found
+                      :prompt-select 'prompt-select
+                      :error-no-id 'error-no-id)))
+    (cl-letf (((symbol-function 'org-scribe--get-all-entities)
+               (lambda (_entity) '(("Alex" . ("char-alex-001" . "Alex"))
+                                   ("Alex" . ("char-alex-002" . "Alex")))))
+              ((symbol-function 'completing-read)
+               (lambda (&rest _) "Alex (char-alex-002)"))
+              ((symbol-function 'org-scribe-msg) (lambda (&rest _) "")))
+      (with-temp-buffer
+        (org-scribe--insert-entity-link entity)
+        (should (string= (buffer-string) "[[id:char-alex-002][Alex]]"))))))
+
 ;;; Character Timeline Tests
 
 (ert-deftest test-character-timeline-dblock-defined ()
