@@ -220,7 +220,12 @@ non-nil.  Beyond that, it acts only when all of the following are true:
 When the conditions are met, runs `org-scribe-update-all-link-names' in
 the manuscript buffer and reports the number of scenes updated.  The
 manuscript is NOT saved automatically; the message reminds the user to
-save if any changes were made."
+save if any changes were made.
+
+Installed as a buffer-local `after-save-hook' by `org-scribe-mode' (in
+org-scribe.el), not globally at load time — so buffers where org-scribe-mode
+was never turned on never pay the cost of running project detection on
+every save, regardless of `org-scribe-auto-relink'."
   (when (and org-scribe-auto-relink
              buffer-file-name (derived-mode-p 'org-mode))
     (ignore-errors
@@ -242,8 +247,6 @@ save if any changes were made."
             (when (> count 0)
               (message "org-scribe: updated link names in %d scene(s) in %s — save to persist."
                        count (file-name-nondirectory novel-file)))))))))
-
-(add-hook 'after-save-hook #'org-scribe--auto-update-links-after-save)
 
 (provide 'org-scribe-link-update)
 

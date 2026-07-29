@@ -168,7 +168,12 @@ the manuscript of an org-scribe project, and `org-context-extended' is
 available (degraded counts are suppressed to avoid misleading data).
 Calls `org-scribe-ews-org-count-words' silently; the planner sync fires
 automatically via the advice on that function.
-Also refreshes any org-generate-wordcount-table dynamic blocks in the buffer."
+Also refreshes any org-generate-wordcount-table dynamic blocks in the buffer.
+
+Installed as a buffer-local `before-save-hook' by `org-scribe-mode' (in
+org-scribe.el), not globally at load time — so buffers where org-scribe-mode
+was never turned on never pay the cost of running project detection on
+every save, regardless of `org-scribe-auto-wordcount'."
   (when (and org-scribe-auto-wordcount
              buffer-file-name
              (derived-mode-p 'org-mode)
@@ -183,8 +188,6 @@ Also refreshes any org-generate-wordcount-table dynamic blocks in the buffer."
         (let ((inhibit-message t))
           (org-scribe-ews-org-count-words)
           (org-scribe--update-wordcount-dblocks))))))
-
-(add-hook 'before-save-hook #'org-scribe--auto-wordcount-before-save)
 
 ;;; Dynamic Block for Word Count Table
 

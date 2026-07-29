@@ -120,13 +120,29 @@ Avoids drifting out of sync with the header, unlike a hardcoded string."
 ;;;###autoload
 (define-minor-mode org-scribe-mode
   "Minor mode for creative writing features.
-Provides keybindings and menu for all org-scribe functions."
+Provides keybindings and menu for all org-scribe functions.
+
+Also installs `org-scribe--auto-wordcount-before-save' and
+`org-scribe--auto-update-links-after-save' as buffer-local save hooks
+(removed again on disable).  Both remain individually opt-in via
+`org-scribe-auto-wordcount' / `org-scribe-auto-relink' and no-op unless the
+buffer is an org-scribe manuscript/entity file; installing them
+buffer-locally here, rather than unconditionally on the global
+`before-save-hook' / `after-save-hook' at module load time, means buffers
+where org-scribe-mode is never turned on never pay the cost of running
+project detection on every save (L3)."
   :lighter " Write"
   :keymap (let ((map (make-sparse-keymap)))
             (define-key map (kbd "<f8> <f8>") 'hydra-org-scribe/body)
             (define-key map (kbd "C-c W") 'org-scribe-capture-to-file)
             map)
-  :group 'org-scribe)
+  :group 'org-scribe
+  (if org-scribe-mode
+      (progn
+        (add-hook 'before-save-hook #'org-scribe--auto-wordcount-before-save nil t)
+        (add-hook 'after-save-hook #'org-scribe--auto-update-links-after-save nil t))
+    (remove-hook 'before-save-hook #'org-scribe--auto-wordcount-before-save t)
+    (remove-hook 'after-save-hook #'org-scribe--auto-update-links-after-save t)))
 
 ;;;###autoload
 (defun org-scribe-setup ()
