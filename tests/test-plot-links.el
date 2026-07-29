@@ -117,6 +117,68 @@
   "Test that timeline dynamic block function is defined."
   (should (fboundp 'org-dblock-write:plot-thread-timeline)))
 
+;;; Health Report Coverage Tests (M2)
+
+(defmacro test-plot--with-novel-and-plot-files (novel-content plot-content &rest body)
+  "Bind temp novel/plot files with NOVEL-CONTENT/PLOT-CONTENT, run BODY.
+Stubs `org-scribe-project-structure' and `org-scribe-project-type' so the
+plot module resolves both files without a real project on disk."
+  (declare (indent 2))
+  `(let ((temp-novel (make-temp-file "test-plot-novel-" nil ".org"))
+         (temp-plot (make-temp-file "test-plot-plot-" nil ".org")))
+     (unwind-protect
+         (progn
+           (with-temp-file temp-novel (insert ,novel-content))
+           (with-temp-file temp-plot (insert ,plot-content))
+           (cl-letf (((symbol-function 'org-scribe-project-structure)
+                      (lambda () (list :novel-file temp-novel :plot-file temp-plot)))
+                     ((symbol-function 'org-scribe-project-type)
+                      (lambda () 'novel)))
+             ,@body))
+       (delete-file temp-novel)
+       (delete-file temp-plot))))
+
+(ert-deftest test-plot-report-total-scenes-counts-scenes-without-plot ()
+  "\"Total scenes\" in the health report must count every scene, not just
+those with a Plot property.
+Regression test for M2: previously \"Total scenes\" and \"Scenes with
+plot threads\" were both computed from the same plot-carrying-scenes
+list, so they were always equal and never reflected scenes missing a
+Plot property — the very thing the report is meant to flag."
+  (test-plot--with-novel-and-plot-files
+      (concat "* Chapter 1\n"
+              "*** Scene 1\n:PROPERTIES:\n:Plot: Main Plot\n:END:\n"
+              "*** Scene 2\n:PROPERTIES:\n:Plot: Main Plot\n:END:\n"
+              "*** Scene 3\n")  ; no Plot property
+      "* Main Plot\n:PROPERTIES:\n:ID: plot-main-001\n:END:\n"
+    (org-scribe-plot-thread-report)
+    (with-current-buffer "*Plot Thread Health Report*"
+      (let ((text (buffer-string)))
+        (should (string-match-p "Total scenes: 3" text))
+        (should (string-match-p "Scenes with plot threads: 2" text))))
+    (kill-buffer "*Plot Thread Health Report*")))
+
+(ert-deftest test-plot-report-coverage-uses-true-total-not-plot-carrying-scenes ()
+  "Thread coverage percentage must be computed against the true total
+scene count, not just scenes that already carry a Plot property.
+Regression test for M2: a thread appearing in every plot-carrying scene
+used to be reported as 100% coverage even when most of the manuscript's
+scenes had no Plot property at all — overstating coverage in exactly the
+case the report exists to catch."
+  (test-plot--with-novel-and-plot-files
+      (concat "* Chapter 1\n"
+              "*** Scene 1\n:PROPERTIES:\n:Plot: Main Plot\n:END:\n"
+              "*** Scene 2\n"   ; no Plot property
+              "*** Scene 3\n"   ; no Plot property
+              "*** Scene 4\n")  ; no Plot property
+      "* Main Plot\n:PROPERTIES:\n:ID: plot-main-001\n:END:\n"
+    (org-scribe-plot-thread-report)
+    (with-current-buffer "*Plot Thread Health Report*"
+      (let ((text (buffer-string)))
+        ;; 1 of 4 total scenes = 25.0%, not 1 of 1 plot-carrying scene = 100.0%
+        (should (string-match-p "Scenes: 1 of 4 (25\\.0%)" text))))
+    (kill-buffer "*Plot Thread Health Report*")))
+
 (ert-deftest test-plot-thread-helper-functions ()
   "Test that helper functions for analysis are defined."
   (should (fboundp 'org-scribe--get-all-scenes-with-plots))

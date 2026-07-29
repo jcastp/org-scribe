@@ -201,16 +201,28 @@ PARAMS are ignored (reserved for future options)."
 
 ;;; Plot Thread Health Report
 
-(defun org-scribe--get-thread-status (thread-name appearances all-scenes)
+(defun org-scribe--get-scene-count ()
+  "Return the total number of scenes (level-3 headings) in the novel file.
+Unlike `org-scribe--get-all-scenes-with-plots', this counts every scene
+regardless of whether it carries a Plot property, so it can be used as
+the denominator for plot-thread coverage percentages."
+  (length (org-scribe--get-all-scenes (lambda () t))))
+
+(defun org-scribe--get-thread-status (thread-name appearances all-scenes total-scenes)
   "Get status symbol and warnings for THREAD-NAME.
 APPEARANCES is list of scenes containing thread.
-ALL-SCENES is list of all scenes.
+ALL-SCENES is the list of scenes carrying a Plot property, used to
+compute the largest gap between appearances.
+TOTAL-SCENES is the total number of scenes in the manuscript (including
+ones without a Plot property at all), used as the coverage percentage
+denominator — using ALL-SCENES there instead would overstate coverage
+whenever some scenes lack a Plot property.
 Returns (STATUS-SYMBOL . WARNINGS-LIST)."
   (let ((warnings nil)
         (status "✓")
         (scene-count (length appearances))
-        (coverage-pct (if (> (length all-scenes) 0)
-                         (/ (* 100.0 scene-count) (length all-scenes))
+        (coverage-pct (if (> total-scenes 0)
+                         (/ (* 100.0 (length appearances)) total-scenes)
                        0))
         (gap (org-scribe--calculate-thread-gap appearances all-scenes)))
     (when (< coverage-pct 30)
@@ -230,9 +242,10 @@ Returns (STATUS-SYMBOL . WARNINGS-LIST)."
 Analyzes thread coverage, gaps, and warnings.
 Opens a new buffer with the report."
   (interactive)
-  (let ((report-buffer (get-buffer-create "*Plot Thread Health Report*"))
-        (threads (org-scribe--get-all-plot-threads))
-        (scenes (org-scribe--get-all-scenes-with-plots)))
+  (let* ((report-buffer (get-buffer-create "*Plot Thread Health Report*"))
+         (threads (org-scribe--get-all-plot-threads))
+         (scenes (org-scribe--get-all-scenes-with-plots))
+         (total-scene-count (org-scribe--get-scene-count)))
     (with-current-buffer report-buffer
       (erase-buffer)
       (org-mode)
@@ -241,7 +254,7 @@ Opens a new buffer with the report."
       (insert "#+STARTUP: overview\n\n")
       (insert "* Summary\n\n")
       (insert (format "- Total plot threads: %d\n" (length threads)))
-      (insert (format "- Total scenes: %d\n" (length scenes)))
+      (insert (format "- Total scenes: %d\n" total-scene-count))
       (insert (format "- Scenes with plot threads: %d\n" (length scenes)))
       (insert "\n")
       (if (null scenes)
@@ -252,18 +265,22 @@ Opens a new buffer with the report."
                  (thread-id (cadr thread))
                  (appearances (org-scribe--find-thread-in-scenes thread-name scenes))
                  (scene-count (length appearances))
-                 (coverage-pct (if (> (length scenes) 0)
-                                  (/ (* 100.0 scene-count) (length scenes))
+                 (coverage-pct (if (> total-scene-count 0)
+                                  (/ (* 100.0 scene-count) total-scene-count)
                                 0))
-                 (status-info (org-scribe--get-thread-status thread-name appearances scenes))
+                 (status-info (org-scribe--get-thread-status
+                               thread-name appearances scenes total-scene-count))
                  (status (car status-info))
                  (warnings (cdr status-info)))
             (insert (format "** %s %s\n" status thread-name))
-            (insert (format ":PROPERTIES:\n"))
-            (insert (format ":ID: %s\n" thread-id))
-            (insert (format ":END:\n\n"))
+            ;; Shown as plain text, not a real :ID: property drawer: if this
+            ;; report buffer is ever saved to a file, org-id must not index
+            ;; it as a second location for an ID that already belongs to the
+            ;; real plot-thread heading, or `org-id-goto' could start
+            ;; jumping to this report instead.
+            (insert (format "- ID: %s\n" thread-id))
             (insert (format "- Scenes: %d of %d (%.1f%%)\n"
-                           scene-count (length scenes) coverage-pct))
+                           scene-count total-scene-count coverage-pct))
             (when appearances
               (insert (format "- First appearance: %s (Chapter: %s)\n"
                              (nth 0 (car appearances))
@@ -311,11 +328,13 @@ Opens a new buffer with the report."
          (scenes (org-scribe--get-all-scenes-with-plots))
          (thread-count (length threads))
          (scene-count (length scenes))
+         (total-scene-count (org-scribe--get-scene-count))
          (warning-count 0))
     (dolist (thread threads)
       (let* ((thread-name (car thread))
              (appearances (org-scribe--find-thread-in-scenes thread-name scenes))
-             (status-info (org-scribe--get-thread-status thread-name appearances scenes))
+             (status-info (org-scribe--get-thread-status
+                          thread-name appearances scenes total-scene-count))
              (warnings (cdr status-info)))
         (when warnings
           (setq warning-count (1+ warning-count)))))
