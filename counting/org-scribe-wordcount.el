@@ -29,10 +29,20 @@
 ;; built-in `count-words', which simply counts everything in the region.
 ;; This single primitive keeps that fallback in one place.
 
+(defvar org-scribe--accurate-wordcount-checked nil
+  "Non-nil once `org-scribe-accurate-wordcount-p' has attempted to load
+`org-context-extended'.  Prevents retrying a failed `require' on every call.")
+
 (defun org-scribe-accurate-wordcount-p ()
   "Return non-nil when accurate (metadata-excluding) counting is available.
-That is the case when `org-context-extended' is installed."
-  (featurep 'org-context-extended))
+That is the case when `org-context-extended' is installed.  Since nothing
+else in org-scribe loads it explicitly, `featurep' alone would only be true
+by luck of load order; this attempts to load it on first use (memoized) so
+availability reflects installation, not accidental load order."
+  (or (featurep 'org-context-extended)
+      (unless org-scribe--accurate-wordcount-checked
+        (setq org-scribe--accurate-wordcount-checked t)
+        (require 'org-context-extended nil t))))
 
 (defun org-scribe--count-words-region (start end)
   "Return the word count between START and END.
