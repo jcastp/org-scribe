@@ -147,6 +147,40 @@
   "Test collecting characters from empty scenes list."
   (should (equal '() (org-scribe--collect-unique-characters '()))))
 
+;;; Heading Predicate Tests
+
+(ert-deftest test-character-heading-p-detects-top-level ()
+  "org-scribe--character-heading-p matches a level-1 character heading."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Protagonist\n** Physical Description\n")
+    (goto-char (point-min))
+    (org-back-to-heading)
+    (should (org-scribe--character-heading-p))))
+
+(ert-deftest test-character-heading-p-rejects-subsection ()
+  "org-scribe--character-heading-p must not match a subsection under a
+character heading (e.g. Physical Description, Personality, Background)."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Protagonist\n** Physical Description\n** Personality\n** Background\n")
+    (goto-char (point-min))
+    (dolist (heading '("Physical Description" "Personality" "Background"))
+      (goto-char (point-min))
+      (search-forward heading)
+      (org-back-to-heading)
+      (should-not (org-scribe--character-heading-p)))))
+
+(ert-deftest test-character-heading-p-rejects-nested-subsection ()
+  "org-scribe--character-heading-p must not match a level-3 subsection."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Protagonist\n** Goal, Motivation, Conflict\n*** Internal\n")
+    (goto-char (point-min))
+    (search-forward "Internal")
+    (org-back-to-heading)
+    (should-not (org-scribe--character-heading-p))))
+
 ;;; Run tests
 
 (defun org-scribe-character-links-run-tests ()

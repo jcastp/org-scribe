@@ -33,7 +33,7 @@
 
 (defun org-scribe--plot-heading-p ()
   "Return non-nil if the heading at point is a plot thread heading."
-  (and (>= (org-current-level) 1)
+  (and (= (org-current-level) 1)
        (or (org-entry-get nil "TYPE")
            (org-entry-get nil "THREAD-TYPE")
            (string-match-p "\\(Main Plot\\|Subplot\\|Thread\\|A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\)"

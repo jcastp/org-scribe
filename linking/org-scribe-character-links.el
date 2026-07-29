@@ -32,14 +32,11 @@
 
 (defun org-scribe--character-heading-p ()
   "Return non-nil if the heading at point is a character heading."
-  (and (>= (org-current-level) 1)
+  (and (= (org-current-level) 1)
        (or (org-entry-get nil "Role")
            (org-entry-get nil "TYPE")
-           (save-excursion
-             (ignore-errors
-               (org-up-heading-safe)
-               (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
-                              (org-get-heading t t t t)))))))
+           (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
+                          (org-get-heading t t t t)))))
 
 ;;; Entity Definition
 

@@ -29,14 +29,11 @@
 
 (defun org-scribe--location-heading-p ()
   "Return non-nil if the heading at point is a location heading."
-  (and (>= (org-current-level) 1)
+  (and (= (org-current-level) 1)
        (or (org-entry-get nil "Type")
            (org-entry-get nil "TYPE")
-           (save-excursion
-             (ignore-errors
-               (org-up-heading-safe)
-               (string-match-p "Location\\|Ubicación\\|Localización\\|Setting\\|Place\\|Lugar"
-                              (org-get-heading t t t t)))))))
+           (string-match-p "Location\\|Ubicación\\|Localización\\|Setting\\|Place\\|Lugar"
+                          (org-get-heading t t t t)))))
 
 ;;; Entity Definition
 

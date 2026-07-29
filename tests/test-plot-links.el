@@ -169,6 +169,29 @@
       (setq org-scribe--project-type-cache nil)
       (delete-directory temp-dir t))))
 
+;;; Heading Predicate Tests
+
+(ert-deftest test-plot-heading-p-detects-top-level ()
+  "org-scribe--plot-heading-p matches a level-1 plot thread heading."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Main Plot\n** Escalation\n")
+    (goto-char (point-min))
+    (org-back-to-heading)
+    (should (org-scribe--plot-heading-p))))
+
+(ert-deftest test-plot-heading-p-rejects-subsection ()
+  "org-scribe--plot-heading-p must not match a subsection under a plot thread heading."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Main Plot\n** Thread Notes\n** Resolution\n")
+    (goto-char (point-min))
+    (dolist (heading '("Thread Notes" "Resolution"))
+      (goto-char (point-min))
+      (search-forward heading)
+      (org-back-to-heading)
+      (should-not (org-scribe--plot-heading-p)))))
+
 ;;; Run tests
 
 (defun org-scribe-plot-links-run-tests ()

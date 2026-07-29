@@ -157,9 +157,20 @@
     (org-mode)
     (insert "* Localización Principal 1\n** Descripción General\n")
     (goto-char (point-min))
-    (search-forward "Descripción General")
     (org-back-to-heading)
     (should (org-scribe--location-heading-p))))
+
+;;; Subsection Over-Matching Regression Tests
+
+(ert-deftest test-location-heading-p-rejects-subsection ()
+  "org-scribe--location-heading-p must not match a subsection of a location heading."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Old Mill\n** Descripción General\n** Notes\n")
+    (goto-char (point-min))
+    (search-forward "Descripción General")
+    (org-back-to-heading)
+    (should-not (org-scribe--location-heading-p))))
 
 ;;; Setup Wizard Tests
 
