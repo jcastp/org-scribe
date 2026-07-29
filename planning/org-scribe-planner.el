@@ -1122,6 +1122,17 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
         (unless (org-scribe-planner--buffer-safe-to-erase-p buf filepath)
           (error "Cannot save plan: file '%s' contains multiple headings or non-plan content. Please use a dedicated file for this plan" filepath))
 
+        ;; Preserve any "** Agenda Entries" subtree (created separately by
+        ;; `org-scribe-planner-sync-agenda') across the erase-buffer below —
+        ;; otherwise agenda integration is wiped out on every save, which
+        ;; happens automatically on every word-count sync.
+        (let ((agenda-entries-text
+               (save-excursion
+                 (goto-char (point-min))
+                 (when (re-search-forward "^\\*\\* Agenda Entries" nil t)
+                   (goto-char (line-beginning-position))
+                   (buffer-substring-no-properties (point) (point-max))))))
+
         (erase-buffer)
         (org-mode)
 
@@ -1202,8 +1213,13 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                               (t "")))))))
 
         (org-table-align)
+
+        (when agenda-entries-text
+          (goto-char (point-max))
+          (insert "\n" agenda-entries-text))
+
         (save-buffer)
-        (message "Plan saved to %s" filepath)))))
+        (message "Plan saved to %s" filepath))))))
 
 (defun org-scribe-planner--load-plan (filepath)
   "Load a writing plan from FILEPATH."
@@ -1541,13 +1557,23 @@ loaded."
   :group 'org-scribe-planner)
 
 (defun org-scribe-planner--add-agenda-entries (plan filepath)
-  "Add scheduled agenda entries for PLAN to FILEPATH."
+  "Add scheduled agenda entries for PLAN to FILEPATH.
+Replaces any previously generated entries under \"** Agenda Entries\"
+rather than appending, so calling this repeatedly (e.g. re-running
+`org-scribe-planner-sync-agenda') regenerates the schedule instead of
+duplicating hundreds of TODOs."
   (when org-scribe-planner-sync-to-agenda
     (with-current-buffer (find-file-noselect filepath)
-      (goto-char (point-max))
+      (goto-char (point-min))
 
-      ;; Add agenda entries heading
-      (unless (re-search-backward "^\\*\\* Agenda Entries" nil t)
+      ;; Add (or reset) the agenda entries heading
+      (if (re-search-forward "^\\*\\* Agenda Entries" nil t)
+          (let ((subtree-start (line-beginning-position))
+                (subtree-end (progn (org-end-of-subtree t t) (point))))
+            (delete-region subtree-start subtree-end)
+            (goto-char subtree-start)
+            (insert "** Agenda Entries\n")
+            (insert ":PROPERTIES:\n:VISIBILITY: folded\n:END:\n\n"))
         (goto-char (point-max))
         (insert "\n** Agenda Entries\n")
         (insert ":PROPERTIES:\n:VISIBILITY: folded\n:END:\n\n"))
@@ -1572,12 +1598,20 @@ loaded."
       (message "Agenda entries synced"))))
 
 (defun org-scribe-planner--update-agenda-file-list (filepath)
-  "Add FILEPATH to org-agenda-files if not already present."
+  "Add FILEPATH to org-agenda-files if not already present.
+No-ops (with a message) when `org-agenda-files' is set to a string — Org's
+\"file of files\" indirection — since `member' requires a list and this
+function does not attempt to edit an external file list."
   (require 'org-agenda)
-  (unless (member filepath org-agenda-files)
+  (cond
+   ((not (listp org-agenda-files))
+    (message "org-agenda-files points to a file (%s); add %s to it manually"
+             org-agenda-files filepath))
+   ((member filepath org-agenda-files) nil)
+   (t
     (customize-save-variable 'org-agenda-files
                             (cons filepath org-agenda-files))
-    (message "Added %s to org-agenda-files" filepath)))
+    (message "Added %s to org-agenda-files" filepath))))
 
 ;;;###autoload
 (defun org-scribe-planner-sync-agenda ()
