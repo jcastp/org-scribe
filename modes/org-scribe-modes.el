@@ -126,23 +126,27 @@ this command drives."
 (defvar-local org-scribe-env--writeroom-active nil
   "Track if writeroom was activated by org-scribe-env mode.")
 
+(defvar-local org-scribe-env--saved-writeroom-width nil
+  "Global value of `writeroom-width' saved before org-scribe-env overrode it.")
+
 (defun org-scribe-env--activate ()
   "Activate writing environment with theme, font, and writeroom."
+  ;; Fail fast, before touching theme/font, if writeroom-mode is absent.
+  (unless (fboundp 'writeroom-mode)
+    (user-error (org-scribe-msg 'error-writeroom-required)))
   (display-line-numbers-mode 1)
   ;; Check if consult-theme is available
   (if (fboundp 'consult-theme)
       (consult-theme org-scribe-env-work-theme)
+    (mapc #'disable-theme custom-enabled-themes)
     (load-theme org-scribe-env-work-theme t))
   ;; Check if fontaine is available
   (when (fboundp 'fontaine-set-preset)
     (fontaine-set-preset org-scribe-env-work-font))
-  ;; Check if writeroom-mode is available
-  (if (fboundp 'writeroom-mode)
-      (progn
-        (setq writeroom-width org-scribe-env-work-width)
-        (writeroom-mode 1)
-        (setq org-scribe-env--writeroom-active t))
-    (user-error (org-scribe-msg 'error-writeroom-required))))
+  (setq org-scribe-env--saved-writeroom-width writeroom-width)
+  (setq writeroom-width org-scribe-env-work-width)
+  (writeroom-mode 1)
+  (setq org-scribe-env--writeroom-active t))
 
 (defun org-scribe-env--deactivate ()
   "Deactivate writing environment and restore previous settings."
@@ -150,6 +154,7 @@ this command drives."
   ;; Restore theme
   (if (fboundp 'consult-theme)
       (consult-theme org-scribe-env-normal-theme)
+    (mapc #'disable-theme custom-enabled-themes)
     (load-theme org-scribe-env-normal-theme t))
   ;; Restore font
   (when (fboundp 'fontaine-set-preset)
@@ -157,7 +162,8 @@ this command drives."
   ;; Deactivate writeroom if we activated it
   (when org-scribe-env--writeroom-active
     (writeroom-mode -1)
-    (setq org-scribe-env--writeroom-active nil)))
+    (setq org-scribe-env--writeroom-active nil)
+    (setq writeroom-width org-scribe-env--saved-writeroom-width)))
 
 ;;;###autoload
 (define-minor-mode org-scribe-writing-env-mode
@@ -170,7 +176,11 @@ with customized settings optimized for focused writing."
   (if org-scribe-writing-env-mode
       (progn
         (org-scribe--deactivate-other-modes 'org-scribe-writing-env-mode)
-        (org-scribe-env--activate))
+        (condition-case err
+            (org-scribe-env--activate)
+          (error
+           (org-scribe-writing-env-mode -1)
+           (signal (car err) (cdr err)))))
     (org-scribe-env--deactivate)))
 
 ;;; Focus Writing Mode (with narrowing)
@@ -208,7 +218,11 @@ it narrows the buffer to the current org section at point."
   (if org-scribe-writing-env-mode-focus
       (progn
         (org-scribe--deactivate-other-modes 'org-scribe-writing-env-mode-focus)
-        (org-scribe-env-focus--activate))
+        (condition-case err
+            (org-scribe-env-focus--activate)
+          (error
+           (org-scribe-writing-env-mode-focus -1)
+           (signal (car err) (cdr err)))))
     (org-scribe-env-focus--deactivate)))
 
 ;;; Project Writing Mode (treemacs + imenu-list)
