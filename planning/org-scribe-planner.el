@@ -250,8 +250,12 @@ If end-date is already set, skips calculating it."
               (format-time-string "%Y-%m-%d" end))))))
 
 (defun org-scribe-planner--parse-date (date-string)
-  "Parse DATE-STRING in YYYY-MM-DD format to Emacs time."
-  (apply #'encode-time (parse-time-string (concat date-string " 00:00:00"))))
+  "Parse DATE-STRING in YYYY-MM-DD format to Emacs time.
+Anchored at local noon rather than midnight so that adding whole-day
+increments (86400 seconds) with `time-add' never crosses a DST
+transition boundary (which always occurs in the small hours, never
+near noon), and never duplicates or skips a calendar day."
+  (apply #'encode-time (parse-time-string (concat date-string " 12:00:00"))))
 
 (defun org-scribe-planner--parse-date-parts (date-string)
   "Return a list (YEAR MONTH DAY) of integers from DATE-STRING in YYYY-MM-DD format."
