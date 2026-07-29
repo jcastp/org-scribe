@@ -295,6 +295,55 @@
       (let ((plan (expand-file-name "plan.org" (expand-file-name dir templates-root))))
         (should (file-exists-p plan))))))
 
+;;; Project Creation Language Selection Tests
+
+(defmacro test-project--with-temp-base-dir (var &rest body)
+  "Bind VAR to a fresh temp directory for BODY, then delete it."
+  (declare (indent 1))
+  `(let ((,var (make-temp-file "org-scribe-project-test-" t)))
+     (unwind-protect
+         (progn ,@body)
+       (delete-directory ,var t))))
+
+(defun test-project--kill-file-buffer (file)
+  "Kill any buffer visiting FILE, if one was opened by project creation."
+  (let ((buf (get-file-buffer file)))
+    (when buf (kill-buffer buf))))
+
+(ert-deftest test-create-novel-project-spanish-templates ()
+  "Creating a novel project with LANGUAGE \\='es uses the Spanish templates."
+  (test-project--with-temp-base-dir base-dir
+    (let ((project-dir (expand-file-name "Mi Novela" base-dir)))
+      (org-scribe-create-novel-project base-dir "Mi Novela" 'es)
+      (unwind-protect
+          (progn
+            (should (file-exists-p (expand-file-name "novela.org" project-dir)))
+            (should-not (file-exists-p (expand-file-name "novel.org" project-dir)))
+            (with-temp-buffer
+              (insert-file-contents (expand-file-name ".org-scribe-project" project-dir))
+              (should (string-match-p "# Language: es" (buffer-string)))))
+        (test-project--kill-file-buffer (expand-file-name "README.org" project-dir))))))
+
+(ert-deftest test-create-novel-project-english-default ()
+  "Omitting LANGUAGE keeps the default English templates."
+  (test-project--with-temp-base-dir base-dir
+    (let ((project-dir (expand-file-name "My Novel" base-dir)))
+      (org-scribe-create-novel-project base-dir "My Novel")
+      (unwind-protect
+          (should (file-exists-p (expand-file-name "novel.org" project-dir)))
+        (test-project--kill-file-buffer (expand-file-name "README.org" project-dir))))))
+
+(ert-deftest test-create-short-story-project-spanish-templates ()
+  "Creating a short story project with LANGUAGE \\='es uses cuento.org."
+  (test-project--with-temp-base-dir base-dir
+    (let ((project-dir (expand-file-name "Mi Cuento" base-dir)))
+      (org-scribe-create-short-story-project base-dir "Mi Cuento" 'es)
+      (unwind-protect
+          (progn
+            (should (file-exists-p (expand-file-name "cuento.org" project-dir)))
+            (should-not (file-exists-p (expand-file-name "story.org" project-dir))))
+        (test-project--kill-file-buffer (expand-file-name "cuento.org" project-dir))))))
+
 ;;; Run tests
 
 (defun org-scribe-project-run-tests ()

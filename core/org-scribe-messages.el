@@ -29,6 +29,7 @@
     (project-creation-base-dir . "Base directory for project: ")
     (project-creation-novel-title . "Novel title: ")
     (project-creation-short-story-title . "Short story title: ")
+    (project-creation-language-prompt . "Template language: ")
     (project-creation-success-novel . "Novel project '%s' created successfully at %s")
     (project-creation-success-short-story . "Short story project '%s' created successfully at %s")
     (project-already-exists . "Project directory '%s' already exists!")

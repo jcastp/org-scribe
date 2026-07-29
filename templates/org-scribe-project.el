@@ -118,10 +118,13 @@ must never make project creation fail."
             (org-scribe--add-entity-ids entity)))))))
 
 ;;;###autoload
-(defun org-scribe-create-novel-project (base-dir title)
+(defun org-scribe-create-novel-project (base-dir title &optional language)
   "Create a new novel project structure from templates.
 BASE-DIR is the parent directory where the project will be created.
 TITLE is the name of the novel/project.
+LANGUAGE selects which template set to use, either \\='en or \\='es.
+When omitted (e.g. non-interactive callers), defaults to
+`org-scribe-template-language'.
 
 This function:
 1. Validates the title
@@ -134,64 +137,76 @@ This function:
   (interactive
    (list
     (read-directory-name (org-scribe-msg 'project-creation-base-dir) org-scribe-projects-directory)
-    (read-string (org-scribe-msg 'project-creation-novel-title))))
+    (read-string (org-scribe-msg 'project-creation-novel-title))
+    (intern (completing-read (org-scribe-msg 'project-creation-language-prompt)
+                              '("en" "es") nil t
+                              (if (eq org-scribe-template-language 'es) "es" "en")))))
 
-  (unless (file-directory-p org-scribe-template-directory)
-    (user-error (org-scribe-msg 'error-template-not-found org-scribe-template-directory)))
+  (let* ((language (or language org-scribe-template-language))
+         (template-dir (expand-file-name
+                        (format "../org-scribe-templates/novel-%s"
+                                (if (eq language 'es) "es" "en"))
+                        org-scribe-project-package-directory)))
 
-  ;; Validate title
-  (let ((validation-error (org-scribe--validate-project-title title)))
-    (when validation-error
-      (user-error "%s" validation-error)))
+    (unless (file-directory-p template-dir)
+      (user-error (org-scribe-msg 'error-template-not-found template-dir)))
 
-  (let* ((project-dir (expand-file-name title base-dir))
-         (variables `(("TITLE" . ,title)
-                     ("AUTHOR" . ,(if (boundp 'user-full-name) user-full-name "Author"))
-                     ("DATE" . ,(format-time-string "%Y-%m-%d")))))
+    ;; Validate title
+    (let ((validation-error (org-scribe--validate-project-title title)))
+      (when validation-error
+        (user-error "%s" validation-error)))
 
-    ;; Check if project already exists
-    (when (file-exists-p project-dir)
-      (user-error (org-scribe-msg 'project-already-exists project-dir)))
+    (let* ((project-dir (expand-file-name title base-dir))
+           (variables `(("TITLE" . ,title)
+                       ("AUTHOR" . ,(if (boundp 'user-full-name) user-full-name "Author"))
+                       ("DATE" . ,(format-time-string "%Y-%m-%d")))))
 
-    ;; Create project directory
-    (make-directory project-dir t)
+      ;; Check if project already exists
+      (when (file-exists-p project-dir)
+        (user-error (org-scribe-msg 'project-already-exists project-dir)))
 
-    ;; Create .org-scribe-project marker file for project detection
-    (with-temp-file (expand-file-name ".org-scribe-project" project-dir)
-      (insert (format "# Writing project: %s\n" title)
-              (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
-              (format "# Language: %s\n" org-scribe-template-language)))
+      ;; Create project directory
+      (make-directory project-dir t)
 
-    ;; Initialize git repository
-    (let ((default-directory project-dir))
-      (unless (zerop (call-process "git" nil nil nil "init"))
-        (warn "Failed to initialize git repository")))
+      ;; Create .org-scribe-project marker file for project detection
+      (with-temp-file (expand-file-name ".org-scribe-project" project-dir)
+        (insert (format "# Writing project: %s\n" title)
+                (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
+                (format "# Language: %s\n" language)))
 
-    ;; Process all templates
-    (org-scribe--copy-templates org-scribe-template-directory project-dir variables)
+      ;; Initialize git repository
+      (let ((default-directory project-dir))
+        (unless (zerop (call-process "git" nil nil nil "init"))
+          (warn "Failed to initialize git repository")))
 
-    ;; Linking on by default: mint IDs for the template's entities so the
-    ;; user never has to run a separate "setup" step (A7).
-    (org-scribe--auto-setup-links project-dir)
+      ;; Process all templates
+      (org-scribe--copy-templates template-dir project-dir variables)
 
-    ;; Create initial git commit
-    (let ((default-directory project-dir))
-      (when (zerop (call-process "git" nil nil nil "add" "."))
-        (call-process "git" nil nil nil "commit" "-m"
-                     (format "Initial commit: %s" title))))
+      ;; Linking on by default: mint IDs for the template's entities so the
+      ;; user never has to run a separate "setup" step (A7).
+      (org-scribe--auto-setup-links project-dir)
 
-    ;; Register project with project.el
-    (project-remember-project (project-current nil project-dir))
+      ;; Create initial git commit
+      (let ((default-directory project-dir))
+        (when (zerop (call-process "git" nil nil nil "add" "."))
+          (call-process "git" nil nil nil "commit" "-m"
+                       (format "Initial commit: %s" title))))
 
-    ;; Open README.org
-    (find-file (expand-file-name "README.org" project-dir))
-    (message (org-scribe-msg 'project-creation-success-novel title project-dir))))
+      ;; Register project with project.el
+      (project-remember-project (project-current nil project-dir))
+
+      ;; Open README.org
+      (find-file (expand-file-name "README.org" project-dir))
+      (message (org-scribe-msg 'project-creation-success-novel title project-dir)))))
 
 ;;;###autoload
-(defun org-scribe-create-short-story-project (base-dir title)
+(defun org-scribe-create-short-story-project (base-dir title &optional language)
   "Create a new short story project structure from templates.
 BASE-DIR is the parent directory where the project will be created.
 TITLE is the name of the short story/project.
+LANGUAGE selects which template set to use, either \\='en or \\='es.
+When omitted (e.g. non-interactive callers), defaults to
+`org-scribe-template-language'.
 
 This function:
 1. Validates the title
@@ -204,12 +219,16 @@ This function:
   (interactive
    (list
     (read-directory-name (org-scribe-msg 'project-creation-base-dir) org-scribe-projects-directory)
-    (read-string (org-scribe-msg 'project-creation-short-story-title))))
+    (read-string (org-scribe-msg 'project-creation-short-story-title))
+    (intern (completing-read (org-scribe-msg 'project-creation-language-prompt)
+                              '("en" "es") nil t
+                              (if (eq org-scribe-template-language 'es) "es" "en")))))
 
   ;; Determine template directory based on language
-  (let ((template-dir (expand-file-name
+  (let* ((language (or language org-scribe-template-language))
+         (template-dir (expand-file-name
                       (format "../org-scribe-templates/short-story-%s"
-                              (if (eq org-scribe-template-language 'es) "es" "en"))
+                              (if (eq language 'es) "es" "en"))
                       org-scribe-project-package-directory)))
 
     (unless (file-directory-p template-dir)
@@ -224,7 +243,7 @@ This function:
            (variables `(("TITLE" . ,title)
                        ("AUTHOR" . ,(if (boundp 'user-full-name) user-full-name "Author"))
                        ("DATE" . ,(format-time-string "%Y-%m-%d"))))
-           (story-file (if (eq org-scribe-template-language 'es) "cuento.org" "story.org")))
+           (story-file (if (eq language 'es) "cuento.org" "story.org")))
 
       ;; Check if project already exists
       (when (file-exists-p project-dir)
@@ -238,7 +257,7 @@ This function:
         (insert (format "# Writing project: %s\n" title)
                 (format "# Type: short-story\n")
                 (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
-                (format "# Language: %s\n" org-scribe-template-language)))
+                (format "# Language: %s\n" language)))
 
       ;; Initialize git repository
       (let ((default-directory project-dir))
