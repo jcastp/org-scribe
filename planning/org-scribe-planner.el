@@ -2647,12 +2647,22 @@ the found file is a placeholder with no plan content."
 
 ;;; Offer plan creation on project creation
 
-(defun org-scribe-planner--offer-plan-on-create (project-dir title &rest _)
-  "Offer to create a writing plan for the newly created project at PROJECT-DIR.
-TITLE is the project title passed by the creation command."
+(defun org-scribe-planner--offer-plan-on-create (base-dir title &rest _)
+  "Offer to create a writing plan for the project just created under BASE-DIR.
+BASE-DIR and TITLE are the first two arguments of
+`org-scribe-create-novel-project' / `org-scribe-create-short-story-project'
+\(this function is installed as :after advice on both, so it receives
+their exact arguments).  BASE-DIR is the *parent* directory the creation
+command was given, not the new project's own directory — mirror the
+`(expand-file-name title base-dir)' computation those functions use
+internally to get the actual project directory, so that
+`org-scribe-planner-new-plan' (via its project-aware advice) finds
+.org-scribe-project and defaults the save path to <project>/plan.org
+instead of falling back to generic prompts and
+`org-scribe-planner-directory'."
   (when (yes-or-no-p (format "Create a writing plan for \"%s\" with org-scribe-planner? "
                              title))
-    (let ((default-directory project-dir))
+    (let ((default-directory (expand-file-name title base-dir)))
       (org-scribe-planner-new-plan))))
 
 ;;; Wire up all features (only when org-scribe is present)

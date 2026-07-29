@@ -198,6 +198,34 @@ Cleans up the temp file unconditionally."
         (org-scribe-planner-load-plan))
       (should (string= picker-dir "/tmp/my-writing-project")))))
 
+;;; Tests for --offer-plan-on-create (H11)
+
+(ert-deftest test-planner-offer-plan-on-create-uses-project-dir-not-base-dir ()
+  "The advice must run org-scribe-planner-new-plan with default-directory
+set to the *new project's* directory, not the parent BASE-DIR it was
+given.
+Regression test for H11: `org-scribe-planner--offer-plan-on-create' is
+installed as :after advice on `org-scribe-create-novel-project', whose
+signature is (base-dir title &optional language) — the first argument is
+the parent directory the project was created under, e.g.
+\"/tmp/projects\", not the project's own directory, e.g.
+\"/tmp/projects/My Novel\".  Using it directly as default-directory made
+the project-aware new-plan advice fail to find .org-scribe-project."
+  (let* ((base-dir (make-temp-file "test-offer-plan-base-" t))
+         (title "My Novel")
+         (project-dir (expand-file-name title base-dir))
+         (captured-default-directory nil))
+    (unwind-protect
+        (progn
+          (make-directory project-dir t)
+          (cl-letf (((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
+                    ((symbol-function 'org-scribe-planner-new-plan)
+                     (lambda (&rest _) (setq captured-default-directory default-directory))))
+            (org-scribe-planner--offer-plan-on-create base-dir title))
+          (should (equal (file-truename (file-name-as-directory captured-default-directory))
+                         (file-truename (file-name-as-directory project-dir)))))
+      (delete-directory base-dir t))))
+
 ;;; Tests for org-scribe-planner-today
 
 (ert-deftest test-planner-today-logs-todays-date ()
