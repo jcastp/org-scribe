@@ -1746,7 +1746,14 @@ plan, fires progress hooks, and re-renders the calendar view."
   "Log today's word count to the active plan without extra prompts.
 Pre-fills today's date, asks for a word count (using
 `org-scribe-planner-wordcount-function' when set) and an optional note,
-then saves immediately.  No recalculation prompt is shown."
+then saves immediately.  No recalculation prompt is shown.
+
+When `org-scribe-planner-wordcount-function' is set, it returns the
+*cumulative* manuscript total, not today's word count — so its result is
+converted to today's net delta via `org-scribe-planner--roll-daily-baseline'
+(the same SYNC_DATE/SYNC_WORDS baseline used by the automatic daily
+sync) rather than logged as-is, which would otherwise record the entire
+manuscript total as a single day's words."
   (interactive)
   (org-scribe-planner--with-current-plan (plan file)
     (let* ((today (org-scribe-planner--get-today-date))
@@ -1758,13 +1765,16 @@ then saves immediately.  No recalculation prompt is shown."
            (current-target (if day-info
                                (plist-get day-info :words)
                              (org-scribe-plan-daily-words plan)))
-           (word-count (or (and org-scribe-planner-wordcount-function
-                                (funcall org-scribe-planner-wordcount-function))
-                           (org-scribe-planner--read-non-negative-number
-                            (if is-spare
-                                (format "Word count for today (%s, spare day): " today)
-                              (format "Word count for today (%s): " today))
-                            0)))
+           (total (and org-scribe-planner-wordcount-function
+                       (funcall org-scribe-planner-wordcount-function)))
+           (word-count (if total
+                           (- total (org-scribe-planner--roll-daily-baseline
+                                     plan total today))
+                         (org-scribe-planner--read-non-negative-number
+                          (if is-spare
+                              (format "Word count for today (%s, spare day): " today)
+                            (format "Word count for today (%s): " today))
+                          0)))
            (note (read-string "Note (optional): " ""))
            (existing (assoc today (org-scribe-plan-daily-word-counts plan)))
            (entry-data (list :words word-count
@@ -1773,6 +1783,8 @@ then saves immediately.  No recalculation prompt is shown."
       (if existing
           (setcdr existing entry-data)
         (push (cons today entry-data) (org-scribe-plan-daily-word-counts plan)))
+      (when total
+        (setf (org-scribe-plan-current-words plan) total))
       (org-scribe-planner--save-plan plan file)
       (setq org-scribe-planner--current-plan plan)
       (message "Logged %d words for %s%s" word-count today
@@ -2419,11 +2431,32 @@ Returns nil when no count is available, causing the planner to prompt instead."
                 (novel-file (plist-get struct :novel-file)))
       (org-scribe-planner--sum-wordcounts novel-file))))
 
+(defun org-scribe-planner--roll-daily-baseline (plan total today)
+  "Return the SYNC_WORDS baseline to subtract from TOTAL to get TODAY's delta.
+Mutates PLAN's SYNC_DATE/SYNC_WORDS when a new day begins: the baseline is
+seeded from the previous known total (`org-scribe-plan-current-words',
+updated by every prior sync) rather than TOTAL itself, so that words
+written earlier and only counted once (e.g. a single end-of-day sync) are
+still credited to today as delta = total - previous-total, instead of
+being silently folded into a zero-delta baseline and lost.  When there is
+no prior sync at all (SYNC_DATE unset), there is no historical baseline to
+seed from, so the baseline falls back to TOTAL (delta = 0).
+When SYNC_DATE already equals TODAY, returns the existing SYNC_WORDS
+unchanged so repeated same-day calls stay idempotent."
+  (let ((sync-date (org-scribe-plan-sync-date plan)))
+    (if (equal sync-date today)
+        (or (org-scribe-plan-sync-words plan) 0)
+      (let ((previous-total (if sync-date
+                                (org-scribe-plan-current-words plan)
+                              total)))
+        (setf (org-scribe-plan-sync-date plan) today)
+        (setf (org-scribe-plan-sync-words plan) previous-total)
+        previous-total))))
+
 (defun org-scribe-planner--sync-daily-from-manuscript ()
   "Silently record today's net word delta into the active plan.
-Uses SYNC_DATE / SYNC_WORDS as a per-day baseline.  The first call on a
-new calendar day seeds the baseline (delta = 0).  Subsequent calls on the
-same day compute delta = total - sync-words and upsert today's entry in
+Uses SYNC_DATE / SYNC_WORDS as a per-day baseline via
+`org-scribe-planner--roll-daily-baseline'.  Upserts today's entry in
 DAILY_WORD_COUNTS, preserving any existing note.
 Idempotent: calling many times with the same total produces the same entry.
 No-op when `org-scribe-planner-auto-track-daily' is nil, when there is no
@@ -2440,24 +2473,7 @@ active plan, or when the word count function returns nil."
           (let* ((plan org-scribe-planner--current-plan)
                  (file org-scribe-planner--current-plan-file)
                  (today (org-scribe-planner--get-today-date))
-                 (sync-date (org-scribe-plan-sync-date plan))
-                 (sync-words (or (org-scribe-plan-sync-words plan) 0)))
-            ;; Roll the baseline when a new day begins.  Seed it from the
-            ;; previous known total (plan-current-words, updated by every
-            ;; prior sync) rather than today's total, so that words written
-            ;; in an earlier session and only counted once today (e.g. a
-            ;; single end-of-day F8 F8 a) are still credited to today as
-            ;; delta = total - previous-total, instead of being silently
-            ;; folded into a zero-delta baseline and lost.  When there is no
-            ;; prior sync at all (SYNC_DATE unset), there is no historical
-            ;; baseline to seed from, so fall back to delta = 0.
-            (when (not (equal sync-date today))
-              (let ((previous-total (if sync-date
-                                        (org-scribe-plan-current-words plan)
-                                      total)))
-                (setf (org-scribe-plan-sync-date plan) today)
-                (setf (org-scribe-plan-sync-words plan) previous-total)
-                (setq sync-words previous-total)))
+                 (sync-words (org-scribe-planner--roll-daily-baseline plan total today)))
             (let* ((delta (- total sync-words))
                    (existing (assoc today (org-scribe-plan-daily-word-counts plan)))
                    (existing-note (when existing

@@ -222,8 +222,14 @@ Cleans up the temp file unconditionally."
         (should (= (plist-get (cdr entry) :words) 600))))))
 
 (ert-deftest test-planner-today-wordcount-function-skips-prompt ()
-  "org-scribe-planner-today uses wordcount-function and skips the word-count prompt."
+  "org-scribe-planner-today uses wordcount-function and skips the word-count prompt.
+Regression test for H5: the wordcount-function returns the *cumulative*
+manuscript total (999), not today's word count, so the logged entry must
+be the delta against the prior baseline (700), not the raw total."
   (test-hooks--with-plan-file plan file
+    (setf (org-scribe-plan-current-words plan) 700)
+    (setf (org-scribe-plan-sync-date plan) "2026-01-04")
+    (setf (org-scribe-plan-sync-words plan) 700)
     (let* ((prompt-called nil)
            (org-scribe-planner--current-plan plan)
            (org-scribe-planner--current-plan-file file)
@@ -241,7 +247,8 @@ Cleans up the temp file unconditionally."
       (let ((entry (assoc "2026-01-05"
                           (org-scribe-plan-daily-word-counts
                            org-scribe-planner--current-plan))))
-        (should (= (plist-get (cdr entry) :words) 999))))))
+        (should (= (plist-get (cdr entry) :words) 299)))
+      (should (= (org-scribe-plan-current-words org-scribe-planner--current-plan) 999)))))
 
 (ert-deftest test-planner-today-hook-fires-with-todays-date ()
   "org-scribe-planner-today fires after-progress-update-hook with today's date."
