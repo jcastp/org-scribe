@@ -44,7 +44,15 @@ Cleans up the temp file unconditionally."
                       (lambda () (car ,today-var)))
                      ;; Never actually do I/O for auto-load
                      ((symbol-function 'org-scribe-planner--auto-load-plan)
-                      (lambda () nil)))
+                      (lambda () nil))
+                     ;; Report the plan's own directory as the current
+                     ;; project root, so the M9 cross-project guard in
+                     ;; `org-scribe-planner--ensure-plan-for-current-project'
+                     ;; sees the active plan as belonging to "this project"
+                     ;; and doesn't reset it out from under these tests,
+                     ;; which are testing sync logic, not project detection.
+                     ((symbol-function 'org-scribe-project-root)
+                      (lambda () (file-name-directory ,file-var))))
              ,@body))
        (ignore-errors (delete-file ,file-var)))))
 
@@ -314,6 +322,67 @@ never credited to today's daily delta."
     (setcar total-cell 1600)
     (org-scribe-planner--sync-daily-from-manuscript)
     (should (= (org-scribe-plan-current-words org-scribe-planner--current-plan) 1600))))
+
+;;; Cross-project guard (M9)
+
+(ert-deftest test-planner-daily-sync-skips-when-plan-belongs-to-different-project ()
+  "sync must not push counts into a plan left active from another project.
+Regression (M9): switching projects while a different project's plan was
+still active silently wrote the new project's manuscript totals into the
+old project's plan file, corrupting it (the auto-load hook only fires when
+no plan at all is active).  When no plan can be found for the current
+project either, syncing must skip entirely rather than fall back to the
+mismatched plan."
+  (test-daily-sync--with-plan plan file total-cell today-cell
+    (setcar total-cell 1000)
+    (setcar today-cell "2026-06-28")
+    (cl-letf (((symbol-function 'org-scribe-project-root)
+               (lambda () "/tmp/some-other-project/"))
+              ((symbol-function 'org-scribe-planner--auto-load-plan)
+               (lambda () nil)))            ; no plan found for this project
+      (org-scribe-planner--sync-daily-from-manuscript))
+    ;; The mismatched plan was dropped, and nothing was found to replace
+    ;; it, so no data was written anywhere.
+    (should (null org-scribe-planner--current-plan))
+    (should (null org-scribe-planner--current-plan-file))
+    (should (null (org-scribe-plan-sync-date plan)))
+    (should (null (org-scribe-plan-daily-word-counts plan)))))
+
+(ert-deftest test-planner-daily-sync-switches-to-correct-plan-for-project ()
+  "sync loads and uses the right project's plan instead of a stale one.
+Regression (M9): when a plan file exists for the current project too, the
+guard swaps to it and syncs there, instead of either corrupting the old
+plan or silently doing nothing."
+  (test-daily-sync--with-plan plan file total-cell today-cell
+    (setcar total-cell 2000)
+    (setcar today-cell "2026-06-28")
+    (let* ((other-file (make-temp-file "test-daily-sync-other-" nil ".org"))
+           (other-plan (make-org-scribe-plan
+                        :title "Other Project Plan"
+                        :total-words 5000
+                        :daily-words 200
+                        :days 25
+                        :start-date "2026-01-01"
+                        :end-date "2026-01-25"
+                        :current-words 0)))
+      (unwind-protect
+          (progn
+            (org-scribe-planner--save-plan other-plan other-file)
+            (cl-letf (((symbol-function 'org-scribe-project-root)
+                       (lambda () "/tmp/some-other-project/"))
+                      ((symbol-function 'org-scribe-planner--auto-load-plan)
+                       (lambda ()
+                         (setq org-scribe-planner--current-plan other-plan)
+                         (setq org-scribe-planner--current-plan-file other-file))))
+              (org-scribe-planner--sync-daily-from-manuscript))
+            ;; The originally active plan (belonging to a different
+            ;; project) was left untouched.
+            (should (null (org-scribe-plan-sync-date plan)))
+            (should (null (org-scribe-plan-daily-word-counts plan)))
+            ;; The correct project's plan received the sync instead.
+            (should (eq org-scribe-planner--current-plan other-plan))
+            (should (= (org-scribe-plan-current-words other-plan) 2000)))
+        (ignore-errors (delete-file other-file))))))
 
 (provide 'test-planner-daily-sync)
 ;;; test-planner-daily-sync.el ends here

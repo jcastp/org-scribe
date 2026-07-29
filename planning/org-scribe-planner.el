@@ -2540,6 +2540,35 @@ unchanged so repeated same-day calls stay idempotent."
         (setf (org-scribe-plan-sync-words plan) previous-total)
         previous-total))))
 
+(defun org-scribe-planner--plan-file-in-current-project-p (plan-file)
+  "Return non-nil if PLAN-FILE lives under the current project's root.
+Used to guard against pushing word counts from the manuscript of one
+project into the plan of another (M9): `org-scribe-planner--wordcount-from-manuscript'
+always reads the *current* project's manuscript (via `default-directory'),
+but `org-scribe-planner--current-plan-file' can still point at whatever
+project's plan was active last — the auto-load hook only runs when no plan
+is active at all, so it never swaps plans when switching between two
+projects that both already have one loaded."
+  (when-let* ((root (ignore-errors (org-scribe-project-root))))
+    (file-in-directory-p plan-file root)))
+
+(defun org-scribe-planner--ensure-plan-for-current-project ()
+  "Drop the active plan if it does not belong to the current project.
+When `org-scribe-planner--current-plan-file' is set but is not under the
+current project root, clears it and tries to auto-load the plan that
+actually belongs to this project instead.  No-op when there is no active
+plan, project detection is unavailable (`org-scribe-project-root' not
+loaded — the planner is usable standalone, without org-scribe), or project
+detection is inconclusive."
+  (when (and org-scribe-planner--current-plan-file
+             (fboundp 'org-scribe-project-root)
+             (ignore-errors (org-scribe-project-root))
+             (not (org-scribe-planner--plan-file-in-current-project-p
+                   org-scribe-planner--current-plan-file)))
+    (setq org-scribe-planner--current-plan nil)
+    (setq org-scribe-planner--current-plan-file nil)
+    (org-scribe-planner--auto-load-plan)))
+
 (defun org-scribe-planner--sync-daily-from-manuscript ()
   "Silently record today's net word delta into the active plan.
 Uses SYNC_DATE / SYNC_WORDS as a per-day baseline via
@@ -2547,12 +2576,16 @@ Uses SYNC_DATE / SYNC_WORDS as a per-day baseline via
 DAILY_WORD_COUNTS, preserving any existing note.
 Idempotent: calling many times with the same total produces the same entry.
 No-op when `org-scribe-planner-auto-track-daily' is nil, when there is no
-active plan, or when the word count function returns nil."
+active plan, when the active plan belongs to a different project than the
+current manuscript and no matching plan can be found for this project
+\(M9 — prevents cross-project data corruption instead of silently syncing
+into the wrong plan\), or when the word count function returns nil."
   (when (and org-scribe-planner-auto-track-daily
              org-scribe-planner-wordcount-function)
     (unless (and org-scribe-planner--current-plan
                  org-scribe-planner--current-plan-file)
       (org-scribe-planner--auto-load-plan))
+    (org-scribe-planner--ensure-plan-for-current-project)
     (when (and org-scribe-planner--current-plan
                org-scribe-planner--current-plan-file)
       (let ((total (funcall org-scribe-planner-wordcount-function)))
