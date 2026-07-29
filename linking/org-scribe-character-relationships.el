@@ -266,11 +266,12 @@ RELATIONSHIPS is list of (ID NAME TYPE STRENGTH SENTIMENT) tuples."
                                 ("complex" "~")
                                 (_ "·")))
              (strength-bars (make-string strength ?■)))
-        (push (format "  %s(%s,%s)─> %s"
+        (push (format "  %s(%s,%s)─> %s %s"
                      prefix
                      type
                      sentiment-symbol
-                     name)
+                     name
+                     strength-bars)
               lines)))
     (string-join (nreverse lines) "\n")))
 
@@ -320,6 +321,7 @@ ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
               (insert "  - = negative relationship\n")
               (insert "  ~ = complex relationship\n")
               (insert "  · = neutral relationship\n")
+              (insert "  ■ = one point of relationship strength (1-5)\n")
               (goto-char (point-min))
               (view-mode 1))
             (display-buffer buf-name)))))))

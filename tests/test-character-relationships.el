@@ -267,6 +267,19 @@
          (tree (org-scribe--ascii-relationship-tree "Alice" rels)))
     (should (string-match-p "~" tree))))
 
+(ert-deftest test-relationships-ascii-tree-shows-strength-bars ()
+  "Test that strength is rendered as ■ bars, not silently dropped (L7).
+Regression: `strength-bars' was computed but never inserted into the
+formatted line."
+  (let* ((rels '(("char-bob-001" "Bob" "friend" 3 "positive")))
+         (tree (org-scribe--ascii-relationship-tree "Alice" rels)))
+    (should (string-match-p "■■■" tree))
+    (should-not (string-match-p "■■■■" tree)))
+  (let* ((rels '(("char-bob-001" "Bob" "friend" 1 "positive")))
+         (tree (org-scribe--ascii-relationship-tree "Alice" rels)))
+    (should (string-match-p "■" tree))
+    (should-not (string-match-p "■■" tree))))
+
 (ert-deftest test-relationships-ascii-tree-empty ()
   "Test ASCII tree with no relationships."
   (let ((tree (org-scribe--ascii-relationship-tree "Alice" '())))
