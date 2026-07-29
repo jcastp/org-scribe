@@ -122,6 +122,26 @@ Cleans up the temp file unconditionally."
                           org-scribe-planner--current-plan))))
         (should (= (plist-get (cdr day2) :words) 400))))))
 
+(ert-deftest test-planner-daily-sync-credits-words-written-before-first-sync-of-day ()
+  "A single end-of-day sync must credit all words written that day, not 0.
+Regression test for H4: previously, the first sync of a new calendar day
+seeded the baseline from the current (already-updated) total, so a writer
+who counts only once per day — after writing — got a delta of 0 forever."
+  (test-daily-sync--with-plan plan file total-cell today-cell
+    ;; Day 1 baseline established at 1000 words.
+    (setcar total-cell 1000)
+    (setcar today-cell "2026-06-28")
+    (org-scribe-planner--sync-daily-from-manuscript)
+    ;; Day 2: writer writes 500 words across the day, then syncs once, at
+    ;; the end of the session — no earlier sync that day rolled the baseline.
+    (setcar today-cell "2026-06-29")
+    (setcar total-cell 1500)
+    (org-scribe-planner--sync-daily-from-manuscript)
+    (let* ((p org-scribe-planner--current-plan)
+           (day2 (assoc "2026-06-29" (org-scribe-plan-daily-word-counts p))))
+      (should (= (plist-get (cdr day2) :words) 500))
+      (should (= (org-scribe-plan-current-words p) 1500)))))
+
 ;;; Idempotency
 
 (ert-deftest test-planner-daily-sync-idempotent-same-total ()
