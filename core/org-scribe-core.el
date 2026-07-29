@@ -247,6 +247,35 @@ load-path change) is picked up without restarting Emacs."
        (progn ,@body)
      (user-error (org-scribe-msg 'error-feature-not-available ',feature))))
 
+;;; Short-story Entity Heading Helper
+
+(defconst org-scribe--section-heading-aliases
+  '((characters   . ("Characters" "Personajes"))
+    (setting      . ("Setting" "Ambientación" "Ambientacion"))
+    (plot-threads . ("Plot Threads" "Hilos de la Trama")))
+  "Canonical short-story section key -> localized level-1 heading aliases.
+Mirrors `org-scribe--scene-property-aliases': English and Spanish project
+templates use different literal heading text for the same section
+(\"Characters\" vs \"Personajes\", etc.), so entity heading predicates
+recognize either via `org-scribe--heading-parent-section-p' instead of
+hardcoding one literal name.")
+
+(defun org-scribe--heading-parent-section-p (section-key)
+  "Return non-nil if the level-1 parent of the heading at point is SECTION-KEY.
+SECTION-KEY is a symbol such as \\='characters, \\='setting, or
+\\='plot-threads (see `org-scribe--section-heading-aliases').  Used by
+entity heading predicates to recognize short-story projects' notes.org
+layout, where characters/locations/plot threads are nested as level-2
+headings under a level-1 section rather than being top-level headings of
+their own, as in novel projects.  Matches any localized alias for that
+section, case-insensitively."
+  (save-excursion
+    (and (org-up-heading-safe)
+         (= (org-current-level) 1)
+         (let ((heading (org-get-heading t t t t)))
+           (cl-some (lambda (alias) (string-equal-ignore-case alias heading))
+                    (alist-get section-key org-scribe--section-heading-aliases))))))
+
 ;;; Helper Functions
 
 (defun org-scribe-window-perc (pct)

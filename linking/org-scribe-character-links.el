@@ -31,12 +31,24 @@
 ;;; Character Heading Predicate
 
 (defun org-scribe--character-heading-p ()
-  "Return non-nil if the heading at point is a character heading."
-  (and (= (org-current-level) 1)
-       (or (org-entry-get nil "Role")
-           (org-entry-get nil "TYPE")
-           (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
-                          (org-get-heading t t t t)))))
+  "Return non-nil if the heading at point is a character heading.
+Novel projects keep characters as top-level (level 1) headings in
+objects/characters.org.  Short-story projects instead nest them as
+level-2 headings under the \"* Characters\" section of notes.org (see
+the shipped template) — the level-1 wrapper heading itself does not
+count, avoiding a phantom \"Characters\" entity."
+  (if (eq (org-scribe-project-type) 'short-story)
+      (and (= (org-current-level) 2)
+           (org-scribe--heading-parent-section-p 'characters)
+           (or (org-entry-get nil "Role")
+               (org-entry-get nil "TYPE")
+               (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
+                              (org-get-heading t t t t))))
+    (and (= (org-current-level) 1)
+         (or (org-entry-get nil "Role")
+             (org-entry-get nil "TYPE")
+             (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
+                            (org-get-heading t t t t))))))
 
 ;;; Entity Definition
 

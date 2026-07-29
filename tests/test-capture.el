@@ -536,6 +536,67 @@ marker and returns the actual writing project directory."
         (delete-file temp-file)))))
 
 ;;; ─────────────────────────────────────────────
+;;; --capture-goto-section (H10)
+;;; ─────────────────────────────────────────────
+;; org-scribe--capture-goto-section positions point so a `file+function'
+;; capture files entities under the right level-1 section in short-story
+;; projects, matching org-scribe--character-heading-p /
+;; --location-heading-p / --plot-heading-p (which require exactly that
+;; nesting there), while preserving the flat top-level-append behavior
+;; novel projects need.
+
+(ert-deftest test-capture-goto-section-short-story-lands-on-existing-heading ()
+  "In a short-story buffer, point ends up ON an existing section heading.
+`org-capture-set-target-location' only treats a `file+function' target as
+\"file under this entry\" when `org-at-heading-p' is true after the
+function runs (see org-capture-place-entry); landing anywhere else in the
+section would misfile the capture as a flat top-level entry instead."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Characters\n\n** Protagonist: Alice\n:PROPERTIES:\n:TYPE: Protagonist\n:END:\n")
+      (insert "* Plot Outline\n\n** Premise\n")
+      (org-scribe--capture-goto-section 'characters)
+      (should (org-at-heading-p))
+      (should (string= (org-get-heading t t t t) "Characters")))))
+
+(ert-deftest test-capture-goto-section-short-story-creates-missing-section ()
+  "When the target section is absent, it is created at the buffer end."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Plot Outline\n\n** Premise\n")
+      (org-scribe--capture-goto-section 'setting)
+      (should (org-at-heading-p))
+      (should (string= (org-get-heading t t t t) "Setting")))))
+
+(ert-deftest test-capture-goto-section-short-story-finds-spanish-alias ()
+  "A Spanish short-story project's \"Personajes\" heading is recognized
+directly, instead of creating a redundant English \"Characters\" section."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Personajes\n\n** Protagonista: Alicia\n")
+      (org-scribe--capture-goto-section 'characters)
+      (should (org-at-heading-p))
+      (should (string= (org-get-heading t t t t) "Personajes"))
+      ;; No duplicate English section was created
+      (should-not (string-match-p "\\* Characters" (buffer-string))))))
+
+(ert-deftest test-capture-goto-section-novel-lands-on-blank-line ()
+  "In a novel-project buffer, point ends up on a blank line at buffer end,
+not on a heading — so the capture files as a flat top-level entry,
+matching the level-1-only novel heading predicates and the previous
+plain `file' target's append behavior."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'novel)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Alice\n:PROPERTIES:\n:Role: Protagonist\n:END:\n")
+      (org-scribe--capture-goto-section 'characters)
+      (should-not (org-at-heading-p))
+      (should (eobp)))))
+
+;;; ─────────────────────────────────────────────
 ;;; Run tests
 ;;; ─────────────────────────────────────────────
 

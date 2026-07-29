@@ -192,6 +192,35 @@
       (org-back-to-heading)
       (should-not (org-scribe--plot-heading-p)))))
 
+;;; Short-story Heading Predicate Tests (H10)
+
+(ert-deftest test-plot-heading-p-short-story-matches-level-2-under-plot-threads ()
+  "In short-story projects, plot threads are level-2 headings under
+\"* Plot Threads\" (see the shipped notes.org template and
+`org-scribe-capture-plot-thread', which files new threads there), not
+level-1.  Regression test for H10: the predicate previously required
+level 1 unconditionally, so short-story plot threads were never found."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Plot Threads\n\n** Betrayal Subplot\n:PROPERTIES:\n:THREAD-TYPE: Subplot\n:END:\n")
+      (goto-char (point-min))
+      (search-forward "Betrayal")
+      (org-back-to-heading)
+      (should (org-scribe--plot-heading-p)))))
+
+(ert-deftest test-plot-heading-p-short-story-rejects-plot-threads-wrapper ()
+  "The level-1 \"* Plot Threads\" section header itself is not an entity.
+Regression test for H10: its own heading text contains \"Thread\" and
+would otherwise match the regexp fallback, becoming a phantom entity."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Plot Threads\n\n** Betrayal Subplot\n:PROPERTIES:\n:THREAD-TYPE: Subplot\n:END:\n")
+      (goto-char (point-min))
+      (org-back-to-heading)
+      (should-not (org-scribe--plot-heading-p)))))
+
 ;;; Run tests
 
 (defun org-scribe-plot-links-run-tests ()

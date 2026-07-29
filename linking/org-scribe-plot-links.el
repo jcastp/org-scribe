@@ -32,12 +32,26 @@
 ;;; Plot Thread Heading Predicate
 
 (defun org-scribe--plot-heading-p ()
-  "Return non-nil if the heading at point is a plot thread heading."
-  (and (= (org-current-level) 1)
-       (or (org-entry-get nil "TYPE")
-           (org-entry-get nil "THREAD-TYPE")
-           (string-match-p "\\(Main Plot\\|Subplot\\|Thread\\|A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\)"
-                          (org-get-heading t t t t)))))
+  "Return non-nil if the heading at point is a plot thread heading.
+Novel projects keep plot threads as top-level (level 1) headings in
+objects/plot.org.  Short-story projects instead nest them as level-2
+headings under the \"* Plot Threads\" section of notes.org (see the
+shipped template and `org-scribe-capture-plot-thread', which files new
+threads there).  Requiring level 2 there also keeps the level-1
+\"Plot Threads\" wrapper heading itself from matching the \"Thread\"
+regexp fallback below and becoming a phantom entity."
+  (if (eq (org-scribe-project-type) 'short-story)
+      (and (= (org-current-level) 2)
+           (org-scribe--heading-parent-section-p 'plot-threads)
+           (or (org-entry-get nil "TYPE")
+               (org-entry-get nil "THREAD-TYPE")
+               (string-match-p "\\(Main Plot\\|Subplot\\|Thread\\|A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\)"
+                              (org-get-heading t t t t))))
+    (and (= (org-current-level) 1)
+         (or (org-entry-get nil "TYPE")
+             (org-entry-get nil "THREAD-TYPE")
+             (string-match-p "\\(Main Plot\\|Subplot\\|Thread\\|A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\)"
+                            (org-get-heading t t t t))))))
 
 ;;; Plot Thread File Resolver (custom: inline project-type logic)
 

@@ -181,6 +181,49 @@ character heading (e.g. Physical Description, Personality, Background)."
     (org-back-to-heading)
     (should-not (org-scribe--character-heading-p))))
 
+;;; Short-story Heading Predicate Tests (H10)
+
+(ert-deftest test-character-heading-p-short-story-matches-level-2-under-characters ()
+  "In short-story projects, characters are level-2 headings under
+\"* Characters\" (see the shipped notes.org template), not level-1.
+Regression test for H10: the predicate previously required level 1
+unconditionally, so short-story characters were never found."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Characters\n\n** Protagonist: Alice\n:PROPERTIES:\n:TYPE: Protagonist\n:END:\n")
+      (goto-char (point-min))
+      (search-forward "Alice")
+      (org-back-to-heading)
+      (should (org-scribe--character-heading-p)))))
+
+(ert-deftest test-character-heading-p-short-story-rejects-characters-wrapper ()
+  "The level-1 \"* Characters\" section header itself is not an entity.
+Regression test for H10: without a level check, the wrapper heading's own
+text (which may match the regexp fallback) could become a phantom
+character entity."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Characters\n\n** Protagonist: Alice\n:PROPERTIES:\n:TYPE: Protagonist\n:END:\n")
+      (goto-char (point-min))
+      (org-back-to-heading)
+      (should-not (org-scribe--character-heading-p)))))
+
+(ert-deftest test-character-heading-p-short-story-rejects-level-2-outside-characters ()
+  "A level-2 heading under an unrelated section is not a character, even
+when its text matches the regexp fallback (e.g. contains \"Antagonist\").
+Confirms the parent-section check is load-bearing, not redundant with
+the existing property/regexp checks."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Research & References\n\n** Antagonist's real-world inspiration\n")
+      (goto-char (point-min))
+      (search-forward "Antagonist")
+      (org-back-to-heading)
+      (should-not (org-scribe--character-heading-p)))))
+
 ;;; Run tests
 
 (defun org-scribe-character-links-run-tests ()

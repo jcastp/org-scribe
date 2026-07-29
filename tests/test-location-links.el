@@ -172,6 +172,47 @@
     (org-back-to-heading)
     (should-not (org-scribe--location-heading-p))))
 
+;;; Short-story Heading Predicate Tests (H10)
+
+(ert-deftest test-location-heading-p-short-story-matches-level-2-under-setting ()
+  "In short-story projects, locations are level-2 headings under
+\"* Setting\" (see the shipped notes.org template), not level-1.
+Regression test for H10: the predicate previously required level 1
+unconditionally, so short-story locations were never found."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Setting\n\n** Main Location(s)\n:PROPERTIES:\n:LOCATION_NAME: Old Mill\n:END:\n")
+      (goto-char (point-min))
+      (search-forward "Main Location")
+      (org-back-to-heading)
+      (should (org-scribe--location-heading-p)))))
+
+(ert-deftest test-location-heading-p-short-story-rejects-locations-wrapper ()
+  "The \"** Locations\" comment-only placeholder is not itself a location.
+Regression test for H10: its own heading text contains \"Location\" and
+would otherwise match the regexp fallback, becoming a phantom entity —
+it is a landing-zone wrapper documented as \"captures go here as
+subheadings\", not a real entry."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Setting\n\n** Locations\n\n** Time Period\n")
+      (goto-char (point-min))
+      (search-forward "Locations")
+      (org-back-to-heading)
+      (should-not (org-scribe--location-heading-p)))))
+
+(ert-deftest test-location-heading-p-short-story-rejects-setting-wrapper ()
+  "The level-1 \"* Setting\" section header itself is not a location entity."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Setting\n\n** Main Location(s)\n")
+      (goto-char (point-min))
+      (org-back-to-heading)
+      (should-not (org-scribe--location-heading-p)))))
+
 ;;; Setup Wizard Tests
 
 (ert-deftest test-setup-wizard-defined ()

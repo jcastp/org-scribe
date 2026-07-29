@@ -187,6 +187,70 @@ For short stories: Uses notes.org (or notas.org).
 If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
   (org-scribe--capture-entity-file "plot" "trama" 'plot create-if-missing))
 
+;;; Capture Target Positioning (short-story section nesting)
+;;
+;; Novel projects keep characters/locations as flat top-level headings in
+;; their own dedicated file, so appending at the end of the buffer (the
+;; plain `file' capture target) is correct.  Short-story projects instead
+;; nest these entities as level-2 headings under a level-1 section of
+;; notes.org ("* Characters", "* Setting") — see the shipped template and
+;; `org-scribe--character-heading-p' / `org-scribe--location-heading-p',
+;; which only recognize entities in that position.  These functions move
+;; point to the end of the right section (creating it if missing) so
+;; `file+function' capture targets file new entities where the linking
+;; predicates expect to find them, instead of as stray top-level headings
+;; the getters can never see.
+
+(defun org-scribe--capture-goto-section (section-key)
+  "Move point so a `file+function' capture files as a child of SECTION-KEY.
+SECTION-KEY is a symbol such as \\='characters or \\='setting (see
+`org-scribe--section-heading-aliases').  In short-story projects, finds
+the section by any of its localized aliases (creating it, using the
+English alias, at the end of the buffer if none is present) and leaves
+point ON that heading line — `org-capture-set-target-location' detects
+this via `org-at-heading-p' and treats the capture as filed under the
+current entry, appending it at the end of the section's subtree at one
+level deeper (see `org-capture-place-entry').
+In novel projects (or outside a project), moves to the end of the buffer
+on a blank line instead, so `org-at-heading-p' is false there and the
+entry is appended as a flat top-level heading — preserving the original
+plain `file' target's behavior for novel projects, whose entity files are
+not sectioned this way."
+  (if (eq (org-scribe-project-type) 'short-story)
+      (let* ((aliases (alist-get section-key org-scribe--section-heading-aliases))
+             (regexp (concat "^\\* \\(?:"
+                             (mapconcat #'regexp-quote aliases "\\|")
+                             "\\)[ \t]*$")))
+        (goto-char (point-min))
+        (if (re-search-forward regexp nil t)
+            (forward-line 0)
+          (goto-char (point-max))
+          (unless (bolp) (insert "\n"))
+          (insert (format "* %s\n" (car aliases)))
+          (forward-line -1)))
+    (goto-char (point-max))
+    (unless (bolp) (insert "\n"))))
+
+(defun org-scribe--capture-goto-characters-section ()
+  "Move point to where a new character capture should be filed.
+See `org-scribe--capture-goto-section'."
+  (org-scribe--capture-goto-section 'characters))
+
+(defun org-scribe--capture-goto-setting-section ()
+  "Move point to where a new location capture should be filed.
+See `org-scribe--capture-goto-section'."
+  (org-scribe--capture-goto-section 'setting))
+
+(defun org-scribe--capture-goto-plot-threads-section ()
+  "Move point to where a new plot thread capture should be filed.
+For short stories, nests under the localized \"Plot Threads\" section
+(matching whichever alias the project's own template already uses,
+instead of the previous hardcoded English literal which could create a
+redundant duplicate section in Spanish projects).  For novels, files as
+a flat top-level heading, matching `org-scribe--plot-heading-p', which
+requires level 1 there.  See `org-scribe--capture-goto-section'."
+  (org-scribe--capture-goto-section 'plot-threads))
+
 (defun org-scribe-capture-target-file (&optional create-if-missing)
   "Determine the appropriate notes file for org-capture in writing environment.
 Uses `org-scribe-project-root' to find the project base directory.
@@ -235,7 +299,8 @@ file that doesn't exist."
 
 (defvar org-scribe-character-capture-templates
   '(("c" "Character Profile" entry
-     (file org-scribe-capture-character-file)
+     (file+function org-scribe-capture-character-file
+                    org-scribe--capture-goto-characters-section)
      "* %^{Character Name}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -307,7 +372,8 @@ file that doesn't exist."
 
 (defvar org-scribe-location-capture-templates
   '(("l" "Location" entry
-     (file org-scribe-capture-location-file)
+     (file+function org-scribe-capture-location-file
+                    org-scribe--capture-goto-setting-section)
      "* %^{Location Name}
 :PROPERTIES:
 :ID: %(org-id-new)
@@ -431,7 +497,8 @@ file that doesn't exist."
 
 (defvar org-scribe-plot-thread-capture-templates
   '(("p" "Plot Thread" entry
-     (file+headline org-scribe-capture-plot-thread-file "Plot Threads")
+     (file+function org-scribe-capture-plot-thread-file
+                    org-scribe--capture-goto-plot-threads-section)
      "** %^{Thread Name} %^{Type|Subplot|Main Plot|B-Plot|C-Plot|Thematic Thread}
 :PROPERTIES:
 :ID: %(org-id-new)

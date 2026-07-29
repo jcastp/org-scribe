@@ -28,12 +28,29 @@
 ;;; Location Heading Predicate
 
 (defun org-scribe--location-heading-p ()
-  "Return non-nil if the heading at point is a location heading."
-  (and (= (org-current-level) 1)
-       (or (org-entry-get nil "Type")
-           (org-entry-get nil "TYPE")
-           (string-match-p "Location\\|Ubicación\\|Localización\\|Setting\\|Place\\|Lugar"
-                          (org-get-heading t t t t)))))
+  "Return non-nil if the heading at point is a location heading.
+Novel projects keep locations as top-level (level 1) headings in
+objects/locations.org.  Short-story projects instead nest them as
+level-2 headings under the \"* Setting\" section of notes.org (see the
+shipped template).  The \"Locations\" subheading itself is a comment-only
+placeholder from the template (\"Location captures go here as
+subheadings\") and is excluded by name so it does not become a phantom
+location entity — its own heading text otherwise matches the same
+\"Location\" regexp as a real entry."
+  (if (eq (org-scribe-project-type) 'short-story)
+      (and (= (org-current-level) 2)
+           (org-scribe--heading-parent-section-p 'setting)
+           (not (member (org-get-heading t t t t)
+                       '("Locations" "Localizaciones")))
+           (or (org-entry-get nil "Type")
+               (org-entry-get nil "TYPE")
+               (string-match-p "Location\\|Ubicación\\|Localización\\|Setting\\|Place\\|Lugar"
+                              (org-get-heading t t t t))))
+    (and (= (org-current-level) 1)
+         (or (org-entry-get nil "Type")
+             (org-entry-get nil "TYPE")
+             (string-match-p "Location\\|Ubicación\\|Localización\\|Setting\\|Place\\|Lugar"
+                            (org-get-heading t t t t))))))
 
 ;;; Entity Definition
 
