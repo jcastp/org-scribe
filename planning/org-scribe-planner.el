@@ -979,6 +979,33 @@ the *remaining* words over the *remaining* working days, not the total."
 
 ;;; Org-mode Integration
 
+(defconst org-scribe-planner--note-colon-placeholder "\x01"
+  "Substituted for literal colons when serializing a note into the
+DATE:WORDS:NOTE:TARGET DAILY_WORD_COUNTS property, which is parsed by
+splitting naively on \":\".  A control character is used because it
+cannot be typed via `read-string' and so never collides with real
+note text, unlike a printable escape sequence.")
+
+(defconst org-scribe-planner--note-pipe-placeholder "\x02"
+  "Substituted for literal pipes when serializing a note into a
+Schedule table cell, which is delimited by \"|\".")
+
+(defun org-scribe-planner--escape-note-for-property (note)
+  "Escape colons in NOTE so it survives the DAILY_WORD_COUNTS round-trip."
+  (replace-regexp-in-string ":" org-scribe-planner--note-colon-placeholder note))
+
+(defun org-scribe-planner--unescape-note-from-property (note)
+  "Reverse `org-scribe-planner--escape-note-for-property'."
+  (replace-regexp-in-string org-scribe-planner--note-colon-placeholder ":" note))
+
+(defun org-scribe-planner--escape-note-for-table (note)
+  "Escape pipes in NOTE so it does not shift columns in the Schedule table."
+  (replace-regexp-in-string "|" org-scribe-planner--note-pipe-placeholder note))
+
+(defun org-scribe-planner--unescape-note-from-table (note)
+  "Reverse `org-scribe-planner--escape-note-for-table'."
+  (replace-regexp-in-string org-scribe-planner--note-pipe-placeholder "|" note))
+
 (defun org-scribe-planner--split-daily-counts-str (str)
   "Split STR into individual daily-count entry strings.
 Splits only on commas that are immediately followed by a date pattern
@@ -1012,8 +1039,10 @@ Returns an alist of (date . note) pairs for entries with notes."
           (while (looking-at "^|[[:space:]]+\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)[[:space:]]+|[^|]*|[^|]*|[^|]*|[^|]*|[[:space:]]*\\([^|]+?\\)[[:space:]]*|")
             (let* ((date (match-string 1))
                    (note-raw (match-string 2))
-                   ;; Trim whitespace from note
-                   (note (string-trim note-raw)))
+                   ;; Trim whitespace from note, then reverse the pipe
+                   ;; escaping applied when the note was written into the table
+                   (note (org-scribe-planner--unescape-note-from-table
+                          (string-trim note-raw))))
               ;; Only add if note is not empty and not just "Spare day"
               (when (and note
                         (not (string-empty-p note))
@@ -1183,7 +1212,8 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                    (actual (when daily-data
                             (plist-get daily-data :words)))
                    (note (when daily-data
-                          (or (plist-get daily-data :note) "")))
+                          (org-scribe-planner--escape-note-for-table
+                           (or (plist-get daily-data :note) ""))))
                    (percentage (if (and actual (not is-spare) (> target 0))
                                   (format "%.1f%%" (* 100.0 (/ (float actual) target)))
                                 "")))
@@ -1274,9 +1304,10 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                                  ;; If we have 3 parts, it's old format: date:words:note
                                  ;; If we have 2 parts, it's old format: date:words
                                  (has-target (and target-str (not (string-empty-p target-str))))
-                                 (note (if (and note-or-empty (not (string-empty-p note-or-empty)))
-                                          note-or-empty
-                                        ""))
+                                 (note (org-scribe-planner--unescape-note-from-property
+                                        (if (and note-or-empty (not (string-empty-p note-or-empty)))
+                                            note-or-empty
+                                          "")))
                                  (target (when has-target (string-to-number target-str))))
                             (if has-target
                                 ;; New format with target
@@ -1674,11 +1705,14 @@ Returns one of:
   \"DATE:WORDS\"
   \"DATE:WORDS:NOTE\"
   \"DATE:WORDS::TARGET\"
-  \"DATE:WORDS:NOTE:TARGET\""
+  \"DATE:WORDS:NOTE:TARGET\"
+Colons in NOTE are escaped (see `org-scribe-planner--escape-note-for-property')
+so a note like \"fixed plot: rewrote scene 3\" does not get mis-split on load."
   (let* ((date       (car entry))
          (data       (cdr entry))
          (word-count (plist-get data :words))
-         (note       (or (plist-get data :note) ""))
+         (note       (org-scribe-planner--escape-note-for-property
+                      (or (plist-get data :note) "")))
          (target     (plist-get data :target)))
     (cond
      (target

@@ -96,6 +96,65 @@
             (should (= (plist-get (cdr entry2) :words) 400))))
       (delete-directory temp-dir t))))
 
+(ert-deftest test-planner-roundtrip-note-with-colon ()
+  "A note containing ':' survives a save→load round-trip intact (H7).
+Regression test: DAILY_WORD_COUNTS entries are DATE:WORDS:NOTE:TARGET,
+parsed by splitting naively on ':' — an unescaped colon in the note used
+to be mis-split, corrupting both the note and the numeric target."
+  (let* ((temp-dir (make-temp-file "org-scribe-test-" t))
+         (temp-file (expand-file-name "colon-note.org" temp-dir))
+         (plan (make-org-scribe-plan
+                :title "Colon Note Plan"
+                :total-words 10000
+                :daily-words 500
+                :days 20
+                :start-date "2024-11-01"
+                :end-date "2024-11-20"
+                :daily-word-counts
+                '(("2024-11-01" . (:words 600
+                                   :note "fixed plot: rewrote scene 3"
+                                   :target 500))))))
+    (unwind-protect
+        (progn
+          (org-scribe-planner--save-plan plan temp-file)
+          (let* ((loaded (org-scribe-planner--load-plan temp-file))
+                 (entry (assoc "2024-11-01"
+                               (org-scribe-plan-daily-word-counts loaded))))
+            (should entry)
+            (should (= (plist-get (cdr entry) :words) 600))
+            (should (string= (plist-get (cdr entry) :note)
+                             "fixed plot: rewrote scene 3"))
+            (should (= (plist-get (cdr entry) :target) 500))))
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-planner-roundtrip-note-with-pipe-survives-schedule-table ()
+  "A note containing '|' does not corrupt the regenerated Schedule table (H7).
+Regression test: notes are inserted verbatim into a |-delimited Org table
+row; an unescaped pipe used to shift subsequent columns and confuse the
+table-notes parser used to merge hand-edited notes back into the plan."
+  (let* ((temp-dir (make-temp-file "org-scribe-test-" t))
+         (temp-file (expand-file-name "pipe-note.org" temp-dir))
+         (plan (make-org-scribe-plan
+                :title "Pipe Note Plan"
+                :total-words 10000
+                :daily-words 500
+                :days 20
+                :start-date "2024-11-01"
+                :end-date "2024-11-20"
+                :daily-word-counts
+                '(("2024-11-01" . (:words 600
+                                   :note "outline: A | B | C"
+                                   :target 500))))))
+    (unwind-protect
+        (progn
+          (org-scribe-planner--save-plan plan temp-file)
+          (with-current-buffer (find-file-noselect temp-file)
+            (let ((table-notes (org-scribe-planner--parse-schedule-table)))
+              (should (string= (cdr (assoc "2024-11-01" table-notes))
+                               "outline: A | B | C")))
+            (kill-buffer)))
+      (delete-directory temp-dir t))))
+
 (ert-deftest test-planner-roundtrip-no-spare-days-property-absent ()
   "When there are no spare days, SPARE_DAYS property is not written."
   (let* ((temp-dir (make-temp-file "org-scribe-test-" t))
