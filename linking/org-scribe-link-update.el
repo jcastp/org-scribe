@@ -93,7 +93,8 @@ Returns t if any changes were made, nil otherwise.
 
 This function:
 1. Gets the property value
-2. Splits on commas (for multi-value properties)
+2. Splits on commas (for multi-value properties), without splitting inside
+   a link's own display text — see `org-scribe--split-property-list'
 3. Updates each link's display name
 4. Joins back together
 5. Updates property if changed
@@ -102,12 +103,11 @@ Example:
   Property: \":Characters: [[id:abc][Alex]], [[id:def][Sam]]\"
   After rename: \":Characters: [[id:abc][Alexandra]], [[id:def][Samuel]]\""
   (when-let ((prop-value (org-scribe-scene-property-get property-name)))
-    (let* ((links (split-string prop-value "," t))
+    (let* ((links (org-scribe--split-property-list prop-value))
            (updated-links (mapcar
                            (lambda (link)
                              (org-scribe--update-link-display-name
-                              (string-trim link)
-                              id-to-name-map))
+                              link id-to-name-map))
                            links))
            (updated-string (string-join updated-links ", ")))
       ;; Only update if something changed

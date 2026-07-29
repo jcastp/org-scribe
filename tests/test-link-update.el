@@ -196,6 +196,19 @@
       (let ((changed (org-scribe--update-links-in-property "Characters" map)))
         (should (null changed))))))
 
+(ert-deftest test-link-update-property-comma-in-display-name ()
+  "A display name containing a comma is updated, not silently skipped (L4)."
+  (let ((map (test-link-update--make-map
+              "char-smith-001" "Smith, John (Sr.)"
+              "char-sam-002" "Samuel Chen")))
+    (test-link-update--with-org-heading
+        "* Scene One\n:PROPERTIES:\n:Characters: [[id:char-smith-001][Smith, John]], [[id:char-sam-002][Sam]]\n:END:\n"
+      (let ((changed (org-scribe--update-links-in-property "Characters" map)))
+        (should changed)
+        (let ((updated (org-entry-get nil "Characters")))
+          (should (string-match-p (regexp-quote "[[id:char-smith-001][Smith, John (Sr.)]]") updated))
+          (should (string-match-p (regexp-quote "[[id:char-sam-002][Samuel Chen]]") updated)))))))
+
 ;;; Run tests
 
 (defun org-scribe-link-update-run-tests ()

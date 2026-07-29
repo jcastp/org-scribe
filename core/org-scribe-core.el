@@ -243,6 +243,66 @@ language (see `org-scribe-scene-property-name')."
          (existing (cl-find-if (lambda (prop) (org-entry-get nil prop)) aliases)))
     (org-set-property (or existing (org-scribe-scene-property-name canonical-key)) value)))
 
+;;; Comma-Separated Property Lists
+
+;; Multi-value scene properties (Characters, Locations, Plot threads) are
+;; stored as comma-joined lists, either as plain text ("Alex, Sam") or as
+;; ID links ("[[id:1][Alex]], [[id:2][Sam]]").  A naive `split-string' on
+;; "," breaks whenever an entity's own display name contains a comma (e.g.
+;; "Smith, John"), splitting one name into two bogus items.  These two
+;; helpers protect embedded commas before splitting.
+
+(defun org-scribe--split-property-list (value)
+  "Split VALUE on commas, without splitting inside [[...][...]] links.
+VALUE is a multi-value scene property such as Characters or Locations,
+already possibly containing ID links, e.g.
+\"[[id:1][Smith, John]], [[id:2][Sam]]\".  A comma inside an ID link's
+display text (bracket depth > 0) is not treated as an item separator, so a
+linked entity whose display name itself contains a comma round-trips
+correctly.  Plain-text (unlinked) items are still split on every comma,
+since there is no bracket structure there to disambiguate an embedded
+comma from a separator — use `org-scribe--split-comma-list-protecting-names'
+first if the items are not yet linked.
+Returns a list of trimmed, non-empty items."
+  (let ((items nil)
+        (start 0)
+        (depth 0))
+    (dotimes (i (length value))
+      (let ((c (aref value i)))
+        (cond
+         ((eq c ?\[) (setq depth (1+ depth)))
+         ((eq c ?\]) (setq depth (max 0 (1- depth))))
+         ((and (eq c ?,) (zerop depth))
+          (push (substring value start i) items)
+          (setq start (1+ i))))))
+    (push (substring value start) items)
+    (delete "" (mapcar #'string-trim (nreverse items)))))
+
+(defun org-scribe--split-comma-list-protecting-names (text known-names)
+  "Split TEXT on commas, without splitting inside any name in KNOWN-NAMES.
+TEXT is a plain-text, not-yet-linked comma-separated list of entity names.
+KNOWN-NAMES is a list of known entity display names (e.g. the names from
+`org-scribe--get-all-entities'); any of them that both contains a comma and
+occurs verbatim in TEXT has that internal comma protected before
+splitting, so a character named e.g. \"Smith, John\" is recognized as one
+name instead of being split into \"Smith\" and \"John\" — as long as that
+exact name appears in TEXT.  Names are matched longest-first so a name
+that is a substring of another comma-bearing name is not partially
+protected first.
+Returns a list of trimmed, non-empty items."
+  (let ((protected text)
+        (placeholder (string ?\x01)))
+    (dolist (name (sort (cl-remove-if-not (lambda (n) (string-match-p "," n)) known-names)
+                        (lambda (a b) (> (length a) (length b)))))
+      (setq protected
+            (replace-regexp-in-string
+             (regexp-quote name)
+             (replace-regexp-in-string "," placeholder name t t)
+             protected t t)))
+    (delete "" (mapcar (lambda (s)
+                         (string-trim (replace-regexp-in-string placeholder "," s t t)))
+                       (split-string protected "," t)))))
+
 ;;; Feature Detection
 
 (defvar org-scribe--available-features nil

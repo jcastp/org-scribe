@@ -104,6 +104,13 @@
   "Test converting nil to list."
   (should (null (org-scribe--property-to-list nil))))
 
+(ert-deftest test-property-to-list-comma-in-linked-name ()
+  "A linked display name containing a comma is not split in two (L4)."
+  (should (equal (org-scribe--property-to-list "[[id:1][Smith, John]]")
+                 '("Smith, John")))
+  (should (equal (org-scribe--property-to-list "[[id:1][Smith, John]], [[id:2][Sam]]")
+                 '("Smith, John" "Sam"))))
+
 ;;; Run tests
 
 (defun org-scribe-search-run-link-tests ()

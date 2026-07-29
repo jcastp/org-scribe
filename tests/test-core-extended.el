@@ -334,6 +334,53 @@ Clears the project type cache before and after."
   "Test feature detection for unavailable features."
   (should (eq nil (org-scribe-check-feature 'this-package-does-not-exist))))
 
+;;; org-scribe--split-property-list Tests (L4)
+
+(ert-deftest test-core-split-property-list-plain ()
+  "Test splitting a plain-text comma list."
+  (should (equal (org-scribe--split-property-list "Alex") '("Alex")))
+  (should (equal (org-scribe--split-property-list "Alex, Sam") '("Alex" "Sam"))))
+
+(ert-deftest test-core-split-property-list-links ()
+  "Test splitting a list of ID links."
+  (should (equal (org-scribe--split-property-list "[[id:1][Alex]], [[id:2][Sam]]")
+                 '("[[id:1][Alex]]" "[[id:2][Sam]]"))))
+
+(ert-deftest test-core-split-property-list-comma-in-link-display-text ()
+  "A comma inside a link's display text is not a separator (L4)."
+  (should (equal (org-scribe--split-property-list "[[id:1][Smith, John]]")
+                 '("[[id:1][Smith, John]]")))
+  (should (equal (org-scribe--split-property-list "[[id:1][Smith, John]], [[id:2][Sam]]")
+                 '("[[id:1][Smith, John]]" "[[id:2][Sam]]"))))
+
+(ert-deftest test-core-split-property-list-trims-and-omits-empty ()
+  "Test that items are trimmed and empty items are dropped."
+  (should (equal (org-scribe--split-property-list " Alex ,  Sam  ") '("Alex" "Sam")))
+  (should (equal (org-scribe--split-property-list "Alex,,Sam") '("Alex" "Sam"))))
+
+;;; org-scribe--split-comma-list-protecting-names Tests (L4)
+
+(ert-deftest test-core-split-protecting-names-no-known-comma-names ()
+  "Without any comma-bearing known names, behaves like a plain comma split."
+  (should (equal (org-scribe--split-comma-list-protecting-names
+                  "Alex, Sam" '("Alex" "Sam"))
+                 '("Alex" "Sam"))))
+
+(ert-deftest test-core-split-protecting-names-protects-known-comma-name ()
+  "A known entity name containing a comma is kept as one item (L4)."
+  (should (equal (org-scribe--split-comma-list-protecting-names
+                  "Smith, John" '("Smith, John"))
+                 '("Smith, John")))
+  (should (equal (org-scribe--split-comma-list-protecting-names
+                  "Smith, John, Sam" '("Smith, John" "Sam"))
+                 '("Smith, John" "Sam"))))
+
+(ert-deftest test-core-split-protecting-names-unknown-comma-name-still-splits ()
+  "A comma-bearing name not present in KNOWN-NAMES is still split naively."
+  (should (equal (org-scribe--split-comma-list-protecting-names
+                  "Smith, John" '("Someone Else"))
+                 '("Smith" "John"))))
+
 ;;; Run tests
 
 (defun org-scribe-core-extended-run-tests ()

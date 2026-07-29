@@ -212,11 +212,14 @@ PROPERTY is a canonical scene property key (e.g. \\='characters)."
   "Convert entity names to ID links in PROPERTY of current heading.
 ENTITY is an entity descriptor plist.
 PROPERTY is a canonical scene property key (e.g. \\='characters).
-Handles both single entities and comma-separated lists."
+Handles both single entities and comma-separated lists.  A known entity
+name that itself contains a comma (e.g. \"Smith, John\") is recognized as
+one item rather than split in two — see
+`org-scribe--split-comma-list-protecting-names'."
   (when-let ((prop-value (org-scribe-scene-property-get property)))
     (let* ((id-alist (org-scribe--get-all-entities entity))
-           (name-list (mapcar #'string-trim
-                              (split-string prop-value "," t)))
+           (name-list (org-scribe--split-comma-list-protecting-names
+                       prop-value (mapcar #'car id-alist)))
            (linked (mapcar (lambda (name)
                              (org-scribe--create-entity-link name id-alist))
                            name-list))

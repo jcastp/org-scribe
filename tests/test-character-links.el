@@ -15,6 +15,7 @@
 ;;; Code:
 
 (require 'ert)
+(require 'cl-lib)
 
 ;;; Add paths
 (let ((default-directory (file-name-directory
@@ -50,6 +51,26 @@
 
   ;; Setup wizard
   (should (fboundp 'org-scribe-setup-character-links)))
+
+;;; org-scribe--link-entity-in-property Tests (L4)
+
+(ert-deftest test-character-link-entity-in-property-comma-in-name ()
+  "A known character name containing a comma is linked as one entity, not split (L4)."
+  (let ((id-alist '(("Smith, John" . ("char-smith-001" . "Smith, John"))
+                    ("Sam" . ("char-sam-002" . "Sam")))))
+    (cl-letf (((symbol-function 'org-scribe--get-all-entities)
+               (lambda (_entity) id-alist)))
+      (with-temp-buffer
+        (org-mode)
+        (insert "* Scene One\n:PROPERTIES:\n:Characters: Smith, John, Sam\n:END:\n")
+        (goto-char (point-min))
+        (org-next-visible-heading 1)
+        (let ((changed (org-scribe--link-entity-in-property
+                        org-scribe--character-entity 'characters)))
+          (should changed)
+          (let ((updated (org-entry-get nil "Characters")))
+            (should (string-match-p (regexp-quote "[[id:char-smith-001][Smith, John]]") updated))
+            (should (string-match-p (regexp-quote "[[id:char-sam-002][Sam]]") updated))))))))
 
 ;;; Character Timeline Tests
 

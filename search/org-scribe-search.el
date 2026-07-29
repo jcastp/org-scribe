@@ -59,16 +59,16 @@ Case-insensitive search."
 (defun org-scribe--property-to-list (property-value)
   "Convert PROPERTY-VALUE to list of items.
 Handles both plain text and ID links.
-Splits on comma and extracts display text from links.
+Splits on comma (but not on commas inside a link's display text — see
+`org-scribe--split-property-list') and extracts display text from links.
 
 Examples:
   \"Alex, Sam\" → (\"Alex\" \"Sam\")
-  \"[[id:abc][Alex]], [[id:def][Sam]]\" → (\"Alex\" \"Sam\")"
+  \"[[id:abc][Alex]], [[id:def][Sam]]\" → (\"Alex\" \"Sam\")
+  \"[[id:abc][Smith, John]]\" → (\"Smith, John\")"
   (when property-value
-    (let ((clean-text (org-scribe--extract-link-text property-value)))
-      (when clean-text
-        (mapcar #'string-trim
-                (split-string clean-text ","))))))
+    (mapcar #'org-scribe--extract-link-text
+            (org-scribe--split-property-list property-value))))
 
 ;;; Shared Search Helpers
 
