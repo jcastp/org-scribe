@@ -69,6 +69,28 @@ Stubs today to a date before the plan so all working days count as future."
          (data (org-scribe-planner--compute-recalculation-data plan)))
     (should (= (plist-get data :cumulative-actual) 0))))
 
+(ert-deftest test-planner-recalc-data-note-only-future-day-still-remaining ()
+  "A note-only entry on a future working day still counts as remaining (H8).
+Regression test: annotating a future day (e.g. \"planning outline\") via
+`org-scribe-planner--add-spare-day-note' must not shrink the pool of
+remaining working days used to recalculate the daily target — only a day
+with an actual :words value is \"already accounted for\".
+Stubs today to a date before the plan so all four days count as future."
+  (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
+             (lambda () "2024-10-31")))
+    (let* ((plan (make-org-scribe-plan
+                  :total-words 4000 :daily-words 1000 :days 4
+                  :start-date "2024-11-01" :end-date "2024-11-04"
+                  :spare-days nil
+                  :daily-word-counts
+                  ;; Note-only entry on a normal (non-spare) future day
+                  '(("2024-11-03" . (:note "Planning outline, no writing yet")))))
+           (data (org-scribe-planner--compute-recalculation-data plan)))
+      (should (= (plist-get data :cumulative-actual) 0))
+      ;; All 4 days remain remaining working days: the note carries no
+      ;; :words, so it must not remove Nov 3 from the remaining count.
+      (should (= (plist-get data :remaining-days) 4)))))
+
 ;;; --get-enhanced-milestones
 
 (ert-deftest test-planner-milestones-returns-four-entries ()

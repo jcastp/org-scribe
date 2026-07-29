@@ -155,6 +155,37 @@ table-notes parser used to merge hand-edited notes back into the plan."
             (kill-buffer)))
       (delete-directory temp-dir t))))
 
+(ert-deftest test-planner-roundtrip-spare-day-note-stays-note-only ()
+  "A note-only spare-day entry must not gain a fake :words 0 on load (H8).
+Regression test: `--add-spare-day-note' creates entries with no :words
+key.  `--counts-with-words' filters them out of the DAILY_WORD_COUNTS
+property, but the note text still shows up in the regenerated Schedule
+table; the load-time merge of table notes back into daily-word-counts
+used to re-create the entry with :words 0, making downstream code treat
+the spare day as \"0 actual words written\" instead of \"no data\"."
+  (let* ((temp-dir (make-temp-file "org-scribe-test-" t))
+         (temp-file (expand-file-name "spare-note.org" temp-dir))
+         (plan (make-org-scribe-plan
+                :title "Spare Note Plan"
+                :total-words 10000
+                :daily-words 500
+                :days 20
+                :start-date "2024-11-01"
+                :end-date "2024-11-20"
+                :spare-days '("2024-11-02"))))
+    (org-scribe-planner--add-spare-day-note plan "2024-11-02" "Rest day, no writing")
+    (unwind-protect
+        (progn
+          (org-scribe-planner--save-plan plan temp-file)
+          (let* ((loaded (org-scribe-planner--load-plan temp-file))
+                 (entry (assoc "2024-11-02"
+                               (org-scribe-plan-daily-word-counts loaded))))
+            (should entry)
+            (should (string= (plist-get (cdr entry) :note) "Rest day, no writing"))
+            ;; Must remain a note-only entry: no numeric :words.
+            (should-not (numberp (plist-get (cdr entry) :words)))))
+      (delete-directory temp-dir t))))
+
 (ert-deftest test-planner-roundtrip-no-spare-days-property-absent ()
   "When there are no spare days, SPARE_DAYS property is not written."
   (let* ((temp-dir (make-temp-file "org-scribe-test-" t))

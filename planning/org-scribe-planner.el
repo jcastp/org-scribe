@@ -1341,16 +1341,25 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                       (setq notes-updated t)
                       ;; Update the :note field
                       (plist-put data :note note)))
-                ;; No existing entry - create one with just the note
+                ;; No existing entry - create a note-only entry (no :words),
+                ;; matching `org-scribe-planner--add-spare-day-note'.  A note
+                ;; appears in the table for spare/future days that never had
+                ;; an actual word count; giving it :words 0 would make
+                ;; downstream code (cumulative/expected totals, remaining
+                ;; working-day counts) treat it as real zero-word "actual
+                ;; data" for that day (H8).
                 (setq notes-updated t)
-                (push (cons date (list :words 0 :note note :target nil))
+                (push (cons date (list :note note))
                       (org-scribe-plan-daily-word-counts plan)))))
 
-          ;; If we updated any notes, persist them to the properties
+          ;; If we updated any notes, persist them to the properties.
+          ;; Filter through `--counts-with-words' first: note-only entries
+          ;; have no :words key, and `--format-daily-count-entry' requires one.
           (when notes-updated
             (org-set-property "DAILY_WORD_COUNTS"
                              (mapconcat #'org-scribe-planner--format-daily-count-entry
-                                        (org-scribe-plan-daily-word-counts plan)
+                                        (org-scribe-planner--counts-with-words
+                                         (org-scribe-plan-daily-word-counts plan))
                                         ","))
             (save-buffer)
             (message "Merged %d note(s) from schedule table into plan properties"
@@ -1963,8 +1972,13 @@ Returns a plist with:
         (let ((date (plist-get day :date))
               (is-spare (plist-get day :is-spare-day)))
           ;; Only count today and future days; past empty days are unlogged history,
-          ;; not future obligations.
-          (when (and (not (assoc date daily-counts))
+          ;; not future obligations.  Check for actual :words data, not mere
+          ;; presence of a daily-counts entry — a note-only entry (e.g. from
+          ;; `org-scribe-planner--add-spare-day-note' on a future day) carries
+          ;; no word count and must still count as a remaining working day,
+          ;; otherwise annotating a future day silently shrinks the pool of
+          ;; remaining days and inflates the recalculated daily target (H8).
+          (when (and (not (org-scribe-planner--get-entry-words (assoc date daily-counts)))
                      (not is-spare)
                      (not (string< date today)))
             (setq remaining-days (1+ remaining-days))))))
