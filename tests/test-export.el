@@ -20,6 +20,12 @@
 (require 'org-scribe-config)
 (require 'org-scribe-export)
 
+;; `org-scribe-mode' itself lives in org-scribe.el (the package entry
+;; point), which this test file does not load. Declare it here so the
+;; `buffer-local-value' check in `org-scribe--export-in-scribe-context-p'
+;; can be exercised in isolation.
+(defvar-local org-scribe-mode nil)
+
 ;;; Module Loading Tests
 
 (ert-deftest test-export-module-loads ()
@@ -121,10 +127,71 @@
 ;;; Filter Integration Tests
 
 (ert-deftest test-scene-break-filter-registered ()
-  "Test that scene break filter is registered in org-export."
+  "Test that the scene break filter wrapper is registered in org-export."
   (should (boundp 'org-export-filter-final-output-functions))
-  (should (memq 'org-scribe--export-replace-scene-breaks
+  (should (memq 'org-scribe--export-filter-scene-breaks
                 org-export-filter-final-output-functions)))
+
+;;; Scoping to org-scribe documents (L2)
+
+(ert-deftest test-scene-break-in-scribe-context-nil-info ()
+  "in-scribe-context-p is nil when INFO carries no file or buffer info."
+  (should-not (org-scribe--export-in-scribe-context-p nil)))
+
+(ert-deftest test-scene-break-in-scribe-context-project-file ()
+  "in-scribe-context-p is t when :input-file lives under an org-scribe project."
+  (let* ((project-dir (make-temp-file "test-export-project-" t))
+         (file (expand-file-name "novel.org" project-dir)))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" project-dir)
+            (insert "# Writing project: Test\n# Type: novel\n"))
+          (with-temp-file file (insert "* Chapter\n"))
+          (should (org-scribe--export-in-scribe-context-p (list :input-file file))))
+      (delete-directory project-dir t))))
+
+(ert-deftest test-scene-break-in-scribe-context-non-project-file ()
+  "in-scribe-context-p is nil for a file outside any org-scribe project."
+  (let ((file (make-temp-file "test-export-unrelated-" nil ".org")))
+    (unwind-protect
+        (should-not (org-scribe--export-in-scribe-context-p (list :input-file file)))
+      (delete-file file))))
+
+(ert-deftest test-scene-break-in-scribe-context-buffer-with-org-scribe-mode ()
+  "in-scribe-context-p is t when the source buffer has org-scribe-mode on."
+  (with-temp-buffer
+    (rename-buffer "*test-export-scribe-buf*" t)
+    (setq-local org-scribe-mode t)
+    (should (org-scribe--export-in-scribe-context-p
+             (list :input-buffer (buffer-name))))))
+
+(ert-deftest test-scene-break-in-scribe-context-buffer-without-org-scribe-mode ()
+  "in-scribe-context-p is nil when the source buffer has org-scribe-mode off."
+  (with-temp-buffer
+    (rename-buffer "*test-export-non-scribe-buf*" t)
+    (setq-local org-scribe-mode nil)
+    (should-not (org-scribe--export-in-scribe-context-p
+                 (list :input-buffer (buffer-name))))))
+
+(ert-deftest test-scene-break-filter-skips-non-scribe-document ()
+  "The registered filter leaves SCENE-BREAK untouched outside org-scribe."
+  (let ((text "Before\nSCENE-BREAK\nAfter"))
+    (should (string= text
+                      (org-scribe--export-filter-scene-breaks text 'ascii nil)))))
+
+(ert-deftest test-scene-break-filter-replaces-in-scribe-document ()
+  "The registered filter replaces SCENE-BREAK inside an org-scribe project."
+  (let* ((project-dir (make-temp-file "test-export-project-" t))
+         (file (expand-file-name "novel.org" project-dir))
+         (text "Before\nSCENE-BREAK\nAfter"))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" project-dir)
+            (insert "# Writing project: Test\n# Type: novel\n"))
+          (let ((result (org-scribe--export-filter-scene-breaks
+                         text 'ascii (list :input-file file))))
+            (should-not (string-match-p "SCENE-BREAK" result))))
+      (delete-directory project-dir t))))
 
 ;;; Configuration Customization Tests
 
