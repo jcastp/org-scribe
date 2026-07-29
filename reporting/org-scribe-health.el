@@ -31,6 +31,8 @@
 (declare-function org-scribe-plan-daily-words   "planning/org-scribe-planner")
 (declare-function org-scribe-plan-start-date    "planning/org-scribe-planner")
 (declare-function org-scribe-plan-end-date      "planning/org-scribe-planner")
+(declare-function org-scribe-planner--generate-day-schedule "planning/org-scribe-planner")
+(declare-function org-scribe-planner--get-today-date         "planning/org-scribe-planner")
 (defvar org-scribe-planner--current-plan)
 
 ;;; Date Helpers (used by Writing Plan section)
@@ -52,13 +54,22 @@
     (max 0 (round (/ (float-time (time-subtract today start)) 86400)))))
 
 (defun org-scribe--health-plan-status (plan)
-  "Return 'On track' or 'Behind by N words' for PLAN."
-  (let* ((elapsed (org-scribe--health-days-since (org-scribe-plan-start-date plan)))
-         (expected (* elapsed (org-scribe-plan-daily-words plan)))
-         (delta (- expected (org-scribe-plan-current-words plan))))
-    (if (<= delta 0)
-        "On track"
-      (format "Behind by %d words" delta))))
+  "Return 'On track' or 'Behind by N words' for PLAN.
+Expected words are computed by walking PLAN's day schedule up to and
+including today, skipping spare days — matching
+`org-scribe-planner--show-progress-report' — instead of the naive
+elapsed-days × daily-words, which overcounts every spare day (e.g.
+weekends off) as an expected writing day."
+  (let* ((today (org-scribe-planner--get-today-date))
+         (expected 0))
+    (dolist (day (org-scribe-planner--generate-day-schedule plan))
+      (when (and (not (string< today (plist-get day :date)))
+                 (not (plist-get day :is-spare-day)))
+        (setq expected (+ expected (plist-get day :words)))))
+    (let ((delta (- expected (org-scribe-plan-current-words plan))))
+      (if (<= delta 0)
+          "On track"
+        (format "Behind by %d words" delta)))))
 
 ;;; Internal Helpers
 

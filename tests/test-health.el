@@ -13,6 +13,7 @@
 
 (require 'ert)
 (require 'org)
+(require 'cl-lib)
 
 ;; Add parent directory to load path
 (let ((parent-dir (file-name-directory
@@ -258,6 +259,40 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
   "days-since returns 0 for a future date."
   (let* ((future (format-time-string "%Y-%m-%d" (time-add (current-time) (* 10 86400)))))
     (should (= (org-scribe--health-days-since future) 0))))
+
+;;; Plan status ignores spare days (M7)
+
+(ert-deftest test-health-plan-status-ignores-spare-days ()
+  "Status must not count spare days as expected writing days.
+Regression test: the naive `elapsed-days * daily-words' calculation treated
+every day since start as an expected writing day, so a plan with weekends
+off (or any spare days) was reported \"Behind\" right after every spare day
+even though nothing was actually due."
+  (require 'org-scribe-planner)
+  (let* ((today-date (org-scribe-planner--get-today-date))
+         (now (current-time))
+         (date-n-days-ago (lambda (n)
+                             (format-time-string "%Y-%m-%d"
+                                                  (time-add now (days-to-time (- n))))))
+         (start-date (funcall date-n-days-ago 10))
+         (end-date (funcall date-n-days-ago -10))
+         ;; Every elapsed day except today is a spare day, so only today's
+         ;; target (1000 words) is actually expected so far.
+         (spare-days (cl-loop for n from 1 to 10
+                              collect (funcall date-n-days-ago n)))
+         (plan (make-org-scribe-plan
+                :title "Spare Day Plan"
+                :total-words 50000
+                :daily-words 1000
+                :days 21
+                :start-date start-date
+                :end-date end-date
+                :spare-days spare-days
+                :current-words 1000)))
+    (should (string= (org-scribe--health-plan-status plan) "On track"))
+    ;; Sanity check the naive elapsed*daily-words math (what the old code
+    ;; did) would have flagged this same plan as far behind.
+    (should (> (* (1+ (org-scribe--health-days-since start-date)) 1000) 1000))))
 
 ;;; Writing Plan section in the report
 
