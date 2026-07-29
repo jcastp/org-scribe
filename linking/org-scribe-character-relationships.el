@@ -537,10 +537,12 @@ PARAMS can include:
         (insert dot-code)
         (insert "\n#+END_SRC\n\n")
 
-        ;; If we successfully rendered, copy to final location and show image
+        ;; If we successfully rendered, copy to final location and show image.
+        ;; `image-path' is always a temp file; copy it to OUTPUT-FILE
+        ;; unconditionally so the inserted link never points at a file that
+        ;; was never created.
         (when image-path
-          (when image-file
-            (copy-file image-path image-file t))
+          (copy-file image-path output-file t)
           (insert "[[file:" output-file "]]\n"))))
 
      ;; ASCII tree format

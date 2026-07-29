@@ -19,6 +19,7 @@
 ;;; Code:
 
 (require 'ert)
+(require 'cl-lib)
 
 ;;; Add paths
 (let ((default-directory (file-name-directory
@@ -359,6 +360,31 @@
   "Test table format with empty relationships."
   (let ((table (org-scribe--format-relationship-table '())))
     (should (stringp table))))
+
+;;; Dynamic Block Image Link Tests
+
+(ert-deftest test-relationships-dblock-dot-copies-image-to-output-file ()
+  "Test that the dot dblock copies the rendered image to the linked file.
+Regression test: previously the inserted [[file:...]] link pointed at
+`character-relationships.png' even when nothing had been copied there,
+because the copy only happened when an explicit :image-file was given."
+  (let* ((temp-dir (file-name-as-directory (make-temp-file "org-scribe-rel-test-" t)))
+         (default-directory temp-dir)
+         (rendered-temp (make-temp-file "org-scribe-graph" nil ".png")))
+    (unwind-protect
+        (progn
+          (with-temp-file rendered-temp (insert "fake-png-bytes"))
+          (cl-letf (((symbol-function 'org-scribe--build-relationship-graph-data)
+                     (lambda (&optional _filter-strength) '(("Alice" . (("char-bob-001" "Bob" "friend" 3 "positive"))))))
+                    ((symbol-function 'org-scribe--render-dot-to-image)
+                     (lambda (_dot-code _output-format) rendered-temp)))
+            (with-temp-buffer
+              (org-dblock-write:character-relationships '(:format dot))
+              (should (string-match-p "\\[\\[file:character-relationships\\.png\\]\\]"
+                                       (buffer-string)))))
+          (should (file-exists-p (expand-file-name "character-relationships.png" temp-dir))))
+      (when (file-exists-p rendered-temp) (delete-file rendered-temp))
+      (delete-directory temp-dir t))))
 
 ;;; Run tests
 
