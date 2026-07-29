@@ -3,7 +3,7 @@
 ;; Copyright (C) 2025 Javier Castilla
 
 ;; Author: Javier Castilla <jcastp@pm.me>
-;; Version: 0.4.0
+;; Version: 0.5.0
 ;; Package-Requires: ((emacs "29.1") (org "9.6") (org-ql "0.8") (writeroom-mode "3.7") (hydra "0.15.0"))
 ;; Keywords: writing, org-mode, novel, fiction, project
 ;; URL: https://codeberg.org/jcastp/org-scribe
@@ -46,6 +46,7 @@
 
 (require 'org)
 (require 'org-element)
+(require 'lisp-mnt)
 
 (defconst org-scribe--source-directory
   (file-name-directory (or load-file-name buffer-file-name))
@@ -109,9 +110,12 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
 
 ;;;###autoload
 (defun org-scribe-version ()
-  "Display org-scribe version."
+  "Display org-scribe version, read from the \"Version:\" package header.
+Avoids drifting out of sync with the header, unlike a hardcoded string."
   (interactive)
-  (message "org-scribe version 0.2.0 (includes project templates)"))
+  (message "org-scribe version %s"
+           (or (lm-version (expand-file-name "org-scribe.el" org-scribe--source-directory))
+               "unknown")))
 
 ;;;###autoload
 (define-minor-mode org-scribe-mode
