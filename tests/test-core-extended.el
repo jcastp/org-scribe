@@ -141,9 +141,41 @@ Clears the project type cache before and after."
     (let ((type1 (org-scribe-project-type))
           (type2 (org-scribe-project-type)))
       (should (eq type1 type2))
-      ;; Cache should have an entry
-      (should (assoc default-directory org-scribe--project-type-cache
-                     #'string=)))))
+      ;; Cache should have an entry, keyed by the normalized root so that
+      ;; different spellings of the same directory share one entry.
+      (should (assoc (org-scribe--normalize-project-root default-directory)
+                      org-scribe--project-type-cache
+                      #'string=)))))
+
+(ert-deftest test-core-project-type-cache-normalizes-trailing-slash ()
+  "Test that a trailing-slash spelling of a root reuses the same cache entry."
+  (test-core--with-temp-project
+      '("novel.org")
+    (org-scribe-project-type)
+    (let ((without-slash (directory-file-name default-directory)))
+      ;; Both spellings should resolve to the same normalized cache key.
+      (should (string= (org-scribe--normalize-project-root default-directory)
+                        (org-scribe--normalize-project-root without-slash))))))
+
+(ert-deftest test-core-project-type-cache-clear-invalidates-root ()
+  "Test that `org-scribe-project-type-cache-clear' drops the entry for ROOT."
+  (test-core--with-temp-project
+      '("novel.org")
+    (org-scribe-project-type)
+    (should (assoc (org-scribe--normalize-project-root default-directory)
+                    org-scribe--project-type-cache #'string=))
+    (org-scribe-project-type-cache-clear default-directory)
+    (should-not (assoc (org-scribe--normalize-project-root default-directory)
+                        org-scribe--project-type-cache #'string=))))
+
+(ert-deftest test-core-project-type-cache-clear-all ()
+  "Test that `org-scribe-project-type-cache-clear' with no argument wipes the cache."
+  (test-core--with-temp-project
+      '("novel.org")
+    (org-scribe-project-type)
+    (should org-scribe--project-type-cache)
+    (org-scribe-project-type-cache-clear)
+    (should-not org-scribe--project-type-cache)))
 
 ;;; org-scribe-project-structure Tests
 

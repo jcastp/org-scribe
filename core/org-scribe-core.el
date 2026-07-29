@@ -28,7 +28,30 @@ Looks for .org-scribe-project file, then falls back to `project-current'."
 
 (defvar org-scribe--project-type-cache nil
   "Alist of (PROJECT-ROOT . PROJECT-TYPE) for caching project type detection.
-Cleared when changing directories or projects.")
+Keys are canonicalized with `org-scribe--normalize-project-root' so that
+different spellings of the same directory (trailing slash, symlink) share one
+entry.  Entries are invalidated via `org-scribe-project-type-cache-clear'.")
+
+(defun org-scribe--normalize-project-root (root)
+  "Return a canonical form of ROOT for use as a project-type cache key.
+Resolves symlinks and normalizes trailing slashes so that different
+spellings of the same directory map to the same cache entry."
+  (file-truename (file-name-as-directory (expand-file-name root))))
+
+(defun org-scribe-project-type-cache-clear (&optional root)
+  "Invalidate the project-type cache.
+With ROOT, remove only the entry for that project root (its type will be
+re-detected on next use).  With no argument, clear the entire cache.
+
+Call this after anything that can change what `org-scribe-project-type'
+would detect for a project already in the cache: creating project marker
+files/structure in an existing directory, or switching to a different
+project whose root was previously misdetected."
+  (if root
+      (setq org-scribe--project-type-cache
+            (assoc-delete-all (org-scribe--normalize-project-root root)
+                               org-scribe--project-type-cache #'string=))
+    (setq org-scribe--project-type-cache nil)))
 
 (defun org-scribe-project-type ()
   "Detect the type of writing project.
@@ -45,7 +68,8 @@ Detection strategy:
 5. Check for novel.org or novela.org (indicates novel)
 6. Return 'unknown if none of the above"
   (let* ((root (org-scribe-project-root))
-         (cached (alist-get root org-scribe--project-type-cache nil nil #'string=)))
+         (cache-key (org-scribe--normalize-project-root root))
+         (cached (alist-get cache-key org-scribe--project-type-cache nil nil #'string=)))
     (if cached
         cached
       ;; Not cached, detect and cache
@@ -83,7 +107,7 @@ Detection strategy:
                 (t 'unknown)))))
         ;; Cache the result
         (setq org-scribe--project-type-cache
-              (cons (cons root type) org-scribe--project-type-cache))
+              (cons (cons cache-key type) org-scribe--project-type-cache))
         type))))
 
 (defun org-scribe--find-existing-file (root &rest relative-paths)

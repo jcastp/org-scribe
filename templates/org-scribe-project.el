@@ -32,9 +32,9 @@
 ;; Linking is loaded after this module; these are resolved at runtime when
 ;; `org-scribe--auto-setup-links' runs during project creation.
 (defvar org-scribe-entity-registry)
-(defvar org-scribe--project-type-cache)
 (declare-function org-scribe--add-entity-ids "org-scribe-linking-core")
 (declare-function org-scribe-project-structure "org-scribe-core")
+(declare-function org-scribe-project-type-cache-clear "org-scribe-core")
 
 ;;; Configuration
 
@@ -107,11 +107,11 @@ Works off `org-scribe-entity-registry', so any future entity type is
 covered automatically.  Errors are swallowed — this is a convenience and
 must never make project creation fail."
   (require 'org-scribe-linking-core)
+  ;; The marker file already exists, so project detection resolves to the
+  ;; new project; drop any stale cached type for this root first.
+  (org-scribe-project-type-cache-clear project-dir)
   (ignore-errors
-    (let ((default-directory (file-name-as-directory project-dir))
-          ;; The marker file already exists, so project detection resolves
-          ;; to the new project; clear any cached type for a clean read.
-          (org-scribe--project-type-cache nil))
+    (let ((default-directory (file-name-as-directory project-dir)))
       (dolist (entry org-scribe-entity-registry)
         (let* ((entity (cdr entry))
                (file (funcall (plist-get entity :file-fn))))
