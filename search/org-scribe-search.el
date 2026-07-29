@@ -28,14 +28,6 @@
 (declare-function org-scribe--get-all-locations "linking/org-scribe-location-links")
 (declare-function org-scribe--get-all-plot-threads "linking/org-scribe-plot-links")
 
-;;; variables for the searches
-(defcustom org-scribe-edit-string
-  "\*EDIT\*\\|\*NOTE\*"
-  "Regexp to search for edit notes in the manuscript.
-The default matches headings or text containing *EDIT* or *NOTE*."
-  :type 'string
-  :group 'org-scribe)
-
 ;;; Helper Functions for ID Links
 
 (defun org-scribe--extract-link-text (text)

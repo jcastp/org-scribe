@@ -114,6 +114,29 @@ correctly by extracting file names from item text properties."
       (when (file-exists-p temp-dir)
         (delete-directory temp-dir t)))))
 
+;;; org-scribe-edit-string regexp (M1)
+
+(ert-deftest test-edit-string-matches-edit-marker ()
+  "org-scribe-edit-string matches a literal *EDIT* marker.
+Regression test for M1: the Lisp string \"\\*EDIT\\*\\|\\*NOTE\\*\" (single
+backslash before each star) produces the regexp *EDIT*\\|*NOTE*, in which
+a bare `*' is not a metacharacter needing escape but the *trailing* `*'
+after EDIT/NOTE is misread as quantifying the preceding letter, so the
+literal closing star was never required to match."
+  (should (string-match-p org-scribe-edit-string "see *EDIT* here")))
+
+(ert-deftest test-edit-string-matches-note-marker ()
+  "org-scribe-edit-string matches a literal *NOTE* marker."
+  (should (string-match-p org-scribe-edit-string "do *NOTE* this")))
+
+(ert-deftest test-edit-string-rejects-broken-match-without-closing-star ()
+  "org-scribe-edit-string must not match text missing the closing star.
+Before the fix, the regexp actually compiled to *EDI(T*) i.e. \"*EDI\"
+followed by zero-or-more \"T\"s, so \"*EDI\" alone (no closing star)
+incorrectly matched."
+  (should-not (string-match-p org-scribe-edit-string "see *EDI here, no closing star"))
+  (should-not (string-match-p org-scribe-edit-string "do *NOT do this, no closing star")))
+
 ;;; Run tests
 
 (defun org-scribe-search-run-tests ()

@@ -227,6 +227,15 @@ Disabled by default to keep saving fast and side-effect-free."
   :type 'symbol
   :group 'org-scribe)
 
+;;; Search
+
+(defcustom org-scribe-edit-string
+  "\\*EDIT\\*\\|\\*NOTE\\*"
+  "Regexp to search for edit notes in the manuscript.
+The default matches headings or text containing *EDIT* or *NOTE*."
+  :type 'string
+  :group 'org-scribe)
+
 (provide 'org-scribe-config)
 
 ;;; org-scribe-config.el ends here
