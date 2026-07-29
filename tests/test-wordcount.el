@@ -179,6 +179,39 @@ sets the WORDCOUNT property using `count-words'."
         (beginning-of-line)
         (should (null (org-entry-get nil "WORDCOUNT")))))))
 
+(ert-deftest test-wordcount-count-words-ignores-narrowing ()
+  "org-scribe-ews-org-count-words updates headings outside a narrowed view (H9).
+Regression test: org-scribe's focus mode narrows the buffer to one
+subtree via `org-narrow-to-subtree'.  `org-map-entries' with a nil scope
+respects the current restriction, so without widening first, only the
+narrowed heading would be updated — silently dropping every other
+heading's WORDCOUNT from the refresh."
+  (let ((orig-featurep (symbol-function 'featurep)))
+    (cl-letf (((symbol-function 'featurep)
+               (lambda (feature &rest args)
+                 (if (eq feature 'org-context-extended)
+                     t
+                   (apply orig-featurep feature args))))
+              ((symbol-function 'org-context-count-words)
+               (lambda (&rest _) 7)))
+      (with-temp-buffer
+        (org-mode)
+        (setq buffer-file-name (make-temp-name "/tmp/test-wordcount-narrow-"))
+        (insert "* Chapter One\nSome prose.\n")
+        (insert "* Chapter Two\nMore prose.\n")
+        ;; Narrow to Chapter Two only, simulating focus mode
+        (goto-char (point-min))
+        (re-search-forward "^\\* Chapter Two")
+        (org-narrow-to-subtree)
+        (unwind-protect
+            (org-scribe-ews-org-count-words)
+          (widen))
+        ;; Chapter One, outside the narrowed view, must still be updated
+        (goto-char (point-min))
+        (re-search-forward "^\\* Chapter One")
+        (beginning-of-line)
+        (should (equal (org-entry-get nil "WORDCOUNT") "7"))))))
+
 (provide 'test-wordcount)
 
 ;;; test-wordcount.el ends here

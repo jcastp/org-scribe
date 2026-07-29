@@ -62,18 +62,22 @@ Uses `org-context-count-words' for accurate counting that excludes
 comments, properties, drawers, etc.  When `org-context-extended' is not
 installed, falls back to a plain word count (which cannot exclude Org
 metadata) so the command still works.  Also creates a custom ID for each
-heading to enable linking."
+heading to enable linking.  Widens the buffer first (`org-with-wide-buffer')
+so an active narrowing — e.g. org-scribe's own focus mode, which narrows
+to a single subtree — does not silently limit the count to whatever is
+currently visible."
   (interactive)
-  (org-map-entries
-   (lambda ()
-     (let* ((start (point))
-            ;; Pass t (INVISIBLE-OK) to org-end-of-subtree to correctly find
-            ;; the end of THIS subtree (not the end of the document)
-            (end (save-excursion (org-end-of-subtree t)))
-            (word-count (org-scribe--count-words-region start end)))
-       (org-set-property "WORDCOUNT" (number-to-string word-count)))
-     ;; Create the id to link the org heading
-     (org-id-get-create)))
+  (org-with-wide-buffer
+   (org-map-entries
+    (lambda ()
+      (let* ((start (point))
+             ;; Pass t (INVISIBLE-OK) to org-end-of-subtree to correctly find
+             ;; the end of THIS subtree (not the end of the document)
+             (end (save-excursion (org-end-of-subtree t)))
+             (word-count (org-scribe--count-words-region start end)))
+        (org-set-property "WORDCOUNT" (number-to-string word-count)))
+      ;; Create the id to link the org heading
+      (org-id-get-create))))
   (unless (org-scribe-accurate-wordcount-p)
     (message (org-scribe-msg 'msg-wordcount-degraded))))
 

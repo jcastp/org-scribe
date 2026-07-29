@@ -2484,17 +2484,22 @@ Used to avoid double-counting when WORDCOUNT is set on both parent and child hea
 A heading is included only when its immediate parent heading does not already carry a
 WORDCOUNT property.  This prevents double-counting in hierarchical manuscripts where
 WORDCOUNT on a chapter or act is the aggregate of its scene children.
-Prefers a live buffer so unsaved changes are included."
+Prefers a live buffer so unsaved changes are included.  When summing a
+live buffer, widens first (`org-with-wide-buffer') so an active
+narrowing — e.g. org-scribe's focus mode, which narrows to a single
+subtree — does not collapse the \"manuscript total\" down to whatever
+subtree happens to be visible."
   (when (and novel-file (file-readable-p novel-file))
     (let ((total 0)
           (live-buffer (find-buffer-visiting novel-file)))
       (if live-buffer
           (with-current-buffer live-buffer
-            (org-map-entries
-             (lambda ()
-               (let ((wc (org-entry-get nil "WORDCOUNT")))
-                 (when (and wc (not (org-scribe-planner--parent-has-wordcount-p)))
-                   (setq total (+ total (string-to-number wc))))))))
+            (org-with-wide-buffer
+             (org-map-entries
+              (lambda ()
+                (let ((wc (org-entry-get nil "WORDCOUNT")))
+                  (when (and wc (not (org-scribe-planner--parent-has-wordcount-p)))
+                    (setq total (+ total (string-to-number wc)))))))))
         (with-temp-buffer
           (insert-file-contents novel-file)
           (org-mode)

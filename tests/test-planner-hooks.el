@@ -648,4 +648,27 @@ WORDCOUNT is set on act, chapter, and scene headings simultaneously."
         (should (= 800 (org-scribe-planner--sum-wordcounts f)))
       (delete-file f))))
 
+(ert-deftest test-planner-sum-wordcounts-live-buffer-ignores-narrowing ()
+  "sum-wordcounts totals the whole manuscript even when the live buffer is
+narrowed to one subtree (H9).
+Regression test: org-scribe's focus mode narrows the buffer via
+`org-narrow-to-subtree'.  The live-buffer branch of `--sum-wordcounts'
+must widen first, otherwise the \"manuscript total\" silently collapses
+to whatever subtree happens to be visible, corrupting the writing plan's
+CURRENT_WORDS and daily deltas."
+  (let* ((f (test-hooks--make-org-with-wordcounts
+             (concat "* Chapter 1\n:PROPERTIES:\n:WORDCOUNT: 500\n:END:\n"
+                     "* Chapter 2\n:PROPERTIES:\n:WORDCOUNT: 300\n:END:\n")))
+         (buf (find-file-noselect f)))
+    (unwind-protect
+        (with-current-buffer buf
+          (goto-char (point-min))
+          (re-search-forward "^\\* Chapter 2")
+          (org-narrow-to-subtree)
+          (unwind-protect
+              (should (= 800 (org-scribe-planner--sum-wordcounts f)))
+            (widen)))
+      (kill-buffer buf)
+      (delete-file f))))
+
 ;;; test-hooks.el ends here
