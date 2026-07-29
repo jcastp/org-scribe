@@ -167,10 +167,10 @@
 
     ;; Dictionary / language tools
     (error-word-empty . "Word cannot be empty")
-    (error-word-lookup . "Error al buscar la palabra: %s")
-    (msg-word-not-found . "Palabra no encontrada: %s")
-    (msg-word-suggestions . "Sugerencias:")
-    (error-random-word . "Error al obtener palabra aleatoria: %s")
+    (error-word-lookup . "Error looking up word: %s")
+    (msg-word-not-found . "Word not found: %s")
+    (msg-word-suggestions . "Suggestions:")
+    (error-random-word . "Error fetching random word: %s")
     (error-word-parse . "Error parsing RAE response: %s")
     (error-random-word-parse . "Error parsing random word response: %s")
 
