@@ -56,7 +56,7 @@
   - Project navigation mode (with treemacs and imenu-list)
   - Three-pane editing layout
 - *Search Functions*: Find scenes by POV, character, location, or plot keywords using org-ql (handles ID links)
-- *Dictionary Tools*: Spanish RAE dictionary API, synonym lookup, and translation support
+- *Dictionary Tools*: Spanish RAE dictionary API and synonym lookup
 - *Capture System*: Project-aware note capture that finds the right notes file
 - *Project Health Report*: =org-scribe-project-health= aggregates word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
@@ -68,7 +68,6 @@
 Full support for English/Spanish bilingual writing:
 - Spanish RAE dictionary integration
 - WordReference synonym lookup
-- Automatic language detection
 - Bilingual project structure support (notes/notas directories)
 
 * Installation

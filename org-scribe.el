@@ -29,18 +29,15 @@
 ;; working in Org-mode.  Features include:
 ;;
 ;; - Project creation from customizable templates
-;; - Word counting and progress tracking
-;; - Character database and timeline management
+;; - Word counting
+;; - Character/location/plot ID-based linking, with timeline visualization
 ;; - Writing modes (distraction-free, focus, editing, project)
-;; - Dictionary integration (RAE, synonyms, translation)
+;; - Dictionary integration (RAE, synonyms)
 ;; - Scene and chapter insertion templates
-;; - Analysis tools (dialogue, tension, word frequency)
-;; - Export presets for various formats
-;; - Research linking and note capture
-;; - Name generator and writing prompts
+;; - Scene break export filters
+;; - Note capture
 ;;
-;; Version 0.2.0 merges the functionality of emacs-writing-template,
-;; providing a complete batteries-included writing environment.
+;; Bundles a writing planner (see planning/).
 
 ;;; Code:
 
