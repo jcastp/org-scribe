@@ -20,7 +20,8 @@
                    (directory-file-name
                     (file-name-directory (or load-file-name buffer-file-name))))))
   (add-to-list 'load-path (expand-file-name "core" parent-dir))
-  (add-to-list 'load-path (expand-file-name "linking" parent-dir)))
+  (add-to-list 'load-path (expand-file-name "linking" parent-dir))
+  (add-to-list 'load-path (expand-file-name "search" parent-dir)))
 
 (require 'org-scribe-messages)
 (require 'org-scribe-health)
@@ -239,6 +240,136 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
             (should (string-match-p "Project Health Report" content))
             (should (string-match-p "Scenes by Status" content))
             (should (string-match-p "Open TODO Scenes" content))))))))
+
+;;; Text-level statistics: per-PoV word share and chapter length spread
+
+(defmacro test-health--with-stats-fixture (&rest body)
+  "Run BODY with `org-scribe-project-health' rendered for a fixture
+project of two PoVs (Alice, Bob) across three chapters with known
+WORDCOUNTs: Chapter One (Alice 1000 + Bob 500 = 1500), Chapter Two
+(Alice 2000), Chapter Three (Bob 100).  Total words = 3600.
+Chapter totals [1500, 2000, 100] -> mean 1200.0, median 1500.0;
+Chapter Three (100) is the only outlier (< 0.5 * mean = 600)."
+  (declare (indent 0))
+  `(test-health--with-novel-file
+       (concat
+        "** DONE Chapter One :ignore:\n"
+        "*** DONE Scene 1 :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 1000\n:END:\n\n"
+        "*** DONE Scene 2 :ignore:\n:PROPERTIES:\n:PoV: Bob\n:WORDCOUNT: 500\n:END:\n\n"
+        "** DONE Chapter Two :ignore:\n"
+        "*** DONE Scene 3 :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 2000\n:END:\n\n"
+        "** DONE Chapter Three :ignore:\n"
+        "*** DONE Scene 4 :ignore:\n:PROPERTIES:\n:PoV: Bob\n:WORDCOUNT: 100\n:END:\n\n")
+     (cl-letf (((symbol-function 'org-scribe-project-structure)
+                (lambda ()
+                  (list :novel-file temp-novel
+                        :plan-file nil
+                        :characters-file nil
+                        :locations-file nil))))
+       (org-scribe-project-health)
+       (with-current-buffer (get-buffer "*org-scribe-health*")
+         ,@body))))
+
+(ert-deftest test-health-pov-word-share-table-numbers ()
+  "Per-PoV Word Share section shows correct scene counts, words, and percentages."
+  (test-health--with-stats-fixture
+    (let ((content (buffer-string)))
+      (should (string-match-p "Per-PoV Word Share" content))
+      ;; Alice: 2 scenes, 3000 words, 83.3% of 3600
+      (should (string-match-p "| Alice | 2 | 3000 | 83\\.3% |" content))
+      ;; Bob: 2 scenes, 600 words, 16.7% of 3600
+      (should (string-match-p "| Bob | 2 | 600 | 16\\.7% |" content)))))
+
+(ert-deftest test-health-pov-word-share-groups-missing-pov ()
+  "Scenes with no PoV are grouped under the \"(no PoV)\" label."
+  (test-health--with-novel-file
+      (concat
+       "** DONE Chapter One :ignore:\n"
+       "*** DONE Scene 1 :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 100\n:END:\n\n"
+       "*** DONE Scene 2 :ignore:\n:PROPERTIES:\n:WORDCOUNT: 50\n:END:\n\n")
+    (cl-letf (((symbol-function 'org-scribe-project-structure)
+               (lambda ()
+                 (list :novel-file temp-novel
+                       :plan-file nil
+                       :characters-file nil
+                       :locations-file nil))))
+      (org-scribe-project-health)
+      (with-current-buffer (get-buffer "*org-scribe-health*")
+        (should (string-match-p "(no PoV)" (buffer-string)))))))
+
+(ert-deftest test-health-chapter-length-spread-table-and-summary ()
+  "Chapter Length Spread section shows each chapter's total and the
+min/max/mean/median summary line, with one decimal rounding."
+  (test-health--with-stats-fixture
+    (let ((content (buffer-string)))
+      (should (string-match-p "Chapter Length Spread" content))
+      (should (string-match-p "| Chapter One | 1500 |" content))
+      (should (string-match-p "| Chapter Two | 2000 |" content))
+      ;; Chapter Three is the outlier (100 < 0.5 * mean 1200) — flagged
+      (should (string-match-p "| Chapter Three | 100 \\*? |" content))
+      (should (string-match-p
+              "Min: 100 words · Max: 2000 words · Mean: 1200\\.0 words · Median: 1500\\.0 words"
+              content)))))
+
+(ert-deftest test-health-chapter-length-spread-flags-outlier ()
+  "A chapter under ~0.5x the mean is flagged with the outlier marker,
+and the outlier legend line is shown."
+  (test-health--with-stats-fixture
+    (let ((content (buffer-string)))
+      (should (string-match-p "| Chapter Three | 100 \\*" content))
+      (should-not (string-match-p "| Chapter One | 1500 \\*" content))
+      (should-not (string-match-p "| Chapter Two | 2000 \\*" content))
+      (should (string-match-p "marks a chapter" content)))))
+
+(ert-deftest test-health-chapter-length-spread-no-outliers-no-legend ()
+  "The outlier legend line is omitted when no chapter is an outlier."
+  (test-health--with-novel-file
+      (concat
+       "** DONE Chapter One :ignore:\n"
+       "*** DONE Scene 1 :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 1000\n:END:\n\n"
+       "** DONE Chapter Two :ignore:\n"
+       "*** DONE Scene 2 :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 1100\n:END:\n\n")
+    (cl-letf (((symbol-function 'org-scribe-project-structure)
+               (lambda ()
+                 (list :novel-file temp-novel
+                       :plan-file nil
+                       :characters-file nil
+                       :locations-file nil))))
+      (org-scribe-project-health)
+      (with-current-buffer (get-buffer "*org-scribe-health*")
+        (should-not (string-match-p "marks a chapter" (buffer-string)))))))
+
+;;; --health-pov-word-share / --health-chapter-word-totals / --health-median
+
+(ert-deftest test-health-pov-word-share-pure-function ()
+  "org-scribe--health-pov-word-share groups and sums correctly."
+  (let ((scenes (list (list "S1" "Ch1" nil "DONE" t nil nil nil 1000 "Alice")
+                      (list "S2" "Ch1" nil "DONE" t nil nil nil 500 "Bob")
+                      (list "S3" "Ch2" nil "DONE" nil nil nil nil 50 nil))))
+    (let ((result (org-scribe--health-pov-word-share scenes)))
+      (should (equal (assoc "Alice" result) '("Alice" 1 1000)))
+      (should (equal (assoc "Bob" result) '("Bob" 1 500)))
+      (should (equal (assoc "(no PoV)" result) '("(no PoV)" 1 50))))))
+
+(ert-deftest test-health-chapter-word-totals-pure-function ()
+  "org-scribe--health-chapter-word-totals sums WORDCOUNT per chapter."
+  (let ((scenes (list (list "S1" "Ch1" nil "DONE" t nil nil nil 300 "Alice")
+                      (list "S2" "Ch1" nil "DONE" t nil nil nil 200 "Alice")
+                      (list "S3" "Ch2" nil "DONE" t nil nil nil 400 "Alice"))))
+    (should (equal (org-scribe--health-chapter-word-totals scenes)
+                  '(("Ch1" . 500) ("Ch2" . 400))))))
+
+(ert-deftest test-health-median-odd-length ()
+  "Median of an odd-length list is the middle value."
+  (should (= (org-scribe--health-median '(3 1 2)) 2)))
+
+(ert-deftest test-health-median-even-length ()
+  "Median of an even-length list averages the two middle values."
+  (should (= (org-scribe--health-median '(1 2 3 4)) 2.5)))
+
+(ert-deftest test-health-median-empty-list ()
+  "Median of an empty list is 0."
+  (should (= (org-scribe--health-median '()) 0)))
 
 ;;; Writing Plan section helpers
 

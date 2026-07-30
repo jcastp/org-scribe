@@ -210,6 +210,15 @@
     (msg-workspace-normal . "Workspace: normal editing")
     (error-unknown-workspace . "Unknown workspace layout: %s")
 
+    ;; Health report — text-level statistics
+    (msg-health-pov-word-share-heading . "Per-PoV Word Share")
+    (msg-health-pov-word-share-table-header . "| PoV | Scenes | Words | % of Total |")
+    (msg-health-pov-none-label . "(no PoV)")
+    (msg-health-chapter-length-heading . "Chapter Length Spread")
+    (msg-health-chapter-length-table-header . "| Chapter | Words |")
+    (msg-health-chapter-length-summary . "Min: %d words · Max: %d words · Mean: %.1f words · Median: %.1f words")
+    (msg-health-chapter-length-outlier-legend . "* marks a chapter more than ~2x the mean or under ~0.5x — informational, not a judgment.")
+
     ;; Pluralization helpers (used in code)
     (plural-empty . "")
     (plural-s . "s")

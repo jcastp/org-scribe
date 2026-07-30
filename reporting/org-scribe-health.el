@@ -18,6 +18,7 @@
 (require 'cl-lib)
 (require 'org-scribe-core)
 (require 'org-scribe-messages)
+(require 'org-scribe-search)
 
 ;; Entity getter functions (from linking modules, loaded before this file)
 (declare-function org-scribe--get-all-characters "linking/org-scribe-character-links")
@@ -83,7 +84,12 @@ Falls back to plain HEADING text when ID is nil."
 (defun org-scribe--health-collect-scene-data (novel-file)
   "Scan NOVEL-FILE and return a list of scene data plists.
 Each element is a list:
-  (HEADING CHAPTER ID TODO-STATE HAS-POV HAS-CHARS HAS-PLOT HAS-LOCATION)"
+  (HEADING CHAPTER ID TODO-STATE HAS-POV HAS-CHARS HAS-PLOT HAS-LOCATION
+   WORDCOUNT POV-NAME)
+WORDCOUNT is the scene's :WORDCOUNT: property as a number (0 if unset).
+POV-NAME is the resolved display text of the PoV property (via
+`org-scribe--extract-link-text', so an ID link or plain name both
+resolve to the character's name), or nil when no PoV is set."
   (let (scenes)
     (when (and novel-file (file-exists-p novel-file))
       (with-current-buffer (find-file-noselect novel-file)
@@ -101,12 +107,16 @@ Each element is a list:
                      (pov (org-scribe-scene-property-get 'pov))
                      (chars (org-scribe-scene-property-get 'characters))
                      (plot (org-scribe-scene-property-get 'plot))
-                     (loc (org-scribe-scene-property-get 'location)))
+                     (loc (org-scribe-scene-property-get 'location))
+                     (wordcount (string-to-number (or (org-entry-get nil "WORDCOUNT") "0")))
+                     (pov-name (org-scribe--extract-link-text pov)))
                 (push (list heading chapter id todo
                             (and pov (not (string-empty-p (string-trim pov))))
                             (and chars (not (string-empty-p (string-trim chars))))
                             (and plot (not (string-empty-p (string-trim plot))))
-                            (and loc (not (string-empty-p (string-trim loc)))))
+                            (and loc (not (string-empty-p (string-trim loc))))
+                            wordcount
+                            pov-name)
                       scenes))))
           nil 'file))))
     (nreverse scenes)))
@@ -131,6 +141,62 @@ OBJECTIVE is the sum of WORD-OBJECTIVE from level-2 (chapter) headings."
                   (setq obj (+ obj (string-to-number wo)))))))
           nil 'file))))
     (cons words obj)))
+
+;;; Text-level statistics (per-PoV word share, chapter length spread)
+
+(defun org-scribe--health-pov-word-share (scenes)
+  "Group SCENES by resolved PoV name and sum their WORDCOUNT.
+SCENES is a list as returned by `org-scribe--health-collect-scene-data'.
+Returns a list of (POV-NAME SCENE-COUNT WORDS), in order of each PoV's
+first appearance in SCENES.  Scenes with no PoV are grouped under the
+localized \"(no PoV)\" label, which doubles as a missing-property signal."
+  (let ((counts (make-hash-table :test 'equal))
+        (words (make-hash-table :test 'equal))
+        (order nil)
+        (none-label (org-scribe-msg 'msg-health-pov-none-label)))
+    (dolist (s scenes)
+      (let* ((pov-name (nth 9 s))
+             (key (if (and pov-name (not (string-empty-p (string-trim pov-name))))
+                      pov-name
+                    none-label))
+             (wc (or (nth 8 s) 0)))
+        (unless (gethash key counts)
+          (push key order)
+          (puthash key 0 counts)
+          (puthash key 0 words))
+        (puthash key (1+ (gethash key counts)) counts)
+        (puthash key (+ (gethash key words) wc) words)))
+    (mapcar (lambda (key)
+              (list key (gethash key counts) (gethash key words)))
+            (nreverse order))))
+
+(defun org-scribe--health-chapter-word-totals (scenes)
+  "Group SCENES by chapter and sum their WORDCOUNT.
+SCENES is a list as returned by `org-scribe--health-collect-scene-data'.
+Returns a list of (CHAPTER . WORDS), in order of each chapter's first
+appearance in SCENES."
+  (let ((totals (make-hash-table :test 'equal))
+        (order nil))
+    (dolist (s scenes)
+      (let ((chapter (or (nth 1 s) "?"))
+            (wc (or (nth 8 s) 0)))
+        (unless (gethash chapter totals)
+          (push chapter order)
+          (puthash chapter 0 totals))
+        (puthash chapter (+ (gethash chapter totals) wc) totals)))
+    (mapcar (lambda (chapter) (cons chapter (gethash chapter totals)))
+            (nreverse order))))
+
+(defun org-scribe--health-median (numbers)
+  "Return the median of NUMBERS (a list of numbers).
+Averages the two middle values when NUMBERS has an even length."
+  (let* ((sorted (sort (copy-sequence numbers) #'<))
+         (n (length sorted)))
+    (if (zerop n)
+        0
+      (if (cl-oddp n)
+          (nth (/ n 2) sorted)
+        (/ (+ (nth (1- (/ n 2)) sorted) (nth (/ n 2) sorted)) 2.0)))))
 
 (defun org-scribe--health-collect-referenced-ids (novel-file)
   "Return a hash table of all entity IDs referenced in scene properties.
@@ -213,6 +279,14 @@ with clickable ID links back to each scene."
                              (org-scribe--health-find-orphans
                               (org-scribe--get-all-locations) ref-ids)))
            (scene-count    (length scenes))
+           ;; Per-PoV word share and chapter length spread (text-level stats)
+           (pov-share      (org-scribe--health-pov-word-share scenes))
+           (chapter-totals (org-scribe--health-chapter-word-totals scenes))
+           (chapter-words  (mapcar #'cdr chapter-totals))
+           (chapter-mean   (if chapter-words
+                               (/ (float (apply #'+ chapter-words)) (length chapter-words))
+                             0.0))
+           (chapter-median (org-scribe--health-median chapter-words))
            ;; Counts by TODO state
            (todo-counts    (let ((ht (make-hash-table :test 'equal)))
                              (dolist (s scenes)
@@ -296,6 +370,43 @@ with clickable ID links back to each scene."
                    (insert (format "| %-6s | %5d |\n" state count)))
                  todo-counts)
         (insert "\n")
+
+        ;; ── Per-PoV word share ───────────────────────────────────────────────
+        (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-pov-word-share-heading)))
+        (insert (format "%s\n" (org-scribe-msg 'msg-health-pov-word-share-table-header)))
+        (insert "|-----+--------+-------+------------|\n")
+        (dolist (row pov-share)
+          (let* ((pov-name (nth 0 row))
+                 (count (nth 1 row))
+                 (words (nth 2 row))
+                 (pct (if (> total-words 0) (* 100.0 (/ (float words) total-words)) 0.0)))
+            (insert (format "| %s | %d | %d | %.1f%% |\n" pov-name count words pct))))
+        (insert "\n")
+
+        ;; ── Chapter length spread ────────────────────────────────────────────
+        (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-chapter-length-heading)))
+        (insert (format "%s\n" (org-scribe-msg 'msg-health-chapter-length-table-header)))
+        (insert "|---------+-------|\n")
+        (dolist (entry chapter-totals)
+          (let* ((chapter (car entry))
+                 (words (cdr entry))
+                 (outlier (and (> chapter-mean 0)
+                              (or (> words (* 2 chapter-mean))
+                                  (< words (* 0.5 chapter-mean))))))
+            (insert (format "| %s | %d%s |\n" chapter words (if outlier " *" "")))))
+        (insert "\n")
+        (insert (format "%s\n\n"
+                        (org-scribe-msg 'msg-health-chapter-length-summary
+                                        (if chapter-words (apply #'min chapter-words) 0)
+                                        (if chapter-words (apply #'max chapter-words) 0)
+                                        chapter-mean
+                                        chapter-median)))
+        (when (cl-some (lambda (entry)
+                         (and (> chapter-mean 0)
+                              (or (> (cdr entry) (* 2 chapter-mean))
+                                  (< (cdr entry) (* 0.5 chapter-mean)))))
+                       chapter-totals)
+          (insert (format "%s\n\n" (org-scribe-msg 'msg-health-chapter-length-outlier-legend))))
 
         ;; ── Missing properties ────────────────────────────────────────────────
         (insert "* Missing Scene Properties\n\n")
