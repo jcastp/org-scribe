@@ -51,9 +51,6 @@
       (require 'org-scribe-wordcount)
       (message "✓ org-scribe-wordcount loaded successfully")
 
-      (require 'org-scribe-tracking)
-      (message "✓ org-scribe-tracking loaded successfully")
-
       (require 'org-scribe-modes)
       (message "✓ org-scribe-modes loaded successfully")
 

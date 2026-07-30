@@ -70,7 +70,6 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            ;; Feature modules
            (org-scribe-modes       . "modes/org-scribe-modes")
            (org-scribe-wordcount   . "counting/org-scribe-wordcount")
-           (org-scribe-tracking    . "counting/org-scribe-tracking")
            (org-scribe-search      . "search/org-scribe-search")
            (org-scribe-dictionary  . "language/org-scribe-dictionary")
            (org-scribe-capture     . "capture/org-scribe-capture")
@@ -159,8 +158,7 @@ recommended keybindings and hooks."
      (writeroom-mode . "Distraction-free writing workspaces")
      (hydra          . "The F8 F8 command menu"))
     (:recommended
-     (org-context-extended . "Accurate word counts that exclude Org metadata")
-     (org-tracktable       . "Daily writing-progress tracking"))
+     (org-context-extended . "Accurate word counts that exclude Org metadata"))
     (:optional
      (consult        . "Theme switching in writing workspaces")
      (fontaine       . "Font preset management")
@@ -176,8 +174,7 @@ Only the `:required' group is needed for the package to load; the
 group simply leaves the corresponding feature inert.")
 
 (defconst org-scribe--package-urls
-  '((org-context-extended . "https://codeberg.org/jcastp/org-context-extended")
-    (org-tracktable       . "https://codeberg.org/jcastp/org-tracktable"))
+  '((org-context-extended . "https://codeberg.org/jcastp/org-context-extended"))
   "Source URLs for dependencies that are not on a package archive.")
 
 (defun org-scribe--feature-available-p (feature)
