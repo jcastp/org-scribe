@@ -88,10 +88,7 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            (org-scribe-health      . "reporting/org-scribe-health")
            ;; Export and UI
            (org-scribe-export      . "export/org-scribe-export")
-           (org-scribe-hydra       . "ui/org-scribe-hydra")
-           ;; Backward-compatibility aliases (loaded last: every replacement
-           ;; symbol must already exist before the obsolete aliases bind)
-           (org-scribe-compat      . "core/org-scribe-compat")))
+           (org-scribe-hydra       . "ui/org-scribe-hydra")))
   (org-scribe--require (car module) (cdr module)))
 
 ;; Writing planner (planning/org-scribe-planner.el) — lazy-loaded via autoloads.
