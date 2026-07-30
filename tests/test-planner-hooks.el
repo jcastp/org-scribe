@@ -198,6 +198,71 @@ Cleans up the temp file unconditionally."
         (org-scribe-planner-load-plan))
       (should (string= picker-dir "/tmp/my-writing-project")))))
 
+;;; Tests for plan-path persistence (L10)
+
+(defmacro test-hooks--with-fake-project (root-var marker-var &rest body)
+  "Bind ROOT-VAR/MARKER-VAR to a fresh temp project dir and its marker file.
+Also makes `(featurep 'org-scribe)' true for the duration of BODY (unless
+it already is), so code gated on that check runs without actually
+loading the org-scribe package.  `features' is an ordinary (non-special)
+global variable, so a `let' binding on it has no effect on `featurep' —
+it must be mutated and restored explicitly instead."
+  (declare (indent 2))
+  `(let* ((,root-var (make-temp-file "test-hooks-project-" t))
+          (,marker-var (expand-file-name ".org-scribe-project" ,root-var))
+          (test-hooks--faked-org-scribe-feature (not (featurep 'org-scribe))))
+     (when test-hooks--faked-org-scribe-feature
+       (push 'org-scribe features))
+     (unwind-protect
+         (progn ,@body)
+       (when test-hooks--faked-org-scribe-feature
+         (setq features (delq 'org-scribe features)))
+       (delete-directory ,root-var t))))
+
+(ert-deftest test-planner-hooks-save-plan-path-writes-relative-path ()
+  "--save-plan-path records a project-relative path, not an absolute one (L10)."
+  (test-hooks--with-fake-project root marker
+    (let ((plan-file (expand-file-name "plan.org" root)))
+      (write-region "# Writing project: Test\n" nil marker)
+      (write-region "" nil plan-file)
+      (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () root)))
+        (org-scribe-planner--save-plan-path nil plan-file))
+      (with-temp-buffer
+        (insert-file-contents marker)
+        (should (string-match-p "^# Plan: plan\\.org$" (buffer-string)))))))
+
+(ert-deftest test-planner-hooks-save-plan-path-relative-for-nested-file ()
+  "A plan file in a subdirectory is recorded relative to the project root."
+  (test-hooks--with-fake-project root marker
+    (let* ((subdir (expand-file-name "sub" root))
+           (plan-file (expand-file-name "plan.org" subdir)))
+      (make-directory subdir t)
+      (write-region "# Writing project: Test\n" nil marker)
+      (write-region "" nil plan-file)
+      (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () root)))
+        (org-scribe-planner--save-plan-path nil plan-file))
+      (with-temp-buffer
+        (insert-file-contents marker)
+        (should (string-match-p "^# Plan: sub/plan\\.org$" (buffer-string)))))))
+
+(ert-deftest test-planner-hooks-find-plan-file-resolves-relative-recorded-path ()
+  "--find-plan-file resolves a project-relative recorded path against root (L10)."
+  (test-hooks--with-fake-project root marker
+    (let ((plan-file (expand-file-name "plan.org" root)))
+      (write-region "# Plan: plan.org\n" nil marker)
+      (write-region "" nil plan-file)
+      (should (equal (org-scribe-planner--find-plan-file root) plan-file)))))
+
+(ert-deftest test-planner-hooks-find-plan-file-accepts-legacy-absolute-recorded-path ()
+  "A pre-fix absolute recorded path still resolves correctly (L10).
+`expand-file-name' returns an already-absolute path unchanged regardless
+of the default-directory argument, so old markers keep working."
+  (test-hooks--with-fake-project root marker
+    (let ((plan-file (expand-file-name "plan.org" root)))
+      (write-region (format "# Plan: %s\n" plan-file) nil marker)
+      (write-region "" nil plan-file)
+      (should (equal (org-scribe-planner--find-plan-file root) plan-file)))))
+
 ;;; Tests for --offer-plan-on-create (H11)
 
 (ert-deftest test-planner-offer-plan-on-create-uses-project-dir-not-base-dir ()

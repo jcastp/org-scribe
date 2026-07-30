@@ -2394,16 +2394,20 @@ Search order:
   (let ((candidate-1 (expand-file-name "plan.org" root))
         (marker (expand-file-name ".org-scribe-project" root)))
     (cond
-     ;; 0. Path recorded in the .org-scribe-project marker file
-     ((let ((recorded
-             (when (file-exists-p marker)
-               (with-temp-buffer
-                 (insert-file-contents marker)
-                 (goto-char (point-min))
-                 (when (re-search-forward "^# Plan: \\(.*\\)$" nil t)
-                   (match-string 1))))))
-        (when (and recorded (file-exists-p recorded))
-          recorded)))
+     ;; 0. Path recorded in the .org-scribe-project marker file.  Resolved
+     ;; against ROOT: a project-relative path (the format written since
+     ;; this fix) expands normally, while a legacy absolute path written
+     ;; before this fix is returned unchanged by `expand-file-name'.
+     ((let* ((recorded
+              (when (file-exists-p marker)
+                (with-temp-buffer
+                  (insert-file-contents marker)
+                  (goto-char (point-min))
+                  (when (re-search-forward "^# Plan: \\(.*\\)$" nil t)
+                    (match-string 1)))))
+             (resolved (when recorded (expand-file-name recorded root))))
+        (when (and resolved (file-exists-p resolved))
+          resolved)))
      ;; 1. Plain plan.org
      ((file-exists-p candidate-1) candidate-1)
      ;; 2. <title>-plan.org derived from the marker file
@@ -2446,19 +2450,24 @@ Silently does nothing if no candidate is found or a plan is already active."
 
 (defun org-scribe-planner--save-plan-path (_plan plan-file)
   "Record PLAN-FILE in the .org-scribe-project marker for fast future discovery.
-_PLAN is the plan struct passed by the hook; it is not used here."
+_PLAN is the plan struct passed by the hook; it is not used here.
+The path is stored relative to the project root (see
+`org-scribe-planner--find-plan-file') so the marker stays valid when the
+whole project directory is synced (Nextcloud, etc.) to a different
+machine or home path."
   (when (featurep 'org-scribe)
     (when-let* ((root (org-scribe-project-root))
                 (marker (expand-file-name ".org-scribe-project" root))
-                (_ (file-exists-p marker)))
+                (_ (file-exists-p marker))
+                (relative-path (file-relative-name plan-file root)))
       (with-temp-buffer
         (insert-file-contents marker)
         (goto-char (point-min))
         (if (re-search-forward "^# Plan: .*$" nil t)
-            (replace-match (format "# Plan: %s" plan-file))
+            (replace-match (format "# Plan: %s" relative-path))
           (goto-char (point-max))
           (unless (bolp) (insert "\n"))
-          (insert (format "# Plan: %s\n" plan-file)))
+          (insert (format "# Plan: %s\n" relative-path)))
         (write-region (point-min) (point-max) marker nil 'silent)))))
 
 (defun org-scribe-planner--persist-plan-path-after-load (&rest _)
