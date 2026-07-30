@@ -27,16 +27,21 @@ Stubs today to a date before the plan so all plan days count as future."
 
 (ert-deftest test-planner-recalc-data-with-entries ()
   "Entries for 2 of 4 days yield correct cumulative, remaining, and remaining-days.
-Stubs today to a date before the plan so Nov 3 and 4 count as future."
+Stubs today to a date before the plan so Nov 3 and 4 count as future.
+:cumulative-actual is sourced directly from current-words (Phase 6b —
+kept in sync with the latest cumulative ledger entry by every write
+path), so the fixture sets it explicitly rather than relying on a sum
+of the (now cumulative, not delta) daily entries."
   (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
              (lambda () "2024-10-31")))
     (let* ((plan (make-org-scribe-plan
                   :total-words 4000 :daily-words 1000 :days 4
                   :start-date "2024-11-01" :end-date "2024-11-04"
                   :spare-days nil
+                  :current-words 2000
                   :daily-word-counts
                   '(("2024-11-01" . (:words 800 :note "" :target 1000))
-                    ("2024-11-02" . (:words 1200 :note "" :target 1000)))))
+                    ("2024-11-02" . (:words 2000 :note "" :target 1000)))))
            (data (org-scribe-planner--compute-recalculation-data plan)))
       (should (= (plist-get data :cumulative-actual) 2000))
       (should (= (plist-get data :remaining-words) 2000))
@@ -151,13 +156,16 @@ Stubs today to a date before the plan so all four days count as future."
     (should-not (plist-get m50 :reached))))
 
 (ert-deftest test-planner-milestones-100-percent-reached ()
-  "100% milestone is reached when all words are written."
+  "100% milestone is reached when all words are written.
+:words holds the CUMULATIVE manuscript total as of each date (Phase 6b),
+so day 2's entry is 2000 (total written by then), not another 1000
+added on top."
   (let* ((plan (make-org-scribe-plan
                 :total-words 2000 :daily-words 1000 :days 2
                 :start-date "2024-11-01" :end-date "2024-11-02"
                 :daily-word-counts
                 '(("2024-11-01" . (:words 1000 :note "" :target 1000))
-                  ("2024-11-02" . (:words 1000 :note "" :target 1000)))))
+                  ("2024-11-02" . (:words 2000 :note "" :target 1000)))))
          (milestones (org-scribe-planner--get-enhanced-milestones plan))
          (m100 (cl-find 100 milestones :key (lambda (m) (plist-get m :percent)))))
     (should (plist-get m100 :reached))

@@ -35,27 +35,63 @@
                     '("2024-11-01" . (:words 1500 :note "good day" :target 2000)))
                    "2024-11-01:1500:good day:2000")))
 
-;;; --migrate-daily-counts
+;;; --sorted-daily-counts / --daily-deltas / --entry-delta /
+;;; --previous-cumulative-total (Phase 6b: single cumulative ledger)
+;;
+;; DAILY_WORD_COUNTS entries store the manuscript's CUMULATIVE word total
+;; as of each date, not that day's own delta — these are the primitives
+;; that derive the actual net words written on a given date.
 
-(ert-deftest test-planner-migrate-already-new-format-unchanged ()
-  "Entries already in new plist format are returned as-is."
-  (let ((counts '(("2024-11-01" . (:words 1000 :note "" :target 1000)))))
-    (should (equal (org-scribe-planner--migrate-daily-counts counts) counts))))
+(ert-deftest test-planner-sorted-daily-counts-orders-chronologically ()
+  "Entries come back sorted ascending by date regardless of input order."
+  (let ((counts '(("2024-11-03" . (:words 300))
+                  ("2024-11-01" . (:words 100))
+                  ("2024-11-02" . (:words 200)))))
+    (should (equal (mapcar #'car (org-scribe-planner--sorted-daily-counts counts))
+                  '("2024-11-01" "2024-11-02" "2024-11-03")))))
 
-(ert-deftest test-planner-migrate-old-plain-number-format ()
-  "Old format (date . N) is promoted to plist with :words key."
-  (let* ((old '(("2024-11-01" . 1000)))
-         (result (org-scribe-planner--migrate-daily-counts old)))
-    (should (= (length result) 1))
-    (should (= (plist-get (cdar result) :words) 1000))
-    (should (keywordp (car (cdar result))))))
+(ert-deftest test-planner-sorted-daily-counts-excludes-note-only-entries ()
+  "Note-only entries (no numeric :words) are excluded, same as --counts-with-words."
+  (let ((counts '(("2024-11-01" . (:words 100))
+                  ("2024-11-02" . (:note "rest day")))))
+    (should (equal (mapcar #'car (org-scribe-planner--sorted-daily-counts counts))
+                  '("2024-11-01")))))
 
-(ert-deftest test-planner-migrate-old-cons-cell-format ()
-  "Old format (date . (words . note)) is promoted to plist."
-  (let* ((old '(("2024-11-01" . (800 . "slow start"))))
-         (result (org-scribe-planner--migrate-daily-counts old)))
-    (should (= (plist-get (cdar result) :words) 800))
-    (should (string= (plist-get (cdar result) :note) "slow start"))))
+(ert-deftest test-planner-daily-deltas-first-entry-equals-its-own-total ()
+  "The earliest entry's delta equals its cumulative total (implicit 0 baseline)."
+  (let ((counts '(("2024-11-01" . (:words 500)))))
+    (should (equal (org-scribe-planner--daily-deltas counts)
+                  '(("2024-11-01" . 500))))))
+
+(ert-deftest test-planner-daily-deltas-derives-net-change-across-entries ()
+  "Each subsequent entry's delta is its cumulative total minus the previous one's."
+  (let ((counts '(("2024-11-01" . (:words 500))
+                  ("2024-11-02" . (:words 800))
+                  ("2024-11-04" . (:words 750)))))  ; gap day + a net loss
+    (should (equal (org-scribe-planner--daily-deltas counts)
+                  '(("2024-11-01" . 500) ("2024-11-02" . 300) ("2024-11-04" . -50))))))
+
+(ert-deftest test-planner-entry-delta-returns-nil-when-no-entry ()
+  "entry-delta returns nil for a date with no recorded cumulative total."
+  (let ((counts '(("2024-11-01" . (:words 500)))))
+    (should (null (org-scribe-planner--entry-delta counts "2024-11-02")))))
+
+(ert-deftest test-planner-entry-delta-matches-daily-deltas ()
+  "entry-delta for a given date agrees with --daily-deltas."
+  (let ((counts '(("2024-11-01" . (:words 500)) ("2024-11-02" . (:words 900)))))
+    (should (= (org-scribe-planner--entry-delta counts "2024-11-02") 400))))
+
+(ert-deftest test-planner-previous-cumulative-total-zero-for-earliest-date ()
+  "previous-cumulative-total is 0 when DATE is the earliest (or only) entry."
+  (let ((counts '(("2024-11-01" . (:words 500)))))
+    (should (= (org-scribe-planner--previous-cumulative-total counts "2024-11-01") 0))))
+
+(ert-deftest test-planner-previous-cumulative-total-finds-prior-entry ()
+  "previous-cumulative-total returns the immediately preceding entry's total."
+  (let ((counts '(("2024-11-01" . (:words 500)) ("2024-11-02" . (:words 900)))))
+    (should (= (org-scribe-planner--previous-cumulative-total counts "2024-11-02") 500))
+    ;; A future/unrecorded date still resolves against the latest known entry
+    (should (= (org-scribe-planner--previous-cumulative-total counts "2024-11-05") 900))))
 
 ;;; --counts-with-words
 

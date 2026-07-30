@@ -20,6 +20,9 @@
 
 ;; Declare external functions to avoid compiler warnings
 (declare-function org-context-count-words "org-context-extended")
+(declare-function org-scribe-planner-record-total "planning/org-scribe-planner")
+(defvar org-scribe-planner-wordcount-function)
+(defvar org-scribe-planner--current-plan)
 
 ;;; Counting primitive (graceful degradation)
 
@@ -68,7 +71,13 @@ that only want fresh WORDCOUNT properties (e.g. the silent save path,
 see `org-scribe-auto-wordcount-mint-ids') can opt out of it.  Widens the
 buffer first (`org-with-wide-buffer') so an active narrowing — e.g.
 org-scribe's own focus mode, which narrows to a single subtree — does
-not silently limit the count to whatever is currently visible."
+not silently limit the count to whatever is currently visible.
+
+When the writing planner is loaded and a plan is active, also pushes the
+manuscript's new total to the plan via `org-scribe-planner-record-total'
+\(itself gated on `org-scribe-planner-auto-push-wordcount' and
+`org-scribe-planner-auto-track-daily') — a direct, debuggable call in
+this direction rather than the planner monkey-patching this function."
   (interactive)
   (org-with-wide-buffer
    (org-map-entries
@@ -83,7 +92,15 @@ not silently limit the count to whatever is currently visible."
       (unless skip-id-creation
         (org-id-get-create)))))
   (unless (org-scribe-accurate-wordcount-p)
-    (message (org-scribe-msg 'msg-wordcount-degraded))))
+    (message (org-scribe-msg 'msg-wordcount-degraded)))
+  (when (featurep 'org-scribe-planner)
+    (let ((total (and (boundp 'org-scribe-planner-wordcount-function)
+                      org-scribe-planner-wordcount-function
+                      (funcall org-scribe-planner-wordcount-function))))
+      (when (and total
+                (fboundp 'org-scribe-planner-record-total)
+                org-scribe-planner--current-plan)
+        (org-scribe-planner-record-total total)))))
 
 ;;; Scene-level Word Count Update
 

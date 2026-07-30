@@ -29,13 +29,15 @@
 (declare-function org-scribe-planner--generate-day-schedule "org-scribe-planner")
 (declare-function org-scribe-planner--parse-date-parts "org-scribe-planner")
 (declare-function org-scribe-planner--get-entry-words "org-scribe-planner")
-(declare-function org-scribe-planner--counts-with-words "org-scribe-planner")
+(declare-function org-scribe-planner--daily-deltas "org-scribe-planner")
+(declare-function org-scribe-planner--entry-delta "org-scribe-planner")
 (declare-function org-scribe-planner--add-days "org-scribe-planner")
 (declare-function org-scribe-planner--days-between "org-scribe-planner")
 (declare-function org-scribe-planner-show-current-plan "org-scribe-planner")
 
 ;; Access to struct accessors
 (declare-function org-scribe-plan-total-words "org-scribe-planner")
+(declare-function org-scribe-plan-current-words "org-scribe-planner")
 (declare-function org-scribe-plan-daily-word-counts "org-scribe-planner")
 (declare-function org-scribe-plan-daily-words "org-scribe-planner")
 (declare-function org-scribe-plan-end-date "org-scribe-planner")
@@ -97,11 +99,9 @@ Returns nil if today is not in the plan or is a spare day."
 (defun org-scribe-planner--get-today-actual (plan)
   "Get the actual word count written today from PLAN.
 Returns nil if no data has been logged for today."
-  (let* ((today (org-scribe-planner--get-today-date))
-         (daily-counts (org-scribe-plan-daily-word-counts plan))
-         (today-entry (assoc today daily-counts)))
-    (when today-entry
-      (org-scribe-planner--get-entry-words today-entry))))
+  (let ((today (org-scribe-planner--get-today-date))
+        (daily-counts (org-scribe-plan-daily-word-counts plan)))
+    (org-scribe-planner--entry-delta daily-counts today)))
 
 ;;; Helper Functions - Streak Calculation
 
@@ -124,10 +124,8 @@ Returns plist with :current :longest and :last-streak-date."
     (dolist (day schedule)
       (let* ((date (plist-get day :date))
              (is-spare (plist-get day :is-spare-day))
-             (entry (assoc date daily-counts))
-             (has-words (and entry
-                           (numberp (org-scribe-planner--get-entry-words entry))
-                           (> (org-scribe-planner--get-entry-words entry) 0))))
+             (delta (org-scribe-planner--entry-delta daily-counts date))
+             (has-words (and delta (> delta 0))))
 
         ;; Only count working days (not spare days)
         (unless is-spare
@@ -161,25 +159,20 @@ Returns plist with :average :recent :trend :projected-date."
   (let* ((daily-counts (org-scribe-plan-daily-word-counts plan))
          (total-words (org-scribe-plan-total-words plan))
          (today (org-scribe-planner--get-today-date))
-         (counts-with-words (org-scribe-planner--counts-with-words daily-counts))
-         (word-values (mapcar #'org-scribe-planner--get-entry-words
-                             counts-with-words))
-         (cumulative-actual (if word-values
-                               (apply #'+ word-values)
-                             0))
-         (days-logged (length counts-with-words))
+         ;; current-words is kept in sync with the latest cumulative ledger
+         ;; entry by every write path, so it IS the total written so far.
+         (cumulative-actual (org-scribe-plan-current-words plan))
+         (daily-deltas (org-scribe-planner--daily-deltas daily-counts))
+         (days-logged (length daily-deltas))
          (average-velocity (if (> days-logged 0)
                              (/ (float cumulative-actual) days-logged)
                            0)))
 
     ;; Calculate recent velocity (last 7 days)
-    (let* ((sorted-counts (sort (copy-sequence counts-with-words)
-                               (lambda (a b) (string< (car a) (car b)))))
-           (recent-counts (last sorted-counts (min 7 (length sorted-counts))))
-           (recent-words (mapcar #'org-scribe-planner--get-entry-words recent-counts))
-           (recent-velocity (if recent-words
-                              (/ (float (apply #'+ recent-words))
-                                 (length recent-words))
+    (let* ((recent-deltas (mapcar #'cdr (last daily-deltas (min 7 (length daily-deltas)))))
+           (recent-velocity (if recent-deltas
+                              (/ (float (apply #'+ recent-deltas))
+                                 (length recent-deltas))
                             0))
            (trend (cond
                   ((= average-velocity 0) "no data")
@@ -212,14 +205,9 @@ Returns plist with :average :recent :trend :projected-date."
 Returns plist with :status :days-ahead :words-ahead :current-words :percentage :days-elapsed :days-remaining."
   (let* ((schedule (org-scribe-planner--generate-day-schedule plan))
          (today (org-scribe-planner--get-today-date))
-         (daily-counts (org-scribe-plan-daily-word-counts plan))
-         (counts-with-words (org-scribe-planner--counts-with-words daily-counts))
-         ;; Calculate total current words from ALL entries (not just up to today)
-         ;; This matches how the progress dashboard calculates current-words
-         (cumulative-actual (if counts-with-words
-                                (apply #'+ (mapcar #'org-scribe-planner--get-entry-words
-                                                  counts-with-words))
-                              0))
+         ;; current-words is kept in sync with the latest cumulative ledger
+         ;; entry by every write path, so it IS the total written so far.
+         (cumulative-actual (org-scribe-plan-current-words plan))
          (expected-by-today 0)
          (days-completed 0)
          (expected-days 0)
@@ -358,12 +346,7 @@ beginning, and displayed after BODY executes."
   (interactive)
   (org-scribe-planner--with-current-plan (plan _)
     (let* ((total (org-scribe-plan-total-words plan))
-             (daily-counts (org-scribe-plan-daily-word-counts plan))
-             (counts-with-words (org-scribe-planner--counts-with-words daily-counts))
-             (current-words (if counts-with-words
-                               (apply #'+ (mapcar #'org-scribe-planner--get-entry-words
-                                                counts-with-words))
-                             0))
+             (current-words (org-scribe-plan-current-words plan))
              (percent (if (> total 0)
                         (/ (* 100.0 current-words) total)
                       0))
@@ -540,7 +523,10 @@ WIDTH and HEIGHT are chart dimensions, MAX-WORDS is the scale maximum."
              (chart-height 20)
              (data-points nil))
 
-        ;; Build data points: (date ideal-remaining actual-remaining)
+        ;; Build data points: (date ideal-remaining actual-remaining).
+        ;; daily-data's :words is already the cumulative total as of that
+        ;; date, so cumulative-actual just carries the latest known value
+        ;; forward — no summation.
         (let ((cumulative-actual 0))
           (dolist (day schedule)
             (let* ((date (plist-get day :date))
@@ -551,7 +537,7 @@ WIDTH and HEIGHT are chart dimensions, MAX-WORDS is the scale maximum."
                                   (org-scribe-planner--get-entry-words entry))))
 
               (when (numberp actual-words)
-                (setq cumulative-actual (+ cumulative-actual actual-words)))
+                (setq cumulative-actual actual-words))
 
               (push (list :date date
                          :ideal ideal-remaining
@@ -638,8 +624,10 @@ Returns t if successful, nil otherwise."
                        (actual-words (when entry
                                       (org-scribe-planner--get-entry-words entry))))
 
+                  ;; daily-data's :words is already cumulative; carry
+                  ;; forward the latest known value, no summation.
                   (when (numberp actual-words)
-                    (setq cumulative-actual (+ cumulative-actual actual-words)))
+                    (setq cumulative-actual actual-words))
 
                   (insert (format "%s %d %d\n"
                                 date
@@ -745,8 +733,10 @@ Returns t if successful, nil otherwise."
                        (actual-words (when entry
                                       (org-scribe-planner--get-entry-words entry))))
 
+                  ;; daily-data's :words is already cumulative; carry
+                  ;; forward the latest known value, no summation.
                   (when (numberp actual-words)
-                    (setq cumulative-actual (+ cumulative-actual actual-words)))
+                    (setq cumulative-actual actual-words))
 
                   ;; Write data point (use NA for actual if no data yet)
                   (insert (format "%s %d %s\n"
@@ -1039,11 +1029,8 @@ WIDTH and HEIGHT are dimensions in pixels."
 
       (let* (               (total (org-scribe-plan-total-words plan))
                (daily-counts (org-scribe-plan-daily-word-counts plan))
-               (counts-with-words (org-scribe-planner--counts-with-words daily-counts))
-               (current-words (if counts-with-words
-                                 (apply #'+ (mapcar #'org-scribe-planner--get-entry-words
-                                                  counts-with-words))
-                               0))
+               (daily-deltas (org-scribe-planner--daily-deltas daily-counts))
+               (current-words (org-scribe-plan-current-words plan))
                (percent (if (> total 0)
                           (/ (* 100.0 current-words) total)
                         0))
@@ -1079,11 +1066,9 @@ WIDTH and HEIGHT are dimensions in pixels."
               (insert "\n\n")
 
               ;; Recent Velocity Sparkline
-              (when (> (length counts-with-words) 2)
-                (let* ((sorted-entries (sort (copy-sequence counts-with-words)
-                                            (lambda (a b) (string< (car a) (car b)))))
-                       (recent-entries (last sorted-entries (min 14 (length sorted-entries))))
-                       (word-counts (mapcar #'org-scribe-planner--get-entry-words recent-entries)))
+              (when (> (length daily-deltas) 2)
+                (let* ((recent-deltas (last daily-deltas (min 14 (length daily-deltas))))
+                       (word-counts (mapcar #'cdr recent-deltas)))
                   (insert (propertize "📈 Recent Velocity (Last 14 Days)\n" 'face 'org-level-2))
                   (insert "  ")
                   (org-scribe-planner--insert-svg-image
@@ -1167,10 +1152,8 @@ Shows every Nth date to avoid overcrowding. MAX-LABELS defaults to 10."
   (org-scribe-planner--with-current-plan (plan _)
 
     (let* (             (daily-counts (org-scribe-plan-daily-word-counts plan))
-             (counts-with-words (org-scribe-planner--counts-with-words daily-counts))
-             (sorted-entries (sort (copy-sequence counts-with-words)
-                                  (lambda (a b) (string< (car a) (car b)))))
-             (word-counts (mapcar #'org-scribe-planner--get-entry-words sorted-entries))
+             (sorted-entries (org-scribe-planner--daily-deltas daily-counts))
+             (word-counts (mapcar #'cdr sorted-entries))
              (target (org-scribe-plan-daily-words plan))
              (velocity (org-scribe-planner--calculate-velocity plan)))
 
@@ -1210,7 +1193,7 @@ Shows every Nth date to avoid overcrowding. MAX-LABELS defaults to 10."
                 ;; Use chart.el to create vertical bar chart
                 (let* ((chart-entries (last sorted-entries (min 20 (length sorted-entries))))
                        (chart-dates (mapcar #'car chart-entries))
-                       (chart-words (mapcar #'org-scribe-planner--get-entry-words chart-entries))
+                       (chart-words (mapcar #'cdr chart-entries))
                        (chart-labels (org-scribe-planner--format-date-labels chart-dates 10)))
 
                   (chart-bar-quickie 'vertical
@@ -1233,7 +1216,7 @@ Shows every Nth date to avoid overcrowding. MAX-LABELS defaults to 10."
               (let ((recent-entries (last sorted-entries (min 14 (length sorted-entries)))))
                 (dolist (entry recent-entries)
                   (let* ((date (car entry))
-                         (words (org-scribe-planner--get-entry-words entry))
+                         (words (cdr entry))
                          (percent (if (> target 0)
                                     (/ (* 100.0 words) target)
                                   100))
@@ -1284,9 +1267,7 @@ containing :day-name :total-words :count :average."
     (dolist (day schedule)
       (let* ((date (plist-get day :date))
              (is-spare (plist-get day :is-spare-day))
-             (entry (assoc date daily-counts))
-             (actual-words (when entry
-                            (org-scribe-planner--get-entry-words entry))))
+             (actual-words (org-scribe-planner--entry-delta daily-counts date)))
 
         ;; Only count non-spare days with data
         (when (and (not is-spare) (numberp actual-words))
@@ -1360,9 +1341,7 @@ Returns a plist with :rate, :days-met, :days-partial, :days-missed, :total-days.
       (let* ((date (plist-get day :date))
              (is-spare (plist-get day :is-spare-day))
              (target (plist-get day :words))
-             (entry (assoc date daily-counts))
-             (actual (when entry
-                      (org-scribe-planner--get-entry-words entry))))
+             (actual (org-scribe-planner--entry-delta daily-counts date)))
 
         (when (and (not is-spare) (numberp actual))
           (setq total-days (1+ total-days))
@@ -1565,10 +1544,7 @@ Shows day-of-week patterns, consistency scores, and target achievement rates."
   "Calculate velocity across multiple time windows for PLAN.
 Returns plist with :7-day :14-day :30-day :overall velocities and trend info."
   (let* ((daily-counts (org-scribe-plan-daily-word-counts plan))
-         (counts-with-words (org-scribe-planner--counts-with-words daily-counts))
-         (sorted-entries (sort (copy-sequence counts-with-words)
-                              (lambda (a b) (string< (car a) (car b)))))
-         (word-counts (mapcar #'org-scribe-planner--get-entry-words sorted-entries))
+         (word-counts (mapcar #'cdr (org-scribe-planner--daily-deltas daily-counts)))
          (total-days (length word-counts)))
 
     (when (> total-days 0)
@@ -1613,12 +1589,7 @@ Returns plist with :7-day :14-day :30-day :overall velocities and trend info."
   "Calculate required velocity to complete PLAN on time.
 Returns plist with :required-velocity :current-velocity :feasible :adjustment-needed."
   (let* ((total-words (org-scribe-plan-total-words plan))
-         (daily-counts (org-scribe-plan-daily-word-counts plan))
-         (counts-with-words (org-scribe-planner--counts-with-words daily-counts))
-         (current-words (if counts-with-words
-                           (apply #'+ (mapcar #'org-scribe-planner--get-entry-words
-                                            counts-with-words))
-                         0))
+         (current-words (org-scribe-plan-current-words plan))
          (remaining-words (- total-words current-words))
          (schedule (org-scribe-planner--generate-day-schedule plan))
          (today (org-scribe-planner--get-today-date))
@@ -1899,10 +1870,8 @@ Shows daily word counts over time with a 7-day moving average."
   (org-scribe-planner--with-current-plan (plan _)
 
     (let* (             (daily-counts (org-scribe-plan-daily-word-counts plan))
-             (counts-with-words (org-scribe-planner--counts-with-words daily-counts))
-             (sorted-entries (sort (copy-sequence counts-with-words)
-                                  (lambda (a b) (string< (car a) (car b)))))
-             (word-counts (mapcar #'org-scribe-planner--get-entry-words sorted-entries))
+             (sorted-entries (org-scribe-planner--daily-deltas daily-counts))
+             (word-counts (mapcar #'cdr sorted-entries))
              (target (org-scribe-plan-daily-words plan))
              (moving-avg (org-scribe-planner--moving-average word-counts 7)))
 
@@ -1917,7 +1886,7 @@ Shows daily word counts over time with a 7-day moving average."
                                        (last sorted-entries 30)
                                      sorted-entries))
                      (chart-dates (mapcar #'car chart-entries))
-                     (chart-words (mapcar #'org-scribe-planner--get-entry-words chart-entries))
+                     (chart-words (mapcar #'cdr chart-entries))
                      (chart-labels (org-scribe-planner--format-date-labels chart-dates 12)))
 
                 (chart-bar-quickie 'vertical
@@ -2257,9 +2226,8 @@ Shows progress, velocity, and performance dashboards side by side."
                        (month (nth 1 date-parts))
                        (day-num (nth 2 date-parts))
                        (dow (calendar-day-of-week (list month day-num year)))
-                       (entry (assoc date daily-counts))
                        (target (plist-get day :words))
-                       (actual (when entry (org-scribe-planner--get-entry-words entry)))
+                       (actual (org-scribe-planner--entry-delta daily-counts date))
                        (is-spare (plist-get day :is-spare-day))
                        (performance (cond
                                     (is-spare 'spare)

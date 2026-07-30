@@ -266,20 +266,21 @@ of the default-directory argument, so old markers keep working."
 ;;; Tests for --offer-plan-on-create (H11)
 
 (ert-deftest test-planner-offer-plan-on-create-uses-project-dir-not-base-dir ()
-  "The advice must run org-scribe-planner-new-plan with default-directory
-set to the *new project's* directory, not the parent BASE-DIR it was
-given.
+  "new-plan must be called with a save-path under the *new project's*
+directory, not the parent BASE-DIR it was given.
 Regression test for H11: `org-scribe-planner--offer-plan-on-create' is
 installed as :after advice on `org-scribe-create-novel-project', whose
 signature is (base-dir title &optional language) — the first argument is
 the parent directory the project was created under, e.g.
 \"/tmp/projects\", not the project's own directory, e.g.
-\"/tmp/projects/My Novel\".  Using it directly as default-directory made
-the project-aware new-plan advice fail to find .org-scribe-project."
+\"/tmp/projects/My Novel\".  Since Phase 6a replaced the project-aware
+prompt-rebinding advice with explicit arguments, this now means
+`org-scribe-planner-new-plan' must receive TITLE and SAVE-PATH computed
+from the project directory directly, not derived from `default-directory'."
   (let* ((base-dir (make-temp-file "test-offer-plan-base-" t))
          (title "My Novel")
          (project-dir (expand-file-name title base-dir))
-         (captured-default-directory nil))
+         (new-plan-args nil))
     (unwind-protect
         (progn
           (make-directory project-dir t)
@@ -287,10 +288,10 @@ the project-aware new-plan advice fail to find .org-scribe-project."
             (insert (format "# Writing project: %s\n# Type: novel\n" title)))
           (cl-letf (((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
                     ((symbol-function 'org-scribe-planner-new-plan)
-                     (lambda (&rest _) (setq captured-default-directory default-directory))))
+                     (lambda (&rest args) (setq new-plan-args args))))
             (org-scribe-planner--offer-plan-on-create base-dir title))
-          (should (equal (file-truename (file-name-as-directory captured-default-directory))
-                         (file-truename (file-name-as-directory project-dir))))
+          (should (equal new-plan-args
+                        (list title (expand-file-name "plan.org" project-dir))))
           ;; The gate is opened too — see test-planner-gate.el for the
           ;; dedicated accept/decline coverage of this behavior.
           (should (eq 'yes (org-scribe-planner-gate project-dir))))
@@ -321,13 +322,15 @@ the project-aware new-plan advice fail to find .org-scribe-project."
 
 (ert-deftest test-planner-today-wordcount-function-skips-prompt ()
   "org-scribe-planner-today uses wordcount-function and skips the word-count prompt.
-Regression test for H5: the wordcount-function returns the *cumulative*
-manuscript total (999), not today's word count, so the logged entry must
-be the delta against the prior baseline (700), not the raw total."
+Regression test for H5, updated for the Phase 6b cumulative ledger: the
+wordcount-function returns the *cumulative* manuscript total (999) and
+is recorded as-is (no baseline subtraction needed anymore); the delta
+against yesterday's cumulative entry (700) is only derived when
+displayed/consumed, via `org-scribe-planner--entry-delta'."
   (test-hooks--with-plan-file plan file
     (setf (org-scribe-plan-current-words plan) 700)
-    (setf (org-scribe-plan-sync-date plan) "2026-01-04")
-    (setf (org-scribe-plan-sync-words plan) 700)
+    (setf (org-scribe-plan-daily-word-counts plan)
+          (list (cons "2026-01-04" (list :words 700 :note ""))))
     (let* ((prompt-called nil)
            (org-scribe-planner--current-plan plan)
            (org-scribe-planner--current-plan-file file)
@@ -342,10 +345,10 @@ be the delta against the prior baseline (700), not the raw total."
                  (lambda (&rest _) "")))
         (org-scribe-planner-today))
       (should-not prompt-called)
-      (let ((entry (assoc "2026-01-05"
-                          (org-scribe-plan-daily-word-counts
-                           org-scribe-planner--current-plan))))
-        (should (= (plist-get (cdr entry) :words) 299)))
+      (let ((daily-counts (org-scribe-plan-daily-word-counts
+                           org-scribe-planner--current-plan)))
+        (should (= (plist-get (cdr (assoc "2026-01-05" daily-counts)) :words) 999))
+        (should (= (org-scribe-planner--entry-delta daily-counts "2026-01-05") 299)))
       (should (= (org-scribe-plan-current-words org-scribe-planner--current-plan) 999)))))
 
 (ert-deftest test-planner-today-hook-fires-with-todays-date ()
@@ -391,103 +394,137 @@ be the delta against the prior baseline (700), not the raw total."
         (org-scribe-planner-today))
       (should-not y-or-n-called))))
 
-;;; Tests for org-scribe-planner--load-plan-project-aware
+;;; Tests for explicit-argument new-plan / load-plan (Phase 6a)
+;;
+;; With the prompt-rebinding advice gone, a caller that supplies TITLE /
+;; SAVE-PATH (new-plan) or FILE (load-plan) must trigger no prompt for
+;; that value — `read-string' / `read-file-name' signal an error if
+;; called at all, so any regression that reintroduces a prompt fails
+;; loudly instead of silently blocking in batch mode.  (Start date is a
+;; separate, still-prompted step not covered by these two args, so it is
+;; stubbed rather than asserted absent.)
 
-(defmacro test-hooks--with-load-plan-project-aware (&rest body)
-  "Run BODY with `org-scribe-planner--load-plan-project-aware' guaranteed
-installed as :around advice on `org-scribe-planner-load-plan'.
+(ert-deftest test-planner-hooks-new-plan-with-args-prompts-for-nothing ()
+  "new-plan with TITLE and SAVE-PATH supplied never calls read-string or
+read-file-name."
+  (let* ((temp-dir (make-temp-file "test-planner-new-plan-args-" t))
+         (save-path (expand-file-name "explicit-plan.org" temp-dir))
+         (org-scribe-planner--current-plan nil)
+         (org-scribe-planner--current-plan-file nil))
+    (unwind-protect
+        (cl-letf (((symbol-function 'read-string)
+                   (lambda (&rest _) (error "read-string must not be called")))
+                  ((symbol-function 'read-file-name)
+                   (lambda (&rest _) (error "read-file-name must not be called")))
+                  ((symbol-function 'completing-read)
+                   (lambda (_ choices &rest _) (car choices)))
+                  ((symbol-function 'org-scribe-planner--read-positive-number)
+                   (lambda (&rest _) 10000))
+                  ((symbol-function 'org-scribe-planner--read-days)
+                   (lambda (&rest _) 20))
+                  ((symbol-function 'org-scribe-planner--read-date)
+                   (lambda (&rest _) "2026-01-01"))
+                  ((symbol-function 'y-or-n-p) (lambda (&rest _) nil))
+                  ((symbol-function 'org-scribe-planner-show-calendar) (lambda (&rest _) nil)))
+          (org-scribe-planner-new-plan "Explicit Args Novel" save-path)
+          (should org-scribe-planner--current-plan)
+          (should (string= "Explicit Args Novel"
+                          (org-scribe-plan-title org-scribe-planner--current-plan)))
+          (should (string= save-path org-scribe-planner--current-plan-file))
+          (should (file-exists-p save-path)))
+      (delete-directory temp-dir t))))
 
-The production code only installs this advice inside
-\(with-eval-after-load \\='org-scribe ...\) in planning/org-scribe-planner.el,
-so it is present only once org-scribe.el has actually been required.  The
-standard test entry point (`org-scribe-run-tests-batch' via
-tests/run-all-tests.el) never requires \\='org-scribe — only the individual
-planner modules — so without this macro, tests of this advice would pass or
-fail depending on whether some *other* test file happened to load org-scribe
-first (order-dependent), rather than on the behavior under test.  Installing
-the advice locally here makes the test self-contained regardless of ambient
-load state, matching this file's stated goal of testing integration hooks
-\"in isolation, without requiring org-scribe to be present.\""
-  (declare (indent 0))
-  `(let ((already-advised (advice-member-p #'org-scribe-planner--load-plan-project-aware
-                                            #'org-scribe-planner-load-plan)))
-     (unless already-advised
-       (advice-add 'org-scribe-planner-load-plan :around
-                   #'org-scribe-planner--load-plan-project-aware))
-     (unwind-protect
-         (progn ,@body)
-       (unless already-advised
-         (advice-remove 'org-scribe-planner-load-plan
-                         #'org-scribe-planner--load-plan-project-aware)))))
+(ert-deftest test-planner-hooks-load-plan-with-file-prompts-for-nothing ()
+  "load-plan with FILE supplied never calls `org-scribe-planner--select-plan-file'."
+  (test-hooks--with-plan-file plan file
+    (let ((picker-called nil)
+          (org-scribe-planner--current-plan nil)
+          (org-scribe-planner--current-plan-file nil)
+          (org-scribe-planner-after-plan-load-hook nil))
+      (cl-letf (((symbol-function 'org-scribe-planner--select-plan-file)
+                 (lambda (&rest _) (setq picker-called t) file))
+                ((symbol-function 'org-scribe-planner-show-calendar) (lambda (&rest _) nil)))
+        (org-scribe-planner-load-plan file))
+      (should-not picker-called)
+      (should org-scribe-planner--current-plan)
+      (should (string= file org-scribe-planner--current-plan-file)))))
+
+;;; Tests for org-scribe-planner-load-plan's project-aware interactive spec
+;;
+;; Phase 6a replaced the :around prompt-rebinding advice with an
+;; `(interactive ...)' spec on `org-scribe-planner-load-plan' itself: it
+;; computes FILE from project context (or leaves it nil) before the body
+;; ever runs.  That spec only fires via `call-interactively' — a plain
+;; `(org-scribe-planner-load-plan)' call leaves FILE at its argument
+;; default (nil) regardless of project context, which is right for
+;; non-interactive callers (they pass FILE themselves) but wrong for
+;; simulating the interactive path in a test.
 
 (ert-deftest test-planner-hooks-load-plan-skips-picker-in-project ()
   "load-plan loads plan.org directly when inside a project — no file picker."
-  (test-hooks--with-load-plan-project-aware
-    (test-hooks--with-plan-file plan plan-file
-      (let* ((temp-dir (make-temp-file "test-planner-lp-" t))
-             (project-plan (expand-file-name "plan.org" temp-dir))
-             (picker-called nil)
-             (org-scribe-planner--current-plan nil)
-             (org-scribe-planner--current-plan-file nil)
-             (org-scribe-planner-after-plan-load-hook nil))
-        (unwind-protect
-            (progn
-              ;; Write marker file and copy the plan into the project dir
-              (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
-                (insert "# Writing project: Test Novel\n# Type: novel\n"))
-              (copy-file plan-file project-plan)
-              (cl-letf (((symbol-function 'org-scribe-project-root)
-                         (lambda () temp-dir))
-                        ((symbol-function 'org-scribe-planner--select-plan-file)
-                         (lambda (&rest _) (setq picker-called t) nil))
-                        ((symbol-function 'org-scribe-planner-show-calendar)
-                         (lambda (&rest _) nil)))
-                (org-scribe-planner-load-plan))
-              ;; The advice must have intercepted --select-plan-file
-              (should-not picker-called)
-              ;; The plan must now be active
-              (should org-scribe-planner--current-plan)
-              (should (string= org-scribe-planner--current-plan-file project-plan)))
-          (delete-directory temp-dir t))))))
-
-(ert-deftest test-planner-hooks-load-plan-uses-picker-outside-project ()
-  "load-plan uses the file picker when not inside an org-scribe project."
-  (test-hooks--with-load-plan-project-aware
-    (test-hooks--with-plan-file _plan plan-file
-      (let ((picker-called nil)
-            (org-scribe-planner--current-plan nil)
-            (org-scribe-planner--current-plan-file nil)
-            (org-scribe-planner-after-plan-load-hook nil))
-        (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () nil))
-                  ((symbol-function 'org-scribe-planner--select-plan-file)
-                   (lambda (&rest _) (setq picker-called t) nil))
-                  ((symbol-function 'org-scribe-planner-show-calendar)
-                   (lambda (&rest _) nil)))
-          (org-scribe-planner-load-plan))
-        (should picker-called)))))
-
-(ert-deftest test-planner-hooks-load-plan-uses-picker-when-no-plan-file ()
-  "load-plan uses the file picker when in a project that has no plan.org."
-  (test-hooks--with-load-plan-project-aware
-    (let* ((temp-dir (make-temp-file "test-planner-lp-nf-" t))
+  (test-hooks--with-plan-file plan plan-file
+    (let* ((temp-dir (make-temp-file "test-planner-lp-" t))
+           (project-plan (expand-file-name "plan.org" temp-dir))
            (picker-called nil)
            (org-scribe-planner--current-plan nil)
            (org-scribe-planner--current-plan-file nil)
            (org-scribe-planner-after-plan-load-hook nil))
       (unwind-protect
           (progn
-            ;; Marker file present but no plan.org
+            ;; Write marker file and copy the plan into the project dir
             (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
               (insert "# Writing project: Test Novel\n# Type: novel\n"))
+            (copy-file plan-file project-plan)
             (cl-letf (((symbol-function 'org-scribe-project-root)
                        (lambda () temp-dir))
                       ((symbol-function 'org-scribe-planner--select-plan-file)
                        (lambda (&rest _) (setq picker-called t) nil))
                       ((symbol-function 'org-scribe-planner-show-calendar)
                        (lambda (&rest _) nil)))
-              (org-scribe-planner-load-plan))
-            (should picker-called))
+              (call-interactively #'org-scribe-planner-load-plan))
+            ;; The interactive spec must have supplied the file directly
+            (should-not picker-called)
+            ;; The plan must now be active
+            (should org-scribe-planner--current-plan)
+            (should (string= org-scribe-planner--current-plan-file project-plan)))
         (delete-directory temp-dir t)))))
+
+(ert-deftest test-planner-hooks-load-plan-uses-picker-outside-project ()
+  "load-plan uses the file picker when not inside an org-scribe project."
+  (test-hooks--with-plan-file _plan plan-file
+    (let ((picker-called nil)
+          (org-scribe-planner--current-plan nil)
+          (org-scribe-planner--current-plan-file nil)
+          (org-scribe-planner-after-plan-load-hook nil))
+      (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () nil))
+                ((symbol-function 'org-scribe-planner--select-plan-file)
+                 (lambda (&rest _) (setq picker-called t) nil))
+                ((symbol-function 'org-scribe-planner-show-calendar)
+                 (lambda (&rest _) nil)))
+        (call-interactively #'org-scribe-planner-load-plan))
+      (should picker-called))))
+
+(ert-deftest test-planner-hooks-load-plan-uses-picker-when-no-plan-file ()
+  "load-plan uses the file picker when in a project that has no plan.org."
+  (let* ((temp-dir (make-temp-file "test-planner-lp-nf-" t))
+         (picker-called nil)
+         (org-scribe-planner--current-plan nil)
+         (org-scribe-planner--current-plan-file nil)
+         (org-scribe-planner-after-plan-load-hook nil))
+    (unwind-protect
+        (progn
+          ;; Marker file present but no plan.org
+          (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+            (insert "# Writing project: Test Novel\n# Type: novel\n"))
+          (cl-letf (((symbol-function 'org-scribe-project-root)
+                     (lambda () temp-dir))
+                    ((symbol-function 'org-scribe-planner--select-plan-file)
+                     (lambda (&rest _) (setq picker-called t) nil))
+                    ((symbol-function 'org-scribe-planner-show-calendar)
+                     (lambda (&rest _) nil)))
+            (call-interactively #'org-scribe-planner-load-plan))
+          (should picker-called))
+      (delete-directory temp-dir t))))
 
 ;;; Tests for org-scribe-planner--plan-file-valid-p
 
@@ -589,9 +626,12 @@ load state, matching this file's stated goal of testing integration hooks
         (delete-directory temp-dir t)))))
 
 (ert-deftest test-planner-hooks-org-scribe-plan-offers-create-when-no-plan ()
-  "org-scribe-plan offers to create a plan when in project with no plan file."
+  "org-scribe-plan offers to create a plan when in project with no plan file.
+Also verifies new-plan is called with the project's title and
+<root>/plan.org as explicit arguments (Phase 6a: no more prompt-rebinding
+advice — the dispatcher must pass these directly)."
   (let* ((temp-dir (make-temp-file "test-planner-ep-np-" t))
-         (new-plan-called nil)
+         (new-plan-args nil)
          (org-scribe-planner--current-plan nil)
          (org-scribe-planner--current-plan-file nil))
     (unwind-protect
@@ -602,9 +642,11 @@ load state, matching this file's stated goal of testing integration hooks
                      (lambda () temp-dir))
                     ((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
                     ((symbol-function 'org-scribe-planner-new-plan)
-                     (lambda () (setq new-plan-called t))))
+                     (lambda (&rest args) (setq new-plan-args args))))
             (org-scribe-plan))
-          (should new-plan-called))
+          (should new-plan-args)
+          (should (equal new-plan-args
+                        (list "Test Novel" (expand-file-name "plan.org" temp-dir)))))
       (delete-directory temp-dir t))))
 
 (ert-deftest test-planner-hooks-org-scribe-plan-falls-back-outside-project ()
@@ -637,7 +679,7 @@ load state, matching this file's stated goal of testing integration hooks
                      (lambda () temp-dir))
                     ((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
                     ((symbol-function 'org-scribe-planner-new-plan)
-                     (lambda () (setq new-plan-called t))))
+                     (lambda (&rest _) (setq new-plan-called t))))
             (org-scribe-plan))
           ;; new-plan must have been called, not a load attempt
           (should new-plan-called))
@@ -645,28 +687,27 @@ load state, matching this file's stated goal of testing integration hooks
 
 (ert-deftest test-planner-hooks-load-plan-falls-through-for-placeholder ()
   "load-plan uses the file picker when plan.org is a comment-only placeholder."
-  (test-hooks--with-load-plan-project-aware
-    (let* ((temp-dir (make-temp-file "test-planner-stub-lp-" t))
-           (picker-called nil)
-           (org-scribe-planner--current-plan nil)
-           (org-scribe-planner--current-plan-file nil)
-           (org-scribe-planner-after-plan-load-hook nil))
-      (unwind-protect
-          (progn
-            (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
-              (insert "# Writing project: Stub Test\n# Type: novel\n"))
-            (with-temp-file (expand-file-name "plan.org" temp-dir)
-              (insert "# plan.org — placeholder\n"))
-            (cl-letf (((symbol-function 'org-scribe-project-root)
-                       (lambda () temp-dir))
-                      ((symbol-function 'org-scribe-planner--select-plan-file)
-                       (lambda (&rest _) (setq picker-called t) nil))
-                      ((symbol-function 'org-scribe-planner-show-calendar)
-                       (lambda (&rest _) nil)))
-              (org-scribe-planner-load-plan))
-            ;; Picker must have been shown (advice fell through)
-            (should picker-called))
-        (delete-directory temp-dir t)))))
+  (let* ((temp-dir (make-temp-file "test-planner-stub-lp-" t))
+         (picker-called nil)
+         (org-scribe-planner--current-plan nil)
+         (org-scribe-planner--current-plan-file nil)
+         (org-scribe-planner-after-plan-load-hook nil))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+            (insert "# Writing project: Stub Test\n# Type: novel\n"))
+          (with-temp-file (expand-file-name "plan.org" temp-dir)
+            (insert "# plan.org — placeholder\n"))
+          (cl-letf (((symbol-function 'org-scribe-project-root)
+                     (lambda () temp-dir))
+                    ((symbol-function 'org-scribe-planner--select-plan-file)
+                     (lambda (&rest _) (setq picker-called t) nil))
+                    ((symbol-function 'org-scribe-planner-show-calendar)
+                     (lambda (&rest _) nil)))
+            (call-interactively #'org-scribe-planner-load-plan))
+          ;; Picker must have been shown (interactive spec found no valid file)
+          (should picker-called))
+      (delete-directory temp-dir t))))
 
 ;;; Regression: update-daily-word-count refreshes calendar even when user declines recalculation
 
