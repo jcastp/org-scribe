@@ -30,6 +30,9 @@
 (require 'hydra)
 
 ;; Declare functions from other modules
+(declare-function org-scribe-project-root "core/org-scribe-core")
+(declare-function org-scribe-planner-gate "core/org-scribe-core")
+(declare-function org-scribe--project-marker-set "core/org-scribe-core")
 (declare-function org-scribe-workspace "modes/org-scribe-modes")
 (declare-function org-scribe-rae-api-lookup "language/org-scribe-dictionary")
 (declare-function org-scribe-sinonimo "language/org-scribe-dictionary")
@@ -192,8 +195,15 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("H" org-scribe-project-health "project health report")
   ("W" (lambda ()
          (interactive)
-         (require 'org-scribe-planner)
-         (hydra-org-scribe-planner/body))
+         (if (eq (org-scribe-planner-gate) 'no)
+             (if (yes-or-no-p "The planner is disabled for this project.  Enable it? ")
+                 (progn
+                   (org-scribe--project-marker-set (org-scribe-project-root) "Planner" "yes")
+                   (require 'org-scribe-planner)
+                   (hydra-org-scribe-planner/body))
+               (message "org-scribe-planner: staying disabled for this project."))
+           (require 'org-scribe-planner)
+           (hydra-org-scribe-planner/body)))
    "planner")
 
   ;; Exit

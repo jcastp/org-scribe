@@ -74,41 +74,91 @@ Detection strategy:
         cached
       ;; Not cached, detect and cache
       (let ((type
-             (let ((marker-file (expand-file-name ".org-scribe-project" root)))
-               (cond
-                ;; Strategy 1: Read marker file
-                ((and (file-exists-p marker-file)
-                      (with-temp-buffer
-                        (insert-file-contents marker-file)
-                        (goto-char (point-min))
-                        (when (re-search-forward "^# Type: \\(.*\\)$" nil t)
-                          (let ((type-str (match-string 1)))
-                            (cond
-                             ((string= type-str "short-story") 'short-story)
-                             ((string= type-str "novel") 'novel)
-                             (t nil)))))))
+             (cond
+              ;; Strategy 1: Read marker file
+              ((let ((type-str (org-scribe--project-marker-get root "Type")))
+                 (cond
+                  ((equal type-str "short-story") 'short-story)
+                  ((equal type-str "novel") 'novel)
+                  (t nil))))
 
-                ;; Strategy 2: Check for objects/ directory (novel indicator)
-                ((or (file-directory-p (expand-file-name "objects" root))
-                     (file-directory-p (expand-file-name "objects/" root)))
-                 'novel)
+              ;; Strategy 2: Check for objects/ directory (novel indicator)
+              ((or (file-directory-p (expand-file-name "objects" root))
+                   (file-directory-p (expand-file-name "objects/" root)))
+               'novel)
 
-                ;; Strategy 3: Check for story.org or cuento.org (short story indicator)
-                ((or (file-exists-p (expand-file-name "story.org" root))
-                     (file-exists-p (expand-file-name "cuento.org" root)))
-                 'short-story)
+              ;; Strategy 3: Check for story.org or cuento.org (short story indicator)
+              ((or (file-exists-p (expand-file-name "story.org" root))
+                   (file-exists-p (expand-file-name "cuento.org" root)))
+               'short-story)
 
-                ;; Strategy 4: Check for novel.org or novela.org (novel indicator)
-                ((or (file-exists-p (expand-file-name "novel.org" root))
-                     (file-exists-p (expand-file-name "novela.org" root)))
-                 'novel)
+              ;; Strategy 4: Check for novel.org or novela.org (novel indicator)
+              ((or (file-exists-p (expand-file-name "novel.org" root))
+                   (file-exists-p (expand-file-name "novela.org" root)))
+               'novel)
 
-                ;; Unknown
-                (t 'unknown)))))
+              ;; Unknown
+              (t 'unknown))))
         ;; Cache the result
         (setq org-scribe--project-type-cache
               (cons (cons cache-key type) org-scribe--project-type-cache))
         type))))
+
+;;; Project Marker File
+
+(defun org-scribe--project-marker-get (root key)
+  "Return the value recorded for KEY in ROOT's .org-scribe-project marker file.
+KEY is a string such as \"Type\", \"Plan\", or \"Planner\", matched
+case-insensitively against a line of the form \"# KEY: value\".  Returns
+the trimmed value string, or nil if the marker file or the line does
+not exist."
+  (let ((marker-file (expand-file-name ".org-scribe-project" root)))
+    (when (file-exists-p marker-file)
+      (with-temp-buffer
+        (insert-file-contents marker-file)
+        (goto-char (point-min))
+        (let ((case-fold-search t))
+          (when (re-search-forward
+                 (concat "^# " (regexp-quote key) ": \\(.*\\)$")
+                 nil t)
+            (string-trim (match-string 1))))))))
+
+(defun org-scribe--project-marker-set (root key value)
+  "Idempotently record KEY as VALUE in ROOT's .org-scribe-project marker file.
+Replaces an existing \"# KEY: ...\" line (matched case-insensitively) in
+place, or appends a new one, preserving the rest of the file.  Does
+nothing if the marker file does not exist."
+  (let ((marker-file (expand-file-name ".org-scribe-project" root)))
+    (when (file-exists-p marker-file)
+      (with-temp-buffer
+        (insert-file-contents marker-file)
+        (goto-char (point-min))
+        (let ((case-fold-search t))
+          (if (re-search-forward
+               (concat "^# " (regexp-quote key) ": .*$")
+               nil t)
+              (replace-match (format "# %s: %s" key value))
+            (goto-char (point-max))
+            (unless (bolp) (insert "\n"))
+            (insert (format "# %s: %s\n" key value))))
+        (write-region (point-min) (point-max) marker-file nil 'silent)))))
+
+(defun org-scribe-planner-gate (&optional root)
+  "Return the per-project writing-planner opt-in state.
+Returns \\='yes, \\='no, or nil (undecided) read from the \"# Planner:\"
+line of ROOT's (default: the current project's) .org-scribe-project
+marker file.  nil means the project has not been asked yet, or has no
+marker file at all.
+
+This function lives in `org-scribe-core.el', not the planner module,
+precisely so that callers which must not force-load the (lazily
+autoloaded) planner — the hydra menu, the project health report — can
+still check the gate first."
+  (let* ((root (or root (org-scribe-project-root)))
+         (value (org-scribe--project-marker-get root "Planner")))
+    (cond ((equal value "yes") 'yes)
+          ((equal value "no") 'no)
+          (t nil))))
 
 (defun org-scribe--find-existing-file (root &rest relative-paths)
   "Return the first existing file from RELATIVE-PATHS under ROOT, or nil."
@@ -197,15 +247,10 @@ that logical property, English first, then Spanish.")
 Reads the \"# Language:\" line from the project's .org-scribe-project
 marker file.  Falls back to `org-scribe-template-language' (or \\='en
 if that is unbound) when no marker file or line is found."
-  (let ((marker-file (expand-file-name ".org-scribe-project" (org-scribe-project-root))))
-    (or (when (file-exists-p marker-file)
-          (with-temp-buffer
-            (insert-file-contents marker-file)
-            (goto-char (point-min))
-            (when (re-search-forward "^# Language: \\(.*\\)$" nil t)
-              (let ((lang (match-string 1)))
-                (cond ((string= lang "es") 'es)
-                      ((string= lang "en") 'en))))))
+  (let* ((root (org-scribe-project-root))
+         (lang (org-scribe--project-marker-get root "Language")))
+    (or (cond ((equal lang "es") 'es)
+              ((equal lang "en") 'en))
         (and (boundp 'org-scribe-template-language)
              (default-value 'org-scribe-template-language))
         'en)))

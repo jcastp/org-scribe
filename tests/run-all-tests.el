@@ -85,7 +85,8 @@
     "test-planner-buffer-safety"   ; Buffer erase safety
     "test-planner-hooks"           ; Integration hooks and pluggable fn-vars
     "test-planner-daily-sync"      ; Automatic daily word-count tracking
-    "test-planner-agenda")         ; Org-agenda sync integration
+    "test-planner-agenda"          ; Org-agenda sync integration
+    "test-planner-gate")           ; Per-project planner gate
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
@@ -220,7 +221,8 @@ Suitable for CI/CD pipelines and automated testing."
                     "test-planner-buffer-safety"
                     "test-planner-hooks"
                     "test-planner-daily-sync"
-                    "test-planner-agenda"))
+                    "test-planner-agenda"
+                    "test-planner-gate"))
       (load-file (expand-file-name (concat file ".el") tests-dir))))
   (ert "^test-planner-"))
 

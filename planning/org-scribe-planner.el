@@ -2355,6 +2355,9 @@ If no plan is active, prompt to load one."
 
 (declare-function org-scribe-project-root "core/org-scribe-core")
 (declare-function org-scribe-project-structure "core/org-scribe-core")
+(declare-function org-scribe--project-marker-get "core/org-scribe-core")
+(declare-function org-scribe--project-marker-set "core/org-scribe-core")
+(declare-function org-scribe-planner-gate "core/org-scribe-core")
 (declare-function org-scribe-ews-org-count-words "counting/org-scribe-wordcount")
 (declare-function org-scribe-create-novel-project "templates/org-scribe-project")
 (declare-function org-scribe-create-short-story-project "templates/org-scribe-project")
@@ -2391,32 +2394,20 @@ Search order:
   1. <root>/plan.org
   2. <root>/<title>-plan.org  (title derived from .org-scribe-project)
   3. Any single .org file in ROOT with a TOTAL_WORDS property"
-  (let ((candidate-1 (expand-file-name "plan.org" root))
-        (marker (expand-file-name ".org-scribe-project" root)))
+  (let ((candidate-1 (expand-file-name "plan.org" root)))
     (cond
      ;; 0. Path recorded in the .org-scribe-project marker file.  Resolved
      ;; against ROOT: a project-relative path (the format written since
      ;; this fix) expands normally, while a legacy absolute path written
      ;; before this fix is returned unchanged by `expand-file-name'.
-     ((let* ((recorded
-              (when (file-exists-p marker)
-                (with-temp-buffer
-                  (insert-file-contents marker)
-                  (goto-char (point-min))
-                  (when (re-search-forward "^# Plan: \\(.*\\)$" nil t)
-                    (match-string 1)))))
+     ((let* ((recorded (org-scribe--project-marker-get root "Plan"))
              (resolved (when recorded (expand-file-name recorded root))))
         (when (and resolved (file-exists-p resolved))
           resolved)))
      ;; 1. Plain plan.org
      ((file-exists-p candidate-1) candidate-1)
      ;; 2. <title>-plan.org derived from the marker file
-     ((let* ((title (when (file-exists-p marker)
-                      (with-temp-buffer
-                        (insert-file-contents marker)
-                        (goto-char (point-min))
-                        (when (re-search-forward "^# Writing project: \\(.*\\)$" nil t)
-                          (match-string 1)))))
+     ((let* ((title (org-scribe--project-marker-get root "Writing project"))
              (slug (when title
                      (downcase (replace-regexp-in-string "[^[:alnum:]]" "-" title))))
              (candidate-2 (when slug
@@ -2434,11 +2425,13 @@ Search order:
 
 (defun org-scribe-planner--auto-load-plan ()
   "Try to auto-load the plan associated with the current org-scribe project.
-Silently does nothing if no candidate is found or a plan is already active."
+Silently does nothing if the project has not opted into the planner
+\(see `org-scribe-planner-gate'), no plan candidate is found, or a plan
+is already active."
   (when (and (featurep 'org-scribe)
              (not org-scribe-planner--current-plan))
     (when-let* ((root (org-scribe-project-root))
-                (_ (file-exists-p (expand-file-name ".org-scribe-project" root)))
+                (_ (eq (org-scribe-planner-gate root) 'yes))
                 (plan-file (org-scribe-planner--find-plan-file root))
                 (plan (ignore-errors (org-scribe-planner--load-plan plan-file))))
       (setq org-scribe-planner--current-plan plan)
@@ -2457,18 +2450,8 @@ whole project directory is synced (Nextcloud, etc.) to a different
 machine or home path."
   (when (featurep 'org-scribe)
     (when-let* ((root (org-scribe-project-root))
-                (marker (expand-file-name ".org-scribe-project" root))
-                (_ (file-exists-p marker))
                 (relative-path (file-relative-name plan-file root)))
-      (with-temp-buffer
-        (insert-file-contents marker)
-        (goto-char (point-min))
-        (if (re-search-forward "^# Plan: .*$" nil t)
-            (replace-match (format "# Plan: %s" relative-path))
-          (goto-char (point-max))
-          (unless (bolp) (insert "\n"))
-          (insert (format "# Plan: %s\n" relative-path)))
-        (write-region (point-min) (point-max) marker nil 'silent)))))
+      (org-scribe--project-marker-set root "Plan" relative-path))))
 
 (defun org-scribe-planner--persist-plan-path-after-load (&rest _)
   "Persist the active plan path after a manual load or creation."
@@ -2628,8 +2611,13 @@ Delegates to `org-scribe-planner--sync-daily-from-manuscript'."
 ;;; Mode-line status
 
 (defun org-scribe-planner--mode-line ()
-  "Return a mode-line string showing today's target/actual, or nil."
+  "Return a mode-line string showing today's target/actual, or nil.
+In practice a plan is only ever loaded when the project's gate is
+\\='yes (see `org-scribe-planner-gate'), but the gate is checked
+explicitly here too so the mode-line contribution stays off even if
+some other path ever loads a plan into a gated-off project."
   (when-let* ((plan org-scribe-planner--current-plan)
+              (_ (eq (ignore-errors (org-scribe-planner-gate)) 'yes))
               (target (org-scribe-plan-daily-words plan))
               (today (org-scribe-planner--get-today-date))
               (entry (assoc today (org-scribe-plan-daily-word-counts plan)))
@@ -2640,13 +2628,7 @@ Delegates to `org-scribe-planner--sync-daily-from-manuscript'."
 
 (defun org-scribe-planner--project-title (root)
   "Return the project title recorded in ROOT/.org-scribe-project, or nil."
-  (let ((marker (expand-file-name ".org-scribe-project" root)))
-    (when (file-exists-p marker)
-      (with-temp-buffer
-        (insert-file-contents marker)
-        (goto-char (point-min))
-        (when (re-search-forward "^# Writing project: \\(.*\\)$" nil t)
-          (match-string 1))))))
+  (org-scribe--project-marker-get root "Writing project"))
 
 (defun org-scribe-planner--new-plan-project-aware (orig &rest args)
   "Around-advice for `org-scribe-planner-new-plan' that pre-fills project context.
@@ -2701,11 +2683,21 @@ internally to get the actual project directory, so that
 `org-scribe-planner-new-plan' (via its project-aware advice) finds
 .org-scribe-project and defaults the save path to <project>/plan.org
 instead of falling back to generic prompts and
-`org-scribe-planner-directory'."
-  (when (yes-or-no-p (format "Create a writing plan for \"%s\" with org-scribe-planner? "
+`org-scribe-planner-directory'.
+
+Also records the answer in the project's marker file as \"# Planner:
+yes\" or \"# Planner: no\" (see `org-scribe-planner-gate'), so a decline
+is remembered — the project is never asked again, and every other
+gate-aware feature (auto-load, mode line, health report) stays off
+until the author explicitly enables it later."
+  (let ((project-dir (expand-file-name title base-dir)))
+    (if (yes-or-no-p (format "Create a writing plan for \"%s\" with org-scribe-planner? "
                              title))
-    (let ((default-directory (expand-file-name title base-dir)))
-      (org-scribe-planner-new-plan))))
+        (progn
+          (org-scribe--project-marker-set project-dir "Planner" "yes")
+          (let ((default-directory project-dir))
+            (org-scribe-planner-new-plan)))
+      (org-scribe--project-marker-set project-dir "Planner" "no"))))
 
 ;;; Wire up all features (only when org-scribe is present)
 
@@ -2749,9 +2741,11 @@ instead of falling back to generic prompts and
 ;;;###autoload
 (defun org-scribe-plan ()
   "Open the writing plan for the current org-scribe project.
-If a plan is already active, show its calendar.  If a plan file exists
-for the current project but is not yet loaded, load it silently first.
-If no plan file exists, offer to create one.  Falls back to
+If a plan is already active, show its calendar.  If the project has
+declined the planner (see `org-scribe-planner-gate'), offer to enable
+it before doing anything else.  If a plan file exists for the current
+project but is not yet loaded, load it silently first.  If no plan
+file exists, offer to create one.  Falls back to
 `org-scribe-planner-show-current-plan' when not inside an org-scribe project."
   (interactive)
   (let* ((root (ignore-errors (org-scribe-project-root)))
@@ -2763,6 +2757,13 @@ If no plan file exists, offer to create one.  Falls back to
      (org-scribe-planner--current-plan
       (org-scribe-planner-show-calendar org-scribe-planner--current-plan
                                         org-scribe-planner--current-plan-file))
+     ;; In a project that has declined the planner — offer to enable first
+     ((and in-project (eq (org-scribe-planner-gate root) 'no))
+      (if (yes-or-no-p "The planner is disabled for this project.  Enable it? ")
+          (progn
+            (org-scribe--project-marker-set root "Planner" "yes")
+            (org-scribe-plan))
+        (message "org-scribe-planner: staying disabled for this project.")))
      ;; In project with a valid saved plan file — load silently, then show
      ((and in-project
            (org-scribe-planner--plan-file-valid-p
@@ -2776,10 +2777,40 @@ If no plan file exists, offer to create one.  Falls back to
      ;; In project but no valid plan — offer to create one
      (in-project
       (when (yes-or-no-p "No writing plan found for this project.  Create one? ")
+        (org-scribe--project-marker-set root "Planner" "yes")
         (org-scribe-planner-new-plan)))
      ;; Not in an org-scribe project — standard show-or-load flow
      (t
       (org-scribe-planner-show-current-plan)))))
+
+;;; Per-project enable/disable
+
+;;;###autoload
+(defun org-scribe-planner-enable-for-project ()
+  "Enable the writing planner for the current org-scribe project.
+Sets \"# Planner: yes\" in .org-scribe-project.  With the gate open,
+auto-load, the mode line, and the health report's Writing Plan section
+all resume for this project.  Errors if not inside an org-scribe project."
+  (interactive)
+  (let ((root (org-scribe-project-root)))
+    (unless (file-exists-p (expand-file-name ".org-scribe-project" root))
+      (user-error "Not inside an org-scribe project"))
+    (org-scribe--project-marker-set root "Planner" "yes")
+    (message "org-scribe-planner: enabled for this project.")))
+
+;;;###autoload
+(defun org-scribe-planner-disable-for-project ()
+  "Disable the writing planner for the current org-scribe project.
+Sets \"# Planner: no\" in .org-scribe-project.  Does not unload an
+already-active plan from memory, but auto-load, the mode line, and the
+health report's Writing Plan section all stop for this project.
+Errors if not inside an org-scribe project."
+  (interactive)
+  (let ((root (org-scribe-project-root)))
+    (unless (file-exists-p (expand-file-name ".org-scribe-project" root))
+      (user-error "Not inside an org-scribe project"))
+    (org-scribe--project-marker-set root "Planner" "no")
+    (message "org-scribe-planner: disabled for this project.")))
 
 ;;; Planner hydra submenu
 
@@ -2801,6 +2832,8 @@ If no plan file exists, offer to create one.  Falls back to
   _a_: Adjust remaining days
   _m_: Milestones
   _D_: Dashboards menu
+  _E_: Enable for project
+  _X_: Disable for project
   _q_: Back to main menu
   "
     ("p" org-scribe-plan "open project plan")
@@ -2813,6 +2846,8 @@ If no plan file exists, offer to create one.  Falls back to
     ("a" org-scribe-planner-adjust-remaining-plan "adjust remaining")
     ("m" org-scribe-planner-show-milestones "milestones")
     ("D" org-scribe-planner-dashboards-menu "dashboards")
+    ("E" org-scribe-planner-enable-for-project "enable for project")
+    ("X" org-scribe-planner-disable-for-project "disable for project")
     ("q" hydra-org-scribe/body "back")))
 
 ;;; Provide

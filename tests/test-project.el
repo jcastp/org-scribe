@@ -306,15 +306,18 @@
                 (message "Warning: Template directory not found at %s"
                         org-scribe-template-directory)))))
 
-(ert-deftest test-template-plan-org-present-in-all-templates ()
-  "Every template directory ships a plan.org placeholder."
+(ert-deftest test-template-no-plan-org-in-any-template ()
+  "No template directory ships a plan.org file (Phase 4: per-project planner gate).
+A project only gets a plan.org once it explicitly opts into the planner
+via `org-scribe-planner-new-plan' or the offer-on-create prompt — never
+as a template artifact present from project creation."
   ;; org-scribe-template-directory = <repo>/org-scribe-templates/novel-en
   ;; Its parent is the org-scribe-templates/ root.
   (let ((templates-root (file-name-directory
                          (directory-file-name org-scribe-template-directory))))
     (dolist (dir '("novel-en" "novel-es" "short-story-en" "short-story-es"))
       (let ((plan (expand-file-name "plan.org" (expand-file-name dir templates-root))))
-        (should (file-exists-p plan))))))
+        (should-not (file-exists-p plan))))))
 
 ;;; Project Creation Language Selection Tests
 

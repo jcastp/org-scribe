@@ -283,12 +283,17 @@ the project-aware new-plan advice fail to find .org-scribe-project."
     (unwind-protect
         (progn
           (make-directory project-dir t)
+          (with-temp-file (expand-file-name ".org-scribe-project" project-dir)
+            (insert (format "# Writing project: %s\n# Type: novel\n" title)))
           (cl-letf (((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
                     ((symbol-function 'org-scribe-planner-new-plan)
                      (lambda (&rest _) (setq captured-default-directory default-directory))))
             (org-scribe-planner--offer-plan-on-create base-dir title))
           (should (equal (file-truename (file-name-as-directory captured-default-directory))
-                         (file-truename (file-name-as-directory project-dir)))))
+                         (file-truename (file-name-as-directory project-dir))))
+          ;; The gate is opened too — see test-planner-gate.el for the
+          ;; dedicated accept/decline coverage of this behavior.
+          (should (eq 'yes (org-scribe-planner-gate project-dir))))
       (delete-directory base-dir t))))
 
 ;;; Tests for org-scribe-planner-today

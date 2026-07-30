@@ -252,7 +252,10 @@ with clickable ID links back to each scene."
         (insert "\n")
 
         ;; ── Writing Plan ─────────────────────────────────────────────────────
-        (when (featurep 'org-scribe-planner)
+        ;; Skipped entirely when the project has explicitly declined the
+        ;; planner (gate = 'no); undecided (nil) keeps prior behavior.
+        (when (and (featurep 'org-scribe-planner)
+                   (not (eq (org-scribe-planner-gate) 'no)))
           (insert "* Writing Plan\n\n")
           (cond
            ;; Plan is active in memory

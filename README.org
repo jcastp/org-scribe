@@ -1131,11 +1131,20 @@ org-scribe includes a full writing planner in =planning/org-scribe-planner.el=. 
 
 If you previously installed [[https://codeberg.org/jcastp/org-scribe-planner][org-scribe-planner]] as a standalone package and loaded =(require 'org-scribe-planner-integration)= in your init file, remove that snippet — the compatibility shim has been deleted and the integration is built directly into the planner module.
 
+** Opt-in Gate
+
+A project only sees the planner after explicitly opting in — no prompts, no mode-line indicator, no health-report section, and no =plan.org= template artifact until then. The decision is recorded as a =# Planner: yes= / =# Planner: no= line in =.org-scribe-project=:
+
+- Declining the "Create a writing plan?" prompt on project creation writes =no= — the project is never asked again.
+- Accepting that prompt, or creating/loading a plan manually via =M-x org-scribe-plan=, writes =yes=.
+- =M-x org-scribe-planner-enable-for-project= / =M-x org-scribe-planner-disable-for-project= (hydra =F8 F8 W E= / =X=) flip the marker directly at any time.
+- An *undecided* project (no =# Planner:= line yet) behaves exactly as before this gate existed — only an explicit decline turns features off.
+
 ** What It Does
 
 *** 1. Auto-load the Plan on Project Open
 
-When you enter an org-scribe project, the planner silently looks for a matching plan file and loads it. Search order:
+When you enter an org-scribe project whose gate is =yes=, the planner silently looks for a matching plan file and loads it. Search order:
 
 0. Path recorded in =.org-scribe-project= (written automatically after the first load — fastest)
 1. =<project-root>/plan.org=
@@ -1160,7 +1169,7 @@ When enabled, saving =novel.org= (or =novela.org=) silently calls
 pushing the new total to the active plan in one step.  Requires
 =org-context-extended=.  Disabled by default to keep saves fast.
 
-*** 3. Project-Aware Commands
+*** 4. Project-Aware Commands
 
 Inside an org-scribe project, planner commands require no file-path decisions:
 
@@ -1173,17 +1182,17 @@ The primary way to open your plan is =M-x org-scribe-plan= (or =F8 F8 W p=):
 - *Plan already active* → shows the calendar immediately.
 - *Plan file exists but not loaded* → loads it silently, then shows the calendar.
 - *No plan file found* → offers to create one (project-aware, no prompts).
-- *Not in a project* → falls back to =org-scribe-planner-show-current-plan=.
+- *Not in a project, or the gate is =no=* → falls back to =org-scribe-planner-show-current-plan=, or offers to enable the gate first (see Opt-in Gate above).
 
-Every new project includes a =plan.org= placeholder so the planner can find it at step 1 of its search without scanning.
+Plan file discovery still works without a shipped placeholder — the first accepted plan creation writes =plan.org= itself.
 
-*** 4. Plan Creation on Project Creation
+*** 5. Plan Creation on Project Creation
 
-After creating a new novel or short story project, you are offered the option to create a matching writing plan immediately.
+After creating a new novel or short story project, you are offered the option to create a matching writing plan immediately. Accepting opens the gate (=# Planner: yes=) and creates the plan; declining closes it (=# Planner: no=) so you are not asked again for that project.
 
-*** 5. Planner Hydra Sub-menu (=W=)
+*** 6. Planner Hydra Sub-menu (=W=)
 
-Press =F8 F8 W= to open the planner sub-menu:
+Press =F8 F8 W= to open the planner sub-menu. If the project has declined the planner, this key offers to enable it first instead of opening the submenu.
 
 - =p= - Open project plan (load or create)
 - =n= - New plan
@@ -1194,15 +1203,17 @@ Press =F8 F8 W= to open the planner sub-menu:
 - =a= - Adjust remaining days
 - =m= - Milestones
 - =D= - Dashboards menu
+- =E= - Enable planner for this project
+- =X= - Disable planner for this project
 - =q= - Back to main menu
 
-*** 6. Mode-Line Status
+*** 7. Mode-Line Status
 
-When a plan is active, the mode line shows today's progress: =[W:actual/target]=.
+When a plan is active and the project's gate is =yes=, the mode line shows today's progress: =[W:actual/target]=.
 
-*** 7. Project Health Integration
+*** 8. Project Health Integration
 
-=M-x org-scribe-project-health= includes a =* Writing Plan= section when the planner is loaded, showing title, target, current word count and percentage, daily target, end date, days remaining, and whether you are on track or behind. When no plan is active a hint to run =M-x org-scribe-plan= is shown instead.
+=M-x org-scribe-project-health= includes a =* Writing Plan= section when the planner is loaded and the gate is not =no=, showing title, target, current word count and percentage, daily target, end date, days remaining, and whether you are on track or behind. When no plan is active a hint to run =M-x org-scribe-plan= is shown instead. The section is omitted entirely for a project that has declined the planner.
 
 ** Opting Out of Individual Features
 
