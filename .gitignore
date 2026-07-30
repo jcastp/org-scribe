@@ -20,3 +20,6 @@ tests/data/temp*
 
 # Markdown files
 *.md
+
+# Working notes (not part of the roadmap)
+/notes/
