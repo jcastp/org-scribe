@@ -121,38 +121,42 @@ Includes improved error handling for network issues."
     (url-retrieve
      url
      (lambda (status palabra buffer-name)
-       (org-scribe-with-error-handling "org-scribe-rae-api-lookup"
-         (if (plist-get status :error)
-             (message (org-scribe-msg 'error-word-lookup (plist-get status :error)))
-           ;; Move past HTTP headers
-           (goto-char (point-min))
-           (re-search-forward "^$")
-           ;; Extract and decode the response body as UTF-8
-           (let* ((body-start (point))
-                  (raw-body (buffer-substring-no-properties body-start (point-max)))
-                  (decoded-body (decode-coding-string raw-body 'utf-8)))
-             (condition-case err
-                 (let* ((json-object-type 'hash-table)
-                        (json-array-type 'list)
-                        (json-key-type 'string)
-                        (json-data (json-read-from-string decoded-body))
-                        (ok (gethash "ok" json-data))
-                        (output-buffer (get-buffer-create buffer-name)))
-                 (with-current-buffer output-buffer
-                   (erase-buffer)
-                   (org-mode)
-                   (if ok
-                       (org-scribe-rae-format-result json-data palabra)
-                     ;; Word not found - show suggestions
-                     (let ((suggestions (gethash "suggestions" json-data)))
-                       (insert (format "* %s\n\n" (org-scribe-msg 'msg-word-not-found palabra)))
-                       (insert (format "** %s\n" (org-scribe-msg 'msg-word-suggestions)))
-                       (dolist (suggestion suggestions)
-                         (insert (format "- %s\n" suggestion)))))
-                   (goto-char (point-min)))
-                 (display-buffer output-buffer))
-               (json-error
-                (message (org-scribe-msg 'error-word-parse err))))))))
+       (let ((response-buffer (current-buffer)))
+         (unwind-protect
+             (org-scribe-with-error-handling "org-scribe-rae-api-lookup"
+               (if (plist-get status :error)
+                   (message (org-scribe-msg 'error-word-lookup (plist-get status :error)))
+                 ;; Move past HTTP headers
+                 (goto-char (point-min))
+                 (re-search-forward "^$")
+                 ;; Extract and decode the response body as UTF-8
+                 (let* ((body-start (point))
+                        (raw-body (buffer-substring-no-properties body-start (point-max)))
+                        (decoded-body (decode-coding-string raw-body 'utf-8)))
+                   (condition-case err
+                       (let* ((json-object-type 'hash-table)
+                              (json-array-type 'list)
+                              (json-key-type 'string)
+                              (json-data (json-read-from-string decoded-body))
+                              (ok (gethash "ok" json-data))
+                              (output-buffer (get-buffer-create buffer-name)))
+                       (with-current-buffer output-buffer
+                         (erase-buffer)
+                         (org-mode)
+                         (if ok
+                             (org-scribe-rae-format-result json-data palabra)
+                           ;; Word not found - show suggestions
+                           (let ((suggestions (gethash "suggestions" json-data)))
+                             (insert (format "* %s\n\n" (org-scribe-msg 'msg-word-not-found palabra)))
+                             (insert (format "** %s\n" (org-scribe-msg 'msg-word-suggestions)))
+                             (dolist (suggestion suggestions)
+                               (insert (format "- %s\n" suggestion)))))
+                         (goto-char (point-min)))
+                       (display-buffer output-buffer))
+                     (json-error
+                      (message (org-scribe-msg 'error-word-parse err)))))))
+           (when (buffer-live-p response-buffer)
+             (kill-buffer response-buffer)))))
      (list palabra buffer-name)
      nil   ; no SILENT
      t)))  ; INHIBIT-COOKIES
@@ -166,26 +170,29 @@ Includes improved error handling for network issues."
     (url-retrieve
      url
      (lambda (status)
-       (org-scribe-with-error-handling "org-scribe-rae-api-random"
-         (if (plist-get status :error)
-             (message (org-scribe-msg 'error-random-word (plist-get status :error)))
-           (goto-char (point-min))
-           (re-search-forward "^$")
-           ;; Extract and decode the response body as UTF-8
-           (let* ((body-start (point))
-                  (raw-body (buffer-substring-no-properties body-start (point-max)))
-                  (decoded-body (decode-coding-string raw-body 'utf-8)))
-             (condition-case err
-                 (let* ((json-object-type 'hash-table)
-                        (json-array-type 'list)
-                        (json-key-type 'string)
-                        (json-data (json-read-from-string decoded-body))
-                        (palabra (gethash "word" (gethash "data" json-data))))
-                   (kill-buffer)
-                   (when palabra
-                     (org-scribe-rae-api-lookup palabra)))
-               (json-error
-                (message (org-scribe-msg 'error-random-word-parse err)))))))))))
+       (let ((response-buffer (current-buffer)))
+         (unwind-protect
+             (org-scribe-with-error-handling "org-scribe-rae-api-random"
+               (if (plist-get status :error)
+                   (message (org-scribe-msg 'error-random-word (plist-get status :error)))
+                 (goto-char (point-min))
+                 (re-search-forward "^$")
+                 ;; Extract and decode the response body as UTF-8
+                 (let* ((body-start (point))
+                        (raw-body (buffer-substring-no-properties body-start (point-max)))
+                        (decoded-body (decode-coding-string raw-body 'utf-8)))
+                   (condition-case err
+                       (let* ((json-object-type 'hash-table)
+                              (json-array-type 'list)
+                              (json-key-type 'string)
+                              (json-data (json-read-from-string decoded-body))
+                              (palabra (gethash "word" (gethash "data" json-data))))
+                         (when palabra
+                           (org-scribe-rae-api-lookup palabra)))
+                     (json-error
+                      (message (org-scribe-msg 'error-random-word-parse err)))))))
+           (when (buffer-live-p response-buffer)
+             (kill-buffer response-buffer))))))))
 
 ;;; Synonym Lookup (WordReference)
 

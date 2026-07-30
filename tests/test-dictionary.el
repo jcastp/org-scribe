@@ -16,6 +16,7 @@
 
 (require 'ert)
 (require 'json)
+(require 'cl-lib)
 
 ;;; Add paths
 (let ((default-directory (file-name-directory
@@ -183,6 +184,61 @@
     (org-scribe-rae-format-conjugations nil)
     ;; Should not insert anything for nil
     (should (= 0 (buffer-size)))))
+
+;;; Response-Buffer Cleanup Tests (L9)
+
+(defmacro test-dictionary--with-mocked-http (json-body &rest body)
+  "Run BODY with `url-retrieve' mocked to synchronously call back.
+JSON-BODY is the literal JSON text used as the HTTP response body.
+The fake HTTP buffer created for each call is pushed onto the
+`test-dictionary--http-buffers' list so callers can assert on
+liveness after BODY runs."
+  (declare (indent 1))
+  `(let ((test-dictionary--http-buffers nil))
+     (cl-letf (((symbol-function 'url-retrieve)
+                (lambda (_url callback &optional cbargs &rest _)
+                  (let ((buf (generate-new-buffer " *fake-http*")))
+                    (push buf test-dictionary--http-buffers)
+                    (with-current-buffer buf
+                      (insert "HTTP/1.1 200 OK\n\n")
+                      (insert ,json-body)
+                      (apply callback (list nil) cbargs))))))
+       ,@body)
+     test-dictionary--http-buffers))
+
+(ert-deftest test-dictionary-rae-lookup-kills-response-buffer ()
+  "org-scribe-rae-api-lookup kills its HTTP response buffer (L9)."
+  (let ((buffers (test-dictionary--with-mocked-http
+                     "{\"ok\":true,\"data\":{\"word\":\"azul\",\"meanings\":[]}}"
+                   (org-scribe-rae-api-lookup "azul"))))
+    (should buffers)
+    (should (cl-every (lambda (b) (not (buffer-live-p b))) buffers))))
+
+(ert-deftest test-dictionary-rae-lookup-kills-response-buffer-on-word-not-found ()
+  "The response buffer is killed even when the word is not found (L9)."
+  (let ((buffers (test-dictionary--with-mocked-http
+                     "{\"ok\":false,\"suggestions\":[]}"
+                   (org-scribe-rae-api-lookup "azulx"))))
+    (should buffers)
+    (should (cl-every (lambda (b) (not (buffer-live-p b))) buffers))))
+
+(ert-deftest test-dictionary-rae-lookup-kills-response-buffer-on-parse-error ()
+  "The response buffer is killed even when the JSON body is malformed (L9)."
+  (let ((buffers (test-dictionary--with-mocked-http
+                     "not valid json"
+                   (org-scribe-rae-api-lookup "azul"))))
+    (should buffers)
+    (should (cl-every (lambda (b) (not (buffer-live-p b))) buffers))))
+
+(ert-deftest test-dictionary-rae-random-kills-response-buffer ()
+  "org-scribe-rae-api-random kills its HTTP response buffer (L9).
+It also chains into org-scribe-rae-api-lookup, whose own response
+buffer must be cleaned up too."
+  (let ((buffers (test-dictionary--with-mocked-http
+                     "{\"data\":{\"word\":\"azul\"}}"
+                   (org-scribe-rae-api-random))))
+    (should (= 2 (length buffers)))
+    (should (cl-every (lambda (b) (not (buffer-live-p b))) buffers))))
 
 ;;; Run tests
 
