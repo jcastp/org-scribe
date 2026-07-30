@@ -1216,7 +1216,7 @@ Tag the current scene's properties with ID-based links:
 
 org-scribe includes a full writing planner in =planning/org-scribe-planner.el=. It is *bundled and available automatically* — no separate install, no init.el glue required. All planner commands carry autoload cookies, so they load on first use with zero startup cost when unused.
 
-If you previously installed [[https://codeberg.org/jcastp/org-scribe-planner][org-scribe-planner]] as a standalone package and loaded =integration/org-scribe-planner-integration.el=, you can remove that snippet from your init file. Loading it is harmless (it became a no-op shim), but unnecessary.
+If you previously installed [[https://codeberg.org/jcastp/org-scribe-planner][org-scribe-planner]] as a standalone package and loaded =(require 'org-scribe-planner-integration)= in your init file, remove that snippet — the compatibility shim has been deleted and the integration is built directly into the planner module.
 
 ** What It Does
 
