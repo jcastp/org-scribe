@@ -37,7 +37,7 @@ If your init file contains:
   (require 'org-scribe-planner-integration))
 #+END_SRC
 
-you can safely remove that block. The integration features are now built directly into the planner module. The ~org-scribe-planner-integration~ file still exists as a compatibility shim but does nothing — it just prints a reminder message and exits.
+remove that block. The integration features are now built directly into the planner module, and the ~org-scribe-planner-integration~ compatibility shim has been deleted from the package — that ~require~ will now signal a file-missing error instead of loading a no-op.
 
 * What Does the Integration Do?
 
@@ -387,9 +387,9 @@ The standalone Codeberg package is superseded by the bundled version. If you sti
 - Confirm auto-push is enabled: ~M-: org-scribe-planner-auto-push-wordcount RET~ should return ~t~.
 - Run ~F8 F8 W u~ (Update progress) manually to test the word count bridge independently.
 
-** "I get a message about org-scribe-planner-integration being deprecated."
+** "I get an error loading org-scribe-planner-integration."
 
-Your init file still contains ~(require 'org-scribe-planner-integration)~. Remove that line — the integration is built in and the shim will be removed in a future release.
+Your init file still contains ~(require 'org-scribe-planner-integration)~. Remove that line — the file has been deleted, and the integration is built directly into the planner module, so nothing needs to be required for it separately.
 
 * What You've Learned
 

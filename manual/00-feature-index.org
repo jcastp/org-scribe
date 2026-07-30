@@ -679,17 +679,15 @@ Progress visualisations loaded on demand from ~planning/org-scribe-planner-dashb
 
 *Status*: Fully implemented | *Hydra*: ~W D~ | *Module*: ~planning/org-scribe-planner-dashboards.el~
 
-** Deprecated: org-scribe-planner-integration (~integration/org-scribe-planner-integration.el~)
+** Migrating from the standalone org-scribe-planner-integration
 
-A no-op compatibility shim retained for users who previously loaded the integration module explicitly. Loading it prints a deprecation message and exits immediately. Users should remove the following snippet from their init files:
+If your init file still contains the following snippet from before the planner was bundled directly into org-scribe, remove it — the compatibility shim (~integration/org-scribe-planner-integration.el~) has been deleted from the package entirely, so this ~require~ will now error instead of loading a no-op:
 
 #+BEGIN_SRC emacs-lisp
 ;; Remove this — the integration is now built into the planner module
 (with-eval-after-load 'org-scribe-planner
   (require 'org-scribe-planner-integration))
 #+END_SRC
-
-*Status*: Deprecated (no-op shim, will be removed in next major release) | *Module*: ~integration/org-scribe-planner-integration.el~
 
 * Feature Statistics
 
