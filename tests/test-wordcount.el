@@ -212,6 +212,86 @@ heading's WORDCOUNT from the refresh."
         (beginning-of-line)
         (should (equal (org-entry-get nil "WORDCOUNT") "7"))))))
 
+;;; ID Creation Opt-Out Tests (L11)
+
+(ert-deftest test-wordcount-count-words-skips-id-creation-when-requested ()
+  "SKIP-ID-CREATION suppresses org-id-get-create without affecting counts (L11)."
+  (with-temp-buffer
+    (org-mode)
+    (setq buffer-file-name (make-temp-name "/tmp/test-wordcount-noid-"))
+    (insert "* Heading One\nSome text.\n")
+    (insert "* Heading Two\nMore text.\n")
+    (goto-char (point-min))
+    (org-scribe-ews-org-count-words t)
+    (goto-char (point-min))
+    (org-next-visible-heading 1)
+    (should (org-entry-get nil "WORDCOUNT"))
+    (should (null (org-entry-get nil "ID")))
+    (org-next-visible-heading 1)
+    (should (org-entry-get nil "WORDCOUNT"))
+    (should (null (org-entry-get nil "ID")))))
+
+(ert-deftest test-wordcount-count-words-creates-ids-by-default ()
+  "With no argument, org-scribe-ews-org-count-words still mints IDs (L11)."
+  (with-temp-buffer
+    (org-mode)
+    (setq buffer-file-name (make-temp-name "/tmp/test-wordcount-withid-"))
+    (insert "* Heading One\nSome text.\n")
+    (goto-char (point-min))
+    (org-scribe-ews-org-count-words)
+    (goto-char (point-min))
+    (org-next-visible-heading 1)
+    (should (org-entry-get nil "ID"))))
+
+(ert-deftest test-wordcount-auto-save-skips-id-creation-by-default ()
+  "The silent save path does not mint IDs unless opted in (L11).
+Regression test: `org-scribe-auto-wordcount' previously always minted
+IDs on every save via the unconditional `org-id-get-create' call inside
+`org-scribe-ews-org-count-words', so merely saving the manuscript
+permanently inserted :ID: drawers on every heading."
+  (let* ((dir (make-temp-file "test-wordcount-autosave-" t))
+         (novel-file (expand-file-name "novel.org" dir))
+         (org-scribe-auto-wordcount t)
+         (org-scribe-auto-wordcount-mint-ids nil))
+    (unwind-protect
+        (progn
+          (with-temp-file novel-file
+            (insert "* Heading One\nSome text.\n"))
+          (with-current-buffer (find-file-noselect novel-file)
+            (cl-letf (((symbol-function 'org-scribe-accurate-wordcount-p) (lambda () t))
+                      ((symbol-function 'org-scribe-project-structure)
+                       (lambda () (list :novel-file novel-file))))
+              (org-scribe--auto-wordcount-before-save))
+            (goto-char (point-min))
+            (org-next-visible-heading 1)
+            (should (org-entry-get nil "WORDCOUNT"))
+            (should (null (org-entry-get nil "ID")))
+            (set-buffer-modified-p nil)
+            (kill-buffer)))
+      (delete-directory dir t))))
+
+(ert-deftest test-wordcount-auto-save-mints-ids-when-opted-in ()
+  "Setting org-scribe-auto-wordcount-mint-ids restores ID minting on save (L11)."
+  (let* ((dir (make-temp-file "test-wordcount-autosave-" t))
+         (novel-file (expand-file-name "novel.org" dir))
+         (org-scribe-auto-wordcount t)
+         (org-scribe-auto-wordcount-mint-ids t))
+    (unwind-protect
+        (progn
+          (with-temp-file novel-file
+            (insert "* Heading One\nSome text.\n"))
+          (with-current-buffer (find-file-noselect novel-file)
+            (cl-letf (((symbol-function 'org-scribe-accurate-wordcount-p) (lambda () t))
+                      ((symbol-function 'org-scribe-project-structure)
+                       (lambda () (list :novel-file novel-file))))
+              (org-scribe--auto-wordcount-before-save))
+            (goto-char (point-min))
+            (org-next-visible-heading 1)
+            (should (org-entry-get nil "ID"))
+            (set-buffer-modified-p nil)
+            (kill-buffer)))
+      (delete-directory dir t))))
+
 (provide 'test-wordcount)
 
 ;;; test-wordcount.el ends here

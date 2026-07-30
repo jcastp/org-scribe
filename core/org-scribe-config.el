@@ -200,6 +200,22 @@ Disabled by default to keep saving fast and side-effect-free."
   :type 'boolean
   :group 'org-scribe)
 
+(defcustom org-scribe-auto-wordcount-mint-ids nil
+  "When non-nil, the save-triggered word count is also allowed to mint IDs.
+`org-scribe-ews-org-count-words' normally calls `org-id-get-create' on
+every heading it visits (so scenes can be linked); when
+`org-scribe-auto-wordcount' silently re-runs it on every save, that
+means merely saving the manuscript permanently inserts a fresh =:ID:=
+property drawer on any heading that lacked one — buffer churn and larger
+diffs the user never asked for.
+
+Disabled by default so the silent save path only refreshes WORDCOUNT
+properties; ID creation stays an explicit, visible action (interactively
+running `org-scribe-ews-org-count-words' or `org-scribe-wordcount' with
+one prefix argument always mints IDs regardless of this setting)."
+  :type 'boolean
+  :group 'org-scribe)
+
 ;;; Editing Mode Configuration
 
 (defcustom org-scribe-editing-left-width-percent 0.25

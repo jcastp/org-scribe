@@ -56,16 +56,19 @@ falling back to the plain `count-words' otherwise."
 ;;; Word Count Property Function
 
 ;;;###autoload
-(defun org-scribe-ews-org-count-words ()
+(defun org-scribe-ews-org-count-words (&optional skip-id-creation)
   "Add word count to each heading property drawer in an Org mode buffer.
 Uses `org-context-count-words' for accurate counting that excludes
 comments, properties, drawers, etc.  When `org-context-extended' is not
 installed, falls back to a plain word count (which cannot exclude Org
 metadata) so the command still works.  Also creates a custom ID for each
-heading to enable linking.  Widens the buffer first (`org-with-wide-buffer')
-so an active narrowing — e.g. org-scribe's own focus mode, which narrows
-to a single subtree — does not silently limit the count to whatever is
-currently visible."
+heading to enable linking, unless SKIP-ID-CREATION is non-nil — ID
+creation is a separate, visible side effect from counting, and callers
+that only want fresh WORDCOUNT properties (e.g. the silent save path,
+see `org-scribe-auto-wordcount-mint-ids') can opt out of it.  Widens the
+buffer first (`org-with-wide-buffer') so an active narrowing — e.g.
+org-scribe's own focus mode, which narrows to a single subtree — does
+not silently limit the count to whatever is currently visible."
   (interactive)
   (org-with-wide-buffer
    (org-map-entries
@@ -77,7 +80,8 @@ currently visible."
              (word-count (org-scribe--count-words-region start end)))
         (org-set-property "WORDCOUNT" (number-to-string word-count)))
       ;; Create the id to link the org heading
-      (org-id-get-create))))
+      (unless skip-id-creation
+        (org-id-get-create)))))
   (unless (org-scribe-accurate-wordcount-p)
     (message (org-scribe-msg 'msg-wordcount-degraded))))
 
@@ -167,7 +171,9 @@ Acts only when `org-scribe-auto-wordcount' is non-nil, the saved buffer is
 the manuscript of an org-scribe project, and `org-context-extended' is
 available (degraded counts are suppressed to avoid misleading data).
 Calls `org-scribe-ews-org-count-words' silently; the planner sync fires
-automatically via the advice on that function.
+automatically via the advice on that function.  ID creation is skipped
+unless `org-scribe-auto-wordcount-mint-ids' is non-nil, so merely saving
+the manuscript does not silently insert :ID: drawers on every heading.
 Also refreshes any org-generate-wordcount-table dynamic blocks in the buffer.
 
 Installed as a buffer-local `before-save-hook' by `org-scribe-mode' (in
@@ -186,7 +192,7 @@ every save, regardless of `org-scribe-auto-wordcount'."
                   ((file-exists-p novel-file))
                   ((file-equal-p buffer-file-name novel-file)))
         (let ((inhibit-message t))
-          (org-scribe-ews-org-count-words)
+          (org-scribe-ews-org-count-words (not org-scribe-auto-wordcount-mint-ids))
           (org-scribe--update-wordcount-dblocks))))))
 
 ;;; Dynamic Block for Word Count Table
