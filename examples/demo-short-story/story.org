@@ -46,16 +46,12 @@ A quantum physicist receives a message from her future self warning about a cata
 
 To update word count, use:
 - =F8 F8 n= (org-context-count-words)
-- =F8 F8 m= (org-scribe/ews-org-count-words)
+- =F8 F8 m= (org-scribe-ews-org-count-words)
 
-#+NAME: tracktable
-|---+---------------+-------+-----+---------------+--------------|
-| * | date          | start | end | total (today) | comment      |
-|---+---------------+-------+-----+---------------+--------------|
-|   | initial count |     0 |   0 |             0 |              |
-|   | 2025-01-14    |     0 | 892 |           892 | First draft  |
-|---+---------------+-------+-----+---------------+--------------|
-#+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
+For automated daily word-count tracking, use the bundled writing planner
+(=M-x org-scribe-plan= or =F8 F8 W=) — it pushes live word counts and
+daily deltas into a plan file automatically, with no separate table to
+maintain here.
 
 * Quick Links :noexport:
 :PROPERTIES:

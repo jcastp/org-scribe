@@ -123,17 +123,11 @@ Displays an interactive word count for the current selection, heading, or entire
 
 *Status*: Fully implemented (via org-context-extended) | *Hydra*: ~w~ (Tools section) | *Module*: External dependency
 
-** Progress Tracking Tables (~org-tracktable~)
+** Progress Tracking Tables (~org-generate-wordcount-table~)
 
-Generates dynamic progress tracking tables that combine word counts from ~:WORDCOUNT:~ properties with target goals from ~:WORD-OBJECTIVE:~ properties to calculate completion percentages automatically. The tables show hierarchical structure (Acts → Chapters → Scenes) with columns for current wordcount, objective, and auto-calculated progress. Tables are created with ~#+BEGIN: org-generate-wordcount-table~ and updated by pressing ~C-c C-c~. The ~org-tracktable-write~ function from the org-tracktable package handles table generation.
+Generates dynamic progress tracking tables that combine word counts from ~:WORDCOUNT:~ properties with target goals from ~:WORD-OBJECTIVE:~ properties to calculate completion percentages automatically. The tables show hierarchical structure (Acts → Chapters → Scenes) with columns for current wordcount, objective, and auto-calculated progress. Tables are created with ~#+BEGIN: org-generate-wordcount-table~ and updated by pressing ~C-c C-c~ — this dynamic block is implemented directly in org-scribe, not by any external package.
 
-*Status*: Fully implemented (via org-tracktable) | *Hydra*: ~r~ (Tools section) | *Module*: External dependency
-
-** Daily Progress Tracking (~org-scribe/track-progress~)
-
-Provides session-based writing progress tracking by recording word count changes over time. This feature complements the static wordcount tables by showing how many words were written each day. Uses org-tracktable's time-based tracking to maintain a history of progress, helping writers see momentum and maintain accountability. Daily tracking data can be displayed as tables or graphs to visualize writing habits and productivity patterns.
-
-*Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~counting/org-scribe-tracking.el~
+*Status*: Fully implemented | *Hydra*: Not in menu (dynamic block, updated via ~C-c C-c~) | *Module*: ~counting/org-scribe-wordcount.el~
 
 ** Word Count Properties
 

@@ -98,7 +98,7 @@ properties without typing them manually.
 | Key     | Command              | What it does                                         |
 |---------+----------------------+------------------------------------------------------|
 | =F8 F8 w= | =org-scribe-wordcount= | Count words (=C-u= refreshes all WORDCOUNT properties) |
-| =F8 F8 r= | =org-tracktable-write= | Add a daily word count row to the tracktable         |
+| =F8 F8 W= | =org-scribe-plan=      | Open/create the bundled writing planner (auto-tracks daily words) |
 
 ** Search (org-ql powered)
 | Key     | Command                           | What it does                       |

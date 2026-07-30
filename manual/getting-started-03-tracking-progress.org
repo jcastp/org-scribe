@@ -366,16 +366,11 @@ Tomorrow after writing 300 more:
 | 2025-11-17 | 300 |  800 | Continued scene 1  |
 #+END_EXAMPLE
 
-** Using org-tracktable (Advanced)
+** Automated Tracking (Advanced)
 
-The package integrates with ~org-tracktable~ for automated tracking.
+For automated daily tracking without maintaining tables by hand, see [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with org-scribe-planner]] — the bundled writing planner pushes live word counts and daily deltas automatically.
 
-If you have org-tracktable installed:
-
-1. Press ~F8 F8 r~ (for "tRack table")
-2. It updates tracking tables automatically
-
-*Don't worry if you don't have it* - manual tracking works great!
+*Don't worry if you skip it* - manual tracking works great!
 
 ** Why Track Daily Progress?
 
@@ -572,9 +567,8 @@ Or check the TOTAL row in your progress table!
 
 *Solutions*:
 1. Make sure cursor is *on* the ~#+BEGIN:~ line, not just near it
-2. Make sure you have org-tracktable installed
-3. Check that the line says ~org-generate-wordcount-table~ exactly
-4. Try ~M-x org-dblock-update~
+2. Check that the line says ~org-generate-wordcount-table~ exactly
+3. Try ~M-x org-dblock-update~
 
 ** "Word count seems wrong/too low"
 
@@ -661,7 +655,6 @@ Tracking progress is habit-forming - the more you do it, the more motivated you'
 | Quick word count        | ~F8 F8 w~ | Count current subtree           |
 | Add word count property | ~F8 F8 a~ | Set :WORDCOUNT: property        |
 | Update progress table   | ~C-c C-c~ | Regenerate table (cursor on it) |
-| Update tracking         | ~F8 F8 r~ | org-tracktable update           |
 
 ** Word Count Properties
 

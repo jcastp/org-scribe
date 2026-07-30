@@ -492,7 +492,7 @@ You went from 32% to 34% - progress!
 
 ** Step 3: Update Daily Tracking (2 minutes)
 
-If using org-tracktable for daily logs:
+If you keep a daily tracking table by hand:
 
 1. Navigate to your daily tracking table
 2. Add today's entry:

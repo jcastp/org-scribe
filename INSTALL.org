@@ -70,11 +70,6 @@ These must be installed for org-scribe to work:
        :branch "main"
        :rev :newest))
 
-(use-package org-tracktable
-  :vc (:url "https://codeberg.org/jcastp/org-tracktable"
-       :branch "main"
-       :rev :newest))
-
 (use-package hydra
   :ensure t)
 #+end_src

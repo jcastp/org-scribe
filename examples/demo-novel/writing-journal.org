@@ -162,7 +162,7 @@ vehicle, not the destination. This feels more meaningful.
 ** What's working for me
 - Setting specific scene goals before each session
 - Using the metadata properties to think through scene purpose before writing
-- The org-tracktable for quick daily tracking
+- The bundled writing planner for quick daily tracking
 - Writing session notes immediately after finishing (while it's fresh)
 
 ** Productivity patterns

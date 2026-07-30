@@ -60,21 +60,10 @@ Update it with =C-c C-c= on the #+BEGIN line.
 :ID:       9a871edc-d412-49bc-952a-c7fd1236630b
 :END:
 
-If you want to track here a daily word count, you can use the
-=org-tracktable-insert-table= command with an empty line at point.
-For more details, check the [[https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org][org-tracktable documentation]] at
-https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
-
-#+NAME: tracktable
-|---+---------------+-------+------+---------------+------------|
-| * |          date | start |  end | total (today) | comment    |
-|---+---------------+-------+------+---------------+------------|
-|   | initial count |     0 |    0 |             0 |            |
-|   |    2025-01-15 |     0 |  892 |           892 | First day  |
-|   |    2025-01-16 |   892 | 1654 |           762 | Good flow  |
-|   |    2025-01-17 |  1654 | 2847 |          1193 | Finished 3 |
-|---+---------------+-------+------+---------------+------------|
-#+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
+For automated daily word-count tracking, use the bundled writing planner
+(=M-x org-scribe-plan= or =F8 F8 W=) — it pushes live word counts and
+daily deltas into a plan file automatically, with no separate table to
+maintain here.
 
 ** Plot Thread Analysis
 :PROPERTIES:
