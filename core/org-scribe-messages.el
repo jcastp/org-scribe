@@ -6,20 +6,46 @@
 
 ;;; Commentary:
 
-;; Centralized repository for all user-facing strings in org-scribe.
-;; This makes it easy to maintain consistency and prepares for future
-;; internationalization if needed.
+;; Centralized repository for all user-facing strings in org-scribe,
+;; in two languages: English (`org-scribe-messages-en') and Spanish
+;; (`org-scribe-messages-es').  `org-scribe-msg' looks up the key in
+;; whichever language `org-scribe-message-language' selects, falls back
+;; to English when the key is missing from that language's alist, and
+;; falls back to the symbol's own name as a last resort — it never
+;; signals an error for a genuinely unregistered key.
+;;
+;; Every message key must be present in BOTH alists; `tests/test-messages.el'
+;; enforces this (key-set parity, and matching counts of %s/%d format
+;; specifiers between the two languages for the same key).
 ;;
 ;; Usage:
 ;;   (org-scribe-msg 'default-scene-name)
-;;   => "New scene"
+;;   => "New scene"                (English, the default)
+;;
+;;   (let ((org-scribe-message-language 'es))
+;;     (org-scribe-msg 'default-scene-name))
+;;   => "Escena nueva"
 ;;
 ;;   (org-scribe-msg 'msg-inserted-link "Alex")
 ;;   => "Inserted link to Alex"
 
 ;;; Code:
 
-(defconst org-scribe-messages
+;; `org-scribe-message-language' is a `defcustom' in
+;; core/org-scribe-config.el (per the project's convention that all
+;; defcustoms live there), but this file loads before config.el in the
+;; module load order (see org-scribe.el) and `org-scribe-msg' needs the
+;; variable at load time.  A plain `defvar' here supplies the default
+;; ('en) until config.el's `defcustom' runs and adds the customize
+;; metadata on top — `defcustom', like `defvar', does not override an
+;; already-bound value, so this is safe and the two forms cooperate
+;; rather than conflict.
+(defvar org-scribe-message-language 'en
+  "Language for user-facing messages: `en' (English) or `es' (Spanish).
+The real `defcustom' lives in `core/org-scribe-config.el'; see this
+file's Commentary for why a forward `defvar' is needed here too.")
+
+(defconst org-scribe-messages-en
   '(
     ;; Default values
     (default-scene-name . "New scene")
@@ -223,15 +249,229 @@
     (plural-empty . "")
     (plural-s . "s")
     )
-  "Central repository for all user-facing messages in org-scribe.
+  "English messages.  See `org-scribe-messages-es' for the Spanish set.
 Each entry is (KEY . MESSAGE-TEMPLATE) where MESSAGE-TEMPLATE can include
 printf-style format specifiers (%s, %d, etc.) for dynamic content.")
+
+(defconst org-scribe-messages-es
+  '(
+    ;; Default values
+    (default-scene-name . "Escena nueva")
+    (default-chapter-name . "Capítulo nuevo")
+
+    ;; Project creation
+    (project-creation-base-dir . "Directorio base del proyecto: ")
+    (project-creation-novel-title . "Título de la novela: ")
+    (project-creation-short-story-title . "Título del relato: ")
+    (project-creation-language-prompt . "Idioma de la plantilla: ")
+    (project-creation-success-novel . "Proyecto de novela «%s» creado correctamente en %s")
+    (project-creation-success-short-story . "Proyecto de relato «%s» creado correctamente en %s")
+    (project-already-exists . "¡El directorio del proyecto «%s» ya existe!")
+    (msg-projects-registered . "Se escanearon y registraron %d proyecto(s) en %s")
+
+    ;; Writing templates
+    (scene-name-prompt . "Nombre de la escena: ")
+    (chapter-name-prompt . "Nombre del capítulo: ")
+    (not-in-org-mode . "Este comando solo se puede usar en búferes de org-mode")
+    (not-in-novel-project . "No se encuentra en un directorio de proyecto de novela")
+
+    ;; Capture
+    (capture-character-name . "Nombre del personaje")
+    (capture-location-type . "Tipo de localización")
+    (capture-object-type . "Tipo de objeto")
+
+    ;; Search
+    (search-pov-prompt . "Buscar personaje PoV [difuso]: ")
+    (search-pov-prompt-free . "Personaje (PoV) [subcadena]: ")
+    (search-char-prompt . "Buscar personaje [difuso]: ")
+    (search-char-prompt-free . "Nombre del personaje [subcadena]: ")
+    (search-plot-prompt . "Buscar trama [difuso]: ")
+    (search-plot-prompt-free . "Término de trama [subcadena]: ")
+    (search-loc-prompt . "Buscar localización [difuso]: ")
+    (search-loc-prompt-free . "Localización [subcadena]: ")
+    (msg-no-org-files . "No se encontraron archivos .org en %s ni en sus subdirectorios")
+
+    ;; Character linking
+    (prompt-select-character . "Seleccionar personaje: ")
+    (prompt-select-pov . "Seleccionar personaje PoV: ")
+    (prompt-select-characters-multi . "Seleccionar personaje (RET para terminar): ")
+    (msg-inserted-link . "Enlace insertado a %s")
+    (msg-inserted-links . "Insertados %d enlace%s de personaje")
+    (msg-set-pov . "PoV establecido en %s")
+    (msg-set-characters . "Personajes establecidos en: %s")
+    (msg-updated-pov . "Propiedad PoV actualizada")
+    (msg-updated-characters . "Propiedad Characters actualizada")
+    (msg-updated-pov-and-chars . "Propiedades PoV y Characters actualizadas")
+    (msg-no-updates-needed . "No se encontraron propiedades de personaje o ya estaban enlazadas")
+    (msg-updated-links . "Enlaces de personaje actualizados en %d escena%s")
+    (msg-added-ids . "IDs añadidos a %d encabezado%s de personaje")
+    (msg-jump-to-pov . "Se saltó al personaje PoV")
+    (msg-no-characters-selected . "No se seleccionó ningún personaje")
+    (msg-character-ids-updated . "IDs de personaje actualizados en %s")
+    (msg-setting-up-links . "Configurando el sistema de enlace de personajes…")
+    (msg-setup-complete . "¡Configuración del sistema de enlace de personajes completa!")
+
+    ;; Location linking
+    (prompt-select-location . "Seleccionar localización: ")
+    (prompt-select-locations-multi . "Seleccionar localización (RET para terminar): ")
+    (msg-set-location . "Localización establecida en %s")
+    (msg-set-locations . "Localizaciones establecidas en: %s")
+    (msg-updated-location . "Propiedad Location actualizada")
+    (msg-updated-locations . "Propiedad Locations actualizada")
+    (msg-updated-location-links . "Enlaces de localización actualizados en %d escena%s")
+    (msg-added-location-ids . "IDs añadidos a %d encabezado%s de localización")
+    (msg-location-ids-updated . "IDs de localización actualizados en %s")
+    (msg-no-locations-selected . "No se seleccionó ninguna localización")
+    (msg-inserted-location-links . "Insertados %d enlace%s de localización")
+    (msg-setting-up-location-links . "Configurando el sistema de enlace de localizaciones…")
+    (msg-location-setup-complete . "¡Configuración del sistema de enlace de localizaciones completa!")
+
+    ;; Plot linking
+    (prompt-select-plot-thread . "Seleccionar hilo de trama: ")
+    (prompt-select-plot-threads-multi . "Seleccionar hilo de trama (RET para terminar): ")
+    (msg-set-plot-thread . "Trama establecida en %s")
+    (msg-set-plot-threads . "Hilos de trama establecidos en: %s")
+    (msg-updated-plot . "Propiedad Plot actualizada")
+    (msg-updated-plot-threads . "Propiedad Plot actualizada")
+    (msg-updated-plot-links . "Enlaces de hilos de trama actualizados en %d escena%s")
+    (msg-added-plot-ids . "IDs añadidos a %d encabezado%s de hilo de trama")
+    (msg-plot-ids-updated . "IDs de hilos de trama actualizados en %s")
+    (msg-no-plot-threads-selected . "No se seleccionó ningún hilo de trama")
+    (msg-inserted-plot-links . "Insertados %d enlace%s de hilo de trama")
+    (msg-no-plot-updates-needed . "No se encontró la propiedad Plot o ya estaba enlazada")
+    (msg-jump-to-plot-thread . "Se saltó al hilo de trama")
+    (msg-setting-up-plot-links . "Configurando el sistema de enlace de hilos de trama…")
+    (msg-plot-setup-complete . "¡Configuración del sistema de enlace de hilos de trama completa!")
+    (msg-plot-health-report . "Informe de estado de los hilos de trama generado")
+    (msg-plot-stats . "Hilos de trama: %d | Escenas: %d | Hilos con avisos: %d")
+    (msg-no-plot-property . "No hay propiedad Plot en el encabezado actual")
+    (msg-no-plot-threads-in-property . "No se encontraron hilos de trama en la propiedad Plot")
+    (msg-plot-not-id-link . "El hilo de trama «%s» no es un enlace de ID")
+    (prompt-jump-to-plot . "Saltar al hilo de trama: ")
+
+    ;; Link name updates
+    (msg-updated-link-names . "Nombres de enlace actualizados")
+    (msg-updated-all-link-names . "Nombres de enlace de %s actualizados en %d escena%s")
+    (msg-updated-all-links-scene . "Nombres de enlace actualizados en %d escena%s")
+    (msg-relink-complete . "Reenlace completo: enlaces actualizados en %d escena%s en %s")
+    (msg-relink-no-novel . "No se encontró ningún archivo de manuscrito en este proyecto")
+    (msg-no-link-updates . "Ningún nombre de enlace de %s necesitaba actualizarse")
+    (msg-updated-pov-link-names . "Nombres de enlace de PoV actualizados")
+    (msg-updated-characters-link-names . "Nombres de enlace de personajes actualizados")
+    (msg-updated-pov-and-chars-link-names . "Nombres de enlace de PoV y personajes actualizados")
+    (msg-updated-plot-link-names . "Nombres de enlace de trama actualizados")
+
+    ;; Character relationships
+    (prompt-relationship-from-character . "Personaje de origen: ")
+    (prompt-relationship-to-character . "Personaje de destino: ")
+    (prompt-relationship-type . "Tipo de relación: ")
+    (prompt-remove-relationship . "Eliminar relación: ")
+    (msg-added-relationship . "Relación de tipo %s añadida: %s → %s")
+    (msg-removed-relationship . "Relación de %s eliminada: %s")
+    (msg-no-relationships . "No se encontraron relaciones para este personaje.")
+    (msg-no-relationships-in-project . "No se encontraron relaciones en el proyecto.")
+    (msg-relationship-setup-complete . "Propiedad RelationshipsData añadida a %d personaje%s")
+    (msg-no-other-characters . "No se encontraron más personajes. Cree más personajes primero.")
+    (error-no-relationships . "No hay relaciones definidas para %s")
+
+    ;; Column view
+    (msg-column-view-enabled . "Simplificación de enlaces en vista de columnas activada")
+    (msg-column-view-disabled . "Simplificación de enlaces en vista de columnas desactivada")
+
+    ;; Overlay tooltips
+    (msg-overlays-enabled . "Información emergente de entidades activada")
+    (msg-overlays-disabled . "Información emergente de entidades desactivada")
+
+    ;; Scene word counts
+    (msg-scenes-wordcount-updated . "Recuento de palabras actualizado en %d escena%s")
+    (msg-wordcount-region . "%d palabras en la región")
+    (msg-wordcount-buffer . "%d palabras en el búfer")
+    (msg-wordcount-degraded . "Contado sin org-context-extended: los totales incluyen metadatos de Org. Instálelo para un recuento preciso (M-x org-scribe-setup-check).")
+
+    ;; Dictionary / language tools
+    (error-word-empty . "La palabra no puede estar vacía")
+    (error-word-lookup . "Error al buscar la palabra: %s")
+    (msg-word-not-found . "Palabra no encontrada: %s")
+    (msg-word-suggestions . "Sugerencias:")
+    (error-random-word . "Error al obtener una palabra aleatoria: %s")
+    (error-word-parse . "Error al analizar la respuesta de la RAE: %s")
+    (error-random-word-parse . "Error al analizar la respuesta de palabra aleatoria: %s")
+
+    ;; File operations
+    (file-not-found . "El archivo %s no existe. ¿Crearlo? ")
+    (file-open-prompt . "Abrir archivo: ")
+
+    ;; Questions / confirmations
+    (question-link-existing-scenes . "¿Enlazar personajes en las escenas existentes? ")
+    (question-link-existing-locations . "¿Enlazar localizaciones en las escenas existentes? ")
+    (question-link-existing-plots . "¿Enlazar hilos de trama en las escenas existentes? ")
+    (question-create-directory . "El directorio %s no existe. ¿Crearlo? ")
+
+    ;; Errors — input validation
+    (error-empty-title . "El título no puede estar vacío ni contener solo espacios en blanco")
+    (error-path-separator . "El título no puede contener separadores de ruta (/ o \\)")
+    (error-title-colon . "El título no puede contener dos puntos (:)")
+    (error-title-special-chars . "El título no puede contener caracteres especiales (* ? < > | \" ')")
+    (error-title-dot . "El título no puede empezar con un punto (.)")
+    (error-title-double-dot . "El título no puede contener puntos dobles (..)")
+    (error-empty-character . "El nombre del personaje no puede estar vacío")
+    (error-empty-location . "La localización no puede estar vacía")
+    (error-empty-plot . "El término de trama no puede estar vacío")
+
+    ;; Errors — missing features / files
+    (error-no-characters-found . "No se encontraron personajes. Cree personajes primero o añada IDs con org-scribe-add-character-ids.")
+    (error-no-locations-found . "No se encontraron localizaciones. Cree localizaciones primero o añada IDs con org-scribe-add-location-ids.")
+    (error-no-plot-threads-found . "No se encontraron hilos de trama. Cree hilos de trama primero o añada IDs con org-scribe-add-plot-thread-ids.")
+    (error-no-character-file . "No se encontró el archivo de personajes. Cree personajes primero.")
+    (error-no-location-file . "No se encontró el archivo de localizaciones. Cree localizaciones primero.")
+    (error-no-plot-file . "No se encontró el archivo de trama. Cree hilos de trama primero.")
+    (error-no-pov-property . "No se encontró la propiedad PoV")
+    (error-pov-not-link . "La propiedad PoV no es un enlace de ID. Use org-scribe-set-pov-character para crear un enlace.")
+    (error-plot-not-link . "La propiedad Plot no es un enlace de ID. Use org-scribe-set-scene-plot-threads para crear un enlace.")
+    (error-no-id-for-character . "No se encontró ID para %s")
+    (error-no-id-for-location . "No se encontró ID para %s")
+    (error-no-id-for-plot . "No se encontró ID para %s")
+    (error-template-not-found . "No se encontró el directorio de plantillas: %s")
+    (error-org-ql-required . "El paquete org-ql es necesario para las funciones de búsqueda")
+    (error-org-context-required . "El paquete org-context-extended es necesario para un recuento de palabras preciso")
+    (error-writeroom-required . "writeroom-mode es necesario para los modos de entorno de escritura")
+    (error-feature-not-available . "La función %s no está disponible. Instale el paquete necesario")
+    (error-no-org-file . "El búfer actual no está visitando ningún archivo; no se puede activar `org-scribe-editing-mode'")
+
+    ;; Workspace dispatcher
+    (prompt-select-workspace . "Disposición del espacio de trabajo: ")
+    (msg-workspace-set . "Espacio de trabajo: %s")
+    (msg-workspace-normal . "Espacio de trabajo: edición normal")
+    (error-unknown-workspace . "Disposición de espacio de trabajo desconocida: %s")
+
+    ;; Health report — text-level statistics
+    (msg-health-pov-word-share-heading . "Reparto de Palabras por PoV")
+    (msg-health-pov-word-share-table-header . "| PoV | Escenas | Palabras | % del Total |")
+    (msg-health-pov-none-label . "(sin PoV)")
+    (msg-health-chapter-length-heading . "Dispersión de Longitud de Capítulos")
+    (msg-health-chapter-length-table-header . "| Capítulo | Palabras |")
+    (msg-health-chapter-length-summary . "Mín: %d palabras · Máx: %d palabras · Media: %.1f palabras · Mediana: %.1f palabras")
+    (msg-health-chapter-length-outlier-legend . "* señala un capítulo con más del ~2x de la media o menos del ~0.5x — informativo, no un juicio.")
+
+    ;; Pluralization helpers (used in code)
+    (plural-empty . "")
+    (plural-s . "s")
+    )
+  "Spanish messages.  See `org-scribe-messages-en' for the English set
+and this file's Commentary for the parity requirement between the two.")
 
 (defun org-scribe-msg (key &rest args)
   "Get user-facing message for KEY and format with ARGS.
 
-KEY is a symbol that identifies the message in `org-scribe-messages'.
-ARGS are optional format arguments to substitute into the message template.
+KEY is a symbol that identifies the message in the alist selected by
+`org-scribe-message-language' (`org-scribe-messages-en' or
+`org-scribe-messages-es').  ARGS are optional format arguments to
+substitute into the message template.
+
+Falls back to `org-scribe-messages-en' when KEY is missing from the
+selected language, and to KEY's own symbol name when it is missing from
+English too — this function never signals an error for an unregistered
+key.
 
 Examples:
   (org-scribe-msg 'default-scene-name)
@@ -241,15 +481,16 @@ Examples:
   => \"Inserted link to Alex\"
 
   (org-scribe-msg 'msg-updated-links 5 \"s\")
-  => \"Updated character links in 5 scenes\"
-
-If KEY is not found in `org-scribe-messages', signals an error."
-  (let ((template (alist-get key org-scribe-messages)))
-    (if template
-        (if args
-            (apply #'format template args)
-          template)
-      (error "Unknown message key: %s" key))))
+  => \"Updated character links in 5 scenes\""
+  (let* ((table (if (eq org-scribe-message-language 'es)
+                    org-scribe-messages-es
+                  org-scribe-messages-en))
+         (template (or (alist-get key table)
+                       (alist-get key org-scribe-messages-en)
+                       (symbol-name key))))
+    (if args
+        (apply #'format template args)
+      template)))
 
 (defun org-scribe-plural (count singular-suffix)
   "Return appropriate plural suffix based on COUNT.
@@ -261,7 +502,13 @@ Examples:
   (org-scribe-plural 5 \"\") => \"s\"
   (org-scribe-plural 0 \"\") => \"s\"
 
-This is a helper for constructing grammatically correct messages."
+This is a helper for constructing grammatically correct messages.
+Every message in `org-scribe-messages-es' that uses this suffix
+attaches it to a noun whose Spanish plural is also formed by adding
+just \"s\" (e.g. \"enlace\"/\"enlaces\", \"escena\"/\"escenas\",
+\"encabezado\"/\"encabezados\") — nouns needing \"-es\" (e.g.
+\"localización\"/\"localizaciones\") are rephrased so the pluralized
+word is always one of the safe \"-s\" nouns instead."
   (if (= count 1) singular-suffix "s"))
 
 (provide 'org-scribe-messages)

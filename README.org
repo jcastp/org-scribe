@@ -66,6 +66,7 @@ Full support for English/Spanish bilingual writing:
 - Spanish RAE dictionary integration
 - WordReference synonym lookup
 - Bilingual project structure support (notes/notas directories)
+- Bilingual UI: every command prompt, message, and error is available in Spanish too — set =(setq org-scribe-message-language 'es)= (default =en=)
 
 * Installation
 

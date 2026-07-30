@@ -16,6 +16,20 @@
   :group 'org
   :prefix "org-scribe-")
 
+;;; Messages
+
+(defcustom org-scribe-message-language 'en
+  "Language for user-facing messages: `en' (English) or `es' (Spanish).
+Affects every string returned by `org-scribe-msg' — commands, prompts,
+and error messages throughout org-scribe.  Unrelated to
+`org-scribe-template-language' / `org-scribe-project-language', which
+select which language's *project templates* a new project is created
+from; see `core/org-scribe-messages.el' for why this defcustom has a
+forward `defvar' there too."
+  :type '(choice (const :tag "English" en)
+                 (const :tag "Spanish" es))
+  :group 'org-scribe)
+
 ;;; Project Structure
 
 (defcustom org-scribe-novel-file-names '("novel.org" "novela.org" "manuscript.org")
