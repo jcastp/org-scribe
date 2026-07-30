@@ -131,25 +131,14 @@
     (prompt-relationship-from-character . "From character: ")
     (prompt-relationship-to-character . "To character: ")
     (prompt-relationship-type . "Relationship type: ")
-    (prompt-relationship-strength . "Strength (1-5): ")
-    (prompt-relationship-sentiment . "Sentiment: ")
     (prompt-remove-relationship . "Remove relationship: ")
-    (msg-added-relationship . "Added %s relationship: %s → %s (strength: %d, %s)")
+    (msg-added-relationship . "Added %s relationship: %s → %s")
     (msg-removed-relationship . "Removed %s's relationship: %s")
     (msg-no-relationships . "No relationships found for this character.")
     (msg-no-relationships-in-project . "No relationships found in project.")
     (msg-relationship-setup-complete . "Added RelationshipsData property to %d character%s")
     (msg-no-other-characters . "No other characters found. Create more characters first.")
     (error-no-relationships . "No relationships defined for %s")
-
-    ;; Relationship visualization
-    (prompt-graph-format . "Format: ")
-    (prompt-graph-character . "Character (blank for all): ")
-    (prompt-graph-min-strength . "Minimum strength (blank for all): ")
-    (msg-graph-inserted . "Relationship graph block inserted. Press C-c C-c to update.")
-    (error-graphviz-not-found . "Graphviz 'dot' command not found. Install Graphviz to generate images.")
-    (error-graph-render-failed . "Error rendering graph: dot exited with code %d")
-    (msg-graph-format-unknown . "Unknown format: %s. Use 'dot, 'ascii, or 'table")
 
     ;; Column view
     (msg-column-view-enabled . "Column view link stripping enabled")

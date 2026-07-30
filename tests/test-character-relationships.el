@@ -5,16 +5,14 @@
 ;;; Commentary:
 
 ;; Tests for org-scribe-character-relationships.el.
-;; Covers the pure functions that handle relationship data:
+;; Covers:
 ;;   - Parsing relationship strings from :RelationshipsData: properties
 ;;   - Formatting relationships back to strings
-;;   - ASCII tree visualization
-;;   - Relationship filtering by strength
-;;   - Sentiment-to-color mapping for DOT graphs
-;;   - Table formatting
-;;
-;; Interactive functions (add/remove/show) require a live project
-;; and are not tested here.
+;;   - Plain-list and table display formatting
+;;   - The interactive add/remove/show/get-all commands, against a
+;;     temp-file fixture with `org-scribe-capture-character-file' and
+;;     `org-scribe-project-type' stubbed so the entity-lookup machinery
+;;     resolves to the fixture instead of a real project.
 
 ;;; Code:
 
@@ -40,77 +38,62 @@
 ;;; Function Availability Tests
 
 (ert-deftest test-relationships-functions-defined ()
-  "Test that all relationship functions are defined."
+  "Test that all surviving relationship functions are defined."
   ;; Parsing
   (should (fboundp 'org-scribe--parse-single-relationship))
   (should (fboundp 'org-scribe--parse-relationships))
   ;; Formatting
   (should (fboundp 'org-scribe--format-relationship))
   (should (fboundp 'org-scribe--relationships-to-string))
-  ;; Visualization
-  (should (fboundp 'org-scribe--ascii-relationship-tree))
+  ;; Display
+  (should (fboundp 'org-scribe--format-relationship-list))
   (should (fboundp 'org-scribe--format-relationship-table))
-  ;; Filtering
-  (should (fboundp 'org-scribe--filter-relationships-by-strength))
-  ;; DOT graph
-  (should (fboundp 'org-scribe--sentiment-to-color))
-  (should (fboundp 'org-scribe--generate-dot-code))
+  ;; Database
+  (should (fboundp 'org-scribe--get-character-relationships))
+  (should (fboundp 'org-scribe--find-character-by-name))
+  (should (fboundp 'org-scribe--update-character-relationships))
+  (should (fboundp 'org-scribe--get-character-relationships-by-name))
+  (should (fboundp 'org-scribe--get-all-relationships))
   ;; Interactive
   (should (fboundp 'org-scribe-add-relationship))
   (should (fboundp 'org-scribe-remove-relationship))
   (should (fboundp 'org-scribe-show-character-relationships))
   (should (fboundp 'org-scribe-show-all-relationships))
-  (should (fboundp 'org-scribe-setup-character-relationships))
-  (should (fboundp 'org-dblock-write:character-relationships)))
+  (should (fboundp 'org-scribe-setup-character-relationships)))
 
 (ert-deftest test-relationships-variables-defined ()
-  "Test that relationship type variables are defined."
+  "Test that the relationship type variable is defined."
   (should (boundp 'org-scribe-relationship-types))
-  (should (boundp 'org-scribe-relationship-sentiments))
   (should (listp org-scribe-relationship-types))
-  (should (listp org-scribe-relationship-sentiments))
-  (should (> (length org-scribe-relationship-types) 0))
-  (should (> (length org-scribe-relationship-sentiments) 0)))
+  (should (> (length org-scribe-relationship-types) 0)))
 
 ;;; org-scribe--parse-single-relationship Tests
 
 (ert-deftest test-relationships-parse-single-basic ()
   "Test parsing a basic relationship string."
   (let ((result (org-scribe--parse-single-relationship
-                 "[[id:char-bob-001][Bob]](friend,3,positive)")))
+                 "[[id:char-bob-001][Bob]]|friend")))
     (should result)
     (should (string= "char-bob-001" (nth 0 result)))  ; ID
     (should (string= "Bob" (nth 1 result)))            ; Name
-    (should (string= "friend" (nth 2 result)))         ; Type
-    (should (= 3 (nth 3 result)))                      ; Strength
-    (should (string= "positive" (nth 4 result)))))     ; Sentiment
+    (should (string= "friend" (nth 2 result)))))        ; Type
 
 (ert-deftest test-relationships-parse-single-full ()
-  "Test parsing relationship with all metadata."
+  "Test parsing relationship with a multi-word name."
   (let ((result (org-scribe--parse-single-relationship
-                 "[[id:char-alice-001][Alice Rivera]](mentor,5,positive)")))
+                 "[[id:char-alice-001][Alice Rivera]]|mentor")))
     (should result)
     (should (string= "char-alice-001" (nth 0 result)))
     (should (string= "Alice Rivera" (nth 1 result)))
-    (should (string= "mentor" (nth 2 result)))
-    (should (= 5 (nth 3 result)))
-    (should (string= "positive" (nth 4 result)))))
+    (should (string= "mentor" (nth 2 result)))))
 
 (ert-deftest test-relationships-parse-single-different-types ()
   "Test parsing relationships with various types."
   (dolist (type '("enemy" "rival" "family" "lover" "ally" "colleague"))
-    (let* ((rel-string (format "[[id:char-001][Person]](%s,2,neutral)" type))
+    (let* ((rel-string (format "[[id:char-001][Person]]|%s" type))
            (result (org-scribe--parse-single-relationship rel-string)))
       (should result)
       (should (string= type (nth 2 result))))))
-
-(ert-deftest test-relationships-parse-single-all-sentiments ()
-  "Test parsing relationships with all sentiment values."
-  (dolist (sentiment '("positive" "negative" "neutral" "complex"))
-    (let* ((rel-string (format "[[id:char-001][Person]](friend,3,%s)" sentiment))
-           (result (org-scribe--parse-single-relationship rel-string)))
-      (should result)
-      (should (string= sentiment (nth 4 result))))))
 
 (ert-deftest test-relationships-parse-single-nil ()
   "Test parsing nil returns nil."
@@ -126,13 +109,6 @@
   (should (null (org-scribe--parse-single-relationship "[[id:x][Name]]")))
   (should (null (org-scribe--parse-single-relationship "[[id:x][Name]](friend)"))))
 
-(ert-deftest test-relationships-parse-single-strength-as-integer ()
-  "Test that strength is parsed as an integer."
-  (let ((result (org-scribe--parse-single-relationship
-                 "[[id:char-001][Bob]](friend,4,positive)")))
-    (should (integerp (nth 3 result)))
-    (should (= 4 (nth 3 result)))))
-
 ;;; org-scribe--parse-relationships Tests
 
 (ert-deftest test-relationships-parse-multi-empty ()
@@ -143,7 +119,7 @@
 (ert-deftest test-relationships-parse-multi-single ()
   "Test parsing property with one relationship."
   (let ((result (org-scribe--parse-relationships
-                 "[[id:char-bob-001][Bob]](friend,3,positive)")))
+                 "[[id:char-bob-001][Bob]]|friend")))
     (should result)
     (should (= 1 (length result)))
     (should (string= "Bob" (nth 1 (car result))))))
@@ -151,7 +127,7 @@
 (ert-deftest test-relationships-parse-multi-multiple ()
   "Test parsing property with multiple relationships."
   (let ((result (org-scribe--parse-relationships
-                 "[[id:char-bob-001][Bob]](friend,3,positive); [[id:char-carol-001][Carol]](rival,2,negative)")))
+                 "[[id:char-bob-001][Bob]]|friend; [[id:char-carol-001][Carol]]|rival")))
     (should result)
     (should (= 2 (length result)))
     (should (string= "Bob" (nth 1 (nth 0 result))))
@@ -160,9 +136,9 @@
 (ert-deftest test-relationships-parse-multi-preserves-order ()
   "Test that parsing preserves relationship order."
   (let* ((rel-string (concat
-                      "[[id:char-001][Alice]](friend,5,positive); "
-                      "[[id:char-002][Bob]](rival,3,negative); "
-                      "[[id:char-003][Carol]](mentor,4,neutral)"))
+                      "[[id:char-001][Alice]]|friend; "
+                      "[[id:char-002][Bob]]|rival; "
+                      "[[id:char-003][Carol]]|mentor"))
          (result (org-scribe--parse-relationships rel-string)))
     (should (= 3 (length result)))
     (should (string= "Alice" (nth 1 (nth 0 result))))
@@ -173,39 +149,34 @@
 
 (ert-deftest test-relationships-format-basic ()
   "Test formatting a relationship to string."
-  (should (string= "[[id:char-bob-001][Bob]](friend,3,positive)"
+  (should (string= "[[id:char-bob-001][Bob]]|friend"
                    (org-scribe--format-relationship
-                    "char-bob-001" "Bob" "friend" 3 "positive"))))
+                    "char-bob-001" "Bob" "friend"))))
 
 (ert-deftest test-relationships-format-round-trip ()
   "Test that format and parse are inverse operations."
   (let* ((id "char-alice-001")
          (name "Alice Rivera")
          (type "mentor")
-         (strength 5)
-         (sentiment "complex")
-         (formatted (org-scribe--format-relationship
-                     id name type strength sentiment))
+         (formatted (org-scribe--format-relationship id name type))
          (parsed (org-scribe--parse-single-relationship formatted)))
     (should parsed)
     (should (string= id (nth 0 parsed)))
     (should (string= name (nth 1 parsed)))
-    (should (string= type (nth 2 parsed)))
-    (should (= strength (nth 3 parsed)))
-    (should (string= sentiment (nth 4 parsed)))))
+    (should (string= type (nth 2 parsed)))))
 
 ;;; org-scribe--relationships-to-string Tests
 
 (ert-deftest test-relationships-to-string-single ()
   "Test converting single relationship to string."
-  (let ((rels '(("char-bob-001" "Bob" "friend" 3 "positive"))))
-    (should (string= "[[id:char-bob-001][Bob]](friend,3,positive)"
+  (let ((rels '(("char-bob-001" "Bob" "friend"))))
+    (should (string= "[[id:char-bob-001][Bob]]|friend"
                      (org-scribe--relationships-to-string rels)))))
 
 (ert-deftest test-relationships-to-string-multiple ()
   "Test converting multiple relationships to string."
-  (let ((rels '(("char-bob-001" "Bob" "friend" 3 "positive")
-                ("char-carol-001" "Carol" "rival" 2 "negative"))))
+  (let ((rels '(("char-bob-001" "Bob" "friend")
+                ("char-carol-001" "Carol" "rival"))))
     (let ((result (org-scribe--relationships-to-string rels)))
       (should (string-match-p "Bob" result))
       (should (string-match-p "Carol" result))
@@ -214,8 +185,8 @@
 
 (ert-deftest test-relationships-to-string-round-trip ()
   "Test that to-string and parse-relationships are inverse."
-  (let* ((original '(("char-alice-001" "Alice" "mentor" 5 "positive")
-                     ("char-bob-001" "Bob" "rival" 2 "negative")))
+  (let* ((original '(("char-alice-001" "Alice" "mentor")
+                     ("char-bob-001" "Bob" "rival")))
          (string (org-scribe--relationships-to-string original))
          (parsed (org-scribe--parse-relationships string)))
     (should (= (length original) (length parsed)))
@@ -223,133 +194,41 @@
       (should (string= (nth 0 (nth i original))
                        (nth 0 (nth i parsed))))
       (should (string= (nth 1 (nth i original))
-                       (nth 1 (nth i parsed)))))))
+                       (nth 1 (nth i parsed))))
+      (should (string= (nth 2 (nth i original))
+                       (nth 2 (nth i parsed)))))))
 
-;;; org-scribe--ascii-relationship-tree Tests
+;;; org-scribe--format-relationship-list Tests
 
-(ert-deftest test-relationships-ascii-tree-basic ()
-  "Test basic ASCII tree generation."
-  (let* ((rels '(("char-bob-001" "Bob" "friend" 3 "positive")))
-         (tree (org-scribe--ascii-relationship-tree "Alice" rels)))
-    (should (stringp tree))
-    (should (string-match-p "Alice" tree))
-    (should (string-match-p "Bob" tree))
-    (should (string-match-p "friend" tree))))
+(ert-deftest test-relationships-format-list-basic ()
+  "Test that the plain-list formatter names the character and each relation."
+  (let* ((rels '(("char-bob-001" "Bob" "friend")))
+         (text (org-scribe--format-relationship-list "Alice" rels)))
+    (should (stringp text))
+    (should (string-match-p "Alice" text))
+    (should (string-match-p "Bob" text))
+    (should (string-match-p "friend" text))))
 
-(ert-deftest test-relationships-ascii-tree-last-element ()
-  "Test that last element uses └─ prefix."
-  (let* ((rels '(("char-bob-001" "Bob" "friend" 3 "positive")))
-         (tree (org-scribe--ascii-relationship-tree "Alice" rels)))
-    (should (string-match-p "└─" tree))))
+(ert-deftest test-relationships-format-list-multiple-lines ()
+  "Test that each relationship gets its own line."
+  (let* ((rels '(("char-bob-001" "Bob" "friend")
+                 ("char-carol-001" "Carol" "rival")))
+         (text (org-scribe--format-relationship-list "Alice" rels)))
+    (should (string-match-p "- friend: Bob" text))
+    (should (string-match-p "- rival: Carol" text))))
 
-(ert-deftest test-relationships-ascii-tree-non-last-element ()
-  "Test that non-last elements use ├─ prefix."
-  (let* ((rels '(("char-bob-001" "Bob" "friend" 3 "positive")
-                 ("char-carol-001" "Carol" "rival" 2 "negative")))
-         (tree (org-scribe--ascii-relationship-tree "Alice" rels)))
-    (should (string-match-p "├─" tree))  ; Bob (not last)
-    (should (string-match-p "└─" tree)))) ; Carol (last)
-
-(ert-deftest test-relationships-ascii-tree-sentiment-symbols ()
-  "Test that sentiment is shown as correct symbol."
-  ;; positive → +
-  (let* ((rels '(("char-bob-001" "Bob" "friend" 3 "positive")))
-         (tree (org-scribe--ascii-relationship-tree "Alice" rels)))
-    (should (string-match-p "+" tree)))
-
-  ;; negative → -
-  (let* ((rels '(("char-bob-001" "Bob" "enemy" 4 "negative")))
-         (tree (org-scribe--ascii-relationship-tree "Alice" rels)))
-    (should (string-match-p "-" tree)))
-
-  ;; complex → ~
-  (let* ((rels '(("char-bob-001" "Bob" "rival" 3 "complex")))
-         (tree (org-scribe--ascii-relationship-tree "Alice" rels)))
-    (should (string-match-p "~" tree))))
-
-(ert-deftest test-relationships-ascii-tree-shows-strength-bars ()
-  "Test that strength is rendered as ■ bars, not silently dropped (L7).
-Regression: `strength-bars' was computed but never inserted into the
-formatted line."
-  (let* ((rels '(("char-bob-001" "Bob" "friend" 3 "positive")))
-         (tree (org-scribe--ascii-relationship-tree "Alice" rels)))
-    (should (string-match-p "■■■" tree))
-    (should-not (string-match-p "■■■■" tree)))
-  (let* ((rels '(("char-bob-001" "Bob" "friend" 1 "positive")))
-         (tree (org-scribe--ascii-relationship-tree "Alice" rels)))
-    (should (string-match-p "■" tree))
-    (should-not (string-match-p "■■" tree))))
-
-(ert-deftest test-relationships-ascii-tree-empty ()
-  "Test ASCII tree with no relationships."
-  (let ((tree (org-scribe--ascii-relationship-tree "Alice" '())))
-    (should (stringp tree))
-    (should (string-match-p "Alice" tree))))
-
-;;; org-scribe--sentiment-to-color Tests
-
-(ert-deftest test-relationships-sentiment-positive ()
-  "Test positive sentiment maps to green."
-  (should (string= "forestgreen" (org-scribe--sentiment-to-color "positive"))))
-
-(ert-deftest test-relationships-sentiment-negative ()
-  "Test negative sentiment maps to red."
-  (should (string= "crimson" (org-scribe--sentiment-to-color "negative"))))
-
-(ert-deftest test-relationships-sentiment-complex ()
-  "Test complex sentiment maps to purple."
-  (should (string= "purple" (org-scribe--sentiment-to-color "complex"))))
-
-(ert-deftest test-relationships-sentiment-neutral ()
-  "Test neutral/unknown sentiment maps to gray."
-  (should (string= "gray50" (org-scribe--sentiment-to-color "neutral")))
-  (should (string= "gray50" (org-scribe--sentiment-to-color "unknown")))
-  (should (string= "gray50" (org-scribe--sentiment-to-color ""))))
-
-;;; org-scribe--filter-relationships-by-strength Tests
-
-(ert-deftest test-relationships-filter-by-strength-basic ()
-  "Test filtering relationships by minimum strength."
-  (let* ((all-rels '(("Alice" .
-                      (("char-bob-001" "Bob" "friend" 3 "positive")
-                       ("char-carol-001" "Carol" "rival" 1 "negative")
-                       ("char-dave-001" "Dave" "ally" 5 "neutral")))
-                     ("Bob" .
-                      (("char-alice-001" "Alice" "friend" 2 "positive")))))
-         (filtered (org-scribe--filter-relationships-by-strength all-rels 3)))
-    ;; Alice should have 2 rels (strength 3 and 5)
-    (let ((alice-rels (cdr (assoc "Alice" filtered))))
-      (should (= 2 (length alice-rels)))
-      ;; Carol (strength 1) should be filtered out
-      (should (null (cl-find "Carol" alice-rels :key (lambda (r) (nth 1 r))
-                             :test #'string=)))
-      ;; Bob (strength 3) and Dave (strength 5) should remain
-      (should (cl-find "Bob" alice-rels :key (lambda (r) (nth 1 r))
-                       :test #'string=)))))
-
-(ert-deftest test-relationships-filter-all-above ()
-  "Test filter with threshold that passes all relationships."
-  (let* ((all-rels '(("Alice" .
-                      (("char-bob-001" "Bob" "friend" 5 "positive")
-                       ("char-carol-001" "Carol" "rival" 5 "negative")))))
-         (filtered (org-scribe--filter-relationships-by-strength all-rels 1)))
-    (should (= 2 (length (cdr (assoc "Alice" filtered)))))))
-
-(ert-deftest test-relationships-filter-all-below ()
-  "Test filter with threshold that excludes all relationships."
-  (let* ((all-rels '(("Alice" .
-                      (("char-bob-001" "Bob" "friend" 1 "positive")
-                       ("char-carol-001" "Carol" "rival" 2 "negative")))))
-         (filtered (org-scribe--filter-relationships-by-strength all-rels 5)))
-    ;; Alice's entry should be removed (all rels below threshold)
-    (should (null (assoc "Alice" filtered)))))
+(ert-deftest test-relationships-format-list-empty ()
+  "Test the plain-list formatter with no relationships."
+  (let ((text (org-scribe--format-relationship-list "Alice" '())))
+    (should (stringp text))
+    (should (string-match-p "Alice" text))))
 
 ;;; org-scribe--format-relationship-table Tests
 
 (ert-deftest test-relationships-format-table-basic ()
   "Test basic table format."
   (let* ((all-rels '(("Alice" .
-                      (("char-bob-001" "Bob" "friend" 3 "positive")))))
+                      (("char-bob-001" "Bob" "friend")))))
          (table (org-scribe--format-relationship-table all-rels)))
     (should (stringp table))
     (should (string-match-p "Alice" table))
@@ -359,45 +238,106 @@ formatted line."
     (should (string-match-p "|" table))))
 
 (ert-deftest test-relationships-format-table-header ()
-  "Test that table includes header row."
+  "Test that table includes header row, with no Strength/Sentiment columns."
   (let* ((all-rels '(("Alice" .
-                      (("char-bob-001" "Bob" "friend" 3 "positive")))))
+                      (("char-bob-001" "Bob" "friend")))))
          (table (org-scribe--format-relationship-table all-rels)))
     (should (string-match-p "Character" table))
     (should (string-match-p "Related To" table))
     (should (string-match-p "Type" table))
-    (should (string-match-p "Strength" table))
-    (should (string-match-p "Sentiment" table))))
+    (should-not (string-match-p "Strength" table))
+    (should-not (string-match-p "Sentiment" table))))
 
 (ert-deftest test-relationships-format-table-empty ()
   "Test table format with empty relationships."
   (let ((table (org-scribe--format-relationship-table '())))
     (should (stringp table))))
 
-;;; Dynamic Block Image Link Tests
+;;; Interactive-command fixture
+;;
+;; `org-scribe--get-character-file' and `org-scribe--get-all-characters'
+;; both resolve through `org-scribe-capture-character-file' (see
+;; org-scribe-linking-core.el's :file-fn slot), so stubbing that one
+;; function is enough to point the whole entity-lookup chain at a fixture
+;; file instead of a real project.
 
-(ert-deftest test-relationships-dblock-dot-copies-image-to-output-file ()
-  "Test that the dot dblock copies the rendered image to the linked file.
-Regression test: previously the inserted [[file:...]] link pointed at
-`character-relationships.png' even when nothing had been copied there,
-because the copy only happened when an explicit :image-file was given."
-  (let* ((temp-dir (file-name-as-directory (make-temp-file "org-scribe-rel-test-" t)))
-         (default-directory temp-dir)
-         (rendered-temp (make-temp-file "org-scribe-graph" nil ".png")))
+(defmacro org-scribe-relationships-test--with-fixture (&rest body)
+  "Run BODY with a two-character temp file wired in as the character DB."
+  (declare (indent 0))
+  `(let* ((temp-file (make-temp-file "test-rel-chars-" nil ".org")))
+     (unwind-protect
+         (progn
+           (with-temp-file temp-file
+             (insert "* Alice\n")
+             (insert ":PROPERTIES:\n:ID: char-alice-001\n:Role: Protagonist\n:END:\n\n")
+             (insert "* Bob\n")
+             (insert ":PROPERTIES:\n:ID: char-bob-001\n:Role: Ally\n:END:\n\n")
+             (insert "* Carol\n")
+             (insert ":PROPERTIES:\n:ID: char-carol-001\n:Role: Rival\n:END:\n\n"))
+           (cl-letf (((symbol-function 'org-scribe-capture-character-file)
+                      (lambda (&optional _create) temp-file))
+                     ((symbol-function 'org-scribe-project-type)
+                      (lambda () 'novel)))
+             ,@body))
+       (let ((buf (find-buffer-visiting temp-file)))
+         (when buf (kill-buffer buf)))
+       (delete-file temp-file))))
+
+(ert-deftest test-relationships-add-writes-property ()
+  "org-scribe-add-relationship stores a new SOURCE -> (TARGET, TYPE) entry."
+  (org-scribe-relationships-test--with-fixture
+    (cl-letf (((symbol-function 'completing-read)
+               (let ((answers '("Alice" "Bob" "mentor")))
+                 (lambda (&rest _args)
+                   (pop answers)))))
+      (org-scribe-add-relationship))
+    (let ((rels (org-scribe--get-character-relationships-by-name "Alice")))
+      (should (= 1 (length rels)))
+      (should (string= "char-bob-001" (nth 0 (car rels))))
+      (should (string= "Bob" (nth 1 (car rels))))
+      (should (string= "mentor" (nth 2 (car rels)))))))
+
+(ert-deftest test-relationships-add-then-remove ()
+  "org-scribe-remove-relationship deletes the selected entry only."
+  (org-scribe-relationships-test--with-fixture
+    (org-scribe--update-character-relationships
+     "Alice" '(("char-bob-001" "Bob" "mentor")
+               ("char-carol-001" "Carol" "rival")))
+    (cl-letf (((symbol-function 'completing-read)
+               (let ((answers '("Alice" "Bob (mentor)")))
+                 (lambda (&rest _args)
+                   (pop answers)))))
+      (org-scribe-remove-relationship))
+    (let ((rels (org-scribe--get-character-relationships-by-name "Alice")))
+      (should (= 1 (length rels)))
+      (should (string= "Carol" (nth 1 (car rels)))))))
+
+(ert-deftest test-relationships-get-all-across-project ()
+  "org-scribe--get-all-relationships collects every character's relationships."
+  (org-scribe-relationships-test--with-fixture
+    (org-scribe--update-character-relationships
+     "Alice" '(("char-bob-001" "Bob" "friend")))
+    (org-scribe--update-character-relationships
+     "Bob" '(("char-carol-001" "Carol" "rival")))
+    (let ((all (org-scribe--get-all-relationships)))
+      (should (= 2 (length all)))
+      (should (assoc "Alice" all))
+      (should (assoc "Bob" all))
+      (should-not (assoc "Carol" all)))))
+
+(ert-deftest test-relationships-show-character-lists-relationships ()
+  "org-scribe-show-character-relationships renders the plain list for the selection."
+  (org-scribe-relationships-test--with-fixture
+    (org-scribe--update-character-relationships
+     "Alice" '(("char-bob-001" "Bob" "friend")))
+    (cl-letf (((symbol-function 'completing-read)
+               (lambda (&rest _args) "Alice")))
+      (org-scribe-show-character-relationships))
     (unwind-protect
-        (progn
-          (with-temp-file rendered-temp (insert "fake-png-bytes"))
-          (cl-letf (((symbol-function 'org-scribe--build-relationship-graph-data)
-                     (lambda (&optional _filter-strength) '(("Alice" . (("char-bob-001" "Bob" "friend" 3 "positive"))))))
-                    ((symbol-function 'org-scribe--render-dot-to-image)
-                     (lambda (_dot-code _output-format) rendered-temp)))
-            (with-temp-buffer
-              (org-dblock-write:character-relationships '(:format dot))
-              (should (string-match-p "\\[\\[file:character-relationships\\.png\\]\\]"
-                                       (buffer-string)))))
-          (should (file-exists-p (expand-file-name "character-relationships.png" temp-dir))))
-      (when (file-exists-p rendered-temp) (delete-file rendered-temp))
-      (delete-directory temp-dir t))))
+        (with-current-buffer "*Relationships: Alice*"
+          (should (string-match-p "Alice" (buffer-string)))
+          (should (string-match-p "friend: Bob" (buffer-string))))
+      (kill-buffer "*Relationships: Alice*"))))
 
 ;;; Run tests
 

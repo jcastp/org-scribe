@@ -73,7 +73,6 @@
 (declare-function org-scribe-show-character-relationships "linking/org-scribe-character-relationships")
 (declare-function org-scribe-show-all-relationships "linking/org-scribe-character-relationships")
 (declare-function org-scribe-setup-character-relationships "linking/org-scribe-character-relationships")
-(declare-function org-scribe-insert-relationship-block "linking/org-scribe-character-relationships")
 ;; display toggles
 (declare-function org-scribe-column-view-toggle "linking/org-scribe-column-view")
 (declare-function org-scribe-overlays-mode "linking/org-scribe-overlays")
@@ -110,7 +109,6 @@ _R_: Relink everything    _c_: Characters        _a_: Add relationship       _t_
 _j_: Jump to plot thread  _o_: Locations         _x_: Remove relationship    _S_: Plot statistics
 ^^                        _p_: Plot threads      _v_: View relationships     _C_: Column view toggle
 ^^                        _r_: Relationships     _V_: View all relationships _T_: Tooltips toggle
-^^                        ^^                     _g_: Insert graph block
 _q_: Back to main menu    _Q_: Quit
 "
   ;; Whole-project upkeep (the headline action)
@@ -126,7 +124,6 @@ _q_: Back to main menu    _Q_: Quit
   ("x" org-scribe-remove-relationship "remove relationship")
   ("v" org-scribe-show-character-relationships "view relationships")
   ("V" org-scribe-show-all-relationships "view all")
-  ("g" org-scribe-insert-relationship-block "insert graph block")
   ;; Analysis and display
   ("t" org-scribe-plot-thread-report "plot report")
   ("S" org-scribe-plot-thread-stats "plot stats")
