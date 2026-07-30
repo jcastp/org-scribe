@@ -398,15 +398,17 @@ SCENES is a list where each entry is (heading chapter ...).
 CELL-FN is called with (entity-name scene) and should return the cell string."
   (insert "| Scene | Chapter |")
   (dolist (entity entities)
-    (insert (format " %s |" entity)))
+    (insert (format " %s |" (org-scribe--escape-table-cell entity))))
   (insert "\n|-------+---------+")
   (dolist (_ entities)
     (insert "--------+"))
   (insert "\n")
   (dolist (scene scenes)
-    (insert (format "| %s | %s |" (nth 0 scene) (nth 1 scene)))
+    (insert (format "| %s | %s |"
+                    (org-scribe--escape-table-cell (nth 0 scene))
+                    (org-scribe--escape-table-cell (nth 1 scene))))
     (dolist (entity entities)
-      (insert (format " %s |" (funcall cell-fn entity scene))))
+      (insert (format " %s |" (org-scribe--escape-table-cell (funcall cell-fn entity scene)))))
     (insert "\n"))
   (org-table-align))
 

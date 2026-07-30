@@ -255,7 +255,7 @@ Sections tagged with 'noexport' are excluded."
             (objective (nth 2 row))
             (progress (nth 3 row)))
         (insert (format "| %s | %9d | %9s | %8s |\n"
-                       heading-str
+                       (org-scribe--escape-table-cell heading-str)
                        wordcount
                        (if objective
                            (format "%d" objective)
@@ -356,7 +356,7 @@ Handles missing properties safely:
               (actual (nth 2 row))
               (progress (nth 3 row)))
           (insert (format "| %s | %6d | %6d | %8s |\n"
-                         section
+                         (org-scribe--escape-table-cell section)
                          target
                          actual
                          (if progress

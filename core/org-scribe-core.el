@@ -303,6 +303,19 @@ Returns a list of trimmed, non-empty items."
                          (string-trim (replace-regexp-in-string placeholder "," s t t)))
                        (split-string protected "," t)))))
 
+;;; Org Table Cell Escaping
+
+(defun org-scribe--escape-table-cell (text)
+  "Escape TEXT so it is safe to interpolate into a |-delimited org table cell.
+A literal \"|\" in TEXT would otherwise be read as a column separator,
+shifting every following column; Org's own escape for a literal pipe
+inside a table cell is the string \"\\vert\", which `org-table-align'
+and export both render back as \"|\".  Newlines are flattened to spaces
+since a table cell cannot contain one."
+  (replace-regexp-in-string
+   "\n" " "
+   (replace-regexp-in-string "|" "\\vert" text t t)))
+
 ;;; Feature Detection
 
 (defvar org-scribe--available-features nil

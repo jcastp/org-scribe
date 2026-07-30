@@ -285,11 +285,11 @@ ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
             (rels (cdr entry)))
         (dolist (rel rels)
           (push (format "| %s | %s | %s | %d | %s |"
-                       char-name
-                       (nth 1 rel)  ; Name
-                       (nth 2 rel)  ; Type
+                       (org-scribe--escape-table-cell char-name)
+                       (org-scribe--escape-table-cell (nth 1 rel))  ; Name
+                       (org-scribe--escape-table-cell (nth 2 rel))  ; Type
                        (nth 3 rel)  ; Strength
-                       (nth 4 rel)) ; Sentiment
+                       (org-scribe--escape-table-cell (nth 4 rel))) ; Sentiment
                 lines))))
     (string-join (nreverse lines) "\n")))
 

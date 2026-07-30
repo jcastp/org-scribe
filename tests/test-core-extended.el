@@ -381,6 +381,21 @@ Clears the project type cache before and after."
                   "Smith, John" '("Someone Else"))
                  '("Smith" "John"))))
 
+;;; org-scribe--escape-table-cell Tests (L8)
+
+(ert-deftest test-core-escape-table-cell-escapes-pipe ()
+  "A literal pipe is rewritten to the org literal-pipe escape (L8)."
+  (should (equal (org-scribe--escape-table-cell "Bob | Alice") "Bob \\vert Alice"))
+  (should (equal (org-scribe--escape-table-cell "a|b|c") "a\\vertb\\vertc")))
+
+(ert-deftest test-core-escape-table-cell-flattens-newlines ()
+  "A newline (illegal inside a table cell) is flattened to a space."
+  (should (equal (org-scribe--escape-table-cell "line1\nline2") "line1 line2")))
+
+(ert-deftest test-core-escape-table-cell-passes-through-plain-text ()
+  "Text without pipes or newlines is returned unchanged."
+  (should (equal (org-scribe--escape-table-cell "Alex") "Alex")))
+
 ;;; Run tests
 
 (defun org-scribe-core-extended-run-tests ()
