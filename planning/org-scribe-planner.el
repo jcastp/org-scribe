@@ -2371,6 +2371,7 @@ Tracks actual progress and calculates expected dates for unreached milestones."
           (insert (propertize "Press 'q' to close | 'r' to refresh | 'c' to calendar view\n"
                             'face 'shadow))
           (goto-char (point-min))
+          (require 'org-scribe-planner-dashboards)
           (org-scribe-planner-dashboard-mode)
           (display-buffer (current-buffer)))))))
 
