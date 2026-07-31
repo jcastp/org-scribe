@@ -54,7 +54,7 @@
   - Three-pane editing layout
 - *Search Functions*: Find scenes by POV, character, location, or plot keywords using org-ql (handles ID links)
 - *Dictionary Tools*: Spanish RAE dictionary API and synonym lookup
-- *Capture System*: Project-aware note capture that finds the right notes file
+- *Capture System*: Project-aware note capture that finds the right notes file; character/location/object/timeline/plot-thread templates are fully localized to the project's own language (English/Spanish), independent of your global UI language setting
 - *Project Health Report*: =org-scribe-project-health= aggregates word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
 - *Hydra Menu*: Unified keyboard-driven menu for quick access to all functions
@@ -67,6 +67,7 @@ Full support for English/Spanish bilingual writing:
 - WordReference synonym lookup
 - Bilingual project structure support (notes/notas directories)
 - Bilingual UI: every command prompt, message, and error is available in Spanish too — set =(setq org-scribe-message-language 'es)= (default =en=)
+- Bilingual capture templates: character/location/object/timeline/plot-thread capture prompts and headings automatically match *the project's own language* (read from the =# Language:= line in =.org-scribe-project=), not the global =org-scribe-message-language= setting — a Spanish novel gets Spanish capture prompts even if your own UI language is English
 
 * Installation
 
@@ -879,15 +880,19 @@ Generates an aggregated health snapshot of the current novel project and opens
 it in the =*org-scribe-health*= buffer as a browsable org file with clickable
 =[[id:...]]= links back to each scene.
 
-The report contains five sections:
+The report contains seven sections (plus an optional eighth when the bundled
+writing planner is active for the project):
 
-| Section                   | What it shows                                                       |
-|---------------------------+---------------------------------------------------------------------|
-| *Overview*                | Manuscript file, scene count, words written, chapter objectives, %  |
-| *Scenes by Status*        | Count of scenes per TODO state (TODO, DONE, custom keywords)        |
-| *Missing Properties*      | Scenes lacking =:PoV:=, =:Plot:=, or =:Location:= — linked         |
-| *Orphaned Entities*       | Characters/locations in their database but not linked in any scene  |
-| *Open TODO Scenes*        | Full list with state labels and clickable scene links               |
+| Section                    | What it shows                                                       |
+|----------------------------+-----------------------------------------------------------------------|
+| *Overview*                 | Manuscript file, scene count, words written, chapter objectives, %  |
+| *Writing Plan* (optional)  | Plan title, target, current %, daily target, end date — only when a plan is loaded and the project hasn't opted out |
+| *Scenes by Status*         | Count of scenes per TODO state (TODO, DONE, custom keywords)        |
+| *Per-PoV Word Share*       | Scene count and word count per PoV character, with % of total       |
+| *Chapter Length Spread*    | Per-chapter word totals plus min/max/mean/median across the manuscript |
+| *Missing Properties*       | Scenes lacking =:PoV:=, =:Plot:=, or =:Location:= — linked         |
+| *Orphaned Entities*        | Characters/locations in their database but not linked in any scene  |
+| *Open TODO Scenes*         | Full list with state labels and clickable scene links               |
 
 *** Word count totals
 
@@ -960,6 +965,11 @@ The package provides specialized capture templates for different types of conten
 These functions automatically route captures to the appropriate file based on project type:
 - **Novel projects**: Separate files in =objects/= directory (e.g., =objects/characters.org=, =objects/plot.org=)
 - **Short story projects**: Consolidated =notes.org= file with appropriate sections
+
+Template content — headlines, prompts, and section headings — is generated in
+whichever language the *project* is in (its own =# Language:= marker, not
+your global =org-scribe-message-language= setting), so a Spanish novel gets
+Spanish capture prompts automatically.
 
 All captured items automatically receive unique IDs for use with the linking system.
 

@@ -341,13 +341,13 @@ Two ways to access:
 
 *** Via Hydra Menu
 
-1. Press ~F8 F8 P~ (plot thread submenu)
-2. Press ~r~ (health report)
+1. Press ~F8 F8 L~ (Links & upkeep submenu)
+2. Press ~t~ (plot health report)
 3. Report opens in new buffer
 
 *** Direct Command
 
-1. ~M-x org-scribe/plot-thread-report~
+1. ~M-x org-scribe-plot-thread-report~
 2. Report opens in new buffer
 
 ** Understanding the Report
@@ -409,7 +409,7 @@ The report looks like:
 
 ** Try It Now! (3 minutes)
 
-1. Generate health report (~F8 F8 P r~)
+1. Generate health report (~F8 F8 L t~)
 2. Read the summary
 3. Find any threads with warnings
 4. Make notes about needed fixes
@@ -422,8 +422,8 @@ For a fast check without full report:
 
 ** Command: Plot Thread Stats
 
-1. Press ~F8 F8 P S~ (capital S for Statistics)
-2. Or: ~M-x org-scribe/plot-thread-stats~
+1. Press ~F8 F8 L S~ (capital S for Statistics)
+2. Or: ~M-x org-scribe-plot-thread-stats~
 3. Message appears in minibuffer:
 
 #+BEGIN_EXAMPLE
@@ -434,7 +434,7 @@ Plot threads: 3 | Scenes: 12 | Threads with warnings: 2
 
 ** When to Use
 
-- **Statistics**: Quick daily check (F8 F8 P S)
+- **Statistics**: Quick daily check (F8 F8 L S)
 - **Full Report**: Weekly review, major editing sessions
 - **Timeline**: Visual planning, structural editing
 
@@ -653,8 +653,8 @@ For each thread, verify:
 3. Cursor not on ~#+BEGIN~ line when pressing ~C-c C-c~
 
 *Solutions*:
-1. Set character properties on scenes (~F8 F8 C p~ and ~F8 F8 C c~)
-2. Run character linking setup (~F8 F8 C s~)
+1. Set character properties on scenes (~F8 F8 p~ and ~F8 F8 h~)
+2. Run character linking setup (~F8 F8 L c~)
 3. Position cursor exactly on ~#+BEGIN: character-timeline~ line
 
 ** "Timeline shows some characters but not all"
@@ -801,8 +801,8 @@ Excellent work! You've completed Lesson 10. You now know:
 ✓ How to generate plot thread timelines with ~#+BEGIN: plot-thread-timeline~
 ✓ How to read and interpret timeline tables
 ✓ Common problems timelines reveal (gaps, imbalance, unresolved threads)
-✓ How to use the plot thread health report (~F8 F8 P r~)
-✓ Quick statistics for fast checks (~F8 F8 P S~)
+✓ How to use the plot thread health report (~F8 F8 L t~)
+✓ Quick statistics for fast checks (~F8 F8 L S~)
 ✓ Practical workflows for different analysis needs
 ✓ How to customize timeline sections in your manuscript
 ✓ Advanced analysis techniques for deeper insights
@@ -839,7 +839,7 @@ Reinforce your timeline skills:
    - Regenerate timelines to verify
 
 4. **Run health report**
-   - ~F8 F8 P r~
+   - ~F8 F8 L t~
    - Read all warnings
    - Make notes about fixes
 
@@ -889,8 +889,8 @@ PLOT THREAD TIMELINE:
 
 | Command                    | Key       | What It Shows                  |
 |----------------------------+-----------+--------------------------------|
-| Plot thread health report  | ~F8 F8 P r~ | Full analysis with warnings    |
-| Plot thread statistics     | ~F8 F8 P S~ | Quick one-line summary         |
+| Plot thread health report  | ~F8 F8 L t~ | Full analysis with warnings    |
+| Plot thread statistics     | ~F8 F8 L S~ | Quick one-line summary         |
 | Timeline table             | ~C-c C-c~   | Visual timeline (on BEGIN line)|
 
 ** Warning Thresholds

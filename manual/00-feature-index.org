@@ -7,7 +7,7 @@
 
 This document provides a comprehensive index of all features in the ~org-scribe~ package. Each feature is briefly described in a paragraph. Detailed documentation for each feature will be available in separate files linked from this index.
 
-*Version*: 0.4.0 (includes merged emacs-org-scribe-template functionality)
+*Version*: 0.5.0 (includes merged emacs-org-scribe-template functionality)
 
 *Package Overview*: ~org-scribe~ is a comprehensive toolkit for creative writers working in Org-mode, providing everything from project templates to export filters for novelists and short story writers.
 
@@ -63,7 +63,7 @@ Provides quick navigation to any file in the current writing project using compl
 
 Controls which language templates are used when creating new projects. Set to ~'en~ for English templates (novel.org, notes/, characters.org) or ~'es~ for Spanish templates (novela.org, notas/, personajes.org). This affects both novel and short story project creation. Template directories are structured as org-scribe-templates/novel-en/, novel-es/, short-story-en/, and short-story-es/, allowing complete bilingual support throughout the package.
 
-*Status*: Fully implemented | *Hydra*: N/A (configuration) | *Module*: ~core/org-scribe-config.el~
+*Status*: Fully implemented | *Hydra*: N/A (configuration) | *Module*: ~templates/org-scribe-project.el~
 
 ** Git Integration
 
@@ -76,29 +76,29 @@ Automatically initializes a git repository for new projects and creates an initi
 :CUSTOM_ID: org-scribe-modes
 :END:
 
-** Distraction-Free Writing Mode (~org-scribe/writing-env-mode~)
+** Distraction-Free Writing Mode (~org-scribe-writing-env-mode~)
 
 Activates a distraction-free writing environment optimized for focused writing sessions. This mode switches to a specialized writing theme (customizable via ~org-scribe-env-work-theme~), applies a larger org-scribe-optimized font preset, and enables writeroom-mode with centered text at a comfortable width (default 80 columns). The mode changes visual presentation without affecting file content, and all settings restore automatically when the mode is disabled. Only one writing mode can be active at a time for clean state management.
 
-*Status*: Fully implemented | *Hydra*: ~m~ (Modes section) | *Module*: ~modes/org-scribe-modes.el~
+*Status*: Fully implemented | *Hydra*: ~m~ (Workspace section) | *Module*: ~modes/org-scribe-modes.el~
 
-** Focus Writing Mode (~org-scribe/writing-env-mode-focus~)
+** Focus Writing Mode (~org-scribe-writing-env-mode-focus~)
 
 Extends the distraction-free writing mode by adding automatic narrowing to the current org section. This creates an ultra-focused environment where only the current scene or chapter is visible, eliminating distractions from other parts of the manuscript. The mode activates the full distraction-free environment (theme, font, writeroom) and then narrows the buffer to the org subtree at point. When disabled, it widens the buffer back to full view and restores the normal environment.
 
-*Status*: Fully implemented | *Hydra*: ~f~ (Modes section) | *Module*: ~modes/org-scribe-modes.el~
+*Status*: Fully implemented | *Hydra*: ~f~ (Workspace section) | *Module*: ~modes/org-scribe-modes.el~
 
-** Project Writing Mode (~org-scribe/project-mode~)
+** Project Writing Mode (~org-scribe-project-mode~)
 
 Opens a project navigation environment by displaying both treemacs (showing the project file tree) and imenu-list (showing the current file's outline) in side windows. This creates a three-panel layout: file tree on the left, main document in the center, and document outline on the right. Ideal for navigating large projects with many files and long documents. The mode gracefully handles missing dependencies (treemacs, imenu-list) with warnings if they're not available. Focus automatically returns to the original buffer after opening the side panels.
 
-*Status*: Fully implemented | *Hydra*: ~p~ (Modes section) | *Module*: ~modes/org-scribe-modes.el~
+*Status*: Fully implemented | *Hydra*: ~v~ (Workspace section, "navigate") | *Module*: ~modes/org-scribe-modes.el~
 
-** Editing Mode (~org-scribe/editing-mode~)
+** Editing Mode (~org-scribe-editing-mode~)
 
 Creates a specialized three-panel layout optimized for editing and revision work. The main document appears in the center with comfortable visual-fill-column formatting, while side panels on the left and right can display reference files (notes, character profiles, timeline, etc.). This mode uses a bright editing theme (default: leuven) for clear visibility of markup and structure. Panel widths are customizable via ~org-scribe-editing-left-width-percent~ and ~org-scribe-editing-right-width-percent~. The mode includes font preset support via fontaine for optimal editing clarity.
 
-*Status*: Fully implemented | *Hydra*: ~e~ (Modes section) | *Module*: ~modes/org-scribe-modes.el~
+*Status*: Fully implemented | *Hydra*: ~e~ (Workspace section) | *Module*: ~modes/org-scribe-modes.el~
 
 ** Mode Mutual Exclusivity
 
@@ -111,17 +111,17 @@ All four writing modes are mutually exclusive - activating one automatically dea
 :CUSTOM_ID: word-counting-tracking
 :END:
 
-** Accurate Word Counting (~org-scribe/ews-org-count-words~)
+** Accurate Word Counting (~org-scribe-ews-org-count-words~)
 
 Provides accurate word counting that excludes Org-mode metadata (properties, drawers, comments, keywords, tags) to count only actual narrative content. Delegates to ~org-context-extended~ for precise context-aware counting. Can count the current heading and add the word count as a ~:WORDCOUNT:~ property, count the entire buffer, or count from the current heading down through all subheadings. This feature populates properties that feed into progress tracking tables and ensures word count accuracy for writers who use extensive org metadata.
 
 *Status*: Fully implemented | *Hydra*: ~a~ (Tools section) | *Module*: ~counting/org-scribe-wordcount.el~
 
-** Interactive Word Count Display (~org-context-count-words~)
+** Interactive Word Count Display (~org-scribe-wordcount~)
 
-Displays an interactive word count for the current selection, heading, or entire buffer using ~org-context-extended~. Results are shown in the minibuffer with a breakdown of where words were counted (heading vs content, whether metadata was excluded, etc.). This is the quick-access counting function for immediate feedback without modifying properties. The function respects org context, so counting a heading includes its content and subheadings.
+Displays an interactive word count for the current region or buffer, delegating to ~org-context-extended~ when available for accurate counts that exclude Org metadata (falling back to a plain count, with a warning, when that package is absent). This is org-scribe's own unified word-count dispatcher, not a raw call into the external package: with no prefix argument it just reports a count; with ~C-u~ it refreshes ~:WORDCOUNT:~ on every heading in the buffer (~org-scribe-ews-org-count-words~); with ~C-u C-u~ it refreshes ~:WORDCOUNT:~ only on scene-level headings in the current subtree (~org-scribe-update-scene-wordcounts~).
 
-*Status*: Fully implemented (via org-context-extended) | *Hydra*: ~w~ (Tools section) | *Module*: External dependency
+*Status*: Fully implemented | *Hydra*: ~w~ (Tools section) | *Module*: ~counting/org-scribe-wordcount.el~
 
 ** Progress Tracking Tables (~org-generate-wordcount-table~)
 
@@ -140,41 +140,41 @@ The package uses two standard properties for word count management: ~:WORDCOUNT:
 :CUSTOM_ID: capture-system
 :END:
 
-** Project-Aware Note Capture (~org-scribe/capture-to-file~)
+** Project-Aware Note Capture (~org-scribe-capture-to-file~)
 
 Captures quick notes to the appropriate notes file for the current project type. For novel projects, notes go to notes/notes.org under a "Notes" heading. For short story projects, notes go to the consolidated notes.org file under its "Notes" heading. The capture template includes a timestamp and supports initial content from the region. Files are auto-created if missing with proper structure. This provides a quick way to capture ideas without leaving the writing flow.
 
 *Status*: Fully implemented | *Hydra*: ~n~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
 
-** Character Profile Capture (~org-scribe/capture-character~)
+** Character Profile Capture (~org-scribe-capture-character~)
 
 Opens a comprehensive character capture template that prompts for all essential character information: name, role (protagonist/antagonist/supporting/minor), age, gender, occupation, and first appearance chapter. The template includes structured sections for physical description, personality traits, background, goals/motivation/conflict (both internal and external), character arc, and relationships. Characters are automatically assigned unique IDs via ~%(org-id-new)~ for the linking system. Captures go to objects/characters.org (novels) or notes.org under "Characters" (short stories).
 
-*Status*: Fully implemented | *Hydra*: ~h~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
+*Status*: Fully implemented | *Hydra*: ~F8 F8 k h~ (Manage → Capture entity submenu) | *Module*: ~capture/org-scribe-capture.el~
 
-** Location Profile Capture (~org-scribe/capture-location~)
+** Location Profile Capture (~org-scribe-capture-location~)
 
 Captures detailed location profiles with prompts for name, type (city/building/room/natural/region/country), importance (major/supporting/minor), first appearance, climate, and population. The template includes sections for general description, geography, cultural aspects & society, history, notable features, plot importance, specific places, atmosphere & mood, and map references. Locations receive automatic unique IDs for the linking system. Captures go to objects/locations.org (novels) or notes.org under "Setting → Locations" (short stories).
 
-*Status*: Fully implemented | *Hydra*: ~l~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
+*Status*: Fully implemented | *Hydra*: ~F8 F8 k l~ (Manage → Capture entity submenu) | *Module*: ~capture/org-scribe-capture.el~
 
-** Object Profile Capture (~org-scribe/capture-object~)
+** Object Profile Capture (~org-scribe-capture-object~)
 
 Captures important objects with prompts for name, type (magical/artifact/weapon/tool/symbolic/technology), owner, first appearance, and status (active/lost/destroyed/hidden). The template structures sections for physical description, origin, properties, plot importance, object history, symbolism, current location, and rules & limitations. Objects get unique IDs automatically. Particularly useful for tracking magical items, MacGuffins, symbolic objects, or important props. Captures go to objects/objects.org (novels) or notes.org under "Objects" (short stories).
 
-*Status*: Fully implemented | *Hydra*: ~b~ (Capture section, "oBject") | *Module*: ~capture/org-scribe-capture.el~
+*Status*: Fully implemented | *Hydra*: ~F8 F8 k b~ (Manage → Capture entity submenu, "oBject") | *Module*: ~capture/org-scribe-capture.el~
 
-** Timeline Event Capture (~org-scribe/capture-timeline~)
+** Timeline Event Capture (~org-scribe-capture-timeline~)
 
 Captures story timeline events with prompts for event name, type (action/revelation/character/world/backstory), relevance level, date/time in story, duration, characters involved, location, and chapter. The template includes sections for description, consequences, and connections to other events. Events receive automatic unique IDs. This is essential for tracking complex timelines, multiple plot threads, or stories with non-linear narratives. Captures go to objects/timeline.org (novels) or notes.org under "Timeline" (short stories).
 
-*Status*: Fully implemented | *Hydra*: ~t~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
+*Status*: Fully implemented | *Hydra*: ~F8 F8 k t~ (Manage → Capture entity submenu) | *Module*: ~capture/org-scribe-capture.el~
 
-** Plot Thread Profile Capture (~org-scribe/capture-plot-thread~)
+** Plot Thread Profile Capture (~org-scribe-capture-plot-thread~)
 
 Captures plot thread profiles with prompts for name and type (Main Plot, Subplot, Arc, Theme, or Motif). The template includes sections for description, connection to the main plot, key scenes where the thread appears, and resolution notes. Plot threads receive automatic unique IDs for the linking system. This capture is intentionally minimal - designed to quickly record a new thread when you notice it emerging during writing, with the intention to elaborate during planning sessions. Captures go to objects/plot.org (novels) or notes.org under "Plot Outline" (short stories).
 
-*Status*: Fully implemented | *Hydra*: ~g~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
+*Status*: Fully implemented | *Hydra*: ~F8 F8 k g~ (Manage → Capture entity submenu) | *Module*: ~capture/org-scribe-capture.el~
 
 ** Auto-Creation of Target Files
 
@@ -184,7 +184,7 @@ All capture functions automatically create their target files if they don't exis
 
 ** Bilingual Capture Support
 
-Capture functions automatically detect and work with both English and Spanish project structures. File names adapt: characters.org/personajes.org, locations.org/localizaciones.org, objects.org/objetos.org, timeline.org/cronologia.org, notes.org/notas.org. Templates are populated based on the ~org-scribe-template-language~ setting. This allows Spanish-language writers to work in their native language while using all package features.
+Capture functions automatically detect and work with both English and Spanish project structures. File names adapt: characters.org/personajes.org, locations.org/localizaciones.org, objects.org/objetos.org, timeline.org/cronologia.org, notes.org/notas.org. The template *content* itself — headlines, ~%^{...}~ prompts, and section headings — is also fully localized: it follows ~org-scribe-project-language~, which reads the project's own ~# Language:~ marker in ~.org-scribe-project~ (falling back to ~org-scribe-template-language~ only when the project predates that marker). This allows Spanish-language writers to work entirely in their native language while using all package features, regardless of the global ~org-scribe-message-language~ UI setting.
 
 *Status*: Fully implemented | *Hydra*: N/A (automatic) | *Module*: ~capture/org-scribe-capture.el~
 
@@ -195,57 +195,57 @@ Capture functions automatically detect and work with both English and Spanish pr
 
 ** Character ID-Based Linking
 
-Provides ID-based links between scene properties and character profiles, allowing click-to-navigate from scene ~:PoV:~ and ~:Characters:~ properties directly to character profile headings. Characters captured via ~org-scribe/capture-character~ automatically get unique IDs via ~%(org-id-new)~ in the template. Menu-based functions (~org-scribe/set-pov-character~, ~org-scribe/set-scene-characters~) allow selecting characters from a searchable list and auto-insert ID links. Links are stable across character name changes and work with org's native link following (~C-c C-o~).
+Provides ID-based links between scene properties and character profiles, allowing click-to-navigate from scene ~:PoV:~ and ~:Characters:~ properties directly to character profile headings. Characters captured via ~org-scribe-capture-character~ automatically get unique IDs via ~%(org-id-new)~ in the template. Menu-based functions (~org-scribe-set-pov-character~, ~org-scribe-set-scene-characters~) allow selecting characters from a searchable list and auto-insert ID links. Links are stable across character name changes and work with org's native link following (~C-c C-o~).
 
-*Status*: Fully implemented | *Hydra*: ~C~ submenu | *Module*: ~linking/org-scribe-character-links.el~
+*Status*: Fully implemented | *Hydra*: Tag Scene section (~p~/~h~/~j~) plus ~F8 F8 L c~ for one-time setup | *Module*: ~linking/org-scribe-character-links.el~
 
-** Set PoV Character (~org-scribe/set-pov-character~)
+** Set PoV Character (~org-scribe-set-pov-character~)
 
 Scans the characters file for all character profiles (identified by ~:Role:~ or ~:TYPE:~ properties and unique IDs), presents them in a completion menu, and inserts the selected character as an ID link in the current scene's ~:PoV:~ property. The link format is ~[[id:unique-id][Character Name]]~, providing both human readability and stable navigation. This function saves time compared to manually typing character names and ensures consistency across the manuscript.
 
-*Status*: Fully implemented | *Hydra*: ~C p~ (Character submenu) | *Module*: ~linking/org-scribe-character-links.el~
+*Status*: Fully implemented | *Hydra*: ~p~ (Tag Scene section, "set PoV") | *Module*: ~linking/org-scribe-character-links.el~
 
-** Set Scene Characters (~org-scribe/set-scene-characters~)
+** Set Scene Characters (~org-scribe-set-scene-characters~)
 
 Similar to setting PoV, but allows multi-selection of characters for the ~:Characters:~ property. Characters are presented in a completion menu where you can select multiple names (one at a time, pressing RET between selections, empty input to finish). The function creates comma-separated ID links like ~[[id:id1][Alice]], [[id:id2][Bob]]~ in the Characters property. This tracks which characters appear in each scene, enabling character timeline generation and character-based searches.
 
-*Status*: Fully implemented | *Hydra*: ~C c~ (Character submenu) | *Module*: ~linking/org-scribe-character-links.el~
+*Status*: Fully implemented | *Hydra*: ~h~ (Tag Scene section, "set characters") | *Module*: ~linking/org-scribe-character-links.el~
 
-** Jump to PoV Character (~org-scribe/jump-to-pov-character~)
+** Jump to PoV Character (~org-scribe-jump-to-pov-character~)
 
 Reads the ~:PoV:~ property of the current scene heading, extracts the ID from the link, and navigates directly to that character's profile using org's ID-based navigation. Works in both the same file and across files. After jumping, you can return to the original location using ~C-c &~ (org-mark-ring-goto). This provides instant access to character details while writing scenes, eliminating manual searching through the characters file.
 
-*Status*: Fully implemented | *Hydra*: ~C j~ (Character submenu) | *Module*: ~linking/org-scribe-character-links.el~
+*Status*: Fully implemented | *Hydra*: ~j~ (Tag Scene section, "jump to PoV") | *Module*: ~linking/org-scribe-character-links.el~
 
 ** Location ID-Based Linking
 
-Provides the same ID-based linking infrastructure for locations as exists for characters. Location profiles captured via ~org-scribe/capture-location~ get automatic unique IDs. The ~org-scribe/set-scene-locations~ function presents a multi-select menu of all locations in the project and inserts ID links into the scene's ~:Location:~ property. This enables click-to-navigate to detailed location profiles and supports location-based searches to find all scenes set in a particular place.
+Provides the same ID-based linking infrastructure for locations as exists for characters. Location profiles captured via ~org-scribe-capture-location~ get automatic unique IDs. The ~org-scribe-set-scene-locations~ function presents a multi-select menu of all locations in the project and inserts ID links into the scene's ~:Location:~ property. This enables click-to-navigate to detailed location profiles and supports location-based searches to find all scenes set in a particular place.
 
-*Status*: Fully implemented | *Hydra*: ~L~ submenu | *Module*: ~linking/org-scribe-location-links.el~
+*Status*: Fully implemented | *Hydra*: ~l~ (Tag Scene section) plus ~F8 F8 L o~ for one-time setup | *Module*: ~linking/org-scribe-location-links.el~
 
-** Set Scene Locations (~org-scribe/set-scene-locations~)
+** Set Scene Locations (~org-scribe-set-scene-locations~)
 
 Scans objects/locations.org (or notes.org for short stories) for all location entries with ~:Type:~ properties and IDs, presents them in a multi-select completion menu, and inserts comma-separated ID links in the ~:Location:~ property. Locations can include cities, buildings, rooms, natural settings, regions, or countries. Multiple locations per scene are supported (useful for travel scenes or scenes that span locations). The menu shows location names extracted from heading text or ~:NAME:~ properties.
 
-*Status*: Fully implemented | *Hydra*: ~L c~ (Location submenu) | *Module*: ~linking/org-scribe-location-links.el~
+*Status*: Fully implemented | *Hydra*: ~l~ (Tag Scene section, "set locations") | *Module*: ~linking/org-scribe-location-links.el~
 
 ** Plot Thread ID-Based Linking
 
-Provides ID-based linking for plot threads, enabling tracking of which plot lines appear in which scenes. Plot thread profiles in objects/plot.org receive automatic IDs. The ~org-scribe/set-scene-plot-threads~ function presents a multi-select menu of all plot threads and inserts ID links into the scene's ~:Plot:~ property. This enables generating plot thread timelines (showing which scenes advance which plots), analyzing plot distribution, and identifying gaps in plot coverage.
+Provides ID-based linking for plot threads, enabling tracking of which plot lines appear in which scenes. Plot thread profiles in objects/plot.org receive automatic IDs. The ~org-scribe-set-scene-plot-threads~ function presents a multi-select menu of all plot threads and inserts ID links into the scene's ~:Plot:~ property. This enables generating plot thread timelines (showing which scenes advance which plots), analyzing plot distribution, and identifying gaps in plot coverage.
 
-*Status*: Fully implemented | *Hydra*: ~P~ submenu | *Module*: ~linking/org-scribe-plot-links.el~
+*Status*: Fully implemented | *Hydra*: ~g~ (Tag Scene section) plus ~F8 F8 L p~ for one-time setup | *Module*: ~linking/org-scribe-plot-links.el~
 
-** Set Scene Plot Threads (~org-scribe/set-scene-plot-threads~)
+** Set Scene Plot Threads (~org-scribe-set-scene-plot-threads~)
 
 Scans the plot file for all plot thread entries (headings with ~:Type:~ property set to "Main", "Subplot", "Arc", or similar, plus unique ID), presents them in a multi-select menu, and inserts ID links in the ~:Plot:~ property as ~[[id:id1][Main Plot]], [[id:id2][Romance Subplot]]~. Multiple plot threads per scene are common in complex narratives. This function helps writers ensure plot threads are advanced regularly and no plots are abandoned or forgotten.
 
-*Status*: Fully implemented | *Hydra*: ~P p~ (Plot submenu) | *Module*: ~linking/org-scribe-plot-links.el~
+*Status*: Fully implemented | *Hydra*: ~g~ (Tag Scene section, "set plot threads") | *Module*: ~linking/org-scribe-plot-links.el~
 
-** Jump to Plot Thread (~org-scribe/jump-to-plot-thread~)
+** Jump to Plot Thread (~org-scribe-jump-to-plot-thread~)
 
 Reads the ~:Plot:~ property of the current scene, presents a menu if multiple plot threads are linked, and navigates to the selected plot thread's profile using ID-based navigation. This provides quick access to plot thread details, story beats, and planning notes while writing scenes that advance that plot. The jump works across files and supports returning via org-mark-ring (~C-c &~).
 
-*Status*: Fully implemented | *Hydra*: ~P j~ (Plot submenu) | *Module*: ~linking/org-scribe-plot-links.el~
+*Status*: Fully implemented | *Hydra*: ~F8 F8 L j~ (Links & upkeep submenu) | *Module*: ~linking/org-scribe-plot-links.el~
 
 ** Character Timeline Generation
 
@@ -257,100 +257,100 @@ Generates a dynamic table showing which characters appear in which scenes, with 
 
 Generates a dynamic table showing which plot threads appear in which scenes using the symbol ● for presence. The dynamic block ~#+BEGIN: plot-thread-timeline~ scans all scenes for ~:Plot:~ properties, collects unique plot threads, and creates a visual timeline matrix. Each plot thread gets a column, each scene gets a row, and ● marks where they intersect. Update with ~C-c C-c~. This helps identify plot gaps (threads that disappear for many scenes), plot convergence (multiple threads in one scene), and overall plot pacing.
 
-*Status*: Fully implemented | *Hydra*: ~P t~ (Plot submenu) | *Module*: ~linking/org-scribe-plot-links.el~
+*Status*: Fully implemented | *Hydra*: Not in menu (dynamic block — insert ~#+BEGIN: plot-thread-timeline~ manually and press ~C-c C-c~) | *Module*: ~linking/org-scribe-plot-links.el~
 
-** Plot Thread Health Report (~org-scribe/plot-thread-report~)
+** Plot Thread Health Report (~org-scribe-plot-thread-report~)
 
-Analyzes all plot threads in the manuscript and generates a health report identifying potential problems: threads with low coverage (<30% of scenes), threads with large gaps (>10 scenes without appearance), threads that only appear once, and threads that appear in consecutive scenes (which might need better pacing). The report displays in a temporary buffer with color-coded warnings and recommendations. This helps writers identify neglected plot threads, over-used threads, and pacing issues before they become structural problems.
+Analyzes all plot threads in the manuscript and generates a health report identifying potential problems: threads with low coverage (<30% of scenes), threads with large gaps (>5 scenes without appearance), and threads that only appear once. The report displays in a temporary buffer. This helps writers identify neglected plot threads and pacing issues before they become structural problems.
 
-*Status*: Fully implemented | *Hydra*: ~P r~ (Plot submenu) | *Module*: ~linking/org-scribe-plot-links.el~
+*Status*: Fully implemented | *Hydra*: ~F8 F8 L t~ (Links & upkeep submenu, "plot report") | *Module*: ~linking/org-scribe-plot-links.el~
 
-** Plot Thread Statistics (~org-scribe/plot-thread-stats~)
+** Plot Thread Statistics (~org-scribe-plot-thread-stats~)
 
 Displays quick statistics about plot thread usage in the minibuffer: total number of unique plot threads in the manuscript, total number of scenes with plot thread tags, and per-thread appearance counts sorted by frequency. This provides a quick health check without opening a full report buffer. Useful for getting a snapshot of plot distribution during drafting or revision.
 
-*Status*: Fully implemented | *Hydra*: ~P S~ (Plot submenu) | *Module*: ~linking/org-scribe-plot-links.el~
+*Status*: Fully implemented | *Hydra*: ~F8 F8 L S~ (Links & upkeep submenu, "plot stats") | *Module*: ~linking/org-scribe-plot-links.el~
 
 ** Batch Link Conversion
 
-Provides functions to convert existing plain-text character/location/plot references to ID links in bulk. ~org-scribe/link-scene-characters~ converts the current scene, while ~org-scribe/link-all-scene-characters~ processes the entire manuscript. For each property value, the function looks up the name in the database (characters/locations/plot files), finds the matching ID, and replaces plain text with ID links. Useful when migrating existing projects to the linking system or when writers initially use plain text and want to upgrade to linked references later.
+Provides functions to convert existing plain-text character/location/plot references to ID links in bulk. ~org-scribe-link-scene-characters~ converts the current scene, while ~org-scribe-link-all-scene-characters~ processes the entire manuscript. For each property value, the function looks up the name in the database (characters/locations/plot files), finds the matching ID, and replaces plain text with ID links. Useful when migrating existing projects to the linking system or when writers initially use plain text and want to upgrade to linked references later.
 
-*Status*: Fully implemented | *Hydra*: ~C L~, ~L L~, ~P L~ (various submenus) | *Module*: All three linking modules
+*Status*: Fully implemented | *Hydra*: Not directly bound — superseded by the single ~org-scribe-relink-project~ command (~F8 F8 R~ or ~F8 F8 L R~), which performs this conversion for all three entity types in one pass; call these functions via ~M-x~ if you need to target only one entity type or the current scene | *Module*: All three linking modules
 
 ** Setup Wizards
 
-Each linking system (characters, locations, plot threads) includes a one-time setup wizard (~org-scribe/setup-character-links~, ~org-scribe/setup-location-links~, ~org-scribe/setup-plot-thread-links~). The wizard: (1) adds IDs to all existing profiles that lack them, (2) asks if you want to convert existing scene properties to links, and (3) confirms the setup is complete. Running the wizard on an existing project enables all linking features retroactively. Wizards are idempotent - running them multiple times is safe.
+Each linking system (characters, locations, plot threads) includes a one-time setup wizard (~org-scribe-setup-character-links~, ~org-scribe-setup-location-links~, ~org-scribe-setup-plot-thread-links~). The wizard: (1) adds IDs to all existing profiles that lack them, (2) asks if you want to convert existing scene properties to links, and (3) confirms the setup is complete. Running the wizard on an existing project enables all linking features retroactively. Wizards are idempotent - running them multiple times is safe.
 
-*Status*: Fully implemented | *Hydra*: ~C s~, ~L s~, ~P s~ (various submenus) | *Module*: All three linking modules
+*Status*: Fully implemented | *Hydra*: ~F8 F8 L c~, ~F8 F8 L o~, ~F8 F8 L p~ (Links & upkeep submenu) | *Module*: All three linking modules
 
 ** Add IDs to Existing Entries
 
-Each linking module provides a function to add unique IDs to profiles that don't have them: ~org-scribe/add-character-ids~, ~org-scribe/add-location-ids~, ~org-scribe/add-plot-thread-ids~. These scan the respective files for headings with identifying properties (~:Role:~ for characters, ~:Type:~ for locations and plots) and add ~:ID:~ properties using org-id-get-create. The functions report how many IDs were added. This is the first step in enabling linking in existing projects that were created before the linking system existed.
+Each linking module provides a function to add unique IDs to profiles that don't have them: ~org-scribe-add-character-ids~, ~org-scribe-add-location-ids~, ~org-scribe-add-plot-thread-ids~. These scan the respective files for headings with identifying properties (~:Role:~ for characters, ~:Type:~ for locations and plots) and add ~:ID:~ properties using org-id-get-create. The functions report how many IDs were added. This is the first step in enabling linking in existing projects that were created before the linking system existed.
 
-*Status*: Fully implemented | *Hydra*: ~C i~, ~L i~, ~P i~ (various submenus) | *Module*: All three linking modules
+*Status*: Fully implemented | *Hydra*: Not directly bound — superseded by ~org-scribe-relink-project~ (~F8 F8 R~), which adds missing IDs across all entity types as part of its single pass; call these functions via ~M-x~ to target only one entity type | *Module*: All three linking modules
 
-** Link Display Name Updating (~org-scribe/update-all-link-names~)
+** Link Display Name Updating (~org-scribe-relink-project~)
 
-Refreshes the display text of all ID links in scene properties to match current entity names in the database files. When you rename a character, location, or plot thread in the planning files, the ID links still work (they're ID-based), but the visible display text shows the old name. This function scans characters.org, locations.org, and plot.org to get current names, then updates ~:PoV:~, ~:Characters:~, ~:Location:~, and ~:Plot:~ properties in all scenes throughout the manuscript in a single pass. Reports the number of scenes updated.
+Refreshes the display text of all ID links in scene properties to match current entity names in the database files, adds missing IDs, and links any remaining plain-text property values — all in one registry-driven pass across every entity type. When you rename a character, location, or plot thread in the planning files, the ID links still work (they're ID-based), but the visible display text shows the old name. This function scans every entity type's database file to get current names, then updates ~:PoV:~, ~:Characters:~, ~:Location:~, and ~:Plot:~ properties in all scenes throughout the manuscript in a single pass. Reports the number of scenes updated. This single command replaced the older per-entity add-ids/link/update-names functions as the primary upkeep action.
 
-*Status*: Fully implemented | *Hydra*: ~U~ (Manage section) | *Module*: ~linking/org-scribe-link-update.el~
+*Status*: Fully implemented | *Hydra*: ~R~ (Manage section, also ~F8 F8 L R~) | *Module*: ~linking/org-scribe-link-update.el~
 
-** Character Relationship Tracking (~org-scribe/add-relationship~)
+** Character Relationship Tracking (~org-scribe-add-relationship~)
 
-Provides structured tracking of relationships between characters, stored as structured data in the ~:RelationshipsData:~ property (or ~:DatosRelaciones:~ for Spanish projects). Each relationship records: target character (by ID link for stability across renaming), relationship type (mentor, rival, friend, family, lover, enemy, ally, colleague, etc.), strength (1-5 scale where 1=acquaintance, 5=central to their life), and sentiment (positive, negative, neutral, complex). The ~org-scribe/add-relationship~ function prompts for source character, target character, type, strength, and sentiment using completion menus. ~org-scribe/remove-relationship~ presents the character's existing relationships for selection and deletion.
+Provides structured tracking of relationships between characters, stored as a compact directed list in the ~:RelationshipsData:~ property (or ~:DatosRelaciones:~ for Spanish projects), formatted as ~[[id:...][Name]]|type~ entries. ~org-scribe-add-relationship~ prompts for a source character, a target character, and a relationship type using completion menus. ~org-scribe-remove-relationship~ presents the character's existing relationships for selection and deletion.
 
-*Status*: Fully implemented | *Hydra*: ~C a~, ~C d~ (Character submenu) | *Module*: ~linking/org-scribe-character-relationships.el~
+*Status*: Fully implemented | *Hydra*: ~F8 F8 L a~, ~F8 F8 L x~ (Links & upkeep submenu) | *Module*: ~linking/org-scribe-character-relationships.el~
 
-** Character Relationship Visualization
+** Character Relationship Display
 
-Displays character relationships in multiple formats for analysis and planning. ~org-scribe/show-character-relationships~ generates an ASCII relationship tree for a selected character, showing each connection with relationship type, sentiment symbol (+/-/~/·), and target character name. ~org-scribe/show-all-relationships~ presents all project relationships as a formatted org-mode table with columns for character, related-to, type, strength, and sentiment. ~org-scribe/insert-relationship-block~ inserts a ~#+BEGIN: character-relationships~ dynamic block at point, supporting three output formats: ~dot~ (GraphViz DOT language for graph rendering), ~ascii~ (tree display), or ~table~. Optional block parameters ~:character~ and ~:filter-strength~ focus on one character or filter by minimum relationship strength.
+Displays character relationships for analysis and planning. ~org-scribe-show-character-relationships~ shows a plain list of a selected character's relationships. ~org-scribe-show-all-relationships~ presents all project relationships as a formatted org-mode table with columns for character, related-to, and type.
 
-*Status*: Fully implemented | *Hydra*: ~C v~, ~C V~, ~C g~ (Character submenu) | *Module*: ~linking/org-scribe-character-relationships.el~
+*Status*: Fully implemented | *Hydra*: ~F8 F8 L v~, ~F8 F8 L V~ (Links & upkeep submenu) | *Module*: ~linking/org-scribe-character-relationships.el~
 
 ** Entity Tooltips (~org-scribe-overlays-mode~)
 
 A buffer-local minor mode that displays entity information in the echo area when point moves onto any ~[[id:...][Name]]~ link in a scene property. For character links the tooltip shows the character's Role, Age, Goal, and Motivation from their profile heading; for other entity types it shows the heading name. The lookup is debounced via ~org-scribe--overlays-last-id~: moving along the same link does not trigger repeated file reads.
 
-This feature is *off by default*. To activate it automatically whenever ~org-scribe-mode~ is on, the user sets ~(setq org-scribe-overlays-enable t)~ in their init file. Individual buffers can be toggled at any time with ~M-x org-scribe-overlays-mode~ or the ~T~ key in the Characters hydra submenu (~F8 F8 C T~). The minor mode is always loaded (it is required by ~org-scribe.el~) but never activates unless explicitly enabled, so there is zero overhead for users who do not opt in.
+This feature is *off by default*. To activate it automatically whenever ~org-scribe-mode~ is on, the user sets ~(setq org-scribe-overlays-enable t)~ in their init file. Individual buffers can be toggled at any time with ~M-x org-scribe-overlays-mode~ or the ~T~ key in the Links & upkeep hydra submenu (~F8 F8 L T~). The minor mode is always loaded (it is required by ~org-scribe.el~) but never activates unless explicitly enabled, so there is zero overhead for users who do not opt in.
 
-*Status*: Fully implemented (opt-in) | *Hydra*: ~C T~ (Character submenu, toggle) | *Module*: ~linking/org-scribe-overlays.el~
+*Status*: Fully implemented (opt-in) | *Hydra*: ~F8 F8 L T~ (Links & upkeep submenu, toggle) | *Module*: ~linking/org-scribe-overlays.el~
 
 * Search Tools
 :PROPERTIES:
 :CUSTOM_ID: search-tools
 :END:
 
-** Find Scenes by PoV (~org-scribe/org-find-pov~)
+** Find Scenes by PoV (~org-scribe-org-find-pov~)
 
 Searches the entire manuscript for all scenes with a specific PoV character. Uses org-ql to find headings where the ~:PoV:~ property contains the specified character name (supports both plain text and ID link format via ~org-scribe--property-contains-p~). Results display in an ~*org-ql-search*~ buffer with clickable links to each scene. The search is case-sensitive and partial matches work (searching "Alex" finds "Alex Rivera"). Useful for tracking PoV distribution, checking a character's arc, or finding all scenes written from a particular perspective.
 
 *Status*: Fully implemented | *Hydra*: ~1~ (Search section) | *Module*: ~search/org-scribe-search.el~
 
-** Find Scenes by Character (~org-scribe/org-find-character~)
+** Find Scenes by Character (~org-scribe-org-find-character~)
 
 Searches for all scenes where a specific character appears (in either ~:PoV:~ or ~:Characters:~ properties). Uses org-ql with an OR query to check both properties. Handles both plain-text character names and ID links. Results show all scenes featuring the character, regardless of whether they're the PoV character or a supporting character in that scene. Essential for tracking character appearances, ensuring major characters appear regularly, and finding all scenes for character-arc revision.
 
 *Status*: Fully implemented | *Hydra*: ~2~ (Search section) | *Module*: ~search/org-scribe-search.el~
 
-** Find Scenes by Plot Thread (~org-scribe/org-find-plot~)
+** Find Scenes by Plot Thread (~org-scribe-org-find-plot~)
 
 Searches for all scenes tagged with a specific plot thread in the ~:Plot:~ property. Accepts partial matches, so searching "Romance" finds "Romance Subplot". Handles both plain text and ID links. Results display in chronological order (by position in manuscript), showing how a plot thread develops through the story. This helps writers check plot pacing, identify gaps in plot coverage, and ensure all plot threads are resolved by the end.
 
 *Status*: Fully implemented | *Hydra*: ~3~ (Search section) | *Module*: ~search/org-scribe-search.el~
 
-** Find Scenes by Location (~org-scribe/org-find-location~)
+** Find Scenes by Location (~org-scribe-org-find-location~)
 
 Searches for all scenes set in a specific location using the ~:Location:~ property. Supports partial matches and handles both plain text and ID links. Results show all scenes at that location in manuscript order. Useful for checking setting variety (are too many scenes in the same location?), ensuring locations are used effectively, and finding all scenes to revise when location details change. Can search for broad locations (like "Paris") or specific ones (like "Coffee Shop").
 
 *Status*: Fully implemented | *Hydra*: ~4~ (Search section) | *Module*: ~search/org-scribe-search.el~
 
-** Recursive TODO Search (~org-scribe/search-todos-recursive~)
+** Recursive TODO Search (~org-scribe-search-todos-recursive~)
 
 Searches the entire project recursively for all TODO items, collecting them from the manuscript, planning files, notes, and any other org files in the project. Uses org-ql to find headings with TODO states and displays them in a consolidated searchable buffer. This provides project-wide TODO tracking without maintaining a separate task file. Useful for finding revision notes, plot holes to fix, research needed, or any other tagged tasks scattered across project files.
 
 *Status*: Fully implemented | *Hydra*: ~5~ (Search section) | *Module*: ~search/org-scribe-search.el~
 
-** Find Edit Notes (~org-scribe/search-edits-recursive~)
+** Find Edit Notes (~org-scribe-search-edits-recursive~)
 
 Searches the entire project recursively for inline edit markers and revision notes using ~rgrep~. The search pattern is configured via ~org-scribe-edit-string~ (default regexp matches ~*EDIT*~ or ~*NOTE*~ strings anywhere in .org files). Results appear in a grep buffer with clickable file:line references. Writers use ~*EDIT*~ or ~*NOTE*~ inline while drafting to mark passages needing revision without interrupting flow; this function then collects all such markers across the entire project for a focused revision session.
 
@@ -379,11 +379,11 @@ Inserts a chapter template with TODO state, title prompt, and chapter-level prop
 
 *Status*: Fully implemented | *Hydra*: ~c~ (Insert section) | *Module*: ~templates/org-scribe-project.el~
 
-** Scene-Level Word Count Update (~org-scribe/update-scene-wordcounts~)
+** Scene-Level Word Count Update (~org-scribe-update-scene-wordcounts~)
 
-Updates the ~:WORDCOUNT:~ property on every scene heading (level 3, ~:ignore:~ tag) in the current subtree without modifying chapter or act headings.  When point is on a chapter or act heading, only that subtree is processed; when point is not on any heading, the entire buffer is updated.  The function delegates to ~org-context-count-words~ (from ~org-context-extended~) for metadata-aware counting, using the same counting logic as ~org-scribe/ews-org-count-words~ but scoped exclusively to scenes.  This makes it fast and safe to refresh scene word counts during a writing session without inadvertently overwriting chapter-level aggregates.
+Updates the ~:WORDCOUNT:~ property on every scene heading (level 3, ~:ignore:~ tag) in the current subtree without modifying chapter or act headings.  When point is on a chapter or act heading, only that subtree is processed; when point is not on any heading, the entire buffer is updated.  The function delegates to ~org-context-count-words~ (from ~org-context-extended~) for metadata-aware counting, using the same counting logic as ~org-scribe-ews-org-count-words~ but scoped exclusively to scenes.  This makes it fast and safe to refresh scene word counts during a writing session without inadvertently overwriting chapter-level aggregates.
 
-*Status*: Fully implemented | *Hydra*: ~z~ (Tools section, hidden from hint) | *Module*: ~counting/org-scribe-wordcount.el~
+*Status*: Fully implemented | *Hydra*: Not directly bound — reachable via ~C-u C-u~ on ~w~ (the ~org-scribe-wordcount~ dispatcher) | *Module*: ~counting/org-scribe-wordcount.el~
 
 ** Project Template System
 
@@ -402,21 +402,21 @@ Users can customize templates by editing files in ~org-scribe-template-directory
 :CUSTOM_ID: dictionary-language
 :END:
 
-** RAE Dictionary Lookup (~org-scribe/rae-api-lookup~)
+** RAE Dictionary Lookup (~org-scribe-rae-api-lookup~)
 
 Queries the Real Academia Española (RAE) API for Spanish word definitions, displaying results in a side window. The function fetches complete dictionary entries including definitions, examples, etymology, and verb conjugations (for verbs). Results are formatted for readability with conjugation tables and multiple definition senses clearly separated. The lookup uses the official RAE API endpoints and handles Spanish-specific characters correctly. Ideal for Spanish-language writers who need authoritative dictionary references while writing.
 
 *Status*: Fully implemented | *Hydra*: ~d~ (Tools section) | *Module*: ~language/org-scribe-dictionary.el~
 
-** RAE Random Word (~org-scribe/rae-api-random~)
+** RAE Random Word (~org-scribe-rae-api-random~)
 
-Fetches a random word from the RAE dictionary, displaying its full definition in a side window. This can serve as a vocabulary-building exercise, a writing prompt, or a way to discover interesting words to incorporate into writing. The function uses the RAE's random word endpoint and presents the result in the same formatted display as ~org-scribe/rae-api-lookup~. Useful during brainstorming or when seeking inspiration.
+Fetches a random word from the RAE dictionary, displaying its full definition in a side window. This can serve as a vocabulary-building exercise, a writing prompt, or a way to discover interesting words to incorporate into writing. The function uses the RAE's random word endpoint and presents the result in the same formatted display as ~org-scribe-rae-api-lookup~. Useful during brainstorming or when seeking inspiration.
 
 *Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~language/org-scribe-dictionary.el~
 
-** Spanish Synonym Lookup (~org-scribe/sinonimo~)
+** Spanish Synonym Lookup (~org-scribe-sinonimo~)
 
-Queries WordReference.com's Spanish synonym database and displays results in a customizable-width side window (default 80 columns, configurable via ~org-scribe/sinonimo-window-width~). The function extracts and formats synonym lists by part of speech, making it easy to find alternatives for nouns, verbs, adjectives, etc. separately. This is essential for Spanish writers avoiding repetition and finding the precise word for context. The window can be easily dismissed when done.
+Queries WordReference.com's Spanish synonym database and displays results in a customizable-width side window (default 80 columns, configurable via ~org-scribe-sinonimo-window-width~). The function extracts and formats synonym lists by part of speech, making it easy to find alternatives for nouns, verbs, adjectives, etc. separately. This is essential for Spanish writers avoiding repetition and finding the precise word for context. The window can be easily dismissed when done.
 
 *Status*: Fully implemented | *Hydra*: ~y~ (Tools section, "sYnonyms") | *Module*: ~language/org-scribe-dictionary.el~
 
@@ -424,7 +424,7 @@ Queries WordReference.com's Spanish synonym database and displays results in a c
 
 Integration with the powerthesaurus package provides English synonym and antonym lookup using the PowerThesaurus.org API. The function ~powerthesaurus-lookup-dwim~ looks up the word at point or prompts for a word, displaying alternatives in a searchable buffer. While not part of org-scribe's code, the package declares this function for hydra integration, making it accessible alongside Spanish language tools for bilingual writers.
 
-*Status*: Optional (requires powerthesaurus package) | *Hydra*: Not in menu (available if installed) | *Module*: External dependency
+*Status*: Optional (requires powerthesaurus package) | *Hydra*: ~x~ (Tools section, works once installed) | *Module*: External dependency
 
 ** Translation (gt)
 
@@ -439,11 +439,11 @@ The package declares integration with the gt (Google Translate) package for on-t
 
 ** Scene Break Filter (~org-scribe--export-replace-scene-breaks~)
 
-Automatically replaces ~SCENE-BREAK~ markers with backend-appropriate scene separators during org export. Writers add ~#+MACRO: scene-break SCENE-BREAK~ to their manuscript, then use ~{{{scene-break}}}~ wherever they want scene breaks. During export, the filter replaces these markers with: ~\n***\n~ for ASCII/Markdown/Man, ~<br><br><br>~ for HTML, ~\vspace~ commands for LaTeX, or custom strings defined in ~org-scribe/scene-break-replacements~. This ensures consistent scene break formatting across all export formats without manually editing exports.
+Automatically replaces ~SCENE-BREAK~ markers with backend-appropriate scene separators during org export. Writers add ~#+MACRO: scene-break SCENE-BREAK~ to their manuscript, then use ~{{{scene-break}}}~ wherever they want scene breaks. During export, the filter replaces these markers with: ~\n***\n~ for ASCII/Markdown/Man, ~<br><br><br>~ for HTML, ~\vspace~ commands for LaTeX, or custom strings defined in ~org-scribe-scene-break-replacements~. Backends with no dedicated entry (e.g. ODT, EPUB) fall back to the same generic 3-newline default as any unconfigured backend, rather than a format-specific replacement. This ensures consistent scene break formatting across configured export formats without manually editing exports.
 
 *Status*: Fully implemented | *Hydra*: N/A (automatic on export) | *Module*: ~export/org-scribe-export.el~
 
-** Scene Break Customization (~org-scribe/scene-break-replacements~)
+** Scene Break Customization (~org-scribe-scene-break-replacements~)
 
 An alist mapping export backend symbols to replacement strings: ~'((ascii . "\\n***\\n\\n") (html . "<br><br><br>\\n") (latex . "\\vspace{...}") (t . "\\n\\n\\n"))~. Users can customize this to match publisher requirements, personal preferences, or specific export needs. The key ~t~ serves as default for backends not explicitly listed. Advanced users can add entries for any org export backend (epub, odt, markdown, etc.).
 
@@ -483,23 +483,29 @@ To use column view with writing projects, add a ~#+COLUMNS~ line to your manuscr
 :CUSTOM_ID: analysis-tools
 :END:
 
-** Project Health Report (~org-scribe/project-health~)
+** Project Health Report (~org-scribe-project-health~)
 
-Aggregates project-wide statistics into a single ~*org-scribe-health*~ buffer displayed as an org-mode file with clickable ~[[id:...]]~ links back to individual scenes.  The report is organised into five sections:
+Aggregates project-wide statistics into a single ~*org-scribe-health*~ buffer displayed as an org-mode file with clickable ~[[id:...]]~ links back to individual scenes.  The report is organised into seven sections, plus an optional eighth when the bundled writing planner is active for the project:
 
 1. *Overview* — manuscript filename (linked), total scene count, words written (summed from level-3 ~:WORDCOUNT:~), chapter objectives (summed from level-2 ~:WORD-OBJECTIVE:~), and progress percentage.  Using separate levels for actual vs. target avoids the double-counting that would occur if both chapter and scene objectives were totalled together.
 
-2. *Scenes by Status* — a count of scenes grouped by their org TODO keyword (TODO, DONE, or any custom keyword).  Shows at a glance how much of the draft is complete.
+2. *Writing Plan* (optional) — plan title, target word count, current word count and percentage, daily target, end date, and on-track/behind status.  Shown only when a plan is loaded for the project and the project has not opted out of the planner; otherwise a creation/load hint is shown instead, and the section is omitted entirely for a project that declined the planner.
 
-3. *Missing Scene Properties* — three subsections listing scenes that lack a ~:PoV:~, ~:Plot:~, or ~:Location:~ value respectively.  Each entry is an ~[[id:...][Scene Heading]]~ link followed by the parent chapter name.
+3. *Scenes by Status* — a count of scenes grouped by their org TODO keyword (TODO, DONE, or any custom keyword).  Shows at a glance how much of the draft is complete.
 
-4. *Orphaned Entities* — characters and locations defined in their database files whose IDs do not appear in any scene property.  An entity is considered orphaned if its org ID is absent from every ~:PoV:~, ~:Characters:~, ~:Location:~, and ~:Plot:~ property across all scenes.  Orphaned entities represent planning work not yet woven into the manuscript.
+4. *Per-PoV Word Share* — scenes and words grouped by resolved PoV character name, with each PoV's percentage of the manuscript's total words.  Scenes with no PoV set are grouped under a "(no PoV)" row, doubling as a missing-property signal.
 
-5. *Open TODO Scenes* — a full list of scenes whose TODO state is not DONE, with the state keyword in square brackets and a clickable scene link.
+5. *Chapter Length Spread* — per-chapter word totals plus a summary line of minimum, maximum, mean, and median chapter length, with outlier chapters (roughly 2x the mean or under half of it) flagged for attention.
+
+6. *Missing Scene Properties* — three subsections listing scenes that lack a ~:PoV:~, ~:Plot:~, or ~:Location:~ value respectively.  Each entry is an ~[[id:...][Scene Heading]]~ link followed by the parent chapter name.
+
+7. *Orphaned Entities* — characters and locations defined in their database files whose IDs do not appear in any scene property.  An entity is considered orphaned if its org ID is absent from every ~:PoV:~, ~:Characters:~, ~:Location:~, and ~:Plot:~ property across all scenes.  Orphaned entities represent planning work not yet woven into the manuscript.
+
+8. *Open TODO Scenes* — a full list of scenes whose TODO state is not DONE, with the state keyword in square brackets and a clickable scene link.
 
 The function requires a novel project with a detectable manuscript file (novel.org / novela.org) and gracefully handles missing character or location database files.  Orphan detection is skipped for entity types whose linking module is not loaded.
 
-*Status*: Fully implemented | *Hydra*: ~H~ (Manage section, visible in hint) | *Module*: ~core/org-scribe-health.el~
+*Status*: Fully implemented | *Hydra*: ~H~ (Manage section, visible in hint) | *Module*: ~reporting/org-scribe-health.el~
 
 * UI & Navigation
 :PROPERTIES:
@@ -508,37 +514,31 @@ The function requires a novel project with a detectable manuscript file (novel.o
 
 ** Unified Hydra Menu (~hydra-org-scribe/body~)
 
-Provides a single-keystroke menu for accessing all org-scribe features. Activated via ~F8 F8~ (default keybinding), the hydra displays a formatted menu organized into sections: Insert (scene/chapter), Modes (distraction-free/focus/project/editing), Capture (notes/character/location/object/timeline/plot thread), Tools (word count/tracking/dictionary/powerthesaurus; ~z~ updates scene word counts), Search (by PoV/character/plot/location/TODOs/edit notes), and Manage (character/location/plot linking submenus, update all link names, ~H~ for project health report). Each function is accessible via a single key. The hydra uses color-coded hints and grouped layout for quick visual scanning.
+Provides a single-keystroke menu for accessing all org-scribe features. Activated via ~F8 F8~ (default keybinding), the main hydra displays a formatted menu organized into sections: Insert (scene/chapter/open file), Workspace (write/focus/edit/navigate/normal), Tag Scene (set PoV/characters/locations/plot threads on the current scene; jump to PoV), Tools (word count, dictionary, synonyms, thesaurus), Search (by PoV/character/plot/location/TODOs/edits), and Manage (capture note, capture-entity submenu, links & upkeep submenu, relink project, project health report, planner submenu). Two further tiers keep the everyday surface small: ~F8 F8 k~ opens the capture-entity submenu (new character/location/object/timeline/plot thread/note), and ~F8 F8 L~ opens the links & upkeep submenu (one-time setup per entity type, relationships, plot analysis, display toggles). Each function is accessible via a single key. The hydra uses color-coded hints and grouped layout for quick visual scanning.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8~ (global keybinding) | *Module*: ~ui/org-scribe-hydra.el~
 
-** Character Linking Submenu (~hydra-org-scribe-characters/body~)
+** Capture Entity Submenu (~hydra-org-scribe-capture/body~)
 
-A specialized hydra submenu accessed via ~F8 F8 C~ providing access to all character linking and relationship functions: set PoV character (p), set scene characters (c), jump to PoV character (j), link scene characters (l), link all scene characters (L), add IDs to characters (i), setup linking system (s), update link names for current scene (u), update all link names in file (U), add relationship (a), remove relationship (d), view character relationships (v), view all relationships (V), insert relationship graph block (g), and setup relationship system (R). The submenu includes a back key (q) to return to the main hydra.
+A submenu accessed via ~F8 F8 k~ providing access to all six capture-new-entity commands: character (h), location (l), object (b), timeline event (t), plot thread (g), and note (n). The submenu includes a back key (q) to return to the main hydra and Q to quit outright.
 
-*Status*: Fully implemented | *Hydra*: ~F8 F8 C~ | *Module*: ~ui/org-scribe-hydra.el~
+*Status*: Fully implemented | *Hydra*: ~F8 F8 k~ | *Module*: ~ui/org-scribe-hydra.el~
 
-** Location Linking Submenu (~hydra-org-scribe-locations/body~)
+** Links & Upkeep Submenu (~hydra-org-scribe-links/body~)
 
-Accessed via ~F8 F8 L~, this submenu provides: set scene locations (c), link scene locations (l), link all scenes (L), add IDs to locations (i), and setup linking system (s). Mirrors the character linking submenu structure for consistency. The menu is context-aware - functions operate on the current scene heading or the entire manuscript buffer as appropriate.
+Accessed via ~F8 F8 L~, this submenu covers everything that isn't an everyday scene-tagging or capture action: whole-project upkeep (~R~: relink everything — adds missing IDs, links plain names, and refreshes display names across every entity type in one pass; ~j~: jump to plot thread), one-time set-up per entity type (~c~: characters, ~o~: locations, ~p~: plot threads, ~r~: relationships), relationship management (~a~: add, ~x~: remove, ~v~: view one character's relationships, ~V~: view all relationships as a table), and analysis/display toggles (~t~: plot health report, ~S~: plot statistics, ~C~: column view toggle, ~T~: entity tooltips toggle). This single ~R~ command (also bound at the top level) replaced the older separate per-entity add-ids/link/update-names commands that a previous version of this menu exposed here individually.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8 L~ | *Module*: ~ui/org-scribe-hydra.el~
 
-** Plot Thread Linking Submenu (~hydra-org-scribe-plot-threads/body~)
-
-Accessed via ~F8 F8 P~, this submenu provides plot thread management (p: set plot threads, j: jump to thread, l: link scene, L: link all, i: add IDs, s: setup) plus unique analysis features (t: timeline table instruction, r: health report, S: statistics). The inclusion of analysis tools in this submenu reflects the plot-thread system's advanced analytical capabilities not present in character/location linking.
-
-*Status*: Fully implemented | *Hydra*: ~F8 F8 P~ | *Module*: ~ui/org-scribe-hydra.el~
-
 ** Global Keybindings
 
-The package provides minimal global keybindings to avoid conflicts: ~F8 F8~ for the hydra menu and ~C-c W~ for quick note capture. These are set up via the ~emacs-org-scribe-mode~ minor mode keybindings. Additional keybindings can be configured by users but the package defaults to hydra access to minimize namespace pollution. The function ~emacs-org-scribe-setup~ adds an org-mode hook to enable the minor mode automatically in all org buffers.
+The package provides minimal global keybindings to avoid conflicts: ~F8 F8~ for the hydra menu and ~C-c W~ for quick note capture. These are set up via the ~org-scribe-mode~ minor mode keybindings. Additional keybindings can be configured by users but the package defaults to hydra access to minimize namespace pollution. The function ~org-scribe-setup~ adds an org-mode hook to enable the minor mode automatically in all org buffers.
 
 *Status*: Fully implemented | *Hydra*: N/A (core keybindings) | *Module*: ~org-scribe.el~
 
-** Emacs Writing Mode (~emacs-org-scribe-mode~)
+** Emacs Writing Mode (~org-scribe-mode~)
 
-A minor mode that provides the package's keybindings and lighter (~" Write"~ in the modeline). When enabled in an org-mode buffer, it activates the hydra menu keybinding and capture keybinding. The mode can be enabled manually or automatically via ~emacs-org-scribe-setup~ which adds it to ~org-mode-hook~. The mode is buffer-local and integrates cleanly with other org-mode configurations.
+A minor mode that provides the package's keybindings. When enabled in an org-mode buffer, it activates the hydra menu keybinding and capture keybinding. The mode can be enabled manually or automatically via ~org-scribe-setup~ which adds it to ~org-mode-hook~. The mode is buffer-local and integrates cleanly with other org-mode configurations.
 
 *Status*: Fully implemented | *Hydra*: N/A (core mode) | *Module*: ~org-scribe.el~
 
@@ -555,7 +555,7 @@ Points to the directory containing project templates (novel-en/, novel-es/, shor
 
 ** Writing Stories Directory (~org-scribe-stories-directory~)
 
-Specifies where writing exercise files will be created (default: ~/org-scribe/exercises). This directory is used by functions that generate writing prompts or exercises. Writers who maintain separate directories for exercises vs. actual projects can point this elsewhere to keep exercises organized separately from main work.
+Specifies where writing exercise files will be created (default: ~~/writing/exercises~). This directory is used by functions that generate writing prompts or exercises. Writers who maintain separate directories for exercises vs. actual projects can point this elsewhere to keep exercises organized separately from main work. A sibling variable, ~org-scribe-projects-directory~ (default ~~/writing/~), is the base directory offered when creating a new novel or short story project.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
@@ -585,13 +585,13 @@ Three settings control editing mode's three-panel layout: ~org-scribe-editing-le
 
 ** Scene Break Replacements
 
-The ~org-scribe/scene-break-replacements~ alist maps export backends to scene separator strings. Customize this to match publisher requirements or personal preferences. Common customizations: different asterisk counts (~***~ vs ~* * *~), horizontal rules for HTML (~<hr>~), page breaks for LaTeX (~\\clearpage~), or custom graphics. The default key ~t~ provides fallback for unspecified backends.
+The ~org-scribe-scene-break-replacements~ alist maps export backends to scene separator strings. Customize this to match publisher requirements or personal preferences. Common customizations: different asterisk counts (~***~ vs ~* * *~), horizontal rules for HTML (~<hr>~), page breaks for LaTeX (~\\clearpage~), or custom graphics. The default key ~t~ provides fallback for unspecified backends.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
 ** Synonym Window Width
 
-~org-scribe/sinonimo-window-width~ (default: 80) controls the width of the side window displaying Spanish synonym results from WordReference. Narrower values (60-70) work well on smaller screens or when working in split windows. Wider values (90-100) provide more space for longer synonym lists and reduce line wrapping. The window appears on the right side by default.
+~org-scribe-sinonimo-window-width~ (default: 80) controls the width of the side window displaying Spanish synonym results from WordReference. Narrower values (60-70) work well on smaller screens or when working in split windows. Wider values (90-100) provide more space for longer synonym lists and reduce line wrapping. The window appears on the right side by default.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
@@ -627,7 +627,7 @@ The ~org-scribe/scene-break-replacements~ alist maps export backends to scene se
 
 ** Edit Note Marker (~org-scribe-edit-string~)
 
-Defines the regexp pattern used by ~org-scribe/search-edits-recursive~ to find inline edit notes and revision markers throughout the manuscript. Default value is ~"\*EDIT\*\\|\*NOTE\*"~, matching ~*EDIT*~ or ~*NOTE*~ anywhere in .org files. Writers can customize this to match their personal convention: for example ~"FIXME\\|REVISION\\|TOFIX"~ or any other marker they use to flag places needing attention. The pattern is passed to ~rgrep~, so full regexp syntax is supported.
+Defines the regexp pattern used by ~org-scribe-search-edits-recursive~ to find inline edit notes and revision markers throughout the manuscript. Default value is ~"\*EDIT\*\\|\*NOTE\*"~, matching ~*EDIT*~ or ~*NOTE*~ anywhere in .org files. Writers can customize this to match their personal convention: for example ~"FIXME\\|REVISION\\|TOFIX"~ or any other marker they use to flag places needing attention. The pattern is passed to ~rgrep~, so full regexp syntax is supported.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~search/org-scribe-search.el~
 
@@ -642,16 +642,20 @@ A complete goal-oriented writing planner bundled directly inside ~org-scribe~ at
 
 Features provided: (1) auto-load the project's plan file when any project file is opened; (2) push live word counts to the plan after running ~org-scribe-ews-org-count-words~; (3) wire the planner's word count function to read ~WORDCOUNT~ properties from the manuscript; (4) set the planner's project-root function so file pickers start at the current project root; (5) offer plan creation after ~org-scribe-create-novel-project~ / ~org-scribe-create-short-story-project~; (6) add a planner sub-hydra accessible via ~W~ in the main Hydra menu; (7) show today's target/actual in the mode line as ~[W:actual/target]~.
 
-Integration features are on by default. To opt out, set any of the following variables *before* the planner first loads (e.g. in ~early-init.el~):
+Every one of these integration features is additionally gated *per project*: a project only sees the planner after explicitly opting in via a ~# Planner: yes~/~# Planner: no~ line in ~.org-scribe-project~ (read by ~org-scribe-planner-gate~ in ~core/org-scribe-core.el~). ~nil~ (undecided, the state of a project created before this gate existed) preserves the old always-on behavior; only an explicit ~no~ turns features off. Toggle per project with ~org-scribe-planner-enable-for-project~/~org-scribe-planner-disable-for-project~ (hydra keys ~F8 F8 W E~/~F8 F8 W X~).
+
+Integration features are on by default. To opt out globally, set any of the following variables *before* the planner first loads (e.g. in ~early-init.el~):
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-planner-auto-load-plan nil)
 (setq org-scribe-planner-auto-push-wordcount nil)
+(setq org-scribe-planner-auto-track-daily nil)
 (setq org-scribe-planner-offer-plan-on-create nil)
 (setq org-scribe-planner-show-mode-line nil)
+(setq org-scribe-auto-wordcount nil)   ; keep nil (default) to disable save-triggered full count
 #+END_SRC
 
-*Status*: Fully implemented | *Hydra*: ~W~ sub-menu (hidden from hint) | *Module*: ~planning/org-scribe-planner.el~
+*Status*: Fully implemented | *Hydra*: ~W~ sub-menu (shown in the Manage section of the main hint) | *Module*: ~planning/org-scribe-planner.el~
 
 See [[file:getting-started-16-planner-integration.org][Lesson 16]] for a step-by-step tutorial.
 
@@ -747,6 +751,6 @@ manual/
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2026-06-28
-- *Package Version*: 0.4.0
+- *Package Version*: 0.5.0
 - *Total Features Documented*: 92 (88 core + 4 bundled planner)
 - *Status*: Complete feature extraction, ready for detailed documentation

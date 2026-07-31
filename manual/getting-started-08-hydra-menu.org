@@ -286,7 +286,6 @@ _R_: Relink everything    _c_: Characters        _a_: Add relationship       _t_
 _j_: Jump to plot thread  _o_: Locations         _x_: Remove relationship    _S_: Plot statistics
                           _p_: Plot threads      _v_: View relationships     _C_: Column view toggle
                           _r_: Relationships     _V_: View all relationships _T_: Tooltips toggle
-                                                 _g_: Insert graph block
 _q_: Back to main menu    _Q_: Quit
 #+END_EXAMPLE
 
@@ -296,12 +295,13 @@ _q_: Back to main menu    _Q_: Quit
 - ~c~ / ~o~ / ~p~ - One-time setup wizard for character / location / plot linking
 - ~r~ - Setup character relationship tracking
 - ~a~ / ~x~ - Add or remove a relationship between two characters
-- ~v~ / ~V~ - View relationships (one character / all characters)
-- ~g~ - Insert a relationship graph dynamic block
+- ~v~ / ~V~ - View relationships (one character / all characters, as a plain list / table)
 - ~t~ / ~S~ - Plot thread health report / statistics
 - ~C~ - Toggle clean display in org-column-view (strips =[[id:...]]= syntax)
 - ~T~ - Toggle entity tooltips (shows character info in echo area when point is on an ID link)
 - ~q~ / ~Q~ - Back to main / Quit
+
+Note: there is no relationship dynamic-block/graph-visualization feature anymore — relationships are viewed only via ~v~/~V~ above.
 
 ** Planner Submenu (F8 F8 W)
 
@@ -310,15 +310,20 @@ _q_: Back to main menu    _Q_: Quit
   ──────────────────────────────────────────────────
   p: Open project plan (load or create)
   n: New plan
+  o: Onboard existing project
   l: Load plan
-  u: Update progress (from word count)
-  d: Update daily word count
+  u: Sync word count (from manuscript)
+  d: Add session note
   r: Recalculate plan
   a: Adjust remaining days
   m: Milestones
   D: Dashboards menu
+  E: Enable for project
+  X: Disable for project
   q: Back to main menu
 #+END_EXAMPLE
+
+This submenu is only reachable once the planner is enabled for the current project (a ~# Planner: yes~ line in ~.org-scribe-project~, undecided by default). If the project has explicitly opted out (~# Planner: no~), pressing ~W~ from the main menu offers to re-enable it instead of opening this submenu — see the per-project gate described in [[file:getting-started-16-planner-integration.org][Lesson 16]].
 
 See [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning]] for a full walkthrough of the planner.
 
@@ -518,10 +523,10 @@ HYDRA QUICK REFERENCE (F8 F8)
 INSERT     WORKSPACE   TAG SCENE   TOOLS       SEARCH      MANAGE
 s: Scene   m: Write    p: PoV      w: Count    1: PoV      n: Note
 c: Chapter f: Focus    h: Chars    a: All WC   2: Char     k: Capture…
-o: Open    e: Edit     l: Locs     r: Track    3: Plot     L: Links…
-           v: Nav      g: Plot     d: Dict     4: Loc      R: Relink
-           0: Normal   j: Jump     y: Syn      5: TODO     H: Health
-                                   x: Thes     6: Edits    W: Planner…
+o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
+           v: Nav      g: Plot     y: Syn      4: Loc      R: Relink
+           0: Normal   j: Jump     x: Thes     5: TODO     H: Health
+                                               6: Edits    W: Planner…
 #+END_EXAMPLE
 
 Tape it near your monitor until you memorize it!

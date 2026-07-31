@@ -46,7 +46,7 @@ Don't worry if you don't have all of these - we'll explain which features need w
 |------------------+------+-------------------------------+-------------------------------|
 | Distraction-Free | ~m~    | Clean, focused writing        | Daily writing, first drafts   |
 | Focus Mode       | ~f~    | One section at a time         | Intensive scene work          |
-| Project Mode     | ~p~    | Navigation + writing          | Complex projects, jumping     |
+| Project Mode     | ~v~    | Navigation + writing          | Complex projects, jumping     |
 | Editing Mode     | ~e~    | Three-pane editing layout     | Revision, notes integration   |
 
 ** Mutual Exclusivity
@@ -60,7 +60,7 @@ When you activate a mode:
 
 *What this means*:
 - ~F8 F8 m~ when Focus Mode is active → Focus exits, Distraction-Free activates
-- ~F8 F8 p~ when Editing Mode is active → Editing exits, Project activates
+- ~F8 F8 v~ when Editing Mode is active → Editing exits, Project activates
 - Activating the same mode again → Exits that mode (toggle behavior)
 
 ** Quick Summary
@@ -69,7 +69,7 @@ Before we dive deep, here's the essence of each mode:
 
 1. *Distraction-Free* (~m~): Clean canvas, no distractions, just you and words
 2. *Focus* (~f~): Like Distraction-Free, but shows only current section
-3. *Project* (~p~): Two navigation panels + writing area (overview + detail)
+3. *Project* (~v~): Two navigation panels + writing area (overview + detail)
 4. *Editing* (~e~): Three panels - outline + manuscript + notes (serious revision)
 
 * Mode 1: Distraction-Free Writing Mode
@@ -159,19 +159,19 @@ Control how Distraction-Free mode looks:
 
 #+BEGIN_SRC emacs-lisp
 ;; Theme while writing
-(setq my-writing-env-work-theme 'poet)  ; or modus-operandi, etc.
+(setq org-scribe-env-work-theme 'poet)  ; or modus-operandi, etc.
 
 ;; Normal theme (restored when exiting)
-(setq my-writing-env-normal-theme 'ef-deuteranopia-dark)
+(setq org-scribe-env-normal-theme 'ef-deuteranopia-dark)
 
 ;; Font preset while writing (requires fontaine)
-(setq my-writing-env-work-font 'writing-big)
+(setq org-scribe-env-work-font 'writing-big)
 
 ;; Normal font preset
-(setq my-writing-env-normal-font 'regular)
+(setq org-scribe-env-normal-font 'regular)
 
 ;; Text width (columns)
-(setq my-writing-env-work-width 80)  ; narrower = more focused
+(setq org-scribe-env-work-width 80)  ; narrower = more focused
 #+END_SRC
 
 ** Try It Now!
@@ -305,7 +305,7 @@ No separate configuration needed!
 
 ** What It Does
 
-Activates: ~F8 F8 p~
+Activates: ~F8 F8 v~
 
 *Layout changes*:
 - Opens ~treemacs~ on the left (project file tree)
@@ -398,7 +398,7 @@ Perfect for:
 
 ** How It Works
 
-1. *Press* ~F8 F8 p~
+1. *Press* ~F8 F8 v~
 2. *Frame splits into three*:
    - Treemacs opens (left)
    - Imenu-list opens (right)
@@ -408,21 +408,21 @@ Perfect for:
    - Click treemacs to open files
    - Click imenu-list to jump within file
    - Keep working in center panel
-4. *Press* ~F8 F8 p~ again to exit
+4. *Press* ~F8 F8 v~ again to exit
 5. *Panels close*: Back to normal single-buffer view
 
 ** Workflow Example
 
 *Scenario*: Writing a scene, need to check character details.
 
-1. ~F8 F8 p~ (activate Project mode)
+1. ~F8 F8 v~ (activate Project mode)
 2. Left panel (treemacs) → click ~objects/characters.org~
 3. Character file opens in center
 4. Read character details
 5. Left panel → click ~novel.org~
 6. Manuscript returns to center
 7. Continue writing with fresh details
-8. ~F8 F8 p~ (exit) when navigation not needed
+8. ~F8 F8 v~ (exit) when navigation not needed
 
 ** Dependencies
 
@@ -444,12 +444,12 @@ M-x package-install RET imenu-list RET
 ** Try It Now!
 
 1. Open your manuscript
-2. Press ~F8 F8 p~
+2. Press ~F8 F8 v~
 3. Look at the three panels
 4. Click a heading in imenu-list (right panel)
 5. See cursor jump in main buffer
 6. Click a file in treemacs (left panel) if available
-7. Press ~F8 F8 p~ to exit
+7. Press ~F8 F8 v~ to exit
 
 * Mode 4: Editing Mode
 
@@ -622,17 +622,17 @@ If you use ~org-remark~ for annotations:
 
 #+BEGIN_SRC emacs-lisp
 ;; Panel widths (percentages, must sum to < 1.0)
-(setq writing-editing-left-width-percent 0.25)   ; 25% for outline
-(setq writing-editing-right-width-percent 0.25)  ; 25% for notes
+(setq org-scribe-editing-left-width-percent 0.25)   ; 25% for outline
+(setq org-scribe-editing-right-width-percent 0.25)  ; 25% for notes
 
 ;; Theme for editing mode
-(setq writing-editing-theme 'leuven)  ; or modus-operandi, etc.
+(setq org-scribe-editing-theme 'leuven)  ; or modus-operandi, etc.
 
 ;; Column width for text centering
-(setq writing-editing-fill-column-width 90)
+(setq org-scribe-editing-fill-column-width 90)
 
 ;; Font preset (requires fontaine)
-(setq writing-editing-fontaine-preset 'editing)
+(setq org-scribe-editing-fontaine-preset 'editing)
 #+END_SRC
 
 ** Try It Now!
@@ -703,7 +703,7 @@ START
 ** Combining Modes with Workflow
 
 *Morning routine*:
-1. ~F8 F8 p~ - Check what needs writing (project overview)
+1. ~F8 F8 v~ - Check what needs writing (project overview)
 2. Navigate to today's scene
 3. ~F8 F8 m~ - Switch to distraction-free
 4. Write for 1 hour
@@ -741,11 +741,11 @@ Let's practice using all four modes.
    - ~F8 F8 f~ (exit)
 
 3. *Project*:
-   - ~F8 F8 p~
+   - ~F8 F8 v~
    - Click different headings in imenu-list
    - See cursor jump
    - Notice three-panel layout
-   - ~F8 F8 p~ (exit)
+   - ~F8 F8 v~ (exit)
 
 4. *Editing*:
    - ~F8 F8 e~
@@ -759,7 +759,7 @@ Let's practice using all four modes.
 *Goal*: Practice smooth transitions
 
 1. ~F8 F8 m~ → Distraction-Free active
-2. ~F8 F8 p~ → Distraction-Free exits, Project activates
+2. ~F8 F8 v~ → Distraction-Free exits, Project activates
 3. ~F8 F8 f~ → Project exits, Focus activates
 4. ~F8 F8 e~ → Focus exits, Editing activates
 5. ~F8 F8 m~ → Editing exits, Distraction-Free activates
@@ -783,7 +783,7 @@ Let's practice using all four modes.
 
 3. *Task*: Check character profile, then continue writing
    - *Mode choice*: ?
-   - *Answer*: Project (~p~) - use treemacs to open character file
+   - *Answer*: Project (~v~) - use treemacs to open character file
    - Do it!
 
 4. *Task*: Review Scene 1 with revision checklist
@@ -820,29 +820,29 @@ Both modes use the same variables:
 
 ;; === THEMES ===
 ;; Writing mode theme (clean, minimal)
-(setq my-writing-env-work-theme 'poet)
+(setq org-scribe-env-work-theme 'poet)
 ;; Options: poet, modus-operandi, ef-light, leuven
 
 ;; Normal theme (your regular Emacs theme)
-(setq my-writing-env-normal-theme 'modus-vivendi)
+(setq org-scribe-env-normal-theme 'modus-vivendi)
 ;; Use whatever theme you normally use
 
 ;; === FONTS (requires fontaine package) ===
 ;; Writing mode font preset
-(setq my-writing-env-work-font 'writing-big)
+(setq org-scribe-env-work-font 'writing-big)
 
 ;; Normal font preset
-(setq my-writing-env-normal-font 'regular)
+(setq org-scribe-env-normal-font 'regular)
 
 ;; === TEXT WIDTH ===
 ;; Writing mode width (columns)
-(setq my-writing-env-work-width 80)
+(setq org-scribe-env-work-width 80)
 ;; 60-70: very narrow, intense focus
 ;; 80: classic, comfortable
 ;; 90-100: wider, more context
 
 ;; Normal mode width (not used much)
-(setq my-writing-env-normal-width 90)
+(setq org-scribe-env-normal-width 90)
 #+END_SRC
 
 ** Customizing Editing Mode
@@ -852,24 +852,24 @@ Editing mode has separate settings:
 #+BEGIN_SRC emacs-lisp
 ;; === PANEL SIZES ===
 ;; Left panel (imenu-list) width
-(setq writing-editing-left-width-percent 0.25)  ; 25%
+(setq org-scribe-editing-left-width-percent 0.25)  ; 25%
 
 ;; Right panel (notes) width
-(setq writing-editing-right-width-percent 0.25) ; 25%
+(setq org-scribe-editing-right-width-percent 0.25) ; 25%
 
 ;; (Center panel is automatic: 1.0 - left - right)
 
 ;; === VISUAL STYLE ===
 ;; Editing theme
-(setq writing-editing-theme 'leuven)
+(setq org-scribe-editing-theme 'leuven)
 ;; Good options: leuven, modus-operandi, ef-light
 
 ;; Text column width
-(setq writing-editing-fill-column-width 90)
+(setq org-scribe-editing-fill-column-width 90)
 ;; Wider than writing mode (more context for editing)
 
 ;; Font preset (requires fontaine)
-(setq writing-editing-fontaine-preset 'editing)
+(setq org-scribe-editing-fontaine-preset 'editing)
 #+END_SRC
 
 ** Example: Narrow Focus Configuration
@@ -878,9 +878,9 @@ For intense, narrow focus:
 
 #+BEGIN_SRC emacs-lisp
 ;; Very narrow, very minimal
-(setq my-writing-env-work-theme 'poet)
-(setq my-writing-env-work-width 60)  ; Very narrow!
-(setq my-writing-env-work-font 'writing-huge)
+(setq org-scribe-env-work-theme 'poet)
+(setq org-scribe-env-work-width 60)  ; Very narrow!
+(setq org-scribe-env-work-font 'writing-huge)
 #+END_SRC
 
 ** Example: Wide Editing Configuration
@@ -889,9 +889,9 @@ For more context during revision:
 
 #+BEGIN_SRC emacs-lisp
 ;; Wider panels, more information
-(setq writing-editing-left-width-percent 0.20)   ; Narrower outline
-(setq writing-editing-right-width-percent 0.30)  ; Wider notes
-(setq writing-editing-fill-column-width 100)     ; Wide text
+(setq org-scribe-editing-left-width-percent 0.20)   ; Narrower outline
+(setq org-scribe-editing-right-width-percent 0.30)  ; Wider notes
+(setq org-scribe-editing-fill-column-width 100)     ; Wide text
 #+END_SRC
 
 ** Font Presets (Fontaine)
@@ -950,7 +950,7 @@ It's the most popular for daily writing because:
 
 - Distraction-Free (~m~) works anywhere
 - Focus (~f~) works in any org-mode file
-- Project (~p~) needs a project (any project.el project)
+- Project (~v~) needs a project (any project.el project)
 - Editing (~e~) works with any file (creates matching notes file)
 
 Best experience is within a proper writing project!
@@ -993,7 +993,7 @@ But you can:
 
 *Answer*: Modes gracefully handle missing packages.
 
-- Project mode (~p~): Shows warning, some features missing
+- Project mode (~v~): Shows warning, some features missing
 - Editing mode (~e~): Works but no imenu-list panel
 - Distraction-Free/Focus (~m~/~f~): Require writeroom-mode (show error)
 
@@ -1003,11 +1003,10 @@ Install recommended packages for full experience!
 
 *Answer*: Advanced users can!
 
-Study existing modes in ~modes/writing-modes.el~:
+Study existing modes in ~modes/org-scribe-modes.el~:
 1. Create a minor mode
-2. Add to ~my-writing-exclusive-modes~ list
-3. Call ~my-writing--deactivate-other-modes~ when activating
-4. Save/restore state appropriately
+2. Add an entry to the ~org-scribe-workspace-layouts~ table — this single source of truth automatically derives the exclusivity list (~org-scribe-exclusive-modes~) and wires your new layout into the unified ~org-scribe-workspace~ dispatcher; you no longer need to touch two separate lists/functions by hand
+3. Save/restore state appropriately
 
 This is advanced - stick with the four built-in modes initially!
 
@@ -1099,7 +1098,7 @@ Fantastic work! You've completed Lesson 9. You now know:
 ✓ All four writing modes and their unique purposes
 ✓ Distraction-Free mode (~m~) for daily writing
 ✓ Focus mode (~f~) for intensive single-section work
-✓ Project mode (~p~) for navigation + writing
+✓ Project mode (~v~) for navigation + writing
 ✓ Editing mode (~e~) for revision with notes
 ✓ How modes are mutually exclusive (only one at a time)
 ✓ When to use each mode based on your task
@@ -1160,12 +1159,13 @@ The modes are powerful tools - the more you use them, the more natural they beco
 
 | Key | Mode             | Mnemonic           |
 |-----+------------------+--------------------|
-| ~m~   | Distraction-Free | **M**ode           |
+| ~m~   | Distraction-Free (write) | **M**ode   |
 | ~f~   | Focus            | **F**ocus          |
-| ~p~   | Project          | **P**roject        |
+| ~v~   | Project (navigate) | Na**v**igate    |
 | ~e~   | Editing          | **E**diting        |
+| ~0~   | Normal (off)     | none (**0** = normal)|
 
-All accessed via: ~F8 F8~ then key
+All accessed via: ~F8 F8~ then key. All five go through one unified dispatcher, ~org-scribe-workspace~, which takes the layout name as its argument; re-selecting the active layout's key turns it off.
 
 ** Mode Comparison Chart
 

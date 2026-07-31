@@ -74,10 +74,12 @@ The package provides four main search functions, each focusing on a different sc
 
 | Search Type | Hydra Key | Command                    | Searches Property |
 |-------------+-----------+----------------------------+-------------------|
-| PoV         | F8 F8 1   | ~org-scribe/org-find-pov~       | ~:PoV:~             |
-| Character   | F8 F8 2   | ~org-scribe/org-find-character~ | ~:Characters:~      |
-| Plot        | F8 F8 3   | ~org-scribe/org-find-plot~      | ~:Plot:~            |
-| Location    | F8 F8 4   | ~org-scribe/org-find-location~  | ~:Location:~        |
+| PoV         | F8 F8 1   | ~org-scribe-org-find-pov~       | ~:PoV:~             |
+| Character   | F8 F8 2   | ~org-scribe-org-find-character~ | ~:Characters:~      |
+| Plot        | F8 F8 3   | ~org-scribe-org-find-plot~      | ~:Plot:~            |
+| Location    | F8 F8 4   | ~org-scribe-org-find-location~  | ~:Location:~        |
+
+Two more searches round out the Search section of the hydra (covered later in this lesson): ~F8 F8 5~ for TODO items and ~F8 F8 6~ for inline =*EDIT*=/=*NOTE*= markers (~org-scribe-search-edits-recursive~, an ~rgrep~-based search, not org-ql).
 
 ** Common Pattern
 
@@ -113,12 +115,11 @@ Find all scenes narrated from a specific character's perspective.
 
 Press: ~F8 F8 1~
 
-Or use: ~M-x org-scribe/org-find-pov~
+Or use: ~M-x org-scribe-org-find-pov~
 
 ** The Process
-*NOTE:* This is not implemented as written
 
-1. You'll see a prompt: ~Search for PoV:~
+1. You'll see a prompt: ~Find PoV character [fuzzy]: ~ (or ~Character (PoV) [substring]: ~ if you use the free-text variant)
 2. Start typing a character name: ~Alex~
 3. Matching names appear (with completion)
 4. Select: ~Alex Rivera~
@@ -210,11 +211,11 @@ Find all scenes where a character appears (regardless of whose PoV).
 
 Press: ~F8 F8 2~
 
-Or use: ~M-x org-scribe/org-find-character~
+Or use: ~M-x org-scribe-org-find-character~
 
 ** The Process
 
-1. You'll see a prompt: ~Search for character:~
+1. You'll see a prompt: ~Find character [fuzzy]: ~ (or ~Character name [substring]: ~)
 2. Start typing: ~Sam~
 3. Matching names appear
 4. Select: ~Sam Chen~
@@ -327,11 +328,11 @@ Find all scenes that develop a specific plot thread.
 
 Press: ~F8 F8 3~
 
-Or use: ~M-x org-scribe/org-find-plot~
+Or use: ~M-x org-scribe-org-find-plot~
 
 ** The Process
 
-1. You'll see a prompt: ~Search for plot thread:~
+1. You'll see a prompt: ~Find plot thread [fuzzy]: ~ (or ~Plot term [substring]: ~)
 2. Start typing: ~Mystery~
 3. Matching plot threads appear
 4. Select: ~Main Mystery - Water Sabotage~
@@ -454,11 +455,11 @@ Find all scenes set in a specific location.
 
 Press: ~F8 F8 4~
 
-Or use: ~M-x org-scribe/org-find-location~
+Or use: ~M-x org-scribe-org-find-location~
 
 ** The Process
 
-1. You'll see a prompt: ~Search for location:~
+1. You'll see a prompt: ~Find location [fuzzy]: ~ (or ~Location [substring]: ~)
 2. Start typing: ~Coffee~
 3. Matching locations appear
 4. Select: ~Downtown Coffee Collective~
@@ -590,9 +591,9 @@ Keywords include: TODO, DONE, FIXME, RESEARCH, REVISE, NOTE (customizable).
 
 ** How to Search
 
-Press: ~F8 F8 T~ (capital T for TODO)
+Press: ~F8 F8 5~
 
-Or use: ~M-x org-scribe/org-find-todos~
+Or use: ~M-x org-scribe-search-todos-recursive~
 
 Or Org's built-in: ~C-c a t~ (agenda todo list)
 
@@ -711,7 +712,7 @@ Result: Add family reference in Scene 18 and full family scene around Scene 20.
 
 ** The Results Buffer
 
-Search results appear in a special buffer: ~*org-ql-search*~
+Search results appear in an org-ql results buffer (named after your query, e.g. ~*Org QL View: ...*~ — the exact name depends on your installed org-ql version)
 
 ** Navigating Results
 
@@ -803,7 +804,7 @@ Let's practice all five search types.
 6. Press ~q~ to close results
 
 *** Search 5: TODO
-1. Press: ~F8 F8 T~
+1. Press: ~F8 F8 5~
 2. View all TODO items
 3. Count them
 4. Note: How many TODOs? _______
@@ -870,7 +871,7 @@ Get comfortable with the results navigation cycle:
 
 ** Before Writing
 
-- **Review TODOs**: Check what you left yourself to fix (F8 F8 T)
+- **Review TODOs**: Check what you left yourself to fix (F8 F8 5)
 - **Check last appearance**: If writing Character X, search when they last appeared
 - **Verify plot status**: If developing Plot Y, search to see what's happened so far
 
@@ -956,7 +957,7 @@ For recurring searches, consider creating custom org-ql queries (advanced).
 3. Are property values spelled correctly?
 4. Are you running search from the manuscript file (novel.org / story.org)?
 
-Run ~M-x org-scribe/debug-scene-properties~ (if available) to diagnose.
+Open the manuscript file directly and check the property with ~C-c C-x p~ (=org-set-property=, which also displays the current value) — there is no dedicated diagnostic command for this.
 
 * Troubleshooting
 
@@ -1022,7 +1023,8 @@ Pressing RET or C-c C-o in results doesn't jump to scene.
 | ~F8 F8 2~     | Character         | ~:Characters:~      |
 | ~F8 F8 3~     | Plot              | ~:Plot:~            |
 | ~F8 F8 4~     | Location          | ~:Location:~        |
-| ~F8 F8 T~     | TODO items        | TODO keywords     |
+| ~F8 F8 5~     | TODO items        | TODO keywords     |
+| ~F8 F8 6~     | Edit/note markers | =*EDIT*=/=*NOTE*= text (rgrep) |
 
 ** Results Buffer Navigation
 
@@ -1054,11 +1056,12 @@ Pressing RET or C-c C-o in results doesn't jump to scene.
 
 | Command                      | What It Does             |
 |------------------------------+--------------------------|
-| ~org-scribe/org-find-pov~         | Search by PoV            |
-| ~org-scribe/org-find-character~   | Search by character      |
-| ~org-scribe/org-find-plot~        | Search by plot thread    |
-| ~org-scribe/org-find-location~    | Search by location       |
-| ~org-scribe/org-find-todos~       | Find all TODO items      |
+| ~org-scribe-org-find-pov~         | Search by PoV            |
+| ~org-scribe-org-find-character~   | Search by character      |
+| ~org-scribe-org-find-plot~        | Search by plot thread    |
+| ~org-scribe-org-find-location~    | Search by location       |
+| ~org-scribe-search-todos-recursive~       | Find all TODO items      |
+| ~org-scribe-search-edits-recursive~       | Find inline edit/note markers |
 
 * Tips for Better Searching
 
@@ -1139,7 +1142,7 @@ If you frequently search the same things, consider creating custom commands:
 (defun my/search-alex ()
   "Quickly search for Alex PoV scenes."
   (interactive)
-  (org-scribe/org-find-pov "Alex Rivera"))
+  (org-scribe-org-find-pov "Alex Rivera"))
 #+END_SRC
 
 Bind to key: ~C-c a~ now runs Alex PoV search instantly.

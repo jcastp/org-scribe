@@ -110,22 +110,37 @@ Let's explore what's in the location capture template.
 
 ** Accessing the Template
 
-Press: ~F8 F8 l~ (that's F8 twice, then lowercase L for "location")
+Press: ~F8 F8 k l~ (F8 twice for the main menu, ~k~ for the capture-entity submenu, then ~l~ for "location")
 
-Or use: ~M-x org-scribe/capture-location~
+Or use: ~M-x org-scribe-capture-location~
 
 ** Template Structure
 
-The template has 6 main sections:
+The template actually has *properties plus ten sections* — the walkthrough below uses a simplified/illustrative set of property names for teaching purposes; here is what the template really inserts, verbatim:
 
-1. **Header with Properties** - Type, importance, first appearance
-2. **Physical Description** - What it looks like, sensory details
-3. **Atmosphere & Mood** - How it feels
-4. **Significance** - Why it matters to the story
-5. **Connections** - Related locations, characters who frequent it
-6. **Notes** - Writer notes and continuity details
+#+BEGIN_EXAMPLE
+:PROPERTIES:
+:ID: location-unique-id-here
+:Type:
+:Importance:
+:First-appearance:
+:Climate:
+:Population:
+:END:
 
-Let's examine each section in detail.
+** General Description
+** Geography
+** Cultural Aspects & Society
+** History
+** Notable Features
+** Importance in the Plot
+** Specific Places
+** Atmosphere & Mood
+** Map/Reference Image
+** Notes
+#+END_EXAMPLE
+
+There is no ~:Setting:~, ~:Accessibility:~, or ~:Owner:~ property, and no separate "Connections" or "Significance" section — where the walkthrough below refers to those, capture the same information as free text under *Geography* (broader context, accessibility), *History* (ownership, past events), or *Importance in the Plot* (why it matters, who's connected to it) instead.
 
 * Section 1: Properties
 
@@ -137,10 +152,8 @@ When you capture a location, you'll see these properties:
 :Type:
 :Importance:
 :First-appearance:
-:Setting:
-:Accessibility:
-:Owner:
-:Atmosphere:
+:Climate:
+:Population:
 :END:
 #+END_EXAMPLE
 
@@ -460,7 +473,7 @@ Let's create a location profile together.
 
 ** Step 1: Invoke Capture
 
-Press: ~F8 F8 l~
+Press: ~F8 F8 k l~
 
 You'll see: ~Capture location name:~
 
@@ -515,9 +528,9 @@ Once you have location profiles, link them to scenes.
 
 1. Open your manuscript (novel.org or story.org)
 2. Navigate to a scene heading
-3. Press: ~F8 F8 L L~ (capital L twice - Location menu, then Link)
+3. Press: ~F8 F8 l~ (a top-level Tag Scene action — not a submenu)
 
-Or use: ~M-x org-scribe/set-scene-location~
+Or use: ~M-x org-scribe-set-scene-locations~
 
 4. You'll see a menu of all locations
 5. Select one: Press ~Enter~
@@ -562,11 +575,7 @@ When in a scene with a linked location:
 1. Move cursor to the ~:Location:~ property line
 2. Press: ~C-c C-o~ (org-open-at-point)
 
-OR
-
-Press: ~F8 F8 L j~ (Location menu, jump)
-
-You jump to the full location profile!
+You jump to the full location profile! (Unlike PoV characters and plot threads, there is no dedicated hydra key for jumping to a location — org's native link-following is the way.)
 
 ** Return to Scene
 
@@ -591,7 +600,7 @@ Find all scenes set in a specific location.
 
 Press: ~F8 F8 4~ (search by location)
 
-Or use: ~M-x org-scribe/org-find-location~
+Or use: ~M-x org-scribe-org-find-location~
 
 ** Process
 
@@ -686,17 +695,15 @@ Already have scenes with plain-text locations?
 ** Convert Individual Scene
 
 1. Navigate to scene with plain-text location
-2. Press: ~F8 F8 L l~ (Location menu, link scene)
-
-Or use: ~M-x org-scribe/link-scene-location~
+2. Run: ~M-x org-scribe-link-scene-locations~ (not directly hydra-bound)
 
 This finds the location name in your profiles and replaces it with an ID link.
 
 ** Convert All Scenes (Batch)
 
-Press: ~F8 F8 L L~ (capital L - link all)
+The easiest path is ~F8 F8 R~ (or ~F8 F8 L R~) — ~org-scribe-relink-project~ converts plain-text names to ID links (and adds missing IDs, and refreshes display names) across *every* entity type, including locations, in one pass.
 
-Or use: ~M-x org-scribe/link-all-scene-locations~
+If you specifically want only locations converted, run ~M-x org-scribe-link-all-scene-locations~ directly.
 
 This processes your entire manuscript, converting all matching location names to ID links.
 
@@ -759,7 +766,7 @@ Let's practice location management end-to-end.
 
 *** Location 1: Home Setting
 
-1. Press: ~F8 F8 l~
+1. Press: ~F8 F8 k l~
 2. Name: ~[Protagonist's Apartment/House]~
 3. Fill properties:
    - Type: Residence
@@ -774,7 +781,7 @@ Let's practice location management end-to-end.
 
 *** Location 2: Public Setting
 
-1. Press: ~F8 F8 l~
+1. Press: ~F8 F8 k l~
 2. Name: ~[Park/Restaurant/Library/Store - your choice]~
 3. Fill properties:
    - Type: Public or Business
@@ -790,7 +797,7 @@ Let's practice location management end-to-end.
 
 1. Open your manuscript
 2. Find or create a scene
-3. Press: ~F8 F8 L L~ (Location linking menu)
+3. Press: ~F8 F8 l~ (set scene locations)
 4. Select Location 1
 5. Verify the ~:Location:~ property now has an ID link
 6. Navigate to another scene
@@ -837,7 +844,7 @@ Let's practice location management end-to-end.
 - After using a location for first time:
   - Fill in ~:First-appearance:~ property
 - When introducing a new location mid-draft:
-  - Pause, press F8 F8 l
+  - Pause, press F8 F8 k l
   - Quick capture (5-minute version)
   - Link to scene immediately
 
@@ -943,13 +950,13 @@ The location was captured but doesn't appear in the locations file.
 ** "Location linking menu shows no locations"
 
 *** Problem
-Pressing F8 F8 L L shows empty list.
+Pressing F8 F8 l shows empty list.
 
 *** Solution
 1. Ensure you have captured at least one location
 2. Open objects/locations.org or notes.org
 3. Verify locations are level-1 headings with ~:ID:~ properties
-4. If IDs are missing, run: ~M-x org-scribe/add-location-ids~
+4. If IDs are missing, run: ~M-x org-scribe-add-location-ids~
 
 ** "Search finds no scenes for a location I know I linked"
 
@@ -960,7 +967,7 @@ Search returns 0 results despite linked scenes.
 1. Open a scene that should have this location
 2. Check the ~:Location:~ property
 3. Verify it's an ID link: ~[[id:...][Name]]~
-4. If it's plain text, run: ~M-x org-scribe/link-scene-location~
+4. If it's plain text, run: ~M-x org-scribe-link-scene-locations~
 5. Try search again
 
 ** "Jump to location doesn't work"
@@ -980,26 +987,31 @@ Search returns 0 results despite linked scenes.
 
 | Key           | Action                          |
 |---------------+---------------------------------|
-| ~F8 F8 l~       | Capture new location            |
-| ~F8 F8 L L~     | Link location to scene (menu)   |
-| ~F8 F8 L j~     | Jump to scene's location        |
-| ~F8 F8 L l~     | Link current scene's location   |
-| ~F8 F8 L L~     | Link all scenes (batch)         |
+| ~F8 F8 k l~     | Capture new location            |
+| ~F8 F8 l~       | Set scene's location(s) (menu)  |
+| ~F8 F8 R~       | Relink project (all entity types, incl. locations) |
 | ~F8 F8 4~       | Search scenes by location       |
 | ~C-c C-o~       | Follow link at point            |
 | ~C-c &~         | Return from link                |
 | ~C-c C-c~       | Finalize capture / update table |
 
+There is no dedicated "jump to location" key — following the location link with ~C-c C-o~ is the only way to go from a scene to a location profile.
+
 ** Location Template Sections
 
-| Section              | Purpose                             | Time to Fill   |
-|----------------------+-------------------------------------+----------------|
-| Properties           | Metadata (type, importance, etc.)   | 2 minutes      |
-| Physical Description | Visual and sensory details          | 5-10 minutes   |
-| Atmosphere & Mood    | Emotional tone and feeling          | 2-3 minutes    |
-| Significance         | Why it matters to story             | 2-3 minutes    |
-| Connections          | Related locations and characters    | 2-3 minutes    |
-| Notes                | Continuity and writer reminders     | Ongoing        |
+| Section                     | Purpose                             |
+|------------------------------+-------------------------------------|
+| Properties                  | Metadata (type, importance, first-appearance, climate, population) |
+| General Description         | Visual and sensory details          |
+| Geography                   | Broader geographic context          |
+| Cultural Aspects & Society  | Language, customs, religion, government |
+| History                     | Past events, ownership              |
+| Notable Features            | Distinctive elements                |
+| Importance in the Plot      | Why it matters to the story         |
+| Specific Places             | Sub-locations within this one       |
+| Atmosphere & Mood           | Emotional tone and feeling          |
+| Map/Reference Image         | Visual reference                    |
+| Notes                       | Continuity and writer reminders     |
 
 ** Location Profile Depth
 
@@ -1025,13 +1037,13 @@ Search returns 0 results despite linked scenes.
 
 | Command                              | What It Does                         |
 |--------------------------------------+--------------------------------------|
-| ~org-scribe/capture-location~             | Capture new location profile         |
-| ~org-scribe/set-scene-location~           | Set location via menu                |
-| ~org-scribe/jump-to-scene-location~       | Jump to location from scene          |
-| ~org-scribe/link-scene-location~          | Link current scene's location        |
-| ~org-scribe/link-all-scene-locations~     | Batch link all scenes                |
-| ~org-scribe/org-find-location~            | Search scenes by location            |
-| ~org-scribe/add-location-ids~             | Add IDs to existing locations        |
+| ~org-scribe-capture-location~             | Capture new location profile         |
+| ~org-scribe-set-scene-locations~           | Set location via menu                |
+| ~org-scribe-link-scene-locations~          | Link current scene's location        |
+| ~org-scribe-link-all-scene-locations~     | Batch link all scenes                |
+| ~org-scribe-relink-project~                | Add missing IDs, link plain names, and refresh display names across every entity type (the modern one-command replacement for the four functions above) |
+| ~org-scribe-org-find-location~            | Search scenes by location            |
+| ~org-scribe-add-location-ids~             | Add IDs to existing locations        |
 
 * Tips for Better Location Management
 

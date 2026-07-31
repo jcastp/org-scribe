@@ -197,7 +197,7 @@ Before:                          After:
 
 *Alternative modes*:
 - Focus mode (~F8 F8~ then ~f~) - Current scene only
-- Project mode (~F8 F8~ then ~j~) - With navigation panel
+- Project mode (~F8 F8~ then ~v~) - With navigation panel
 - Normal mode - No special environment
 
 Choose what helps you concentrate best!
@@ -1092,7 +1092,7 @@ EVENING (10 min)
 □ Update table (C-c C-c)
 □ Note for tomorrow
 □ Save + backup
-□ Exit mode (F8 F8 x)
+□ Exit mode (F8 F8 0)
 
 ═══════════════════════════════════════
 Current streak: ___ days

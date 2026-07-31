@@ -122,10 +122,10 @@ Sam sat in the coffee shop, waiting.
 #+END_EXAMPLE
 
 But each export format needs different scene breaks:
-- **Print (PDF)**: Extra vertical space (3 blank lines)
-- **Word (ODT)**: Three asterisks centered (***) or vertical space
+- **Print (PDF/LaTeX)**: Vertical space (~\vspace~)
 - **HTML**: Multiple line breaks
-- **EPUB**: Proper structural break
+- **ASCII/Markdown/Man**: Three asterisks (***)
+- **Word (ODT), EPUB, and any other backend**: no dedicated entry exists yet — these fall back to the same generic 3-newline default as an unconfigured backend, not a format-specific break
 
 **Manually changing this for each format is tedious!**
 
@@ -148,8 +148,8 @@ But each export format needs different scene breaks:
 3. When exporting:
    - LaTeX: Converts to ~\vspace{...}~ (vertical space)
    - HTML: Converts to ~<br><br><br>~ (line breaks)
-   - ODT: Converts to line breaks
-   - ASCII/Markdown: Converts to ~***~
+   - ASCII/Markdown/Man: Converts to ~***~
+   - ODT, EPUB, and any other backend without a dedicated entry: falls back to the generic default (three newlines)
 
 ** Using Scene Breaks
 

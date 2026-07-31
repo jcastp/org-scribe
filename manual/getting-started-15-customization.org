@@ -166,11 +166,11 @@ Typography matters! Different fonts for different tasks.
 
 ~org-scribe~ uses the ~fontaine~ package for font management.
 
-*Default presets*:
+*Actual defcustom defaults* (none of these fontaine presets ship with org-scribe — you must define them yourself with =fontaine-set-presets= before the mode that uses them will find anything):
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-env-normal-font 'regular)      ; Normal editing
-(setq org-scribe-env-work-font 'writing-big)    ; Distraction-free mode
+(setq org-scribe-env-work-font 'org-scribe-big) ; Distraction-free mode
 (setq org-scribe-editing-fontaine-preset 'editing)  ; Editing mode
 #+END_SRC
 
@@ -349,13 +349,13 @@ The WordReference synonym window opens on the right. Adjust its width:
 
 #+BEGIN_SRC emacs-lisp
 ;; Default
-(setq org-scribe/sinonimo-window-width 80)
+(setq org-scribe-sinonimo-window-width 80)
 
 ;; Narrower (good for small screens)
-(setq org-scribe/sinonimo-window-width 60)
+(setq org-scribe-sinonimo-window-width 60)
 
 ;; Wider (more content visible)
-(setq org-scribe/sinonimo-window-width 100)
+(setq org-scribe-sinonimo-window-width 100)
 #+END_SRC
 
 ** Example Configuration
@@ -364,7 +364,7 @@ The WordReference synonym window opens on the right. Adjust its width:
 ;;; Language Tools Customization
 
 ;; Synonym window width
-(setq org-scribe/sinonimo-window-width 70)  ; Adjust to your screen
+(setq org-scribe-sinonimo-window-width 70)  ; Adjust to your screen
 #+END_SRC
 
 * Customizing Export Settings
@@ -377,7 +377,7 @@ The scene break macro (~{{{scene-break}}}~) outputs differently per format:
 
 #+BEGIN_SRC emacs-lisp
 ;; Defaults
-(setq org-scribe/scene-break-replacements
+(setq org-scribe-scene-break-replacements
   '((ascii . "\n***\n\n")
     (md . "\n***\n\n")
     (html . "<br><br><br>\n")
@@ -390,7 +390,7 @@ The scene break macro (~{{{scene-break}}}~) outputs differently per format:
 *Want centered asterisks in LaTeX?*
 
 #+BEGIN_SRC emacs-lisp
-(setq org-scribe/scene-break-replacements
+(setq org-scribe-scene-break-replacements
   '((latex . "\\begin{center}***\\end{center}\n")
     (html . "<p style='text-align:center;'>***</p>\n")
     (t . "\n***\n\n")))
@@ -399,7 +399,7 @@ The scene break macro (~{{{scene-break}}}~) outputs differently per format:
 *Want ornamental break*:
 
 #+BEGIN_SRC emacs-lisp
-(setq org-scribe/scene-break-replacements
+(setq org-scribe-scene-break-replacements
   '((latex . "\\begin{center}\\text{\\Large ❦}\\end{center}\n")
     (html . "<p style='text-align:center; font-size: 1.5em;'>❦</p>\n")
     (t . "\n❦\n\n")))
@@ -408,7 +408,7 @@ The scene break macro (~{{{scene-break}}}~) outputs differently per format:
 *Want simple blank space*:
 
 #+BEGIN_SRC emacs-lisp
-(setq org-scribe/scene-break-replacements
+(setq org-scribe-scene-break-replacements
   '((latex . "\\vspace{2\\baselineskip}\n")
     (html . "<br><br>\n")
     (t . "\n\n")))
@@ -420,7 +420,7 @@ The scene break macro (~{{{scene-break}}}~) outputs differently per format:
 ;;; Export Customization
 
 ;; Scene breaks: Centered ornament
-(setq org-scribe/scene-break-replacements
+(setq org-scribe-scene-break-replacements
   '((ascii . "\n***\n\n")
     (latex . "\\begin{center}\\text{\\Large ❦}\\end{center}\n")
     (html . "<p style='text-align:center;'>❦</p>\n")
@@ -651,24 +651,24 @@ Add to your init file:
 ;;; Custom Keybindings for Writing
 
 ;; Quick access to writing features
-(global-set-key (kbd "C-c w m") 'org-scribe/distraction-free-mode)  ; Start writing
-(global-set-key (kbd "C-c w e") 'org-scribe/editing-mode)           ; Start editing
-(global-set-key (kbd "C-c w w") 'org-context-count-words)      ; Count words
-(global-set-key (kbd "C-c w n") 'org-scribe/capture-to-file)        ; Quick note
+(global-set-key (kbd "C-c w m") 'org-scribe-distraction-free-mode)  ; Start writing
+(global-set-key (kbd "C-c w e") 'org-scribe-editing-mode)           ; Start editing
+(global-set-key (kbd "C-c w w") 'org-scribe-wordcount)      ; Count words
+(global-set-key (kbd "C-c w n") 'org-scribe-capture-to-file)        ; Quick note
 
 ;; Dictionary tools
-(global-set-key (kbd "C-c d") 'org-scribe/rae-api-lookup)           ; RAE dictionary
-(global-set-key (kbd "C-c y") 'org-scribe/sinonimo)                 ; Synonyms
+(global-set-key (kbd "C-c d") 'org-scribe-rae-api-lookup)           ; RAE dictionary
+(global-set-key (kbd "C-c y") 'org-scribe-sinonimo)                 ; Synonyms
 
 ;; Character/plot tools
-(global-set-key (kbd "C-c l p") 'org-scribe/set-pov-character)      ; Set PoV
-(global-set-key (kbd "C-c l c") 'org-scribe/set-scene-characters)   ; Set characters
-(global-set-key (kbd "C-c l j") 'org-scribe/jump-to-pov-character)  ; Jump to character
+(global-set-key (kbd "C-c l p") 'org-scribe-set-pov-character)      ; Set PoV
+(global-set-key (kbd "C-c l c") 'org-scribe-set-scene-characters)   ; Set characters
+(global-set-key (kbd "C-c l j") 'org-scribe-jump-to-pov-character)  ; Jump to character
 
 ;; Search functions
-(global-set-key (kbd "C-c s c") 'org-scribe/org-find-character)     ; Find by character
-(global-set-key (kbd "C-c s p") 'org-scribe/org-find-plot)          ; Find by plot
-(global-set-key (kbd "C-c s l") 'org-scribe/org-find-location)      ; Find by location
+(global-set-key (kbd "C-c s c") 'org-scribe-org-find-character)     ; Find by character
+(global-set-key (kbd "C-c s p") 'org-scribe-org-find-plot)          ; Find by plot
+(global-set-key (kbd "C-c s l") 'org-scribe-org-find-location)      ; Find by location
 #+END_SRC
 
 *Choose keys that don't conflict!*
@@ -816,14 +816,14 @@ Here's a full, commented configuration you can adapt:
 ;; -----------------------------------------------------------------------------
 
 ;; Synonym window width
-(setq org-scribe/sinonimo-window-width 70)
+(setq org-scribe-sinonimo-window-width 70)
 
 ;; -----------------------------------------------------------------------------
 ;; EXPORT SETTINGS
 ;; -----------------------------------------------------------------------------
 
 ;; Scene breaks - centered ornament
-(setq org-scribe/scene-break-replacements
+(setq org-scribe-scene-break-replacements
   '((ascii . "\n***\n\n")
     (latex . "\\begin{center}***\\end{center}\n")
     (html . "<p style='text-align:center;'>***</p>\n")
@@ -851,17 +851,17 @@ Here's a full, commented configuration you can adapt:
 ;; -----------------------------------------------------------------------------
 
 ;; Writing modes
-(global-set-key (kbd "C-c w m") 'org-scribe/distraction-free-mode)
-(global-set-key (kbd "C-c w e") 'org-scribe/editing-mode)
-(global-set-key (kbd "C-c w w") 'org-context-count-words)
+(global-set-key (kbd "C-c w m") 'org-scribe-distraction-free-mode)
+(global-set-key (kbd "C-c w e") 'org-scribe-editing-mode)
+(global-set-key (kbd "C-c w w") 'org-scribe-wordcount)
 
 ;; Dictionary
-(global-set-key (kbd "C-c d") 'org-scribe/rae-api-lookup)
-(global-set-key (kbd "C-c y") 'org-scribe/sinonimo)
+(global-set-key (kbd "C-c d") 'org-scribe-rae-api-lookup)
+(global-set-key (kbd "C-c y") 'org-scribe-sinonimo)
 
 ;; Character linking
-(global-set-key (kbd "C-c l p") 'org-scribe/set-pov-character)
-(global-set-key (kbd "C-c l j") 'org-scribe/jump-to-pov-character)
+(global-set-key (kbd "C-c l p") 'org-scribe-set-pov-character)
+(global-set-key (kbd "C-c l j") 'org-scribe-jump-to-pov-character)
 
 ;; Hydra menu
 (global-set-key (kbd "<f9>") 'hydra-org-scribe/body)
@@ -1130,9 +1130,9 @@ Pick 3-5 features you use most:
 
 #+BEGIN_SRC emacs-lisp
 ;; My writing keybindings
-(global-set-key (kbd "C-c w m") 'org-scribe/distraction-free-mode)
-(global-set-key (kbd "C-c w w") 'org-context-count-words)
-(global-set-key (kbd "C-c d") 'org-scribe/rae-api-lookup)
+(global-set-key (kbd "C-c w m") 'org-scribe-distraction-free-mode)
+(global-set-key (kbd "C-c w w") 'org-scribe-wordcount)
+(global-set-key (kbd "C-c d") 'org-scribe-rae-api-lookup)
 ;; Add more based on what you use!
 #+END_SRC
 
@@ -1223,8 +1223,8 @@ The minimal config most writers need:
 (setq org-scribe-template-language 'en)              ; 'en or 'es
 
 ;; Quick access
-(global-set-key (kbd "C-c w m") 'org-scribe/distraction-free-mode)
-(global-set-key (kbd "C-c w w") 'org-context-count-words)
+(global-set-key (kbd "C-c w m") 'org-scribe-distraction-free-mode)
+(global-set-key (kbd "C-c w w") 'org-scribe-wordcount)
 #+END_SRC
 
 *That's all you need to get started!*

@@ -131,7 +131,7 @@ You'll see messages in the minibuffer showing progress. This takes just a few se
 
 When complete, you'll see:
 - The README.org file opens in your buffer
-- A message: *"Project created successfully!"*
+- A message: *"Novel project '<title>' created successfully at <path>"*
 - Your new project is ready!
 
 * Exploring Your Short Story Project
@@ -236,12 +236,14 @@ My Fantasy Novel/
 ├── .git/
 ├── .org-scribe-project
 ├── README.org                 (overview and navigation)
-├── novel.org                  (main manuscript - 3-act structure)
-├── statistics.org             (word count and progress tracking)
+├── novel.org                  (main manuscript - word count and progress tracking live here, not a separate file)
+├── novel-notes.org            (freeform planning notes)
+├── writing-journal.org        (a journal for reflecting on your writing process)
 ├── revision.org               (revision notes and checklists)
 ├── objects/                      (planning directory)
 │   ├── characters.org         (character database)
 │   ├── locations.org          (locations and world-building)
+│   ├── worldbuilding.org      (deeper world-building notes)
 │   ├── plot.org              (plot threads and structure)
 │   ├── timeline.org          (story timeline and events)
 │   └── objects.org           (important objects/MacGuffins)
@@ -249,6 +251,8 @@ My Fantasy Novel/
     ├── notes.org             (general notes)
     └── research.org          (research and references)
 #+END_EXAMPLE
+
+(A ~plan.org~ does *not* appear here — it's created separately, on demand, only once you opt into the bundled writing planner; see Lesson 16.)
 
 ** When to Use Novel Template
 
@@ -267,22 +271,19 @@ Choose the novel template if:
 | *Word Count*     | 1,000-20,000             | 50,000+                    |
 | *Planning*       | Consolidated notes.org   | Separate objects/ files       |
 | *Best For*       | Quick projects, learning | Long-form, detailed novels |
-| *Word Tracking*  | In story.org             | Separate statistics.org    |
+| *Word Tracking*  | In story.org             | In novel.org (dynamic block, no separate file) |
 | *Learning Curve* | Gentle                   | Steeper                    |
 | *Overhead*       | Minimal                  | More files to manage       |
 
 *Recommendation*: Start with short story template to learn, then try novel template for your big project!
 
-* TODO Bilingual Support (English/Spanish)
-*NOTE:* This section is not yet implemented.
+* Bilingual Support (English/Spanish)
 
 The package supports both English and Spanish templates!
 
 ** How It Works
 
-The template language is controlled by a configuration variable: ~org-scribe-template-language~
-
-*Default*: ~'en~ (English)
+Project creation prompts you for a language interactively each time — you don't have to preset anything to get a Spanish project. The default offered is controlled by the configuration variable ~org-scribe-template-language~ (default ~'en~), and the language you actually pick is recorded in the new project's own ~.org-scribe-project~ marker file (as a ~# Language:~ line), so it's remembered per project — capture templates, scene property names, and other project-language-aware features all follow that per-project setting afterward, not just the global default.
 
 ** English Templates Create:
 - novel.org (main manuscript)

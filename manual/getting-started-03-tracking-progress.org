@@ -156,11 +156,12 @@ Do this for each scene where you want to track progress.
 
 Now let's add the actual word count.
 
-1. Place cursor on the scene heading
-2. Press ~F8 F8~ for Hydra
-3. Press ~a~ (for "Add WC props" - Word Count properties)
+1. Press ~F8 F8~ for Hydra
+2. Press ~a~ ("update all counts")
 
-The command scans your scene and adds the word count:
+*Important*: ~a~ is bound to ~org-scribe-ews-org-count-words~, which recomputes ~:WORDCOUNT:~ on *every* heading in the whole buffer — not just the scene under point, and cursor position doesn't matter for scope. It also mints a fresh ~:ID:~ property on any heading that's missing one. If you want to refresh only the scenes in the current chapter/act (or the whole buffer scoped to scenes only, leaving chapter/act aggregates untouched), place point there and press ~F8 F8 w~ (the ~org-scribe-wordcount~ dispatcher) with a double prefix argument, ~C-u C-u~, instead.
+
+After running ~a~, your scene property looks like:
 
 #+BEGIN_EXAMPLE
 :WORDCOUNT: 347
@@ -185,9 +186,8 @@ But we can do better - let's make tables that calculate this automatically!
 
 As you write more, update your word count:
 
-1. Cursor on scene heading
-2. ~F8 F8 a~
-3. The ~:WORDCOUNT:~ property updates!
+1. ~F8 F8 a~ (refreshes every heading in the buffer, whole-manuscript scope)
+2. The ~:WORDCOUNT:~ properties update!
 
 Do this after each writing session or when you want to check progress.
 
@@ -217,7 +217,7 @@ You'll see:
 * Progress Tracking
 
 #+BEGIN: org-generate-wordcount-table
-| Section | Wordcount | Objective | Progress |
+| Heading | Wordcount | Objective | Progress |
 |---------+-----------+-----------+----------|
 #+END:
 #+END_EXAMPLE
@@ -242,33 +242,26 @@ After updating, you'll see something like:
 
 #+BEGIN_EXAMPLE
 #+BEGIN: org-generate-wordcount-table
-| Section              | Wordcount | Objective | Progress |
+| Heading              | Wordcount | Objective | Progress |
 |----------------------+-----------+-----------+----------|
 | Opening              |       847 |      3000 | 28%      |
 | Scene 1 - The Alarm  |       347 |      1500 | 23%      |
 | Scene 2 - Coffee     |       500 |      1500 | 33%      |
 | Middle               |         0 |      5000 | 0%       |
 | Ending               |         0 |      2000 | 0%       |
-|----------------------+-----------+-----------+----------|
-| *TOTAL*              |       847 |     10000 | 8%       |
 #+END_EXAMPLE
 
 Reading the table:
-- *Section*: Your manuscript structure (scenes, chapters, acts)
+- *Heading*: Your manuscript structure (scenes, chapters, acts) — one row per heading that has either property set, in document order
 - *Wordcount*: Current word count (from ~:WORDCOUNT:~ properties)
 - *Objective*: Target word count (from ~:WORD-OBJECTIVE:~ properties)
 - *Progress*: Percentage complete (calculated automatically)
-- *TOTAL*: Overall manuscript progress
 
-** The Table is Hierarchical
+Note: this dynamic block does *not* compute a TOTAL row or roll scene counts up into their parent chapter automatically — each row simply reflects that heading's own ~:WORDCOUNT:~/~:WORD-OBJECTIVE:~ properties. If you want a manuscript-wide total and percentage, use the *Overview* section of the project health report instead (see below).
 
-Notice how scenes roll up into sections:
-- Scene 1 (347) + Scene 2 (500) = Opening (847)
-- Opening + Middle + Ending = TOTAL (847)
+** The Project Health Report
 
-This gives you both:
-- Detailed view (each scene)
-- Big picture (total progress)
+For a manuscript-wide view beyond any single table, run ~M-x org-scribe-project-health~ (or ~F8 F8 H~). It aggregates an *Overview* (total words written vs. total chapter objectives, with an overall percentage that avoids the double-counting a naive scene+chapter sum would produce), *Scenes by Status*, *Per-PoV Word Share*, *Chapter Length Spread* (min/max/mean/median), *Missing Scene Properties*, *Orphaned Entities*, and *Open TODO Scenes* — plus a *Writing Plan* section when the bundled planner (Lesson 16) is active for the project. It's the fastest way to answer "how much have I actually written, and what still needs attention?" without hunting through per-scene tables.
 
 * Setting Up Objectives (Planning Your Story)
 
@@ -328,7 +321,19 @@ Beyond scene/chapter tracking, you can track daily writing sessions.
 
 ** The Daily Tracking Table
 
-Your template includes a daily tracking section that looks like:
+Your template's "Daily Word Tracking" section doesn't ship a ready-made table — it points you at the external =org-tracktable= package's =org-tracktable-insert-table= command, which generates and auto-updates a table with these columns instead:
+
+#+BEGIN_EXAMPLE
+** Daily Word Tracking
+
+|---+------------------+-------+-----+---------------+---------|
+| * | date             | start | end | total (today) | comment |
+|---+------------------+-------+-----+---------------+---------|
+|   | initial count    |     0 |   0 |             0 |         |
+|---+------------------+-------+-----+---------------+---------|
+#+END_EXAMPLE
+
+=org-tracktable= is not part of org-scribe itself — it's a separate package the template links to (see its own documentation for installation and the table-formula details). If you'd rather keep a simple hand-maintained log instead, nothing stops you from adding your own plain table:
 
 #+BEGIN_EXAMPLE
 ** Daily Writing Log
@@ -339,8 +344,6 @@ Your template includes a daily tracking section that looks like:
 | 2025-11-17 |           750 |        1250 | Chapter 1      |
 #+END_EXAMPLE
 
-** How to Use It
-
 *Manual method* (simple):
 
 1. At the end of your writing session
@@ -350,21 +353,6 @@ Your template includes a daily tracking section that looks like:
    - Words Written: What you wrote today
    - Total Words: Cumulative total
    - Notes: What you worked on
-
-*Example*:
-
-After writing 500 words today:
-
-#+BEGIN_EXAMPLE
-| 2025-11-16 | 500 | 500 | First scene draft |
-#+END_EXAMPLE
-
-Tomorrow after writing 300 more:
-
-#+BEGIN_EXAMPLE
-| 2025-11-16 | 500 |  500 | First scene draft  |
-| 2025-11-17 | 300 |  800 | Continued scene 1  |
-#+END_EXAMPLE
 
 ** Automated Tracking (Advanced)
 

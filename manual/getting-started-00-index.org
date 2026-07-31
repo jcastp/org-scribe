@@ -234,13 +234,13 @@ Tailor the package to your personal preferences and workflow.
 - Configuring export settings
 - Language settings (English/Spanish)
 
-*** [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with org-scribe-planner]] /(Optional)/
+*** [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with the Bundled Planner]] /(Optional)/
 *Time: 20-30 minutes*
 
-Connect ~org-scribe~ to the companion ~org-scribe-planner~ package for goal-oriented writing plans, daily targets, milestones, and progress dashboards.
+The writing planner ships bundled inside ~org-scribe~ itself (no separate package to install) for goal-oriented writing plans, daily targets, milestones, and progress dashboards — opt in per project and it's ready to go.
 
 *You'll learn:*
-- Installing org-scribe-planner and enabling the integration
+- Enabling the planner for a project (the per-project opt-in gate)
 - Creating a writing plan for your project
 - How word counts sync to the plan automatically after ~F8 F8 a~
 - Using the planner Hydra submenu (~W~) — calendar, milestones, dashboards
@@ -264,19 +264,23 @@ Connect ~org-scribe~ to the companion ~org-scribe-planner~ package for goal-orie
 
 From the Hydra menu (F8 F8):
 
-| Key | Action                    | Key | Action                  |
-|-----+---------------------------+-----+-------------------------|
-| s   | Insert scene              | m   | Writing mode            |
-| c   | Insert chapter            | f   | Focus mode              |
-| n   | Capture note              | w   | Count words             |
-| h   | Capture character         | 1   | Search by PoV           |
-| l   | Capture location          | 2   | Search by character     |
-| C   | Character linking menu    | 3   | Search by plot          |
-| L   | Location linking menu     | 4   | Search by location      |
-| P   | Plot thread linking menu  | q   | Quit menu               |
-| W   | Writing plan menu (*)     |     |                         |
+| Key | Action                       | Key | Action                  |
+|-----+-------------------------------+-----+-------------------------|
+| s   | Insert scene                  | m   | Write mode              |
+| c   | Insert chapter                | f   | Focus mode              |
+| n   | Capture note                  | w   | Count words             |
+| p   | Set PoV (tag current scene)   | 1   | Search by PoV           |
+| h   | Set characters (tag scene)    | 2   | Search by character     |
+| l   | Set locations (tag scene)     | 3   | Search by plot          |
+| g   | Set plot threads (tag scene)  | 4   | Search by location      |
+| k   | Capture entity submenu…       | 5   | Search TODOs            |
+| L   | Links & upkeep submenu…       | 6   | Search edits/notes      |
+| R   | Relink project                | H   | Project health report   |
+| W   | Writing planner submenu (*)   | q   | Quit menu               |
 
-(*) Requires the org-scribe-planner integration (see [[file:getting-started-16-planner-integration.org][Lesson 16]]).
+(*) Bundled with org-scribe — only reachable once the planner is enabled for the current project (see [[file:getting-started-16-planner-integration.org][Lesson 16]]).
+
+Capturing a new character/location/object/timeline event/plot thread is one level deeper, via ~k~ then the same letter (e.g. ~F8 F8 k h~ for a new character) — the top-level letters above tag the *current* scene with an existing entity instead.
 
 ** Getting Help
 

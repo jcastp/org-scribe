@@ -627,15 +627,11 @@ Done! No typing, no typos, automatic linking!
 
 For the ~:Characters:~ property (who appears in the scene):
 
-** Step 1: Open Character Linking Menu
+** Step 1: Set Scene Characters
 
-Same as before: ~F8 F8 C~
+From the main Hydra menu, press ~h~ ("set characters") directly — this is a top-level Tag Scene action, not a submenu.
 
-** Step 2: Set Scene Characters
-
-Press ~c~ (for "Set scene characters")
-
-** Step 3: Multi-Select Characters
+** Step 2: Multi-Select Characters
 
 You'll see the same character list, but now you can select multiple:
 
@@ -644,7 +640,7 @@ You'll see the same character list, but now you can select multiple:
 3. Type/select third character if needed, press Enter
 4. Press Enter on empty prompt to finish
 
-** Step 4: Result
+** Step 3: Result
 
 The ~:Characters:~ property now has comma-separated ID links:
 #+BEGIN_EXAMPLE
@@ -666,9 +662,8 @@ Need to check a character detail while writing?
 ** Using the Menu
 
 1. Cursor on scene heading
-2. ~F8 F8 C~ (character submenu)
-3. Press ~j~ (jump to PoV character)
-4. *Boom!* At the PoV character's profile
+2. ~F8 F8 j~ (jump to PoV character — a top-level Tag Scene action)
+3. *Boom!* At the PoV character's profile
 
 ** Return to Scene
 
@@ -807,40 +802,35 @@ You'll see:
 Beyond the free-form "Relationships" section in character profiles, org-scribe provides a powerful system for tracking structured relationship data between characters.
 
 Each relationship includes:
+- *Target character*: linked by ID, so it stays valid across renaming
 - *Type*: mentor, rival, friend, family, lover, enemy, ally, etc.
-- *Strength*: 1-5 (1=acquaintance, 5=central to their life)
-- *Sentiment*: positive, negative, neutral, complex
 
 This structured data enables:
 - Interactive relationship management
-- ASCII tree visualizations
-- Professional network graphs (Graphviz)
-- Relationship filtering and analysis
+- A plain-list view per character and a project-wide table view
 
 ** Quick Setup
 
 For existing projects with characters:
-1. ~F8 F8 C R~ (or ~M-x org-scribe/setup-character-relationships~)
+1. ~F8 F8 L r~ (or ~M-x org-scribe-setup-character-relationships~)
 2. Adds ~:RelationshipsData:~ property to all characters
 3. Ready to add relationships!
 
 ** Adding a Relationship
 
-~F8 F8 C a~ (or ~M-x org-scribe/add-relationship~)
+~F8 F8 L a~ (or ~M-x org-scribe-add-relationship~)
 
 *Interactive prompts guide you*:
 
 1. *From character*: "Alice Rivera"
 2. *To character*: "Sam Chen"
-3. *Relationship type*: "mentor" (from a list of common types)
-4. *Strength*: "5" (strongest relationship)
-5. *Sentiment*: "positive"
+3. *Relationship type*: "mentor" (from a list of common types, or type your own)
 
-*Result*: "Added mentor relationship: Alice → Sam (strength: 5, positive)"
+*Result*: "Added mentor relationship: Alice Rivera → Sam Chen"
 
 The relationship is stored in Alice's =:RelationshipsData:= property:
 #+BEGIN_EXAMPLE
-:RelationshipsData: [[id:char-sam-002][Sam]](mentor,5,positive)
+:RelationshipsData: [[id:char-sam-002][Sam Chen]]|mentor
 #+END_EXAMPLE
 
 ** Common Relationship Types
@@ -859,140 +849,54 @@ The system suggests these common types (but you can use any text):
 
 ** Viewing Relationships
 
-*** Single Character (~F8 F8 C v~)
+*** Single Character (~F8 F8 L v~)
 
-View one character's relationships as an ASCII tree:
+View one character's relationships as a plain list:
 
 #+BEGIN_EXAMPLE
-Alice Rivera
-  ├─(mentor,+)─> Sam Chen
-  ├─(rival,−)──> Jordan Lee
-  └─(friend,+)─> Dana Park
+Relationships for Alice Rivera:
 
-Legend:
-  + = positive relationship
-  - = negative relationship
-  ~ = complex relationship
-  · = neutral relationship
+  - mentor: Sam Chen
+  - rival: Jordan Lee
+  - friend: Dana Park
 #+END_EXAMPLE
 
-*** All Relationships (~F8 F8 C V~)
+*** All Relationships (~F8 F8 L V~)
 
 View complete relationship table for the entire project:
 
-| Character    | Related To  | Type   | Strength | Sentiment |
-|--------------+-------------+--------+----------+-----------|
-| Alice Rivera | Sam Chen    | mentor |        5 | positive  |
-| Alice Rivera | Jordan Lee  | rival  |        3 | negative  |
-| Sam Chen     | Alice Rivera| mentee |        5 | positive  |
-| Jordan Lee   | Alice Rivera| rival  |        3 | negative  |
+| Character    | Related To  | Type   |
+|--------------+-------------+--------|
+| Alice Rivera | Sam Chen    | mentor |
+| Alice Rivera | Jordan Lee  | rival  |
+| Sam Chen     | Alice Rivera| mentee |
+| Jordan Lee   | Alice Rivera| rival  |
 
-** Visualizing Relationship Networks
-
-*** Insert a Relationship Graph (~F8 F8 C g~)
-
-Creates a dynamic block that generates visualizations!
-
-*Choose format*:
-1. =dot= - Graphviz network graph (requires Graphviz installed)
-2. =ascii= - Text-based tree visualization
-3. =table= - Org-mode table
-
-*Example - Full network graph*:
-#+BEGIN_EXAMPLE
-#+BEGIN: character-relationships :format dot
-#+END:
-#+END_EXAMPLE
-
-Press ~C-c C-c~ to generate a professional network visualization showing:
-- Nodes for each character
-- Directed edges showing relationships
-- Color-coded by sentiment (green=positive, red=negative, purple=complex, gray=neutral)
-- Edge thickness shows relationship strength
-- Labels display relationship type and strength
-
-*Example - ASCII tree for all*:
-#+BEGIN_EXAMPLE
-#+BEGIN: character-relationships :format ascii
-#+END:
-#+END_EXAMPLE
-
-Shows ASCII trees for all characters with relationships.
-
-*Example - Table format*:
-#+BEGIN_EXAMPLE
-#+BEGIN: character-relationships :format table
-#+END:
-#+END_EXAMPLE
-
-Generates a sortable org-mode table.
-
-*** Advanced Visualization Options
-
-*Filter by strength* (only strong relationships):
-#+BEGIN_EXAMPLE
-#+BEGIN: character-relationships :format dot :filter-strength 4
-#+END:
-#+END_EXAMPLE
-
-*Single character network* (ego network):
-#+BEGIN_EXAMPLE
-#+BEGIN: character-relationships :format dot :character "Alice Rivera"
-#+END:
-#+END_EXAMPLE
-
-Shows only Alice's direct connections (both incoming and outgoing).
-
-*Custom output file*:
-#+BEGIN_EXAMPLE
-#+BEGIN: character-relationships :format dot :image-file "characters.svg" :image-format svg
-#+END:
-#+END_EXAMPLE
-
-Supported formats: =png= (default), =svg=, =pdf=
+Note: there is no dynamic-block/graph-visualization feature for relationships (no Graphviz/dot, ASCII-tree, or filterable network diagrams) — the two views above (a single character's list and the project-wide table) are the only display options. Relationships also no longer track a strength (1-5) or sentiment (positive/negative/neutral) value, only a directed source → target → type triple; if you want to note intensity or valence, put it in the relationship *type* itself (e.g. "close-ally" vs "ally") or in prose elsewhere on the character's heading.
 
 ** Practical Use Cases
 
 *** Character Network Analysis
 
-*Identify isolated characters*:
-- View full network graph
-- Look for characters with no connections
-- Decide: develop more connections, or cut the character?
+*Identify isolated characters*: scan ~F8 F8 L V~'s table for characters who never appear as either side of a relationship.
 
-*Find central characters*:
-- Who has the most connections?
-- Who connects different groups?
-- Are your protagonist/antagonist sufficiently connected?
+*Find central characters*: characters appearing in many rows (as source or target) are your most-connected — check whether your protagonist/antagonist are sufficiently connected.
 
 *** Story Consistency
 
-*Check relationship symmetry*:
-- Does Alice see Sam as a mentor (strength 5)?
-- How does Sam see Alice? (mentee, strength 5?)
-- Asymmetric views can be interesting or accidental!
-
-*Ensure relationship strength matches story importance*:
-- Is your protagonist's "central relationship" actually strength 5?
-- Do minor characters have inappropriately strong connections?
+*Check relationship symmetry*: does Alice's entry list Sam as "mentor"? Does Sam's own entry list Alice back as "mentee"? Since each side stores its own relationship independently, it's easy for them to drift out of sync — the all-relationships table is the fastest way to spot a one-sided or contradictory pair.
 
 *** Planning Relationship Evolution
 
-Use relationships to track how connections change:
+Use relationships to track how connections change over the story:
 
-1. Add relationships at story start
-2. Update strength/sentiment as story progresses
-3. Remove relationships if they end
-4. Generate graph at different story points to see evolution
-
-*Example*:
-- Beginning: Alice → Bob (acquaintance, 2, neutral)
-- Midpoint: Alice → Bob (friend, 4, positive)
-- End: Alice → Bob (mentor, 5, positive)
+1. Add a relationship when two characters first connect (~F8 F8 L a~)
+2. Remove it (~F8 F8 L x~) and re-add it with a new type if the relationship changes kind (e.g. "acquaintance" → "friend" → "mentor")
+3. Remove it entirely if it ends
 
 ** Removing Relationships
 
-~F8 F8 C r~ (or ~M-x org-scribe/remove-relationship~)
+~F8 F8 L x~ (or ~M-x org-scribe-remove-relationship~)
 
 1. Select character to modify
 2. Choose which relationship to remove from the list
@@ -1006,35 +910,16 @@ Relationships are stored in the ~:RelationshipsData:~ property using this format
 * Alice Rivera
 :PROPERTIES:
 :ID: char-alice-001
-:RelationshipsData: [[id:char-sam-002][Sam]](mentor,5,positive); [[id:char-jordan-003][Jordan]](rival,3,negative)
+:RelationshipsData: [[id:char-sam-002][Sam]]|mentor; [[id:char-jordan-003][Jordan]]|rival
 :END:
 #+END_EXAMPLE
 
-*Format*: ~[[id:TARGET-ID][Name]](type,strength,sentiment)~
+*Format*: ~[[id:TARGET-ID][Name]]|type~
 
 - Uses ID links (stable across renames!)
 - Semicolon-separated for multiple relationships
 - Human-readable
 - Manually editable if needed
-
-** Installing Graphviz (for DOT graphs)
-
-To generate professional network graphs, install Graphviz:
-
-*Debian/Ubuntu*:
-#+BEGIN_SRC sh
-sudo apt install graphviz
-#+END_SRC
-
-*macOS*:
-#+BEGIN_SRC sh
-brew install graphviz
-#+END_SRC
-
-*Windows*:
-Download from https://graphviz.org/download/
-
-Without Graphviz, you can still use ASCII and table formats!
 
 ** Exercise: Build a Relationship Network
 
@@ -1042,50 +927,28 @@ Let's practice with your three characters from the earlier exercise!
 
 *** Part 1: Add Relationships (5 minutes)
 
-1. ~F8 F8 C a~ (add relationship)
+1. ~F8 F8 L a~ (add relationship)
    - From: Protagonist
    - To: Supporting character
    - Type: Choose appropriate (friend? mentor? ally?)
-   - Strength: 3-5 (they're important characters!)
-   - Sentiment: Choose based on your story
 
 2. Add reverse relationship (how supporting char sees protagonist)
    - From: Supporting character
    - To: Protagonist
-   - Different type/strength/sentiment is OK!
+   - A different type is OK! (e.g. protagonist → "mentor", supporting character → "mentee")
 
 3. Add relationship between supporting and minor character
    - Up to you - how do they relate?
 
 *** Part 2: View Relationships (3 minutes)
 
-1. ~F8 F8 C v~ (view single character)
+1. ~F8 F8 L v~ (view single character)
    - Select your protagonist
-   - See their relationship tree!
+   - See their relationship list!
 
-2. ~F8 F8 C V~ (view all relationships)
+2. ~F8 F8 L V~ (view all relationships)
    - See the complete table
    - Check for symmetry/asymmetry
-
-*** Part 3: Create a Graph (5 minutes)
-
-1. Open your character file (or create a new section in notes)
-
-2. Insert a relationship block:
-   - ~F8 F8 C g~
-   - Format: "dot" (or "ascii" if Graphviz not installed)
-   - Character: leave blank for all
-   - Strength: leave blank for all
-
-3. Generate the visualization:
-   - Put cursor on ~#+BEGIN: character-relationships~ line
-   - Press ~C-c C-c~
-   - See your character network!
-
-4. Experiment with filters:
-   - Try ~:filter-strength 4~ (only strong relationships)
-   - Try ~:character "Protagonist Name"~ (ego network)
-   - Update with ~C-c C-c~ after each change
 
 * Practical Exercise (20 minutes)
 
@@ -1096,17 +959,17 @@ Let's practice the complete character workflow!
 *** Part 1: Create Characters (10 minutes)
 
 1. *Create protagonist*:
-   - ~F8 F8 h~ (capture character)
+   - ~F8 F8 k h~ (capture character)
    - Enter name, fill prompts
    - Fill minimum profile (5 minutes)
 
 2. *Create supporting character*:
-   - ~F8 F8 h~
+   - ~F8 F8 k h~
    - Different role (Supporting)
    - Quick profile (3 minutes)
 
 3. *Create minor character*:
-   - ~F8 F8 h~
+   - ~F8 F8 k h~
    - Role: Minor
    - Bare minimum info (2 minutes)
 
@@ -1114,11 +977,11 @@ Let's practice the complete character workflow!
 
 1. *Open manuscript*
 2. *Go to first scene*:
-   - ~F8 F8 C p~ (set PoV to protagonist)
+   - ~F8 F8 p~ (set PoV to protagonist)
 
 3. *Go to second scene*:
-   - ~F8 F8 C p~ (set PoV)
-   - ~F8 F8 C c~ (set scene characters to multiple)
+   - ~F8 F8 p~ (set PoV)
+   - ~F8 F8 h~ (set scene characters to multiple)
 
 4. *Go to third scene*:
    - Link different characters
@@ -1154,8 +1017,8 @@ How to use character features while writing:
 ** While Drafting
 
 1. Insert scene (~F8 F8 s~)
-2. Set PoV (~F8 F8 C p~) - quick menu selection!
-3. Set characters (~F8 F8 C c~) - multi-select!
+2. Set PoV (~F8 F8 p~) - quick menu selection!
+3. Set characters (~F8 F8 h~) - multi-select!
 4. Write scene
 5. Jump to profile if needed (~C-c C-o~)
 6. Return and continue writing (~C-c &~)
@@ -1186,7 +1049,7 @@ How to use character features while writing:
 
 *Yes!* The package includes batch conversion:
 
-- ~F8 F8 C L~ (capital L) links all scenes automatically
+- ~F8 F8 R~ (capital L) links all scenes automatically
 - Scans your manuscript for character names
 - Converts plain text to ID links
 - One command, entire manuscript updated
@@ -1229,10 +1092,10 @@ The linking system works regardless!
 
 *Causes*:
 1. No characters captured yet (create one!)
-2. Characters lack IDs (run ~F8 F8 C i~ to add IDs)
+2. Characters lack IDs (run ~F8 F8 R~ to add IDs)
 3. Wrong file open (must be in writing project)
 
-*Quick fix*: ~F8 F8 C s~ (setup linking system)
+*Quick fix*: ~F8 F8 L c~ (setup linking system)
 
 * Troubleshooting
 
@@ -1253,7 +1116,7 @@ The linking system works regardless!
 2. Characters file not formatted correctly
 
 *Solution*:
-1. ~F8 F8 C i~ (add IDs to all characters)
+1. ~F8 F8 R~ (add IDs to all characters)
 2. Make sure characters have ~:Role:~ or ~:TYPE:~ property
 
 ** "Link doesn't jump to character profile"
@@ -1265,7 +1128,7 @@ The linking system works regardless!
 
 *Solution*:
 1. Click directly on character name in the link
-2. Or use ~F8 F8 C j~ to jump to PoV character
+2. Or use ~F8 F8 j~ to jump to PoV character
 
 ** "Character timeline shows no characters"
 
@@ -1275,7 +1138,7 @@ The linking system works regardless!
 3. Need to update the dynamic block
 
 *Solution*:
-1. Set character properties in scenes (~F8 F8 C p~ and ~F8 F8 C c~)
+1. Set character properties in scenes (~F8 F8 p~ and ~F8 F8 h~)
 2. Update table (~C-c C-c~ on #+BEGIN line)
 
 ** "Character profile template is incomplete"
@@ -1283,7 +1146,7 @@ The linking system works regardless!
 *If capture template looks wrong*:
 
 1. Make sure org-scribe is up to date
-2. Try ~M-x org-scribe/capture-character~ directly
+2. Try ~M-x org-scribe-capture-character~ directly
 3. Check that capture finalized (~C-c C-c~)
 
 * What You've Learned
@@ -1292,17 +1155,17 @@ Excellent work! You've completed Lesson 4. You now know:
 
 ✓ Why character profiles matter (consistency, reference, tracking)
 ✓ Where characters are stored (notes.org vs objects/characters.org)
-✓ How to capture characters (~F8 F8 h~)
+✓ How to capture characters (~F8 F8 k h~)
 ✓ All sections of the character template (physical, personality, GMC, arc, etc.)
 ✓ What minimum vs. full profiles contain
 ✓ How ID-based linking works (unique IDs enable smart features)
-✓ How to set PoV character (~F8 F8 C p~)
-✓ How to set scene characters (~F8 F8 C c~)
+✓ How to set PoV character (~F8 F8 p~)
+✓ How to set scene characters (~F8 F8 h~)
 ✓ How to jump to character profiles (~C-c C-o~)
 ✓ How to search for all scenes with a character (~F8 F8 2~)
 ✓ How to generate character timelines (C-c C-c on block)
-✓ How to add structured character relationships (~F8 F8 C a~)
-✓ How to visualize relationship networks (~F8 F8 C g~)
+✓ How to add structured character relationships (~F8 F8 L a~)
+✓ How to view relationships (~F8 F8 L v~/~V~)
 ✓ How to use relationship data for story analysis
 ✓ How to integrate characters into your daily workflow
 
@@ -1338,17 +1201,15 @@ The more detailed your character profiles, the more consistent and vivid your ch
 
 | Command                  | Key           | What It Does                    |
 |--------------------------+---------------+---------------------------------|
-| Capture character        | ~F8 F8 h~     | Create character profile        |
-| Character linking menu   | ~F8 F8 C~     | Open character submenu          |
-| Set PoV character        | ~F8 F8 C p~   | Select PoV from menu            |
-| Set scene characters     | ~F8 F8 C c~   | Multi-select characters         |
-| Jump to PoV character    | ~F8 F8 C j~   | Go to PoV profile               |
-| Add relationship         | ~F8 F8 C a~   | Add structured relationship     |
-| Remove relationship      | ~F8 F8 C r~   | Remove a relationship           |
-| View relationships       | ~F8 F8 C v~   | Show character's relationships  |
-| View all relationships   | ~F8 F8 C V~   | Show all project relationships  |
-| Insert graph block       | ~F8 F8 C g~   | Insert visualization block      |
-| Setup relationships      | ~F8 F8 C R~   | Initialize relationship system  |
+| Capture character        | ~F8 F8 k h~     | Create character profile        |
+| Set PoV character        | ~F8 F8 p~   | Select PoV from menu            |
+| Set scene characters     | ~F8 F8 h~   | Multi-select characters         |
+| Jump to PoV character    | ~F8 F8 j~   | Go to PoV profile               |
+| Add relationship         | ~F8 F8 L a~   | Add structured relationship     |
+| Remove relationship      | ~F8 F8 L x~   | Remove a relationship           |
+| View relationships       | ~F8 F8 L v~   | Show character's relationships  |
+| View all relationships   | ~F8 F8 L V~   | Show all project relationships  |
+| Setup relationships      | ~F8 F8 L r~   | Initialize relationship system  |
 | Search by character      | ~F8 F8 2~     | Find all scenes with character  |
 | Search by PoV            | ~F8 F8 1~     | Find scenes by PoV              |
 | Follow link              | ~C-c C-o~     | Jump to linked character        |
@@ -1391,14 +1252,14 @@ The more detailed your character profiles, the more consistent and vivid your ch
 1. *Start minimal* - Don't spend hours on profiles before writing
 2. *Develop while writing* - Add details as characters reveal themselves
 3. *Use GMC* - Goal, Motivation, Conflict is the minimum for strong characters
-4. *Link always* - Use the menu (~F8 F8 C p~) instead of typing names
+4. *Link always* - Use the menu (~F8 F8 p~) instead of typing names
 5. *Check consistency* - Jump to profiles when describing characters
 6. *Track appearances* - Use timeline to ensure balanced screen time
 7. *Revise profiles* - Update after drafting when you know characters better
 8. *Distinguish voices* - Use Notes section for speech patterns/catchphrases
-9. *Track relationships* - Use structured relationships (~F8 F8 C a~) to maintain character connections
-10. *Visualize networks* - Generate relationship graphs to identify isolated or over-connected characters
-11. *Check symmetry* - Ensure relationship strengths match their story importance
+9. *Track relationships* - Use structured relationships (~F8 F8 L a~) to maintain character connections
+10. *Review the table* - Use ~F8 F8 L V~ periodically to spot isolated or over-connected characters
+11. *Check symmetry* - Make sure both sides of a relationship agree with each other
 12. *Search often* - Review all scenes for a character during revision
 
 ** Remember

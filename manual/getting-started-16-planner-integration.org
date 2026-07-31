@@ -72,15 +72,20 @@ Press ~F8 F8~ to open the Hydra menu. Press ~W~ to open the planner submenu:
   ──────────────────────────────────────────────────
   p: Open project plan (load or create)
   n: New plan
+  o: Onboard existing project
   l: Load plan
-  u: Update progress (from word count)
-  d: Update daily word count
+  u: Sync word count (from manuscript)
+  d: Add session note
   r: Recalculate plan
   a: Adjust remaining days
   m: Milestones
   D: Dashboards menu
+  E: Enable for project
+  X: Disable for project
   q: Back to main menu
 #+END_EXAMPLE
+
+*Before you get here*: this submenu is only reachable once the planner is *enabled for the current project*. A project's opt-in state lives in a ~# Planner: yes~/~# Planner: no~ line in ~.org-scribe-project~ (undecided/~nil~ by default, which behaves like "yes" for backward compatibility with projects created before this gate existed). If a project has explicitly opted out, pressing ~W~ offers to re-enable it instead of showing this submenu. Toggle it explicitly any time with ~E~ (enable) / ~X~ (disable) once you're in the submenu, or via ~M-x org-scribe-planner-enable-for-project~ / ~M-x org-scribe-planner-disable-for-project~.
 
 ** The ~p~ Key — Your Main Entry Point
 
@@ -106,7 +111,7 @@ Inside a project, the planner pre-fills defaults from your project metadata — 
 
 The planner creates ~plan.org~ in your project root and calculates your required daily word count automatically.
 
-*Note*: New projects created with ~org-scribe-create-novel-project~ or ~org-scribe-create-short-story-project~ include a minimal ~plan.org~ placeholder in the project root. You can populate it by pressing ~F8 F8 W p~ right after project creation.
+*Note*: New projects do *not* ship with a ~plan.org~ placeholder — the file (and the ~# Planner: yes~ opt-in marker) only come into existence once you explicitly create a plan, either by accepting the offer shown right after ~org-scribe-create-novel-project~/~org-scribe-create-short-story-project~ (see below), or later via ~M-x org-scribe-plan~ or ~F8 F8 W p~.
 
 ** What the Plan File Looks Like
 
@@ -198,15 +203,11 @@ This gives you an at-a-glance picture of your entire project arc.
 
 * Step 4: Log Your Daily Session
 
-After a writing session, update the daily count.
+If auto-tracking is on (the default — see ~org-scribe-planner-auto-track-daily~), running a word count after writing already updates today's entry for you; you don't need to do anything else. To add a note about the session, or to record an entry manually:
 
-Press ~F8 F8 W d~ (Update daily word count).
+Press ~F8 F8 W d~ (~org-scribe-planner-add-session-note~).
 
-The planner prompts for:
-1. The date (defaults to today)
-2. How many words you wrote this session
-
-It records the entry and the mode line updates immediately.
+The planner pre-fills today's cumulative word total from the manuscript and prompts you for a session note (what you worked on). Confirming records the entry and the mode line updates immediately. Remember that ~DAILY_WORD_COUNTS~ entries store the manuscript's *cumulative* total as of that date, not that day's delta — the delta shown in the calendar/mode line is derived automatically by subtracting the previous entry.
 
 *Tip*: Combine this with your existing daily writing log (from Lesson 3). The plan calendar gives you the goal-oriented view; your manuscript's progress table gives you the structural view. Both are valuable!
 
@@ -252,7 +253,7 @@ Whenever you create a new project with ~M-x org-scribe-create-novel-project~ or 
 Create a writing plan for "My New Novel" with org-scribe-planner? (yes or no)
 #+END_EXAMPLE
 
-Answer ~yes~ and the planner opens immediately, ready to set up the new project's plan. The project template also places an empty ~plan.org~ placeholder in the root so that auto-load can find it even before you fill it in.
+Answer ~yes~ and the planner opens immediately, walking you through creating the plan (and writing ~# Planner: yes~ to ~.org-scribe-project~). Answer ~no~ and it writes ~# Planner: no~ instead — the project won't be asked again until you run ~org-scribe-planner-enable-for-project~ or ~M-x org-scribe-plan~ yourself. Either way, there is no ~plan.org~ placeholder shipped in the template; the file only appears once you actually create a plan.
 
 * How Auto-Loading Works
 
@@ -349,11 +350,11 @@ The ~W~ key appears in the *Manage* column of the main Hydra hint as ~_W_: Plann
 
 ** "Auto-load says 'loaded plan' but I didn't create one yet."
 
-The planner found an existing ~.org~ file in your project root that has a ~TOTAL_WORDS~ property (step 3 of the search order). This may be the placeholder ~plan.org~ created by the project template. Open it and fill in your targets, or rename/delete it if you don't want to use the planner yet.
+The planner found an existing ~.org~ file in your project root that has a ~TOTAL_WORDS~ property (step 3 of the search order) — perhaps a plan you (or a previous collaborator) created and forgot about. Open it and fill in your targets, or rename/delete it if you don't want to use the planner yet.
 
 ** "The mode line shows [W:0/650] even though I wrote today."
 
-The daily entry doesn't come from the automatic word count sync — it comes from what you log via ~F8 F8 W d~. Run that command and enter how many words you wrote this session. The mode line will update immediately.
+If ~org-scribe-planner-auto-track-daily~ and ~org-scribe-planner-auto-push-wordcount~ are both on (the default), running a word count (~F8 F8 a~ or ~F8 F8 w~) should update today's entry automatically. If it still shows 0, run ~F8 F8 W d~ (~org-scribe-planner-add-session-note~) — it pre-fills today's cumulative total from the manuscript and prompts you for a session note; confirming updates the entry. The mode line will update immediately.
 
 ** "I want to track words for multiple projects independently."
 
@@ -412,13 +413,16 @@ You've completed Lesson 16!
 |-----+-------------------------------+---------------------------------------------|
 | ~p~ | Open project plan             | Load or create plan; show calendar if active |
 | ~n~ | New plan                      | Create a plan for the current project        |
+| ~o~ | Onboard existing project      | Set up a plan for a project already in progress |
 | ~l~ | Load plan                     | Open a plan file manually                    |
-| ~u~ | Update progress               | Push current manuscript total to plan        |
-| ~d~ | Update daily word count       | Log today's session words                    |
+| ~u~ | Sync word count               | Push current manuscript total to plan        |
+| ~d~ | Add session note              | Log/annotate today's entry (auto-tracked by default) |
 | ~r~ | Recalculate plan              | Recompute daily targets from current state   |
 | ~a~ | Adjust remaining days         | Reschedule around changes in availability    |
 | ~m~ | Milestones                    | View/set named word count checkpoints        |
 | ~D~ | Dashboards menu               | Progress dashboards and analytics            |
+| ~E~ | Enable for project            | Flip this project's gate to ~yes~              |
+| ~X~ | Disable for project           | Flip this project's gate to ~no~               |
 | ~q~ | Back to main menu             | Return to main Hydra                         |
 
 ** Integration Features Summary

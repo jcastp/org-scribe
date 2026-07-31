@@ -163,10 +163,11 @@ A complete scene template appears! It looks like this:
 :What-is-at-stake:
 :Emotion:
 :Comment:
-:WORDCOUNT:
-:WORD-OBJECTIVE:
+:WORD-OBJECTIVE: 500
 :END:
 #+END_EXAMPLE
+
+Note: there is no ~:WORDCOUNT:~ property yet at this point — it only appears once you run a word-count command (~F8 F8 w~/~F8 F8 a~) for the first time. ~:WORD-OBJECTIVE:~ does start pre-filled with a default of ~500~, which you can change to fit the scene.
 
 *Congratulations!* You've inserted your first scene template!
 
@@ -431,7 +432,7 @@ When you're done writing:
 2. Press ~m~ again (toggle off)
 3. Your normal environment returns
 
-*Note*: You can also exit by pressing ~M-x org-scribe/writing-env-mode~ and Enter.
+*Note*: You can also exit by pressing ~M-x org-scribe-writing-env-mode~ and Enter.
 
 * Other Writing Modes
 
@@ -454,7 +455,7 @@ The package has four different modes. Here's a quick overview:
 
 *Best for*: Deep focus on one scene, avoiding distractions from the rest of your manuscript
 
-** Mode 3: Project Mode (~F8 F8 p~)
+** Mode 3: Project Mode (~F8 F8 v~)
 - Opens file tree (all project files) on the left
 - Opens outline (current file structure) on the right
 - Main document in center
@@ -495,17 +496,36 @@ If you're working on a novel, you might want to add chapters.
 5. Enter chapter title when prompted
 6. A chapter template appears!
 
-Example result:
+Example result — chapter insertion also auto-inserts a ready-to-fill first scene below it, so you get both in one step:
 
 #+BEGIN_EXAMPLE
-** TODO Chapter 2 - The Discovery
+** TODO Chapter 2 - The Discovery :ignore:
 :PROPERTIES:
-:WORDCOUNT:
-:WORD-OBJECTIVE:
+:WORD-OBJECTIVE: 5000
+:WORDCOUNT: 0
 :END:
+
+*** TODO New scene :ignore:
+:PROPERTIES:
+:PoV:
+:Characters:
+:Plot:
+:Timeline:
+:Location:
+:Description:
+:Summary:
+:Scene-motivation:
+:Conflict-source:
+:What-is-at-stake:
+:Emotion:
+:Comment:
+:WORD-OBJECTIVE: 500
+:END:
+
+{{{scene-break}}}
 #+END_EXAMPLE
 
-Now you can insert scenes under this chapter using ~F8 F8 s~!
+Point lands on the new scene's ~:PoV:~ property, ready for input — the same landing spot ~org-scribe-insert-scene~ produces. Insert additional scenes under this chapter using ~F8 F8 s~!
 
 * Your Basic Writing Workflow
 
@@ -639,7 +659,7 @@ Advanced users can configure custom TODO states, but TODO/DONE works perfectly f
 
 *Solutions*:
 1. Try ~F8 F8 m~ again
-2. Or: ~M-x org-scribe/writing-env-mode~ to toggle it off
+2. Or: ~M-x org-scribe-writing-env-mode~ to toggle it off
 3. Restart Emacs if stuck (your work is saved!)
 
 ** "My text isn't centering in writing mode"
