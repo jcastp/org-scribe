@@ -209,6 +209,8 @@ Scans the characters file for all character profiles (identified by ~:Role:~ or 
 
 Similar to setting PoV, but allows multi-selection of characters for the ~:Characters:~ property. Characters are presented in a completion menu where you can select multiple names (one at a time, pressing RET between selections, empty input to finish). The function creates comma-separated ID links like ~[[id:id1][Alice]], [[id:id2][Bob]]~ in the Characters property. This tracks which characters appear in each scene, enabling character timeline generation and character-based searches.
 
+The tagging is not additive. When set the scene characters, the list is emptied and recreated from scratch with the characters that were selected in that tagging action.
+
 *Status*: Fully implemented | *Hydra*: ~h~ (Tag Scene section, "set characters") | *Module*: ~linking/org-scribe-character-links.el~
 
 ** Jump to PoV Character (~org-scribe-jump-to-pov-character~)
@@ -691,24 +693,24 @@ If your init file still contains the following snippet from before the planner w
 
 ** Summary by Category
 
-| Category                  | Feature Count |
-|---------------------------+---------------|
-| Project Management        |             6 |
-| Writing Modes             |             5 |
-| Word Counting & Tracking  |             5 |
-| Capture System            |             8 |
-| Linking System            |            19 |
-| Search Tools              |             7 |
-| Templates                 |             5 |
-| Dictionary & Language     |             5 |
-| Export Tools              |             3 |
-| Column View               |             3 |
-| Analysis Tools            |             1 |
-| UI & Navigation           |             6 |
-| Configuration             |            15 |
-| Writing Planner           |             4 |
-|---------------------------+---------------|
-| *Total Features*          |            92 |
+| Category                 | Feature Count |
+|--------------------------+---------------|
+| Project Management       |             6 |
+| Writing Modes            |             5 |
+| Word Counting & Tracking |             5 |
+| Capture System           |             8 |
+| Linking System           |            19 |
+| Search Tools             |             7 |
+| Templates                |             5 |
+| Dictionary & Language    |             5 |
+| Export Tools             |             3 |
+| Column View              |             3 |
+| Analysis Tools           |             1 |
+| UI & Navigation          |             6 |
+| Configuration            |            15 |
+| Writing Planner          |             4 |
+|--------------------------+---------------|
+| *Total Features*           |            92 |
 
 ** Implementation Status
 
@@ -732,7 +734,7 @@ manual/
 ├── 00-feature-index.org          (this file)
 ├── 01-getting-started.org        (installation, basic setup)
 ├── 02-project-management.org     (detailed project docs)
-├── 03-org-scribe-modes.org          (mode documentation)
+├── 03-org-scribe-modes.org       (mode documentation)
 ├── 04-word-counting.org          (counting and tracking)
 ├── 05-capture-system.org         (capture workflow)
 ├── 06-linking-system.org         (ID-based linking guide)

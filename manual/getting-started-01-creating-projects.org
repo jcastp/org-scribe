@@ -32,7 +32,7 @@ Let's verify the package is loaded correctly:
 2. Start typing: ~org-scribe-version~
 3. Press Enter
 
-You should see a message like: *"org-scribe version 0.4.0 (includes project templates)"*
+You should see a message like: *"org-scribe version 0.5.0"*
 
 If you see this message, you're ready! If not, make sure you've installed the package correctly.
 
@@ -116,7 +116,21 @@ Short story title:
 - Don't start with a dot (.)
 - The title will become the project folder name
 
-** Step 4: Wait for Creation
+** Step 4: Choose the Template Language
+
+You'll see a prompt with completion:
+#+BEGIN_EXAMPLE
+Template language: en
+#+END_EXAMPLE
+
+*What to do*:
+- Type or select ~en~ for English templates, or ~es~ for Spanish templates (~notas.org~, ~personajes.org~, etc.)
+- Press ~Tab~ to see both options, or just press ~Enter~ to accept the suggested default
+- Press ~Enter~ to confirm
+
+The suggested default comes from the ~org-scribe-template-language~ variable, but you can pick the other language here at any time - this prompt appears on every project creation, so you're never locked into one language project after project. Whatever you choose is recorded in that project's own ~.org-scribe-project~ marker file, so it's remembered for this project from now on. See [[*Bilingual Support (English/Spanish)][Bilingual Support]] below for details.
+
+** Step 5: Wait for Creation
 
 The package will now:
 1. Create the project directory
@@ -127,7 +141,7 @@ The package will now:
 
 You'll see messages in the minibuffer showing progress. This takes just a few seconds.
 
-** Step 5: Success!
+** Step 6: Success!
 
 When complete, you'll see:
 - The README.org file opens in your buffer
@@ -145,7 +159,7 @@ Your new project has this structure:
 #+BEGIN_EXAMPLE
 The Morning Routine/           (your project folder)
 ├── .git/                      (version control - automatic!)
-├── .org-scribe-project           (marker file - identifies this as a writing project)
+├── .org-scribe-project        (marker file - identifies this as a writing project)
 ├── README.org                 (overview and quick links - YOU ARE HERE)
 ├── story.org                  (your main manuscript)
 └── notes.org                  (planning: characters, plot, locations, etc.)
@@ -198,8 +212,21 @@ This hidden file tells Emacs: "This directory is a writing project!"
 - Enables project detection
 - Allows capture functions to find the right files
 - Stores project type information (novel vs. short story)
+- Records the project's template language
+- Tracks whether the writing planner is enabled for this project
 
-*Important*: Don't delete this file! The package needs it.
+*What it looks like right after creation*:
+#+BEGIN_EXAMPLE
+# Writing project: The Morning Routine
+# Created: 2026-07-31
+# Language: en
+#+END_EXAMPLE
+
+- ~# Language:~ - the language you picked at the Step 4 prompt (~en~ or ~es~). This is what ~org-scribe-project-language~ reads, so capture templates, scene property names, and other project-language-aware features stay consistent for this project even if you later change the global ~org-scribe-template-language~ default.
+- ~# Planner:~ - added automatically once you opt into the bundled writing planner (accepting the "create a plan?" offer, running ~M-x org-scribe-plan~, or ~org-scribe-planner-enable-for-project~/~org-scribe-planner-disable-for-project~). Value is ~yes~ or ~no~; the line is absent ("undecided") until you make a choice. See [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning]] for details.
+- ~# Plan:~ - added automatically the first time a plan file is located for this project, caching its path (usually ~plan.org~) so future lookups skip scanning the project directory. Also only present once a plan exists.
+
+*Important*: Don't delete this file! The package needs it, and hand-editing the ~# Language:~ or ~# Planner:~ lines works too, as long as you keep the ~# Key: value~ format.
 
 ** Git Integration
 
@@ -224,8 +251,9 @@ If you want to create a full novel project instead, the process is almost identi
 3. Press ~Enter~
 4. Choose base directory (e.g., ~~/org-scribe/~)
 5. Enter novel title (e.g., ~My Fantasy Novel~)
-6. Wait for creation
-7. Explore!
+6. Choose the template language (~en~ or ~es~)
+7. Wait for creation
+8. Explore!
 
 ** Novel Project Structure
 
@@ -265,15 +293,15 @@ Choose the novel template if:
 
 ** Novel vs. Short Story: Which Should I Use?
 
-| Aspect         | Short Story Template     | Novel Template             |
-|----------------+--------------------------+----------------------------|
-| *Complexity*     | Simple, 3 files          | Complex, 12-13 files       |
-| *Word Count*     | 1,000-20,000             | 50,000+                    |
-| *Planning*       | Consolidated notes.org   | Separate objects/ files       |
-| *Best For*       | Quick projects, learning | Long-form, detailed novels |
+| Aspect         | Short Story Template     | Novel Template                                 |
+|----------------+--------------------------+------------------------------------------------|
+| *Complexity*     | Simple, 3 files          | Complex, 12-13 files                           |
+| *Word Count*     | 1,000-20,000             | 50,000+                                        |
+| *Planning*       | Consolidated notes.org   | Separate objects/ files                        |
+| *Best For*       | Quick projects, learning | Long-form, detailed novels                     |
 | *Word Tracking*  | In story.org             | In novel.org (dynamic block, no separate file) |
-| *Learning Curve* | Gentle                   | Steeper                    |
-| *Overhead*       | Minimal                  | More files to manage       |
+| *Learning Curve* | Gentle                   | Steeper                                        |
+| *Overhead*       | Minimal                  | More files to manage                           |
 
 *Recommendation*: Start with short story template to learn, then try novel template for your big project!
 
@@ -299,15 +327,15 @@ Project creation prompts you for a language interactively each time — you don'
 
 ** Changing Template Language
 
-To use Spanish templates, add this to your Emacs configuration (~init.el~ or ~.emacs~):
+You don't need to configure anything to create a Spanish-language project - just pick ~es~ at the language prompt shown in Step 4 above.
+
+If you create Spanish projects most of the time, you can change the *default* choice offered at that prompt by adding this to your Emacs configuration (~init.el~ or ~.emacs~):
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-template-language 'es)
 #+END_SRC
 
-Then restart Emacs or evaluate the line with ~C-x C-e~.
-
-Now ~org-scribe-create-novel-project~ will create Spanish-language templates!
+Then restart Emacs or evaluate the line with ~C-x C-e~. The prompt will still appear on every project creation - this only changes which option is pre-selected.
 
 ** Bilingual Projects
 
@@ -414,16 +442,16 @@ Take your time! There's no rush. When you feel comfortable with project creation
 
 ** Interactive Commands
 
-| Command                            | What It Does                      |
-|------------------------------------+-----------------------------------|
+| Command                               | What It Does                      |
+|---------------------------------------+-----------------------------------|
 | ~org-scribe-create-novel-project~       | Create a novel project            |
 | ~org-scribe-create-short-story-project~ | Create a short story project      |
 | ~org-scribe-open-project-file~          | Quick navigation to project files |
 
 ** Configuration Variables
 
-| Variable                   | Default       | What It Controls           |
-|----------------------------+---------------+----------------------------|
+| Variable                      | Default       | What It Controls           |
+|-------------------------------+---------------+----------------------------|
 | ~org-scribe-template-language~  | ~'en~           | Template language (en/es)  |
 | ~org-scribe-template-directory~ | (package dir) | Where templates are stored |
 

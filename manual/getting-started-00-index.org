@@ -251,32 +251,32 @@ The writing planner ships bundled inside ~org-scribe~ itself (no separate packag
 
 ** Essential Keybindings
 
-| Key     | Action                  |
-|---------+-------------------------|
-| F8 F8   | Open Hydra menu         |
-| C-c W   | Quick note capture      |
-| C-c C-o | Follow link at point    |
-| C-c &   | Return from link        |
-| C-c C-c | Update dynamic table    |
-| C-c C-x C-c | Toggle column view  |
+| Key         | Action               |
+|-------------+----------------------|
+| F8 F8       | Open Hydra menu      |
+| C-c W       | Quick note capture   |
+| C-c C-o     | Follow link at point |
+| C-c &       | Return from link     |
+| C-c C-c     | Update dynamic table |
+| C-c C-x C-c | Toggle column view   |
 
 ** Common Hydra Menu Keys
 
 From the Hydra menu (F8 F8):
 
-| Key | Action                       | Key | Action                  |
-|-----+-------------------------------+-----+-------------------------|
-| s   | Insert scene                  | m   | Write mode              |
-| c   | Insert chapter                | f   | Focus mode              |
-| n   | Capture note                  | w   | Count words             |
-| p   | Set PoV (tag current scene)   | 1   | Search by PoV           |
-| h   | Set characters (tag scene)    | 2   | Search by character     |
-| l   | Set locations (tag scene)     | 3   | Search by plot          |
-| g   | Set plot threads (tag scene)  | 4   | Search by location      |
-| k   | Capture entity submenu…       | 5   | Search TODOs            |
-| L   | Links & upkeep submenu…       | 6   | Search edits/notes      |
-| R   | Relink project                | H   | Project health report   |
-| W   | Writing planner submenu (*)   | q   | Quit menu               |
+| Key | Action                       | Key | Action                |
+|-----+------------------------------+-----+-----------------------|
+| s   | Insert scene                 |   m | Write mode            |
+| c   | Insert chapter               |   f | Focus mode            |
+| n   | Capture note                 |   w | Count words           |
+| p   | Set PoV (tag current scene)  |   1 | Search by PoV         |
+| h   | Set characters (tag scene)   |   2 | Search by character   |
+| l   | Set locations (tag scene)    |   3 | Search by plot        |
+| g   | Set plot threads (tag scene) |   4 | Search by location    |
+| k   | Capture entity submenu…      |   5 | Search TODOs          |
+| L   | Links & upkeep submenu…      |   6 | Search edits/notes    |
+| R   | Relink project               |   H | Project health report |
+| W   | Writing planner submenu (*)  |   q | Quit menu             |
 
 (*) Bundled with org-scribe — only reachable once the planner is enabled for the current project (see [[file:getting-started-16-planner-integration.org][Lesson 16]]).
 
@@ -305,4 +305,4 @@ Don't feel pressured to complete all lessons at once. Take your time, experiment
 - *Estimated Total Time*: ~4.5 hours (at your own pace)
 - *Difficulty*: Beginner to Intermediate
 
-Happy writing! ✍
+Happy writing!
