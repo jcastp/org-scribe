@@ -486,7 +486,7 @@ Omit a function-name key to skip generating that function."
            (list :key :set-scene-name :args '() :command t
                  :when set-scene-property
                  :doc "Set scene property to multiple entity ID links."
-                 :body `(org-scribe--set-scene-entity ,entity-var ,set-scene-property))
+                 :body `(org-scribe--set-scene-entity ,entity-var ',set-scene-property))
            (list :key :link-in-prop-name :args '(property-name)
                  :doc "Convert entity names to ID links in PROPERTY-NAME."
                  :body `(org-scribe--link-entity-in-property ,entity-var property-name))
