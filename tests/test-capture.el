@@ -58,33 +58,33 @@
 
 (ert-deftest test-capture-templates-defined ()
   "Test that capture templates are defined."
-  (should (boundp 'org-scribe-capture-templates))
-  (should (listp org-scribe-capture-templates))
-  (should (> (length org-scribe-capture-templates) 0)))
+  (should (fboundp 'org-scribe-capture-templates))
+  (should (listp (org-scribe-capture-templates)))
+  (should (> (length (org-scribe-capture-templates)) 0)))
 
 (ert-deftest test-character-capture-templates-defined ()
   "Test that character capture templates are defined."
-  (should (boundp 'org-scribe-character-capture-templates))
-  (should (listp org-scribe-character-capture-templates))
-  (should (> (length org-scribe-character-capture-templates) 0)))
+  (should (fboundp 'org-scribe-character-capture-templates))
+  (should (listp (org-scribe-character-capture-templates)))
+  (should (> (length (org-scribe-character-capture-templates)) 0)))
 
 (ert-deftest test-location-capture-templates-defined ()
   "Test that location capture templates are defined."
-  (should (boundp 'org-scribe-location-capture-templates))
-  (should (listp org-scribe-location-capture-templates))
-  (should (> (length org-scribe-location-capture-templates) 0)))
+  (should (fboundp 'org-scribe-location-capture-templates))
+  (should (listp (org-scribe-location-capture-templates)))
+  (should (> (length (org-scribe-location-capture-templates)) 0)))
 
 (ert-deftest test-object-capture-templates-defined ()
   "Test that object capture templates are defined."
-  (should (boundp 'org-scribe-object-capture-templates))
-  (should (listp org-scribe-object-capture-templates))
-  (should (> (length org-scribe-object-capture-templates) 0)))
+  (should (fboundp 'org-scribe-object-capture-templates))
+  (should (listp (org-scribe-object-capture-templates)))
+  (should (> (length (org-scribe-object-capture-templates)) 0)))
 
 (ert-deftest test-timeline-capture-templates-defined ()
   "Test that timeline capture templates are defined."
-  (should (boundp 'org-scribe-timeline-capture-templates))
-  (should (listp org-scribe-timeline-capture-templates))
-  (should (> (length org-scribe-timeline-capture-templates) 0)))
+  (should (fboundp 'org-scribe-timeline-capture-templates))
+  (should (listp (org-scribe-timeline-capture-templates)))
+  (should (> (length (org-scribe-timeline-capture-templates)) 0)))
 
 ;;; File Creation Tests
 
@@ -93,7 +93,7 @@
   (let ((temp-file (make-temp-file "test-notes-" nil ".org")))
     (unwind-protect
         (progn
-          (org-scribe--create-short-story-notes-file temp-file)
+          (org-scribe--create-short-story-notes-file temp-file 'en)
 
           ;; Verify file was created
           (should (file-exists-p temp-file))
@@ -118,7 +118,7 @@
   (let ((temp-file (make-temp-file "test-characters-" nil ".org")))
     (unwind-protect
         (progn
-          (org-scribe--create-novel-capture-file temp-file 'characters)
+          (org-scribe--create-novel-capture-file temp-file 'characters 'en)
 
           ;; Verify file was created
           (should (file-exists-p temp-file))
@@ -141,7 +141,7 @@
   (let ((temp-file (make-temp-file "test-locations-" nil ".org")))
     (unwind-protect
         (progn
-          (org-scribe--create-novel-capture-file temp-file 'locations)
+          (org-scribe--create-novel-capture-file temp-file 'locations 'en)
 
           (with-temp-buffer
             (insert-file-contents temp-file)
@@ -157,7 +157,7 @@
   (let ((temp-file (make-temp-file "test-objects-" nil ".org")))
     (unwind-protect
         (progn
-          (org-scribe--create-novel-capture-file temp-file 'objects)
+          (org-scribe--create-novel-capture-file temp-file 'objects 'en)
 
           (with-temp-buffer
             (insert-file-contents temp-file)
@@ -173,7 +173,7 @@
   (let ((temp-file (make-temp-file "test-timeline-" nil ".org")))
     (unwind-protect
         (progn
-          (org-scribe--create-novel-capture-file temp-file 'timeline)
+          (org-scribe--create-novel-capture-file temp-file 'timeline 'en)
 
           (with-temp-buffer
             (insert-file-contents temp-file)
@@ -189,7 +189,7 @@
   (let ((temp-file (make-temp-file "test-notes-" nil ".org")))
     (unwind-protect
         (progn
-          (org-scribe--create-novel-capture-file temp-file 'notes)
+          (org-scribe--create-novel-capture-file temp-file 'notes 'en)
 
           (with-temp-buffer
             (insert-file-contents temp-file)
@@ -249,7 +249,7 @@
 
 (ert-deftest test-character-template-has-required-fields ()
   "Test that character template includes all required fields."
-  (let ((template-string (nth 4 (car org-scribe-character-capture-templates))))
+  (let ((template-string (nth 4 (car (org-scribe-character-capture-templates 'en)))))
     (should (string-match-p ":ID:" template-string))
     (should (string-match-p ":Role:" template-string))
     (should (string-match-p ":Age:" template-string))
@@ -263,7 +263,7 @@
 
 (ert-deftest test-location-template-has-required-fields ()
   "Test that location template includes all required fields."
-  (let ((template-string (nth 4 (car org-scribe-location-capture-templates))))
+  (let ((template-string (nth 4 (car (org-scribe-location-capture-templates 'en)))))
     (should (string-match-p ":ID:" template-string))
     (should (string-match-p ":Type:" template-string))
     (should (string-match-p ":Importance:" template-string))
@@ -276,7 +276,7 @@
 
 (ert-deftest test-object-template-has-required-fields ()
   "Test that object template includes all required fields."
-  (let ((template-string (nth 4 (car org-scribe-object-capture-templates))))
+  (let ((template-string (nth 4 (car (org-scribe-object-capture-templates 'en)))))
     (should (string-match-p ":Type:" template-string))
     (should (string-match-p ":Owner:" template-string))
     (should (string-match-p ":Status:" template-string))
@@ -288,7 +288,7 @@
 
 (ert-deftest test-timeline-template-has-required-fields ()
   "Test that timeline template includes all required fields."
-  (let ((template-string (nth 4 (car org-scribe-timeline-capture-templates))))
+  (let ((template-string (nth 4 (car (org-scribe-timeline-capture-templates 'en)))))
     (should (string-match-p ":ID:" template-string))
     (should (string-match-p ":Type:" template-string))
     (should (string-match-p ":Date:" template-string))
@@ -302,18 +302,18 @@
 
 (ert-deftest test-character-template-generates-id ()
   "Test that character template includes auto-ID generation."
-  (let ((template-string (nth 4 (car org-scribe-character-capture-templates))))
+  (let ((template-string (nth 4 (car (org-scribe-character-capture-templates 'en)))))
     ;; Should have %(org-id-new) in ID property
     (should (string-match-p ":ID: %(org-id-new)" template-string))))
 
 (ert-deftest test-location-template-generates-id ()
   "Test that location template includes auto-ID generation."
-  (let ((template-string (nth 4 (car org-scribe-location-capture-templates))))
+  (let ((template-string (nth 4 (car (org-scribe-location-capture-templates 'en)))))
     (should (string-match-p ":ID: %(org-id-new)" template-string))))
 
 (ert-deftest test-timeline-template-generates-id ()
   "Test that timeline template includes auto-ID generation."
-  (let ((template-string (nth 4 (car org-scribe-timeline-capture-templates))))
+  (let ((template-string (nth 4 (car (org-scribe-timeline-capture-templates 'en)))))
     (should (string-match-p ":ID: %(org-id-new)" template-string))))
 
 ;;; ─────────────────────────────────────────────
@@ -595,6 +595,96 @@ plain `file' target's append behavior."
       (org-scribe--capture-goto-section 'characters)
       (should-not (org-at-heading-p))
       (should (eobp)))))
+
+;;; ─────────────────────────────────────────────
+;;; Language-aware capture templates (i18n)
+;;; ─────────────────────────────────────────────
+
+(ert-deftest test-character-template-spanish ()
+  "Test that the character template renders in Spanish when requested."
+  (let ((template-string (nth 4 (car (org-scribe-character-capture-templates 'es)))))
+    (should (string-match-p "Nombre del Personaje" template-string))
+    (should (string-match-p "Descripción Física" template-string))
+    (should (string-match-p "Personalidad" template-string))
+    (should (string-match-p "Trasfondo" template-string))
+    (should (string-match-p "Relaciones" template-string))
+    (should-not (string-match-p "Physical Description" template-string))))
+
+(ert-deftest test-location-template-spanish ()
+  "Test that the location template renders in Spanish when requested."
+  (let ((template-string (nth 4 (car (org-scribe-location-capture-templates 'es)))))
+    (should (string-match-p "Descripción General" template-string))
+    (should (string-match-p "Geografía" template-string))
+    (should-not (string-match-p "General Description" template-string))))
+
+(ert-deftest test-object-template-spanish ()
+  "Test that the object template renders in Spanish when requested."
+  (let ((template-string (nth 4 (car (org-scribe-object-capture-templates 'es)))))
+    (should (string-match-p "Simbolismo" template-string))
+    (should-not (string-match-p "Symbolism" template-string))))
+
+(ert-deftest test-timeline-template-spanish ()
+  "Test that the timeline template renders in Spanish when requested."
+  (let ((template-string (nth 4 (car (org-scribe-timeline-capture-templates 'es)))))
+    (should (string-match-p "Consecuencias" template-string))
+    (should-not (string-match-p "Consequences" template-string))))
+
+(ert-deftest test-plot-thread-template-spanish ()
+  "Test that the plot thread template renders in Spanish, including the
+positional backreference to the type prompt (`%\\2')."
+  (let ((template-string (nth 4 (car (org-scribe-plot-thread-capture-templates 'es)))))
+    (should (string-match-p "Nombre del Hilo" template-string))
+    (should (string-match-p "Resolución" template-string))
+    (should (string-match-p "%\\\\2" template-string))))
+
+(ert-deftest test-capture-templates-follow-project-language ()
+  "Test that templates default to `org-scribe-project-language' when no
+explicit LANGUAGE argument is given, so a Spanish project's capture UI
+is Spanish without the caller having to know about it."
+  (cl-letf (((symbol-function 'org-scribe-project-language) (lambda () 'es)))
+    (should (string-match-p "Nombre del Personaje"
+                            (nth 4 (car (org-scribe-character-capture-templates)))))))
+
+(ert-deftest test-create-short-story-notes-file-spanish ()
+  "Test that the short-story notes.org file is created with Spanish headings."
+  (let ((temp-file (make-temp-file "test-notes-es-" nil ".org")))
+    (unwind-protect
+        (progn
+          (org-scribe--create-short-story-notes-file temp-file 'es)
+          (with-temp-buffer
+            (insert-file-contents temp-file)
+            (let ((content (buffer-string)))
+              (should (string-match-p "Personajes" content))
+              (should (string-match-p "Ambientación" content))
+              (should-not (string-match-p "\\* Characters" content)))))
+      (when (file-exists-p temp-file)
+        (delete-file temp-file)))))
+
+(ert-deftest test-create-novel-capture-file-characters-spanish ()
+  "Test that the novel characters file title is localized to Spanish."
+  (let ((temp-file (make-temp-file "test-characters-es-" nil ".org")))
+    (unwind-protect
+        (progn
+          (org-scribe--create-novel-capture-file temp-file 'characters 'es)
+          (with-temp-buffer
+            (insert-file-contents temp-file)
+            (should (string-match-p "Base de Datos de Personajes" (buffer-string)))))
+      (when (file-exists-p temp-file)
+        (delete-file temp-file)))))
+
+(ert-deftest test-capture-target-file-create-spanish-notes ()
+  "Test that the fallback notes.org file created by
+`org-scribe-capture-target-file' uses Spanish headings for a Spanish project."
+  (let ((temp-dir (make-temp-file "test-target-es-" t)))
+    (unwind-protect
+        (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () temp-dir))
+                  ((symbol-function 'org-scribe-project-language) (lambda () 'es)))
+          (let ((target (org-scribe-capture-target-file t)))
+            (with-temp-buffer
+              (insert-file-contents target)
+              (should (string-match-p "Notas de Escritura" (buffer-string)))
+              (should (string-match-p "\\* Notas" (buffer-string))))))
+      (delete-directory temp-dir t))))
 
 ;;; ─────────────────────────────────────────────
 ;;; Run tests

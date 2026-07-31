@@ -30,70 +30,90 @@ When STARTUP is a non-nil string, appends a #+STARTUP line."
    (when startup (format "#+STARTUP: %s\n" startup))
    "\n"))
 
-(defun org-scribe--create-plot-file (filepath is-short-story)
+(defun org-scribe--create-plot-file (filepath is-short-story &optional language)
   "Create a basic plot file for captures.
 FILEPATH is the path where the file should be created.
-IS-SHORT-STORY determines the structure."
-  (with-temp-file filepath
-    (insert (org-scribe--file-header "Plot Structure" "overview"))
-    (if is-short-story
-        (progn
-          (insert "* Plot Outline\n\n")
-          (insert "** Premise\n\n")
-          (insert "** Setup\n\n")
-          (insert "** Central Conflict\n\n")
-          (insert "** Resolution\n\n")
-          (insert "* Plot Threads\n\n")
-          (insert "[Plot threads will appear here when captured]\n\n"))
-      (progn
-        (insert "* Premise\n\nWhat is the story about in one or two sentences?\n\n")
-        (insert "* Main Plot\n\n")
-        (insert "** Central Conflict\n\n")
-        (insert "** Main Dramatic Question\n\n")
-        (insert "* Subplots\n\n")
-        (insert "* Plot Threads\n\n")
-        (insert "Track your plot threads here. Use F8 F8 p to capture new threads.\n\n")))))
-
-(defun org-scribe--create-short-story-notes-file (filepath)
-  "Create a comprehensive notes.org file for short story projects.
-FILEPATH is the path where the file should be created."
-  (let ((title (file-name-base (directory-file-name (file-name-directory filepath)))))
+IS-SHORT-STORY determines the structure.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language' for
+content generation."
+  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
     (with-temp-file filepath
-      (insert (org-scribe--file-header (format "%s - Planning & Notes" title) "overview"))
-      (insert "* Characters\n\n")
-      (insert "** Protagonist: [Name]\n")
-      (insert ":PROPERTIES:\n:TYPE: Protagonist\n:NAME:\n:AGE:\n:GENDER:\n:END:\n\n")
-      (insert "- Personality ::\n- Goal ::\n- Conflict ::\n\n")
-      (insert "* Plot Outline\n\n")
-      (insert "** Premise\n\n** Setup\n\n** Central Conflict\n\n** Resolution\n\n")
-      (insert "* Setting\n\n")
-      (insert "** Main Location(s)\n\n")
-      (insert "** Locations\n\n")
-      (insert "* Objects\n\n")
-      (insert "* Timeline\n\n")
-      (insert "* Research & References\n\n")
-      (insert "* Revision Notes\n\n")
-      (insert "* Random Ideas & Inspiration\n\n"))))
+      (insert (org-scribe--file-header (org-scribe-msg 'capture-title-plot-structure) "overview"))
+      (if is-short-story
+          (progn
+            (insert (format "* %s\n\n" (org-scribe-msg 'capture-plot-outline)))
+            (insert (format "** %s\n\n" (org-scribe-msg 'capture-plot-premise)))
+            (insert (format "** %s\n\n" (org-scribe-msg 'capture-plot-setup)))
+            (insert (format "** %s\n\n" (org-scribe-msg 'capture-plot-central-conflict)))
+            (insert (format "** %s\n\n" (org-scribe-msg 'capture-plot-resolution)))
+            (insert (format "* %s\n\n" (org-scribe-msg 'capture-plot-threads)))
+            (insert (format "%s\n\n" (org-scribe-msg 'capture-plot-threads-hint-short))))
+        (progn
+          (insert (format "* %s\n\n%s\n\n"
+                          (org-scribe-msg 'capture-plot-premise)
+                          (org-scribe-msg 'capture-plot-premise-hint)))
+          (insert (format "* %s\n\n" (org-scribe-msg 'capture-plot-main-plot)))
+          (insert (format "** %s\n\n" (org-scribe-msg 'capture-plot-central-conflict)))
+          (insert (format "** %s\n\n" (org-scribe-msg 'capture-plot-main-dramatic-question)))
+          (insert (format "* %s\n\n" (org-scribe-msg 'capture-plot-subplots)))
+          (insert (format "* %s\n\n" (org-scribe-msg 'capture-plot-threads)))
+          (insert (format "%s\n\n" (org-scribe-msg 'capture-plot-threads-hint-novel))))))))
 
-(defun org-scribe--create-novel-capture-file (filepath content-type)
+(defun org-scribe--create-short-story-notes-file (filepath &optional language)
+  "Create a comprehensive notes.org file for short story projects.
+FILEPATH is the path where the file should be created.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language' for
+content generation."
+  (let ((title (file-name-base (directory-file-name (file-name-directory filepath))))
+        (org-scribe-message-language (or language (org-scribe-project-language))))
+    (with-temp-file filepath
+      (insert (org-scribe--file-header (org-scribe-msg 'capture-title-project-notes title) "overview"))
+      (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-characters)))
+      (insert (format "** %s\n" (org-scribe-msg 'capture-ss-protagonist-name)))
+      (insert ":PROPERTIES:\n:TYPE: Protagonist\n:NAME:\n:AGE:\n:GENDER:\n:END:\n\n")
+      (insert (format "- %s\n- %s\n- %s\n\n"
+                      (org-scribe-msg 'capture-ss-personality)
+                      (org-scribe-msg 'capture-ss-goal)
+                      (org-scribe-msg 'capture-ss-conflict)))
+      (insert (format "* %s\n\n" (org-scribe-msg 'capture-plot-outline)))
+      (insert (format "** %s\n\n** %s\n\n** %s\n\n** %s\n\n"
+                      (org-scribe-msg 'capture-plot-premise)
+                      (org-scribe-msg 'capture-plot-setup)
+                      (org-scribe-msg 'capture-plot-central-conflict)
+                      (org-scribe-msg 'capture-plot-resolution)))
+      (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-setting)))
+      (insert (format "** %s\n\n" (org-scribe-msg 'capture-ss-main-locations)))
+      (insert (format "** %s\n\n" (org-scribe-msg 'capture-ss-locations)))
+      (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-objects)))
+      (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-timeline)))
+      (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-research)))
+      (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-revision-notes)))
+      (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-random-ideas))))))
+
+(defun org-scribe--create-novel-capture-file (filepath content-type &optional language)
   "Create an individual capture file for novel projects.
 FILEPATH is the path where the file should be created.
-CONTENT-TYPE is \\='characters, \\='locations, \\='objects, \\='timeline, or \\='notes."
-  (let ((titles '((characters . "Character Database")
-                  (locations  . "Locations & World Building")
-                  (objects    . "Important Objects")
-                  (timeline   . "Story Timeline")
-                  (notes      . "Writing Notes"))))
-    (with-temp-file filepath
-      (insert (org-scribe--file-header (alist-get content-type titles "Notes")))
-      (when (eq content-type 'notes)
-        (insert "* Notes\n\n")))))
+CONTENT-TYPE is \\='characters, \\='locations, \\='objects, \\='timeline, or \\='notes.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language' for
+content generation."
+  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
+    (let ((titles (list (cons 'characters (org-scribe-msg 'capture-title-characters))
+                        (cons 'locations  (org-scribe-msg 'capture-title-locations))
+                        (cons 'objects    (org-scribe-msg 'capture-title-objects))
+                        (cons 'timeline   (org-scribe-msg 'capture-title-timeline))
+                        (cons 'notes      (org-scribe-msg 'capture-title-notes)))))
+      (with-temp-file filepath
+        (insert (org-scribe--file-header (alist-get content-type titles (org-scribe-msg 'capture-title-notes))))
+        (when (eq content-type 'notes)
+          (insert (format "* %s\n\n" (org-scribe-msg 'capture-notes-heading))))))))
 
-(defun org-scribe--create-capture-file (filepath project-type content-type)
+(defun org-scribe--create-capture-file (filepath project-type content-type &optional language)
   "Create a capture target file based on project type.
 FILEPATH is the path to create.
 PROJECT-TYPE is 'novel, 'short-story, or 'unknown.
 CONTENT-TYPE is 'characters, 'locations, 'objects, 'timeline, 'plot, or 'notes.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language' for
+content generation.
 
 For plot threads, creates a plot-structured file regardless of project type.
 For short stories, creates notes.org with all standard headings.
@@ -105,13 +125,13 @@ For novels, creates individual files."
   (cond
    ;; Plot threads get their own structure regardless of project type
    ((eq content-type 'plot)
-    (org-scribe--create-plot-file filepath (eq project-type 'short-story)))
+    (org-scribe--create-plot-file filepath (eq project-type 'short-story) language))
    ;; Short story: create comprehensive notes.org
    ((eq project-type 'short-story)
-    (org-scribe--create-short-story-notes-file filepath))
+    (org-scribe--create-short-story-notes-file filepath language))
    ;; Novel or unknown: create individual file
    (t
-    (org-scribe--create-novel-capture-file filepath content-type))))
+    (org-scribe--create-novel-capture-file filepath content-type language))))
 
 ;;; Capture Target File Detection
 
@@ -281,255 +301,383 @@ file that doesn't exist."
       (let ((target-dir (file-name-directory target)))
         (unless (file-directory-p target-dir)
           (make-directory target-dir t)))
-      (with-temp-file target
-        (insert "#+TITLE: Writing Notes\n")
-        (insert (format "#+AUTHOR: %s\n" user-full-name))
-        (insert (format "#+EMAIL: %s\n\n" user-mail-address))
-        (insert "* Notes\n")))
+      (let ((org-scribe-message-language (org-scribe-project-language)))
+        (with-temp-file target
+          (insert (format "#+TITLE: %s\n" (org-scribe-msg 'capture-title-notes)))
+          (insert (format "#+AUTHOR: %s\n" user-full-name))
+          (insert (format "#+EMAIL: %s\n\n" user-mail-address))
+          (insert (format "* %s\n" (org-scribe-msg 'capture-notes-heading))))))
     target))
 
 ;;; Capture Templates
+;;
+;; The template lists below were plain `defvar's until the templates
+;; became language-aware (so a Spanish project's capture UI shows
+;; Spanish prompts/headings instead of always English).  Org capture
+;; templates are read once per capture session from a plain list, not
+;; re-evaluated per keystroke, so they cannot be `defvar's computed
+;; once at load time if their strings must depend on the project
+;; that's active when the capture command runs.  Each is now a
+;; function taking an optional LANGUAGE override; callers rebuild the
+;; list on every capture invocation via `org-scribe--run-capture'.
 
-(defvar org-scribe-capture-templates
-  '(("w" "Writing Note" entry
-     (file+headline org-scribe-capture-target-file "Notes")
-     "** TODO %?\n  %U\n  %i"
-     :empty-lines 1))
-  "Capture templates specific to the writing environment.")
+(defun org-scribe-capture-templates (&optional language)
+  "Return capture templates specific to the writing environment.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
+  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
+    `(("w" ,(org-scribe-msg 'capture-writing-note-name) entry
+       (file+headline org-scribe-capture-target-file ,(org-scribe-msg 'capture-notes-heading))
+       "** TODO %?\n  %U\n  %i"
+       :empty-lines 1))))
 
-(defvar org-scribe-character-capture-templates
-  '(("c" "Character Profile" entry
-     (file+function org-scribe-capture-character-file
-                    org-scribe--capture-goto-characters-section)
-     "* %^{Character Name}
+(defun org-scribe-character-capture-templates (&optional language)
+  "Return capture templates for character profiles.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
+  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
+    `(("c" ,(org-scribe-msg 'capture-char-name) entry
+       (file+function org-scribe-capture-character-file
+                      org-scribe--capture-goto-characters-section)
+       ,(format "* %%^{%s}
 :PROPERTIES:
-:ID: %(org-id-new)
-:Role: %^{Role|Protagonist|Opponent|Antagonist|Supporting|Minor|Ally|Mentor}
-:Weight: %^{Weight|1.0|2.0|3.0|4.0|5.0}
-:Age: %^{Age}
-:Gender: %^{Gender}
-:Occupation: %^{Occupation}
+:ID: %%(org-id-new)
+:Role: %%^{%s}
+:Weight: %%^{%s}
+:Age: %%^{%s}
+:Gender: %%^{%s}
+:Occupation: %%^{%s}
 :Goal:
 :Motivation:
 :Conflict:
 :Arc:
-:First-appearance: %^{First Appearance Chapter}
+:First-appearance: %%^{%s}
 :RelationshipsData:
 :END:
 
-** Physical Description
+** %s
 
-- Height ::
-- Build ::
-- Hair ::
-- Eyes ::
-- Distinctive features ::
+- %s
+- %s
+- %s
+- %s
+- %s
 
-** Personality
+** %s
 
-- Main traits ::
-- Strengths ::
-- Weaknesses ::
-- Fears ::
-- Desire ::
-- Need ::
-- Psychological Flaw ::
-- Moral Flaw :: 
+- %s
+- %s
+- %s
+- %s
+- %s
+- %s
+- %s
+- %s
 
-** Background
+** %s
 
-- Family ::
-- Education ::
-- Occupation ::
-- Formative events ::
+- %s
+- %s
+- %s
+- %s
 
-** Goal, Motivation, Conflict
-*** Internal
-- Goal ::
-- Motivation ::
-- Conflict ::
-*** External
-- Goal ::
-- Motivation ::
-- Conflict ::
+** %s
+*** %s
+- %s
+- %s
+- %s
+*** %s
+- %s
+- %s
+- %s
 
-** Character Arc
+** %s
 
-- Initial state ::
-- Turning point ::
-- Transformation ::
-- Final state ::
+- %s
+- %s
+- %s
+- %s
 
-** Relationships
+** %s
 
-- With other characters ::
+- %s
 
-** Notes
+** %s
 - "
-     :empty-lines 1
-     ))
-  "Capture templates for character profiles.")
+                       (org-scribe-msg 'capture-char-name-prompt)
+                       (org-scribe-msg 'capture-char-role-prompt)
+                       (org-scribe-msg 'capture-char-weight-prompt)
+                       (org-scribe-msg 'capture-char-age-prompt)
+                       (org-scribe-msg 'capture-char-gender-prompt)
+                       (org-scribe-msg 'capture-char-occupation-prompt)
+                       (org-scribe-msg 'capture-char-first-appearance-prompt)
+                       (org-scribe-msg 'capture-char-physical-description)
+                       (org-scribe-msg 'capture-char-height)
+                       (org-scribe-msg 'capture-char-build)
+                       (org-scribe-msg 'capture-char-hair)
+                       (org-scribe-msg 'capture-char-eyes)
+                       (org-scribe-msg 'capture-char-distinctive-features)
+                       (org-scribe-msg 'capture-char-personality)
+                       (org-scribe-msg 'capture-char-main-traits)
+                       (org-scribe-msg 'capture-char-strengths)
+                       (org-scribe-msg 'capture-char-weaknesses)
+                       (org-scribe-msg 'capture-char-fears)
+                       (org-scribe-msg 'capture-char-desire)
+                       (org-scribe-msg 'capture-char-need)
+                       (org-scribe-msg 'capture-char-psychological-flaw)
+                       (org-scribe-msg 'capture-char-moral-flaw)
+                       (org-scribe-msg 'capture-char-background)
+                       (org-scribe-msg 'capture-char-family)
+                       (org-scribe-msg 'capture-char-education)
+                       (org-scribe-msg 'capture-char-occupation-field)
+                       (org-scribe-msg 'capture-char-formative-events)
+                       (org-scribe-msg 'capture-char-gmc)
+                       (org-scribe-msg 'capture-char-internal)
+                       (org-scribe-msg 'capture-char-goal)
+                       (org-scribe-msg 'capture-char-motivation)
+                       (org-scribe-msg 'capture-char-conflict)
+                       (org-scribe-msg 'capture-char-external)
+                       (org-scribe-msg 'capture-char-goal)
+                       (org-scribe-msg 'capture-char-motivation)
+                       (org-scribe-msg 'capture-char-conflict)
+                       (org-scribe-msg 'capture-char-arc)
+                       (org-scribe-msg 'capture-char-initial-state)
+                       (org-scribe-msg 'capture-char-turning-point)
+                       (org-scribe-msg 'capture-char-transformation)
+                       (org-scribe-msg 'capture-char-final-state)
+                       (org-scribe-msg 'capture-char-relationships)
+                       (org-scribe-msg 'capture-char-with-others)
+                       (org-scribe-msg 'capture-char-notes))
+       :empty-lines 1))))
 
-(defvar org-scribe-location-capture-templates
-  '(("l" "Location" entry
-     (file+function org-scribe-capture-location-file
-                    org-scribe--capture-goto-setting-section)
-     "* %^{Location Name}
+(defun org-scribe-location-capture-templates (&optional language)
+  "Return capture templates for location profiles.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
+  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
+    `(("l" ,(org-scribe-msg 'capture-loc-name) entry
+       (file+function org-scribe-capture-location-file
+                      org-scribe--capture-goto-setting-section)
+       ,(format "* %%^{%s}
 :PROPERTIES:
-:ID: %(org-id-new)
-:Type: %^{Type|City|Building|Room|Natural|Region|Country}
-:Importance: %^{Importance|Major|Supporting|Minor}
-:First-appearance: %^{First Appearance Chapter}
-:Climate: %^{Climate}
-:Population: %^{Population}
+:ID: %%(org-id-new)
+:Type: %%^{%s}
+:Importance: %%^{%s}
+:First-appearance: %%^{%s}
+:Climate: %%^{%s}
+:Population: %%^{%s}
 :END:
 
-** General Description
-%?
+** %s
+%%?
 
-** Geography
+** %s
 
-- Location ::
-- Terrain ::
-- Climate ::
-- Natural resources ::
+- %s
+- %s
+- %s
+- %s
 
-** Cultural Aspects & Society
+** %s
 
-- Language ::
-- Customs ::
-- Religion ::
-- Government ::
+- %s
+- %s
+- %s
+- %s
 
-** History
+** %s
 -
 
-** Notable Features
+** %s
 -
 
-** Importance in the Plot
+** %s
 -
 
-** Specific Places
+** %s
 -
 
-** Atmosphere & Mood
+** %s
 -
 
-** Map/Reference Image
+** %s
 -
 
-** Notes
+** %s
 - "
-     :empty-lines 1))
-  "Capture templates for location profiles.")
+                       (org-scribe-msg 'capture-loc-name-prompt)
+                       (org-scribe-msg 'capture-loc-type-prompt)
+                       (org-scribe-msg 'capture-loc-importance-prompt)
+                       (org-scribe-msg 'capture-loc-first-appearance-prompt)
+                       (org-scribe-msg 'capture-loc-climate-prompt)
+                       (org-scribe-msg 'capture-loc-population-prompt)
+                       (org-scribe-msg 'capture-loc-general-description)
+                       (org-scribe-msg 'capture-loc-geography)
+                       (org-scribe-msg 'capture-loc-location)
+                       (org-scribe-msg 'capture-loc-terrain)
+                       (org-scribe-msg 'capture-loc-climate)
+                       (org-scribe-msg 'capture-loc-natural-resources)
+                       (org-scribe-msg 'capture-loc-culture)
+                       (org-scribe-msg 'capture-loc-language)
+                       (org-scribe-msg 'capture-loc-customs)
+                       (org-scribe-msg 'capture-loc-religion)
+                       (org-scribe-msg 'capture-loc-government)
+                       (org-scribe-msg 'capture-loc-history)
+                       (org-scribe-msg 'capture-loc-notable-features)
+                       (org-scribe-msg 'capture-loc-importance-plot)
+                       (org-scribe-msg 'capture-loc-specific-places)
+                       (org-scribe-msg 'capture-loc-atmosphere)
+                       (org-scribe-msg 'capture-loc-map-reference)
+                       (org-scribe-msg 'capture-loc-notes))
+       :empty-lines 1))))
 
-(defvar org-scribe-object-capture-templates
-  '(("o" "Object" entry
-     (file org-scribe-capture-object-file)
-     "* %^{Object Name}
+(defun org-scribe-object-capture-templates (&optional language)
+  "Return capture templates for important objects.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
+  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
+    `(("o" ,(org-scribe-msg 'capture-obj-name) entry
+       (file org-scribe-capture-object-file)
+       ,(format "* %%^{%s}
 :PROPERTIES:
-:ID: %(org-id-new)
-:Type: %^{Type|Magical|Artifact|Weapon|Tool|Symbolic|Technology}
-:Owner: %^{Current Owner}
-:First-appearance: %^{First Appearance Chapter}
-:Status: %^{Status|Active|Lost|Destroyed|Hidden}
+:ID: %%(org-id-new)
+:Type: %%^{%s}
+:Owner: %%^{%s}
+:First-appearance: %%^{%s}
+:Status: %%^{%s}
 :END:
 
-*** Physical Description
-%?
+*** %s
+%%?
 
-*** Origin
+*** %s
 -
 
-*** Properties
+*** %s
 -
 
-*** Importance in the Plot
+*** %s
 -
 
-*** Object History
+*** %s
 -
 
-*** Symbolism
-- 
-
-*** Current Location
+*** %s
 -
 
-*** Rules & Limitations
+*** %s
 -
 
-*** Notes
+*** %s
+-
+
+*** %s
 - "
-     :empty-lines 1))
-  "Capture templates for important objects.")
+                       (org-scribe-msg 'capture-obj-name-prompt)
+                       (org-scribe-msg 'capture-obj-type-prompt)
+                       (org-scribe-msg 'capture-obj-owner-prompt)
+                       (org-scribe-msg 'capture-obj-first-appearance-prompt)
+                       (org-scribe-msg 'capture-obj-status-prompt)
+                       (org-scribe-msg 'capture-obj-physical-description)
+                       (org-scribe-msg 'capture-obj-origin)
+                       (org-scribe-msg 'capture-obj-properties)
+                       (org-scribe-msg 'capture-obj-importance-plot)
+                       (org-scribe-msg 'capture-obj-history)
+                       (org-scribe-msg 'capture-obj-symbolism)
+                       (org-scribe-msg 'capture-obj-current-location)
+                       (org-scribe-msg 'capture-obj-rules)
+                       (org-scribe-msg 'capture-obj-notes))
+       :empty-lines 1))))
 
-(defvar org-scribe-timeline-capture-templates
-  '(("t" "Timeline Event" entry
-     (file org-scribe-capture-timeline-file)
-     "* %^{Event Name}
+(defun org-scribe-timeline-capture-templates (&optional language)
+  "Return capture templates for timeline events.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
+  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
+    `(("t" ,(org-scribe-msg 'capture-tl-name) entry
+       (file org-scribe-capture-timeline-file)
+       ,(format "* %%^{%s}
 :PROPERTIES:
-:ID: %(org-id-new)
-:Type: %^{Type|Action|Revelation|Character|World|Backstory}
+:ID: %%(org-id-new)
+:Type: %%^{%s}
 :Relevance:
-:Date: %^{Date/Time in Story}
+:Date: %%^{%s}
 :Time:
 :Duration:
-:Characters: %^{Characters Involved}
-:Location: %^{Location}
-:Chapter: %^{Chapter(s)}
+:Characters: %%^{%s}
+:Location: %%^{%s}
+:Chapter: %%^{%s}
 :END:
 
-*** Description
-%?
+*** %s
+%%?
 
-*** Consequences
+*** %s
 -
 
-*** Connections
-- Links to:
+*** %s
+- %s
 
-*** Notes
+*** %s
 - "
-     :empty-lines 1))
-  "Capture templates for timeline events.")
+                       (org-scribe-msg 'capture-tl-name-prompt)
+                       (org-scribe-msg 'capture-tl-type-prompt)
+                       (org-scribe-msg 'capture-tl-date-prompt)
+                       (org-scribe-msg 'capture-tl-characters-prompt)
+                       (org-scribe-msg 'capture-tl-location-prompt)
+                       (org-scribe-msg 'capture-tl-chapter-prompt)
+                       (org-scribe-msg 'capture-tl-description)
+                       (org-scribe-msg 'capture-tl-consequences)
+                       (org-scribe-msg 'capture-tl-connections)
+                       (org-scribe-msg 'capture-tl-connections-hint)
+                       (org-scribe-msg 'capture-tl-notes))
+       :empty-lines 1))))
 
-(defvar org-scribe-plot-thread-capture-templates
-  '(("p" "Plot Thread" entry
-     (file+function org-scribe-capture-plot-thread-file
-                    org-scribe--capture-goto-plot-threads-section)
-     "** %^{Thread Name} %^{Type|Subplot|Main Plot|B-Plot|C-Plot|Thematic Thread}
+(defun org-scribe-plot-thread-capture-templates (&optional language)
+  "Return capture templates for plot threads.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
+  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
+    `(("p" ,(org-scribe-msg 'capture-pt-name) entry
+       (file+function org-scribe-capture-plot-thread-file
+                      org-scribe--capture-goto-plot-threads-section)
+       ,(format "** %%^{%s} %%^{%s}
 :PROPERTIES:
-:ID: %(org-id-new)
-:THREAD-TYPE: %\\2
-:STATUS: %^{Status|Emerging|Planned|In Progress|Needs Development|Complete}
-:Weight: %^{Weight|1.0|2.0|3.0|4.0|5.0}
+:ID: %%(org-id-new)
+:THREAD-TYPE: %%\\2
+:STATUS: %%^{%s}
+:Weight: %%^{%s}
 :FIRST-APPEARANCE:
 :END:
 
-*** Description
+*** %s
 
-%^{Brief description of this plot thread}
+%%^{%s}
 
-*** Connection to Main Plot
+*** %s
 
-%^{How does this thread connect to or support the main plot?}
+%%^{%s}
 
-*** Key Scenes
+*** %s
 
-- %?
+- %%?
 
-*** Resolution
+*** %s
 
-[How should this thread resolve?]
+%s
 
-*** Notes
+*** %s
 
-[Quick capture notes - can be messy]
+%s
 "
-     :empty-lines 1))
-  "Capture templates for plot threads.")
+                       (org-scribe-msg 'capture-pt-name-prompt)
+                       (org-scribe-msg 'capture-pt-type-prompt)
+                       (org-scribe-msg 'capture-pt-status-prompt)
+                       (org-scribe-msg 'capture-pt-weight-prompt)
+                       (org-scribe-msg 'capture-pt-description)
+                       (org-scribe-msg 'capture-pt-description-prompt)
+                       (org-scribe-msg 'capture-pt-connection-main)
+                       (org-scribe-msg 'capture-pt-connection-main-prompt)
+                       (org-scribe-msg 'capture-pt-key-scenes)
+                       (org-scribe-msg 'capture-pt-resolution)
+                       (org-scribe-msg 'capture-pt-resolution-hint)
+                       (org-scribe-msg 'capture-pt-notes)
+                       (org-scribe-msg 'capture-pt-notes-hint))
+       :empty-lines 1))))
 
 ;;; Capture Function
 
@@ -550,7 +698,7 @@ KEY is the template key to select directly; if nil, present the full menu."
 Automatically determines the appropriate notes file based on project structure."
   (interactive)
   (org-scribe--run-capture #'org-scribe-capture-target-file
-                           org-scribe-capture-templates))
+                           (org-scribe-capture-templates)))
 
 ;;;###autoload
 (defun org-scribe-capture-character ()
@@ -565,7 +713,7 @@ Creates a comprehensive character template with prompts for:
 - Relationships with other characters"
   (interactive)
   (org-scribe--run-capture #'org-scribe-capture-character-file
-                           org-scribe-character-capture-templates "c"))
+                           (org-scribe-character-capture-templates) "c"))
 
 ;;;###autoload
 (defun org-scribe-capture-location ()
@@ -580,7 +728,7 @@ Creates a comprehensive location template with prompts for:
 - Atmosphere and mood"
   (interactive)
   (org-scribe--run-capture #'org-scribe-capture-location-file
-                           org-scribe-location-capture-templates "l"))
+                           (org-scribe-location-capture-templates) "l"))
 
 ;;;###autoload
 (defun org-scribe-capture-object ()
@@ -595,7 +743,7 @@ Creates a comprehensive object template with prompts for:
 - Current location and limitations"
   (interactive)
   (org-scribe--run-capture #'org-scribe-capture-object-file
-                           org-scribe-object-capture-templates "o"))
+                           (org-scribe-object-capture-templates) "o"))
 
 ;;;###autoload
 (defun org-scribe-capture-timeline ()
@@ -609,7 +757,7 @@ Creates a comprehensive timeline event template with prompts for:
 - Type of event (action, revelation, etc.)"
   (interactive)
   (org-scribe--run-capture #'org-scribe-capture-timeline-file
-                           org-scribe-timeline-capture-templates "t"))
+                           (org-scribe-timeline-capture-templates) "t"))
 
 ;;;###autoload
 (defun org-scribe-capture-plot-thread ()
@@ -632,7 +780,7 @@ The template is intentionally minimal - capture the essence quickly,
 then elaborate later during planning or revision."
   (interactive)
   (org-scribe--run-capture #'org-scribe-capture-plot-thread-file
-                           org-scribe-plot-thread-capture-templates "p"))
+                           (org-scribe-plot-thread-capture-templates) "p"))
 
 ;;; Unified Capture Hook
 
