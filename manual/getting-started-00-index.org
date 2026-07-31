@@ -158,7 +158,7 @@ Explore all four writing modes and when to use each one.
 *You'll learn:*
 - Distraction-free mode (full immersion)
 - Focus mode (one scene at a time)
-- Project mode (navigation panels)
+- Navigate mode (navigation panels)
 - Editing mode (three-panel layout)
 - Customizing modes for your preferences
 

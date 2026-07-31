@@ -498,7 +498,7 @@ Change only if you have a specific reason!
 - ~s~ = Scene, ~c~ = Chapter, ~o~ = Open
 - ~m~ = Mode (write), ~f~ = Focus, ~e~ = Edit, ~v~ = naVigate, ~0~ = zero/reset
 - ~p~ = PoV, ~h~ = cHaracters, ~l~ = Locations, ~g~ = plot threads (Graph), ~j~ = Jump
-- ~w~ = Words, ~a~ = All counts, ~r~ = tRack, ~d~ = Dictionary, ~y~ = sYnonyms, ~x~ = thesaurus
+- ~w~ = Words, ~a~ = All counts, ~d~ = Dictionary, ~y~ = sYnonyms, ~x~ = thesaurus
 - ~n~ = Note, ~k~ = (capture) entity (K), ~L~ = Links, ~R~ = Relink, ~H~ = Health, ~W~ = Writing plan
 
 *Numbers are searches*:
@@ -772,7 +772,7 @@ New Scene:
   F8 F8 s → F8 F8 p → F8 F8 h → F8 F8 l → F8 F8 g → F8 F8 m
 
 Progress Check:
-  F8 F8 a → navigate → C-c C-c → F8 F8 r
+  F8 F8 a → navigate → C-c C-c
 
 Character Research:
   F8 F8 2 → select → C-c C-o → read → C-c &

@@ -30,7 +30,7 @@ By the end of this lesson, you'll have:
 
 Some modes work better with optional packages:
 - *All modes*: ~writeroom-mode~ (required for modes 1-2)
-- *Project mode*: ~treemacs~ and ~imenu-list~ (recommended)
+- *Navigate mode*: ~treemacs~ and ~imenu-list~ (recommended)
 - *Editing mode*: ~imenu-list~ and ~visual-fill-column~ (recommended)
 - *Theming*: ~consult~ and ~fontaine~ (optional but nice)
 
@@ -46,7 +46,7 @@ Don't worry if you don't have all of these - we'll explain which features need w
 |------------------+------+-------------------------------+-------------------------------|
 | Distraction-Free | ~m~    | Clean, focused writing        | Daily writing, first drafts   |
 | Focus Mode       | ~f~    | One section at a time         | Intensive scene work          |
-| Project Mode     | ~v~    | Navigation + writing          | Complex projects, jumping     |
+| Navigate Mode    | ~v~    | Navigation + writing          | Complex projects, jumping     |
 | Editing Mode     | ~e~    | Three-pane editing layout     | Revision, notes integration   |
 
 ** Mutual Exclusivity
@@ -301,7 +301,7 @@ No separate configuration needed!
 6. Press ~F8 F8 f~ to exit
 7. Full manuscript visible again
 
-* Mode 3: Project Mode
+* Mode 3: Navigate Mode
 
 ** What It Does
 
@@ -415,7 +415,7 @@ Perfect for:
 
 *Scenario*: Writing a scene, need to check character details.
 
-1. ~F8 F8 v~ (activate Project mode)
+1. ~F8 F8 v~ (activate Navigate mode)
 2. Left panel (treemacs) → click ~objects/characters.org~
 3. Character file opens in center
 4. Read character details
@@ -426,7 +426,7 @@ Perfect for:
 
 ** Dependencies
 
-Project mode *requires*:
+Navigate mode *requires*:
 - ~treemacs~ package
 - ~imenu-list~ package
 
@@ -661,7 +661,7 @@ START
   ├─ One scene needs intensive work? ──→ YES ──→ Focus Mode (f)
   │                                     NO ↓
   │
-  ├─ Jumping between files often? ──→ YES ──→ Project Mode (p)
+  ├─ Jumping between files often? ──→ YES ──→ Navigate Mode (v)
   │                                  NO ↓
   │
   └─ Serious revision with notes? ──→ YES ──→ Editing Mode (e)
@@ -689,7 +689,7 @@ START
 → Occasionally Focus mode for tough scenes
 
 *** "I need navigation"
-→ Project mode as default
+→ Navigate mode as default
 → Switch to Distraction-Free when actually writing
 
 *** "I'm a serious editor"
@@ -760,7 +760,7 @@ Let's practice using all four modes.
 
 1. ~F8 F8 m~ → Distraction-Free active
 2. ~F8 F8 v~ → Distraction-Free exits, Project activates
-3. ~F8 F8 f~ → Project exits, Focus activates
+3. ~F8 F8 f~ → Navigate exits, Focus activates
 4. ~F8 F8 e~ → Focus exits, Editing activates
 5. ~F8 F8 m~ → Editing exits, Distraction-Free activates
 6. ~F8 F8 m~ → Distraction-Free exits (toggle off)
@@ -783,7 +783,7 @@ Let's practice using all four modes.
 
 3. *Task*: Check character profile, then continue writing
    - *Mode choice*: ?
-   - *Answer*: Project (~v~) - use treemacs to open character file
+   - *Answer*: Navigate (~v~) - use treemacs to open character file
    - Do it!
 
 4. *Task*: Review Scene 1 with revision checklist
@@ -950,7 +950,7 @@ It's the most popular for daily writing because:
 
 - Distraction-Free (~m~) works anywhere
 - Focus (~f~) works in any org-mode file
-- Project (~v~) needs a project (any project.el project)
+- Navigate (~v~) needs a project (any project.el project)
 - Editing (~e~) works with any file (creates matching notes file)
 
 Best experience is within a proper writing project!
@@ -966,7 +966,7 @@ Best experience is within a proper writing project!
 
 This is intentional - modes are temporary environments!
 
-** "Why can't I have Project mode AND Distraction-Free at once?"
+** "Why can't I have Navigate mode AND Distraction-Free at once?"
 
 *Answer*: They conflict in their goals.
 
@@ -993,7 +993,7 @@ But you can:
 
 *Answer*: Modes gracefully handle missing packages.
 
-- Project mode (~v~): Shows warning, some features missing
+- Navigate mode (~v~): Shows warning, some features missing
 - Editing mode (~e~): Works but no imenu-list panel
 - Distraction-Free/Focus (~m~/~f~): Require writeroom-mode (show error)
 
@@ -1017,7 +1017,7 @@ This is advanced - stick with the four built-in modes initially!
 *Check*:
 1. Do you have required packages installed?
    - Distraction-Free/Focus need: ~writeroom-mode~
-   - Project needs: ~treemacs~ and ~imenu-list~
+   - Navigate needs: ~treemacs~ and ~imenu-list~
    - Editing needs: ~imenu-list~
 
 2. Are themes installed?
@@ -1026,7 +1026,7 @@ This is advanced - stick with the four built-in modes initially!
 
 3. Is your frame wide enough?
    - Editing mode needs ~120+ columns
-   - Project mode needs ~100+ columns
+   - Navigate mode needs ~100+ columns
    - Narrow terminal? Modes may look cramped
 
 ** "Exiting mode doesn't restore everything"
@@ -1053,13 +1053,13 @@ This is advanced - stick with the four built-in modes initially!
 - Make sure buffer is in ~org-mode~
 - Try from a deeper heading (not the document title)
 
-** "Project mode panels are too wide/narrow"
+** "Navigate mode panels are too wide/narrow"
 
 *Solution*:
 - Panels size is controlled by the packages themselves
 - For imenu-list: ~M-x customize-variable RET imenu-list-size~
 - For treemacs: ~M-x customize-variable RET treemacs-width~
-- Adjust and restart Project mode
+- Adjust and restart Navigate mode
 
 ** "Editing mode notes file opens in wrong place"
 
@@ -1098,7 +1098,7 @@ Fantastic work! You've completed Lesson 9. You now know:
 ✓ All four writing modes and their unique purposes
 ✓ Distraction-Free mode (~m~) for daily writing
 ✓ Focus mode (~f~) for intensive single-section work
-✓ Project mode (~v~) for navigation + writing
+✓ Navigate mode (~v~) for navigation + writing
 ✓ Editing mode (~e~) for revision with notes
 ✓ How modes are mutually exclusive (only one at a time)
 ✓ When to use each mode based on your task
@@ -1188,9 +1188,9 @@ What do I want to do?
 WRITE → m (Distraction-Free)
   └─ One scene needs work? → f (Focus)
 
-NAVIGATE → p (Project)
-  └─ Between files? → p
-  └─ Within file? → p (imenu-list panel)
+NAVIGATE → v (Navigate)
+  └─ Between files? → v
+  └─ Within file? → v (imenu-list panel)
 
 REVISE → e (Editing)
   └─ With notes? → e
@@ -1200,7 +1200,7 @@ REVISE → e (Editing)
 ** Essential Commands
 
 #+BEGIN_EXAMPLE
-Activate modes: F8 F8 + (m/f/p/e)
+Activate modes: F8 F8 + (m/f/v/e)
 Exit mode: F8 F8 + (same key) [toggles]
 Force exit all: (none needed - modes are well-behaved!)
 
@@ -1208,13 +1208,13 @@ Navigation in Focus mode:
   Widen: C-x n w (but this defeats the purpose!)
   Better: Exit Focus, navigate, re-enter Focus
 
-Resize panels (Project/Editing):
+Resize panels (Navigate/Editing):
   Customize variables (see Customization section)
 #+END_EXAMPLE
 
 * Summary
 
-Writing modes transform your Emacs environment to support different writing tasks. Distraction-Free mode creates a clean canvas for daily writing. Focus mode laser-focuses on one section. Project mode adds navigation for complex projects. Editing mode provides a professional revision environment with notes.
+Writing modes transform your Emacs environment to support different writing tasks. Distraction-Free mode creates a clean canvas for daily writing. Focus mode laser-focuses on one section. Navigate mode adds navigation for complex projects. Editing mode provides a professional revision environment with notes.
 
 The key to mastery is:
 1. Understanding what each mode does

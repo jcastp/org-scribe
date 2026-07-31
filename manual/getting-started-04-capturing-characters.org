@@ -122,7 +122,8 @@ Let's create a character profile using the capture template!
 From anywhere in your project:
 
 1. Press ~F8 F8~ (Hydra menu)
-2. Press ~h~ (for "cHaracter" - yes, the 'h' is a bit weird, but 'c' was taken!)
+2. Press ~k~ (Capture entity submenu)
+3. Press ~h~ (for "cHaracter" - yes, the 'h' is a bit weird, but 'c' was taken!)
 
 The menu closes and you see a prompt.
 

@@ -197,7 +197,7 @@ Before:                          After:
 
 *Alternative modes*:
 - Focus mode (~F8 F8~ then ~f~) - Current scene only
-- Project mode (~F8 F8~ then ~v~) - With navigation panel
+- Navigate mode (~F8 F8~ then ~v~) - With navigation panel
 - Normal mode - No special environment
 
 Choose what helps you concentrate best!
@@ -258,7 +258,7 @@ When inspiration strikes mid-writing, capture it quickly without leaving your ma
 
 You're writing and think: "Sam needs a sister!"
 
-*Don't stop writing.* Just press ~F8 F8~ then ~h~:
+*Don't stop writing.* Just press ~F8 F8~ then ~k~ (capture-entity submenu) then ~h~ (character):
 
 #+BEGIN_EXAMPLE
 Capture character template appears:
@@ -284,7 +284,7 @@ Fill in the minimum (name, role), save (~C-c C-c~), and you're back to writing.
 
 You're writing a scene in a coffee shop and realize you need more details:
 
-Press ~F8 F8~ then ~l~:
+Press ~F8 F8~ then ~k~ (capture-entity submenu) then ~l~ (location):
 
 #+BEGIN_EXAMPLE
 ** Downtown Coffee Shop
@@ -322,7 +322,7 @@ Captured! Now keep writing the current scene.
 
 "Wait, what day is this scene happening?"
 
-Press ~F8 F8~ then ~t~:
+Press ~F8 F8~ then ~k~ (capture-entity submenu) then ~t~ (timeline event):
 
 #+BEGIN_EXAMPLE
 ** Tuesday Morning - Coffee Shop Meeting
@@ -449,7 +449,7 @@ Then move to the next scene you're excited about.
 During your session:
 
 □ Write continuously
-□ Use quick captures for ideas (~F8 F8~ + ~h~/~l~/~n~/~t~)
+□ Use quick captures for ideas (~F8 F8 k~ + ~h~/~l~/~t~, or ~F8 F8 n~ for a general note)
 □ Minimal lookups - mark [CHECK] instead
 □ Leave TODO markers for revision
 □ Don't edit yesterday's work
@@ -577,7 +577,7 @@ If not using git:
 
 Exit your writing environment:
 
-1. Press ~F8 F8~ then ~x~ (exit writing mode)
+1. Press ~F8 F8~ then ~0~ (back to Normal - or press ~m~ again to toggle writing mode off)
 2. Your normal Emacs appears
 3. Close Emacs or switch to other work
 
@@ -1083,7 +1083,7 @@ MORNING (5 min)
 
 WRITING (__ min/hours)
 □ Write continuously
-□ Quick captures (F8 F8 h/l/n)
+□ Quick captures (F8 F8 k h/l, F8 F8 n for a note)
 □ Mark [TODO] for later
 □ No editing!
 
