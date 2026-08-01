@@ -57,11 +57,11 @@ Before we create timelines, let's understand the symbols they use.
 
 ** Character Timeline Symbols
 
-| Symbol | Meaning                         | Example                          |
-|--------+---------------------------------+----------------------------------|
-| ◆      | Point of View character         | Scene from Alice's perspective   |
-| ●      | Character present (not PoV)     | Bob appears but isn't PoV        |
-| (blank)| Character not in scene          | Charlie doesn't appear           |
+| Symbol  | Meaning                     | Example                        |
+|---------+-----------------------------+--------------------------------|
+| ◆       | Point of View character     | Scene from Alice's perspective |
+| ●       | Character present (not PoV) | Bob appears but isn't PoV      |
+| (blank) | Character not in scene      | Charlie doesn't appear         |
 
 ** Symbol Logic: PoV Takes Precedence
 
@@ -84,10 +84,10 @@ Timeline shows:
 
 Plot threads use simpler symbols:
 
-| Symbol | Meaning                  | Example                      |
-|--------+--------------------------+------------------------------|
-| ●      | Thread active in scene   | Main plot progresses         |
-| (blank)| Thread not in scene      | Romance subplot not present  |
+| Symbol  | Meaning                | Example                     |
+|---------+------------------------+-----------------------------|
+| ●       | Thread active in scene | Main plot progresses        |
+| (blank) | Thread not in scene    | Romance subplot not present |
 
 *No PoV distinction* - threads are either present or not.
 
@@ -405,11 +405,11 @@ Note there is no separate "Coverage: Good/Low", "Max gap", "Status", or "Recomme
 
 There are exactly three warning conditions, checked independently, so a single thread can show more than one at once:
 
-| Warning        | Criteria             | Fix                     |
-|-----------------+----------------------+-------------------------|
-| One-appearance | Exactly 1 scene       | Expand to 3+ or remove  |
-| Large gap      | More than 5 scenes between appearances | Add reminder scenes |
-| Low coverage   | Below 30% of all scenes | Add more development scenes |
+| Warning        | Criteria                               | Fix                         |
+|----------------+----------------------------------------+-----------------------------|
+| One-appearance | Exactly 1 scene                        | Expand to 3+ or remove      |
+| Large gap      | More than 5 scenes between appearances | Add reminder scenes         |
+| Low coverage   | Below 30% of all scenes                | Add more development scenes |
 
 ** Using the Report
 
@@ -898,19 +898,19 @@ PLOT THREAD TIMELINE:
 
 ** Health Report Commands
 
-| Command                    | Key       | What It Shows                  |
-|----------------------------+-----------+--------------------------------|
-| Plot thread health report  | ~F8 F8 L t~ | Full analysis with warnings    |
-| Plot thread statistics     | ~F8 F8 L S~ | Quick one-line summary         |
-| Timeline table             | ~C-c C-c~   | Visual timeline (on BEGIN line)|
+| Command                   | Key       | What It Shows                   |
+|---------------------------+-----------+---------------------------------|
+| Plot thread health report | ~F8 F8 L t~ | Full analysis with warnings     |
+| Plot thread statistics    | ~F8 F8 L S~ | Quick one-line summary          |
+| Timeline table            | ~C-c C-c~   | Visual timeline (on BEGIN line) |
 
 ** Warning Thresholds
 
-| Warning        | Threshold                | Recommended Fix        |
-|----------------+---------------------------+------------------------|
-| One-appearance | Exactly 1 scene           | Expand to 3+ or remove |
-| Large gap      | More than 5 scenes        | Add reminder scenes    |
-| Low coverage   | Below 30% of all scenes   | Add development scenes |
+| Warning        | Threshold               | Recommended Fix        |
+|----------------+-------------------------+------------------------|
+| One-appearance | Exactly 1 scene         | Expand to 3+ or remove |
+| Large gap      | More than 5 scenes      | Add reminder scenes    |
+| Low coverage   | Below 30% of all scenes | Add development scenes |
 
 ** Common Analysis Patterns
 
