@@ -454,10 +454,10 @@ As part of your daily writing routine:
 
 From the Hydra menu (~F8 F8~):
 
-| Key | Tool                | Speed  |
-|-----+---------------------+--------|
-| d   | RAE dictionary      | Medium |
-| y   | Synonyms (WordRef)  | Fast   |
+| Key | Tool               | Speed  |
+|-----+--------------------+--------|
+| d   | RAE dictionary     | Medium |
+| y   | Synonyms (WordRef) | Fast   |
 
 *Tip*: After a while, ~F8 F8 d~ becomes muscle memory!
 
@@ -694,14 +694,14 @@ Congratulations! You've learned how to use integrated language tools without lea
 
 ** Quick Reference Card
 
-| Task                      | Command          | Hydra      |
-|---------------------------+------------------+------------|
-| Spanish definition        | org-scribe-rae-api-lookup | F8 F8 d    |
-| Random word               | org-scribe-rae-api-random | M-x command |
-| Synonyms                  | org-scribe-sinonimo | F8 F8 y    |
-| Translation (if installed)| gt-do-translate  | (custom key) |
-| Close lookup window       | (in window) q    | -          |
-| Resize synonym window     | C-x } / C-x {    | -          |
+| Task                       | Command                   | Hydra        |
+|----------------------------+---------------------------+--------------|
+| Spanish definition         | org-scribe-rae-api-lookup | F8 F8 d      |
+| Random word                | org-scribe-rae-api-random | M-x command  |
+| Synonyms                   | org-scribe-sinonimo       | F8 F8 y      |
+| Translation (if installed) | gt-do-translate           | (custom key) |
+| Close lookup window        | (in window) q             | -            |
+| Resize synonym window      | C-x } / C-x {             | -            |
 
 ** Next Steps
 
