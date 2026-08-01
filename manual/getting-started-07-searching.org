@@ -72,8 +72,8 @@ The package provides four main search functions, each focusing on a different sc
 
 ** Overview Table
 
-| Search Type | Hydra Key | Command                    | Searches Property |
-|-------------+-----------+----------------------------+-------------------|
+| Search Type | Hydra Key | Command                       | Searches Property |
+|-------------+-----------+-------------------------------+-------------------|
 | PoV         | F8 F8 1   | ~org-scribe-org-find-pov~       | ~:PoV:~             |
 | Character   | F8 F8 2   | ~org-scribe-org-find-character~ | ~:Characters:~      |
 | Plot        | F8 F8 3   | ~org-scribe-org-find-plot~      | ~:Plot:~            |
@@ -1017,14 +1017,14 @@ Pressing RET or C-c C-o in results doesn't jump to scene.
 
 ** Search Keybindings
 
-| Key         | Search Type       | Searches Property |
-|-------------+-------------------+-------------------|
-| ~F8 F8 1~     | PoV               | ~:PoV:~             |
-| ~F8 F8 2~     | Character         | ~:Characters:~      |
-| ~F8 F8 3~     | Plot              | ~:Plot:~            |
-| ~F8 F8 4~     | Location          | ~:Location:~        |
-| ~F8 F8 5~     | TODO items        | TODO keywords     |
-| ~F8 F8 6~     | Edit/note markers | =*EDIT*=/=*NOTE*= text (rgrep) |
+| Key     | Search Type       | Searches Property            |
+|---------+-------------------+------------------------------|
+| ~F8 F8 1~ | PoV               | ~:PoV:~                        |
+| ~F8 F8 2~ | Character         | ~:Characters:~                 |
+| ~F8 F8 3~ | Plot              | ~:Plot:~                       |
+| ~F8 F8 4~ | Location          | ~:Location:~                   |
+| ~F8 F8 5~ | TODO items        | TODO keywords                |
+| ~F8 F8 6~ | Edit/note markers | =*EDIT*=/=*NOTE*= text (rgrep) |
 
 ** Results Buffer Navigation
 
@@ -1040,28 +1040,28 @@ Pressing RET or C-c C-o in results doesn't jump to scene.
 
 ** Healthy Coverage Targets
 
-| Element Type         | Recommended Coverage | Max Gap    |
-|----------------------+----------------------+------------|
-| Main Plot            | 60-80%               | 5 scenes   |
-| Major Subplot        | 30-50%               | 8 scenes   |
-| Minor Subplot        | 10-30%               | 10 scenes  |
-| Protagonist PoV      | 50-80%               | 8 scenes   |
-| Secondary PoV        | 20-40%               | 10 scenes  |
-| Love Interest Char   | 30-50%               | 8 scenes   |
-| Secondary Character  | 15-30%               | 10 scenes  |
-| Primary Location     | 10-20%               | N/A        |
-| Secondary Location   | 5-10%                | N/A        |
+| Element Type        | Recommended Coverage | Max Gap   |
+|---------------------+----------------------+-----------|
+| Main Plot           |               60-80% | 5 scenes  |
+| Major Subplot       |               30-50% | 8 scenes  |
+| Minor Subplot       |               10-30% | 10 scenes |
+| Protagonist PoV     |               50-80% | 8 scenes  |
+| Secondary PoV       |               20-40% | 10 scenes |
+| Love Interest Char  |               30-50% | 8 scenes  |
+| Secondary Character |               15-30% | 10 scenes |
+| Primary Location    |               10-20% | N/A       |
+| Secondary Location  |                5-10% | N/A       |
 
 ** Common Commands
 
-| Command                      | What It Does             |
-|------------------------------+--------------------------|
-| ~org-scribe-org-find-pov~         | Search by PoV            |
-| ~org-scribe-org-find-character~   | Search by character      |
-| ~org-scribe-org-find-plot~        | Search by plot thread    |
-| ~org-scribe-org-find-location~    | Search by location       |
-| ~org-scribe-search-todos-recursive~       | Find all TODO items      |
-| ~org-scribe-search-edits-recursive~       | Find inline edit/note markers |
+| Command                           | What It Does                  |
+|-----------------------------------+-------------------------------|
+| ~org-scribe-org-find-pov~           | Search by PoV                 |
+| ~org-scribe-org-find-character~     | Search by character           |
+| ~org-scribe-org-find-plot~          | Search by plot thread         |
+| ~org-scribe-org-find-location~      | Search by location            |
+| ~org-scribe-search-todos-recursive~ | Find all TODO items           |
+| ~org-scribe-search-edits-recursive~ | Find inline edit/note markers |
 
 * Tips for Better Searching
 
@@ -1084,16 +1084,16 @@ During revision, systematically search each element:
 ** 3. Create a Coverage Spreadsheet
 
 Run all searches and record:
-| Element           | Scenes | Percentage | Notes                    |
-|-------------------+--------+------------+--------------------------|
-| Main Plot         | 28     | 70%        | ✓ Good                   |
-| Romance Subplot   | 12     | 30%        | ✓ Good                   |
-| Family Subplot    | 8      | 20%        | ⚠ Large gap Sc 10-25     |
-| Alex PoV          | 25     | 63%        | ✓ Good                   |
-| Sam PoV           | 10     | 25%        | ✓ Good                   |
-| Alex (character)  | 30     | 75%        | ✓ Protagonist            |
-| Sam (character)   | 15     | 38%        | ✓ Love interest          |
-| Jordan (character)| 6      | 15%        | ⚠ Disappeared Act II     |
+| Element            | Scenes | Percentage | Notes                 |
+|--------------------+--------+------------+-----------------------|
+| Main Plot          |     28 |        70% | ✓ Good                |
+| Romance Subplot    |     12 |        30% | ✓ Good                |
+| Family Subplot     |      8 |        20% | ⚠ Large gap Sc 10-25 |
+| Alex PoV           |     25 |        63% | ✓ Good                |
+| Sam PoV            |     10 |        25% | ✓ Good                |
+| Alex (character)   |     30 |        75% | ✓ Protagonist        |
+| Sam (character)    |     15 |        38% | ✓ Love interest      |
+| Jordan (character) |      6 |        15% | ⚠ Disappeared Act II |
 
 This gives you a structural overview at a glance.
 
