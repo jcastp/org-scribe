@@ -79,11 +79,11 @@ Before capturing, let's see where characters live.
 Characters go in ~notes.org~ under the "Characters" heading:
 
 #+BEGIN_EXAMPLE
-* Characters
-** Protagonist: [Name]
+ * Characters
+ ** Protagonist: [Name]
    [Your character details]
 
-** Supporting Character: [Name]
+ ** Supporting Character: [Name]
    [Your character details]
 #+END_EXAMPLE
 
@@ -143,16 +143,19 @@ The template asks for key information. Fill each prompt:
 1. *Role*: Choose from Protagonist, Antagonist, Supporting, Minor
    - Example: ~Protagonist~
 
-2. *Age*: Character's age
+2. *Weight*: How prominently this character should be ordered relative to others (~1.0~–~5.0~, lower = more prominent)
+   - Example: ~1.0~ for the protagonist
+
+3. *Age*: Character's age
    - Example: ~28~
 
-3. *Gender*: Character's gender/pronouns
+4. *Gender*: Character's gender/pronouns
    - Example: ~Non-binary (they/them)~
 
-4. *Occupation*: What they do for a living
+5. *Occupation*: What they do for a living
    - Example: ~Freelance graphic designer~
 
-5. *First Appearance Chapter*: When they first appear
+6. *First Appearance Chapter*: When they first appear
    - Example: ~Chapter 1~ or ~Opening~
 
 Press Enter after each prompt.
@@ -166,6 +169,7 @@ After the last prompt, you'll see a complete character profile template:
 :PROPERTIES:
 :ID: char-alex-rivera-20251116-001
 :Role: Protagonist
+:Weight: 1.0
 :Age: 28
 :Gender: Non-binary (they/them)
 :Occupation: Freelance graphic designer
@@ -223,8 +227,6 @@ After the last prompt, you'll see a complete character profile template:
 -
 #+END_EXAMPLE
 
-*Wow!* That's a complete character profile structure!
-
 ** Step 5: Save and File
 
 The capture is automatically filed to the correct location:
@@ -243,6 +245,7 @@ Let's explore each section and what to put in it.
 :PROPERTIES:
 :ID: char-alex-rivera-20251116-001
 :Role: Protagonist
+:Weight: 1.0
 :Age: 28
 :Gender: Non-binary (they/them)
 :Occupation: Freelance graphic designer
@@ -270,7 +273,7 @@ Your character's story role:
 - *Supporting*: Important to the story, helps/hinders protagonist
 - *Minor*: Appears briefly, serves specific purpose
 
-*** :Weight: - Display order
+*** ~:Weight:~ - Display order
 
 Controls the display order of characters in timelines and reports.
 
@@ -590,30 +593,19 @@ Instead of typing character names, use the menu system!
 
 Open your manuscript (story.org or novel.org) and put cursor on a scene heading.
 
-** Step 2: Open Character Linking Menu
+** Step 2: Set PoV Character
+
+From the main Hydra menu, press ~p~ ("set PoV") directly — this is a top-level Tag Scene action, not a submenu:
 
 1. Press ~F8 F8~ (Hydra menu)
-2. Press ~C~ (capital C - for Character submenu)
-
-You'll see the character linking submenu:
-#+BEGIN_EXAMPLE
-^Character Linking^
-_p_: Set PoV character      _l_: Link scene characters
-_c_: Set scene characters   _L_: Link all scenes
-_j_: Jump to PoV char       _i_: Add IDs to characters
-_s_: Setup linking system   _q_: Back to main menu
-#+END_EXAMPLE
-
-** Step 3: Set PoV Character
-
-Press ~p~ (for "Set PoV character")
+2. Press ~p~ (Set PoV character)
 
 You'll see a completion menu with all your characters:
 #+BEGIN_EXAMPLE
 Set PoV character: [Alex Rivera] [Sam Chen] [Jordan Lee]
 #+END_EXAMPLE
 
-** Step 4: Select Character
+** Step 3: Select Character
 
 Start typing the name (e.g., "Alex") and press Tab or Enter to select.
 
@@ -866,12 +858,12 @@ Relationships for Alice Rivera:
 
 View complete relationship table for the entire project:
 
-| Character    | Related To  | Type   |
-|--------------+-------------+--------|
-| Alice Rivera | Sam Chen    | mentor |
-| Alice Rivera | Jordan Lee  | rival  |
-| Sam Chen     | Alice Rivera| mentee |
-| Jordan Lee   | Alice Rivera| rival  |
+| Character    | Related To   | Type   |
+|--------------+--------------+--------|
+| Alice Rivera | Sam Chen     | mentor |
+| Alice Rivera | Jordan Lee   | rival  |
+| Sam Chen     | Alice Rivera | mentee |
+| Jordan Lee   | Alice Rivera | rival  |
 
 Note: there is no dynamic-block/graph-visualization feature for relationships (no Graphviz/dot, ASCII-tree, or filterable network diagrams) — the two views above (a single character's list and the project-wide table) are the only display options. Relationships also no longer track a strength (1-5) or sentiment (positive/negative/neutral) value, only a directed source → target → type triple; if you want to note intensity or valence, put it in the relationship *type* itself (e.g. "close-ally" vs "ally") or in prose elsewhere on the character's heading.
 
@@ -1050,7 +1042,7 @@ How to use character features while writing:
 
 *Yes!* The package includes batch conversion:
 
-- ~F8 F8 R~ (capital L) links all scenes automatically
+- ~F8 F8 R~ (relink project) links all scenes automatically
 - Scans your manuscript for character names
 - Converts plain text to ID links
 - One command, entire manuscript updated
@@ -1062,7 +1054,7 @@ How to use character features while writing:
 1. Go to character profile
 2. Change the heading (the name)
 3. ID links still work (they use the ID, not the name!)
-4. Press ~F8 F8 U~ to update the links.
+4. Press ~F8 F8 R~ (relink project) to update the links.
 5. All scenes will show now the new name
 
 *No need to update each scene manually!*
@@ -1200,45 +1192,45 @@ The more detailed your character profiles, the more consistent and vivid your ch
 
 ** Character Commands
 
-| Command                  | Key           | What It Does                    |
-|--------------------------+---------------+---------------------------------|
-| Capture character        | ~F8 F8 k h~     | Create character profile        |
-| Set PoV character        | ~F8 F8 p~   | Select PoV from menu            |
-| Set scene characters     | ~F8 F8 h~   | Multi-select characters         |
-| Jump to PoV character    | ~F8 F8 j~   | Go to PoV profile               |
-| Add relationship         | ~F8 F8 L a~   | Add structured relationship     |
-| Remove relationship      | ~F8 F8 L x~   | Remove a relationship           |
-| View relationships       | ~F8 F8 L v~   | Show character's relationships  |
-| View all relationships   | ~F8 F8 L V~   | Show all project relationships  |
-| Setup relationships      | ~F8 F8 L r~   | Initialize relationship system  |
-| Search by character      | ~F8 F8 2~     | Find all scenes with character  |
-| Search by PoV            | ~F8 F8 1~     | Find scenes by PoV              |
-| Follow link              | ~C-c C-o~     | Jump to linked character        |
-| Return from link         | ~C-c &~       | Return to previous location     |
-| Generate char timeline   | ~C-c C-c~     | Update timeline (on block)      |
+| Command                | Key       | What It Does                   |
+|------------------------+-----------+--------------------------------|
+| Capture character      | ~F8 F8 k h~ | Create character profile       |
+| Set PoV character      | ~F8 F8 p~   | Select PoV from menu           |
+| Set scene characters   | ~F8 F8 h~   | Multi-select characters        |
+| Jump to PoV character  | ~F8 F8 j~   | Go to PoV profile              |
+| Add relationship       | ~F8 F8 L a~ | Add structured relationship    |
+| Remove relationship    | ~F8 F8 L x~ | Remove a relationship          |
+| View relationships     | ~F8 F8 L v~ | Show character's relationships |
+| View all relationships | ~F8 F8 L V~ | Show all project relationships |
+| Setup relationships    | ~F8 F8 L r~ | Initialize relationship system |
+| Search by character    | ~F8 F8 2~   | Find all scenes with character |
+| Search by PoV          | ~F8 F8 1~   | Find scenes by PoV             |
+| Follow link            | ~C-c C-o~   | Jump to linked character       |
+| Return from link       | ~C-c &~     | Return to previous location    |
+| Generate char timeline | ~C-c C-c~   | Update timeline (on block)     |
 
 ** Character Template Sections
 
-| Section                 | Fill When       | Purpose                          |
-|-------------------------+-----------------+----------------------------------|
-| Properties              | During capture  | ID, role, age, gender, job       |
-| Physical Description    | Planning        | Appearance consistency           |
-| Personality             | Planning        | Core traits, strengths, flaws    |
-| Background              | Planning        | History, formative events        |
-| GMC                     | Planning        | Goals, motivation, conflict      |
-| Character Arc           | Planning        | Journey from start to end        |
-| Relationships           | While writing   | Connections to other characters  |
-| Notes                   | Anytime         | Voice, reminders, ideas          |
+| Section              | Fill When      | Purpose                         |
+|----------------------+----------------+---------------------------------|
+| Properties           | During capture | ID, role, age, gender, job      |
+| Physical Description | Planning       | Appearance consistency          |
+| Personality          | Planning       | Core traits, strengths, flaws   |
+| Background           | Planning       | History, formative events       |
+| GMC                  | Planning       | Goals, motivation, conflict     |
+| Character Arc        | Planning       | Journey from start to end       |
+| Relationships        | While writing  | Connections to other characters |
+| Notes                | Anytime        | Voice, reminders, ideas         |
 
 ** Profile Depth Guide
 
-| Character Type  | Profile Level | Time Needed    |
-|-----------------+---------------+----------------|
-| Protagonist     | Full          | 30-60 minutes  |
-| Antagonist      | Full          | 30-60 minutes  |
-| Major Support   | Medium        | 15-30 minutes  |
-| Minor Support   | Minimal       | 5-10 minutes   |
-| Background      | None          | 0 minutes      |
+| Character Type | Profile Level | Time Needed   |
+|----------------+---------------+---------------|
+| Protagonist    | Full          | 30-60 minutes |
+| Antagonist     | Full          | 30-60 minutes |
+| Major Support  | Medium        | 15-30 minutes |
+| Minor Support  | Minimal       | 5-10 minutes  |
+| Background     | None          | 0 minutes     |
 
 ** Character Timeline Symbols
 
