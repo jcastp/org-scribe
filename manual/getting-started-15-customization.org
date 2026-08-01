@@ -613,14 +613,14 @@ Edit ~novel.org.template~ or ~story.org.template~:
 #+DATE: ${DATE}
 #+STARTUP: overview
 
-* Project Goals
+,* Project Goals
 
 - *Target word count*: 80,000 words
 - *Deadline*: [Add your deadline]
 - *Daily goal*: 1,000 words
 - *Genre*: [Your genre]
 
-* The Manuscript
+,* The Manuscript
 ...
 #+END_EXAMPLE
 
@@ -664,15 +664,15 @@ For novels, add a new planning file:
 #+AUTHOR: ${AUTHOR}
 #+DATE: ${DATE}
 
-* Protagonist Motivations
+,* Protagonist Motivations
 
-** External Goals
+,** External Goals
 What they want in the world
 
-** Internal Needs
+,** Internal Needs
 What they need to grow
 
-* Antagonist Motivations
+,* Antagonist Motivations
 ...
 #+END_EXAMPLE
 
@@ -817,10 +817,10 @@ Exclude sections from word count using tags:
 Usage in manuscript:
 
 #+BEGIN_EXAMPLE
-*** Scene to Exclude    :noexport:
+,*** Scene to Exclude    :noexport:
 This won't be counted!
 
-*** Alternate Version   :draft:
+,*** Alternate Version   :draft:
 Also not counted.
 #+END_EXAMPLE
 

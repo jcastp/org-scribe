@@ -263,7 +263,7 @@ You're writing and think: "Sam needs a sister!"
 #+BEGIN_EXAMPLE
 Capture character template appears:
 
-* Sarah Chen
+,* Sarah Chen
 :PROPERTIES:
 :ID: char-sarah-chen-20251116-001
 :Role: Sam's older sister
@@ -279,7 +279,7 @@ Capture character template appears:
 :RelationshipsData:
 :END:
 
-** Physical Description
+,** Physical Description
 - Height ::
 - Build ::
 ...
@@ -296,7 +296,7 @@ You're writing a scene in a coffee shop and realize you need more details:
 Press ~F8 F8~ then ~k~ (capture-entity submenu) then ~l~ (location):
 
 #+BEGIN_EXAMPLE
-* Downtown Coffee Shop
+,* Downtown Coffee Shop
 :PROPERTIES:
 :ID: loc-downtown-coffee-shop-20251116-001
 :Type: Business
@@ -306,7 +306,7 @@ Press ~F8 F8~ then ~k~ (capture-entity submenu) then ~l~ (location):
 :Population:
 :END:
 
-** General Description
+,** General Description
 Check local coffee shops for authentic details - need to describe the
 espresso machine, wall art, seating arrangement.
 ...
@@ -323,7 +323,7 @@ Mid-scene, you realize: "The mysterious package should contain her mother's old 
 Press ~F8 F8~ then ~n~ (general note). This is a plain TODO entry, filed under a "Notes" heading in your project's notes file - no properties drawer, just a timestamp and your text:
 
 #+BEGIN_EXAMPLE
-** TODO Package Contents
+,** TODO Package Contents
    [2025-11-16 Sun]
    The package Sam receives in chapter 3 should contain letters from Alex's
    mother, written before she died. This ties into the mystery subplot.
@@ -339,7 +339,7 @@ Captured! Now keep writing the current scene.
 Press ~F8 F8~ then ~k~ (capture-entity submenu) then ~t~ (timeline event):
 
 #+BEGIN_EXAMPLE
-* Tuesday Morning - Coffee Shop Meeting
+,* Tuesday Morning - Coffee Shop Meeting
 :PROPERTIES:
 :ID: 20251116123456
 :Type:
@@ -352,7 +352,7 @@ Press ~F8 F8~ then ~k~ (capture-entity submenu) then ~t~ (timeline event):
 :Chapter:
 :END:
 
-*** Notes
+,*** Notes
 This is 2 days after the opening scene. Alex has been avoiding the office.
 #+END_EXAMPLE
 
@@ -438,7 +438,7 @@ You're mid-scene and don't know what happens next:
 #+BEGIN_EXAMPLE
 [SCENE INCOMPLETE - Pick up after the confrontation]
 
-*** Next Scene - The Aftermath
+,*** Next Scene - The Aftermath
 #+END_EXAMPLE
 
 Write what you *do* know, then return to the gap.
@@ -701,15 +701,15 @@ Look through notes you captured during the week:
 Set goals for the coming week:
 
 #+BEGIN_EXAMPLE
-* Week of 2025-11-17
+,* Week of 2025-11-17
 
-** Goals
+,** Goals
 - Complete Chapter 3 (3 scenes remaining)
 - Start Chapter 4
 - Target: 2,500 words total
 - Focus: Develop Sam's backstory
 
-** Specific Tasks
+,** Specific Tasks
 - [ ] Finish coffee shop confrontation scene
 - [ ] Write Sam's revelation scene
 - [ ] Write Alex's reaction scene
@@ -1016,24 +1016,24 @@ Examples:
 Write your custom workflow in your project's README or notes:
 
 #+BEGIN_EXAMPLE
-* My Writing Workflow
+,* My Writing Workflow
 
-** Morning (X minutes)
+,** Morning (X minutes)
 - Step 1
 - Step 2
 - Step 3
 
-** Active Writing
+,** Active Writing
 - Goal: X words OR X time
 - Tools to use: [list]
 - Things to avoid: [list]
 
-** Evening (X minutes)
+,** Evening (X minutes)
 - Step 1
 - Step 2
 - Step 3
 
-** Weekly (if applicable)
+,** Weekly (if applicable)
 - Day: [when]
 - Activities: [what]
 #+END_EXAMPLE

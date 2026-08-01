@@ -123,7 +123,7 @@ Your template already includes a timeline section!
 3. You should see:
 
 #+BEGIN_EXAMPLE
-** Character Timeline
+,** Character Timeline
 
 This table shows which characters appear in which scenes.
 
@@ -233,7 +233,7 @@ Plot thread timelines work the same way but show story threads instead of charac
 In your manuscript, search for "Plot Thread Timeline" or add:
 
 #+BEGIN_EXAMPLE
-** Plot Thread Timeline
+,** Plot Thread Timeline
 
 This table shows which plot threads are active in which scenes.
 
@@ -359,22 +359,22 @@ This is what the report actually generates - each thread gets a status symbol (�
 #+DATE: 2025-11-16 14:30
 #+STARTUP: overview
 
-* Summary
+,* Summary
 
 - Total plot threads: 3
 - Total scenes: 12
 - Scenes with plot threads: 12
 
-* Thread Details
+,* Thread Details
 
-** ✓ Main Plot
+,** ✓ Main Plot
 
 - ID: 20251116-abcd1234
 - Scenes: 8 of 12 (66.7%)
 - First appearance: Scene 1 - Opening (Chapter: Chapter 1)
 - Last appearance: Scene 12 - Climax (Chapter: Chapter 3)
 
-** ⚠️ Romance Subplot
+,** ⚠️ Romance Subplot
 
 - ID: 20251116-efgh5678
 - Scenes: 4 of 12 (33.3%)
@@ -384,7 +384,7 @@ This is what the report actually generates - each thread gets a status symbol (�
 *Warnings:*
 - ⚠️ Gap of 6 scenes
 
-** ⚠️ Mystery Thread
+,** ⚠️ Mystery Thread
 
 - ID: 20251116-ijkl9012
 - Scenes: 2 of 12 (16.7%)
@@ -394,7 +394,7 @@ This is what the report actually generates - each thread gets a status symbol (�
 *Warnings:*
 - ⚠️ Low coverage (16.7%)
 
-* Scenes Without Plot Threads
+,* Scenes Without Plot Threads
 
 All scenes have Plot properties assigned.
 #+END_EXAMPLE

@@ -124,25 +124,25 @@ A new buffer opens with the word definition formatted in Org-mode. You'll see:
 #+BEGIN_EXAMPLE
 #+TITLE: escribir
 
-* Etimología
+,* Etimología
 Del lat. scribĕre.
 
-* Definiciones
+,* Definiciones
 
-** 1. /verbo transitivo/
+,** 1. /verbo transitivo/
 Representar las palabras o las ideas con letras u otros signos trazados en papel u otra superficie.
 
-*** Sinónimos: redactar, anotar, inscribir
+,*** Sinónimos: redactar, anotar, inscribir
 
-** 2. /verbo transitivo/
+,** 2. /verbo transitivo/
 Componer libros, discursos, etc.
 
-*** Sinónimos: componer, crear, redactar
+,*** Sinónimos: componer, crear, redactar
 
-** 3. /verbo intransitivo/
+,** 3. /verbo intransitivo/
 Comunicarse por carta con alguien.
 
-* Conjugaciones
+,* Conjugaciones
 
 INDICATIVO:
   presente:
@@ -188,9 +188,9 @@ Let's practice:
 If the word isn't in the dictionary, you'll see a "not found" heading and a list of suggestions. Unlike the definition headings shown above (~Etimología~, ~Definiciones~, etc., which are always in Spanish - they describe the dictionary's own content), this message is one of org-scribe's own translatable UI strings, so its wording follows your ~org-scribe-message-language~ setting (default: English):
 
 #+BEGIN_EXAMPLE
-* Word not found: buskrar
+,* Word not found: buskrar
 
-** Suggestions:
+,** Suggestions:
 - buscar
 - busqué
 - buscará
@@ -199,9 +199,9 @@ If the word isn't in the dictionary, you'll see a "not found" heading and a list
 With ~(setq org-scribe-message-language 'es)~, the same lookup instead shows:
 
 #+BEGIN_EXAMPLE
-* Palabra no encontrada: buskrar
+,* Palabra no encontrada: buskrar
 
-** Sugerencias:
+,** Sugerencias:
 - buscar
 - busqué
 - buscará

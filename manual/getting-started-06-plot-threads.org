@@ -292,16 +292,16 @@ What's at risk if this plot fails or isn't resolved?
 ** Example: Main Plot
 
 #+BEGIN_EXAMPLE
-** Overview
+,** Overview
 
-*** Premise
+,*** Premise
 Alex Rivera must uncover who's sabotaging the city's water supply before
 the contamination spreads citywide.
 
-*** Central Question
+,*** Central Question
 Who is behind the sabotage, and why are they targeting the water supply?
 
-*** Stakes
+,*** Stakes
 If Alex fails:
 - Thousands could be poisoned
 - The city descends into panic and chaos
@@ -312,16 +312,16 @@ If Alex fails:
 ** Example: Romance Subplot
 
 #+BEGIN_EXAMPLE
-** Overview
+,** Overview
 
-*** Premise
+,*** Premise
 Alex and Sam navigate a complicated relationship while working together
 on the investigation.
 
-*** Central Question
+,*** Central Question
 Can Alex learn to trust and open up to Sam despite past betrayals?
 
-*** Stakes
+,*** Stakes
 If this fails:
 - Alex remains emotionally isolated
 - Sam gets hurt again
@@ -357,15 +357,15 @@ Most plot threads follow a beginning-middle-end arc:
 ** Example: Main Plot Arc
 
 #+BEGIN_EXAMPLE
-** Development Arc
+,** Development Arc
 
-*** Beginning (Chapters 1-3)
+,*** Beginning (Chapters 1-3)
 - Scene 1: Alex notices strange readings in water quality report (inciting incident)
 - Scene 4: First victim hospitalized with mysterious illness
 - Scene 7: Alex discovers tampering evidence at treatment plant
 - End of Act I: Alex realizes this is deliberate sabotage, not accident
 
-*** Middle (Chapters 4-9)
+,*** Middle (Chapters 4-9)
 - Scene 12: Second contamination site found - pattern emerges
 - Scene 18: Alex identifies possible suspect (red herring)
 - Scene 24: Suspect cleared, back to square one (midpoint crisis)
@@ -373,7 +373,7 @@ Most plot threads follow a beginning-middle-end arc:
 - Scene 33: Alex's investigation puts them in danger - first attack
 - Scene 38: Major revelation: saboteur is someone Alex knows
 
-*** End (Chapters 10-12)
+,*** End (Chapters 10-12)
 - Scene 42: Alex confronts saboteur (climax)
 - Scene 44: Truth revealed: motivation was revenge for past injustice
 - Scene 45: Water supply secured, saboteur arrested
@@ -414,22 +414,22 @@ List the most important scenes for this plot thread.
 Simple list with scene references:
 
 #+BEGIN_EXAMPLE
-** Key Scenes
+,** Key Scenes
 
-*** Introduction
+,*** Introduction
 - Scene 1 - Strange Readings (inciting incident)
 
-*** Rising Action
+,*** Rising Action
 - Scene 7 - Evidence of Tampering (confirmation)
 - Scene 18 - False Lead (red herring)
 - Scene 24 - Pattern Discovery (breakthrough)
 - Scene 33 - First Attack (personal stakes)
 
-*** Climax
+,*** Climax
 - Scene 38 - Identity Revealed (major twist)
 - Scene 42 - Confrontation (climax)
 
-*** Resolution
+,*** Resolution
 - Scene 45 - Aftermath (resolution)
 - Scene 46 - Reflection (denouement)
 #+END_EXAMPLE
@@ -471,12 +471,12 @@ How does this plot thread conclude?
 ** Example: Main Plot Resolution
 
 #+BEGIN_EXAMPLE
-** Resolution
+,** Resolution
 
-*** Type
+,*** Type
 Definitive - the mystery is solved and saboteur caught.
 
-*** Outcome
+,*** Outcome
 Saboteur is revealed to be Marcus Chen, whose family lost everything when
 Alex's agency approved the development project 10 years ago. The contamination
 was revenge, but also an attempt to expose ongoing corruption.
@@ -486,13 +486,13 @@ investigation into the original development project, finding evidence of
 actual wrongdoing. Justice is served, but Alex realizes the system failed
 Marcus first.
 
-*** Timing
+,*** Timing
 - Revelation: Scene 38 (Chapter 10, end)
 - Confrontation: Scene 42 (Chapter 11, climax)
 - Legal resolution: Scene 45 (Chapter 12)
 - Emotional resolution: Scene 46 (final scene)
 
-*** Satisfaction
+,*** Satisfaction
 - Mystery solved: YES (who, why, how all answered)
 - Stakes addressed: YES (water supply secured, truth exposed)
 - Thematic payoff: YES (justice isn't simple, systems need reform)
@@ -502,22 +502,22 @@ Marcus first.
 ** Example: Romance Subplot Resolution
 
 #+BEGIN_EXAMPLE
-** Resolution
+,** Resolution
 
-*** Type
+,*** Type
 Definitive - relationship status clear, but future open.
 
-*** Outcome
+,*** Outcome
 Alex and Sam confess their feelings (Scene 43) after the climax. They
 acknowledge the relationship won't be easy (both have trust issues), but
 commit to trying. Story ends with them together, hopeful but realistic.
 
-*** Timing
+,*** Timing
 - Emotional breakthrough: Scene 40 (Alex vulnerable moment)
 - Confession: Scene 43 (post-climax, Act III)
 - Final scene together: Scene 46 (hand-holding, looking forward)
 
-*** Satisfaction
+,*** Satisfaction
 - Will-they-won't-they answered: YES (they will)
 - Character arcs complete: YES (Alex learned to trust, Sam learned patience)
 - Thematic resonance: YES (connection vs. isolation theme)
@@ -541,23 +541,23 @@ Writer notes for tracking and continuity.
 ** Example
 
 #+BEGIN_EXAMPLE
-** Notes
+,** Notes
 
-*** Inspiration
+,*** Inspiration
 Loosely inspired by Flint water crisis, but fictionalized. Research:
 environmental crime, water treatment systems, investigative journalism.
 
-*** Thematic Connections
+,*** Thematic Connections
 - Connects to "systems vs. individuals" theme
 - Parallels Alex's personal arc (trust in institutions broken)
 - Water as symbol: life, purity, contamination mirrors character corruption
 
-*** Challenges
+,*** Challenges
 - Risk of being too preachy about environmental issues
 - Balance sympathy for saboteur without excusing harm
 - Make water treatment science clear but not boring
 
-*** Scenes Developing This Plot
+,*** Scenes Developing This Plot
 (Update as I write)
 - ✓ Scene 1 - Introduction
 - ✓ Scene 4 - First victim
@@ -569,13 +569,13 @@ environmental crime, water treatment systems, investigative journalism.
 - TODO: Scene 38 - Identity reveal
 - TODO: Scene 42 - Climax confrontation
 
-*** Alternative Endings Considered
+,*** Alternative Endings Considered
 1. Saboteur dies (too dark, no moral complexity)
 2. Saboteur escapes (unsatisfying, no closure)
 3. Alex joins saboteur (too extreme for character)
 4. CHOSEN: Alex brings to justice but validates grievance
 
-*** Revision Reminders
+,*** Revision Reminders
 - First draft: focus on mystery mechanics
 - Second draft: deepen saboteur's motivation (add flashback?)
 - Polish: verify water treatment details are accurate
@@ -609,7 +609,7 @@ An ID is automatically generated using ~%(org-id-new)~ - you don't need to do an
 The template has a ~Description~ section. Write a brief description:
 
 #+BEGIN_EXAMPLE
-*** Description
+,*** Description
 
 Alex Rivera must uncover who's sabotaging the city's water supply before
 the contamination spreads citywide. The investigation reveals corruption
@@ -621,7 +621,7 @@ and forces Alex to question the system they've trusted.
 Fill in how this thread connects to the main plot:
 
 #+BEGIN_EXAMPLE
-*** Connection to Main Plot
+,*** Connection to Main Plot
 
 This IS the main plot. All other threads intersect with or support this
 central mystery investigation.
@@ -632,7 +632,7 @@ central mystery investigation.
 List the scenes where this thread appears or will appear:
 
 #+BEGIN_EXAMPLE
-*** Key Scenes
+,*** Key Scenes
 
 - Scene 1 - Strange readings (inciting incident)
 - Scene 7 - Evidence of tampering
@@ -647,7 +647,7 @@ List the scenes where this thread appears or will appear:
 Plan how the thread resolves:
 
 #+BEGIN_EXAMPLE
-*** Resolution
+,*** Resolution
 
 Saboteur is caught and mystery solved. However, investigation reveals
 systemic corruption that led to the sabotage. Alex must decide whether
@@ -659,7 +659,7 @@ to expose the system that failed the saboteur's family years ago.
 Add any quick notes:
 
 #+BEGIN_EXAMPLE
-*** Notes
+,*** Notes
 
 - Research water treatment systems
 - Make sure saboteur's motivation is sympathetic
@@ -684,7 +684,7 @@ The entry is automatically saved as a level-2 heading under "Plot Threads" with:
 Open your plot file and find your new plot thread entry. It should be a level-2 heading with an ID property:
 
 #+BEGIN_EXAMPLE
-** Main Mystery - Water Sabotage Main Plot
+,** Main Mystery - Water Sabotage Main Plot
 :PROPERTIES:
 :ID: 20251124-abcd1234
 :THREAD-TYPE: Main Plot
@@ -808,7 +808,7 @@ Just separate with commas.
 
 Before:
 #+BEGIN_EXAMPLE
-*** Scene 12 - Discovery at Second Site
+,*** Scene 12 - Discovery at Second Site
 :PROPERTIES:
 :PoV: [[id:char-alex-001][Alex]]
 :Characters: [[id:char-alex-001][Alex]], [[id:char-sam-002][Sam]]
@@ -819,7 +819,7 @@ Before:
 
 After (with menu):
 #+BEGIN_EXAMPLE
-*** Scene 12 - Discovery at Second Site
+,*** Scene 12 - Discovery at Second Site
 :PROPERTIES:
 :PoV: [[id:char-alex-001][Alex]]
 :Characters: [[id:char-alex-001][Alex]], [[id:char-sam-002][Sam]]
@@ -955,16 +955,16 @@ A buffer opens showing ALL scenes with that plot thread:
 #+BEGIN_EXAMPLE
 Results for plot thread "Main Mystery - Water Sabotage":
 
-*** Scene 1 - Strange Readings
+,*** Scene 1 - Strange Readings
     Chapter 1: The Beginning
 
-*** Scene 4 - First Victim
+,*** Scene 4 - First Victim
     Chapter 1: The Beginning
 
-*** Scene 7 - Evidence of Tampering
+,*** Scene 7 - Evidence of Tampering
     Chapter 2: Complications
 
-*** Scene 12 - Discovery at Second Site
+,*** Scene 12 - Discovery at Second Site
     Chapter 3: Escalation
 
 [... etc ...]
@@ -993,9 +993,9 @@ A visual representation of plot thread distribution across your story.
 In your novel.org file, find the "Plot Timeline" section (or create one):
 
 #+BEGIN_EXAMPLE
-* Progress Tracking
+,* Progress Tracking
 
-** Plot Timeline
+,** Plot Timeline
 
 #+BEGIN: plot-thread-timeline
 #+END:
@@ -1101,27 +1101,27 @@ Shows: ~Plot threads: 4 | Scenes: 42 | Threads with warnings: 2~
 #+DATE: 2025-11-24 15:30
 #+STARTUP: overview
 
-* Summary
+,* Summary
 
 - Total plot threads: 4
 - Total scenes: 42
 - Scenes with plot threads: 42
 
-* Thread Details
+,* Thread Details
 
-** ✓ Main Mystery - Water Sabotage
+,** ✓ Main Mystery - Water Sabotage
 - ID: 20251124-abcd1234
 - Scenes: 29 of 42 (69.0%)
 - First appearance: Scene 1 - Strange Readings (Chapter: Chapter 1)
 - Last appearance: Scene 42 - Confrontation (Chapter: Chapter 12)
 
-** ✓ Romance Subplot
+,** ✓ Romance Subplot
 - ID: 20251124-efgh5678
 - Scenes: 19 of 42 (45.2%)
 - First appearance: Scene 2 - Meeting Sam (Chapter: Chapter 1)
 - Last appearance: Scene 41 - Confession (Chapter: Chapter 12)
 
-** ⚠️ Family Conflict
+,** ⚠️ Family Conflict
 - ID: 20251124-ijkl9012
 - Scenes: 10 of 42 (23.8%)
 - First appearance: Scene 3 - Home (Chapter: Chapter 1)
@@ -1131,13 +1131,13 @@ Shows: ~Plot threads: 4 | Scenes: 42 | Threads with warnings: 2~
 - ⚠️ Low coverage (23.8%)
 - ⚠️ Gap of 12 scenes
 
-** ✓ Political Corruption
+,** ✓ Political Corruption
 - ID: 20251124-mnop3456
 - Scenes: 13 of 42 (31.0%)
 - First appearance: Scene 4 - City Hall (Chapter: Chapter 1)
 - Last appearance: Scene 38 - Evidence (Chapter: Chapter 11)
 
-* Scenes Without Plot Threads
+,* Scenes Without Plot Threads
 
 All scenes have Plot properties assigned.
 #+END_EXAMPLE
@@ -1349,9 +1349,9 @@ If you have more than 6 active plot threads, consider:
 *A*: Update the profile! This is normal. In the Notes section, track the evolution:
 
 #+BEGIN_EXAMPLE
-** Notes
+,** Notes
 
-*** Evolution
+,*** Evolution
 - Original plan: Romance between Alex and Sam
 - Chapter 5: Realized better chemistry with Jordan
 - Changed to: Romance with Jordan, Sam becomes close friend
@@ -1612,7 +1612,7 @@ This creates a cascade effect that feels satisfying.
 
 In plot Notes, track when each plot last appeared:
 #+BEGIN_EXAMPLE
-*** Last Mentions
+,*** Last Mentions
 - Scene 5: Main mystery developed
 - Scene 8: Romance subplot (Alex and Sam awkward conversation)
 - Scene 12: Main mystery (major discovery!)

@@ -178,7 +178,7 @@ Sam sat waiting.
 Here's a real manuscript snippet:
 
 #+BEGIN_EXAMPLE
-*** Scene 1 - Morning
+,*** Scene 1 - Morning
 :PROPERTIES:
 :PoV: Alex
 :END:
@@ -659,7 +659,7 @@ Your template includes extensive export configuration. Let's understand it!
 In your manuscript, find the "Export config" section (usually at the bottom):
 
 #+BEGIN_EXAMPLE
-* Export config :ignore:noexport:
+,* Export config :ignore:noexport:
 #+END_EXAMPLE
 
 *Note*: This section is tagged ~:noexport:~ so it doesn't appear in exports!

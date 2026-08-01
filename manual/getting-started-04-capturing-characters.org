@@ -94,10 +94,10 @@ All characters in one file, organized by role.
 Characters get their own file: ~objects/characters.org~
 
 #+BEGIN_EXAMPLE
-* [Character Name]
+,* [Character Name]
   [All details]
 
-* [Another Character Name]
+,* [Another Character Name]
   [All details]
 #+END_EXAMPLE
 
@@ -165,7 +165,7 @@ Press Enter after each prompt.
 After the last prompt, you'll see a complete character profile template:
 
 #+BEGIN_EXAMPLE
-* Alex Rivera
+,* Alex Rivera
 :PROPERTIES:
 :ID: char-alex-rivera-20251116-001
 :Role: Protagonist
@@ -176,7 +176,7 @@ After the last prompt, you'll see a complete character profile template:
 :First-appearance: Chapter 1
 :END:
 
-** Physical Description
+,** Physical Description
 
 - Height ::
 - Build ::
@@ -184,7 +184,7 @@ After the last prompt, you'll see a complete character profile template:
 - Eyes ::
 - Distinctive features ::
 
-** Personality
+,** Personality
 
 - Main traits ::
 - Strengths ::
@@ -195,35 +195,35 @@ After the last prompt, you'll see a complete character profile template:
 - Psychological Flaw ::
 - Moral Flaw ::
 
-** Background
+,** Background
 
 - Family ::
 - Education ::
 - Occupation ::
 - Formative events ::
 
-** Goal, Motivation, Conflict
-*** Internal
+,** Goal, Motivation, Conflict
+,*** Internal
 - Goal ::
 - Motivation ::
 - Conflict ::
-*** External
+,*** External
 - Goal ::
 - Motivation ::
 - Conflict ::
 
-** Character Arc
+,** Character Arc
 
 - Initial state ::
 - Turning point ::
 - Transformation ::
 - Final state ::
 
-** Relationships
+,** Relationships
 
 - With other characters ::
 
-** Notes
+,** Notes
 -
 #+END_EXAMPLE
 
@@ -301,7 +301,7 @@ You can edit these anytime!
 ** Physical Description Section
 
 #+BEGIN_EXAMPLE
-** Physical Description
+,** Physical Description
 
 - Height ::
 - Build ::
@@ -332,7 +332,7 @@ You can edit these anytime!
 ** Personality Section
 
 #+BEGIN_EXAMPLE
-** Personality
+,** Personality
 
 - Main traits ::
 - Strengths ::
@@ -383,7 +383,7 @@ Ethical weakness
 ** Background Section
 
 #+BEGIN_EXAMPLE
-** Background
+,** Background
 
 - Family ::
 - Education ::
@@ -411,12 +411,12 @@ Ethical weakness
 This section uses the GMC framework (Debra Dixon's method):
 
 #+BEGIN_EXAMPLE
-** Goal, Motivation, Conflict
-*** Internal
+,** Goal, Motivation, Conflict
+,*** Internal
 - Goal ::
 - Motivation ::
 - Conflict ::
-*** External
+,*** External
 - Goal ::
 - Motivation ::
 - Conflict ::
@@ -449,7 +449,7 @@ This section uses the GMC framework (Debra Dixon's method):
 ** Character Arc Section
 
 #+BEGIN_EXAMPLE
-** Character Arc
+,** Character Arc
 
 - Initial state ::
 - Turning point ::
@@ -470,7 +470,7 @@ Track your character's journey:
 ** Relationships Section
 
 #+BEGIN_EXAMPLE
-** Relationships
+,** Relationships
 
 - With other characters ::
 #+END_EXAMPLE
@@ -489,7 +489,7 @@ List important relationships in free-form text:
 ** Notes Section
 
 #+BEGIN_EXAMPLE
-** Notes
+,** Notes
 -
 #+END_EXAMPLE
 
@@ -702,15 +702,15 @@ Type the character name (e.g., "Alex") and press Enter.
 A buffer opens showing all scenes where Alex appears (either as PoV or in Characters property):
 
 #+BEGIN_EXAMPLE
-* Org QL Search: Character "Alex"
+,* Org QL Search: Character "Alex"
 
-** Scene 1 - The Alarm Goes Off
+,** Scene 1 - The Alarm Goes Off
    :PoV: Alex Rivera
 
-** Scene 2 - Coffee Shop Encounter
+,** Scene 2 - Coffee Shop Encounter
    :Characters: Alex Rivera, Sam Chen
 
-** Scene 5 - The Decision
+,** Scene 5 - The Decision
    :PoV: Alex Rivera
 #+END_EXAMPLE
 
@@ -761,7 +761,7 @@ Reading the table:
 
 You'll see:
 #+BEGIN_EXAMPLE
-** Character Timeline
+,** Character Timeline
 
 #+BEGIN: character-timeline
 #+END:
@@ -900,7 +900,7 @@ Use relationships to track how connections change over the story:
 Relationships are stored in the ~:RelationshipsData:~ property using this format:
 
 #+BEGIN_EXAMPLE
-* Alice Rivera
+,* Alice Rivera
 :PROPERTIES:
 :ID: char-alice-001
 :RelationshipsData: [[id:char-sam-002][Sam]]|mentor; [[id:char-jordan-003][Jordan]]|rival

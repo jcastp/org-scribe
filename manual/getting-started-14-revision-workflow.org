@@ -224,73 +224,73 @@ The first time you use editing mode, the notes file is blank. Set it up:
 #+TITLE: Novel Revision Notes
 #+STARTUP: overview
 
-* Revision Plan
+,* Revision Plan
 
-** Pass 1: Structural Review
+,** Pass 1: Structural Review
 - [ ] Check plot thread resolution
 - [ ] Verify character arcs complete
 - [ ] Review pacing (use timeline)
 - [ ] Ensure all setups pay off
 
-** Pass 2: Scene-Level Work
+,** Pass 2: Scene-Level Work
 - [ ] Strengthen openings
 - [ ] Improve dialogue
 - [ ] Add sensory details
 - [ ] Cut unnecessary scenes
 
-** Pass 3: Line Editing
+,** Pass 3: Line Editing
 - [ ] Polish prose
 - [ ] Fix weak words
 - [ ] Improve rhythm
 - [ ] Final consistency check
 
-* Scene Notes
+,* Scene Notes
 
-** Chapter 1
+,** Chapter 1
 
-*** Scene 1 - Opening
+,*** Scene 1 - Opening
 - [ ] Slow pacing - cut first 2 paragraphs
 - [ ] Add more detail about apartment
 - [ ] Alex's motivation unclear - fix
 - [ ] Good dialogue - keep!
 
-*** Scene 2 - Meeting Sam
+,*** Scene 2 - Meeting Sam
 - [ ] Sam appears too abruptly
 - [ ] Add foreshadowing in Scene 1
 - [ ] Expand their conversation
 - [ ] Check: what time of day is this?
 
-* Character Issues
+,* Character Issues
 
-** Alex (Protagonist)
+,** Alex (Protagonist)
 - Arc: Isolated → Connected
 - Problem: Motivation weak in Act II
 - Fix: Add scene showing why she cares
 - Status: [ ] Not addressed yet
 
-** Sam (Secondary)
+,** Sam (Secondary)
 - Problem: Disappears for 8 scenes (Ch 5-12)
 - Fix: Add brief appearance in Ch 8
 - Status: [ ] Planned, not written
 
-* Plot Threads
+,* Plot Threads
 
-** Main Plot
+,** Main Plot
 - Resolution: Chapter 15, Scene 3
 - Status: ✓ Resolved
 - Notes: Strong ending
 
-** Romance Subplot
+,** Romance Subplot
 - Resolution: Chapter 14, Scene 2
 - Status: ✗ PROBLEM - Feels rushed
 - Fix: Add romantic tension scene in Ch 12
 
-** Mystery Thread
+,** Mystery Thread
 - Resolution: Chapter 15, Scene 1
 - Status: ✓ Resolved
 - Notes: Clues planted well
 
-* Global Issues
+,* Global Issues
 - [ ] Timeline confusion: Day 3 vs Day 4 in Chapter 6
 - [ ] Weather inconsistency: Raining in Ch 2, sunny in same day Ch 3
 - [ ] Character name: Is it "Sarah" or "Sara"? (inconsistent)
@@ -383,15 +383,15 @@ Mystery: 3 scenes ✗ (underserved!)
 In your notes panel (right side), add findings:
 
 #+BEGIN_EXAMPLE
-* Plot Thread Issues
+,* Plot Thread Issues
 
-** Romance Subplot
+,** Romance Subplot
 - Gap: Scenes 11-14 (4 scenes without development)
 - Fix: Add romantic moment in Scene 12
 - Location to add: After coffee shop scene
 - Type: Brief exchange showing tension
 
-** Mystery Thread
+,** Mystery Thread
 - Problem: Only 3 scenes total - feels underdeveloped
 - Options:
   1. Add 2-3 mystery scenes (more work)
@@ -462,16 +462,16 @@ If Sarah is important, introduce earlier!
 In notes panel:
 
 #+BEGIN_EXAMPLE
-* Character Development Issues
+,* Character Development Issues
 
-** Sam (Secondary)
+,** Sam (Secondary)
 - Problem: Absent Scenes 3-11 (8 scenes!)
 - Importance: Major secondary character
 - Fix: Add brief appearance in Scene 6
 - Type: Phone call or text message reference
 - Impact: Minimal (2 paragraphs)
 
-** Jordan (PoV)
+,** Jordan (PoV)
 - Problem: Only 2 PoV scenes vs. Alex's 12
 - Options:
   1. Add 3-4 Jordan PoV scenes
@@ -480,7 +480,7 @@ In notes panel:
 - Action: Convert 2 Jordan scenes to Alex PoV
 - Status: [ ] Not done yet
 
-** Sarah (Late Introduction)
+,** Sarah (Late Introduction)
 - Appears: Scene 8
 - Role: Important in Act II & III
 - Problem: Feels sudden
@@ -519,9 +519,9 @@ Look at your outline (left panel) for structural balance:
 Record in notes:
 
 #+BEGIN_EXAMPLE
-* Structural Issues
+,* Structural Issues
 
-** Chapter Balance
+,** Chapter Balance
 - Chapter 1: 5 scenes (good)
 - Chapter 2: 1 scene (too short!)
 - Chapter 3: 3 scenes (good)
@@ -570,19 +570,19 @@ novel.org:1298: *NOTE*: PAYOFF - Alex opens the box.
 *Manual check list in notes*:
 
 #+BEGIN_EXAMPLE
-* Setups & Payoffs Checklist
+,* Setups & Payoffs Checklist
 
-** Physical Objects
+,** Physical Objects
 - [ ] Mother's locket (Setup: Scene 1) → Payoff: ?
 - [X] Mysterious package (Setup: Scene 2) → Payoff: Scene 10 ✓
 - [ ] Strange phone number (Setup: Scene 5) → Payoff: ?
 
-** Promises to Reader
+,** Promises to Reader
 - [X] Who sent the letters? → Resolved: Scene 12 ✓
 - [ ] What happened to Alex's mother? → Not resolved yet!
 - [ ] Will Sam betray Alex? → Not addressed!
 
-** Character Goals
+,** Character Goals
 - [ ] Alex wants to find truth → Status: Abandoned in Act II?
 - [X] Sam needs to protect secret → Status: Revealed Act III ✓
 - [ ] Jordan seeks redemption → Status: Unresolved!
@@ -620,42 +620,42 @@ Your workflow:
 Add this to your notes file for each scene:
 
 #+BEGIN_EXAMPLE
-*** Scene 1 - Opening
+,*** Scene 1 - Opening
 
-**** Opening Hook
+,**** Opening Hook
 - [ ] First sentence grabs attention?
 - [ ] Clear genre/tone established?
 - [ ] Inciting incident clear?
 
-**** Character
+,**** Character
 - [ ] PoV character's voice distinct?
 - [ ] Motivation clear?
 - [ ] Emotional state shown (not told)?
 
-**** Setting
+,**** Setting
 - [ ] Location established quickly?
 - [ ] Sensory details present (3+ senses)?
 - [ ] Time of day clear?
 
-**** Plot
+,**** Plot
 - [ ] Scene advances plot?
 - [ ] Conflict present?
 - [ ] Stakes clear?
 - [ ] Scene ends with forward momentum?
 
-**** Dialogue
+,**** Dialogue
 - [ ] Each character sounds different?
 - [ ] Dialogue tags necessary? (could cut?)
 - [ ] Subtext present?
 - [ ] Natural rhythm?
 
-**** Prose
+,**** Prose
 - [ ] Strong verbs (not weak "was/were")?
 - [ ] Active voice (not passive)?
 - [ ] Unnecessary words cut?
 - [ ] Sentence variety?
 
-**** Technical
+,**** Technical
 - [ ] POV consistent (no head-hopping)?
 - [ ] Tense consistent?
 - [ ] Timeline consistent with previous scenes?
@@ -672,7 +672,7 @@ Search for weak scene openings:
 *Weak opening example*:
 
 #+BEGIN_EXAMPLE
-*** Scene 5 - The Discovery
+,*** Scene 5 - The Discovery
 
 Alex woke up. She got out of bed. She went to the bathroom and brushed
 her teeth. Then she went downstairs.
@@ -687,7 +687,7 @@ her teeth. Then she went downstairs.
 *Improved opening*:
 
 #+BEGIN_EXAMPLE
-*** Scene 5 - The Discovery
+,*** Scene 5 - The Discovery
 
 The scream woke Alex at 3 AM. She bolted upright, heart hammering. Not
 again. Not another nightmare about the accident.
@@ -756,7 +756,7 @@ If answer is "Nothing important" → Cut it!
 3. In notes (right), record decision:
 
 #+BEGIN_EXAMPLE
-** Scene 4 - Lunch at Café
+,** Scene 4 - Lunch at Café
 - Purpose: Alex and Sam eat lunch
 - Advances plot? No
 - Character development? Minimal
@@ -769,7 +769,7 @@ If answer is "Nothing important" → Cut it!
 Mark scene with ~ARCHIVE~ tag to hide it without deleting:
 
 #+BEGIN_EXAMPLE
-*** Scene 4 - Lunch at Café    :ARCHIVE:
+,*** Scene 4 - Lunch at Café    :ARCHIVE:
 #+END_EXAMPLE
 
 Then ~C-c C-x a~ (org-archive-subtree) moves it to archive file.
@@ -781,9 +781,9 @@ Sometimes you need to ADD scenes:
 *Checklist in notes*:
 
 #+BEGIN_EXAMPLE
-* Scenes to Add
+,* Scenes to Add
 
-** New Scene: Sam's Backstory
+,** New Scene: Sam's Backstory
 - Insert after: Scene 8
 - Purpose: Explain why Sam helps Alex
 - PoV: Sam
@@ -792,7 +792,7 @@ Sometimes you need to ADD scenes:
 - Length: ~800 words
 - Status: [ ] Not written
 
-** New Scene: Romantic Tension
+,** New Scene: Romantic Tension
 - Insert after: Scene 12
 - Purpose: Develop romance subplot
 - PoV: Alex
@@ -840,16 +840,16 @@ Results show all coffee shop scenes. Check:
 *Recording fixes in notes*:
 
 #+BEGIN_EXAMPLE
-* Inconsistencies Found
+,* Inconsistencies Found
 
-** Character Names
+,** Character Names
 - Scene 2: "Sarah" (correct)
 - Scene 7: "Sara" (typo!)
 - Scene 12: "Sarah" (correct)
 - Fix: Change "Sara" to "Sarah" in Scene 7
 - Status: [ ] Not fixed
 
-** Location: Coffee Shop
+,** Location: Coffee Shop
 - Scene 1: "...on the corner of Main and 5th"
 - Scene 7: "...on the corner of Main and 7th" (error!)
 - Fix: Decide which intersection (probably 5th)
@@ -952,14 +952,14 @@ If "suddenly" appears 15 times in one chapter - cut most of them!
 *Tracking in notes*:
 
 #+BEGIN_EXAMPLE
-* Overused Words
+,* Overused Words
 
-** Chapter 1
+,** Chapter 1
 - "suddenly": 8 times (cut to 2-3)
 - "just": 12 times (cut to 3-4)
 - "really": 6 times (cut all)
 
-** Chapter 2
+,** Chapter 2
 - "very": 9 times (replace with stronger adjectives)
 - "that": 23 times (try cutting, many unnecessary)
 #+END_EXAMPLE
@@ -1017,31 +1017,31 @@ Varied sentence structure, better rhythm.
 Create master checklist in notes:
 
 #+BEGIN_EXAMPLE
-* Final Consistency Checklist
+,* Final Consistency Checklist
 
-** Character Details
+,** Character Details
 - [ ] Alex's age consistent (32 throughout)
 - [ ] Alex's hair color (dark brown in all scenes)
 - [ ] Alex's job title (same everywhere)
 - [ ] Sam's eye color (blue, not brown)
 
-** Timeline
+,** Timeline
 - [ ] Day 1: Monday (all references match)
 - [ ] Day 2: Tuesday (weather: rainy)
 - [ ] Day 3: Wednesday (weather: clearing)
 - [ ] Day 4: Thursday (all dated correctly)
 
-** Locations
+,** Locations
 - [ ] Coffee shop: Main & 5th (not 7th)
 - [ ] Alex's apartment: Third floor (not second)
 - [ ] Office: Downtown (not midtown)
 
-** Plot Elements
+,** Plot Elements
 - [ ] Package arrives: Scene 2 (referenced correctly later)
 - [ ] Letters revealed: Scene 10 (timeline works)
 - [ ] Final confrontation: Scene 15 (all threads resolve)
 
-** Names & Terms
+,** Names & Terms
 - [ ] "Sarah" spelled consistently (not "Sara")
 - [ ] Company name: "TechCorp" (not "TechCo")
 - [ ] Device name: "analyzer" (not "analyser" - US spelling)
@@ -1068,17 +1068,17 @@ As you work through revision:
 
 *Scene not yet revised*:
 #+BEGIN_EXAMPLE
-*** DRAFT Scene 1 - Opening
+,*** DRAFT Scene 1 - Opening
 #+END_EXAMPLE
 
 *Scene revised but needs polish*:
 #+BEGIN_EXAMPLE
-*** REVISED Scene 2 - Meeting
+,*** REVISED Scene 2 - Meeting
 #+END_EXAMPLE
 
 *Scene completely finished*:
 #+BEGIN_EXAMPLE
-*** POLISHED Scene 3 - Discovery
+,*** POLISHED Scene 3 - Discovery
 #+END_EXAMPLE
 
 ** Problem Markers
@@ -1086,15 +1086,15 @@ As you work through revision:
 Mark specific issues:
 
 #+BEGIN_EXAMPLE
-*** FIX Scene 4 - Backstory
+,*** FIX Scene 4 - Backstory
 - Problem: Pacing too slow
 - Action: Cut first 3 paragraphs
 
-*** EXPAND Scene 5 - Confrontation
+,*** EXPAND Scene 5 - Confrontation
 - Problem: Dialogue too brief
 - Action: Add 200 words of argument
 
-*** CUT Scene 6 - Filler
+,*** CUT Scene 6 - Filler
 - Problem: Doesn't advance plot
 - Action: Archive this scene
 #+END_EXAMPLE
@@ -1118,27 +1118,27 @@ View all revision work at once:
 In notes file, track overall progress:
 
 #+BEGIN_EXAMPLE
-* Revision Progress
+,* Revision Progress
 
-** Pass 1: Structural (20%)
+,** Pass 1: Structural (20%)
 - [X] Plot timeline reviewed
 - [X] Character timeline reviewed
 - [X] Structural issues identified
 - [ ] Structural issues fixed
 - [ ] Timeline verified again
 
-** Pass 2: Scene-Level (60%)
+,** Pass 2: Scene-Level (60%)
 - [5/15] Act I scenes revised
 - [0/12] Act II scenes revised
 - [0/8] Act III scenes revised
 
-** Pass 3: Line Editing (0%)
+,** Pass 3: Line Editing (0%)
 - [ ] Chapter 1
 - [ ] Chapter 2
 - [ ] Chapter 3
 ...
 
-** Overall Status
+,** Overall Status
 - Total scenes: 35
 - Revised scenes: 5 (14%)
 - Remaining: 30 (86%)
@@ -1315,7 +1315,7 @@ Let's practice the revision workflow with a sample scene.
 In notes panel, answer:
 
 #+BEGIN_EXAMPLE
-*** Scene [X] - [Title]
+,*** Scene [X] - [Title]
 
 Structural:
 - Advances plot? Yes / No / How: __________
@@ -1387,7 +1387,7 @@ In notes:
 
 In manuscript, change TODO state:
 #+BEGIN_EXAMPLE
-*** REVISED Scene [X] - [Title]
+,*** REVISED Scene [X] - [Title]
 #+END_EXAMPLE
 
 *You just completed one revision cycle!*

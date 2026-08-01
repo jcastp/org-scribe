@@ -128,16 +128,16 @@ The template actually has *properties plus ten sections* — the walkthrough bel
 :Population:
 :END:
 
-** General Description
-** Geography
-** Cultural Aspects & Society
-** History
-** Notable Features
-** Importance in the Plot
-** Specific Places
-** Atmosphere & Mood
-** Map/Reference Image
-** Notes
+,** General Description
+,** Geography
+,** Cultural Aspects & Society
+,** History
+,** Notable Features
+,** Importance in the Plot
+,** Specific Places
+,** Atmosphere & Mood
+,** Map/Reference Image
+,** Notes
 #+END_EXAMPLE
 
 There is no ~:Setting:~, ~:Accessibility:~, or ~:Owner:~ property, and no separate "Connections" or "Significance" section — where the walkthrough below refers to those, capture the same information as free text under *Geography* (broader context, accessibility), *History* (ownership, past events), or *Importance in the Plot* (why it matters, who's connected to it) instead.
@@ -288,7 +288,7 @@ This is the heart of your location profile.
 ** Example: Coffee Shop
 
 #+BEGIN_EXAMPLE
-** Physical Description
+,** Physical Description
 
 Downtown Coffee Collective is a narrow, deep space with exposed brick walls
 and reclaimed wood floors. Mismatched vintage chairs cluster around small
@@ -346,7 +346,7 @@ Atmosphere affects how characters behave and how readers feel.
 ** Example: Coffee Shop
 
 #+BEGIN_EXAMPLE
-** Atmosphere & Mood
+,** Atmosphere & Mood
 
 Warm and welcoming but slightly bohemian - not for everyone. Regulars treat
 it like a second living room. Laptop workers claim tables for hours. The
@@ -374,7 +374,7 @@ Why does this location matter to your story?
 ** Example: Coffee Shop
 
 #+BEGIN_EXAMPLE
-** Significance
+,** Significance
 
 This is Alex's anchor point - the story begins here and returns here
 repeatedly. It represents stability and normalcy, so when things go wrong
@@ -409,23 +409,23 @@ How does this location relate to others?
 ** Example: Coffee Shop
 
 #+BEGIN_EXAMPLE
-** Connections
+,** Connections
 
-*** Geographic
+,*** Geographic
 - 2 blocks from Alex's apartment (5-minute walk)
 - Across from Washington Park
 - Same block as Sam's bookstore
 
-*** Frequent Visitors
+,*** Frequent Visitors
 - Alex (daily morning regular)
 - Sam (occasional, afternoon)
 - Jordan (shows up twice, feels out of place)
 
-*** Similar Atmosphere
+,*** Similar Atmosphere
 - The bookstore (also cozy, browsing-friendly)
 - Washington Park (peaceful, contemplative)
 
-*** Contrasting Locations
+,*** Contrasting Locations
 - Alex's office (sterile, corporate) - opposite feeling
 #+END_EXAMPLE
 
@@ -444,25 +444,25 @@ Writer notes for continuity and reminders.
 ** Example: Coffee Shop
 
 #+BEGIN_EXAMPLE
-** Notes
+,** Notes
 
-*** Revealed to Reader
+,*** Revealed to Reader
 - [Chapter 1] Front windows, espresso machine, brick walls
 - [Chapter 3] Bookshelf wall
 - [Chapter 5] Alex's usual table (back left corner)
 - [Chapter 8] Bathroom location (down narrow hallway)
 
-*** To Reveal Later
+,*** To Reveal Later
 - Owner's name (mention in Chapter 10)
 - Back alley entrance (needed for Chapter 12 escape scene)
 
-*** Research
+,*** Research
 - Check typical coffee shop profit margins for owner's dialogue
 
-*** Inspiration
+,*** Inspiration
 Based on my local spot "Common Grounds" - but fictional version is narrower.
 
-*** Evolution
+,*** Evolution
 In Chapter 14, they renovate: new paint, but keep same furniture (shows
 gentrification theme).
 #+END_EXAMPLE
@@ -550,7 +550,7 @@ This requires knowing the location's ID. The menu method is easier!
 
 Before:
 #+BEGIN_EXAMPLE
-*** Scene 1 - Morning Routine
+,*** Scene 1 - Morning Routine
 :PROPERTIES:
 :PoV: [[id:char-alex-001][Alex]]
 :Location: coffee shop
@@ -559,7 +559,7 @@ Before:
 
 After (with menu):
 #+BEGIN_EXAMPLE
-*** Scene 1 - Morning Routine
+,*** Scene 1 - Morning Routine
 :PROPERTIES:
 :PoV: [[id:char-alex-001][Alex]]
 :Location: [[id:loc-coffee-001][Downtown Coffee Collective]]
@@ -617,13 +617,13 @@ A buffer opens showing ALL scenes with that location:
 #+BEGIN_EXAMPLE
 Results for location "Downtown Coffee Collective":
 
-*** Scene 1 - Morning Routine
+,*** Scene 1 - Morning Routine
     Chapter 1: The Beginning
 
-*** Scene 5 - Unexpected Meeting
+,*** Scene 5 - Unexpected Meeting
     Chapter 2: Complications
 
-*** Scene 12 - Confrontation
+,*** Scene 12 - Confrontation
     Chapter 4: Crisis Point
 
 Found 3 scenes.
@@ -723,9 +723,9 @@ A table showing which locations appear in which scenes.
 In your novel.org file, find the "Location Timeline" section (or create one):
 
 #+BEGIN_EXAMPLE
-* Progress Tracking
+,* Progress Tracking
 
-** TODO Location Timeline
+,** TODO Location Timeline
 *NOTE:* This function doesn't exist. It's an hallucination.
 
 #+BEGIN: location-timeline
@@ -896,9 +896,9 @@ For most locations, 1-2 paragraphs is sufficient. For critical locations (protag
 *A*: Update the profile! In the Notes section, track the evolution:
 
 #+BEGIN_EXAMPLE
-** Notes
+,** Notes
 
-*** Evolution
+,*** Evolution
 - [Chapter 1-5]: Messy, dishes in sink, laundry everywhere
 - [Chapter 6]: Alex cleans up (turning point)
 - [Chapter 7-12]: Tidy, plants on windowsill, organized
@@ -1092,7 +1092,7 @@ Lead with that sense when writing scenes there.
 
 In the Notes section, maintain a list of what readers know:
 #+BEGIN_EXAMPLE
-*** Revealed to Reader
+,*** Revealed to Reader
 - [Chapter 1] Front door is blue
 - [Chapter 3] Kitchen has large window
 - [Chapter 5] Creaky floorboard in hallway

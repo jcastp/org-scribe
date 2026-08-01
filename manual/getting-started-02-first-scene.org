@@ -48,16 +48,16 @@ Your ~story.org~ file has a simple three-part structure:
 #+TITLE: The Morning Routine
 #+AUTHOR: Your Name
 
-* Opening
-** Scene 1 - [Title]
+,* Opening
+,** Scene 1 - [Title]
    [Your writing goes here]
 
-* Middle
-** Scene 2 - [Title]
+,* Middle
+,** Scene 2 - [Title]
    [Your writing goes here]
 
-* Ending
-** Scene 3 - [Title]
+,* Ending
+,** Scene 3 - [Title]
    [Your writing goes here]
 #+END_EXAMPLE
 
@@ -74,15 +74,15 @@ Your ~novel.org~ file has a more complex three-act structure:
 #+TITLE: My Fantasy Novel
 #+AUTHOR: Your Name
 
-* Act I - Setup
-** Chapter 1 - [Title]
-*** Scene 1 - [Title]
+,* Act I - Setup
+,** Chapter 1 - [Title]
+,*** Scene 1 - [Title]
     [Your writing goes here]
-*** Scene 2 - [Title]
+,*** Scene 2 - [Title]
     [Your writing goes here]
 
-** Chapter 2 - [Title]
-*** Scene 3 - [Title]
+,** Chapter 2 - [Title]
+,*** Scene 3 - [Title]
     [Your writing goes here]
 #+END_EXAMPLE
 
@@ -150,7 +150,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 A complete scene template appears! It looks like this:
 
 #+BEGIN_EXAMPLE
-*** TODO Scene 1 - The Alarm Goes Off
+,*** TODO Scene 1 - The Alarm Goes Off
 :PROPERTIES:
 :PoV:
 :Characters:
@@ -178,7 +178,7 @@ Let's break down what you're seeing:
 
 *** The Heading Line
 #+BEGIN_EXAMPLE
-*** TODO Scene 1 - The Alarm Goes Off
+,*** TODO Scene 1 - The Alarm Goes Off
 #+END_EXAMPLE
 
 - ~***~ = Scene level (three asterisks for novels, two for short stories)
@@ -364,7 +364,7 @@ Now comes the fun part - actually writing your story!
 Example:
 
 #+BEGIN_EXAMPLE
-*** TODO Scene 1 - The Alarm Goes Off
+,*** TODO Scene 1 - The Alarm Goes Off
 :PROPERTIES:
 :PoV: Alex
 :Characters: Alex
@@ -500,13 +500,13 @@ If you're working on a novel, you might want to add chapters.
 Example result — chapter insertion also auto-inserts a ready-to-fill first scene below it, so you get both in one step:
 
 #+BEGIN_EXAMPLE
-** TODO Chapter 2 - The Discovery :ignore:
+,** TODO Chapter 2 - The Discovery :ignore:
 :PROPERTIES:
 :WORD-OBJECTIVE: 5000
 :WORDCOUNT: 0
 :END:
 
-*** TODO New scene :ignore:
+,*** TODO New scene :ignore:
 :PROPERTIES:
 :PoV:
 :Characters:

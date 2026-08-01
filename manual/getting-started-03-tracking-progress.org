@@ -54,7 +54,7 @@ This gives you an inflated, inaccurate count.
 Look at this scene:
 
 #+BEGIN_EXAMPLE
-*** Scene 1 - The Alarm
+,*** Scene 1 - The Alarm
 :PROPERTIES:
 :PoV: Alex
 :Characters: Alex, Sam
@@ -215,7 +215,7 @@ Open your ~story.org~ file and scroll to the "Progress Tracking" section near th
 You'll see:
 
 #+BEGIN_EXAMPLE
-* Progress Tracking
+,* Progress Tracking
 
 #+BEGIN: org-generate-wordcount-table
 | Heading | Wordcount | Objective | Progress |
@@ -327,7 +327,7 @@ Beyond scene/chapter tracking, you can track daily writing sessions.
 Your template's "Daily Word Tracking" section doesn't ship a ready-made table — it points you at the external =org-tracktable= package's =org-tracktable-insert-table= command, which generates and auto-updates a table with these columns instead:
 
 #+BEGIN_EXAMPLE
-** Daily Word Tracking
+,** Daily Word Tracking
 
 |---+------------------+-------+-----+---------------+---------|
 | * | date             | start | end | total (today) | comment |
@@ -339,7 +339,7 @@ Your template's "Daily Word Tracking" section doesn't ship a ready-made table �
 =org-tracktable= is not part of org-scribe itself — it's a separate package the template links to (see its own documentation for installation and the table-formula details). If you'd rather keep a simple hand-maintained log instead, nothing stops you from adding your own plain table:
 
 #+BEGIN_EXAMPLE
-** Daily Writing Log
+,** Daily Writing Log
 
 | Date       | Words Written | Total Words | Notes          |
 |------------+---------------+-------------+----------------|

@@ -118,7 +118,7 @@ The planner creates ~plan.org~ in your project root and calculates your required
 Open ~plan.org~ to see it:
 
 #+BEGIN_EXAMPLE
-* My Novel — Writing Plan
+,* My Novel — Writing Plan
 :PROPERTIES:
 :TOTAL_WORDS: 80000
 :CURRENT_WORDS: 12450

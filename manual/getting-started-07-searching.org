@@ -582,10 +582,10 @@ Find all TODO items across your entire project.
 In Org-mode, TODOs are special keywords at the start of headings:
 
 #+BEGIN_EXAMPLE
-** TODO Fix the timeline here - Alex arrives too quickly
-** FIXME This dialogue feels stilted
-** RESEARCH How long does DNA testing actually take?
-** REVISE Expand this scene - needs more emotion
+,** TODO Fix the timeline here - Alex arrives too quickly
+,** FIXME This dialogue feels stilted
+,** RESEARCH How long does DNA testing actually take?
+,** REVISE Expand this scene - needs more emotion
 #+END_EXAMPLE
 
 Keywords include: TODO, DONE, FIXME, RESEARCH, REVISE, NOTE (customizable).
@@ -637,14 +637,14 @@ You're writing Scene 15 and realize Scene 7 has a timeline problem.
 Don't stop! Add a TODO:
 
 Navigate to Scene 7 heading:
-*** Scene 7 - Evidence of Tampering
+,*** Scene 7 - Evidence of Tampering
     :PROPERTIES:
     ...
     :END:
 
 Add below the heading:
-*** Scene 7 - Evidence of Tampering
-**** TODO Timeline issue - Alex arrives at 9 AM but lab doesn't open until 10
+,*** Scene 7 - Evidence of Tampering
+,**** TODO Timeline issue - Alex arrives at 9 AM but lab doesn't open until 10
     :PROPERTIES:
     ...
     :END:
