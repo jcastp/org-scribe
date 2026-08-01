@@ -248,7 +248,10 @@ Focus always returns to the original buffer for seamless transitions."
           ;; Check for imenu-list
           (if (fboundp 'imenu-list-smart-toggle)
               (unless (get-buffer-window imenu-list-buffer-name)
-                (imenu-list-smart-toggle))
+                ;; Treemacs already occupies the left edge, so dock
+                ;; imenu-list on the right (its default is 'left).
+                (let ((imenu-list-position 'right))
+                  (imenu-list-smart-toggle)))
             (warn "imenu-list package not available"))
           ;; Return focus to original window
           (when (window-live-p original-window)
