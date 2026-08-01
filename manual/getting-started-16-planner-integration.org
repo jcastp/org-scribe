@@ -43,17 +43,17 @@ remove that block. The integration features are now built directly into the plan
 
 Here is an overview of everything the planner provides out of the box. Each feature is independent and can be disabled individually (see [[*Disabling Individual Features][Disabling Individual Features]] at the end of this lesson).
 
-| Feature                        | What happens automatically                                   |
-|--------------------------------+--------------------------------------------------------------|
-| Auto-load plan                 | Plan file loads when you open any project file               |
-| Word count bridge              | Plan reads word counts directly from your manuscript         |
-| Auto-update after counting     | ~F8 F8 a~ pushes new total to the plan silently              |
-| Auto-update on save            | Saving the manuscript updates all counts and the plan        |
-| Project-aware file picker      | Load-plan dialog opens at your project root                  |
-| Plan creation on new project   | Offered when you run ~org-scribe-create-novel-project~       |
-| Planner Hydra submenu (~W~)    | Full planner menu accessible from the main Hydra             |
-| Mode-line status               | Today's target/actual shown as ~[W:actual/target]~           |
-| ~org-scribe-plan~ entry point  | Single command that dispatches based on current plan state   |
+| Feature                      | What happens automatically                                 |
+|------------------------------+------------------------------------------------------------|
+| Auto-load plan               | Plan file loads when you open any project file             |
+| Word count bridge            | Plan reads word counts directly from your manuscript       |
+| Auto-update after counting   | ~F8 F8 a~ pushes new total to the plan silently              |
+| Auto-update on save          | Saving the manuscript updates all counts and the plan      |
+| Project-aware file picker    | Load-plan dialog opens at your project root                |
+| Plan creation on new project | Offered when you run ~org-scribe-create-novel-project~       |
+| Planner Hydra submenu (~W~)    | Full planner menu accessible from the main Hydra           |
+| Mode-line status             | Today's target/actual shown as ~[W:actual/target]~           |
+| ~org-scribe-plan~ entry point  | Single command that dispatches based on current plan state |
 
 * Step 1: Create Your Writing Plan
 
@@ -411,48 +411,48 @@ You've completed Lesson 16!
 
 ** Planner Submenu Keys (F8 F8 W)
 
-| Key | Command                       | What It Does                                |
-|-----+-------------------------------+---------------------------------------------|
-| ~p~ | Open project plan             | Load or create plan; show calendar if active |
-| ~n~ | New plan                      | Create a plan for the current project        |
-| ~o~ | Onboard existing project      | Set up a plan for a project already in progress |
-| ~l~ | Load plan                     | Open a plan file manually                    |
-| ~u~ | Sync word count               | Push current manuscript total to plan        |
-| ~d~ | Add session note              | Log/annotate today's entry (auto-tracked by default) |
-| ~r~ | Recalculate plan              | Recompute daily targets from current state   |
-| ~a~ | Adjust remaining days         | Reschedule around changes in availability    |
-| ~m~ | Milestones                    | View/set named word count checkpoints        |
-| ~D~ | Dashboards menu               | Progress dashboards and analytics            |
-| ~E~ | Enable for project            | Flip this project's gate to ~yes~              |
-| ~X~ | Disable for project           | Flip this project's gate to ~no~               |
-| ~q~ | Back to main menu             | Return to main Hydra                         |
+| Key | Command                  | What It Does                                         |
+|-----+--------------------------+------------------------------------------------------|
+| ~p~   | Open project plan        | Load or create plan; show calendar if active         |
+| ~n~   | New plan                 | Create a plan for the current project                |
+| ~o~   | Onboard existing project | Set up a plan for a project already in progress      |
+| ~l~   | Load plan                | Open a plan file manually                            |
+| ~u~   | Sync word count          | Push current manuscript total to plan                |
+| ~d~   | Add session note         | Log/annotate today's entry (auto-tracked by default) |
+| ~r~   | Recalculate plan         | Recompute daily targets from current state           |
+| ~a~   | Adjust remaining days    | Reschedule around changes in availability            |
+| ~m~   | Milestones               | View/set named word count checkpoints                |
+| ~D~   | Dashboards menu          | Progress dashboards and analytics                    |
+| ~E~   | Enable for project       | Flip this project's gate to ~yes~                      |
+| ~X~   | Disable for project      | Flip this project's gate to ~no~                       |
+| ~q~   | Back to main menu        | Return to main Hydra                                 |
 
 ** Integration Features Summary
 
-| Feature                     | Enabled by default | Variable to disable / enable                        |
-|-----------------------------+--------------------+-----------------------------------------------------|
-| Auto-load plan              | Yes                | ~(setq org-scribe-planner-auto-load-plan nil)~      |
-| Auto-push after ~F8 F8 a~   | Yes                | ~(setq org-scribe-planner-auto-push-wordcount nil)~ |
-| Offer plan on new project   | Yes                | ~(setq org-scribe-planner-offer-plan-on-create nil)~ |
-| Mode-line status            | Yes                | ~(setq org-scribe-planner-show-mode-line nil)~      |
-| Auto word count on save     | *No* (opt-in)      | ~(setq org-scribe-auto-wordcount t)~                |
+| Feature                   | Enabled by default | Variable to disable / enable                       |
+|---------------------------+--------------------+----------------------------------------------------|
+| Auto-load plan            | Yes                | ~(setq org-scribe-planner-auto-load-plan nil)~       |
+| Auto-push after ~F8 F8 a~   | Yes                | ~(setq org-scribe-planner-auto-push-wordcount nil)~  |
+| Offer plan on new project | Yes                | ~(setq org-scribe-planner-offer-plan-on-create nil)~ |
+| Mode-line status          | Yes                | ~(setq org-scribe-planner-show-mode-line nil)~       |
+| Auto word count on save   | *No* (opt-in)        | ~(setq org-scribe-auto-wordcount t)~                 |
 
 All planner variables must be set *before* the planner first loads (e.g. in ~early-init.el~).
 ~org-scribe-auto-wordcount~ can be set anywhere in your init file.
 
 ** Daily Writing Workflow with Integration
 
-| Phase          | Action                               | Key         |
-|----------------+--------------------------------------+-------------|
-| Start session  | Check mode line for today's target   | —           |
-| Write          | Write in distraction-free mode       | ~F8 F8 m~   |
-| After writing  | Update word count properties         | ~F8 F8 a~   |
-|                | Plan updates automatically!          | —           |
-| Log session    | Log words written today              | ~F8 F8 W d~ |
-| Weekly review  | Recalculate if pace has changed      | ~F8 F8 W r~ |
+| Phase         | Action                             | Key       |
+|---------------+------------------------------------+-----------|
+| Start session | Check mode line for today's target | —         |
+| Write         | Write in distraction-free mode     | ~F8 F8 m~   |
+| After writing | Update word count properties       | ~F8 F8 a~   |
+|               | Plan updates automatically!        | —         |
+| Log session   | Log words written today            | ~F8 F8 W d~ |
+| Weekly review | Recalculate if pace has changed    | ~F8 F8 W r~ |
 
 ---
 
 *Previous*: [[file:getting-started-15-customization.org][Lesson 15: Customization and Configuration]]
 
-*Lesson 16 Complete!* ✓
+*Lesson 16 Complete!*
