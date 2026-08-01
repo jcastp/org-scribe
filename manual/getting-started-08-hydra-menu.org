@@ -112,11 +112,11 @@ Let's explore each category in detail.
 
 *Purpose*: Add new content to your manuscript
 
-| Key | Command      | What It Does                          |
-|-----+--------------+---------------------------------------|
-| ~s~   | Scene        | Insert a new scene with template      |
-| ~c~   | Chapter      | Insert a new chapter with template    |
-| ~o~   | Open file    | Quick navigation to project files     |
+| Key | Command   | What It Does                       |
+|-----+-----------+------------------------------------|
+| ~s~   | Scene     | Insert a new scene with template   |
+| ~c~   | Chapter   | Insert a new chapter with template |
+| ~o~   | Open file | Quick navigation to project files  |
 
 *When to use*:
 - Starting a new scene (~s~)
@@ -129,13 +129,13 @@ Let's explore each category in detail.
 
 *Purpose*: Change your writing environment for different tasks
 
-| Key | Command     | What It Does                              |
-|-----+-------------+-------------------------------------------|
-| ~m~   | Write       | Distraction-free writing mode             |
-| ~f~   | Focus       | Narrow to current section                 |
-| ~e~   | Edit        | Three-panel editing layout                |
-| ~v~   | Navigate    | Project navigation panels (treemacs)      |
-| ~0~   | Normal      | Return to normal layout                   |
+| Key | Command  | What It Does                         |
+|-----+----------+--------------------------------------|
+| ~m~   | Write    | Distraction-free writing mode        |
+| ~f~   | Focus    | Narrow to current section            |
+| ~e~   | Edit     | Three-panel editing layout           |
+| ~v~   | Navigate | Project navigation panels (treemacs) |
+| ~0~   | Normal   | Return to normal layout              |
 
 *When to use*:
 - Starting writing session → ~m~ (distraction-free)
@@ -152,13 +152,13 @@ Let's explore each category in detail.
 
 *Purpose*: Link the current scene to characters, locations, and plot threads using stable ID-based links
 
-| Key | Command         | What It Does                              |
-|-----+-----------------+-------------------------------------------|
-| ~p~   | PoV             | Set the PoV character for this scene      |
-| ~h~   | Characters      | Set all characters present in this scene  |
-| ~l~   | Locations       | Set the location(s) for this scene        |
-| ~g~   | Plot threads    | Set plot threads active in this scene     |
-| ~j~   | Jump to PoV     | Jump to the PoV character's profile       |
+| Key | Command      | What It Does                             |
+|-----+--------------+------------------------------------------|
+| ~p~   | PoV          | Set the PoV character for this scene     |
+| ~h~   | Characters   | Set all characters present in this scene |
+| ~l~   | Locations    | Set the location(s) for this scene       |
+| ~g~   | Plot threads | Set plot threads active in this scene    |
+| ~j~   | Jump to PoV  | Jump to the PoV character's profile      |
 
 *When to use*:
 - After writing a scene → tag it so search functions can find it
@@ -171,13 +171,13 @@ Let's explore each category in detail.
 
 *Purpose*: Writing utilities and reference tools
 
-| Key | Command        | What It Does                                              |
-|-----+----------------+-----------------------------------------------------------|
-| ~w~   | Count words    | Count words in region or buffer; ~C-u w~ = full update    |
-| ~a~   | Update all     | Refresh all heading =WORDCOUNT= properties + sync plan    |
-| ~d~   | Dictionary     | Look up word in RAE dictionary (Spanish)                  |
-| ~y~   | Synonyms       | Find synonyms (Spanish/English)                           |
-| ~x~   | Thesaurus      | English thesaurus lookup (requires powerthesaurus)        |
+| Key | Command     | What It Does                                         |
+|-----+-------------+------------------------------------------------------|
+| ~w~   | Count words | Count words in region or buffer; ~C-u w~ = full update |
+| ~a~   | Update all  | Refresh all heading =WORDCOUNT= properties + sync plan |
+| ~d~   | Dictionary  | Look up word in RAE dictionary (Spanish)             |
+| ~y~   | Synonyms    | Find synonyms (Spanish/English)                      |
+| ~x~   | Thesaurus   | English thesaurus lookup (requires powerthesaurus)   |
 
 *When to use*:
 - After writing → ~w~ (check word count quickly)
@@ -199,14 +199,14 @@ Let's explore each category in detail.
 
 *Purpose*: Find scenes by properties (character, plot, location, PoV)
 
-| Key | Command   | What It Does                             |
-|-----+-----------+------------------------------------------|
-| ~1~   | by PoV     | Find all scenes from a character's PoV   |
-| ~2~   | Character  | Find all scenes featuring a character    |
-| ~3~   | Plot       | Find all scenes in a plot thread         |
-| ~4~   | Location   | Find all scenes in a location            |
-| ~5~   | TODOs      | Find all TODO items in project           |
-| ~6~   | Edits      | Find all edit/revision notes in project  |
+| Key | Command   | What It Does                            |
+|-----+-----------+-----------------------------------------|
+| ~1~   | by PoV    | Find all scenes from a character's PoV  |
+| ~2~   | Character | Find all scenes featuring a character   |
+| ~3~   | Plot      | Find all scenes in a plot thread        |
+| ~4~   | Location  | Find all scenes in a location           |
+| ~5~   | TODOs     | Find all TODO items in project          |
+| ~6~   | Edits     | Find all edit/revision notes in project |
 
 *When to use*:
 - "Where did Alex appear?" → ~2~ (character search)
@@ -229,15 +229,15 @@ Let's explore each category in detail.
 
 *Purpose*: Capture notes, manage links, run health checks, open the planner
 
-| Key | Command           | What It Does                                  |
-|-----+-------------------+-----------------------------------------------|
-| ~n~   | Capture note      | Quick note into the project notes file        |
-| ~k~   | Capture entity…   | Open capture submenu (character, location…)   |
-| ~L~   | Links & upkeep…   | Open linking and relationship submenu         |
-| ~R~   | Relink project    | Add IDs, link names, refresh display names    |
-| ~H~   | Health report     | Project health: counts, missing props, orphans |
-| ~W~   | Planner…          | Open writing plan submenu                     |
-| ~q~   | Quit              | Close the Hydra menu                          |
+| Key | Command         | What It Does                                   |
+|-----+-----------------+------------------------------------------------|
+| ~n~   | Capture note    | Quick note into the project notes file         |
+| ~k~   | Capture entity… | Open capture submenu (character, location…)    |
+| ~L~   | Links & upkeep… | Open linking and relationship submenu          |
+| ~R~   | Relink project  | Add IDs, link names, refresh display names     |
+| ~H~   | Health report   | Project health: counts, missing props, orphans |
+| ~W~   | Planner…        | Open writing plan submenu                      |
+| ~q~   | Quit            | Close the Hydra menu                           |
 
 *When to use*:
 - Quick thought mid-writing → ~n~ (capture note)
@@ -247,7 +247,7 @@ Let's explore each category in detail.
 - Periodic project review → ~H~ (health report)
 - Check writing plan → ~W p~
 
-*Capitals = Submenus*:
+*These three keys open submenus* (marked with … in the menu):
 - ~k~ → Capture submenu
 - ~L~ → Links & upkeep submenu
 - ~W~ → Planner submenu
@@ -504,7 +504,7 @@ Change only if you have a specific reason!
 *Numbers are searches*:
 - 1=PoV, 2=Character, 3=Plot, 4=Location, 5=TODOs, 6=Edits
 
-*Lower case = direct action, Upper case = submenu*:
+*Three keys open submenus, the rest are direct actions*:
 - ~k~ → Capture entity submenu
 - ~L~ → Links submenu
 - ~W~ → Planner submenu
@@ -711,56 +711,56 @@ Take your time! The Hydra menu is your primary interface to ~org-scribe~ - maste
 
 ** Essential Hydra Commands
 
-| Category  | Key | Command            | Frequency |
-|-----------+-----+--------------------+-----------|
-| Insert    | ~s~   | Insert scene       | Daily     |
-| Insert    | ~c~   | Insert chapter     | Weekly    |
-| Workspace | ~m~   | Writing mode       | Daily     |
-| Tag Scene | ~p~   | Set PoV            | Per scene |
-| Tag Scene | ~h~   | Set characters     | Per scene |
-| Tag Scene | ~l~   | Set location       | Per scene |
-| Tools     | ~w~   | Count words        | Daily     |
-| Tools     | ~a~   | Update all counts  | Daily     |
-| Search    | ~2~   | Find by character  | Weekly    |
-| Search    | ~3~   | Find by plot       | Weekly    |
-| Manage    | ~k~   | Capture entity     | As needed |
-| Manage    | ~W~   | Planner            | Daily     |
+| Category  | Key | Command           | Frequency |
+|-----------+-----+-------------------+-----------|
+| Insert    | ~s~   | Insert scene      | Daily     |
+| Insert    | ~c~   | Insert chapter    | Weekly    |
+| Workspace | ~m~   | Writing mode      | Daily     |
+| Tag Scene | ~p~   | Set PoV           | Per scene |
+| Tag Scene | ~h~   | Set characters    | Per scene |
+| Tag Scene | ~l~   | Set location      | Per scene |
+| Tools     | ~w~   | Count words       | Daily     |
+| Tools     | ~a~   | Update all counts | Daily     |
+| Search    | ~2~   | Find by character | Weekly    |
+| Search    | ~3~   | Find by plot      | Weekly    |
+| Manage    | ~k~   | Capture entity    | As needed |
+| Manage    | ~W~   | Planner           | Daily     |
 
 ** Submenu Quick Reference
 
 *** Capture Entity (~F8 F8 k~)
 
-| Key | Command         | Use When                           |
-|-----+-----------------+------------------------------------|
-| ~h~   | Character       | Inventing a new character          |
-| ~l~   | Location        | Adding a new location              |
-| ~b~   | Object          | Tracking an important story object |
-| ~t~   | Timeline event  | Recording a plot timeline event    |
-| ~g~   | Plot thread     | Defining a new plot thread         |
-| ~n~   | Note            | Quick free-text project note       |
+| Key | Command        | Use When                           |
+|-----+----------------+------------------------------------|
+| ~h~   | Character      | Inventing a new character          |
+| ~l~   | Location       | Adding a new location              |
+| ~b~   | Object         | Tracking an important story object |
+| ~t~   | Timeline event | Recording a plot timeline event    |
+| ~g~   | Plot thread    | Defining a new plot thread         |
+| ~n~   | Note           | Quick free-text project note       |
 
 *** Links & Upkeep (~F8 F8 L~)
 
-| Key | Command               | Use When                               |
-|-----+-----------------------+----------------------------------------|
-| ~R~   | Relink project        | Batch update all links and IDs         |
-| ~j~   | Jump to plot thread   | Navigate to a plot thread profile      |
-| ~a~   | Add relationship      | Defining a character relationship      |
-| ~v~   | View relationships    | Checking one character's connections   |
-| ~V~   | View all              | Overview of all character connections  |
-| ~t~   | Plot health report    | Checking plot balance and coverage     |
-| ~C~   | Column view toggle    | Clean display of ID links in columns   |
-| ~T~   | Tooltips toggle       | Show entity info in echo area          |
+| Key | Command             | Use When                              |
+|-----+---------------------+---------------------------------------|
+| ~R~   | Relink project      | Batch update all links and IDs        |
+| ~j~   | Jump to plot thread | Navigate to a plot thread profile     |
+| ~a~   | Add relationship    | Defining a character relationship     |
+| ~v~   | View relationships  | Checking one character's connections  |
+| ~V~   | View all            | Overview of all character connections |
+| ~t~   | Plot health report  | Checking plot balance and coverage    |
+| ~C~   | Column view toggle  | Clean display of ID links in columns  |
+| ~T~   | Tooltips toggle     | Show entity info in echo area         |
 
 *** Planner (~F8 F8 W~)
 
-| Key | Command               | Use When                              |
-|-----+-----------------------+---------------------------------------|
-| ~p~   | Open project plan     | Start/continue daily planning session |
-| ~u~   | Update progress       | Push current total to plan manually   |
-| ~r~   | Recalculate plan      | After a productive or unproductive week |
-| ~m~   | Milestones            | Viewing/setting word count checkpoints |
-| ~D~   | Dashboards menu       | Progress charts and analytics          |
+| Key | Command           | Use When                                |
+|-----+-------------------+-----------------------------------------|
+| ~p~   | Open project plan | Start/continue daily planning session   |
+| ~u~   | Update progress   | Push current total to plan manually     |
+| ~r~   | Recalculate plan  | After a productive or unproductive week |
+| ~m~   | Milestones        | Viewing/setting word count checkpoints  |
+| ~D~   | Dashboards menu   | Progress charts and analytics           |
 
 ** Workflow Patterns
 
