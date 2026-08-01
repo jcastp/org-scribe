@@ -189,7 +189,7 @@ When you capture a plot thread using ~org-scribe-capture-plot-thread~, you'll se
 
 Note: The capture template uses properties optimized for tracking plot threads during the writing process. The template creates a structured entry with sections for Description, Connection to Main Plot, Key Scenes, Resolution, and Notes.
 
-** :ID: (Automatic)
+** ~:ID:~ (Automatic)
 
 A unique identifier for this plot thread, created automatically.
 
@@ -199,7 +199,7 @@ A unique identifier for this plot thread, created automatically.
 
 *You don't set this* - it's automatic!
 
-** :THREAD-TYPE:
+** ~:THREAD-TYPE:~
 
 The category of plot thread.
 
@@ -214,7 +214,7 @@ The category of plot thread.
 
 *Tip*: Be honest about plot importance. Not everything can be "Main Plot"! The template prompts you to select the appropriate type when capturing.
 
-** :STATUS:
+** ~:STATUS:~
 
 Current state of the plot thread.
 
@@ -229,7 +229,7 @@ Current state of the plot thread.
 
 *Tip*: Update this as you write! It helps during revision. The template uses a workflow-focused status system.
 
-** :Weight:
+** ~:Weight:~
 
 Controls the display order of plot threads in timelines and reports.
 
@@ -244,7 +244,7 @@ Controls the display order of plot threads in timelines and reports.
 
 *Tip*: Plot threads are sorted by weight (ascending) in timeline displays. Threads without a Weight property appear last (weight 999.0), sorted alphabetically.
 
-** :FIRST-APPEARANCE:
+** ~:FIRST-APPEARANCE:~
 
 When this plot thread first appears in the story.
 
@@ -1460,66 +1460,66 @@ Dynamic block ~#+BEGIN: plot-thread-timeline~ generates but shows no data.
 
 ** Keybindings
 
-| Key           | Action                          |
-|---------------+---------------------------------|
-| ~F8 F8 k g~     | Capture new plot thread         |
-| ~F8 F8 g~       | Set scene's plot thread(s) (menu) |
-| ~F8 F8 L j~     | Jump to scene's plot thread     |
-| ~F8 F8 R~       | Relink project (all entity types, incl. plot threads) |
-| ~F8 F8 L t~     | Plot health report              |
-| ~F8 F8 L S~     | Plot statistics                 |
-| ~F8 F8 3~       | Search scenes by plot           |
-| ~C-c C-o~       | Follow link at point            |
-| ~C-c &~         | Return from link                |
-| ~C-c C-c~       | Finalize capture / update table |
+| Key       | Action                                                |
+|-----------+-------------------------------------------------------|
+| ~F8 F8 k g~ | Capture new plot thread                               |
+| ~F8 F8 g~   | Set scene's plot thread(s) (menu)                     |
+| ~F8 F8 L j~ | Jump to scene's plot thread                           |
+| ~F8 F8 R~   | Relink project (all entity types, incl. plot threads) |
+| ~F8 F8 L t~ | Plot health report                                    |
+| ~F8 F8 L S~ | Plot statistics                                       |
+| ~F8 F8 3~   | Search scenes by plot                                 |
+| ~C-c C-o~   | Follow link at point                                  |
+| ~C-c &~     | Return from link                                      |
+| ~C-c C-c~   | Finalize capture / update table                       |
 
 ** Plot Template Sections
 
-| Section         | Purpose                            | Time to Fill   |
-|-----------------+------------------------------------+----------------|
-| Properties      | Metadata (type, status, etc.)      | 2 minutes      |
-| Overview        | Premise, question, stakes          | 3-5 minutes    |
-| Development Arc | Beginning, middle, end progression | 5-10 minutes   |
-| Key Scenes      | Major plot moments                 | 3-5 minutes    |
-| Resolution      | How it concludes                   | 3-5 minutes    |
-| Notes           | Tracking and reminders             | Ongoing        |
+| Section         | Purpose                            | Time to Fill |
+|-----------------+------------------------------------+--------------|
+| Properties      | Metadata (type, status, etc.)      | 2 minutes    |
+| Overview        | Premise, question, stakes          | 3-5 minutes  |
+| Development Arc | Beginning, middle, end progression | 5-10 minutes |
+| Key Scenes      | Major plot moments                 | 3-5 minutes  |
+| Resolution      | How it concludes                   | 3-5 minutes  |
+| Notes           | Tracking and reminders             | Ongoing      |
 
 ** Plot Thread Types
 
-| Type              | Coverage     | Example                               |
-|-------------------+--------------+---------------------------------------|
-| Main (A-Story)    | 60-80%       | Solve the murder                      |
-| Major Sub (B)     | 30-50%       | Romance subplot                       |
-| Minor Sub (C)     | 10-30%       | Family conflict                       |
-| Thematic Thread   | Throughout   | "Meaning of home" motif               |
+| Type            |   Coverage | Example                 |
+|-----------------+------------+-------------------------|
+| Main (A-Story)  |     60-80% | Solve the murder        |
+| Major Sub (B)   |     30-50% | Romance subplot         |
+| Minor Sub (C)   |     10-30% | Family conflict         |
+| Thematic Thread | Throughout | "Meaning of home" motif |
 
 ** Healthy Plot Distribution
 
-| Plot Type    | Scenes (50-scene novel) | Max Gap   | Must Resolve? |
-|--------------+-------------------------|-----------|---------------|
-| Main Plot    | 30-40 scenes            | 5 scenes  | Yes           |
-| Major Sub    | 15-25 scenes            | 8 scenes  | Usually yes   |
-| Minor Sub    | 5-15 scenes             | 10 scenes | Optional      |
-| Theme        | Throughout              | N/A       | No            |
+| Plot Type | Scenes (50-scene novel) | Max Gap   | Must Resolve? |
+|-----------+-------------------------+-----------+---------------|
+| Main Plot | 30-40 scenes            | 5 scenes  | Yes           |
+| Major Sub | 15-25 scenes            | 8 scenes  | Usually yes   |
+| Minor Sub | 5-15 scenes             | 10 scenes | Optional      |
+| Theme     | Throughout              | N/A       | No            |
 
 ** Common Commands
 
-| Command                                  | What It Does                              |
-|------------------------------------------+-------------------------------------------|
-| ~org-scribe-capture-plot-thread~              | Capture new plot thread with template     |
-| ~org-scribe-set-scene-plot-threads~           | Set plot via menu (multiple selection)    |
-| ~org-scribe-insert-plot-thread-link~          | Insert single plot link at point          |
-| ~org-scribe-insert-multiple-plot-thread-links~ | Insert multiple plot links at point       |
-| ~org-scribe-jump-to-plot-thread~              | Jump to plot from scene                   |
-| ~org-scribe-link-scene-plot-threads~          | Convert plain text to links (one scene)   |
-| ~org-scribe-link-all-scene-plot-threads~      | Convert plain text to links (all scenes)  |
-| ~org-scribe-org-find-plot~                    | Search scenes by plot (fuzzy completion)  |
-| ~org-scribe-plot-thread-report~               | Generate comprehensive health report      |
-| ~org-scribe-plot-thread-stats~                | Quick statistics in minibuffer            |
-| ~org-scribe-add-plot-thread-ids~              | Add IDs to existing plot threads          |
-| ~org-scribe-setup-plot-thread-links~          | Setup wizard for linking system           |
-| ~org-scribe-update-plot-link-names~           | Update link names in current scene        |
-| ~org-scribe-update-all-plot-link-names~       | Update link names in all scenes           |
+| Command                                      | What It Does                             |
+|----------------------------------------------+------------------------------------------|
+| ~org-scribe-capture-plot-thread~               | Capture new plot thread with template    |
+| ~org-scribe-set-scene-plot-threads~            | Set plot via menu (multiple selection)   |
+| ~org-scribe-insert-plot-thread-link~           | Insert single plot link at point         |
+| ~org-scribe-insert-multiple-plot-thread-links~ | Insert multiple plot links at point      |
+| ~org-scribe-jump-to-plot-thread~               | Jump to plot from scene                  |
+| ~org-scribe-link-scene-plot-threads~           | Convert plain text to links (one scene)  |
+| ~org-scribe-link-all-scene-plot-threads~       | Convert plain text to links (all scenes) |
+| ~org-scribe-org-find-plot~                     | Search scenes by plot (fuzzy completion) |
+| ~org-scribe-plot-thread-report~                | Generate comprehensive health report     |
+| ~org-scribe-plot-thread-stats~                 | Quick statistics in minibuffer           |
+| ~org-scribe-add-plot-thread-ids~               | Add IDs to existing plot threads         |
+| ~org-scribe-setup-plot-thread-links~           | Setup wizard for linking system          |
+| ~org-scribe-update-plot-link-names~            | Update link names in current scene       |
+| ~org-scribe-update-all-plot-link-names~        | Update link names in all scenes          |
 
 * Tips for Better Plot Management
 
