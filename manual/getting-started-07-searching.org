@@ -13,6 +13,7 @@ By the end of this lesson, you'll be able to:
 - Locate all scenes that develop a particular plot thread
 - Find all scenes set in a specific location
 - Search for TODO items across your entire project
+- Find inline *EDIT*/*NOTE* markers left while drafting
 - Combine searches for complex queries
 - Use search results effectively during writing and revision
 
@@ -653,6 +654,73 @@ Continue writing Scene 15!
 
 Later, when you search TODOs, you'll find this and fix it.
 
+* Search 6: Finding Edit/Note Markers
+
+Find every inline ~*EDIT*~ or ~*NOTE*~ marker across your entire project.
+
+** How This Differs from TODO Search
+
+Search 5 (TODOs) looks for Org TODO *keywords* at the start of headings. Search 6 is different in two ways:
+- It looks for the literal text ~*EDIT*~ or ~*NOTE*~ *anywhere* in a line - inside a paragraph of prose, not just on a heading
+- It's implemented with ~rgrep~ (a recursive text-file search), not org-ql, so results come back as plain file:line matches rather than an org-ql view
+
+** When to Use
+
+- **Mid-draft flagging**: Mark a passage as needing work without breaking your writing flow
+- **Revision prep**: Collect every flagged passage across the whole project before a revision pass
+- **Continuity notes**: Leave yourself a reminder about something to double-check later
+
+** What Are Edit/Note Markers?
+
+While drafting, just type ~*EDIT*~ or ~*NOTE*~ directly in your prose (or in a heading) wherever something needs a second look:
+
+#+BEGIN_EXAMPLE
+Alex walked into the coffee shop. *NOTE* check this is the same shop from Chapter 2.
+
+The confrontation happened too fast. *EDIT* needs another beat here before the reveal.
+#+END_EXAMPLE
+
+Don't stop writing to fix it - just drop the marker and keep going.
+
+** How to Search
+
+Press: ~F8 F8 6~
+
+Or use: ~M-x org-scribe-search-edits-recursive~
+
+This runs ~rgrep~ across every ~.org~ file under your project root, searching for the pattern in ~org-scribe-edit-string~ (default: ~\*EDIT\*\|\*NOTE\*~, matching either marker; customize the variable if you prefer different markers).
+
+** Example Results
+
+#+BEGIN_EXAMPLE
+-*- mode: grep; default-directory: "~/my-novel/" -*-
+Grep started at ...
+
+novel.org:145:Alex walked into the coffee shop. *NOTE* check this is the same shop from Chapter 2.
+novel.org:312:The confrontation happened too fast. *EDIT* needs another beat here before the reveal.
+objects/characters.org:58:*EDIT* Sam's backstory contradicts Chapter 9 - reconcile.
+
+Grep finished with 3 matches found
+#+END_EXAMPLE
+
+** Using Results
+
+Since this is a standard ~grep-mode~ buffer, use Emacs' normal grep navigation:
+- ~RET~ or click a line to jump to that file and line
+- ~n~ / ~p~ to move to the next/previous match without leaving the results buffer
+- ~g~ to re-run the search after making fixes
+- ~q~ to close the results buffer
+
+Work through the list top to bottom, fixing or clearing each marker, then re-run the search (~g~) to confirm the count drops to zero before you consider revision "done."
+
+** Customizing the Markers
+
+If you prefer different marker text (e.g. ~TODO-REVISE~ instead of ~*EDIT*~), change the pattern in your init file:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")
+#+END_SRC
+
 * Combining Searches
 
 For advanced queries, combine multiple searches.
@@ -1169,6 +1237,7 @@ Congratulations! You've completed Lesson 7. You now know:
 ✓ Why searching is essential for managing longer manuscripts
 ✓ The four core search types (PoV, character, plot, location)
 ✓ How to search for TODO items across your project
+✓ How to find inline *EDIT*/*NOTE* markers across your project
 ✓ How to interpret search results (coverage %, gaps, distribution)
 ✓ How to navigate results efficiently (next, jump, return)
 ✓ What healthy coverage percentages look like for different elements
