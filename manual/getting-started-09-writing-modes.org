@@ -624,17 +624,20 @@ If the requested file cannot be found, the panel falls back to the project notes
 
 ** About the Notes File
 
-Editing mode's right panel is a plain companion org file named
-=<manuscript>-notes.org= (created automatically if it doesn't exist yet).
+Editing mode's right panel is your project's notes file - ~notes/notes.org~
+(~notas/notas.org~ in Spanish projects), or ~notes.org~ for short stories.
+It is created automatically if it doesn't exist yet. This is the same file
+~F8 F8 n~ captures into, so notes typed in the panel and notes captured from
+elsewhere all end up in one place.
+
+For notes that belong to a *specific sentence* rather than to the project as
+a whole, don't use this panel - write an inline marker in the manuscript
+itself and find them later with ~F8 F8~ then ~6~. See lesson 14, "Marker
+Convention".
+
 org-scribe does not integrate with ~org-remark~ or any other annotation
-package - it just opens this file alongside your manuscript so you have
-somewhere to jot revision notes.
-
-If you happen to use ~org-remark~ in your own workflow, you're welcome to
-point it at this same notes file, but org-scribe itself does nothing
-special to wire the two together (no automatic highlight linking, etc.).
-
-*Not required*: You can use Editing mode without org-remark!
+package - the right panel is a plain org file opened alongside your
+manuscript.
 
 ** Customization Variables
 
@@ -1082,13 +1085,14 @@ This is advanced - stick with the four built-in modes initially!
 ** "Editing mode notes file opens in wrong place"
 
 *Expected behavior*:
-- Notes file is always in same directory as manuscript
-- Named: ~[manuscript-name]-notes.org~
+- The panel shows the project notes file: ~notes/notes.org~, ~notas/notas.org~, or ~notes.org~ for short stories
+- The file is found relative to the *project root*, not the manuscript's directory
 
 If opening elsewhere:
-- Check current buffer's ~buffer-file-name~
-- Notes file derives from this name
-- Make sure manuscript is saved to disk (not unnamed buffer)
+- Check that the project root is detected: the ~.org-scribe-project~ marker file should be present
+- Check ~org-scribe-editing-right-panel~ - if set to a path string or a function, the panel shows that instead
+- If the requested file can't be found, the panel falls back to the project notes file
+- Make sure the manuscript is saved to disk (not an unnamed buffer)
 
 ** "Themes don't change when mode activates"
 

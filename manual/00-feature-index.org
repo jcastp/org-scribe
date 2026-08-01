@@ -354,7 +354,7 @@ Searches the entire project recursively for all TODO items, collecting them from
 
 ** Find Edit Notes (~org-scribe-search-edits-recursive~)
 
-Searches the entire project recursively for inline edit markers and revision notes using ~rgrep~. The search pattern is configured via ~org-scribe-edit-string~ (default regexp matches ~*EDIT*~ or ~*NOTE*~ strings anywhere in .org files). Results appear in a grep buffer with clickable file:line references. Writers use ~*EDIT*~ or ~*NOTE*~ inline while drafting to mark passages needing revision without interrupting flow; this function then collects all such markers across the entire project for a focused revision session.
+Searches the entire project recursively for inline edit markers and revision notes using ~rgrep~. The search pattern is configured via ~org-scribe-edit-string~ (default regexp matches ~*EDIT*~ or ~*NOTE*~ strings anywhere in .org files). Results appear in a grep buffer with clickable file:line references. Writers use ~*EDIT*~ or ~*NOTE*~ inline while drafting to mark passages needing revision without interrupting flow; this function then collects all such markers across the entire project for a focused revision session. Markers are conventionally written inside an ~#+begin_comment~ block, which keeps them out of every export backend and out of word counts (see lesson 14, "Marker Convention"). The search is deliberately project-wide; outside a writing project it falls back to the current buffer's directory rather than failing.
 
 *Status*: Fully implemented | *Hydra*: ~6~ (Search section) | *Module*: ~search/org-scribe-search.el~
 
@@ -629,7 +629,7 @@ The ~org-scribe-scene-break-replacements~ alist maps export backends to scene se
 
 ** Edit Note Marker (~org-scribe-edit-string~)
 
-Defines the regexp pattern used by ~org-scribe-search-edits-recursive~ to find inline edit notes and revision markers throughout the manuscript. Default value is ~"\*EDIT\*\\|\*NOTE\*"~, matching ~*EDIT*~ or ~*NOTE*~ anywhere in .org files. Writers can customize this to match their personal convention: for example ~"FIXME\\|REVISION\\|TOFIX"~ or any other marker they use to flag places needing attention. The pattern is passed to ~rgrep~, so full regexp syntax is supported.
+Defines the regexp pattern used by ~org-scribe-search-edits-recursive~ to find inline edit notes and revision markers throughout the manuscript. Default value is ~"\*EDIT\*\\|\*NOTE\*"~, matching ~*EDIT*~ or ~*NOTE*~ anywhere in .org files. Writers can customize this to match their personal convention: for example ~"FIXME\\|REVISION\\|TOFIX"~ or any other marker they use to flag places needing attention. The pattern is passed to ~rgrep~, so full regexp syntax is supported. Note that the default deliberately does *not* match ~*SUMMARY*~, a related marker for scenes planned but not yet written: those live under ~TODO~ headings and are found with the TODO search instead, keeping notes about absent prose separate from edits to prose that exists.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~search/org-scribe-search.el~
 

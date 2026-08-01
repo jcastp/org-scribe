@@ -137,6 +137,48 @@ incorrectly matched."
   (should-not (string-match-p org-scribe-edit-string "see *EDI here, no closing star"))
   (should-not (string-match-p org-scribe-edit-string "do *NOT do this, no closing star")))
 
+;;; org-scribe-search-edits-recursive: search root resolution
+;;
+;; `rgrep' is stubbed so these exercise root resolution only, without
+;; spawning a find/grep subprocess.
+
+(ert-deftest test-search-edits-uses-project-root ()
+  "Inside a project, the edits search greps from the project root."
+  (let* ((temp-dir (file-name-as-directory (make-temp-file "org-scribe-edits-" t)))
+         (captured nil))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" temp-dir)
+            (insert "Type: novel\n"))
+          (cl-letf (((symbol-function 'rgrep)
+                     (lambda (regexp files dir &optional _confirm)
+                       (setq captured (list regexp files dir)))))
+            (let ((default-directory temp-dir))
+              (org-scribe-search-edits-recursive)))
+          (should (equal org-scribe-edit-string (nth 0 captured)))
+          (should (equal "*.org" (nth 1 captured)))
+          (should (file-equal-p temp-dir (nth 2 captured))))
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-search-edits-falls-back-outside-project ()
+  "Outside a project, the edits search falls back to the buffer's directory.
+Regression test: `org-scribe-project-root' returns nil outside a
+project, and passing nil to `rgrep' as its DIR argument fails instead of
+degrading.  `org-scribe-search-todos-recursive' already had this
+fallback; the edits search did not."
+  (let* ((temp-dir (file-name-as-directory (make-temp-file "org-scribe-noproj-" t)))
+         (captured-dir 'unset))
+    (unwind-protect
+        (cl-letf (((symbol-function 'rgrep)
+                   (lambda (_regexp _files dir &optional _confirm)
+                     (setq captured-dir dir)))
+                  ((symbol-function 'org-scribe-project-root) (lambda () nil)))
+          (let ((default-directory temp-dir))
+            (org-scribe-search-edits-recursive))
+          (should (stringp captured-dir))
+          (should (file-equal-p temp-dir captured-dir)))
+      (delete-directory temp-dir t))))
+
 ;;; Run tests
 
 (defun org-scribe-search-run-tests ()

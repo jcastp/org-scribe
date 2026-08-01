@@ -919,8 +919,9 @@ All search functions are available via the hydra menu (=F8 F8=):
 - =3=: Find scenes by plot keyword
 - =4=: Find scenes by location
 - =5=: Find all TODO items in project
+- =6=: Find all edit/note markers in project (see [[*Inline Edit Markers][Inline Edit Markers]])
 
-These searches use org properties and work with both plain text and ID links:
+Searches =1= through =5= use org properties and work with both plain text and ID links:
 
 #+begin_example
  * Chapter 1
@@ -933,6 +934,38 @@ These searches use org properties and work with both plain text and ID links:
 #+end_example
 
 Searching for "Alice" finds this scene even with ID links!
+
+*** Inline Edit Markers
+
+Search =6= is different from the others: it is a plain text search (=rgrep=) for notes you leave *inside* the manuscript, attached to the sentence that needs work, rather than a property query.
+
+The convention is to write them inside an Org comment block:
+
+#+begin_example
+The carriage arrived before dawn, and nobody was awake to meet it.
+
+,#+begin_comment
+*EDIT*: prose - too flat. The arrival should feel ominous.
+,#+end_comment
+#+end_example
+
+| Marker   | Use for                                              |
+|----------+------------------------------------------------------|
+| =*EDIT*= | Something to change in prose that already exists     |
+| =*NOTE*= | Something to remember or check; not a change as such |
+
+Delete the comment block once you have dealt with it — that is how a marker is "closed"; there is no separate done state.
+
+**Why the comment block matters.** It is not decoration; it buys two guarantees:
+
+1. *Markers never reach your readers.* Org excludes comment blocks from every export backend. A marker written as bare text in a paragraph is ordinary prose and *will* appear in your exported manuscript, with nothing to warn you.
+2. *Markers never inflate your word count.* Comment blocks are excluded when counting, so =:WORDCOUNT:=, progress tables and the planner's daily ledger report real prose no matter how heavily you annotate.
+
+The word-count guarantee depends on the optional =org-context-extended= package; without it, org-scribe falls back to a plain count that counts everything, markers included. The export guarantee is pure Org behavior and always holds.
+
+Customize which markers are matched with =org-scribe-edit-string=. The search is deliberately project-wide, so markers in the manuscript, the notes file and research notes all surface in one pass; outside a project it falls back to the current buffer's directory.
+
+See lesson 14 of the manual for the full revision workflow, including the related =*SUMMARY*= marker for scenes you have planned but not yet written.
 
 ** Dictionary Tools
 

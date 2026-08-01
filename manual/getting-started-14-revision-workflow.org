@@ -101,6 +101,55 @@ Editing mode (~F8 F8 e~) creates a professional three-panel layout:
 3. Three-panel layout appears
 4. Notes file opens/creates automatically (~notes/notes.org~)
 
+** Marker Convention
+
+Revision produces two different kinds of writing: notes *about* the manuscript, which belong in the notes file, and notes *inside* the manuscript, attached to the exact sentence that needs work. This section is about the second kind.
+
+The convention is to write them inside an Org comment block:
+
+#+BEGIN_EXAMPLE
+The carriage arrived before dawn, and nobody was awake to meet it.
+
+,#+begin_comment
+*EDIT*: prose - too flat. The arrival should feel ominous.
+,#+end_comment
+#+END_EXAMPLE
+
+Two markers are recognized by the edit search:
+
+| Marker    | Use for                                              |
+|-----------+------------------------------------------------------|
+| ~*EDIT*~  | Something to change in prose that already exists     |
+| ~*NOTE*~  | Something to remember or check; not a change as such |
+
+Find them all with ~F8 F8~ then ~6~. Delete the comment block when you have dealt with it - that is how a marker gets "closed"; there is no separate done state to track.
+
+*** Why the Comment Block Matters
+
+Wrapping markers in ~#+begin_comment~ is not decoration. It buys two guarantees that unwrapped inline text does not:
+
+1. *They never reach your readers.* Org excludes comment blocks from every export backend - ODT, LaTeX, HTML, Markdown. A marker written as bare text in a paragraph is ordinary prose and *will* appear in your exported manuscript, bolded, with nothing to warn you. This is the single most important reason for the convention.
+
+2. *They never inflate your word count.* org-scribe excludes comment blocks when counting, so ~:WORDCOUNT:~, your progress tables, and the writing planner's daily ledger all report real prose. Annotate a scene as heavily as you like; your numbers stay honest.
+
+#+BEGIN_QUOTE
+*Requirement*: the word count exclusion depends on the optional ~org-context-extended~ package. Without it, org-scribe falls back to a plain word count that counts *everything*, including your markers. The export guarantee is pure Org behavior and always holds.
+#+END_QUOTE
+
+*** A Third Marker: ~*SUMMARY*~
+
+Some writers use a third marker for a scene they have decided to write later:
+
+#+BEGIN_EXAMPLE
+,** TODO Scene 12 - The confrontation
+
+,#+begin_comment
+*SUMMARY*: Alex finally opens the box. Sam admits the letter was never sent.
+,#+end_comment
+#+END_EXAMPLE
+
+This is deliberately *not* matched by the edit search, and the difference is worth understanding: ~*EDIT*~ and ~*NOTE*~ annotate prose that exists, while ~*SUMMARY*~ describes prose that does not exist yet. It belongs under a ~TODO~ heading and you find it with the TODO search (~F8 F8~ then ~5~), alongside every other unwritten scene - not mixed in with edits to prose you have already drafted.
+
 ** Setting Up Your Revision Notes File
 
 The first time you use editing mode, the notes file is blank. Set it up:
@@ -422,16 +471,32 @@ Search for elements that need resolution:
 
 *Search for Chekhov's Guns*:
 
-~F8 F8~ then ~5~ (TODO search) only finds Org TODO-keyword headings (~TODO~, ~TOWRITE~, etc.) - it won't catch inline bracket text like ~[SETUP: Box]~ sitting inside a paragraph. For that, either:
-- Use plain-text search (~C-s~ or ~M-x rgrep~) for ~[SETUP\|FORESHADOW\|PAYOFF]~ across your project, or
-- Customize ~org-scribe-edit-string~ to include these markers (e.g. ~"\\*EDIT\\*\\|\\*NOTE\\*\\|\\[SETUP\\|\\[FORESHADOW\\|\\[PAYOFF"~) and then use ~F8 F8~ then ~6~ (edit/note search), which is the ~rgrep~-based search meant for exactly this kind of inline marker
+~F8 F8~ then ~5~ (TODO search) only finds Org TODO-keyword headings (~TODO~, ~TOWRITE~, etc.) - it won't catch markers written in the prose itself. For those, use ~F8 F8~ then ~6~ (edit/note search), the ~rgrep~-based search meant for exactly this kind of marker.
+
+Write setup/payoff markers the same way as any other marker: inside a comment block, so they never reach your exported manuscript and never count toward your word totals (see [[*Marker Convention][Marker Convention]]).
+
+#+BEGIN_EXAMPLE
+Sam mentions the locked box in the attic, and says nothing more about it.
+
+,#+begin_comment
+*NOTE*: SETUP - the box. Payoff in Scene 12.
+,#+end_comment
+#+END_EXAMPLE
+
+Because ~*NOTE*~ is already matched by ~org-scribe-edit-string~, tracking setups needs no configuration at all - just write ~SETUP~, ~FORESHADOW~ or ~PAYOFF~ inside the note and scan the results.
+
+If you would rather have them as a separate category you can search independently, customize ~org-scribe-edit-string~ to add them:
+
+#+BEGIN_SRC elisp
+(setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|\\*SETUP\\*\\|\\*PAYOFF\\*")
+#+END_SRC
 
 Example findings:
 
 #+BEGIN_EXAMPLE
-Scene 3: "Sam mentions the locked box in the attic. [SETUP: Box]"
-Scene 7: "Alex hears strange noises from above. [FORESHADOW: Box]"
-Scene 12: "Alex opens the box and finds... [PAYOFF: Box]"
+novel.org:412:  *NOTE*: SETUP - the box. Payoff in Scene 12.
+novel.org:781:  *NOTE*: FORESHADOW - noises from the attic.
+novel.org:1298: *NOTE*: PAYOFF - Alex opens the box.
 #+END_EXAMPLE
 
 **Check**: Every SETUP needs a PAYOFF!
@@ -1404,7 +1469,8 @@ In the next lesson, you'll learn:
 
 ** Emacs Tools for Revision
 
-- *org-remark*: Annotation system for revision notes
+- *org-scribe's own edit markers*: comment-block ~*EDIT*~ / ~*NOTE*~ markers plus ~F8 F8~ then ~6~ - no extra package needed, and they never export or affect word counts (see [[*Marker Convention][Marker Convention]])
+- *org-remark*: Annotation system for revision notes, if you prefer highlight-based annotation; org-scribe does not wire itself to it
 - *writegood-mode*: Highlights passive voice, weasel words, duplicates
 - *flyspell-mode*: On-the-fly spell checking
 - *langtool*: Grammar checking integration

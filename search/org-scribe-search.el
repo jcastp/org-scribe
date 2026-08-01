@@ -177,9 +177,25 @@ Requires org-ql package to be installed."
 
 ;;;###autoload
 (defun org-scribe-search-edits-recursive ()
-  "Search for edition and notes items in current file tree using rgrep."
+  "Search the project for inline edit and note markers using rgrep.
+
+Matches `org-scribe-edit-string' (by default the \\=*EDIT\\=* and
+\\=*NOTE\\=* markers) across every .org file below the project root.
+The search is deliberately project-wide: markers left in the manuscript,
+in the notes file and in research notes are all worth seeing in one
+pass.
+
+Markers are conventionally written inside an Org comment block, which
+keeps them out of exports and out of word counts — see the manual for
+the convention.  This is a plain text search, so it finds them wherever
+they are written.
+
+Outside a writing project, falls back to the current buffer's directory
+rather than failing, matching `org-scribe-search-todos-recursive'."
   (interactive)
-  (rgrep org-scribe-edit-string "*.org" (org-scribe-project-root)))
+  (let ((root (or (org-scribe-project-root)
+                  (file-name-directory (or (buffer-file-name) default-directory)))))
+    (rgrep org-scribe-edit-string "*.org" root)))
 
 (provide 'org-scribe-search)
 
