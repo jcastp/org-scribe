@@ -260,7 +260,7 @@ Opens treemacs (file tree) and imenu-list (document outline) for easy navigation
 Three-pane layout:
 - Left: Document outline (imenu-list)
 - Center: Main document
-- Right: Notes file (org-remark annotations)
+- Right: Companion notes file (plain .org file; pair it with org-remark yourself if you want annotations)
 
 ** Word Counting
 

@@ -471,7 +471,7 @@ Activates: ~F8 F8 e~
 Perfect for:
 - Revision sessions (second draft onward)
 - Editing with annotations
-- Working with ~org-remark~ notes
+- Keeping a companion notes file open next to the manuscript
 - Comparing manuscript to planning notes
 - Serious structural editing
 
@@ -608,13 +608,17 @@ When you activate Editing mode:
 11. Repeat revision process
 12. ~F8 F8 e~ when done - layout closes, work saved
 
-** Integration with org-remark
+** About the Notes File
 
-If you use ~org-remark~ for annotations:
-- Highlights in manuscript link to notes file
-- Notes file contains annotation details
-- Editing mode shows both simultaneously
-- Perfect for detailed revision work
+Editing mode's right panel is a plain companion org file named
+=<manuscript>-notes.org= (created automatically if it doesn't exist yet).
+org-scribe does not integrate with ~org-remark~ or any other annotation
+package - it just opens this file alongside your manuscript so you have
+somewhere to jot revision notes.
+
+If you happen to use ~org-remark~ in your own workflow, you're welcome to
+point it at this same notes file, but org-scribe itself does nothing
+special to wire the two together (no automatic highlight linking, etc.).
 
 *Not required*: You can use Editing mode without org-remark!
 
