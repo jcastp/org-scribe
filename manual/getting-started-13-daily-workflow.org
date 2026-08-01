@@ -133,10 +133,10 @@ Reconnect with your story:
 
 See where you stand:
 
-1. Open your statistics file (~statistics.org~ for novels, or tracking section in ~story.org~ for short stories)
-2. Look at your progress table
+1. Open your manuscript (~novel.org~ or ~story.org~) and find the "Progress Tracking" section with the ~#+BEGIN: org-generate-wordcount-table~ dynamic block
+2. Look at your progress table (press ~C-c C-c~ on the ~#+BEGIN~ line to refresh it first)
 3. Note your current total word count
-4. See how close you are to your milestone
+4. For a manuscript-wide total and percentage (rather than per-heading numbers), run ~M-x org-scribe-project-health~ (or ~F8 F8 H~) instead
 
 Example progress table you might see:
 
@@ -499,9 +499,9 @@ See what you achieved today!
 
 Update your project statistics:
 
-1. Open ~statistics.org~ (novels) or your story file (short stories)
-2. Navigate to the word count table
-3. Position cursor in the table
+1. Open your manuscript (~novel.org~ or ~story.org~)
+2. Navigate to the "Progress Tracking" section's word count table (~#+BEGIN: org-generate-wordcount-table~)
+3. Position cursor on the ~#+BEGIN~ line
 4. Press ~C-c C-c~ to update
 
 The table recalculates:
@@ -633,7 +633,7 @@ Choose a consistent time when you can reflect without rushing.
 
 *** 1. Review Progress (5 minutes)
 
-Open ~statistics.org~ and assess:
+Run ~M-x org-scribe-project-health~ (or ~F8 F8 H~) and assess:
 
 - *Word count*: "I wrote 3,500 words this week"
 - *Scenes completed*: "Finished 5 scenes"
@@ -1071,12 +1071,12 @@ You now have a complete framework for daily writing productivity!
 
 ** The Core Workflow at a Glance
 
-| Phase   | Time   | Key Activities                                    |
-|---------+--------+---------------------------------------------------|
-| Morning | 5 min  | Open, review, set goal, activate mode             |
-| Writing | 30-120 | Write, quick captures, minimal interruptions      |
-| Evening | 10 min | Count words, update tables, plan, backup          |
-| Weekly  | 30 min | Review timelines, plan week, celebrate            |
+| Phase   | Time   | Key Activities                               |
+|---------+--------+----------------------------------------------|
+| Morning | 5 min  | Open, review, set goal, activate mode        |
+| Writing | 30-120 | Write, quick captures, minimal interruptions |
+| Evening | 10 min | Count words, update tables, plan, backup     |
+| Weekly  | 30 min | Review timelines, plan week, celebrate       |
 
 ** Best Practices
 
@@ -1178,4 +1178,4 @@ Share your workflow and learn from others:
 - *Difficulty*: Intermediate
 - *Prerequisites*: Familiarity with features from Lessons 1-12
 
-Remember: The best workflow is the one you actually use. Start simple, adjust as needed, and keep writing! 📝✨
+Remember: The best workflow is the one you actually use. Start simple, adjust as needed, and keep writing!

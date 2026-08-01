@@ -597,7 +597,7 @@ Place timeline sections in your manuscript after:
 
 You can have multiple timeline blocks:
 - One in ~novel.org~ (quick reference)
-- One in ~statistics.org~ (detailed tracking)
+- One in ~timeline.org~ (detailed analysis)
 - One per act (in separate files)
 
 All show same data - choose what fits your workflow!
