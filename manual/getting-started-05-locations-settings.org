@@ -157,7 +157,7 @@ When you capture a location, you'll see these properties:
 :END:
 #+END_EXAMPLE
 
-** :ID: (Automatic)
+** ~:ID:~ (Automatic)
 
 A unique identifier for this location, created automatically.
 
@@ -167,7 +167,7 @@ A unique identifier for this location, created automatically.
 
 *You don't set this* - it's automatic!
 
-** :Type:
+** ~:Type:~
 
 The category of location.
 
@@ -184,7 +184,7 @@ The category of location.
 
 *Tip*: Use broad categories. You'll add specifics in the description.
 
-** :Importance:
+** ~:Importance:~
 
 How central this location is to your story.
 
@@ -197,7 +197,7 @@ How central this location is to your story.
 
 *Tip*: If unsure, start with Secondary. You can upgrade later.
 
-** :First-appearance:
+** ~:First-appearance:~
 
 When readers first see this location.
 
@@ -210,7 +210,7 @@ When readers first see this location.
 
 *Tip*: Fill this when you link the location to its first scene.
 
-** :Setting:
+** ~:Setting:~
 
 Broader context - where is this location?
 
@@ -223,7 +223,7 @@ Broader context - where is this location?
 
 *Purpose*: Shows geographic relationships between locations.
 
-** :Accessibility:
+** ~:Accessibility:~
 
 Who can access this location and when?
 
@@ -236,7 +236,7 @@ Who can access this location and when?
 
 *Tip*: This prevents plot holes (character shows up when location is closed).
 
-** :Owner:
+** ~:Owner:~
 
 Who owns, manages, or controls this location?
 
@@ -248,7 +248,7 @@ Who owns, manages, or controls this location?
 
 *Tip*: You can link to character profiles here if the owner is a character.
 
-** :Atmosphere:
+** ~:Atmosphere:~
 
 The overall feeling or mood.
 
@@ -985,33 +985,33 @@ Search returns 0 results despite linked scenes.
 
 ** Keybindings
 
-| Key           | Action                          |
-|---------------+---------------------------------|
-| ~F8 F8 k l~     | Capture new location            |
-| ~F8 F8 l~       | Set scene's location(s) (menu)  |
-| ~F8 F8 R~       | Relink project (all entity types, incl. locations) |
-| ~F8 F8 4~       | Search scenes by location       |
-| ~C-c C-o~       | Follow link at point            |
-| ~C-c &~         | Return from link                |
-| ~C-c C-c~       | Finalize capture / update table |
+| Key       | Action                                             |
+|-----------+----------------------------------------------------|
+| ~F8 F8 k l~ | Capture new location                               |
+| ~F8 F8 l~   | Set scene's location(s) (menu)                     |
+| ~F8 F8 R~   | Relink project (all entity types, incl. locations) |
+| ~F8 F8 4~   | Search scenes by location                          |
+| ~C-c C-o~   | Follow link at point                               |
+| ~C-c &~     | Return from link                                   |
+| ~C-c C-c~   | Finalize capture / update table                    |
 
 There is no dedicated "jump to location" key — following the location link with ~C-c C-o~ is the only way to go from a scene to a location profile.
 
 ** Location Template Sections
 
-| Section                     | Purpose                             |
-|------------------------------+-------------------------------------|
-| Properties                  | Metadata (type, importance, first-appearance, climate, population) |
-| General Description         | Visual and sensory details          |
-| Geography                   | Broader geographic context          |
-| Cultural Aspects & Society  | Language, customs, religion, government |
-| History                     | Past events, ownership              |
-| Notable Features            | Distinctive elements                |
-| Importance in the Plot      | Why it matters to the story         |
-| Specific Places             | Sub-locations within this one       |
-| Atmosphere & Mood           | Emotional tone and feeling          |
-| Map/Reference Image         | Visual reference                    |
-| Notes                       | Continuity and writer reminders     |
+| Section                    | Purpose                                                            |
+|----------------------------+--------------------------------------------------------------------|
+| Properties                 | Metadata (type, importance, first-appearance, climate, population) |
+| General Description        | Visual and sensory details                                         |
+| Geography                  | Broader geographic context                                         |
+| Cultural Aspects & Society | Language, customs, religion, government                            |
+| History                    | Past events, ownership                                             |
+| Notable Features           | Distinctive elements                                               |
+| Importance in the Plot     | Why it matters to the story                                        |
+| Specific Places            | Sub-locations within this one                                      |
+| Atmosphere & Mood          | Emotional tone and feeling                                         |
+| Map/Reference Image        | Visual reference                                                   |
+| Notes                      | Continuity and writer reminders                                    |
 
 ** Location Profile Depth
 
@@ -1023,27 +1023,27 @@ There is no dedicated "jump to location" key — following the location link wit
 
 ** Location Types
 
-| Type            | Examples                                 | Typical Importance |
-|-----------------+------------------------------------------+--------------------|
-| Residence       | Apartment, house, dorm                   | Primary/Secondary  |
-| Business        | Coffee shop, office, store               | Primary/Secondary  |
-| Public          | Park, street, library                    | Secondary/Minor    |
-| Institution     | School, hospital, government building    | Secondary          |
-| Transportation  | Car, train, bus, airplane                | Minor              |
-| Natural         | Forest, beach, mountain, river           | Secondary/Minor    |
-| Other           | Unique to your story                     | Varies             |
+| Type           | Examples                              | Typical Importance |
+|----------------+---------------------------------------+--------------------|
+| Residence      | Apartment, house, dorm                | Primary/Secondary  |
+| Business       | Coffee shop, office, store            | Primary/Secondary  |
+| Public         | Park, street, library                 | Secondary/Minor    |
+| Institution    | School, hospital, government building | Secondary          |
+| Transportation | Car, train, bus, airplane             | Minor              |
+| Natural        | Forest, beach, mountain, river        | Secondary/Minor    |
+| Other          | Unique to your story                  | Varies             |
 
 ** Common Commands
 
-| Command                              | What It Does                         |
-|--------------------------------------+--------------------------------------|
-| ~org-scribe-capture-location~             | Capture new location profile         |
-| ~org-scribe-set-scene-locations~           | Set location via menu                |
-| ~org-scribe-link-scene-locations~          | Link current scene's location        |
-| ~org-scribe-link-all-scene-locations~     | Batch link all scenes                |
-| ~org-scribe-relink-project~                | Add missing IDs, link plain names, and refresh display names across every entity type (the modern one-command replacement for the four functions above) |
-| ~org-scribe-org-find-location~            | Search scenes by location            |
-| ~org-scribe-add-location-ids~             | Add IDs to existing locations        |
+| Command                             | What It Does                                                                                                                                            |
+|-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ~org-scribe-capture-location~         | Capture new location profile                                                                                                                            |
+| ~org-scribe-set-scene-locations~      | Set location via menu                                                                                                                                   |
+| ~org-scribe-link-scene-locations~     | Link current scene's location                                                                                                                           |
+| ~org-scribe-link-all-scene-locations~ | Batch link all scenes                                                                                                                                   |
+| ~org-scribe-relink-project~           | Add missing IDs, link plain names, and refresh display names across every entity type (the modern one-command replacement for the four functions above) |
+| ~org-scribe-org-find-location~        | Search scenes by location                                                                                                                               |
+| ~org-scribe-add-location-ids~         | Add IDs to existing locations                                                                                                                           |
 
 * Tips for Better Location Management
 
