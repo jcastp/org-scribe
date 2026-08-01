@@ -164,6 +164,7 @@ recommended keybindings and hooks."
      (guess-language . "Automatic language detection")
      (gt             . "Translation support")
      (powerthesaurus . "English thesaurus")
+     (tempel         . "Snippets for inline edit markers (org-scribe-tempel-setup)")
      (org-remark     . "Text annotations")))
   "org-scribe dependencies grouped by importance, each with a description.
 Only the `:required' group is needed for the package to load; the

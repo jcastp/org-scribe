@@ -106,6 +106,14 @@ These enhance functionality but are not required:
 (use-package powerthesaurus
   :ensure t)
 
+;; For the bundled inline edit marker snippets
+(use-package tempel
+  :ensure t
+  :config
+  ;; Adds org-scribe's `edit' and `note' snippets to `tempel-path'.
+  ;; Your own templates file is never touched.
+  (org-scribe-tempel-setup))
+
 ;; For text annotations
 (use-package org-remark
   :ensure t)

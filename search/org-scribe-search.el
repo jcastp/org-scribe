@@ -458,6 +458,59 @@ In the index buffer, `g' refreshes and `q' buries it."
                                      (abbreviate-file-name root)))
           (pop-to-buffer buffer))))))
 
+;;; Tempel snippets (optional)
+;;
+;; The snippets that *write* markers live here, next to the parser that
+;; *reads* them, because the two have to agree on the grammar.  The
+;; `edit' snippet prompts from `org-scribe-edit-categories', the same
+;; variable the index groups by, so the prompt and the grouping cannot
+;; drift apart.
+
+;; Tempel is an optional dependency: declared, never required.
+(defvar tempel-path)
+
+(defconst org-scribe--search-source-directory
+  (file-name-directory (or load-file-name buffer-file-name))
+  "Directory holding this file, used to locate bundled snippets.")
+
+;;;###autoload
+(defun org-scribe-tempel-snippets-file ()
+  "Return the path to org-scribe's bundled Tempel snippet file.
+The file defines `edit' and `note' snippets that insert inline edit
+markers wrapped in a comment block, matching the convention
+`org-scribe-search-edits' indexes."
+  (expand-file-name "../snippets/org-scribe-tempel.eld"
+                    org-scribe--search-source-directory))
+
+;;;###autoload
+(defun org-scribe-tempel-setup ()
+  "Add org-scribe's bundled snippets to `tempel-path'.
+
+Call this from your init file if you use Tempel and want the `edit' and
+`note' snippets:
+
+  (with-eval-after-load \\='tempel (org-scribe-tempel-setup))
+
+This only ever adds to `tempel-path': your own templates file is never
+read, modified, or overridden by org-scribe.  If both define a snippet
+of the same name, whichever file comes first in `tempel-path' wins.
+
+Note that `tempel-path' may hold a single path *string* rather than a
+list — that is its default — so this normalizes it to a list first
+rather than using `add-to-list', which would fail on a string.  Calling
+this twice is harmless.
+
+Signals a `user-error' when Tempel is not installed; the markers are
+plain text and can always be typed by hand."
+  (interactive)
+  (unless (boundp 'tempel-path)
+    (user-error "Tempel is not installed or not yet loaded"))
+  (let ((file (org-scribe-tempel-snippets-file))
+        (paths (if (listp tempel-path) tempel-path (list tempel-path))))
+    (unless (member file paths)
+      (setq tempel-path (cons file paths)))
+    tempel-path))
+
 ;;;###autoload
 (defalias 'org-scribe-search-edits-recursive #'org-scribe-search-edits
   "Compatibility alias for `org-scribe-search-edits'.

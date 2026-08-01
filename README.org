@@ -104,6 +104,7 @@ active and which are missing, with install hints.
 - [[https://github.com/guess-language/guess-language.el][guess-language]] - For automatic language detection
 - [[https://github.com/lorniu/gt.el][gt]] - For translation support
 - [[https://github.com/SavchenkoValeriy/emacs-powerthesaurus][powerthesaurus]] - For English thesaurus
+- [[https://github.com/minad/tempel][tempel]] - For the bundled inline edit marker snippets (see [[*Inline Edit Markers][Inline Edit Markers]])
 - [[https://github.com/nobiot/org-remark][org-remark]] - For text annotations
 
 ** From Source
@@ -980,6 +981,17 @@ Each entry links back to the exact line. In the index buffer, =g= refreshes and 
 Categories come from =org-scribe-edit-categories= (default: plot, scene, character, prose). A marker whose category is missing, empty or unrecognized is grouped under =other= rather than dropped — a typo moves a marker, it never hides one. Set =org-scribe-edits-index-show-empty-categories= to =nil= if you would rather not see categories with nothing in them.
 
 The index is built by walking Org's parse tree for comment blocks, so prose that merely mentions =*NOTE*= cannot produce a false positive. If your markers *don't* follow the comment-block convention, call it with a prefix argument (=C-u=) for =org-scribe-search-edits-rgrep=, the plain-text search that finds them anywhere.
+
+**Typing markers.** They are plain text, so you can type them by hand. If you use [[https://github.com/minad/tempel][Tempel]], org-scribe bundles =edit= and =note= snippets:
+
+#+begin_src elisp
+(with-eval-after-load 'tempel
+  (org-scribe-tempel-setup))
+#+end_src
+
+Then type =edit= or =note= in an org buffer and expand. The =edit= snippet prompts for the category from =org-scribe-edit-categories= — the same variable the index groups by, so the prompt and the grouping can never drift apart.
+
+=org-scribe-tempel-setup= only *adds* to =tempel-path=; your own templates file is never read, modified or overridden. If you already define snippets of the same name, whichever file comes first in =tempel-path= wins. Tempel is entirely optional.
 
 **Why the comment block matters.** It is not decoration; it buys two guarantees:
 

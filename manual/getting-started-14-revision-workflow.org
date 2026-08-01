@@ -124,6 +124,23 @@ Two markers are recognized by the edit search:
 
 Delete the comment block when you have dealt with it - that is how a marker gets "closed"; there is no separate done state to track.
 
+*** Typing Markers Quickly
+
+Markers are plain text - typing them by hand is perfectly fine. But since you'll write hundreds of them over a manuscript, org-scribe bundles snippets for [[https://github.com/minad/tempel][Tempel]]:
+
+#+BEGIN_SRC elisp
+(with-eval-after-load 'tempel
+  (org-scribe-tempel-setup))
+#+END_SRC
+
+Then type ~edit~ in an org buffer and expand it. You get the comment block, the marker, and a prompt for the category - filled from ~org-scribe-edit-categories~, the same variable the index groups by, so the prompt and the grouping can never disagree. Type ~note~ for the simpler ~*NOTE*~ form.
+
+#+BEGIN_QUOTE
+*Your own snippets are safe*: ~org-scribe-tempel-setup~ only adds a file to ~tempel-path~. It never reads, modifies or overrides your own templates file. If you already have snippets named ~edit~ or ~note~, whichever file comes first in ~tempel-path~ wins - org-scribe doesn't try to resolve that for you.
+#+END_QUOTE
+
+Tempel is optional. Without it, everything else in this lesson works exactly the same.
+
 *** Categories
 
 An ~*EDIT*~ carries a category before a ~" - "~ separator, so that a revision pass can tackle one kind of problem at a time. The default categories are ~plot~, ~scene~, ~character~ and ~prose~ (customize ~org-scribe-edit-categories~).
@@ -187,7 +204,17 @@ Some writers use a third marker for a scene they have decided to write later:
 ,#+end_comment
 #+END_EXAMPLE
 
-This is deliberately *not* matched by the edit search, and the difference is worth understanding: ~*EDIT*~ and ~*NOTE*~ annotate prose that exists, while ~*SUMMARY*~ describes prose that does not exist yet. It belongs under a ~TODO~ heading and you find it with the TODO search (~F8 F8~ then ~5~), alongside every other unwritten scene - not mixed in with edits to prose you have already drafted.
+This is deliberately *not* matched by the edit search. The distinction is what organizes the whole marker system:
+
+| Marker      | Annotates                   | Lives under      | Found by       |
+|-------------+-----------------------------+------------------+----------------|
+| ~*EDIT*~    | prose that exists           | any scene        | ~F8 F8~ then ~6~ |
+| ~*NOTE*~    | prose that exists           | any scene        | ~F8 F8~ then ~6~ |
+| ~*SUMMARY*~ | prose that does *not* exist | a ~TODO~ heading | ~F8 F8~ then ~5~ |
+
+A revision pass and a drafting session are different work. Mixing "fix this sentence" into the same list as "write this scene" would make both lists less useful, so the edit index covers the first two rows only and the TODO search covers the third - where an unwritten scene sits alongside every other unwritten scene.
+
+There is no bundled snippet for ~*SUMMARY*~ for the same reason; if you use one, keep it in your own templates file.
 
 ** Setting Up Your Revision Notes File
 

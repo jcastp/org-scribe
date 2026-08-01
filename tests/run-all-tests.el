@@ -30,6 +30,7 @@
 ;;   - Word counting (org-scribe-wordcount.el)
 ;;   - Dictionary and language tools (org-scribe-dictionary.el)
 ;;   - Project health report (org-scribe-health.el)
+;;   - Bundled Tempel snippets (snippets/org-scribe-tempel.eld)
 
 ;;; Code:
 
@@ -75,6 +76,7 @@
     "test-dictionary"              ; Dictionary and language tools
     "test-health"                  ; Project health report
     "test-overlays"                ; Entity tooltip system
+    "test-tempel-snippets"         ; Bundled Tempel snippets
     ;; Writing planner (planning/org-scribe-planner.el)
     "test-planner-calculation"     ; Calculation engine
     "test-planner-io"              ; Plan save/load round-trips
