@@ -35,8 +35,8 @@ By the end of this lesson, you'll have:
 All customizations go in your Emacs configuration file:
 
 *Common locations*:
-- ~~/..emacs.d/init.el~ (most common)
-- ~~/..emacs~
+- ~~/.emacs.d/init.el~ (most common)
+- ~~/.emacs~
 - ~~/.config/emacs/init.el~
 
 *To find yours*:
@@ -211,7 +211,7 @@ Run: ~M-x menu-set-font~ to see available fonts, or:
 M-x describe-font RET TAB
 #+END_SRC
 
-### Adjusting Font Size Only
+*** Adjusting Font Size Only
 
 If you just want bigger/smaller text without changing fonts:
 
@@ -385,7 +385,7 @@ The scene break macro (~{{{scene-break}}}~) outputs differently per format:
     (t . "\n\n\n")))  ; Default for other backends
 #+END_SRC
 
-### Customizing Scene Breaks
+*** Customizing Scene Breaks
 
 *Want centered asterisks in LaTeX?*
 
@@ -643,7 +643,7 @@ Modify the appropriate set for your needs!
 
 Speed up your workflow with personalized keyboard shortcuts.
 
-## Global Keybindings
+** Global Keybindings
 
 Add to your init file:
 
@@ -651,7 +651,7 @@ Add to your init file:
 ;;; Custom Keybindings for Writing
 
 ;; Quick access to writing features
-(global-set-key (kbd "C-c w m") 'org-scribe-distraction-free-mode)  ; Start writing
+(global-set-key (kbd "C-c w m") 'org-scribe-writing-env-mode)  ; Start writing (distraction-free)
 (global-set-key (kbd "C-c w e") 'org-scribe-editing-mode)           ; Start editing
 (global-set-key (kbd "C-c w w") 'org-scribe-wordcount)      ; Count words
 (global-set-key (kbd "C-c w n") 'org-scribe-capture-to-file)        ; Quick note
@@ -731,7 +731,7 @@ The package looks for manuscripts with these names:
 (setq org-scribe-novel-file-names '("novel.org" "novela.org" "manuscript.org" "book.org" "draft.org"))
 #+END_SRC
 
-## Directory Name Preferences
+** Directory Name Preferences
 
 For notes directory:
 
@@ -851,7 +851,7 @@ Here's a full, commented configuration you can adapt:
 ;; -----------------------------------------------------------------------------
 
 ;; Writing modes
-(global-set-key (kbd "C-c w m") 'org-scribe-distraction-free-mode)
+(global-set-key (kbd "C-c w m") 'org-scribe-writing-env-mode)
 (global-set-key (kbd "C-c w e") 'org-scribe-editing-mode)
 (global-set-key (kbd "C-c w w") 'org-scribe-wordcount)
 
@@ -900,7 +900,7 @@ For those who prefer a GUI approach.
 - Fonts
 - Text widths
 
-## Customizing Individual Variables
+** Customizing Individual Variables
 
 *For a specific variable*:
 
@@ -923,7 +923,7 @@ After making changes, test them!
 - Changes are applied
 
 *Method 2: Reload config file*
-- ~M-x load-file RET ~/..emacs.d/init.el RET~
+- ~M-x load-file RET ~/.emacs.d/init.el RET~
 - Changes applied without restart
 
 *Method 3: Evaluate region*
@@ -976,11 +976,11 @@ Now you can:
 
 * Sharing and Backup
 
-## Backing Up Your Configuration
+** Backing Up Your Configuration
 
 *Essential files to backup*:
-- ~~/..emacs.d/init.el~ (your main config)
-- ~~/..emacs.d/custom.el~ (if using customize interface)
+- ~~/.emacs.d/init.el~ (your main config)
+- ~~/.emacs.d/custom.el~ (if using customize interface)
 - Any custom template directories
 
 *Backup methods*:
@@ -1083,7 +1083,7 @@ Let's customize your setup right now!
 
 *Goal*: Build a customized ~org-scribe~ setup.
 
-### Step 1: Open Your Init File (1 min)
+** Step 1: Open Your Init File (1 min)
 
 1. ~C-x C-f~~/.emacs.d/init.el RET~
 2. Go to the end: ~M->~
@@ -1130,7 +1130,7 @@ Pick 3-5 features you use most:
 
 #+BEGIN_SRC emacs-lisp
 ;; My writing keybindings
-(global-set-key (kbd "C-c w m") 'org-scribe-distraction-free-mode)
+(global-set-key (kbd "C-c w m") 'org-scribe-writing-env-mode)
 (global-set-key (kbd "C-c w w") 'org-scribe-wordcount)
 (global-set-key (kbd "C-c d") 'org-scribe-rae-api-lookup)
 ;; Add more based on what you use!
@@ -1139,7 +1139,7 @@ Pick 3-5 features you use most:
 ** Step 6: Save and Test (3 min)
 
 1. Save init file: ~C-x C-s~
-2. Reload: ~M-x load-file RET ~/..emacs.d/init.el RET~
+2. Reload: ~M-x load-file RET ~/.emacs.d/init.el RET~
 3. Open a writing project
 4. Test writing mode: ~F8 F8 m~
 5. Test keybindings: ~C-c w m~
@@ -1223,7 +1223,7 @@ The minimal config most writers need:
 (setq org-scribe-template-language 'en)              ; 'en or 'es
 
 ;; Quick access
-(global-set-key (kbd "C-c w m") 'org-scribe-distraction-free-mode)
+(global-set-key (kbd "C-c w m") 'org-scribe-writing-env-mode)
 (global-set-key (kbd "C-c w w") 'org-scribe-wordcount)
 #+END_SRC
 
@@ -1273,7 +1273,7 @@ MAINTENANCE
 
 ** Next Steps
 
-*You've completed all 15 lessons!* 🎉
+*You've completed all 15 core lessons!* 🎉
 
 *What's next*:
 1. **Write!** - Use what you've learned
@@ -1281,6 +1281,8 @@ MAINTENANCE
 3. **Share** - Help other writers
 4. **Contribute** - Report bugs, suggest features
 5. **Enjoy** - You have a powerful writing environment!
+
+*Optional*: If you want goal-oriented writing plans - target dates, daily word targets, milestones, and progress dashboards - see [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with the Bundled Planner]]. It's bundled with org-scribe but opt-in per project, so nothing changes unless you enable it.
 
 *Keep learning*:
 - Read Emacs documentation: ~C-h i~
@@ -1340,7 +1342,7 @@ MAINTENANCE
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
-- *Lesson Number*: 15 of 15 (Final Lesson!)
+- *Lesson Number*: 15 of 16 (Final Core Lesson - Lesson 16 covers the optional bundled planner)
 - *Part*: 5 - Workflows and Best Practices
 - *Estimated Time*: 20-25 minutes
 - *Difficulty*: Beginner to Intermediate

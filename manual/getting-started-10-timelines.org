@@ -322,18 +322,18 @@ If all threads appear in same scenes:
 4. Check if all threads resolve near the end
 5. Identify any threads that need more development
 
-* TODO The Plot Thread Health Report
-*NOTE:* This needs review
+* The Plot Thread Health Report
 
 For deeper analysis, ~org-scribe~ includes an automated health report!
 
 ** What It Does
 
-The health report analyzes your plot threads and finds:
-- **One-appearance threads**: Mentioned once, never developed
-- **Large gaps**: Thread disappears for 10+ scenes
-- **Low coverage**: Thread appears in <30% of scenes
-- **Unresolved threads**: No appearances in final act
+The health report (~org-scribe-plot-thread-report~) analyzes every plot thread and flags three conditions, checked independently (a thread can trigger more than one at once):
+- **One-appearance threads**: Present in exactly 1 scene
+- **Large gaps**: More than 5 scenes between two appearances of the thread
+- **Low coverage**: Thread appears in less than 30% of all scenes
+
+There is no separate "unresolved thread" or "missing from final act" check - the report only evaluates coverage percentage, gap size, and single-scene appearances.
 
 ** Generating the Report
 
@@ -352,11 +352,12 @@ Two ways to access:
 
 ** Understanding the Report
 
-The report looks like:
+This is what the report actually generates - each thread gets a status symbol (✓ or ⚠️) in its heading, its ID, scene coverage, first/last appearance, and (only if a threshold was crossed) a ~*Warnings:*~ block:
 
 #+BEGIN_EXAMPLE
 #+TITLE: Plot Thread Health Report
 #+DATE: 2025-11-16 14:30
+#+STARTUP: overview
 
 * Summary
 
@@ -366,44 +367,55 @@ The report looks like:
 
 * Thread Details
 
-** Main Plot (Healthy ✓)
+** ✓ Main Plot
 
-- Appearances: 8/12 scenes (67%)
-- Coverage: Good
-- Max gap: 2 scenes
-- Status: Active throughout
+- ID: 20251116-abcd1234
+- Scenes: 8 of 12 (66.7%)
+- First appearance: Scene 1 - Opening (Chapter: Chapter 1)
+- Last appearance: Scene 12 - Climax (Chapter: Chapter 3)
 
-** Romance Subplot (⚠ Warning)
+** ⚠️ Romance Subplot
 
-- Appearances: 4/12 scenes (33%)
-- Coverage: Low (below 40%)
-- Max gap: 5 scenes
-- Status: ⚠ Long gap detected
-- Recommendation: Add 2-3 more scenes with this thread
+- ID: 20251116-efgh5678
+- Scenes: 4 of 12 (33.3%)
+- First appearance: Scene 2 - Meeting (Chapter: Chapter 1)
+- Last appearance: Scene 11 - Confession (Chapter: Chapter 3)
 
-** Mystery Thread (⚠ Warning)
+*Warnings:*
+- ⚠️ Gap of 6 scenes
 
-- Appearances: 2/12 scenes (17%)
-- Coverage: Very low
-- Max gap: 8 scenes
-- Status: ⚠ Minimal development
-- Recommendation: Either expand (5+ scenes) or remove
+** ⚠️ Mystery Thread
+
+- ID: 20251116-ijkl9012
+- Scenes: 2 of 12 (16.7%)
+- First appearance: Scene 3 - Clue (Chapter: Chapter 1)
+- Last appearance: Scene 9 - Second Clue (Chapter: Chapter 2)
+
+*Warnings:*
+- ⚠️ Low coverage (16.7%)
+
+* Scenes Without Plot Threads
+
+All scenes have Plot properties assigned.
 #+END_EXAMPLE
+
+Note there is no separate "Coverage: Good/Low", "Max gap", "Status", or "Recommendation" line in the real output - the heading's ✓/⚠️ symbol and the (optional) ~*Warnings:*~ list are the only status indicators. The final "Scenes Without Plot Threads" section always appears, listing any scene missing a ~:Plot:~ property (or confirming there are none).
 
 ** Warning Types
 
-| Warning            | Criteria              | Fix                           |
-|--------------------+-----------------------+-------------------------------|
-| One-appearance     | Only 1 scene          | Expand to 3+ or remove        |
-| Large gap          | 10+ scenes between    | Add reminder scenes           |
-| Low coverage       | <30% of scenes        | Add more development          |
-| Very low coverage  | <20% of scenes        | Major expansion or cut thread |
+There are exactly three warning conditions, checked independently, so a single thread can show more than one at once:
+
+| Warning        | Criteria             | Fix                     |
+|-----------------+----------------------+-------------------------|
+| One-appearance | Exactly 1 scene       | Expand to 3+ or remove  |
+| Large gap      | More than 5 scenes between appearances | Add reminder scenes |
+| Low coverage   | Below 30% of all scenes | Add more development scenes |
 
 ** Using the Report
 
 1. **Read Summary**: Get overall thread count
 2. **Check each thread**: Look for ⚠ warnings
-3. **Prioritize fixes**: Start with "Very low coverage" threads
+3. **Prioritize fixes**: Start with threads showing the lowest coverage percentage
 4. **Make changes**: Add scenes or remove threads
 5. **Regenerate report**: Verify improvements
 
@@ -415,8 +427,7 @@ The report looks like:
 4. Make notes about needed fixes
 5. Close report buffer
 
-* TODO Quick Statistics
-*NOTE:* This needs review
+* Quick Statistics
 
 For a fast check without full report:
 
@@ -895,12 +906,11 @@ PLOT THREAD TIMELINE:
 
 ** Warning Thresholds
 
-| Warning        | Threshold       | Recommended Fix        |
-|----------------+-----------------+------------------------|
-| One-appearance | 1 scene only    | Expand to 3+ or remove |
-| Large gap      | 10+ scenes      | Add reminder scenes    |
-| Low coverage   | <30% of scenes  | Add development scenes |
-| Very low       | <20% of scenes  | Major rework or cut    |
+| Warning        | Threshold                | Recommended Fix        |
+|----------------+---------------------------+------------------------|
+| One-appearance | Exactly 1 scene           | Expand to 3+ or remove |
+| Large gap      | More than 5 scenes        | Add reminder scenes    |
+| Low coverage   | Below 30% of all scenes   | Add development scenes |
 
 ** Common Analysis Patterns
 

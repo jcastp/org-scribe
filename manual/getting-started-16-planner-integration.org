@@ -147,18 +147,20 @@ Go to your manuscript (~novel.org~) and run the word count command:
 
 ** Check the Plan
 
-Immediately after step 2, look at your minibuffer. You should see:
-
-#+BEGIN_EXAMPLE
-org-scribe-planner: progress updated to 12847 words.
-#+END_EXAMPLE
+This sync is completely silent - ~F8 F8 a~ (~org-scribe-ews-org-count-words~) calls ~org-scribe-planner-record-total~ under the hood, which writes today's cumulative total into ~plan.org~ and saves it, but prints *no* minibuffer message and doesn't reopen the calendar. Don't expect to see anything after step 2.
 
 The planner automatically:
 1. Summed all ~WORDCOUNT~ properties across your manuscript
 2. Wrote the new total to ~plan.org~
 3. Saved the plan silently
 
-No extra steps needed. Every time you run ~F8 F8 a~, your plan stays in sync.
+No extra steps needed for the sync itself. If you want visible confirmation, press ~F8 F8 W u~ (Sync word count / ~org-scribe-planner-update-progress~) instead - unlike the automatic push after ~F8 F8 a~, this command also re-reads the manuscript total, reopens the calendar, and prints a progress line in the minibuffer:
+
+#+BEGIN_EXAMPLE
+Progress: 12847/80000 words (16.1%) | Ahead: +120 words
+#+END_EXAMPLE
+
+Every time you run ~F8 F8 a~, your plan stays in sync in the background - you just won't see it happen.
 
 ** Optional: Automatic Update on Every Save
 
@@ -335,8 +337,8 @@ Let's do a complete write-and-track cycle using the planner.
 2. *Check auto-load* — after a moment, does the minibuffer show ~org-scribe-planner: loaded plan~? If no plan exists yet, continue to step 3.
 3. *Open the planner* — press ~F8 F8 W p~. If no plan exists, answer ~yes~ to create one and follow the prompts.
 4. *Write something* — activate writing mode (~F8 F8 m~), write 200 words, exit mode, save (~C-x C-s~).
-5. *Update word counts* — press ~F8 F8 a~. Watch the minibuffer confirm the plan updated.
-6. *Check mode line* — is ~[W:actual/target]~ visible? Does the actual number match what you just wrote?
+5. *Update word counts* — press ~F8 F8 a~. This pushes the new total to the plan silently (no minibuffer message).
+6. *Check mode line* — is ~[W:actual/target]~ visible? Does the actual number match what you just wrote? (This is the actual confirmation that the sync worked.)
 7. *Log the session* — press ~F8 F8 W d~ and enter today's session word count.
 8. *View the calendar* — press ~F8 F8 W p~ to see your plan.
 

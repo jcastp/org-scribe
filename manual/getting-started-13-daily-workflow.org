@@ -263,20 +263,29 @@ You're writing and think: "Sam needs a sister!"
 #+BEGIN_EXAMPLE
 Capture character template appears:
 
-** Sarah Chen
+* Sarah Chen
 :PROPERTIES:
-:TYPE: Secondary
-:NAME: Sarah Chen
-:AGE: 28
-:ROLE: Sam's older sister
-:PHYSICAL: [fill later]
-:PERSONALITY: Protective, lawyer
+:ID: char-sarah-chen-20251116-001
+:Role: Sam's older sister
+:Weight: 3.0
+:Age: 28
+:Gender:
+:Occupation: Lawyer
+:Goal:
+:Motivation:
+:Conflict:
+:Arc:
+:First-appearance:
+:RelationshipsData:
 :END:
 
-Quick description: Sam's sister, will appear in courthouse scene
+** Physical Description
+- Height ::
+- Build ::
+...
 #+END_EXAMPLE
 
-Fill in the minimum (name, role), save (~C-c C-c~), and you're back to writing.
+Fill in the minimum (name, role, occupation), leave the rest blank, save (~C-c C-c~), and you're back to writing.
 
 *Time elapsed: 30 seconds*
 
@@ -287,13 +296,20 @@ You're writing a scene in a coffee shop and realize you need more details:
 Press ~F8 F8~ then ~k~ (capture-entity submenu) then ~l~ (location):
 
 #+BEGIN_EXAMPLE
-** Downtown Coffee Shop
+* Downtown Coffee Shop
 :PROPERTIES:
-:TYPE: Secondary
-:NAME: Downtown Coffee Shop
+:ID: loc-downtown-coffee-shop-20251116-001
+:Type: Business
+:Importance:
+:First-appearance:
+:Climate:
+:Population:
 :END:
 
-Interior: Check local coffee shops for authentic details - need to describe the espresso machine, wall art, seating arrangement
+** General Description
+Check local coffee shops for authentic details - need to describe the
+espresso machine, wall art, seating arrangement.
+...
 #+END_EXAMPLE
 
 Save (~C-c C-c~) - back to writing.
@@ -304,16 +320,14 @@ Save (~C-c C-c~) - back to writing.
 
 Mid-scene, you realize: "The mysterious package should contain her mother's old letters!"
 
-Press ~F8 F8~ then ~n~ (general note):
+Press ~F8 F8~ then ~n~ (general note). This is a plain TODO entry, filed under a "Notes" heading in your project's notes file - no properties drawer, just a timestamp and your text:
 
 #+BEGIN_EXAMPLE
-** Plot: Package Contents
-   :PROPERTIES:
-   :END:
-
-The package Sam receives in chapter 3 should contain letters from Alex's mother, written before she died. This ties into the mystery subplot.
-
-TODO: Revise chapter 2 to foreshadow the mother's letters
+** TODO Package Contents
+   [2025-11-16 Sun]
+   The package Sam receives in chapter 3 should contain letters from Alex's
+   mother, written before she died. This ties into the mystery subplot.
+   Revise chapter 2 to foreshadow the mother's letters.
 #+END_EXAMPLE
 
 Captured! Now keep writing the current scene.
@@ -325,11 +339,20 @@ Captured! Now keep writing the current scene.
 Press ~F8 F8~ then ~k~ (capture-entity submenu) then ~t~ (timeline event):
 
 #+BEGIN_EXAMPLE
-** Tuesday Morning - Coffee Shop Meeting
-   :PROPERTIES:
-   :DATE: Day 3 of the story
-   :END:
+* Tuesday Morning - Coffee Shop Meeting
+:PROPERTIES:
+:ID: 20251116123456
+:Type:
+:Relevance:
+:Date: Day 3 of the story
+:Time:
+:Duration:
+:Characters:
+:Location:
+:Chapter:
+:END:
 
+*** Notes
 This is 2 days after the opening scene. Alex has been avoiding the office.
 #+END_EXAMPLE
 
@@ -1149,7 +1172,7 @@ Share your workflow and learn from others:
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
-- *Lesson Number*: 13 of 15
+- *Lesson Number*: 13 of 16
 - *Part*: 5 - Workflows and Best Practices
 - *Estimated Time*: 15-20 minutes
 - *Difficulty*: Intermediate

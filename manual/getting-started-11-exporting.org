@@ -227,12 +227,12 @@ PDF is the gold standard for print and submission to publishers.
 Your template has LaTeX settings:
 
 #+BEGIN_EXAMPLE
-#+LATEX_CLASS: book
+#+LATEX_CLASS: memoir_draft
 #+LATEX_HEADER:
 #+LATEX_HEADER_EXTRA:
 #+END_EXAMPLE
 
-*Default*: Uses "book" class (appropriate for novels)
+*Default*: The novel template ships with the ~memoir_draft~ class (a draft-oriented variant of the ~memoir~ class, good for book-length manuscripts). The short story template instead defaults to ~article~. If ~memoir_draft~ isn't available in your LaTeX distribution, switch to a standard class like ~book~ or ~article~ (see "Custom LaTeX Class" below).
 
 ** Step 2: Export to PDF
 
@@ -277,8 +277,9 @@ Now chapters show as "Chapter 1" without numbers on sections.
 For specific publisher requirements:
 
 #+BEGIN_EXAMPLE
-#+LATEX_CLASS: article        (shorter works)
-#+LATEX_CLASS: book           (novels - default)
+#+LATEX_CLASS: article        (shorter works - short story template default)
+#+LATEX_CLASS: memoir_draft   (book-length manuscripts - novel template default)
+#+LATEX_CLASS: book           (standard alternative to memoir_draft)
 #+LATEX_CLASS: memoir         (extensive customization)
 #+END_EXAMPLE
 
@@ -721,7 +722,7 @@ Change:
 ** LaTeX-Specific Settings
 
 #+BEGIN_EXAMPLE
-#+LATEX_CLASS: book
+#+LATEX_CLASS: memoir_draft
 #+LATEX_HEADER: \usepackage{geometry}
 #+LATEX_HEADER: \geometry{margin=1in}
 #+END_EXAMPLE
@@ -969,7 +970,8 @@ Here are complete workflows for common scenarios.
 *Solution*:
 1. Check top of file has: ~#+MACRO: scene-break SCENE-BREAK~
 2. Verify using ~{{{scene-break}}}~ not ~{{{scene break}}}~ (no space!)
-3. Check ~writing-export.el~ is loaded: ~M-x writing-version~
+3. Confirm ~org-scribe~ is loaded: ~M-x org-scribe-version~
+4. The replacement only applies inside an org-scribe context: either the file lives under a project with a ~.org-scribe-project~ marker, or ~org-scribe-mode~ is enabled in the buffer. Outside of that, the literal ~SCENE-BREAK~ text is left as-is (so other org files aren't affected).
 
 ** Problem: Export Shows TODO Keywords
 

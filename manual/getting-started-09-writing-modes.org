@@ -42,12 +42,12 @@ Don't worry if you don't have all of these - we'll explain which features need w
 
 ** Overview Table
 
-| Mode             | Key  | Purpose                       | Best For                      |
-|------------------+------+-------------------------------+-------------------------------|
-| Distraction-Free | ~m~    | Clean, focused writing        | Daily writing, first drafts   |
-| Focus Mode       | ~f~    | One section at a time         | Intensive scene work          |
-| Navigate Mode    | ~v~    | Navigation + writing          | Complex projects, jumping     |
-| Editing Mode     | ~e~    | Three-pane editing layout     | Revision, notes integration   |
+| Mode             | Key | Purpose                   | Best For                    |
+|------------------+-----+---------------------------+-----------------------------|
+| Distraction-Free | ~m~   | Clean, focused writing    | Daily writing, first drafts |
+| Focus Mode       | ~f~   | One section at a time     | Intensive scene work        |
+| Navigate Mode    | ~v~   | Navigation + writing      | Complex projects, jumping   |
+| Editing Mode     | ~e~   | Three-pane editing layout | Revision, notes integration |
 
 ** Mutual Exclusivity
 
@@ -83,7 +83,7 @@ Activates: ~F8 F8 m~
 - Changes font to writing preset (larger, more readable)
 - Enables ~writeroom-mode~ (centers text, hides mode line)
 - Shows line numbers
-- Narrows text width to comfortable reading (default: 80 columns)
+- Narrows text width to comfortable reading (default: 80 columns, configurable)
 
 *The result*: A clean, centered, distraction-free writing canvas
 
@@ -126,9 +126,9 @@ BEFORE DISTRACTION-FREE MODE:
 │         │ Text text text text text text text   │
 │ - Files │ text text text text text text text   │
 │ - Buffs │ text text text text text text text   │
-│ - ...   │                                       │
-│         │ *** Chapter 2                         │
-│         │ More text...                          │
+│ - ...   │                                      │
+│         │ *** Chapter 2                        │
+│         │ More text...                         │
 ├─────────┴──────────────────────────────────────┤
 │ [Mode indicators] [Battery] [Time] ...         │
 └────────────────────────────────────────────────┘
@@ -212,13 +212,13 @@ Perfect for:
 
 ** The Difference from Distraction-Free
 
-| Aspect         | Distraction-Free      | Focus Mode                 |
-|----------------+-----------------------+----------------------------|
-| *Visibility*     | Entire manuscript     | Current section only       |
-| *Scrolling*      | Can scroll anywhere   | Scrolls within section     |
-| *Navigation*     | All headings visible  | Only current heading       |
-| *Mental Model*   | "Work on manuscript"  | "Work on THIS scene"       |
-| *When to Exit*   | After writing session | After finishing section    |
+| Aspect       | Distraction-Free      | Focus Mode              |
+|--------------+-----------------------+-------------------------|
+| *Visibility*   | Entire manuscript     | Current section only    |
+| *Scrolling*    | Can scroll anywhere   | Scrolls within section  |
+| *Navigation*   | All headings visible  | Only current heading    |
+| *Mental Model* | "Work on manuscript"  | "Work on THIS scene"    |
+| *When to Exit* | After writing session | After finishing section |
 
 ** How It Works
 
@@ -336,11 +336,11 @@ Perfect for:
 │                          EMACS FRAME                        │
 ├──────────────┬────────────────────────────┬─────────────────┤
 │              │                            │                 │
-│  TREEMACS    │    MAIN BUFFER            │   IMENU-LIST    │
+│  TREEMACS    │    MAIN BUFFER             │   IMENU-LIST    │
 │  (left)      │    (center)                │   (right)       │
 │              │                            │                 │
 │ 📁 project/  │ #+TITLE: My Novel          │ * Contents      │
-│  📁 objects/    │                            │   ** Act I      │
+│  📁 objects/ │                            │   ** Act I      │
 │   📄 chars   │ * Act I                    │     *** Ch 1    │
 │   📄 plot    │ ** Chapter 1               │     *** Ch 2    │
 │   📄 locs    │ *** Scene 1 - Morning      │   ** Act II     │
@@ -351,7 +351,7 @@ Perfect for:
 │  📄 README   │                            │                 │
 │              │ *** Scene 2 - Coffee       │ (Click to jump) │
 │              │                            │                 │
-│  (Click file│ Sam entered the shop...    │                 │
+│  (Click file │ Sam entered the shop...    │                 │
 │   to open)   │                            │                 │
 │              │                            │                 │
 └──────────────┴────────────────────────────┴─────────────────┘
@@ -484,8 +484,8 @@ Perfect for:
 ** Layout Diagram
 
 #+BEGIN_EXAMPLE
-┌──────────────────────────────────────────────────────────────────────┐
-│                           EMACS FRAME                                │
+┌───────────────────────────────────────────────────────────────────────┐
+│                            EMACS FRAME                                │
 ├─────────────┬──────────────────────────────┬──────────────────────────┤
 │             │                              │                          │
 │ IMENU-LIST  │    MANUSCRIPT                │    NOTES FILE            │
@@ -670,17 +670,17 @@ START
 
 ** By Task Type
 
-| Task                    | Best Mode          | Why                               |
-|-------------------------+--------------------+-----------------------------------|
-| Daily writing           | Distraction-Free   | Clean, focused, no distractions   |
-| Rewriting problem scene | Focus              | Laser focus on one section        |
-| Research while writing  | Project            | Easy file switching               |
-| Second draft revision   | Editing            | Notes + manuscript side-by-side   |
-| Outlining               | Project            | See structure clearly             |
-| Writing sprints         | Distraction-Free   | Minimal interface, max focus      |
-| Structural editing      | Editing            | Outline + text + notes            |
-| Character checking      | Project            | Jump to character files           |
-| Final polish            | Focus              | One scene at a time, perfecting   |
+| Task                    | Best Mode        | Why                             |
+|-------------------------+------------------+---------------------------------|
+| Daily writing           | Distraction-Free | Clean, focused, no distractions |
+| Rewriting problem scene | Focus            | Laser focus on one section      |
+| Research while writing  | Project          | Easy file switching             |
+| Second draft revision   | Editing          | Notes + manuscript side-by-side |
+| Outlining               | Project          | See structure clearly           |
+| Writing sprints         | Distraction-Free | Minimal interface, max focus    |
+| Structural editing      | Editing          | Outline + text + notes          |
+| Character checking      | Project          | Jump to character files         |
+| Final polish            | Focus            | One scene at a time, perfecting |
 
 ** By Writer Preference
 
@@ -1157,13 +1157,13 @@ The modes are powerful tools - the more you use them, the more natural they beco
 
 ** Mode Activation Keys
 
-| Key | Mode             | Mnemonic           |
-|-----+------------------+--------------------|
-| ~m~   | Distraction-Free (write) | **M**ode   |
-| ~f~   | Focus            | **F**ocus          |
-| ~v~   | Project (navigate) | Na**v**igate    |
-| ~e~   | Editing          | **E**diting        |
-| ~0~   | Normal (off)     | none (**0** = normal)|
+| Key | Mode                     | Mnemonic            |
+|-----+--------------------------+---------------------|
+| ~m~   | Distraction-Free (write) | **M**ode            |
+| ~f~   | Focus                    | **F**ocus           |
+| ~v~   | Project (navigate)       | Na**v**igate        |
+| ~e~   | Editing                  | **E**diting         |
+| ~0~   | Normal (off)             | none (**0** = normal) |
 
 All accessed via: ~F8 F8~ then key. All five go through one unified dispatcher, ~org-scribe-workspace~, which takes the layout name as its argument; re-selecting the active layout's key turns it off.
 
@@ -1171,12 +1171,12 @@ All accessed via: ~F8 F8~ then key. All five go through one unified dispatcher, 
 
 | Feature           | Dist-Free | Focus | Project | Editing |
 |-------------------+-----------+-------+---------+---------|
-| Text centering    | ✓         | ✓     | -       | ✓       |
-| Theme change      | ✓         | ✓     | -       | ✓       |
-| Font change       | ✓         | ✓     | -       | ✓       |
-| Narrowing         | -         | ✓     | -       | -       |
-| Navigation panels | -         | -     | ✓       | ✓       |
-| Notes panel       | -         | -     | -       | ✓       |
+| Text centering    | ✓        | ✓    | -       | ✓      |
+| Theme change      | ✓        | ✓    | -       | ✓      |
+| Font change       | ✓        | ✓    | -       | ✓      |
+| Narrowing         | -         | ✓    | -       | -       |
+| Navigation panels | -         | -     | ✓      | ✓      |
+| Notes panel       | -         | -     | -       | ✓      |
 | Distraction level | Minimal   | None  | Medium  | Medium  |
 | Best for          | Writing   | Focus | Nav     | Editing |
 

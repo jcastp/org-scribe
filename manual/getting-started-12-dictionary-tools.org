@@ -185,7 +185,18 @@ Let's practice:
 
 ** Word Not Found?
 
-If the word isn't in the dictionary, you'll see:
+If the word isn't in the dictionary, you'll see a "not found" heading and a list of suggestions. Unlike the definition headings shown above (~Etimología~, ~Definiciones~, etc., which are always in Spanish - they describe the dictionary's own content), this message is one of org-scribe's own translatable UI strings, so its wording follows your ~org-scribe-message-language~ setting (default: English):
+
+#+BEGIN_EXAMPLE
+* Word not found: buskrar
+
+** Suggestions:
+- buscar
+- busqué
+- buscará
+#+END_EXAMPLE
+
+With ~(setq org-scribe-message-language 'es)~, the same lookup instead shows:
 
 #+BEGIN_EXAMPLE
 * Palabra no encontrada: buskrar
@@ -736,7 +747,7 @@ Ready to establish a complete daily workflow? Head to [[file:getting-started-13-
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
-- *Lesson Number*: 12 of 15
+- *Lesson Number*: 12 of 16
 - *Part*: 4 - Advanced Features
 - *Estimated Time*: 10-15 minutes
 - *Difficulty*: Beginner to Intermediate

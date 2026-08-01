@@ -422,10 +422,9 @@ Search for elements that need resolution:
 
 *Search for Chekhov's Guns*:
 
-Use ~F8 F8~ then ~5~ (TODO search) to find:
-- ~[SETUP]~ markers
-- ~[FORESHADOW]~ markers
-- ~[PAYOFF]~ markers
+~F8 F8~ then ~5~ (TODO search) only finds Org TODO-keyword headings (~TODO~, ~TOWRITE~, etc.) - it won't catch inline bracket text like ~[SETUP: Box]~ sitting inside a paragraph. For that, either:
+- Use plain-text search (~C-s~ or ~M-x rgrep~) for ~[SETUP\|FORESHADOW\|PAYOFF]~ across your project, or
+- Customize ~org-scribe-edit-string~ to include these markers (e.g. ~"\\*EDIT\\*\\|\\*NOTE\\*\\|\\[SETUP\\|\\[FORESHADOW\\|\\[PAYOFF"~) and then use ~F8 F8~ then ~6~ (edit/note search), which is the ~rgrep~-based search meant for exactly this kind of inline marker
 
 Example findings:
 
@@ -969,7 +968,7 @@ Mark specific issues:
 - Action: Archive this scene
 #+END_EXAMPLE
 
-## Using TODO Agenda
+** Using TODO Agenda
 
 View all revision work at once:
 
@@ -1195,7 +1194,7 @@ Structural:
 - Timeline consistent? Yes / No / Issue: __________
 #+END_EXAMPLE
 
-## Scene-Level Review (10 minutes)
+** Scene-Level Review (10 minutes)
 
 Read the scene and check:
 
@@ -1420,7 +1419,7 @@ In the next lesson, you'll learn:
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
-- *Lesson Number*: 14 of 15
+- *Lesson Number*: 14 of 16
 - *Part*: 5 - Workflows and Best Practices
 - *Estimated Time*: 20-25 minutes
 - *Difficulty*: Intermediate to Advanced
