@@ -5,8 +5,7 @@
 
 * Welcome to Lesson 15!
 
-Congratulations on completing all the core lessons! You now know how to use every feature of ~
-org-scribe~. This final lesson helps you make the package truly yours by customizing it to match your personal preferences and workflow.
+Congratulations on completing all the core lessons! You now know how to use every feature of ~org-scribe~. This final lesson helps you make the package truly yours by customizing it to match your personal preferences and workflow.
 
 The beauty of Emacs is its flexibility - every aspect can be tailored. ~org-scribe~ follows this philosophy, providing dozens of customization options while maintaining sensible defaults.
 
@@ -1273,7 +1272,7 @@ MAINTENANCE
 
 ** Next Steps
 
-*You've completed all 15 core lessons!* 🎉
+*You've completed all 15 core lessons!*
 
 *What's next*:
 1. **Write!** - Use what you've learned
@@ -1350,12 +1349,12 @@ MAINTENANCE
 
 ---
 
-*Congratulations on completing the entire org-scribe tutorial series!* 🎉
+*Congratulations on completing the entire org-scribe tutorial series!*
 
-You now have a complete, powerful, and personalized writing environment. Use it to write amazing stories! 📚✨
+You now have a complete, powerful, and personalized writing environment. Use it to write amazing stories!
 
 *Previous*: [[file:getting-started-14-revision-workflow.org][Lesson 14: Revision and Editing Workflow]]
 *Next (Optional)*: [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with org-scribe-planner]]
 *Back to Start*: [[file:getting-started-00-index.org][Getting Started Guide - Index]]
 
-*Tutorial Complete!* Happy writing! ✍️
+*Tutorial Complete!* Happy writing!
