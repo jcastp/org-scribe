@@ -1306,12 +1306,12 @@ Revision transforms your first draft into a polished manuscript using systematic
 
 ** The Revision Workflow at a Glance
 
-| Pass            | Focus              | Tools                      | Time    |
-|-----------------+--------------------+----------------------------+---------|
-| Structural      | Plot & character   | Timelines, notes           | 1 week  |
-| Scene-level     | Individual scenes  | Editing mode, checklists   | 2 weeks |
-| Line editing    | Prose polish       | Dictionary, search         | 1 week  |
-| Final check     | Consistency        | Search, notes checklist    | 3 days  |
+| Pass         | Focus             | Tools                    | Time    |
+|--------------+-------------------+--------------------------+---------|
+| Structural   | Plot & character  | Timelines, notes         | 1 week  |
+| Scene-level  | Individual scenes | Editing mode, checklists | 2 weeks |
+| Line editing | Prose polish      | Dictionary, search       | 1 week  |
+| Final check  | Consistency       | Search, notes checklist  | 3 days  |
 
 *Total revision time: ~4-5 weeks for a novel*
 
@@ -1425,4 +1425,4 @@ In the next lesson, you'll learn:
 - *Difficulty*: Intermediate to Advanced
 - *Prerequisites*: Completed first draft, familiarity with Lessons 7, 9, 10
 
-The revision process is where good writing becomes great. Use these tools systematically, trust the process, and watch your manuscript transform! 📝✨
+The revision process is where good writing becomes great. Use these tools systematically, trust the process, and watch your manuscript transform!
