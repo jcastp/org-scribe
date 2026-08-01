@@ -260,7 +260,9 @@ Opens treemacs (file tree) and imenu-list (document outline) for easy navigation
 Three-pane layout:
 - Left: Document outline (imenu-list)
 - Center: Main document
-- Right: Companion notes file (plain .org file; pair it with org-remark yourself if you want annotations)
+- Right: The project notes file (=notes/notes.org=), the same file captures write to
+
+Set =org-scribe-editing-right-panel= to show something else in the right pane: =revision= for the project's =revision.org=, a project-relative path string, or a function receiving the manuscript file name and returning the file to display.
 
 ** Word Counting
 
@@ -857,11 +859,11 @@ You can also toggle tooltips manually at any time:
 #+end_example
 
 The tooltip is drawn from properties in the character heading:
-| Property     | Shown as       |
-|--------------+----------------|
-| =:Role:=     | =Role: ...=    |
-| =:Age:=      | =Age: ...=     |
-| =:Goal:=     | =Goal: ...=    |
+| Property     | Shown as        |
+|--------------+-----------------|
+| =:Role:=       | =Role: ...=       |
+| =:Age:=        | =Age: ...=        |
+| =:Goal:=       | =Goal: ...=       |
 | =:Motivation:= | =Motivation: ...= |
 
 Properties that are empty or not set are simply omitted.
@@ -883,16 +885,16 @@ it in the =*org-scribe-health*= buffer as a browsable org file with clickable
 The report contains seven sections (plus an optional eighth when the bundled
 writing planner is active for the project):
 
-| Section                    | What it shows                                                       |
-|----------------------------+-----------------------------------------------------------------------|
-| *Overview*                 | Manuscript file, scene count, words written, chapter objectives, %  |
-| *Writing Plan* (optional)  | Plan title, target, current %, daily target, end date — only when a plan is loaded and the project hasn't opted out |
-| *Scenes by Status*         | Count of scenes per TODO state (TODO, DONE, custom keywords)        |
-| *Per-PoV Word Share*       | Scene count and word count per PoV character, with % of total       |
-| *Chapter Length Spread*    | Per-chapter word totals plus min/max/mean/median across the manuscript |
-| *Missing Properties*       | Scenes lacking =:PoV:=, =:Plot:=, or =:Location:= — linked         |
-| *Orphaned Entities*        | Characters/locations in their database but not linked in any scene  |
-| *Open TODO Scenes*         | Full list with state labels and clickable scene links               |
+| Section                 | What it shows                                                                                                       |
+|-------------------------+---------------------------------------------------------------------------------------------------------------------|
+| *Overview*                | Manuscript file, scene count, words written, chapter objectives, %                                                  |
+| *Writing Plan* (optional) | Plan title, target, current %, daily target, end date — only when a plan is loaded and the project hasn't opted out |
+| *Scenes by Status*        | Count of scenes per TODO state (TODO, DONE, custom keywords)                                                        |
+| *Per-PoV Word Share*      | Scene count and word count per PoV character, with % of total                                                       |
+| *Chapter Length Spread*   | Per-chapter word totals plus min/max/mean/median across the manuscript                                              |
+| *Missing Properties*      | Scenes lacking =:PoV:=, =:Plot:=, or =:Location:= — linked                                                                |
+| *Orphaned Entities*       | Characters/locations in their database but not linked in any scene                                                  |
+| *Open TODO Scenes*        | Full list with state labels and clickable scene links                                                               |
 
 *** Word count totals
 

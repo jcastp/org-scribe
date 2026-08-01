@@ -57,7 +57,7 @@
   (should (fboundp 'org-scribe-editing--setup))
   (should (fboundp 'org-scribe-editing--teardown))
   (should (fboundp 'org-scribe-env--cleanup))
-  (should (fboundp 'org-scribe-file-notes-filename))
+  (should (fboundp 'org-scribe--editing-right-panel-file))
   (should (fboundp 'org-scribe-editing-profile))
   (should (fboundp 'org-scribe-resize-margins)))
 
@@ -170,23 +170,81 @@
       (should     (memq 'project   calls))))) ; was t — should be called
 
 ;;; ─────────────────────────────────────────────
-;;; Utility: file-notes-filename
+;;; Utility: editing right-panel resolution
 ;;; ─────────────────────────────────────────────
+;;
+;; The pane used to show a per-manuscript companion file
+;; ("novel.org" -> "novel-notes.org") that existed only as an org-remark
+;; annotation sink.  org-remark support was removed, so the pane now
+;; resolves through `org-scribe-editing-right-panel'.
 
-(ert-deftest test-modes-file-notes-filename-simple ()
-  "Test file-notes-filename with a bare filename."
-  (should (string= "novel-notes.org"
-                   (org-scribe-file-notes-filename "novel.org"))))
+(defmacro org-scribe-test--with-project (dir-var &rest body)
+  "Run BODY in a temporary novel project rooted at DIR-VAR."
+  (declare (indent 1))
+  `(let ((,dir-var (make-temp-file "org-scribe-panel-" t)))
+     (unwind-protect
+         (progn
+           (with-temp-file (expand-file-name ".org-scribe-project" ,dir-var)
+             (insert "Type: novel\n"))
+           (make-directory (expand-file-name "notes" ,dir-var) t)
+           (with-temp-file (expand-file-name "notes/notes.org" ,dir-var)
+             (insert "#+TITLE: Notes\n"))
+           (let ((default-directory ,dir-var))
+             ,@body))
+       (delete-directory ,dir-var t))))
 
-(ert-deftest test-modes-file-notes-filename-strips-directory ()
-  "Test that file-notes-filename strips the directory component."
-  (should (string= "story-notes.org"
-                   (org-scribe-file-notes-filename "/home/user/writing/story.org"))))
+(ert-deftest test-modes-right-panel-defaults-to-notes ()
+  "The default `notes' value resolves to the project notes file."
+  (org-scribe-test--with-project dir
+    (let ((org-scribe-editing-right-panel 'notes))
+      (should (string= (expand-file-name "notes/notes.org" dir)
+                       (org-scribe--editing-right-panel-file
+                        (expand-file-name "novel.org" dir)))))))
 
-(ert-deftest test-modes-file-notes-filename-tilde-path ()
-  "Test file-notes-filename with a ~ path."
-  (should (string= "manuscript-notes.org"
-                   (org-scribe-file-notes-filename "~/projects/novel/manuscript.org"))))
+(ert-deftest test-modes-right-panel-string-is-project-relative ()
+  "A string value is expanded relative to the project root."
+  (org-scribe-test--with-project dir
+    (let ((org-scribe-editing-right-panel "notes/research.org"))
+      (should (string= (expand-file-name "notes/research.org" dir)
+                       (org-scribe--editing-right-panel-file
+                        (expand-file-name "novel.org" dir)))))))
+
+(ert-deftest test-modes-right-panel-function-receives-manuscript ()
+  "A function value is called with the manuscript file name."
+  (org-scribe-test--with-project dir
+    (let* ((seen nil)
+           (org-scribe-editing-right-panel
+            (lambda (src) (setq seen src) "/tmp/custom-panel.org")))
+      (should (string= "/tmp/custom-panel.org"
+                       (org-scribe--editing-right-panel-file
+                        (expand-file-name "novel.org" dir))))
+      (should (string= (expand-file-name "novel.org" dir) seen)))))
+
+(ert-deftest test-modes-right-panel-revision-falls-back-when-absent ()
+  "`revision' falls back to the notes file when no revision.org exists."
+  (org-scribe-test--with-project dir
+    (let ((org-scribe-editing-right-panel 'revision))
+      (should (string= (expand-file-name "notes/notes.org" dir)
+                       (org-scribe--editing-right-panel-file
+                        (expand-file-name "novel.org" dir)))))))
+
+(ert-deftest test-modes-right-panel-revision-found-when-present ()
+  "`revision' resolves to revision.org when the project has one."
+  (org-scribe-test--with-project dir
+    (with-temp-file (expand-file-name "revision.org" dir)
+      (insert "#+TITLE: Revision\n"))
+    (let ((org-scribe-editing-right-panel 'revision))
+      (should (string= (expand-file-name "revision.org" dir)
+                       (org-scribe--editing-right-panel-file
+                        (expand-file-name "novel.org" dir)))))))
+
+(ert-deftest test-modes-right-panel-unknown-value-falls-back ()
+  "An unrecognised value falls back to the notes file, never nil."
+  (org-scribe-test--with-project dir
+    (let ((org-scribe-editing-right-panel 'nonsense))
+      (should (string= (expand-file-name "notes/notes.org" dir)
+                       (org-scribe--editing-right-panel-file
+                        (expand-file-name "novel.org" dir)))))))
 
 ;;; ─────────────────────────────────────────────
 ;;; Writing Environment: absence of writeroom

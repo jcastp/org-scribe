@@ -242,6 +242,28 @@ one prefix argument always mints IDs regardless of this setting)."
   :type 'float
   :group 'org-scribe)
 
+(defcustom org-scribe-editing-right-panel 'notes
+  "What to display in the right pane of `org-scribe-editing-mode'.
+
+Possible values:
+- `notes'    -- the project notes file, as chosen by
+                `org-scribe-capture-target-file' (the same file
+                org-scribe captures write to).
+- `revision' -- the project revision file, when one exists.
+- a string   -- a project-relative file path, e.g. \"notes/research.org\".
+- a function -- called with the manuscript file name; must return the
+                file name to display in the pane.
+
+The pane used to show a per-manuscript companion file (\"novel.org\" ->
+\"novel-notes.org\") that existed only as an org-remark annotation sink.
+org-remark support has been removed and inline edit markers replaced it,
+so the pane now defaults to the project notes file instead."
+  :type '(choice (const :tag "Project notes file" notes)
+                 (const :tag "Project revision file" revision)
+                 (string :tag "Project-relative file path")
+                 (function :tag "Function returning a file name"))
+  :group 'org-scribe)
+
 (defcustom org-scribe-editing-theme 'leuven
   "Theme to use in editing mode."
   :type 'symbol

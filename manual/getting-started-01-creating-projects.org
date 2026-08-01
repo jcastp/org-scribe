@@ -265,7 +265,6 @@ My Fantasy Novel/
 ├── .org-scribe-project
 ├── README.org                 (overview and navigation)
 ├── novel.org                  (main manuscript - word count and progress tracking live here, not a separate file)
-├── novel-notes.org            (freeform planning notes)
 ├── writing-journal.org        (a journal for reflecting on your writing process)
 ├── revision.org               (revision notes and checklists)
 ├── objects/                      (planning directory)

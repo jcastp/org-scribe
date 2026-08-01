@@ -545,8 +545,8 @@ Perfect for:
 *Purpose*: Companion notes for manuscript
 
 *Shows*:
-- File named ~[manuscript]-notes.org~
-- Example: ~novel.org~ → ~novel-notes.org~
+- The project notes file — ~notes/notes.org~ (~notas/notas.org~ in Spanish projects), or ~notes.org~ for short stories
+- The same file your captures go to, so notes written here and notes captured with ~F8 F8 n~ land in one place
 - Your revision notes, ideas, TODOs
 
 *Use for*:
@@ -558,14 +558,28 @@ Perfect for:
 ** Notes File Creation
 
 When you activate Editing mode:
-1. If ~novel-notes.org~ exists → opens it
-2. If it doesn't exist → creates it automatically
-3. New file is blank (ready for your notes)
+1. If the project notes file exists → opens it
+2. If it doesn't exist → creates it automatically, with a title and a top-level notes heading
 
-*Notes file naming*:
-- ~novel.org~ → ~novel-notes.org~
-- ~story.org~ → ~story-notes.org~
-- ~manuscript.org~ → ~manuscript-notes.org~
+** Showing Something Else in the Right Panel
+
+The right panel is configurable through ~org-scribe-editing-right-panel~:
+
+| Value             | Right panel shows                                       |
+|-------------------+---------------------------------------------------------|
+| ~notes~ (default) | The project notes file                                  |
+| ~revision~        | The project's ~revision.org~                            |
+| a string          | A project-relative path, e.g. ~"notes/research.org"~    |
+| a function        | Called with the manuscript file name; returns a file    |
+
+#+BEGIN_SRC elisp
+;; Show revision.org instead of the notes file
+(setq org-scribe-editing-right-panel 'revision)
+#+END_SRC
+
+If the requested file cannot be found, the panel falls back to the project notes file rather than opening nothing.
+
+*Note*: this panel used to show a per-manuscript companion file (~novel.org~ → ~novel-notes.org~) that existed to hold org-remark annotations. org-remark support has been removed — use inline ~*EDIT*~ / ~*NOTE*~ markers and ~F8 F8~ then ~6~ instead — so the panel now defaults to the project notes file. Any existing ~novel-notes.org~ in your projects is left untouched; open it normally if it holds content you want.
 
 ** How It Works
 
@@ -590,7 +604,7 @@ When you activate Editing mode:
 
 1. Open ~novel.org~
 2. ~F8 F8 e~ (activate Editing mode)
-3. ~novel-notes.org~ opens automatically (right panel)
+3. ~notes/notes.org~ opens automatically (right panel)
 4. In notes panel, write:
    #+BEGIN_EXAMPLE
    * Chapter 3 Revision

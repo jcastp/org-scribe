@@ -277,12 +277,22 @@ Uses `org-scribe-project-root' to find the project base directory.
 Returns the file path based on the following priority:
 1. notes/notes.org (relative to project root)
 2. notas/notas.org - Spanish (relative to project root)
-3. novel-notes.org (in project root)
+3. novel-notes.org (in project root) - legacy, see below
 4. notes.org (in project root)
 5. current buffer if none of the above exist
 
 If CREATE-IF-MISSING is non-nil, create the first priority notes
-file that doesn't exist."
+file that doesn't exist.
+
+Priority 3 is a legacy fallback.  Novel projects created by older
+versions shipped a \"novel-notes.org\" stub as an org-remark annotation
+sink; the template was removed when org-remark support was dropped.
+New projects always have priority 1, so this branch is
+unreachable for them, but it is kept so that a pre-0.5.3 project whose
+author put real content in that file still captures into it instead of
+appearing to lose it.  This is also the reason the editing-mode right
+pane routes through this function rather than naming a file directly
+\(see `org-scribe--editing-right-panel-file')."
   (let* ((project-dir (or (org-scribe-project-root)
                          (file-name-directory (or (buffer-file-name) default-directory))))
          (notes-subdir-en (expand-file-name "notes/notes.org" project-dir))

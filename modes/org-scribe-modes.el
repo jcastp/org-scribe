@@ -9,7 +9,9 @@
 ;; Four mutually exclusive writing layouts for different workflows:
 ;; - write    (org-scribe-writing-env-mode): Distraction-free writing environment
 ;; - focus    (org-scribe-writing-env-mode-focus): Focus mode with narrowing
-;; - edit     (org-scribe-editing-mode): Three-pane editing layout with notes
+;; - edit     (org-scribe-editing-mode): Three-pane editing layout with the
+;;            project notes file in the right pane (see
+;;            `org-scribe-editing-right-panel')
 ;; - navigate (org-scribe-project-mode): Project navigation (treemacs + imenu-list)
 ;;
 ;; `org-scribe-workspace' is the single unified entry point: it switches
@@ -33,6 +35,10 @@
 (declare-function treemacs-add-and-display-current-project-exclusively "treemacs")
 (declare-function treemacs-get-local-window "treemacs")
 (declare-function imenu-list-smart-toggle "imenu-list")
+;; Loaded after this module (see the load order in org-scribe.el), but
+;; only called at runtime from `org-scribe--editing-right-panel-file'.
+(declare-function org-scribe-capture-target-file "org-scribe-capture")
+(declare-function org-scribe--find-existing-file "org-scribe-core")
 
 ;;; Workspace Layout Table (single source of truth)
 
@@ -273,12 +279,21 @@ Focus always returns to the original buffer for seamless transitions."
 ;;; Editing Mode (three-pane layout)
 
 ;; Helper functions for editing mode
-(defun org-scribe-file-notes-filename (file)
-  "Return the org-remark notes filename for FILE.
-E.g., \"~/tmp/foo.org\" → \"foo-notes.org\"."
-  (let* ((base (file-name-sans-extension (file-name-nondirectory file)))
-         (ext  (file-name-extension (file-name-nondirectory file))))
-    (concat base "-notes." ext)))
+(defun org-scribe--editing-right-panel-file (src-file)
+  "Return the file to show in the editing-mode right pane for SRC-FILE.
+Dispatches on `org-scribe-editing-right-panel'; see that variable for
+the accepted values.  Falls back to the project notes file when a
+requested file cannot be located, so the pane always has something to
+display."
+  (let ((root (org-scribe-project-root)))
+    (or (pcase org-scribe-editing-right-panel
+          ('notes (org-scribe-capture-target-file t))
+          ('revision (and root (org-scribe--find-existing-file root "revision.org")))
+          ((and (pred stringp) path) (and root (expand-file-name path root)))
+          ((and (pred functionp) fn) (funcall fn src-file)))
+        ;; Unknown value, or a file that could not be located: fall back
+        ;; to the notes file rather than leaving the pane empty.
+        (org-scribe-capture-target-file t))))
 
 (defun org-scribe-resize-margins ()
   "Center the current buffer according to `visual-fill-column-width'.
@@ -320,7 +335,7 @@ Applies theme, column width, and font preset."
          (src-file
           (or (buffer-file-name)
               (user-error (org-scribe-msg 'error-no-org-file))))
-         (notes-file (org-scribe-file-notes-filename src-file))
+         (notes-file (org-scribe--editing-right-panel-file src-file))
          (frame-w    (frame-width))
          (right-w    (org-scribe-window-perc right-perc))
          (left-w     (org-scribe-window-perc left-perc)))
@@ -393,7 +408,8 @@ Applies theme, column width, and font preset."
 When enabled the current frame is split into:
   - left: `imenu-list' (configurable percentage)
   - centre: the buffer you are currently editing
-  - right: a matching org-remark notes file (configurable percentage)
+  - right: the project notes file (configurable percentage); see
+    `org-scribe-editing-right-panel' to show something else there
 
 Disabling the mode restores the previous window configuration and the
 visual settings (theme, column width, font preset)."
