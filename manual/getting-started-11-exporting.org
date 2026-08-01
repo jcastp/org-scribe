@@ -76,14 +76,14 @@ Org Export Dispatcher
 
 Each format has variations:
 
-| Key Sequence | What It Does                                      |
-|--------------+---------------------------------------------------|
-| ~C-c C-e l o~  | Export to LaTeX and open file                     |
-| ~C-c C-e l l~  | Export to LaTeX (don't open)                      |
-| ~C-c C-e l p~  | Export to PDF (LaTeX → PDF)                       |
-| ~C-c C-e h h~  | Export to HTML (single file)                      |
-| ~C-c C-e h o~  | Export to HTML and open in browser                |
-| ~C-c C-e o o~  | Export to ODT and open in LibreOffice/Word        |
+| Key Sequence | What It Does                               |
+|--------------+--------------------------------------------|
+| ~C-c C-e l o~  | Export to LaTeX and open file              |
+| ~C-c C-e l l~  | Export to LaTeX (don't open)               |
+| ~C-c C-e l p~  | Export to PDF (LaTeX → PDF)                |
+| ~C-c C-e h h~  | Export to HTML (single file)               |
+| ~C-c C-e h o~  | Export to HTML and open in browser         |
+| ~C-c C-e o o~  | Export to ODT and open in LibreOffice/Word |
 
 *Pattern*: First letter = format, second letter = action
 
@@ -676,16 +676,16 @@ In your manuscript, find the "Export config" section (usually at the bottom):
 
 *What these mean*:
 
-| Option      | Meaning                                |
-|-------------+----------------------------------------|
-| ~H:3~         | Heading depth (3 levels max)           |
-| ~num:t~       | Number headings                        |
-| ~toc:2~       | Table of contents (2 levels deep)      |
-| ~author:t~    | Include author name                    |
-| ~date:t~      | Include date                           |
-| ~email:nil~   | Don't include email                    |
-| ~tags:t~      | Include tags in export                 |
-| ~todo:t~      | Include TODO keywords                  |
+| Option    | Meaning                           |
+|-----------+-----------------------------------|
+| ~H:3~       | Heading depth (3 levels max)      |
+| ~num:t~     | Number headings                   |
+| ~toc:2~     | Table of contents (2 levels deep) |
+| ~author:t~  | Include author name               |
+| ~date:t~    | Include date                      |
+| ~email:nil~ | Don't include email               |
+| ~tags:t~    | Include tags in export            |
+| ~todo:t~    | Include TODO keywords             |
 
 ** Common Customizations
 
