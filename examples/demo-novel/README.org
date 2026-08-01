@@ -108,7 +108,7 @@ properties without typing them manually.
 | =F8 F8 3= | =org-scribe-org-find-plot=          | Find scenes by plot thread         |
 | =F8 F8 4= | =org-scribe-org-find-location=      | Find scenes by location            |
 | =F8 F8 5= | =org-scribe-search-todos-recursive= | Find all TODO/unwritten scenes     |
-| =F8 F8 6= | =org-scribe-search-edits-recursive= | Find scenes flagged for editing    |
+| =F8 F8 6= | =org-scribe-search-edits=           | Find scenes flagged for editing    |
 
 ** Capture new entities
 Open capture sub-menu with =F8 F8 k=.

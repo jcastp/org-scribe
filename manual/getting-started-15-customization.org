@@ -336,6 +336,62 @@ Put this in your init file:
 (setq org-scribe-editing-left-width-percent 0.25)       ; Outline: 25%
 (setq org-scribe-editing-right-width-percent 0.25)      ; Notes: 25%
                                                       ; Manuscript: 50% (automatic)
+(setq org-scribe-editing-right-panel 'notes)            ; What the right pane shows
+#+END_SRC
+
+** What the Right Panel Shows
+
+By default Editing mode's right pane shows your project notes file. ~org-scribe-editing-right-panel~ changes that:
+
+| Value             | Right panel shows                                        |
+|-------------------+----------------------------------------------------------|
+| ~notes~ (default) | The project notes file, the same one captures write to   |
+| ~edits~           | A live index of your inline edit markers, rebuilt on save |
+| ~revision~        | The project's ~revision.org~                             |
+| a string          | A project-relative path, e.g. ~"notes/research.org"~     |
+| a function        | Called with the manuscript file name; returns a file     |
+
+#+BEGIN_SRC emacs-lisp
+;; During a revision pass, keep the outstanding edits beside the text
+(setq org-scribe-editing-right-panel 'edits)
+#+END_SRC
+
+If the requested file can't be found, the pane falls back to the notes file rather than opening nothing.
+
+* Customizing Edit Markers
+
+The inline ~*EDIT*~ / ~*NOTE*~ markers you leave in the manuscript (lesson 14) have two settings.
+
+** Marker Categories
+
+An ~*EDIT*~ carries a category before a ~" - "~ separator, and the edit index groups by it:
+
+#+BEGIN_SRC emacs-lisp
+;; Default
+(setq org-scribe-edit-categories '("plot" "scene" "character" "prose"))
+
+;; Add your own
+(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "pacing" "research"))
+#+END_SRC
+
+This one variable drives both ends: the index groups by it, and the bundled Tempel ~edit~ snippet prompts from it, so they cannot disagree. A marker whose category is missing, empty or unrecognized lands under ~other~ - never dropped.
+
+** Empty Categories in the Index
+
+#+BEGIN_SRC emacs-lisp
+;; Default: show every category, even empty ones (index doubles as a checklist)
+(setq org-scribe-edits-index-show-empty-categories t)
+
+;; Compact: only categories that actually have markers
+(setq org-scribe-edits-index-show-empty-categories nil)
+#+END_SRC
+
+** The Plain-Text Fallback
+
+~org-scribe-edit-string~ is the regexp used by ~org-scribe-search-edits-rgrep~ (the ~C-u~ variant of ~F8 F8 6~), not by the structured index. Customize it if you use marker styles of your own:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")
 #+END_SRC
 
 * Customizing Language Tools

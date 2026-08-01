@@ -53,6 +53,7 @@
   - Project navigation mode (with treemacs and imenu-list)
   - Three-pane editing layout
 - *Search Functions*: Find scenes by POV, character, location, or plot keywords using org-ql (handles ID links)
+- *Edit Marker Index*: Collects the =*EDIT*= / =*NOTE*= markers you leave inline while drafting into one navigable buffer, grouped by category, each linking back to its exact line. Markers live in Org comment blocks, so they never reach your exported manuscript and never inflate your word counts
 - *Dictionary Tools*: Spanish RAE dictionary API and synonym lookup
 - *Capture System*: Project-aware note capture that finds the right notes file; character/location/object/timeline/plot-thread templates are fully localized to the project's own language (English/Spanish), independent of your global UI language setting
 - *Project Health Report*: =org-scribe-project-health= aggregates word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
@@ -1160,7 +1161,7 @@ Tag the current scene's properties with ID-based links:
 - =3= - Find scenes by plot thread
 - =4= - Find scenes by location
 - =5= - Find all TODOs in the project
-- =6= - Find all edit/revision notes
+- =6= - Index all inline edit/note markers (=C-u= for the plain-text fallback)
 
 *** Manage
 - =n= - Capture a quick note

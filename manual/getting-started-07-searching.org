@@ -80,7 +80,7 @@ The package provides four main search functions, each focusing on a different sc
 | Plot        | F8 F8 3   | ~org-scribe-org-find-plot~      | ~:Plot:~            |
 | Location    | F8 F8 4   | ~org-scribe-org-find-location~  | ~:Location:~        |
 
-Two more searches round out the Search section of the hydra (covered later in this lesson): ~F8 F8 5~ for TODO items and ~F8 F8 6~ for inline =*EDIT*=/=*NOTE*= markers (~org-scribe-search-edits-recursive~, an ~rgrep~-based search, not org-ql).
+Two more searches round out the Search section of the hydra (covered later in this lesson): ~F8 F8 5~ for TODO items and ~F8 F8 6~ for inline =*EDIT*=/=*NOTE*= markers (~org-scribe-search-edits~, which parses Org comment blocks rather than querying properties).
 
 ** Common Pattern
 
@@ -660,9 +660,9 @@ Find every inline ~*EDIT*~ or ~*NOTE*~ marker across your entire project.
 
 ** How This Differs from TODO Search
 
-Search 5 (TODOs) looks for Org TODO *keywords* at the start of headings. Search 6 is different in two ways:
-- It looks for the literal text ~*EDIT*~ or ~*NOTE*~ *anywhere* in a line - inside a paragraph of prose, not just on a heading
-- It's implemented with ~rgrep~ (a recursive text-file search), not org-ql, so results come back as plain file:line matches rather than an org-ql view
+Search 5 (TODOs) looks for Org TODO *keywords* at the start of headings - things you have decided to *write*. Search 6 finds markers you left *inside* prose you have already written, attached to the sentence that needs work.
+
+Both are searches over the whole project; they simply cover different stages of the work.
 
 ** When to Use
 
@@ -672,50 +672,79 @@ Search 5 (TODOs) looks for Org TODO *keywords* at the start of headings. Search 
 
 ** What Are Edit/Note Markers?
 
-While drafting, just type ~*EDIT*~ or ~*NOTE*~ directly in your prose (or in a heading) wherever something needs a second look:
+A marker is written inside an Org comment block, right after the passage it refers to:
 
 #+BEGIN_EXAMPLE
-Alex walked into the coffee shop. *NOTE* check this is the same shop from Chapter 2.
+Alex walked into the coffee shop.
 
-The confrontation happened too fast. *EDIT* needs another beat here before the reveal.
+,#+begin_comment
+*NOTE*: check this is the same shop from Chapter 2
+,#+end_comment
+
+The confrontation happened too fast.
+
+,#+begin_comment
+*EDIT*: scene - needs another beat here before the reveal
+,#+end_comment
 #+END_EXAMPLE
 
-Don't stop writing to fix it - just drop the marker and keep going.
+Don't stop writing to fix the passage - drop the marker and keep going.
+
+The comment block is not optional decoration. It is what keeps markers out of your exported manuscript and out of your word counts. A marker typed as bare text in a paragraph is ordinary prose and *will* appear in your exported book. Lesson 14 covers the convention in full, including the ~edit~ and ~note~ snippets that write the block for you.
+
+An ~*EDIT*~ also carries a category before a ~" - "~ separator (~plot~, ~scene~, ~character~, ~prose~ by default), so a revision pass can tackle one kind of problem at a time. ~*NOTE*~ has no category - it is a reminder, not a classified piece of work.
 
 ** How to Search
 
 Press: ~F8 F8 6~
 
-Or use: ~M-x org-scribe-search-edits-recursive~
+Or use: ~M-x org-scribe-search-edits~
 
-This runs ~rgrep~ across every ~.org~ file under your project root, searching for the pattern in ~org-scribe-edit-string~ (default: ~\*EDIT\*\|\*NOTE\*~, matching either marker; customize the variable if you prefer different markers).
+This collects every marker in every ~.org~ file below your project root and builds an index grouped by kind and category.
 
 ** Example Results
 
 #+BEGIN_EXAMPLE
--*- mode: grep; default-directory: "~/my-novel/" -*-
-Grep started at ...
+,* Edits
+,** plot
+,*** [[file:novel.org::312][Scene 12]] — novel.org
+    Alice's motive here contradicts chapter 1
+,** scene
+,*** [[file:novel.org::420][Scene 14]] — novel.org
+    needs another beat here before the reveal
+,** character
+,** prose
+,** other
 
-novel.org:145:Alex walked into the coffee shop. *NOTE* check this is the same shop from Chapter 2.
-novel.org:312:The confrontation happened too fast. *EDIT* needs another beat here before the reveal.
-objects/characters.org:58:*EDIT* Sam's backstory contradicts Chapter 9 - reconcile.
-
-Grep finished with 3 matches found
+,* Notes
+,** [[file:novel.org::145][Scene 3]] — novel.org
+   check this is the same shop from Chapter 2
 #+END_EXAMPLE
+
+Each entry shows the scene it came from and links to the exact line. Empty categories are listed too, so you can see at a glance which kinds of problem are outstanding and which are clear.
 
 ** Using Results
 
-Since this is a standard ~grep-mode~ buffer, use Emacs' normal grep navigation:
-- ~RET~ or click a line to jump to that file and line
-- ~n~ / ~p~ to move to the next/previous match without leaving the results buffer
-- ~g~ to re-run the search after making fixes
-- ~q~ to close the results buffer
+- ~RET~ on an entry jumps to that marker in the manuscript
+- ~TAB~ folds and unfolds sections - collapse ~Notes~ while working through ~Edits~, or fold everything to see just the category headings
+- ~g~ rebuilds the index after making fixes
+- ~q~ buries the buffer
 
-Work through the list top to bottom, fixing or clearing each marker, then re-run the search (~g~) to confirm the count drops to zero before you consider revision "done."
+Work through a category, deleting each comment block as you deal with it - that is how a marker gets "closed", there is no separate done state - then press ~g~ to confirm the category is empty.
+
+You can also keep the index open beside your manuscript while you work: set ~org-scribe-editing-right-panel~ to ~edits~ and it becomes the right pane of Editing mode, rebuilding itself every time you save (lesson 9).
 
 ** Customizing the Markers
 
-If you prefer different marker text (e.g. ~TODO-REVISE~ instead of ~*EDIT*~), change the pattern in your init file:
+The categories come from ~org-scribe-edit-categories~:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "pacing"))
+#+END_SRC
+
+A marker whose category is missing, empty or unrecognized is grouped under ~other~ rather than dropped - a typo moves a marker, it never hides one.
+
+If your markers *don't* follow the comment-block convention - older projects, or a marker style of your own - call the search with a prefix argument (~C-u F8 F8 6~) to get ~org-scribe-search-edits-rgrep~, a plain-text search that finds them anywhere. That fallback is the one that uses ~org-scribe-edit-string~:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")
@@ -1092,7 +1121,7 @@ Pressing RET or C-c C-o in results doesn't jump to scene.
 | ~F8 F8 3~ | Plot              | ~:Plot:~                       |
 | ~F8 F8 4~ | Location          | ~:Location:~                   |
 | ~F8 F8 5~ | TODO items        | TODO keywords                |
-| ~F8 F8 6~ | Edit/note markers | =*EDIT*=/=*NOTE*= text (rgrep) |
+| ~F8 F8 6~ | Edit/note markers | =*EDIT*=/=*NOTE*= in comment blocks |
 
 ** Results Buffer Navigation
 
@@ -1129,7 +1158,7 @@ Pressing RET or C-c C-o in results doesn't jump to scene.
 | ~org-scribe-org-find-plot~          | Search by plot thread         |
 | ~org-scribe-org-find-location~      | Search by location            |
 | ~org-scribe-search-todos-recursive~ | Find all TODO items           |
-| ~org-scribe-search-edits-recursive~ | Find inline edit/note markers |
+| ~org-scribe-search-edits~           | Find inline edit/note markers |
 
 * Tips for Better Searching
 

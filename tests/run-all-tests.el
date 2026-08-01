@@ -162,7 +162,17 @@ Suitable for CI/CD pipelines and automated testing."
                                (file-name-directory (or load-file-name buffer-file-name))))
   (load-file (expand-file-name "test-search-links.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
-  (ert "^test-search-\\|^test-extract-\\|^test-property-"))
+  ;; `^test-edit-' picks up the org-scribe-edit-string regexp tests, which
+  ;; live in test-search.el but do not share the test-search- prefix.
+  (ert "^test-search-\\|^test-extract-\\|^test-property-\\|^test-edit-"))
+
+;;;###autoload
+(defun org-scribe-run-tempel-tests ()
+  "Run bundled Tempel snippet tests only."
+  (interactive)
+  (load-file (expand-file-name "test-tempel-snippets.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-tempel-"))
 
 ;;;###autoload
 (defun org-scribe-run-linking-tests ()

@@ -537,7 +537,7 @@ Search for elements that need resolution:
 
 *Search for Chekhov's Guns*:
 
-~F8 F8~ then ~5~ (TODO search) only finds Org TODO-keyword headings (~TODO~, ~TOWRITE~, etc.) - it won't catch markers written in the prose itself. For those, use ~F8 F8~ then ~6~ (edit/note search), the ~rgrep~-based search meant for exactly this kind of marker.
+~F8 F8~ then ~5~ (TODO search) only finds Org TODO-keyword headings (~TODO~, ~TOWRITE~, etc.) - it won't catch markers written in the prose itself. For those, use ~F8 F8~ then ~6~ (the edit index), which collects markers from every comment block in the project.
 
 Write setup/payoff markers the same way as any other marker: inside a comment block, so they never reach your exported manuscript and never count toward your word totals (see [[*Marker Convention][Marker Convention]]).
 

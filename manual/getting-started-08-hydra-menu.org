@@ -206,7 +206,7 @@ Let's explore each category in detail.
 | ~3~   | Plot      | Find all scenes in a plot thread        |
 | ~4~   | Location  | Find all scenes in a location           |
 | ~5~   | TODOs     | Find all TODO items in project          |
-| ~6~   | Edits     | Find all edit/revision notes in project |
+| ~6~   | Edits     | Index inline edit/note markers in project |
 
 *When to use*:
 - "Where did Alex appear?" → ~2~ (character search)
