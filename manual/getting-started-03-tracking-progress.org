@@ -94,7 +94,7 @@ Press ~F8 F8~ to open the Hydra menu, then press ~w~ (for "Words count")
 You'll see a message in the minibuffer like:
 
 #+BEGIN_EXAMPLE
-Word count: 2108
+2108 words in buffer.
 #+END_EXAMPLE
 
 *That's it!* Quick and easy.
@@ -103,7 +103,8 @@ Word count: 2108
 
 This command counts the current window:
 - if the window shows the whole novel.org file, it will count everything.
-- if the window is in focus mode, or narrowed, you will get the word counting of the section focused.  
+- if the window is in focus mode, or narrowed, you will get the word counting of the section focused.
+  
 ** Try It Now!
 
 1. With the writing mode enabled, press ~F8 F8 w~, for "Words count".
@@ -269,7 +270,7 @@ To get meaningful progress percentages, you need objectives at each level.
 
 ** Scene-Level Objectives
 
-For each scene, add ~:WORD-OBJECTIVE:~ based on importance:
+For each scene, add ~:WORD-OBJECTIVE:~ based on importance. These numbers are shown here as an example of what could be:
 - Quick transition scene: 500
 - Standard scene: 1,000-1,500
 - Important scene: 2,000+
@@ -277,10 +278,12 @@ For each scene, add ~:WORD-OBJECTIVE:~ based on importance:
 ** Chapter-Level Objectives (Novels)
 
 For each chapter, set an objective that's the sum of its scenes:
-- Chapter 1 has 3 scenes × 1,500 = 4,500
+- Chapter 1 has 3 standard scenes × 1,500 = 4,500
 - Set ~:WORD-OBJECTIVE: 4500~ on Chapter 1 heading
 
 ** Section/Act Objectives
+
+These numbers are shown as examples:
 
 For major sections:
 - Opening: ~3,000
@@ -358,6 +361,8 @@ Your template's "Daily Word Tracking" section doesn't ship a ready-made table �
 
 For automated daily tracking without maintaining tables by hand, see [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with org-scribe-planner]] — the bundled writing planner pushes live word counts and daily deltas automatically.
 
+Note: word counting itself only runs when you ask for it (~F8 F8 a~ or ~F8 F8 w~) unless you've opted into ~org-scribe-auto-wordcount~, which is *off by default*. Setting it to ~t~ makes saving ~novel.org~/~novela.org~ silently recount words and sync the plan on every save — convenient, but it makes saves a bit slower since it recounts every heading in the buffer. See Lesson 16's "Optional: Automatic Update on Every Save" section for details and how to turn it back off.
+
 *Don't worry if you skip it* - manual tracking works great!
 
 ** Why Track Daily Progress?
@@ -415,15 +420,15 @@ Let's interpret what your progress data means.
 
 ** Progress Percentage Meanings
 
-| Progress | Meaning                                      |
-|----------+----------------------------------------------|
-| 0-10%    | Just started, lots of work ahead             |
-| 10-25%   | Early stages, finding your rhythm            |
-| 25-50%   | Making solid progress, story taking shape    |
-| 50-75%   | Past halfway! Momentum building              |
-| 75-90%   | Final push, can see the finish line          |
-| 90-100%  | Almost done! Final scenes                    |
-| 100%+    | First draft complete! (or exceeded target)   |
+| Progress | Meaning                                    |
+|----------+--------------------------------------------|
+|    0-10% | Just started, lots of work ahead           |
+|   10-25% | Early stages, finding your rhythm          |
+|   25-50% | Making solid progress, story taking shape  |
+|   50-75% | Past halfway! Momentum building            |
+|   75-90% | Final push, can see the finish line        |
+|  90-100% | Almost done! Final scenes                  |
+|    100%+ | First draft complete! (or exceeded target) |
 
 ** Realistic Writing Pace
 
@@ -469,7 +474,7 @@ Here's a recommended daily routine that includes tracking.
 3. Set today's goal (words or scenes)
 4. Activate writing mode (~F8 F8 m~)
 
-** During Writing
+** During Writing (Variable time)
 
 1. Write without interruption
 2. Don't obsess over word count mid-session

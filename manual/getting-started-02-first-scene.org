@@ -748,13 +748,13 @@ The more you practice, the more natural it becomes!
 
 ** Writing Modes Quick Guide
 
-| Mode          | Hydra Key | Best For                  |
-|---------------+-----------+---------------------------|
-| Normal        | (none)    | Editing properties        |
-| Distraction   | ~m~       | Daily writing             |
-| Focus         | ~f~       | Deep focus, one scene     |
-| Project       | ~p~       | Navigation, organization  |
-| Editing       | ~e~       | Revision, reference files |
+| Mode        | Hydra Key | Best For                  |
+|-------------+-----------+---------------------------|
+| Normal      | (none)    | Editing properties        |
+| Distraction | ~m~         | Daily writing             |
+| Focus       | ~f~         | Deep focus, one scene     |
+| Project     | ~p~         | Navigation, organization  |
+| Editing     | ~e~         | Revision, reference files |
 
 * Tips for Success
 
