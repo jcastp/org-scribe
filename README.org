@@ -937,7 +937,7 @@ Searching for "Alice" finds this scene even with ID links!
 
 *** Inline Edit Markers
 
-Search =6= is different from the others: it is a plain text search (=rgrep=) for notes you leave *inside* the manuscript, attached to the sentence that needs work, rather than a property query.
+Search =6= is different from the others: it indexes notes you leave *inside* the manuscript, attached to the sentence that needs work, rather than querying properties.
 
 The convention is to write them inside an Org comment block:
 
@@ -956,6 +956,31 @@ The carriage arrived before dawn, and nobody was awake to meet it.
 
 Delete the comment block once you have dealt with it — that is how a marker is "closed"; there is no separate done state.
 
+An =*EDIT*= carries a category before a =" - "= separator. =M-x org-scribe-search-edits= (=F8 F8= then =6=) collects every marker in the project and groups them:
+
+#+begin_example
+,* Edits
+,** plot
+,*** [[file:novel.org::412][Scene 12]] — novel.org
+    Alice's motive here contradicts chapter 1
+,** character
+,*** [[file:novel.org::980][Scene 30]] — novel.org
+    too much interiority, cut by half
+,** prose
+,** scene
+,** other
+
+,* Notes
+,** [[file:novel.org::455][Scene 14]] — novel.org
+   check whether Alice already knows about the letter
+#+end_example
+
+Each entry links back to the exact line. In the index buffer, =g= refreshes and =q= buries it.
+
+Categories come from =org-scribe-edit-categories= (default: plot, scene, character, prose). A marker whose category is missing, empty or unrecognized is grouped under =other= rather than dropped — a typo moves a marker, it never hides one. Set =org-scribe-edits-index-show-empty-categories= to =nil= if you would rather not see categories with nothing in them.
+
+The index is built by walking Org's parse tree for comment blocks, so prose that merely mentions =*NOTE*= cannot produce a false positive. If your markers *don't* follow the comment-block convention, call it with a prefix argument (=C-u=) for =org-scribe-search-edits-rgrep=, the plain-text search that finds them anywhere.
+
 **Why the comment block matters.** It is not decoration; it buys two guarantees:
 
 1. *Markers never reach your readers.* Org excludes comment blocks from every export backend. A marker written as bare text in a paragraph is ordinary prose and *will* appear in your exported manuscript, with nothing to warn you.
@@ -963,7 +988,7 @@ Delete the comment block once you have dealt with it — that is how a marker is
 
 The word-count guarantee depends on the optional =org-context-extended= package; without it, org-scribe falls back to a plain count that counts everything, markers included. The export guarantee is pure Org behavior and always holds.
 
-Customize which markers are matched with =org-scribe-edit-string=. The search is deliberately project-wide, so markers in the manuscript, the notes file and research notes all surface in one pass; outside a project it falls back to the current buffer's directory.
+Both searches are deliberately project-wide, so markers in the manuscript, the notes file and research notes all surface in one pass. =org-scribe-edit-string= customizes what the plain-text fallback matches.
 
 See lesson 14 of the manual for the full revision workflow, including the related =*SUMMARY*= marker for scenes you have planned but not yet written.
 

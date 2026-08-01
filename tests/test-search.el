@@ -142,8 +142,8 @@ incorrectly matched."
 ;; `rgrep' is stubbed so these exercise root resolution only, without
 ;; spawning a find/grep subprocess.
 
-(ert-deftest test-search-edits-uses-project-root ()
-  "Inside a project, the edits search greps from the project root."
+(ert-deftest test-search-edits-rgrep-uses-project-root ()
+  "Inside a project, the rgrep fallback greps from the project root."
   (let* ((temp-dir (file-name-as-directory (make-temp-file "org-scribe-edits-" t)))
          (captured nil))
     (unwind-protect
@@ -154,14 +154,14 @@ incorrectly matched."
                      (lambda (regexp files dir &optional _confirm)
                        (setq captured (list regexp files dir)))))
             (let ((default-directory temp-dir))
-              (org-scribe-search-edits-recursive)))
+              (org-scribe-search-edits-rgrep)))
           (should (equal org-scribe-edit-string (nth 0 captured)))
           (should (equal "*.org" (nth 1 captured)))
           (should (file-equal-p temp-dir (nth 2 captured))))
       (delete-directory temp-dir t))))
 
-(ert-deftest test-search-edits-falls-back-outside-project ()
-  "Outside a project, the edits search falls back to the buffer's directory.
+(ert-deftest test-search-edits-rgrep-falls-back-outside-project ()
+  "Outside a project, the rgrep fallback uses the buffer's directory.
 Regression test: `org-scribe-project-root' returns nil outside a
 project, and passing nil to `rgrep' as its DIR argument fails instead of
 degrading.  `org-scribe-search-todos-recursive' already had this
@@ -174,10 +174,190 @@ fallback; the edits search did not."
                      (setq captured-dir dir)))
                   ((symbol-function 'org-scribe-project-root) (lambda () nil)))
           (let ((default-directory temp-dir))
-            (org-scribe-search-edits-recursive))
+            (org-scribe-search-edits-rgrep))
           (should (stringp captured-dir))
           (should (file-equal-p temp-dir captured-dir)))
       (delete-directory temp-dir t))))
+
+;;; Edit marker index
+
+(defmacro org-scribe-test--with-edits-project (dir-var content &rest body)
+  "Run BODY in a temp project rooted at DIR-VAR containing CONTENT.
+CONTENT is inserted into \"novel.org\" at the project root."
+  (declare (indent 2))
+  `(let ((,dir-var (file-name-as-directory
+                    (make-temp-file "org-scribe-index-" t))))
+     (unwind-protect
+         (progn
+           (with-temp-file (expand-file-name ".org-scribe-project" ,dir-var)
+             (insert "Type: novel\n"))
+           (with-temp-file (expand-file-name "novel.org" ,dir-var)
+             (insert ,content))
+           ,@body)
+       (delete-directory ,dir-var t))))
+
+(defun org-scribe-test--markers (dir)
+  "Collect edit markers from novel.org in DIR."
+  (org-scribe--edits-collect-file (expand-file-name "novel.org" dir)))
+
+(ert-deftest test-search-edits-index-parses-category ()
+  "An *EDIT* with a known category is split into category and body."
+  (org-scribe-test--with-edits-project dir
+      "* Scene 1\n#+begin_comment\n*EDIT*: plot - test this\n#+end_comment\n"
+    (let ((marker (car (org-scribe-test--markers dir))))
+      (should (equal "EDIT" (plist-get marker :type)))
+      (should (equal "plot" (plist-get marker :category)))
+      (should (equal "test this" (plist-get marker :text)))
+      (should (equal "Scene 1" (plist-get marker :heading))))))
+
+(ert-deftest test-search-edits-index-keeps-multiline-body ()
+  "A marker spanning several lines keeps its whole body.
+This is the main thing the structured index buys over a line-based
+grep, which would show only the line carrying the marker."
+  (org-scribe-test--with-edits-project dir
+      (concat "* Scene 1\n#+begin_comment\n*EDIT*: prose - first line\n"
+              "second line\nthird line\n#+end_comment\n")
+    (let ((marker (car (org-scribe-test--markers dir))))
+      (should (equal "first line\nsecond line\nthird line"
+                     (plist-get marker :text))))))
+
+(ert-deftest test-search-edits-index-unknown-category-goes-to-other ()
+  "An *EDIT* with an unrecognised category lands in the catch-all.
+A typo must move a marker, never hide it, so the bogus category is
+kept in the visible body."
+  (org-scribe-test--with-edits-project dir
+      "* Scene 1\n#+begin_comment\n*EDIT*: plto - typo here\n#+end_comment\n"
+    (let ((marker (car (org-scribe-test--markers dir))))
+      (should (null (plist-get marker :category)))
+      (should (equal "plto - typo here" (plist-get marker :text))))))
+
+(ert-deftest test-search-edits-index-empty-category-goes-to-other ()
+  "An *EDIT* with an empty category lands in the catch-all.
+Tempel inserts the \" - \" separator even when the category prompt is
+answered with RET, so this shape occurs in normal use."
+  (org-scribe-test--with-edits-project dir
+      "* Scene 1\n#+begin_comment\n*EDIT*:  - no category\n#+end_comment\n"
+    (let ((marker (car (org-scribe-test--markers dir))))
+      (should (null (plist-get marker :category)))
+      (should (equal "no category" (plist-get marker :text))))))
+
+(ert-deftest test-search-edits-index-note-with-dash-is-not-split ()
+  "A *NOTE* containing \" - \" is never split into a category.
+Only *EDIT* carries a category; *NOTE* bodies are taken verbatim."
+  (org-scribe-test--with-edits-project dir
+      (concat "* Scene 1\n#+begin_comment\n"
+              "*NOTE*: plot - this whole line is the note\n#+end_comment\n")
+    (let ((marker (car (org-scribe-test--markers dir))))
+      (should (equal "NOTE" (plist-get marker :type)))
+      (should (null (plist-get marker :category)))
+      (should (equal "plot - this whole line is the note"
+                     (plist-get marker :text))))))
+
+(ert-deftest test-search-edits-index-ignores-prose-outside-comment ()
+  "Markers in ordinary prose are not indexed.
+Only `comment-block' elements are traversed, so prose that merely
+mentions *NOTE* cannot produce a false positive — the reason the index
+is immune to a problem the rgrep search has."
+  (org-scribe-test--with-edits-project dir
+      "* Scene 1\nShe wrote *NOTE* on the margin, and *EDIT*: plot - nope.\n"
+    (should (null (org-scribe-test--markers dir)))))
+
+(ert-deftest test-search-edits-index-ignores-summary-marker ()
+  "*SUMMARY* markers are deliberately excluded from the index.
+They describe prose that does not exist yet, live under a TODO heading,
+and are found with the TODO search instead.  Do not \"fix\" this by
+adding *SUMMARY* to `org-scribe--edits-marker-regexp'."
+  (org-scribe-test--with-edits-project dir
+      (concat "* TODO Scene 12\n#+begin_comment\n"
+              "*SUMMARY*: Alex opens the box.\n#+end_comment\n")
+    (should (null (org-scribe-test--markers dir)))))
+
+(ert-deftest test-search-edits-index-handles-block-before-first-heading ()
+  "A marker before the first heading is indexed with a nil heading."
+  (org-scribe-test--with-edits-project dir
+      "#+begin_comment\n*NOTE*: no heading above me\n#+end_comment\n* Scene 1\n"
+    (let ((marker (car (org-scribe-test--markers dir))))
+      (should marker)
+      (should (null (plist-get marker :heading)))
+      (should (equal "no heading above me" (plist-get marker :text))))))
+
+(ert-deftest test-search-edits-index-records-line-number ()
+  "Each marker records the line it occupies, for navigation."
+  (org-scribe-test--with-edits-project dir
+      (concat "* Scene 1\nProse.\n\n#+begin_comment\n"
+              "*EDIT*: scene - fix this\n#+end_comment\n")
+    (let ((marker (car (org-scribe-test--markers dir))))
+      ;; Lines: 1 heading, 2 prose, 3 blank, 4 begin_comment, 5 marker.
+      (should (equal 5 (plist-get marker :line))))))
+
+(ert-deftest test-search-edits-index-collects-multiple-markers-per-block ()
+  "Several markers in one comment block are indexed separately."
+  (org-scribe-test--with-edits-project dir
+      (concat "* Scene 1\n#+begin_comment\n*EDIT*: plot - first\n"
+              "*NOTE*: second\n#+end_comment\n")
+    (let ((markers (org-scribe-test--markers dir)))
+      (should (equal 2 (length markers)))
+      (should (equal '("EDIT" "NOTE") (mapcar (lambda (m) (plist-get m :type))
+                                              markers))))))
+
+(ert-deftest test-search-edits-index-renders-grouped-buffer ()
+  "The index buffer groups edits by category and notes separately."
+  (org-scribe-test--with-edits-project dir
+      (concat "* Scene 1\n#+begin_comment\n*EDIT*: plot - plot problem\n"
+              "#+end_comment\n* Scene 2\n#+begin_comment\n"
+              "*NOTE*: remember this\n#+end_comment\n")
+    (let ((buffer (org-scribe--edits-build dir)))
+      (unwind-protect
+          (with-current-buffer buffer
+            (let ((text (buffer-substring-no-properties (point-min) (point-max))))
+              (should (string-match-p "^\\* Edits$" text))
+              (should (string-match-p "^\\*\\* plot$" text))
+              (should (string-match-p "plot problem" text))
+              (should (string-match-p "^\\* Notes$" text))
+              (should (string-match-p "remember this" text))
+              ;; Entries link back to the source line.
+              (should (string-match-p "\\[\\[file:.*::[0-9]+\\]\\[Scene 1\\]\\]" text))))
+        (kill-buffer buffer)))))
+
+(ert-deftest test-search-edits-index-empty-categories-configurable ()
+  "Empty categories appear or not per `org-scribe-edits-index-show-empty-categories'."
+  (org-scribe-test--with-edits-project dir
+      "* Scene 1\n#+begin_comment\n*EDIT*: plot - only plot\n#+end_comment\n"
+    (dolist (case '((t . t) (nil . nil)))
+      (let* ((org-scribe-edits-index-show-empty-categories (car case))
+             (buffer (org-scribe--edits-build dir)))
+        (unwind-protect
+            (with-current-buffer buffer
+              (let ((has-empty (string-match-p
+                                "^\\*\\* prose$"
+                                (buffer-substring-no-properties
+                                 (point-min) (point-max)))))
+                (should (equal (cdr case) (and has-empty t)))))
+          (kill-buffer buffer))))))
+
+(ert-deftest test-search-edits-compat-alias ()
+  "The old command name still works, now pointing at the index."
+  (should (fboundp 'org-scribe-search-edits-recursive))
+  (should (eq (indirect-function 'org-scribe-search-edits-recursive)
+              (indirect-function 'org-scribe-search-edits))))
+
+(ert-deftest test-search-edits-refresh-on-save-is-inert-when-hidden ()
+  "The save hook does no work while the index buffer is not displayed.
+The index is rebuilt by reparsing every project file, so it must not
+run on every save just because an index was opened once."
+  (org-scribe-test--with-edits-project dir
+      "* Scene 1\n#+begin_comment\n*EDIT*: plot - one\n#+end_comment\n"
+    (let ((buffer (org-scribe--edits-build dir))
+          (rebuilt nil))
+      (unwind-protect
+          (cl-letf (((symbol-function 'org-scribe--edits-build)
+                     (lambda (&rest _) (setq rebuilt t))))
+            ;; Batch mode: the buffer exists but is in no window.
+            (with-temp-buffer
+              (setq buffer-file-name (expand-file-name "novel.org" dir))
+              (org-scribe--edits-refresh-on-save))
+            (should-not rebuilt))
+        (kill-buffer buffer)))))
 
 ;;; Run tests
 

@@ -50,7 +50,7 @@
 (declare-function org-scribe-org-find-plot "search/org-scribe-search")
 (declare-function org-scribe-org-find-location "search/org-scribe-search")
 (declare-function org-scribe-search-todos-recursive "search/org-scribe-search")
-(declare-function org-scribe-search-edits-recursive "search/org-scribe-search")
+(declare-function org-scribe-search-edits "search/org-scribe-search")
 (declare-function org-scribe-create-novel-project "templates/org-scribe-project")
 (declare-function org-scribe-create-short-story-project "templates/org-scribe-project")
 (declare-function org-scribe-insert-scene "templates/org-scribe-project")
@@ -185,7 +185,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("3" org-scribe-org-find-plot "find by plot")
   ("4" org-scribe-org-find-location "find by location")
   ("5" org-scribe-search-todos-recursive "find TODOs")
-  ("6" org-scribe-search-edits-recursive "find edits and notes")
+  ("6" org-scribe-search-edits "find edits and notes")
 
   ;; Manage
   ("n" org-scribe-capture-to-file "capture note")

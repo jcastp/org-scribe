@@ -249,6 +249,10 @@ Possible values:
 - `notes'    -- the project notes file, as chosen by
                 `org-scribe-capture-target-file' (the same file
                 org-scribe captures write to).
+- `edits'    -- a live index of the project's inline edit markers, as
+                built by `org-scribe-search-edits'.  Unlike the other
+                values this is a generated buffer, not a file, and it
+                refreshes whenever you save an Org file in the project.
 - `revision' -- the project revision file, when one exists.
 - a string   -- a project-relative file path, e.g. \"notes/research.org\".
 - a function -- called with the manuscript file name; must return the
@@ -259,6 +263,7 @@ The pane used to show a per-manuscript companion file (\"novel.org\" ->
 org-remark support has been removed and inline edit markers replaced it,
 so the pane now defaults to the project notes file instead."
   :type '(choice (const :tag "Project notes file" notes)
+                 (const :tag "Live edit marker index" edits)
                  (const :tag "Project revision file" revision)
                  (string :tag "Project-relative file path")
                  (function :tag "Function returning a file name"))
@@ -284,8 +289,41 @@ so the pane now defaults to the project notes file instead."
 (defcustom org-scribe-edit-string
   "\\*EDIT\\*\\|\\*NOTE\\*"
   "Regexp to search for edit notes in the manuscript.
-The default matches headings or text containing *EDIT* or *NOTE*."
+The default matches headings or text containing *EDIT* or *NOTE*.
+
+Used by `org-scribe-search-edits-rgrep', the plain-text fallback
+search.  The structured index built by `org-scribe-search-edits' does
+not use this regexp: it parses the marker grammar directly, so that it
+can tell *EDIT* from *NOTE* and read the category off an *EDIT*.
+Customize this when you want the text search to find markers of your
+own beyond the two org-scribe knows about."
   :type 'string
+  :group 'org-scribe)
+
+(defcustom org-scribe-edit-categories
+  '("plot" "scene" "character" "prose")
+  "Known categories for *EDIT* markers, used to group the edit index.
+
+An *EDIT* marker carries a category before a \" - \" separator:
+
+  *EDIT*: plot - Alice's motive contradicts chapter 1
+
+`org-scribe-search-edits' groups the index by these categories.  A
+marker whose category is absent, empty, or not in this list is grouped
+under a catch-all \"other\" heading rather than being dropped, so a
+typo moves a marker but never hides it.
+
+*NOTE* markers have no category and are listed in their own section."
+  :type '(repeat string)
+  :group 'org-scribe)
+
+(defcustom org-scribe-edits-index-show-empty-categories t
+  "Whether the edit index lists categories that have no markers.
+
+When non-nil, every category in `org-scribe-edit-categories' gets a
+heading even when empty, so the index doubles as a checklist of what is
+outstanding in each.  When nil, only categories with markers appear."
+  :type 'boolean
   :group 'org-scribe)
 
 (provide 'org-scribe-config)

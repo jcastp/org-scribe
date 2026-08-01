@@ -279,6 +279,17 @@ Focus always returns to the original buffer for seamless transitions."
 ;;; Editing Mode (three-pane layout)
 
 ;; Helper functions for editing mode
+(defun org-scribe--editing-display-right-panel (src-file)
+  "Display the editing-mode right pane for SRC-FILE in the current window.
+Most values of `org-scribe-editing-right-panel' name a file; `edits'
+instead names a generated buffer, so it cannot go through `find-file'."
+  (if (eq org-scribe-editing-right-panel 'edits)
+      (switch-to-buffer
+       (org-scribe--edits-build
+        (or (org-scribe-project-root)
+            (file-name-directory src-file))))
+    (find-file (org-scribe--editing-right-panel-file src-file))))
+
 (defun org-scribe--editing-right-panel-file (src-file)
   "Return the file to show in the editing-mode right pane for SRC-FILE.
 Dispatches on `org-scribe-editing-right-panel'; see that variable for
@@ -288,6 +299,11 @@ display."
   (let ((root (org-scribe-project-root)))
     (or (pcase org-scribe-editing-right-panel
           ('notes (org-scribe-capture-target-file t))
+          ;; `edits' is a buffer, not a file; it is handled by
+          ;; `org-scribe--editing-display-right-panel' before reaching
+          ;; here.  Fall through to the notes file for any caller that
+          ;; asks this function for a file name regardless.
+          ('edits (org-scribe-capture-target-file t))
           ('revision (and root (org-scribe--find-existing-file root "revision.org")))
           ((and (pred stringp) path) (and root (expand-file-name path root)))
           ((and (pred functionp) fn) (funcall fn src-file)))
@@ -335,7 +351,6 @@ Applies theme, column width, and font preset."
          (src-file
           (or (buffer-file-name)
               (user-error (org-scribe-msg 'error-no-org-file))))
-         (notes-file (org-scribe--editing-right-panel-file src-file))
          (frame-w    (frame-width))
          (right-w    (org-scribe-window-perc right-perc))
          (left-w     (org-scribe-window-perc left-perc)))
@@ -362,7 +377,7 @@ Applies theme, column width, and font preset."
     (let ((left-size (- (window-total-width) right-w)))
       (split-window-right left-size)
       (other-window 1)
-      (find-file notes-file))
+      (org-scribe--editing-display-right-panel src-file))
     (other-window -1)
 
     ;; Apply visual profile

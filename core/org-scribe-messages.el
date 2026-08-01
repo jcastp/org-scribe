@@ -249,6 +249,16 @@ file's Commentary for why a forward `defvar' is needed here too.")
     (search-loc-prompt-free . "Location [substring]: ")
     (msg-no-org-files . "No .org files found in %s and subdirectories")
 
+    ;; Search — edit marker index
+    (edits-index-title . "Edit markers")
+    (edits-index-section-edits . "Edits")
+    (edits-index-section-notes . "Notes")
+    (edits-index-other-category . "other")
+    (edits-index-no-heading . "(before first heading)")
+    (edits-index-none-found . "No edit markers found in %s")
+    (edits-index-found . "%d marker%s in %d file%s")
+    (edits-index-help . "RET or mouse-1 follows a marker to its place in the manuscript.  g refreshes, q buries.")
+
     ;; Character linking
     (prompt-select-character . "Select character: ")
     (prompt-select-pov . "Select PoV character: ")
@@ -622,6 +632,16 @@ printf-style format specifiers (%s, %d, etc.) for dynamic content.")
     (search-loc-prompt . "Buscar localización [difuso]: ")
     (search-loc-prompt-free . "Localización [subcadena]: ")
     (msg-no-org-files . "No se encontraron archivos .org en %s ni en sus subdirectorios")
+
+    ;; Search — edit marker index
+    (edits-index-title . "Marcas de edición")
+    (edits-index-section-edits . "Ediciones")
+    (edits-index-section-notes . "Notas")
+    (edits-index-other-category . "otras")
+    (edits-index-no-heading . "(antes del primer encabezado)")
+    (edits-index-none-found . "No se encontraron marcas de edición en %s")
+    (edits-index-found . "%d marca%s en %d archivo%s")
+    (edits-index-help . "RET o mouse-1 abre la marca en el manuscrito.  g actualiza, q oculta.")
 
     ;; Character linking
     (prompt-select-character . "Seleccionar personaje: ")

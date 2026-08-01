@@ -565,17 +565,23 @@ When you activate Editing mode:
 
 The right panel is configurable through ~org-scribe-editing-right-panel~:
 
-| Value             | Right panel shows                                       |
-|-------------------+---------------------------------------------------------|
-| ~notes~ (default) | The project notes file                                  |
-| ~revision~        | The project's ~revision.org~                            |
-| a string          | A project-relative path, e.g. ~"notes/research.org"~    |
-| a function        | Called with the manuscript file name; returns a file    |
+| Value             | Right panel shows                                          |
+|-------------------+------------------------------------------------------------|
+| ~notes~ (default) | The project notes file                                     |
+| ~edits~           | A live index of your inline edit markers (see lesson 14)   |
+| ~revision~        | The project's ~revision.org~                               |
+| a string          | A project-relative path, e.g. ~"notes/research.org"~       |
+| a function        | Called with the manuscript file name; returns a file       |
 
 #+BEGIN_SRC elisp
 ;; Show revision.org instead of the notes file
 (setq org-scribe-editing-right-panel 'revision)
+
+;; Or keep a live list of everything still to fix beside the manuscript
+(setq org-scribe-editing-right-panel 'edits)
 #+END_SRC
+
+The ~edits~ value is worth trying during a revision pass: it is the only option that isn't a file you write into, but a generated index that rebuilds itself every time you save. Mark a passage with ~*EDIT*~, save, and it appears in the panel; delete the marker, save, and it disappears. Because markers live in comment blocks they are easy to skim past in the manuscript itself, which is exactly why having them listed beside it helps.
 
 If the requested file cannot be found, the panel falls back to the project notes file rather than opening nothing.
 

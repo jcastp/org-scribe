@@ -352,7 +352,11 @@ Searches the entire project recursively for all TODO items, collecting them from
 
 *Status*: Fully implemented | *Hydra*: ~5~ (Search section) | *Module*: ~search/org-scribe-search.el~
 
-** Find Edit Notes (~org-scribe-search-edits-recursive~)
+** Edit Marker Index (~org-scribe-search-edits~)
+
+Collects every ~*EDIT*~ and ~*NOTE*~ marker written inside an ~#+begin_comment~ block across all .org files below the project root, and presents them in a navigable Org buffer: ~*EDIT*~ markers grouped by category (~org-scribe-edit-categories~, default plot/scene/character/prose, with an ~other~ catch-all for missing or unrecognized ones), ~*NOTE*~ markers in a section of their own. Each entry links back to the exact source line. Built by traversing Org's parse tree for ~comment-block~ elements rather than by text search, which means complete multi-line marker bodies, the enclosing scene heading for each marker, and immunity to false positives from prose that merely mentions ~*NOTE*~. ~*SUMMARY*~ markers are deliberately excluded - they describe unwritten scenes and belong to the TODO search. In the index buffer ~g~ refreshes and ~q~ buries; with a prefix argument the command runs the ~rgrep~ fallback instead. Also available as the ~edits~ value of ~org-scribe-editing-right-panel~, where it refreshes on every save. ~org-scribe-search-edits-recursive~ remains as an alias.
+
+** Find Edit Notes (~org-scribe-search-edits-rgrep~)
 
 Searches the entire project recursively for inline edit markers and revision notes using ~rgrep~. The search pattern is configured via ~org-scribe-edit-string~ (default regexp matches ~*EDIT*~ or ~*NOTE*~ strings anywhere in .org files). Results appear in a grep buffer with clickable file:line references. Writers use ~*EDIT*~ or ~*NOTE*~ inline while drafting to mark passages needing revision without interrupting flow; this function then collects all such markers across the entire project for a focused revision session. Markers are conventionally written inside an ~#+begin_comment~ block, which keeps them out of every export backend and out of word counts (see lesson 14, "Marker Convention"). The search is deliberately project-wide; outside a writing project it falls back to the current buffer's directory rather than failing.
 
@@ -629,9 +633,27 @@ The ~org-scribe-scene-break-replacements~ alist maps export backends to scene se
 
 ** Edit Note Marker (~org-scribe-edit-string~)
 
-Defines the regexp pattern used by ~org-scribe-search-edits-recursive~ to find inline edit notes and revision markers throughout the manuscript. Default value is ~"\*EDIT\*\\|\*NOTE\*"~, matching ~*EDIT*~ or ~*NOTE*~ anywhere in .org files. Writers can customize this to match their personal convention: for example ~"FIXME\\|REVISION\\|TOFIX"~ or any other marker they use to flag places needing attention. The pattern is passed to ~rgrep~, so full regexp syntax is supported. Note that the default deliberately does *not* match ~*SUMMARY*~, a related marker for scenes planned but not yet written: those live under ~TODO~ headings and are found with the TODO search instead, keeping notes about absent prose separate from edits to prose that exists.
+Defines the regexp pattern used by ~org-scribe-search-edits-rgrep~, the plain-text fallback search, to find inline edit notes and revision markers throughout the manuscript. The structured index (~org-scribe-search-edits~) does not use this regexp: it parses the marker grammar directly so it can tell ~*EDIT*~ from ~*NOTE*~ and read categories. Default value is ~"\*EDIT\*\\|\*NOTE\*"~, matching ~*EDIT*~ or ~*NOTE*~ anywhere in .org files. Writers can customize this to match their personal convention: for example ~"FIXME\\|REVISION\\|TOFIX"~ or any other marker they use to flag places needing attention. The pattern is passed to ~rgrep~, so full regexp syntax is supported. Note that the default deliberately does *not* match ~*SUMMARY*~, a related marker for scenes planned but not yet written: those live under ~TODO~ headings and are found with the TODO search instead, keeping notes about absent prose separate from edits to prose that exists.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~search/org-scribe-search.el~
+
+** Edit Marker Categories (~org-scribe-edit-categories~)
+
+The known categories for ~*EDIT*~ markers, used to group the edit index. Default is ~'("plot" "scene" "character" "prose")~. A marker carries its category before a ~" - "~ separator (~*EDIT*: plot - Alice's motive contradicts chapter 1~); matching is case-insensitive. A marker whose category is absent, empty, or not in this list is grouped under a catch-all ~other~ heading rather than being dropped, so a typo moves a marker but never hides it - and the unrecognized category stays visible in the entry text. ~*NOTE*~ markers have no category at all and are listed in their own section.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
+
+** Show Empty Edit Categories (~org-scribe-edits-index-show-empty-categories~)
+
+Whether the edit index lists categories that currently have no markers (default: t). When enabled, every category gets a heading even when empty, so the index doubles as a checklist showing at a glance which kinds of problem are outstanding and which are clear. Set to nil for a more compact index that shows only categories with something in them.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
+
+** Editing Mode Right Panel (~org-scribe-editing-right-panel~)
+
+Selects what ~org-scribe-editing-mode~ displays in its right pane. ~notes~ (the default) shows the project notes file, the same file captures write to. ~edits~ shows a live index of inline edit markers that rebuilds itself whenever an Org file in the project is saved - the only value that is a generated buffer rather than a file. ~revision~ shows the project's ~revision.org~. A string is treated as a project-relative file path; a function is called with the manuscript file name and must return the file to display. If a requested file cannot be located, the pane falls back to the project notes file rather than opening nothing. Before org-remark support was removed, this pane always showed a per-manuscript companion file (~novel.org~ → ~novel-notes.org~) that existed only as an annotation sink.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
 * Writing Planner
 :PROPERTIES:

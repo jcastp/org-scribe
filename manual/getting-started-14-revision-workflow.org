@@ -122,7 +122,46 @@ Two markers are recognized by the edit search:
 | ~*EDIT*~  | Something to change in prose that already exists     |
 | ~*NOTE*~  | Something to remember or check; not a change as such |
 
-Find them all with ~F8 F8~ then ~6~. Delete the comment block when you have dealt with it - that is how a marker gets "closed"; there is no separate done state to track.
+Delete the comment block when you have dealt with it - that is how a marker gets "closed"; there is no separate done state to track.
+
+*** Categories
+
+An ~*EDIT*~ carries a category before a ~" - "~ separator, so that a revision pass can tackle one kind of problem at a time. The default categories are ~plot~, ~scene~, ~character~ and ~prose~ (customize ~org-scribe-edit-categories~).
+
+~*NOTE*~ has no category - it is a reminder, not a classified piece of work.
+
+*** The Edit Index
+
+~F8 F8~ then ~6~ collects every marker in the project and groups them:
+
+#+BEGIN_EXAMPLE
+,* Edits
+,** plot
+,*** [[file:novel.org::412][Scene 12]] — novel.org
+    Alice's motive here contradicts chapter 1
+,** character
+,*** [[file:novel.org::980][Scene 30]] — novel.org
+    too much interiority, cut by half
+,** prose
+,** scene
+,** other
+
+,* Notes
+,** [[file:novel.org::455][Scene 14]] — novel.org
+   check whether Alice already knows about the letter
+#+END_EXAMPLE
+
+Each entry links to the exact line the marker sits on. Press ~RET~ on one to jump there; ~g~ rebuilds the index, ~q~ buries it.
+
+Three things worth knowing:
+
+- *Multi-line markers stay whole.* A marker spanning several lines shows all of it, not just the line the ~*EDIT*~ is on.
+- *Typos move a marker, they never hide it.* A category that isn't recognized (~plto~) lands under ~other~, with the bad category still visible in the text.
+- *Prose can't create false positives.* The index reads Org's parse tree for comment blocks, so a sentence that merely mentions ~*NOTE*~ is not a marker and is not indexed.
+
+Empty categories are listed by default, so the index doubles as a checklist of what is outstanding in each. Set ~org-scribe-edits-index-show-empty-categories~ to ~nil~ to hide them.
+
+If your markers don't follow the comment-block convention, call the search with a prefix argument (~C-u~) to get ~org-scribe-search-edits-rgrep~, a plain-text search that finds them anywhere - at the cost of the grouping.
 
 *** Why the Comment Block Matters
 
