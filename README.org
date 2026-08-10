@@ -61,7 +61,7 @@
 - *Edit Marker Index*: Collects the =*EDIT*= / =*NOTE*= markers you leave inline while drafting into one navigable buffer, grouped by category, each linking back to its exact line. Markers live in Org comment blocks, so they never reach your exported manuscript and never inflate your word counts
 - *Dictionary Tools*: Spanish RAE dictionary API and synonym lookup
 - *Capture System*: Project-aware note capture that finds the right notes file; character/location/object/timeline/plot-thread templates are fully localized to the project's own language (English/Spanish), independent of your global UI language setting
-- *Project Health Report*: =org-scribe-project-health= aggregates word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, plot points no scene serves yet, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
+- *Project Health Report*: =org-scribe-project-health= aggregates the Starting Gate (how many of its eight items are done, two of them measured rather than self-reported), word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, plot points no scene serves yet, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
 - *Hydra Menu*: Unified keyboard-driven menu for quick access to all functions
 - *Writing Planner* (bundled): Connect writing goal planning to your manuscript — auto-loads plans, pushes live word counts, shows daily progress in the mode line, and adds a planner sub-menu at =W=. Available automatically; no separate install needed.

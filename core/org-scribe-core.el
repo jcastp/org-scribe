@@ -184,6 +184,7 @@ Returns plist with:
   :plot-file       - plot file (objects/plot.org or objects/trama.org)
   :timeline-file   - timeline file (objects/timeline.org or objects/cronologia.org)
   :objects-file    - objects file (objects/objects.org or objects/objetos.org)
+  :design-file     - method design file (design.org or diseno.org), or nil
   :plan-file       - writing plan file (plan.org in the project root), or nil
 
 All file/directory values are nil if the path does not exist."
@@ -211,6 +212,8 @@ All file/directory values are nil if the path does not exist."
           :objects-file (org-scribe--find-existing-file root
                           "objects/objects.org" "objects/objetos.org"
                           "objects.org" "objetos.org")
+          :design-file (org-scribe--find-existing-file root
+                         "design.org" "diseno.org")
           :plan-file (org-scribe--find-existing-file root "plan.org"))))
 
 ;;; Scene Property Localization
@@ -399,8 +402,9 @@ load-path change) is picked up without restarting Emacs."
   '((characters   . ("Characters" "Personajes"))
     (setting      . ("Setting" "Ambientación" "Ambientacion"))
     (plot-threads . ("Plot Threads" "Hilos de la Trama"))
-    (plot-points  . ("The Thirteen Non-Negotiables" "Los trece irrenunciables")))
-  "Canonical short-story section key -> localized level-1 heading aliases.
+    (plot-points  . ("The Thirteen Non-Negotiables" "Los trece irrenunciables"))
+    (starting-gate . ("Starting Gate" "Puerta de salida")))
+  "Canonical section key -> localized level-1 heading aliases.
 Mirrors `org-scribe--scene-property-aliases': English and Spanish project
 templates use different literal heading text for the same section
 (\"Characters\" vs \"Personajes\", etc.), so entity heading predicates

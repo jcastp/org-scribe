@@ -506,6 +506,83 @@ Verified directly: the guard expression returns nil for a missing feature."
             (should (string-match-p "2026-06-30" content))
             (should (string-match-p "\\(On track\\|Behind by\\)" content))))))))
 
+;;; Starting Gate
+;;
+;; Six of the gate's eight items can only be self-reported; two are
+;; measurable.  These tests cover the measuring and the parsing, since a
+;; checklist that only reads back what the writer asserted would add nothing.
+
+(defmacro test-health--with-file (content suffix &rest body)
+  "Write CONTENT to a temp .org file bound to `temp-file' and run BODY."
+  (declare (indent 2))
+  `(let ((temp-file (make-temp-file ,suffix nil ".org")))
+     (unwind-protect
+         (progn (with-temp-file temp-file (insert ,content)) ,@body)
+       (delete-file temp-file))))
+
+(ert-deftest test-health-gate-items-parsed ()
+  "Gate checkboxes are read with their state, in document order."
+  (test-health--with-file
+      "* Starting Gate\n\n- [ ] Theme and at least five Stances\n- [X] Stakes\n- [ ] Premise\n"
+      "test-health-design-"
+    (let ((items (org-scribe--health-gate-items temp-file)))
+      (should (= 3 (length items)))
+      (should (equal '(nil t nil) (mapcar #'car items)))
+      (should (equal "Theme and at least five Stances" (cdr (nth 0 items)))))))
+
+(ert-deftest test-health-gate-items-join-wrapped-labels ()
+  "A label wrapped across lines is reported whole.
+The shipped gate wraps its second item; reading only the first line
+reported it truncated mid-sentence."
+  (test-health--with-file
+      "* Starting Gate\n\n- [ ] Protagonist and opponent with Ghost, Lie, Weakness, Desire and\n  Need\n- [X] Stakes\n"
+      "test-health-design-"
+    (let ((items (org-scribe--health-gate-items temp-file)))
+      (should (= 2 (length items)))
+      (should (equal "Protagonist and opponent with Ghost, Lie, Weakness, Desire and Need"
+                     (cdr (nth 0 items)))))))
+
+(ert-deftest test-health-gate-items-localized-heading ()
+  "The Spanish gate heading is recognized too."
+  (test-health--with-file
+      "* Puerta de salida\n\n- [ ] Tema y al menos cinco Posturas\n"
+      "test-health-design-"
+    (should (= 1 (length (org-scribe--health-gate-items temp-file))))))
+
+(ert-deftest test-health-gate-absent-without-design-file ()
+  "No design file, or no gate section, yields nil rather than an error.
+Projects created from the pre-sistema templates have neither, and must
+not grow an empty report section."
+  (should-not (org-scribe--health-gate-items nil))
+  (should-not (org-scribe--health-gate-items "/nonexistent/design.org"))
+  (test-health--with-file "* Some Other Heading\n\n- [ ] not a gate item\n"
+      "test-health-design-"
+    (should-not (org-scribe--health-gate-items temp-file))))
+
+(ert-deftest test-health-plot-points-comments-do-not-count-as-content ()
+  "A plot point whose body is only the template's `#' hint counts as empty.
+Every shipped point carries a hint, so counting non-blank bodies would
+report all thirteen as done in a brand-new project — the report would
+congratulate the writer for the template."
+  (test-health--with-file
+      (concat "* The Thirteen Non-Negotiables\n"
+              "** 1. Theme Stated\n\n# Someone states the Theme.\n\n"
+              "** 2. Weakness, Lie and Need\n\nReal content here.\n\n"
+              "** 3. Desire\n\n")
+      "test-health-plot-"
+    (let ((result (org-scribe--health-plot-points-with-content temp-file)))
+      (should (equal '(1 . 3) result)))))
+
+(ert-deftest test-health-scenes-written-counts-first-n ()
+  "Only the first N scenes count, and only those with a word count."
+  (let ((scenes (list (list "S1" "C1" nil nil nil nil nil nil 500 nil)
+                      (list "S2" "C1" nil nil nil nil nil nil 0   nil)
+                      (list "S3" "C1" nil nil nil nil nil nil 300 nil)
+                      (list "S4" "C1" nil nil nil nil nil nil 900 nil))))
+    (should (= 2 (org-scribe--health-scenes-written scenes 3)))
+    (should (= 1 (org-scribe--health-scenes-written scenes 1)))
+    (should (= 3 (org-scribe--health-scenes-written scenes 4)))))
+
 (provide 'test-health)
 
 ;;; test-health.el ends here

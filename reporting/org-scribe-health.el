@@ -225,6 +225,91 @@ property listed here, or all of its entities are reported as orphaned."
           nil 'file))))
     ids))
 
+;;; Starting Gate
+;;
+;; The method's Starting Gate is the single checklist that decides when
+;; planning stops and drafting begins.  Six of its eight items live as prose
+;; in the design file and can only be self-reported; two are measurable, and
+;; measuring them is the point of this section — a checklist that only ever
+;; reads back what you asserted cannot tell you that you crossed the gate
+;; eleven days ago.
+;;
+;; Both figures are reported alongside the writer's own tick, and a
+;; disagreement is called out rather than silently resolved either way: the
+;; report's job is to show the discrepancy, not to decide who is right.
+
+(defun org-scribe--health-gate-items (design-file)
+  "Return the Starting Gate checkboxes from DESIGN-FILE.
+Each element is (CHECKED-P . LABEL), in document order.  Returns nil when
+there is no design file or no gate section — projects created from the
+pre-sistema templates have neither, and the caller skips the section."
+  (when (and design-file (file-exists-p design-file))
+    (with-current-buffer (find-file-noselect design-file)
+      (org-with-wide-buffer
+       (goto-char (point-min))
+       (let ((aliases (alist-get 'starting-gate org-scribe--section-heading-aliases))
+             (found nil)
+             (items nil))
+         (org-map-entries
+          (lambda ()
+            (when (and (not found)
+                       (= (org-current-level) 1)
+                       (cl-some (lambda (a)
+                                  (string-equal-ignore-case a (org-get-heading t t t t)))
+                                aliases))
+              (setq found t)
+              (save-restriction
+                (org-narrow-to-subtree)
+                (goto-char (point-min))
+                (while (re-search-forward "^[ \t]*- \\[\\([ X-]\\)\\][ \t]+\\(.*\\)$" nil t)
+                  (let ((checked (string= (match-string 1) "X"))
+                        (label (string-trim (match-string 2))))
+                    ;; Gate labels wrap: "Protagonista y oponente con Fantasma,
+                    ;; Mentira, Debilidad, Deseo y\n  Necesidad".  Absorb the
+                    ;; indented continuation lines, or the label is reported
+                    ;; truncated mid-sentence.
+                    (forward-line 1)
+                    (while (and (not (eobp))
+                                (looking-at "^[ \t]+\\([^ \t\n-].*\\)$"))
+                      (setq label (concat label " " (string-trim (match-string 1))))
+                      (forward-line 1))
+                    (push (cons checked label) items))))))
+          nil 'file)
+         (nreverse items))))))
+
+(defun org-scribe--health-plot-points-with-content (plot-file)
+  "Return (FILLED . TOTAL) for the thirteen non-negotiables in PLOT-FILE.
+A plot point counts as filled when its body holds at least one line that
+is neither blank nor an Org comment — the shipped template gives every
+one of them a `#' hint, so counting non-empty bodies would report all
+thirteen as done in a brand-new project."
+  (when (and plot-file (file-exists-p plot-file)
+             (fboundp 'org-scribe--plot-point-heading-p))
+    (with-current-buffer (find-file-noselect plot-file)
+      (org-with-wide-buffer
+       (let ((total 0) (filled 0))
+         (org-map-entries
+          (lambda ()
+            (when (org-scribe--plot-point-heading-p)
+              (cl-incf total)
+              (let ((body (save-excursion
+                            (org-end-of-meta-data t)
+                            (buffer-substring-no-properties
+                             (point) (save-excursion (org-end-of-subtree t t) (point))))))
+                (when (cl-some (lambda (line)
+                                 (let ((l (string-trim line)))
+                                   (and (not (string-empty-p l))
+                                        (not (string-prefix-p "#" l)))))
+                               (split-string body "\n"))
+                  (cl-incf filled)))))
+          nil 'file)
+         (when (> total 0) (cons filled total)))))))
+
+(defun org-scribe--health-scenes-written (scenes n)
+  "Return how many of the first N SCENES have a non-zero word count."
+  (let ((first-n (seq-take scenes n)))
+    (seq-count (lambda (s) (> (nth 8 s) 0)) first-n)))
+
 (defun org-scribe--health-find-orphans (entities referenced-ids)
   "Return list of entity names not present in REFERENCED-IDS.
 ENTITIES is an alist (NAME . (ID . HEADING)) as returned by
@@ -278,6 +363,13 @@ with clickable ID links back to each scene."
                                (* 100.0 (/ (float total-words) total-obj))
                              nil))
            (ref-ids        (org-scribe--health-collect-referenced-ids novel-file))
+           ;; Starting Gate: the writer's own ticks, plus the two items that
+           ;; can be measured rather than asserted.
+           (gate-items     (org-scribe--health-gate-items
+                            (plist-get structure :design-file)))
+           (gate-points    (org-scribe--health-plot-points-with-content
+                            (plist-get structure :plot-file)))
+           (gate-scenes    (org-scribe--health-scenes-written scenes 3))
            (orphan-chars   (when (fboundp 'org-scribe--get-all-characters)
                              (org-scribe--health-find-orphans
                               (org-scribe--get-all-characters) ref-ids)))
@@ -374,6 +466,54 @@ with clickable ID links back to each scene."
           (insert "\n"))
 
         ;; ── Scene status breakdown ────────────────────────────────────────────
+        ;; ── Starting Gate ─────────────────────────────────────────────────────
+        ;; Only for projects that have a design file with a gate section;
+        ;; pre-sistema projects have neither and get no empty section.
+        (when gate-items
+          (let ((ticked (seq-count #'car gate-items))
+                (total  (length gate-items)))
+            (insert (format "* Starting Gate (%d of %d)\n\n" ticked total))
+            (insert "The one checklist that decides when planning stops.\n\n")
+            (dolist (item gate-items)
+              (insert (format "- [%s] %s\n" (if (car item) "X" " ") (cdr item))))
+            (insert "\n")
+            ;; The two measurable items, reported whether or not they are ticked.
+            (when gate-points
+              (insert (format "Plot points with content: *%d of %d*.\n"
+                              (car gate-points) (cdr gate-points))))
+            (insert (format "First three scenes written: *%d of 3*.\n" gate-scenes))
+            ;; Disagreements between the tick and the measurement, in both
+            ;; directions.  Shown, not resolved.
+            (let ((notes nil))
+              (when (and gate-points (nth 6 gate-items))
+                (let ((ticked-p (car (nth 6 gate-items)))
+                      (done-p   (= (car gate-points) (cdr gate-points))))
+                  (cond ((and ticked-p (not done-p))
+                         (push (format "plot points are ticked but %d of %d are still empty"
+                                       (- (cdr gate-points) (car gate-points))
+                                       (cdr gate-points))
+                               notes))
+                        ((and (not ticked-p) done-p)
+                         (push "all thirteen plot points have content but the box is unticked"
+                               notes)))))
+              (when (nth 7 gate-items)
+                (let ((ticked-p (car (nth 7 gate-items)))
+                      (done-p   (>= gate-scenes 3)))
+                  (cond ((and ticked-p (not done-p))
+                         (push (format "first three scenes are ticked but only %d written"
+                                       gate-scenes)
+                               notes))
+                        ((and (not ticked-p) done-p)
+                         (push "the first three scenes are written but the box is unticked"
+                               notes)))))
+              (when notes
+                (insert "\nWorth a look: ")
+                (insert (mapconcat #'identity (nreverse notes) "; "))
+                (insert ".\n")))
+            (when (= ticked total)
+              (insert "\n*The gate is crossed. Stop planning.*\n"))
+            (insert "\n")))
+
         (insert "* Scenes by Status\n\n")
         (insert "| Status | Count |\n")
         (insert "|--------+-------|\n")
