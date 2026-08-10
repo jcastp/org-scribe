@@ -22,13 +22,19 @@
 - [ ] Submission/Publication
 
 ** Project Structure
+
+# Start with design.org: the Starting Gate and the twelve questions of the
+# Core. When the gate's eight boxes are ticked, stop planning.
+
+- [[file:design.org][design.org]] - *Start here*: Starting Gate and Core
 - [[file:novel.org][novel.org]] - Main manuscript file with progress tracking
-- [[file:revision.org][revision.org]] - Editing notes and feedback
-- [[file:writing-journal.org][writing-journal.org]] - Reflective writing journal
 - [[file:objects/characters.org][objects/characters.org]] - Character profiles
-- [[file:objects/locations.org][objects/locations.org]] - Location descriptions
+- [[file:objects/plot.org][objects/plot.org]] - The thirteen non-negotiables and the narrative lines
+- [[file:objects/locations.org][objects/locations.org]] - Settings, with their Echo and Hazard
+- [[file:objects/worldbuilding.org][objects/worldbuilding.org]] - The world and how it presses on the Weakness
+- [[file:revision.org][revision.org]] - The ten revision passes
+- [[file:writing-journal.org][writing-journal.org]] - Reflective writing journal
 - [[file:objects/objects.org][objects/objects.org]] - Important objects
-- [[file:objects/plot.org][objects/plot.org]] - Plot structure
 - [[file:objects/timeline.org][objects/timeline.org]] - Timeline of events
 - [[file:notes/research.org][notes/research.org]] - Research notes
 - [[file:notes/notes.org][notes/notes.org]] - General notes

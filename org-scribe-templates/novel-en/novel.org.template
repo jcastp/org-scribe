@@ -45,6 +45,31 @@ https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
 |---+------------------+-------+-----+---------------+---------|
 #+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
 
+** Time Tracking
+
+To record writing time, use:
+- =C-c C-x C-i= (org-clock-in)
+- =C-c C-x C-o= (org-clock-out)
+
+*** Writing Sessions
+
+**** ${DATE} First session
+:LOGBOOK:
+:END:
+
+** Productivity Analysis
+
+*** Best day
+- Date ::
+- Words ::
+
+*** Weekly average
+- Words per week ::
+- Words per day ::
+
+*** Current streak
+- Consecutive writing days :: 0
+
 ** Plot Thread Analysis
 
 This table shows which plot threads appear in which scenes.

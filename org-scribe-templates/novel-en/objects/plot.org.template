@@ -1,446 +1,176 @@
-#+TITLE: ${TITLE} - Plot Structure
+#+TITLE: ${TITLE} - Plot
 #+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: en
 #+STARTUP: overview
 
-* Premise
+# The plot is the scaffolding: the common points and rhythms, marks along the
+# route. The plot is not the story. The map is not the territory.
+#
+# Two kinds of heading live here and they do not mix:
+#   - The thirteen non-negotiables, level 2 under their section. They are
+#     fixed: the same thirteen in every story. Do not add or remove any.
+#   - Narrative lines, level 1 with :THREAD-TYPE:. Those are yours: add as many
+#     as you need with F8 F8 p.
 
-What is the story about in one or two sentences?
+* The Thirteen Non-Negotiables
 
-* Theme and  Moral argument
+# With them the story is complete and causal. Start here and look at nothing
+# else until you have them. They are box 7 of the Starting Gate.
 
-** Central Moral Question
-What moral dilemma is at the heart of your story?
+** 1. Theme Stated
 
+# Someone who is not the protagonist states the Theme, and he ignores it.
 
-** The Moral Argument Structure (Story as Debate)
+** 2. Weakness, Lie and Need
 
-*** Protagonist's Initial Position (Thesis)
-What does the hero believe at the start?
+# Where he starts from and what he is wrong about. Seen working, and costing.
 
+** 3. Desire
 
-*** Antagonist's Position (Antithesis)
-What does the antagonist believe?
+# The external goal he believes will improve his life. Starts weak and rises.
 
+** 4. Inciting Incident
 
-*** Supporting Characters' Positions
-Other perspectives on the moral question:
-- [Character]: [Their position]
-- [Character]: [Their position]
+# An external event that leaves him distinctly worse off and makes him discern
+# a goal. It happens to him: he does not choose it.
 
-*** Resolution (Synthesis)
-What answer does your story ultimately argue for?
+** 5. Opponent
 
+# The most important relationship in the story, because they fight for the same
+# thing. Attacks the Weakness.
 
-** Theme Statement
-What is your story fundamentally about? (1-2 sentences)
+** 6. Crossing the Threshold
 
+# His own decision to enter the new world. Closes the first quarter.
 
-** How Theme Manifests
-- In protagonist's flaw:
-- In antagonist's justification:
-- In the central conflict:
-- In the climax resolution:
+** 7. Plan
 
-* Three-Act Structure
+# How he means to win. It fails, because the opponent is strong.
 
-** Act I - Setup (25%)
+** 8. Drive
 
-*** Ordinary world
+# The actions of the plan. He usually loses, and so takes decisions that are
+# less and less moral. Vary the actions: do not repeat the same kind of attempt.
 
-*** Inciting incident
+** 9. Midpoint
 
-*** First plot point
+# False victory or false defeat. He stops reacting and starts acting. Closes
+# the second quarter.
 
-** Act II - Confrontation (50%)
+** 10. Apparent Defeat
 
-*** Midpoint
+# His lowest point, nearly catastrophic. He believes he has lost. Closes the
+# third quarter.
 
-*** Trials and challenges
+** 11. Self-Revelation
 
-*** Second plot point
+# He sees the Lie. It is one point in two moments and a single heading: the
+# glimpse begins before the battle — it is what lets him fight differently —
+# and is confirmed inside it.
+#
+# - Glimpse (before the battle):
+# - Confirmation (inside or just after):
 
-*** Darkest moment
+** 12. Battle
 
-** Act III - Resolution (25%)
+# The final confrontation between the two ways of understanding the world.
+# Everything converges here as through a funnel, in the smallest space possible.
 
-*** Climax
+** 13. Moral Decision
 
-*** Falling action
+# The proof that the self-revelation is real: he chooses between two courses,
+# both with a cost. Between two goods or between two evils, never between good
+# and evil.
 
-*** New world
+* Optional points used
 
-* Main Plot
+# The ones you decide to use, in the place where they belong. Unlike the
+# thirteen, these are per-story: add and remove freely.
+#
+# Opening image, ghost, resistance, promise of the premise, allies, fake ally,
+# opponent's plan, first/second/third revelation, revelation to the audience,
+# tightening noose, ally attack, dark moment, new plan, death of the Weakness,
+# new equilibrium, final image.
 
-** Central Conflict
+-
 
-** Main Dramatic Question
+* Sequence of revelations
 
-Will the protagonist...?
+# Built backwards from the self-revelation. Logical, escalating, accelerating.
+# A novel needs between seven and ten.
 
-** Conflict Resolution
+| # | Revelation | Who receives it | Quarter |
+|---+------------+-----------------+---------|
+|   |            |                 |         |
 
-* Subplots
-
-** Subplot 1
-
-*** Conflict
-
-*** Resolution
-
-*** Connection to Main Plot
-
-* Story Beats
-** SAVE THE CAT BEAT SHEET - ACT ONE
-*** Logline
-[One sentence: protagonist + goal + obstacle + stakes]
-
-*** Opening Image (0-1% / ~800 words)
-**** Purpose: "Before" snapshot of protagonist in flawed world
-
-**** Scene Summary
-
-
-**** What it shows:
-- Protagonist's flaw in action:
-- What's wrong/missing:
-- Tone and genre:
-
-**** Key Elements
-- First impression protagonist creates:
-- Visual elements:
-- Mood:
-
-*** Theme Stated (~5% / ~4,000 words)
-**** Purpose: Someone hints at what protagonist must learn
-
-**** Who states it:
-
-
-**** Context/Scene:
-
-
-**** The statement (can be subtle):
-
-
-**** How it connects to protagonist's arc:
-
-*** Setup (1-10% / ~8,000 words)
-**** Purpose: Establish thesis world - the flawed way things are
-
-**** Key Scenes/Elements [0/6]
-- [ ] Protagonist's routines
-- [ ] Important relationships
-- [ ] Current problems/conflicts
-- [ ] What's missing from their life
-- [ ] Stakes if nothing changes
-- [ ] Supporting characters introduced
-
-**** Scene List
-1.
-2.
-3.
-4.
-
-**** What's Wrong in Protagonist's Life
-(The problem their flaw creates)
-
-Key moments that must occur:
-
-1.
-2.
-3.
-
-*** Catalyst (~10% / ~8,000 words)
-**** Purpose: Life-changing event that disrupts status quo
-
-**** The Event
-
-
-**** How it disrupts ordinary world:
-
-
-**** Opportunity or challenge it presents:
-
-
-**** Connection to protagonist's flaw:
-
-
-**** Why protagonist can't ignore this:
-
-*** Debate (10-20% / ~16,000 words)
-**** Purpose: Protagonist debates accepting the call
-
-**** Why They're Hesitant
-
-
-**** What They Could Lose if They Say Yes
-
-
-**** What They'll Lose if They Say No
-
-
-**** Mounting Pressure
-How does the situation force a decision?
-
-
-**** Key Debate Scenes
-1.
-2.
-3.
-
-**** Their Internal Conflict
-
-** SAVE THE CAT BEAT SHEET - ACT TWO - Part A
-*** Break into Two (~20% / ~16,000 words)
-**** Purpose: Active choice to enter new world (Act 2)
-
-**** The Decision
-What choice does protagonist make?
-
-
-**** How They Actively Decide
-
-
-**** What They're Leaving Behind
-
-
-**** The New World/Situation They're Entering
-
-
-**** Point of No Return
-Why can't they go back?
-
-*** B Story (~22% / ~17,600 words)
-**** Purpose: New relationship that represents theme
-
-**** The Character
-Who enters the story?
-
-
-**** Their Role (mentor/love interest/friend)
-
-
-**** How They Tie into Theme
-
-
-**** What They'll Teach Protagonist
-
-
-**** Their Own Goal/Arc
-*** Fun and Games (20-50% / ~40,000 words)
-**** Purpose: Promise of the premise - what the book is "about"
-
-**** Genre Beats to Hit
-
-
-**** Sequence List (8-10 major sequences)
-1.
-2.
-3.
-4.
-5.
-6.
-7.
-8.
-9.
-10.
-
-**** Small Victories
-
-**** Small Setbacks
-
-**** How Protagonist Handles New World
-
-*** Midpoint (~50% / ~40,000 words)
-**** Purpose: Major event that raises stakes and changes direction
-
-**** The Event
-
-
-**** False Victory or False Defeat?
-
-
-**** How Stakes Raise
-
-
-**** Time Clock That Begins
-
-
-**** Shift: Reactive → Proactive
-How does protagonist become more active?
-
-** SAVE THE CAT BEAT SHEET - ACT TWO - Part B
-*** Bad Guys Close In (50-75% / ~60,000 words)
-**** Purpose: Opposition regroups and gains strength
-
-**** External Forces Working Against Protagonist
-1.
-2.
-3.
-
-**** Internal Doubts/Flaws Emerging
-1.
-2.
-3.
-
-**** Relationship Deterioration
-
-
-**** Pressure Building
-How does each complication raise the stakes?
-
-
-**** Key Complication Scenes
-1.
-2.
-3.
-4.
-5.
-6.
-
-*** All Is Lost (~75% / ~60,000 words)
-**** Purpose: Lowest point - everything seems hopeless
-
-**** The Devastating Event
-
-
-**** The "Death" (literal or symbolic)
-What dies? (Person, relationship, dream, old self)
-
-
-**** Why Everything Seems Hopeless
-
-
-**** What Protagonist Has Lost
-
-*** Dark Night of the Soul (75-80% / ~64,000 words)
-**** Purpose: Wallowing in despair before breakthrough
-
-**** How Protagonist Reacts to Hitting Bottom
-
-
-**** Moment of Reflection
-
-
-**** What Begins to Shift in Understanding
-** SAVE THE CAT BEAT SHEET - ACT THREE
-*** Break into Three (~80% / ~64,000 words)
-**** Purpose: "Aha!" moment - protagonist discovers solution
-
-**** The Realization
-What does protagonist finally understand?
-
-
-**** How They Now Understand Theme
-
-
-**** New Approach/Plan They Devise
-
-
-**** Internal Change That's Occurred
-
-
-**** Synthesis
-How do they combine thesis world + antithesis world?
-
-*** Finale (80-99% / ~79,200 words)
-**** Purpose: Execute new plan using transformation
-
-**** Five-Part Structure
-
-***** 1. Gathering the Team
-Who/what does protagonist assemble?
-
-
-***** 2. Executing the Plan
-Initial execution:
-
-
-***** 3. High Tower Surprise
-What setback occurs?
-
-
-***** 4. Dig Deep Down
-How protagonist overcomes using growth:
-
-
-***** 5. Execution of New Plan
-Final push:
-
-
-**** How Protagonist Uses Transformation
-
-
-**** Proof They've Learned the Lesson
-
-
-**** Final Obstacles & How Overcome
-1.
-2.
-3.
-
-*** Final Image (99-100% / ~80,000 words)
-**** Purpose: "After" snapshot proving transformation
-
-**** The Scene
-
-
-**** How It Mirrors Opening Image
-
-
-**** What's Changed in Protagonist
-
-
-**** What's Changed in Their World
-
-
-**** How Theme Is Demonstrated
-* Scene Beat Sheet
-
-| # | Chapter | Scene  | POV | Location | Goal | Conflict | Status   |
-|---+---------+--------+-----+----------+------+----------+----------|
-| 1 | Ch 1    | Scene 1|     |          |      |          | Draft    |
-| 2 | Ch 1    | Scene 2|     |          |      |          | Pending  |
-
-* Plot Threads
-
-Track your plot threads here. Each thread is a storyline that runs through your novel.
-
-Threads can be:
-- Main Plot: The primary storyline
-- Subplots: Secondary storylines (character arcs, romances, mysteries)
-- Thematic Threads: Recurring themes or symbols
-
-Use =F8 F8 p= to quickly add new plot threads as they emerge during writing.
-
-** Example: Main Plot
+* Quarters
+
+# The rhythm layer: they say how much space each movement takes, not what
+# happens in it. Closing the first quarter may land anywhere from 20 to 25 %.
+# If one quarter runs to twice the length of the others, you have a rhythm
+# problem even if the content is right.
+
+- I Setup (0–25 %) ::
+  # Closes on: crossing the threshold
+- II Reaction (25–50 %) ::
+  # Closes on: midpoint
+- III Action (50–75 %) ::
+  # Closes on: apparent defeat
+- IV Resolution (75–100 %) ::
+  # Closes on: moral decision and new equilibrium
+
+* Main Line
 :PROPERTIES:
-:ID: example-plot-main
-:THREAD-TYPE: Main Plot
+:THREAD-TYPE: Main
+:Stance:
 :STATUS: Planned
 :END:
 
-*** Description
+** Desire that drives it
 
-[What is this plot thread about?]
+** Resolution
 
-*** Connection to Main Plot
+* Subplot
+:PROPERTIES:
+:THREAD-TYPE: Subplot
+:Stance:
+:STATUS: Planned
+:END:
 
-[How does this relate to the main story question?]
+# One for every Stance you want represented that the main line does not already
+# carry. Duplicate this heading — or use F8 F8 p — for each subplot.
+#
+# At least three crossings with the main line, and one of them at the midpoint,
+# the apparent defeat or the battle. If it never crosses, it is not a subplot:
+# it is another novel inside this one.
 
-*** Key Scenes
+- Stance it embodies ::
+- Who carries it ::
+- Own desire ::
 
-- [List scenes where this thread appears]
+** Crossings with the main line
 
-*** Resolution
+1.
+2.
+3.
 
-[How does this thread resolve?]
+** Resolution
 
-[Delete this example when you add your own plot threads]
+* Opening and closing order                                        :noexport:
 
-* Symbols
-# The best symbols emerge naturally from the story world, character actions and choices, the physical manifestation of theme, the designing principle, etc.
-# Symbols will be related to theme and we will iterate through them, gaining more and more meaning and significance.
+# Type of each line: Setting / Question / Character / Event.
+# The first one opened is the last one closed.
 
-** Web of symbols
-# Symbols also relate to each other
+| Line | Type | Opens at | Closes at |
+|------+------+----------+-----------|
+|      |      |          |           |
+
+* Sequences and scenes                                             :noexport:
+
+# The scene list does not live here: it lives in the manuscript, where every
+# scene is a heading with its properties. To see it as a table, open novel.org
+# and use column view (C-c C-x C-c).
+#
+# Scenes are the flesh on the skeleton. Write them in structural order and tag
+# each with the plot point it serves; the ones that serve none are suspect.

@@ -1,0 +1,209 @@
+#+TITLE: ${TITLE} - Design
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: en
+#+STARTUP: overview
+
+# Lines starting with # are instructions: do not turn them into prose.
+# This file is for filling in.
+#
+# It holds the Core and everything that has no entities of its own.
+# Characters live in objects/characters.org, settings in
+# objects/locations.org, and the plot in objects/plot.org.
+
+* Starting Gate
+
+# This is the only list that decides when you start writing. When these eight
+# boxes are ticked, stop planning and begin. Everything else is discovered by
+# writing, and what is discovered by writing is better than what is decided in
+# a table.
+#
+# The first six come from the Core below; the last two do not.
+#
+# If you have gone three weeks without writing narrative, you are not
+# designing: you are designing in order not to write. Come back to this list
+# and check whether you had already crossed it.
+
+- [ ] Theme and at least five Stances
+- [ ] Protagonist and opponent with Ghost, Lie, Weakness, Desire and Need
+- [ ] Stakes
+- [ ] Ending chosen
+- [ ] Point of view decided
+- [ ] Premise
+- [ ] The thirteen non-negotiable plot points
+- [ ] The first three scenes
+
+* Core
+
+# Twelve questions. Short answers. One page in total.
+# Questions 4 to 7 are the causal chain and are answered in that order,
+# because each comes out of the one before: the Ghost produces the Lie, the Lie
+# produces the Weakness, and the Weakness generates the Desire. If one does not
+# fit the one beside it, the wrong one is usually the one above.
+
+- Theme ::
+  # The moral problem. One sentence carrying a risk if you fail to act a
+  # certain way: "if you do not fight injustice, you become part of it."
+  # It may be a question rather than a statement if you write by discovery,
+  # but it has to be a statement before revision Pass 2.
+
+- Stances ::
+  # How many ways can it be answered? At least five, worst to best.
+  # The list is not copied: it is built for your theme, and it is the most
+  # profitable work in the whole Core. For each one, look for who could embody
+  # it best: there is half your cast. The ones left over are your subplots.
+  1.
+  2.
+  3.
+  4.
+  5.
+
+- Protagonist and their opening Stance ::
+
+- Ghost ::
+  # What happened before the story starts and still hurts. A concrete event,
+  # not a climate: not "he had a hard childhood", but the exact night he
+  # cannot get out of his head.
+
+- Lie ::
+  # What he concluded from it, still believes, and is not true.
+
+- Psychological Weakness ::
+  # How he behaves because he believes it. The one that holds him back.
+
+- Moral Weakness ::
+  # Who he harms, and in what concrete act.
+
+- Desire ::
+
+- Need ::
+
+- Opponent and their Stance ::
+  # Who wants the same thing. Their full chain goes in their own profile, in
+  # objects/characters.org. The Starting Gate requires it.
+
+- Stakes ::
+  # What is lost if he fails, and how that gets worse halfway through.
+  # Concrete, not abstract: not "freedom", but "his sister goes back to prison
+  # and he loses custody of the girl".
+
+- Ending ::
+  # Where does he end up on the list of Stances, and does he get what he was
+  # after? Two independent questions. See "The ending", below.
+
+- Point of view ::
+  # Who tells this, in what person and what tense. See its own section.
+
+- Premise ::
+  # When (problem, setting), (protagonist) must (action) in order to (resolve
+  # the problem). It does not include the answer to the ending: you know the
+  # ending, the premise does not say it. It also serves to pitch the story.
+
+* World Problem
+
+# What makes the status quo untenable: something affecting the story's world
+# and everything in it. Expressed as an Aspect, so you can invoke it whenever
+# you need to complicate a scene.
+#
+# It is not decoration: in revision, every scene where it does not show up in
+# any way — not even in the background — is a candidate for cutting.
+#
+# Not to be confused with Trouble: Trouble belongs to a character, the World
+# Problem belongs to everyone.
+
+- Aspect ::
+
+** Box of complications
+
+# Concrete ways the World Problem can wreck a scene. Having them written down
+# in advance saves you improvising badly halfway through a session.
+
+-
+-
+-
+-
+
+* Stakes
+
+# Every rung must change category, not be "the same but more".
+# Control question: could the protagonist walk away from the story with no
+# consequences? If he could, there are no stakes.
+
+| Quarter | What is at stake |
+|---------+------------------|
+| I       |                  |
+| II      |                  |
+| III     |                  |
+| IV      |                  |
+
+* The ending
+
+# Moral movement and external result are independent axes. Crossing them gives
+# six endings, and picking the cell is more precise than picking "happy" or
+# "sad".
+#
+#            | Gets the Desire         | Does not get it
+#  Rise      | Complete victory        | Moral victory, external defeat
+#  Fall      | Wins and it is no use   | Complete tragedy
+#  Resistance| The world proves him right | He pays the full price
+#
+# If you choose Resistance, the thirteen non-negotiables do not read the same.
+
+- Moral movement ::
+  # Rise / Fall / Resistance
+- Opening Stance → closing Stance ::
+- External result ::
+  # Gets the Desire / does not get it
+- What that crossing proves about the Theme ::
+
+* Designing principle and archetype
+
+# Optional. Fill it in if it helps; skip it if not.
+
+- Designing principle ::
+  # The internal logic that organizes the whole story, in one sentence.
+- Archetype ::
+
+* Point of view
+
+- Person and tense ::
+- Focalizers ::
+- Distance ::
+- Narrative voice ::
+- Rule for switching ::
+- What this choice forbids me ::
+  # With a single focalizer, the reader cannot know anything before he does;
+  # with several, you lose tension at every switch. Write it down now, not when
+  # you hit it.
+
+** Focalizer control
+
+# Only if there is more than one. Every focalizer needs an arc of their own, or
+# they are an observer and not a perspective.
+
+| Focalizer | Desire | Arc | Their scenes | Knows / Does not know |
+|-----------+--------+-----+--------------+-----------------------|
+|           |        |     |              |                       |
+
+* Symbols
+
+# A symbol that does not change is decoration. For each one, how does it change?
+
+- Of the story ::
+- Of character ::
+- Of change ::
+- Of world ::
+- Of action ::
+
+* Pending design changes
+
+# One line per deviation, noted without leaving the drafting session. They are
+# processed between sessions, in one sitting, and struck out.
+#
+# If the story contradicts the design, the story wins: update the document and
+# carry on. The map is not the territory.
+#
+# In the manuscript, use *EDIT*: design - ... markers inside a comment block;
+# they are collected by the edit index (F8 F8 e).
+
+-

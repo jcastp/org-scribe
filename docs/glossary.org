@@ -1,0 +1,177 @@
+#+TITLE: org-scribe method glossary — Spanish ↔ English
+#+AUTHOR: org-scribe
+#+STARTUP: overview
+#+OPTIONS: toc:2
+
+* What this is
+
+The authoritative Spanish↔English mapping for the writing method the
+=novel-es= and =novel-en= template sets implement. Every template string,
+message key and capture prompt in =novel-en= resolves through this table.
+
+Two rules govern it:
+
+1. *Where a term has a canonical English source, that source wins.* The method
+   is a Spanish synthesis of predominantly English-language craft sources —
+   Truby, Swain, McKee, Maass, Gardner, Browne & King, Save the Cat, and the
+   FATE rulebook. Most of the vocabulary is therefore not translated but
+   *restored*. Rows marked /fixed/ are not open to preference.
+2. *Where no source exists, the choice was made once and is recorded with its
+   reasoning* (see [[*The six judgement calls][The six judgement calls]]). Rows marked /settled/ may be revisited,
+   but only deliberately — a synonym slipped in later re-creates the ambiguity
+   the Spanish revision removed.
+
+A third rule follows from both: *do not port terminology between the two sets
+casually.* If a term needs to change, change it here first, then in both
+template sets, then in the message alists.
+
+* Property names are not translated
+
+A distinction that trips people up. Three different things are localized
+differently:
+
+| Thing                        | Localized?                     |
+|------------------------------+--------------------------------|
+| Heading text and prose       | Yes — follows the project      |
+| *Scene* property names       | Yes — via the alias table      |
+| *Entity* property names      | *No* — English in both sets    |
+| Property *values* for =Role=   | *No* — English in both sets    |
+
+So a Spanish project carries =* [Nombre del oponente]= with =:Role: Opponent=,
+and its scenes carry =:Trama:= rather than =:Plot:=. Entity properties stay
+English because three modules (=org-scribe-overlays.el=, column view, the health
+report) read them as literals, and because they are machine-facing identifiers
+a writer barely sees. Scene properties are localized because writers *do* see
+them, in the property drawer and in column view, and because existing projects
+already carry the Spanish spellings.
+
+* The glossary
+
+** Character chain
+
+| Spanish                | English                | Source          | Call    |
+|------------------------+------------------------+-----------------+---------|
+| Fantasma               | Ghost                  | Truby           | fixed   |
+| Mentira                | Lie                    | Weiland / Cron  | fixed   |
+| Debilidad psicológica  | Psychological Weakness | Truby           | settled |
+| Debilidad moral        | Moral Weakness         | Truby           | settled |
+| Deseo                  | Desire                 | Truby           | fixed   |
+| Necesidad              | Need                   | Truby           | fixed   |
+| Apuro                  | Trouble                | FATE            | fixed   |
+| Aspecto                | Aspect                 | FATE            | fixed   |
+| Concepto               | Concept                | FATE            | fixed   |
+| Plan / Plan de repuesto| Plan / Fallback Plan   | Truby           | fixed   |
+| Posesión               | Possession             | —               | fixed   |
+| Relación               | Relationship           | —               | fixed   |
+| Postura                | *Stance*               | —               | settled |
+
+The chain is causal and is always written in this order: Ghost → Lie →
+Weakness → Desire/Need. Each link is derived from the one above it.
+
+** Roles
+
+| Spanish                | English                        | Source  | Call    |
+|------------------------+--------------------------------+---------+---------|
+| Protagonista           | Protagonist                    | Truby   | settled |
+| Oponente               | Opponent (*not* Antagonist)    | Truby   | fixed   |
+| Aliado                 | Ally                           | Truby   | fixed   |
+| Falso aliado-Oponente  | Fake-Ally Opponent             | Truby   | fixed   |
+| Secundarios temáticos  | Thematic Supporting Characters | —       | settled |
+| Focalizador            | Focalizer                      | Genette | fixed   |
+
+The English forms are also the =:Role:= property *values* in both template sets:
+=Protagonist=, =Opponent=, =Ally=, =Fake-Ally Opponent=, =Thematic Supporting=.
+
+** Plot
+
+| Spanish                  | English                        | Source       | Call    |
+|--------------------------+--------------------------------+--------------+---------|
+| Tema                     | Theme                          | —            | fixed   |
+| Susurro del tema         | Theme Stated                   | Save the Cat | fixed   |
+| Evento incitador         | Inciting Incident              | standard     | fixed   |
+| Cruzar el umbral         | Crossing the Threshold         | Campbell     | fixed   |
+| Empuje                   | Drive                          | Truby        | fixed   |
+| Punto medio              | Midpoint                       | standard     | fixed   |
+| Aparente derrota         | Apparent Defeat                | Truby        | fixed   |
+| Autorrevelación          | Self-Revelation                | Truby        | fixed   |
+| Batalla                  | Battle                         | Truby        | fixed   |
+| Decisión moral           | Moral Decision                 | Truby        | fixed   |
+| Nuevo equilibrio         | New Equilibrium                | Truby        | fixed   |
+| Revelaciones             | Revelations                    | Truby        | fixed   |
+| Principio diseñador      | Designing Principle            | Truby        | fixed   |
+| Arquetipo                | Archetype                      | Truby        | fixed   |
+| Punto de trama           | Plot Point                     | standard     | fixed   |
+| Los trece irrenunciables | *The Thirteen Non-Negotiables* | —            | settled |
+| Cuartiles                | *Quarters*                     | —            | settled |
+| Planteamiento            | Setup                          | —            | fixed   |
+| Reacción (cuartil)       | Reaction                       | —            | fixed   |
+| Acción (cuartil)         | Action                         | —            | fixed   |
+| Resolución (cuartil)     | Resolution                     | —            | fixed   |
+
+** Scene and world
+
+| Spanish                     | English                       | Source | Call    |
+|-----------------------------+-------------------------------+--------+---------|
+| Escena                      | Scene                         | Swain  | fixed   |
+| Secuela                     | Sequel                        | Swain  | fixed   |
+| Reacción / Dilema / Decisión| Reaction / Dilemma / Decision | Swain  | fixed   |
+| Brecha                      | Gap                           | McKee  | fixed   |
+| Apuestas                    | Stakes                        | —      | fixed   |
+| Problema del Mundo          | *World Problem*               | —      | settled |
+| Eco                         | Echo                          | —      | fixed   |
+| Escollo                     | *Hazard*                      | —      | settled |
+| Símbolo                     | Symbol                        | —      | fixed   |
+| Escenario                   | Setting                       | —      | fixed   |
+
+** Process and craft
+
+| Spanish                      | English                          | Source        | Call    |
+|------------------------------+----------------------------------+---------------+---------|
+| Sueño vívido y continuo      | Vivid and Continuous Dream       | Gardner       | fixed   |
+| El Creador / El Crítico      | The Creator / The Critic         | —             | fixed   |
+| Microtensión                 | Microtension                     | Maass         | fixed   |
+| RIE (Resiste el impulso…)    | RUE (Resist the Urge to Explain) | Browne & King | fixed   |
+| Puerta de salida             | *The Starting Gate*              | —             | settled |
+| Hitos de cambio              | Change Milestones                | —             | fixed   |
+| Ajuste / Ruptura             | Adjustment / Break               | —             | fixed   |
+| Pase (0–9)                   | Pass (0–9)                       | —             | fixed   |
+| Test del sueño               | Dream Test                       | —             | fixed   |
+| Comprobación del elenco      | Cast Check                       | —             | fixed   |
+| Cambios pendientes al diseño | Pending Design Changes           | —             | fixed   |
+
+* The six judgement calls
+
+The only terms not dictated by a source. Kept with their reasoning because a
+glossary without it gets relitigated by whoever touches it next.
+
+1. *Postura → Stance.* Short, distinct from "Theme", takes a possessive
+   naturally ("Orlando's stance"). /Position/ was rejected: it is closer to the
+   rejected Spanish /Posición Temática/ and risks re-importing the exact
+   confusion the merge removed.
+2. *Escollo → Hazard.* Nothing canonical exists. Pairs acoustically with /Echo/
+   and reads as a property of a place. /Snag/ is too small for something that
+   worsens the World Problem; /Reef/ is the literal translation and too
+   nautical outside one worked example.
+3. *Puerta de salida → The Starting Gate.* The Spanish means the door you leave
+   planning through; a literal /Exit Gate/ reads in English as an ending. The
+   racing sense carries both "this is the threshold" and "now you run". The one
+   term where the English is arguably better than the Spanish.
+4. *Debilidad → Weakness, not Flaw.* Truby says weakness, and /Debilidad/ is
+   literally that. Cost: the pre-existing message keys said =flaw=; renamed
+   while the capture builders were being rewritten anyway.
+5. *Protagonista → Protagonist.* Truby says /hero/, but /hero/ carries a moral
+   charge this method explicitly refuses — one worked example ends in Ascenso
+   and loses, the other in Caída and wins. /Protagonist/ stays neutral.
+6. *Irrenunciables → Non-Negotiables.* The method's own gloss is an argument
+   ("sin ellos la historia no es completa ni causal"), and /non-negotiable/
+   carries an argument. /Essentials/ is blander; /Indispensables/ is a false
+   friend.
+
+* Terms deliberately left alone
+
+- =:capa:= and =:ref:= tags exist only in the method document, which does not
+  ship with org-scribe. If an English method document is ever exported,
+  =:layer:= / =:ref:= is the obvious pair.
+- =Línea principal= / =Main Line= and =Subtrama= / =Subplot= are heading text in
+  the plot file, and read as names rather than classifications; the
+  classification lives in =:THREAD-TYPE:=.

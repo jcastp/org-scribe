@@ -1,47 +1,82 @@
-#+TITLE: ${TITLE} - Locations
+#+TITLE: ${TITLE} - Settings
 #+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: en
 #+STARTUP: overview
+#+COLUMNS: %30ITEM(Setting) %14Type %30Echo
 
-* Main Location 1
+# THE HEADING IS THE PLACE'S NAME. Replace [Name of setting N] with the name as
+# soon as you have it; the brackets only mark that it is unfilled. The
+# classification does not go in the heading: it goes in the :Type: property,
+# which is what org-scribe reads.
+#
+# Every setting is a level-1 heading. Do not nest them: org-scribe recognizes
+# settings that way.
+#
+# The world as a whole — the four axes, how it presses on the protagonist's
+# Weakness — lives in worldbuilding.org. This file holds the specific places
+# where scenes happen.
+#
+# A setting with no Aspect at all is scenery. In revision Pass 5, settings used
+# only as scenery are candidates for cutting.
+
+* [Name of setting 1]
 :PROPERTIES:
-:ID:
-:Type: City/Town/etc.
-:Importance:
+:Type: Setting
+:Echo:
 :First-appearance:
-:Climate:
-:Population:
 :END:
 
-** General Description
+- Echo ::
+  # How this place reflects the Theme. This is what makes it part of the
+  # argument instead of a backdrop. "Everyone here speaks between the lines."
+- Hazard ::
+  # How this place makes the World Problem worse. "Everyone is looking for
+  # someone to pin the blame on."
+- Character ::
+  # A character Aspect this place activates. "I owe money to half the people
+  # in this room."
+- Symbol ::
+  # The object or detail that charges the scene. "The cup I never get to drink."
 
-** Geography
+** Description
 
-- Location ::
-- Terrain ::
-- Climate ::
-- Natural resources ::
+# What can be seen, heard and smelled. Only what a focalizer would notice while
+# standing there.
 
-** Cultural Aspects & Society
+** Scenes that happen here
 
-- Language ::
-- Customs ::
-- Religion ::
-- Government ::
+# Filled in automatically if you link the setting from each scene's Location
+# property (F8 F8 l). Scenes stay linked by ID.
 
-** History
+* [Name of setting 2]
+:PROPERTIES:
+:Type: Setting
+:Echo:
+:First-appearance:
+:END:
 
-** Notable Features
+- Echo ::
+- Hazard ::
+- Character ::
+- Symbol ::
 
-** Importance in the Plot
+** Description
 
-** Specific Places
+** Scenes that happen here
 
-** Atmosphere & Mood
+* [Name of setting 3]
+:PROPERTIES:
+:Type: Setting
+:Echo:
+:First-appearance:
+:END:
 
-** Map/Reference Image
+- Echo ::
+- Hazard ::
+- Character ::
+- Symbol ::
 
-# [[file:../notes/images/map.jpg]]
+** Description
 
-** Notes
-
-* Main Location 2
+** Scenes that happen here
