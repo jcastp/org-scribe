@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
-#+COLUMNS: %40ITEM(Task) %12WORDCOUNT %12PoV %20Trama %40Resumen
+#+COLUMNS: %40ITEM(Escena) %9WORDCOUNT %12PoV %16Trama %20Punto-de-trama %30Brecha %20Resultado %14Emocion
 #+MACRO: scene-break SCENE-BREAK
 
 * Objetivos del Proyecto :ignore:noexport:
@@ -127,16 +127,20 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :Personajes:
 :Ritmo: Imagen inicial
 :Trama:
+:Punto-de-trama:
 :Linea-temporal:
 :Localizacion:
 :Descripcion:
 :Resumen:
 :Motivacion-escena:
 :Fuente-conflicto:
+:Brecha:
 :Que-esta-en-juego:
+:Problema-mundo:
 :Emocion:
 :Nivel-tension:
 :Resultado:
+:Decision-secuela:
 :Comentario:
 :END:
 
@@ -153,59 +157,6 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 20000
 :END:
-
-* Export config :ignore:noexport:
-# ############################
-# General options
-# ############################
-#+OPTIONS: ':t *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
-#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK")
-#+OPTIONS: date:t e:t email:nil f:t inline:t num:t p:nil pri:nil
-#+OPTIONS: prop:nil stat:t tags:t tasks:t tex:t timestamp:t title:t
-#+OPTIONS: toc:2 todo:t |:t
-
-#+EXCLUDE_TAGS: noexport
-#+EXPORT_FILE_NAME:
-
-# ######################
-# latex related options
-# ######################
-#+LATEX_CLASS: memoir_draft
-#+LATEX_HEADER:
-#+LATEX_HEADER_EXTRA:
-#+DESCRIPTION:
-#+KEYWORDS:
-#+SUBTITLE:
-
-# ######################
-# odt related options
-# ######################
-#+OPTIONS: tex:t
-#+ODT_STYLES_FILE: "~/Nextcloud/escritura/recursos/orgtemplate2odt.ott"
-#+DESCRIPTION:
-#+KEYWORDS:
-#+SUBTITLE:
-#+LATEX_HEADER:
-
-# ######################
-# HTML related options
-# ######################
-#+DESCRIPTION:
-#+HTML_DOCTYPE: html5
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="file:///home/jcastp/Nextcloud/config/org.css"/>
-#+HTML_HEAD_EXTRA:
-
-# ######################
-# epub related options
-# ######################
-#+UID:
-#+Subject:
-#+Description:
-#+Publisher:
-#+License:
-#+EPUBSTYLE:
-#+EPUBCOVER:
-#+HTML_DOCTYPE: xhtml
 
 # Local Variables:
 # eval: (progn

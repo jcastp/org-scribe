@@ -317,10 +317,17 @@ VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
 ;;; Template Insertion
 
 (defconst org-scribe--scene-property-keys
-  '(pov characters beat plot timeline location description summary
-    scene-motivation conflict-source what-is-at-stake emotion
-    tension-level outcome comment)
-  "Canonical scene property keys, in the order they appear in a scene drawer.")
+  '(pov characters beat plot plot-point timeline location description summary
+    scene-motivation conflict-source gap what-is-at-stake world-problem
+    emotion tension-level outcome sequel-decision comment)
+  "Canonical scene property keys, in the order they appear in a scene drawer.
+
+Ordered to follow the method's scene table: whose desire drives the
+scene (scene-motivation), what opposes it (conflict-source), the Gap
+between what the character expected and what the world gave, the
+outcome, and the sequel decision that opens the next scene.  `plot-point'
+sits beside `plot' because both classify the scene structurally rather
+than describing what happens in it.")
 
 (defun org-scribe--scene-property-drawer-lines ()
   "Return the scene property drawer lines, localized to the current project."

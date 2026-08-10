@@ -24,6 +24,7 @@
 (declare-function org-scribe--get-all-characters "linking/org-scribe-character-links")
 (declare-function org-scribe--get-all-locations "linking/org-scribe-location-links")
 (declare-function org-scribe--get-all-plot-threads "linking/org-scribe-plot-links")
+(declare-function org-scribe--get-all-plot-points "linking/org-scribe-plot-point-links")
 
 ;; Planner struct accessors — only called when (featurep 'org-scribe-planner)
 (declare-function org-scribe-plan-title         "planning/org-scribe-planner")
@@ -202,8 +203,11 @@ Averages the two middle values when NUMBERS has an even length."
 
 (defun org-scribe--health-collect-referenced-ids (novel-file)
   "Return a hash table of all entity IDs referenced in scene properties.
-Scans PoV, Characters, Location, and Plot properties of all level-3
-headings in NOVEL-FILE for [[id:...]] link patterns."
+Scans PoV, Characters, Location, Plot and Plot-point properties of all
+level-3 headings in NOVEL-FILE for [[id:...]] link patterns.
+
+Every entity type whose orphans are reported must have its scene
+property listed here, or all of its entities are reported as orphaned."
   (let ((ids (make-hash-table :test 'equal)))
     (when (and novel-file (file-exists-p novel-file))
       (with-current-buffer (find-file-noselect novel-file)
@@ -212,7 +216,7 @@ headings in NOVEL-FILE for [[id:...]] link patterns."
          (org-map-entries
           (lambda ()
             (when (= (org-current-level) 3)
-              (dolist (prop '(pov characters location plot))
+              (dolist (prop '(pov characters location plot plot-point))
                 (when-let ((val (org-scribe-scene-property-get prop)))
                   (let ((pos 0))
                     (while (string-match "\\[\\[id:\\([^]]+\\)\\]" val pos)
@@ -280,6 +284,11 @@ with clickable ID links back to each scene."
            (orphan-locs    (when (fboundp 'org-scribe--get-all-locations)
                              (org-scribe--health-find-orphans
                               (org-scribe--get-all-locations) ref-ids)))
+           ;; An orphaned plot point is one of the thirteen non-negotiables
+           ;; that no scene serves — the method's own check, mechanized.
+           (orphan-points  (when (fboundp 'org-scribe--get-all-plot-points)
+                             (org-scribe--health-find-orphans
+                              (org-scribe--get-all-plot-points) ref-ids)))
            (scene-count    (length scenes))
            ;; Per-PoV word share and chapter length spread (text-level stats)
            (pov-share      (org-scribe--health-pov-word-share scenes))
@@ -431,6 +440,18 @@ with clickable ID links back to each scene."
             (dolist (name orphan-locs) (insert (format "- %s\n" name)))
           (insert "No orphaned locations.\n"))
         (insert "\n")
+
+        ;; Only shown when the project actually defines plot points, so
+        ;; projects created from the pre-sistema templates do not grow an
+        ;; empty section reporting nothing.
+        (when (and (fboundp 'org-scribe--get-all-plot-points)
+                   (org-scribe--get-all-plot-points))
+          (insert (format "** Plot Points With No Scene (%d)\n\n" (length orphan-points)))
+          (insert "Non-negotiables that no scene serves yet.\n\n")
+          (if orphan-points
+              (dolist (name orphan-points) (insert (format "- %s\n" name)))
+            (insert "Every plot point is served by at least one scene.\n"))
+          (insert "\n"))
 
         ;; ── Open TODOs ────────────────────────────────────────────────────────
         (insert (format "* Open TODO Scenes (%d)\n\n" (length open-todos)))

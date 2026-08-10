@@ -227,16 +227,20 @@ All file/directory values are nil if the path does not exist."
     (characters        . ("Characters" "Personajes"))
     (beat              . ("Beat" "Ritmo"))
     (plot              . ("Plot" "Trama"))
+    (plot-point        . ("Plot-point" "Punto-de-trama"))
     (timeline          . ("Timeline" "Linea-temporal"))
     (location          . ("Location" "Localizacion"))
     (description       . ("Description" "Descripcion"))
     (summary           . ("Summary" "Resumen"))
     (scene-motivation  . ("Scene-motivation" "Motivacion-escena"))
     (conflict-source   . ("Conflict-source" "Fuente-conflicto"))
+    (gap               . ("Gap" "Brecha"))
     (what-is-at-stake  . ("What-is-at-stake" "Que-esta-en-juego"))
+    (world-problem     . ("World-problem" "Problema-mundo"))
     (emotion           . ("Emotion" "Emocion"))
     (tension-level     . ("Tension-level" "Nivel-tension"))
     (outcome           . ("Outcome" "Resultado"))
+    (sequel-decision   . ("Sequel-decision" "Decision-secuela"))
     (comment           . ("Comment" "Comentario")))
   "Canonical scene property key -> localized property name aliases.
 Each value lists every literal Org property name known to be used for
@@ -394,7 +398,8 @@ load-path change) is picked up without restarting Emacs."
 (defconst org-scribe--section-heading-aliases
   '((characters   . ("Characters" "Personajes"))
     (setting      . ("Setting" "Ambientación" "Ambientacion"))
-    (plot-threads . ("Plot Threads" "Hilos de la Trama")))
+    (plot-threads . ("Plot Threads" "Hilos de la Trama"))
+    (plot-points  . ("The Thirteen Non-Negotiables" "Los trece irrenunciables")))
   "Canonical short-story section key -> localized level-1 heading aliases.
 Mirrors `org-scribe--scene-property-aliases': English and Spanish project
 templates use different literal heading text for the same section

@@ -68,6 +68,10 @@
 (declare-function org-scribe-setup-character-links "linking/org-scribe-character-links")
 (declare-function org-scribe-setup-location-links "linking/org-scribe-location-links")
 (declare-function org-scribe-setup-plot-thread-links "linking/org-scribe-plot-links")
+;; plot points (the thirteen non-negotiables)
+(declare-function org-scribe-setup-plot-point-links "linking/org-scribe-plot-point-links")
+(declare-function org-scribe-set-scene-plot-points "linking/org-scribe-plot-point-links")
+(declare-function org-scribe-jump-to-plot-point "linking/org-scribe-plot-point-links")
 (declare-function org-scribe-plot-thread-report "linking/org-scribe-plot-links")
 (declare-function org-scribe-plot-thread-stats "linking/org-scribe-plot-links")
 ;; character relationships
@@ -110,17 +114,20 @@ _q_: Back to main menu            _Q_: Quit
 ^^^^------------------------------------------------------------------------------------------------------------
 _R_: Relink everything    _c_: Characters        _a_: Add relationship       _t_: Plot health report
 _j_: Jump to plot thread  _o_: Locations         _x_: Remove relationship    _S_: Plot statistics
-^^                        _p_: Plot threads      _v_: View relationships     _C_: Column view toggle
-^^                        _r_: Relationships     _V_: View all relationships _T_: Tooltips toggle
+_J_: Jump to plot point   _p_: Plot threads      _v_: View relationships     _C_: Column view toggle
+^^                        _P_: Plot points       _V_: View all relationships _T_: Tooltips toggle
+^^                        _r_: Relationships
 _q_: Back to main menu    _Q_: Quit
 "
   ;; Whole-project upkeep (the headline action)
   ("R" org-scribe-relink-project "relink project")
   ("j" org-scribe-jump-to-plot-thread "jump to plot")
+  ("J" org-scribe-jump-to-plot-point "jump to plot point")
   ;; One-time set-up per entity type
   ("c" org-scribe-setup-character-links "char setup")
   ("o" org-scribe-setup-location-links "loc setup")
   ("p" org-scribe-setup-plot-thread-links "plot setup")
+  ("P" org-scribe-setup-plot-point-links "plot point setup")
   ("r" org-scribe-setup-character-relationships "rel setup")
   ;; Relationships
   ("a" org-scribe-add-relationship "add relationship")
@@ -167,6 +174,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("h" org-scribe-set-scene-characters "set characters")
   ("l" org-scribe-set-scene-locations "set locations")
   ("g" org-scribe-set-scene-plot-threads "set plot threads")
+  ("G" org-scribe-set-scene-plot-points "set plot point")
   ("j" org-scribe-jump-to-pov-character "jump to PoV")
 
   ;; Tools

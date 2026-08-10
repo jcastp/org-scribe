@@ -29,6 +29,7 @@
 
 (require 'ert)
 (require 'org)
+(require 'ox)
 
 ;;; Add paths
 
@@ -45,6 +46,7 @@
 (require 'org-scribe-character-links)
 (require 'org-scribe-location-links)
 (require 'org-scribe-plot-links)
+(require 'org-scribe-plot-point-links)
 
 ;;; Helpers
 
@@ -252,21 +254,47 @@ a phantom plot-thread entity with an ID minted at project creation."
                    "\\(Main Plot\\|Subplot\\|Thread\\|A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\)"
                    heading)))))
 
-(ert-deftest test-sistema-es-templates-have-no-export-blocks ()
-  "The sistema templates ship no export configuration.
-Decision recorded in opus-mi-sistema.org section 4, note 5: the dropped
-block carried personal absolute paths, and Org's `org-export-exclude-tags'
-already defaults to (\"noexport\")."
-  (dolist (relative '("novel-es/diseno.org.template"
-                      "novel-es/objects/personajes.org.template"
-                      "novel-es/objects/localizaciones.org.template"
-                      "novel-es/objects/worldbuilding.org.template"
-                      "novel-es/objects/trama.org.template"
-                      "novel-es/revision.org.template"))
-    (org-scribe-test--with-template relative
-      (should-not (string-match-p "ODT_STYLES_FILE\\|LATEX_CLASS\\|EPUBSTYLE"
-                                  (buffer-string)))
-      (should-not (string-match-p "/home/[a-z]+/" (buffer-string))))))
+(ert-deftest test-sistema-no-template-ships-export-config ()
+  "No shipped template carries export configuration, in any template set.
+Decision recorded in opus-mi-sistema.org section 4, note 5 and extended
+to the manuscripts and short-story sets: the blocks carried personal
+absolute paths (a `file:///home/jcastp/' stylesheet, a private .ott) and
+required LaTeX classes that are not shipped, so every user's first
+export failed on someone else's machine.
+
+Dropping `#+EXCLUDE_TAGS: noexport' along with them is safe and was
+checked rather than assumed: `org-export-exclude-tags' already defaults
+to (\"noexport\"), so `:noexport:' subtrees still drop from every
+backend.  A regression here would silently start exporting the project's
+planning sections into the manuscript."
+  (let ((offenders nil))
+    (dolist (file (directory-files-recursively
+                   (expand-file-name "org-scribe-templates" org-scribe-test--root)
+                   "\\.template\\'"))
+      (with-temp-buffer
+        (insert-file-contents file)
+        (let ((raw (buffer-string)))
+          (when (string-match-p
+                 (concat "ODT_STYLES_FILE\\|LATEX_CLASS\\|EPUBSTYLE\\|EPUB_STYLESHEET"
+                         "\\|EXCLUDE_TAGS\\|EXPORT_FILE_NAME"
+                         "\\|^\\* Export [Cc]onfig\\|^\\* Configuración de Exportación")
+                 raw)
+            (push (file-name-nondirectory file) offenders))
+          ;; No template may hard-code a personal home directory.
+          (when (string-match-p "/home/[a-z]+/" raw)
+            (push (concat (file-name-nondirectory file) " (home path)") offenders)))))
+    (should-not offenders)))
+
+(ert-deftest test-sistema-noexport-still-drops-without-exclude-tags ()
+  "`:noexport:' subtrees drop from export with no `#+EXCLUDE_TAGS' line.
+This is the assumption that made removing the export blocks safe."
+  (should (member "noexport" (default-value 'org-export-exclude-tags)))
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Kept\nprose here\n* Dropped :noexport:\nplanning metadata\n")
+    (let ((out (org-export-as 'ascii nil nil t)))
+      (should (string-match-p "prose here" out))
+      (should-not (string-match-p "planning metadata" out)))))
 
 (ert-deftest test-sistema-es-templates-substitute-cleanly ()
   "Every sistema template declares TITLE and AUTHOR placeholders."
@@ -281,6 +309,162 @@ already defaults to (\"noexport\")."
                  (buffer-string))))
       (should (string-match-p "\\${TITLE}" raw))
       (should (string-match-p "\\${AUTHOR}" raw)))))
+
+;;; Phase 4 — new scene property keys
+
+(ert-deftest test-sistema-new-scene-property-aliases ()
+  "The four keys added for the method resolve in both languages."
+  (should (equal (org-scribe-scene-property-aliases 'gap) '("Gap" "Brecha")))
+  (should (equal (org-scribe-scene-property-aliases 'world-problem)
+                 '("World-problem" "Problema-mundo")))
+  (should (equal (org-scribe-scene-property-aliases 'sequel-decision)
+                 '("Sequel-decision" "Decision-secuela")))
+  (should (equal (org-scribe-scene-property-aliases 'plot-point)
+                 '("Plot-point" "Punto-de-trama")))
+  (should (equal (org-scribe-scene-property-name 'gap 'es) "Brecha"))
+  (should (equal (org-scribe-scene-property-name 'gap 'en) "Gap"))
+  (should (equal (org-scribe-scene-property-name 'plot-point 'es) "Punto-de-trama")))
+
+(ert-deftest test-sistema-scene-drawer-includes-new-keys ()
+  "Generated scene drawers carry the method's four new properties.
+Uses the default project language (English), since
+`org-scribe--scene-property-drawer-lines' resolves names through
+`org-scribe-project-language', which reads the project marker file and
+falls back to the *default value* of `org-scribe-template-language' — a
+`let' binding cannot influence it."
+  (let ((drawer (org-scribe--scene-property-drawer-lines)))
+    (dolist (prop '(":Plot-point:" ":Gap:" ":World-problem:" ":Sequel-decision:"))
+      (should (string-match-p (regexp-quote prop) drawer)))
+    ;; Gap sits between the opposition and what is at stake, following the
+    ;; method's scene table order.
+    (should (< (string-match ":Conflict-source:" drawer)
+               (string-match ":Gap:" drawer)
+               (string-match ":What-is-at-stake:" drawer)))))
+
+(ert-deftest test-sistema-manuscript-drawers-cover-every-canonical-key ()
+  "Both shipped manuscripts declare every canonical scene property.
+Checked through the alias table rather than by generating a drawer,
+because drawer generation resolves the language from the project marker
+file and cannot be redirected by binding a variable in a test.
+
+A gap here means a project's shipped first scene and any scene the
+writer later inserts have different property sets, which silently breaks
+column view and the health report's missing-property lists."
+  (dolist (relative '("novel-es/novela.org.template"
+                      "novel-en/novel.org.template"))
+    (let ((raw (with-temp-buffer
+                 (insert-file-contents (org-scribe-test--template relative))
+                 (buffer-string))))
+      (dolist (key org-scribe--scene-property-keys)
+        (let ((aliases (org-scribe-scene-property-aliases key)))
+          ;; At least one localized spelling of the key must be present.
+          (should (cl-some (lambda (alias)
+                             (string-match-p (regexp-quote (concat ":" alias ":")) raw))
+                           aliases)))))))
+
+(ert-deftest test-sistema-columns-spec-is-localized-and-parallel ()
+  "Both manuscripts expose the same columns, under localized property names."
+  (let ((es (with-temp-buffer
+              (insert-file-contents (org-scribe-test--template "novel-es/novela.org.template"))
+              (buffer-string)))
+        (en (with-temp-buffer
+              (insert-file-contents (org-scribe-test--template "novel-en/novel.org.template"))
+              (buffer-string))))
+    (should (string-match-p "#\\+COLUMNS:.*Punto-de-trama.*Brecha" es))
+    (should (string-match-p "#\\+COLUMNS:.*Plot-point.*Gap" en))
+    ;; Same number of columns in both.
+    (cl-flet ((ncols (s) (length (split-string
+                                  (car (split-string
+                                        (substring s (string-match "#\\+COLUMNS:" s)) "\n"))
+                                  "%" t))))
+      (should (= (ncols es) (ncols en))))))
+
+;;; Phase 4b — the plot-point entity
+
+(ert-deftest test-sistema-plot-point-entity-registered ()
+  "The plot-point entity type is registered and its API is generated."
+  (should (assq 'plot-point org-scribe-entity-registry))
+  (dolist (fn '(org-scribe--get-all-plot-points
+                org-scribe-add-plot-point-ids
+                org-scribe-insert-plot-point-link
+                org-scribe-set-scene-plot-points
+                org-scribe-setup-plot-point-links
+                org-scribe-update-all-plot-point-link-names
+                org-scribe-jump-to-plot-point))
+    (should (fboundp fn))))
+
+(ert-deftest test-sistema-plot-point-predicate-requires-level-2-under-wrapper ()
+  "Only level-2 headings under the non-negotiables wrapper are plot points.
+The wrapper itself must not match, or it would become a phantom entity
+with an ID minted at project creation."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Los trece irrenunciables\n"
+            "** 1. Susurro del tema\n"
+            "*** Detalle\n"
+            "* Subtrama\n"
+            ":PROPERTIES:\n:THREAD-TYPE: Subtrama\n:END:\n"
+            "** Cruces\n")
+    (let (matched)
+      (org-map-entries
+       (lambda ()
+         (when (org-scribe--plot-point-heading-p)
+           (push (org-get-heading t t t t) matched))))
+      (should (equal '("1. Susurro del tema") (nreverse matched))))))
+
+(ert-deftest test-sistema-plot-point-predicate-matches-english-wrapper ()
+  "The English wrapper name is recognized too."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* The Thirteen Non-Negotiables\n** 1. Theme Stated\n")
+    (goto-char (point-min))
+    (re-search-forward "^\\*\\* 1\\.")
+    (should (org-scribe--plot-point-heading-p))))
+
+(ert-deftest test-sistema-es-thirteen-are-recognized-as-plot-points ()
+  "All thirteen shipped non-negotiables satisfy the plot-point predicate,
+and nothing else in the plot file does."
+  (org-scribe-test--with-template "novel-es/objects/trama.org.template"
+    (let (points)
+      (org-map-entries
+       (lambda ()
+         (when (org-scribe--plot-point-heading-p)
+           (push (org-get-heading t t t t) points))))
+      (should (= 13 (length points))))))
+
+(ert-deftest test-sistema-plot-points-and-threads-do-not-overlap ()
+  "No heading is both a plot point and a plot thread.
+They share a file, so a heading matching both predicates would be minted
+twice and appear in two completion lists."
+  (org-scribe-test--with-template "novel-es/objects/trama.org.template"
+    (org-map-entries
+     (lambda ()
+       (should-not (and (org-scribe--plot-point-heading-p)
+                        (org-scribe--plot-heading-p)))))))
+
+(declare-function org-scribe--health-collect-referenced-ids "org-scribe-health")
+
+(ert-deftest test-sistema-health-counts-plot-point-references ()
+  "The health report's ID collector reads the Plot-point property.
+Every entity type whose orphans are reported must have its scene
+property in `org-scribe--health-collect-referenced-ids'; omitting one
+makes the report claim all of that type's entities are orphaned, which
+is exactly wrong and looks plausible."
+  (add-to-list 'load-path (expand-file-name "reporting" org-scribe-test--root))
+  (require 'org-scribe-health)
+  (let ((file (make-temp-file "org-scribe-health-" nil ".org")))
+    (unwind-protect
+        (progn
+          (with-temp-file file
+            (insert "* Act I\n** Chapter 1\n*** Scene 1\n"
+                    ":PROPERTIES:\n"
+                    ":Plot-point: [[id:pp-001][1. Theme Stated]]\n"
+                    ":Characters: [[id:ch-001][Alex]]\n"
+                    ":END:\n"))
+          (let ((ids (org-scribe--health-collect-referenced-ids file)))
+            (should (gethash "pp-001" ids))
+            (should (gethash "ch-001" ids))))
+      (delete-file file))))
 
 (provide 'test-sistema-templates)
 ;;; test-sistema-templates.el ends here
