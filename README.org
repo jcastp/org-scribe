@@ -12,10 +12,11 @@
 
 *** Project Creation & Templates
 - *Create Novel Projects*: Generate complete project structure from templates with a single command
+- *A Writing Method, Not Just Scaffolding*: novel templates implement a coherent method — a causal chain per character, thirteen non-negotiable plot points, and one checklist that tells you when to stop planning ([[*The writing method behind the templates][details]])
 - *Scene Insertion*: Insert pre-formatted scene templates with metadata properties
 - *Chapter Insertion*: Add chapter templates with word count tracking; automatically inserts a ready-to-fill first scene below the chapter heading
 - *Template Customization*: Edit templates to match your workflow
-- *Bilingual Support*: English and Spanish templates included
+- *Bilingual Support*: English and Spanish templates included, structurally identical and test-enforced
 - *Git Integration*: Projects automatically initialized with git
 
 *** Writing Tools
@@ -32,6 +33,10 @@
 - *Location Linking*: ID-based links between scenes and location profiles
   - Same linking system for locations/settings
   - Jump from scene to detailed location descriptions
+- *Plot Point Linking*: tag each scene with the non-negotiable plot point it serves
+  - The thirteen points ship with every novel project, already linkable
+  - The health report lists any point no scene serves yet — the method's own check, mechanized
+  - =F8 F8 G= to tag a scene, =F8 F8 L J= to jump from a scene to its point
 - *Plot Thread Linking*: ID-based links for plot threads and subplots
   - Track main plot and subplots across your novel
   - Timeline visualization showing plot distribution
@@ -56,7 +61,7 @@
 - *Edit Marker Index*: Collects the =*EDIT*= / =*NOTE*= markers you leave inline while drafting into one navigable buffer, grouped by category, each linking back to its exact line. Markers live in Org comment blocks, so they never reach your exported manuscript and never inflate your word counts
 - *Dictionary Tools*: Spanish RAE dictionary API and synonym lookup
 - *Capture System*: Project-aware note capture that finds the right notes file; character/location/object/timeline/plot-thread templates are fully localized to the project's own language (English/Spanish), independent of your global UI language setting
-- *Project Health Report*: =org-scribe-project-health= aggregates word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
+- *Project Health Report*: =org-scribe-project-health= aggregates word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, plot points no scene serves yet, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
 - *Hydra Menu*: Unified keyboard-driven menu for quick access to all functions
 - *Writing Planner* (bundled): Connect writing goal planning to your manuscript — auto-loads plans, pushes live word counts, shows daily progress in the mode line, and adds a planner sub-menu at =W=. Available automatically; no separate install needed.
@@ -69,6 +74,13 @@ Full support for English/Spanish bilingual writing:
 - Bilingual project structure support (notes/notas directories)
 - Bilingual UI: every command prompt, message, and error is available in Spanish too — set =(setq org-scribe-message-language 'es)= (default =en=)
 - Bilingual capture templates: character/location/object/timeline/plot-thread capture prompts and headings automatically match *the project's own language* (read from the =# Language:= line in =.org-scribe-project=), not the global =org-scribe-message-language= setting — a Spanish novel gets Spanish capture prompts even if your own UI language is English
+- One method, two languages: the =novel-en= and =novel-es= template sets are structurally identical — same headings, same properties, same order — and =M-x org-scribe-run-parity-tests= enforces it. Only heading text and prose differ. See [[file:docs/glossary.org][docs/glossary.org]] for the term-by-term mapping
+
+*What is /not/ translated, deliberately:* entity property names (=:Role:=,
+=:Type:=, =:THREAD-TYPE:=) and their values stay English in both sets, because
+they are machine-facing identifiers read by the linking layer. *Scene* property
+names /are/ localized (=:Trama:= vs =:Plot:=), because you see those every day in
+the property drawer and in column view.
 
 * Installation
 
@@ -194,14 +206,16 @@ This creates a complete project structure:
 
 #+begin_example
 MyNovel/
-├── README.org              # Project overview and status
+├── README.org             # Project overview and navigation
+├── design.org             # ← START HERE: Starting Gate and the Core
 ├── novel.org              # Main manuscript with progress tracking
-├── revision.org           # Revision tracking
+├── revision.org           # The ten revision passes
 ├── writing-journal.org    # Reflective writing journal
-├── objects/                  # Planning documents
-│   ├── characters.org
-│   ├── locations.org
-│   ├── plot.org
+├── objects/               # Planning documents
+│   ├── characters.org     # Character profiles (full profile per role)
+│   ├── plot.org           # The thirteen non-negotiables + narrative lines
+│   ├── locations.org      # Settings, each with Echo and Hazard
+│   ├── worldbuilding.org  # The world and how it presses on the Weakness
 │   ├── timeline.org
 │   └── objects.org
 └── notes/                 # Research and notes
@@ -209,12 +223,45 @@ MyNovel/
     └── research.org
 #+end_example
 
+Spanish projects have the same structure with localized file names
+(=diseno.org=, =novela.org=, =objects/personajes.org=, and so on).
+
+*Open =design.org= first.* It holds the /Starting Gate/ — the one checklist that
+decides when you stop planning and start writing — and the twelve questions of
+the Core. Everything else is filled in as you need it.
+
 The project includes:
 - Pre-configured word count tracking
-- Scene and chapter templates
+- Scene and chapter templates, with the method's scene metadata
 - Progress tracking tables
-- Export configurations for LaTeX, ODT, HTML, EPUB
 - Git repository initialization
+
+*** The writing method behind the templates
+
+The novel templates implement a specific method rather than generic
+scaffolding. Characters are built on a causal chain (Ghost → Lie →
+Weakness → Desire/Need); plot is built on thirteen non-negotiable points;
+scenes are checked for a /Gap/ between what the character expected and what the
+world gave them.
+
+You do not have to adopt it. The templates are ordinary Org files: delete what
+you do not use, and org-scribe's linking, search and reporting keep working, as
+they key off properties (=:Role:=, =:Type:=, =:THREAD-TYPE:=) rather than off
+the method's headings.
+
+The English and Spanish template sets are two renderings of *one* method, and a
+test enforces that they stay structurally identical. The Spanish↔English
+vocabulary — and the reasoning behind each choice — is in [[file:docs/glossary.org][docs/glossary.org]].
+
+*Projects created before this change keep the structure they were created with.*
+Templates are read once, at project creation, and copied; nothing re-reads them
+afterwards. There is no migration to run and none is planned — the linking
+layer handles both structures.
+
+*Short story projects still use the previous structure.* Adapting the method to
+short-story scale needs editorial decisions the method does not yet make (how
+many Stances at that length, which of the thirteen survive, whether subplots
+exist at all), so it is deliberately deferred rather than guessed at.
 
 *** Insert Scene or Chapter
 
