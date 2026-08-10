@@ -1,145 +1,250 @@
-#+TITLE: ${TITLE} - Revision and Feedback
+#+TITLE: ${TITLE} - Revision
 #+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: en
 #+STARTUP: overview
 
-* Revision Passes
+# Ten passes, always top-down: do not polish the sentences of a scene you may
+# end up cutting. The Critic is in charge here, and only here.
+#
+# The design is the checklist. Every pass ends with a pointer: when something
+# fails, you do not go back to the beginning, you go back to the section that
+# designed it.
 
-** Draft 1 - Structural Edit
-:PROPERTIES:
-:START-DATE:
-:END-DATE:
-:STATUS:
-:END:
+* Revision log
 
-*** Issues to Address
-- [ ] Plot holes
-- [ ] Pacing problems
-- [ ] Character consistency
-- [ ] Scene transitions
+# One line per pass. Note what you found and which section it sends you back to.
 
-*** Notes
+| Pass | Date | What I found | Section I go back to |
+|------+------+--------------+----------------------|
+|    0 |      | Rest         | —                    |
+|    1 |      |              | —                    |
+|    2 |      |              |                      |
+|    3 |      |              |                      |
+|    4 |      |              |                      |
+|    5 |      |              |                      |
+|    6 |      |              |                      |
+|    7 |      |              |                      |
+|    8 |      |              | —                    |
+|    9 |      |              |                      |
 
-** Draft 2 - Line Edit
-:PROPERTIES:
-:START-DATE:
-:END-DATE:
-:STATUS:
-:END:
+* Pass 0 — Rest
 
-*** Focus Areas
-- [ ] Dialogue polish
-- [ ] Description refinement
-- [ ] Tone consistency
-- [ ] Remove redundancies
+Let the draft sit for at least two weeks. Distance is the only thing that turns
+the Creator into the Critic, and there is no shortcut. Write something else in
+the meantime.
 
-*** Notes
+- Date the draft was put away ::
+- Date you may come back ::
 
-** Draft 3 - Copy Edit
-:PROPERTIES:
-:START-DATE:
-:END-DATE:
-:STATUS:
-:END:
+* Pass 1 — The dream test
 
-*** Checklist
-- [ ] Grammar
-- [ ] Punctuation
-- [ ] Spelling
-- [ ] Formatting
+Read the whole manuscript in as few sittings as possible. Mark every point where
+you fall out of the dream: you get bored, you get lost, you do not believe it.
+*Fix nothing.* Only mark.
 
-*** Notes
+Those marks are the roadmap for the eight passes that follow.
 
-* Beta Reader Feedback
+** Marks
 
-** Beta Reader 1
-:PROPERTIES:
-:NAME:
-:DATE-SENT:
-:DATE-RECEIVED:
-:END:
+# One line per fall: where, and what kind (boredom, confusion, disbelief). No
+# diagnosis yet.
 
-*** Overall Impression
-
-*** Specific Comments
-
-*** Action Items
-- [ ]
-
-** Beta Reader 2
-:PROPERTIES:
-:NAME:
-:DATE-SENT:
-:DATE-RECEIVED:
-:END:
-
-*** Overall Impression
-
-*** Specific Comments
-
-*** Action Items
-- [ ]
-
-* Editor Feedback
-
-** Round 1
-:PROPERTIES:
-:EDITOR:
-:DATE:
-:END:
-
-*** Major Issues
-
-*** Minor Issues
-
-*** Action Items
-- [ ]
-
-* Self-Review Notes
-
-** Strengths
-
-** Weaknesses
-
-** Questions for Beta Readers
 -
 
-* Change Log
-| Date | Section | Change | Reason |
-|------+---------+--------+--------|
-|      |         |        |        |
+* Pass 2 — Theme and structure
 
-* Revision Checklist
+- [ ] Is every Stance on the list embodied by someone?
+- [ ] Does every Stance receive the consequence the story says it deserves?
+- [ ] Does the protagonist begin and end on different Stances?
+- [ ] Does the theme emerge through action, or is there preaching?
+- [ ] If you framed the theme as a question, what is the statement that answers
+  what you actually wrote? This is the last chance to write it down.
+- [ ] Are all thirteen non-negotiables present, each in its own quarter?
+- [ ] Are the quarters balanced in length?
+- [ ] Are the promises of the first quarter kept?
+- [ ] Is progress steady, or are there dead zones?
+- [ ] Does the sequence of revelations accelerate, each hitting harder than the
+  last?
+- [ ] Are there scenes that could be cut or merged?
 
-** Plot
-- [ ] Is the main conflict clear?
-- [ ] Do secondary conflicts support the plot?
-- [ ] Is there adequate tension in each scene?
-- [ ] Is the climax satisfying?
-- [ ] Does the resolution tie up all threads?
+If it fails → section 1 (Theme and Stances) and section 9 (Plot).
 
-** Characters
-- [ ] Do characters have clear motivations?
-- [ ] Do they develop throughout the story?
-- [ ] Are dialogues distinctive for each character?
-- [ ] Are actions consistent with their personality?
+** Notes
 
-** Setting
-- [ ] Are location descriptions vivid?
-- [ ] Is the world consistent?
-- [ ] Does the setting support the story?
+* Pass 3 — Characters
 
-** Style
-- [ ] Is the point of view consistent?
-- [ ] Is the tone appropriate?
-- [ ] Are clichés avoided?
-- [ ] Is the pacing appropriate?
+- [ ] Does every main character have a Ghost, a Lie, a Weakness and a Need?
+- [ ] Is the moral Weakness visible in concrete acts against concrete people?
+- [ ] Is the Weakness clearly the cause of their failures?
+- [ ] Does the opponent want the same thing as the protagonist, and fight hard
+  enough?
+- [ ] Is their Stance defensible? Could you argue it yourself?
+- [ ] Is every change milestone anchored to a specific scene?
+- [ ] Does every named character have their Desire in three parts —Goal,
+  Motivation and Conflict— and is the ally's their own rather than auxiliary?
+- [ ] Read all of one character's scenes back to back, one character at a time.
+  Does their arc make sense on its own? Is their voice consistent? Is the
+  change believable?
+- [ ] Are there redundant supporting characters?
+- [ ] Are any of them defined so rigidly they can no longer surprise?
 
-* Identified Problems
+If it fails → section 5 (Characters).
 
-** Plot Problems
+** Notes
 
-** Character Problems
+* Pass 4 — Scenes and sequels
 
-** Style Problems
+- [ ] Does every scene have a desire, an opposition and an outcome?
+- [ ] What is each scene's Gap: what did the character expect, and what did the
+  world give them? If there is no gap, either add one or cut the scene.
+- [ ] Does something change in every scene? If not, cut it or merge it.
+- [ ] Does it enter late and leave early?
+- [ ] Does it advance plot, arc or theme? If it does none of the three, it is
+  surplus.
+- [ ] Does every scene have a clear emotional core, and connect to the theme?
+- [ ] Is there a sequel after every important scene?
+- [ ] Does each sequel's decision chain into the next scene's desire?
+- [ ] Is anything striking but irrelevant stealing attention?
 
-** Technical Problems
+If it fails → section 11 (Scenes and sequels).
+
+** Notes
+
+* Pass 5 — World and symbols
+
+- [ ] Does every setting have at least one Aspect?
+- [ ] Are any settings used as scenery only?
+- [ ] Does the World Problem show up in every scene, even in the background?
+  Scenes where it appears in no way at all are candidates for cutting.
+- [ ] Do the symbols change over the course of the story?
+
+If it fails → section 7 (World and settings) and section 8 (Symbols).
+
+** Notes
+
+* Pass 6 — Stakes and tension
+
+- [ ] Is it clear what is lost if the protagonist fails?
+- [ ] Do the stakes escalate quarter by quarter, changing category at every
+  step?
+- [ ] Could the protagonist walk away from the story without consequences? If
+  they could, there are no stakes.
+- [ ] Is there any chapter with no tension of any kind?
+- [ ] Do chapters close on a hook —a question, a partial revelation, an imminent
+  decision, a threat— rather than on a summary?
+- [ ] Is there variation in pace, or is the tension uniform?
+
+If it fails → section 2 (World Problem and Stakes) and section 12 (Chapters and
+pace).
+
+** Notes
+
+* Pass 7 — Point of view and dialogue
+
+- [ ] Is the point of view respected? Are there jumps inside a scene?
+- [ ] Have you planned any scene this point of view cannot carry?
+- [ ] Do the important conversations have a moral layer, and not just a melody?
+- [ ] Do the characters sound different from one another?
+- [ ] Read all the dialogue aloud: is anyone saying exactly what they mean? If
+  so, add layers.
+- [ ] Do actions contradict words anywhere?
+- [ ] Does the reader understand more than any character, where you want them
+  to?
+
+If the point of view fails → section 6 (Point of view). If the dialogue fails →
+Symphonic dialogue, in Level 3 of the method.
+
+** Notes
+
+* Pass 8 — Line
+
+Now, at last: sentence by sentence. It is the longest pass and the only one that
+does not send you back to a design section, because prose is checked against the
+craft of Level 3.
+
+Start with emotion, which is still scene-level, and work down to the sentence:
+
+- [ ] Walk every emotional peak. Is the emotion named or created? For every
+  fear, grief, joy or rage, is there a physical anchor?
+- [ ] Mark every "thought", "realized", "knew". Replace them with sensory
+  evidence.
+- [ ] Mark every explanation that follows a shown moment. If the showing works,
+  cut the telling. (RUE — Resist the Urge to Explain.)
+- [ ] And then the detail: see the line-pass layer.
+
+** Things I need to improve
+
+# Your own list of recurring defects. It lives here and not in the method on
+# purpose: it grows with every revision and is of no use to anyone else. End
+# every Pass 8 by reviewing it, and add whatever you found this time.
+
+-
+
+* Pass 9 — Beta readers and final draft
+
+Between two and five readers. More is not better: noise grows with numbers.
+
+** Who
+
+The right reader reads what you write, can articulate *why* something does not
+work —not just that they did not like it— and separates their preferences from
+the text's real problems. Avoid anyone who tells you what you want to hear,
+anyone who filters what they read through their own insecurities, and anyone who
+leaves you hanging in uncertainty.
+
+| Reader | Contact | Sent | Received | Fits what I write |
+|--------+---------+------+----------+-------------------|
+|        |         |      |          |                   |
+
+** What to ask
+
+- *Structure*: holes, inconsistencies, confusion? On what page did it start to
+  slow down? Is the ending satisfying? Did the transformation feel earned? Is
+  any promise from the first quarter left unkept?
+- *Characters*: did you care about the protagonist? Did you believe their
+  decisions? Did you understand the opponent? Did any of them feel flat or
+  redundant?
+- *Prose*: info dumps, and where? Slow or overwritten stretches? Unnatural
+  dialogue?
+
+** How to read it
+
+Feedback is information, not instructions.
+
+- *Pattern versus noise.* If three readers flag the same thing in the same
+  scene, there is a real problem: fix it even if you dislike the solution they
+  propose. If only one flags it, look at the context.
+- *Symptom versus cause.* Readers diagnose symptoms. "Chapter 7 bored me" is a
+  symptom; the cause may be a scene with no Gap, a stalled arc, or uniform pace.
+  Your job is to trace the cause.
+- *When it contradicts your intention.* Either your intention is not reaching
+  the page, or that reader is not your reader. To tell them apart: are they
+  describing what you wanted them to feel? If they do not describe it, it is an
+  execution problem. If they describe it but dislike it, it is a question of
+  fit.
+- *What nobody flags and you know is wrong.* That feedback exists and is the
+  most valuable of all. After reading the notes, sit alone with the manuscript
+  and listen to your own critical voice.
+
+** Feedback received
+
+*** Reader 1
+
+*** Reader 2
+
+** Final draft
+
+Incorporate by gravity: structure before scene, scene before line. Do not touch
+a line while a structural problem remains unresolved. Every large change can
+create problems downstream: when you cut a character, restructure a stretch or
+change a revelation, reread everything around it before moving on.
+
+And when you are convinced it is as good as you can make it, now, with the skill
+you have now, let it go. A finished imperfect story teaches more than an
+unfinished perfect one.
+
+- [ ] Structure resolved
+- [ ] Scenes resolved
+- [ ] Line resolved
+- [ ] Released

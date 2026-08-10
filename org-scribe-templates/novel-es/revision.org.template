@@ -1,145 +1,249 @@
-#+TITLE: ${TITLE} - Revisión y Comentarios
+#+TITLE: ${TITLE} - Revisión
 #+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: es
 #+STARTUP: overview
 
-* Pasadas de Revisión
+# Diez pases, siempre de arriba abajo: no pules las frases de una escena que
+# quizá acabes borrando. Aquí manda el Crítico, y sólo aquí.
+#
+# El diseño es la lista de comprobación. Cada pase termina con un puntero: si
+# algo falla, no vuelves al principio, vuelves al apartado que lo diseñó.
 
-** Borrador 1 - Edición Estructural
-:PROPERTIES:
-:START-DATE:
-:END-DATE:
-:STATUS:
-:END:
+* Registro de revisión
 
-*** Problemas a Resolver
-- [ ] Agujeros de trama
-- [ ] Problemas de ritmo
-- [ ] Consistencia de personajes
-- [ ] Transiciones de escena
+# Una línea por pase. Anota qué has encontrado y a qué apartado te devuelve.
 
-*** Notas
+| Pase | Fecha | Qué he encontrado | A qué apartado vuelvo |
+|------+-------+-------------------+-----------------------|
+|    0 |       | Descanso          | —                     |
+|    1 |       |                   | —                     |
+|    2 |       |                   |                       |
+|    3 |       |                   |                       |
+|    4 |       |                   |                       |
+|    5 |       |                   |                       |
+|    6 |       |                   |                       |
+|    7 |       |                   |                       |
+|    8 |       |                   | —                     |
+|    9 |       |                   |                       |
 
-** Borrador 2 - Edición de Línea
-:PROPERTIES:
-:START-DATE:
-:END-DATE:
-:STATUS:
-:END:
+* Pase 0 — Descanso
 
-*** Áreas de Enfoque
-- [ ] Pulido de diálogos
-- [ ] Refinamiento de descripciones
-- [ ] Consistencia de tono
-- [ ] Eliminar redundancias
+Deja el borrador reposar al menos dos semanas. La distancia es lo único que
+convierte al Creador en Crítico, y no hay atajo. Escribe otra cosa mientras
+tanto.
 
-*** Notas
+- Fecha en que guardas el borrador ::
+- Fecha en que puedes volver ::
 
-** Borrador 3 - Corrección de Estilo
-:PROPERTIES:
-:START-DATE:
-:END-DATE:
-:STATUS:
-:END:
+* Pase 1 — Test del sueño
 
-*** Lista de Verificación
-- [ ] Gramática
-- [ ] Puntuación
-- [ ] Ortografía
-- [ ] Formato
+Lee el manuscrito entero en las menos sesiones posibles. Marca cada punto donde
+te caes fuera del sueño: te aburres, te pierdes, no te lo crees. *No arregles
+nada.* Sólo marca.
 
-*** Notas
+Esas marcas son la hoja de ruta de los ocho pases siguientes.
 
-* Comentarios de Lectores Beta
+** Marcas
 
-** Lector Beta 1
-:PROPERTIES:
-:NAME:
-:DATE-SENT:
-:DATE-RECEIVED:
-:END:
+# Una línea por caída: dónde, y de qué tipo (aburrimiento, confusión,
+# incredulidad). Sin diagnóstico todavía.
 
-*** Impresión General
-
-*** Comentarios Específicos
-
-*** Acciones a Realizar
-- [ ]
-
-** Lector Beta 2
-:PROPERTIES:
-:NAME:
-:DATE-SENT:
-:DATE-RECEIVED:
-:END:
-
-*** Impresión General
-
-*** Comentarios Específicos
-
-*** Acciones a Realizar
-- [ ]
-
-* Comentarios del Editor
-
-** Ronda 1
-:PROPERTIES:
-:EDITOR:
-:DATE:
-:END:
-
-*** Problemas Mayores
-
-*** Problemas Menores
-
-*** Acciones a Realizar
-- [ ]
-
-* Notas de Autoevaluación
-
-** Fortalezas
-
-** Debilidades
-
-** Preguntas para los Lectores Beta
 -
 
-* Registro de Cambios
-| Fecha | Sección | Cambio | Motivo |
-|-------+---------+--------+--------|
-|       |         |        |        |
+* Pase 2 — Tema y estructura
 
-* Lista de Verificación de Revisión
+- [ ] ¿Está cada Postura de la lista encarnada por alguien?
+- [ ] ¿Recibe cada Postura la consecuencia que la historia dice que merece?
+- [ ] ¿Empieza y termina el protagonista en Posturas distintas?
+- [ ] ¿Emerge el tema a través de la acción, o hay prédicas?
+- [ ] Si formulaste el tema como pregunta, ¿cuál es la afirmación que responde
+  lo que has escrito? Ésta es la última oportunidad de escribirla.
+- [ ] ¿Están los trece puntos irrenunciables, y cada uno en su cuartil?
+- [ ] ¿Están los cuartiles equilibrados en extensión?
+- [ ] ¿Se cumplen las promesas del primer cuartil?
+- [ ] ¿Es constante el progreso, o hay zonas muertas?
+- [ ] ¿Se acelera la secuencia de revelaciones, y golpea cada una más que la
+  anterior?
+- [ ] ¿Hay escenas que se puedan cortar o fundir?
 
-** Trama
-- [ ] ¿El conflicto principal está claro?
-- [ ] ¿Los conflictos secundarios apoyan la trama?
-- [ ] ¿Hay tensión adecuada en cada escena?
-- [ ] ¿El clímax es satisfactorio?
-- [ ] ¿La resolución cierra todos los hilos?
+Si falla → apartado 1 (Tema y Posturas) y apartado 9 (Trama).
 
-** Personajes
-- [ ] ¿Los personajes tienen motivaciones claras?
-- [ ] ¿Se desarrollan a lo largo de la historia?
-- [ ] ¿Los diálogos son distintivos para cada personaje?
-- [ ] ¿Las acciones son coherentes con su personalidad?
+** Notas
 
-** Ambientación
-- [ ] ¿Las descripciones de lugares son vívidas?
-- [ ] ¿El mundo es coherente?
-- [ ] ¿La ambientación apoya la historia?
+* Pase 3 — Personajes
 
-** Estilo
-- [ ] ¿El punto de vista es consistente?
-- [ ] ¿El tono es adecuado?
-- [ ] ¿Se evitan clichés?
-- [ ] ¿El ritmo es apropiado?
+- [ ] ¿Tiene cada personaje principal Fantasma, Mentira, Debilidad y Necesidad?
+- [ ] ¿Es la Debilidad moral visible en actos concretos contra personas
+  concretas?
+- [ ] ¿Es la Debilidad claramente la causa de sus fracasos?
+- [ ] ¿Quiere el oponente lo mismo que el protagonista, y pelea con fuerza
+  suficiente?
+- [ ] ¿Es defendible su Postura? ¿Podrías argumentarla tú?
+- [ ] ¿Está cada hito de cambio anclado a una escena concreta?
+- [ ] ¿Tiene cada personaje con nombre su Deseo en tres partes —Objetivo,
+  Motivación y Conflicto—, y el del aliado es propio y no auxiliar?
+- [ ] Lee seguidas todas las escenas de un personaje, uno por uno. ¿Su arco
+  tiene sentido por separado? ¿Su voz es constante? ¿La evolución se cree?
+- [ ] ¿Hay secundarios redundantes?
+- [ ] ¿Están definidos tan rígidamente que ya no pueden sorprender?
 
-* Problemas Identificados
+Si falla → apartado 5 (Personajes).
 
-** Problemas de Trama
+** Notas
 
-** Problemas de Personajes
+* Pase 4 — Escenas y secuelas
 
-** Problemas de Estilo
+- [ ] ¿Tiene cada escena un deseo, una oposición y un resultado?
+- [ ] ¿Cuál es la brecha de cada escena: qué esperaba el personaje y qué le dio
+  el mundo? Si no hay brecha, o la añades o la cortas.
+- [ ] ¿Cambia algo en cada escena? Si no, córtala o fúndela con otra.
+- [ ] ¿Entra tarde y sale pronto?
+- [ ] ¿Avanza trama, arco o tema? Si no hace ninguna de las tres, sobra.
+- [ ] ¿Tiene cada escena un núcleo emocional claro, y se conecta con el tema?
+- [ ] ¿Hay secuela después de cada escena importante?
+- [ ] ¿Encadena cada decisión de secuela con el deseo de la escena siguiente?
+- [ ] ¿Hay algún elemento llamativo e irrelevante robando la atención?
 
-** Problemas Técnicos
+Si falla → apartado 11 (Escenas y secuelas).
+
+** Notas
+
+* Pase 5 — Mundo y símbolos
+
+- [ ] ¿Tiene cada escenario al menos un Aspecto?
+- [ ] ¿Hay escenarios usados sólo como decorado?
+- [ ] ¿Se manifiesta el Problema del Mundo en cada escena, aunque sea de fondo?
+  Las escenas donde no aparece de ninguna manera son candidatas a corte.
+- [ ] ¿Cambian los símbolos a lo largo de la historia?
+
+Si falla → apartado 7 (Mundo y escenarios) y apartado 8 (Símbolos).
+
+** Notas
+
+* Pase 6 — Apuestas y tensión
+
+- [ ] ¿Se sabe qué se pierde si fracasa?
+- [ ] ¿Escala de cuartil en cuartil, y cambia de categoría en cada peldaño?
+- [ ] ¿Podría el protagonista abandonar la historia sin consecuencias? Si
+  podría, no hay apuestas.
+- [ ] ¿Hay algún capítulo sin tensión de ningún tipo?
+- [ ] ¿Cierran los capítulos en gancho —pregunta, revelación parcial, decisión
+  inminente, amenaza— y no en resumen?
+- [ ] ¿Hay variación de ritmo, o es tensión uniforme?
+
+Si falla → apartado 2 (Problema del Mundo y Apuestas) y apartado 12 (Capítulos
+y ritmo).
+
+** Notas
+
+* Pase 7 — Punto de vista y diálogo
+
+- [ ] ¿Se respeta el punto de vista? ¿Hay saltos dentro de una escena?
+- [ ] ¿Has planificado alguna escena que este punto de vista no puede sostener?
+- [ ] ¿Tienen las conversaciones importantes capa moral, y no sólo melodía?
+- [ ] ¿Suenan distintos los personajes entre sí?
+- [ ] Lee todo el diálogo en voz alta: ¿hay alguien diciendo exactamente lo que
+  quiere decir? Si lo hay, añade capas.
+- [ ] ¿Contradicen las acciones a las palabras en algún momento?
+- [ ] ¿Comprende el lector más que cualquier personaje, donde quieres que lo
+  haga?
+
+Si falla el punto de vista → apartado 6 (Punto de vista). Si falla el diálogo →
+Diálogo sinfónico, en el Nivel 3 del método.
+
+** Notas
+
+* Pase 8 — Línea
+
+Ahora sí: frase a frase. Es el pase más largo y el único que no vuelve a un
+apartado de diseño, porque la prosa se revisa contra el oficio del Nivel 3.
+
+Empieza por la emoción, que todavía es de escena, y baja a la frase:
+
+- [ ] Recorre cada pico emocional. ¿La emoción se nombra o se crea? Para cada
+  miedo, duelo, alegría o rabia, ¿hay un ancla física?
+- [ ] Marca cada "pensó", "se dio cuenta", "supo". Sustitúyelos por evidencia
+  sensorial.
+- [ ] Marca cada explicación que siga a un momento mostrado. Si lo mostrado
+  funciona, corta lo contado.
+- [ ] Y después, el detalle: ver la capa del pase de línea.
+
+** Cosas que debo mejorar
+
+# Tu lista de defectos propios. Está aquí y no en el método a propósito: crece
+# con cada revisión y no le sirve a nadie más. Termina cada Pase 8 revisándola,
+# y añade lo que hayas encontrado esta vez.
+
+-
+
+* Pase 9 — Lectores beta y borrador final
+
+Entre dos y cinco lectores. Más no es mejor: el ruido crece con la cantidad.
+
+** A quién
+
+El lector adecuado lee lo que tú escribes, sabe articular *por qué* algo no
+funciona —y no sólo que no le gusta— y distingue sus preferencias de los
+problemas reales del texto. Evita a quien te diga lo que quieres oír, a quien
+filtre lo que lee a través de sus propias inseguridades, y a quien te deje
+colgado en la incertidumbre.
+
+| Lector | Contacto | Enviado | Recibido | Encaja con lo que escribo |
+|--------+----------+---------+----------+---------------------------|
+|        |          |         |          |                           |
+
+** Qué preguntar
+
+- *Estructura*: ¿agujeros, incoherencias, confusión? ¿En qué página empezó a
+  ralentizarse? ¿Satisface el final? ¿Se sentía merecida la transformación?
+  ¿Hay alguna promesa del primer cuartil sin cumplir?
+- *Personajes*: ¿te importó el protagonista? ¿Te creíste sus decisiones?
+  ¿Entendiste al oponente? ¿Alguno se sintió plano o redundante?
+- *Prosa*: ¿volcados de información, y dónde? ¿Tramos lentos o sobreescritos?
+  ¿Diálogo poco natural?
+
+** Cómo leerlo
+
+El feedback es información, no instrucciones.
+
+- *Patrón frente a ruido.* Si tres lectores señalan lo mismo en la misma escena,
+  hay un problema real: arréglalo aunque no te guste la solución que proponen.
+  Si lo señala uno solo, mira el contexto.
+- *Síntoma frente a causa.* Los lectores diagnostican síntomas. "El capítulo 7
+  me aburrió" es un síntoma; la causa puede ser una escena sin brecha, un arco
+  estancado o un ritmo uniforme. Tu trabajo es rastrear la causa.
+- *Cuando contradice tu intención.* O tu intención no está llegando al texto, o
+  ese lector no es tu lector. Para distinguirlo: ¿está describiendo lo que
+  querías que sintiera? Si no lo describe, es problema de ejecución. Si lo
+  describe pero no le gusta, es cuestión de encaje.
+- *Lo que nadie señala y tú sabes que está mal.* Ese feedback existe y es el más
+  valioso de todos. Después de leer las notas, siéntate a solas con el
+  manuscrito y escucha tu propia voz crítica.
+
+** Comentarios recibidos
+
+*** Lector 1
+
+*** Lector 2
+
+** Borrador final
+
+Incorpora por gravedad: estructura antes que escena, escena antes que línea. No
+toques una línea mientras quede un problema estructural sin resolver. Cada
+cambio grande puede crear problemas aguas abajo: cuando cortes un personaje,
+reestructures un tramo o cambies una revelación, relee entero lo que haya
+alrededor antes de seguir.
+
+Y cuando estés convencido de que está tan bien como puedes dejarlo tú, ahora y
+con la destreza que tienes ahora, suéltalo. Una historia imperfecta terminada
+enseña más que una perfecta sin terminar.
+
+- [ ] Estructura resuelta
+- [ ] Escenas resueltas
+- [ ] Línea resuelta
+- [ ] Soltado
+
+# Local Variables:
+# ispell-local-dictionary: "es_ES"
+# End:

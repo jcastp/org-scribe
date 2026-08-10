@@ -3,7 +3,7 @@
 #+DATE: ${DATE}
 #+LANGUAGE: en
 #+STARTUP: overview
-#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
+#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(p@/!)
 #+COLUMNS: %40ITEM(Task) %9WORDCOUNT %12PoV %20Beat %20Plot %40Summary %40Comment
 #+MACRO: scene-break SCENE-BREAK
 
@@ -113,7 +113,6 @@ Update with =C-c C-c= on the #+BEGIN line.
 :Tension-level:
 :Outcome:
 :Comment:
-:WORD-OBJECTIVE: 500
 :END:
 
 
