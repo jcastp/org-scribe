@@ -30,6 +30,26 @@
 
 ;;; Character Heading Predicate
 
+(defconst org-scribe--character-heading-regexp
+  (concat "Character\\|Personaje"
+          "\\|Protagonist\\|Antagonist"
+          "\\|Opponent\\|Oponente"
+          "\\|Ally\\|[Aa]liado"
+          "\\|Secondary\\|Secundario"
+          "\\|Thematic Supporting")
+  "Regexp matching heading text that names a character by role.
+Used as the last-resort branch of `org-scribe--character-heading-p',
+after the `Role' and `TYPE' properties have been tried.  The shipped
+templates always carry an explicit `Role', so this only matters for
+headings a writer typed by hand.
+
+Covers the method's five roles in both languages: protagonist,
+opponent, ally, fake-ally opponent (via \"aliado\") and thematic
+supporting character.  \"Aliado\" is matched case-insensitively at its
+first letter because the fake-ally heading reads \"Falso aliado\", where
+the word is not capitalized, and `string-match-p' honours the buffer's
+`case-fold-search' rather than guaranteeing a fold.")
+
 (defun org-scribe--character-heading-p ()
   "Return non-nil if the heading at point is a character heading.
 Novel projects keep characters as top-level (level 1) headings in
@@ -42,12 +62,12 @@ count, avoiding a phantom \"Characters\" entity."
            (org-scribe--heading-parent-section-p 'characters)
            (or (org-entry-get nil "Role")
                (org-entry-get nil "TYPE")
-               (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
+               (string-match-p org-scribe--character-heading-regexp
                               (org-get-heading t t t t))))
     (and (= (org-current-level) 1)
          (or (org-entry-get nil "Role")
              (org-entry-get nil "TYPE")
-             (string-match-p "Character\\|Personaje\\|Protagonist\\|Antagonist\\|Secondary"
+             (string-match-p org-scribe--character-heading-regexp
                             (org-get-heading t t t t))))))
 
 ;;; Entity Definition

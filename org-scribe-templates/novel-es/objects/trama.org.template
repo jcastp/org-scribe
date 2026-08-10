@@ -1,115 +1,180 @@
-#+TITLE: ${TITLE} - Estructura de la Trama
+#+TITLE: ${TITLE} - Trama
 #+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: es
 #+STARTUP: overview
 
-* Premisa
+# La trama es el andamio: los puntos y ritmos comunes, marcas sobre la ruta.
+# La trama no es la historia. El mapa no es el territorio.
+#
+# Dos clases de encabezado viven aquí y no se mezclan:
+#   - Los trece irrenunciables, de nivel 2 bajo su apartado. Son fijos: los
+#     mismos trece en toda historia. No añadas ni quites.
+#   - Las líneas argumentales, de nivel 1 con :THREAD-TYPE:. Son tuyas: añade
+#     las que necesites con F8 F8 p.
 
-¿De qué trata la historia en una o dos frases?
+* Los trece irrenunciables
 
+# Con ellos la historia es completa y causal. Empieza por ellos y no mires nada
+# más hasta tenerlos. Son la casilla 7 de la puerta de salida.
 
-* Temas
-¿Cuáles son los temas de la historia?
+** 1. Susurro del tema
 
-* Estructura en Tres Actos
+# Alguien que no es el protagonista enuncia el Tema, y él lo desoye.
 
-** Acto I - Planteamiento (25%)
+** 2. Debilidad, Mentira y Necesidad
 
-*** Mundo ordinario
+# De dónde parte y en qué se equivoca. Se ve funcionando, y costando.
 
-*** Incidente desencadenante
+** 3. Deseo
 
-*** Primer punto de giro
+# La meta externa que cree que mejorará su vida. Empieza floja y sube.
 
-** Acto II - Confrontación (50%)
+** 4. Evento incitador
 
-*** Punto medio
+# Un suceso externo que le deja bastante peor y le hace discernir un objetivo.
+# Le ocurre: no lo elige.
 
-*** Pruebas y desafíos
+** 5. Oponente
 
-*** Segundo punto de giro
+# La relación más importante de la historia, porque luchan por lo mismo. Ataca
+# la Debilidad.
 
-*** Momento de mayor oscuridad
+** 6. Cruzar el umbral
 
-** Acto III - Resolución (25%)
+# Decisión propia de entrar en el mundo nuevo. Cierra el primer cuartil.
 
-*** Clímax
+** 7. Plan
 
-*** Desenlace
+# Cómo pretende ganar. Falla, porque el oponente es fuerte.
 
-*** Mundo nuevo
+** 8. Empuje
 
-* Trama Principal
+# Las acciones del plan. Suele perder, y por eso toma decisiones cada vez menos
+# morales. Que las acciones varíen: no repitas el mismo tipo de intento.
 
-** Conflicto Central
+** 9. Punto medio
 
-** Pregunta Dramática Principal
+# Falsa victoria o falsa derrota. Deja de reaccionar y empieza a actuar. Cierra
+# el segundo cuartil.
 
-¿Conseguirá el protagonista...?
+** 10. Aparente derrota
 
-** Resolución del Conflicto
+# Su punto más bajo, casi catastrófico. Cree que ha perdido. Cierra el tercer
+# cuartil.
 
-* Tramas Secundarias
+** 11. Autorrevelación
 
-** Trama Secundaria 1
+# Ve la Mentira. Es un punto en dos tiempos y un solo encabezado: el atisbo
+# empieza antes de la batalla —es lo que le permite pelear de otra manera— y se
+# confirma dentro de ella.
+#
+# - Atisbo (antes de la batalla):
+# - Confirmación (dentro o justo después):
 
-*** Conflicto
+** 12. Batalla
 
-*** Resolución
+# El enfrentamiento final entre las dos maneras de entender el mundo. Todo
+# converge aquí como un embudo, en el espacio más reducido posible.
 
-*** Conexión con Trama Principal
+** 13. Decisión moral
 
-* Escaleta de Escenas
+# La prueba de que la autorrevelación es real: elige entre dos rumbos, ambos con
+# coste. Entre dos bienes o entre dos males, nunca entre el bien y el mal.
 
-| # | Capítulo | Escena | POV | Localización | Objetivo | Conflicto | Estado |
-|---+----------+--------+-----+--------------+----------+-----------+--------|
-| 1 | Cap 1    | Esc 1  |     |              |          |           | Borrador |
-| 2 | Cap 1    | Esc 2  |     |              |          |           | Pendiente |
+* Puntos opcionales usados
 
-* Beats de la Historia
+# Los que decidas usar, en el sitio donde les toca ocurrir. A diferencia de los
+# trece, éstos son por historia: añade y quita libremente.
+#
+# Imagen de apertura, Fantasma, resistencia, promesa de la premisa, aliados,
+# falso aliado, plan del oponente, primera/segunda/tercera revelación,
+# revelación a la audiencia, cerco, ataque de aliado, momento oscuro, nuevo
+# plan, muerte de la Debilidad, nuevo equilibrio, imagen final.
 
-Momentos clave que deben ocurrir:
+-
+
+* Secuencia de revelaciones
+
+# Construida hacia atrás desde la autorrevelación. Lógica, creciente, acelerada.
+# Una novela necesita entre siete y diez.
+
+| # | Revelación | Quién la recibe | Cuartil |
+|---+------------+-----------------+---------|
+|   |            |                 |         |
+
+* Cuartiles
+
+# La capa de ritmo: dicen cuánto espacio ocupa cada movimiento, no qué ocurre en
+# él. El cierre del primer cuartil admite la banda del 20 al 25 %.
+# Si un cuartil se te va al doble de extensión que los otros, tienes un problema
+# de ritmo aunque el contenido sea correcto.
+
+- I Planteamiento (0–25 %) ::
+  # Cierra en: cruzar el umbral
+- II Reacción (25–50 %) ::
+  # Cierra en: punto medio
+- III Acción (50–75 %) ::
+  # Cierra en: aparente derrota
+- IV Resolución (75–100 %) ::
+  # Cierra en: decisión moral y nuevo equilibrio
+
+* Línea principal
+:PROPERTIES:
+:THREAD-TYPE: Principal
+:Stance:
+:STATUS: Planificado
+:END:
+
+** Deseo que la mueve
+
+** Resolución
+
+* Subtrama
+:PROPERTIES:
+:THREAD-TYPE: Subtrama
+:Stance:
+:STATUS: Planificado
+:END:
+
+# Una por cada Postura que quieras ver representada y que no lleve ya la línea
+# principal. Duplica este encabezado —o usa F8 F8 p— para cada subtrama.
+#
+# Mínimo tres cruces con la línea principal, y al menos uno en el punto medio,
+# la aparente derrota o la batalla. Si no cruza, no es una subtrama: es otra
+# novela dentro de ésta.
+
+- Postura que encarna ::
+- Quién la lleva ::
+- Deseo propio ::
+
+** Cruces con la línea principal
 
 1.
 2.
 3.
 
-* Temas
+** Resolución
 
-- Tema principal ::
-- Temas secundarios ::
+* Orden de apertura y cierre                                       :noexport:
 
-* Hilos de la Trama
+# Tipo de cada línea: Entorno / Pregunta / Personaje / Suceso.
+# La primera que se abre es la última que se cierra.
 
-Rastrea los hilos de tu trama aquí. Cada hilo es una línea narrativa que atraviesa tu novela.
+| Línea | Tipo | Se abre en | Se cierra en |
+|-------+------+------------+--------------|
+|       |      |            |              |
 
-Los hilos pueden ser:
-- Trama Principal: La línea narrativa primaria
-- Tramas Secundarias: Líneas narrativas secundarias (arcos de personajes, romances, misterios)
-- Hilos Temáticos: Temas o símbolos recurrentes
+* Secuencias y escenas                                             :noexport:
 
-Usa =F8 F8 p= para añadir rápidamente nuevos hilos de trama mientras escribes.
+# La escaleta no vive aquí: vive en el manuscrito, donde cada escena es un
+# encabezado con sus propiedades. Para verla como tabla, abre novela.org y usa
+# la vista de columnas (C-c C-x C-c).
+#
+# Las escenas son la carne sobre el esqueleto. Escríbelas en orden estructural y
+# etiqueta cada una con el punto de trama al que sirve; las que no sirven a
+# ninguno son sospechosas.
 
-** Ejemplo: Trama Principal
-:PROPERTIES:
-:ID: ejemplo-trama-principal
-:THREAD-TYPE: Trama Principal
-:STATUS: Planificado
-:END:
-
-*** Descripción
-
-[¿De qué trata este hilo de la trama?]
-
-*** Conexión con la Trama Principal
-
-[¿Cómo se relaciona con la pregunta principal de la historia?]
-
-*** Escenas Clave
-
-- [Lista las escenas donde aparece este hilo]
-
-*** Resolución
-
-[¿Cómo se resuelve este hilo?]
-
-[Elimina este ejemplo cuando añadas tus propios hilos de trama]
+# Local Variables:
+# ispell-local-dictionary: "es_ES"
+# End:

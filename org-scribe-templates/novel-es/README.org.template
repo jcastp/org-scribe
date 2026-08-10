@@ -22,13 +22,19 @@
 - [ ] Envío/Publicación
 
 ** Estructura del Proyecto
+
+# Empieza por diseno.org: la puerta de salida y las doce preguntas del Núcleo.
+# Cuando las ocho casillas de la puerta estén marcadas, deja de planificar.
+
+- [[file:diseno.org][diseno.org]] - *Empieza aquí*: puerta de salida y Núcleo
 - [[file:novela.org][novela.org]] - Manuscrito principal con seguimiento de progreso
-- [[file:revision.org][revision.org]] - Notas de edición y comentarios
+- [[file:objects/personajes.org][objects/personajes.org]] - Fichas de personajes
+- [[file:objects/trama.org][objects/trama.org]] - Los trece irrenunciables y las líneas argumentales
+- [[file:objects/localizaciones.org][objects/localizaciones.org]] - Escenarios, con su Eco y su Escollo
+- [[file:objects/worldbuilding.org][objects/worldbuilding.org]] - El mundo y cómo presiona la Debilidad
+- [[file:revision.org][revision.org]] - Los diez pases de revisión
 - [[file:diario-escritura.org][diario-escritura.org]] - Diario reflexivo de escritura
-- [[file:objects/personajes.org][objects/personajes.org]] - Perfiles de personajes
-- [[file:objects/localizaciones.org][objects/localizaciones.org]] - Descripciones de localizaciones
 - [[file:objects/objetos.org][objects/objetos.org]] - Objetos importantes
-- [[file:objects/trama.org][objects/trama.org]] - Estructura de la trama
 - [[file:objects/cronologia.org][objects/cronologia.org]] - Cronología de eventos
 - [[file:notas/investigacion.org][notas/investigacion.org]] - Notas de investigación
 - [[file:notas/notas.org][notas/notas.org]] - Notas generales

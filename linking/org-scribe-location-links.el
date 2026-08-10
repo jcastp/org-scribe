@@ -27,6 +27,17 @@
 
 ;;; Location Heading Predicate
 
+(defconst org-scribe--location-heading-regexp
+  "Location\\|Ubicación\\|Localización\\|Setting\\|Escenario\\|Place\\|Lugar"
+  "Regexp matching heading text that names a location.
+Used as the last-resort branch of `org-scribe--location-heading-p',
+after the `Type' and `TYPE' properties have been tried.  The shipped
+templates always carry an explicit `Type', so this only matters for
+headings a writer typed by hand.
+
+\"Escenario\" is the method's own word for a place that carries an Echo
+and a Hazard, and is the heading the Spanish template ships.")
+
 (defun org-scribe--location-heading-p ()
   "Return non-nil if the heading at point is a location heading.
 Novel projects keep locations as top-level (level 1) headings in
@@ -44,12 +55,12 @@ location entity — its own heading text otherwise matches the same
                        '("Locations" "Localizaciones")))
            (or (org-entry-get nil "Type")
                (org-entry-get nil "TYPE")
-               (string-match-p "Location\\|Ubicación\\|Localización\\|Setting\\|Place\\|Lugar"
+               (string-match-p org-scribe--location-heading-regexp
                               (org-get-heading t t t t))))
     (and (= (org-current-level) 1)
          (or (org-entry-get nil "Type")
              (org-entry-get nil "TYPE")
-             (string-match-p "Location\\|Ubicación\\|Localización\\|Setting\\|Place\\|Lugar"
+             (string-match-p org-scribe--location-heading-regexp
                             (org-get-heading t t t t))))))
 
 ;;; Entity Definition

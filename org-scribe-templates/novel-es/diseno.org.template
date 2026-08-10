@@ -1,0 +1,213 @@
+#+TITLE: ${TITLE} - Diseño
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: es
+#+STARTUP: overview
+
+# Las líneas que empiezan por # son instrucciones: no las conviertas en prosa.
+# Aquí sólo se rellena. El método completo está en sistema-unificado.org.
+#
+# Este fichero contiene el Núcleo y lo que no tiene entidades propias. Los
+# personajes viven en objects/personajes.org, los escenarios en
+# objects/localizaciones.org y la trama en objects/trama.org.
+
+* Puerta de salida
+
+# Ésta es la única lista que decide cuándo se empieza a escribir. Cuando estas
+# ocho casillas estén marcadas, deja de planificar y empieza. Todo lo demás se
+# descubre escribiendo, y lo que se descubre escribiendo es mejor que lo que se
+# decide en una tabla.
+#
+# Las seis primeras salen del Núcleo de aquí abajo; las dos últimas, no.
+#
+# Si llevas tres semanas sin escribir narrativa, no estás diseñando: estás
+# diseñando para no escribir. Vuelve a esta lista y comprueba si ya la habías
+# cruzado.
+
+- [ ] Tema y al menos cinco Posturas
+- [ ] Protagonista y oponente con Fantasma, Mentira, Debilidad, Deseo y
+  Necesidad
+- [ ] Apuestas
+- [ ] Final elegido
+- [ ] Punto de vista decidido
+- [ ] Premisa
+- [ ] Los trece puntos de trama irrenunciables
+- [ ] Las tres primeras escenas
+
+* Núcleo
+
+# Doce preguntas. Respuestas cortas. Una página en total.
+# Las preguntas 4 a 7 son la cadena causal y se responden en ese orden, porque
+# cada una sale de la anterior: el Fantasma produce la Mentira, la Mentira
+# produce la Debilidad, y la Debilidad genera el Deseo. Si una no encaja con la
+# de al lado, la equivocada suele ser la de más arriba.
+
+- Tema ::
+  # El problema moral. Una frase que encierre un riesgo si no se actúa de
+  # determinada manera: "si no luchas contra la injusticia, te conviertes en
+  # parte de ella". Puede ser una pregunta si escribes descubriendo, pero
+  # tendrá que ser afirmación antes del Pase 2 de revisión.
+
+- Posturas ::
+  # ¿De cuántas maneras se puede responder? Mínimo cinco, de peor a mejor.
+  # La lista no se copia: se construye para tu tema, y es el trabajo más
+  # rentable de todo el Núcleo. Busca, para cada una, quién podría encarnarla
+  # mejor: ahí tienes medio elenco. Las que sobran son tus subtramas.
+  1.
+  2.
+  3.
+  4.
+  5.
+
+- Protagonista y su Postura inicial ::
+
+- Fantasma ::
+  # Qué le ocurrió antes de que empiece la historia y todavía le duele. Un
+  # suceso concreto, no un clima: no "tuvo una infancia dura", sino la noche
+  # exacta que no se le va de la cabeza.
+
+- Mentira ::
+  # Qué concluyó de aquello, sigue creyendo, y no es verdad.
+
+- Debilidad psicológica ::
+  # Cómo se comporta por creerla. La que le retiene a él.
+
+- Debilidad moral ::
+  # A quién hace daño y en qué acto concreto.
+
+- Deseo ::
+
+- Necesidad ::
+
+- Oponente y su Postura ::
+  # Quién quiere lo mismo. Su cadena completa se rellena en su ficha, en
+  # objects/personajes.org. La puerta de salida la exige.
+
+- Apuestas ::
+  # Qué se pierde si fracasa, y cómo empeora a mitad de la historia. Concreto,
+  # no abstracto: no "la libertad", sino "su hermana vuelve a la cárcel y él
+  # pierde la custodia de la niña".
+
+- Final ::
+  # ¿Dónde acaba en la lista de Posturas, y consigue o no lo que perseguía?
+  # Son dos preguntas independientes. Ver "El final", más abajo.
+
+- Punto de vista ::
+  # Quién cuenta esto, en qué persona y en qué tiempo. Ver el apartado propio.
+
+- Premisa ::
+  # Cuando (problema, entorno), (protagonista) deberá (acción) para (resolver
+  # el problema). No incluye la respuesta del final: el final lo sabes tú, la
+  # premisa no lo dice. Sirve además para contar la historia fuera.
+
+* Problema del Mundo
+
+# Lo que hace que el statu quo no pueda seguir: algo que afecta al mundo de la
+# historia y a todo lo que contiene. Se expresa como Aspecto, para poder
+# invocarlo cuando necesites complicar una escena.
+#
+# No es decoración: en la revisión, cada escena donde no se manifiesta de
+# ninguna manera —ni siquiera de fondo— es candidata a corte.
+#
+# No confundir con el Apuro: el Apuro es de un personaje, el Problema es de
+# todos.
+
+- Aspecto ::
+
+** Caja de complicaciones
+
+# Maneras concretas en que el Problema del Mundo puede estropear una escena.
+# Tenerlas escritas de antemano evita improvisar mal a mitad de sesión.
+
+-
+-
+-
+-
+
+* Apuestas
+
+# Cada peldaño debe cambiar de categoría, no ser "lo mismo pero más".
+# Pregunta de control: ¿podría el protagonista abandonar la historia sin
+# consecuencias? Si podría, no hay apuestas.
+
+| Cuartil | Qué está en juego |
+|---------+-------------------|
+| I       |                   |
+| II      |                   |
+| III     |                   |
+| IV      |                   |
+
+* El final
+
+# Movimiento moral y resultado externo son ejes independientes. Cruzarlos da
+# seis finales, y elegir la casilla es más preciso que elegir "final feliz" o
+# "final triste".
+#
+#              | Consigue el Deseo        | No lo consigue
+#  Ascenso     | Victoria completa        | Victoria moral, derrota externa
+#  Caída       | Gana y ya no le sirve    | Tragedia completa
+#  Resistencia | El mundo le da la razón  | Paga el precio entero
+#
+# Si eliges Resistencia, los trece puntos irrenunciables no se leen igual.
+
+- Movimiento moral ::
+  # Ascenso / Caída / Resistencia
+- Postura inicial → Postura final ::
+- Resultado externo ::
+  # Consigue el Deseo / no lo consigue
+- Qué demuestra ese cruce sobre el Tema ::
+
+* Principio diseñador y arquetipo
+
+# Opcional. Rellénalo si te ayuda; sáltatelo si no.
+
+- Principio diseñador ::
+  # La lógica interna que organiza la historia entera en una frase.
+- Arquetipo ::
+
+* Punto de vista
+
+- Persona y tiempo ::
+- Focalizadores ::
+- Distancia ::
+- Voz narradora ::
+- Regla de cambio ::
+- Lo que esta elección me prohíbe ::
+  # Con un solo focalizador, el lector no puede saber nada antes que él; con
+  # varios, pierdes tensión en cada cambio. Anótalo ahora, no cuando te choques.
+
+** Control de focalizadores
+
+# Sólo si hay más de uno. Cada focalizador necesita arco propio, o es un
+# observador y no una perspectiva.
+
+| Focalizador | Deseo | Arco | Escenas suyas | Sabe / No sabe |
+|-------------+-------+------+---------------+----------------|
+|             |       |      |               |                |
+
+* Símbolos
+
+# Un símbolo que no cambia es decoración. Para cada uno, ¿cómo cambia?
+
+- De la historia ::
+- De personaje ::
+- De cambio ::
+- De mundo ::
+- De acción ::
+
+* Cambios pendientes al diseño
+
+# Una línea por desviación, apuntada sin salir de la sesión de borrador. Se
+# procesan entre sesiones, en una sola sentada, y se tachan.
+#
+# Si la historia contradice el diseño, gana la historia: actualiza el documento
+# y sigue. El mapa no es el territorio.
+#
+# En el manuscrito, usa marcas *EDIT*: diseño - ... dentro de un bloque de
+# comentario; se recogen con el índice de ediciones (F8 F8 e).
+
+-
+
+# Local Variables:
+# ispell-local-dictionary: "es_ES"
+# End:

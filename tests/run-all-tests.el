@@ -77,6 +77,7 @@
     "test-health"                  ; Project health report
     "test-overlays"                ; Entity tooltip system
     "test-tempel-snippets"         ; Bundled Tempel snippets
+    "test-sistema-templates"       ; Sistema template set + entity recognition
     ;; Writing planner (planning/org-scribe-planner.el)
     "test-planner-calculation"     ; Calculation engine
     "test-planner-io"              ; Plan save/load round-trips
@@ -173,6 +174,14 @@ Suitable for CI/CD pipelines and automated testing."
   (load-file (expand-file-name "test-tempel-snippets.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (ert "^test-tempel-"))
+
+;;;###autoload
+(defun org-scribe-run-sistema-tests ()
+  "Run sistema template set and entity-recognition tests only."
+  (interactive)
+  (load-file (expand-file-name "test-sistema-templates.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-sistema-"))
 
 ;;;###autoload
 (defun org-scribe-run-linking-tests ()

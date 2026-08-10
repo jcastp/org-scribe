@@ -1,89 +1,350 @@
 #+TITLE: ${TITLE} - Personajes
 #+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: es
 #+STARTUP: overview
+#+COLUMNS: %30ITEM(Personaje) %14Role %20Stance %30Goal
 
-* Protagonista
+# EL ENCABEZADO ES EL NOMBRE DEL PERSONAJE. Sustituye [Nombre del ...] por el
+# nombre en cuanto lo tengas; los corchetes sólo marcan que está sin rellenar.
+# El papel no va en el encabezado: va en la propiedad :Role:, que es la que
+# org-scribe lee. Por eso puedes renombrar a un personaje cuando quieras sin
+# romper nada, y por eso los enlaces desde las escenas siguen funcionando
+# después (F8 F8 u actualiza los nombres mostrados).
+#
+# Cada personaje es un encabezado de nivel 1. No los anides: org-scribe
+# reconoce los personajes por ahí, y un personaje anidado es invisible para los
+# enlaces, las búsquedas y el informe de salud.
+#
+# Para ver de un vistazo quién es quién, usa la vista de columnas: C-c C-x C-c
+# muestra Role, Stance y Goal al lado de cada nombre.
+#
+# Ficha completa para protagonista y oponente. Para el aliado basta la ficha
+# intermedia (sin Fantasma, Necesidad ni Plan) y para el falso aliado y los
+# secundarios la reducida: Concepto, Postura, Apuro, un Aspecto y el Deseo en
+# tres partes. Se indica en cada uno qué puedes borrar.
+#
+# Todo Aspecto tiene doble filo: una frase corta, en la voz de quien la dice,
+# verdadera, que pueda tanto salvarle como hundirle. Si sólo sirve para una de
+# las dos cosas, todavía no es un Aspecto.
+
+* [Nombre del protagonista]
 :PROPERTIES:
-:TIPO: Protagonista
-:NOMBRE:
-:EDAD:
-:GENERO:
-:DatosRelaciones:
+:Role: Protagonist
+:Stance:
+:Goal:
+:Age:
+:Occupation:
+:First-appearance:
+:RelationshipsData:
 :END:
 
-** Descripción Física
+- Concepto ::
+  # Quién es y a qué se dedica, en una frase con voz. Cómo se describiría él
+  # mismo.
+- Postura ::
+  # Su posición ante el Tema, tomada de la lista. Elige la que más conflicto le
+  # genere. Reescríbela con sus palabras.
+- Fantasma ::
+  # Qué le ocurrió antes de que empiece la historia y todavía le duele.
+- Mentira ::
+  # Qué concluyó de aquello, sigue creyendo, y no es verdad.
+- Apuro ::
+  # Algo inmediato que le complica la vida y le impide quedarse quieto. Es suyo;
+  # el Problema del Mundo es de todos.
+- Debilidad psicológica ::
+  # El defecto interno que le retiene, consecuencia de la Mentira.
+- Debilidad moral ::
+  # A quién hace daño por culpa de lo anterior, y cómo. Una persona, un acto.
+  # Ser demasiado ambicioso le retiene a él; que sus hijos no le vean nunca es
+  # el daño moral.
 
-- Altura ::
-- Complexión ::
-- Cabello ::
-- Ojos ::
-- Rasgos distintivos ::
+** Deseo
 
-** Personalidad
+# Desea (Objetivo), porque cree que así conseguirá (Motivación), pero
+# (Conflicto) se lo impide.
 
-- Rasgos principales ::
-- Fortalezas ::
-- Debilidades ::
-- Miedos ::
-- Deseos ::
+- Objetivo ::
+  # Concreto y externo. El lector tiene que saber cuándo se ha conseguido y
+  # cuándo no. "Ser feliz" no es un Objetivo; "robar el tesoro del rey Urdano" sí.
+- Motivación ::
+  # Lo que cree que le dará conseguirlo. Sale de la Mentira, y por eso siempre
+  # es falsa en el fondo. Si al escribirla te sale algo sano y cierto, has
+  # escrito la Necesidad en la casilla equivocada.
+- Conflicto ::
+  # Quién o qué se interpone. Aquí es externo, y casi siempre el oponente. Si el
+  # Conflicto no tiene cara, todavía no tienes oponente.
+
+** Necesidad
+
+# Necesita (Objetivo), porque sólo así conseguirá (Motivación), pero
+# (Conflicto) se lo impide. Las mismas tres partes, giradas hacia dentro.
+
+- Objetivo ::
+  # Un cambio de conducta, no un objeto.
+- Motivación ::
+  # Lo que la Mentira le impide tener. Suele nombrar el daño de la Debilidad moral.
+- Conflicto ::
+  # Ya no es el oponente, sino la propia Mentira y lo que tendría que admitir
+  # del Fantasma para soltarla. Si vuelve a ser el oponente, el arco está
+  # externalizado: nada de lo que le pase por dentro dependerá de él.
+
+** Plan
+
+- Plan ::
+  # Cómo pretende conseguir el Deseo. Tiene que fallar: el oponente es fuerte.
+- Plan de repuesto ::
+  # Más desesperado y menos limpio.
+
+** Aspectos
+
+# Máximo tres para el protagonista, dos para los demás. Más convierte al
+# personaje en caricatura.
+
+- Aspecto ::
+- Aspecto ::
+- Aspecto ::
+- Relación ::
+  # Un Aspecto que define su vínculo con otro personaje, grupo u organización.
+- Posesión ::
+  # Un objeto significativo, si aplica. Suele ser también su símbolo de personaje.
 
 ** Trasfondo
 
-- Familia ::
-- Educación ::
-- Ocupación ::
-- Eventos formativos ::
+# Una escena corta donde se vea quién es, en vez de decir lo que es. Para ti,
+# no para el libro: no tiene que ser buena y nadie va a leerla. Un buen
+# trasfondo muestra el Fantasma en acción, o al personaje ante un dilema moral
+# que resuelve según su Mentira.
 
-** Motivación
+** Interrogatorio
 
-- Objetivo principal ::
-- Motivación interna ::
-- Motivación externa ::
+# Un párrafo por pregunta.
 
-** Arco del Personaje
+1. ¿Qué es lo que jamás haría?
+   # El clímax debería amenazar con obligarle a ello.
+2. ¿Qué hace cuando está solo y nadie le mira?
+   # Ése es el verdadero yo.
+3. ¿En qué está equivocado?
+   # La Mentira en acción.
+4. ¿Por qué moriría?
+   # El núcleo moral.
+5. Escríbele una escena trivial.
+   # Pidiendo de beber, lidiando con una molestia menor. Si sale genérica,
+   # todavía no le conoces.
 
-- Estado inicial ::
-- Punto de inflexión ::
-- Transformación ::
-- Estado final ::
+** Hitos de cambio
 
-** Relaciones
+# Todo hito va anclado a un punto de trama concreto. Si no puedes decir en qué
+# escena ocurre, no es un hito: es un deseo.
+# Ajuste: aprende o consigue algo; cambia un Aspecto secundario.
+# Ruptura: cambia de Postura ante el Tema.
+# Diseña la secuencia hacia atrás, desde la transformación final.
 
-- Con otros personajes ::
+| Punto de trama | Tipo | Qué cambia |
+|----------------+------+------------|
+|                |      |            |
 
-* Antagonista
+** Notas
+
+* [Nombre del oponente]
 :PROPERTIES:
-:TIPO: Antagonista
-:NOMBRE:
-:EDAD:
-:GENERO:
-:DatosRelaciones:
+:Role: Opponent
+:Stance:
+:Goal:
+:Age:
+:Occupation:
+:First-appearance:
+:RelationshipsData:
 :END:
 
-** Descripción Física
+# Ficha completa. Quiere lo mismo que el protagonista —por eso chocan— y ataca
+# directamente su Debilidad. Elige al que pueda atacarla con más saña.
+# Su Postura tiene que ser defendible: si no puedes argumentarla tú mismo con
+# convicción, todavía no está terminada.
+# No lo reveles entero de golpe: usa jerarquías de oponentes y muestra piezas.
 
-** Personalidad
+- Concepto ::
+- Postura ::
+- Fantasma ::
+- Mentira ::
+- Apuro ::
+- Debilidad psicológica ::
+- Debilidad moral ::
+
+** Deseo
+
+# El mismo Objetivo que el protagonista.
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+** Necesidad
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+** Plan y contraataques
+
+** Aspectos
+
+- Aspecto ::
+- Aspecto ::
+- Relación ::
+- Posesión ::
 
 ** Trasfondo
 
-** Motivación
+** Hitos de cambio
 
-Por qué se opone al protagonista...
+| Punto de trama | Tipo | Qué cambia |
+|----------------+------+------------|
+|                |      |            |
 
-** Relaciones
+** Notas
 
-* Personajes Secundarios
-
-** Personaje Secundario 1
+* [Nombre del aliado]
 :PROPERTIES:
-:TIPO: Secundario
-:NOMBRE:
-:ROL: Aliado/Mentor/etc.
-:DatosRelaciones:
+:Role: Ally
+:Stance:
+:Goal:
+:First-appearance:
+:RelationshipsData:
 :END:
 
-*** Descripción
+# Ficha intermedia: la reducida más Mentira, Debilidad y Relación. Basta para
+# que tenga interior propio y ejecute el ataque de aliado con autoridad, sin
+# cargarle el aparato completo del arco.
+# Borra Fantasma, Necesidad y Plan si no los necesitas.
 
-*** Papel en la Historia
+- Concepto ::
+- Postura ::
+- Mentira ::
+- Apuro ::
+- Debilidad ::
 
-*** Relación con Protagonista
+** Deseo propio
+
+# Propio, no auxiliar: no puede ser "ayudar al protagonista".
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+** Aspectos
+
+- Aspecto ::
+- Aspecto ::
+- Relación ::
+
+** Hitos de cambio
+
+| Punto de trama | Tipo | Qué cambia |
+|----------------+------+------------|
+|                |      |            |
+
+** Notas
+
+* [Nombre del falso aliado]
+:PROPERTIES:
+:Role: Fake-Ally Opponent
+:Stance:
+:Goal:
+:First-appearance:
+:RelationshipsData:
+:END:
+
+# Parece aliado y sirve al oponente. Ficha reducida. Su revelación mide el poder
+# real del enemigo. Necesita los dos Deseos, el declarado y el real.
+
+- Concepto ::
+- Postura ::
+- Apuro ::
+
+** Deseo declarado
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+  # Suele ser el propio protagonista, sin que él lo sepa.
+
+** Deseo real
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+** Revelación
+
+- A quién sirve en realidad ::
+- Cuándo se revela ::
+
+** Aspectos
+
+- Aspecto ::
+
+** Notas
+
+* [Nombre del secundario]
+:PROPERTIES:
+:Role: Thematic Supporting
+:Stance:
+:Goal:
+:First-appearance:
+:RelationshipsData:
+:END:
+
+# Uno por cada Postura que quieras ver representada. Duplica este encabezado
+# entero —o usa F8 F8 c— para cada uno.
+#
+# Ficha reducida. El Deseo en tres partes no es opcional aquí: es lo que
+# distingue a un personaje de un figurante. Sin Deseo, la comprobación de
+# contraste no se puede hacer.
+
+- Concepto ::
+- Postura ::
+- Apuro ::
+
+** Deseo
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+** Aspectos
+
+- Aspecto ::
+
+** Notas
+
+* Comprobación del elenco                                          :noexport:
+
+# Dos comprobaciones distintas, y hacen falta las dos.
+
+** De cobertura
+
+# Entre todos los personajes cubres las Posturas de la lista, y cada una recibe
+# de la historia la consecuencia que merece. Si dos comparten Postura, o uno
+# sobra o hay que diferenciarlos.
+
+| Postura | Quién la encarna | Qué le pasa por sostenerla |
+|---------+------------------+----------------------------|
+|         |                  |                            |
+
+** De contraste
+
+# Para cada par de personajes, ¿cómo define A a B por oposición?
+
+- [ ] Cada uno tiene su propio Deseo con las tres partes, y el Conflicto de cada
+  uno tiene cara: alguien concreto se lo impide.
+- [ ] Cada uno habla distinto. Prueba: diálogo sin acotaciones, ¿sabes quién
+  habla?
+- [ ] Ninguno existe sólo para servir a la trama; cada uno es el protagonista de
+  su propia historia.
+- [ ] Oponente y protagonista están unidos por el conflicto más profundo posible.
+- [ ] Muestran su personalidad con actos, no con descripciones.
+
+# Local Variables:
+# ispell-local-dictionary: "es_ES"
+# End:

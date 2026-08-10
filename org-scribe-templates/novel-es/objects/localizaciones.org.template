@@ -1,46 +1,85 @@
-#+TITLE: ${TITLE} - Localizaciones
+#+TITLE: ${TITLE} - Escenarios
 #+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: es
 #+STARTUP: overview
+#+COLUMNS: %30ITEM(Escenario) %14Type %30Echo
 
-* Localización Principal 1
+# EL ENCABEZADO ES EL NOMBRE DEL LUGAR. Sustituye [Nombre del escenario N] por
+# el nombre en cuanto lo tengas; los corchetes sólo marcan que está sin
+# rellenar. La clasificación no va en el encabezado: va en la propiedad :Type:,
+# que es la que org-scribe lee.
+#
+# Cada escenario es un encabezado de nivel 1. No los anides: org-scribe
+# reconoce los escenarios por ahí.
+#
+# El mundo entero —los cuatro ejes, cómo presiona la Debilidad del
+# protagonista— vive en worldbuilding.org. Aquí van los lugares concretos donde
+# ocurren escenas.
+#
+# Un escenario sin ningún Aspecto es decorado. En el Pase 5 de revisión, los
+# escenarios usados sólo como decorado son candidatos a corte.
+
+* [Nombre del escenario 1]
 :PROPERTIES:
-:TIPO: Ciudad/Pueblo/etc.
-:NOMBRE:
-:CLIMA:
-:POBLACION:
+:Type: Escenario
+:Echo:
+:First-appearance:
 :END:
 
-** Descripción General
+- Eco ::
+  # Cómo este lugar refleja el Tema. Es lo que lo convierte en parte del
+  # argumento y no en un fondo. "Todo el mundo aquí habla entre líneas."
+- Escollo ::
+  # Cómo este lugar empeora el Problema del Mundo. "Todos buscan a alguien a
+  # quien cargarle las culpas."
+- Personaje ::
+  # Un Aspecto de personaje que este lugar activa. "Tengo deudas con la mitad de
+  # los presentes."
+- Símbolo ::
+  # El objeto o detalle que carga la escena. "La copa que no llego a beber."
 
-** Geografía
+** Descripción
 
-- Ubicación ::
-- Terreno ::
-- Clima ::
-- Recursos naturales ::
+# Qué se ve, se oye y se huele. Sólo lo que un focalizador notaría estando ahí.
 
-** Aspectos Culturales
+** Escenas que ocurren aquí
 
-- Idioma ::
-- Costumbres ::
-- Religión ::
-- Gobierno ::
+# Se rellena solo si enlazas el escenario desde la propiedad Localizacion de
+# cada escena (F8 F8 l). Las escenas quedan enlazadas por ID.
 
-** Historia
-
-** Importancia en la Trama
-
-** Lugares Específicos
-
-*** Lugar 1
+* [Nombre del escenario 2]
 :PROPERTIES:
-:TIPO: Casa/Edificio/etc.
+:Type: Escenario
+:Echo:
+:First-appearance:
 :END:
 
-Descripción detallada...
+- Eco ::
+- Escollo ::
+- Personaje ::
+- Símbolo ::
 
-** Mapa/Imagen de Referencia
+** Descripción
 
-# [[file:../notas/imagenes/mapa.jpg]]
+** Escenas que ocurren aquí
 
-* Localización Principal 2
+* [Nombre del escenario 3]
+:PROPERTIES:
+:Type: Escenario
+:Echo:
+:First-appearance:
+:END:
+
+- Eco ::
+- Escollo ::
+- Personaje ::
+- Símbolo ::
+
+** Descripción
+
+** Escenas que ocurren aquí
+
+# Local Variables:
+# ispell-local-dictionary: "es_ES"
+# End:
