@@ -248,31 +248,53 @@
 ;;; Template Structure Tests
 
 (ert-deftest test-character-template-has-required-fields ()
-  "Test that character template includes all required fields."
+  "The character template files the method's ficha completa.
+Asserts the causal chain in order (Ghost -> Lie -> Weakness ->
+Desire/Need), because the chain is what the ficha is for: each link is
+derived from the one above it, and a template that lists them out of
+order invites filling them in out of order."
   (let ((template-string (nth 4 (car (org-scribe-character-capture-templates 'en)))))
+    ;; The Role property is what `org-scribe--character-heading-p' reads,
+    ;; and the heading must stay free for the character's name.
     (should (string-match-p ":ID:" template-string))
     (should (string-match-p ":Role:" template-string))
-    (should (string-match-p ":Age:" template-string))
-    (should (string-match-p ":Gender:" template-string))
-    (should (string-match-p "Physical Description" template-string))
-    (should (string-match-p "Personality" template-string))
-    (should (string-match-p "Background" template-string))
-    (should (string-match-p "Goal, Motivation, Conflict" template-string))
-    (should (string-match-p "Character Arc" template-string))
-    (should (string-match-p "Relationships" template-string))))
+    (should (string-match-p "Protagonist|Opponent|Ally" template-string))
+    (should-not (string-match-p ":Gender:" template-string))
+    ;; The causal chain, in order.  Anchored to the "- Label ::" list form:
+    ;; a bare label also matches inside the property drawer, where :Stance:
+    ;; precedes everything and makes the order check pass or fail by accident.
+    (let ((positions (mapcar (lambda (label)
+                               (string-match (regexp-quote (concat "- " label " ::"))
+                                             template-string))
+                             '("Concept" "Stance" "Ghost" "Lie" "Trouble"
+                               "Psychological Weakness" "Moral Weakness"))))
+      (should (cl-every #'identity positions))
+      (should (equal positions (sort (copy-sequence positions) #'<))))
+    ;; Desire and Need, each in three parts.
+    (should (string-match-p "Desire" template-string))
+    (should (string-match-p "Need" template-string))
+    (should (= 2 (cl-count "Goal ::" (split-string template-string "\n")
+                           :test (lambda (a b) (string-match-p (regexp-quote a) b)))))
+    (should (string-match-p "Change Milestones" template-string))
+    ;; The superseded model must be gone entirely.
+    (dolist (old '("Physical Description" "Personality" "Character Arc"
+                   "Goal, Motivation, Conflict" "Psychological Flaw"))
+      (should-not (string-match-p (regexp-quote old) template-string)))))
 
 (ert-deftest test-location-template-has-required-fields ()
-  "Test that location template includes all required fields."
+  "The setting template files the method's four setting Aspects.
+Echo and Hazard are the two that make a place part of the argument
+rather than scenery; the gazetteer fields of the previous model
+(climate, population, terrain) are deliberately gone."
   (let ((template-string (nth 4 (car (org-scribe-location-capture-templates 'en)))))
     (should (string-match-p ":ID:" template-string))
     (should (string-match-p ":Type:" template-string))
-    (should (string-match-p ":Importance:" template-string))
-    (should (string-match-p "General Description" template-string))
-    (should (string-match-p "Geography" template-string))
-    (should (string-match-p "Cultural Aspects" template-string))
-    (should (string-match-p "History" template-string))
-    (should (string-match-p "Notable Features" template-string))
-    (should (string-match-p "Atmosphere & Mood" template-string))))
+    (dolist (aspect '("Echo" "Hazard" "Character" "Symbol"))
+      (should (string-match-p aspect template-string)))
+    (should (string-match-p "Description" template-string))
+    (dolist (old '("Geography" "Cultural Aspects" "Notable Features"
+                   "Atmosphere & Mood" ":Population:" ":Climate:"))
+      (should-not (string-match-p (regexp-quote old) template-string)))))
 
 (ert-deftest test-object-template-has-required-fields ()
   "Test that object template includes all required fields."
@@ -601,21 +623,25 @@ plain `file' target's append behavior."
 ;;; ─────────────────────────────────────────────
 
 (ert-deftest test-character-template-spanish ()
-  "Test that the character template renders in Spanish when requested."
+  "The character template renders the method's vocabulary in Spanish."
   (let ((template-string (nth 4 (car (org-scribe-character-capture-templates 'es)))))
-    (should (string-match-p "Nombre del Personaje" template-string))
-    (should (string-match-p "Descripción Física" template-string))
-    (should (string-match-p "Personalidad" template-string))
-    (should (string-match-p "Trasfondo" template-string))
-    (should (string-match-p "Relaciones" template-string))
-    (should-not (string-match-p "Physical Description" template-string))))
+    (dolist (term '("Nombre del personaje" "Concepto" "Postura" "Fantasma"
+                    "Mentira" "Apuro" "Debilidad psicológica" "Debilidad moral"
+                    "Deseo" "Necesidad" "Hitos de cambio"))
+      (should (string-match-p term template-string)))
+    (should-not (string-match-p "Ghost" template-string))
+    (should-not (string-match-p "Psychological Weakness" template-string))
+    ;; Role *values* stay English in both languages: they are machine-facing
+    ;; identifiers read by the entity predicate, not display text.
+    (should (string-match-p "Protagonist|Opponent|Ally" template-string))))
 
 (ert-deftest test-location-template-spanish ()
-  "Test that the location template renders in Spanish when requested."
+  "The setting template renders the method's vocabulary in Spanish."
   (let ((template-string (nth 4 (car (org-scribe-location-capture-templates 'es)))))
-    (should (string-match-p "Descripción General" template-string))
-    (should (string-match-p "Geografía" template-string))
-    (should-not (string-match-p "General Description" template-string))))
+    (dolist (term '("Nombre del escenario" "Eco" "Escollo" "Símbolo" "Descripción"))
+      (should (string-match-p term template-string)))
+    (should-not (string-match-p "Hazard" template-string))
+    (should-not (string-match-p "Geography" template-string))))
 
 (ert-deftest test-object-template-spanish ()
   "Test that the object template renders in Spanish when requested."
@@ -630,12 +656,18 @@ plain `file' target's append behavior."
     (should-not (string-match-p "Consequences" template-string))))
 
 (ert-deftest test-plot-thread-template-spanish ()
-  "Test that the plot thread template renders in Spanish, including the
-positional backreference to the type prompt (`%\\2')."
+  "The plot thread template renders in Spanish and files a real thread.
+The `%\\2' positional backreference of the previous template is gone:
+the type is now prompted straight into the THREAD-TYPE property, which
+removes the one place where reordering the prompts silently produced a
+thread whose type was its own name."
   (let ((template-string (nth 4 (car (org-scribe-plot-thread-capture-templates 'es)))))
-    (should (string-match-p "Nombre del Hilo" template-string))
-    (should (string-match-p "Resolución" template-string))
-    (should (string-match-p "%\\\\2" template-string))))
+    (dolist (term '("Nombre de la línea" "Postura" "Deseo propio"
+                    "Cruces con la línea principal" "Resolución"))
+      (should (string-match-p term template-string)))
+    ;; THREAD-TYPE is what `org-scribe--plot-heading-p' reads.
+    (should (string-match-p ":THREAD-TYPE: %\\^{" template-string))
+    (should-not (string-match-p "%\\\\2" template-string))))
 
 (ert-deftest test-capture-templates-follow-project-language ()
   "Test that templates default to `org-scribe-project-language' when no

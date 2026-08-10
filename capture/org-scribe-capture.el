@@ -342,201 +342,113 @@ LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
 
 (defun org-scribe-character-capture-templates (&optional language)
   "Return capture templates for character profiles.
-LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
-  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
-    `(("c" ,(org-scribe-msg 'capture-char-name) entry
-       (file+function org-scribe-capture-character-file
-                      org-scribe--capture-goto-characters-section)
-       ,(format "* %%^{%s}
-:PROPERTIES:
-:ID: %%(org-id-new)
-:Role: %%^{%s}
-:Weight: %%^{%s}
-:Age: %%^{%s}
-:Gender: %%^{%s}
-:Occupation: %%^{%s}
-:Goal:
-:Motivation:
-:Conflict:
-:Arc:
-:First-appearance: %%^{%s}
-:RelationshipsData:
-:END:
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
 
-** %s
+Files the ficha completa of the method: the causal chain
+Ghost -> Lie -> Weakness -> Desire/Need, plus Plan, Aspects and change
+milestones.  The heading is the character's *name*; the role lives in the
+`Role' property, which is what `org-scribe--character-heading-p' reads, so
+renaming a character later never unlinks them.
 
-- %s
-- %s
-- %s
-- %s
-- %s
-
-** %s
-
-- %s
-- %s
-- %s
-- %s
-- %s
-- %s
-- %s
-- %s
-
-** %s
-
-- %s
-- %s
-- %s
-- %s
-
-** %s
-*** %s
-- %s
-- %s
-- %s
-*** %s
-- %s
-- %s
-- %s
-
-** %s
-
-- %s
-- %s
-- %s
-- %s
-
-** %s
-
-- %s
-
-** %s
-- "
-                       (org-scribe-msg 'capture-char-name-prompt)
-                       (org-scribe-msg 'capture-char-role-prompt)
-                       (org-scribe-msg 'capture-char-weight-prompt)
-                       (org-scribe-msg 'capture-char-age-prompt)
-                       (org-scribe-msg 'capture-char-gender-prompt)
-                       (org-scribe-msg 'capture-char-occupation-prompt)
-                       (org-scribe-msg 'capture-char-first-appearance-prompt)
-                       (org-scribe-msg 'capture-char-physical-description)
-                       (org-scribe-msg 'capture-char-height)
-                       (org-scribe-msg 'capture-char-build)
-                       (org-scribe-msg 'capture-char-hair)
-                       (org-scribe-msg 'capture-char-eyes)
-                       (org-scribe-msg 'capture-char-distinctive-features)
-                       (org-scribe-msg 'capture-char-personality)
-                       (org-scribe-msg 'capture-char-main-traits)
-                       (org-scribe-msg 'capture-char-strengths)
-                       (org-scribe-msg 'capture-char-weaknesses)
-                       (org-scribe-msg 'capture-char-fears)
-                       (org-scribe-msg 'capture-char-desire)
-                       (org-scribe-msg 'capture-char-need)
-                       (org-scribe-msg 'capture-char-psychological-flaw)
-                       (org-scribe-msg 'capture-char-moral-flaw)
-                       (org-scribe-msg 'capture-char-background)
-                       (org-scribe-msg 'capture-char-family)
-                       (org-scribe-msg 'capture-char-education)
-                       (org-scribe-msg 'capture-char-occupation-field)
-                       (org-scribe-msg 'capture-char-formative-events)
-                       (org-scribe-msg 'capture-char-gmc)
-                       (org-scribe-msg 'capture-char-internal)
-                       (org-scribe-msg 'capture-char-goal)
-                       (org-scribe-msg 'capture-char-motivation)
-                       (org-scribe-msg 'capture-char-conflict)
-                       (org-scribe-msg 'capture-char-external)
-                       (org-scribe-msg 'capture-char-goal)
-                       (org-scribe-msg 'capture-char-motivation)
-                       (org-scribe-msg 'capture-char-conflict)
-                       (org-scribe-msg 'capture-char-arc)
-                       (org-scribe-msg 'capture-char-initial-state)
-                       (org-scribe-msg 'capture-char-turning-point)
-                       (org-scribe-msg 'capture-char-transformation)
-                       (org-scribe-msg 'capture-char-final-state)
-                       (org-scribe-msg 'capture-char-relationships)
-                       (org-scribe-msg 'capture-char-with-others)
-                       (org-scribe-msg 'capture-char-notes))
-       :empty-lines 1))))
+Built with `concat' rather than one `format' with forty positional
+arguments: the previous shape made every field addition a re-count of the
+argument list, and a mismatch produced a plausible-looking template with
+the labels silently shifted by one."
+  (let* ((org-scribe-message-language (or language (org-scribe-project-language))))
+    (cl-flet ((m (key) (org-scribe-msg key)))
+      `(("c" ,(m 'capture-char-name) entry
+         (file+function org-scribe-capture-character-file
+                        org-scribe--capture-goto-characters-section)
+         ,(concat
+           "* %^{" (m 'capture-char-name-prompt) "}\n"
+           ":PROPERTIES:\n"
+           ":ID: %(org-id-new)\n"
+           ":Role: %^{" (m 'capture-char-role-prompt) "}\n"
+           ":Stance:\n"
+           ":Goal:\n"
+           ":Age: %^{" (m 'capture-char-age-prompt) "}\n"
+           ":Occupation: %^{" (m 'capture-char-occupation-prompt) "}\n"
+           ":First-appearance: %^{" (m 'capture-char-first-appearance-prompt) "}\n"
+           ":RelationshipsData:\n"
+           ":END:\n\n"
+           "- " (m 'capture-char-concept) "\n"
+           "  # " (m 'capture-char-concept-hint) "\n"
+           "- " (m 'capture-char-stance) "\n"
+           "  # " (m 'capture-char-stance-hint) "\n"
+           "- " (m 'capture-char-ghost) "\n"
+           "  # " (m 'capture-char-ghost-hint) "\n"
+           "- " (m 'capture-char-lie) "\n"
+           "  # " (m 'capture-char-lie-hint) "\n"
+           "- " (m 'capture-char-trouble) "\n"
+           "  # " (m 'capture-char-trouble-hint) "\n"
+           "- " (m 'capture-char-psych-weakness) "\n"
+           "- " (m 'capture-char-moral-weakness) "\n"
+           "  # " (m 'capture-char-moral-weakness-hint) "\n\n"
+           "** " (m 'capture-char-desire) "\n\n"
+           "# " (m 'capture-char-desire-hint) "\n\n"
+           "- " (m 'capture-char-goal) "\n"
+           "- " (m 'capture-char-motivation) "\n"
+           "- " (m 'capture-char-conflict) "\n\n"
+           "** " (m 'capture-char-need) "\n\n"
+           "# " (m 'capture-char-need-hint) "\n\n"
+           "- " (m 'capture-char-goal) "\n"
+           "- " (m 'capture-char-motivation) "\n"
+           "- " (m 'capture-char-conflict) "\n\n"
+           "** " (m 'capture-char-plan-heading) "\n\n"
+           "- " (m 'capture-char-plan) "\n"
+           "  # " (m 'capture-char-plan-hint) "\n"
+           "- " (m 'capture-char-fallback-plan) "\n\n"
+           "** " (m 'capture-char-aspects) "\n\n"
+           "# " (m 'capture-char-aspects-hint) "\n\n"
+           "- " (m 'capture-char-aspect) "\n"
+           "- " (m 'capture-char-aspect) "\n"
+           "- " (m 'capture-char-relationship) "\n"
+           "- " (m 'capture-char-possession) "\n\n"
+           "** " (m 'capture-char-backstory) "\n\n"
+           "# " (m 'capture-char-backstory-hint) "\n\n"
+           "%?\n\n"
+           "** " (m 'capture-char-milestones) "\n\n"
+           "# " (m 'capture-char-milestones-hint) "\n\n"
+           (m 'capture-char-milestone-header) "\n"
+           "|---|\n\n"
+           "** " (m 'capture-char-notes) "\n")
+         :empty-lines 1)))))
 
 (defun org-scribe-location-capture-templates (&optional language)
-  "Return capture templates for location profiles.
-LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
-  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
-    `(("l" ,(org-scribe-msg 'capture-loc-name) entry
-       (file+function org-scribe-capture-location-file
-                      org-scribe--capture-goto-setting-section)
-       ,(format "* %%^{%s}
-:PROPERTIES:
-:ID: %%(org-id-new)
-:Type: %%^{%s}
-:Importance: %%^{%s}
-:First-appearance: %%^{%s}
-:Climate: %%^{%s}
-:Population: %%^{%s}
-:END:
+  "Return capture templates for setting profiles.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
 
-** %s
-%%?
-
-** %s
-
-- %s
-- %s
-- %s
-- %s
-
-** %s
-
-- %s
-- %s
-- %s
-- %s
-
-** %s
--
-
-** %s
--
-
-** %s
--
-
-** %s
--
-
-** %s
--
-
-** %s
--
-
-** %s
-- "
-                       (org-scribe-msg 'capture-loc-name-prompt)
-                       (org-scribe-msg 'capture-loc-type-prompt)
-                       (org-scribe-msg 'capture-loc-importance-prompt)
-                       (org-scribe-msg 'capture-loc-first-appearance-prompt)
-                       (org-scribe-msg 'capture-loc-climate-prompt)
-                       (org-scribe-msg 'capture-loc-population-prompt)
-                       (org-scribe-msg 'capture-loc-general-description)
-                       (org-scribe-msg 'capture-loc-geography)
-                       (org-scribe-msg 'capture-loc-location)
-                       (org-scribe-msg 'capture-loc-terrain)
-                       (org-scribe-msg 'capture-loc-climate)
-                       (org-scribe-msg 'capture-loc-natural-resources)
-                       (org-scribe-msg 'capture-loc-culture)
-                       (org-scribe-msg 'capture-loc-language)
-                       (org-scribe-msg 'capture-loc-customs)
-                       (org-scribe-msg 'capture-loc-religion)
-                       (org-scribe-msg 'capture-loc-government)
-                       (org-scribe-msg 'capture-loc-history)
-                       (org-scribe-msg 'capture-loc-notable-features)
-                       (org-scribe-msg 'capture-loc-importance-plot)
-                       (org-scribe-msg 'capture-loc-specific-places)
-                       (org-scribe-msg 'capture-loc-atmosphere)
-                       (org-scribe-msg 'capture-loc-map-reference)
-                       (org-scribe-msg 'capture-loc-notes))
-       :empty-lines 1))))
+Files the method's four setting Aspects — Echo, Hazard, Character and
+Symbol — rather than the gazetteer fields (climate, population, terrain)
+of the previous model.  A setting with no Aspect is scenery, and Pass 5
+of the revision marks scenery for cutting."
+  (let* ((org-scribe-message-language (or language (org-scribe-project-language))))
+    (cl-flet ((m (key) (org-scribe-msg key)))
+      `(("l" ,(m 'capture-loc-name) entry
+         (file+function org-scribe-capture-location-file
+                        org-scribe--capture-goto-setting-section)
+         ,(concat
+           "* %^{" (m 'capture-loc-name-prompt) "}\n"
+           ":PROPERTIES:\n"
+           ":ID: %(org-id-new)\n"
+           ":Type: %^{" (m 'capture-loc-type-prompt) "}\n"
+           ":Echo:\n"
+           ":First-appearance: %^{" (m 'capture-loc-first-appearance-prompt) "}\n"
+           ":END:\n\n"
+           "- " (m 'capture-loc-echo) "\n"
+           "  # " (m 'capture-loc-echo-hint) "\n"
+           "- " (m 'capture-loc-hazard) "\n"
+           "  # " (m 'capture-loc-hazard-hint) "\n"
+           "- " (m 'capture-loc-character-aspect) "\n"
+           "  # " (m 'capture-loc-character-aspect-hint) "\n"
+           "- " (m 'capture-loc-symbol) "\n"
+           "  # " (m 'capture-loc-symbol-hint) "\n\n"
+           "** " (m 'capture-loc-general-description) "\n\n"
+           "# " (m 'capture-loc-general-description-hint) "\n\n"
+           "%?\n\n"
+           "** " (m 'capture-loc-scenes-here) "\n\n"
+           "** " (m 'capture-loc-notes) "\n")
+         :empty-lines 1)))))
 
 (defun org-scribe-object-capture-templates (&optional language)
   "Return capture templates for important objects.
@@ -639,55 +551,42 @@ LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
        :empty-lines 1))))
 
 (defun org-scribe-plot-thread-capture-templates (&optional language)
-  "Return capture templates for plot threads.
-LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
-  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
-    `(("p" ,(org-scribe-msg 'capture-pt-name) entry
-       (file+function org-scribe-capture-plot-thread-file
-                      org-scribe--capture-goto-plot-threads-section)
-       ,(format "** %%^{%s} %%^{%s}
-:PROPERTIES:
-:ID: %%(org-id-new)
-:THREAD-TYPE: %%\\2
-:STATUS: %%^{%s}
-:Weight: %%^{%s}
-:FIRST-APPEARANCE:
-:END:
+  "Return capture templates for plot threads (narrative lines).
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
 
-*** %s
+Files a subplot in the method's terms: which Stance it embodies, who
+carries it, its own desire, and its crossings with the main line.  A
+thread that never crosses the main line is not a subplot but a second
+novel inside the first.
 
-%%^{%s}
-
-*** %s
-
-%%^{%s}
-
-*** %s
-
-- %%?
-
-*** %s
-
-%s
-
-*** %s
-
-%s
-"
-                       (org-scribe-msg 'capture-pt-name-prompt)
-                       (org-scribe-msg 'capture-pt-type-prompt)
-                       (org-scribe-msg 'capture-pt-status-prompt)
-                       (org-scribe-msg 'capture-pt-weight-prompt)
-                       (org-scribe-msg 'capture-pt-description)
-                       (org-scribe-msg 'capture-pt-description-prompt)
-                       (org-scribe-msg 'capture-pt-connection-main)
-                       (org-scribe-msg 'capture-pt-connection-main-prompt)
-                       (org-scribe-msg 'capture-pt-key-scenes)
-                       (org-scribe-msg 'capture-pt-resolution)
-                       (org-scribe-msg 'capture-pt-resolution-hint)
-                       (org-scribe-msg 'capture-pt-notes)
-                       (org-scribe-msg 'capture-pt-notes-hint))
-       :empty-lines 1))))
+Note this captures narrative *lines*, not the thirteen non-negotiables.
+Those are a fixed set shipped by the template and are never captured —
+see `linking/org-scribe-plot-point-links.el'."
+  (let* ((org-scribe-message-language (or language (org-scribe-project-language))))
+    (cl-flet ((m (key) (org-scribe-msg key)))
+      `(("p" ,(m 'capture-pt-name) entry
+         (file+function org-scribe-capture-plot-thread-file
+                        org-scribe--capture-goto-plot-threads-section)
+         ,(concat
+           "* %^{" (m 'capture-pt-name-prompt) "}\n"
+           ":PROPERTIES:\n"
+           ":ID: %(org-id-new)\n"
+           ":THREAD-TYPE: %^{" (m 'capture-pt-type-prompt) "}\n"
+           ":Stance:\n"
+           ":STATUS: %^{" (m 'capture-pt-status-prompt) "}\n"
+           ":FIRST-APPEARANCE:\n"
+           ":END:\n\n"
+           "- " (m 'capture-pt-stance-prompt) " ::\n"
+           "- " (m 'capture-pt-carried-by-prompt) " ::\n\n"
+           "** " (m 'capture-pt-own-desire) "\n\n"
+           "# " (m 'capture-pt-own-desire-hint) "\n\n"
+           "%?\n\n"
+           "** " (m 'capture-pt-crossings) "\n\n"
+           "# " (m 'capture-pt-crossings-hint) "\n\n"
+           "1.\n2.\n3.\n\n"
+           "** " (m 'capture-pt-resolution) "\n\n"
+           "** " (m 'capture-pt-notes) "\n")
+         :empty-lines 1)))))
 
 ;;; Capture Function
 
