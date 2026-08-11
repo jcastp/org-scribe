@@ -48,7 +48,9 @@ If you see this message, you're ready! If not, make sure you've installed the pa
 - Stories requiring detailed planning and world-building
 
 *What you get*:
-- 12-13 files organized in a structured hierarchy
+- 13 files organized in a structured hierarchy
+- A design file (~design.org~) holding the Starting Gate and the Core — the
+  file you open first
 - Separate planning files for characters, locations, plot, timeline, objects
 - Statistics tracking section with word count tables
 - Revision notes file
@@ -183,7 +185,10 @@ This is where you'll write your actual story.
 - Three-section structure (Opening, Middle, Ending)
 - Scene templates with properties (PoV, Characters, Location, etc.)
 - Integrated word count tracking table
-- Export configuration
+
+No export configuration ships in the templates — it carried absolute paths and
+LaTeX classes that were personal to one machine. Add your own ~#+LATEX_CLASS~
+and friends if you export; Lesson 11 covers it.
 
 *What to do now*:
 1. Look at the README.org file (currently open)
@@ -264,22 +269,91 @@ My Fantasy Novel/
 ├── .git/
 ├── .org-scribe-project
 ├── README.org                 (overview and navigation)
+├── design.org                 (START HERE: the Starting Gate and the Core)
 ├── novel.org                  (main manuscript - word count and progress tracking live here, not a separate file)
 ├── writing-journal.org        (a journal for reflecting on your writing process)
-├── revision.org               (revision notes and checklists)
+├── revision.org               (the revision passes)
 ├── objects/                      (planning directory)
-│   ├── characters.org         (character database)
-│   ├── locations.org          (locations and world-building)
+│   ├── characters.org         (character profiles)
+│   ├── locations.org          (settings, each with its Echo and Hazard)
 │   ├── worldbuilding.org      (deeper world-building notes)
-│   ├── plot.org              (plot threads and structure)
-│   ├── timeline.org          (story timeline and events)
-│   └── objects.org           (important objects/MacGuffins)
+│   ├── plot.org               (the thirteen non-negotiables and the narrative lines)
+│   ├── timeline.org           (story timeline and events)
+│   └── objects.org            (important objects/MacGuffins)
 └── notes/                     (notes directory)
-    ├── notes.org             (general notes)
-    └── research.org          (research and references)
+    ├── notes.org              (general notes)
+    └── research.org           (research and references)
 #+END_EXAMPLE
 
+A Spanish project has exactly the same structure with localized file names:
+~diseno.org~, ~novela.org~, ~diario-escritura.org~, ~objects/personajes.org~,
+~objects/localizaciones.org~, ~objects/trama.org~, ~objects/cronologia.org~,
+~objects/objetos.org~, and ~notas/~ instead of ~notes/~.
+
 (A ~plan.org~ does *not* appear here — it's created separately, on demand, only once you opt into the bundled writing planner; see Lesson 16.)
+
+** Start With design.org
+
+The novel templates are not blank scaffolding: they implement a specific
+writing method, and ~design.org~ (~diseno.org~ in Spanish projects) is where
+that method starts. Open it before anything else.
+
+It holds two things.
+
+*** The Starting Gate
+
+One checklist, at the top of the file, whose only job is to tell you when to
+stop planning and start writing:
+
+#+BEGIN_EXAMPLE
+* Starting Gate
+
+- [ ] Theme and at least five Stances
+- [ ] Protagonist and opponent with Ghost, Lie, Weakness, Desire and Need
+- [ ] Stakes
+- [ ] Ending chosen
+- [ ] Point of view decided
+- [ ] Premise
+- [ ] The thirteen non-negotiable plot points
+- [ ] The first three scenes
+#+END_EXAMPLE
+
+When those eight boxes are ticked, you begin. Everything else is discovered by
+writing. The gate exists because planning has no natural end — there is always
+one more thing to work out — and a project that never crosses it never becomes
+a draft.
+
+Two of the eight are *measured* rather than self-reported: ~F8 F8 H~
+(~org-scribe-project-health~) counts how many of the thirteen plot points you
+have actually filled in, and how many of the first three scenes have a non-zero
+word count. Where the measurement disagrees with your tick — in either
+direction — the health report says so and leaves it to you. A ticked box over
+ten empty plot points is worth knowing about; so is an unticked box over
+thirteen full ones. See Lesson 3 for the full report.
+
+*** The Core
+
+Twelve questions, short answers, one page in total. Questions 4 to 7 are a
+causal chain and are answered in that order, because each one comes out of the
+one before: the Ghost produces the Lie, the Lie produces the Weakness, and the
+Weakness generates the Desire. If one does not fit the one beside it, the wrong
+one is usually the one above.
+
+The rest of ~design.org~ covers what has no file of its own — the World
+Problem, the stakes, the ending, point of view, symbols. Characters, settings
+and plot each have their own file under ~objects/~, and you fill those in as
+you need them.
+
+*Vocabulary*: terms like /Ghost/, /Lie/, /Weakness/, /Stance/, /Echo/ and
+/Hazard/ are used in a precise sense, and most are restored from named English
+sources rather than invented. [[file:../docs/glossary.org][docs/glossary.org]]
+gives the term-by-term definition and the Spanish↔English mapping. Consult it
+before renaming anything: a synonym usually re-creates an ambiguity the method
+removed.
+
+The lines beginning with ~#~ throughout the file are instructions to you, not
+content. Leave them or delete them as you prefer — they are Org comments, so
+they never export, and the word counter ignores them.
 
 ** When to Use Novel Template
 
@@ -484,7 +558,7 @@ Take your time! There's no rush. When you feel comfortable with project creation
 
 If you're stuck:
 
-1. Check the [[file:getting-started-index.org][Tutorial Index]] for other lessons
+1. Check the [[file:getting-started-00-index.org][Tutorial Index]] for other lessons
 2. Refer to the [[file:00-feature-index.org][Feature Index]] for detailed feature documentation
 3. Use ~C-h f~ followed by a function name for help
 4. Ask in the Emacs community or file an issue
@@ -497,7 +571,7 @@ In the next lessons, you'll learn how to actually use all these files effectivel
 
 ---
 
-*Previous*: [[file:getting-started-index.org][Tutorial Index]]
+*Previous*: [[file:getting-started-00-index.org][Tutorial Index]]
 *Next*: [[file:getting-started-02-first-scene.org][Lesson 2: Writing Your First Scene]]
 
 *Lesson 1 Complete!*

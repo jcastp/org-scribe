@@ -1034,7 +1034,7 @@ Fantastic work! You've completed Lesson 11. You now know:
 
 * Next Steps
 
-Ready to enhance your writing with language tools? Head to [[file:getting-started-12-dictionary.org][Lesson 12: Dictionary and Language Tools]]!
+Ready to enhance your writing with language tools? Head to [[file:getting-started-12-dictionary-tools.org][Lesson 12: Dictionary and Language Tools]]!
 
 In the next lesson, you'll learn:
 - RAE dictionary lookup for Spanish

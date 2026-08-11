@@ -494,7 +494,7 @@ Set-up, relationships, and display options are in the Links & upkeep submenu (=F
 - =r= - Setup relationships
 - =T= - Toggle entity tooltips (=org-scribe-overlays-mode=)
 
-See [[file:CHARACTER-LINKING.org][Character Linking Guide]] for complete documentation.
+See [[file:manual/getting-started-04-capturing-characters.org][Lesson 4: Capturing Characters]] for complete documentation.
 
 ** Character Relationships
 
@@ -808,10 +808,10 @@ Character timeline uses the existing character properties you're already setting
    - Identify forgotten supporting characters
    - Plan reintroduction scenes
 
-4. **Character Arc Tracking**: "Is the character development well-distributed?"
-   - See all scenes featuring specific character
-   - Verify arc scenes span appropriate chapters
-   - Check character appears in key moments
+4. **Change Milestone Tracking**: "Is the character's change well-distributed?"
+   - See all scenes featuring a specific character
+   - Check that each Change Milestone's plot point actually has a scene
+   - Verify the character appears at the moments their arc turns on
 
 5. **Relationship Tracking**: "When do these characters interact?"
    - Find rows where both characters have symbols

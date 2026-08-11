@@ -116,90 +116,94 @@ Or use: ~M-x org-scribe-capture-location~
 
 ** Template Structure
 
-The template actually has *properties plus ten sections* — the walkthrough below uses a simplified/illustrative set of property names for teaching purposes; here is what the template really inserts, verbatim:
+Here is what the capture template really inserts, verbatim:
 
 #+BEGIN_EXAMPLE
+* Setting name
 :PROPERTIES:
-:ID: location-unique-id-here
+:ID: (generated automatically)
 :Type:
-:Importance:
+:Echo:
 :First-appearance:
-:Climate:
-:Population:
 :END:
 
-,** General Description
-,** Geography
-,** Cultural Aspects & Society
-,** History
-,** Notable Features
-,** Importance in the Plot
-,** Specific Places
-,** Atmosphere & Mood
-,** Map/Reference Image
+- Echo ::
+- Hazard ::
+- Character ::
+- Symbol ::
+
+,** Description
+
+,** Scenes that happen here
+
 ,** Notes
 #+END_EXAMPLE
 
-There is no ~:Setting:~, ~:Accessibility:~, or ~:Owner:~ property, and no separate "Connections" or "Significance" section — where the walkthrough below refers to those, capture the same information as free text under *Geography* (broader context, accessibility), *History* (ownership, past events), or *Importance in the Plot* (why it matters, who's connected to it) instead.
+It is short on purpose. Three properties and four one-line Aspects carry
+almost everything; the prose section is for what you can see, hear and smell
+when you are standing there.
+
+The settings file that ships with a new novel project
+(~objects/locations.org~) uses the same shape, so a setting you capture and a
+setting you fill in by hand look identical.
+
+*The important idea*: a setting is not a backdrop. It has a job in the
+argument of the story, and the four Aspects are that job written down. A
+setting with no Aspect at all is scenery — and in the revision passes,
+settings used only as scenery are candidates for cutting.
 
 * Section 1: Properties
 
-When you capture a location, you'll see these properties:
+When you capture a setting, you'll see these three properties:
 
 #+BEGIN_EXAMPLE
 :PROPERTIES:
-:ID: location-unique-id-here
+:ID: (generated automatically)
 :Type:
-:Importance:
+:Echo:
 :First-appearance:
-:Climate:
-:Population:
 :END:
 #+END_EXAMPLE
 
 ** ~:ID:~ (Automatic)
 
-A unique identifier for this location, created automatically.
+A unique identifier for this setting, created automatically.
 
 *Example*: ~loc-coffee-shop-20251116-001~
 
-*Purpose*: Enables clickable links from scenes to location profiles.
+*Purpose*: Enables clickable links from scenes to setting profiles.
 
 *You don't set this* - it's automatic!
 
 ** ~:Type:~
 
-The category of location.
+What kind of place this is. The capture prompt is free text, so use whatever
+categories suit your story — the property exists so that org-scribe can tell a
+setting heading from anything else in the file, and so you can group settings
+in column view.
 
-*Common values*:
-- Residence (home, apartment)
-- Business (store, office, restaurant)
-- Public (park, library, street)
-- Institution (school, hospital, government)
-- Transportation (car, train, airport)
-- Natural (forest, beach, mountain)
-- Other (anything else)
+*Examples*: ~Residence~, ~Business~, ~Public~, ~Institution~, ~Natural~,
+~Transport~
 
-*Example*: ~Business~
+*Tip*: Use broad categories. The specifics belong in the description.
 
-*Tip*: Use broad categories. You'll add specifics in the description.
+*Note*: this property is what makes the heading a setting as far as the
+linking system is concerned. Don't delete it, and don't put the category in
+the heading — the heading is the *name* of the place.
 
-** ~:Importance:~
+** ~:Echo:~
 
-How central this location is to your story.
+A short restatement of the setting's Echo (see below), kept in a property so
+it shows up in column view beside the setting's name. The shipped
+~#+COLUMNS:~ line in ~objects/locations.org~ displays exactly three things:
+the name, the ~:Type:~, and this.
 
-*Values*:
-- Primary - Appears frequently, major story significance
-- Secondary - Appears multiple times, moderate importance
-- Minor - One or two appearances, but memorable
-
-*Example*: ~Primary~
-
-*Tip*: If unsure, start with Secondary. You can upgrade later.
+*Tip*: keep it to a few words here and write the full version in the ~Echo ::~
+line in the body.
 
 ** ~:First-appearance:~
 
-When readers first see this location.
+When readers first see this setting.
 
 *Format*: ~Chapter X, Scene Y~ or ~Scene title~
 
@@ -208,238 +212,198 @@ When readers first see this location.
 - ~Scene 3 - The Coffee Shop Encounter~
 - ~Opening scene~
 
-*Tip*: Fill this when you link the location to its first scene.
+*Tip*: Fill this when you link the setting to its first scene.
 
-** ~:Setting:~
+** Properties that no longer exist
 
-Broader context - where is this location?
+Earlier versions of the templates had ~:Importance:~, ~:Climate:~,
+~:Population:~, ~:Setting:~, ~:Accessibility:~, ~:Owner:~ and ~:Atmosphere:~.
+They are gone. Nothing reads them, and adding them back does nothing.
+
+Most of what they held has a better home:
+
+| Old property     | Where it goes now                                          |
+|------------------+------------------------------------------------------------|
+| ~:Atmosphere:~   | the *Echo* and *Symbol* Aspects — mood with a job to do     |
+| ~:Importance:~   | how often you actually link the setting to scenes           |
+| ~:Owner:~        | *Description*, or a character link in the scene that shows it |
+| ~:Accessibility:~| *Description*, when it constrains a scene                   |
+| ~:Setting:~      | ~objects/worldbuilding.org~, which holds the world as a whole |
+| ~:Climate:~ ~:Population:~ | ~objects/worldbuilding.org~                       |
+
+* Section 2: The Four Aspects
+
+This is the heart of your setting profile.
+
+The four Aspects sit at the top of the profile, before any prose. Each is one
+line. They are what turn a place into part of the story's argument rather than
+a stage it happens on, and they are the reason this template is so much shorter
+than a generic "location profile" — four sharp lines do more work than three
+paragraphs of description.
+
+Write them in the order given: the Echo comes from your Theme, and the rest
+lean on it.
+
+** Echo
+
+*How this place reflects the Theme.*
+
+Your Theme is the moral problem of the book, written down in ~design.org~. The
+Echo is that problem showing up in the physical world — in what the place
+allows, rewards or punishes.
+
+This is the Aspect that makes a setting part of the argument instead of a
+backdrop. If you can't write it, ask whether you need the place at all, or
+whether a scene set here could happen anywhere else with no loss.
 
 *Examples*:
-- ~Downtown Manhattan~
-- ~Rural Ohio~
-- ~Mars Colony Alpha~
-- ~Victorian London~
-- ~The protagonist's neighborhood~
+- ~Everyone here speaks between the lines.~
+- ~Nobody is ever alone long enough to think.~
+- ~The rules are posted, and nobody follows them.~
 
-*Purpose*: Shows geographic relationships between locations.
+** Hazard
 
-** ~:Accessibility:~
+*How this place makes the World Problem worse.*
 
-Who can access this location and when?
+The World Problem is the pressure the world puts on everyone in it, also
+recorded in ~design.org~. The Hazard is this place's contribution to it —
+what it makes harder, riskier or more costly.
 
-*Examples*:
-- ~Public, 24 hours~
-- ~Private residence~
-- ~Members only~
-- ~Business hours (9-5)~
-- ~Invitation required~
-
-*Tip*: This prevents plot holes (character shows up when location is closed).
-
-** ~:Owner:~
-
-Who owns, manages, or controls this location?
+The Hazard is what generates scenes. A place with a real Hazard produces
+conflict on its own, without you having to arrange for someone to walk in with
+a gun.
 
 *Examples*:
-- ~Sarah Martinez~ (character link)
-- ~City Parks Department~
-- ~Abandoned~
-- ~Corporation XYZ~
+- ~Everyone is looking for someone to pin the blame on.~
+- ~Anything said here reaches the wrong ears by evening.~
+- ~You cannot leave without being seen leaving.~
 
-*Tip*: You can link to character profiles here if the owner is a character.
+** Character
 
-** ~:Atmosphere:~
+*A character Aspect this place activates.*
 
-The overall feeling or mood.
+Characters carry Aspects too (Lesson 4). This line names the one that this
+place brings out — the trait, debt or history that becomes unavoidable here.
+
+It is what makes a setting matter to a *specific* person. The same room can be
+neutral for one character and intolerable for another, and that difference is
+usually where the scene is.
 
 *Examples*:
-- ~Cozy, intimate~
-- ~Sterile, clinical~
-- ~Chaotic, energetic~
-- ~Peaceful, contemplative~
-- ~Threatening, oppressive~
+- ~I owe money to half the people in this room.~
+- ~This is where I was told I would never amount to anything.~
+- ~Everyone here still calls me by my father's name.~
 
-*Tip*: Use sensory language that evokes feeling.
+** Symbol
 
-* Section 2: Physical Description
+*The object or detail that charges the scene.*
 
-This is the heart of your location profile.
+One concrete thing the reader can see. Not a mood — a noun. It gives you
+something to cut back to, and it carries the Echo without anyone having to
+state it.
 
-** What to Include
-
-*** Visual Details
-- Size and layout
-- Colors and lighting
-- Furniture and objects
-- Architectural features
-- View from windows
-
-*** Sensory Details
-- Sounds (traffic, music, silence)
-- Smells (coffee, flowers, exhaust)
-- Textures (smooth tables, rough brick)
-- Temperature (warm, drafty, humid)
-
-*** Time-Specific Details
-- How it changes throughout the day
-- Seasonal variations
-- Weather effects
+*Examples*:
+- ~The cup I never get to drink.~
+- ~The clock that has been ten minutes fast for years.~
+- ~The chair nobody sits in.~
 
 ** Example: Coffee Shop
 
 #+BEGIN_EXAMPLE
-,** Physical Description
+* Downtown Coffee Collective
+:PROPERTIES:
+:ID: loc-coffee-shop-20251116-001
+:Type: Business
+:Echo: Belonging you have to keep paying for
+:First-appearance: Chapter 1, Scene 1
+:END:
 
-Downtown Coffee Collective is a narrow, deep space with exposed brick walls
-and reclaimed wood floors. Mismatched vintage chairs cluster around small
-round tables. The back wall is floor-to-ceiling bookshelves (customers leave
-books, take books). Large front windows flood the space with morning light
-but make it dim in the afternoon.
+- Echo :: Everyone here belongs, as long as they keep buying something.
+- Hazard :: Regulars notice everything, and none of them keep it to themselves.
+- Character :: Alex's need to be recognized without having to ask.
+- Symbol :: The chalkboard with the regulars' names on it.
+#+END_EXAMPLE
 
-The espresso machine dominates the counter - chrome and copper, always
-hissing. Smells: fresh coffee beans, cinnamon from pastries, sometimes rain
-from wet coats. Sound: indie music plays low, ceramic mugs clink, the door
-chime jingles.
+Note how much narrower this is than "a warm bohemian coffee shop". The Echo
+commits the place to the book's argument, the Hazard guarantees the place
+generates trouble, and the Symbol gives every scene set here something to
+point at.
 
-Busiest 7-9 AM (laptop crowd) and 3-5 PM (students). Empty 10 AM-2 PM.
-Temperature: too warm in summer (no AC), perfect in fall.
+*A setting with no Aspect at all is scenery.* That is not a rule invented for
+the template — it is a revision test. When you reach the revision passes,
+settings with no Aspects are the first candidates for cutting, because nothing
+would be lost by moving their scenes somewhere else.
+
+* Section 3: Description
+
+What can be seen, heard and smelled — and *only what a focalizer would notice
+while standing there*.
+
+That constraint is the whole point of the section. You are not writing a
+surveyor's report; you are writing what a particular person perceives, which
+means the details are already filtered by who they are and what they want.
+Description written this way can be lifted almost directly into a scene.
+
+** What to Include
+
+- What the point-of-view character would actually register on walking in
+- Sound and smell, not only sight — they are the senses prose usually forgets
+- Details that the Aspects above have made relevant
+
+** Example: Coffee Shop
+
+#+BEGIN_EXAMPLE
+,** Description
+
+Narrow and deep, brick walls, reclaimed wood floors. Mismatched vintage chairs
+around small round tables. The back wall is floor-to-ceiling bookshelves —
+customers leave books, take books. Large front windows: flooded with light in
+the morning, dim by mid-afternoon.
+
+The espresso machine dominates the counter, chrome and copper, always hissing.
+Fresh beans, cinnamon from the pastry case, wet coats when it rains. Indie
+music low, ceramic clinking, the door chime.
+
+Alex notices the chalkboard before anything else, every single time.
 #+END_EXAMPLE
 
 ** How Much Detail?
 
-*** Minimum (5 minutes):
-- Size and basic layout
-- Key visual features
-- Dominant sensory impression
+Less than you think. The Aspects carry the meaning; this section only has to
+give you enough concrete material to write from.
 
-*** Standard (15 minutes):
-- Above plus specific furniture/objects
-- Multiple senses (sight, sound, smell)
-- Lighting and atmosphere
+- *Minimum*: dominant sensory impression, plus whatever the Symbol needs
+- *Standard*: the above, plus layout and two or three senses
+- *Comprehensive*: the above, plus how it changes with time of day or season
 
-*** Comprehensive (30 minutes):
-- Above plus time variations
-- Weather and seasonal changes
-- Historical details or backstory
+*Recommendation*: write the minimum at capture time, and expand the first time
+you actually set a scene there. Description written before you need it tends
+to be description you never use.
 
-*Recommendation*: Start with standard, expand when writing scenes there.
+* Section 4: Scenes That Happen Here
 
-* Section 3: Atmosphere & Mood
+A list of the scenes set in this place.
 
-How does this location *feel*?
+You do not maintain this by hand. Tag each scene with its ~Location~ property
+(~F8 F8 l~) and the link runs from the scene to the setting; searching by
+location (~F8 F8 4~, covered later in this lesson) gives you the list on
+demand, current by construction.
 
-** Why This Matters
+Keep the section for anything the search cannot tell you — a note that three
+scenes here all happen in the same week, say, or that the place is used twice
+in Act I and then never again.
 
-The same physical space can have different atmospheres:
-- An empty church: reverent, peaceful, echoing
-- A crowded church during service: communal, joyful, energetic
-
-Atmosphere affects how characters behave and how readers feel.
-
-** What to Include
-
-- Emotional tone (welcoming, hostile, neutral, charged)
-- Energy level (frenetic, calm, tense, sleepy)
-- How it affects characters (relaxes them, puts them on edge, inspires them)
-- Cultural or social implications (formal, casual, exclusive, open)
-
-** Example: Coffee Shop
-
-#+BEGIN_EXAMPLE
-,** Atmosphere & Mood
-
-Warm and welcoming but slightly bohemian - not for everyone. Regulars treat
-it like a second living room. Laptop workers claim tables for hours. The
-staff knows names and orders.
-
-There's an unspoken code: headphones mean don't talk to me, but book reading
-means you're open to chat. First-timers stand awkwardly at the counter,
-unsure of the ordering system.
-
-For Alex, this place means safety and routine. For corporate types, it's
-uncomfortably informal.
-#+END_EXAMPLE
-
-* Section 4: Significance
-
-Why does this location matter to your story?
-
-** Story Function
-
-- Plot significance (where key events happen)
-- Character significance (represents something to a character)
-- Thematic significance (symbolizes story themes)
-- Structural significance (recurring setting that frames story)
-
-** Example: Coffee Shop
-
-#+BEGIN_EXAMPLE
-,** Significance
-
-This is Alex's anchor point - the story begins here and returns here
-repeatedly. It represents stability and normalcy, so when things go wrong
-elsewhere, Alex retreats here.
-
-Plot-wise:
-- Opening scene establishes daily routine
-- First meeting with Sam happens here (Chapter 1)
-- Major argument with Jordan (Chapter 8)
-- Final reconciliation scene (Chapter 15)
-
-Thematically: represents the "ordinary world" that's threatened by the
-main conflict.
-#+END_EXAMPLE
-
-* Section 5: Connections
-
-How does this location relate to others?
-
-** Geographic Connections
-
-- Adjacent locations
-- Same neighborhood or district
-- Travel time between locations
-
-** Social Connections
-
-- Characters who frequent this location
-- Events that happen here
-- Other locations with similar atmosphere
-
-** Example: Coffee Shop
-
-#+BEGIN_EXAMPLE
-,** Connections
-
-,*** Geographic
-- 2 blocks from Alex's apartment (5-minute walk)
-- Across from Washington Park
-- Same block as Sam's bookstore
-
-,*** Frequent Visitors
-- Alex (daily morning regular)
-- Sam (occasional, afternoon)
-- Jordan (shows up twice, feels out of place)
-
-,*** Similar Atmosphere
-- The bookstore (also cozy, browsing-friendly)
-- Washington Park (peaceful, contemplative)
-
-,*** Contrasting Locations
-- Alex's office (sterile, corporate) - opposite feeling
-#+END_EXAMPLE
-
-* Section 6: Notes
+* Section 5: Notes
 
 Writer notes for continuity and reminders.
 
 ** What to Include
 
-- Continuity details (what's been revealed to readers)
-- Future plans (events to happen here)
+- Continuity details (what has been revealed to the reader, and when)
+- Future plans (things that must happen here later)
 - Research needed
 - Real-world inspiration
-- Changes over time (if location evolves)
+- Changes over time, if the place evolves
 
 ** Example: Coffee Shop
 
@@ -447,24 +411,16 @@ Writer notes for continuity and reminders.
 ,** Notes
 
 ,*** Revealed to Reader
-- [Chapter 1] Front windows, espresso machine, brick walls
+- [Chapter 1] Front windows, espresso machine, brick walls, chalkboard
 - [Chapter 3] Bookshelf wall
 - [Chapter 5] Alex's usual table (back left corner)
-- [Chapter 8] Bathroom location (down narrow hallway)
 
 ,*** To Reveal Later
-- Owner's name (mention in Chapter 10)
-- Back alley entrance (needed for Chapter 12 escape scene)
-
-,*** Research
-- Check typical coffee shop profit margins for owner's dialogue
-
-,*** Inspiration
-Based on my local spot "Common Grounds" - but fictional version is narrower.
+- Back alley entrance (needed for the Chapter 12 escape)
 
 ,*** Evolution
-In Chapter 14, they renovate: new paint, but keep same furniture (shows
-gentrification theme).
+Chapter 14: they renovate. New paint, same furniture, and the chalkboard
+comes down — which is the Symbol going out with it, deliberately.
 #+END_EXAMPLE
 
 * Capturing a Location: Step-by-Step
@@ -487,26 +443,37 @@ The capture template opens in a new buffer.
 
 ** Step 3: Fill Properties
 
-The template has property prompts:
+You get two prompts, and that is all:
 
-1. ~Type:~ → Type: ~Business~
-2. ~Importance:~ → Type: ~Primary~
-3. ~First-appearance:~ → Leave blank for now (fill when linking to scene)
-4. ~Setting:~ → Type: ~Downtown~
-5. ~Accessibility:~ → Type: ~Public, 6 AM - 8 PM~
-6. ~Owner:~ → Type: ~Independent~
-7. ~Atmosphere:~ → Type: ~Cozy, bohemian~
+1. ~Type~ → type ~Business~
+2. ~First appearance~ → press ~Enter~ to leave it blank for now (fill it in
+   when you link the setting to its first scene)
 
-Press ~Tab~ to move between prompts (or click with mouse).
+Press ~Enter~ to accept each one. The ~:ID:~ is generated for you, and
+~:Echo:~ is left empty for you to fill in after you have written the Echo
+Aspect in the body.
 
-** Step 4: Fill Description Sections
+** Step 4: Fill In the Aspects
 
-Navigate to each section and write:
-- Physical Description: 1-2 paragraphs
-- Atmosphere & Mood: 1 paragraph
-- Significance: 1 paragraph
-- Connections: List format
-- Notes: As needed
+Point lands in the *Description* section, but do the four Aspects first —
+they are what the rest hangs on:
+
+#+BEGIN_EXAMPLE
+- Echo :: Everyone here belongs, as long as they keep buying something.
+- Hazard :: Regulars notice everything, and none of them keep it to themselves.
+- Character :: Alex's need to be recognized without having to ask.
+- Symbol :: The chalkboard with the regulars' names on it.
+#+END_EXAMPLE
+
+Then copy a shortened version of the Echo up into the ~:Echo:~ property, so it
+shows in column view.
+
+*If you can only manage one*, make it the Echo — it is the one that decides
+whether the place belongs in the book. The others can wait until you set a
+scene there.
+
+Finally, write a few lines under *Description*: what a point-of-view character
+would notice standing in the room. ~Notes~ can stay empty.
 
 ** Step 5: Finalize Capture
 
@@ -770,13 +737,13 @@ Let's practice location management end-to-end.
 2. Name: ~[Protagonist's Apartment/House]~
 3. Fill properties:
    - Type: Residence
-   - Importance: Primary
-   - Setting: [Your story's city/area]
-   - Accessibility: Private
-   - Owner: [Protagonist's name]
-   - Atmosphere: [Choose one: cozy/cramped/luxurious/messy]
-4. Write 1 paragraph of physical description
-5. Write 1 sentence about significance
+   - First appearance: leave blank
+4. Write the four Aspects — one line each:
+   - Echo: how this place reflects your Theme
+   - Hazard: how it makes things worse for whoever is in it
+   - Character: what it brings out in the protagonist
+   - Symbol: one concrete object you could cut back to
+5. Write 1 paragraph of description: what the protagonist notices here
 6. Press: ~C-c C-c~ to save
 
 *** Location 2: Public Setting
@@ -785,12 +752,11 @@ Let's practice location management end-to-end.
 2. Name: ~[Park/Restaurant/Library/Store - your choice]~
 3. Fill properties:
    - Type: Public or Business
-   - Importance: Secondary
-   - Setting: [Related to Location 1's setting]
-   - Accessibility: Public or business hours
-   - Atmosphere: [Contrasting with Location 1]
-4. Write 1 paragraph of physical description
-5. Write 1 sentence about significance
+   - First appearance: leave blank
+4. Write the four Aspects again — and make this place's *Hazard* pull in the
+   opposite direction from Location 1's. Two settings that endanger a
+   character in the same way are one setting
+5. Write 1 paragraph of description
 6. Press: ~C-c C-c~ to save
 
 ** Part 2: Link to Scenes (4 minutes)
@@ -882,14 +848,16 @@ You don't need profiles for:
 - Generic settings ("a restaurant" with no specific details)
 - One-line locations ("the sidewalk")
 
-** Q: How detailed should Physical Description be?
+** Q: How detailed should the Description be?
 
-*A*: Write enough that you can:
-1. Visualize the space clearly
-2. Write sensory details in scenes
-3. Maintain consistency
+*A*: Less detailed than you expect. The four Aspects carry the meaning, so the
+description only has to give you concrete material to write from — enough to
+visualize the space, reach for a sound or a smell mid-scene, and stay
+consistent about it.
 
-For most locations, 1-2 paragraphs is sufficient. For critical locations (protagonist's home, key meeting places), go deeper.
+For most settings a short paragraph is plenty. Go deeper only for places the
+reader spends real time in, and preferably *after* you have written a scene
+there, when you know which details you actually reached for.
 
 ** Q: What if my location changes during the story?
 
@@ -927,9 +895,10 @@ Don't link generic "a street" or "a car" - those don't need consistency tracking
 ** Q: How do I handle locations that only exist in one scene but are important?
 
 *A*: Create a profile with:
-- Importance: Minor
+- A sharp Echo and Symbol — a place that carries one crucial scene needs those
+  more than a recurring one does
 - Detailed description (since it's important)
-- Significance: Explain why this one scene matters
+- A note under *Notes* on why this single scene matters
 
 Example: The rooftop where the protagonist makes a crucial decision - appears once, but needs vivid description and emotional weight.
 
@@ -997,41 +966,43 @@ Search returns 0 results despite linked scenes.
 
 There is no dedicated "jump to location" key — following the location link with ~C-c C-o~ is the only way to go from a scene to a location profile.
 
-** Location Template Sections
+** Setting Template Shape
 
-| Section                    | Purpose                                                            |
-|----------------------------+--------------------------------------------------------------------|
-| Properties                 | Metadata (type, importance, first-appearance, climate, population) |
-| General Description        | Visual and sensory details                                         |
-| Geography                  | Broader geographic context                                         |
-| Cultural Aspects & Society | Language, customs, religion, government                            |
-| History                    | Past events, ownership                                             |
-| Notable Features           | Distinctive elements                                               |
-| Importance in the Plot     | Why it matters to the story                                        |
-| Specific Places            | Sub-locations within this one                                      |
-| Atmosphere & Mood          | Emotional tone and feeling                                         |
-| Map/Reference Image        | Visual reference                                                   |
-| Notes                      | Continuity and writer reminders                                    |
+| Part                    | Purpose                                                |
+|-------------------------+--------------------------------------------------------|
+| ~:Type:~                | What kind of place; also marks the heading as a setting |
+| ~:Echo:~                | Short form of the Echo, for column view                 |
+| ~:First-appearance:~    | Where the reader first sees it                          |
+| ~Echo ::~               | How the place reflects the Theme                        |
+| ~Hazard ::~             | How it makes the World Problem worse                    |
+| ~Character ::~          | A character Aspect it activates                         |
+| ~Symbol ::~             | The concrete detail that charges the scene              |
+| Description             | What a focalizer would see, hear and smell              |
+| Scenes that happen here | Notes the location search can't derive                  |
+| Notes                   | Continuity and writer reminders                         |
 
-** Location Profile Depth
+** Setting Profile Depth
 
-| Depth         | Time    | When to Use                                     |
-|---------------+---------+-------------------------------------------------|
-| Quick         | 5 min   | Minor locations, placeholder for later          |
-| Standard      | 15 min  | Secondary locations, initial primary locations  |
-| Comprehensive | 30+ min | Critical primary locations, world-building hubs |
+| Depth      | What you write                            | When                        |
+|------------+-------------------------------------------+-----------------------------|
+| Minimum    | Echo only                                 | At capture, always          |
+| Standard   | All four Aspects + a few lines of description | Before writing a scene there |
+| Full       | The above, plus notes on what's been revealed | Once it recurs           |
 
-** Location Types
+A setting used once, with an Echo and nothing else, is perfectly finished.
 
-| Type           | Examples                              | Typical Importance |
-|----------------+---------------------------------------+--------------------|
-| Residence      | Apartment, house, dorm                | Primary/Secondary  |
-| Business       | Coffee shop, office, store            | Primary/Secondary  |
-| Public         | Park, street, library                 | Secondary/Minor    |
-| Institution    | School, hospital, government building | Secondary          |
-| Transportation | Car, train, bus, airplane             | Minor              |
-| Natural        | Forest, beach, mountain, river        | Secondary/Minor    |
-| Other          | Unique to your story                  | Varies             |
+** Setting Types
+
+~:Type:~ is free text — these are only common choices.
+
+| Type        | Examples                              |
+|-------------+---------------------------------------|
+| Residence   | Apartment, house, dorm                |
+| Business    | Coffee shop, office, store            |
+| Public      | Park, street, library                 |
+| Institution | School, hospital, government building |
+| Transport   | Car, train, bus, airplane             |
+| Natural     | Forest, beach, mountain, river        |
 
 ** Common Commands
 
@@ -1067,9 +1038,11 @@ Reference the real place in your Notes section.
 ** 3. Create a Mental Map
 
 For complex settings (entire neighborhoods, buildings with multiple rooms):
-- List all related locations in Connections
-- Note spatial relationships ("upstairs from", "across the street from")
-- Consider sketching a map (store in Notes as image link)
+- Note spatial relationships under *Notes* ("upstairs from", "across the
+  street from")
+- Consider sketching a map (store in Notes as an image link)
+- If the whole geography matters to the book, it belongs in
+  ~objects/worldbuilding.org~ rather than in any one setting's profile
 
 ** 4. Balance Familiarity and Novelty
 
@@ -1129,7 +1102,9 @@ Group locations by theme or function:
 - "Past" (childhood locations) vs. "present"
 - "Work life" vs. "home life"
 
-Note these connections in the Connections section.
+This grouping is really a question about Echoes: two settings in the same group
+usually echo the Theme from the same side. Compare their ~Echo ::~ lines, and
+if they say the same thing, consider whether you need both.
 
 ** 10. Let Locations Surprise You
 
@@ -1138,9 +1113,9 @@ Sometimes you'll invent a location for a single scene and it becomes important:
 - A minor location reveals character depth
 - A throwaway scene in a new place sparks plot ideas
 
-When this happens, upgrade the location:
-- Change Importance: Minor → Secondary or Primary
-- Expand the profile
+When this happens, upgrade the setting:
+- Fill in the Aspects you skipped — a place carrying real weight needs all four
+- Expand the description
 - Plan additional scenes there
 
 * What You've Learned

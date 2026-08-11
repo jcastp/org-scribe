@@ -266,26 +266,27 @@ Capture character template appears:
 ,* Sarah Chen
 :PROPERTIES:
 :ID: char-sarah-chen-20251116-001
-:Role: Sam's older sister
-:Weight: 3.0
-:Age: 28
-:Gender:
-:Occupation: Lawyer
+:Role: Ally
+:Stance:
 :Goal:
-:Motivation:
-:Conflict:
-:Arc:
+:Age: 28
+:Occupation: Lawyer
 :First-appearance:
 :RelationshipsData:
 :END:
 
-,** Physical Description
-- Height ::
-- Build ::
+- Concept ::
+- Stance ::
+- Ghost ::
+- Lie ::
 ...
 #+END_EXAMPLE
 
-Fill in the minimum (name, role, occupation), leave the rest blank, save (~C-c C-c~), and you're back to writing.
+Fill in the minimum — name, role, and one line of Concept — leave the rest
+blank, save (~C-c C-c~), and you're back to writing.
+
+*If you only have ten seconds*, write the Concept. It is the line that will
+remind you tomorrow why you wanted this character at all.
 
 *Time elapsed: 30 seconds*
 
@@ -300,13 +301,16 @@ Press ~F8 F8~ then ~k~ (capture-entity submenu) then ~l~ (location):
 :PROPERTIES:
 :ID: loc-downtown-coffee-shop-20251116-001
 :Type: Business
-:Importance:
+:Echo:
 :First-appearance:
-:Climate:
-:Population:
 :END:
 
-,** General Description
+- Echo ::
+- Hazard ::
+- Character ::
+- Symbol ::
+
+,** Description
 Check local coffee shops for authentic details - need to describe the
 espresso machine, wall art, seating arrangement.
 ...
@@ -314,7 +318,9 @@ espresso machine, wall art, seating arrangement.
 
 Save (~C-c C-c~) - back to writing.
 
-*Details can wait for research phase!*
+*Details can wait for the research phase* — but if the place is going to
+matter, write the Echo now, while you still remember why the scene wanted to
+happen here.
 
 *** Plot Idea
 

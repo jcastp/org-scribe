@@ -55,9 +55,69 @@ Plot thread profiles help you:
 5. **Visualize Structure**: See how plots interweave across your story
 6. **Prevent Forgetting**: Never lose track of a subplot again
 
+* The Thirteen Non-Negotiables
+
+Before anything about threads, there is a second thing in ~objects/plot.org~,
+and it comes first in the file for a reason.
+
+** What They Are
+
+Thirteen plot points that ship with every novel project, already written into
+the template, waiting for you to fill in their bodies:
+
+| #  | Plot point             | #   | Plot point          |
+|----+------------------------+-----+---------------------|
+|  1 | Theme Stated           |   8 | Drive               |
+|  2 | Weakness, Lie and Need |   9 | Midpoint            |
+|  3 | Desire                 |  10 | Apparent Defeat     |
+|  4 | Inciting Incident      |  11 | Self-Revelation     |
+|  5 | Opponent               |  12 | Battle              |
+|  6 | Crossing the Threshold |  13 | Moral Decision      |
+|  7 | Plan                   |     |                     |
+
+They are called non-negotiable because with them the story is complete and
+causal, and without one of them it is not. Filling them in is box 7 of the
+Starting Gate (Lesson 1) — the template's advice is to start here and look at
+nothing else until you have all thirteen.
+
+*You never create or delete them.* Unlike characters, settings and threads,
+this is a fixed list, identical in every project, and there is no capture
+command for it. You write into the thirteen headings that are already there.
+
+** Tagging a Scene With Its Plot Point
+
+Once a scene serves one of the thirteen, tag it:
+
+: F8 F8 G     (org-scribe-set-scene-plot-points)
+
+Pick from the list; the scene's ~:Plot-point:~ property gets an ID link, the
+same mechanism as every other entity. To go the other way — from a scene to
+the plot point it serves — use:
+
+: F8 F8 L J   (org-scribe-jump-to-plot-point)
+
+If your project predates the linking setup, ~F8 F8 L P~ mints the IDs once.
+
+** Why This Matters More Than It Looks
+
+The project health report (~F8 F8 H~) lists *every one of the thirteen that no
+scene serves yet*. That single list is the method's own completeness check,
+mechanized: a plot point nothing serves is either a scene you have not written
+or a structural hole you have not noticed. It is the most useful thing in the
+report while drafting.
+
+For that to work, the tagging has to be real — the report can only count what
+you have linked.
+
 * Understanding Plot Thread Types
 
-Before capturing plots, understand the different types:
+Threads are the other half of the file, and they *are* yours to create.
+
+Before capturing plots, understand the different kinds. *These are craft
+categories, not property values*: ~:THREAD-TYPE:~ offers only ~Main~ and
+~Subplot~, and everything below that is not the main line is a subplot as far
+as org-scribe is concerned. What distinguishes one subplot from another is its
+~:Stance:~ — the answer to the Theme it embodies — not a letter grade.
 
 ** Main Plot (A-Story)
 
@@ -143,12 +203,17 @@ Keep it simple! Short stories thrive on focused narrative.
 ** Novel Plot Structure
 
 For novels (50-70 scenes), a healthy structure might be:
-- **1 main plot** (the A-story)
-- **1-2 major subplots** (B-stories)
-- **2-4 minor subplots** (C-stories)
-- **1-2 thematic threads**
+- **1 main line** (~:THREAD-TYPE: Main~)
+- **3-6 subplots** (~:THREAD-TYPE: Subplot~), of varying weight
 
 More than this risks overcomplexity and reader confusion.
+
+A more useful way to decide the number: *one subplot for every Stance you want
+represented that the main line does not already carry.* You listed those
+Stances in ~design.org~ when you worked out the Theme — at least five, worst
+to best — and the characters who embody them are, in the method's phrase, half
+your cast. The Stances left over are your subplots. Counted that way, the
+number comes out of the book rather than out of a rule of thumb.
 
 * The Plot Thread Capture Template
 
@@ -162,16 +227,17 @@ Or use: ~M-x org-scribe-capture-plot-thread~
 
 ** Template Structure
 
-The template has properties plus 5 sections — intentionally minimal, since a plot-thread capture is meant to record the essence quickly while writing, not to be a full planning document:
+The template is intentionally minimal — a plot-thread capture records the
+essence quickly while you are writing; it is not a full planning document:
 
-1. **Properties** - Thread type, status, weight, first-appearance
-2. **Description** - Brief description of the thread
-3. **Connection to Main Plot** - How it supports or connects to the main plot
-4. **Key Scenes** - Major plot moments
-5. **Resolution** - How it should resolve
-6. **Notes** - Quick capture notes (can be messy)
+1. **Properties** — thread type, Stance, status, first-appearance
+2. **Stance it embodies / Who carries it** — two lines, at the top of the body
+3. **Own desire** — what the thread wants for itself
+4. **Crossings with the main line** — three or more, numbered
+5. **Resolution** — how it should resolve
+6. **Notes** — quick capture notes (can be messy)
 
-Let's examine each section in detail.
+Let's examine each in detail.
 
 * Section 1: Properties
 
@@ -179,15 +245,43 @@ When you capture a plot thread using ~org-scribe-capture-plot-thread~, you'll se
 
 #+BEGIN_EXAMPLE
 :PROPERTIES:
-:ID: plot-unique-id-here (automatically generated)
-:THREAD-TYPE: Main Plot|Subplot|B-Plot|C-Plot|Thematic Thread
-:STATUS: Emerging|Planned|In Progress|Needs Development|Complete
-:Weight: 1.0|2.0|3.0|4.0|5.0
+:ID: (generated automatically)
+:THREAD-TYPE: Subplot|Main
+:Stance:
+:STATUS: Planned|In progress|Resolved|Abandoned
 :FIRST-APPEARANCE:
 :END:
 #+END_EXAMPLE
 
-Note: The capture template uses properties optimized for tracking plot threads during the writing process. The template creates a structured entry with sections for Description, Connection to Main Plot, Key Scenes, Resolution, and Notes.
+and this body:
+
+#+BEGIN_EXAMPLE
+- Stance it embodies ::
+- Who carries it ::
+
+,** Own desire
+
+,** Crossings with the main line
+
+1.
+2.
+3.
+
+,** Resolution
+
+,** Notes
+#+END_EXAMPLE
+
+The same shape is already in ~objects/plot.org~ when the project is created,
+under *Main Line* and *Subplot*, so a thread you capture and a thread you fill
+in by hand match.
+
+*Plot threads are not the same thing as plot points.* The thirteen
+non-negotiable plot points also live in ~objects/plot.org~, at the top, and
+they are a fixed list that ships with every project — you tag scenes with them
+but never create new ones. Threads are yours to add. Both are covered in this
+lesson; the plot points are covered earlier, under "The Thirteen
+Non-Negotiables".
 
 ** ~:ID:~ (Automatic)
 
@@ -201,48 +295,52 @@ A unique identifier for this plot thread, created automatically.
 
 ** ~:THREAD-TYPE:~
 
-The category of plot thread.
+Whether this is the main line of the book or a subplot.
 
-*Values provided in template*:
-- Main Plot (A-story, primary plot)
-- Subplot (general subplot)
-- B-Plot (major subplot)
-- C-Plot (minor subplot)
-- Thematic Thread
+*Values offered at capture*:
+- ~Main~ — the main line
+- ~Subplot~
 
-*Example*: ~Main Plot~
+*Example*: ~Main~
 
-*Tip*: Be honest about plot importance. Not everything can be "Main Plot"! The template prompts you to select the appropriate type when capturing.
+There are only two, deliberately. A "B-plot" and a "C-plot" are both subplots;
+ranking them tells you nothing you can act on, whereas the real question — what
+Stance does this thread embody, and where does it cross the main line — is
+answered by the two properties below and the Crossings section.
+
+*Note*: this property is what marks the heading as a plot thread for the
+linking system. Don't remove it.
+
+** ~:Stance:~
+
+The Stance this thread embodies.
+
+Your Theme is the moral problem of the book; the Stances are the different
+answers to it, listed worst to best in ~design.org~. A subplot exists to carry
+one of those answers that the main line does not already carry — usually
+through the character who embodies it.
+
+*Example*: ~Loyalty is worth more than the truth~
+
+*Tip*: this is the single most useful field on a subplot. If you cannot name
+the Stance it embodies, you generally have a sequence of events rather than a
+thread — and it will feel detachable to a reader, because it is.
 
 ** ~:STATUS:~
 
 Current state of the plot thread.
 
-*Values provided in template*:
-- Emerging - Just discovered while writing
-- Planned - Not yet introduced in manuscript
-- In Progress - Currently developing in story
-- Needs Development - Requires attention
-- Complete - Concluded/resolved
+*Values offered at capture*:
+- ~Planned~ — not yet introduced in the manuscript
+- ~In progress~ — currently developing
+- ~Resolved~ — concluded
+- ~Abandoned~ — deliberately dropped
 
-*Example*: ~In Progress~
+*Example*: ~In progress~
 
-*Tip*: Update this as you write! It helps during revision. The template uses a workflow-focused status system.
-
-** ~:Weight:~
-
-Controls the display order of plot threads in timelines and reports.
-
-*Values*:
-- 1.0 - Highest priority (leftmost in timeline)
-- 2.0 - High priority
-- 3.0 - Medium priority
-- 4.0 - Lower priority
-- 5.0 - Lowest priority
-
-*Example*: ~1.0~ for main plot, ~3.0~ for subplots
-
-*Tip*: Plot threads are sorted by weight (ascending) in timeline displays. Threads without a Weight property appear last (weight 999.0), sorted alphabetically.
+*Tip*: update this as you write, and use ~Abandoned~ honestly rather than
+deleting the thread. A dropped thread you can still see is a decision;
+a dropped thread you deleted is a loose end you will rediscover in revision.
 
 ** ~:FIRST-APPEARANCE:~
 
@@ -257,189 +355,174 @@ When this plot thread first appears in the story.
 
 *Tip*: Fill this when you write the introduction scene. The template leaves this blank for you to fill in later.
 
-* Section 2: Overview
+* Section 2: Stance, Carrier and Own Desire
 
-This section captures the essence of your plot thread.
+Three short entries at the top of the thread, before any prose. Between them
+they decide whether the thread is really a thread.
 
-** What to Include
+** ~Stance it embodies~
 
-*** Premise
-One-sentence description of what this plot thread is about.
-
-*Examples*:
-- "Alex must solve the murder before the killer strikes again."
-- "Will Sam and Jordan reconcile after their falling out?"
-- "Alex struggles to balance ambition with personal relationships."
-
-*** Central Question
-The question this plot thread poses (and eventually answers).
+The answer to the Theme that this thread argues for. Same value as the
+~:Stance:~ property — the property is what shows in column view, this line is
+where you can write it out properly.
 
 *Examples*:
-- "Who killed the mayor?"
-- "Can Alex trust the new partner?"
-- "Will Alex choose career over family?"
-- "What is the meaning of the mysterious symbol?"
+- "You protect your own, whatever it costs everyone else."
+- "The truth is worth more than anybody's comfort."
+- "If you cannot fix it, at least do not make it worse."
 
-*** Stakes
-What's at risk if this plot fails or isn't resolved?
+** ~Who carries it~
+
+The character who embodies that Stance. Usually one person; the thread is the
+shape of what happens to them because of what they believe.
+
+If two threads name the same carrier *and* a similar Stance, they are one
+thread wearing two hats.
+
+** ~Own desire~
+
+*What this thread wants, on its own terms.*
+
+This is the entry that does the real work, and the template is blunt about the
+test it has to pass: **it cannot be "help the protagonist."** A thread whose
+desire is to assist the main line is not a subplot, it is a delivery mechanism
+— and readers feel it, because nothing in it is ever at risk for its own sake.
+
+Ask what the carrier would still be trying to do if the main plot vanished
+overnight. That is the own desire.
 
 *Examples*:
-- "More people will die"
-- "Alex loses the only remaining family"
-- "The truth about Alex's past remains buried"
-- "Sam never finds closure"
+- "Sam wants to be trusted with something that matters, by anyone."
+  (/not/ "Sam wants to help Alex investigate")
+- "Marcus wants the record corrected before his mother dies."
+  (/not/ "Marcus wants to oppose Alex")
 
-** Example: Main Plot
-
-#+BEGIN_EXAMPLE
-,** Overview
-
-,*** Premise
-Alex Rivera must uncover who's sabotaging the city's water supply before
-the contamination spreads citywide.
-
-,*** Central Question
-Who is behind the sabotage, and why are they targeting the water supply?
-
-,*** Stakes
-If Alex fails:
-- Thousands could be poisoned
-- The city descends into panic and chaos
-- Alex's credibility as an investigator is destroyed
-- The real conspiracy remains hidden
-#+END_EXAMPLE
-
-** Example: Romance Subplot
+** Example: Main Line
 
 #+BEGIN_EXAMPLE
-,** Overview
+* The Water Supply Investigation
+:PROPERTIES:
+:THREAD-TYPE: Main
+:Stance: The truth is worth more than anybody's comfort
+:STATUS: In progress
+:END:
 
-,*** Premise
-Alex and Sam navigate a complicated relationship while working together
-on the investigation.
+- Stance it embodies :: The truth is worth more than anybody's comfort.
+- Who carries it :: Alex Rivera.
 
-,*** Central Question
-Can Alex learn to trust and open up to Sam despite past betrayals?
+,** Desire that drives it
 
-,*** Stakes
-If this fails:
-- Alex remains emotionally isolated
-- Sam gets hurt again
-- They miss the chance at genuine connection
-- Alex's arc toward vulnerability doesn't complete
+Uncover who is sabotaging the city's water supply before the contamination
+spreads citywide — and publish it, whoever it damages.
 #+END_EXAMPLE
 
-* Section 3: Development Arc
-
-How does this plot thread progress through your story?
-
-** The Three-Part Structure
-
-Most plot threads follow a beginning-middle-end arc:
-
-*** Beginning (Setup/Introduction)
-- When and how is the plot introduced?
-- What triggers this storyline?
-- Initial stakes and questions
-
-*** Middle (Development/Complications)
-- How does the plot develop?
-- What obstacles arise?
-- How do complications escalate?
-- Twists and revelations
-
-*** End (Climax/Resolution)
-- How does the plot reach its peak?
-- How is it resolved?
-- What's the outcome?
-- Loose ends tied up or intentionally left open
-
-** Example: Main Plot Arc
+** Example: Subplot
 
 #+BEGIN_EXAMPLE
-,** Development Arc
+* Sam and the Question of Trust
+:PROPERTIES:
+:THREAD-TYPE: Subplot
+:Stance: Loyalty is worth more than the truth
+:STATUS: In progress
+:END:
 
-,*** Beginning (Chapters 1-3)
-- Scene 1: Alex notices strange readings in water quality report (inciting incident)
-- Scene 4: First victim hospitalized with mysterious illness
-- Scene 7: Alex discovers tampering evidence at treatment plant
-- End of Act I: Alex realizes this is deliberate sabotage, not accident
+- Stance it embodies :: Loyalty is worth more than the truth.
+- Who carries it :: Sam.
 
-,*** Middle (Chapters 4-9)
-- Scene 12: Second contamination site found - pattern emerges
-- Scene 18: Alex identifies possible suspect (red herring)
-- Scene 24: Suspect cleared, back to square one (midpoint crisis)
-- Scene 29: Discovers connection to old city development project
-- Scene 33: Alex's investigation puts them in danger - first attack
-- Scene 38: Major revelation: saboteur is someone Alex knows
+,** Own desire
 
-,*** End (Chapters 10-12)
-- Scene 42: Alex confronts saboteur (climax)
-- Scene 44: Truth revealed: motivation was revenge for past injustice
-- Scene 45: Water supply secured, saboteur arrested
-- Scene 46: Alex reflects on gray areas - saboteur had valid grievance
+Sam wants to be trusted with something that matters. Not by Alex
+specifically — by anyone. Which is exactly why Sam will bury the one fact
+that would break the case open.
 #+END_EXAMPLE
+
+Notice that the subplot's Stance *contradicts* the main line's. That is the
+usual reason a subplot earns its place: it argues the other side, through
+someone the reader likes.
+
+* Section 3: Crossings With the Main Line
+
+Where does this thread touch the rest of the book?
+
+** At Least Three, One of Them Late
+
+A subplot's shape is defined by where it *touches* the main line. The template
+asks for at least three crossings, numbered, and puts one condition on them:
+
+#+BEGIN_QUOTE
+At least three crossings with the main line, and one of them at the midpoint,
+the apparent defeat or the battle. If it never crosses, it is not a subplot:
+it is another novel inside this one.
+#+END_QUOTE
+
+Those three named moments are plot points 9, 10 and 12 (see "The Thirteen
+Non-Negotiables" above). Requiring a crossing at one of them is what stops a
+subplot from running politely alongside the main story and resolving in its own
+corner: at the book's highest-pressure moment, the subplot has to be part of
+what makes it hard.
+
+** What Counts as a Crossing
+
+Not "both threads appear in this scene." A crossing is a scene where one thread
+*changes what happens in the other*:
+
+- The subplot's carrier does something that costs the main line
+- The main line forces the subplot's carrier into a choice about their Stance
+- A fact from one thread lands in the other and changes its direction
+
+If you can cut the scene and the other thread is unaffected, it was a
+co-appearance, not a crossing.
+
+** Example: Subplot Crossings
+
+#+BEGIN_EXAMPLE
+,** Crossings with the main line
+
+1. Scene 18 — Sam vouches for the suspect Alex is about to charge. Alex backs
+   off, and the investigation loses three weeks. (Loyalty over truth, at cost.)
+2. Scene 24 — Midpoint. Sam is the one who finds the tampering log and does
+   not hand it over. The case collapses here because of the subplot, not
+   despite it.
+3. Scene 42 — Battle. Alex has to decide whether to use what Sam buried,
+   knowing it ends the friendship.
+#+END_EXAMPLE
+
+Crossing 2 satisfies the condition: it sits at the midpoint, and the main
+line's worst moment is caused by the subplot.
 
 ** How Much Detail?
 
-*** Minimum (5 minutes):
-- One sentence per section (beginning/middle/end)
+- *Minimum*: three numbered crossings, one line each, one of them at the
+  midpoint, apparent defeat or battle
+- *Standard*: the above, with the scene each one lands in
+- *Comprehensive*: the above, plus what each crossing costs the carrier
 
-*** Standard (10 minutes):
-- One paragraph per section
-- Key turning points noted
+*Recommendation*: write the three lines when you create the thread. They are
+the cheapest structural work in the book, and a subplot that cannot produce
+three of them is telling you something now rather than in revision.
 
-*** Comprehensive (20-30 minutes):
-- Detailed scene-by-scene breakdown
-- All major beats and reversals
-- Thematic progression
+* Section 4: Finding a Thread's Scenes
 
-*Recommendation*: Start with standard, expand during drafting.
+There is no "Key Scenes" section in the template, and that is deliberate — a
+hand-maintained list of scenes goes stale the first week of drafting, and a
+stale list is worse than none, because you stop checking it against the
+manuscript.
 
-* Section 4: Key Scenes
+Instead, tag each scene with the thread it advances (~F8 F8 g~) and let the
+links answer the question whenever you ask it:
 
-List the most important scenes for this plot thread.
+| Want                                    | Use                                       |
+|-----------------------------------------+-------------------------------------------|
+| Every scene on this thread              | ~F8 F8 3~ (search by plot thread)         |
+| Which threads run through which chapters | ~F8 F8 L t~ (plot thread report)          |
+| Where the gaps are                      | plot timeline and statistics, below       |
 
-** What Qualifies as a Key Scene?
+All three are current by construction, because they read the manuscript rather
+than a list you wrote in chapter 3.
 
-- Introduction of the plot
-- Major revelations or discoveries
-- Turning points and reversals
-- Escalation moments
-- Climax
-- Resolution
-
-** Format
-
-Simple list with scene references:
-
-#+BEGIN_EXAMPLE
-,** Key Scenes
-
-,*** Introduction
-- Scene 1 - Strange Readings (inciting incident)
-
-,*** Rising Action
-- Scene 7 - Evidence of Tampering (confirmation)
-- Scene 18 - False Lead (red herring)
-- Scene 24 - Pattern Discovery (breakthrough)
-- Scene 33 - First Attack (personal stakes)
-
-,*** Climax
-- Scene 38 - Identity Revealed (major twist)
-- Scene 42 - Confrontation (climax)
-
-,*** Resolution
-- Scene 45 - Aftermath (resolution)
-- Scene 46 - Reflection (denouement)
-#+END_EXAMPLE
-
-** Use Cases
-
-- **Planning**: Map out key plot moments before drafting
-- **Tracking**: Check off scenes as you write them
-- **Revision**: Ensure these scenes are strong and well-paced
-- **Gap Analysis**: Notice missing beats (no midpoint twist? Add one!)
+*What to write down instead*: the things a search cannot derive — that a
+thread should go quiet for all of Act II, say, or that two of its scenes need
+to swap order. Those are notes about *intent*, and they belong under *Notes*.
 
 * Section 5: Resolution
 
@@ -468,7 +551,7 @@ How does this plot thread conclude?
 - Are readers likely to be satisfied?
 - Thematic resonance?
 
-** Example: Main Plot Resolution
+** Example: Main Line Resolution
 
 #+BEGIN_EXAMPLE
 ,** Resolution
@@ -597,49 +680,51 @@ The capture template opens with prompts.
 
 The template will prompt you for:
 
-1. *Thread Name*: ~Main Mystery - Water Sabotage~
-2. *Type*: Select from menu → ~Main Plot~
-3. *Status*: Select from menu → ~In Progress~
-4. *Weight*: Select from menu → ~1.0~ (for main plot)
+You get three prompts:
+
+1. *Thread Name*: ~Sam and the Question of Trust~
+2. *Type*: choose ~Subplot~ or ~Main~
+3. *Status*: choose ~Planned~, ~In progress~, ~Resolved~ or ~Abandoned~
 
 An ID is automatically generated using ~%(org-id-new)~ - you don't need to do anything!
 
-** Step 3: Fill Description
+~:Stance:~ and ~:FIRST-APPEARANCE:~ are left empty for you to fill in.
 
-The template has a ~Description~ section. Write a brief description:
+** Step 3: Name the Stance and the Carrier
+
+The two lines at the top of the body. Fill them before anything else — if
+you cannot, the thread is not ready to exist yet:
 
 #+BEGIN_EXAMPLE
-,*** Description
-
-Alex Rivera must uncover who's sabotaging the city's water supply before
-the contamination spreads citywide. The investigation reveals corruption
-and forces Alex to question the system they've trusted.
+- Stance it embodies :: Loyalty is worth more than the truth.
+- Who carries it :: Sam.
 #+END_EXAMPLE
 
-** Step 4: Connection to Main Plot
+Then copy the Stance into the ~:Stance:~ property so it shows in column view.
 
-Fill in how this thread connects to the main plot:
+** Step 4: Own Desire
+
+What this thread wants for itself — remembering that it cannot be "help the
+protagonist":
 
 #+BEGIN_EXAMPLE
-,*** Connection to Main Plot
+,** Own desire
 
-This IS the main plot. All other threads intersect with or support this
-central mystery investigation.
+Sam wants to be trusted with something that matters. Not by Alex
+specifically — by anyone.
 #+END_EXAMPLE
 
-** Step 5: Key Scenes
+** Step 5: Crossings
 
-List the scenes where this thread appears or will appear:
+At least three, one of them at the midpoint, the apparent defeat or the
+battle:
 
 #+BEGIN_EXAMPLE
-,*** Key Scenes
+,** Crossings with the main line
 
-- Scene 1 - Strange readings (inciting incident)
-- Scene 7 - Evidence of tampering
-- Scene 12 - Second contamination site
-- Scene 24 - Pattern discovery
-- Scene 38 - Identity revealed
-- Scene 42 - Confrontation (climax)
+1. Scene 18 — Sam vouches for the suspect; the investigation loses three weeks.
+2. Scene 24 (midpoint) — Sam finds the tampering log and does not hand it over.
+3. Scene 42 (battle) — Alex must decide whether to use what Sam buried.
 #+END_EXAMPLE
 
 ** Step 6: Resolution
@@ -647,11 +732,10 @@ List the scenes where this thread appears or will appear:
 Plan how the thread resolves:
 
 #+BEGIN_EXAMPLE
-,*** Resolution
+,** Resolution
 
-Saboteur is caught and mystery solved. However, investigation reveals
-systemic corruption that led to the sabotage. Alex must decide whether
-to expose the system that failed the saboteur's family years ago.
+Sam confesses before Alex can expose it. The friendship survives; Sam's
+belief that loyalty outranks truth does not.
 #+END_EXAMPLE
 
 ** Step 7: Notes
@@ -671,25 +755,27 @@ Add any quick notes:
 When done, press: ~C-c C-c~
 
 This saves the plot thread profile to:
-- **Novel project**: ~objects/plot.org~ (under "Plot Threads" heading)
-- **Short story project**: ~notes.org~ (under "Plot Outline" heading)
+- **Novel project**: ~objects/plot.org~, as a *top-level* heading
+- **Short story project**: ~notes.org~, nested under the "Plot Threads"
+  section (or its Spanish equivalent, matching whichever your project uses)
 
-The entry is automatically saved as a level-2 heading under "Plot Threads" with:
-- Auto-generated unique ID
-- All properties filled in
-- Structured sections ready for expansion
+The level matters in a novel: org-scribe only recognizes a plot thread if its
+heading is level 1, the same rule that applies to characters and settings. Do
+not demote a thread under another heading — it disappears from completion,
+searches and reports.
 
 ** Step 9: Verify It Saved
 
-Open your plot file and find your new plot thread entry. It should be a level-2 heading with an ID property:
+Open your plot file and find your new plot thread entry. In a novel it should
+be a level-1 heading with an ID property:
 
 #+BEGIN_EXAMPLE
-,** Main Mystery - Water Sabotage Main Plot
+* Sam and the Question of Trust
 :PROPERTIES:
 :ID: 20251124-abcd1234
-:THREAD-TYPE: Main Plot
-:STATUS: In Progress
-:Weight: 1.0
+:THREAD-TYPE: Subplot
+:Stance: Loyalty is worth more than the truth
+:STATUS: In progress
 :FIRST-APPEARANCE:
 :END:
 #+END_EXAMPLE
@@ -1003,7 +1089,20 @@ In your novel.org file, find the "Plot Timeline" section (or create one):
 
 Put cursor on ~#+BEGIN:~ line and press: ~C-c C-c~
 
-The dynamic block uses ~org-dblock-write:plot-thread-timeline~ to generate the table. Plot threads are sorted by their ~:Weight:~ property (ascending), so your main plot (weight 1.0) appears leftmost, followed by subplots with higher weights.
+The dynamic block uses ~org-dblock-write:plot-thread-timeline~ to generate the
+table.
+
+*Column order*: threads are sorted by a ~:Weight:~ property, ascending. The
+templates do not ship one — a thread without it is treated as weight 999.0, so
+by default the columns come out alphabetical. If you want your main line
+leftmost, add the property yourself:
+
+#+BEGIN_EXAMPLE
+:Weight: 1.0
+#+END_EXAMPLE
+
+Lower sorts first. It is purely a display preference and nothing else reads
+it, so use it only if the alphabetical order bothers you.
 
 ** Example Output
 
@@ -1161,54 +1260,43 @@ Let's practice plot thread management end-to-end.
 
 ** Part 1: Capture Three Plot Threads (10 minutes)
 
-*** Plot Thread 1: Main Plot
+*** Plot Thread 1: The Main Line
 
 1. Press: ~F8 F8 k g~
-2. Name: ~[Your main plot - what's your story about?]~
+2. Name: ~[Your main line - what's your story about?]~
 3. Fill properties:
-   - Type: Main
-   - Status: Active
-   - Importance: Critical
-   - Introduced: Chapter 1, Scene 1
-   - Resolved: [Final chapter]
-4. Write overview (3 minutes):
-   - One-sentence premise
-   - Central question
-   - Stakes (what if it fails?)
-5. Write development arc (3 minutes):
-   - Beginning: How it starts
-   - Middle: Major complications
-   - End: How it resolves
+   - Type: ~Main~
+   - Status: ~In progress~
+4. Write the two top lines (2 minutes):
+   - Stance it embodies — the answer to your Theme this book argues for
+   - Who carries it — usually the protagonist
+5. Write the desire that drives it (3 minutes)
 6. Press: ~C-c C-c~ to save
 
-*** Plot Thread 2: Subplot
+*** Plot Thread 2: A Subplot
 
 1. Press: ~F8 F8 k g~
 2. Name: ~[A relationship, internal journey, or secondary goal]~
 3. Fill properties:
-   - Type: Major Subplot
-   - Status: Active
-   - Importance: High
-   - Introduced: [Early chapter]
-   - Resolved: [Near end]
-4. Write overview (2 minutes):
-   - Premise
-   - Central question
-5. Write development arc (2 minutes):
-   - Brief beginning/middle/end
-6. Press: ~C-c C-c~ to save
+   - Type: ~Subplot~
+   - Status: ~Planned~
+4. Write the two top lines (2 minutes) — and pick a Stance that *contradicts*
+   the main line's
+5. Write its own desire (2 minutes). Check it against the test: it cannot be
+   "help the protagonist"
+6. Write three crossings (3 minutes), one of them at the midpoint, the
+   apparent defeat or the battle
+7. Press: ~C-c C-c~ to save
 
-*** Plot Thread 3: Minor Subplot or Theme
+*** Plot Thread 3: A Smaller Subplot
 
 1. Press: ~F8 F8 k g~
 2. Name: ~[A smaller storyline or thematic thread]~
 3. Fill properties:
-   - Type: Minor Subplot or Thematic Thread
-   - Status: Active
-   - Importance: Medium
-4. Write overview (1 minute):
-   - One sentence premise
-   - What it adds to story
+   - Type: ~Subplot~
+   - Status: ~Planned~
+4. Write the Stance and carrier only (1 minute) — a thread this size can wait
+   for its desire and crossings until you know it is staying
 5. Press: ~C-c C-c~ to save
 
 ** Part 2: Link to Scenes (5 minutes)
@@ -1473,25 +1561,42 @@ Dynamic block ~#+BEGIN: plot-thread-timeline~ generates but shows no data.
 | ~C-c &~     | Return from link                                      |
 | ~C-c C-c~   | Finalize capture / update table                       |
 
-** Plot Template Sections
+** Plot Thread Template Shape
 
-| Section         | Purpose                            | Time to Fill |
-|-----------------+------------------------------------+--------------|
-| Properties      | Metadata (type, status, etc.)      | 2 minutes    |
-| Overview        | Premise, question, stakes          | 3-5 minutes  |
-| Development Arc | Beginning, middle, end progression | 5-10 minutes |
-| Key Scenes      | Major plot moments                 | 3-5 minutes  |
-| Resolution      | How it concludes                   | 3-5 minutes  |
-| Notes           | Tracking and reminders             | Ongoing      |
+| Part                      | Purpose                                  | Time to Fill |
+|---------------------------+------------------------------------------+--------------|
+| ~:THREAD-TYPE:~           | ~Main~ or ~Subplot~                      | seconds      |
+| ~:Stance:~                | The answer to the Theme it embodies      | 2 minutes    |
+| ~:STATUS:~                | Planned / In progress / Resolved / Abandoned | seconds  |
+| ~Stance it embodies ::~   | The same, written out                    | 2 minutes    |
+| ~Who carries it ::~       | The character who embodies it            | 1 minute     |
+| Own desire                | What it wants for itself                 | 3-5 minutes  |
+| Crossings with the main line | Three or more, one of them late       | 5-10 minutes |
+| Resolution                | How it concludes                         | 3-5 minutes  |
+| Notes                     | Tracking and reminders                   | Ongoing      |
 
-** Plot Thread Types
+** The Thirteen Non-Negotiables
 
-| Type            |   Coverage | Example                 |
+| Key         | Action                                    |
+|-------------+-------------------------------------------|
+| ~F8 F8 G~   | Tag the current scene with a plot point   |
+| ~F8 F8 L J~ | Jump from a scene to its plot point       |
+| ~F8 F8 L P~ | Mint IDs for the thirteen (once, if needed) |
+| ~F8 F8 H~   | Health report: which points no scene serves |
+
+You never create or delete these — they ship with the project.
+
+** Plot Thread Kinds
+
+Craft categories, not ~:THREAD-TYPE:~ values — everything that is not the main
+line is a ~Subplot~.
+
+| Kind            |   Coverage | Example                 |
 |-----------------+------------+-------------------------|
-| Main (A-Story)  |     60-80% | Solve the murder        |
-| Major Sub (B)   |     30-50% | Romance subplot         |
-| Minor Sub (C)   |     10-30% | Family conflict         |
-| Thematic Thread | Throughout | "Meaning of home" motif |
+| Main line       |     60-80% | Solve the murder        |
+| Major subplot   |     30-50% | Romance subplot         |
+| Minor subplot   |     10-30% | Family conflict         |
+| Thematic thread | Throughout | "Meaning of home" motif |
 
 ** Healthy Plot Distribution
 
@@ -1563,7 +1668,8 @@ Example - mysterious symbol in mystery plot:
 - Scene 15: Symbol appears again, Alex investigates (develop)
 - Scene 35: Symbol's meaning revealed (payoff)
 
-Track these in Key Scenes section.
+Track these under *Notes* — or, better, as three crossings, if the motif
+belongs to a thread.
 
 ** 5. Balance Variety with Focus
 
