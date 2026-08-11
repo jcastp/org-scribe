@@ -368,6 +368,52 @@ as a template artifact present from project creation."
             (should-not (file-exists-p (expand-file-name "story.org" project-dir))))
         (test-project--kill-file-buffer (expand-file-name "cuento.org" project-dir))))))
 
+;;; Project File Navigation Tests
+
+(ert-deftest test-project-file-candidates-scans-project ()
+  "Completion candidates come from disk, not a hardcoded list.
+The design file (design.org / diseno.org) shipped by the method
+templates was missing from the old static list; scanning finds it
+along with anything a future template adds."
+  (test-project--with-temp-base-dir root
+    (make-directory (expand-file-name "objects" root))
+    (make-directory (expand-file-name "notas" root))
+    (dolist (file '("novela.org" "diseno.org" "README.org" ".org-scribe-project"
+                    "objects/personajes.org" "notas/notas.org"))
+      (with-temp-file (expand-file-name file root) (insert "x")))
+    (let ((candidates (org-scribe--project-file-candidates root)))
+      (should (member "diseno.org" candidates))
+      (should (member "novela.org" candidates))
+      (should (member "objects/personajes.org" candidates))
+      (should (member "notas/notas.org" candidates))
+      ;; Non-Org files and the marker file are not offered.
+      (should-not (member ".org-scribe-project" candidates))
+      ;; Sorted, so completion order is stable.
+      (should (equal candidates (sort (copy-sequence candidates) #'string<))))))
+
+(ert-deftest test-project-file-candidates-fallback-without-root ()
+  "With no project root the static fallback list is used, and it
+includes the design file under both language names."
+  (let ((candidates (org-scribe--project-file-candidates nil)))
+    (should (equal candidates org-scribe--known-project-files))
+    (should (member "design.org" candidates))
+    (should (member "diseno.org" candidates))))
+
+(ert-deftest test-project-known-files-match-shipped-templates ()
+  "Every Org file the novel templates ship appears in the fallback list.
+A template that adds a file must not silently drop out of completion
+for users outside a detectable project."
+  ;; org-scribe-template-directory = <repo>/org-scribe-templates/novel-en;
+  ;; its parent is the org-scribe-templates/ root.
+  (let ((templates-root (file-name-directory
+                         (directory-file-name org-scribe-template-directory))))
+    (dolist (set '("novel-en" "novel-es"))
+      (let ((dir (expand-file-name set templates-root)))
+        (dolist (file (directory-files-recursively dir "\\.org\\.template\\'"))
+          (let ((relative (string-remove-suffix
+                           ".template" (file-relative-name file dir))))
+            (should (member relative org-scribe--known-project-files))))))))
+
 ;;; Run tests
 
 (defun org-scribe-project-run-tests ()

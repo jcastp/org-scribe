@@ -415,46 +415,70 @@ If CHAPTER-NAME is empty, defaults to \"New chapter\"."
 
 ;;; Project Navigation
 
+(defconst org-scribe--known-project-files
+  '(;; Common
+    "README.org"
+    ;; Novel files
+    "novel.org" "novela.org"
+    "design.org" "diseno.org"
+    "revision.org"
+    "plan.org"
+    "writing-journal.org" "diario-escritura.org"
+    "objects/characters.org" "objects/personajes.org"
+    "objects/locations.org" "objects/localizaciones.org"
+    "objects/objects.org" "objects/objetos.org"
+    "objects/plot.org" "objects/trama.org"
+    "objects/timeline.org" "objects/cronologia.org"
+    "objects/worldbuilding.org"
+    "notes/notes.org" "notas/notas.org"
+    "notes/research.org" "notas/investigacion.org"
+    ;; Short story files
+    "story.org" "cuento.org"
+    "notes.org" "notas.org")
+  "Fallback completion candidates for `org-scribe-open-project-file'.
+Used when no project root can be detected.  Inside a project the
+candidates are scanned from disk instead, so a file created after
+this list was written is still offered.")
+
+(defun org-scribe--open-file-project-root ()
+  "Return the project root for file navigation, or nil."
+  (if (fboundp 'org-scribe-project-root)
+      (org-scribe-project-root)
+    (or (when-let ((project (project-current)))
+          (project-root project))
+        (locate-dominating-file default-directory "README.org"))))
+
+(defun org-scribe--project-file-candidates (&optional root)
+  "Return relative paths of Org files under ROOT for completion.
+Scans ROOT and its immediate subdirectories (skipping hidden ones),
+so files added by newer templates — such as design.org / diseno.org —
+are offered without this function knowing their names.  Falls back to
+`org-scribe--known-project-files' when ROOT is nil or holds no Org files."
+  (let ((found
+         (when (and root (file-directory-p root))
+           (let (files)
+             (dolist (entry (directory-files root nil "\\`[^.]" t))
+               (let ((full (expand-file-name entry root)))
+                 (cond
+                  ((file-directory-p full)
+                   (dolist (sub (directory-files full nil "\\.org\\'" t))
+                     (push (concat entry "/" sub) files)))
+                  ((string-suffix-p ".org" entry)
+                   (push entry files)))))
+             (sort files #'string<)))))
+    (or found org-scribe--known-project-files)))
+
 ;;;###autoload
 (defun org-scribe-open-project-file (filename)
   "Quickly open a file in the current writing project (novel or short story).
-FILENAME should be relative to project root (e.g., 'objects/characters.org').
-Uses completion to help select from common project files."
+FILENAME should be relative to project root (e.g., \"objects/characters.org\").
+Completion offers the Org files actually present in the project."
   (interactive
-   (list (completing-read "Open file: "
-                          '("README.org"
-                            ;; Novel files
-                            "novel.org"
-                            "novela.org"
-                            "revision.org"
-                            "org-scribe-journal.org"
-                            "diario-escritura.org"
-                            "objects/characters.org"
-                            "objects/personajes.org"
-                            "objects/locations.org"
-                            "objects/localizaciones.org"
-                            "objects/objects.org"
-                            "objects/objetos.org"
-                            "objects/plot.org"
-                            "objects/trama.org"
-                            "objects/timeline.org"
-                            "objects/cronologia.org"
-			    "objects/worldbuilding.org"
-                            "notes/notes.org"
-                            "notas/notas.org"
-                            "notes/research.org"
-                            "notas/investigacion.org"
-                            ;; Short story files
-                            "story.org"
-                            "cuento.org"
-                            "notes.org"
-                            "notas.org"))))
-  ;; Use org-scribe-core's project detection if available
-  (let ((project-root (if (fboundp 'org-scribe-project-root)
-                          (org-scribe-project-root)
-                        (or (when-let ((project (project-current)))
-                              (project-root project))
-                            (locate-dominating-file default-directory "README.org")))))
+   (list (completing-read
+          "Open file: "
+          (org-scribe--project-file-candidates
+           (org-scribe--open-file-project-root)))))
+  (let ((project-root (org-scribe--open-file-project-root)))
     (if project-root
         (let ((full-path (expand-file-name filename project-root)))
           (if (file-exists-p full-path)

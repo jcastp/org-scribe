@@ -59,8 +59,6 @@
 
 (ert-deftest org-scribe-test-config-variables-exist ()
   "Test that configuration variables are defined."
-  (should (boundp 'org-scribe-novel-file-names))
-  (should (boundp 'org-scribe-notes-dir-names))
   (should (boundp 'org-scribe-env-work-theme))
   (should (boundp 'org-scribe-env-normal-theme))
   (should (boundp 'org-scribe-scene-break-replacements)))

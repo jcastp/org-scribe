@@ -774,29 +774,14 @@ Set where new projects are created:
     (call-interactively 'org-scribe-create-novel-project)))
 #+END_SRC
 
-** File Name Preferences
+** File and Directory Name Preferences
 
-The package looks for manuscripts with these names:
-
-#+BEGIN_SRC emacs-lisp
-;; Defaults
-(setq org-scribe-novel-file-names '("novel.org" "novela.org" "manuscript.org"))
-
-;; Add your preferred names
-(setq org-scribe-novel-file-names '("novel.org" "novela.org" "manuscript.org" "book.org" "draft.org"))
-#+END_SRC
-
-** Directory Name Preferences
-
-For notes directory:
-
-#+BEGIN_SRC emacs-lisp
-;; Defaults
-(setq org-scribe-notes-dir-names '("notes" "notas"))
-
-;; Add alternatives
-(setq org-scribe-notes-dir-names '("notes" "notas" "research" "ideas"))
-#+END_SRC
+Project file and directory names are not configurable. org-scribe
+resolves them from the fixed bilingual pairs its templates ship —
+~novel.org~ / ~novela.org~ for the manuscript, ~notes/~ / ~notas/~ for
+the notes directory, and so on — and the manuscript pair also drives
+project type detection, so renaming it would leave the project
+unrecognized. Keep the names the template gave you.
 
 * Word Counting Configuration
 
@@ -890,16 +875,6 @@ Here's a full, commented configuration you can adapt:
 
 ;; Tags to ignore in word count
 (setq org-scribe-wordcount-default-ignore-tags '("noexport" "draft" "archive"))
-
-;; -----------------------------------------------------------------------------
-;; PROJECT STRUCTURE
-;; -----------------------------------------------------------------------------
-
-;; Recognized manuscript file names
-(setq org-scribe-novel-file-names '("novel.org" "novela.org" "manuscript.org"))
-
-;; Recognized notes directory names
-(setq org-scribe-notes-dir-names '("notes" "notas"))
 
 ;; -----------------------------------------------------------------------------
 ;; KEYBINDINGS

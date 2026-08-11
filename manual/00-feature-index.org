@@ -607,18 +607,6 @@ The ~org-scribe-scene-break-replacements~ alist maps export backends to scene se
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
-** Novel File Names
-
-~org-scribe-novel-file-names~ (default: '("novel.org" "novela.org" "manuscript.org")) defines which filenames to check when looking for the main manuscript. The project detection system tries each name in order. This allows flexibility in naming conventions - some writers prefer "manuscript.org", others "novel.org", and Spanish writers use "novela.org". Additional custom names can be added to the list.
-
-*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
-
-** Notes Directory Names
-
-~org-scribe-notes-dir-names~ (default: '("notes" "notas")) specifies directory names to try when looking for the notes directory. English projects use notes/, Spanish projects use notas/. Writers can add custom directory names to support their organizational preferences or non-English languages. The first existing directory from the list is used.
-
-*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
-
 ** Automatic Directory Creation
 
 ~org-scribe-create-dirs-automatically~ (default: t) controls whether the package automatically creates directories (like objects/, notes/, research/) when they're needed by capture functions or searches. When nil, functions will error if directories don't exist, giving writers full control over project structure. When t (default), convenience is prioritized - directories are created as needed.
