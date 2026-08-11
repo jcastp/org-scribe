@@ -119,8 +119,8 @@ Or use: ~M-x org-scribe-capture-location~
 Here is what the capture template really inserts, verbatim:
 
 #+BEGIN_EXAMPLE
-* Setting name
-:PROPERTIES:
+,* Setting name
+3:PROPERTIES:
 :ID: (generated automatically)
 :Type:
 :Echo:
@@ -182,8 +182,7 @@ categories suit your story — the property exists so that org-scribe can tell a
 setting heading from anything else in the file, and so you can group settings
 in column view.
 
-*Examples*: ~Residence~, ~Business~, ~Public~, ~Institution~, ~Natural~,
-~Transport~
+*Examples*: ~Residence~, ~Business~, ~Public~, ~Institution~, ~Natural~, ~Transport~
 
 *Tip*: Use broad categories. The specifics belong in the description.
 
@@ -222,14 +221,14 @@ They are gone. Nothing reads them, and adding them back does nothing.
 
 Most of what they held has a better home:
 
-| Old property     | Where it goes now                                          |
-|------------------+------------------------------------------------------------|
-| ~:Atmosphere:~   | the *Echo* and *Symbol* Aspects — mood with a job to do     |
-| ~:Importance:~   | how often you actually link the setting to scenes           |
-| ~:Owner:~        | *Description*, or a character link in the scene that shows it |
-| ~:Accessibility:~| *Description*, when it constrains a scene                   |
-| ~:Setting:~      | ~objects/worldbuilding.org~, which holds the world as a whole |
-| ~:Climate:~ ~:Population:~ | ~objects/worldbuilding.org~                       |
+| Old property           | Where it goes now                                           |
+|------------------------+-------------------------------------------------------------|
+| ~:Atmosphere:~           | the *Echo* and *Symbol* Aspects — mood with a job to do         |
+| ~:Importance:~           | how often you actually link the setting to scenes           |
+| ~:Owner:~                | *Description*, or a character link in the scene that shows it |
+| ~:Accessibility:~      | *Description*, when it constrains a scene                     |
+| ~:Setting:~              | ~objects/worldbuilding.org~, which holds the world as a whole |
+| ~:Climate:~ ~:Population:~ | ~objects/worldbuilding.org~                                   |
 
 * Section 2: The Four Aspects
 
@@ -310,7 +309,7 @@ state it.
 ** Example: Coffee Shop
 
 #+BEGIN_EXAMPLE
-* Downtown Coffee Collective
+,* Downtown Coffee Collective
 :PROPERTIES:
 :ID: loc-coffee-shop-20251116-001
 :Type: Business

@@ -30,12 +30,12 @@ template sets, then in the message alists.
 A distinction that trips people up. Three different things are localized
 differently:
 
-| Thing                        | Localized?                     |
-|------------------------------+--------------------------------|
-| Heading text and prose       | Yes — follows the project      |
-| *Scene* property names       | Yes — via the alias table      |
-| *Entity* property names      | *No* — English in both sets    |
-| Property *values* for =Role=   | *No* — English in both sets    |
+| Thing                    | Localized?                |
+|--------------------------+---------------------------|
+| Heading text and prose   | Yes — follows the project |
+| *Scene* property names     | Yes — via the alias table |
+| *Entity* property names    | *No* — English in both sets |
+| Property *values* for =Role= | *No* — English in both sets |
 
 So a Spanish project carries =* [Nombre del oponente]= with =:Role: Opponent=,
 and its scenes carry =:Trama:= rather than =:Plot:=. Entity properties stay
@@ -49,79 +49,79 @@ already carry the Spanish spellings.
 
 ** Character chain
 
-| Spanish                | English                | Source          | Call    |
-|------------------------+------------------------+-----------------+---------|
-| Fantasma               | Ghost                  | Truby           | fixed   |
-| Mentira                | Lie                    | Weiland / Cron  | fixed   |
-| Debilidad psicológica  | Psychological Weakness | Truby           | settled |
-| Debilidad moral        | Moral Weakness         | Truby           | settled |
-| Deseo                  | Desire                 | Truby           | fixed   |
-| Necesidad              | Need                   | Truby           | fixed   |
-| Apuro                  | Trouble                | FATE            | fixed   |
-| Aspecto                | Aspect                 | FATE            | fixed   |
-| Concepto               | Concept                | FATE            | fixed   |
-| Plan / Plan de repuesto| Plan / Fallback Plan   | Truby           | fixed   |
-| Posesión               | Possession             | —               | fixed   |
-| Relación               | Relationship           | —               | fixed   |
-| Postura                | *Stance*               | —               | settled |
+| Spanish                 | English                | Source         | Call    |
+|-------------------------+------------------------+----------------+---------|
+| Fantasma                | Ghost                  | Truby          | fixed   |
+| Mentira                 | Lie                    | Weiland / Cron | fixed   |
+| Debilidad psicológica   | Psychological Weakness | Truby          | settled |
+| Debilidad moral         | Moral Weakness         | Truby          | settled |
+| Deseo                   | Desire                 | Truby          | fixed   |
+| Necesidad               | Need                   | Truby          | fixed   |
+| Apuro                   | Trouble                | FATE           | fixed   |
+| Aspecto                 | Aspect                 | FATE           | fixed   |
+| Concepto                | Concept                | FATE           | fixed   |
+| Plan / Plan de repuesto | Plan / Fallback Plan   | Truby          | fixed   |
+| Posesión                | Possession             | —              | fixed   |
+| Relación                | Relationship           | —              | fixed   |
+| Postura                 | *Stance*                 | —              | settled |
 
 The chain is causal and is always written in this order: Ghost → Lie →
 Weakness → Desire/Need. Each link is derived from the one above it.
 
 ** Roles
 
-| Spanish                | English                        | Source  | Call    |
-|------------------------+--------------------------------+---------+---------|
-| Protagonista           | Protagonist                    | Truby   | settled |
-| Oponente               | Opponent (*not* Antagonist)    | Truby   | fixed   |
-| Aliado                 | Ally                           | Truby   | fixed   |
-| Falso aliado-Oponente  | Fake-Ally Opponent             | Truby   | fixed   |
-| Secundarios temáticos  | Thematic Supporting Characters | —       | settled |
-| Focalizador            | Focalizer                      | Genette | fixed   |
+| Spanish               | English                        | Source  | Call    |
+|-----------------------+--------------------------------+---------+---------|
+| Protagonista          | Protagonist                    | Truby   | settled |
+| Oponente              | Opponent (*not* Antagonist)      | Truby   | fixed   |
+| Aliado                | Ally                           | Truby   | fixed   |
+| Falso aliado-Oponente | Fake-Ally Opponent             | Truby   | fixed   |
+| Secundarios temáticos | Thematic Supporting Characters | —       | settled |
+| Focalizador           | Focalizer                      | Genette | fixed   |
 
 The English forms are also the =:Role:= property *values* in both template sets:
 =Protagonist=, =Opponent=, =Ally=, =Fake-Ally Opponent=, =Thematic Supporting=.
 
 ** Plot
 
-| Spanish                  | English                        | Source       | Call    |
-|--------------------------+--------------------------------+--------------+---------|
-| Tema                     | Theme                          | —            | fixed   |
-| Susurro del tema         | Theme Stated                   | Save the Cat | fixed   |
-| Evento incitador         | Inciting Incident              | standard     | fixed   |
-| Cruzar el umbral         | Crossing the Threshold         | Campbell     | fixed   |
-| Empuje                   | Drive                          | Truby        | fixed   |
-| Punto medio              | Midpoint                       | standard     | fixed   |
-| Aparente derrota         | Apparent Defeat                | Truby        | fixed   |
-| Autorrevelación          | Self-Revelation                | Truby        | fixed   |
-| Batalla                  | Battle                         | Truby        | fixed   |
-| Decisión moral           | Moral Decision                 | Truby        | fixed   |
-| Nuevo equilibrio         | New Equilibrium                | Truby        | fixed   |
-| Revelaciones             | Revelations                    | Truby        | fixed   |
-| Principio diseñador      | Designing Principle            | Truby        | fixed   |
-| Arquetipo                | Archetype                      | Truby        | fixed   |
-| Punto de trama           | Plot Point                     | standard     | fixed   |
+| Spanish                  | English                      | Source       | Call    |
+|--------------------------+------------------------------+--------------+---------|
+| Tema                     | Theme                        | —            | fixed   |
+| Susurro del tema         | Theme Stated                 | Save the Cat | fixed   |
+| Evento incitador         | Inciting Incident            | standard     | fixed   |
+| Cruzar el umbral         | Crossing the Threshold       | Campbell     | fixed   |
+| Empuje                   | Drive                        | Truby        | fixed   |
+| Punto medio              | Midpoint                     | standard     | fixed   |
+| Aparente derrota         | Apparent Defeat              | Truby        | fixed   |
+| Autorrevelación          | Self-Revelation              | Truby        | fixed   |
+| Batalla                  | Battle                       | Truby        | fixed   |
+| Decisión moral           | Moral Decision               | Truby        | fixed   |
+| Nuevo equilibrio         | New Equilibrium              | Truby        | fixed   |
+| Revelaciones             | Revelations                  | Truby        | fixed   |
+| Principio diseñador      | Designing Principle          | Truby        | fixed   |
+| Arquetipo                | Archetype                    | Truby        | fixed   |
+| Punto de trama           | Plot Point                   | standard     | fixed   |
 | Los trece irrenunciables | *The Thirteen Non-Negotiables* | —            | settled |
 | Cuartiles                | *Quarters*                     | —            | settled |
-| Planteamiento            | Setup                          | —            | fixed   |
-| Reacción (cuartil)       | Reaction                       | —            | fixed   |
-| Acción (cuartil)         | Action                         | —            | fixed   |
-| Resolución (cuartil)     | Resolution                     | —            | fixed   |
+| Planteamiento            | Setup                        | —            | fixed   |
+| Reacción (cuartil)       | Reaction                     | —            | fixed   |
+| Acción (cuartil)         | Action                       | —            | fixed   |
+| Resolución (cuartil)     | Resolution                   | —            | fixed   |
 
 ** Scene and world
 
-| Spanish                     | English                       | Source | Call    |
-|-----------------------------+-------------------------------+--------+---------|
-| Escena                      | Scene                         | Swain  | fixed   |
-| Secuela                     | Sequel                        | Swain  | fixed   |
-| Reacción / Dilema / Decisión| Reaction / Dilemma / Decision | Swain  | fixed   |
-| Brecha                      | Gap                           | McKee  | fixed   |
-| Apuestas                    | Stakes                        | —      | fixed   |
-| Problema del Mundo          | *World Problem*               | —      | settled |
-| Eco                         | Echo                          | —      | fixed   |
-| Escollo                     | *Hazard*                      | —      | settled |
-| Símbolo                     | Symbol                        | —      | fixed   |
-| Escenario                   | Setting                       | —      | fixed   |
+| Spanish                      | English                       | Source | Call    |
+|------------------------------+-------------------------------+--------+---------|
+| Escena                       | Scene                         | Swain  | fixed   |
+| Secuela                      | Sequel                        | Swain  | fixed   |
+| Reacción / Dilema / Decisión | Reaction / Dilemma / Decision | Swain  | fixed   |
+| Brecha                       | Gap                           | McKee  | fixed   |
+| Apuestas                     | Stakes                        | —      | fixed   |
+| Problema del Mundo           | *World Problem*                 | —      | settled |
+| Eco                          | Echo                          | —      | fixed   |
+| Escollo                      | *Hazard*                        | —      | settled |
+| Símbolo                      | Symbol                        | —      | fixed   |
+| Escenario                    | Setting                       | —      | fixed   |
 
 ** Process and craft
 
@@ -131,7 +131,7 @@ The English forms are also the =:Role:= property *values* in both template sets:
 | El Creador / El Crítico      | The Creator / The Critic         | —             | fixed   |
 | Microtensión                 | Microtension                     | Maass         | fixed   |
 | RIE (Resiste el impulso…)    | RUE (Resist the Urge to Explain) | Browne & King | fixed   |
-| Puerta de salida             | *The Starting Gate*              | —             | settled |
+| Puerta de salida             | *The Starting Gate*                | —             | settled |
 | Hitos de cambio              | Change Milestones                | —             | fixed   |
 | Ajuste / Ruptura             | Adjustment / Break               | —             | fixed   |
 | Pase (0–9)                   | Pass (0–9)                       | —             | fixed   |

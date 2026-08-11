@@ -428,7 +428,7 @@ Wants (Goal), because they believe it will get them (Motivation), but
 
 *Goal*: concrete and external. The reader has to know when it has been achieved
 and when it has not. "Being happy" is not a Goal; "stealing King Urdano's
-treasure" is.
+treasure", "Get the Director's position", or "Buy the most expensive car" are.
 
 *Motivation*: what they believe achieving it will give them. It comes out of
 the Lie, so it is always false underneath. **If what you write here is healthy
@@ -441,7 +441,7 @@ opponent. **If the Conflict has no face, you do not have an opponent yet.**
 
 The same three parts, turned inward:
 
-*Goal*: a change of behaviour, not an object.
+*Goal*: a change of behavior, not an object.
 
 *Motivation*: what the Lie prevents them having. It usually names the harm in
 the Moral Weakness.

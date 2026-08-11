@@ -254,7 +254,7 @@ If you want to create a full novel project instead, the process is almost identi
 1. Press ~M-x~
 2. Type: ~org-scribe-create-novel-project~
 3. Press ~Enter~
-4. Choose base directory (e.g., ~~/org-scribe/~)
+4. Choose base directory (e.g., ~~/writing/~)
 5. Enter novel title (e.g., ~My Fantasy Novel~)
 6. Choose the template language (~en~ or ~es~)
 7. Wait for creation
@@ -306,7 +306,7 @@ One checklist, at the top of the file, whose only job is to tell you when to
 stop planning and start writing:
 
 #+BEGIN_EXAMPLE
-* Starting Gate
+,* Starting Gate
 
 - [ ] Theme and at least five Stances
 - [ ] Protagonist and opponent with Ghost, Lie, Weakness, Desire and Need
@@ -346,10 +346,9 @@ you need them.
 
 *Vocabulary*: terms like /Ghost/, /Lie/, /Weakness/, /Stance/, /Echo/ and
 /Hazard/ are used in a precise sense, and most are restored from named English
-sources rather than invented. [[file:../docs/glossary.org][docs/glossary.org]]
-gives the term-by-term definition and the Spanish↔English mapping. Consult it
-before renaming anything: a synonym usually re-creates an ambiguity the method
-removed.
+sources rather than invented. [[file:../docs/glossary.org][docs/glossary.org]] gives the term-by-term
+definition and the Spanish↔English mapping. Consult it before renaming
+anything: a synonym usually re-creates an ambiguity the method removed.
 
 The lines beginning with ~#~ throughout the file are instructions to you, not
 content. Leave them or delete them as you prefer — they are Org comments, so
