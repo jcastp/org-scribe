@@ -56,12 +56,6 @@ Clears the project type cache before and after."
        (setq org-scribe--project-type-cache nil)
        (delete-directory temp-dir t))))
 
-;;; Module Loading Tests
-
-(ert-deftest test-core-module-loads ()
-  "Test that org-scribe-core module loads without errors."
-  (should (featurep 'org-scribe-core)))
-
 ;;; Function Availability Tests
 
 (ert-deftest test-core-functions-defined ()

@@ -22,12 +22,6 @@
 (require 'org-scribe-core)
 (require 'org-scribe-capture)
 
-;;; Module Loading Tests
-
-(ert-deftest test-capture-module-loads ()
-  "Test that org-scribe-capture module loads without errors."
-  (should (featurep 'org-scribe-capture)))
-
 ;;; Function Availability Tests
 
 (ert-deftest test-capture-functions-defined ()

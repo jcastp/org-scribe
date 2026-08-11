@@ -20,12 +20,6 @@
 
 (require 'org-scribe-project)
 
-;;; Module Loading Tests
-
-(ert-deftest test-project-module-loads ()
-  "Test that org-scribe-project module loads without errors."
-  (should (featurep 'org-scribe-project)))
-
 ;;; Function Availability Tests
 
 (ert-deftest test-project-functions-defined ()

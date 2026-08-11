@@ -19,12 +19,6 @@
 
 (require 'org-scribe-messages)
 
-;;; Module Loading Tests
-
-(ert-deftest test-messages-module-loads ()
-  "Test that org-scribe-messages module loads without errors."
-  (should (featurep 'org-scribe-messages)))
-
 ;;; Function Availability Tests
 
 (ert-deftest test-messages-functions-defined ()

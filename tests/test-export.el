@@ -26,12 +26,6 @@
 ;; can be exercised in isolation.
 (defvar-local org-scribe-mode nil)
 
-;;; Module Loading Tests
-
-(ert-deftest test-export-module-loads ()
-  "Test that org-scribe-export module loads without errors."
-  (should (featurep 'org-scribe-export)))
-
 ;;; Function Availability Tests
 
 (ert-deftest test-export-functions-defined ()

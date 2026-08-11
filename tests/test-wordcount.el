@@ -49,16 +49,45 @@
       (should (org-entry-get nil "WORDCOUNT"))))
 
   (ert-deftest org-scribe-test-wordcount-excludes-comments ()
-    "Test that word counting excludes comments."
-    (with-temp-buffer
-      (org-mode)
-      (insert "* Heading\n")
-      (insert "This is visible text.\n")
-      (insert "# This is a comment and should be excluded\n")
-      (insert "More visible text.\n")
-      ;; The actual count will depend on org-context-extended behavior
-      ;; This is a placeholder test
-      (should t)))
+    "Word counting excludes both Org comment forms, counting only prose.
+
+Two distinct exclusions are asserted, because they come from two
+different flags in `org-context-count-words':
+
+  - a `#' comment line, excluded by `ignore-comments-p';
+  - a `#+begin_comment' block, excluded by `ignore-blocks-p'.
+
+The block case is the load-bearing one: `org-context-in-commented-line'
+matches only `^[ \\t]*#', so it catches the block's delimiters but not
+its interior lines.  Inline *EDIT* / *NOTE* markers live inside such
+blocks precisely so they stay out of WORDCOUNT, progress tables and the
+planner ledger, so a regression here would silently inflate every word
+count in a project."
+    (let ((prose-only
+           ;; Control: the same prose with neither comment form present.
+           (with-temp-buffer
+             (org-mode)
+             (insert "* Heading\n")
+             (insert "One two three four five.\n")
+             (insert "Six seven eight.\n")
+             (org-scribe--count-words-region (point-min) (point-max)))))
+      (with-temp-buffer
+        (org-mode)
+        (insert "* Heading\n")
+        (insert "One two three four five.\n")
+        (insert "# a comment line carrying several extra words here\n")
+        (insert "#+begin_comment\n")
+        (insert "*EDIT*: plot - this marker text must not be counted\n")
+        (insert "#+end_comment\n")
+        (insert "Six seven eight.\n")
+        (let ((counted (org-scribe--count-words-region (point-min) (point-max))))
+          ;; Only the eight prose words count.
+          (should (= counted 8))
+          (should (= counted prose-only))
+          ;; And that is genuinely less than a naive count of the region,
+          ;; so the test would fail if the accurate counter stopped being
+          ;; used and the plain `count-words' fallback took over.
+          (should (< counted (count-words (point-min) (point-max))))))))
 
   (defun org-scribe-wordcount-run-tests ()
     "Run word count tests."

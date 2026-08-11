@@ -26,12 +26,6 @@
 (require 'org-scribe-messages)
 (require 'org-scribe-overlays)
 
-;;; Module loading
-
-(ert-deftest test-overlays-module-loads ()
-  "org-scribe-overlays feature is available after require."
-  (should (featurep 'org-scribe-overlays)))
-
 (ert-deftest test-overlays-functions-defined ()
   "All public and internal functions are defined."
   (should (fboundp 'org-scribe-overlays-mode))

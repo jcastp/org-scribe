@@ -26,12 +26,6 @@
 
 (require 'org-scribe-dictionary)
 
-;;; Module Loading Tests
-
-(ert-deftest test-dictionary-module-loads ()
-  "Test that org-scribe-dictionary module loads without errors."
-  (should (featurep 'org-scribe-dictionary)))
-
 ;;; Function Availability Tests
 
 (ert-deftest test-dictionary-functions-defined ()

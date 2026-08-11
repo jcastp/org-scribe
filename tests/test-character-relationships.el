@@ -29,12 +29,6 @@
 
 (require 'org-scribe-character-relationships)
 
-;;; Module Loading Tests
-
-(ert-deftest test-relationships-module-loads ()
-  "Test that org-scribe-character-relationships module loads without errors."
-  (should (featurep 'org-scribe-character-relationships)))
-
 ;;; Function Availability Tests
 
 (ert-deftest test-relationships-functions-defined ()

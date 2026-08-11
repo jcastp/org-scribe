@@ -4,18 +4,41 @@ Comprehensive test suite for the org-scribe package using Emacs Lisp Regression 
 
 ## Test Coverage
 
-The test suite covers all major modules:
+The suite covers every module. The authoritative list is
+`org-scribe-test-files` in `run-all-tests.el` — a file missing from it does
+not run, so add new files there.
 
-- **Core Utilities** (`org-scribe-test.el`) - Project detection, utilities, feature detection
-- **Project Creation** (`test-project.el`) - Template processing, validation, project structure
-- **Capture System** (`test-capture.el`) - Capture templates, file creation, project-aware routing
-- **Search Functions** (`test-search.el`, `test-search-links.el`) - org-ql searches, link extraction helpers
-- **Character Linking** (`test-character-links.el`) - ID-based character links, timeline generation
-- **Location Linking** (`test-location-links.el`) - ID-based location links
-- **Plot Thread Linking** (`test-plot-links.el`) - Plot thread tracking, statistics, timeline
-- **Column View** (`test-column-view.el`) - Link stripping in column view
-- **Export Filters** (`test-export.el`) - Scene break replacement for various backends
-- **Word Counting** (`test-wordcount.el`) - Accurate word counting (requires org-context-extended)
+**Core and configuration**
+- `org-scribe-test.el` — project detection, utilities
+- `test-core-extended.el` — project type detection, project structure
+- `test-messages.el` — message system (en/es parity)
+- `test-scene-property-localization.el` — localized scene property aliases
+
+**Project creation and capture**
+- `test-project.el` — template processing, validation, file navigation
+- `test-capture.el` — capture templates, file creation, project-aware routing
+- `test-sistema-templates.el` — method template set, entity recognition, entity registry
+- `test-template-parity.el` — `novel-en` / `novel-es` structural parity
+
+**Linking**
+- `test-character-links.el` — character links, `entity-name-at-point`, timeline
+- `test-location-links.el` — location links
+- `test-plot-links.el` — plot threads, file dispatch, statistics, timeline
+- `test-character-relationships.el` — relationship tracking
+- `test-link-update.el` — link display name updates
+- `test-column-view.el` — link stripping at the column-view boundary
+- `test-overlays.el` — entity tooltips
+
+**Everything else**
+- `test-search.el`, `test-search-links.el` — org-ql searches, link extraction
+- `test-tempel-snippets.el` — bundled snippets and the marker grammar seam
+- `test-wordcount.el` — word counting (requires org-context-extended)
+- `test-export.el` — scene break replacement per backend
+- `test-dictionary.el` — dictionary and language tools
+- `test-modes.el` — writing environment modes
+- `test-health.el` — project health report
+- `test-planner-*.el` (11 files) — calculation, I/O, schedule, milestones, data
+  helpers, dates, buffer safety, hooks, daily sync, agenda, per-project gate
 
 ## Running Tests
 
@@ -31,11 +54,24 @@ Run specific test suites:
 M-x org-scribe-run-core-tests
 M-x org-scribe-run-project-tests
 M-x org-scribe-run-capture-tests
+M-x org-scribe-run-modes-tests
 M-x org-scribe-run-search-tests
+M-x org-scribe-run-tempel-tests
 M-x org-scribe-run-linking-tests
+M-x org-scribe-run-messages-tests
+M-x org-scribe-run-dictionary-tests
+M-x org-scribe-run-health-tests
 M-x org-scribe-run-export-tests
 M-x org-scribe-run-wordcount-tests
+M-x org-scribe-run-sistema-tests
+M-x org-scribe-run-parity-tests
+M-x org-scribe-run-planner-tests
 ```
+
+Each loads one test file and selects by name regexp. Because ERT matches
+against every test it knows about, running one of these in a session where
+the whole suite is loaded may also run a same-prefixed test from another
+file. See the comment above the definitions in `run-all-tests.el`.
 
 View test statistics:
 ```elisp
@@ -58,36 +94,19 @@ emacs -batch -l tests/run-all-tests.el
 
 ### Individual Test Files
 
-Run individual test files:
+Run one test file. Load `test-load.el` first — it sets up every module's
+load path, which the test files themselves only do partially:
+
 ```sh
-# Core tests
-emacs -batch -l tests/org-scribe-test.el -f ert-run-tests-batch-and-exit
-
-# Project creation tests
-emacs -batch -l tests/test-project.el -f test-project-run-tests
-
-# Capture system tests
-emacs -batch -l tests/test-capture.el -f test-capture-run-tests
-
-# And so on...
+emacs -batch -l test-load.el -l tests/test-character-links.el \
+      -f ert-run-tests-batch-and-exit
 ```
 
 ## Test Organization
 
 ### Test Files
 
-- `org-scribe-test.el` - Core utilities and configuration
-- `test-wordcount.el` - Word counting (optional dependency)
-- `test-project.el` - Project creation and templates
-- `test-capture.el` - Capture system
-- `test-search.el` - Search functions
-- `test-search-links.el` - Link extraction helpers
-- `test-character-links.el` - Character linking
-- `test-location-links.el` - Location linking
-- `test-plot-links.el` - Plot thread linking
-- `test-column-view.el` - Column view enhancement
-- `test-export.el` - Export filters
-- `run-all-tests.el` - Master test runner
+See the coverage list above; `run-all-tests.el` is the master runner.
 
 ### Test Naming Convention
 
@@ -97,10 +116,15 @@ All test functions follow the pattern:
 - `test-FEATURE-ASPECT` for specific features
 
 Examples:
-- `test-project-module-loads`
 - `org-scribe-test-sanitize-filename`
 - `test-capture-character-file-detection`
 - `test-export-scene-break-replacement-html`
+
+A test's name is a claim about what it checks. If the name says the test
+covers a behavior, it must assert that behavior — a name like
+`test-wordcount-excludes-comments` over a body that only checks the
+function exists is worse than no test, because it makes the behavior look
+covered.
 
 ## Writing New Tests
 
@@ -114,15 +138,18 @@ Examples:
 
 ### Common Patterns
 
-**Testing function existence:**
-```elisp
-(should (fboundp 'function-name))
-```
+**Do not write existence-only tests.** `(should (fboundp 'f))` and
+`(should (boundp 'v))` pass as long as the file loads, which the `require`
+at the top of every test file already guarantees — so they fail only in
+situations where the whole file would fail to load anyway. Assert what the
+function *does* instead. Existence checks are justified in two narrow
+cases, both present in the suite:
 
-**Testing variable existence:**
-```elisp
-(should (boundp 'variable-name))
-```
+- a function generated by a macro, where existence is the contract —
+  covered for all entity types at once by
+  `test-entity-registry-api-is-generated` in `test-sistema-templates.el`;
+- a hand-written command the hydra or manual promises, listed in a single
+  per-module roll-up rather than one test each.
 
 **Testing with temporary files:**
 ```elisp
@@ -152,7 +179,19 @@ Some tests require optional dependencies:
 - `test-search.el` requires `org-ql`
 - `test-*-links.el` require `org-id`
 
-Tests automatically check for dependencies and skip if not available.
+Tests check for dependencies and skip when one is genuinely absent. Prefer
+simulating absence with `cl-letf` over skipping: a guard like
+`(skip-unless (not (fboundp 'writeroom-mode)))` never fires in an
+environment where the package is installed, so the test silently never
+runs. Emptying the function cell —
+`(cl-letf (((symbol-function 'writeroom-mode) nil)) ...)` — exercises the
+same branch and always runs.
+
+One inverse guard remains that cannot be handled this way:
+`test-tempel-setup-errors-without-tempel` in `test-tempel-snippets.el` is
+guarded on `(not (boundp 'tempel-path))`, and `boundp` cannot be defeated
+by let-binding. It runs today because Tempel is not installed in the test
+environment, and would silently stop running if it ever were.
 
 ## CI/CD Integration
 
@@ -203,9 +242,12 @@ test-interactive:
 ## Test Statistics
 
 As of the latest version:
-- **Test Files:** 11
-- **Total Tests:** 150+
-- **Coverage:** All major modules and features
+- **Test Files:** 34 (plus `run-all-tests.el`)
+- **Total Tests:** 669
+- **Coverage:** All modules
+
+Note `org-scribe-test-statistics` predates several test categories and does
+not count them; the numbers above come from a full batch run.
 
 Run `M-x org-scribe-test-statistics` for current statistics.
 

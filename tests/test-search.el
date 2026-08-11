@@ -24,11 +24,12 @@
 
 (require 'org-scribe-search)
 
-;;; Module Loading Tests
-
-(ert-deftest test-search-module-loads ()
-  "Test that org-scribe-search module loads without errors."
-  (should (featurep 'org-scribe-search)))
+;; org-ql is autoloaded, so `featurep' is nil until something calls into it.
+;; Load it here so the guard on `test-search-todos-recursive-execution' below
+;; reflects whether org-ql is *installed* rather than whether it happens to
+;; have been loaded yet — without this the test skipped even where org-ql was
+;; present, which is everywhere the suite runs.
+(require 'org-ql nil t)
 
 ;;; Function Availability Tests
 

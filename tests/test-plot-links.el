@@ -26,29 +26,17 @@
 
 (require 'org-scribe-plot-links)
 
-;;; Module Loading Tests
-
-(ert-deftest test-plot-links-module-loads ()
-  "Test that org-scribe-plot-links module loads without errors."
-  (should (featurep 'org-scribe-plot-links)))
-
 ;;; Function Availability Tests
 
 (ert-deftest test-plot-links-functions-defined ()
-  "Test that all public plot thread linking functions are defined."
-  ;; Core functions
-  (should (fboundp 'org-scribe-add-plot-thread-ids))
-  (should (fboundp 'org-scribe-insert-plot-thread-link))
-  (should (fboundp 'org-scribe-insert-multiple-plot-thread-links))
-  (should (fboundp 'org-scribe-set-scene-plot-threads))
+  "The plot functions written by hand, outside `org-scribe-define-entity'.
+The generated API is covered for every entity at once by
+`test-entity-registry-api-is-generated' in test-sistema-templates.el."
   (should (fboundp 'org-scribe-jump-to-plot-thread))
-
-  ;; Batch operations
-  (should (fboundp 'org-scribe-link-scene-plot-threads))
-  (should (fboundp 'org-scribe-link-all-scene-plot-threads))
-
-  ;; Setup wizard
-  (should (fboundp 'org-scribe-setup-plot-thread-links)))
+  ;; Analytics and the timeline dblock — plot-specific, not generated.
+  (should (fboundp 'org-scribe-plot-thread-report))
+  (should (fboundp 'org-scribe-plot-thread-stats))
+  (should (fboundp 'org-dblock-write:plot-thread-timeline)))
 
 ;;; Helper Function Tests
 
@@ -67,21 +55,28 @@
     ;; Should return plain text for unknown thread (fallback)
     (should (string= link3 "Unknown"))))
 
-(ert-deftest test-plot-thread-name-extraction ()
-  "Test extracting plot thread name from heading."
-  ;; This is a simple wrapper around org functions
-  ;; Just verify it's callable
-  (should (fboundp 'org-scribe--get-plot-thread-name-at-point)))
+;; `org-scribe--get-plot-thread-name-at-point' is a defalias for
+;; `org-scribe--entity-name-at-point'; the behavior is tested once, at the
+;; real function, in test-character-links.el.
 
 (ert-deftest test-plot-thread-file-detection ()
-  "Test plot thread file detection."
-  ;; Verify the function exists and is callable
-  (should (fboundp 'org-scribe--get-plot-thread-file))
-
-  ;; The actual behavior depends on project structure
-  ;; which requires a full project setup, so we just
-  ;; verify the function is defined)
-  )
+  "The plot file resolver dispatches on project type.
+Short stories keep their plot threads in the consolidated notes file;
+novels keep them in objects/plot.org.  This is the one entity file
+resolver with a project-type branch, which is why plot does not use the
+generic `:file-fn' the other entities share."
+  (cl-letf (((symbol-function 'org-scribe-project-structure)
+             (lambda () (list :notes-file "/tmp/notes.org"
+                              :plot-file "/tmp/objects/plot.org"))))
+    (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+      (should (equal (org-scribe--get-plot-thread-file) "/tmp/notes.org")))
+    (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'novel)))
+      (should (equal (org-scribe--get-plot-thread-file) "/tmp/objects/plot.org")))
+    ;; An undetermined project type must not fall into the short-story
+    ;; branch: an unknown project is far likelier to be a novel whose
+    ;; marker file is missing than a short story.
+    (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'unknown)))
+      (should (equal (org-scribe--get-plot-thread-file) "/tmp/objects/plot.org")))))
 
 ;;; Integration Tests (require project structure)
 
@@ -105,17 +100,9 @@
 
 ;;; Phase 2 Function Tests
 
-(ert-deftest test-plot-thread-report-function-defined ()
-  "Test that plot thread report function is defined."
-  (should (fboundp 'org-scribe-plot-thread-report)))
-
-(ert-deftest test-plot-thread-stats-function-defined ()
-  "Test that plot thread statistics function is defined."
-  (should (fboundp 'org-scribe-plot-thread-stats)))
-
-(ert-deftest test-plot-thread-timeline-dblock-defined ()
-  "Test that timeline dynamic block function is defined."
-  (should (fboundp 'org-dblock-write:plot-thread-timeline)))
+;; The three `fboundp' checks that used to live here (report, stats, the
+;; timeline dblock) are folded into `test-plot-links-functions-defined'
+;; above.
 
 ;;; Health Report Coverage Tests (M2)
 

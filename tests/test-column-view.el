@@ -22,12 +22,6 @@
 (require 'org-scribe-column-view)
 (require 'org-scribe-search)  ; For org-scribe--extract-link-text
 
-;;; Module Loading Tests
-
-(ert-deftest test-column-view-module-loads ()
-  "Test that org-scribe-column-view module loads without errors."
-  (should (featurep 'org-scribe-column-view)))
-
 ;;; Function Availability Tests
 
 (ert-deftest test-column-view-functions-defined ()

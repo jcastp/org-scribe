@@ -29,14 +29,6 @@
 (require 'org-scribe-modes)
 
 ;;; ─────────────────────────────────────────────
-;;; Module Loading
-;;; ─────────────────────────────────────────────
-
-(ert-deftest test-modes-module-loads ()
-  "Test that org-scribe-modes loads without errors."
-  (should (featurep 'org-scribe-modes)))
-
-;;; ─────────────────────────────────────────────
 ;;; Function Availability
 ;;; ─────────────────────────────────────────────
 
@@ -251,14 +243,19 @@
 ;;; ─────────────────────────────────────────────
 
 (ert-deftest test-modes-writeroom-required-signals-user-error ()
-  "Test that activate signals user-error when writeroom-mode is not installed."
-  ;; Only meaningful when writeroom is not installed in the test environment
-  (skip-unless (not (fboundp 'writeroom-mode)))
+  "Test that activate signals user-error when writeroom-mode is not installed.
+Writeroom absence is simulated by emptying its function cell, which is
+what `org-scribe-env--activate' checks with `fboundp'.  This used to be
+a `skip-unless' on writeroom being absent, which meant the test never
+ran anywhere writeroom is installed — that is, anywhere the rest of the
+suite runs."
   (with-temp-buffer
-    (cl-letf (((symbol-function 'display-line-numbers-mode) #'ignore)
+    (cl-letf (((symbol-function 'writeroom-mode) nil)
+              ;; Not reached while the guard holds (it fires before any of
+              ;; this), but stubbed so a future reordering fails on the
+              ;; missing user-error rather than on a live theme change.
+              ((symbol-function 'display-line-numbers-mode) #'ignore)
               ((symbol-function 'load-theme) #'ignore))
-      ;; consult-theme and fontaine-set-preset are also absent in clean test env,
-      ;; so the code naturally falls through to the writeroom guard.
       (should-error (org-scribe-env--activate) :type 'user-error))))
 
 (ert-deftest test-modes-deactivate-clears-writeroom-flag ()
@@ -336,15 +333,24 @@
     (should (null org-scribe-editing--saved-fontaine-preset))))
 
 (ert-deftest test-modes-editing-teardown-restores-window-config ()
-  "Test that teardown restores a previously saved window configuration."
-  (skip-unless (display-graphic-p))  ; window configs require a display
-  (let ((saved-config (current-window-configuration)))
+  "Test that teardown restores a previously saved window configuration.
+The restore call is captured rather than performed, so this runs in
+batch: it used to be `skip-unless' on `display-graphic-p', which meant
+it never ran in the batch suite at all.  Capturing also lets us assert
+the stronger fact — that teardown passed the *saved* configuration to
+`set-window-configuration' — instead of only that the variable was
+cleared afterwards."
+  (let ((saved-config (current-window-configuration))
+        (restored nil))
     (with-temp-buffer
       (setq org-scribe-editing--saved-config saved-config
             org-scribe-editing--saved-theme nil
             org-scribe-editing--saved-fill-column-width nil
             org-scribe-editing--saved-fontaine-preset nil)
-      (org-scribe-editing--teardown)
+      (cl-letf (((symbol-function 'set-window-configuration)
+                 (lambda (config &rest _) (setq restored config))))
+        (org-scribe-editing--teardown))
+      (should (eq restored saved-config))
       ;; After teardown the saved config is cleared
       (should (null org-scribe-editing--saved-config)))))
 

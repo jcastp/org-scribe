@@ -50,7 +50,7 @@
     ;; Add all module directories to load path
     (dolist (dir '("." "core" "counting" "templates" "modes" "search"
                    "language" "capture" "linking" "export" "reporting" "ui"
-                   "planning"))
+                   "planning" "snippets"))
       (add-to-list 'load-path (expand-file-name dir default-directory)))))
 
 ;;; Load test files
@@ -123,6 +123,17 @@ Suitable for CI/CD pipelines and automated testing."
   (ert-run-tests-batch-and-exit t))
 
 ;;; Selective test running
+;;
+;; Each function below loads one test file and runs the tests matching a
+;; regexp.  The regexps are matched against every test ERT knows about, not
+;; just the file just loaded, so in a session where the whole suite has been
+;; loaded a runner can also pick up same-prefixed tests from other files
+;; (e.g. `test-location-capture-hook-*' lives in test-location-links.el but
+;; matches the capture runner).  A handful of such overlaps remain and are
+;; harmless — they run a related test twice.  What the regexps must not do
+;; is *miss* tests defined in the file they load, or pull in a whole other
+;; suite; both were happening before, which is why several enumerate their
+;; alternatives instead of using a short prefix.
 
 ;;;###autoload
 (defun org-scribe-run-core-tests ()
@@ -138,7 +149,18 @@ Suitable for CI/CD pipelines and automated testing."
   (interactive)
   (load-file (expand-file-name "test-project.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
-  (ert "^test-project-\\|^test-validate-\\|^test-template-\\|^test-insert-"))
+  ;; Matches what test-project.el actually defines.  Note the enumerated
+  ;; test-template-* alternatives: a bare `^test-template-' also selects the
+  ;; test-template-parity-* tests, which live in a file this function does
+  ;; not load — harmless in a fresh session, but in a session where the full
+  ;; suite has been loaded it silently runs another file's tests under this
+  ;; name.  The `create'/`backward'/`obsolete' prefixes were missing
+  ;; entirely, so project-creation tests never ran under this runner.
+  (ert (concat "^test-project-\\|^test-validate-\\|^test-insert-"
+               "\\|^test-backward-\\|^test-obsolete-"
+               "\\|^test-create-novel-project-\\|^test-create-short-story-project-"
+               "\\|^test-short-story-template-"
+               "\\|^test-template-\\(?:directory\\|language\\|variable\\|no-plan\\)")))
 
 ;;;###autoload
 (defun org-scribe-run-capture-tests ()
@@ -146,7 +168,15 @@ Suitable for CI/CD pipelines and automated testing."
   (interactive)
   (load-file (expand-file-name "test-capture.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
-  (ert "^test-capture-\\|^test-create-\\|^test-character-\\|^test-location-\\|^test-object-\\|^test-timeline-"))
+  ;; The bare `^test-character-' / `^test-location-' alternatives used to
+  ;; pull in the character and location *linking* tests, from files this
+  ;; function does not load.  Both are narrowed to the capture-side names
+  ;; test-capture.el defines.
+  (ert (concat "^test-capture-"
+               "\\|^test-character-\\(?:capture\\|template\\)"
+               "\\|^test-location-\\(?:capture\\|template\\)"
+               "\\|^test-object-\\|^test-timeline-\\|^test-plot-thread-template"
+               "\\|^test-create-novel-capture-file\\|^test-create-short-story-notes-file")))
 
 ;;;###autoload
 (defun org-scribe-run-modes-tests ()

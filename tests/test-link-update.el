@@ -26,12 +26,6 @@
 
 (require 'org-scribe-link-update)
 
-;;; Module Loading Tests
-
-(ert-deftest test-link-update-module-loads ()
-  "Test that org-scribe-link-update module loads without errors."
-  (should (featurep 'org-scribe-link-update)))
-
 (ert-deftest test-link-update-functions-defined ()
   "Test that all link update functions are defined."
   (should (fboundp 'org-scribe--update-link-display-name))

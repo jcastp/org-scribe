@@ -39,12 +39,6 @@ The path is available as `temp-novel'."
            ,@body)
        (delete-file temp-novel))))
 
-;;; Module loading
-
-(ert-deftest test-health-module-loads ()
-  "Test that the health module loads without errors."
-  (should (featurep 'org-scribe-health)))
-
 (ert-deftest test-health-function-defined ()
   "Test that org-scribe-project-health is defined."
   (should (fboundp 'org-scribe-project-health)))
@@ -427,13 +421,10 @@ even though nothing was actually due."
 
 ;;; Writing Plan section in the report
 
-(ert-deftest test-health-report-writing-plan-guard-is-featurep ()
-  "Writing Plan section code is gated on (featurep 'org-scribe-planner).
-Verified directly: the guard expression returns nil for a missing feature."
-  ;; This is a unit test on the guard condition itself — it does not invoke
-  ;; the full report because overriding `featurep' globally during a live
-  ;; session causes excessive-lisp-nesting from Emacs internals.
-  (should-not (featurep 'this-package-does-not-exist-at-all)))
+;; The `(featurep 'org-scribe-planner)' guard on this section is covered
+;; behaviorally by the two tests below, which exercise the section with the
+;; planner loaded.  A unit test on the guard expression itself would only
+;; assert that Emacs' `featurep' returns nil for a missing feature.
 
 (ert-deftest test-health-report-writing-plan-no-plan-file ()
   "Writing Plan section shows creation hint when no plan exists."

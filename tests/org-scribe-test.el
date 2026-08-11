@@ -63,19 +63,10 @@
   (should (boundp 'org-scribe-env-normal-theme))
   (should (boundp 'org-scribe-scene-break-replacements)))
 
-(ert-deftest org-scribe-test-scene-break-replacements ()
-  "Test scene break replacement configuration."
-  (should (alist-get 'ascii org-scribe-scene-break-replacements))
-  (should (alist-get 'html org-scribe-scene-break-replacements))
-  (should (alist-get 'latex org-scribe-scene-break-replacements))
-  (should (alist-get t org-scribe-scene-break-replacements)))
-
-;;; Utility Tests
-
-(ert-deftest org-scribe-test-feature-detection ()
-  "Test feature detection mechanism."
-  (should (eq nil (org-scribe-check-feature 'nonexistent-package)))
-  (should (eq t (org-scribe-check-feature 'org))))
+;; The contents of `org-scribe-scene-break-replacements' are asserted in
+;; test-export.el, next to the filter that consumes them, and
+;; `org-scribe-check-feature' in test-core-extended.el, which covers both
+;; the available and unavailable branches.  Both were duplicated here.
 
 ;;; Running Tests
 

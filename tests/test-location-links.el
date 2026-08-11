@@ -24,40 +24,17 @@
 
 (require 'org-scribe-location-links)
 
-;;; Module Loading Tests
-
-(ert-deftest test-location-links-module-loads ()
-  "Test that org-scribe-location-links module loads without errors."
-  (should (featurep 'org-scribe-location-links)))
-
 ;;; Function Availability Tests
 
 (ert-deftest test-location-links-functions-defined ()
-  "Test that all public location linking functions are defined."
-  ;; Core functions
-  (should (fboundp 'org-scribe-add-location-ids))
-  (should (fboundp 'org-scribe-insert-location-link))
-  (should (fboundp 'org-scribe-insert-multiple-location-links))
-  (should (fboundp 'org-scribe-set-scene-locations))
-
-  ;; Batch operations
-  (should (fboundp 'org-scribe-link-scene-locations))
-  (should (fboundp 'org-scribe-link-all-scene-locations))
-
-  ;; Setup wizard
-  (should (fboundp 'org-scribe-setup-location-links)))
-
-;;; Helper Function Tests
-
-(ert-deftest test-location-links-helper-functions-defined ()
-  "Test that helper functions are defined."
+  "The location functions that `org-scribe-define-entity' does not generate.
+Everything the macro generates for this entity — the whole public
+command set plus the `org-scribe--get-*' helpers — is covered for all
+entities at once by `test-entity-registry-api-is-generated' in
+test-sistema-templates.el.  What remains here is the hand-written pair
+in linking/org-scribe-location-links.el."
   (should (fboundp 'org-scribe--ensure-location-has-id))
-  (should (fboundp 'org-scribe--add-id-to-all-locations))
-  (should (fboundp 'org-scribe--get-location-name-at-point))
-  (should (fboundp 'org-scribe--get-location-file))
-  (should (fboundp 'org-scribe--get-all-locations))
-  (should (fboundp 'org-scribe--create-location-link))
-  (should (fboundp 'org-scribe--link-locations-in-property)))
+  (should (fboundp 'org-scribe--location-heading-p)))
 
 ;;; Location Link Creation Tests
 
@@ -78,10 +55,6 @@
 
 ;;; Location Database Tests
 
-(ert-deftest test-location-database-function-defined ()
-  "Test that location database function is defined."
-  (should (fboundp 'org-scribe--get-all-locations)))
-
 (ert-deftest test-location-database-structure ()
   "Test that location database returns correct structure."
   ;; The function should return nil if no location file exists
@@ -100,24 +73,14 @@
         (should (stringp (cadr item)))  ; ID is a string
         ))))
 
-;;; Location Name Extraction Tests
-
-(ert-deftest test-location-name-extraction-function-defined ()
-  "Test that location name extraction function is defined."
-  (should (fboundp 'org-scribe--get-location-name-at-point)))
-
-;;; ID Ensurement Tests
-
-(ert-deftest test-ensure-location-has-id ()
-  "Test ensuring a location heading has an ID."
-  ;; This function wraps org-id-get-create
-  (should (fboundp 'org-scribe--ensure-location-has-id)))
-
-;;; Batch Update Tests
-
-(ert-deftest test-link-locations-in-property-function-defined ()
-  "Test that property linking function is defined."
-  (should (fboundp 'org-scribe--link-locations-in-property)))
+;; Three `fboundp'-only tests stood here: one for
+;; `org-scribe--get-location-name-at-point' (a defalias for
+;; `org-scribe--entity-name-at-point', whose behavior is tested in
+;; test-character-links.el), one for `org-scribe--ensure-location-has-id'
+;; (a one-line wrapper over `org-id-get-create' — a test would exercise
+;; org-id, not org-scribe), and one for
+;; `org-scribe--link-locations-in-property', which duplicated the
+;; roll-up above.
 
 ;;; Hook Integration Tests
 
@@ -212,12 +175,6 @@ subheadings\", not a real entry."
       (goto-char (point-min))
       (org-back-to-heading)
       (should-not (org-scribe--location-heading-p)))))
-
-;;; Setup Wizard Tests
-
-(ert-deftest test-setup-wizard-defined ()
-  "Test that setup wizard function is defined."
-  (should (fboundp 'org-scribe-setup-location-links)))
 
 ;;; Run tests
 

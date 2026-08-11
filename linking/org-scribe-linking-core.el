@@ -440,6 +440,10 @@ Config keys — stored in the entity descriptor constant and registry:
   :msg-setup-complete, :msg-updated-link-names, :msg-no-link-updates-type,
   :msg-updated-all-type
 
+The registry entry additionally carries :api, an alist of (NAME . COMMAND-P)
+for every function-name key supplied, so callers (and tests) can ask an
+entity what its API is.  The descriptor constant does not carry it.
+
 Function-name keys — consumed at expansion time; each generates one function:
   :get-file-name, :get-all-name, :create-link-name, :add-ids-to-all-name,
   :add-ids-name, :insert-link-name, :insert-multi-name, :set-scene-name,
@@ -512,6 +516,18 @@ Omit a function-name key to skip generating that function."
          (fn-key-list (append (mapcar (lambda (s) (plist-get s :key)) specs)
                               '(:set-scene-property :setup-add-ids-fn
                                 :setup-link-all-fn)))
+         ;; The API this entity *declares*: one (NAME . COMMAND-P) pair per
+         ;; function-name key supplied in KEYS.  Collected before the :when
+         ;; guards below are applied, deliberately — recording what was
+         ;; actually emitted would make the registry a restatement of the
+         ;; expansion, and a guard that turns falsy by accident (dropping a
+         ;; command from the entity's API) would go unnoticed.  Declared here,
+         ;; the mismatch is visible to anyone comparing :api against fboundp.
+         (api (let (result)
+                (dolist (spec specs (nreverse result))
+                  (when-let* ((name (plist-get keys (plist-get spec :key))))
+                    (push (cons name (and (plist-get spec :command) t))
+                          result)))))
          ;; Build config-only plist by filtering out expansion-time keys.
          (config-plist
           (let ((result nil) (rest keys))
@@ -531,8 +547,12 @@ Omit a function-name key to skip generating that function."
           forms)
 
     ;; 2. Register entity in the global registry (replacing any prior entry).
+    ;;    The registry entry carries the config keys plus :api, the list of
+    ;;    (NAME . COMMAND-P) pairs this entity declares.  :api is added here
+    ;;    rather than to the descriptor constant so ENTITY-VAR stays a pure
+    ;;    config plist, which is all the generic engine functions read.
     (push `(setq org-scribe-entity-registry
-                 (cons (cons ',entity-symbol ,entity-var)
+                 (cons (cons ',entity-symbol (append (list :api ',api) ,entity-var))
                        (assq-delete-all ',entity-symbol org-scribe-entity-registry)))
           forms)
 

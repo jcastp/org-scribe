@@ -27,30 +27,56 @@
 
 (require 'org-scribe-character-links)
 
-;;; Module Loading Tests
-
-(ert-deftest test-character-links-module-loads ()
-  "Test that org-scribe-character-links module loads without errors."
-  (should (featurep 'org-scribe-character-links)))
-
 ;;; Function Availability Tests
 
 (ert-deftest test-character-links-functions-defined ()
-  "Test that all public character linking functions are defined."
-  ;; Core functions
-  (should (fboundp 'org-scribe-add-character-ids))
+  "The hand-written half of the character API is defined.
+
+The character entity deliberately does not generate these four through
+`org-scribe-define-entity' — PoV needs its own single-value handling, so
+they are written out in linking/org-scribe-character-links.el.  The
+generated half is covered for every entity at once by
+`test-entity-registry-api-is-generated' in test-sistema-templates.el, so
+listing it again here would only duplicate that, and go stale."
   (should (fboundp 'org-scribe-set-pov-character))
-  (should (fboundp 'org-scribe-set-scene-characters))
-  (should (fboundp 'org-scribe-insert-character-link))
-  (should (fboundp 'org-scribe-insert-multiple-character-links))
   (should (fboundp 'org-scribe-jump-to-pov-character))
-
-  ;; Batch operations
   (should (fboundp 'org-scribe-link-scene-characters))
-  (should (fboundp 'org-scribe-link-all-scene-characters))
+  (should (fboundp 'org-scribe-link-all-scene-characters)))
 
-  ;; Setup wizard
-  (should (fboundp 'org-scribe-setup-character-links)))
+;;; org-scribe--entity-name-at-point
+;;
+;; Tested here rather than per entity: every entity type resolves its name
+;; through this one function in linking/org-scribe-linking-core.el, and the
+;; per-entity `org-scribe--get-*-name-at-point' names are defaliases for it.
+
+(ert-deftest test-entity-name-at-point-uses-heading ()
+  "With no NAME property, the heading text is the entity name.
+This is what lets the template ship placeholder headings the writer
+overwrites with the real name."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Alice Moreau\n")
+    (goto-char (point-min))
+    (should (equal (org-scribe--entity-name-at-point) "Alice Moreau"))))
+
+(ert-deftest test-entity-name-at-point-prefers-name-property ()
+  "An explicit NAME property overrides the heading text.
+It is the escape hatch for an entity whose heading is not its name."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* The Antagonist\n:PROPERTIES:\n:NAME: Victor Sarraute\n:END:\n")
+    (goto-char (point-min))
+    (should (equal (org-scribe--entity-name-at-point) "Victor Sarraute"))))
+
+(ert-deftest test-entity-name-at-point-strips-heading-decoration ()
+  "TODO keywords, priorities and tags are not part of the entity name.
+A name carrying a tag would not match the same entity elsewhere, so link
+display names and completion would silently split in two."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* TODO [#A] Alice Moreau :draft:\n")
+    (goto-char (point-min))
+    (should (equal (org-scribe--entity-name-at-point) "Alice Moreau"))))
 
 ;;; org-scribe--link-entity-in-property Tests (L4)
 
@@ -120,12 +146,9 @@ still linked to the first Alex's ID."
 
 ;;; Character Timeline Tests
 
-(ert-deftest test-character-timeline-dblock-defined ()
-  "Test that character timeline dynamic block function is defined."
-  (should (fboundp 'org-dblock-write:character-timeline)))
-
 (ert-deftest test-character-timeline-helper-functions-defined ()
-  "Test that character timeline helper functions are defined."
+  "Test that the character timeline dblock and its helpers are defined."
+  (should (fboundp 'org-dblock-write:character-timeline))
   (should (fboundp 'org-scribe--get-all-scenes-with-characters))
   (should (fboundp 'org-scribe--collect-unique-characters))
   (should (fboundp 'org-scribe--character-symbol)))
