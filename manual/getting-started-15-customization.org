@@ -310,6 +310,29 @@ Balanced three-column:
 
 *Must sum to less than 1.0!*
 
+** Outline Panel Depth (Scenes vs. Chapters)
+
+The outline panel used by Editing mode and Navigate mode is built from Org's
+*imenu index*, and that index stops at ~org-imenu-depth~ headings deep. The
+Org default is ~2~:
+
+#+BEGIN_SRC emacs-lisp
+;; Show scenes (level 3) in the outline panel, not just acts and chapters
+(setq org-imenu-depth 3)
+#+END_SRC
+
+org-scribe's novel templates put acts at level 1, chapters at level 2 and
+*scenes at level 3* — so with the default the panel lists chapters and stops,
+one level short of the headings you actually navigate by. Set ~4~ if you also
+write beats below scenes; each extra level makes the index slower to build and
+the panel longer.
+
+The index is cached per buffer, so after changing this either restart Emacs,
+revert the manuscript buffer, or click ~*Rescan*~ at the top of the panel.
+
+Note this is a plain Org variable, not an org-scribe one — raising it also
+improves ~M-x imenu~, ~consult-imenu~ and anything else that reads the index.
+
 ** Complete Writing Modes Configuration Example
 
 Put this in your init file:
@@ -337,6 +360,9 @@ Put this in your init file:
 (setq org-scribe-editing-right-width-percent 0.25)      ; Notes: 25%
                                                       ; Manuscript: 50% (automatic)
 (setq org-scribe-editing-right-panel 'notes)            ; What the right pane shows
+
+;; === OUTLINE PANEL DEPTH ===
+(setq org-imenu-depth 3)                                ; List scenes, not just chapters
 #+END_SRC
 
 ** What the Right Panel Shows

@@ -94,6 +94,11 @@ Editing mode (~F8 F8 e~) creates a professional three-panel layout:
 **Center panel**: Your manuscript for editing
 **Right panel**: Revision notes and checklists
 
+*Note*: to see individual scenes in the left panel as drawn above, you need
+~(setq org-imenu-depth 3)~ in your init file. Org's default of ~2~ stops the
+outline at chapters, and org-scribe's scenes are level 3. See
+[[file:getting-started-09-writing-modes.org::*Important: Making Your Scenes Visible in the Outline][Making Your Scenes Visible in the Outline]] in the writing-modes chapter.
+
 ** Activating Editing Mode
 
 1. Open your manuscript (~novel.org~ or ~story.org~)

@@ -441,6 +441,47 @@ M-x package-install RET treemacs RET
 M-x package-install RET imenu-list RET
 #+END_SRC
 
+** Important: Making Your Scenes Visible in the Outline
+
+By default, *the outline panel does not show your scenes*. You will see acts
+and chapters, and nothing below them. This surprises nearly everyone the first
+time.
+
+The cause is an Org variable, not an org-scribe setting. ~imenu-list~ builds
+its outline from Org's *imenu index*, and that index stops at the depth set by
+~org-imenu-depth~, whose default value is *2*:
+
+#+BEGIN_EXAMPLE
+* Act I                      ← level 1  (shown)
+** TODO Chapter 1            ← level 2  (shown)
+*** TODO Scene 1             ← level 3  (NOT shown by default)
+*** TODO Scene 2             ← level 3  (NOT shown by default)
+#+END_EXAMPLE
+
+org-scribe's novel templates put *scenes at level 3*, which is exactly one
+level past the cutoff. Since scenes are the unit you actually navigate by, the
+panel is far less useful until you raise the limit.
+
+*The fix* — add this to your init file:
+
+#+BEGIN_SRC emacs-lisp
+;; Show scenes (level 3) in the outline panel, not just acts and chapters
+(setq org-imenu-depth 3)
+#+END_SRC
+
+Use ~4~ instead if you write sub-scene headings (beats) and want those listed
+too. Higher values make the index slower to build and the panel longer to
+scroll, so raise it only as far as you actually need.
+
+*After changing it*, the index of an already-open file is cached. Either
+restart Emacs, or revert the manuscript buffer (~M-x revert-buffer~), or click
+~*Rescan*~ at the top of the imenu-list panel.
+
+This affects *both* Navigate mode and Editing mode, since both build their
+outline panel from the same index. It also affects plain ~M-x imenu~ and any
+completion front-end that uses it (for example ~consult-imenu~), so raising it
+improves heading navigation throughout Org, not only inside org-scribe.
+
 ** Try It Now!
 
 1. Open your manuscript
@@ -1079,6 +1120,21 @@ This is advanced - stick with the four built-in modes initially!
 - Position cursor on a scene or chapter heading (*** or **)
 - Make sure buffer is in ~org-mode~
 - Try from a deeper heading (not the document title)
+
+** "The outline panel doesn't show my scenes"
+
+*Cause*: Org's ~org-imenu-depth~ defaults to ~2~, so the index stops at
+chapters. org-scribe's scenes are level 3.
+
+*Solution*:
+#+BEGIN_SRC emacs-lisp
+(setq org-imenu-depth 3)
+#+END_SRC
+Then revert the manuscript buffer, or click ~*Rescan*~ at the top of the
+panel — the old index is cached until you do.
+
+See [[*Important: Making Your Scenes Visible in the Outline][Making Your Scenes Visible in the Outline]] for the full explanation. This
+applies to Editing mode as well as Navigate mode.
 
 ** "Navigate mode panels are too wide/narrow"
 
