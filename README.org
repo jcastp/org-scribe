@@ -59,7 +59,7 @@
   - Three-pane editing layout
 - *Search Functions*: Find scenes by POV, character, location, or plot keywords using org-ql (handles ID links)
 - *Edit Marker Index*: Collects the =*EDIT*= / =*NOTE*= markers you leave inline while drafting into one navigable buffer, grouped by category, each linking back to its exact line. Markers live in Org comment blocks, so they never reach your exported manuscript and never inflate your word counts
-- *Dictionary Tools*: Spanish RAE dictionary API, plus synonym lookup that works *offline* when the system thesaurus is installed — including for inflected words, so looking up =corriendo= finds =correr=
+- *Dictionary Tools*: definitions and synonyms that both work *offline* when the local data is installed — a Wikcionario served by kiwix-serve for definitions, the system thesaurus for synonyms — falling back to the online RAE and WordReference otherwise. Inflected words resolve either way, so looking up =corriendo= finds =correr=
 - *Capture System*: Project-aware note capture that finds the right notes file; character/location/object/timeline/plot-thread templates are fully localized to the project's own language (English/Spanish), independent of your global UI language setting
 - *Project Health Report*: =org-scribe-project-health= aggregates the Starting Gate (how many of its eight items are done, two of them measured rather than self-reported), word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, plot points no scene serves yet, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
@@ -69,7 +69,7 @@
 ** Bilingual Support
 
 Full support for English/Spanish bilingual writing:
-- Spanish RAE dictionary integration
+- Spanish definitions: offline via a local Wikcionario, or the RAE online
 - Synonym lookup: offline via the system thesaurus, or WordReference online
 - Bilingual project structure support (notes/notas directories)
 - Bilingual UI: every command prompt, message, and error is available in Spanish too — set =(setq org-scribe-message-language 'es)= (default =en=)
@@ -125,14 +125,16 @@ active and which are missing, with install hints.
 Installed with your OS package manager, not =package.el=. org-scribe reads
 their data files directly — there is nothing to require or configure.
 
-| Package    | Gives you                                              | Debian/Ubuntu                     |
-|------------+--------------------------------------------------------+-----------------------------------|
-| =mythes-es= | Offline synonyms, replacing the WordReference web page | =sudo apt install mythes-es=       |
-| =hunspell=  | Inflected words resolve (=corriendo= → =correr=)         | =sudo apt install hunspell-es=     |
+| Package       | Gives you                                              | Debian/Ubuntu                  |
+|---------------+--------------------------------------------------------+--------------------------------|
+| =mythes-es=     | Offline synonyms, replacing the WordReference web page | =sudo apt install mythes-es=     |
+| =hunspell=      | Inflected words resolve (=corriendo= → =correr=)         | =sudo apt install hunspell-es=   |
+| =kiwix-tools=   | Offline definitions, replacing the online RAE          | =sudo apt install kiwix-tools=   |
 
-Both are optional and independent. With neither installed, synonym lookup
-behaves exactly as it always has. See [[*Synonyms][Synonyms]] below and lesson 12 of the
-manual.
+All three are optional and independent. With none installed, dictionary and
+synonym lookup behave exactly as they always have. =kiwix-tools= additionally
+needs a ~566 MB Wikcionario ZIM and a background service — see [[file:INSTALL.org][INSTALL.org]] for
+the systemd unit. See [[*Dictionary Tools][Dictionary Tools]] below and lesson 12 of the manual.
 
 ** From Source
 
@@ -1068,11 +1070,53 @@ See lesson 14 of the manual for the full revision workflow, including the relate
 
 ** Dictionary Tools
 
-*** Spanish RAE Dictionary
+*** Definitions
 
-=M-x org-scribe-rae-api-lookup= or press =F8 F8 d= in hydra
+=M-x org-scribe-dictionary-lookup= or press =F8 F8 d= in hydra
 
-Looks up Spanish words in the Real Academia Española dictionary.
+Looks up a Spanish word, from one of two sources.
+
+**** Offline
+
+Requires =kiwix-tools= and a Wikcionario ZIM, plus a =kiwix-serve= running —
+see [[file:INSTALL.org][INSTALL.org]] for the download and the systemd user unit. *org-scribe never
+starts or manages that server*; it checks whether it answers and says so when
+it does not.
+
+With it running, definitions arrive instantly and offline, with etymology,
+numbered senses, usage examples, and per-sense synonyms and antonyms.
+Inflected words resolve to their dictionary form: looking up =corriendo=
+opens =correr= and says that it did. (Wikcionario does store an article for
+every inflected form, but they are stubs whose whole content is a pointer to
+the lemma — so following the pointer is the useful behaviour.)
+
+Availability is probed once per session and then cached, so lookups cost no
+latency. If you start =kiwix-serve= after Emacs, press =C-u= before the
+lookup to force a re-probe.
+
+**** Online (fallback)
+
+With no local server, the Real Academia Española is queried through
+=rae-api.com=, exactly as before. =M-x org-scribe-rae-api-lookup= still calls
+it directly if you want the RAE specifically.
+
+Note there is no free offline copy of the RAE's own dictionary — it is
+copyrighted, which is why the offline path uses Wikcionario.
+
+**** Choosing explicitly
+
+#+begin_src emacs-lisp
+;; 'auto (default) — local server when it answers, online RAE otherwise
+;; 'wikcionario    — local only; never queries the network
+;; 'rae-api        — always the online RAE
+(setq org-scribe-dictionary-backend 'auto)
+
+(setq org-scribe-wikcionario-url "http://localhost:8080")
+#+end_src
+
+A word the local server simply lacks is reported as missing, with
+suggestions, rather than silently going online — otherwise a gap in your
+local data would be indistinguishable from a normal network lookup.
 
 *** Synonyms
 

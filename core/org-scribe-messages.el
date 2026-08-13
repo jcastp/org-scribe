@@ -378,6 +378,10 @@ file's Commentary for why a forward `defvar' is needed here too.")
     (msg-thesaurus-fallback-online . "No local entry for %s; opening WordReference")
     (msg-thesaurus-sense . "Sense %d")
     (msg-thesaurus-lemma-used . "No entry for %s; showing synonyms for %s")
+    (error-wikcionario-unreachable . "No local dictionary at %s — is kiwix-serve running? (systemctl --user status kiwix-serve)")
+    (msg-dictionary-lemma-used . "%s is a form of %s; showing that entry")
+    (msg-dictionary-fallback-online . "No local entry for %s; using the online RAE")
+    (msg-dictionary-not-found . "No entry for %s in the local dictionary")
 
     ;; File operations
     (file-not-found . "File %s doesn't exist. Create it? ")
@@ -782,6 +786,10 @@ printf-style format specifiers (%s, %d, etc.) for dynamic content.")
     (msg-thesaurus-fallback-online . "Sin entrada local para %s; abriendo WordReference")
     (msg-thesaurus-sense . "Acepción %d")
     (msg-thesaurus-lemma-used . "Sin entrada para %s; mostrando sinónimos de %s")
+    (error-wikcionario-unreachable . "No hay diccionario local en %s — ¿está kiwix-serve en marcha? (systemctl --user status kiwix-serve)")
+    (msg-dictionary-lemma-used . "%s es una forma de %s; mostrando esa entrada")
+    (msg-dictionary-fallback-online . "Sin entrada local para %s; usando la RAE en línea")
+    (msg-dictionary-not-found . "Sin entrada para %s en el diccionario local")
 
     ;; File operations
     (file-not-found . "El archivo %s no existe. ¿Crearlo? ")

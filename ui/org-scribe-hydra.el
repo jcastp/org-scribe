@@ -35,6 +35,7 @@
 (declare-function org-scribe--project-marker-set "core/org-scribe-core")
 (declare-function org-scribe-workspace "modes/org-scribe-modes")
 (declare-function org-scribe-rae-api-lookup "language/org-scribe-dictionary")
+(declare-function org-scribe-dictionary-lookup "language/org-scribe-dictionary")
 (declare-function org-scribe-sinonimo "language/org-scribe-dictionary")
 (declare-function powerthesaurus-lookup-dwim "powerthesaurus")
 (declare-function org-scribe-capture-to-file "capture/org-scribe-capture")
@@ -183,7 +184,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ;; "a" refreshes WORDCOUNT on every heading in the buffer (and updates the plan).
   ("w" org-scribe-wordcount "count words")
   ("a" org-scribe-ews-org-count-words "update all counts")
-  ("d" org-scribe-rae-api-lookup "RAE dictionary")
+  ("d" org-scribe-dictionary-lookup "dictionary")
   ("y" org-scribe-sinonimo "synonyms")
   ("x" powerthesaurus-lookup-dwim "thesaurus")
 

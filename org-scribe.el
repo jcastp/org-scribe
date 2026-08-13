@@ -73,6 +73,7 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            ;; resolves the lemmatizer lazily rather than requiring it.
            (org-scribe-mythes      . "language/org-scribe-mythes")
            (org-scribe-lemma       . "language/org-scribe-lemma")
+           (org-scribe-wikcionario . "language/org-scribe-wikcionario")
            (org-scribe-dictionary  . "language/org-scribe-dictionary")
            (org-scribe-capture     . "capture/org-scribe-capture")
            ;; Linking system (core framework + entity modules)

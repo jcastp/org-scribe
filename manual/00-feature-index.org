@@ -22,7 +22,7 @@ This package organizes features into the following categories:
 5. [[#linking-system][Linking System]] - ID-based linking for characters, locations, and plot threads; entity tooltips
 6. [[#search-tools][Search Tools]] - Find scenes by character, plot, location, or PoV
 7. [[#templates][Templates]] - Scene and chapter insertion templates; scene word-count update
-8. [[#dictionary-language][Dictionary & Language Tools]] - Spanish dictionary, offline/online synonyms, lemmatization, translations
+8. [[#dictionary-language][Dictionary & Language Tools]] - offline/online definitions and synonyms, lemmatization, translations
 9. [[#export-tools][Export Tools]] - Scene break filters and export presets
 10. [[#column-view][Column View Enhancements]] - Clean display of ID links in column view
 11. [[#analysis-tools][Analysis Tools]] - Project health report and aggregated statistics
@@ -414,6 +414,18 @@ Users can customize templates by editing files in ~org-scribe-template-directory
 :CUSTOM_ID: dictionary-language
 :END:
 
+** Dictionary Lookup (~org-scribe-dictionary-lookup~)
+
+The definition entry point, dispatching on ~org-scribe-dictionary-backend~ between a local Wikcionario served by kiwix-serve and the online RAE API. Under the default ~'auto~ the local server is used when it answers and the RAE otherwise, so a writer who sets up nothing sees the previous online behaviour. Availability is probed once per session and cached so lookups cost no latency; a prefix argument forces a re-probe, for a server started after Emacs. A word the local server lacks is reported as missing — with suggestions from the ZIM — rather than silently falling back online, because that would make a gap in local data indistinguishable from a normal network lookup. Bound to ~d~ in the hydra.
+
+*Status*: Fully implemented | *Hydra*: ~d~ (Tools section) | *Module*: ~language/org-scribe-dictionary.el~, ~language/org-scribe-wikcionario.el~
+
+** Local Wikcionario Backend (~org-scribe-wikcionario-resolve~)
+
+Serves definitions from a Spanish Wiktionary ZIM through a local kiwix-serve. Discovers the served book from the OPDS catalogue (reading the content link, since the catalogue's ~<name>~ omits the flavour suffix and 404s), builds article URLs under ~/content/~, and queries ~/suggest~ for near matches on a miss, filtering out the server's synthetic "containing '...'" entry. Its lookup order deliberately differs from the thesaurus module's: Wikcionario stores an article for *every* inflected form, but they are stubs pointing at the dictionary form, so an inflected word resolves to its lemma's article rather than to its own stub. org-scribe never starts, stops or supervises the server — it probes a URL and names the service when nothing answers.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (used by ~d~) | *Module*: ~language/org-scribe-wikcionario.el~
+
 ** RAE Dictionary Lookup (~org-scribe-rae-api-lookup~)
 
 Queries the Real Academia Española (RAE) API for Spanish word definitions, displaying results in a side window. The function fetches complete dictionary entries including definitions, examples, etymology, and verb conjugations (for verbs). Results are formatted for readability with conjugation tables and multiple definition senses clearly separated. The lookup uses the official RAE API endpoints and handles Spanish-specific characters correctly. Ideal for Spanish-language writers who need authoritative dictionary references while writing.
@@ -631,6 +643,18 @@ Selects where ~org-scribe-sinonimo~ gets its synonyms: ~'mythes~ reads only the 
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
+** Dictionary Backend (~org-scribe-dictionary-backend~)
+
+Selects where definitions come from: ~'wikcionario~ reads only a local kiwix-serve, ~'rae-api~ only the online service, and ~'auto~ (the default) uses the local server when it answers. Set ~'wikcionario~ to guarantee no network traffic, which also makes coverage gaps in the local ZIM visible instead of being papered over by an online lookup.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
+
+** Local Dictionary Server (~org-scribe-wikcionario-url~ / ~-book~ / ~-timeout~)
+
+~org-scribe-wikcionario-url~ (default ~http://localhost:8080~) is where kiwix-serve is listening; ~org-scribe-wikcionario-book~ (default nil) names the ZIM, and nil means "ask the server"; ~org-scribe-wikcionario-timeout~ (default 3 seconds) bounds the availability probe, which is paid only once per session. Note the book name used in URLs carries the flavour suffix (~wiktionary_es_all_nopic~) and differs from the name shown in the OPDS catalogue, which is why auto-discovery is the default.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
+
 ** Lemmatization Dictionary (~org-scribe-lemma-dictionary~)
 
 Names the hunspell dictionary used to reduce inflected words to their dictionary form. When nil (the default) it follows ~org-scribe-mythes-language~, so one setting drives both the thesaurus and the morphology. Set it explicitly only when the two should differ, or when hunspell names its dictionary differently from the thesaurus. Run ~M-x org-scribe-lemma-clear-cache~ after installing a dictionary mid-session.
@@ -748,19 +772,19 @@ If your init file still contains the following snippet from before the planner w
 | Linking System           |            19 |
 | Search Tools             |             7 |
 | Templates                |             5 |
-| Dictionary & Language    |             7 |
+| Dictionary & Language    |             9 |
 | Export Tools             |             3 |
 | Column View              |             3 |
 | Analysis Tools           |             1 |
 | UI & Navigation          |             6 |
-| Configuration            |            18 |
+| Configuration            |            20 |
 | Writing Planner          |             4 |
 |--------------------------+---------------|
-| *Total Features*           |            97 |
+| *Total Features*           |           101 |
 
 ** Implementation Status
 
-All 97 features are fully implemented and tested. The package is in active use and stable (version 0.6.0).
+All 101 features are fully implemented and tested. The package is in active use and stable (version 0.6.0).
 
 * Next Steps
 
@@ -800,5 +824,5 @@ manual/
 - *Created*: 2025-11-16
 - *Last Updated*: 2026-06-28
 - *Package Version*: 0.5.0
-- *Total Features Documented*: 97 (93 core + 4 bundled planner)
+- *Total Features Documented*: 101 (97 core + 4 bundled planner)
 - *Status*: Complete feature extraction, ready for detailed documentation

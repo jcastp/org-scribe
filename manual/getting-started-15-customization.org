@@ -441,6 +441,34 @@ The synonym window opens on the right. Adjust its width:
 
 This applies to both offline and online results.
 
+** Definition Source
+
+Definitions can come from a local Wikcionario served by kiwix-serve instead
+of the online RAE. Lesson 12 covers the setup (a 566 MB download and a
+background service).
+
+#+BEGIN_SRC emacs-lisp
+;; 'auto (default)  — the local server when it answers, the online RAE otherwise
+;; 'wikcionario     — local only; never queries the network
+;; 'rae-api         — always the online RAE
+(setq org-scribe-dictionary-backend 'auto)
+
+;; Where the local server is listening
+(setq org-scribe-wikcionario-url "http://localhost:8080")
+
+;; Which ZIM to query; nil asks the server what it is serving
+(setq org-scribe-wikcionario-book nil)
+
+;; How long to wait for the local server before giving up.  Only paid on the
+;; first lookup of a session.
+(setq org-scribe-wikcionario-timeout 3)
+#+END_SRC
+
+org-scribe never starts or supervises kiwix-serve — it probes and reports.
+Availability is cached per session, so if you start the server after Emacs,
+press ~C-u~ before the lookup (~C-u F8 F8 d~) or run
+~M-x org-scribe-wikcionario-clear-cache~.
+
 ** Thesaurus Source
 
 Synonym lookup can read a thesaurus on your own disk instead of loading a
@@ -502,10 +530,11 @@ up.
 #+BEGIN_SRC emacs-lisp
 ;;; Language Tools Customization
 
-;; Synonym window width
-(setq org-scribe-sinonimo-window-width 70)  ; Adjust to your screen
+;; Side window width (definitions and synonyms both use it)
+(setq org-scribe-sinonimo-window-width 70)
 
-;; Prefer the offline thesaurus, fall back to the web
+;; Prefer local sources, fall back to the web
+(setq org-scribe-dictionary-backend 'auto)
 (setq org-scribe-thesaurus-backend 'auto)
 
 ;; Mexican Spanish for both thesaurus and morphology

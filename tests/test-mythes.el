@@ -335,7 +335,7 @@ Skipped unless both the thesaurus and hunspell are installed."
 
 (ert-deftest test-mythes-render-produces-org-buffer ()
   "The renderer writes an Org buffer listing every sense."
-  (cl-letf (((symbol-function 'org-scribe--sinonimo-side-window) #'ignore))
+  (cl-letf (((symbol-function 'org-scribe--side-window) #'ignore))
     (org-scribe--sinonimo-render-mythes
      "abandonar" '(("tr." "dejar" "soltar") (nil "renunciar" "cesar")))
     (with-current-buffer (format "*%s*" (org-scribe-msg 'msg-thesaurus-title "abandonar"))
@@ -351,7 +351,7 @@ Skipped unless both the thesaurus and hunspell are installed."
   "When a lemma answered, the buffer says so.
 A writer who asked about \"corriendo\" and is shown \"correr\" must see that
 a substitution happened, or the tool looks like it misread the question."
-  (cl-letf (((symbol-function 'org-scribe--sinonimo-side-window) #'ignore))
+  (cl-letf (((symbol-function 'org-scribe--side-window) #'ignore))
     (org-scribe--sinonimo-render-mythes
      "corriendo" '((nil "huir" "escapar")) "correr")
     (with-current-buffer (format "*%s*" (org-scribe-msg 'msg-thesaurus-title "corriendo"))
@@ -363,7 +363,7 @@ a substitution happened, or the tool looks like it misread the question."
 
 (ert-deftest test-mythes-render-silent-when-no-substitution ()
   "A direct hit carries no substitution notice."
-  (cl-letf (((symbol-function 'org-scribe--sinonimo-side-window) #'ignore))
+  (cl-letf (((symbol-function 'org-scribe--side-window) #'ignore))
     (org-scribe--sinonimo-render-mythes
      "abandonar" '((nil "dejar" "soltar")) "abandonar")
     (with-current-buffer (format "*%s*" (org-scribe-msg 'msg-thesaurus-title "abandonar"))
@@ -372,7 +372,7 @@ a substitution happened, or the tool looks like it misread the question."
 
 (ert-deftest test-mythes-render-case-difference-is-not-a-substitution ()
   "Resolving `Miedo' to the headword `miedo' is not worth announcing."
-  (cl-letf (((symbol-function 'org-scribe--sinonimo-side-window) #'ignore))
+  (cl-letf (((symbol-function 'org-scribe--side-window) #'ignore))
     (org-scribe--sinonimo-render-mythes "Miedo" '((nil "temor")) "miedo")
     (with-current-buffer (format "*%s*" (org-scribe-msg 'msg-thesaurus-title "Miedo"))
       (should-not (string-match-p

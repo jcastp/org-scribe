@@ -8,8 +8,9 @@
 You're deep into your writing when you encounter a word that doesn't feel quite right. Do you stop, open a browser, search for synonyms, lose your flow? Not anymore! This lesson shows you how to look up definitions, find synonyms, and get translations without ever leaving Emacs.
 
 By the end of this lesson, you'll have:
-- Learned to use the RAE (Real Academia Española) dictionary for Spanish definitions
+- Learned to look up Spanish definitions, online via the RAE or offline
 - Installed an *offline* thesaurus so synonym lookup works with no network at all
+- Seen how to run a local Wikcionario for definitions without a connection
 - Discovered how to find synonyms quickly in a side window
 - Understood translation integration options
 - Practiced quick lookups that maintain your writing flow
@@ -41,7 +42,7 @@ The tools work with both the English and Spanish templates in ~org-scribe~.
 Let's verify the dictionary module is loaded:
 
 1. Press ~M-x~ (Alt+x or Option+x)
-2. Start typing: ~org-scribe-rae-api-lookup~
+2. Start typing: ~org-scribe-dictionary-lookup~
 3. You should see it in the completion list
 
 If you see it, you're ready! The dictionary tools are part of the core package.
@@ -50,19 +51,34 @@ If you see it, you're ready! The dictionary tools are part of the core package.
 
 ~org-scribe~ integrates three types of language tools:
 
-** 1. RAE Dictionary API (Spanish)
+** 1. Definitions (offline or online)
 
-*What it is*:
+Definition lookup is one command, ~org-scribe-dictionary-lookup~ (~F8 F8 d~),
+with two possible sources behind it:
+
+*Online — the RAE API* (the default when nothing local is set up):
 - Official dictionary of the Spanish Royal Academy
 - Authoritative source for Spanish word definitions
-- Includes etymology, multiple meanings, synonyms, and antonyms
-- Shows verb conjugations
+- Etymology, multiple meanings, synonyms, antonyms, verb conjugations
+- Goes through ~rae-api.com~, an unofficial service, and needs a connection
+
+*Offline — a local Wikcionario* (needs a one-time setup, covered below):
+- The Spanish Wiktionary, served from a file on your own disk
+- Definitions, etymology, numbered senses with usage examples, and
+  per-sense synonyms and antonyms
+- Instant, and works with no network at all
+- Inflected words resolve to their dictionary form (~corriendo~ → ~correr~)
+
+*Why not an offline RAE?* There isn't one. The RAE's dictionary is
+copyrighted and has never been released under a free licence — which is also
+why the online lookup goes through an unofficial API rather than an official
+one. Wikcionario is the offline alternative.
 
 *Best for*:
 - Spanish language writing
 - Checking formal/correct usage
 - Understanding word origins
-- Finding synonyms and antonyms from authoritative source
+- Finding synonyms and antonyms while drafting
 
 ** 2. Synonyms (offline or online)
 
@@ -108,9 +124,10 @@ Installing the offline data is covered in the next section.
 
 *Note*: Translation requires installing the separate ~gt~ package. We'll cover this at the end of the lesson.
 
-* Using the RAE Dictionary
+* Using the Dictionary
 
-Let's look up a Spanish word using the official RAE dictionary API.
+Let's look up a Spanish word. The command is the same whether the definition
+comes from your disk or from the RAE online — org-scribe picks the source.
 
 ** Step 1: Select or Type a Word
 
@@ -129,10 +146,14 @@ Press ~F8 F8~ to open the Hydra menu, then press ~d~ (for "Dictionary")
 
 You'll see a prompt:
 #+BEGIN_EXAMPLE
-Palabra a buscar en la RAE:
+Palabra a buscar:
 #+END_EXAMPLE
 
 Type the Spanish word you want to look up and press ~Enter~.
+
+*Which source answers?* With a local Wikcionario running you get that,
+instantly; otherwise the RAE is queried online. To force one or the other for
+a single lookup, see "Choosing a Source" at the end of this section.
 
 ** Step 3: Review the Results
 
@@ -235,6 +256,114 @@ Press ~M-x~ and type ~org-scribe-rae-api-random~ - this fetches a random word fr
 - Breaking writer's block
 - Daily vocabulary practice
 - Finding unexpected inspiration
+
+* Installing Offline Definitions (optional, ~30 minutes)
+
+This is the heavier of the two offline setups: a 566 MB download and a
+background service. Worth it if you write without a connection; skip it
+otherwise — the online RAE keeps working, and the *thesaurus* setup in the
+next section is much cheaper and helps more often while drafting.
+
+** Step 1: Install kiwix-serve
+
+#+BEGIN_SRC sh
+sudo apt install kiwix-tools      # Debian/Ubuntu
+sudo dnf install kiwix-tools      # Fedora
+sudo pacman -S kiwix-tools        # Arch
+#+END_SRC
+
+** Step 2: Download the Wikcionario
+
+One file, downloaded once, from https://library.kiwix.org (search for
+"Wikcionario"):
+
+#+BEGIN_SRC sh
+mkdir -p ~/zim
+wget -P ~/zim https://download.kiwix.org/zim/wiktionary/wiktionary_es_all_nopic.zim
+#+END_SRC
+
+Choose the ~nopic~ flavour: it is 566 MB against 997 MB, has /more/ articles
+than the ~maxi~ one (948,486), and the images it omits are of no use in a
+dictionary.
+
+** Step 3: Run the Server
+
+*org-scribe never starts or stops this server.* It only checks whether the
+server answers, and tells you if it does not. That keeps Emacs out of the
+business of supervising a daemon — but it does mean you have to run it.
+
+The tidy way is a systemd user unit, which survives reboots:
+
+#+BEGIN_SRC conf
+# ~/.config/systemd/user/kiwix-serve.service
+[Unit]
+Description=kiwix-serve (local Wikcionario for org-scribe)
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/kiwix-serve --port 8080 %h/zim/wiktionary_es_all_nopic.zim
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+#+END_SRC
+
+#+BEGIN_SRC sh
+systemctl --user daemon-reload
+systemctl --user enable --now kiwix-serve.service
+systemctl --user status kiwix-serve.service
+#+END_SRC
+
+To try it before committing to a service, just run it in a terminal:
+
+#+BEGIN_SRC sh
+kiwix-serve --port 8080 ~/zim/wiktionary_es_all_nopic.zim
+#+END_SRC
+
+** Step 4: Verify
+
+#+BEGIN_SRC emacs-lisp
+(org-scribe-wikcionario-available-p)   ;; => t
+(org-scribe-wikcionario-book)          ;; => "wiktionary_es_all_nopic"
+#+END_SRC
+
+Nothing else to configure — org-scribe asks the server which book it holds.
+If you run it on another port, set ~org-scribe-wikcionario-url~.
+
+** What Changes
+
+Same command, same key. Definitions now arrive instantly, offline, and:
+
+- *Inflected words resolve.* Looking up ~corriendo~ opens ~correr~ and says
+  so. Wikcionario does have a ~corriendo~ page, but its entire content is
+  "Gerundio de correr" — following that pointer is what you wanted anyway.
+- *A missing word is reported as missing*, with suggestions, rather than
+  quietly going online. That distinction matters: otherwise a gap in your
+  local data looks exactly like a normal network lookup.
+
+** If You Start the Server After Emacs
+
+Availability is checked once per session and then remembered, so lookups
+cost no waiting. A server started later is therefore not noticed. Force a
+fresh check with a prefix argument:
+
+#+BEGIN_EXAMPLE
+C-u F8 F8 d
+#+END_EXAMPLE
+
+or run ~M-x org-scribe-wikcionario-clear-cache~.
+
+** Choosing a Source
+
+#+BEGIN_SRC emacs-lisp
+;; 'auto (default) — the local server when it answers, the online RAE otherwise
+;; 'wikcionario    — local only; never queries the network
+;; 'rae-api        — always the online RAE
+(setq org-scribe-dictionary-backend 'auto)
+#+END_SRC
+
+~M-x org-scribe-rae-api-lookup~ still queries the RAE directly whenever you
+want that specific source, whatever the backend setting says.
 
 * Installing the Offline Thesaurus (10 minutes, once)
 
@@ -649,10 +778,10 @@ As part of your daily writing routine:
 
 From the Hydra menu (~F8 F8~):
 
-| Key | Tool           | Speed                            |
-|-----+----------------+----------------------------------|
-| d   | RAE dictionary | Medium (network)                 |
-| y   | Synonyms       | Instant offline / medium online  |
+| Key | Tool       | Speed                           |
+|-----+------------+---------------------------------|
+| d   | Dictionary | Instant offline / medium online |
+| y   | Synonyms   | Instant offline / medium online |
 
 *Tip*: After a while, ~F8 F8 d~ becomes muscle memory!
 
@@ -662,12 +791,12 @@ If you use these tools frequently, create dedicated keybindings:
 
 #+BEGIN_SRC elisp
 ;; Add to your Emacs config
-(global-set-key (kbd "C-c d") 'org-scribe-rae-api-lookup)
+(global-set-key (kbd "C-c d") 'org-scribe-dictionary-lookup)
 (global-set-key (kbd "C-c y") 'org-scribe-sinonimo)
 #+END_SRC
 
 Now:
-- ~C-c d~ = RAE dictionary
+- ~C-c d~ = Dictionary
 - ~C-c y~ = Synonyms
 
 Choose keybindings that don't conflict with your other packages!
@@ -692,14 +821,13 @@ Experiment to find what works for your screen!
 Offline Thesaurus" above). This is the one language tool that needs nothing
 from the network, and it is the one you reach for most while drafting.
 
-*RAE Dictionary*:
-- Requires an internet connection
-- Fails gracefully when offline (shows an error message)
-- There is no free offline Spanish *definition* dictionary to fall back on —
-  the RAE's dictionary is copyrighted and has never been released under a
-  free licence, which is why an online lookup is the only option here. Note
-  the offline thesaurus does give you synonyms and antonyms, which covers a
-  good part of why writers reach for the dictionary mid-draft.
+*Definitions*: offline once you set up a local Wikcionario (see "Installing
+Offline Definitions" above). Without that, definitions need a connection.
+
+Note there is no free offline copy of the *RAE's own* dictionary — it is
+copyrighted — so the offline path uses Wikcionario instead. If you skip that
+setup, the offline thesaurus still gives you synonyms and antonyms, which
+covers a good part of why writers reach for a dictionary mid-draft.
 
 *Translation*:
 - The ~gt~ package requires internet
@@ -710,7 +838,10 @@ For a deliberately disconnected writing session:
   completely
 - Set ~(setq org-scribe-thesaurus-backend 'mythes)~ so a miss is reported
   immediately instead of hanging on a network request that cannot succeed
-- Look up any definitions you expect to need before disconnecting
+- For definitions too, set up the local Wikcionario and set
+  ~(setq org-scribe-dictionary-backend 'wikcionario)~
+- With both in place, every language tool except translation works with the
+  network unplugged
 - Use built-in spell-check for basic word validation
 
 ** Language Switching

@@ -174,6 +174,69 @@ brew install hunspell
 Without hunspell, only the exact word you typed is looked up. Nothing
 breaks; inflected forms simply do not resolve.
 
+*** Offline definitions (=kiwix-serve= + a Wikcionario ZIM)
+
+Replaces the online RAE lookup with a local Spanish Wiktionary. This one is
+a bigger commitment than the two above — about 566 MB and a background
+service — so install it only if you want definitions without a network.
+
+*Note*: there is no free offline copy of the RAE's own dictionary; it is
+copyrighted. Wikcionario is the offline alternative, and covers definitions,
+etymology, conjugations, and per-sense synonyms and antonyms.
+
+1. Install the server:
+
+   #+begin_src sh
+   sudo apt install kiwix-tools      # Debian/Ubuntu
+   sudo dnf install kiwix-tools      # Fedora
+   sudo pacman -S kiwix-tools        # Arch
+   #+end_src
+
+2. Download the ZIM once from https://library.kiwix.org (search for
+   "Wikcionario"). Pick =wiktionary_es_all_nopic= — it has /more/ articles
+   than the =maxi= flavour and no images, which a dictionary does not need.
+
+   #+begin_src sh
+   mkdir -p ~/zim
+   # ~566 MB
+   wget -P ~/zim https://download.kiwix.org/zim/wiktionary/wiktionary_es_all_nopic.zim
+   #+end_src
+
+3. Run the server. *org-scribe never starts, stops or supervises
+   kiwix-serve* — it only checks whether the server answers. Use a systemd
+   user unit so it comes back after a reboot:
+
+   #+begin_src conf
+   # ~/.config/systemd/user/kiwix-serve.service
+   [Unit]
+   Description=kiwix-serve (local Wikcionario for org-scribe)
+   After=network.target
+
+   [Service]
+   ExecStart=/usr/bin/kiwix-serve --port 8080 %h/zim/wiktionary_es_all_nopic.zim
+   Restart=on-failure
+
+   [Install]
+   WantedBy=default.target
+   #+end_src
+
+   #+begin_src sh
+   systemctl --user daemon-reload
+   systemctl --user enable --now kiwix-serve.service
+   systemctl --user status kiwix-serve.service
+   #+end_src
+
+4. Verify from Emacs:
+
+   #+begin_src emacs-lisp
+   (org-scribe-wikcionario-available-p)   ;; => t
+   (org-scribe-wikcionario-book)          ;; => "wiktionary_es_all_nopic"
+   #+end_src
+
+That is all the configuration needed — org-scribe asks the server which book
+it is serving. Use a different port by setting
+=org-scribe-wikcionario-url=.
+
 * Verification
 
 After installation, verify it works:
@@ -260,6 +323,45 @@ equivalent), or point at one you have:
 #+end_src
 
 After installing a dictionary mid-session, run =M-x org-scribe-lemma-clear-cache=.
+
+** Definitions still come from the online RAE
+
+Under the default =auto= backend, =org-scribe-dictionary-lookup= uses the
+online RAE whenever the local server does not answer. Check what it sees:
+
+#+begin_src emacs-lisp
+(org-scribe-wikcionario-available-p)   ;; => t when kiwix-serve answers
+(org-scribe-wikcionario-book)          ;; => the ZIM name, or nil
+#+end_src
+
+If both are =nil=:
+
+1. Is the service running? =systemctl --user status kiwix-serve=
+2. Is it on the port org-scribe expects? Default is 8080:
+   #+begin_src emacs-lisp
+   (setq org-scribe-wikcionario-url "http://localhost:9000")
+   #+end_src
+3. Test the server directly:
+   =curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/catalog/v2/entries=
+
+*If you started kiwix-serve after Emacs*: availability is probed once per
+session and then cached, so a server started later is not noticed. Press
+=C-u= before the lookup (=C-u F8 F8 d=) to force a re-probe, or run
+=M-x org-scribe-wikcionario-clear-cache=.
+
+** "No entry for X in the local dictionary"
+
+The server is running and answering — this word genuinely has no article.
+org-scribe deliberately does *not* silently fall back to the online RAE here,
+because that would make a gap in your local data look identical to a normal
+network lookup. Suggestions are offered when the ZIM has near matches.
+
+To use the online RAE for that word, set the backend for one call:
+
+#+begin_src emacs-lisp
+(let ((org-scribe-dictionary-backend 'rae-api))
+  (call-interactively #'org-scribe-dictionary-lookup))
+#+end_src
 
 ** Hydra menu not working
 

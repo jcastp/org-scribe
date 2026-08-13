@@ -21,6 +21,20 @@
 (require 'org-scribe-config)
 (require 'org-scribe-messages)
 (require 'org-scribe-mythes)
+(require 'org-scribe-wikcionario)
+
+;;; Shared presentation
+
+(defun org-scribe--side-window (buffer)
+  "Display BUFFER in the language-tools side window and select it.
+Shared by the definition and synonym lookups so both feel like one tool."
+  (let ((window (display-buffer-in-side-window
+                 buffer
+                 `((side . right)
+                   (window-width . ,org-scribe-sinonimo-window-width)
+                   (window-parameters . ((no-delete-other-windows . t)))))))
+    (when window (select-window window))
+    window))
 
 ;;; RAE Dictionary API
 
@@ -195,22 +209,90 @@ Includes improved error handling for network issues."
            (when (buffer-live-p response-buffer)
              (kill-buffer response-buffer))))))))
 
+;;; Definition Lookup (backend dispatch)
+
+;; Two backends, selected by `org-scribe-dictionary-backend': a local
+;; Wikcionario served by kiwix-serve, and the online rae-api.com service.
+;; org-scribe never starts or supervises the local server — it probes, and
+;; says so when nothing answers.
+
+(defun org-scribe--wikcionario-show (word)
+  "Show WORD's local Wikcionario article in a side window.
+Return non-nil when an article was shown.  Discloses a substituted headword:
+Wikcionario stores inflected forms as stubs pointing at the dictionary form,
+so a lookup for one lands on the lemma's article and the writer must be told."
+  (when-let* ((entry (org-scribe-wikcionario-resolve word))
+              (headword (car entry))
+              (url (cdr entry)))
+    (let* ((buffer (generate-new-buffer "*temp-dictionary*"))
+           (side-window (org-scribe--side-window buffer)))
+      ;; `display-buffer-in-side-window' can decline; fall back to the
+      ;; selected window rather than signalling on a nil window.
+      (if side-window
+          (with-selected-window side-window
+            (eww url)
+            (kill-buffer buffer))
+        (kill-buffer buffer)
+        (eww url)))
+    (unless (string-equal-ignore-case headword word)
+      (message (org-scribe-msg 'msg-dictionary-lemma-used word headword)))
+    t))
+
+(defun org-scribe--wikcionario-report-miss (word)
+  "Report that WORD has no local entry, offering suggestions when there are any."
+  (if-let* ((suggestions (org-scribe-wikcionario-suggest word)))
+      (let ((buffer (get-buffer-create (format "*Dictionary: %s*" word))))
+        (with-current-buffer buffer
+          (let ((inhibit-read-only t))
+            (erase-buffer)
+            (org-mode)
+            (insert (format "* %s\n\n" (org-scribe-msg 'msg-word-not-found word)))
+            (insert (format "** %s\n" (org-scribe-msg 'msg-word-suggestions)))
+            (dolist (suggestion suggestions)
+              (insert (format "- %s\n" suggestion))))
+          (goto-char (point-min))
+          (read-only-mode 1))
+        (org-scribe--side-window buffer))
+    (message (org-scribe-msg 'msg-dictionary-not-found word))))
+
+;;;###autoload
+(defun org-scribe-dictionary-lookup (palabra &optional reprobe)
+  "Look up PALABRA's definition, offline or online.
+
+Uses a local Wikcionario or the online RAE API according to
+`org-scribe-dictionary-backend'.  Under the default `auto' the local server
+is tried first and the RAE used when it is not running.
+
+With a prefix argument, REPROBE discards the cached availability of the local
+server — use it after starting kiwix-serve mid-session, since availability is
+probed once and then trusted so that lookups cost no latency."
+  (interactive "sPalabra a buscar: \nP")
+  (when (string-empty-p (string-trim palabra))
+    (user-error (org-scribe-msg 'error-word-empty)))
+  (let* ((backend org-scribe-dictionary-backend)
+         (local (unless (eq backend 'rae-api)
+                  (org-scribe-wikcionario-available-p reprobe))))
+    (cond
+     ((and local (org-scribe--wikcionario-show palabra)))
+     ;; Local server is up but has no entry: report it rather than silently
+     ;; going online, which would make a coverage gap look like a network hop.
+     (local
+      (org-scribe--wikcionario-report-miss palabra))
+     ;; Offline-only: name the service, since that is the actionable part.
+     ((eq backend 'wikcionario)
+      (message (org-scribe-msg 'error-wikcionario-unreachable
+                               org-scribe-wikcionario-url)))
+     (t
+      (when (eq backend 'auto)
+        (message (org-scribe-msg 'msg-dictionary-fallback-online palabra)))
+      (org-scribe-rae-api-lookup palabra)))))
+
 ;;; Synonym Lookup
 
 ;; Two backends, selected by `org-scribe-thesaurus-backend': the offline
 ;; MyThes thesaurus (`org-scribe-mythes.el') and the original WordReference
 ;; page rendered with eww.  Both present their result in the same side
 ;; window, so the command feels identical either way.
-
-(defun org-scribe--sinonimo-side-window (buffer)
-  "Display BUFFER in the synonyms side window and select it."
-  (let ((window (display-buffer-in-side-window
-                 buffer
-                 `((side . right)
-                   (window-width . ,org-scribe-sinonimo-window-width)
-                   (window-parameters . ((no-delete-other-windows . t)))))))
-    (when window (select-window window))
-    window))
 
 (defun org-scribe--sinonimo-render-mythes (palabra groups &optional headword)
   "Render GROUPS, the MyThes meaning groups for PALABRA, in a side window.
@@ -253,14 +335,14 @@ unlabelled senses would otherwise be indistinguishable from one another."
       (local-set-key (kbd "q") #'quit-window))
     (when substituted
       (message (org-scribe-msg 'msg-thesaurus-lemma-used palabra headword)))
-    (org-scribe--sinonimo-side-window buffer)))
+    (org-scribe--side-window buffer)))
 
 (defun org-scribe--sinonimo-wordreference (palabra)
   "Open the WordReference synonym page for PALABRA in a side window."
   (let ((url (concat "https://www.wordreference.com/sinonimos/" palabra))
         ;; eww replaces this placeholder with its own buffer once it loads.
         (temp-buffer (generate-new-buffer "*temp-sinonimos*")))
-    (let ((side-window (org-scribe--sinonimo-side-window temp-buffer)))
+    (let ((side-window (org-scribe--side-window temp-buffer)))
       (with-selected-window side-window
         (eww url)
         (kill-buffer temp-buffer)

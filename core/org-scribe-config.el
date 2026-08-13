@@ -132,6 +132,46 @@ is used instead."
   :type 'string
   :group 'org-scribe)
 
+(defcustom org-scribe-dictionary-backend 'auto
+  "Where `org-scribe-dictionary-lookup' gets Spanish definitions.
+
+`wikcionario' use only a local Wikcionario served by kiwix-serve;
+`rae-api'     use only the online rae-api.com service;
+`auto'        use the local server when it answers, the online API otherwise.
+
+The default is `auto', so a writer running no local server sees exactly the
+previous online behaviour, and one who runs kiwix-serve gets offline
+definitions without configuring anything.
+
+org-scribe never starts or manages kiwix-serve; see INSTALL.org for the
+systemd user unit."
+  :type '(choice (const :tag "Local Wikcionario only" wikcionario)
+                 (const :tag "Online RAE API only" rae-api)
+                 (const :tag "Local, falling back to the online RAE" auto))
+  :group 'org-scribe)
+
+(defcustom org-scribe-wikcionario-url "http://localhost:8080"
+  "Base URL of a local kiwix-serve instance serving a Wiktionary ZIM."
+  :type 'string
+  :group 'org-scribe)
+
+(defcustom org-scribe-wikcionario-book nil
+  "Name of the ZIM book to query, as kiwix-serve addresses it.
+When nil, ask the server which book it is serving.
+
+Note this is the name used in URLs — for the Spanish Wiktionary that is
+`wiktionary_es_all_nopic', including the flavour suffix, which differs from
+the name shown in the OPDS catalogue."
+  :type '(choice (const :tag "Ask the server" nil)
+                 (string :tag "Book name"))
+  :group 'org-scribe)
+
+(defcustom org-scribe-wikcionario-timeout 3
+  "Seconds to wait for the local kiwix-serve before giving up.
+Only paid on the first lookup of a session, or after a forced re-probe."
+  :type 'integer
+  :group 'org-scribe)
+
 (defcustom org-scribe-lemma-dictionary nil
   "Hunspell dictionary used to reduce inflected words to their lemma.
 When nil, the language is taken from `org-scribe-mythes-language', so a
