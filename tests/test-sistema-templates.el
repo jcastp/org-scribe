@@ -497,5 +497,53 @@ is exactly wrong and looks plausible."
             (should (gethash "ch-001" ids))))
       (delete-file file))))
 
+;;; The Weight property in shipped templates
+
+(ert-deftest test-templates-ship-weight-on-every-character ()
+  "Every character profile in both novel templates carries a `:Weight:' line.
+Shipping the property is what makes `-1' discoverable: it is a display
+knob nothing else reveals, and a writer who never sees the key never
+learns they can keep a walk-on part out of the timeline."
+  (dolist (relative '("novel-en/objects/characters.org.template"
+                      "novel-es/objects/personajes.org.template"))
+    (org-scribe-test--with-template relative
+      (let ((roles 0) (weights 0))
+        (org-map-entries
+         (lambda ()
+           (when (and (= (org-current-level) 1)
+                      (org-entry-get nil "Role"))
+             (cl-incf roles)
+             (when (org-entry-get nil "Weight")
+               (cl-incf weights)))))
+        (should (> roles 0))
+        (should (= roles weights))))))
+
+(ert-deftest test-templates-ship-weight-on-every-plot-thread ()
+  "Every narrative line in both plot templates carries a `:Weight:' line."
+  (dolist (relative '("novel-en/objects/plot.org.template"
+                      "novel-es/objects/trama.org.template"))
+    (org-scribe-test--with-template relative
+      (let ((threads 0) (weights 0))
+        (org-map-entries
+         (lambda ()
+           (when (org-entry-get nil "THREAD-TYPE")
+             (cl-incf threads)
+             (when (org-entry-get nil "Weight")
+               (cl-incf weights)))))
+        (should (> threads 0))
+        (should (= threads weights))))))
+
+(ert-deftest test-template-weight-values-are-blank-and-read-as-unweighted ()
+  "The shipped `:Weight:' is blank, and blank must not parse as 0.
+Zero sorts ahead of every real weight, so if a blank value were read as a
+number, every template character would silently jump to the first columns
+of the timeline — with nothing in the file to explain why."
+  (org-scribe-test--with-template "novel-en/objects/characters.org.template"
+    (org-map-entries
+     (lambda ()
+       (when-let ((weight (org-entry-get nil "Weight")))
+         (should (string-empty-p (string-trim weight)))
+         (should (null (org-scribe--parse-weight weight))))))))
+
 (provide 'test-sistema-templates)
 ;;; test-sistema-templates.el ends here

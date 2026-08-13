@@ -237,6 +237,130 @@ still linked to the first Alex's ID."
   "Test collecting characters from empty scenes list."
   (should (equal '() (org-scribe--collect-unique-characters '()))))
 
+;;; Hidden Weight Tests (linking-core helpers + character timeline)
+
+(ert-deftest test-entity-hidden-weight-p-boundaries ()
+  "Only negative weights hide; 0 and the 999.0 default do not.
+The default matters most: an entity with no Weight property at all must
+still appear in the table, merely sorted last."
+  (should (org-scribe--entity-hidden-weight-p -1))
+  (should (org-scribe--entity-hidden-weight-p -1.0))
+  (should (org-scribe--entity-hidden-weight-p -2))
+  (should (org-scribe--entity-hidden-weight-p -0.5))
+  (should-not (org-scribe--entity-hidden-weight-p 0))
+  (should-not (org-scribe--entity-hidden-weight-p 1.0))
+  (should-not (org-scribe--entity-hidden-weight-p 999.0))
+  (should-not (org-scribe--entity-hidden-weight-p nil)))
+
+(ert-deftest test-parse-weight-rejects-blank-and-nonsense ()
+  "A blank or non-numeric Weight parses to nil, never to 0.
+`string-to-number' answers 0 for both, and 0 is a real weight that sorts
+ahead of everything — so the templates' blank `:Weight:' would otherwise
+pin every shipped character to the first columns of the timeline."
+  (should (null (org-scribe--parse-weight "")))
+  (should (null (org-scribe--parse-weight " ")))
+  (should (null (org-scribe--parse-weight "high")))
+  (should (null (org-scribe--parse-weight "1-2")))
+  (should (null (org-scribe--parse-weight nil)))
+  (should (= 0 (org-scribe--parse-weight "0")))
+  (should (= 3.0 (org-scribe--parse-weight "3.0")))
+  (should (= 3.0 (org-scribe--parse-weight " 3.0 ")))
+  (should (= -1 (org-scribe--parse-weight "-1")))
+  (should (= -1.0 (org-scribe--parse-weight "-1.0"))))
+
+(ert-deftest test-blank-weight-property-reads-as-unweighted ()
+  "A heading with a blank `:Weight:' is not hidden and is not weight 0.
+Goes through `org-entry-get' rather than testing the parser alone,
+because it is Org's empty-string answer that makes this a live hazard."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Alice\n:PROPERTIES:\n:Role: Protagonist\n:Weight:\n:END:\n")
+    (goto-char (point-min))
+    (let ((parsed (org-scribe--parse-weight (org-entry-get nil "Weight"))))
+      (should (null parsed))
+      (should-not (org-scribe--entity-hidden-weight-p parsed)))))
+
+(ert-deftest test-partition-entities-by-weight ()
+  "Partition splits on negative weight and sorts both halves."
+  (let* ((weights '(("Alice" . 1.0) ("Zoe" . 2.0)
+                    ("Bob" . -1.0) ("Carla" . -1.0) ("Dan" . 999.0)))
+         (weight-fn (lambda (name) (alist-get name weights nil nil #'string=)))
+         (split (org-scribe--partition-entities-by-weight
+                 '("Zoe" "Carla" "Alice" "Dan" "Bob") weight-fn)))
+    (should (equal '("Alice" "Zoe" "Dan") (car split)))
+    ;; Equal weights fall back to alphabetical, same as the visible half.
+    (should (equal '("Bob" "Carla") (cdr split)))))
+
+(ert-deftest test-sort-entities-by-weight-drops-hidden ()
+  "`org-scribe--sort-entities-by-weight' returns the visible half only."
+  (let* ((weights '(("Alice" . 1.0) ("Bob" . -1.0)))
+         (weight-fn (lambda (name) (alist-get name weights nil nil #'string=))))
+    (should (equal '("Alice")
+                   (org-scribe--sort-entities-by-weight '("Alice" "Bob") weight-fn)))))
+
+(defmacro org-scribe-test--with-character-weights (weights &rest body)
+  "Run BODY with `org-scribe--get-character-weight' stubbed from WEIGHTS.
+WEIGHTS is an alist of (NAME . WEIGHT); names absent from it get the
+999.0 no-property default."
+  (declare (indent 1))
+  `(cl-letf (((symbol-function 'org-scribe--get-character-weight)
+              (lambda (name) (or (alist-get name ,weights nil nil #'string=) 999.0))))
+     ,@body))
+
+(ert-deftest test-collect-unique-characters-excludes-hidden ()
+  "A character with Weight -1 is left out of the visible column list."
+  (let ((scenes '(("Scene 1" "Ch 1" "Alice" ("Alice" "Extra"))
+                  ("Scene 2" "Ch 1" "Bob" ("Bob" "Extra")))))
+    (org-scribe-test--with-character-weights '(("Extra" . -1.0))
+      (should (equal '("Alice" "Bob")
+                     (org-scribe--collect-unique-characters scenes))))))
+
+(ert-deftest test-collect-unique-characters-with-hidden-reports-both ()
+  "The partitioned collector reports the hidden characters separately."
+  (let ((scenes '(("Scene 1" "Ch 1" "Alice" ("Alice" "Extra" "Spear Carrier")))))
+    (org-scribe-test--with-character-weights '(("Extra" . -1.0)
+                                               ("Spear Carrier" . -2.0))
+      (let ((split (org-scribe--collect-unique-characters-with-hidden scenes)))
+        (should (equal '("Alice") (car split)))
+        (should (equal '("Spear Carrier" "Extra") (cdr split)))))))
+
+(ert-deftest test-collect-unique-characters-all-hidden ()
+  "Hiding every character yields an empty column list, not an error."
+  (let ((scenes '(("Scene 1" "Ch 1" "Extra" ("Extra")))))
+    (org-scribe-test--with-character-weights '(("Extra" . -1.0))
+      (let ((split (org-scribe--collect-unique-characters-with-hidden scenes)))
+        (should (equal '() (car split)))
+        (should (equal '("Extra") (cdr split)))))))
+
+(ert-deftest test-character-timeline-omits-hidden-and-notes-them ()
+  "The dblock drops hidden columns and names them in a comment line."
+  (let ((scenes '(("Scene 1" "Ch 1" "Alice" ("Alice" "Extra")))))
+    (cl-letf (((symbol-function 'org-scribe--get-all-scenes-with-characters)
+               (lambda () scenes)))
+      (org-scribe-test--with-character-weights '(("Extra" . -1.0))
+        (with-temp-buffer
+          (org-mode)
+          (org-dblock-write:character-timeline nil)
+          (let ((text (buffer-string)))
+            (should (string-match-p "Alice" text))
+            (should-not (string-match-p "| Extra" text))
+            ;; Named in a comment line, so it is neither exported nor counted.
+            (should (string-match-p "^# .*Extra" text))))))))
+
+(ert-deftest test-character-timeline-show-hidden-restores-columns ()
+  "The :show-hidden dblock parameter puts hidden characters back."
+  (let ((scenes '(("Scene 1" "Ch 1" "Alice" ("Alice" "Extra")))))
+    (cl-letf (((symbol-function 'org-scribe--get-all-scenes-with-characters)
+               (lambda () scenes)))
+      (org-scribe-test--with-character-weights '(("Extra" . -1.0))
+        (with-temp-buffer
+          (org-mode)
+          (org-dblock-write:character-timeline '(:show-hidden t))
+          (let ((text (buffer-string)))
+            (should (string-match-p "Extra" text))
+            ;; No note: nothing was withheld.
+            (should-not (string-match-p "^# " text))))))))
+
 ;;; Heading Predicate Tests
 
 (ert-deftest test-character-heading-p-detects-top-level ()

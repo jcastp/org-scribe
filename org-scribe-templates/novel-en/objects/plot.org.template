@@ -12,6 +12,12 @@
 #     fixed: the same thirteen in every story. Do not add or remove any.
 #   - Narrative lines, level 1 with :THREAD-TYPE:. Those are yours: add as many
 #     as you need with F8 F8 p.
+#
+# A line's :Weight: orders the columns of the plot timeline: 1 to 5, lower
+# first; blank sorts last. Put -1 and the line keeps everything except its
+# column — for a running gag you track but do not want on the board. The plot
+# health report ignores Weight entirely: a hidden line is still checked for
+# coverage and gaps.
 
 * The Thirteen Non-Negotiables
 
@@ -125,6 +131,7 @@
 :THREAD-TYPE: Main
 :Stance:
 :STATUS: Planned
+:Weight:
 :END:
 
 ** Desire that drives it
@@ -136,6 +143,7 @@
 :THREAD-TYPE: Subplot
 :Stance:
 :STATUS: Planned
+:Weight:
 :END:
 
 # One for every Stance you want represented that the main line does not already

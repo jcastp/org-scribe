@@ -12,6 +12,12 @@
 #     mismos trece en toda historia. No añadas ni quites.
 #   - Las líneas argumentales, de nivel 1 con :THREAD-TYPE:. Son tuyas: añade
 #     las que necesites con F8 F8 p.
+#
+# El :Weight: de una línea ordena las columnas de la cronología de tramas: de 1
+# a 5, menor primero; vacío va al final. Pon -1 y la línea conserva todo menos
+# su columna — para un chiste recurrente que sigues pero no quieres en el
+# tablero. El informe de salud de tramas ignora el Weight por completo: una
+# línea oculta se sigue revisando por cobertura y huecos.
 
 * Los trece irrenunciables
 
@@ -124,6 +130,7 @@
 :THREAD-TYPE: Principal
 :Stance:
 :STATUS: Planificado
+:Weight:
 :END:
 
 ** Deseo que la mueve
@@ -135,6 +142,7 @@
 :THREAD-TYPE: Subtrama
 :Stance:
 :STATUS: Planificado
+:Weight:
 :END:
 
 # Una por cada Postura que quieras ver representada y que no lleve ya la línea

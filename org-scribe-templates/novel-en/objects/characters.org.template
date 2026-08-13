@@ -19,6 +19,13 @@
 # To see who is who at a glance, use column view: C-c C-x C-c shows Role,
 # Stance and Goal beside each name.
 #
+# :Weight: orders the columns of the character timeline: 1 to 5, lower first.
+# Leave it blank and the character simply sorts last, alphabetically among the
+# other blanks. Put -1 and they are left out of the timeline altogether while
+# keeping their profile, their links and their place in every search — for the
+# innkeeper with two lines, whom you want on file but not in a column. The
+# table names anyone it hides in a comment line underneath.
+#
 # Full profile for protagonist and opponent. For the ally the intermediate
 # profile is enough (no Ghost, Need or Plan), and for the fake ally and the
 # supporting characters the reduced one: Concept, Stance, Trouble, one Aspect
@@ -36,6 +43,7 @@
 :Age:
 :Occupation:
 :First-appearance:
+:Weight:
 :RelationshipsData:
 :END:
 
@@ -156,6 +164,7 @@
 :Age:
 :Occupation:
 :First-appearance:
+:Weight:
 :RelationshipsData:
 :END:
 
@@ -213,6 +222,7 @@
 :Stance:
 :Goal:
 :First-appearance:
+:Weight:
 :RelationshipsData:
 :END:
 
@@ -255,6 +265,7 @@
 :Stance:
 :Goal:
 :First-appearance:
+:Weight:
 :RelationshipsData:
 :END:
 
@@ -295,6 +306,7 @@
 :Stance:
 :Goal:
 :First-appearance:
+:Weight:
 :RelationshipsData:
 :END:
 

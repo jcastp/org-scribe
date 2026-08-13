@@ -713,6 +713,62 @@ is Spanish without the caller having to know about it."
       (delete-directory temp-dir t))))
 
 ;;; ─────────────────────────────────────────────
+;;; Weight prompt
+;;; ─────────────────────────────────────────────
+
+(defun org-scribe-test--fill-template (template weight-answer)
+  "Expand TEMPLATE with `org-capture-fill-template', answering WEIGHT-ANSWER.
+Every other prompt gets a placeholder.  Uses the real expander rather
+than a hand-rolled substitution: a home-made `%^{...}' reader mishandles
+the |-alternative form and turns harness bugs into apparent template bugs."
+  (cl-letf (((symbol-function 'read-string)
+             (lambda (prompt &rest _)
+               (if (string-match-p "Weight\\|Peso" prompt) weight-answer "x")))
+            ((symbol-function 'completing-read)
+             (lambda (prompt coll &rest _)
+               (cond ((string-match-p "Weight\\|Peso" prompt) weight-answer)
+                     ((functionp coll) "x")
+                     ((car (all-completions "" coll)))
+                     (t "x"))))
+            ((symbol-function 'org-id-new) (lambda (&rest _) "test-id-1")))
+    (org-capture-fill-template template)))
+
+(ert-deftest test-character-template-prompts-for-weight ()
+  "The character capture asks for Weight and files the answer.
+Free text, not a |-alternative list: -1 and an empty answer both have to
+be typable, and alternatives would make the first one the default."
+  (let ((template-string (nth 4 (car (org-scribe-character-capture-templates 'en)))))
+    (should (string-match-p ":Weight: %\\^{" template-string))
+    (should (string-match-p "-1" template-string))
+    (should (member ":Weight: -1"
+                    (split-string
+                     (org-scribe-test--fill-template template-string "-1")
+                     "\n")))))
+
+(ert-deftest test-plot-thread-template-prompts-for-weight ()
+  "The plot-thread capture asks for Weight and files the answer."
+  (let ((template-string (nth 4 (car (org-scribe-plot-thread-capture-templates 'en)))))
+    (should (string-match-p ":Weight: %\\^{" template-string))
+    (should (string-match-p ":Weight: -1"
+                            (org-scribe-test--fill-template template-string "-1")))))
+
+(ert-deftest test-weight-prompt-accepts-empty-answer ()
+  "Declining the Weight prompt leaves the property blank, not zero.
+The blank is what the templates ship too, and
+`org-scribe--parse-weight' reads it as unweighted."
+  (let* ((template-string (nth 4 (car (org-scribe-character-capture-templates 'en))))
+         (filled (org-scribe-test--fill-template template-string "")))
+    (should (string-match-p ":Weight: *\n" filled))
+    (should-not (string-match-p ":Weight: *0" filled))))
+
+(ert-deftest test-weight-prompt-localized ()
+  "The Weight prompt is translated, while the property key stays English.
+`org-scribe--get-entity-weight' looks up the literal \"Weight\", so a
+translated key would make the property invisible to the timeline."
+  (let ((template-string (nth 4 (car (org-scribe-character-capture-templates 'es)))))
+    (should (string-match-p ":Weight: %\\^{Peso" template-string))))
+
+;;; ─────────────────────────────────────────────
 ;;; Run tests
 ;;; ─────────────────────────────────────────────
 

@@ -256,6 +256,37 @@ so the regex fallback path must handle this case."
               (should (string-match-p "From: Ch. 2" result)))))
       (when (file-exists-p temp-file) (delete-file temp-file)))))
 
+(ert-deftest test-overlays-format-weight ()
+  "A negative Weight is labelled as hidden in the tooltip; others are not."
+  (should (string= "Weight: 3.0" (org-scribe--overlays-format-weight "3.0")))
+  (should (string= "Weight: 999.0" (org-scribe--overlays-format-weight "999.0")))
+  (should (string-match-p "\\`Weight: -1 ("
+                          (org-scribe--overlays-format-weight "-1")))
+  (should (string-match-p "\\`Weight: -1.0 ("
+                          (org-scribe--overlays-format-weight "-1.0"))))
+
+(ert-deftest test-overlays-format-tooltip-plot-thread-hidden-weight ()
+  "A thread hidden from timeline tables says so in its tooltip."
+  (let ((temp-file (make-temp-file "test-overlays-plot-hidden-" nil ".org"))
+        heading-pos)
+    (unwind-protect
+        (progn
+          (with-current-buffer (find-file-noselect temp-file)
+            (erase-buffer)
+            (insert (concat "* Running Gag\n"
+                            ":PROPERTIES:\n"
+                            ":ID: plot-hidden-001\n"
+                            ":THREAD-TYPE: Subplot\n"
+                            ":Weight: -1\n"
+                            ":END:\n\n"))
+            (save-buffer)
+            (setq heading-pos (point-min)))
+          (cl-letf (((symbol-function 'org-id-find)
+                     (lambda (_id) (cons temp-file heading-pos))))
+            (let ((result (org-scribe--overlays-format-tooltip "plot-hidden-001")))
+              (should (string-match-p "Weight: -1 (" result)))))
+      (when (file-exists-p temp-file) (delete-file temp-file)))))
+
 (ert-deftest test-overlays-format-tooltip-plot-thread-type-property ()
   "format-tooltip handles plot threads that use :TYPE: instead of :THREAD-TYPE:."
   (let ((temp-file (make-temp-file "test-overlays-plot-type-" nil ".org"))

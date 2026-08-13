@@ -321,10 +321,52 @@ You can edit the rest anytime.
 
 *** Optional: ~:Weight:~ for Timeline Order
 
-Not shipped by the template, but still read by the character timeline: add
-~:Weight: 1.0~ to control column order (lower sorts first). Characters without
-it are treated as 999.0, so by default the timeline is alphabetical. It is a
-display preference and nothing else uses it.
+The capture asks you for this one, and the template ships it blank. It controls
+column order in the character timeline: ~1.0~ to ~5.0~, lower first. Press
+~RET~ at the prompt to leave it blank — a blank weight is treated as 999.0, so
+the character sorts last, alphabetically among the other blanks. That is the
+default, and it is why an untouched timeline comes out alphabetical.
+
+It is a display preference. Nothing else reads it — not the searches, not the
+health report.
+
+*** Optional: ~:Weight: -1~ to Keep a Character Out of the Timeline
+
+A novel accumulates walk-on parts — the innkeeper with two lines, the desk
+sergeant, the neighbour's dog. You may well want a file entry for each so you
+can keep their names straight, and yet not want a column for each of them in
+the timeline, where thirty near-empty columns bury the ten that matter.
+
+Answer ~-1~ at the Weight prompt when you capture them, or add it by hand later:
+
+#+BEGIN_EXAMPLE
+:Weight: -1
+#+END_EXAMPLE
+
+They keep their profile, their ID, their links from scenes, and their place in
+every search and report. They simply stop getting a column. Any negative value
+works, but ~-1~ is the one to use.
+
+The timeline does not hide the fact that it is hiding something. Below the
+table it writes a line naming who was left out:
+
+#+BEGIN_EXAMPLE
+# Not shown (Weight -1): Desk Sergeant, Innkeeper
+#+END_EXAMPLE
+
+That line starts with ~#~, which makes it an Org comment: it is visible to you
+in the buffer, and invisible to exports and to word counts — the same trick the
+~*EDIT*~ markers use.
+
+To see the full table once without editing any properties, add ~:show-hidden t~
+to the block header and refresh with ~C-c C-c~:
+
+#+BEGIN_EXAMPLE
+,#+BEGIN: character-timeline :show-hidden t
+,#+END:
+#+END_EXAMPLE
+
+The same convention works for plot threads — see lesson 6.
 
 *** A Note on ~:Gender:~
 

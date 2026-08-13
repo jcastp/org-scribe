@@ -1093,9 +1093,9 @@ The dynamic block uses ~org-dblock-write:plot-thread-timeline~ to generate the
 table.
 
 *Column order*: threads are sorted by a ~:Weight:~ property, ascending. The
-templates do not ship one — a thread without it is treated as weight 999.0, so
-by default the columns come out alphabetical. If you want your main line
-leftmost, add the property yourself:
+capture asks for it and the template ships it blank; a thread left blank is
+treated as weight 999.0, so by default the columns come out alphabetical. If
+you want your main line leftmost, give it a number:
 
 #+BEGIN_EXAMPLE
 :Weight: 1.0
@@ -1103,6 +1103,33 @@ leftmost, add the property yourself:
 
 Lower sorts first. It is purely a display preference and nothing else reads
 it, so use it only if the alphabetical order bothers you.
+
+*Hiding a thread from the table*: a thread you track but don't want a column
+for — a running gag, a piece of background business — gets ~-1~ at the Weight
+prompt, or by hand:
+
+#+BEGIN_EXAMPLE
+:Weight: -1
+#+END_EXAMPLE
+
+Any negative value works; ~-1~ is the documented one. The thread keeps its ID,
+its links and its place in every search. Below the table the block writes a
+comment line naming what it left out —
+
+#+BEGIN_EXAMPLE
+# Not shown (Weight -1): Running Gag
+#+END_EXAMPLE
+
+— so a missing column never has to be a mystery. Being an Org comment, that
+line is not exported and not word-counted. To see everything once, add
+~:show-hidden t~ to the ~#+BEGIN:~ line and refresh with ~C-c C-c~.
+
+One deliberate limit: *the health report below ignores Weight entirely.* A
+hidden thread is still checked for coverage, gaps and single-scene
+appearances, and will still produce warnings. Weight decides what the table
+shows, not which threads are held to the craft standard — if you want a minor
+thread to stop warning you, the question to answer is whether it should be a
+thread at all.
 
 ** Example Output
 

@@ -19,6 +19,13 @@
 # Para ver de un vistazo quién es quién, usa la vista de columnas: C-c C-x C-c
 # muestra Role, Stance y Goal al lado de cada nombre.
 #
+# :Weight: ordena las columnas de la cronología de personajes: de 1 a 5, menor
+# primero. Déjala vacía y el personaje va al final, por orden alfabético entre
+# los demás vacíos. Pon -1 y queda fuera de la cronología por completo, sin
+# perder su ficha, sus enlaces ni su sitio en las búsquedas — para el posadero
+# de dos frases, que quieres tener fichado pero no en una columna. La tabla
+# nombra debajo, en una línea de comentario, a quien haya ocultado.
+#
 # Ficha completa para protagonista y oponente. Para el aliado basta la ficha
 # intermedia (sin Fantasma, Necesidad ni Plan) y para el falso aliado y los
 # secundarios la reducida: Concepto, Postura, Apuro, un Aspecto y el Deseo en
@@ -36,6 +43,7 @@
 :Age:
 :Occupation:
 :First-appearance:
+:Weight:
 :RelationshipsData:
 :END:
 
@@ -154,6 +162,7 @@
 :Age:
 :Occupation:
 :First-appearance:
+:Weight:
 :RelationshipsData:
 :END:
 
@@ -210,6 +219,7 @@
 :Stance:
 :Goal:
 :First-appearance:
+:Weight:
 :RelationshipsData:
 :END:
 
@@ -252,6 +262,7 @@
 :Stance:
 :Goal:
 :First-appearance:
+:Weight:
 :RelationshipsData:
 :END:
 
@@ -292,6 +303,7 @@
 :Stance:
 :Goal:
 :First-appearance:
+:Weight:
 :RelationshipsData:
 :END:
 

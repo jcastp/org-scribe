@@ -78,10 +78,40 @@ ENTITY is an entity descriptor plist."
           nil 'file))))
     (nreverse result)))
 
+(defconst org-scribe-hidden-weight -1
+  "The documented Weight value that hides an entity from timeline tables.
+Any negative weight hides; -1 is the value the manual tells writers to
+use.  See `org-scribe--entity-hidden-weight-p'.")
+
+(defun org-scribe--entity-hidden-weight-p (weight)
+  "Return non-nil when WEIGHT marks an entity as hidden from timeline tables.
+Any negative weight counts, not just `org-scribe-hidden-weight': the
+value reaches us through `string-to-number', so -1, -1.0 and -2 must not
+behave differently in ways a writer has to discover.  Note that a missing
+Weight yields 999.0, which is emphatically not hidden — an unweighted
+entity sorts last but still appears."
+  (and (numberp weight) (< weight 0)))
+
+(defconst org-scribe--weight-value-regexp
+  "\\`[[:space:]]*[-+]?\\(?:[0-9]+\\.?[0-9]*\\|\\.[0-9]+\\)[[:space:]]*\\'"
+  "Regexp matching a Weight property value that is a plain number.")
+
+(defun org-scribe--parse-weight (value)
+  "Return VALUE, a Weight property string, as a number, or nil if it is not one.
+Guards against `string-to-number', which answers 0 for both an empty
+string and outright nonsense.  Zero is a legitimate weight that sorts
+ahead of everything, so an entity whose `:Weight:' was left blank — the
+shape the templates ship — would otherwise be pinned silently to the
+first column of every timeline table.  Returning nil lets callers fall
+back to the 999.0 unweighted default instead."
+  (when (and (stringp value)
+             (string-match-p org-scribe--weight-value-regexp value))
+    (string-to-number value)))
+
 (defun org-scribe--get-entity-weight (entity name)
   "Get the Weight property for entity NAME from its database file.
 ENTITY is an entity descriptor plist.
-Returns the weight as a float, or 999.0 if not found."
+Returns the weight as a float, or 999.0 if not found, blank or non-numeric."
   (let ((file (funcall (plist-get entity :file-fn)))
         (pred (plist-get entity :heading-predicate))
         (weight 999.0))
@@ -94,8 +124,9 @@ Returns the weight as a float, or 999.0 if not found."
             (lambda ()
               (when (and (funcall pred)
                          (string= (org-scribe--entity-name-at-point) name))
-                (when-let ((weight-str (org-entry-get nil "Weight")))
-                  (setq weight (string-to-number weight-str)))
+                (when-let ((parsed (org-scribe--parse-weight
+                                    (org-entry-get nil "Weight"))))
+                  (setq weight parsed))
                 (throw 'found t)))
             nil 'file)))))
     weight))
@@ -379,23 +410,50 @@ DATA-FN is called at each level-3 heading.  It should return scene data
           nil 'file))))
     (nreverse scenes)))
 
+(defun org-scribe--sort-weighted-names (weighted)
+  "Return the names in WEIGHTED, an alist of (NAME . WEIGHT), sorted.
+Sorted by weight ascending, ties broken alphabetically."
+  (mapcar #'car
+          (sort weighted
+                (lambda (a b)
+                  (if (= (cdr a) (cdr b))
+                      (string< (car a) (car b))
+                    (< (cdr a) (cdr b)))))))
+
+(defun org-scribe--partition-entities-by-weight (items weight-fn)
+  "Split ITEMS into visible and hidden entities by weight.
+WEIGHT-FN takes a name string and returns its weight (float; lower =
+earlier).  Returns a cons (VISIBLE . HIDDEN), each a list of names sorted
+by weight then alphabetically, where HIDDEN holds the entities whose
+weight satisfies `org-scribe--entity-hidden-weight-p'.
+
+Callers that render a timeline table should show VISIBLE as columns and
+account for HIDDEN somewhere visible — an entity that vanishes from a
+table with no trace is indistinguishable from a linking bug."
+  (let (visible hidden)
+    (dolist (name items)
+      (let ((entry (cons name (funcall weight-fn name))))
+        (if (org-scribe--entity-hidden-weight-p (cdr entry))
+            (push entry hidden)
+          (push entry visible))))
+    (cons (org-scribe--sort-weighted-names (nreverse visible))
+          (org-scribe--sort-weighted-names (nreverse hidden)))))
+
 (defun org-scribe--sort-entities-by-weight (items weight-fn)
   "Return ITEMS sorted by weight, then alphabetically.
-WEIGHT-FN takes a name string and returns its weight (float; lower = earlier)."
-  (let ((weighted (mapcar (lambda (name) (cons name (funcall weight-fn name)))
-                          items)))
-    (mapcar #'car
-            (sort weighted
-                  (lambda (a b)
-                    (if (= (cdr a) (cdr b))
-                        (string< (car a) (car b))
-                      (< (cdr a) (cdr b))))))))
+WEIGHT-FN takes a name string and returns its weight (float; lower = earlier).
+Entities with a negative weight are omitted; use
+`org-scribe--partition-entities-by-weight' to get at them."
+  (car (org-scribe--partition-entities-by-weight items weight-fn)))
 
-(defun org-scribe--render-presence-table (entities scenes cell-fn)
+(defun org-scribe--render-presence-table (entities scenes cell-fn &optional hidden)
   "Insert an org table showing ENTITIES across SCENES.
 ENTITIES is the list of column header strings.
 SCENES is a list where each entry is (heading chapter ...).
-CELL-FN is called with (entity-name scene) and should return the cell string."
+CELL-FN is called with (entity-name scene) and should return the cell string.
+HIDDEN, when non-nil, is a list of names left out of the table because of
+a negative Weight; they are named in a trailing Org comment line so the
+omission is visible in the buffer without being exported or word-counted."
   (insert "| Scene | Chapter |")
   (dolist (entity entities)
     (insert (format " %s |" (org-scribe--escape-table-cell entity))))
@@ -410,7 +468,15 @@ CELL-FN is called with (entity-name scene) and should return the cell string."
     (dolist (entity entities)
       (insert (format " %s |" (org-scribe--escape-table-cell (funcall cell-fn entity scene)))))
     (insert "\n"))
-  (org-table-align))
+  (org-table-align)
+  (when hidden
+    ;; `org-table-align' leaves point inside the table; the note has to land
+    ;; after it, not in the middle of a row.
+    (when (org-at-table-p)
+      (goto-char (org-table-end)))
+    (insert (format "# %s\n"
+                    (org-scribe-msg 'msg-timeline-hidden-entities
+                                    (string-join hidden ", "))))))
 
 ;;; Entity Registry
 

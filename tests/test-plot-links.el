@@ -270,6 +270,63 @@ would otherwise match the regexp fallback, becoming a phantom entity."
       (org-back-to-heading)
       (should-not (org-scribe--plot-heading-p)))))
 
+;;; Hidden Weight Tests
+
+(defmacro org-scribe-test--with-thread-weights (weights &rest body)
+  "Run BODY with `org-scribe--get-plot-thread-weight' stubbed from WEIGHTS.
+WEIGHTS is an alist of (NAME . WEIGHT); names absent from it get the
+999.0 no-property default."
+  (declare (indent 1))
+  `(cl-letf (((symbol-function 'org-scribe--get-plot-thread-weight)
+              (lambda (name) (or (alist-get name ,weights nil nil #'string=) 999.0))))
+     ,@body))
+
+(ert-deftest test-collect-unique-plot-threads-with-hidden ()
+  "Threads with a negative Weight land in the hidden half."
+  (let ((scenes '(("Scene 1" "Ch 1" ("Main Quest" "Running Gag"))
+                  ("Scene 2" "Ch 1" ("Main Quest")))))
+    (org-scribe-test--with-thread-weights '(("Main Quest" . 1.0)
+                                            ("Running Gag" . -1.0))
+      (let ((split (org-scribe--collect-unique-plot-threads-with-hidden scenes)))
+        (should (equal '("Main Quest") (car split)))
+        (should (equal '("Running Gag") (cdr split)))))))
+
+(ert-deftest test-plot-thread-timeline-omits-hidden-and-notes-them ()
+  "The dblock drops hidden thread columns and names them in a comment line."
+  (let ((scenes '(("Scene 1" "Ch 1" ("Main Quest" "Running Gag")))))
+    (cl-letf (((symbol-function 'org-scribe--get-all-scenes-with-plots)
+               (lambda () scenes)))
+      (org-scribe-test--with-thread-weights '(("Running Gag" . -1.0))
+        (with-temp-buffer
+          (org-mode)
+          (org-dblock-write:plot-thread-timeline nil)
+          (let ((text (buffer-string)))
+            (should (string-match-p "Main Quest" text))
+            (should-not (string-match-p "| Running Gag" text))
+            (should (string-match-p "^# .*Running Gag" text))))))))
+
+(ert-deftest test-plot-thread-timeline-show-hidden-restores-columns ()
+  "The :show-hidden dblock parameter puts hidden threads back."
+  (let ((scenes '(("Scene 1" "Ch 1" ("Main Quest" "Running Gag")))))
+    (cl-letf (((symbol-function 'org-scribe--get-all-scenes-with-plots)
+               (lambda () scenes)))
+      (org-scribe-test--with-thread-weights '(("Running Gag" . -1.0))
+        (with-temp-buffer
+          (org-mode)
+          (org-dblock-write:plot-thread-timeline '(:show-hidden t))
+          (let ((text (buffer-string)))
+            (should (string-match-p "Running Gag" text))
+            (should-not (string-match-p "^# " text))))))))
+
+(ert-deftest test-plot-thread-report-still-analyzes-hidden-threads ()
+  "A hidden thread is still held to the coverage and gap checks.
+Weight governs table columns only; the health report deliberately
+ignores it, so a minor thread that appears once still gets its warning."
+  (let ((status (org-scribe--get-thread-status
+                 "Running Gag" '(("Scene 1" "Ch 1")) '(("Scene 1" "Ch 1")) 10)))
+    (should (string= "⚠️" (car status)))
+    (should (member "Only in 1 scene" (cdr status)))))
+
 ;;; Run tests
 
 (defun org-scribe-plot-links-run-tests ()

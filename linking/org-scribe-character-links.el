@@ -262,9 +262,10 @@ Each entry is (SCENE-HEADING CHAPTER-HEADING POV-NAME CHARACTERS-LIST)."
 Returns the weight as a float, or 999.0 if not found."
   (org-scribe--get-entity-weight org-scribe--character-entity char-name))
 
-(defun org-scribe--collect-unique-characters (scenes)
-  "Extract unique character names from SCENES list.
-Returns list of unique character names, sorted by Weight property (ascending)."
+(defun org-scribe--collect-unique-characters-with-hidden (scenes)
+  "Extract unique character names from SCENES list, split by visibility.
+Returns a cons (VISIBLE . HIDDEN), each sorted by Weight property
+\(ascending), where HIDDEN holds characters carrying a negative Weight."
   (let ((chars (make-hash-table :test 'equal)))
     (dolist (scene scenes)
       (let ((pov (nth 2 scene))
@@ -274,8 +275,15 @@ Returns list of unique character names, sorted by Weight property (ascending)."
         (dolist (char (or chars-list '()))
           (unless (string-empty-p char)
             (puthash char t chars)))))
-    (org-scribe--sort-entities-by-weight (hash-table-keys chars)
-                                          #'org-scribe--get-character-weight)))
+    (org-scribe--partition-entities-by-weight (hash-table-keys chars)
+                                             #'org-scribe--get-character-weight)))
+
+(defun org-scribe--collect-unique-characters (scenes)
+  "Extract unique character names from SCENES list.
+Returns list of unique character names, sorted by Weight property
+\(ascending).  Characters with a negative Weight are omitted; use
+`org-scribe--collect-unique-characters-with-hidden' to get at them."
+  (car (org-scribe--collect-unique-characters-with-hidden scenes)))
 
 (defun org-scribe--character-symbol (char-name pov-name chars-list)
   "Return symbol for CHAR-NAME in a scene.
@@ -291,15 +299,23 @@ CHARS-LIST is list of other characters in scene."
 ;;;###autoload
 (defun org-dblock-write:character-timeline (params)
   "Generate timeline showing character appearances across scenes.
-PARAMS are ignored (reserved for future filtering options)."
+PARAMS may contain :show-hidden, which when non-nil includes characters
+whose Weight is negative — they are left out of the table otherwise and
+named in a comment line beneath it."
   (let* ((scenes (org-scribe--get-all-scenes-with-characters))
-         (characters (org-scribe--collect-unique-characters scenes)))
+         (split (org-scribe--collect-unique-characters-with-hidden scenes))
+         (show-hidden (plist-get params :show-hidden))
+         (characters (if show-hidden
+                         (append (car split) (cdr split))
+                       (car split)))
+         (hidden (unless show-hidden (cdr split))))
     (if (null scenes)
         (insert "No scenes with character properties found.\n")
       (org-scribe--render-presence-table
        characters scenes
        (lambda (char scene)
-         (org-scribe--character-symbol char (nth 2 scene) (nth 3 scene)))))))
+         (org-scribe--character-symbol char (nth 2 scene) (nth 3 scene)))
+       hidden))))
 
 ;;; Legacy Aliases
 

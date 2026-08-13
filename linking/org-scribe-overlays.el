@@ -33,6 +33,7 @@
 (require 'org)
 (require 'org-id)
 (require 'org-scribe-messages)
+(require 'org-scribe-linking-core)
 
 ;;; Face
 
@@ -99,6 +100,15 @@ Convenience wrapper around `org-scribe--overlays-link-at-point'."
 Used to distinguish plot headings (TYPE: A-plot) from location headings
 that also carry a :Type: property (e.g. Type: City).")
 
+(defun org-scribe--overlays-format-weight (weight)
+  "Return the tooltip fragment for the raw WEIGHT property string.
+A negative weight keeps the entity out of timeline tables, so the tooltip
+says so — otherwise the only place the convention is visible is the
+manual."
+  (if (org-scribe--entity-hidden-weight-p (org-scribe--parse-weight weight))
+      (format "Weight: %s (%s)" weight (org-scribe-msg 'msg-weight-hidden-marker))
+    (format "Weight: %s" weight)))
+
 (defun org-scribe--overlays-format-tooltip (id)
   "Return a tooltip string for the entity with ID, or nil if not found.
 Dispatches on entity type detected from heading properties:
@@ -131,7 +141,7 @@ Dispatches on entity type detected from heading properties:
                    (parts        (delq nil
                                        (list thread-type
                                              (when status       (format "Status: %s" status))
-                                             (when weight       (format "Weight: %s" weight))
+                                             (when weight       (org-scribe--overlays-format-weight weight))
                                              (when first-appear (format "From: %s" first-appear))))))
               (format "[%s]  %s" name (string-join parts "  |  "))))
            ;; ── Character ───────────────────────────────────────────────────

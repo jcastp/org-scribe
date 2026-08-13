@@ -180,24 +180,42 @@ Returns the maximum number of consecutive scenes where thread is absent."
 Returns the weight as a float, or 999.0 if not found."
   (org-scribe--get-entity-weight org-scribe--plot-entity thread-name))
 
-;;;###autoload
-(defun org-dblock-write:plot-thread-timeline (params)
-  "Generate timeline showing plot thread progression across scenes.
-PARAMS are ignored (reserved for future options)."
-  (let* ((scenes (org-scribe--get-all-scenes-with-plots))
-         (threads-set (make-hash-table :test 'equal)))
+(defun org-scribe--collect-unique-plot-threads-with-hidden (scenes)
+  "Extract unique plot thread names from SCENES, split by visibility.
+Returns a cons (VISIBLE . HIDDEN), each sorted by Weight property
+\(ascending), where HIDDEN holds threads carrying a negative Weight."
+  (let ((threads-set (make-hash-table :test 'equal)))
     (dolist (scene scenes)
       (dolist (thread (nth 2 scene))
         (puthash thread t threads-set)))
-    (let ((threads (org-scribe--sort-entities-by-weight
-                    (hash-table-keys threads-set)
-                    #'org-scribe--get-plot-thread-weight)))
-      (if (null scenes)
-          (insert "No scenes with Plot properties found.\n")
-        (org-scribe--render-presence-table
-         threads scenes
-         (lambda (thread scene)
-           (if (member thread (nth 2 scene)) "●" "")))))))
+    (org-scribe--partition-entities-by-weight
+     (hash-table-keys threads-set)
+     #'org-scribe--get-plot-thread-weight)))
+
+;;;###autoload
+(defun org-dblock-write:plot-thread-timeline (params)
+  "Generate timeline showing plot thread progression across scenes.
+PARAMS may contain :show-hidden, which when non-nil includes threads
+whose Weight is negative — they are left out of the table otherwise and
+named in a comment line beneath it.
+
+Note that a hidden thread is still analyzed in full by
+`org-scribe-plot-thread-report': Weight governs table columns, not
+whether a thread is held to the coverage and gap checks."
+  (let* ((scenes (org-scribe--get-all-scenes-with-plots))
+         (split (org-scribe--collect-unique-plot-threads-with-hidden scenes))
+         (show-hidden (plist-get params :show-hidden))
+         (threads (if show-hidden
+                      (append (car split) (cdr split))
+                    (car split)))
+         (hidden (unless show-hidden (cdr split))))
+    (if (null scenes)
+        (insert "No scenes with Plot properties found.\n")
+      (org-scribe--render-presence-table
+       threads scenes
+       (lambda (thread scene)
+         (if (member thread (nth 2 scene)) "●" ""))
+       hidden))))
 
 ;;; Plot Thread Health Report
 
