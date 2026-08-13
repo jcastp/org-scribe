@@ -9,12 +9,13 @@ You're deep into your writing when you encounter a word that doesn't feel quite 
 
 By the end of this lesson, you'll have:
 - Learned to use the RAE (Real Academia Española) dictionary for Spanish definitions
+- Installed an *offline* thesaurus so synonym lookup works with no network at all
 - Discovered how to find synonyms quickly in a side window
 - Understood translation integration options
 - Practiced quick lookups that maintain your writing flow
 - Customized dictionary tools for your workflow
 
-*Estimated time*: 10-15 minutes
+*Estimated time*: 15-20 minutes
 
 * Before You Begin
 
@@ -22,7 +23,8 @@ By the end of this lesson, you'll have:
 
 ✓ A writing project open (any project will work)
 ✓ Your manuscript file open
-✓ Internet connection (for API lookups)
+✓ Internet connection — for the RAE dictionary, and for synonyms *until* you
+  install the offline thesaurus described below
 
 ** Language Note
 
@@ -62,13 +64,28 @@ If you see it, you're ready! The dictionary tools are part of the core package.
 - Understanding word origins
 - Finding synonyms and antonyms from authoritative source
 
-** 2. WordReference Synonyms
+** 2. Synonyms (offline or online)
 
-*What it is*:
-- Web-based thesaurus
-- Available for both Spanish and English
-- Shows related words and usage examples
-- Opens in a side window within Emacs
+Synonym lookup is one command, ~org-scribe-sinonimo~, with two possible
+sources behind it:
+
+*Offline — the MyThes thesaurus* (recommended, needs a one-time install):
+- Reads a data file on your own disk; no network, no waiting
+- The same thesaurus LibreOffice uses
+- Results appear as an Org buffer with senses grouped, so you can yank a
+  word straight into your manuscript
+- With ~hunspell~ also installed, finds inflected words too (~corriendo~ →
+  ~correr~)
+
+*Online — WordReference* (the fallback, needs nothing):
+- Web-based thesaurus rendered in a side window
+- Used automatically when you have no local data, or when a word has no
+  local entry
+- Clickable: press ~Enter~ on a word to look /it/ up
+
+You don't choose between them per lookup. org-scribe tries the local
+thesaurus first and falls back to the web, so you always get an answer.
+Installing the offline data is covered in the next section.
 
 *Best for*:
 - Finding alternative words quickly
@@ -219,9 +236,102 @@ Press ~M-x~ and type ~org-scribe-rae-api-random~ - this fetches a random word fr
 - Daily vocabulary practice
 - Finding unexpected inspiration
 
-* Finding Synonyms with WordReference
+* Installing the Offline Thesaurus (10 minutes, once)
 
-Sometimes you need alternatives quickly. The synonym lookup opens a web-based thesaurus in a side window.
+This is the single most worthwhile setup step in this lesson. Once done,
+synonym lookup is instant, works on a train with no signal, and gives you
+better-organized results than the web page.
+
+** Step 1: Install the Data
+
+The thesaurus data comes from your *operating system's* package manager, not
+from Emacs. Pick your system:
+
+#+BEGIN_SRC sh
+# Debian / Ubuntu / Linux Mint
+sudo apt install mythes-es
+
+# Fedora
+sudo dnf install mythes-es
+
+# Arch / Manjaro
+sudo pacman -S mythes-es
+#+END_SRC
+
+Writing in English? Install ~mythes-en-us~ instead (or as well).
+
+*What this installs*: two data files in ~/usr/share/mythes/~, about 3 MB
+total. It is the LibreOffice thesaurus, freely licensed. No Emacs package,
+no configuration file, no account.
+
+** Step 2: Install hunspell (Recommended)
+
+You almost certainly have this already — it is what Emacs uses for spell
+checking. If not:
+
+#+BEGIN_SRC sh
+sudo apt install hunspell hunspell-es      # Debian/Ubuntu
+#+END_SRC
+
+*Why it matters*: your manuscript contains ~corriendo~, ~oscurecía~,
+~abandonadas~. The thesaurus is indexed under ~correr~, ~oscurecer~,
+~abandonar~. hunspell is what bridges the two. Without it, looking up a
+conjugated verb finds nothing — which looks like "this word has no synonyms"
+rather than "this word needs its dictionary form".
+
+** Step 3: Verify
+
+Restart Emacs (or just evaluate the check below) and confirm:
+
+#+BEGIN_SRC emacs-lisp
+(org-scribe-mythes-available-p)   ;; => t
+(org-scribe-lemma "corriendo")    ;; => "correr"
+#+END_SRC
+
+To evaluate a line: put your cursor at the end of it and press ~C-x C-e~.
+The result appears in the echo area at the bottom of the screen.
+
+If the first returns ~t~, you're done — there is nothing else to configure.
+
+*If it returns ~nil~*: see "When It Doesn't Find the Data" at the end of
+this section.
+
+** What Changed
+
+Nothing about how you use it. Same command, same key, same side window. The
+difference is where the answer comes from:
+
+| Situation                          | What happens                        |
+|------------------------------------+-------------------------------------|
+| Word is in your local thesaurus    | Instant Org buffer, no network      |
+| Word is inflected (~corriendo~)      | Finds ~correr~, and tells you it did  |
+| Word has no local entry            | Falls back to WordReference online  |
+| No local data installed at all     | WordReference, exactly as before    |
+
+** When It Doesn't Find the Data
+
+Check what org-scribe sees:
+
+#+BEGIN_SRC emacs-lisp
+(org-scribe-mythes-files)   ;; => ("/usr/share/mythes/th_es_ES_v2.dat" . "...idx")
+#+END_SRC
+
+If that is ~nil~, list the directory — ~ls /usr/share/mythes/~ — and look for
+a pair of files named ~th_<language>_v2.dat~ and ~th_<language>_v2.idx~.
+
+If they live somewhere else, or are named for a different language:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-mythes-directory "/usr/share/mythes/")
+(setq org-scribe-mythes-language "es_ES")   ; or es_MX, en_US, ...
+#+END_SRC
+
+On Debian and Ubuntu, every regional Spanish (~es_MX~, ~es_AR~, ~es_CO~ …) is
+a link to the same data, so setting your own region costs no extra download.
+
+* Finding Synonyms
+
+Sometimes you need alternatives quickly. One command covers both sources.
 
 ** Step 1: Invoke Synonym Search
 
@@ -234,9 +344,65 @@ You'll see a prompt:
 
 Type your word and press ~Enter~.
 
-** Step 2: Browse in Side Window
+** Step 2a: Reading Offline Results
 
-A side window opens on the right showing the WordReference synonym page.
+With the thesaurus installed, a side window opens showing an Org buffer:
+
+#+BEGIN_EXAMPLE
+┌────────────────────────────┬──────────────────────────────────┐
+│ Your manuscript            │ *Synonyms: abandonar*            │
+│                            │                                  │
+│ Alex abandonó la casa.     │ #+TITLE: Synonyms: abandonar     │
+│                            │                                  │
+│ "abandonar" again?         │ * Sense 1 /prnl./                │
+│                            │ abandonarse, dejarse llevar,     │
+│                            │ confiarse, darse, entregarse     │
+│                            │                                  │
+│                            │ * Sense 2 /tr./                  │
+│                            │ desistir, renunciar, marcharse,  │
+│                            │ dejar, ceder, descuidar          │
+│                            │                                  │
+│                            │ * Sense 3                        │
+│                            │ aparcar, posponer, retrasar      │
+└────────────────────────────┴──────────────────────────────────┘
+#+END_EXAMPLE
+
+*Reading the senses*: each heading is a distinct meaning. Sense 2 above is
+"to give something up"; sense 3 is "to postpone". Picking a synonym from the
+wrong sense is the classic thesaurus mistake, and the grouping is there to
+stop you making it.
+
+Most Spanish entries carry no grammatical label, which is why senses are
+numbered — the number is often all that separates one meaning from another.
+When a label /is/ present it appears in italics (~/tr./~ = transitive verb,
+~/prnl./~ = pronominal, ~/m./~ = masculine noun, ~/f./~ = feminine noun).
+
+*It's an Org buffer*, so everything you know works: ~C-c C-n~ jumps to the
+next sense, folding works, and you can copy a word with the usual keys and
+yank it into your manuscript.
+
+** Step 2b: When an Inflected Word Is Looked Up
+
+Look up ~corriendo~ and you'll see this line under the title:
+
+#+BEGIN_EXAMPLE
+#+TITLE: Synonyms: correr
+
+# No entry for corriendo; showing synonyms for correr
+#+END_EXAMPLE
+
+The same notice appears in the echo area. This is deliberate: you asked
+about one word and are being shown another, and you should never have to
+guess whether that happened. (It's an Org comment, so if you ever copy the
+buffer somewhere it won't export or count toward your word total.)
+
+A mere difference in capitalization — looking up ~Miedo~, finding ~miedo~ —
+is *not* announced, because nothing meaningful was substituted.
+
+** Step 2c: Reading Online Results
+
+Without local data, or for a word with no local entry, the side window shows
+the WordReference page instead.
 
 #+BEGIN_EXAMPLE
 ┌────────────────────────────┬────────────────────┐
@@ -255,11 +421,16 @@ A side window opens on the right showing the WordReference synonym page.
 
 ** Navigation in Side Window
 
-The synonym window is an Emacs web browser (eww):
-- *Scroll*: Use arrow keys or ~C-n~ / ~C-p~
-- *Click links*: Press ~Enter~ on a word to see its synonyms
-- *Close window*: Press ~q~
-- *Resize*: Use ~C-x }~ and ~C-x {~ to adjust width
+*Offline results* are a normal Org buffer:
+- *Scroll*: arrow keys or ~C-n~ / ~C-p~
+- *Next / previous sense*: ~C-c C-n~ / ~C-c C-p~
+- *Close window*: ~q~
+
+*Online results* are an Emacs web browser (eww):
+- *Click links*: press ~Enter~ on a word to see /its/ synonyms
+- *Close window*: ~q~
+
+Either way, ~C-x }~ and ~C-x {~ adjust the width for the current session.
 
 ** Window Width Customization
 
@@ -270,17 +441,38 @@ By default, the synonym window is 80 characters wide. To change this:
 (setq org-scribe-sinonimo-window-width 100)  ; Make it wider
 #+END_SRC
 
-Adjust the number to suit your screen size and preference.
+Adjust the number to suit your screen size and preference. This applies to
+both offline and online results.
+
+** Choosing a Source Explicitly
+
+The default suits nearly everyone: offline when possible, online when not.
+If you want to be strict about it:
+
+#+BEGIN_SRC emacs-lisp
+;; Never touch the network — a miss is reported instead of going online.
+;; Good on metered connections, or when you want to know what your local
+;; data actually covers.
+(setq org-scribe-thesaurus-backend 'mythes)
+
+;; Always use WordReference, even with local data installed.
+(setq org-scribe-thesaurus-backend 'wordreference)
+
+;; The default.
+(setq org-scribe-thesaurus-backend 'auto)
+#+END_SRC
 
 ** Language Selection
 
-WordReference works for multiple languages:
+*Offline*: set the language of the thesaurus you installed —
 
-*Spanish synonyms*: Just type the Spanish word (default)
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-mythes-language "en_US")   ; needs mythes-en-us installed
+#+END_SRC
 
-*English synonyms*: The function works, but you might want to use WordReference's English site. You can manually visit:
-- Press ~M-x~ then ~eww~
-- Type: ~https://www.wordreference.com/synonyms/~ followed by your English word
+*Online*: WordReference's Spanish synonym site is used. For English you can
+visit the English site manually — ~M-x eww~, then
+~https://www.wordreference.com/synonyms/~ followed by your word.
 
 ** Example: Try It Now!
 
@@ -289,8 +481,11 @@ Let's find synonyms:
 1. Press ~F8 F8~ then ~y~
 2. Type: ~hermoso~ (beautiful)
 3. Press ~Enter~
-4. Browse the synonyms: precioso, bello, lindo, etc.
+4. Browse the senses: precioso, bello, lindo, etc.
 5. Press ~q~ to close the window
+
+Now try an inflected form — ~F8 F8 y~, then ~caminaba~. If hunspell is
+installed you'll get the entry for ~caminar~, with a line telling you so.
 
 ** Pro Tip: Keep It Open
 
@@ -454,10 +649,10 @@ As part of your daily writing routine:
 
 From the Hydra menu (~F8 F8~):
 
-| Key | Tool               | Speed  |
-|-----+--------------------+--------|
-| d   | RAE dictionary     | Medium |
-| y   | Synonyms (WordRef) | Fast   |
+| Key | Tool           | Speed                            |
+|-----+----------------+----------------------------------|
+| d   | RAE dictionary | Medium (network)                 |
+| y   | Synonyms       | Instant offline / medium online  |
 
 *Tip*: After a while, ~F8 F8 d~ becomes muscle memory!
 
@@ -493,22 +688,29 @@ Experiment to find what works for your screen!
 
 ** Offline Usage
 
-*RAE Dictionary*:
-- Requires internet connection
-- Fails gracefully if offline (shows error message)
-- Consider keeping a local Spanish dictionary package as backup
+*Synonyms*: fully offline once you install ~mythes-es~ (see "Installing the
+Offline Thesaurus" above). This is the one language tool that needs nothing
+from the network, and it is the one you reach for most while drafting.
 
-*Synonyms*:
-- Requires internet connection (loads web page)
-- Alternative: Use Emacs' built-in ~M-x synonyms~ (requires local thesaurus file)
+*RAE Dictionary*:
+- Requires an internet connection
+- Fails gracefully when offline (shows an error message)
+- There is no free offline Spanish *definition* dictionary to fall back on —
+  the RAE's dictionary is copyrighted and has never been released under a
+  free licence, which is why an online lookup is the only option here. Note
+  the offline thesaurus does give you synonyms and antonyms, which covers a
+  good part of why writers reach for the dictionary mid-draft.
 
 *Translation*:
 - The ~gt~ package requires internet
-- Alternative: Install offline translation tools
+- Alternative: install offline translation tools
 
-For offline writing sessions, prepare ahead:
-- Look up likely words before going offline
-- Keep synonym lists in your notes files
+For a deliberately disconnected writing session:
+- Install ~mythes-es~ and ~hunspell-es~ ahead of time — that covers synonyms
+  completely
+- Set ~(setq org-scribe-thesaurus-backend 'mythes)~ so a miss is reported
+  immediately instead of hanging on a network request that cannot succeed
+- Look up any definitions you expect to need before disconnecting
 - Use built-in spell-check for basic word validation
 
 ** Language Switching

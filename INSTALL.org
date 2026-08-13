@@ -120,6 +120,60 @@ These enhance functionality but are not required:
 
 #+end_src
 
+** Optional System Packages
+
+These are *not* Emacs packages — they are installed with your operating
+system's package manager. org-scribe reads their data files directly, so
+there is nothing to configure once they are present.
+
+*** Offline synonyms (=mythes=)
+
+Installs the LibreOffice thesaurus data that =org-scribe-sinonimo= reads
+instead of loading WordReference over the network.
+
+#+begin_src sh
+# Debian / Ubuntu
+sudo apt install mythes-es          # Spanish
+sudo apt install mythes-en-us       # English
+
+# Fedora
+sudo dnf install mythes-es
+
+# Arch
+sudo pacman -S mythes-es
+
+# macOS (Homebrew) — no package; see the manual for downloading the
+# LibreOffice dictionary files manually and setting
+# `org-scribe-mythes-directory'.
+#+end_src
+
+Data lands in =/usr/share/mythes/=. Nothing else is required: with the data
+present, synonym lookups become instant and work offline; without it,
+org-scribe falls back to WordReference exactly as before.
+
+*** Lemmatization (=hunspell=)
+
+Lets a lookup for an inflected word as it appears in your manuscript
+(=corriendo=) find the entry the thesaurus is indexed under (=correr=).
+Most systems already have hunspell installed for spell checking.
+
+#+begin_src sh
+# Debian / Ubuntu
+sudo apt install hunspell hunspell-es
+
+# Fedora
+sudo dnf install hunspell hunspell-es
+
+# Arch
+sudo pacman -S hunspell hunspell-es
+
+# macOS
+brew install hunspell
+#+end_src
+
+Without hunspell, only the exact word you typed is looked up. Nothing
+breaks; inflected forms simply do not resolve.
+
 * Verification
 
 After installation, verify it works:
@@ -158,6 +212,54 @@ Install writeroom-mode:
 (use-package writeroom-mode
   :ensure t)
 #+end_src
+
+** Synonyms still open a web page after installing mythes
+
+=org-scribe-sinonimo= falls back to WordReference when it cannot find the
+thesaurus data. Check what it sees:
+
+#+begin_src emacs-lisp
+(org-scribe-mythes-available-p)   ;; => t when the data was found
+(org-scribe-mythes-files)         ;; => (DAT . IDX), or nil
+#+end_src
+
+If both return =nil=:
+
+1. Confirm the files exist — =ls /usr/share/mythes/=. You are looking for a
+   pair named =th_<language>_v2.dat= and =th_<language>_v2.idx=.
+2. If they are elsewhere (a non-standard prefix, or macOS), point org-scribe
+   at them:
+   #+begin_src emacs-lisp
+   (setq org-scribe-mythes-directory "/opt/local/share/mythes/")
+   #+end_src
+3. If the files are there but named for another language, set the language:
+   #+begin_src emacs-lisp
+   (setq org-scribe-mythes-language "en_US")
+   #+end_src
+
+If =org-scribe-mythes-available-p= returns =t= but a particular word still
+opens WordReference, that word simply has no entry in the thesaurus — the
+fallback is working as intended, and the echo area says so.
+
+** Inflected words find no synonyms
+
+=corriendo= returns nothing while =correr= works: hunspell is missing, so the
+word cannot be reduced to the form the thesaurus is indexed under. Check:
+
+#+begin_src emacs-lisp
+(org-scribe-lemma-available-p)    ;; => t when hunspell is on PATH
+(org-scribe-lemma "corriendo")    ;; => "correr"
+#+end_src
+
+If the first returns =t= but the second returns =nil=, the dictionary for
+your language is missing. Install =hunspell-es= (or your language's
+equivalent), or point at one you have:
+
+#+begin_src emacs-lisp
+(setq org-scribe-lemma-dictionary "es_ES")
+#+end_src
+
+After installing a dictionary mid-session, run =M-x org-scribe-lemma-clear-cache=.
 
 ** Hydra menu not working
 

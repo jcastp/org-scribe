@@ -426,7 +426,7 @@ Configure the dictionary and synonym tools.
 
 ** Synonym Window Width
 
-The WordReference synonym window opens on the right. Adjust its width:
+The synonym window opens on the right. Adjust its width:
 
 #+BEGIN_SRC emacs-lisp
 ;; Default
@@ -439,6 +439,64 @@ The WordReference synonym window opens on the right. Adjust its width:
 (setq org-scribe-sinonimo-window-width 100)
 #+END_SRC
 
+This applies to both offline and online results.
+
+** Thesaurus Source
+
+Synonym lookup can read a thesaurus on your own disk instead of loading a
+web page. Install the data with your system package manager — ~sudo apt
+install mythes-es~ on Debian/Ubuntu — and it is used automatically. Lesson
+12 covers the install and what changes.
+
+#+BEGIN_SRC emacs-lisp
+;; 'auto (default)  — offline when the data is installed, online otherwise,
+;;                    and online for a word with no local entry
+;; 'mythes          — offline only; a miss is reported, never goes online
+;; 'wordreference   — always the WordReference page
+(setq org-scribe-thesaurus-backend 'auto)
+#+END_SRC
+
+~'mythes~ is worth setting on a metered connection, or when you want to know
+exactly what your local data covers rather than having gaps papered over.
+
+** Thesaurus Location and Language
+
+Only needed if the data is somewhere unusual, or you want a language other
+than the default:
+
+#+BEGIN_SRC emacs-lisp
+;; Where the th_*_v2.dat / th_*_v2.idx pairs live
+(setq org-scribe-mythes-directory "/usr/share/mythes/")
+
+;; Which one to read
+(setq org-scribe-mythes-language "es_ES")   ; es_MX, en_US, ...
+#+END_SRC
+
+If no thesaurus matches exactly, another variant of the same base language
+is used — so ~es_MX~ still works when only ~es_ES~ is installed.
+
+Check what org-scribe found with ~(org-scribe-mythes-files)~; ~nil~ means it
+found nothing.
+
+** Lemmatization Dictionary
+
+Lemmatization is what lets a lookup for ~corriendo~ find the thesaurus entry
+for ~correr~. It uses hunspell, which you very likely already have installed
+for spell checking, and follows the thesaurus language by default.
+
+#+BEGIN_SRC emacs-lisp
+;; nil (default) — follow `org-scribe-mythes-language'
+;; Or name a hunspell dictionary explicitly:
+(setq org-scribe-lemma-dictionary "es_ES")
+#+END_SRC
+
+Check it with ~(org-scribe-lemma "corriendo")~, which should return
+~"correr"~. If you install a dictionary while Emacs is running, run
+~M-x org-scribe-lemma-clear-cache~ so it is picked up.
+
+Without hunspell nothing breaks — only the exact word you typed is looked
+up.
+
 ** Example Configuration
 
 #+BEGIN_SRC emacs-lisp
@@ -446,6 +504,12 @@ The WordReference synonym window opens on the right. Adjust its width:
 
 ;; Synonym window width
 (setq org-scribe-sinonimo-window-width 70)  ; Adjust to your screen
+
+;; Prefer the offline thesaurus, fall back to the web
+(setq org-scribe-thesaurus-backend 'auto)
+
+;; Mexican Spanish for both thesaurus and morphology
+(setq org-scribe-mythes-language "es_MX")
 #+END_SRC
 
 * Customizing Export Settings

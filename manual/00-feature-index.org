@@ -22,7 +22,7 @@ This package organizes features into the following categories:
 5. [[#linking-system][Linking System]] - ID-based linking for characters, locations, and plot threads; entity tooltips
 6. [[#search-tools][Search Tools]] - Find scenes by character, plot, location, or PoV
 7. [[#templates][Templates]] - Scene and chapter insertion templates; scene word-count update
-8. [[#dictionary-language][Dictionary & Language Tools]] - Spanish dictionary, synonyms, translations
+8. [[#dictionary-language][Dictionary & Language Tools]] - Spanish dictionary, offline/online synonyms, lemmatization, translations
 9. [[#export-tools][Export Tools]] - Scene break filters and export presets
 10. [[#column-view][Column View Enhancements]] - Clean display of ID links in column view
 11. [[#analysis-tools][Analysis Tools]] - Project health report and aggregated statistics
@@ -426,11 +426,23 @@ Fetches a random word from the RAE dictionary, displaying its full definition in
 
 *Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~language/org-scribe-dictionary.el~
 
-** Spanish Synonym Lookup (~org-scribe-sinonimo~)
+** Synonym Lookup (~org-scribe-sinonimo~)
 
-Queries WordReference.com's Spanish synonym database and displays results in a customizable-width side window (default 80 columns, configurable via ~org-scribe-sinonimo-window-width~). The function extracts and formats synonym lists by part of speech, making it easy to find alternatives for nouns, verbs, adjectives, etc. separately. This is essential for Spanish writers avoiding repetition and finding the precise word for context. The window can be easily dismissed when done.
+Displays synonyms in a customizable-width side window (default 80 columns, configurable via ~org-scribe-sinonimo-window-width~), from either of two sources selected by ~org-scribe-thesaurus-backend~. When the MyThes thesaurus data is installed (~apt install mythes-es~), results come from disk — instant, offline, and rendered as an Org buffer with meanings grouped by sense, so a synonym can be yanked straight into the manuscript and the classic error of picking one from the wrong sense is harder to make. Otherwise, or for a word with no local entry, the WordReference page is loaded as before. The default ~'auto~ means writers with no data installed see exactly the previous behaviour, and those who install it get the offline path with no configuration.
 
-*Status*: Fully implemented | *Hydra*: ~y~ (Tools section, "sYnonyms") | *Module*: ~language/org-scribe-dictionary.el~
+*Status*: Fully implemented | *Hydra*: ~y~ (Tools section, "sYnonyms") | *Module*: ~language/org-scribe-dictionary.el~, ~language/org-scribe-mythes.el~
+
+** Offline Thesaurus Reader (~org-scribe-mythes-lookup~)
+
+Reads the MyThes thesaurus files shipped by LibreOffice language packs, returning meaning groups as data. Locates the files itself under ~org-scribe-mythes-directory~, honours the encoding each file declares, and caches its index so only the first lookup of a session pays for loading it. Regional variants resolve to whatever data is present, so ~es_MX~ works when only ~es_ES~ is installed. ~org-scribe-mythes-lookup-entry~ additionally reports *which* headword answered, so a substituted lemma can be disclosed rather than passed off as the word you asked about.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (used by ~y~) | *Module*: ~language/org-scribe-mythes.el~
+
+** Lemmatization (~org-scribe-lemma~ / ~org-scribe-lemmas~)
+
+Reduces an inflected word to the dictionary form reference works are indexed under, via hunspell's morphological analysis — so looking up ~corriendo~ finds ~correr~ and ~oscurecía~ finds ~oscurecer~. Without it, a lookup for any conjugated verb simply misses, which reads as "this word has no synonyms" rather than "this word needs its dictionary form". Ambiguous words return every reading (~casas~ gives both ~casa~ and ~casar~) so the caller can try each against its index rather than guessing. Requires no new dependency — hunspell is already present for spell checking — and degrades silently to no lemmatization when absent.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (used by ~y~) | *Module*: ~language/org-scribe-lemma.el~
 
 ** English Thesaurus (powerthesaurus)
 
@@ -603,7 +615,25 @@ The ~org-scribe-scene-break-replacements~ alist maps export backends to scene se
 
 ** Synonym Window Width
 
-~org-scribe-sinonimo-window-width~ (default: 80) controls the width of the side window displaying Spanish synonym results from WordReference. Narrower values (60-70) work well on smaller screens or when working in split windows. Wider values (90-100) provide more space for longer synonym lists and reduce line wrapping. The window appears on the right side by default.
+~org-scribe-sinonimo-window-width~ (default: 80) controls the width of the side window displaying synonym results, offline or online. Narrower values (60-70) work well on smaller screens or when working in split windows. Wider values (90-100) provide more space for longer synonym lists and reduce line wrapping. The window appears on the right side by default.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
+
+** Thesaurus Backend (~org-scribe-thesaurus-backend~)
+
+Selects where ~org-scribe-sinonimo~ gets its synonyms: ~'mythes~ reads only the offline MyThes data, ~'wordreference~ only the online page, and ~'auto~ (the default) tries offline first and falls back to the web — both when no data is installed and when a particular word has no local entry. The default is chosen so that writers who install nothing keep the previous behaviour exactly, while those who run ~apt install mythes-es~ get instant offline lookups without touching their configuration. Setting ~'mythes~ is useful on a metered connection, or to see honestly what the local data covers instead of having gaps papered over by a web request.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
+
+** Thesaurus Data Location (~org-scribe-mythes-directory~ / ~org-scribe-mythes-language~)
+
+~org-scribe-mythes-directory~ (default: ~/usr/share/mythes/~) is where the ~th_LANG_v2.dat~ / ~.idx~ pairs live, and ~org-scribe-mythes-language~ (default: ~es_ES~) selects which one to read. Neither normally needs setting — the defaults match where Debian, Ubuntu, Fedora and Arch install the data. Change the directory on systems that put it elsewhere (macOS, or a manual download), and the language when writing in something other than Spanish. A language with no exact match falls back to another variant of the same base language, so ~es_MX~ resolves even when only ~es_ES~ is installed. ~(org-scribe-mythes-files)~ reports what was found.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
+
+** Lemmatization Dictionary (~org-scribe-lemma-dictionary~)
+
+Names the hunspell dictionary used to reduce inflected words to their dictionary form. When nil (the default) it follows ~org-scribe-mythes-language~, so one setting drives both the thesaurus and the morphology. Set it explicitly only when the two should differ, or when hunspell names its dictionary differently from the thesaurus. Run ~M-x org-scribe-lemma-clear-cache~ after installing a dictionary mid-session.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
@@ -718,19 +748,19 @@ If your init file still contains the following snippet from before the planner w
 | Linking System           |            19 |
 | Search Tools             |             7 |
 | Templates                |             5 |
-| Dictionary & Language    |             5 |
+| Dictionary & Language    |             7 |
 | Export Tools             |             3 |
 | Column View              |             3 |
 | Analysis Tools           |             1 |
 | UI & Navigation          |             6 |
-| Configuration            |            15 |
+| Configuration            |            18 |
 | Writing Planner          |             4 |
 |--------------------------+---------------|
-| *Total Features*           |            92 |
+| *Total Features*           |            97 |
 
 ** Implementation Status
 
-All 92 features are fully implemented and tested. The package is in active use and stable (version 0.4.0).
+All 97 features are fully implemented and tested. The package is in active use and stable (version 0.6.0).
 
 * Next Steps
 
@@ -770,5 +800,5 @@ manual/
 - *Created*: 2025-11-16
 - *Last Updated*: 2026-06-28
 - *Package Version*: 0.5.0
-- *Total Features Documented*: 92 (88 core + 4 bundled planner)
+- *Total Features Documented*: 97 (93 core + 4 bundled planner)
 - *Status*: Complete feature extraction, ready for detailed documentation

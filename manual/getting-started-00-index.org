@@ -186,12 +186,13 @@ Learn how to export your finished work to various formats with proper scene brea
 - Customizing export settings
 
 *** [[file:getting-started-12-dictionary-tools.org][Lesson 12: Dictionary and Language Tools]]
-*Time: 10 minutes*
+*Time: 15-20 minutes*
 
-Use integrated Spanish dictionary, synonyms, and translation tools while writing.
+Use integrated Spanish dictionary, synonyms, and translation tools while writing — including a thesaurus that works with no network at all.
 
 *You'll learn:*
 - RAE dictionary lookup for Spanish
+- Installing an offline thesaurus, so synonyms need no connection
 - Synonym search (Spanish and English)
 - Translation integration
 - Quick lookups without breaking flow
