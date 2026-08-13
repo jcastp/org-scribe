@@ -100,6 +100,50 @@ forward `defvar' there too."
   :type 'integer
   :group 'org-scribe)
 
+(defcustom org-scribe-thesaurus-backend 'auto
+  "Where `org-scribe-sinonimo' looks up synonyms.
+
+`mythes'        use only the offline MyThes thesaurus;
+`wordreference' use only the online WordReference page;
+`auto'          use MyThes when its data files are installed, and fall
+                back to WordReference otherwise, or when a word has no
+                local entry.
+
+The default is `auto', so a user who has not installed MyThes data sees
+exactly the previous online behaviour, and one who has gets the offline
+lookup without configuring anything.
+
+Install the data on Debian/Ubuntu with `apt install mythes-es'."
+  :type '(choice (const :tag "Offline MyThes only" mythes)
+                 (const :tag "Online WordReference only" wordreference)
+                 (const :tag "MyThes, falling back to WordReference" auto))
+  :group 'org-scribe)
+
+(defcustom org-scribe-mythes-directory "/usr/share/mythes/"
+  "Directory holding MyThes thesaurus data files.
+Each thesaurus is a pair of files named th_LANG_v2.dat and th_LANG_v2.idx."
+  :type 'directory
+  :group 'org-scribe)
+
+(defcustom org-scribe-mythes-language "es_ES"
+  "Language code selecting which MyThes thesaurus to read.
+When no thesaurus matches exactly, any variant of the same base language
+is used instead."
+  :type 'string
+  :group 'org-scribe)
+
+(defcustom org-scribe-lemma-dictionary nil
+  "Hunspell dictionary used to reduce inflected words to their lemma.
+When nil, the language is taken from `org-scribe-mythes-language', so a
+single setting drives both the thesaurus and the morphology.
+
+Lemmatization lets a lookup for a word as written in the manuscript
+\(\"corriendo\") fall back to the form reference works are indexed under
+\(\"correr\").  It is skipped silently when hunspell is not installed."
+  :type '(choice (const :tag "Follow the thesaurus language" nil)
+                 (string :tag "Dictionary name (e.g. es_ES)"))
+  :group 'org-scribe)
+
 (defcustom org-scribe-writing-companion-script nil
   "Path to writing companion Python script for exercise generation.
 Set this to the absolute path of writing_companion.py on your system.

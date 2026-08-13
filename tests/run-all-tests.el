@@ -74,6 +74,8 @@
     "test-column-view"             ; Column view enhancement
     "test-export"                  ; Export filters
     "test-dictionary"              ; Dictionary and language tools
+    "test-mythes"                  ; Offline MyThes thesaurus reader
+    "test-lemma"                   ; Hunspell lemmatization
     "test-health"                  ; Project health report
     "test-overlays"                ; Entity tooltip system
     "test-tempel-snippets"         ; Bundled Tempel snippets
@@ -252,6 +254,22 @@ Suitable for CI/CD pipelines and automated testing."
   (ert "^test-dictionary-"))
 
 ;;;###autoload
+(defun org-scribe-run-mythes-tests ()
+  "Run offline MyThes thesaurus tests only."
+  (interactive)
+  (load-file (expand-file-name "test-mythes.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-mythes-"))
+
+;;;###autoload
+(defun org-scribe-run-lemma-tests ()
+  "Run hunspell lemmatization tests only."
+  (interactive)
+  (load-file (expand-file-name "test-lemma.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-lemma-"))
+
+;;;###autoload
 (defun org-scribe-run-health-tests ()
   "Run project health report tests only."
   (interactive)
@@ -343,6 +361,10 @@ Note: Requires org-context-extended to be installed."
              (length (ert-select-tests "^org-scribe-test-wordcount-" t)))
     (message "  - Dictionary:          %d tests"
              (length (ert-select-tests "^test-dictionary-" t)))
+    (message "  - MyThes thesaurus:    %d tests"
+             (length (ert-select-tests "^test-mythes-" t)))
+    (message "  - Lemmatization:       %d tests"
+             (length (ert-select-tests "^test-lemma-" t)))
     (message "  - Writing planner:     %d tests"
              (length (ert-select-tests "^test-planner-" t)))
     (message "=========================================")))

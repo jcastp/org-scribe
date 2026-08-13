@@ -68,6 +68,11 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            (org-scribe-modes       . "modes/org-scribe-modes")
            (org-scribe-wordcount   . "counting/org-scribe-wordcount")
            (org-scribe-search      . "search/org-scribe-search")
+           ;; `mythes' first: `dictionary' requires it for the offline backend.
+           ;; `lemma' need only precede a lookup, not `mythes' itself, which
+           ;; resolves the lemmatizer lazily rather than requiring it.
+           (org-scribe-mythes      . "language/org-scribe-mythes")
+           (org-scribe-lemma       . "language/org-scribe-lemma")
            (org-scribe-dictionary  . "language/org-scribe-dictionary")
            (org-scribe-capture     . "capture/org-scribe-capture")
            ;; Linking system (core framework + entity modules)
