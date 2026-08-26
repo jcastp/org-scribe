@@ -122,5 +122,22 @@ bound command, and none use the removed `org-scribe/' slash convention."
                   offenders)))))
     (should-not offenders)))
 
+(ert-deftest test-template-references-no-unshipped-tracker ()
+  "No shipped template references `org-tracktable'.
+The novel and short-story templates used to ship a `#+NAME: tracktable'
+table whose `#+TBLFM:' calls `org-tracktable-stamp' and
+`org-tracktable-current-count'.  That package is not a dependency, not in
+the README's optional list and not checked by `org-scribe-setup-check', so
+`C-c C-c' on the shipped table errored — and it was a second daily word
+tracker beside the planner's ledger.  Daily totals belong to the plan."
+  (let (offenders)
+    (dolist (file (org-scribe-refs--templates))
+      (with-temp-buffer
+        (insert-file-contents file)
+        (goto-char (point-min))
+        (when (re-search-forward "tracktable" nil t)
+          (push (file-relative-name file org-scribe-refs--root) offenders))))
+    (should-not offenders)))
+
 (provide 'test-template-references)
 ;;; test-template-references.el ends here

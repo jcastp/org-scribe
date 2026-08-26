@@ -322,21 +322,13 @@ Let's set objectives for your current project:
 
 Beyond scene/chapter tracking, you can track daily writing sessions.
 
-** The Daily Tracking Table
+** Where Daily Totals Live
 
-Your template's "Daily Word Tracking" section doesn't ship a ready-made table — it points you at the external =org-tracktable= package's =org-tracktable-insert-table= command, which generates and auto-updates a table with these columns instead:
+Your template's "Daily Word Tracking" section holds no table. Daily totals are the *planner's* ledger: open it with ~F8 F8 W~, or ~M-x org-scribe-plan~ to create or load the project's plan. From then on, every word count you run records that day's total, and the planner reports the daily target, whether you are on track, and how many days remain — see [[file:getting-started-16-planner-integration.org][Lesson 16]].
 
-#+BEGIN_EXAMPLE
-,** Daily Word Tracking
+There is deliberately only one place in the project that counts words (the progress table above, generated from ~:WORDCOUNT:~ properties) and one place that tracks them over time (the plan). Earlier templates also shipped a table for the external =org-tracktable= package and a hand-filled "Productivity Analysis" section; both are gone, because a package that isn't installed and figures the planner computes for you are two ways of making tracking feel like work.
 
-|---+------------------+-------+-----+---------------+---------|
-| * | date             | start | end | total (today) | comment |
-|---+------------------+-------+-----+---------------+---------|
-|   | initial count    |     0 |   0 |             0 |         |
-|---+------------------+-------+-----+---------------+---------|
-#+END_EXAMPLE
-
-=org-tracktable= is not part of org-scribe itself — it's a separate package the template links to (see its own documentation for installation and the table-formula details). If you'd rather keep a simple hand-maintained log instead, nothing stops you from adding your own plain table:
+If you'd still rather keep a simple hand-maintained log, nothing stops you from adding your own plain table:
 
 #+BEGIN_EXAMPLE
 ,** Daily Writing Log
@@ -403,11 +395,8 @@ Let's put everything together in a real tracking workflow.
    - Watch the table regenerate with new numbers!
 
 4. *Log your session*
-   - Go to Daily Writing Log table
-   - Add a row with today's date
-   - Fill in words written
-   - Add cumulative total
-   - Note what you worked on
+   - If you use the planner (~F8 F8 W~), today's total is already recorded — check it with ~F8 F8 W u~ (sync word count) and add a note with ~F8 F8 W d~
+   - If you keep a hand-maintained log instead, add a row with today's date, the words written, the cumulative total, and what you worked on
 
 5. *Celebrate!*
    - You just completed a full tracking cycle
@@ -487,7 +476,7 @@ Here's a recommended daily routine that includes tracking.
 3. Quick count (~F8 F8 w~) to see session total
 4. Update scene properties (~F8 F8 a~)
 5. Update progress table (~C-c C-c~ on table)
-6. Log session in daily tracking table
+6. Log the session — the planner records the total for you (~F8 F8 W~); add a note with ~F8 F8 W d~
 7. Note what went well/what's next
 
 ** Weekly Review (10 minutes)

@@ -178,6 +178,24 @@
       ;; Check scene break macro
       (should (string-match-p "{{{scene-break}}}" content)))))
 
+(ert-deftest test-insert-scene-template-has-no-beat-property ()
+  "Inserted scenes carry no `:Beat:'/`:Ritmo:' property.
+The drawer used to ship a free-text beat field beside `:Plot-point:' —
+two structural classifications of the same scene, one of them read by no
+module.  A scene template that re-grows it would re-create exactly the
+ambiguity the glossary removes, and nothing else would fail."
+  (with-temp-buffer
+    (org-mode)
+    (org-scribe-insert-scene "Opening Scene")
+    (let ((content (buffer-string)))
+      (should (string-match-p ":Plot-point:" content))
+      (should-not (string-match-p ":Beat:" content))
+      (should-not (string-match-p ":Ritmo:" content))))
+  (should-not (memq 'beat org-scribe--scene-property-keys))
+  ;; The vocabulary is gone from the alias table too, so the key no longer
+  ;; resolves to a localized name; unknown keys pass through unchanged.
+  (should-not (assq 'beat org-scribe--scene-property-aliases)))
+
 (ert-deftest test-insert-scene-template-spanish-project ()
   "Inside a Spanish project, inserted scenes use localized property names."
   (let* ((temp-dir (make-temp-file "org-scribe-insert-scene-es-" t)))

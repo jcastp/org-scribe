@@ -15,6 +15,11 @@
 - Fecha objetivo de finalización ::
 - Palabras por día objetivo :: 1,000
 
+# Estas cuatro cifras son una declaración de intenciones, escrita una vez.
+# Si activas el planificador de escritura (=F8 F8 W=, o =M-x org-scribe-plan=),
+# él se hace cargo: lleva el registro diario, recalcula el objetivo diario
+# sobre la marcha y te dice si vas al día.
+
 * Seguimiento del Progreso :ignore:noexport:
 
 ** Conteo de Palabras y Progreso
@@ -25,6 +30,11 @@
 Esta tabla muestra tu conteo de palabras, objetivos y progreso por sección.
 Actualízala con =C-c C-c= en la línea #+BEGIN.
 
+# Esta tabla es el único lugar donde el proyecto cuenta palabras. Se genera
+# a partir de las propiedades =WORDCOUNT= que refresca =F8 F8 a=, así que
+# nunca está desactualizada a propósito. Los totales diarios, los objetivos
+# y las rachas son tarea del planificador (más abajo), no de una segunda tabla.
+
 #+BEGIN: org-generate-wordcount-table
 | Heading       | Wordcount | Objective | Progress |
 |---------------+-----------+-----------+----------|
@@ -33,18 +43,15 @@ Actualízala con =C-c C-c= en la línea #+BEGIN.
 
 ** Seguimiento Diario de Palabras
 
-Si deseas rastrear aquí un conteo diario de palabras, puedes usar el
-comando =org-tracktable-insert-table= con una línea vacía en el punto.
-Para más detalles, consulta la [[https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org][documentación de org-tracktable]] en
-https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
+Los totales diarios los lleva el planificador de escritura incluido, no una
+tabla en este archivo. Ábrelo con =F8 F8 W=, o con =M-x org-scribe-plan=
+para crear o cargar el plan del proyecto.
 
-#+NAME: tracktable
-|---+---------------+-------+-----+---------------+---------|
-| * | date          | start | end | total (today) | comment |
-|---+---------------+-------+-----+---------------+---------|
-|   | initial count |     0 |   0 |             0 |         |
-|---+---------------+-------+-----+---------------+---------|
-#+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
+Cuando existe un plan, cada conteo de palabras registra el total de ese día
+en su registro, y el planificador informa del objetivo diario, de si vas al
+día y de cuántos días quedan. Sus paneles (=F8 F8 W=, luego =D=) dibujan la curva de
+progreso, la velocidad, el mejor día y la racha de escritura a partir de ese
+registro: cifras que vale la pena leer, y que no vale la pena teclear a mano.
 
 ** Seguimiento de Tiempo
 
@@ -57,19 +64,6 @@ Para registrar tiempo de escritura, usa:
 **** ${DATE} Primera sesión
 :LOGBOOK:
 :END:
-
-** Análisis de Productividad
-
-*** Mejor día
-- Fecha ::
-- Palabras ::
-
-*** Promedio semanal
-- Palabras por semana ::
-- Palabras por día ::
-
-*** Racha actual
-- Días consecutivos escribiendo :: 0
 
 ** Análisis de Tramas
 
@@ -126,7 +120,6 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :WORD-OBJECTIVE: 500
 :PoV:
 :Personajes:
-:Ritmo: Imagen inicial
 :Trama:
 :Punto-de-trama:
 :Linea-temporal:

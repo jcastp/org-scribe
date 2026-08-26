@@ -34,13 +34,8 @@ To update word count, use:
 - =F8 F8 w= (org-scribe-wordcount, count now)
 - =F8 F8 a= (org-scribe-ews-org-count-words, refresh all headings)
 
-#+NAME: tracktable
-|---+---------------+-------+-----+---------------+---------|
-| * | date          | start | end | total (today) | comment |
-|---+---------------+-------+-----+---------------+---------|
-|   | initial count |     0 |   0 |             0 |         |
-|---+---------------+-------+-----+---------------+---------|
-#+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
+Daily totals are kept by the bundled writing planner rather than by a table
+here: =F8 F8 W=, or =M-x org-scribe-plan= to create or load a plan.
 
 * Quick Links :noexport:
 - [[file:README.org][Project Overview]]

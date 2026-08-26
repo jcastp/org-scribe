@@ -228,7 +228,6 @@ All file/directory values are nil if the path does not exist."
 (defconst org-scribe--scene-property-aliases
   '((pov               . ("PoV"))
     (characters        . ("Characters" "Personajes"))
-    (beat              . ("Beat" "Ritmo"))
     (plot              . ("Plot" "Trama"))
     (plot-point        . ("Plot-point" "Punto-de-trama"))
     (timeline          . ("Timeline" "Linea-temporal"))
@@ -247,7 +246,13 @@ All file/directory values are nil if the path does not exist."
     (comment           . ("Comment" "Comentario")))
   "Canonical scene property key -> localized property name aliases.
 Each value lists every literal Org property name known to be used for
-that logical property, English first, then Spanish.")
+that logical property, English first, then Spanish.
+
+`beat' (\"Beat\" / \"Ritmo\") was removed: no module ever read it, and it
+duplicated `plot-point' — the method's own structural classifier — with a
+term borrowed from a different taxonomy.  A scene written before the
+removal may still carry the property; unknown names pass through
+`org-scribe-scene-property-aliases' unchanged, so nothing breaks.")
 
 ;; *EDIT* marker categories (`org-scribe-edit-categories') are plain
 ;; strings, not localized like scene properties, but templates for

@@ -26,13 +26,9 @@ Para actualizar el recuento de palabras, usa:
 - =F8 F8 w= (org-scribe-wordcount, contar ahora)
 - =F8 F8 a= (org-scribe-ews-org-count-words, actualizar todos los encabezados)
 
-#+NAME: tracktable
-|---+---------------+--------+-----+---------------+---------------|
-| * | fecha         | inicio | fin | total (hoy)   | comentario    |
-|---+---------------+--------+-----+---------------+---------------|
-|   | cuenta inicial|      0 |   0 |             0 |               |
-|---+---------------+--------+-----+---------------+---------------|
-#+TBLFM: @2$2=cuenta inicial::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
+Los totales diarios los lleva el planificador de escritura incluido, no una
+tabla en este archivo: =F8 F8 W=, o =M-x org-scribe-plan= para crear o
+cargar un plan.
 
 * Enlaces Rápidos :noexport:
 - [[file:README.org][Resumen del Proyecto]]

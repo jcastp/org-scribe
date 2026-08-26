@@ -15,6 +15,11 @@
 - Target completion date ::
 - Daily word target :: 1,000
 
+# These four numbers are a statement of intent, written once. If you enable
+# the writing planner (=F8 F8 W=, or =M-x org-scribe-plan=), it takes them
+# over: it keeps the daily ledger, recomputes the daily target as you go,
+# and tells you whether you are on track.
+
 * Progress Tracking :ignore:noexport:
 
 ** Word Count and Progress
@@ -25,6 +30,11 @@
 This table shows your word count, objectives, and progress by section.
 Update it with =C-c C-c= on the #+BEGIN line.
 
+# This table is the one place the project counts words. It is generated
+# from the =WORDCOUNT= properties that =F8 F8 a= refreshes, so it is never
+# out of date on purpose. Daily totals, targets and streaks are the
+# planner's job (below), not a second table's.
+
 #+BEGIN: org-generate-wordcount-table
 | Heading       | Wordcount | Objective | Progress |
 |---------------+-----------+-----------+----------|
@@ -33,18 +43,15 @@ Update it with =C-c C-c= on the #+BEGIN line.
 
 ** Daily Word Tracking
 
-If you want to track here a daily word count, you can use the
-=org-tracktable-insert-table= command with an empty line at point.
-For more details, check the [[https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org][org-tracktable documentation]] at
-https://codeberg.org/jcastp/org-tracktable/src/branch/main/README.org
+Daily totals are kept by the bundled writing planner, not by a table here.
+Open it with =F8 F8 W=, or =M-x org-scribe-plan= to create or load the
+project's plan.
 
-#+NAME: tracktable
-|---+------------------+-------+-----+---------------+---------|
-| * | date             | start | end | total (today) | comment |
-|---+------------------+-------+-----+---------------+---------|
-|   | initial count    |     0 |   0 |             0 |         |
-|---+------------------+-------+-----+---------------+---------|
-#+TBLFM: @2$2=initial count::$2='(org-tracktable-stamp)::@2$3=0::$3=(@-1$4)::$4='(org-tracktable-current-count)::$5=$4-$3
+Once a plan exists, every word count you run records that day's total in
+its ledger, and the planner reports the daily target, whether you are on
+track, and how many days remain. Its dashboards (=F8 F8 W=, then =D=) draw the
+progress curve, velocity, best day and writing streak from that ledger —
+figures worth reading, and not worth typing in by hand.
 
 ** Time Tracking
 
@@ -57,19 +64,6 @@ To record writing time, use:
 **** ${DATE} First session
 :LOGBOOK:
 :END:
-
-** Productivity Analysis
-
-*** Best day
-- Date ::
-- Words ::
-
-*** Weekly average
-- Words per week ::
-- Words per day ::
-
-*** Current streak
-- Consecutive writing days :: 0
 
 ** Plot Thread Analysis
 
@@ -126,7 +120,6 @@ Update with =C-c C-c= on the #+BEGIN line.
 :WORD-OBJECTIVE: 500
 :PoV:
 :Characters:
-:Beat: Opening Image
 :Plot:
 :Plot-point:
 :Timeline:

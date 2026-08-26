@@ -317,7 +317,7 @@ VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
 ;;; Template Insertion
 
 (defconst org-scribe--scene-property-keys
-  '(pov characters beat plot plot-point timeline location description summary
+  '(pov characters plot plot-point timeline location description summary
     scene-motivation conflict-source gap what-is-at-stake world-problem
     emotion tension-level outcome sequel-decision comment)
   "Canonical scene property keys, in the order they appear in a scene drawer.
@@ -327,7 +327,15 @@ scene (scene-motivation), what opposes it (conflict-source), the Gap
 between what the character expected and what the world gave, the
 outcome, and the sequel decision that opens the next scene.  `plot-point'
 sits beside `plot' because both classify the scene structurally rather
-than describing what happens in it.")
+than describing what happens in it.
+
+There is deliberately no `beat' key.  The drawer used to carry a free-text
+`:Beat:' (shipped as \"Opening Image\", a Save the Cat term) beside
+`plot-point', which is the method's own structural classifier — linkable,
+health-checked and jumpable.  Two overlapping structural classifications
+is exactly the ambiguity the glossary exists to remove, and no module ever
+read `:Beat:'.  Scenes in projects created before the removal keep the
+property; it is inert.")
 
 (defun org-scribe--scene-property-drawer-lines ()
   "Return the scene property drawer lines, localized to the current project."
