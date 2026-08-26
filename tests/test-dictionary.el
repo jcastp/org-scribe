@@ -234,6 +234,28 @@ buffer must be cleaned up too."
     (should (= 2 (length buffers)))
     (should (cl-every (lambda (b) (not (buffer-live-p b))) buffers))))
 
+;;; Optional dependency: powerthesaurus
+
+(ert-deftest test-dictionary-thesaurus-lookup-without-powerthesaurus-messages ()
+  "The thesaurus command degrades to a message when powerthesaurus is absent.
+The hydra binds this command; before the guard existed it bound
+`powerthesaurus-lookup-dwim' directly, so the menu threw a
+void-function error on any install without that optional package."
+  (let ((msg nil))
+    (cl-letf (((symbol-function 'powerthesaurus-lookup-dwim) nil)
+              ((symbol-function 'message)
+               (lambda (fmt &rest args) (setq msg (apply #'format fmt args)))))
+      (org-scribe-thesaurus-lookup))
+    (should (string-match-p "powerthesaurus" msg))))
+
+(ert-deftest test-dictionary-thesaurus-lookup-delegates-when-available ()
+  "The thesaurus command calls powerthesaurus when it is installed."
+  (let (called)
+    (cl-letf (((symbol-function 'powerthesaurus-lookup-dwim)
+               (lambda () (interactive) (setq called t))))
+      (org-scribe-thesaurus-lookup))
+    (should called)))
+
 ;;; Run tests
 
 (defun org-scribe-dictionary-run-tests ()

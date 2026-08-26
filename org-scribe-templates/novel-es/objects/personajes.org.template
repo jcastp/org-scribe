@@ -10,7 +10,7 @@
 # El papel no va en el encabezado: va en la propiedad :Role:, que es la que
 # org-scribe lee. Por eso puedes renombrar a un personaje cuando quieras sin
 # romper nada, y por eso los enlaces desde las escenas siguen funcionando
-# después (F8 F8 u actualiza los nombres mostrados).
+# después (F8 F8 R actualiza los nombres mostrados).
 #
 # Cada personaje es un encabezado de nivel 1. No los anides: org-scribe
 # reconoce los personajes por ahí, y un personaje anidado es invisible para los
@@ -308,7 +308,7 @@
 :END:
 
 # Uno por cada Postura que quieras ver representada. Duplica este encabezado
-# entero —o usa F8 F8 c— para cada uno.
+# entero —o usa F8 F8 k h— para cada uno.
 #
 # Ficha reducida. El Deseo en tres partes no es opcional aquí: es lo que
 # distingue a un personaje de un figurante. Sin Deseo, la comprobación de

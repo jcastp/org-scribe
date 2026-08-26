@@ -10,7 +10,7 @@
 # The role does not go in the heading: it goes in the :Role: property, which is
 # what org-scribe reads. That is why you can rename a character whenever you
 # like without breaking anything, and why links from scenes keep working
-# afterwards (F8 F8 u refreshes the displayed names).
+# afterwards (F8 F8 R refreshes the displayed names).
 #
 # Every character is a level-1 heading. Do not nest them: org-scribe recognizes
 # characters that way, and a nested character is invisible to linking, search
@@ -311,7 +311,7 @@
 :END:
 
 # One for every Stance you want represented. Duplicate this whole heading — or
-# use F8 F8 c — for each of them.
+# use F8 F8 k h — for each of them.
 #
 # Reduced profile. The Desire in three parts is not optional here: it is what
 # distinguishes a character from an extra. Without a Desire, the contrast check

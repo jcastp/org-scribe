@@ -10,6 +10,7 @@
 ;;; Code:
 
 (require 'ert)
+(require 'org)
 
 ;;; Add paths
 (let ((default-directory (file-name-directory
@@ -186,6 +187,58 @@
                          text 'ascii (list :input-file file))))
             (should-not (string-match-p "SCENE-BREAK" result))))
       (delete-directory project-dir t))))
+
+;;; :ignore: Tag Activation (ox-extra, PROP-8)
+
+(ert-deftest test-ignore-headlines-filter-registered-when-ox-extra-available ()
+  "The ignore-headlines filter is registered exactly when ox-extra loaded."
+  (should (eq (and (memq 'org-scribe--export-filter-ignore-headlines
+                        org-export-filter-parse-tree-functions)
+                   t)
+              (and org-scribe--ox-extra-available t))))
+
+(ert-deftest test-ignore-headlines-drops-title-keeps-body-in-scribe-document ()
+  "Exporting an org-scribe document drops an :ignore: title but keeps its body.
+This is the design lesson 11 documents (title excluded, content
+included) -- confirmed against ox-extra's actual behavior rather than
+plain Org, which has no built-in handling for a tag named \"ignore\"."
+  (skip-unless org-scribe--ox-extra-available)
+  (let* ((project-dir (make-temp-file "test-export-project-" t))
+         (file (expand-file-name "novel.org" project-dir)))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" project-dir)
+            (insert "# Writing project: Test\n# Type: novel\n"))
+          (with-temp-file file
+            (insert "#+TODO: TODO | DONE\n* TODO Scene 1 :ignore:\nThe door creaked open.\n"))
+          (let ((buf (find-file-noselect file)))
+            (unwind-protect
+                (with-current-buffer buf
+                  (let ((output (org-export-as 'ascii nil nil t)))
+                    (should-not (string-match-p "TODO" output))
+                    (should-not (string-match-p "Scene 1" output))
+                    (should (string-match-p "door creaked open" output))))
+              (kill-buffer buf))))
+      (delete-directory project-dir t))))
+
+(ert-deftest test-ignore-headlines-keeps-title-outside-scribe-document ()
+  "An :ignore:-tagged heading in a non-org-scribe file is left untouched.
+Loading org-scribe-export must not change the export behavior of
+unrelated Org files just because ox-extra happens to be on the
+load-path."
+  (skip-unless org-scribe--ox-extra-available)
+  (let ((file (make-temp-file "test-export-unrelated-" nil ".org")))
+    (unwind-protect
+        (progn
+          (with-temp-file file
+            (insert "#+TODO: TODO | DONE\n* TODO Scene 1 :ignore:\nThe door creaked open.\n"))
+          (let ((buf (find-file-noselect file)))
+            (unwind-protect
+                (with-current-buffer buf
+                  (let ((output (org-export-as 'ascii nil nil t)))
+                    (should (string-match-p "Scene 1" output))))
+              (kill-buffer buf))))
+      (delete-file file))))
 
 ;;; Configuration Customization Tests
 

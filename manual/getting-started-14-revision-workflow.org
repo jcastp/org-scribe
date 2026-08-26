@@ -148,7 +148,7 @@ Tempel is optional. Without it, everything else in this lesson works exactly the
 
 *** Categories
 
-An ~*EDIT*~ carries a category before a ~" - "~ separator, so that a revision pass can tackle one kind of problem at a time. The default categories are ~plot~, ~scene~, ~character~ and ~prose~ (customize ~org-scribe-edit-categories~).
+An ~*EDIT*~ carries a category before a ~" - "~ separator, so that a revision pass can tackle one kind of problem at a time. The default categories are ~plot~, ~scene~, ~character~, ~prose~ and ~design~ (customize ~org-scribe-edit-categories~). A localized spelling known to `org-scribe--edit-category-aliases' (currently just Spanish "diseño") canonicalizes to its English key before matching.
 
 ~*NOTE*~ has no category - it is a reminder, not a classified piece of work.
 

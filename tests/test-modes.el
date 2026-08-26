@@ -239,6 +239,58 @@
                         (expand-file-name "novel.org" dir)))))))
 
 ;;; ─────────────────────────────────────────────
+;;; Safe theme application
+;;; ─────────────────────────────────────────────
+
+(ert-deftest test-modes-theme-defaults-are-nil ()
+  "Test that the writing-mode themes default to nil.
+A non-nil default means the *first* press of the writing-mode key on a
+fresh install tries to load a theme the user may not have."
+  (should (null (default-value 'org-scribe-env-work-theme)))
+  (should (null (default-value 'org-scribe-env-normal-theme))))
+
+(ert-deftest test-modes-apply-theme-nil-is-a-no-op ()
+  "Test that a nil theme touches neither `load-theme' nor `consult-theme'."
+  (let (called)
+    (cl-letf (((symbol-function 'load-theme)
+               (lambda (&rest _) (setq called 'load-theme)))
+              ((symbol-function 'consult-theme)
+               (lambda (&rest _) (setq called 'consult-theme)))
+              ((symbol-function 'disable-theme) #'ignore))
+      (org-scribe--apply-theme nil))
+    (should-not called)))
+
+(ert-deftest test-modes-apply-theme-missing-theme-messages-instead-of-erroring ()
+  "Test that a theme that is not installed degrades to a message.
+This is the fresh-install failure BAD-7 describes: `load-theme' on an
+absent theme signals, so the package's own writing mode errored out."
+  (let (called (msg nil))
+    (cl-letf (((symbol-function 'load-theme)
+               (lambda (&rest _) (setq called 'load-theme)))
+              ((symbol-function 'disable-theme) #'ignore)
+              ((symbol-function 'custom-available-themes) (lambda () nil))
+              ((symbol-function 'message)
+               (lambda (fmt &rest args) (setq msg (apply #'format fmt args)))))
+      ;; `consult-theme' may or may not be defined in the test environment;
+      ;; the guard must fire before either branch is reached.
+      (cl-letf (((symbol-function 'consult-theme)
+                 (lambda (&rest _) (setq called 'consult-theme))))
+        (org-scribe--apply-theme 'org-scribe-no-such-theme)))
+    (should-not called)
+    (should (string-match-p "org-scribe-no-such-theme" msg))))
+
+(ert-deftest test-modes-apply-theme-installed-theme-is-loaded ()
+  "Test that an available theme is still applied."
+  (let (loaded)
+    (cl-letf (((symbol-function 'load-theme)
+               (lambda (theme &rest _) (setq loaded theme)))
+              ((symbol-function 'disable-theme) #'ignore)
+              ((symbol-function 'custom-available-themes) (lambda () '(leuven)))
+              ((symbol-function 'consult-theme) nil))
+      (org-scribe--apply-theme 'leuven))
+    (should (eq loaded 'leuven))))
+
+;;; ─────────────────────────────────────────────
 ;;; Writing Environment: absence of writeroom
 ;;; ─────────────────────────────────────────────
 

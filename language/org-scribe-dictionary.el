@@ -23,6 +23,8 @@
 (require 'org-scribe-mythes)
 (require 'org-scribe-wikcionario)
 
+(declare-function powerthesaurus-lookup-dwim "powerthesaurus")
+
 ;;; Shared presentation
 
 (defun org-scribe--side-window (buffer)
@@ -381,6 +383,19 @@ should still get an answer rather than a shrug."
       (when (and (eq backend 'auto) (org-scribe-mythes-available-p))
         (message (org-scribe-msg 'msg-thesaurus-fallback-online palabra)))
       (org-scribe--sinonimo-wordreference palabra)))))
+
+;;;###autoload
+(defun org-scribe-thesaurus-lookup ()
+  "Look up the word at point in the English thesaurus.
+
+Delegates to `powerthesaurus-lookup-dwim', an optional dependency.  The
+guard is the point of this wrapper: the hydra used to call that command
+directly, so on an install without powerthesaurus the package's own menu
+threw a void-function error instead of degrading."
+  (interactive)
+  (if (fboundp 'powerthesaurus-lookup-dwim)
+      (call-interactively #'powerthesaurus-lookup-dwim)
+    (message (org-scribe-msg 'msg-command-unavailable "powerthesaurus"))))
 
 (provide 'org-scribe-dictionary)
 

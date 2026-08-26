@@ -11,7 +11,7 @@
 #   - The thirteen non-negotiables, level 2 under their section. They are
 #     fixed: the same thirteen in every story. Do not add or remove any.
 #   - Narrative lines, level 1 with :THREAD-TYPE:. Those are yours: add as many
-#     as you need with F8 F8 p.
+#     as you need with F8 F8 k g.
 #
 # A line's :Weight: orders the columns of the plot timeline: 1 to 5, lower
 # first; blank sorts last. Put -1 and the line keeps everything except its
@@ -147,7 +147,7 @@
 :END:
 
 # One for every Stance you want represented that the main line does not already
-# carry. Duplicate this heading — or use F8 F8 p — for each subplot.
+# carry. Duplicate this heading — or use F8 F8 k g — for each subplot.
 #
 # At least three crossings with the main line, and one of them at the midpoint,
 # the apparent defeat or the battle. If it never crosses, it is not a subplot:

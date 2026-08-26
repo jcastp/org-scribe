@@ -249,6 +249,39 @@ All file/directory values are nil if the path does not exist."
 Each value lists every literal Org property name known to be used for
 that logical property, English first, then Spanish.")
 
+;; *EDIT* marker categories (`org-scribe-edit-categories') are plain
+;; strings, not localized like scene properties, but templates for
+;; different project languages still write category names in that
+;; language -- the Spanish design template asks the writer for
+;; "*EDIT*: diseño - ..." even though the canonical category is
+;; "design".  Without an alias, that marker would file under the
+;; catch-all "other" bucket instead of the "design" section it was
+;; meant for.  The table below is deliberately small: most categories
+;; ("plot", "scene", "character", "prose") are used as-is by every
+;; template regardless of language, and only "design" currently has a
+;; localized spelling in the templates.  Add an entry here, not a
+;; second literal string, if that changes.
+
+(defconst org-scribe--edit-category-aliases
+  '(("design" . ("Diseño")))
+  "Canonical *EDIT* category -> other spellings known to appear in templates.
+Each key is a canonical value from `org-scribe-edit-categories'; each
+value lists additional literal spellings (e.g. localized ones) that
+should canonicalize to that key.  Matching is case-insensitive.")
+
+(defun org-scribe-edit-category-canonical (category)
+  "Return the canonical spelling of CATEGORY, or CATEGORY unchanged.
+Looks CATEGORY up in `org-scribe--edit-category-aliases' (both the
+canonical keys and their known alternate spellings), case-insensitively.
+Returns CATEGORY as given when it matches nothing, so callers can pass
+an unrecognized or already-canonical category safely."
+  (or (car (cl-find-if
+            (lambda (row)
+              (or (string-equal-ignore-case (car row) category)
+                  (cl-member category (cdr row) :test #'string-equal-ignore-case)))
+            org-scribe--edit-category-aliases))
+      category))
+
 (defun org-scribe-project-language ()
   "Return the language symbol (\\='en or \\='es) for the current project.
 Reads the \"# Language:\" line from the project's .org-scribe-project

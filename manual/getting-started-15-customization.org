@@ -92,17 +92,23 @@ Each mode can use a different theme to signal mode changes visually.
 
 #+BEGIN_SRC emacs-lisp
 ;; Default themes
-(setq org-scribe-env-normal-theme 'ef-deuteranopia-dark)  ; Your normal theme
-(setq org-scribe-env-work-theme 'poet)                    ; Distraction-free mode
-(setq org-scribe-editing-theme 'leuven)                       ; Editing mode
+(setq org-scribe-env-normal-theme nil)   ; nil = leave your theme alone
+(setq org-scribe-env-work-theme nil)     ; nil = leave your theme alone
+(setq org-scribe-editing-theme 'leuven)  ; Editing mode (leuven ships with Emacs)
 #+END_SRC
+
+The writing-mode themes default to ~nil~: out of the box, entering and
+leaving a writing mode does *not* change your colours. Set them to a theme
+you have installed to get theme switching. If a theme you name is not
+installed, org-scribe says so in the echo area and keeps your current theme
+rather than signalling an error.
 
 *** Changing Themes
 
 *Popular writing themes*:
 
 For distraction-free mode:
-- ~'poet~ - Minimalist, high contrast (default)
+- ~'poet~ - Minimalist, high contrast
 - ~'writeroom~ - Very clean
 - ~'nord~ - Cool, calming colors
 - ~'zenburn~ - Low contrast, easy on eyes
@@ -1243,7 +1249,8 @@ Let's customize your setup right now!
 
 ** Step 2: Choose Your Writing Theme (3 min)
 
-1. Test a few themes:
+1. Test a few themes (only ~modus-*~ and ~leuven~ ship with Emacs; the
+   others must be installed first):
    - ~M-x load-theme RET poet RET~
    - ~M-x load-theme RET modus-vivendi RET~
    - ~M-x load-theme RET zenburn RET~

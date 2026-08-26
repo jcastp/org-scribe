@@ -135,17 +135,31 @@ this command drives."
 (defvar-local org-scribe-env--saved-writeroom-width nil
   "Global value of `writeroom-width' saved before org-scribe-env overrode it.")
 
+(defun org-scribe--apply-theme (theme)
+  "Switch to THEME, degrading gracefully instead of erroring.
+
+Does nothing when THEME is nil — the default for the writing-mode
+themes, so a fresh install never touches the user's colours.  When
+THEME names a theme that is not installed, says so and leaves the
+current theme alone: a bare `load-theme' on a missing theme would
+signal, turning the first press of the writing-mode key on a fresh
+install into an error."
+  (when theme
+    (if (not (or (custom-theme-p theme)
+                 (memq theme (custom-available-themes))))
+        (message (org-scribe-msg 'msg-theme-unavailable (symbol-name theme)))
+      (if (fboundp 'consult-theme)
+          (consult-theme theme)
+        (mapc #'disable-theme custom-enabled-themes)
+        (load-theme theme t)))))
+
 (defun org-scribe-env--activate ()
   "Activate writing environment with theme, font, and writeroom."
   ;; Fail fast, before touching theme/font, if writeroom-mode is absent.
   (unless (fboundp 'writeroom-mode)
     (user-error (org-scribe-msg 'error-writeroom-required)))
   (display-line-numbers-mode 1)
-  ;; Check if consult-theme is available
-  (if (fboundp 'consult-theme)
-      (consult-theme org-scribe-env-work-theme)
-    (mapc #'disable-theme custom-enabled-themes)
-    (load-theme org-scribe-env-work-theme t))
+  (org-scribe--apply-theme org-scribe-env-work-theme)
   ;; Check if fontaine is available
   (when (fboundp 'fontaine-set-preset)
     (fontaine-set-preset org-scribe-env-work-font))
@@ -158,10 +172,7 @@ this command drives."
   "Deactivate writing environment and restore previous settings."
   (display-line-numbers-mode -1)
   ;; Restore theme
-  (if (fboundp 'consult-theme)
-      (consult-theme org-scribe-env-normal-theme)
-    (mapc #'disable-theme custom-enabled-themes)
-    (load-theme org-scribe-env-normal-theme t))
+  (org-scribe--apply-theme org-scribe-env-normal-theme)
   ;; Restore font
   (when (fboundp 'fontaine-set-preset)
     (fontaine-set-preset org-scribe-env-normal-font))
@@ -325,8 +336,7 @@ instead of passing a negative margin to `set-window-margins'."
   "Apply the visual style for editing sessions.
 Applies theme, column width, and font preset."
   ;; Theme
-  (when (fboundp 'consult-theme)
-    (consult-theme org-scribe-editing-theme))
+  (org-scribe--apply-theme org-scribe-editing-theme)
   ;; Column width for visual-fill-column
   (when (boundp 'visual-fill-column-width)
     (setq visual-fill-column-width org-scribe-editing-fill-column-width))

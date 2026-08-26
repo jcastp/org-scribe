@@ -11,7 +11,7 @@
 #   - Los trece irrenunciables, de nivel 2 bajo su apartado. Son fijos: los
 #     mismos trece en toda historia. No añadas ni quites.
 #   - Las líneas argumentales, de nivel 1 con :THREAD-TYPE:. Son tuyas: añade
-#     las que necesites con F8 F8 p.
+#     las que necesites con F8 F8 k g.
 #
 # El :Weight: de una línea ordena las columnas de la cronología de tramas: de 1
 # a 5, menor primero; vacío va al final. Pon -1 y la línea conserva todo menos
@@ -146,7 +146,7 @@
 :END:
 
 # Una por cada Postura que quieras ver representada y que no lleve ya la línea
-# principal. Duplica este encabezado —o usa F8 F8 p— para cada subtrama.
+# principal. Duplica este encabezado —o usa F8 F8 k g— para cada subtrama.
 #
 # Mínimo tres cruces con la línea principal, y al menos uno en el punto medio,
 # la aparente derrota o la batalla. Si no cruza, no es una subtrama: es otra

@@ -119,6 +119,12 @@ active and which are missing, with install hints.
 - [[https://github.com/SavchenkoValeriy/emacs-powerthesaurus][powerthesaurus]] - For English thesaurus
 - [[https://github.com/minad/tempel][tempel]] - For the bundled inline edit marker snippets (see [[*Inline Edit Markers][Inline Edit Markers]])
 - [[https://github.com/nobiot/org-remark][org-remark]] - For text annotations
+- [[https://elpa.gnu.org/packages/org-contrib.html][org-contrib]] (for =ox-extra=) - Makes the =:ignore:= tag on scene/chapter
+  headings actually drop the title from export while keeping its body.
+  Without it the tag is inert and exported manuscripts show raw TODO
+  keywords and heading titles. org-scribe activates =ox-extra='s
+  =ignore-headlines= automatically once it is installed — nothing else
+  to configure.
 
 *** Optional System Packages (not Emacs packages)
 
@@ -1042,7 +1048,7 @@ An =*EDIT*= carries a category before a =" - "= separator. =M-x org-scribe-searc
 
 Each entry links back to the exact line. In the index buffer, =g= refreshes and =q= buries it.
 
-Categories come from =org-scribe-edit-categories= (default: plot, scene, character, prose). A marker whose category is missing, empty or unrecognized is grouped under =other= rather than dropped — a typo moves a marker, it never hides one. Set =org-scribe-edits-index-show-empty-categories= to =nil= if you would rather not see categories with nothing in them.
+Categories come from =org-scribe-edit-categories= (default: plot, scene, character, prose, design). A marker whose category is missing, empty or unrecognized is grouped under =other= rather than dropped — a typo moves a marker, it never hides one. Set =org-scribe-edits-index-show-empty-categories= to =nil= if you would rather not see categories with nothing in them.
 
 The index is built by walking Org's parse tree for comment blocks, so prose that merely mentions =*NOTE*= cannot produce a false positive. If your markers *don't* follow the comment-block convention, call it with a prefix argument (=C-u=) for =org-scribe-search-edits-rgrep=, the plain-text search that finds them anywhere.
 

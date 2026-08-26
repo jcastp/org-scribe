@@ -434,6 +434,10 @@ file's Commentary for why a forward `defvar' is needed here too.")
     (msg-workspace-normal . "Workspace: normal editing")
     (error-unknown-workspace . "Unknown workspace layout: %s")
 
+    ;; Optional dependencies missing (graceful degradation)
+    (msg-theme-unavailable . "Theme `%s' is not installed; keeping the current theme")
+    (msg-command-unavailable . "%s is not installed; command unavailable")
+
     ;; Health report — text-level statistics
     (msg-health-pov-word-share-heading . "Per-PoV Word Share")
     (msg-health-pov-word-share-table-header . "| PoV | Scenes | Words | % of Total |")
@@ -841,6 +845,10 @@ printf-style format specifiers (%s, %d, etc.) for dynamic content.")
     (msg-workspace-set . "Espacio de trabajo: %s")
     (msg-workspace-normal . "Espacio de trabajo: edición normal")
     (error-unknown-workspace . "Disposición de espacio de trabajo desconocida: %s")
+
+    ;; Dependencias opcionales ausentes (degradación elegante)
+    (msg-theme-unavailable . "El tema `%s' no está instalado; se mantiene el tema actual")
+    (msg-command-unavailable . "%s no está instalado; orden no disponible")
 
     ;; Health report — text-level statistics
     (msg-health-pov-word-share-heading . "Reparto de Palabras por PoV")

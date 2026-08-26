@@ -63,6 +63,41 @@ affected."
 (add-to-list 'org-export-filter-final-output-functions
              #'org-scribe--export-filter-scene-breaks)
 
+;;; :ignore: Tag Activation (via ox-extra, optional)
+
+;; Every scene and chapter heading in the shipped templates carries the
+;; :ignore: tag, intending the heading's *title* to drop from export
+;; while its body is kept -- exactly what ox-extra's `ignore-headlines'
+;; extra does (from the optional `org-contrib' package). Plain Org has
+;; no built-in handling for a tag literally named "ignore" --
+;; `org-export-exclude-tags' defaults to ("noexport") only -- so
+;; without this, :ignore: is inert and TODO keywords and titles leak
+;; into every exported manuscript. `org-scribe-setup-check' (in
+;; org-scribe.el) lists `ox-extra' among the optional dependencies so
+;; a writer who has not installed it is told why exports look wrong,
+;; rather than left to discover it silently.
+
+(defvar org-scribe--ox-extra-available (require 'ox-extra nil t)
+  "Non-nil when `ox-extra' (from the optional org-contrib package) is loaded.")
+
+(declare-function org-export-ignore-headlines "ox-extra" (data backend info))
+
+(defun org-scribe--export-filter-ignore-headlines (data backend info)
+  "Apply ox-extra's `org-export-ignore-headlines' to org-scribe documents only.
+Delegates to it when `org-scribe--export-in-scribe-context-p' says INFO
+belongs to an org-scribe document; otherwise returns DATA unchanged, so
+a :ignore:-tagged heading in an unrelated Org file is never affected
+just because this package happens to be loaded -- the same scoping
+`org-scribe--export-filter-scene-breaks' already applies to scene
+breaks."
+  (if (org-scribe--export-in-scribe-context-p info)
+      (org-export-ignore-headlines data backend info)
+    data))
+
+(when org-scribe--ox-extra-available
+  (add-to-list 'org-export-filter-parse-tree-functions
+               #'org-scribe--export-filter-ignore-headlines))
+
 (provide 'org-scribe-export)
 
 ;;; org-scribe-export.el ends here

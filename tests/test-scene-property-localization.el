@@ -143,6 +143,25 @@ Mirrors `test-core--with-temp-project' from test-core-extended.el."
       (should (equal (org-entry-get nil "Trama") "Trama principal"))
       (should (null (org-entry-get nil "Plot"))))))
 
+;;; Edit-marker category aliases
+
+(ert-deftest test-edit-category-canonical-resolves-localized-spelling ()
+  "A known alternate spelling canonicalizes to its English key.
+The Spanish design template writes \"diseño\"; it must resolve to the
+canonical \"design\" so the marker is not silently dropped into an
+\"other\" bucket."
+  (should (equal (org-scribe-edit-category-canonical "diseño") "design"))
+  (should (equal (org-scribe-edit-category-canonical "Diseño") "design")))
+
+(ert-deftest test-edit-category-canonical-passes-through-canonical-value ()
+  "A category already in canonical form is returned unchanged."
+  (should (equal (org-scribe-edit-category-canonical "design") "design"))
+  (should (equal (org-scribe-edit-category-canonical "plot") "plot")))
+
+(ert-deftest test-edit-category-canonical-passes-through-unknown-value ()
+  "An unrecognized category is returned unchanged rather than dropped."
+  (should (equal (org-scribe-edit-category-canonical "worldbuilding") "worldbuilding")))
+
 (provide 'test-scene-property-localization)
 
 ;;; test-scene-property-localization.el ends here

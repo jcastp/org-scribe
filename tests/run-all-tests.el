@@ -82,6 +82,7 @@
     "test-tempel-snippets"         ; Bundled Tempel snippets
     "test-sistema-templates"       ; Sistema template set + entity recognition
     "test-template-parity"         ; novel-en / novel-es structural parity
+    "test-template-references"     ; Template F8-key/command references are real
     ;; Writing planner (planning/org-scribe-planner.el)
     "test-planner-calculation"     ; Calculation engine
     "test-planner-io"              ; Plan save/load round-trips
@@ -224,6 +225,14 @@ Suitable for CI/CD pipelines and automated testing."
   (load-file (expand-file-name "test-template-parity.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (ert "^test-template-parity-"))
+
+;;;###autoload
+(defun org-scribe-run-template-reference-tests ()
+  "Run template key/command-reference tests only."
+  (interactive)
+  (load-file (expand-file-name "test-template-references.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-template-references-"))
 
 ;;;###autoload
 (defun org-scribe-run-linking-tests ()

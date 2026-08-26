@@ -63,14 +63,21 @@ forward `defvar' there too."
   "Customization group for writing environment modes."
   :group 'org-scribe)
 
-(defcustom org-scribe-env-normal-theme 'ef-deuteranopia-dark
-  "Theme for normal environment."
-  :type 'symbol
+(defcustom org-scribe-env-normal-theme nil
+  "Theme restored when leaving the writing environment.
+The default is nil, which leaves the current theme untouched: a fresh
+install must not try to load a theme the user does not have.  Set this
+to a theme you actually have installed to get theme switching."
+  :type '(choice (const :tag "Leave the current theme alone" nil)
+                 (symbol :tag "Theme name"))
   :group 'org-scribe-env)
 
-(defcustom org-scribe-env-work-theme 'poet
-  "Theme for writing environment."
-  :type 'symbol
+(defcustom org-scribe-env-work-theme nil
+  "Theme for the writing environment.
+The default is nil, which leaves the current theme untouched.  See
+`org-scribe-env-normal-theme'."
+  :type '(choice (const :tag "Leave the current theme alone" nil)
+                 (symbol :tag "Theme name"))
   :group 'org-scribe-env)
 
 (defcustom org-scribe-env-normal-font 'regular
@@ -212,10 +219,18 @@ to the Python script."
     (md . "\n***\n\n")
     (man . "\n***\n\n")
     (html . "<br><br><br>\n")
+    (epub . "<br><br><br>\n")
+    (odt . "<text:p>***</text:p>\n")
     (latex . "\\vspace{\\baselineskip}\\vspace{\\baselineskip}\\vspace{\\baselineskip}\n")
     (t . "\n\n\n"))
   "Alist of export backend symbols to scene break replacement strings.
-The key t serves as the default for unlisted backends."
+The key t serves as the default for unlisted backends.  The =epub=
+entry (from the optional `ox-epub' package) reuses the HTML break
+since EPUB export derives from the HTML backend.  The =odt= entry
+deliberately omits a =text:style-name= attribute -- that attribute is
+optional in the ODF spec, and hardcoding a specific style name risks
+one that does not exist in the reader's template, corrupting the
+paragraph instead of just looking plain."
   :type '(alist :key-type symbol :value-type string)
   :group 'org-scribe)
 
@@ -352,8 +367,11 @@ so the pane now defaults to the project notes file instead."
   :group 'org-scribe)
 
 (defcustom org-scribe-editing-theme 'leuven
-  "Theme to use in editing mode."
-  :type 'symbol
+  "Theme to use in editing mode.
+Defaults to `leuven', which ships with Emacs.  Set to nil to leave the
+current theme untouched."
+  :type '(choice (const :tag "Leave the current theme alone" nil)
+                 (symbol :tag "Theme name"))
   :group 'org-scribe)
 
 (defcustom org-scribe-editing-fill-column-width 90
@@ -383,7 +401,7 @@ own beyond the two org-scribe knows about."
   :group 'org-scribe)
 
 (defcustom org-scribe-edit-categories
-  '("plot" "scene" "character" "prose")
+  '("plot" "scene" "character" "prose" "design")
   "Known categories for *EDIT* markers, used to group the edit index.
 
 An *EDIT* marker carries a category before a \" - \" separator:
@@ -391,9 +409,11 @@ An *EDIT* marker carries a category before a \" - \" separator:
   *EDIT*: plot - Alice's motive contradicts chapter 1
 
 `org-scribe-search-edits' groups the index by these categories.  A
-marker whose category is absent, empty, or not in this list is grouped
-under a catch-all \"other\" heading rather than being dropped, so a
-typo moves a marker but never hides it.
+marker whose category is absent, empty, or not in this list (after
+resolving it through `org-scribe--edit-category-aliases', so a
+localized spelling such as \"diseño\" still matches \"design\") is
+grouped under a catch-all \"other\" heading rather than being dropped,
+so a typo moves a marker but never hides it.
 
 *NOTE* markers have no category and are listed in their own section."
   :type '(repeat string)

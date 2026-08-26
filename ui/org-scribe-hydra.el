@@ -37,7 +37,7 @@
 (declare-function org-scribe-rae-api-lookup "language/org-scribe-dictionary")
 (declare-function org-scribe-dictionary-lookup "language/org-scribe-dictionary")
 (declare-function org-scribe-sinonimo "language/org-scribe-dictionary")
-(declare-function powerthesaurus-lookup-dwim "powerthesaurus")
+(declare-function org-scribe-thesaurus-lookup "language/org-scribe-dictionary")
 (declare-function org-scribe-capture-to-file "capture/org-scribe-capture")
 (declare-function org-scribe-capture-character "capture/org-scribe-capture")
 (declare-function org-scribe-capture-location "capture/org-scribe-capture")
@@ -186,7 +186,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("a" org-scribe-ews-org-count-words "update all counts")
   ("d" org-scribe-dictionary-lookup "dictionary")
   ("y" org-scribe-sinonimo "synonyms")
-  ("x" powerthesaurus-lookup-dwim "thesaurus")
+  ("x" org-scribe-thesaurus-lookup "thesaurus")
 
   ;; Search
   ("1" org-scribe-org-find-pov "find by PoV")

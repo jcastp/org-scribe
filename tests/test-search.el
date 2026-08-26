@@ -211,6 +211,18 @@ CONTENT is inserted into \"novel.org\" at the project root."
       (should (equal "test this" (plist-get marker :text)))
       (should (equal "Scene 1" (plist-get marker :heading))))))
 
+(ert-deftest test-search-edits-index-localized-category-canonicalizes ()
+  "A known alternate spelling of a category canonicalizes before grouping.
+The Spanish design template asks the writer for \"*EDIT*: diseño - ...\";
+without canonicalization that marker falls into the catch-all \"other\"
+bucket instead of \"design\" (see `org-scribe-edit-category-canonical')."
+  (org-scribe-test--with-edits-project dir
+      "* Scene 1\n#+begin_comment\n*EDIT*: diseño - revisar la premisa\n#+end_comment\n"
+    (let ((marker (car (org-scribe-test--markers dir))))
+      (should (equal "EDIT" (plist-get marker :type)))
+      (should (equal "design" (plist-get marker :category)))
+      (should (equal "revisar la premisa" (plist-get marker :text))))))
+
 (ert-deftest test-search-edits-index-keeps-multiline-body ()
   "A marker spanning several lines keeps its whole body.
 This is the main thing the structured index buys over a line-based

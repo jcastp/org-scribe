@@ -98,13 +98,26 @@ You can export:
 
 ** What Gets Exported?
 
-Org-mode respects:
-- ~:ignore:~ tag on headings → Heading excluded (but content included)
-- ~:noexport:~ tag on headings → Heading and content excluded
+- ~:ignore:~ tag on headings → Heading title excluded, content included.
+  This is *not* plain Org behavior — it requires the optional ~ox-extra~
+  package (part of ~org-contrib~; ~M-x package-install RET org-contrib~).
+  org-scribe activates it automatically for your manuscript whenever it
+  is installed (=export/org-scribe-export.el=); without it, ~:ignore:~
+  does nothing and the raw heading — TODO keyword included — exports
+  literally. ~M-x org-scribe-setup-check~ tells you whether it is
+  present.
+- ~:noexport:~ tag on headings → Heading and content excluded. This
+  one *is* plain Org (~org-export-exclude-tags~ defaults to
+  ~("noexport")~).
 - ~#+OPTIONS: toc:nil~ → No table of contents
+- ~#+OPTIONS: todo:nil tags:nil~ → TODO keywords and tags stripped from
+  exported headings (shipped in your manuscript template, so a scene
+  heading that still says "TODO" in the buffer exports as plain prose)
 - ~#+EXCLUDE_TAGS: noexport~ → Tags to exclude
 
-*Your template already has these configured!*
+*Your template already has the ~:ignore:~/~:noexport:~ tags and the
+~#+OPTIONS~ line configured — install ~org-contrib~ once and exporting
+just works.*
 
 * The Scene Break Macro
 
@@ -125,7 +138,9 @@ But each export format needs different scene breaks:
 - **Print (PDF/LaTeX)**: Vertical space (~\vspace~)
 - **HTML**: Multiple line breaks
 - **ASCII/Markdown/Man**: Three asterisks (***)
-- **Word (ODT), EPUB, and any other backend**: no dedicated entry exists yet — these fall back to the same generic 3-newline default as an unconfigured backend, not a format-specific break
+- **Word (ODT)**: A centered =***= paragraph
+- **EPUB**: Multiple line breaks (it derives from the HTML backend)
+- **Any other backend**: falls back to the generic 3-newline default
 
 **Manually changing this for each format is tedious!**
 
@@ -149,7 +164,9 @@ But each export format needs different scene breaks:
    - LaTeX: Converts to ~\vspace{...}~ (vertical space)
    - HTML: Converts to ~<br><br><br>~ (line breaks)
    - ASCII/Markdown/Man: Converts to ~***~
-   - ODT, EPUB, and any other backend without a dedicated entry: falls back to the generic default (three newlines)
+   - ODT: Converts to a centered =***= paragraph
+   - EPUB: Converts to ~<br><br><br>~ (like HTML)
+   - Any other backend without a dedicated entry: falls back to the generic default (three newlines)
 
 ** Using Scene Breaks
 
@@ -973,13 +990,25 @@ Here are complete workflows for common scenarios.
 3. Confirm ~org-scribe~ is loaded: ~M-x org-scribe-version~
 4. The replacement only applies inside an org-scribe context: either the file lives under a project with a ~.org-scribe-project~ marker, or ~org-scribe-mode~ is enabled in the buffer. Outside of that, the literal ~SCENE-BREAK~ text is left as-is (so other org files aren't affected).
 
-** Problem: Export Shows TODO Keywords
+** Problem: Export Shows TODO Keywords or Raw Scene Headings
 
-*Symptom*: PDF/ODT shows "TODO Scene 3" instead of "Scene 3"
+*Symptom*: PDF/ODT shows "TODO Scene 3" instead of "Scene 3", or the
+scene/chapter title itself appears in the output where you expected
+only its body text.
 
-*Cause*: TODO export enabled
+*Cause*: Either ~#+OPTIONS: todo:nil~ is missing (already shipped in
+the manuscript template — check it wasn't deleted), or ~ox-extra~ is
+not installed, so the ~:ignore:~ tag that is supposed to drop the
+heading title has no effect. Run ~M-x org-scribe-setup-check~ to see
+which.
 
-*Solution*: Add ~#+OPTIONS: todo:nil~
+*Solution*:
+- Confirm ~#+OPTIONS: todo:nil tags:nil~ is present near the top of
+  the manuscript file.
+- Install ~org-contrib~ (~M-x package-install RET org-contrib~) for
+  ~ox-extra~. org-scribe activates its ~ignore-headlines~ extra for
+  your manuscript automatically once it is on the load-path — no
+  further configuration needed.
 
 ** Problem: Chapters Not Numbered Correctly
 

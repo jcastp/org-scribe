@@ -692,7 +692,7 @@ Don't stop writing to fix the passage - drop the marker and keep going.
 
 The comment block is not optional decoration. It is what keeps markers out of your exported manuscript and out of your word counts. A marker typed as bare text in a paragraph is ordinary prose and *will* appear in your exported book. Lesson 14 covers the convention in full, including the ~edit~ and ~note~ snippets that write the block for you.
 
-An ~*EDIT*~ also carries a category before a ~" - "~ separator (~plot~, ~scene~, ~character~, ~prose~ by default), so a revision pass can tackle one kind of problem at a time. ~*NOTE*~ has no category - it is a reminder, not a classified piece of work.
+An ~*EDIT*~ also carries a category before a ~" - "~ separator (~plot~, ~scene~, ~character~, ~prose~, ~design~ by default), so a revision pass can tackle one kind of problem at a time. ~*NOTE*~ has no category - it is a reminder, not a classified piece of work.
 
 ** How to Search
 

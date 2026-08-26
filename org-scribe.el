@@ -174,7 +174,8 @@ recommended keybindings and hooks."
      (gt             . "Translation support")
      (powerthesaurus . "English thesaurus")
      (tempel         . "Snippets for inline edit markers (org-scribe-tempel-setup)")
-     (org-remark     . "Text annotations")))
+     (org-remark     . "Text annotations")
+     (ox-extra       . "Makes the :ignore: tag on scene/chapter headings actually drop the title from export while keeping its body; part of the org-contrib package. Without it, exported manuscripts show raw TODO keywords and heading titles.")))
   "org-scribe dependencies grouped by importance, each with a description.
 Only the `:required' group is needed for the package to load; the
 `:recommended' group degrades gracefully when absent and the `:optional'

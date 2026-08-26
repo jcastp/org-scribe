@@ -225,19 +225,22 @@ Group 1 is the marker type, group 2 the rest of the line.")
 
 (defun org-scribe--edits-parse-category (text)
   "Split TEXT into a (CATEGORY . BODY) cons for an *EDIT* marker.
-CATEGORY is nil when TEXT carries none, or carries one that is not in
+CATEGORY is nil when TEXT carries none, or carries one that does not
+resolve (via `org-scribe-edit-category-canonical') to a member of
 `org-scribe-edit-categories'; BODY is TEXT with the category and its
 \" - \" separator removed.  Matching is case-insensitive so that
-\"Plot\" groups with \"plot\"."
+\"Plot\" groups with \"plot\", and a known alternate spelling such as
+\"diseño\" canonicalizes to \"design\" before the check."
   (let ((case-fold-search t))
     (cond
      ;; "category - body"
      ((string-match "\\`\\([^-]*[^ \t-]\\)[ \t]+-[ \t]+\\(.*\\)\\'" text)
-      (let ((category (match-string 1 text))
-            (body (match-string 2 text)))
-        (if (seq-find (lambda (known) (string-equal-ignore-case known category))
+      (let* ((category (match-string 1 text))
+             (body (match-string 2 text))
+             (canonical (org-scribe-edit-category-canonical category)))
+        (if (seq-find (lambda (known) (string-equal-ignore-case known canonical))
                       org-scribe-edit-categories)
-            (cons (downcase category) body)
+            (cons (downcase canonical) body)
           ;; Unknown category: keep it visible in the body rather than
           ;; silently discarding a typo.
           (cons nil text))))
