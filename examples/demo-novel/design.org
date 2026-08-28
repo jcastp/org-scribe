@@ -1,0 +1,212 @@
+#+TITLE: The Morning Routine - Design
+#+AUTHOR: Demo Author
+#+DATE: 2026-05-01
+#+LANGUAGE: en
+#+STARTUP: overview
+
+# This is a *worked example*. In a project you create yourself, this file
+# arrives empty, with the instruction comments still in place and every
+# field blank. Here it is filled in, so you can see what a crossed Starting
+# Gate actually looks like before you have to produce one.
+#
+# The instruction comments have been kept only where they explain why an
+# answer is shaped the way it is.
+
+* Starting Gate
+
+# The only list that decides when you start writing. Eight boxes; when they
+# are ticked, stop planning.
+#
+# =F8 F8 H= (org-scribe-project-health) reads these boxes back at you, and
+# measures two of them for itself: how many of the thirteen non-negotiables
+# have content, and how many of the first three scenes are written. Where
+# the measurement and your tick disagree, the report says so and leaves the
+# disagreement standing.
+#
+# Box 7 is deliberately left unticked here even though all thirteen plot
+# points are filled in, so that the demo shows you what that disagreement
+# looks like in the report.
+
+- [X] Theme and at least five Stances
+- [X] Protagonist and opponent with Ghost, Lie, Weakness, Desire and Need
+- [X] Stakes
+- [X] Ending chosen
+- [X] Point of view decided
+- [X] Premise
+- [ ] The thirteen non-negotiable plot points
+- [X] The first three scenes
+
+* Core
+
+- Theme ::
+  If you refuse to give your days a shape, you hand their shape to whoever
+  asks for it first.
+
+- Stances ::
+  # Worst to best. Each one is carried by somebody: that is what turned this
+  # list into a cast. See the Coverage table in objects/characters.org.
+  1. Time is what other people take from you. The only defence is to promise
+     nobody anything with an hour attached. (Alex, opening)
+  2. Availability is loyalty. Whoever always answers deserves the work.
+     (Dana)
+  3. Keep your own hours by making sure you never owe anyone one. (Priya)
+  4. A routine is a discipline you owe yourself, and keeping it makes you
+     better than the people who don't. (Sam, opening)
+  5. A shape you give the day is what lets you be reliably somewhere, for
+     someone. (Sam, closing — and Alex, closing)
+
+- Protagonist and their opening Stance ::
+  Alex Rivera, on Stance 1.
+
+- Ghost ::
+  The morning Marisol died. Alex had promised to be at the hospice at nine.
+  They lost the morning the way they lost every morning — three alarms, a
+  shower that ran long, a client message answered on the stairs — and got
+  there at eleven. She died at ten-forty.
+
+- Lie ::
+  Clocks are cruel, and looking at one is how you let it accuse you. Time
+  cannot be held; planning it is a way of pretending otherwise, and the
+  pretence is what makes the loss unbearable.
+
+- Psychological Weakness ::
+  Alex will not make any commitment with an hour attached to it. They say
+  "sometime this week", "I'll swing by", "before the end of the day" — and
+  mean all of it.
+
+- Moral Weakness ::
+  Alex spends Sam's mornings instead of their own. Concretely: Alex asks Sam
+  to take the 8:00 courier handover for them, again, and that is the exact
+  hour Sam has to be free to take the care centre's call about their father.
+
+- Desire ::
+  Win the twelve-month Kestrel retainer — the one contract that would end
+  the scramble. It is pitched at nine in the morning, three weeks out.
+
+- Need ::
+  To give the day a shape, and keep one hour they promised.
+
+- Opponent and their Stance ::
+  Dana Okonkwo, on Stance 2. She wants the same thing Alex wants: control of
+  Alex's mornings. Alex wants to own them; Dana needs to be able to spend
+  them. Full chain in objects/characters.org.
+
+- Stakes ::
+  If Alex fails: the Kestrel retainer goes to someone else and the scramble
+  becomes permanent; Sam's father loses the assessment slot and with it the
+  day place; and Alex becomes, provably, a person who costs other people
+  their mornings.
+
+- Ending ::
+  Rise, and does not get the Desire. See "The ending" below.
+
+- Point of view ::
+  Third person limited, past tense, single focalizer: Alex.
+
+- Premise ::
+  When a city pays for availability instead of time, a chronically
+  unpunctual freelance designer must give their days a shape in order to
+  keep the one promise that cannot be rescheduled.
+
+* World Problem
+
+# Expressed as an Aspect, so it can be invoked to complicate any scene.
+
+- Aspect ::
+  Nobody here is paid for their time; everyone is paid for their
+  availability.
+
+** Box of complications
+
+- A client message lands at 6:40 and is read before the kettle boils.
+- A "quick call, ten minutes" is booked into the middle of the only
+  uninterrupted block of the day.
+- The freelance platform ranks by median response time, and the ranking is
+  public.
+- Rent clears on the 1st; invoices clear on the 30th, when they clear.
+
+* Stakes
+
+# Every rung changes category, not degree.
+
+| Quarter | What is at stake                                                   |
+|---------+--------------------------------------------------------------------|
+| I       | Money. The Halloran account, then the rent.                        |
+| II      | Trust. Sam stops asking Alex for anything, which is worse than a row. |
+| III     | Someone else's life. Sam's father loses the placement.             |
+| IV      | Who Alex is. Two promises at nine o'clock, one car, one of them broken. |
+
+* The ending
+
+- Moral movement ::
+  Rise.
+- Opening Stance → closing Stance ::
+  1 → 5.
+- External result ::
+  Does not get the Desire. Alex misses the Kestrel pitch and loses the
+  retainer to Priya.
+- What that crossing proves about the Theme ::
+  That the shape of a day is not a productivity technique. It is the only
+  mechanism by which a promise to another person can be kept, and it costs
+  something real, or it proves nothing.
+
+* Designing principle and archetype
+
+- Designing principle ::
+  A person who has never looked at a clock learns to, one hour at a time,
+  and the last hour he keeps is the one that costs him everything he was
+  trying to buy with the others.
+- Archetype ::
+  The penitent.
+
+* Point of view
+
+- Person and tense ::
+  Third person limited, past tense.
+- Focalizers ::
+  Alex only.
+- Distance ::
+  Close, but never inside the thought as it forms — Alex is a person who
+  does not look directly at things, and the prose does not either.
+- Narrative voice ::
+  Dry, present-tense-adjacent, given to counting. Alex narrates in minutes.
+- Rule for switching ::
+  There is no switching. One focalizer.
+- What this choice forbids me ::
+  The reader can never watch Dana calculate — every one of her moves has to
+  be legible from the outside, from what she says and when she sends it.
+  And Priya's betrayal cannot be narrated: it has to be visible in the
+  record, in a timestamp Alex can be shown.
+
+* Symbols
+
+# A symbol that does not change is decoration.
+
+- Of the story ::
+  Marisol's wristwatch. Mechanical: it stops unless it is wound, every day,
+  by hand. The routine is not a metaphor for the watch; the watch is the
+  routine.
+- Of character ::
+  Sam's paper notebook. Alex reads it as serenity for most of the book. It
+  is a caregiver's log.
+- Of change ::
+  The watch stops at the apparent defeat, on the morning Sam misses the
+  call. Alex winds it at the moral decision, and that is the whole
+  self-revelation in one gesture.
+- Of world ::
+  The notification badge. A number that only ever goes up.
+- Of action ::
+  Making the bed. Absurd in Act I, sincere in Act III, and the same act.
+
+* Pending design changes
+
+# One line per deviation, noted without leaving the drafting session.
+# In the manuscript, use *EDIT*: design - ... markers inside a comment
+# block; they are collected by the edit index (F8 F8 6).
+
+- Casey was going to be the flustered stranger of the last scene and nothing
+  else. Writing the scene, they turned out to need a Stance of their own, so
+  they are now in the Coverage table.
+- The watch stopping was in the outline at the midpoint. It works at the
+  apparent defeat instead: too early and the reader spends the third quarter
+  waiting for it.

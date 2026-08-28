@@ -195,6 +195,31 @@ After loading, run =M-x org-scribe-setup-check= to confirm what is active.
 
 * Quick Start
 
+** Read the Demo Project First
+
+Before creating anything, it is worth ten minutes to read a project that is
+already filled in. Two ship with the package, in =examples/=:
+
+- [[file:examples/demo-novel/README.org][=examples/demo-novel/=]] — /The Morning Routine/, a novel project three weeks
+  and five scenes into a first draft. It implements the writing method in
+  full: a crossed Starting Gate in [[file:examples/demo-novel/design.org][design.org]], the thirteen non-negotiables
+  filled in, a causal chain per character, settings with an Echo and a
+  Hazard, live =*EDIT*= markers, an active writing plan, and two entities
+  deliberately hidden from the timelines with =:Weight: -1=.
+- [[file:examples/demo-short-story/README.org][=examples/demo-short-story/=]] — /The Last Message/, the smaller
+  consolidated layout.
+
+Both are real projects, not screenshots. Open =examples/demo-novel/novel.org=
+in Emacs with org-scribe loaded and every command works against it: =<f8>
+<f8> H= for the health report, =6= for the edit index, =5= for the unwritten
+scenes, =C-c C-x C-c= for column view. Nothing needs installing and nothing
+you do there touches your own work.
+
+The novel demo is also deliberately imperfect — a gate box left unticked
+against thirteen written plot points, two continuity errors about the same
+object, an orphaned character — so that you can see what the tools say when
+they find something.
+
 ** Create Your First Novel Project
 
 1. Install the package and dependencies
@@ -1145,13 +1170,13 @@ can yank straight into the manuscript, with senses grouped:
 #+begin_example
 #+TITLE: Synonyms: abandonar
 
-* Sense 1 /prnl./
+,* Sense 1 /prnl./
 abandonarse, dejarse llevar, confiarse, darse, entregarse
 
-* Sense 2 /tr./
+,* Sense 2 /tr./
 desistir, renunciar, marcharse, desasistir, dejar, ceder, descuidar
 
-* Sense 3
+,* Sense 3
 aparcar, posponer, retrasar, atrasar, arrinconar, diferir, apartar
 #+end_example
 

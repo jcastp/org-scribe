@@ -1,174 +1,221 @@
 #+TITLE: The Morning Routine - Project Overview
 #+AUTHOR: Demo Author
-#+DATE: 2025-01-15
+#+DATE: 2026-05-01
 #+STARTUP: overview
+
+* What this project is
+
+A complete org-scribe novel project, filled in, so that you can read a worked
+example instead of a blank template. It is what =M-x org-scribe-create-novel-project=
+produces, three weeks and five scenes later.
+
+Nothing here needs installing. Open any file and read it; open it inside
+Emacs with org-scribe loaded and every command in the tables below works
+against it.
+
+** Where to start
+
+1. [[file:design.org][design.org]] — the Starting Gate and the Core. Read this first, because the
+   book did.
+2. [[file:objects/plot.org][objects/plot.org]] — the thirteen non-negotiables, filled in, and the four
+   narrative lines.
+3. [[file:novel.org][novel.org]] — the manuscript. Five scenes drafted, ten carrying planning
+   metadata only.
+4. Then =F8 F8 H= (=org-scribe-project-health=) with any of these files open,
+   and read what the tool makes of it.
+
+** Synopsis
+
+Alex Rivera has never once been where they said they would be, and has never
+once meant to let anyone down. In a city that pays for availability rather
+than time, that is a marketable trait — and the two people who benefit from
+it most are the client who needs Alex reachable at any hour and the neighbour
+who has quietly been covering the one hour Alex keeps spending.
+
+Theme: /if you refuse to give your days a shape, you hand their shape to
+whoever asks for it first./
+
+* What this project demonstrates
+
+Each of these is worth opening the relevant file to see, rather than reading
+about here.
+
+| Feature                        | Where to look                                                        |
+|--------------------------------+----------------------------------------------------------------------|
+| The Starting Gate              | [[file:design.org][design.org]] — and =F8 F8 H=, which reads the boxes back and measures two of them |
+| The thirteen non-negotiables   | [[file:objects/plot.org][objects/plot.org]], and the =:Plot-point:= property on every scene    |
+| The causal chain               | [[file:objects/characters.org][objects/characters.org]] — Ghost → Lie → Weakness → Desire/Need       |
+| An opponent who wants the same thing | Dana Okonkwo's profile, and the Main Line in plot.org          |
+| Settings with an Echo and a Hazard | [[file:objects/locations.org][objects/locations.org]] — four settings, four Aspects each          |
+| Hidden entities (=:Weight: -1=)  | Marisol Rivera and the "Running late" thread; see the timeline tables in novel.org and the comment line each writes under itself |
+| Edit markers and the index     | The =#+begin_comment= blocks in [[file:novel.org][novel.org]]; then =F8 F8 6=             |
+| Unwritten scenes               | The =*SUMMARY*= markers under TOWRITE headings; then =F8 F8 5=        |
+| ID linking                     | Every =:PoV:=, =:Characters:=, =:Location:=, =:Plot:= and =:Plot-point:= property |
+| Character relationships        | The =:RelationshipsData:= properties; then =F8 F8 L V=                |
+| The writing planner            | [[file:plan.org][plan.org]], and =# Planner: yes= in =.org-scribe-project=; then =F8 F8 W= |
+| Column view                    | =C-c C-x C-c= in any file — each sets its own =#+COLUMNS=            |
+
+** Deliberate imperfections
+
+The demo is a project mid-draft, not a finished one, so several things are
+wrong on purpose and the tools are meant to find them:
+
+- Starting Gate box 7 is unticked although all thirteen plot points are
+  written. =F8 F8 H= reports the disagreement and does not resolve it.
+- The watch is described as ticking in one scene and as having an alarm in
+  another; both contradict [[file:design.org][design.org]]. Both are flagged with =*EDIT*: plot=
+  markers and appear in the edit index.
+- One Cast Check box is unticked, with the offending scenes flagged
+  =*EDIT*: character=.
+- Several of the thirteen plot points are served by no scene yet. The health
+  report lists them.
 
 * Project Information
 :PROPERTIES:
-:PROJECT_START: 2025-01-15
-:GENRE: Contemporary Fiction
-:TARGET-WORDCOUNT: 15000
-:DEADLINE: 2025-03-15
+:PROJECT_START: 2026-05-01
+:GENRE: Contemporary fiction
+:TARGET-WORDCOUNT: 80000
+:DEADLINE: 2026-08-03
 :END:
 
-** Synopsis
-A simple story about Alex, who struggles with chaotic mornings and decides to
-establish a better morning routine. Through various challenges and with help
-from neighbor Sam, Alex learns to find balance between structure and flexibility.
-
-This demo project showcases the features of the org-scribe package, including:
-- Scene and chapter organization with metadata
-- Character development tracking
-- **ID-based character linking** (click character names in scene properties to jump to their profiles)
-- Location and world-building
-- Plot structure planning
-- Word count tracking
-- Timeline management
-- And much more!
-
-** Character Linking
-
-This project demonstrates the **ID-based character linking system**:
-
-- Click on character names in scene properties to jump to their profiles
-- Navigate seamlessly between scenes and character database
-- Menu-based character selection for scene properties
-- Automatic ID creation for new characters
-
-See the PoV and Characters properties in each scene heading in [[file:novel.org][novel.org]] for examples.
-
 ** Writing Goals
-- [X] Complete project planning
+
+- [X] Cross the Starting Gate
 - [ ] Complete first draft
-- [ ] Revision pass 1
+- [ ] Revision passes 0–9 ([[file:revision.org][revision.org]])
 - [ ] Beta reader feedback
 - [ ] Final revision
-- [ ] Submission/Publication
 
 ** Project Structure
-- [[file:novel.org][novel.org]] - Main manuscript file with progress tracking
-- [[file:revision.org][revision.org]] - Editing notes and feedback
-- [[file:writing-journal.org][writing-journal.org]] - Reflective writing journal
-- [[file:objects/characters.org][objects/characters.org]] - Character profiles
-- [[file:objects/locations.org][objects/locations.org]] - Location descriptions
-- [[file:objects/objects.org][objects/objects.org]] - Important objects
-- [[file:objects/plot.org][objects/plot.org]] - Plot structure
-- [[file:objects/timeline.org][objects/timeline.org]] - Timeline of events
-- [[file:notes/research.org][notes/research.org]] - Research notes
-- [[file:notes/notes.org][notes/notes.org]] - General notes
+
+- [[file:design.org][design.org]] — *start here*: Starting Gate and Core
+- [[file:novel.org][novel.org]] — manuscript, progress tables and timelines
+- [[file:objects/characters.org][objects/characters.org]] — six character profiles
+- [[file:objects/plot.org][objects/plot.org]] — the thirteen non-negotiables and the narrative lines
+- [[file:objects/locations.org][objects/locations.org]] — settings, with their Echo and Hazard
+- [[file:objects/worldbuilding.org][objects/worldbuilding.org]] — the world and how it presses on the Weakness
+- [[file:objects/objects.org][objects/objects.org]] — the symbols, and how each one changes
+- [[file:objects/timeline.org][objects/timeline.org]] — story and backstory chronology
+- [[file:revision.org][revision.org]] — the ten revision passes
+- [[file:writing-journal.org][writing-journal.org]] — the drafting diary, including how the design changed
+- [[file:notes/notes.org][notes/notes.org]] — scratch: ideas, and which ones were promoted
+- [[file:notes/research.org][notes/research.org]] — what has been checked, and what is still open
+- [[file:plan.org][plan.org]] — the writing planner's schedule and ledger
 
 ** Current Status
+
 Status: Drafting
-Current Chapter: Chapter 2
-Last Updated: 2025-01-15
+Position: Act I complete, Act II begun. Five scenes of fifteen, 1,290 words of 80,000
+Last Updated: 2026-05-07
 
 * Available Commands
 
 Open the main menu with =F8 F8= (=hydra-org-scribe/body=).
 
 ** Insert
-| Key     | Command                      | What it does                               |
-|---------+------------------------------+--------------------------------------------|
+| Key       | Command                        | What it does                               |
+|-----------+--------------------------------+--------------------------------------------|
 | =F8 F8 s= | =org-scribe-insert-scene=      | Insert a new scene heading with properties |
 | =F8 F8 c= | =org-scribe-insert-chapter=    | Insert a new chapter heading               |
 | =F8 F8 o= | =org-scribe-open-project-file= | Open a project file (characters, plot…)    |
 
-** Tag the current scene (everyday linking)
-Point anywhere inside a scene heading and use these to set ID links in its
-properties without typing them manually.
+** Tag the current scene
+Point anywhere inside a scene heading. These write proper ID links into its
+properties.
 
-| Key     | Command                           | What it does                       |
-|---------+-----------------------------------+------------------------------------|
-| =F8 F8 p= | =org-scribe-set-pov-character=      | Set :PoV: link from character list |
-| =F8 F8 h= | =org-scribe-set-scene-characters=   | Set :Characters: links             |
-| =F8 F8 l= | =org-scribe-set-scene-locations=    | Set :Location: links               |
-| =F8 F8 g= | =org-scribe-set-scene-plot-threads= | Set :Plot: thread links            |
+| Key       | Command                             | What it does                       |
+|-----------+-------------------------------------+------------------------------------|
+| =F8 F8 p= | =org-scribe-set-pov-character=      | Set =:PoV:= link from character list |
+| =F8 F8 h= | =org-scribe-set-scene-characters=   | Set =:Characters:= links             |
+| =F8 F8 l= | =org-scribe-set-scene-locations=    | Set =:Location:= links               |
+| =F8 F8 g= | =org-scribe-set-scene-plot-threads= | Set =:Plot:= thread links            |
+| =F8 F8 G= | =org-scribe-set-scene-plot-points=  | Set =:Plot-point:= links             |
 | =F8 F8 j= | =org-scribe-jump-to-pov-character=  | Jump to the PoV character's entry  |
 
-** Writing modes (Workspace)
-| Key     | Command                          | What it does                                     |
-|---------+----------------------------------+--------------------------------------------------|
-| =F8 F8 m= | =(org-scribe-workspace 'write)=    | Distraction-free writing mode                    |
-| =F8 F8 f= | =(org-scribe-workspace 'focus)=    | Focus mode (narrow to current section)           |
-| =F8 F8 e= | =(org-scribe-workspace 'edit)=     | Editing mode (notes and manuscript side by side) |
-| =F8 F8 v= | =(org-scribe-workspace 'navigate)= | Project navigation mode (tree + outline)         |
-| =F8 F8 0= | =(org-scribe-workspace 'normal)=   | Return to normal layout                          |
+** Workspaces
+| Key       | Command                            | What it does                                     |
+|-----------+------------------------------------+--------------------------------------------------|
+| =F8 F8 m= | =(org-scribe-workspace 'write)=    | Distraction-free writing                         |
+| =F8 F8 f= | =(org-scribe-workspace 'focus)=    | Focus: narrow to the current section             |
+| =F8 F8 e= | =(org-scribe-workspace 'edit)=     | Editing: notes and manuscript side by side       |
+| =F8 F8 v= | =(org-scribe-workspace 'navigate)= | Project navigation: tree and outline             |
+| =F8 F8 0= | =(org-scribe-workspace 'normal)=   | Back to a normal layout                          |
 
-** Word counting and tracking
-| Key     | Command              | What it does                                         |
-|---------+----------------------+------------------------------------------------------|
-| =F8 F8 w= | =org-scribe-wordcount= | Count words (=C-u= refreshes all WORDCOUNT properties) |
-| =F8 F8 W= | =org-scribe-plan=      | Open/create the bundled writing planner (auto-tracks daily words) |
+** Counting and planning
+| Key       | Command                | What it does                                             |
+|-----------+------------------------+----------------------------------------------------------|
+| =F8 F8 w= | =org-scribe-wordcount= | Count words (=C-u= refreshes every =WORDCOUNT= property)   |
+| =F8 F8 a= | =org-scribe-ews-org-count-words= | Refresh =WORDCOUNT= on every heading, and sync the plan |
+| =F8 F8 W= | =org-scribe-plan=      | The writing planner. This project has opted in           |
 
-** Search (org-ql powered)
-| Key     | Command                           | What it does                       |
-|---------+-----------------------------------+------------------------------------|
-| =F8 F8 1= | =org-scribe-org-find-pov=           | Find all scenes by PoV character   |
-| =F8 F8 2= | =org-scribe-org-find-character=     | Find scenes a character appears in |
-| =F8 F8 3= | =org-scribe-org-find-plot=          | Find scenes by plot thread         |
-| =F8 F8 4= | =org-scribe-org-find-location=      | Find scenes by location            |
-| =F8 F8 5= | =org-scribe-search-todos-recursive= | Find all TODO/unwritten scenes     |
-| =F8 F8 6= | =org-scribe-search-edits=           | Find scenes flagged for editing    |
+** Search
+| Key       | Command                             | What it does                          |
+|-----------+-------------------------------------+---------------------------------------|
+| =F8 F8 1= | =org-scribe-org-find-pov=           | Scenes by PoV character               |
+| =F8 F8 2= | =org-scribe-org-find-character=     | Scenes a character appears in         |
+| =F8 F8 3= | =org-scribe-org-find-plot=          | Scenes by plot thread                 |
+| =F8 F8 4= | =org-scribe-org-find-location=      | Scenes by setting                     |
+| =F8 F8 5= | =org-scribe-search-todos-recursive= | Unwritten scenes, with their =*SUMMARY*= |
+| =F8 F8 6= | =org-scribe-search-edits=           | The edit index, grouped by category   |
 
 ** Capture new entities
-Open capture sub-menu with =F8 F8 k=.
+Sub-menu: =F8 F8 k=.
 
-| Key      | Command                        | What it does                    |
-|----------+--------------------------------+---------------------------------|
-| =F8 F8 kh= | =org-scribe-capture-character=   | Capture a new character profile |
-| =F8 F8 kl= | =org-scribe-capture-location=    | Capture a new location          |
-| =F8 F8 kg= | =org-scribe-capture-plot-thread= | Capture a new plot thread       |
-| =F8 F8 kb= | =org-scribe-capture-object=      | Capture an important object     |
-| =F8 F8 kt= | =org-scribe-capture-timeline=    | Capture a timeline event        |
-| =F8 F8 kn= | =org-scribe-capture-to-file=     | Capture a free-form note        |
+| Key         | Command                          | What it does                    |
+|-------------+----------------------------------+---------------------------------|
+| =F8 F8 k h= | =org-scribe-capture-character=   | A new character, full ficha     |
+| =F8 F8 k l= | =org-scribe-capture-location=    | A new setting, with its Aspects |
+| =F8 F8 k g= | =org-scribe-capture-plot-thread= | A new narrative line            |
+| =F8 F8 k b= | =org-scribe-capture-object=      | An important object             |
+| =F8 F8 k t= | =org-scribe-capture-timeline=    | A timeline event                |
+| =F8 F8 k n= | =org-scribe-capture-to-file=     | A free-form note                |
 
-** Linking upkeep
-Open links sub-menu with =F8 F8 L=.
+There is deliberately no plot-point capture: the thirteen non-negotiables are
+a fixed set, identical in every project, and shipped by the template.
 
-| Key      | Command                            | What it does                                        |
-|----------+------------------------------------+-----------------------------------------------------|
-| =F8 F8 LR= | =org-scribe-relink-project=          | One-pass: add IDs, link names, refresh all entities |
-| =F8 F8 Lc= | =org-scribe-setup-character-links=   | Add IDs to all characters and link plain names      |
-| =F8 F8 Lo= | =org-scribe-setup-location-links=    | Add IDs to all locations and link plain names       |
-| =F8 F8 Lp= | =org-scribe-setup-plot-thread-links= | Add IDs to plot threads and link plain names        |
-| =F8 F8 Lj= | =org-scribe-jump-to-plot-thread=     | Jump to a plot thread entry from a scene            |
+** Linking and upkeep
+Sub-menu: =F8 F8 L=.
+
+| Key         | Command                              | What it does                                      |
+|-------------+--------------------------------------+---------------------------------------------------|
+| =F8 F8 L R= | =org-scribe-relink-project=          | One pass: add IDs, link names, refresh everything |
+| =F8 F8 L c= | =org-scribe-setup-character-links=   | IDs and links for characters                      |
+| =F8 F8 L o= | =org-scribe-setup-location-links=    | IDs and links for settings                        |
+| =F8 F8 L p= | =org-scribe-setup-plot-thread-links= | IDs and links for narrative lines                 |
+| =F8 F8 L P= | =org-scribe-setup-plot-point-links=  | IDs and links for the thirteen non-negotiables    |
+| =F8 F8 L r= | =org-scribe-setup-character-relationships= | Set up the relationship properties          |
+| =F8 F8 L j= | =org-scribe-jump-to-plot-thread=     | From a scene to its narrative line                |
+| =F8 F8 L J= | =org-scribe-jump-to-plot-point=      | From a scene to its plot point                    |
 
 ** Character relationships
-| Key      | Command                                 | What it does                                 |
-|----------+-----------------------------------------+----------------------------------------------|
-| =F8 F8 La= | =org-scribe-add-relationship=             | Add a relationship to the character at point |
-| =F8 F8 Lx= | =org-scribe-remove-relationship=          | Remove a relationship                        |
-| =F8 F8 Lv= | =org-scribe-show-character-relationships= | Show relationships for character at point    |
-| =F8 F8 LV= | =org-scribe-show-all-relationships=       | Show full relationship map                   |
-| =F8 F8 Lg= | =org-scribe-insert-relationship-block=    | Insert a DOT graph block into the buffer     |
+| Key         | Command                                   | What it does                                 |
+|-------------+-------------------------------------------+----------------------------------------------|
+| =F8 F8 L a= | =org-scribe-add-relationship=             | Add a relationship to the character at point |
+| =F8 F8 L x= | =org-scribe-remove-relationship=          | Remove one                                   |
+| =F8 F8 L v= | =org-scribe-show-character-relationships= | Show them for the character at point         |
+| =F8 F8 L V= | =org-scribe-show-all-relationships=       | The whole map                                |
 
-Relationships are stored in the =:RelationshipsData:= property as:
+Relationships live in the =:RelationshipsData:= property:
+
 : [[id:...][Name]](type,strength,sentiment); ...
-See =objects/characters.org= in this project for live examples.
 
-** Plot analytics
-| Key      | Command                       | What it does                                |
-|----------+-------------------------------+---------------------------------------------|
-| =F8 F8 Lt= | =org-scribe-plot-thread-report= | Detailed report: coverage, gaps, scene list |
-| =F8 F8 LS= | =org-scribe-plot-thread-stats=  | Quick statistics per thread                 |
+Every character in [[file:objects/characters.org][objects/characters.org]] carries live examples.
 
-** Health report
-| Key     | Command                   | What it does                                                            |
-|---------+---------------------------+-------------------------------------------------------------------------|
-| =F8 F8 H= | =org-scribe-project-health= | Aggregated report: word progress, missing properties, orphaned entities |
-
-** Dictionary and language tools
-| Key     | Command                    | What it does                       |
-|---------+----------------------------+------------------------------------|
-| =F8 F8 d= | =org-scribe-rae-api-lookup=  | Spanish RAE dictionary lookup      |
-| =F8 F8 y= | =org-scribe-sinonimo=        | Spanish synonyms                   |
-| =F8 F8 x= | =powerthesaurus-lookup-dwim= | English thesaurus (powerthesaurus) |
-
-** Display toggles
-| Key      | Command                       | What it does                                        |
-|----------+-------------------------------+-----------------------------------------------------|
-| =F8 F8 LC= | =org-scribe-column-view-toggle= | Toggle org-column-view (shows clean names, not IDs) |
-| =F8 F8 LT= | =org-scribe-overlays-mode=      | Toggle entity tooltips in echo area (opt-in)        |
+** Analysis and display
+| Key         | Command                         | What it does                                    |
+|-------------+---------------------------------+-------------------------------------------------|
+| =F8 F8 L t= | =org-scribe-plot-thread-report= | Coverage, gaps and single-scene lines           |
+| =F8 F8 L S= | =org-scribe-plot-thread-stats=  | Quick statistics per line                       |
+| =F8 F8 L C= | =org-scribe-column-view-toggle= | Column view, showing names rather than ID links |
+| =F8 F8 L T= | =org-scribe-overlays-mode=      | Entity tooltips in the echo area (opt-in)       |
+| =F8 F8 H=   | =org-scribe-project-health=     | The whole-project report                        |
 
 With =org-scribe-overlays-mode= active, moving point onto any =[[id:...]]= link
-displays the entity's Role, Age, Goal, and Motivation in the echo area.
+shows that entity's Role, Age, Goal and Motivation in the echo area.
+
+** Dictionary and language
+| Key       | Command                      | What it does                                    |
+|-----------+------------------------------+-------------------------------------------------|
+| =F8 F8 d= | =org-scribe-dictionary-lookup= | Dictionary lookup (Spanish RAE)               |
+| =F8 F8 y= | =org-scribe-sinonimo=        | Spanish synonyms (offline MyThes, or WordReference) |
+| =F8 F8 x= | =org-scribe-thesaurus-lookup=  | English thesaurus (powerthesaurus, optional)  |

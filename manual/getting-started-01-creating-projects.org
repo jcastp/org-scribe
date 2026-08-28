@@ -292,6 +292,25 @@ A Spanish project has exactly the same structure with localized file names:
 
 (A ~plan.org~ does *not* appear here — it's created separately, on demand, only once you opt into the bundled writing planner; see Lesson 16.)
 
+*** See One Already Filled In
+
+A brand-new project is all structure and no content, which makes it hard to
+judge what any of these files are *for*. The package ships a worked example
+of exactly this layout, three weeks and five scenes into a first draft:
+
+- [[file:../examples/demo-novel/README.org][=examples/demo-novel/=]] — /The Morning Routine/
+
+Every file listed above exists there with real content in it: a crossed
+Starting Gate in [[file:../examples/demo-novel/design.org][design.org]], thirteen non-negotiables written out in
+[[file:../examples/demo-novel/objects/plot.org][objects/plot.org]], six character profiles with their causal chains, four
+settings with an Echo and a Hazard each, and a manuscript carrying live
+=*EDIT*= markers and planning metadata on every scene.
+
+Open it in Emacs alongside your own new project and compare the two files
+side by side. It is also the safest place to try any command in this guide
+for the first time — it is a demo, and ~git checkout examples/~ undoes
+anything you do to it.
+
 ** Start With design.org
 
 The novel templates are not blank scaffolding: they implement a specific

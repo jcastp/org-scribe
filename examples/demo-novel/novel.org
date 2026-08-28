@@ -1,99 +1,172 @@
 #+TITLE: The Morning Routine
 #+AUTHOR: Demo Author
-#+DATE: 2025-01-15
+#+DATE: 2026-05-01
 #+LANGUAGE: en
 #+STARTUP: overview
-#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
-#+COLUMNS: %40ITEM(Task) %12WORDCOUNT %12PoV %30Characters %20Plot %40Summary %40Comment
+#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(p@/!)
+#+COLUMNS: %40ITEM(Scene) %9WORDCOUNT %12PoV %16Plot %20Plot-point %30Gap %20Outcome %14Emotion
 #+MACRO: scene-break SCENE-BREAK
+#+OPTIONS: todo:nil tags:nil
+
+# A worked example manuscript. Eight chapters outlined, five scenes drafted,
+# the rest carrying their planning metadata only.
+#
+# Things worth opening this file to see:
+#   C-c C-x C-c   column view — Plot-point and Gap beside every scene
+#   C-c C-c       on any #+BEGIN: line below, to regenerate the tables
+#   F8 F8 6       the edit index, built from the *EDIT* and *NOTE* markers
+#                 in the comment blocks scattered through the scenes
+#   F8 F8 5       every unwritten scene, with its *SUMMARY* marker
+#   F8 F8 H       the project health report
+#
+# The markers live inside #+begin_comment blocks on purpose. That keeps them
+# out of every export backend and out of the word counts, so WORDCOUNT below
+# is real prose and nothing else.
 
 * Project Goals :ignore:noexport:
 :PROPERTIES:
 :WORDCOUNT: 0
-:ID:       6de7cad2-cc97-479d-83fd-64e87b69770c
+:ID:       9cb521fd-2eb4-47bc-bc41-3ed726d298dc
 :END:
 
-- Total word target :: 15,000
-- Start date :: 2025-01-15
-- Target completion date :: 2025-03-15
-- Daily word target :: 500
+- Total word target :: 80,000
+- Start date :: 2026-05-01
+- Target completion date :: 2026-08-03
+- Daily word target :: 1,200
+
+# These four numbers are a statement of intent, written once. The writing
+# planner has taken them over — this project opted in (# Planner: yes in
+# .org-scribe-project), so F8 F8 W opens the calendar and every word count
+# records the day's total in plan.org.
 
 * Progress Tracking :ignore:noexport:
 :PROPERTIES:
 :WORDCOUNT: 0
-:ID:       17f232d0-e0e6-43bd-8bb8-997d57343808
+:ID:       ac6ca73f-3fa0-4c84-ba64-f722785fca77
 :END:
 
 ** Word Count and Progress
 :PROPERTIES:
 :WORDCOUNT: 0
-:ID:       12629909-9619-4ea6-bcf6-ab6c437ecd32
+:ID:       bacadb21-3abf-42bf-b463-5119fdaa0c95
 :END:
 
 This table shows your word count, objectives, and progress by section.
 Update it with =C-c C-c= on the #+BEGIN line.
 
 #+BEGIN: org-generate-wordcount-table
-| Heading                                 | Wordcount | Objective | Progress |
-|-----------------------------------------+-----------+-----------+----------|
-| └> [[Act I]]                                |       711 |      5000 |      14% |
-| └--> [[Chapter 1]]                          |       447 |      1500 |      30% |
-| └----> [[Scene 1 - The Alarm]]              |       167 |       500 |      33% |
-| └----> [[Scene 2 - Coffee Shop Encounter]]  |       280 |       500 |      56% |
-| └--> [[Chapter 2]]                          |       264 |      1500 |      18% |
-| └----> [[Scene 1 - The Decision]]           |       264 |       500 |      53% |
-| └> [[Act II]]                               |       277 |      6000 |       5% |
-| └--> [[Chapter 3]]                          |       269 |      1500 |      18% |
-| └----> [[Scene 1 - First Attempt]]          |       269 |       500 |      54% |
-| └--> [[Chapter 4 - Learning and Adjusting]] |         8 |      1500 |       1% |
-| └----> [[Scene 1 - Coffee Talk]]            |         4 |       500 |       1% |
-| └----> [[Scene 2 - Finding Balance]]        |         4 |       500 |       1% |
-| └> [[Act III]]                              |       308 |      4000 |       8% |
-| └--> [[Chapter 5 - The New Normal]]         |       308 |      1500 |      21% |
-| └----> [[Scene 1 - Full Circle]]            |       308 |       500 |      62% |
+| Heading                                | Wordcount | Objective | Progress |
+|----------------------------------------+-----------+-----------+----------|
+| └> [[Act I]]                               |       711 |     20000 |       4% |
+| └--> [[Chapter 1 - Three Alarms]]          |       447 |      3000 |      15% |
+| └----> [[Scene 1 - The Alarm]]             |       167 |       500 |      33% |
+| └----> [[Scene 2 - Coffee Shop Encounter]] |       280 |       800 |      35% |
+| └--> [[Chapter 2 - What It Costs]]         |       264 |      3000 |       9% |
+| └----> [[Scene 1 - The Decision]]          |       264 |       800 |      33% |
+| └----> [[Scene 2 - The Handover]]          |         0 |       800 |       0% |
+| └----> [[Scene 3 - Terms]]                 |         0 |       800 |       0% |
+| └> [[Act II]]                              |       269 |     40000 |       1% |
+| └--> [[Chapter 3 - Day One]]               |       269 |      3000 |       9% |
+| └----> [[Scene 1 - First Attempt]]         |       269 |       800 |      34% |
+| └----> [[Scene 2 - Solidarity]]            |         0 |       800 |       0% |
+| └--> [[Chapter 4 - Adjusting]]             |         0 |      3000 |       0% |
+| └----> [[Scene 1 - Coffee Talk]]           |         0 |       800 |       0% |
+| └----> [[Scene 2 - Finding Balance]]       |         0 |       800 |       0% |
+| └--> [[Chapter 5 - Six O'Clock]]           |         0 |      3000 |       0% |
+| └----> [[Scene 1 - The Compliment]]        |         0 |       800 |       0% |
+| └--> [[Chapter 6 - Thursday]]              |         0 |      3000 |       0% |
+| └----> [[Scene 1 - Thursday]]              |         0 |      1000 |       0% |
+| └----> [[Scene 2 - The Watch Has Stopped]] |         0 |       800 |       0% |
+| └> [[Act III]]                             |       310 |     20000 |       2% |
+| └--> [[Chapter 7 - Winding It]]            |         0 |      3000 |       0% |
+| └----> [[Scene 1 - Winding It]]            |         0 |       800 |       0% |
+| └--> [[Chapter 8 - The New Normal]]        |       310 |      3000 |      10% |
+| └----> [[Scene 1 - Eleven Minutes]]        |         0 |      1200 |       0% |
+| └----> [[Scene 2 - Full Circle]]           |       310 |       800 |      39% |
 
 #+END:
 
 ** Daily Word Tracking
 :PROPERTIES:
 :WORDCOUNT: 0
-:ID:       9a871edc-d412-49bc-952a-c7fd1236630b
+:ID:       236410d5-56c4-484d-aa2c-146b888b51c9
 :END:
 
-For automated daily word-count tracking, use the bundled writing planner
-(=M-x org-scribe-plan= or =F8 F8 W=) — it pushes live word counts and
-daily deltas into a plan file automatically, with no separate table to
-maintain here.
+Daily totals are kept by the bundled writing planner, not by a table here.
+Open it with =F8 F8 W=, or =M-x org-scribe-plan=.
+
+This project has a plan ([[file:plan.org][plan.org]]) and the gate is open, so every word count
+you run here records that day's cumulative total in its ledger. The
+planner's dashboards (=F8 F8 W=, then =D=) draw the progress curve, velocity,
+best day and writing streak from that ledger.
+
+** Time Tracking
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       2ef05a30-fde1-416c-923d-53d3ed85a4c2
+:END:
+
+To record writing time, use:
+- =C-c C-x C-i= (org-clock-in)
+- =C-c C-x C-o= (org-clock-out)
+
+*** Writing Sessions
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       a6dffc06-711f-431e-bc46-6aad18e9af06
+:END:
+
+**** 2026-05-01 First session
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       06000ff7-0cd7-46c1-8ceb-f00011da2098
+:END:
+:LOGBOOK:
+CLOCK: [2026-05-01 Fri 06:15]--[2026-05-01 Fri 07:40] =>  1:25
+:END:
 
 ** Plot Thread Analysis
 :PROPERTIES:
 :WORDCOUNT: 0
-:ID:       ac9493e9-575c-4e41-bbbc-4dd320f602fb
+:ID:       c3e5ee95-0b65-4c75-8d89-df6134a5f9dd
 :END:
 
 This table shows which plot threads appear in which scenes.
 Update with =C-c C-c= on the #+BEGIN line.
 
-For detailed health reports, use =M-x org-scribe/plot-thread-report=.
-For quick statistics, use =M-x org-scribe/plot-thread-stats=.
+For detailed health reports, use =M-x org-scribe-plot-thread-report= (=F8 F8 L t=).
+For quick statistics, use =M-x org-scribe-plot-thread-stats= (=F8 F8 L S=).
+
+# Note the comment line the table writes under itself. "Running late" carries
+# :Weight: -1 in objects/plot.org, so it keeps everything except its column
+# here. Pass :show-hidden t on the #+BEGIN line to render it anyway.
 
 #+BEGIN: plot-thread-timeline
-| Scene                           | Chapter                            | Character growth | Decision to change | First try at routine | Inciting Incident | Introduction | Introduction of mentor figure | Mentor guidance | Resolution | new beginning |
-|---------------------------------+------------------------------------+------------------+--------------------+----------------------+-------------------+--------------+-------------------------------+-----------------+------------+---------------|
-| Scene 1 - The Alarm             | Chapter 1                          |                  |                    |                      | ●                 | ●            |                               |                 |            |               |
-| Scene 2 - Coffee Shop Encounter | Chapter 1                          |                  |                    |                      |                   |              | ●                             |                 |            |               |
-| Scene 1 - The Decision          | Chapter 2                          |                  | ●                  |                      |                   |              |                               |                 |            |               |
-| Scene 1 - First Attempt         | Chapter 3                          |                  |                    | ●                    |                   |              |                               |                 |            |               |
-| Scene 1 - Coffee Talk           | Chapter 4 - Learning and Adjusting |                  |                    |                      |                   |              |                               | ●               |            |               |
-| Scene 2 - Finding Balance       | Chapter 4 - Learning and Adjusting | ●                |                    |                      |                   |              |                               |                 |            |               |
-| Scene 1 - Full Circle           | Chapter 5 - The New Normal         |                  |                    |                      |                   |              |                               |                 | ●          | ●             |
+| Scene                           | Chapter                    | Main Line | Sam's Thursdays | The Kestrel Retainer |
+|---------------------------------+----------------------------+-----------+-----------------+----------------------|
+| Scene 1 - The Alarm             | Chapter 1 - Three Alarms   |           |                 |                      |
+| Scene 2 - Coffee Shop Encounter | Chapter 1 - Three Alarms   |           | ●               |                      |
+| Scene 1 - The Decision          | Chapter 2 - What It Costs  | ●         |                 |                      |
+| Scene 2 - The Handover          | Chapter 2 - What It Costs  | ●         | ●               |                      |
+| Scene 3 - Terms                 | Chapter 2 - What It Costs  | ●         |                 |                      |
+| Scene 1 - First Attempt         | Chapter 3 - Day One        | ●         |                 |                      |
+| Scene 2 - Solidarity            | Chapter 3 - Day One        |           |                 | ●                    |
+| Scene 1 - Coffee Talk           | Chapter 4 - Adjusting      | ●         | ●               |                      |
+| Scene 2 - Finding Balance       | Chapter 4 - Adjusting      | ●         |                 |                      |
+| Scene 1 - The Compliment        | Chapter 5 - Six O'Clock    | ●         |                 | ●                    |
+| Scene 1 - Thursday              | Chapter 6 - Thursday       | ●         | ●               | ●                    |
+| Scene 2 - The Watch Has Stopped | Chapter 6 - Thursday       | ●         |                 |                      |
+| Scene 1 - Winding It            | Chapter 7 - Winding It     | ●         | ●               |                      |
+| Scene 1 - Eleven Minutes        | Chapter 8 - The New Normal | ●         | ●               | ●                    |
+| Scene 2 - Full Circle           | Chapter 8 - The New Normal | ●         | ●               |                      |
+# Not shown (Weight -1): Running late
 
 #+END:
 
 ** Character Timeline
 :PROPERTIES:
 :WORDCOUNT: 0
-:ID:       3e7a2d0a-2b7e-4f4a-a056-b6cae8d8a877
+:ID:       7282dd5c-35ad-49da-9b25-aba935b81a82
 :END:
 
 This table shows which characters appear in which scenes.
@@ -104,67 +177,88 @@ Symbols:
 
 Update with =C-c C-c= on the #+BEGIN line.
 
+# Marisol Rivera carries :Weight: -1 in objects/characters.org — she is dead
+# before the story opens, so a column of blanks would read as a linking bug.
+# The table names her underneath instead.
+
 #+BEGIN: character-timeline
-| Scene                           | Chapter                            | Alex | Casey | Sam |
-|---------------------------------+------------------------------------+------+-------+-----|
-| Scene 1 - The Alarm             | Chapter 1                          | ◆    |       |     |
-| Scene 2 - Coffee Shop Encounter | Chapter 1                          | ◆    |       | ●   |
-| Scene 1 - The Decision          | Chapter 2                          | ◆    |       |     |
-| Scene 1 - First Attempt         | Chapter 3                          | ◆    |       |     |
-| Scene 1 - Coffee Talk           | Chapter 4 - Learning and Adjusting | ◆    |       | ●   |
-| Scene 2 - Finding Balance       | Chapter 4 - Learning and Adjusting | ◆    |       |     |
-| Scene 1 - Full Circle           | Chapter 5 - The New Normal         | ◆    | ●     | ●   |
+| Scene                           | Chapter                    | Alex | Casey | Dana | Priya | Sam |
+|---------------------------------+----------------------------+------+-------+------+-------+-----|
+| Scene 1 - The Alarm             | Chapter 1 - Three Alarms   | ◆    |       |      |       |     |
+| Scene 2 - Coffee Shop Encounter | Chapter 1 - Three Alarms   | ◆    |       |      |       | ●   |
+| Scene 1 - The Decision          | Chapter 2 - What It Costs  | ◆    |       |      |       |     |
+| Scene 2 - The Handover          | Chapter 2 - What It Costs  | ◆    |       |      |       | ●   |
+| Scene 3 - Terms                 | Chapter 2 - What It Costs  | ◆    |       | ●    |       |     |
+| Scene 1 - First Attempt         | Chapter 3 - Day One        | ◆    |       |      |       |     |
+| Scene 2 - Solidarity            | Chapter 3 - Day One        | ◆    |       |      | ●     |     |
+| Scene 1 - Coffee Talk           | Chapter 4 - Adjusting      | ◆    |       |      |       | ●   |
+| Scene 2 - Finding Balance       | Chapter 4 - Adjusting      | ◆    |       |      |       |     |
+| Scene 1 - The Compliment        | Chapter 5 - Six O'Clock    | ◆    |       | ●    | ●     |     |
+| Scene 1 - Thursday              | Chapter 6 - Thursday       | ◆    |       |      |       | ●   |
+| Scene 2 - The Watch Has Stopped | Chapter 6 - Thursday       | ◆    |       |      | ●     |     |
+| Scene 1 - Winding It            | Chapter 7 - Winding It     | ◆    |       |      |       | ●   |
+| Scene 1 - Eleven Minutes        | Chapter 8 - The New Normal | ◆    |       | ●    |       |     |
+| Scene 2 - Full Circle           | Chapter 8 - The New Normal | ◆    | ●     |      |       | ●   |
 
 #+END:
 
 * Quick Navigation :ignore:noexport:
 :PROPERTIES:
 :WORDCOUNT: 0
-:ID:       fd87db0f-c696-4f58-ba85-5504eed23afe
+:ID:       1b5599b8-65fd-40c7-8827-2f1f1f5015e9
 :END:
 - [[file:README.org][README - Project Overview]]
+- [[file:design.org][Design - Starting Gate and Core]]
 - [[file:objects/characters.org][Characters]]
-- [[file:objects/locations.org][Locations]]
+- [[file:objects/plot.org][Plot - the thirteen non-negotiables and the narrative lines]]
+- [[file:objects/locations.org][Settings]]
+- [[file:objects/worldbuilding.org][World]]
 - [[file:objects/objects.org][Objects]]
-- [[file:objects/plot.org][Plot]]
 - [[file:objects/timeline.org][Timeline]]
 - [[file:notes/notes.org][General Notes]]
 - [[file:notes/research.org][Research]]
-- [[file:revision.org][Revision and Feedback]]
+- [[file:revision.org][Revision]]
 - [[file:writing-journal.org][Writing Journal]]
+- [[file:plan.org][Writing plan]]
 
 * Act I :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-1
 :WORDCOUNT: 711
-:WORD-OBJECTIVE: 5000
-:ID:       25ed268e-9439-4397-af7b-3562113189dc
+:WORD-OBJECTIVE: 20000
+:ID:       995567d9-f43f-4fb5-a061-51dece674e8d
 :END:
 
-** FINISHED Chapter 1 :ignore:
+** FINISHED Chapter 1 - Three Alarms :ignore:
 :PROPERTIES:
 :WORDCOUNT: 447
-:WORD-OBJECTIVE: 1500
-:ID:       3a99edcc-6972-4f98-9cf6-fef5d73fb0e9
+:WORD-OBJECTIVE: 3000
+:ID:       f9532c04-63d5-4871-9ed2-4aeefa13fac1
 :END:
 
 *** FINISHED Scene 1 - The Alarm :ignore:
 :PROPERTIES:
-:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
-:Characters: [[id:char-alex-rivera-20251115-001][Alex]]
-:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
-:Timeline: Day 1, 6:30 AM
-:Location: [[id:loc-alex-apartment-001][Alex's Apartment - Bedroom]]
-:Description: Alex wakes up to chaos
-:Summary: Alex's alarm goes off but they hit snooze multiple times, starting another chaotic morning
-:Scene-motivation: Establish Alex's problematic morning routine
-:Conflict-source: Alex vs. self-discipline
-:What-is-at-stake: Being late to work again
-:Emotion: Frustration, anxiety
-:Comment: This scene demonstrates how to use all the metadata properties. Character links added for demo!
 :WORDCOUNT: 167
 :WORD-OBJECTIVE: 500
-:ID:       0ef78704-8216-424a-8a9c-1bd041b0e14c
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]]
+:Plot: [[id:plot-running-late-001][Running late]]
+:Plot-point: [[id:pp-02-weakness-lie-need][2. Weakness, Lie and Need]]
+:Timeline: Day 1, 06:30
+:Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Description: Alex wakes up three times and gets up once
+:Summary: The alarm goes off at 6:30, 6:45 and 7:00. Alex is awake for the third one and has a meeting at nine.
+:Scene-motivation: Alex wants thirty more minutes
+:Conflict-source: Alex against a clock they refuse to look at
+:Gap: Alex expects the morning to hold; the morning has already gone
+:What-is-at-stake: The 9:00 meeting, and the Halloran account behind it
+:World-problem: The first message of the day arrives before the first alarm
+:Emotion: Warmth, then panic
+:Tension-level: 2
+:Outcome: Alex gets up, seventy minutes behind an hour they never named
+:Sequel-decision: None. Alex does not yet believe there is a decision available
+:Comment: Opening image: an alarm silenced without either eye opening
+:ID:       a6aaa600-35b3-4193-9510-a4bb2ef0000f
 :END:
 
 The harsh buzz of the alarm pierced through Alex's dream. Without opening
@@ -189,25 +283,39 @@ wear, grab breakfast—
 
 The familiar morning chaos had begun.
 
+#+begin_comment
+*NOTE*: The scene works, but the Ghost is not in it anywhere. Marisol's watch
+is under the mail pile in the next room and the reader has no reason to care
+about it yet. Consider one line — Alex's wrist, bare, noticed and dismissed.
+*EDIT*: prose - Three paragraphs open on the alarm, the room and the alarm.
+Vary the entry points.
+#+end_comment
+
 {{{scene-break}}}
 
 *** FINISHED Scene 2 - Coffee Shop Encounter :ignore:
 :PROPERTIES:
-:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
-:Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]]
-:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-romance-subplot-001][Romance Subplot]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
-:Timeline: Day 1, 7:45 AM
-:Location: [[id:loc-coffee-shop-001][Corner Coffee Shop]]
-:Description: Alex rushes in for coffee and meets Sam
-:Summary: While rushing for coffee, Alex bumps into Sam who seems unusually calm and collected
-:Scene-motivation: Introduce Sam as contrast to Alex's chaos
-:Conflict-source: Alex's rush vs. Sam's calm
-:What-is-at-stake: Alex's composure before the meeting
-:Emotion: Stress, then curiosity
-:Comment: Click on Alex or Sam to jump to their character profiles!
 :WORDCOUNT: 280
-:WORD-OBJECTIVE: 500
-:ID:       ab00337f-0342-431c-a44d-b57ad5d4ace8
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-sam-chen-001][Sam]]
+:Plot: [[id:plot-sams-thursdays-001][Sam's Thursdays]]
+:Plot-point: [[id:pp-01-theme-stated][1. Theme Stated]]
+:Timeline: Day 1, 07:45
+:Location: [[id:loc-coffee-shop-001][The Corner Coffee Shop]]
+:Description: Sam states the theme and Alex hears a hobby
+:Summary: Queueing for coffee, Alex meets Sam from 4B, who mentions tracking a morning routine every day and calls it freeing.
+:Scene-motivation: Alex wants coffee in under five minutes
+:Conflict-source: Alex's arithmetic against Sam's unhurriedness
+:Gap: Alex expects a neighbourly two minutes; gets the thesis of the book and does not recognize it
+:What-is-at-stake: Nothing yet, which is why the theme can be stated safely here
+:World-problem: Everyone in the queue is answering something
+:Emotion: Stress, then an unwelcome curiosity
+:Tension-level: 2
+:Outcome: Alex stops counting minutes for the length of one conversation
+:Sequel-decision: Alex files the routine under other people's hobbies
+:Comment: Non-negotiable 1. Stated by someone who is not the protagonist, and ignored
+:ID:       1ba80e22-da5c-4457-ae43-3d577c5d3529
 :END:
 
 Alex burst through the coffee shop door at 7:47, already calculating minutes in
@@ -247,30 +355,44 @@ As Sam left, Alex noticed something—they'd been so caught up in the conversati
 they'd stopped mentally counting minutes. For just a moment, the morning chaos
 had paused.
 
-** TODO Chapter 2 :ignore:
+#+begin_comment
+*NOTE*: The notebook needs to be readable twice. Here it is serenity. In
+Chapter 6 the reader learns it is a caregiver's log, and this scene has to
+support that reading without having hinted at it.
+*EDIT*: character - Sam is too warm here. Stance 4 is a discipline held with
+some pride in it, and none of that shows. One slightly superior line.
+#+end_comment
+
+** TOWRITE Chapter 2 - What It Costs :ignore:
 :PROPERTIES:
 :WORDCOUNT: 264
-:WORD-OBJECTIVE: 1500
-:ID:       64bc3a00-b0a2-4166-a58c-27a94682d171
+:WORD-OBJECTIVE: 3000
+:ID:       eb368063-6935-4b48-8eec-2aa9d9ababaa
 :END:
 
-*** TODO Scene 1 - The Decision :ignore:
+*** FINISHED Scene 1 - The Decision :ignore:
 :PROPERTIES:
-:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
-:Characters: [[id:char-alex-rivera-20251115-001][Alex]]
-:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
-:Timeline: Day 1, 8:30 PM
-:Location: [[id:loc-alex-apartment-001][Alex's Apartment - Living Room]]
-:Description: Alex reflects on the day and decides to try Sam's approach
-:Summary: After a stressful day, Alex finds an old watch and decides to make a change
-:Scene-motivation: Push Alex toward character growth
-:Conflict-source: Fear of change vs. need for change
-:What-is-at-stake: Alex's quality of life
-:Emotion: Determination, hope, nostalgia
-:Comment: This introduces the important object (the watch)
 :WORDCOUNT: 264
-:WORD-OBJECTIVE: 500
-:ID:       df8c3837-4e85-4d8f-a775-a435e26cc1b5
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]]
+:Plot: [[id:plot-main-line-001][Main Line]]
+:Plot-point: [[id:pp-06-crossing-threshold][6. Crossing the Threshold]]
+:Timeline: Day 1, 20:30
+:Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Description: Alex finds the watch and writes Day 1
+:Summary: After a day of near-misses, Alex uncovers Marisol's watch under the mail, puts it on, and sets an alarm for a stated hour.
+:Scene-motivation: Alex wants the day to have been someone else's fault
+:Conflict-source: Fear of naming an hour against the evidence of the day
+:Gap: Alex expects to look up a technique; finds the Ghost under the mail pile
+:What-is-at-stake: Whether anything changes at all
+:World-problem: The invoices are still ninety days out
+:Emotion: Exhaustion, then a nostalgia that turns into resolve
+:Tension-level: 4
+:Outcome: Alex fastens the watch and writes "Day 1"
+:Sequel-decision: Set the alarm for six. Say the hour out loud, once, to nobody
+:Comment: Non-negotiable 6. Alex's own decision — closes the first quarter
+:ID:       3d67d00c-62fd-475c-9c64-70d551fdb3db
 :END:
 
 The day had been a blur of near-misses and minor disasters. Alex had made it to
@@ -303,38 +425,141 @@ At the top of the first page, they wrote: "Day 1."
 
 Tomorrow morning would be different.
 
+#+begin_comment
+*EDIT*: plot - "The watch was still ticking, somehow" contradicts the design.
+It is mechanical and has been under the mail for two years; it cannot be
+running. It has to be stopped here and wound for the first time in Chapter 7,
+or the symbol of change has nothing to change from.
+*EDIT*: design - If the watch is stopped here, Alex setting it means choosing
+a time to believe in, on the same evening they write "Day 1". That is better
+than what is in the outline. Update design.org, Symbols.
+#+end_comment
+
+*** TOWRITE Scene 2 - The Handover :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-sam-chen-001][Sam]]
+:Plot: [[id:plot-main-line-001][Main Line]], [[id:plot-sams-thursdays-001][Sam's Thursdays]]
+:Plot-point: [[id:pp-04-inciting-incident][4. Inciting Incident]]
+:Timeline: Day 2, 08:00
+:Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Description: Alex asks Sam to take the courier handover and loses the account anyway
+:Summary: Alex asks Sam to sign for the Halloran proofs at eight. Sam cannot, this once, and does not say why. The courier leaves; the account goes.
+:Scene-motivation: Alex wants one more hour of sleep and to keep the account
+:Conflict-source: Alex's asking against Sam's inability to refuse plainly
+:Gap: Alex expects Sam to say yes as always; Sam says "not this morning" and offers no reason
+:What-is-at-stake: The Halloran account, and the rent behind it
+:World-problem: The courier's window is fifteen minutes wide and nobody is paid to wait in it
+:Emotion: Irritation, then a shame Alex does not examine
+:Tension-level: 6
+:Outcome: The account is lost. It happens *to* Alex — they did not choose it
+:Sequel-decision: Alex decides the problem is that they need a system, not that they spent someone else's hour
+:Comment: Non-negotiable 4. Note the moral Weakness is already in it, unremarked
+:ID:       d3a8b898-d081-4aa1-aa8e-4a4a161f19f5
+:END:
+
+#+begin_comment
+*SUMMARY*: Eight in the morning. Alex knocks on 4B in yesterday's shirt and
+asks Sam to take the courier — the Halloran proofs, signature required,
+fifteen-minute window. Sam is already dressed, already holding the phone, and
+says "not this morning", which is the first thing Sam has ever refused Alex.
+No reason given. Alex does not ask for one. Alex goes back to bed for
+twenty-five minutes and the courier comes at 8:06 and goes at 8:07, and by
+eleven the Halloran account is with someone else.
+
+The reader should be able to see, and Alex should not, that Sam is standing
+by a phone waiting for it to ring at exactly eight.
+
+*NOTE*: This is the scene that makes the moral Weakness concrete. Do not
+soften the ask — Alex has to be genuinely likeable while doing it, or the
+book becomes about a selfish person, which is a different and much smaller
+book.
+#+end_comment
+
+*** TOWRITE Scene 3 - Terms :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-dana-okonkwo-001][Dana]]
+:Plot: [[id:plot-main-line-001][Main Line]]
+:Plot-point: [[id:pp-03-desire][3. Desire]], [[id:pp-05-opponent][5. Opponent]]
+:Timeline: Day 2, 18:20
+:Location: [[id:loc-agency-001][Okonkwo & Field]]
+:Description: Dana states her Stance and offers exactly the wrong help
+:Summary: Dana hears about Halloran, is kind about it, names the Kestrel retainer, and explains why Alex is not the kind of person who takes retainers.
+:Scene-motivation: Alex wants work to replace what they lost today
+:Conflict-source: Dana, who wants the same eight hours Alex wants
+:Gap: Alex expects sympathy or a job; gets both, on terms that guarantee the Weakness
+:What-is-at-stake: The Kestrel retainer, named here for the first time
+:World-problem: The room is full of people who have been there since seven and will be there at nine
+:Emotion: Gratitude, and underneath it something Alex cannot name
+:Tension-level: 5
+:Outcome: Alex leaves with more work and less contract than they came for
+:Sequel-decision: Alex decides to earn the retainer by out-performing the doubt
+:Comment: Non-negotiables 3 and 5. Dana attacks the Weakness by praising it
+:ID:       67890287-912e-460b-8997-d5a317a4705c
+:END:
+
+#+begin_comment
+*SUMMARY*: Dana's office at twenty past six in the evening, which is the
+middle of her day. She has already heard about Halloran. She is warm, and
+specific, and says the sentence that buys Alex for the next hundred pages:
+"you do your best work at two in the morning — that's why I call you and not
+them." Then Kestrel: twelve months, one client, one scope, pitched in three
+weeks. And then, gently, why Alex is not a retainer person: retainers are for
+people with a shape to their week, and Alex is better than that, freer than
+that.
+
+Alex leaves with three weeks of piecework and the belief that the retainer is
+something you are given for being reliable, rather than something you are
+refused for being available.
+
+*EDIT*: character - Dana's Stance has to be arguable here, not just charming.
+She is right about the city. Give her one sentence about 2009 that she
+immediately withdraws.
+#+end_comment
+
 * Act II :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-2
-:WORDCOUNT: 277
-:WORD-OBJECTIVE: 6000
-:ID:       cdad6212-34f1-4bf0-b226-3ddecf7ce70f
+:WORDCOUNT: 269
+:WORD-OBJECTIVE: 40000
+:ID:       95ff0f2c-d57b-4e9c-86a9-120299bee1c0
 :END:
 
-** TOWRITE Chapter 3 :ignore:
+** TOWRITE Chapter 3 - Day One :ignore:
 :PROPERTIES:
 :WORDCOUNT: 269
-:WORD-OBJECTIVE: 1500
-:ID:       72c83287-21b6-4488-b2e6-83c9efa4bb74
+:WORD-OBJECTIVE: 3000
+:ID:       20c236d5-93b5-4563-9e98-134733ff5d35
 :END:
 
-*** TOWRITE Scene 1 - First Attempt :ignore:
+*** FINISHED Scene 1 - First Attempt :ignore:
 :PROPERTIES:
-:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
-:Characters: [[id:char-alex-rivera-20251115-001][Alex]]
-:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-romance-subplot-001][Romance Subplot]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
-:Timeline: Day 2, 6:00 AM
-:Location: [[id:loc-alex-apartment-001][Alex's Apartment]]
-:Description: Alex's first attempt at a morning routine
-:Summary: Alex wakes early and tries to follow a routine, but struggles with the structure
-:Scene-motivation: Show that change is difficult
-:Conflict-source: Old habits vs. new intentions
-:What-is-at-stake: Alex's commitment to change
-:Emotion: Determination fading to frustration
-:Comment: Character linking works even for single-character scenes!
 :WORDCOUNT: 269
-:WORD-OBJECTIVE: 500
-:ID:       3920e12c-cbda-49a1-bfe3-04a92d4a94e9
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]]
+:Plot: [[id:plot-main-line-001][Main Line]], [[id:plot-running-late-001][Running late]]
+:Plot-point: [[id:pp-07-plan][7. Plan]]
+:Timeline: Day 3, 06:00
+:Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Description: Alex copies Sam's routine to the minute and it does not fit
+:Summary: Alex wakes at six without snoozing, makes the bed, attempts meditation, and is exhausted and late by half past seven.
+:Scene-motivation: Alex wants to prove the change is already done
+:Conflict-source: Old habits against a borrowed system
+:Gap: Alex expects the routine to produce calm; it produces a new way to be behind
+:What-is-at-stake: Alex's belief that they can be a person who does this
+:World-problem: The routine has no defence against a message at 6:40
+:Emotion: Determination fading to disappointment
+:Tension-level: 4
+:Outcome: Late again, and this time with effort spent
+:Sequel-decision: Alex decides the problem is that they did it imperfectly
+:Comment: Non-negotiable 7. The Plan is imitation, which is why it has to fail
+:ID:       066703a7-c447-444e-8e21-0b94597d33ff
 :END:
 
 The alarm went off at 6:00 AM sharp. This time, Alex didn't hit snooze. They'd
@@ -369,89 +594,425 @@ By 7:30, Alex was exhausted and running late again—but this time, instead of j
 chaos, there was also disappointment. They'd tried to do everything right, and it
 still hadn't worked.
 
+#+begin_comment
+*EDIT*: plot - "They'd set the watch's alarm too" — the watch is mechanical
+and has no alarm. Same problem as Chapter 2 Scene 1. Cut the clause; the
+ticking is enough and is better.
+*EDIT*: scene - The Gap is right but the outcome is soft. Alex should miss
+something specific by being late here, not just feel disappointed. A
+fifteen-minute call at 7:45 that Priya takes instead.
+#+end_comment
+
 {{{scene-break}}}
 
-** TOWRITE Chapter 4 - Learning and Adjusting :ignore:
+*** TOWRITE Scene 2 - Solidarity :ignore:
 :PROPERTIES:
-:WORDCOUNT: 8
-:WORD-OBJECTIVE: 1500
-:ID:       065f37ed-f95c-4a18-a8a0-d666dadb1b0d
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-priya-raman-001][Priya]]
+:Plot: [[id:plot-kestrel-retainer-001][The Kestrel Retainer]]
+:Plot-point: [[id:pp-08-drive][8. Drive]]
+:Timeline: Day 4, 13:00
+:Location: [[id:loc-agency-001][Okonkwo & Field]]
+:Description: Priya introduces herself as the only other person who understands
+:Summary: Priya finds Alex in the stairwell, commiserates fluently about Dana, and asks two specific questions about which mornings Alex has free.
+:Scene-motivation: Alex wants to be told they are not the problem
+:Conflict-source: Priya's declared desire against her real one
+:Gap: Alex expects an ally and gets one, and that is exactly the trouble
+:What-is-at-stake: Every free hour Alex still has
+:World-problem: Solidarity costs nothing when the currency is other people's availability
+:Emotion: Relief, then a warmth that will look different on the reread
+:Tension-level: 3
+:Outcome: Alex tells Priya their whole week
+:Sequel-decision: Alex decides they have found a friend
+:Comment: The fake ally. The two questions are the whole scene; everything else is cover
+:ID:       ac4e36ab-9e29-4cf6-9f82-8e1238927f5d
+:END:
+
+#+begin_comment
+*SUMMARY*: The stairwell, one in the afternoon, because the lift takes ninety
+seconds and Priya never waits for it. She is funny about Dana in a way nobody
+has been to Alex before — the four-minute reply, the compliments that are
+invoices. Alex laughs for the first time in the book.
+
+Then: "What mornings are you actually free? I'll stop offering you things on
+the wrong days." And Alex tells her. All of them.
+
+*NOTE*: The reader is not supposed to catch this on the first pass. They are
+supposed to catch it in Chapter 6 and come back. Which means the two
+questions have to be *the most natural lines in the scene* — buried in
+kindness, not set apart by a beat.
+#+end_comment
+
+** TOWRITE Chapter 4 - Adjusting :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
+:ID:       19997d65-ed5c-471c-851f-cdff96fa25f9
 :END:
 
 *** TOWRITE Scene 1 - Coffee Talk :ignore:
 :PROPERTIES:
-:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
-:Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]]
-:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-romance-subplot-001][Romance Subplot]]
-:Timeline: Day 5, 7:30 AM
-:Location: [[id:loc-coffee-shop-001][Corner Coffee Shop]]
-:Description: Sam offers advice on making routines sustainable
-:Summary: Alex admits struggle to Sam, who shares that routines should be personalized
-:Scene-motivation: Provide guidance and course correction
-:Conflict-source: Perfectionism vs. flexibility
-:What-is-at-stake: Alex's continued effort
-:Emotion: Vulnerability, relief, insight
-:Comment: This scene has no content yet - just the planning metadata
-:WORDCOUNT: 4
-:WORD-OBJECTIVE: 500
-:ID:       8abad439-d477-41ff-9548-56db3532c1db
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-sam-chen-001][Sam]]
+:Plot: [[id:plot-main-line-001][Main Line]], [[id:plot-sams-thursdays-001][Sam's Thursdays]]
+:Plot-point: [[id:pp-08-drive][8. Drive]]
+:Timeline: Day 9, 07:05
+:Location: [[id:loc-coffee-shop-001][The Corner Coffee Shop]]
+:Description: Sam explains that a routine is not a schedule you copy
+:Summary: Alex admits the imitation failed. Sam says a routine is built around the one thing that cannot move, and refuses to say what theirs is.
+:Scene-motivation: Alex wants Sam's system, correctly this time
+:Conflict-source: Alex's perfectionism against Sam's refusal to explain themselves
+:Gap: Alex expects a better schedule; is told to find the immovable thing, and does not have one
+:What-is-at-stake: Whether Alex tries again at all
+:World-problem: The shop is empty at 7:05, which Alex did not know
+:Emotion: Vulnerability, relief, and an unanswered question
+:Tension-level: 3
+:Outcome: Alex stops copying and starts looking for their own immovable hour
+:Sequel-decision: Alex decides the immovable thing is the Kestrel pitch. Wrong, and it takes until Chapter 8
+:Comment: The ally speaks with authority because Sam is describing their own life without saying so
+:ID:       6335f3bf-f059-4d5a-9292-fb952143bb1f
 :END:
 
-[Scene to be written]
+#+begin_comment
+*SUMMARY*: Alex has come at five past seven because Sam mentioned it once,
+and the shop is empty, and that alone is a small revelation. Alex confesses
+the whole failed imitation, funny about it, hoping to be told it was a good
+try.
+
+Sam does not do reassurance. "You built it around what you'd like to be. Build
+it around the thing that can't move." Alex asks what Sam's is. Sam says
+"something on Thursdays" and changes the subject, and the notebook stays shut
+on the table between them.
+
+*EDIT*: character - Sam's Stance 4 should be at its most visible here. There
+is a version of this line that is generous and a version that is a little
+superior, and the superior one is the true one at this point in the book.
+#+end_comment
 
 *** TOWRITE Scene 2 - Finding Balance :ignore:
 :PROPERTIES:
-:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
-:Characters: [[id:char-alex-rivera-20251115-001][Alex]]
-:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
-:Timeline: Day 8, 6:15 AM
-:Location: [[id:loc-alex-apartment-001][Alex's Apartment]]
-:Description: Alex's morning routine, now personalized and working
-:Summary: Alex finds a routine that works for them, not a perfect textbook version
-:Scene-motivation: Show character development
-:Conflict-source: Internal - accepting "good enough"
-:What-is-at-stake: Sustainable change
-:Emotion: Peace, accomplishment, growth
-:Comment: Climax of Act II - the routine actually works
-:WORDCOUNT: 4
-:WORD-OBJECTIVE: 500
-:ID:       691ff06f-b99a-4b6d-8c1a-bd1d2b5146b5
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]]
+:Plot: [[id:plot-main-line-001][Main Line]]
+:Plot-point: [[id:pp-08-drive][8. Drive]]
+:Timeline: Day 12, 06:15
+:Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Description: A routine that is Alex's, and holds for four days
+:Summary: Alex builds a short routine around one fixed hour of their own and it works, twice, and delivers two jobs early.
+:Scene-motivation: Alex wants a week they can point at
+:Conflict-source: Internal — accepting a version that is smaller than the ideal
+:Gap: Alex expects to feel diminished by the smaller version; feels the opposite
+:What-is-at-stake: Sustainable change, and the evidence Alex plans to show Dana
+:World-problem: Two of the four mornings are still interrupted before seven
+:Emotion: Peace, then a pride that is aimed at the wrong person
+:Tension-level: 2
+:Outcome: Two deliveries early. Alex starts counting the streak
+:Sequel-decision: Alex decides to show Dana the streak
+:Comment: The false victory begins here and pays off at the midpoint
+:ID:       a0fd6c78-07af-497e-8e13-6ae9ba851160
 :END:
 
-[Scene to be written]
+#+begin_comment
+*SUMMARY*: Bed made, kettle, twenty minutes at the desk before the phone
+comes off airplane mode. That is the whole routine. It is four things and it
+holds for four days, and both jobs go out early.
+
+The last line has to make the reader slightly uneasy: Alex is not keeping the
+mornings for themselves, they are accumulating them as evidence for Dana. The
+Lie has not moved.
+
+*NOTE*: Check against the plan — this is around 45% and should land right
+before the midpoint. If Chapter 4 runs long, the second quarter is over
+length. See the Quarters section in objects/plot.org.
+#+end_comment
+
+** TOWRITE Chapter 5 - Six O'Clock :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
+:ID:       779e022f-7d02-4260-ab85-f81a54e8a880
+:END:
+
+*** TOWRITE Scene 1 - The Compliment :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-dana-okonkwo-001][Dana]], [[id:char-priya-raman-001][Priya]]
+:Plot: [[id:plot-main-line-001][Main Line]], [[id:plot-kestrel-retainer-001][The Kestrel Retainer]]
+:Plot-point: [[id:pp-09-midpoint][9. Midpoint]]
+:Timeline: Day 16, 17:00
+:Location: [[id:loc-agency-001][Okonkwo & Field]]
+:Description: Praise in public, and a six o'clock call booked as a courtesy
+:Summary: Dana praises Alex in front of the studio and books them for a 6:00 call "since you're up anyway". Alex refuses, for the first time.
+:Scene-motivation: Alex wants the streak recognized, and gets it
+:Conflict-source: Dana, converting Alex's new reliability into more availability
+:Gap: Alex expects the streak to buy them a contract; it buys them an earlier alarm
+:What-is-at-stake: Whether the change is for Alex or for Dana
+:World-problem: A booking made in front of witnesses cannot be refused privately
+:Emotion: Pride curdling into clarity
+:Tension-level: 7
+:Outcome: Alex says no out loud, in a room, and the room hears it
+:Sequel-decision: Alex stops asking to be allowed to be unavailable and starts declining
+:Comment: Non-negotiable 9. False victory; Alex stops reacting and starts acting. Closes quarter II
+:ID:       76c1c219-ea92-4424-8265-659fe60d2b09
+:END:
+
+#+begin_comment
+*SUMMARY*: Five in the afternoon, the studio half-full. Dana says the kind
+thing loudly — three weeks, everything early, this is what it looks like when
+someone wants it — and then, in the same breath and the same warmth, "so
+you'll take the Kestrel call at six on Thursday, since you're up anyway."
+
+The trap is that it is a compliment. Refusing it is refusing the praise.
+
+Alex refuses it. Not well: too fast, slightly too loud, and with a reason
+that is not the real one. Priya, at the back, writes something down.
+
+*EDIT*: scene - The refusal needs a cost inside the scene, not just after it.
+Dana should give the call to Priya on the spot, warmly, in front of Alex.
+#+end_comment
+
+** TOWRITE Chapter 6 - Thursday :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
+:ID:       4ff12e63-c90c-4ec0-baff-7af685a95ea6
+:END:
+
+*** TOWRITE Scene 1 - Thursday :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 1000
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-sam-chen-001][Sam]]
+:Plot: [[id:plot-main-line-001][Main Line]], [[id:plot-sams-thursdays-001][Sam's Thursdays]], [[id:plot-kestrel-retainer-001][The Kestrel Retainer]]
+:Plot-point: [[id:pp-10-apparent-defeat][10. Apparent Defeat]]
+:Timeline: Day 23, 08:00
+:Location: [[id:loc-bell-lane-001][Bell Lane Day Centre]]
+:Description: The call that is not answered, and what the notebook is
+:Summary: Alex asks Sam for the handover one last time. Sam takes it, misses the 8:00 call, and the Bell Lane place goes to the next name.
+:Scene-motivation: Alex wants forty minutes to prepare the pitch
+:Conflict-source: Alex's need against the only hour Sam cannot give
+:Gap: Alex expects a favour of no consequence; learns the price after it has been paid
+:What-is-at-stake: Sam's father's place, which does not come back
+:World-problem: The list moves down; nobody is paid to hold a space
+:Emotion: Impatience, then the ally attack, then something Alex has no word for
+:Tension-level: 9
+:Outcome: The placement is lost. Sam says what the hour was for
+:Sequel-decision: None available. Alex is not in a state to decide anything
+:Comment: Non-negotiable 10, and the ally attack. Closes quarter III
+:ID:       4d3f6ed3-d875-4730-8879-4fc13b36fde6
+:END:
+
+#+begin_comment
+*SUMMARY*: Alex asks. Sam says yes — the first yes since Chapter 2 and the
+wrong one — takes the courier at eight, and the phone rings at 8:00 and 8:01
+and not again. By eleven the place is gone.
+
+The ally attack, and it should be quiet: "You're not building a routine. You
+found a nicer way to have the same mornings." And then, because Sam has never
+said it to anyone: what Thursdays are. The notebook opens. It is a log of
+medication times, and it goes back fourteen months.
+
+*NOTE*: The reader has to be a half-page ahead of Alex here and no further.
+If they are a whole scene ahead the ally attack lands as confirmation instead
+of as a blow.
+*EDIT*: plot - Check the geography before drafting. If Bell Lane is
+twenty-five minutes away, Sam cannot be at the flat at eight and at Bell Lane
+for the assessment later the same morning. Either the call is the only
+contact on Thursdays or the drive is shorter. Design decision, not a prose
+one — see objects/worldbuilding.org.
+#+end_comment
+
+*** TOWRITE Scene 2 - The Watch Has Stopped :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-priya-raman-001][Priya]]
+:Plot: [[id:plot-main-line-001][Main Line]]
+:Plot-point: [[id:pp-10-apparent-defeat][10. Apparent Defeat]]
+:Timeline: Day 23, 22:40
+:Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Description: A forwarded message chain with the timestamps left on
+:Summary: A misdirected forward shows Alex a year of Priya passing their free mornings to Dana. Alex looks at the watch and it has stopped.
+:Scene-motivation: Alex wants to not be in this day any more
+:Conflict-source: The evidence, which cannot be argued with
+:Gap: Alex expects to be alone with what they did to Sam; discovers they were also being spent
+:What-is-at-stake: Alex's last explanation for their own life
+:World-problem: The whole scheme is legible in timestamps because timestamps are what this city records
+:Emotion: Numbness, and then a very cold clarity
+:Tension-level: 8
+:Outcome: The Lie loses its last support. The watch has stopped
+:Sequel-decision: None yet. The decision is the next chapter
+:Comment: Priya's reveal, documentary rather than narrated — required by the single focalizer
+:ID:       179af7d2-cb84-421b-90fe-f71689bb864f
+:END:
+
+#+begin_comment
+*SUMMARY*: Twenty to eleven at night. A forward Priya did not mean to send,
+with the chain intact underneath: a year of "Alex is free Tuesday and
+Thursday mornings", each one timestamped, each one within four minutes of
+Dana's reply.
+
+Alex does not rage. Alex counts — the way they always count — and the number
+comes to fourteen months, which is also how long Sam has been keeping the
+notebook, and the coincidence is the closest this book comes to a thesis
+statement.
+
+Then the watch. 8:00, and it is twenty to eleven at night, and it has been
+stopped since the morning.
+
+*NOTE*: The symbol does its whole job in two lines and must not be explained.
+No "and Alex understood that". Pass 8 will hunt for exactly that sentence.
+#+end_comment
 
 * Act III :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-3
-:WORDCOUNT: 308
-:WORD-OBJECTIVE: 4000
-:ID:       78daff4c-02bd-4990-a017-1b5a5678b62c
+:WORDCOUNT: 310
+:WORD-OBJECTIVE: 20000
+:ID:       005a0d70-8e3b-4580-afe8-f2c98f8d6c4e
 :END:
 
-** TODO Chapter 5 - The New Normal :ignore:
+** TOWRITE Chapter 7 - Winding It :ignore:
 :PROPERTIES:
-:WORDCOUNT: 308
-:WORD-OBJECTIVE: 1500
-:ID:       79fdf66f-ef42-45c8-9c9c-b474f45c663e
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
+:ID:       da8c6041-9f71-4bbf-b1a8-95997a5f7b46
 :END:
 
-*** TODO Scene 1 - Full Circle :ignore:
+*** TOWRITE Scene 1 - Winding It :ignore:
 :PROPERTIES:
-:PoV: [[id:char-alex-rivera-20251115-001][Alex]]
-:Characters: [[id:char-alex-rivera-20251115-001][Alex]], [[id:char-sam-chen-20251115-002][Sam]], [[id:char-casey-20251115-003][Casey]]
-:Plot:     [[id:plot-main-thread-001][Main Plot Thread]], [[id:plot-romance-subplot-001][Romance Subplot]], [[id:plot-professional-subplot-001][Professional Life Subplot]]
-:Timeline: Day 30, 7:00 AM
-:Location: [[id:loc-coffee-shop-001][Corner Coffee Shop]]
-:Description: Alex helps someone else, showing their growth
-:Summary: Alex encounters someone having a rough morning and offers the same kindness Sam showed them
-:Scene-motivation: Demonstrate complete character arc
-:Conflict-source: None - resolution
-:What-is-at-stake: Nothing - this is about showing growth
-:Emotion: Satisfaction, contentment, generosity
-:Comment: All three characters now have ID links - try clicking on them!
-:WORDCOUNT: 308
-:WORD-OBJECTIVE: 500
-:ID:       0f6858e1-5014-45ec-b3cf-3dec85448e09
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-sam-chen-001][Sam]]
+:Plot: [[id:plot-main-line-001][Main Line]], [[id:plot-sams-thursdays-001][Sam's Thursdays]]
+:Plot-point: [[id:pp-11-self-revelation][11. Self-Revelation]]
+:Timeline: Day 24, 06:00
+:Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Description: Alex winds the watch and offers an hour with a number on it
+:Summary: Alex winds the watch for the first time, sees what actually happened the morning Marisol died, and offers Sam the nine o'clock drive.
+:Scene-motivation: Alex wants to give back an hour, which is a thing they have never done
+:Conflict-source: The Lie, and what admitting it costs
+:Gap: Alex expects winding it to feel like penance; it feels like arithmetic that finally adds up
+:What-is-at-stake: The self-revelation itself — whether it is real or a mood
+:World-problem: The rescheduled assessment is at nine, and so is the pitch
+:Emotion: Grief, and then something steadier
+:Tension-level: 6
+:Outcome: Alex says "nine o'clock" out loud to another person and means it
+:Sequel-decision: Alex does not tell Sam about the pitch
+:Comment: Non-negotiable 11, the glimpse. Confirmation comes in the lobby
+:ID:       2a437a1b-6c86-4120-bb50-a79601a00b31
+:END:
+
+#+begin_comment
+*SUMMARY*: Six in the morning, the flat, the watch on the table. Winding it
+takes about forty seconds and Alex does it badly the first time.
+
+The Ghost lands here, complete and for the first time in order: the promise
+of nine, the three alarms, the shower, the message answered on the stairs,
+eleven o'clock, ten-forty. And the thing Alex has never once let themselves
+put in that sequence — that nothing took the morning. It was spent, in
+increments, by a person making choices.
+
+Then 4B, and the offer: the assessment is at nine on Friday, Alex will drive,
+Alex will be downstairs at twenty past eight. A stated hour, said out loud,
+to somebody.
+
+They do not mention that the Kestrel pitch is at nine on Friday.
+
+*EDIT*: prose - Do not let Alex weep here. The self-revelation is a
+*correction to a sequence*, not a catharsis, and the prose should be at its
+flattest on this page.
+#+end_comment
+
+** TOWRITE Chapter 8 - The New Normal :ignore:
+:PROPERTIES:
+:WORDCOUNT: 310
+:WORD-OBJECTIVE: 3000
+:ID:       f3a8a733-6fd7-4afd-a4f8-31aa79cef3dc
+:END:
+
+*** TOWRITE Scene 1 - Eleven Minutes :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 1200
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-dana-okonkwo-001][Dana]]
+:Plot: [[id:plot-main-line-001][Main Line]], [[id:plot-sams-thursdays-001][Sam's Thursdays]], [[id:plot-kestrel-retainer-001][The Kestrel Retainer]]
+:Plot-point: [[id:pp-12-battle][12. Battle]], [[id:pp-13-moral-decision][13. Moral Decision]]
+:Timeline: Day 25, 08:40
+:Location: [[id:loc-agency-001][Okonkwo & Field]]
+:Description: The lobby, the lift, the car, and eleven minutes
+:Summary: Dana argues for the pitch and argues well. Alex chooses the drive, loses the retainer, and says the hour out loud.
+:Scene-motivation: Alex wants both, and cannot have both
+:Conflict-source: Dana, and the fact that she is not wrong about the money
+:Gap: Alex expects to have to defend the choice; discovers there is no argument, only the choosing
+:What-is-at-stake: Everything on all four rungs at once
+:World-problem: Twenty-five minutes is twenty-five minutes and no amount of availability shortens it
+:Emotion: Fear, then the particular calm of a decision already made
+:Tension-level: 10
+:Outcome: Alex drives. Priya takes the pitch and, three days later, the retainer
+:Sequel-decision: Alex writes the hour in the notebook. First entry that is not a word count
+:Comment: Non-negotiables 12 and 13 in one scene. Two goods, both costly
+:ID:       c7c267a4-f074-4e92-a5b5-e258689ecf17
+:END:
+
+#+begin_comment
+*SUMMARY*: The lobby at 8:40, lift ninety seconds, pitch on four at nine, car
+at the kerb, Bell Lane twenty-five minutes away. The clock over reception is
+four minutes fast and Alex knows it now.
+
+Dana comes down. She is not cruel and she is not stupid: she argues the case
+Alex would have made a month ago, and she argues it better — the retainer is
+the money that would let Alex help Sam properly, for a year, instead of for
+one morning. And then, once, she says the thing about 2009, and does not
+withdraw it this time.
+
+Alex says: "I said nine o'clock." Which is the confirmation of the
+self-revelation, and it is four words, and it is the whole book.
+
+Alex drives.
+
+*NOTE*: Both options must be *goods*. If the reader can see a right answer,
+this is not a moral decision, it is an obstacle. The retainer really would
+have helped Sam more, in money, over a year. That has to be true and stated.
+*EDIT*: plot - Priya should be visible upstairs through the lobby glass,
+already waiting, already early. One line, no comment on it.
+#+end_comment
+
+*** FINISHED Scene 2 - Full Circle :ignore:
+:PROPERTIES:
+:WORDCOUNT: 310
+:WORD-OBJECTIVE: 800
+:PoV: [[id:char-alex-rivera-001][Alex]]
+:Characters: [[id:char-alex-rivera-001][Alex]], [[id:char-sam-chen-001][Sam]], [[id:char-casey-mbeki-001][Casey]]
+:Plot: [[id:plot-main-line-001][Main Line]], [[id:plot-sams-thursdays-001][Sam's Thursdays]], [[id:plot-running-late-001][Running late]]
+:Plot-point: [[id:pp-13-moral-decision][13. Moral Decision]]
+:Timeline: Day 67, 07:00
+:Location: [[id:loc-coffee-shop-001][The Corner Coffee Shop]]
+:Description: The new equilibrium, and the wheel still turning
+:Summary: Six weeks on, Alex offers a stranger the sentence Sam once offered them, without preaching, and has time.
+:Scene-motivation: Alex wants nothing. That is the point of the scene
+:Conflict-source: None. This is the new equilibrium
+:Gap: Casey expects to be judged; is offered something instead
+:What-is-at-stake: Nothing, deliberately. The stakes were spent in the previous scene
+:World-problem: Still true, and now visibly survivable
+:Emotion: Contentment, generosity
+:Tension-level: 1
+:Outcome: Alex looks at the watch on purpose
+:Sequel-decision: —
+:Comment: Final image. Note there is no arithmetic anywhere in this scene — the "Running late" motif closes by stopping
+:ID:       27382341-8ad6-46b1-b7bf-4c937a489ba8
 :END:
 
 Alex walked into the coffee shop at 7:00 AM, right on schedule. Not because they
@@ -461,7 +1022,7 @@ rather than a trial.
 
 They'd learned to be flexible. Some mornings included meditation, some didn't.
 Some mornings they woke at 6:00, some at 6:30. The watch on their wrist—
-grandmother's watch, still ticking steadily—had taught them that time wasn't
+grandmother's watch, wound every morning by hand—had taught them that time wasn't
 about controlling every minute. It was about being present for the ones that
 mattered.
 
@@ -495,65 +1056,11 @@ warmer, a little kinder. Alex glanced at the watch. 7:15. They had plenty of tim
 
 They always did, now.
 
-* Export config :ignore:noexport:
-:PROPERTIES:
-:WORDCOUNT: 0
-:ID:       861a553c-2808-43b7-bbde-7d4ffc281c2e
-:END:
-# ############################
-# General options
-# ############################
-#+OPTIONS: ':t *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
-#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK")
-#+OPTIONS: date:t e:t email:nil f:t inline:t num:t p:nil pri:nil
-#+OPTIONS: prop:nil stat:t tags:t tasks:t tex:t timestamp:t title:t
-#+OPTIONS: toc:2 todo:t |:t
-
-#+EXCLUDE_TAGS: noexport
-#+EXPORT_FILE_NAME:
-
-# ######################
-# latex related options
-# ######################
-#+LATEX_CLASS: book
-#+LATEX_HEADER:
-#+LATEX_HEADER_EXTRA:
-#+DESCRIPTION:
-#+KEYWORDS:
-#+SUBTITLE:
-
-# ######################
-# odt related options
-# ######################
-#+OPTIONS: tex:t
-#+ODT_STYLES_FILE: "<file>.ott"
-#+DESCRIPTION:
-#+KEYWORDS:
-#+SUBTITLE:
-#+LATEX_HEADER:
-
-# ######################
-# HTML related options
-# ######################
-#+DESCRIPTION:
-#+HTML_DOCTYPE: html5
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="file:org.css"/>
-#+HTML_HEAD_EXTRA:
-
-# ######################
-# epub related options
-# ######################
-#+UID:
-#+Subject:
-#+Description:
-#+Publisher:
-#+License:
-#+EPUBSTYLE:
-#+EPUBCOVER:
-#+HTML_DOCTYPE: xhtml
-
-# Local Variables:
-# eval: (progn
-# (setq ispell-local-dictionary "en_US")
-# (setq lexical-binding t))
-# End:
+#+begin_comment
+*EDIT*: scene - "recognizing themselves from a month ago" — it is six weeks
+and it is after the loss of the retainer, and neither fact is in the scene.
+The reader should feel the cost sitting quietly under the contentment.
+*NOTE*: Casey is named in objects/characters.org but never named on the page
+here. Decide which is right. Naming them makes the ending warmer and slightly
+smaller.
+#+end_comment

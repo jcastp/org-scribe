@@ -1,20 +1,18 @@
 * The Last Message
 :PROPERTIES:
-:TOTAL_WORDS:      5000
-:DAILY_WORDS:      200
-:DAYS:             25
-:START_DATE:       2026-05-01
-:END_DATE:         2026-06-04
-:CURRENT_WORDS:    532
-:SYNC_DATE:        2026-06-28
-:SYNC_WORDS:       532
-:SPARE_DAYS:       2026-05-02,2026-05-03,2026-05-09,2026-05-10,2026-05-16,2026-05-17,2026-05-23,2026-05-24,2026-05-30,2026-05-31
-:DAILY_WORD_COUNTS: 2026-05-01:218:Opening scene complete — the message is sent,2026-05-04:226:Middle section drafted — the wait,2026-05-05:88:Ending begun — against the clock
+:TOTAL_WORDS: 5000
+:DAILY_WORDS: 200
+:DAYS:     35
+:START_DATE: 2026-05-01
+:END_DATE: 2026-06-04
+:CURRENT_WORDS: 532
+:SPARE_DAYS: 2026-05-02,2026-05-03,2026-05-09,2026-05-10,2026-05-16,2026-05-17,2026-05-23,2026-05-24,2026-05-30,2026-05-31
+:DAILY_WORD_COUNTS: 2026-05-01:218:Opening scene complete — the message is sent,2026-05-04:444:Middle section drafted — the wait,2026-05-05:532:Ending begun — against the clock
 :END:
 
 ** Schedule
 
-| Date       | Target | Cumulative | Actual | Progress % | Notes                                        |
+|       Date | Target | Cumulative | Actual | Progress % | Notes                                        |
 |------------+--------+------------+--------+------------+----------------------------------------------|
 | 2026-05-01 |    200 |        218 |    218 |     109.0% | Opening scene complete — the message is sent |
 | 2026-05-02 |   REST |        218 |        |            | Spare day                                    |

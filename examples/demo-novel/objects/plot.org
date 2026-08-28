@@ -1,243 +1,319 @@
-#+TITLE: The Morning Routine - Plot Structure
+#+TITLE: The Morning Routine - Plot
 #+AUTHOR: Demo Author
+#+DATE: 2026-05-01
+#+LANGUAGE: en
 #+STARTUP: overview
 
-* Plot Threads
+# A worked example. Two kinds of heading live here and they do not mix:
+#
+#   - The thirteen non-negotiables, level 2 under their section. Fixed: the
+#     same thirteen in every story. Scenes point at them with the
+#     :Plot-point: property, and the health report (F8 F8 H) lists any of
+#     the thirteen that no scene serves.
+#
+#   - Narrative lines, level 1 with :THREAD-TYPE:. These are yours. Scenes
+#     point at them with the :Plot= property (F8 F8 g), and they become the
+#     columns of the plot-thread timeline in novel.org.
+#
+# Try F8 F8 L t for the plot health report, and F8 F8 L J to jump to a plot
+# point from a scene.
+#
+# The "Running late" line below carries :Weight: -1, so it keeps everything
+# except its column in the timeline table. Note that the plot health report
+# still analyzes it: Weight governs tables, never analysis.
+
+* The Thirteen Non-Negotiables
+
+** 1. Theme Stated
 :PROPERTIES:
-:ID:       8b5c4196-a2eb-4f7c-af72-1f85dfb183d1
+:ID: pp-01-theme-stated
 :END:
 
-These headings are the linkable plot thread entries. Scene properties in
-novel.org reference them with [[id:...][Name]] links.
-Use =F8 F8 g= (org-scribe-set-scene-plot-threads) to assign threads to a scene,
-or =F8 F8 L j= (org-scribe-jump-to-plot-thread) to navigate here from a scene.
+Sam, in the coffee shop queue, Chapter 1 Scene 2: "I track it every day.
+Sounds rigid, but it's actually quite freeing." Alex laughs and files it
+under other people's hobbies. The theme is stated by someone who is not the
+protagonist, and ignored.
 
-** Main Plot Thread
+** 2. Weakness, Lie and Need
 :PROPERTIES:
-:ID:       plot-main-thread-001
-:TYPE:     A-plot
+:ID: pp-02-weakness-lie-need
 :END:
 
-Alex establishes a sustainable morning routine over 30 days. The central
-conflict (chaos vs. structure) and the transformation arc (reactive →
-proactive) run through every chapter.
+The three alarms, Chapter 1 Scene 1 — the Weakness working. Then the 9:00
+meeting Alex reaches on time and walks into without the presentation notes:
+the Weakness costing. The Lie is visible in the watch, worn and never wound.
 
-** Romance Subplot
+** 3. Desire
 :PROPERTIES:
-:ID:       plot-romance-subplot-001
-:TYPE:     B-plot
+:ID: pp-03-desire
 :END:
 
-The developing connection between Alex and Sam. Begins as a momentary
-neighbourly encounter, evolves into mentorship, and carries an undertone
-of genuine friendship (and possible romance) that the author can develop
-further.
+Dana names the Kestrel retainer over a phone call at 6:40 in the morning:
+twelve months, one client, one scope. It starts weak — Alex assumes it is
+not for them — and rises for three quarters.
 
-** Professional Life Subplot
+** 4. Inciting Incident
 :PROPERTIES:
-:ID:       plot-professional-subplot-001
-:TYPE:     C-plot
+:ID: pp-04-inciting-incident
 :END:
 
-Alex's work as a freelance graphic designer and the real cost of morning
-chaos on their career (missed deadlines, forgotten presentation notes).
-Resolved quietly once the routine takes hold.
+The Halloran account is lost over an 8:00 courier handover Alex asked Sam to
+cover and Sam, that once, could not. It happens *to* Alex, leaves them
+distinctly worse off, and is the first time the cost lands on somebody else.
 
-* Premise
-
-Alex, a chronically disorganized young professional, struggles with chaotic mornings until a chance encounter with their put-together neighbor Sam inspires them to establish a sustainable morning routine and find peace in their daily life.
-
-* Themes
-What are the themes of the story?
-
-- Primary :: Structure creates freedom (not restriction)
-- Secondary :: Self-compassion over self-criticism
-- Tertiary :: Paying kindness forward, Connection with others, Honoring the past while living in the present
-
-* Three-Act Structure
-
-** Act I - Setup (25%)
-
-*** Ordinary world
-Alex's life is defined by morning chaos: hitting snooze repeatedly, rushing through getting ready, forgetting things, arriving everywhere frazzled and stressed. They've accepted this as "just how they are."
-
-*** Inciting incident
-While rushing to grab coffee before an important meeting, Alex encounters Sam, their neighbor from 4B, who seems impossibly calm and put-together. Sam gently suggests that a morning routine changed their life, and reveals they used to be "exactly like" Alex.
-
-*** First plot point
-That evening, after a particularly disastrous day, Alex finds their grandmother's old watch and decides to try establishing a morning routine. They commit to change.
-
-** Act II - Confrontation (50%)
-
-*** Rising action / First attempts
-Alex tries to implement a "perfect" morning routine based on articles and apps, but struggles. They wake up early but the meditation feels forced, the schedule is too rigid, and they end up more stressed than before.
-
-*** Midpoint
-Alex runs into Sam again at the coffee shop and admits their struggle. Sam shares that the key isn't following someone else's routine perfectly - it's creating one that works for you. "I track mine," Sam says, "but it's my routine, not the internet's."
-
-*** Trials and challenges
-Alex experiments with different approaches, fails, adjusts, and slowly finds what works for them. Some days go well, others don't. They learn to be flexible rather than perfect.
-
-*** Second plot point
-Alex realizes they've had several mornings in a row where they felt peaceful instead of chaotic. The routine is actually working - not because it's perfect, but because it's theirs.
-
-*** Darkest moment (optional/subtle)
-A disruption threatens the new routine (visitor, emergency, or just life happening). Old patterns tempt Alex to give up entirely. But they choose to adapt rather than abandon.
-
-** Act III - Resolution (25%)
-
-*** Climax
-30 days later, Alex's morning routine is established and sustainable. They walk into the coffee shop calm and on time, and encounter someone else having a rough morning.
-
-*** Falling action
-Alex offers the same kindness Sam showed them, sharing their story and suggesting that change is possible. They see themselves in this stranger.
-
-*** Resolution / New world
-Alex has become someone who helps others, not just someone struggling alone. The watch keeps ticking steadily on their wrist. They have time now - they always did, they just needed to learn how to use it. The cycle of kindness continues.
-
-* Main Plot
+** 5. Opponent
 :PROPERTIES:
-:ID:       14c9f719-4da4-4521-856d-28b5d16e06b2
+:ID: pp-05-opponent
 :END:
 
-** Central Conflict
-*External:* Alex vs. chaotic mornings / lack of routine
-*Internal:* Alex vs. resistance to structure / fear that routine kills creativity / need for self-compassion
+Dana states her Stance across a desk — "structure is a luxury; the rest of
+us take the call" — and offers Alex more work on exactly the terms that
+guarantee Alex can never be reliable. She wants the same eight hours Alex
+wants, and she attacks the Weakness by praising it.
 
-** Main Dramatic Question
-Will Alex be able to establish a sustainable morning routine and find peace in their daily life?
-
-** Conflict Resolution
-Yes, but not by becoming perfectly disciplined. By learning that structure can coexist with creativity, and that routines should be personalized, flexible, and rooted in self-compassion rather than self-criticism.
-
-* Subplots
+** 6. Crossing the Threshold
 :PROPERTIES:
-:ID:       07e5232d-09d5-478c-b089-28399f39a203
+:ID: pp-06-crossing-threshold
 :END:
 
-** Subplot 1: The Grandmother's Legacy
+Alex's own decision, alone on the couch: finds Marisol's watch under the
+mail pile, fastens it on, writes "Day 1" at the top of a notebook and sets
+an alarm for a stated hour. Closes the first quarter.
+
+** 7. Plan
 :PROPERTIES:
-:ID:       79746111-1ef9-48bd-a313-31ff2f1da090
-:END:
-*** Conflict
-Alex is still grieving their grandmother's death (2 years ago) and feeling disconnected from her wisdom.
-
-*** Resolution
-Finding and wearing the grandmother's watch reconnects Alex to her memory and her approach to life. Alex honors her by learning the lessons she tried to teach: time is precious, presence matters, routine creates space for what's important.
-
-*** Connection to Main Plot
-:PROPERTIES:
-:ID:       e695eab1-f378-48b5-9216-d7dedd8bf6d0
-:END:
-The watch is both symbol and catalyst. It represents steady, reliable time - the opposite of Alex's chaotic relationship with time. Wearing it daily reinforces the routine.
-
-** Subplot 2: Sam's Humanity
-:PROPERTIES:
-:ID:       d9ec40fb-2a3b-4c2e-9b08-d743f4f82e53
-:END:
-*** Conflict
-Sam initially appears too perfect, which makes them less relatable and their advice less credible.
-
-*** Resolution
-Sam reveals their own struggles (past chaos, current areas where routine doesn't help, the balance between structure and spontaneity). This makes them a real person, not just a wise mentor figure.
-
-*** Connection to Main Plot
-:PROPERTIES:
-:ID:       9f4598b1-2fbd-4de9-b02e-349bf2c32e44
-:END:
-Shows that there's no "perfect" way to live. Even Sam, who seems to have it all together, is still learning. This gives Alex permission to be imperfect in their progress.
-
-* Scene Beat Sheet
-
-| # | Chapter | Scene           | POV  | Location         | Goal                    | Conflict                 | Status   |
-|---+---------+-----------------+------+------------------+-------------------------+--------------------------+----------|
-| 1 | Ch 1    | The Alarm       | Alex | Apartment        | Wake up on time         | Snooze button addiction  | Finished |
-| 2 | Ch 1    | Coffee Shop     | Alex | Coffee Shop      | Get coffee fast         | Line + encounter w/Sam   | Finished |
-| 3 | Ch 2    | The Decision    | Alex | Apartment        | Decide to change        | Fear vs. desperation     | Finished |
-| 4 | Ch 3    | First Attempt   | Alex | Apartment        | Perfect morning routine | Too rigid, doesn't work  | Draft    |
-| 5 | Ch 4    | Coffee Talk     | Alex | Coffee Shop      | Get advice from Sam     | Admitting struggle       | Outlined |
-| 6 | Ch 4    | Finding Balance | Alex | Apartment        | Personalized routine    | Letting go of perfect    | Outlined |
-| 7 | Ch 5    | Full Circle     | Alex | Coffee Shop      | Help someone else       | None (resolution)        | Draft    |
-
-* Story Beats
-
-Key moments that must occur:
-
-1. Alex hits snooze 3 times - establishes the problem
-2. Sam says "I used to be exactly like you" - plants hope
-3. Alex finds the grandmother's watch - symbolic turning point
-4. First routine attempt fails - shows change is hard
-5. Sam shares that routines must be personal - key wisdom
-6. Alex wakes up peacefully - shows progress
-7. Alex helps the new person - demonstrates complete transformation
-8. Alex looks at the watch and realizes "they have time now" - thematic resolution
-
-* Plot Threads to Track
-:PROPERTIES:
-:ID:       c6107f21-21e9-41f6-a869-bbd0ffbb1c95
+:ID: pp-07-plan
 :END:
 
-** The Morning Routine Evolution
-- Day 1: Chaos (snooze x3, rushed, forgot things)
-- Day 2: Decision (finds watch, commits to change)
-- Day 3: Perfect attempt fails (too rigid)
-- Day 5-8: Experimentation (finding what works)
-- Day 30: Success (peaceful, sustainable, teaching others)
+Copy Sam's routine exactly, to the minute, and be visibly reliable for three
+weeks so that Dana has no argument left when the retainer is decided. It
+fails, because it is a plan to impress the opponent rather than to change.
 
-** The Watch Symbol
-- Hidden under mail → found and worn
-- Ticking steadily throughout (in contrast to chaos)
-- Becomes a reminder of time's value, not time's pressure
-- Connects past (grandmother) to present (Alex) to future (new person)
+** 8. Drive
+:PROPERTIES:
+:ID: pp-08-drive
+:END:
 
-** The Coffee Shop as Threshold
-- First visit: Rushed, stressed, no time
-- Middle visits: Conversations with Sam, learning
-- Final visit: Calm, on time, helping others
+Three weeks of attempts, each a different kind: the imitation (Chapter 3),
+the negotiation (Alex tries to buy the mornings back by working nights), and
+the concealment (Alex starts lying about why they are unavailable). Each
+loses, and each costs a little more of the moral ground.
 
-** Alex and Sam's Relationship
-- Strangers → Alex observes Sam → Sam reaches out → Mentorship → Friendship
-- Mirrors the final scene where Alex reaches out to new person
+** 9. Midpoint
+:PROPERTIES:
+:ID: pp-09-midpoint
+:END:
 
-* Themes
+False victory. Alex delivers twice on time and Dana praises them in front of
+the studio — then books a 6:00 call "since you're up anyway". Alex refuses
+it. First refusal in the book: they stop reacting and start acting. Closes
+the second quarter.
 
-- Main theme :: Structure creates freedom. Routines don't trap you; they free you to focus on what matters.
+** 10. Apparent Defeat
+:PROPERTIES:
+:ID: pp-10-apparent-defeat
+:END:
 
-- Secondary themes ::
-  - Self-compassion: Be kind to yourself in the process of change
-  - Progress over perfection: Growth isn't linear
-  - Honoring the past: The grandmother's wisdom lives on
-  - Paying it forward: Kindness creates cycles
-  - Time as gift: You don't find time, you make it
+Sam misses the Thursday call because Alex asked them to take the handover,
+and the Bell Lane place goes to the next name on the list. In the same hour
+Alex is forwarded a message chain with the timestamps left on, and sees that
+Priya has been passing their free slots to Dana for a year. The watch has
+stopped. Lowest point; closes the third quarter.
 
-* Narrative Arc Visual
+** 11. Self-Revelation
+:PROPERTIES:
+:ID: pp-11-self-revelation
+:END:
 
-#+BEGIN_SRC
-Chaos Level
+- Glimpse (before the battle): Alex winds the watch. It is the first thing
+  they have done at a stated hour because they said they would, and the Lie
+  comes apart in the gesture: the clock did not take the morning Marisol
+  died. Alex spent it.
+- Confirmation (inside the battle): Alex says an hour out loud, to Dana, and
+  keeps it.
 
-High ┤    *
-     │   * *
-     │  *   *
-     │ *     *
-     │*       *              [disruption?]
-     │         *         *  /
-     │          *       * */
-     │           *     *  *
-     │            *   *
-Low  └─────*───────*────────*─────────
-     Day 1    Day 8    Day 15    Day 30
+** 12. Battle
+:PROPERTIES:
+:ID: pp-12-battle
+:END:
 
-     [alarm] [decision] [learning] [helping
-      chaos]  [found     [flexible  others]
-              watch]    routine]
-#+END_SRC
+The agency lobby at 8:40. The pitch is on the fourth floor at nine; the car
+is at the kerb and Bell Lane is a twenty-five minute drive. Dana argues for
+the two years she has never talked about, and argues well. Everything in the
+book converges into one lobby and eleven minutes.
 
-* Questions to Answer in Story
+** 13. Moral Decision
+:PROPERTIES:
+:ID: pp-13-moral-decision
+:END:
 
-- [X] Why is Alex so chaotic? (Work from home, no external structure, grief, habits)
-- [X] Why does Sam help? (Remembers own struggle, genuinely kind)
-- [X] What makes the watch special? (Grandmother's, still ticking, symbol of time)
-- [ ] What's Sam's flaw/struggle? (Need to develop)
-- [X] How does routine not kill creativity? (Creates space/energy for creativity)
-- [X] Why 30 days? (Habit formation research suggests ~30 days)
-- [X] What's Alex's job? (Freelance graphic designer)
+Two goods, both with a cost: the Kestrel pitch, which would end the scramble
+and let Alex pay Sam back in the only currency Alex has — or the drive to
+the assessment, which is the hour Alex promised and the last one available.
+Alex drives. Priya gets the retainer.
+
+* Optional points used
+
+- Opening image: an alarm silenced without either eye opening.
+- Ghost: delivered late and in pieces, never as a flashback scene.
+- Ally attack: Sam, at the apparent defeat — "you're not building a routine,
+  you're building a way to feel better about the same mornings".
+- Revelation to the audience: the reader sees the forwarded timestamps one
+  scene before Alex reads them properly.
+- Death of the Weakness: the watch is wound.
+- New equilibrium: the coffee shop, six weeks later, with Casey.
+- Final image: Alex looks at the watch on purpose, and has time.
+
+* Sequence of revelations
+
+# Built backwards from the self-revelation. Eight, escalating and
+# accelerating.
+
+|   # | Revelation                                          | Who receives it | Quarter |
+|-----+-----------------------------------------------------+-----------------+---------|
+|   1 | Sam used to be exactly like Alex                    | Alex            | I       |
+|   2 | The Halloran handover was an hour Sam needed        | Alex            | I       |
+|   3 | Dana decides the retainer alone                     | Alex            | II      |
+|   4 | The notebook is a caregiver's log, not a planner    | Reader          | II      |
+|   5 | Dana knows Alex's free slots before Alex offers them | Reader         | III     |
+|   6 | Sam's father has a place waiting on one phone call  | Alex            | III     |
+|   7 | Priya has been feeding the slots to Dana            | Alex            | III     |
+|   8 | Alex spent the morning Marisol died; nothing took it | Alex           | IV      |
+
+* Quarters
+
+- I Setup (0–25 %) ::
+  Chapters 1–2. Closes on the crossing of the threshold: "Day 1", and an
+  alarm set for a stated hour.
+- II Reaction (25–50 %) ::
+  Chapters 3–4. Closes on the midpoint: the refused 6:00 call.
+- III Action (50–75 %) ::
+  Chapters 5–6. Closes on the apparent defeat: the missed Thursday call and
+  the timestamps.
+- IV Resolution (75–100 %) ::
+  Chapters 7–8. Closes on the moral decision and the new equilibrium.
+
+* Main Line
+:PROPERTIES:
+:ID: plot-main-line-001
+:THREAD-TYPE: Main
+:Stance: A shape lets you be somewhere for someone
+:STATUS: In progress
+:Weight: 1
+:END:
+
+Alex against Dana for the same eight hours. Runs from the 6:40 phone call to
+the lobby at 8:40, and it is the line that carries the theme.
+
+** Desire that drives it
+
+Alex wants the Kestrel retainer because they believe steady money will hold
+the days together. Dana wants Alex uncontracted because a studio one account
+from folding survives on people who answer.
+
+** Resolution
+
+Alex loses it. Priya takes the retainer, and the loss is the proof: the
+shape of a day is worth something only if keeping it costs.
+
+* Sam's Thursdays
+:PROPERTIES:
+:ID: plot-sams-thursdays-001
+:THREAD-TYPE: Subplot
+:Stance: A routine is a discipline you owe yourself
+:STATUS: In progress
+:Weight: 2
+:END:
+
+- Stance it embodies :: 4 → 5. Sam begins holding the routine as a virtue
+  and ends holding it as a scaffold, said out loud.
+- Who carries it :: Sam Chen.
+- Own desire :: The confirmed day place at Bell Lane, which needs the 8:00
+  Thursday calls and one assessment in person.
+
+** Crossings with the main line
+
+1. Chapter 1, Scene 2 — Sam states the theme in the coffee shop queue, and
+   Alex hears a hobby.
+2. Chapter 2, Scene 2 — Alex asks Sam to cover the 8:00 handover. This is
+   the inciting incident from Alex's side and the first crack from Sam's.
+3. Chapter 6 — the missed Thursday call. This is the apparent defeat, so the
+   crossing lands on one of the three points the method requires.
+
+** Resolution
+
+The assessment is rescheduled once, to a nine o'clock that cannot move
+again, and that is the appointment in the moral decision.
+
+* The Kestrel Retainer
+:PROPERTIES:
+:ID: plot-kestrel-retainer-001
+:THREAD-TYPE: Subplot
+:Stance: Never owe anyone an hour
+:STATUS: In progress
+:Weight: 3
+:END:
+
+- Stance it embodies :: 3. Priya keeps her hours by owing nobody one, and
+  the retainer is what that strategy buys.
+- Who carries it :: Priya Raman.
+- Own desire :: To be the name Dana calls first, permanently and in writing.
+
+** Crossings with the main line
+
+1. Chapter 3, Scene 2 — Priya offers solidarity, and asks two questions
+   about Alex's schedule.
+2. Chapter 5 — Dana books a slot Alex had not offered to anyone.
+3. Chapter 6 — the forwarded timestamps. Apparent defeat.
+
+** Resolution
+
+She gets it, on the terms she has been living under for three years, and the
+last thing the reader sees her do is answer a message at 6:40.
+
+* Running late
+:PROPERTIES:
+:ID: plot-running-late-001
+:THREAD-TYPE: Subplot
+:Stance: Time is what other people take from you
+:STATUS: In progress
+:Weight: -1
+:END:
+
+# :Weight: -1 — tracked, deliberately kept off the timeline board.
+#
+# The running gag: every chapter opens on a stated time and a number of
+# minutes Alex is behind it. Worth tracking for consistency (the numbers
+# shrink across the book and then stop mattering), and not worth a column of
+# its own beside the three real lines. The plot health report still checks
+# it for coverage and gaps.
+
+- Stance it embodies :: 1, in the narration itself rather than in a mouth.
+- Who carries it :: The narrator, counting.
+- Own desire :: n/a — a motif line, not a story line.
+
+** Crossings with the main line
+
+1. Every chapter opening.
+2. Chapter 7 — the first chapter that opens on a time Alex is not behind.
+3. Chapter 8 — opens on a time and no number at all.
+
+** Resolution
+
+The counting stops. In the last scene there is no arithmetic anywhere in the
+prose, which is the only announcement the change gets.
+
+* Opening and closing order                                        :noexport:
+
+| Line               | Type      | Opens at            | Closes at          |
+|--------------------+-----------+---------------------+--------------------|
+| Running late       | Character | Ch. 1, first line   | Ch. 8, last scene  |
+| Main Line          | Question  | Ch. 2, the 6:40 call | Ch. 8, the lobby  |
+| Sam's Thursdays    | Character | Ch. 1, Scene 2      | Ch. 8, Bell Lane   |
+| The Kestrel Retainer | Event   | Ch. 3, Scene 2      | Ch. 8, the pitch   |
+
+* Sequences and scenes                                             :noexport:
+
+# The scene list lives in the manuscript, not here. Open novel.org and use
+# column view (C-c C-x C-c) to see it as a table — the COLUMNS line there is
+# set up to show Plot-point and Gap beside each scene.

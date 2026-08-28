@@ -1,0 +1,74 @@
+#+TITLE: The Morning Routine - World
+#+AUTHOR: Demo Author
+#+DATE: 2026-05-01
+#+LANGUAGE: en
+#+STARTUP: overview
+
+# A worked example. The world, not the places — specific settings with their
+# Echo and Hazard are in locations.org.
+#
+# Contemporary realism needs this file as much as fantasy does, and gets it
+# wrong more often: the temptation is to skip it because "it's just a city".
+# The section that matters is "How the world presses on the protagonist's
+# Weakness". If a world does not press where the protagonist is weak, it is
+# expensive scenery, and that is true of a gig economy exactly as much as of
+# a magic system.
+
+* The world in one line
+
+A city that has quietly stopped buying people's time and started buying
+their availability instead.
+
+* Physical element developed
+
+Distance and the twenty-five minutes. Everything in this book is a known
+number of minutes from everything else, and the plot turns on one of them:
+the agency lobby to Bell Lane is twenty-five minutes by car and there is no
+version of the morning where both nine o'clock appointments happen. The
+geography is developed exactly this far and no further, because this is the
+only thing the plot asks of it.
+
+* Cultural elements developed
+
+- Work. Nobody in this book has an employer except Priya, and she has one
+  she is not allowed to name that way. Payment is per project, invoiced at
+  thirty days and cleared at ninety, so the actual unit of exchange is not
+  money but the promise of being reachable next time.
+- Care. The other institution running on the same shortage. Bell Lane has
+  the hours and not the staff; Sam has the willingness and not the hours.
+  The two economies never meet except through people who are in both, which
+  in this book is Sam and, by the end, Alex.
+
+* How the world presses on the protagonist's Weakness
+
+Alex's Weakness is that they will not attach an hour to a commitment. A city
+that rewards availability does not punish that — it *pays* for it. Alex's
+defect is, in this specific economy, a marketable trait, and every actor in
+the book who benefits from it says so out loud and means it kindly.
+
+That is the pressure: the world does not oppose Alex's Weakness, it
+subsidizes it. The only forces that require a stated hour are a day centre's
+telephone and a dead woman's watch, and both are, by the standards of this
+city, obsolete.
+
+* Rules and limits
+
+- An hour missed at Bell Lane is not rescheduled. It goes to the next name
+  on the list. This costs a placement, and placements do not come back.
+- A retainer at Okonkwo & Field is granted by one person and never
+  negotiated. Refusing an hour is not against a rule; it is simply
+  remembered.
+- The watch is mechanical. Unwound for more than about thirty-six hours, it
+  stops, and it does not tell you it has stopped. This is a rule with a cost
+  and it is the reason the object is in the book.
+
+* Research pending
+
+# Only what is needed before writing the scene that uses it.
+
+- [X] Adult day-centre assessment procedure and typical waiting-list
+  behaviour — see notes/research.org.
+- [ ] What a 1960s mechanical wristwatch actually does when it runs down,
+  and how long it takes. Needed before Chapter 6 Scene 2, not before.
+- [ ] Freelance platform response-time ranking: is it public, and to whom?
+  Needed for Chapter 5 only.

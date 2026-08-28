@@ -1,286 +1,436 @@
 #+TITLE: The Morning Routine - Characters
 #+AUTHOR: Demo Author
+#+DATE: 2026-05-01
+#+LANGUAGE: en
 #+STARTUP: overview
+#+COLUMNS: %30ITEM(Character) %14Role %20Stance %30Goal
+
+# A worked example. Six characters, each at the profile depth the method
+# asks for: full for the protagonist and the opponent, intermediate for the
+# ally, reduced for the fake ally and the supporting characters.
+#
+# Things to try in this file:
+#   C-c C-x C-c   column view — Role, Stance and Goal beside each name
+#   F8 F8 L v     relationships for the character at point
+#   F8 F8 L V     the whole relationship map
+#   F8 F8 2       every scene a character appears in
+#
+# Note Marisol Rivera at the bottom: :Weight: -1. She is dead before the
+# story starts, so she has no column in the character timeline in novel.org
+# — but she keeps her profile, her links and her place in every search. The
+# timeline names her in a comment line underneath, so a missing column is
+# never mistaken for a linking bug.
 
 * Alex Rivera
 :PROPERTIES:
-:ID: char-alex-rivera-20251115-001
+:ID: char-alex-rivera-001
 :Role: Protagonist
+:Stance: Promise nobody an hour
+:Goal: Win the Kestrel retainer
 :Age: 28
-:Gender: Non-binary (they/them)
 :Occupation: Freelance graphic designer
 :First-appearance: Chapter 1, Scene 1
-:RelationshipsData: [[id:char-sam-chen-20251115-002][Sam]](mentor,7,positive); [[id:char-maria-rivera-20251115-004][Maria]](family,9,positive)
+:Weight: 1
+:RelationshipsData: [[id:char-sam-chen-001][Sam Chen]](neighbour,7,positive); [[id:char-dana-okonkwo-001][Dana Okonkwo]](client,8,negative); [[id:char-priya-raman-001][Priya Raman]](colleague,4,positive); [[id:char-marisol-rivera-001][Marisol Rivera]](family,10,positive)
 :END:
 
-** Physical Description
+- Concept :: A designer who has never once been where they said they would
+  be, and has never once meant to let anyone down.
+- Stance :: "The hours aren't mine. If I don't promise any of them, nobody
+  can take one."
+- Ghost :: The morning Marisol died. Alex promised nine. Three alarms, a
+  long shower, a client message answered on the stairs. Eleven. She died at
+  ten-forty.
+- Lie :: Clocks are cruel, and looking at one is how you let it accuse you.
+  Time cannot be held; planning it only makes losing it worse.
+- Trouble :: Rent clears on the 1st. Two invoices are ninety days out and
+  the studio that owes them has stopped answering.
+- Psychological Weakness :: Will not attach an hour to any commitment.
+  "Sometime this week." "I'll swing by." "Before end of day."
+- Moral Weakness :: Spends Sam's mornings instead of their own. Asks Sam to
+  take the 8:00 courier handover — the exact hour Sam has to be free for the
+  care centre's call.
 
-- Height :: 5'7"
-- Build :: Average, slightly soft from too many desk hours
-- Hair :: Dark brown, medium length, often uncombed
-- Eyes :: Brown, with dark circles from poor sleep
-- Distinctive features :: Expressive eyebrows, slightly crooked smile, usually has coffee stains somewhere on their clothing
+** Desire
 
-** Personality
+- Goal :: Win the twelve-month Kestrel retainer. Pitch is at nine, three
+  weeks out.
+- Motivation :: That once the money is steady, the days will hold
+  themselves. (Out of the Lie, so false underneath: it puts the shape of the
+  day in the money's gift rather than Alex's.)
+- Conflict :: Dana, who decides who gets the retainer and needs Alex
+  available rather than booked.
 
-- Main traits :: Creative, disorganized, well-meaning, adaptable, self-aware
-- Strengths :: Empathetic, intelligent, capable of growth, sense of humor about their flaws
-- Weaknesses :: Poor time management, avoidant, perfectionist tendencies, difficulty with routine
-- Fears :: Being mediocre, letting people down, being trapped in monotony
-- Desire :: To have their life "together" and feel in control
-- Need :: To learn that structure can create freedom, not limit it
-- Psychological Flaw :: Believes they work better in chaos (they don't)
-- Moral Flaw :: Can be self-centered when stressed, forgetting how their chaos affects others
+** Need
 
-** Background
+- Goal :: Give the day a shape and keep one hour they promised.
+- Motivation :: To be someone who can be counted on at a named hour — which
+  is exactly what Sam has stopped counting on.
+- Conflict :: The Lie, and what Alex would have to admit about the morning
+  Marisol died: that the clock did not take that morning. Alex did.
 
-- Family :: Raised by grandmother after parents divorced; grandmother passed 2 years ago
-- Education :: BFA in Graphic Design
-- Occupation :: Freelance graphic designer (works from home, which doesn't help the routine issue)
-- Formative events :: Grandmother's death left them adrift; losing a major client 6 months ago due to missed deadline; childhood of moving between parents' houses created instability
+** Plan
 
-** Goal, Motivation, Conflict
-*** Internal
-- Goal :: Find peace and stability in daily life
-- Motivation :: Tired of constant stress and feeling like a mess
-- Conflict :: Fear that structure will kill creativity; resistance to change; self-sabotage
-*** External
-- Goal :: Establish a sustainable morning routine
-- Motivation :: Keep making the same mistakes (late to meetings, forgot important things)
-- Conflict :: Old habits are deeply ingrained; life keeps throwing curveballs; no accountability
+- Plan :: Copy Sam's routine exactly, to the minute, and be visibly reliable
+  for three weeks so that Dana has no argument left.
+- Fallback plan :: Take the 6:00 calls. Be so available that the retainer is
+  cheaper to grant than to refuse.
 
-** Character Arc
+** Aspects
 
-- Initial state :: Chaotic, reactive, running on constant anxiety, blaming circumstances
-- Turning point :: Sam's kindness and the watch symbol plant a seed; hitting rock bottom with the meeting disaster
-- Transformation :: Learns that routines can be flexible; discovers morning peace; becomes someone who helps others
-- Final state :: Balanced, proactive, maintains routine while staying creative, pays forward Sam's kindness
+- Aspect :: "I do my best work at two in the morning." True, and it is the
+  sentence Dana uses to buy them.
+- Aspect :: Cannot stand to watch someone else be late.
+- Aspect :: Marisol's watch on their wrist, unwound.
+- Relationship :: Sam from 4B has a key to Alex's flat, and Alex has never
+  once had to ask twice.
+- Possession :: The watch. Mechanical, and it stops unless it is wound by
+  hand every day.
 
-** Relationships
+** Backstory
 
-- With Sam :: Starts as strangers, becomes mentor/mentee, evolves to genuine friendship
-- With Grandmother (deceased) :: Deep love and admiration; regrets not learning from her earlier; the watch keeps her memory alive
-- With themselves :: Journey from self-criticism to self-compassion
+Alex is nineteen, at the kitchen table in Marisol's flat, and has been there
+since seven because the bus times only work that way. Marisol comes in at
+eight, makes tea for two without asking, and they sit. At ten to nine she
+puts her cup down, says "I have the doctor at half past", stands, and goes.
+Alex remembers the hour more clearly than anything she said, and has never
+understood why the memory feels like an accusation.
+
+** Interrogation
+
+1. What would they never do?
+   Say a time out loud and then not be there. It is the only promise Alex
+   treats as unbreakable, which is why they have arranged a life in which
+   they never make one.
+2. What do they do when they are alone and nobody is watching?
+   Count. Minutes to the door, minutes to the meeting, minutes left. Alex
+   narrates their whole life in arithmetic and has never once written any of
+   it down.
+3. What are they wrong about?
+   That the morning Marisol died was taken from them. It was spent.
+4. What would they die for?
+   Not being the reason someone else missed something.
+5. Write them a trivial scene.
+   Ordering coffee, Alex says "whatever's fastest", and then waits four
+   minutes for the fastest thing while a filter coffee sits ready on the
+   counter.
+
+** Change Milestones
+
+| Plot point         | Type       | What changes                                           |
+|--------------------+------------+--------------------------------------------------------|
+| 6. Crossing        | Adjustment | Writes "Day 1" and sets an alarm for a stated hour     |
+| 9. Midpoint        | Adjustment | Stops asking permission to be unavailable; starts refusing hours |
+| 10. Apparent Defeat | Adjustment | Learns what an hour of Sam's actually cost             |
+| 11. Self-Revelation | Break      | Stance 1 → 5. The clock did not take that morning      |
+| 13. Moral Decision | Break      | Keeps an hour at the price of the thing the hours were for |
 
 ** Notes
 
-Character voice: Internal monologue is self-deprecating, slightly sarcastic, observant. Dialogue is honest, sometimes flustered, uses humor as defense. Example: "Close enough" about the socks - shows their resigned acceptance of chaos.
+The counting is the voice. If a scene from Alex's point of view contains no
+number, check whether it is really in their head.
+
+* Dana Okonkwo
+:PROPERTIES:
+:ID: char-dana-okonkwo-001
+:Role: Opponent
+:Stance: Availability is loyalty
+:Goal: Keep Alex on call rather than on retainer
+:Age: 44
+:Occupation: Founder and art director, Okonkwo & Field
+:First-appearance: Chapter 2, Scene 2
+:Weight: 2
+:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]](client,8,negative); [[id:char-priya-raman-001][Priya Raman]](employer,7,negative)
+:END:
+
+- Concept :: A woman who has not been late in twenty years and has not been
+  free in twenty years, and can no longer tell the two facts apart.
+- Stance :: "Structure is a luxury for people who already have money. The
+  rest of us take the call."
+- Ghost :: 2009. She kept the studio alive through the crash by being the
+  one who answered, at any hour, for two years, and lost nothing except
+  everything that was not the studio.
+- Lie :: Availability is loyalty. Anyone protecting their hours is
+  protecting them from her.
+- Trouble :: Okonkwo & Field is one lost account from folding, and Kestrel
+  is the account.
+- Psychological Weakness :: Cannot let go of anything with a deadline on it,
+  and so is the bottleneck in her own agency.
+- Moral Weakness :: She buys other people's mornings with praise and calls
+  it opportunity. Priya has been on a reachable-at-any-hour retainer for
+  three years and has not taken a holiday in two.
+
+** Desire
+
+# The same Goal as the protagonist: both of them are after Alex's mornings.
+
+- Goal :: Control of Alex's mornings — Alex on call for Kestrel, at any
+  hour, rather than contracted to a fixed twelve-month scope.
+- Motivation :: That a studio survives on the people who answer, and that
+  she is protecting Alex from a retainer they are not steady enough to hold.
+- Conflict :: Alex, once Alex starts naming hours.
+
+** Need
+
+- Goal :: To let one deadline out of her hands and watch it be met by
+  someone else.
+- Motivation :: The two years she does not talk about, and what answering
+  every hour of them actually cost her.
+- Conflict :: The Lie. If availability is not loyalty, then the two years
+  were not loyalty either, and she has no name for what they were.
+
+** Plan and counterattacks
+
+Flatter the Weakness directly: Alex does their best work at two in the
+morning, and Dana is the only client who understands that about them. When
+Alex starts refusing hours, escalate — a 6:00 call booked as a courtesy, a
+public compliment that makes refusal look like ingratitude, and finally the
+pitch itself scheduled at nine on the one morning Alex has already promised
+away.
+
+** Aspects
+
+- Aspect :: "I have never missed a deadline." Said as a credential, heard as
+  a threat, and both are correct.
+- Aspect :: Answers within four minutes, always, and everyone has noticed.
+- Relationship :: Priya owes her a career and has been told so once, which
+  was enough.
+- Possession :: A phone that is never face-down.
+
+** Backstory
+
+March 2009, ten past one in the morning, Dana answers a call from a client
+who is drunk and wants to talk about a logo. She talks about the logo for
+fifty minutes. The account stays. She writes the time down in the margin of
+the brief, and she still has the brief.
+
+** Change Milestones
+
+| Plot point          | Type       | What changes                                        |
+|---------------------+------------+-----------------------------------------------------|
+| 9. Midpoint         | Adjustment | Stops asking Alex and starts booking Alex           |
+| 12. Battle          | Adjustment | Says the two years out loud for the first time      |
+| 13. Moral Decision  | —          | Does not change Stance. She watches Alex leave and books the room for ten past |
+
+** Notes
+
+Her Stance has to be arguable. If a reader finishes the book thinking Dana
+was simply wrong, the theme has been preached rather than proved: she is
+right about the city, and wrong about what to do inside it.
 
 * Sam Chen
 :PROPERTIES:
-:ID: char-sam-chen-20251115-002
-:Role: Supporting
-:Age: 32
-:Gender: Male (he/him)
-:Occupation: Project manager at tech company
+:ID: char-sam-chen-001
+:Role: Ally
+:Stance: A routine is a discipline you owe yourself
+:Goal: Get their father's day place confirmed
 :First-appearance: Chapter 1, Scene 2
-:RelationshipsData: [[id:char-alex-rivera-20251115-001][Alex]](mentee,6,positive)
+:Weight: 3
+:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]](neighbour,7,positive)
 :END:
 
-** Physical Description
+# Intermediate profile: reduced, plus Lie, Weakness and Relationship. Enough
+# interior to carry the ally attack with authority.
 
-- Height :: 5'10"
-- Build :: Slim, fit
-- Hair :: Black, neat short hair
-- Eyes :: Brown, behind glasses
-- Distinctive features :: Always looks put-together, calm demeanor, warm smile
+- Concept :: The neighbour from 4B who looks like serenity and is in fact
+  load-bearing.
+- Stance :: "I keep the mornings because I am the sort of person who keeps
+  them." (Opening. It becomes Stance 5 by the end, and the distance between
+  the two is Sam's whole arc.)
+- Lie :: That the routine is a virtue rather than a scaffold, and that
+  needing it would be a weakness worth hiding.
+- Trouble :: Their father had a stroke fourteen months ago. The care centre
+  calls at 8:00 on Thursdays, and only at 8:00.
+- Weakness :: Will not say that they need something. Will reorganize a whole
+  week rather than ask.
 
-** Personality
+** Own desire
 
-- Main traits :: Patient, organized, genuine, non-judgmental, emotionally intelligent
-- Strengths :: Consistency, empathy, wisdom from experience
-- Weaknesses :: Can be too rigid sometimes, struggles with spontaneity
-- Fears :: Falling back into chaos, not being able to help
-- Desire :: To maintain balance and help others find theirs
-- Need :: To accept that not everyone needs the same level of structure he does
-- Psychological Flaw :: Sometimes projects his past struggles onto others
-- Moral Flaw :: Can be unintentionally preachy about routines
+# Their own, not auxiliary. It cannot be "help the protagonist".
 
-** Background
+- Goal :: Get the confirmed day place at the Bell Lane centre, which
+  requires the Thursday calls and an assessment appointment in person.
+- Motivation :: Four hours a day back, and a father who is somewhere with
+  people in them.
+- Conflict :: The centre's intake officer, a waiting list, and — as it turns
+  out — Alex, who keeps spending the eight o'clock hour.
 
-- Family :: Not detailed in story
-- Education :: College degree (field unspecified)
-- Occupation :: Project manager at tech company
-- Formative events :: Quarter-life crisis 4 years ago; was chaotic like Alex; over-corrected with extreme routines; gradually found balance
+** Aspects
 
-** Goal, Motivation, Conflict
-*** Internal
-- Goal :: Maintain his hard-won balance
-- Motivation :: Remembers how difficult the transformation was
-- Conflict :: Fear of becoming rigid; tendency to over-structure
-*** External
-- Goal :: Help Alex without being pushy
-- Motivation :: Recognizes himself in Alex's struggles
-- Conflict :: Knows he can't force change; must let Alex find their own way
+- Aspect :: "I've learned to spot the signs." Kind, observant, and a little
+  proud of it.
+- Aspect :: The notebook goes everywhere and is never shown to anyone.
+- Relationship :: Alex has never asked what the notebook is for, and Sam has
+  never volunteered.
 
-** Character Arc
+** Change Milestones
 
-- Initial state :: Already balanced, serves as mentor
-- Turning point :: Realizes Alex needs flexibility, not rigidity
-- Transformation :: Learns to adapt his advice to the individual
-- Final state :: More accepting of different approaches, witnesses Alex pay it forward
-
-** Relationships
-
-- With Alex :: Neighborly acquaintance → mentor → friend. Sees potential in Alex and genuinely wants to help
-- With his past self :: Has compassion for who he was, uses that to help Alex
+| Plot point          | Type       | What changes                                     |
+|---------------------+------------+--------------------------------------------------|
+| 10. Apparent Defeat | Adjustment | Says out loud, once, what the hour was for       |
+| 12. Battle          | Break      | Stance 4 → 5. Asks Alex for something directly   |
 
 ** Notes
 
-Voice: Calm, measured, uses questions instead of commands. Never condescending, speaks from experience not superiority. Example: "I used to be exactly like you" - establishes connection, not hierarchy.
+Sam is not a mentor. Sam is a person running a tighter operation than Alex
+for reasons Alex has not asked about, and the mentor reading is Alex's
+mistake — one the reader should be able to catch before Alex does.
 
-BETA READER FEEDBACK: Sam feels too perfect. Added flaws: can be too rigid, struggles with spontaneity, occasionally preachy. Backstory shows he overcompensated initially, making him more relatable.
-
-* Casey
+* Priya Raman
 :PROPERTIES:
-:ID: char-casey-20251115-003
-:Role: Minor
-:Age: 23
-:Gender: TBD
-:Occupation: Unknown (implied early career)
-:First-appearance: Chapter 5, Scene 1
-:RelationshipsData: [[id:char-alex-rivera-20251115-001][Alex]](acquaintance,2,positive)
+:ID: char-priya-raman-001
+:Role: Fake-Ally Opponent
+:Stance: Never owe anyone an hour
+:Goal: Be the one Dana calls
+:First-appearance: Chapter 3, Scene 2
+:Weight: 4
+:RelationshipsData: [[id:char-dana-okonkwo-001][Dana Okonkwo]](employer,7,negative); [[id:char-alex-rivera-001][Alex Rivera]](colleague,4,negative)
 :END:
 
-** Physical Description
+# Looks like an ally and serves the opponent. Reduced profile, both Desires.
 
-- Height ::
-- Build ::
-- Hair ::
-- Eyes ::
-- Distinctive features :: Clearly disheveled from a rough morning
+- Concept :: The freelancer two floors down who complains about Dana more
+  fluently than anyone and has never once said no to her.
+- Stance :: "I keep my hours by making sure I never owe anybody one."
+- Trouble :: Three years on a reachable-at-any-hour retainer, and the
+  arithmetic only works if she stays the most reliable name on the list.
 
-** Personality
+** Declared desire
 
-- Main traits :: Stressed, overwhelmed, reminded of young Alex
-- Strengths ::
-- Weaknesses ::
-- Fears ::
-- Desire ::
-- Need ::
-- Psychological Flaw ::
-- Moral Flaw ::
+- Goal :: Get Alex out from under Dana. Solidarity, drinks, war stories.
+- Motivation :: Nobody should have to live like this, and she means it.
+- Conflict :: Alex himself, without his knowing it — every hour Alex
+  reclaims is an hour Priya has to cover.
 
-** Background
+** Real desire
 
-- Family :: Unknown
-- Education :: Unknown
-- Occupation :: Unknown (early career stage implied)
-- Formative events ::
+- Goal :: The Kestrel retainer.
+- Motivation :: Three years of being available is only worth something if it
+  ends in a contract, and it has to end soon.
+- Conflict :: Alex, who is better at the work and worse at everything else,
+  and who has just started getting better at everything else.
 
-** Goal, Motivation, Conflict
-*** Internal
-- Goal ::
-- Motivation ::
-- Conflict ::
-*** External
-- Goal ::
-- Motivation ::
-- Conflict ::
+** Reveal
 
-** Character Arc
+- Who they really serve :: Dana, and before that herself. She has been
+  passing Alex's free slots to Dana all along — which is how Dana always
+  knew exactly when Alex could be booked.
+- When they are revealed :: At the apparent defeat, in a forwarded message
+  with the timestamps left on.
 
-- Initial state :: Having a terrible morning, like Alex at story start
-- Turning point :: Alex offers kindness
-- Transformation :: [Off-page, beyond this story]
-- Final state :: [Unknown, symbolic character]
+** Aspects
 
-** Relationships
-
-- With other characters :: Complete stranger to Alex; receives the same kindness Alex got from Sam
+- Aspect :: "We should stick together." Sincere every time she says it, and
+  it has never once cost her anything.
 
 ** Notes
 
-This is a symbolic character who appears only in the final scene. Gives Alex the chance to pay forward Sam's kindness. Shows that Alex has truly changed - they now notice and help others instead of being consumed by their own chaos.
+The reveal has to be *documentary*, not narrated — a single focalizer means
+the reader cannot be shown Priya deciding. They can be shown a timestamp.
 
-Intentionally underdeveloped - serves a thematic function rather than being a full character.
-
-* Maria Rivera (Grandmother)
+* Casey Mbeki
 :PROPERTIES:
-:ID: char-maria-rivera-20251115-004
-:Role: Minor
-:Age: Deceased
-:Gender: Female (she/her)
-:Occupation: Unknown
-:First-appearance: Mentioned Chapter 2 (deceased)
-:RelationshipsData: [[id:char-alex-rivera-20251115-001][Alex]](family,9,positive)
+:ID: char-casey-mbeki-001
+:Role: Thematic Supporting
+:Stance: Promise nobody an hour
+:Goal: Get through the week without being noticed
+:First-appearance: Chapter 8, Scene 2
+:Weight: 5
+:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]](stranger,2,positive)
 :END:
 
-** Physical Description
+# One for every Stance you want represented. Casey carries Alex's opening
+# Stance, which is what makes the last scene mean anything: the wheel is
+# still turning, and Alex is now the other person in it.
 
-- Height ::
-- Build ::
-- Hair ::
-- Eyes ::
-- Distinctive features :: Wore her watch every day, along with apron and reading glasses
+- Concept :: Twenty-three, four months into a first job, and already
+  convinced that the trick is to be reachable.
+- Stance :: "Time is what other people take from you." (Alex's Stance 1,
+  intact, in a new mouth.)
+- Trouble :: A probation review in six weeks and a manager who messages at
+  weekends.
 
-** Personality
+** Desire
 
-- Main traits :: Present, unhurried, always had time for what mattered
-- Strengths :: Wisdom, constancy, love
-- Weaknesses ::
-- Fears ::
-- Desire ::
-- Need ::
-- Psychological Flaw ::
-- Moral Flaw ::
+- Goal :: Get through probation without anyone deciding they are difficult.
+- Motivation :: The job is the flat, and the flat is not negotiable.
+- Conflict :: A manager whose only measure of commitment is response time.
 
-** Background
+** Aspects
 
-- Family :: Alex's grandmother; raised Alex after parents divorced
-- Education :: Unknown
-- Occupation :: Unknown
-- Formative events ::
-
-** Goal, Motivation, Conflict
-*** Internal
-- Goal ::
-- Motivation ::
-- Conflict ::
-*** External
-- Goal ::
-- Motivation ::
-- Conflict ::
-
-** Character Arc
-
-- Initial state :: [Before story]
-- Turning point :: Death 2 years before story
-- Transformation :: Lives on through watch and memory
-- Final state :: Symbolic presence inspiring Alex
-
-** Relationships
-
-- With other characters :: Alex's grandmother; deep love and admiration; Alex regrets not learning from her earlier
+- Aspect :: "It's fine, I wasn't doing anything." Said reflexively, and
+  never true.
 
 ** Notes
 
-Deceased character who appears only through memory and the symbolic watch. Represents wisdom, constancy, and the value of being present. Her watch becomes the catalyst for Alex's transformation.
+Casey is not a lesson delivered. Alex offers, and does not preach — the
+distinction is the whole scene, and Pass 2 checks for it.
 
-Not a fully developed character - serves as symbolic touchstone and emotional anchor for Alex's journey.
+* Marisol Rivera
+:PROPERTIES:
+:ID: char-marisol-rivera-001
+:Role: Thematic Supporting
+:Stance: The hours are not yours to keep, only to spend well
+:Goal: (Dead before the story opens)
+:First-appearance: Backstory only
+:Weight: -1
+:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]](family,10,positive)
+:END:
 
-* Character Relationships Map
+# :Weight: -1 — kept on file, left out of the character timeline.
+#
+# She appears only in the Ghost, in the watch, and in one remembered kitchen
+# table. She should not occupy a column in a table of who is present in
+# which scene, because the answer is "none" and a column of blanks reads as
+# a linking failure. Everything else about her still works: search finds
+# her, links resolve, and the timeline names her underneath itself.
 
-#+BEGIN_SRC
-                Grandmother (deceased)
-                      |
-                   [legacy]
-                      |
-          [watch/inspiration/memory]
-                      |
-                    ALEX ←----[mentor/friend]---- SAM
-                      |                             |
-                   [helps]                   [was helped by]
-                      |                             |
-                      ↓                        [someone?]
-                   Casey                  [needs development]
-#+END_SRC
+- Concept :: Alex's grandmother, who was never once in a hurry and never
+  once early.
+- Stance :: "You don't get to keep them. You only get to choose what you
+  spend them on."
+- Trouble :: (None. She is the one person in this book who did not have any.)
 
-* Names & Pronouns Quick Reference
+** Desire
 
-| Character     | Full Name    | Pronouns  | Age | Role         |
-|---------------+--------------+-----------+-----+--------------|
-| Alex          | Alex Rivera  | they/them |  28 | Protagonist  |
-| Sam           | Sam Chen     | he/him    |  32 | Supporting   |
-| Casey         | Casey (TBD)  | TBD       | ~23 | Minor        |
-| Maria         | Maria Rivera | she/her   |   - | Deceased     |
+- Goal :: Morning tea, evening walk, Sunday phone call, in that order,
+  every day, until she could not.
+- Motivation :: That a day with a shape is a day you can hand to somebody.
+- Conflict :: Time, which she lost on the terms everybody loses it on.
+
+** Aspects
+
+- Aspect :: "I have the doctor at half past." A sentence with an hour in it,
+  said without apology, which Alex has never been able to say.
+
+** Notes
+
+She is the Stance the book argues for, held before the book starts, by
+someone who never had to explain it. That is why she must not appear on the
+page: the argument has to be made by Alex, not inherited.
+
+* Cast Check                                                       :noexport:
+
+** Coverage
+
+| Stance                                 | Who embodies it | What happens to them for holding it                     |
+|----------------------------------------+-----------------+---------------------------------------------------------|
+| 1. Promise nobody an hour               | Alex (opening)  | Loses the morning that mattered, twice, before learning |
+| 1. Promise nobody an hour               | Casey           | Nothing yet. That is the point of the last scene        |
+| 2. Availability is loyalty              | Dana            | Keeps the agency, ends the book alone in a booked room  |
+| 3. Never owe anyone an hour             | Priya           | Gets the retainer, and the retainer is the punishment   |
+| 4. A routine is a discipline you owe yourself | Sam (opening) | Nearly loses his father's place by refusing to ask   |
+| 5. A shape lets you be somewhere for someone | Sam (closing), Alex (closing) | Loses the contract, keeps the hour |
+
+** Contrast
+
+- [X] Each has their own Desire in three parts, and each Conflict has a
+  face: someone specific is stopping them.
+- [X] Each speaks differently. Alex counts, Dana states credentials, Sam
+  understates, Priya offers solidarity, Casey apologizes.
+- [X] None exists only to serve the plot; each is the protagonist of their
+  own story.
+- [X] Opponent and protagonist are bound by the deepest conflict possible:
+  they want the same eight hours.
+- [ ] They show their personality through acts, not descriptions. Not yet —
+  see the *EDIT*: character markers in novel.org, Chapter 3.

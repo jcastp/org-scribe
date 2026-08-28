@@ -48,6 +48,24 @@ This guide is organized into progressive lessons. Each lesson builds on the prev
 
 You can always refer to the [[file:00-feature-index.org][Feature Index]] for a complete list of available features.
 
+** Read Along in the Demo Projects
+
+Every lesson below describes something you can see working in the two demo
+projects that ship with org-scribe, in =examples/=:
+
+- [[file:../examples/demo-novel/README.org][=examples/demo-novel/=]] — /The Morning Routine/, a full novel project partway
+  into a first draft: a crossed Starting Gate, the thirteen non-negotiables,
+  six character profiles, live edit markers, an active writing plan.
+- [[file:../examples/demo-short-story/README.org][=examples/demo-short-story/=]] — /The Last Message/, the short-story layout.
+
+These are working projects, not illustrations. Open one in Emacs with
+org-scribe loaded and every keystroke in these lessons does something real
+against it — which is a much better place to press =<f8> <f8> H= for the
+first time than a project of your own with four words in it.
+
+Nothing in them can affect your own work, so experiment freely; =git
+checkout examples/= puts them back.
+
 * Tutorial Lessons
 
 ** Part 1: The Essentials (Start Here!)

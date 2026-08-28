@@ -1,207 +1,242 @@
-#+TITLE: The Morning Routine - Revision and Feedback
+#+TITLE: The Morning Routine - Revision
 #+AUTHOR: Demo Author
+#+DATE: 2026-05-01
+#+LANGUAGE: en
 #+STARTUP: overview
 
-* Revision Passes
+# A worked example, and a deliberately *early* one: this project is a fifth
+# of the way into a first draft, so nothing here is ticked yet. The file
+# arrives with the passes empty and stays that way until Pass 0 begins.
+#
+# It is included in the demo anyway because the shape matters before it is
+# used. Ten passes, always top-down: do not polish the sentences of a scene
+# you may end up cutting. Every pass ends with a pointer back to the section
+# of design.org that designed the thing that failed.
+#
+# Note where the checks live. The mechanical ones — is every scene tagged,
+# does every plot point have a scene, is anything orphaned — are the health
+# report's job (F8 F8 H), and are not repeated here. What is here is
+# everything only a reader can decide.
 
-** Draft 1 - Structural Edit
-:PROPERTIES:
-:START-DATE: 2025-02-01
-:END-DATE: 2025-02-15
-:STATUS: Planning
-:END:
+* Revision log
 
-*** Issues to Address
-- [X] Plot holes - Fixed timeline inconsistency in Chapter 2
-- [ ] Pacing problems - Act II feels rushed
-- [X] Character consistency - Sam's personality is now consistent
-- [ ] Scene transitions - Need smoother transitions between coffee shop scenes
+| Pass | Date | What I found | Section I go back to |
+|------+------+--------------+----------------------|
+|    0 |      | Rest         | —                    |
+|    1 |      |              | —                    |
+|    2 |      |              |                      |
+|    3 |      |              |                      |
+|    4 |      |              |                      |
+|    5 |      |              |                      |
+|    6 |      |              |                      |
+|    7 |      |              |                      |
+|    8 |      |              | —                    |
+|    9 |      |              |                      |
 
-*** Notes
-Need to slow down Act II to give Alex's transformation more breathing room.
-Consider adding another scene where Alex backtracks or has a setback.
+* Pass 0 — Rest
 
-The watch could be introduced earlier - maybe a brief mention in Scene 1?
+Let the draft sit for at least two weeks. Distance is the only thing that
+turns the Creator into the Critic, and there is no shortcut. Write something
+else in the meantime.
 
-** Draft 2 - Line Edit
-:PROPERTIES:
-:START-DATE:
-:END-DATE:
-:STATUS: Pending
-:END:
+- Date the draft was put away :: (not yet — first draft in progress)
+- Date you may come back ::
 
-*** Focus Areas
-- [ ] Dialogue polish - Make sure each character has distinct voice
-- [ ] Description refinement - Coffee shop needs more sensory details
-- [ ] Tone consistency - Balance humor with genuine emotion
-- [ ] Remove redundancies - Watch for repeated phrases like "rushed" and "chaotic"
+* Pass 1 — The dream test
 
-*** Notes
+Read the whole manuscript in as few sittings as possible. Mark every point
+where you fall out of the dream: you get bored, you get lost, you do not
+believe it. *Fix nothing.* Only mark.
 
-** Draft 3 - Copy Edit
-:PROPERTIES:
-:START-DATE:
-:END-DATE:
-:STATUS: Pending
-:END:
+** Marks
 
-*** Checklist
-- [ ] Grammar
-- [ ] Punctuation
-- [ ] Spelling
-- [ ] Formatting
+# One line per fall: where, and what kind. No diagnosis yet.
 
-*** Notes
+-
 
-* Beta Reader Feedback
+* Pass 2 — Theme and structure
 
-** Beta Reader 1
-:PROPERTIES:
-:NAME: Sarah M.
-:DATE-SENT: 2025-03-01
-:DATE-RECEIVED: 2025-03-15
-:END:
+- [ ] Is every Stance on the list embodied by someone?
+- [ ] Does every Stance receive the consequence the story says it deserves?
+- [ ] Does the protagonist begin and end on different Stances?
+- [ ] Does the theme emerge through action, or is there preaching?
+- [ ] If you framed the theme as a question, what is the statement that
+  answers what you actually wrote?
+- [ ] Are all thirteen non-negotiables present, each in its own quarter?
+- [ ] Are the quarters balanced in length?
+- [ ] Are the promises of the first quarter kept?
+- [ ] Is progress steady, or are there dead zones?
+- [ ] Does the sequence of revelations accelerate, each hitting harder than
+  the last?
+- [ ] Are there scenes that could be cut or merged?
 
-*** Overall Impression
-Really enjoyed the concept! The story feels very relatable. I especially loved
-the grandmother's watch as a symbol - it's subtle but powerful.
+If it fails → design.org, Core (Theme and Stances) and objects/plot.org.
 
-*** Specific Comments
-- Opening scene is great - immediately hooked me
-- Sam feels a bit too perfect. Maybe give them a flaw or struggle?
-- The coffee shop scenes are my favorite
-- Would love to see more of Alex at work - what do they do?
-- The ending felt a little abrupt
+** Notes
 
-*** Action Items
-- [X] Add brief mentions of Alex's job (graphic designer)
-- [ ] Give Sam a flaw or vulnerability (maybe they struggle with something else?)
-- [ ] Expand the ending scene
-- [ ] Add one more scene showing Alex's work life
+Known in advance, from drafting: Chapter 4 is at risk of running long, which
+would push the midpoint past the halfway mark. Flagged with a *NOTE* marker
+in novel.org, Chapter 4 Scene 2. Check the Quarters section before this pass
+rather than during it.
 
-** Beta Reader 2
-:PROPERTIES:
-:NAME: Marcus T.
-:DATE-SENT: 2025-03-01
-:DATE-RECEIVED:
-:END:
+* Pass 3 — Characters
 
-*** Overall Impression
-[Waiting for feedback]
+- [ ] Does every main character have a Ghost, a Lie, a Weakness and a Need?
+- [ ] Is the moral Weakness visible in concrete acts against concrete people?
+- [ ] Is the Weakness clearly the cause of their failures?
+- [ ] Does the opponent want the same thing as the protagonist, and fight
+  hard enough?
+- [ ] Is their Stance defensible? Could you argue it yourself?
+- [ ] Is every change milestone anchored to a specific scene?
+- [ ] Does every named character have their Desire in three parts, and is the
+  ally's their own rather than auxiliary?
+- [ ] Read all of one character's scenes back to back, one character at a
+  time. (=F8 F8 2= builds that list.) Does their arc make sense on its own?
+- [ ] Are there redundant supporting characters?
+- [ ] Are any of them defined so rigidly they can no longer surprise?
 
-*** Specific Comments
+If it fails → objects/characters.org.
 
-*** Action Items
-- [ ]
+** Notes
 
-* Editor Feedback
+The cast-check Contrast list in objects/characters.org already has one box
+unticked ("they show their personality through acts, not descriptions"), with
+the offending scenes flagged by *EDIT*: character markers. Start this pass by
+running the edit index (=F8 F8 6=) and reading that category first.
 
-** Round 1
-:PROPERTIES:
-:EDITOR:
-:DATE:
-:END:
+* Pass 4 — Scenes and sequels
 
-*** Major Issues
+- [ ] Does every scene have a desire, an opposition and an outcome?
+- [ ] What is each scene's Gap: what did the character expect, and what did
+  the world give them? If there is no gap, either add one or cut the scene.
+- [ ] Does something change in every scene?
+- [ ] Does it enter late and leave early?
+- [ ] Does it advance plot, arc or theme?
+- [ ] Does every scene have a clear emotional core, and connect to the theme?
+- [ ] Is there a sequel after every important scene?
+- [ ] Does each sequel's decision chain into the next scene's desire?
+- [ ] Is anything striking but irrelevant stealing attention?
 
-*** Minor Issues
+If it fails → design.org and objects/plot.org.
 
-*** Action Items
-- [ ]
+** Notes
 
-* Self-Review Notes
+The =:Gap:= and =:Sequel-decision:= properties are filled on every scene in
+novel.org, so most of this pass can be read in column view (=C-c C-x C-c=)
+before opening a single scene. The COLUMNS line is already set up to show Gap
+beside Plot-point.
 
-** Strengths
-- The watch symbol works really well
-- Alex feels authentic and relatable
-- The progression from chaos to calm feels earned
-- Coffee shop setting creates good atmosphere
-- Ending comes full circle nicely
+* Pass 5 — World and symbols
 
-** Weaknesses
-- Act II pacing is too fast
-- Sam might be too one-dimensional
-- Not enough conflict in some scenes
-- Alex's job/life outside mornings is vague
-- Need more sensory details throughout
+- [ ] Does every setting have at least one Aspect?
+- [ ] Are any settings used as scenery only?
+- [ ] Does the World Problem show up in every scene, even in the background?
+- [ ] Do the symbols change over the course of the story?
 
-** Questions for Beta Readers
-- Does Alex's transformation feel realistic?
-- Is Sam too perfect or preachy?
-- Does the ending satisfy you?
-- What scene was your favorite and why?
-- Did any part feel slow or boring?
+If it fails → objects/locations.org and design.org, Symbols.
 
-* Change Log
-| Date       | Section    | Change                                | Reason                         |
-|------------+------------+---------------------------------------+--------------------------------|
-| 2025-01-18 | Chapter 1  | Added mismatched socks detail         | Show Alex's chaos visually     |
-| 2025-01-19 | Chapter 2  | Changed watch from drawer to mail pile| More realistic/casual discovery|
-| 2025-01-20 | Chapter 1  | Polished Sam's dialogue               | Reduce preachiness             |
-| 2025-01-20 | All scenes | Added more scene break macros         | Better visual separation       |
+** Notes
 
-* Revision Checklist
+One setting was already cut on these grounds during drafting — a mid-sized
+city with a climate and a population figure and no Echo, Hazard or scene. The
+=:World-problem:= property on each scene makes the third check mechanical:
+any scene with that property empty is a candidate.
 
-** Plot
-- [X] Is the main conflict clear?
-- [ ] Do secondary conflicts support the plot?
-- [X] Is there adequate tension in each scene?
-- [ ] Is the climax satisfying?
-- [ ] Does the resolution tie up all threads?
+* Pass 6 — Stakes and tension
 
-** Characters
-- [X] Do characters have clear motivations?
-- [ ] Do they develop throughout the story?
-- [X] Are dialogues distinctive for each character?
-- [X] Are actions consistent with their personality?
+- [ ] Is it clear what is lost if the protagonist fails?
+- [ ] Do the stakes escalate quarter by quarter, changing category at every
+  step?
+- [ ] Could the protagonist walk away from the story without consequences?
+- [ ] Is there any chapter with no tension of any kind?
+- [ ] Do chapters close on a hook rather than on a summary?
+- [ ] Is there variation in pace, or is the tension uniform?
 
-** Setting
-- [ ] Are location descriptions vivid?
-- [X] Is the world consistent?
-- [X] Does the setting support the story?
+If it fails → design.org, Stakes.
 
-** Style
-- [X] Is the point of view consistent?
-- [X] Is the tone appropriate?
-- [X] Are clichés avoided?
-- [ ] Is the pacing appropriate?
+** Notes
 
-* Identified Problems
+The =:Tension-level:= property is filled on every scene, 1 to 10. Reading the
+column top to bottom is the fastest version of the last check in this list;
+the current draft runs 2, 2, 4, 6, 5, 4, 3, 3, 2, 7, 9, 8, 6, 10, 1.
 
-** Plot Problems
-*** Act II pacing
-Act II feels rushed. Alex goes from struggling to succeeding too quickly.
-Need to add at least one more scene showing setback or continued struggle.
+* Pass 7 — Point of view and dialogue
 
-Possible addition: Scene where Alex tries to force Sam's exact routine and
-it completely fails, leading to the realization that routines must be personal.
+- [ ] Is the point of view respected? Are there jumps inside a scene?
+- [ ] Have you planned any scene this point of view cannot carry?
+- [ ] Do the important conversations have a moral layer, and not just a
+  melody?
+- [ ] Do the characters sound different from one another?
+- [ ] Read all the dialogue aloud: is anyone saying exactly what they mean?
+- [ ] Do actions contradict words anywhere?
+- [ ] Does the reader understand more than any character, where you want
+  them to?
 
-** Character Problems
-*** Sam's perfection
-Sam comes across as too perfect and wise. Need to humanize them more.
+If the point of view fails → design.org, Point of view.
 
-Ideas:
-- Give them a struggle in another area of life
-- Show them being wrong about something
-- Have them admit their routine isn't always perfect
+** Notes
 
-*** Alex's backstory
-We know very little about Alex outside their morning struggles. Need to weave
-in more details about their work, family, past.
+Single focalizer, so the second check has teeth: Priya's reveal was
+*designed* around it (a forwarded chain with timestamps rather than a scene
+of her deciding). Check that nothing has crept in that only works from
+Dana's or Priya's head.
 
-** Style Problems
-*** Sensory details
-Coffee shop scenes need more sensory grounding - smells, sounds, textures.
-Alex's apartment needs more visual detail.
+* Pass 8 — Line
 
-*** Dialogue tags
-Overusing "said" and "asked". Need more variety and action beats.
+Now, at last: sentence by sentence.
 
-** Technical Problems
-*** Timeline clarity
-Make sure the 30-day progression is clear. Currently jumps from Day 1 to Day 2
-to Day 5 to Day 8 to Day 30 - this works but should be explicit.
+- [ ] Walk every emotional peak. Is the emotion named or created?
+- [ ] Mark every "thought", "realized", "knew". Replace them with sensory
+  evidence.
+- [ ] Mark every explanation that follows a shown moment. (RUE.)
+- [ ] And then the detail.
 
-*** POV slips
-One or two places where the narration seems to know things Alex doesn't.
-Need to review for POV consistency.
+** Things I need to improve
+
+# Your own list of recurring defects. It grows with every revision and is of
+# no use to anyone else.
+
+- Explaining a symbol in the sentence after using it. Already flagged once,
+  in novel.org Chapter 6 Scene 2 — "no 'and Alex understood that'".
+- Opening consecutive paragraphs on the same noun. Chapter 1 Scene 1 does it
+  three times.
+- Adverbs on dialogue tags in first-draft Sam scenes specifically, where the
+  warmth is doing the work the line should do.
+
+* Pass 9 — Beta readers and final draft
+
+Between two and five readers. More is not better.
+
+** Who
+
+| Reader | Contact | Sent | Received | Fits what I write |
+|--------+---------+------+----------+-------------------|
+|        |         |      |          |                   |
+
+** What to ask
+
+- *Structure*: holes, inconsistencies, confusion? Where did it slow down? Is
+  the ending satisfying? Did the transformation feel earned?
+- *Characters*: did you care about Alex? Did you believe the choice in the
+  lobby? Did you understand Dana? Was Priya's reveal fair?
+- *Prose*: info dumps, and where? Slow or overwritten stretches? Unnatural
+  dialogue?
+
+** How to read it
+
+Feedback is information, not instructions. Pattern versus noise; symptom
+versus cause; and the feedback nobody gives you that you already know is
+true.
+
+** Feedback received
+
+*** Reader 1
+
+*** Reader 2
+
+** Final draft
+
+- [ ] Structure resolved
+- [ ] Scenes resolved
+- [ ] Line resolved
+- [ ] Released
