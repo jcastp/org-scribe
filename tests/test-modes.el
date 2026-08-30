@@ -15,11 +15,18 @@
 
 (require 'ert)
 (require 'cl-lib)
+(require 'bytecomp)
 (require 'org)
 
 ;;; Load paths
-(let ((default-directory (file-name-directory
-                          (or load-file-name buffer-file-name))))
+
+(defvar test-modes--directory
+  (file-name-directory (or load-file-name buffer-file-name))
+  "Directory of this test file.
+Captured at load time: `load-file-name' is nil while a test body runs,
+so a test that needs a repo path cannot compute one for itself.")
+
+(let ((default-directory test-modes--directory))
   (add-to-list 'load-path (expand-file-name "../core" default-directory))
   (add-to-list 'load-path (expand-file-name "../modes" default-directory)))
 
@@ -423,6 +430,90 @@ cleared afterwards."
           (should-not org-scribe-env--narrowed)
           (should-not org-scribe-editing--saved-config))
       (kill-buffer buf))))
+
+;;; ─────────────────────────────────────────────
+;;; Navigation mode / imenu-list interop
+;;; ─────────────────────────────────────────────
+
+;; The trap here is that imenu-list makes its *function* available long
+;; before its *variables*: `imenu-list-smart-toggle' is autoloaded, so it
+;; is bound the moment the package is installed, while
+;; `imenu-list-buffer-name' is a plain `defconst' that only exists once
+;; the library is really loaded.  Guarding on the function and then
+;; reading the variable therefore passed the check and signalled
+;; `void-variable imenu-list-buffer-name' on the very next line — but
+;; only in a session where nothing else had pulled imenu-list in, which
+;; is why it looked intermittent: entering the *editing* workspace first
+;; loads the library (it uses `require') and hides the bug.
+
+(defmacro test-modes--with-autoloaded-imenu-list (&rest body)
+  "Run BODY with imenu-list autoloaded but not loaded.
+Simulates a fresh session in which the package is installed — the
+function is bound — yet the library has never been pulled in, so none of
+its variables exist.  Skips when imenu-list is not installed at all."
+  (declare (indent 0))
+  `(progn
+     (skip-unless (fboundp 'imenu-list-smart-toggle))
+     (skip-unless (not (featurep 'imenu-list)))
+     ,@body))
+
+(ert-deftest test-modes-project-mode-loads-imenu-list-before-reading-its-vars ()
+  "Entering navigation mode must not signal when imenu-list is only autoloaded.
+
+This is the regression: `fboundp' on the autoloaded function is not
+evidence that `imenu-list-buffer-name' exists."
+  (test-modes--with-autoloaded-imenu-list
+    (cl-letf (((symbol-function 'treemacs-add-and-display-current-project-exclusively)
+               #'ignore)
+              ((symbol-function 'imenu-list-smart-toggle) #'ignore))
+      (with-temp-buffer
+        (org-mode)
+        (should (progn (org-scribe-project-mode 1) t))
+        (should (featurep 'imenu-list))
+        (org-scribe-project-mode -1)))))
+
+(ert-deftest test-modes-project-mode-disable-survives-unloaded-imenu-list ()
+  "Leaving navigation mode must not signal either.
+
+The disable branch had the same bug, and it bit harder: with the mode
+stuck on after a failed enable, the way *out* signalled too, so treemacs
+could not be dismissed.  Here imenu-list is never loaded at all, which
+is the state a failed enable used to leave behind."
+  (cl-letf (((symbol-function 'treemacs-get-local-window) (lambda () nil)))
+    (with-temp-buffer
+      (org-mode)
+      (should (progn (org-scribe-project-mode -1) t)))))
+
+(ert-deftest test-modes-project-mode-imenu-position-binds-dynamically ()
+  "The `let' that docks imenu-list on the right compiles to a dynamic binding.
+
+In a `lexical-binding' file the byte compiler binds a symbol lexically
+unless it knows the symbol is special, so without the forward `defvar'
+this `let' becomes a lexical variable the library never reads and the
+docking side is silently dead in any byte-compiled install — the state
+every package.el user is in.  Nothing about the running mode reveals it.
+
+The check has to be the compiler's own verdict.  `special-variable-p' is
+*not* usable here: a valueless `(defvar foo)' deliberately marks the
+symbol special only for the rest of the file being compiled, and leaves
+the global flag alone — which is exactly the scoping we want, and why
+asserting on that function would fail while the code is correct."
+  (let* ((src (expand-file-name "../modes/org-scribe-modes.el"
+                                test-modes--directory))
+         (dest (make-temp-file "org-scribe-modes-compile-" nil ".elc"))
+         (byte-compile-dest-file-function (lambda (_) dest)))
+    (unwind-protect
+        (progn
+          (with-current-buffer (get-buffer-create byte-compile-log-buffer)
+            (erase-buffer))
+          (should (byte-compile-file src))
+          (let ((log (with-current-buffer byte-compile-log-buffer
+                       (buffer-string))))
+            (should-not (string-match-p
+                         "Unused lexical variable.*imenu-list-position" log))
+            (should-not (string-match-p
+                         "free variable.*imenu-list" log))))
+      (delete-file dest))))
 
 ;;; ─────────────────────────────────────────────
 ;;; Test runner

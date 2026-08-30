@@ -35,6 +35,20 @@
 (declare-function treemacs-add-and-display-current-project-exclusively "treemacs")
 (declare-function treemacs-get-local-window "treemacs")
 (declare-function imenu-list-smart-toggle "imenu-list")
+
+;; Forward declarations for imenu-list's own variables.  These are not
+;; cosmetic: `imenu-list-position' is `let'-bound below, and in a
+;; `lexical-binding' file the byte compiler binds a symbol lexically
+;; unless it knows the symbol is special.  Compiled without imenu-list
+;; loaded, that `let' becomes a lexical variable the library never reads
+;; — the compiler says so outright ("Unused lexical variable") — and the
+;; docking side is silently ignored.  A bare `defvar' marks the symbol
+;; special without giving it a value, so the library's own definition
+;; still wins.
+(defvar imenu-list-buffer-name)
+(defvar imenu-list-position)
+(defvar imenu-list-size)
+(defvar imenu-list-focus-after-activation)
 ;; Loaded after this module (see the load order in org-scribe.el), but
 ;; only called at runtime from `org-scribe--editing-right-panel-file'.
 (declare-function org-scribe-capture-target-file "org-scribe-capture")
@@ -262,11 +276,20 @@ Focus always returns to the original buffer for seamless transitions."
           (if (fboundp 'treemacs-add-and-display-current-project-exclusively)
               (treemacs-add-and-display-current-project-exclusively)
             (warn "treemacs package not available"))
-          ;; Check for imenu-list
-          (if (fboundp 'imenu-list-smart-toggle)
+          ;; Check for imenu-list.  Load it rather than testing
+          ;; `fboundp': `imenu-list-smart-toggle' is autoloaded, so it is
+          ;; bound as soon as the package is *installed*, while
+          ;; `imenu-list-buffer-name' is a plain `defconst' that does not
+          ;; exist until the library is actually loaded.  Guarding on the
+          ;; function and then reading the variable passed the check and
+          ;; signalled `void-variable' on the next line, in a fresh
+          ;; session where nothing else had pulled imenu-list in.
+          (if (require 'imenu-list nil t)
               (unless (get-buffer-window imenu-list-buffer-name)
                 ;; Treemacs already occupies the left edge, so dock
-                ;; imenu-list on the right (its default is 'left).
+                ;; imenu-list on the right.  The package has defaulted
+                ;; both ways across versions, so state it rather than
+                ;; relying on the default.
                 (let ((imenu-list-position 'right))
                   (imenu-list-smart-toggle)))
             (warn "imenu-list package not available"))
@@ -279,8 +302,13 @@ Focus always returns to the original buffer for seamless transitions."
         (when (fboundp 'treemacs-get-local-window)
           (when-let ((treemacs-window (treemacs-get-local-window)))
             (delete-window treemacs-window)))
-        ;; Close imenu-list
-        (when (and (fboundp 'imenu-list-smart-toggle)
+        ;; Close imenu-list.  Same trap as the enable branch, and it bit
+        ;; harder here: with the mode stuck on after a failed enable, the
+        ;; way out also signalled, so treemacs could not be dismissed.
+        ;; `featurep' rather than `require' — if the library was never
+        ;; loaded there is no imenu-list window to close, and loading it
+        ;; just to decide that would be backwards.
+        (when (and (featurep 'imenu-list)
                    (get-buffer-window imenu-list-buffer-name))
           (imenu-list-smart-toggle))
         ;; Ensure focus is on original window
