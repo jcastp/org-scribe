@@ -116,12 +116,13 @@ _q_: Back to main menu            _Q_: Quit
 _R_: Relink everything    _c_: Characters        _a_: Add relationship       _t_: Plot health report
 _j_: Jump to plot thread  _o_: Locations         _x_: Remove relationship    _S_: Plot statistics
 _J_: Jump to plot point   _p_: Plot threads      _v_: View relationships     _C_: Column view toggle
-^^                        _P_: Plot points       _V_: View all relationships _T_: Tooltips toggle
+_D_: Spelling dictionary  _P_: Plot points       _V_: View all relationships _T_: Tooltips toggle
 ^^                        _r_: Relationships
 _q_: Back to main menu    _Q_: Quit
 "
   ;; Whole-project upkeep (the headline action)
   ("R" org-scribe-relink-project "relink project")
+  ("D" org-scribe-update-dir-locals "spelling dictionary")
   ("j" org-scribe-jump-to-plot-thread "jump to plot")
   ("J" org-scribe-jump-to-plot-point "jump to plot point")
   ;; One-time set-up per entity type

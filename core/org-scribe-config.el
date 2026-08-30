@@ -45,6 +45,34 @@ forward `defvar' there too."
   :type 'boolean
   :group 'org-scribe)
 
+(defcustom org-scribe-ispell-dictionaries
+  '((en . "en_US")
+    (es . "es_ES"))
+  "Ispell dictionary to record in a new project's `.dir-locals.el'.
+
+Keyed by project language symbol (see `org-scribe-project-language').
+Set a regional variant such as \"en_GB\" or \"es_MX\" to have new
+projects use it.  An entry of nil, or a language missing from the
+list, suppresses the `.dir-locals.el' entry for that language.
+
+The dictionary is written as `ispell-local-dictionary', which carries a
+`safe-local-variable' property, so the generated file applies without
+prompting.  `ispell-dictionary' is *not* safe and must not be used
+here."
+  :type '(alist :key-type symbol :value-type (choice string (const nil)))
+  :group 'org-scribe)
+
+(defcustom org-scribe-write-dir-locals t
+  "Whether project creation writes a `.dir-locals.el' with the dictionary.
+
+A project is monolingual by construction — its language is recorded in
+`.org-scribe-project' and picks the whole template set — so the spelling
+dictionary belongs to the project rather than to each file.  Set this to
+nil if you manage directory-local variables yourself; nothing else in
+org-scribe reads the generated file."
+  :type 'boolean
+  :group 'org-scribe)
+
 (defcustom org-scribe-projects-directory
   (expand-file-name "~/writing/")
   "Default base directory proposed when creating a new novel or short story project."

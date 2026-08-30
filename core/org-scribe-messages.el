@@ -61,6 +61,13 @@ file's Commentary for why a forward `defvar' is needed here too.")
     (project-already-exists . "Project directory '%s' already exists!")
     (msg-projects-registered . "Scanned and registered %d project(s) under %s")
 
+    ;; Directory-local spelling dictionary
+    (dir-locals-written . ".dir-locals.el created (dictionary: %s)")
+    (dir-locals-exists . ".dir-locals.el already exists; not overwritten")
+    (dir-locals-overwrite-confirm . "Overwrite %s with the org-scribe dictionary block? ")
+    (dir-locals-no-dictionary . "No dictionary configured for language %s")
+    (dir-locals-not-in-project . "Not inside an org-scribe project")
+
     ;; Writing templates
     (scene-name-prompt . "Scene name: ")
     (chapter-name-prompt . "Chapter name: ")
@@ -474,6 +481,13 @@ printf-style format specifiers (%s, %d, etc.) for dynamic content.")
     (project-creation-success-short-story . "Proyecto de relato «%s» creado correctamente en %s")
     (project-already-exists . "¡El directorio del proyecto «%s» ya existe!")
     (msg-projects-registered . "Se escanearon y registraron %d proyecto(s) en %s")
+
+    ;; Diccionario ortográfico por directorio
+    (dir-locals-written . "Se creó .dir-locals.el (diccionario: %s)")
+    (dir-locals-exists . ".dir-locals.el ya existe; no se ha sobrescrito")
+    (dir-locals-overwrite-confirm . "¿Sobrescribir %s con el bloque de diccionario de org-scribe? ")
+    (dir-locals-no-dictionary . "No hay diccionario configurado para el idioma %s")
+    (dir-locals-not-in-project . "No se encuentra dentro de un proyecto de org-scribe")
 
     ;; Writing templates
     (scene-name-prompt . "Nombre de la escena: ")

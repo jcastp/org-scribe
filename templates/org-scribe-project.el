@@ -118,6 +118,78 @@ must never make project creation fail."
           (when (and file (file-exists-p file))
             (org-scribe--add-entity-ids entity)))))))
 
+;;; Directory-local spelling dictionary
+
+;; A project is monolingual by construction: `.org-scribe-project' records
+;; the language and it picks the whole template set.  The spelling
+;; dictionary is therefore a property of the project, not of each file, and
+;; is written once to `.dir-locals.el' rather than repeated in a per-file
+;; `Local Variables' block.  Templates deliberately ship no such block —
+;; see `test-template-parity-templates-carry-no-local-variables'.
+
+(defun org-scribe--dir-locals-dictionary (language)
+  "Return the ispell dictionary name configured for LANGUAGE, or nil.
+Reads `org-scribe-ispell-dictionaries'; a missing entry and an entry of
+nil both mean \"write no dictionary\"."
+  (alist-get language org-scribe-ispell-dictionaries))
+
+(defun org-scribe--dir-locals-content (language dictionary)
+  "Return the text of a `.dir-locals.el' pinning DICTIONARY for LANGUAGE.
+
+The variable written is `ispell-local-dictionary', which carries a
+`safe-local-variable' property, so the file applies without prompting —
+unlike the `eval:' form the manuscript templates used to ship.  The key
+is nil rather than `org-mode' because a project's notes may hold other
+modes and the dictionary is right for all of them."
+  (format ";;; Directory Local Variables            -*- no-byte-compile: t -*-
+;;; Written by org-scribe.  Language: %s (see .org-scribe-project).
+;;; Regenerate with M-x org-scribe-update-dir-locals.
+
+((nil . ((ispell-local-dictionary . %S))))
+"
+          language dictionary))
+
+(defun org-scribe--write-dir-locals (project-dir language)
+  "Write PROJECT-DIR/.dir-locals.el pinning the ispell dictionary for LANGUAGE.
+
+Does nothing when `org-scribe-write-dir-locals' is nil, when LANGUAGE has
+no dictionary in `org-scribe-ispell-dictionaries', or when the file
+already exists — an existing `.dir-locals.el' is the user's, and merging
+into it is not something this package should guess at.  Returns the
+dictionary written, or nil."
+  (when org-scribe-write-dir-locals
+    (let ((dictionary (org-scribe--dir-locals-dictionary language))
+          (file (expand-file-name ".dir-locals.el" project-dir)))
+      (when (and dictionary (not (file-exists-p file)))
+        (with-temp-file file
+          (insert (org-scribe--dir-locals-content language dictionary)))
+        dictionary))))
+
+;;;###autoload
+(defun org-scribe-update-dir-locals ()
+  "Create or refresh `.dir-locals.el' for the current project.
+
+The language is read from the project's `.org-scribe-project' marker
+file, which stays the single source of truth; the dictionary name comes
+from `org-scribe-ispell-dictionaries'.  Use this on projects created
+before org-scribe generated the file, or after changing the configured
+dictionary.  An existing file is only replaced after confirmation."
+  (interactive)
+  (let ((root (org-scribe-project-root)))
+    (unless root
+      (user-error "%s" (org-scribe-msg 'dir-locals-not-in-project)))
+    (let* ((language (org-scribe-project-language))
+           (dictionary (org-scribe--dir-locals-dictionary language))
+           (file (expand-file-name ".dir-locals.el" root)))
+      (unless dictionary
+        (user-error "%s" (org-scribe-msg 'dir-locals-no-dictionary language)))
+      (if (and (file-exists-p file)
+               (not (yes-or-no-p (org-scribe-msg 'dir-locals-overwrite-confirm file))))
+          (message "%s" (org-scribe-msg 'dir-locals-exists))
+        (with-temp-file file
+          (insert (org-scribe--dir-locals-content language dictionary)))
+        (message "%s" (org-scribe-msg 'dir-locals-written dictionary))))))
+
 ;;;###autoload
 (defun org-scribe-create-novel-project (base-dir title &optional language)
   "Create a new novel project structure from templates.
@@ -174,6 +246,10 @@ This function:
         (insert (format "# Writing project: %s\n" title)
                 (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
                 (format "# Language: %s\n" language)))
+
+      ;; Pin the spelling dictionary for the whole project, before the
+      ;; initial commit so it is versioned like every other created file.
+      (org-scribe--write-dir-locals project-dir language)
 
       ;; Initialize git repository
       (let ((default-directory project-dir))
@@ -259,6 +335,10 @@ This function:
                 (format "# Type: short-story\n")
                 (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
                 (format "# Language: %s\n" language)))
+
+      ;; Pin the spelling dictionary for the whole project, before the
+      ;; initial commit so it is versioned like every other created file.
+      (org-scribe--write-dir-locals project-dir language)
 
       ;; Initialize git repository
       (let ((default-directory project-dir))

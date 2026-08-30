@@ -153,9 +153,3 @@ Update with =C-c C-c= on the #+BEGIN line.
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 20000
 :END:
-
-# Local Variables:
-# eval: (progn
-# (setq ispell-local-dictionary "en_US")
-# (setq lexical-binding t))
-# End:

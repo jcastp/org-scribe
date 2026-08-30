@@ -254,6 +254,7 @@ This creates a complete project structure:
 #+begin_example
 MyNovel/
 ├── README.org             # Project overview and navigation
+├── .dir-locals.el         # Spelling dictionary for the whole project
 ├── design.org             # ← START HERE: Starting Gate and the Core
 ├── novel.org              # Main manuscript with progress tracking
 ├── revision.org           # The ten revision passes
@@ -309,6 +310,49 @@ layer handles both structures.
 short-story scale needs editorial decisions the method does not yet make (how
 many Stances at that length, which of the thirteen survive, whether subplots
 exist at all), so it is deliberately deferred rather than guessed at.
+
+*** Spelling dictionary for the whole project
+
+A project is monolingual by construction: the language you pick at creation is
+recorded in =.org-scribe-project= and selects the whole template set. The
+spelling dictionary follows from it, so project creation writes one
+=.dir-locals.el= at the project root:
+
+#+begin_src elisp
+;;; Directory Local Variables            -*- no-byte-compile: t -*-
+;;; Written by org-scribe.  Language: es (see .org-scribe-project).
+;;; Regenerate with M-x org-scribe-update-dir-locals.
+
+((nil . ((ispell-local-dictionary . "es_ES"))))
+#+end_src
+
+Every file in the project gets the right dictionary, including the notes, the
+journal, the plan, and anything you or =org-scribe-capture= create later —
+none of which would ever grow a per-file =Local Variables= block. Because
+=ispell-local-dictionary= is a declared-safe local variable, it applies
+silently; Emacs never asks you to approve it.
+
+To use a regional variant, set the mapping before creating projects:
+
+#+begin_src elisp
+(setq org-scribe-ispell-dictionaries '((en . "en_GB") (es . "es_MX")))
+#+end_src
+
+Set =org-scribe-write-dir-locals= to nil if you manage directory-local
+variables yourself; nothing else in org-scribe reads the file.
+
+- =M-x org-scribe-update-dir-locals= (=F8 F8 L D=) creates or refreshes the
+  file for the current project, reading the language from
+  =.org-scribe-project=. Use it on projects created before org-scribe
+  generated the file, or after changing the mapping above. An existing file is
+  only replaced after confirmation. The project health report flags a missing
+  or mismatched dictionary in its Overview.
+- A per-file =Local Variables= block still wins over the project-wide setting,
+  so a research file quoting sources in another language can keep its own.
+- If you use =guess-language=, it overrides both, per paragraph, by design.
+- Spell-checking *inside* an =org-capture= buffer does not see the dictionary:
+  capture works in an indirect buffer, which does not pick up directory-local
+  variables. This was equally true of the per-file blocks it replaces.
 
 *** Insert Scene or Chapter
 

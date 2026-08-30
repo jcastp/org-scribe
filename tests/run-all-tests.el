@@ -62,6 +62,7 @@
     "test-wordcount"               ; Word counting
     "test-scene-property-localization" ; Localized scene property aliases
     "test-project"                 ; Project creation
+    "test-dir-locals"              ; Project-wide spelling dictionary
     "test-capture"                 ; Capture system
     "test-modes"                   ; Writing environment modes
     "test-search"                  ; Search functions
@@ -165,6 +166,14 @@ Suitable for CI/CD pipelines and automated testing."
                "\\|^test-create-novel-project-\\|^test-create-short-story-project-"
                "\\|^test-short-story-template-"
                "\\|^test-template-\\(?:directory\\|language\\|variable\\|no-plan\\)")))
+
+;;;###autoload
+(defun org-scribe-run-dir-locals-tests ()
+  "Run project-wide spelling dictionary tests only."
+  (interactive)
+  (load-file (expand-file-name "test-dir-locals.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-dir-locals-"))
 
 ;;;###autoload
 (defun org-scribe-run-capture-tests ()

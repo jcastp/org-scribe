@@ -212,5 +212,30 @@ invisible to `org-scribe-scene-property-get' either way."
                  (push (cons (cdr spec) (car kv)) offenders))))))))
     (should-not offenders)))
 
+(ert-deftest test-template-parity-templates-carry-no-local-variables ()
+  "No shipped template declares file-local variables.
+
+The spelling dictionary is a property of the *project* — the language
+lives in `.org-scribe-project' and picks the whole template set — so it
+is written once to `.dir-locals.el' at creation time (see
+`org-scribe--write-dir-locals') rather than repeated per file.
+
+Before that, eight templates carried a `Local Variables' block and the
+rest did not, which is why this test exists: the coverage matched no
+rule, the two sets diverged on it in a way `org-scribe-parity--shape'
+cannot see (it compares headings and properties, not comments), and the
+two manuscripts used an `eval:' form, which is never a safe file-local
+and so made Emacs prompt on every open.  A block added back to one
+template would quietly re-create all three problems."
+  (let (offenders)
+    (dolist (set '("novel-es" "novel-en" "short-story-es" "short-story-en"))
+      (dolist (relative (org-scribe-parity--templates set))
+        (with-temp-buffer
+          (insert-file-contents (org-scribe-parity--path set relative))
+          (goto-char (point-min))
+          (when (re-search-forward "^# Local Variables:" nil t)
+            (push (concat set "/" relative) offenders)))))
+    (should-not offenders)))
+
 (provide 'test-template-parity)
 ;;; test-template-parity.el ends here

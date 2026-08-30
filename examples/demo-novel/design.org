@@ -129,11 +129,11 @@
 
 # Every rung changes category, not degree.
 
-| Quarter | What is at stake                                                   |
-|---------+--------------------------------------------------------------------|
-| I       | Money. The Halloran account, then the rent.                        |
-| II      | Trust. Sam stops asking Alex for anything, which is worse than a row. |
-| III     | Someone else's life. Sam's father loses the placement.             |
+| Quarter | What is at stake                                                        |
+|---------+-------------------------------------------------------------------------|
+| I       | Money. The Halloran account, then the rent.                             |
+| II      | Trust. Sam stops asking Alex for anything, which is worse than a row.   |
+| III     | Someone else's life. Sam's father loses the placement.                  |
 | IV      | Who Alex is. Two promises at nine o'clock, one car, one of them broken. |
 
 * The ending

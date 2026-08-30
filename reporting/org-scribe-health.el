@@ -26,6 +26,11 @@
 (declare-function org-scribe--get-all-plot-threads "linking/org-scribe-plot-links")
 (declare-function org-scribe--get-all-plot-points "linking/org-scribe-plot-point-links")
 
+;; Directory-local spelling dictionary (from templates/org-scribe-project.el,
+;; loaded before this file; guarded with `fboundp' at the call site anyway).
+(declare-function org-scribe--dir-locals-dictionary "templates/org-scribe-project")
+(defvar org-scribe-write-dir-locals)
+
 ;; Planner struct accessors — only called when (featurep 'org-scribe-planner)
 (declare-function org-scribe-plan-title         "planning/org-scribe-planner")
 (declare-function org-scribe-plan-total-words   "planning/org-scribe-planner")
@@ -310,6 +315,39 @@ thirteen as done in a brand-new project."
   (let ((first-n (seq-take scenes n)))
     (seq-count (lambda (s) (> (nth 8 s) 0)) first-n)))
 
+(defun org-scribe--health-dir-locals-hint ()
+  "Return a hint string when the project's `.dir-locals.el' needs attention.
+
+The project language lives in `.org-scribe-project'; the spelling
+dictionary is derived from it into `.dir-locals.el' at creation time.
+The two can drift — a project created before org-scribe generated the
+file has none, and a project whose language was edited by hand keeps the
+old dictionary — and that drift is invisible until a spell check
+disagrees with the prose.  Returns nil when there is nothing to say."
+  (when (and org-scribe-write-dir-locals
+             (fboundp 'org-scribe--dir-locals-dictionary))
+    (when-let* ((root (org-scribe-project-root))
+                (expected (org-scribe--dir-locals-dictionary
+                           (org-scribe-project-language))))
+      (let ((file (expand-file-name ".dir-locals.el" root)))
+        (cond
+         ((not (file-exists-p file))
+          (format "not set (expected %s) — run =M-x org-scribe-update-dir-locals="
+                  expected))
+         (t
+          (let ((found (ignore-errors
+                         (alist-get 'ispell-local-dictionary
+                                    (alist-get nil (with-temp-buffer
+                                                     (insert-file-contents file)
+                                                     (read (current-buffer))))))))
+            (cond
+             ((null found)
+              (format "no dictionary in .dir-locals.el (expected %s)" expected))
+             ((not (equal found expected))
+              (format "%s in .dir-locals.el, but the project language says %s"
+                      found expected))
+             (t nil)))))))))
+
 (defun org-scribe--health-find-orphans (entities referenced-ids)
   "Return list of entity names not present in REFERENCED-IDS.
 ENTITIES is an alist (NAME . (ID . HEADING)) as returned by
@@ -426,6 +464,8 @@ with clickable ID links back to each scene."
               (insert (format "- Word objective :: %d\n" total-obj))
               (insert (format "- Progress :: %.1f%%\n" progress)))
           (insert "- Word objective :: /not set/\n"))
+        (when-let* ((hint (org-scribe--health-dir-locals-hint)))
+          (insert (format "- Spelling dictionary :: %s\n" hint)))
         (insert "\n")
 
         ;; ── Writing Plan ─────────────────────────────────────────────────────

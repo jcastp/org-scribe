@@ -182,7 +182,3 @@
 # Las escenas son la carne sobre el esqueleto. Escríbelas en orden estructural y
 # etiqueta cada una con el punto de trama al que sirve; las que no sirven a
 # ninguno son sospechosas.
-
-# Local Variables:
-# ispell-local-dictionary: "es_ES"
-# End:

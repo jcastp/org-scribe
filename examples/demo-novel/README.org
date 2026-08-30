@@ -40,20 +40,20 @@ whoever asks for it first./
 Each of these is worth opening the relevant file to see, rather than reading
 about here.
 
-| Feature                        | Where to look                                                        |
-|--------------------------------+----------------------------------------------------------------------|
-| The Starting Gate              | [[file:design.org][design.org]] — and =F8 F8 H=, which reads the boxes back and measures two of them |
-| The thirteen non-negotiables   | [[file:objects/plot.org][objects/plot.org]], and the =:Plot-point:= property on every scene    |
-| The causal chain               | [[file:objects/characters.org][objects/characters.org]] — Ghost → Lie → Weakness → Desire/Need       |
-| An opponent who wants the same thing | Dana Okonkwo's profile, and the Main Line in plot.org          |
-| Settings with an Echo and a Hazard | [[file:objects/locations.org][objects/locations.org]] — four settings, four Aspects each          |
-| Hidden entities (=:Weight: -1=)  | Marisol Rivera and the "Running late" thread; see the timeline tables in novel.org and the comment line each writes under itself |
-| Edit markers and the index     | The =#+begin_comment= blocks in [[file:novel.org][novel.org]]; then =F8 F8 6=             |
-| Unwritten scenes               | The =*SUMMARY*= markers under TOWRITE headings; then =F8 F8 5=        |
-| ID linking                     | Every =:PoV:=, =:Characters:=, =:Location:=, =:Plot:= and =:Plot-point:= property |
-| Character relationships        | The =:RelationshipsData:= properties; then =F8 F8 L V=                |
-| The writing planner            | [[file:plan.org][plan.org]], and =# Planner: yes= in =.org-scribe-project=; then =F8 F8 W= |
-| Column view                    | =C-c C-x C-c= in any file — each sets its own =#+COLUMNS=            |
+| Feature                              | Where to look                                                                                                                    |
+|--------------------------------------+----------------------------------------------------------------------------------------------------------------------------------|
+| The Starting Gate                    | [[file:design.org][design.org]] — and =F8 F8 H=, which reads the boxes back and measures two of them                                                    |
+| The thirteen non-negotiables         | [[file:objects/plot.org][objects/plot.org]], and the =:Plot-point:= property on every scene                                                                   |
+| The causal chain                     | [[file:objects/characters.org][objects/characters.org]] — Ghost → Lie → Weakness → Desire/Need                                                                    |
+| An opponent who wants the same thing | Dana Okonkwo's profile, and the Main Line in plot.org                                                                            |
+| Settings with an Echo and a Hazard   | [[file:objects/locations.org][objects/locations.org]] — four settings, four Aspects each                                                                         |
+| Hidden entities (=:Weight: -1=)        | Marisol Rivera and the "Running late" thread; see the timeline tables in novel.org and the comment line each writes under itself |
+| Edit markers and the index           | The =#+begin_comment= blocks in [[file:novel.org][novel.org]]; then =F8 F8 6=                                                                            |
+| Unwritten scenes                     | The =*SUMMARY*= markers under TOWRITE headings; then =F8 F8 5=                                                                       |
+| ID linking                           | Every =:PoV:=, =:Characters:=, =:Location:=, =:Plot:= and =:Plot-point:= property                                                          |
+| Character relationships              | The =:RelationshipsData:= properties; then =F8 F8 L V=                                                                               |
+| The writing planner                  | [[file:plan.org][plan.org]], and =# Planner: yes= in =.org-scribe-project=; then =F8 F8 W=                                                                |
+| Column view                          | =C-c C-x C-c= in any file — each sets its own =#+COLUMNS=                                                                            |
 
 ** Deliberate imperfections
 
