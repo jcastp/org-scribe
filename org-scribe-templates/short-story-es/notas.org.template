@@ -1,6 +1,7 @@
 #+TITLE: ${TITLE} - Planificación y Notas
 #+AUTHOR: ${AUTHOR}
 #+DATE: ${DATE}
+#+LANGUAGE: es
 #+STARTUP: overview
 
 * Personajes

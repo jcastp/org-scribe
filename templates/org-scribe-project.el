@@ -126,31 +126,60 @@ must never make project creation fail."
 ;; is written once to `.dir-locals.el' rather than repeated in a per-file
 ;; `Local Variables' block.  Templates deliberately ship no such block —
 ;; see `test-template-parity-templates-carry-no-local-variables'.
+;;
+;; Templates do still ship a `#+LANGUAGE:' keyword, which is not a
+;; duplicate of this file: it is the per-file fallback for a file read
+;; outside its project tree, and jinx reads it natively.  Where both are
+;; present the directory-local wins, since `jinx--get-org-language' only
+;; consults the keyword when `jinx-languages' is not already buffer-local.
+;; That is the right precedence — the project is authoritative — and it is
+;; why a writer who deletes the keyword line loses nothing.
+
+;; Jinx declares this itself, but via an autoload, so it is only in force
+;; once jinx is installed.  Declaring it here as well means the generated
+;; file applies silently for every org-scribe user, jinx or no jinx —
+;; without it, a project opened on a machine that lacks jinx prompts the
+;; writer to approve the local variables list on every single file, which
+;; is the exact failure this whole arrangement exists to prevent.  The
+;; predicate is jinx's own.
+(put 'jinx-languages 'safe-local-variable #'stringp)
 
 (defun org-scribe--dir-locals-dictionary (language)
-  "Return the ispell dictionary name configured for LANGUAGE, or nil.
+  "Return the dictionary/language name configured for LANGUAGE, or nil.
 Reads `org-scribe-ispell-dictionaries'; a missing entry and an entry of
-nil both mean \"write no dictionary\"."
+nil both mean \"write no dictionary\".  The name is written both as an
+ispell dictionary and as a jinx language: the codes coincide (\"es_ES\",
+\"en_US\"), since both resolve against the installed hunspell data."
   (alist-get language org-scribe-ispell-dictionaries))
 
 (defun org-scribe--dir-locals-content (language dictionary)
   "Return the text of a `.dir-locals.el' pinning DICTIONARY for LANGUAGE.
 
-The variable written is `ispell-local-dictionary', which carries a
-`safe-local-variable' property, so the file applies without prompting —
-unlike the `eval:' form the manuscript templates used to ship.  The key
-is nil rather than `org-mode' because a project's notes may hold other
-modes and the dictionary is right for all of them."
+Two variables are written because the two spell checkers in common use
+read different ones, and neither reads the other's:
+`ispell-local-dictionary' for ispell/flyspell, and `jinx-languages' for
+jinx, which also drives word completion for anyone whose `cape-dict'
+word list follows the buffer language.  Writing only one leaves the
+other checker on the user's global default — in a Spanish project that
+means English spell-check and English completion candidates, with no
+visible cause.
+
+Both carry a `safe-local-variable' property, so the file applies without
+prompting — unlike the `eval:' form the manuscript templates used to
+ship.  Jinx declares its own via an autoload; org-scribe declares it too,
+so the generated file is silent even when jinx is not installed.  The key is nil rather than `org-mode' because a project's
+notes may hold other modes and the language is right for all of them."
   (format ";;; Directory Local Variables            -*- no-byte-compile: t -*-
 ;;; Written by org-scribe.  Language: %s (see .org-scribe-project).
 ;;; Regenerate with M-x org-scribe-update-dir-locals.
 
-((nil . ((ispell-local-dictionary . %S))))
+((nil . ((ispell-local-dictionary . %S)
+         (jinx-languages . %S))))
 "
-          language dictionary))
+          language dictionary dictionary))
 
 (defun org-scribe--write-dir-locals (project-dir language)
-  "Write PROJECT-DIR/.dir-locals.el pinning the ispell dictionary for LANGUAGE.
+  "Write PROJECT-DIR/.dir-locals.el pinning the dictionary for LANGUAGE.
 
 Does nothing when `org-scribe-write-dir-locals' is nil, when LANGUAGE has
 no dictionary in `org-scribe-ispell-dictionaries', or when the file

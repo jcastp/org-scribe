@@ -237,5 +237,53 @@ template would quietly re-create all three problems."
             (push (concat set "/" relative) offenders)))))
     (should-not offenders)))
 
+(ert-deftest test-template-parity-every-template-declares-its-language ()
+  "Every shipped template carries a `#+LANGUAGE:' keyword for its set.
+
+This is the per-file half of the language declaration; the project-wide
+half is the generated `.dir-locals.el'.  The keyword matters for a file
+read outside its project tree, where no directory-local applies, and it
+is what jinx reads natively (`jinx--get-org-language').
+
+Sixteen of the thirty-two templates used to carry it and sixteen did
+not, with no rule behind the split: in a Spanish project the notes, the
+journal, the timeline and both READMEs fell back to the user's global
+language, so they were spell-checked — and completed from a word list —
+in the wrong language.  Coverage that matches no rule is exactly the
+drift `org-scribe-parity--shape' cannot see, since it compares headings
+and properties, not keywords."
+  (let (offenders)
+    (dolist (set '("novel-es" "novel-en" "short-story-es" "short-story-en"))
+      (let ((expected (if (string-suffix-p "-es" set) "es" "en")))
+        (dolist (relative (org-scribe-parity--templates set))
+          (with-temp-buffer
+            (insert-file-contents (org-scribe-parity--path set relative))
+            (goto-char (point-min))
+            (let ((case-fold-search t))
+              (unless (and (re-search-forward
+                            "^#\\+LANGUAGE: +\\([a-z_]+\\) *$" nil t)
+                           (equal (match-string 1) expected))
+                (push (concat set "/" relative) offenders)))))))
+    (should-not offenders)))
+
+(ert-deftest test-template-parity-language-keyword-matches-jinx-regexp ()
+  "The keyword is written in the shape jinx actually parses.
+
+Jinx reads the language with `\"^ *#\\+language: +\\([a-z_]+\\) *$\"'.
+Two things about that are easy to break without noticing: the value must
+be a bare code with nothing after it — a trailing comment, or a form
+like `es-ES', simply fails to match — and the match relies on
+`case-fold-search', which Org buffers set, to accept the uppercase
+`#+LANGUAGE:' the templates use.  A template that fails this is not
+broken in any visible way; it just silently keeps the global language."
+  (dolist (set '("novel-es" "novel-en" "short-story-es" "short-story-en"))
+    (dolist (relative (org-scribe-parity--templates set))
+      (with-temp-buffer
+        (insert-file-contents (org-scribe-parity--path set relative))
+        (org-mode)
+        (goto-char (point-min))
+        (should (re-search-forward "^ *#\\+language: +\\([a-z_]+\\) *$"
+                                   nil t))))))
+
 (provide 'test-template-parity)
 ;;; test-template-parity.el ends here

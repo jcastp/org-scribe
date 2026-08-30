@@ -48,17 +48,24 @@ forward `defvar' there too."
 (defcustom org-scribe-ispell-dictionaries
   '((en . "en_US")
     (es . "es_ES"))
-  "Ispell dictionary to record in a new project's `.dir-locals.el'.
+  "Dictionary name to record in a new project's `.dir-locals.el'.
 
 Keyed by project language symbol (see `org-scribe-project-language').
 Set a regional variant such as \"en_GB\" or \"es_MX\" to have new
 projects use it.  An entry of nil, or a language missing from the
 list, suppresses the `.dir-locals.el' entry for that language.
 
-The dictionary is written as `ispell-local-dictionary', which carries a
-`safe-local-variable' property, so the generated file applies without
-prompting.  `ispell-dictionary' is *not* safe and must not be used
-here."
+The name is written twice: as `ispell-local-dictionary' for
+ispell/flyspell, and as `jinx-languages' for jinx (which also drives
+word completion where the `cape-dict' word list follows the buffer
+language).  One value serves both because the codes coincide — both
+resolve against the same installed hunspell data — and keeping a single
+option avoids two settings that can disagree about one project.
+
+Both variables carry a `safe-local-variable' property, so the generated
+file applies without prompting.  `ispell-dictionary' is *not* safe and
+must not be used here.  The name is kept for compatibility with existing
+configurations, despite now covering more than ispell."
   :type '(alist :key-type symbol :value-type (choice string (const nil)))
   :group 'org-scribe)
 

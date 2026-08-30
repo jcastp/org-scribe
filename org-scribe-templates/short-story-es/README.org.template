@@ -1,6 +1,7 @@
 #+TITLE: ${TITLE} - Resumen del Proyecto
 #+AUTHOR: ${AUTHOR}
 #+DATE: ${DATE}
+#+LANGUAGE: es
 #+STARTUP: overview
 
 * Información del Cuento

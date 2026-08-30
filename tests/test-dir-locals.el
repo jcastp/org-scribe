@@ -19,6 +19,11 @@
 ;;
 ;; These tests pin both halves: that creation writes the file, and that it
 ;; writes a form which applies *without* prompting.
+;;
+;; The file names the language twice, once per spell checker: ispell and
+;; jinx read different variables and neither falls back to the other, so a
+;; file that mentions only one silently leaves the other checker — and the
+;; word completion that follows it — on the user's global default.
 
 ;;; Code:
 
@@ -58,6 +63,11 @@
 (defun test-dir-locals--dictionary (project-dir)
   "Return the ispell dictionary recorded in PROJECT-DIR/.dir-locals.el."
   (alist-get 'ispell-local-dictionary
+             (alist-get nil (test-dir-locals--read project-dir))))
+
+(defun test-dir-locals--jinx-language (project-dir)
+  "Return the jinx language recorded in PROJECT-DIR/.dir-locals.el."
+  (alist-get 'jinx-languages
              (alist-get nil (test-dir-locals--read project-dir))))
 
 ;;; Creation
@@ -103,7 +113,8 @@ block, so this is the set that gains coverage it never had."
   (test-dir-locals--with-temp-base-dir root
     (org-scribe--write-dir-locals root 'es)
     (should (equal (test-dir-locals--read root)
-                   '((nil . ((ispell-local-dictionary . "es_ES"))))))))
+                   '((nil . ((ispell-local-dictionary . "es_ES")
+                             (jinx-languages . "es_ES"))))))))
 
 (ert-deftest test-dir-locals-variable-written-is-safe ()
   "The dictionary applies without prompting.
@@ -122,6 +133,41 @@ variables list every single time the file was opened.
       (should entries)
       (dolist (entry entries)
         (should (safe-local-variable-p (car entry) (cdr entry)))))))
+
+(ert-deftest test-dir-locals-covers-both-spell-checkers ()
+  "The file pins the language for jinx as well as for ispell.
+
+Neither checker reads the other's variable, so writing only
+`ispell-local-dictionary' left every jinx user — and, through
+`cape-dict', their word completion — on the global default.  In a
+Spanish project that means English spell-check and English candidates,
+with nothing in the project to explain why."
+  (test-dir-locals--with-temp-base-dir root
+    (org-scribe--write-dir-locals root 'es)
+    (should (equal (test-dir-locals--dictionary root) "es_ES"))
+    (should (equal (test-dir-locals--jinx-language root) "es_ES"))))
+
+(ert-deftest test-dir-locals-jinx-language-is-safe-without-jinx ()
+  "`jinx-languages' applies without prompting even when jinx is absent.
+
+Jinx declares the property itself, but through an autoload, so it is
+only in force once jinx is installed.  Without org-scribe declaring it
+too, a project opened on a machine that lacks jinx would ask the writer
+to approve the local variables list on every file — reintroducing the
+prompt this whole arrangement exists to remove.  This test runs in a
+batch Emacs with no jinx loaded, which is exactly the case at issue."
+  (should-not (featurep 'jinx))
+  (should (safe-local-variable-p 'jinx-languages "es_ES"))
+  (should-not (safe-local-variable-p 'jinx-languages 42)))
+
+(ert-deftest test-dir-locals-regional-variant-reaches-both-variables ()
+  "A configured regional dictionary is written for both checkers.
+One option governs both, so the two can never disagree about a project."
+  (test-dir-locals--with-temp-base-dir root
+    (let ((org-scribe-ispell-dictionaries '((es . "es_MX"))))
+      (org-scribe--write-dir-locals root 'es))
+    (should (equal (test-dir-locals--dictionary root) "es_MX"))
+    (should (equal (test-dir-locals--jinx-language root) "es_MX"))))
 
 (ert-deftest test-dir-locals-names-the-authoritative-file ()
   "The generated file points a reader at .org-scribe-project.

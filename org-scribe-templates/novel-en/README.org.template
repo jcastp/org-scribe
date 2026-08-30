@@ -1,6 +1,7 @@
 #+TITLE: ${TITLE} - Project Overview
 #+AUTHOR: ${AUTHOR}
 #+DATE: ${DATE}
+#+LANGUAGE: en
 #+STARTUP: overview
 
 * Project Information

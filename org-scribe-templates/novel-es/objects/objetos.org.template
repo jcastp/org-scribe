@@ -1,5 +1,6 @@
 #+TITLE: ${TITLE} - Objetos Importantes
 #+AUTHOR: ${AUTHOR}
+#+LANGUAGE: es
 #+STARTUP: overview
 
 * Objetos Mágicos/Especiales

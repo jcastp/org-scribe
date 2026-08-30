@@ -324,14 +324,30 @@ spelling dictionary follows from it, so project creation writes one
 ;;; Written by org-scribe.  Language: es (see .org-scribe-project).
 ;;; Regenerate with M-x org-scribe-update-dir-locals.
 
-((nil . ((ispell-local-dictionary . "es_ES"))))
+((nil . ((ispell-local-dictionary . "es_ES")
+         (jinx-languages . "es_ES"))))
 #+end_src
+
+The language is named twice because the two spell checkers in common use read
+different variables and neither falls back to the other: =ispell-local-dictionary=
+for ispell and flyspell, =jinx-languages= for [[https://github.com/minad/jinx][jinx]]. If you use jinx, that second
+line is also what gives you the right *word completion*: a =cape-dict= word list
+keyed on =jinx-languages= follows the project automatically. One value serves
+both, since the codes coincide — they resolve against the same hunspell data.
 
 Every file in the project gets the right dictionary, including the notes, the
 journal, the plan, and anything you or =org-scribe-capture= create later —
-none of which would ever grow a per-file =Local Variables= block. Because
-=ispell-local-dictionary= is a declared-safe local variable, it applies
-silently; Emacs never asks you to approve it.
+none of which would ever grow a per-file =Local Variables= block. Both
+variables are declared-safe locals, so the file applies silently; Emacs never
+asks you to approve it. (org-scribe declares =jinx-languages= safe itself, so
+the project stays silent on machines where jinx is not installed.)
+
+Templates also ship a =#+LANGUAGE:= keyword in every file, which jinx reads
+natively. That is the fallback for a file opened *outside* its project tree,
+where no directory-local applies — a chapter mailed to a reader, a notes file
+copied elsewhere. Inside the project the =.dir-locals.el= wins, which is the
+right way round: the project is authoritative, and deleting a keyword line
+costs you nothing.
 
 To use a regional variant, set the mapping before creating projects:
 
