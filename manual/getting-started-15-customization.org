@@ -630,6 +630,47 @@ Controls which templates are used when creating projects:
 - Template content language
 - Default scene/chapter templates
 
+** Spelling Dictionary Per Project
+
+A project is written in one language, so the spelling dictionary belongs to the
+project rather than to each file. When org-scribe creates a project it writes a
+~.dir-locals.el~ at the project root pinning ~ispell-local-dictionary~, and
+every file in the project — manuscript, notes, planning files, and anything you
+add later — picks it up automatically, with no prompt.
+
+Which dictionary name gets written comes from this alist:
+
+#+BEGIN_SRC emacs-lisp
+;; Default
+(setq org-scribe-ispell-dictionaries '((en . "en_US")
+                                       (es . "es_ES")))
+
+;; Regional variants
+(setq org-scribe-ispell-dictionaries '((en . "en_GB")
+                                       (es . "es_MX")))
+#+END_SRC
+
+The key is the *project* language (from ~.org-scribe-project~), not your global
+~org-scribe-template-language~ default — so a Spanish project keeps its Spanish
+dictionary even when your default is English. A language with no entry, or an
+entry of ~nil~, means "write no dictionary" rather than guessing one.
+
+To apply a change to projects that already exist, or to give an older project
+its first ~.dir-locals.el~, run ~M-x org-scribe-update-dir-locals~ (~F8 F8 L D~)
+inside the project. It reads the language from the marker file and asks before
+replacing an existing file. The project health report flags a missing or
+mismatched dictionary in its Overview.
+
+If you manage directory-local variables yourself, turn the whole thing off:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-write-dir-locals nil)
+#+END_SRC
+
+Nothing else in org-scribe reads the generated file — it exists purely for
+Emacs's own spell checking. A per-file ~# Local Variables:~ block still
+overrides it, and ~guess-language~, if you use it, overrides both.
+
 ** Bilingual Setup
 
 If you write in both languages, you can:

@@ -65,6 +65,12 @@ Controls which language templates are used when creating new projects. Set to ~'
 
 *Status*: Fully implemented | *Hydra*: N/A (configuration) | *Module*: ~templates/org-scribe-project.el~
 
+** Project Spelling Dictionary (~org-scribe-update-dir-locals~)
+
+Writes a ~.dir-locals.el~ at the project root pinning ~ispell-local-dictionary~ to the project's language, so every file in the project — manuscript, planning files, notes, journal, and anything created later by capture or the planner — spell checks against the right dictionary with no per-file setup. Created automatically alongside the ~.org-scribe-project~ marker file, before the initial git commit; the marker file remains the single source of truth for the language and the dictionary is derived from it. The variable written carries a ~safe-local-variable~ property, so Emacs applies it silently rather than asking the writer to approve a local variables list on every open. The interactive command creates or refreshes the file for an existing project (asking before replacing one), which is how projects created before this feature — or projects whose configured dictionary changed — catch up; the project health report flags a missing or mismatched file. A per-file ~Local Variables~ block still overrides the project-wide setting, and ~guess-language~ overrides both.
+
+*Status*: Fully implemented | *Hydra*: ~D~ (Links & Upkeep submenu) | *Module*: ~templates/org-scribe-project.el~
+
 ** Git Integration
 
 Automatically initializes a git repository for new projects and creates an initial commit after template processing. This provides version control from the start of a project, enabling writers to track changes to their manuscript and planning documents. The .org-scribe-project marker file is included in the initial commit. Projects can be easily pushed to remote repositories for backup and collaboration.
@@ -529,7 +535,7 @@ To use column view with writing projects, add a ~#+COLUMNS~ line to your manuscr
 
 Aggregates project-wide statistics into a single ~*org-scribe-health*~ buffer displayed as an org-mode file with clickable ~[[id:...]]~ links back to individual scenes.  The report is organised into seven sections, plus an optional eighth when the bundled writing planner is active for the project:
 
-1. *Overview* — manuscript filename (linked), total scene count, words written (summed from level-3 ~:WORDCOUNT:~), chapter objectives (summed from level-2 ~:WORD-OBJECTIVE:~), and progress percentage.  Using separate levels for actual vs. target avoids the double-counting that would occur if both chapter and scene objectives were totalled together.
+1. *Overview* — manuscript filename (linked), total scene count, words written (summed from level-3 ~:WORDCOUNT:~), chapter objectives (summed from level-2 ~:WORD-OBJECTIVE:~), and progress percentage.  Using separate levels for actual vs. target avoids the double-counting that would occur if both chapter and scene objectives were totalled together.  A ~Spelling dictionary~ line appears here only when the project's ~.dir-locals.el~ is missing or names a dictionary that disagrees with the project language — drift that is otherwise invisible until a spell check argues with the prose; ~M-x org-scribe-update-dir-locals~ fixes it.
 
 2. *Writing Plan* (optional) — plan title, target word count, current word count and percentage, daily target, end date, and on-track/behind status.  Shown only when a plan is loaded for the project and the project has not opted out of the planner; otherwise a creation/load hint is shown instead, and the section is omitted entirely for a project that declined the planner.
 
@@ -594,6 +600,12 @@ A minor mode that provides the package's keybindings. When enabled in an org-mod
 Points to the directory containing project templates (novel-en/, novel-es/, short-story-en/, short-story-es/). Defaults to the package's bundled templates but can be customized to point to user templates. This allows writers to maintain custom project structures while still using the package's project creation functions. Templates are processed recursively with variable substitution for ${TITLE}, ${AUTHOR}, and ${DATE}.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~templates/org-scribe-project.el~
+
+** Spelling Dictionaries (~org-scribe-ispell-dictionaries~)
+
+Maps a project language to the ispell dictionary name recorded in that project's ~.dir-locals.el~ (default: ~'((en . "en_US") (es . "es_ES"))~). Set a regional variant — ~en_GB~, ~es_MX~, ~es_AR~ — to have new projects use it; run ~M-x org-scribe-update-dir-locals~ inside an existing project to apply a change there. The key is the project's own language, read from ~.org-scribe-project~, not the global ~org-scribe-template-language~ default, so a Spanish project keeps its Spanish dictionary whatever your default for new projects is. A language with no entry, or an entry of ~nil~, writes no dictionary rather than guessing one. A companion boolean, ~org-scribe-write-dir-locals~ (default ~t~), turns the whole mechanism off for writers who manage directory-local variables themselves; an existing ~.dir-locals.el~ is never overwritten by project creation either way.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
 ** Writing Stories Directory (~org-scribe-stories-directory~)
 

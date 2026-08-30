@@ -17,6 +17,7 @@
 - *Chapter Insertion*: Add chapter templates with word count tracking; automatically inserts a ready-to-fill first scene below the chapter heading
 - *Template Customization*: Edit templates to match your workflow
 - *Bilingual Support*: English and Spanish templates included, structurally identical and test-enforced
+- *Project-Wide Spelling Dictionary*: a generated =.dir-locals.el= points every file in the project at the dictionary for its language, with no per-file setup and no local-variables prompt ([[*Spelling dictionary for the whole project][details]])
 - *Git Integration*: Projects automatically initialized with git
 
 *** Writing Tools
@@ -1027,7 +1028,7 @@ writing planner is active for the project):
 
 | Section                 | What it shows                                                                                                       |
 |-------------------------+---------------------------------------------------------------------------------------------------------------------|
-| *Overview*                | Manuscript file, scene count, words written, chapter objectives, %                                                  |
+| *Overview*                | Manuscript file, scene count, words written, chapter objectives, %; plus a spelling-dictionary line when it drifts   |
 | *Writing Plan* (optional) | Plan title, target, current %, daily target, end date — only when a plan is loaded and the project hasn't opted out |
 | *Scenes by Status*        | Count of scenes per TODO state (TODO, DONE, custom keywords)                                                        |
 | *Per-PoV Word Share*      | Scene count and word count per PoV character, with % of total                                                       |
@@ -1042,6 +1043,13 @@ Actual words are summed from level-3 (scene) =:WORDCOUNT:= properties; the
 target is summed from level-2 (chapter) =:WORD-OBJECTIVE:= properties.  This
 avoids double-counting that would occur if both chapter and scene objectives
 were summed together.
+
+*** Spelling dictionary drift
+
+The Overview gains a =- Spelling dictionary ::= line only when the project's
+=.dir-locals.el= is missing, or names a dictionary that disagrees with the
+language recorded in =.org-scribe-project=. The marker file is authoritative;
+=M-x org-scribe-update-dir-locals= regenerates from it.
 
 *** Orphan detection
 
@@ -1414,11 +1422,14 @@ Tag the current scene's properties with ID-based links:
 *Whole-project upkeep:*
 - =R= - Relink entire project (add IDs, link plain names, refresh display names)
 - =j= - Jump to a plot thread
+- =J= - Jump to a plot point
+- =D= - Create or refresh the project's spelling dictionary (=.dir-locals.el=)
 
 *One-time set-up per entity type:*
 - =c= - Setup character linking system
 - =o= - Setup location linking system
 - =p= - Setup plot thread linking system
+- =P= - Setup plot point linking system
 - =r= - Setup character relationships system
 
 *Relationships:*

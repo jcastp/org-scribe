@@ -162,6 +162,7 @@ Your new project has this structure:
 The Morning Routine/           (your project folder)
 ├── .git/                      (version control - automatic!)
 ├── .org-scribe-project        (marker file - identifies this as a writing project)
+├── .dir-locals.el             (spelling dictionary for every file in the project)
 ├── README.org                 (overview and quick links - YOU ARE HERE)
 ├── story.org                  (your main manuscript)
 └── notes.org                  (planning: characters, plot, locations, etc.)
@@ -233,6 +234,50 @@ This hidden file tells Emacs: "This directory is a writing project!"
 
 *Important*: Don't delete this file! The package needs it, and hand-editing the ~# Language:~ or ~# Planner:~ lines works too, as long as you keep the ~# Key: value~ format.
 
+** The .dir-locals.el File (Your Spelling Dictionary)
+
+Your project is written in one language — you chose it at Step 4, and it is
+recorded in the marker file you just read. The spelling dictionary follows from
+that choice, so project creation writes it once, at the project root:
+
+#+BEGIN_EXAMPLE
+;;; Directory Local Variables            -*- no-byte-compile: t -*-
+;;; Written by org-scribe.  Language: en (see .org-scribe-project).
+;;; Regenerate with M-x org-scribe-update-dir-locals.
+
+((nil . ((ispell-local-dictionary . "en_US"))))
+#+END_EXAMPLE
+
+*What this does for you*: every file in the project — the manuscript, the notes,
+the planning files, the writing journal, and anything you create later — spell
+checks against the right dictionary, without you setting anything per file.
+Emacs applies it silently; it will not ask you to approve it.
+
+*If you want a different regional variant* (British English, Mexican Spanish),
+tell org-scribe once, before creating projects:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-ispell-dictionaries '((en . "en_GB") (es . "es_MX")))
+#+END_SRC
+
+Then run ~M-x org-scribe-update-dir-locals~ inside any existing project to
+rewrite its file. You can also just edit the dictionary name in
+~.dir-locals.el~ by hand — nothing in org-scribe reads it back.
+
+*Things worth knowing*:
+- Projects created with older versions of org-scribe don't have this file.
+  ~M-x org-scribe-update-dir-locals~ (or ~F8 F8 L D~) creates it, reading the
+  language from ~.org-scribe-project~. The project health report (~F8 F8 H~)
+  tells you when it's missing or when it disagrees with the project language.
+- A single file can still override the project: a ~# Local Variables:~ block at
+  the end of that file wins. Handy for a research file full of quotations in
+  another language.
+- If you use the ~guess-language~ package, it detects the language per paragraph
+  and overrides both — which is what you want from it.
+- Spell-checking *inside* a capture buffer doesn't see this setting, because
+  capture works in a special kind of buffer that doesn't pick up directory
+  settings. Spell check after the capture is filed.
+
 ** Git Integration
 
 Your project is automatically a git repository!
@@ -268,6 +313,7 @@ A novel project has more files:
 My Fantasy Novel/
 ├── .git/
 ├── .org-scribe-project
+├── .dir-locals.el             (spelling dictionary for every file in the project)
 ├── README.org                 (overview and navigation)
 ├── design.org                 (START HERE: the Starting Gate and the Core)
 ├── novel.org                  (main manuscript - word count and progress tracking live here, not a separate file)

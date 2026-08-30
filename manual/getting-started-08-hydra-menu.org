@@ -284,15 +284,17 @@ _q_: Back to main menu            _Q_: Quit
 ^Whole project^          ^Set up linking^       ^Relationships^             ^Analysis & Display^
 _R_: Relink everything    _c_: Characters        _a_: Add relationship       _t_: Plot health report
 _j_: Jump to plot thread  _o_: Locations         _x_: Remove relationship    _S_: Plot statistics
-                          _p_: Plot threads      _v_: View relationships     _C_: Column view toggle
-                          _r_: Relationships     _V_: View all relationships _T_: Tooltips toggle
+_J_: Jump to plot point   _p_: Plot threads      _v_: View relationships     _C_: Column view toggle
+_D_: Spelling dictionary  _P_: Plot points       _V_: View all relationships _T_: Tooltips toggle
+                          _r_: Relationships
 _q_: Back to main menu    _Q_: Quit
 #+END_EXAMPLE
 
 *What it does*:
 - ~R~ - Relink project: the headline command. Runs one pass across the entire project — adds any missing IDs, converts plain character/location/plot names to ID links, and refreshes all display names. This replaces the old per-entity "add IDs / link / update" commands.
-- ~j~ - Jump to a plot thread's profile
-- ~c~ / ~o~ / ~p~ - One-time setup wizard for character / location / plot linking
+- ~j~ / ~J~ - Jump to a plot thread's profile / to one of the thirteen plot points
+- ~D~ - Spelling dictionary: create or refresh the project's ~.dir-locals.el~ so every file spell checks against the project's language. Use it on projects created before org-scribe generated that file, or after changing ~org-scribe-ispell-dictionaries~. It asks before replacing an existing file. See Lesson 1.
+- ~c~ / ~o~ / ~p~ / ~P~ - One-time setup wizard for character / location / plot thread / plot point linking
 - ~r~ - Setup character relationship tracking
 - ~a~ / ~x~ - Add or remove a relationship between two characters
 - ~v~ / ~V~ - View relationships (one character / all characters, as a plain list / table)
