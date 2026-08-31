@@ -32,7 +32,7 @@ Let's verify the package is loaded correctly:
 2. Start typing: ~org-scribe-version~
 3. Press Enter
 
-You should see a message like: *"org-scribe version 0.6.0"*
+You should see a message like: *"org-scribe version 0.7.0"*
 
 If you see this message, you're ready! If not, make sure you've installed the package correctly.
 

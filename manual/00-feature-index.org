@@ -7,7 +7,7 @@
 
 This document provides a comprehensive index of all features in the ~org-scribe~ package. Each feature is briefly described in a paragraph. Detailed documentation for each feature will be available in separate files linked from this index.
 
-*Version*: 0.6.0 (includes merged emacs-org-scribe-template functionality)
+*Version*: 0.7.0 (includes merged emacs-org-scribe-template functionality)
 
 *Package Overview*: ~org-scribe~ is a comprehensive toolkit for creative writers working in Org-mode, providing everything from project templates to export filters for novelists and short story writers.
 

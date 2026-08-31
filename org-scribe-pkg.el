@@ -6,7 +6,7 @@
 
 ;;; Code:
 
-(define-package "org-scribe" "0.6.0"
+(define-package "org-scribe" "0.7.0"
   "Comprehensive toolkit for creative writing in Org-mode"
   '((emacs "29.1")
     (org "9.6")
