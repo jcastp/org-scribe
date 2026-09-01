@@ -269,6 +269,39 @@ paragraph instead of just looking plain."
   :type '(alist :key-type symbol :value-type string)
   :group 'org-scribe)
 
+(defcustom org-scribe-compile-output-directory "export"
+  "Directory, relative to the project root, where compiled manuscripts go.
+`org-scribe-compile' creates it on demand and writes both the
+intermediate Org file and the rendered output there.  It is deliberately
+not the project root: the root is the writer's workspace, and compiled
+output is a build artifact worth keeping out of it (and out of version
+control)."
+  :type 'string
+  :group 'org-scribe)
+
+(defcustom org-scribe-compile-scene-break "⁂"
+  "Text placed between consecutive scenes by `org-scribe-compile'.
+Rendered inside an Org =center= block, which makes it a real block-level
+element in every backend rather than a string patched into the finished
+output -- the reason the compiled ODT gets a sibling paragraph instead of
+the nested, invalid `text:p' the `SCENE-BREAK' macro produces.
+
+The default is U+2042 ASTERISM, the typographic mark for a scene break.
+Two shapes look obvious and do not work, both confirmed against real
+exports:
+
+  - Anything beginning with `*'.  A line starting with `* ' is parsed as
+    an Org *headline* even inside a center block, which silently splits
+    the manuscript in two; and a bare `***' is consumed by the emphasis
+    parser, reaching ODT as a bold `*'.
+  - Anything beginning with `#'.  That is an Org comment, so the break
+    vanishes from the output with nothing to show it was ever there.
+
+`org-scribe-compile' refuses to run rather than emit either, so a bad
+value is reported instead of silently corrupting a manuscript."
+  :type 'string
+  :group 'org-scribe)
+
 ;;; Search Configuration
 
 (defcustom org-scribe-todo-keywords

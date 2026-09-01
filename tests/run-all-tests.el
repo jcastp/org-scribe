@@ -74,6 +74,7 @@
     "test-link-update"             ; Link display name updates
     "test-column-view"             ; Column view enhancement
     "test-export"                  ; Export filters
+    "test-compile"                 ; Manuscript compilation
     "test-dictionary"              ; Dictionary and language tools
     "test-mythes"                  ; Offline MyThes thesaurus reader
     "test-lemma"                   ; Hunspell lemmatization
@@ -305,6 +306,14 @@ Suitable for CI/CD pipelines and automated testing."
   (ert "^test-health-"))
 
 ;;;###autoload
+(defun org-scribe-run-compile-tests ()
+  "Run manuscript compilation tests only."
+  (interactive)
+  (load-file (expand-file-name "test-compile.el"
+                               (file-name-directory
+                                (or load-file-name buffer-file-name))))
+  (ert "^test-compile-"))
+
 (defun org-scribe-run-export-tests ()
   "Run export filter tests only."
   (interactive)

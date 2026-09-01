@@ -78,6 +78,9 @@
       (require 'org-scribe-export)
       (message "✓ org-scribe-export loaded successfully")
 
+      (require 'org-scribe-compile)
+      (message "✓ org-scribe-compile loaded successfully")
+
       ;; Hydra is optional
       (when (require 'hydra nil t)
         (require 'org-scribe-hydra)

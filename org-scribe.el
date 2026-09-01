@@ -93,6 +93,10 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            (org-scribe-health      . "reporting/org-scribe-health")
            ;; Export and UI
            (org-scribe-export      . "export/org-scribe-export")
+           ;; Compile builds on the export filters' scoping helpers and on
+           ;; org-scribe-project-type; it loads after export, before the UI
+           ;; that binds its command.
+           (org-scribe-compile     . "export/org-scribe-compile")
            (org-scribe-hydra       . "ui/org-scribe-hydra")))
   (org-scribe--require (car module) (cdr module)))
 

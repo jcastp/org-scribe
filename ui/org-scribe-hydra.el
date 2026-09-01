@@ -44,6 +44,7 @@
 (declare-function org-scribe-capture-object "capture/org-scribe-capture")
 (declare-function org-scribe-capture-timeline "capture/org-scribe-capture")
 (declare-function org-scribe-capture-plot-thread "capture/org-scribe-capture")
+(declare-function org-scribe-compile "export/org-scribe-compile")
 (declare-function org-scribe-wordcount "counting/org-scribe-wordcount")
 (declare-function org-scribe-ews-org-count-words "counting/org-scribe-wordcount")
 (declare-function org-scribe-org-find-pov "search/org-scribe-search")
@@ -155,6 +156,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 ^^               _v_: Navigate    _g_: Plot threads    _y_: Synonyms        _4_: Location     _R_: Relink project
 ^^               _0_: Normal      _j_: Jump to PoV     _x_: Thesaurus       _5_: TODOs        _H_: Health report
 ^^               ^^               ^^                   ^^                   _6_: Edits        _W_: Planner…
+^^               ^^               ^^                   ^^                   ^^                _X_: Compile draft
 ^^               ^^               ^^                   ^^                   ^^                _q_: Quit
 "
   ;; Insert (most frequent)
@@ -203,6 +205,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("L" hydra-org-scribe-links/body "links & upkeep")
   ("R" org-scribe-relink-project "relink project")
   ("H" org-scribe-project-health "project health report")
+  ("X" org-scribe-compile "compile manuscript")
   ("W" (lambda ()
          (interactive)
          (if (eq (org-scribe-planner-gate) 'no)
