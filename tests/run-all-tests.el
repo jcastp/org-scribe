@@ -63,6 +63,7 @@
     "test-scene-property-localization" ; Localized scene property aliases
     "test-project"                 ; Project creation
     "test-dir-locals"              ; Project-wide spelling dictionary
+    "test-refile"                  ; Project-wide org-refile targets
     "test-capture"                 ; Capture system
     "test-modes"                   ; Writing environment modes
     "test-search"                  ; Search functions
@@ -175,6 +176,14 @@ Suitable for CI/CD pipelines and automated testing."
   (load-file (expand-file-name "test-dir-locals.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (ert "^test-dir-locals-"))
+
+;;;###autoload
+(defun org-scribe-run-refile-tests ()
+  "Run project-wide refile target tests only."
+  (interactive)
+  (load-file (expand-file-name "test-refile.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-refile-"))
 
 ;;;###autoload
 (defun org-scribe-run-capture-tests ()

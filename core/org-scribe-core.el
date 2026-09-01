@@ -507,6 +507,118 @@ NAME should be a string identifying the function for error messages."
       (message "Error in %s: %s" ,name (error-message-string err))
       nil)))
 
+;;; Refile Targets
+
+(defun org-scribe--project-refile-files ()
+  "Return every real file in the current project, for `org-refile-targets'.
+Derives the list from `org-scribe-project-structure' rather than probing
+the filesystem again, keeping only its file-valued keys (`:root' and
+`:notes-dir' are directories, not files, so they are excluded) and
+dropping any that resolved to nil because that file does not exist in
+this project.  Files `org-scribe-project-structure' never resolves at
+all — README.org, the writing journal — are excluded for free by using
+it as the sole source of truth here, with no name-based filtering
+needed.
+
+One file is resolved separately rather than through that plist: a
+short-story manuscript (story.org/cuento.org) has no key of its own in
+`org-scribe-project-structure' — its `:novel-file' only ever matches
+novel.org/novela.org, so a short-story project's own manuscript would
+otherwise be silently missing from its own refile targets, the one file
+a writer most wants to refile from.  `org-scribe-project-structure' is
+left alone rather than widened here: several other modules already key
+behavior off `:novel-file' being nil for a short-story project, so
+changing what it resolves is a larger, separate change than this
+feature calls for."
+  (let* ((structure (org-scribe-project-structure))
+         (manuscript (or (plist-get structure :novel-file)
+                         (org-scribe--find-existing-file
+                          (plist-get structure :root) "story.org" "cuento.org"))))
+    (delq nil
+          (list manuscript
+                (plist-get structure :notes-file)
+                (plist-get structure :characters-file)
+                (plist-get structure :locations-file)
+                (plist-get structure :plot-file)
+                (plist-get structure :timeline-file)
+                (plist-get structure :objects-file)
+                (plist-get structure :design-file)
+                (plist-get structure :plan-file)))))
+
+(defconst org-scribe--refile-unset 'org-scribe--refile-unset
+  "Sentinel distinguishing \"nothing saved yet\" from a saved value of nil.
+`org-refile-use-outline-path' defaults to nil, so a plain nil default on
+the variables below would be indistinguishable from \"I saved nil\" —
+the same trap a naive `Weight' read falls into elsewhere in this
+package.  Never compare a saved slot to nil to decide whether it holds
+a real value; use `eq' against this sentinel instead.")
+
+(defvar-local org-scribe--refile-saved-targets org-scribe--refile-unset
+  "This buffer's `org-refile-targets' from before org-scribe overrode it.
+Restored by `org-scribe--refile-disable'.  See `org-scribe--refile-unset'.")
+
+(defvar-local org-scribe--refile-saved-outline-path org-scribe--refile-unset
+  "This buffer's `org-refile-use-outline-path' from before org-scribe overrode it.
+Restored by `org-scribe--refile-disable'.  See `org-scribe--refile-unset'.")
+
+(defun org-scribe--refile-enabled-p ()
+  "Non-nil when this buffer's refile variables are currently org-scribe's."
+  (not (eq org-scribe--refile-saved-targets org-scribe--refile-unset)))
+
+(defun org-scribe--refile-enable ()
+  "Point this buffer's refile targets at every file in its project.
+Saves the buffer's current `org-refile-targets' and
+`org-refile-use-outline-path' the first time this runs, so
+`org-scribe--refile-disable' can restore exactly what was there before,
+then sets both buffer-locally: targets to every real project file with
+every heading level offered (`t', Org's own \"all headlines\" spelling —
+see `org-scribe--project-refile-files' for the file list itself), and
+outline-path display to `file'
+so a completion candidate names the file it comes from (a scene in the
+manuscript vs. a character in objects/characters.org read identically
+by heading text alone). Also turns on Org's own refile cache
+(`org-refile-use-cache'), since a project-wide file list is exactly the
+case that cache exists for and it is off by default in stock Org."
+  (unless (org-scribe--refile-enabled-p)
+    (setq org-scribe--refile-saved-targets org-refile-targets
+          org-scribe--refile-saved-outline-path org-refile-use-outline-path))
+  ;; The cdr here is the target-description slot, not an optional
+  ;; keyword-plist: `t' is Org's own spelling for "all headlines,"
+  ;; and omitting it (a bare `(org-scribe--project-refile-files)') is
+  ;; read by `org-refile-get-targets' as a target description of nil,
+  ;; which is not one of its recognized forms and errors as "Bad
+  ;; refiling target description."
+  (setq-local org-refile-targets '((org-scribe--project-refile-files . t)))
+  (setq-local org-refile-use-outline-path 'file)
+  (setq org-refile-use-cache t))
+
+(defun org-scribe--refile-disable ()
+  "Restore this buffer's refile variables to their pre-org-scribe values.
+No-op if `org-scribe--refile-enable' was never called in this buffer."
+  (when (org-scribe--refile-enabled-p)
+    (setq-local org-refile-targets org-scribe--refile-saved-targets)
+    (setq-local org-refile-use-outline-path org-scribe--refile-saved-outline-path)
+    (setq org-scribe--refile-saved-targets org-scribe--refile-unset
+          org-scribe--refile-saved-outline-path org-scribe--refile-unset)))
+
+(defun org-scribe--refile-maybe-setup ()
+  "Set up or tear down project-wide refile targets for this buffer.
+Added to `org-scribe-mode-hook', which runs whenever `org-scribe-mode' is
+toggled on OR off — both directions matter here, since a buffer where
+org-scribe-mode is turned off must not keep pointing `org-refile-targets'
+at a now-stale project file list.  Applies only when `org-scribe-mode' is
+on, `org-scribe-refile-project-wide' is non-nil, and this buffer is
+inside a project org-scribe actually recognizes (`org-scribe-project-type'
+is not `unknown') — otherwise any prior override is torn down and the
+buffer's own refile configuration is left alone."
+  (if (and org-scribe-mode
+           (bound-and-true-p org-scribe-refile-project-wide)
+           (not (eq (org-scribe-project-type) 'unknown)))
+      (org-scribe--refile-enable)
+    (org-scribe--refile-disable)))
+
+(add-hook 'org-scribe-mode-hook #'org-scribe--refile-maybe-setup)
+
 (provide 'org-scribe-core)
 
 ;;; org-scribe-core.el ends here

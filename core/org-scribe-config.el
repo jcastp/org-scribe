@@ -471,6 +471,32 @@ one prefix argument always mints IDs regardless of this setting)."
   :type 'boolean
   :group 'org-scribe)
 
+;;; Refile Targets
+
+(defcustom org-scribe-refile-project-wide t
+  "When non-nil, point `org-refile-targets' at the whole current project.
+Every file `org-scribe-project-structure' resolves for the project —
+the manuscript, the entity files under objects/ (or the consolidated
+notes.org for a short story), design.org, and plan.org — becomes a
+refile target, with every heading level offered (no `:maxlevel'
+restriction). This lets you refile e.g. a loose note directly under
+the right character, or move a scene between chapters, without
+switching buffers first.
+
+Takes effect only in a buffer where `org-scribe-mode' is on and inside
+a project org-scribe recognizes (`org-scribe-project-type' is not
+`unknown'); outside a project, or with this nil, your own
+`org-refile-targets' is left untouched. Also sets
+`org-refile-use-outline-path' to `file' in such buffers, so a
+completion candidate names the file it comes from.
+
+Defaults to on, unlike the save-time automations above: nothing here
+touches buffer contents or runs on every save, it only changes what
+`org-refile' offers when you invoke it. Disable to keep
+`org-refile-targets' exactly as you configured it."
+  :type 'boolean
+  :group 'org-scribe)
+
 ;;; Editing Mode Configuration
 
 (defcustom org-scribe-editing-left-width-percent 0.25
