@@ -181,7 +181,8 @@ recommended keybindings and hooks."
      (org-remark     . "Text annotations")
      (ox-extra       . "Makes the :ignore: tag on scene/chapter headings actually drop the title from export while keeping its body; part of the org-contrib package. Without it, exported manuscripts show raw TODO keywords and heading titles.")
      ("pdflatex"     . "PDF output from `org-scribe-compile'; needs a LaTeX distribution (TeX Live, MacTeX, or MiKTeX). Without it, `org-scribe-compile' reports the missing tool by name rather than failing partway through.")
-     ("pandoc"       . "DOCX output from `org-scribe-compile'; needs the pandoc command-line tool (https://pandoc.org). Without it, `org-scribe-compile' reports the missing tool by name rather than failing partway through.")))
+     ("pandoc"       . "DOCX output from `org-scribe-compile'; needs the pandoc command-line tool (https://pandoc.org). Without it, `org-scribe-compile' reports the missing tool by name rather than failing partway through.")
+     (ox-epub        . "EPUB output from `org-scribe-compile'. Not on a package archive by default on all systems; available via MELPA (M-x package-install RET ox-epub RET). Without it, `org-scribe-compile' reports it by name rather than failing partway through.")))
   "org-scribe dependencies grouped by importance, each with a description.
 Only the `:required' group is needed for the package to load; the
 `:recommended' group degrades gracefully when absent and the `:optional'

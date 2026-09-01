@@ -182,6 +182,10 @@ writes a separate file rather than overwriting the `clean' one."
   (executable-find "pandoc")
   "Non-nil when pandoc is on PATH.")
 
+(defvar org-scribe-compile-test--epub-available
+  (and (require 'ox-epub nil t) (fboundp 'org-epub-export-to-epub))
+  "Non-nil when this Emacs can export EPUB (the optional `ox-epub' package).")
+
 (defun org-scribe-compile-test--magic-bytes (file n)
   "Return the first N bytes of FILE as a unibyte string."
   (with-temp-buffer
@@ -525,6 +529,122 @@ satisfies `file-exists-p'."
         (call-process "pandoc" nil t nil "-f" "docx" "-t" "plain" output)
         (should (string-match-p "door creaked open" (buffer-string)))
         (should (string-match-p "Chapter 1" (buffer-string)))))))
+
+;;; EPUB
+
+(ert-deftest test-compile-epub-file-is-a-real-container ()
+  "EPUB compiles to an actual EPUB container, via `org-epub-export-to-epub'.
+Checks the zip magic bytes and the EPUB-specific `mimetype' member (the
+first entry in every valid EPUB, required to be stored uncompressed and
+to read exactly \"application/epub+zip\") rather than just
+`file-exists-p', matching every other packaged-format test in this
+file: existence alone would also be true of a broken or empty file."
+  (skip-unless org-scribe-compile-test--epub-available)
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (let ((output (org-scribe-compile 'clean 'epub)))
+      (should (string-suffix-p ".epub" output))
+      (should (file-exists-p output))
+      (should (string= "PK" (org-scribe-compile-test--magic-bytes output 2)))
+      (with-temp-buffer
+        (call-process "unzip" nil t nil "-p" output "mimetype")
+        (should (string= "application/epub+zip" (string-trim (buffer-string))))))))
+
+(ert-deftest test-compile-epub-scene-break-has-distinct-class ()
+  "The compiled scene break gets its own CSS class in the EPUB body,
+distinguishing it from an ordinary `.org-center' block -- the actual
+point of `org-scribe--compile-filter-epub-scene-break': without it, a
+scene break looks identical to any other centered paragraph, with no
+visual signal that a break happened."
+  (skip-unless org-scribe-compile-test--epub-available)
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (let ((output (org-scribe-compile 'clean 'epub)))
+      (with-temp-buffer
+        (call-process "unzip" nil t nil "-p" output "body.html")
+        (let ((body (buffer-string)))
+          (should (string-match-p "class=\"org-scribe-scene-break\"" body))
+          (should (string-match-p "⁂" body))
+          (should (string-match-p "Chapter 1" body))
+          (should (string-match-p "door creaked open" body)))))))
+
+(ert-deftest test-compile-epub-scene-break-class-is-not-corrupted ()
+  "Regression test for a real bug found while building this: the CSS
+class `org-scribe-scene-break' contains, case-insensitively, the exact
+text the *pre-existing* {{{scene-break}}} macro's final-output filter
+(`org-scribe--export-replace-scene-breaks', export/org-scribe-export.el)
+searches for and replaces -- and that filter runs on the entire
+rendered document for any org-scribe-context export, EPUB included, not
+only where the old macro was actually used.  Before that filter was
+fixed to match case-sensitively, the class attribute came out as
+`org-scribe-<br><br><br>\\n\"', not `org-scribe-scene-break', silently
+breaking the CSS selector.  This asserts the class name survives intact
+through the *real* compile pipeline, not just the filter in isolation
+(which `test-scene-break-replacement-is-case-sensitive' in
+tests/test-export.el already covers)."
+  (skip-unless org-scribe-compile-test--epub-available)
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (let ((output (org-scribe-compile 'clean 'epub)))
+      (with-temp-buffer
+        (call-process "unzip" nil t nil "-p" output "body.html")
+        (should-not (string-match-p "<br>" (buffer-string)))
+        (should (string-match-p "\"org-scribe-scene-break\"" (buffer-string)))))))
+
+(ert-deftest test-compile-epub-ships-and-embeds-its-stylesheet ()
+  "The scene-break stylesheet exists on disk and is embedded in the EPUB,
+with its actual rule intact -- not just referenced by a path that might
+not resolve."
+  (skip-unless org-scribe-compile-test--epub-available)
+  (should (file-exists-p org-scribe--compile-epub-css))
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (let ((output (org-scribe-compile 'clean 'epub)))
+      (with-temp-buffer
+        (call-process "unzip" nil t nil "-p" output "style-1.css")
+        (should (string-match-p "\\.org-scribe-scene-break" (buffer-string)))))))
+
+(ert-deftest test-compile-epub-writer-own-center-block-keeps-plain-class ()
+  "A center block the writer wrote for their own reasons -- an epigraph,
+a few lines of verse -- is not mistaken for the scene break and keeps
+ox-epub's ordinary `.org-center' class."
+  (skip-unless org-scribe-compile-test--epub-available)
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      (concat "#+TITLE: T\n#+OPTIONS: todo:nil tags:nil\n\n"
+              "* Act I :ignore:\n** Chapter 1 :ignore:\n*** Scene 1 :ignore:\n"
+              "Prose.\n\n#+begin_center\nAn epigraph.\n#+end_center\n")
+    (let ((output (org-scribe-compile 'clean 'epub)))
+      (with-temp-buffer
+        (call-process "unzip" nil t nil "-p" output "body.html")
+        (should (string-match-p "An epigraph" (buffer-string)))
+        (should (string-match-p "class=\"org-center\"" (buffer-string)))
+        (should-not (string-match-p "org-scribe-scene-break" (buffer-string)))))))
+
+(ert-deftest test-compile-shunn-refuses-epub ()
+  "EPUB is reflowable; Shunn is a fixed-page standard, so it is not
+offered for EPUB, the same way `md' and `odt' are not."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (should-error (org-scribe-compile 'shunn 'epub) :type 'user-error))))
+
+(ert-deftest test-compile-refuses-when-ox-epub-is-missing ()
+  "A missing `ox-epub' is reported by name, not signalled as a crash."
+  (let ((real-require (symbol-function 'require)))
+    (cl-letf (((symbol-function 'require)
+               (lambda (feature &optional filename noerror)
+                 (if (eq feature 'ox-epub)
+                     (if noerror nil (signal 'file-missing (list "" feature)))
+                   (funcall real-require feature filename noerror)))))
+      (org-scribe-compile-test--with-project "novel" "novel.org"
+          org-scribe-compile-test--novel
+        (should-error (org-scribe-compile 'clean 'epub) :type 'user-error)))))
+
+(ert-deftest test-compile-epub-dependency-is-registered ()
+  "`ox-epub' appears in `org-scribe--dependencies' as :optional, so
+`org-scribe-setup-check' reports it."
+  (skip-unless (boundp 'org-scribe--dependencies))
+  (should (assq 'ox-epub (alist-get :optional org-scribe--dependencies))))
 
 (ert-deftest test-compile-refuses-when-pdflatex-is-missing ()
   "A missing pdflatex is reported by name, not signalled as a crash."

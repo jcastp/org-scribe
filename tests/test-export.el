@@ -51,6 +51,24 @@
 
 ;;; Scene Break Replacement Tests
 
+(ert-deftest test-scene-break-replacement-is-case-sensitive ()
+  "A case-insensitive occurrence of the macro text is left untouched.
+The macro always expands to exactly \"SCENE-BREAK\" (uppercase); a
+lowercase or mixed-case occurrence elsewhere in the document -- prose
+discussing a \"scene break\", or a CSS class name like
+\"org-scribe-scene-break\" (the bug this pins: found corrupting
+org-scribe-compile's EPUB output, because this filter runs on the
+*entire* rendered document under Emacs's usual case-insensitive
+default, not just at macro-expansion sites) -- must not be replaced."
+  (let ((text "See the org-scribe-scene-break CSS class.\nSCENE-BREAK\nDone.")
+        (backend 'ascii))
+    (let ((result (org-scribe--export-replace-scene-breaks text backend nil))
+          (case-fold-search nil))
+      ;; The lowercase occurrence survives verbatim...
+      (should (string-match-p "org-scribe-scene-break CSS class" result))
+      ;; ...while the real, uppercase macro expansion is gone.
+      (should-not (string-match-p "SCENE-BREAK" result)))))
+
 (ert-deftest test-scene-break-replacement-ascii ()
   "Test scene break replacement for ASCII backend."
   (let ((text "Some text before.\nSCENE-BREAK\nSome text after.")

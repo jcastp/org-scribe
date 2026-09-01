@@ -366,6 +366,12 @@ other STYLE (including nil) produces exactly the `clean' document."
       (when-let* ((value (org-scribe--compile-keyword-value keyword keywords))
                   ((org-string-nw-p value)))
         (insert (format "#+%s: %s\n" keyword value))))
+    ;; EPUBSTYLE is an ox-epub-only keyword; every other backend ignores
+    ;; an unrecognized keyword line, so it is written unconditionally
+    ;; rather than threading FORMAT through just to gate one line -- the
+    ;; same reasoning that keeps the LaTeX-only running header out of a
+    ;; format branch below.
+    (insert (format "#+EPUBSTYLE: %s\n" org-scribe--compile-epub-css))
     ;; num:nil because the writer's own heading text already says
     ;; "Chapter 1"; auto-numbering would silently disagree with a
     ;; chapter the writer renamed.  Shunn additionally suppresses Org's
@@ -509,6 +515,56 @@ does not match the single-line pattern and is left untouched."
 (add-to-list 'org-export-filter-center-block-functions
              #'org-scribe--compile-filter-latex-scene-break)
 
+;;; EPUB Rendering
+;;
+;; Unlike LaTeX, EPUB (XHTML under the hood) has no font-coverage problem
+;; with any of the shipped presets -- Unicode just works.  What it lacks
+;; is *distinction*: `org-html-center-block' (ox-epub derives from
+;; ox-html and does not override it) renders every center block, the
+;; writer's own epigraphs included, as the same
+;; `<div class="org-center">', so a scene break looks identical to any
+;; other centered paragraph -- no visual signal that a break happened.
+;;
+;; The fix is the same shape as the LaTeX one: a filter that recognizes
+;; the compiled scene break specifically and gives it its own class,
+;; `org-scribe-scene-break', styled by a small stylesheet
+;; (org-scribe-epub.css, shipped beside this file) with real margin and
+;; letter-spacing -- distinct from an ordinary `.org-center' block.  The
+;; writer's configured marker glyph itself is kept (no font problem to
+;; route around), only its wrapper changes.
+
+(defconst org-scribe--compile-epub-css
+  (expand-file-name "org-scribe-epub.css"
+                    (file-name-directory (or load-file-name buffer-file-name)))
+  "Path to the stylesheet `org-scribe-compile' points EPUB output at.
+Resolved against this file's own directory rather than
+`org-scribe--source-directory' (core/org-scribe-core.el), so it does not
+depend on load order: this constant is set once, at load time, from
+`load-file-name', which is already correct regardless of how the
+package was installed.")
+
+(defun org-scribe--compile-filter-epub-scene-break (data backend info)
+  "Give a compiled scene break its own styled class in EPUB output.
+DATA is the transcoded center block (`<div class=\"org-center\">...</div>'),
+BACKEND the backend name and INFO the export communication channel.
+Applies only to EPUB output for org-scribe documents, and only when the
+block's inner paragraph -- on its own line -- is the scene break itself;
+a multi-line center block (an epigraph, a few lines of verse the writer
+wrote for their own reasons) does not match the single-line pattern and
+keeps the plain `.org-center' class ox-epub already gives it."
+  (if (and (org-export-derived-backend-p backend 'epub)
+           (org-scribe--export-in-scribe-context-p info)
+           (string-match "\\`<div class=\"org-center\">\n<p>\n\\(.*\\)\n</p>\n</div>\n*\\'"
+                        data)
+           (string= (string-trim (match-string 1 data))
+                    (string-trim (or org-scribe-compile-scene-break ""))))
+      (concat "<div class=\"org-scribe-scene-break\">\n<p>"
+             (match-string 1 data) "</p>\n</div>\n\n")
+    data))
+
+(add-to-list 'org-export-filter-center-block-functions
+             #'org-scribe--compile-filter-epub-scene-break)
+
 ;;; Output Formats
 
 (defconst org-scribe--compile-formats
@@ -520,16 +576,21 @@ does not match the single-line pattern and is left untouched."
     (pdf  . (:extension "pdf"  :backend latex :library ox-latex
              :exporter org-latex-export-to-pdf :executable "pdflatex"))
     (docx . (:extension "docx" :backend nil   :library nil
-             :exporter org-scribe--compile-pandoc-export :executable "pandoc")))
+             :exporter org-scribe--compile-pandoc-export :executable "pandoc"))
+    (epub . (:extension "epub" :backend epub  :library ox-epub
+             :exporter org-epub-export-to-epub)))
   "Formats `org-scribe-compile' can produce, and what each needs.
-Every format needs at most an Elisp library (:library, always bundled
-with Org except EPUB's, which is not offered here) and at most one
+Every format needs at most an Elisp library (:library) and at most one
 external program (:executable, checked with `executable-find' rather
 than required as a library, since neither pdflatex nor pandoc is
 Elisp).  A missing executable is reported by name via
 `compile-backend-missing' before anything is written, and both are
 listed in `org-scribe--dependencies' as :optional so
-`org-scribe-setup-check' reports them too.")
+`org-scribe-setup-check' reports them too.  `epub' needs no external
+executable of its own: `ox-epub' shells out to `zip' internally, the
+same as `ox-odt' already does for `odt', and neither declares that as a
+separate org-scribe dependency for the same reason -- it is normally
+already on PATH wherever Emacs itself is.")
 
 (defun org-scribe--compile-pandoc-export ()
   "Convert the intermediate .org file to .docx with pandoc.

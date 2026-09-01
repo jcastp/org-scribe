@@ -15,8 +15,10 @@ By the end of this lesson, you'll have:
   a reader
 - Compiled a submission-ready manuscript in standard (Shunn) format,
   with a real contact block, word count, and running header
-- Understood org-mode's export system for everything compile doesn't do yet
-  (EPUB, full formatting control)
+- Compiled a styled EPUB, with scene breaks that stand out from
+  ordinary text
+- Understood org-mode's export system for everything compile doesn't
+  do yet (full formatting control, EPUB covers and metadata)
 - Learned to use the scene break macro for professional formatting
 - Exported your manuscript to PDF (via LaTeX)
 - Exported to Word-compatible format (ODT)
@@ -81,7 +83,7 @@ document to Org's own exporters.
 F8 F8 X          (or M-x org-scribe-compile)
 
 Compile style:  clean / shunn
-Compile the manuscript to:  org / txt / md / odt / pdf / docx
+Compile the manuscript to:  org / txt / md / odt / pdf / docx / epub
 #+END_EXAMPLE
 
 Pick ~clean~ (covered here first) and a format, and org-scribe writes two
@@ -95,10 +97,12 @@ adding to ~.gitignore~):
   transformation or in the renderer.
 
 ~org~, ~txt~, ~md~ and ~odt~ need nothing beyond Emacs. ~pdf~ needs a LaTeX
-distribution (~pdflatex~ on your PATH) and ~docx~ needs the ~pandoc~
-command-line tool — both optional, both reported by ~M-x
-org-scribe-setup-check~. If one is missing, compile refuses with the
-tool's name rather than writing a partial or broken file:
+distribution (~pdflatex~ on your PATH), ~docx~ needs the ~pandoc~
+command-line tool, and ~epub~ needs the optional ~ox-epub~ Emacs package
+(~M-x package-install RET ox-epub RET~ — unlike the others, not bundled
+with Org) — all optional, all reported by ~M-x org-scribe-setup-check~.
+If one is missing, compile refuses with the tool's name rather than
+writing a partial or broken file:
 
 #+BEGIN_EXAMPLE
 Cannot compile to docx: `pandoc' is not available
@@ -137,6 +141,14 @@ from Emacs. Three asterisks is also the traditional print-manuscript
 scene break, so PDF isn't losing anything by not matching your other
 formats here.
 
+*EPUB has no such problem* — it's Unicode all the way through, so
+whatever marker you've set renders exactly as configured. What EPUB
+gets instead is its own styling: a compiled scene break is given a
+distinct CSS class rather than looking like an ordinary centered
+paragraph, so it reads as a deliberate break in an e-reader. A center
+block you wrote yourself (an epigraph, a few lines of verse) is left
+with its plain styling.
+
 ** Try It Now! (2 minutes)
 
 1. Open your manuscript
@@ -146,6 +158,9 @@ formats here.
    drawers
 4. Try again with ~odt~ and open it in LibreOffice or Word
 5. If you have a LaTeX distribution installed, try ~pdf~ too
+6. If you have ~ox-epub~ installed, try ~epub~ and open it in an
+   e-reader app or Calibre — check that a scene break looks visually
+   distinct from ordinary text
 
 * Compiling a Submission Manuscript (Shunn Format)
 
@@ -209,11 +224,14 @@ Compile style:  shunn
 Compile the manuscript to:  org / txt / pdf / docx
 #+END_EXAMPLE
 
-~md~ and ~odt~ aren't offered for ~shunn~: Markdown has no page layout
-for a submission standard to apply to, and ODT support needs a styles
-file org-scribe doesn't ship yet (the same reasoning that keeps every
-export format in this package from hardcoding a style that might not
-match what you actually have installed).
+~md~, ~odt~ and ~epub~ aren't offered for ~shunn~: Markdown has no page
+layout for a submission standard to apply to, ODT support needs a
+styles file org-scribe doesn't ship yet, and EPUB is reflowable — there
+is no fixed page for a standard manuscript format to describe (the same
+reasoning that keeps every export format in this package from
+hardcoding a style that might not match what you actually have
+installed, or applying a fixed-page standard to a format with no
+fixed page).
 
 ** What You Get
 
@@ -1296,6 +1314,8 @@ Fantastic work! You've completed Lesson 11. You now know:
 ✓ Compiling a submission-ready manuscript with the ~shunn~ style — a
   real contact block, rounded word count, and (for PDF) a running
   header, generated directly from your manuscript
+✓ Compiling a styled EPUB with ~org-scribe-compile~, with scene breaks
+  that read as deliberate breaks rather than ordinary centered text
 ✓ How org-mode's export system works
 ✓ The export dispatcher (~C-c C-e~) and format options
 ✓ Using the scene break macro (~{{{scene-break}}}~)
@@ -1333,6 +1353,9 @@ Reinforce your export skills:
      your working manuscript
    - Try ~odt~ and open it in LibreOffice/Word
    - If you have LaTeX or pandoc installed, try ~pdf~ and ~docx~ too
+   - If you have ~ox-epub~ installed, try ~epub~ and open it in Calibre
+     or an e-reader app — find a scene break and confirm it stands out
+     from ordinary text
 
 2. **Compile a Shunn manuscript**
    - Set ~org-scribe-author-name~ (and, if you like, the rest of your
@@ -1388,7 +1411,7 @@ Exporting is how you share your work - master these skills to present your writi
 
 | Key Sequence | Action                                              |
 |--------------+------------------------------------------------------|
-| ~F8 F8 X~      | ~M-x org-scribe-compile~: prompts for style (clean/shunn), then format (org/txt/md/odt/pdf/docx — shunn offers only org/txt/pdf/docx) |
+| ~F8 F8 X~      | ~M-x org-scribe-compile~: prompts for style (clean/shunn), then format (org/txt/md/odt/pdf/docx/epub — shunn offers only org/txt/pdf/docx) |
 
 ** Essential Export Commands
 
@@ -1467,7 +1490,9 @@ Submit to publisher/agent    → org-scribe-compile, shunn (pdf) — full contac
                                  block, spacing, running header, done for you
 Share with beta readers       → org-scribe-compile, clean (odt or docx)
 Publish online/blog           → HTML (direct export)
-Self-publish e-book           → EPUB (direct export)
+Self-publish e-book           → org-scribe-compile, clean (epub, if ox-epub
+                                 installed), or direct EPUB export for covers
+                                 and metadata
 Print book (CreateSpace/KDP)  → PDF (direct export, for full LaTeX control)
 Share with writing group      → org-scribe-compile, clean (odt or pdf)
 Archive readable version      → HTML, or org-scribe-compile, clean (md)
@@ -1481,12 +1506,13 @@ Send to editor                → org-scribe-compile, clean (docx or odt),
 
 You have two ways to get a manuscript out of org-scribe. Start with
 ~org-scribe-compile~ (~F8 F8 X~): the ~clean~ style needs no configuration
-and produces org/txt/md/odt in seconds, and the ~shunn~ style — once your
+and produces org/txt/md/odt/epub in seconds (epub with its own styled
+scene breaks, if ~ox-epub~ is installed), and the ~shunn~ style — once your
 author identity is set up — produces a submission-ready manuscript
 (org/txt/pdf/docx) with a real contact block, word count, and running
 header, generated directly from your working file. Both styles leave an
 inspectable intermediate you can check when something looks off. Reach
-for Org's direct export (~C-c C-e~) when you need EPUB, or configuration
+for Org's direct export (~C-c C-e~) when you need HTML, or configuration
 neither compile style offers yet: HTML stylesheets, EPUB metadata and
 covers, or hand-tuned LaTeX beyond what ~org-scribe-compile-shunn-latex-preamble~
 covers.

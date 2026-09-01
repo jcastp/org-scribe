@@ -26,7 +26,18 @@ Usage: Add this macro to your org file:
 
 Then use {{{scene-break}}} wherever you want a scene break."
   (let ((replacement (or (alist-get backend org-scribe-scene-break-replacements)
-                         (alist-get t org-scribe-scene-break-replacements))))
+                         (alist-get t org-scribe-scene-break-replacements)))
+        ;; Case-sensitively: the macro always expands to exactly
+        ;; "SCENE-BREAK" (uppercase, per the #+MACRO: line above), so a
+        ;; case-insensitive match -- Emacs's usual default -- risks
+        ;; replacing an unrelated case-insensitive occurrence of that
+        ;; text anywhere in the final output: prose that happens to
+        ;; discuss a "scene break", or (found while building
+        ;; org-scribe-compile's EPUB output) a CSS class name like
+        ;; "org-scribe-scene-break", corrupted mid-string because this
+        ;; filter runs on the *entire* rendered document, not just
+        ;; macro-expansion sites.
+        (case-fold-search nil))
     (replace-regexp-in-string "SCENE-BREAK" replacement text t t)))
 
 (defun org-scribe--export-in-scribe-context-p (info)

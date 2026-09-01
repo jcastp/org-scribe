@@ -1,0 +1,13 @@
+/* Minimal EPUB stylesheet for org-scribe-compile.
+   Loaded alongside ox-epub's own baked-in defaults (org-epub-style-default),
+   which already covers headings, .org-center and general typography.  This
+   file adds exactly one thing: distinct styling for a compiled scene break,
+   so it reads as a deliberate break rather than an ordinary centered
+   paragraph.  See org-scribe--compile-filter-epub-scene-break in
+   export/org-scribe-compile.el for what emits the class this targets. */
+
+.org-scribe-scene-break {
+  text-align: center;
+  margin: 2em 0;
+  letter-spacing: 0.4em;
+}

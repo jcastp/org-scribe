@@ -127,6 +127,11 @@ active and which are missing, with install hints.
   keywords and heading titles. org-scribe activates =ox-extra='s
   =ignore-headlines= automatically once it is installed — nothing else
   to configure.
+- [[https://melpa.org/#/ox-epub][ox-epub]] - EPUB output from =org-scribe-compile= (=F8 F8 X=). Not
+  bundled with Org, unlike every other format =org-scribe-compile=
+  offers. Without it, =epub= is simply not offered by name in
+  =org-scribe-setup-check= and refused with a clear message if requested
+  directly.
 
 *** Optional System Packages (not Emacs packages)
 
@@ -1330,7 +1335,7 @@ handing it to Org's exporters, rather than patching the exported result:
 #+begin_example
 M-x org-scribe-compile
 Compile style:  clean / shunn
-Compile the manuscript to:  org / txt / md / odt / pdf / docx
+Compile the manuscript to:  org / txt / md / odt / pdf / docx / epub
 #+end_example
 
 Output goes to =org-scribe-compile-output-directory= (default =export/=,
@@ -1356,6 +1361,19 @@ setting: pdflatex's default fonts don't cover the asterism (or the fleuron
 preset) at all — the glyph simply doesn't appear in the PDF, with no error —
 and there's no reliable way to test an arbitrary glyph's font coverage from
 Emacs.
+
+**** EPUB
+
+=epub= needs the optional =ox-epub= package (MELPA:
+=M-x package-install RET ox-epub RET= — not bundled with Org, unlike every
+other format here). Unlike PDF, EPUB has no font-coverage problem — it's
+Unicode all the way down — so your configured scene-break marker renders
+as-is. It does get its own CSS class (=org-scribe-scene-break=, styled by a
+small shipped stylesheet) instead of a plain centered paragraph, so a scene
+break reads as a deliberate break rather than an ordinary centered line — a
+writer's own center block (an epigraph, a few lines of verse) is untouched
+and keeps its plain styling. Not offered for =shunn=: EPUB is reflowable,
+and standard manuscript format is a fixed-page standard.
 
 **** Submission format (=shunn=)
 
@@ -1384,7 +1402,8 @@ per-project details the same way =Plan=/=Planner= already do:
 #+end_example
 
 Available for =org=, =txt=, =pdf= and =docx= — not =md= (no layout for a
-submission standard to apply to) or =odt= (no styles file yet). DOCX gets
+submission standard to apply to), =odt= (no styles file yet), or =epub=
+(reflowable, while Shunn is a fixed-page standard). DOCX gets
 the same front-matter content as the others but no page-level formatting
 (no forced double-spacing or margins): that needs a reference document
 pandoc doesn't have one to fall back on, the same reasoning that keeps

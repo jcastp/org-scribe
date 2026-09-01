@@ -481,7 +481,7 @@ The package declares integration with the gt (Google Translate) package for on-t
 
 ** Scene Break Filter (~org-scribe--export-replace-scene-breaks~)
 
-Automatically replaces ~SCENE-BREAK~ markers with backend-appropriate scene separators during org export. Writers add ~#+MACRO: scene-break SCENE-BREAK~ to their manuscript, then use ~{{{scene-break}}}~ wherever they want scene breaks. During export, the filter replaces these markers with: ~\n***\n~ for ASCII/Markdown/Man, ~<br><br><br>~ for HTML and EPUB (EPUB derives from the HTML backend), a centered ~***~ paragraph for ODT, ~\vspace~ commands for LaTeX, or custom strings defined in ~org-scribe-scene-break-replacements~. A backend with no dedicated entry falls back to the generic 3-newline default. This ensures consistent scene break formatting across configured export formats without manually editing exports.
+Automatically replaces ~SCENE-BREAK~ markers with backend-appropriate scene separators during org export. Writers add ~#+MACRO: scene-break SCENE-BREAK~ to their manuscript, then use ~{{{scene-break}}}~ wherever they want scene breaks. During export, the filter replaces these markers with: ~\n***\n~ for ASCII/Markdown/Man, ~<br><br><br>~ for HTML and EPUB (EPUB derives from the HTML backend), a centered ~***~ paragraph for ODT, ~\vspace~ commands for LaTeX, or custom strings defined in ~org-scribe-scene-break-replacements~. A backend with no dedicated entry falls back to the generic 3-newline default. This ensures consistent scene break formatting across configured export formats without manually editing exports. The match against ~SCENE-BREAK~ is case-sensitive (~case-fold-search~ bound to nil): found necessary while building ~org-scribe-compile~'s EPUB support, where a CSS class named ~org-scribe-scene-break~ was silently mangled by this filter's default case-insensitive matching, since it runs on the *entire* rendered document rather than only where the macro was actually used.
 
 *Status*: Fully implemented | *Hydra*: N/A (automatic on export) | *Module*: ~export/org-scribe-export.el~
 
@@ -509,13 +509,15 @@ Compile normalizes the manuscript first — acts dropped, chapters kept as
 real visible headings, scenes silenced with breaks derived from sibling
 structure rather than typed — then hands the result to stock Org exporters.
 Formats: Org, plain text, Markdown, ODT need nothing beyond Emacs; PDF
-(via ~org-latex-export-to-pdf~) needs a LaTeX distribution and DOCX (via
-pandoc, shelled out) needs the ~pandoc~ tool — both optional, both
-reported by ~M-x org-scribe-setup-check~, and a missing one is refused by
-name (~Cannot compile to docx: `pandoc' is not available~) rather than
-producing a partial file. The intermediate ~.org~ file is always written
-alongside the output, so a compile that looks wrong is inspectable rather
-than a black box. The scene-break marker
+(via ~org-latex-export-to-pdf~) needs a LaTeX distribution, DOCX (via
+pandoc, shelled out) needs the ~pandoc~ tool, and EPUB (via
+~org-epub-export-to-epub~) needs the optional ~ox-epub~ package (MELPA;
+unlike every other format here, not bundled with Org) — all optional,
+all reported by ~M-x org-scribe-setup-check~, and a missing one is
+refused by name (~Cannot compile to docx: `pandoc' is not available~)
+rather than producing a partial file. The intermediate ~.org~ file is
+always written alongside the output, so a compile that looks wrong is
+inspectable rather than a black box. The scene-break marker
 (~org-scribe-compile-scene-break~, default ~⁂~) and output directory
 (~org-scribe-compile-output-directory~, default ~export~) are both
 customizable; a marker beginning with ~*~ or ~#~ is refused rather than
@@ -525,6 +527,12 @@ regardless of that setting — pdflatex's default fonts don't cover the
 asterism (or the fleuron preset) at all, confirmed by rendering real PDFs
 and reading them back with ~pdftotext~ rather than trusting a clean
 build: the glyph is simply absent, with no error and no visible trace.
+EPUB has no such font problem (it's Unicode throughout), so the
+configured marker renders as-is; instead it gets a dedicated CSS class
+(~org-scribe-scene-break~, styled by a small stylesheet shipped beside
+~org-scribe-compile.el~) distinguishing it from an ordinary centered
+paragraph, which every other center block — including one the writer
+wrote for their own reasons — still gets.
 
 Two compile styles: ~clean~ (a readable draft, the above) and ~shunn~
 (submission/"standard manuscript" format) — a contact block, word count
@@ -537,20 +545,22 @@ keyword are per-project (~# Pen-name:~/~# Running-header:~ markers in
 ~.org-scribe-project~, read the same way ~Plan~/~Planner~ already are).
 ~shunn~ is refused, naming what's missing, without
 ~org-scribe-author-name~ set, and is only offered for ~org~/~txt~/~pdf~/~docx~
-(not ~md~, which has no layout for a submission standard, or ~odt~,
-which has no styles file yet). The PDF running header and spacing come
+(not ~md~, which has no layout for a submission standard; ~odt~, which
+has no styles file yet; or ~epub~, which is reflowable while Shunn is a
+fixed-page standard). The PDF running header and spacing come
 from ~org-scribe-compile-shunn-latex-preamble~, a stock-classes-only
 LaTeX template (~geometry~/~setspace~/~fancyhdr~) with two ~%s~
 placeholders for surname and keyword, validated before use so a bad
 customization is reported by name rather than silently missing data or
 raising Elisp's own generic ~format~ error.
 
-*Status*: Fully implemented for ~clean~ and ~shunn~ (DOCX Shunn gets the
-front-matter content but no page-level formatting — no reference
-document to carry double-spacing/margins through pandoc, the same
-"never hardcode a style that might not exist" reasoning that keeps the
-ODT scene break from hardcoding a style name) | *Hydra*: ~F8 F8 X~ |
-*Module*: ~export/org-scribe-compile.el~
+*Status*: Fully implemented for ~clean~ and ~shunn~, across all six
+formats (DOCX Shunn gets the front-matter content but no page-level
+formatting — no reference document to carry double-spacing/margins
+through pandoc, the same "never hardcode a style that might not exist"
+reasoning that keeps the ODT scene break from hardcoding a style name)
+| *Hydra*: ~F8 F8 X~ | *Module*: ~export/org-scribe-compile.el~,
+~export/org-scribe-epub.css~
 
 ** Project templates ship no export configuration
 
