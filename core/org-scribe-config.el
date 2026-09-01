@@ -298,8 +298,18 @@ exports:
     vanishes from the output with nothing to show it was ever there.
 
 `org-scribe-compile' refuses to run rather than emit either, so a bad
-value is reported instead of silently corrupting a manuscript."
-  :type 'string
+value is reported instead of silently corrupting a manuscript.
+
+The classic typewriter dinkus is `* * *', which is one of the shapes Org
+reparses, so it is deliberately absent from the presets below; the
+asterism is the typeset form of the same mark.  Any string is accepted
+via `Other'."
+  :type '(choice (const :tag "Asterism (⁂)" "⁂")
+                 (const :tag "Three dots (· · ·)" "· · ·")
+                 (const :tag "Em dash (—)" "—")
+                 (const :tag "Section sign (§)" "§")
+                 (const :tag "Fleuron (❧)" "❧")
+                 (string :tag "Other"))
   :group 'org-scribe)
 
 ;;; Search Configuration

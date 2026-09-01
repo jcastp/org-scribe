@@ -10,7 +10,11 @@ You've written your manuscript in org-mode, and now it's time to share it with t
 Org-mode's powerful export system can transform your manuscript into professional documents in multiple formats, and ~org-scribe~ adds special features for creative writing like proper scene break formatting.
 
 By the end of this lesson, you'll have:
-- Understood org-mode's export system
+- Compiled a clean, readable draft with ~org-scribe-compile~ — the fastest
+  path from a working manuscript to something you can actually hand to
+  a reader
+- Understood org-mode's export system for everything compile doesn't do yet
+  (PDF, EPUB, full formatting control)
 - Learned to use the scene break macro for professional formatting
 - Exported your manuscript to PDF (via LaTeX)
 - Exported to Word-compatible format (ODT)
@@ -18,7 +22,7 @@ By the end of this lesson, you'll have:
 - Customized export settings for different requirements
 - Prepared manuscripts for submission to publishers
 
-*Estimated time*: 15-20 minutes
+*Estimated time*: 20-25 minutes
 
 * Before You Begin
 
@@ -45,6 +49,98 @@ Different export formats need different tools installed:
   - Install: ~M-x package-install RET ox-epub RET~
 
 Don't worry if you don't have everything - we'll indicate what's needed for each format.
+
+* Compiling a Clean Draft (Start Here)
+
+Before reaching for Org's export dispatcher, try ~org-scribe-compile~
+first. It solves the problem most writers actually have at this point:
+"I want a readable document from what I've written so far," not
+"I want to configure LaTeX."
+
+** Why Not Just Export the Working File?
+
+The manuscript you've been writing in is a *workspace*, not a manuscript.
+It has apparatus sections, an eighteen-field property drawer on every
+scene, and ~:ignore:~ tags on acts, chapters, *and* scenes. Export that
+file directly (~C-c C-e~) without ~org-scribe-compile~ and, unless you've
+separately installed ~ox-extra~ (see below), you'll get raw ~TODO Scene 3~
+headings in your output — or, even with ~ox-extra~ installed, you'll get
+one undifferentiated wall of prose with *no chapter divisions at all*,
+because ~:ignore:~ sits on chapter headings exactly as it does on scenes.
+
+~org-scribe-compile~ solves this differently: it *transforms* the
+manuscript into a clean intermediate document first — acts dropped,
+chapters kept as real visible headings, scenes silenced with breaks
+inserted between them automatically — and only then hands that clean
+document to Org's own exporters.
+
+** Using It
+
+#+BEGIN_EXAMPLE
+F8 F8 X          (or M-x org-scribe-compile)
+
+Compile the manuscript to:  org / txt / md / odt
+#+END_EXAMPLE
+
+Pick a format and org-scribe writes two files to ~export/~ under your
+project root (created automatically; worth adding to ~.gitignore~):
+
+- The rendered output, e.g. ~novel-clean.odt~
+- The clean intermediate, e.g. ~novel-clean.org~ — always written,
+  whichever format you picked. If the output ever looks wrong, open
+  this file first: it tells you whether the problem is in the
+  transformation or in the renderer.
+
+** What You Get
+
+- Acts: omitted (a planning structure, not a reading one)
+- Chapters: kept as real headings — "Chapter 1", not "TODO Chapter 1 :ignore:"
+- Scenes: silent, with a break inserted between consecutive scenes of the
+  same chapter automatically — nothing to type, nowhere to forget it
+- Property drawers, dynamic blocks (word-count tables), and ~*EDIT*~/~*NOTE*~
+  markers: all gone, not merely hidden from export
+
+** The Scene Break Marker
+
+The default break is ~⁂~ (the asterism, U+2042). Change it with:
+
+#+BEGIN_EXAMPLE
+(setq org-scribe-compile-scene-break "· · ·")
+#+END_EXAMPLE
+
+or via ~M-x customize-group RET org-scribe RET~, which offers a few named
+presets (asterism, three dots, em dash, section sign, fleuron) besides
+free text. Two shapes are refused rather than silently corrupting your
+manuscript: anything starting with ~*~ (Org reparses it as a heading,
+even inside a centered block) and anything starting with ~#~ (an Org
+comment, so it would vanish with no trace).
+
+** What It Doesn't Do (Yet)
+
+- Only a *clean* draft style exists — no Shunn/submission formatting,
+  no title page, no automatic chapter numbering beyond what you typed
+- Only four formats: Org, plain text, Markdown, ODT — no PDF, no EPUB
+- No chapter/act subset selection — it always compiles the whole
+  manuscript
+
+For any of those, use Org's direct export (below), which the rest of
+this lesson covers.
+
+** Try It Now! (2 minutes)
+
+1. Open your manuscript
+2. ~F8 F8 X~, then choose ~txt~
+3. Open the resulting file in ~export/~ — notice the chapter headings,
+   the scene breaks, and the complete absence of ~TODO~ or property
+   drawers
+4. Try again with ~odt~ and open it in LibreOffice or Word
+
+* Direct Export with Org's Dispatcher
+
+For PDF, EPUB, or when you need fine-grained control that compile
+doesn't offer yet, export the working file directly with Org's own
+dispatcher. This is the "advanced" path: more configuration, more
+formats, more manual setup.
 
 * Understanding Org-Mode Export
 
@@ -241,7 +337,7 @@ PDF is the gold standard for print and submission to publishers.
 
 ** Step 1: Check LaTeX Configuration
 
-Your template has LaTeX settings:
+Add LaTeX settings to your manuscript (these are not shipped by default):
 
 #+BEGIN_EXAMPLE
 #+LATEX_CLASS: memoir_draft
@@ -249,7 +345,7 @@ Your template has LaTeX settings:
 #+LATEX_HEADER_EXTRA:
 #+END_EXAMPLE
 
-*Default*: The novel template ships with the ~memoir_draft~ class (a draft-oriented variant of the ~memoir~ class, good for book-length manuscripts). The short story template instead defaults to ~article~. If ~memoir_draft~ isn't available in your LaTeX distribution, switch to a standard class like ~book~ or ~article~ (see "Custom LaTeX Class" below).
+*Note*: Project templates ship with no export configuration at all — that block was removed deliberately (it hardcoded personal absolute paths and an unshipped LaTeX class). ~memoir_draft~ (a draft-oriented variant of ~memoir~, good for book-length manuscripts) and ~article~ (better for short works) are reasonable choices to add yourself; if ~memoir_draft~ isn't available in your LaTeX distribution, use a standard class like ~book~ or ~article~ (see "Custom LaTeX Class" below).
 
 ** Step 2: Export to PDF
 
@@ -565,7 +661,7 @@ EPUB is the standard format for e-readers (Kindle, Kobo, Apple Books).
 
 ** Step 1: Check EPUB Configuration
 
-Your template has EPUB settings:
+Add EPUB settings to your manuscript (these are not shipped by default):
 
 #+BEGIN_EXAMPLE
 #+UID: unique-identifier
@@ -669,17 +765,23 @@ Kindle uses MOBI format, but you can convert:
 
 * Customizing Export Settings
 
-Your template includes extensive export configuration. Let's understand it!
+Project templates ship with none of this configured — it is deliberately
+left for you to add per-project rather than baked into the template (see
+[[file:00-feature-index.org][the feature index]] for why). Here's what's
+available to add.
 
-** Location of Export Settings
+** Adding an Export Settings Section
 
-In your manuscript, find the "Export config" section (usually at the bottom):
+A convenient place to keep these settings together is a dedicated
+section, tagged so it never appears in your output:
 
 #+BEGIN_EXAMPLE
 ,* Export config :ignore:noexport:
 #+END_EXAMPLE
 
-*Note*: This section is tagged ~:noexport:~ so it doesn't appear in exports!
+Add the ~#+OPTIONS~/~#+LATEX_HEADER~/etc. lines below it, or anywhere
+else in the file before the content they affect — Org reads them
+regardless of position.
 
 ** General Export Options
 
@@ -1048,6 +1150,8 @@ which.
 
 Fantastic work! You've completed Lesson 11. You now know:
 
+✓ Compiling a clean draft with ~org-scribe-compile~ (~F8 F8 X~) — the
+  fastest path from working file to readable document
 ✓ How org-mode's export system works
 ✓ The export dispatcher (~C-c C-e~) and format options
 ✓ Using the scene break macro (~{{{scene-break}}}~)
@@ -1077,37 +1181,43 @@ In the next lesson, you'll learn:
 
 Reinforce your export skills:
 
-1. **Export to all formats**
+1. **Compile a clean draft**
+   - ~F8 F8 X~, choose ~txt~
+   - Open the intermediate ~.org~ file in ~export/~ and compare it to
+     your working manuscript
+   - Try ~odt~ and open it in LibreOffice/Word
+
+2. **Export to all formats**
    - PDF: ~C-c C-e l p~
    - ODT: ~C-c C-e o o~
    - HTML: ~C-c C-e h o~
    - EPUB: ~C-c C-e e e~ (if installed)
    - Compare results
 
-2. **Add scene breaks**
+3. **Add scene breaks**
    - Find 3 places in manuscript
    - Add ~{{{scene-break}}}~
    - Export to PDF
    - Verify breaks appear correctly
 
-3. **Create submission package**
+4. **Create submission package**
    - First 3 chapters to PDF
    - Standard manuscript format
    - Save as: ~YourName-Title-Sample.pdf~
 
-4. **Customize one format**
+5. **Customize one format**
    - Choose PDF or ODT
    - Add custom formatting
    - Create template for reuse
    - Document settings
 
-5. **Beta reader workflow**
+6. **Beta reader workflow**
    - Export manuscript to ODT
    - Open in Word/LibreOffice
    - Add sample comments
    - Practice workflow
 
-6. **EPUB with cover**
+7. **EPUB with cover**
    - Create or find cover image
    - Add to manuscript
    - Export to EPUB
@@ -1116,6 +1226,12 @@ Reinforce your export skills:
 Exporting is how you share your work - master these skills to present your writing professionally!
 
 * Quick Reference
+
+** Compile Command
+
+| Key Sequence | Action                                              |
+|--------------+------------------------------------------------------|
+| ~F8 F8 X~      | Compile a clean draft (~M-x org-scribe-compile~), prompts for org/txt/md/odt |
 
 ** Essential Export Commands
 
@@ -1187,30 +1303,38 @@ Exports as:
 ** Format Decision Guide
 
 #+BEGIN_EXAMPLE
-Need to:                     → Use format:
+Need to:                     → Use:
 ─────────────────────────────────────────────────
-Submit to publisher/agent    → PDF (LaTeX)
-Share with beta readers       → ODT
-Publish online/blog           → HTML
-Self-publish e-book           → EPUB
-Print book (CreateSpace/KDP)  → PDF (LaTeX)
-Share with writing group      → ODT or PDF
-Archive readable version      → HTML
-Submit to contest             → PDF (usually)
-Send to editor                → ODT (editable)
+Quick readable draft, no fuss → org-scribe-compile (txt/md/odt)
+Submit to publisher/agent    → PDF (LaTeX, direct export)
+Share with beta readers       → org-scribe-compile (odt), or direct ODT
+Publish online/blog           → HTML (direct export)
+Self-publish e-book           → EPUB (direct export)
+Print book (CreateSpace/KDP)  → PDF (LaTeX, direct export)
+Share with writing group      → org-scribe-compile (odt) or PDF
+Archive readable version      → HTML, or org-scribe-compile (md)
+Submit to contest             → PDF (usually, direct export)
+Send to editor                → org-scribe-compile (odt), fully editable
 #+END_EXAMPLE
 
 * Summary
 
-Exporting transforms your org-mode manuscript into professional documents in multiple formats. Each format serves different needs: PDF for print and submission, ODT for editing and beta readers, HTML for web, and EPUB for e-books.
+You have two ways to get a manuscript out of org-scribe. Start with
+~org-scribe-compile~ (~F8 F8 X~) for a clean draft — it needs no
+configuration and produces org/txt/md/odt in seconds, with an inspectable
+intermediate you can check when something looks off. Reach for Org's
+direct export (~C-c C-e~) when you need PDF, EPUB, or configuration
+compile doesn't offer yet: LaTeX headers, ODT style templates, HTML
+stylesheets, EPUB metadata and covers.
 
 The key to successful exporting:
-1. Use the scene break macro for format-independent breaks
-2. Understand your target format's requirements
-3. Customize export settings in your manuscript
-4. Test exports early and often
-5. Create templates for repeated uses (Shunn format, etc.)
-6. Validate output before sharing
+1. Try ~org-scribe-compile~ first for a quick, clean draft
+2. For direct export, use the scene break macro for format-independent breaks
+3. Understand your target format's requirements
+4. Customize export settings in your manuscript (not shipped by default)
+5. Test exports early and often
+6. Create templates for repeated uses (Shunn format, etc.)
+7. Validate output before sharing
 
 Your manuscript is ready for the world - export with confidence!
 

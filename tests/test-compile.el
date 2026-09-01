@@ -378,7 +378,11 @@ center block, so it becomes a real sibling element."
       (unwind-protect
           (with-current-buffer buffer
             (let ((xml (org-export-as 'odt nil nil t)))
-              (should (string-match-p "<text:p[^>]*OrgCenter[^>]*>⁂</text:p>" xml))
+              (should (string-match-p
+                       (concat "<text:p[^>]*OrgCenter[^>]*>"
+                               (regexp-quote org-scribe-compile-scene-break)
+                               "</text:p>")
+                       xml))
               (should-not (string-match-p "<text:p[^>]*><text:p" xml))
               ;; Chapters arrive as real ODT headings.
               (should (string-match-p "<text:h[^>]*>" xml))))
@@ -442,6 +446,19 @@ whatever `ox-md' does with them."
     (let ((out (org-scribe-compile-test--read (org-scribe-compile 'clean 'md))))
       (should (string-match-p "An epigraph" out))
       (should (string-match-p "org-center" out)))))
+
+(ert-deftest test-compile-honours-a-customised-scene-break ()
+  "A customised marker reaches every output format.
+The marker is read at call time in all three places that touch it -- the
+break builder, the validator and the Markdown filter -- so setting the
+variable is enough; nothing caches the default."
+  (let ((org-scribe-compile-scene-break "· · ·"))
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (dolist (format '(org txt md))
+        (let ((out (org-scribe-compile-test--read (org-scribe-compile 'clean format))))
+          (should (string-match-p (regexp-quote "· · ·") out))
+          (should-not (string-match-p "⁂" out)))))))
 
 ;;; Command behaviour
 

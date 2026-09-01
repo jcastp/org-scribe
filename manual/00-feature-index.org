@@ -23,7 +23,7 @@ This package organizes features into the following categories:
 6. [[#search-tools][Search Tools]] - Find scenes by character, plot, location, or PoV
 7. [[#templates][Templates]] - Scene and chapter insertion templates; scene word-count update
 8. [[#dictionary-language][Dictionary & Language Tools]] - offline/online definitions and synonyms, lemmatization, translations
-9. [[#export-tools][Export Tools]] - Scene break filters and export presets
+9. [[#export-tools][Export Tools]] - Manuscript compilation, scene break filters and export presets
 10. [[#column-view][Column View Enhancements]] - Clean display of ID links in column view
 11. [[#analysis-tools][Analysis Tools]] - Project health report and aggregated statistics
 12. [[#ui-navigation][UI & Navigation]] - Hydra menu and keybindings
@@ -497,11 +497,43 @@ An alist mapping export backend symbols to replacement strings: ~'((ascii . "\\n
 
 *Status*: Fully implemented | *Hydra*: N/A (configuration) | *Module*: ~core/org-scribe-config.el~
 
-** Export Configurations in Templates
+** Manuscript Compilation (~org-scribe-compile~)
 
-Project templates include comprehensive export configuration blocks for LaTeX, ODT, HTML, and EPUB. These blocks set up professional manuscript formatting with appropriate fonts, spacing, margins, and styles. Novel templates include configurations optimized for long-form fiction, while short story templates include settings for shorter works. Writers can customize these configurations per-project or modify the templates for all new projects.
+Turns the working manuscript into a clean, readable document, rather than
+exporting the workspace file directly. The working file is not itself a
+manuscript: apparatus sections, an eighteen-field property drawer per scene,
+act/chapter/scene headings all tagged ~:ignore:~, and edit markers in
+comment blocks. Exporting it as-is produces a wall of prose with no chapter
+divisions, because ~:ignore:~ sits on chapters exactly as it does on scenes.
+Compile normalizes the manuscript first — acts dropped, chapters kept as
+real visible headings, scenes silenced with breaks derived from sibling
+structure rather than typed — then hands the result to stock Org exporters.
+Formats: Org, plain text, Markdown, ODT, none requiring anything beyond
+Emacs. The intermediate ~.org~ file is always written alongside the output,
+so a compile that looks wrong is inspectable rather than a black box. The
+scene-break marker (~org-scribe-compile-scene-break~, default ~⁂~) and
+output directory (~org-scribe-compile-output-directory~, default ~export~)
+are both customizable; a marker beginning with ~*~ or ~#~ is refused rather
+than emitted, since Org would reparse either as structure rather than text.
 
-*Status*: Fully implemented | *Hydra*: N/A (in templates) | *Module*: Template files
+*Status*: Fully implemented (~clean~ style only; ~shunn~/submission format
+and PDF/DOCX outputs not yet built) | *Hydra*: ~F8 F8 X~ | *Module*:
+~export/org-scribe-compile.el~
+
+** Project templates ship no export configuration
+
+Unlike an earlier design, project templates deliberately carry no LaTeX,
+ODT, HTML, or EPUB configuration blocks — those blocks used to exist and
+were removed because they hardcoded personal absolute paths and an
+unshipped LaTeX class. Dropping ~#+EXCLUDE_TAGS: noexport~ along with them
+is safe: ~org-export-exclude-tags~ already defaults to ~("noexport")~.
+Export settings (LaTeX class, ODT style file, EPUB metadata) are left for
+the writer to add per-project via Org's own ~#+LATEX_CLASS~,
+~#+ODT_STYLES_FILE~, etc. — see the direct-export path in
+[[file:getting-started-11-exporting.org][Lesson 11]].
+
+*Status*: Deliberate (see ~tests/test-template-parity.el~, which pins the
+absence) | *Hydra*: N/A | *Module*: Template files
 
 * Column View Enhancements
 :PROPERTIES:

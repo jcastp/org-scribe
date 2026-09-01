@@ -64,6 +64,7 @@
 - *Capture System*: Project-aware note capture that finds the right notes file; character/location/object/timeline/plot-thread templates are fully localized to the project's own language (English/Spanish), independent of your global UI language setting
 - *Project Health Report*: =org-scribe-project-health= aggregates the Starting Gate (how many of its eight items are done, two of them measured rather than self-reported), word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, plot points no scene serves yet, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
+- *Manuscript Compilation*: =org-scribe-compile= (=F8 F8 X=) turns the working file — apparatus sections, act/chapter/scene structure, property drawers, edit markers and all — into a clean, readable document. Chapters become visible headings, scenes stay silent, breaks between them are derived from structure rather than typed. Formats: Org, plain text, Markdown, ODT — nothing beyond Emacs required. The intermediate =.org= file is always kept beside the output, so a compile that looks wrong is inspectable
 - *Hydra Menu*: Unified keyboard-driven menu for quick access to all functions
 - *Writing Planner* (bundled): Connect writing goal planning to your manuscript — auto-loads plans, pushes live word counts, shows daily progress in the mode line, and adds a planner sub-menu at =W=. Available automatically; no separate install needed.
 
@@ -1298,17 +1299,73 @@ Spanish capture prompts automatically.
 
 All captured items automatically receive unique IDs for use with the linking system.
 
-** Export with Scene Breaks
+** Exporting Your Manuscript
 
-Add this macro to your org file:
+There are two ways to get a manuscript out of org-scribe. They solve different
+problems and are not alternatives to each other.
+
+*** Compiling a clean draft (=org-scribe-compile=)
+
+=M-x org-scribe-compile= (=F8 F8 X=) is the recommended path for a document
+you would actually hand to a reader. The working file is a workspace, not a
+manuscript — apparatus sections, an eighteen-field property drawer per scene,
+act and chapter and scene headings all marked =:ignore:=, edit markers in
+comment blocks — and exporting it directly produces a wall of prose with no
+chapter divisions at all, because =:ignore:= sits on chapters exactly as it
+does on scenes. Compile fixes this by *transforming* the manuscript before
+handing it to Org's exporters, rather than patching the exported result:
+
+- Acts are dropped (a planning structure, not a reading one); chapter
+  headings survive as real, visible headings; scene headings go silent.
+- A break is inserted between consecutive sibling scenes automatically —
+  derived from the document's structure, so there is nothing to remember to
+  type between scenes.
+- Property drawers, planning apparatus, dynamic blocks, and =*EDIT*=/=*NOTE*=
+  markers are all removed, not merely excluded from export.
+
+#+begin_example
+M-x org-scribe-compile
+Compile the manuscript to:  org / txt / md / odt
+#+end_example
+
+Output goes to =org-scribe-compile-output-directory= (default =export/=,
+relative to the project root — worth adding to =.gitignore=) as e.g.
+=novel-clean.odt=, alongside the intermediate =novel-clean.org= that produced
+it. That intermediate is always written, whichever format you choose: when a
+compile looks wrong, open it and see whether the problem is the transform or
+the renderer.
+
+The break between scenes is configurable:
+
+#+begin_example
+(setq org-scribe-compile-scene-break "⁂")   ; the default: U+2042 ASTERISM
+#+end_example
+
+=M-x customize-group RET org-scribe RET= offers named presets (asterism,
+three dots, em dash, section sign, fleuron) alongside free text. A marker
+beginning with =*= or =#= is refused rather than emitted — the first is
+reparsed by Org as a heading (silently splitting the manuscript) and the
+second as a comment (vanishing with nothing to show it was ever there).
+
+Only a *clean* draft is available today — no chapter/act numbering beyond
+what you typed, no title page, no Shunn/submission formatting — and only the
+four formats above, none of which need anything beyond Emacs itself.
+
+*** Direct export with scene breaks (=C-c C-e=)
+
+For LaTeX/PDF, EPUB, or fine-grained control over Org's own export options,
+export the working file directly with Org's dispatcher (=C-c C-e=). Add this
+macro to your org file:
 
 #+begin_example
 #+MACRO: scene-break SCENE-BREAK
 #+end_example
 
-Use ={{{scene-break}}}= where you want scene breaks.
-
-When exporting, scene breaks will be replaced with appropriate separators for each backend (HTML, LaTeX, Markdown, etc.).
+Use ={{{scene-break}}}= where you want scene breaks. When exporting, scene
+breaks will be replaced with appropriate separators for each backend (HTML,
+LaTeX, Markdown, etc.). Note this path still needs the optional =ox-extra=
+package for the manuscript's =:ignore:= tags to drop chapter/scene titles
+while keeping their prose — see [[file:manual/getting-started-11-exporting.org][Lesson 11]] for the full walkthrough.
 
 * Project Structure
 
@@ -1355,7 +1412,9 @@ Key variables:
 - =org-scribe-overlays-enable= - Set to =t= to enable tooltips automatically (default: =nil=)
 
 ** Export
-- =org-scribe-scene-break-replacements= - Scene break strings for export backends
+- =org-scribe-scene-break-replacements= - Scene break strings for direct export backends (=C-c C-e=)
+- =org-scribe-compile-scene-break= - The marker =org-scribe-compile= places between scenes (default: =⁂=)
+- =org-scribe-compile-output-directory= - Where =org-scribe-compile= writes its output, relative to the project root (default: =export=)
 
 * Keybindings
 
@@ -1377,6 +1436,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
                  _v_: Navigate    _g_: Plot threads    _y_: Synonyms        _4_: Location     _R_: Relink project
                  _0_: Normal      _j_: Jump to PoV     _x_: Thesaurus       _5_: TODOs        _H_: Health report
                                                                             _6_: Edits        _W_: Planner…
+                                                                                              _X_: Compile draft
                                                                                               _q_: Quit
 #+end_example
 
@@ -1422,6 +1482,7 @@ Tag the current scene's properties with ID-based links:
 - =R= - Relink entire project (adds IDs, links names, refreshes display names)
 - =H= - Project health report
 - =W= - Writing planner submenu
+- =X= - Compile manuscript (=org-scribe-compile=; prompts for output format)
 
 **** Capture Entity Submenu (F8 F8 k)
 
