@@ -1329,6 +1329,7 @@ handing it to Org's exporters, rather than patching the exported result:
 
 #+begin_example
 M-x org-scribe-compile
+Compile style:  clean / shunn
 Compile the manuscript to:  org / txt / md / odt / pdf / docx
 #+end_example
 
@@ -1349,15 +1350,49 @@ The break between scenes is configurable:
 three dots, em dash, section sign, fleuron) alongside free text. A marker
 beginning with =*= or =#= is refused rather than emitted — the first is
 reparsed by Org as a heading (silently splitting the manuscript) and the
-second as a comment (vanishing with nothing to show it was ever there).
+second as a comment (vanishing with nothing to show it was ever there). PDF
+output always shows three centered asterisks instead, regardless of this
+setting: pdflatex's default fonts don't cover the asterism (or the fleuron
+preset) at all — the glyph simply doesn't appear in the PDF, with no error —
+and there's no reliable way to test an arbitrary glyph's font coverage from
+Emacs.
 
-Only a *clean* draft is available today — no chapter/act numbering beyond
-what you typed, no title page, no Shunn/submission formatting. PDF and DOCX
-need a LaTeX distribution (=pdflatex= on PATH) and =pandoc= respectively; the
-other four formats need nothing beyond Emacs. A missing tool is reported by
-name (=Cannot compile to docx: `pandoc' is not available=) rather than
-producing a partial or silently broken file — check with =M-x
-org-scribe-setup-check=.
+**** Submission format (=shunn=)
+
+The =shunn= style additionally produces a submission-ready ("standard
+manuscript format") document: a contact block, word count rounded to the
+nearest hundred, a centered title and byline, and — for PDF — 1-inch
+margins, double spacing, and a running header reading "Surname / KEYWORD /
+page" from page 2 on. It needs your author identity configured first:
+
+#+begin_example
+(setq org-scribe-author-name "Jane Alcott Doe")
+(setq org-scribe-author-address '("123 Elm Street" "Springfield, IL 62704"))
+(setq org-scribe-author-email "jane@example.com")
+(setq org-scribe-author-phone "555-0100")           ; all optional except author-name
+(setq org-scribe-author-agent '("Pat Agent" "Agent House Literary"))  ; replaces your own contact block, if set
+#+end_example
+
+=shunn= is refused, naming what's missing, without =org-scribe-author-name=
+set — a manuscript with a blank contact block would be worse than an
+explicit error. Two project-level =.org-scribe-project= markers customize
+per-project details the same way =Plan=/=Planner= already do:
+
+#+begin_example
+# Pen-name: J.A. Doe          (byline, when it differs from your legal name)
+# Running-header: TIDE        (defaults to the title's first word, uppercased)
+#+end_example
+
+Available for =org=, =txt=, =pdf= and =docx= — not =md= (no layout for a
+submission standard to apply to) or =odt= (no styles file yet). DOCX gets
+the same front-matter content as the others but no page-level formatting
+(no forced double-spacing or margins): that needs a reference document
+pandoc doesn't have one to fall back on, the same reasoning that keeps
+=org-scribe-scene-break-replacements='s =odt= entry from hardcoding a style
+name that might not exist. The PDF running header and spacing come from
+=org-scribe-compile-shunn-latex-preamble= (stock LaTeX packages only —
+=geometry=, =setspace=, =fancyhdr=), which you can override for different
+margins or header wording.
 
 *** Direct export with scene breaks (=C-c C-e=)
 
@@ -1423,6 +1458,9 @@ Key variables:
 - =org-scribe-scene-break-replacements= - Scene break strings for direct export backends (=C-c C-e=)
 - =org-scribe-compile-scene-break= - The marker =org-scribe-compile= places between scenes (default: =⁂=)
 - =org-scribe-compile-output-directory= - Where =org-scribe-compile= writes its output, relative to the project root (default: =export=)
+- =org-scribe-author-name=, =org-scribe-author-address=, =org-scribe-author-email=, =org-scribe-author-phone= - Your contact information for the =shunn= compile style
+- =org-scribe-author-agent= - Agent contact lines that replace your own on a =shunn= manuscript, when set
+- =org-scribe-compile-shunn-latex-preamble= - Stock-classes LaTeX preamble (margins, spacing, running header) for a =shunn= PDF
 
 * Keybindings
 

@@ -312,6 +312,72 @@ via `Other'."
                  (string :tag "Other"))
   :group 'org-scribe)
 
+(defcustom org-scribe-author-name nil
+  "Your legal name, for the contact block on a `shunn'-style manuscript.
+Compiling with the `shunn' style (`org-scribe-compile') is refused
+without this set -- a submission manuscript with a blank contact block
+is worse than an explicit error naming what to configure.  Also supplies
+the byline (=by ...=) when no project-level pen name is recorded (see
+the `# Pen-name:' marker line in `.org-scribe-project'), and the surname
+half of the running header (its last whitespace-separated word)."
+  :type '(choice (const :tag "Not set" nil) string)
+  :group 'org-scribe)
+
+(defcustom org-scribe-author-address nil
+  "Your postal address, one line per string, for the Shunn contact block.
+For example: (\"123 Elm Street\" \"Springfield, IL 62704\").  Nil omits
+the address lines; unlike `org-scribe-author-name', this is optional."
+  :type '(choice (const :tag "Not set" nil) (repeat string))
+  :group 'org-scribe)
+
+(defcustom org-scribe-author-email nil
+  "Your email address, for the Shunn contact block.  Optional."
+  :type '(choice (const :tag "Not set" nil) string)
+  :group 'org-scribe)
+
+(defcustom org-scribe-author-phone nil
+  "Your phone number, for the Shunn contact block.  Optional."
+  :type '(choice (const :tag "Not set" nil) string)
+  :group 'org-scribe)
+
+(defcustom org-scribe-author-agent nil
+  "Your literary agent's contact lines, one per string.
+When set, these lines replace your own contact block (name, address,
+phone, email) at the top of a `shunn'-style manuscript -- the convention
+for a work submitted through an agent.  Nil (the default) uses your own
+contact information instead.  Either way, the byline and running header
+still derive from `org-scribe-author-name' and the project's pen name:
+an agent handles correspondence, not authorship."
+  :type '(choice (const :tag "Not set (submit directly)" nil)
+                 (repeat string))
+  :group 'org-scribe)
+
+(defcustom org-scribe-compile-shunn-latex-preamble
+  "\\usepackage[margin=1in]{geometry}
+\\usepackage{setspace}
+\\doublespacing
+\\usepackage{fancyhdr}
+\\pagestyle{fancy}
+\\fancyhf{}
+\\fancyhead[R]{%s / %s / \\thepage}
+\\renewcommand{\\headrulewidth}{0pt}"
+  "LaTeX preamble `org-scribe-compile' uses for the `shunn' style's PDF.
+Stock classes only: `geometry', `setspace' and `fancyhdr' all ship in
+texlive-latex-recommended -- no custom =.cls= file and no absolute path,
+per the reason the shipped templates carry no LaTeX configuration of
+their own (see CLAUDE.md).  This gets 1-inch margins, double spacing,
+and a running header reading =SURNAME / KEYWORD / page= on every page
+from page 2 on, which is Shunn format's own running header.
+
+Contains exactly two `%s' placeholders, filled with the author's
+surname and the running-header keyword, in that order.  Override this to
+change margins, spacing, or the header layout, but keep both
+placeholders, in that order: `org-scribe-compile' reports a clear error
+rather than emitting a broken preamble if a customized value doesn't
+match."
+  :type 'string
+  :group 'org-scribe)
+
 ;;; Search Configuration
 
 (defcustom org-scribe-todo-keywords

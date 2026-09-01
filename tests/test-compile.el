@@ -138,13 +138,26 @@ project."
        (org-scribe-project-type-cache-clear)
        (delete-directory root t))))
 
-(defun org-scribe-compile-test--intermediate (root name)
-  "Return the text of the intermediate Org file for NAME under ROOT."
+(defun org-scribe-compile-test--intermediate (root name &optional style)
+  "Return the text of the intermediate Org file for NAME under ROOT.
+STYLE (default \"clean\") selects which style's intermediate to read --
+`org-scribe-compile' names it after the style, so a `shunn' compile
+writes a separate file rather than overwriting the `clean' one."
   (with-temp-buffer
     (insert-file-contents
-     (expand-file-name (concat name "-clean.org")
+     (expand-file-name (concat name "-" (or style "clean") ".org")
                        (expand-file-name org-scribe-compile-output-directory root)))
     (buffer-string)))
+
+(defmacro org-scribe-compile-test--with-author (&rest body)
+  "Run BODY with a complete, valid Shunn author identity configured."
+  (declare (indent 0))
+  `(let ((org-scribe-author-name "Jane Alcott Doe")
+         (org-scribe-author-address '("123 Elm Street" "Springfield, IL 62704"))
+         (org-scribe-author-email "jane@example.com")
+         (org-scribe-author-phone nil)
+         (org-scribe-author-agent nil))
+     ,@body))
 
 (defun org-scribe-compile-test--read (file)
   "Return the contents of FILE."
@@ -543,6 +556,246 @@ already loaded the full package, e.g. via test-load.el."
   (should (assoc "pdflatex" (alist-get :optional org-scribe--dependencies)))
   (should (assoc "pandoc" (alist-get :optional org-scribe--dependencies))))
 
+;;; Shunn style -- word count and rounding
+
+(ert-deftest test-compile-round-wordcount-nearest-hundred ()
+  "Word counts round to the nearest hundred, per Shunn convention."
+  (should (= 0 (org-scribe--compile-round-wordcount 37)))
+  (should (= 300 (org-scribe--compile-round-wordcount 253)))
+  (should (= 200 (org-scribe--compile-round-wordcount 249)))
+  (should (= 400 (org-scribe--compile-round-wordcount 350))))
+
+(ert-deftest test-compile-word-count-counts-scene-and-prose-only ()
+  "The word count is computed from what actually compiles, not raw metadata."
+  (should (= 5 (org-scribe--compile-word-count
+               '((chapter . "Chapter One, Ignored")
+                 (scene . "one two three")
+                 (break)
+                 (prose . "four five")))))
+  (should (= 0 (org-scribe--compile-word-count nil))))
+
+;;; Shunn style -- validation
+
+(ert-deftest test-compile-shunn-refuses-without-author-name ()
+  "Shunn is refused, by name, when no author identity is configured."
+  (let ((org-scribe-author-name nil))
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (should-error (org-scribe-compile 'shunn 'txt) :type 'user-error))))
+
+(ert-deftest test-compile-shunn-refuses-md-and-odt ()
+  "Shunn has no layout for Markdown and no styles file for ODT (yet)."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (should-error (org-scribe-compile 'shunn 'md) :type 'user-error)
+      (should-error (org-scribe-compile 'shunn 'odt) :type 'user-error))))
+
+(ert-deftest test-compile-shunn-accepts-org-and-txt ()
+  "Shunn compiles for the two formats that need no external toolchain."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (should (file-exists-p (org-scribe-compile 'shunn 'org)))
+      (should (file-exists-p (org-scribe-compile 'shunn 'txt))))))
+
+;;; Shunn style -- front matter content
+
+(ert-deftest test-compile-shunn-includes-contact-block ()
+  "The author's name, address and email appear in a verse block."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (org-scribe-compile 'clean 'org)  ; unrelated clean compile: proves no interference
+      (org-scribe-compile 'shunn 'org)
+      (let ((out (org-scribe-compile-test--intermediate root "novel" "shunn")))
+        (should (string-match-p "#\\+begin_verse" out))
+        (should (string-match-p "Jane Alcott Doe" out))
+        (should (string-match-p "123 Elm Street" out))
+        (should (string-match-p "jane@example.com" out))))))
+
+(ert-deftest test-compile-shunn-agent-replaces-own-contact ()
+  "An agent's contact lines replace the author's own, not append to them."
+  (org-scribe-compile-test--with-author
+    (let ((org-scribe-author-agent '("Pat Agent" "Agent House Literary")))
+      (org-scribe-compile-test--with-project "novel" "novel.org"
+          org-scribe-compile-test--novel
+        (org-scribe-compile 'shunn 'org)
+        (let ((out (org-scribe-compile-test--intermediate root "novel" "shunn")))
+          (should (string-match-p "Pat Agent" out))
+          (should (string-match-p "Agent House Literary" out))
+          (should-not (string-match-p "123 Elm Street" out))
+          (should-not (string-match-p "jane@example.com" out)))))))
+
+(ert-deftest test-compile-shunn-byline-falls-back-to-author-name ()
+  "With no Pen-name marker, the byline is the author's legal name."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (org-scribe-compile 'shunn 'org)
+      (should (string-match-p "by Jane Alcott Doe"
+                              (org-scribe-compile-test--intermediate root "novel" "shunn"))))))
+
+(ert-deftest test-compile-shunn-byline-uses-pen-name-marker ()
+  "A `# Pen-name:' marker overrides the byline without touching the contact block."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (org-scribe--project-marker-set root "Pen-name" "J.A. Doe")
+      (org-scribe-compile 'shunn 'org)
+      (let ((out (org-scribe-compile-test--intermediate root "novel" "shunn")))
+        (should (string-match-p "by J\\.A\\. Doe" out))
+        ;; The contact block still carries the legal name.
+        (should (string-match-p "Jane Alcott Doe" out))))))
+
+(ert-deftest test-compile-shunn-running-header-keyword-defaults-from-title ()
+  "With no Running-header marker, the keyword is the title's first word."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (org-scribe-compile 'shunn 'org)
+      (should (string-match-p "#\\+LATEX_HEADER:.*Doe / THE /"
+                              (org-scribe-compile-test--intermediate root "novel" "shunn"))))))
+
+(ert-deftest test-compile-shunn-running-header-keyword-from-marker ()
+  "A `# Running-header:' marker overrides the derived keyword."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (org-scribe--project-marker-set root "Running-header" "TIDE")
+      (org-scribe-compile 'shunn 'org)
+      (should (string-match-p "#\\+LATEX_HEADER:.*Doe / TIDE /"
+                              (org-scribe-compile-test--intermediate root "novel" "shunn"))))))
+
+(ert-deftest test-compile-shunn-word-count-matches-computed-rounding ()
+  "The displayed word count is the actual rounding of the compiled prose,
+not a hardcoded or unrelated figure."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (let* ((blocks (car (org-scribe-compile-normalize manuscript)))
+             (expected (org-scribe--compile-round-wordcount
+                        (org-scribe--compile-word-count blocks))))
+        (org-scribe-compile 'shunn 'org)
+        (should (string-match-p
+                 (format "about %d words" expected)
+                 (org-scribe-compile-test--intermediate root "novel" "shunn")))))))
+
+(ert-deftest test-compile-shunn-suppresses-org-title-block ()
+  "Org's own title/author/date rendering is suppressed for Shunn.
+Without title:nil/author:nil/date:nil, every backend prints its own
+title block (a `\\maketitle' in LaTeX, a boilerplate author/date line in
+ASCII) above the front matter this module builds -- confirmed by
+exporting a minimal fixture before this suppression was added."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (org-scribe-compile 'shunn 'org)
+      (should (string-match-p "title:nil author:nil date:nil"
+                              (org-scribe-compile-test--intermediate root "novel" "shunn"))))))
+
+(ert-deftest test-compile-shunn-clean-title-block-unaffected ()
+  "The `clean' style does not suppress the title -- only `shunn' needs to."
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (org-scribe-compile 'clean 'org)
+    (should-not (string-match-p "title:nil"
+                                (org-scribe-compile-test--intermediate root "novel" "clean")))))
+
+(ert-deftest test-compile-shunn-ends-with-end-mark ()
+  "A Shunn manuscript closes with a centered END mark; clean does not."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (org-scribe-compile 'clean 'org)
+      (org-scribe-compile 'shunn 'org)
+      ;; The exact marker block, not a bare "END" substring search: every
+      ;; clean compile already contains "#+end_center" from scene
+      ;; breaks, which a loose case-insensitive \\bEND\\b would match
+      ;; ("+" and "_" both count as non-word characters in Emacs's
+      ;; default syntax table, so "end" inside "#+end_center" sits at a
+      ;; word boundary on both sides) -- confirmed by this exact
+      ;; false positive during development.
+      (should (string-match-p "#\\+begin_center\nEND\n#\\+end_center"
+                              (org-scribe-compile-test--intermediate root "novel" "shunn")))
+      (should-not (string-match-p "#\\+begin_center\nEND\n#\\+end_center"
+                                  (org-scribe-compile-test--intermediate root "novel" "clean"))))))
+
+(ert-deftest test-compile-shunn-preamble-rejects-malformed-template ()
+  "A customized preamble with the wrong placeholder count is refused,
+not silently rendered with SURNAME/KEYWORD missing or an opaque Elisp
+`format' error."
+  (org-scribe-compile-test--with-author
+    (dolist (bad '("no placeholders" "only %s one" "%s %s %s three"))
+      (let ((org-scribe-compile-shunn-latex-preamble bad))
+        (org-scribe-compile-test--with-project "novel" "novel.org"
+            org-scribe-compile-test--novel
+          (should-error (org-scribe-compile 'shunn 'org) :type 'user-error))))))
+
+;;; Shunn style -- real PDF and DOCX output
+
+(ert-deftest test-compile-shunn-pdf-has-real-running-header ()
+  "The compiled PDF's LaTeX source carries the actual Shunn running
+header, and pdflatex accepts it -- a real end-to-end check, not just
+that the preamble text was assembled correctly."
+  (skip-unless org-scribe-compile-test--pdflatex-available)
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (let* ((output (org-scribe-compile 'shunn 'pdf))
+             (tex (expand-file-name "novel-shunn.tex" (file-name-directory output))))
+        (should (string= "%PDF" (org-scribe-compile-test--magic-bytes output 4)))
+        (should (file-exists-p tex))
+        (with-temp-buffer
+          (insert-file-contents tex)
+          (should (string-match-p "\\\\fancyhead\\[R\\]{Doe / THE / \\\\thepage}"
+                                  (buffer-string)))
+          (should (string-match-p "\\\\thispagestyle{empty}" (buffer-string)))
+          (should (string-match-p "\\\\doublespacing" (buffer-string))))))))
+
+(ert-deftest test-compile-pdf-scene-break-is-visible-not-silently-dropped ()
+  "The scene break actually appears in the rendered PDF text.
+The default marker (the asterism, U+2042) is outside pdflatex's default
+font encoding: it compiles with no error -- only ox-latex's own
+\"unicode character(s) not supported\" warning, easy to miss in a batch
+build -- and the glyph is silently absent from the PDF, with no visible
+trace at all where the break should be.  A test that only checked the
+build succeeded, or that some replacement string is *present* in the
+.tex source, would have missed this: the bug is specifically that a
+clean compile produces a PDF with content missing.  This reads the
+rendered PDF back with pdftotext and checks the break is actually there,
+in a `clean' compile -- the bug affects every PDF, not just Shunn's."
+  (skip-unless org-scribe-compile-test--pdflatex-available)
+  (skip-unless (executable-find "pdftotext"))
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (let ((output (org-scribe-compile 'clean 'pdf)))
+      (with-temp-buffer
+        (call-process "pdftotext" nil t nil output "-")
+        ;; `org-scribe--compile-latex-scene-break' is *LaTeX source*
+        ;; ("*~~*~~*", `~' being a tie); what a reader sees, and what
+        ;; pdftotext extracts, is three asterisks with the ties
+        ;; rendered as ordinary spaces -- so check for the rendered
+        ;; result, not the source string.
+        (should (string-match-p "\\*\\*\\*"
+                                (replace-regexp-in-string "[ \t]+" "" (buffer-string))))))))
+
+(ert-deftest test-compile-shunn-docx-round-trips-frontmatter ()
+  "The Shunn DOCX carries the front matter content through pandoc,
+verified by converting it back to plain text rather than assuming the
+input text made it through unmangled."
+  (skip-unless org-scribe-compile-test--pandoc-available)
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (let ((output (org-scribe-compile 'shunn 'docx)))
+        (should (string= "PK" (org-scribe-compile-test--magic-bytes output 2)))
+        (with-temp-buffer
+          (call-process "pandoc" nil t nil "-f" "docx" "-t" "plain" output)
+          (should (string-match-p "Jane Alcott Doe" (buffer-string)))
+          (should (string-match-p "by Jane Alcott Doe" (buffer-string)))
+          (should (string-match-p "END" (buffer-string))))))))
+
 ;;; Command behaviour
 
 (ert-deftest test-compile-writes-the-intermediate-for-every-format ()
@@ -566,13 +819,10 @@ already loaded the full package, e.g. via test-load.el."
       (should (file-exists-p (expand-file-name "built/novel-clean.txt" root)))
       (should-not (file-exists-p (expand-file-name "novel-clean.txt" root))))))
 
-(ert-deftest test-compile-refuses-the-shunn-style ()
-  "Shunn is refused with a message, not approximated.
-It needs author and address data the project does not record; guessing
-at a submission standard would be worse than declining."
-  (org-scribe-compile-test--with-project "novel" "novel.org"
-      org-scribe-compile-test--novel
-    (should-error (org-scribe-compile 'shunn 'txt) :type 'user-error)))
+;; Shunn's own validation (author identity, supported formats, a
+;; malformed preamble) is covered in the "Shunn style" section above --
+;; `test-compile-shunn-refuses-without-author-name' is what this test
+;; used to be, back when `shunn' was refused unconditionally.
 
 (ert-deftest test-compile-refuses-an-unknown-format ()
   "An unknown format is reported rather than silently defaulted."
@@ -597,11 +847,12 @@ at a submission standard would be worse than declining."
 
 (ert-deftest test-compile-messages-exist-in-both-languages ()
   "Every compile message key is registered in both alists."
-  (dolist (key '(compile-prompt-format compile-not-in-project
+  (dolist (key '(compile-prompt-style compile-prompt-format compile-not-in-project
                  compile-no-manuscript compile-empty
                  compile-style-unsupported compile-format-unknown
                  compile-backend-missing compile-unsafe-scene-break
-                 compile-done))
+                 compile-done compile-shunn-format-unsupported
+                 compile-shunn-author-missing compile-shunn-preamble-malformed))
     (should (assq key org-scribe-messages-en))
     (should (assq key org-scribe-messages-es))))
 

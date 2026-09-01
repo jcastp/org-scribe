@@ -13,16 +13,17 @@ By the end of this lesson, you'll have:
 - Compiled a clean, readable draft with ~org-scribe-compile~ — the fastest
   path from a working manuscript to something you can actually hand to
   a reader
+- Compiled a submission-ready manuscript in standard (Shunn) format,
+  with a real contact block, word count, and running header
 - Understood org-mode's export system for everything compile doesn't do yet
-  (PDF, EPUB, full formatting control)
+  (EPUB, full formatting control)
 - Learned to use the scene break macro for professional formatting
 - Exported your manuscript to PDF (via LaTeX)
 - Exported to Word-compatible format (ODT)
 - Created HTML and EPUB versions for digital reading
 - Customized export settings for different requirements
-- Prepared manuscripts for submission to publishers
 
-*Estimated time*: 20-25 minutes
+*Estimated time*: 25-30 minutes
 
 * Before You Begin
 
@@ -79,11 +80,13 @@ document to Org's own exporters.
 #+BEGIN_EXAMPLE
 F8 F8 X          (or M-x org-scribe-compile)
 
+Compile style:  clean / shunn
 Compile the manuscript to:  org / txt / md / odt / pdf / docx
 #+END_EXAMPLE
 
-Pick a format and org-scribe writes two files to ~export/~ under your
-project root (created automatically; worth adding to ~.gitignore~):
+Pick ~clean~ (covered here first) and a format, and org-scribe writes two
+files to ~export/~ under your project root (created automatically; worth
+adding to ~.gitignore~):
 
 - The rendered output, e.g. ~novel-clean.odt~ or ~novel-clean.pdf~
 - The clean intermediate, e.g. ~novel-clean.org~ — always written,
@@ -125,36 +128,160 @@ manuscript: anything starting with ~*~ (Org reparses it as a heading,
 even inside a centered block) and anything starting with ~#~ (an Org
 comment, so it would vanish with no trace).
 
-** What It Doesn't Do (Yet)
-
-- Only a *clean* draft style exists — no Shunn/submission formatting,
-  no title page, no automatic chapter numbering beyond what you typed.
-  The PDF this produces is plain ~article~-class Org output, not a
-  formatted manuscript — no double-spacing, no running header, no
-  margins tuned for submission. That's Phase 3's job.
-- No EPUB — reflowable e-book output still needs Org's direct export
-- No chapter/act subset selection — it always compiles the whole
-  manuscript
-
-For any of those, use Org's direct export (below), which the rest of
-this lesson covers.
+*PDF is the one exception*: it always shows three centered asterisks
+(~* * *~) for the break, regardless of this setting. pdflatex's default
+fonts don't have a glyph for the asterism (or the fleuron preset) at
+all — not an error, just a blank space where the break should be — and
+there's no reliable way to check an arbitrary glyph's font coverage
+from Emacs. Three asterisks is also the traditional print-manuscript
+scene break, so PDF isn't losing anything by not matching your other
+formats here.
 
 ** Try It Now! (2 minutes)
 
 1. Open your manuscript
-2. ~F8 F8 X~, then choose ~txt~
+2. ~F8 F8 X~, ~clean~, then choose ~txt~
 3. Open the resulting file in ~export/~ — notice the chapter headings,
    the scene breaks, and the complete absence of ~TODO~ or property
    drawers
 4. Try again with ~odt~ and open it in LibreOffice or Word
 5. If you have a LaTeX distribution installed, try ~pdf~ too
 
+* Compiling a Submission Manuscript (Shunn Format)
+
+"Shunn format" (after William Shunn, who wrote the reference guide) is
+what most publishers, agents and magazines mean by "standard manuscript
+format": a plain, unfussy contact block, a rounded word count, double
+spacing, generous margins, and a running header on every page after the
+first. ~org-scribe-compile~'s ~shunn~ style produces this directly from
+your manuscript — no separate submission-formatting pass.
+
+** Set Up Your Author Identity Once
+
+Before your first ~shunn~ compile, tell org-scribe who you are. This is
+per-author, not per-project — set it once in your init file:
+
+#+BEGIN_EXAMPLE
+(setq org-scribe-author-name "Jane Alcott Doe")
+(setq org-scribe-author-address '("123 Elm Street" "Springfield, IL 62704"))
+(setq org-scribe-author-email "jane@example.com")
+(setq org-scribe-author-phone "555-0100")
+#+END_EXAMPLE
+
+Only ~org-scribe-author-name~ is required; the rest are optional and
+simply omitted from the contact block if unset. Submitting through an
+agent? Their contact information replaces your own on the page:
+
+#+BEGIN_EXAMPLE
+(setq org-scribe-author-agent '("Pat Agent" "Agent House Literary"
+                                "456 Publishing Row" "New York, NY 10001"))
+#+END_EXAMPLE
+
+Compiling ~shunn~ with no ~org-scribe-author-name~ set is refused, not
+approximated — a submission manuscript with a blank contact block would
+be worse than an explicit error telling you what to configure.
+
+** Per-Project Details (Optional)
+
+Two lines in your project's ~.org-scribe-project~ file customize details
+Shunn format wants that are specific to *this* manuscript, not to you as
+an author. Add them by hand, or with ~M-x add-file-local-variable~-style
+editing of the marker file — there's no dedicated command yet:
+
+#+BEGIN_EXAMPLE
+# Pen-name: J.A. Doe
+# Running-header: TIDE
+#+END_EXAMPLE
+
+- ~Pen-name~ — shown as the byline ("by ...") instead of your legal
+  name. The contact block still carries your legal name regardless: a
+  check gets written to the name on the contact block, not the byline.
+- ~Running-header~ — the keyword in "Surname / KEYWORD / page" atop
+  every page after the first. Without this marker, org-scribe derives
+  one from your title's first word automatically, so you don't have to
+  set it just to get a working header — only to change what it says.
+
+** Compiling
+
+#+BEGIN_EXAMPLE
+F8 F8 X
+Compile style:  shunn
+Compile the manuscript to:  org / txt / pdf / docx
+#+END_EXAMPLE
+
+~md~ and ~odt~ aren't offered for ~shunn~: Markdown has no page layout
+for a submission standard to apply to, and ODT support needs a styles
+file org-scribe doesn't ship yet (the same reasoning that keeps every
+export format in this package from hardcoding a style that might not
+match what you actually have installed).
+
+** What You Get
+
+Every ~shunn~ format shares the same front matter: your contact block
+(or your agent's), the word count rounded to the nearest hundred ("about
+47,800 words"), and your title centered with "by ..." beneath it. The
+manuscript itself closes with a centered "END".
+
+*PDF* additionally gets real page formatting: 1-inch margins, double
+spacing, and the running header from page 2 on. This is the closest to
+what a publisher expects to see, and needs a LaTeX distribution
+installed (~pdflatex~ on your PATH).
+
+*DOCX* (via pandoc) gets the same front-matter content, but *not* the
+page formatting — no forced double-spacing or margins. Word documents
+get that kind of styling from a reference template, and org-scribe
+doesn't ship one to point pandoc at (for the same reason it has never
+hardcoded an ODT style name: a wrong one risks corrupting the document
+rather than just looking plain). If DOCX with full manuscript formatting
+matters for a submission, compile ~pdf~ instead, or export directly to
+ODT and apply your own template (see "ODT-Specific Settings" below).
+
+*Plain text* and the *org* intermediate get the front-matter content
+with no page model at all — there's no concept of margins or double
+spacing in a .txt file. Some submission portals specifically want plain
+text, so this is a real target, not just a debugging aid.
+
+** Customizing the Running Header's Appearance
+
+The LaTeX behind the PDF's header and spacing lives in one =defcustom=,
+built from stock LaTeX packages only (~geometry~, ~setspace~,
+~fancyhdr~ — all in a base ~texlive-latex-recommended~ install, nothing
+extra to install):
+
+#+BEGIN_EXAMPLE
+(setq org-scribe-compile-shunn-latex-preamble
+      "\\usepackage[margin=1.25in]{geometry}
+\\usepackage{setspace}
+\\doublespacing
+\\usepackage{fancyhdr}
+\\pagestyle{fancy}
+\\fancyhf{}
+\\fancyhead[R]{%s / %s / \\thepage}
+\\renewcommand{\\headrulewidth}{0pt}")
+#+END_EXAMPLE
+
+Keep both ~%s~ placeholders (filled with your surname and the running-
+header keyword, in that order) — a customization missing either is
+refused with an error naming the problem, rather than silently
+compiling a PDF with a broken header.
+
+** Try It Now! (3 minutes)
+
+1. Set ~org-scribe-author-name~ (and, if you like, the address/email)
+   in your ~*scratch*~ buffer or ~M-x eval-expression~
+2. ~F8 F8 X~, ~shunn~, then choose ~txt~ — read the front matter that
+   comes out
+3. If you have a LaTeX distribution, try ~pdf~ and look for the running
+   header starting on page 2
+4. Add a ~# Pen-name:~ line to ~.org-scribe-project~ and compile again —
+   confirm the byline changes but the contact block doesn't
+
 * Direct Export with Org's Dispatcher
 
-For PDF, EPUB, or when you need fine-grained control that compile
-doesn't offer yet, export the working file directly with Org's own
-dispatcher. This is the "advanced" path: more configuration, more
-formats, more manual setup.
+For PDF with full manual control, EPUB, or fine-grained control that
+neither compile style offers yet, export the working file directly with
+Org's own dispatcher. This is the "advanced" path: more configuration,
+more formats, more manual setup.
 
 * Understanding Org-Mode Export
 
@@ -1166,6 +1293,9 @@ Fantastic work! You've completed Lesson 11. You now know:
 
 ✓ Compiling a clean draft with ~org-scribe-compile~ (~F8 F8 X~) — the
   fastest path from working file to readable document
+✓ Compiling a submission-ready manuscript with the ~shunn~ style — a
+  real contact block, rounded word count, and (for PDF) a running
+  header, generated directly from your manuscript
 ✓ How org-mode's export system works
 ✓ The export dispatcher (~C-c C-e~) and format options
 ✓ Using the scene break macro (~{{{scene-break}}}~)
@@ -1174,7 +1304,9 @@ Fantastic work! You've completed Lesson 11. You now know:
 ✓ Exporting to HTML for web (~C-c C-e h h~)
 ✓ Exporting to EPUB for e-readers (~C-c C-e e e~)
 ✓ Customizing export settings for different needs
-✓ Preparing manuscripts for publisher/agent submission
+✓ Preparing manuscripts for publisher/agent submission, both ways: the
+  ~org-scribe-compile~ ~shunn~ style, and manual LaTeX headers for full
+  control over direct export
 ✓ Standard manuscript format (Shunn format)
 ✓ Complete workflows for various export scenarios
 ✓ Troubleshooting common export issues
@@ -1196,43 +1328,53 @@ In the next lesson, you'll learn:
 Reinforce your export skills:
 
 1. **Compile a clean draft**
-   - ~F8 F8 X~, choose ~txt~
+   - ~F8 F8 X~, ~clean~, then choose ~txt~
    - Open the intermediate ~.org~ file in ~export/~ and compare it to
      your working manuscript
    - Try ~odt~ and open it in LibreOffice/Word
    - If you have LaTeX or pandoc installed, try ~pdf~ and ~docx~ too
 
-2. **Export to all formats**
+2. **Compile a Shunn manuscript**
+   - Set ~org-scribe-author-name~ (and, if you like, the rest of your
+     contact information)
+   - ~F8 F8 X~, ~shunn~, then choose ~txt~ — read through the front
+     matter
+   - If you have a LaTeX distribution installed, try ~pdf~ and check for
+     the running header on page 2
+   - Add a ~# Running-header:~ line to ~.org-scribe-project~ and compile
+     again to see it change
+
+3. **Export to all formats**
    - PDF: ~C-c C-e l p~
    - ODT: ~C-c C-e o o~
    - HTML: ~C-c C-e h o~
    - EPUB: ~C-c C-e e e~ (if installed)
    - Compare results
 
-3. **Add scene breaks**
+4. **Add scene breaks**
    - Find 3 places in manuscript
    - Add ~{{{scene-break}}}~
    - Export to PDF
    - Verify breaks appear correctly
 
-4. **Create submission package**
+5. **Create submission package**
    - First 3 chapters to PDF
    - Standard manuscript format
    - Save as: ~YourName-Title-Sample.pdf~
 
-5. **Customize one format**
+6. **Customize one format**
    - Choose PDF or ODT
    - Add custom formatting
    - Create template for reuse
    - Document settings
 
-6. **Beta reader workflow**
+7. **Beta reader workflow**
    - Export manuscript to ODT
    - Open in Word/LibreOffice
    - Add sample comments
    - Practice workflow
 
-7. **EPUB with cover**
+8. **EPUB with cover**
    - Create or find cover image
    - Add to manuscript
    - Export to EPUB
@@ -1246,7 +1388,7 @@ Exporting is how you share your work - master these skills to present your writi
 
 | Key Sequence | Action                                              |
 |--------------+------------------------------------------------------|
-| ~F8 F8 X~      | Compile a clean draft (~M-x org-scribe-compile~), prompts for org/txt/md/odt/pdf/docx |
+| ~F8 F8 X~      | ~M-x org-scribe-compile~: prompts for style (clean/shunn), then format (org/txt/md/odt/pdf/docx — shunn offers only org/txt/pdf/docx) |
 
 ** Essential Export Commands
 
@@ -1320,36 +1462,43 @@ Exports as:
 #+BEGIN_EXAMPLE
 Need to:                     → Use:
 ─────────────────────────────────────────────────
-Quick readable draft, no fuss → org-scribe-compile (txt/md/odt)
-Submit to publisher/agent    → org-scribe-compile (pdf/docx), or direct LaTeX for Shunn control
-Share with beta readers       → org-scribe-compile (odt or docx)
+Quick readable draft, no fuss → org-scribe-compile, clean (txt/md/odt)
+Submit to publisher/agent    → org-scribe-compile, shunn (pdf) — full contact
+                                 block, spacing, running header, done for you
+Share with beta readers       → org-scribe-compile, clean (odt or docx)
 Publish online/blog           → HTML (direct export)
 Self-publish e-book           → EPUB (direct export)
 Print book (CreateSpace/KDP)  → PDF (direct export, for full LaTeX control)
-Share with writing group      → org-scribe-compile (odt or pdf)
-Archive readable version      → HTML, or org-scribe-compile (md)
-Submit to contest             → org-scribe-compile (pdf), or direct export for exact page-count control
-Send to editor                → org-scribe-compile (docx or odt), fully editable
+Share with writing group      → org-scribe-compile, clean (odt or pdf)
+Archive readable version      → HTML, or org-scribe-compile, clean (md)
+Submit to contest             → org-scribe-compile, shunn (pdf), or direct
+                                 export for exact page-count control
+Send to editor                → org-scribe-compile, clean (docx or odt),
+                                 fully editable
 #+END_EXAMPLE
 
 * Summary
 
 You have two ways to get a manuscript out of org-scribe. Start with
-~org-scribe-compile~ (~F8 F8 X~) for a clean draft — it needs no
-configuration and produces org/txt/md/odt in seconds, with an inspectable
-intermediate you can check when something looks off. Reach for Org's
-direct export (~C-c C-e~) when you need PDF, EPUB, or configuration
-compile doesn't offer yet: LaTeX headers, ODT style templates, HTML
-stylesheets, EPUB metadata and covers.
+~org-scribe-compile~ (~F8 F8 X~): the ~clean~ style needs no configuration
+and produces org/txt/md/odt in seconds, and the ~shunn~ style — once your
+author identity is set up — produces a submission-ready manuscript
+(org/txt/pdf/docx) with a real contact block, word count, and running
+header, generated directly from your working file. Both styles leave an
+inspectable intermediate you can check when something looks off. Reach
+for Org's direct export (~C-c C-e~) when you need EPUB, or configuration
+neither compile style offers yet: HTML stylesheets, EPUB metadata and
+covers, or hand-tuned LaTeX beyond what ~org-scribe-compile-shunn-latex-preamble~
+covers.
 
 The key to successful exporting:
-1. Try ~org-scribe-compile~ first for a quick, clean draft
+1. Try ~org-scribe-compile~ first — ~clean~ for a quick draft, ~shunn~
+   once you're ready to submit
 2. For direct export, use the scene break macro for format-independent breaks
 3. Understand your target format's requirements
 4. Customize export settings in your manuscript (not shipped by default)
 5. Test exports early and often
-6. Create templates for repeated uses (Shunn format, etc.)
-7. Validate output before sharing
+6. Validate output before sharing
 
 Your manuscript is ready for the world - export with confidence!
 

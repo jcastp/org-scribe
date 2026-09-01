@@ -520,11 +520,37 @@ than a black box. The scene-break marker
 (~org-scribe-compile-output-directory~, default ~export~) are both
 customizable; a marker beginning with ~*~ or ~#~ is refused rather than
 emitted, since Org would reparse either as structure rather than text.
+PDF output always renders the break as three centered asterisks
+regardless of that setting — pdflatex's default fonts don't cover the
+asterism (or the fleuron preset) at all, confirmed by rendering real PDFs
+and reading them back with ~pdftotext~ rather than trusting a clean
+build: the glyph is simply absent, with no error and no visible trace.
 
-*Status*: Fully implemented (~clean~ style only; ~shunn~/submission format
-not yet built — the ~clean~-style PDF has no manuscript formatting, just
-plain ~article~-class output) | *Hydra*: ~F8 F8 X~ | *Module*:
-~export/org-scribe-compile.el~
+Two compile styles: ~clean~ (a readable draft, the above) and ~shunn~
+(submission/"standard manuscript" format) — a contact block, word count
+rounded to the nearest hundred, centered title and byline, and, for PDF,
+1-inch margins, double spacing and a running header reading "Surname /
+KEYWORD / page" from page 2 on. Author identity is per-author
+(~org-scribe-author-name~/~-address~/~-email~/~-phone~/~-agent~,
+~core/org-scribe-config.el~ defcustoms); pen name and running-header
+keyword are per-project (~# Pen-name:~/~# Running-header:~ markers in
+~.org-scribe-project~, read the same way ~Plan~/~Planner~ already are).
+~shunn~ is refused, naming what's missing, without
+~org-scribe-author-name~ set, and is only offered for ~org~/~txt~/~pdf~/~docx~
+(not ~md~, which has no layout for a submission standard, or ~odt~,
+which has no styles file yet). The PDF running header and spacing come
+from ~org-scribe-compile-shunn-latex-preamble~, a stock-classes-only
+LaTeX template (~geometry~/~setspace~/~fancyhdr~) with two ~%s~
+placeholders for surname and keyword, validated before use so a bad
+customization is reported by name rather than silently missing data or
+raising Elisp's own generic ~format~ error.
+
+*Status*: Fully implemented for ~clean~ and ~shunn~ (DOCX Shunn gets the
+front-matter content but no page-level formatting — no reference
+document to carry double-spacing/margins through pandoc, the same
+"never hardcode a style that might not exist" reasoning that keeps the
+ODT scene break from hardcoding a style name) | *Hydra*: ~F8 F8 X~ |
+*Module*: ~export/org-scribe-compile.el~
 
 ** Project templates ship no export configuration
 
