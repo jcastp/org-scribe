@@ -179,7 +179,9 @@ recommended keybindings and hooks."
      (powerthesaurus . "English thesaurus")
      (tempel         . "Snippets for inline edit markers (org-scribe-tempel-setup)")
      (org-remark     . "Text annotations")
-     (ox-extra       . "Makes the :ignore: tag on scene/chapter headings actually drop the title from export while keeping its body; part of the org-contrib package. Without it, exported manuscripts show raw TODO keywords and heading titles.")))
+     (ox-extra       . "Makes the :ignore: tag on scene/chapter headings actually drop the title from export while keeping its body; part of the org-contrib package. Without it, exported manuscripts show raw TODO keywords and heading titles.")
+     ("pdflatex"     . "PDF output from `org-scribe-compile'; needs a LaTeX distribution (TeX Live, MacTeX, or MiKTeX). Without it, `org-scribe-compile' reports the missing tool by name rather than failing partway through.")
+     ("pandoc"       . "DOCX output from `org-scribe-compile'; needs the pandoc command-line tool (https://pandoc.org). Without it, `org-scribe-compile' reports the missing tool by name rather than failing partway through.")))
   "org-scribe dependencies grouped by importance, each with a description.
 Only the `:required' group is needed for the package to load; the
 `:recommended' group degrades gracefully when absent and the `:optional'
@@ -190,9 +192,17 @@ group simply leaves the corresponding feature inert.")
   "Source URLs for dependencies that are not on a package archive.")
 
 (defun org-scribe--feature-available-p (feature)
-  "Return non-nil when FEATURE is loaded or installed on the `load-path'."
-  (or (featurep feature)
-      (and (locate-library (symbol-name feature)) t)))
+  "Return non-nil when FEATURE is available.
+FEATURE is either a symbol naming an Elisp feature -- checked via
+`featurep' or `locate-library', as before -- or a string naming an
+external executable, checked via `executable-find'.  The string case
+exists for dependencies `org-scribe-compile' shells out to (pandoc,
+pdflatex): there is no Elisp library to require for those, so the usual
+check does not apply."
+  (if (stringp feature)
+      (and (executable-find feature) t)
+    (or (featurep feature)
+        (and (locate-library (symbol-name feature)) t))))
 
 ;;;###autoload
 (defun org-scribe-setup-check ()

@@ -508,16 +508,22 @@ divisions, because ~:ignore:~ sits on chapters exactly as it does on scenes.
 Compile normalizes the manuscript first — acts dropped, chapters kept as
 real visible headings, scenes silenced with breaks derived from sibling
 structure rather than typed — then hands the result to stock Org exporters.
-Formats: Org, plain text, Markdown, ODT, none requiring anything beyond
-Emacs. The intermediate ~.org~ file is always written alongside the output,
-so a compile that looks wrong is inspectable rather than a black box. The
-scene-break marker (~org-scribe-compile-scene-break~, default ~⁂~) and
-output directory (~org-scribe-compile-output-directory~, default ~export~)
-are both customizable; a marker beginning with ~*~ or ~#~ is refused rather
-than emitted, since Org would reparse either as structure rather than text.
+Formats: Org, plain text, Markdown, ODT need nothing beyond Emacs; PDF
+(via ~org-latex-export-to-pdf~) needs a LaTeX distribution and DOCX (via
+pandoc, shelled out) needs the ~pandoc~ tool — both optional, both
+reported by ~M-x org-scribe-setup-check~, and a missing one is refused by
+name (~Cannot compile to docx: `pandoc' is not available~) rather than
+producing a partial file. The intermediate ~.org~ file is always written
+alongside the output, so a compile that looks wrong is inspectable rather
+than a black box. The scene-break marker
+(~org-scribe-compile-scene-break~, default ~⁂~) and output directory
+(~org-scribe-compile-output-directory~, default ~export~) are both
+customizable; a marker beginning with ~*~ or ~#~ is refused rather than
+emitted, since Org would reparse either as structure rather than text.
 
 *Status*: Fully implemented (~clean~ style only; ~shunn~/submission format
-and PDF/DOCX outputs not yet built) | *Hydra*: ~F8 F8 X~ | *Module*:
+not yet built — the ~clean~-style PDF has no manuscript formatting, just
+plain ~article~-class output) | *Hydra*: ~F8 F8 X~ | *Module*:
 ~export/org-scribe-compile.el~
 
 ** Project templates ship no export configuration

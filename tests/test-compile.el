@@ -161,6 +161,21 @@ project."
   (and (require 'ox-odt nil t) (fboundp 'org-odt-export-to-odt))
   "Non-nil when this Emacs can export ODT at all.")
 
+(defvar org-scribe-compile-test--pdflatex-available
+  (and (require 'ox-latex nil t) (executable-find "pdflatex"))
+  "Non-nil when this Emacs can compile LaTeX to PDF.")
+
+(defvar org-scribe-compile-test--pandoc-available
+  (executable-find "pandoc")
+  "Non-nil when pandoc is on PATH.")
+
+(defun org-scribe-compile-test--magic-bytes (file n)
+  "Return the first N bytes of FILE as a unibyte string."
+  (with-temp-buffer
+    (set-buffer-multibyte nil)
+    (insert-file-contents-literally file nil 0 n)
+    (buffer-string)))
+
 ;;; Definition
 
 (ert-deftest test-compile-functions-defined ()
@@ -460,6 +475,74 @@ variable is enough; nothing caches the default."
           (should (string-match-p (regexp-quote "· · ·") out))
           (should-not (string-match-p "⁂" out)))))))
 
+(ert-deftest test-compile-pdf-file-is-a-real-pdf ()
+  "PDF compiles to an actual PDF, via `org-latex-export-to-pdf'.
+The exporter/backend split matters here the same way it does for ODT:
+`org-export-to-file' on the `latex' backend would write a .tex file
+under a .pdf name, which is not a PDF and would pass any
+`file-exists-p' check. Checking the `%PDF' magic bytes is what would
+have caught that."
+  (skip-unless org-scribe-compile-test--pdflatex-available)
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (let ((output (org-scribe-compile 'clean 'pdf)))
+      (should (string-suffix-p ".pdf" output))
+      (should (file-exists-p output))
+      (should (string= "%PDF"
+                       (org-scribe-compile-test--magic-bytes output 4))))))
+
+(ert-deftest test-compile-docx-file-is-a-real-docx ()
+  "DOCX compiles to an actual zip container via pandoc, not the intermediate.
+This pins the regression found while wiring pandoc in: `docx' has
+:backend nil (there is no Org export backend for it, pandoc is
+external) and an :exporter, and the dispatch in `org-scribe-compile'
+originally branched on :backend alone -- so a DOCX request silently
+returned the *intermediate .org file*, unnoticed because it also
+satisfies `file-exists-p'."
+  (skip-unless org-scribe-compile-test--pandoc-available)
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (let ((output (org-scribe-compile 'clean 'docx)))
+      (should (string-suffix-p ".docx" output))
+      (should (file-exists-p output))
+      (should (string= "PK" (org-scribe-compile-test--magic-bytes output 2)))
+      ;; Not the intermediate: a real docx round-trips as text via pandoc.
+      (should (executable-find "pandoc"))
+      (with-temp-buffer
+        (call-process "pandoc" nil t nil "-f" "docx" "-t" "plain" output)
+        (should (string-match-p "door creaked open" (buffer-string)))
+        (should (string-match-p "Chapter 1" (buffer-string)))))))
+
+(ert-deftest test-compile-refuses-when-pdflatex-is-missing ()
+  "A missing pdflatex is reported by name, not signalled as a crash."
+  (cl-letf (((symbol-function 'executable-find) (lambda (_) nil)))
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (should-error (org-scribe-compile 'clean 'pdf) :type 'user-error))))
+
+(ert-deftest test-compile-refuses-when-pandoc-is-missing ()
+  "A missing pandoc is reported by name, not signalled as a crash.
+No file is left behind for a request that failed before rendering."
+  (cl-letf (((symbol-function 'executable-find) (lambda (_) nil)))
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--novel
+      (should-error (org-scribe-compile 'clean 'docx) :type 'user-error)
+      (should-not (file-exists-p
+                   (expand-file-name
+                    "export/novel-clean.docx" root))))))
+
+(ert-deftest test-compile-pandoc-dependencies-are-registered ()
+  "pdflatex and pandoc appear in `org-scribe--dependencies' as :optional,
+so `org-scribe-setup-check' reports them the way every other optional
+toolchain is reported.  `org-scribe--dependencies' lives in the main
+org-scribe.el entry point, which this test file's own requires do not
+load (only core/ and export/ are on its load-path, matching every other
+compile test) -- so this only runs when something else in the session
+already loaded the full package, e.g. via test-load.el."
+  (skip-unless (boundp 'org-scribe--dependencies))
+  (should (assoc "pdflatex" (alist-get :optional org-scribe--dependencies)))
+  (should (assoc "pandoc" (alist-get :optional org-scribe--dependencies))))
+
 ;;; Command behaviour
 
 (ert-deftest test-compile-writes-the-intermediate-for-every-format ()
@@ -495,7 +578,7 @@ at a submission standard would be worse than declining."
   "An unknown format is reported rather than silently defaulted."
   (org-scribe-compile-test--with-project "novel" "novel.org"
       org-scribe-compile-test--novel
-    (should-error (org-scribe-compile 'clean 'pdf) :type 'user-error)))
+    (should-error (org-scribe-compile 'clean 'rtf) :type 'user-error)))
 
 (ert-deftest test-compile-reports-a-project-with-no-manuscript ()
   "A project without a manuscript file is reported, not crashed on."

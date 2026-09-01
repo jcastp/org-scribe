@@ -21,7 +21,7 @@
 ;; So compilation is a *transformation*, not a set of export filters.
 ;; The pipeline is:
 ;;
-;;   manuscript.org --normalize--> <clean .org> --stock ox-*--> txt/md/odt
+;;   manuscript.org --normalize--> <clean .org> --stock ox-*/pandoc--> txt/md/odt/pdf/docx
 ;;
 ;; Two properties of that shape are the reason for it:
 ;;
@@ -306,16 +306,49 @@ org-scribe documents, and only when DATA is the scene break itself."
 ;;; Output Formats
 
 (defconst org-scribe--compile-formats
-  '((org . (:extension "org" :backend nil    :library nil))
-    (txt . (:extension "txt" :backend ascii  :library ox-ascii))
-    (md  . (:extension "md"  :backend md     :library ox-md))
-    (odt . (:extension "odt" :backend odt    :library ox-odt
-            :exporter org-odt-export-to-odt)))
+  '((org  . (:extension "org"  :backend nil   :library nil))
+    (txt  . (:extension "txt"  :backend ascii :library ox-ascii))
+    (md   . (:extension "md"   :backend md    :library ox-md))
+    (odt  . (:extension "odt"  :backend odt   :library ox-odt
+             :exporter org-odt-export-to-odt))
+    (pdf  . (:extension "pdf"  :backend latex :library ox-latex
+             :exporter org-latex-export-to-pdf :executable "pdflatex"))
+    (docx . (:extension "docx" :backend nil   :library nil
+             :exporter org-scribe--compile-pandoc-export :executable "pandoc")))
   "Formats `org-scribe-compile' can produce, and what each needs.
-Phase 1 deliberately ships only the formats that require no toolchain
-beyond Emacs itself.  PDF (LaTeX) and DOCX (pandoc) are separate work,
-and each will be reported by `org-scribe-setup-check' when it lands, so
-a missing toolchain is a legible message rather than a bad export.")
+Every format needs at most an Elisp library (:library, always bundled
+with Org except EPUB's, which is not offered here) and at most one
+external program (:executable, checked with `executable-find' rather
+than required as a library, since neither pdflatex nor pandoc is
+Elisp).  A missing executable is reported by name via
+`compile-backend-missing' before anything is written, and both are
+listed in `org-scribe--dependencies' as :optional so
+`org-scribe-setup-check' reports them too.")
+
+(defun org-scribe--compile-pandoc-export ()
+  "Convert the intermediate .org file to .docx with pandoc.
+Returns the .docx file's name, relative to its directory -- the same
+contract `org-odt-export-to-odt' and `org-latex-export-to-pdf' satisfy,
+so pandoc slots into `org-scribe--compile-export' as just another
+:exporter rather than a special case.
+
+Called with `current-buffer' visiting the intermediate, exactly as those
+two are, but unlike them pandoc is not Elisp: it is an external process
+reading the file already saved to disk, so the buffer is consulted only
+for its file name.  `default-directory' is the intermediate's directory
+because Emacs sets it that way for any buffer visiting a file, which is
+what lets the output name stay relative and the working directory stay
+implicit rather than threading it through explicitly."
+  (let* ((source (buffer-file-name))
+         (target (concat (file-name-base source) ".docx")))
+    (with-temp-buffer
+      (let ((status (call-process "pandoc" nil t nil
+                                  "-f" "org" "-t" "docx"
+                                  source "-o" target)))
+        (unless (zerop status)
+          (user-error "%s" (org-scribe-msg 'compile-pandoc-failed
+                                           (string-trim (buffer-string)))))))
+    target))
 
 (defun org-scribe--compile-read-format ()
   "Prompt for an output format, returning its symbol."
@@ -338,11 +371,12 @@ also let-binds the `hfy-*' variables `org-odt-template' expects, so
 calling it is what keeps a manuscript (a document with no source blocks
 to fontify) from signalling `void-variable hfy-user-sheet-assoc'.
 
-`org-odt-export-to-odt' names its own output, beside the buffer's file
-and sharing its base name, which is why the intermediate is written with
-the base name the output wants.  Any future packaged backend (EPUB) needs
-the same treatment, hence `:exporter' in the format spec rather than a
-branch on `odt'."
+`org-odt-export-to-odt', `org-latex-export-to-pdf' and
+`org-scribe--compile-pandoc-export' all follow the same contract -- name
+their own output, beside the buffer's file and sharing its base name --
+which is why the intermediate is always written with the base name every
+output wants, and why any future packaged or external-tool format (EPUB)
+needs only an :exporter entry in the format spec, never a branch here."
   (let ((buffer (find-file-noselect intermediate))
         (exporter (plist-get spec :exporter)))
     (unwind-protect
@@ -369,9 +403,13 @@ scenes, and all planning apparatus removed.  `shunn' -- submission
 format -- is refused rather than approximated, because it needs author
 and address data the project does not yet record.
 
-FORMAT is one of the keys of `org-scribe--compile-formats'.  The
-intermediate Org document is always written, whatever FORMAT is, so
-there is something to inspect when the output looks wrong.
+FORMAT is one of the keys of `org-scribe--compile-formats': `org',
+`txt', `md' and `odt' need nothing beyond Emacs; `pdf' needs a LaTeX
+distribution (pdflatex on PATH) and `docx' needs pandoc.  A missing
+toolchain is reported by name -- see `org-scribe-setup-check' -- before
+anything is written, rather than partway through.  The intermediate Org
+document is always written too, whatever FORMAT is, so there is
+something to inspect when the output looks wrong.
 
 Both are written to `org-scribe-compile-output-directory' under the
 project root.  That directory is a build artifact: it is worth adding to
@@ -392,9 +430,12 @@ your behalf."
       (unless manuscript
         (user-error "%s" (org-scribe-msg 'compile-no-manuscript root)))
       (let* ((library (plist-get spec :library))
-             (backend (plist-get spec :backend)))
+             (backend (plist-get spec :backend))
+             (executable (plist-get spec :executable)))
         (when (and library (not (require library nil t)))
           (user-error "%s" (org-scribe-msg 'compile-backend-missing format library)))
+        (when (and executable (not (executable-find executable)))
+          (user-error "%s" (org-scribe-msg 'compile-backend-missing format executable)))
         (pcase-let* ((`(,blocks . ,text) (org-scribe-compile-normalize manuscript))
                      (chapters (seq-count (lambda (b) (eq (car-safe b) 'chapter)) blocks))
                      (scenes (seq-count (lambda (b) (eq (car-safe b) 'scene)) blocks))
@@ -406,13 +447,18 @@ your behalf."
           (make-directory directory t)
           (with-temp-file intermediate (insert text))
           (let ((output
-                 (if (null backend)
-                     intermediate
-                   (org-scribe--compile-export
-                    spec intermediate
-                    (expand-file-name
-                     (concat base "." (plist-get spec :extension))
-                     directory)))))
+                 ;; `org' is the only format with neither a real backend
+                 ;; nor an :exporter -- the intermediate *is* its output.
+                 ;; `docx' has an :exporter but no Org export backend
+                 ;; (pandoc is external), so the branch must check both,
+                 ;; not just `backend'.
+                 (if (or backend (plist-get spec :exporter))
+                     (org-scribe--compile-export
+                     spec intermediate
+                     (expand-file-name
+                      (concat base "." (plist-get spec :extension))
+                      directory))
+                   intermediate)))
             (message "%s" (org-scribe-msg 'compile-done
                                           chapters (org-scribe-plural chapters "")
                                           scenes (org-scribe-plural scenes "")

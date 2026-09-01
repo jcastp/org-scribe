@@ -64,7 +64,7 @@
 - *Capture System*: Project-aware note capture that finds the right notes file; character/location/object/timeline/plot-thread templates are fully localized to the project's own language (English/Spanish), independent of your global UI language setting
 - *Project Health Report*: =org-scribe-project-health= aggregates the Starting Gate (how many of its eight items are done, two of them measured rather than self-reported), word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, plot points no scene serves yet, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
-- *Manuscript Compilation*: =org-scribe-compile= (=F8 F8 X=) turns the working file — apparatus sections, act/chapter/scene structure, property drawers, edit markers and all — into a clean, readable document. Chapters become visible headings, scenes stay silent, breaks between them are derived from structure rather than typed. Formats: Org, plain text, Markdown, ODT — nothing beyond Emacs required. The intermediate =.org= file is always kept beside the output, so a compile that looks wrong is inspectable
+- *Manuscript Compilation*: =org-scribe-compile= (=F8 F8 X=) turns the working file — apparatus sections, act/chapter/scene structure, property drawers, edit markers and all — into a clean, readable document. Chapters become visible headings, scenes stay silent, breaks between them are derived from structure rather than typed. Formats: Org, plain text, Markdown, ODT need nothing beyond Emacs; PDF (via a LaTeX distribution) and DOCX (via pandoc) are available when those optional tools are installed, reported by =org-scribe-setup-check= like any other optional dependency. The intermediate =.org= file is always kept beside the output, so a compile that looks wrong is inspectable
 - *Hydra Menu*: Unified keyboard-driven menu for quick access to all functions
 - *Writing Planner* (bundled): Connect writing goal planning to your manuscript — auto-loads plans, pushes live word counts, shows daily progress in the mode line, and adds a planner sub-menu at =W=. Available automatically; no separate install needed.
 
@@ -133,16 +133,20 @@ active and which are missing, with install hints.
 Installed with your OS package manager, not =package.el=. org-scribe reads
 their data files directly — there is nothing to require or configure.
 
-| Package       | Gives you                                              | Debian/Ubuntu                  |
-|---------------+--------------------------------------------------------+--------------------------------|
-| =mythes-es=     | Offline synonyms, replacing the WordReference web page | =sudo apt install mythes-es=     |
-| =hunspell=      | Inflected words resolve (=corriendo= → =correr=)         | =sudo apt install hunspell-es=   |
-| =kiwix-tools=   | Offline definitions, replacing the online RAE          | =sudo apt install kiwix-tools=   |
+| Package         | Gives you                                                | Debian/Ubuntu                    |
+|-----------------+-----------------------------------------------------------+-----------------------------------|
+| =mythes-es=       | Offline synonyms, replacing the WordReference web page   | =sudo apt install mythes-es=       |
+| =hunspell=        | Inflected words resolve (=corriendo= → =correr=)           | =sudo apt install hunspell-es=     |
+| =kiwix-tools=     | Offline definitions, replacing the online RAE            | =sudo apt install kiwix-tools=     |
+| a LaTeX distribution | PDF output from =org-scribe-compile= (=F8 F8 X=)      | =sudo apt install texlive=         |
+| =pandoc=          | DOCX output from =org-scribe-compile= (=F8 F8 X=)         | =sudo apt install pandoc=          |
 
-All three are optional and independent. With none installed, dictionary and
-synonym lookup behave exactly as they always have. =kiwix-tools= additionally
-needs a ~566 MB Wikcionario ZIM and a background service — see [[file:INSTALL.org][INSTALL.org]] for
-the systemd unit. See [[*Dictionary Tools][Dictionary Tools]] below and lesson 12 of the manual.
+All five are optional and independent. With none installed, dictionary and
+synonym lookup behave exactly as they always have, and =org-scribe-compile=
+still offers Org, plain text, Markdown and ODT — a missing LaTeX/pandoc is
+reported by name rather than blocking the other formats. =kiwix-tools=
+additionally needs a ~566 MB Wikcionario ZIM and a background service — see
+[[file:INSTALL.org][INSTALL.org]] for the systemd unit. See [[*Dictionary Tools][Dictionary Tools]] below and lesson 12 of the manual.
 
 ** From Source
 
@@ -1325,7 +1329,7 @@ handing it to Org's exporters, rather than patching the exported result:
 
 #+begin_example
 M-x org-scribe-compile
-Compile the manuscript to:  org / txt / md / odt
+Compile the manuscript to:  org / txt / md / odt / pdf / docx
 #+end_example
 
 Output goes to =org-scribe-compile-output-directory= (default =export/=,
@@ -1348,8 +1352,12 @@ reparsed by Org as a heading (silently splitting the manuscript) and the
 second as a comment (vanishing with nothing to show it was ever there).
 
 Only a *clean* draft is available today — no chapter/act numbering beyond
-what you typed, no title page, no Shunn/submission formatting — and only the
-four formats above, none of which need anything beyond Emacs itself.
+what you typed, no title page, no Shunn/submission formatting. PDF and DOCX
+need a LaTeX distribution (=pdflatex= on PATH) and =pandoc= respectively; the
+other four formats need nothing beyond Emacs. A missing tool is reported by
+name (=Cannot compile to docx: `pandoc' is not available=) rather than
+producing a partial or silently broken file — check with =M-x
+org-scribe-setup-check=.
 
 *** Direct export with scene breaks (=C-c C-e=)
 

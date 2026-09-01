@@ -79,17 +79,27 @@ document to Org's own exporters.
 #+BEGIN_EXAMPLE
 F8 F8 X          (or M-x org-scribe-compile)
 
-Compile the manuscript to:  org / txt / md / odt
+Compile the manuscript to:  org / txt / md / odt / pdf / docx
 #+END_EXAMPLE
 
 Pick a format and org-scribe writes two files to ~export/~ under your
 project root (created automatically; worth adding to ~.gitignore~):
 
-- The rendered output, e.g. ~novel-clean.odt~
+- The rendered output, e.g. ~novel-clean.odt~ or ~novel-clean.pdf~
 - The clean intermediate, e.g. ~novel-clean.org~ — always written,
   whichever format you picked. If the output ever looks wrong, open
   this file first: it tells you whether the problem is in the
   transformation or in the renderer.
+
+~org~, ~txt~, ~md~ and ~odt~ need nothing beyond Emacs. ~pdf~ needs a LaTeX
+distribution (~pdflatex~ on your PATH) and ~docx~ needs the ~pandoc~
+command-line tool — both optional, both reported by ~M-x
+org-scribe-setup-check~. If one is missing, compile refuses with the
+tool's name rather than writing a partial or broken file:
+
+#+BEGIN_EXAMPLE
+Cannot compile to docx: `pandoc' is not available
+#+END_EXAMPLE
 
 ** What You Get
 
@@ -118,8 +128,11 @@ comment, so it would vanish with no trace).
 ** What It Doesn't Do (Yet)
 
 - Only a *clean* draft style exists — no Shunn/submission formatting,
-  no title page, no automatic chapter numbering beyond what you typed
-- Only four formats: Org, plain text, Markdown, ODT — no PDF, no EPUB
+  no title page, no automatic chapter numbering beyond what you typed.
+  The PDF this produces is plain ~article~-class Org output, not a
+  formatted manuscript — no double-spacing, no running header, no
+  margins tuned for submission. That's Phase 3's job.
+- No EPUB — reflowable e-book output still needs Org's direct export
 - No chapter/act subset selection — it always compiles the whole
   manuscript
 
@@ -134,6 +147,7 @@ this lesson covers.
    the scene breaks, and the complete absence of ~TODO~ or property
    drawers
 4. Try again with ~odt~ and open it in LibreOffice or Word
+5. If you have a LaTeX distribution installed, try ~pdf~ too
 
 * Direct Export with Org's Dispatcher
 
@@ -1186,6 +1200,7 @@ Reinforce your export skills:
    - Open the intermediate ~.org~ file in ~export/~ and compare it to
      your working manuscript
    - Try ~odt~ and open it in LibreOffice/Word
+   - If you have LaTeX or pandoc installed, try ~pdf~ and ~docx~ too
 
 2. **Export to all formats**
    - PDF: ~C-c C-e l p~
@@ -1231,7 +1246,7 @@ Exporting is how you share your work - master these skills to present your writi
 
 | Key Sequence | Action                                              |
 |--------------+------------------------------------------------------|
-| ~F8 F8 X~      | Compile a clean draft (~M-x org-scribe-compile~), prompts for org/txt/md/odt |
+| ~F8 F8 X~      | Compile a clean draft (~M-x org-scribe-compile~), prompts for org/txt/md/odt/pdf/docx |
 
 ** Essential Export Commands
 
@@ -1306,15 +1321,15 @@ Exports as:
 Need to:                     → Use:
 ─────────────────────────────────────────────────
 Quick readable draft, no fuss → org-scribe-compile (txt/md/odt)
-Submit to publisher/agent    → PDF (LaTeX, direct export)
-Share with beta readers       → org-scribe-compile (odt), or direct ODT
+Submit to publisher/agent    → org-scribe-compile (pdf/docx), or direct LaTeX for Shunn control
+Share with beta readers       → org-scribe-compile (odt or docx)
 Publish online/blog           → HTML (direct export)
 Self-publish e-book           → EPUB (direct export)
-Print book (CreateSpace/KDP)  → PDF (LaTeX, direct export)
-Share with writing group      → org-scribe-compile (odt) or PDF
+Print book (CreateSpace/KDP)  → PDF (direct export, for full LaTeX control)
+Share with writing group      → org-scribe-compile (odt or pdf)
 Archive readable version      → HTML, or org-scribe-compile (md)
-Submit to contest             → PDF (usually, direct export)
-Send to editor                → org-scribe-compile (odt), fully editable
+Submit to contest             → org-scribe-compile (pdf), or direct export for exact page-count control
+Send to editor                → org-scribe-compile (docx or odt), fully editable
 #+END_EXAMPLE
 
 * Summary
