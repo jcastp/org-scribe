@@ -282,6 +282,41 @@ pre-sistema templates have neither, and the caller skips the section."
           nil 'file)
          (nreverse items))))))
 
+(defconst org-scribe--health-gate-measured-item-substrings
+  '((plot-points . ("non-negotiable" "irrenunciable"))
+    (first-three-scenes . ("first three scenes" "tres primeras escenas")))
+  "Substrings identifying the Starting Gate's two measurable items.
+Keyed by a symbol naming what is measured; each value lists the known
+localized substrings, matched case-insensitively against a gate item's
+label.  Every method's gate (Sistema, Hélice, Matriz — see
+`org-scribe--methods') phrases its plot-points item and its
+first-three-scenes item using one of these, in whichever language the
+project template was written in.
+
+This exists so that `org-scribe--health-gate-item' finds the right
+checkbox by what it says rather than by its position in the list —
+`(nth 6 gate-items)' and `(nth 7 gate-items)' assumed the Sistema's
+eight-item gate in the Sistema's own order, which the other methods'
+gates do not share: their items are fewer, differently grouped, and in
+a different order.  Matching on the label is also what lets a
+disagreement note render correctly even if a project's gate has been
+manually reordered.")
+
+(defun org-scribe--health-gate-item (key gate-items)
+  "Return the (CHECKED-P . LABEL) entry of GATE-ITEMS measuring KEY.
+KEY is a key of `org-scribe--health-gate-measured-item-substrings'.
+Returns nil when no item's label contains any of KEY's known
+substrings, case-insensitively — which happens for every project
+whose design file predates this table having an entry for KEY, not
+only for a genuinely malformed gate."
+  (let ((substrings (alist-get key org-scribe--health-gate-measured-item-substrings))
+        (case-fold-search t))
+    (cl-find-if
+     (lambda (item)
+       (cl-some (lambda (s) (string-match-p (regexp-quote s) (cdr item)))
+                substrings))
+     gate-items)))
+
 (defun org-scribe--health-plot-points-with-content (plot-file)
   "Return (FILLED . TOTAL) for the thirteen non-negotiables in PLOT-FILE.
 A plot point counts as filled when its body holds at least one line that
@@ -524,9 +559,11 @@ with clickable ID links back to each scene."
             (insert (format "First three scenes written: *%d of 3*.\n" gate-scenes))
             ;; Disagreements between the tick and the measurement, in both
             ;; directions.  Shown, not resolved.
-            (let ((notes nil))
-              (when (and gate-points (nth 6 gate-items))
-                (let ((ticked-p (car (nth 6 gate-items)))
+            (let ((notes nil)
+                  (plot-points-item (org-scribe--health-gate-item 'plot-points gate-items))
+                  (first-scenes-item (org-scribe--health-gate-item 'first-three-scenes gate-items)))
+              (when (and gate-points plot-points-item)
+                (let ((ticked-p (car plot-points-item))
                       (done-p   (= (car gate-points) (cdr gate-points))))
                   (cond ((and ticked-p (not done-p))
                          (push (format "plot points are ticked but %d of %d are still empty"
@@ -536,8 +573,8 @@ with clickable ID links back to each scene."
                         ((and (not ticked-p) done-p)
                          (push "all thirteen plot points have content but the box is unticked"
                                notes)))))
-              (when (nth 7 gate-items)
-                (let ((ticked-p (car (nth 7 gate-items)))
+              (when first-scenes-item
+                (let ((ticked-p (car first-scenes-item))
                       (done-p   (>= gate-scenes 3)))
                   (cond ((and ticked-p (not done-p))
                          (push (format "first three scenes are ticked but only %d written"

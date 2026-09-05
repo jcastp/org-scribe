@@ -1,0 +1,247 @@
+#+TITLE: ${TITLE} - Diseño (La Matriz)
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: es
+#+STARTUP: overview
+
+# Las líneas que empiezan por # son instrucciones: no las conviertas en prosa.
+# Aquí sólo se rellena. El método completo está en copo-matriz.org.
+#
+# Éste es el método de la Matriz: se usa cuando lo que tienes son
+# personajes y te falta la historia. El otro método del Copo vivo, la
+# Hélice, parte del extremo contrario — de una premisa sin personajes.
+#
+# Este fichero contiene los cinco niveles de la Matriz y lo que no tiene
+# entidades propias. Los personajes viven en objects/personajes.org, los
+# escenarios en objects/localizaciones.org y la trama —incluidos los trece
+# puntos irrenunciables— en objects/trama.org.
+
+* Puerta de salida
+
+# En la Matriz la puerta está un nivel más abajo que en la Hélice: al
+# cerrar el nivel 3 tienes un esqueleto recién deducido que todavía no se
+# ha probado contra el ritmo de una sinopsis. El nivel 4 es donde este
+# método comprueba que lo deducido se sostiene como narración.
+#
+# Si llevas tres semanas sin escribir narrativa, no estás diseñando: estás
+# diseñando para no escribir. Vuelve a esta lista y comprueba si ya la
+# habías cruzado.
+
+- [ ] Censo (2–4 fuerzas) y arena (objeto en disputa, lugar y momento,
+  reloj)
+- [ ] Cadenas completas por fuerza (Fantasma → Mentira → Debilidad → Apuro
+  → Deseo → Necesidad)
+- [ ] La matriz de colisiones rellena y las colisiones elegidas por
+  inevitabilidad y progresión
+- [ ] La prueba del gancho pasada
+- [ ] Sinopsis por cuartiles con los hitos de cambio anclados
+- [ ] Los trece puntos de trama irrenunciables
+- [ ] Las tres primeras escenas
+
+* El método de la Matriz
+
+# El Snowflake dado la vuelta: en lugar de escalar la trama y colgar de
+# ella a los personajes, se escalan las fuerzas y la trama se deduce de
+# ellas. Cinco niveles, los mismos que la Hélice, pero con el orden de
+# dependencia invertido: los dos primeros son de personaje, la trama nace
+# en el tercero.
+
+** Regla de la arena
+
+# No hay deducción sin escasez. Dos personajes con Mentiras incompatibles
+# pero sin nada que disputarse no colisionan: se ignoran.
+
+** Regla de la inevitabilidad
+
+# Entre todas las colisiones posibles se elige la que ninguna de las dos
+# fuerzas puede evitar sin dejar de ser quien es.
+
+** Regla del gancho tardío
+
+# La frase vendible de quince palabras se sigue escribiendo, pero al
+# final del nivel 3 en lugar de al principio, y es una puerta: si no
+# sale, el censo está mal y se vuelve al nivel 1.
+
+* NIVEL 1 — El censo y la arena
+
+** El censo de fuerzas
+
+# Entre dos y cuatro fuerzas vivas, una frase cada una:
+# NOMBRE cree que MENTIRA, porque FANTASMA.
+#
+# Recomendación fuerte: que al menos dos fuerzas compartan el mismo
+# Fantasma con la conclusión contraria.
+
+1. ______ cree que ______, porque ______.
+2. ______ cree que ______, porque ______.
+3. ______ cree que ______, porque ______.
+
+** La arena
+
+# Tres líneas, y no son opcionales (regla de la arena).
+
+- Objeto en disputa ::
+- Lugar y momento en que coinciden todos ::
+- Reloj (qué hace que no puedan esperar) ::
+
+** Chequeo del nivel 1
+
+- [ ] ¿Los Deseos apuntan al mismo objeto, o al menos se rozan?
+- [ ] ¿Las Mentiras son incompatibles?
+- [ ] ¿El reloj existe?
+
+* NIVEL 2 — Las cadenas
+
+# Un párrafo por fuerza viva, expandiendo la frase del censo: Fantasma →
+# Mentira → Debilidad (psicológica y moral) → Apuro → Deseo (Objetivo ·
+# Motivación · Conflicto) → Necesidad.
+#
+# La Motivación es la promesa que le hace la Mentira, y por tanto es falsa
+# en el fondo. En la Necesidad, el Conflicto no es otro personaje: es la
+# propia Mentira y lo que tendría que admitir del Fantasma para soltarla.
+
+** Chequeo del nivel 2
+
+- [ ] Prueba de la deducción: tapa todo lo demás y escribe las dos
+  próximas decisiones equivocadas de esa fuerza
+- [ ] Prueba de la defensa: argumenta la Postura de cada fuerza con
+  convicción
+- [ ] Simetría: ¿qué quieren todas por debajo del objeto?
+
+* NIVEL 3 — La matriz de colisiones
+
+# El nivel característico del método y donde nace la trama.
+
+** Paso 1 — Rellenar la matriz
+
+# Una fila y una columna por fuerza. En la casilla (A, B) se escribe qué
+# le hace la Mentira de A a la Mentira de B cuando ambos van a por el
+# objeto en disputa. La diagonal se deja vacía.
+
+|     | *a ___* | *a ___* | *a ___* |
+|-----+---------+---------+---------|
+| *___* | —       |         |         |
+| *___* |         | —       |         |
+| *___* |         |         | —       |
+
+** Paso 2 — Elegir las colisiones
+
+# Tantas colisiones como fronteras tenga tu estructura (tres con cuatro
+# cuartiles), aplicando dos filtros: inevitabilidad y progresión (castiga,
+# redobla, cuesta todo).
+
+| # | Casilla (A→B) | Por qué es inevitable | Posición               |
+|---+----------------+------------------------+-------------------------|
+| 1 |                |                        | Fin del primer cuartil |
+| 2 |                |                        | Punto medio            |
+| 3 |                |                        | Fin del tercer cuartil |
+
+** Paso 3 — Escribir el esqueleto
+
+# El párrafo de N+1 frases: planteamiento, las N colisiones, y el final.
+# El final se escribe dos veces —externo e interno— sin mirarse, y se
+# cruzan en la rejilla.
+
+|                      | Suelta la Mentira (Ascenso) | Se aferra a ella (Caída)          |
+|-----------------------+------------------------------+------------------------------------|
+| *Consigue el Objetivo*  | Final pleno                 | Victoria amarga: gana y se pierde |
+| *No lo consigue*        | Pierde y se salva           | Tragedia                          |
+
+- Final externo ::
+- Final interno ::
+- Casilla de la rejilla ::
+
+** Paso 4 — La prueba del gancho
+
+# Esto es una puerta, no un ejercicio. Escribe ahora la frase de quince
+# palabras que resume la novela. Si no sale, el problema está en el
+# nivel 1: falta objeto en disputa, falta reloj, o falta una fuerza.
+
+- Frase de quince palabras ::
+- A quién le prometo qué ::
+- [ ] Sale → bajar al nivel 4 · [ ] No sale → volver al nivel 1
+
+** Chequeo del nivel 3
+
+- [ ] Toda fuerza viva es dueña de al menos una posición (las N colisiones
+  más la batalla final)
+- [ ] Ninguna colisión es evitable con que alguien sea razonable un momento
+- [ ] La progresión se cumple: castiga, redobla, cuesta todo
+- [ ] La puerta del gancho está pasada
+
+* NIVEL 4 — La sinopsis y los hitos
+
+# Sinopsis de una página por cuartiles, y una página por fuerza con sus
+# hitos de cambio, cada uno anclado a un punto concreto de la sinopsis y
+# marcado como Ruptura o Ajuste.
+
+| Punto de trama | Tipo (Ruptura/Ajuste) | Qué cambia |
+|-----------------+------------------------+------------|
+|                 |                        |            |
+
+** Chequeo del nivel 4
+
+- [ ] Anclaje: ningún hito flota
+- [ ] La auto revelación llega antes de la batalla
+- [ ] Prueba del Fantasma: quítaselo al protagonista y relee. ¿Qué cambia?
+- [ ] Mezcla de hitos: no todo son Rupturas ni todo son Ajustes
+
+* NIVEL 5 — Las escenas
+
+| # | Cuartil | Punto de vista | Quién quiere qué | Qué lo impide | Cómo termina | Qué mueve |
+|---+---------+-----------------+-------------------+----------------+---------------+-----------|
+
+** Chequeo del nivel 5
+
+- [ ] Toda escena mueve un Deseo o presiona una Mentira
+- [ ] Todo hito de cambio tiene escena asignada
+- [ ] Reparto del punto de vista: si una fuerza no tiene escena propia,
+  que sea una decisión
+- [ ] Ritmo: ningún cuartil al doble de escenas que los otros
+
+* Dónde está el peso de la trama
+
+# Las colisiones elegidas, en una tabla, para saber de un vistazo dónde
+# cae el peso de la historia antes de traducirlo a escenas. No es una
+# entidad enlazable: es una nota de trabajo, igual que la tabla de
+# Apuestas del Sistema.
+
+| Colisión | Casilla (A→B) | Por qué es inevitable | Posición       |
+|----------+----------------+------------------------+------------------|
+|        1 |                |                        | Fin cuartil I   |
+|        2 |                |                        | Punto medio     |
+|        3 |                |                        | Fin cuartil III |
+
+* Plantilla en blanco
+
+# Cópiala por historia y trabaja en la copia.
+
+** Nivel 1
+- Censo (2–4 fuerzas):
+- Arena: objeto en disputa / lugar y momento / reloj
+
+** Nivel 2
+- Un párrafo por fuerza: Fantasma / Mentira / Debilidad / Apuro / Deseo / Necesidad
+
+** Nivel 3
+- Matriz de colisiones y colisiones elegidas.
+- Esqueleto (N+1 frases).
+- Prueba del gancho.
+
+** Nivel 4
+- Sinopsis por cuartiles.
+- Hitos de cambio por fuerza.
+
+** Nivel 5
+- Lista de escenas.
+
+* Cambios pendientes al diseño
+
+# Una línea por desviación, apuntada sin salir de la sesión de borrador.
+# Si la historia contradice el diseño, gana la historia: actualiza el
+# documento y sigue.
+#
+# En el manuscrito, usa marcas *EDIT*: diseño - ... dentro de un bloque de
+# comentario; se recogen con el índice de ediciones (F8 F8 6).
+
+-

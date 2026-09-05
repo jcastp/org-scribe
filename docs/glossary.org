@@ -139,6 +139,63 @@ The English forms are also the =:Role:= property *values* in both template sets:
 | Comprobación del elenco      | Cast Check                       | —             | fixed   |
 | Cambios pendientes al diseño | Pending Design Changes           | —             | fixed   |
 
+** Plotting methods (Copo vivo)
+
+Vocabulary specific to the two plotting methods added beside the Sistema
+(=org-scribe--methods=, =core/org-scribe-core.el=; design files under
+=org-scribe-templates/methods/{helice,matriz}/=). Both are collectively the
+*Copo vivo* ("Living Snowflake"): a rebuild of the Sistema's own Snowflake
+scaffold that gives character its own leveled progression instead of letting
+it fill in holes plot already made. La Hélice starts from a premise; la Matriz
+starts from characters. Everything in the "Character chain" and "Plot"
+sections above is shared unchanged — the causal chain, the thirteen
+non-negotiables, the four quarters — since both methods are built on that same
+vocabulary rather than replacing it.
+
+| Spanish                    | English               | Source | Call    |
+|-----------------------------+------------------------+--------+---------|
+| Copo vivo                  | *Living Snowflake*      | —      | settled |
+| Fuerza viva                | *Living force*          | —      | settled |
+| La Hélice                  | *The Helix*             | —      | settled |
+| La Matriz                  | *The Matrix*            | —      | settled |
+| Desastre (la Hélice)       | Disaster               | —      | fixed   |
+| Colisión (la Matriz)       | Collision              | —      | fixed   |
+| Regla del escalado         | Rule of scaling        | —      | fixed   |
+| Regla del dueño            | Rule of ownership      | —      | fixed   |
+| Regla del retorno          | Rule of return         | —      | fixed   |
+| Regla de la arena          | Rule of the arena      | —      | fixed   |
+| Regla de la inevitabilidad | Rule of inevitability  | —      | fixed   |
+| Regla del gancho tardío    | Rule of the late hook  | —      | fixed   |
+| Censo (de fuerzas)         | Census (of forces)     | —      | fixed   |
+| Arena                      | Arena                  | —      | fixed   |
+| Objeto en disputa          | Object in dispute      | —      | fixed   |
+| Reloj                      | Clock                  | —      | fixed   |
+| Prueba del gancho          | Hook test              | —      | fixed   |
+| Cotejo de los dos finales  | Two-endings cross-check | —     | fixed   |
+
+Two calls specific to this vocabulary, following the same "settled" discipline
+as the six below:
+
+- *"Fuerza viva" is "living force", not "living character".* Both methods'
+  own definition of the term is functional, not about being a rounded
+  character — it names any character whose next wrong decisions can be
+  deduced from their profile without consulting the plot — so the English
+  keeps the same abstraction rather than narrowing it to "character".
+- *Desastre and colisión are not merged into one English word*, even though
+  they play the same structural role (a Lie put to the test, at a fixed
+  point in the four-quarter structure) and the health report and the design
+  templates treat them identically as prose. La Hélice designs a disaster and
+  looks for its owner; la Matriz reads a collision off an already-filled
+  matrix and the owner comes with it. Collapsing the distinction to a single
+  term would erase the direction each method works in, which is the one
+  fact about them everything else follows from.
+
+Deliberately *not* glossed here, because Q1 (=diffsystems.org=) keeps them as
+prose rather than a linked entity type: no scene property, no capture
+template, no health check reads =Desastre=/=Disaster= or =Colisión=/=Collision=,
+so unlike every other row in this file they are not resolved through any
+module's alias table — only through the design file's own prose.
+
 * The six judgement calls
 
 The only terms not dictated by a source. Kept with their reasoning because a

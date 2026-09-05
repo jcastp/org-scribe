@@ -323,6 +323,27 @@ short-story scale needs editorial decisions the method does not yet make (how
 many Stances at that length, which of the thirteen survive, whether subplots
 exist at all), so it is deliberately deferred rather than guessed at.
 
+*** Choosing a plotting method
+
+Novel project creation also asks *which plotting method* to use: the Sistema
+above, or one of two others built on the same vocabulary —
+
+- *La Hélice* ("the Helix") — start from a premise and build the characters
+  that carry it.
+- *La Matriz* ("the Matrix") — start from characters and let the plot get
+  deduced from how they collide.
+
+Choosing one only changes =design.org=/=diseno.org=; =novel.org=, =notes/= and every
+file under =objects/= are identical regardless of method, since both new
+methods reuse the Sistema's character profile, its thirteen non-negotiables
+and its four quarters rather than replacing them. The Spanish↔English
+vocabulary for the two methods — /fuerza viva/, /desastre/, /colisión/, and the
+rest — is in [[file:docs/glossary.org][docs/glossary.org]], section "Plotting methods (Copo vivo)".
+
+The choice is recorded in =.org-scribe-project= as =# Method:= and never
+inferred; a project created before this feature existed, with no such line,
+behaves exactly as it always did.
+
 *** Spelling dictionary for the whole project
 
 A project is monolingual by construction: the language you pick at creation is

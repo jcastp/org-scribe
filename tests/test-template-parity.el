@@ -84,6 +84,30 @@ Every entry is a debt, not a licence.  `test-template-parity-exceptions-are-live
 fails when an entry no longer diverges, so a pair that gets fixed cannot
 leave a stale exemption behind that would hide the next regression.")
 
+(defconst org-scribe-parity--method-pairs
+  '(("methods/helice/es/diseno.org.template" . "methods/helice/en/design.org.template")
+    ("methods/matriz/es/diseno.org.template" . "methods/matriz/en/design.org.template"))
+  "Spanish overlay template -> English overlay template, for the plotting
+methods added beside the Sistema (see `org-scribe--methods',
+core/org-scribe-core.el).  Kept separate from `org-scribe-parity--pairs'
+because that list's own tests hardcode the \"novel-es\"/\"novel-en\" set
+names in `org-scribe-parity--path'; these files live under
+`org-scribe-templates/methods/' instead, one design file per method per
+language, with no base-set counterpart the way `novel-*'s files have.
+`test-template-parity-method-overlay-pairing-is-complete' checks this
+list accounts for every shipped overlay template on both sides, the same
+guarantee `test-template-parity-pairing-is-complete' gives the base sets.")
+
+(defconst org-scribe-parity--all-sets
+  '("novel-es" "novel-en" "short-story-es" "short-story-en"
+    "methods/helice/es" "methods/helice/en"
+    "methods/matriz/es" "methods/matriz/en")
+  "Every shipped template set, including the plotting-method overlays.
+Used by the three cross-set checks (no stray `Local Variables' block,
+every template declares its language, and in the shape jinx parses) so
+that a new overlay set is covered by construction rather than by
+remembering to add it to three separate literal lists.")
+
 ;;; Helpers
 
 (defun org-scribe-parity--canonical-property (name)
@@ -229,7 +253,7 @@ two manuscripts used an `eval:' form, which is never a safe file-local
 and so made Emacs prompt on every open.  A block added back to one
 template would quietly re-create all three problems."
   (let (offenders)
-    (dolist (set '("novel-es" "novel-en" "short-story-es" "short-story-en"))
+    (dolist (set org-scribe-parity--all-sets)
       (dolist (relative (org-scribe-parity--templates set))
         (with-temp-buffer
           (insert-file-contents (org-scribe-parity--path set relative))
@@ -237,6 +261,51 @@ template would quietly re-create all three problems."
           (when (re-search-forward "^# Local Variables:" nil t)
             (push (concat set "/" relative) offenders)))))
     (should-not offenders)))
+
+;;; The plotting-method overlays
+
+(ert-deftest test-template-parity-method-overlay-pairing-is-complete ()
+  "Every shipped method-overlay template appears in the pairing, on both
+sides.  Mirrors `test-template-parity-pairing-is-complete' for the
+overlay tree under `org-scribe-templates/methods/'."
+  (let ((es-files (sort (mapcar (lambda (f) (file-relative-name f org-scribe-parity--root))
+                                (directory-files-recursively
+                                 (expand-file-name "org-scribe-templates/methods" org-scribe-parity--root)
+                                 "\\.template\\'"))
+                        #'string<)))
+    (should (equal (sort (append (mapcar (lambda (p) (concat "org-scribe-templates/" (car p)))
+                                         org-scribe-parity--method-pairs)
+                                 (mapcar (lambda (p) (concat "org-scribe-templates/" (cdr p)))
+                                         org-scribe-parity--method-pairs))
+                         #'string<)
+                   es-files))))
+
+(ert-deftest test-template-parity-method-overlays-heading-trees-match ()
+  "Each plotting method's ES/EN design file shares one heading tree,
+exactly like `test-template-parity-heading-trees-match' requires of the
+base `novel-es'/`novel-en' pair.  There are no known-divergent overlay
+pairs, unlike the base set: both files of a method pair are written
+together as part of this feature, so there is no legacy drift to
+tolerate."
+  (dolist (pair org-scribe-parity--method-pairs)
+    (let ((es (org-scribe-parity--shape
+               (expand-file-name (concat "org-scribe-templates/" (car pair)) org-scribe-parity--root)))
+          (en (org-scribe-parity--shape
+               (expand-file-name (concat "org-scribe-templates/" (cdr pair)) org-scribe-parity--root))))
+      (should (equal (cons (car pair) (car es)) (cons (car pair) (car en)))))))
+
+(ert-deftest test-template-parity-method-overlays-property-sets-match ()
+  "Each plotting method's ES/EN design file uses the same property keys.
+Both are expected to be empty: the design file overlays hold no entity
+headings (Q1 keeps the disasters/collisions as a plain table, not a
+linked entity), so this mainly guards against one language accidentally
+growing a `:PROPERTIES:' drawer the other lacks."
+  (dolist (pair org-scribe-parity--method-pairs)
+    (let ((es (org-scribe-parity--shape
+               (expand-file-name (concat "org-scribe-templates/" (car pair)) org-scribe-parity--root)))
+          (en (org-scribe-parity--shape
+               (expand-file-name (concat "org-scribe-templates/" (cdr pair)) org-scribe-parity--root))))
+      (should (equal (cons (car pair) (cdr es)) (cons (car pair) (cdr en)))))))
 
 (ert-deftest test-template-parity-every-template-declares-its-language ()
   "Every shipped template carries a `#+LANGUAGE:' keyword for its set.
@@ -254,8 +323,8 @@ in the wrong language.  Coverage that matches no rule is exactly the
 drift `org-scribe-parity--shape' cannot see, since it compares headings
 and properties, not keywords."
   (let (offenders)
-    (dolist (set '("novel-es" "novel-en" "short-story-es" "short-story-en"))
-      (let ((expected (if (string-suffix-p "-es" set) "es" "en")))
+    (dolist (set org-scribe-parity--all-sets)
+      (let ((expected (if (string-suffix-p "es" set) "es" "en")))
         (dolist (relative (org-scribe-parity--templates set))
           (with-temp-buffer
             (insert-file-contents (org-scribe-parity--path set relative))
@@ -277,7 +346,7 @@ like `es-ES', simply fails to match — and the match relies on
 `case-fold-search', which Org buffers set, to accept the uppercase
 `#+LANGUAGE:' the templates use.  A template that fails this is not
 broken in any visible way; it just silently keeps the global language."
-  (dolist (set '("novel-es" "novel-en" "short-story-es" "short-story-en"))
+  (dolist (set org-scribe-parity--all-sets)
     (dolist (relative (org-scribe-parity--templates set))
       (with-temp-buffer
         (insert-file-contents (org-scribe-parity--path set relative))

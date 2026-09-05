@@ -160,6 +160,64 @@ still check the gate first."
           ((equal value "no") 'no)
           (t nil))))
 
+;;; Plotting Method
+
+(defconst org-scribe--methods
+  '((sistema . (:overlay nil
+                :label-en "Sistema unificado (default)"
+                :label-es "Sistema unificado (por defecto)"))
+    (helice  . (:overlay "helice"
+                :label-en "La Hélice — start from a premise"
+                :label-es "La Hélice — se parte de una premisa"))
+    (matriz  . (:overlay "matriz"
+                :label-en "La Matriz — start from characters"
+                :label-es "La Matriz — se parte de personajes")))
+  "Novel plotting methods known to org-scribe, keyed by their canonical
+symbol (also the literal value written to the \"# Method:\" marker line).
+Each value is a plist:
+
+  :overlay    - subdirectory name under `org-scribe-templates/methods/'
+                holding this method's design-file overlay, or nil for
+                `sistema', which ships no overlay (its design file lives
+                in the base `novel-en'/`novel-es' template sets and is
+                never modified by another method's presence).
+  :label-en   - creation-prompt label, English
+  :label-es   - creation-prompt label, Spanish
+
+This table, not a hardcoded list of method names, is what
+`org-scribe-project-method' and the creation prompt read.  Adding a
+method means adding one entry here plus its overlay templates.")
+
+(defun org-scribe-project-method (&optional root)
+  "Return the plotting method recorded for ROOT's project.
+Returns \\='sistema, \\='helice, or \\='matriz, read from the \"# Method:\"
+line of ROOT's (default: the current project's) .org-scribe-project
+marker file.
+
+Unlike `org-scribe-planner-gate', there is no undecided state: every
+project created before this feature existed was written under the
+Sistema, and a project with no \"# Method:\" line at all is not
+ambiguous about which method it uses — it is a Sistema project.  So a
+missing or unrecognized marker value returns \\='sistema rather than
+nil, which is what keeps every project created to date behaving
+exactly as it did before this feature existed.
+
+The value is matched case- and whitespace-insensitively, the same
+tolerance `org-scribe-planner-gate' and the (unimplemented) narrative
+form marker apply to their own marker values, so a hand-edited
+\"# Method: Helice\" or \"# Method:  helice \" line still resolves.
+
+This function lives in `org-scribe-core.el', not the templates module,
+precisely so that callers which must not force-load anything else —
+the health report, the hydra menu — can still check the method first,
+mirroring `org-scribe-planner-gate'."
+  (let* ((root (or root (org-scribe-project-root)))
+         (value (org-scribe--project-marker-get root "Method"))
+         (normalized (and value (intern (downcase (string-trim value))))))
+    (if (assq normalized org-scribe--methods)
+        normalized
+      'sistema)))
+
 (defun org-scribe--find-existing-file (root &rest relative-paths)
   "Return the first existing file from RELATIVE-PATHS under ROOT, or nil."
   (cl-loop for path in relative-paths

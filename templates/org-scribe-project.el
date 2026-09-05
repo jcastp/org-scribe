@@ -220,31 +220,55 @@ dictionary.  An existing file is only replaced after confirmation."
         (message "%s" (org-scribe-msg 'dir-locals-written dictionary))))))
 
 ;;;###autoload
-(defun org-scribe-create-novel-project (base-dir title &optional language)
+(defun org-scribe--read-method (&optional language)
+  "Prompt for a novel plotting method, returning its symbol.
+LANGUAGE (\\='en or \\='es) selects which of each method's two labels
+in `org-scribe--methods' is offered; defaults to
+`org-scribe-template-language'.  The default candidate is \\='sistema,
+matching what an omitted `# Method:' marker resolves to via
+`org-scribe-project-method'."
+  (let* ((language (or language org-scribe-template-language))
+         (label-key (if (eq language 'es) :label-es :label-en))
+         (choices (mapcar (lambda (entry)
+                            (cons (plist-get (cdr entry) label-key) (car entry)))
+                          org-scribe--methods))
+         (default-label (car (rassq 'sistema choices))))
+    (alist-get (completing-read (org-scribe-msg 'project-creation-method-prompt)
+                                 (mapcar #'car choices) nil t nil nil default-label)
+               choices nil nil #'string=)))
+
+(defun org-scribe-create-novel-project (base-dir title &optional language method)
   "Create a new novel project structure from templates.
 BASE-DIR is the parent directory where the project will be created.
 TITLE is the name of the novel/project.
 LANGUAGE selects which template set to use, either \\='en or \\='es.
 When omitted (e.g. non-interactive callers), defaults to
 `org-scribe-template-language'.
+METHOD selects which plotting method's design file is deployed — one
+of \\='sistema, \\='helice, or \\='matriz (see `org-scribe--methods').
+When omitted, defaults to \\='sistema, exactly matching the legacy
+behavior a project got before this argument existed.
 
 This function:
 1. Validates the title
 2. Creates the project directory
 3. Initializes a git repository
 4. Processes all template files with variable substitution
-5. Creates an initial git commit
-6. Registers the project with project.el
-7. Opens the README.org file"
+5. Overlays the chosen method's design file, if it has one
+6. Creates an initial git commit
+7. Registers the project with project.el
+8. Opens the README.org file"
   (interactive
-   (list
-    (read-directory-name (org-scribe-msg 'project-creation-base-dir) org-scribe-projects-directory)
-    (read-string (org-scribe-msg 'project-creation-novel-title))
-    (intern (completing-read (org-scribe-msg 'project-creation-language-prompt)
-                              '("en" "es") nil t
-                              (if (eq org-scribe-template-language 'es) "es" "en")))))
+   (let* ((base-dir (read-directory-name (org-scribe-msg 'project-creation-base-dir)
+                                         org-scribe-projects-directory))
+          (title (read-string (org-scribe-msg 'project-creation-novel-title)))
+          (language (intern (completing-read (org-scribe-msg 'project-creation-language-prompt)
+                                              '("en" "es") nil t
+                                              (if (eq org-scribe-template-language 'es) "es" "en")))))
+     (list base-dir title language (org-scribe--read-method language))))
 
   (let* ((language (or language org-scribe-template-language))
+         (method (or method 'sistema))
          (template-dir (expand-file-name
                         (format "../org-scribe-templates/novel-%s"
                                 (if (eq language 'es) "es" "en"))
@@ -274,7 +298,8 @@ This function:
       (with-temp-file (expand-file-name ".org-scribe-project" project-dir)
         (insert (format "# Writing project: %s\n" title)
                 (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
-                (format "# Language: %s\n" language)))
+                (format "# Language: %s\n" language)
+                (format "# Method: %s\n" method)))
 
       ;; Pin the spelling dictionary for the whole project, before the
       ;; initial commit so it is versioned like every other created file.
@@ -287,6 +312,11 @@ This function:
 
       ;; Process all templates
       (org-scribe--copy-templates template-dir project-dir variables)
+
+      ;; Overlay the chosen method's design file, if it has one — a no-op
+      ;; for `sistema', whose design file already came from the base copy
+      ;; above and is never touched by another method's presence.
+      (org-scribe--copy-method-overlay method language project-dir variables)
 
       ;; Linking on by default: mint IDs for the template's entities so the
       ;; user never has to run a separate "setup" step (A7).
@@ -407,6 +437,34 @@ VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
       (if (string-match-p "\\.template$" file)
           (org-scribe--process-template file output-path variables)
         (copy-file file output-path)))))
+
+(defun org-scribe--copy-method-overlay (method language project-dir variables)
+  "Overlay METHOD's design-file templates onto PROJECT-DIR, if any.
+LANGUAGE is \\='en or \\='es.  VARIABLES is passed through to
+`org-scribe--process-template' unchanged.
+
+METHOD is a key of `org-scribe--methods'.  When its :overlay is nil
+(the case for \\='sistema), this does nothing: the base template set
+copied by `org-scribe--copy-templates' already holds that method's
+design file, and it is not touched.  Otherwise the overlay directory
+at `org-scribe-templates/methods/<overlay>/<language>/' is copied over
+PROJECT-DIR the same way the base set was — same substitution, same
+variables — so a design file it names replaces the base one written a
+moment before.
+
+This is a separate function rather than a parameter on
+`org-scribe--copy-templates' because the base copy is shared with
+`org-scribe-create-short-story-project', which never has a method or
+an overlay (see CLAUDE.md, \\='Q2\\=')."
+  (let ((overlay (plist-get (alist-get method org-scribe--methods) :overlay)))
+    (when overlay
+      (let ((overlay-dir (expand-file-name
+                          (format "../org-scribe-templates/methods/%s/%s"
+                                  overlay (if (eq language 'es) "es" "en"))
+                          org-scribe-project-package-directory)))
+        (unless (file-directory-p overlay-dir)
+          (user-error (org-scribe-msg 'error-template-not-found overlay-dir)))
+        (org-scribe--copy-templates overlay-dir project-dir variables)))))
 
 (defun org-scribe--process-template (template-file output-file variables)
   "Process TEMPLATE-FILE replacing variables, save to OUTPUT-FILE.

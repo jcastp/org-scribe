@@ -33,8 +33,15 @@
 (require 'org-scribe-hydra)
 
 (defconst org-scribe-refs--template-sets
-  '("novel-en" "novel-es" "short-story-en" "short-story-es")
-  "Template directories to scan, relative to `org-scribe-templates/'.")
+  '("novel-en" "novel-es" "short-story-en" "short-story-es"
+    "methods/helice/en" "methods/helice/es"
+    "methods/matriz/en" "methods/matriz/es")
+  "Template directories to scan, relative to `org-scribe-templates/'.
+Includes the plotting-method overlay directories (see
+`org-scribe--methods', core/org-scribe-core.el) alongside the base
+novel/short-story sets, so an `F8 F8 ...' sequence or `org-scribe-...'
+command cited in one of their design files is checked exactly like every
+other template's.")
 
 (defun org-scribe-refs--templates ()
   "Return the absolute paths of every shipped `.template' file."

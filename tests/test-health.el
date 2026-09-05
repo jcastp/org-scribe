@@ -550,6 +550,73 @@ not grow an empty report section."
       "test-health-design-"
     (should-not (org-scribe--health-gate-items temp-file))))
 
+(ert-deftest test-health-gate-item-finds-measured-items-by-label ()
+  "The measured items are found by label, in the Sistema's own order.
+This is the baseline the reordering/count tests below deviate from."
+  (test-health--with-file
+      (concat "* Starting Gate\n\n"
+              "- [ ] Theme and at least five Stances\n"
+              "- [ ] Protagonist and opponent with Ghost, Lie, Weakness, Desire and\n  Need\n"
+              "- [ ] Stakes\n"
+              "- [ ] Ending chosen\n"
+              "- [ ] Point of view decided\n"
+              "- [ ] Premise\n"
+              "- [X] The thirteen non-negotiable plot points\n"
+              "- [ ] The first three scenes\n")
+      "test-health-design-"
+    (let ((items (org-scribe--health-gate-items temp-file)))
+      (should (equal "The thirteen non-negotiable plot points"
+                     (cdr (org-scribe--health-gate-item 'plot-points items))))
+      (should (car (org-scribe--health-gate-item 'plot-points items)))
+      (should (equal "The first three scenes"
+                     (cdr (org-scribe--health-gate-item 'first-three-scenes items))))
+      (should-not (car (org-scribe--health-gate-item 'first-three-scenes items))))))
+
+(ert-deftest test-health-gate-item-finds-measured-items-when-reordered ()
+  "The measured items are still found when the gate lists them in a
+different order and interleaved with other items — exactly what the
+Hélice and Matriz gates do, each of which is shaped nothing like the
+Sistema's eight-item list."
+  (test-health--with-file
+      (concat "* Starting Gate\n\n"
+              "- [X] The first three scenes\n"
+              "- [ ] Theme and at least five Stances\n"
+              "- [X] The thirteen non-negotiable plot points\n")
+      "test-health-design-"
+    (let ((items (org-scribe--health-gate-items temp-file)))
+      (should (car (org-scribe--health-gate-item 'first-three-scenes items)))
+      (should (car (org-scribe--health-gate-item 'plot-points items))))))
+
+(ert-deftest test-health-gate-item-finds-measured-items-with-fewer-items ()
+  "The measured items are found in a gate with a different item count.
+A Hélice/Matriz gate has neither the Sistema's six prose items nor its
+eight total — the lookup must not assume either."
+  (test-health--with-file
+      "* Starting Gate\n\n- [ ] The thirteen non-negotiable plot points\n- [X] The first three scenes\n"
+      "test-health-design-"
+    (let ((items (org-scribe--health-gate-items temp-file)))
+      (should (= 2 (length items)))
+      (should-not (car (org-scribe--health-gate-item 'plot-points items)))
+      (should (car (org-scribe--health-gate-item 'first-three-scenes items))))))
+
+(ert-deftest test-health-gate-item-finds-measured-items-in-spanish ()
+  "The measured items are found via their Spanish substrings too."
+  (test-health--with-file
+      "* Puerta de salida\n\n- [X] Los trece puntos de trama irrenunciables\n- [ ] Las tres primeras escenas\n"
+      "test-health-design-"
+    (let ((items (org-scribe--health-gate-items temp-file)))
+      (should (car (org-scribe--health-gate-item 'plot-points items)))
+      (should-not (car (org-scribe--health-gate-item 'first-three-scenes items))))))
+
+(ert-deftest test-health-gate-item-nil-when-not-present ()
+  "A gate with neither measured item returns nil for both, not an error."
+  (test-health--with-file
+      "* Starting Gate\n\n- [ ] Theme and at least five Stances\n"
+      "test-health-design-"
+    (let ((items (org-scribe--health-gate-items temp-file)))
+      (should-not (org-scribe--health-gate-item 'plot-points items))
+      (should-not (org-scribe--health-gate-item 'first-three-scenes items)))))
+
 (ert-deftest test-health-plot-points-comments-do-not-count-as-content ()
   "A plot point whose body is only the template's `#' hint counts as empty.
 Every shipped point carries a hint, so counting non-blank bodies would

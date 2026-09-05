@@ -426,6 +426,150 @@ for users outside a detectable project."
                            ".template" (file-relative-name file dir))))
             (should (member relative org-scribe--known-project-files))))))))
 
+;;; org-scribe-create-novel-project + METHOD
+
+(ert-deftest test-create-novel-project-sistema-is-byte-identical-to-omitted-method ()
+  "Explicitly passing METHOD \\='sistema produces the same design.org as
+omitting METHOD altogether — the legacy-preservation guarantee (Q6):
+Sistema's own design file is never touched by this feature."
+  (test-project--with-temp-base-dir base-dir
+    (test-project--with-temp-base-dir base-dir-2
+      (let ((dir-a (expand-file-name "Novel A" base-dir))
+            (dir-b (expand-file-name "Novel B" base-dir-2)))
+        (org-scribe-create-novel-project base-dir "Novel A" 'en)
+        (org-scribe-create-novel-project base-dir-2 "Novel B" 'en 'sistema)
+        (unwind-protect
+            (let ((a (with-temp-buffer
+                       (insert-file-contents (expand-file-name "design.org" dir-a))
+                       (buffer-string)))
+                  (b (with-temp-buffer
+                       (insert-file-contents (expand-file-name "design.org" dir-b))
+                       (buffer-string))))
+              ;; Both were substituted with their own TITLE, so compare with
+              ;; that difference normalized rather than asserting equality
+              ;; on the raw text.
+              (should (string= (replace-regexp-in-string "Novel A" "X" a)
+                               (replace-regexp-in-string "Novel B" "X" b))))
+          (test-project--kill-file-buffer (expand-file-name "README.org" dir-a))
+          (test-project--kill-file-buffer (expand-file-name "README.org" dir-b)))))))
+
+(ert-deftest test-create-novel-project-sistema-marker-line-written ()
+  "A project created with no METHOD argument still gets an explicit
+'# Method: sistema' line, matching what `org-scribe-project-method'
+resolves an absent line to."
+  (test-project--with-temp-base-dir base-dir
+    (let ((project-dir (expand-file-name "Sistema Novel" base-dir)))
+      (org-scribe-create-novel-project base-dir "Sistema Novel" 'en)
+      (unwind-protect
+          (should (eq 'sistema (org-scribe-project-method project-dir)))
+        (test-project--kill-file-buffer (expand-file-name "README.org" project-dir))))))
+
+(ert-deftest test-create-novel-project-helice-deploys-overlay-design-file ()
+  "METHOD \\='helice deploys the Hélice's design file over the base one,
+and the marker records the method."
+  (test-project--with-temp-base-dir base-dir
+    (let ((project-dir (expand-file-name "Helice Novel" base-dir)))
+      (org-scribe-create-novel-project base-dir "Helice Novel" 'en 'helice)
+      (unwind-protect
+          (progn
+            (should (eq 'helice (org-scribe-project-method project-dir)))
+            (with-temp-buffer
+              (insert-file-contents (expand-file-name "design.org" project-dir))
+              (should (string-match-p "Design (The Helix)" (buffer-string)))
+              (should (string-match-p "Helice Novel" (buffer-string)))))
+        (test-project--kill-file-buffer (expand-file-name "README.org" project-dir))))))
+
+(ert-deftest test-create-novel-project-matriz-deploys-overlay-design-file-spanish ()
+  "METHOD \\='matriz with Spanish templates deploys diseno.org, not
+design.org, exactly like the base Sistema set does."
+  (test-project--with-temp-base-dir base-dir
+    (let ((project-dir (expand-file-name "Novela Matriz" base-dir)))
+      (org-scribe-create-novel-project base-dir "Novela Matriz" 'es 'matriz)
+      (unwind-protect
+          (progn
+            (should (file-exists-p (expand-file-name "diseno.org" project-dir)))
+            (should-not (file-exists-p (expand-file-name "design.org" project-dir)))
+            (should (eq 'matriz (org-scribe-project-method project-dir)))
+            (with-temp-buffer
+              (insert-file-contents (expand-file-name "diseno.org" project-dir))
+              (should (string-match-p "Diseño (La Matriz)" (buffer-string)))))
+        (test-project--kill-file-buffer (expand-file-name "README.org" project-dir))))))
+
+(ert-deftest test-create-novel-project-helice-leaves-other-files-untouched ()
+  "Choosing a method changes only the design file; novel.org and the
+objects/ files are the same as a Sistema project's — the hypothesis
+under test in diffsystems.org, pinned in code."
+  (test-project--with-temp-base-dir base-dir
+    (test-project--with-temp-base-dir base-dir-2
+      (let ((sistema-dir (expand-file-name "Sistema" base-dir))
+            (helice-dir (expand-file-name "Helice" base-dir-2)))
+        (org-scribe-create-novel-project base-dir "Sistema" 'en)
+        (org-scribe-create-novel-project base-dir-2 "Helice" 'en 'helice)
+        (unwind-protect
+            (dolist (relative '("novel.org" "objects/characters.org"
+                                "objects/locations.org" "objects/plot.org"
+                                "objects/timeline.org" "objects/worldbuilding.org"))
+              ;; `:ID:' lines are minted fresh (random) on every project
+              ;; creation by `org-scribe--auto-setup-links', independently
+              ;; of the method, so they are normalized out along with the
+              ;; title before comparing — the point of this test is that
+              ;; the method leaves the *content* untouched, not that two
+              ;; separate mintings produce the same IDs.
+              (let ((a (with-temp-buffer
+                        (insert-file-contents (expand-file-name relative sistema-dir))
+                        (replace-regexp-in-string
+                         ":ID:.*" ":ID:"
+                         (replace-regexp-in-string "Sistema" "X" (buffer-string)))))
+                    (b (with-temp-buffer
+                        (insert-file-contents (expand-file-name relative helice-dir))
+                        (replace-regexp-in-string
+                         ":ID:.*" ":ID:"
+                         (replace-regexp-in-string "Helice" "X" (buffer-string))))))
+                (should (string= a b))))
+          (test-project--kill-file-buffer (expand-file-name "README.org" sistema-dir))
+          (test-project--kill-file-buffer (expand-file-name "README.org" helice-dir)))))))
+
+;;; Method overlay (org-scribe--copy-method-overlay)
+
+(ert-deftest test-project-copy-method-overlay-sistema-is-a-noop ()
+  "Sistema has no overlay directory, so nothing is copied and nothing
+is required to exist on disk — the base template set already holds
+its design file, untouched."
+  (test-project--with-temp-base-dir project-dir
+    (let ((org-scribe-project-package-directory "/nonexistent/package/dir/"))
+      (should-not (org-scribe--copy-method-overlay
+                   'sistema 'en project-dir '(("TITLE" . "T") ("AUTHOR" . "A")))))))
+
+(ert-deftest test-project-copy-method-overlay-copies-and-substitutes ()
+  "A method with an overlay copies its templates over PROJECT-DIR,
+substituting variables exactly as the base copy does."
+  (test-project--with-temp-base-dir package-root
+    (test-project--with-temp-base-dir project-dir
+      (let* ((overlay-dir (expand-file-name "org-scribe-templates/methods/helice/en" package-root))
+             (org-scribe-project-package-directory
+              (file-name-as-directory (expand-file-name "templates" package-root))))
+        (make-directory overlay-dir t)
+        (with-temp-file (expand-file-name "design.org.template" overlay-dir)
+          (insert "#+TITLE: ${TITLE} - Design (Hélice)\n#+AUTHOR: ${AUTHOR}\n"))
+        (org-scribe--copy-method-overlay
+         'helice 'en project-dir '(("TITLE" . "My Novel") ("AUTHOR" . "Jane")))
+        (let ((design-file (expand-file-name "design.org" project-dir)))
+          (should (file-exists-p design-file))
+          (with-temp-buffer
+            (insert-file-contents design-file)
+            (should (string-match-p "My Novel - Design (Hélice)" (buffer-string)))
+            (should (string-match-p "Jane" (buffer-string)))))))))
+
+(ert-deftest test-project-copy-method-overlay-errors-when-directory-missing ()
+  "A method that declares an overlay but has no overlay directory on
+disk errors loudly rather than silently skipping the design file."
+  (test-project--with-temp-base-dir project-dir
+    (let ((org-scribe-project-package-directory
+           (file-name-as-directory (make-temp-file "org-scribe-empty-pkg-" t))))
+      (should-error
+       (org-scribe--copy-method-overlay 'helice 'en project-dir '(("TITLE" . "T") ("AUTHOR" . "A")))
+       :type 'user-error))))
+
 ;;; Run tests
 
 (defun org-scribe-project-run-tests ()

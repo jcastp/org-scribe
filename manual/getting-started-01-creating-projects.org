@@ -316,8 +316,11 @@ If you want to create a full novel project instead, the process is almost identi
 4. Choose base directory (e.g., ~~/writing/~)
 5. Enter novel title (e.g., ~My Fantasy Novel~)
 6. Choose the template language (~en~ or ~es~)
-7. Wait for creation
-8. Explore!
+7. Choose a plotting method — the default, /Sistema unificado/, or one of two
+   others, /La Hélice/ ("start from a premise") and /La Matriz/ ("start from
+   characters"); see [[*Choosing a Plotting Method][Choosing a Plotting Method]] below
+8. Wait for creation
+9. Explore!
 
 ** Novel Project Structure
 
@@ -371,6 +374,41 @@ Open it in Emacs alongside your own new project and compare the two files
 side by side. It is also the safest place to try any command in this guide
 for the first time — it is a demo, and ~git checkout examples/~ undoes
 anything you do to it.
+
+** Choosing a Plotting Method
+
+Step 7 above asks one more question novel projects get that short story
+projects do not: which *plotting method* to deploy.
+
+#+BEGIN_EXAMPLE
+Plotting method: Sistema unificado (default)
+#+END_EXAMPLE
+
+Three choices are offered, all built on the same underlying vocabulary
+(Ghost → Lie → Weakness → Desire/Need, the thirteen non-negotiables, the four
+quarters):
+
+- *Sistema unificado* (the default) — the method this guide's rest of the
+  lessons and the demo novel use.
+- *La Hélice* ("the Helix") — for when you already have a premise and need to
+  build the characters that carry it.
+- *La Matriz* ("the Matrix") — for when you already have characters and need
+  the plot to come from how they collide.
+
+Press ~Tab~ to see all three, or ~Enter~ to accept the Sistema default.
+
+*What changes, and what does not*: the method you pick only changes
+~design.org~ (~diseno.org~ in Spanish) — the file this lesson tells you to
+open first. Every other file in the structure above —~novel.org~, ~notes/~,
+and everything under ~objects/~ — is identical no matter which method you
+choose, because both Hélice and Matriz reuse the Sistema's character profile,
+its thirteen non-negotiables and its quarters rather than replacing them.
+
+Your choice is recorded in ~.org-scribe-project~ as a ~# Method:~ line, the
+same way the language is recorded as ~# Language:~, so it is remembered for
+this project without you needing to do anything further. It is a one-time
+choice at creation, not a setting you switch mid-project — the rest of this
+guide assumes Sistema unificado throughout.
 
 ** Start With design.org
 

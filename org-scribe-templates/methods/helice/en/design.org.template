@@ -1,0 +1,246 @@
+#+TITLE: ${TITLE} - Design (The Helix)
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: en
+#+STARTUP: overview
+
+# Lines starting with # are instructions: do not turn them into prose.
+# This file is for filling in. The full method lives in copo-helice.org.
+#
+# This is the Helix method: use it when you already have a premise and
+# lack the characters to carry it. The other Living Snowflake method, the
+# Matrix, starts from the opposite end — characters without a plot.
+#
+# This file holds the Helix's five levels and everything that has no
+# entities of its own. Characters live in objects/characters.org, settings
+# in objects/locations.org, and the plot — including the thirteen
+# non-negotiables — in objects/plot.org.
+
+* Starting Gate
+
+# This is the only list that decides when you start writing. In the Helix
+# the gate sits at the close of level 3, not at the end of the method:
+# with protagonist and opponent cross-checked, the ending chosen and the
+# plot points placed, everything else is discovered by writing.
+#
+# If you have gone three weeks without writing narrative, you are not
+# designing: you are designing in order not to write. Come back to this
+# list and check whether you had already crossed it.
+
+- [ ] Protagonist and opponent with Ghost, Lie, Weakness, Desire and
+  Need, their Stances cross-checked
+- [ ] The three disasters, each with an owner and a progression role
+  (punish, redouble, cost everything)
+- [ ] The two-endings cross-check resolved
+- [ ] One-page synopsis with change milestones anchored to a concrete
+  point
+- [ ] The thirteen non-negotiable plot points
+- [ ] The first three scenes
+
+* The Helix method
+
+# Five levels, and each one produces two sibling documents — one for
+# plot, one for character, at the same level of detail — plus a check
+# that crosses them. The difference from the original Snowflake: character
+# gets its own level instead of filling in holes plot already made.
+
+** Rule of scaling
+
+# No level is left until both of its documents are written and its check
+# passes. Never write one helix three levels ahead of the other.
+
+** Rule of ownership
+
+# Every disaster has an owner: a person and a specific Lie that causes
+# it. If a disaster has no owner, the disaster is badly designed, not
+# missing a character.
+
+** Rule of return
+
+# When a check fails, rewrite at the level where it failed, not the one
+# below it, and do not keep descending until it passes.
+
+* What a living force is
+
+# A character is a living force when their next wrong decisions can be
+# deduced from their profile without consulting the plot. Only living
+# forces carry a full profile (Ghost, Lie, Weakness, Trouble, Desire,
+# Need) in objects/characters.org. Usually two or three turn up.
+
+* LEVEL 1 — The commitment
+
+** Plot helix
+
+- Novel sentence (~15 words) ::
+  # No proper name but the protagonist's.
+
+** Character helix
+
+- Protagonist ::
+  # NAME believes LIE, and so wants DESIRE.
+  # The opponent does not enter yet: they enter at level 2, already
+  # defined by the collision.
+
+** Level 1 check
+
+- [ ] Does the novel sentence carry a wrong belief, or only a situation?
+- [ ] Inversion test: swap the Lie for its opposite and reread the
+  sentence. If it still works just as well, the Lie is not holding
+  anything up.
+
+* LEVEL 2 — The skeleton and the forces
+
+# The decisive level. Plan to spend noticeably more time here than on
+# the others.
+
+** Plot helix
+
+# A paragraph of N+1 sentences: setup, the N disasters, and the external
+# ending (does he get the Objective or not?).
+
+1. Setup ::
+2. Disaster 1 ::
+3. Disaster 2 ::
+4. Disaster 3 ::
+5. External ending ::
+
+** Character helix
+
+# One paragraph per living force, starting with the protagonist: Ghost →
+# Lie → Weakness → Trouble → Desire (Goal · Motivation · Conflict) →
+# Need. The opponent enters here for the first time and must want the
+# same thing as the protagonist, on both levels.
+
+*** Protagonist
+
+*** Opponent
+
+*** Other living forces, if any
+
+** Level 2 check
+
+- [ ] Ownership: whose Lie causes each disaster, and who it explodes on
+- [ ] Progression: punish / redouble / cost everything
+- [ ] Coverage: every living force owns at least one disaster
+- [ ] The two-endings cross-check (below)
+
+| Disaster | Owner | Lie that causes it | Explodes on whom |
+|----------+-------+---------------------+-------------------|
+|        1 |       |                     |                   |
+|        2 |       |                     |                   |
+|        3 |       |                     |                   |
+
+** The two-endings cross-check
+
+# The external (last sentence of the plot helix) and the internal (the
+# Need of the character helix) are written without looking at each other
+# and crossed in the grid.
+
+|                      | Lets go of the Lie (Rise) | Clings to it (Fall)               |
+|----------------------+---------------------------+------------------------------------|
+| *Gets the Objective*   | Complete victory          | Bitter victory: wins and loses    |
+| *Does not get it*      | Loses and is saved        | Tragedy                           |
+
+- Grid cell ::
+
+* LEVEL 3 — The synopsis and the change milestones
+
+** Plot helix
+
+# One-page synopsis, split by quarters: Setup (0–25%), Reaction
+# (25–50%), Action (50–75%), Resolution (75–100%).
+
+** Character helix
+
+# One page per living force: the chain developed, and its change
+# milestones, each anchored to a concrete point in the synopsis.
+
+| Plot point | Type (Break/Adjustment) | What changes |
+|------------+--------------------------+---------------|
+|            |                          |               |
+
+** Level 3 check
+
+- [ ] Anchoring: every milestone names a concrete point in the synopsis
+- [ ] Reciprocity: no major point moves nothing
+- [ ] Self-revelation arrives before the battle
+- [ ] Ghost test: strip it from the protagonist and reread. What changes?
+
+* LEVEL 4 — Development and the profiles
+
+** Plot helix
+
+# Four-page synopsis, one page per quarter.
+
+** Character helix
+
+# Full profile (section 5 of the unified system) per living force.
+
+** Level 4 check
+
+- [ ] Owner for every plot point, not only the disasters
+- [ ] The Motivation sounds like the Lie
+- [ ] The Conflict of the Need is not the opponent
+- [ ] The two Weaknesses are distinct
+
+* LEVEL 5 — The scenes
+
+** Plot helix
+
+| # | Quarter | PoV | Who wants what | What blocks it | How it ends | What drives it |
+|---+---------+-----+------------------+------------------+---------------+------------------|
+
+** Level 5 check
+
+- [ ] Every scene advances a Desire or presses a Lie
+- [ ] Every change milestone has a scene assigned
+- [ ] PoV distribution is a decision, not an oversight
+- [ ] Pace: no quarter has double the scenes of the others
+
+* Where the plot's weight sits
+
+# The three disasters, in a table, to see at a glance where the story's
+# weight falls before translating it into scenes. This is not a linkable
+# entity: it is a working note, the same way the Sistema's Stakes table
+# is.
+
+| Disaster | Owner | Lie that causes it | Explodes on whom | Position       |
+|----------+-------+---------------------+-------------------+------------------|
+|        1 |       |                     |                   | End of quarter I |
+|        2 |       |                     |                   | Midpoint         |
+|        3 |       |                     |                   | End of quarter III |
+
+* Blank template
+
+# Copy it per story and work in the copy.
+
+** Level 1
+- Novel sentence:
+- Protagonist: ______ believes ______, and so wants ______.
+
+** Level 2
+- Plot (N+1 sentences):
+- Living force 1 (protagonist): Ghost / Lie / Weakness / Trouble / Desire / Need
+- Living force 2 (opponent): (same fields)
+
+** Level 3
+- One-page synopsis, by quarters.
+- Change milestones per force.
+
+** Level 4
+- Four pages, one per quarter.
+- Full profiles.
+
+** Level 5
+- Scene list.
+
+* Pending design changes
+
+# One line per deviation, noted without leaving the drafting session. If
+# the story contradicts the design, the story wins: update the document
+# and carry on.
+#
+# In the manuscript, use *EDIT*: design - ... markers inside a comment
+# block; they are collected by the edit index (F8 F8 6).
+
+-
