@@ -45,6 +45,13 @@
 # ellas. Cinco niveles, los mismos que la Hélice, pero con el orden de
 # dependencia invertido: los dos primeros son de personaje, la trama nace
 # en el tercero.
+#
+# Ajuste más débil: un protagonista claro y nadie más a su peso (la
+# matriz se convierte en una fila y no deduce nada); un género donde la
+# maquinaria de la trama tiene que mandar (un misterio de enigma, un
+# golpe); o un plazo ajustado — es el más lento de los tres métodos hasta
+# que aparece la primera línea de trama, y hasta entonces no sabes si
+# tienes novela.
 
 ** Regla de la arena
 
@@ -70,7 +77,11 @@
 # NOMBRE cree que MENTIRA, porque FANTASMA.
 #
 # Recomendación fuerte: que al menos dos fuerzas compartan el mismo
-# Fantasma con la conclusión contraria.
+# Fantasma con la conclusión contraria. Ejemplo del patrón que esto
+# premia: dos personajes a los que de niños una autoridad les quitó algo,
+# uno concluyendo "hay que seguir moviéndose, no pararse nunca" y el otro
+# "hay que estar del lado que firma los papeles" — la misma herida,
+# lecciones contrarias, y van a colisionar sin que ninguno lo pretenda.
 
 1. ______ cree que ______, porque ______.
 2. ______ cree que ______, porque ______.
@@ -117,6 +128,10 @@
 # Una fila y una columna por fuerza. En la casilla (A, B) se escribe qué
 # le hace la Mentira de A a la Mentira de B cuando ambos van a por el
 # objeto en disputa. La diagonal se deja vacía.
+#
+# Una casilla rellena se lee como una frase, no como una palabra: no
+# "conflicto", sino "su firma de hace veinte años es la razón de que la
+# casa de ella ya no exista".
 
 |     | *a ___* | *a ___* | *a ___* |
 |-----+---------+---------+---------|
@@ -234,6 +249,20 @@
 
 ** Nivel 5
 - Lista de escenas.
+
+* Dónde mirar cuando algo falla
+
+# "Todos se ignoran entre sí" → nivel 1, regla de la arena: falta objeto
+#   en disputa o falta reloj.
+# "Sigo eligiendo yo la colisión" → nivel 3, regla de la inevitabilidad:
+#   ninguna de las candidatas era de verdad inevitable.
+# "El gancho no sale" → nivel 1: falta objeto en disputa, falta reloj, o
+#   falta una fuerza.
+# "Nada cambia hasta el final" → nivel 4: faltan Ajustes entre las
+#   Rupturas.
+# "El elenco se dispersa, cuatro voces y ningún foco" → chequeo 1 del
+#   nivel 3 (toda fuerza es dueña de una posición) y chequeo 3 del
+#   nivel 5 (reparto del punto de vista).
 
 * Cambios pendientes al diseño
 

@@ -73,6 +73,12 @@
 
 - Novel sentence (~15 words) ::
   # No proper name but the protagonist's.
+  #
+  # Two failure modes: a sentence that describes the world, not the
+  # protagonist ("A kingdom torn by civil war…" — whose kingdom, wanting
+  # what?); and writing the Need in the Desire's blank ("wants to learn
+  # to stay" is what he needs, not a Desire — a Desire is external,
+  # concrete, and wrong).
 
 ** Character helix
 
@@ -115,9 +121,21 @@
 
 *** Opponent
 
+# Three checks specific to the opponent, the ones most often skipped:
+# wants the same thing as the protagonist, on both levels — not just the
+# same object, the same thing underneath it; their Stance can be argued
+# with real conviction; and ideally their Ghost is the same event as the
+# protagonist's, with the opposite conclusion drawn from it.
+
 *** Other living forces, if any
 
 ** Level 2 check
+
+# Two traps: a disaster nobody causes — the storm, the plague, the royal
+# edict — can exist as backdrop but never counts as a structural
+# disaster. And the Motivation must sound like the Lie's promise, since
+# it *is* that promise; if it reads as sincere, one of the two fields is
+# wrong.
 
 - [ ] Ownership: whose Lie causes each disaster, and who it explodes on
 - [ ] Progression: punish / redouble / cost everything
@@ -160,6 +178,10 @@
 |            |                          |               |
 
 ** Level 3 check
+
+# Resist inventing new plot on this page to make it read better — if the
+# synopsis needs something the level-2 paragraph doesn't have, that's a
+# level-2 problem (rule of return), not a chance to improve it here.
 
 - [ ] Anchoring: every milestone names a concrete point in the synopsis
 - [ ] Reciprocity: no major point moves nothing
@@ -233,6 +255,15 @@
 
 ** Level 5
 - Scene list.
+
+* Where to look when something's wrong
+
+# "Things happen but mean nothing" → level 2, rule of ownership.
+# "The opponent feels like cardboard" → level 2: undefendable Stance, or
+#   wants a different thing than the protagonist.
+# "The ending doesn't convince me" → level 2, the two-endings cross-check.
+# "Nothing changes until the very end" → level 3: missing Adjustments
+#   between the Breaks.
 
 * Pending design changes
 

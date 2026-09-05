@@ -45,6 +45,13 @@
 # deduced from them. Five levels, the same as the Helix, but with the
 # dependency order reversed: the first two are about character, the plot
 # is born in the third.
+#
+# Weakest fit: a single clear protagonist and no one else at the same
+# weight (the matrix becomes one row and deduces nothing); a genre where
+# the plot mechanism has to lead (a puzzle mystery, a heist); or a tight
+# deadline — this is the slowest of the three methods until the first
+# line of plot appears, and until then you don't know if you have a
+# novel.
 
 ** Rule of the arena
 
@@ -71,7 +78,11 @@
 # NAME believes LIE, because GHOST.
 #
 # Strong recommendation: have at least two forces share the same Ghost
-# with the opposite conclusion.
+# with the opposite conclusion. Example of the pattern this rewards: two
+# characters who each lost something to an authority as children, one
+# concluding "keep moving, never stop" and the other "get on the side
+# that signs the papers" — same wound, opposite lesson, and they will
+# collide without either of them trying to.
 
 1. ______ believes ______, because ______.
 2. ______ believes ______, because ______.
@@ -119,6 +130,10 @@
 # One row and one column per force. In cell (A, B), write what A's Lie
 # does to B's Lie when both go after the object in dispute. The
 # diagonal is left blank.
+#
+# A filled cell reads like a sentence, not a word: not "conflict" but
+# "his signature from years ago is the reason her home doesn't exist
+# anymore."
 
 |     | *to ___* | *to ___* | *to ___* |
 |-----+----------+----------+----------|
@@ -237,6 +252,20 @@
 
 ** Level 5
 - Scene list.
+
+* Where to look when something's wrong
+
+# "Everyone ignores everyone" → level 1, rule of the arena: missing
+#   object in dispute or missing clock.
+# "I keep choosing the collision myself" → level 3, rule of
+#   inevitability: none of the candidates was truly unavoidable.
+# "The hook won't come out" → level 1: missing object in dispute,
+#   missing clock, or missing force.
+# "Nothing changes until the very end" → level 4: missing Adjustments
+#   between the Breaks.
+# "The cast feels scattered, four voices and no focus" → level 3 check
+#   1 (every force owns a position) and level 5 check 3 (PoV
+#   distribution).
 
 * Pending design changes
 

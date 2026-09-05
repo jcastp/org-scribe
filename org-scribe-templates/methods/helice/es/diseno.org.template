@@ -74,6 +74,12 @@
 
 - Frase de la novela (~15 palabras) ::
   # Sin más nombre propio que el del protagonista.
+  #
+  # Dos fallos frecuentes: una frase que describe el mundo, no al
+  # protagonista ("Un reino desgarrado por la guerra civil…" — ¿de quién
+  # es el reino, y qué quiere?); y escribir la Necesidad en el hueco del
+  # Deseo ("quiere aprender a quedarse" es lo que necesita, no un Deseo —
+  # el Deseo es externo, concreto y equivocado.
 
 ** Hélice de personaje
 
@@ -115,9 +121,21 @@
 
 *** Oponente
 
+# Tres comprobaciones propias del oponente, las que más se saltan: quiere
+# lo mismo que el protagonista, en los dos niveles —no sólo el mismo
+# objeto, lo mismo por debajo—; su Postura se puede defender con
+# convicción real; e, idealmente, su Fantasma es el mismo suceso que el
+# del protagonista, con la conclusión contraria.
+
 *** Otras fuerzas vivas, si las hay
 
 ** Chequeo del nivel 2
+
+# Dos trampas: un desastre que no causa nadie —la tormenta, la peste, el
+# edicto real— puede existir como telón de fondo pero nunca cuenta como
+# desastre estructural. Y la Motivación tiene que sonar a la promesa de
+# la Mentira, porque es esa promesa; si suena sincera, uno de los dos
+# campos está mal.
 
 - [ ] Dueño: ¿de quién es la Mentira que causa cada desastre, y a quién
   le estalla?
@@ -139,8 +157,8 @@
 
 |                       | Suelta la Mentira (Ascenso) | Se aferra a ella (Caída)          |
 |-----------------------+------------------------------+------------------------------------|
-| *Consigue el Objetivo*  | Final pleno                 | Victoria amarga: gana y se pierde |
-| *No lo consigue*        | Pierde y se salva           | Tragedia                          |
+| *Consigue el Objetivo* | Final pleno                 | Victoria amarga: gana y se pierde |
+| *No lo consigue*       | Pierde y se salva           | Tragedia                          |
 
 - Casilla de la rejilla ::
 
@@ -161,6 +179,11 @@
 |                 |                        |            |
 
 ** Chequeo del nivel 3
+
+# Resiste la tentación de inventar trama nueva en esta página para que
+# lea mejor: si la sinopsis necesita algo que el párrafo del nivel 2 no
+# tiene, es un problema del nivel 2 (regla del retorno), no una ocasión
+# para mejorarlo aquí.
 
 - [ ] Anclaje: cada hito nombra un punto concreto de la sinopsis
 - [ ] Reciprocidad: ningún punto grande se queda sin mover nada
@@ -234,6 +257,15 @@
 
 ** Nivel 5
 - Lista de escenas.
+
+* Dónde mirar cuando algo falla
+
+# "Pasan cosas pero no significan nada" → nivel 2, regla del dueño.
+# "El oponente parece de cartón" → nivel 2: Postura indefendible, o
+#   quiere algo distinto que el protagonista.
+# "El final no me convence" → nivel 2, el cotejo de los dos finales.
+# "Nada cambia hasta el final" → nivel 3: faltan Ajustes entre las
+#   Rupturas.
 
 * Cambios pendientes al diseño
 
