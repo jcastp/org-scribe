@@ -1,0 +1,273 @@
+#+TITLE: Lesson 18: Plotting Methods — La Hélice and La Matriz
+#+AUTHOR: Javier Castilla
+#+DATE: 2026-09-05
+#+STARTUP: overview
+
+* Welcome to Lesson 18!
+
+Lesson 1 mentioned, in one paragraph, that project creation asks *which
+plotting method* to use. This lesson is that paragraph expanded: what the
+three methods are, when each one earns its keep, what their five levels
+actually ask you to do, and — the part that matters most if you already have
+a project — exactly what changes and what does not when you pick one.
+
+By the end of this lesson, you'll know how to:
+- Decide which of the three methods fits the story you're about to write
+- Read and fill in La Hélice's five levels, in order
+- Read and fill in La Matriz's five levels, in order
+- Recognize the one thing both new methods deliberately do *not* automate,
+  and why
+- Confirm that the health report (~F8 F8 H~) checks your Starting Gate the
+  same way no matter which method you picked
+
+*Prerequisites*: Lesson 1 (you need to have created a project, or be about
+to). Nothing else in this guide depends on which method you choose — every
+other lesson works identically under all three.
+
+*Estimated time*: 20 minutes to read, longer to actually use one.
+
+* Part 1: Three Methods, One Vocabulary
+
+Every method available at project creation is built on the same underlying
+vocabulary: a causal chain per character (Ghost → Lie → Weakness →
+Desire/Need), the thirteen non-negotiable plot points, and the four quarters
+that structure your novel. They differ only in *what order you fill things in*
+and *where the plot comes from*.
+
+| Method             | You start from…               | The plot comes from…                                                  |
+|--------------------+-------------------------------+-----------------------------------------------------------------------|
+| *Sistema unificado*  | A theme and a Stance spectrum | Escalating trama and hanging characters from it                       |
+| *La Hélice* (Helix)  | A premise                     | Characters scaled to their own five levels, in parallel with the plot |
+| *La Matriz* (Matrix) | Characters                    | Deducing collisions from characters who cannot avoid each other       |
+
+*Sistema unificado* is the default and the one every other lesson in this
+guide assumes — it's what the demo novel (~examples/demo-novel/~) uses. This
+lesson is about the other two.
+
+** What Actually Changes
+
+This is worth stating plainly, because it's easy to assume a "method" changes
+your whole project:
+
+#+BEGIN_QUOTE
+Choosing La Hélice or La Matriz changes *one file*: ~design.org~
+(~diseno.org~ in Spanish projects). Everything else — ~novel.org~, ~notes/~,
+and every file under ~objects/~ — is identical to a Sistema project's.
+#+END_QUOTE
+
+That's not an accident or a simplification for this guide — it follows
+directly from the shared vocabulary above. Both new methods import the
+Sistema's character profile, its thirteen non-negotiables and its four
+quarters rather than replacing them, so nothing downstream of the design
+file — capture, linking, the health report, compilation, the planner — needs
+to know or care which method you picked. Lesson 4 (character capture),
+Lesson 6 (plot threads), Lesson 11 (export) and every other lesson in this
+guide work exactly the same regardless.
+
+* Part 2: Choosing at Project Creation
+
+The method prompt appears as Step 7 of novel project creation (see Lesson 1):
+
+#+BEGIN_EXAMPLE
+Plotting method: Sistema unificado (default)
+#+END_EXAMPLE
+
+Press ~Tab~ to see all three, or ~Enter~ to accept the Sistema default. Your
+choice is written to ~.org-scribe-project~ as a ~# Method:~ line — the same
+mechanism that records your project's language — so it's a one-time decision
+remembered for that project from then on.
+
+*This prompt only appears for novel projects.* Short story projects don't
+offer a method choice; they keep their existing minimal structure.
+
+If you're not sure which to pick, read the "When to use it" subsection under
+each method below, or just start with Sistema unificado — you lose nothing
+by trying the other two later on a fresh project, since the choice is made
+once, at creation, per project.
+
+* Part 3: La Hélice ("The Helix")
+
+** When to Use It
+
+Use La Hélice when *you already have a premise* — a sentence like "a pirate
+who's spent twenty years never stopping must hold still to destroy the
+magistrate who burned his village" — and the characters who would live that
+premise haven't taken shape yet.
+
+** The Three Rules
+
+Before the levels, three rules that make this a method rather than a list of
+fields — they're printed at the top of the design file so you always have
+them nearby:
+
+- *Rule of scaling*: don't move to the next level until both of the current
+  level's documents (one for plot, one for character) are written and their
+  check passes. Never write one three levels ahead of the other.
+- *Rule of ownership*: every disaster has an owner — a specific person and a
+  specific Lie that causes it. If a disaster has no owner, the disaster is
+  badly designed, not missing a character.
+- *Rule of return*: when a check fails, rewrite at the level where it failed,
+  not the one below it, and don't keep descending until it passes.
+
+** The Five Levels
+
+Each level (except the last) produces *two sibling documents* — one about
+plot, one about character, at the same level of detail — plus a check that
+crosses them.
+
+| Level | Plot side                             | Character side                                        |
+|-------+---------------------------------------+-------------------------------------------------------|
+|     1 | The ~15-word novel sentence           | The protagonist's Lie and Desire only                 |
+|     2 | Setup + 3 disasters + external ending | Full chain, protagonist then opponent                 |
+|     3 | One-page synopsis by quarters         | One page per force, with change milestones            |
+|     4 | Four-page synopsis                    | Full profile per force                                |
+|     5 | Scene list                            | (folded into the scene list's PoV/motivation columns) |
+
+*Level 2 is the decisive one* — budget more time there than anywhere else. It
+produces the three disasters (see Part 5 below), each with an owner, and the
+cross-check of the two endings: what the story looks like from the outside
+(does the protagonist get the Objective?) and from the inside (do they let go
+of the Lie?), written without looking at each other and then crossed in a
+grid.
+
+** The Exit Gate
+
+You can start drafting once *level 3 is closed and its check passes*, plus
+your first three scenes are written. Levels 4 and 5 are there for when you
+need them or the draft stalls — not a requirement to start.
+
+* Part 4: La Matriz ("The Matrix")
+
+** When to Use It
+
+Use La Matriz when *what you have are characters* and the story hasn't
+arrived yet — you know two to four people well, but not what happens between
+them. It's also the better fit for a coral story with three or four
+comparably weighted forces, where La Hélice would tend to sort everyone into
+a single protagonist/opponent pair.
+
+Two situations where it's the wrong tool: if you're starting from a premise
+or a commissioned pitch (use La Hélice instead — inverting the method throws
+away what you already have), or if you're working in a genre with strong
+plot expectations — a mechanism thriller, a puzzle mystery — where the
+machinery has to lead and the arc follows.
+
+** The Three Rules
+
+- *Rule of the arena*: there's no deduction without scarcity. Two characters
+  with incompatible Lies but nothing to fight over don't collide — they just
+  ignore each other. That's why level 1 asks for an object in dispute, and a
+  place and moment where everyone has to be at once.
+- *Rule of inevitability*: among every possible collision, pick the one
+  neither force can dodge without ceasing to be who they are. This replaces
+  authorial taste as the selection criterion.
+- *Rule of the late hook*: the sellable fifteen-word sentence still gets
+  written — just at the *end* of level 3 instead of the beginning, and it's a
+  gate: if it doesn't come out, go back to level 1.
+
+** The Five Levels
+
+The dependency order is *inverted* relative to La Hélice: the first two
+levels are about character, and the plot is born in the third.
+
+| Level | What you produce                                                                         |
+|-------+------------------------------------------------------------------------------------------|
+|     1 | The census (2–4 one-line force statements) and the arena (object, place/moment, clock)   |
+|     2 | One full chain per force: Ghost → Lie → Weakness → Trouble → Desire → Need               |
+|     3 | The collision matrix, the collisions you choose from it, the skeleton, and the hook test |
+|     4 | One-page synopsis by quarters, with change milestones                                    |
+|     5 | Scene list                                                                               |
+
+*Level 3 is the method's signature move.* You fill an N×N matrix — one row
+and column per force — where cell (A, B) says what A's Lie does to B's Lie
+when both go after the same object. From the candidates in that matrix, you
+pick your collisions by inevitability, and only *then* — after the plot has
+been deduced — do you write the fifteen-word hook. If it doesn't come out,
+that's not a level-3 problem to push through: it's a sign the level-1 census
+was wrong (missing a force, missing a clock), and you go back there.
+
+** The Exit Gate
+
+The gate sits *one level later* than La Hélice's — at the close of level 4,
+not level 3. That's deliberate: closing level 3 here gives you a skeleton
+that was just deduced from the matrix but hasn't yet been tested against a
+synopsis's actual pace. Level 4 is where this method checks that what it
+deduced actually holds up as narrative.
+
+* Part 5: Where the Plot's Weight Lives
+
+Both methods make the same three-or-so structural moments — La Hélice's
+*disasters*, La Matriz's *collisions* — visible in a table near the end of
+the design file:
+
+#+BEGIN_EXAMPLE
+| Disaster | Owner | Lie that causes it | Explodes on whom | Position           |
+|----------+-------+---------------------+-------------------+---------------------|
+|        1 |       |                     |                   | End of quarter I    |
+|        2 |       |                     |                   | Midpoint            |
+|        3 |       |                     |                   | End of quarter III  |
+#+END_EXAMPLE
+
+This table is deliberately *just a table* — plain prose in ~design.org~, not
+a linked entity the way characters, locations and plot threads are. Nothing
+in org-scribe checks automatically that every force owns one, or that every
+disaster has a scene. It's there so that, at a glance, you know where your
+story's weight falls before you translate that into actual scenes — a
+working note, exactly like the Sistema's own Stakes table, not a fourth or
+fifth thing the linking system tracks.
+
+If you want the ownership and coverage checks a linked entity would give you
+automatically, that's a reasonable thing to want — it just isn't what this
+version does. Track it by eye for now: three rows is not a lot to watch.
+
+* Part 6: The Starting Gate Still Works the Same Way
+
+Whichever method you picked, ~F8 F8 H~ (the project health report) opens
+with your *Starting Gate* section exactly as it does for a Sistema project —
+your own checkboxes read back, plus two measured items reported alongside
+them regardless of the method or the language: how many of the thirteen
+plot points actually have content, and how many of your first three scenes
+have a nonzero word count.
+
+The only difference is *where* the gate sits and what it asks:
+
+| Method  | Gate closes at…                           |
+|---------+-------------------------------------------|
+| Sistema | Eight items, no level structure           |
+| Hélice  | End of level 3, plus three scenes written |
+| Matriz  | End of level 4, plus three scenes written |
+
+You don't need to do anything differently to get this — the health report
+finds your Starting Gate section and its two measured items by what they
+say, not by counting checkboxes in a fixed order, so it works the same way
+under all three methods.
+
+* Try It Now
+
+1. Create a second, throwaway project (~M-x org-scribe-create-novel-project~)
+   and pick a different method than your main project uses.
+2. Open its ~design.org~ (or ~diseno.org~) and compare it side by side with
+   your main project's.
+3. Confirm for yourself that ~novel.org~ and everything under ~objects/~ look
+   the same in both — copy one of your own characters' profiles into the new
+   project's ~objects/characters.org~ and see that nothing about it needs to
+   change.
+4. Delete the throwaway project once you're done; nothing about it is worth
+   keeping unless you decide to actually write that story.
+
+* About This Lesson
+
+- *Created*: 2026-09-05
+- *Last Updated*: 2026-09-05
+- *Lesson Number*: 18
+- *Part*: 1 - The Essentials (read any time after Lesson 1)
+- *Estimated Time*: 20 minutes
+- *Difficulty*: Beginner
+- *Prerequisites*: Lesson 1 (you need to be creating or comparing projects)
+
+---
+
+*Previous*: [[file:getting-started-17-scratchpad.org][Lesson 17: The Scratchpad and Branching Ideas]]
+*Back to Start*: [[file:getting-started-00-index.org][Getting Started Guide - Index]]
+
+*Lesson 18 Complete!*

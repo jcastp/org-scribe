@@ -41,6 +41,12 @@ Creates a complete novel project structure from customizable templates. This fun
 
 *Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~templates/org-scribe-project.el~
 
+** Plotting Method Selection (~org-scribe-project-method~)
+
+Novel project creation also prompts for which plotting method to deploy: the Sistema unificado (the default, and the one every other lesson assumes), La Hélice ("start from a premise"), or La Matriz ("start from characters"). All three are built on the same underlying vocabulary — the causal chain, the thirteen non-negotiables, the four quarters — so the choice only changes ~design.org~/~diseno.org~; the manuscript, notes and every file under ~objects/~ are identical regardless of method. The choice is recorded as a ~# Method:~ line in ~.org-scribe-project~ and read via ~org-scribe-project-method~, which — like the per-project language — resolves to the Sistema for any project with no such line, so nothing created before this feature existed changes behavior. See [[file:getting-started-18-plotting-methods.org][Lesson 18]] for a full walkthrough of each method's five levels, and ~docs/glossary.org~ for the Spanish↔English vocabulary specific to the two new methods.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~core/org-scribe-core.el~, ~templates/org-scribe-project.el~
+
 ** Short Story Project Creation (~org-scribe-create-short-story-project~)
 
 Creates a minimal short story project structure optimized for shorter works (1,000-20,000 words). Unlike novel projects, short story projects use only 3 files: README.org, story.org (or cuento.org for Spanish), and a consolidated notes.org file that combines character sketches, plot outline, and research. Word counting is integrated directly into the story file rather than maintained separately. This streamlined structure reduces overhead for quick projects while maintaining essential planning features.

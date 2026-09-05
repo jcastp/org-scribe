@@ -277,6 +277,7 @@ package. That's the point.
 ---
 
 *Previous*: [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with the Bundled Planner]]
+*Next*: [[file:getting-started-18-plotting-methods.org][Lesson 18: Plotting Methods — La Hélice and La Matriz]]
 *Back to Start*: [[file:getting-started-00-index.org][Getting Started Guide - Index]]
 
 *Lesson 17 Complete!*

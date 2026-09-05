@@ -410,6 +410,9 @@ this project without you needing to do anything further. It is a one-time
 choice at creation, not a setting you switch mid-project — the rest of this
 guide assumes Sistema unificado throughout.
 
+*Curious about La Hélice or La Matriz?* [[file:getting-started-18-plotting-methods.org][Lesson 18]] walks through each
+method's five levels in full, once you have a project to try them on.
+
 ** Start With design.org
 
 The novel templates are not blank scaffolding: they implement a specific
