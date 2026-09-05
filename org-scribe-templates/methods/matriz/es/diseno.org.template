@@ -27,12 +27,9 @@
 # diseñando para no escribir. Vuelve a esta lista y comprueba si ya la
 # habías cruzado.
 
-- [ ] Censo (2–4 fuerzas) y arena (objeto en disputa, lugar y momento,
-  reloj)
-- [ ] Cadenas completas por fuerza (Fantasma → Mentira → Debilidad → Apuro
-  → Deseo → Necesidad)
-- [ ] La matriz de colisiones rellena y las colisiones elegidas por
-  inevitabilidad y progresión
+- [ ] Censo (2–4 fuerzas) y arena (objeto en disputa, lugar y momento, reloj)
+- [ ] Cadenas completas por fuerza (Fantasma → Mentira → Debilidad → Apuro → Deseo → Necesidad)
+- [ ] La matriz de colisiones rellena y las colisiones elegidas por inevitabilidad y progresión
 - [ ] La prueba del gancho pasada
 - [ ] Sinopsis por cuartiles con los hitos de cambio anclados
 - [ ] Los trece puntos de trama irrenunciables
@@ -113,10 +110,8 @@
 
 ** Chequeo del nivel 2
 
-- [ ] Prueba de la deducción: tapa todo lo demás y escribe las dos
-  próximas decisiones equivocadas de esa fuerza
-- [ ] Prueba de la defensa: argumenta la Postura de cada fuerza con
-  convicción
+- [ ] Prueba de la deducción: tapa todo lo demás y escribe las dos próximas decisiones equivocadas de esa fuerza
+- [ ] Prueba de la defensa: argumenta la Postura de cada fuerza con convicción
 - [ ] Simetría: ¿qué quieren todas por debajo del objeto?
 
 * NIVEL 3 — La matriz de colisiones
@@ -134,10 +129,10 @@
 # casa de ella ya no exista".
 
 |     | *a ___* | *a ___* | *a ___* |
-|-----+---------+---------+---------|
-| *___* | —       |         |         |
-| *___* |         | —       |         |
-| *___* |         |         | —       |
+|-----+-------+-------+-------|
+| *___* | —     |       |       |
+| *___* |       | —     |       |
+| *___* |       |       | —     |
 
 ** Paso 2 — Elegir las colisiones
 
@@ -146,10 +141,10 @@
 # redobla, cuesta todo).
 
 | # | Casilla (A→B) | Por qué es inevitable | Posición               |
-|---+----------------+------------------------+-------------------------|
-| 1 |                |                        | Fin del primer cuartil |
-| 2 |                |                        | Punto medio            |
-| 3 |                |                        | Fin del tercer cuartil |
+|---+---------------+-----------------------+------------------------|
+| 1 |               |                       | Fin del primer cuartil |
+| 2 |               |                       | Punto medio            |
+| 3 |               |                       | Fin del tercer cuartil |
 
 ** Paso 3 — Escribir el esqueleto
 
@@ -158,9 +153,9 @@
 # cruzan en la rejilla.
 
 |                      | Suelta la Mentira (Ascenso) | Se aferra a ella (Caída)          |
-|-----------------------+------------------------------+------------------------------------|
-| *Consigue el Objetivo*  | Final pleno                 | Victoria amarga: gana y se pierde |
-| *No lo consigue*        | Pierde y se salva           | Tragedia                          |
+|----------------------+-----------------------------+-----------------------------------|
+| *Consigue el Objetivo* | Final pleno                 | Victoria amarga: gana y se pierde |
+| *No lo consigue*       | Pierde y se salva           | Tragedia                          |
 
 - Final externo ::
 - Final interno ::
@@ -178,8 +173,7 @@
 
 ** Chequeo del nivel 3
 
-- [ ] Toda fuerza viva es dueña de al menos una posición (las N colisiones
-  más la batalla final)
+- [ ] Toda fuerza viva es dueña de al menos una posición (las N colisiones más la batalla final)
 - [ ] Ninguna colisión es evitable con que alguien sea razonable un momento
 - [ ] La progresión se cumple: castiga, redobla, cuesta todo
 - [ ] La puerta del gancho está pasada
@@ -191,8 +185,8 @@
 # marcado como Ruptura o Ajuste.
 
 | Punto de trama | Tipo (Ruptura/Ajuste) | Qué cambia |
-|-----------------+------------------------+------------|
-|                 |                        |            |
+|----------------+-----------------------+------------|
+|                |                       |            |
 
 ** Chequeo del nivel 4
 
@@ -210,8 +204,7 @@
 
 - [ ] Toda escena mueve un Deseo o presiona una Mentira
 - [ ] Todo hito de cambio tiene escena asignada
-- [ ] Reparto del punto de vista: si una fuerza no tiene escena propia,
-  que sea una decisión
+- [ ] Reparto del punto de vista: si una fuerza no tiene escena propia, que sea una decisión
 - [ ] Ritmo: ningún cuartil al doble de escenas que los otros
 
 * Dónde está el peso de la trama
@@ -221,11 +214,11 @@
 # entidad enlazable: es una nota de trabajo, igual que la tabla de
 # Apuestas del Sistema.
 
-| Colisión | Casilla (A→B) | Por qué es inevitable | Posición       |
-|----------+----------------+------------------------+------------------|
-|        1 |                |                        | Fin cuartil I   |
-|        2 |                |                        | Punto medio     |
-|        3 |                |                        | Fin cuartil III |
+| Colisión | Casilla (A→B) | Por qué es inevitable | Posición        |
+|----------+---------------+-----------------------+-----------------|
+|        1 |               |                       | Fin cuartil I   |
+|        2 |               |                       | Punto medio     |
+|        3 |               |                       | Fin cuartil III |
 
 * Plantilla en blanco
 

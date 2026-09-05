@@ -27,13 +27,10 @@
 # diseñando para no escribir. Vuelve a esta lista y comprueba si ya la
 # habías cruzado.
 
-- [ ] Protagonista y oponente con Fantasma, Mentira, Debilidad, Deseo y
-  Necesidad, con las Posturas cotejadas
-- [ ] Los tres desastres, cada uno con dueño y progresión (castiga, redobla,
-  cuesta todo)
+- [ ] Protagonista y oponente con Fantasma, Mentira, Debilidad, Deseo y Necesidad, con las Posturas cotejadas
+- [ ] Los tres desastres, cada uno con dueño y progresión (castiga, redobla, cuesta todo)
 - [ ] El cotejo de los dos finales resuelto
-- [ ] Sinopsis de una página y los hitos de cambio anclados a un punto
-  concreto
+- [ ] Sinopsis de una página y los hitos de cambio anclados a un punto concreto
 - [ ] Los trece puntos de trama irrenunciables
 - [ ] Las tres primeras escenas
 
@@ -90,10 +87,8 @@
 
 ** Chequeo del nivel 1
 
-- [ ] ¿La frase de la novela contiene una creencia equivocada, o sólo una
-  situación?
-- [ ] Prueba de la inversión: sustituye la Mentira por su contraria y
-  relee la frase. Si sigue funcionando igual, la Mentira no sujeta nada.
+- [ ] ¿La frase de la novela contiene una creencia equivocada, o sólo una situación?
+- [ ] Prueba de la inversión: sustituye la Mentira por su contraria y relee la frase. Si sigue funcionando igual, la Mentira no sujeta nada.
 
 * NIVEL 2 — El esqueleto y las fuerzas
 
@@ -137,8 +132,7 @@
 # la Mentira, porque es esa promesa; si suena sincera, uno de los dos
 # campos está mal.
 
-- [ ] Dueño: ¿de quién es la Mentira que causa cada desastre, y a quién
-  le estalla?
+- [ ] Dueño: ¿de quién es la Mentira que causa cada desastre, y a quién le estalla?
 - [ ] Progresión: castiga / redobla / cuesta todo
 - [ ] Cobertura: toda fuerza viva es dueña de al menos un desastre
 - [ ] El cotejo de los dos finales (ver abajo)
@@ -155,8 +149,8 @@
 # Necesidad de la hélice de personaje) se escriben sin mirarse y se
 # cruzan en la rejilla.
 
-|                       | Suelta la Mentira (Ascenso) | Se aferra a ella (Caída)          |
-|-----------------------+------------------------------+------------------------------------|
+|                      | Suelta la Mentira (Ascenso) | Se aferra a ella (Caída)          |
+|----------------------+-----------------------------+-----------------------------------|
 | *Consigue el Objetivo* | Final pleno                 | Victoria amarga: gana y se pierde |
 | *No lo consigue*       | Pierde y se salva           | Tragedia                          |
 
@@ -175,8 +169,8 @@
 # cambio, cada uno anclado a un punto concreto de la sinopsis.
 
 | Punto de trama | Tipo (Ruptura/Ajuste) | Qué cambia |
-|-----------------+------------------------+------------|
-|                 |                        |            |
+|----------------+-----------------------+------------|
+|                |                       |            |
 
 ** Chequeo del nivel 3
 
@@ -228,14 +222,13 @@
 # enlazable: es una nota de trabajo, igual que la tabla de Apuestas del
 # Sistema.
 
-| Desastre | Dueño | Mentira que lo causa | A quién le estalla | Posición      |
-|----------+-------+----------------------+---------------------+----------------|
-|        1 |       |                      |                     | Fin cuartil I  |
-|        2 |       |                      |                     | Punto medio    |
-|        3 |       |                      |                     | Fin cuartil III|
+| Desastre | Dueño | Mentira que lo causa | A quién le estalla | Posición        |
+|----------+-------+----------------------+--------------------+-----------------|
+|        1 |       |                      |                    | Fin cuartil I   |
+|        2 |       |                      |                    | Punto medio     |
+|        3 |       |                      |                    | Fin cuartil III |
 
 * Plantilla en blanco
-
 # Cópiala por historia y trabaja en la copia.
 
 ** Nivel 1
