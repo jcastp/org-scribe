@@ -59,6 +59,12 @@ Provides quick navigation to any file in the current writing project using compl
 
 *Status*: Fully implemented | *Hydra*: ~o~ (Insert section) | *Module*: ~templates/org-scribe-project.el~
 
+** Project Scratchpad (~scratchpad.org~)
+
+An unstructured file shipped at the root of every project (~cuaderno-borradores.org~ in Spanish projects) for drafts, fragments, "what if" questions and ideas that have nowhere to live yet. It is the only file in a project that is read by nothing: the word count walks the manuscript, compilation reads the manuscript, and the entity resolvers work from fixed file names, so a character sketched here stays invisible to the linking system until it is moved somewhere real. It is a refile /source/ only — ~C-c C-w~ out of it reaches every heading in every project file, while nothing can be refiled into it. The file also ships a convention for *branching a question*: a heading tagged ~:branch:~ with one child heading per answer, each carrying a file-local state (~OPEN~, ~EXPLORING~, ~CHOSEN~, ~REJECTED~) cycled with ~C-c C-t~, and the outcomes of an answer nested as its children. Those four keywords sit outside ~org-scribe-todo-keywords~ on purpose, so open questions never appear in the project TODO search. An optional ~:ABOUT:~ property carries an ID link to the character or plot thread the question concerns.
+
+*Status*: Fully implemented | *Hydra*: ~o~ (Insert section, via project file navigation) | *Module*: ~org-scribe-templates/*/~ (template only — no code)
+
 ** Template Language Selection (~org-scribe-template-language~)
 
 Controls which language templates are used when creating new projects. Set to ~'en~ for English templates (novel.org, notes/, characters.org) or ~'es~ for Spanish templates (novela.org, notas/, personajes.org). This affects both novel and short story project creation. Template directories are structured as org-scribe-templates/novel-en/, novel-es/, short-story-en/, and short-story-es/, allowing complete bilingual support throughout the package.

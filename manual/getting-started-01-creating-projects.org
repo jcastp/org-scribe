@@ -165,6 +165,7 @@ The Morning Routine/           (your project folder)
 ├── .dir-locals.el             (spelling dictionary for every file in the project)
 ├── README.org                 (overview and quick links - YOU ARE HERE)
 ├── story.org                  (your main manuscript)
+├── scratchpad.org             (a free-form place for drafts and ideas)
 └── notes.org                  (planning: characters, plot, locations, etc.)
 #+END_EXAMPLE
 
@@ -209,6 +210,19 @@ This is your planning hub, containing:
 - Random Ideas & Inspiration section
 
 *What to do later*: We'll explore this in Lesson 4 (Capturing Characters).
+
+*** scratchpad.org (Your Free-Form Space)
+
+Notice that ~notes.org~ above is not actually free-form: its Characters and
+Setting sections are read by the linking system and filed into by capture, so a
+stray sketch there becomes a half-real entity.
+
+~scratchpad.org~ is the file that asks nothing of you. No structure, no
+properties, nothing reads it. Drafts, fragments, "what if" questions, arguments
+with yourself — put them here, and refile out what survives with ~C-c C-w~.
+
+*What to do later*: Lesson 17 covers it, including how to branch a question into
+alternatives and explore each one.
 
 ** The .org-scribe-project Marker File
 
@@ -317,6 +331,7 @@ My Fantasy Novel/
 ├── README.org                 (overview and navigation)
 ├── design.org                 (START HERE: the Starting Gate and the Core)
 ├── novel.org                  (main manuscript - word count and progress tracking live here, not a separate file)
+├── scratchpad.org             (a free-form place for drafts and ideas)
 ├── writing-journal.org        (a journal for reflecting on your writing process)
 ├── revision.org               (the revision passes)
 ├── objects/                      (planning directory)

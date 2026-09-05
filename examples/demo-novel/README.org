@@ -98,6 +98,7 @@ wrong on purpose and the tools are meant to find them:
 - [[file:objects/timeline.org][objects/timeline.org]] — story and backstory chronology
 - [[file:revision.org][revision.org]] — the ten revision passes
 - [[file:writing-journal.org][writing-journal.org]] — the drafting diary, including how the design changed
+- [[file:scratchpad.org][scratchpad.org]] — the unstructured file: loose ideas, and two questions branched into alternatives
 - [[file:notes/notes.org][notes/notes.org]] — scratch: ideas, and which ones were promoted
 - [[file:notes/research.org][notes/research.org]] — what has been checked, and what is still open
 - [[file:plan.org][plan.org]] — the writing planner's schedule and ledger

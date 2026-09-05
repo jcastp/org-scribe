@@ -1,0 +1,78 @@
+#+TITLE: ${TITLE} - Cuaderno de borradores
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: es
+#+STARTUP: overview
+#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)
+
+# Este archivo no tiene estructura, y no pretende llegar a tenerla.
+#
+# Es el único sitio del proyecto que no te pide nada.  Aquí notas.org no
+# es libre: sus secciones de Personajes y Ambientación las lee el sistema
+# de enlaces y en ellas archiva la captura, así que un esbozo suelto ahí
+# se convierte en una entidad a medias.  Ponlo aquí.
+#
+# Nada de lo que escribas aquí se cuenta, se exporta ni lo lee ninguna
+# orden de org-scribe.  El recuento de palabras recorre solo el
+# manuscrito; la compilación lee solo el manuscrito; los resolutores de
+# entidades trabajan con nombres de archivo fijos, así que un personaje
+# esbozado aquí es invisible para el sistema de enlaces hasta que lo
+# muevas a su sitio.  Esboza a alguien que quizá no exista.  Escribe una
+# escena que vas a tirar.  Haz la pregunta tonta.  Discute contigo mismo
+# por escrito.
+#
+# Refila lo que sobreviva con C-c C-w, que ofrece todos los encabezados
+# de todos los archivos del proyecto.  Borra el resto sin ceremonia.
+#
+# Abre este archivo desde cualquier punto del proyecto con F8 F8 o.
+#
+#
+# RAMIFICAR UNA PREGUNTA
+#
+# Cuando una pregunta resulta tener más de una respuesta, dale un
+# encabezado y etiquétalo :branch:.  Cada respuesta es un encabezado hijo
+# con un estado, que se cambia con C-c C-t:
+#
+#   OPEN       sigue viva, aún sin explorar
+#   EXPLORING  la estás desarrollando ahora mismo
+#   CHOSEN     es esta
+#   REJECTED   descartada, conservando el motivo
+#
+# Conserva las ramas descartadas.  El porqué-no vale tanto como el
+# porqué, y borrar una solo significa volver a deducirla dentro de tres
+# meses.  REJECTED y CHOSEN son estados finales, así que una pregunta ya
+# resuelta se pliega sin perder su razonamiento.
+#
+# Las consecuencias de una respuesta son los hijos de esa respuesta.
+# Anida tan hondo como llegue de verdad la pregunta.
+#
+# Estas cuatro palabras clave quedan deliberadamente fuera del vocabulario
+# TODO del proyecto, de modo que una pregunta abierta nunca aparece en la
+# búsqueda de TODOs (F8 F8 5).  Especular no es trabajo en curso.
+#
+# :ABOUT: guarda un enlace ID a aquello de lo que trata la pregunta — un
+# personaje, un hilo, una escena — para que la pregunta sea accesible
+# también desde ese lado, y sobreviva a un cambio de nombre.  Déjala
+# vacía mientras la pregunta no trate aún de nada en concreto.
+#
+# La forma de abajo es un ejemplo.  Cópiala, o bórrala en cuanto tengas
+# la tuya.
+
+* Ideas sueltas
+
+
+* ¿Y si <la pregunta>?                                             :branch:
+:PROPERTIES:
+:ABOUT:
+:END:
+
+# Qué hace que esto sea una pregunta de verdad, y qué está en juego en la
+# respuesta.
+
+** OPEN A. <primera respuesta>
+
+*** OPEN <una consecuencia de A, si la tiene>
+
+** OPEN B. <segunda respuesta>
+
+** OPEN C. <tercera respuesta>

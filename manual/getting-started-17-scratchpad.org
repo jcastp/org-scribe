@@ -1,0 +1,282 @@
+#+TITLE: Lesson 17: The Scratchpad and Branching Ideas
+#+AUTHOR: Javier Castilla
+#+DATE: 2026-09-05
+#+STARTUP: overview
+
+* Welcome to Lesson 17!
+
+Every other lesson in this guide has taught you to put something in its proper
+place: a character in ~objects/characters.org~, a scene in the manuscript, a
+plot thread with its own profile and its own crossings.
+
+This lesson is about the opposite. It covers the one file in your project that
+asks nothing of you at all, and a convention for the messiest part of writing —
+the moment when a question turns out to have three answers and you have no idea
+which one is right.
+
+By the end of this lesson, you'll know how to:
+- Open and use your project's scratchpad
+- Understand why nothing in the package reads it, and why that matters
+- Refile the good parts out into your real files
+- Branch a question into alternatives and explore each one
+- Keep your speculation out of your TODO list
+
+*Prerequisites*: Lesson 1 (you need a project). Everything else is optional —
+you can read this lesson at any point after your first project exists.
+
+* Part 1: Finding the Scratchpad
+
+** Opening It
+
+Every project ships one, at the project root:
+
+- English projects: ~scratchpad.org~
+- Spanish projects: ~cuaderno-borradores.org~
+
+Open it from anywhere in the project:
+
+#+BEGIN_EXAMPLE
+F8 F8 o    →  then pick scratchpad.org from the list
+#+END_EXAMPLE
+
+That's the whole interface. There is no capture command, no dedicated
+keybinding, no submenu. It is a file, and that is deliberate — the point of the
+scratchpad is that it has no machinery attached to it.
+
+** Why You Need One
+
+Look at what happens to a stray thought in every other file:
+
+| If you write it in…            | It becomes…                                     |
+|--------------------------------+-------------------------------------------------|
+| The manuscript                 | Words in your word count and your daily progress |
+| ~objects/characters.org~       | A character the linking system offers you        |
+| ~notes.org~ (short story)      | Same — that file *is* the entity file            |
+| ~design.org~                   | Part of the Starting Gate you're measured against |
+
+Notice the short story row especially. A short story project's ~notes.org~ looks
+free-form, but its Characters and Setting sections are read by the linking layer
+and filed into by capture. A half-formed sketch there becomes a half-real
+character.
+
+So there was nowhere to put a thought that isn't yet any of those things. Now
+there is.
+
+** What to Put in It
+
+Anything, in any shape:
+
+- A "what if" question you can't answer yet
+- A fragment of dialogue with no scene to live in
+- A scene you fully intend to throw away
+- A character who may not exist
+- An argument with yourself about whether chapter 9 works
+- A list, a doodle, three words and a question mark
+
+There is no template to fill in and no heading you're required to use. The file
+ships with a couple of example headings; delete them the moment they're in your
+way.
+
+* Part 2: Nothing Reads It
+
+This is the part worth trusting, because it's what makes the file safe.
+
+** Your Word Count Is Unaffected
+
+~F8 F8 a~ walks your *manuscript*. It doesn't touch the scratchpad. Ten thousand
+words of abandoned drafting here will not show up in:
+
+- Your ~WORDCOUNT~ properties
+- Your progress tracking table
+- The writing planner's daily ledger
+- The project health report's totals
+
+** Your Exports Are Unaffected
+
+~org-scribe-compile~ (Lesson 11) reads the manuscript and nothing else. There is
+no path by which scratchpad content reaches a PDF, an EPUB, or a submission
+draft. You cannot accidentally publish your notes to yourself.
+
+** Your Entity Lists Are Unaffected
+
+The linking system finds characters, locations and plot threads by looking in
+specific files with specific names. The scratchpad isn't one of them.
+
+So you can write:
+
+#+BEGIN_EXAMPLE
+* Maybe there's a sister?
+
+Younger. Estranged. Or maybe she's the one who left, and Alice is the
+one who stayed. Try both.
+#+END_EXAMPLE
+
+…and "sister" will not appear in your character completion list, will not be
+counted as an orphaned entity in the health report, and will not clutter
+anything. She becomes real when — and only when — you move her.
+
+* Part 3: Getting the Good Parts Out
+
+** Refiling
+
+When something in the scratchpad turns out to be worth keeping, refile it:
+
+#+BEGIN_EXAMPLE
+C-c C-w    →  refile the heading at point
+#+END_EXAMPLE
+
+Inside an org-scribe project, ~C-c C-w~ offers *every heading in every file of
+the project*, with each candidate labelled by the file it comes from. So a
+drafted scene goes straight under a chapter in the manuscript; a character
+sketch goes into ~objects/characters.org~; a research question goes into
+~notes/research.org~.
+
+Delete the rest without ceremony. That's what the file is for.
+
+** One-Way Only
+
+The scratchpad is a refile *source*, never a destination. You cannot refile
+things *into* it, and it doesn't appear in your refile completion list.
+
+This is on purpose. Refiling into a scratchpad would be filing something into a
+place with no structure — the opposite of what refiling is for — and it would
+add noise to a completion list you use constantly.
+
+* Part 4: Branching a Question
+
+** The Problem
+
+Some questions have one answer and you find it by thinking for a minute. Others
+have three plausible answers, and the only way to know which one is right is to
+follow each one far enough to see where it goes.
+
+That second kind is hard to hold in your head and easy to lose. You explore
+option B, decide it's wrong, and four months later you rediscover option B and
+explore it again, because you never wrote down *why* it was wrong.
+
+** The Shape
+
+Give the question a heading and tag it ~:branch:~. Make each answer a child
+heading carrying a state. The outcomes of an answer are that answer's children.
+
+#+BEGIN_EXAMPLE
+* What if Alice's Need isn't forgiveness?                          :branch:
+:PROPERTIES:
+:ABOUT:    [[id:char-alice-001][Alice]]
+:END:
+
+Her Lie is "if I keep the peace nobody leaves". Forgiveness is the
+obvious Need and it's boring.
+
+** CHOSEN A. She needs to stop protecting him
+*** OPEN A1. The protection was never asked for
+*** OPEN A2. He knows, and has been letting her
+** OPEN B. She needs to be believed
+   Cheap — collapses into the same beat as chapter 3.
+** REJECTED C. She needs to forgive him
+   Makes the Ghost redundant. Keeping this here so I don't re-derive
+   it in two months.
+#+END_EXAMPLE
+
+Nest as deep as the question actually goes. A branch of a branch of a branch is
+fine — that's just a question whose answer raised another question.
+
+** The Four States
+
+The scratchpad declares these at the top of the file, so they work there and
+nowhere else. Cycle them with ~C-c C-t~ on the heading:
+
+| State       | Meaning                         | When to use it                       |
+|-------------+---------------------------------+--------------------------------------|
+| ~OPEN~      | Still live, not yet explored    | You've named the option, that's all  |
+| ~EXPLORING~ | Being written out right now     | You're following this one today      |
+| ~CHOSEN~    | This is the one                 | You've decided                       |
+| ~REJECTED~  | Ruled out, with the reason kept | You've decided /against/ — say why   |
+
+~CHOSEN~ and ~REJECTED~ are *done* states, so a settled question folds up out of
+your way when you collapse the file, while keeping everything underneath it.
+
+** Keep Your Rejected Branches
+
+The strong temptation is to delete option C once you've ruled it out. Don't.
+
+Why-not is worth as much as why. A rejected branch with its reason attached is
+the thing that stops you from spending an afternoon rediscovering it, and it's
+often the thing that explains a decision you can no longer remember making. It
+costs you three folded lines.
+
+** Your TODO List Stays Clean
+
+Here's the detail that makes this usable day to day.
+
+~F8 F8 5~ (Search TODOs, Lesson 7) scans every ~.org~ file in your project,
+scratchpad included. But it only matches the keywords in
+~org-scribe-todo-keywords~ — ~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~,
+~TOREVIEW~, ~REDO~, ~RESTRUCTURE~.
+
+~OPEN~, ~EXPLORING~, ~CHOSEN~ and ~REJECTED~ are deliberately *not* in that list.
+So no matter how many open questions pile up in your scratchpad, your TODO
+search keeps showing actual work.
+
+Speculation is not work in progress. If you ever add these keywords to
+~org-scribe-todo-keywords~, you'll lose that separation.
+
+** Linking a Question to What It's About
+
+The optional ~:ABOUT:~ property holds an ID link to whatever the question
+concerns — a character, a plot thread, a scene:
+
+#+BEGIN_EXAMPLE
+:PROPERTIES:
+:ABOUT:    [[id:char-alice-001][Alice]]
+:END:
+#+END_EXAMPLE
+
+Because it's a real ID link, it survives renaming the character, and ~C-c C-o~
+on it jumps to her profile. Leave it empty while the question isn't about
+anything in particular yet.
+
+The easiest way to get the link is to copy it from a scene property you've
+already tagged, or run ~M-x org-store-link~ on the character heading and then
+~C-c C-l~ here to insert it.
+
+** A Note on Language
+
+In a Spanish project, the file name, the headings and all the prose are Spanish
+— but the four state keywords, the ~:branch:~ tag and the ~:ABOUT:~ property
+stay English.
+
+That's consistent with the rest of the package: names that software reads are
+English in both languages, the same way ~:TARGET_WORDCOUNT:~ is. It also means
+the convention reads the same in a bilingual writer's two projects.
+
+* Try It Now
+
+1. Open your project's scratchpad with ~F8 F8 o~.
+2. Delete the example branch at the bottom.
+3. Write down a question about your story you genuinely haven't answered.
+4. Give it three answers as child headings, all ~OPEN~.
+5. Pick the one you like least and write one line about why. Mark it
+   ~REJECTED~.
+6. Pick the one you like most, mark it ~EXPLORING~, and write for ten minutes
+   underneath it.
+
+Nothing you write will be counted, exported, or noticed by any other part of the
+package. That's the point.
+
+* About This Lesson
+
+- *Created*: 2026-09-05
+- *Last Updated*: 2026-09-05
+- *Lesson Number*: 17
+- *Part*: 5 - Workflows, Best Practices and Integrations
+- *Estimated Time*: 15 minutes
+- *Difficulty*: Beginner
+- *Prerequisites*: Lesson 1 (you need a project to have a scratchpad)
+
+---
+
+*Previous*: [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with the Bundled Planner]]
+*Back to Start*: [[file:getting-started-00-index.org][Getting Started Guide - Index]]
+
+*Lesson 17 Complete!*

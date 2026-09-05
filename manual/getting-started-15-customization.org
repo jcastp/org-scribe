@@ -1539,7 +1539,7 @@ MAINTENANCE
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
-- *Lesson Number*: 15 of 16 (Final Core Lesson - Lesson 16 covers the optional bundled planner)
+- *Lesson Number*: 15 of 17 (Final Core Lesson - Lesson 16 covers the optional bundled planner, Lesson 17 the scratchpad)
 - *Part*: 5 - Workflows and Best Practices
 - *Estimated Time*: 20-25 minutes
 - *Difficulty*: Beginner to Intermediate

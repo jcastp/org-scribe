@@ -454,5 +454,6 @@ All planner variables must be set *before* the planner first loads (e.g. in ~ear
 ---
 
 *Previous*: [[file:getting-started-15-customization.org][Lesson 15: Customization and Configuration]]
+*Next*: [[file:getting-started-17-scratchpad.org][Lesson 17: The Scratchpad and Branching Ideas]]
 
 *Lesson 16 Complete!*

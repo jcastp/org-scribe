@@ -1,0 +1,71 @@
+#+TITLE: ${TITLE} - Scratchpad
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: en
+#+STARTUP: overview
+#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)
+
+# This file has no structure, and it is not meant to acquire one.
+#
+# Nothing written here is counted, exported, or read by any org-scribe
+# command.  The word count walks the manuscript only; compilation reads
+# the manuscript only; the entity resolvers work from fixed file names,
+# so a character sketched here stays invisible to the linking layer until
+# you move it somewhere real.  Sketch someone who may not exist.  Draft a
+# scene you will throw away.  Ask the stupid question.  Argue with
+# yourself in writing.
+#
+# Refile what survives with C-c C-w, which offers every heading in every
+# file of the project.  Delete the rest without ceremony.
+#
+# Open this file from anywhere in the project with F8 F8 o.
+#
+#
+# BRANCHING A QUESTION
+#
+# When a question turns out to have more than one answer, give it a
+# heading and tag it :branch:.  Each answer is a child heading carrying a
+# state, cycled with C-c C-t:
+#
+#   OPEN       still live, not yet explored
+#   EXPLORING  being written out right now
+#   CHOSEN     this is the one
+#   REJECTED   ruled out, with the reason kept
+#
+# Keep rejected branches.  Why-not is worth as much as why, and deleting
+# one only means re-deriving it in three months.  REJECTED and CHOSEN are
+# done states, so a settled question folds away without losing its
+# reasoning.
+#
+# The outcomes of an answer are that answer's children.  Nest as deep as
+# the question actually goes.
+#
+# These four keywords are deliberately outside the project's TODO
+# vocabulary, so an open question never turns up in the TODO search
+# (F8 F8 5).  Speculation is not work in progress.
+#
+# :ABOUT: holds an ID link to whatever the question concerns — a
+# character, a thread, a scene — so the question is reachable from that
+# side too, and survives a rename.  Leave it empty when the question is
+# not yet about anything in particular.
+#
+# The shape below is an example.  Copy it, or delete it once you have
+# your own.
+
+* Loose ideas
+
+
+* What if <the question>?                                          :branch:
+:PROPERTIES:
+:ABOUT:
+:END:
+
+# What makes this a real question, and what is at stake in the answer.
+
+** OPEN A. <first answer>
+
+*** OPEN <an outcome of A, if it has one>
+
+** OPEN B. <second answer>
+
+** OPEN C. <third answer>

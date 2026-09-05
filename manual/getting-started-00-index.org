@@ -266,6 +266,18 @@ The writing planner ships bundled inside ~org-scribe~ itself (no separate packag
 - Logging daily sessions and adjusting the plan as you go
 - Disabling individual integration features
 
+*** [[file:getting-started-17-scratchpad.org][Lesson 17: The Scratchpad and Branching Ideas]]
+*Time: 15 minutes*
+
+Every other lesson teaches you to put something in its proper place. This one covers the file that asks nothing of you — and what to do when a question turns out to have three answers. It needs nothing but Lesson 1, so read it whenever you like.
+
+*You'll learn:*
+- Where your project's scratchpad is, and why nothing in the package reads it
+- Refiling the good parts out into your real files with ~C-c C-w~
+- Branching a question into alternatives and exploring each one
+- Keeping rejected options, with their reasons, instead of deleting them
+- Why your speculation never shows up in the TODO search
+
 * Quick Reference
 
 ** Essential Keybindings

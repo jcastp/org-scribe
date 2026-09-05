@@ -1,0 +1,62 @@
+#+TITLE: The Last Message - Scratchpad
+#+AUTHOR: Demo Writer
+#+DATE: 2025-01-14
+#+LANGUAGE: en
+#+STARTUP: overview
+#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)
+
+# This file has no structure, and it is not meant to acquire one.
+#
+# It is the one place in the project that asks nothing of you.  notes.org
+# is not free-form here: its Characters and Setting sections are read by
+# the linking layer and filed into by capture, so a stray sketch there
+# becomes a half-real entity.  Put it here instead.
+#
+# Nothing written here is counted, exported, or read by any org-scribe
+# command.  Refile what survives with C-c C-w; delete the rest.
+#
+# See Lesson 17 in the manual for the branching convention below.
+
+* Loose ideas
+
+The message should be shorter than the reader expects. Nine words at
+most. Everything else is Elena deciding what they mean.
+
+Lab at 04:00. Nobody there. The coffee machine is the only thing running
+and it has been on all night, which means someone meant to come back.
+
+Don't explain the physics. The story is not about whether it works.
+
+Last three lines: she does the thing anyway. Not defiance — she simply
+runs out of reasons not to.
+
+
+* What if Elena never verifies the message is from herself?          :branch:
+:PROPERTIES:
+:ABOUT:
+:END:
+
+# The verification scene is the most obvious beat available and probably
+# the most boring one.  What does the story lose without it?
+
+** REJECTED A. She verifies it, and it checks out
+
+Turns the story into a procedural. The reader stops asking the question
+the whole thing runs on.
+
+** EXPLORING B. She never tries
+
+Then the story is about what she was already willing to believe, which
+is the secret story underneath. Costs the reader a certainty they may
+not forgive losing.
+
+*** OPEN B1. One line acknowledging she could check, and doesn't
+
+*** OPEN B2. It never occurs to her at all
+
+Harder, better, and it makes her someone specific rather than someone
+sensible.
+
+** OPEN C. She tries and the result is ambiguous
+
+Wants to be both. Probably is neither.

@@ -18,6 +18,7 @@
 - *Template Customization*: Edit templates to match your workflow
 - *Bilingual Support*: English and Spanish templates included, structurally identical and test-enforced
 - *Project-Wide Spelling Dictionary*: a generated =.dir-locals.el= points every file in the project at the dictionary for its language, with no per-file setup and no local-variables prompt ([[*Spelling dictionary for the whole project][details]])
+- *Scratchpad*: one unstructured file per project for drafts, "what if" questions and ideas with nowhere to live yet — plus a convention for branching a question into alternatives and exploring each ([[*The Scratchpad][details]])
 - *Git Integration*: Projects automatically initialized with git
 
 *** Writing Tools
@@ -1308,6 +1309,101 @@ Spanish capture prompts automatically.
 
 All captured items automatically receive unique IDs for use with the linking system.
 
+** The Scratchpad
+
+Every project ships a =scratchpad.org= (=cuaderno-borradores.org= in Spanish
+projects) at its root. Open it from anywhere in the project with =F8 F8 o=.
+
+*** What it is for
+
+It is the one file in the project that asks nothing of you. Every other file is
+read by something — the manuscript by the word count and the compiler,
+=objects/= by the entity resolvers, and in a short story project =notes.org= by
+capture and linking both — so there was nowhere to put a thought that is not yet
+any of those things.
+
+Write drafts, fragments of dialogue with no scene to live in, "what if"
+questions, arguments with yourself. Sketch a character who may not exist. Draft
+a scene you fully intend to throw away.
+
+*** Nothing reads it
+
+This is the point, not an oversight:
+
+- The word count walks the manuscript only, so nothing here inflates your
+  =WORDCOUNT= properties, your progress tables, or the planner's ledger.
+- =org-scribe-compile= reads the manuscript only, so nothing here can leak into
+  an export.
+- The entity resolvers work from fixed file names, so a character sketched here
+  is invisible to the linking system until you move it somewhere real.
+
+*** Refiling out of it
+
+Refile what survives with =C-c C-w=, which inside an org-scribe project offers
+every heading in every file — so a scene drafted here goes straight into a
+chapter, a character sketch into =objects/characters.org=. Delete the rest
+without ceremony.
+
+The scratchpad is a refile /source/ only. Nothing can be refiled /into/ it, and
+it does not clutter your refile completion list.
+
+*** Branching a question
+
+Some questions turn out to have more than one answer, and the useful work is
+exploring each one rather than picking early. The scratchpad ships a convention
+for that.
+
+Give the question a heading, tag it =:branch:=, and make each answer a child
+heading carrying a state. The outcomes of an answer are that answer's children —
+nest as deep as the question actually goes.
+
+#+BEGIN_EXAMPLE
+* What if Alice's Need isn't forgiveness?                          :branch:
+:PROPERTIES:
+:ABOUT:    [[id:char-alice-001][Alice]]
+:END:
+
+Her Lie is "if I keep the peace nobody leaves". Forgiveness is the
+obvious Need and it is boring.
+
+** CHOSEN A. She needs to stop protecting him
+*** OPEN A1. The protection was never asked for
+*** OPEN A2. He knows, and has been letting her
+** OPEN B. She needs to be believed
+   Cheap — collapses into the same beat as chapter 3.
+** REJECTED C. She needs to forgive him
+   Makes the Ghost redundant. Keeping this here so I don't re-derive
+   it in two months.
+#+END_EXAMPLE
+
+The file declares four states, cycled with =C-c C-t=:
+
+| State       | Meaning                             |
+|-------------+-------------------------------------|
+| =OPEN=      | Still live, not yet explored        |
+| =EXPLORING= | Being written out right now         |
+| =CHOSEN=    | This is the one                     |
+| =REJECTED=  | Ruled out, with the reason kept     |
+
+Three things about this are deliberate:
+
+- *These four keywords never appear in your TODO search.* They are declared
+  file-locally and are outside =org-scribe-todo-keywords=, so =F8 F8 5= keeps
+  showing real work rather than filling up with your musings. Speculation is not
+  work in progress.
+- *=CHOSEN= and =REJECTED= are done states*, so a settled question folds away
+  without losing its reasoning. Keep rejected branches instead of deleting them:
+  why-not is worth as much as why, and a deleted branch only gets re-derived
+  three months later.
+- *=:ABOUT:= holds an ID link* to whatever the question concerns — a character, a
+  plot thread, a scene — so the question is reachable from that side too and
+  survives a rename. Leave it empty while the question is not about anything in
+  particular yet.
+
+The keywords, the =:branch:= tag and the =:ABOUT:= property are English in both
+languages, like every other machine-facing name in the package; the prose,
+headings and file name are localized.
+
 ** Exporting Your Manuscript
 
 There are two ways to get a manuscript out of org-scribe. They solve different
@@ -1437,7 +1533,9 @@ while keeping their prose — see [[file:manual/getting-started-11-exporting.org
 project-root/
 ├── .org-scribe-project    # Project marker file
 ├── README.org            # Project overview
+├── design.org            # The Starting Gate and the Core (or diseno.org for Spanish)
 ├── novel.org             # Main manuscript with progress tracking (or novela.org for Spanish)
+├── scratchpad.org        # Unstructured drafts and ideas (or cuaderno-borradores.org for Spanish)
 ├── revision.org          # Revision tracking
 ├── writing-journal.org   # Reflective writing journal (or diario-escritura.org for Spanish)
 ├── objects/                 # Planning documents

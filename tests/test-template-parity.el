@@ -58,6 +58,7 @@
     ("objects/worldbuilding.org.template" . "objects/worldbuilding.org.template")
     ("objects/objetos.org.template"       . "objects/objects.org.template")
     ("objects/cronologia.org.template"    . "objects/timeline.org.template")
+    ("cuaderno-borradores.org.template"   . "scratchpad.org.template")
     ("notas/notas.org.template"           . "notes/notes.org.template")
     ("notas/investigacion.org.template"   . "notes/research.org.template"))
   "Spanish template -> English template, relative to each set's directory.

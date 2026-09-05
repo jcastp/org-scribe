@@ -1,0 +1,91 @@
+#+TITLE: The Morning Routine - Scratchpad
+#+AUTHOR: Demo Writer
+#+DATE: 2026-02-14
+#+LANGUAGE: en
+#+STARTUP: overview
+#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)
+
+# This file has no structure, and it is not meant to acquire one.
+#
+# Nothing written here is counted, exported, or read by any org-scribe
+# command.  Sketch someone who may not exist.  Draft a scene you will
+# throw away.  Refile what survives with C-c C-w; delete the rest.
+#
+# See Lesson 17 in the manual for the branching convention below.
+
+* Loose ideas
+
+Sam counts things out loud when nervous. Steps, floors, the seconds on a
+crossing light. Alex has never noticed. Try it in the courier handover
+scene and see whether it reads as a tic or as a reproach.
+
+Weather: it should rain exactly once, and Alex should be on time for it.
+
+A scene that is just the two care-centre voicemails, back to back, three
+weeks apart. No prose around them. Probably too clever. Keep anyway.
+
+"Sometime this week" — Sam repeats it back flat, without the question
+mark. That's the whole argument and it's four words.
+
+
+* What if Alex keeps the 8:00 handover?                            :branch:
+:PROPERTIES:
+:ABOUT:    [[id:char-alex-rivera-001][Alex Rivera]]
+:END:
+
+# The design says Alex asks Sam to take it.  But the Moral Weakness lands
+# harder if Alex takes it and is still late — the failure is then Alex's
+# alone, with nobody to have asked.
+
+** REJECTED A. Alex takes it and is on time
+
+Kills the Moral Weakness in chapter 2, which is the only thing making
+Dana's suspicion reasonable. Also makes the pitch scene unearned: Alex
+would already have changed before the Need is stated.
+
+** CHOSEN B. Alex takes it and is forty minutes late
+
+Sam misses the care centre's call anyway, but now there is nobody to
+blame, and Alex has to sit with that. Same beat, one fewer excuse.
+
+*** CHOSEN B1. Sam does not mention it
+
+The silence is worse. It also sets up chapter 7, where Sam finally does
+mention it and Alex has forgotten which morning is being referred to.
+
+*** REJECTED B2. Sam mentions it that evening
+
+Spends the material too early. By chapter 7 there is nothing left to
+detonate.
+
+** REJECTED C. Alex forgets to ask, and Sam covers anyway
+
+Makes Sam a saint and Alex merely careless. The book is not about
+carelessness.
+
+
+* What if the Kestrel retainer is never actually available?         :branch:
+:PROPERTIES:
+:ABOUT:    [[id:char-dana-okonkwo-001][Dana Okonkwo]]
+:END:
+
+# Dana needs Alex available rather than booked.  There is a version where
+# the retainer is a leash Dana never intends to hand over.
+
+** OPEN A. Dana always meant to give it to someone else
+
+Cleanest, and makes Dana an Opponent rather than an obstacle. But it
+risks reading as a twist, and this book has no room for a twist.
+
+** OPEN B. The retainer exists but has already been cut to six months
+
+Nobody lied. Everybody is diminished. Probably the honest version.
+
+** EXPLORING C. Dana genuinely can't decide, and says so in chapter 9
+
+Then the pitch is not a test Alex passes or fails, it's a mirror. Worth
+half an hour to see whether it survives contact with the scene.
+
+*** OPEN C1. Alex hears this as permission to stop trying
+
+*** OPEN C2. Alex hears it correctly, for once, and it is the first sign the Need has landed

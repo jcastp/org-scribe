@@ -30,6 +30,7 @@ When Dr. Elena Chen receives a cryptic warning from her future self, she must ch
 * Project Files
 - [[file:story.org][story.org]] - Main manuscript with word tracking
 - [[file:notes.org][notes.org]] - Character sketches, plot outline, research, and notes
+- [[file:scratchpad.org][scratchpad.org]] - Free-form drafting: loose ideas, and one question branched into alternatives
 
 * Current Status
 - Status :: Drafting
