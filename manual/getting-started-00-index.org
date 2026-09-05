@@ -82,7 +82,7 @@ Learn how to create a novel or short story project from templates. This is your 
 - Finding your way around the template files
 
 *** [[file:getting-started-18-plotting-methods.org][Lesson 18: Plotting Methods — La Hélice and La Matriz]] /(Optional)/
-*Time: 20 minutes*
+*Time: 25 minutes*
 
 Novel project creation asks which plotting method to use. This lesson walks
 through the other two options besides the default — La Hélice (start from a
@@ -98,6 +98,8 @@ exactly what they change (one file) versus what they leave untouched
   linked entity
 - That the Starting Gate health check (~F8 F8 H~) works identically under
   all three methods
+- Where each design file's built-in troubleshooting note points you when a
+  level's check won't pass
 
 *** [[file:getting-started-02-first-scene.org][Lesson 2: Writing Your First Scene]]
 :PROPERTIES:

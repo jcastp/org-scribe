@@ -19,12 +19,14 @@ By the end of this lesson, you'll know how to:
   and why
 - Confirm that the health report (~F8 F8 H~) checks your Starting Gate the
   same way no matter which method you picked
+- Find the troubleshooting note built into each design file for when a
+  level's check keeps failing
 
 *Prerequisites*: Lesson 1 (you need to have created a project, or be about
 to). Nothing else in this guide depends on which method you choose — every
 other lesson works identically under all three.
 
-*Estimated time*: 20 minutes to read, longer to actually use one.
+*Estimated time*: 25 minutes to read, longer to actually use one.
 
 * Part 1: Three Methods, One Vocabulary
 
@@ -130,6 +132,16 @@ cross-check of the two endings: what the story looks like from the outside
 of the Lie?), written without looking at each other and then crossed in a
 grid.
 
+The design file calls out two traps right where they bite: a disaster that
+nobody causes — the storm, the plague, the royal edict — can sit in the
+background but never counts as a structural disaster; and the Motivation has
+to sound like the *promise* the Lie makes, so if it reads as sincere, one of
+the two fields is wrong. It also spells out, under the Opponent heading, the
+three checks that most often get skipped: they want the same thing as the
+protagonist (not just the same object — the same thing underneath it), their
+Stance can be argued with real conviction, and ideally their Ghost is the
+protagonist's own Ghost with the opposite conclusion drawn from it.
+
 ** The Exit Gate
 
 You can start drafting once *level 3 is closed and its check passes*, plus
@@ -150,7 +162,9 @@ Two situations where it's the wrong tool: if you're starting from a premise
 or a commissioned pitch (use La Hélice instead — inverting the method throws
 away what you already have), or if you're working in a genre with strong
 plot expectations — a mechanism thriller, a puzzle mystery — where the
-machinery has to lead and the arc follows.
+machinery has to lead and the arc follows. (A one-paragraph version of this
+"weakest fit" note ships right in the design file too, under the method's own
+heading — you don't need to come back to this lesson to be reminded.)
 
 ** The Three Rules
 
@@ -180,11 +194,20 @@ levels are about character, and the plot is born in the third.
 
 *Level 3 is the method's signature move.* You fill an N×N matrix — one row
 and column per force — where cell (A, B) says what A's Lie does to B's Lie
-when both go after the same object. From the candidates in that matrix, you
-pick your collisions by inevitability, and only *then* — after the plot has
-been deduced — do you write the fifteen-word hook. If it doesn't come out,
-that's not a level-3 problem to push through: it's a sign the level-1 census
-was wrong (missing a force, missing a clock), and you go back there.
+when both go after the same object. A filled cell should read like a
+sentence, not a word — the design file's own example: not "conflict" but
+"his signature from years ago is the reason her home doesn't exist anymore."
+From the candidates in that matrix, you pick your collisions by
+inevitability, and only *then* — after the plot has been deduced — do you
+write the fifteen-word hook. If it doesn't come out, that's not a level-3
+problem to push through: it's a sign the level-1 census was wrong (missing a
+force, missing a clock), and you go back there.
+
+The census itself comes with a worked example of the pattern it rewards:
+two characters who each lost something to an authority as children, one
+concluding "keep moving, never stop" and the other "get on the side that
+signs the papers" — same wound, opposite lesson, and they collide without
+either of them trying to.
 
 ** The Exit Gate
 
@@ -220,7 +243,38 @@ If you want the ownership and coverage checks a linked entity would give you
 automatically, that's a reasonable thing to want — it just isn't what this
 version does. Track it by eye for now: three rows is not a lot to watch.
 
-* Part 6: The Starting Gate Still Works the Same Way
+* Part 6: When a Check Keeps Failing
+
+Both design files end with a short section, right before ~Pending design
+changes~, for exactly the moment this lesson can't help you with directly —
+you're stuck, a check won't pass, and you don't know which level to go back
+to. It reads a symptom and names the level:
+
+#+BEGIN_EXAMPLE
+* Where to look when something's wrong
+
+# "Things happen but mean nothing" → level 2, rule of ownership.
+# "The opponent feels like cardboard" → level 2: undefendable Stance, or
+#   wants a different thing than the protagonist.
+# "The ending doesn't convince me" → level 2, the two-endings cross-check.
+# "Nothing changes until the very end" → level 3: missing Adjustments
+#   between the Breaks.
+#+END_EXAMPLE
+
+That's La Hélice's version. La Matriz's covers its own five symptoms instead
+— "everyone ignores everyone" points at level 1's rule of the arena, "I keep
+choosing the collision myself" points at level 3's rule of inevitability, and
+so on — because the two methods fail in different places: La Hélice's
+weak point is usually the opponent or the ending cross-check (both level 2);
+La Matriz's is usually the arena or the matrix itself (levels 1 and 3).
+
+It's adapted from each method's own source material — the "Diagnóstico
+rápido" table in ~copo-helice.org~ and the "Riesgos y sus mitigaciones" table
+in ~copo-matriz.org~ — condensed to the handful of symptoms you're most
+likely to actually hit. Read it before you assume a check is wrong; it's
+usually pointing at the level above.
+
+* Part 7: The Starting Gate Still Works the Same Way
 
 Whichever method you picked, ~F8 F8 H~ (the project health report) opens
 with your *Starting Gate* section exactly as it does for a Sistema project —
@@ -252,7 +306,10 @@ under all three methods.
    the same in both — copy one of your own characters' profiles into the new
    project's ~objects/characters.org~ and see that nothing about it needs to
    change.
-4. Delete the throwaway project once you're done; nothing about it is worth
+4. Scroll to the bottom of the new ~design.org~/~diseno.org~ and read its
+   "Where to look when something's wrong" section — it's a useful reference
+   to bookmark once you're actually working through the levels.
+5. Delete the throwaway project once you're done; nothing about it is worth
    keeping unless you decide to actually write that story.
 
 * About This Lesson
@@ -261,7 +318,7 @@ under all three methods.
 - *Last Updated*: 2026-09-05
 - *Lesson Number*: 18
 - *Part*: 1 - The Essentials (read any time after Lesson 1)
-- *Estimated Time*: 20 minutes
+- *Estimated Time*: 25 minutes
 - *Difficulty*: Beginner
 - *Prerequisites*: Lesson 1 (you need to be creating or comparing projects)
 
