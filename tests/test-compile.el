@@ -413,6 +413,65 @@ rather than warns."
   ;; The shipped default is accepted.
   (should (stringp (org-scribe--compile-scene-break))))
 
+(ert-deftest test-compile-rejects-list-and-table-scene-break-markers ()
+  "Not just `*'/`#': any shape Org would reparse inside a center block is
+refused, found by actually parsing the marker's own three-line context
+\(see `org-scribe--compile-scene-break-safe-p'\) rather than by testing
+only its first character against those two.  `-'/`+' followed by a
+space is a plain-list bullet, `|' opens a table row, and a digit
+followed by `.'/`)' and a space is a numbered-list item -- all
+confirmed via `org-element-parse-buffer', not merely asserted."
+  (dolist (bad '("- - -" "- text" "+ + +" "+ text"
+                 "| a |" "|||" "|-"
+                 "1. one" "1) one" "5. x" "9) x"
+                 ;; A bare "1." with nothing after it is *also* reparsed --
+                 ;; an empty numbered-list item, not requiring a following
+                 ;; space the way a non-empty one does.
+                 "1." "1)" "12."))
+    (let ((org-scribe-compile-scene-break bad))
+      (should-error (org-scribe--compile-scene-break) :type 'user-error)))
+  ;; A handful of shapes that look similar but do not trigger reparsing --
+  ;; pinning that the check does not over-reject.  `+++'/`---' with no
+  ;; following space are not list bullets (Org requires the space, except
+  ;; at end of line, which is why a bare "1." above is unsafe but these
+  ;; are not); a letter before the dot is not a numbered-list marker.
+  (dolist (ok '("+++" "---" "a." "1.x" "· · ·" "—" "§" "❧"))
+    (let ((org-scribe-compile-scene-break ok))
+      (should (stringp (org-scribe--compile-scene-break))))))
+
+(ert-deftest test-compile-scene-break-safe-p-matches-actual-parse ()
+  "Unit-level pin of the predicate itself, independent of the emit path,
+against the exact element types confirmed by parsing (see the
+commentary above `org-scribe--compile-scene-break-safe-p')."
+  (dolist (unsafe '("* * *" "***" "#" "# x" "- x" "+ x" "| x |" "1. x" "1) x"))
+    (should-not (org-scribe--compile-scene-break-safe-p unsafe)))
+  (dolist (safe '("⁂" "· · ·" "—" "§" "❧" "+++" "---" "///" "==="))
+    (should (org-scribe--compile-scene-break-safe-p safe))))
+
+(ert-deftest test-compile-validates-scene-break-before-touching-any-file ()
+  "A broken marker is refused at the start of `org-scribe-compile', not
+only once a second scene first makes an actual break necessary -- the
+'validation is emit-time, not entry-time' gap: a manuscript with a
+single written scene used to compile cleanly with a broken marker, and
+the error only appeared later, when a second scene was written, with
+nothing to connect it back to a setting changed weeks earlier.
+Confirmed against a one-scene manuscript, and confirmed no file is
+written at all when it is refused this early."
+  (let ((org-scribe-compile-scene-break "- - -")
+        (one-scene "\
+#+TITLE: One Scene
+#+MACRO: scene-break SCENE-BREAK
+#+OPTIONS: todo:nil tags:nil
+* Act 1 :ignore:
+** Chapter 1 :ignore:
+*** Scene 1 :ignore:
+Only scene in the manuscript.
+"))
+    (org-scribe-compile-test--with-project "novel" "novel.org" one-scene
+      (should-error (org-scribe-compile 'clean 'txt) :type 'user-error)
+      (should-not (file-exists-p
+                   (expand-file-name "export/novel-clean.org" root))))))
+
 (ert-deftest test-compile-scene-break-survives-plain-text-export ()
   "The break is visible in exported plain text."
   (org-scribe-compile-test--with-project "novel" "novel.org"

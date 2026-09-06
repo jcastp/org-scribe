@@ -139,17 +139,77 @@ alike: an optional leading section, then any child headlines."
   (seq-filter (lambda (child) (eq (org-element-type child) 'headline))
               (org-element-contents element)))
 
-(defun org-scribe--compile-scene-break ()
-  "Return the scene break as Org markup, validating the configured marker.
-Signals a `user-error' for a marker Org would reparse as something other
-than text -- see `org-scribe-compile-scene-break' for why the two
-rejected shapes are not hypothetical."
+(defun org-scribe--compile-scene-break-safe-p (marker)
+  "Return non-nil when MARKER, alone on a line inside an Org =center=
+block, is parsed back as plain text -- a single paragraph holding
+exactly MARKER -- rather than reparsed as some other element.
+
+Checks by actually parsing the shape `org-scribe--compile-scene-break'
+would emit, not by testing MARKER's first character against a hardcoded
+list of known-unsafe ones.  `*' (a headline) and `#' (a comment) are the
+two shapes confirmed against real exports and documented on
+`org-scribe-compile-scene-break', but they are not the only ones: `-' or
+`+' followed by a space is a plain-list bullet, `|' opens a table row,
+and a digit followed by `.' or `)' and a space is a numbered list --
+confirmed the same way, by parsing the actual center-block content and
+checking what element type comes back, not by reasoning about Org's
+grammar in the abstract.  Parsing the real shape catches whichever of
+these -- or some future one -- applies, without a blacklist that has to
+be extended by hand every time another one turns up.
+
+No `org-mode' buffer is needed for this: `org-element-parse-buffer'
+parses from the raw text alone, so this stays cheap enough to call once
+per emitted break rather than only once per compile.
+
+Wrapped in `save-match-data': the only caller,
+`org-scribe--compile-validate-scene-break', is itself called from inside
+`org-scribe--compile-strip-macros', as the replacement function passed to
+`replace-regexp-in-string' while it is mid-iteration over
+{{{scene-break}}} matches in a scene body.  `replace-regexp-in-string'
+does not save match data around its own replacement callback, so the
+regexp scanning `org-element-parse-buffer' does here -- on an unrelated,
+temporary buffer -- would otherwise clobber the match data
+`replace-regexp-in-string' still needs once this function returns,
+corrupting its own iteration (confirmed: `args-out-of-range' errors
+throughout the compile test suite before this was added, not a
+hypothetical)."
+  (save-match-data
+    (let ((contents
+           (with-temp-buffer
+             (insert "#+begin_center\n" marker "\n#+end_center")
+             (let (result)
+               (org-element-map (org-element-parse-buffer) 'center-block
+                 (lambda (cb) (setq result (org-element-contents cb))))
+               result))))
+      (and (= (length contents) 1)
+           (eq (org-element-type (car contents)) 'paragraph)))))
+
+(defun org-scribe--compile-validate-scene-break ()
+  "Signal a `user-error' unless `org-scribe-compile-scene-break' is safe
+to emit -- see `org-scribe--compile-scene-break-safe-p' for how that is
+checked and its own docstring for why this is not hypothetical.  Returns
+the trimmed marker on success.
+
+Called both by `org-scribe-compile', before any file is read or written,
+and by `org-scribe--compile-scene-break', when a break is actually about
+to be emitted.  The two calls are not redundant: without the first, a
+broken marker would not be reported until the compile reached a *second*
+written scene -- the point a break first becomes necessary -- so a
+manuscript with only one scene written would compile cleanly and the
+error, when it finally did appear, would carry nothing to connect it back
+to a setting changed weeks earlier."
   (let ((marker (string-trim (or org-scribe-compile-scene-break ""))))
     (when (or (string-empty-p marker)
-              (memq (aref marker 0) '(?* ?#)))
+              (not (org-scribe--compile-scene-break-safe-p marker)))
       (user-error "%s" (org-scribe-msg 'compile-unsafe-scene-break
                                        (format "%S" org-scribe-compile-scene-break))))
-    (format "#+begin_center\n%s\n#+end_center" marker)))
+    marker))
+
+(defun org-scribe--compile-scene-break ()
+  "Return the scene break as Org markup, validating the configured marker.
+See `org-scribe--compile-validate-scene-break'."
+  (format "#+begin_center\n%s\n#+end_center"
+          (org-scribe--compile-validate-scene-break)))
 
 (defun org-scribe--compile-strip-macros (body)
   "Return BODY with {{{scene-break}}} macros resolved.
@@ -785,6 +845,10 @@ your behalf."
           (user-error "%s" (org-scribe-msg 'compile-backend-missing format library)))
         (when (and executable (not (executable-find executable)))
           (user-error "%s" (org-scribe-msg 'compile-backend-missing format executable)))
+        ;; Validated again, here, before any file is read or written --
+        ;; not only implicitly whenever `org-scribe--compile-scene-break'
+        ;; first runs.  See `org-scribe--compile-validate-scene-break'.
+        (org-scribe--compile-validate-scene-break)
         (pcase-let* ((`(,blocks . ,text) (org-scribe-compile-normalize manuscript style root))
                      (chapters (seq-count (lambda (b) (eq (car-safe b) 'chapter)) blocks))
                      (scenes (seq-count (lambda (b) (eq (car-safe b) 'scene)) blocks))

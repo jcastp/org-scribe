@@ -287,8 +287,9 @@ output -- the reason the compiled ODT gets a sibling paragraph instead of
 the nested, invalid `text:p' the `SCENE-BREAK' macro produces.
 
 The default is U+2042 ASTERISM, the typographic mark for a scene break.
-Two shapes look obvious and do not work, both confirmed against real
-exports:
+Several shapes look obvious and do not work; all were confirmed against
+real exports (and, for the ones added later, against how Org actually
+reparses the marker's own three-line context, not just reasoned about):
 
   - Anything beginning with `*'.  A line starting with `* ' is parsed as
     an Org *headline* even inside a center block, which silently splits
@@ -296,9 +297,19 @@ exports:
     parser, reaching ODT as a bold `*'.
   - Anything beginning with `#'.  That is an Org comment, so the break
     vanishes from the output with nothing to show it was ever there.
+  - `-' or `+' followed by a space.  That is a plain-list bullet, so the
+    break becomes a list item instead of a centered line.
+  - `|'.  That opens a table row; the break's own characters (including
+    any `|' in it) are consumed as cell delimiters and do not survive.
+  - A digit followed by `.' or `)' and a space.  That is a numbered-list
+    item, the same failure as the plain-list bullets above.
 
-`org-scribe-compile' refuses to run rather than emit either, so a bad
-value is reported instead of silently corrupting a manuscript.
+`org-scribe-compile' refuses to run rather than emit any of these, so a
+bad value is reported instead of silently corrupting a manuscript.  The
+check itself parses the marker's actual three-line center-block context
+and confirms it comes back as a single plain paragraph, rather than
+testing the first character against this list -- so a shape not listed
+above, present or added to Org later, is still caught.
 
 The classic typewriter dinkus is `* * *', which is one of the shapes Org
 reparses, so it is deliberately absent from the presets below; the
