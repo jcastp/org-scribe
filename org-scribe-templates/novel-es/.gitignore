@@ -21,6 +21,9 @@
 *.docx
 ltximg/
 
+# Compiled manuscript output (org-scribe-compile-output-directory)
+export/
+
 # EPUB files
 *.epub
 
