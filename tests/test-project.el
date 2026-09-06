@@ -235,6 +235,54 @@ ambiguity the glossary removes, and nothing else would fail."
     (let ((content (buffer-string)))
       (should (string-match-p "\\*\\*\\* TODO New scene :ignore:" content)))))
 
+(ert-deftest test-insert-scene-novel-is-level-3-tagged-ignore ()
+  "Explicit regression pin for a novel project, stubbed rather than
+relying on the ambient (batch-run) project type defaulting to `novel':
+inserting a scene produces a level-3 heading tagged :ignore:, exactly as
+before this command was made project-type aware."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'novel)))
+    (with-temp-buffer
+      (org-mode)
+      (org-scribe-insert-scene "Opening Scene")
+      (should (string-match-p "\\*\\*\\* TODO Opening Scene :ignore:"
+                              (buffer-string))))))
+
+(ert-deftest test-insert-scene-short-story-is-level-2 ()
+  "In a short-story project, inserting a scene produces a level-2
+heading, matching `org-scribe-scene-level' for that project type and the
+shipped story.org/cuento.org templates -- not the level-3 heading a
+novel gets.  Regression test: before this command consulted the current
+project's own outline shape, every short-story scene it inserted was
+invisible to `org-scribe-scene-match' and so uncounted by word counting,
+linking and the health report."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (org-scribe-insert-scene "Opening")
+      (let ((content (buffer-string)))
+        (should (string-match-p "^\\*\\* TODO Opening" content))
+        (should-not (string-match-p "^\\*\\*\\* " content))
+        ;; Tag presence follows whatever `org-scribe-project-levels' says
+        ;; for short-story's `:scene-tag' at the time this test runs --
+        ;; this only pins the level, not the tag, since the tag is a
+        ;; separate, independently-tested decision (see
+        ;; `org-scribe-scene-match' tests in test-core-extended.el).
+        (should (string-match-p ":PoV:" content))))))
+
+(ert-deftest test-insert-scene-short-story-tag-matches-project-levels ()
+  "The tag on an inserted short-story scene -- present or absent -- must
+follow `org-scribe-project-levels' `:scene-tag' for that project type,
+not a hardcoded assumption either way."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (org-scribe-insert-scene "Opening")
+      (let ((tag (plist-get (org-scribe-project-levels 'short-story) :scene-tag))
+            (content (buffer-string)))
+        (if tag
+            (should (string-match-p (format ":%s:" (regexp-quote tag)) content))
+          (should-not (string-match-p "^\\*\\* TODO Opening :" content)))))))
+
 ;;; Chapter Template Insertion Tests
 
 (ert-deftest test-insert-chapter-template ()
@@ -266,6 +314,18 @@ ambiguity the glossary removes, and nothing else would fail."
 
     (let ((content (buffer-string)))
       (should (string-match-p "\\*\\* TODO New chapter :ignore:" content)))))
+
+(ert-deftest test-insert-chapter-refuses-in-short-story-project ()
+  "A short story has no chapter level at all (`org-scribe-chapter-level'
+returns nil for it), so inserting a chapter must refuse with a
+`user-error' naming the reason, rather than inserting a heading that
+would collide with the project's own scene level."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (should-error (org-scribe-insert-chapter "Chapter 1") :type 'user-error)
+      ;; Nothing was inserted.
+      (should (string-empty-p (buffer-string))))))
 
 ;;; Configuration Tests
 

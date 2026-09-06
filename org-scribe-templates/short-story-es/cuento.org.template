@@ -3,24 +3,32 @@
 #+DATE: ${DATE}
 #+LANGUAGE: es
 #+STARTUP: overview
-#+TODO: TODO(t) BORRADOR(d) REVISANDO(r) | HECHO(x) ENVIADO(s)
+#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
 #+COLUMNS: %40ITEM(Sección) %12WORDCOUNT %12PoV %30Personajes %20Trama %40Resumen %40Comentario
 #+MACRO: scene-break SCENE-BREAK
 #+OPTIONS: todo:nil tags:nil
 
 * Información del Cuento :noexport:
 :PROPERTIES:
-:GENERO:
-:PALABRAS_OBJETIVO: 5000
-:PALABRAS_ACTUALES: 0
-:ESTADO: Borrador
-:FECHA_LIMITE:
+:GENRE:
+:TARGET_WORDCOUNT: 5000
+:ACTUAL_WORDCOUNT: 0
+:STATUS: Borrador
+:DEADLINE:
 :END:
 
 ** Sinopsis
 [Resumen del cuento en un párrafo]
 
 ** Seguimiento de Palabras
+
+# Esto muestra tu recuento de palabras por secciones:
+# Tabla para llevar el control de palabras por sección
+#+BEGIN: org-generate-wordcount-table
+| Encabezado    | Wordcount |
+|---------------+-----------|
+|               |           |
+#+END:
 
 Para actualizar el recuento de palabras, usa:
 - =F8 F8 w= (org-scribe-wordcount, contar ahora)
@@ -36,21 +44,27 @@ cargar un plan.
 
 * Contenido del Cuento
 
-** Inicio
+** TODO Inicio :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 1500
 :PoV:
 :Personajes:
 :Trama:
+:Punto-de-trama:
 :Linea-temporal:
 :Localizacion:
 :Descripcion:
 :Resumen:
 :Motivacion-escena:
 :Fuente-conflicto:
+:Brecha:
 :Que-esta-en-juego:
+:Problema-mundo:
 :Emocion:
+:Nivel-tension:
+:Resultado:
+:Decision-secuela:
 :Comentario:
 :END:
 
@@ -58,21 +72,27 @@ Escribe aquí el inicio...
 
 {{{scene-break}}}
 
-** Desarrollo
+** TODO Desarrollo :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 2000
 :PoV:
 :Personajes:
 :Trama:
+:Punto-de-trama:
 :Linea-temporal:
 :Localizacion:
 :Descripcion:
 :Resumen:
 :Motivacion-escena:
 :Fuente-conflicto:
+:Brecha:
 :Que-esta-en-juego:
+:Problema-mundo:
 :Emocion:
+:Nivel-tension:
+:Resultado:
+:Decision-secuela:
 :Comentario:
 :END:
 
@@ -80,21 +100,27 @@ Continúa la historia...
 
 {{{scene-break}}}
 
-** Final
+** TODO Final :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 1500
 :PoV:
 :Personajes:
 :Trama:
+:Punto-de-trama:
 :Linea-temporal:
 :Localizacion:
 :Descripcion:
 :Resumen:
 :Motivacion-escena:
 :Fuente-conflicto:
+:Brecha:
 :Que-esta-en-juego:
+:Problema-mundo:
 :Emocion:
+:Nivel-tension:
+:Resultado:
+:Decision-secuela:
 :Comentario:
 :END:
 

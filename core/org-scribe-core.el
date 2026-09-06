@@ -336,22 +336,25 @@ All file/directory values are nil if the path does not exist."
 ;; scenes are level 2).  One table, read by every one of them, is what
 ;; keeps that assumption from drifting out of step again.
 ;;
-;; `short-story' carries `:scene-tag' nil rather than "ignore", because
+;; `short-story' carries `:scene-tag' "ignore", the same as a novel's --
 ;; the shipped short-story manuscript templates (story.org.template /
-;; cuento.org.template) do not tag their scenes at all -- unlike a
-;; novel's, which are always tagged :ignore:.  This was confirmed against
-;; a project actually created from those templates, not assumed: setting
-;; :scene-tag to "ignore" here before the templates carry that tag makes
-;; every scene-level function in the package silently find zero scenes
-;; in every short story, which is a worse bug than the one this table
-;; exists to fix.  If the templates are ever changed to tag their scenes
-;; :ignore: (matching a novel's), this entry's `:scene-tag' must change
-;; to "ignore" in the same commit -- the two are one atomic decision, not
-;; two independent ones.
+;; cuento.org.template) tag their scenes :ignore: too, matching a
+;; novel's.  This used to be nil: the templates originally shipped
+;; untagged scenes, and setting :scene-tag to "ignore" here before they
+;; did made every scene-level function in the package silently find zero
+;; scenes in every short story -- confirmed against a real project, not
+;; assumed.  The table and the templates were changed together, in the
+;; same commit, for exactly that reason: the two are one atomic decision,
+;; not two independent ones.  If a project type is ever added whose
+;; scenes are genuinely untagged, give that entry `:scene-tag' nil --
+;; `org-scribe-scene-match' already falls back to an explicit
+;; :noexport:-exclusion match for that case (see its docstring) -- rather
+;; than leaving this one's value ambiguous between "no tag" and "not
+;; decided yet."
 
 (defconst org-scribe--project-levels
   '((novel       . (:chapter 2 :scene 3 :scene-tag "ignore"))
-    (short-story . (:chapter nil :scene 2 :scene-tag nil)))
+    (short-story . (:chapter nil :scene 2 :scene-tag "ignore")))
   "Per project type, the outline levels that carry chapters and scenes.
 See the commentary above this constant for what each field means.")
 

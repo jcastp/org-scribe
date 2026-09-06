@@ -510,13 +510,26 @@ property; it is inert.")
              org-scribe--scene-property-keys
              "\n"))
 
+(defun org-scribe--heading-tag-suffix (tag)
+  "Return \" :TAG:\" when TAG is non-nil, or the empty string when nil.
+Shared by `org-scribe-insert-scene' and `org-scribe-insert-chapter' so
+both read the current project type's tagging convention from
+`org-scribe-project-levels' `:scene-tag' instead of assuming a novel's
+own :ignore: unconditionally -- which is what let a short story's
+scenes go uncounted by every scene-level function in the package until
+the project type each command runs in is actually consulted (a short
+story's scenes carry no tag at all, per that table)."
+  (if tag (format " :%s:" tag) ""))
+
 ;;;###autoload
 (defun org-scribe-insert-scene (scene-name)
   "Insert a scene template at point with SCENE-NAME.
-The template includes a TODO heading with :ignore: tag and property
-drawer for scene metadata (PoV, Characters, Plot, Timeline, Location,
-Description, Summary, Scene-motivation, Conflict-source, What-is-at-stake,
-Emotion, and Comment).
+The template includes a TODO heading at the current project's scene
+level (see `org-scribe-scene-level'), tagged per
+`org-scribe-project-levels' `:scene-tag' when that project type tags its
+scenes, and a property drawer for scene metadata (PoV, Characters, Plot,
+Timeline, Location, Description, Summary, Scene-motivation,
+Conflict-source, What-is-at-stake, Emotion, and Comment).
 If SCENE-NAME is empty, defaults to \"New scene\"."
   (interactive (list (read-string (org-scribe-msg 'scene-name-prompt))))
 
@@ -529,15 +542,18 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
     (setq scene-name (org-scribe-msg 'default-scene-name)))
 
   ;; Define and insert template
-  (let ((template (format "*** TODO %s :ignore:
+  (let* ((levels (org-scribe-project-levels))
+         (stars (make-string (plist-get levels :scene) ?*))
+         (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag)))
+         (template (format "%s TODO %s%s
 :PROPERTIES:
 %s
 :WORD-OBJECTIVE: 500
 :END:
 
 {{{scene-break}}}
-" scene-name (org-scribe--scene-property-drawer-lines)))
-        (start-pos (point)))
+" stars scene-name tag (org-scribe--scene-property-drawer-lines)))
+         (start-pos (point)))
 
     ;; Insert template
     (insert template)
@@ -546,7 +562,9 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
     ;; turned `org-refile-use-cache' on.
     (org-scribe--refile-invalidate-cache)
 
-    ;; Position cursor at first property value (after :PoV:)
+    ;; Position cursor at first property value (after :PoV:).  The
+    ;; heading occupies exactly one line regardless of its star count or
+    ;; tag, so this offset holds for every project type.
     (goto-char start-pos)
     (forward-line 2)  ; Move to PoV line
     (end-of-line)))   ; Move to end of line (after :PoV:)
@@ -554,35 +572,50 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 ;;;###autoload
 (defun org-scribe-insert-chapter (chapter-name)
   "Insert a chapter template at point with CHAPTER-NAME.
-The template includes a TODO heading with :ignore: tag, a property
-drawer with WORDCOUNT field initialized to 0, and an empty first scene.
-If CHAPTER-NAME is empty, defaults to \"New chapter\"."
+The template includes a TODO heading at the current project's chapter
+level, tagged per `org-scribe-project-levels' when that project type
+tags its chapters, a property drawer with WORDCOUNT field initialized to
+0, and an empty first scene.
+If CHAPTER-NAME is empty, defaults to \"New chapter\".
+
+Refuses with a `user-error' in a project type with no chapter level at
+all (a short story, per `org-scribe-chapter-level' returning nil) --
+there is no level to insert a chapter at, and inserting one anyway would
+collide with the project's own scene level."
   (interactive (list (read-string (org-scribe-msg 'chapter-name-prompt))))
 
   ;; Validate we're in org-mode
   (unless (derived-mode-p 'org-mode)
     (user-error (org-scribe-msg 'not-in-org-mode)))
 
+  (unless (org-scribe-chapter-level)
+    (user-error (org-scribe-msg 'insert-chapter-no-chapters)))
+
   ;; Use default title if chapter-name is empty
   (when (string-empty-p (string-trim chapter-name))
     (setq chapter-name (org-scribe-msg 'default-chapter-name)))
 
   ;; Define and insert combined chapter + first scene template
-  (let ((template (format "** TODO %s :ignore:
+  (let* ((levels (org-scribe-project-levels))
+         (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag)))
+         (chapter-stars (make-string (plist-get levels :chapter) ?*))
+         (scene-stars (make-string (plist-get levels :scene) ?*))
+         (template (format "%s TODO %s%s
 :PROPERTIES:
 :WORD-OBJECTIVE: 5000
 :WORDCOUNT: 0
 :END:
 
-*** TODO %s :ignore:
+%s TODO %s%s
 :PROPERTIES:
 %s
 :WORD-OBJECTIVE: 500
 :END:
 
 {{{scene-break}}}
-" chapter-name (org-scribe-msg 'default-scene-name) (org-scribe--scene-property-drawer-lines)))
-        (start-pos (point)))
+" chapter-stars chapter-name tag scene-stars (org-scribe-msg 'default-scene-name) tag
+  (org-scribe--scene-property-drawer-lines)))
+         (start-pos (point)))
 
     ;; Insert template
     (insert template)
@@ -591,7 +624,10 @@ If CHAPTER-NAME is empty, defaults to \"New chapter\"."
     ;; turned `org-refile-use-cache' on.
     (org-scribe--refile-invalidate-cache)
 
-    ;; Position cursor at first scene's :PoV: property (line 8 from start)
+    ;; Position cursor at first scene's :PoV: property (line 8 from
+    ;; start).  Like the scene heading above, a heading's star count and
+    ;; tag do not change how many lines it occupies, so this offset holds
+    ;; regardless of project type.
     (goto-char start-pos)
     (forward-line 8)
     (end-of-line)))

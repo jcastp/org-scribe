@@ -74,6 +74,7 @@ file's Commentary for why a forward `defvar' is needed here too.")
     (chapter-name-prompt . "Chapter name: ")
     (not-in-org-mode . "This command can only be used in org-mode buffers")
     (not-in-novel-project . "Not in a novel project directory")
+    (insert-chapter-no-chapters . "This project type has no chapter level; insert a scene instead")
 
     ;; Capture
     (capture-character-name . "Character Name")
@@ -512,6 +513,7 @@ printf-style format specifiers (%s, %d, etc.) for dynamic content.")
     (chapter-name-prompt . "Nombre del capítulo: ")
     (not-in-org-mode . "Este comando solo se puede usar en búferes de org-mode")
     (not-in-novel-project . "No se encuentra en un directorio de proyecto de novela")
+    (insert-chapter-no-chapters . "Este tipo de proyecto no tiene nivel de capítulo; inserte una escena en su lugar")
 
     ;; Capture
     (capture-character-name . "Nombre del personaje")

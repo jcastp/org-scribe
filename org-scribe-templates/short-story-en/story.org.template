@@ -3,7 +3,7 @@
 #+DATE: ${DATE}
 #+LANGUAGE: en
 #+STARTUP: overview
-#+TODO: TODO(t) DRAFT(d) REVISING(r) | DONE(x) SUBMITTED(s)
+#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(p@/!)
 #+COLUMNS: %40ITEM(Section) %12WORDCOUNT %12PoV %30Characters %20Plot %40Summary %40Comment
 #+MACRO: scene-break SCENE-BREAK
 #+OPTIONS: todo:nil tags:nil
@@ -43,21 +43,27 @@ here: =F8 F8 W=, or =M-x org-scribe-plan= to create or load a plan.
 
 * Story Content
 
-** Opening
+** TODO Opening :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 1500
 :PoV:
 :Characters:
 :Plot:
+:Plot-point:
 :Timeline:
 :Location:
 :Description:
 :Summary:
 :Scene-motivation:
 :Conflict-source:
+:Gap:
 :What-is-at-stake:
+:World-problem:
 :Emotion:
+:Tension-level:
+:Outcome:
+:Sequel-decision:
 :Comment:
 :END:
 
@@ -65,21 +71,27 @@ Write your opening here...
 
 {{{scene-break}}}
 
-** Middle
+** TODO Middle :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 2000
 :PoV:
 :Characters:
 :Plot:
+:Plot-point:
 :Timeline:
 :Location:
 :Description:
 :Summary:
 :Scene-motivation:
 :Conflict-source:
+:Gap:
 :What-is-at-stake:
+:World-problem:
 :Emotion:
+:Tension-level:
+:Outcome:
+:Sequel-decision:
 :Comment:
 :END:
 
@@ -87,21 +99,27 @@ Continue the story...
 
 {{{scene-break}}}
 
-** Ending
+** TODO Ending :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 1500
 :PoV:
 :Characters:
 :Plot:
+:Plot-point:
 :Timeline:
 :Location:
 :Description:
 :Summary:
 :Scene-motivation:
 :Conflict-source:
+:Gap:
 :What-is-at-stake:
+:World-problem:
 :Emotion:
+:Tension-level:
+:Outcome:
+:Sequel-decision:
 :Comment:
 :END:
 

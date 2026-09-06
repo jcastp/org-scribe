@@ -455,14 +455,16 @@ fallback in this package."
   "A novel's scene match string selects level 3 tagged :ignore:."
   (should (equal (org-scribe-scene-match 'novel) "LEVEL=3+ignore")))
 
-(ert-deftest test-core-scene-match-short-story-excludes-noexport ()
-  "A short story's scene match string selects level 2, excluding
-:noexport:, rather than a tag: the shipped short-story manuscript
-templates do not tag their scenes :ignore: the way a novel's do (see
-`org-scribe--project-levels'), so a tag-based match would silently find
-zero scenes in a real short-story project.  This was verified against a
-project actually created from the shipped templates, not assumed."
-  (should (equal (org-scribe-scene-match 'short-story) "LEVEL=2-noexport")))
+(ert-deftest test-core-scene-match-short-story-uses-tag ()
+  "A short story's scene match string selects level 2 tagged :ignore:,
+matching the shipped short-story manuscript templates (story.org.template
+/ cuento.org.template), which tag their scenes the same way a novel's
+do.  This was verified against a project actually created from the
+shipped templates, not assumed.  See
+`test-core-scene-match-untagged-type-excludes-noexport' below for the
+:noexport:-exclusion path this table falls back to for a project type
+whose scenes genuinely carry no tag."
+  (should (equal (org-scribe-scene-match 'short-story) "LEVEL=2+ignore")))
 
 (ert-deftest test-core-scene-match-untagged-type-excludes-noexport ()
   "When a project type's scene level carries no tag, the match string

@@ -61,25 +61,66 @@
     ("cuaderno-borradores.org.template"   . "scratchpad.org.template")
     ("notas/notas.org.template"           . "notes/notes.org.template")
     ("notas/investigacion.org.template"   . "notes/research.org.template"))
-  "Spanish template -> English template, relative to each set's directory.
-File names differ between the sets, so the pairing cannot be derived and
-has to be declared.  `test-template-parity-pairing-is-complete' checks
-that this list accounts for every shipped template on both sides.")
+  "Spanish template -> English template, relative to each set's directory,
+for the novel family.  File names differ between the sets, so the
+pairing cannot be derived and has to be declared.
+`test-template-parity-pairing-is-complete' checks that this list accounts
+for every shipped template on both sides.")
+
+(defconst org-scribe-parity--short-story-pairs
+  '(("cuento.org.template"              . "story.org.template")
+    ("notas.org.template"               . "notes.org.template")
+    ("README.org.template"              . "README.org.template")
+    ("cuaderno-borradores.org.template" . "scratchpad.org.template"))
+  "Spanish template -> English template, relative to each set's directory,
+for the short-story family.  Mirrors `org-scribe-parity--pairs' for the
+novel family, kept as a separate list because the two families are never
+compared against each other (see `org-scribe-parity--families') — they
+render two different methods and legitimately differ in sections,
+property sets and design core.")
+
+(defconst org-scribe-parity--families
+  '((:es "novel-es"       :en "novel-en"       :pairs org-scribe-parity--pairs)
+    (:es "short-story-es" :en "short-story-en" :pairs org-scribe-parity--short-story-pairs))
+  "Every base template family this file checks for ES/EN structural parity.
+Each entry names the Spanish and English set directories and the symbol
+holding their file pairing (looked up with `symbol-value' rather than
+stored as the list itself, so each pairing keeps its own defconst and
+docstring).  Deliberately excludes the plotting-method overlays under
+`org-scribe-templates/methods/', which have their own pairing
+\(`org-scribe-parity--method-pairs') and their own tests below — they are
+overlays on top of `novel-es'/`novel-en', not a third family of full
+template sets, and a design-file-only overlay has no heading tree or
+property set of its own to speak of beyond what those tests already
+check.
+
+The families are read independently everywhere in this file: no test
+ever compares a `novel-*' template against a `short-story-*' one. They
+render two different methods and are expected to differ in sections,
+property sets and design core — only each family's own ES/EN pair must
+stay parallel.")
 
 (defconst org-scribe-parity--known-divergent
-  '(("diario-escritura.org.template"
+  '(("novel-es/diario-escritura.org.template"
      . "Habits and the writing calendar live outside the method on purpose, so
 these two were never ports of each other and the migration did not touch
 them.  English is the far longer of the two.  Reconciling them is a
 decision about what the journal is for, not a translation task.")
-    ("objects/objetos.org.template"
+    ("novel-es/objects/objetos.org.template"
      . "Objects have no counterpart in the method; both files are pre-sistema
 stubs that were never parallel.  English carries Status and
 First-appearance properties Spanish lacks.")
-    ("objects/cronologia.org.template"
+    ("novel-es/objects/cronologia.org.template"
      . "Timeline likewise has no counterpart in the method; English carries an
 extra ID and Type property."))
   "Pairs known to diverge, each with the reason it is tolerated.
+Keys are \"SET/RELATIVE-PATH\" (the Spanish set name, a slash, then the
+Spanish-side path from `org-scribe-parity--pairs' or
+`org-scribe-parity--short-story-pairs') rather than a bare relative path:
+`README.org.template' is a pair in *both* families, and a bare-filename
+key would silently exempt whichever family's pair happened to be looked
+up first instead of the one actually intended.
+
 Every entry is a debt, not a licence.  `test-template-parity-exceptions-are-live'
 fails when an entry no longer diverges, so a pair that gets fixed cannot
 leave a stale exemption behind that would hide the next regression.")
@@ -146,9 +187,13 @@ on purpose — they are supposed to differ between the two sets."
   (expand-file-name (concat "org-scribe-templates/" set "/" relative)
                     org-scribe-parity--root))
 
-(defun org-scribe-parity--divergent-p (es-name)
-  "Return non-nil if the pair keyed by ES-NAME is a known exception."
-  (assoc es-name org-scribe-parity--known-divergent))
+(defun org-scribe-parity--divergent-p (set es-name)
+  "Return non-nil if the pair keyed by SET/ES-NAME is a known exception.
+SET is the Spanish set name (e.g. \"novel-es\"); ES-NAME is the Spanish
+side of the pair, relative to that set's directory.  See
+`org-scribe-parity--known-divergent' for why the key must be qualified
+by SET rather than a bare filename."
+  (assoc (concat set "/" es-name) org-scribe-parity--known-divergent))
 
 (defun org-scribe-parity--templates (set)
   "Return the shipped .template files of SET, relative to its directory."
@@ -159,37 +204,59 @@ on purpose — they are supposed to differ between the two sets."
           #'string<)))
 
 ;;; Tests
+;;
+;; Every test below iterates `org-scribe-parity--families' rather than
+;; naming "novel-es"/"novel-en" directly, so a family's own pairing gets
+;; the same guarantees as every other family's -- including the
+;; short-story one, which had none of these checks until this file was
+;; extended to iterate families instead of one hardcoded pair.  Never
+;; compare across families: each entry's :es/:en names one family's own
+;; ES/EN pair, and no test here ever mixes one family's file against
+;; another's.
 
 (ert-deftest test-template-parity-pairing-is-complete ()
-  "Every shipped template appears in the pairing, on both sides.
+  "Every shipped template appears in the pairing, on both sides, in every family.
 This is the check that catches a file added to one set only — the drift
 that produced a 2066-line English character template with an 89-line
 Spanish counterpart."
-  (should (equal (sort (mapcar #'car org-scribe-parity--pairs) #'string<)
-                 (org-scribe-parity--templates "novel-es")))
-  (should (equal (sort (mapcar #'cdr org-scribe-parity--pairs) #'string<)
-                 (org-scribe-parity--templates "novel-en"))))
+  (dolist (family org-scribe-parity--families)
+    (let ((es-set (plist-get family :es))
+          (en-set (plist-get family :en))
+          (pairs (symbol-value (plist-get family :pairs))))
+      (should (equal (sort (mapcar #'car pairs) #'string<)
+                     (org-scribe-parity--templates es-set)))
+      (should (equal (sort (mapcar #'cdr pairs) #'string<)
+                     (org-scribe-parity--templates en-set))))))
 
 (ert-deftest test-template-parity-heading-trees-match ()
-  "Paired templates have identical heading trees: count, depth and order."
-  (dolist (pair org-scribe-parity--pairs)
-    (unless (org-scribe-parity--divergent-p (car pair))
-      (let ((es (org-scribe-parity--shape (org-scribe-parity--path "novel-es" (car pair))))
-            (en (org-scribe-parity--shape (org-scribe-parity--path "novel-en" (cdr pair)))))
-        (should (equal (cons (car pair) (car es))
-                       (cons (car pair) (car en))))))))
+  "Paired templates have identical heading trees: count, depth and order,
+within every family."
+  (dolist (family org-scribe-parity--families)
+    (let ((es-set (plist-get family :es))
+          (en-set (plist-get family :en))
+          (pairs (symbol-value (plist-get family :pairs))))
+      (dolist (pair pairs)
+        (unless (org-scribe-parity--divergent-p es-set (car pair))
+          (let ((es (org-scribe-parity--shape (org-scribe-parity--path es-set (car pair))))
+                (en (org-scribe-parity--shape (org-scribe-parity--path en-set (cdr pair)))))
+            (should (equal (cons (concat es-set "/" (car pair)) (car es))
+                           (cons (concat es-set "/" (car pair)) (car en))))))))))
 
 (ert-deftest test-template-parity-property-sets-match ()
-  "Paired templates use the same property keys, once localization is undone.
-Scene properties legitimately differ in spelling between the sets
-\(`:Brecha:' against `:Gap:'), so they are compared through
-`org-scribe--scene-property-aliases' rather than literally."
-  (dolist (pair org-scribe-parity--pairs)
-    (unless (org-scribe-parity--divergent-p (car pair))
-      (let ((es (org-scribe-parity--shape (org-scribe-parity--path "novel-es" (car pair))))
-            (en (org-scribe-parity--shape (org-scribe-parity--path "novel-en" (cdr pair)))))
-        (should (equal (cons (car pair) (cdr es))
-                       (cons (car pair) (cdr en))))))))
+  "Paired templates use the same property keys, once localization is undone,
+within every family.  Scene properties legitimately differ in spelling
+between the sets (`:Brecha:' against `:Gap:'), so they are compared
+through `org-scribe--scene-property-aliases' rather than literally."
+  (dolist (family org-scribe-parity--families)
+    (let ((es-set (plist-get family :es))
+          (en-set (plist-get family :en))
+          (pairs (symbol-value (plist-get family :pairs))))
+      (dolist (pair pairs)
+        (unless (org-scribe-parity--divergent-p es-set (car pair))
+          (let ((es (org-scribe-parity--shape (org-scribe-parity--path es-set (car pair))))
+                (en (org-scribe-parity--shape (org-scribe-parity--path en-set (cdr pair)))))
+            (should (equal (cons (concat es-set "/" (car pair)) (cdr es))
+                           (cons (concat es-set "/" (car pair)) (cdr en))))))))))
 
 (ert-deftest test-template-parity-exceptions-are-live ()
   "Every tolerated exception still actually diverges.
@@ -198,11 +265,17 @@ the next regression in a pair someone has already fixed.  When this test
 fails, the fix is to delete the entry from
 `org-scribe-parity--known-divergent', not to re-break the templates."
   (dolist (entry org-scribe-parity--known-divergent)
-    (let* ((es-name (car entry))
-           (pair (assoc es-name org-scribe-parity--pairs)))
+    (let* ((key (car entry))
+           (slash (string-search "/" key))
+           (es-set (substring key 0 slash))
+           (es-name (substring key (1+ slash)))
+           (family (cl-find-if (lambda (f) (equal (plist-get f :es) es-set))
+                               org-scribe-parity--families))
+           (en-set (plist-get family :en))
+           (pair (assoc es-name (symbol-value (plist-get family :pairs)))))
       (should pair)
-      (let ((es (org-scribe-parity--shape (org-scribe-parity--path "novel-es" (car pair))))
-            (en (org-scribe-parity--shape (org-scribe-parity--path "novel-en" (cdr pair)))))
+      (let ((es (org-scribe-parity--shape (org-scribe-parity--path es-set (car pair))))
+            (en (org-scribe-parity--shape (org-scribe-parity--path en-set (cdr pair)))))
         (should-not (and (equal (car es) (car en))
                          (equal (cdr es) (cdr en))))))))
 
