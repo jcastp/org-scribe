@@ -426,6 +426,35 @@ rather than scenery; the gazetteer fields of the previous model
             (should (string-match-p "notes\\.org$" result))))
       (delete-directory temp-dir t))))
 
+(ert-deftest test-capture-create-if-missing-short-story-spanish-creates-notas ()
+  "A Spanish short-story project with no consolidated notes file yet gets
+notas.org created, not notes.org.
+Regression test: `org-scribe--capture-entity-file' used to hardcode
+\"notes.org\" as the fallback name whenever neither candidate existed on
+disk, ignoring the project's own `# Language: es' marker entirely.  A
+brand-new project created via `org-scribe-create-short-story-project'
+never hits this path (its templates ship notas.org from the start), but
+any Spanish short-story project missing that file -- one predating a
+fix, one assembled by hand, or one where the file was deleted -- did,
+and every entity captured into it (plot threads included) landed in an
+English-named file a Spanish project should never have."
+  (let* ((temp-dir (make-temp-file "test-ss-proj-es-" t))
+         (expected-file (expand-file-name "notas.org" temp-dir))
+         (wrong-file (expand-file-name "notes.org" temp-dir)))
+    (unwind-protect
+        (cl-letf (((symbol-function 'org-scribe-project-root)
+                   (lambda () temp-dir))
+                  ((symbol-function 'org-scribe-project-type)
+                   (lambda () 'short-story))
+                  ((symbol-function 'org-scribe-project-language)
+                   (lambda () 'es)))
+          (should-not (file-exists-p expected-file))
+          (let ((result (org-scribe-capture-plot-thread-file t)))
+            (should (file-exists-p expected-file))
+            (should-not (file-exists-p wrong-file))
+            (should (string-match-p "notas\\.org$" result))))
+      (delete-directory temp-dir t))))
+
 ;;; ─────────────────────────────────────────────
 ;;; Project-type routing — without filesystem
 ;;; ─────────────────────────────────────────────
@@ -458,6 +487,24 @@ rather than scenery; the gazetteer fields of the previous model
                      (lambda () 'novel)))
             (let ((result (org-scribe-capture-character-file)))
               (should (string-match-p "characters\\.org$" result)))))
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-capture-character-file-novel-spanish-fallback-uses-personajes ()
+  "A Spanish novel project with no objects/ files yet gets
+objects/personajes.org as its fallback target, not objects/characters.org.
+Same regression class as the short-story notas.org/notes.org case: the
+fallback used to hardcode the English stem regardless of
+`org-scribe-project-language'."
+  (let* ((temp-dir (make-temp-file "test-route-novel-es-" t)))
+    (unwind-protect
+        (cl-letf (((symbol-function 'org-scribe-project-root)
+                   (lambda () temp-dir))
+                  ((symbol-function 'org-scribe-project-type)
+                   (lambda () 'novel))
+                  ((symbol-function 'org-scribe-project-language)
+                   (lambda () 'es)))
+          (let ((result (org-scribe-capture-character-file)))
+            (should (string-match-p "objects/personajes\\.org$" result))))
       (delete-directory temp-dir t))))
 
 ;;; ─────────────────────────────────────────────

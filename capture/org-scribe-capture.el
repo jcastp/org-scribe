@@ -149,11 +149,22 @@ If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist.
 
 For short stories, returns notes.org (or notas.org) in the project root.
 For novels, searches objects/{en-name}.org, objects/{es-name}.org,
-{en-name}.org, and {es-name}.org in that order, defaulting to
-objects/{en-name}.org if none exist."
+{en-name}.org, and {es-name}.org in that order.
+
+When none of those candidates exists yet, the file to create is chosen by
+`org-scribe-project-language', not hardcoded to English: a Spanish
+project gets notas.org (or objects/{es-name}.org), not notes.org (or
+objects/{en-name}.org).  This path is only reached for a project whose
+consolidated notes file (or, for a novel, the relevant objects/ file)
+does not exist on disk yet — normal project creation always ships it, so
+in ordinary use one of the `cl-find-if' candidates above already
+matches — but a project missing it (an older project, one assembled by
+hand, or a deliberately deleted file) must still get the file named for
+its own language, not the tool's fallback default."
   (let* ((project-dir (or (org-scribe-project-root)
                          (file-name-directory (or (buffer-file-name) default-directory))))
          (project-type (org-scribe-project-type))
+         (es-p (eq (org-scribe-project-language) 'es))
          (target
           (cond
            ;; Short story: use notes.org
@@ -161,7 +172,7 @@ objects/{en-name}.org if none exist."
             (or (cl-find-if #'file-exists-p
                             (mapcar (lambda (f) (expand-file-name f project-dir))
                                     '("notes.org" "notas.org")))
-                (expand-file-name "notes.org" project-dir)))
+                (expand-file-name (if es-p "notas.org" "notes.org") project-dir)))
            ;; Novel or unknown: search objects/ first, then project root
            (t
             (or (cl-find-if #'file-exists-p
@@ -170,7 +181,8 @@ objects/{en-name}.org if none exist."
                                           (concat "objects/" es-name ".org")
                                           (concat en-name ".org")
                                           (concat es-name ".org"))))
-                (expand-file-name (concat "objects/" en-name ".org") project-dir))))))
+                (expand-file-name (concat "objects/" (if es-p es-name en-name) ".org")
+                                  project-dir))))))
 
     (when (and create-if-missing (not (file-exists-p target)))
       (org-scribe--create-capture-file target project-type content-type))
