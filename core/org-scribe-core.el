@@ -13,6 +13,10 @@
 
 (require 'cl-lib)
 (require 'org)
+;; `org-refile-cache-clear' (used by `org-scribe--refile-invalidate-cache'
+;; below) is not autoloaded and `(require 'org)' alone does not pull it in
+;; -- confirmed empirically, not assumed.
+(require 'org-refile)
 (require 'project)
 (require 'org-scribe-messages)
 
@@ -634,9 +638,19 @@ see `org-scribe--project-refile-files' for the file list itself), and
 outline-path display to `file'
 so a completion candidate names the file it comes from (a scene in the
 manuscript vs. a character in objects/characters.org read identically
-by heading text alone). Also turns on Org's own refile cache
-(`org-refile-use-cache'), since a project-wide file list is exactly the
-case that cache exists for and it is off by default in stock Org."
+by heading text alone).
+
+Deliberately does not touch `org-refile-use-cache'.  An earlier version
+turned it on globally here (with a plain `setq', since it has no
+buffer-local meaning), on the reasoning that a project-wide file list is
+exactly the case that cache exists for — but nothing ever turned it back
+off, not even `org-scribe--refile-disable', so opening a single
+org-scribe file left every *other* Org file's refiling cached for the
+rest of the session. If the writer has turned `org-refile-use-cache' on
+themselves, `org-scribe--refile-invalidate-cache' (called from
+`org-scribe-insert-scene', `org-scribe-insert-chapter' and after every
+capture) keeps it from going stale against org-scribe's own commands
+without org-scribe ever needing to flip the setting itself."
   (unless (org-scribe--refile-enabled-p)
     (setq org-scribe--refile-saved-targets org-refile-targets
           org-scribe--refile-saved-outline-path org-refile-use-outline-path))
@@ -647,8 +661,7 @@ case that cache exists for and it is off by default in stock Org."
   ;; which is not one of its recognized forms and errors as "Bad
   ;; refiling target description."
   (setq-local org-refile-targets '((org-scribe--project-refile-files . t)))
-  (setq-local org-refile-use-outline-path 'file)
-  (setq org-refile-use-cache t))
+  (setq-local org-refile-use-outline-path 'file))
 
 (defun org-scribe--refile-disable ()
   "Restore this buffer's refile variables to their pre-org-scribe values.
@@ -676,6 +689,38 @@ buffer's own refile configuration is left alone."
     (org-scribe--refile-disable)))
 
 (add-hook 'org-scribe-mode-hook #'org-scribe--refile-maybe-setup)
+
+(defun org-scribe--refile-invalidate-cache ()
+  "Clear Org's refile cache, if the writer has one to clear.
+`org-scribe-insert-scene', `org-scribe-insert-chapter' and every
+org-scribe capture command add a new heading, and a heading added to a
+file already in `org-refile-targets' is exactly what `org-refile-cache'
+does not notice on its own — see `org-refile-use-cache''s docstring: the
+cache is invalidated on a changed *file set*, not a changed file.
+Without this, a writer who has `org-refile-use-cache' on (their own
+choice; org-scribe no longer turns it on for them, see
+`org-scribe--refile-enable') would refile into a project and not see the
+scene they just wrote until manually clearing the cache
+\(`C-u C-u C-c C-w').
+
+A no-op, silently, when there is nothing cached — either because the
+writer never turned `org-refile-use-cache' on, or because Org has not
+populated it yet — so this is safe to call unconditionally after every
+insert/capture rather than threading that check through each caller.
+`org-refile-cache-clear' itself always prints \"Refile cache has been
+cleared\"; that message is fine when the writer asks for it via
+`C-u C-u C-c C-w', but is noise here, where this runs as a routine side
+effect of an ordinary insert or capture the writer did not ask to hear
+about."
+  (when org-refile-cache
+    (let ((inhibit-message t))
+      (org-refile-cache-clear))))
+
+;; Not scoped to org-scribe buffers or org-scribe's own captures: any
+;; `org-capture' finalize can add a heading to a cached file, org-scribe's
+;; or not, and `org-scribe--refile-invalidate-cache' is already a no-op
+;; whenever there is nothing cached to clear.
+(add-hook 'org-capture-after-finalize-hook #'org-scribe--refile-invalidate-cache)
 
 (provide 'org-scribe-core)
 

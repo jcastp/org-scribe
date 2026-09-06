@@ -20,6 +20,7 @@
 
 (let ((default-directory (file-name-directory
                           (or load-file-name buffer-file-name))))
+  (add-to-list 'load-path (expand-file-name ".." default-directory))
   (add-to-list 'load-path (expand-file-name "../core" default-directory))
   (add-to-list 'load-path (expand-file-name "../export" default-directory)))
 
@@ -27,6 +28,35 @@
 (require 'org-scribe-core)
 (require 'org-scribe-config)
 (require 'org-scribe-compile)
+;; `org-scribe--dependencies' (checked below by
+;; test-compile-epub-dependency-is-registered and
+;; test-compile-pandoc-dependencies-are-registered) lives in the main
+;; org-scribe.el entry point, not in any file this test otherwise loads.
+;; Requiring it here -- rather than relying on `boundp' and skipping when
+;; something else in the session happens to have loaded it first, e.g. via
+;; test-load.el -- is what lets those two tests actually run instead of
+;; silently skipping every time this file is run on its own.
+;;
+;; Requiring 'org-scribe here is what makes it "already loaded" by the time
+;; any test file that requires 'org-scribe-planner is loaded later in the
+;; same batch run (org-scribe-load-tests loads every test file's top level
+;; before any test is actually run, regardless of this file's position in
+;; org-scribe-test-files) -- and org-scribe-planner wires itself into
+;; org-scribe via `(with-eval-after-load 'org-scribe ...)', which then fires
+;; immediately instead of waiting for a real, interactive load order.  One
+;; thing that integration does is `(advice-add 'org-scribe-create-novel-project
+;; :after #'org-scribe-planner--offer-plan-on-create)', which -- for the rest
+;; of the batch process -- turns every later call to
+;; `org-scribe-create-novel-project' (including from tests/test-project.el
+;; and tests/test-dir-locals.el, which do not stub `yes-or-no-p') into a
+;; blocking prompt.  Disabling the defcustom that gates that advice-add,
+;; before anything can require org-scribe-planner, keeps this file's fix
+;; from corrupting unrelated tests elsewhere in the suite; no test in this
+;; codebase relies on the advice actually being attached (the planner's own
+;; coverage of this feature, in tests/test-planner-hooks.el, calls
+;; `org-scribe-planner--offer-plan-on-create' directly).
+(setq org-scribe-planner-offer-plan-on-create nil)
+(require 'org-scribe)
 
 ;;; Fixtures
 
@@ -643,7 +673,6 @@ offered for EPUB, the same way `md' and `odt' are not."
 (ert-deftest test-compile-epub-dependency-is-registered ()
   "`ox-epub' appears in `org-scribe--dependencies' as :optional, so
 `org-scribe-setup-check' reports it."
-  (skip-unless (boundp 'org-scribe--dependencies))
   (should (assq 'ox-epub (alist-get :optional org-scribe--dependencies))))
 
 (ert-deftest test-compile-refuses-when-pdflatex-is-missing ()
@@ -668,11 +697,10 @@ No file is left behind for a request that failed before rendering."
   "pdflatex and pandoc appear in `org-scribe--dependencies' as :optional,
 so `org-scribe-setup-check' reports them the way every other optional
 toolchain is reported.  `org-scribe--dependencies' lives in the main
-org-scribe.el entry point, which this test file's own requires do not
-load (only core/ and export/ are on its load-path, matching every other
-compile test) -- so this only runs when something else in the session
-already loaded the full package, e.g. via test-load.el."
-  (skip-unless (boundp 'org-scribe--dependencies))
+org-scribe.el entry point; this file's own requires load it explicitly
+(unlike every other compile test, which only needs core/ and export/) so
+this assertion runs unconditionally instead of skipping whenever nothing
+else in the session has already loaded the full package."
   (should (assoc "pdflatex" (alist-get :optional org-scribe--dependencies)))
   (should (assoc "pandoc" (alist-get :optional org-scribe--dependencies))))
 
@@ -962,6 +990,83 @@ input text made it through unmangled."
           (should-error (org-scribe-compile 'clean 'txt) :type 'user-error))
       (org-scribe-project-type-cache-clear)
       (delete-directory root t))))
+
+;;; Recompiling with the intermediate already open (B5)
+;;
+;; The intermediate is documented as something the writer opens to check a
+;; compile that looks wrong (see CLAUDE.md, "Manuscript Compilation"). An
+;; earlier version wrote it with a bare `with-temp-file', which left a
+;; buffer already visiting that path stale on disk -- so the very next
+;; thing to visit the same file (`org-scribe--compile-export', when the
+;; format needs one) blocked on Emacs's own "File ... changed on disk.
+;; Reread from disk?" prompt, and then killed that buffer regardless of the
+;; answer.  These pin both halves of the fix: the buffer is kept in sync
+;; without a revert prompt, and it survives a compile it did not open.
+
+(ert-deftest test-compile-write-intermediate-updates-existing-buffer-in-place ()
+  "Writing to an already-visited intermediate path updates that buffer
+directly instead of leaving it stale, and does not prompt."
+  (let* ((file (make-temp-file "org-scribe-compile-intermediate-" nil ".org"))
+         (buf (find-file-noselect file)))
+    (unwind-protect
+        (with-current-buffer buf
+          (insert "* stale content\n")
+          (cl-letf (((symbol-function 'yes-or-no-p)
+                     (lambda (&rest _) (error "must not prompt")))
+                    ((symbol-function 'y-or-n-p)
+                     (lambda (&rest _) (error "must not prompt"))))
+            (org-scribe--compile-write-intermediate file "* fresh content\n"))
+          (should (equal (buffer-string) "* fresh content\n"))
+          (should-not (buffer-modified-p))
+          (should (eq buf (current-buffer))))
+      (kill-buffer buf))))
+
+(ert-deftest test-compile-write-intermediate-with-no-existing-buffer-writes-the-file ()
+  "With no buffer visiting the path, this is a plain file write, as before."
+  (let ((file (make-temp-file "org-scribe-compile-intermediate-" nil ".org")))
+    (unwind-protect
+        (progn
+          (should-not (get-file-buffer file))
+          (org-scribe--compile-write-intermediate file "* fresh content\n")
+          (should-not (get-file-buffer file))
+          (with-temp-buffer
+            (insert-file-contents file)
+            (should (equal (buffer-string) "* fresh content\n"))))
+      (delete-file file))))
+
+(ert-deftest test-compile-export-reuses-and-preserves-a-preexisting-intermediate-buffer ()
+  "`org-scribe--compile-export' must not kill a buffer it did not open."
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (let* ((intermediate (expand-file-name "export/novel-clean.org" root)))
+      ;; First compile: no buffer exists yet for the intermediate.
+      (org-scribe-compile 'clean 'txt)
+      (let ((buf (find-file-noselect intermediate)))
+        (unwind-protect
+            (progn
+              ;; Recompile with the intermediate already open -- the exact
+              ;; scenario that used to block on a revert prompt and then
+              ;; kill this buffer.
+              (cl-letf (((symbol-function 'yes-or-no-p)
+                         (lambda (&rest _) (error "must not prompt")))
+                        ((symbol-function 'y-or-n-p)
+                         (lambda (&rest _) (error "must not prompt"))))
+                (org-scribe-compile 'clean 'txt))
+              (should (buffer-live-p buf))
+              (should (eq buf (get-file-buffer intermediate)))
+              (should-not (buffer-modified-p buf)))
+          (when (buffer-live-p buf) (kill-buffer buf)))))))
+
+(ert-deftest test-compile-export-kills-an-intermediate-buffer-it-opened-itself ()
+  "The pre-existing no-leak behavior is unchanged: a buffer this pass
+opens purely to export -- nothing was visiting the intermediate before
+the compile -- is still cleaned up afterward, exactly as before this fix."
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (let ((intermediate (expand-file-name "export/novel-clean.org" root)))
+      (should-not (get-file-buffer intermediate))
+      (org-scribe-compile 'clean 'txt)
+      (should-not (get-file-buffer intermediate)))))
 
 ;;; Messages
 

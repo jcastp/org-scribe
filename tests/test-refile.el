@@ -164,8 +164,29 @@ that regression is caught here rather than in normal use."
     (org-scribe--refile-enable)
     (should (equal org-refile-targets '((org-scribe--project-refile-files . t))))
     (should (eq org-refile-use-outline-path 'file))
-    (should (eq org-refile-use-cache t))
     (should (org-scribe--refile-enabled-p))))
+
+(ert-deftest test-refile-enable-does-not-touch-global-cache-setting ()
+  "Enabling must not flip `org-refile-use-cache' on globally.
+It used to (plain `setq', since the variable has no buffer-local
+meaning), and nothing ever turned it back off -- so opening one
+org-scribe file left every other Org file's refiling cached for the
+rest of the session, in any other buffer, indefinitely.  Enabling and
+then disabling org-scribe's refile override must leave whatever the
+writer's own `org-refile-use-cache' setting was, unchanged in both
+directions."
+  (let ((org-refile-use-cache nil))
+    (test-refile--with-temp-project '(("novel.org" . "#+TITLE: Test\n"))
+      (org-scribe--refile-enable)
+      (should-not org-refile-use-cache)
+      (org-scribe--refile-disable)
+      (should-not org-refile-use-cache)))
+  (let ((org-refile-use-cache t))
+    (test-refile--with-temp-project '(("novel.org" . "#+TITLE: Test\n"))
+      (org-scribe--refile-enable)
+      (should org-refile-use-cache)
+      (org-scribe--refile-disable)
+      (should org-refile-use-cache))))
 
 (ert-deftest test-refile-disable-restores-saved-values ()
   "Test that disabling restores the buffer's pre-enable values exactly."
@@ -242,6 +263,47 @@ a naive save/restore falls into (see commentary at the top of this file)."
       (let ((org-scribe-mode nil))
         (org-scribe--refile-maybe-setup)
         (should-not (org-scribe--refile-enabled-p))))))
+
+;;; org-scribe--refile-invalidate-cache
+
+(ert-deftest test-refile-invalidate-cache-is-noop-with-nothing-cached ()
+  "A no-op when `org-refile-cache' is empty.
+Covers both a writer who never turned `org-refile-use-cache' on (the
+default) and one who did but has not refiled yet, so Org has not
+populated the cache."
+  (let ((org-refile-cache nil))
+    (org-scribe--refile-invalidate-cache)
+    (should-not org-refile-cache)))
+
+(ert-deftest test-refile-invalidate-cache-clears-a-populated-cache ()
+  "Clears `org-refile-cache' when there is something in it to clear."
+  (let ((org-refile-cache '(("dummy" . nil)))
+        (org-refile-markers nil))
+    (org-scribe--refile-invalidate-cache)
+    (should-not org-refile-cache)))
+
+(ert-deftest test-refile-invalidate-cache-silences-org-refile-cache-clears-message ()
+  "`org-refile-cache-clear' always calls `message'; that is fine when the
+writer asks for it directly (`C-u C-u C-c C-w'), but would be noise here,
+where this runs as a routine side effect of an ordinary insert or
+capture.  `inhibit-message' suppresses the echo-area/stdout output
+without needing to stub `message' itself -- confirmed to leave
+`current-message' nil and print nothing to stdout in batch mode."
+  (let ((org-refile-cache '(("dummy" . nil)))
+        (org-refile-markers nil))
+    (message nil) ;; clear any prior message so the check below is meaningful
+    (org-scribe--refile-invalidate-cache)
+    (should-not (current-message))))
+
+(ert-deftest test-refile-invalidate-cache-registered-on-capture-finalize ()
+  "`org-scribe--refile-invalidate-cache' is on the capture-finalize hook,
+so a new heading from any `org-capture' -- including org-scribe's own
+capture commands, which insert asynchronously via `org-capture' and so
+cannot be invalidated synchronously the way `org-scribe-insert-scene'
+and `org-scribe-insert-chapter' are -- does not go unnoticed by a
+writer-enabled refile cache."
+  (should (memq 'org-scribe--refile-invalidate-cache
+                org-capture-after-finalize-hook)))
 
 ;;; Run tests
 

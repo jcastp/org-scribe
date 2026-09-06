@@ -420,6 +420,41 @@ when checking a draft."
                            blocks (org-scribe--compile-keywords) style root)))))
       (unless existing (kill-buffer buffer)))))
 
+(defun org-scribe--compile-write-intermediate (file text)
+  "Write TEXT to FILE, the compiled intermediate.
+Unlike the manuscript FILE is read from in `org-scribe-compile-normalize',
+this FILE is a build artifact `org-scribe-compile' regenerates from
+scratch on every run, never something the writer authors -- so, unlike
+that function, any existing content in a buffer already visiting it is
+meant to be superseded here, not preserved.
+
+A bare `with-temp-file' -- writing straight to disk, bypassing any buffer
+-- is exactly what an earlier version of this function did, and it broke
+the one workflow this module's own design argues for: opening the
+intermediate to see whether a compile looks wrong (see CLAUDE.md,
+'Manuscript Compilation').  The write leaves that buffer's file modtime
+stale, so the very next thing that visits the same path --
+`org-scribe--compile-export', when FILE is also the export source --
+blocks on Emacs's interactive \"File ... changed on disk.  Reread from
+disk?\" prompt, and then unconditionally kills the buffer regardless of
+the answer.
+
+When a buffer already visits FILE, this updates it in place (replacing
+its content with TEXT, whatever was there before, edited or not) and
+saves it from within that buffer, which is what keeps Emacs's own
+notion of the file's modtime consistent and avoids the prompt entirely
+-- rather than writing to disk out from under the buffer and hoping
+something reconciles the two afterward.  With no such buffer, this is
+`with-temp-file', unchanged from before."
+  (let ((existing (get-file-buffer file)))
+    (if existing
+        (with-current-buffer existing
+          (let ((inhibit-read-only t))
+            (widen)
+            (erase-buffer)
+            (insert text)
+            (save-buffer)))
+      (with-temp-file file (insert text)))))
 
 ;;; Markdown Rendering
 ;;
@@ -662,9 +697,25 @@ to fontify) from signalling `void-variable hfy-user-sheet-assoc'.
 their own output, beside the buffer's file and sharing its base name --
 which is why the intermediate is always written with the base name every
 output wants, and why any future packaged or external-tool format (EPUB)
-needs only an :exporter entry in the format spec, never a branch here."
-  (let ((buffer (find-file-noselect intermediate))
-        (exporter (plist-get spec :exporter)))
+needs only an :exporter entry in the format spec, never a branch here.
+
+Mirrors `org-scribe-compile-normalize''s existing-buffer handling: a
+buffer already visiting INTERMEDIATE (the writer opened it to see
+whether an earlier compile looks wrong -- exactly the workflow this
+module's own design argues for) is reused rather than killed at the
+end.  By the time this runs, `org-scribe--compile-write-intermediate'
+has already brought that buffer's content in sync with what is on disk,
+so reusing it here is safe -- it is not the stale-content risk that
+motivated `org-scribe-compile-normalize' to instead keep and export
+whatever the writer left unsaved in the *manuscript*.  Without this,
+INTERMEDIATE is unconditionally reopened and killed here regardless of
+whether the writer had it open, which used to both block on Emacs's own
+\"File ... changed on disk.  Reread from disk?\" prompt (INTERMEDIATE
+having just been rewritten out from under that buffer) and then discard
+it once the prompt was answered."
+  (let* ((existing (get-file-buffer intermediate))
+         (buffer (or existing (find-file-noselect intermediate)))
+         (exporter (plist-get spec :exporter)))
     (unwind-protect
         (with-current-buffer buffer
           (if exporter
@@ -675,7 +726,7 @@ needs only an :exporter entry in the format spec, never a branch here."
               (expand-file-name (funcall exporter)
                                 (file-name-directory intermediate))
             (org-export-to-file (plist-get spec :backend) output)))
-      (kill-buffer buffer))))
+      (unless existing (kill-buffer buffer)))))
 
 ;;; Command
 
@@ -743,7 +794,7 @@ your behalf."
           (unless blocks
             (user-error "%s" (org-scribe-msg 'compile-empty)))
           (make-directory directory t)
-          (with-temp-file intermediate (insert text))
+          (org-scribe--compile-write-intermediate intermediate text)
           (let ((output
                  ;; `org' is the only format with neither a real backend
                  ;; nor an :exporter -- the intermediate *is* its output.

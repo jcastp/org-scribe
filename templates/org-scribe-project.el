@@ -219,7 +219,6 @@ dictionary.  An existing file is only replaced after confirmation."
           (insert (org-scribe--dir-locals-content language dictionary)))
         (message "%s" (org-scribe-msg 'dir-locals-written dictionary))))))
 
-;;;###autoload
 (defun org-scribe--read-method (&optional language)
   "Prompt for a novel plotting method, returning its symbol.
 LANGUAGE (\\='en or \\='es) selects which of each method's two labels
@@ -237,6 +236,7 @@ matching what an omitted `# Method:' marker resolves to via
                                  (mapcar #'car choices) nil t nil nil default-label)
                choices nil nil #'string=)))
 
+;;;###autoload
 (defun org-scribe-create-novel-project (base-dir title &optional language method)
   "Create a new novel project structure from templates.
 BASE-DIR is the parent directory where the project will be created.
@@ -541,6 +541,10 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 
     ;; Insert template
     (insert template)
+    ;; A stale refile cache would not notice this new heading; see
+    ;; `org-scribe--refile-invalidate-cache' -- a no-op if the writer never
+    ;; turned `org-refile-use-cache' on.
+    (org-scribe--refile-invalidate-cache)
 
     ;; Position cursor at first property value (after :PoV:)
     (goto-char start-pos)
@@ -582,6 +586,10 @@ If CHAPTER-NAME is empty, defaults to \"New chapter\"."
 
     ;; Insert template
     (insert template)
+    ;; A stale refile cache would not notice this new heading; see
+    ;; `org-scribe--refile-invalidate-cache' -- a no-op if the writer never
+    ;; turned `org-refile-use-cache' on.
+    (org-scribe--refile-invalidate-cache)
 
     ;; Position cursor at first scene's :PoV: property (line 8 from start)
     (goto-char start-pos)
