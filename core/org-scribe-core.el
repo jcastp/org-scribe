@@ -623,6 +623,25 @@ Restored by `org-scribe--refile-disable'.  See `org-scribe--refile-unset'.")
   "This buffer's `org-refile-use-outline-path' from before org-scribe overrode it.
 Restored by `org-scribe--refile-disable'.  See `org-scribe--refile-unset'.")
 
+(defvar-local org-scribe--refile-targets-was-local nil
+  "Whether `org-refile-targets' already had a buffer-local value before
+`org-scribe--refile-enable' gave this buffer its own.  Read by
+`org-scribe--refile-disable' to decide *how* to restore: nil means the
+buffer was simply tracking the global value (a plain `(setq
+org-refile-targets ...)' in the writer's init file, most commonly), so
+restoring correctly means going back to tracking it too
+\(`kill-local-variable') rather than `setq-local'-ing a same-looking
+snapshot that then permanently stops following later changes to the
+global value.  Non-nil means the buffer had its own value already (a
+dir-local, a file-local, an earlier `setq-local' from something else),
+which restoring must put back as buffer-local, not discard.")
+
+(defvar-local org-scribe--refile-outline-path-was-local nil
+  "Whether `org-refile-use-outline-path' already had a buffer-local value
+before `org-scribe--refile-enable' gave this buffer its own.  See
+`org-scribe--refile-targets-was-local', which this mirrors exactly for
+the other overridden variable.")
+
 (defun org-scribe--refile-enabled-p ()
   "Non-nil when this buffer's refile variables are currently org-scribe's."
   (not (eq org-scribe--refile-saved-targets org-scribe--refile-unset)))
@@ -652,7 +671,9 @@ themselves, `org-scribe--refile-invalidate-cache' (called from
 capture) keeps it from going stale against org-scribe's own commands
 without org-scribe ever needing to flip the setting itself."
   (unless (org-scribe--refile-enabled-p)
-    (setq org-scribe--refile-saved-targets org-refile-targets
+    (setq org-scribe--refile-targets-was-local (local-variable-p 'org-refile-targets)
+          org-scribe--refile-outline-path-was-local (local-variable-p 'org-refile-use-outline-path)
+          org-scribe--refile-saved-targets org-refile-targets
           org-scribe--refile-saved-outline-path org-refile-use-outline-path))
   ;; The cdr here is the target-description slot, not an optional
   ;; keyword-plist: `t' is Org's own spelling for "all headlines,"
@@ -665,12 +686,34 @@ without org-scribe ever needing to flip the setting itself."
 
 (defun org-scribe--refile-disable ()
   "Restore this buffer's refile variables to their pre-org-scribe values.
-No-op if `org-scribe--refile-enable' was never called in this buffer."
+No-op if `org-scribe--refile-enable' was never called in this buffer.
+
+Restoring is not simply `setq-local'-ing the saved values back: a plain
+`setq-local' *always* leaves a buffer-local binding behind, even when
+the buffer had none before org-scribe touched it (the ordinary case — a
+writer's own refile setup is usually a bare `(setq org-refile-targets
+...)' in their init file, tracked globally, not per buffer).  Doing that
+would silently detach the buffer from the global variable forever after:
+a later change to the global value — a customize edit, another package,
+a fresh `setq' — would reach every other buffer and quietly not reach
+this one.  `org-scribe--refile-targets-was-local' and
+`-outline-path-was-local' record, at enable time, whether each variable
+was genuinely buffer-local already; only then does disabling restore via
+`setq-local', putting back the buffer's own prior value.  Otherwise it
+uses `kill-local-variable', which is what actually undoes org-scribe's
+override and lets the buffer resume tracking the global value, exactly
+as if org-scribe had never touched it."
   (when (org-scribe--refile-enabled-p)
-    (setq-local org-refile-targets org-scribe--refile-saved-targets)
-    (setq-local org-refile-use-outline-path org-scribe--refile-saved-outline-path)
+    (if org-scribe--refile-targets-was-local
+        (setq-local org-refile-targets org-scribe--refile-saved-targets)
+      (kill-local-variable 'org-refile-targets))
+    (if org-scribe--refile-outline-path-was-local
+        (setq-local org-refile-use-outline-path org-scribe--refile-saved-outline-path)
+      (kill-local-variable 'org-refile-use-outline-path))
     (setq org-scribe--refile-saved-targets org-scribe--refile-unset
-          org-scribe--refile-saved-outline-path org-scribe--refile-unset)))
+          org-scribe--refile-saved-outline-path org-scribe--refile-unset
+          org-scribe--refile-targets-was-local nil
+          org-scribe--refile-outline-path-was-local nil)))
 
 (defun org-scribe--refile-maybe-setup ()
   "Set up or tear down project-wide refile targets for this buffer.

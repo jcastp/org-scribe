@@ -189,7 +189,12 @@ directions."
       (should org-refile-use-cache))))
 
 (ert-deftest test-refile-disable-restores-saved-values ()
-  "Test that disabling restores the buffer's pre-enable values exactly."
+  "Test that disabling restores the buffer's pre-enable values exactly.
+Both variables are buffer-local *before* enabling here, so both must
+stay buffer-local after disabling too -- see
+`test-refile-disable-does-not-leave-a-stray-buffer-local-binding' for
+the opposite (and more common) case, where nothing was buffer-local to
+begin with."
   (test-refile--with-temp-project '(("novel.org" . "#+TITLE: Test\n"))
     (setq-local org-refile-targets '((nil . (:maxlevel . 3))))
     (setq-local org-refile-use-outline-path nil)
@@ -197,6 +202,8 @@ directions."
     (org-scribe--refile-disable)
     (should (equal org-refile-targets '((nil . (:maxlevel . 3)))))
     (should (eq org-refile-use-outline-path nil))
+    (should (local-variable-p 'org-refile-targets))
+    (should (local-variable-p 'org-refile-use-outline-path))
     (should-not (org-scribe--refile-enabled-p))))
 
 (ert-deftest test-refile-disable-restores-nil-outline-path-correctly ()
@@ -209,6 +216,58 @@ a naive save/restore falls into (see commentary at the top of this file)."
     (should (eq org-refile-use-outline-path 'file))
     (org-scribe--refile-disable)
     (should (eq org-refile-use-outline-path nil))))
+
+(ert-deftest test-refile-disable-does-not-leave-a-stray-buffer-local-binding ()
+  "Disabling must not leave a buffer-local value behind when neither
+variable was buffer-local before `org-scribe--refile-enable' ran -- the
+ordinary case, where the writer's own refile setup is a plain `setq' in
+their init file, tracked globally.  A naive `setq-local' restore leaves
+a same-looking snapshot in place that silently stops following later
+changes to the global value; the correct restore is
+`kill-local-variable', which actually resumes tracking it."
+  (test-refile--with-temp-project '(("novel.org" . "#+TITLE: Test\n"))
+    (should-not (local-variable-p 'org-refile-targets))
+    (should-not (local-variable-p 'org-refile-use-outline-path))
+    (org-scribe--refile-enable)
+    (org-scribe--refile-disable)
+    (should-not (local-variable-p 'org-refile-targets))
+    (should-not (local-variable-p 'org-refile-use-outline-path))))
+
+(ert-deftest test-refile-disable-resumes-tracking-a-later-global-change ()
+  "The concrete, user-visible consequence of the test above: once
+disabled, the buffer must pick up a *later* change to the global refile
+configuration, not stay frozen on whatever the global value was back
+when `org-scribe--refile-enable' first ran."
+  (let ((org-refile-targets '((nil . (:maxlevel . 2)))))
+    (test-refile--with-temp-project '(("novel.org" . "#+TITLE: Test\n"))
+      (org-scribe--refile-enable)
+      (org-scribe--refile-disable)
+      ;; Simulate a later, unrelated global change -- a customize edit,
+      ;; another package, a fresh `setq' -- reaching every buffer that is
+      ;; still tracking the global value.
+      (setq org-refile-targets '((nil . (:maxlevel . 5))))
+      (should (equal org-refile-targets '((nil . (:maxlevel . 5))))))))
+
+(ert-deftest test-refile-disable-keeps-a-preexisting-local-binding-independent-of-global ()
+  "The mirror image of the two tests above: when the buffer *did* have its
+own buffer-local value before `org-scribe--refile-enable' -- a dir-local
+or file-local setting, say -- disabling must restore it as buffer-local,
+not silently fold it into whatever the global value is.  A later global
+change must not reach this buffer, exactly the opposite requirement from
+the ordinary case."
+  (let ((org-refile-targets '((nil . (:maxlevel . 5)))))
+    (test-refile--with-temp-project '(("novel.org" . "#+TITLE: Test\n"))
+      (setq-local org-refile-targets '((nil . (:maxlevel . 3))))
+      (org-scribe--refile-enable)
+      (org-scribe--refile-disable)
+      (should (local-variable-p 'org-refile-targets))
+      (should (equal org-refile-targets '((nil . (:maxlevel . 3)))))
+      ;; Simulate a later, unrelated global change, made from some other
+      ;; buffer -- a plain `setq' from *this* buffer would only rebind
+      ;; the buffer-local slot just restored above, which is not what a
+      ;; global change elsewhere in Emacs looks like.
+      (setq-default org-refile-targets '((nil . (:maxlevel . 9))))
+      (should (equal org-refile-targets '((nil . (:maxlevel . 3))))))))
 
 (ert-deftest test-refile-disable-is-noop-when-never-enabled ()
   "Test that disabling before ever enabling leaves refile variables alone."
