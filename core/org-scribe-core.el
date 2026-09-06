@@ -623,7 +623,9 @@ load-path change) is picked up without restarting Emacs."
     (setting      . ("Setting" "Ambientación" "Ambientacion"))
     (plot-threads . ("Plot Threads" "Hilos de la Trama"))
     (plot-points  . ("The Thirteen Non-Negotiables" "Los trece irrenunciables"))
-    (starting-gate . ("Starting Gate" "Puerta de salida")))
+    (starting-gate . ("Starting Gate" "Puerta de salida"))
+    (objects      . ("Objects" "Objetos"))
+    (timeline     . ("Timeline" "Línea Temporal" "Linea Temporal")))
   "Canonical section key -> localized level-1 heading aliases.
 Mirrors `org-scribe--scene-property-aliases': English and Spanish project
 templates use different literal heading text for the same section

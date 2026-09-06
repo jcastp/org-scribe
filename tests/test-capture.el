@@ -606,6 +606,78 @@ directly, instead of creating a redundant English \"Characters\" section."
       ;; No duplicate English section was created
       (should-not (string-match-p "\\* Characters" (buffer-string))))))
 
+(ert-deftest test-capture-goto-objects-section-lands-on-existing-heading ()
+  "An object capture files under the shipped notes.org template's own
+\"Objects\" section, matching what manual/00-feature-index.org already
+claims — mirrors `test-capture-goto-section-short-story-lands-on-existing-heading'
+for the `characters' section."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Objects\n\n")
+      (insert "* Timeline\n\n")
+      (org-scribe--capture-goto-objects-section)
+      (should (org-at-heading-p))
+      (should (string= (org-get-heading t t t t) "Objects")))))
+
+(ert-deftest test-capture-goto-objects-section-creates-missing-section ()
+  "When no \"Objects\" section exists yet, it is created at the buffer end,
+rather than the object being appended as a stray top-level heading."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Characters\n\n")
+      (org-scribe--capture-goto-objects-section)
+      (should (org-at-heading-p))
+      (should (string= (org-get-heading t t t t) "Objects")))))
+
+(ert-deftest test-capture-goto-objects-section-finds-spanish-alias ()
+  "A Spanish short-story project's \"Objetos\" heading (the shipped
+notas.org.template's own text) is recognized directly."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Objetos\n\n")
+      (org-scribe--capture-goto-objects-section)
+      (should (org-at-heading-p))
+      (should (string= (org-get-heading t t t t) "Objetos"))
+      (should-not (string-match-p "\\* Objects" (buffer-string))))))
+
+(ert-deftest test-capture-goto-timeline-section-lands-on-existing-heading ()
+  "A timeline-event capture files under the shipped notes.org template's
+own \"Timeline\" section."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Objects\n\n")
+      (insert "* Timeline\n\n")
+      (org-scribe--capture-goto-timeline-section)
+      (should (org-at-heading-p))
+      (should (string= (org-get-heading t t t t) "Timeline")))))
+
+(ert-deftest test-capture-goto-timeline-section-creates-missing-section ()
+  "When no \"Timeline\" section exists yet, it is created at the buffer end."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Characters\n\n")
+      (org-scribe--capture-goto-timeline-section)
+      (should (org-at-heading-p))
+      (should (string= (org-get-heading t t t t) "Timeline")))))
+
+(ert-deftest test-capture-goto-timeline-section-finds-spanish-alias ()
+  "A Spanish short-story project's \"Línea Temporal\" heading (the shipped
+notas.org.template's own text) is recognized directly, and does not
+create a redundant English \"Timeline\" section."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Línea Temporal\n\n")
+      (org-scribe--capture-goto-timeline-section)
+      (should (org-at-heading-p))
+      (should (string= (org-get-heading t t t t) "Línea Temporal"))
+      (should-not (string-match-p "\\* Timeline" (buffer-string))))))
+
 (ert-deftest test-capture-goto-section-novel-lands-on-blank-line ()
   "In a novel-project buffer, point ends up on a blank line at buffer end,
 not on a heading — so the capture files as a flat top-level entry,

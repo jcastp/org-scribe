@@ -554,7 +554,14 @@ printf-style format specifiers (%s, %d, etc.) for dynamic content.")
     (capture-ss-main-locations . "Localización(es) Principal(es)")
     (capture-ss-locations . "Localizaciones")
     (capture-ss-objects . "Objetos")
-    (capture-ss-timeline . "Cronología")
+    ;; Must match the shipped notas.org.template's own heading text
+    ;; ("Línea Temporal"), not a different translation of "Timeline" --
+    ;; the recovery file this key feeds has to stay in step with the
+    ;; template it stands in for, or a capture routed by section heading
+    ;; would find no match and create a second, duplicate section instead
+    ;; of filing into the one the writer already has (the same class of
+    ;; bug "Hilos de Trama" vs "Hilos de la Trama" was).
+    (capture-ss-timeline . "Línea Temporal")
     (capture-ss-research . "Investigación y Referencias")
     (capture-ss-revision-notes . "Notas de Revisión")
     (capture-ss-random-ideas . "Ideas Sueltas e Inspiración")

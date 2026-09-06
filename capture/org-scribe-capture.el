@@ -276,6 +276,24 @@ a flat top-level heading, matching `org-scribe--plot-heading-p', which
 requires level 1 there.  See `org-scribe--capture-goto-section'."
   (org-scribe--capture-goto-section 'plot-threads))
 
+(defun org-scribe--capture-goto-objects-section ()
+  "Move point to where a new object capture should be filed.
+In short stories, nests under the localized \"Objects\" section of
+notes.org.  Unlike characters/setting/plot-threads, no entity predicate
+reads this section (objects are not a linked entity type in this
+package), so this exists only so a captured object lands under the
+section `manual/00-feature-index.org' already claims it does, instead of
+appended as a stray heading at the end of the buffer.  See
+`org-scribe--capture-goto-section'."
+  (org-scribe--capture-goto-section 'objects))
+
+(defun org-scribe--capture-goto-timeline-section ()
+  "Move point to where a new timeline-event capture should be filed.
+In short stories, nests under the localized \"Timeline\" section of
+notes.org.  See `org-scribe--capture-goto-objects-section', which this
+mirrors exactly, and `org-scribe--capture-goto-section'."
+  (org-scribe--capture-goto-section 'timeline))
+
 (defun org-scribe-capture-target-file (&optional create-if-missing)
   "Determine the appropriate notes file for org-capture in writing environment.
 Uses `org-scribe-project-root' to find the project base directory.
@@ -461,7 +479,8 @@ of the revision marks scenery for cutting."
 LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
   (let ((org-scribe-message-language (or language (org-scribe-project-language))))
     `(("o" ,(org-scribe-msg 'capture-obj-name) entry
-       (file org-scribe-capture-object-file)
+       (file+function org-scribe-capture-object-file
+                      org-scribe--capture-goto-objects-section)
        ,(format "* %%^{%s}
 :PROPERTIES:
 :ID: %%(org-id-new)
@@ -518,7 +537,8 @@ LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
 LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
   (let ((org-scribe-message-language (or language (org-scribe-project-language))))
     `(("t" ,(org-scribe-msg 'capture-tl-name) entry
-       (file org-scribe-capture-timeline-file)
+       (file+function org-scribe-capture-timeline-file
+                      org-scribe--capture-goto-timeline-section)
        ,(format "* %%^{%s}
 :PROPERTIES:
 :ID: %%(org-id-new)
