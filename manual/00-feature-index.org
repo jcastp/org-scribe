@@ -49,7 +49,7 @@ Novel project creation also prompts for which plotting method to deploy: the Sis
 
 ** Short Story Project Creation (~org-scribe-create-short-story-project~)
 
-Creates a minimal short story project structure optimized for shorter works (1,000-20,000 words). Unlike novel projects, short story projects use only 3 files: README.org, story.org (or cuento.org for Spanish), and a consolidated notes.org file that combines character sketches, plot outline, and research. Word counting is integrated directly into the story file rather than maintained separately. This streamlined structure reduces overhead for quick projects while maintaining essential planning features.
+Creates a minimal short story project structure optimized for shorter works (1,000-20,000 words). Unlike novel projects, short story projects have no ~objects/~ directory: they ship README.org, .gitignore, story.org (or cuento.org for Spanish), a consolidated notes.org file that combines character sketches, plot outline, and research, and a scratchpad.org file for chaotic notes. Word counting is integrated directly into the story file rather than maintained separately. The manuscript's scenes carry the same scene-metadata property drawer, the same ~:ignore:~ tag, and the same TODO keyword vocabulary a novel's scenes do, so word counting, linking, search, and the health report treat a short story exactly like a novel — only the plotting method itself (Sistema/Hélice/Matriz) has not been adapted to short-story scale. This streamlined structure reduces overhead for quick projects while maintaining essential planning features.
 
 *Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~templates/org-scribe-project.el~
 
@@ -172,7 +172,7 @@ Opens a comprehensive character capture template that prompts for all essential 
 
 ** Location Profile Capture (~org-scribe-capture-location~)
 
-Captures detailed location profiles with prompts for name, type (city/building/room/natural/region/country), importance (major/supporting/minor), first appearance, climate, and population. The template includes sections for general description, geography, cultural aspects & society, history, notable features, plot importance, specific places, atmosphere & mood, and map references. Locations receive automatic unique IDs for the linking system. Captures go to objects/locations.org (novels) or notes.org under "Setting → Locations" (short stories).
+Captures detailed location profiles with prompts for name, type (city/building/room/natural/region/country), importance (major/supporting/minor), first appearance, climate, and population. The template includes sections for general description, geography, cultural aspects & society, history, notable features, plot importance, specific places, atmosphere & mood, and map references. Locations receive automatic unique IDs for the linking system. Captures go to objects/locations.org (novels) or notes.org under "Setting" (short stories) — a level-2 heading alongside the section's own placeholder entries, not nested a level deeper under them.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8 k l~ (Manage → Capture entity submenu) | *Module*: ~capture/org-scribe-capture.el~
 
@@ -190,7 +190,7 @@ Captures story timeline events with prompts for event name, type (action/revelat
 
 ** Plot Thread Profile Capture (~org-scribe-capture-plot-thread~)
 
-Captures plot thread profiles with prompts for name and type (Main Plot, Subplot, Arc, Theme, or Motif). The template includes sections for description, connection to the main plot, key scenes where the thread appears, and resolution notes. Plot threads receive automatic unique IDs for the linking system. This capture is intentionally minimal - designed to quickly record a new thread when you notice it emerging during writing, with the intention to elaborate during planning sessions. Captures go to objects/plot.org (novels) or notes.org under "Plot Outline" (short stories).
+Captures plot thread profiles with prompts for name and type (Main Plot, Subplot, Arc, Theme, or Motif). The template includes sections for description, connection to the main plot, key scenes where the thread appears, and resolution notes. Plot threads receive automatic unique IDs for the linking system. This capture is intentionally minimal - designed to quickly record a new thread when you notice it emerging during writing, with the intention to elaborate during planning sessions. Captures go to objects/plot.org (novels) or notes.org under "Plot Threads" (short stories) — a section distinct from "Plot Outline," which holds the Premise/Setup/Central Conflict/Resolution prose, not captured threads.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8 k g~ (Manage → Capture entity submenu) | *Module*: ~capture/org-scribe-capture.el~
 
@@ -269,7 +269,7 @@ Reads the ~:Plot:~ property of the current scene, presents a menu if multiple pl
 
 ** Character Timeline Generation
 
-Generates a dynamic table showing which characters appear in which scenes, with distinction between PoV characters (◆) and other appearances (●). The dynamic block ~#+BEGIN: character-timeline~ scans all scenes (level-3 headings) in the manuscript, extracts ~:PoV:~ and ~:Characters:~ properties, collects unique characters, and builds a presence matrix. PoV takes precedence (a character won't show both ◆ and ● in the same scene). Update the table by pressing ~C-c C-c~ on the block. Useful for checking character coverage and PoV balance.
+Generates a dynamic table showing which characters appear in which scenes, with distinction between PoV characters (◆) and other appearances (●). The dynamic block ~#+BEGIN: character-timeline~ scans all scenes (the project's own scene level — level 3 in a novel, level 2 in a short story) in the manuscript, extracts ~:PoV:~ and ~:Characters:~ properties, collects unique characters, and builds a presence matrix. PoV takes precedence (a character won't show both ◆ and ● in the same scene). Update the table by pressing ~C-c C-c~ on the block. Useful for checking character coverage and PoV balance. The short-story manuscript template does not ship this block by default, but it works if added to ~story.org~/~cuento.org~.
 
 *Status*: Fully implemented | *Hydra*: Not in menu (dynamic block) | *Module*: ~linking/org-scribe-character-links.el~
 
@@ -399,25 +399,25 @@ Internal helper function that extracts display text from ID links, handling sing
 
 ** Scene Template Insertion (~org-scribe-insert-scene~)
 
-Inserts a complete scene template with TODO state, placeholder title, and comprehensive scene properties at the current heading. The template includes: ~:PoV:~, ~:Characters:~, ~:Plot:~, ~:Timeline:~, ~:Location:~, ~:Description:~, ~:Summary:~, ~:Scene-motivation:~, ~:Conflict-source:~, ~:What-is-at-stake:~, ~:Emotion:~, ~:Comment:~, ~:WORDCOUNT:~, and ~:WORD-OBJECTIVE:~. These properties integrate with search functions, linking system, word counting, and progress tracking. The function prompts for scene title and automatically creates the heading at the appropriate level (level 3 for novels, following the Act → Chapter → Scene hierarchy).
+Inserts a complete scene template with TODO state, placeholder title, and comprehensive scene properties at the current heading. The template includes: ~:PoV:~, ~:Characters:~, ~:Plot:~, ~:Timeline:~, ~:Location:~, ~:Description:~, ~:Summary:~, ~:Scene-motivation:~, ~:Conflict-source:~, ~:What-is-at-stake:~, ~:Emotion:~, ~:Comment:~, ~:WORDCOUNT:~, and ~:WORD-OBJECTIVE:~. These properties integrate with search functions, linking system, word counting, and progress tracking. The function reads the current project's own outline shape (~org-scribe-project-levels~) rather than assuming a novel's, so the heading it creates lands at the project's own scene level — level 3, following the Act → Chapter → Scene hierarchy, for a novel; level 2 for a short story — tagged ~:ignore:~ either way.
 
 *Status*: Fully implemented | *Hydra*: ~s~ (Insert section) | *Module*: ~templates/org-scribe-project.el~
 
 ** Chapter Template Insertion (~org-scribe-insert-chapter~)
 
-Inserts a chapter template with TODO state, title prompt, and chapter-level properties (~:WORDCOUNT:~, ~:WORD-OBJECTIVE:~) followed immediately by a complete empty first scene (level-3 heading with all scene metadata properties and ~{{{scene-break}}}~). After insertion, point lands at the new scene's ~:PoV:~ property ready for input — the same landing position produced by ~org-scribe-insert-scene~. This means a single command both creates the chapter structure and opens a scene for writing without a second step.
+Inserts a chapter template with TODO state, title prompt, and chapter-level properties (~:WORDCOUNT:~, ~:WORD-OBJECTIVE:~) followed immediately by a complete empty first scene (at the project's own scene level, with all scene metadata properties and ~{{{scene-break}}}~). After insertion, point lands at the new scene's ~:PoV:~ property ready for input — the same landing position produced by ~org-scribe-insert-scene~. This means a single command both creates the chapter structure and opens a scene for writing without a second step. In a short-story project, which has no chapter level at all, the function refuses with a clear ~user-error~ instead of inserting a heading that would collide with the scene level — use ~org-scribe-insert-scene~ there instead.
 
 *Status*: Fully implemented | *Hydra*: ~c~ (Insert section) | *Module*: ~templates/org-scribe-project.el~
 
 ** Scene-Level Word Count Update (~org-scribe-update-scene-wordcounts~)
 
-Updates the ~:WORDCOUNT:~ property on every scene heading (level 3, ~:ignore:~ tag) in the current subtree without modifying chapter or act headings.  When point is on a chapter or act heading, only that subtree is processed; when point is not on any heading, the entire buffer is updated.  The function delegates to ~org-context-count-words~ (from ~org-context-extended~) for metadata-aware counting, using the same counting logic as ~org-scribe-ews-org-count-words~ but scoped exclusively to scenes.  This makes it fast and safe to refresh scene word counts during a writing session without inadvertently overwriting chapter-level aggregates.
+Updates the ~:WORDCOUNT:~ property on every scene heading (the project's own scene level — level 3 tagged ~:ignore:~ in a novel, level 2 tagged ~:ignore:~ in a short story, via ~org-scribe-scene-match~) in the current subtree without modifying chapter or act headings.  When point is on a chapter or act heading, only that subtree is processed; when point is not on any heading, the entire buffer is updated.  The function delegates to ~org-context-count-words~ (from ~org-context-extended~) for metadata-aware counting, using the same counting logic as ~org-scribe-ews-org-count-words~ but scoped exclusively to scenes.  This makes it fast and safe to refresh scene word counts during a writing session without inadvertently overwriting chapter-level aggregates.
 
 *Status*: Fully implemented | *Hydra*: Not directly bound — reachable via ~C-u C-u~ on ~w~ (the ~org-scribe-wordcount~ dispatcher) | *Module*: ~counting/org-scribe-wordcount.el~
 
 ** Project Template System
 
-The template system processes directories of .template files recursively, performing variable substitution for ~${TITLE}~, ~${AUTHOR}~, and ~${DATE}~. Templates support both novels (12-13 files with separate planning documents) and short stories (3 files with consolidated structure). Template processing removes the .template extension, creates target directories as needed, and preserves file permissions. This system makes it trivial to add new project types or customize existing templates without code changes.
+The template system processes directories of .template files recursively, performing variable substitution for ~${TITLE}~, ~${AUTHOR}~, and ~${DATE}~. Templates support both novels (12-13 files with separate planning documents) and short stories (4 files with consolidated structure: README, story/cuento manuscript, notes, and scratchpad — plus a plain, non-templated ~.gitignore~ copied alongside them). Template processing removes the .template extension, creates target directories as needed, and preserves file permissions. This system makes it trivial to add new project types or customize existing templates without code changes.
 
 *Status*: Fully implemented | *Hydra*: N/A (used by project creation) | *Module*: ~templates/org-scribe-project.el~
 
@@ -520,6 +520,10 @@ divisions, because ~:ignore:~ sits on chapters exactly as it does on scenes.
 Compile normalizes the manuscript first — acts dropped, chapters kept as
 real visible headings, scenes silenced with breaks derived from sibling
 structure rather than typed — then hands the result to stock Org exporters.
+A short story, which has no acts or chapters, compiles the same way: its
+own single container heading is dropped and its scenes go silent just the
+same, at whatever level ~org-scribe-project-levels~ says that project type's
+scenes live at.
 Formats: Org, plain text, Markdown, ODT need nothing beyond Emacs; PDF
 (via ~org-latex-export-to-pdf~) needs a LaTeX distribution, DOCX (via
 pandoc, shelled out) needs the ~pandoc~ tool, and EPUB (via
@@ -619,9 +623,9 @@ To use column view with writing projects, add a ~#+COLUMNS~ line to your manuscr
 
 ** Project Health Report (~org-scribe-project-health~)
 
-Aggregates project-wide statistics into a single ~*org-scribe-health*~ buffer displayed as an org-mode file with clickable ~[[id:...]]~ links back to individual scenes.  The report is organised into seven sections, plus an optional eighth when the bundled writing planner is active for the project:
+Aggregates project-wide statistics into a single ~*org-scribe-health*~ buffer displayed as an org-mode file with clickable ~[[id:...]]~ links back to individual scenes.  Works for both project types — novel and short story — reading each one's own scene and chapter levels via ~org-scribe-project-levels~ rather than assuming a novel's.  The report is organised into seven sections, plus an optional eighth when the bundled writing planner is active for the project; one of the seven, /Chapter Length Spread/, is shown only for a project type that has chapters:
 
-1. *Overview* — manuscript filename (linked), total scene count, words written (summed from level-3 ~:WORDCOUNT:~), chapter objectives (summed from level-2 ~:WORD-OBJECTIVE:~), and progress percentage.  Using separate levels for actual vs. target avoids the double-counting that would occur if both chapter and scene objectives were totalled together.  A ~Spelling dictionary~ line appears here only when the project's ~.dir-locals.el~ is missing or names a dictionary that disagrees with the project language — drift that is otherwise invisible until a spell check argues with the prose; ~M-x org-scribe-update-dir-locals~ fixes it.
+1. *Overview* — manuscript filename (linked), total scene count, words written (summed from the project's own scene level), word objective (summed from the chapter level when the project type has one, or from the scene level when it does not — a short story, having no chapters, carries ~:WORD-OBJECTIVE:~ on its scenes directly), and progress percentage.  This either/or is what avoids the double-counting that would occur if a novel's chapter and scene objectives were totalled together.  A ~Spelling dictionary~ line appears here only when the project's ~.dir-locals.el~ is missing or names a dictionary that disagrees with the project language — drift that is otherwise invisible until a spell check argues with the prose; ~M-x org-scribe-update-dir-locals~ fixes it.
 
 2. *Writing Plan* (optional) — plan title, target word count, current word count and percentage, daily target, end date, and on-track/behind status.  Shown only when a plan is loaded for the project and the project has not opted out of the planner; otherwise a creation/load hint is shown instead, and the section is omitted entirely for a project that declined the planner.
 
@@ -629,15 +633,15 @@ Aggregates project-wide statistics into a single ~*org-scribe-health*~ buffer di
 
 4. *Per-PoV Word Share* — scenes and words grouped by resolved PoV character name, with each PoV's percentage of the manuscript's total words.  Scenes with no PoV set are grouped under a "(no PoV)" row, doubling as a missing-property signal.
 
-5. *Chapter Length Spread* — per-chapter word totals plus a summary line of minimum, maximum, mean, and median chapter length, with outlier chapters (roughly 2x the mean or under half of it) flagged for attention.
+5. *Chapter Length Spread* (novels only) — per-chapter word totals plus a summary line of minimum, maximum, mean, and median chapter length, with outlier chapters (roughly 2x the mean or under half of it) flagged for attention.  Omitted entirely for a short story, which has no chapters to spread.
 
-6. *Missing Scene Properties* — three subsections listing scenes that lack a ~:PoV:~, ~:Plot:~, or ~:Location:~ value respectively.  Each entry is an ~[[id:...][Scene Heading]]~ link followed by the parent chapter name.
+6. *Missing Scene Properties* — three subsections listing scenes that lack a ~:PoV:~, ~:Plot:~, or ~:Location:~ value respectively.  Each entry is an ~[[id:...][Scene Heading]]~ link, followed by the parent chapter name for a novel; a short story's entries carry no such suffix, since there is no chapter to name.
 
 7. *Orphaned Entities* — characters and locations defined in their database files whose IDs do not appear in any scene property.  An entity is considered orphaned if its org ID is absent from every ~:PoV:~, ~:Characters:~, ~:Location:~, and ~:Plot:~ property across all scenes.  Orphaned entities represent planning work not yet woven into the manuscript.
 
-8. *Open TODO Scenes* — a full list of scenes whose TODO state is not DONE, with the state keyword in square brackets and a clickable scene link.
+8. *Open TODO Scenes* — a full list of scenes whose TODO state is not DONE, with the state keyword in square brackets and a clickable scene link (again with the chapter-name suffix only for a novel).
 
-The function requires a novel project with a detectable manuscript file (novel.org / novela.org) and gracefully handles missing character or location database files.  Orphan detection is skipped for entity types whose linking module is not loaded.
+The function requires a project with a detectable manuscript file (~novel.org~/~novela.org~ for a novel, ~story.org~/~cuento.org~ for a short story) and gracefully handles missing character or location database files.  Orphan detection is skipped for entity types whose linking module is not loaded.
 
 *Status*: Fully implemented | *Hydra*: ~H~ (Manage section, visible in hint) | *Module*: ~reporting/org-scribe-health.el~
 

@@ -296,6 +296,46 @@ The project includes:
 - Progress tracking tables
 - Git repository initialization
 
+*** Create a New Short Story Project
+
+=M-x org-scribe-create-short-story-project=
+
+This creates a smaller, consolidated project structure:
+
+#+begin_example
+MyStory/
+├── README.org             # Project overview and navigation
+├── .gitignore             # Keeps compiled output and build artifacts out of git
+├── story.org              # Manuscript, with front matter and word-count tracking
+├── notes.org              # Characters, Setting, Plot Threads, Objects, Timeline, and more
+└── scratchpad.org         # A place for chaotic notes; nothing reads it
+#+end_example
+
+Spanish projects have the same structure with localized file names
+(=cuento.org=, =notas.org=, =cuaderno-borradores.org=).
+
+Unlike a novel project, there is no =objects/= directory: characters, locations
+and plot threads are level-2 headings nested under =* Characters=, =* Setting=
+and =* Plot Threads= in =notes.org= rather than living in their own files.
+Capturing a new character, location, object, or timeline event
+(=F8 F8 k=) files it under the matching section of =notes.org= automatically.
+
+The manuscript's scenes (=** Opening=, =** Middle=, =** Ending= to start —
+add more with =F8 F8 s=) carry the same eighteen-property scene metadata
+drawer, the same =:ignore:= tag, and the same TODO vocabulary
+(=TODO=/=TOWRITE=/=TOREVIEW=/=REDO=/=RESTRUCTURE=/=FINISHED=/=PURGE=) a novel's
+scenes do — word counting, search, linking, and the health report all work
+the same way regardless of project type. The one thing =F8 F8 c= (insert
+chapter) cannot do here is insert a chapter: a short story has no chapter
+level, so it refuses with a clear message instead of inserting a heading that
+would collide with the scene level — use =F8 F8 s= for the next scene instead.
+
+*The writing method itself has not been adapted to short-story scale yet* — see
+"Short story projects still use the previous structure" below — but every
+other feature (word counting, the health report, manuscript compilation,
+capture, linking, and search) works on a short story exactly as it does on a
+novel.
+
 *** The writing method behind the templates
 
 The novel templates implement a specific method rather than generic
@@ -321,7 +361,12 @@ layer handles both structures.
 *Short story projects still use the previous structure.* Adapting the method to
 short-story scale needs editorial decisions the method does not yet make (how
 many Stances at that length, which of the thirteen survive, whether subplots
-exist at all), so it is deliberately deferred rather than guessed at.
+exist at all), so it is deliberately deferred rather than guessed at. This is
+specifically about the *plotting method* — the causal chain, the thirteen
+non-negotiables, the Starting Gate. It does not affect anything else: word
+counting, the health report, compilation, capture, linking and search all
+already treat a short story as a first-class project type (see "Create a New
+Short Story Project" above).
 
 *** Choosing a plotting method
 
@@ -410,6 +455,12 @@ While working in your manuscript:
 - =M-x org-scribe-insert-scene= or =F8 F8 s=: Insert a scene with metadata properties (PoV, Characters, Plot, Location, etc.)
 - =M-x org-scribe-insert-chapter= or =F8 F8 c=: Insert a chapter heading with word count properties and an empty first scene; cursor lands at the scene's =:PoV:= line ready to fill in
 
+Both commands read the current project's own outline shape rather than
+assuming a novel's: a scene lands at level 3 in a novel and level 2 in a
+short story, tagged =:ignore:= either way. =org-scribe-insert-chapter= refuses
+with a clear message in a short-story project, which has no chapter level to
+insert one at.
+
 *** Quick Project File Access
 
 =M-x org-scribe-open-project-file= or =F8 F8 o=
@@ -473,11 +524,11 @@ writing planner is active, silently syncs today's word delta to =plan.org=.
 
 =M-x org-scribe-update-scene-wordcounts=
 
-Updates =:WORDCOUNT:= on every scene heading (level 3, =:ignore:= tagged) in the
-current subtree.  When point is on a chapter or act heading, only that
-chapter/act is updated; when point is not on a heading the entire buffer is
-processed.  Chapter and act headings are not touched.  Requires
-=org-context-extended=.
+Updates =:WORDCOUNT:= on every scene heading — level 3 in a novel, level 2 in
+a short story, both tagged =:ignore:= — in the current subtree.  When point
+is on a chapter or act heading, only that chapter/act is updated; when point
+is not on a heading the entire buffer is processed.  Chapter and act headings
+are not touched.  Requires =org-context-extended=.
 
 *** Automatic Update on Save
 
@@ -488,7 +539,8 @@ automatically every time you save the manuscript file:
 (setq org-scribe-auto-wordcount t)
 #+end_src
 
-When enabled, saving =novel.org= (or =novela.org=) silently calls
+When enabled, saving the manuscript (=novel.org=/=novela.org= for a novel,
+=story.org=/=cuento.org= for a short story) silently calls
 =org-scribe-ews-org-count-words= and, if the planner is active, pushes the new
 total to =plan.org= in the same operation.  Requires =org-context-extended=
 (skipped silently when that package is absent).  Disabled by default to keep
@@ -891,7 +943,7 @@ Note: To update plot thread display names after renaming threads in =objects/plo
 
 *** Overview
 
-Track character appearances across your novel using a visual timeline. See at a glance which characters appear in which scenes, who has the PoV, and identify coverage gaps.
+Track character appearances across your manuscript using a visual timeline. See at a glance which characters appear in which scenes, who has the PoV, and identify coverage gaps. The scene scan itself is project-type aware, so this works the same way in a short story as in a novel — the short-story manuscript template just does not ship the dynamic block by default (a short story's short scene count makes coverage easy to see by eye); add it to =story.org=/=cuento.org= yourself if you want it.
 
 *** Quick Start
 
@@ -1067,30 +1119,38 @@ a /different/ ID.
 
 =M-x org-scribe-project-health= or press =F8 F8 H= in hydra
 
-Generates an aggregated health snapshot of the current novel project and opens
-it in the =*org-scribe-health*= buffer as a browsable org file with clickable
-=[[id:...]]= links back to each scene.
+Generates an aggregated health snapshot of the current project — novel or
+short story — and opens it in the =*org-scribe-health*= buffer as a
+browsable org file with clickable =[[id:...]]= links back to each scene.
 
 The report contains seven sections (plus an optional eighth when the bundled
-writing planner is active for the project):
+writing planner is active for the project); one of the seven, *Chapter Length
+Spread*, only appears for a project type that has chapters:
 
-| Section                 | What it shows                                                                                                       |
-|-------------------------+---------------------------------------------------------------------------------------------------------------------|
-| *Overview*                | Manuscript file, scene count, words written, chapter objectives, %; plus a spelling-dictionary line when it drifts   |
-| *Writing Plan* (optional) | Plan title, target, current %, daily target, end date — only when a plan is loaded and the project hasn't opted out |
-| *Scenes by Status*        | Count of scenes per TODO state (TODO, DONE, custom keywords)                                                        |
-| *Per-PoV Word Share*      | Scene count and word count per PoV character, with % of total                                                       |
-| *Chapter Length Spread*   | Per-chapter word totals plus min/max/mean/median across the manuscript                                              |
-| *Missing Properties*      | Scenes lacking =:PoV:=, =:Plot:=, or =:Location:= — linked                                                                |
-| *Orphaned Entities*       | Characters/locations in their database but not linked in any scene                                                  |
-| *Open TODO Scenes*        | Full list with state labels and clickable scene links                                                               |
+| Section                            | What it shows                                                                                                       |
+|-------------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| *Overview*                           | Manuscript file, scene count, words written, word objective, %; plus a spelling-dictionary line when it drifts      |
+| *Writing Plan* (optional)            | Plan title, target, current %, daily target, end date — only when a plan is loaded and the project hasn't opted out |
+| *Scenes by Status*                   | Count of scenes per TODO state (TODO, DONE, custom keywords)                                                        |
+| *Per-PoV Word Share*                 | Scene count and word count per PoV character, with % of total                                                       |
+| *Chapter Length Spread* (novels only) | Per-chapter word totals plus min/max/mean/median across the manuscript                                             |
+| *Missing Properties*                 | Scenes lacking =:PoV:=, =:Plot:=, or =:Location:= — linked                                                          |
+| *Orphaned Entities*                  | Characters/locations in their database but not linked in any scene                                                  |
+| *Open TODO Scenes*                   | Full list with state labels and clickable scene links                                                               |
+
+In a short-story project — which has no chapters — the Chapter Length Spread
+section is omitted entirely, and the =(chapter: ...)= annotation that would
+otherwise follow each entry in Missing Properties and Open TODO Scenes is
+left off too, since there is no chapter to name.
 
 *** Word count totals
 
-Actual words are summed from level-3 (scene) =:WORDCOUNT:= properties; the
-target is summed from level-2 (chapter) =:WORD-OBJECTIVE:= properties.  This
-avoids double-counting that would occur if both chapter and scene objectives
-were summed together.
+Actual words are always summed from the project's own scene level (level 3
+in a novel, level 2 in a short story). The objective is summed from the
+chapter level when the project type has one; a short story, which has no
+chapter level, sums =:WORD-OBJECTIVE:= from the scene level instead — the two
+are never summed together, which is what avoids double-counting a novel's
+per-chapter target against its own scenes' objectives.
 
 *** Spelling dictionary drift
 
@@ -1442,7 +1502,10 @@ does on scenes. Compile fixes this by *transforming* the manuscript before
 handing it to Org's exporters, rather than patching the exported result:
 
 - Acts are dropped (a planning structure, not a reading one); chapter
-  headings survive as real, visible headings; scene headings go silent.
+  headings survive as real, visible headings; scene headings go silent. A
+  short story, which has no acts or chapters at all, compiles the same way:
+  its own container heading is dropped and its scenes go silent just the
+  same.
 - A break is inserted between consecutive sibling scenes automatically —
   derived from the document's structure, so there is nothing to remember to
   type between scenes.
@@ -1456,10 +1519,11 @@ Compile the manuscript to:  org / txt / md / odt / pdf / docx / epub
 #+end_example
 
 Output goes to =org-scribe-compile-output-directory= (default =export/=,
-relative to the project root — worth adding to =.gitignore=) as e.g.
-=novel-clean.odt=, alongside the intermediate =novel-clean.org= that produced
-it. That intermediate is always written, whichever format you choose: when a
-compile looks wrong, open it and see whether the problem is the transform or
+relative to the project root — already excluded by the =.gitignore= every
+new project ships with) as e.g. =novel-clean.odt=, alongside the intermediate
+=novel-clean.org= that produced it. That intermediate is always written,
+whichever format you choose: when a compile looks wrong, open it and see
+whether the problem is the transform or
 the renderer.
 
 The break between scenes is configurable:
