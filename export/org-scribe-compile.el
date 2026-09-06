@@ -242,6 +242,27 @@ than being regenerated from the parse tree."
                 parts))))
     (org-scribe--compile-strip-macros (string-trim (apply #'concat (nreverse parts))))))
 
+(defun org-scribe--compile-chapter-title (headline)
+  "Return HEADLINE's title text for use as a compiled chapter heading.
+Like `:raw-value', with a statistics cookie (`[1/3]', `[50%]') removed
+wherever in the title it sits, along with the whitespace immediately
+around it -- Org's own subtree-progress bookkeeping, not something a
+reader has any business seeing on a chapter line.  `:raw-value' already
+correctly excludes the TODO keyword, priority cookie and tags (they are
+not part of it to begin with), so the cookie was the one piece of
+planning apparatus still leaking through.
+
+Everything else in the title -- inline links, emphasis, and any other
+markup -- is kept as literal Org syntax, not stripped: this text becomes
+a headline in the intermediate .org file, which every backend re-parses
+normally on its own export pass, so a link here is exactly as legitimate
+as one anywhere else in the manuscript, not corruption to route around."
+  (let ((kept (seq-remove (lambda (el) (eq (org-element-type el) 'statistics-cookie))
+                          (org-element-property :title headline))))
+    (string-trim (replace-regexp-in-string
+                  "[ \t]+" " "
+                  (org-element-interpret-data kept)))))
+
 (defun org-scribe--compile-blocks (tree levels)
   "Return the ordered output blocks for parse TREE, given LEVELS.
 Each block is (chapter . TITLE), (scene . TEXT), (prose . TEXT) or
@@ -277,7 +298,7 @@ TREE was parsed from."
                    (push (cons 'scene body) blocks)))
                 ;; Chapter: kept, and resets the run of scenes.
                 ((and chapter-level (= level chapter-level))
-                 (push (cons 'chapter (org-element-property :raw-value headline)) blocks)
+                 (push (cons 'chapter (org-scribe--compile-chapter-title headline)) blocks)
                  (setq scenes-this-chapter 0)
                  (emit-prose body))
                 ;; Container (act, story wrapper): heading dropped, any
@@ -372,20 +393,46 @@ is the writer's choice."
   (or (org-scribe--project-marker-get root "Pen-name")
       org-scribe-author-name))
 
+(defun org-scribe--compile-shunn-preamble-directives (template)
+  "Return the `format' directives in TEMPLATE, in order.
+Each `%' introduces one directive: `escaped' for a literal `%%' (which
+`format' does not treat as a placeholder and does not consume an
+argument for), the one-character specifier as a symbol for any other
+`%X' (`s' for the placeholders this template wants, but also `d', `c',
+etc. -- any specifier this template has no business using), or
+`truncated' for a trailing `%' with nothing after it.  Scans by actual
+directive, not by searching for the substring \"%s\": that substring
+also occurs *inside* an unrelated `%%s' (a literal `%' followed by a
+literal `s', consuming no argument at all) and does not occur in a
+directive `format' would still choke on, like a stray `%d'."
+  (let ((pos 0) (specs nil) (len (length template)))
+    (while (setq pos (string-match "%" template pos))
+      (if (>= (1+ pos) len)
+          (progn (push 'truncated specs) (setq pos len))
+        (let ((c (aref template (1+ pos))))
+          (push (if (eq c ?%) 'escaped (intern (char-to-string c))) specs)
+          (setq pos (+ pos 2)))))
+    (nreverse specs)))
+
 (defun org-scribe--compile-shunn-preamble-lines (surname keyword)
   "Return `#+LATEX_HEADER:' lines built from the Shunn LaTeX preamble.
 SURNAME and KEYWORD fill the two `%s' placeholders in
 `org-scribe-compile-shunn-latex-preamble', in that order.  The template
-is validated to contain exactly two before `format' ever runs: fewer
-would silently produce a preamble with SURNAME/KEYWORD missing (`format'
-ignores unused arguments rather than erroring), and more would raise
-Elisp's own \"not enough arguments\" instead of naming the actual
-customization that is wrong."
-  (let ((template org-scribe-compile-shunn-latex-preamble)
-        (count 0) (pos 0))
-    (while (string-match "%s" template pos)
-      (setq count (1+ count) pos (match-end 0)))
-    (unless (= count 2)
+is validated to contain exactly two -- and nothing else `format' would
+choke or silently misbehave on -- before `format' ever runs: fewer real
+`%s' directives would silently produce a preamble with SURNAME/KEYWORD
+missing (`format' ignores unused arguments rather than erroring), more
+would raise Elisp's own \"not enough arguments\" instead of naming the
+actual customization that is wrong, and a directive `format' does not
+recognize at all (a bare trailing `%', or one followed by a character
+that is not a valid specifier) signals its own generic error the same
+way.  A literal `%%' is allowed anywhere in the template alongside
+exactly two real `%s' directives -- it consumes no argument, so it does
+not count toward or against the two."
+  (let* ((template org-scribe-compile-shunn-latex-preamble)
+         (directives (org-scribe--compile-shunn-preamble-directives template))
+         (specifiers (seq-remove (lambda (d) (eq d 'escaped)) directives)))
+    (unless (equal specifiers '(s s))
       (user-error "%s" (org-scribe-msg 'compile-shunn-preamble-malformed template)))
     (mapconcat (lambda (line) (concat "#+LATEX_HEADER: " line "\n"))
               (split-string (format template surname keyword) "\n")
@@ -554,7 +601,11 @@ org-scribe documents, and only when DATA is the scene break itself."
       ;; A trailing blank line is required, not cosmetic: without it the
       ;; marker and the paragraph beneath it are one Markdown block, and
       ;; the break renders as a word at the start of the next sentence.
-      (concat (string-trim org-scribe-compile-scene-break) "\n\n")
+      ;; The `or' mirrors the comparison above: with the marker nil, that
+      ;; comparison only matches an empty center block, but it can match
+      ;; one, and `string-trim' on a literal nil signals rather than
+      ;; producing the empty string this is supposed to fall back to.
+      (concat (string-trim (or org-scribe-compile-scene-break "")) "\n\n")
     data))
 
 (add-to-list 'org-export-filter-center-block-functions
@@ -840,8 +891,17 @@ Both are written to `org-scribe-compile-output-directory' under the
 project root.  That directory is a build artifact: it is worth adding to
 the project's .gitignore, which org-scribe deliberately does not edit on
 your behalf."
-  (interactive (let ((style (org-scribe--compile-read-style)))
-                (list style (org-scribe--compile-read-format style))))
+  (interactive
+   ;; Checked here too, not only in the body below: invoked outside a
+   ;; project, prompting for style and format first and only then
+   ;; refusing means answering two prompts to be told they were
+   ;; pointless.  The body's own check still stands -- it is what a
+   ;; non-interactive Lisp caller (which never reaches this interactive
+   ;; spec at all) relies on.
+   (unless (org-scribe-project-root)
+     (user-error "%s" (org-scribe-msg 'compile-not-in-project)))
+   (let ((style (org-scribe--compile-read-style)))
+     (list style (org-scribe--compile-read-format style))))
   (let* ((style (or style 'clean))
          (format (or format 'txt))
          (spec (alist-get format org-scribe--compile-formats))

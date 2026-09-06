@@ -265,6 +265,40 @@ division anywhere."
       (should (string-match-p "^\\* Chapter 2$" out))
       (should (string-match-p "^\\* Chapter 3$" out)))))
 
+(ert-deftest test-compile-chapter-title-drops-statistics-cookie ()
+  "A statistics cookie on a chapter heading (`[1/3]', `[50%]') -- Org's
+own subtree-progress bookkeeping, left there by `C-c C-c' tracking TODO
+completion in the scenes below -- must not leak into the compiled
+chapter title.  `:raw-value' already correctly excludes the TODO keyword
+and priority cookie; the statistics cookie was the one piece of planning
+apparatus still getting through, whether it sits at the end, the start,
+or in the middle of the heading text."
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      (concat "#+TITLE: T\n#+OPTIONS: todo:nil tags:nil\n\n"
+              "* Act I :ignore:\n"
+              "** TODO Chapter One [1/3] :ignore:\n*** Scene 1 :ignore:\nProse.\n\n"
+              "** [50%] Chapter Two :ignore:\n*** Scene 1 :ignore:\nMore prose.\n\n"
+              "** Chapter [2/2] Three :ignore:\n*** Scene 1 :ignore:\nEven more.\n")
+    (org-scribe-compile 'clean 'org)
+    (let ((out (org-scribe-compile-test--intermediate root "novel")))
+      (should (string-match-p "^\\* Chapter One$" out))
+      (should (string-match-p "^\\* Chapter Two$" out))
+      (should (string-match-p "^\\* Chapter Three$" out))
+      (should-not (string-match-p "\\[1/3\\]\\|\\[50%\\]\\|\\[2/2\\]" out)))))
+
+(ert-deftest test-compile-chapter-title-keeps-inline-markup ()
+  "Unlike a statistics cookie, an inline link or emphasis in a chapter
+title is not apparatus -- it is prose the writer put there on purpose,
+and is kept as literal Org syntax so the real export pass re-parses it
+normally, the same as anywhere else in the manuscript."
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      (concat "#+TITLE: T\n#+OPTIONS: todo:nil tags:nil\n\n"
+              "* Act I :ignore:\n"
+              "** The *Real* Beginning :ignore:\n*** Scene 1 :ignore:\nProse.\n")
+    (org-scribe-compile 'clean 'org)
+    (let ((out (org-scribe-compile-test--intermediate root "novel")))
+      (should (string-match-p "^\\* The \\*Real\\* Beginning$" out)))))
+
 (ert-deftest test-compile-omits-act-headings ()
   "Acts are dropped; they are a planning structure, not a reading one."
   (org-scribe-compile-test--with-project "novel" "novel.org"
@@ -584,6 +618,28 @@ whatever `ox-md' does with them."
     (let ((out (org-scribe-compile-test--read (org-scribe-compile 'clean 'md))))
       (should (string-match-p "An epigraph" out))
       (should (string-match-p "org-center" out)))))
+
+(ert-deftest test-compile-markdown-filter-does-not-signal-with-nil-marker ()
+  "The Markdown filter is a general `org-export-filter-center-block-functions'
+entry, not something only `org-scribe-compile' reaches -- so it can run
+against an ordinary `M-x org-md-export-to-markdown' on any org-scribe
+file, independent of and not protected by
+`org-scribe--compile-validate-scene-break' (which only guards the
+`org-scribe-compile' entry point, and would itself refuse a nil marker
+before this filter ever saw one there).  With
+`org-scribe-compile-scene-break' nil and an empty center block -- content
+that reduces to the empty string the same way the comparison's own `or'
+guard does -- the comparison matches and used to reach a bare
+`(string-trim org-scribe-compile-scene-break)' in the replacement branch,
+signalling on the literal nil instead of falling back to the empty
+string the guard above it already treats as the marker's stand-in."
+  (let ((org-scribe-compile-scene-break nil))
+    (with-temp-buffer
+      (rename-buffer "*test-compile-md-nil-marker*" t)
+      (setq-local org-scribe-mode t)
+      (should (equal "\n\n"
+                     (org-scribe--compile-filter-md-scene-break
+                      "" 'md (list :input-buffer (buffer-name))))))))
 
 (ert-deftest test-compile-honours-a-customised-scene-break ()
   "A customised marker reaches every output format.
@@ -950,11 +1006,41 @@ exporting a minimal fixture before this suppression was added."
 not silently rendered with SURNAME/KEYWORD missing or an opaque Elisp
 `format' error."
   (org-scribe-compile-test--with-author
-    (dolist (bad '("no placeholders" "only %s one" "%s %s %s three"))
+    (dolist (bad '("no placeholders" "only %s one" "%s %s %s three"
+                   ;; A directive `format' would choke on, distinct from
+                   ;; just a wrong %s count: a real LaTeX comment with a
+                   ;; bare `%s' escaped as a literal (naively counted as
+                   ;; a real placeholder before, when it consumes no
+                   ;; argument at all), a stray non-%s specifier
+                   ;; alongside exactly two real ones, and a truncated
+                   ;; trailing `%'.
+                   "%%s only, no real ones" "%s %s %d three total" "trailing %"))
       (let ((org-scribe-compile-shunn-latex-preamble bad))
         (org-scribe-compile-test--with-project "novel" "novel.org"
             org-scribe-compile-test--novel
           (should-error (org-scribe-compile 'shunn 'org) :type 'user-error))))))
+
+(ert-deftest test-compile-shunn-preamble-accepts-an-escaped-percent-alongside-the-two-placeholders ()
+  "A literal `%%' -- a real LaTeX comment mentioning a percentage, say --
+must not itself be rejected: it consumes no `format' argument, so it
+does not count toward or against the required two real `%s' directives."
+  (org-scribe-compile-test--with-author
+    (let ((org-scribe-compile-shunn-latex-preamble "50%% off: %s and %s"))
+      (org-scribe-compile-test--with-project "novel" "novel.org"
+          org-scribe-compile-test--novel
+        (org-scribe-compile 'shunn 'org)
+        (let ((out (org-scribe-compile-test--intermediate root "novel" "shunn")))
+          (should (string-match-p "50% off:" out)))))))
+
+(ert-deftest test-compile-shunn-preamble-directives-classifies-correctly ()
+  "Unit-level pin of the scanner itself, independent of the validation
+that consumes it."
+  (should (equal '(s s) (org-scribe--compile-shunn-preamble-directives "%s x %s")))
+  (should (equal '(escaped) (org-scribe--compile-shunn-preamble-directives "%%s")))
+  (should (equal '(s escaped s) (org-scribe--compile-shunn-preamble-directives "%s%%%s")))
+  (should (equal '(s s d) (org-scribe--compile-shunn-preamble-directives "%s %s %d")))
+  (should (equal '(truncated) (org-scribe--compile-shunn-preamble-directives "trailing %")))
+  (should (equal nil (org-scribe--compile-shunn-preamble-directives "no directives here"))))
 
 ;;; Shunn style -- real PDF and DOCX output
 
@@ -1078,6 +1164,23 @@ that belongs in a document the writer might keep, share or version."
   (org-scribe-compile-test--with-project "novel" "novel.org"
       org-scribe-compile-test--novel
     (should-error (org-scribe-compile 'clean 'rtf) :type 'user-error)))
+
+(ert-deftest test-compile-refuses-outside-a-project-before-prompting ()
+  "Invoked interactively outside any project, this must refuse
+immediately -- via its own `interactive' spec -- rather than prompting
+for style and format first and only then explaining, via the body's
+check, that the answers were pointless.  Stubs `completing-read' to
+error if called at all, so this fails loudly if the ordering regresses
+instead of merely leaving an untested gap."
+  (let ((default-directory (file-name-as-directory (make-temp-file "org-scribe-compile-noproj-" t))))
+    (unwind-protect
+        (progn
+          (org-scribe-project-type-cache-clear)
+          (cl-letf (((symbol-function 'completing-read)
+                     (lambda (&rest _) (error "must not prompt"))))
+            (should-error (call-interactively #'org-scribe-compile) :type 'user-error)))
+      (org-scribe-project-type-cache-clear)
+      (delete-directory default-directory t))))
 
 (ert-deftest test-compile-reports-a-project-with-no-manuscript ()
   "A project without a manuscript file is reported, not crashed on."
