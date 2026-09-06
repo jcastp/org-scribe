@@ -415,23 +415,30 @@ KEYWORDS is the alist `org-collect-keywords' returns: NAME to a list of
 every occurrence, in document order."
   (cadr (assoc name keywords)))
 
-(defun org-scribe--compile-to-org (blocks keywords &optional style root)
+(defun org-scribe--compile-to-org (blocks keywords &optional style root format)
   "Return the intermediate Org document for BLOCKS with KEYWORDS.
 STYLE `shunn' additionally prepends the Shunn front matter, inserts the
 LaTeX running-header preamble (inert outside PDF output), and appends a
 centered \"END\" mark; ROOT supplies the project's Shunn markers.  Any
-other STYLE (including nil) produces exactly the `clean' document."
+other STYLE (including nil) produces exactly the `clean' document.
+FORMAT `epub' additionally inserts an `#+EPUBSTYLE:' keyword line."
   (with-temp-buffer
     (dolist (keyword '("TITLE" "AUTHOR" "DATE" "LANGUAGE"))
       (when-let* ((value (org-scribe--compile-keyword-value keyword keywords))
                   ((org-string-nw-p value)))
         (insert (format "#+%s: %s\n" keyword value))))
-    ;; EPUBSTYLE is an ox-epub-only keyword; every other backend ignores
-    ;; an unrecognized keyword line, so it is written unconditionally
-    ;; rather than threading FORMAT through just to gate one line -- the
-    ;; same reasoning that keeps the LaTeX-only running header out of a
-    ;; format branch below.
-    (insert (format "#+EPUBSTYLE: %s\n" org-scribe--compile-epub-css))
+    ;; Unlike the LaTeX-only running header below, which is genuinely
+    ;; inert everywhere but LaTeX/PDF output, this line is not written
+    ;; unconditionally: its value is `org-scribe--compile-epub-css', an
+    ;; *absolute path into this install of org-scribe* -- harmless for the
+    ;; ox-epub backend that reads it, but plumbing with no business
+    ;; appearing in a `clean'/`shunn' `org' or `txt' output the writer
+    ;; might keep, share or put under version control on a machine where
+    ;; that path means nothing.  So this is gated on FORMAT rather than
+    ;; reusing the "every other backend ignores an unrecognized keyword"
+    ;; reasoning that justifies the running header staying unconditional.
+    (when (eq format 'epub)
+      (insert (format "#+EPUBSTYLE: %s\n" org-scribe--compile-epub-css)))
     ;; num:nil because the writer's own heading text already says
     ;; "Chapter 1"; auto-numbering would silently disagree with a
     ;; chapter the writer renamed.  Shunn additionally suppresses Org's
@@ -462,13 +469,13 @@ other STYLE (including nil) produces exactly the `clean' document."
       (insert "#+begin_center\nEND\n#+end_center\n"))
     (buffer-string)))
 
-(defun org-scribe-compile-normalize (file &optional style root)
+(defun org-scribe-compile-normalize (file &optional style root format)
   "Return (BLOCKS . ORG-TEXT) compiled from the manuscript FILE.
-STYLE and ROOT are forwarded to `org-scribe--compile-to-org' -- see
-there for what `shunn' adds.  A buffer opened here purely to read FILE
-is closed again; one the writer already had open is left alone, and its
-unsaved edits are what gets compiled -- which is the useful behavior
-when checking a draft."
+STYLE, ROOT and FORMAT are forwarded to `org-scribe--compile-to-org' --
+see there for what `shunn' STYLE and `epub' FORMAT each add.  A buffer
+opened here purely to read FILE is closed again; one the writer already
+had open is left alone, and its unsaved edits are what gets compiled --
+which is the useful behavior when checking a draft."
   (let* ((existing (get-file-buffer file))
          (buffer (or existing (find-file-noselect file))))
     (unwind-protect
@@ -477,7 +484,7 @@ when checking a draft."
            (let* ((levels (org-scribe--compile-levels-for (org-scribe-project-type)))
                   (blocks (org-scribe--compile-blocks (org-element-parse-buffer) levels)))
              (cons blocks (org-scribe--compile-to-org
-                           blocks (org-scribe--compile-keywords) style root)))))
+                           blocks (org-scribe--compile-keywords) style root format)))))
       (unless existing (kill-buffer buffer)))))
 
 (defun org-scribe--compile-write-intermediate (file text)
@@ -630,13 +637,28 @@ does not match the single-line pattern and is left untouched."
 
 (defconst org-scribe--compile-epub-css
   (expand-file-name "org-scribe-epub.css"
-                    (file-name-directory (or load-file-name buffer-file-name)))
+                    (file-name-directory
+                     (or load-file-name buffer-file-name default-directory)))
   "Path to the stylesheet `org-scribe-compile' points EPUB output at.
 Resolved against this file's own directory rather than
 `org-scribe--source-directory' (core/org-scribe-core.el), so it does not
 depend on load order: this constant is set once, at load time, from
 `load-file-name', which is already correct regardless of how the
-package was installed.")
+package was installed.
+
+`default-directory' is a last-resort fallback, not a real answer:
+`load-file-name' and `buffer-file-name' are both nil only when this file
+is evaluated directly with neither `load'/`require' nor a file-visiting
+buffer behind it -- `M-x eval-buffer' in a scratch buffer, say -- a
+development-only scenario this package's own normal `require'-based
+loading (org-scribe.el) never hits.  Without a fallback,
+`file-name-directory' signals `wrong-type-argument' on that nil, which
+would abort the whole `(require \\='org-scribe-compile)' chain over an
+EPUB CSS path nothing may even be about to use.  A missing or wrong path
+here only matters if the writer then compiles to `epub' in that same
+odd session, and even then fails as a clear `file-missing' from
+`ox-epub' rather than silently, which is not worse than the crash this
+replaces.")
 
 (defun org-scribe--compile-filter-epub-scene-break (data backend info)
   "Give a compiled scene break its own styled class in EPUB output.
@@ -849,7 +871,7 @@ your behalf."
         ;; not only implicitly whenever `org-scribe--compile-scene-break'
         ;; first runs.  See `org-scribe--compile-validate-scene-break'.
         (org-scribe--compile-validate-scene-break)
-        (pcase-let* ((`(,blocks . ,text) (org-scribe-compile-normalize manuscript style root))
+        (pcase-let* ((`(,blocks . ,text) (org-scribe-compile-normalize manuscript style root format))
                      (chapters (seq-count (lambda (b) (eq (car-safe b) 'chapter)) blocks))
                      (scenes (seq-count (lambda (b) (eq (car-safe b) 'scene)) blocks))
                      (directory (expand-file-name org-scribe-compile-output-directory root))
