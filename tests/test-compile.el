@@ -450,6 +450,34 @@ each would compile a manuscript made entirely of separators."
       (should (string-match-p "waited by the window" out))
       (should (string-match-p "stopped waiting" out)))))
 
+(ert-deftest test-compile-short-story-unwritten-scene-emits-nothing ()
+  "An unwritten scene contributes neither prose nor a break, in a short
+story exactly as in a novel (`test-compile-unwritten-scene-emits-nothing').
+A short story has no chapter level to reset the break counter at, so this
+also guards that an empty scene sandwiched between two written ones
+produces exactly one break overall -- not a break on either side of the
+gap, and not zero."
+  (org-scribe-compile-test--with-project "short-story" "story.org"
+      (concat "#+TITLE: Small Hours\n#+AUTHOR: A Writer\n#+LANGUAGE: en\n"
+              "#+MACRO: scene-break SCENE-BREAK\n#+OPTIONS: todo:nil tags:nil\n\n"
+              "* Story Content\n\n"
+              "** Opening\nShe waited by the window.\n\n"
+              "** Middle\n\n"
+              "** Ending\nBy dawn she had stopped waiting.\n")
+    (org-scribe-compile 'clean 'org)
+    (let ((out (org-scribe-compile-test--intermediate root "story")))
+      ;; The break (an Org `center' block, not a bare marker line) sits
+      ;; between the two written scenes' prose, with nothing of the
+      ;; unwritten scene on either side of it.
+      (should (string-match-p
+               (concat "waited by the window\\.\n+#\\+begin_center\n"
+                       (regexp-quote org-scribe-compile-scene-break)
+                       "\n#\\+end_center\n+By dawn")
+               out))
+      ;; Exactly one break, not two -- the unwritten scene added neither.
+      (should (= 1 (org-scribe-compile-test--count
+                    org-scribe-compile-scene-break out))))))
+
 ;;; The scene-break marker itself
 
 (ert-deftest test-compile-rejects-unsafe-scene-break-markers ()

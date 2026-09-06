@@ -841,4 +841,43 @@ CURRENT_WORDS and daily deltas."
       (kill-buffer buf)
       (delete-file f))))
 
+;;; Tests for --wordcount-from-manuscript (short-story projects)
+
+(ert-deftest test-planner-wordcount-from-manuscript-short-story ()
+  "wordcount-from-manuscript reads a short story's own manuscript
+\(story.org), not just a novel's.
+Regression test: before `org-scribe-project-structure' resolved
+`:manuscript-file' for a short story, this always returned nil for one
+\(there was no `:novel-file' to find), so the planner could never learn a
+short-story project's word count without prompting for it by hand."
+  (test-hooks--with-fake-project root marker
+    (write-region "# Writing project: Test\n# Type: short-story\n" nil marker)
+    (write-region
+     (concat "* Story Content\n"
+             "** Opening\n:PROPERTIES:\n:WORDCOUNT: 300\n:END:\n\n"
+             "** Ending\n:PROPERTIES:\n:WORDCOUNT: 200\n:END:\n")
+     nil (expand-file-name "story.org" root))
+    (let ((default-directory root))
+      (org-scribe-project-type-cache-clear)
+      (should (= 500 (org-scribe-planner--wordcount-from-manuscript))))))
+
+(ert-deftest test-planner-wordcount-from-manuscript-novel-still-works ()
+  "Regression guard: the same function still reads a novel's manuscript
+\(novel.org), so the short-story fix above did not narrow it to only one
+project type."
+  (test-hooks--with-fake-project root marker
+    (write-region "# Writing project: Test\n# Type: novel\n" nil marker)
+    (write-region
+     ;; Neither Act I nor Chapter 1 carries its own WORDCOUNT here, so
+     ;; Scene 1's is the one actually summed -- see
+     ;; `test-planner-sum-wordcounts-zero-parents-skipped' for why a
+     ;; parent WORDCOUNT of even 0 would otherwise suppress the child.
+     (concat "* Act I\n"
+             "** Chapter 1\n"
+             "*** Scene 1\n:PROPERTIES:\n:WORDCOUNT: 700\n:END:\n")
+     nil (expand-file-name "novel.org" root))
+    (let ((default-directory root))
+      (org-scribe-project-type-cache-clear)
+      (should (= 700 (org-scribe-planner--wordcount-from-manuscript))))))
+
 ;;; test-hooks.el ends here

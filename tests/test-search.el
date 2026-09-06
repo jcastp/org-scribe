@@ -115,6 +115,50 @@ correctly by extracting file names from item text properties."
       (when (file-exists-p temp-dir)
         (delete-directory temp-dir t)))))
 
+(ert-deftest test-search-todos-recursive-finds-short-story-towrite-scene ()
+  "A short story's TOWRITE-tagged scene is found, not just a bare TODO.
+Regression guard for the short-story manuscript templates' TODO keyword
+vocabulary: before they were brought in line with the novel set's
+\(TODO/TOWRITE/TOREVIEW/REDO/RESTRUCTURE), a short story's own placeholder
+scenes carried keywords (DRAFT/REVISING/etc.) that `org-scribe-todo-keywords'
+never recognized at all, so this search silently missed every one of
+them.  Verified against the same query
+`org-scribe-search-todos-recursive' itself runs
+\(`(todo ,@org-scribe-todo-keywords)'), rather than scraping the
+interactive results buffer `org-ql-search' renders."
+  (skip-unless (featurep 'org-ql))
+  (let* ((temp-dir (make-temp-file "org-scribe-test-ss-" t))
+         (story-file (expand-file-name "story.org" temp-dir)))
+    (unwind-protect
+        (progn
+          (with-temp-file story-file
+            ;; The #+TODO: line matters, not just decoration: without it
+            ;; Org falls back to its own default keyword set (bare TODO
+            ;; and DONE), so TOWRITE and FINISHED would not be recognized
+            ;; as TODO states at all -- `org-get-heading' would not strip
+            ;; them from the heading text, and the org-ql `todo' query
+            ;; itself would not match them either.
+            (insert "#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(p@/!)\n")
+            (insert "* Story Content\n")
+            (insert "** TODO Opening :ignore:\n")
+            (insert "** TOWRITE Middle :ignore:\n")
+            (insert "** FINISHED Ending :ignore:\n"))
+          (with-current-buffer (find-file-noselect story-file)
+            ;; The public entry point still runs without error...
+            (should-not (condition-case err
+                            (progn (org-scribe-search-todos-recursive) nil)
+                          (error err)))
+            ;; ...and its own query actually matches the TOWRITE scene,
+            ;; not just the bare-TODO one.
+            (let ((matches (org-ql-select (list story-file)
+                             `(todo ,@org-scribe-todo-keywords)
+                             :action '(org-get-heading t t t t))))
+              (should (member "Opening" matches))
+              (should (member "Middle" matches))
+              (should-not (member "Ending" matches)))))
+      (when (file-exists-p temp-dir)
+        (delete-directory temp-dir t)))))
+
 ;;; org-scribe-edit-string regexp (M1)
 
 (ert-deftest test-edit-string-matches-edit-marker ()
