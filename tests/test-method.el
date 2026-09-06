@@ -130,6 +130,44 @@ agrees with a direct `org-scribe--project-marker-get' read."
                      (org-scribe--project-marker-get root "Writing project")))
     (should (string= "novel" (org-scribe--project-marker-get root "Type")))))
 
+(ert-deftest test-method-resolves-sistema-when-no-project-and-no-root-arg ()
+  "Outside any project, with no ROOT argument either, this must not fall
+through to reading \".org-scribe-project\" against `default-directory' --
+which could pick up an unrelated marker file that happens to sit there --
+and must resolve to `sistema without consulting the filesystem at all.
+Pins the specific gap: a stray marker file in `default-directory', with
+a Method line naming something other than `sistema, must not leak in.
+
+The marker file is written directly with `with-temp-file', not via
+`org-scribe--project-marker-set' (which does nothing when the file does
+not already exist) -- otherwise this would trivially pass for the wrong
+reason, with no marker file for `default-directory' to leak in the
+first place."
+  (let ((stray-dir (make-temp-file "test-method-stray-" t)))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" stray-dir)
+            (insert "# Writing project: Stray\n# Method: helice\n"))
+          (should (equal "helice" (org-scribe--project-marker-get stray-dir "Method")))
+          (let ((default-directory (file-name-as-directory stray-dir)))
+            (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () nil)))
+              (should (eq 'sistema (org-scribe-project-method))))))
+      (delete-directory stray-dir t))))
+
+(ert-deftest test-method-does-not-intern-a-symbol-for-an-unknown-value ()
+  "A typo or garbage \"# Method:\" value must not permanently intern a new
+symbol into the obarray -- it should be checked with `intern-soft', which
+finds any of the three known method symbols (already interned from
+`org-scribe--methods' own definition) exactly as `intern' would, but
+returns nil instead of interning anything for a value that matches none
+of them."
+  (test-method--with-project root
+    (let ((garbage-name (format "org-scribe-test-method-garbage-%d" (random 1000000))))
+      (should-not (intern-soft garbage-name))
+      (org-scribe--project-marker-set root "Method" garbage-name)
+      (should (eq 'sistema (org-scribe-project-method root)))
+      (should-not (intern-soft garbage-name)))))
+
 (provide 'test-method)
 
 ;;; test-method.el ends here

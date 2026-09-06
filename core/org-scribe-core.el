@@ -196,7 +196,13 @@ method means adding one entry here plus its overlay templates.")
   "Return the plotting method recorded for ROOT's project.
 Returns \\='sistema, \\='helice, or \\='matriz, read from the \"# Method:\"
 line of ROOT's (default: the current project's) .org-scribe-project
-marker file.
+marker file.  Returns \\='sistema, not nil, when ROOT is nil and no
+project can be found either — \"not in a project\" is no more ambiguous
+about which method applies than a project with no \"# Method:\" line at
+all (see below), so this does not fall through to
+`org-scribe--project-marker-get' with a nil ROOT, which would instead
+resolve \".org-scribe-project\" against `default-directory' and could read
+whatever marker file happens to sit there, project or not.
 
 Unlike `org-scribe-planner-gate', there is no undecided state: every
 project created before this feature existed was written under the
@@ -207,20 +213,30 @@ nil, which is what keeps every project created to date behaving
 exactly as it did before this feature existed.
 
 The value is matched case- and whitespace-insensitively, the same
-tolerance `org-scribe-planner-gate' and the (unimplemented) narrative
-form marker apply to their own marker values, so a hand-edited
-\"# Method: Helice\" or \"# Method:  helice \" line still resolves.
+tolerance `org-scribe-planner-gate' applies to its own marker values, so
+a hand-edited \"# Method: Helice\" or \"# Method:  helice \" line still
+resolves.  Matching uses `intern-soft', not `intern': every symbol
+`org-scribe--methods' actually names (\\='sistema, \\='helice, \\='matriz)
+is already interned from the literal quoted symbols in that table's own
+definition, so `intern-soft' finds any of them exactly as `intern' would
+-- but for a typo or a value that names no known method,
+`intern-soft' returns nil (falling through to the \\='sistema default
+below) instead of interning a fresh, permanent symbol into the obarray
+for a value nothing will ever match again.
 
 This function lives in `org-scribe-core.el', not the templates module,
-precisely so that callers which must not force-load anything else —
-the health report, the hydra menu — can still check the method first,
-mirroring `org-scribe-planner-gate'."
-  (let* ((root (or root (org-scribe-project-root)))
-         (value (org-scribe--project-marker-get root "Method"))
-         (normalized (and value (intern (downcase (string-trim value))))))
-    (if (assq normalized org-scribe--methods)
-        normalized
-      'sistema)))
+for the same reason `org-scribe-planner-gate' does: a caller that must
+not force-load the templates module, or force-load the (lazily
+autoloaded) planner in that function's own case, can still check either
+marker first."
+  (let ((root (or root (org-scribe-project-root))))
+    (if (null root)
+        'sistema
+      (let* ((value (org-scribe--project-marker-get root "Method"))
+             (normalized (and value (intern-soft (downcase (string-trim value))))))
+        (if (assq normalized org-scribe--methods)
+            normalized
+          'sistema)))))
 
 (defun org-scribe--find-existing-file (root &rest relative-paths)
   "Return the first existing file from RELATIVE-PATHS under ROOT, or nil."
