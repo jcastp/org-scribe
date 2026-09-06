@@ -8,10 +8,9 @@
 
 ** Protagonista: [Nombre]
 :PROPERTIES:
-:TIPO: Protagonista
-:NOMBRE:
-:EDAD:
-:GENERO:
+:Role: Protagonist
+:Age:
+:Gender:
 :END:
 
 - Personalidad ::
@@ -22,8 +21,7 @@
 
 ** Personaje Secundario: [Nombre]
 :PROPERTIES:
-:TIPO: Secundario
-:NOMBRE:
+:Role: Supporting
 :END:
 
 - Papel ::
@@ -32,8 +30,7 @@
 
 ** Antagonista: [Nombre]
 :PROPERTIES:
-:TIPO: Antagonista
-:NOMBRE:
+:Role: Antagonist
 :END:
 
 - Papel ::
@@ -73,8 +70,8 @@ Rastrea los hilos de la trama y líneas narrativas aquí. Usa =F8 F8 k g= para c
 
 ** Ubicación(es) Principal(es)
 :PROPERTIES:
-:NOMBRE_UBICACION:
-:PERIODO_TEMPORAL:
+:Type: Escenario
+:Time-period:
 :END:
 
 - Descripción ::

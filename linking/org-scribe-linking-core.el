@@ -44,8 +44,17 @@
 ;;; Shared Helper Functions
 
 (defun org-scribe--entity-name-at-point ()
-  "Get entity name from current heading or NAME property."
-  (or (org-entry-get nil "NAME")
+  "Get entity name from current heading or NAME property.
+A blank NAME property is treated as absent, not as the entity's name:
+`org-entry-get' returns the empty string, not nil, for a property that
+is present but has no value, and the empty string is truthy in Lisp --
+the same trap `org-scribe--parse-weight' exists to avoid for `Weight'.
+The shipped short-story notes templates ship exactly this shape (a bare
+`:NAME:' with nothing after it), so without this guard every character
+captured from that template resolves to the empty string instead of its
+heading text, and every one of them collapses into a single
+indistinguishable completion candidate."
+  (or (org-string-nw-p (or (org-entry-get nil "NAME") ""))
       (org-get-heading t t t t)))
 
 (defun org-scribe--create-entity-link (name id-alist)

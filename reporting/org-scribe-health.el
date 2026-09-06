@@ -139,21 +139,22 @@ story's manuscript."
 WORDS is the sum of WORDCOUNT from scene headings (the level for the
 current project type, per `org-scribe-scene-level' -- level 3 for a
 novel, level 2 for a short story).
-OBJECTIVE is the sum of WORD-OBJECTIVE from level-2 (chapter) headings.
-
-The OBJECTIVE side is still hardcoded to a novel's own chapter level:
-a short story carries WORD-OBJECTIVE on its *scenes* instead, since it
-has no chapters at all, so this undercounts to 0 for one.  Widening it
-to sum at the scene level when there is no chapter level is deliberately
-deferred -- doing so unconditionally would double-count a novel's
-totals, since a novel's scenes already roll up into their chapter's own
+OBJECTIVE is the sum of WORD-OBJECTIVE, read from the chapter level
+\(`org-scribe-chapter-level') when the project type has one, or from the
+scene level otherwise.  This is deliberately either/or, not both: a
+short story has no chapter level at all and carries WORD-OBJECTIVE on
+its *scenes* instead, so reading only the (nonexistent) chapter level
+would undercount to 0 for a project that plainly set an objective, but
+reading both unconditionally would double-count a novel's totals, since
+a novel's scenes already roll up into their own chapter's
 WORD-OBJECTIVE."
   (let ((words 0) (obj 0))
     (when (and novel-file (file-exists-p novel-file))
       (with-current-buffer (find-file-noselect novel-file)
         (org-with-wide-buffer
          (goto-char (point-min))
-         (let ((scene-level (org-scribe-scene-level)))
+         (let* ((scene-level (org-scribe-scene-level))
+                (objective-level (or (org-scribe-chapter-level) scene-level)))
            (org-map-entries
             (lambda ()
               (let ((level (org-current-level)))
@@ -161,7 +162,7 @@ WORD-OBJECTIVE."
                   (when (= level scene-level)
                     (when-let ((wc (org-entry-get nil "WORDCOUNT")))
                       (setq words (+ words (string-to-number wc)))))
-                  (when (= level 2)
+                  (when (= level objective-level)
                     (when-let ((wo (org-entry-get nil "WORD-OBJECTIVE")))
                       (setq obj (+ obj (string-to-number wo))))))))
             nil 'file)))))
@@ -413,7 +414,13 @@ ENTITIES is an alist (NAME . (ID . HEADING)) as returned by
 ;;; Report Rendering Helpers
 
 (defun org-scribe--health-insert-missing-list (label scenes-list prop-name)
-  "Insert a subsection listing SCENES-LIST with missing PROP-NAME under LABEL."
+  "Insert a subsection listing SCENES-LIST with missing PROP-NAME under LABEL.
+Each scene is followed by its chapter, in parentheses, only for a
+project type with a real chapter level (a novel) -- see
+`org-scribe--health-word-totals' for why -- since a short story's
+\"chapter\" is really its own single level-1 manuscript wrapper (e.g.
+\"Story Content\"), and printing that on every line names nothing
+useful."
   (insert (format "** Scenes missing %s (%d scene%s)\n\n"
                   label
                   (length scenes-list)
@@ -421,9 +428,12 @@ ENTITIES is an alist (NAME . (ID . HEADING)) as returned by
   (if (null scenes-list)
       (insert (format "All scenes have =%s= set.\n\n" prop-name))
     (dolist (s scenes-list)
-      (insert (format "- %s  (chapter: /%s/)\n"
-                      (org-scribe--health-scene-link (nth 0 s) (nth 2 s))
-                      (or (nth 1 s) "?"))))
+      (if (org-scribe-chapter-level)
+          (insert (format "- %s  (chapter: /%s/)\n"
+                          (org-scribe--health-scene-link (nth 0 s) (nth 2 s))
+                          (or (nth 1 s) "?")))
+        (insert (format "- %s\n"
+                        (org-scribe--health-scene-link (nth 0 s) (nth 2 s))))))
     (insert "\n")))
 
 ;;; Main Report Function
@@ -439,22 +449,22 @@ The report opens in the *org-scribe-health* buffer as an Org-mode file
 with clickable ID links back to each scene."
   (interactive)
   (let* ((structure (org-scribe-project-structure))
-         (novel-file (plist-get structure :novel-file)))
+         (manuscript-file (plist-get structure :manuscript-file)))
 
-    (unless novel-file
-      (user-error "No manuscript file found. Is this an org-scribe novel project?"))
+    (unless manuscript-file
+      (user-error (org-scribe-msg 'msg-relink-no-novel)))
 
     ;; Collect all data before opening the buffer
-    (let* ((scenes         (org-scribe--health-collect-scene-data novel-file))
-           (done-keywords  (with-current-buffer (find-file-noselect novel-file)
+    (let* ((scenes         (org-scribe--health-collect-scene-data manuscript-file))
+           (done-keywords  (with-current-buffer (find-file-noselect manuscript-file)
                              org-done-keywords))
-           (word-totals    (org-scribe--health-word-totals novel-file))
+           (word-totals    (org-scribe--health-word-totals manuscript-file))
            (total-words    (car word-totals))
            (total-obj      (cdr word-totals))
            (progress       (if (> total-obj 0)
                                (* 100.0 (/ (float total-words) total-obj))
                              nil))
-           (ref-ids        (org-scribe--health-collect-referenced-ids novel-file))
+           (ref-ids        (org-scribe--health-collect-referenced-ids manuscript-file))
            ;; Starting Gate: the writer's own ticks, plus the two items that
            ;; can be measured rather than asserted.
            (gate-items     (org-scribe--health-gate-items
@@ -510,7 +520,7 @@ with clickable ID links back to each scene."
         ;; ── Overview ─────────────────────────────────────────────────────────
         (insert "* Overview\n\n")
         (insert (format "- Manuscript :: [[file:%s][%s]]\n"
-                        novel-file (file-name-nondirectory novel-file)))
+                        manuscript-file (file-name-nondirectory manuscript-file)))
         (insert (format "- Total scenes :: %d\n" scene-count))
         (insert (format "- Words written :: %d\n" total-words))
         (if progress
@@ -631,29 +641,35 @@ with clickable ID links back to each scene."
         (insert "\n")
 
         ;; ── Chapter length spread ────────────────────────────────────────────
-        (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-chapter-length-heading)))
-        (insert (format "%s\n" (org-scribe-msg 'msg-health-chapter-length-table-header)))
-        (insert "|---------+-------|\n")
-        (dolist (entry chapter-totals)
-          (let* ((chapter (car entry))
-                 (words (cdr entry))
-                 (outlier (and (> chapter-mean 0)
-                              (or (> words (* 2 chapter-mean))
-                                  (< words (* 0.5 chapter-mean))))))
-            (insert (format "| %s | %d%s |\n" chapter words (if outlier " *" "")))))
-        (insert "\n")
-        (insert (format "%s\n\n"
-                        (org-scribe-msg 'msg-health-chapter-length-summary
-                                        (if chapter-words (apply #'min chapter-words) 0)
-                                        (if chapter-words (apply #'max chapter-words) 0)
-                                        chapter-mean
-                                        chapter-median)))
-        (when (cl-some (lambda (entry)
-                         (and (> chapter-mean 0)
-                              (or (> (cdr entry) (* 2 chapter-mean))
-                                  (< (cdr entry) (* 0.5 chapter-mean)))))
-                       chapter-totals)
-          (insert (format "%s\n\n" (org-scribe-msg 'msg-health-chapter-length-outlier-legend))))
+        ;; Only for a project type with a real chapter level (a novel).  A
+        ;; short story has no chapter level at all -- `chapter-totals' would
+        ;; still compute one pseudo-"chapter" per scene's level-1 container
+        ;; (the manuscript's own wrapper heading), which is not a chapter
+        ;; and has nothing to spread.
+        (when (org-scribe-chapter-level)
+          (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-chapter-length-heading)))
+          (insert (format "%s\n" (org-scribe-msg 'msg-health-chapter-length-table-header)))
+          (insert "|---------+-------|\n")
+          (dolist (entry chapter-totals)
+            (let* ((chapter (car entry))
+                   (words (cdr entry))
+                   (outlier (and (> chapter-mean 0)
+                                (or (> words (* 2 chapter-mean))
+                                    (< words (* 0.5 chapter-mean))))))
+              (insert (format "| %s | %d%s |\n" chapter words (if outlier " *" "")))))
+          (insert "\n")
+          (insert (format "%s\n\n"
+                          (org-scribe-msg 'msg-health-chapter-length-summary
+                                          (if chapter-words (apply #'min chapter-words) 0)
+                                          (if chapter-words (apply #'max chapter-words) 0)
+                                          chapter-mean
+                                          chapter-median)))
+          (when (cl-some (lambda (entry)
+                           (and (> chapter-mean 0)
+                                (or (> (cdr entry) (* 2 chapter-mean))
+                                    (< (cdr entry) (* 0.5 chapter-mean)))))
+                         chapter-totals)
+            (insert (format "%s\n\n" (org-scribe-msg 'msg-health-chapter-length-outlier-legend)))))
 
         ;; ── Missing properties ────────────────────────────────────────────────
         (insert "* Missing Scene Properties\n\n")
@@ -690,14 +706,22 @@ with clickable ID links back to each scene."
           (insert "\n"))
 
         ;; ── Open TODOs ────────────────────────────────────────────────────────
+        ;; The "(chapter: ...)" suffix only makes sense for a project type
+        ;; with a real chapter level; for a short story it would print the
+        ;; manuscript's own level-1 container heading (e.g. "Story Content")
+        ;; on every single line, which names nothing useful.
         (insert (format "* Open TODO Scenes (%d)\n\n" (length open-todos)))
         (if (null open-todos)
             (insert "All scenes are marked DONE.\n")
           (dolist (s open-todos)
-            (insert (format "- [%s] %s  (chapter: /%s/)\n"
-                            (or (nth 3 s) "?")
-                            (org-scribe--health-scene-link (nth 0 s) (nth 2 s))
-                            (or (nth 1 s) "?")))))
+            (if (org-scribe-chapter-level)
+                (insert (format "- [%s] %s  (chapter: /%s/)\n"
+                                (or (nth 3 s) "?")
+                                (org-scribe--health-scene-link (nth 0 s) (nth 2 s))
+                                (or (nth 1 s) "?")))
+              (insert (format "- [%s] %s\n"
+                              (or (nth 3 s) "?")
+                              (org-scribe--health-scene-link (nth 0 s) (nth 2 s)))))))
 
         (goto-char (point-min))
         (pop-to-buffer (current-buffer))

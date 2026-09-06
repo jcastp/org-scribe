@@ -70,7 +70,12 @@ content generation."
       (insert (org-scribe--file-header (org-scribe-msg 'capture-title-project-notes title) "overview"))
       (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-characters)))
       (insert (format "** %s\n" (org-scribe-msg 'capture-ss-protagonist-name)))
-      (insert ":PROPERTIES:\n:TYPE: Protagonist\n:NAME:\n:AGE:\n:GENDER:\n:END:\n\n")
+      ;; :Role: is deliberately English regardless of LANGUAGE (see
+      ;; docs/glossary.org: entity property values for Role are English in
+      ;; both template sets), matching the shipped short-story templates
+      ;; this recovery file stands in for.  No :NAME: -- the heading is the
+      ;; name; see `org-scribe--entity-name-at-point'.
+      (insert ":PROPERTIES:\n:Role: Protagonist\n:Age:\n:Gender:\n:END:\n\n")
       (insert (format "- %s\n- %s\n- %s\n\n"
                       (org-scribe-msg 'capture-ss-personality)
                       (org-scribe-msg 'capture-ss-goal)

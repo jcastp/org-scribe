@@ -39,6 +39,25 @@ The path is available as `temp-novel'."
            ,@body)
        (delete-file temp-novel))))
 
+(defmacro test-health--with-short-story-file (content &rest body)
+  "Create a temp file with CONTENT as an org short story, bind its path, run BODY.
+Like `test-health--with-novel-file', but also stubs
+`org-scribe-project-type' to return \\='short-story for the duration of
+BODY, so `org-scribe-scene-level'/`org-scribe-chapter-level' resolve the
+short-story levels rather than defaulting to a novel's (which is what
+would happen for a bare temp file with no real project marker on disk).
+The path is available as `temp-novel', matching the novel macro so the
+two fixtures are interchangeable in a test that wants to run both."
+  (declare (indent 1))
+  `(let ((temp-novel (make-temp-file "test-health-short-story-" nil ".org")))
+     (unwind-protect
+         (progn
+           (with-temp-file temp-novel (insert ,content))
+           (cl-letf (((symbol-function 'org-scribe-project-type)
+                      (lambda () 'short-story)))
+             ,@body))
+       (delete-file temp-novel))))
+
 (ert-deftest test-health-function-defined ()
   "Test that org-scribe-project-health is defined."
   (should (fboundp 'org-scribe-project-health)))
@@ -99,10 +118,25 @@ The path is available as `temp-novel'."
         (should-not (nth 4 b))  ; has-pov = nil
         (should (nth 6 b))))))  ; has-plot = t
 
+(ert-deftest test-health-collect-scene-data-short-story-level-2 ()
+  "Test that scene data is collected from level-2 headings in a short story.
+Regression test: before scene collection was made project-type aware, this
+returned no scenes at all for a short story, since it hardcoded level 3."
+  (test-health--with-short-story-file
+      "* Story Content\n** TODO Opening :ignore:\n:PROPERTIES:\n:PoV: Alice\n:END:\n\nSome text.\n"
+    (let ((scenes (org-scribe--health-collect-scene-data temp-novel)))
+      (should (= (length scenes) 1))
+      (should (equal (nth 0 (car scenes)) "Opening")))))
+
 ;;; Word totals
 
 (ert-deftest test-health-word-totals-sums-levels ()
-  "Test that word totals sum level-3 WORDCOUNT and level-2 WORD-OBJECTIVE."
+  "Test that word totals sum level-3 WORDCOUNT and level-2 WORD-OBJECTIVE.
+Regression guard: a novel's WORD-OBJECTIVE must keep coming from the
+chapter level only, never also from the scene level -- summing both
+would double-count against a novel's own per-chapter target, which is
+exactly the trap the short-story either/or logic below must not fall
+into for a novel."
   (test-health--with-novel-file
       "** TODO Chapter One :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 5000\n:WORDCOUNT: 0\n:END:\n\n*** TODO Scene A :ignore:\n:PROPERTIES:\n:WORDCOUNT: 1200\n:WORD-OBJECTIVE: 500\n:END:\n\n*** TODO Scene B :ignore:\n:PROPERTIES:\n:WORDCOUNT: 800\n:WORD-OBJECTIVE: 500\n:END:\n\n"
     (let* ((totals (org-scribe--health-word-totals temp-novel))
@@ -110,8 +144,26 @@ The path is available as `temp-novel'."
            (obj (cdr totals)))
       ;; Words = scene A + scene B = 1200 + 800
       (should (= words 2000))
-      ;; Objective = chapter objective only (level-2) = 5000
+      ;; Objective = chapter objective only (level-2) = 5000, NOT
+      ;; 5000 + 500 + 500 from also reading the scenes' own WORD-OBJECTIVE.
       (should (= obj 5000)))))
+
+(ert-deftest test-health-word-totals-short-story-sums-scene-level-objective ()
+  "A short story has no chapter level, so WORD-OBJECTIVE is read from the
+scene level instead -- the either/or half of `org-scribe--health-word-totals'.
+Regression test: before this, OBJECTIVE was hardcoded to a novel's
+chapter level (2), which for a short story either misses the mark
+entirely or, as here, happens to equal the scene level by coincidence --
+this test pins the actual logic, not the coincidence."
+  (test-health--with-short-story-file
+      (concat "* Story Content\n"
+              "** TODO Opening :ignore:\n:PROPERTIES:\n:WORDCOUNT: 300\n:WORD-OBJECTIVE: 1500\n:END:\n\n"
+              "** TODO Ending :ignore:\n:PROPERTIES:\n:WORDCOUNT: 200\n:WORD-OBJECTIVE: 1500\n:END:\n\n")
+    (let* ((totals (org-scribe--health-word-totals temp-novel))
+           (words (car totals))
+           (obj (cdr totals)))
+      (should (= words 500))
+      (should (= obj 3000)))))
 
 (ert-deftest test-health-word-totals-empty-file ()
   "Test that an empty file returns zero totals."
@@ -162,14 +214,55 @@ The path is available as `temp-novel'."
     (puthash "char-001" t ref-ids)
     (should (null (org-scribe--health-find-orphans entities ref-ids)))))
 
-;;; Integration: project-health errors without a novel file
+;;; Integration: project-health errors without a manuscript file
 
 (ert-deftest test-health-project-health-errors-without-novel-file ()
-  "Test that project-health signals user-error when no manuscript file exists."
-  (let ((orig-fn (symbol-function 'org-scribe-project-structure)))
+  "Test that project-health signals user-error when no manuscript file exists.
+Note this is no longer specific to a novel: the same refusal, and the
+same type-neutral message, applies to a short-story project with no
+manuscript at all."
+  (cl-letf (((symbol-function 'org-scribe-project-structure)
+             (lambda () (list :manuscript-file nil :novel-file nil))))
+    (should-error (org-scribe-project-health) :type 'user-error)))
+
+;;; Integration: project-health on a short-story project
+
+(ert-deftest test-health-project-health-short-story-produces-a-report ()
+  "org-scribe-project-health no longer refuses a short-story project --
+it produces a real report, with a non-zero scene count and no Chapter
+Length Spread section (a short story has no chapters at all), and no
+meaningless \"(chapter: /Story Content/)\" suffix on every Open TODO or
+Missing Property line -- \"Story Content\" is the manuscript's own
+level-1 wrapper, not a chapter.
+Regression test: before `:manuscript-file' existed, `:novel-file' was
+always nil for a short story and this call always signalled a
+\"novel project?\" user-error, which was wrong for a project that
+plainly is a short story."
+  (test-health--with-short-story-file
+      (concat "* Story Content\n"
+              "** TODO Opening :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 300\n:WORD-OBJECTIVE: 1500\n:END:\n\n"
+              "** TODO Ending :ignore:\n:PROPERTIES:\n:WORDCOUNT: 200\n:WORD-OBJECTIVE: 1500\n:END:\n\n")
     (cl-letf (((symbol-function 'org-scribe-project-structure)
-               (lambda () (list :novel-file nil))))
-      (should-error (org-scribe-project-health) :type 'user-error))))
+               (lambda ()
+                 (list :manuscript-file temp-novel
+                       :novel-file temp-novel
+                       :plan-file nil
+                       :design-file nil
+                       :plot-file nil
+                       :characters-file nil
+                       :locations-file nil))))
+      (should-not (condition-case nil (progn (org-scribe-project-health) nil)
+                    (error t)))
+      (with-current-buffer (get-buffer "*org-scribe-health*")
+        (let ((text (buffer-string)))
+          (should (string-match-p "Total scenes :: 2" text))
+          (should (string-match-p "Words written :: 500" text))
+          (should-not (string-match-p "Chapter Length Spread" text))
+          (should-not (string-match-p "(chapter:" text))
+          ;; Ending is missing PoV -- confirm it's still listed, just
+          ;; without the chapter suffix.
+          (should (string-match-p "Scenes missing PoV" text))
+          (should (string-match-p "Ending" text)))))))
 
 ;;; Regression: custom done-state keywords
 
@@ -200,7 +293,8 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
               ":PROPERTIES:\n:PoV: Carol\n:WORDCOUNT: 50\n:END:\n\n")
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
-                 (list :novel-file temp-novel
+                 (list :manuscript-file temp-novel
+                       :novel-file temp-novel
                        :characters-file nil
                        :locations-file nil))))
       (org-scribe-project-health)
@@ -223,7 +317,8 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
       "** TODO Chapter :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 5000\n:END:\n\n*** TODO Scene :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 300\n:END:\n\nSome words.\n"
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
-                 (list :novel-file temp-novel
+                 (list :manuscript-file temp-novel
+                       :novel-file temp-novel
                        :characters-file nil
                        :locations-file nil))))
       (org-scribe-project-health)
@@ -256,7 +351,8 @@ Chapter Three (100) is the only outlier (< 0.5 * mean = 600)."
         "*** DONE Scene 4 :ignore:\n:PROPERTIES:\n:PoV: Bob\n:WORDCOUNT: 100\n:END:\n\n")
      (cl-letf (((symbol-function 'org-scribe-project-structure)
                 (lambda ()
-                  (list :novel-file temp-novel
+                  (list :manuscript-file temp-novel
+                        :novel-file temp-novel
                         :plan-file nil
                         :characters-file nil
                         :locations-file nil))))
@@ -283,7 +379,8 @@ Chapter Three (100) is the only outlier (< 0.5 * mean = 600)."
        "*** DONE Scene 2 :ignore:\n:PROPERTIES:\n:WORDCOUNT: 50\n:END:\n\n")
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
-                 (list :novel-file temp-novel
+                 (list :manuscript-file temp-novel
+                       :novel-file temp-novel
                        :plan-file nil
                        :characters-file nil
                        :locations-file nil))))
@@ -325,7 +422,8 @@ and the outlier legend line is shown."
        "*** DONE Scene 2 :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 1100\n:END:\n\n")
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
-                 (list :novel-file temp-novel
+                 (list :manuscript-file temp-novel
+                       :novel-file temp-novel
                        :plan-file nil
                        :characters-file nil
                        :locations-file nil))))
@@ -434,7 +532,8 @@ even though nothing was actually due."
     (let ((org-scribe-planner--current-plan nil))
       (cl-letf (((symbol-function 'org-scribe-project-structure)
                  (lambda ()
-                   (list :novel-file temp-novel
+                   (list :manuscript-file temp-novel
+                         :novel-file temp-novel
                          :plan-file nil
                          :characters-file nil
                          :locations-file nil))))
@@ -454,7 +553,8 @@ even though nothing was actually due."
       (unwind-protect
           (cl-letf (((symbol-function 'org-scribe-project-structure)
                      (lambda ()
-                       (list :novel-file temp-novel
+                       (list :manuscript-file temp-novel
+                             :novel-file temp-novel
                              :plan-file plan-file
                              :characters-file nil
                              :locations-file nil))))
@@ -482,7 +582,8 @@ even though nothing was actually due."
            (org-scribe-planner--current-plan plan))
       (cl-letf (((symbol-function 'org-scribe-project-structure)
                  (lambda ()
-                   (list :novel-file temp-novel
+                   (list :manuscript-file temp-novel
+                         :novel-file temp-novel
                          :plan-file nil
                          :characters-file nil
                          :locations-file nil))))

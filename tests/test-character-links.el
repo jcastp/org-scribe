@@ -68,6 +68,21 @@ It is the escape hatch for an entity whose heading is not its name."
     (goto-char (point-min))
     (should (equal (org-scribe--entity-name-at-point) "Victor Sarraute"))))
 
+(ert-deftest test-entity-name-at-point-treats-blank-name-as-absent ()
+  "A NAME property present but empty falls back to the heading, not the
+empty string.  `org-entry-get' returns \"\" (not nil) for a property with
+no value, and \"\" is truthy -- the trap `org-scribe--parse-weight'
+guards against for `Weight'.  The shipped short-story notes templates
+ship exactly this shape (`:NAME:' with nothing after it), so without
+this guard every character captured from them resolves to the same
+empty-string \"name\" and collapses into one indistinguishable
+completion candidate."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Protagonist: [Name]\n:PROPERTIES:\n:Role: Protagonist\n:NAME:\n:END:\n")
+    (goto-char (point-min))
+    (should (equal (org-scribe--entity-name-at-point) "Protagonist: [Name]"))))
+
 (ert-deftest test-entity-name-at-point-strips-heading-decoration ()
   "TODO keywords, priorities and tags are not part of the entity name.
 A name carrying a tag would not match the same entity elsewhere, so link

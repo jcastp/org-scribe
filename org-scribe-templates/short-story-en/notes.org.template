@@ -8,10 +8,9 @@
 
 ** Protagonist: [Name]
 :PROPERTIES:
-:TYPE: Protagonist
-:NAME:
-:AGE:
-:GENDER:
+:Role: Protagonist
+:Age:
+:Gender:
 :END:
 
 - Personality ::
@@ -22,8 +21,7 @@
 
 ** Supporting Character: [Name]
 :PROPERTIES:
-:TYPE: Supporting
-:NAME:
+:Role: Supporting
 :END:
 
 - Role ::
@@ -32,8 +30,7 @@
 
 ** Antagonist: [Name]
 :PROPERTIES:
-:TYPE: Antagonist
-:NAME:
+:Role: Antagonist
 :END:
 
 - Role ::
@@ -73,8 +70,8 @@ Track plot threads and storylines here. Use =F8 F8 k g= to capture new threads a
 
 ** Main Location(s)
 :PROPERTIES:
-:LOCATION_NAME:
-:TIME_PERIOD:
+:Type: Setting
+:Time-period:
 :END:
 
 - Description ::

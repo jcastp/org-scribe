@@ -273,7 +273,8 @@ when the project's gate is 'no."
             (insert "** TODO Chapter :ignore:\n*** TODO Scene :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 100\n:END:\n\n"))
           (cl-letf (((symbol-function 'org-scribe-project-structure)
                      (lambda ()
-                       (list :novel-file temp-novel
+                       (list :manuscript-file temp-novel
+                             :novel-file temp-novel
                              :plan-file nil
                              :characters-file nil
                              :locations-file nil)))
@@ -292,7 +293,8 @@ when the project's gate is 'no."
             (insert "** TODO Chapter :ignore:\n*** TODO Scene :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 100\n:END:\n\n"))
           (cl-letf (((symbol-function 'org-scribe-project-structure)
                      (lambda ()
-                       (list :novel-file temp-novel
+                       (list :manuscript-file temp-novel
+                             :novel-file temp-novel
                              :plan-file nil
                              :characters-file nil
                              :locations-file nil)))

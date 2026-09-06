@@ -85,6 +85,7 @@
     "test-overlays"                ; Entity tooltip system
     "test-tempel-snippets"         ; Bundled Tempel snippets
     "test-sistema-templates"       ; Sistema template set + entity recognition
+    "test-short-story-templates"   ; Short-story template set + entity recognition
     "test-template-parity"         ; novel-en / novel-es structural parity
     "test-template-references"     ; Template F8-key/command references are real
     ;; Writing planner (planning/org-scribe-planner.el)
@@ -245,6 +246,14 @@ Suitable for CI/CD pipelines and automated testing."
   (load-file (expand-file-name "test-sistema-templates.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (ert "^test-sistema-"))
+
+;;;###autoload
+(defun org-scribe-run-short-story-template-tests ()
+  "Run short-story template set and entity-recognition tests only."
+  (interactive)
+  (load-file (expand-file-name "test-short-story-templates.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-short-story-"))
 
 ;;;###autoload
 (defun org-scribe-run-parity-tests ()

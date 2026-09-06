@@ -101,7 +101,14 @@
               (should (string-match-p "AUTHOR" content))
               (should (string-match-p "Characters" content))
               (should (string-match-p "Plot" content))
-              (should (string-match-p "Setting" content)))))
+              (should (string-match-p "Setting" content))
+              ;; The protagonist entity satisfies the template contract:
+              ;; classified by :Role:, not :TYPE:, and named by its
+              ;; heading, not a blank :NAME:.  See docs/glossary.org for
+              ;; why :Role:'s value is English even here.
+              (should (string-match-p ":Role: Protagonist" content))
+              (should-not (string-match-p ":TYPE:" content))
+              (should-not (string-match-p ":NAME:" content)))))
 
       ;; Cleanup
       (when (file-exists-p temp-file)
@@ -570,7 +577,7 @@ section would misfile the capture as a flat top-level entry instead."
   (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
     (with-temp-buffer
       (org-mode)
-      (insert "* Characters\n\n** Protagonist: Alice\n:PROPERTIES:\n:TYPE: Protagonist\n:END:\n")
+      (insert "* Characters\n\n** Protagonist: Alice\n:PROPERTIES:\n:Role: Protagonist\n:END:\n")
       (insert "* Plot Outline\n\n** Premise\n")
       (org-scribe--capture-goto-section 'characters)
       (should (org-at-heading-p))
@@ -682,7 +689,14 @@ is Spanish without the caller having to know about it."
             (let ((content (buffer-string)))
               (should (string-match-p "Personajes" content))
               (should (string-match-p "Ambientación" content))
-              (should-not (string-match-p "\\* Characters" content)))))
+              (should-not (string-match-p "\\* Characters" content))
+              ;; The property drawer itself does not localize: :Role:'s
+              ;; value is English even in a Spanish project (see
+              ;; docs/glossary.org), and there is no :NAME:/:TYPE: to
+              ;; regress back to.
+              (should (string-match-p ":Role: Protagonist" content))
+              (should-not (string-match-p ":TYPE:" content))
+              (should-not (string-match-p ":NAME:" content)))))
       (when (file-exists-p temp-file)
         (delete-file temp-file)))))
 
