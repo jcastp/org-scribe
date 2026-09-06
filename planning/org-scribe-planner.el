@@ -1807,8 +1807,8 @@ Skips silently when any of those conditions is not met."
              (fboundp 'org-scribe-accurate-wordcount-p)
              (org-scribe-accurate-wordcount-p))
     (when-let* ((struct (ignore-errors (org-scribe-project-structure)))
-                (novel-file (plist-get struct :novel-file))
-                (live-buf (find-buffer-visiting novel-file)))
+                (manuscript-file (plist-get struct :manuscript-file))
+                (live-buf (find-buffer-visiting manuscript-file)))
       (with-current-buffer live-buf
         (let ((inhibit-message t))
           (org-scribe-ews-org-count-words))))))
@@ -2547,8 +2547,8 @@ subtree happens to be visible."
 Returns nil when no count is available, causing the planner to prompt instead."
   (when (featurep 'org-scribe)
     (when-let* ((struct (ignore-errors (org-scribe-project-structure)))
-                (novel-file (plist-get struct :novel-file)))
-      (org-scribe-planner--sum-wordcounts novel-file))))
+                (manuscript-file (plist-get struct :manuscript-file)))
+      (org-scribe-planner--sum-wordcounts manuscript-file))))
 
 (defun org-scribe-planner--plan-file-in-current-project-p (plan-file)
   "Return non-nil if PLAN-FILE lives under the current project's root.

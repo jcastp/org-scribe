@@ -74,47 +74,39 @@
 (declare-function org-scribe-project-type "org-scribe-core")
 (declare-function org-scribe--find-existing-file "org-scribe-core" (root &rest relative-paths))
 (declare-function org-scribe--project-marker-get "org-scribe-core" (root key))
+(declare-function org-scribe-project-levels "org-scribe-core" (&optional type))
+(defvar org-scribe--manuscript-file-names)
 
 ;;; Manuscript Resolution
 
-(defconst org-scribe--compile-manuscript-names
-  '("novel.org" "novela.org" "story.org" "cuento.org")
-  "Manuscript file names, in resolution order, for both languages.
-A fixed bilingual list rather than a glob, matching how every other
-file resolver in the package works: a project contains exactly one of
-these, and globbing would pick up a writer's own stray .org file.")
-
 (defun org-scribe--compile-manuscript-file (root)
-  "Return ROOT's manuscript file, or nil when there is none."
+  "Return ROOT's manuscript file, or nil when there is none.
+Delegates the file-name list to `org-scribe--manuscript-file-names'
+\(core/org-scribe-core.el\) rather than keeping its own copy, so the two
+never drift out of step."
   (apply #'org-scribe--find-existing-file root
-         org-scribe--compile-manuscript-names))
+         org-scribe--manuscript-file-names))
 
 ;;; Document Structure
 ;;
-;; Which level means what differs by project type, so the walk is
-;; parameterized rather than hardcoded -- the same branch on
-;; `org-scribe-project-type' every other resolver makes.
-;;
-;;   novel:        * Act   ** Chapter   *** Scene
-;;   short story:  * Story Content   ** Scene
-;;
-;; `:chapter' is the level whose headings survive into the output as
-;; visible headings; `:scene' is the level at and below which headings
-;; go silent and become breaks.  Anything *above* :chapter (a novel's
-;; acts) or above :scene when there are no chapters (a short story's
-;; content wrapper) is a container: its heading is dropped and its
-;; children are processed in order.  Dropping acts is deliberate --
-;; acts in this method are a planning structure, not a reading one.
-
-(defconst org-scribe--compile-levels
-  '((novel       . (:chapter 2 :scene 3))
-    (short-story . (:chapter nil :scene 2)))
-  "Per project type, the outline levels that carry chapters and scenes.")
+;; Which level means what differs by project type -- see
+;; `org-scribe-project-levels' (core/org-scribe-core.el) for the table
+;; and the reasoning behind it.  `:chapter' is the level whose headings
+;; survive into the output as visible headings; `:scene' is the level at
+;; and below which headings go silent and become breaks.  Anything
+;; *above* :chapter (a novel's acts) or above :scene when there are no
+;; chapters (a short story's content wrapper) is a container: its
+;; heading is dropped and its children are processed in order.  Dropping
+;; acts is deliberate -- acts in this method are a planning structure,
+;; not a reading one.
 
 (defun org-scribe--compile-levels-for (type)
-  "Return the chapter/scene level plist for project TYPE."
-  (or (alist-get type org-scribe--compile-levels)
-      (alist-get 'novel org-scribe--compile-levels)))
+  "Return the chapter/scene level plist for project TYPE.
+A thin wrapper over `org-scribe-project-levels', kept so this module's
+own call site does not need to change; the level table itself lives in
+core/org-scribe-core.el, shared with word counting, linking and the
+health report."
+  (org-scribe-project-levels type))
 
 (defconst org-scribe--compile-skip-elements
   '(property-drawer planning drawer comment comment-block dynamic-block)

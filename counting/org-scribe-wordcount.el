@@ -106,11 +106,13 @@ this direction rather than the planner monkey-patching this function."
 
 (defun org-scribe--refresh-scene-wordcounts (scope)
   "Recompute the WORDCOUNT property on scene headings within SCOPE.
-Scenes are level-3 headings tagged with :ignore:.  SCOPE is passed to
-`org-map-entries' (nil for the whole buffer, \\='tree for the current
-subtree).  Returns the number of scenes updated.  Counts accurately when
-`org-context-extended' is available, otherwise falls back to a plain
-count."
+Scenes are identified via `org-scribe-scene-match', which resolves the
+scene level and tag for the current project type (level 3 tagged
+:ignore: for a novel, level 2 for a short story) rather than assuming a
+novel's own shape.  SCOPE is passed to `org-map-entries' (nil for the
+whole buffer, \\='tree for the current subtree).  Returns the number of
+scenes updated.  Counts accurately when `org-context-extended' is
+available, otherwise falls back to a plain count."
   (let ((count 0))
     (org-map-entries
      (lambda ()
@@ -119,7 +121,7 @@ count."
               (words (org-scribe--count-words-region start end)))
          (org-set-property "WORDCOUNT" (number-to-string words))
          (setq count (1+ count))))
-     "LEVEL=3+ignore"
+     (org-scribe-scene-match)
      scope)
     count))
 

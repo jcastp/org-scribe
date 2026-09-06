@@ -1272,6 +1272,26 @@ the compile -- is still cleaned up afterward, exactly as before this fix."
       (org-scribe-compile 'clean 'txt)
       (should-not (get-file-buffer intermediate)))))
 
+;;; Outline levels
+
+(ert-deftest test-compile-short-story-levels-are-pinned ()
+  "Pin the short-story entry of the outline-level table this module
+reads (now `org-scribe-project-levels', core/org-scribe-core.el, lifted
+from what used to be this file's own private `org-scribe--compile-levels').
+Nothing else asserted the table's actual values; it could regress
+silently and every other compile test would still pass, since none of
+them compile an actual short-story fixture."
+  (let ((levels (org-scribe--compile-levels-for 'short-story)))
+    (should (null (plist-get levels :chapter)))
+    (should (= (plist-get levels :scene) 2))))
+
+(ert-deftest test-compile-novel-levels-are-pinned ()
+  "Pin the novel entry the same way, so a change to one project type's
+levels cannot silently also change the other's."
+  (let ((levels (org-scribe--compile-levels-for 'novel)))
+    (should (= (plist-get levels :chapter) 2))
+    (should (= (plist-get levels :scene) 3))))
+
 ;;; Messages
 
 (ert-deftest test-compile-messages-exist-in-both-languages ()

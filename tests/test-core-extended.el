@@ -204,8 +204,41 @@ Clears the project type cache before and after."
       '()
     (let ((structure (org-scribe-project-structure)))
       (should (null (plist-get structure :novel-file)))
+      (should (null (plist-get structure :manuscript-file)))
       (should (null (plist-get structure :characters-file)))
       (should (null (plist-get structure :locations-file))))))
+
+(ert-deftest test-core-project-structure-short-story-manuscript ()
+  "Test that :manuscript-file and :novel-file both resolve story.org.
+`:novel-file' is a deprecated synonym of `:manuscript-file' kept for
+existing callers -- both must hold the same value for a short story's
+manuscript, not just for a novel's."
+  (test-core--with-temp-project
+      '(("story.org" . "#+TITLE: Test Story\n"))
+    (let ((structure (org-scribe-project-structure)))
+      (should (string-suffix-p "story.org"
+                               (plist-get structure :manuscript-file)))
+      (should (string-suffix-p "story.org"
+                               (plist-get structure :novel-file))))))
+
+(ert-deftest test-core-project-structure-spanish-short-story-manuscript ()
+  "Test that :manuscript-file and :novel-file both resolve cuento.org."
+  (test-core--with-temp-project
+      '(("cuento.org" . "#+TITLE: Cuento de Prueba\n"))
+    (let ((structure (org-scribe-project-structure)))
+      (should (string-suffix-p "cuento.org"
+                               (plist-get structure :manuscript-file)))
+      (should (string-suffix-p "cuento.org"
+                               (plist-get structure :novel-file))))))
+
+(ert-deftest test-core-project-structure-manuscript-keys-agree ()
+  "Test that :manuscript-file and :novel-file hold the identical value
+for a novel project too, not only for a short story."
+  (test-core--with-temp-project
+      '(("novel.org" . "#+TITLE: Test\n"))
+    (let ((structure (org-scribe-project-structure)))
+      (should (equal (plist-get structure :manuscript-file)
+                     (plist-get structure :novel-file))))))
 
 (ert-deftest test-core-project-structure-spanish-files ()
   "Test project structure detects Spanish file names."
@@ -389,6 +422,57 @@ Clears the project type cache before and after."
 (ert-deftest test-core-escape-table-cell-passes-through-plain-text ()
   "Text without pipes or newlines is returned unchanged."
   (should (equal (org-scribe--escape-table-cell "Alex") "Alex")))
+
+;;; Outline Levels (org-scribe-project-levels / scene-level / chapter-level /
+;;; scene-match)
+
+(ert-deftest test-core-scene-level-novel-is-3 ()
+  "A novel's scene level is 3 (Act / Chapter / Scene)."
+  (should (= (org-scribe-scene-level 'novel) 3)))
+
+(ert-deftest test-core-scene-level-short-story-is-2 ()
+  "A short story's scene level is 2 (Story Content / Scene) -- there is
+no intervening chapter level."
+  (should (= (org-scribe-scene-level 'short-story) 2)))
+
+(ert-deftest test-core-chapter-level-novel-is-2 ()
+  "A novel's chapter level is 2."
+  (should (= (org-scribe-chapter-level 'novel) 2)))
+
+(ert-deftest test-core-chapter-level-short-story-is-nil ()
+  "A short story has no chapter level at all -- nil, not some level
+number -- since a cuento has no intervening chapter division."
+  (should (null (org-scribe-chapter-level 'short-story))))
+
+(ert-deftest test-core-project-levels-falls-back-to-novel-for-unknown-type ()
+  "An unrecognized project type (e.g. `unknown') resolves to the novel
+levels rather than signalling, matching every other project-type
+fallback in this package."
+  (should (equal (org-scribe-project-levels 'unknown)
+                 (org-scribe-project-levels 'novel))))
+
+(ert-deftest test-core-scene-match-novel-uses-tag ()
+  "A novel's scene match string selects level 3 tagged :ignore:."
+  (should (equal (org-scribe-scene-match 'novel) "LEVEL=3+ignore")))
+
+(ert-deftest test-core-scene-match-short-story-excludes-noexport ()
+  "A short story's scene match string selects level 2, excluding
+:noexport:, rather than a tag: the shipped short-story manuscript
+templates do not tag their scenes :ignore: the way a novel's do (see
+`org-scribe--project-levels'), so a tag-based match would silently find
+zero scenes in a real short-story project.  This was verified against a
+project actually created from the shipped templates, not assumed."
+  (should (equal (org-scribe-scene-match 'short-story) "LEVEL=2-noexport")))
+
+(ert-deftest test-core-scene-match-untagged-type-excludes-noexport ()
+  "When a project type's scene level carries no tag, the match string
+falls back to \"LEVEL=<n>-noexport\" rather than a bare \"LEVEL=<n>\" --
+without the exclusion, an untagged project's own :noexport: apparatus
+headings at the same level (e.g. a short story's Synopsis) would be
+misread as scenes."
+  (let ((org-scribe--project-levels
+         '((novel . (:chapter 2 :scene 3 :scene-tag nil)))))
+    (should (equal (org-scribe-scene-match 'novel) "LEVEL=3-noexport"))))
 
 ;;; Run tests
 

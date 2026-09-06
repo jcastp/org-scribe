@@ -95,59 +95,76 @@ Each element is a list:
 WORDCOUNT is the scene's :WORDCOUNT: property as a number (0 if unset).
 POV-NAME is the resolved display text of the PoV property (via
 `org-scribe--extract-link-text', so an ID link or plain name both
-resolve to the character's name), or nil when no PoV is set."
+resolve to the character's name), or nil when no PoV is set.
+
+Scenes are identified by `org-scribe-scene-level', the level for the
+*current* project type (level 3 for a novel, level 2 for a short story)
+-- not a hardcoded 3, which would silently find nothing in a short
+story's manuscript."
   (let (scenes)
     (when (and novel-file (file-exists-p novel-file))
       (with-current-buffer (find-file-noselect novel-file)
         (org-with-wide-buffer
          (goto-char (point-min))
-         (org-map-entries
-          (lambda ()
-            (when (and (= (org-current-level) 3)
-                       (not (member "noexport" (org-get-tags))))
-              (let* ((heading (org-get-heading t t t t))
-                     (id (org-id-get))
-                     (todo (org-get-todo-state))
-                     (chapter (save-excursion
-                                (org-up-heading-safe)
-                                (org-get-heading t t t t)))
-                     (pov (org-scribe-scene-property-get 'pov))
-                     (chars (org-scribe-scene-property-get 'characters))
-                     (plot (org-scribe-scene-property-get 'plot))
-                     (loc (org-scribe-scene-property-get 'location))
-                     (wordcount (string-to-number (or (org-entry-get nil "WORDCOUNT") "0")))
-                     (pov-name (org-scribe--extract-link-text pov)))
-                (push (list heading chapter id todo
-                            (and pov (not (string-empty-p (string-trim pov))))
-                            (and chars (not (string-empty-p (string-trim chars))))
-                            (and plot (not (string-empty-p (string-trim plot))))
-                            (and loc (not (string-empty-p (string-trim loc))))
-                            wordcount
-                            pov-name)
-                      scenes))))
-          nil 'file))))
+         (let ((scene-level (org-scribe-scene-level)))
+           (org-map-entries
+            (lambda ()
+              (when (and (= (org-current-level) scene-level)
+                         (not (member "noexport" (org-get-tags))))
+                (let* ((heading (org-get-heading t t t t))
+                       (id (org-id-get))
+                       (todo (org-get-todo-state))
+                       (chapter (save-excursion
+                                  (org-up-heading-safe)
+                                  (org-get-heading t t t t)))
+                       (pov (org-scribe-scene-property-get 'pov))
+                       (chars (org-scribe-scene-property-get 'characters))
+                       (plot (org-scribe-scene-property-get 'plot))
+                       (loc (org-scribe-scene-property-get 'location))
+                       (wordcount (string-to-number (or (org-entry-get nil "WORDCOUNT") "0")))
+                       (pov-name (org-scribe--extract-link-text pov)))
+                  (push (list heading chapter id todo
+                              (and pov (not (string-empty-p (string-trim pov))))
+                              (and chars (not (string-empty-p (string-trim chars))))
+                              (and plot (not (string-empty-p (string-trim plot))))
+                              (and loc (not (string-empty-p (string-trim loc))))
+                              wordcount
+                              pov-name)
+                        scenes))))
+            nil 'file)))))
     (nreverse scenes)))
 
 (defun org-scribe--health-word-totals (novel-file)
   "Return (WORDS . OBJECTIVE) from NOVEL-FILE.
-WORDS is the sum of WORDCOUNT from level-3 (scene) headings.
-OBJECTIVE is the sum of WORD-OBJECTIVE from level-2 (chapter) headings."
+WORDS is the sum of WORDCOUNT from scene headings (the level for the
+current project type, per `org-scribe-scene-level' -- level 3 for a
+novel, level 2 for a short story).
+OBJECTIVE is the sum of WORD-OBJECTIVE from level-2 (chapter) headings.
+
+The OBJECTIVE side is still hardcoded to a novel's own chapter level:
+a short story carries WORD-OBJECTIVE on its *scenes* instead, since it
+has no chapters at all, so this undercounts to 0 for one.  Widening it
+to sum at the scene level when there is no chapter level is deliberately
+deferred -- doing so unconditionally would double-count a novel's
+totals, since a novel's scenes already roll up into their chapter's own
+WORD-OBJECTIVE."
   (let ((words 0) (obj 0))
     (when (and novel-file (file-exists-p novel-file))
       (with-current-buffer (find-file-noselect novel-file)
         (org-with-wide-buffer
          (goto-char (point-min))
-         (org-map-entries
-          (lambda ()
-            (let ((level (org-current-level)))
-              (unless (member "noexport" (org-get-tags))
-                (when (= level 3)
-                  (when-let ((wc (org-entry-get nil "WORDCOUNT")))
-                    (setq words (+ words (string-to-number wc)))))
-                (when (= level 2)
-                  (when-let ((wo (org-entry-get nil "WORD-OBJECTIVE")))
-                    (setq obj (+ obj (string-to-number wo))))))))
-          nil 'file))))
+         (let ((scene-level (org-scribe-scene-level)))
+           (org-map-entries
+            (lambda ()
+              (let ((level (org-current-level)))
+                (unless (member "noexport" (org-get-tags))
+                  (when (= level scene-level)
+                    (when-let ((wc (org-entry-get nil "WORDCOUNT")))
+                      (setq words (+ words (string-to-number wc)))))
+                  (when (= level 2)
+                    (when-let ((wo (org-entry-get nil "WORD-OBJECTIVE")))
+                      (setq obj (+ obj (string-to-number wo))))))))
+            nil 'file)))))
     (cons words obj)))
 
 ;;; Text-level statistics (per-PoV word share, chapter length spread)
@@ -209,7 +226,8 @@ Averages the two middle values when NUMBERS has an even length."
 (defun org-scribe--health-collect-referenced-ids (novel-file)
   "Return a hash table of all entity IDs referenced in scene properties.
 Scans PoV, Characters, Location, Plot and Plot-point properties of all
-level-3 headings in NOVEL-FILE for [[id:...]] link patterns.
+scene headings (the level for the current project type, per
+`org-scribe-scene-level') in NOVEL-FILE for [[id:...]] link patterns.
 
 Every entity type whose orphans are reported must have its scene
 property listed here, or all of its entities are reported as orphaned."
@@ -218,16 +236,17 @@ property listed here, or all of its entities are reported as orphaned."
       (with-current-buffer (find-file-noselect novel-file)
         (org-with-wide-buffer
          (goto-char (point-min))
-         (org-map-entries
-          (lambda ()
-            (when (= (org-current-level) 3)
-              (dolist (prop '(pov characters location plot plot-point))
-                (when-let ((val (org-scribe-scene-property-get prop)))
-                  (let ((pos 0))
-                    (while (string-match "\\[\\[id:\\([^]]+\\)\\]" val pos)
-                      (puthash (match-string 1 val) t ids)
-                      (setq pos (match-end 0))))))))
-          nil 'file))))
+         (let ((scene-level (org-scribe-scene-level)))
+           (org-map-entries
+            (lambda ()
+              (when (= (org-current-level) scene-level)
+                (dolist (prop '(pov characters location plot plot-point))
+                  (when-let ((val (org-scribe-scene-property-get prop)))
+                    (let ((pos 0))
+                      (while (string-match "\\[\\[id:\\([^]]+\\)\\]" val pos)
+                        (puthash (match-string 1 val) t ids)
+                        (setq pos (match-end 0))))))))
+            nil 'file)))))
     ids))
 
 ;;; Starting Gate

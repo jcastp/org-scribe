@@ -118,7 +118,9 @@ plot module resolves both files without a real project on disk."
            (with-temp-file temp-novel (insert ,novel-content))
            (with-temp-file temp-plot (insert ,plot-content))
            (cl-letf (((symbol-function 'org-scribe-project-structure)
-                      (lambda () (list :novel-file temp-novel :plot-file temp-plot)))
+                      (lambda () (list :manuscript-file temp-novel
+                                       :novel-file temp-novel
+                                       :plot-file temp-plot)))
                      ((symbol-function 'org-scribe-project-type)
                       (lambda () 'novel)))
              ,@body))

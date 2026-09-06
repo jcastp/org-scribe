@@ -192,10 +192,10 @@ manuscript buffer is saved when changes were made."
       (when (and file (file-exists-p file))
         (org-scribe--add-entity-ids entity))))
   ;; Phases 2 & 3 operate on the manuscript.
-  (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file)))
-    (if (not (and novel-file (file-exists-p novel-file)))
+  (let ((manuscript-file (plist-get (org-scribe-project-structure) :manuscript-file)))
+    (if (not (and manuscript-file (file-exists-p manuscript-file)))
         (user-error (org-scribe-msg 'msg-relink-no-novel))
-      (with-current-buffer (find-file-noselect novel-file)
+      (with-current-buffer (find-file-noselect manuscript-file)
         ;; Phase 2 — convert plain names to links for every entity type.
         (dolist (entry org-scribe-entity-registry)
           (org-scribe--link-all-scene-entities (cdr entry)))
@@ -205,7 +205,7 @@ manuscript buffer is saved when changes were made."
             (save-buffer))
           (message (org-scribe-msg 'msg-relink-complete
                                    count (org-scribe-plural count "")
-                                   (file-name-nondirectory novel-file))))))))
+                                   (file-name-nondirectory manuscript-file))))))))
 
 ;;; Auto-propagation on entity file save
 
@@ -215,7 +215,7 @@ Runs via `after-save-hook', but only when `org-scribe-auto-relink' is
 non-nil.  Beyond that, it acts only when all of the following are true:
 - The saved buffer visits a file in an org-scribe project.
 - That file is the characters, locations, or plot database for the project.
-- The manuscript (novel.org) is already open in another buffer.
+- The manuscript is already open in another buffer.
 
 When the conditions are met, runs `org-scribe-update-all-link-names' in
 the manuscript buffer and reports the number of scenes updated.  The
@@ -237,16 +237,16 @@ every save, regardless of `org-scribe-auto-relink'."
                   ;; Only act when the saved file is an entity database file.
                   ((member (expand-file-name buffer-file-name)
                            (mapcar #'expand-file-name entity-files)))
-                  (novel-file (plist-get struct :novel-file))
-                  ((file-exists-p novel-file))
+                  (manuscript-file (plist-get struct :manuscript-file))
+                  ((file-exists-p manuscript-file))
                   ;; Only act when the manuscript is already open (never
                   ;; open files unexpectedly as a side effect of saving).
-                  (novel-buf (find-buffer-visiting novel-file)))
-        (with-current-buffer novel-buf
+                  (manuscript-buf (find-buffer-visiting manuscript-file)))
+        (with-current-buffer manuscript-buf
           (let ((count (org-scribe-update-all-link-names)))
             (when (> count 0)
               (message "org-scribe: updated link names in %d scene(s) in %s — save to persist."
-                       count (file-name-nondirectory novel-file)))))))))
+                       count (file-name-nondirectory manuscript-file)))))))))
 
 (provide 'org-scribe-link-update)
 

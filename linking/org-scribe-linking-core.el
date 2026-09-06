@@ -337,9 +337,9 @@ LINK-ALL-FN is the function to call to link all scenes."
   (message (org-scribe-msg (plist-get entity :msg-setting-up)))
   (funcall add-ids-fn)
   (when (y-or-n-p (org-scribe-msg (plist-get entity :question-link-existing)))
-    (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file)))
-      (when (and novel-file (file-exists-p novel-file))
-        (with-current-buffer (find-file-noselect novel-file)
+    (let ((manuscript-file (plist-get (org-scribe-project-structure) :manuscript-file)))
+      (when (and manuscript-file (file-exists-p manuscript-file))
+        (with-current-buffer (find-file-noselect manuscript-file)
           (funcall link-all-fn)
           (save-buffer)))))
   (message (org-scribe-msg (plist-get entity :msg-setup-complete))))
@@ -393,18 +393,33 @@ Returns the number of scenes updated."
 ;;; Timeline Utilities
 
 (defun org-scribe--get-all-scenes (data-fn)
-  "Return list of scene data from the novel file.
-DATA-FN is called at each level-3 heading.  It should return scene data
-\(a list starting with heading and chapter) or nil to skip the heading."
-  (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file))
+  "Return list of scene data from the manuscript file.
+DATA-FN is called at each scene heading (the level for the current
+project type, per `org-scribe-scene-level' -- level 3 for a novel, level
+2 for a short story) that is not tagged :noexport:.  It should return
+scene data (a list starting with heading and chapter) or nil to skip the
+heading.
+
+The :noexport: exclusion is load-bearing for a short story: its scene
+level (2) is the same level its own front-matter apparatus sits at (the
+shipped template's \"Synopsis\" and \"Word Count Tracking\", both under a
+:noexport:-tagged level-1 wrapper and inheriting the tag) -- a novel's
+apparatus, by contrast, lives at level 1, so this exclusion was never
+exercised there and a novel's own scenes are never tagged :noexport:
+themselves.  Without it, every caller of this function -- the plot
+timeline, the plot-thread report's total scene count and coverage
+percentages -- would count a short story's own front matter as scenes."
+  (let ((manuscript-file (plist-get (org-scribe-project-structure) :manuscript-file))
+        (scene-level (org-scribe-scene-level))
         scenes)
-    (when (and novel-file (file-exists-p novel-file))
-      (with-current-buffer (find-file-noselect novel-file)
+    (when (and manuscript-file (file-exists-p manuscript-file))
+      (with-current-buffer (find-file-noselect manuscript-file)
         (org-with-wide-buffer
          (goto-char (point-min))
          (org-map-entries
           (lambda ()
-            (when (= (org-current-level) 3)
+            (when (and (= (org-current-level) scene-level)
+                       (not (member "noexport" (org-get-tags))))
               (when-let ((data (funcall data-fn)))
                 (push data scenes))))
           nil 'file))))

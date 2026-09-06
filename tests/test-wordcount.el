@@ -176,6 +176,70 @@ sets the WORDCOUNT property using `count-words'."
           ;; Level-3 scene should have been updated
           (should (equal (cdr (assq 3 results)) "99")))))))
 
+(ert-deftest test-wordcount-update-scene-wordcounts-short-story-level-2 ()
+  "A short story's scenes are level 2, not level 3, and are untagged
+\(unlike a novel's, which carry :ignore:) -- see `org-scribe--project-levels'.
+The match string must come from `org-scribe-scene-match' rather than a
+hardcoded \"LEVEL=3+ignore\", or this silently updates zero scenes.
+Regression test: before the scene level was made project-type aware,
+this returned 0 on a real short-story manuscript.  The fixture here
+mirrors the shipped story.org.template shape (untagged level-2 scenes
+under an untagged level-1 container) rather than an invented one."
+  (cl-letf (((symbol-function 'featurep)
+             (let ((orig (symbol-function 'featurep)))
+               (lambda (feature &rest args)
+                 (if (eq feature 'org-context-extended)
+                     t
+                   (apply orig feature args)))))
+            ((symbol-function 'org-context-count-words)
+             (lambda (&rest _) 77))
+            ((symbol-function 'org-scribe-project-type)
+             (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Story Content\n\n")
+      (insert "** TODO Opening\n:PROPERTIES:\n:PoV:\n:END:\n\n")
+      (goto-char (point-min))
+      (let ((count (org-scribe--refresh-scene-wordcounts nil)))
+        (should (= count 1)))
+      (goto-char (point-min))
+      (org-next-visible-heading 1)  ; Story Content
+      (org-next-visible-heading 1)  ; Opening
+      (should (equal (org-entry-get nil "WORDCOUNT") "77")))))
+
+(ert-deftest test-wordcount-update-scene-wordcounts-short-story-excludes-noexport ()
+  "A short story's :noexport: apparatus headings sit at the same level
+\(2) as its real scenes, since short-story scenes carry no distinguishing
+tag of their own.  Without the `-noexport' exclusion built into
+`org-scribe-scene-match' for an untagged project type, a heading such as
+the shipped template's \"Word Count Tracking\" (level 2, under a
+:noexport:-tagged level-1 wrapper, inheriting the tag) would be
+miscounted as a scene."
+  (cl-letf (((symbol-function 'featurep)
+             (let ((orig (symbol-function 'featurep)))
+               (lambda (feature &rest args)
+                 (if (eq feature 'org-context-extended)
+                     t
+                   (apply orig feature args)))))
+            ((symbol-function 'org-context-count-words)
+             (lambda (&rest _) 33))
+            ((symbol-function 'org-scribe-project-type)
+             (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Story Info :noexport:\n\n")
+      (insert "** Word Count Tracking\n\nSome apparatus text.\n\n")
+      (insert "* Story Content\n\n")
+      (insert "** TODO Opening\n:PROPERTIES:\n:PoV:\n:END:\n\n")
+      (goto-char (point-min))
+      (let ((count (org-scribe--refresh-scene-wordcounts nil)))
+        ;; Only "Opening" should be counted, not "Word Count Tracking".
+        (should (= count 1)))
+      (org-map-entries
+       (lambda ()
+         (when (equal (org-get-heading t t t t) "Word Count Tracking")
+           (should-not (org-entry-get nil "WORDCOUNT"))))))))
+
 (ert-deftest test-wordcount-update-scene-wordcounts-scope-tree ()
   "Test that update-scene-wordcounts scopes to the current subtree when on a heading."
   (let ((orig-featurep (symbol-function 'featurep)))

@@ -312,23 +312,21 @@ Opens a new buffer with the report."
                 (insert (format "- ⚠️ %s\n" warning))))
             (insert "\n"))))
       (insert "* Scenes Without Plot Threads\n\n")
-      (let ((novel-file (plist-get (org-scribe-project-structure) :novel-file))
-            (scenes-without-plot nil))
-        (when (and novel-file (file-exists-p novel-file))
-          (with-current-buffer (find-file-noselect novel-file)
-            (org-map-entries
-             (lambda ()
-               (when (= (org-current-level) 3)
-                 (unless (org-scribe-scene-property-get 'plot)
-                   (let ((heading (org-get-heading t t t t))
-                         (chapter (save-excursion
-                                   (org-up-heading-safe)
-                                   (org-get-heading t t t t))))
-                     (push (list heading chapter) scenes-without-plot)))))
-             nil 'file)))
+      (let ((scenes-without-plot
+             ;; Reuses `org-scribe--get-all-scenes' rather than its own
+             ;; `org-map-entries' walk, so it inherits that function's
+             ;; :noexport: exclusion for free -- a short story's own
+             ;; front-matter apparatus sits at the same level as its
+             ;; scenes and would otherwise be listed here as a scene
+             ;; missing a Plot property.
+             (org-scribe--get-all-scenes
+              (lambda ()
+                (unless (org-scribe-scene-property-get 'plot)
+                  (list (org-get-heading t t t t)
+                        (save-excursion (org-up-heading-safe)
+                                        (org-get-heading t t t t))))))))
         (if scenes-without-plot
             (progn
-              (setq scenes-without-plot (nreverse scenes-without-plot))
               (insert (format "Found %d scene(s) without Plot property:\n\n"
                              (length scenes-without-plot)))
               (dolist (scene scenes-without-plot)

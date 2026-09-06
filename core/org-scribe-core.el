@@ -250,11 +250,25 @@ marker first."
            for full = (expand-file-name path root)
            when (file-directory-p full) return full))
 
+(defconst org-scribe--manuscript-file-names
+  '("novel.org" "novela.org" "story.org" "cuento.org")
+  "Manuscript file names, in resolution order, for both project types
+and both languages.  A fixed bilingual list rather than a glob, matching
+every other file resolver in this package: a project contains exactly
+one of these, and globbing would pick up a writer's own stray .org
+file.")
+
 (defun org-scribe-project-structure ()
   "Detect project structure and return layout information.
 Returns plist with:
   :root          - project root directory
-  :novel-file    - main manuscript file (novel.org or novela.org)
+  :manuscript-file - the project's manuscript, whichever of
+                   novel.org/novela.org/story.org/cuento.org exists
+  :novel-file    - deprecated synonym of `:manuscript-file', kept only so
+                   existing call sites keep working.  Despite the name it
+                   no longer means \"novel\" specifically -- it holds the
+                   same value as `:manuscript-file' for both project
+                   types.  New code should read `:manuscript-file'.
   :notes-dir     - notes directory (notes/ or notas/)
   :notes-file    - notes file (notes/notes.org, notas/notas.org, notes.org, or notas.org)
   :characters-file - characters file (objects/characters.org or objects/personajes.org)
@@ -266,10 +280,12 @@ Returns plist with:
   :plan-file       - writing plan file (plan.org in the project root), or nil
 
 All file/directory values are nil if the path does not exist."
-  (let* ((root (org-scribe-project-root)))
+  (let* ((root (org-scribe-project-root))
+         (manuscript (apply #'org-scribe--find-existing-file root
+                            org-scribe--manuscript-file-names)))
     (list :root root
-          :novel-file (org-scribe--find-existing-file root
-                        "novel.org" "novela.org")
+          :manuscript-file manuscript
+          :novel-file manuscript
           :notes-dir (org-scribe--find-existing-dir root
                        "notes" "notas")
           :notes-file (org-scribe--find-existing-file root
@@ -293,6 +309,91 @@ All file/directory values are nil if the path does not exist."
           :design-file (org-scribe--find-existing-file root
                          "design.org" "diseno.org")
           :plan-file (org-scribe--find-existing-file root "plan.org"))))
+
+;;; Outline Levels (Chapter / Scene)
+;;
+;; Which outline level means what differs by project type:
+;;
+;;   novel:        * Act   ** Chapter   *** Scene
+;;   short story:  * Story Content   ** Scene
+;;
+;; `:chapter' is the level whose headings survive into compiled output as
+;; visible headings; `:scene' is the level at and below which headings go
+;; silent and become breaks.  `:scene-tag' is the tag scene headings
+;; carry (used to build an `org-map-entries' match string), or nil for a
+;; project type whose scenes carry no such tag.  Anything above
+;; `:chapter' -- or above `:scene' when `:chapter' is nil -- is a
+;; container: its heading is dropped and its children are processed in
+;; order.  Dropping acts from compiled output is deliberate: acts in this
+;; method are a planning structure, not a reading one.
+;;
+;; This table was originally private to `export/org-scribe-compile.el',
+;; the only module that treated the level as anything but a hardcoded 3.
+;; It lives here instead because several other modules -- word counting,
+;; the entity linking core, the plot-thread report, the project health
+;; report -- all separately hardcoded the same "scene is level 3"
+;; assumption, which is simply wrong for a short-story project (whose
+;; scenes are level 2).  One table, read by every one of them, is what
+;; keeps that assumption from drifting out of step again.
+;;
+;; `short-story' carries `:scene-tag' nil rather than "ignore", because
+;; the shipped short-story manuscript templates (story.org.template /
+;; cuento.org.template) do not tag their scenes at all -- unlike a
+;; novel's, which are always tagged :ignore:.  This was confirmed against
+;; a project actually created from those templates, not assumed: setting
+;; :scene-tag to "ignore" here before the templates carry that tag makes
+;; every scene-level function in the package silently find zero scenes
+;; in every short story, which is a worse bug than the one this table
+;; exists to fix.  If the templates are ever changed to tag their scenes
+;; :ignore: (matching a novel's), this entry's `:scene-tag' must change
+;; to "ignore" in the same commit -- the two are one atomic decision, not
+;; two independent ones.
+
+(defconst org-scribe--project-levels
+  '((novel       . (:chapter 2 :scene 3 :scene-tag "ignore"))
+    (short-story . (:chapter nil :scene 2 :scene-tag nil)))
+  "Per project type, the outline levels that carry chapters and scenes.
+See the commentary above this constant for what each field means.")
+
+(defun org-scribe-project-levels (&optional type)
+  "Return the chapter/scene level plist for TYPE.
+TYPE defaults to the current project's `org-scribe-project-type'.  Falls
+back to the `novel' entry for an unrecognized TYPE (e.g. `unknown'),
+since every property org-scribe reads via this table (scene level,
+chapter level, scene tag) is well-defined for a novel and a project
+whose type cannot be determined is not more likely to be a short story
+than a novel."
+  (let ((type (or type (org-scribe-project-type))))
+    (or (alist-get type org-scribe--project-levels)
+        (alist-get 'novel org-scribe--project-levels))))
+
+(defun org-scribe-scene-level (&optional type)
+  "Return the outline level of a scene heading for TYPE.
+See `org-scribe-project-levels'."
+  (plist-get (org-scribe-project-levels type) :scene))
+
+(defun org-scribe-chapter-level (&optional type)
+  "Return the outline level of a chapter heading for TYPE, or nil.
+Nil means TYPE has no chapter level at all (a short story), not that it
+could not be determined.  See `org-scribe-project-levels'."
+  (plist-get (org-scribe-project-levels type) :chapter))
+
+(defun org-scribe-scene-match (&optional type)
+  "Return an `org-map-entries' MATCH string selecting TYPE's scenes.
+When TYPE's scene level carries a tag (see `org-scribe-project-levels'),
+the match is \"LEVEL=<scene>+<tag>\".  When it does not, the match is
+\"LEVEL=<scene>-noexport\" instead of a bare \"LEVEL=<scene>\" -- the
+`-noexport' exclusion is load-bearing here, not decorative: an untagged
+project's apparatus headings (e.g. a short story's \"Synopsis\" or \"Word
+Count Tracking\" under a :noexport: wrapper) sit at the very same level
+as its scenes, and only the :noexport: tag -- inherited by Org's default
+tag inheritance -- tells them apart from a real scene."
+  (let* ((levels (org-scribe-project-levels type))
+         (level (plist-get levels :scene))
+         (tag (plist-get levels :scene-tag)))
+    (if tag
+        (format "LEVEL=%d+%s" level tag)
+      (format "LEVEL=%d-noexport" level))))
 
 ;;; Scene Property Localization
 ;;
@@ -598,22 +699,12 @@ all — README.org, the writing journal — are excluded for free by using
 it as the sole source of truth here, with no name-based filtering
 needed.
 
-One file is resolved separately rather than through that plist: a
-short-story manuscript (story.org/cuento.org) has no key of its own in
-`org-scribe-project-structure' — its `:novel-file' only ever matches
-novel.org/novela.org, so a short-story project's own manuscript would
-otherwise be silently missing from its own refile targets, the one file
-a writer most wants to refile from.  `org-scribe-project-structure' is
-left alone rather than widened here: several other modules already key
-behavior off `:novel-file' being nil for a short-story project, so
-changing what it resolves is a larger, separate change than this
-feature calls for."
-  (let* ((structure (org-scribe-project-structure))
-         (manuscript (or (plist-get structure :novel-file)
-                         (org-scribe--find-existing-file
-                          (plist-get structure :root) "story.org" "cuento.org"))))
+The manuscript is read via `:manuscript-file', which resolves both a
+novel's and a short story's manuscript (see `org-scribe-project-structure'),
+so no separate short-story fallback is needed here."
+  (let* ((structure (org-scribe-project-structure)))
     (delq nil
-          (list manuscript
+          (list (plist-get structure :manuscript-file)
                 (plist-get structure :notes-file)
                 (plist-get structure :characters-file)
                 (plist-get structure :locations-file)
