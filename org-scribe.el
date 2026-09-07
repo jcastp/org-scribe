@@ -58,7 +58,14 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
 ;; (FEATURE . RELATIVE-PATH); see CLAUDE.md for the rationale behind the
 ;; ordering.  Keep this list grouped by concern.
 (dolist (module
-         '(;; Core (always first — everything else depends on messages/core/config)
+         '(;; Language pack registry, then the shipped packs themselves
+           ;; (before everything else: messages, core and config all read
+           ;; language packs, and neither the registry nor a pack has any
+           ;; dependency of its own -- see lang/org-scribe-lang.el).
+           (org-scribe-lang         . "lang/org-scribe-lang")
+           (org-scribe-lang-en      . "lang/org-scribe-lang-en")
+           (org-scribe-lang-es      . "lang/org-scribe-lang-es")
+           ;; Core (always first — everything else depends on messages/core/config)
            (org-scribe-messages    . "core/org-scribe-messages")
            (org-scribe-core        . "core/org-scribe-core")
            (org-scribe-config      . "core/org-scribe-config")
@@ -99,6 +106,15 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            (org-scribe-compile     . "export/org-scribe-compile")
            (org-scribe-hydra       . "ui/org-scribe-hydra")))
   (org-scribe--require (car module) (cdr module)))
+
+;; Register the two shipped language packs.  Registration is a function
+;; call, not data, so it happens here rather than inside the pack files
+;; themselves (lang/org-scribe-lang-en.el, lang/org-scribe-lang-es.el),
+;; which stay plain data with no evaluation of their own -- see
+;; lang/org-scribe-lang.el's Commentary.  A third-party pack registers
+;; itself the same way, from its own `require'd file.
+(org-scribe-register-language 'en org-scribe-lang-en)
+(org-scribe-register-language 'es org-scribe-lang-es)
 
 ;; Writing planner (planning/org-scribe-planner.el) — lazy-loaded via autoloads.
 ;; Adding planning/ to load-path lets the autoload entries (which use bare

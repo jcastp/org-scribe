@@ -30,6 +30,17 @@ forward `defvar' there too."
                  (const :tag "Spanish" es))
   :group 'org-scribe)
 
+(defcustom org-scribe-fallback-language 'en
+  "Language to fall back to when a message key is missing from the
+requested language's pack (see `org-scribe-lang-message').  This is
+distinct from `org-scribe-message-language' (which language to use)
+and from `org-scribe-project-language' (which language a given
+project's own files are in); it only matters when a translation is
+genuinely absent.  See `lang/org-scribe-lang.el' for why this
+defcustom has a forward `defvar' there too."
+  :type 'symbol
+  :group 'org-scribe)
+
 ;;; Project Structure
 
 ;; Project file and directory names are deliberately not configurable

@@ -21,6 +21,7 @@
 (let ((default-directory (file-name-directory
                           (or load-file-name buffer-file-name))))
   (add-to-list 'load-path default-directory)
+  (add-to-list 'load-path (expand-file-name "lang" default-directory))
   (add-to-list 'load-path (expand-file-name "core" default-directory))
   (add-to-list 'load-path (expand-file-name "templates" default-directory))
   (add-to-list 'load-path (expand-file-name "counting" default-directory))
@@ -39,6 +40,15 @@
 
 (condition-case err
     (progn
+      (require 'org-scribe-lang)
+      (message "✓ org-scribe-lang loaded successfully")
+
+      (require 'org-scribe-lang-en)
+      (message "✓ org-scribe-lang-en loaded successfully")
+
+      (require 'org-scribe-lang-es)
+      (message "✓ org-scribe-lang-es loaded successfully")
+
       (require 'org-scribe-core)
       (message "✓ org-scribe-core loaded successfully")
 
