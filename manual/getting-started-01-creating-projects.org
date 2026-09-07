@@ -349,10 +349,29 @@ My Fantasy Novel/
     └── research.org           (research and references)
 #+END_EXAMPLE
 
-A Spanish project has exactly the same structure with localized file names:
-~diseno.org~, ~novela.org~, ~diario-escritura.org~, ~objects/personajes.org~,
-~objects/localizaciones.org~, ~objects/trama.org~, ~objects/cronologia.org~,
-~objects/objetos.org~, and ~notas/~ instead of ~notes/~.
+A Spanish project has exactly the same structure with localized file *and
+directory* names: ~diseno.org~, ~novela.org~, ~diario-escritura.org~,
+~objetos/~ instead of ~objects/~ (holding ~personajes.org~,
+~localizaciones.org~, ~trama.org~, ~cronologia.org~, ~objetos.org~, and
+~construccion-mundo.org~), and ~notas/~ instead of ~notes/~.
+
+#+BEGIN_QUOTE
+*Breaking change for existing Spanish novel projects.* Before this release,
+the Spanish entity directory was named ~objects/~ — the same as the English
+one — and ~objects/worldbuilding.org~ was never translated. Both are now
+localized (~objetos/~, ~objetos/construccion-mundo.org~), matching every
+other file and directory name in a Spanish project. There is no automatic
+migration; a Spanish project created with an older version needs:
+
+#+BEGIN_SRC bash
+cd /path/to/your/project
+git mv objects objetos
+git mv objetos/worldbuilding.org objetos/construccion-mundo.org
+#+END_SRC
+
+New Spanish projects created with this version already use ~objetos/~ and
+need nothing done. English projects are entirely unaffected.
+#+END_QUOTE
 
 (A ~plan.org~ does *not* appear here — it's created separately, on demand, only once you opt into the bundled writing planner; see Lesson 16.)
 

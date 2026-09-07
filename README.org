@@ -74,7 +74,7 @@
 Full support for English/Spanish bilingual writing:
 - Spanish definitions: offline via a local Wikcionario, or the RAE online
 - Synonym lookup: offline via the system thesaurus, or WordReference online
-- Bilingual project structure support (notes/notas directories)
+- Bilingual project structure support: every project file and directory name — the manuscript, the entity directory (=objects=/=objetos=), the notes directory (=notes=/=notas=) — is resolved from a per-language pack, not hardcoded
 - Bilingual UI: every command prompt, message, and error is available in Spanish too — set =(setq org-scribe-message-language 'es)= (default =en=)
 - Bilingual capture templates: character/location/object/timeline/plot-thread capture prompts and headings automatically match *the project's own language* (read from the =# Language:= line in =.org-scribe-project=), not the global =org-scribe-message-language= setting — a Spanish novel gets Spanish capture prompts even if your own UI language is English
 - One method, two languages: the =novel-en= and =novel-es= template sets are structurally identical — same headings, same properties, same order — and =M-x org-scribe-run-parity-tests= enforces it. Only heading text and prose differ. See [[file:docs/glossary.org][docs/glossary.org]] for the term-by-term mapping
@@ -84,6 +84,24 @@ Full support for English/Spanish bilingual writing:
 they are machine-facing identifiers read by the linking layer. *Scene* property
 names /are/ localized (=:Trama:= vs =:Plot:=), because you see those every day in
 the property drawer and in column view.
+
+#+BEGIN_QUOTE
+*Breaking change for existing Spanish novel projects.* Previous versions
+named the Spanish entity directory =objects/=, identical to the English one,
+and never translated =objects/worldbuilding.org=. Both are now localized:
+=objetos/= and =objetos/construccion-mundo.org=, matching every other file
+and directory name in a Spanish project. There is no automatic migration —
+run this once, in the project's root, on any Spanish novel project created
+before this release:
+
+#+BEGIN_SRC bash
+git mv objects objetos
+git mv objetos/worldbuilding.org objetos/construccion-mundo.org
+#+END_SRC
+
+New Spanish projects already use =objetos/=. English projects and Spanish
+short-story projects are unaffected.
+#+END_QUOTE
 
 * Installation
 
@@ -283,8 +301,9 @@ MyNovel/
     └── research.org
 #+end_example
 
-Spanish projects have the same structure with localized file names
-(=diseno.org=, =novela.org=, =objects/personajes.org=, and so on).
+Spanish projects have the same structure with localized file *and directory*
+names (=diseno.org=, =novela.org=, =objetos/personajes.org=, and so on —
+note =objetos/=, not =objects/=).
 
 *Open =design.org= first.* It holds the /Starting Gate/ — the one checklist that
 decides when you stop planning and start writing — and the twelve questions of
@@ -1623,16 +1642,22 @@ project-root/
 ├── scratchpad.org        # Unstructured drafts and ideas (or cuaderno-borradores.org for Spanish)
 ├── revision.org          # Revision tracking
 ├── writing-journal.org   # Reflective writing journal (or diario-escritura.org for Spanish)
-├── objects/                 # Planning documents
-│   ├── characters.org    # Character profiles
-│   ├── locations.org     # World building
-│   ├── plot.org         # Story structure
-│   ├── timeline.org     # Chronology
-│   └── objects.org      # Important items
-└── notes/               # Notes and research
-    ├── notes.org        # General notes
-    └── research.org     # Research tracking
+├── objects/                 # Planning documents (or objetos/ for Spanish)
+│   ├── characters.org    # Character profiles (personajes.org)
+│   ├── locations.org     # World building (localizaciones.org)
+│   ├── plot.org         # Story structure (trama.org)
+│   ├── timeline.org     # Chronology (cronologia.org)
+│   ├── worldbuilding.org # World as a whole (construccion-mundo.org)
+│   └── objects.org      # Important items (objetos.org)
+└── notes/               # Notes and research (or notas/ for Spanish)
+    ├── notes.org        # General notes (notas.org)
+    └── research.org     # Research tracking (investigacion.org)
 #+end_example
+
+Every one of those file and directory names — for every language, not only
+English and Spanish — comes from a registered *language pack* (=lang/=), not
+a hardcoded list; see =CLAUDE.md='s "Language Packs" section for the
+mechanism and how to add another language.
 
 Projects can be created with =M-x org-scribe-create-novel-project= or the package works with any org-mode file structure.
 

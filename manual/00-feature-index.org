@@ -55,7 +55,7 @@ Creates a minimal short story project structure optimized for shorter works (1,0
 
 ** Project Type Detection (~org-scribe-project-type~)
 
-Automatically detects whether a project is a novel, short story, or unknown type by examining the directory structure and marker files. Detection checks for the .org-scribe-project marker file first, then looks for characteristic indicators: the presence of a objects/ directory suggests a novel, while story.org/cuento.org indicates a short story. This detection is cached per project root for performance and enables other features (like capture functions) to adapt their behavior based on project type.
+Automatically detects whether a project is a novel, short story, or unknown type by examining the directory structure and marker files. Detection checks for the .org-scribe-project marker file first, then looks for characteristic indicators: the presence of an entity directory (~objects/~ in an English project, ~objetos/~ in a Spanish one) suggests a novel, while a short-story manuscript (~story.org~/~cuento.org~) indicates a short story — every registered language's own spelling is checked, not just English's. This detection is cached per project root for performance and enables other features (like capture functions) to adapt their behavior based on project type.
 
 *Status*: Fully implemented | *Hydra*: N/A (internal function) | *Module*: ~core/org-scribe-core.el~
 
@@ -202,7 +202,7 @@ All capture functions automatically create their target files if they don't exis
 
 ** Bilingual Capture Support
 
-Capture functions automatically detect and work with both English and Spanish project structures. File names adapt: characters.org/personajes.org, locations.org/localizaciones.org, objects.org/objetos.org, timeline.org/cronologia.org, notes.org/notas.org. The template *content* itself — headlines, ~%^{...}~ prompts, and section headings — is also fully localized: it follows ~org-scribe-project-language~, which reads the project's own ~# Language:~ marker in ~.org-scribe-project~ (falling back to ~org-scribe-template-language~ only when the project predates that marker). This allows Spanish-language writers to work entirely in their native language while using all package features, regardless of the global ~org-scribe-message-language~ UI setting.
+Capture functions automatically detect and work with both English and Spanish project structures. File and directory names both adapt: ~objects/characters.org~ becomes ~objetos/personajes.org~, and likewise for locations, plot, timeline and objects — the Spanish set uses ~objetos/~, not ~objects/~, throughout. The template *content* itself — headlines, ~%^{...}~ prompts, and section headings — is also fully localized: it follows ~org-scribe-project-language~, which reads the project's own ~# Language:~ marker in ~.org-scribe-project~ (falling back to ~org-scribe-template-language~ only when the project predates that marker). This allows Spanish-language writers to work entirely in their native language while using all package features, regardless of the global ~org-scribe-message-language~ UI setting.
 
 *Status*: Fully implemented | *Hydra*: N/A (automatic) | *Module*: ~capture/org-scribe-capture.el~
 

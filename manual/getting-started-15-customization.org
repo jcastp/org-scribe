@@ -943,11 +943,12 @@ Set where new projects are created:
 ** File and Directory Name Preferences
 
 Project file and directory names are not configurable. org-scribe
-resolves them from the fixed bilingual pairs its templates ship —
-~novel.org~ / ~novela.org~ for the manuscript, ~notes/~ / ~notas/~ for
-the notes directory, and so on — and the manuscript pair also drives
-project type detection, so renaming it would leave the project
-unrecognized. Keep the names the template gave you.
+resolves them from the registered language packs (one per language,
+under ~lang/~ in the package's own source) — ~novel.org~ / ~novela.org~
+for the manuscript, ~notes/~ / ~notas/~ for the notes directory, and so
+on — and the manuscript concept also drives project type detection, so
+renaming it would leave the project unrecognized. Keep the names the
+template gave you.
 
 * Word Counting Configuration
 
