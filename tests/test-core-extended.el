@@ -241,18 +241,21 @@ for a novel project too, not only for a short story."
                      (plist-get structure :novel-file))))))
 
 (ert-deftest test-core-project-structure-spanish-files ()
-  "Test project structure detects Spanish file names."
+  "Test project structure detects Spanish file names.
+Spanish projects use `objetos/', not `objects/', for the entity
+subdirectory -- localized like `notes/'/`notas/', per the language
+pack's own `:dirs' section (see \"i18n-extended.org\", decision D1)."
   (test-core--with-temp-project
       '(("novela.org" . "#+TITLE: Novela\n")
-        ("objects/personajes.org" . "#+TITLE: Personajes\n")
-        ("objects/localizaciones.org" . "#+TITLE: Localizaciones\n")
-        ("objects/trama.org" . "#+TITLE: Trama\n"))
+        ("objetos/personajes.org" . "#+TITLE: Personajes\n")
+        ("objetos/localizaciones.org" . "#+TITLE: Localizaciones\n")
+        ("objetos/trama.org" . "#+TITLE: Trama\n"))
     (let ((structure (org-scribe-project-structure)))
       (should (string-suffix-p "novela.org"
                                (plist-get structure :novel-file)))
-      (should (string-suffix-p "objects/personajes.org"
+      (should (string-suffix-p "objetos/personajes.org"
                                (plist-get structure :characters-file)))
-      (should (string-suffix-p "objects/localizaciones.org"
+      (should (string-suffix-p "objetos/localizaciones.org"
                                (plist-get structure :locations-file))))))
 
 (ert-deftest test-core-project-structure-plan-file-present ()

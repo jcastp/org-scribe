@@ -193,16 +193,19 @@ case the report exists to catch."
 ;;; Plot Thread File Resolution Tests
 
 (ert-deftest test-get-plot-thread-file-resolves-spanish-trama-file ()
-  "org-scribe--get-plot-thread-file finds objects/trama.org in Spanish projects."
+  "org-scribe--get-plot-thread-file finds objetos/trama.org in Spanish projects.
+Spanish projects use `objetos/', not `objects/' -- localized like
+`notes/'/`notas/', per the language pack's own `:dirs' section (see
+\"i18n-extended.org\", decision D1)."
   (let* ((temp-dir (make-temp-file "org-scribe-plot-file-es-" t))
          (org-scribe--project-type-cache nil))
     (unwind-protect
         (let ((default-directory temp-dir))
-          (make-directory (expand-file-name "objects" temp-dir) t)
-          (with-temp-file (expand-file-name "objects/trama.org" temp-dir)
+          (make-directory (expand-file-name "objetos" temp-dir) t)
+          (with-temp-file (expand-file-name "objetos/trama.org" temp-dir)
             (insert "* Trama\n"))
           (should (equal (file-truename (org-scribe--get-plot-thread-file))
-                         (file-truename (expand-file-name "objects/trama.org" temp-dir)))))
+                         (file-truename (expand-file-name "objetos/trama.org" temp-dir)))))
       (setq org-scribe--project-type-cache nil)
       (delete-directory temp-dir t))))
 

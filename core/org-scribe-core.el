@@ -45,6 +45,17 @@ Keys are canonicalized with `org-scribe--normalize-project-root' so that
 different spellings of the same directory (trailing slash, symlink) share one
 entry.  Entries are invalidated via `org-scribe-project-type-cache-clear'.")
 
+(defvar org-scribe--project-language-cache nil
+  "Alist of (PROJECT-ROOT . LANGUAGE) for caching project language detection.
+Mirrors `org-scribe--project-type-cache' exactly -- same key
+normalization (`org-scribe--normalize-project-root'), same invalidation
+(`org-scribe-project-type-cache-clear').  A parallel cache rather than
+folding language into the type cache's own value, so every existing
+reader of `org-scribe--project-type-cache' keeps its current shape.
+Worth caching because `org-scribe-project-language' re-reads the marker
+file on every call, and `org-scribe-project-structure' is about to call
+it once per resolved file instead of never.")
+
 (defun org-scribe--normalize-project-root (root)
   "Return a canonical form of ROOT for use as a project-type cache key.
 Resolves symlinks and normalizes trailing slashes so that different
@@ -52,19 +63,24 @@ spellings of the same directory map to the same cache entry."
   (file-truename (file-name-as-directory (expand-file-name root))))
 
 (defun org-scribe-project-type-cache-clear (&optional root)
-  "Invalidate the project-type cache.
-With ROOT, remove only the entry for that project root (its type will be
-re-detected on next use).  With no argument, clear the entire cache.
+  "Invalidate the project-type and project-language caches.
+With ROOT, remove only the entry for that project root (its type and
+language will be re-detected on next use).  With no argument, clear
+both caches entirely.
 
 Call this after anything that can change what `org-scribe-project-type'
-would detect for a project already in the cache: creating project marker
-files/structure in an existing directory, or switching to a different
-project whose root was previously misdetected."
+or `org-scribe-project-language' would detect for a project already in
+the cache: creating project marker files/structure in an existing
+directory, or switching to a different project whose root was
+previously misdetected."
   (if root
-      (setq org-scribe--project-type-cache
-            (assoc-delete-all (org-scribe--normalize-project-root root)
-                               org-scribe--project-type-cache #'string=))
-    (setq org-scribe--project-type-cache nil)))
+      (let ((key (org-scribe--normalize-project-root root)))
+        (setq org-scribe--project-type-cache
+              (assoc-delete-all key org-scribe--project-type-cache #'string=))
+        (setq org-scribe--project-language-cache
+              (assoc-delete-all key org-scribe--project-language-cache #'string=)))
+    (setq org-scribe--project-type-cache nil)
+    (setq org-scribe--project-language-cache nil)))
 
 (defun org-scribe-project-type ()
   "Detect the type of writing project.
@@ -95,19 +111,25 @@ Detection strategy:
                   ((equal type-str "novel") 'novel)
                   (t nil))))
 
-              ;; Strategy 2: Check for objects/ directory (novel indicator)
-              ((or (file-directory-p (expand-file-name "objects" root))
-                   (file-directory-p (expand-file-name "objects/" root)))
+              ;; Strategy 2: Check for a localized "objects" directory in
+              ;; any registered language (novel indicator).  Reads every
+              ;; registered pack, not just the two shipped ones, and not
+              ;; scoped to any one language -- there is no marker line to
+              ;; read a language from yet at this point.
+              ((cl-some (lambda (name) (file-directory-p (expand-file-name name root)))
+                        (org-scribe-lang-all :dirs 'objects))
                'novel)
 
-              ;; Strategy 3: Check for story.org or cuento.org (short story indicator)
-              ((or (file-exists-p (expand-file-name "story.org" root))
-                   (file-exists-p (expand-file-name "cuento.org" root)))
+              ;; Strategy 3: Check for a localized short-story manuscript
+              ;; (story.org, cuento.org, ...) in any registered language.
+              ((cl-some (lambda (name) (file-exists-p (expand-file-name name root)))
+                        (org-scribe-lang-all :files 'manuscript-short))
                'short-story)
 
-              ;; Strategy 4: Check for novel.org or novela.org (novel indicator)
-              ((or (file-exists-p (expand-file-name "novel.org" root))
-                   (file-exists-p (expand-file-name "novela.org" root)))
+              ;; Strategy 4: Check for a localized novel manuscript
+              ;; (novel.org, novela.org, ...) in any registered language.
+              ((cl-some (lambda (name) (file-exists-p (expand-file-name name root)))
+                        (org-scribe-lang-all :files 'manuscript-novel))
                'novel)
 
               ;; Unknown
@@ -259,65 +281,85 @@ marker first."
            for full = (expand-file-name path root)
            when (file-directory-p full) return full))
 
-(defconst org-scribe--manuscript-file-names
-  '("novel.org" "novela.org" "story.org" "cuento.org")
-  "Manuscript file names, in resolution order, for both project types
-and both languages.  A fixed bilingual list rather than a glob, matching
-every other file resolver in this package: a project contains exactly
-one of these, and globbing would pick up a writer's own stray .org
-file.")
+(defun org-scribe--resolve (root concept)
+  "Return ROOT's file for CONCEPT, trying the project language first.
+CONCEPT is a key of the `:files' section of `lang/org-scribe-lang.el',
+such as `characters' or `design'.  Falls back to every other registered
+language's spelling (via `org-scribe-lang-all'), so a file copied in
+from a project in another language still resolves.  Returns nil when
+no candidate exists, or when ROOT is nil."
+  (when root
+    (cl-loop for name in (org-scribe-lang-all :files concept)
+             for full = (expand-file-name name root)
+             when (file-exists-p full) return full)))
+
+(defun org-scribe--resolve-dir (root concept)
+  "Return ROOT's directory for CONCEPT, trying the project language first.
+The directory-valued sibling of `org-scribe--resolve': CONCEPT is a key
+of the `:dirs' section of `lang/org-scribe-lang.el', such as `notes'."
+  (when root
+    (cl-loop for name in (org-scribe-lang-all :dirs concept)
+             for full = (expand-file-name name root)
+             when (file-directory-p full) return full)))
+
+(defun org-scribe--resolve-manuscript (root type)
+  "Return ROOT's manuscript file for project TYPE.
+TYPE is `novel', `short-story', or `unknown' (see
+`org-scribe-project-type').  For `unknown', tries both manuscript
+concepts -- novel first, then short-story -- since the type could not
+be determined from the project's marker or structure and either is
+possible."
+  (pcase type
+    ('short-story (org-scribe--resolve root 'manuscript-short))
+    ('novel (org-scribe--resolve root 'manuscript-novel))
+    (_ (or (org-scribe--resolve root 'manuscript-novel)
+           (org-scribe--resolve root 'manuscript-short)))))
 
 (defun org-scribe-project-structure ()
   "Detect project structure and return layout information.
 Returns plist with:
   :root          - project root directory
-  :manuscript-file - the project's manuscript, whichever of
-                   novel.org/novela.org/story.org/cuento.org exists
+  :manuscript-file - the project's manuscript file (see
+                   `org-scribe--resolve-manuscript')
   :novel-file    - deprecated synonym of `:manuscript-file', kept only so
                    existing call sites keep working.  Despite the name it
                    no longer means \"novel\" specifically -- it holds the
                    same value as `:manuscript-file' for both project
                    types.  New code should read `:manuscript-file'.
-  :notes-dir     - notes directory (notes/ or notas/)
-  :notes-file    - notes file (notes/notes.org, notas/notas.org, notes.org, or notas.org)
-  :characters-file - characters file (objects/characters.org or objects/personajes.org)
-  :locations-file  - locations file (objects/locations.org or objects/localizaciones.org)
-  :plot-file       - plot file (objects/plot.org or objects/trama.org)
-  :timeline-file   - timeline file (objects/timeline.org or objects/cronologia.org)
-  :objects-file    - objects file (objects/objects.org or objects/objetos.org)
-  :design-file     - method design file (design.org or diseno.org), or nil
-  :plan-file       - writing plan file (plan.org in the project root), or nil
+  :notes-dir     - notes directory
+  :notes-file    - notes file, either shape (a novel's notes/ subdirectory
+                   file, or a short story's root-level file)
+  :characters-file - characters file
+  :locations-file  - locations file
+  :plot-file       - plot file
+  :timeline-file   - timeline file
+  :objects-file    - objects file
+  :design-file     - method design file, or nil
+  :plan-file       - writing plan file (in the project root), or nil
 
-All file/directory values are nil if the path does not exist."
+Every file name is resolved from the registered language packs (see
+`org-scribe--resolve'); all file/directory values are nil if the path
+does not exist."
   (let* ((root (org-scribe-project-root))
-         (manuscript (apply #'org-scribe--find-existing-file root
-                            org-scribe--manuscript-file-names)))
+         (type (org-scribe-project-type))
+         (manuscript (org-scribe--resolve-manuscript root type)))
     (list :root root
           :manuscript-file manuscript
           :novel-file manuscript
-          :notes-dir (org-scribe--find-existing-dir root
-                       "notes" "notas")
-          :notes-file (org-scribe--find-existing-file root
-                        "notes/notes.org" "notas/notas.org"
-                        "notes.org" "notas.org")
-          :characters-file (org-scribe--find-existing-file root
-                             "objects/characters.org" "objects/personajes.org"
-                             "characters.org" "personajes.org")
-          :locations-file (org-scribe--find-existing-file root
-                            "objects/locations.org" "objects/localizaciones.org"
-                            "locations.org" "localizaciones.org")
-          :plot-file (org-scribe--find-existing-file root
-                       "objects/plot.org" "objects/trama.org"
-                       "plot.org" "trama.org")
-          :timeline-file (org-scribe--find-existing-file root
-                           "objects/timeline.org" "objects/cronologia.org"
-                           "timeline.org" "cronologia.org")
-          :objects-file (org-scribe--find-existing-file root
-                          "objects/objects.org" "objects/objetos.org"
-                          "objects.org" "objetos.org")
-          :design-file (org-scribe--find-existing-file root
-                         "design.org" "diseno.org")
-          :plan-file (org-scribe--find-existing-file root "plan.org"))))
+          :notes-dir (org-scribe--resolve-dir root 'notes)
+          ;; The novel-subdir shape (notes/notes.org, notas/notas.org) is
+          ;; tried before the short-story root-level shape (notes.org,
+          ;; notas.org), matching the fixed order the two used to be
+          ;; hand-listed in.
+          :notes-file (or (org-scribe--resolve root 'notes-novel)
+                           (org-scribe--resolve root 'notes-short))
+          :characters-file (org-scribe--resolve root 'characters)
+          :locations-file (org-scribe--resolve root 'locations)
+          :plot-file (org-scribe--resolve root 'plot)
+          :timeline-file (org-scribe--resolve root 'timeline)
+          :objects-file (org-scribe--resolve root 'objects)
+          :design-file (org-scribe--resolve root 'design)
+          :plan-file (org-scribe--resolve root 'plan))))
 
 ;;; Outline Levels (Chapter / Scene)
 ;;
@@ -522,14 +564,28 @@ already-canonical category safely."
   "Return the language symbol (\\='en or \\='es) for the current project.
 Reads the \"# Language:\" line from the project's .org-scribe-project
 marker file.  Falls back to `org-scribe-template-language' (or \\='en
-if that is unbound) when no marker file or line is found."
+if that is unbound) when no marker file or line is found.
+
+Cached per project root in `org-scribe--project-language-cache' --
+`org-scribe-project-structure' now calls this once per resolved file
+instead of never, so re-reading the marker file on every call would
+otherwise turn a single call into several stats and a file read.
+Invalidate with `org-scribe-project-type-cache-clear' after anything
+that changes a project's \"# Language:\" line."
   (let* ((root (org-scribe-project-root))
-         (lang (org-scribe--project-marker-get root "Language")))
-    (or (cond ((equal lang "es") 'es)
-              ((equal lang "en") 'en))
-        (and (boundp 'org-scribe-template-language)
-             (default-value 'org-scribe-template-language))
-        'en)))
+         (cache-key (org-scribe--normalize-project-root root))
+         (cached (alist-get cache-key org-scribe--project-language-cache nil nil #'string=)))
+    (or cached
+        (let ((language
+               (let ((lang (org-scribe--project-marker-get root "Language")))
+                 (or (cond ((equal lang "es") 'es)
+                           ((equal lang "en") 'en))
+                     (and (boundp 'org-scribe-template-language)
+                          (default-value 'org-scribe-template-language))
+                     'en))))
+          (setq org-scribe--project-language-cache
+                (cons (cons cache-key language) org-scribe--project-language-cache))
+          language))))
 
 (defun org-scribe-scene-property-aliases (canonical-key)
   "Return the list of literal property name aliases for CANONICAL-KEY.

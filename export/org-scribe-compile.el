@@ -75,17 +75,22 @@
 (declare-function org-scribe--find-existing-file "org-scribe-core" (root &rest relative-paths))
 (declare-function org-scribe--project-marker-get "org-scribe-core" (root key))
 (declare-function org-scribe-project-levels "org-scribe-core" (&optional type))
-(defvar org-scribe--manuscript-file-names)
+(declare-function org-scribe-lang-all "org-scribe-lang" (section key))
 
 ;;; Manuscript Resolution
 
 (defun org-scribe--compile-manuscript-file (root)
   "Return ROOT's manuscript file, or nil when there is none.
-Delegates the file-name list to `org-scribe--manuscript-file-names'
-\(core/org-scribe-core.el\) rather than keeping its own copy, so the two
-never drift out of step."
+Reads the candidate file names live from the registered language
+packs (`org-scribe-lang-all', `lang/org-scribe-lang.el') rather than
+keeping its own copy, so this and `org-scribe-project-structure''s own
+manuscript resolution (`core/org-scribe-core.el') never drift out of
+step.  Tries every registered language's spelling of both manuscript
+concepts -- novel first, then short-story -- since this caller does
+not otherwise know or need the project's type."
   (apply #'org-scribe--find-existing-file root
-         org-scribe--manuscript-file-names))
+         (append (org-scribe-lang-all :files 'manuscript-novel)
+                 (org-scribe-lang-all :files 'manuscript-short))))
 
 ;;; Document Structure
 ;;
