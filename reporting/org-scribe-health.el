@@ -272,7 +272,7 @@ pre-sistema templates have neither, and the caller skips the section."
     (with-current-buffer (find-file-noselect design-file)
       (org-with-wide-buffer
        (goto-char (point-min))
-       (let ((aliases (alist-get 'starting-gate org-scribe--section-heading-aliases))
+       (let ((aliases (org-scribe-lang-all :headings 'starting-gate))
              (found nil)
              (items nil))
          (org-map-entries
@@ -302,34 +302,30 @@ pre-sistema templates have neither, and the caller skips the section."
           nil 'file)
          (nreverse items))))))
 
-(defconst org-scribe--health-gate-measured-item-substrings
-  '((plot-points . ("non-negotiable" "irrenunciable"))
-    (first-three-scenes . ("first three scenes" "tres primeras escenas")))
-  "Substrings identifying the Starting Gate's two measurable items.
-Keyed by a symbol naming what is measured; each value lists the known
-localized substrings, matched case-insensitively against a gate item's
-label.  Every method's gate (Sistema, Hélice, Matriz — see
-`org-scribe--methods') phrases its plot-points item and its
-first-three-scenes item using one of these, in whichever language the
-project template was written in.
-
-This exists so that `org-scribe--health-gate-item' finds the right
-checkbox by what it says rather than by its position in the list —
-`(nth 6 gate-items)' and `(nth 7 gate-items)' assumed the Sistema's
-eight-item gate in the Sistema's own order, which the other methods'
-gates do not share: their items are fewer, differently grouped, and in
-a different order.  Matching on the label is also what lets a
-disagreement note render correctly even if a project's gate has been
-manually reordered.")
+;; The Starting Gate's two measurable items are identified by matching a
+;; substring of their label -- see each pack's `:gate-substrings' section
+;; (`lang/org-scribe-lang.el') for the known localized substrings.  Every
+;; method's gate (Sistema, Hélice, Matriz — see `org-scribe--methods')
+;; phrases its plot-points item and its first-three-scenes item using one
+;; of these, in whichever language the project template was written in.
+;;
+;; This exists so that `org-scribe--health-gate-item' finds the right
+;; checkbox by what it says rather than by its position in the list —
+;; `(nth 6 gate-items)' and `(nth 7 gate-items)' assumed the Sistema's
+;; eight-item gate in the Sistema's own order, which the other methods'
+;; gates do not share: their items are fewer, differently grouped, and in
+;; a different order.  Matching on the label is also what lets a
+;; disagreement note render correctly even if a project's gate has been
+;; manually reordered.
 
 (defun org-scribe--health-gate-item (key gate-items)
   "Return the (CHECKED-P . LABEL) entry of GATE-ITEMS measuring KEY.
-KEY is a key of `org-scribe--health-gate-measured-item-substrings'.
-Returns nil when no item's label contains any of KEY's known
-substrings, case-insensitively — which happens for every project
-whose design file predates this table having an entry for KEY, not
-only for a genuinely malformed gate."
-  (let ((substrings (alist-get key org-scribe--health-gate-measured-item-substrings))
+KEY is `plot-points' or `first-three-scenes' (see the `:gate-substrings'
+section of `lang/org-scribe-lang.el').  Returns nil when no item's
+label contains any of KEY's known substrings, case-insensitively —
+which happens for every project whose design file predates a pack
+having an entry for KEY, not only for a genuinely malformed gate."
+  (let ((substrings (org-scribe-lang-all :gate-substrings key))
         (case-fold-search t))
     (cl-find-if
      (lambda (item)

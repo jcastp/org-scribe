@@ -17,8 +17,19 @@
 ;; which is what lets a new language be added without touching any other
 ;; module.  See that file's Commentary for the pack shape and the
 ;; read/write split between single-language and cross-language access.
+;;
+;; This file self-registers on `require': `core/org-scribe-core.el' derives
+;; several of its own tables from every registered pack at ITS OWN load
+;; time, and several test files `require' it directly without ever loading
+;; `org-scribe.el' (which is where a naive design would register packs
+;; instead) -- so registration cannot be deferred to that file without
+;; leaving the registry empty on those paths.  A third-party pack should
+;; do the same: register itself from its own file, on `require', rather
+;; than relying on `org-scribe.el' to do it.
 
 ;;; Code:
+
+(require 'org-scribe-lang)
 
 (defconst org-scribe-lang-en
   (list
@@ -460,6 +471,8 @@
      (plural-s . "s")))
   "The English language pack.  Read only through the accessors in
 `lang/org-scribe-lang.el'; see that file's Commentary for the shape.")
+
+(org-scribe-register-language 'en org-scribe-lang-en)
 
 (provide 'org-scribe-lang-en)
 

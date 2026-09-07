@@ -19,6 +19,15 @@
 (require 'org-refile)
 (require 'project)
 (require 'org-scribe-messages)
+;; Several tables below (`org-scribe--scene-property-aliases' and
+;; friends) are derived from the registered language packs at THIS file's
+;; own load time, so the packs must be loaded -- and self-registered,
+;; which each does on `require' -- before that point.  Required directly
+;; here, not left to `org-scribe.el', because several test files
+;; `require' this file standalone without ever loading that one.
+(require 'org-scribe-lang)
+(require 'org-scribe-lang-en)
+(require 'org-scribe-lang-es)
 
 ;;; Project Detection
 
@@ -398,37 +407,69 @@ tag inheritance -- tells them apart from a real scene."
         (format "LEVEL=%d+%s" level tag)
       (format "LEVEL=%d-noexport" level))))
 
-;;; Scene Property Localization
+;;; Language-Pack-Derived Alias Tables
 ;;
-;; Scene metadata properties (PoV, Characters, Plot, ...) are stored as
-;; literal Org property names.  English project templates and Spanish
-;; project templates use different literal names for the same logical
-;; property (e.g. "Characters" vs "Personajes"), so every reader/writer
-;; of these properties must go through the alias table below instead of
-;; hardcoding one literal name.
+;; Scene metadata properties (PoV, Characters, Plot, ...) and level-1
+;; section headings (Characters, Setting, ...) are stored as literal Org
+;; text.  English project templates and Spanish project templates use
+;; different literal spellings for the same logical property or section
+;; (e.g. "Characters" vs "Personajes"), so every reader/writer of them
+;; must go through an alias table instead of hardcoding one literal name.
+;;
+;; That data now lives in the registered language packs (see
+;; `lang/org-scribe-lang.el', `lang/org-scribe-lang-en.el',
+;; `lang/org-scribe-lang-es.el'), not here.  The two tables below are
+;; rebuilt from the packs at load time via `org-scribe--pack-derived-alist'
+;; rather than hand-authored, purely to keep a handful of direct readers
+;; -- `capture/org-scribe-capture.el', a couple of tests that inspect the
+;; raw shape -- working unmodified; every reader that can instead ask a
+;; single question of the live registry (`org-scribe--heading-parent-section-p'
+;; below, `org-scribe-scene-property-aliases') does that instead, which is
+;; also what makes those readers see a language registered after this file
+;; has already loaded.
+
+(defun org-scribe--pack-derived-alist (section &optional variants-section)
+  "Rebuild a legacy-shaped alist (KEY . ALIASES) from every registered
+language pack's SECTION (and, if given, VARIANTS-SECTION), in pack
+REGISTRATION order -- i.e. always English-then-Spanish today, regardless
+of the current project's language.  Unlike `org-scribe-lang-all', this
+never looks at `org-scribe-project-language': it exists solely to
+reconstruct, once at load time, the exact shape and order the
+hand-authored bilingual alias tables had before their data moved into
+the language packs, for the few callers that still read that shape
+directly with `alist-get' instead of going through an accessor.
+
+ALIASES is deduplicated (first occurrence kept), so a key whose only
+known spelling is identical in every language -- `pov', written \"PoV\"
+in both shipped packs -- still comes back as a single-element list,
+matching what the hand-authored table always had."
+  (let (keys)
+    (dolist (lang (org-scribe-languages))
+      (dolist (row (plist-get (org-scribe-lang-pack lang) section))
+        (unless (memq (car row) keys) (push (car row) keys))))
+    (setq keys (nreverse keys))
+    (mapcar
+     (lambda (key)
+       (cons key
+             (delete-dups
+              (append
+               (delq nil
+                     (mapcar (lambda (lang)
+                               (alist-get key (plist-get (org-scribe-lang-pack lang) section)))
+                             (org-scribe-languages)))
+               (when variants-section
+                 (apply #'append
+                        (mapcar (lambda (lang)
+                                  (alist-get key (plist-get (org-scribe-lang-pack lang) variants-section)))
+                                (org-scribe-languages))))))))
+     keys)))
 
 (defconst org-scribe--scene-property-aliases
-  '((pov               . ("PoV"))
-    (characters        . ("Characters" "Personajes"))
-    (plot              . ("Plot" "Trama"))
-    (plot-point        . ("Plot-point" "Punto-de-trama"))
-    (timeline          . ("Timeline" "Linea-temporal"))
-    (location          . ("Location" "Localizacion"))
-    (description       . ("Description" "Descripcion"))
-    (summary           . ("Summary" "Resumen"))
-    (scene-motivation  . ("Scene-motivation" "Motivacion-escena"))
-    (conflict-source   . ("Conflict-source" "Fuente-conflicto"))
-    (gap               . ("Gap" "Brecha"))
-    (what-is-at-stake  . ("What-is-at-stake" "Que-esta-en-juego"))
-    (world-problem     . ("World-problem" "Problema-mundo"))
-    (emotion           . ("Emotion" "Emocion"))
-    (tension-level     . ("Tension-level" "Nivel-tension"))
-    (outcome           . ("Outcome" "Resultado"))
-    (sequel-decision   . ("Sequel-decision" "Decision-secuela"))
-    (comment           . ("Comment" "Comentario")))
+  (org-scribe--pack-derived-alist :properties)
   "Canonical scene property key -> localized property name aliases.
 Each value lists every literal Org property name known to be used for
-that logical property, English first, then Spanish.
+that logical property, English first, then Spanish.  Derived from the
+registered language packs; see `org-scribe--pack-derived-alist'.
 
 `beat' (\"Beat\" / \"Ritmo\") was removed: no module ever read it, and it
 duplicated `plot-point' — the method's own structural classifier — with a
@@ -441,32 +482,40 @@ removal may still carry the property; unknown names pass through
 ;; different project languages still write category names in that
 ;; language -- the Spanish design template asks the writer for
 ;; "*EDIT*: diseño - ..." even though the canonical category is
-;; "design".  Without an alias, that marker would file under the
-;; catch-all "other" bucket instead of the "design" section it was
-;; meant for.  The table below is deliberately small: most categories
-;; ("plot", "scene", "character", "prose") are used as-is by every
-;; template regardless of language, and only "design" currently has a
-;; localized spelling in the templates.  Add an entry here, not a
-;; second literal string, if that changes.
+;; "design".  Without recognizing this, that marker would file under the
+;; catch-all "other" bucket instead of the "design" section it was meant
+;; for.  Each pack's `:edit-categories' section is deliberately small in
+;; practice: most categories ("plot", "scene", "character", "prose") are
+;; used as-is by every template regardless of language, and only
+;; "design" currently has a localized spelling in the templates.
 
-(defconst org-scribe--edit-category-aliases
-  '(("design" . ("Diseño")))
-  "Canonical *EDIT* category -> other spellings known to appear in templates.
-Each key is a canonical value from `org-scribe-edit-categories'; each
-value lists additional literal spellings (e.g. localized ones) that
-should canonicalize to that key.  Matching is case-insensitive.")
+(defun org-scribe--edit-category-canonical-keys ()
+  "Return every canonical *EDIT* category string known to any registered
+language pack's `:edit-categories' section, in pack registration order.
+This mirrors the *value* `org-scribe-edit-categories' (config.el) is
+expected to hold, without depending on that defcustom: config.el loads
+after this file, and `org-scribe-edit-category-canonical' must work for
+callers -- including a few tests -- that load this file standalone."
+  (let (keys)
+    (dolist (lang (org-scribe-languages))
+      (dolist (row (plist-get (org-scribe-lang-pack lang) :edit-categories))
+        (let ((name (symbol-name (car row))))
+          (unless (member name keys) (push name keys)))))
+    (nreverse keys)))
 
 (defun org-scribe-edit-category-canonical (category)
   "Return the canonical spelling of CATEGORY, or CATEGORY unchanged.
-Looks CATEGORY up in `org-scribe--edit-category-aliases' (both the
-canonical keys and their known alternate spellings), case-insensitively.
-Returns CATEGORY as given when it matches nothing, so callers can pass
-an unrecognized or already-canonical category safely."
-  (or (car (cl-find-if
-            (lambda (row)
-              (or (string-equal-ignore-case (car row) category)
-                  (cl-member category (cdr row) :test #'string-equal-ignore-case)))
-            org-scribe--edit-category-aliases))
+Checks CATEGORY, case-insensitively, against every registered language
+pack's spelling of every known canonical category (see
+`org-scribe--edit-category-canonical-keys' and the `:edit-categories'
+section of `lang/org-scribe-lang.el').  Returns CATEGORY as given when
+it matches nothing, so callers can pass an unrecognized or
+already-canonical category safely."
+  (or (cl-find-if
+       (lambda (canonical)
+         (cl-some (lambda (spelling) (string-equal-ignore-case spelling category))
+                  (org-scribe-lang-all :edit-categories (intern canonical))))
+       (org-scribe--edit-category-canonical-keys))
       category))
 
 (defun org-scribe-project-language ()
@@ -484,20 +533,22 @@ if that is unbound) when no marker file or line is found."
 
 (defun org-scribe-scene-property-aliases (canonical-key)
   "Return the list of literal property name aliases for CANONICAL-KEY.
-CANONICAL-KEY is a symbol such as \\='characters or \\='plot (see
-`org-scribe--scene-property-aliases').  If CANONICAL-KEY is not found
-in the alias table, it is returned as a single-element list unchanged,
-so callers may also pass a literal property name directly."
-  (or (alist-get canonical-key org-scribe--scene-property-aliases)
+CANONICAL-KEY is a symbol such as \\='characters or \\='plot (see the
+`:properties' section of `lang/org-scribe-lang.el').  Reads every
+registered language pack live (via `org-scribe-lang-all'), so a
+language registered after this file loaded is still recognized.  If
+CANONICAL-KEY is not found in any registered pack, it is returned as a
+single-element list unchanged, so callers may also pass a literal
+property name directly."
+  (or (org-scribe-lang-all :properties canonical-key)
       (list canonical-key)))
 
 (defun org-scribe-scene-property-name (canonical-key &optional language)
   "Return the literal property name to write for CANONICAL-KEY.
-LANGUAGE defaults to `org-scribe-project-language'."
-  (let* ((aliases (org-scribe-scene-property-aliases canonical-key))
-         (language (or language (org-scribe-project-language))))
-    (or (and (eq language 'es) (nth 1 aliases))
-        (car aliases))))
+LANGUAGE defaults to `org-scribe-project-language'.  Signals an error
+if CANONICAL-KEY is not a known scene property in any registered
+language pack -- see `org-scribe-lang-property'."
+  (org-scribe-lang-property canonical-key language))
 
 (defun org-scribe-scene-property-get (canonical-key)
   "Return the value of scene property CANONICAL-KEY at point.
@@ -619,35 +670,33 @@ load-path change) is picked up without restarting Emacs."
 ;;; Short-story Entity Heading Helper
 
 (defconst org-scribe--section-heading-aliases
-  '((characters   . ("Characters" "Personajes"))
-    (setting      . ("Setting" "Ambientación" "Ambientacion"))
-    (plot-threads . ("Plot Threads" "Hilos de la Trama"))
-    (plot-points  . ("The Thirteen Non-Negotiables" "Los trece irrenunciables"))
-    (starting-gate . ("Starting Gate" "Puerta de salida"))
-    (objects      . ("Objects" "Objetos"))
-    (timeline     . ("Timeline" "Línea Temporal" "Linea Temporal")))
+  (org-scribe--pack-derived-alist :headings :heading-variants)
   "Canonical section key -> localized level-1 heading aliases.
 Mirrors `org-scribe--scene-property-aliases': English and Spanish project
 templates use different literal heading text for the same section
-(\"Characters\" vs \"Personajes\", etc.), so entity heading predicates
-recognize either via `org-scribe--heading-parent-section-p' instead of
-hardcoding one literal name.")
+(\"Characters\" vs \"Personajes\", etc.).  Derived from the registered
+language packs; see `org-scribe--pack-derived-alist'.  Kept, in this
+exact shape, only for `capture/org-scribe-capture.el''s direct readers
+-- `org-scribe--heading-parent-section-p' below reads the live registry
+instead, via `org-scribe-lang-all'.")
 
 (defun org-scribe--heading-parent-section-p (section-key)
   "Return non-nil if the level-1 parent of the heading at point is SECTION-KEY.
 SECTION-KEY is a symbol such as \\='characters, \\='setting, or
-\\='plot-threads (see `org-scribe--section-heading-aliases').  Used by
-entity heading predicates to recognize short-story projects' notes.org
-layout, where characters/locations/plot threads are nested as level-2
-headings under a level-1 section rather than being top-level headings of
-their own, as in novel projects.  Matches any localized alias for that
-section, case-insensitively."
+\\='plot-threads (see the `:headings' section of `lang/org-scribe-lang.el').
+Used by entity heading predicates to recognize short-story projects'
+notes.org layout, where characters/locations/plot threads are nested as
+level-2 headings under a level-1 section rather than being top-level
+headings of their own, as in novel projects.  Matches any localized
+alias for that section, case-insensitively, reading every registered
+language pack live via `org-scribe-lang-all' -- so a language
+registered after this file loaded is still recognized."
   (save-excursion
     (and (org-up-heading-safe)
          (= (org-current-level) 1)
          (let ((heading (org-get-heading t t t t)))
            (cl-some (lambda (alias) (string-equal-ignore-case alias heading))
-                    (alist-get section-key org-scribe--section-heading-aliases))))))
+                    (org-scribe-lang-all :headings section-key))))))
 
 ;;; Helper Functions
 
