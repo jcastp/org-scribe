@@ -314,10 +314,13 @@ Returns the file path based on the following priority:
 2. notas/notas.org - Spanish (relative to project root)
 3. novel-notes.org (in project root) - legacy, see below
 4. notes.org (in project root)
-5. current buffer if none of the above exist
+5. notas.org - Spanish (in project root)
+6. current buffer if none of the above exist
 
 If CREATE-IF-MISSING is non-nil, create the first priority notes
-file that doesn't exist.
+file that doesn't exist, named for `org-scribe-project-language' (notas.org
+for a Spanish project, notes.org otherwise) rather than hardcoded to English
+- mirroring `org-scribe--capture-entity-file''s own fallback naming.
 
 Priority 3 is a legacy fallback.  Novel projects created by older
 versions shipped a \"novel-notes.org\" stub as an org-remark annotation
@@ -327,20 +330,31 @@ unreachable for them, but it is kept so that a pre-0.5.3 project whose
 author put real content in that file still captures into it instead of
 appearing to lose it.  This is also the reason the editing-mode right
 pane routes through this function rather than naming a file directly
-\(see `org-scribe--editing-right-panel-file')."
+\(see `org-scribe--editing-right-panel-file').
+
+Priority 5 exists because a Spanish short-story project ships its
+consolidated notes file as root-level \"notas.org\", not a \"notas/\"
+subdirectory - without it, a fresh Spanish short-story project matched none
+of priorities 1-4 and every general note capture silently fell through to
+whatever buffer the capture was invoked from instead of notas.org."
   (let* ((project-dir (or (org-scribe-project-root)
                          (file-name-directory (or (buffer-file-name) default-directory))))
          (notes-subdir-en (expand-file-name "notes/notes.org" project-dir))
          (notes-subdir-es (expand-file-name "notas/notas.org" project-dir))
          (novel-notes (expand-file-name "novel-notes.org" project-dir))
-         (notes (expand-file-name "notes.org" project-dir))
+         (notes-en (expand-file-name "notes.org" project-dir))
+         (notes-es (expand-file-name "notas.org" project-dir))
          (target (cond
                   ((file-exists-p notes-subdir-en) notes-subdir-en)
                   ((file-exists-p notes-subdir-es) notes-subdir-es)
                   ((file-exists-p novel-notes) novel-notes)
-                  ((file-exists-p notes) notes)
+                  ((file-exists-p notes-en) notes-en)
+                  ((file-exists-p notes-es) notes-es)
                   (t (or (buffer-file-name)
-                         (expand-file-name "notes.org" project-dir))))))
+                         (expand-file-name
+                          (if (eq (org-scribe-project-language) 'es)
+                              "notas.org" "notes.org")
+                          project-dir))))))
     (when (and create-if-missing
                (not (file-exists-p target)))
       (let ((target-dir (file-name-directory target)))

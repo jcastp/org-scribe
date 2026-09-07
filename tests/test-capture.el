@@ -210,6 +210,54 @@
     (should (stringp target))
     (should (string-match-p "\\.org$" target))))
 
+(ert-deftest test-capture-target-file-finds-existing-root-notas ()
+  "A Spanish short-story project's general note capture must find the
+project's own root-level notas.org, not fall through to whatever buffer
+the capture happens to be invoked from.
+
+Regression test: `org-scribe-capture-target-file' only ever checked
+notes/notes.org, notas/notas.org, novel-notes.org and root notes.org --
+never root notas.org, which is exactly what
+`org-scribe-templates/short-story-es/notas.org.template' ships.  Since
+org-capture's `file+headline' target resolves a function target via
+`org-capture-expand-file' by calling it with no arguments (so
+CREATE-IF-MISSING is always nil on that path), a fresh Spanish
+short-story project matched none of the four checks and the \"w\"
+general-note template filed into the current buffer (e.g. cuento.org)
+instead of notas.org."
+  (let* ((temp-dir (make-temp-file "test-ss-proj-es-notas-" t))
+         (notas-file (expand-file-name "notas.org" temp-dir)))
+    (unwind-protect
+        (progn
+          (with-temp-file notas-file (insert "* Notas\n"))
+          (cl-letf (((symbol-function 'org-scribe-project-root)
+                     (lambda () temp-dir))
+                    ((symbol-function 'org-scribe-project-language)
+                     (lambda () 'es)))
+            (should (string= (org-scribe-capture-target-file) notas-file))))
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-capture-target-file-create-if-missing-spanish-creates-notas ()
+  "With no consolidated notes file yet, a Spanish project's general note
+capture creates notas.org, not notes.org, when CREATE-IF-MISSING is
+non-nil -- mirroring the fallback naming already fixed for
+`org-scribe--capture-entity-file' (see
+`test-capture-create-if-missing-short-story-spanish-creates-notas')."
+  (let* ((temp-dir (make-temp-file "test-ss-proj-es-create-notas-" t))
+         (expected-file (expand-file-name "notas.org" temp-dir))
+         (wrong-file (expand-file-name "notes.org" temp-dir)))
+    (unwind-protect
+        (cl-letf (((symbol-function 'org-scribe-project-root)
+                   (lambda () temp-dir))
+                  ((symbol-function 'org-scribe-project-language)
+                   (lambda () 'es)))
+          (should-not (file-exists-p expected-file))
+          (let ((result (org-scribe-capture-target-file t)))
+            (should (file-exists-p expected-file))
+            (should-not (file-exists-p wrong-file))
+            (should (string= result expected-file))))
+      (delete-directory temp-dir t))))
+
 (ert-deftest test-capture-character-file-detection ()
   "Test that character file detection works."
   (let ((target (org-scribe-capture-character-file)))
