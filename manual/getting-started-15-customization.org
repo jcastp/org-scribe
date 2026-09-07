@@ -375,13 +375,13 @@ Put this in your init file:
 
 By default Editing mode's right pane shows your project notes file. ~org-scribe-editing-right-panel~ changes that:
 
-| Value             | Right panel shows                                        |
-|-------------------+----------------------------------------------------------|
-| ~notes~ (default) | The project notes file, the same one captures write to   |
+| Value           | Right panel shows                                         |
+|-----------------+-----------------------------------------------------------|
+| ~notes~ (default) | The project notes file, the same one captures write to    |
 | ~edits~           | A live index of your inline edit markers, rebuilt on save |
-| ~revision~        | The project's ~revision.org~                             |
-| a string          | A project-relative path, e.g. ~"notes/research.org"~     |
-| a function        | Called with the manuscript file name; returns a file     |
+| ~revision~        | The project's ~revision.org~                                |
+| a string        | A project-relative path, e.g. ~"notes/research.org"~        |
+| a function      | Called with the manuscript file name; returns a file      |
 
 #+BEGIN_SRC emacs-lisp
 ;; During a revision pass, keep the outstanding edits beside the text
