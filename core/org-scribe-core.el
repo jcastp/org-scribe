@@ -92,9 +92,9 @@ Returns one of:
 Detection strategy:
 1. Check cache for this project root
 2. Read .org-scribe-project marker file if it exists (look for Type: line)
-3. Check for existence of objects/ directory structure (indicates novel)
-4. Check for story.org or cuento.org (indicates short story)
-5. Check for novel.org or novela.org (indicates novel)
+3. Check for a registered language's \"objects\" directory (indicates novel)
+4. Check for a registered language's short-story manuscript (e.g. story.org)
+5. Check for a registered language's novel manuscript (e.g. novel.org)
 6. Return 'unknown if none of the above"
   (let* ((root (org-scribe-project-root))
          (cache-key (org-scribe--normalize-project-root root))
@@ -121,13 +121,13 @@ Detection strategy:
                'novel)
 
               ;; Strategy 3: Check for a localized short-story manuscript
-              ;; (story.org, cuento.org, ...) in any registered language.
+              ;; (any registered language's `manuscript-short' spelling).
               ((cl-some (lambda (name) (file-exists-p (expand-file-name name root)))
                         (org-scribe-lang-all :files 'manuscript-short))
                'short-story)
 
               ;; Strategy 4: Check for a localized novel manuscript
-              ;; (novel.org, novela.org, ...) in any registered language.
+              ;; (any registered language's `manuscript-novel' spelling).
               ((cl-some (lambda (name) (file-exists-p (expand-file-name name root)))
                         (org-scribe-lang-all :files 'manuscript-novel))
                'novel)
@@ -345,10 +345,9 @@ does not exist."
           :manuscript-file manuscript
           :novel-file manuscript
           :notes-dir (org-scribe--resolve-dir root 'notes)
-          ;; The novel-subdir shape (notes/notes.org, notas/notas.org) is
-          ;; tried before the short-story root-level shape (notes.org,
-          ;; notas.org), matching the fixed order the two used to be
-          ;; hand-listed in.
+          ;; The novel-subdir shape (`notes-novel') is tried before the
+          ;; short-story root-level shape (`notes-short'), matching the
+          ;; fixed order the two used to be hand-listed in.
           :notes-file (or (org-scribe--resolve root 'notes-novel)
                            (org-scribe--resolve root 'notes-short))
           :characters-file (org-scribe--resolve root 'characters)
@@ -386,9 +385,9 @@ does not exist."
 ;; keeps that assumption from drifting out of step again.
 ;;
 ;; `short-story' carries `:scene-tag' "ignore", the same as a novel's --
-;; the shipped short-story manuscript templates (story.org.template /
-;; cuento.org.template) tag their scenes :ignore: too, matching a
-;; novel's.  This used to be nil: the templates originally shipped
+;; every language's shipped short-story manuscript template tags its
+;; scenes :ignore: too, matching a novel's.  This used to be nil: the
+;; templates originally shipped
 ;; untagged scenes, and setting :scene-tag to "ignore" here before they
 ;; did made every scene-level function in the package silently find zero
 ;; scenes in every short story -- confirmed against a real project, not
@@ -453,8 +452,9 @@ tag inheritance -- tells them apart from a real scene."
 ;; section headings (Characters, Setting, ...) are stored as literal Org
 ;; text.  English project templates and Spanish project templates use
 ;; different literal spellings for the same logical property or section
-;; (e.g. "Characters" vs "Personajes"), so every reader/writer of them
-;; must go through an alias table instead of hardcoding one literal name.
+;; (a heading spelled one way in the English templates and another way
+;; in the Spanish ones), so every reader/writer of them must go through
+;; an alias table instead of hardcoding one literal name.
 ;;
 ;; That data now lives in the registered language packs (see
 ;; `lang/org-scribe-lang.el', `lang/org-scribe-lang-en.el',
@@ -727,9 +727,9 @@ load-path change) is picked up without restarting Emacs."
   (org-scribe--pack-derived-alist :headings :heading-variants)
   "Canonical section key -> localized level-1 heading aliases.
 Mirrors `org-scribe--scene-property-aliases': English and Spanish project
-templates use different literal heading text for the same section
-(\"Characters\" vs \"Personajes\", etc.).  Derived from the registered
-language packs; see `org-scribe--pack-derived-alist'.  Kept, in this
+templates use different literal heading text for the same section.
+Derived from the registered language packs; see
+`org-scribe--pack-derived-alist'.  Kept, in this
 exact shape, only for `capture/org-scribe-capture.el''s direct readers
 -- `org-scribe--heading-parent-section-p' below reads the live registry
 instead, via `org-scribe-lang-all'.")

@@ -43,10 +43,11 @@ content generation."
       ;; "Plot Threads" is entity-recognized (see the matching comment in
       ;; `org-scribe--create-short-story-notes-file'), so it is written
       ;; via `org-scribe-lang-heading' rather than `org-scribe-msg' --
-      ;; the `capture-plot-threads' message key has drifted from the
-      ;; `plot-threads' heading alias (\"Hilos de Trama\" vs \"Hilos de la
-      ;; Trama\"), which used to make a plot-thread captured into a
-      ;; Spanish short-story project grow a second, parallel section the
+      ;; the `capture-plot-threads' message key had drifted from the
+      ;; `plot-threads' heading alias's own Spanish spelling (an
+      ;; abbreviated form vs the full one the alias actually uses),
+      ;; which used to make a plot-thread captured into a Spanish
+      ;; short-story project grow a second, parallel section the
       ;; linking layer never read.
       (if is-short-story
           (progn
@@ -86,12 +87,12 @@ content generation."
       ;; instead, as this file used to, makes the written text and the
       ;; alias two independent copies of the same string that can drift
       ;; -- which is exactly what happened: `capture-plot-threads' (used
-      ;; below, in `org-scribe--create-plot-file') still reads "Hilos de
-      ;; Trama" while the `plot-threads' heading alias is "Hilos de la
-      ;; Trama", so a plot-thread capture into a Spanish short-story
-      ;; project grew a second, parallel section the linking layer never
-      ;; read.  `org-scribe-lang-heading' reads the SAME datum the
-      ;; matcher does, so the two cannot disagree.
+      ;; below, in `org-scribe--create-plot-file') still read an
+      ;; abbreviated Spanish spelling while the `plot-threads' heading
+      ;; alias used the full one, so a plot-thread capture into a
+      ;; Spanish short-story project grew a second, parallel section the
+      ;; linking layer never read.  `org-scribe-lang-heading' reads the
+      ;; SAME datum the matcher does, so the two cannot disagree.
       (insert (format "* %s\n\n" (org-scribe-lang-heading 'characters resolved-language)))
       (insert (format "** %s\n" (org-scribe-msg 'capture-ss-protagonist-name)))
       ;; :Role: is deliberately English regardless of LANGUAGE (see
@@ -173,15 +174,15 @@ such as `characters' or `plot' -- the same symbol
 `org-scribe--create-capture-file' on the create path.  If
 CREATE-IF-MISSING is non-nil, create the file if it doesn't exist.
 
-For short stories, returns notes.org (or notas.org, ...) in the
-project root.  For novels, resolves CONCEPT's own file
-(objects/characters.org, objetos/personajes.org, ...) via
-`org-scribe--resolve', trying every registered language's spelling.
+For short stories, returns the notes file in the project root, in
+whichever registered language's spelling exists.  For novels, resolves
+CONCEPT's own file via `org-scribe--resolve', trying every registered
+language's spelling.
 
 When none of those candidates exists yet, the file to create is chosen by
 `org-scribe-project-language', not hardcoded to English: a Spanish
-project gets its own spelling (notas.org, or objetos/personajes.org),
-not the English one.  This path is only reached for a project whose
+project gets its own spelling, not the English one.  This path is
+only reached for a project whose
 consolidated notes file (or, for a novel, the relevant entity file)
 does not exist on disk yet — normal project creation always ships it, so
 in ordinary use `org-scribe--resolve' above already finds a match — but
@@ -320,12 +321,11 @@ mirrors exactly, and `org-scribe--capture-goto-section'."
   "Determine the appropriate notes file for org-capture in writing environment.
 Uses `org-scribe-project-root' to find the project base directory.
 Tries, in order:
-1. The novel-subdir notes file (notes/notes.org, notas/notas.org, ...),
-   whichever registered language's spelling exists (see
-   `org-scribe--resolve').
+1. The novel-subdir notes file, whichever registered language's
+   spelling exists (see `org-scribe--resolve').
 2. \"novel-notes.org\" in the project root -- a legacy fallback, see below.
-3. The short-story notes file (notes.org, notas.org, ...), whichever
-   registered language's spelling exists.
+3. The short-story notes file, whichever registered language's
+   spelling exists.
 4. The current buffer.
 5. The project's own language's notes file name -- only reached when
    CREATE-IF-MISSING is non-nil and none of the above exist.
@@ -346,11 +346,11 @@ pane routes through this function rather than naming a file directly
 \(see `org-scribe--editing-right-panel-file').
 
 Priority 3's short-story shape exists because a Spanish short-story
-project ships its consolidated notes file as root-level \"notas.org\",
-not a \"notas/\" subdirectory - without it, a fresh Spanish
-short-story project matched no earlier priority and every general note
-capture silently fell through to whatever buffer the capture was
-invoked from instead of notas.org."
+project ships its consolidated notes file at the project root, not in
+a subdirectory - without it, a fresh Spanish short-story project
+matched no earlier priority and every general note capture silently
+fell through to whatever buffer the capture was invoked from instead
+of that file."
   (let* ((project-dir (or (org-scribe-project-root)
                          (file-name-directory (or (buffer-file-name) default-directory))))
          (novel-notes (expand-file-name "novel-notes.org" project-dir))

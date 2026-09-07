@@ -56,7 +56,8 @@
 ;;; Load test files
 
 (defvar org-scribe-test-files
-  '("org-scribe-test"              ; Core utilities (basic)
+  '("test-lang"                    ; Language pack registry (lang/org-scribe-lang.el)
+    "org-scribe-test"              ; Core utilities (basic)
     "test-core-extended"           ; Core utilities (project type/structure)
     "test-messages"                ; Message system
     "test-wordcount"               ; Word counting
@@ -143,6 +144,14 @@ Suitable for CI/CD pipelines and automated testing."
 ;; is *miss* tests defined in the file they load, or pull in a whole other
 ;; suite; both were happening before, which is why several enumerate their
 ;; alternatives instead of using a short prefix.
+
+;;;###autoload
+(defun org-scribe-run-lang-tests ()
+  "Run language pack registry tests only (lang/org-scribe-lang.el)."
+  (interactive)
+  (load-file (expand-file-name "test-lang.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-lang-"))
 
 ;;;###autoload
 (defun org-scribe-run-core-tests ()

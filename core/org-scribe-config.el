@@ -44,12 +44,12 @@ defcustom has a forward `defvar' there too."
 ;;; Project Structure
 
 ;; Project file and directory names are deliberately not configurable
-;; here.  `org-scribe-project-structure' resolves them from the fixed
-;; bilingual pairs the templates ship (novel.org / novela.org, notes/ /
-;; notas/, and so on), and the manuscript pair also drives project-type
-;; detection in `org-scribe-project-type', so a rename would leave the
-;; project unrecognized.  Options that nothing reads are worse than no
-;; options: they read as a supported way to rename these files.
+;; here.  `org-scribe-project-structure' resolves them from the
+;; registered language packs (see `lang/org-scribe-lang.el'), and the
+;; manuscript concept also drives project-type detection in
+;; `org-scribe-project-type', so a rename would leave the project
+;; unrecognized.  Options that nothing reads are worse than no options:
+;; they read as a supported way to rename these files.
 
 (defcustom org-scribe-create-dirs-automatically t
   "When non-nil, create directories (characters/, research/) automatically."

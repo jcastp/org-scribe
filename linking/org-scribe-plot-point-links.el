@@ -25,7 +25,7 @@
 ;;     this entity type exists rather than the points being a plain list.
 ;;
 ;; Structurally the thirteen are *level-2* headings under a level-1 wrapper
-;; ("Los trece irrenunciables" / "The Thirteen Non-Negotiables") in the same
+;; (the localized "The Thirteen Non-Negotiables" heading) in the same
 ;; file as the plot threads.  Level 2 is deliberate: plot threads are level-1
 ;; headings in that file, and putting the thirteen alongside them would leave
 ;; only the heading text to tell the two kinds apart.

@@ -57,8 +57,9 @@ regexp fallback below and becoming a phantom entity."
 
 (defun org-scribe--get-plot-thread-file ()
   "Get the path to the plot threads file for the current project.
-For novels, this is objects/plot.org (or objetos/trama.org).
-For short stories, this is notes.org (Plot section)."
+For novels, this is the `plot' concept's own file, named for the
+project's language.  For short stories, this is the notes file (Plot
+section)."
   (let* ((project-type (org-scribe-project-type))
          (structure (org-scribe-project-structure)))
     (if (eq project-type 'short-story)

@@ -361,7 +361,7 @@ This function:
 4. Processes all template files with variable substitution
 5. Creates an initial git commit
 6. Registers the project with project.el
-7. Opens the story file (story.org or cuento.org)"
+7. Opens the story file, named for LANGUAGE"
   (interactive
    (list
     (read-directory-name (org-scribe-msg 'project-creation-base-dir) org-scribe-projects-directory)
@@ -676,7 +676,7 @@ reads the live registry rather than this fallback list.")
 (defun org-scribe--project-file-candidates (&optional root)
   "Return relative paths of Org files under ROOT for completion.
 Scans ROOT and its immediate subdirectories (skipping hidden ones),
-so files added by newer templates — such as design.org / diseno.org —
+so files added by a newer template — such as the method design file —
 are offered without this function knowing their names.  Falls back to
 `org-scribe--known-project-files' when ROOT is nil or holds no Org files."
   (let ((found
