@@ -538,11 +538,13 @@ English-named file a Spanish project should never have."
       (delete-directory temp-dir t))))
 
 (ert-deftest test-capture-character-file-novel-spanish-fallback-uses-personajes ()
-  "A Spanish novel project with no objects/ files yet gets
-objects/personajes.org as its fallback target, not objects/characters.org.
+  "A Spanish novel project with no entity files yet gets
+objetos/personajes.org as its fallback target, not objects/characters.org.
 Same regression class as the short-story notas.org/notes.org case: the
 fallback used to hardcode the English stem regardless of
-`org-scribe-project-language'."
+`org-scribe-project-language'.  Spanish projects use `objetos/', not
+`objects/' -- localized like `notes/'/`notas/', per the language pack's
+own `:dirs' section (see \"i18n-extended.org\", decision D1)."
   (let* ((temp-dir (make-temp-file "test-route-novel-es-" t)))
     (unwind-protect
         (cl-letf (((symbol-function 'org-scribe-project-root)
@@ -552,7 +554,7 @@ fallback used to hardcode the English stem regardless of
                   ((symbol-function 'org-scribe-project-language)
                    (lambda () 'es)))
           (let ((result (org-scribe-capture-character-file)))
-            (should (string-match-p "objects/personajes\\.org$" result))))
+            (should (string-match-p "objetos/personajes\\.org$" result))))
       (delete-directory temp-dir t))))
 
 ;;; ─────────────────────────────────────────────
@@ -575,7 +577,7 @@ marker and returns the actual writing project directory."
                   ;; Simulate project-current pointing at a *different* (wrong) root
                   ((symbol-function 'project-current)
                    (lambda (&rest _) `(vc Git . ,git-root))))
-          (let ((result (org-scribe--capture-entity-file "characters" "personajes" 'characters)))
+          (let ((result (org-scribe--capture-entity-file 'characters)))
             ;; Must resolve under the org-scribe writing-project root
             (should (string-prefix-p project-root result))
             ;; Must NOT resolve under the git repo root

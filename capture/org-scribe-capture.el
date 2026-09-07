@@ -140,89 +140,75 @@ For novels, creates individual files."
 
 ;;; Capture Target File Detection
 
-(defun org-scribe--capture-entity-file (en-name es-name content-type &optional create-if-missing)
-  "Find the appropriate capture file for an entity type.
-EN-NAME is the English filename stem (without directory or extension).
-ES-NAME is the Spanish filename stem (without directory or extension).
-CONTENT-TYPE is used for file creation (passed to `org-scribe--create-capture-file').
-If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist.
+(defun org-scribe--capture-entity-file (concept &optional create-if-missing)
+  "Find the appropriate capture file for CONCEPT.
+CONCEPT is a key of the `:files' section of `lang/org-scribe-lang.el',
+such as `characters' or `plot' -- the same symbol
+`org-scribe-project-structure' resolves under the matching
+`:CONCEPT-file' key, and also passed through as CONTENT-TYPE to
+`org-scribe--create-capture-file' on the create path.  If
+CREATE-IF-MISSING is non-nil, create the file if it doesn't exist.
 
-For short stories, returns notes.org (or notas.org) in the project root.
-For novels, searches objects/{en-name}.org, objects/{es-name}.org,
-{en-name}.org, and {es-name}.org in that order.
+For short stories, returns notes.org (or notas.org, ...) in the
+project root.  For novels, resolves CONCEPT's own file
+(objects/characters.org, objetos/personajes.org, ...) via
+`org-scribe--resolve', trying every registered language's spelling.
 
 When none of those candidates exists yet, the file to create is chosen by
 `org-scribe-project-language', not hardcoded to English: a Spanish
-project gets notas.org (or objects/{es-name}.org), not notes.org (or
-objects/{en-name}.org).  This path is only reached for a project whose
-consolidated notes file (or, for a novel, the relevant objects/ file)
+project gets its own spelling (notas.org, or objetos/personajes.org),
+not the English one.  This path is only reached for a project whose
+consolidated notes file (or, for a novel, the relevant entity file)
 does not exist on disk yet — normal project creation always ships it, so
-in ordinary use one of the `cl-find-if' candidates above already
-matches — but a project missing it (an older project, one assembled by
-hand, or a deliberately deleted file) must still get the file named for
-its own language, not the tool's fallback default."
+in ordinary use `org-scribe--resolve' above already finds a match — but
+a project missing it (an older project, one assembled by hand, or a
+deliberately deleted file) must still get the file named for its own
+language, not the tool's fallback default."
   (let* ((project-dir (or (org-scribe-project-root)
                          (file-name-directory (or (buffer-file-name) default-directory))))
          (project-type (org-scribe-project-type))
-         (es-p (eq (org-scribe-project-language) 'es))
          (target
           (cond
            ;; Short story: use notes.org
            ((eq project-type 'short-story)
-            (or (cl-find-if #'file-exists-p
-                            (mapcar (lambda (f) (expand-file-name f project-dir))
-                                    '("notes.org" "notas.org")))
-                (expand-file-name (if es-p "notas.org" "notes.org") project-dir)))
-           ;; Novel or unknown: search objects/ first, then project root
+            (or (org-scribe--resolve project-dir 'notes-short)
+                (expand-file-name (org-scribe-lang-file 'notes-short) project-dir)))
+           ;; Novel or unknown: resolve CONCEPT's own file
            (t
-            (or (cl-find-if #'file-exists-p
-                            (mapcar (lambda (f) (expand-file-name f project-dir))
-                                    (list (concat "objects/" en-name ".org")
-                                          (concat "objects/" es-name ".org")
-                                          (concat en-name ".org")
-                                          (concat es-name ".org"))))
-                (expand-file-name (concat "objects/" (if es-p es-name en-name) ".org")
-                                  project-dir))))))
+            (or (org-scribe--resolve project-dir concept)
+                (expand-file-name (org-scribe-lang-file concept) project-dir))))))
 
     (when (and create-if-missing (not (file-exists-p target)))
-      (org-scribe--create-capture-file target project-type content-type))
+      (org-scribe--create-capture-file target project-type concept))
 
     target))
 
 (defun org-scribe-capture-character-file (&optional create-if-missing)
   "Determine the appropriate file for character captures.
-For novels: Uses objects/characters.org (or personajes.org).
-For short stories: Uses notes.org (or notas.org).
-If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
-  (org-scribe--capture-entity-file "characters" "personajes" 'characters create-if-missing))
+For novels: uses the `characters' concept's own file.  For short
+stories: uses the notes file.  If CREATE-IF-MISSING is non-nil, create
+the file if it doesn't exist.  See `org-scribe--capture-entity-file'."
+  (org-scribe--capture-entity-file 'characters create-if-missing))
 
 (defun org-scribe-capture-location-file (&optional create-if-missing)
   "Determine the appropriate file for location captures.
-For novels: Uses objects/locations.org (or localizaciones.org).
-For short stories: Uses notes.org (or notas.org).
-If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
-  (org-scribe--capture-entity-file "locations" "localizaciones" 'locations create-if-missing))
+See `org-scribe-capture-character-file'; uses the `locations' concept."
+  (org-scribe--capture-entity-file 'locations create-if-missing))
 
 (defun org-scribe-capture-object-file (&optional create-if-missing)
   "Determine the appropriate file for object captures.
-For novels: Uses objects/objects.org (or objetos.org).
-For short stories: Uses notes.org (or notas.org).
-If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
-  (org-scribe--capture-entity-file "objects" "objetos" 'objects create-if-missing))
+See `org-scribe-capture-character-file'; uses the `objects' concept."
+  (org-scribe--capture-entity-file 'objects create-if-missing))
 
 (defun org-scribe-capture-timeline-file (&optional create-if-missing)
   "Determine the appropriate file for timeline captures.
-For novels: Uses objects/timeline.org (or cronologia.org).
-For short stories: Uses notes.org (or notas.org).
-If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
-  (org-scribe--capture-entity-file "timeline" "cronologia" 'timeline create-if-missing))
+See `org-scribe-capture-character-file'; uses the `timeline' concept."
+  (org-scribe--capture-entity-file 'timeline create-if-missing))
 
 (defun org-scribe-capture-plot-thread-file (&optional create-if-missing)
   "Determine the appropriate file for plot thread captures.
-For novels: Uses objects/plot.org (or trama.org).
-For short stories: Uses notes.org (or notas.org).
-If CREATE-IF-MISSING is non-nil, create the file if it doesn't exist."
-  (org-scribe--capture-entity-file "plot" "trama" 'plot create-if-missing))
+See `org-scribe-capture-character-file'; uses the `plot' concept."
+  (org-scribe--capture-entity-file 'plot create-if-missing))
 
 ;;; Capture Target Positioning (short-story section nesting)
 ;;
@@ -309,52 +295,46 @@ mirrors exactly, and `org-scribe--capture-goto-section'."
 (defun org-scribe-capture-target-file (&optional create-if-missing)
   "Determine the appropriate notes file for org-capture in writing environment.
 Uses `org-scribe-project-root' to find the project base directory.
-Returns the file path based on the following priority:
-1. notes/notes.org (relative to project root)
-2. notas/notas.org - Spanish (relative to project root)
-3. novel-notes.org (in project root) - legacy, see below
-4. notes.org (in project root)
-5. notas.org - Spanish (in project root)
-6. current buffer if none of the above exist
+Tries, in order:
+1. The novel-subdir notes file (notes/notes.org, notas/notas.org, ...),
+   whichever registered language's spelling exists (see
+   `org-scribe--resolve').
+2. \"novel-notes.org\" in the project root -- a legacy fallback, see below.
+3. The short-story notes file (notes.org, notas.org, ...), whichever
+   registered language's spelling exists.
+4. The current buffer.
+5. The project's own language's notes file name -- only reached when
+   CREATE-IF-MISSING is non-nil and none of the above exist.
 
-If CREATE-IF-MISSING is non-nil, create the first priority notes
-file that doesn't exist, named for `org-scribe-project-language' (notas.org
-for a Spanish project, notes.org otherwise) rather than hardcoded to English
-- mirroring `org-scribe--capture-entity-file''s own fallback naming.
+If CREATE-IF-MISSING is non-nil, create the first-priority file that
+doesn't exist, named for `org-scribe-project-language' rather than
+hardcoded to English -- mirroring `org-scribe--capture-entity-file''s
+own fallback naming.
 
-Priority 3 is a legacy fallback.  Novel projects created by older
+Priority 2 is a legacy fallback.  Novel projects created by older
 versions shipped a \"novel-notes.org\" stub as an org-remark annotation
 sink; the template was removed when org-remark support was dropped.
-New projects always have priority 1, so this branch is
+New projects always match priority 1, so this branch is
 unreachable for them, but it is kept so that a pre-0.5.3 project whose
 author put real content in that file still captures into it instead of
 appearing to lose it.  This is also the reason the editing-mode right
 pane routes through this function rather than naming a file directly
 \(see `org-scribe--editing-right-panel-file').
 
-Priority 5 exists because a Spanish short-story project ships its
-consolidated notes file as root-level \"notas.org\", not a \"notas/\"
-subdirectory - without it, a fresh Spanish short-story project matched none
-of priorities 1-4 and every general note capture silently fell through to
-whatever buffer the capture was invoked from instead of notas.org."
+Priority 3's short-story shape exists because a Spanish short-story
+project ships its consolidated notes file as root-level \"notas.org\",
+not a \"notas/\" subdirectory - without it, a fresh Spanish
+short-story project matched no earlier priority and every general note
+capture silently fell through to whatever buffer the capture was
+invoked from instead of notas.org."
   (let* ((project-dir (or (org-scribe-project-root)
                          (file-name-directory (or (buffer-file-name) default-directory))))
-         (notes-subdir-en (expand-file-name "notes/notes.org" project-dir))
-         (notes-subdir-es (expand-file-name "notas/notas.org" project-dir))
          (novel-notes (expand-file-name "novel-notes.org" project-dir))
-         (notes-en (expand-file-name "notes.org" project-dir))
-         (notes-es (expand-file-name "notas.org" project-dir))
-         (target (cond
-                  ((file-exists-p notes-subdir-en) notes-subdir-en)
-                  ((file-exists-p notes-subdir-es) notes-subdir-es)
-                  ((file-exists-p novel-notes) novel-notes)
-                  ((file-exists-p notes-en) notes-en)
-                  ((file-exists-p notes-es) notes-es)
-                  (t (or (buffer-file-name)
-                         (expand-file-name
-                          (if (eq (org-scribe-project-language) 'es)
-                              "notas.org" "notes.org")
-                          project-dir))))))
+         (target (or (org-scribe--resolve project-dir 'notes-novel)
+                     (and (file-exists-p novel-notes) novel-notes)
+                     (org-scribe--resolve project-dir 'notes-short)
+                     (buffer-file-name)
+                     (expand-file-name (org-scribe-lang-file 'notes-short) project-dir))))
     (when (and create-if-missing
                (not (file-exists-p target)))
       (let ((target-dir (file-name-directory target)))
