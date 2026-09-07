@@ -198,15 +198,9 @@ still check the gate first."
 ;;; Plotting Method
 
 (defconst org-scribe--methods
-  '((sistema . (:overlay nil
-                :label-en "Sistema unificado (default)"
-                :label-es "Sistema unificado (por defecto)"))
-    (helice  . (:overlay "helice"
-                :label-en "La Hélice — start from a premise"
-                :label-es "La Hélice — se parte de una premisa"))
-    (matriz  . (:overlay "matriz"
-                :label-en "La Matriz — start from characters"
-                :label-es "La Matriz — se parte de personajes")))
+  '((sistema . (:overlay nil))
+    (helice  . (:overlay "helice"))
+    (matriz  . (:overlay "matriz")))
   "Novel plotting methods known to org-scribe, keyed by their canonical
 symbol (also the literal value written to the \"# Method:\" marker line).
 Each value is a plist:
@@ -216,12 +210,16 @@ Each value is a plist:
                 `sistema', which ships no overlay (its design file lives
                 in the base `novel-en'/`novel-es' template sets and is
                 never modified by another method's presence).
-  :label-en   - creation-prompt label, English
-  :label-es   - creation-prompt label, Spanish
 
-This table, not a hardcoded list of method names, is what
-`org-scribe-project-method' and the creation prompt read.  Adding a
-method means adding one entry here plus its overlay templates.")
+Creation-prompt labels used to live here too, as `:label-en'/`:label-es'
+plist keys; they moved to each registered language pack's own
+`:method-labels' section (see `lang/org-scribe-lang.el',
+`org-scribe--read-method' in `templates/org-scribe-project.el') so that
+a third language's labels do not require touching this table -- this
+one is now exactly the symbol + overlay-directory table it should
+always have been.  Adding a method still means adding one entry here
+plus its overlay templates, plus a `:method-labels' entry in every
+registered pack.")
 
 (defun org-scribe-project-method (&optional root)
   "Return the plotting method recorded for ROOT's project.

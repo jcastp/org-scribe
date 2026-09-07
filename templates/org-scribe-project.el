@@ -64,8 +64,7 @@ This is used to automatically set the template directory."
          ;; Update template directory when language changes
          (setq org-scribe-template-directory
                (expand-file-name
-                (format "../org-scribe-templates/novel-%s"
-                        (if (eq value 'es) "es" "en"))
+                (concat "../org-scribe-templates/" (org-scribe-lang-template 'novel value))
                 org-scribe-project-package-directory))))
 
 (defcustom org-scribe-short-story-template-directory
@@ -146,11 +145,22 @@ must never make project creation fail."
 
 (defun org-scribe--dir-locals-dictionary (language)
   "Return the dictionary/language name configured for LANGUAGE, or nil.
-Reads `org-scribe-ispell-dictionaries'; a missing entry and an entry of
-nil both mean \"write no dictionary\".  The name is written both as an
-ispell dictionary and as a jinx language: the codes coincide (\"es_ES\",
-\"en_US\"), since both resolve against the installed hunspell data."
-  (alist-get language org-scribe-ispell-dictionaries))
+Consults `org-scribe-ispell-dictionaries' first -- a documented user
+override for a regional variant (\"es_MX\", \"en_GB\") -- so an EXPLICIT
+entry there, even one of nil, is respected as given (an explicit nil
+still means \"write no dictionary\", never guessed at).  Only when
+LANGUAGE has no entry there at all does this fall back to the LANGUAGE
+pack's own `:ispell' default (see `lang/org-scribe-lang.el'), and only
+when LANGUAGE is actually registered -- a language nothing knows about
+gets no dictionary either, quietly, rather than signalling.  The name
+is written both as an ispell dictionary and as a jinx language: the
+codes coincide (\"es_ES\", \"en_US\"), since both resolve against the
+installed hunspell data."
+  (let ((cell (assq language org-scribe-ispell-dictionaries)))
+    (if cell
+        (cdr cell)
+      (and (memq language (org-scribe-languages))
+           (plist-get (org-scribe-lang-pack language) :ispell)))))
 
 (defun org-scribe--dir-locals-content (language dictionary)
   "Return the text of a `.dir-locals.el' pinning DICTIONARY for LANGUAGE.
@@ -221,15 +231,15 @@ dictionary.  An existing file is only replaced after confirmation."
 
 (defun org-scribe--read-method (&optional language)
   "Prompt for a novel plotting method, returning its symbol.
-LANGUAGE (\\='en or \\='es) selects which of each method's two labels
-in `org-scribe--methods' is offered; defaults to
+LANGUAGE (\\='en or \\='es) selects which registered language pack's
+`:method-labels' section is offered; defaults to
 `org-scribe-template-language'.  The default candidate is \\='sistema,
 matching what an omitted `# Method:' marker resolves to via
 `org-scribe-project-method'."
   (let* ((language (or language org-scribe-template-language))
-         (label-key (if (eq language 'es) :label-es :label-en))
+         (labels (plist-get (org-scribe-lang-pack language) :method-labels))
          (choices (mapcar (lambda (entry)
-                            (cons (plist-get (cdr entry) label-key) (car entry)))
+                            (cons (alist-get (car entry) labels) (car entry)))
                           org-scribe--methods))
          (default-label (car (rassq 'sistema choices))))
     (alist-get (completing-read (org-scribe-msg 'project-creation-method-prompt)
@@ -263,15 +273,15 @@ This function:
                                          org-scribe-projects-directory))
           (title (read-string (org-scribe-msg 'project-creation-novel-title)))
           (language (intern (completing-read (org-scribe-msg 'project-creation-language-prompt)
-                                              '("en" "es") nil t
-                                              (if (eq org-scribe-template-language 'es) "es" "en")))))
+                                              (mapcar #'symbol-name (org-scribe-languages))
+                                              nil t nil nil
+                                              (symbol-name org-scribe-template-language)))))
      (list base-dir title language (org-scribe--read-method language))))
 
   (let* ((language (or language org-scribe-template-language))
          (method (or method 'sistema))
          (template-dir (expand-file-name
-                        (format "../org-scribe-templates/novel-%s"
-                                (if (eq language 'es) "es" "en"))
+                        (concat "../org-scribe-templates/" (org-scribe-lang-template 'novel language))
                         org-scribe-project-package-directory)))
 
     (unless (file-directory-p template-dir)
@@ -357,14 +367,14 @@ This function:
     (read-directory-name (org-scribe-msg 'project-creation-base-dir) org-scribe-projects-directory)
     (read-string (org-scribe-msg 'project-creation-short-story-title))
     (intern (completing-read (org-scribe-msg 'project-creation-language-prompt)
-                              '("en" "es") nil t
-                              (if (eq org-scribe-template-language 'es) "es" "en")))))
+                              (mapcar #'symbol-name (org-scribe-languages))
+                              nil t nil nil
+                              (symbol-name org-scribe-template-language)))))
 
   ;; Determine template directory based on language
   (let* ((language (or language org-scribe-template-language))
          (template-dir (expand-file-name
-                      (format "../org-scribe-templates/short-story-%s"
-                              (if (eq language 'es) "es" "en"))
+                      (concat "../org-scribe-templates/" (org-scribe-lang-template 'short-story language))
                       org-scribe-project-package-directory)))
 
     (unless (file-directory-p template-dir)
@@ -379,7 +389,7 @@ This function:
            (variables `(("TITLE" . ,title)
                        ("AUTHOR" . ,(if (boundp 'user-full-name) user-full-name "Author"))
                        ("DATE" . ,(format-time-string "%Y-%m-%d"))))
-           (story-file (if (eq language 'es) "cuento.org" "story.org")))
+           (story-file (org-scribe-lang-file 'manuscript-short language)))
 
       ;; Check if project already exists
       (when (file-exists-p project-dir)
@@ -460,7 +470,7 @@ an overlay (see CLAUDE.md, \\='Q2\\=')."
     (when overlay
       (let ((overlay-dir (expand-file-name
                           (format "../org-scribe-templates/methods/%s/%s"
-                                  overlay (if (eq language 'es) "es" "en"))
+                                  overlay (plist-get (org-scribe-lang-pack language) :code))
                           org-scribe-project-package-directory)))
         (unless (file-directory-p overlay-dir)
           (user-error (org-scribe-msg 'error-template-not-found overlay-dir)))
@@ -635,30 +645,25 @@ collide with the project's own scene level."
 ;;; Project Navigation
 
 (defconst org-scribe--known-project-files
-  '(;; Common
-    "README.org"
-    ;; Novel files
-    "novel.org" "novela.org"
-    "design.org" "diseno.org"
-    "revision.org"
-    "plan.org"
-    "writing-journal.org" "diario-escritura.org"
-    "scratchpad.org" "cuaderno-borradores.org"
-    "objects/characters.org" "objects/personajes.org"
-    "objects/locations.org" "objects/localizaciones.org"
-    "objects/objects.org" "objects/objetos.org"
-    "objects/plot.org" "objects/trama.org"
-    "objects/timeline.org" "objects/cronologia.org"
-    "objects/worldbuilding.org"
-    "notes/notes.org" "notas/notas.org"
-    "notes/research.org" "notas/investigacion.org"
-    ;; Short story files
-    "story.org" "cuento.org"
-    "notes.org" "notas.org")
+  (let (files)
+    (dolist (lang (org-scribe-languages))
+      (dolist (row (plist-get (org-scribe-lang-pack lang) :files))
+        (unless (member (cdr row) files) (push (cdr row) files))))
+    (dolist (extra '("README.org" "plan.org"))
+      (unless (member extra files) (push extra files)))
+    (nreverse files))
   "Fallback completion candidates for `org-scribe-open-project-file'.
-Used when no project root can be detected.  Inside a project the
-candidates are scanned from disk instead, so a file created after
-this list was written is still offered.")
+Used when no project root can be detected.  Derived, once at load
+time, from the union of every registered language pack's `:files'
+values (see `lang/org-scribe-lang.el'), plus \"README.org\" and
+\"plan.org\" explicitly -- already covered by the union for the two
+shipped packs, added directly so neither can silently drop out if a
+future pack ever omits either key.  Inside a project the candidates
+are scanned from disk instead, so a file created after this constant
+was computed is still offered; a language pack registered after this
+file loaded is not reflected here, but real projects in that language
+resolve correctly regardless, since `org-scribe-project-structure'
+reads the live registry rather than this fallback list.")
 
 (defun org-scribe--open-file-project-root ()
   "Return the project root for file navigation, or nil."

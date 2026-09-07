@@ -139,7 +139,7 @@ an ID on a structural heading."
   "Every character in the Spanish template is level 1 with an explicit Role.
 This is the contract in `org-scribe--character-heading-p'; a nested
 character is invisible to linking, capture and the health report."
-  (org-scribe-test--with-template "novel-es/objects/personajes.org.template"
+  (org-scribe-test--with-template "novel-es/objetos/personajes.org.template"
     (let ((roles '("Protagonist" "Opponent" "Ally"
                    "Fake-Ally Opponent" "Thematic Supporting"))
           (found nil))
@@ -160,7 +160,7 @@ and lose the only human-readable label the file has.
 
 The placeholders must also be distinct from one another, for the same
 reason as the settings above — completion is keyed on display name."
-  (org-scribe-test--with-template "novel-es/objects/personajes.org.template"
+  (org-scribe-test--with-template "novel-es/objetos/personajes.org.template"
     (let (names)
       (org-map-entries
        (lambda ()
@@ -182,7 +182,7 @@ reason as the settings above — completion is keyed on display name."
 
 (ert-deftest test-sistema-es-cast-check-is-not-a-character ()
   "The Comprobación del elenco heading does not become a phantom character."
-  (org-scribe-test--with-template "novel-es/objects/personajes.org.template"
+  (org-scribe-test--with-template "novel-es/objetos/personajes.org.template"
     (goto-char (point-min))
     (should (re-search-forward "^\\* Comprobación del elenco" nil t))
     (should-not (org-entry-get nil "Role"))
@@ -195,7 +195,7 @@ Their headings must also be distinct: entity completion is keyed on the
 display name, so three placeholders all called \"Escenario\" would
 collapse into one selectable item and every link would resolve to the
 first."
-  (org-scribe-test--with-template "novel-es/objects/localizaciones.org.template"
+  (org-scribe-test--with-template "novel-es/objetos/localizaciones.org.template"
     (let (names)
       (org-map-entries
        (lambda ()
@@ -213,7 +213,7 @@ first."
   "The thirteen are level-2 headings under their wrapper.
 Level 1 would put them beside plot threads, where only the heading text
 would tell them apart (see opus-mi-sistema.org section 11.1)."
-  (org-scribe-test--with-template "novel-es/objects/trama.org.template"
+  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
     (goto-char (point-min))
     (should (re-search-forward "^\\* Los trece irrenunciables" nil t))
     (let ((subs (save-restriction
@@ -227,7 +227,7 @@ would tell them apart (see opus-mi-sistema.org section 11.1)."
   "Self-revelation is a single heading, not split into two.
 It is \"un punto en dos tiempos\", but the count thirteen is load-bearing
 in the method's own name for the set."
-  (org-scribe-test--with-template "novel-es/objects/trama.org.template"
+  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
     (should (= 1 (how-many "^\\*\\* 11\\. Autorrevelación" (point-min) (point-max))))
     (should (= 0 (how-many "^\\*\\* 1[45]\\." (point-min) (point-max))))))
 
@@ -235,7 +235,7 @@ in the method's own name for the set."
   "Exactly the two shipped narrative lines carry THREAD-TYPE.
 The structural wrappers in trama.org must not, or they would each become
 a phantom plot-thread entity with an ID minted at project creation."
-  (org-scribe-test--with-template "novel-es/objects/trama.org.template"
+  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
     (let (threads)
       (org-map-entries
        (lambda ()
@@ -246,7 +246,7 @@ a phantom plot-thread entity with an ID minted at project creation."
 
 (ert-deftest test-sistema-es-plot-wrappers-are-not-threads ()
   "The structural level-1 headings in trama.org fail the plot predicate."
-  (org-scribe-test--with-template "novel-es/objects/trama.org.template"
+  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
     (dolist (heading '("Los trece irrenunciables" "Puntos opcionales usados"
                        "Secuencia de revelaciones" "Cuartiles"
                        "Orden de apertura y cierre" "Secuencias y escenas"))
@@ -299,10 +299,10 @@ This is the assumption that made removing the export blocks safe."
 (ert-deftest test-sistema-es-templates-substitute-cleanly ()
   "Every sistema template declares TITLE and AUTHOR placeholders."
   (dolist (relative '("novel-es/diseno.org.template"
-                      "novel-es/objects/personajes.org.template"
-                      "novel-es/objects/localizaciones.org.template"
-                      "novel-es/objects/worldbuilding.org.template"
-                      "novel-es/objects/trama.org.template"
+                      "novel-es/objetos/personajes.org.template"
+                      "novel-es/objetos/localizaciones.org.template"
+                      "novel-es/objetos/construccion-mundo.org.template"
+                      "novel-es/objetos/trama.org.template"
                       "novel-es/revision.org.template"))
     (let ((raw (with-temp-buffer
                  (insert-file-contents (org-scribe-test--template relative))
@@ -455,7 +455,7 @@ with an ID minted at project creation."
 (ert-deftest test-sistema-es-thirteen-are-recognized-as-plot-points ()
   "All thirteen shipped non-negotiables satisfy the plot-point predicate,
 and nothing else in the plot file does."
-  (org-scribe-test--with-template "novel-es/objects/trama.org.template"
+  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
     (let (points)
       (org-map-entries
        (lambda ()
@@ -467,7 +467,7 @@ and nothing else in the plot file does."
   "No heading is both a plot point and a plot thread.
 They share a file, so a heading matching both predicates would be minted
 twice and appear in two completion lists."
-  (org-scribe-test--with-template "novel-es/objects/trama.org.template"
+  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
     (org-map-entries
      (lambda ()
        (should-not (and (org-scribe--plot-point-heading-p)
@@ -505,7 +505,7 @@ Shipping the property is what makes `-1' discoverable: it is a display
 knob nothing else reveals, and a writer who never sees the key never
 learns they can keep a walk-on part out of the timeline."
   (dolist (relative '("novel-en/objects/characters.org.template"
-                      "novel-es/objects/personajes.org.template"))
+                      "novel-es/objetos/personajes.org.template"))
     (org-scribe-test--with-template relative
       (let ((roles 0) (weights 0))
         (org-map-entries
@@ -521,7 +521,7 @@ learns they can keep a walk-on part out of the timeline."
 (ert-deftest test-templates-ship-weight-on-every-plot-thread ()
   "Every narrative line in both plot templates carries a `:Weight:' line."
   (dolist (relative '("novel-en/objects/plot.org.template"
-                      "novel-es/objects/trama.org.template"))
+                      "novel-es/objetos/trama.org.template"))
     (org-scribe-test--with-template relative
       (let ((threads 0) (weights 0))
         (org-map-entries

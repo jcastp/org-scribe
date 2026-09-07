@@ -53,11 +53,16 @@
     (should (stringp matriz-overlay))
     (should-not (string= helice-overlay matriz-overlay))))
 
-(ert-deftest test-method-every-entry-has-both-labels ()
-  "Every method entry carries an English and a Spanish prompt label."
-  (dolist (entry org-scribe--methods)
-    (should (stringp (plist-get (cdr entry) :label-en)))
-    (should (stringp (plist-get (cdr entry) :label-es)))))
+(ert-deftest test-method-every-entry-has-a-label-in-every-registered-pack ()
+  "Every method symbol has a prompt label in every registered language pack.
+Labels moved from `org-scribe--methods' own `:label-en'/`:label-es'
+plist keys to each pack's `:method-labels' section (see
+\"i18n-extended.org\", Step 7); this is the pack-driven equivalent of
+the old direct presence check."
+  (dolist (lang (org-scribe-languages))
+    (let ((labels (plist-get (org-scribe-lang-pack lang) :method-labels)))
+      (dolist (entry org-scribe--methods)
+        (should (stringp (alist-get (car entry) labels)))))))
 
 ;;; org-scribe-project-method
 

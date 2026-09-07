@@ -52,12 +52,12 @@
     ("diseno.org.template"                . "design.org.template")
     ("revision.org.template"              . "revision.org.template")
     ("diario-escritura.org.template"      . "writing-journal.org.template")
-    ("objects/personajes.org.template"    . "objects/characters.org.template")
-    ("objects/localizaciones.org.template". "objects/locations.org.template")
-    ("objects/trama.org.template"         . "objects/plot.org.template")
-    ("objects/worldbuilding.org.template" . "objects/worldbuilding.org.template")
-    ("objects/objetos.org.template"       . "objects/objects.org.template")
-    ("objects/cronologia.org.template"    . "objects/timeline.org.template")
+    ("objetos/personajes.org.template"    . "objects/characters.org.template")
+    ("objetos/localizaciones.org.template". "objects/locations.org.template")
+    ("objetos/trama.org.template"         . "objects/plot.org.template")
+    ("objetos/construccion-mundo.org.template" . "objects/worldbuilding.org.template")
+    ("objetos/objetos.org.template"       . "objects/objects.org.template")
+    ("objetos/cronologia.org.template"    . "objects/timeline.org.template")
     ("cuaderno-borradores.org.template"   . "scratchpad.org.template")
     ("notas/notas.org.template"           . "notes/notes.org.template")
     ("notas/investigacion.org.template"   . "notes/research.org.template"))
@@ -106,11 +106,11 @@ stay parallel.")
 these two were never ports of each other and the migration did not touch
 them.  English is the far longer of the two.  Reconciling them is a
 decision about what the journal is for, not a translation task.")
-    ("novel-es/objects/objetos.org.template"
+    ("novel-es/objetos/objetos.org.template"
      . "Objects have no counterpart in the method; both files are pre-sistema
 stubs that were never parallel.  English carries Status and
 First-appearance properties Spanish lacks.")
-    ("novel-es/objects/cronologia.org.template"
+    ("novel-es/objetos/cronologia.org.template"
      . "Timeline likewise has no counterpart in the method; English carries an
 extra ID and Type property."))
   "Pairs known to diverge, each with the reason it is tolerated.
