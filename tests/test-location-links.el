@@ -13,6 +13,7 @@
 ;;; Code:
 
 (require 'ert)
+(require 'cl-lib)
 
 ;;; Add paths
 (let ((default-directory (file-name-directory
@@ -99,10 +100,10 @@ in linking/org-scribe-location-links.el."
   "Test that location file detection works."
   (let ((file (org-scribe--get-location-file)))
     (should (stringp file))
-    (should (or (string-match-p "locations\\.org$" file)
-                (string-match-p "localizaciones\\.org$" file)
-                (string-match-p "notes\\.org$" file)
-                (string-match-p "notas\\.org$" file)))))
+    (should (cl-some (lambda (name) (string-suffix-p name file))
+                      (append (org-scribe-lang-all :files 'locations)
+                              (org-scribe-lang-all :files 'notes-novel)
+                              (org-scribe-lang-all :files 'notes-short))))))
 
 ;;; Integration with Capture System Tests
 

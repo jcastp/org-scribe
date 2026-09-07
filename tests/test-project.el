@@ -210,11 +210,16 @@ ambiguity the glossary removes, and nothing else would fail."
               (let ((content (buffer-string)))
                 ;; PoV has no Spanish alias, stays as-is.
                 (should (string-match-p ":PoV:" content))
-                (should (string-match-p ":Personajes:" content))
-                (should (string-match-p ":Trama:" content))
-                (should (string-match-p ":Localizacion:" content))
-                (should-not (string-match-p ":Characters:" content))
-                (should-not (string-match-p ":Plot:" content))))))
+                (should (string-match-p
+                         (format ":%s:" (org-scribe-lang-property 'characters 'es)) content))
+                (should (string-match-p
+                         (format ":%s:" (org-scribe-lang-property 'plot 'es)) content))
+                (should (string-match-p
+                         (format ":%s:" (org-scribe-lang-property 'location 'es)) content))
+                (should-not (string-match-p
+                             (format ":%s:" (org-scribe-lang-property 'characters 'en)) content))
+                (should-not (string-match-p
+                             (format ":%s:" (org-scribe-lang-property 'plot 'en)) content))))))
       (delete-directory temp-dir t))))
 
 (ert-deftest test-insert-scene-empty-name ()
@@ -413,8 +418,8 @@ as a template artifact present from project creation."
       (org-scribe-create-novel-project base-dir "Mi Novela" 'es)
       (unwind-protect
           (progn
-            (should (file-exists-p (expand-file-name "novela.org" project-dir)))
-            (should-not (file-exists-p (expand-file-name "novel.org" project-dir)))
+            (should (file-exists-p (expand-file-name (org-scribe-lang-file 'manuscript-novel 'es) project-dir)))
+            (should-not (file-exists-p (expand-file-name (org-scribe-lang-file 'manuscript-novel 'en) project-dir)))
             (with-temp-buffer
               (insert-file-contents (expand-file-name ".org-scribe-project" project-dir))
               (should (string-match-p "# Language: es" (buffer-string)))))
@@ -432,13 +437,15 @@ as a template artifact present from project creation."
 (ert-deftest test-create-short-story-project-spanish-templates ()
   "Creating a short story project with LANGUAGE \\='es uses cuento.org."
   (test-project--with-temp-base-dir base-dir
-    (let ((project-dir (expand-file-name "Mi Cuento" base-dir)))
+    (let ((project-dir (expand-file-name "Mi Cuento" base-dir))
+          (manuscript-es (org-scribe-lang-file 'manuscript-short 'es))
+          (manuscript-en (org-scribe-lang-file 'manuscript-short 'en)))
       (org-scribe-create-short-story-project base-dir "Mi Cuento" 'es)
       (unwind-protect
           (progn
-            (should (file-exists-p (expand-file-name "cuento.org" project-dir)))
-            (should-not (file-exists-p (expand-file-name "story.org" project-dir))))
-        (test-project--kill-file-buffer (expand-file-name "cuento.org" project-dir))))))
+            (should (file-exists-p (expand-file-name manuscript-es project-dir)))
+            (should-not (file-exists-p (expand-file-name manuscript-en project-dir))))
+        (test-project--kill-file-buffer (expand-file-name manuscript-es project-dir))))))
 
 ;;; Project File Navigation Tests
 
@@ -447,29 +454,33 @@ as a template artifact present from project creation."
 The design file (design.org / diseno.org) shipped by the method
 templates was missing from the old static list; scanning finds it
 along with anything a future template adds."
-  (test-project--with-temp-base-dir root
-    (make-directory (expand-file-name "objects" root))
-    (make-directory (expand-file-name "notas" root))
-    (dolist (file '("novela.org" "diseno.org" "README.org" ".org-scribe-project"
-                    "objects/personajes.org" "notas/notas.org"))
-      (with-temp-file (expand-file-name file root) (insert "x")))
-    (let ((candidates (org-scribe--project-file-candidates root)))
-      (should (member "diseno.org" candidates))
-      (should (member "novela.org" candidates))
-      (should (member "objects/personajes.org" candidates))
-      (should (member "notas/notas.org" candidates))
-      ;; Non-Org files and the marker file are not offered.
-      (should-not (member ".org-scribe-project" candidates))
-      ;; Sorted, so completion order is stable.
-      (should (equal candidates (sort (copy-sequence candidates) #'string<))))))
+  (let* ((manuscript (org-scribe-lang-file 'manuscript-novel 'es))
+         (design (org-scribe-lang-file 'design 'es))
+         (characters (org-scribe-lang-file 'characters 'es))
+         (notes (org-scribe-lang-file 'notes-novel 'es)))
+    (test-project--with-temp-base-dir root
+      (make-directory (expand-file-name (org-scribe-lang-dir 'objects 'es) root))
+      (make-directory (expand-file-name (org-scribe-lang-dir 'notes 'es) root))
+      (dolist (file (list manuscript design "README.org" ".org-scribe-project"
+                          characters notes))
+        (with-temp-file (expand-file-name file root) (insert "x")))
+      (let ((candidates (org-scribe--project-file-candidates root)))
+        (should (member design candidates))
+        (should (member manuscript candidates))
+        (should (member characters candidates))
+        (should (member notes candidates))
+        ;; Non-Org files and the marker file are not offered.
+        (should-not (member ".org-scribe-project" candidates))
+        ;; Sorted, so completion order is stable.
+        (should (equal candidates (sort (copy-sequence candidates) #'string<)))))))
 
 (ert-deftest test-project-file-candidates-fallback-without-root ()
   "With no project root the static fallback list is used, and it
 includes the design file under both language names."
   (let ((candidates (org-scribe--project-file-candidates nil)))
     (should (equal candidates org-scribe--known-project-files))
-    (should (member "design.org" candidates))
-    (should (member "diseno.org" candidates))))
+    (should (member (org-scribe-lang-file 'design 'en) candidates))
+    (should (member (org-scribe-lang-file 'design 'es) candidates))))
 
 (ert-deftest test-project-known-files-match-shipped-templates ()
   "Every Org file the novel templates ship appears in the fallback list.
@@ -542,18 +553,20 @@ and the marker records the method."
 (ert-deftest test-create-novel-project-matriz-deploys-overlay-design-file-spanish ()
   "METHOD \\='matriz with Spanish templates deploys diseno.org, not
 design.org, exactly like the base Sistema set does."
-  (test-project--with-temp-base-dir base-dir
-    (let ((project-dir (expand-file-name "Novela Matriz" base-dir)))
-      (org-scribe-create-novel-project base-dir "Novela Matriz" 'es 'matriz)
-      (unwind-protect
-          (progn
-            (should (file-exists-p (expand-file-name "diseno.org" project-dir)))
-            (should-not (file-exists-p (expand-file-name "design.org" project-dir)))
-            (should (eq 'matriz (org-scribe-project-method project-dir)))
-            (with-temp-buffer
-              (insert-file-contents (expand-file-name "diseno.org" project-dir))
-              (should (string-match-p "Diseño (La Matriz)" (buffer-string)))))
-        (test-project--kill-file-buffer (expand-file-name "README.org" project-dir))))))
+  (let ((design-es (org-scribe-lang-file 'design 'es))
+        (design-en (org-scribe-lang-file 'design 'en)))
+    (test-project--with-temp-base-dir base-dir
+      (let ((project-dir (expand-file-name "Novela Matriz" base-dir)))
+        (org-scribe-create-novel-project base-dir "Novela Matriz" 'es 'matriz)
+        (unwind-protect
+            (progn
+              (should (file-exists-p (expand-file-name design-es project-dir)))
+              (should-not (file-exists-p (expand-file-name design-en project-dir)))
+              (should (eq 'matriz (org-scribe-project-method project-dir)))
+              (with-temp-buffer
+                (insert-file-contents (expand-file-name design-es project-dir))
+                (should (string-match-p "Diseño (La Matriz)" (buffer-string)))))
+          (test-project--kill-file-buffer (expand-file-name "README.org" project-dir)))))))
 
 (ert-deftest test-create-novel-project-helice-leaves-other-files-untouched ()
   "Choosing a method changes only the design file; novel.org and the

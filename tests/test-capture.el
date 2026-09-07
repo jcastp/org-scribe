@@ -226,7 +226,7 @@ short-story project matched none of the four checks and the \"w\"
 general-note template filed into the current buffer (e.g. cuento.org)
 instead of notas.org."
   (let* ((temp-dir (make-temp-file "test-ss-proj-es-notas-" t))
-         (notas-file (expand-file-name "notas.org" temp-dir)))
+         (notas-file (expand-file-name (org-scribe-lang-file 'notes-short 'es) temp-dir)))
     (unwind-protect
         (progn
           (with-temp-file notas-file (insert "* Notas\n"))
@@ -244,8 +244,8 @@ non-nil -- mirroring the fallback naming already fixed for
 `org-scribe--capture-entity-file' (see
 `test-capture-create-if-missing-short-story-spanish-creates-notas')."
   (let* ((temp-dir (make-temp-file "test-ss-proj-es-create-notas-" t))
-         (expected-file (expand-file-name "notas.org" temp-dir))
-         (wrong-file (expand-file-name "notes.org" temp-dir)))
+         (expected-file (expand-file-name (org-scribe-lang-file 'notes-short 'es) temp-dir))
+         (wrong-file (expand-file-name (org-scribe-lang-file 'notes-short 'en) temp-dir)))
     (unwind-protect
         (cl-letf (((symbol-function 'org-scribe-project-root)
                    (lambda () temp-dir))
@@ -487,8 +487,8 @@ fix, one assembled by hand, or one where the file was deleted -- did,
 and every entity captured into it (plot threads included) landed in an
 English-named file a Spanish project should never have."
   (let* ((temp-dir (make-temp-file "test-ss-proj-es-" t))
-         (expected-file (expand-file-name "notas.org" temp-dir))
-         (wrong-file (expand-file-name "notes.org" temp-dir)))
+         (expected-file (expand-file-name (org-scribe-lang-file 'notes-short 'es) temp-dir))
+         (wrong-file (expand-file-name (org-scribe-lang-file 'notes-short 'en) temp-dir)))
     (unwind-protect
         (cl-letf (((symbol-function 'org-scribe-project-root)
                    (lambda () temp-dir))

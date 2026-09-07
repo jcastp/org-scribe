@@ -198,14 +198,15 @@ Spanish projects use `objetos/', not `objects/' -- localized like
 `notes/'/`notas/', per the language pack's own `:dirs' section (see
 \"i18n-extended.org\", decision D1)."
   (let* ((temp-dir (make-temp-file "org-scribe-plot-file-es-" t))
-         (org-scribe--project-type-cache nil))
+         (org-scribe--project-type-cache nil)
+         (plot-file (org-scribe-lang-file 'plot 'es)))
     (unwind-protect
         (let ((default-directory temp-dir))
-          (make-directory (expand-file-name "objetos" temp-dir) t)
-          (with-temp-file (expand-file-name "objetos/trama.org" temp-dir)
+          (make-directory (expand-file-name (org-scribe-lang-dir 'objects 'es) temp-dir) t)
+          (with-temp-file (expand-file-name plot-file temp-dir)
             (insert "* Trama\n"))
           (should (equal (file-truename (org-scribe--get-plot-thread-file))
-                         (file-truename (expand-file-name "objetos/trama.org" temp-dir)))))
+                         (file-truename (expand-file-name plot-file temp-dir)))))
       (setq org-scribe--project-type-cache nil)
       (delete-directory temp-dir t))))
 

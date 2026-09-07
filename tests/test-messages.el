@@ -115,16 +115,21 @@ fallback chain used for keys missing from a single language)."
 ;;; Message Repository Tests
 
 (ert-deftest test-messages-repository-is-alist ()
-  "Test that both language alists are proper alists."
-  (dolist (table (list org-scribe-messages-en org-scribe-messages-es))
-    (should (listp table))
-    (should (> (length table) 0))
-    (dolist (entry table)
-      (should (consp entry))
-      (should (symbolp (car entry)))
-      (should (stringp (cdr entry))))))
+  "Every registered language pack's `:messages' section is a proper alist.
+Generalized over `org-scribe-languages' rather than the two shipped
+`org-scribe-messages-en'/`-es' variables, so a third registered
+language pack is covered automatically -- see \"i18n-extended.org\",
+Step 8."
+  (dolist (lang (org-scribe-languages))
+    (let ((table (plist-get (org-scribe-lang-pack lang) :messages)))
+      (should (listp table))
+      (should (> (length table) 0))
+      (dolist (entry table)
+        (should (consp entry))
+        (should (symbolp (car entry)))
+        (should (stringp (cdr entry)))))))
 
-;;; English/Spanish Parity Tests (Phase 8)
+;;; Cross-Language Parity Tests
 
 (defun test-messages--format-spec-count (template)
   "Return the number of %s/%d specifiers in TEMPLATE."
@@ -135,31 +140,45 @@ fallback chain used for keys missing from a single language)."
     count))
 
 (ert-deftest test-messages-parity-same-key-sets ()
-  "English and Spanish alists define exactly the same set of keys."
-  (let ((en-keys (sort (mapcar #'car org-scribe-messages-en) #'string<))
-        (es-keys (sort (mapcar #'car org-scribe-messages-es) #'string<)))
-    (should (equal en-keys es-keys))))
+  "Every registered language pack defines exactly the same set of
+message keys, each compared against the first-registered language
+\(English, in registration order -- see `org-scribe-languages').  With
+exactly the two shipped packs this is the original English/Spanish
+check; a third registered pack is covered by the same loop, with no
+test edit needed to add it."
+  (let* ((languages (org-scribe-languages))
+         (reference-keys (sort (mapcar #'car (plist-get (org-scribe-lang-pack (car languages)) :messages))
+                               #'string<)))
+    (dolist (lang (cdr languages))
+      (should (equal reference-keys
+                     (sort (mapcar #'car (plist-get (org-scribe-lang-pack lang) :messages))
+                          #'string<))))))
 
 (ert-deftest test-messages-parity-no-duplicate-keys ()
-  "Neither alist defines the same key twice."
-  (dolist (table (list org-scribe-messages-en org-scribe-messages-es))
-    (let ((keys (mapcar #'car table)))
+  "No registered language pack's `:messages' table defines the same key twice."
+  (dolist (lang (org-scribe-languages))
+    (let ((keys (mapcar #'car (plist-get (org-scribe-lang-pack lang) :messages))))
       (should (= (length keys) (length (delete-dups (copy-sequence keys))))))))
 
 (ert-deftest test-messages-parity-format-spec-counts-match ()
-  "For every key, the number of %s/%d specifiers matches between languages.
-This does not require the same order or types swapped, only the same
-count — `format' has no positional specifiers in Elisp, so the specifier
-sequence (not just its length) must actually match for a translation to
-be correct, but a mismatched *count* is always a translation bug and is
-what this test catches mechanically."
-  (dolist (entry org-scribe-messages-en)
-    (let* ((key (car entry))
-           (en-template (cdr entry))
-           (es-template (alist-get key org-scribe-messages-es)))
-      (should es-template)
-      (should (= (test-messages--format-spec-count en-template)
-                (test-messages--format-spec-count es-template))))))
+  "For every key, the number of %s/%d specifiers matches across every
+registered language pack, each compared against the first-registered
+language.  This does not require the same order or types swapped, only
+the same count — `format' has no positional specifiers in Elisp, so the
+specifier sequence (not just its length) must actually match for a
+translation to be correct, but a mismatched *count* is always a
+translation bug and is what this test catches mechanically."
+  (let* ((languages (org-scribe-languages))
+         (reference-table (plist-get (org-scribe-lang-pack (car languages)) :messages)))
+    (dolist (lang (cdr languages))
+      (let ((table (plist-get (org-scribe-lang-pack lang) :messages)))
+        (dolist (entry reference-table)
+          (let* ((key (car entry))
+                 (reference-template (cdr entry))
+                 (template (alist-get key table)))
+            (should template)
+            (should (= (test-messages--format-spec-count reference-template)
+                      (test-messages--format-spec-count template)))))))))
 
 (ert-deftest test-messages-fallback-to-english-when-es-key-missing ()
   "Lookup falls back to English when a key is deliberately absent from

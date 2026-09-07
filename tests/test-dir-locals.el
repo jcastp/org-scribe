@@ -104,7 +104,7 @@ block, so this is the set that gains coverage it never had."
       (unwind-protect
           (should (equal (test-dir-locals--dictionary project-dir) "es_ES"))
         (test-dir-locals--kill-file-buffer
-         (expand-file-name "cuento.org" project-dir))))))
+         (expand-file-name (org-scribe-lang-file 'manuscript-short 'es) project-dir))))))
 
 ;;; The form that is written
 
