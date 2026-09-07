@@ -36,9 +36,18 @@ FILEPATH is the path where the file should be created.
 IS-SHORT-STORY determines the structure.
 LANGUAGE, if non-nil, overrides `org-scribe-project-language' for
 content generation."
-  (let ((org-scribe-message-language (or language (org-scribe-project-language))))
+  (let* ((resolved-language (or language (org-scribe-project-language)))
+         (org-scribe-message-language resolved-language))
     (with-temp-file filepath
       (insert (org-scribe--file-header (org-scribe-msg 'capture-title-plot-structure) "overview"))
+      ;; "Plot Threads" is entity-recognized (see the matching comment in
+      ;; `org-scribe--create-short-story-notes-file'), so it is written
+      ;; via `org-scribe-lang-heading' rather than `org-scribe-msg' --
+      ;; the `capture-plot-threads' message key has drifted from the
+      ;; `plot-threads' heading alias (\"Hilos de Trama\" vs \"Hilos de la
+      ;; Trama\"), which used to make a plot-thread captured into a
+      ;; Spanish short-story project grow a second, parallel section the
+      ;; linking layer never read.
       (if is-short-story
           (progn
             (insert (format "* %s\n\n" (org-scribe-msg 'capture-plot-outline)))
@@ -46,7 +55,7 @@ content generation."
             (insert (format "** %s\n\n" (org-scribe-msg 'capture-plot-setup)))
             (insert (format "** %s\n\n" (org-scribe-msg 'capture-plot-central-conflict)))
             (insert (format "** %s\n\n" (org-scribe-msg 'capture-plot-resolution)))
-            (insert (format "* %s\n\n" (org-scribe-msg 'capture-plot-threads)))
+            (insert (format "* %s\n\n" (org-scribe-lang-heading 'plot-threads resolved-language)))
             (insert (format "%s\n\n" (org-scribe-msg 'capture-plot-threads-hint-short))))
         (progn
           (insert (format "* %s\n\n%s\n\n"
@@ -56,7 +65,7 @@ content generation."
           (insert (format "** %s\n\n" (org-scribe-msg 'capture-plot-central-conflict)))
           (insert (format "** %s\n\n" (org-scribe-msg 'capture-plot-main-dramatic-question)))
           (insert (format "* %s\n\n" (org-scribe-msg 'capture-plot-subplots)))
-          (insert (format "* %s\n\n" (org-scribe-msg 'capture-plot-threads)))
+          (insert (format "* %s\n\n" (org-scribe-lang-heading 'plot-threads resolved-language)))
           (insert (format "%s\n\n" (org-scribe-msg 'capture-plot-threads-hint-novel))))))))
 
 (defun org-scribe--create-short-story-notes-file (filepath &optional language)
@@ -64,11 +73,26 @@ content generation."
 FILEPATH is the path where the file should be created.
 LANGUAGE, if non-nil, overrides `org-scribe-project-language' for
 content generation."
-  (let ((title (file-name-base (directory-file-name (file-name-directory filepath))))
-        (org-scribe-message-language (or language (org-scribe-project-language))))
+  (let* ((title (file-name-base (directory-file-name (file-name-directory filepath))))
+         (resolved-language (or language (org-scribe-project-language)))
+         (org-scribe-message-language resolved-language))
     (with-temp-file filepath
       (insert (org-scribe--file-header (org-scribe-msg 'capture-title-project-notes title) "overview"))
-      (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-characters)))
+      ;; The four section headings below are entity-recognized: the
+      ;; linking layer's `org-scribe--heading-parent-section-p' and
+      ;; `org-scribe--capture-goto-section' match a captured entity's
+      ;; parent section against `lang/org-scribe-lang.el''s `:headings'
+      ;; section for the SAME keys.  Writing them from `org-scribe-msg'
+      ;; instead, as this file used to, makes the written text and the
+      ;; alias two independent copies of the same string that can drift
+      ;; -- which is exactly what happened: `capture-plot-threads' (used
+      ;; below, in `org-scribe--create-plot-file') still reads "Hilos de
+      ;; Trama" while the `plot-threads' heading alias is "Hilos de la
+      ;; Trama", so a plot-thread capture into a Spanish short-story
+      ;; project grew a second, parallel section the linking layer never
+      ;; read.  `org-scribe-lang-heading' reads the SAME datum the
+      ;; matcher does, so the two cannot disagree.
+      (insert (format "* %s\n\n" (org-scribe-lang-heading 'characters resolved-language)))
       (insert (format "** %s\n" (org-scribe-msg 'capture-ss-protagonist-name)))
       ;; :Role: is deliberately English regardless of LANGUAGE (see
       ;; docs/glossary.org: entity property values for Role are English in
@@ -86,11 +110,11 @@ content generation."
                       (org-scribe-msg 'capture-plot-setup)
                       (org-scribe-msg 'capture-plot-central-conflict)
                       (org-scribe-msg 'capture-plot-resolution)))
-      (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-setting)))
+      (insert (format "* %s\n\n" (org-scribe-lang-heading 'setting resolved-language)))
       (insert (format "** %s\n\n" (org-scribe-msg 'capture-ss-main-locations)))
       (insert (format "** %s\n\n" (org-scribe-msg 'capture-ss-locations)))
-      (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-objects)))
-      (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-timeline)))
+      (insert (format "* %s\n\n" (org-scribe-lang-heading 'objects resolved-language)))
+      (insert (format "* %s\n\n" (org-scribe-lang-heading 'timeline resolved-language)))
       (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-research)))
       (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-revision-notes)))
       (insert (format "* %s\n\n" (org-scribe-msg 'capture-ss-random-ideas))))))
