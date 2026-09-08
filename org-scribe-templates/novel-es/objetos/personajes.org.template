@@ -51,8 +51,11 @@
   # Quién es y a qué se dedica, en una frase con voz. Cómo se describiría él
   # mismo.
 - Postura ::
-  # Su posición ante el Tema, tomada de la lista. Elige la que más conflicto le
-  # genere. Reescríbela con sus palabras.
+  # Su posición ante el Tema. En el Sistema la tomas de la lista ya
+  # construida en el archivo de diseño; en la Hélice o la Matriz el Tema
+  # se nombra más tarde (nivel 3 y nivel 4), así que escribe la posición
+  # ahora y cotéjala con la lista cuando exista. Elige la que más
+  # conflicto le genere. Reescríbela con sus palabras.
 - Fantasma ::
   # Qué le ocurrió antes de que empiece la historia y todavía le duele.
 - Mentira ::

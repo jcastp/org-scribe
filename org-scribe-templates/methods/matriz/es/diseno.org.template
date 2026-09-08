@@ -183,6 +183,24 @@
 # Sinopsis de una página por cuartiles, y una página por fuerza con sus
 # hitos de cambio, cada uno anclado a un punto concreto de la sinopsis y
 # marcado como Ruptura o Ajuste.
+#
+# Aquí entran los puntos de trama que no son colisiones —susurro del
+# tema, cruzar el umbral, plan, empuje, batalla, decisión moral—. Los
+# trece irrenunciables viven en objetos/trama.org.
+
+- Tema ::
+  # El problema moral, en una frase. En la Matriz el tema sale solo: al
+  # deducir la trama de Mentiras incompatibles aparece sin haberlo
+  # declarado. Nombrarlo aquí es ponerle palabras a lo que la matriz de
+  # colisiones ya está discutiendo.
+
+- Posturas ::
+  # Las maneras de responder al Tema, de peor a mejor. Cada fuerza ya
+  # defiende una: sácalas de sus Mentiras y ordénalas. Si dos fuerzas
+  # comparten Postura, o una sobra o hay que diferenciarlas.
+  1.
+  2.
+  3.
 
 | Punto de trama | Tipo (Ruptura/Ajuste) | Qué cambia |
 |----------------+-----------------------+------------|

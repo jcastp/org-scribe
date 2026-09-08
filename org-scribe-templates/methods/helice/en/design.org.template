@@ -167,6 +167,26 @@
 
 # One-page synopsis, split by quarters: Setup (0–25%), Reaction
 # (25–50%), Action (50–75%), Resolution (75–100%).
+#
+# This is where the plot points that are not disasters appear — Theme
+# Stated, Crossing the Threshold, Plan, Drive, Battle, Moral Decision.
+# They are placed between the disasters, not the other way round; the
+# thirteen non-negotiables live in objects/plot.org.
+
+- Theme ::
+  # The moral problem, in one sentence. In the Helix it is not declared
+  # at the start: it comes out of what you already have — the
+  # protagonist's Lie, the opponent's Stance, and the two-endings
+  # cross-check — and is named here, before crossing the Starting Gate.
+
+- Stances ::
+  # The ways of answering the Theme, worst to best. Here you do not
+  # deal characters onto a list made in advance: you read off the
+  # positions the living forces already defend, and fill in the rungs
+  # the list is missing.
+  1.
+  2.
+  3.
 
 ** Character helix
 

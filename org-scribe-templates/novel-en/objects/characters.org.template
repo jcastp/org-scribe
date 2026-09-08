@@ -51,8 +51,11 @@
   # Who they are and what they do, in one sentence with a voice. How they would
   # describe themselves.
 - Stance ::
-  # Their position on the Theme, taken from the list. Pick the one that
-  # generates most conflict. Rewrite it in their words.
+  # Their position on the Theme. Under the Sistema you take it from the
+  # list already built in the design file; under the Hélice or the Matriz
+  # the Theme is named later (level 3 and level 4 respectively), so write
+  # the position now and check it against the list when it exists. Pick
+  # the one that generates most conflict. Rewrite it in their words.
 - Ghost ::
   # What happened before the story starts and still hurts.
 - Lie ::

@@ -162,6 +162,26 @@
 
 # Sinopsis de una página, repartida por cuartiles: Planteamiento (0–25 %),
 # Reacción (25–50 %), Acción (50–75 %), Resolución (75–100 %).
+#
+# Es aquí donde aparecen los puntos de trama que no son desastres
+# —susurro del tema, cruzar el umbral, plan, empuje, batalla, decisión
+# moral—. Se sitúan entre los desastres, no al revés; los trece
+# irrenunciables viven en objetos/trama.org.
+
+- Tema ::
+  # El problema moral, en una frase. En la Hélice no se declara al
+  # empezar: sale de lo que ya tienes —la Mentira del protagonista, la
+  # Postura del oponente y el cotejo de los dos finales— y se nombra
+  # aquí, antes de cruzar la puerta de salida.
+
+- Posturas ::
+  # Las maneras de responder al Tema, de peor a mejor. Aquí no se
+  # reparten personajes sobre una lista previa: se leen las posiciones
+  # que las fuerzas vivas ya defienden y se completa la lista si le
+  # faltan escalones.
+  1.
+  2.
+  3.
 
 ** Hélice de personaje
 

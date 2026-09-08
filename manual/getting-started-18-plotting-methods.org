@@ -121,7 +121,7 @@ crosses them.
 |-------+---------------------------------------+-------------------------------------------------------|
 |     1 | The ~15-word novel sentence           | The protagonist's Lie and Desire only                 |
 |     2 | Setup + 3 disasters + external ending | Full chain, protagonist then opponent                 |
-|     3 | One-page synopsis by quarters         | One page per force, with change milestones            |
+|     3 | One-page synopsis by quarters, Theme and Stances named | One page per force, with change milestones            |
 |     4 | Four-page synopsis                    | Full profile per force                                |
 |     5 | Scene list                            | (folded into the scene list's PoV/motivation columns) |
 
@@ -141,6 +141,15 @@ three checks that most often get skipped: they want the same thing as the
 protagonist (not just the same object — the same thing underneath it), their
 Stance can be argued with real conviction, and ideally their Ghost is the
 protagonist's own Ghost with the opposite conclusion drawn from it.
+
+*Level 3 is also where your Theme gets named* — unlike the Sistema, which
+names it before any character exists, La Hélice deduces it late, from what
+you already have: the protagonist's Lie, the opponent's Stance, and the
+two-endings cross-check. Name it here, then build the Stance list by
+reading off the positions your living forces already hold rather than
+building the list first and casting to fill it. If you captured a
+character's ~:Stance:~ earlier (level 2), that value was necessarily
+provisional — check it against the list now that it exists.
 
 ** The Exit Gate
 
@@ -189,7 +198,7 @@ levels are about character, and the plot is born in the third.
 |     1 | The census (2–4 one-line force statements) and the arena (object, place/moment, clock)   |
 |     2 | One full chain per force: Ghost → Lie → Weakness → Trouble → Desire → Need               |
 |     3 | The collision matrix, the collisions you choose from it, the skeleton, and the hook test |
-|     4 | One-page synopsis by quarters, with change milestones                                    |
+|     4 | One-page synopsis by quarters, Theme and Stances named, with change milestones          |
 |     5 | Scene list                                                                               |
 
 *Level 3 is the method's signature move.* You fill an N×N matrix — one row
@@ -208,6 +217,13 @@ two characters who each lost something to an authority as children, one
 concluding "keep moving, never stop" and the other "get on the side that
 signs the papers" — same wound, opposite lesson, and they collide without
 either of them trying to.
+
+*Level 4 is also where your Theme gets named* — and here it comes out on
+its own: deducing the plot from incompatible Lies produces the Theme
+without ever declaring it first. Naming it at this level is putting words
+to what the collision matrix has already been arguing about since level 3.
+Build the Stance list the same way — take each force's Stance from its
+Lie — rather than casting characters to fill a list decided in advance.
 
 ** The Exit Gate
 

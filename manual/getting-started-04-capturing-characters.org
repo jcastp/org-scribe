@@ -288,7 +288,10 @@ there. That separation is why renaming a character never breaks a link.
 *** ~:Stance:~ - Their Answer to the Theme
 
 Where this character stands on the moral problem of the book, in their own
-words. Your Theme and its Stances are in ~design.org~ (Lesson 1).
+words. Your Theme and its Stances are in ~design.org~ (Lesson 1) — under the
+Sistema, already built before you started capturing characters; under La
+Hélice or La Matriz, named later (level 3 / level 4 — see Lesson 18), so
+write the Stance now and check it against the list once it exists.
 
 This is the most useful property on the sheet. It is what tells you whether
 you have a cast or a crowd: two characters with the same Stance are, for the

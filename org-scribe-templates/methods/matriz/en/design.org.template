@@ -192,6 +192,24 @@
 # One-page synopsis by quarters, and one page per force with its change
 # milestones, each anchored to a concrete point in the synopsis and
 # marked as a Break or an Adjustment.
+#
+# This is where the plot points that are not collisions come in — Theme
+# Stated, Crossing the Threshold, Plan, Drive, Battle, Moral Decision.
+# The thirteen non-negotiables live in objects/plot.org.
+
+- Theme ::
+  # The moral problem, in one sentence. In the Matrix the theme comes
+  # out on its own: deducing the plot from incompatible Lies produces it
+  # without it ever being declared. Naming it here is putting words to
+  # what the collision matrix is already arguing about.
+
+- Stances ::
+  # The ways of answering the Theme, worst to best. Each force already
+  # defends one: take them from their Lies and order them. If two forces
+  # share a Stance, either one is surplus or they need differentiating.
+  1.
+  2.
+  3.
 
 | Plot point | Type (Break/Adjustment) | What changes |
 |------------+--------------------------+---------------|

@@ -380,6 +380,90 @@ growing a `:PROPERTIES:' drawer the other lacks."
                (expand-file-name (concat "org-scribe-templates/" (cdr pair)) org-scribe-parity--root))))
       (should (equal (cons (car pair) (cdr es)) (cons (car pair) (cdr en)))))))
 
+;;; Theme/Stance in the method overlays
+;;
+;; Hélice and Matriz both place "Theme Stated" among the shared thirteen
+;; non-negotiables, and both source method documents (outside this repo;
+;; see notes/theme-mismatch.org) name a Theme and build a Stance list of
+;; their own -- late, and deduced rather than declared, but not absent.
+;; The overlay templates shipped without either step for a full release
+;; before the omission was caught; these tests pin the restoration so a
+;; future template edit cannot silently drop it again.
+
+(defconst org-scribe-parity--method-overlay-levels
+  '(("methods/helice/es/diseno.org.template" . "^\\* NIVEL 3\\b")
+    ("methods/helice/en/design.org.template" . "^\\* LEVEL 3\\b")
+    ("methods/matriz/es/diseno.org.template" . "^\\* NIVEL 4\\b")
+    ("methods/matriz/en/design.org.template" . "^\\* LEVEL 4\\b"))
+  "Overlay template (relative to `org-scribe-templates/') -> the regexp
+matching the level heading where that method's own source document
+places the Theme step -- Hélice level 3, Matriz level 4.")
+
+(defun org-scribe-parity--heading-subtree-text (file heading-regexp)
+  "Return the text of FILE from the level-1 heading matching HEADING-REGEXP
+up to the next level-1 heading, or to the end of the buffer.
+Signals an error if no heading in FILE matches HEADING-REGEXP, since a
+caller asking for a specific level's content getting silent empty text
+back would be a worse failure mode than a loud one."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (goto-char (point-min))
+    (unless (re-search-forward heading-regexp nil t)
+      (error "No heading matching %S in %s" heading-regexp file))
+    (let ((start (line-beginning-position)))
+      (goto-char (line-end-position))
+      (if (re-search-forward "^\\* " nil t)
+          (buffer-substring-no-properties start (line-beginning-position))
+        (buffer-substring-no-properties start (point-max))))))
+
+(ert-deftest test-template-parity-method-overlays-name-their-theme ()
+  "Hélice and Matriz both declare a Theme field and a Stances list
+somewhere in their design file overlay."
+  (dolist (pair org-scribe-parity--method-pairs)
+    (let ((es (with-temp-buffer
+                (insert-file-contents
+                 (expand-file-name (concat "org-scribe-templates/" (car pair)) org-scribe-parity--root))
+                (buffer-string)))
+          (en (with-temp-buffer
+                (insert-file-contents
+                 (expand-file-name (concat "org-scribe-templates/" (cdr pair)) org-scribe-parity--root))
+                (buffer-string))))
+      (should (string-match-p "^- Tema ::" es))
+      (should (string-match-p "^- Posturas ::" es))
+      (should (string-match-p "^- Theme ::" en))
+      (should (string-match-p "^- Stances ::" en)))))
+
+(ert-deftest test-template-parity-method-overlays-place-theme-at-the-right-level ()
+  "The Theme step sits inside the specific level each method's own
+source document places it at -- Hélice level 3, Matriz level 4 -- not
+merely somewhere in the file.  A regression that moved the field to the
+wrong level, or duplicated it at both, would pass
+`test-template-parity-method-overlays-name-their-theme' but not this."
+  (dolist (entry org-scribe-parity--method-overlay-levels)
+    (let* ((relative (car entry))
+           (file (expand-file-name (concat "org-scribe-templates/" relative) org-scribe-parity--root))
+           (spanish (string-match-p "/es/" relative))
+           (theme-line (if spanish "^- Tema ::" "^- Theme ::"))
+           (stances-line (if spanish "^- Posturas ::" "^- Stances ::"))
+           (subtree (org-scribe-parity--heading-subtree-text file (cdr entry))))
+      (should (string-match-p theme-line subtree))
+      (should (string-match-p stances-line subtree)))))
+
+(ert-deftest test-template-parity-method-overlays-gate-has-no-separate-theme-item ()
+  "The Hélice/Matriz Starting Gates do not grow a dedicated Theme
+checkbox.  Theme Stated is already one of the thirteen non-negotiables
+both gates list (see notes/theme-mismatch.org, decision 4); a separate
+item would duplicate it and lengthen gates the source documents kept
+deliberately short."
+  (dolist (pair org-scribe-parity--method-pairs)
+    (dolist (relative (list (car pair) (cdr pair)))
+      (let* ((file (expand-file-name (concat "org-scribe-templates/" relative) org-scribe-parity--root))
+             (spanish (string-match-p "/es/" relative))
+             (gate-heading (if spanish "^\\* Puerta de salida\\b" "^\\* Starting Gate\\b"))
+             (theme-word (if spanish "Tema" "Theme"))
+             (gate (org-scribe-parity--heading-subtree-text file gate-heading)))
+        (should-not (string-match-p (concat "- \\[ \\] .*" theme-word) gate))))))
+
 (ert-deftest test-template-parity-every-template-declares-its-language ()
   "Every shipped template carries a `#+LANGUAGE:' keyword for its set.
 

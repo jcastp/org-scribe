@@ -571,13 +571,21 @@ design.org, exactly like the base Sistema set does."
 (ert-deftest test-create-novel-project-helice-leaves-other-files-untouched ()
   "Choosing a method changes only the design file; novel.org and the
 objects/ files are the same as a Sistema project's — the hypothesis
-under test in diffsystems.org, pinned in code."
+under test in diffsystems.org, pinned in code.
+
+Project titles here are deliberately *not* \"Sistema\"/\"Helice\": those
+words now legitimately appear in the shared characters.org.template
+prose too (the Stance field's sequencing note, see
+notes/theme-mismatch.org), so a title-stripping `replace-regexp-in-string'
+keyed on the method's own name would also mangle that prose and produce
+a false mismatch — exactly what happened the first time this test was
+run after that content was added."
   (test-project--with-temp-base-dir base-dir
     (test-project--with-temp-base-dir base-dir-2
-      (let ((sistema-dir (expand-file-name "Sistema" base-dir))
-            (helice-dir (expand-file-name "Helice" base-dir-2)))
-        (org-scribe-create-novel-project base-dir "Sistema" 'en)
-        (org-scribe-create-novel-project base-dir-2 "Helice" 'en 'helice)
+      (let ((sistema-dir (expand-file-name "Alfaproj" base-dir))
+            (helice-dir (expand-file-name "Betaproj" base-dir-2)))
+        (org-scribe-create-novel-project base-dir "Alfaproj" 'en)
+        (org-scribe-create-novel-project base-dir-2 "Betaproj" 'en 'helice)
         (unwind-protect
             (dolist (relative '("novel.org" "objects/characters.org"
                                 "objects/locations.org" "objects/plot.org"
@@ -592,12 +600,12 @@ under test in diffsystems.org, pinned in code."
                         (insert-file-contents (expand-file-name relative sistema-dir))
                         (replace-regexp-in-string
                          ":ID:.*" ":ID:"
-                         (replace-regexp-in-string "Sistema" "X" (buffer-string)))))
+                         (replace-regexp-in-string "Alfaproj" "X" (buffer-string)))))
                     (b (with-temp-buffer
                         (insert-file-contents (expand-file-name relative helice-dir))
                         (replace-regexp-in-string
                          ":ID:.*" ":ID:"
-                         (replace-regexp-in-string "Helice" "X" (buffer-string))))))
+                         (replace-regexp-in-string "Betaproj" "X" (buffer-string))))))
                 (should (string= a b))))
           (test-project--kill-file-buffer (expand-file-name "README.org" sistema-dir))
           (test-project--kill-file-buffer (expand-file-name "README.org" helice-dir)))))))

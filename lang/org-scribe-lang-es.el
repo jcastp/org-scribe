@@ -174,7 +174,7 @@
      (capture-char-concept . "Concepto ::")
      (capture-char-concept-hint . "Quién es y a qué se dedica, en una frase con voz.")
      (capture-char-stance . "Postura ::")
-     (capture-char-stance-hint . "Su posición ante el Tema, tomada de la lista. Elige la que más conflicto le genere.")
+     (capture-char-stance-hint . "Su posición ante el Tema, tomada de la lista cuando exista: en la Hélice o la Matriz el Tema se nombra más tarde (nivel 3 / nivel 4). Elige la que más conflicto le genere.")
      (capture-char-ghost . "Fantasma ::")
      (capture-char-ghost-hint . "Qué le ocurrió antes de que empiece la historia y todavía le duele. Un suceso concreto, no un clima.")
      (capture-char-lie . "Mentira ::")

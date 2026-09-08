@@ -179,7 +179,7 @@
      (capture-char-concept . "Concept ::")
      (capture-char-concept-hint . "Who they are and what they do, in one sentence with a voice.")
      (capture-char-stance . "Stance ::")
-     (capture-char-stance-hint . "Their position on the Theme, taken from the list. Pick the one that generates most conflict.")
+     (capture-char-stance-hint . "Their position on the Theme, taken from the list once it exists — under the Hélice or the Matriz the Theme is named later (level 3 / level 4). Pick the one that generates most conflict.")
      (capture-char-ghost . "Ghost ::")
      (capture-char-ghost-hint . "What happened before the story starts and still hurts. A concrete event, not a climate.")
      (capture-char-lie . "Lie ::")

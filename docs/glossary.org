@@ -152,6 +152,22 @@ sections above is shared unchanged — the causal chain, the thirteen
 non-negotiables, the four quarters — since both methods are built on that same
 vocabulary rather than replacing it.
 
+*Tema/Theme and Postura/Stance are shared too, not Sistema-exclusive — only
+their timing differs.* All three methods place "Theme Stated" among the
+thirteen non-negotiables and use Stance in the character profile; what
+differs is when a Theme is named and the Stance list built. The Sistema
+front-loads both in its Núcleo, before any character exists ("at least five
+Stances" is that Núcleo's own minimum, not a requirement of the concept
+itself). La Hélice names the Theme at level 3, and la Matriz at level 4 —
+in both cases exactly where that method's own Starting Gate sits, and
+derived rather than declared: the Theme and its list of Stances are read off
+the positions the living forces already hold (their Lies, argued Stances,
+and — in la Hélice — the two-endings cross-check), not decided in advance
+of the cast. A character's =:Stance:= is filled in earlier than that in
+either method (the causal-chain profile, level 2 in both), so it is written
+provisionally and checked against the list once the list exists — see the
+capture and template comments on the =Stance= field.
+
 | Spanish                    | English               | Source | Call    |
 |-----------------------------+------------------------+--------+---------|
 | Copo vivo                  | *Living Snowflake*      | —      | settled |
