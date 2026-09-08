@@ -12,9 +12,9 @@
 # Matriz, parte del extremo contrario — de personajes sin trama.
 #
 # Este fichero contiene los cinco niveles de la Hélice y lo que no tiene
-# entidades propias. Los personajes viven en objects/personajes.org, los
-# escenarios en objects/localizaciones.org y la trama —incluidos los trece
-# puntos irrenunciables— en objects/trama.org.
+# entidades propias. Los personajes viven en objetos/personajes.org, los
+# escenarios en objetos/localizaciones.org y la trama —incluidos los trece
+# puntos irrenunciables— en objetos/trama.org.
 
 * Puerta de salida
 
@@ -63,7 +63,7 @@
 # Un personaje es una fuerza viva cuando de su ficha se pueden deducir sus
 # próximas decisiones equivocadas sin consultar la trama. Sólo las fuerzas
 # vivas llevan ficha completa (Fantasma, Mentira, Debilidad, Apuro, Deseo,
-# Necesidad) en objects/personajes.org. Suelen salir dos o tres.
+# Necesidad) en objetos/personajes.org. Suelen salir dos o tres.
 
 * NIVEL 1 — El compromiso
 

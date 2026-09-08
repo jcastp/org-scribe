@@ -8,8 +8,8 @@
 # Aquí sólo se rellena. El método completo está en sistema-unificado.org.
 #
 # Este fichero contiene el Núcleo y lo que no tiene entidades propias. Los
-# personajes viven en objects/personajes.org, los escenarios en
-# objects/localizaciones.org y la trama en objects/trama.org.
+# personajes viven en objetos/personajes.org, los escenarios en
+# objetos/localizaciones.org y la trama en objetos/trama.org.
 
 * Puerta de salida
 
@@ -81,7 +81,7 @@
 
 - Oponente y su Postura ::
   # Quién quiere lo mismo. Su cadena completa se rellena en su ficha, en
-  # objects/personajes.org. La puerta de salida la exige.
+  # objetos/personajes.org. La puerta de salida la exige.
 
 - Apuestas ::
   # Qué se pierde si fracasa, y cómo empeora a mitad de la historia. Concreto,

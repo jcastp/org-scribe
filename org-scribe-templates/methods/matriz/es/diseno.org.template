@@ -12,9 +12,9 @@
 # Hélice, parte del extremo contrario — de una premisa sin personajes.
 #
 # Este fichero contiene los cinco niveles de la Matriz y lo que no tiene
-# entidades propias. Los personajes viven en objects/personajes.org, los
-# escenarios en objects/localizaciones.org y la trama —incluidos los trece
-# puntos irrenunciables— en objects/trama.org.
+# entidades propias. Los personajes viven en objetos/personajes.org, los
+# escenarios en objetos/localizaciones.org y la trama —incluidos los trece
+# puntos irrenunciables— en objetos/trama.org.
 
 * Puerta de salida
 
