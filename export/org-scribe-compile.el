@@ -895,10 +895,26 @@ your behalf."
    ;; pointless.  The body's own check still stands -- it is what a
    ;; non-interactive Lisp caller (which never reaches this interactive
    ;; spec at all) relies on.
-   (unless (org-scribe-project-root)
-     (user-error "%s" (org-scribe-msg 'compile-not-in-project)))
-   (let ((style (org-scribe--compile-read-style)))
-     (list style (org-scribe--compile-read-format style))))
+   ;;
+   ;; Both forms below must be wrapped in one PROGN: `interactive' takes
+   ;; at most two arguments of its own, ARG-DESCRIPTOR and MODES -- two
+   ;; bare top-level forms here would silently make the second form
+   ;; (the actual style/format prompts) into MODES instead of code that
+   ;; runs, so the prompts would never fire and STYLE/FORMAT would
+   ;; always come back nil.
+   ;;
+   ;; The check itself must be against `org-scribe-project-type', not a
+   ;; bare `org-scribe-project-root' truthiness test: `org-scribe-project-root'
+   ;; unconditionally falls back to `default-directory' as its last resort
+   ;; (see its docstring), so it is never nil and a check against it can
+   ;; never fire -- exactly the same trap `org-scribe--refile-maybe-setup'
+   ;; and friends avoid by testing `org-scribe-project-type' instead (see
+   ;; core/org-scribe-core.el:945).
+   (progn
+     (when (eq (org-scribe-project-type) 'unknown)
+       (user-error "%s" (org-scribe-msg 'compile-not-in-project)))
+     (let ((style (org-scribe--compile-read-style)))
+       (list style (org-scribe--compile-read-format style)))))
   (let* ((style (or style 'clean))
          (format (or format 'txt))
          (spec (alist-get format org-scribe--compile-formats))
@@ -912,7 +928,11 @@ your behalf."
         (user-error "%s" (org-scribe-msg 'compile-shunn-format-unsupported format)))
       (unless (org-string-nw-p org-scribe-author-name)
         (user-error "%s" (org-scribe-msg 'compile-shunn-author-missing))))
-    (unless root
+    ;; Same trap as the interactive spec above: `root' (from
+    ;; `org-scribe-project-root') falls back to `default-directory' and is
+    ;; therefore never nil, so this must check `org-scribe-project-type'
+    ;; instead of `root' itself.
+    (when (eq (org-scribe-project-type) 'unknown)
       (user-error "%s" (org-scribe-msg 'compile-not-in-project)))
     (let ((manuscript (org-scribe--compile-manuscript-file root)))
       (unless manuscript
