@@ -35,6 +35,7 @@
 (declare-function org-scribe-plan-title         "planning/org-scribe-planner")
 (declare-function org-scribe-plan-total-words   "planning/org-scribe-planner")
 (declare-function org-scribe-plan-current-words "planning/org-scribe-planner")
+(declare-function org-scribe-plan-preexisting-words "planning/org-scribe-planner")
 (declare-function org-scribe-plan-daily-words   "planning/org-scribe-planner")
 (declare-function org-scribe-plan-start-date    "planning/org-scribe-planner")
 (declare-function org-scribe-plan-end-date      "planning/org-scribe-planner")
@@ -69,7 +70,8 @@ elapsed-days × daily-words, which overcounts every spare day (e.g.
 weekends off) as an expected writing day.  Today's goal isn't due until
 the day is over, so it never makes the plan look behind."
   (let* ((today (org-scribe-planner--get-today-date))
-         (expected 0))
+         ;; Expected starts at the pre-existing words, like CURRENT_WORDS
+         (expected (or (org-scribe-plan-preexisting-words plan) 0)))
     (dolist (day (org-scribe-planner--generate-day-schedule plan))
       (when (and (string< (plist-get day :date) today)
                  (not (plist-get day :is-spare-day)))

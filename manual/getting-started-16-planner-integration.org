@@ -238,6 +238,16 @@ Press ~F8 F8 W e~ (Adjust end date), or ~e~ in the plan calendar.
 
 The opposite trade: keep your daily target and move the end date so the words left fit. Ahead of schedule, you finish early; behind, the deadline is extended. Spare days are skipped, and if you have already written today, the count starts tomorrow.
 
+** Starting Mid-Draft
+
+Press ~F8 F8 W o~ (Onboard existing project) when the manuscript already has words.
+
+The planner reads the manuscript's word count and stores it as the plan's /pre-existing words/. The plan starts today (you can pick another date), and the daily target covers only the words left: a 30,000-word goal with 20,000 already written, over 10 days, is 1,000 words a day.
+
+Pre-existing words count toward the goal and the completion percentage, but never as one day's writing. Your first sync records only the words you wrote that day, so your pace, streaks and best day reflect the plan's writing alone.
+
+A plan created with ~F8 F8 W n~ asks the same question (/Words already written/), with the manuscript's count as the default.
+
 ** Update Progress Manually
 
 Press ~F8 F8 W u~ (Update progress).

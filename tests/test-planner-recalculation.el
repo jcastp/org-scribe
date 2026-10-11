@@ -81,6 +81,8 @@ date computed before they were added."
                (lambda (&rest _) "Total words + Daily words → Calculate days needed"))
               ((symbol-function 'org-scribe-planner--read-positive-number)
                (test-recalc--answers 8000 1000))
+              ((symbol-function 'org-scribe-planner--read-non-negative-number)
+               (lambda (&rest _) 0))
               ((symbol-function 'org-scribe-planner--read-date)
                (lambda (&rest _) "2026-11-01"))
               ((symbol-function 'y-or-n-p) (lambda (&rest _) t))

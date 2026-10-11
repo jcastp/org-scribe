@@ -1863,6 +1863,15 @@ Plan file discovery still works without a shipped placeholder — the first acce
 
 After creating a new novel or short story project, you are offered the option to create a matching writing plan immediately. Accepting opens the gate (=# Planner: yes=) and creates the plan; declining closes it (=# Planner: no=) so you are not asked again for that project.
 
+*Starting mid-draft.* A plan records the words already in the manuscript as
+its pre-existing words (=PREEXISTING_WORDS=). New plans ask for them, with the
+manuscript's current count as the default; =F8 F8 W o= (Onboard existing
+project) reads them from the manuscript and starts the plan today. They count
+toward the goal and the completion percentage, and "expected" starts from
+them, but they are never one day's writing: the first sync records only the
+words written that day, and pace, streaks and best day ignore them. The total
+goal is the full length of the work; the daily target covers what is left.
+
 *** 6. Planner Hydra Sub-menu (=W=)
 
 Press =F8 F8 W= to open the planner sub-menu. If the project has declined the planner, this key offers to enable it first instead of opening the submenu.

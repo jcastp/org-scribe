@@ -72,6 +72,9 @@ Cleans up the temp file unconditionally."
                      (car choices)))
                   ((symbol-function 'org-scribe-planner--read-positive-number)
                    (lambda (&rest _) 10000))
+                  ;; "Words already written (before this plan)"
+                  ((symbol-function 'org-scribe-planner--read-non-negative-number)
+                   (lambda (&rest _) 0))
                   ((symbol-function 'org-scribe-planner--read-days)
                    (lambda (&rest _) 20))
                   ((symbol-function 'org-scribe-planner--read-date)
@@ -420,6 +423,9 @@ read-file-name."
                    (lambda (_ choices &rest _) (car choices)))
                   ((symbol-function 'org-scribe-planner--read-positive-number)
                    (lambda (&rest _) 10000))
+                  ;; "Words already written (before this plan)"
+                  ((symbol-function 'org-scribe-planner--read-non-negative-number)
+                   (lambda (&rest _) 0))
                   ((symbol-function 'org-scribe-planner--read-days)
                    (lambda (&rest _) 20))
                   ((symbol-function 'org-scribe-planner--read-date)

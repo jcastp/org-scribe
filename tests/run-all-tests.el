@@ -101,7 +101,8 @@
     "test-planner-daily-sync"      ; Automatic daily word-count tracking
     "test-planner-agenda"          ; Org-agenda sync integration
     "test-planner-gate"            ; Per-project planner gate
-    "test-planner-recalculation")  ; Plan changes, status, mode line
+    "test-planner-recalculation"   ; Plan changes, status, mode line
+    "test-planner-preexisting")    ; Pre-existing words
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
@@ -374,7 +375,8 @@ Suitable for CI/CD pipelines and automated testing."
                     "test-planner-daily-sync"
                     "test-planner-agenda"
                     "test-planner-gate"
-                    "test-planner-recalculation"))
+                    "test-planner-recalculation"
+                    "test-planner-preexisting"))
       (load-file (expand-file-name (concat file ".el") tests-dir))))
   (ert "^test-planner-"))
 

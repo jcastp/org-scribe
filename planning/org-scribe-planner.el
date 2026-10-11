@@ -150,6 +150,10 @@ or nil if no project is active.")
   (end-date nil :type string)
   (spare-days nil :type list)    ; List of dates in "YYYY-MM-DD" format
   (current-words 0 :type number)
+  ;; Words in the manuscript before the plan started (PREEXISTING_WORDS).
+  ;; TOTAL-WORDS is the full goal, these included; the schedule covers the
+  ;; rest.  The first ledger entry's delta is measured against them.
+  (preexisting-words 0 :type number)
   (org-heading-marker nil)       ; Marker to org heading
   ;; Alist of (date . plist), plist has :words :note :target.  :words holds
   ;; the manuscript's CUMULATIVE word total as of that date, not that day's
@@ -179,10 +183,15 @@ window yet, so every spare day counts."
 Given 2 of 3 variables (total-words, daily-words, days), calculate the third.
 Updates PLAN in place and returns the calculated variable as a symbol.
 Only spare days inside the plan's window count (see
-`org-scribe-planner--spare-days-in-window')."
-  (let ((total-words (org-scribe-plan-total-words plan))
-        (daily-words (org-scribe-plan-daily-words plan))
-        (days (org-scribe-plan-days plan)))
+`org-scribe-planner--spare-days-in-window').
+TOTAL-WORDS is the full goal; the daily target only has to cover what is
+left after the plan's pre-existing words."
+  (let* ((total-words (org-scribe-plan-total-words plan))
+         (daily-words (org-scribe-plan-daily-words plan))
+         (days (org-scribe-plan-days plan))
+         (preexisting (or (org-scribe-plan-preexisting-words plan) 0))
+         (to-write (when (numberp total-words)
+                     (max 0 (- total-words preexisting)))))
     (let ((num-spare-days (when (numberp days)
                             (org-scribe-planner--spare-days-in-window plan days)))
           (non-nil-count 0)
@@ -199,7 +208,7 @@ Only spare days inside the plan's window count (see
          ;; Calculate total-words
          ((not (numberp total-words))
           (setf (org-scribe-plan-total-words plan)
-                (ceiling (* daily-words (- days num-spare-days))))
+                (+ preexisting (ceiling (* daily-words (- days num-spare-days)))))
           (setq missing-var 'total-words))
 
          ;; Calculate daily-words
@@ -209,7 +218,7 @@ Only spare days inside the plan's window count (see
                 (error "Cannot calculate plan: not enough working days. Total days: %d, spare days: %d. Please reduce spare days or increase total days"
                        days num-spare-days)
               (setf (org-scribe-plan-daily-words plan)
-                    (ceiling (/ (float total-words) working-days)))
+                    (ceiling (/ (float to-write) working-days)))
               (setq missing-var 'daily-words))))
 
          ;; Calculate days
@@ -220,7 +229,7 @@ Only spare days inside the plan's window count (see
             ;; bring later spare days into it: grow until the window holds
             ;; every working day.  It only grows, by at most the number of
             ;; spare days, so this ends.
-            (let* ((working-days (ceiling (/ (float total-words) daily-words)))
+            (let* ((working-days (ceiling (/ (float to-write) daily-words)))
                    (total-days working-days))
               (while (let ((needed (+ working-days
                                       (org-scribe-planner--spare-days-in-window
@@ -239,10 +248,10 @@ Only spare days inside the plan's window count (see
 
           ;; Check if the values are consistent
           (let ((calculated-total (* daily-words working-days)))
-            (unless (= calculated-total total-words)
+            (unless (= calculated-total to-write)
               (message "Warning: Values are inconsistent. Recalculating daily-words.")
               (setf (org-scribe-plan-daily-words plan)
-                    (ceiling (/ (float total-words) working-days)))
+                    (ceiling (/ (float to-write) working-days)))
               (setq missing-var 'daily-words)))))
 
        ;; Less than 2 variables set
@@ -525,32 +534,37 @@ Returns either:
 
 (defvar org-scribe-planner--schedule-cache nil
   "One-entry memo cache for `org-scribe-planner--generate-day-schedule'.
-Stored as a cons (KEY . SCHEDULE) where KEY is a string built from the four
-plan fields that determine the schedule: start-date, end-date, daily-words,
-and spare-days.  Set to nil when no result is cached.")
+Stored as a cons (KEY . SCHEDULE) where KEY is a string built from the
+plan fields that determine the schedule: start-date, end-date,
+daily-words, spare-days and preexisting-words.  Set to nil when no result
+is cached.")
 
 (defun org-scribe-planner--generate-day-schedule (plan)
   "Generate a list of writing days with cumulative word counts for PLAN.
 Returns a list of plists with :date, :words, :cumulative, :is-spare-day.
+:cumulative is where the manuscript should stand at the end of that day:
+PLAN's pre-existing words plus the goals up to it.
 
 The result is memoised: repeated calls with identical plan parameters return
 the cached schedule without re-iterating the date range."
   (let ((start-date (org-scribe-plan-start-date plan))
         (end-date (org-scribe-plan-end-date plan))
         (daily-words (org-scribe-plan-daily-words plan))
-        (spare-days (org-scribe-plan-spare-days plan)))
+        (spare-days (org-scribe-plan-spare-days plan))
+        (preexisting (or (org-scribe-plan-preexisting-words plan) 0)))
     (unless (and start-date end-date)
       (error "Cannot generate schedule: start-date (%s) and end-date (%s) must be set. Please calculate dates first"
              start-date end-date))
 
-    (let ((key (format "%s|%s|%d|%S" start-date end-date daily-words spare-days)))
+    (let ((key (format "%s|%s|%d|%S|%d"
+                       start-date end-date daily-words spare-days preexisting)))
       (if (and org-scribe-planner--schedule-cache
                (string= (car org-scribe-planner--schedule-cache) key))
           (cdr org-scribe-planner--schedule-cache)
 
         (let ((current-date (org-scribe-planner--parse-date start-date))
               (end (org-scribe-planner--parse-date end-date))
-              (cumulative 0)
+              (cumulative preexisting)
               (schedule nil))
 
           (while (not (time-less-p end current-date))
@@ -641,6 +655,20 @@ that has not yet been asked, so no prompt appears in that case either."
        ;; Fallback if nothing matched (shouldn't happen, but just in case)
        (t
         (error "Invalid choice: %s" var-choice))))
+
+    ;; Words already written: the plan's pre-existing words.  Inside a
+    ;; project the manuscript's current count is offered as the default.
+    (let* ((counted (and org-scribe-planner-wordcount-function
+                         (ignore-errors (funcall org-scribe-planner-wordcount-function))))
+           (preexisting (org-scribe-planner--read-non-negative-number
+                         "Words already written (before this plan): "
+                         (if (and (numberp counted) (> counted 0)) counted 0)))
+           (total (org-scribe-plan-total-words plan)))
+      (when (and (numberp total) (>= preexisting total))
+        (user-error "%d words are already written, which reaches the %d-word goal"
+                    preexisting total))
+      (setf (org-scribe-plan-preexisting-words plan) preexisting)
+      (setf (org-scribe-plan-current-words plan) preexisting))
 
     ;; Ask about start date only if not already set (from date entry method)
     (unless (org-scribe-plan-start-date plan)
@@ -750,9 +778,11 @@ that has not yet been asked, so no prompt appears in that case either."
 (defun org-scribe-planner-onboard-existing-project ()
   "Create a writing plan for a novel already in progress.
 Reads the current manuscript word count, asks for your target and
-timeline, then builds a plan that treats all existing words as a
-single historical entry so auto-tracking records only net-new writing
-going forward.
+timeline, then builds a plan that starts today (or the date you give)
+with the existing words recorded as its pre-existing words
+\(PREEXISTING_WORDS): they count toward the goal and completion, but
+not as any one day's writing, so auto-tracking records only net-new
+writing going forward.
 
 Skips the normal new-plan wizard; the daily target is calculated from
 the *remaining* words over the *remaining* working days, not the total."
@@ -780,10 +810,11 @@ the *remaining* words over the *remaining* working days, not the total."
       (error "Target (%d) must be greater than words already written (%d)"
              (org-scribe-plan-total-words plan) current-words))
 
+    ;; The plan starts today by default: the words already written are
+    ;; its pre-existing words, not part of its schedule
     (setf (org-scribe-plan-start-date plan)
-          (org-scribe-planner--read-date
-           "When did you start writing? (YYYY-MM-DD)"
-           (org-scribe-planner--add-days today -30)))
+          (org-scribe-planner--read-date "Plan start date (YYYY-MM-DD)" today))
+    (setf (org-scribe-plan-preexisting-words plan) current-words)
 
     ;; 3. Pace: end date or daily words
     (let ((how (completing-read
@@ -821,15 +852,18 @@ the *remaining* words over the *remaining* working days, not the total."
                           (org-scribe-planner--days-between
                            (org-scribe-plan-start-date plan)
                            (org-scribe-plan-end-date plan))))
-                   ;; Daily words given → calculate DAYS from remaining words + today
+                   ;; Daily words given → calculate DAYS from remaining words
                    (t
-                    (let ((raw-working (ceiling (/ (float remaining-words)
-                                                   (org-scribe-plan-daily-words plan)))))
-                      ;; end-date measured from TODAY, not start-date (existing
-                      ;; work is done); only spare days from today on push it out
+                    (let* ((raw-working (ceiling (/ (float remaining-words)
+                                                    (org-scribe-plan-daily-words plan))))
+                           (start-date (org-scribe-plan-start-date plan))
+                           ;; The remaining words are written from today, or
+                           ;; from the start date if the plan starts later
+                           (from (if (string< today start-date) start-date today)))
+                      ;; Only spare days from then on push the end date out
                       (setf (org-scribe-plan-end-date plan)
                             (org-scribe-planner--end-after-working-days
-                             today raw-working (org-scribe-plan-spare-days plan)))
+                             from raw-working (org-scribe-plan-spare-days plan)))
                       ;; DAYS spans the whole plan, start-date to end-date
                       (setf (org-scribe-plan-days plan)
                             (org-scribe-planner--days-between
@@ -851,22 +885,11 @@ the *remaining* words over the *remaining* working days, not the total."
           (setf (org-scribe-plan-daily-words plan)
                 (max 1 (ceiling (/ (float remaining-words) future-working-days))))
 
-          ;; 6. Populate the plan state.  Attribute existing words to a single
-          ;; historical cumulative entry — dated today if the plan starts
-          ;; today, otherwise the start date — so future syncs derive correct
-          ;; net-new deltas going forward.  Under the cumulative-ledger model
-          ;; this entry's :words is simply the manuscript total as of that
-          ;; date; no separate sync baseline is needed.
+          ;; 6. Populate the plan state.  The existing words are the plan's
+          ;; pre-existing words (set above), not a ledger entry: the first
+          ;; sync's delta is measured against them, so only net-new writing
+          ;; counts as a day's words.
           (setf (org-scribe-plan-current-words plan) current-words)
-          (let ((start-date (org-scribe-plan-start-date plan)))
-            (when (> current-words 0)
-              (setf (org-scribe-plan-daily-word-counts plan)
-                    (list (cons (if (string= start-date today) today start-date)
-                                (list :words current-words
-                                      :note (if (string= start-date today)
-                                                ""
-                                              "Existing manuscript")
-                                      :target nil))))))
 
           ;; 7. Save
           (let* ((default-filename
@@ -1227,6 +1250,8 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
         (org-set-property "START_DATE" (org-scribe-plan-start-date plan))
         (org-set-property "END_DATE" (org-scribe-plan-end-date plan))
         (org-set-property "CURRENT_WORDS" (number-to-string (org-scribe-plan-current-words plan)))
+        (org-set-property "PREEXISTING_WORDS"
+                          (number-to-string (or (org-scribe-plan-preexisting-words plan) 0)))
 
         (when (org-scribe-plan-spare-days plan)
           (org-set-property "SPARE_DAYS" (mapconcat #'identity (org-scribe-plan-spare-days plan) ",")))
@@ -1247,7 +1272,8 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
         (let ((schedule (org-scribe-planner--generate-day-schedule plan))
               (daily-counts (org-scribe-plan-daily-word-counts plan))
               (cumulative-actual 0)
-              (expected-total 0))
+              ;; The manuscript starts at its pre-existing words
+              (expected-total (or (org-scribe-plan-preexisting-words plan) 0)))
           (insert "| Date | Target | Cumulative | Actual | Progress % | Notes |\n")
           (insert "|------+--------+------------+--------+------------+-------|\n")
           (dolist (day schedule)
@@ -1262,7 +1288,8 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                    ;; This day's net delta, derived from the cumulative total
                    ;; stored in daily-data (nil when no entry exists for date)
                    (actual (when daily-data
-                            (org-scribe-planner--entry-delta daily-counts date)))
+                            (org-scribe-planner--entry-delta daily-counts date
+                             (org-scribe-plan-preexisting-words plan))))
                    (note (when daily-data
                           (org-scribe-planner--escape-note-for-table
                            (or (plist-get daily-data :note) ""))))
@@ -1304,6 +1331,23 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
         (save-buffer)
         (message "Plan saved to %s" filepath))))))
 
+(defun org-scribe-planner--migrate-existing-manuscript-entry (plan)
+  "Turn PLAN's \"Existing manuscript\" ledger entry into pre-existing words.
+Onboarding used to record the manuscript's count as the first entry of
+DAILY_WORD_COUNTS, with that note, so it counted as one day's writing.
+When the earliest entry with a word count carries that note, its count
+becomes `org-scribe-plan-preexisting-words' and the entry is removed.
+Returns non-nil when PLAN was changed."
+  (let* ((daily-counts (org-scribe-plan-daily-word-counts plan))
+         (first (car (org-scribe-planner--sorted-daily-counts daily-counts))))
+    (when (and first
+               (equal (org-scribe-planner--get-entry-note first) "Existing manuscript"))
+      (setf (org-scribe-plan-preexisting-words plan)
+            (org-scribe-planner--get-entry-words first))
+      (setf (org-scribe-plan-daily-word-counts plan)
+            (assoc-delete-all (car first) daily-counts))
+      t)))
+
 (defun org-scribe-planner--load-plan (filepath)
   "Load a writing plan from FILEPATH."
   ;; Check if file exists and is readable
@@ -1333,6 +1377,8 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
             (org-entry-get nil "END_DATE"))
       (setf (org-scribe-plan-current-words plan)
             (string-to-number (or (org-entry-get nil "CURRENT_WORDS") "0")))
+      (setf (org-scribe-plan-preexisting-words plan)
+            (string-to-number (or (org-entry-get nil "PREEXISTING_WORDS") "0")))
 
       (let ((spare-days-str (org-entry-get nil "SPARE_DAYS")))
         (when spare-days-str
@@ -1364,6 +1410,13 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                               (cons date (list :words word-count :note note)))))
                         (org-scribe-planner--split-daily-counts-str daily-counts-str))))
             (setf (org-scribe-plan-daily-word-counts plan) parsed-counts))))
+
+      ;; Plans onboarded before PREEXISTING_WORDS existed stored the
+      ;; manuscript as a first ledger entry noted "Existing manuscript".
+      ;; Move it to the pre-existing words, so it no longer counts as a
+      ;; day's writing.  The next save writes the new property.
+      (unless (org-entry-get nil "PREEXISTING_WORDS")
+        (org-scribe-planner--migrate-existing-manuscript-entry plan))
 
       (setf (org-scribe-plan-org-heading-marker plan)
             (point-marker))
@@ -1479,6 +1532,9 @@ Optional FILEPATH shows the location of the plan file."
                             plan (org-scribe-plan-days plan)))))
         (insert (format "  Start Date:    %s\n" (org-scribe-plan-start-date plan)))
         (insert (format "  End Date:      %s\n" (org-scribe-plan-end-date plan)))
+        (when (> (or (org-scribe-plan-preexisting-words plan) 0) 0)
+          (insert (format "  Written Before: %d (pre-existing, part of the total)\n"
+                          (org-scribe-plan-preexisting-words plan))))
         (insert (format "  Current Words: %d (%.1f%%)\n\n"
                        (org-scribe-plan-current-words plan)
                        (* 100 (/ (float (org-scribe-plan-current-words plan))
@@ -1494,7 +1550,8 @@ Optional FILEPATH shows the location of the plan file."
               (week-words 0)
               (prev-week-start nil)
               (cumulative-actual 0)
-              (expected-total 0))
+              ;; The manuscript starts at its pre-existing words
+              (expected-total (or (org-scribe-plan-preexisting-words plan) 0)))
 
           (dolist (day schedule)
             (let* ((date (plist-get day :date))
@@ -1510,7 +1567,8 @@ Optional FILEPATH shows the location of the plan file."
                    ;; This day's net delta, derived from the cumulative
                    ;; total stored in daily-data
                    (actual (when daily-data
-                            (org-scribe-planner--entry-delta daily-counts date)))
+                            (org-scribe-planner--entry-delta daily-counts date
+                             (org-scribe-plan-preexisting-words plan))))
                    (note (when daily-data
                           (or (plist-get daily-data :note) "")))
                    ;; Parse date to get day of week (0=Sunday, 1=Monday, ..., 6=Saturday)
@@ -1758,25 +1816,28 @@ excluded, same as `org-scribe-planner--counts-with-words'."
   (sort (copy-sequence (org-scribe-planner--counts-with-words daily-counts))
         (lambda (a b) (string< (car a) (car b)))))
 
-(defun org-scribe-planner--previous-cumulative-total (daily-counts date)
+(defun org-scribe-planner--previous-cumulative-total (daily-counts date &optional baseline)
   "Return the cumulative total recorded strictly before DATE in DAILY-COUNTS.
 Looks only at entries with a numeric :words value (real cumulative data
-points).  Returns 0 when DATE is the earliest entry or no earlier entry
-exists — the plan's implicit starting count."
+points).  Returns BASELINE (default 0) when DATE is the earliest entry or
+no earlier entry exists — the plan's starting count, i.e. its
+`org-scribe-plan-preexisting-words'."
   (let* ((sorted (org-scribe-planner--sorted-daily-counts daily-counts))
          (before (seq-take-while (lambda (e) (string< (car e) date)) sorted)))
     (if before
         (plist-get (cdr (car (last before))) :words)
-      0)))
+      (or baseline 0))))
 
-(defun org-scribe-planner--daily-deltas (daily-counts)
+(defun org-scribe-planner--daily-deltas (daily-counts &optional baseline)
   "Return DAILY-COUNTS as a chronological list of (DATE . DELTA).
 DAILY-COUNTS entries with a numeric :words value hold the manuscript's
 cumulative total as of that date (see the `org-scribe-plan-daily-word-counts'
 slot docstring).  DELTA is each entry's cumulative total minus the
-previous entry's (0 for the earliest entry) — the actual net words
-written on that date."
-  (let ((previous 0)
+previous entry's — the actual net words written on that date.  The
+earliest entry is measured against BASELINE (default 0): pass the plan's
+`org-scribe-plan-preexisting-words', so words written before the plan
+don't count as the first day's writing."
+  (let ((previous (or baseline 0))
         (result nil))
     (dolist (entry (org-scribe-planner--sorted-daily-counts daily-counts))
       (let ((total (plist-get (cdr entry) :words)))
@@ -1784,11 +1845,12 @@ written on that date."
         (setq previous total)))
     (nreverse result)))
 
-(defun org-scribe-planner--entry-delta (daily-counts date)
+(defun org-scribe-planner--entry-delta (daily-counts date &optional baseline)
   "Return the net words written on DATE, derived from cumulative DAILY-COUNTS.
-Returns nil when DATE has no recorded cumulative total (no entry, or a
-note-only entry)."
-  (cdr (assoc date (org-scribe-planner--daily-deltas daily-counts))))
+BASELINE is the count before the earliest entry, as for
+`org-scribe-planner--daily-deltas'.  Returns nil when DATE has no
+recorded cumulative total (no entry, or a note-only entry)."
+  (cdr (assoc date (org-scribe-planner--daily-deltas daily-counts baseline))))
 
 (defun org-scribe-planner--format-daily-count-entry (entry)
   "Format daily-word-count ENTRY as a string for the DAILY_WORD_COUNTS property.
@@ -1932,7 +1994,8 @@ adding it to the previous entry's cumulative total (0 if none)."
             (if total
                 total
               (+ (org-scribe-planner--previous-cumulative-total
-                  (org-scribe-plan-daily-word-counts plan) today)
+                  (org-scribe-plan-daily-word-counts plan) today
+                  (org-scribe-plan-preexisting-words plan))
                  (org-scribe-planner--read-non-negative-number
                   (if is-spare
                       (format "Word count for today (%s, spare day): " today)
@@ -1950,7 +2013,8 @@ adding it to the previous entry's cumulative total (0 if none)."
       (org-scribe-planner--save-plan plan file)
       (setq org-scribe-planner--current-plan plan)
       (let ((delta (org-scribe-planner--entry-delta
-                    (org-scribe-plan-daily-word-counts plan) today)))
+                    (org-scribe-plan-daily-word-counts plan) today
+                    (org-scribe-plan-preexisting-words plan))))
         (message "Logged %d words for %s%s" delta today
                  (if (string-empty-p note) "" (format " — %s" note)))
         (run-hook-with-args 'org-scribe-planner-after-progress-update-hook
@@ -1984,7 +2048,8 @@ every later date that still has its own absolute cumulative total."
            (daily-counts (org-scribe-plan-daily-word-counts plan))
            (existing (assoc date daily-counts))
            (existing-data (when existing (cdr existing)))
-           (current-delta (or (org-scribe-planner--entry-delta daily-counts date) 0))
+           (current-delta (or (org-scribe-planner--entry-delta daily-counts date
+                             (org-scribe-plan-preexisting-words plan)) 0))
            (current-note (or (and existing-data
                                   (plist-get existing-data :note))
                              ""))
@@ -2002,7 +2067,8 @@ every later date that still has its own absolute cumulative total."
                        (format "Word count [%d]: " current-delta)
                        current-delta))
            (new-cumulative (+ (org-scribe-planner--previous-cumulative-total
-                               daily-counts date)
+                               daily-counts date
+                               (org-scribe-plan-preexisting-words plan))
                               new-delta))
            (entry-data (list :words new-cumulative
                              :note note
@@ -2035,7 +2101,8 @@ every later date that still has its own absolute cumulative total."
          (schedule (org-scribe-planner--generate-day-schedule plan))
          (today (org-scribe-planner--get-today-date))
          (days-elapsed 0)
-         (expected-words 0))
+         ;; Expected starts at the pre-existing words, like CURRENT_WORDS
+         (expected-words (or (org-scribe-plan-preexisting-words plan) 0)))
 
     ;; Expected words: goals through yesterday.  Today's goal isn't due
     ;; until the day is over, while today's words already count.
@@ -2296,7 +2363,9 @@ Tracks actual progress and calculates expected dates for unreached milestones."
          (daily-counts (org-scribe-plan-daily-word-counts plan))
          (schedule (org-scribe-planner--generate-day-schedule plan))
          (milestone-percentages '(25 50 75 100))
-         (cumulative-actual 0)
+         ;; The manuscript starts at its pre-existing words; a milestone
+         ;; they already reach has no date (reached before the plan)
+         (cumulative-actual (or (org-scribe-plan-preexisting-words plan) 0))
          (actual-by-date nil)
          (results nil))
 
@@ -2387,7 +2456,7 @@ Tracks actual progress and calculates expected dates for unreached milestones."
                 (insert (propertize
                         (format "%3d%% - %s (%d words) - Reached\n"
                                percent
-                               (or date "Unknown date")
+                               (or date "before the plan")
                                words)
                         'face 'org-done)))
 
@@ -2664,7 +2733,8 @@ not positive."
         (run-hook-with-args 'org-scribe-planner-after-progress-update-hook
                             plan
                             (org-scribe-planner--entry-delta
-                             (org-scribe-plan-daily-word-counts plan) today)
+                             (org-scribe-plan-daily-word-counts plan) today
+                             (org-scribe-plan-preexisting-words plan))
                             today)))))
 
 ;;; Mode-line status
@@ -2681,7 +2751,8 @@ string reads \"[W:actual rest]\", and outside the plan just \"[W:actual]\"."
               (_ (eq (ignore-errors (org-scribe-planner-gate)) 'yes))
               (today (org-scribe-planner--get-today-date))
               (actual (org-scribe-planner--entry-delta
-                       (org-scribe-plan-daily-word-counts plan) today)))
+                       (org-scribe-plan-daily-word-counts plan) today
+                       (org-scribe-plan-preexisting-words plan))))
     (let ((day (cl-find today
                         (ignore-errors (org-scribe-planner--generate-day-schedule plan))
                         :key (lambda (d) (plist-get d :date))

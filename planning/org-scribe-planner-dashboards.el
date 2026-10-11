@@ -100,7 +100,7 @@ Returns nil if today is not in the plan or is a spare day."
 Returns nil if no data has been logged for today."
   (let ((today (org-scribe-planner--get-today-date))
         (daily-counts (org-scribe-plan-daily-word-counts plan)))
-    (org-scribe-planner--entry-delta daily-counts today)))
+    (org-scribe-planner--entry-delta daily-counts today (org-scribe-plan-preexisting-words plan))))
 
 ;;; Helper Functions - Streak Calculation
 
@@ -123,7 +123,7 @@ Returns plist with :current :longest and :last-streak-date."
     (dolist (day schedule)
       (let* ((date (plist-get day :date))
              (is-spare (plist-get day :is-spare-day))
-             (delta (org-scribe-planner--entry-delta daily-counts date))
+             (delta (org-scribe-planner--entry-delta daily-counts date (org-scribe-plan-preexisting-words plan)))
              (has-words (and delta (> delta 0))))
 
         ;; Only count working days (not spare days)
@@ -161,10 +161,14 @@ Returns plist with :average :recent :trend :projected-date."
          ;; current-words is kept in sync with the latest cumulative ledger
          ;; entry by every write path, so it IS the total written so far.
          (cumulative-actual (org-scribe-plan-current-words plan))
-         (daily-deltas (org-scribe-planner--daily-deltas daily-counts))
+         (daily-deltas (org-scribe-planner--daily-deltas daily-counts (org-scribe-plan-preexisting-words plan)))
          (days-logged (length daily-deltas))
+         ;; Pace counts only words written in the plan: pre-existing
+         ;; words were written before it
          (average-velocity (if (> days-logged 0)
-                             (/ (float cumulative-actual) days-logged)
+                             (/ (float (- cumulative-actual
+                                          (or (org-scribe-plan-preexisting-words plan) 0)))
+                                days-logged)
                            0)))
 
     ;; Calculate recent velocity (last 7 days)
@@ -211,7 +215,8 @@ Accordingly, :days-elapsed counts the days before today and
          ;; current-words is kept in sync with the latest cumulative ledger
          ;; entry by every write path, so it IS the total written so far.
          (cumulative-actual (org-scribe-plan-current-words plan))
-         (expected-by-today 0)
+         ;; Expected starts at the pre-existing words, like CURRENT_WORDS
+         (expected-by-today (or (org-scribe-plan-preexisting-words plan) 0))
          (days-completed 0)
          (expected-days 0)
          (days-elapsed 0)
@@ -528,7 +533,8 @@ WIDTH and HEIGHT are chart dimensions, MAX-WORDS is the scale maximum."
         ;; daily-data's :words is already the cumulative total as of that
         ;; date, so cumulative-actual just carries the latest known value
         ;; forward — no summation.
-        (let ((cumulative-actual 0))
+        ;; Before the first entry the manuscript stands at its pre-existing words
+        (let ((cumulative-actual (or (org-scribe-plan-preexisting-words plan) 0)))
           (dolist (day schedule)
             (let* ((date (plist-get day :date))
                    (cumulative-planned (plist-get day :cumulative))
@@ -616,7 +622,8 @@ Returns t if successful, nil otherwise."
           ;; Write data file for gnuplot
           (with-temp-file data-file
             (insert "# Date Ideal-Remaining Actual-Remaining\n")
-            (let ((cumulative-actual 0))
+            ;; Before the first entry the manuscript stands at its pre-existing words
+            (let ((cumulative-actual (or (org-scribe-plan-preexisting-words plan) 0)))
               (dolist (day schedule)
                 (let* ((date (plist-get day :date))
                        (cumulative-planned (plist-get day :cumulative))
@@ -726,7 +733,8 @@ Returns t if successful, nil otherwise."
           ;; Write data file for gnuplot
           (with-temp-file data-file
             (insert "# Date Planned-Cumulative Actual-Cumulative\n")
-            (let ((cumulative-actual 0))
+            ;; Before the first entry the manuscript stands at its pre-existing words
+            (let ((cumulative-actual (or (org-scribe-plan-preexisting-words plan) 0)))
               (dolist (day schedule)
                 (let* ((date (plist-get day :date))
                        (cumulative-planned (plist-get day :cumulative))
@@ -1030,7 +1038,7 @@ WIDTH and HEIGHT are dimensions in pixels."
 
       (let* (               (total (org-scribe-plan-total-words plan))
                (daily-counts (org-scribe-plan-daily-word-counts plan))
-               (daily-deltas (org-scribe-planner--daily-deltas daily-counts))
+               (daily-deltas (org-scribe-planner--daily-deltas daily-counts (org-scribe-plan-preexisting-words plan)))
                (current-words (org-scribe-plan-current-words plan))
                (percent (if (> total 0)
                           (/ (* 100.0 current-words) total)
@@ -1153,7 +1161,7 @@ Shows every Nth date to avoid overcrowding. MAX-LABELS defaults to 10."
   (org-scribe-planner--with-current-plan (plan _)
 
     (let* (             (daily-counts (org-scribe-plan-daily-word-counts plan))
-             (sorted-entries (org-scribe-planner--daily-deltas daily-counts))
+             (sorted-entries (org-scribe-planner--daily-deltas daily-counts (org-scribe-plan-preexisting-words plan)))
              (word-counts (mapcar #'cdr sorted-entries))
              (target (org-scribe-plan-daily-words plan))
              (velocity (org-scribe-planner--calculate-velocity plan)))
@@ -1268,7 +1276,7 @@ containing :day-name :total-words :count :average."
     (dolist (day schedule)
       (let* ((date (plist-get day :date))
              (is-spare (plist-get day :is-spare-day))
-             (actual-words (org-scribe-planner--entry-delta daily-counts date)))
+             (actual-words (org-scribe-planner--entry-delta daily-counts date (org-scribe-plan-preexisting-words plan))))
 
         ;; Only count non-spare days with data
         (when (and (not is-spare) (numberp actual-words))
@@ -1342,7 +1350,7 @@ Returns a plist with :rate, :days-met, :days-partial, :days-missed, :total-days.
       (let* ((date (plist-get day :date))
              (is-spare (plist-get day :is-spare-day))
              (target (plist-get day :words))
-             (actual (org-scribe-planner--entry-delta daily-counts date)))
+             (actual (org-scribe-planner--entry-delta daily-counts date (org-scribe-plan-preexisting-words plan))))
 
         (when (and (not is-spare) (numberp actual))
           (setq total-days (1+ total-days))
@@ -1545,7 +1553,7 @@ Shows day-of-week patterns, consistency scores, and target achievement rates."
   "Calculate velocity across multiple time windows for PLAN.
 Returns plist with :7-day :14-day :30-day :overall velocities and trend info."
   (let* ((daily-counts (org-scribe-plan-daily-word-counts plan))
-         (word-counts (mapcar #'cdr (org-scribe-planner--daily-deltas daily-counts)))
+         (word-counts (mapcar #'cdr (org-scribe-planner--daily-deltas daily-counts (org-scribe-plan-preexisting-words plan))))
          (total-days (length word-counts)))
 
     (when (> total-days 0)
@@ -1871,7 +1879,7 @@ Shows daily word counts over time with a 7-day moving average."
   (org-scribe-planner--with-current-plan (plan _)
 
     (let* (             (daily-counts (org-scribe-plan-daily-word-counts plan))
-             (sorted-entries (org-scribe-planner--daily-deltas daily-counts))
+             (sorted-entries (org-scribe-planner--daily-deltas daily-counts (org-scribe-plan-preexisting-words plan)))
              (word-counts (mapcar #'cdr sorted-entries))
              (target (org-scribe-plan-daily-words plan))
              (moving-avg (org-scribe-planner--moving-average word-counts 7)))
@@ -2228,7 +2236,7 @@ Shows progress, velocity, and performance dashboards side by side."
                        (day-num (nth 2 date-parts))
                        (dow (calendar-day-of-week (list month day-num year)))
                        (target (plist-get day :words))
-                       (actual (org-scribe-planner--entry-delta daily-counts date))
+                       (actual (org-scribe-planner--entry-delta daily-counts date (org-scribe-plan-preexisting-words plan)))
                        (is-spare (plist-get day :is-spare-day))
                        (performance (cond
                                     (is-spare 'spare)
