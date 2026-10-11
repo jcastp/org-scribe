@@ -262,6 +262,15 @@ When you are ahead or behind it offers the two adjustments above, each with its 
 
 The same status line appears in the plan calendar's summary and after every word-count sync.
 
+** How the Numbers Are Counted
+
+The dashboards measure your writing against each day's own goal, over your /writing days so far/: every day up to yesterday that isn't a rest day, plus any day you wrote on.
+
+- A day you missed counts, with 0 words: your average pace and your weekday averages include it. Rest days — spare days, weekends off, a day goal of 0 — don't.
+- A day is /met/ at its goal, /partial/ from 75%, /missed/ below that or with nothing — and also when the manuscript ended the day shorter than it started (you cut more than you wrote). The heatmap, the achievement rate and the calendar's ✓ ~ ✗ marks all use this.
+- Best and worst day only look at days you wrote on.
+- The estimated finish spends your pace on each coming writing day, skipping rest days — your average pace, and your last week's.
+
 ** Starting Mid-Draft
 
 Press ~F8 F8 W o~ (Onboard existing project) when the manuscript already has words.

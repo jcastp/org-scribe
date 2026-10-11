@@ -106,7 +106,8 @@
     "test-planner-engine"          ; Schedule engine, locking, invariants
     "test-planner-changes"         ; Changing a plan with previews
     "test-planner-status"          ; Status, recalculation previews, check
-    "test-planner-patterns")       ; Patterns, weekends, day goals
+    "test-planner-patterns"        ; Patterns, weekends, day goals
+    "test-planner-analytics")      ; Analytics on the schedule
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
@@ -384,7 +385,8 @@ Suitable for CI/CD pipelines and automated testing."
                     "test-planner-engine"
                     "test-planner-changes"
                     "test-planner-status"
-                    "test-planner-patterns"))
+                    "test-planner-patterns"
+                    "test-planner-analytics"))
       (load-file (expand-file-name (concat file ".el") tests-dir))))
   (ert "^test-planner-"))
 

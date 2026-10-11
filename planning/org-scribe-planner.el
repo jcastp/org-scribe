@@ -1021,6 +1021,130 @@ A plist:
                    (if (eq state 'ahead) "+" "")
                    (plist-get status :days)))))
 
+;;; Analytics on the schedule
+
+(defun org-scribe-planner--words-by-date (plan)
+  "Return a hash table of the net words PLAN's ledger records on each date.
+The first entry is measured against the plan's pre-existing words."
+  (let ((table (make-hash-table :test #'equal)))
+    (dolist (delta (org-scribe-planner--daily-deltas
+                    (org-scribe-plan-daily-word-counts plan)
+                    (org-scribe-plan-preexisting-words plan)))
+      (puthash (car delta) (cdr delta) table))
+    table))
+
+(defvar org-scribe-planner--goal-table-cache nil
+  "One-entry cache for `org-scribe-planner--day-goal': (SCHEDULE . TABLE).")
+
+(defun org-scribe-planner--day-goal (plan date)
+  "Return PLAN's goal for DATE, or nil when DATE is outside the plan.
+Looks the date up in a table cached on the schedule, so asking for every
+day of a plan stays linear."
+  (when (and (org-scribe-plan-start-date plan)
+             (plist-get (org-scribe-planner--build-schedule plan) :rows))
+    (let ((schedule (org-scribe-planner--generate-day-schedule plan)))
+      (unless (eq (car org-scribe-planner--goal-table-cache) schedule)
+        (let ((table (make-hash-table :test #'equal :size (length schedule))))
+          (dolist (day schedule)
+            (puthash (plist-get day :date) (plist-get day :words) table))
+          (setq org-scribe-planner--goal-table-cache (cons schedule table))))
+      (gethash date (cdr org-scribe-planner--goal-table-cache)))))
+
+(defun org-scribe-planner--elapsed-daily-words (plan)
+  "Return PLAN's elapsed writing days as (DATE . WORDS), in date order.
+The days the writing pace is measured over, as in wordplanner: every
+plan day up to yesterday that isn't a rest day (missed days included,
+with 0 words), plus every day with words written — today once you've
+written, rest days you wrote on, days outside the plan."
+  (let* ((today (org-scribe-planner--get-today-date))
+         (written (org-scribe-planner--words-by-date plan))
+         (days nil))
+    (when (and (org-scribe-plan-start-date plan)
+               (plist-get (org-scribe-planner--build-schedule plan) :rows))
+      (dolist (day (org-scribe-planner--generate-day-schedule plan))
+        (when (and (string< (plist-get day :date) today)
+                   (not (plist-get day :is-spare-day)))
+          (push (plist-get day :date) days))))
+    (maphash (lambda (date words) (when (> words 0) (push date days))) written)
+    (mapcar (lambda (date) (cons date (gethash date written 0)))
+            (sort (delete-dups days) #'string<))))
+
+(defun org-scribe-planner--average-pace (plan)
+  "Return PLAN's words written in the plan per elapsed writing day.
+Pre-existing words don't count; missed days do, rest days don't (see
+`org-scribe-planner--elapsed-daily-words')."
+  (let ((days (length (org-scribe-planner--elapsed-daily-words plan))))
+    (if (> days 0)
+        (/ (float (- (org-scribe-plan-current-words plan)
+                     (or (org-scribe-plan-preexisting-words plan) 0)))
+           days)
+      0.0)))
+
+(defun org-scribe-planner--day-status (plan date &optional written)
+  "Return the status of DATE in PLAN, as a symbol.
+WRITTEN is the table from `org-scribe-planner--words-by-date' (built when
+nil).  The statuses:
+  `no-goal'  outside the plan
+  `rest'     a rest day (goal 0) with nothing written; writing on one
+             is `exceeded'
+  `future'   after today, or today with nothing logged yet (today isn't
+             over)
+  `exceeded' more than the day's goal
+  `met'      the day's goal
+  `partial'  75% of the goal or more
+  `missed'   less than 75%, nothing, or fewer words than the day before
+             (a net cut)"
+  (let* ((goal (org-scribe-planner--day-goal plan date))
+         (written (or written (org-scribe-planner--words-by-date plan)))
+         (words (gethash date written))
+         (today (org-scribe-planner--get-today-date)))
+    (cond
+     ((null goal) 'no-goal)
+     ((zerop goal) (if (and words (> words 0)) 'exceeded 'rest))
+     ((string< today date) 'future)
+     ((and (string= date today) (null words)) 'future)
+     ((> (or words 0) goal) 'exceeded)
+     ((= (or words 0) goal) 'met)
+     ((>= (or words 0) (* 0.75 goal)) 'partial)
+     (t 'missed))))
+
+(defun org-scribe-planner--rest-after-end-p (plan date)
+  "Return non-nil when DATE, after PLAN's end, would be a rest day.
+Spare dates, and weekend days when weekends are off."
+  (or (member date (org-scribe-plan-spare-days plan))
+      (and (eq (org-scribe-plan-weekend-mode plan) 'rest)
+           (org-scribe-planner--weekend-p plan date))))
+
+(defun org-scribe-planner--completion-date (plan pace)
+  "Return the date PLAN's goal is reached writing PACE words a writing day.
+Spends PACE on each coming writing day, from today (tomorrow when today
+is already logged), skipping rest days: the plan's own, then spare days
+and weekends off after its end.  Today's date when the goal is already
+reached; nil without a positive PACE."
+  (let ((remaining (- (org-scribe-plan-total-words plan)
+                      (org-scribe-plan-current-words plan))))
+    (cond
+     ((<= remaining 0) (org-scribe-planner--get-today-date))
+     ((not (and pace (> pace 0))) nil)
+     (t
+      (let* ((end (org-scribe-plan-end-date plan))
+             (rest (make-hash-table :test #'equal))
+             (date (org-scribe-planner--default-recalculation-date plan))
+             (found nil)
+             (count 0))
+        (dolist (day (org-scribe-planner--generate-day-schedule plan))
+          (when (plist-get day :is-spare-day)
+            (puthash (plist-get day :date) t rest)))
+        (while (and (not found) (< count org-scribe-planner--max-days))
+          (unless (if (and end (not (string< end date)))
+                      (gethash date rest)
+                    (org-scribe-planner--rest-after-end-p plan date))
+            (setq remaining (- remaining pace))
+            (when (<= remaining 1e-9) (setq found date)))
+          (setq date (org-scribe-planner--add-days date 1)
+                count (1+ count)))
+        found)))))
+
 ;;; Locked past goals and recalculation from progress
 
 (defun org-scribe-planner--lock-past-goals (plan &optional as-of)
@@ -2159,6 +2283,7 @@ Optional FILEPATH shows the location of the plan file."
 
         (let ((schedule (org-scribe-planner--generate-day-schedule plan))
               (daily-counts (org-scribe-plan-daily-word-counts plan))
+              (written-table (org-scribe-planner--words-by-date plan))
               (week-num 1)
               (week-words 0)
               (prev-week-start nil)
@@ -2243,9 +2368,18 @@ Optional FILEPATH shows the location of the plan file."
                      (cumulative-actual-col (if (> cumulative-actual 0)
                                                (format "%d words" cumulative-actual)
                                              ""))
-                     (daily-actual-col (if actual
-                                          (format "%d words %s" actual percentage)
-                                        ""))
+                     ;; ✓ met, ~ partial (75%+), ✗ missed (see
+                     ;; `org-scribe-planner--day-status')
+                     (day-status (org-scribe-planner--day-status plan date written-table))
+                     (mark (pcase day-status
+                             ((or 'met 'exceeded) " ✓")
+                             ('partial " ~")
+                             ('missed " ✗")
+                             (_ "")))
+                     (daily-actual-col (cond
+                                        (actual (format "%d words %s%s" actual percentage mark))
+                                        ((eq day-status 'missed) "0 ✗")
+                                        (t "")))
                      (note-col (cond
                                 ;; If there's a custom note (even for spare days), show it
                                 ((and note (not (string-empty-p note))) note)
