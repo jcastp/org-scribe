@@ -517,6 +517,30 @@ even though nothing was actually due."
     ;; did) would have flagged this same plan as far behind.
     (should (> (* (1+ (org-scribe--health-days-since start-date)) 1000) 1000))))
 
+(ert-deftest test-health-plan-status-today-not-yet-expected ()
+  "Today's goal isn't due until the day is over.
+Regression: the status counted today's goal as expected, so a writer who
+had met every goal through yesterday was \"Behind\" every morning."
+  (require 'org-scribe-planner)
+  ;; No `setf' on plan slots here: this file loads before the planner, so
+  ;; the slot setters wouldn't expand.  Build one plan per word count.
+  (let* ((day (lambda (n)
+                (org-scribe-planner--add-days (org-scribe-planner--get-today-date) n)))
+         (plan-with (lambda (words)
+                      (make-org-scribe-plan
+                       :title "Morning Plan"
+                       :total-words 10000
+                       :daily-words 1000
+                       :days 10
+                       :start-date (funcall day -2)
+                       :end-date (funcall day 7)
+                       :current-words words))))
+    (should (string= (org-scribe--health-plan-status (funcall plan-with 2000))
+                     "On track"))
+    ;; One word short of yesterday's total is behind
+    (should (string= (org-scribe--health-plan-status (funcall plan-with 1999))
+                     "Behind by 1 words"))))
+
 ;;; Writing Plan section in the report
 
 ;; The `(featurep 'org-scribe-planner)' guard on this section is covered

@@ -58,6 +58,58 @@
     ;; 8000/1000 = 8 working days + 2 spare = 10 total days
     (should (= (org-scribe-plan-days plan) 10))))
 
+(ert-deftest test-planner-calc-spare-days-outside-window-ignored ()
+  "Spare days outside the plan's window don't shorten it.
+Regression: every entry of SPARE-DAYS was subtracted from the working
+days, wherever its date fell, so a spare day before the start or after
+the end raised the daily target."
+  (let ((plan (make-org-scribe-plan :total-words 8000 :days 10
+                                    :start-date "2026-11-01"
+                                    :spare-days '("2026-11-03" "2026-11-04"
+                                                  "2026-10-20" "2026-12-25"))))
+    (org-scribe-planner--calculate-missing-variable plan)
+    ;; Only Nov 3 and 4 are inside Nov 1-10: 8000 / 8 working days
+    (should (= (org-scribe-plan-daily-words plan) 1000))))
+
+(ert-deftest test-planner-calc-total-ignores-spare-days-outside-window ()
+  "The total for a daily target counts only spare days inside the window."
+  (let ((plan (make-org-scribe-plan :daily-words 500 :days 10
+                                    :start-date "2026-11-01"
+                                    :spare-days '("2026-11-05" "2027-01-01"))))
+    (org-scribe-planner--calculate-missing-variable plan)
+    ;; 9 working days (Nov 5 is spare; Jan 1 is outside)
+    (should (= (org-scribe-plan-total-words plan) 4500))))
+
+(ert-deftest test-planner-calc-days-window-grows-over-later-spare-days ()
+  "Calculating days: a spare day just past the working days still counts.
+8 working days from Nov 1 end on Nov 8; the spare day on Nov 5 pushes the
+end to Nov 9, which is also spare, so the plan needs 10 calendar days."
+  (let ((plan (make-org-scribe-plan :total-words 8000 :daily-words 1000
+                                    :start-date "2026-11-01"
+                                    :spare-days '("2026-11-05" "2026-11-09"
+                                                  "2026-12-01"))))
+    (org-scribe-planner--calculate-missing-variable plan)
+    (should (= (org-scribe-plan-days plan) 10))))
+
+(ert-deftest test-planner-spare-days-in-window-without-start-counts-all ()
+  "Without a start date there is no window yet, so every spare day counts."
+  (let ((plan (make-org-scribe-plan :spare-days '("2026-11-01" "2030-01-01"))))
+    (should (= (org-scribe-planner--spare-days-in-window plan 5) 2))))
+
+(ert-deftest test-planner-end-after-working-days-skips-spare-days ()
+  "The end date lands after WORKING-DAYS non-spare days, FROM included."
+  (should (string= (org-scribe-planner--end-after-working-days
+                    "2026-11-01" 3 '("2026-11-02"))
+                   "2026-11-04"))
+  ;; A spare first day doesn't count
+  (should (string= (org-scribe-planner--end-after-working-days
+                    "2026-11-01" 1 '("2026-11-01"))
+                   "2026-11-02"))
+  ;; Below one working day, FROM itself
+  (should (string= (org-scribe-planner--end-after-working-days
+                    "2026-11-01" 0 nil)
+                   "2026-11-01")))
+
 (ert-deftest test-planner-calc-error-when-all-days-are-spare ()
   "Error when spare days consume all available days."
   (let ((plan (make-org-scribe-plan :total-words 10000 :days 2

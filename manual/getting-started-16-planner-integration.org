@@ -77,7 +77,8 @@ Press ~F8 F8~ to open the Hydra menu. Press ~W~ to open the planner submenu:
   u: Sync word count (from manuscript)
   d: Add session note
   r: Recalculate plan
-  a: Adjust remaining days
+  a: Adjust remaining days (keep end date)
+  e: Adjust end date (keep daily words)
   m: Milestones
   D: Dashboards menu
   E: Enable for project
@@ -228,6 +229,14 @@ Run this whenever you want to recompute daily targets based on current progress 
 Press ~F8 F8 W a~ (Adjust remaining days).
 
 Use this when your schedule changes — vacation, deadline moved, days off. The planner redistributes the remaining word count across the new schedule.
+
+The end date stays where it is: only the daily target changes.
+
+** Adjust the End Date
+
+Press ~F8 F8 W e~ (Adjust end date), or ~e~ in the plan calendar.
+
+The opposite trade: keep your daily target and move the end date so the words left fit. Ahead of schedule, you finish early; behind, the deadline is extended. Spare days are skipped, and if you have already written today, the count starts tomorrow.
 
 ** Update Progress Manually
 
@@ -421,6 +430,7 @@ You've completed Lesson 16!
 | ~d~   | Add session note         | Log/annotate today's entry (auto-tracked by default) |
 | ~r~   | Recalculate plan         | Recompute daily targets from current state           |
 | ~a~   | Adjust remaining days    | Reschedule around changes in availability            |
+| ~e~   | Adjust end date          | Keep the daily target; finish early or extend        |
 | ~m~   | Milestones               | View/set named word count checkpoints                |
 | ~D~   | Dashboards menu          | Progress dashboards and analytics                    |
 | ~E~   | Enable for project       | Flip this project's gate to ~yes~                      |

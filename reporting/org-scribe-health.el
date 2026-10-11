@@ -63,14 +63,15 @@
 (defun org-scribe--health-plan-status (plan)
   "Return 'On track' or 'Behind by N words' for PLAN.
 Expected words are computed by walking PLAN's day schedule up to and
-including today, skipping spare days — matching
+including yesterday, skipping spare days — matching
 `org-scribe-planner--show-progress-report' — instead of the naive
 elapsed-days × daily-words, which overcounts every spare day (e.g.
-weekends off) as an expected writing day."
+weekends off) as an expected writing day.  Today's goal isn't due until
+the day is over, so it never makes the plan look behind."
   (let* ((today (org-scribe-planner--get-today-date))
          (expected 0))
     (dolist (day (org-scribe-planner--generate-day-schedule plan))
-      (when (and (not (string< today (plist-get day :date)))
+      (when (and (string< (plist-get day :date) today)
                  (not (plist-get day :is-spare-day)))
         (setq expected (+ expected (plist-get day :words)))))
     (let ((delta (- expected (org-scribe-plan-current-words plan))))

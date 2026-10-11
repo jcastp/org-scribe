@@ -1873,7 +1873,8 @@ Press =F8 F8 W= to open the planner sub-menu. If the project has declined the pl
 - =u= - Update progress (from word count)
 - =d= - Update daily word count
 - =r= - Recalculate plan
-- =a= - Adjust remaining days
+- =a= - Adjust remaining days (keep the end date, change the daily target)
+- =e= - Adjust end date (keep the daily target: finish early or extend)
 - =m= - Milestones
 - =D= - Dashboards menu
 - =E= - Enable planner for this project
@@ -1882,7 +1883,7 @@ Press =F8 F8 W= to open the planner sub-menu. If the project has declined the pl
 
 *** 7. Mode-Line Status
 
-When a plan is active and the project's gate is =yes=, the mode line shows today's progress: =[W:actual/target]=.
+When a plan is active and the project's gate is =yes=, the mode line shows today's progress: =[W:actual/target]=. The target is today's own goal; on a spare day it reads =[W:actual rest]=, and on a day outside the plan just =[W:actual]=.
 
 *** 8. Project Health Integration
 

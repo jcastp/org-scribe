@@ -10,20 +10,75 @@
 ;;; Generated autoloads from org-scribe-planner.el
 
 (autoload 'org-scribe-planner-new-plan "org-scribe-planner"
-"Create a new writing plan interactively." t)
+"Create a new writing plan interactively.
+TITLE and SAVE-PATH, when supplied, are used directly instead of
+prompting for them — the interactive spec supplies both automatically
+when invoked (via `M-x' or a keybinding) inside an org-scribe project
+that has not yet been asked, so no prompt appears in that case either.
+
+(fn &optional TITLE SAVE-PATH)" t)
+(autoload 'org-scribe-planner-onboard-existing-project "org-scribe-planner"
+"Create a writing plan for a novel already in progress.
+Reads the current manuscript word count, asks for your target and
+timeline, then builds a plan that treats all existing words as a
+single historical entry so auto-tracking records only net-new writing
+going forward.
+
+Skips the normal new-plan wizard; the daily target is calculated from
+the *remaining* words over the *remaining* working days, not the total." t)
 (autoload 'org-scribe-planner-load-plan "org-scribe-planner"
-"Load an existing writing plan and set it as the active plan." t)
+"Load an existing writing plan and set it as the active plan.
+FILE, when supplied, is loaded directly with no file-picker prompt —
+the interactive spec supplies it automatically when invoked (via `M-x'
+or a keybinding) inside an org-scribe project that already has a valid
+saved plan file.
+
+(fn &optional FILE)" t)
 (autoload 'org-scribe-planner-sync-agenda "org-scribe-planner"
 "Sync active writing plan to org-agenda." t)
 (autoload 'org-scribe-planner-update-progress "org-scribe-planner"
-"Update the current word count for the active writing plan." t)
-(autoload 'org-scribe-planner-update-daily-word-count "org-scribe-planner"
-"Update the actual word count for a specific day in the active plan." t)
+"Sync the word count from the manuscript into the active writing plan.
+First refreshes WORDCOUNT properties on every heading in the manuscript
+buffer (when it is live and `org-context-extended' is available), so the
+numbers are always current rather than reflecting the last explicit count.
+Reads the total via `org-scribe-planner-wordcount-function' when set
+(i.e. when the planner integration is active); otherwise prompts for a
+number.  Saves the new count to the plan file, updates the in-memory
+plan, fires progress hooks, and re-renders the calendar view." t)
 (autoload 'org-scribe-planner-today "org-scribe-planner"
 "Log today's word count to the active plan without extra prompts.
 Pre-fills today's date, asks for a word count (using
 `org-scribe-planner-wordcount-function' when set) and an optional note,
-then saves immediately.  No recalculation prompt is shown." t)
+then saves immediately.  No recalculation prompt is shown.
+
+DAILY_WORD_COUNTS stores the manuscript's *cumulative* total as of each
+date (see the `org-scribe-plan-daily-word-counts' slot docstring), so
+when `org-scribe-planner-wordcount-function' is set, its return value is
+recorded as-is.  When it is not set, the number the user enters is a
+delta (\"words written today\"), converted to a cumulative total by
+adding it to the previous entry's cumulative total (0 if none)." t)
+(autoload 'org-scribe-planner-add-session-note "org-scribe-planner"
+"Add or update a note for a writing session in the active plan.
+The word count for the selected day is pre-filled from whatever the
+auto-tracker already recorded; the primary prompt is for the session
+annotation (what you wrote, scene finished, etc.).  You can also adjust
+the word count when auto-tracking was unavailable — for example when
+writing on paper or in an external file.
+
+The prompt shows and edits this day's net delta (words written that
+day) for a natural entry experience, even though DAILY_WORD_COUNTS
+stores cumulative totals internally (see the
+`org-scribe-plan-daily-word-counts' slot docstring): the edited delta is
+converted back to a cumulative total — this date's previous cumulative
+total plus the (possibly edited) delta — before being saved.  Editing an
+earlier day's delta this way naturally shifts the derived deltas of
+every later date that still has its own absolute cumulative total." t)
+(autoload 'org-scribe-planner-adjust-end-date "org-scribe-planner"
+"Move the end date so the words left fit at the current daily target.
+Finishes early when you are ahead and extends the deadline when you are
+behind, keeping your daily target and total word goal.  The counterpart
+of `org-scribe-planner-adjust-remaining-plan', which keeps the end date
+and changes the daily target instead." t)
 (autoload 'org-scribe-planner-adjust-remaining-plan "org-scribe-planner"
 "Recalculate daily target for remaining days based on progress.
 This command keeps your end date and total word goal fixed, and adjusts
@@ -38,12 +93,43 @@ cumulative progress so far." t)
 If no plan is active, prompt to load one." t)
 (autoload 'org-scribe-planner-current-plan-info "org-scribe-planner"
 "Show information about the currently active plan." t)
+(autoload 'org-scribe-planner-record-total "org-scribe-planner"
+"Record TOTAL as today's cumulative manuscript word count in the active plan.
+Upserts today's DAILY_WORD_COUNTS entry with TOTAL (preserving any
+existing note), saves the plan, and fires
+`org-scribe-planner-after-progress-update-hook' with today's derived net
+delta.  Idempotent: calling repeatedly with the same TOTAL on the same
+day reproduces the same entry and delta — there is no separate baseline
+to roll forward, unlike the old SYNC_DATE/SYNC_WORDS mechanism.
+
+No-op when `org-scribe-planner-auto-push-wordcount' or
+`org-scribe-planner-auto-track-daily' is nil, when there is no active
+plan for the current project, when the active plan belongs to a
+different project than the current manuscript and no matching plan can
+be found for this project (M9 — prevents cross-project data corruption
+instead of silently recording into the wrong plan), or when TOTAL is
+not positive.
+
+(fn TOTAL)")
 (autoload 'org-scribe-plan "org-scribe-planner"
 "Open the writing plan for the current org-scribe project.
-If a plan is already active, show its calendar.  If a plan file exists
-for the current project but is not yet loaded, load it silently first.
-If no plan file exists, offer to create one.  Falls back to
+If a plan is already active, show its calendar.  If the project has
+declined the planner (see `org-scribe-planner-gate'), offer to enable
+it before doing anything else.  If a plan file exists for the current
+project but is not yet loaded, load it silently first.  If no plan
+file exists, offer to create one.  Falls back to
 `org-scribe-planner-show-current-plan' when not inside an org-scribe project." t)
+(autoload 'org-scribe-planner-enable-for-project "org-scribe-planner"
+"Enable the writing planner for the current org-scribe project.
+Sets \"# Planner: yes\" in .org-scribe-project.  With the gate open,
+auto-load, the mode line, and the health report's Writing Plan section
+all resume for this project.  Errors if not inside an org-scribe project." t)
+(autoload 'org-scribe-planner-disable-for-project "org-scribe-planner"
+"Disable the writing planner for the current org-scribe project.
+Sets \"# Planner: no\" in .org-scribe-project.  Does not unload an
+already-active plan from memory, but auto-load, the mode line, and the
+health report's Writing Plan section all stop for this project.
+Errors if not inside an org-scribe project." t)
 (register-definition-prefixes "org-scribe-planner" '("org-scribe-planner-"))
 
 
@@ -89,6 +175,7 @@ Shows progress, velocity, and performance dashboards side by side." t)
 (autoload 'org-scribe-planner-show-all-dashboards "org-scribe-planner-dashboards"
 "Display all dashboards in split windows." t)
 (register-definition-prefixes "org-scribe-planner-dashboards" '("org-scribe-planner-"))
+
 
 ;;; End of scraped data
 

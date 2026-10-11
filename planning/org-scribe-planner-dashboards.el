@@ -201,7 +201,11 @@ Returns plist with :average :recent :trend :projected-date."
 
 (defun org-scribe-planner--calculate-schedule-position (plan)
   "Calculate if PLAN is ahead or behind schedule.
-Returns plist with :status :days-ahead :words-ahead :current-words :percentage :days-elapsed :days-remaining."
+Returns plist with :status :days-ahead :words-ahead :current-words :percentage :days-elapsed :days-remaining.
+:expected-by-today holds the goals through yesterday: today's goal isn't
+due until the day is over, while the words already written today count.
+Accordingly, :days-elapsed counts the days before today and
+:days-remaining the working days from today on."
   (let* ((schedule (org-scribe-planner--generate-day-schedule plan))
          (today (org-scribe-planner--get-today-date))
          ;; current-words is kept in sync with the latest cumulative ledger
@@ -213,14 +217,12 @@ Returns plist with :status :days-ahead :words-ahead :current-words :percentage :
          (days-elapsed 0)
          (days-remaining 0))
 
-    ;; Calculate expected words and days elapsed up to today
+    ;; Calculate expected words and days elapsed, up to yesterday
     (dolist (day schedule)
       (let* ((date (plist-get day :date))
              (is-spare (plist-get day :is-spare-day)))
 
-        ;; Stop when we reach future dates
-        ;; Use (not (string< today date)) instead of string<= for Emacs 27 compatibility
-        (when (not (string< today date))
+        (when (string< date today)
           ;; Count all days elapsed (including spare days)
           (setq days-elapsed (1+ days-elapsed))
 
@@ -233,7 +235,7 @@ Returns plist with :status :days-ahead :words-ahead :current-words :percentage :
     (dolist (day schedule)
       (let* ((date (plist-get day :date))
              (is-spare (plist-get day :is-spare-day)))
-        (when (and (string< today date)
+        (when (and (not (string< date today))
                   (not is-spare))
           (setq days-remaining (1+ days-remaining)))))
 
@@ -407,7 +409,7 @@ beginning, and displayed after BODY executes."
                             (org-scribe-planner--format-number words-ahead)
                             sign
                             days-ahead))
-              (insert (format "  Expected by today: %s words\n"
+              (insert (format "  Expected so far (through yesterday): %s words\n"
                             (org-scribe-planner--format-number
                              (plist-get position :expected-by-today))))
               (insert (format "  Actual by today: %s words\n\n"
@@ -816,7 +818,7 @@ plot '%s' using 1:2 with lines ls 1 title 'Planned Progress', \\
                         (insert (propertize "Current Status\n" 'face 'org-level-2))
                         (insert (format "  Actual words written:   %s\n"
                                       (org-scribe-planner--format-number cumulative-actual)))
-                        (insert (format "  Expected by today:      %s\n"
+                        (insert (format "  Expected by yesterday:  %s\n"
                                       (org-scribe-planner--format-number expected-by-today)))
                         (let ((status-text (if (eq status 'ahead)
                                               (propertize "AHEAD OF SCHEDULE ✓"
