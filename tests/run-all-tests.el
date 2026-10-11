@@ -103,7 +103,8 @@
     "test-planner-gate"            ; Per-project planner gate
     "test-planner-recalculation"   ; Plan changes, status, mode line
     "test-planner-preexisting"     ; Pre-existing words
-    "test-planner-engine")         ; Schedule engine, locking, invariants
+    "test-planner-engine"          ; Schedule engine, locking, invariants
+    "test-planner-changes")        ; Changing a plan with previews
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
@@ -378,7 +379,8 @@ Suitable for CI/CD pipelines and automated testing."
                     "test-planner-gate"
                     "test-planner-recalculation"
                     "test-planner-preexisting"
-                    "test-planner-engine"))
+                    "test-planner-engine"
+                    "test-planner-changes"))
       (load-file (expand-file-name (concat file ".el") tests-dir))))
   (ert "^test-planner-"))
 

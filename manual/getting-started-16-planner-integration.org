@@ -220,9 +220,17 @@ As you write, things change — you get ahead, fall behind, or adjust your targe
 
 ** Recalculate the Plan
 
-Press ~F8 F8 W r~ (Recalculate).
+Press ~F8 F8 W r~ (Recalculate), or ~r~ in the plan calendar.
 
-Run this whenever you want to recompute daily targets based on current progress and remaining days. Useful after a productive week (the target goes down!) or when you've been away for a while.
+Use it when the plan itself changes. It asks /What changed?/:
+
+- *Total words*, *Daily words* or *Days available* — then asks which of the other two to keep. A new total can keep the writing days (the daily target follows) or the daily target (the end date moves).
+- *Two values* — set two of total, daily words and days; the third is calculated.
+- *Spare days* (add, remove, clear) — then asks how the plan absorbs them: keep the end date (the daily target changes), move the end date (keep the daily target), or keep both (the total changes).
+
+Every option shows its outcome before you choose — /ends 2026-12-01, 1000 words/day, total 30000 words/ — and the first one is the default. Past days keep their goals whatever you choose. If you have synced the plan to the agenda, its entries are regenerated.
+
+To recompute targets from your progress instead, use /Adjust Remaining Days/ or /Adjust the End Date/ below.
 
 ** Adjust Remaining Days
 
@@ -438,7 +446,7 @@ You've completed Lesson 16!
 | ~l~   | Load plan                | Open a plan file manually                            |
 | ~u~   | Sync word count          | Push current manuscript total to plan                |
 | ~d~   | Add session note         | Log/annotate today's entry (auto-tracked by default) |
-| ~r~   | Recalculate plan         | Recompute daily targets from current state           |
+| ~r~   | Recalculate plan         | Change total, days or spare days, with previews      |
 | ~a~   | Adjust remaining days    | Reschedule around changes in availability            |
 | ~e~   | Adjust end date          | Keep the daily target; finish early or extend        |
 | ~m~   | Milestones               | View/set named word count checkpoints                |

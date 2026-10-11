@@ -23,6 +23,16 @@
   "Return a function that returns VALUES one by one, ignoring its arguments."
   (lambda (&rest _) (pop values)))
 
+(defun test-recalc--choose (&rest prefixes)
+  "Return a `completing-read' stub answering with PREFIXES, one per call.
+Each answer is the first candidate starting with its prefix, so tests
+needn't spell out the previewed outcome that follows an option's label."
+  (lambda (_prompt collection &rest _)
+    (let ((prefix (pop prefixes)))
+      (or (cl-find-if (lambda (c) (string-prefix-p prefix c))
+                      (all-completions "" collection))
+          prefix))))
+
 (defmacro test-recalc--without-io (&rest body)
   "Run BODY with plan saving, calendar display and load hooks stubbed out."
   (declare (indent 0))
@@ -46,7 +56,7 @@ schedule still had 10 days."
       (setq org-scribe-planner--current-plan plan
             org-scribe-planner--current-plan-file "/tmp/unused-plan.org")
       (cl-letf (((symbol-function 'completing-read)
-                 (lambda (&rest _) "Daily words (recalc days needed)"))
+                 (test-recalc--choose "Daily words" "Total (the end date moves)"))
                 ((symbol-function 'org-scribe-planner--read-positive-number)
                  (lambda (&rest _) 500)))
         (org-scribe-planner-recalculate))
@@ -63,7 +73,7 @@ schedule still had 10 days."
       (setq org-scribe-planner--current-plan plan
             org-scribe-planner--current-plan-file "/tmp/unused-plan.org")
       (cl-letf (((symbol-function 'completing-read)
-                 (lambda (&rest _) "Days available (recalc daily words)"))
+                 (test-recalc--choose "Days available" "Total (the daily target changes)"))
                 ((symbol-function 'org-scribe-planner--read-days)
                  (lambda (&rest _) 20)))
         (org-scribe-planner-recalculate))

@@ -2062,7 +2062,8 @@ duplicating hundreds of TODOs."
       ;; Generate scheduled entries for each day
       (let ((schedule (org-scribe-planner--generate-day-schedule plan)))
         (dolist (day schedule)
-          (unless (plist-get day :is-spare-day)
+          ;; Rest days get no entry: spare days, and days with no goal
+          (unless (or (plist-get day :is-spare-day) (zerop (plist-get day :words)))
             (let ((date (plist-get day :date))
                   (words (plist-get day :words))
                   (cumulative (plist-get day :cumulative)))
@@ -2509,6 +2510,7 @@ FILE is the path where the plan is saved."
         (org-scribe-planner--rebase-on-progress plan as-of)
         (org-scribe-planner--sync-daily plan)
         (org-scribe-planner--save-plan plan file)
+        (org-scribe-planner--refresh-agenda-if-synced plan file)
         (org-scribe-planner-show-calendar plan file)
         (message "Daily target %d → %d words from %s: %d words left, end date %s unchanged"
                  old-daily (org-scribe-plan-daily-words plan) as-of remaining
@@ -2540,6 +2542,7 @@ where the plan is saved."
       (let* ((new-end-date (org-scribe-plan-end-date plan))
              (shift (1- (org-scribe-planner--days-between old-end-date new-end-date))))
         (org-scribe-planner--save-plan plan file)
+        (org-scribe-planner--refresh-agenda-if-synced plan file)
         (org-scribe-planner-show-calendar plan file)
         (message "New end date %s (was %s): %s, keeping %d words/day for the %d words left"
                  new-end-date old-end-date
@@ -2571,94 +2574,300 @@ cumulative progress so far."
   (org-scribe-planner--with-current-plan (plan file)
     (org-scribe-planner-recalculate-remaining-days plan file)))
 
+;;; Changing a plan, with previews
+
+(defun org-scribe-planner--copy-plan (plan)
+  "Return a copy of PLAN that can be changed without touching PLAN.
+List slots are copied deeply; the heading marker is shared."
+  (let ((copy (copy-org-scribe-plan plan)))
+    (setf (org-scribe-plan-spare-days copy) (copy-tree (org-scribe-plan-spare-days plan))
+          (org-scribe-plan-locked-goals copy) (copy-tree (org-scribe-plan-locked-goals plan))
+          (org-scribe-plan-daily-word-counts copy)
+          (copy-tree (org-scribe-plan-daily-word-counts plan)))
+    copy))
+
+(defun org-scribe-planner--describe-outcome (plan)
+  "Describe PLAN's shape in one line: end date, daily target and total."
+  (format "ends %s, %d words/day, total %d words"
+          (or (org-scribe-plan-end-date plan) "-")
+          (or (org-scribe-plan-daily-words plan) 0)
+          (or (org-scribe-plan-total-words plan) 0)))
+
+(defun org-scribe-planner--choose-change (plan question options &optional before)
+  "Preview each of OPTIONS on a copy of PLAN, ask QUESTION, apply the choice.
+OPTIONS is a list of (LABEL . FUNCTION); FUNCTION changes the plan it is
+given.  Each candidate shows the outcome of its option (see
+`org-scribe-planner--describe-outcome'); an option that fails on its
+preview is offered with the reason and can't be chosen.  The first option
+is the default.  BEFORE, a plan copy taken before the change being
+absorbed, is shown as the starting point.  Returns the chosen LABEL."
+  (let* ((previews
+          (mapcar (lambda (option)
+                    (let ((copy (org-scribe-planner--copy-plan plan)))
+                      (condition-case err
+                          (progn (funcall (cdr option) copy)
+                                 (list option (org-scribe-planner--describe-outcome copy) t))
+                        (error (list option (format "not possible: %s"
+                                                    (error-message-string err))
+                                     nil)))))
+                  options))
+         (candidates (mapcar (lambda (preview)
+                               (cons (format "%s → %s" (car (nth 0 preview)) (nth 1 preview))
+                                     preview))
+                             previews))
+         (possible (cl-remove-if-not (lambda (c) (nth 2 (cdr c))) candidates)))
+    (unless possible
+      (user-error "No option is possible: %s" (nth 1 (cdr (car candidates)))))
+    (let* ((prompt (if before
+                       (format "%s (now: %s) "
+                               question (org-scribe-planner--describe-outcome before))
+                     (format "%s " question)))
+           (answer (completing-read prompt (mapcar #'car candidates)
+                                    (lambda (c) (nth 2 (cdr (if (consp c) c
+                                                                (assoc c candidates)))))
+                                    t nil nil (car (car possible))))
+           (option (car (cdr (assoc answer candidates)))))
+      (funcall (cdr option) plan)
+      (message "Plan %s" (org-scribe-planner--describe-outcome plan))
+      (car option))))
+
+(defconst org-scribe-planner--adjustments '(keep-end move-end change-total)
+  "The three ways a plan can absorb a change to its days (decision 1).")
+
+(defun org-scribe-planner--apply-adjustment (plan before adjustment)
+  "Rebalance PLAN after a change, in one of three ways.
+BEFORE is a copy of PLAN taken before the change.  ADJUSTMENT is one of
+`org-scribe-planner--adjustments':
+  `keep-end'     keep the end date and the total; the daily target changes;
+  `move-end'     keep the daily target and the total; the end date moves;
+  `change-total' keep the end date and the daily target; the total changes.
+If no open day is left (every day past or spare), the total becomes what
+the fixed days add up to."
+  (let ((old-end (org-scribe-plan-end-date before))
+        (old-daily (org-scribe-plan-daily-words before)))
+    (pcase adjustment
+      ('keep-end
+       (setf (org-scribe-plan-total-words plan) (org-scribe-plan-total-words before))
+       (org-scribe-planner--keep-end-date plan old-end))
+      ('move-end
+       (setf (org-scribe-plan-total-words plan) (org-scribe-plan-total-words before))
+       (org-scribe-planner--calculate-time plan old-daily))
+      ('change-total
+       (org-scribe-planner--keep-end-date plan old-end)
+       (setf (org-scribe-plan-total-words plan)
+             (round (org-scribe-planner--total-for-daily plan old-daily)))
+       (org-scribe-planner--sync-daily plan))
+      (_ (error "Unknown plan adjustment: %s" adjustment)))
+    (when (zerop (plist-get (org-scribe-planner--build-schedule plan) :adjustable-weight))
+      (setf (org-scribe-plan-total-words plan)
+            (round (org-scribe-planner--total-for-daily plan 0))))))
+
+(defun org-scribe-planner--schedule-goals (plan)
+  "Return PLAN's (DATE . GOAL) pairs, to tell whether a change moved any goal."
+  (mapcar (lambda (day) (cons (plist-get day :date) (plist-get day :words)))
+          (org-scribe-planner--generate-day-schedule plan)))
+
+(defun org-scribe-planner--offer-adjustment (plan before &optional question)
+  "Ask how PLAN absorbs a change to its days, previewing each way; apply it.
+BEFORE is a copy of PLAN taken before the change (spare days added or
+removed, and later weekend or day-goal changes).  Does nothing when the
+change didn't move any goal.  The three ways are those of
+`org-scribe-planner--apply-adjustment'; moving the end date isn't offered
+when the daily target was 0.  Keeping the end date is the default.
+QUESTION replaces the default question.  Returns the chosen adjustment,
+or nil."
+  (unless (equal (org-scribe-planner--schedule-goals plan)
+                 (org-scribe-planner--schedule-goals before))
+    (let* ((old-daily (org-scribe-plan-daily-words before))
+           (labels `((keep-end . "Keep the end date (change the daily target)")
+                     (move-end . ,(format "Move the end date (keep %d words/day)" old-daily))
+                     (change-total . "Keep the end date and the daily target (change the total)")))
+           (options (delq nil
+                          (mapcar (lambda (adjustment)
+                                    (unless (and (eq adjustment 'move-end)
+                                                 (not (> (or old-daily 0) 0)))
+                                      (cons (cdr (assq adjustment labels))
+                                            (lambda (p)
+                                              (org-scribe-planner--apply-adjustment
+                                               p before adjustment)))))
+                                  org-scribe-planner--adjustments)))
+           (chosen (org-scribe-planner--choose-change
+                    plan (or question "This changes the plan's days. How should it adjust?")
+                    options before)))
+      (car (rassoc chosen labels)))))
+
+(defun org-scribe-planner--refresh-agenda-if-synced (plan file)
+  "Regenerate PLAN's agenda entries in FILE when it has been synced before.
+A plan synced with `org-scribe-planner-sync-agenda' has an \"** Agenda
+Entries\" subtree; after a change its TODOs would show old goals."
+  (when (and file (file-exists-p file)
+             (with-temp-buffer
+               (insert-file-contents file)
+               (goto-char (point-min))
+               (re-search-forward "^\\*\\* Agenda Entries" nil t)))
+    (org-scribe-planner--add-agenda-entries plan file)))
+
+(defun org-scribe-planner--read-writing-days (plan prompt)
+  "Read a plan length with PROMPT; return it as PLAN's writing days.
+The answer is a number of calendar days from the start date, or a start
+and end date (which also moves PLAN's start date); spare days inside are
+taken out.  Refuses fewer days than PLAN's locked (past) writing days."
+  (let* ((days-result (org-scribe-planner--read-days prompt (org-scribe-plan-days plan)))
+         (writing-days
+          (if (listp days-result)
+              (progn
+                (setf (org-scribe-plan-start-date plan) (plist-get days-result :start-date))
+                (org-scribe-planner--writing-days-through
+                 plan (plist-get days-result :end-date)))
+            (- days-result (org-scribe-planner--spare-days-in-window plan days-result))))
+         (min-days (max 1 (org-scribe-planner--min-writing-days plan))))
+    (when (< writing-days min-days)
+      (user-error "The plan already has %d past writing days; it needs at least %d"
+                  (org-scribe-planner--min-writing-days plan) min-days))
+    writing-days))
+
+(defun org-scribe-planner--set-total-keeping-daily (plan daily)
+  "Set PLAN's total to what DAILY words a day give over its writing days."
+  (setf (org-scribe-plan-total-words plan)
+        (round (org-scribe-planner--total-for-daily plan daily)))
+  (org-scribe-planner--sync-daily plan))
+
 ;;;###autoload
 (defun org-scribe-planner-recalculate ()
-  "Recalculate the active writing plan with new parameters."
+  "Change the active writing plan, previewing the result before applying it.
+A new total, daily target or length asks which of the other two to keep;
+\"Two values\" sets two and calculates the third.  Adding or removing
+spare days asks how the plan absorbs them: keep the end date (the daily
+target changes), move the end date (keep the daily target), or keep both
+\(the total changes).  Every option shows its outcome first.  Past days
+keep their goals throughout."
   (interactive)
   (org-scribe-planner--with-current-plan (plan file)
-    ;; Ask what to recalculate
     (let ((choice (completing-read
-                      "What changed? "
-                      '("Daily words (recalc days needed)"
-                        "Days available (recalc daily words)"
-                        "Total words (recalc daily words)"
-                        "Add/modify spare days"
-                        "Remove spare days"
-                        "Clear all spare days")
-                      nil t)))
+                   "What changed? "
+                   '("Total words"
+                     "Daily words"
+                     "Days available"
+                     "Two values (third calculated)"
+                     "Add/modify spare days"
+                     "Remove spare days"
+                     "Clear all spare days")
+                   nil t)))
+      (pcase choice
+        ("Total words"
+         (let ((total (org-scribe-planner--read-positive-number
+                       "New total words: " (org-scribe-plan-total-words plan))))
+           (org-scribe-planner--choose-change
+            plan (format "Total %d words: keep" total)
+            `(("Writing days (the daily target changes)"
+               . ,(lambda (p)
+                    (setf (org-scribe-plan-total-words p) total)
+                    (org-scribe-planner--sync-daily p)))
+              (,(format "Daily target (the end date moves)")
+               . ,(lambda (p)
+                    (let ((daily (org-scribe-plan-daily-words p)))
+                      (setf (org-scribe-plan-total-words p) total)
+                      (org-scribe-planner--calculate-time p daily))))))))
 
-          (cond
-           ;; New daily target, same total: the plan gets the days it needs
-           ((string-match "recalc days" choice)
-            (org-scribe-planner--calculate-time
-             plan (org-scribe-planner--read-positive-number
-                   "New daily words: " (org-scribe-plan-daily-words plan))))
+        ("Daily words"
+         (let ((daily (org-scribe-planner--read-positive-number
+                       "New daily words: " (org-scribe-plan-daily-words plan))))
+           (org-scribe-planner--choose-change
+            plan (format "%d words/day: keep" daily)
+            `(("Total (the end date moves)"
+               . ,(lambda (p) (org-scribe-planner--calculate-time p daily)))
+              ("Writing days (the total changes)"
+               . ,(lambda (p) (org-scribe-planner--set-total-keeping-daily p daily)))))))
 
-           ;; New length, same total: the daily target follows
-           ((string-match "Days available" choice)
-            (let* ((days-result (org-scribe-planner--read-days "New days available: "
-                                                              (org-scribe-plan-days plan)))
-                   (writing-days
-                    (if (listp days-result)
-                        (progn
-                          (setf (org-scribe-plan-start-date plan)
-                                (plist-get days-result :start-date))
-                          (org-scribe-planner--writing-days-through
-                           plan (plist-get days-result :end-date)))
-                      (- days-result (org-scribe-planner--spare-days-in-window
-                                      plan days-result))))
-                   (min-days (org-scribe-planner--min-writing-days plan)))
-              (when (< writing-days (max 1 min-days))
-                (user-error "The plan already has %d past writing days; it needs at least %d"
-                            min-days (max 1 min-days)))
-              (org-scribe-planner--set-writing-days plan writing-days)))
+        ("Days available"
+         (let* ((target (org-scribe-planner--copy-plan plan))
+                (writing-days (org-scribe-planner--read-writing-days
+                               target "New days available: "))
+                (start-date (org-scribe-plan-start-date target)))
+           (org-scribe-planner--choose-change
+            plan (format "%d writing days: keep" writing-days)
+            `(("Total (the daily target changes)"
+               . ,(lambda (p)
+                    (setf (org-scribe-plan-start-date p) start-date)
+                    (org-scribe-planner--set-writing-days p writing-days)))
+              ("Daily target (the total changes)"
+               . ,(lambda (p)
+                    (let ((daily (org-scribe-plan-daily-words p)))
+                      (setf (org-scribe-plan-start-date p) start-date)
+                      (org-scribe-planner--set-writing-days p writing-days)
+                      (org-scribe-planner--set-total-keeping-daily p daily))))))))
 
-           ;; New total, same length: the daily target follows
-           ((string-match "Total words" choice)
-            (setf (org-scribe-plan-total-words plan)
-                  (org-scribe-planner--read-positive-number
-                   "New total words: " (org-scribe-plan-total-words plan)))
-            (org-scribe-planner--sync-daily plan))
+        ("Two values (third calculated)"
+         (let* ((third (completing-read
+                        "Calculate: "
+                        '("Total words (from daily words × days)"
+                          "Daily words (from total ÷ days)"
+                          "Days (from total ÷ daily words)")
+                        nil t))
+                (target (org-scribe-planner--copy-plan plan))
+                (change
+                 (pcase third
+                   ("Total words (from daily words × days)"
+                    (let* ((daily (org-scribe-planner--read-positive-number
+                                   "Daily words: " (org-scribe-plan-daily-words plan)))
+                           (writing-days (org-scribe-planner--read-writing-days
+                                          target "Days available: "))
+                           (start-date (org-scribe-plan-start-date target)))
+                      (lambda (p)
+                        (setf (org-scribe-plan-start-date p) start-date)
+                        (org-scribe-planner--set-writing-days p writing-days)
+                        (org-scribe-planner--set-total-keeping-daily p daily))))
+                   ("Daily words (from total ÷ days)"
+                    (let* ((total (org-scribe-planner--read-positive-number
+                                   "Total words: " (org-scribe-plan-total-words plan)))
+                           (writing-days (org-scribe-planner--read-writing-days
+                                          target "Days available: "))
+                           (start-date (org-scribe-plan-start-date target)))
+                      (lambda (p)
+                        (setf (org-scribe-plan-start-date p) start-date
+                              (org-scribe-plan-total-words p) total)
+                        (org-scribe-planner--set-writing-days p writing-days))))
+                   (_
+                    (let ((total (org-scribe-planner--read-positive-number
+                                  "Total words: " (org-scribe-plan-total-words plan)))
+                          (daily (org-scribe-planner--read-positive-number
+                                  "Daily words: " (org-scribe-plan-daily-words plan))))
+                      (lambda (p)
+                        (setf (org-scribe-plan-total-words p) total)
+                        (org-scribe-planner--calculate-time p daily)))))))
+           (org-scribe-planner--choose-change
+            plan "Apply?" `(("Apply" . ,change)))))
 
-           ;; Spare days: keep the end date, the daily target follows
-           ((string-match "Add/modify spare days" choice)
-            (let ((end-date (org-scribe-plan-end-date plan)))
-              (org-scribe-planner--configure-spare-days plan)
-              (org-scribe-planner--keep-end-date plan end-date)))
+        ("Add/modify spare days"
+         (let ((before (org-scribe-planner--copy-plan plan)))
+           (org-scribe-planner--configure-spare-days plan)
+           (org-scribe-planner--offer-adjustment plan before)))
 
-           ((string-match "Remove spare days" choice)
-            (let ((current-spare-days (org-scribe-plan-spare-days plan))
-                  (end-date (org-scribe-plan-end-date plan)))
-              (if (null current-spare-days)
-                  (message "No spare days to remove")
-                (let ((date (completing-read "Select date to remove: "
-                                            (sort (copy-sequence current-spare-days) #'string<)
-                                            nil t)))
-                  (when date
-                    (setf (org-scribe-plan-spare-days plan)
-                          (remove date current-spare-days))
-                    (org-scribe-planner--keep-end-date plan end-date)
-                    (message "Removed %s from spare days and recalculated plan" date))))))
+        ("Remove spare days"
+         (if (null (org-scribe-plan-spare-days plan))
+             (message "No spare days to remove")
+           (let ((before (org-scribe-planner--copy-plan plan))
+                 (date (completing-read "Select date to remove: "
+                                        (sort (copy-sequence (org-scribe-plan-spare-days plan))
+                                              #'string<)
+                                        nil t)))
+             (setf (org-scribe-plan-spare-days plan)
+                   (remove date (org-scribe-plan-spare-days plan)))
+             (org-scribe-planner--offer-adjustment plan before))))
 
-           ((string-match "Clear all spare days" choice)
-            (let ((current-spare-days (org-scribe-plan-spare-days plan))
-                  (end-date (org-scribe-plan-end-date plan)))
-              (if (null current-spare-days)
-                  (message "No spare days to clear")
-                (when (y-or-n-p (format "Remove all %d spare days and recalculate? " (length current-spare-days)))
-                  (setf (org-scribe-plan-spare-days plan) nil)
-                  (org-scribe-planner--keep-end-date plan end-date)
-                  (message "Cleared all spare days and recalculated plan"))))))
+        ("Clear all spare days"
+         (let ((spare-days (org-scribe-plan-spare-days plan)))
+           (if (null spare-days)
+               (message "No spare days to clear")
+             (when (y-or-n-p (format "Remove all %d spare days? " (length spare-days)))
+               (let ((before (org-scribe-planner--copy-plan plan)))
+                 (setf (org-scribe-plan-spare-days plan) nil)
+                 (org-scribe-planner--offer-adjustment plan before)))))))
 
-      ;; Save updated plan to the same file location
       (org-scribe-planner--save-plan plan file)
-
-      ;; Update current plan in memory
+      (org-scribe-planner--refresh-agenda-if-synced plan file)
       (setq org-scribe-planner--current-plan plan)
-
-      ;; Show updated calendar
-      (org-scribe-planner-show-calendar plan file)
-      (message "Plan recalculated and saved"))))
+      (org-scribe-planner-show-calendar plan file))))
 
 ;;; Milestone Tracking
 
