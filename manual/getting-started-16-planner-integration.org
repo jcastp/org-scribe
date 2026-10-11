@@ -229,6 +229,7 @@ Use it when the plan itself changes. It asks /What changed?/:
 
 - *Total words*, *Daily words* or *Days available* — then asks which of the other two to keep. A new total can keep the writing days (the daily target follows) or the daily target (the end date moves).
 - *Two values* — set two of total, daily words and days; the third is calculated.
+- *Start date* — move the plan earlier or later. It keeps the same number of writing days, so the end date moves too. Spare days and day goals from today on can stay on their dates (the default) or move with the start; past ones never move, and neither do the words you've written. Before applying, it warns you about written words that would fall outside the plan and past days that would join it. A plan already under way is recalculated so its remaining days cover the words left.
 - *Writing pattern* — how the words are spread: steady, /valley/ (start high, ease in the middle, finish high), /mountain/ (start easy, peak in the middle), /rising/, /declining/ or /random/, each mild, moderate or extreme. Only the days still to come change shape.
 - *Weekends* — the same goal as other days, a goal of their own (say, more words on Saturdays and Sundays), or no writing; and which days count as the weekend.
 - *Day goal* — a goal for one date: more words on a free day, fewer on a busy one, 0 to make it a rest day. Not for past days, spare days or weekends off.

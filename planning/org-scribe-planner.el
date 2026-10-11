@@ -499,15 +499,19 @@ writing days plus every spare day."
 
 (defun org-scribe-planner--min-writing-days (plan)
   "Return the fewest writing days PLAN can have without dropping locked days.
-Locked days on or after the start date that aren't spare days count."
-  (let ((start (org-scribe-plan-start-date plan))
-        (spare (org-scribe-plan-spare-days plan)))
-    (if (not start)
-        0
-      (cl-count-if (lambda (lock)
-                     (and (not (string< (car lock) start))
-                          (not (member (car lock) spare))))
-                   (org-scribe-plan-locked-goals plan)))))
+The writing days from the start date through the last locked day on or
+after it: past days are history, so the plan can't end before them.
+Locked days are normally every day from the start to yesterday, so this
+is usually the number of locked days; after the start date moves, a gap
+between them counts too."
+  (let* ((start (org-scribe-plan-start-date plan))
+         (last-locked (when start
+                        (car (last (sort (cl-remove-if (lambda (date) (string< date start))
+                                                       (mapcar #'car (org-scribe-plan-locked-goals plan)))
+                                         #'string<))))))
+    (if last-locked
+        (org-scribe-planner--writing-days-through plan last-locked)
+      0)))
 
 (defun org-scribe-planner--calculate-time (plan daily)
   "Give PLAN the fewest writing days that fit its total at DAILY words a day.
@@ -517,7 +521,8 @@ the schedule adds up to exactly the total.  Never goes below the locked
 \(past) writing days.  With DAILY 0 the fixed days have to carry the
 total; if they can't, signals an error and leaves PLAN unchanged."
   (let* ((total (org-scribe-plan-total-words plan))
-         (min-days (org-scribe-planner--min-writing-days plan))
+         ;; At least one writing day: a plan far ahead could "fit" in none
+         (min-days (max 1 (org-scribe-planner--min-writing-days plan)))
          (original (org-scribe-plan-writing-days plan))
          (to-write (max 0 (- total (or (org-scribe-plan-preexisting-words plan) 0))))
          (fits (lambda (days)
@@ -570,7 +575,7 @@ total; if they can't, signals an error and leaves PLAN unchanged."
 Used after spare days change: the words are spread over the writing days
 left before END-DATE.  Never goes below the locked (past) writing days."
   (org-scribe-planner--set-writing-days
-   plan (max (org-scribe-planner--min-writing-days plan)
+   plan (max 1 (org-scribe-planner--min-writing-days plan)
              (org-scribe-planner--writing-days-through plan end-date))))
 
 (defun org-scribe-planner--calculate-missing-variable (plan)
@@ -3181,6 +3186,126 @@ wordplanner's `recalculate_from_progress' does."
                 0))))
     (org-scribe-planner--sync-daily plan)))
 
+;;; Moving the start date
+
+(defun org-scribe-planner--days-from (from to)
+  "Return the number of days from date FROM to date TO (negative when earlier)."
+  (round (/ (float-time (time-subtract (org-scribe-planner--parse-date to)
+                                       (org-scribe-planner--parse-date from)))
+            86400)))
+
+(defun org-scribe-planner--movable-dated-days (plan)
+  "Return PLAN's spare days and day goals from today on, as (DATE . LABEL)."
+  (let ((today (org-scribe-planner--get-today-date)))
+    (sort (append
+           (mapcar (lambda (date) (cons date "spare day"))
+                   (cl-remove-if (lambda (date) (string< date today))
+                                 (org-scribe-plan-spare-days plan)))
+           (mapcar (lambda (goal) (cons (car goal) (format "day goal of %d words" (cdr goal))))
+                   (cl-remove-if (lambda (goal) (string< (car goal) today))
+                                 (org-scribe-plan-custom-goals plan))))
+          (lambda (a b) (string< (car a) (car b))))))
+
+(defun org-scribe-planner--move-start-date (plan new-start &optional shift)
+  "Move PLAN to start on NEW-START, as wordplanner's `move_start_date' does.
+- The number of writing days is kept, so the end date moves too.
+- Spare days and day goals stay on their dates; outside the new window
+  they are ignored.  With SHIFT, the ones from today on move by the same
+  number of days; past ones are history, and a shifted day goal never
+  replaces a past one.
+- Recorded words never move.  Locked goals stay on their dates: inside
+  the new window they keep their goals, outside it they are ignored.
+- The pre-existing words follow the plan.
+- A plan that has started (locked days or words written) is rebased (see
+  `org-scribe-planner--rebase-on-progress'), so its open days cover the
+  words actually left; words outside the new window still count."
+  (let ((offset (org-scribe-planner--days-from (org-scribe-plan-start-date plan) new-start))
+        (today (org-scribe-planner--get-today-date))
+        ;; Decided before the move locks anything: only a plan that had
+        ;; started is rebased (wordplanner's decision 10)
+        (started (or (org-scribe-plan-locked-goals plan)
+                     (> (org-scribe-plan-current-words plan)
+                        (or (org-scribe-plan-preexisting-words plan) 0)))))
+    (when (and shift (/= offset 0))
+      (setf (org-scribe-plan-spare-days plan)
+            (delete-dups (mapcar (lambda (date)
+                                   (if (string< date today)
+                                       date
+                                     (org-scribe-planner--add-days date offset)))
+                                 (org-scribe-plan-spare-days plan))))
+      (let* ((goals (org-scribe-plan-custom-goals plan))
+             (past (cl-remove-if-not (lambda (goal) (string< (car goal) today)) goals))
+             (moved (mapcar (lambda (goal)
+                              (cons (org-scribe-planner--add-days (car goal) offset) (cdr goal)))
+                            (cl-remove-if (lambda (goal) (string< (car goal) today)) goals))))
+        ;; A past goal is history: a shifted goal never replaces it
+        (setf (org-scribe-plan-custom-goals plan)
+              (append (cl-remove-if (lambda (goal) (assoc (car goal) past)) moved)
+                      past))))
+    (setf (org-scribe-plan-start-date plan) new-start)
+    (org-scribe-planner--sync-window plan)
+    ;; Locked days from the new start on are history: the window grows to
+    ;; hold them (moving the start earlier could end the plan before
+    ;; them), and the past days that join it are locked as they are
+    (let ((as-of (org-scribe-planner--default-recalculation-date plan)))
+      (org-scribe-planner--lock-past-goals plan as-of)
+      (while (< (org-scribe-planner--writing-days plan)
+                (org-scribe-planner--min-writing-days plan))
+        (org-scribe-planner--set-writing-days
+         plan (org-scribe-planner--min-writing-days plan))
+        (org-scribe-planner--lock-past-goals plan as-of)))
+    (when started
+      (org-scribe-planner--rebase-on-progress
+       plan (org-scribe-planner--default-recalculation-date plan)))
+    (org-scribe-planner--sync-daily plan)
+    offset))
+
+(defun org-scribe-planner--in-window-p (plan date)
+  "Return non-nil when DATE falls inside PLAN's start and end dates."
+  (and (org-scribe-plan-end-date plan)
+       (not (string< date (org-scribe-plan-start-date plan)))
+       (not (string< (org-scribe-plan-end-date plan) date))))
+
+(defun org-scribe-planner--start-move-warnings (before moved)
+  "Return what to know before a start-date move is applied, as strings.
+BEFORE is the plan before the move, MOVED a copy with the move applied."
+  (let* ((today (org-scribe-planner--get-today-date))
+         (written (org-scribe-planner--words-by-date moved))
+         (outside nil)
+         (warnings nil))
+    (maphash (lambda (date words)
+               (when (and (> words 0) (not (org-scribe-planner--in-window-p moved date)))
+                 (push (cons date words) outside)))
+             written)
+    (when outside
+      (push (format "%d day(s) with words written (%d words) are outside the new plan. Recorded words never move: they still count as written, but not toward any day's goal."
+                    (length outside) (apply #'+ (mapcar #'cdr outside)))
+            warnings))
+    (let ((joining (cl-count-if
+                    (lambda (day)
+                      (let ((date (plist-get day :date)))
+                        (and (string< date today)
+                             (not (org-scribe-planner--in-window-p before date)))))
+                    (org-scribe-planner--generate-day-schedule moved))))
+      (when (> joining 0)
+        (push (format "%d day(s) before today join the plan. They are past, so their goals are locked as they are now."
+                      joining)
+              warnings)))
+    (when (cl-some (lambda (lock)
+                     (and (org-scribe-planner--in-window-p before (car lock))
+                          (not (org-scribe-planner--in-window-p moved (car lock)))))
+                   (org-scribe-plan-locked-goals before))
+      (push "Some past (locked) days are now outside the plan; their goals no longer count."
+            warnings))
+    (when (or (org-scribe-plan-locked-goals moved)
+              (> (org-scribe-plan-current-words moved)
+                 (or (org-scribe-plan-preexisting-words moved) 0)))
+      (push (format "The plan has started: the open days are recalculated to cover the %d words left."
+                    (max 0 (- (org-scribe-plan-total-words moved)
+                              (org-scribe-plan-current-words moved))))
+            warnings))
+    (nreverse warnings)))
+
 (defun org-scribe-planner--recalculation-problem (plan as-of)
   "Return why PLAN can't be recalculated from AS-OF, as a message, or nil.
 The goal may already be reached, the plan may be over, or no writing day
@@ -3285,20 +3410,22 @@ List slots are copied deeply; the heading marker is shared."
           (or (org-scribe-plan-daily-words plan) 0)
           (or (org-scribe-plan-total-words plan) 0)))
 
-(defun org-scribe-planner--choose-change (plan question options &optional before)
+(defun org-scribe-planner--choose-change (plan question options &optional before describe)
   "Preview each of OPTIONS on a copy of PLAN, ask QUESTION, apply the choice.
 OPTIONS is a list of (LABEL . FUNCTION); FUNCTION changes the plan it is
-given.  Each candidate shows the outcome of its option (see
-`org-scribe-planner--describe-outcome'); an option that fails on its
-preview is offered with the reason and can't be chosen.  The first option
-is the default.  BEFORE, a plan copy taken before the change being
-absorbed, is shown as the starting point.  Returns the chosen LABEL."
-  (let* ((previews
+given.  Each candidate shows the outcome of its option, as DESCRIBE (a
+function of a plan; default `org-scribe-planner--describe-outcome') puts
+it; an option that fails on its preview is offered with the reason and
+can't be chosen.  The first option is the default.  BEFORE, a plan copy
+taken before the change being absorbed, is shown as the starting point.
+Returns the chosen LABEL."
+  (let* ((describe (or describe #'org-scribe-planner--describe-outcome))
+         (previews
           (mapcar (lambda (option)
                     (let ((copy (org-scribe-planner--copy-plan plan)))
                       (condition-case err
                           (progn (funcall (cdr option) copy)
-                                 (list option (org-scribe-planner--describe-outcome copy) t))
+                                 (list option (funcall describe copy) t))
                         (error (list option (format "not possible: %s"
                                                     (error-message-string err))
                                      nil)))))
@@ -3312,7 +3439,7 @@ absorbed, is shown as the starting point.  Returns the chosen LABEL."
       (user-error "No option is possible: %s" (nth 1 (cdr (car candidates)))))
     (let* ((prompt (if before
                        (format "%s (now: %s) "
-                               question (org-scribe-planner--describe-outcome before))
+                               question (funcall describe before))
                      (format "%s " question)))
            (answer (completing-read prompt (mapcar #'car candidates)
                                     (lambda (c) (nth 2 (cdr (if (consp c) c
@@ -3320,7 +3447,7 @@ absorbed, is shown as the starting point.  Returns the chosen LABEL."
                                     t nil nil (car (car possible))))
            (option (car (cdr (assoc answer candidates)))))
       (funcall (cdr option) plan)
-      (message "Plan %s" (org-scribe-planner--describe-outcome plan))
+      (message "Plan %s" (funcall describe plan))
       (car option))))
 
 (defconst org-scribe-planner--adjustments '(keep-end move-end change-total)
@@ -3659,6 +3786,7 @@ keep their goals throughout."
                      "Daily words"
                      "Days available"
                      "Two values (third calculated)"
+                     "Start date"
                      "Writing pattern"
                      "Weekends"
                      "Day goal: set"
@@ -3752,6 +3880,52 @@ keep their goals throughout."
                         (org-scribe-planner--calculate-time p daily)))))))
            (org-scribe-planner--choose-change
             plan "Apply?" `(("Apply" . ,change)))))
+
+        ("Start date"
+         (let* ((new-start (org-scribe-planner--read-date
+                            "New start date (YYYY-MM-DD)" (org-scribe-planner--get-today-date)))
+                (offset (org-scribe-planner--days-from (org-scribe-plan-start-date plan) new-start))
+                (before (org-scribe-planner--copy-plan plan))
+                (movable (org-scribe-planner--movable-dated-days plan))
+                (direction (if (> offset 0) "later" "earlier"))
+                (describe (lambda (p) (format "%s to %s, %d words/day"
+                                              (org-scribe-plan-start-date p)
+                                              (org-scribe-plan-end-date p)
+                                              (org-scribe-plan-daily-words p)))))
+           (when (= offset 0)
+             (user-error "%s is already the start date" new-start))
+           (if (null movable)
+               (org-scribe-planner--choose-change
+                plan (format "Move the start %d day(s) %s?" (abs offset) direction)
+                `(("Move the start date" . ,(lambda (p) (org-scribe-planner--move-start-date p new-start))))
+                before describe)
+             ;; Which spare days and day goals would end up outside, if kept
+             (let* ((kept (org-scribe-planner--copy-plan plan))
+                    (outside (progn (org-scribe-planner--move-start-date kept new-start)
+                                    (cl-remove-if (lambda (item)
+                                                    (org-scribe-planner--in-window-p kept (car item)))
+                                                  movable))))
+               (org-scribe-planner--choose-change
+                plan
+                (format "Moving the start %d day(s) %s. %s Your spare days and day goals from today on:"
+                        (abs offset) direction
+                        (if outside
+                            (format "Kept on their dates, %d would fall outside the plan (%s)."
+                                    (length outside)
+                                    (mapconcat (lambda (item) (format "%s %s" (car item) (cdr item)))
+                                               outside ", "))
+                          "Kept on their dates, all stay inside the plan."))
+                `(("Keep them on their dates"
+                   . ,(lambda (p) (org-scribe-planner--move-start-date p new-start)))
+                  (,(format "Shift them all %d day(s) %s%s" (abs offset) direction
+                            (if (zerop (mod offset 7)) "" " (they land on other weekdays)"))
+                   . ,(lambda (p) (org-scribe-planner--move-start-date p new-start t))))
+                before describe)))
+           (let ((warnings (org-scribe-planner--start-move-warnings before plan)))
+             (when (and warnings
+                        (not (y-or-n-p (format "%s\nApply the new start date? "
+                                               (string-join warnings "\n")))))
+               (user-error "Start date not changed")))))
 
         ("Writing pattern"
          (let ((choice (org-scribe-planner--read-pattern)))

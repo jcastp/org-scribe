@@ -397,7 +397,7 @@ Returns a description of the change."
                  (mod (/ (car rng-state) 65536) n)))
          (today (org-scribe-planner--get-today-date))
          (end (org-scribe-plan-end-date plan))
-         (op (funcall next 12)))
+         (op (funcall next 13)))
     (pcase op
       (0 (let ((days (funcall next 4)))
            (setq test-engine--today (org-scribe-planner--add-days today days))
@@ -458,6 +458,11 @@ Returns a description of the change."
                           (assoc-delete-all date (copy-tree (org-scribe-plan-custom-goals plan)))))
               (test-engine--adjust plan before adjustment)
               (format "day goal %s = %d, %s" date goal adjustment))))
+      (11 (let ((new-start (org-scribe-planner--add-days
+                            (org-scribe-plan-start-date plan) (- (funcall next 15) 7)))
+                (shift (= (funcall next 2) 1)))
+            (org-scribe-planner--move-start-date plan new-start shift)
+            (format "start %s%s" new-start (if shift ", shifted" ""))))
       (_ (org-scribe-planner-recalculate-end-date plan "/tmp/unused-plan.org")
          "adjust end date"))))
 
