@@ -362,7 +362,8 @@ BEFORE-LOCKED is PLAN's locked goals before the step; TODAY the date."
     (should (equal (list label (org-scribe-plan-days plan))
                    (list label (length schedule))))
     (should (equal (list label (org-scribe-plan-writing-days plan))
-                   (list label (cl-count-if-not (lambda (d) (plist-get d :is-spare-day))
+                   ;; Writing days are every day that isn't a spare date
+                   (list label (cl-count-if-not (lambda (d) (plist-get d :spare))
                                                 schedule))))
     (should (equal (list label (>= (org-scribe-plan-writing-days plan)
                                    (org-scribe-planner--min-writing-days plan)))
@@ -372,6 +373,19 @@ BEFORE-LOCKED is PLAN's locked goals before the step; TODAY the date."
       (when (string< (plist-get day :date) today)
         (should (equal (list label (plist-get day :date) (plist-get day :locked))
                        (list label (plist-get day :date) t)))))))
+
+(defun test-engine--restore (plan before)
+  "Put every slot of BEFORE back into PLAN: a change that failed is undone.
+The \"What changed?\" command does the same when it can't finish."
+  (dolist (slot (mapcar #'car (cdr (cl-struct-slot-info 'org-scribe-plan))))
+    (setf (cl-struct-slot-value 'org-scribe-plan slot plan)
+          (cl-struct-slot-value 'org-scribe-plan slot before))))
+
+(defun test-engine--adjust (plan before adjustment)
+  "Apply ADJUSTMENT to PLAN; if it fails, undo the change back to BEFORE."
+  (condition-case nil
+      (org-scribe-planner--apply-adjustment plan before adjustment)
+    (error (test-engine--restore plan before))))
 
 (defun test-engine--random-step (plan rng-state)
   "Apply one random change to PLAN; RNG-STATE is a one-element list (seed).
@@ -383,7 +397,7 @@ Returns a description of the change."
                  (mod (/ (car rng-state) 65536) n)))
          (today (org-scribe-planner--get-today-date))
          (end (org-scribe-plan-end-date plan))
-         (op (funcall next 9)))
+         (op (funcall next 12)))
     (pcase op
       (0 (let ((days (funcall next 4)))
            (setq test-engine--today (org-scribe-planner--add-days today days))
@@ -409,17 +423,41 @@ Returns a description of the change."
              (setf (org-scribe-plan-spare-days plan)
                    (cons date (org-scribe-plan-spare-days plan))))
            (ignore end)
-           (ignore-errors (org-scribe-planner--apply-adjustment plan before adjustment))
+           (test-engine--adjust plan before adjustment)
            (format "spare %s, %s" date adjustment)))
       (6 (let ((date (car (org-scribe-plan-spare-days plan)))
                (before (org-scribe-planner--copy-plan plan))
                (adjustment (nth (funcall next 3) org-scribe-planner--adjustments)))
            (setf (org-scribe-plan-spare-days plan)
                  (remove date (org-scribe-plan-spare-days plan)))
-           (ignore-errors (org-scribe-planner--apply-adjustment plan before adjustment))
+           (test-engine--adjust plan before adjustment)
            (format "unspare %s, %s" date adjustment)))
       (7 (org-scribe-planner-recalculate-remaining-days plan "/tmp/unused-plan.org")
          "adjust remaining")
+      (8 (let ((pattern (car (nth (funcall next 6) org-scribe-planner--patterns))))
+           (setf (org-scribe-plan-pattern plan) pattern)
+           (setf (org-scribe-plan-pattern-config plan)
+                 (when (eq pattern 'random) (list :seed (1+ (funcall next 1000)))))
+           (org-scribe-planner--sync-daily plan)
+           (format "pattern %s" pattern)))
+      (9 (let ((before (org-scribe-planner--copy-plan plan))
+               (mode (nth (funcall next 3) '(same different rest)))
+               (adjustment (nth (funcall next 3) org-scribe-planner--adjustments)))
+           (setf (org-scribe-plan-weekend-mode plan) mode
+                 (org-scribe-plan-weekend-daily plan) (* 100 (funcall next 30)))
+           (test-engine--adjust plan before adjustment)
+           (format "weekends %s, %s" mode adjustment)))
+      (10 (let* ((date (org-scribe-planner--add-days today (funcall next 30)))
+                 (goal (* 100 (funcall next 25)))
+                 (before (org-scribe-planner--copy-plan plan))
+                 (adjustment (nth (funcall next 3) org-scribe-planner--adjustments)))
+            (if (org-scribe-planner--custom-goal-problem plan date)
+                (format "day goal %s refused" date)
+              (setf (org-scribe-plan-custom-goals plan)
+                    (cons (cons date goal)
+                          (assoc-delete-all date (copy-tree (org-scribe-plan-custom-goals plan)))))
+              (test-engine--adjust plan before adjustment)
+              (format "day goal %s = %d, %s" date goal adjustment))))
       (_ (org-scribe-planner-recalculate-end-date plan "/tmp/unused-plan.org")
          "adjust end date"))))
 

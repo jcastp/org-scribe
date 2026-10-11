@@ -227,7 +227,10 @@ Use it when the plan itself changes. It asks /What changed?/:
 
 - *Total words*, *Daily words* or *Days available* — then asks which of the other two to keep. A new total can keep the writing days (the daily target follows) or the daily target (the end date moves).
 - *Two values* — set two of total, daily words and days; the third is calculated.
-- *Spare days* (add, remove, clear) — then asks how the plan absorbs them: keep the end date (the daily target changes), move the end date (keep the daily target), or keep both (the total changes).
+- *Writing pattern* — how the words are spread: steady, /valley/ (start high, ease in the middle, finish high), /mountain/ (start easy, peak in the middle), /rising/, /declining/ or /random/, each mild, moderate or extreme. Only the days still to come change shape.
+- *Weekends* — the same goal as other days, a goal of their own (say, more words on Saturdays and Sundays), or no writing; and which days count as the weekend.
+- *Day goal* — a goal for one date: more words on a free day, fewer on a busy one, 0 to make it a rest day. Not for past days, spare days or weekends off.
+- *Spare days* (add, remove, clear) — then asks how the plan absorbs them: keep the end date (the daily target changes), move the end date (keep the daily target), or keep both (the total changes). Weekend and day-goal changes ask the same.
 
 Every option shows its outcome before you choose — /ends 2026-12-01, 1000 words/day, total 30000 words/ — and the first one is the default. Past days keep their goals whatever you choose. If you have synced the plan to the agenda, its entries are regenerated.
 

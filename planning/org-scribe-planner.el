@@ -162,6 +162,18 @@ or nil if no project is active.")
   ;; Words added to the open days by a recalculation from progress, so they
   ;; cover what is actually left (negative when ahead) (SCHEDULE_ADJUSTMENT)
   (schedule-adjustment 0 :type number)
+  ;; Writing pattern (PATTERN, PATTERN_CONFIG): a symbol from
+  ;; `org-scribe-planner--patterns', and a plist of its settings
+  (pattern 'flat)
+  (pattern-config nil :type list)
+  ;; Weekends (WEEKEND_MODE, WEEKEND_DAYS, WEEKEND_DAILY): `same' as other
+  ;; days, a `different' goal (WEEKEND-DAILY), or `rest'; WEEKEND-DAYS are
+  ;; days of the week, 0 for Sunday to 6 for Saturday
+  (weekend-mode 'same)
+  (weekend-days '(6 0) :type list)
+  (weekend-daily 0 :type number)
+  ;; Alist of (DATE . GOAL): goals set for single days (CUSTOM_GOALS)
+  (custom-goals nil :type list)
   (org-heading-marker nil)       ; Marker to org heading
   ;; Alist of (date . plist), plist has :words :note :target.  :words holds
   ;; the manuscript's CUMULATIVE word total as of that date, not that day's
@@ -221,10 +233,95 @@ from DAYS, by taking out the spare days inside that window."
       (max 0 (- days (org-scribe-planner--spare-days-in-window plan days))))
      (t nil))))
 
-(defun org-scribe-planner--pattern-weights (positions)
-  "Return the relative weight of each of POSITIONS writing days, averaging 1.
-Every plan is flat for now, so every weight is 1.0."
-  (make-list positions 1.0))
+(defconst org-scribe-planner--patterns
+  '((flat . "Steady: the same goal every day")
+    (valley . "Valley: start high, ease in the middle, finish high")
+    (mountain . "Mountain: start easy, peak in the middle, ease at the end")
+    (rising . "Rising: goals grow over time")
+    (declining . "Declining: goals shrink over time")
+    (random . "Random: varied goals within a range"))
+  "Writing patterns: how the words are spread over the writing days.")
+
+(defconst org-scribe-planner--pattern-intensities
+  '((valley (mild :peak 1.2 :valley 0.8) (moderate :peak 1.5 :valley 0.7)
+            (extreme :peak 2.0 :valley 0.5))
+    (mountain (mild :peak 1.2 :valley 0.8) (moderate :peak 1.5 :valley 0.7)
+              (extreme :peak 2.0 :valley 0.5))
+    (rising (mild :start 0.8 :end 1.2) (moderate :start 0.5 :end 1.5)
+            (extreme :start 0.3 :end 2.0))
+    (declining (mild :start 1.2 :end 0.8) (moderate :start 1.5 :end 0.5)
+               (extreme :start 2.0 :end 0.3))
+    (random (mild :min 0.8 :max 1.2) (moderate :min 0.5 :max 1.5)
+            (extreme :min 0.3 :max 2.0)))
+  "Each pattern's settings for a mild, moderate (default) or extreme variation.")
+
+(defun org-scribe-planner--pattern-setting (plan key)
+  "Return PLAN's pattern setting KEY, or the moderate default for its pattern."
+  (or (plist-get (org-scribe-plan-pattern-config plan) key)
+      (plist-get (cdr (assq 'moderate (cdr (assq (org-scribe-plan-pattern plan)
+                                                  org-scribe-planner--pattern-intensities))))
+                 key)))
+
+(defun org-scribe-planner--random-weights (seed count low high)
+  "Return COUNT numbers in [LOW, HIGH] from a generator seeded with SEED.
+A linear congruential generator of its own, so the global `random' state
+is never touched and the same seed always gives the same goals."
+  (let ((state seed) (result nil))
+    (dotimes (_ count)
+      (setq state (mod (+ (* state 1103515245) 12345) 2147483648))
+      (push (+ low (* (- high low) (/ (float state) 2147483648))) result))
+    (nreverse result)))
+
+(defun org-scribe-planner--pattern-weights (plan positions)
+  "Return the relative weight of each of POSITIONS writing days of PLAN.
+The weights follow PLAN's pattern (see `org-scribe-planner--patterns')
+and average 1, so the daily target is the goal of a day of weight 1:
+  valley    low + (high - low) × (cos(2πp/n) + 1) / 2
+  mountain  low + (high - low) × sin(πp/n)
+  rising,
+  declining a straight line from the start to the end multiplier
+  random    uniform in [min, max], from the plan's stored seed
+for position p of n."
+  (let ((n positions)
+        (pattern (or (org-scribe-plan-pattern plan) 'flat))
+        (setting (lambda (key) (org-scribe-planner--pattern-setting plan key))))
+    (if (<= n 0)
+        nil
+      (let* ((raw
+              (pcase pattern
+                ('valley
+                 (let ((high (funcall setting :peak)) (low (funcall setting :valley)))
+                   (mapcar (lambda (p) (+ low (* (- high low)
+                                                 (/ (+ (cos (/ (* p 2 float-pi) n)) 1) 2))))
+                           (number-sequence 0 (1- n)))))
+                ('mountain
+                 (let ((high (funcall setting :peak)) (low (funcall setting :valley)))
+                   (mapcar (lambda (p) (+ low (* (- high low) (sin (/ (* p float-pi) n)))))
+                           (number-sequence 0 (1- n)))))
+                ((or 'rising 'declining)
+                 (let ((from (funcall setting :start)) (to (funcall setting :end)))
+                   (mapcar (lambda (p) (+ from (* (- to from)
+                                                  (if (> n 1) (/ (float p) (1- n)) 0))))
+                           (number-sequence 0 (1- n)))))
+                ('random
+                 (org-scribe-planner--random-weights
+                  (or (funcall setting :seed) 1) n
+                  (funcall setting :min) (funcall setting :max)))
+                (_ (make-list n 1.0))))
+             (sum (apply #'+ raw)))
+        (if (<= sum 0)
+            (make-list n 1.0)
+          (mapcar (lambda (w) (/ (* w n) sum)) raw))))))
+
+(defun org-scribe-planner--weekday (date)
+  "Return DATE's day of the week, 0 for Sunday to 6 for Saturday."
+  (let ((parts (org-scribe-planner--parse-date-parts date)))
+    (calendar-day-of-week (list (nth 1 parts) (nth 2 parts) (nth 0 parts)))))
+
+(defun org-scribe-planner--weekend-p (plan date)
+  "Return non-nil when DATE falls on one of PLAN's weekend days."
+  (memq (org-scribe-planner--weekday date)
+        (or (org-scribe-plan-weekend-days plan) '(6 0))))
 
 (defvar org-scribe-planner--engine-cache nil
   "One-entry cache for `org-scribe-planner--build-schedule': (KEY . RESULT).
@@ -240,9 +337,18 @@ WRITING-DAYS is PLAN's number of writing days."
 
 (defun org-scribe-planner--build-schedule (plan)
   "Decide the goal of every day of PLAN in one pass.
+Days are fixed or adjustable.  In order of precedence, a day is fixed at:
+its locked goal (a past day); 0 when it is a rest day (a spare date, or a
+weekend day when weekends are off); its custom day goal; or the weekend
+goal when weekends have a goal of their own.  The adjustable days share
+the words left after the fixed ones, weighted by the pattern (see
+`org-scribe-planner--pattern-weights'); pattern positions skip rest
+days, so the shape doesn't shift when one is added.
+
 Returns a plist:
-  :rows              list of (DATE :goal G :spare BOOL :locked BOOL), in
-                     date order; G is exact (a float on adjustable days)
+  :rows              list of (DATE :goal G :spare BOOL :rest BOOL :locked BOOL
+                     :custom BOOL), in date order; G is exact (a float on
+                     adjustable days)
   :level             goal of an adjustable day of weight 1
   :adjustable-weight sum of the adjustable days' weights
   :fixed-words       sum of the fixed days' goals
@@ -253,12 +359,19 @@ writing days are all adjustable."
          (writing-days (org-scribe-planner--writing-days plan))
          (spare (org-scribe-plan-spare-days plan))
          (locked (org-scribe-plan-locked-goals plan))
+         (custom (org-scribe-plan-custom-goals plan))
+         (weekend-mode (or (org-scribe-plan-weekend-mode plan) 'same))
+         (weekend-daily (or (org-scribe-plan-weekend-daily plan) 0))
          (preexisting (or (org-scribe-plan-preexisting-words plan) 0))
          (adjustment (or (org-scribe-plan-schedule-adjustment plan) 0))
          (total (org-scribe-planner--effective-total plan writing-days))
          ;; Copies: a caller changing a list in place (e.g. `delete' on the
          ;; spare days) must not change the cached key with it
          (key (list start writing-days (copy-tree spare) (copy-tree locked)
+                    (copy-tree custom) weekend-mode
+                    (copy-sequence (org-scribe-plan-weekend-days plan)) weekend-daily
+                    (org-scribe-plan-pattern plan)
+                    (copy-tree (org-scribe-plan-pattern-config plan))
                     preexisting adjustment total)))
     (if (equal key (car org-scribe-planner--engine-cache))
         (cdr org-scribe-planner--engine-cache)
@@ -270,39 +383,60 @@ writing days are all adjustable."
             (let* ((end (org-scribe-planner--end-after-working-days
                          start writing-days spare))
                    (dates (org-scribe-planner--generate-date-range start end))
-                   ;; Pattern positions: every non-spare day, in order
-                   (positions (cl-remove-if (lambda (d) (member d spare)) dates))
-                   (weights (cl-mapcar #'cons positions
+                   (rest-p (lambda (date)
+                             (or (member date spare)
+                                 (and (eq weekend-mode 'rest)
+                                      (org-scribe-planner--weekend-p plan date)))))
+                   ;; Pattern positions: every day that isn't a rest day
+                   (positions (cl-remove-if rest-p dates))
+                   ;; A hash table: an alist lookup per day is quadratic in
+                   ;; the plan's length
+                   (weights (let ((table (make-hash-table :test #'equal
+                                                          :size (length positions))))
+                              (cl-mapc (lambda (date weight) (puthash date weight table))
+                                       positions
                                        (org-scribe-planner--pattern-weights
-                                        (length positions)))))
+                                        plan (length positions)))
+                              table)))
               (setq end-date end)
               (dolist (date dates)
-                (let ((lock (assoc date locked))
-                      (is-spare (and (member date spare) t)))
+                (let* ((lock (assoc date locked))
+                       (is-spare (and (member date spare) t))
+                       (is-rest (and (funcall rest-p date) t))
+                       (goal (assoc date custom))
+                       (flags (list :spare is-spare :rest is-rest)))
                   (cond
                    (lock
                     (setq fixed-words (+ fixed-words (cdr lock)))
-                    (push (list date :goal (cdr lock) :spare is-spare :locked t) rows))
-                   (is-spare
-                    (push (list date :goal 0 :spare t :locked nil) rows))
+                    (push (append (list date :goal (cdr lock) :locked t) flags) rows))
+                   (is-rest
+                    (push (append (list date :goal 0) flags) rows))
+                   (goal
+                    (setq fixed-words (+ fixed-words (cdr goal)))
+                    (push (append (list date :goal (cdr goal) :custom t) flags) rows))
+                   ((and (eq weekend-mode 'different)
+                         (org-scribe-planner--weekend-p plan date))
+                    (setq fixed-words (+ fixed-words weekend-daily))
+                    (push (append (list date :goal weekend-daily) flags) rows))
                    (t
-                    (let ((weight (cdr (assoc date weights))))
+                    (let ((weight (gethash date weights)))
                       (setq adjustable-weight (+ adjustable-weight weight))
-                      (push (list date :goal weight :spare nil :locked nil :weight weight)
+                      (push (append (list date :goal weight :weight weight) flags)
                             rows))))))
               (setq rows (nreverse rows)))
           ;; No dates yet: abstract writing days, all adjustable
           (setq adjustable-weight
-                (apply #'+ (org-scribe-planner--pattern-weights (or writing-days 0)))))
+                (apply #'+ (org-scribe-planner--pattern-weights plan (or writing-days 0)))))
         (let* ((target (- (+ (- total preexisting) adjustment) fixed-words))
                (level (if (> adjustable-weight 0)
                           (max 0.0 (/ (float target) adjustable-weight))
                         0.0)))
           ;; Adjustable rows held their weight; turn it into the goal
           (dolist (row rows)
-            (when (plist-get (cdr row) :weight)
-              (setf (cdr row) (list :goal (* level (plist-get (cdr row) :weight))
-                                    :spare nil :locked nil))))
+            (let ((weight (plist-get (cdr row) :weight)))
+              (when weight
+                (setf (cdr row) (list :goal (* level weight) :adjustable t
+                                      :spare nil :rest nil)))))
           (let ((result (list :rows rows
                               :level level
                               :adjustable-weight adjustable-weight
@@ -386,6 +520,16 @@ total; if they can't, signals an error and leaves PLAN unchanged."
                      (or original 1)))
          (guess (min org-scribe-planner--max-days (max min-days estimate 1)))
          low high)
+    ;; With no daily pace, more days only add words through a recurring
+    ;; fixed goal (a weekend goal); without one, if the days now can't
+    ;; carry the total, no number of days can -- don't search to the limit
+    (when (and (<= daily 0)
+               (not (funcall fits guess))
+               (not (and (eq (org-scribe-plan-weekend-mode plan) 'different)
+                         (> (or (org-scribe-plan-weekend-daily plan) 0) 0))))
+      (setf (org-scribe-plan-writing-days plan) original)
+      (error "With a daily target of 0, the plan's days never reach the %d-word goal"
+             total))
     (if (funcall fits guess)
         (setq low (1- min-days) high guess)
       (setq low guess high (min org-scribe-planner--max-days (* 2 guess)))
@@ -746,8 +890,12 @@ the result by the same amount, which keeps whole-word goals exact."
 
 (defun org-scribe-planner--generate-day-schedule (plan)
   "Generate a list of the days of PLAN with their goals.
-Returns a list of plists with :date, :words, :cumulative, :is-spare-day
-and :locked, one per calendar day from the start date to the end date.
+Returns a list of plists with :date, :words, :cumulative, :is-spare-day,
+:spare, :locked and :custom, one per calendar day from the start date to
+the end date.  :is-spare-day marks a rest day: any day whose goal is 0 (a
+spare date, a weekend day when weekends are off, a day goal of 0, a
+locked 0); everything that skips rest days reads it.  :spare marks the
+spare dates themselves, :custom a day with its own goal.
 
 The goals come from the schedule engine (`org-scribe-planner--build-schedule'),
 rounded to whole words through their running total, so they add up exactly:
@@ -772,12 +920,15 @@ The result is memoised on the engine's own result."
              (schedule nil))
         (dolist (row (plist-get engine :rows))
           (setq exact (+ exact (plist-get (cdr row) :goal)))
-          (let ((cumulative (org-scribe-planner--round-half-up exact)))
+          (let* ((cumulative (org-scribe-planner--round-half-up exact))
+                 (words (- cumulative previous)))
             (push (list :date (car row)
-                        :words (- cumulative previous)
+                        :words words
                         :cumulative cumulative
-                        :is-spare-day (plist-get (cdr row) :spare)
-                        :locked (plist-get (cdr row) :locked))
+                        :is-spare-day (zerop words)
+                        :spare (plist-get (cdr row) :spare)
+                        :locked (plist-get (cdr row) :locked)
+                        :custom (plist-get (cdr row) :custom))
                   schedule)
             (setq previous cumulative)))
         (let ((result (nreverse schedule)))
@@ -1453,10 +1604,11 @@ Returns an alist of (date . note) pairs for entries with notes."
                    ;; escaping applied when the note was written into the table
                    (note (org-scribe-planner--unescape-note-from-table
                           (string-trim note-raw))))
-              ;; Only add if note is not empty and not just "Spare day"
+              ;; Only add if note is not empty and not just the default
+              ;; "Spare day" / "Rest day" label
               (when (and note
                         (not (string-empty-p note))
-                        (not (string= note "Spare day")))
+                        (not (member note '("Spare day" "Rest day"))))
                 (push (cons date note) notes-alist)))
             (forward-line 1))))
       ;; Return in chronological order
@@ -1600,6 +1752,26 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
         (unless (zerop (or (org-scribe-plan-schedule-adjustment plan) 0))
           (org-set-property "SCHEDULE_ADJUSTMENT"
                             (number-to-string (org-scribe-plan-schedule-adjustment plan))))
+        (unless (memq (org-scribe-plan-pattern plan) '(nil flat))
+          (org-set-property "PATTERN" (symbol-name (org-scribe-plan-pattern plan)))
+          (when (org-scribe-plan-pattern-config plan)
+            (org-set-property "PATTERN_CONFIG"
+                              (org-scribe-planner--format-pattern-config
+                               (org-scribe-plan-pattern-config plan)))))
+        (unless (memq (org-scribe-plan-weekend-mode plan) '(nil same))
+          (org-set-property "WEEKEND_MODE" (symbol-name (org-scribe-plan-weekend-mode plan)))
+          (org-set-property "WEEKEND_DAYS"
+                            (mapconcat #'number-to-string
+                                       (or (org-scribe-plan-weekend-days plan) '(6 0)) ","))
+          (when (eq (org-scribe-plan-weekend-mode plan) 'different)
+            (org-set-property "WEEKEND_DAILY"
+                              (number-to-string (or (org-scribe-plan-weekend-daily plan) 0)))))
+        (when (org-scribe-plan-custom-goals plan)
+          (org-set-property "CUSTOM_GOALS"
+                            (mapconcat (lambda (goal) (format "%s:%d" (car goal) (cdr goal)))
+                                       (sort (copy-sequence (org-scribe-plan-custom-goals plan))
+                                             (lambda (a b) (string< (car a) (car b))))
+                                       ",")))
 
         (when (org-scribe-plan-spare-days plan)
           (org-set-property "SPARE_DAYS" (mapconcat #'identity (org-scribe-plan-spare-days plan) ",")))
@@ -1668,7 +1840,7 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                               ;; If there's a custom note (even for spare days), show it
                               ((and note (not (string-empty-p note))) note)
                               ;; Otherwise, if it's a spare day, show default message
-                              (is-spare "Spare day")
+                              (is-spare (if (plist-get day :spare) "Spare day" "Rest day"))
                               ;; No note and not spare day
                               (t "")))))))
 
@@ -1697,6 +1869,24 @@ Returns non-nil when PLAN was changed."
       (setf (org-scribe-plan-daily-word-counts plan)
             (assoc-delete-all (car first) daily-counts))
       t)))
+
+(defun org-scribe-planner--format-pattern-config (config)
+  "Write pattern CONFIG, a plist, as \"peak=1.5 valley=0.7\" for PATTERN_CONFIG."
+  (let ((parts nil))
+    (while config
+      (push (format "%s=%s" (substring (symbol-name (car config)) 1) (cadr config)) parts)
+      (setq config (cddr config)))
+    (mapconcat #'identity (nreverse parts) " ")))
+
+(defun org-scribe-planner--parse-pattern-config (text)
+  "Read TEXT, as written by `org-scribe-planner--format-pattern-config'."
+  (when text
+    (apply #'append
+           (mapcar (lambda (item)
+                     (let ((parts (split-string item "=")))
+                       (list (intern (concat ":" (car parts)))
+                             (string-to-number (cadr parts)))))
+                   (split-string text " " t)))))
 
 (defun org-scribe-planner--migrate-recalculated-daily (plan)
   "Keep the daily target of a PLAN saved before the schedule engine.
@@ -1760,6 +1950,28 @@ recalculation, and is left alone.  Returns non-nil when PLAN was changed."
                         (split-string locked "," t " ")))))
       (setf (org-scribe-plan-schedule-adjustment plan)
             (string-to-number (or (org-entry-get nil "SCHEDULE_ADJUSTMENT") "0")))
+      (let ((pattern (org-entry-get nil "PATTERN")))
+        (when pattern
+          (setf (org-scribe-plan-pattern plan) (intern pattern))
+          (setf (org-scribe-plan-pattern-config plan)
+                (org-scribe-planner--parse-pattern-config
+                 (org-entry-get nil "PATTERN_CONFIG")))))
+      (let ((mode (org-entry-get nil "WEEKEND_MODE")))
+        (when mode
+          (setf (org-scribe-plan-weekend-mode plan) (intern mode))
+          (let ((days (org-entry-get nil "WEEKEND_DAYS")))
+            (when days
+              (setf (org-scribe-plan-weekend-days plan)
+                    (mapcar #'string-to-number (split-string days "," t " ")))))
+          (setf (org-scribe-plan-weekend-daily plan)
+                (string-to-number (or (org-entry-get nil "WEEKEND_DAILY") "0")))))
+      (let ((goals (org-entry-get nil "CUSTOM_GOALS")))
+        (when goals
+          (setf (org-scribe-plan-custom-goals plan)
+                (mapcar (lambda (item)
+                          (let ((parts (split-string item ":")))
+                            (cons (car parts) (string-to-number (cadr parts)))))
+                        (split-string goals "," t " ")))))
 
       (let ((spare-days-str (org-entry-get nil "SPARE_DAYS")))
         (when spare-days-str
@@ -1916,7 +2128,13 @@ Optional FILEPATH shows the location of the plan file."
         ;; Summary
         (insert (propertize "Summary:\n" 'face 'org-level-2))
         (insert (format "  Total Words:   %d\n" (org-scribe-plan-total-words plan)))
-        (insert (format "  Daily Words:   %d\n" (org-scribe-plan-daily-words plan)))
+        (insert (format "  Daily Words:   %d%s\n" (org-scribe-plan-daily-words plan)
+                        (if (memq (org-scribe-plan-pattern plan) '(nil flat))
+                            ""
+                          (format " (average, %s pattern)"
+                                  (org-scribe-planner--describe-pattern plan)))))
+        (unless (memq (org-scribe-plan-weekend-mode plan) '(nil same))
+          (insert (format "  Weekends:      %s\n" (org-scribe-planner--describe-weekends plan))))
         (insert (format "  Total Days:    %d\n" (org-scribe-plan-days plan)))
         (insert (format "  Working Days:  %d\n"
                         (- (org-scribe-plan-days plan)
@@ -2032,7 +2250,8 @@ Optional FILEPATH shows the location of the plan file."
                                 ;; If there's a custom note (even for spare days), show it
                                 ((and note (not (string-empty-p note))) note)
                                 ;; Otherwise, if it's a spare day, show default message
-                                (is-spare "(spare day)")
+                                (is-spare (if (plist-get day :spare) "(spare day)" "(rest day)"))
+                                ((plist-get day :custom) "(day goal)")
                                 ;; No note and not spare day
                                 (t ""))))
                 (insert (propertize
@@ -2536,6 +2755,39 @@ Returns a plist with:
           :remaining-words   remaining-words
           :remaining-days    remaining-days)))
 
+(defun org-scribe-planner--rebase-keeping-end-date (plan as-of)
+  "Rebase PLAN on progress from AS-OF and spread the words left, end date kept.
+See `org-scribe-planner--rebase-on-progress'.  When weekends have a goal
+of their own, it keeps its proportion to the weekday goal: the open
+weekday and weekend days share the words left at the old ratio, as
+wordplanner's `recalculate_from_progress' does."
+  (let* ((old-daily (org-scribe-plan-daily-words plan))
+         (ratio (when (and (eq (org-scribe-plan-weekend-mode plan) 'different)
+                           (numberp old-daily) (> old-daily 0))
+                  (/ (float (or (org-scribe-plan-weekend-daily plan) 0)) old-daily))))
+    (org-scribe-planner--rebase-on-progress plan as-of)
+    (when ratio
+      ;; Solve with weekends at 0, then share the open words between both
+      (setf (org-scribe-plan-weekend-daily plan) 0)
+      (let* ((schedule (org-scribe-planner--build-schedule plan))
+             (weekday-weight (plist-get schedule :adjustable-weight))
+             (spread (* (plist-get schedule :level) weekday-weight))
+             (open-weekend-days
+              (cl-count-if (lambda (row)
+                             (let ((date (car row)) (info (cdr row)))
+                               (and (not (string< date as-of))
+                                    (not (plist-get info :locked))
+                                    (not (plist-get info :custom))
+                                    (not (plist-get info :rest))
+                                    (org-scribe-planner--weekend-p plan date))))
+                           (plist-get schedule :rows)))
+             (denominator (+ weekday-weight (* ratio open-weekend-days))))
+        (setf (org-scribe-plan-weekend-daily plan)
+              (if (> denominator 0)
+                  (round (/ (* ratio spread) denominator))
+                0))))
+    (org-scribe-planner--sync-daily plan)))
+
 (defun org-scribe-planner--recalculation-problem (plan as-of)
   "Return why PLAN can't be recalculated from AS-OF, as a message, or nil.
 The goal may already be reached, the plan may be over, or no writing day
@@ -2570,8 +2822,7 @@ FILE is the path where the plan is saved."
       (let ((old-daily (org-scribe-plan-daily-words plan))
             (remaining (- (org-scribe-plan-total-words plan)
                           (org-scribe-plan-current-words plan))))
-        (org-scribe-planner--rebase-on-progress plan as-of)
-        (org-scribe-planner--sync-daily plan)
+        (org-scribe-planner--rebase-keeping-end-date plan as-of)
         (org-scribe-planner--save-plan plan file)
         (org-scribe-planner--refresh-agenda-if-synced plan file)
         (org-scribe-planner-show-calendar plan file)
@@ -2625,6 +2876,11 @@ List slots are copied deeply; the heading marker is shared."
   (let ((copy (copy-org-scribe-plan plan)))
     (setf (org-scribe-plan-spare-days copy) (copy-tree (org-scribe-plan-spare-days plan))
           (org-scribe-plan-locked-goals copy) (copy-tree (org-scribe-plan-locked-goals plan))
+          (org-scribe-plan-custom-goals copy) (copy-tree (org-scribe-plan-custom-goals plan))
+          (org-scribe-plan-pattern-config copy)
+          (copy-tree (org-scribe-plan-pattern-config plan))
+          (org-scribe-plan-weekend-days copy)
+          (copy-sequence (org-scribe-plan-weekend-days plan))
           (org-scribe-plan-daily-word-counts copy)
           (copy-tree (org-scribe-plan-daily-word-counts plan)))
     copy))
@@ -2819,8 +3075,7 @@ The counterpart of `org-scribe-planner-adjust-end-date'."
       (if problem
           (message "%s" problem)
         (let ((preview (org-scribe-planner--copy-plan plan)))
-          (org-scribe-planner--rebase-on-progress preview as-of)
-          (org-scribe-planner--sync-daily preview)
+          (org-scribe-planner--rebase-keeping-end-date preview as-of)
           (if (y-or-n-p (concat (org-scribe-planner--describe-remaining-days-change
                                  plan preview as-of)
                                 "\nApply? "))
@@ -2894,8 +3149,7 @@ today's goal isn't due until the day is over."
                     . ,(lambda (p)
                          (let ((problem (org-scribe-planner--recalculation-problem p as-of)))
                            (when problem (user-error "%s" problem)))
-                         (org-scribe-planner--rebase-on-progress p as-of)
-                         (org-scribe-planner--sync-daily p)))
+                         (org-scribe-planner--rebase-keeping-end-date p as-of)))
                    (,(if ahead "Finish early (keep the daily target)"
                        "Extend the deadline (keep the daily target)")
                     . ,(lambda (p)
@@ -2908,6 +3162,87 @@ today's goal isn't due until the day is over."
             (setq org-scribe-planner--current-plan plan)
             (org-scribe-planner-show-calendar plan file))))))))
 
+(defconst org-scribe-planner--day-names
+  '(("Sunday" . 0) ("Monday" . 1) ("Tuesday" . 2) ("Wednesday" . 3)
+    ("Thursday" . 4) ("Friday" . 5) ("Saturday" . 6))
+  "Day names and their numbers, as `calendar-day-of-week' gives them.")
+
+(defun org-scribe-planner--describe-weekends (plan)
+  "Describe PLAN's weekend setting in a few words."
+  (let ((days (mapconcat (lambda (n) (car (rassq n org-scribe-planner--day-names)))
+                         (or (org-scribe-plan-weekend-days plan) '(6 0)) ", ")))
+    (pcase (org-scribe-plan-weekend-mode plan)
+      ('different (format "%d words/day on %s" (org-scribe-plan-weekend-daily plan) days))
+      ('rest (format "no writing on %s" days))
+      (_ "same as other days"))))
+
+(defun org-scribe-planner--describe-pattern (plan)
+  "Describe PLAN's writing pattern in a few words."
+  (let ((pattern (or (org-scribe-plan-pattern plan) 'flat)))
+    (if (eq pattern 'flat)
+        "steady"
+      (let ((intensity (car (cl-find-if
+                             (lambda (preset)
+                               (cl-every (lambda (key)
+                                           (equal (plist-get (cdr preset) key)
+                                                  (plist-get (org-scribe-plan-pattern-config plan) key)))
+                                         '(:peak :valley :start :end :min :max)))
+                             (cdr (assq pattern org-scribe-planner--pattern-intensities))))))
+        (format "%s%s" pattern (if intensity (format " (%s)" intensity) ""))))))
+
+(defun org-scribe-planner--read-pattern ()
+  "Ask for a writing pattern and its intensity; return (PATTERN . CONFIG)."
+  (let* ((choice (completing-read
+                  "Writing pattern: "
+                  (mapcar #'cdr org-scribe-planner--patterns) nil t))
+         (pattern (car (rassoc choice org-scribe-planner--patterns))))
+    (if (eq pattern 'flat)
+        (cons 'flat nil)
+      (let* ((intensity (intern (completing-read
+                                 "How much variation? " '("moderate" "mild" "extreme")
+                                 nil t nil nil "moderate")))
+             (config (copy-sequence
+                      (cdr (assq intensity (cdr (assq pattern
+                                                      org-scribe-planner--pattern-intensities)))))))
+        ;; The random pattern keeps its seed, so its goals stay the same
+        (when (eq pattern 'random)
+          (setq config (append config (list :seed (1+ (random 999999))))))
+        (cons pattern config)))))
+
+(defun org-scribe-planner--read-weekend-days (plan)
+  "Ask which days count as the weekend in PLAN; return their numbers."
+  (let* ((current (mapcar (lambda (n) (car (rassq n org-scribe-planner--day-names)))
+                          (or (org-scribe-plan-weekend-days plan) '(6 0))))
+         (names (completing-read-multiple
+                 (format "Weekend days (default %s): " (string-join current ","))
+                 (mapcar #'car org-scribe-planner--day-names) nil t nil nil
+                 (string-join current ","))))
+    (or (delq nil (mapcar (lambda (name) (cdr (assoc name org-scribe-planner--day-names)))
+                          names))
+        '(6 0))))
+
+(defun org-scribe-planner--custom-goal-problem (plan date)
+  "Return why DATE can't get a day goal in PLAN, as a message, or nil.
+Past days are locked; days outside the plan have no goal; spare days and
+weekends off are rest days by rule."
+  (let ((start (org-scribe-plan-start-date plan))
+        (end (org-scribe-plan-end-date plan)))
+    (cond
+     ((string< date (org-scribe-planner--get-today-date))
+      "Days before today are locked: their goals can't change.")
+     ((or (null end) (string< date start) (string< end date))
+      (format "%s is outside the plan (%s to %s)." date start end))
+     ((member date (org-scribe-plan-spare-days plan))
+      (format "%s is a spare day. Remove it from the spare days first." date))
+     ((and (eq (org-scribe-plan-weekend-mode plan) 'rest)
+           (org-scribe-planner--weekend-p plan date))
+      (format "%s falls on a weekend, and weekends are days off. Change the weekend setting first."
+              date)))))
+
+(defconst org-scribe-planner--day-goal-question
+  "This changes the day's goal. How should the rest of the plan adjust?"
+  "The adjustment question asked after a day goal is set or removed.")
+
 ;;;###autoload
 (defun org-scribe-planner-recalculate ()
   "Change the active writing plan, previewing the result before applying it.
@@ -2919,12 +3254,23 @@ target changes), move the end date (keep the daily target), or keep both
 keep their goals throughout."
   (interactive)
   (org-scribe-planner--with-current-plan (plan file)
+    ;; If the change doesn't finish (no option possible, C-g), the plan in
+    ;; memory goes back to how it was: nothing half-changed stays active
+    (let ((backup (org-scribe-planner--copy-plan plan))
+          (finished nil))
+     (unwind-protect
+      (progn
     (let ((choice (completing-read
                    "What changed? "
                    '("Total words"
                      "Daily words"
                      "Days available"
                      "Two values (third calculated)"
+                     "Writing pattern"
+                     "Weekends"
+                     "Day goal: set"
+                     "Day goal: remove"
+                     "Day goals: clear from today on"
                      "Add/modify spare days"
                      "Remove spare days"
                      "Clear all spare days")
@@ -3014,6 +3360,83 @@ keep their goals throughout."
            (org-scribe-planner--choose-change
             plan "Apply?" `(("Apply" . ,change)))))
 
+        ("Writing pattern"
+         (let ((choice (org-scribe-planner--read-pattern)))
+           (setf (org-scribe-plan-pattern plan) (car choice))
+           (setf (org-scribe-plan-pattern-config plan) (cdr choice))
+           (org-scribe-planner--sync-daily plan)
+           (message "Pattern: %s. Past days keep their goals."
+                    (org-scribe-planner--describe-pattern plan))))
+
+        ("Weekends"
+         (let* ((before (org-scribe-planner--copy-plan plan))
+                (mode (completing-read
+                       "Weekends: "
+                       '("Same as other days" "A goal of their own" "No writing")
+                       nil t)))
+           (pcase mode
+             ("Same as other days"
+              (setf (org-scribe-plan-weekend-mode plan) 'same))
+             ("A goal of their own"
+              (setf (org-scribe-plan-weekend-mode plan) 'different)
+              (setf (org-scribe-plan-weekend-daily plan)
+                    (org-scribe-planner--read-non-negative-number
+                     "Weekend goal (words/day): "
+                     (if (eq (org-scribe-plan-weekend-mode before) 'different)
+                         (org-scribe-plan-weekend-daily before)
+                       (round (* 1.5 (org-scribe-plan-daily-words plan)))))))
+             (_ (setf (org-scribe-plan-weekend-mode plan) 'rest)))
+           (unless (eq (org-scribe-plan-weekend-mode plan) 'same)
+             (setf (org-scribe-plan-weekend-days plan)
+                   (org-scribe-planner--read-weekend-days plan)))
+           (org-scribe-planner--offer-adjustment
+            plan before "This changes the weekends. How should the plan adjust?")))
+
+        ("Day goal: set"
+         (let* ((date (org-scribe-planner--read-date "Date (YYYY-MM-DD)"
+                                                     (org-scribe-planner--get-today-date)))
+                (problem (org-scribe-planner--custom-goal-problem plan date)))
+           (when problem (user-error "%s" problem))
+           (let ((goal (org-scribe-planner--read-non-negative-number
+                        (format "Goal for %s (0 makes it a rest day): " date)
+                        (or (cdr (assoc date (org-scribe-plan-custom-goals plan)))
+                            (plist-get (cl-find date (org-scribe-planner--generate-day-schedule plan)
+                                                :key (lambda (d) (plist-get d :date))
+                                                :test #'string=)
+                                       :words))))
+                 (before (org-scribe-planner--copy-plan plan)))
+             (setf (org-scribe-plan-custom-goals plan)
+                   (cons (cons date goal)
+                         (assoc-delete-all date (copy-tree (org-scribe-plan-custom-goals plan)))))
+             (org-scribe-planner--offer-adjustment
+              plan before org-scribe-planner--day-goal-question))))
+
+        ("Day goal: remove"
+         (let ((dates (cl-remove-if (lambda (date) (string< date (org-scribe-planner--get-today-date)))
+                                    (mapcar #'car (org-scribe-plan-custom-goals plan)))))
+           (if (null dates)
+               (message "No day goals from today on to remove")
+             (let ((date (completing-read "Remove the goal of: " (sort dates #'string<) nil t))
+                   (before (org-scribe-planner--copy-plan plan)))
+               (setf (org-scribe-plan-custom-goals plan)
+                     (assoc-delete-all date (copy-tree (org-scribe-plan-custom-goals plan))))
+               (org-scribe-planner--offer-adjustment
+                plan before org-scribe-planner--day-goal-question)))))
+
+        ("Day goals: clear from today on"
+         (let* ((today (org-scribe-planner--get-today-date))
+                (clearable (cl-remove-if (lambda (goal) (string< (car goal) today))
+                                         (org-scribe-plan-custom-goals plan))))
+           (if (null clearable)
+               (message "No day goals from today on to clear")
+             (when (y-or-n-p (format "Clear %d day goals from today on? " (length clearable)))
+               (let ((before (org-scribe-planner--copy-plan plan)))
+                 (setf (org-scribe-plan-custom-goals plan)
+                       (cl-remove-if-not (lambda (goal) (string< (car goal) today))
+                                         (org-scribe-plan-custom-goals plan)))
+                 (org-scribe-planner--offer-adjustment
+                  plan before org-scribe-planner--day-goal-question))))))
+
         ("Add/modify spare days"
          (let ((before (org-scribe-planner--copy-plan plan)))
            (org-scribe-planner--configure-spare-days plan)
@@ -3043,7 +3466,10 @@ keep their goals throughout."
       (org-scribe-planner--save-plan plan file)
       (org-scribe-planner--refresh-agenda-if-synced plan file)
       (setq org-scribe-planner--current-plan plan)
-      (org-scribe-planner-show-calendar plan file))))
+      (setq finished t)
+      (org-scribe-planner-show-calendar plan file)))
+      (unless finished
+        (setq org-scribe-planner--current-plan backup))))))
 
 ;;; Milestone Tracking
 
