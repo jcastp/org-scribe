@@ -230,7 +230,7 @@ Press ~F8 F8 W a~ (Adjust remaining days).
 
 Use this when your schedule changes — vacation, deadline moved, days off. The planner redistributes the remaining word count across the new schedule.
 
-The end date stays where it is: only the daily target changes.
+The end date stays where it is: only the daily target changes. Past days keep the goals they had — only the days from today on (from tomorrow, if you have already written today) share the words you actually have left. Afterwards the plan counts you as on track: it measures from what you had written when you recalculated.
 
 ** Adjust the End Date
 

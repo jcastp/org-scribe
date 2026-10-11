@@ -1872,6 +1872,14 @@ them, but they are never one day's writing: the first sync records only the
 words written that day, and pace, streaks and best day ignore them. The total
 goal is the full length of the work; the daily target covers what is left.
 
+*Past days are locked.* Once a day is over, its goal never changes again:
+changing the total, the days, the daily target or the spare days, or
+recalculating from your progress, only reshapes the days still to come.
+Day goals are whole words that add up exactly to the goal (10,000 words over
+7 days is 1,429 four times and 1,428 three times). The plan stores its number
+of writing days (=WRITING_DAYS=); its end date follows from them and the spare
+days.
+
 *** 6. Planner Hydra Sub-menu (=W=)
 
 Press =F8 F8 W= to open the planner sub-menu. If the project has declined the planner, this key offers to enable it first instead of opening the submenu.

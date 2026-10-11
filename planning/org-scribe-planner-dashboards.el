@@ -30,6 +30,7 @@
 (declare-function org-scribe-planner--get-entry-words "org-scribe-planner")
 (declare-function org-scribe-planner--daily-deltas "org-scribe-planner")
 (declare-function org-scribe-planner--entry-delta "org-scribe-planner")
+(declare-function org-scribe-planner--expected-through "org-scribe-planner")
 (declare-function org-scribe-planner--add-days "org-scribe-planner")
 (declare-function org-scribe-planner--days-between "org-scribe-planner")
 (declare-function org-scribe-planner-show-current-plan "org-scribe-planner")
@@ -215,8 +216,9 @@ Accordingly, :days-elapsed counts the days before today and
          ;; current-words is kept in sync with the latest cumulative ledger
          ;; entry by every write path, so it IS the total written so far.
          (cumulative-actual (org-scribe-plan-current-words plan))
-         ;; Expected starts at the pre-existing words, like CURRENT_WORDS
-         (expected-by-today (or (org-scribe-plan-preexisting-words plan) 0))
+         ;; Where the manuscript should stand at the end of yesterday
+         (expected-by-today (org-scribe-planner--expected-through
+                             plan (org-scribe-planner--add-days today -1)))
          (days-completed 0)
          (expected-days 0)
          (days-elapsed 0)
@@ -231,9 +233,7 @@ Accordingly, :days-elapsed counts the days before today and
           ;; Count all days elapsed (including spare days)
           (setq days-elapsed (1+ days-elapsed))
 
-          ;; Add to expected cumulative (skip spare days)
           (unless is-spare
-            (setq expected-by-today (+ expected-by-today (plist-get day :words)))
             (setq expected-days (1+ expected-days))))))
 
     ;; Calculate remaining days (from today onwards, excluding spare days)

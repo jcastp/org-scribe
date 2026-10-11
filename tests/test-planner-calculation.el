@@ -17,11 +17,18 @@
     (org-scribe-planner--calculate-missing-variable plan)
     (should (= (org-scribe-plan-daily-words plan) 1000))))
 
-(ert-deftest test-planner-calc-daily-words-rounds-up ()
-  "daily-words is ceiled, not floored (1000/3 → 334)."
-  (let ((plan (make-org-scribe-plan :total-words 1000 :days 3)))
+(ert-deftest test-planner-calc-daily-words-schedule-adds-up ()
+  "1000 words in 3 days: the goals add up to exactly 1000 (334, 333, 333).
+The daily target is the ordinary day's goal, rounded (333).  It used to
+be rounded up to 334 for every day, scheduling 1002 words."
+  (let ((plan (make-org-scribe-plan :total-words 1000 :days 3
+                                    :start-date "2026-11-01")))
     (org-scribe-planner--calculate-missing-variable plan)
-    (should (= (org-scribe-plan-daily-words plan) 334))))
+    (should (= (org-scribe-plan-daily-words plan) 333))
+    (let ((goals (mapcar (lambda (d) (plist-get d :words))
+                         (org-scribe-planner--generate-day-schedule plan))))
+      (should (= (apply #'+ goals) 1000))
+      (should (cl-every (lambda (g) (memq g '(333 334))) goals)))))
 
 (ert-deftest test-planner-calc-total-words-from-daily-and-days ()
   "Calculate total-words when daily-words and days are provided."
