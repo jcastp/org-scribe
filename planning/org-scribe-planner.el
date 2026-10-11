@@ -796,6 +796,80 @@ when DATE is before the plan."
         (setq expected (plist-get day :cumulative))))
     expected))
 
+;;; Where the plan stands
+
+(defun org-scribe-planner--writing-day-position (plan words)
+  "Return how many writing days of PLAN's schedule WORDS cover, as a fraction.
+WORDS is a manuscript total.  Follows each day's own goal, from the
+plan's starting point (pre-existing words, on the baseline of the last
+recalculation), so a recalculation or a pattern doesn't distort it.
+Days without a goal take no position.  Words beyond the end count at the
+plan's daily target."
+  (let ((cumulative (- (or (org-scribe-plan-preexisting-words plan) 0)
+                       (or (org-scribe-plan-schedule-adjustment plan) 0)))
+        (position 0.0)
+        (result nil))
+    (when (> words cumulative)
+      (dolist (day (org-scribe-planner--generate-day-schedule plan))
+        (let ((goal (plist-get day :words)))
+          (when (and (null result) (> goal 0))
+            (if (>= (+ cumulative goal) words)
+                (setq result (+ position (/ (float (- words cumulative)) goal)))
+              (setq cumulative (+ cumulative goal)
+                    position (1+ position)))))))
+    (cond
+     (result result)
+     ((<= words cumulative) position)
+     (t (+ position (/ (float (- words cumulative))
+                       (max 1 (or (org-scribe-plan-daily-words plan) 1))))))))
+
+(defun org-scribe-planner--status (plan)
+  "Return where PLAN stands, or nil when it has no schedule yet.
+A plist:
+  :status     `ahead', `on-track' or `behind'
+  :expected   where the manuscript should stand at the end of yesterday
+              (today's goal isn't due until the day is over)
+  :actual     the manuscript's count, today's words included
+  :difference :actual minus :expected
+  :percent    :difference as a percentage of the words the plan expected
+              to be written by then (0 before the plan has expected any)
+  :days       writing days ahead (positive) or behind (negative),
+              measured along the schedule (see
+              `org-scribe-planner--writing-day-position')"
+  (when (and (org-scribe-plan-start-date plan)
+             (plist-get (org-scribe-planner--build-schedule plan) :rows))
+    (let* ((yesterday (org-scribe-planner--add-days (org-scribe-planner--get-today-date) -1))
+           (expected (org-scribe-planner--expected-through plan yesterday))
+           (actual (org-scribe-plan-current-words plan))
+           (difference (- actual expected))
+           (baseline (- (or (org-scribe-plan-preexisting-words plan) 0)
+                        (or (org-scribe-plan-schedule-adjustment plan) 0)))
+           (expected-written (- expected baseline)))
+      (list :status (cond ((> difference 0) 'ahead)
+                          ((= difference 0) 'on-track)
+                          (t 'behind))
+            :expected expected
+            :actual actual
+            :difference difference
+            :percent (if (> expected-written 0)
+                         (* 100.0 (/ (float difference) expected-written))
+                       0.0)
+            :days (- (org-scribe-planner--writing-day-position plan actual)
+                     (org-scribe-planner--writing-day-position plan expected))))))
+
+(defun org-scribe-planner--describe-status (status)
+  "Describe STATUS (from `org-scribe-planner--status') in a few words."
+  (pcase (plist-get status :status)
+    ('on-track "On track")
+    (state (format "%s: %s%d words (%s%.1f%%, %s%.1f writing days)"
+                   (if (eq state 'ahead) "Ahead" "Behind")
+                   (if (eq state 'ahead) "+" "")
+                   (plist-get status :difference)
+                   (if (eq state 'ahead) "+" "")
+                   (plist-get status :percent)
+                   (if (eq state 'ahead) "+" "")
+                   (plist-get status :days)))))
+
 ;;; Locked past goals and recalculation from progress
 
 (defun org-scribe-planner--lock-past-goals (plan &optional as-of)
@@ -1834,7 +1908,7 @@ Optional FILEPATH shows the location of the plan file."
         (insert (make-string 80 ?=) "\n")
         (insert "Commands:\n")
         (insert "  [q] quit  [G] refresh view  [u] sync word count  [d] daily word count\n")
-        (insert "  [r] recalculate plan  [a] adjust remaining days  [e] adjust end date\n")
+        (insert "  [r] recalculate plan  [a] adjust remaining days  [e] adjust end date  [c] check progress\n")
         (insert "  [D] dashboards menu  [p] progress  [b] burndown  [g] cumulative\n")
         (insert "  [v] velocity  [h] heatmap\n")
 	(insert (make-string 80 ?=) "\n\n")
@@ -1853,6 +1927,9 @@ Optional FILEPATH shows the location of the plan file."
         (when (> (or (org-scribe-plan-preexisting-words plan) 0) 0)
           (insert (format "  Written Before: %d (pre-existing, part of the total)\n"
                           (org-scribe-plan-preexisting-words plan))))
+        (when-let* ((status (ignore-errors (org-scribe-planner--status plan))))
+          (insert (format "  Status:        %s\n"
+                          (org-scribe-planner--describe-status status))))
         (insert (format "  Current Words: %d (%.1f%%)\n\n"
                        (org-scribe-plan-current-words plan)
                        (* 100 (/ (float (org-scribe-plan-current-words plan))
@@ -1985,7 +2062,7 @@ Optional FILEPATH shows the location of the plan file."
         (insert "\n" (make-string 80 ?=) "\n")
         (insert "\nCommands:\n")
         (insert "  [q] quit  [G] refresh view  [u] sync word count  [d] daily word count\n")
-        (insert "  [r] recalculate plan  [a] adjust remaining days  [e] adjust end date\n")
+        (insert "  [r] recalculate plan  [a] adjust remaining days  [e] adjust end date  [c] check progress\n")
         (insert "  [D] dashboards menu  [p] progress  [b] burndown  [g] cumulative\n")
         (insert "  [v] velocity  [h] heatmap\n"))
 
@@ -2001,6 +2078,7 @@ Optional FILEPATH shows the location of the plan file."
     (define-key map (kbd "d") #'org-scribe-planner-add-session-note)
     (define-key map (kbd "a") #'org-scribe-planner-adjust-remaining-plan)
     (define-key map (kbd "e") #'org-scribe-planner-adjust-end-date)
+    (define-key map (kbd "c") #'org-scribe-planner-check-progress)
     (define-key map (kbd "D") #'org-scribe-planner-dashboards-menu)
     (define-key map (kbd "m") #'org-scribe-planner-show-multi-metric-dashboard)
     (define-key map (kbd "p") #'org-scribe-planner-show-progress-dashboard)
@@ -2414,31 +2492,16 @@ every later date that still has its own absolute cumulative total."
   "Use `org-scribe-planner-add-session-note' instead.")
 
 (defun org-scribe-planner--show-progress-report (plan)
-  "Display a progress report for PLAN."
+  "Display a progress report for PLAN: words written, and where it stands.
+Expected words run through yesterday: today's goal isn't due until the
+day is over, while today's words already count (see
+`org-scribe-planner--status')."
   (let* ((total (org-scribe-plan-total-words plan))
          (current (org-scribe-plan-current-words plan))
-         (remaining (- total current))
-         (percent (* 100.0 (/ (float current) total)))
-         (schedule (org-scribe-planner--generate-day-schedule plan))
-         (today (org-scribe-planner--get-today-date))
-         (days-elapsed 0)
-         ;; Expected: where the manuscript should stand at the end of
-         ;; yesterday.  Today's goal isn't due until the day is over, while
-         ;; today's words already count.
-         (expected-words (org-scribe-planner--expected-through
-                          plan (org-scribe-planner--add-days today -1))))
-
-    (dolist (day schedule)
-      (when (string< (plist-get day :date) today)
-        (setq days-elapsed (1+ days-elapsed))))
-
-    (let ((ahead-behind (- current expected-words)))
-      (message
-       "Progress: %d/%d words (%.1f%%) | %s: %s%d words"
-       current total percent
-       (if (>= ahead-behind 0) "Ahead" "Behind")
-       (if (>= ahead-behind 0) "+" "")
-       ahead-behind))))
+         (percent (* 100.0 (/ (float current) total))))
+    (message "Progress: %d/%d words (%.1f%%) | %s"
+             current total percent
+             (org-scribe-planner--describe-status (org-scribe-planner--status plan)))))
 
 (defun org-scribe-planner--compute-recalculation-data (plan)
   "Compute the common recalculation values for PLAN.
@@ -2553,26 +2616,6 @@ where the plan is saved."
                        (t "unchanged"))
                  daily-words remaining-words))))))
 
-;;;###autoload
-(defun org-scribe-planner-adjust-end-date ()
-  "Move the end date so the words left fit at the current daily target.
-Finishes early when you are ahead and extends the deadline when you are
-behind, keeping your daily target and total word goal.  The counterpart
-of `org-scribe-planner-adjust-remaining-plan', which keeps the end date
-and changes the daily target instead."
-  (interactive)
-  (org-scribe-planner--with-current-plan (plan file)
-    (org-scribe-planner-recalculate-end-date plan file)))
-
-;;;###autoload
-(defun org-scribe-planner-adjust-remaining-plan ()
-  "Recalculate daily target for remaining days based on progress.
-This command keeps your end date and total word goal fixed, and adjusts
-only the daily target for remaining working days based on your actual
-cumulative progress so far."
-  (interactive)
-  (org-scribe-planner--with-current-plan (plan file)
-    (org-scribe-planner-recalculate-remaining-days plan file)))
 
 ;;; Changing a plan, with previews
 
@@ -2731,6 +2774,139 @@ taken out.  Refuses fewer days than PLAN's locked (past) writing days."
   (setf (org-scribe-plan-total-words plan)
         (round (org-scribe-planner--total-for-daily plan daily)))
   (org-scribe-planner--sync-daily plan))
+
+;;; Recalculating from progress, with previews
+
+(defun org-scribe-planner--describe-shift (old-end new-end)
+  "Describe moving an end date from OLD-END to NEW-END in a few words."
+  (let ((shift (1- (org-scribe-planner--days-between old-end new-end))))
+    (cond ((< shift 0) (format "finishing %d day%s early" (- shift) (if (= shift -1) "" "s")))
+          ((> shift 0) (format "extended by %d day%s" shift (if (= shift 1) "" "s")))
+          (t "unchanged"))))
+
+(defun org-scribe-planner--describe-remaining-days-change (plan preview as-of)
+  "Describe what keeping PLAN's end date does, as PREVIEW shows, from AS-OF."
+  (let* ((old-daily (org-scribe-plan-daily-words plan))
+         (new-daily (org-scribe-plan-daily-words preview))
+         (change (- new-daily old-daily))
+         (open-days (cl-count-if (lambda (day)
+                                   (and (not (plist-get day :is-spare-day))
+                                        (not (string< (plist-get day :date) as-of))))
+                                 (org-scribe-planner--generate-day-schedule preview)))
+         (newly-locked (- (length (org-scribe-plan-locked-goals preview))
+                          (length (org-scribe-plan-locked-goals plan)))))
+    (format "From %s: %d words left over %d writing days.\nDaily target %d → %d words (%s%d, %s%.1f%%)%s. End date %s unchanged."
+            as-of
+            (- (org-scribe-plan-total-words plan) (org-scribe-plan-current-words plan))
+            open-days old-daily new-daily
+            (if (>= change 0) "+" "") change
+            (if (>= change 0) "+" "")
+            (if (> old-daily 0) (* 100.0 (/ (float change) old-daily)) 0.0)
+            (if (> newly-locked 0) (format ". Past days locked: %d" newly-locked) "")
+            (org-scribe-plan-end-date preview))))
+
+;;;###autoload
+(defun org-scribe-planner-adjust-remaining-plan ()
+  "Spread the words you actually have left over the remaining writing days.
+Keeps your end date and total word goal; changes the daily target.  Past
+days keep their goals; the change starts today, or tomorrow if you have
+already written today.  Shows what changes and asks before applying it.
+The counterpart of `org-scribe-planner-adjust-end-date'."
+  (interactive)
+  (org-scribe-planner--with-current-plan (plan file)
+    (let* ((as-of (org-scribe-planner--default-recalculation-date plan))
+           (problem (org-scribe-planner--recalculation-problem plan as-of)))
+      (if problem
+          (message "%s" problem)
+        (let ((preview (org-scribe-planner--copy-plan plan)))
+          (org-scribe-planner--rebase-on-progress preview as-of)
+          (org-scribe-planner--sync-daily preview)
+          (if (y-or-n-p (concat (org-scribe-planner--describe-remaining-days-change
+                                 plan preview as-of)
+                                "\nApply? "))
+              (org-scribe-planner-recalculate-remaining-days plan file)
+            (message "Plan left unchanged.")))))))
+
+;;;###autoload
+(defun org-scribe-planner-adjust-end-date ()
+  "Move the end date so the words left fit at the current daily target.
+Finishes early when you are ahead and extends the deadline when you are
+behind, keeping your daily target and total word goal.  Past days keep
+their goals.  Shows the new end date and asks before applying it.  The
+counterpart of `org-scribe-planner-adjust-remaining-plan', which keeps
+the end date and changes the daily target instead."
+  (interactive)
+  (org-scribe-planner--with-current-plan (plan file)
+    (let ((remaining (- (org-scribe-plan-total-words plan)
+                        (org-scribe-plan-current-words plan)))
+          (daily (org-scribe-plan-daily-words plan)))
+      (cond
+       ((<= remaining 0)
+        (message "Goal already reached: %d of %d words. End date unchanged."
+                 (org-scribe-plan-current-words plan) (org-scribe-plan-total-words plan)))
+       ((not (and (numberp daily) (> daily 0)))
+        (message "The plan has no daily target to keep. Use the recalculate command instead."))
+       (t
+        (let ((preview (org-scribe-planner--copy-plan plan)))
+          (org-scribe-planner--rebase-on-progress
+           preview (org-scribe-planner--default-recalculation-date plan))
+          (org-scribe-planner--calculate-time preview daily)
+          (if (y-or-n-p
+               (format "Daily target %d words kept. Writing days %d → %d.\nEnd date %s → %s: %s. Apply? "
+                       daily
+                       (org-scribe-planner--writing-days plan)
+                       (org-scribe-planner--writing-days preview)
+                       (org-scribe-plan-end-date plan) (org-scribe-plan-end-date preview)
+                       (org-scribe-planner--describe-shift
+                        (org-scribe-plan-end-date plan) (org-scribe-plan-end-date preview))))
+              (org-scribe-planner-recalculate-end-date plan file)
+            (message "Plan left unchanged."))))))))
+
+;;;###autoload
+(defun org-scribe-planner-check-progress ()
+  "Show where the active plan stands; when ahead or behind, offer to adjust it.
+Ahead, you can reduce the daily target (keeping the end date) or finish
+early (keeping the daily target); behind, increase the daily target or
+extend the deadline.  Every option shows its outcome first, and keeping
+the plan as it is is the default.  Expected words run through yesterday:
+today's goal isn't due until the day is over."
+  (interactive)
+  (org-scribe-planner--with-current-plan (plan file)
+    (let ((status (org-scribe-planner--status plan)))
+      (cond
+       ((null status)
+        (message "The plan has no schedule yet."))
+       ((eq (plist-get status :status) 'on-track)
+        (message "On track: %d words written, as expected by the end of yesterday."
+                 (plist-get status :actual)))
+       (t
+        (let* ((ahead (eq (plist-get status :status) 'ahead))
+               (as-of (org-scribe-planner--default-recalculation-date plan))
+               (chosen
+                (org-scribe-planner--choose-change
+                 plan
+                 (format "%s (expected %d, written %d). Adjust the plan?"
+                         (org-scribe-planner--describe-status status)
+                         (plist-get status :expected) (plist-get status :actual))
+                 `(("Keep the plan as it is" . ignore)
+                   (,(if ahead "Reduce the daily target (keep the end date)"
+                       "Increase the daily target (keep the end date)")
+                    . ,(lambda (p)
+                         (let ((problem (org-scribe-planner--recalculation-problem p as-of)))
+                           (when problem (user-error "%s" problem)))
+                         (org-scribe-planner--rebase-on-progress p as-of)
+                         (org-scribe-planner--sync-daily p)))
+                   (,(if ahead "Finish early (keep the daily target)"
+                       "Extend the deadline (keep the daily target)")
+                    . ,(lambda (p)
+                         (org-scribe-planner--rebase-on-progress p as-of)
+                         (org-scribe-planner--calculate-time
+                          p (org-scribe-plan-daily-words p))))))))
+          (unless (string= chosen "Keep the plan as it is")
+            (org-scribe-planner--save-plan plan file)
+            (org-scribe-planner--refresh-agenda-if-synced plan file)
+            (setq org-scribe-planner--current-plan plan)
+            (org-scribe-planner-show-calendar plan file))))))))
 
 ;;;###autoload
 (defun org-scribe-planner-recalculate ()
@@ -3445,6 +3621,7 @@ Errors if not inside an org-scribe project."
   _r_: Recalculate plan
   _a_: Adjust remaining days (keep end date)
   _e_: Adjust end date (keep daily words)
+  _c_: Check progress (adjust if ahead/behind)
   _m_: Milestones
   _D_: Dashboards menu
   _E_: Enable for project
@@ -3460,6 +3637,7 @@ Errors if not inside an org-scribe project."
     ("r" org-scribe-planner-recalculate "recalculate")
     ("a" org-scribe-planner-adjust-remaining-plan "adjust remaining")
     ("e" org-scribe-planner-adjust-end-date "adjust end date")
+    ("c" org-scribe-planner-check-progress "check progress")
     ("m" org-scribe-planner-show-milestones "milestones")
     ("D" org-scribe-planner-dashboards-menu "dashboards")
     ("E" org-scribe-planner-enable-for-project "enable for project")

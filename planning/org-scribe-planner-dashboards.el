@@ -31,6 +31,7 @@
 (declare-function org-scribe-planner--daily-deltas "org-scribe-planner")
 (declare-function org-scribe-planner--entry-delta "org-scribe-planner")
 (declare-function org-scribe-planner--expected-through "org-scribe-planner")
+(declare-function org-scribe-planner--status "org-scribe-planner")
 (declare-function org-scribe-planner--add-days "org-scribe-planner")
 (declare-function org-scribe-planner--days-between "org-scribe-planner")
 (declare-function org-scribe-planner-show-current-plan "org-scribe-planner")
@@ -204,6 +205,18 @@ Returns plist with :average :recent :trend :projected-date."
 
 ;;; Helper Functions - Schedule Position
 
+(defun org-scribe-planner--status-text (position &optional marks)
+  "Return POSITION's status as a propertized label: ahead, on track or behind.
+POSITION is from `org-scribe-planner--calculate-schedule-position'.
+With MARKS, append a check mark or a warning sign."
+  (cond
+   ((plist-get position :on-track)
+    (propertize (if marks "ON TRACK ✓" "ON TRACK") 'face 'org-done))
+   ((eq (plist-get position :status) 'ahead)
+    (propertize (if marks "AHEAD OF SCHEDULE ✓" "AHEAD OF SCHEDULE") 'face 'org-done))
+   (t
+    (propertize (if marks "BEHIND SCHEDULE ⚠" "BEHIND SCHEDULE") 'face 'org-warning))))
+
 (defun org-scribe-planner--calculate-schedule-position (plan)
   "Calculate if PLAN is ahead or behind schedule.
 Returns plist with :status :days-ahead :words-ahead :current-words :percentage :days-elapsed :days-remaining.
@@ -249,15 +262,16 @@ Accordingly, :days-elapsed counts the days before today and
                           (/ (* 100.0 cumulative-actual) total-words)
                         0))
            (words-ahead (- cumulative-actual expected-by-today))
-           (daily-target (org-scribe-plan-daily-words plan))
-           (days-ahead (if (> daily-target 0)
-                         (/ (float words-ahead) daily-target)
-                       0))
+           ;; Writing days ahead along the schedule, not words ÷ the
+           ;; current daily target (which changes with every recalculation)
+           (days-ahead (or (plist-get (org-scribe-planner--status plan) :days) 0))
            (status (cond
                    ((>= words-ahead 0) 'ahead)
                    (t 'behind))))
 
+      ;; :status stays two-valued for the dashboards; :on-track is exact
       (list :status status
+            :on-track (= words-ahead 0)
             :days-ahead days-ahead
             :words-ahead words-ahead
             :cumulative-actual cumulative-actual
@@ -399,14 +413,9 @@ beginning, and displayed after BODY executes."
 
             ;; Schedule Position Section
             (insert (propertize "📈 Schedule Status\n" 'face 'org-level-2))
-            (let* ((status (plist-get position :status))
-                   (words-ahead (plist-get position :words-ahead))
+            (let* ((words-ahead (plist-get position :words-ahead))
                    (days-ahead (plist-get position :days-ahead))
-                   (status-text (if (eq status 'ahead)
-                                   (propertize "AHEAD OF SCHEDULE"
-                                             'face 'org-done)
-                                 (propertize "BEHIND SCHEDULE"
-                                           'face 'org-warning)))
+                   (status-text (org-scribe-planner--status-text position nil))
                    (sign (if (>= words-ahead 0) "+" "")))
               (insert (format "  Status: %s\n" status-text))
               (insert (format "  Progress: %s%s words (%s%.1f days)\n"
@@ -812,8 +821,7 @@ plot '%s' using 1:2 with lines ls 1 title 'Planned Progress', \\
                   (let* ((position (org-scribe-planner--calculate-schedule-position plan))
                          (cumulative-actual (plist-get position :cumulative-actual))
                          (expected-by-today (plist-get position :expected-by-today))
-                         (words-ahead (plist-get position :words-ahead))
-                         (status (plist-get position :status)))
+                         (words-ahead (plist-get position :words-ahead)))
 
                     ;; Display image in buffer
                     (org-scribe-planner--with-dashboard-buffer "*Cumulative Progress*"
@@ -828,11 +836,7 @@ plot '%s' using 1:2 with lines ls 1 title 'Planned Progress', \\
                                       (org-scribe-planner--format-number cumulative-actual)))
                         (insert (format "  Expected by yesterday:  %s\n"
                                       (org-scribe-planner--format-number expected-by-today)))
-                        (let ((status-text (if (eq status 'ahead)
-                                              (propertize "AHEAD OF SCHEDULE ✓"
-                                                        'face 'org-done)
-                                            (propertize "BEHIND SCHEDULE ⚠"
-                                                      'face 'org-warning)))
+                        (let ((status-text (org-scribe-planner--status-text position t))
                               (sign (if (>= words-ahead 0) "+" "")))
                           (insert (format "  Status:                 %s (%s%s words)\n\n"
                                         status-text
@@ -1103,13 +1107,8 @@ WIDTH and HEIGHT are dimensions in pixels."
 
               ;; Status Summary (text)
               (insert (propertize "📈 Schedule Status\n" 'face 'org-level-2))
-              (let* ((status (plist-get position :status))
-                     (words-ahead (plist-get position :words-ahead))
-                     (status-text (if (eq status 'ahead)
-                                     (propertize "AHEAD OF SCHEDULE"
-                                               'face 'org-done)
-                                   (propertize "BEHIND SCHEDULE"
-                                             'face 'org-warning)))
+              (let* ((words-ahead (plist-get position :words-ahead))
+                     (status-text (org-scribe-planner--status-text position nil))
                      (sign (if (>= words-ahead 0) "+" "")))
                 (insert (format "  Status: %s\n" status-text))
                 (insert (format "  Progress: %s%s words\n\n"

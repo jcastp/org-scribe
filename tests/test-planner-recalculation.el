@@ -245,7 +245,8 @@ the plan a full day behind."
     (cl-letf (((symbol-function 'message)
                (lambda (fmt &rest args) (setq shown (apply #'format fmt args)))))
       (org-scribe-planner--show-progress-report plan))
-    (should (string-match-p "Ahead: \\+0 words" shown))))
+    ;; Exactly the words expected through yesterday: on track
+    (should (string-match-p "| On track" shown))))
 
 ;;; Mode line
 

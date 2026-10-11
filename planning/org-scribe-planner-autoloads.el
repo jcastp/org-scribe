@@ -20,9 +20,11 @@ that has not yet been asked, so no prompt appears in that case either.
 (autoload 'org-scribe-planner-onboard-existing-project "org-scribe-planner"
 "Create a writing plan for a novel already in progress.
 Reads the current manuscript word count, asks for your target and
-timeline, then builds a plan that treats all existing words as a
-single historical entry so auto-tracking records only net-new writing
-going forward.
+timeline, then builds a plan that starts today (or the date you give)
+with the existing words recorded as its pre-existing words
+(PREEXISTING_WORDS): they count toward the goal and completion, but
+not as any one day's writing, so auto-tracking records only net-new
+writing going forward.
 
 Skips the normal new-plan wizard; the daily target is calculated from
 the *remaining* words over the *remaining* working days, not the total." t)
@@ -73,19 +75,34 @@ converted back to a cumulative total — this date's previous cumulative
 total plus the (possibly edited) delta — before being saved.  Editing an
 earlier day's delta this way naturally shifts the derived deltas of
 every later date that still has its own absolute cumulative total." t)
+(autoload 'org-scribe-planner-adjust-remaining-plan "org-scribe-planner"
+"Spread the words you actually have left over the remaining writing days.
+Keeps your end date and total word goal; changes the daily target.  Past
+days keep their goals; the change starts today, or tomorrow if you have
+already written today.  Shows what changes and asks before applying it.
+The counterpart of `org-scribe-planner-adjust-end-date'." t)
 (autoload 'org-scribe-planner-adjust-end-date "org-scribe-planner"
 "Move the end date so the words left fit at the current daily target.
 Finishes early when you are ahead and extends the deadline when you are
-behind, keeping your daily target and total word goal.  The counterpart
-of `org-scribe-planner-adjust-remaining-plan', which keeps the end date
-and changes the daily target instead." t)
-(autoload 'org-scribe-planner-adjust-remaining-plan "org-scribe-planner"
-"Recalculate daily target for remaining days based on progress.
-This command keeps your end date and total word goal fixed, and adjusts
-only the daily target for remaining working days based on your actual
-cumulative progress so far." t)
+behind, keeping your daily target and total word goal.  Past days keep
+their goals.  Shows the new end date and asks before applying it.  The
+counterpart of `org-scribe-planner-adjust-remaining-plan', which keeps
+the end date and changes the daily target instead." t)
+(autoload 'org-scribe-planner-check-progress "org-scribe-planner"
+"Show where the active plan stands; when ahead or behind, offer to adjust it.
+Ahead, you can reduce the daily target (keeping the end date) or finish
+early (keeping the daily target); behind, increase the daily target or
+extend the deadline.  Every option shows its outcome first, and keeping
+the plan as it is is the default.  Expected words run through yesterday:
+today's goal isn't due until the day is over." t)
 (autoload 'org-scribe-planner-recalculate "org-scribe-planner"
-"Recalculate the active writing plan with new parameters." t)
+"Change the active writing plan, previewing the result before applying it.
+A new total, daily target or length asks which of the other two to keep;
+\"Two values\" sets two and calculates the third.  Adding or removing
+spare days asks how the plan absorbs them: keep the end date (the daily
+target changes), move the end date (keep the daily target), or keep both
+(the total changes).  Every option shows its outcome first.  Past days
+keep their goals throughout." t)
 (autoload 'org-scribe-planner-show-milestones "org-scribe-planner"
 "Show milestone dates for the active writing plan with actual and expected dates." t)
 (autoload 'org-scribe-planner-show-current-plan "org-scribe-planner"

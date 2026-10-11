@@ -1892,6 +1892,7 @@ Press =F8 F8 W= to open the planner sub-menu. If the project has declined the pl
 - =r= - Recalculate plan
 - =a= - Adjust remaining days (keep the end date, change the daily target)
 - =e= - Adjust end date (keep the daily target: finish early or extend)
+- =c= - Check progress: ahead, on track or behind, and offer to adjust
 - =m= - Milestones
 - =D= - Dashboards menu
 - =E= - Enable planner for this project

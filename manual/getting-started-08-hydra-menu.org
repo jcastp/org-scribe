@@ -319,6 +319,7 @@ Note: there is no relationship dynamic-block/graph-visualization feature anymore
   r: Recalculate plan
   a: Adjust remaining days (keep end date)
   e: Adjust end date (keep daily words)
+  c: Check progress (adjust if ahead/behind)
   m: Milestones
   D: Dashboards menu
   E: Enable for project

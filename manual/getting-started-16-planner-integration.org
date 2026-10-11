@@ -79,6 +79,7 @@ Press ~F8 F8~ to open the Hydra menu. Press ~W~ to open the planner submenu:
   r: Recalculate plan
   a: Adjust remaining days (keep end date)
   e: Adjust end date (keep daily words)
+  c: Check progress (adjust if ahead/behind)
   m: Milestones
   D: Dashboards menu
   E: Enable for project
@@ -240,11 +241,23 @@ Use this when your schedule changes — vacation, deadline moved, days off. The 
 
 The end date stays where it is: only the daily target changes. Past days keep the goals they had — only the days from today on (from tomorrow, if you have already written today) share the words you actually have left. Afterwards the plan counts you as on track: it measures from what you had written when you recalculated.
 
+Before applying anything it shows the change — /From 2026-11-11: 25000 words left over 20 writing days. Daily target 1000 → 1250 words (+250, +25.0%)/ — and asks.
+
 ** Adjust the End Date
 
 Press ~F8 F8 W e~ (Adjust end date), or ~e~ in the plan calendar.
 
-The opposite trade: keep your daily target and move the end date so the words left fit. Ahead of schedule, you finish early; behind, the deadline is extended. Spare days are skipped, and if you have already written today, the count starts tomorrow.
+The opposite trade: keep your daily target and move the end date so the words left fit. Ahead of schedule, you finish early; behind, the deadline is extended. Spare days are skipped, and if you have already written today, the count starts tomorrow. It shows the new end date (/End date 2026-11-30 → 2026-12-05: extended by 5 days/) and asks before applying it.
+
+** Check Progress
+
+Press ~F8 F8 W c~ (Check progress), or ~c~ in the plan calendar.
+
+It tells you where the plan stands — /On track/, or /Behind: -500 words (-5.0%, -0.5 writing days)/ — counting your goals through yesterday: today's goal isn't due until the day is over, but the words you've already written today count. The writing days are measured along your own schedule, day by day.
+
+When you are ahead or behind it offers the two adjustments above, each with its outcome: ahead, /reduce the daily target/ or /finish early/; behind, /increase the daily target/ or /extend the deadline/. Keeping the plan as it is stays the default.
+
+The same status line appears in the plan calendar's summary and after every word-count sync.
 
 ** Starting Mid-Draft
 
@@ -449,6 +462,7 @@ You've completed Lesson 16!
 | ~r~   | Recalculate plan         | Change total, days or spare days, with previews      |
 | ~a~   | Adjust remaining days    | Reschedule around changes in availability            |
 | ~e~   | Adjust end date          | Keep the daily target; finish early or extend        |
+| ~c~   | Check progress           | Ahead, on track or behind; offers the adjustments    |
 | ~m~   | Milestones               | View/set named word count checkpoints                |
 | ~D~   | Dashboards menu          | Progress dashboards and analytics                    |
 | ~E~   | Enable for project       | Flip this project's gate to ~yes~                      |
