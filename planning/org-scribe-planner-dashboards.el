@@ -34,6 +34,8 @@
 (declare-function org-scribe-planner--status "org-scribe-planner")
 (declare-function org-scribe-planner--day-goal "org-scribe-planner")
 (declare-function org-scribe-planner--weekday "org-scribe-planner")
+(declare-function org-scribe-planner--week-day-names "org-scribe-planner")
+(defvar org-scribe-planner-week-start-day)
 (declare-function org-scribe-planner--words-by-date "org-scribe-planner")
 (declare-function org-scribe-planner--day-status "org-scribe-planner")
 (declare-function org-scribe-planner--completion-date "org-scribe-planner")
@@ -2220,19 +2222,21 @@ Shows progress, velocity, and performance dashboards side by side."
                                    (calendar-month-name month)
                                    year)
                             'face 'org-level-2))
-                    (insert "  Mo Tu We Th Fr Sa Su\n")
+                    (insert "  " (mapconcat #'identity (org-scribe-planner--week-day-names) " ") "\n")
                     (setq current-month month
                           current-year year)
 
-                    ;; Padding for first week (1=Monday, 0=Sunday)
-                    (when (> dow 0)
-                      (insert (make-string (* 3 dow) ?\s))))
+                    ;; Padding for the first week
+                    ;; Pad to the first day's column, counted from the first
+                    ;; day of the week (the header's first column)
+                    (insert (make-string (* 3 (mod (- dow org-scribe-planner-week-start-day) 7))
+                                         ?\s)))
 
                   ;; Day cell
                   (insert (propertize (format " %c " char) 'face face))
 
-                  ;; New line on Sunday
-                  (when (= dow 0)
+                  ;; New line after the last day of the week
+                  (when (= dow (mod (+ org-scribe-planner-week-start-day 6) 7))
                     (insert "\n")))))
 
             (insert "\n\n")
@@ -2271,6 +2275,8 @@ Shows progress, velocity, and performance dashboards side by side."
                    "Velocity Trend Analysis"
                    "Performance Analytics"
                    "Consistency Heatmap"
+                   "Weekly Summary"
+                   "Month Grid"
                    "Split Dashboard View"
                    "Show All Dashboards")
                  nil t)))
@@ -2285,6 +2291,8 @@ Shows progress, velocity, and performance dashboards side by side."
       ("Velocity Trend Analysis" (org-scribe-planner-show-velocity-trends))
       ("Performance Analytics" (org-scribe-planner-show-performance-analytics))
       ("Consistency Heatmap" (org-scribe-planner-show-heatmap))
+      ("Weekly Summary" (org-scribe-planner-show-weekly-summary))
+      ("Month Grid" (org-scribe-planner-show-month-calendar))
       ("Split Dashboard View" (org-scribe-planner-show-split-dashboards))
       ("Show All Dashboards" (org-scribe-planner-show-all-dashboards)))))
 

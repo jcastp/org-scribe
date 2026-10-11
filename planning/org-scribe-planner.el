@@ -90,6 +90,14 @@ entries must be entered by hand with `org-scribe-planner-today'."
   :type 'boolean
   :group 'org-scribe-planner)
 
+(defcustom org-scribe-planner-week-start-day 1
+  "The day the planner's weeks start on: 1 for Monday, 0 for Sunday.
+Any day of the week works, 0 (Sunday) to 6 (Saturday).  Used by the plan
+calendar's weeks, the weekly summary, the month grid and the heatmap."
+  :type '(choice (const :tag "Monday" 1) (const :tag "Sunday" 0)
+                 (integer :tag "Other day (0 = Sunday … 6 = Saturday)"))
+  :group 'org-scribe-planner)
+
 (defcustom org-scribe-planner-streak-grace-days 2
   "Number of days without a new entry before a writing streak is broken.
 A value of 2 means the streak survives if the last logged entry was
@@ -1087,8 +1095,8 @@ nil).  The statuses:
   `no-goal'  outside the plan
   `rest'     a rest day (goal 0) with nothing written; writing on one
              is `exceeded'
-  `future'   after today, or today with nothing logged yet (today isn't
-             over)
+  `future'   after today, or today below its goal (today isn't over:
+             it isn't due, and the words so far can still grow)
   `exceeded' more than the day's goal
   `met'      the day's goal
   `partial'  75% of the goal or more
@@ -1102,7 +1110,7 @@ nil).  The statuses:
      ((null goal) 'no-goal)
      ((zerop goal) (if (and words (> words 0)) 'exceeded 'rest))
      ((string< today date) 'future)
-     ((and (string= date today) (null words)) 'future)
+     ((and (string= date today) (< (or words 0) goal)) 'future)
      ((> (or words 0) goal) 'exceeded)
      ((= (or words 0) goal) 'met)
      ((>= (or words 0) (* 0.75 goal)) 'partial)
@@ -1144,6 +1152,254 @@ reached; nil without a positive PACE."
           (setq date (org-scribe-planner--add-days date 1)
                 count (1+ count)))
         found)))))
+
+;;; Weeks and views
+
+(defun org-scribe-planner--week-start (date)
+  "Return the first day of the week DATE falls in.
+Weeks start on `org-scribe-planner-week-start-day'."
+  (org-scribe-planner--add-days
+   date (- (mod (- (org-scribe-planner--weekday date) org-scribe-planner-week-start-day) 7))))
+
+(defun org-scribe-planner--week-day-names ()
+  "Return the two-letter day names in week order, from the first day of the week."
+  (mapcar (lambda (i) (substring (calendar-day-name (mod (+ i org-scribe-planner-week-start-day) 7)
+                                                     nil t)
+                                 0 2))
+          (number-sequence 0 6)))
+
+(defun org-scribe-planner--manuscript-total-through (plan date)
+  "Return PLAN's manuscript total at the end of DATE.
+The last ledger entry on or before DATE, or the pre-existing words before
+the first one."
+  (let ((total (or (org-scribe-plan-preexisting-words plan) 0)))
+    (dolist (entry (org-scribe-planner--sorted-daily-counts
+                    (org-scribe-plan-daily-word-counts plan)))
+      (unless (string< date (car entry))
+        (setq total (plist-get (cdr entry) :words))))
+    total))
+
+(defun org-scribe-planner--weekly-summary (plan)
+  "Return PLAN's days grouped in calendar weeks, with what was written.
+Weeks start on `org-scribe-planner-week-start-day'; the first and last
+may be partial.  One plist per week:
+  :number :start :end    week number and its first and last plan day
+  :writing-days          days with a goal; :rest-days days without
+  :goals                 the goals of the writing days
+  :goal                  the week's goal
+  :started :ended        whether the week has begun / is over
+and, for started weeks:
+  :written               words written that week (net)
+  :days-written          days with words written
+  :written-total         the manuscript total at the end of the week
+  :planned-total         where it should stand (see below)
+  :difference            :written-total minus :planned-total
+For the current week :planned-total runs through yesterday, like the
+plan's status: today isn't expected until it's over.  As in wordplanner's
+`weekly_summary'."
+  (let* ((today (org-scribe-planner--get-today-date))
+         (yesterday (org-scribe-planner--add-days today -1))
+         (written (org-scribe-planner--words-by-date plan))
+         (weeks nil)
+         (current nil))
+    (dolist (day (org-scribe-planner--generate-day-schedule plan))
+      (let ((start (org-scribe-planner--week-start (plist-get day :date))))
+        (if (and current (string= (car current) start))
+            (push day (cdr current))
+          (when current (push current weeks))
+          (setq current (list start day)))))
+    (when current (push current weeks))
+    (let ((number 0))
+      (mapcar
+       (lambda (week)
+         (let* ((days (reverse (cdr week)))
+                (start (plist-get (car days) :date))
+                (end (plist-get (car (last days)) :date))
+                (goals (mapcar (lambda (d) (plist-get d :words)) days))
+                (started (not (string< today start)))
+                (ended (string< end today))
+                (result (list :number (setq number (1+ number))
+                              :start start :end end
+                              :writing-days (cl-count-if #'cl-plusp goals)
+                              :rest-days (cl-count 0 goals)
+                              :goals (cl-remove-if-not #'cl-plusp goals)
+                              :goal (apply #'+ goals)
+                              :started started :ended ended
+                              :planned-total (org-scribe-planner--expected-through plan end))))
+           (when started
+             (let* ((before (org-scribe-planner--add-days start -1))
+                    (written-total (org-scribe-planner--manuscript-total-through plan end))
+                    (planned (org-scribe-planner--expected-through
+                              plan (if ended end yesterday))))
+               (setq result
+                     (append result
+                             (list :written (- written-total
+                                               (org-scribe-planner--manuscript-total-through
+                                                plan before))
+                                   :days-written (cl-count-if
+                                                  (lambda (d) (> (gethash (plist-get d :date) written 0) 0))
+                                                  days)
+                                   :written-total written-total
+                                   :difference (- written-total planned))))
+               (setq result (plist-put result :planned-total planned))))
+           result))
+       (nreverse weeks)))))
+
+(defun org-scribe-planner--format-week-written (week)
+  "Describe WEEK's words written: the count, ✓ ~ ✗, and the share of its goal."
+  (if (not (plist-get week :started))
+      ""
+    (let* ((written (plist-get week :written))
+           (goal (plist-get week :goal))
+           (mark (cond ((zerop goal) "")
+                       ((>= written goal) " ✓")
+                       ((not (plist-get week :ended)) "")
+                       ((> written 0) " ~")
+                       (t " ✗"))))
+      (format "%d%s%s" written mark
+              (if (> goal 0) (format " %d%%" (round (* 100.0 (/ (float written) goal)))) "")))))
+
+;;;###autoload
+(defun org-scribe-planner-show-weekly-summary ()
+  "Show the active plan week by week, with what was written.
+For each calendar week: days written of the writing days, rest days, the
+daily goal (a range when the goals vary), the week's goal, the words
+written (✓ goal met, ~ part of it, ✗ none) and their share of the goal,
+where the manuscript should stand and where it stands, and the
+difference.  The current week's difference counts goals through
+yesterday.  Weeks start on `org-scribe-planner-week-start-day'."
+  (interactive)
+  (org-scribe-planner--with-current-plan (plan _)
+    (let ((weeks (org-scribe-planner--weekly-summary plan)))
+      (with-current-buffer (get-buffer-create "*Writing Plan Weekly*")
+        (let ((inhibit-read-only t))
+          (erase-buffer)
+          (org-mode)
+          (insert (format "* Weekly summary: %s\n\n" (org-scribe-plan-title plan)))
+          (insert "| Week | Dates | Days written | Rest | Daily goal | Week goal | Written | Planned total | Actual total | +/- |\n|-\n")
+          (dolist (week weeks)
+            (let ((goals (plist-get week :goals)))
+              (insert (format "| %d | %s – %s | %s | %s | %s | %d | %s | %d | %s | %s |\n"
+                              (plist-get week :number)
+                              (substring (plist-get week :start) 5)
+                              (substring (plist-get week :end) 5)
+                              (if (plist-get week :started)
+                                  (format "%d/%d" (plist-get week :days-written)
+                                          (plist-get week :writing-days))
+                                (format "-/%d" (plist-get week :writing-days)))
+                              (if (> (plist-get week :rest-days) 0) (plist-get week :rest-days) "-")
+                              (cond ((null goals) "-")
+                                    ((= (apply #'min goals) (apply #'max goals)) (car goals))
+                                    (t (format "%d–%d" (apply #'min goals) (apply #'max goals))))
+                              (plist-get week :goal)
+                              (org-scribe-planner--format-week-written week)
+                              (plist-get week :planned-total)
+                              (if (plist-get week :started) (plist-get week :written-total) "")
+                              (let ((difference (plist-get week :difference)))
+                                (cond ((null difference) "")
+                                      ((> difference 0) (format "+%d" difference))
+                                      (t (number-to-string difference))))))))
+          (goto-char (point-min))
+          (forward-line 2)
+          (org-table-align)
+          (goto-char (point-min))
+          (setq buffer-read-only t)
+          (local-set-key (kbd "q") #'quit-window)
+          (display-buffer (current-buffer)))))))
+
+(defconst org-scribe-planner--month-cell-width 9
+  "Width of a day's cell in the month grid.")
+
+(defun org-scribe-planner--month-cell (plan date written today)
+  "Return the four lines of DATE's cell in PLAN's month grid, as a list.
+WRITTEN is the table from `org-scribe-planner--words-by-date'.  The lines:
+the day of the month (today in brackets), its goal (or \"rest\"), the
+result (✓ met or exceeded, with the words when over; ~ partial, with the
+words; ✗ missed), and the manuscript's share of the goal by the end of
+the day, for days already logged."
+  (let* ((goal (org-scribe-planner--day-goal plan date))
+         (status (org-scribe-planner--day-status plan date written))
+         (words (gethash date written))
+         (number (string-to-number (substring date 8)))
+         (face (pcase status
+                 ((or 'met 'exceeded) 'org-done)
+                 ('partial 'org-scheduled)
+                 ('missed 'org-warning)
+                 ('rest 'org-agenda-dimmed-todo-face)
+                 (_ 'default))))
+    (list (if (string= date today)
+              (propertize (format "[%d]" number) 'face '(:weight bold :inverse-video t))
+            (format "%d" number))
+          (cond ((null goal) "")
+                ((zerop goal) (propertize "rest" 'face 'org-agenda-dimmed-todo-face))
+                (t (format "%dw" goal)))
+          (propertize (pcase status
+                        ('exceeded (format "✓%d" words))
+                        ('met "✓")
+                        ('partial (format "~%d" words))
+                        ('missed (if (and words (> words 0)) (format "✗%d" words) "✗"))
+                        ;; Today, still under way
+                        ((guard (and words (string= date today))) (format "%d…" words))
+                        (_ ""))
+                      'face face)
+          (if (and goal words (not (string< today date)))
+              (propertize (format "%d%%" (round (* 100.0 (/ (float (org-scribe-planner--manuscript-total-through plan date))
+                                                         (org-scribe-plan-total-words plan)))))
+                          'face 'shadow)
+            ""))))
+
+;;;###autoload
+(defun org-scribe-planner-show-month-calendar ()
+  "Show the active plan as a month grid.
+One grid per month, weeks starting on `org-scribe-planner-week-start-day'.
+Each day shows its goal, its result (✓ met, ~ partial, ✗ missed) and the
+manuscript's share of the goal by the end of the day; today is in
+brackets."
+  (interactive)
+  (org-scribe-planner--with-current-plan (plan _)
+    (let* ((today (org-scribe-planner--get-today-date))
+           (written (org-scribe-planner--words-by-date plan))
+           (width org-scribe-planner--month-cell-width)
+           (pad (lambda (text) (concat text (make-string (max 0 (- width (string-width text))) ?\s))))
+           (month (concat (substring (org-scribe-plan-start-date plan) 0 8) "01"))
+           (last-month (substring (org-scribe-plan-end-date plan) 0 7)))
+      (with-current-buffer (get-buffer-create "*Writing Plan Months*")
+        (let ((inhibit-read-only t))
+          (erase-buffer)
+          (insert (propertize (format "Writing Plan: %s\n" (org-scribe-plan-title plan))
+                              'face 'org-level-1))
+          (insert (propertize "✓ met  ~ partial (75%+)  ✗ missed  [n] today\n\n" 'face 'shadow))
+          (while (not (string< last-month (substring month 0 7)))
+            (let* ((parts (org-scribe-planner--parse-date-parts month))
+                   (month-end (format "%04d-%02d-%02d" (nth 0 parts) (nth 1 parts)
+                                      (calendar-last-day-of-month (nth 1 parts) (nth 0 parts))))
+                   (day (org-scribe-planner--week-start month)))
+              (insert (propertize (format "%s %d\n" (calendar-month-name (nth 1 parts)) (nth 0 parts))
+                                  'face 'org-level-2))
+              (insert (string-trim-right
+                       (mapconcat (lambda (name) (funcall pad name))
+                                  (org-scribe-planner--week-day-names) ""))
+                      "\n")
+              (while (not (string< month-end day))
+                (let ((cells (mapcar (lambda (offset)
+                                       (let ((date (org-scribe-planner--add-days day offset)))
+                                         (if (and (not (string< date month))
+                                                  (not (string< month-end date)))
+                                             (org-scribe-planner--month-cell plan date written today)
+                                           (list "" "" "" ""))))
+                                     (number-sequence 0 6))))
+                  (dotimes (line 4)
+                    (insert (string-trim-right
+                             (mapconcat (lambda (cell) (funcall pad (nth line cell))) cells ""))
+                            "\n"))
+                  (insert "\n")
+                  (setq day (org-scribe-planner--add-days day 7))))
+              (setq month (format "%04d-%02d-01"
+                                  (if (= (nth 1 parts) 12) (1+ (nth 0 parts)) (nth 0 parts))
+                                  (1+ (mod (nth 1 parts) 12))))))
+          (goto-char (point-min))
+          (special-mode)
+          (display-buffer (current-buffer)))))))
 
 ;;; Locked past goals and recalculation from progress
 
@@ -2244,7 +2500,7 @@ Optional FILEPATH shows the location of the plan file."
         (insert (make-string 80 ?=) "\n")
         (insert "Commands:\n")
         (insert "  [q] quit  [G] refresh view  [u] sync word count  [d] daily word count\n")
-        (insert "  [r] recalculate plan  [a] adjust remaining days  [e] adjust end date  [c] check progress\n")
+        (insert "  [r] recalculate plan  [a] adjust remaining days  [e] adjust end date  [c] check progress\n  [w] weekly summary  [M] month grid\n")
         (insert "  [D] dashboards menu  [p] progress  [b] burndown  [g] cumulative\n")
         (insert "  [v] velocity  [h] heatmap\n")
 	(insert (make-string 80 ?=) "\n\n")
@@ -2318,7 +2574,8 @@ Optional FILEPATH shows the location of the plan file."
                    (day-num (nth 2 date-parts))
                    (day-of-week (calendar-day-of-week (list month day-num year)))
                    (day-name (calendar-day-name (list month day-num year)))
-                   (is-monday (= day-of-week 1))
+                   ;; A week starts on `org-scribe-planner-week-start-day'
+                   (is-monday (= day-of-week org-scribe-planner-week-start-day))
                    (percentage (if (and actual (not is-spare) (> display-target 0))
                                   (format "[%.1f%%]" (* 100.0 (/ (float actual) display-target)))
                                 ""))
@@ -2335,7 +2592,7 @@ Optional FILEPATH shows the location of the plan file."
                 (unless is-spare
                   (setq expected-total (+ expected-total current-daily-words))))
 
-              ;; Week header (starts on Monday)
+              ;; Week header (on the first day of the week)
               (when (or is-monday (null prev-week-start))
                 (insert (propertize (format "\nWeek %d:\n" week-num) 'face 'org-level-3))
                 ;; Add column headers
@@ -2408,14 +2665,14 @@ Optional FILEPATH shows the location of the plan file."
                          (let* ((next-date (plist-get next-day :date))
                                 (next-parts (org-scribe-planner--parse-date-parts next-date))
                                 (next-dow (calendar-day-of-week (list (nth 1 next-parts) (nth 2 next-parts) (nth 0 next-parts)))))
-                           (= next-dow 1)))  ; next day is Monday
+                           (= next-dow org-scribe-planner-week-start-day)))  ; next week begins
                   (insert (propertize (format "  Week total: %d words\n" week-words)
                                      'face 'org-level-4)))))))
 
         (insert "\n" (make-string 80 ?=) "\n")
         (insert "\nCommands:\n")
         (insert "  [q] quit  [G] refresh view  [u] sync word count  [d] daily word count\n")
-        (insert "  [r] recalculate plan  [a] adjust remaining days  [e] adjust end date  [c] check progress\n")
+        (insert "  [r] recalculate plan  [a] adjust remaining days  [e] adjust end date  [c] check progress\n  [w] weekly summary  [M] month grid\n")
         (insert "  [D] dashboards menu  [p] progress  [b] burndown  [g] cumulative\n")
         (insert "  [v] velocity  [h] heatmap\n"))
 
@@ -2432,6 +2689,8 @@ Optional FILEPATH shows the location of the plan file."
     (define-key map (kbd "a") #'org-scribe-planner-adjust-remaining-plan)
     (define-key map (kbd "e") #'org-scribe-planner-adjust-end-date)
     (define-key map (kbd "c") #'org-scribe-planner-check-progress)
+    (define-key map (kbd "w") #'org-scribe-planner-show-weekly-summary)
+    (define-key map (kbd "M") #'org-scribe-planner-show-month-calendar)
     (define-key map (kbd "D") #'org-scribe-planner-dashboards-menu)
     (define-key map (kbd "m") #'org-scribe-planner-show-multi-metric-dashboard)
     (define-key map (kbd "p") #'org-scribe-planner-show-progress-dashboard)
@@ -4183,6 +4442,8 @@ Errors if not inside an org-scribe project."
   _e_: Adjust end date (keep daily words)
   _c_: Check progress (adjust if ahead/behind)
   _m_: Milestones
+  _w_: Weekly summary
+  _M_: Month grid
   _D_: Dashboards menu
   _E_: Enable for project
   _X_: Disable for project
@@ -4199,6 +4460,8 @@ Errors if not inside an org-scribe project."
     ("e" org-scribe-planner-adjust-end-date "adjust end date")
     ("c" org-scribe-planner-check-progress "check progress")
     ("m" org-scribe-planner-show-milestones "milestones")
+    ("w" org-scribe-planner-show-weekly-summary "weekly summary")
+    ("M" org-scribe-planner-show-month-calendar "month grid")
     ("D" org-scribe-planner-dashboards-menu "dashboards")
     ("E" org-scribe-planner-enable-for-project "enable for project")
     ("X" org-scribe-planner-disable-for-project "disable for project")

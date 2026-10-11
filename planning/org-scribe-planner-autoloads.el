@@ -9,6 +9,20 @@
 
 ;;; Generated autoloads from org-scribe-planner.el
 
+(autoload 'org-scribe-planner-show-weekly-summary "org-scribe-planner"
+"Show the active plan week by week, with what was written.
+For each calendar week: days written of the writing days, rest days, the
+daily goal (a range when the goals vary), the week's goal, the words
+written (✓ goal met, ~ part of it, ✗ none) and their share of the goal,
+where the manuscript should stand and where it stands, and the
+difference.  The current week's difference counts goals through
+yesterday.  Weeks start on `org-scribe-planner-week-start-day'." t)
+(autoload 'org-scribe-planner-show-month-calendar "org-scribe-planner"
+"Show the active plan as a month grid.
+One grid per month, weeks starting on `org-scribe-planner-week-start-day'.
+Each day shows its goal, its result (✓ met, ~ partial, ✗ missed) and the
+manuscript's share of the goal by the end of the day; today is in
+brackets." t)
 (autoload 'org-scribe-planner-new-plan "org-scribe-planner"
 "Create a new writing plan interactively.
 TITLE and SAVE-PATH, when supplied, are used directly instead of

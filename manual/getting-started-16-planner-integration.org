@@ -81,6 +81,8 @@ Press ~F8 F8~ to open the Hydra menu. Press ~W~ to open the planner submenu:
   e: Adjust end date (keep daily words)
   c: Check progress (adjust if ahead/behind)
   m: Milestones
+  w: Weekly summary
+  M: Month grid
   D: Dashboards menu
   E: Enable for project
   X: Disable for project
@@ -261,6 +263,18 @@ It tells you where the plan stands — /On track/, or /Behind: -500 words (-5.0%
 When you are ahead or behind it offers the two adjustments above, each with its outcome: ahead, /reduce the daily target/ or /finish early/; behind, /increase the daily target/ or /extend the deadline/. Keeping the plan as it is stays the default.
 
 The same status line appears in the plan calendar's summary and after every word-count sync.
+
+** Week by Week, Month by Month
+
+Press ~F8 F8 W w~ (or ~w~ in the plan calendar) for the /weekly summary/: one row per calendar week with the days written out of the writing days, rest days, the daily goal, the week's goal, the words written (✓ the goal met, ~ part of it, ✗ none) and their share of the goal, and where the manuscript should stand against where it does. The current week is measured through yesterday.
+
+Press ~F8 F8 W M~ (or ~M~) for the /month grid/: one calendar per month, each day with its goal, its result (✓ ~ ✗) and the share of the whole goal written by then. Today is in brackets; while today is under way it shows the words so far.
+
+Weeks start on Monday. To start them on Sunday — in the plan calendar, the weekly summary, the month grid and the heatmap:
+
+#+begin_src emacs-lisp
+(setq org-scribe-planner-week-start-day 0)
+#+end_src
 
 ** How the Numbers Are Counted
 
@@ -476,6 +490,8 @@ You've completed Lesson 16!
 | ~e~   | Adjust end date          | Keep the daily target; finish early or extend        |
 | ~c~   | Check progress           | Ahead, on track or behind; offers the adjustments    |
 | ~m~   | Milestones               | View/set named word count checkpoints                |
+| ~w~   | Weekly summary           | Each week: goal, written, planned vs actual total    |
+| ~M~   | Month grid               | A calendar of each day's goal and result             |
 | ~D~   | Dashboards menu          | Progress dashboards and analytics                    |
 | ~E~   | Enable for project       | Flip this project's gate to ~yes~                      |
 | ~X~   | Disable for project      | Flip this project's gate to ~no~                       |

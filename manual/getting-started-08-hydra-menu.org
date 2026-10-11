@@ -321,6 +321,8 @@ Note: there is no relationship dynamic-block/graph-visualization feature anymore
   e: Adjust end date (keep daily words)
   c: Check progress (adjust if ahead/behind)
   m: Milestones
+  w: Weekly summary
+  M: Month grid
   D: Dashboards menu
   E: Enable for project
   X: Disable for project

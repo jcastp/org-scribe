@@ -1897,6 +1897,8 @@ Press =F8 F8 W= to open the planner sub-menu. If the project has declined the pl
 - =e= - Adjust end date (keep the daily target: finish early or extend)
 - =c= - Check progress: ahead, on track or behind, and offer to adjust
 - =m= - Milestones
+- =w= - Weekly summary (week by week: goal, written, planned vs actual)
+- =M= - Month grid (each day's goal and result)
 - =D= - Dashboards menu
 - =E= - Enable planner for this project
 - =X= - Disable planner for this project
