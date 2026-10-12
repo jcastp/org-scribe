@@ -1879,7 +1879,10 @@ Day goals are whole words that add up exactly to the goal (10,000 words over
 7 days is 1,429 four times and 1,428 three times). The words can follow a
 pattern (valley, mountain, rising, declining, random), weekends can have a
 goal of their own or be days off, and single days can have their own goal —
-all through =F8 F8 W r= (What changed?). The plan stores its number
+all through =F8 F8 W r= (What changed?). New plans can start from a preset
+(novel draft, NaNoWriMo, novella, short story, daily habits), with the one for
+the project's type offered first, and defaults for pattern and weekends can be
+set once (=org-scribe-planner-default-pattern= and friends). The plan stores its number
 of writing days (=WRITING_DAYS=); its end date follows from them and the spare
 days.
 

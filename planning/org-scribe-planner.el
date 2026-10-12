@@ -90,6 +90,68 @@ entries must be entered by hand with `org-scribe-planner-today'."
   :type 'boolean
   :group 'org-scribe-planner)
 
+(defcustom org-scribe-planner-presets
+  '(("Novel draft" :description "A full novel draft" :total 80000 :days 60
+     :pattern valley :weekend-mode same :project-types (novel))
+    ("NaNoWriMo" :description "50,000 words in 30 days" :total 50000 :days 30
+     :pattern flat :weekend-mode different :project-types (novel))
+    ("Novella" :description "A novella, 20,000-40,000 words" :total 30000 :days 30
+     :pattern mountain :weekend-mode different :project-types (novel short-story))
+    ("Short story" :description "A short story in a week" :total 5000 :days 7
+     :pattern rising :weekend-mode different :project-types (short-story))
+    ("1,000 words a day" :description "A daily habit for a month" :total 30000 :daily 1000
+     :pattern flat :weekend-mode same)
+    ("500 words a day" :description "A gentle daily habit for a month" :total 15000 :daily 500
+     :pattern flat :weekend-mode same))
+  "Preset plans offered when a new plan is created.
+Each entry is (NAME . PLIST).  The PLIST keys:
+  :description    one line shown next to the name
+  :total          the total goal, in words
+  :days           the days available (calendar days), or
+  :daily          the words per day: give one of the two
+  :pattern        a suggested writing pattern (one of
+                  `org-scribe-planner--patterns')
+  :weekend-mode   a suggested weekend setting: `same', `different' or `rest'
+  :project-types  the org-scribe project types (`novel', `short-story') the
+                  preset suits; the first is its main one.  A project's
+                  type gets, as the default answer, the first preset made
+                  mainly for it, or else the first that suits it
+The values can all be changed when the plan is created.  Adapted from
+wordplanner's templates."
+  :type '(alist :key-type string :value-type plist)
+  :group 'org-scribe-planner)
+
+(defcustom org-scribe-planner-default-pattern 'flat
+  "Writing pattern offered for new plans made from scratch.
+One of `flat', `valley', `mountain', `rising', `declining' or `random'.
+When it isn't `flat', the new-plan wizard asks whether to use it."
+  :type '(choice (const flat) (const valley) (const mountain) (const rising)
+                 (const declining) (const random))
+  :group 'org-scribe-planner)
+
+(defcustom org-scribe-planner-default-pattern-intensity 'moderate
+  "How much the default pattern varies: `mild', `moderate' or `extreme'."
+  :type '(choice (const mild) (const moderate) (const extreme))
+  :group 'org-scribe-planner)
+
+(defcustom org-scribe-planner-default-weekend-mode 'same
+  "Weekend setting offered for new plans made from scratch.
+`same' as other days, a `different' goal of their own, or `rest' (no
+writing).  When it isn't `same', the new-plan wizard asks whether to use it."
+  :type '(choice (const same) (const different) (const rest))
+  :group 'org-scribe-planner)
+
+(defcustom org-scribe-planner-default-weekend-days '(6 0)
+  "Days of the week new plans treat as the weekend, 0 for Sunday to 6 for Saturday."
+  :type '(repeat integer)
+  :group 'org-scribe-planner)
+
+(defcustom org-scribe-planner-default-weekend-daily nil
+  "Weekend goal offered when weekends have a goal of their own, in words.
+nil offers 1.5 times the plan's daily target."
+  :type '(choice (const :tag "1.5 × the daily target" nil) integer)
+  :group 'org-scribe-planner)
+
 (defcustom org-scribe-planner-week-start-day 1
   "The day the planner's weeks start on: 1 for Monday, 0 for Sunday.
 Any day of the week works, 0 (Sunday) to 6 (Saturday).  Used by the plan
@@ -1473,6 +1535,92 @@ elsewhere.  Returns the number of days newly locked."
           (- locked-words credited (- written-total written-on-locked)))
     newly))
 
+;;; New plans: presets and defaults
+
+(defun org-scribe-planner--describe-preset (name preset)
+  "Describe PRESET, called NAME, in one line for the preset question."
+  (format "%s — %s (%d words %s%s)"
+          name (plist-get preset :description) (plist-get preset :total)
+          (if (plist-get preset :days)
+              (format "in %d days" (plist-get preset :days))
+            (format "at %d a day" (plist-get preset :daily)))
+          (let ((pattern (plist-get preset :pattern)))
+            (if (memq pattern '(nil flat)) "" (format ", %s" pattern)))))
+
+(defun org-scribe-planner--read-preset ()
+  "Ask whether to start a new plan from a preset; return (NAME . PLIST) or nil.
+Offers `org-scribe-planner-presets' after \"From scratch\".  Inside an
+org-scribe project, the first preset made for its type (novel or short
+story) is the default answer."
+  (when org-scribe-planner-presets
+    (let* ((type (ignore-errors (org-scribe-project-type)))
+           (labels (mapcar (lambda (preset)
+                             (cons (org-scribe-planner--describe-preset (car preset) (cdr preset))
+                                   preset))
+                           org-scribe-planner-presets))
+           ;; The first type a preset lists is its main one: prefer a preset
+           ;; made mainly for this type, then any that also suits it
+           (suggested (or (cl-find-if (lambda (label)
+                                        (eq type (car (plist-get (cddr label) :project-types))))
+                                      labels)
+                          (cl-find-if (lambda (label)
+                                        (memq type (plist-get (cddr label) :project-types)))
+                                      labels)))
+           (answer (completing-read "Start from: " (cons "From scratch" (mapcar #'car labels))
+                                    nil t nil nil
+                                    (if suggested (car suggested) "From scratch"))))
+      (cdr (assoc answer labels)))))
+
+(defun org-scribe-planner--pattern-config-for (pattern intensity)
+  "Return the settings of PATTERN at INTENSITY; random gets a seed of its own."
+  (let ((config (copy-sequence
+                 (cdr (assq intensity (cdr (assq pattern org-scribe-planner--pattern-intensities)))))))
+    (if (eq pattern 'random)
+        (append config (list :seed (1+ (random 999999))))
+      config)))
+
+(defun org-scribe-planner--offer-pattern (plan pattern intensity why)
+  "Ask whether PLAN uses PATTERN at INTENSITY; apply it on yes.
+WHY says where the suggestion comes from.  Does nothing for `flat'."
+  (when (and pattern (not (eq pattern 'flat))
+             (y-or-n-p (format "Use the %s %s pattern (%s)? " why pattern
+                               (cdr (assq pattern org-scribe-planner--patterns)))))
+    (setf (org-scribe-plan-pattern plan) pattern)
+    (setf (org-scribe-plan-pattern-config plan)
+          (org-scribe-planner--pattern-config-for pattern intensity))
+    t))
+
+(defun org-scribe-planner--offer-weekends (plan mode why)
+  "Ask whether PLAN's weekends follow MODE; apply it on yes.
+WHY says where the suggestion comes from.  A goal of their own is asked
+for, offering `org-scribe-planner-default-weekend-daily' or 1.5 times the
+daily target.  Does nothing for `same'."
+  (when (and mode (not (eq mode 'same))
+             (y-or-n-p (format "%s weekends: %s? " why
+                               (if (eq mode 'rest) "no writing" "a goal of their own"))))
+    (setf (org-scribe-plan-weekend-mode plan) mode)
+    (setf (org-scribe-plan-weekend-days plan) (copy-sequence org-scribe-planner-default-weekend-days))
+    (when (eq mode 'different)
+      (setf (org-scribe-plan-weekend-daily plan)
+            (org-scribe-planner--read-non-negative-number
+             "Weekend goal (words/day): "
+             (or org-scribe-planner-default-weekend-daily
+                 (round (* 1.5 (org-scribe-plan-daily-words plan)))))))
+    t))
+
+(defun org-scribe-planner--wizard-rebalance (plan calculated daily end-date)
+  "Recalculate the value the new-plan wizard worked out, keeping the other two.
+CALCULATED is what `org-scribe-planner--calculate-missing-variable'
+returned: `days' (keep the total and DAILY, the entered daily target),
+`total-words' (keep the days, ending on END-DATE, and DAILY) or anything
+else (keep the total and END-DATE)."
+  (pcase calculated
+    ('days (org-scribe-planner--calculate-time plan daily))
+    ('total-words
+     (org-scribe-planner--keep-end-date plan end-date)
+     (org-scribe-planner--set-total-keeping-daily plan daily))
+    (_ (org-scribe-planner--keep-end-date plan end-date))))
+
 ;;; Interactive Commands
 
 ;;;###autoload
@@ -1488,12 +1636,31 @@ that has not yet been asked, so no prompt appears in that case either."
                            (file-exists-p (expand-file-name ".org-scribe-project" root)))))
      (list (and in-project (org-scribe-planner--project-title root))
            (and in-project (expand-file-name "plan.org" root)))))
-  (let ((plan (make-org-scribe-plan)))
+  (let ((plan (make-org-scribe-plan))
+        (preset nil))
 
     ;; Get plan title
     (setf (org-scribe-plan-title plan)
           (or title (read-string "Project title: ")))
 
+    ;; A preset, or from scratch
+    (setq preset (org-scribe-planner--read-preset))
+    (if preset
+        (let ((settings (cdr preset)))
+          (setf (org-scribe-plan-total-words plan)
+                (org-scribe-planner--read-positive-number
+                 "Total words to write: " (plist-get settings :total)))
+          (if (plist-get settings :days)
+              (let ((days-result (org-scribe-planner--read-days
+                                  "Days available: " (plist-get settings :days))))
+                (if (listp days-result)
+                    (setf (org-scribe-plan-days plan) (plist-get days-result :days)
+                          (org-scribe-plan-start-date plan) (plist-get days-result :start-date)
+                          (org-scribe-plan-end-date plan) (plist-get days-result :end-date))
+                  (setf (org-scribe-plan-days plan) days-result)))
+            (setf (org-scribe-plan-daily-words plan)
+                  (org-scribe-planner--read-positive-number
+                   "Words per day you can write: " (plist-get settings :daily)))))
     ;; Ask which variables to set and read them directly into the plan
     (let ((var-choice (completing-read
                       "What do you know? "
@@ -1540,7 +1707,7 @@ that has not yet been asked, so no prompt appears in that case either."
 
        ;; Fallback if nothing matched (shouldn't happen, but just in case)
        (t
-        (error "Invalid choice: %s" var-choice))))
+        (error "Invalid choice: %s" var-choice)))))
 
     ;; Words already written: the plan's pre-existing words.  Inside a
     ;; project the manuscript's current count is offered as the default.
@@ -1567,7 +1734,8 @@ that has not yet been asked, so no prompt appears in that case either."
         (progn
           ;; Initial calculation without spare days
           ;; Remember which variable we calculated so we can recalculate it if spare days are added
-          (let* ((calculated-var (org-scribe-planner--calculate-missing-variable plan))
+          (let* ((typed-daily (org-scribe-plan-daily-words plan))
+                 (calculated-var (org-scribe-planner--calculate-missing-variable plan))
                  (initial-value (when calculated-var
                                   (cl-getf (list 'total-words (org-scribe-plan-total-words plan)
                                                 'daily-words (org-scribe-plan-daily-words plan)
@@ -1579,48 +1747,36 @@ that has not yet been asked, so no prompt appears in that case either."
             ;; Calculate dates (now we have start-date and all variables)
             (org-scribe-planner--calculate-dates plan)
 
-            ;; NOW ask about spare days (we have all the info needed for weekend calculation)
-            (when (y-or-n-p "Do you want to set spare/break days? ")
-              (org-scribe-planner--configure-spare-days plan)
+            ;; The pattern and weekends: the preset's suggestions, or the
+            ;; defaults for plans made from scratch
+            ;; Rebalancing keeps the daily target as typed, when one was
+            (let ((entered-daily (or typed-daily (org-scribe-plan-daily-words plan)))
+                  (end-date (org-scribe-plan-end-date plan))
+                  (settings (cdr preset)))
+              (org-scribe-planner--offer-pattern
+               plan
+               (if preset (plist-get settings :pattern) org-scribe-planner-default-pattern)
+               (if preset 'moderate org-scribe-planner-default-pattern-intensity)
+               (if preset "suggested" "default"))
+              (when (org-scribe-planner--offer-weekends
+                     plan
+                     (if preset (plist-get settings :weekend-mode)
+                       org-scribe-planner-default-weekend-mode)
+                     (if preset "Suggested" "Default"))
+                (org-scribe-planner--wizard-rebalance plan calculated-var entered-daily end-date))
+              (org-scribe-planner--sync-daily plan)
 
-              ;; If spare days were added, recalculate the variable we originally calculated
-              (when (org-scribe-plan-spare-days plan)
-                (let ((num-spare (length (org-scribe-plan-spare-days plan))))
-                  (message "Added %d spare day(s), recalculating..." num-spare)
-
-                  ;; Recalculate the same variable we calculated before
-                  (cond
-                   ;; If we calculated days, recalculate days (add spare days to total)
-                   ((eq calculated-var 'days)
-                    (setf (org-scribe-plan-days plan) nil)
-                    (org-scribe-planner--calculate-missing-variable plan)
-                    ;; The plan is now longer: derive the end date again
-                    (setf (org-scribe-plan-end-date plan) nil)
-                    (org-scribe-planner--calculate-dates plan)
-                    (message "Recalculated: %d total days needed (including %d spare days)"
-                            (org-scribe-plan-days plan)
-                            (org-scribe-planner--spare-days-in-window
-                             plan (org-scribe-plan-days plan))))
-
-                   ;; If we calculated total-words, recalculate total-words
-                   ((eq calculated-var 'total-words)
-                    (setf (org-scribe-plan-total-words plan) nil)
-                    (org-scribe-planner--calculate-missing-variable plan)
-                    (message "Recalculated: %d total words achievable (%d working days)"
-                            (org-scribe-plan-total-words plan)
-                            (- (org-scribe-plan-days plan)
-                               (org-scribe-planner--spare-days-in-window
-                                plan (org-scribe-plan-days plan)))))
-
-                   ;; If we calculated daily-words (or nothing), recalculate daily-words
-                   (t
-                    (setf (org-scribe-plan-daily-words plan) nil)
-                    (org-scribe-planner--calculate-missing-variable plan)
-                    (message "Recalculated: %d words/day (%d working days)"
-                            (org-scribe-plan-daily-words plan)
-                            (- (org-scribe-plan-days plan)
-                               (org-scribe-planner--spare-days-in-window
-                                plan (org-scribe-plan-days plan))))))))))
+              ;; Spare days: the same rebalance keeps the two values given
+              (when (y-or-n-p "Do you want to set spare/break days? ")
+                (setq end-date (org-scribe-plan-end-date plan))
+                (org-scribe-planner--configure-spare-days plan)
+                (when (org-scribe-plan-spare-days plan)
+                  (message "Added %d spare day(s), recalculating..."
+                           (length (org-scribe-plan-spare-days plan)))
+                  (org-scribe-planner--wizard-rebalance plan calculated-var entered-daily end-date)
+                  (message "Recalculated: %d writing days ending %s, %d words/day, %d words"
+                           (org-scribe-plan-writing-days plan) (org-scribe-plan-end-date plan)
+                           (org-scribe-plan-daily-words plan) (org-scribe-plan-total-words plan))))))
 
           ;; A plan started in the past: its past days keep these goals
           (org-scribe-planner--lock-past-goals plan)
@@ -4197,6 +4353,7 @@ If no plan is active, prompt to load one."
 
 (declare-function org-scribe-project-root "core/org-scribe-core")
 (declare-function org-scribe-project-structure "core/org-scribe-core")
+(declare-function org-scribe-project-type "core/org-scribe-core")
 (declare-function org-scribe--project-marker-get "core/org-scribe-core")
 (declare-function org-scribe--project-marker-set "core/org-scribe-core")
 (declare-function org-scribe-planner-gate "core/org-scribe-core")

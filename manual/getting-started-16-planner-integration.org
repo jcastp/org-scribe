@@ -286,6 +286,24 @@ The dashboards measure your writing against each day's own goal, over your /writ
 - Best and worst day only look at days you wrote on.
 - The estimated finish spends your pace on each coming writing day, skipping rest days — your average pace, and your last week's.
 
+** Starting from a Preset
+
+A new plan first asks /Start from:/ — a preset, or from scratch. In a novel project the default is /Novel draft/ (80,000 words in 60 days); in a short-story project, /Short story/ (5,000 words in a week). There are also /NaNoWriMo/, /Novella/ and two daily habits (1,000 and 500 words a day).
+
+A preset only fills in the answers: the total and the days (or words per day) are asked with its values ready, so ~RET~ keeps them and any number replaces them. Its suggested pattern and weekend setting are offered too — say yes or no to each.
+
+To change the presets, customize ~org-scribe-planner-presets~.
+
+*Defaults for plans from scratch.* If you always plan the same way, set it once; a new plan made from scratch then offers it:
+
+#+begin_src emacs-lisp
+(setq org-scribe-planner-default-pattern 'valley           ; or mountain, rising, …
+      org-scribe-planner-default-pattern-intensity 'mild   ; mild, moderate, extreme
+      org-scribe-planner-default-weekend-mode 'rest        ; same, different, rest
+      org-scribe-planner-default-weekend-days '(6 0)       ; Saturday and Sunday
+      org-scribe-planner-default-weekend-daily nil)        ; nil: 1.5 × the daily target
+#+end_src
+
 ** Starting Mid-Draft
 
 Press ~F8 F8 W o~ (Onboard existing project) when the manuscript already has words.

@@ -109,7 +109,8 @@
     "test-planner-patterns"        ; Patterns, weekends, day goals
     "test-planner-analytics"       ; Analytics on the schedule
     "test-planner-views"           ; Weekly summary, month grid, week start
-    "test-planner-start-date")     ; Moving the start date
+    "test-planner-start-date"      ; Moving the start date
+    "test-planner-presets")        ; Preset plans, new-plan defaults
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
@@ -390,7 +391,8 @@ Suitable for CI/CD pipelines and automated testing."
                     "test-planner-patterns"
                     "test-planner-analytics"
                     "test-planner-views"
-                    "test-planner-start-date"))
+                    "test-planner-start-date"
+                    "test-planner-presets"))
       (load-file (expand-file-name (concat file ".el") tests-dir))))
   (ert "^test-planner-"))
 
