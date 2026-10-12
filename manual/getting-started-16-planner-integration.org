@@ -312,7 +312,25 @@ The planner reads the manuscript's word count and stores it as the plan's /pre-e
 
 Pre-existing words count toward the goal and the completion percentage, but never as one day's writing. Your first sync records only the words you wrote that day, so your pace, streaks and best day reflect the plan's writing alone.
 
-A plan created with ~F8 F8 W n~ asks the same question (/Words already written/), with the manuscript's count as the default.
+A plan created with ~F8 F8 W n~ inside a project takes the manuscript's count the same way.
+
+** Words Written Elsewhere
+
+The planner counts your manuscript on every sync. Words that count toward your goal but aren't in it — an earlier draft in another file, pages in a notebook, text you haven't pasted in yet — need to be told apart, or every sync would miss them and the plan would look behind by exactly that many.
+
+When you onboard a manuscript or create a plan in a project, the planner shows the manuscript's count and then asks for /words written elsewhere/:
+
+- *Type a number* — fixed until you change it.
+- *Count files* — point to one or more files; Org files are counted like the manuscript (no headings, drawers or comments), others by words. For each file choose: /on every sync/ (a draft you keep adding to; the default for files inside the project) or /once/ (its count now; the default for files elsewhere).
+
+Both add up, and the plan's written total is always /the manuscript + these/.
+
+To change them later — or to fix a plan made before this existed — use ~F8 F8 W r~ → /Words outside the manuscript/: set the typed number, add a file or stop counting one. Then say what those words are:
+
+- /Among the starting words already declared/ — you told the plan about them when you created it, but they weren't recorded: the record is corrected, and the plan stops looking behind.
+- /New to the plan, written before it/ — the starting words rise with them, so your progress doesn't change.
+
+Both are previewed. If a sync ever finds fewer words than the plan started with, the planner suggests this option.
 
 ** Update Progress Manually
 

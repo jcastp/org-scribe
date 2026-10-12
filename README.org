@@ -1882,7 +1882,10 @@ goal of their own or be days off, and single days can have their own goal —
 all through =F8 F8 W r= (What changed?). New plans can start from a preset
 (novel draft, NaNoWriMo, novella, short story, daily habits), with the one for
 the project's type offered first, and defaults for pattern and weekends can be
-set once (=org-scribe-planner-default-pattern= and friends). The plan stores its number
+set once (=org-scribe-planner-default-pattern= and friends). Words written outside
+the manuscript — typed, or counted from other files once or on every sync —
+are added to its count, so a plan started with words written elsewhere
+doesn't look behind. The plan stores its number
 of writing days (=WRITING_DAYS=); its end date follows from them and the spare
 days.
 

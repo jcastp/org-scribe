@@ -303,6 +303,9 @@ the recalculation."
             (answers (list 30000)))
         (cl-letf (((symbol-function 'org-scribe-planner--read-positive-number)
                    (lambda (&rest _) (pop answers)))
+                  ;; No words outside the manuscript
+                  ((symbol-function 'org-scribe-planner--read-non-negative-number)
+                   (lambda (&rest _) 0))
                   ((symbol-function 'read-string) (lambda (&rest _) "P"))
                   ((symbol-function 'org-scribe-planner--read-date)
                    (lambda (prompt &rest _)

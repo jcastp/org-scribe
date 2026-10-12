@@ -116,14 +116,19 @@ today; and DAYS was measured from today while the plan started earlier."
     (let ((org-scribe-planner-wordcount-function nil)
           (start (test-recalc--day -30)))
       (cl-letf (((symbol-function 'org-scribe-planner--read-positive-number)
-                 ;; current manuscript, target, words per day
-                 (test-recalc--answers 20000 30000 1000))
+                 ;; target, words per day
+                 (test-recalc--answers 30000 1000))
+                ((symbol-function 'org-scribe-planner--read-non-negative-number)
+                 ;; manuscript count (no word counter), words elsewhere
+                 (test-recalc--answers 20000 0))
                 ((symbol-function 'read-string) (lambda (&rest _) "P"))
                 ((symbol-function 'org-scribe-planner--read-date)
                  (lambda (&rest _) start))
                 ((symbol-function 'completing-read)
                  (lambda (&rest _) "Daily words → calculate end date"))
-                ((symbol-function 'y-or-n-p) (lambda (&rest _) t))
+                ;; No files outside the manuscript; yes to spare days
+                ((symbol-function 'y-or-n-p)
+                 (lambda (prompt) (not (string-match-p "files outside" prompt))))
                 ((symbol-function 'org-scribe-planner--configure-spare-days)
                  (lambda (plan)
                    (setf (org-scribe-plan-spare-days plan)

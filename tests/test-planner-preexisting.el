@@ -269,6 +269,9 @@ average of 7,267 words a day."
       (cl-letf (((symbol-function 'org-scribe-planner--read-positive-number)
                  ;; target, words per day
                  (test-pre--answers 30000 1000))
+                ;; No words outside the manuscript
+                ((symbol-function 'org-scribe-planner--read-non-negative-number)
+                 (lambda (&rest _) 0))
                 ((symbol-function 'read-string) (lambda (&rest _) "P"))
                 ((symbol-function 'org-scribe-planner--read-date)
                  (lambda (_prompt &optional default _allow-empty)
@@ -291,8 +294,9 @@ average of 7,267 words a day."
         (should (string= (org-scribe-plan-end-date plan) (test-pre--day 9)))))))
 
 (ert-deftest test-planner-pre-new-plan-offers-manuscript-count ()
-  "New plan in a project: the manuscript's count is the default, and the
-daily target covers only the words left."
+  "New plan in a project: the manuscript's count is taken as it is, words
+elsewhere are asked for (none by default), and the daily target covers
+only the words left."
   (test-pre--without-io
     (let ((org-scribe-planner-wordcount-function (lambda () 20000))
           (offered nil))
@@ -309,7 +313,8 @@ daily target covers only the words left."
                 ((symbol-function 'y-or-n-p) (lambda (&rest _) nil)))
         (org-scribe-planner-new-plan "P" "/tmp/unused-plan.org"))
       (let ((plan org-scribe-planner--current-plan))
-        (should (= offered 20000))
+        ;; The only number asked is the words elsewhere, 0 by default
+        (should (= offered 0))
         (should (= (org-scribe-plan-preexisting-words plan) 20000))
         (should (= (org-scribe-plan-current-words plan) 20000))
         (should (= (org-scribe-plan-daily-words plan) 1000))))))
