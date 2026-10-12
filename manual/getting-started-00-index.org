@@ -274,17 +274,19 @@ Tailor the package to your personal preferences and workflow.
 - Language settings (English/Spanish)
 
 *** [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with the Bundled Planner]] /(Optional)/
-*Time: 20-30 minutes*
+*Time: 30-40 minutes*
 
-The writing planner ships bundled inside ~org-scribe~ itself (no separate package to install) for goal-oriented writing plans, daily targets, milestones, and progress dashboards — opt in per project and it's ready to go.
+The writing planner ships bundled inside ~org-scribe~ itself (no separate package to install). It gives every day its own target, follows your word count as you write, tells you whether you're ahead or behind, and reshapes the days to come when your plans change — opt in per project and it's ready to go.
 
 *You'll learn:*
-- Enabling the planner for a project (the per-project opt-in gate)
-- Creating a writing plan for your project
-- How word counts sync to the plan automatically after ~F8 F8 a~
-- Using the planner Hydra submenu (~W~) — calendar, milestones, dashboards
-- Logging daily sessions and adjusting the plan as you go
-- Disabling individual integration features
+- Creating a plan from a preset, from scratch, or for a manuscript already in progress
+- Declaring words written outside the manuscript
+- How word counts reach the plan after ~F8 F8 a~, and what the mode line shows
+- Reading the calendar, status, weekly summary, month grid, milestones and dashboards
+- Adjusting from your progress (~c~, ~a~, ~e~) and changing the plan (~r~), with previews
+- Patterns, weekends, day goals, spare days and moving the start date
+- How the planner counts: exact daily goals, locked past days, rest days, starting words
+- Turning the planner and its individual features on and off
 
 *** [[file:getting-started-17-scratchpad.org][Lesson 17: The Scratchpad and Branching Ideas]]
 *Time: 15 minutes*

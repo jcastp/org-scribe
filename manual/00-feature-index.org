@@ -857,6 +857,48 @@ Progress visualisations loaded on demand from ~planning/org-scribe-planner-dashb
 
 *Status*: Fully implemented | *Hydra*: ~W D~ | *Module*: ~planning/org-scribe-planner-dashboards.el~
 
+** Day-by-Day Schedule Engine
+
+Every day of a plan gets its own goal in whole words, and the goals add up exactly to the total (10,000 words over 7 days is 1,429 four times and 1,428 three times). The plan's length is stored as ~WRITING_DAYS~; the end date follows from it and the spare days. Once a day is over its goal is locked (~LOCKED_GOALS~) and never changes again — new totals, patterns, spare days and recalculations only reshape the days to come. Rest days (goal 0: spare days, weekends off, a day goal of 0) never count as missed, don't break streaks and are left out of the pace. Words written before the plan are its /starting words/ (~PREEXISTING_WORDS~): they count toward the goal but never as one day's writing. Plans saved by earlier versions load unchanged.
+
+*Status*: Fully implemented | *Hydra*: N/A (engine) | *Module*: ~planning/org-scribe-planner.el~
+
+** Writing Patterns, Weekends and Day Goals
+
+A pattern spreads the words unevenly over the writing days — steady, valley, mountain, rising, declining or random (seeded, so its goals are stable), each mild, moderate or extreme. Weekends can be ordinary days, have a goal of their own (~WEEKEND_DAILY~, 1.5 × the daily target by default) or be days off, with configurable weekend days (~WEEKEND_DAYS~). A day goal (~CUSTOM_GOALS~) gives one date its own target, 0 making it a rest day. Spare days (~SPARE_DAYS~) are added by date, range, all weekends, all Saturdays or all Sundays, each with an optional note.
+
+*Status*: Fully implemented | *Hydra*: ~W r~ | *Module*: ~planning/org-scribe-planner.el~
+
+** Changing a Plan with Previews (~org-scribe-planner-recalculate~)
+
+/What changed?/ — total words, daily words, days available, two values at once, the start date, words outside the manuscript, the writing pattern, weekends, a day goal (set, remove, clear from today on) or spare days (add, remove, clear). Every option is tried on a copy and shown with its outcome before you choose; changes that alter how many words some days take ask whether to keep the end date, move it, or keep both end date and daily target. Moving the start date keeps the writing days, lets future spare days and day goals stay on their dates or move with it, and warns about written words or past days left outside. ~C-g~ at any question leaves the plan untouched.
+
+*Status*: Fully implemented | *Hydra*: ~W r~ | *Module*: ~planning/org-scribe-planner.el~
+
+** Status and Adjusting from Progress (~org-scribe-planner-check-progress~)
+
+The plan's status — on track, or ahead/behind in words, percent and writing days measured along the plan's own schedule — compares the goals through yesterday with everything written, today included. It appears in the calendar summary and after every sync. ~c~ (Check progress) offers the fitting adjustments; ~a~ (~org-scribe-planner-adjust-remaining-plan~) keeps the end date and re-spreads the words left; ~e~ (~org-scribe-planner-adjust-end-date~) keeps the daily target and moves the end date. Each shows its outcome first and changes only the days from today on (from tomorrow if today already has words).
+
+*Status*: Fully implemented | *Hydra*: ~W c~, ~W a~, ~W e~ | *Module*: ~planning/org-scribe-planner.el~
+
+** Weekly Summary, Month Grid and Milestones
+
+Three views besides the calendar and the dashboards. The weekly summary (~org-scribe-planner-show-weekly-summary~) has one row per calendar week: days written, rest days, the week's goal, words written, planned and actual totals and the difference. The month grid (~org-scribe-planner-show-month-calendar~) is a calendar per month with each day's goal, result (✓ ~ ✗) and the share of the goal written by then. Milestones (~org-scribe-planner-show-milestones~) show when 25%, 50%, 75% and 100% of the goal were reached, when they're expected, or that they can't be reached by the end date. Weeks start on ~org-scribe-planner-week-start-day~ (Monday by default).
+
+*Status*: Fully implemented | *Hydra*: ~W w~, ~W M~, ~W m~ | *Module*: ~planning/org-scribe-planner.el~
+
+** Presets, Defaults and Onboarding
+
+New plans start from a preset (~org-scribe-planner-presets~: Novel draft, NaNoWriMo, Novella, Short story, 1,000 and 500 words a day) — the one matching the project type is offered first, and its values and suggested pattern and weekends are defaults you can change — or from scratch, where ~org-scribe-planner-default-pattern~, ~-default-pattern-intensity~, ~-default-weekend-mode~, ~-default-weekend-days~ and ~-default-weekend-daily~ are offered. ~org-scribe-planner-onboard-existing-project~ (~W o~) creates a plan for a manuscript already in progress, reading its word count as the starting words and asking for an end date or a daily pace.
+
+*Status*: Fully implemented | *Hydra*: ~W n~, ~W o~ | *Module*: ~planning/org-scribe-planner.el~
+
+** Words Written Outside the Manuscript
+
+Words that count toward the goal but aren't in the manuscript — another file, a notebook — are declared when the plan is created, or later via /What changed?/ → /Words outside the manuscript/: a typed number (~OUTSIDE_WORDS~) and/or files (~OUTSIDE_FILES~), each counted on every sync or once. Every count the plan records is the manuscript plus these words. The repair option says whether the words were among the starting words already declared (the record is corrected) or new to the plan (the starting words rise with them), previewing both. A sync that finds fewer words than the plan started with suggests it, and an empty manuscript (0 words) is never recorded.
+
+*Status*: Fully implemented | *Hydra*: ~W r~ | *Module*: ~planning/org-scribe-planner.el~
+
 ** Migrating from the standalone org-scribe-planner-integration
 
 If your init file still contains the following snippet from before the planner was bundled directly into org-scribe, remove it — the compatibility shim (~integration/org-scribe-planner-integration.el~) has been deleted from the package entirely, so this ~require~ will now error instead of loading a no-op:
@@ -886,13 +928,13 @@ If your init file still contains the following snippet from before the planner w
 | Analysis Tools           |             1 |
 | UI & Navigation          |             6 |
 | Configuration            |            20 |
-| Writing Planner          |             4 |
+| Writing Planner          |            11 |
 |--------------------------+---------------|
-| *Total Features*           |           101 |
+| *Total Features*           |           108 |
 
 ** Implementation Status
 
-All 101 features are fully implemented and tested. The package is in active use and stable (version 0.6.0).
+All 108 features are fully implemented and tested. The package is in active use and stable (version 0.6.0).
 
 * Next Steps
 
@@ -932,5 +974,5 @@ manual/
 - *Created*: 2025-11-16
 - *Last Updated*: 2026-06-28
 - *Package Version*: 0.6.0
-- *Total Features Documented*: 101 (97 core + 4 bundled planner)
+- *Total Features Documented*: 108 (97 core + 11 bundled planner)
 - *Status*: Complete feature extraction, ready for detailed documentation

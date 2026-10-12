@@ -1,21 +1,22 @@
 #+TITLE: Lesson 16: Writing Goal Planning with org-scribe-planner
 #+AUTHOR: Javier Castilla
-#+DATE: 2026-06-28
+#+DATE: 2026-10-12
 #+STARTUP: overview
 
 * Welcome to Lesson 16!
 
 You know how to count words, track progress tables, and log your daily sessions. But do you ever wish Emacs could tell you /how many words you need to write today/ to finish your manuscript on time? That's exactly what this lesson is about.
 
-~org-scribe-planner~ is a planning engine bundled directly inside ~org-scribe~. It handles goal-oriented writing plans: target dates, milestones, daily targets, and progress dashboards. Because it ships with the package, there is nothing extra to install and no integration glue to load — everything wires up automatically the first time you invoke a planner command.
+~org-scribe-planner~ is a planning engine bundled directly inside ~org-scribe~. You give it a goal and a deadline (or a daily pace); it gives every day its own target, follows your manuscript's word count as you write, and tells you where you stand. When life gets in the way, it reshapes the days still to come — the past stays as it was.
 
 By the end of this lesson, you'll have:
-- Created a writing plan for your project from inside Emacs
-- Seen your live word count pushed to the plan automatically
-- Understood the full planner submenu (~W~) in the Hydra
-- Learned how to disable individual features you don't want
+- Created a writing plan for your project, from scratch, from a preset, or for a manuscript already in progress
+- Seen your word count recorded in the plan automatically
+- Read your plan in its calendar, weekly summary, month grid and dashboards
+- Adjusted the plan from your progress, and changed it when your plans change
+- Understood how the planner counts, so its numbers never surprise you
 
-*Estimated time*: 20-30 minutes
+*Estimated time*: 30-40 minutes
 
 *Note*: This lesson covers an *optional module*. You can skip it if you prefer to track goals manually.
 
@@ -37,41 +38,35 @@ If your init file contains:
   (require 'org-scribe-planner-integration))
 #+END_SRC
 
-remove that block. The integration features are now built directly into the planner module, and the ~org-scribe-planner-integration~ compatibility shim has been deleted from the package — that ~require~ will now signal a file-missing error instead of loading a no-op.
+remove that block. The integration features are built directly into the planner module, and that compatibility file no longer exists — the ~require~ would signal a file-missing error.
 
-* What Does the Integration Do?
+* What the Planner Does
 
-Here is an overview of everything the planner provides out of the box. Each feature is independent and can be disabled individually (see [[*Disabling Individual Features][Disabling Individual Features]] at the end of this lesson).
+| Feature                       | What happens                                                    |
+|-------------------------------+-----------------------------------------------------------------|
+| A goal for every day          | Each day gets its own target; together they add up exactly      |
+| Word count tracking           | Every manuscript word count is recorded in the plan             |
+| Past days locked              | Once a day is over, its goal never changes                      |
+| Patterns, weekends, day goals | Spread the words unevenly, rest on weekends, plan special days  |
+| Status                        | Ahead, on track or behind — in words, % and writing days        |
+| Adjust from progress          | Re-spread the words left, or move the end date                  |
+| Change the plan               | New total, length, start date, spare days… previewed first      |
+| Views                         | Calendar, weekly summary, month grid, milestones, dashboards    |
+| Presets                       | Novel draft, NaNoWriMo, short story… as a starting point        |
+| Words written elsewhere       | Count words outside the manuscript too                          |
+| Integration                   | Auto-load, mode line, agenda, health report, plan on new project |
 
-| Feature                      | What happens automatically                                 |
-|------------------------------+------------------------------------------------------------|
-| Auto-load plan               | Plan file loads when you open any project file             |
-| Word count bridge            | Plan reads word counts directly from your manuscript       |
-| Auto-update after counting   | ~F8 F8 a~ pushes new total to the plan silently              |
-| Auto-update on save          | Saving the manuscript updates all counts and the plan      |
-| Project-aware file picker    | Load-plan dialog opens at your project root                |
-| Plan creation on new project | Offered when you run ~org-scribe-create-novel-project~       |
-| Planner Hydra submenu (~W~)    | Full planner menu accessible from the main Hydra           |
-| Mode-line status             | Today's target/actual shown as ~[W:actual/target]~           |
-| ~org-scribe-plan~ entry point  | Single command that dispatches based on current plan state |
+The planner is *opt-in per project*: a project only sees it once you create a plan or enable it (see [[*Turning the Planner On and Off][Turning the Planner On and Off]]).
 
-* Step 1: Create Your Writing Plan
+* Step 1: Open the Planner
 
-Let's create a plan for an existing project.
-
-** Open Your Project
-
-Open any file inside your org-scribe project (your ~novel.org~, a scene file, etc.).
-
-** Open the Planner Submenu
-
-Press ~F8 F8~ to open the Hydra menu. Press ~W~ to open the planner submenu:
+Open any file of your project, press ~F8 F8~ to open the Hydra menu, and press ~W~ for the planner submenu:
 
 #+BEGIN_EXAMPLE
   org-scribe-planner
   ──────────────────────────────────────────────────
   p: Open project plan (load or create)
-  n: New plan
+  n: New plan (fresh start)
   o: Onboard existing project
   l: Load plan
   u: Sync word count (from manuscript)
@@ -89,474 +84,541 @@ Press ~F8 F8~ to open the Hydra menu. Press ~W~ to open the planner submenu:
   q: Back to main menu
 #+END_EXAMPLE
 
-*Before you get here*: this submenu is only reachable once the planner is *enabled for the current project*. A project's opt-in state lives in a ~# Planner: yes~/~# Planner: no~ line in ~.org-scribe-project~ (undecided/~nil~ by default, which behaves like "yes" for backward compatibility with projects created before this gate existed). If a project has explicitly opted out, pressing ~W~ offers to re-enable it instead of showing this submenu. Toggle it explicitly any time with ~E~ (enable) / ~X~ (disable) once you're in the submenu, or via ~M-x org-scribe-planner-enable-for-project~ / ~M-x org-scribe-planner-disable-for-project~.
-
 ** The ~p~ Key — Your Main Entry Point
 
-Press ~p~ (Open project plan) at any time. It does the right thing based on context:
+~p~ (Open project plan, or ~M-x org-scribe-plan~) does the right thing for where you are:
 
-- *Plan already active* → shows the plan calendar immediately
-- *Plan file exists but not loaded* → loads it silently, then shows the calendar
-- *No plan file found* → asks "No writing plan found for this project. Create one?"
-- *Not in an org-scribe project* → falls back to standard load-or-show flow
+- *Plan already active* → shows the plan calendar
+- *Plan file exists but not loaded* → loads it, then shows the calendar
+- *No plan yet* → asks "No writing plan found for this project. Create one?"
+- *Planner disabled for this project* → offers to enable it first
+- *Not in an org-scribe project* → the standard load-or-show flow
 
-This means ~F8 F8 W p~ is the one command you need to remember.
+~F8 F8 W p~ is the one command you need to remember.
 
-** Create a New Plan
+* Step 2: Create Your Writing Plan
 
-If no plan exists, press ~p~ and answer ~yes~, or press ~n~ directly (New plan).
+There are two ways in: ~n~ (New plan) for a plan that starts now, and ~o~ (Onboard existing project) for a manuscript already under way. Both save the plan as ~plan.org~ in your project root.
 
-Inside a project, the planner pre-fills defaults from your project metadata — no hunting for paths. It will prompt you for:
+** A New Plan (~n~)
 
-1. *Plan file location* — defaults to ~plan.org~ in your project root. Accept or type a custom name.
-2. *Total word count target* — e.g. ~80000~ for an 80,000-word novel.
-3. *Target completion date* — e.g. ~2026-12-31~.
-4. *Daily writing days* — which days of the week you plan to write (e.g. Mon–Fri).
+*1. Start from a preset, or from scratch.* The first question is /Start from:/. In a novel project the default answer is /Novel draft/ (80,000 words in 60 days); in a short-story project, /Short story/ (5,000 words in a week). The other presets are /NaNoWriMo/ (50,000 in 30 days), /Novella/ (30,000 in 30 days) and two daily habits (1,000 and 500 words a day).
 
-The planner creates ~plan.org~ in your project root and calculates your required daily word count automatically.
+A preset only fills in the answers. Its total and its days (or words per day) are asked with the preset's values ready: ~RET~ keeps them, any number replaces them.
 
-*Note*: New projects do *not* ship with a ~plan.org~ placeholder — the file (and the ~# Planner: yes~ opt-in marker) only come into existence once you explicitly create a plan, either by accepting the offer shown right after ~org-scribe-create-novel-project~/~org-scribe-create-short-story-project~ (see below), or later via ~M-x org-scribe-plan~ or ~F8 F8 W p~.
-
-** What the Plan File Looks Like
-
-Open ~plan.org~ to see it:
+*2. From scratch: what do you know?* You give two of the three numbers and the planner works out the third:
 
 #+BEGIN_EXAMPLE
-,* My Novel — Writing Plan
-:PROPERTIES:
-:TOTAL_WORDS: 80000
-:CURRENT_WORDS: 12450
-:TARGET_DATE: 2026-12-31
-:DAILY_WORDS: 650
-:END:
-...
+Total words + Days → Calculate daily words
+Total words + Daily words → Calculate days needed
+Daily words + Days → Calculate total words
 #+END_EXAMPLE
 
-The key properties:
-- ~TOTAL_WORDS~ — your total manuscript target
-- ~CURRENT_WORDS~ — the latest word count (updated automatically)
-- ~TARGET_DATE~ — your finish-by date
-- ~DAILY_WORDS~ — how many words/day you need to stay on track
+"Days available" are calendar days. You can type a number, or a start and an end date.
 
-* Step 2: Watch Word Counts Sync Automatically
+*3. Words already written.* Inside a project the planner shows your manuscript's word count and asks for /words written elsewhere/ — see [[*Words Written Elsewhere][Words Written Elsewhere]] below. (Outside a project it simply asks how many words are already written.) These are the plan's /starting words/: they count toward the goal, never as a day's writing.
 
-This is where the integration really shines.
+*4. Start date.* Today by default.
 
-** Update Your Manuscript Word Counts
+*5. Pattern and weekends.* A preset's suggested pattern and weekend setting are offered as yes/no questions — say, the short-story preset's /rising/ pattern and a goal of their own for weekends (1.5 × the daily target, which you can change). Plans from scratch are offered your defaults, if you've set any (see [[*Settings][Settings]]).
 
-Go to your manuscript (~novel.org~) and run the word count command:
+*6. Spare days.* /Do you want to set spare/break days?/ opens a small menu: add a date, a date range, all weekends, all Saturdays or all Sundays, each with an optional note ("Christmas"); remove them; list them.
 
-1. Press ~F8 F8 a~ (Update all word count properties)
-2. Watch the ~:WORDCOUNT:~ properties update on each heading
+After each of these the planner keeps the two numbers you gave and recalculates the third. Then it saves the plan and shows its calendar.
 
-** Check the Plan
+** A Manuscript Already in Progress (~o~)
 
-This sync is completely silent - ~F8 F8 a~ (~org-scribe-ews-org-count-words~) calls ~org-scribe-planner-record-total~ under the hood, which writes today's cumulative total into ~plan.org~ and saves it, but prints *no* minibuffer message and doesn't reopen the calendar. Don't expect to see anything after step 2.
+~o~ (Onboard existing project) is for a draft that already has words:
 
-The planner automatically:
-1. Summed all ~WORDCOUNT~ properties across your manuscript
-2. Wrote the new total to ~plan.org~
-3. Saved the plan silently
+1. It shows your manuscript's word count — 0 is fine, for an empty manuscript — and asks for words written elsewhere.
+2. You give the total target and the plan's start date (today by default).
+3. You set the pace: an end date (the daily target follows), or words per day (the end date follows).
+4. Spare days, as above.
 
-No extra steps needed for the sync itself. If you want visible confirmation, press ~F8 F8 W u~ (Sync word count / ~org-scribe-planner-update-progress~) instead - unlike the automatic push after ~F8 F8 a~, this command also re-reads the manuscript total, reopens the calendar, and prints a progress line in the minibuffer:
+The words already written are the plan's starting words, so the daily target covers only what is left: a 30,000-word goal with 20,000 written, over 10 days, is 1,000 words a day. If you choose a start date in the past, the days before today get no goal.
 
-#+BEGIN_EXAMPLE
-Progress: 12847/80000 words (16.1%) | Ahead: +120 words
-#+END_EXAMPLE
+** Words Written Elsewhere
 
-Every time you run ~F8 F8 a~, your plan stays in sync in the background - you just won't see it happen.
+The planner counts your manuscript. Words that count toward your goal but aren't in it — an earlier draft in another file, pages in a notebook, text you haven't pasted in yet — must be declared, or every sync would miss them and the plan would look behind by exactly that many.
 
-** Optional: Automatic Update on Every Save
+When the planner asks for /words written elsewhere/ you can:
 
-If you prefer to have word counts and plan sync happen automatically on every
-save, add this to your Emacs init file:
+- *Type a number* — fixed until you change it.
+- *Count files* — point to one or more files. Org files are counted like the manuscript (no headings, drawers or comments), others by words. For each file choose /on every sync/ (a draft you keep adding to; the default for files inside the project) or /once/ (its count now; the default for files elsewhere).
+
+Both add up. From then on, everything the plan records is /the manuscript + these words/.
+
+To change them later — or to fix a plan made before you declared them — use ~F8 F8 W r~ → /Words outside the manuscript/: set the typed number, add a file, or stop counting one. Then say what those words are:
+
+- /Among the starting words already declared/ — you told the plan about them when you created it, but they weren't counted: the record is corrected and the plan stops looking behind.
+- /New to the plan, written before it/ — the starting words rise with them, so your progress doesn't change.
+
+Both are shown with their outcome before you choose. If a sync ever finds fewer words than the plan started with, the planner suggests this option.
+
+* Step 3: Write — the Plan Follows
+
+** Word Counts Are Recorded Automatically
+
+Write, then update your manuscript's word counts with ~F8 F8 a~. The planner records the new total for today in ~plan.org~, silently: no message, no window. Several counts in one day just update today's entry.
+
+To record on every save instead, turn on automatic word counting (requires ~org-context-extended~; it makes saves slightly slower):
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-auto-wordcount t)
 #+END_SRC
 
-With this enabled, saving ~novel.org~ (or ~novela.org~) runs the full word
-count update and syncs the plan silently — no extra key needed.  The trade-off
-is a slightly slower save (the word count runs on every heading in the buffer).
-Requires ~org-context-extended~; if that package is absent the setting is
-ignored.
-
-** Check the Mode Line
-
-Look at the right end of your mode line. You should see something like:
+For visible confirmation, press ~F8 F8 W u~ (Sync word count). It reads the manuscript, records the total, reopens the calendar and prints where you stand:
 
 #+BEGIN_EXAMPLE
-[W:450/650]
+Progress: 12847/80000 words (16.1%) | Ahead: +120 words (+1.2%, +0.1 writing days)
 #+END_EXAMPLE
 
-This means:
-- ~450~ — words written today (from your daily log entry)
-- ~650~ — today's target to stay on track
+A manuscript that counts 0 words is ignored by both: an empty manuscript says nothing about what you've written.
 
-Green days are satisfying. Make it a habit!
+** The Mode Line
 
-* Step 3: View Your Plan Calendar
+Once today has words recorded, the mode line shows:
 
-Press ~F8 F8 W p~ (Open project plan).
+#+BEGIN_EXAMPLE
+[W:450/650]      450 words today, against today's goal of 650
+[W:300 rest]     300 words on a rest day
+[W:300]          300 words on a day outside the plan
+#+END_EXAMPLE
 
-The planner opens a visual calendar showing:
-- Each writing day with its target word count
-- Actual words written per day (once you log them)
-- Color indicators for ahead / on track / behind
-- Milestone markers at key word count thresholds
+** Session Notes
 
-This gives you an at-a-glance picture of your entire project arc.
+Press ~F8 F8 W d~ (Add session note) to annotate a day — "finished chapter 3", "rewrote the opening". It asks for the date (today by default), the note, and that day's word count, pre-filled with what was recorded. Change the count only when it wasn't tracked (writing on paper, in another file).
 
-* Step 4: Log Your Daily Session
+You can also type notes straight into the /Notes/ column of the Schedule table in ~plan.org~: they are read back the next time the plan loads.
 
-If auto-tracking is on (the default — see ~org-scribe-planner-auto-track-daily~), running a word count after writing already updates today's entry for you; you don't need to do anything else. To add a note about the session, or to record an entry manually:
+~M-x org-scribe-planner-today~ logs today in one go: it reads the manuscript (or asks for today's words) and a note.
 
-Press ~F8 F8 W d~ (~org-scribe-planner-add-session-note~).
+* Step 4: See Where You Stand
 
-The planner pre-fills today's cumulative word total from the manuscript and prompts you for a session note (what you worked on). Confirming records the entry and the mode line updates immediately. Remember that ~DAILY_WORD_COUNTS~ entries store the manuscript's *cumulative* total as of that date, not that day's delta — the delta shown in the calendar/mode line is derived automatically by subtracting the previous entry.
+** The Plan Calendar
 
-*Tip*: Combine this with your existing daily writing log (from Lesson 3). The plan calendar gives you the goal-oriented view; your manuscript's progress table gives you the structural view. Both are valuable!
+~F8 F8 W p~ opens the plan calendar. At the top, the summary: total words, the daily target (the average, when the plan has a pattern), the weekend setting, total and working days, start and end dates, the starting words and the words elsewhere, the *status*, and the words written so far.
 
-* Step 5: Keep the Plan Healthy
+Below it, every day of the plan, week by week:
 
-As you write, things change — you get ahead, fall behind, or adjust your target. Here are the tools for that.
+#+BEGIN_EXAMPLE
+Week 2:
+  Date (Day)                 Daily Target   Expected Total   Actual Total     Daily Actual             Notes
+  2026-11-02 (Monday   )     1400 words     1400 words       1400 words       1400 words [100.0%] ✓
+  2026-11-03 (Tuesday  )     1400 words     2900 words       2900 words       1500 words [107.1%] ✓
+  2026-11-04 (Wednesday)     1400 words     4300 words                        0 ✗
+  2026-11-05 (Thursday )     1400 words     3800 words       3800 words       900 words [64.3%] ✗
+  2026-11-06 (Friday   )     1400 words     5200 words       5200 words       1400 words [100.0%] ✓
+  2026-11-07 (Saturday )     REST           5200 words                                                 (rest day)
+#+END_EXAMPLE
 
-** Recalculate the Plan
+✓ means the day's goal was met, ~ partial (75% or more), ✗ missed. Rest days say /(spare day)/ or /(rest day)/; a day with a goal of its own says /(day goal)/; your notes appear in their place.
 
-Press ~F8 F8 W r~ (Recalculate), or ~r~ in the plan calendar.
+The calendar has its own keys:
 
-Use it when the plan itself changes. It asks /What changed?/:
+| Key   | Opens                       | Key | Opens                        |
+|-------+-----------------------------+-----+------------------------------|
+| ~u~     | Sync word count             | ~D~   | Dashboards menu              |
+| ~d~     | Session note                | ~m~   | Multi-metric dashboard       |
+| ~r~     | What changed? (recalculate) | ~p~   | Progress dashboard           |
+| ~a~     | Adjust remaining days       | ~b~   | Burndown                     |
+| ~e~     | Adjust end date             | ~g~   | Cumulative progress          |
+| ~c~     | Check progress              | ~v~ ~V~ | Velocity statistics, chart   |
+| ~w~     | Weekly summary              | ~t~   | Velocity trends              |
+| ~M~     | Month grid                  | ~P~   | Performance analytics        |
+| ~G~     | Refresh                     | ~h~   | Heatmap                      |
+| ~q~     | Quit                        | ~s~   | Split dashboards             |
 
-- *Total words*, *Daily words* or *Days available* — then asks which of the other two to keep. A new total can keep the writing days (the daily target follows) or the daily target (the end date moves).
-- *Two values* — set two of total, daily words and days; the third is calculated.
-- *Start date* — move the plan earlier or later. It keeps the same number of writing days, so the end date moves too. Spare days and day goals from today on can stay on their dates (the default) or move with the start; past ones never move, and neither do the words you've written. Before applying, it warns you about written words that would fall outside the plan and past days that would join it. A plan already under way is recalculated so its remaining days cover the words left.
-- *Writing pattern* — how the words are spread: steady, /valley/ (start high, ease in the middle, finish high), /mountain/ (start easy, peak in the middle), /rising/, /declining/ or /random/, each mild, moderate or extreme. Only the days still to come change shape.
-- *Weekends* — the same goal as other days, a goal of their own (say, more words on Saturdays and Sundays), or no writing; and which days count as the weekend.
-- *Day goal* — a goal for one date: more words on a free day, fewer on a busy one, 0 to make it a rest day. Not for past days, spare days or weekends off.
-- *Spare days* (add, remove, clear) — then asks how the plan absorbs them: keep the end date (the daily target changes), move the end date (keep the daily target), or keep both (the total changes). Weekend and day-goal changes ask the same.
+(In the calendar ~m~ is the multi-metric dashboard; in the ~F8 F8 W~ menu, ~m~ is milestones.)
 
-Every option shows its outcome before you choose — /ends 2026-12-01, 1000 words/day, total 30000 words/ — and the first one is the default. Past days keep their goals whatever you choose. If you have synced the plan to the agenda, its entries are regenerated.
+** Status: Ahead, On Track or Behind
 
-To recompute targets from your progress instead, use /Adjust Remaining Days/ or /Adjust the End Date/ below.
+The status reads /On track/, or /Ahead: +2000 words (+20.0%, +2.0 writing days)/, or /Behind: -500 words (-5.0%, -0.5 writing days)/. Two rules make it fair:
 
-** Adjust Remaining Days
+- *Today isn't due until it's over.* The planner compares the goals through /yesterday/ with everything you've written, /today included/: your morning never starts behind, and today's words can only help.
+- *Writing days are measured along your own schedule*, day by day — a valley pattern's heavy days count as such.
 
-Press ~F8 F8 W a~ (Adjust remaining days).
-
-Use this when your schedule changes — vacation, deadline moved, days off. The planner redistributes the remaining word count across the new schedule.
-
-The end date stays where it is: only the daily target changes. Past days keep the goals they had — only the days from today on (from tomorrow, if you have already written today) share the words you actually have left. Afterwards the plan counts you as on track: it measures from what you had written when you recalculated.
-
-Before applying anything it shows the change — /From 2026-11-11: 25000 words left over 20 writing days. Daily target 1000 → 1250 words (+250, +25.0%)/ — and asks.
-
-** Adjust the End Date
-
-Press ~F8 F8 W e~ (Adjust end date), or ~e~ in the plan calendar.
-
-The opposite trade: keep your daily target and move the end date so the words left fit. Ahead of schedule, you finish early; behind, the deadline is extended. Spare days are skipped, and if you have already written today, the count starts tomorrow. It shows the new end date (/End date 2026-11-30 → 2026-12-05: extended by 5 days/) and asks before applying it.
-
-** Check Progress
-
-Press ~F8 F8 W c~ (Check progress), or ~c~ in the plan calendar.
-
-It tells you where the plan stands — /On track/, or /Behind: -500 words (-5.0%, -0.5 writing days)/ — counting your goals through yesterday: today's goal isn't due until the day is over, but the words you've already written today count. The writing days are measured along your own schedule, day by day.
-
-When you are ahead or behind it offers the two adjustments above, each with its outcome: ahead, /reduce the daily target/ or /finish early/; behind, /increase the daily target/ or /extend the deadline/. Keeping the plan as it is stays the default.
-
-The same status line appears in the plan calendar's summary and after every word-count sync.
+It appears in the calendar summary and after every sync. ~F8 F8 W c~ (Check progress) tells you the same, and when you're ahead or behind offers to adjust (see [[*Step 5: Adjust from Your Progress][Step 5]]).
 
 ** Week by Week, Month by Month
 
-Press ~F8 F8 W w~ (or ~w~ in the plan calendar) for the /weekly summary/: one row per calendar week with the days written out of the writing days, rest days, the daily goal, the week's goal, the words written (✓ the goal met, ~ part of it, ✗ none) and their share of the goal, and where the manuscript should stand against where it does. The current week is measured through yesterday.
+~F8 F8 W w~ (or ~w~ in the calendar) opens the /weekly summary/, one row per calendar week:
 
-Press ~F8 F8 W M~ (or ~M~) for the /month grid/: one calendar per month, each day with its goal, its result (✓ ~ ✗) and the share of the whole goal written by then. Today is in brackets; while today is under way it shows the words so far.
+#+BEGIN_EXAMPLE
+| Week | Dates         | Days written | Rest | Daily goal | Week goal | Written    | Planned total | Actual total |   +/- |
+|------+---------------+--------------+------+------------+-----------+------------+---------------+--------------+-------|
+|    2 | 11-02 – 11-08 | 4/5          |    2 |       1400 |      7000 | 5200 ~ 74% |          7000 |         5200 | -1800 |
+#+END_EXAMPLE
 
-Weeks start on Monday. To start them on Sunday — in the plan calendar, the weekly summary, the month grid and the heatmap:
+The current week is measured through yesterday, like the status.
 
-#+begin_src emacs-lisp
-(setq org-scribe-planner-week-start-day 0)
-#+end_src
+~F8 F8 W M~ (or ~M~) opens the /month grid/: a calendar per month where each day shows its goal, its result (✓, ✓1500 when over, ~800 partial, ✗ missed) and the share of the whole goal written by then. Today is in brackets, with its words so far:
 
-** How the Numbers Are Counted
+#+BEGIN_EXAMPLE
+November 2026
+Mo       Tu       We       Th       Fr       Sa       Su
+2        3        4        5        6        7        8
+1400w    1400w    1400w    1400w    1400w    rest     rest
+✓        ✓1500    ✗        ✗900     ✓
+10%      21%               27%      37%
 
-The dashboards measure your writing against each day's own goal, over your /writing days so far/: every day up to yesterday that isn't a rest day, plus any day you wrote on.
+[9]      10       11       12       13       14       15
+1400w    1400w    1400w    1400w    1400w    rest
+500…
+#+END_EXAMPLE
 
-- A day you missed counts, with 0 words: your average pace and your weekday averages include it. Rest days — spare days, weekends off, a day goal of 0 — don't.
-- A day is /met/ at its goal, /partial/ from 75%, /missed/ below that or with nothing — and also when the manuscript ended the day shorter than it started (you cut more than you wrote). The heatmap, the achievement rate and the calendar's ✓ ~ ✗ marks all use this.
-- Best and worst day only look at days you wrote on.
-- The estimated finish spends your pace on each coming writing day, skipping rest days — your average pace, and your last week's.
-
-** Starting from a Preset
-
-A new plan first asks /Start from:/ — a preset, or from scratch. In a novel project the default is /Novel draft/ (80,000 words in 60 days); in a short-story project, /Short story/ (5,000 words in a week). There are also /NaNoWriMo/, /Novella/ and two daily habits (1,000 and 500 words a day).
-
-A preset only fills in the answers: the total and the days (or words per day) are asked with its values ready, so ~RET~ keeps them and any number replaces them. Its suggested pattern and weekend setting are offered too — say yes or no to each.
-
-To change the presets, customize ~org-scribe-planner-presets~.
-
-*Defaults for plans from scratch.* If you always plan the same way, set it once; a new plan made from scratch then offers it:
-
-#+begin_src emacs-lisp
-(setq org-scribe-planner-default-pattern 'valley           ; or mountain, rising, …
-      org-scribe-planner-default-pattern-intensity 'mild   ; mild, moderate, extreme
-      org-scribe-planner-default-weekend-mode 'rest        ; same, different, rest
-      org-scribe-planner-default-weekend-days '(6 0)       ; Saturday and Sunday
-      org-scribe-planner-default-weekend-daily nil)        ; nil: 1.5 × the daily target
-#+end_src
-
-** Starting Mid-Draft
-
-Press ~F8 F8 W o~ (Onboard existing project) when the manuscript already has words.
-
-The planner reads the manuscript's word count and stores it as the plan's /pre-existing words/. The plan starts today (you can pick another date), and the daily target covers only the words left: a 30,000-word goal with 20,000 already written, over 10 days, is 1,000 words a day.
-
-Pre-existing words count toward the goal and the completion percentage, but never as one day's writing. Your first sync records only the words you wrote that day, so your pace, streaks and best day reflect the plan's writing alone.
-
-A plan created with ~F8 F8 W n~ inside a project takes the manuscript's count the same way.
-
-** Words Written Elsewhere
-
-The planner counts your manuscript on every sync. Words that count toward your goal but aren't in it — an earlier draft in another file, pages in a notebook, text you haven't pasted in yet — need to be told apart, or every sync would miss them and the plan would look behind by exactly that many.
-
-When you onboard a manuscript or create a plan in a project, the planner shows the manuscript's count and then asks for /words written elsewhere/:
-
-- *Type a number* — fixed until you change it.
-- *Count files* — point to one or more files; Org files are counted like the manuscript (no headings, drawers or comments), others by words. For each file choose: /on every sync/ (a draft you keep adding to; the default for files inside the project) or /once/ (its count now; the default for files elsewhere).
-
-Both add up, and the plan's written total is always /the manuscript + these/.
-
-To change them later — or to fix a plan made before this existed — use ~F8 F8 W r~ → /Words outside the manuscript/: set the typed number, add a file or stop counting one. Then say what those words are:
-
-- /Among the starting words already declared/ — you told the plan about them when you created it, but they weren't recorded: the record is corrected, and the plan stops looking behind.
-- /New to the plan, written before it/ — the starting words rise with them, so your progress doesn't change.
-
-Both are previewed. If a sync ever finds fewer words than the plan started with, the planner suggests this option.
-
-** Update Progress Manually
-
-Press ~F8 F8 W u~ (Update progress).
-
-This reads the current total directly from your manuscript (same as the automatic sync after ~F8 F8 a~), but you can trigger it any time without re-running the full word count command.
+Weeks start on Monday; set ~org-scribe-planner-week-start-day~ to start them on Sunday (see [[*Settings][Settings]]).
 
 ** Milestones
 
-Press ~F8 F8 W m~ (Milestones).
-
-Milestones are named word count checkpoints — "Act I complete", "Halfway!", "First draft done". The planner lets you define them and marks them on the calendar.
+~F8 F8 W m~ shows the 25%, 50%, 75% and 100% points of your goal: the date each was reached, or the date it is expected on the current schedule, or that it can't be reached by the end date. Milestones your starting words already reach say /before the plan/.
 
 ** Dashboards
 
-Press ~F8 F8 W D~ (Dashboards menu).
+~F8 F8 W D~ opens the dashboards menu:
 
-The planner provides various progress dashboards: simple totals, daily averages, streak tracking, burndown charts, velocity trends, and projected completion dates based on your recent pace.
+- *Multi-Metric Dashboard* — everything at a glance
+- *Progress Dashboard* (text, or SVG in a graphical Emacs) — overall progress, today, status, pace, streaks, and when you'll finish
+- *Burndown Chart* and *Cumulative Progress* — expected against actual (gnuplot, or text)
+- *Velocity Statistics*, *Velocity Chart*, *Velocity Trend Analysis* — your pace over 7, 14 and 30 days, its trend, the pace you need, and a momentum score
+- *Performance Analytics* — consistency, target achievement, and your best and worst weekdays
+- *Consistency Heatmap* — every day of the plan as a coloured square
+- *Weekly Summary*, *Month Grid*, *Split Dashboard View*, *Show All Dashboards*
 
-* Step 6: Plan Creation on New Projects
+/When will I finish?/ The progress dashboard gives two answers: at your average pace and at your last week's pace, each spent on coming writing days only, and whether that lands by your end date.
 
-Whenever you create a new project with ~M-x org-scribe-create-novel-project~ or ~M-x org-scribe-create-short-story-project~, the planner will offer:
+* Step 5: Adjust from Your Progress
+
+You got ahead, or fell behind. Three commands bring the plan in line with what you've actually written. All three keep the past as it was: only the days from today on change — from tomorrow, if you've already written today.
+
+** Check Progress (~c~)
+
+~F8 F8 W c~ (or ~c~ in the calendar). On track, it says so. Ahead, it offers to /reduce the daily target/ (keep the end date) or /finish early/ (keep the daily target); behind, to /increase the daily target/ or /extend the deadline/. Every option shows its outcome; /keep the plan as it is/ is the default.
+
+** Adjust Remaining Days (~a~)
+
+~F8 F8 W a~: keep the end date and spread the words you actually have left over the remaining writing days. It shows the change first and asks:
 
 #+BEGIN_EXAMPLE
-Create a writing plan for "My New Novel" with org-scribe-planner? (yes or no)
+From 2026-11-11: 25000 words left over 20 writing days.
+Daily target 1000 → 1250 words (+250, +25.0%). End date 2026-11-30 unchanged. Apply?
 #+END_EXAMPLE
 
-Answer ~yes~ and the planner opens immediately, walking you through creating the plan (and writing ~# Planner: yes~ to ~.org-scribe-project~). Answer ~no~ and it writes ~# Planner: no~ instead — the project won't be asked again until you run ~org-scribe-planner-enable-for-project~ or ~M-x org-scribe-plan~ yourself. Either way, there is no ~plan.org~ placeholder shipped in the template; the file only appears once you actually create a plan.
+Afterwards the plan counts you as on track from that point. If weekends have a goal of their own, it keeps its proportion to the weekday goal.
 
-* How Auto-Loading Works
+** Adjust the End Date (~e~)
 
-When you open any file inside an org-scribe project, the planner looks for a plan file automatically. It checks in this order:
+~F8 F8 W e~: the opposite trade. Keep your daily target and move the end date so the words left fit — earlier when you're ahead, later when you're behind. Rest days are skipped.
 
-0. *Cached path* — if ~.org-scribe-project~ contains a ~# Plan:~ line written during a previous load, that path is used directly (fastest path, skips the scan entirely)
+#+BEGIN_EXAMPLE
+Daily target 1000 words kept. Writing days 30 → 35.
+End date 2026-11-30 → 2026-12-05: extended by 5 days. Apply?
+#+END_EXAMPLE
+
+* Step 6: Change the Plan
+
+When the plan itself changes — a new deadline, a holiday, a different goal — press ~F8 F8 W r~ (or ~r~ in the calendar). It asks /What changed?/:
+
+| Choice                        | What it does                                                                        |
+|-------------------------------+-------------------------------------------------------------------------------------|
+| Total words                   | A new goal; then keep the writing days (daily target follows) or the daily target (end date moves) |
+| Daily words                   | A new pace; then keep the total (end date moves) or the writing days (total follows) |
+| Days available                | A new length; then keep the total (daily target follows) or the daily target (total follows) |
+| Two values (third calculated) | Set two of total, daily words and days                                             |
+| Start date                    | Move the plan earlier or later                                                      |
+| Words outside the manuscript  | See [[*Words Written Elsewhere][Words Written Elsewhere]]                                     |
+| Writing pattern               | How the words are spread over the days                                             |
+| Weekends                      | Same as other days, a goal of their own, or no writing                             |
+| Day goal: set / remove / clear | A goal for one particular day                                                     |
+| Add, remove or clear spare days | Days off                                                                         |
+
+Every option is tried on a copy first and shown with its outcome — /ends 2026-12-01, 1000 words/day, total 30000 words/ — so you choose knowing the result. The first option is the default, and ~C-g~ at any question leaves the plan untouched. Past days keep their goals whatever you choose.
+
+** Spare Days, Weekends and Day Goals
+
+Adding or removing spare days, changing the weekend setting, or setting a day goal changes how many words some days take. The planner then asks how the plan should absorb it:
+
+- *Keep the end date* — the daily target changes (the default)
+- *Move the end date* — keep the daily target
+- *Keep the end date and the daily target* — the total changes
+
+*Weekends* can be the same as other days, have a goal of their own (more words on Saturdays and Sundays, or fewer), or be days off. You also choose which days are the weekend — Friday and Saturday works too.
+
+*A day goal* gives one date its own target: more on a free day, fewer on a busy one, 0 to make it a rest day. It can't be set on past days, outside the plan, on spare days, or on weekends that are already days off — the planner tells you why.
+
+** Writing Patterns
+
+A pattern spreads the words unevenly over the writing days, each /mild/, /moderate/ or /extreme/:
+
+| Pattern   | Shape                                           |
+|-----------+-------------------------------------------------|
+| Steady    | The same goal every day                         |
+| Valley    | Start high, ease off in the middle, finish high |
+| Mountain  | Start easy, peak in the middle, ease at the end |
+| Rising    | Goals grow over time                            |
+| Declining | Goals shrink over time                          |
+| Random    | Varied goals within a range                     |
+
+Changing the pattern reshapes only the days still to come. The random pattern keeps its own seed, so its goals stay the same from one session to the next.
+
+** Moving the Start Date
+
+/Start date/ moves the plan earlier or later. It keeps the number of writing days, so the end date moves too. Spare days and day goals from today on can stay on their dates (the default — the question lists any that would fall outside the plan) or move with the start; past ones never move, and neither do the words you've written.
+
+Before applying, it warns you about written words that would end up outside the plan, past days that would join it (they're locked as they are), and past days left outside. A plan already under way is recalculated so its remaining days cover the words left.
+
+* How the Planner Counts
+
+A few rules explain every number you'll see.
+
+** Every Day Has Its Own Goal
+
+The plan gives each day a goal in whole words, and the goals add up exactly to your total: 10,000 words over 7 days is 1,429 four times and 1,428 three times. Fixed days (rest days, weekend goals of their own, day goals, past days) keep their goals; the other days share the rest, shaped by the pattern. The /daily target/ shown is the goal of an ordinary day.
+
+** The Plan's Length Is Its Writing Days
+
+The plan stores how many /writing days/ it has; the end date follows from them and the spare days. That's why adding a spare day can either push the end date out or keep it, as you choose.
+
+** Past Days Are Locked
+
+Once a day is over, its goal never changes again — not with a new total, a new pattern, new spare days or a recalculation. Your history stays honest, and changes only ever reshape the days to come.
+
+** Rest Days
+
+A rest day is any day whose goal is 0: a spare day, a weekend off, a day goal of 0. Rest days never count as missed, don't break your streak, and are left out of your pace. Writing on one still counts.
+
+** Starting Words
+
+Words written before the plan — in the manuscript, or declared as written elsewhere — are the plan's /starting words/. They count toward the goal and the completion percentage, but they're never one day's writing: your pace, streaks and best day reflect only what you write during the plan.
+
+** Pace, Days and Statuses
+
+- Your *pace* is the words written during the plan divided by your writing days so far — /missed days count, with 0 words/; rest days don't.
+- A day is *met* at its goal, *partial* from 75%, *missed* below that or with nothing — and also when the manuscript ended the day shorter than it started (you cut more than you wrote). Today is never missed while it's under way.
+- *Best and worst day* only look at days you wrote on.
+- The *estimated finish* spends your pace on coming writing days, skipping rest days.
+
+The heatmap, the achievement rate, the weekly summary and the calendar's ✓ ~ ✗ marks all use these rules.
+
+* The Plan File
+
+~plan.org~ is an ordinary Org file:
+
+#+BEGIN_EXAMPLE
+,* My Novel
+:PROPERTIES:
+:TOTAL_WORDS: 80000
+:DAILY_WORDS: 1177
+:DAYS:     70
+:START_DATE: 2026-10-12
+:END_DATE: 2026-12-20
+:CURRENT_WORDS: 8214
+:PREEXISTING_WORDS: 3672
+:WRITING_DAYS: 62
+:SPARE_DAYS: 2026-10-18,2026-10-25
+:DAILY_WORD_COUNTS: 2026-10-12:8214
+:END:
+
+,** Schedule
+
+|       Date | Target | Cumulative | Actual | Progress % | Notes            |
+|------------+--------+------------+--------+------------+------------------|
+| 2026-10-12 |   1177 |       4849 |   4542 |     385.9% |                  |
+| 2026-10-18 |   REST |      11916 |        |            | Sundays are free |
+#+END_EXAMPLE
+
+The main properties:
+
+| Property              | Meaning                                                              |
+|-----------------------+----------------------------------------------------------------------|
+| ~TOTAL_WORDS~           | Your goal, starting words included                                  |
+| ~WRITING_DAYS~          | The plan's length in writing days                                    |
+| ~START_DATE~, ~END_DATE~  | The plan's window (the end date follows from the writing days)       |
+| ~DAYS~                  | Calendar days from start to end, rest days included                 |
+| ~DAILY_WORDS~           | The goal of an ordinary day                                          |
+| ~CURRENT_WORDS~         | Words written so far, starting words included                        |
+| ~PREEXISTING_WORDS~     | The starting words                                                   |
+| ~DAILY_WORD_COUNTS~     | The record: the total written by the end of each day                 |
+| ~SPARE_DAYS~            | Days off                                                             |
+
+Others appear when you use the features they belong to: ~LOCKED_GOALS~ (past days' goals), ~SCHEDULE_ADJUSTMENT~ (set by an adjustment from progress), ~PATTERN~ and ~PATTERN_CONFIG~, ~WEEKEND_MODE~, ~WEEKEND_DAYS~ and ~WEEKEND_DAILY~, ~CUSTOM_GOALS~ (day goals), ~OUTSIDE_WORDS~ and ~OUTSIDE_FILES~ (words written elsewhere).
+
+Prefer the planner's commands to editing the properties by hand: the commands keep them consistent. The Notes column is the exception — type there freely.
+
+Plans saved by earlier versions load as they are: their writing days are worked out from their dates, and a daily target set by an old recalculation is kept.
+
+* Settings
+
+** New Plans
+
+#+BEGIN_SRC emacs-lisp
+;; Offered to plans made from scratch (only asked when not steady / ordinary weekends)
+(setq org-scribe-planner-default-pattern 'valley           ; flat, valley, mountain, rising, declining, random
+      org-scribe-planner-default-pattern-intensity 'mild   ; mild, moderate, extreme
+      org-scribe-planner-default-weekend-mode 'rest        ; same, different, rest
+      org-scribe-planner-default-weekend-days '(6 0)       ; 0 = Sunday … 6 = Saturday
+      org-scribe-planner-default-weekend-daily nil)        ; nil: 1.5 × the daily target
+#+END_SRC
+
+The presets are a customizable list: ~M-x customize-variable RET org-scribe-planner-presets~. Each has a name, a description, a total, days or words per day, a suggested pattern and weekend setting, and the project types it's the default for.
+
+** Views and Tracking
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-planner-week-start-day 0)      ; weeks from Sunday (default 1, Monday)
+(setq org-scribe-planner-streak-grace-days 2)   ; a streak survives logging the morning after
+#+END_SRC
+
+** The Agenda
+
+~M-x org-scribe-planner-sync-agenda~ adds a /Write N words/ TODO for every writing day of the plan to ~plan.org~ and adds the file to your agenda. Once synced, the entries are regenerated whenever the plan changes; rest days get none.
+
+** Turning the Planner On and Off
+
+A project's choice lives in its ~.org-scribe-project~ file as ~# Planner: yes~ or ~# Planner: no~. Creating a plan turns it on. ~F8 F8 W E~ / ~F8 F8 W X~ (or ~M-x org-scribe-planner-enable-for-project~ / ~-disable-for-project~) flip it. In a project that declined, ~F8 F8 W~ offers to enable it instead of showing the menu. Projects created before this choice existed behave as /yes/.
+
+When you create a project (~org-scribe-create-novel-project~ or ~org-scribe-create-short-story-project~), the planner offers to create a plan right away. Answering /no/ records ~# Planner: no~ so you aren't asked again.
+
+** How Auto-Loading Works
+
+When you open a file of a project, the planner looks for its plan:
+
+0. [@0] The path cached in ~.org-scribe-project~ as ~# Plan:~ (written after the first load — fastest)
 1. ~<project-root>/plan.org~
-2. ~<project-root>/<project-title>-plan.org~ (title read from ~.org-scribe-project~)
-3. Any ~.org~ file in the project root that contains a ~TOTAL_WORDS~ property
+2. ~<project-root>/<project-title>-plan.org~
+3. Any ~.org~ file in the project root with a ~TOTAL_WORDS~ property
 
-Once a plan file is found via steps 1-3, the path is written back to ~.org-scribe-project~ so future lookups use step 0.
+If one is found the plan loads silently (/org-scribe-planner: loaded plan "My Novel"./); if not, nothing happens. Switching to another project's files switches to its plan.
 
-If a matching file is found, the plan loads silently and you see:
+** Disabling Individual Features
 
-#+BEGIN_EXAMPLE
-org-scribe-planner: loaded plan "My Novel".
-#+END_EXAMPLE
-
-If no plan file exists yet, nothing happens — no error, no interruption.
-
-* Disabling Individual Features
-
-Every integration feature can be turned off independently. Set these variables *before* the planner first loads — the safest place is ~early-init.el~ or anywhere in your init file before the first planner command runs:
-
-** Disable Auto-Loading Plans
+Each automatic feature can be turned off. Set these *before* the planner first loads (e.g. in ~early-init.el~):
 
 #+BEGIN_SRC emacs-lisp
-;; Don't load the plan automatically when opening a project file
-(setq org-scribe-planner-auto-load-plan nil)
-#+END_SRC
-
-** Disable Automatic Word Count Push
-
-#+BEGIN_SRC emacs-lisp
-;; Don't push word counts to the plan after F8 F8 a
-(setq org-scribe-planner-auto-push-wordcount nil)
-#+END_SRC
-
-** Disable Plan Creation Offer on New Projects
-
-#+BEGIN_SRC emacs-lisp
-;; Don't offer to create a plan after creating a novel/short story project
-(setq org-scribe-planner-offer-plan-on-create nil)
-#+END_SRC
-
-** Disable Mode-Line Status
-
-#+BEGIN_SRC emacs-lisp
-;; Don't show [W:actual/target] in the mode line
-(setq org-scribe-planner-show-mode-line nil)
-#+END_SRC
-
-** Disable Auto Word Count on Save
-
-#+BEGIN_SRC emacs-lisp
-;; Keep saves fast — don't run the full word count on every save
-;; (This is the default; only set it if you previously enabled it.)
-(setq org-scribe-auto-wordcount nil)
-#+END_SRC
-
-All settings can be combined in one block:
-
-#+BEGIN_SRC emacs-lisp
-;; Opt out of all automatic tracking features
-(setq org-scribe-planner-auto-load-plan nil
-      org-scribe-planner-auto-push-wordcount nil
-      org-scribe-planner-offer-plan-on-create nil
-      org-scribe-planner-show-mode-line nil
-      org-scribe-auto-wordcount nil)
+(setq org-scribe-planner-auto-load-plan nil         ; don't load the plan when opening a project file
+      org-scribe-planner-auto-push-wordcount nil    ; don't record word counts in the plan
+      org-scribe-planner-auto-track-daily nil       ; don't keep the daily record automatically
+      org-scribe-planner-offer-plan-on-create nil   ; don't offer a plan for new projects
+      org-scribe-planner-show-mode-line nil)        ; no [W:actual/target] in the mode line
+(setq org-scribe-auto-wordcount nil)                ; no word count on save (the default)
 #+END_SRC
 
 * Practical Exercise
 
-Let's do a complete write-and-track cycle using the planner.
+Let's do a complete plan-write-review cycle.
 
-** Exercise: Your First Integrated Session
+** Exercise: Your First Planned Week
 
-1. *Open your project* — open ~novel.org~ in your project.
-2. *Check auto-load* — after a moment, does the minibuffer show ~org-scribe-planner: loaded plan~? If no plan exists yet, continue to step 3.
-3. *Open the planner* — press ~F8 F8 W p~. If no plan exists, answer ~yes~ to create one and follow the prompts.
-4. *Write something* — activate writing mode (~F8 F8 m~), write 200 words, exit mode, save (~C-x C-s~).
-5. *Update word counts* — press ~F8 F8 a~. This pushes the new total to the plan silently (no minibuffer message).
-6. *Check mode line* — is ~[W:actual/target]~ visible? Does the actual number match what you just wrote? (This is the actual confirmation that the sync worked.)
-7. *Log the session* — press ~F8 F8 W d~ and enter today's session word count.
-8. *View the calendar* — press ~F8 F8 W p~ to see your plan.
+1. *Create a plan* — open your project, press ~F8 F8 W p~, answer /yes/, and start from the preset offered. Accept its values with ~RET~.
+2. *Take weekends off* — ~F8 F8 W r~ → /Weekends/ → /No writing/ → keep the end date. Look at the preview: the daily target goes up.
+3. *Write* — ~F8 F8 m~ for writing mode, write a few hundred words, save.
+4. *Count* — ~F8 F8 a~. Check the mode line: ~[W:words/goal]~.
+5. *Annotate* — ~F8 F8 W d~ and write what you did.
+6. *Check* — ~F8 F8 W c~. Ahead? Try the /finish early/ preview, and press ~C-g~ to leave the plan as it is.
+7. *Look around* — ~F8 F8 W M~ for the month grid, ~F8 F8 W D~ for the dashboards.
 
-Congratulations — you have a fully integrated writing tracking system!
+Come back tomorrow: yesterday's goal is now locked, and today's status measures you through yesterday.
 
 * Common Questions
 
-** "I don't see the planner submenu in the Hydra hint."
+** "The plan says I'm behind by exactly the words I'd already written."
 
-The ~W~ key appears in the *Manage* column of the main Hydra hint as ~_W_: Planner…~. If you don't see it, confirm that ~org-scribe-mode~ is active (check the mode line). The planner commands load on first use — press ~F8 F8 W~ once to trigger the load, after which all planner keys are available.
+Those words aren't in the manuscript, so every sync misses them. Declare them: ~F8 F8 W r~ → /Words outside the manuscript/ → type the number (or point to the files), then /Among the starting words already declared/. See [[*Words Written Elsewhere][Words Written Elsewhere]].
 
-** "Auto-load says 'loaded plan' but I didn't create one yet."
+** "I changed the total and my past days didn't change."
 
-The planner found an existing ~.org~ file in your project root that has a ~TOTAL_WORDS~ property (step 3 of the search order) — perhaps a plan you (or a previous collaborator) created and forgot about. Open it and fill in your targets, or rename/delete it if you don't want to use the planner yet.
+That's by design: past days are locked. Only the days to come take the new goal.
 
-** "The mode line shows [W:0/650] even though I wrote today."
+** "The mode line shows nothing, or [W:0/650], even though I wrote today."
 
-If ~org-scribe-planner-auto-track-daily~ and ~org-scribe-planner-auto-push-wordcount~ are both on (the default), running a word count (~F8 F8 a~ or ~F8 F8 w~) should update today's entry automatically. If it still shows 0, run ~F8 F8 W d~ (~org-scribe-planner-add-session-note~) — it pre-fills today's cumulative total from the manuscript and prompts you for a session note; confirming updates the entry. The mode line will update immediately.
+The mode line appears once today has words recorded. Run ~F8 F8 a~ (or ~F8 F8 W u~). If the words were written elsewhere (on paper, another file), record them with ~F8 F8 W d~.
 
-** "I want to track words for multiple projects independently."
+** "Why is my daily target 1,429 and not 1,500?"
 
-Each project has its own ~plan.org~ at its root. When you switch between projects (open a file in a different project), the planner detects the new project root and loads that project's plan. The two plans remain separate.
+Goals add up exactly to your total. 10,000 words at up to 1,500 a day takes 7 days, and 7 days of 1,429 (some 1,428) make exactly 10,000.
+
+** "I set a day goal and the plan asked how to adjust."
+
+A day goal changes how many words that day takes; the others must absorb the difference — over the same dates (the daily target changes), over more or fewer days (the end date moves), or by changing the total. Each option shows its outcome.
 
 ** "Can I use this with a short story project?"
 
-Yes! The planner works identically with short story projects. The plan file goes in the short story's project root (~story.org~'s parent directory).
+Yes. The planner works the same way in short-story projects; the /Short story/ preset is offered first.
 
-** "I was using org-scribe-planner as a separate package from Codeberg."
+** "I want to track several projects."
 
-The standalone Codeberg package is superseded by the bundled version. If you still have the standalone package on your load path, the bundled ~planning/org-scribe-planner.el~ takes precedence when loaded through ~org-scribe~. You can safely remove the standalone package from your load path and init file — all functionality is preserved in the bundled version.
+Each project has its own ~plan.org~. Open a file of another project and the planner switches to that project's plan.
 
 * Troubleshooting
 
 ** "W in the Hydra does nothing."
 
-- Confirm the planner has been loaded at least once: ~M-: (featurep 'org-scribe-planner) RET~. If it returns ~nil~, trigger a load by running ~M-x org-scribe-plan~.
 - Confirm hydra is installed: ~M-: (featurep 'hydra) RET~.
+- Load the planner by running ~M-x org-scribe-plan~ once.
 
-** "Plan doesn't auto-load even though plan.org exists."
+** "The plan doesn't auto-load even though plan.org exists."
 
-- Confirm you're inside an org-scribe project (the directory must have a ~.org-scribe-project~ marker file).
-- Confirm ~org-scribe-mode~ is active in the buffer (check mode line for ~Write~).
-- Confirm auto-load is enabled: ~M-: org-scribe-planner-auto-load-plan RET~ should return ~t~.
-- Try loading manually: ~M-x org-scribe-planner-load-plan~.
+- Confirm you're inside an org-scribe project (the directory has a ~.org-scribe-project~ file) and the project hasn't declined the planner (~# Planner: no~).
+- Confirm ~org-scribe-mode~ is active in the buffer.
+- Confirm ~org-scribe-planner-auto-load-plan~ is ~t~, or load it by hand: ~M-x org-scribe-planner-load-plan~.
 
-** "Word counts don't push to the plan after F8 F8 a."
+** "Word counts don't reach the plan after F8 F8 a."
 
-- A plan must be active. Check: ~M-: org-scribe-planner--current-plan RET~ — should be non-nil.
-- Confirm auto-push is enabled: ~M-: org-scribe-planner-auto-push-wordcount RET~ should return ~t~.
-- Run ~F8 F8 W u~ (Update progress) manually to test the word count bridge independently.
+- A plan must be active: ~F8 F8 W p~ loads it.
+- Confirm ~org-scribe-planner-auto-push-wordcount~ and ~org-scribe-planner-auto-track-daily~ are ~t~.
+- An empty manuscript (0 words) is ignored on purpose.
+- Run ~F8 F8 W u~ to sync by hand and see the result.
 
 ** "I get an error loading org-scribe-planner-integration."
 
-Your init file still contains ~(require 'org-scribe-planner-integration)~. Remove that line — the file has been deleted, and the integration is built directly into the planner module, so nothing needs to be required for it separately.
+Your init file still contains ~(require 'org-scribe-planner-integration)~. Remove it — the integration is built into the planner.
 
 * What You've Learned
 
 You've completed Lesson 16!
 
-✓ That ~org-scribe-planner~ is bundled inside ~org-scribe~ — nothing extra to install
-✓ How to open or create a writing plan with ~F8 F8 W p~
-✓ How word counts push to the plan automatically after ~F8 F8 a~
-✓ How the mode line shows today's target vs. actual (~[W:actual/target]~)
-✓ The full planner Hydra submenu (~W~) and what each key does
-✓ How to log daily sessions, recalculate, and adjust the plan
-✓ How the auto-load system finds plan files (including the cached path in ~.org-scribe-project~)
-✓ How to disable individual features with simple ~setq~ variables
+✓ How to create a plan — from scratch, from a preset, or for a draft in progress
+✓ How to declare words written outside the manuscript
+✓ How your word counts reach the plan, and what the mode line shows
+✓ How to read the calendar, the status, the weekly summary, the month grid, milestones and dashboards
+✓ How to adjust from your progress (~c~, ~a~, ~e~) and change the plan (~r~), with previews
+✓ Patterns, weekends, day goals, spare days and moving the start date
+✓ The rules behind the numbers: exact goals, locked past days, rest days, starting words, pace
 
 * Quick Reference
 
 ** Planner Submenu Keys (F8 F8 W)
 
-| Key | Command                  | What It Does                                         |
-|-----+--------------------------+------------------------------------------------------|
-| ~p~   | Open project plan        | Load or create plan; show calendar if active         |
-| ~n~   | New plan                 | Create a plan for the current project                |
-| ~o~   | Onboard existing project | Set up a plan for a project already in progress      |
-| ~l~   | Load plan                | Open a plan file manually                            |
-| ~u~   | Sync word count          | Push current manuscript total to plan                |
-| ~d~   | Add session note         | Log/annotate today's entry (auto-tracked by default) |
-| ~r~   | Recalculate plan         | Change total, days or spare days, with previews      |
-| ~a~   | Adjust remaining days    | Reschedule around changes in availability            |
-| ~e~   | Adjust end date          | Keep the daily target; finish early or extend        |
-| ~c~   | Check progress           | Ahead, on track or behind; offers the adjustments    |
-| ~m~   | Milestones               | View/set named word count checkpoints                |
-| ~w~   | Weekly summary           | Each week: goal, written, planned vs actual total    |
-| ~M~   | Month grid               | A calendar of each day's goal and result             |
-| ~D~   | Dashboards menu          | Progress dashboards and analytics                    |
-| ~E~   | Enable for project       | Flip this project's gate to ~yes~                      |
-| ~X~   | Disable for project      | Flip this project's gate to ~no~                       |
-| ~q~   | Back to main menu        | Return to main Hydra                                 |
+| Key | Command                  | What It Does                                                 |
+|-----+--------------------------+--------------------------------------------------------------|
+| ~p~   | Open project plan        | Load or create the plan; show the calendar                   |
+| ~n~   | New plan                 | From a preset or from scratch                                |
+| ~o~   | Onboard existing project | A plan for a manuscript already in progress                  |
+| ~l~   | Load plan                | Open a plan file by hand                                     |
+| ~u~   | Sync word count          | Record the manuscript's total now, and show the status       |
+| ~d~   | Add session note         | Annotate a day; correct an untracked count                   |
+| ~r~   | Recalculate plan         | What changed? Total, days, start, pattern, weekends, days off |
+| ~a~   | Adjust remaining days    | Keep the end date, re-spread the words left                  |
+| ~e~   | Adjust end date          | Keep the daily target; finish early or extend                |
+| ~c~   | Check progress           | Ahead, on track or behind; offers the adjustments            |
+| ~m~   | Milestones               | When 25/50/75/100% were or will be reached                   |
+| ~w~   | Weekly summary           | Each week: goal, written, planned vs actual total            |
+| ~M~   | Month grid               | A calendar of each day's goal and result                     |
+| ~D~   | Dashboards menu          | Progress, burndown, velocity, heatmap and more               |
+| ~E~   | Enable for project       | Turn the planner on for this project                         |
+| ~X~   | Disable for project      | Turn it off                                                  |
+| ~q~   | Back to main menu        | Return to the main Hydra                                     |
 
-** Integration Features Summary
+** A Writing Day with the Planner
 
-| Feature                   | Enabled by default | Variable to disable / enable                       |
-|---------------------------+--------------------+----------------------------------------------------|
-| Auto-load plan            | Yes                | ~(setq org-scribe-planner-auto-load-plan nil)~       |
-| Auto-push after ~F8 F8 a~   | Yes                | ~(setq org-scribe-planner-auto-push-wordcount nil)~  |
-| Offer plan on new project | Yes                | ~(setq org-scribe-planner-offer-plan-on-create nil)~ |
-| Mode-line status          | Yes                | ~(setq org-scribe-planner-show-mode-line nil)~       |
-| Auto word count on save   | *No* (opt-in)        | ~(setq org-scribe-auto-wordcount t)~                 |
-
-All planner variables must be set *before* the planner first loads (e.g. in ~early-init.el~).
-~org-scribe-auto-wordcount~ can be set anywhere in your init file.
-
-** Daily Writing Workflow with Integration
-
-| Phase         | Action                             | Key       |
-|---------------+------------------------------------+-----------|
-| Start session | Check mode line for today's target | —         |
-| Write         | Write in distraction-free mode     | ~F8 F8 m~   |
-| After writing | Update word count properties       | ~F8 F8 a~   |
-|               | Plan updates automatically!        | —         |
-| Log session   | Log words written today            | ~F8 F8 W d~ |
-| Weekly review | Recalculate if pace has changed    | ~F8 F8 W r~ |
+| Moment        | Action                                    | Key         |
+|---------------+-------------------------------------------+-------------|
+| Start         | Glance at the mode line or the calendar   | ~F8 F8 W p~   |
+| Write         | Distraction-free mode                     | ~F8 F8 m~     |
+| After writing | Count words — the plan records them       | ~F8 F8 a~     |
+| Optional      | Note what you did                         | ~F8 F8 W d~   |
+| Weekly        | Review the week, check progress           | ~F8 F8 W w~, ~c~ |
+| Plans change  | Change the plan, previewed                | ~F8 F8 W r~   |
 
 ---
 
