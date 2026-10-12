@@ -354,7 +354,7 @@ Don't feel pressured to complete all lessons at once. Take your time, experiment
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2026-09-05
-- *Package Version*: 0.7.0
+- *Package Version*: 0.8.1
 - *Estimated Total Time*: ~4.75 hours (at your own pace)
 - *Difficulty*: Beginner to Intermediate
 

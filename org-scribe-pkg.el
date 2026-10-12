@@ -6,13 +6,13 @@
 
 ;;; Code:
 
-(define-package "org-scribe" "0.7.0"
+(define-package "org-scribe" "0.8.1"
   "Comprehensive toolkit for creative writing in Org-mode"
   '((emacs "29.1")
     (org "9.6")
     (org-ql "0.8")
     (writeroom-mode "3.7")
-    (wc-mode "1.3"))
+    (hydra "0.15.0"))
   :keywords '("writing" "org-mode" "novel" "fiction")
   :url "https://codeberg.org/jcastp/org-scribe"
   :authors '(("Javier Castilla" . "jcastp@pm.me"))
