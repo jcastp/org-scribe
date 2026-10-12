@@ -128,7 +128,8 @@ available, otherwise falls back to a plain count."
 ;;;###autoload
 (defun org-scribe-update-scene-wordcounts ()
   "Update WORDCOUNT property on scene headings in the current subtree.
-Scenes are identified as level-3 headings tagged with :ignore:.
+Scenes are identified via `org-scribe-scene-match' (level 3 for a
+novel, level 2 for a short story; tagged :ignore: in both).
 When point is on a heading, operates on that subtree only.
 When point is not on a heading, operates on the entire buffer.
 Uses `org-context-extended' for accurate counting when installed, and a

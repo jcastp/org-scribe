@@ -221,7 +221,7 @@ whether a thread is held to the coverage and gap checks."
 ;;; Plot Thread Health Report
 
 (defun org-scribe--get-scene-count ()
-  "Return the total number of scenes (level-3 headings) in the novel file.
+  "Return the total number of scenes in the project's manuscript.
 Unlike `org-scribe--get-all-scenes-with-plots', this counts every scene
 regardless of whether it carries a Plot property, so it can be used as
 the denominator for plot-thread coverage percentages."
