@@ -375,9 +375,24 @@ Chapter Three (100) is the only outlier (< 0.5 * mean = 600)."
     (let ((content (buffer-string)))
       (should (string-match-p "Per-PoV Word Share" content))
       ;; Alice: 2 scenes, 3000 words, 83.3% of 3600
-      (should (string-match-p "| Alice | 2 | 3000 | 83\\.3% |" content))
+      (should (string-match-p "| Alice +| +2 +| +3000 +| +83\\.3% +|" content))
       ;; Bob: 2 scenes, 600 words, 16.7% of 3600
-      (should (string-match-p "| Bob | 2 | 600 | 16\\.7% |" content)))))
+      (should (string-match-p "| Bob +| +2 +| +600 +| +16\\.7% +|" content)))))
+
+(ert-deftest test-health-report-tables-are-aligned ()
+  "Every row of a report table has the same width."
+  (test-health--with-stats-fixture
+    (goto-char (point-min))
+    (let ((tables 0))
+      (while (re-search-forward "^|" nil t)
+        (let ((widths nil))
+          (forward-line 0)
+          (while (looking-at "|")
+            (push (- (line-end-position) (line-beginning-position)) widths)
+            (forward-line 1))
+          (setq tables (1+ tables))
+          (should (= 1 (length (delete-dups widths))))))
+      (should (> tables 0)))))
 
 (ert-deftest test-health-pov-word-share-groups-missing-pov ()
   "Scenes with no PoV are grouped under the \"(no PoV)\" label."
@@ -403,10 +418,10 @@ min/max/mean/median summary line, with one decimal rounding."
   (test-health--with-stats-fixture
     (let ((content (buffer-string)))
       (should (string-match-p "Chapter Length Spread" content))
-      (should (string-match-p "| Chapter One | 1500 |" content))
-      (should (string-match-p "| Chapter Two | 2000 |" content))
+      (should (string-match-p "| Chapter One +| +1500 +|" content))
+      (should (string-match-p "| Chapter Two +| +2000 +|" content))
       ;; Chapter Three is the outlier (100 < 0.5 * mean 1200) — flagged
-      (should (string-match-p "| Chapter Three | 100 \\*? |" content))
+      (should (string-match-p "| Chapter Three +| +100 +\\*? *|" content))
       (should (string-match-p
               "Min: 100 words · Max: 2000 words · Mean: 1200\\.0 words · Median: 1500\\.0 words"
               content)))))

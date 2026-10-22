@@ -727,6 +727,8 @@ with clickable ID links back to each scene."
                               (or (nth 3 s) "?")
                               (org-scribe--health-scene-link (nth 0 s) (nth 2 s)))))))
 
+        ;; The tables are inserted row by row; align them once, here.
+        (org-table-map-tables #'org-table-align t)
         (goto-char (point-min))
         (pop-to-buffer (current-buffer))
         (message "Project health report generated.")))))
