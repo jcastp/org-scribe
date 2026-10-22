@@ -101,6 +101,7 @@
     "test-planner-daily-sync"      ; Automatic daily word-count tracking
     "test-planner-agenda"          ; Org-agenda sync integration
     "test-planner-gate"            ; Per-project planner gate
+    "test-planner-autoload"        ; Planner loads itself for opted-in projects
     "test-planner-recalculation"   ; Plan changes, status, mode line
     "test-planner-preexisting"     ; Pre-existing words
     "test-planner-engine"          ; Schedule engine, locking, invariants
@@ -384,6 +385,7 @@ Suitable for CI/CD pipelines and automated testing."
                     "test-planner-daily-sync"
                     "test-planner-agenda"
                     "test-planner-gate"
+                    "test-planner-autoload"
                     "test-planner-recalculation"
                     "test-planner-preexisting"
                     "test-planner-engine"

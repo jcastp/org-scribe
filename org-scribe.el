@@ -118,6 +118,7 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
 (let ((planning-dir (expand-file-name "planning" org-scribe--source-directory)))
   (add-to-list 'load-path planning-dir)
   (load (expand-file-name "org-scribe-planner-autoloads" planning-dir) nil :nomessage))
+
 ;; To disable individual integration features before the planner loads:
 ;;   (setq org-scribe-planner-auto-load-plan nil)   ; no auto-load on project open
 ;;   (setq org-scribe-planner-auto-push-wordcount nil) ; no push after word count
@@ -159,6 +160,41 @@ project detection on every save (L3)."
         (add-hook 'after-save-hook #'org-scribe--auto-update-links-after-save nil t))
     (remove-hook 'before-save-hook #'org-scribe--auto-wordcount-before-save t)
     (remove-hook 'after-save-hook #'org-scribe--auto-update-links-after-save t)))
+
+
+;;; Planner auto-load
+
+(defvar org-scribe-planner-auto-load-plan)
+(declare-function org-scribe-planner--auto-load-plan "org-scribe-planner")
+
+(defun org-scribe--planner-maybe-autoload ()
+  "Load the writing planner when the current project has opted into it.
+Runs on `org-scribe-mode-hook'.  The planner is autoloaded, and its own
+integrations — the auto-load-plan hook, the word-count bridge in
+`org-scribe-ews-org-count-words', save-time syncing — are only wired up
+once it loads.  Without this, a fresh session never loaded it until the
+writer happened to open a planner view, and every word count until then
+silently missed the ledger.
+
+Only a project whose gate is \\='yes (see `org-scribe-planner-gate') pays
+the load; undecided and \\='no projects are left alone.  The plan itself
+is loaded through `org-scribe-planner--auto-load-plan' directly, rather
+than left to the hook the planner adds while loading: that hook is added
+in the middle of this very `org-scribe-mode-hook' run and would not fire
+until the next buffer.  Calling it twice is harmless — it does nothing
+once a plan is active.  `org-scribe-planner-auto-load-plan' set to nil
+still keeps the plan from loading; it does not keep the planner (and so
+the ledger) from working."
+  (when (and org-scribe-mode
+             (not (featurep 'org-scribe-planner))
+             (org-scribe-project-root)
+             (eq (org-scribe-planner-gate) 'yes))
+    (with-demoted-errors "org-scribe: could not load the planner: %S"
+      (when (and (require 'org-scribe-planner nil t)
+                 org-scribe-planner-auto-load-plan)
+        (org-scribe-planner--auto-load-plan)))))
+
+(add-hook 'org-scribe-mode-hook #'org-scribe--planner-maybe-autoload)
 
 ;;;###autoload
 (defun org-scribe-setup ()
