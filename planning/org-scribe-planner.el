@@ -4502,6 +4502,7 @@ Tracks actual progress and calculates expected dates for unreached milestones."
          (daily-counts (org-scribe-plan-daily-word-counts plan))
          (schedule (org-scribe-planner--generate-day-schedule plan))
          (milestone-percentages '(25 50 75 100))
+         (today (org-scribe-planner--get-today-date))
          ;; The manuscript starts at its pre-existing words; a milestone
          ;; they already reach has no date (reached before the plan)
          (cumulative-actual (or (org-scribe-plan-preexisting-words plan) 0))
@@ -4549,11 +4550,21 @@ Tracks actual progress and calculates expected dates for unreached milestones."
                      (has-actual (assoc date daily-counts))
                      (current-daily (plist-get day :words)))
 
-                ;; Project forward using days without actuals
-                (when (and (not has-actual)
+                ;; Project forward using days without actuals.  Today may
+                ;; already hold a partial entry; what is left of its goal
+                ;; still counts, or a plan on schedule never reaches 100%.
+                (when (and (or (not has-actual) (equal date today))
                           (not is-spare)
                           (not expected-date))
-                  (setq projection-total (+ projection-total current-daily))
+                  (setq projection-total
+                        (+ projection-total
+                           (if has-actual
+                               (max 0 (- current-daily
+                                         (or (org-scribe-planner--entry-delta
+                                              daily-counts date
+                                              (org-scribe-plan-preexisting-words plan))
+                                             0)))
+                             current-daily)))
 
                   (when (>= projection-total milestone-words)
                     (setq expected-date date)))))))

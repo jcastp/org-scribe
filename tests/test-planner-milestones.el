@@ -171,4 +171,23 @@ added on top."
     (should (plist-get m100 :reached))
     (should (plist-get m100 :date))))
 
+;;; --get-enhanced-milestones
+
+(ert-deftest test-planner-milestones-final-reachable-after-partial-today ()
+  "A partial entry for today does not make 100% unreachable.
+Four days of 1000 words; 300 written on day one.  The rest of today's
+goal plus three more days reaches 4000 on the last day, not never."
+  (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
+             (lambda () "2024-11-01")))
+    (let* ((plan (make-org-scribe-plan
+                  :total-words 4000 :daily-words 1000 :days 4
+                  :start-date "2024-11-01" :end-date "2024-11-04"
+                  :spare-days nil :current-words 300
+                  :daily-word-counts
+                  '(("2024-11-01" . (:words 300 :note "" :target 1000)))))
+           (ms (org-scribe-planner--get-enhanced-milestones plan))
+           (final (car (last ms))))
+      (should (= 100 (plist-get final :percent)))
+      (should (equal "2024-11-04" (plist-get final :expected))))))
+
 ;;; test-milestones.el ends here
