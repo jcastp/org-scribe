@@ -512,5 +512,29 @@ broken in any visible way; it just silently keeps the global language."
         (should (re-search-forward "^ *#\\+language: +\\([a-z_]+\\) *$"
                                    nil t))))))
 
+;; A fresh story is empty scenes: placeholder prose would be counted as
+;; words written and compiled into the story as if it were the text.
+(ert-deftest test-template-parity-short-story-scenes-ship-no-prose ()
+  "Short-story manuscript templates hold no prose below their property drawers."
+  (dolist (file '("short-story-en/story.org.template"
+                  "short-story-es/cuento.org.template"))
+    (with-temp-buffer
+      (insert-file-contents
+       (expand-file-name file (expand-file-name "org-scribe-templates"
+                                                org-scribe-parity--root)))
+      (goto-char (point-min))
+      (re-search-forward "^\\* Story Content\\|^\\* Contenido")
+      (let ((in-drawer nil) (prose nil))
+        (while (not (eobp))
+          (let ((line (buffer-substring (line-beginning-position)
+                                        (line-end-position))))
+            (cond ((string-match-p "^:PROPERTIES:" line) (setq in-drawer t))
+                  ((string-match-p "^:END:" line) (setq in-drawer nil))
+                  ((or in-drawer
+                       (string-match-p "\\`\\(\\*\\|#\\|{{{\\|[ \t]*\\'\\)" line)))
+                  (t (push line prose))))
+          (forward-line 1))
+        (should (equal (cons file nil) (cons file prose)))))))
+
 (provide 'test-template-parity)
 ;;; test-template-parity.el ends here
