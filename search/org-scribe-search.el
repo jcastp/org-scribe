@@ -89,6 +89,14 @@ PROMPT-FREE is the message key for the free-text prompt."
       (completing-read (org-scribe-msg prompt-completion)
                        names nil nil nil nil nil))))
 
+(defun org-scribe--org-ql-available-p ()
+  "Load org-ql if it is installed; return non-nil when it is available.
+`featurep' alone is the wrong test: org-ql's commands are autoloaded, so
+an installed org-ql is usually not yet loaded when a writer first runs a
+search, and every search refused with \"org-ql is required\" until
+something else happened to load it."
+  (require 'org-ql nil t))
+
 (defun org-scribe--search-property (term error-key property)
   "Search for TERM in PROPERTY across headings in current buffer.
 ERROR-KEY is the message key for empty input validation.
@@ -97,7 +105,7 @@ localized alias for it (see `org-scribe-scene-property-aliases') is
 checked so the search works regardless of the project's language."
   (when (string-empty-p (string-trim term))
     (user-error (org-scribe-msg error-key)))
-  (unless (featurep 'org-ql)
+  (unless (org-scribe--org-ql-available-p)
     (user-error (org-scribe-msg 'error-org-ql-required)))
   (org-ql-search (current-buffer)
     `(and (heading)
@@ -163,7 +171,7 @@ and displays all TODO keywords with an active (non-DONE) status.
 Results are grouped by file for easy navigation.
 Requires org-ql package to be installed."
   (interactive)
-  (unless (featurep 'org-ql)
+  (unless (org-scribe--org-ql-available-p)
     (user-error (org-scribe-msg 'error-org-ql-required)))
   (let* ((project-root (or (org-scribe-project-root)
                           (file-name-directory (or (buffer-file-name) default-directory))))

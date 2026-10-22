@@ -102,6 +102,7 @@
     "test-planner-agenda"          ; Org-agenda sync integration
     "test-planner-gate"            ; Per-project planner gate
     "test-planner-autoload"        ; Planner loads itself for opted-in projects
+    "test-lazy-dependencies"       ; org-ql / writeroom work before they load
     "test-planner-recalculation"   ; Plan changes, status, mode line
     "test-planner-preexisting"     ; Pre-existing words
     "test-planner-engine"          ; Schedule engine, locking, invariants
