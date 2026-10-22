@@ -47,14 +47,48 @@ availability reflects installation, not accidental load order."
         (setq org-scribe--accurate-wordcount-checked t)
         (require 'org-context-extended nil t))))
 
-(defun org-scribe--count-words-region (start end)
-  "Return the word count between START and END.
-Uses `org-context-count-words' when available (excludes Org metadata),
-falling back to the plain `count-words' otherwise."
+(defconst org-scribe--scene-break-macro-regexp "^[ \t]*{{{scene-break}}}[ \t]*$"
+  "A scene-break macro standing alone on its line.")
+
+(defun org-scribe--raw-count-words-region (start end)
+  "Count words between START and END with the best counter available."
   (if (org-scribe-accurate-wordcount-p)
       (org-context-count-words start end t t t t t t
                                org-scribe-wordcount-default-ignore-tags)
     (count-words start end)))
+
+(defun org-scribe--scene-break-macro-words ()
+  "Return how many words one scene-break macro adds to a count.
+Measured with the active counter rather than assumed: it is 2 with
+`org-context-extended' (which splits at the hyphen) and 1 with the plain
+fallback."
+  (with-temp-buffer
+    (delay-mode-hooks (org-mode))
+    (insert "* H\nword\n")
+    (let ((without (org-scribe--raw-count-words-region (point-min) (point-max))))
+      (insert "\n{{{scene-break}}}\n")
+      (- (org-scribe--raw-count-words-region (point-min) (point-max)) without))))
+
+(defun org-scribe--count-words-region (start end)
+  "Return the word count between START and END.
+Uses `org-context-count-words' when available (excludes Org metadata),
+falling back to the plain `count-words' otherwise.  A scene-break macro
+is markup, not prose, so the words it would add are taken back off:
+every scene carries one, and they inflated the totals (and the planner
+ledger) by a couple of words per scene."
+  (let ((macros (save-excursion
+                  (save-restriction
+                    (narrow-to-region start end)
+                    (goto-char (point-min))
+                    (let ((case-fold-search t) (n 0))
+                      (while (re-search-forward
+                              org-scribe--scene-break-macro-regexp nil t)
+                        (setq n (1+ n)))
+                      n)))))
+    (max 0 (- (org-scribe--raw-count-words-region start end)
+              (if (> macros 0)
+                  (* macros (org-scribe--scene-break-macro-words))
+                0)))))
 
 ;;; Word Count Property Function
 

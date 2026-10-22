@@ -388,6 +388,15 @@ permanently inserted :ID: drawers on every heading."
             (kill-buffer)))
       (delete-directory dir t))))
 
+(ert-deftest test-wordcount-scene-break-macro-is-not-prose ()
+  "A scene-break macro adds no words to a region's count."
+  (with-temp-buffer
+    (delay-mode-hooks (org-mode))
+    (insert "* S\nAlpha beta gamma.\n")
+    (let ((plain (org-scribe--count-words-region (point-min) (point-max))))
+      (insert "\n{{{scene-break}}}\n")
+      (should (= plain (org-scribe--count-words-region (point-min) (point-max)))))))
+
 (provide 'test-wordcount)
 
 ;;; test-wordcount.el ends here
