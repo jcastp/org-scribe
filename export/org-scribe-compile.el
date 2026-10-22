@@ -465,24 +465,14 @@ STYLE `shunn' additionally prepends the Shunn front matter, inserts the
 LaTeX running-header preamble (inert outside PDF output), and appends a
 centered \"END\" mark; ROOT supplies the project's Shunn markers.  Any
 other STYLE (including nil) produces exactly the `clean' document.
-FORMAT `epub' additionally inserts an `#+EPUBSTYLE:' keyword line."
+FORMAT is accepted for callers' sake but changes nothing: the EPUB
+stylesheet line is added at export time, in memory only, by
+`org-scribe--compile-export' -- see there for why it is not written here."
   (with-temp-buffer
     (dolist (keyword '("TITLE" "AUTHOR" "DATE" "LANGUAGE"))
       (when-let* ((value (org-scribe--compile-keyword-value keyword keywords))
                   ((org-string-nw-p value)))
         (insert (format "#+%s: %s\n" keyword value))))
-    ;; Unlike the LaTeX-only running header below, which is genuinely
-    ;; inert everywhere but LaTeX/PDF output, this line is not written
-    ;; unconditionally: its value is `org-scribe--compile-epub-css', an
-    ;; *absolute path into this install of org-scribe* -- harmless for the
-    ;; ox-epub backend that reads it, but plumbing with no business
-    ;; appearing in a `clean'/`shunn' `org' or `txt' output the writer
-    ;; might keep, share or put under version control on a machine where
-    ;; that path means nothing.  So this is gated on FORMAT rather than
-    ;; reusing the "every other backend ignores an unrecognized keyword"
-    ;; reasoning that justifies the running header staying unconditional.
-    (when (eq format 'epub)
-      (insert (format "#+EPUBSTYLE: %s\n" org-scribe--compile-epub-css)))
     ;; num:nil because the writer's own heading text already says
     ;; "Chapter 1"; auto-numbering would silently disagree with a
     ;; chapter the writer renamed.  Shunn additionally suppresses Org's
@@ -808,6 +798,36 @@ refused."
                              choices nil t nil nil
                              (if (member "txt" choices) "txt" (car choices))))))
 
+(defmacro org-scribe--compile-with-epub-style (backend &rest body)
+  "Run BODY with the EPUBSTYLE keyword line present when BACKEND is `epub'.
+The line's value, `org-scribe--compile-epub-css', is an absolute path
+into this install of org-scribe: harmless to ox-epub, which reads it, but
+no business in a file the writer may keep, share or version.  It cannot
+live in the intermediate on disk, because for `org' output the
+intermediate *is* the deliverable and, for every other format, shares its
+base name with the output (see `org-scribe--compile-export'), so a later
+EPUB compile would overwrite a clean `org' file with the path in it.  So
+the line is inserted into the buffer for the duration of BODY only, then
+removed and the buffer's modified flag restored: nothing reaches disk."
+  (declare (indent 1))
+  `(if (not (eq ,backend 'epub))
+       (progn ,@body)
+     (let ((line (format "#+EPUBSTYLE: %s\n" org-scribe--compile-epub-css))
+           (modified (buffer-modified-p))
+           (start nil))
+       (save-excursion
+         (save-restriction
+           (widen)
+           (goto-char (point-min))
+           (setq start (point))
+           (insert line)))
+       (unwind-protect (progn ,@body)
+         (save-excursion
+           (save-restriction
+             (widen)
+             (delete-region start (+ start (length line)))))
+         (set-buffer-modified-p modified)))))
+
 (defun org-scribe--compile-export (spec intermediate output)
   "Export INTERMEDIATE to OUTPUT per format SPEC, returning the file written.
 
@@ -848,14 +868,15 @@ it once the prompt was answered."
          (exporter (plist-get spec :exporter)))
     (unwind-protect
         (with-current-buffer buffer
-          (if exporter
+          (org-scribe--compile-with-epub-style (plist-get spec :backend)
+            (if exporter
               ;; `org-odt-export-to-odt' returns a *relative* name, which
               ;; only resolves against the intermediate's directory --
               ;; not the caller's.  Absolutize it, or the path handed
               ;; back (and shown to the writer) points nowhere.
               (expand-file-name (funcall exporter)
                                 (file-name-directory intermediate))
-            (org-export-to-file (plist-get spec :backend) output)))
+            (org-export-to-file (plist-get spec :backend) output))))
       (unless existing (kill-buffer buffer)))))
 
 ;;; Command

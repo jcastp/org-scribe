@@ -781,6 +781,20 @@ tests/test-export.el already covers)."
         (should-not (string-match-p "<br>" (buffer-string)))
         (should (string-match-p "\"org-scribe-scene-break\"" (buffer-string)))))))
 
+(ert-deftest test-compile-epub-does-not-rewrite-org-deliverable ()
+  "Compiling to `epub' after `org' leaves the org file free of the CSS path.
+The intermediate and the `org' output are the same file; the absolute
+`#+EPUBSTYLE:' path must reach ox-epub in memory only."
+  (skip-unless org-scribe-compile-test--epub-available)
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (let* ((org-file (org-scribe-compile 'clean 'org))
+           (before (with-temp-buffer (insert-file-contents org-file) (buffer-string))))
+      (org-scribe-compile 'clean 'epub)
+      (let ((after (with-temp-buffer (insert-file-contents org-file) (buffer-string))))
+        (should-not (string-match-p "EPUBSTYLE" after))
+        (should (string= before after))))))
+
 (ert-deftest test-compile-epub-ships-and-embeds-its-stylesheet ()
   "The scene-break stylesheet exists on disk and is embedded in the EPUB,
 with its actual rule intact -- not just referenced by a path that might
@@ -1162,15 +1176,18 @@ that belongs in a document the writer might keep, share or version."
                    "#\\+EPUBSTYLE:"
                    (org-scribe-compile-test--intermediate root "novel"))))))
 
-(ert-deftest test-compile-epub-still-includes-the-epubstyle-line ()
-  "The gate above must not have swallowed the line `epub' itself needs."
+(ert-deftest test-compile-epub-intermediate-never-carries-the-epub-css-path ()
+  "Not even an `epub' compile writes the `#+EPUBSTYLE:' line to disk.
+It is added to the export buffer in memory only (the EPUB still embeds
+its stylesheet -- see `test-compile-epub-ships-and-embeds-its-stylesheet'),
+because the intermediate doubles as the `org' deliverable."
   (skip-unless org-scribe-compile-test--epub-available)
   (org-scribe-compile-test--with-project "novel" "novel.org"
       org-scribe-compile-test--novel
     (org-scribe-compile 'clean 'epub)
-    (should (string-match-p
-             (regexp-quote (format "#+EPUBSTYLE: %s" org-scribe--compile-epub-css))
-             (org-scribe-compile-test--intermediate root "novel")))))
+    (should-not (string-match-p
+                 "EPUBSTYLE"
+                 (org-scribe-compile-test--intermediate root "novel")))))
 
 (ert-deftest test-compile-uses-the-configured-output-directory ()
   "Output lands in `org-scribe-compile-output-directory', not the root."
