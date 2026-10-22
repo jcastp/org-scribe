@@ -936,6 +936,26 @@ else in the session has already loaded the full package."
         (should (string-match-p "123 Elm Street" out))
         (should (string-match-p "jane@example.com" out))))))
 
+(ert-deftest test-compile-shunn-address-may-be-a-string ()
+  "A multi-line string address, as `setq' users write it, is accepted."
+  (org-scribe-compile-test--with-author
+    (let ((org-scribe-author-address "1 Quay St\nPortmere"))
+      (org-scribe-compile-test--with-project "novel" "novel.org"
+          org-scribe-compile-test--novel
+        (org-scribe-compile 'shunn 'org)
+        (let ((out (org-scribe-compile-test--intermediate root "novel" "shunn")))
+          (should (string-match-p "1 Quay St" out))
+          (should (string-match-p "Portmere" out)))))))
+
+(ert-deftest test-compile-shunn-bad-address-names-the-variable ()
+  "A value of the wrong type is a `user-error' naming the variable."
+  (org-scribe-compile-test--with-author
+    (let ((org-scribe-author-address 42))
+      (org-scribe-compile-test--with-project "novel" "novel.org"
+          org-scribe-compile-test--novel
+        (let ((err (should-error (org-scribe-compile 'shunn 'org) :type 'user-error)))
+          (should (string-match-p "org-scribe-author-address" (cadr err))))))))
+
 (ert-deftest test-compile-shunn-agent-replaces-own-contact ()
   "An agent's contact lines replace the author's own, not append to them."
   (org-scribe-compile-test--with-author

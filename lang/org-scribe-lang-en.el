@@ -465,6 +465,7 @@
      (compile-done . "Compiled %d chapter%s and %d scene%s to %s")
      (compile-pandoc-failed . "pandoc could not produce the DOCX: %s")
      (compile-shunn-format-unsupported . "Shunn format is not available for %s; use org, txt, pdf, or docx")
+     (compile-shunn-contact-invalid . "`%s' must be a string or a list of strings, not %S")
      (compile-shunn-author-missing . "Shunn format needs `org-scribe-author-name' set; see M-x customize-group RET org-scribe RET")
      (compile-shunn-preamble-malformed . "org-scribe-compile-shunn-latex-preamble is malformed (must contain exactly two `%%s' placeholders): %s")
      (plural-empty . "")

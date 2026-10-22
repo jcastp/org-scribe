@@ -356,14 +356,29 @@ so they would overcount what the compiled document actually contains."
   "Round N to the nearest hundred, per Shunn format's word-count convention."
   (* 100 (round n 100)))
 
+(defun org-scribe--compile-contact-list (value variable)
+  "Return VALUE, the contents of VARIABLE, as a list of lines.
+Accepts a list of strings (what `customize' enforces) or, since `setq'
+is how most people configure, a single string, split on newlines.  Any
+other type is a `user-error' naming VARIABLE rather than a bare
+`wrong-type-argument' from deep inside the front-matter builder."
+  (cond
+   ((null value) nil)
+   ((stringp value) (split-string value "\n" t))
+   ((and (listp value) (cl-every #'stringp value)) value)
+   (t (user-error "%s" (org-scribe-msg 'compile-shunn-contact-invalid
+                                       variable value)))))
+
 (defun org-scribe--compile-shunn-contact-lines ()
   "Return the Shunn contact block, as a list of lines.
 `org-scribe-author-agent', when set, replaces the writer's own contact
 information entirely -- the convention for a work submitted through an
 agent, where the agent's address is what a publisher writes back to."
-  (or org-scribe-author-agent
+  (or (org-scribe--compile-contact-list org-scribe-author-agent
+                                        'org-scribe-author-agent)
       (delq nil (append (list org-scribe-author-name)
-                        org-scribe-author-address
+                        (org-scribe--compile-contact-list
+                         org-scribe-author-address 'org-scribe-author-address)
                         (list org-scribe-author-phone
                               org-scribe-author-email)))))
 
