@@ -658,6 +658,74 @@ marker and returns the actual writing project directory."
 ;;; ─────────────────────────────────────────────
 ;;; --capture-goto-section (H10)
 ;;; ─────────────────────────────────────────────
+;; Note capture files under a top-level Notes heading
+
+(ert-deftest test-capture-goto-notes-section-ignores-nested-notes-headings ()
+  "A `*** Notes' inside a character profile is not the Notes section.
+The note template used `file+headline', which takes the first heading of
+that text at any level, so in a short story's single notes file a note
+went inside whichever profile came first."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Characters\n** Alice\n*** Notes\n- a profile field\n")
+    (insert "* Plot\n")
+    (org-scribe--capture-goto-notes-section)
+    (should (org-at-heading-p))
+    (should (= 1 (org-current-level)))
+    (should (string= "Notes" (org-get-heading t t t t)))
+    ;; created at the end, not reused from the profile
+    (should (= (point) (save-excursion (goto-char (point-max))
+                                       (forward-line -1) (point))))))
+
+(ert-deftest test-capture-goto-notes-section-finds-existing-section-in-any-language ()
+  "An existing top-level Notes/Notas heading is reused, not duplicated."
+  (dolist (heading '("Notes" "Notas"))
+    (with-temp-buffer
+      (org-mode)
+      (insert (format "* Characters\n** Alice\n*** Notas\n* %s\n** TODO earlier\n* Plot\n" heading))
+      (org-scribe--capture-goto-notes-section)
+      (should (string= heading (org-get-heading t t t t)))
+      (should (= 1 (org-current-level)))
+      (should (= 1 (how-many (format "^\\* %s$" heading) (point-min) (point-max)))))))
+
+(ert-deftest test-capture-note-in-short-story-is-filed-at-top-level-notes ()
+  "End to end: a captured note lands under `* Notes', not in a character.
+Runs the real `org-capture' against a short-story notes file whose first
+character profile has a `*** Notes' sub-heading — the shape every captured
+character produces."
+  (let* ((root (make-temp-file "test-capture-note-" t))
+         (notes (expand-file-name "notes.org" root)))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name ".org-scribe-project" root)
+            (insert "# Writing project: Note Test\n# Type: short-story\n# Language: en\n"))
+          (with-temp-file (expand-file-name "story.org" root) (insert "* Story\n"))
+          (with-temp-file notes
+            (insert "* Characters\n** Alice\n*** Notes\n- profile\n* Plot Threads\n"))
+          (let ((default-directory (file-name-as-directory root)))
+            (org-scribe-project-type-cache-clear root)
+            (let ((org-capture-templates (org-scribe-capture-templates)))
+              (org-capture nil "w")
+              (insert "the letter is forged")
+              (org-capture-finalize)))
+          (with-current-buffer (find-file-noselect notes)
+            (revert-buffer t t)
+            (goto-char (point-min))
+            (re-search-forward "the letter is forged")
+            (org-back-to-heading t)
+            (should (= 2 (org-current-level)))
+            (should (equal "Notes" (save-excursion (org-up-heading-safe)
+                                                   (org-get-heading t t t t))))
+            (should (= 1 (save-excursion (org-up-heading-safe) (org-current-level))))
+            (should-not (string-match-p
+                         "the letter is forged"
+                         (save-excursion (goto-char (point-min))
+                                         (re-search-forward "^\\*\\* Alice")
+                                         (buffer-substring (point) (progn (org-end-of-subtree) (point))))))))
+      (when (get-file-buffer notes) (with-current-buffer (get-file-buffer notes) (set-buffer-modified-p nil)) (kill-buffer (get-file-buffer notes)))
+      (delete-directory root t))))
+
+;;; ─────────────────────────────────────────────
 ;; org-scribe--capture-goto-section positions point so a `file+function'
 ;; capture files entities under the right level-1 section in short-story
 ;; projects, matching org-scribe--character-heading-p /

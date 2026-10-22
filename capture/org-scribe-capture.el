@@ -317,6 +317,34 @@ notes.org.  See `org-scribe--capture-goto-objects-section', which this
 mirrors exactly, and `org-scribe--capture-goto-section'."
   (org-scribe--capture-goto-section 'timeline))
 
+(defun org-scribe--capture-goto-notes-section ()
+  "Move point to the top-level Notes heading, creating it if absent.
+Leaves point ON the heading line, so the capture is filed under it (see
+`org-scribe--capture-goto-section').
+
+This replaced a `file+headline' target, which takes the *first* heading of
+that text at any level.  A short story's notes file keeps its characters,
+settings and plot threads in one file, and every captured character
+profile carries its own `*** Notes' sub-heading, so a note went inside
+whichever profile came first.  Only a level-1 heading qualifies here.
+The heading is matched in every registered language, so a file written
+under another language's spelling is not given a second section."
+  (let* ((headings (delete-dups
+                    (mapcar (lambda (lang)
+                              (org-scribe-lang-message 'capture-notes-heading lang))
+                            (org-scribe-languages))))
+         (regexp (concat "^\\* \\(?:" (mapconcat #'regexp-quote headings "\\|")
+                         "\\)[ \t]*$")))
+    (goto-char (point-min))
+    (if (re-search-forward regexp nil t)
+        (forward-line 0)
+      (goto-char (point-max))
+      (unless (bolp) (insert "\n"))
+      (insert (format "* %s\n"
+                      (org-scribe-lang-message 'capture-notes-heading
+                                               (org-scribe-project-language))))
+      (forward-line -1))))
+
 (defun org-scribe-capture-target-file (&optional create-if-missing)
   "Determine the appropriate notes file for org-capture in writing environment.
 Uses `org-scribe-project-root' to find the project base directory.
@@ -389,7 +417,8 @@ of that file."
 LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
   (let ((org-scribe-message-language (or language (org-scribe-project-language))))
     `(("w" ,(org-scribe-msg 'capture-writing-note-name) entry
-       (file+headline org-scribe-capture-target-file ,(org-scribe-msg 'capture-notes-heading))
+       (file+function org-scribe-capture-target-file
+                      org-scribe--capture-goto-notes-section)
        "** TODO %?\n  %U\n  %i"
        :empty-lines 1))))
 
