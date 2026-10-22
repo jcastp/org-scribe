@@ -63,6 +63,27 @@
     (should (= (org-scribe-planner--count-file-words (expand-file-name "draft.txt" dir)) 6))
     (should-not (org-scribe-planner--count-file-words (expand-file-name "missing.txt" dir)))))
 
+(ert-deftest test-planner-outside-directory-is-not-a-countable-file ()
+  "A directory has no words: nil, not a \"Is a directory\" error."
+  (test-outside--in-dir dir
+    (should-not (org-scribe-planner--count-file-words dir))
+    (should-not (org-scribe-planner--count-file-words
+                 (directory-file-name dir)))))
+
+(ert-deftest test-planner-outside-accepting-the-directory-default-is-refused-not-fatal ()
+  "Answering the file prompt with its default (the directory) must not abort.
+It used to signal from `insert-file-contents', unwinding the whole
+new-plan wizard and losing every answer typed so far."
+  (test-outside--in-dir dir
+    (let ((plan (make-org-scribe-plan))
+          (told nil))
+      (cl-letf (((symbol-function 'read-file-name) (lambda (&rest _) dir))
+                ((symbol-function 'message)
+                 (lambda (fmt &rest args) (setq told (apply #'format fmt args)))))
+        (should-not (org-scribe-planner--add-outside-file plan dir)))
+      (should (string-match-p "Can't read" told))
+      (should-not (org-scribe-plan-outside-files plan)))))
+
 (ert-deftest test-planner-outside-count-org-file-like-the-manuscript ()
   "An Org file is counted without its headings, drawers and comments."
   (skip-unless (and (fboundp 'org-scribe-accurate-wordcount-p)

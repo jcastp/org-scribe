@@ -1230,10 +1230,14 @@ reached; nil without a positive PACE."
 
 (defun org-scribe-planner--count-file-words (file)
   "Return the number of words in FILE, or nil when it can't be read.
+A directory is not a file: `file-readable-p' is true for one, and the
+file picker's default answer is the project directory, so accepting it
+used to signal \"Is a directory\" and abort the whole new-plan wizard,
+losing everything already typed.
 Org files are counted like the manuscript — without comments, drawers,
 headings, properties, tables or blocks (`org-scribe--count-words-region',
 which uses `org-context-count-words') — other files by plain words."
-  (when (file-readable-p file)
+  (when (and (file-readable-p file) (not (file-directory-p file)))
     (with-temp-buffer
       (insert-file-contents file)
       (if (and (string-match-p "\\.org\\'" file)
