@@ -30,6 +30,7 @@
 
 ;; Declare external functions
 (declare-function writeroom-mode "writeroom-mode")
+(defvar writeroom-width)
 (declare-function consult-theme "consult")
 (declare-function fontaine-set-preset "fontaine")
 (declare-function treemacs-add-and-display-current-project-exclusively "treemacs")
@@ -170,7 +171,12 @@ install into an error."
 (defun org-scribe-env--activate ()
   "Activate writing environment with theme, font, and writeroom."
   ;; Fail fast, before touching theme/font, if writeroom-mode is absent.
-  (unless (fboundp 'writeroom-mode)
+  ;; `require', not `fboundp': the command is autoloaded as soon as the
+  ;; package is installed, but `writeroom-width' — read below — stays void
+  ;; until the library loads, so an `fboundp' guard passed and then
+  ;; signalled `void-variable' after the theme and font had already
+  ;; changed, leaving the session half-switched.
+  (unless (require 'writeroom-mode nil t)
     (user-error (org-scribe-msg 'error-writeroom-required)))
   (display-line-numbers-mode 1)
   (org-scribe--apply-theme org-scribe-env-work-theme)

@@ -83,5 +83,28 @@ output as a string when no result was printed (so a failure shows why)."
     (should (eq 'ok (alist-get 'pov result)))
     (should (eq 'ok (alist-get 'todos result)))))
 
+(ert-deftest test-lazy-deps-write-workspace-works-before-writeroom-loads ()
+  "The write and focus workspaces open in a session where writeroom is only installed."
+  (skip-unless (locate-library "writeroom-mode"))
+  (let ((result (test-lazy-deps--run
+                 (format "(let ((ms %s) out)
+  (push (cons 'loaded-before (featurep 'writeroom-mode)) out)
+  (with-current-buffer (find-file-noselect ms)
+    (switch-to-buffer (current-buffer))
+    ;; Focus narrows to the heading at point; start where a writer would.
+    (re-search-forward \"The letter\")
+    (dolist (layout '(write focus))
+      (push (cons layout (condition-case err
+                             (progn (org-scribe-workspace layout)
+                                    (prog1 (org-scribe-workspace-current)
+                                      (org-scribe-workspace 'normal)))
+                           (error (error-message-string err))))
+            out)))
+  (princ (format \"RESULT:%%S\" out)))" test-lazy-deps--manuscript))))
+    (should (consp result))
+    (should-not (alist-get 'loaded-before result))
+    (should (eq 'write (alist-get 'write result)))
+    (should (eq 'focus (alist-get 'focus result)))))
+
 (provide 'test-lazy-dependencies)
 ;;; test-lazy-dependencies.el ends here

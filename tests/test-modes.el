@@ -303,19 +303,28 @@ absent theme signals, so the package's own writing mode errored out."
 
 (ert-deftest test-modes-writeroom-required-signals-user-error ()
   "Test that activate signals user-error when writeroom-mode is not installed.
-Writeroom absence is simulated by emptying its function cell, which is
-what `org-scribe-env--activate' checks with `fboundp'.  This used to be
-a `skip-unless' on writeroom being absent, which meant the test never
-ran anywhere writeroom is installed — that is, anywhere the rest of the
-suite runs."
+Writeroom absence is simulated by making `require' fail for it, which is
+what `org-scribe-env--activate' checks (not `fboundp': see the comment
+there).  This used to be a `skip-unless' on writeroom being absent, which
+meant the test never ran anywhere writeroom is installed — that is,
+anywhere the rest of the suite runs.
+
+The guard must fire before anything is switched: line numbers, theme and
+font changing and then an error is the half-switched session this guard
+exists to prevent."
   (with-temp-buffer
-    (cl-letf (((symbol-function 'writeroom-mode) nil)
-              ;; Not reached while the guard holds (it fires before any of
-              ;; this), but stubbed so a future reordering fails on the
-              ;; missing user-error rather than on a live theme change.
-              ((symbol-function 'display-line-numbers-mode) #'ignore)
-              ((symbol-function 'load-theme) #'ignore))
-      (should-error (org-scribe-env--activate) :type 'user-error))))
+    (let ((real-require (symbol-function 'require))
+          (touched nil))
+      (cl-letf (((symbol-function 'require)
+                 (lambda (feature &rest args)
+                   (unless (eq feature 'writeroom-mode)
+                     (apply real-require feature args))))
+                ((symbol-function 'display-line-numbers-mode)
+                 (lambda (&rest _) (push 'line-numbers touched)))
+                ((symbol-function 'load-theme)
+                 (lambda (&rest _) (push 'theme touched))))
+        (should-error (org-scribe-env--activate) :type 'user-error)
+        (should-not touched)))))
 
 (ert-deftest test-modes-deactivate-clears-writeroom-flag ()
   "Test that deactivate clears org-scribe-env--writeroom-active."
