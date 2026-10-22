@@ -856,12 +856,20 @@ return nil."
 
 ;;; File Selection Helper
 
+(defun org-scribe-planner--project-root ()
+  "Return the current project's root via `org-scribe-planner-project-root-function'.
+Nil outside a project or when no function is set."
+  (when org-scribe-planner-project-root-function
+    (ignore-errors (funcall org-scribe-planner-project-root-function))))
+
 (defun org-scribe-planner--select-plan-file (prompt &optional directory)
   "Prompt user to select a plan file with PROMPT.
 If DIRECTORY is non-nil, use it as the starting directory instead of
 `org-scribe-planner-directory'.  Returns the selected file path."
   (read-file-name prompt
-                  (or directory org-scribe-planner-directory)
+                  (or directory
+                      (org-scribe-planner--project-root)
+                      org-scribe-planner-directory)
                   nil
                   t
                   nil
@@ -885,7 +893,12 @@ Returns nil if user cancels the prompt."
    ;; No current plan and prompting is allowed
    (allow-prompt
     (if (y-or-n-p "No active plan. Would you like to load one? ")
-        (let ((file (org-scribe-planner--select-plan-file "Select plan file: ")))
+        (let* ((root (org-scribe-planner--project-root))
+               (project-plan (and root (org-scribe-planner--find-plan-file root)))
+               (file (if (and project-plan
+                              (org-scribe-planner--plan-file-valid-p project-plan))
+                         project-plan
+                       (org-scribe-planner--select-plan-file "Select plan file: " root))))
           (when file
             (let ((plan (org-scribe-planner--load-plan file)))
               (setq org-scribe-planner--current-plan plan)

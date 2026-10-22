@@ -886,4 +886,38 @@ project type."
       (org-scribe-project-type-cache-clear)
       (should (= 700 (org-scribe-planner--wordcount-from-manuscript))))))
 
+;;; "No active plan" prompt follows the project
+
+(ert-deftest test-planner-get-current-plan-prompt-loads-project-plan ()
+  "Accepting \"load one?\" inside a project loads its plan.org without a file picker."
+  (let* ((root (make-temp-file "plan-root-" t))
+         (file (expand-file-name "plan.org" root))
+         (plan (make-org-scribe-plan :title "P" :total-words 1000 :daily-words 100
+                                     :days 10 :start-date "2026-11-01"
+                                     :end-date "2026-11-10"))
+         (org-scribe-planner--current-plan nil)
+         (org-scribe-planner--current-plan-file nil)
+         (org-scribe-planner-project-root-function (lambda () root))
+         picked)
+    (unwind-protect
+        (progn
+          (org-scribe-planner--save-plan plan file)
+          (cl-letf (((symbol-function 'y-or-n-p) (lambda (&rest _) t))
+                    ((symbol-function 'org-scribe-planner--select-plan-file)
+                     (lambda (&rest _) (setq picked t) nil)))
+            (let ((result (org-scribe-planner--get-current-plan t)))
+              (should-not picked)
+              (should (equal (cdr result) file)))))
+      (delete-directory root t))))
+
+(ert-deftest test-planner-select-plan-file-starts-in-project-root ()
+  "Without a directory argument the picker opens at the project root."
+  (let ((org-scribe-planner-project-root-function (lambda () "/tmp/some-project/"))
+        (org-scribe-planner-directory "/tmp/elsewhere/")
+        start)
+    (cl-letf (((symbol-function 'read-file-name)
+               (lambda (_prompt dir &rest _) (setq start dir) "x.org")))
+      (org-scribe-planner--select-plan-file "Plan: ")
+      (should (equal start "/tmp/some-project/")))))
+
 ;;; test-hooks.el ends here
