@@ -97,6 +97,16 @@ search, and every search refused with \"org-ql is required\" until
 something else happened to load it."
   (require 'org-ql nil t))
 
+(defmacro org-scribe--with-plain-tags (&rest body)
+  "Run BODY, an org-ql view, with tag inheritance off.
+org-ql lists a heading's local tags and then the inherited ones too, so
+every scene under a chapter tagged `ignore' showed as
+\"The letter  :ignore:ignore:\".  With inheritance off the view prints
+only the tags a heading actually carries.  None of the queries here
+match on tags, so the results themselves do not change."
+  (declare (indent 0))
+  `(let ((org-use-tag-inheritance nil)) ,@body))
+
 (defun org-scribe--search-property (term error-key property)
   "Search for TERM in PROPERTY across headings in current buffer.
 ERROR-KEY is the message key for empty input validation.
@@ -107,10 +117,11 @@ checked so the search works regardless of the project's language."
     (user-error (org-scribe-msg error-key)))
   (unless (org-scribe--org-ql-available-p)
     (user-error (org-scribe-msg 'error-org-ql-required)))
-  (org-ql-search (current-buffer)
-    `(and (heading)
-          (let ((val (org-scribe-scene-property-get ',property)))
-            (org-scribe--property-contains-p val ,term)))))
+  (org-scribe--with-plain-tags
+    (org-ql-search (current-buffer)
+      `(and (heading)
+            (let ((val (org-scribe-scene-property-get ',property)))
+              (org-scribe--property-contains-p val ,term))))))
 
 ;;; Property-based scene search (PoV / Characters / Plot / Location)
 ;;
@@ -177,10 +188,11 @@ Requires org-ql package to be installed."
                           (file-name-directory (or (buffer-file-name) default-directory))))
          (org-files (directory-files-recursively project-root "\\.org$")))
     (if org-files
-        (org-ql-search org-files
-          `(todo ,@org-scribe-todo-keywords)
-          :title "TODO items in writing project"
-          :super-groups '((:auto-category t)))
+        (org-scribe--with-plain-tags
+          (org-ql-search org-files
+            `(todo ,@org-scribe-todo-keywords)
+            :title "TODO items in writing project"
+            :super-groups '((:auto-category t))))
       (message (org-scribe-msg 'msg-no-org-files project-root)))))
 
 ;;;###autoload

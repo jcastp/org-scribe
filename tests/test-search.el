@@ -159,6 +159,26 @@ interactive results buffer `org-ql-search' renders."
       (when (file-exists-p temp-dir)
         (delete-directory temp-dir t)))))
 
+(ert-deftest test-search-views-do-not-repeat-inherited-tags ()
+  "A scene under a chapter with the same tag is listed with the tag once."
+  (skip-unless (locate-library "org-ql"))
+  (let* ((dir (make-temp-file "org-scribe-test-tags-" t))
+         (file (expand-file-name "novel.org" dir)))
+    (unwind-protect
+        (progn
+          (with-temp-file file
+            (insert "* Act :ignore:\n** Chapter :ignore:\n*** TODO The letter :ignore:\n"
+                    ":PROPERTIES:\n:PoV: Mara\n:END:\n"))
+          (with-current-buffer (find-file-noselect file)
+            (org-scribe-search-todos-recursive)
+            (let ((view (cl-find-if (lambda (b) (string-match-p "Org QL View" (buffer-name b)))
+                                    (buffer-list))))
+              (should view)
+              (with-current-buffer view
+                (should (string-match-p "The letter" (buffer-string)))
+                (should-not (string-match-p ":ignore:ignore:" (buffer-string)))))))
+      (delete-directory dir t))))
+
 ;;; org-scribe-edit-string regexp (M1)
 
 (ert-deftest test-edit-string-matches-edit-marker ()
