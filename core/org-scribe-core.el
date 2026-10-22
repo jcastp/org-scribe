@@ -47,7 +47,7 @@ text shown changes; the link still resolves by its ID."
   "Find root directory of writing project.
 Looks for .org-scribe-project file, then falls back to `project-current'."
   (or (locate-dominating-file default-directory ".org-scribe-project")
-      (when-let ((proj (project-current)))
+      (when-let* ((proj (project-current)))
         (project-root proj))
       default-directory))
 

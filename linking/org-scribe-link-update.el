@@ -51,7 +51,7 @@ Examples:
   (if (string-match "\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]*\\)\\]\\]" link-string)
       (let ((id (match-string 1 link-string))
             (old-name (match-string 2 link-string)))
-        (if-let ((new-name (gethash id id-to-name-map)))
+        (if-let* ((new-name (gethash id id-to-name-map)))
             (if (string= old-name (org-scribe--link-text new-name))
                 link-string  ; No change needed
               ;; Name changed - update it
@@ -102,7 +102,7 @@ This function:
 Example:
   Property: \":Characters: [[id:abc][Alex]], [[id:def][Sam]]\"
   After rename: \":Characters: [[id:abc][Alexandra]], [[id:def][Samuel]]\""
-  (when-let ((prop-value (org-scribe-scene-property-get property-name)))
+  (when-let* ((prop-value (org-scribe-scene-property-get property-name)))
     (let* ((links (org-scribe--split-property-list prop-value))
            (updated-links (mapcar
                            (lambda (link)

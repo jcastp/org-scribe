@@ -162,7 +162,7 @@ so the regex fallback path must handle this case."
             (let ((result (org-scribe--overlays-format-tooltip "char-blank-001")))
               (should (string-match-p "Role: Protagonist" result))
               (should-not (string-match-p "Age:\\|Occupation:\\|Goal:" result)))))
-      (when-let ((buf (get-file-buffer temp-file))) (with-current-buffer buf (set-buffer-modified-p nil)) (kill-buffer buf))
+      (when-let* ((buf (get-file-buffer temp-file))) (with-current-buffer buf (set-buffer-modified-p nil)) (kill-buffer buf))
       (delete-file temp-file))))
 
 ;;; Tooltip formatting

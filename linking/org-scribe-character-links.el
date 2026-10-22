@@ -142,7 +142,7 @@ Follows the ID link in the :PoV: property."
   (interactive)
   (unless (org-at-heading-p)
     (org-back-to-heading))
-  (if-let ((pov (org-scribe-scene-property-get 'pov)))
+  (if-let* ((pov (org-scribe-scene-property-get 'pov)))
       (progn
         (if (string-match "\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]" pov)
             (let ((id (match-string 1 pov)))

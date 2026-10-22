@@ -311,7 +311,7 @@ Focus always returns to the original buffer for seamless transitions."
       (progn
         ;; Close treemacs
         (when (fboundp 'treemacs-get-local-window)
-          (when-let ((treemacs-window (treemacs-get-local-window)))
+          (when-let* ((treemacs-window (treemacs-get-local-window)))
             (delete-window treemacs-window)))
         ;; Close imenu-list.  Same trap as the enable branch, and it bit
         ;; harder here: with the mode stuck on after a failed enable, the

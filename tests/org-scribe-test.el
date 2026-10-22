@@ -75,6 +75,25 @@
   (interactive)
   (ert-run-tests-interactively "^org-scribe-test-"))
 
+;; Captured at load time: `load-file-name' is nil when the test runs.
+(defconst org-scribe-test--root
+  (expand-file-name ".." (file-name-directory (or load-file-name buffer-file-name)))
+  "Repository root.")
+
+(ert-deftest test-no-obsolete-let-macros-in-shipped-code ()
+  "Shipped code uses `when-let*'/`if-let*', obsolete-free on Emacs 31.
+The unstarred forms print a byte-compile warning for every use at load."
+  (let* ((root org-scribe-test--root)
+         (hits nil))
+    (dolist (file (directory-files-recursively root "\\.el\\'"))
+      (unless (string-match-p "/\\(tests\\|\\.git\\)/" file)
+        (with-temp-buffer
+          (insert-file-contents file)
+          (goto-char (point-min))
+          (while (re-search-forward "(\\(when-let\\|if-let\\|and-let\\) " nil t)
+            (push (format "%s:%d" (file-name-nondirectory file) (line-number-at-pos)) hits)))))
+    (should (equal nil hits))))
+
 (provide 'org-scribe-test)
 
 ;;; org-scribe-test.el ends here

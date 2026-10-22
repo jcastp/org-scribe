@@ -146,7 +146,7 @@ If Plot property has multiple threads, prompts for selection."
 Each entry is (SCENE-HEADING CHAPTER-HEADING PLOT-THREADS-LIST)."
   (org-scribe--get-all-scenes
    (lambda ()
-     (when-let ((plot-prop (org-scribe-scene-property-get 'plot)))
+     (when-let* ((plot-prop (org-scribe-scene-property-get 'plot)))
        (list (org-get-heading t t t t)
              (save-excursion (org-up-heading-safe) (org-get-heading t t t t))
              (org-scribe--property-to-list plot-prop))))))

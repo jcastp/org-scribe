@@ -145,7 +145,7 @@ character is invisible to linking, capture and the health report."
           (found nil))
       (org-map-entries
        (lambda ()
-         (when-let ((role (org-entry-get nil "Role")))
+         (when-let* ((role (org-entry-get nil "Role")))
            (should (= 1 (org-current-level)))
            (push role found))))
       (should (equal roles (nreverse found))))))
@@ -541,7 +541,7 @@ of the timeline — with nothing in the file to explain why."
   (org-scribe-test--with-template "novel-en/objects/characters.org.template"
     (org-map-entries
      (lambda ()
-       (when-let ((weight (org-entry-get nil "Weight")))
+       (when-let* ((weight (org-entry-get nil "Weight")))
          (should (string-empty-p (string-trim weight)))
          (should (null (org-scribe--parse-weight weight))))))))
 

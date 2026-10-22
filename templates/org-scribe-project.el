@@ -714,7 +714,7 @@ reads the live registry rather than this fallback list.")
   "Return the project root for file navigation, or nil."
   (if (fboundp 'org-scribe-project-root)
       (org-scribe-project-root)
-    (or (when-let ((project (project-current)))
+    (or (when-let* ((project (project-current)))
           (project-root project))
         (locate-dominating-file default-directory "README.org"))))
 

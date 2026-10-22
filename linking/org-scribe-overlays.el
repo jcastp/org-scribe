@@ -243,7 +243,7 @@ Registered on `post-command-hook' by `org-scribe-overlays-mode'."
         (setq org-scribe--overlays-last-id nil))
        ((not (equal id org-scribe--overlays-last-id))
         (setq org-scribe--overlays-last-id id)
-        (if-let ((tooltip (org-scribe--overlays-format-tooltip id)))
+        (if-let* ((tooltip (org-scribe--overlays-format-tooltip id)))
             (org-scribe--overlays-show tooltip endpos)
           (org-scribe--overlays-clear)))))))
 

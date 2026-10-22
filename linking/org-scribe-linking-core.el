@@ -133,7 +133,7 @@ Returns the weight as a float, or 999.0 if not found, blank or non-numeric."
             (lambda ()
               (when (and (funcall pred)
                          (string= (org-scribe--entity-name-at-point) name))
-                (when-let ((parsed (org-scribe--parse-weight
+                (when-let* ((parsed (org-scribe--parse-weight
                                     (org-entry-get nil "Weight"))))
                   (setq weight parsed))
                 (throw 'found t)))
@@ -292,7 +292,7 @@ Handles both single entities and comma-separated lists.  A known entity
 name that itself contains a comma (e.g. \"Smith, John\") is recognized as
 one item rather than split in two — see
 `org-scribe--split-comma-list-protecting-names'."
-  (when-let ((prop-value (org-scribe-scene-property-get property)))
+  (when-let* ((prop-value (org-scribe-scene-property-get property)))
     (let* ((id-alist (org-scribe--get-all-entities entity))
            (name-list (org-scribe--split-comma-list-protecting-names
                        prop-value (mapcar #'car id-alist)))
@@ -429,7 +429,7 @@ percentages -- would count a short story's own front matter as scenes."
           (lambda ()
             (when (and (= (org-current-level) scene-level)
                        (not (member "noexport" (org-get-tags))))
-              (when-let ((data (funcall data-fn)))
+              (when-let* ((data (funcall data-fn)))
                 (push data scenes))))
           nil 'file))))
     (nreverse scenes)))

@@ -63,7 +63,7 @@ Returns list of (ID NAME TYPE) tuples."
     (let ((parts (split-string rel-property-value ";" t " "))
           result)
       (dolist (part parts)
-        (when-let ((parsed (org-scribe--parse-single-relationship part)))
+        (when-let* ((parsed (org-scribe--parse-single-relationship part)))
           (push parsed result)))
       (nreverse result))))
 
@@ -111,7 +111,7 @@ Returns the marker position of the character heading, or nil if not found."
 (defun org-scribe--update-character-relationships (char-name relationships)
   "Update CHAR-NAME's relationships to RELATIONSHIPS.
 RELATIONSHIPS is a list of (ID NAME TYPE) tuples."
-  (when-let ((marker (org-scribe--find-character-by-name char-name)))
+  (when-let* ((marker (org-scribe--find-character-by-name char-name)))
     (with-current-buffer (marker-buffer marker)
       (org-with-wide-buffer
        (goto-char marker)
@@ -130,7 +130,7 @@ RELATIONSHIPS is a list of (ID NAME TYPE) tuples."
 (defun org-scribe--get-character-relationships-by-name (char-name)
   "Get relationships for CHAR-NAME.
 Returns list of (ID NAME TYPE) tuples."
-  (when-let ((marker (org-scribe--find-character-by-name char-name)))
+  (when-let* ((marker (org-scribe--find-character-by-name char-name)))
     (with-current-buffer (marker-buffer marker)
       (org-with-wide-buffer
        (goto-char marker)

@@ -166,7 +166,7 @@ Spanish template must not carry a translated value like \"Protagonista\"."
     (let (roles)
       (org-map-entries
        (lambda ()
-         (when-let ((role (org-entry-get nil "Role")))
+         (when-let* ((role (org-entry-get nil "Role")))
            (push role roles))))
       (should (equal (sort roles #'string<)
                      (sort '("Protagonist" "Supporting" "Antagonist") #'string<))))))
