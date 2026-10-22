@@ -192,5 +192,17 @@ Regression: the average divided by the days logged only (6), giving 950."
       (with-current-buffer "*Velocity Statistics*"
         (should (string-match-p "Days written: +6 of 8 writing days" (buffer-string)))))))
 
+(ert-deftest test-planner-analytics-multi-metric-no-projection-on-day-one ()
+  "Only today's partial entry exists: no BEHIND SCHEDULE projection is shown."
+  (test-analytics--on "2026-11-01"
+    (let* ((plan (test-analytics--plan '(("2026-11-01" . 47))))
+           (org-scribe-planner--current-plan plan)
+           (org-scribe-planner--current-plan-file "/tmp/unused-plan.org"))
+      (cl-letf (((symbol-function 'display-buffer) #'ignore))
+        (org-scribe-planner-show-multi-metric-dashboard))
+      (with-current-buffer "*Multi-Metric Dashboard*"
+        (should-not (string-match-p "BEHIND SCHEDULE" (buffer-string)))
+        (should (string-match-p "first completed writing day" (buffer-string)))))))
+
 (provide 'test-planner-analytics)
 ;;; test-planner-analytics.el ends here

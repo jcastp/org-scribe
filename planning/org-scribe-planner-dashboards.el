@@ -1732,7 +1732,15 @@ Shows multi-window averages, acceleration/deceleration, and projections."
                    (feasible (plist-get required-vel :feasible))
                    (adjustment (plist-get required-vel :adjustment-needed))
                    (adj-percent (plist-get required-vel :adjustment-percent))
-                   (projected-date (plist-get velocity :projected-date))
+                   ;; A pace measured over today's partial entry alone says
+                   ;; "behind" about a plan that is ahead; wait for a day
+                   ;; that is over.
+                   (projected-date
+                    (and (cl-some (lambda (day)
+                                    (string< (car day)
+                                             (org-scribe-planner--get-today-date)))
+                                  (org-scribe-planner--elapsed-daily-words plan))
+                         (plist-get velocity :projected-date)))
                    (planned-end (org-scribe-plan-end-date plan)))
 
               (insert (format "  Words remaining:     %s\n"
@@ -2093,7 +2101,15 @@ Shows progress, velocity, performance, and projections in one unified view."
                    (remaining-words (or (plist-get required-vel :remaining-words) 0))
                    (remaining-days (or (plist-get required-vel :remaining-days) 0))
                    (feasible (plist-get required-vel :feasible))
-                   (projected-date (plist-get velocity :projected-date))
+                   ;; A pace measured over today's partial entry alone says
+                   ;; "behind" about a plan that is ahead; wait for a day
+                   ;; that is over.
+                   (projected-date
+                    (and (cl-some (lambda (day)
+                                    (string< (car day)
+                                             (org-scribe-planner--get-today-date)))
+                                  (org-scribe-planner--elapsed-daily-words plan))
+                         (plist-get velocity :projected-date)))
                    (planned-end (org-scribe-plan-end-date plan)))
 
               (insert (format "  Remaining: %s words    Working days left: %d\n"
@@ -2105,6 +2121,10 @@ Shows progress, velocity, performance, and projections in one unified view."
                                       'face (if feasible 'org-done 'org-warning))
                             current))
 
+              (unless projected-date
+                (insert (propertize
+                         "\n  Projection appears after your first completed writing day.\n"
+                         'face 'shadow)))
               (when projected-date
                 (insert "\n")
                 (insert (format "  Projected finish: %s    Planned finish: %s\n"
