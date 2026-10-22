@@ -290,6 +290,109 @@ not a hardcoded assumption either way."
 
 ;;; Chapter Template Insertion Tests
 
+;;; Where inserted scenes and chapters go
+
+(defconst test-project--outline
+  (concat "* Act I :ignore:\n"
+          "** TODO Chapter 1 :ignore:\n"
+          "*** TODO Scene A :ignore:\n:PROPERTIES:\n:PoV:\n:END:\n\n"
+          "First paragraph of A, with some words in it.\n\nSecond paragraph.\n"
+          "*** TODO Scene B :ignore:\n\nText of B.\n"
+          "** TODO Chapter 2 :ignore:\n"
+          "*** TODO Scene C :ignore:\n\nText of C.\n"
+          "* Act II :ignore:\n")
+  "A small novel outline for the insertion-point tests.")
+
+(defun test-project--headings ()
+  "Return the buffer's headings as (LEVEL . TITLE) pairs, in order."
+  (org-map-entries (lambda () (cons (org-current-level)
+                                    (org-get-heading t t t t)))))
+
+(defmacro test-project--in-outline (search &rest body)
+  "Run BODY in the outline with point just after the first match of SEARCH."
+  (declare (indent 1))
+  `(cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'novel)))
+     (with-temp-buffer
+       (org-mode)
+       (insert test-project--outline)
+       (goto-char (point-min))
+       (search-forward ,search)
+       ,@body)))
+
+(ert-deftest test-insert-scene-mid-paragraph-does-not-split-prose ()
+  "With point inside a paragraph the scene goes after the scene, whole.
+It used to be inserted at raw point: \"First paragraph of A, with*** TODO ...\",
+which is not a heading, with its property drawer inside the sentence."
+  (test-project--in-outline "with some"
+    (org-scribe-insert-scene "Interrupted")
+    (should (string-match-p "^First paragraph of A, with some words in it\\.$"
+                            (buffer-string)))
+    (should (equal (test-project--headings)
+                   '((1 . "Act I") (2 . "Chapter 1") (3 . "Scene A")
+                     (3 . "Interrupted") (3 . "Scene B") (2 . "Chapter 2")
+                     (3 . "Scene C") (1 . "Act II"))))))
+
+(ert-deftest test-insert-scene-on-chapter-heading-goes-inside-that-chapter ()
+  "A scene added with point on a chapter heading is that chapter's last scene.
+It used to be inserted above the heading, making it the last scene of the
+previous chapter."
+  (test-project--in-outline "Chapter 2"
+    (org-scribe-insert-scene "Added")
+    (should (equal (test-project--headings)
+                   '((1 . "Act I") (2 . "Chapter 1") (3 . "Scene A")
+                     (3 . "Scene B") (2 . "Chapter 2") (3 . "Scene C")
+                     (3 . "Added") (1 . "Act II"))))))
+
+(ert-deftest test-insert-scene-after-the-scene-point-is-in ()
+  "From inside Scene A's drawer or text, the new scene follows Scene A."
+  (dolist (where '(":PoV:" "Second paragraph"))
+    (test-project--in-outline where
+      (org-scribe-insert-scene "Next")
+      (should (equal (mapcar #'cdr (test-project--headings))
+                     '("Act I" "Chapter 1" "Scene A" "Next" "Scene B"
+                       "Chapter 2" "Scene C" "Act II"))))))
+
+(ert-deftest test-insert-scene-leaves-point-on-the-new-scenes-pov-line ()
+  "Point ends on the new scene's :PoV: line wherever the scene went."
+  (test-project--in-outline "with some"
+    (org-scribe-insert-scene "Interrupted")
+    (should (string-match-p "^:PoV:$" (buffer-substring (line-beginning-position)
+                                                         (line-end-position))))
+    (should (equal "Interrupted" (org-get-heading t t t t)))))
+
+(ert-deftest test-insert-chapter-from-inside-a-scene-goes-after-that-chapter ()
+  "A chapter added from inside Scene B follows Chapter 1, not Scene B's prose."
+  (test-project--in-outline "Text of B"
+    (org-scribe-insert-chapter "Interlude")
+    (should (equal (test-project--headings)
+                   '((1 . "Act I") (2 . "Chapter 1") (3 . "Scene A")
+                     (3 . "Scene B") (2 . "Interlude") (3 . "New scene")
+                     (2 . "Chapter 2") (3 . "Scene C") (1 . "Act II"))))))
+
+(ert-deftest test-insert-scene-at-end-of-file-without-trailing-newline ()
+  "The last subtree may lack a final newline; the heading must start a line."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'novel)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "** TODO Chapter 1 :ignore:\n*** TODO Scene A :ignore:\n\nlast words")
+      (goto-char (point-max))
+      (org-scribe-insert-scene "Next")
+      (should (equal (mapcar #'cdr (test-project--headings))
+                     '("Chapter 1" "Scene A" "Next")))
+      (should (string-match-p "^last words$" (buffer-string))))))
+
+(ert-deftest test-insert-scene-in-short-story-goes-after-current-scene ()
+  "Short-story scenes are level 2 under a level-1 container."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Story\n** TODO One :ignore:\n\nfirst scene text\n** TODO Two :ignore:\n\ntext\n")
+      (goto-char (point-min))
+      (search-forward "first scene")
+      (org-scribe-insert-scene "Between")
+      (should (equal (test-project--headings)
+                     '((1 . "Story") (2 . "One") (2 . "Between") (2 . "Two")))))))
+
 (ert-deftest test-insert-chapter-template ()
   "Test chapter template insertion includes chapter heading and first scene."
   (with-temp-buffer

@@ -539,9 +539,42 @@ the project type each command runs in is actually consulted (a short
 story's scenes carry no tag at all, per that table)."
   (if tag (format " :%s:" tag) ""))
 
+(defun org-scribe--goto-insertion-point (level)
+  "Move point to where a new heading of LEVEL stars may be inserted.
+Returns that position.
+
+The commands used to insert at raw point, which has two failure modes a
+writer meets daily: with point in the middle of a paragraph the heading
+was glued onto the prose (\"Mara found the*** TODO ...\", not a heading
+at all, its drawer inside the sentence), and with point on a chapter
+heading the new scene went in *above* it, ending up as the last scene of
+the previous chapter.
+
+So, in a buffer with a heading at or above point, climb to the enclosing
+heading of LEVEL or higher (the scene when adding a scene, the chapter
+when adding a chapter, whichever is nearer) and insert at the end of its
+subtree: after the scene point is in, or as the last scene of the chapter
+point is on.  Before the first heading there is nothing to nest under, so
+the new heading goes at the start of the current line, as it always did."
+  (if (org-before-first-heading-p)
+      (beginning-of-line)
+    (org-back-to-heading t)
+    (while (and (> (org-current-level) level)
+                (org-up-heading-safe)))
+    (org-end-of-subtree t)
+    (if (eobp)
+        (unless (bolp) (insert "\n"))
+      (forward-line 1)))
+  (point))
+
 ;;;###autoload
 (defun org-scribe-insert-scene (scene-name)
-  "Insert a scene template at point with SCENE-NAME.
+  "Insert a scene template with SCENE-NAME after the scene point is in.
+Point may be anywhere: in the middle of prose, on a scene or chapter
+heading, in a scene's drawer.  The scene goes at the end of the scene
+point is in, or at the end of the chapter point is on (see
+`org-scribe--goto-insertion-point'); before the first heading it goes at
+the start of the current line.
 The template includes a TODO heading at the current project's scene
 level (see `org-scribe-scene-level'), tagged per
 `org-scribe-project-levels' `:scene-tag' when that project type tags its
@@ -571,7 +604,8 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 
 {{{scene-break}}}
 " stars scene-name tag (org-scribe--scene-property-drawer-lines)))
-         (start-pos (point)))
+         (start-pos (org-scribe--goto-insertion-point
+                     (plist-get levels :scene))))
 
     ;; Insert template
     (insert template)
@@ -589,7 +623,9 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 
 ;;;###autoload
 (defun org-scribe-insert-chapter (chapter-name)
-  "Insert a chapter template at point with CHAPTER-NAME.
+  "Insert a chapter template with CHAPTER-NAME after the chapter point is in.
+The chapter goes at the end of the chapter point is in, scene or not
+\(see `org-scribe--goto-insertion-point'), never in the middle of prose.
 The template includes a TODO heading at the current project's chapter
 level, tagged per `org-scribe-project-levels' when that project type
 tags its chapters, a property drawer with WORDCOUNT field initialized to
@@ -633,7 +669,8 @@ collide with the project's own scene level."
 {{{scene-break}}}
 " chapter-stars chapter-name tag scene-stars (org-scribe-msg 'default-scene-name) tag
   (org-scribe--scene-property-drawer-lines)))
-         (start-pos (point)))
+         (start-pos (org-scribe--goto-insertion-point
+                     (plist-get levels :chapter))))
 
     ;; Insert template
     (insert template)
