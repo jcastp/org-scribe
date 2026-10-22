@@ -166,7 +166,7 @@
      (capture-char-key . "c")
      (capture-char-name . "Ficha de personaje")
      (capture-char-name-prompt . "Nombre del personaje")
-     (capture-char-role-prompt . "Papel|Protagonist|Opponent|Ally|Fake-Ally Opponent|Thematic Supporting")
+     (capture-char-role-prompt . "Papel|Thematic Supporting|Protagonist|Opponent|Ally|Fake-Ally Opponent")
      (capture-char-age-prompt . "Edad")
      (capture-char-occupation-prompt . "Ocupación")
      (capture-char-first-appearance-prompt . "Primera aparición")

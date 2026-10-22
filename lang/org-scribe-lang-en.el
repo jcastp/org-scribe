@@ -171,7 +171,7 @@
      (capture-char-key . "c")
      (capture-char-name . "Character Profile")
      (capture-char-name-prompt . "Character name")
-     (capture-char-role-prompt . "Role|Protagonist|Opponent|Ally|Fake-Ally Opponent|Thematic Supporting")
+     (capture-char-role-prompt . "Role|Thematic Supporting|Protagonist|Opponent|Ally|Fake-Ally Opponent")
      (capture-char-age-prompt . "Age")
      (capture-char-occupation-prompt . "Occupation")
      (capture-char-first-appearance-prompt . "First appearance")

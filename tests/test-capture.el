@@ -389,6 +389,15 @@ org-capture shifts the whole template relative to its target, so a
         (dolist (n (cdr stars))
           (should (equal (list builder 2) (list builder n))))))))
 
+;;; Role default
+
+(ert-deftest test-character-capture-role-default-is-not-protagonist ()
+  "Pressing RET on the Role prompt must not mint another protagonist."
+  (dolist (lang '(en es))
+    (let ((template (nth 4 (car (org-scribe-character-capture-templates lang)))))
+      (should (string-match-p "Protagonist|Opponent|Ally" template))
+      (should (string-match-p ":Role: %^{[^|}]+|Thematic Supporting|" template)))))
+
 ;;; Auto-ID Generation Tests
 
 (ert-deftest test-character-template-generates-id ()
