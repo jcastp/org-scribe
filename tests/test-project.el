@@ -447,6 +447,37 @@ as a template artifact present from project creation."
             (should-not (file-exists-p (expand-file-name manuscript-en project-dir))))
         (test-project--kill-file-buffer (expand-file-name manuscript-es project-dir))))))
 
+(ert-deftest test-create-short-story-project-mints-entity-ids ()
+  "A new short story's template characters and settings are linkable at once.
+Novel creation always minted IDs; short-story creation did not, and every
+entity getter skips an ID-less heading — so a fresh short story had no
+characters to set as PoV, and the health report reported \"no orphaned
+characters\" while three placeholders sat in the notes file.  The IDs must
+also be part of the initial commit, not a dirty working tree."
+  (require 'org-scribe-character-links)
+  (require 'org-scribe-location-links)
+  (dolist (language '(en es))
+    (test-project--with-temp-base-dir base-dir
+      (let* ((title (format "Story %s" language))
+             (project-dir (expand-file-name title base-dir))
+             (notes (expand-file-name (org-scribe-lang-file 'notes-short language)
+                                      project-dir)))
+        (org-scribe-create-short-story-project base-dir title language)
+        (unwind-protect
+            (let ((default-directory (file-name-as-directory project-dir)))
+              (let ((characters (org-scribe--get-all-characters))
+                    (locations (org-scribe--get-all-locations)))
+                (should (= 3 (length characters)))
+                (should (>= (length locations) 1))
+                (dolist (entity (append characters locations))
+                  (should (org-string-nw-p (cadr entity)))))
+              (should (string-empty-p
+                       (shell-command-to-string "git status --porcelain"))))
+          (test-project--kill-file-buffer notes)
+          (test-project--kill-file-buffer
+           (expand-file-name (org-scribe-lang-file 'manuscript-short language)
+                             project-dir)))))))
+
 ;;; Project File Navigation Tests
 
 (ert-deftest test-project-file-candidates-scans-project ()

@@ -359,9 +359,10 @@ This function:
 2. Creates the project directory
 3. Initializes a git repository
 4. Processes all template files with variable substitution
-5. Creates an initial git commit
-6. Registers the project with project.el
-7. Opens the story file, named for LANGUAGE"
+5. Mints IDs for the template's characters and settings
+6. Creates an initial git commit
+7. Registers the project with project.el
+8. Opens the story file, named for LANGUAGE"
   (interactive
    (list
     (read-directory-name (org-scribe-msg 'project-creation-base-dir) org-scribe-projects-directory)
@@ -416,6 +417,13 @@ This function:
 
       ;; Process all templates
       (org-scribe--copy-templates template-dir project-dir variables)
+
+      ;; Mint IDs for the template's characters and settings, as for a
+      ;; novel.  Without this they carried `:Role:'/`:Type:' but no `:ID:',
+      ;; and every entity getter skips an ID-less heading — so a new short
+      ;; story had no characters to link and the health report called it
+      ;; "no orphans" until the writer found the setup command.
+      (org-scribe--auto-setup-links project-dir)
 
       ;; Create initial git commit
       (let ((default-directory project-dir))
