@@ -109,6 +109,12 @@ manual."
       (format "Weight: %s (%s)" weight (org-scribe-msg 'msg-weight-hidden-marker))
     (format "Weight: %s" weight)))
 
+(defun org-scribe--overlays-prop (property)
+  "Return PROPERTY of the heading at point, or nil when absent or blank.
+Org answers \"\" for a property that is present but empty, which printed
+as a bare label (\"Age:  |  Occupation:\") in tooltips."
+  (org-string-nw-p (org-entry-get nil property)))
+
 (defun org-scribe--overlays-format-tooltip (id)
   "Return a tooltip string for the entity with ID, or nil if not found.
 Dispatches on entity type detected from heading properties:
@@ -127,7 +133,7 @@ Dispatches on entity type detected from heading properties:
         (let* ((name        (org-get-heading t t t t))
                ;; Plot thread: explicit THREAD-TYPE, or TYPE whose value looks
                ;; like a plot category (guards against location :Type: City).
-               (thread-type (or (org-entry-get nil "THREAD-TYPE")
+               (thread-type (or (org-scribe--overlays-prop "THREAD-TYPE")
                                 (let ((tp (org-entry-get nil "TYPE")))
                                   (when (and tp (string-match-p
                                                  org-scribe--overlays-plot-type-re tp))
@@ -135,9 +141,9 @@ Dispatches on entity type detected from heading properties:
           (cond
            ;; ── Plot thread ──────────────────────────────────────────────────
            (thread-type
-            (let* ((status       (org-entry-get nil "STATUS"))
-                   (weight       (org-entry-get nil "Weight"))
-                   (first-appear (org-entry-get nil "FIRST-APPEARANCE"))
+            (let* ((status (org-scribe--overlays-prop "STATUS"))
+                   (weight (org-scribe--overlays-prop "Weight"))
+                   (first-appear (org-scribe--overlays-prop "FIRST-APPEARANCE"))
                    (parts        (delq nil
                                        (list thread-type
                                              (when status       (format "Status: %s" status))
@@ -146,12 +152,12 @@ Dispatches on entity type detected from heading properties:
               (format "[%s]  %s" name (string-join parts "  |  "))))
            ;; ── Character ───────────────────────────────────────────────────
            ((org-entry-get nil "Role")
-            (let* ((role       (org-entry-get nil "Role"))
-                   (age        (org-entry-get nil "Age"))
-                   (occupation (org-entry-get nil "Occupation"))
-                   (goal       (org-entry-get nil "Goal"))
-                   (motivation (org-entry-get nil "Motivation"))
-                   (conflict   (org-entry-get nil "Conflict"))
+            (let* ((role (org-scribe--overlays-prop "Role"))
+                   (age (org-scribe--overlays-prop "Age"))
+                   (occupation (org-scribe--overlays-prop "Occupation"))
+                   (goal (org-scribe--overlays-prop "Goal"))
+                   (motivation (org-scribe--overlays-prop "Motivation"))
+                   (conflict (org-scribe--overlays-prop "Conflict"))
                    (parts      (delq nil
                                      (list (when role       (format "Role: %s" role))
                                            (when age        (format "Age: %s" age))

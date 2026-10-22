@@ -144,6 +144,27 @@ so the regex fallback path must handle this case."
     (goto-char (point-min))
     (should (null (org-scribe--overlays-id-at-point)))))
 
+(ert-deftest test-overlays-format-tooltip-omits-blank-properties ()
+  "Blank properties are left out of the tooltip, not printed as bare labels."
+  (let ((temp-file (make-temp-file "test-overlays-blank-" nil ".org"))
+        heading-pos)
+    (unwind-protect
+        (progn
+          (with-current-buffer (find-file-noselect temp-file)
+            (erase-buffer)
+            (insert (concat "* Mara\n:PROPERTIES:\n:ID: char-blank-001\n"
+                            ":Role: Protagonist\n:Age:\n:Occupation:\n:Goal:\n"
+                            ":END:\n\n"))
+            (save-buffer)
+            (setq heading-pos (point-min)))
+          (cl-letf (((symbol-function 'org-id-find)
+                     (lambda (_id) (cons temp-file heading-pos))))
+            (let ((result (org-scribe--overlays-format-tooltip "char-blank-001")))
+              (should (string-match-p "Role: Protagonist" result))
+              (should-not (string-match-p "Age:\\|Occupation:\\|Goal:" result)))))
+      (when-let ((buf (get-file-buffer temp-file))) (with-current-buffer buf (set-buffer-modified-p nil)) (kill-buffer buf))
+      (delete-file temp-file))))
+
 ;;; Tooltip formatting
 
 (ert-deftest test-overlays-format-tooltip-full-properties ()
