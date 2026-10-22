@@ -22,11 +22,17 @@ Add this to your Emacs configuration:
   :config
   ;; Optional: customize settings
   (setq org-scribe-env-work-theme 'poet)
-  (setq writing-stories-directory "~/writing/exercises")
+  (setq org-scribe-stories-directory "~/writing/exercises")
 
   ;; Optional: keybindings
   (global-set-key (kbd "<f8> <f8>") 'hydra-org-scribe/body))
 #+end_src
+
+Hooking =org-scribe-mode= onto every =org-mode= buffer is deliberate: the
+keybindings and save hooks are then available wherever you write. Outside a
+project the hooks do little more than look for the project marker file, so
+if you keep agenda files or journals you would rather leave alone, hook it
+on a directory-local basis instead (for example with =.dir-locals.el=).
 
 ** Manual Installation
 

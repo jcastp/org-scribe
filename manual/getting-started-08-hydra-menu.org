@@ -300,7 +300,7 @@ _q_: Back to main menu    _Q_: Quit
 - ~v~ / ~V~ - View relationships (one character / all characters, as a plain list / table)
 - ~t~ / ~S~ - Plot thread health report / statistics
 - ~C~ - Toggle clean display in org-column-view (strips =[[id:...]]= syntax)
-- ~T~ - Toggle entity tooltips (shows character info in echo area when point is on an ID link)
+- ~T~ - Toggle entity tooltips (shows character info inline after the link, or in the echo area per ~org-scribe-overlays-display~, when point is on an ID link)
 - ~q~ / ~Q~ - Back to main / Quit
 
 Note: there is no relationship dynamic-block/graph-visualization feature anymore — relationships are viewed only via ~v~/~V~ above.
@@ -756,7 +756,7 @@ Take your time! The Hydra menu is your primary interface to ~org-scribe~ - maste
 | ~V~   | View all            | Overview of all character connections |
 | ~t~   | Plot health report  | Checking plot balance and coverage    |
 | ~C~   | Column view toggle  | Clean display of ID links in columns  |
-| ~T~   | Tooltips toggle     | Show entity info in echo area         |
+| ~T~   | Tooltips toggle     | Show entity info on ID links          |
 
 *** Planner (~F8 F8 W~)
 

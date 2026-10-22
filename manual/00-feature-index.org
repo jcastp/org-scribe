@@ -329,7 +329,7 @@ Displays character relationships for analysis and planning. ~org-scribe-show-cha
 
 ** Entity Tooltips (~org-scribe-overlays-mode~)
 
-A buffer-local minor mode that displays entity information in the echo area when point moves onto any ~[[id:...][Name]]~ link in a scene property. For character links the tooltip shows the character's Role, Age, Goal, and Motivation from their profile heading; for other entity types it shows the heading name. The lookup is debounced via ~org-scribe--overlays-last-id~: moving along the same link does not trigger repeated file reads.
+A buffer-local minor mode that displays entity information (inline after the link by default; ~org-scribe-overlays-display~ also offers a posframe or the echo area) when point moves onto any ~[[id:...][Name]]~ link in a scene property. For character links the tooltip shows the character's Role, Age, Goal, and Motivation from their profile heading; for other entity types it shows the heading name. The lookup is debounced via ~org-scribe--overlays-last-id~: moving along the same link does not trigger repeated file reads.
 
 This feature is *off by default*. To activate it automatically whenever ~org-scribe-mode~ is on, the user sets ~(setq org-scribe-overlays-enable t)~ in their init file. Individual buffers can be toggled at any time with ~M-x org-scribe-overlays-mode~ or the ~T~ key in the Links & upkeep hydra submenu (~F8 F8 L T~). The minor mode is always loaded (it is required by ~org-scribe.el~) but never activates unless explicitly enabled, so there is zero overhead for users who do not opt in.
 
