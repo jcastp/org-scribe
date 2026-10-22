@@ -460,6 +460,7 @@
      (compile-done . "Compilación: %d capítulo%s, %d escena%s, en %s")
      (compile-pandoc-failed . "pandoc no pudo generar el DOCX: %s")
      (compile-shunn-format-unsupported . "El formato Shunn no está disponible para %s; usa org, txt, pdf o docx")
+     (focus-no-heading . "Coloca el cursor dentro de una escena para enfocarla")
      (compile-shunn-contact-invalid . "`%s' debe ser una cadena o una lista de cadenas, no %S")
      (compile-shunn-author-missing . "El formato Shunn necesita `org-scribe-author-name' configurado; ve a M-x customize-group RET org-scribe RET")
      (compile-shunn-preamble-malformed . "org-scribe-compile-shunn-latex-preamble está mal formado (debe contener exactamente dos marcadores `%%s'): %s")

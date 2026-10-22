@@ -227,6 +227,11 @@ with customized settings optimized for focused writing."
 
 (defun org-scribe-env-focus--activate ()
   "Activate writing environment and narrow to current org section."
+  ;; Refuse before switching theme and font: with point above the first
+  ;; heading there is no section to narrow to, and Org's own error
+  ;; ("Before first heading") says nothing about what to do.
+  (when (and (derived-mode-p 'org-mode) (org-before-first-heading-p))
+    (user-error "%s" (org-scribe-msg 'focus-no-heading)))
   ;; First activate the base writing environment
   (org-scribe-env--activate)
   ;; Then add narrowing if in org-mode

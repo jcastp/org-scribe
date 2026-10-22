@@ -533,6 +533,21 @@ asserting on that function would fail while the code is correct."
   (interactive)
   (ert "^test-modes-"))
 
+;;; Focus mode needs a section to focus on
+
+(ert-deftest test-modes-focus-before-first-heading-is-a-user-error ()
+  "Focus above the first heading says what to do and switches nothing."
+  (with-temp-buffer
+    (delay-mode-hooks (org-mode))
+    (insert "#+TITLE: T\n\n* Scene\ntext\n")
+    (goto-char (point-min))
+    (let ((activated nil))
+      (cl-letf (((symbol-function 'org-scribe-env--activate)
+                 (lambda () (setq activated t))))
+        (let ((err (should-error (org-scribe-env-focus--activate) :type 'user-error)))
+          (should (string-match-p "scene" (cadr err)))
+          (should-not activated))))))
+
 (provide 'test-modes)
 
 ;;; test-modes.el ends here
