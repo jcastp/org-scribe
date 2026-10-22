@@ -607,8 +607,14 @@ language pack -- see `org-scribe-lang-property'."
 (defun org-scribe-scene-property-get (canonical-key)
   "Return the value of scene property CANONICAL-KEY at point.
 Tries every known localized alias for CANONICAL-KEY and returns the
-first non-nil value found via `org-entry-get'."
-  (cl-some (lambda (prop) (org-entry-get nil prop))
+first non-blank value found via `org-entry-get'.  A property that is
+present but empty counts as absent, so the result is nil for it: Org
+returns the empty string, which is truthy in Lisp, and every scene the
+templates and `org-scribe-insert-scene' produce carries `:Plot:' and the
+rest blank.  Callers use the result as a plain truthiness test, and the
+plot-thread report was counting every such scene as having a plot thread
+(the same trap `org-scribe--parse-weight' exists to avoid for Weight)."
+  (cl-some (lambda (prop) (org-string-nw-p (org-entry-get nil prop)))
            (org-scribe-scene-property-aliases canonical-key)))
 
 (defun org-scribe-scene-property-set (canonical-key value)

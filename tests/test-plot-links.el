@@ -340,6 +340,28 @@ ignores it, so a minor thread that appears once still gets its warning."
   (interactive)
   (ert "^test-plot-"))
 
+(ert-deftest test-plot-report-blank-plot-property-counts-as-unassigned ()
+  "A scene whose `:Plot:' is present but empty has no plot thread.
+Every scene from the templates and `org-scribe-insert-scene' ships with
+`:Plot:' blank, and Org returns the empty string (truthy) for it, so the
+report said \"Scenes with plot threads: 3\" and \"All scenes have Plot
+properties assigned\" with only one scene linked.  The earlier tests
+here used scenes with no `:Plot:' line at all, which is not the shape a
+writer's scenes have."
+  (test-plot--with-novel-and-plot-files
+      (concat "* Chapter 1\n"
+              "*** Scene 1\n:PROPERTIES:\n:Plot: Main Plot\n:END:\n"
+              "*** Scene 2\n:PROPERTIES:\n:Plot:\n:END:\n"
+              "*** Scene 3\n:PROPERTIES:\n:Plot:   \n:END:\n")
+      "* Main Plot\n:PROPERTIES:\n:ID: plot-main-001\n:END:\n"
+    (org-scribe-plot-thread-report)
+    (with-current-buffer "*Plot Thread Health Report*"
+      (let ((text (buffer-string)))
+        (should (string-match-p "Scenes with plot threads: 1" text))
+        (should (string-match-p "Found 2 scene(s) without Plot property" text))
+        (should-not (string-match-p "All scenes have Plot" text))))
+    (kill-buffer "*Plot Thread Health Report*")))
+
 (provide 'test-plot-links)
 
 ;;; test-plot-links.el ends here
