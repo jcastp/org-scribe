@@ -369,6 +369,26 @@ rather than scenery; the gazetteer fields of the previous model
     (should (string-match-p "Consequences" template-string))
     (should (string-match-p "Connections" template-string))))
 
+;;; Sub-heading levels
+
+(ert-deftest test-object-and-timeline-templates-do-not-skip-a-level ()
+  "Sub-headings sit one level below the entry, not two.
+org-capture shifts the whole template relative to its target, so a
+\"***\" under a \"*\" left a gap wherever the entry was filed."
+  (dolist (builder '(org-scribe-object-capture-templates
+                     org-scribe-timeline-capture-templates))
+    (dolist (lang '(en es))
+      (let* ((template (nth 4 (car (funcall builder lang))))
+             (stars (delq nil
+                          (mapcar (lambda (l)
+                                    (when (string-match "^\\(\\*+\\) " l)
+                                      (length (match-string 1 l))))
+                                  (split-string template "\n")))))
+        (should (equal (list builder 1) (list builder (car stars))))
+        (should (cdr stars))
+        (dolist (n (cdr stars))
+          (should (equal (list builder 2) (list builder n))))))))
+
 ;;; Auto-ID Generation Tests
 
 (ert-deftest test-character-template-generates-id ()

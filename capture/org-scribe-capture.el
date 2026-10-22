@@ -535,105 +535,62 @@ of the revision marks scenery for cutting."
 
 (defun org-scribe-object-capture-templates (&optional language)
   "Return capture templates for important objects.
-LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
+The sub-headings are one level below the object, so wherever org-capture
+files the entry they sit directly under it."
   (let ((org-scribe-message-language (or language (org-scribe-project-language))))
-    `(("o" ,(org-scribe-msg 'capture-obj-name) entry
-       (file+function org-scribe-capture-object-file
-                      org-scribe--capture-goto-objects-section)
-       ,(format "* %%^{%s}
-:PROPERTIES:
-:ID: %%(org-id-new)
-:Type: %%^{%s}
-:Owner: %%^{%s}
-:First-appearance: %%^{%s}
-:Status: %%^{%s}
-:END:
-
-*** %s
-%%?
-
-*** %s
--
-
-*** %s
--
-
-*** %s
--
-
-*** %s
--
-
-*** %s
--
-
-*** %s
--
-
-*** %s
--
-
-*** %s
-- "
-                       (org-scribe-msg 'capture-obj-name-prompt)
-                       (org-scribe-msg 'capture-obj-type-prompt)
-                       (org-scribe-msg 'capture-obj-owner-prompt)
-                       (org-scribe-msg 'capture-obj-first-appearance-prompt)
-                       (org-scribe-msg 'capture-obj-status-prompt)
-                       (org-scribe-msg 'capture-obj-physical-description)
-                       (org-scribe-msg 'capture-obj-origin)
-                       (org-scribe-msg 'capture-obj-properties)
-                       (org-scribe-msg 'capture-obj-importance-plot)
-                       (org-scribe-msg 'capture-obj-history)
-                       (org-scribe-msg 'capture-obj-symbolism)
-                       (org-scribe-msg 'capture-obj-current-location)
-                       (org-scribe-msg 'capture-obj-rules)
-                       (org-scribe-msg 'capture-obj-notes))
-       :empty-lines 1))))
+    (cl-flet ((m (key) (org-scribe-msg key)))
+      `(("o" ,(m 'capture-obj-name) entry
+         (file+function org-scribe-capture-object-file
+                        org-scribe--capture-goto-objects-section)
+         ,(concat
+           "* %^{" (m 'capture-obj-name-prompt) "}\n"
+           ":PROPERTIES:\n"
+           ":ID: %(org-id-new)\n"
+           ":Type: %^{" (m 'capture-obj-type-prompt) "}\n"
+           ":Owner: %^{" (m 'capture-obj-owner-prompt) "}\n"
+           ":First-appearance: %^{" (m 'capture-obj-first-appearance-prompt) "}\n"
+           ":Status: %^{" (m 'capture-obj-status-prompt) "}\n"
+           ":END:\n\n"
+           "** " (m 'capture-obj-physical-description) "\n%?\n\n"
+           "** " (m 'capture-obj-origin) "\n-\n\n"
+           "** " (m 'capture-obj-properties) "\n-\n\n"
+           "** " (m 'capture-obj-importance-plot) "\n-\n\n"
+           "** " (m 'capture-obj-history) "\n-\n\n"
+           "** " (m 'capture-obj-symbolism) "\n-\n\n"
+           "** " (m 'capture-obj-current-location) "\n-\n\n"
+           "** " (m 'capture-obj-rules) "\n-\n\n"
+           "** " (m 'capture-obj-notes) "\n- ")
+         :empty-lines 1)))))
 
 (defun org-scribe-timeline-capture-templates (&optional language)
   "Return capture templates for timeline events.
-LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
+The sub-headings are one level below the event; see
+`org-scribe-object-capture-templates'."
   (let ((org-scribe-message-language (or language (org-scribe-project-language))))
-    `(("t" ,(org-scribe-msg 'capture-tl-name) entry
-       (file+function org-scribe-capture-timeline-file
-                      org-scribe--capture-goto-timeline-section)
-       ,(format "* %%^{%s}
-:PROPERTIES:
-:ID: %%(org-id-new)
-:Type: %%^{%s}
-:Relevance:
-:Date: %%^{%s}
-:Time:
-:Duration:
-:Characters: %%^{%s}
-:Location: %%^{%s}
-:Chapter: %%^{%s}
-:END:
-
-*** %s
-%%?
-
-*** %s
--
-
-*** %s
-- %s
-
-*** %s
-- "
-                       (org-scribe-msg 'capture-tl-name-prompt)
-                       (org-scribe-msg 'capture-tl-type-prompt)
-                       (org-scribe-msg 'capture-tl-date-prompt)
-                       (org-scribe-msg 'capture-tl-characters-prompt)
-                       (org-scribe-msg 'capture-tl-location-prompt)
-                       (org-scribe-msg 'capture-tl-chapter-prompt)
-                       (org-scribe-msg 'capture-tl-description)
-                       (org-scribe-msg 'capture-tl-consequences)
-                       (org-scribe-msg 'capture-tl-connections)
-                       (org-scribe-msg 'capture-tl-connections-hint)
-                       (org-scribe-msg 'capture-tl-notes))
-       :empty-lines 1))))
+    (cl-flet ((m (key) (org-scribe-msg key)))
+      `(("t" ,(m 'capture-tl-name) entry
+         (file+function org-scribe-capture-timeline-file
+                        org-scribe--capture-goto-timeline-section)
+         ,(concat
+           "* %^{" (m 'capture-tl-name-prompt) "}\n"
+           ":PROPERTIES:\n"
+           ":ID: %(org-id-new)\n"
+           ":Type: %^{" (m 'capture-tl-type-prompt) "}\n"
+           ":Relevance:\n"
+           ":Date: %^{" (m 'capture-tl-date-prompt) "}\n"
+           ":Time:\n"
+           ":Duration:\n"
+           ":Characters: %^{" (m 'capture-tl-characters-prompt) "}\n"
+           ":Location: %^{" (m 'capture-tl-location-prompt) "}\n"
+           ":Chapter: %^{" (m 'capture-tl-chapter-prompt) "}\n"
+           ":END:\n\n"
+           "** " (m 'capture-tl-description) "\n%?\n\n"
+           "** " (m 'capture-tl-consequences) "\n-\n\n"
+           "** " (m 'capture-tl-connections) "\n- " (m 'capture-tl-connections-hint) "\n\n"
+           "** " (m 'capture-tl-notes) "\n- ")
+         :empty-lines 1)))))
 
 (defun org-scribe-plot-thread-capture-templates (&optional language)
   "Return capture templates for plot threads (narrative lines).
