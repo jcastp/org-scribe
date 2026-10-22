@@ -165,6 +165,15 @@ this test pins the actual logic, not the coincidence."
       (should (= words 500))
       (should (= obj 3000)))))
 
+(ert-deftest test-health-word-totals-uses-outermost-objective ()
+  "Acts' objectives win over the chapters and scenes nested under them."
+  (test-health--with-novel-file
+      (concat "* Act I :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 20000\n:END:\n\n"
+              "** TODO Chapter One :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 3000\n:END:\n\n"
+              "*** TODO Scene A :ignore:\n:PROPERTIES:\n:WORDCOUNT: 10\n:WORD-OBJECTIVE: 500\n:END:\n\n"
+              "* Act II :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 40000\n:END:\n\n")
+    (should (= 60000 (cdr (org-scribe--health-word-totals temp-novel))))))
+
 (ert-deftest test-health-word-totals-empty-file ()
   "Test that an empty file returns zero totals."
   (test-health--with-novel-file

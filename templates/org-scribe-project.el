@@ -656,7 +656,7 @@ collide with the project's own scene level."
          (scene-stars (make-string (plist-get levels :scene) ?*))
          (template (format "%s TODO %s%s
 :PROPERTIES:
-:WORD-OBJECTIVE: 5000
+:WORD-OBJECTIVE: 3000
 :WORDCOUNT: 0
 :END:
 

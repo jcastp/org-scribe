@@ -404,7 +404,7 @@ previous chapter."
       (should (string-match-p "\\*\\* TODO Chapter 1 :ignore:" content))
 
       ;; Check chapter properties
-      (should (string-match-p ":WORD-OBJECTIVE: 5000" content))
+      (should (string-match-p ":WORD-OBJECTIVE: 3000" content))
       (should (string-match-p ":WORDCOUNT: 0" content))
 
       ;; Check first scene is present

@@ -143,22 +143,20 @@ story's manuscript."
 WORDS is the sum of WORDCOUNT from scene headings (the level for the
 current project type, per `org-scribe-scene-level' -- level 3 for a
 novel, level 2 for a short story).
-OBJECTIVE is the sum of WORD-OBJECTIVE, read from the chapter level
-\(`org-scribe-chapter-level') when the project type has one, or from the
-scene level otherwise.  This is deliberately either/or, not both: a
-short story has no chapter level at all and carries WORD-OBJECTIVE on
-its *scenes* instead, so reading only the (nonexistent) chapter level
-would undercount to 0 for a project that plainly set an objective, but
-reading both unconditionally would double-count a novel's totals, since
-a novel's scenes already roll up into their own chapter's
-WORD-OBJECTIVE."
+OBJECTIVE is the sum of the *outermost* WORD-OBJECTIVE values: a heading
+counts only when no ancestor carries one.  Objectives roll up, so each
+level's figures restate the one above (a novel's acts, then their
+chapters, then their scenes); adding levels together would double-count,
+and picking a fixed level reported a chapter-level 8,000 against an
+80,000-word project.  The top-most level that sets an objective is the
+authoritative one -- the acts in a shipped novel, the scenes in a short
+story, which has nothing above them."
   (let ((words 0) (obj 0))
     (when (and novel-file (file-exists-p novel-file))
       (with-current-buffer (find-file-noselect novel-file)
         (org-with-wide-buffer
          (goto-char (point-min))
-         (let* ((scene-level (org-scribe-scene-level))
-                (objective-level (or (org-scribe-chapter-level) scene-level)))
+         (let ((scene-level (org-scribe-scene-level)))
            (org-map-entries
             (lambda ()
               (let ((level (org-current-level)))
@@ -166,9 +164,12 @@ WORD-OBJECTIVE."
                   (when (= level scene-level)
                     (when-let ((wc (org-entry-get nil "WORDCOUNT")))
                       (setq words (+ words (string-to-number wc)))))
-                  (when (= level objective-level)
+                  (when (<= level scene-level)
                     (when-let ((wo (org-entry-get nil "WORD-OBJECTIVE")))
-                      (setq obj (+ obj (string-to-number wo))))))))
+                      (unless (save-excursion
+                                (and (org-up-heading-safe)
+                                     (org-entry-get nil "WORD-OBJECTIVE" t)))
+                        (setq obj (+ obj (string-to-number wo)))))))))
             nil 'file)))))
     (cons words obj)))
 
