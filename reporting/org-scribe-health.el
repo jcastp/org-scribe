@@ -64,7 +64,7 @@
     (max 0 (round (/ (float-time (time-subtract today start)) 86400)))))
 
 (defun org-scribe--health-plan-status (plan)
-  "Return 'On track' or 'Behind by N words' for PLAN.
+  "Return 'On track', 'Ahead by N words' or 'Behind by N words' for PLAN.
 Expected words are computed by walking PLAN's day schedule up to and
 including yesterday, skipping spare days — matching
 `org-scribe-planner--show-progress-report' — instead of the naive
@@ -78,9 +78,9 @@ the day is over, so it never makes the plan look behind."
          (expected (org-scribe-planner--expected-through
                     plan (org-scribe-planner--add-days today -1))))
     (let ((delta (- expected (org-scribe-plan-current-words plan))))
-      (if (<= delta 0)
-          "On track"
-        (format "Behind by %d words" delta)))))
+      (cond ((> delta 0) (format "Behind by %d words" delta))
+            ((< delta 0) (format "Ahead by %d words" (- delta)))
+            (t "On track")))))
 
 ;;; Internal Helpers
 
@@ -551,7 +551,10 @@ with clickable ID links back to each scene."
                    (pct     (if (> target 0)
                                 (* 100.0 (/ (float current) target))
                               0.0))
-                   (days-rem (org-scribe--health-days-until end))
+                   ;; Counting today, as the dashboards do
+                   (days-rem (if (and end (not (string< end (org-scribe-planner--get-today-date))))
+                                 (1+ (org-scribe--health-days-until end))
+                               0))
                    (status  (org-scribe--health-plan-status plan)))
               (insert (format "- Title :: %s\n" title))
               (insert (format "- Target :: %d words\n" target))

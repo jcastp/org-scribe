@@ -204,5 +204,11 @@ Regression: the average divided by the days logged only (6), giving 950."
         (should-not (string-match-p "BEHIND SCHEDULE" (buffer-string)))
         (should (string-match-p "first completed writing day" (buffer-string)))))))
 
+(ert-deftest test-planner-analytics-count-text-pluralizes ()
+  "One day, two days, zero days."
+  (should (equal "1 day" (org-scribe-planner--count-text 1 "day" "days")))
+  (should (equal "0 days" (org-scribe-planner--count-text 0 "day" "days")))
+  (should (equal "1 session" (org-scribe-planner--count-text 1 "session" "sessions"))))
+
 (provide 'test-planner-analytics)
 ;;; test-planner-analytics.el ends here

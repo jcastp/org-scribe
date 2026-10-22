@@ -161,6 +161,10 @@ Returns plist with :current :longest and :last-streak-date."
           :longest longest-streak
           :last-date last-streak-date)))
 
+(defun org-scribe-planner--count-text (n singular plural)
+  "Return N with SINGULAR when it is 1, PLURAL otherwise: \"1 day\", \"3 days\"."
+  (format "%d %s" n (if (= n 1) singular plural)))
+
 ;;; Helper Functions - Velocity Calculation
 
 (defun org-scribe-planner--calculate-velocity (plan)
@@ -436,12 +440,12 @@ beginning, and displayed after BODY executes."
                   (recent-velocity (plist-get velocity :recent))
                   (days-logged (plist-get velocity :days-logged)))
               (insert (format "  Current streak: %s\n"
-                            (propertize (format "%d days" (plist-get streak :current))
+                            (propertize (org-scribe-planner--count-text (plist-get streak :current) "day" "days")
                                       'face (if (> (plist-get streak :current) 0)
                                               'org-done
                                             'shadow))))
-              (insert (format "  Longest streak: %d days\n"
-                            (plist-get streak :longest)))
+              (insert (format "  Longest streak: %s\n"
+                            (org-scribe-planner--count-text (plist-get streak :longest) "day" "days")))
               (insert (format "  Average velocity: %s words/day (%d days logged)\n"
                             (propertize (format "%.0f" avg-velocity)
                                       'face 'org-scheduled)
@@ -1117,8 +1121,8 @@ WIDTH and HEIGHT are dimensions in pixels."
 
               ;; Momentum
               (insert (propertize "⚡ Momentum\n" 'face 'org-level-2))
-              (insert (format "  Current streak: %d days\n"
-                            (plist-get streak :current)))
+              (insert (format "  Current streak: %s\n"
+                            (org-scribe-planner--count-text (plist-get streak :current) "day" "days")))
               (insert (format "  Trend: %s\n\n"
                             (org-scribe-planner--format-trend
                              (plist-get velocity :trend))))
@@ -1434,12 +1438,12 @@ Shows day-of-week patterns, consistency scores, and target achievement rates."
             ;; Streaks Section
             (insert (propertize "🔥 Writing Streaks\n" 'face 'org-level-2))
             (insert (format "  Current streak: %s\n"
-                          (propertize (format "%d days" (plist-get streak :current))
+                          (propertize (org-scribe-planner--count-text (plist-get streak :current) "day" "days")
                                     'face (if (> (plist-get streak :current) 0)
                                             'org-done
                                           'shadow))))
-            (insert (format "  Longest streak: %d days\n"
-                          (plist-get streak :longest)))
+            (insert (format "  Longest streak: %s\n"
+                          (org-scribe-planner--count-text (plist-get streak :longest) "day" "days")))
             (insert (format "  Trend: %s\n\n"
                           (org-scribe-planner--format-trend
                            (plist-get velocity :trend))))
@@ -1974,10 +1978,11 @@ Shows progress, velocity, performance, and projections in one unified view."
                           (or momentum 0)))
 
             ;; Row 3: Performance metrics
-            (insert (format "Consistency: %d%%  Achievement: %.1f%%  Streak: %d days\n"
+            (insert (format "Consistency: %d%%  Achievement: %.1f%%  Streak: %s\n"
                           (or (plist-get consistency :score) 0)
                           (or (plist-get achievement :rate) 0)
-                          (or (plist-get streak :current) 0)))
+                          (org-scribe-planner--count-text
+                           (or (plist-get streak :current) 0) "day" "days")))
 
             (insert "\n" (make-string 90 ?─) "\n\n")
 
@@ -2049,14 +2054,14 @@ Shows progress, velocity, performance, and projections in one unified view."
 
               ;; Streaks
               (insert (format "  Current Streak: %s  "
-                            (propertize (format "%d days" (or (plist-get streak :current) 0))
+                            (propertize (org-scribe-planner--count-text (or (plist-get streak :current) 0) "day" "days")
                                       'face (if (> (or (plist-get streak :current) 0) 0)
                                               'org-done
                                             'shadow))))
 
               ;; Longest streak
-              (insert (format "Longest Streak: %d days\n"
-                            (or (plist-get streak :longest) 0))))
+              (insert (format "Longest Streak: %s\n"
+                            (org-scribe-planner--count-text (or (plist-get streak :longest) 0) "day" "days"))))
 
             (insert "\n" (make-string 90 ?─) "\n\n")
 
@@ -2085,8 +2090,9 @@ Shows progress, velocity, performance, and projections in one unified view."
                                          ((= rank 2) "🥈")
                                          ((= rank 3) "🥉")
                                          (t "  "))))
-                        (insert (format "  %s %-12s %.0f words/day (%d sessions)\n"
-                                      medal day-name average count))
+                        (insert (format "  %s %-12s %.0f words/day (%s)\n"
+                                      medal day-name average
+                                      (org-scribe-planner--count-text count "session" "sessions")))
                         (setq rank (1+ rank)))))
                 (insert "  No data available yet\n")))
 

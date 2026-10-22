@@ -521,7 +521,8 @@ even though nothing was actually due."
                 :end-date end-date
                 :spare-days spare-days
                 :current-words 1000)))
-    (should (string= (org-scribe--health-plan-status plan) "On track"))
+    ;; 1000 words written, nothing yet expected: ahead, certainly not behind
+    (should (string= (org-scribe--health-plan-status plan) "Ahead by 1000 words"))
     ;; Sanity check the naive elapsed*daily-words math (what the old code
     ;; did) would have flagged this same plan as far behind.
     (should (> (* (1+ (org-scribe--health-days-since start-date)) 1000) 1000))))
@@ -551,6 +552,17 @@ had met every goal through yesterday was \"Behind\" every morning."
                      "Behind by 1 words"))))
 
 ;;; Writing Plan section in the report
+
+(ert-deftest test-health-plan-status-says-when-ahead ()
+  "A plan past its expected total reads \"Ahead by N words\", as the calendar does."
+  (require 'org-scribe-planner)
+  (let* ((day (lambda (n)
+                (org-scribe-planner--add-days (org-scribe-planner--get-today-date) n)))
+         (plan (make-org-scribe-plan
+                :title "P" :total-words 10000 :daily-words 1000 :days 10
+                :start-date (funcall day -2) :end-date (funcall day 7)
+                :current-words 2047)))
+    (should (string= (org-scribe--health-plan-status plan) "Ahead by 47 words"))))
 
 ;; The `(featurep 'org-scribe-planner)' guard on this section is covered
 ;; behaviorally by the two tests below, which exercise the section with the
@@ -629,7 +641,7 @@ had met every goal through yesterday was \"Behind\" every morning."
             (should (string-match-p "23456" content))
             (should (string-match-p "500" content))
             (should (string-match-p "2026-06-30" content))
-            (should (string-match-p "\\(On track\\|Behind by\\)" content))))))))
+            (should (string-match-p "\\(On track\\|Ahead by\\|Behind by\\)" content))))))))
 
 ;;; Starting Gate
 ;;
