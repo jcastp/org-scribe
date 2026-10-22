@@ -31,6 +31,18 @@
 
 ;;; Project Detection
 
+(defun org-scribe--link-text (name)
+  "Return NAME made safe as the description of an Org link.
+Square brackets would end the description early -- a placeholder name
+such as \"Protagonist: [Name]\" parsed as the description \"Protagonist:
+[Name\" plus a stray bracket -- so they become parentheses.  Only the
+text shown changes; the link still resolves by its ID."
+  (replace-regexp-in-string "\\[" "(" (replace-regexp-in-string "\\]" ")" name)))
+
+(defun org-scribe--format-id-link (id name)
+  "Return the Org ID link to ID, displayed as NAME."
+  (format "[[id:%s][%s]]" id (org-scribe--link-text name)))
+
 (defun org-scribe-project-root ()
   "Find root directory of writing project.
 Looks for .org-scribe-project file, then falls back to `project-current'."

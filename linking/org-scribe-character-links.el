@@ -131,7 +131,7 @@ Specifically designed for the :PoV: property in scene headings."
              (id (cadr entry)))
         (if id
             (progn
-              (org-scribe-scene-property-set 'pov (format "[[id:%s][%s]]" id selected))
+              (org-scribe-scene-property-set 'pov (org-scribe--format-id-link id selected))
               (message (org-scribe-msg 'msg-set-pov selected)))
           (message (org-scribe-msg 'error-no-id-for-character selected)))))))
 

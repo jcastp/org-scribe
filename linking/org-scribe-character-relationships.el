@@ -70,7 +70,7 @@ Returns list of (ID NAME TYPE) tuples."
 (defun org-scribe--format-relationship (id name type)
   "Format a relationship into the standard string format.
 Returns: [[id:ID][NAME]]|TYPE"
-  (format "[[id:%s][%s]]|%s" id name type))
+  (format "%s|%s" (org-scribe--format-id-link id name) type))
 
 (defun org-scribe--relationships-to-string (relationships)
   "Convert list of relationship tuples to property string.

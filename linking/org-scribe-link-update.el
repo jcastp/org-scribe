@@ -52,10 +52,10 @@ Examples:
       (let ((id (match-string 1 link-string))
             (old-name (match-string 2 link-string)))
         (if-let ((new-name (gethash id id-to-name-map)))
-            (if (string= old-name new-name)
+            (if (string= old-name (org-scribe--link-text new-name))
                 link-string  ; No change needed
               ;; Name changed - update it
-              (format "[[id:%s][%s]]" id new-name))
+              (org-scribe--format-id-link id new-name))
           ;; ID not found in database - keep as is (don't break working links)
           link-string))
     ;; Not an ID link - return unchanged

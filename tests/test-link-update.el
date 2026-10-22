@@ -210,6 +210,27 @@
   (interactive)
   (ert "^test-link-update-"))
 
+(ert-deftest test-link-text-brackets-do-not-break-the-link ()
+  "A placeholder name with square brackets still yields one well-formed link."
+  (let ((link (org-scribe--create-entity-link
+               "Protagonist: [Name]" '(("Protagonist: [Name]" . ("abc" . "h"))))))
+    (should (equal link "[[id:abc][Protagonist: (Name)]]"))
+    (with-temp-buffer
+      (delay-mode-hooks (org-mode))
+      (insert link)
+      (goto-char 3)
+      (let ((el (org-element-context)))
+        (should (eq 'link (org-element-type el)))
+        (should (= (org-element-property :end el) (1+ (length link))))))))
+
+(ert-deftest test-link-update-leaves-sanitized-link-alone ()
+  "A link already showing the parenthesised name is not rewritten each run."
+  (let ((map (make-hash-table :test 'equal)))
+    (puthash "abc" "Protagonist: [Name]" map)
+    (should (equal "[[id:abc][Protagonist: (Name)]]"
+                   (org-scribe--update-link-display-name
+                    "[[id:abc][Protagonist: (Name)]]" map)))))
+
 (provide 'test-link-update)
 
 ;;; test-link-update.el ends here

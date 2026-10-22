@@ -63,7 +63,7 @@ ID-ALIST should be in format ((NAME . (ID . HEADING)) ...).
 Returns the link string or plain text if no ID found."
   (if-let* ((entry (assoc name id-alist))
             (id (cadr entry)))
-      (format "[[id:%s][%s]]" id name)
+      (org-scribe--format-id-link id name)
     name))
 
 ;;; Generic Entity Functions
@@ -209,7 +209,7 @@ ENTITY is an entity descriptor plist."
              (name (cddr entry)))
         (if id
             (progn
-              (insert (format "[[id:%s][%s]]" id name))
+              (insert (org-scribe--format-id-link id name))
               (message (org-scribe-msg 'msg-inserted-link name)))
           (message (org-scribe-msg (plist-get entity :error-no-id) selected)))))))
 
@@ -234,7 +234,7 @@ ENTITY is an entity descriptor plist."
         (if-let* ((entry (assoc label items))
                   (id (cadr entry))
                   (name (cddr entry)))
-            (push (format "[[id:%s][%s]]" id name) links)
+            (push (org-scribe--format-id-link id name) links)
           (push label links)))
       (setq links (nreverse links))
       (if links
@@ -271,7 +271,7 @@ PROPERTY is a canonical scene property key (e.g. \\='characters)."
                   (id (cadr entry))
                   (name (cddr entry)))
             (progn
-              (push (format "[[id:%s][%s]]" id name) links)
+              (push (org-scribe--format-id-link id name) links)
               (push name selected-names))
           (push label links)
           (push label selected-names)))
