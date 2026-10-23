@@ -8,8 +8,10 @@
 
 ;; Provides simple, typed relationship tracking between characters.
 ;; A relationship is directed: SOURCE -> (TARGET, TYPE), stored on the
-;; source character's heading in the :RelationshipsData: property
-;; (or :DatosRelaciones: for Spanish-language projects).
+;; source character's heading in the :RelationshipsData: property.
+;; Older Spanish templates shipped a localized spelling of that property;
+;; every pack's spelling is still read (see
+;; `org-scribe--relationships-property-at-point').
 ;;
 ;; Entries are separated by "; ", each in the format:
 ;;   [[id:TARGET-ID][Target Name]]|TYPE
@@ -96,12 +98,24 @@ Returns a string suitable for :RelationshipsData: property."
 
 ;;; Character Relationship Database
 
+(defun org-scribe--relationships-property-name ()
+  "Return the property name new relationship data is written under.
+English in every project, like the other project-metadata properties:
+it is a machine-facing identifier, not something the writer reads."
+  (org-scribe-lang-property 'relationships 'en))
+
+(defun org-scribe--relationships-property-at-point ()
+  "Return the spelling of the relationships property on this heading, or nil.
+Every registered pack's spelling is checked, so data written under an
+older localized name is still found."
+  (seq-find (lambda (name) (org-entry-get nil name))
+            (org-scribe-lang-all :properties 'relationships)))
+
 (defun org-scribe--get-character-relationships ()
   "Get relationships for character at point.
 Returns list of (ID NAME TYPE) tuples."
-  (let ((rel-data (org-entry-get nil "RelationshipsData"))
-        (datos-rel (org-entry-get nil "DatosRelaciones"))) ; Spanish property name
-    (org-scribe--parse-relationships (or rel-data datos-rel))))
+  (when-let* ((property (org-scribe--relationships-property-at-point)))
+    (org-scribe--parse-relationships (org-entry-get nil property))))
 
 (defun org-scribe--find-character-by-name (char-name)
   "Find character by CHAR-NAME in characters file.
@@ -130,9 +144,8 @@ RELATIONSHIPS is a list of (ID NAME TYPE) tuples."
        (let* ((rel-string (if relationships
                              (org-scribe--relationships-to-string relationships)
                            ""))
-              (property-name (if (org-entry-get nil "DatosRelaciones")
-                               "DatosRelaciones"
-                             "RelationshipsData")))
+              (property-name (or (org-scribe--relationships-property-at-point)
+                                 (org-scribe--relationships-property-name))))
          (if (string-empty-p rel-string)
              (org-entry-delete nil property-name)
            (org-entry-put nil property-name rel-string))
@@ -316,6 +329,39 @@ ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
           (view-mode 1))
         (display-buffer buf-name)))))
 
+;;; Keeping stored names current
+
+(defun org-scribe-refresh-relationship-names ()
+  "Rewrite the target names stored in relationships to the current names.
+A relationship stores its target as an ID link, so renaming a character
+kept it working but left the old name in the relationships list and
+table.  Called by `org-scribe-relink-project'.  Returns the number of
+characters whose relationships changed."
+  (let ((char-file (org-scribe--get-character-file))
+        (count 0))
+    (when (and char-file (file-exists-p char-file))
+      (let ((names (make-hash-table :test 'equal)))
+        (dolist (entry (org-scribe--get-all-characters))
+          (puthash (cadr entry) (car entry) names))
+        (with-current-buffer (find-file-noselect char-file)
+          (org-with-wide-buffer
+           (org-map-entries
+            (lambda ()
+              (when-let* ((property (org-scribe--relationships-property-at-point))
+                          (rels (org-scribe--get-character-relationships)))
+                (let ((renamed (mapcar (lambda (rel)
+                                         (list (nth 0 rel)
+                                               (gethash (nth 0 rel) names (nth 1 rel))
+                                               (nth 2 rel)))
+                                       rels)))
+                  (unless (equal rels renamed)
+                    (org-entry-put nil property
+                                   (org-scribe--relationships-to-string renamed))
+                    (setq count (1+ count))))))
+            nil 'file))
+          (when (buffer-modified-p) (save-buffer)))))
+    count))
+
 ;;; Setup Function
 
 ;;;###autoload
@@ -337,9 +383,8 @@ Ensures all characters have IDs and adds empty RelationshipsData properties."
            (org-map-entries
             (lambda ()
               (when (and (org-id-get)
-                        (not (org-entry-get nil "RelationshipsData"))
-                        (not (org-entry-get nil "DatosRelaciones")))
-                (org-entry-put nil "RelationshipsData" "")
+                        (not (org-scribe--relationships-property-at-point)))
+                (org-entry-put nil (org-scribe--relationships-property-name) "")
                 (setq count (1+ count))))
             nil 'file)
            (when (> count 0)

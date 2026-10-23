@@ -214,6 +214,7 @@ Returns the number of scenes updated."
 ;;; One-Shot Project Relink (registry-driven)
 
 (declare-function org-scribe--add-entity-ids "org-scribe-linking-core")
+(declare-function org-scribe-refresh-relationship-names "org-scribe-character-relationships")
 (declare-function org-scribe--link-all-scene-entities "org-scribe-linking-core")
 
 ;;;###autoload
@@ -248,7 +249,10 @@ manuscript buffer is saved when changes were made."
         ;; Phase 2 — convert plain names to links for every entity type.
         (dolist (entry org-scribe-entity-registry)
           (org-scribe--link-all-scene-entities (cdr entry)))
-        ;; Phase 3 — refresh stale display names (already registry-driven).
+        ;; Phase 3 — refresh stale display names (already registry-driven),
+        ;; in scenes and in the names stored with character relationships.
+        (when (fboundp 'org-scribe-refresh-relationship-names)
+          (org-scribe-refresh-relationship-names))
         (let ((count (org-scribe-update-all-link-names))
               (broken (length (org-scribe--find-broken-links))))
           (when (buffer-modified-p)

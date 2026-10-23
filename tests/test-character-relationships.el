@@ -341,6 +341,41 @@
           (should (string-match-p "friend: Bob" (buffer-string))))
       (kill-buffer "*Relationships: Alice*"))))
 
+(ert-deftest test-relationships-refresh-names-after-rename ()
+  "Renaming a character updates the name its relationships store (relink)."
+  (org-scribe-relationships-test--with-fixture
+    (org-scribe--update-character-relationships
+     "Alice" '(("char-bob-001" "Bob" "friend")))
+    (with-current-buffer (find-file-noselect (org-scribe-capture-character-file))
+      (goto-char (point-min))
+      (re-search-forward "^\\* Bob$")
+      (replace-match "* Robert Lane")
+      (save-buffer))
+    (should (= 1 (org-scribe-refresh-relationship-names)))
+    (should (equal '(("char-bob-001" "Robert Lane" "friend"))
+                   (org-scribe--get-character-relationships-by-name "Alice")))
+    (should (= 0 (org-scribe-refresh-relationship-names)))))
+
+(ert-deftest test-relationships-read-legacy-localized-property ()
+  "Data under an older localized property name is still read and updated
+in place, not duplicated under the English name."
+  (org-scribe-relationships-test--with-fixture
+    (let ((legacy (org-scribe-lang-property 'relationships 'es)))
+      (with-current-buffer (find-file-noselect (org-scribe-capture-character-file))
+        (goto-char (point-min))
+        (re-search-forward "^\\* Alice$")
+        (org-entry-put nil legacy "[[id:char-bob-001][Bob]]|friend")
+        (save-buffer))
+      (should (equal '(("char-bob-001" "Bob" "friend"))
+                     (org-scribe--get-character-relationships-by-name "Alice")))
+      (org-scribe--update-character-relationships
+       "Alice" '(("char-carol-001" "Carol" "rival")))
+      (with-current-buffer (find-file-noselect (org-scribe-capture-character-file))
+        (goto-char (point-min))
+        (re-search-forward "^\\* Alice$")
+        (should (equal "[[id:char-carol-001][Carol]]|rival" (org-entry-get nil legacy)))
+        (should-not (org-entry-get nil (org-scribe--relationships-property-name)))))))
+
 ;;; Run tests
 
 (defun org-scribe-relationships-run-tests ()

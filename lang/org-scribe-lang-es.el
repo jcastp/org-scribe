@@ -86,7 +86,8 @@
      (tension-level . "Nivel-tension")
      (outcome . "Resultado")
      (sequel-decision . "Decision-secuela")
-     (comment . "Comentario"))
+     (comment . "Comentario")
+     (relationships . "DatosRelaciones"))
    :edit-categories
    '((plot . "plot")
      (scene . "scene")

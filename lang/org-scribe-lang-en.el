@@ -91,7 +91,8 @@
      (tension-level . "Tension-level")
      (outcome . "Outcome")
      (sequel-decision . "Sequel-decision")
-     (comment . "Comment"))
+     (comment . "Comment")
+     (relationships . "RelationshipsData"))
    :edit-categories
    '((plot . "plot")
      (scene . "scene")

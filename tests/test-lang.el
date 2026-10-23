@@ -256,7 +256,8 @@ only the live registry -- find it correctly."
   '("novela.org" "cuento.org" "diseno.org" "personajes.org"
     "localizaciones.org" "objetos" "trama.org" "cronologia.org"
     "notas" "investigacion.org" "Personajes" "Ambientaci"
-    "Hilos de" "irrenunciables" "Puerta de salida" "Línea Temporal")
+    "Hilos de" "irrenunciables" "Puerta de salida" "Línea Temporal"
+    "DatosRelaciones")
   "Spanish-specific literals a shipped, non-test, non-pack .el file must
 never name directly -- see `test-lang-no-hardcoded-localized-names-in-code'.")
 
