@@ -1040,6 +1040,22 @@ The result is memoised on the engine's own result."
           (setq org-scribe-planner--schedule-cache (cons engine result))
           result)))))
 
+(defun org-scribe-planner--anchor-expected (anchor day expected)
+  "Return the running expected total to use before adding DAY's goal.
+ANCHOR is a two-element list the caller keeps across days: its car is
+non-nil once a ledger entry has anchored the series on an actual total,
+its cadr once today has been reached.  On the first day from today on,
+a series no entry has anchored yet switches to the schedule's own
+figure, which carries the adjustment of the last recalculation from
+progress; otherwise EXPECTED is returned unchanged."
+  (if (or (cadr anchor)
+          (string< (plist-get day :date) (org-scribe-planner--get-today-date)))
+      expected
+    (setcar (cdr anchor) t)
+    (if (car anchor)
+        expected
+      (- (plist-get day :cumulative) (plist-get day :words)))))
+
 (defun org-scribe-planner--expected-through (plan date)
   "Return where PLAN's manuscript should stand at the end of DATE.
 That is the :cumulative of the last plan day on or before DATE, or the
@@ -1463,7 +1479,9 @@ and, for started weeks:
   :planned-total         where it should stand (see below)
   :difference            :written-total minus :planned-total
 For the current week :planned-total runs through yesterday, like the
-plan's status: today isn't expected until it's over.  As in wordplanner's
+plan's status: today isn't expected until it's over.  A finished week's
+leaves out the schedule adjustment of a later recalculation from
+progress, so it stays what it was.  As in wordplanner's
 `weekly_summary'."
   (let* ((today (org-scribe-planner--get-today-date))
          (yesterday (org-scribe-planner--add-days today -1))
@@ -1497,8 +1515,15 @@ plan's status: today isn't expected until it's over.  As in wordplanner's
            (when started
              (let* ((before (org-scribe-planner--add-days start -1))
                     (written-total (org-scribe-planner--manuscript-total-through plan end))
-                    (planned (org-scribe-planner--expected-through
-                              plan (if ended end yesterday))))
+                    ;; A finished week is history: it is measured against
+                    ;; the plan as it stood, without the adjustment of a
+                    ;; later recalculation from progress.  With it, a week
+                    ;; that fell behind read as thousands of words ahead
+                    ;; once "adjust remaining" had rebased the plan.
+                    (planned (if ended
+                                 (+ (org-scribe-planner--expected-through plan end)
+                                    (or (org-scribe-plan-schedule-adjustment plan) 0))
+                               (org-scribe-planner--expected-through plan yesterday))))
                (setq result
                      (append result
                              (list :written (- written-total
@@ -2564,10 +2589,14 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
         (let ((schedule (org-scribe-planner--generate-day-schedule plan))
               (daily-counts (org-scribe-plan-daily-word-counts plan))
               (cumulative-actual 0)
-              ;; The manuscript starts at its pre-existing words (on the
-              ;; baseline of the last recalculation from progress)
-              (expected-total (- (or (org-scribe-plan-preexisting-words plan) 0)
-                                 (or (org-scribe-plan-schedule-adjustment plan) 0))))
+              ;; The manuscript starts at its pre-existing words.  The
+              ;; schedule adjustment of a recalculation from progress is
+              ;; applied from today on (see
+              ;; `org-scribe-planner--anchor-expected'): applied from the
+              ;; start, it showed a negative expected total for the past
+              ;; days before the first entry.
+              (expected-total (or (org-scribe-plan-preexisting-words plan) 0))
+              (anchor (list nil nil)))
           (insert "| Date | Target | Cumulative | Actual | Progress % | Notes |\n")
           (insert "|------+--------+------------+--------+------------+-------|\n")
           (dolist (day schedule)
@@ -2592,12 +2621,15 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                                 "")))
 
               ;; Calculate cumulative the same way as in the report
+              (setq expected-total
+                    (org-scribe-planner--anchor-expected anchor day expected-total))
               (if actual
                   ;; Has actual data - the entry's own cumulative total IS
                   ;; the cumulative-to-date; expected matches it
                   (progn
                     (setq cumulative-actual (plist-get daily-data :words))
-                    (setq expected-total cumulative-actual))
+                    (setq expected-total cumulative-actual)
+                    (setcar anchor t))
                 ;; No actual data - add daily target to expected (skip spare days)
                 (unless is-spare
                   (setq expected-total (+ expected-total target))))
@@ -2951,10 +2983,14 @@ Optional FILEPATH shows the location of the plan file."
               (week-words 0)
               (prev-week-start nil)
               (cumulative-actual 0)
-              ;; The manuscript starts at its pre-existing words (on the
-              ;; baseline of the last recalculation from progress)
-              (expected-total (- (or (org-scribe-plan-preexisting-words plan) 0)
-                                 (or (org-scribe-plan-schedule-adjustment plan) 0))))
+              ;; The manuscript starts at its pre-existing words.  The
+              ;; schedule adjustment of a recalculation from progress is
+              ;; applied from today on (see
+              ;; `org-scribe-planner--anchor-expected'): applied from the
+              ;; start, it showed a negative expected total for the past
+              ;; days before the first entry.
+              (expected-total (or (org-scribe-plan-preexisting-words plan) 0))
+              (anchor (list nil nil)))
 
           (dolist (day schedule)
             (let* ((date (plist-get day :date))
@@ -2991,10 +3027,13 @@ Optional FILEPATH shows the location of the plan file."
               ;; Update cumulative actual word count and expected total.
               ;; daily-data's :words IS already the cumulative total as of
               ;; this date, so no summation — just carry it forward.
+              (setq expected-total
+                    (org-scribe-planner--anchor-expected anchor day expected-total))
               (if actual
                   (progn
                     (setq cumulative-actual (plist-get daily-data :words))
-                    (setq expected-total cumulative-actual))
+                    (setq expected-total cumulative-actual)
+                    (setcar anchor t))
                 ;; No actual data - add daily target to expected (skip spare days)
                 (unless is-spare
                   (setq expected-total (+ expected-total current-daily-words))))

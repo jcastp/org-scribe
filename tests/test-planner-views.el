@@ -113,6 +113,47 @@ Written: 1,400 on Nov 2, 1,500 on Nov 3, nothing on Nov 4, 900 on Nov 5,
       (should (= (length weeks) 2))
       (should (equal (mapcar (lambda (w) (plist-get w :start)) weeks)
                      '("2026-11-01" "2026-11-08"))))))
+(ert-deftest test-planner-views-expected-total-after-a-rebase ()
+  "A recalculation from progress shifts the expected series from today on;
+the past days before the first entry still start from the pre-existing
+words.  With the adjustment applied from the start, the first day of a
+plan read a negative expected total."
+  (let ((anchor (list nil nil))
+        (today "2026-11-10"))
+    (cl-letf (((symbol-function 'org-scribe-planner--get-today-date) (lambda () today)))
+      ;; A past day: unchanged.
+      (should (= 1120 (org-scribe-planner--anchor-expected
+                       anchor '(:date "2026-11-01" :words 1000 :cumulative -3880) 1120)))
+      ;; Today, with no entry seen: the schedule's own (adjusted) figure.
+      (should (= 5000 (org-scribe-planner--anchor-expected
+                       anchor '(:date "2026-11-10" :words 1000 :cumulative 6000) 9120)))
+      ;; After that, the running total is kept.
+      (should (= 7000 (org-scribe-planner--anchor-expected
+                       anchor '(:date "2026-11-11" :words 1000 :cumulative 7000) 7000))))
+    ;; A series an entry has anchored keeps its running total at today.
+    (let ((anchor (list t nil)))
+      (cl-letf (((symbol-function 'org-scribe-planner--get-today-date) (lambda () today)))
+        (should (= 4321 (org-scribe-planner--anchor-expected
+                         anchor '(:date "2026-11-10" :words 1000 :cumulative 6000) 4321)))))))
+
+(ert-deftest test-planner-views-weekly-summary-ended-week-ignores-rebase ()
+  "A finished week keeps its planned total after a recalculation from
+progress; only the current and future weeks follow the rebased plan."
+  (test-views--on "2026-11-09"
+    (let* ((plan (test-views--plan))
+           (before (progn
+                     ;; As before any real rebase: past days keep their goals.
+                     (org-scribe-planner--lock-past-goals plan)
+                     (org-scribe-planner--weekly-summary plan))))
+      (setf (org-scribe-plan-schedule-adjustment plan) 3000)
+      (let ((after (org-scribe-planner--weekly-summary plan)))
+        ;; Week 2 (Nov 2-8) is over: unchanged by the adjustment.
+        (should (= (plist-get (nth 1 before) :planned-total)
+                   (plist-get (nth 1 after) :planned-total)))
+        ;; Week 3 is under way: it follows the rebased plan (through
+        ;; yesterday, all locked days, so shifted by the adjustment).
+        (should (= (- (plist-get (nth 2 before) :planned-total) 3000)
+                   (plist-get (nth 2 after) :planned-total)))))))
 
 (ert-deftest test-planner-views-goal-free-week-has-no-mark ()
   "A week with no goal gets no ✓ ~ ✗."
