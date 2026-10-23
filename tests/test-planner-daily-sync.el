@@ -55,6 +55,19 @@ Cleans up the temp file unconditionally."
              ,@body))
        (ignore-errors (delete-file ,file-var)))))
 
+(ert-deftest test-planner-daily-sync-nothing-recorded-when-disabled ()
+  "With the planner disabled for the project (gate `no'), a count leaves the
+ledger alone; disabling used to stop the mode line but not the ledger."
+  (test-daily-sync--with-plan plan file today-cell
+    (setcar today-cell "2026-06-28")
+    (cl-letf (((symbol-function 'org-scribe-planner-gate) (lambda (&rest _) 'no)))
+      (org-scribe-planner-record-total 1000))
+    (should-not (org-scribe-plan-daily-word-counts org-scribe-planner--current-plan))
+    (cl-letf (((symbol-function 'org-scribe-planner-gate) (lambda (&rest _) 'yes)))
+      (org-scribe-planner-record-total 1000))
+    (should (assoc "2026-06-28" (org-scribe-plan-daily-word-counts
+                                 org-scribe-planner--current-plan)))))
+
 ;;; First call records the cumulative total as-is
 
 (ert-deftest test-planner-daily-sync-first-call-records-cumulative-total ()

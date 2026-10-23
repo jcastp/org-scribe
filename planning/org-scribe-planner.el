@@ -4929,10 +4929,14 @@ No-op when `org-scribe-planner-auto-push-wordcount' or
 plan for the current project, when the active plan belongs to a
 different project than the current manuscript and no matching plan can
 be found for this project (M9 — prevents cross-project data corruption
-instead of silently recording into the wrong plan), or when TOTAL is
-not positive."
+instead of silently recording into the wrong plan), when TOTAL is not
+positive, or when the planner is disabled for the current project (gate
+`no', see `org-scribe-planner-gate'): disabling it used to stop the mode
+line and the health section but not the ledger, which kept rewriting
+plan.org on every count."
   (when (and org-scribe-planner-auto-push-wordcount
-             org-scribe-planner-auto-track-daily)
+             org-scribe-planner-auto-track-daily
+             (not (eq (org-scribe-planner-gate) 'no)))
     (unless (and org-scribe-planner--current-plan
                  org-scribe-planner--current-plan-file)
       (org-scribe-planner--auto-load-plan))
