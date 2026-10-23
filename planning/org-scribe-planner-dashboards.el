@@ -480,9 +480,15 @@ beginning, and displayed after BODY executes."
 ;;; Burndown Chart (ASCII)
 
 (defun org-scribe-planner--scale-to-height (value max-value height)
-  "Scale VALUE (0 to MAX-VALUE) to chart HEIGHT."
+  "Scale VALUE (0 to MAX-VALUE) to a row of a chart HEIGHT rows tall.
+Row 0 is the bottom row, so a higher VALUE gives a higher row; the result
+is clamped to the canvas.  This used to return the row counted from the
+top, while `org-scribe-planner--draw-ascii-burndown' prints its last row
+first, so the two inversions drew the chart upside down, and a VALUE of 0
+fell outside the canvas."
   (if (and (> max-value 0) (> height 0))
-      (round (/ (* (- max-value value) height) (float max-value)))
+      (max 0 (min (1- height)
+                  (round (/ (* value (1- height)) (float max-value)))))
     0))
 
 (defun org-scribe-planner--replace-char-at (string pos char)
@@ -560,9 +566,11 @@ WIDTH and HEIGHT are chart dimensions, MAX-WORDS is the scale maximum."
               (when (numberp actual-words)
                 (setq cumulative-actual actual-words))
 
+              ;; No actual line in the future: nothing is known there.
               (push (list :date date
                          :ideal ideal-remaining
-                         :actual (- total cumulative-actual))
+                         :actual (unless (string< (org-scribe-planner--get-today-date) date)
+                                   (- total cumulative-actual)))
                     data-points))))
 
         (setq data-points (nreverse data-points))

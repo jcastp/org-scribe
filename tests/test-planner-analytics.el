@@ -192,6 +192,26 @@ Regression: the average divided by the days logged only (6), giving 950."
       (with-current-buffer "*Velocity Statistics*"
         (should (string-match-p "Days written: +6 of 8 writing days" (buffer-string)))))))
 
+(ert-deftest test-planner-analytics-burndown-is-drawn-the-right-way-up ()
+  "Words remaining fall from the top-left to the bottom-right.
+The scale and the renderer both inverted the rows, so the ideal line rose
+instead of falling, and a value of 0 landed outside the canvas."
+  (should (= 9 (org-scribe-planner--scale-to-height 100 100 10)))
+  (should (= 0 (org-scribe-planner--scale-to-height 0 100 10)))
+  (should (= 0 (org-scribe-planner--scale-to-height -50 100 10)))
+  (let ((rows (split-string
+               (with-temp-buffer
+                 (org-scribe-planner--draw-ascii-burndown
+                  (list (list :ideal 100 :actual nil)
+                        (list :ideal 50 :actual nil)
+                        (list :ideal 0 :actual nil))
+                  3 3 100)
+                 (buffer-string))
+               "\n" t)))
+    (should (equal "│-  │" (nth 0 rows)))
+    (should (equal "│ - │" (nth 1 rows)))
+    (should (equal "│  -│" (nth 2 rows)))))
+
 (ert-deftest test-planner-analytics-multi-metric-no-projection-on-day-one ()
   "Only today's partial entry exists: no BEHIND SCHEDULE projection is shown."
   (test-analytics--on "2026-11-01"
