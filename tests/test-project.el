@@ -385,9 +385,20 @@ report counted the act as a chapter."
   "Point ends on the new scene's :PoV: line wherever the scene went."
   (test-project--in-outline "with some"
     (org-scribe-insert-scene "Interrupted")
-    (should (string-match-p "^:PoV:$" (buffer-substring (line-beginning-position)
-                                                         (line-end-position))))
+    (should (string-match-p "^:PoV: $" (buffer-substring (line-beginning-position)
+                                                          (line-end-position))))
     (should (equal "Interrupted" (org-get-heading t t t t)))))
+
+(ert-deftest test-insert-scene-and-chapter-a-typed-pov-is-read ()
+  "A name typed where the cursor is left becomes the PoV.
+With no space after \":PoV:\" the line read \":PoV:Xoán\", which Org does
+not parse as a property, so the PoV was silently empty."
+  (dolist (insert-fn (list (lambda () (org-scribe-insert-scene "Next"))
+                           (lambda () (org-scribe-insert-chapter "Coda"))))
+    (test-project--in-outline "Text of C"
+      (funcall insert-fn)
+      (insert "Xoán")
+      (should (equal "Xoán" (org-entry-get nil "PoV"))))))
 
 (ert-deftest test-insert-chapter-from-inside-a-scene-goes-after-that-chapter ()
   "A chapter added from inside Scene B follows Chapter 1, not Scene B's prose."

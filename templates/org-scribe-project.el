@@ -655,6 +655,10 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
     (goto-char start-pos)
     (forward-line 2)  ; Move to PoV line
     (end-of-line)     ; Move to end of line (after :PoV:)
+    ;; Org needs whitespace between a property name and its value: a name
+    ;; typed straight after ":PoV:" makes ":PoV:Xoán", which is not a
+    ;; property at all, so the PoV was silently lost.
+    (insert " ")
     ;; The new heading may sit inside a folded chapter or act.
     (org-fold-show-context)))
 
@@ -723,6 +727,7 @@ collide with the project's own scene level."
     (goto-char start-pos)
     (forward-line 8)
     (end-of-line)
+    (insert " ")  ; see `org-scribe--insert-scene-template'
     (org-fold-show-context)))
 
 ;;; Project Navigation
