@@ -1025,6 +1025,38 @@ be typable, and alternatives would make the first one the default."
                      (org-scribe-test--fill-template template-string "-1")
                      "\n")))))
 
+(ert-deftest test-short-story-character-capture-matches-template ()
+  "In a short-story project a captured character gets the template's own
+profile, not the novel ficha -- one notes file, one profile shape."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (dolist (lang '(en es))
+      (let* ((template (nth 4 (car (org-scribe-character-capture-templates lang))))
+             (filled (org-scribe-test--fill-template template "")))
+        ;; RET takes the first alternative: it must not be Protagonist,
+        ;; or every capture after the first mints another one.
+        (should (string-match-p ":Role: %^{[^|}]+|Supporting|" template))
+        (should (string-match-p "^:Role: " filled))
+        (should (string-match-p "^:Gender:$" filled))
+        (should (string-match-p (if (eq lang 'es) "^- Personalidad ::" "^- Personality ::")
+                                filled))
+        (should-not (string-match-p "Ghost\\|Fantasma\\|Hélice\\|:Stance:\\|:Weight:" filled))))))
+
+(ert-deftest test-short-story-location-capture-matches-template ()
+  "In a short-story project a captured location gets the template's own
+profile (Description / Important details / Atmosphere), not the Aspects."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (let ((filled (org-scribe-test--fill-template
+                   (nth 4 (car (org-scribe-location-capture-templates 'en))) "")))
+      (should (string-match-p "^:Time-period:$" filled))
+      (should (string-match-p "^- Atmosphere ::$" filled))
+      (should-not (string-match-p ":Echo:\\|Hazard" filled)))))
+
+(ert-deftest test-novel-character-capture-keeps-the-ficha ()
+  "The novel profile is unchanged."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'novel)))
+    (should (string-match-p ":Stance:"
+                            (nth 4 (car (org-scribe-character-capture-templates 'en)))))))
+
 (ert-deftest test-plot-thread-template-prompts-for-weight ()
   "The plot-thread capture asks for Weight and files the answer."
   (let ((template-string (nth 4 (car (org-scribe-plot-thread-capture-templates 'en)))))

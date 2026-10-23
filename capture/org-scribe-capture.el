@@ -435,13 +435,34 @@ renaming a character later never unlinks them.
 Built with `concat' rather than one `format' with forty positional
 arguments: the previous shape made every field addition a re-count of the
 argument list, and a mismatch produced a plausible-looking template with
-the labels silently shifted by one."
-  (let* ((org-scribe-message-language (or language (org-scribe-project-language))))
+the labels silently shifted by one.
+
+In a short-story project the profile is the short-story template's own
+(Personality, Goal, Conflict, Key trait, Background): a novel ficha
+filed into the same notes file as the template's characters gave it two
+incompatible profile shapes."
+  (let* ((org-scribe-message-language (or language (org-scribe-project-language)))
+         (short-story (eq (org-scribe-project-type) 'short-story)))
     (cl-flet ((m (key) (org-scribe-msg key)))
       `(("c" ,(m 'capture-char-name) entry
          (file+function org-scribe-capture-character-file
                         org-scribe--capture-goto-characters-section)
-         ,(concat
+         ,(if short-story
+              (concat
+               "* %^{" (m 'capture-char-name-prompt) "}\n"
+               ":PROPERTIES:\n"
+               ":ID: %(org-id-new)\n"
+               ":Role: %^{" (m 'capture-ss-char-role-prompt) "}\n"
+               ":Age: %^{" (m 'capture-char-age-prompt) "}\n"
+               ":Gender:\n"
+               ":RelationshipsData:\n"
+               ":END:\n\n"
+               "- " (m 'capture-ss-personality) " %?\n"
+               "- " (m 'capture-ss-goal) "\n"
+               "- " (m 'capture-ss-conflict) "\n"
+               "- " (m 'capture-ss-trait) "\n"
+               "- " (m 'capture-ss-background) "\n")
+          (concat
            "* %^{" (m 'capture-char-name-prompt) "}\n"
            ":PROPERTIES:\n"
            ":ID: %(org-id-new)\n"
@@ -494,7 +515,7 @@ the labels silently shifted by one."
            "# " (m 'capture-char-milestones-hint) "\n\n"
            (m 'capture-char-milestone-header) "\n"
            "|---|\n\n"
-           "** " (m 'capture-char-notes) "\n")
+           "** " (m 'capture-char-notes) "\n"))
          :empty-lines 1)))))
 
 (defun org-scribe-location-capture-templates (&optional language)
@@ -504,13 +525,29 @@ LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
 Files the method's four setting Aspects — Echo, Hazard, Character and
 Symbol — rather than the gazetteer fields (climate, population, terrain)
 of the previous model.  A setting with no Aspect is scenery, and Pass 5
-of the revision marks scenery for cutting."
-  (let* ((org-scribe-message-language (or language (org-scribe-project-language))))
+of the revision marks scenery for cutting.
+
+In a short-story project the profile is the short-story template's own
+\(Description, Important details, Atmosphere), for the same reason as in
+`org-scribe-character-capture-templates'."
+  (let* ((org-scribe-message-language (or language (org-scribe-project-language)))
+         (short-story (eq (org-scribe-project-type) 'short-story)))
     (cl-flet ((m (key) (org-scribe-msg key)))
       `(("l" ,(m 'capture-loc-name) entry
          (file+function org-scribe-capture-location-file
                         org-scribe--capture-goto-setting-section)
-         ,(concat
+         ,(if short-story
+              (concat
+               "* %^{" (m 'capture-loc-name-prompt) "}\n"
+               ":PROPERTIES:\n"
+               ":ID: %(org-id-new)\n"
+               ":Type: %^{" (m 'capture-loc-type-prompt) "}\n"
+               ":Time-period:\n"
+               ":END:\n\n"
+               "- " (m 'capture-ss-loc-description) " %?\n"
+               "- " (m 'capture-ss-loc-details) "\n"
+               "- " (m 'capture-ss-loc-atmosphere) "\n")
+          (concat
            "* %^{" (m 'capture-loc-name-prompt) "}\n"
            ":PROPERTIES:\n"
            ":ID: %(org-id-new)\n"
@@ -530,7 +567,7 @@ of the revision marks scenery for cutting."
            "# " (m 'capture-loc-general-description-hint) "\n\n"
            "%?\n\n"
            "** " (m 'capture-loc-scenes-here) "\n\n"
-           "** " (m 'capture-loc-notes) "\n")
+           "** " (m 'capture-loc-notes) "\n"))
          :empty-lines 1)))))
 
 (defun org-scribe-object-capture-templates (&optional language)
