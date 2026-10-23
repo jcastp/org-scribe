@@ -819,7 +819,10 @@ visual signal that a break happened."
           (should (string-match-p "class=\"org-scribe-scene-break\"" body))
           (should (string-match-p "⁂" body))
           (should (string-match-p "Chapter 1" body))
-          (should (string-match-p "door creaked open" body)))))))
+          (should (string-match-p "door creaked open" body))
+          ;; ox-html's footer ("Created …", a W3C "Validate" link) used to
+          ;; be printed at the end of the ebook.
+          (should-not (string-match-p "postamble\\|validator\\.w3\\.org" body)))))))
 
 (ert-deftest test-compile-epub-scene-break-class-is-not-corrupted ()
   "Regression test for a real bug found while building this: the CSS

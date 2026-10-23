@@ -77,6 +77,9 @@
 (declare-function org-scribe--project-marker-get "org-scribe-core" (root key))
 (declare-function org-scribe-project-levels "org-scribe-core" (&optional type))
 (declare-function org-scribe-lang-all "org-scribe-lang" (section key))
+;; Let-bound around the EPUB export (see `org-scribe--compile-with-epub-style');
+;; declared special so the binding is not compiled as a dead lexical one.
+(defvar org-html-postamble)
 
 ;;; Manuscript Resolution
 
@@ -915,7 +918,10 @@ removed and the buffer's modified flag restored: nothing reaches disk."
        (progn ,@body)
      (let ((line (format "#+EPUBSTYLE: %s\n" org-scribe--compile-epub-css))
            (modified (buffer-modified-p))
-           (start nil))
+           (start nil)
+           ;; ox-epub renders through ox-html, whose footer ("Created …"
+           ;; and a link to the W3C validator) ended up in the ebook.
+           (org-html-postamble nil))
        (save-excursion
          (save-restriction
            (widen)
