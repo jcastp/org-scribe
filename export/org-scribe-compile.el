@@ -224,6 +224,14 @@ real break element."
       (replace-regexp-in-string edge "" body)
       t t))))
 
+(defvar org-scribe--compile-plain-links nil
+  "Non-nil means every link becomes plain text, web and mail links too.
+Bound by `org-scribe-compile-normalize' for the `shunn' style -- a
+submission manuscript carries no links -- and by
+`org-scribe--compile-export' for `txt', which cannot make a link
+clickable and instead appended the URL after the text (in a Shunn txt,
+after the END marker).  See `org-scribe--compile-link-replacement'.")
+
 (defun org-scribe--compile-link-replacement (link)
   "Return the plain text LINK becomes in the manuscript, or nil to keep it.
 A link into the writer's own notes -- an `id:' link to a character, a
@@ -232,18 +240,24 @@ nothing to a reader: kept, the txt backend appended \"See file
 ../objects/characters.org\" after it, md pointed at a file that does not
 exist, and one whose target had been deleted aborted the whole compile
 with Org's \"Unable to resolve link\".  Such a link becomes its
-description.  Web and mail links are kept, and so is a `file:' link
-with no description to an image, which Org renders as an inline image.
+description.  Web and mail links are kept too unless
+`org-scribe--compile-plain-links' is non-nil, in which case they become
+their description, or their address when they have none.  A `file:' link
+with no description to an image is always kept: Org renders it as an
+inline image, not as a link.
 Must be called in the buffer LINK was parsed from."
   (let ((type (org-element-property :type link))
         (path (org-element-property :path link))
         (cbeg (org-element-property :contents-begin link))
         (cend (org-element-property :contents-end link)))
-    (when (or (member type '("id" "fuzzy" "custom-id" "coderef"))
-              (and (equal type "file")
-                   (or cbeg (not (org-file-image-p path)))))
+    (when (if (equal type "file")
+              (or cbeg (not (org-file-image-p path)))
+            (or org-scribe--compile-plain-links
+                (member type '("id" "fuzzy" "custom-id" "coderef"))))
       (cond
        (cbeg (buffer-substring-no-properties cbeg cend))
+       ((not (member type '("id" "fuzzy" "custom-id" "coderef" "file")))
+        (org-element-property :raw-link link))
        ((equal type "id")
         (or (org-scribe--compile-id-heading path) path))
        ((equal type "fuzzy") (string-remove-prefix "*" path))
@@ -256,6 +270,23 @@ Must be called in the buffer LINK was parsed from."
     (prog1 (with-current-buffer (marker-buffer marker)
              (org-with-point-at marker (org-get-heading t t t t)))
       (set-marker marker nil))))
+
+(defun org-scribe--compile-plain-links-in-buffer ()
+  "Replace every link in the current buffer with its plain text.
+Used on an in-memory copy of the intermediate for `txt' output, with
+`org-scribe--compile-plain-links' bound; see
+`org-scribe--compile-link-replacement'.  Links are replaced from the
+end of the buffer so earlier positions stay valid."
+  (let ((links (org-element-map (org-element-parse-buffer) 'link #'identity nil nil 'link)))
+    (dolist (link (sort links (lambda (a b) (> (org-element-property :begin a)
+                                               (org-element-property :begin b)))))
+      (when-let* ((text (org-scribe--compile-link-replacement link)))
+        (let ((beg (org-element-property :begin link))
+              (end (- (org-element-property :end link)
+                      (or (org-element-property :post-blank link) 0))))
+          (delete-region beg end)
+          (goto-char beg)
+          (insert text))))))
 
 (defun org-scribe--compile-element-text (element)
   "Return ELEMENT's buffer text with links into the notes made plain.
@@ -584,7 +615,8 @@ which is the useful behavior when checking a draft."
     (unwind-protect
         (with-current-buffer buffer
           (org-with-wide-buffer
-           (let* ((levels (org-scribe--compile-levels-for (org-scribe-project-type)))
+           (let* ((org-scribe--compile-plain-links (eq style 'shunn))
+                  (levels (org-scribe--compile-levels-for (org-scribe-project-type)))
                   (blocks (org-scribe--compile-blocks (org-element-parse-buffer) levels)))
              (cons blocks (org-scribe--compile-to-org
                            blocks (org-scribe--compile-keywords) style root format)))))
@@ -945,7 +977,18 @@ it once the prompt was answered."
               ;; back (and shown to the writer) points nowhere.
               (expand-file-name (funcall exporter)
                                 (file-name-directory intermediate))
-            (org-export-to-file (plist-get spec :backend) output))))
+            (if (eq (plist-get spec :backend) 'ascii)
+                ;; Plain text cannot make a link clickable, so links go
+                ;; in an in-memory copy; the intermediate on disk is
+                ;; shared with every other format and stays as it is.
+                (let ((text (buffer-string)))
+                  (with-temp-buffer
+                    (insert text)
+                    (delay-mode-hooks (org-mode))
+                    (let ((org-scribe--compile-plain-links t))
+                      (org-scribe--compile-plain-links-in-buffer))
+                    (org-export-to-file 'ascii output)))
+              (org-export-to-file (plist-get spec :backend) output)))))
       (unless existing (kill-buffer buffer)))))
 
 ;;; Command

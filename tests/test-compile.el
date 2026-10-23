@@ -318,6 +318,39 @@ business and is kept."
                out))
       (should-not (string-match-p "id:\\|file:\\|\\*Lamp" out)))))
 
+(defconst org-scribe-compile-test--web-link-novel
+  (concat "#+TITLE: T\n\n* Act I :ignore:\n** One :ignore:\n*** Scene 1 :ignore:\n"
+          "She walked past [[https://example.com/pier][the pier]] and "
+          "[[https://example.com/bare]] at dawn.\n")
+  "A manuscript with a described and an undescribed web link.")
+
+(ert-deftest test-compile-clean-keeps-web-links-except-in-txt ()
+  "A `clean' compile keeps web links in formats that can make them
+clickable (md here), and makes them plain text in txt, which otherwise
+appended the URL after the paragraph."
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--web-link-novel
+    (let ((md (org-scribe-compile-test--read (org-scribe-compile 'clean 'md))))
+      (should (string-match-p "\\[the pier\\](https://example.com/pier)" md)))
+    (let ((txt (org-scribe-compile-test--read (org-scribe-compile 'clean 'txt))))
+      ;; An address with no description stays the address; ox-ascii
+      ;; brackets a bare URL as <...>, the plain-text convention.
+      (should (string-match-p "past the pier and <?https://example.com/bare>? at dawn" txt))
+      (should-not (string-match-p "example.com/pier\\|\\[the pier\\]" txt)))
+    ;; The txt pass worked on a copy: the shared intermediate keeps the link.
+    (should (string-match-p "\\[\\[https://example.com/pier\\]\\[the pier\\]\\]"
+                            (org-scribe-compile-test--intermediate root "novel")))))
+
+(ert-deftest test-compile-shunn-makes-every-link-plain-text ()
+  "A submission manuscript carries no links, web links included."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novel.org"
+        org-scribe-compile-test--web-link-novel
+      (org-scribe-compile 'shunn 'org)
+      (let ((out (org-scribe-compile-test--intermediate root "novel" "shunn")))
+        (should (string-match-p "past the pier and https://example.com/bare at dawn" out))
+        (should-not (string-match-p "\\[\\[" out))))))
+
 (ert-deftest test-compile-broken-link-does-not-abort ()
   "A link whose target no longer exists must not abort a txt or md
 compile with Org's \"Unable to resolve link\"."
