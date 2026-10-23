@@ -162,6 +162,38 @@ and never calls `org-scribe-planner-new-plan'."
           (should (eq 'no (org-scribe-planner-gate project-dir))))
       (delete-directory base-dir t))))
 
+;;; Onboarding opens the gate
+
+(ert-deftest test-planner-gate-onboarding-writes-yes ()
+  "Onboarding an existing project writes \"# Planner: yes\".
+It used to leave the gate undecided, so in a fresh session the planner
+was never loaded and word counts silently missed the ledger."
+  (test-planner-gate--with-project root
+    (let ((default-directory (file-name-as-directory root))
+          (org-scribe-planner-after-plan-load-hook nil)
+          (org-scribe-planner--current-plan nil)
+          (org-scribe-planner--current-plan-file nil)
+          (org-scribe-planner-wordcount-function (lambda () 20000))
+          (numbers (list 30000 1000)))
+      (org-scribe-project-type-cache-clear)
+      (cl-letf (((symbol-function 'org-scribe-planner--save-plan) #'ignore)
+                ((symbol-function 'org-scribe-planner-show-calendar) #'ignore)
+                ((symbol-function 'org-scribe-planner--read-positive-number)
+                 (lambda (&rest _) (pop numbers)))
+                ((symbol-function 'org-scribe-planner--read-non-negative-number)
+                 (lambda (&rest _) 0))
+                ((symbol-function 'read-string) (lambda (&rest _) "P"))
+                ((symbol-function 'org-scribe-planner--read-date)
+                 (lambda (_p &optional default _a) default))
+                ((symbol-function 'completing-read)
+                 (lambda (&rest _) "Daily words → calculate end date"))
+                ((symbol-function 'y-or-n-p) (lambda (&rest _) nil))
+                ((symbol-function 'read-file-name)
+                 (lambda (&rest _) (expand-file-name "plan.org" root))))
+        (org-scribe-planner-onboard-existing-project))
+      (org-scribe-project-type-cache-clear)
+      (should (eq 'yes (org-scribe-planner-gate root))))))
+
 ;;; Auto-load no-ops when gated off
 
 (ert-deftest test-planner-gate-auto-load-noop-when-gate-no ()

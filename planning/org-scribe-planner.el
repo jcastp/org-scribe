@@ -2187,6 +2187,13 @@ the *remaining* words over the *remaining* working days, not the total."
             (org-scribe-planner--save-plan plan save-location)
             (setq org-scribe-planner--current-plan plan)
             (setq org-scribe-planner--current-plan-file save-location)
+            ;; Open the project's gate, as `org-scribe-plan' and the offer
+            ;; on project creation do.  Left undecided, the planner never
+            ;; loaded in a fresh session, and word counts silently missed
+            ;; the ledger.
+            (when (and (featurep 'org-scribe)
+                       (not (eq (org-scribe-project-type) 'unknown)))
+              (org-scribe--project-marker-set (org-scribe-project-root) "Planner" "yes"))
             (run-hook-with-args 'org-scribe-planner-after-plan-load-hook
                                 plan save-location)
             (message "Plan ready — %d written, %d to go at %d words/day over %d days."
