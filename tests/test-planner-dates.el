@@ -61,4 +61,30 @@
   (should (org-scribe-planner--validate-date "2024-04-30"))
   (should-error (org-scribe-planner--validate-date "2024-04-31"))) ; April only has 30 days
 
+;;; Choice prompts: RET never ends in a raw "Invalid choice"
+
+(ert-deftest test-planner-choose-ret-takes-the-default ()
+  "RET on a choice prompt with a default returns the default."
+  (cl-letf (((symbol-function 'completing-read)
+             (lambda (_p _c _pred _req _i _h default &rest _) (or default ""))))
+    (should (equal "Done" (org-scribe-planner--choose "Q: " '("Add" "Done") "Done")))))
+
+(ert-deftest test-planner-choose-ret-without-default-asks-again ()
+  "RET on a choice prompt without a default asks again instead of returning \"\"."
+  (let ((answers (list "" "" "Weekends"))
+        (asked 0))
+    (cl-letf (((symbol-function 'completing-read)
+               (lambda (&rest _) (cl-incf asked) (pop answers))))
+      (should (equal "Weekends" (org-scribe-planner--choose "Q: " '("Weekends"))))
+      (should (= 3 asked)))))
+
+(ert-deftest test-planner-read-days-ret-enters-a-number ()
+  "RET at \"How do you want to enter the days?\" reads a number of days.
+It used to fail with \"Invalid choice: \" and abort the wizard -- most
+often right after choosing a preset, which had filled in the days."
+  (cl-letf (((symbol-function 'completing-read)
+             (lambda (_p _c _pred _req _i _h default &rest _) (or default "")))
+            ((symbol-function 'read-number) (lambda (_p &optional default) default)))
+    (should (= 60 (org-scribe-planner--read-days "Days available: " 60)))))
+
 ;;; test-date-validation.el ends here

@@ -2297,7 +2297,7 @@ Shows progress, velocity, and performance dashboards side by side."
 (defun org-scribe-planner-dashboards-menu ()
   "Show dashboard selection menu."
   (interactive)
-  (let ((choice (completing-read
+  (let ((choice (org-scribe-planner--choose
                  "Select dashboard: "
                  '("Multi-Metric Dashboard"
                    "Progress Dashboard"
@@ -2312,8 +2312,7 @@ Shows progress, velocity, and performance dashboards side by side."
                    "Weekly Summary"
                    "Month Grid"
                    "Split Dashboard View"
-                   "Show All Dashboards")
-                 nil t)))
+                   "Show All Dashboards"))))
     (pcase choice
       ("Multi-Metric Dashboard" (org-scribe-planner-show-multi-metric-dashboard))
       ("Progress Dashboard" (org-scribe-planner-show-progress-dashboard))

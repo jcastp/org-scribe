@@ -912,6 +912,17 @@ Returns nil if user cancels the prompt."
 
 ;;; Input Validation Helpers
 
+(defun org-scribe-planner--choose (prompt choices &optional default)
+  "Read one of CHOICES with PROMPT, never returning an empty answer.
+RET on an empty input picks DEFAULT when there is one, and otherwise asks
+again.  A plain `completing-read' with REQUIRE-MATCH returns \"\" for an
+empty input, which every caller here then failed on -- most with a raw
+\"Invalid choice: \" error that threw away the answers typed so far."
+  (let ((choice ""))
+    (while (string-empty-p choice)
+      (setq choice (completing-read prompt choices nil t nil nil default)))
+    choice))
+
 (defun org-scribe-planner--read-positive-number (prompt &optional default)
   "Read a positive number from the user with PROMPT.
 Optional DEFAULT provides a default value.
@@ -945,11 +956,11 @@ Optional DEFAULT provides a default value when entering days directly.
 Returns either:
   - An integer (when entering days directly)
   - A plist with :days, :start-date, :end-date (when entering dates)"
-  (let ((method (completing-read
+  (let ((method (org-scribe-planner--choose
                  "How do you want to enter the days? "
                  '("Enter number of days"
                    "Enter start and end dates")
-                 nil t)))
+                 "Enter number of days")))
     (cond
      ((string-match-p "number of days" method)
       (org-scribe-planner--read-positive-number prompt default))
@@ -1852,12 +1863,12 @@ that has not yet been asked, so no prompt appears in that case either."
                   (org-scribe-planner--read-positive-number
                    "Words per day you can write: " (plist-get settings :daily)))))
     ;; Ask which variables to set and read them directly into the plan
-    (let ((var-choice (completing-read
-                      "What do you know? "
-                      '("Total words + Days → Calculate daily words"
-                        "Total words + Daily words → Calculate days needed"
-                        "Daily words + Days → Calculate total words")
-                      nil t)))
+    (let ((var-choice (org-scribe-planner--choose
+                       "What do you know? "
+                       '("Total words + Days → Calculate daily words"
+                         "Total words + Daily words → Calculate days needed"
+                         "Daily words + Days → Calculate total words")
+                       "Total words + Days → Calculate daily words")))
 
       (cond
        ;; Total words + Days → Calculate daily words
@@ -2163,18 +2174,18 @@ the *remaining* words over the *remaining* working days, not the total."
         (continue t))
 
     (while continue
-      (let ((method (completing-read
-                    "Configure spare days: "
-                    '("Add: Specific date"
-                      "Add: Date range"
-                      "Add: All weekends"
-                      "Add: All Saturdays"
-                      "Add: All Sundays"
-                      "Remove: Specific date"
-                      "Remove: All spare days"
-                      "List current spare days"
-                      "Done")
-                    nil t)))
+      (let ((method (org-scribe-planner--choose
+                     "Configure spare days: "
+                     '("Add: Specific date"
+                       "Add: Date range"
+                       "Add: All weekends"
+                       "Add: All Saturdays"
+                       "Add: All Sundays"
+                       "Remove: Specific date"
+                       "Remove: All spare days"
+                       "List current spare days"
+                       "Done")
+                     "Done")))
         (cond
          ((equal method "Add: Specific date")
           (let ((date (org-scribe-planner--read-date "Enter date (YYYY-MM-DD)" nil t)))
@@ -2230,9 +2241,8 @@ the *remaining* words over the *remaining* working days, not the total."
          ((equal method "Remove: Specific date")
           (if (null spare-days)
               (message "No spare days to remove")
-            (let ((date (completing-read "Select date to remove: "
-                                        (sort (copy-sequence spare-days) #'string<)
-                                        nil t)))
+            (let ((date (org-scribe-planner--choose "Select date to remove: "
+                                                    (sort (copy-sequence spare-days) #'string<))))
               (when date
                 (setq spare-days (delete date spare-days))
                 (org-scribe-planner--remove-spare-day-note plan date)
@@ -4127,9 +4137,9 @@ today's goal isn't due until the day is over."
 
 (defun org-scribe-planner--read-pattern ()
   "Ask for a writing pattern and its intensity; return (PATTERN . CONFIG)."
-  (let* ((choice (completing-read
+  (let* ((choice (org-scribe-planner--choose
                   "Writing pattern: "
-                  (mapcar #'cdr org-scribe-planner--patterns) nil t))
+                  (mapcar #'cdr org-scribe-planner--patterns)))
          (pattern (car (rassoc choice org-scribe-planner--patterns))))
     (if (eq pattern 'flat)
         (cons 'flat nil)
@@ -4195,7 +4205,7 @@ keep their goals throughout."
           (finished nil))
      (unwind-protect
       (progn
-    (let ((choice (completing-read
+    (let ((choice (org-scribe-planner--choose
                    "What changed? "
                    '("Total words"
                      "Daily words"
@@ -4210,8 +4220,7 @@ keep their goals throughout."
                      "Day goals: clear from today on"
                      "Add/modify spare days"
                      "Remove spare days"
-                     "Clear all spare days")
-                   nil t)))
+                     "Clear all spare days"))))
       (pcase choice
         ("Total words"
          (let ((total (org-scribe-planner--read-positive-number
@@ -4257,12 +4266,11 @@ keep their goals throughout."
                       (org-scribe-planner--set-total-keeping-daily p daily))))))))
 
         ("Two values (third calculated)"
-         (let* ((third (completing-read
+         (let* ((third (org-scribe-planner--choose
                         "Calculate: "
                         '("Total words (from daily words × days)"
                           "Daily words (from total ÷ days)"
-                          "Days (from total ÷ daily words)")
-                        nil t))
+                          "Days (from total ÷ daily words)")))
                 (target (org-scribe-planner--copy-plan plan))
                 (change
                  (pcase third
@@ -4349,13 +4357,12 @@ keep their goals throughout."
                 (target (org-scribe-planner--copy-plan plan))
                 (typed (or (org-scribe-plan-outside-words plan) 0))
                 (files (org-scribe-plan-outside-files plan))
-                (action (completing-read
+                (action (org-scribe-planner--choose
                          (format "Words outside the manuscript (%s): "
                                  (org-scribe-planner--describe-outside plan base))
                          (append (list (format "Set the typed number (now %d)" typed)
                                        "Add a file")
-                                 (when files '("Stop counting a file")))
-                         nil t)))
+                                 (when files '("Stop counting a file"))))))
            (cond
             ((string-prefix-p "Set" action)
              (setf (org-scribe-plan-outside-words target)
@@ -4365,9 +4372,8 @@ keep their goals throughout."
              (unless (org-scribe-planner--add-outside-file target base)
                (user-error "No file added")))
             (t
-             (let ((path (completing-read "Stop counting: "
-                                          (mapcar (lambda (e) (plist-get e :path)) files)
-                                          nil t)))
+             (let ((path (org-scribe-planner--choose "Stop counting: "
+                                                     (mapcar (lambda (e) (plist-get e :path)) files))))
                (setf (org-scribe-plan-outside-files target)
                      (cl-remove path (org-scribe-plan-outside-files target)
                                 :key (lambda (e) (plist-get e :path)) :test #'equal)))))
@@ -4410,10 +4416,9 @@ keep their goals throughout."
 
         ("Weekends"
          (let* ((before (org-scribe-planner--copy-plan plan))
-                (mode (completing-read
+                (mode (org-scribe-planner--choose
                        "Weekends: "
-                       '("Same as other days" "A goal of their own" "No writing")
-                       nil t)))
+                       '("Same as other days" "A goal of their own" "No writing"))))
            (pcase mode
              ("Same as other days"
               (setf (org-scribe-plan-weekend-mode plan) 'same))
@@ -4456,7 +4461,7 @@ keep their goals throughout."
                                     (mapcar #'car (org-scribe-plan-custom-goals plan)))))
            (if (null dates)
                (message "No day goals from today on to remove")
-             (let ((date (completing-read "Remove the goal of: " (sort dates #'string<) nil t))
+             (let ((date (org-scribe-planner--choose "Remove the goal of: " (sort dates #'string<)))
                    (before (org-scribe-planner--copy-plan plan)))
                (setf (org-scribe-plan-custom-goals plan)
                      (assoc-delete-all date (copy-tree (org-scribe-plan-custom-goals plan))))
@@ -4486,10 +4491,9 @@ keep their goals throughout."
          (if (null (org-scribe-plan-spare-days plan))
              (message "No spare days to remove")
            (let ((before (org-scribe-planner--copy-plan plan))
-                 (date (completing-read "Select date to remove: "
-                                        (sort (copy-sequence (org-scribe-plan-spare-days plan))
-                                              #'string<)
-                                        nil t)))
+                 (date (org-scribe-planner--choose "Select date to remove: "
+                                                   (sort (copy-sequence (org-scribe-plan-spare-days plan))
+                                                         #'string<))))
              (setf (org-scribe-plan-spare-days plan)
                    (remove date (org-scribe-plan-spare-days plan)))
              (org-scribe-planner--offer-adjustment plan before))))
