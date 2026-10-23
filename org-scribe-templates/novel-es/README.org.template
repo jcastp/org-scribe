@@ -24,10 +24,12 @@
 
 ** Estructura del Proyecto
 
-# Empieza por diseno.org: la puerta de salida y las doce preguntas del Núcleo.
-# Cuando las ocho casillas de la puerta estén marcadas, deja de planificar.
+# Empieza por diseno.org: abre con la puerta de salida, la única lista que
+# decide cuándo se deja de planificar, y sigue con el método de trama que
+# elegiste. Cuando todas las casillas de la puerta estén marcadas, deja de
+# planificar.
 
-- [[file:diseno.org][diseno.org]] - *Empieza aquí*: puerta de salida y Núcleo
+- [[file:diseno.org][diseno.org]] - *Empieza aquí*: puerta de salida y método de trama
 - [[file:novela.org][novela.org]] - Manuscrito principal con seguimiento de progreso
 - [[file:objetos/personajes.org][objetos/personajes.org]] - Fichas de personajes
 - [[file:objetos/trama.org][objetos/trama.org]] - Los trece irrenunciables y las líneas argumentales

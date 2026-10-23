@@ -742,6 +742,23 @@ design.org, exactly like the base Sistema set does."
                 (should (string-match-p "Diseño (La Matriz)" (buffer-string)))))
           (test-project--kill-file-buffer (expand-file-name "README.org" project-dir)))))))
 
+(ert-deftest test-create-novel-project-readme-fits-every-method ()
+  "The README is shared by every method, so it must not describe the
+Sistema's design file: the Hélice and Matriz gates have 6 and 7 boxes,
+and neither has a Core."
+  (dolist (lang '(en es))
+    (dolist (method '(helice matriz))
+      (test-project--with-temp-base-dir base-dir
+        (let ((project-dir (expand-file-name "Readme Check" base-dir)))
+          (org-scribe-create-novel-project base-dir "Readme Check" lang method)
+          (unwind-protect
+              (with-temp-buffer
+                (insert-file-contents (expand-file-name "README.org" project-dir))
+                (should-not (string-match-p
+                             "Core\\|Núcleo\\|twelve\\|doce\\|eight\\|ocho"
+                             (buffer-string))))
+            (test-project--kill-file-buffer (expand-file-name "README.org" project-dir))))))))
+
 (ert-deftest test-create-novel-project-helice-leaves-other-files-untouched ()
   "Choosing a method changes only the design file; novel.org and the
 objects/ files are the same as a Sistema project's — the hypothesis

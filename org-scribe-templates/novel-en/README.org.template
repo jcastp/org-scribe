@@ -24,10 +24,11 @@
 
 ** Project Structure
 
-# Start with design.org: the Starting Gate and the twelve questions of the
-# Core. When the gate's eight boxes are ticked, stop planning.
+# Start with design.org: it opens with the Starting Gate, the one checklist
+# that decides when planning stops, followed by the plotting method you
+# chose. When every box of the gate is ticked, stop planning.
 
-- [[file:design.org][design.org]] - *Start here*: Starting Gate and Core
+- [[file:design.org][design.org]] - *Start here*: Starting Gate and plotting method
 - [[file:novel.org][novel.org]] - Main manuscript file with progress tracking
 - [[file:objects/characters.org][objects/characters.org]] - Character profiles
 - [[file:objects/plot.org][objects/plot.org]] - The thirteen non-negotiables and the narrative lines
