@@ -84,6 +84,7 @@
 (declare-function org-scribe-setup-character-relationships "linking/org-scribe-character-relationships")
 ;; display toggles
 (declare-function org-scribe-column-view-toggle "linking/org-scribe-column-view")
+(declare-function org-scribe-column-view "linking/org-scribe-column-view")
 (declare-function org-scribe-overlays-mode "linking/org-scribe-overlays")
 ;; project health report
 (declare-function org-scribe-project-health "reporting/org-scribe-health")
@@ -140,7 +141,7 @@ _q_: Back to main menu    _Q_: Quit
   ;; Analysis and display
   ("t" org-scribe-plot-thread-report "plot report")
   ("S" org-scribe-plot-thread-stats "plot stats")
-  ("C" org-scribe-column-view-toggle "column view")
+  ("C" org-scribe-column-view "column view")
   ("T" org-scribe-overlays-mode "tooltips")
   ("q" hydra-org-scribe/body "back")
   ("Q" nil "quit"))

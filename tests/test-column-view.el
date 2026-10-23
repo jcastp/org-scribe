@@ -149,6 +149,24 @@
   (should-not (advice-member-p #'org-scribe--column-view-advice
                                'org-columns--displayed-value)))
 
+(ert-deftest test-column-view-command-opens-columns-with-stripping ()
+  "The hydra's column view key opens column view with stripping on, even
+after stripping was turned off -- it used to only toggle the stripping."
+  (org-scribe-column-view-disable)
+  (let ((opened nil)
+        (org-scribe-column-view-strip-links t))
+    (cl-letf (((symbol-function 'org-columns) (lambda (&rest _) (setq opened t))))
+      (org-scribe-column-view))
+    (should opened)
+    (should (advice-member-p #'org-scribe--column-view-advice
+                             'org-columns--displayed-value))))
+
+(ert-deftest test-column-view-hydra-key-opens-column-view ()
+  "F8 F8 L C runs `org-scribe-column-view', not the toggle."
+  (require 'org-scribe-hydra)
+  (should (eq 'org-scribe-column-view
+              (cadr (assoc "C" hydra-org-scribe-links/heads)))))
+
 ;;; Edge Case Tests
 
 (ert-deftest test-column-view-malformed-links ()

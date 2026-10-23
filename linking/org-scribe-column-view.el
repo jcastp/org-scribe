@@ -82,13 +82,16 @@ ORIGINAL-VALUE is the return value from the original function."
 
 ;;; Enable/Disable Functions
 
-(defun org-scribe-column-view-enable ()
+(defun org-scribe-column-view-enable (&optional quiet)
   "Enable ID link stripping in column view.
-Adds advice to `org-columns--displayed-value' to strip link syntax."
+Adds advice to `org-columns--displayed-value' to strip link syntax.
+With QUIET non-nil, say nothing: loading the module enables it, and a
+message at every startup was noise."
   (interactive)
   (advice-add 'org-columns--displayed-value :filter-return
               #'org-scribe--column-view-advice)
-  (message (org-scribe-msg 'msg-column-view-enabled)))
+  (unless quiet
+    (message (org-scribe-msg 'msg-column-view-enabled))))
 
 (defun org-scribe-column-view-disable ()
   "Disable ID link stripping in column view.
@@ -108,9 +111,25 @@ Removes advice from `org-columns--displayed-value'."
 
 ;;; Automatic Setup
 
+;;;###autoload
+(defun org-scribe-column-view ()
+  "Open Org column view, showing linked names without their link syntax.
+This is the hydra's column view key.  It used to run
+`org-scribe-column-view-toggle', which only switched the link
+stripping -- and, since loading the module had already switched it on,
+the first press turned it off.  Stripping is (re)enabled here unless
+`org-scribe-column-view-strip-links' is nil; toggling it stays available
+as `org-scribe-column-view-toggle'."
+  (interactive)
+  (when (and org-scribe-column-view-strip-links
+             (not (advice-member-p #'org-scribe--column-view-advice
+                                   'org-columns--displayed-value)))
+    (org-scribe-column-view-enable t))
+  (org-columns))
+
 ;; Enable by default when module is loaded
 (when org-scribe-column-view-strip-links
-  (org-scribe-column-view-enable))
+  (org-scribe-column-view-enable t))
 
 (provide 'org-scribe-column-view)
 
