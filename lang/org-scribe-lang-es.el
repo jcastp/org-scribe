@@ -122,6 +122,7 @@
      (dir-locals-not-in-project . "No se encuentra dentro de un proyecto de org-scribe")
      (scene-name-prompt . "Nombre de la escena: ")
      (chapter-name-prompt . "Nombre del capítulo: ")
+     (prompt-chapter-for-empty-act . "%s aún no tiene capítulos. Nombre del primero: ")
      (not-in-org-mode . "Este comando solo se puede usar en búferes de org-mode")
      (not-in-novel-project . "No se encuentra en un directorio de proyecto de novela")
      (insert-chapter-no-chapters . "Este tipo de proyecto no tiene nivel de capítulo; inserte una escena en su lugar")

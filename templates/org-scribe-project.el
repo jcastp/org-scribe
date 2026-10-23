@@ -567,6 +567,25 @@ the new heading goes at the start of the current line, as it always did."
       (forward-line 1)))
   (point))
 
+(defun org-scribe--chapterless-container-at-point ()
+  "Return the title of the act point is on when it has no chapter yet.
+That is: the nearest heading at or above point is above the project's
+chapter level (an act), is not apparatus (`noexport'), and has no
+chapter-level heading anywhere in its subtree.  Return nil otherwise,
+including in a project type with no chapter level (a short story) and
+before the first heading."
+  (when-let* ((chapter-level (org-scribe-chapter-level))
+              ((not (org-before-first-heading-p))))
+    (save-excursion
+      (org-back-to-heading t)
+      (when (and (< (org-current-level) chapter-level)
+                 (not (member "noexport" (org-get-tags))))
+        (let ((title (org-get-heading t t t t))
+              (end (save-excursion (org-end-of-subtree t t))))
+          (unless (re-search-forward (format "^\\*\\{%d\\}[ \t]" chapter-level)
+                                     end t)
+            title))))))
+
 ;;;###autoload
 (defun org-scribe-insert-scene (scene-name)
   "Insert a scene template with SCENE-NAME after the scene point is in.
@@ -574,7 +593,10 @@ Point may be anywhere: in the middle of prose, on a scene or chapter
 heading, in a scene's drawer.  The scene goes at the end of the scene
 point is in, or at the end of the chapter point is on (see
 `org-scribe--goto-insertion-point'); before the first heading it goes at
-the start of the current line.
+the start of the current line.  With point on an act, the scene goes at
+the end of the act's last chapter; an act with no chapter yet gets one
+first (its name is asked for), since a scene directly under an act
+compiled as part of the previous act's last chapter.
 The template includes a TODO heading at the current project's scene
 level (see `org-scribe-scene-level'), tagged per
 `org-scribe-project-levels' `:scene-tag' when that project type tags its
@@ -592,7 +614,20 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
   (when (string-empty-p (string-trim scene-name))
     (setq scene-name (org-scribe-msg 'default-scene-name)))
 
-  ;; Define and insert template
+  (if-let* ((act (org-scribe--chapterless-container-at-point)))
+      ;; `org-scribe-insert-chapter' adds the chapter at the end of the
+      ;; act with a first scene, and leaves point on that scene's :PoV:
+      ;; line; the scene only needs the name the writer typed.
+      (progn
+        (org-scribe-insert-chapter
+         (read-string (org-scribe-msg 'prompt-chapter-for-empty-act act)))
+        (save-excursion
+          (org-back-to-heading t)
+          (org-edit-headline scene-name)))
+    (org-scribe--insert-scene-template scene-name)))
+
+(defun org-scribe--insert-scene-template (scene-name)
+  "Insert the scene template named SCENE-NAME; see `org-scribe-insert-scene'."
   (let* ((levels (org-scribe-project-levels))
          (stars (make-string (plist-get levels :scene) ?*))
          (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag)))
@@ -619,7 +654,9 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
     ;; tag, so this offset holds for every project type.
     (goto-char start-pos)
     (forward-line 2)  ; Move to PoV line
-    (end-of-line)))   ; Move to end of line (after :PoV:)
+    (end-of-line)     ; Move to end of line (after :PoV:)
+    ;; The new heading may sit inside a folded chapter or act.
+    (org-fold-show-context)))
 
 ;;;###autoload
 (defun org-scribe-insert-chapter (chapter-name)
@@ -685,7 +722,8 @@ collide with the project's own scene level."
     ;; regardless of project type.
     (goto-char start-pos)
     (forward-line 8)
-    (end-of-line)))
+    (end-of-line)
+    (org-fold-show-context)))
 
 ;;; Project Navigation
 

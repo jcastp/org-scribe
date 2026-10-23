@@ -343,6 +343,35 @@ previous chapter."
                      (3 . "Scene B") (2 . "Chapter 2") (3 . "Scene C")
                      (3 . "Added") (1 . "Act II"))))))
 
+(ert-deftest test-insert-scene-on-act-goes-in-its-last-chapter ()
+  "On an act that has chapters, the scene is its last chapter's last scene."
+  (test-project--in-outline "Act I"
+    (org-scribe-insert-scene "Added")
+    (should (equal (test-project--headings)
+                   '((1 . "Act I") (2 . "Chapter 1") (3 . "Scene A")
+                     (3 . "Scene B") (2 . "Chapter 2") (3 . "Scene C")
+                     (3 . "Added") (1 . "Act II"))))))
+
+(ert-deftest test-insert-scene-on-empty-act-creates-its-first-chapter ()
+  "On an act with no chapter, a chapter is created first, named by the
+writer, and the scene is its first scene.  A scene straight under the act
+compiled as part of the previous act's last chapter, and the health
+report counted the act as a chapter."
+  (let (prompt)
+    (cl-letf (((symbol-function 'read-string)
+               (lambda (p &rest _) (setq prompt p) "Chapter 3")))
+      (test-project--in-outline "Act II"
+        (org-scribe-insert-scene "The lamp goes out")
+        (should (string-match-p "Act II" prompt))
+        (should (equal (test-project--headings)
+                       '((1 . "Act I") (2 . "Chapter 1") (3 . "Scene A")
+                         (3 . "Scene B") (2 . "Chapter 2") (3 . "Scene C")
+                         (1 . "Act II") (2 . "Chapter 3")
+                         (3 . "The lamp goes out"))))
+        (should (string-match-p "^:PoV:" (buffer-substring (line-beginning-position)
+                                                            (line-end-position))))
+        (should (equal "The lamp goes out" (org-get-heading t t t t)))))))
+
 (ert-deftest test-insert-scene-after-the-scene-point-is-in ()
   "From inside Scene A's drawer or text, the new scene follows Scene A."
   (dolist (where '(":PoV:" "Second paragraph"))
