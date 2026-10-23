@@ -77,6 +77,7 @@
 (declare-function org-scribe--project-marker-get "org-scribe-core" (root key))
 (declare-function org-scribe-project-levels "org-scribe-core" (&optional type))
 (declare-function org-scribe-lang-all "org-scribe-lang" (section key))
+(declare-function org-scribe-project-language "org-scribe-core")
 ;; Let-bound around the EPUB export (see `org-scribe--compile-with-epub-style');
 ;; declared special so the binding is not compiled as a dead lexical one.
 (defvar org-html-postamble)
@@ -441,8 +442,19 @@ so they would overcount what the compiled document actually contains."
     total))
 
 (defun org-scribe--compile-round-wordcount (n)
-  "Round N to the nearest hundred, per Shunn format's word-count convention."
-  (* 100 (round n 100)))
+  "Round N to the nearest hundred, per Shunn format's word-count convention.
+A piece with any words at all reads at least 100: rounding a 37-word
+text gave \"about 0 words\"."
+  (if (> n 0)
+      (max 100 (* 100 (round n 100)))
+    0))
+
+(defun org-scribe--compile-shunn-msg (key &rest args)
+  "Return message KEY with ARGS in the project's language.
+The front matter is part of the manuscript, so it follows the language
+the manuscript is written in, not `org-scribe-message-language'."
+  (let ((org-scribe-message-language (org-scribe-project-language)))
+    (apply #'org-scribe-msg key args)))
 
 (defun org-scribe--compile-contact-list (value variable)
   "Return VALUE, the contents of VARIABLE, as a list of lines.
@@ -548,12 +560,14 @@ marker for the byline."
    (mapconcat #'identity (org-scribe--compile-shunn-contact-lines) "\n")
    "\n#+end_verse\n\n"
    "#+begin_center\n"
-   (format "about %d words" (org-scribe--compile-round-wordcount wordcount))
+   (org-scribe--compile-shunn-msg 'compile-shunn-wordcount
+                                  (org-scribe--compile-round-wordcount wordcount))
    "\n#+end_center\n\n"
    "#+begin_export latex\n\\thispagestyle{empty}\n#+end_export\n\n"
    "#+begin_center\n"
-   (or title "Untitled") "\n\n"
-   "by " (org-scribe--compile-shunn-byline root)
+   (or title (org-scribe--compile-shunn-msg 'compile-shunn-untitled)) "\n\n"
+   (org-scribe--compile-shunn-msg 'compile-shunn-byline
+                                  (org-scribe--compile-shunn-byline root))
    "\n#+end_center\n\n"))
 
 (defun org-scribe--compile-keyword-value (name keywords)
@@ -603,7 +617,8 @@ stylesheet line is added at export time, in memory only, by
         (`(,(or 'prose 'scene) . ,text) (insert text "\n\n"))
         (`(break) (insert (org-scribe--compile-scene-break) "\n\n"))))
     (when (eq style 'shunn)
-      (insert "#+begin_center\nEND\n#+end_center\n"))
+      (insert "#+begin_center\n" (org-scribe--compile-shunn-msg 'compile-shunn-end)
+              "\n#+end_center\n"))
     (buffer-string)))
 
 (defun org-scribe-compile-normalize (file &optional style root format)

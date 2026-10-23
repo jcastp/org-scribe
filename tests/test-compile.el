@@ -942,8 +942,10 @@ else in the session has already loaded the full package."
 ;;; Shunn style -- word count and rounding
 
 (ert-deftest test-compile-round-wordcount-nearest-hundred ()
-  "Word counts round to the nearest hundred, per Shunn convention."
-  (should (= 0 (org-scribe--compile-round-wordcount 37)))
+  "Word counts round to the nearest hundred, per Shunn convention, with a
+floor of 100 for a piece that has any words (37 used to read \"about 0\")."
+  (should (= 100 (org-scribe--compile-round-wordcount 37)))
+  (should (= 0 (org-scribe--compile-round-wordcount 0)))
   (should (= 300 (org-scribe--compile-round-wordcount 253)))
   (should (= 200 (org-scribe--compile-round-wordcount 249)))
   (should (= 400 (org-scribe--compile-round-wordcount 350))))
@@ -1104,6 +1106,22 @@ exporting a minimal fixture before this suppression was added."
     (org-scribe-compile 'clean 'org)
     (should-not (string-match-p "title:nil"
                                 (org-scribe-compile-test--intermediate root "novel" "clean")))))
+
+(ert-deftest test-compile-shunn-front-matter-follows-project-language ()
+  "A Spanish manuscript's Shunn front matter and end mark are Spanish."
+  (org-scribe-compile-test--with-author
+    (org-scribe-compile-test--with-project "novel" "novela.org"
+        org-scribe-compile-test--novel
+      (with-temp-file (expand-file-name ".org-scribe-project" root)
+        (insert "# Writing project: Test\n# Type: novel\n# Language: es\n"))
+      (org-scribe-project-type-cache-clear)
+      (let ((org-scribe-message-language 'en))
+        (org-scribe-compile 'shunn 'org))
+      (let ((out (org-scribe-compile-test--intermediate root "novela" "shunn")))
+        (should (string-match-p "^unas [0-9]+ palabras$" out))
+        (should (string-match-p "^por Jane Alcott Doe$" out))
+        (should (string-match-p "#\\+begin_center\nFIN\n#\\+end_center" out))
+        (should-not (string-match-p "about [0-9]+ words\\|^by \\|\nEND\n" out))))))
 
 (ert-deftest test-compile-shunn-ends-with-end-mark ()
   "A Shunn manuscript closes with a centered END mark; clean does not."
