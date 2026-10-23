@@ -3469,6 +3469,12 @@ every later date that still has its own absolute cumulative total."
            (date (completing-read
                   (format "Date [%s]: " today)
                   dates nil nil nil nil today))
+           ;; Any text used to be accepted and saved as a ledger key
+           ;; ("next tuesday"), which later broke the dashboards that
+           ;; parse every key as a date.
+           (_ (condition-case err
+                  (org-scribe-planner--validate-date date)
+                (error (user-error "%s" (error-message-string err)))))
            (daily-counts (org-scribe-plan-daily-word-counts plan))
            (existing (assoc date daily-counts))
            (existing-data (when existing (cdr existing)))

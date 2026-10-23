@@ -766,6 +766,22 @@ The old update-daily-word-count alias must exhibit the same behaviour."
       ;; Calendar is always refreshed
       (should (= 1 calendar-calls)))))
 
+(ert-deftest test-planner-hooks-add-session-note-rejects-a-non-date ()
+  "A session note dated with anything but YYYY-MM-DD is refused.
+\"next tuesday\" used to be saved as a ledger key, and the performance
+dashboard then failed with \"There was no year zero\"."
+  (test-hooks--with-plan-file plan file
+    (let ((org-scribe-planner--current-plan plan)
+          (org-scribe-planner--current-plan-file file))
+      (cl-letf (((symbol-function 'completing-read) (lambda (&rest _) "next tuesday"))
+                ((symbol-function 'org-scribe-planner--read-non-negative-number)
+                 (lambda (&rest _) 300))
+                ((symbol-function 'read-string) (lambda (&rest _) ""))
+                ((symbol-function 'org-scribe-planner-show-calendar) #'ignore))
+        (should-error (org-scribe-planner-add-session-note) :type 'user-error))
+      (should-not (assoc "next tuesday"
+                         (org-scribe-plan-daily-word-counts plan))))))
+
 ;;; Tests for --sum-wordcounts (double-counting regression)
 
 (defun test-hooks--make-org-with-wordcounts (content)
