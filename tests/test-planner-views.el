@@ -94,7 +94,8 @@ Written: 1,400 on Nov 2, 1,500 on Nov 3, nothing on Nov 4, 900 on Nov 5,
         (should (= (plist-get week :written) 5200))
         (should (= (plist-get week :planned-total) 7000))
         (should (= (plist-get week :difference) -1800))
-        (should (string= (org-scribe-planner--format-week-written week) "5200 ~ 74%")))
+        ;; 74% of the goal: under the 75% a partial day needs, so missed.
+        (should (string= (org-scribe-planner--format-week-written week) "5200 ✗ 74%")))
       (let ((week (nth 2 weeks)))
         (should (plist-get week :started))
         (should-not (plist-get week :ended))
@@ -113,6 +114,16 @@ Written: 1,400 on Nov 2, 1,500 on Nov 3, nothing on Nov 4, 900 on Nov 5,
       (should (= (length weeks) 2))
       (should (equal (mapcar (lambda (w) (plist-get w :start)) weeks)
                      '("2026-11-01" "2026-11-08"))))))
+
+(ert-deftest test-planner-views-week-marks-match-day-marks ()
+  "A finished week is ~ from 75% of its goal, ✗ below, as a day is."
+  (should (string= (org-scribe-planner--format-week-written
+                    '(:started t :ended t :written 800 :goal 1000))
+                   "800 ~ 80%"))
+  (should (string= (org-scribe-planner--format-week-written
+                    '(:started t :ended t :written 560 :goal 1000))
+                   "560 ✗ 56%")))
+
 (ert-deftest test-planner-views-expected-total-after-a-rebase ()
   "A recalculation from progress shifts the expected series from today on;
 the past days before the first entry still start from the pre-existing

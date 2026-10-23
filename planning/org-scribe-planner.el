@@ -1539,7 +1539,10 @@ progress, so it stays what it was.  As in wordplanner's
        (nreverse weeks)))))
 
 (defun org-scribe-planner--format-week-written (week)
-  "Describe WEEK's words written: the count, ✓ ~ ✗, and the share of its goal."
+  "Describe WEEK's words written: the count, ✓ ~ ✗, and the share of its goal.
+The marks mean what they mean for a day (see
+`org-scribe-planner--day-status'): ~ is a partial week, 75% of its goal
+or more; below that a finished week is ✗."
   (if (not (plist-get week :started))
       ""
     (let* ((written (plist-get week :written))
@@ -1547,7 +1550,7 @@ progress, so it stays what it was.  As in wordplanner's
            (mark (cond ((zerop goal) "")
                        ((>= written goal) " ✓")
                        ((not (plist-get week :ended)) "")
-                       ((> written 0) " ~")
+                       ((>= written (* 0.75 goal)) " ~")
                        (t " ✗"))))
       (format "%d%s%s" written mark
               (if (> goal 0) (format " %d%%" (round (* 100.0 (/ (float written) goal)))) "")))))
@@ -1569,6 +1572,7 @@ yesterday.  Weeks start on `org-scribe-planner-week-start-day'."
           (erase-buffer)
           (org-mode)
           (insert (format "* Weekly summary: %s\n\n" (org-scribe-plan-title plan)))
+          (insert (propertize "✓ met  ~ partial (75%+)  ✗ missed\n\n" 'face 'shadow))
           (insert "| Week | Dates | Days written | Rest | Daily goal | Week goal | Written | Planned total | Actual total | +/- |\n|-\n")
           (dolist (week weeks)
             (let ((goals (plist-get week :goals)))
