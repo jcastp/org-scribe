@@ -43,18 +43,13 @@
 ;; before any test is actually run, regardless of this file's position in
 ;; org-scribe-test-files) -- and org-scribe-planner wires itself into
 ;; org-scribe via `(with-eval-after-load 'org-scribe ...)', which then fires
-;; immediately instead of waiting for a real, interactive load order.  One
-;; thing that integration does is `(advice-add 'org-scribe-create-novel-project
-;; :after #'org-scribe-planner--offer-plan-on-create)', which -- for the rest
-;; of the batch process -- turns every later call to
-;; `org-scribe-create-novel-project' (including from tests/test-project.el
-;; and tests/test-dir-locals.el, which do not stub `yes-or-no-p') into a
-;; blocking prompt.  Disabling the defcustom that gates that advice-add,
-;; before anything can require org-scribe-planner, keeps this file's fix
-;; from corrupting unrelated tests elsewhere in the suite; no test in this
-;; codebase relies on the advice actually being attached (the planner's own
-;; coverage of this feature, in tests/test-planner-hooks.el, calls
-;; `org-scribe-planner--offer-plan-on-create' directly).
+;; immediately instead of waiting for a real, interactive load order.  That
+;; integration used to include advice on the project-creation commands that
+;; prompted for a plan on every later call, tests included.  The commands
+;; now offer a plan themselves, and only when called interactively
+;; (`org-scribe--offer-plan-after-create'), so a test calling them as
+;; functions is never prompted; turning the offer off here is kept as a
+;; guard for any interactive run of the suite.
 (setq org-scribe-planner-offer-plan-on-create nil)
 (require 'org-scribe)
 

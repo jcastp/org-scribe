@@ -126,5 +126,38 @@ recorded in the ledger."
           (should (alist-get 'ledger result)))
       (delete-directory base t))))
 
+(ert-deftest test-planner-autoload-offers-a-plan-on-interactive-create ()
+  "In a fresh session, creating a project interactively offers a plan.
+The offer was advice the planner installed when it loaded, so before any
+planner command nothing was offered; and a programmatic call, which used
+to prompt once the planner was loaded, must never prompt."
+  (let* ((emacs (expand-file-name invocation-name invocation-directory))
+         (base (make-temp-file "test-planner-offer-" t))
+         (form (format "(let ((repo %S) (base %S))
+  (setq org-id-locations-file (expand-file-name \"ids\" base)
+        make-backup-files nil create-lockfiles nil)
+  (load (expand-file-name \"test-load.el\" repo) nil t)
+  (let ((asked nil))
+    (fset 'yes-or-no-p (lambda (p) (push p asked) nil))
+    (org-scribe-create-short-story-project base \"Quiet\" 'en)
+    (let ((quiet asked))
+      (funcall-interactively #'org-scribe-create-short-story-project base \"Asked\" 'en)
+      (princ (format \"RESULT:%%S\"
+                     (list :quiet quiet
+                           :asked (length asked)
+                           :gate (org-scribe-planner-gate (expand-file-name \"Asked\" base))))))))"
+                       test-planner-autoload--repo base)))
+    (unwind-protect
+        (let* ((output (with-temp-buffer
+                         (call-process emacs nil t nil "-Q" "--batch" "--eval" form)
+                         (buffer-string)))
+               (result (and (string-match "RESULT:\\(.*\\)\\'" output)
+                            (car (read-from-string (match-string 1 output))))))
+          (should result)
+          (should-not (plist-get result :quiet))
+          (should (= 1 (plist-get result :asked)))
+          (should (eq 'no (plist-get result :gate))))
+      (delete-directory base t))))
+
 (provide 'test-planner-autoload)
 ;;; test-planner-autoload.el ends here

@@ -4998,8 +4998,8 @@ string reads \"[W:actual rest]\", and outside the plan just \"[W:actual]\"."
   "Offer to create a writing plan for the project just created under BASE-DIR.
 BASE-DIR and TITLE are the first two arguments of
 `org-scribe-create-novel-project' / `org-scribe-create-short-story-project'
-\(this function is installed as :after advice on both, so it receives
-their exact arguments).  BASE-DIR is the *parent* directory the creation
+\(both call it, through `org-scribe--offer-plan-after-create', when run
+interactively).  BASE-DIR is the *parent* directory the creation
 command was given, not the new project's own directory — mirror the
 `(expand-file-name title base-dir)' computation those functions use
 internally to get the actual project directory, so that
@@ -5044,10 +5044,9 @@ until the author explicitly enables it later."
   ;; and `org-scribe-planner-auto-push-wordcount' is checked inside
   ;; `org-scribe-planner-record-total' itself.
 
-  ;; Offer to create a plan when a new project is created.
-  (when org-scribe-planner-offer-plan-on-create
-    (advice-add 'org-scribe-create-novel-project :after #'org-scribe-planner--offer-plan-on-create)
-    (advice-add 'org-scribe-create-short-story-project :after #'org-scribe-planner--offer-plan-on-create))
+  ;; Offering a plan when a project is created is not wired here: the
+  ;; creation commands call `org-scribe--offer-plan-after-create'
+  ;; themselves, so the offer also happens before the planner has loaded.
 
   ;; Mode-line status indicator.
   (when org-scribe-planner-show-mode-line

@@ -35,6 +35,9 @@
 (declare-function org-scribe--add-entity-ids "org-scribe-linking-core")
 (declare-function org-scribe-project-structure "org-scribe-core")
 (declare-function org-scribe-project-type-cache-clear "org-scribe-core")
+(declare-function org-scribe-planner--offer-plan-on-create "org-scribe-planner"
+                  (base-dir title &rest _))
+(defvar org-scribe-planner-offer-plan-on-create)
 
 ;;; Configuration
 
@@ -343,7 +346,9 @@ This function:
 
       ;; Open README.org
       (find-file (expand-file-name "README.org" project-dir))
-      (message (org-scribe-msg 'project-creation-success-novel title project-dir)))))
+      (message (org-scribe-msg 'project-creation-success-novel title project-dir))
+      (when (called-interactively-p 'any)
+        (org-scribe--offer-plan-after-create base-dir title)))))
 
 ;;;###autoload
 (defun org-scribe-create-short-story-project (base-dir title &optional language)
@@ -436,7 +441,23 @@ This function:
 
       ;; Open the story file
       (find-file (expand-file-name story-file project-dir))
-      (message (org-scribe-msg 'project-creation-success-short-story title project-dir)))))
+      (message (org-scribe-msg 'project-creation-success-short-story title project-dir))
+      (when (called-interactively-p 'any)
+        (org-scribe--offer-plan-after-create base-dir title)))))
+
+(defun org-scribe--offer-plan-after-create (base-dir title)
+  "Offer a writing plan for the project TITLE just created under BASE-DIR.
+Called by the two creation commands when run interactively.  The offer
+used to be advice the planner installed on them when it loaded, and the
+planner is autoloaded, so a fresh session never offered a plan; the
+advice also fired for programmatic calls.  Honours
+`org-scribe-planner-offer-plan-on-create', which a writer may have set
+before the planner loads (unbound means its default, t)."
+  (when (if (boundp 'org-scribe-planner-offer-plan-on-create)
+            org-scribe-planner-offer-plan-on-create
+          t)
+    (when (require 'org-scribe-planner nil t)
+      (org-scribe-planner--offer-plan-on-create base-dir title))))
 
 (defun org-scribe--copy-templates (template-dir project-dir variables)
   "Copy and process templates from TEMPLATE-DIR to PROJECT-DIR.
