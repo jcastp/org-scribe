@@ -536,10 +536,11 @@ removal may still carry the property; unknown names pass through
 ;; "*EDIT*: diseño - ..." even though the canonical category is
 ;; "design".  Without recognizing this, that marker would file under the
 ;; catch-all "other" bucket instead of the "design" section it was meant
-;; for.  Each pack's `:edit-categories' section is deliberately small in
-;; practice: most categories ("plot", "scene", "character", "prose") are
-;; used as-is by every template regardless of language, and only
-;; "design" currently has a localized spelling in the templates.
+;; for.  Every pack spells every category in its own language, and
+;; every spelling is recognized in every project (the lookup reads all
+;; registered packs), so a writer can use either the English name or
+;; the project language's one; the index groups them under the
+;; canonical category.
 
 (defun org-scribe--edit-category-canonical-keys ()
   "Return every canonical *EDIT* category string known to any registered

@@ -89,10 +89,10 @@
      (comment . "Comentario")
      (relationships . "DatosRelaciones"))
    :edit-categories
-   '((plot . "plot")
-     (scene . "scene")
-     (character . "character")
-     (prose . "prose")
+   '((plot . "trama")
+     (scene . "escena")
+     (character . "personaje")
+     (prose . "prosa")
      (design . "Diseño"))
    :gate-substrings
    '((plot-points . "irrenunciable")

@@ -287,6 +287,36 @@ bucket instead of \"design\" (see `org-scribe-edit-category-canonical')."
       (should (equal "design" (plist-get marker :category)))
       (should (equal "revisar la premisa" (plist-get marker :text))))))
 
+(ert-deftest test-search-edits-index-spanish-categories ()
+  "A Spanish writer's category names group with the canonical categories.
+\"trama\" used to land in the catch-all bucket: only \"diseño\" was
+localized."
+  (org-scribe-test--with-edits-project dir
+      (concat "* Escena 1\n#+begin_comment\n*EDIT*: trama - a\n*EDIT*: Escena - b\n"
+              "*EDIT*: personaje - c\n*EDIT*: prosa - d\n*EDIT*: plot - e\n#+end_comment\n")
+    (should (equal '("plot" "scene" "character" "prose" "plot")
+                   (mapcar (lambda (m) (plist-get m :category))
+                           (org-scribe-test--markers dir))))))
+
+(ert-deftest test-search-edits-index-reads-unsaved-buffer ()
+  "A marker added but not saved yet is found, with its line in the buffer."
+  (org-scribe-test--with-edits-project dir
+      "* Scene 1\n\nText.\n"
+    (let ((buf (find-file-noselect (expand-file-name "novel.org" dir))))
+      (unwind-protect
+          (with-current-buffer buf
+            (goto-char (point-min))
+            (insert "#+TITLE: T\n\n")
+            (goto-char (point-max))
+            (insert "#+begin_comment\n*EDIT*: plot - unsaved\n#+end_comment\n")
+            (let ((marker (car (org-scribe-test--markers dir))))
+              (should (equal "unsaved" (plist-get marker :text)))
+              (goto-char (point-min))
+              (forward-line (1- (plist-get marker :line)))
+              (should (looking-at-p "\\*EDIT\\*: plot - unsaved"))))
+        (with-current-buffer buf (set-buffer-modified-p nil))
+        (kill-buffer buf)))))
+
 (ert-deftest test-search-edits-index-keeps-multiline-body ()
   "A marker spanning several lines keeps its whole body.
 This is the main thing the structured index buys over a line-based

@@ -307,9 +307,20 @@ intact; text before the first marker is ignored."
 (defun org-scribe--edits-collect-file (file)
   "Return the edit markers found in FILE.
 Each marker is a plist with :type, :category, :text, :file, :heading
-and :line (a 1-based line number in FILE, for navigation)."
+and :line (a 1-based line number in FILE, for navigation).
+
+When FILE is open in a buffer, that buffer's text is read, unsaved
+edits included: reading the file from disk missed a marker just added,
+and gave markers below unsaved edits a line number that pointed
+elsewhere.  `org-scribe-compile-normalize' does the same for the
+manuscript."
   (with-temp-buffer
-    (insert-file-contents file)
+    (if-let* ((visiting (find-buffer-visiting file)))
+        (insert (with-current-buffer visiting
+                  (save-restriction
+                    (widen)
+                    (buffer-substring-no-properties (point-min) (point-max)))))
+      (insert-file-contents file))
     (let ((org-inhibit-startup t)
           (org-mode-hook nil))
       (delay-mode-hooks (org-mode)))
