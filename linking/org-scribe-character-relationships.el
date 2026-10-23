@@ -58,13 +58,25 @@ Returns (ID NAME TYPE) or nil if parsing fails."
 (defun org-scribe--parse-relationships (rel-property-value)
   "Parse relationship property value into list of relationships.
 REL-PROPERTY-VALUE is the value of :RelationshipsData: property.
-Returns list of (ID NAME TYPE) tuples."
+Returns list of (ID NAME TYPE) tuples.
+
+Entries are split where a new link starts, not on every \";\": the
+type is free text, so \"friend; almost a brother\" is one type, and
+splitting on the bare separator silently dropped everything after it."
   (when (and rel-property-value (not (string-empty-p rel-property-value)))
-    (let ((parts (split-string rel-property-value ";" t " "))
+    (let ((starts nil)
+          (pos 0)
           result)
-      (dolist (part parts)
-        (when-let* ((parsed (org-scribe--parse-single-relationship part)))
-          (push parsed result)))
+      (while (string-match "\\[\\[id:" rel-property-value pos)
+        (push (match-beginning 0) starts)
+        (setq pos (match-end 0)))
+      (setq starts (nreverse starts))
+      (while starts
+        (let* ((part (substring rel-property-value (car starts) (cadr starts)))
+               (part (string-trim part nil "[ \t;]+")))
+          (when-let* ((parsed (org-scribe--parse-single-relationship part)))
+            (push parsed result)))
+        (setq starts (cdr starts)))
       (nreverse result))))
 
 (defun org-scribe--format-relationship (id name type)

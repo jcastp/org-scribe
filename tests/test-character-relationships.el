@@ -139,6 +139,14 @@
     (should (string= "Bob" (nth 1 (nth 1 result))))
     (should (string= "Carol" (nth 1 (nth 2 result))))))
 
+(ert-deftest test-relationships-parse-multi-type-with-semicolon ()
+  "A free-text type containing \";\" survives a round trip whole."
+  (let* ((original '(("char-001" "Alice" "friend; almost a brother")
+                     ("char-002" "Bob" "rival")))
+         (parsed (org-scribe--parse-relationships
+                  (org-scribe--relationships-to-string original))))
+    (should (equal original parsed))))
+
 ;;; org-scribe--format-relationship Tests
 
 (ert-deftest test-relationships-format-basic ()
