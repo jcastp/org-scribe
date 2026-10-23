@@ -120,8 +120,7 @@ count, avoiding a phantom \"Characters\" entity."
   "Set the PoV property to a character with ID link.
 Specifically designed for the :PoV: property in scene headings."
   (interactive)
-  (unless (org-at-heading-p)
-    (org-back-to-heading))
+  (org-scribe--goto-scene-heading)
   (let* ((chars (org-scribe--get-all-characters))
          (char-names (mapcar #'car chars)))
     (if (null char-names)

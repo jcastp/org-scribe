@@ -43,6 +43,29 @@
 
 ;;; Shared Helper Functions
 
+(defun org-scribe--goto-scene-heading ()
+  "Move to the scene heading point is in, or signal a `user-error'.
+From a scene's own sub-headings this climbs to the scene.  A heading that
+is not a scene -- a chapter, an act, a short story's info section --
+is refused: the scene metadata commands used to write PoV, characters
+and threads onto whatever heading point was under, where nothing reads
+them as a scene's.  A scene is a heading at the project's scene level
+carrying its scene tag, as everywhere else (see
+`org-scribe-project-levels').  Outside a project of known type, the
+heading at point is used as before."
+  (unless (org-at-heading-p)
+    (org-back-to-heading t))
+  (when (memq (org-scribe-project-type) '(novel short-story))
+    (let* ((levels (org-scribe-project-levels))
+           (scene-level (plist-get levels :scene))
+           (tag (plist-get levels :scene-tag)))
+      (while (and (> (org-current-level) scene-level)
+                  (org-up-heading-safe)))
+      (unless (and (= (org-current-level) scene-level)
+                   (or (null tag) (member tag (org-get-tags nil t))))
+        (user-error "%s" (org-scribe-msg 'error-not-in-scene
+                                         (org-get-heading t t t t)))))))
+
 (defun org-scribe--goto-entity-id (id name)
   "Visit the entity with ID, or signal a `user-error' naming NAME.
 A link whose entity was deleted made `org-id-goto' fail with Org's raw
@@ -257,8 +280,7 @@ ENTITY is an entity descriptor plist."
   "Set PROPERTY to multiple entity ID links via completion.
 ENTITY is an entity descriptor plist.
 PROPERTY is a canonical scene property key (e.g. \\='characters)."
-  (unless (org-at-heading-p)
-    (org-back-to-heading))
+  (org-scribe--goto-scene-heading)
   (let* ((items (org-scribe--entity-completion-items
                 (org-scribe--get-all-entities entity)))
          (names (mapcar #'car items))

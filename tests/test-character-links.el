@@ -460,6 +460,47 @@ the existing property/regexp checks."
   (interactive)
   (ert "^test-character-"))
 
+;;; Scene metadata commands act on scenes only
+
+(defmacro test-char-links--in-outline (type text search &rest body)
+  "Run BODY in a TYPE project buffer holding TEXT, at the first SEARCH."
+  (declare (indent 3))
+  `(cl-letf (((symbol-function 'org-scribe-project-type) (lambda () ,type))
+             ((symbol-function 'org-scribe--get-all-characters)
+              (lambda () '(("Xoán" "char-xoan" . "Xoán"))))
+             ((symbol-function 'completing-read) (lambda (&rest _) "Xoán")))
+     (with-temp-buffer
+       (org-mode)
+       (insert ,text)
+       (goto-char (point-min))
+       (search-forward ,search)
+       ,@body)))
+
+(ert-deftest test-character-links-set-pov-refuses-a-chapter ()
+  "On a chapter heading the PoV is refused rather than written there."
+  (test-char-links--in-outline 'novel
+      "* Act I :ignore:\n** Chapter 1 :ignore:\n*** Scene A :ignore:\n"
+      "Chapter 1"
+    (should-error (org-scribe-set-pov-character) :type 'user-error)
+    (goto-char (point-min))
+    (should-not (org-entry-get (progn (search-forward "Chapter 1") (point)) "PoV"))))
+
+(ert-deftest test-character-links-set-pov-refuses-short-story-info ()
+  "A short story's Synopsis sits at the scene level but is not a scene."
+  (test-char-links--in-outline 'short-story
+      "* Story Info :noexport:\n** Synopsis\n* Story Content\n** TODO Opening :ignore:\n"
+      "Synopsis"
+    (should-error (org-scribe-set-pov-character) :type 'user-error)))
+
+(ert-deftest test-character-links-set-pov-from-a-scene-subheading ()
+  "From a sub-heading inside a scene, the PoV goes on the scene."
+  (test-char-links--in-outline 'novel
+      "* Act I :ignore:\n** Chapter 1 :ignore:\n*** Scene A :ignore:\n**** Notes\nsome notes\n"
+      "some notes"
+    (org-scribe-set-pov-character)
+    (should (equal "Scene A" (org-get-heading t t t t)))
+    (should (equal "[[id:char-xoan][Xoán]]" (org-entry-get nil "PoV")))))
+
 (provide 'test-character-links)
 
 ;;; test-character-links.el ends here

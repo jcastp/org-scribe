@@ -350,6 +350,7 @@
      (msg-relink-complete . "Reenlace completo: enlaces actualizados en %d escena%s en %s")
      (msg-relink-broken-links . " — %d enlace%s sin destino: la entidad ya no existe (consulta el informe de salud)")
      (error-entity-link-broken . "%s ya no existe: la entrada a la que apunta este enlace se borró")
+     (error-not-in-scene . "%s no es una escena: sitúa el cursor en una escena para fijar sus datos")
      (msg-overlays-broken-link . "[enlace sin destino: esta entidad ya no existe]")
      (msg-relink-no-novel . "No se encontró ningún archivo de manuscrito en este proyecto")
      (msg-no-link-updates . "Ningún nombre de enlace de %s necesitaba actualizarse")
