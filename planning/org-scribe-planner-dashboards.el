@@ -1768,16 +1768,22 @@ Shows multi-window averages, acceleration/deceleration, and projections."
                             planned))
 
               (insert (propertize "  Feasibility Analysis:\n" 'face 'org-level-3))
-              (if feasible
-                  (progn
-                    (insert (propertize "  ✓ On track to complete on time!\n" 'face 'org-done))
-                    (when (< required current)
-                      (insert (format "    You have a buffer of %.0f words/day.\n"
-                                    (- current required)))))
-                (progn
-                  (insert (propertize "  ⚠ Need to increase velocity to finish on time.\n"
-                                    'face 'org-warning))
-                  (insert (format "    Adjustment needed: %s%.0f words/day (%.1f%%)\n"
+              ;; "On track" is about the writer's own pace.  `feasible' only
+              ;; says the required pace is within reach of the plan's, and
+              ;; was shown as "On track" next to a projection months late.
+              (cond
+               ((>= current required)
+                (insert (propertize "  ✓ On track to complete on time!\n" 'face 'org-done))
+                (when (< required current)
+                  (insert (format "    You have a buffer of %.0f words/day.\n"
+                                  (- current required)))))
+               (t
+                (insert (if feasible
+                            (propertize "  ◑ Within reach, but above your recent pace.\n"
+                                        'face 'org-scheduled)
+                          (propertize "  ⚠ Need to increase velocity to finish on time.\n"
+                                      'face 'org-warning)))
+                (insert (format "    Adjustment needed: %s%.0f words/day (%.1f%%)\n"
                                 (if (> adjustment 0) "+" "")
                                 adjustment
                                 adj-percent))))

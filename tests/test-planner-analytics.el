@@ -212,6 +212,20 @@ instead of falling, and a value of 0 landed outside the canvas."
     (should (equal "│ - │" (nth 1 rows)))
     (should (equal "│  -│" (nth 2 rows)))))
 
+(ert-deftest test-planner-analytics-velocity-trends-not-on-track-when-behind ()
+  "Velocity trends only says \"On track\" when the recent pace covers the
+required one.  A required pace merely within reach of the plan's used to
+be shown as \"On track to complete on time!\" beside a late projection."
+  (test-analytics--on "2026-11-08"
+    (let* ((plan (test-analytics--week))
+           (org-scribe-planner--current-plan plan)
+           (org-scribe-planner--current-plan-file "/tmp/unused-plan.org"))
+      (cl-letf (((symbol-function 'display-buffer) #'ignore))
+        (org-scribe-planner-show-velocity-trends))
+      (with-current-buffer "*Velocity Trend Analysis*"
+        (should-not (string-match-p "On track to complete on time" (buffer-string)))
+        (should (string-match-p "Within reach, but above your recent pace" (buffer-string)))))))
+
 (ert-deftest test-planner-analytics-cumulative-chart-messages ()
   "A chart that was generated is shown without a \"Failed\" message, and a
 failure says so.  A misplaced parenthesis echoed \"Failed to generate\"
