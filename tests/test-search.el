@@ -287,6 +287,25 @@ bucket instead of \"design\" (see `org-scribe-edit-category-canonical')."
       (should (equal "design" (plist-get marker :category)))
       (should (equal "revisar la premisa" (plist-get marker :text))))))
 
+(ert-deftest test-search-edits-index-ret-follows-the-marker ()
+  "RET on an index entry opens the marker in the manuscript, as the header
+says, with Org's default `org-return-follows-link' (nil)."
+  (org-scribe-test--with-edits-project dir
+      "* Scene 1\n\nText.\n#+begin_comment\n*EDIT*: plot - fix\n#+end_comment\n"
+    (let ((org-return-follows-link nil)
+          (index (org-scribe--edits-build dir)))
+      (unwind-protect
+          (with-current-buffer index
+            (should (eq (key-binding (kbd "RET")) #'org-open-at-point))
+            (goto-char (point-min))
+            (re-search-forward "\\[\\[file:")
+            (call-interactively (key-binding (kbd "RET")))
+            (should (equal "novel.org" (file-name-nondirectory (buffer-file-name))))
+            (should (looking-at-p "\\*EDIT\\*: plot - fix")))
+        (kill-buffer index)
+        (when-let* ((b (find-buffer-visiting (expand-file-name "novel.org" dir))))
+          (kill-buffer b))))))
+
 (ert-deftest test-search-edits-index-spanish-categories ()
   "A Spanish writer's category names group with the canonical categories.
 \"trama\" used to land in the catch-all bucket: only \"diseño\" was

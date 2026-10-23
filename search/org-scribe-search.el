@@ -427,6 +427,10 @@ manuscript."
       (setq buffer-read-only t)
       (add-hook 'after-save-hook #'org-scribe--edits-refresh-on-save)
       (use-local-map (copy-keymap org-mode-map))
+      ;; The header promises RET follows a marker.  RET is `org-return',
+      ;; which only does that with `org-return-follows-link' set (off by
+      ;; default), so in a read-only buffer it signalled an error.
+      (local-set-key (kbd "RET") #'org-open-at-point)
       (local-set-key (kbd "g") #'org-scribe-edits-refresh)
       (local-set-key (kbd "q") #'quit-window))
     buffer))
