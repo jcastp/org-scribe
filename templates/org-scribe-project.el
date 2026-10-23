@@ -217,7 +217,9 @@ from `org-scribe-ispell-dictionaries'.  Use this on projects created
 before org-scribe generated the file, or after changing the configured
 dictionary.  An existing file is only replaced after confirmation."
   (interactive)
-  (let ((root (org-scribe-project-root)))
+  ;; Not `org-scribe-project-root': it is never nil, so outside a project
+  ;; this wrote a .dir-locals.el into whatever directory it was in.
+  (let ((root (org-scribe--project-root-if-any)))
     (unless root
       (user-error "%s" (org-scribe-msg 'dir-locals-not-in-project)))
     (let* ((language (org-scribe-project-language))

@@ -701,6 +701,7 @@ Creates a comprehensive character template with prompts for:
 - Motivation and character arc
 - Relationships with other characters"
   (interactive)
+  (org-scribe--require-project)
   (org-scribe--run-capture #'org-scribe-capture-character-file
                            (org-scribe-character-capture-templates) "c"))
 
@@ -716,6 +717,7 @@ Creates a comprehensive location template with prompts for:
 - History and plot significance
 - Atmosphere and mood"
   (interactive)
+  (org-scribe--require-project)
   (org-scribe--run-capture #'org-scribe-capture-location-file
                            (org-scribe-location-capture-templates) "l"))
 
@@ -731,6 +733,7 @@ Creates a comprehensive object template with prompts for:
 - Plot significance
 - Current location and limitations"
   (interactive)
+  (org-scribe--require-project)
   (org-scribe--run-capture #'org-scribe-capture-object-file
                            (org-scribe-object-capture-templates) "o"))
 
@@ -745,6 +748,7 @@ Creates a comprehensive timeline event template with prompts for:
 - Consequences and connections
 - Type of event (action, revelation, etc.)"
   (interactive)
+  (org-scribe--require-project)
   (org-scribe--run-capture #'org-scribe-capture-timeline-file
                            (org-scribe-timeline-capture-templates) "t"))
 
@@ -768,6 +772,7 @@ This is useful when:
 The template is intentionally minimal - capture the essence quickly,
 then elaborate later during planning or revision."
   (interactive)
+  (org-scribe--require-project)
   (org-scribe--run-capture #'org-scribe-capture-plot-thread-file
                            (org-scribe-plot-thread-capture-templates) "p"))
 

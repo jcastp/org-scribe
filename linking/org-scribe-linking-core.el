@@ -373,6 +373,7 @@ ENTITY is an entity descriptor plist."
 ENTITY is an entity descriptor plist.
 ADD-IDS-FN is the function to call to add IDs.
 LINK-ALL-FN is the function to call to link all scenes."
+  (org-scribe--require-project)
   (message (org-scribe-msg (plist-get entity :msg-setting-up)))
   (funcall add-ids-fn)
   (when (y-or-n-p (org-scribe-msg (plist-get entity :question-link-existing)))

@@ -369,6 +369,7 @@ characters whose relationships changed."
   "Initialize character relationship system for current project.
 Ensures all characters have IDs and adds empty RelationshipsData properties."
   (interactive)
+  (org-scribe--require-project)
   (let ((char-file (org-scribe--get-character-file)))
     (if (not (file-exists-p char-file))
         (message "No character file found. Create characters first.")

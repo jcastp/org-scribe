@@ -467,6 +467,8 @@ with clickable ID links back to each scene."
          (manuscript-file (plist-get structure :manuscript-file)))
 
     (unless manuscript-file
+      ;; Outside a project, say so rather than "no manuscript in this project".
+      (org-scribe--require-project)
       (user-error (org-scribe-msg 'msg-relink-no-novel)))
 
     ;; Collect all data before opening the buffer

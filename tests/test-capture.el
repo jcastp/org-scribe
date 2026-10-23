@@ -391,6 +391,37 @@ org-capture shifts the whole template relative to its target, so a
 
 ;;; Role default
 
+(ert-deftest test-commands-outside-a-project-refuse-and-create-nothing ()
+  "Outside a project, commands that need one refuse, and write no files.
+`org-scribe-project-root' falls back to the current directory, so these
+used to treat any folder as a project: a .dir-locals.el written there,
+objects/ entity files created next to an unrelated Org file, and a raw
+error from the plot setup commands."
+  (let* ((dir (file-name-as-directory (make-temp-file "loose-" t)))
+         (default-directory dir))
+    (unwind-protect
+        (progn
+          (with-temp-file (expand-file-name "inbox.org" dir) (insert "* Buy milk\n"))
+          (org-scribe-project-type-cache-clear)
+          (cl-letf (((symbol-function 'project-current) (lambda (&rest _) nil))
+                    ((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
+                    ((symbol-function 'y-or-n-p) (lambda (&rest _) t)))
+            (dolist (cmd '(org-scribe-update-dir-locals
+                           org-scribe-capture-character org-scribe-capture-location
+                           org-scribe-capture-object org-scribe-capture-timeline
+                           org-scribe-capture-plot-thread
+                           org-scribe-setup-character-links org-scribe-setup-plot-thread-links
+                           org-scribe-setup-plot-point-links org-scribe-setup-character-relationships
+                           org-scribe-relink-project org-scribe-project-health))
+              (should (equal (list cmd 'user-error)
+                             (list cmd (condition-case err (progn (funcall cmd) 'ok)
+                                         (user-error 'user-error)
+                                         (error err)))))))
+          (should (equal '("inbox.org")
+                         (directory-files dir nil directory-files-no-dot-files-regexp))))
+      (org-scribe-project-type-cache-clear)
+      (delete-directory dir t))))
+
 (ert-deftest test-object-capture-type-default-is-not-magical ()
   "Pressing RET on the object Type prompt must not make every object magical."
   (dolist (lang '(en es))

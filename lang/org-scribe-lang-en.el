@@ -356,6 +356,7 @@
      (msg-relink-broken-links . " — %d broken link%s left: the entity no longer exists (see the health report)")
      (error-entity-link-broken . "%s no longer exists: the entry this link points to was deleted")
      (error-not-in-scene . "%s is not a scene: put the cursor in a scene to set its metadata")
+     (error-not-in-project . "Not inside an org-scribe project: no .org-scribe-project file here or in any parent directory")
      (msg-overlays-broken-link . "[broken link: this entity no longer exists]")
      (msg-relink-no-novel . "No manuscript file found in this project")
      (msg-no-link-updates . "No %s link names needed updating")

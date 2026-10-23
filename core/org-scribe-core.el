@@ -94,6 +94,27 @@ previously misdetected."
     (setq org-scribe--project-type-cache nil)
     (setq org-scribe--project-language-cache nil)))
 
+(defun org-scribe--project-root-if-any ()
+  "Return the current project's root, or nil when not in a project.
+`org-scribe-project-root' cannot answer this: it falls back to
+`default-directory' and is never nil, so a check on it never fires and
+commands went on to treat any directory as a project -- writing a
+`.dir-locals.el' there, or an objects/ folder of entity files next to an
+unrelated Org file.  A project is a root holding a `.org-scribe-project'
+marker, or one whose type `org-scribe-project-type' can determine from
+its files."
+  (let ((root (org-scribe-project-root)))
+    (and root
+         (or (file-exists-p (expand-file-name ".org-scribe-project" root))
+             (not (eq (org-scribe-project-type) 'unknown)))
+         root)))
+
+(defun org-scribe--require-project ()
+  "Return the project root, or signal a `user-error' outside a project.
+See `org-scribe--project-root-if-any'."
+  (or (org-scribe--project-root-if-any)
+      (user-error "%s" (org-scribe-msg 'error-not-in-project))))
+
 (defun org-scribe-project-type ()
   "Detect the type of writing project.
 Returns one of:

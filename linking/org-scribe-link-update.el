@@ -234,6 +234,7 @@ update-names maintenance commands — and, being driven off the registry,
 automatically covers new entity types with no change here.  The
 manuscript buffer is saved when changes were made."
   (interactive)
+  (org-scribe--require-project)
   (require 'org-scribe-linking-core)
   ;; Phase 1 — make sure every entity has an ID in its database file.
   (dolist (entry org-scribe-entity-registry)
