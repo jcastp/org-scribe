@@ -299,6 +299,36 @@ normally, the same as anywhere else in the manuscript."
     (let ((out (org-scribe-compile-test--intermediate root "novel")))
       (should (string-match-p "^\\* The \\*Real\\* Beginning$" out)))))
 
+(ert-deftest test-compile-flattens-links-into-the-notes ()
+  "A link into the writer's notes reaches the reader as its description.
+Kept, txt appended \"See file ../objects/characters.org\" after it and md
+linked to a file that does not exist; a web link is the writer's own
+business and is kept."
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      (concat "#+TITLE: T\n\n* Act I :ignore:\n"
+              "** The [[id:no-such-id][Ash]] chapter :ignore:\n*** Scene 1 :ignore:\n"
+              "Nell walked out, and [[id:no-such-id][Ash]] followed with "
+              "[[*Lamp][the lamp]] and [[file:objects/characters.org][her notes]], "
+              "past [[https://example.com][the pier]].\n")
+    (org-scribe-compile 'clean 'org)
+    (let ((out (org-scribe-compile-test--intermediate root "novel")))
+      (should (string-match-p "^\\* The Ash chapter$" out))
+      (should (string-match-p
+               "and Ash followed with the lamp and her notes, past \\[\\[https://example.com\\]\\[the pier\\]\\]\\."
+               out))
+      (should-not (string-match-p "id:\\|file:\\|\\*Lamp" out)))))
+
+(ert-deftest test-compile-broken-link-does-not-abort ()
+  "A link whose target no longer exists must not abort a txt or md
+compile with Org's \"Unable to resolve link\"."
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      (concat "#+TITLE: T\n\n* Act I :ignore:\n** One :ignore:\n*** Scene 1 :ignore:\n"
+              "Then [[id:deleted-character][Tomás]] whistled.\n")
+    (dolist (fmt '(txt md))
+      (let ((out (org-scribe-compile-test--read (org-scribe-compile 'clean fmt))))
+        (should (string-match-p "Then Tomás whistled\\." out))
+        (should-not (string-match-p "See file\\|deleted-character" out))))))
+
 (ert-deftest test-compile-omits-act-headings ()
   "Acts are dropped; they are a planning structure, not a reading one."
   (org-scribe-compile-test--with-project "novel" "novel.org"

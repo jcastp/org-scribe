@@ -65,6 +65,7 @@
 (require 'seq)
 (require 'org)
 (require 'org-element)
+(require 'org-id)
 (require 'ox)
 (require 'org-scribe-config)
 (require 'org-scribe-messages)
@@ -223,20 +224,69 @@ real break element."
       (replace-regexp-in-string edge "" body)
       t t))))
 
+(defun org-scribe--compile-link-replacement (link)
+  "Return the plain text LINK becomes in the manuscript, or nil to keep it.
+A link into the writer's own notes -- an `id:' link to a character, a
+heading or custom-id link, a `file:' link to a notes file -- means
+nothing to a reader: kept, the txt backend appended \"See file
+../objects/characters.org\" after it, md pointed at a file that does not
+exist, and one whose target had been deleted aborted the whole compile
+with Org's \"Unable to resolve link\".  Such a link becomes its
+description.  Web and mail links are kept, and so is a `file:' link
+with no description to an image, which Org renders as an inline image.
+Must be called in the buffer LINK was parsed from."
+  (let ((type (org-element-property :type link))
+        (path (org-element-property :path link))
+        (cbeg (org-element-property :contents-begin link))
+        (cend (org-element-property :contents-end link)))
+    (when (or (member type '("id" "fuzzy" "custom-id" "coderef"))
+              (and (equal type "file")
+                   (or cbeg (not (org-file-image-p path)))))
+      (cond
+       (cbeg (buffer-substring-no-properties cbeg cend))
+       ((equal type "id")
+        (or (org-scribe--compile-id-heading path) path))
+       ((equal type "fuzzy") (string-remove-prefix "*" path))
+       ((equal type "file") (file-name-nondirectory path))
+       (t path)))))
+
+(defun org-scribe--compile-id-heading (id)
+  "Return the heading text of the entry with ID, or nil if none is found."
+  (when-let* ((marker (ignore-errors (org-id-find id 'marker))))
+    (prog1 (with-current-buffer (marker-buffer marker)
+             (org-with-point-at marker (org-get-heading t t t t)))
+      (set-marker marker nil))))
+
+(defun org-scribe--compile-element-text (element)
+  "Return ELEMENT's buffer text with links into the notes made plain.
+See `org-scribe--compile-link-replacement'.  The text is otherwise taken
+verbatim from the buffer."
+  (let ((pos (org-element-property :begin element))
+        (parts nil))
+    (dolist (link (sort (org-element-map element 'link #'identity nil nil 'link)
+                        (lambda (a b) (< (org-element-property :begin a)
+                                         (org-element-property :begin b)))))
+      (when-let* ((text (org-scribe--compile-link-replacement link)))
+        (push (buffer-substring-no-properties pos (org-element-property :begin link)) parts)
+        (push text parts)
+        (setq pos (- (org-element-property :end link)
+                     (or (org-element-property :post-blank link) 0)))))
+    (push (buffer-substring-no-properties pos (org-element-property :end element)) parts)
+    (apply #'concat (nreverse parts))))
+
 (defun org-scribe--compile-heading-body (headline)
   "Return HEADLINE's own prose, excluding subheadings and apparatus.
 Must be called in the buffer HEADLINE was parsed from: the text is taken
 from buffer positions so the writer's prose survives verbatim, rather
-than being regenerated from the parse tree."
+than being regenerated from the parse tree -- except for links into the
+writer's notes, which become plain text (see
+`org-scribe--compile-link-replacement')."
   (let ((section (car (org-element-contents headline)))
         (parts nil))
     (when (eq (org-element-type section) 'section)
       (dolist (element (org-element-contents section))
         (unless (memq (org-element-type element) org-scribe--compile-skip-elements)
-          (push (buffer-substring-no-properties
-                 (org-element-property :begin element)
-                 (org-element-property :end element))
-                parts))))
+          (push (org-scribe--compile-element-text element) parts))))
     (org-scribe--compile-strip-macros (string-trim (apply #'concat (nreverse parts))))))
 
 (defun org-scribe--compile-chapter-title (headline)
@@ -249,16 +299,20 @@ correctly excludes the TODO keyword, priority cookie and tags (they are
 not part of it to begin with), so the cookie was the one piece of
 planning apparatus still leaking through.
 
-Everything else in the title -- inline links, emphasis, and any other
-markup -- is kept as literal Org syntax, not stripped: this text becomes
-a headline in the intermediate .org file, which every backend re-parses
-normally on its own export pass, so a link here is exactly as legitimate
-as one anywhere else in the manuscript, not corruption to route around."
-  (let ((kept (seq-remove (lambda (el) (eq (org-element-type el) 'statistics-cookie))
-                          (org-element-property :title headline))))
-    (string-trim (replace-regexp-in-string
-                  "[ \t]+" " "
-                  (org-element-interpret-data kept)))))
+A link into the writer's notes becomes plain text, as it does in the
+body (see `org-scribe--compile-link-replacement').  Everything else in
+the title -- web links, emphasis, and any other markup -- is kept as
+literal Org syntax: this text becomes a headline in the intermediate .org
+file, which every backend re-parses normally on its own export pass.
+Must be called in the buffer HEADLINE was parsed from."
+  (let* ((kept (seq-remove (lambda (el) (eq (org-element-type el) 'statistics-cookie))
+                           (org-element-property :title headline)))
+         (title (org-element-interpret-data kept)))
+    (dolist (link (org-element-map kept 'link #'identity nil nil 'link))
+      (when-let* ((text (org-scribe--compile-link-replacement link)))
+        (setq title (string-replace (string-trim-right (org-element-interpret-data link))
+                                    text title))))
+    (string-trim (replace-regexp-in-string "[ \t]+" " " title))))
 
 (defun org-scribe--compile-blocks (tree levels)
   "Return the ordered output blocks for parse TREE, given LEVELS.
