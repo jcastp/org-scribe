@@ -156,10 +156,19 @@ after stripping was turned off -- it used to only toggle the stripping."
   (let ((opened nil)
         (org-scribe-column-view-strip-links t))
     (cl-letf (((symbol-function 'org-columns) (lambda (&rest _) (setq opened t))))
-      (org-scribe-column-view))
+      (with-temp-buffer
+        (org-mode)
+        (org-scribe-column-view)))
     (should opened)
     (should (advice-member-p #'org-scribe--column-view-advice
                              'org-columns--displayed-value))))
+
+(ert-deftest test-column-view-command-refuses-outside-org ()
+  "Outside an Org buffer the command says so; it used to fail with Org's
+internal \"Cache must be active\"."
+  (with-temp-buffer
+    (fundamental-mode)
+    (should-error (org-scribe-column-view) :type 'user-error)))
 
 (ert-deftest test-column-view-hydra-key-opens-column-view ()
   "F8 F8 L C runs `org-scribe-column-view', not the toggle."

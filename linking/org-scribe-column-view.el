@@ -121,6 +121,8 @@ the first press turned it off.  Stripping is (re)enabled here unless
 `org-scribe-column-view-strip-links' is nil; toggling it stays available
 as `org-scribe-column-view-toggle'."
   (interactive)
+  (unless (derived-mode-p 'org-mode)
+    (user-error "%s" (org-scribe-msg 'not-in-org-mode)))
   (when (and org-scribe-column-view-strip-links
              (not (advice-member-p #'org-scribe--column-view-advice
                                    'org-columns--displayed-value)))

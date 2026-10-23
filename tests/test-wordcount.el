@@ -397,6 +397,13 @@ permanently inserted :ID: drawers on every heading."
       (insert "\n{{{scene-break}}}\n")
       (should (= plain (org-scribe--count-words-region (point-min) (point-max)))))))
 
+(ert-deftest test-wordcount-count-words-refuses-outside-org ()
+  "Outside an Org buffer the command says so; it used to fail with Org's
+internal \"Cache must be active\"."
+  (with-temp-buffer
+    (fundamental-mode)
+    (should-error (org-scribe-ews-org-count-words) :type 'user-error)))
+
 (provide 'test-wordcount)
 
 ;;; test-wordcount.el ends here

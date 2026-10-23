@@ -113,6 +113,10 @@ manuscript's new total to the plan via `org-scribe-planner-record-total'
 `org-scribe-planner-auto-track-daily') — a direct, debuggable call in
 this direction rather than the planner monkey-patching this function."
   (interactive)
+  ;; Outside Org, `org-map-entries' failed with Org's internal "Cache
+  ;; must be active".
+  (unless (derived-mode-p 'org-mode)
+    (user-error "%s" (org-scribe-msg 'not-in-org-mode)))
   (org-with-wide-buffer
    (org-map-entries
     (lambda ()
