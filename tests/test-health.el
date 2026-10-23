@@ -359,6 +359,34 @@ scene, the property and the entity -- before this nothing reported it."
                    "^- \\[\\[id:scene-1\\]\\[Low tide\\]\\] :: PoV → Nell Varga$"
                    content)))))))
 
+(ert-deftest test-health-duplicate-names ()
+  "Names carried by more than one entity are found, with their count."
+  (should (equal '(("Ash" . 2))
+                 (org-scribe--health-duplicate-names
+                  '(("Ash" "id1" . "Ash") ("Nell" "id2" . "Nell")
+                    ("Ash" "id3" . "Ash")))))
+  (should (null (org-scribe--health-duplicate-names
+                 '(("Ash" "id1" . "Ash") ("Nell" "id2" . "Nell"))))))
+
+(ert-deftest test-health-report-lists-duplicate-names ()
+  "Two characters sharing a name get a Duplicate Names section; with no
+duplicates the section is left out."
+  (test-health--with-novel-file
+      "** Chapter :ignore:\n*** TODO Scene :ignore:\n\nWords.\n"
+    (let ((chars '(("Ash" "id1" . "Ash") ("Nell" "id2" . "Nell") ("Ash" "id3" . "Ash")))
+          (org-scribe-message-language 'en))
+      (cl-letf (((symbol-function 'org-scribe-project-structure)
+                 (lambda () (list :manuscript-file temp-novel :novel-file temp-novel)))
+                ((symbol-function 'org-scribe--get-all-characters) (lambda () chars)))
+        (org-scribe-project-health)
+        (with-current-buffer (get-buffer "*org-scribe-health*")
+          (should (string-match-p "^\\* Duplicate Names (1)$" (buffer-string)))
+          (should (string-match-p "^- Character :: Ash (×2)$" (buffer-string))))
+        (setq chars '(("Ash" "id1" . "Ash")))
+        (org-scribe-project-health)
+        (with-current-buffer (get-buffer "*org-scribe-health*")
+          (should-not (string-match-p "Duplicate Names" (buffer-string))))))))
+
 ;;; Text-level statistics: per-PoV word share and chapter length spread
 
 (defmacro test-health--with-stats-fixture (&rest body)
@@ -454,7 +482,10 @@ and the outlier legend line is shown."
       (should (string-match-p "| Chapter Three | 100 \\*" content))
       (should-not (string-match-p "| Chapter One | 1500 \\*" content))
       (should-not (string-match-p "| Chapter Two | 2000 \\*" content))
-      (should (string-match-p "marks a chapter" content)))))
+      (should (string-match-p "^Chapters marked \\* are" content))
+      ;; The legend is a paragraph, not an Org heading: it used to start
+      ;; with "* " and became a level-1 heading called "marks a chapter".
+      (should-not (string-match-p "^\\* marks a chapter" content)))))
 
 (ert-deftest test-health-chapter-length-spread-no-outliers-no-legend ()
   "The outlier legend line is omitted when no chapter is an outlier."
@@ -473,7 +504,7 @@ and the outlier legend line is shown."
                        :locations-file nil))))
       (org-scribe-project-health)
       (with-current-buffer (get-buffer "*org-scribe-health*")
-        (should-not (string-match-p "marks a chapter" (buffer-string)))))))
+        (should-not (string-match-p "Chapters marked" (buffer-string)))))))
 
 ;;; --health-pov-word-share / --health-chapter-word-totals / --health-median
 

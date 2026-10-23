@@ -405,6 +405,19 @@ disagrees with the prose.  Returns nil when there is nothing to say."
                       found expected))
              (t nil)))))))))
 
+(defun org-scribe--health-duplicate-names (entities)
+  "Return the names that more than one entity in ENTITIES carries.
+ENTITIES is a getter's alist of (NAME . (ID . HEADING)).  Each entry of
+the result is (NAME . COUNT), in order of first appearance.  Completion
+is keyed on the name, so all but the first of such entities can never
+be picked, and every link goes to the first one."
+  (let ((counts nil))
+    (dolist (entry entities)
+      (let ((cell (assoc (car entry) counts)))
+        (if cell (setcdr cell (1+ (cdr cell)))
+          (push (cons (car entry) 1) counts))))
+    (seq-filter (lambda (cell) (> (cdr cell) 1)) (nreverse counts))))
+
 (defun org-scribe--health-find-orphans (entities referenced-ids)
   "Return list of entity names not present in REFERENCED-IDS.
 ENTITIES is an alist (NAME . (ID . HEADING)) as returned by
@@ -467,6 +480,21 @@ with clickable ID links back to each scene."
                                (* 100.0 (/ (float total-words) total-obj))
                              nil))
            (ref-ids        (org-scribe--health-collect-referenced-ids manuscript-file))
+           ;; Names shared by two entities of one kind: (KIND-KEY . DUPLICATES).
+           (duplicates     (seq-filter
+                            #'cdr
+                            (mapcar
+                             (lambda (spec)
+                               (cons (car spec)
+                                     (when (fboundp (cdr spec))
+                                       (org-scribe--health-duplicate-names
+                                        (funcall (cdr spec))))))
+                             '((msg-health-duplicate-kind-character
+                                . org-scribe--get-all-characters)
+                               (msg-health-duplicate-kind-location
+                                . org-scribe--get-all-locations)
+                               (msg-health-duplicate-kind-plot-thread
+                                . org-scribe--get-all-plot-threads)))))
            ;; Links whose entity was deleted: nothing else reports them.
            (broken-links   (when (fboundp 'org-scribe--find-broken-links)
                              (with-current-buffer (find-file-noselect manuscript-file)
@@ -698,6 +726,19 @@ with clickable ID links back to each scene."
                                                            (plist-get b :scene-id))
                             (plist-get b :property)
                             (plist-get b :name))))
+          (insert "\n"))
+
+        ;; ── Duplicate names (only when there are any) ─────────────────────────
+        (when duplicates
+          (insert (format "* %s\n\n"
+                          (org-scribe-msg 'msg-health-duplicate-names-heading
+                                          (apply #'+ (mapcar (lambda (d) (length (cdr d)))
+                                                             duplicates)))))
+          (insert (org-scribe-msg 'msg-health-duplicate-names-intro) "\n\n")
+          (dolist (kind duplicates)
+            (dolist (dup (cdr kind))
+              (insert (format "- %s :: %s (×%d)\n"
+                              (org-scribe-msg (car kind)) (car dup) (cdr dup)))))
           (insert "\n"))
 
         ;; ── Orphaned entities ─────────────────────────────────────────────────
