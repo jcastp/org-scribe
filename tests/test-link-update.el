@@ -231,6 +231,51 @@
                    (org-scribe--update-link-display-name
                     "[[id:abc][Protagonist: (Name)]]" map)))))
 
+;;; Broken links (entity deleted)
+
+(defun test-link-update--broken-fixture-maps ()
+  "Entity maps where only \"alive-id\" exists, and locations failed to load."
+  (let ((chars (make-hash-table :test 'equal)))
+    (puthash "alive-id" "Ash" chars)
+    (list (cons 'pov chars) (cons 'characters chars) (cons 'location nil))))
+
+(ert-deftest test-link-update-find-broken-links ()
+  "A link whose ID belongs to no entity is reported, with its scene and name;
+a property whose entity type could not be read is skipped, not reported."
+  (cl-letf (((symbol-function 'org-scribe--entity-property-id-maps)
+             #'test-link-update--broken-fixture-maps))
+    (test-link-update--with-org-heading
+        (concat "* Low tide\n:PROPERTIES:\n:ID: scene-1\n"
+                ":PoV: [[id:dead-id][Nell Varga]]\n"
+                ":Characters: [[id:alive-id][Ash]], [[id:dead-id][Nell Varga]]\n"
+                ":Location: [[id:whatever][The Lighthouse]]\n:END:\n")
+      (let ((broken (org-scribe--find-broken-links)))
+        (should (= 2 (length broken)))
+        (dolist (b broken)
+          (should (equal "Low tide" (plist-get b :heading)))
+          (should (equal "scene-1" (plist-get b :scene-id)))
+          (should (equal "Nell Varga" (plist-get b :name)))
+          (should (equal "dead-id" (plist-get b :target))))
+        (should (equal '("PoV" "Characters")
+                       (mapcar (lambda (b) (plist-get b :property)) broken)))))))
+
+(ert-deftest test-link-update-find-broken-links-none ()
+  "Links to existing entities are not reported."
+  (cl-letf (((symbol-function 'org-scribe--entity-property-id-maps)
+             #'test-link-update--broken-fixture-maps))
+    (test-link-update--with-org-heading
+        "* Scene\n:PROPERTIES:\n:PoV: [[id:alive-id][Ash]]\n:END:\n"
+      (should (null (org-scribe--find-broken-links))))))
+
+(ert-deftest test-link-update-jump-to-deleted-pov-is-user-error ()
+  "Jumping to a PoV whose entity was deleted names it in a `user-error',
+instead of Org's raw \"Cannot find entry with ID\"."
+  (cl-letf (((symbol-function 'org-id-find) (lambda (&rest _) nil)))
+    (test-link-update--with-org-heading
+        "* Scene\n:PROPERTIES:\n:PoV: [[id:dead-id][Nell Varga]]\n:END:\n"
+      (let ((err (should-error (org-scribe-jump-to-pov-character) :type 'user-error)))
+        (should (string-match-p "Nell Varga" (cadr err)))))))
+
 (provide 'test-link-update)
 
 ;;; test-link-update.el ends here

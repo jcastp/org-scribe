@@ -339,6 +339,26 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
             (should (string-match-p "Scenes by Status" content))
             (should (string-match-p "Open TODO Scenes" content))))))))
 
+(ert-deftest test-health-report-lists-broken-links ()
+  "A scene link whose entity was deleted gets its own section, naming the
+scene, the property and the entity -- before this nothing reported it."
+  (test-health--with-novel-file
+      (concat "** Chapter :ignore:\n*** TODO Low tide :ignore:\n"
+              ":PROPERTIES:\n:ID: scene-1\n:PoV: [[id:dead-id][Nell Varga]]\n:END:\n\nWords.\n")
+    (cl-letf (((symbol-function 'org-scribe-project-structure)
+               (lambda ()
+                 (list :manuscript-file temp-novel :novel-file temp-novel)))
+              ((symbol-function 'org-scribe--entity-property-id-maps)
+               (lambda () (list (cons 'pov (make-hash-table :test 'equal))))))
+      (let ((org-scribe-message-language 'en))
+        (org-scribe-project-health))
+      (with-current-buffer (get-buffer "*org-scribe-health*")
+        (let ((content (buffer-string)))
+          (should (string-match-p "^\\* Broken Links (1)$" content))
+          (should (string-match-p
+                   "^- \\[\\[id:scene-1\\]\\[Low tide\\]\\] :: PoV → Nell Varga$"
+                   content)))))))
+
 ;;; Text-level statistics: per-PoV word share and chapter length spread
 
 (defmacro test-health--with-stats-fixture (&rest body)

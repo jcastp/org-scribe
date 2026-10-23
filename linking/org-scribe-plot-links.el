@@ -128,7 +128,7 @@ If Plot property has multiple threads, prompts for selection."
      ((= (length thread-list) 1)
       (let ((thread-name (car thread-list)))
         (if (string-match "\\[\\[id:\\([^]]+\\)\\]\\[" plot-prop)
-            (org-id-goto (match-string 1 plot-prop))
+            (org-scribe--goto-entity-id (match-string 1 plot-prop) thread-name)
           (message (org-scribe-msg 'msg-plot-not-id-link thread-name)))))
      (t
       (let* ((selected (completing-read (org-scribe-msg 'prompt-jump-to-plot) thread-list nil t))
@@ -136,7 +136,7 @@ If Plot property has multiple threads, prompts for selection."
              (entry (assoc selected threads))
              (id (cadr entry)))
         (if id
-            (org-id-goto id)
+            (org-scribe--goto-entity-id id selected)
           (message (org-scribe-msg 'error-no-id-for-plot selected))))))))
 
 ;;; Plot Thread Timeline and Analytics

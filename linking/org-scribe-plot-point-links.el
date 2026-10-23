@@ -127,7 +127,7 @@ plot file, not two files."
                                       points nil t)))
              (entry (alist-get name all nil nil #'string=)))
         (if (and entry (car entry))
-            (org-id-goto (car entry))
+            (org-scribe--goto-entity-id (car entry) name)
           (user-error (org-scribe-msg 'error-no-id-for-plot-point) name)))))))
 
 (provide 'org-scribe-plot-point-links)

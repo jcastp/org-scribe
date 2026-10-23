@@ -146,7 +146,7 @@ Follows the ID link in the :PoV: property."
       (progn
         (if (string-match "\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]" pov)
             (let ((id (match-string 1 pov)))
-              (org-id-goto id)
+              (org-scribe--goto-entity-id id (match-string 2 pov))
               (message (org-scribe-msg 'msg-jump-to-pov)))
           (message (org-scribe-msg 'error-pov-not-link))))
     (message (org-scribe-msg 'error-no-pov-property))))

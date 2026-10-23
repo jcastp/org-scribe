@@ -43,6 +43,14 @@
 
 ;;; Shared Helper Functions
 
+(defun org-scribe--goto-entity-id (id name)
+  "Visit the entity with ID, or signal a `user-error' naming NAME.
+A link whose entity was deleted made `org-id-goto' fail with Org's raw
+\"Cannot find entry with ID\"; this says what actually happened."
+  (if (ignore-errors (org-id-find id))
+      (org-id-goto id)
+    (user-error "%s" (org-scribe-msg 'error-entity-link-broken name))))
+
 (defun org-scribe--entity-name-at-point ()
   "Get entity name from current heading or NAME property.
 A blank NAME property is treated as absent, not as the entity's name:

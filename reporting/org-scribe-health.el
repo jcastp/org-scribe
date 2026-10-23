@@ -25,6 +25,7 @@
 (declare-function org-scribe--get-all-locations "linking/org-scribe-location-links")
 (declare-function org-scribe--get-all-plot-threads "linking/org-scribe-plot-links")
 (declare-function org-scribe--get-all-plot-points "linking/org-scribe-plot-point-links")
+(declare-function org-scribe--find-broken-links "linking/org-scribe-link-update")
 
 ;; Directory-local spelling dictionary (from templates/org-scribe-project.el,
 ;; loaded before this file; guarded with `fboundp' at the call site anyway).
@@ -466,6 +467,10 @@ with clickable ID links back to each scene."
                                (* 100.0 (/ (float total-words) total-obj))
                              nil))
            (ref-ids        (org-scribe--health-collect-referenced-ids manuscript-file))
+           ;; Links whose entity was deleted: nothing else reports them.
+           (broken-links   (when (fboundp 'org-scribe--find-broken-links)
+                             (with-current-buffer (find-file-noselect manuscript-file)
+                               (org-scribe--find-broken-links))))
            ;; Starting Gate: the writer's own ticks, plus the two items that
            ;; can be measured rather than asserted.
            (gate-items     (org-scribe--health-gate-items
@@ -680,6 +685,20 @@ with clickable ID links back to each scene."
         (org-scribe--health-insert-missing-list "PoV" miss-pov "PoV")
         (org-scribe--health-insert-missing-list "Plot" miss-plot "Plot")
         (org-scribe--health-insert-missing-list "Location" miss-location "Location")
+
+        ;; ── Broken links ──────────────────────────────────────────────────────
+        (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-broken-links-heading
+                                                   (length broken-links))))
+        (if (null broken-links)
+            (insert (org-scribe-msg 'msg-health-broken-links-none) "\n\n")
+          (insert (org-scribe-msg 'msg-health-broken-links-intro) "\n\n")
+          (dolist (b broken-links)
+            (insert (format "- %s :: %s → %s\n"
+                            (org-scribe--health-scene-link (plist-get b :heading)
+                                                           (plist-get b :scene-id))
+                            (plist-get b :property)
+                            (plist-get b :name))))
+          (insert "\n"))
 
         ;; ── Orphaned entities ─────────────────────────────────────────────────
         (insert "* Orphaned Entities\n\n")

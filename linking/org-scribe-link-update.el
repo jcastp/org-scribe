@@ -115,6 +115,68 @@ Example:
         (org-scribe-scene-property-set property-name updated-string)
         t))))
 
+;;; Entity ID Maps and Broken Links
+
+(defun org-scribe--entity-property-id-maps ()
+  "Return an alist of (PROPERTY . ID-MAP) for every registered entity type.
+PROPERTY is a canonical scene property key; ID-MAP maps each entity ID
+to its current name (see `org-scribe--build-id-to-name-map').  An entity
+may own several properties (characters own PoV and Characters); each
+gets its own entry pointing to the same map.  ID-MAP is nil when the
+entity type's getter failed, so callers can tell \"no entities\" from
+\"could not read them\"."
+  (require 'org-scribe-linking-core)
+  (apply #'append
+         (mapcar
+          (lambda (entry)
+            (let* ((entity (cdr entry))
+                   (id-map (condition-case nil
+                               (org-scribe--build-id-to-name-map
+                                (org-scribe--get-all-entities entity))
+                             (error nil))))
+              (mapcar (lambda (prop) (cons prop id-map))
+                      (plist-get entity :properties))))
+          org-scribe-entity-registry)))
+
+(defun org-scribe--find-broken-links ()
+  "Return the scene-property links in the current buffer that point nowhere.
+A link is broken when its ID belongs to no entity of any registered type
+-- typically because the entity's heading was deleted.  Nothing else
+notices: the link still looks fine, relink has no name to refresh it to,
+and the health report credited the deleted character with its scenes.
+
+Each item is a plist (:heading H :scene-id ID :property P :name N
+:target TARGET-ID), where P is the property name as written in the
+scene.  Entity types whose getter failed are skipped rather than having
+every link reported as broken."
+  (let* ((prop-maps (org-scribe--entity-property-id-maps))
+         (known (make-hash-table :test 'equal))
+         (result nil))
+    (dolist (pm prop-maps)
+      (when (cdr pm)
+        (maphash (lambda (id _) (puthash id t known)) (cdr pm))))
+    (org-with-wide-buffer
+     (org-map-entries
+      (lambda ()
+        (dolist (pm prop-maps)
+          (when-let* (((cdr pm))
+                      (value (org-scribe-scene-property-get (car pm))))
+            (let ((pos 0))
+              (while (string-match
+                      "\\[\\[id:\\([^]]+\\)\\]\\(?:\\[\\([^]]+\\)\\]\\)?\\]"
+                      value pos)
+                (setq pos (match-end 0))
+                (let ((target (match-string 1 value))
+                      (name (or (match-string 2 value) (match-string 1 value))))
+                  (unless (gethash target known)
+                    (push (list :heading (org-get-heading t t t t)
+                                :scene-id (org-entry-get nil "ID")
+                                :property (org-scribe-scene-property-name (car pm))
+                                :name name
+                                :target target)
+                          result))))))))))
+    (nreverse result)))
+
 ;;; Unified Update Function
 
 ;;;###autoload
@@ -132,21 +194,8 @@ current names.
 Returns the number of scenes updated."
   (interactive)
   (require 'org-scribe-linking-core)
-  ;; Build (property-name . id-map) alist from every registered entity.
-  ;; An entity may own several properties (e.g. character owns PoV + Characters);
-  ;; each gets its own entry pointing to the same id-map object.
-  (let ((prop-maps
-         (apply #'append
-                (mapcar
-                 (lambda (entry)
-                   (let* ((entity (cdr entry))
-                          (id-map (condition-case nil
-                                      (org-scribe--build-id-to-name-map
-                                       (org-scribe--get-all-entities entity))
-                                    (error (make-hash-table :test 'equal)))))
-                     (mapcar (lambda (prop) (cons prop id-map))
-                             (plist-get entity :properties))))
-                 org-scribe-entity-registry)))
+  (let ((prop-maps (mapcar (lambda (pm) (cons (car pm) (or (cdr pm) (make-hash-table :test 'equal))))
+                           (org-scribe--entity-property-id-maps)))
         (count 0))
     (save-excursion
       (goto-char (point-min))
@@ -200,12 +249,18 @@ manuscript buffer is saved when changes were made."
         (dolist (entry org-scribe-entity-registry)
           (org-scribe--link-all-scene-entities (cdr entry)))
         ;; Phase 3 — refresh stale display names (already registry-driven).
-        (let ((count (org-scribe-update-all-link-names)))
+        (let ((count (org-scribe-update-all-link-names))
+              (broken (length (org-scribe--find-broken-links))))
           (when (buffer-modified-p)
             (save-buffer))
-          (message (org-scribe-msg 'msg-relink-complete
+          (message "%s%s"
+                   (org-scribe-msg 'msg-relink-complete
                                    count (org-scribe-plural count "")
-                                   (file-name-nondirectory manuscript-file))))))))
+                                   (file-name-nondirectory manuscript-file))
+                   (if (> broken 0)
+                       (org-scribe-msg 'msg-relink-broken-links
+                                       broken (org-scribe-plural broken ""))
+                     "")))))))
 
 ;;; Auto-propagation on entity file save
 
