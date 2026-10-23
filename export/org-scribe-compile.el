@@ -390,7 +390,14 @@ TREE was parsed from."
                 ;; Container (act, story wrapper): heading dropped, any
                 ;; prose of its own kept, children processed in order.
                 (t (emit-prose body)))
-               (mapc #'walk (org-scribe--compile-child-headlines headline))))))
+               (let ((chapter-cell (and chapter-level (= level chapter-level) blocks)))
+                 (mapc #'walk (org-scribe--compile-child-headlines headline))
+                 ;; A chapter that emitted nothing -- every scene still
+                 ;; unwritten -- is dropped, as an unwritten scene emits no
+                 ;; break: a draft with planned chapters otherwise ended in
+                 ;; a run of empty chapter titles.
+                 (when (and chapter-cell (eq blocks chapter-cell))
+                   (setq blocks (cdr blocks))))))))
       (mapc #'walk (org-scribe--compile-child-headlines tree)))
     (nreverse blocks)))
 

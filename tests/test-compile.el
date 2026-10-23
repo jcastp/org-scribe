@@ -346,6 +346,21 @@ appended the URL after the paragraph."
         (should (string-match-p "past the pier and https://example.com/bare at dawn" out))
         (should-not (string-match-p "\\[\\[" out))))))
 
+(ert-deftest test-compile-drops-a-chapter-with-nothing-written ()
+  "A chapter whose scenes are all unwritten is left out, as an unwritten
+scene is; a chapter with prose of its own (an epigraph) is kept."
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      (concat "#+TITLE: T\n\n* Act I :ignore:\n"
+              "** One :ignore:\n*** S :ignore:\nWritten.\n"
+              "** Planned :ignore:\n*** TODO Not yet :ignore:\n\n"
+              "** Epigraph only :ignore:\n#+begin_quote\nA line.\n#+end_quote\n"
+              "*** TODO Not yet either :ignore:\n")
+    (org-scribe-compile 'clean 'org)
+    (let ((out (org-scribe-compile-test--intermediate root "novel")))
+      (should (string-match-p "^\\* One$" out))
+      (should-not (string-match-p "Planned" out))
+      (should (string-match-p "^\\* Epigraph only$" out)))))
+
 (ert-deftest test-compile-broken-link-does-not-abort ()
   "A link whose target no longer exists must not abort a txt or md
 compile with Org's \"Unable to resolve link\"."
