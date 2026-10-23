@@ -212,6 +212,31 @@ instead of falling, and a value of 0 landed outside the canvas."
     (should (equal "│ - │" (nth 1 rows)))
     (should (equal "│  -│" (nth 2 rows)))))
 
+(ert-deftest test-planner-analytics-cumulative-chart-messages ()
+  "A chart that was generated is shown without a \"Failed\" message, and a
+failure says so.  A misplaced parenthesis echoed \"Failed to generate\"
+after every success, and a real failure said gnuplot was not available."
+  (test-analytics--on "2026-11-08"
+    (let* ((plan (test-analytics--week))
+           (org-scribe-planner--current-plan plan)
+           (org-scribe-planner--current-plan-file "/tmp/unused-plan.org")
+           (messages nil))
+      (cl-letf (((symbol-function 'display-buffer) #'ignore)
+                ((symbol-function 'insert-image) #'ignore)
+                ((symbol-function 'org-scribe-planner--gnuplot-available-p) (lambda () t))
+                ((symbol-function 'message)
+                 (lambda (fmt &rest args) (push (apply #'format fmt args) messages))))
+        (cl-letf (((symbol-function 'org-scribe-planner--generate-gnuplot-cumulative)
+                   (lambda (&rest _) t)))
+          (org-scribe-planner-show-cumulative-progress))
+        (should-not (cl-some (lambda (m) (string-match-p "Failed" m)) messages))
+        (should (get-buffer "*Cumulative Progress*"))
+        (setq messages nil)
+        (cl-letf (((symbol-function 'org-scribe-planner--generate-gnuplot-cumulative)
+                   (lambda (&rest _) nil)))
+          (org-scribe-planner-show-cumulative-progress))
+        (should (member "Failed to generate cumulative progress chart" messages))))))
+
 (ert-deftest test-planner-analytics-multi-metric-no-projection-on-day-one ()
   "Only today's partial entry exists: no BEHIND SCHEDULE projection is shown."
   (test-analytics--on "2026-11-01"

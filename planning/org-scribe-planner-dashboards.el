@@ -870,9 +870,9 @@ plot '%s' using 1:2 with lines ls 1 title 'Planned Progress', \\
 
                       (insert (make-string 75 ?═) "\n")
                       (insert (propertize "Press 'q' to close | 'r' to refresh | 'c' to calendar\n"
-                                        'face 'shadow))))
+                                        'face 'shadow)))))
               (message "Failed to generate cumulative progress chart"))
-          (message "Gnuplot not available. Install gnuplot to use this feature."))))))
+          (message "Gnuplot not available. Install gnuplot to use this feature.")))))
 
 ;;; SVG Progress Indicators
 
