@@ -1152,6 +1152,32 @@ VALUES is a list of numbers, WINDOW is the number of days to average over."
         (push avg result)))
     (nreverse result)))
 
+(defun org-scribe-planner--insert-bar-chart (title labels words)
+  "Insert a vertical bar chart of WORDS per LABELS, titled TITLE, at point.
+`chart-bar-quickie' draws in a buffer of its own, which it switches the
+selected window to: called in the middle of building a dashboard, the
+rest of the dashboard was inserted into the chart's buffer, which then
+took over the window.  The chart is drawn off-screen here and its text
+copied in.  `chart.el' also fails in a window shorter than about 13 rows
+\(the case for \"Show All Dashboards\" and the split view on an
+ordinary frame); a note takes the chart's place then, and the rest of
+the dashboard still renders."
+  (let ((dashboard (current-buffer))
+        (chart nil))
+    (condition-case nil
+        (save-window-excursion
+          (save-current-buffer
+            (chart-bar-quickie 'vertical title labels "Days" words "Words")
+            (let ((buffer (current-buffer)))
+              (setq chart (string-trim-left (buffer-string) "\n+"))
+              (kill-buffer buffer))))
+      ((arith-error wrong-type-argument args-out-of-range)
+       (setq chart nil)))
+    (with-current-buffer dashboard
+      (insert (or chart
+                  (propertize "  (Chart left out: the window is too small to draw it.  Enlarge the window and press r.)\n"
+                              'face 'shadow))))))
+
 (defun org-scribe-planner--format-date-labels (dates &optional max-labels)
   "Format DATES list for chart labels.
 Shows every Nth date to avoid overcrowding. MAX-LABELS defaults to 10."
@@ -1218,13 +1244,9 @@ Shows every Nth date to avoid overcrowding. MAX-LABELS defaults to 10."
                        (chart-words (mapcar #'cdr chart-entries))
                        (chart-labels (org-scribe-planner--format-date-labels chart-dates 10)))
 
-                  (chart-bar-quickie 'vertical
-                                    (format "Daily Word Counts - %s"
-                                            (org-scribe-plan-title plan))
-                                    chart-labels
-                                    "Days"
-                                    chart-words
-                                    "Words")
+                  (org-scribe-planner--insert-bar-chart
+                   (format "Daily Word Counts - %s" (org-scribe-plan-title plan))
+                   chart-labels chart-words)
                   (insert "\n"))
 
                 (insert (make-string 70 ?─) "\n\n"))
@@ -1887,13 +1909,9 @@ Shows daily word counts over time with a 7-day moving average."
                      (chart-words (mapcar #'cdr chart-entries))
                      (chart-labels (org-scribe-planner--format-date-labels chart-dates 12)))
 
-                (chart-bar-quickie 'vertical
-                                  (format "Daily Word Counts - %s"
-                                          (org-scribe-plan-title plan))
-                                  chart-labels
-                                  "Days"
-                                  chart-words
-                                  "Words")
+                (org-scribe-planner--insert-bar-chart
+                 (format "Daily Word Counts - %s" (org-scribe-plan-title plan))
+                 chart-labels chart-words)
                 (insert "\n"))
 
               (insert (make-string 80 ?─) "\n\n")

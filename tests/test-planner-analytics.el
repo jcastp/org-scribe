@@ -251,6 +251,42 @@ after every success, and a real failure said gnuplot was not available."
           (org-scribe-planner-show-cumulative-progress))
         (should (member "Failed to generate cumulative progress chart" messages))))))
 
+(ert-deftest test-planner-analytics-velocity-keeps-its-content-after-the-chart ()
+  "The velocity dashboard holds everything after its chart, and the chart
+does not take over the window.  `chart-bar-quickie' switches the
+selected window to a buffer of its own, so the rest of the dashboard
+used to be inserted there."
+  (test-analytics--on "2026-11-08"
+    (let* ((plan (test-analytics--week))
+           (org-scribe-planner--current-plan plan)
+           (org-scribe-planner--current-plan-file "/tmp/unused-plan.org")
+           (shown (window-buffer (selected-window))))
+      (cl-letf (((symbol-function 'display-buffer) #'ignore))
+        (org-scribe-planner-show-velocity))
+      (should (eq shown (window-buffer (selected-window))))
+      (should-not (seq-some (lambda (b) (string-match-p "Daily Word Counts" (buffer-name b)))
+                            (buffer-list)))
+      (with-current-buffer "*Velocity Statistics*"
+        (should (string-match-p "Performance Overview" (buffer-string)))
+        (should (string-match-p "Press 'q' to close" (buffer-string)))))))
+
+(ert-deftest test-planner-analytics-chart-too-small-leaves-a-note ()
+  "When chart.el cannot draw (a window under ~13 rows, as in \"Show All
+Dashboards\"), the dashboard says so and still renders the rest."
+  (test-analytics--on "2026-11-08"
+    (let* ((plan (test-analytics--week))
+           (org-scribe-planner--current-plan plan)
+           (org-scribe-planner--current-plan-file "/tmp/unused-plan.org"))
+      (cl-letf (((symbol-function 'display-buffer) #'ignore)
+                ((symbol-function 'chart-bar-quickie)
+                 (lambda (&rest _) (signal 'wrong-type-argument '(wholenump -6)))))
+        (org-scribe-planner-show-velocity)
+        (org-scribe-planner-show-velocity-chart))
+      (dolist (name '("*Velocity Statistics*" "*Velocity Chart*"))
+        (with-current-buffer name
+          (should (string-match-p "Chart left out" (buffer-string)))
+          (should (string-match-p "Press 'q'" (buffer-string))))))))
+
 (ert-deftest test-planner-analytics-multi-metric-no-projection-on-day-one ()
   "Only today's partial entry exists: no BEHIND SCHEDULE projection is shown."
   (test-analytics--on "2026-11-01"
