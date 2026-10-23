@@ -234,7 +234,7 @@
      (capture-obj-key . "o")
      (capture-obj-name . "Objeto")
      (capture-obj-name-prompt . "Nombre del Objeto")
-     (capture-obj-type-prompt . "Tipo|Mágico|Artefacto|Arma|Herramienta|Simbólico|Tecnología")
+     (capture-obj-type-prompt . "Tipo|Artefacto|Herramienta|Arma|Simbólico|Tecnología|Mágico")
      (capture-obj-owner-prompt . "Propietario Actual")
      (capture-obj-first-appearance-prompt . "Capítulo de Primera Aparición")
      (capture-obj-status-prompt . "Estado|Activo|Perdido|Destruido|Oculto")

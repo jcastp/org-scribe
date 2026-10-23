@@ -239,7 +239,7 @@
      (capture-obj-key . "o")
      (capture-obj-name . "Object")
      (capture-obj-name-prompt . "Object Name")
-     (capture-obj-type-prompt . "Type|Magical|Artifact|Weapon|Tool|Symbolic|Technology")
+     (capture-obj-type-prompt . "Type|Artifact|Tool|Weapon|Symbolic|Technology|Magical")
      (capture-obj-owner-prompt . "Current Owner")
      (capture-obj-first-appearance-prompt . "First Appearance Chapter")
      (capture-obj-status-prompt . "Status|Active|Lost|Destroyed|Hidden")

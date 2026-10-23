@@ -391,6 +391,13 @@ org-capture shifts the whole template relative to its target, so a
 
 ;;; Role default
 
+(ert-deftest test-object-capture-type-default-is-not-magical ()
+  "Pressing RET on the object Type prompt must not make every object magical."
+  (dolist (lang '(en es))
+    (let ((template (nth 4 (car (org-scribe-object-capture-templates lang)))))
+      (should (string-match-p ":Type: %\\^{[^|}]+|\\(Artifact\\|Artefacto\\)|" template))
+      (should (string-match-p "Magical\\|Mágico" template)))))
+
 (ert-deftest test-character-capture-role-default-is-not-protagonist ()
   "Pressing RET on the Role prompt must not mint another protagonist."
   (dolist (lang '(en es))
