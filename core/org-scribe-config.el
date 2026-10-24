@@ -51,6 +51,22 @@ defcustom has a forward `defvar' there too."
 ;; unrecognized.  Options that nothing reads are worse than no options:
 ;; they read as a supported way to rename these files.
 
+(defcustom org-scribe-default-word-target
+  '((novel . 80000) (short-story . 5000))
+  "Default total word count offered when a project is created.
+An alist from project type to words.  The project's own total is stored
+in its .org-scribe-project file (see `org-scribe-project-word-target')."
+  :type '(alist :key-type (choice (const novel) (const short-story))
+                :value-type natnum)
+  :group 'org-scribe)
+
+(defcustom org-scribe-word-target-proportions '(25 50 25)
+  "Weights for splitting a project's total among its outermost parts.
+The acts of a novel, the three scenes of a short story.  Only the
+ratios matter: (1 2 1) is the same as (25 50 25)."
+  :type '(repeat (number :tag "Weight"))
+  :group 'org-scribe)
+
 (defcustom org-scribe-create-dirs-automatically t
   "When non-nil, create directories (characters/, research/) automatically."
   :type 'boolean

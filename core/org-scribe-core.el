@@ -12,6 +12,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'seq)
 (require 'org)
 ;; `org-refile-cache-clear' (used by `org-scribe--refile-invalidate-cache'
 ;; below) is not autoloaded and `(require 'org)' alone does not pull it in
@@ -299,6 +300,88 @@ marker first."
         (if (assq normalized org-scribe--methods)
             normalized
           'sistema)))))
+
+;;; Project word target
+
+(defun org-scribe-project-word-target (&optional root)
+  "Return the total word target recorded for ROOT's project, or nil.
+Read from the \"# Target-words:\" line of ROOT's (default: the current
+project's) .org-scribe-project marker file.  Returns a positive integer,
+or nil when there is no project, no such line, or its value is empty,
+non-numeric or not positive: a project with no line has no recorded
+total, and behaves as it always did.
+
+The value is parsed strictly, never with a bare `string-to-number',
+which answers 0 for both \"\" and \"abc\" and so would turn garbage into a
+number.  A nil ROOT with no project short-circuits to nil, rather than
+resolving the marker against `default-directory'."
+  (let ((root (or root (org-scribe-project-root))))
+    (when root
+      (let ((value (org-scribe--project-marker-get root "Target-words")))
+        (when (and value (string-match-p "\\`[0-9]+\\'" value))
+          (let ((n (string-to-number value)))
+            (and (> n 0) n)))))))
+
+(defun org-scribe--set-project-word-target (root n)
+  "Record N as the total word target in ROOT's .org-scribe-project marker.
+Signal a `user-error' unless N is a positive integer."
+  (unless (and (integerp n) (> n 0))
+    (user-error "%s" (org-scribe-msg 'error-word-target-invalid)))
+  (org-scribe--project-marker-set root "Target-words" (number-to-string n)))
+
+(defun org-scribe-default-word-target-for (type)
+  "Return the default total word target offered for a project of TYPE.
+TYPE is `novel' or `short-story'; anything else falls back to the novel
+value.  Read from `org-scribe-default-word-target'."
+  (or (alist-get type org-scribe-default-word-target)
+      (alist-get 'novel org-scribe-default-word-target)
+      80000))
+
+(defun org-scribe--split-word-target (total weights)
+  "Split TOTAL words among parts weighted by WEIGHTS, as exact integers.
+Return a list the length of WEIGHTS that sums to TOTAL.  Only the ratios
+between weights matter.  Uses the largest-remainder method: each part
+gets the floor of its share, and the leftover words go one each to the
+parts with the largest fractional share, ties to the earlier part.
+
+  (org-scribe--split-word-target 80000 \\='(25 50 25)) => (20000 40000 20000)
+  (org-scribe--split-word-target 10 \\='(1 1 1))       => (4 3 3)
+  (org-scribe--split-word-target 7 \\='(25 50 25))     => (2 3 2)
+
+Signal a `user-error' when TOTAL is not a positive integer or WEIGHTS is
+empty, has a negative weight, or sums to zero."
+  (unless (and (integerp total) (> total 0))
+    (user-error "%s" (org-scribe-msg 'error-word-target-invalid)))
+  (let ((sum (apply #'+ weights)))
+    (when (or (null weights) (cl-some (lambda (w) (< w 0)) weights) (<= sum 0))
+      (user-error "%s" (org-scribe-msg 'error-word-target-weights)))
+    (let* ((raw (mapcar (lambda (w) (/ (* (float total) w) sum)) weights))
+           (parts (mapcar #'floor raw))
+           (leftover (- total (apply #'+ parts)))
+           ;; Indices by descending fraction; `sort' is stable, so ties
+           ;; keep their original, earlier-first order
+           (order (sort (number-sequence 0 (1- (length raw)))
+                        (lambda (a b)
+                          (> (- (nth a raw) (nth a parts))
+                             (- (nth b raw) (nth b parts)))))))
+      (dolist (i (seq-take order leftover))
+        (cl-incf (nth i parts)))
+      parts)))
+
+(defun org-scribe--format-word-count (n &optional language)
+  "Return N with the thousands separator of LANGUAGE between digit groups.
+LANGUAGE defaults to the project's language; the separator is the
+`word-count-thousands-separator' message, so a language pack sets its own."
+  (let ((sep (let ((org-scribe-message-language
+                    (or language (org-scribe-project-language))))
+               (org-scribe-msg 'word-count-thousands-separator)))
+        (digits (number-to-string (abs n)))
+        (groups nil))
+    (while (> (length digits) 3)
+      (push (substring digits -3) groups)
+      (setq digits (substring digits 0 -3)))
+    (push digits groups)
+    (concat (if (< n 0) "-" "") (string-join groups sep))))
 
 (defun org-scribe--find-existing-file (root &rest relative-paths)
   "Return the first existing file from RELATIVE-PATHS under ROOT, or nil."

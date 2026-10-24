@@ -64,6 +64,7 @@
     "test-scene-property-localization" ; Localized scene property aliases
     "test-project"                 ; Project creation
     "test-method"                  ; Per-project plotting method marker
+    "test-word-target"             ; Project word target (marker, split, formatting)
     "test-dir-locals"              ; Project-wide spelling dictionary
     "test-refile"                  ; Project-wide org-refile targets
     "test-capture"                 ; Capture system
@@ -192,6 +193,14 @@ Suitable for CI/CD pipelines and automated testing."
                "\\|^test-create-novel-project-\\|^test-create-short-story-project-"
                "\\|^test-short-story-template-"
                "\\|^test-template-\\(?:directory\\|language\\|variable\\|no-plan\\)")))
+
+;;;###autoload
+(defun org-scribe-run-word-target-tests ()
+  "Run project word-target tests only."
+  (interactive)
+  (load-file (expand-file-name "test-word-target.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-word-target-"))
 
 ;;;###autoload
 (defun org-scribe-run-method-tests ()
