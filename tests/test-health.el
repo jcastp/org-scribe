@@ -734,6 +734,72 @@ had met every goal through yesterday was \"Behind\" every morning."
         (with-current-buffer (get-buffer "*org-scribe-health*")
           (should-not (string-match-p "not counted" (buffer-string))))))))
 
+;;; Word target and drift
+
+(defconst test-health--objective-novel
+  (concat "* Act I :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 20000\n:END:\n\n"
+          "** TODO Chapter :ignore:\n*** TODO Scene :ignore:\n:PROPERTIES:\n"
+          ":PoV: Alice\n:WORDCOUNT: 100\n:END:\n\n"
+          "* Act II :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 40000\n:END:\n\n")
+  "A novel whose parts add up to 60,000.")
+
+(defun test-health--report (word-target &optional plan)
+  "Return the health report text for the objective novel.
+WORD-TARGET stubs `org-scribe-project-word-target'; PLAN is the active plan."
+  (require 'org-scribe-planner)
+  (test-health--with-novel-file test-health--objective-novel
+    (let ((org-scribe-planner--current-plan plan))
+      (cl-letf (((symbol-function 'org-scribe-project-word-target)
+                 (lambda (&optional _root) word-target))
+                ((symbol-function 'org-scribe-project-structure)
+                 (lambda ()
+                   (list :manuscript-file temp-novel :novel-file temp-novel
+                         :plan-file nil :characters-file nil :locations-file nil))))
+        (org-scribe-project-health)
+        (with-current-buffer (get-buffer "*org-scribe-health*")
+          (buffer-string))))))
+
+(ert-deftest test-health-word-target-matching-the-parts ()
+  (let ((content (test-health--report 60000)))
+    (should (string-match-p "^- Word target :: 60000 words$" content))
+    (should-not (string-match-p "mismatch" content))))
+
+(ert-deftest test-health-word-target-drift-is-reported ()
+  (let ((content (test-health--report 50000)))
+    (should (string-match-p "^- Word target :: 50000 words$" content))
+    (should (string-match-p "Word target mismatch :: the parts add up to 60000, the project target is 50000"
+                            content))))
+
+(ert-deftest test-health-no-word-target-no-new-lines ()
+  (let ((content (test-health--report nil)))
+    (should-not (string-match-p "Word target" content))
+    (should-not (string-match-p "mismatch" content))
+    (should (string-match-p "^- Word objective :: 60000$" content))))
+
+(ert-deftest test-health-plan-target-mismatch ()
+  (require 'org-scribe-planner)
+  (let ((plan (make-org-scribe-plan
+               :title "My Novel" :total-words 80000 :daily-words 500 :days 160
+               :start-date "2026-01-01" :end-date "2026-06-30" :current-words 100)))
+    (should (string-match-p
+             "Target mismatch :: the plan aims at 80000 words, the project at 60000"
+             (test-health--report 60000 plan)))
+    (should-not (string-match-p "Target mismatch :: the plan"
+                                (test-health--report 80000 plan)))
+    (should-not (string-match-p "Target mismatch :: the plan"
+                                (test-health--report nil plan)))))
+
+(ert-deftest test-health-plan-section-absent-when-gate-is-no ()
+  (require 'org-scribe-planner)
+  (cl-letf (((symbol-function 'org-scribe-planner-gate) (lambda (&optional _) 'no)))
+    (let ((content (test-health--report
+                    60000 (make-org-scribe-plan
+                           :title "My Novel" :total-words 80000 :daily-words 500 :days 160
+                           :start-date "2026-01-01" :end-date "2026-06-30"
+                           :current-words 100))))
+      (should-not (string-match-p "Writing Plan" content))
+      (should-not (string-match-p "Target mismatch" content)))))
+
 ;;; Starting Gate
 ;;
 ;; Six of the gate's eight items can only be self-reported; two are

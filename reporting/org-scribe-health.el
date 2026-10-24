@@ -558,6 +558,14 @@ with clickable ID links back to each scene."
                         manuscript-file (file-name-nondirectory manuscript-file)))
         (insert (format "- Total scenes :: %d\n" scene-count))
         (insert (format "- Words written :: %d\n" total-words))
+        (let ((word-target (org-scribe-project-word-target)))
+          (when word-target
+            (insert (format "- %s\n" (org-scribe-msg 'msg-health-word-target word-target)))
+            ;; Reported, not resolved: the parts and the target are the
+            ;; writer's to reconcile (F8 F8 t)
+            (when (and (> total-obj 0) (/= total-obj word-target))
+              (insert (format "- %s\n" (org-scribe-msg 'msg-health-word-target-drift
+                                                         total-obj word-target))))))
         (if progress
             (progn
               (insert (format "- Word objective :: %d\n" total-obj))
@@ -597,6 +605,10 @@ with clickable ID links back to each scene."
               (insert (format "- End date :: %s\n" end))
               (insert (format "- Days remaining :: %d\n" days-rem))
               (insert (format "- Status :: %s\n" status))
+              (let ((word-target (org-scribe-project-word-target)))
+                (when (and word-target (/= target word-target))
+                  (insert (format "- %s\n" (org-scribe-msg 'msg-health-plan-target-mismatch
+                                                             target word-target)))))
               (when (fboundp 'org-scribe-planner--outside-total)
                 (let ((outside (org-scribe-planner--outside-total plan)))
                   (when (> outside 0)
