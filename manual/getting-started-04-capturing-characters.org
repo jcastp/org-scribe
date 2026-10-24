@@ -860,20 +860,20 @@ See which characters appear in which scenes at a glance!
 A table showing:
 - Rows: Your scenes (in story order)
 - Columns: Your characters
-- Symbols: ◆ (PoV character) or ● (appears in scene)
+- Symbols: ★ (PoV character) or ● (appears in scene)
 
 Example:
 #+BEGIN_EXAMPLE
 | Scene                  | Chapter   | Alex | Sam | Jordan |
 |------------------------+-----------+------+-----+--------|
-| Scene 1 - Alarm        | Chapter 1 | ◆    |     |        |
-| Scene 2 - Coffee Shop  | Chapter 1 | ◆    | ●   |        |
+| Scene 1 - Alarm        | Chapter 1 | ★    |     |        |
+| Scene 2 - Coffee Shop  | Chapter 1 | ★    | ●   |        |
 | Scene 3 - Work Meeting | Chapter 1 | ●    |     | ●      |
-| Scene 4 - Evening      | Chapter 2 | ◆    | ●   |        |
+| Scene 4 - Evening      | Chapter 2 | ★    | ●   |        |
 #+END_EXAMPLE
 
 Reading the table:
-- ◆ = This character is the PoV
+- ★ = This character is the PoV
 - ● = This character appears (but isn't PoV)
 - (blank) = Character doesn't appear
 
@@ -1373,7 +1373,7 @@ runs between them. A walk-on needs no profile at all.
 
 | Symbol  | Meaning                                 |
 |---------+-----------------------------------------|
-| ◆       | PoV character (viewpoint in this scene) |
+| ★       | PoV character (viewpoint in this scene) |
 | ●       | Present (appears but not PoV)           |
 | (blank) | Absent (doesn't appear in this scene)   |
 

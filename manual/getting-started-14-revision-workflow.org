@@ -419,14 +419,14 @@ Use the character timeline to verify character appearances.
 #+BEGIN_EXAMPLE
 | Scene                  | Chapter   | Alex | Sam | Jordan | Sarah |
 |------------------------+-----------+------+-----+--------+-------|
-| Scene 1 - Opening      | Chapter 1 | ◆    | ●   |        |       |
-| Scene 2 - Meeting      | Chapter 1 | ◆    | ●   | ●      |       |
-| Scene 3 - Conflict     | Chapter 2 | ◆    |     | ●      | ●     |
-| Scene 4 - Discovery    | Chapter 2 | ◆    | ●   |        |       |
+| Scene 1 - Opening      | Chapter 1 | ★    | ●   |        |       |
+| Scene 2 - Meeting      | Chapter 1 | ★    | ●   | ●      |       |
+| Scene 3 - Conflict     | Chapter 2 | ★    |     | ●      | ●     |
+| Scene 4 - Discovery    | Chapter 2 | ★    | ●   |        |       |
 #+END_EXAMPLE
 
 **Symbols reminder**:
-- ◆ = Point of View character (this scene from their perspective)
+- ★ = Point of View character (this scene from their perspective)
 - ● = Character present (appears but not PoV)
 
 **What to look for**:
@@ -445,8 +445,8 @@ Use the character timeline to verify character appearances.
 
 *Problem: PoV imbalance (multi-PoV novels)*
 #+BEGIN_EXAMPLE
-Alex PoV: 12 scenes ◆◆◆◆◆◆◆◆◆◆◆◆
-Jordan PoV: 2 scenes ◆◆
+Alex PoV: 12 scenes ★★★★★★★★★★★★
+Jordan PoV: 2 scenes ★★
 #+END_EXAMPLE
 
 *Action*: Add more Jordan PoV scenes, or make Jordan non-PoV

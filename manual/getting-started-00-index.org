@@ -208,7 +208,7 @@ Generate visual timelines showing character appearances and plot development.
 *You'll learn:*
 - Creating character timeline tables
 - Creating plot thread timeline tables
-- Interpreting timeline symbols (◆ for PoV, ● for presence)
+- Interpreting timeline symbols (★ for PoV, ● for presence)
 - Using timelines to check story balance
 
 *** [[file:getting-started-11-exporting.org][Lesson 11: Export Your Manuscript]]

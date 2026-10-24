@@ -15,7 +15,7 @@ These visual tables help you spot problems:
 By the end of this lesson, you'll have:
 - Created character timeline tables showing who appears where
 - Created plot thread timeline tables showing story development
-- Understood timeline symbols (◆ for PoV, ● for presence)
+- Understood timeline symbols (★ for PoV, ● for presence)
 - Used timelines to identify gaps and imbalances
 - Generated plot health reports with warnings
 - Made your story stronger through visual analysis
@@ -59,13 +59,13 @@ Before we create timelines, let's understand the symbols they use.
 
 | Symbol  | Meaning                     | Example                        |
 |---------+-----------------------------+--------------------------------|
-| ◆       | Point of View character     | Scene from Alice's perspective |
+| ★       | Point of View character     | Scene from Alice's perspective |
 | ●       | Character present (not PoV) | Bob appears but isn't PoV      |
 | (blank) | Character not in scene      | Charlie doesn't appear         |
 
 ** Symbol Logic: PoV Takes Precedence
 
-*Important rule*: If a character is PoV, they're shown as ◆ even if they're also in the ~:Characters:~ property.
+*Important rule*: If a character is PoV, they're shown as ★ even if they're also in the ~:Characters:~ property.
 
 Example scene properties:
 #+BEGIN_EXAMPLE
@@ -74,11 +74,11 @@ Example scene properties:
 #+END_EXAMPLE
 
 Timeline shows:
-- Alice: ◆ (PoV, not ● even though in Characters list)
+- Alice: ★ (PoV, not ● even though in Characters list)
 - Bob: ●
 - Charlie: ●
 
-*Why?* PoV implies presence, so we don't need both symbols. The diamond (◆) is stronger/more important.
+*Why?* PoV implies presence, so we don't need both symbols. The star (★) is stronger/more important.
 
 ** Plot Thread Timeline Symbols
 
@@ -98,17 +98,17 @@ Here's what a character timeline looks like:
 #+BEGIN_EXAMPLE
 | Scene                  | Chapter   | Alice | Bob | Charlie |
 |------------------------+-----------+-------+-----+---------|
-| Scene 1 - Morning      | Chapter 1 | ◆     | ●   |         |
+| Scene 1 - Morning      | Chapter 1 | ★     | ●   |         |
 | Scene 2 - Coffee       | Chapter 1 | ●     |     | ●       |
-| Scene 3 - Office       | Chapter 1 | ◆     | ●   | ●       |
-| Scene 4 - Confrontation| Chapter 2 | ◆     | ●   |         |
+| Scene 3 - Office       | Chapter 1 | ★     | ●   | ●       |
+| Scene 4 - Confrontation| Chapter 2 | ★     | ●   |         |
 #+END_EXAMPLE
 
 Reading this table:
-- Scene 1: Alice is PoV (◆), Bob appears (●), Charlie absent
+- Scene 1: Alice is PoV (★), Bob appears (●), Charlie absent
 - Scene 2: Alice appears (●), Charlie appears (●), Bob absent, no PoV
-- Scene 3: Alice is PoV (◆), Bob and Charlie both appear (●)
-- Scene 4: Alice is PoV (◆), Bob appears (●), Charlie absent
+- Scene 3: Alice is PoV (★), Bob and Charlie both appear (●)
+- Scene 4: Alice is PoV (★), Bob appears (●), Charlie absent
 
 * Creating Your First Character Timeline
 
@@ -128,7 +128,7 @@ Your template already includes a timeline section!
 This table shows which characters appear in which scenes.
 
 Symbols:
-- ◆ = Point of View character
+- ★ = Point of View character
 - ● = Present in scene
 
 Update with =C-c C-c= on the #+BEGIN line.
@@ -152,9 +152,9 @@ You should now see:
 #+BEGIN: character-timeline
 | Scene              | Chapter   | Alice | Bob | Charlie | Dana |
 |--------------------+-----------+-------+-----+---------+------|
-| Scene 1 - Opening  | Chapter 1 | ◆     | ●   |         |      |
+| Scene 1 - Opening  | Chapter 1 | ★     | ●   |         |      |
 | Scene 2 - Meeting  | Chapter 1 | ●     |     | ●       |      |
-| Scene 3 - Conflict | Chapter 2 | ◆     | ●   | ●       | ●    |
+| Scene 3 - Conflict | Chapter 2 | ★     | ●   | ●       | ●    |
 #+END:
 #+END_EXAMPLE
 
@@ -167,7 +167,7 @@ Look at your generated timeline and identify:
 1. **Character columns**: One column per character who appears anywhere
 2. **Scene rows**: One row per scene with character properties
 3. **Symbols**:
-   - ◆ = This character's PoV
+   - ★ = This character's PoV
    - ● = Character present
    - Blank = Character absent
 
@@ -195,13 +195,13 @@ If a character appears early, then has many blanks:
 
 *** No PoV Variety (Single PoV Novels)
 
-If only one character has ◆:
+If only one character has ★:
 - *Okay for*: First-person novels, single PoV stories
 - *Problem if*: You intended multi-PoV but forgot to switch
 
 *** PoV Switching Too Often
 
-If ◆ bounces between many characters rapidly:
+If ★ bounces between many characters rapidly:
 - *Problem*: Confusing PoV shifts, no character focus
 - *Solution*: Group PoV scenes together (3-4 consecutive scenes same PoV)
 
@@ -458,18 +458,18 @@ Here are real-world uses for timelines.
 *Goal*: Ensure all main characters get screen time
 
 1. Generate character timeline
-2. Count ◆ symbols per character (PoV scenes)
+2. Count ★ symbols per character (PoV scenes)
 3. Count ● symbols per character (total appearances)
 4. Compare:
-   - Protagonist should have most ◆ (single PoV) or plurality (multi-PoV)
+   - Protagonist should have most ★ (single PoV) or plurality (multi-PoV)
    - Supporting cast should have regular ●
    - Minor characters should have occasional ●
 5. Add scenes for under-represented characters
 
 *Example findings*:
-- Alice: 10 ◆, 2 ● = 12 appearances (good for protagonist)
-- Bob: 0 ◆, 8 ● = 8 appearances (good for sidekick)
-- Charlie: 0 ◆, 2 ● = only 2 appearances (need more!)
+- Alice: 10 ★, 2 ● = 12 appearances (good for protagonist)
+- Bob: 0 ★, 8 ● = 8 appearances (good for sidekick)
+- Charlie: 0 ★, 2 ● = only 2 appearances (need more!)
 
 ** Workflow 2: Plot Thread Pacing (During Drafting)
 
@@ -511,7 +511,7 @@ Here are real-world uses for timelines.
 *Goal*: Balance PoV distribution across characters
 
 1. Generate character timeline
-2. Count ◆ per character
+2. Count ★ per character
 3. Calculate percentages:
    - Alice: 6/15 scenes = 40% PoV
    - Bob: 5/15 scenes = 33% PoV
@@ -557,7 +557,7 @@ In your manuscript (~novel.org~), add:
 This table shows which characters appear in which scenes.
 
 Symbols:
-- ◆ = Point of View character (implies presence)
+- ★ = Point of View character (implies presence)
 - ● = Present in scene (not PoV)
 
 Update with =C-c C-c= on the #+BEGIN line.
@@ -609,7 +609,7 @@ Once comfortable with basic timelines, try these advanced techniques.
 ** Color Coding (External Tool)
 
 Export timeline to CSV or HTML and use spreadsheet for color coding:
-1. ◆ = Green (PoV)
+1. ★ = Green (PoV)
 2. ● = Blue (present)
 3. Blank = White (absent)
 
@@ -620,7 +620,7 @@ Visual color patterns show balance instantly!
 Create a summary table manually:
 
 #+BEGIN_EXAMPLE
-| Character | PoV (◆) | Present (●) | Total | Percentage |
+| Character | PoV (★) | Present (●) | Total | Percentage |
 |-----------+---------+-------------+-------+------------|
 | Alice     |      10 |           2 |    12 | 80%        |
 | Bob       |       0 |           8 |     8 | 53%        |
@@ -700,7 +700,7 @@ For each thread, verify:
 
 *Depends on story type*:
 
-- **Single PoV**: One character has 100% of ◆
+- **Single PoV**: One character has 100% of ★
 - **Dual PoV**: 50/50 split (or 60/40 if one is primary)
 - **Triple PoV**: 33/33/33 (or weighted like 50/30/20)
 - **Ensemble**: 4+ characters, distributed across acts
@@ -807,7 +807,7 @@ Only the first one auto-generates from ~:Plot:~ properties, but you can maintain
 Excellent work! You've completed Lesson 10. You now know:
 
 ✓ The two types of timelines (character and plot thread)
-✓ Timeline symbols (◆ for PoV, ● for presence)
+✓ Timeline symbols (★ for PoV, ● for presence)
 ✓ How to generate character timelines with ~#+BEGIN: character-timeline~
 ✓ How to generate plot thread timelines with ~#+BEGIN: plot-thread-timeline~
 ✓ How to read and interpret timeline tables
@@ -887,7 +887,7 @@ Plot Thread Timeline:
 
 #+BEGIN_EXAMPLE
 CHARACTER TIMELINE:
-  ◆ = PoV character (this character's perspective)
+  ★ = PoV character (this character's perspective)
   ● = Present in scene (but not PoV)
   blank = Not in this scene
 

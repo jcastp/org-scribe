@@ -269,7 +269,7 @@ Reads the ~:Plot:~ property of the current scene, presents a menu if multiple pl
 
 ** Character Timeline Generation
 
-Generates a dynamic table showing which characters appear in which scenes, with distinction between PoV characters (◆) and other appearances (●). The dynamic block ~#+BEGIN: character-timeline~ scans all scenes (the project's own scene level — level 3 in a novel, level 2 in a short story) in the manuscript, extracts ~:PoV:~ and ~:Characters:~ properties, collects unique characters, and builds a presence matrix. PoV takes precedence (a character won't show both ◆ and ● in the same scene). Update the table by pressing ~C-c C-c~ on the block. Useful for checking character coverage and PoV balance. The short-story manuscript template does not ship this block by default, but it works if added to ~story.org~/~cuento.org~.
+Generates a dynamic table showing which characters appear in which scenes, with distinction between PoV characters (★) and other appearances (●). The dynamic block ~#+BEGIN: character-timeline~ scans all scenes (the project's own scene level — level 3 in a novel, level 2 in a short story) in the manuscript, extracts ~:PoV:~ and ~:Characters:~ properties, collects unique characters, and builds a presence matrix. PoV takes precedence (a character won't show both ★ and ● in the same scene). Update the table by pressing ~C-c C-c~ on the block. Useful for checking character coverage and PoV balance. The short-story manuscript template does not ship this block by default, but it works if added to ~story.org~/~cuento.org~.
 
 *Status*: Fully implemented | *Hydra*: Not in menu (dynamic block) | *Module*: ~linking/org-scribe-character-links.el~
 

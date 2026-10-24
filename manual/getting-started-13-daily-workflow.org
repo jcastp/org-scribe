@@ -659,9 +659,9 @@ Review the table:
 #+BEGIN_EXAMPLE
 | Scene              | Alex | Sam | Jordan |
 |--------------------+------+-----+--------|
-| Scene 1 - Opening  | ◆    | ●   |        |
-| Scene 2 - Meeting  | ◆    | ●   | ●      |
-| Scene 3 - Reveal   | ◆    | ●   |        |
+| Scene 1 - Opening  | ★    | ●   |        |
+| Scene 2 - Meeting  | ★    | ●   | ●      |
+| Scene 3 - Reveal   | ★    | ●   |        |
 #+END_EXAMPLE
 
 *Questions to ask*:

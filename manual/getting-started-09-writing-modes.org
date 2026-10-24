@@ -1198,7 +1198,7 @@ Ready to visualize your story? Head to [[file:getting-started-10-timelines.org][
 In the next lesson, you'll learn:
 - Creating character timeline tables
 - Creating plot thread timeline tables
-- Understanding timeline symbols (◆ for PoV, ● for presence)
+- Understanding timeline symbols (★ for PoV, ● for presence)
 - Using timelines to check story balance
 - Identifying gaps in character appearances
 - Analyzing plot thread coverage

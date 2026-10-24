@@ -79,7 +79,7 @@ Para estadísticas rápidas, usa =M-x org-scribe-plot-thread-stats=.
 Esta tabla muestra qué personajes aparecen en cada escena.
 
 Símbolos:
-- ◆ = Personaje con Punto de Vista
+- ★ = Personaje con Punto de Vista
 - ● = Presente en la escena
 
 Actualiza con =C-c C-c= en la línea #+BEGIN.

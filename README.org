@@ -985,7 +985,7 @@ Character timeline uses the existing character properties you're already setting
 *** Reading the Timeline
 
 **Symbols**:
-- ◆ = Character is the Point of View character (implies presence)
+- ★ = Character is the Point of View character (implies presence)
 - ● = Character is present in the scene (not PoV)
 - (blank) = Character is not present
 
@@ -993,9 +993,9 @@ Character timeline uses the existing character properties you're already setting
 #+begin_example
 | Scene              | Chapter   | Alice | Bob | Charlie |
 |--------------------+-----------+-------+-----+---------|
-| Scene 1 - Opening  | Chapter 1 | ◆     | ●   |         |
+| Scene 1 - Opening  | Chapter 1 | ★     | ●   |         |
 | Scene 2 - Meeting  | Chapter 1 | ●     |     | ●       |
-| Scene 3 - Conflict | Chapter 2 | ◆     | ●   | ●       |
+| Scene 3 - Conflict | Chapter 2 | ★     | ●   | ●       |
 #+end_example
 
 **Interpretation**:
@@ -1010,7 +1010,7 @@ Character timeline uses the existing character properties you're already setting
    - Identify extended absences
 
 2. **PoV Balance** (Multi-POV Novels): "Am I favoring one viewpoint too much?"
-   - Scan ◆ symbols across characters
+   - Scan ★ symbols across characters
    - Ensure balanced distribution
    - Verify alternating pattern (if desired)
 
@@ -1038,7 +1038,7 @@ The timeline automatically:
 - Sorts characters alphabetically for easy location
 - Distinguishes PoV from other appearances
 
-If a character is PoV and also in Characters property, only ◆ is shown (PoV implies presence).
+If a character is PoV and also in Characters property, only ★ is shown (PoV implies presence).
 
 *** Best Practices
 

@@ -290,9 +290,9 @@ POV-NAME is the scene's PoV character (or nil).
 CHARS-LIST is list of other characters in scene."
   (cond
    ((and pov-name (string= char-name pov-name))
-    "◆")
+    org-scribe-timeline-pov-symbol)
    ((and chars-list (member char-name chars-list))
-    "●")
+    org-scribe-timeline-present-symbol)
    (t "")))
 
 ;;;###autoload

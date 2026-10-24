@@ -170,7 +170,7 @@ still linked to the first Alex's ID."
 
 (ert-deftest test-character-symbol-pov ()
   "Test character symbol for PoV character."
-  (should (string= "◆"
+  (should (string= "★"
                    (org-scribe--character-symbol "Alice" "Alice" '("Bob" "Charlie")))))
 
 (ert-deftest test-character-symbol-present ()
@@ -185,8 +185,8 @@ still linked to the first Alex's ID."
 
 (ert-deftest test-character-symbol-pov-precedence ()
   "Test that PoV takes precedence when character in both properties."
-  ;; If Alice is PoV and also in Characters list, should show ◆ (not both)
-  (should (string= "◆"
+  ;; If Alice is PoV and also in Characters list, should show ★ (not both)
+  (should (string= "★"
                    (org-scribe--character-symbol "Alice" "Alice" '("Alice" "Bob")))))
 
 (ert-deftest test-character-symbol-no-pov ()
@@ -198,7 +198,7 @@ still linked to the first Alex's ID."
 
 (ert-deftest test-character-symbol-no-characters ()
   "Test character symbol when no Characters list (nil or empty)."
-  (should (string= "◆"
+  (should (string= "★"
                    (org-scribe--character-symbol "Alice" "Alice" nil)))
   (should (string= ""
                    (org-scribe--character-symbol "Bob" "Alice" nil)))

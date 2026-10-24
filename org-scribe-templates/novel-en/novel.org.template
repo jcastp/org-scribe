@@ -79,7 +79,7 @@ For quick statistics, use =M-x org-scribe-plot-thread-stats=.
 This table shows which characters appear in which scenes.
 
 Symbols:
-- ◆ = Point of View character
+- ★ = Point of View character
 - ● = Present in scene
 
 Update with =C-c C-c= on the #+BEGIN line.

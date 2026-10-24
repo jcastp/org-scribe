@@ -592,6 +592,23 @@ current theme untouched."
   :type 'symbol
   :group 'org-scribe)
 
+;;; Timeline symbols
+
+(defcustom org-scribe-timeline-pov-symbol "★"
+  "Symbol marking the PoV character in the character timeline.
+Shown in `character-timeline' dynamic blocks, in the cell of the
+character whose point of view the scene is told from.  It implies
+presence, so the present symbol is not shown alongside it.  Pick
+something that stands apart from `org-scribe-timeline-present-symbol'
+in your font."
+  :type 'string
+  :group 'org-scribe)
+
+(defcustom org-scribe-timeline-present-symbol "●"
+  "Symbol marking a character present, but not PoV, in the timeline."
+  :type 'string
+  :group 'org-scribe)
+
 ;;; Search
 
 (defcustom org-scribe-edit-string
