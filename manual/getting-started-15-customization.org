@@ -426,6 +426,24 @@ This one variable drives both ends: the index groups by it, and the bundled Temp
 (setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")
 #+END_SRC
 
+* Customizing the Word Target
+
+A new project asks for its total word count. Two options shape that question:
+
+#+BEGIN_SRC emacs-lisp
+;; The total offered for each project type (press Enter to accept it)
+(setq org-scribe-default-word-target
+      '((novel . 80000) (short-story . 5000)))
+
+;; How the total is split among the three outermost parts
+;; (acts of a novel, scenes of a short story). Only the ratios matter.
+(setq org-scribe-word-target-proportions '(25 50 25))
+#+END_SRC
+
+~org-scribe-word-target-proportions~ must hold exactly three weights, because
+the shipped templates have three outermost parts; project creation refuses
+anything else before it writes a file.
+
 * Customizing Language Tools
 
 Configure the dictionary and synonym tools.

@@ -319,8 +319,27 @@ If you want to create a full novel project instead, the process is almost identi
 7. Choose a plotting method — the default, /Sistema unificado/, or one of two
    others, /La Hélice/ ("start from a premise") and /La Matriz/ ("start from
    characters"); see [[*Choosing a Plotting Method][Choosing a Plotting Method]] below
-8. Wait for creation
-9. Explore!
+8. Enter the total word count for the project (80,000 by default; press
+   ~Enter~ to accept) — see [[*The Total Word Count][The Total Word Count]] below
+9. Wait for creation
+10. Explore!
+
+** The Total Word Count
+
+Both project types ask for the project's *total word count* at creation. It
+is stored in the ~.org-scribe-project~ file (the ~# Target-words:~ line) and
+used to size the outermost parts of the manuscript: the three acts of a novel,
+or the three scenes of a short story, get 25 % / 50 % / 25 % of it. For 50,000
+words a novel's acts are 12,500 / 25,000 / 12,500. The Project Goals list of a
+novel shows the total too. Chapter and scene objectives (3,000 and 500) are
+not changed.
+
+The default is 80,000 words for a novel and 5,000 for a short story;
+change it with ~org-scribe-default-word-target~, and the split with
+~org-scribe-word-target-proportions~ (see Lesson 15).
+
+The pace — daily target and end date — is not set here: that is the writing
+planner's job (~F8 F8 W~).
 
 ** Novel Project Structure
 

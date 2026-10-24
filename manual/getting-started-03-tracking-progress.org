@@ -290,10 +290,9 @@ For major sections:
 - Middle: ~5,000
 - Ending: ~2,000
 
-Or for novels:
-- Act I: ~20,000
-- Act II: ~40,000
-- Act III: ~20,000
+Or for novels, the three acts split the project's total 25 % / 50 % / 25 %
+(for an 80,000-word novel: 20,000 / 40,000 / 20,000; for 50,000:
+12,500 / 25,000 / 12,500). The total is asked for when the project is created.
 
 ** Total Story Objective
 

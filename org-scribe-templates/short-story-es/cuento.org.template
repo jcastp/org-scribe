@@ -11,7 +11,7 @@
 * Información del Cuento :noexport:
 :PROPERTIES:
 :GENRE:
-:TARGET_WORDCOUNT: 5000
+:TARGET_WORDCOUNT: ${TOTAL_WORDS}
 :ACTUAL_WORDCOUNT: 0
 :STATUS: Borrador
 :DEADLINE:
@@ -47,7 +47,7 @@ cargar un plan.
 ** TODO Inicio :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 1500
+:WORD-OBJECTIVE: ${PART1_WORDS}
 :PoV:
 :Personajes:
 :Trama:
@@ -75,7 +75,7 @@ cargar un plan.
 ** TODO Desarrollo :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 2000
+:WORD-OBJECTIVE: ${PART2_WORDS}
 :PoV:
 :Personajes:
 :Trama:
@@ -103,7 +103,7 @@ cargar un plan.
 ** TODO Final :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 1500
+:WORD-OBJECTIVE: ${PART3_WORDS}
 :PoV:
 :Personajes:
 :Trama:

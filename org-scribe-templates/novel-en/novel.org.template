@@ -10,15 +10,12 @@
 
 * Project Goals :ignore:noexport:
 
-- Total word target :: 80,000
+- Total word target :: ${TOTAL_WORDS_FMT}
 - Start date :: ${DATE}
-- Target completion date ::
-- Daily word target :: 1,000
 
-# These four numbers are a statement of intent, written once. If you enable
-# the writing planner (=F8 F8 W=, or =M-x org-scribe-plan=), it takes them
-# over: it keeps the daily ledger, recomputes the daily target as you go,
-# and tells you whether you are on track.
+# The total is the project's own (its marker file, line "Target-words").
+# The pace (daily target, end date) is the writing planner's job:
+# =F8 F8 W=, or =M-x org-scribe-plan=.
 
 * Progress Tracking :ignore:noexport:
 
@@ -105,7 +102,7 @@ Update with =C-c C-c= on the #+BEGIN line.
 :PROPERTIES:
 :CUSTOM_ID: act-1
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 20000
+:WORD-OBJECTIVE: ${PART1_WORDS}
 :END:
 
 ** TODO Chapter 1 :ignore:
@@ -144,12 +141,12 @@ Update with =C-c C-c= on the #+BEGIN line.
 :PROPERTIES:
 :CUSTOM_ID: act-2
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 40000
+:WORD-OBJECTIVE: ${PART2_WORDS}
 :END:
 
 * Act III :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-3
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 20000
+:WORD-OBJECTIVE: ${PART3_WORDS}
 :END:

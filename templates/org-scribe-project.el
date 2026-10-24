@@ -251,8 +251,48 @@ matching what an omitted `# Method:' marker resolves to via
                                  (mapcar #'car choices) nil t nil nil default-label)
                choices nil nil #'string=)))
 
+;; Number of outermost parts the shipped templates have: the three acts of
+;; a novel, the three scenes of a short story.
+(defconst org-scribe--word-target-parts 3)
+
+(defun org-scribe--read-word-target (type)
+  "Prompt for the total word target of a TYPE project, returning an integer.
+TYPE is `novel' or `short-story'; the default offered comes from
+`org-scribe-default-word-target'.  Asks again until the answer is a whole
+number with at least one word for each outermost part."
+  (let ((default (org-scribe-default-word-target-for type))
+        (answer nil))
+    (while (not (and answer (integerp answer)
+                     (>= answer org-scribe--word-target-parts)))
+      (setq answer (read-number (org-scribe-msg 'project-creation-word-target-prompt)
+                                default)))
+    answer))
+
+(defun org-scribe--word-target-variables (target-words language)
+  "Return the template variables for a project of TARGET-WORDS in LANGUAGE.
+TOTAL_WORDS (plain digits), TOTAL_WORDS_FMT (with LANGUAGE's thousands
+separator) and PART1_WORDS..PART3_WORDS (the exact split by
+`org-scribe-word-target-proportions').  Signal a `user-error' for a bad
+total or for proportions that are not exactly three weights; callers run
+this before creating anything on disk."
+  (unless (and (integerp target-words)
+               (>= target-words org-scribe--word-target-parts))
+    (user-error "%s" (org-scribe-msg 'error-word-target-invalid)))
+  (unless (= (length org-scribe-word-target-proportions)
+             org-scribe--word-target-parts)
+    (user-error "%s" (org-scribe-msg 'error-word-target-proportions)))
+  (let ((parts (org-scribe--split-word-target
+                target-words org-scribe-word-target-proportions)))
+    (when (memq 0 parts)
+      (user-error "%s" (org-scribe-msg 'error-word-target-invalid)))
+    `(("TOTAL_WORDS" . ,(number-to-string target-words))
+      ("TOTAL_WORDS_FMT" . ,(org-scribe--format-word-count target-words language))
+      ,@(cl-loop for part in parts
+                 for i from 1
+                 collect (cons (format "PART%d_WORDS" i) (number-to-string part))))))
+
 ;;;###autoload
-(defun org-scribe-create-novel-project (base-dir title &optional language method)
+(defun org-scribe-create-novel-project (base-dir title &optional language method target-words)
   "Create a new novel project structure from templates.
 BASE-DIR is the parent directory where the project will be created.
 TITLE is the name of the novel/project.
@@ -263,6 +303,9 @@ METHOD selects which plotting method's design file is deployed — one
 of \\='sistema, \\='helice, or \\='matriz (see `org-scribe--methods').
 When omitted, defaults to \\='sistema, exactly matching the legacy
 behavior a project got before this argument existed.
+TARGET-WORDS is the project's total word count, recorded in the marker
+file and used to size the three acts; when omitted, the default for a
+novel in `org-scribe-default-word-target'.
 
 This function:
 1. Validates the title
@@ -281,10 +324,12 @@ This function:
                                               (mapcar #'symbol-name (org-scribe-languages))
                                               nil t nil nil
                                               (symbol-name org-scribe-template-language)))))
-     (list base-dir title language (org-scribe--read-method language))))
+     (list base-dir title language (org-scribe--read-method language)
+           (org-scribe--read-word-target 'novel))))
 
   (let* ((language (or language org-scribe-template-language))
          (method (or method 'sistema))
+         (target-words (or target-words (org-scribe-default-word-target-for 'novel)))
          (template-dir (expand-file-name
                         (concat "../org-scribe-templates/" (org-scribe-lang-template 'novel language))
                         org-scribe-project-package-directory)))
@@ -300,7 +345,8 @@ This function:
     (let* ((project-dir (expand-file-name title base-dir))
            (variables `(("TITLE" . ,title)
                        ("AUTHOR" . ,(if (boundp 'user-full-name) user-full-name "Author"))
-                       ("DATE" . ,(format-time-string "%Y-%m-%d")))))
+                       ("DATE" . ,(format-time-string "%Y-%m-%d"))
+                       ,@(org-scribe--word-target-variables target-words language))))
 
       ;; Check if project already exists
       (when (file-exists-p project-dir)
@@ -314,7 +360,8 @@ This function:
         (insert (format "# Writing project: %s\n" title)
                 (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
                 (format "# Language: %s\n" language)
-                (format "# Method: %s\n" method)))
+                (format "# Method: %s\n" method)
+                (format "# Target-words: %d\n" target-words)))
 
       ;; Pin the spelling dictionary for the whole project, before the
       ;; initial commit so it is versioned like every other created file.
@@ -353,13 +400,16 @@ This function:
         (org-scribe--offer-plan-after-create base-dir title)))))
 
 ;;;###autoload
-(defun org-scribe-create-short-story-project (base-dir title &optional language)
+(defun org-scribe-create-short-story-project (base-dir title &optional language target-words)
   "Create a new short story project structure from templates.
 BASE-DIR is the parent directory where the project will be created.
 TITLE is the name of the short story/project.
 LANGUAGE selects which template set to use, either \\='en or \\='es.
 When omitted (e.g. non-interactive callers), defaults to
 `org-scribe-template-language'.
+TARGET-WORDS is the story's total word count, recorded in the marker
+file and used to size its three scenes; when omitted, the default for a
+short story in `org-scribe-default-word-target'.
 
 This function:
 1. Validates the title
@@ -377,10 +427,12 @@ This function:
     (intern (completing-read (org-scribe-msg 'project-creation-language-prompt)
                               (mapcar #'symbol-name (org-scribe-languages))
                               nil t nil nil
-                              (symbol-name org-scribe-template-language)))))
+                              (symbol-name org-scribe-template-language)))
+    (org-scribe--read-word-target 'short-story)))
 
   ;; Determine template directory based on language
   (let* ((language (or language org-scribe-template-language))
+         (target-words (or target-words (org-scribe-default-word-target-for 'short-story)))
          (template-dir (expand-file-name
                       (concat "../org-scribe-templates/" (org-scribe-lang-template 'short-story language))
                       org-scribe-project-package-directory)))
@@ -396,7 +448,8 @@ This function:
     (let* ((project-dir (expand-file-name title base-dir))
            (variables `(("TITLE" . ,title)
                        ("AUTHOR" . ,(if (boundp 'user-full-name) user-full-name "Author"))
-                       ("DATE" . ,(format-time-string "%Y-%m-%d"))))
+                       ("DATE" . ,(format-time-string "%Y-%m-%d"))
+                       ,@(org-scribe--word-target-variables target-words language)))
            (story-file (org-scribe-lang-file 'manuscript-short language)))
 
       ;; Check if project already exists
@@ -411,7 +464,8 @@ This function:
         (insert (format "# Writing project: %s\n" title)
                 (format "# Type: short-story\n")
                 (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
-                (format "# Language: %s\n" language)))
+                (format "# Language: %s\n" language)
+                (format "# Target-words: %d\n" target-words)))
 
       ;; Pin the spelling dictionary for the whole project, before the
       ;; initial commit so it is versioned like every other created file.

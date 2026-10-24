@@ -536,5 +536,21 @@ broken in any visible way; it just silently keeps the global language."
           (forward-line 1))
         (should (equal (cons file nil) (cons file prose)))))))
 
+;;; Goals label
+
+(ert-deftest test-template-parity-goals-label-matches-pack ()
+  "The novel templates' total-word line carries the pack's own label.
+`org-scribe-set-word-target' finds the line by that label."
+  (dolist (spec '((en . "novel-en/novel.org.template")
+                  (es . "novel-es/novela.org.template")))
+    (let ((file (expand-file-name (concat "org-scribe-templates/" (cdr spec))
+                                  org-scribe-parity--root))
+          (label (let ((org-scribe-message-language (car spec)))
+                   (org-scribe-msg 'goals-total-label))))
+      (with-temp-buffer
+        (insert-file-contents file)
+        (should (re-search-forward
+                 (format "^- %s :: " (regexp-quote label)) nil t))))))
+
 (provide 'test-template-parity)
 ;;; test-template-parity.el ends here

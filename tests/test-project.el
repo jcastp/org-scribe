@@ -849,6 +849,117 @@ disk errors loudly rather than silently skipping the design file."
   (interactive)
   (ert "^test-project-\\|^test-validate-\\|^test-template-\\|^test-insert-\\|^test-backward-"))
 
+;;; Total word target at creation
+
+(defun test-project--read (&rest parts)
+  "Return the text of the file named by PARTS joined as a path."
+  (with-temp-buffer
+    (insert-file-contents (apply #'expand-file-name (list (mapconcat #'identity (cdr parts) "/") (car parts))))
+    (buffer-string)))
+
+(defmacro test-project--with-created (dir-var kind title language target &rest body)
+  "Create a KIND project TITLE in LANGUAGE with TARGET words; run BODY.
+DIR-VAR is bound to the project directory."
+  (declare (indent 5))
+  `(test-project--with-temp-base-dir base
+     (let ((,dir-var (expand-file-name ,title base)))
+       (cl-letf (((symbol-function 'message) #'ignore))
+         (if (eq ,kind 'novel)
+             (org-scribe-create-novel-project base ,title ,language nil ,target)
+           (org-scribe-create-short-story-project base ,title ,language ,target)))
+       (unwind-protect (progn ,@body)
+         (dolist (buf (buffer-list))
+           (when (and (buffer-file-name buf)
+                      (string-prefix-p (file-name-as-directory ,dir-var)
+                                       (buffer-file-name buf)))
+             (with-current-buffer buf (set-buffer-modified-p nil))
+             (kill-buffer buf)))))))
+
+(defun test-project--objectives (text)
+  "Return the WORD-OBJECTIVE values in TEXT, in order, as integers."
+  (let (values (start 0))
+    (while (string-match ":WORD-OBJECTIVE: +\\([0-9]+\\)" text start)
+      (push (string-to-number (match-string 1 text)) values)
+      (setq start (match-end 0)))
+    (nreverse values)))
+
+(ert-deftest test-project-word-target-novel-explicit ()
+  (test-project--with-created dir 'novel "Novel" 'en 50000
+    (should (= (org-scribe-project-word-target dir) 50000))
+    (let ((novel (test-project--read dir "novel.org")))
+      (should (equal (test-project--objectives novel) '(12500 3000 500 25000 12500)))
+      (should (string-match-p "^- Total word target :: 50,000$" novel)))
+    (should (string-match-p "^:TARGET-WORDCOUNT: 50000$" (test-project--read dir "README.org")))
+    (dolist (file (directory-files-recursively dir "\\.org$"))
+      (should-not (string-match-p "\\${" (test-project--read file))))))
+
+(ert-deftest test-project-word-target-novel-default ()
+  (test-project--with-created dir 'novel "Novel" 'en nil
+    (should (= (org-scribe-project-word-target dir) 80000))
+    (should (equal (test-project--objectives (test-project--read dir "novel.org"))
+                   '(20000 3000 500 40000 20000)))))
+
+(ert-deftest test-project-word-target-novel-spanish-separator ()
+  (test-project--with-created dir 'novel "Novela" 'es nil
+    (should (string-match-p "^- Objetivo total de palabras :: 80\\.000$"
+                            (test-project--read dir (org-scribe-lang-file 'manuscript-novel 'es))))))
+
+(ert-deftest test-project-word-target-short-story ()
+  (dolist (case '((5000 . (1250 2500 1250)) (8000 . (2000 4000 2000))))
+    (test-project--with-created dir 'short-story "Story" 'en (car case)
+      (let ((story (test-project--read dir "story.org")))
+        (should (equal (test-project--objectives story) (cdr case)))
+        (should (string-match-p (format "^:TARGET_WORDCOUNT: %d$" (car case)) story)))
+      (should (string-match-p (format "^:TARGET_WORDCOUNT: %d$" (car case))
+                              (test-project--read dir "README.org")))
+      (should (= (org-scribe-project-word-target dir) (car case))))))
+
+(ert-deftest test-project-word-target-bad-proportions-leave-nothing-behind ()
+  (test-project--with-temp-base-dir base
+    (let ((org-scribe-word-target-proportions '(1 1)))
+      (should-error (org-scribe-create-novel-project base "Novel" 'en nil 50000)
+                    :type 'user-error)
+      (should-error (org-scribe-create-short-story-project base "Story" 'en 5000)
+                    :type 'user-error)
+      (should-not (directory-files base nil "\\`[^.]")))))
+
+(ert-deftest test-project-word-target-bad-total-leaves-nothing-behind ()
+  (test-project--with-temp-base-dir base
+    (dolist (bad '(0 -5 2 12.5))
+      (should-error (org-scribe-create-novel-project base "Novel" 'en nil bad)
+                    :type 'user-error))
+    (should-not (directory-files base nil "\\`[^.]"))))
+
+(ert-deftest test-project-word-target-same-for-every-method ()
+  (dolist (method '(sistema helice matriz))
+    (test-project--with-temp-base-dir base
+      (cl-letf (((symbol-function 'message) #'ignore))
+        (org-scribe-create-novel-project base "Novel" 'en method 60000))
+      (let ((dir (expand-file-name "Novel" base)))
+        (unwind-protect
+            (progn
+              (should (= (org-scribe-project-word-target dir) 60000))
+              (should (equal (test-project--objectives (test-project--read dir "novel.org"))
+                             '(15000 3000 500 30000 15000))))
+          (test-project--kill-file-buffer (expand-file-name "README.org" dir)))))))
+
+(ert-deftest test-project-word-target-prompt-offers-the-default ()
+  (let ((offered nil)
+        (org-scribe-default-word-target '((novel . 70000) (short-story . 4000))))
+    (cl-letf (((symbol-function 'read-number)
+               (lambda (_prompt &optional default) (setq offered default) default)))
+      (should (= (org-scribe--read-word-target 'novel) 70000))
+      (should (= offered 70000))
+      (org-scribe--read-word-target 'short-story)
+      (should (= offered 4000)))))
+
+(ert-deftest test-project-word-target-prompt-asks-again-on-too-small ()
+  (let ((answers (list 1 2 9000)) (asked 0))
+    (cl-letf (((symbol-function 'read-number)
+               (lambda (&rest _) (cl-incf asked) (pop answers))))
+      (should (= (org-scribe--read-word-target 'novel) 9000))
+      (should (= asked 3)))))
+
 (provide 'test-project)
 
 ;;; test-project.el ends here

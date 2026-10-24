@@ -10,15 +10,12 @@
 
 * Objetivos del Proyecto :ignore:noexport:
 
-- Objetivo total de palabras :: 80,000
+- Objetivo total de palabras :: ${TOTAL_WORDS_FMT}
 - Fecha de inicio :: ${DATE}
-- Fecha objetivo de finalización ::
-- Palabras por día objetivo :: 1,000
 
-# Estas cuatro cifras son una declaración de intenciones, escrita una vez.
-# Si activas el planificador de escritura (=F8 F8 W=, o =M-x org-scribe-plan=),
-# él se hace cargo: lleva el registro diario, recalcula el objetivo diario
-# sobre la marcha y te dice si vas al día.
+# El total es el del proyecto (su archivo marcador, línea "Target-words").
+# El ritmo (objetivo diario, fecha de fin) es cosa del planificador de
+# escritura: =F8 F8 W=, o =M-x org-scribe-plan=.
 
 * Seguimiento del Progreso :ignore:noexport:
 
@@ -105,7 +102,7 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :PROPERTIES:
 :CUSTOM_ID: acto-1
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 20000
+:WORD-OBJECTIVE: ${PART1_WORDS}
 :END:
 
 ** TODO Capítulo 1 :ignore:
@@ -142,12 +139,12 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :PROPERTIES:
 :CUSTOM_ID: acto-2
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 40000
+:WORD-OBJECTIVE: ${PART2_WORDS}
 :END:
 
 * Acto III :ignore:
 :PROPERTIES:
 :CUSTOM_ID: acto-3
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 20000
+:WORD-OBJECTIVE: ${PART3_WORDS}
 :END:
