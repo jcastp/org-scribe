@@ -303,6 +303,24 @@ Or for novels, the three acts split the project's total 25 % / 50 % / 25 %
 
 Set objectives that match your target length!
 
+** Changing the Length of Your Novel
+
+Decided your 80,000-word novel should be 50,000? Press ~F8 F8 t~
+(~M-x org-scribe-set-word-target~). It asks for the new total and how to
+rescale the parts (the acts of a novel, the scenes of a short story):
+
+- /Keep the current proportions/ — if you had made Act II longer than half,
+  it stays that way.
+- /Reset to the default proportions/ — 25 % / 50 % / 25 % (offered only when
+  the project has as many parts as the proportions).
+
+You see each part's old and new objective before anything is written. The
+command then updates the project's total, those part objectives, the Project
+Goals total line and any target word count property in the manuscript and
+README. Chapter and scene objectives, IDs and your writing plan are not
+changed. If the manuscript has unsaved edits, the file is left modified
+rather than saved.
+
 ** Quick Setup Exercise
 
 Let's set objectives for your current project:

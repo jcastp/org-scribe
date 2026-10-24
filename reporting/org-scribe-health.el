@@ -161,18 +161,16 @@ story, which has nothing above them."
          (let ((scene-level (org-scribe-scene-level)))
            (org-map-entries
             (lambda ()
-              (let ((level (org-current-level)))
-                (unless (member "noexport" (org-get-tags))
-                  (when (= level scene-level)
-                    (when-let* ((wc (org-entry-get nil "WORDCOUNT")))
-                      (setq words (+ words (string-to-number wc)))))
-                  (when (<= level scene-level)
-                    (when-let* ((wo (org-entry-get nil "WORD-OBJECTIVE")))
-                      (unless (save-excursion
-                                (and (org-up-heading-safe)
-                                     (org-entry-get nil "WORD-OBJECTIVE" t)))
-                        (setq obj (+ obj (string-to-number wo)))))))))
-            nil 'file)))))
+              (when (and (= (org-current-level) scene-level)
+                         (not (member "noexport" (org-get-tags))))
+                (when-let* ((wc (org-entry-get nil "WORDCOUNT")))
+                  (setq words (+ words (string-to-number wc))))))
+            nil 'file)))
+        (dolist (marker (org-scribe--outermost-objective-markers novel-file))
+          (setq obj (+ obj (string-to-number
+                            (org-with-point-at marker
+                              (org-entry-get nil "WORD-OBJECTIVE")))))
+          (set-marker marker nil))))
     (cons words obj)))
 
 ;;; Text-level statistics (per-PoV word share, chapter length spread)

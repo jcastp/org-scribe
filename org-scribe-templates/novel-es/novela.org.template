@@ -14,6 +14,7 @@
 - Fecha de inicio :: ${DATE}
 
 # El total es el del proyecto (su archivo marcador, línea "Target-words").
+# Cámbialo con =F8 F8 t=: eso también reescala los tres actos.
 # El ritmo (objetivo diario, fecha de fin) es cosa del planificador de
 # escritura: =F8 F8 W=, o =M-x org-scribe-plan=.
 

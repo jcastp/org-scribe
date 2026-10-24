@@ -739,6 +739,168 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
     ;; The new heading may sit inside a folded chapter or act.
     (org-fold-show-context)))
 
+;;; Changing the project's word target
+
+(defun org-scribe--objective-markers-values (markers)
+  "Return the WORD-OBJECTIVE of each of MARKERS as an integer, in order."
+  (mapcar (lambda (m)
+            (string-to-number
+             (org-with-point-at m (org-entry-get nil "WORD-OBJECTIVE"))))
+          markers))
+
+(defun org-scribe--release-markers (markers)
+  "Detach every marker in MARKERS."
+  (dolist (m markers) (set-marker m nil)))
+
+(defun org-scribe--word-target-weights (split values)
+  "Return the weights SPLIT asks for: VALUES (`keep') or the proportions (`reset').
+`keep' with every value 0 falls back to equal weights."
+  (pcase split
+    ('reset
+     (unless (= (length values) (length org-scribe-word-target-proportions))
+       (user-error "%s" (org-scribe-msg 'error-word-target-reset-unavailable
+                                         (length values)
+                                         (length org-scribe-word-target-proportions))))
+     org-scribe-word-target-proportions)
+    (_ (if (zerop (apply #'+ values)) (mapcar (lambda (_) 1) values) values))))
+
+(defun org-scribe--read-word-target-change (root markers)
+  "Ask for a new total and how to split it, for ROOT's project.
+MARKERS are the outermost objective headings.  Return (TOTAL SPLIT)."
+  (let* ((values (org-scribe--objective-markers-values markers))
+         (default (or (org-scribe-project-word-target root)
+                      (and values (> (apply #'+ values) 0) (apply #'+ values))
+                      (org-scribe-default-word-target-for (org-scribe-project-type))))
+         (minimum (max 1 (length values)))
+         (total nil))
+    (while (not (and (integerp total) (>= total minimum)))
+      (setq total (read-number (org-scribe-msg 'word-target-prompt) default)))
+    (list total
+          (when markers
+            (let* ((keep (org-scribe-msg 'word-target-split-keep))
+                   (reset (org-scribe-msg 'word-target-split-reset))
+                   (choices (append (list keep)
+                                    (when (= (length values)
+                                             (length org-scribe-word-target-proportions))
+                                      (list reset)))))
+              (if (cdr choices)
+                  (if (equal (completing-read (org-scribe-msg 'word-target-split-prompt)
+                                              choices nil t nil nil keep)
+                             reset)
+                      'reset
+                    'keep)
+                'keep))))))
+
+(defun org-scribe--update-total-goal-line (total)
+  "Rewrite the Project Goals total-words line in this buffer to TOTAL.
+The line is found by the project language's `goals-total-label'; only
+the text after the \"::\" changes.  Return 1 when a line was rewritten, else 0."
+  (let ((label (let ((org-scribe-message-language (org-scribe-project-language)))
+                 (org-scribe-msg 'goals-total-label))))
+    (org-with-wide-buffer
+     (goto-char (point-min))
+     (if (re-search-forward
+          (concat "^\\([ \t]*- " (regexp-quote label) " :: \\).*$") nil t)
+         (progn (replace-match (concat "\\1" (org-scribe--format-word-count total))
+                               t)
+                1)
+       0))))
+
+(defun org-scribe--update-total-properties (total)
+  "Set TOTAL in every existing target word count property of this buffer.
+Only a property that is already there is touched.  Return how many were set."
+  (let ((count 0))
+    (org-with-wide-buffer
+     (org-map-entries
+      (lambda ()
+        (dolist (name '("TARGET-WORDCOUNT" "TARGET_WORDCOUNT"))
+          (when (org-entry-get nil name)
+            (org-entry-put nil name (number-to-string total))
+            (cl-incf count))))
+      nil 'file))
+    count))
+
+(defun org-scribe--save-unless-modified-before (buffer was-modified)
+  "Save BUFFER if it was not WAS-MODIFIED before; else say it was left modified."
+  (with-current-buffer buffer
+    (if was-modified
+        (message "%s" (org-scribe-msg 'word-target-unsaved
+                                      (file-name-nondirectory (buffer-file-name))))
+      (save-buffer))))
+
+;;;###autoload
+(defun org-scribe-set-word-target (total &optional split confirm)
+  "Set the project's total word target to TOTAL and rescale its parts.
+Records TOTAL in the project marker file, rewrites the outermost
+WORD-OBJECTIVE headings (a novel's acts, a short story's scenes), the
+Project Goals total line, and any target word count property in the
+manuscript or the README.  Chapter and scene objectives, IDs and the
+writing plan are never touched.
+
+SPLIT is `keep' (the current proportions) or `reset' (the proportions
+in `org-scribe-word-target-proportions', only when the part count
+matches); nil means `keep'.  Unless CONFIRM is non-nil, the change is
+previewed and confirmed first.  A file whose buffer had unsaved changes
+is left modified rather than saved."
+  (interactive
+   (let* ((root (org-scribe--require-project))
+          (markers (org-scribe--outermost-objective-markers
+                    (plist-get (org-scribe-project-structure) :manuscript-file))))
+     (unwind-protect (org-scribe--read-word-target-change root markers)
+       (org-scribe--release-markers markers))))
+  (let* ((root (org-scribe--require-project))
+         (file (plist-get (org-scribe-project-structure) :manuscript-file))
+         (markers (org-scribe--outermost-objective-markers file)))
+    (unwind-protect
+        (let* ((old (org-scribe--objective-markers-values markers))
+               (new (when markers
+                      (org-scribe--split-word-target
+                       total (org-scribe--word-target-weights split old))))
+               (names (mapcar (lambda (m)
+                                (org-with-point-at m (org-get-heading t t t t)))
+                              markers)))
+          (unless (and (integerp total) (>= total (max 1 (length old))))
+            (user-error "%s" (org-scribe-msg 'error-word-target-invalid)))
+          (unless (or confirm
+                      (y-or-n-p
+                       (org-scribe-msg
+                        'word-target-preview
+                        (org-scribe--format-word-count total)
+                        (string-join
+                         (cl-mapcar (lambda (name o n)
+                                      (org-scribe-msg 'word-target-preview-line name o n))
+                                    names old new)
+                         "\n"))))
+            (user-error "%s" (org-scribe-msg 'word-target-cancelled)))
+          (org-scribe--set-project-word-target root total)
+          (let ((goal-lines 0) (properties 0))
+            ;; The manuscript: objectives, goals line and properties, one save
+            (when (and file (file-exists-p file))
+              (let ((buffer (find-file-noselect file)))
+                (with-current-buffer buffer
+                  (let ((was-modified (buffer-modified-p)))
+                    (cl-mapc (lambda (m n)
+                               (org-with-point-at m
+                                 (org-entry-put nil "WORD-OBJECTIVE" (number-to-string n))))
+                             markers new)
+                    (cl-incf goal-lines (org-scribe--update-total-goal-line total))
+                    (cl-incf properties (org-scribe--update-total-properties total))
+                    (org-scribe--save-unless-modified-before buffer was-modified)))))
+            ;; The README, only where the property already exists
+            (let ((readme (expand-file-name "README.org" root)))
+              (when (file-exists-p readme)
+                (let ((buffer (find-file-noselect readme)))
+                  (with-current-buffer buffer
+                    (let ((was-modified (buffer-modified-p))
+                          (count (org-scribe--update-total-properties total)))
+                      (cl-incf properties count)
+                      (when (> count 0)
+                        (org-scribe--save-unless-modified-before buffer was-modified)))))))
+            (message "%s" (org-scribe-msg 'word-target-applied
+                                           (org-scribe--format-word-count total)
+                                           (length markers) goal-lines properties))))
+      (org-scribe--release-markers markers))))
+
 ;;;###autoload
 (defun org-scribe-insert-chapter (chapter-name)
   "Insert a chapter template with CHAPTER-NAME after the chapter point is in.

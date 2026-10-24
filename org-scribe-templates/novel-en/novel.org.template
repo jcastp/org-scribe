@@ -14,6 +14,7 @@
 - Start date :: ${DATE}
 
 # The total is the project's own (its marker file, line "Target-words").
+# Change it with =F8 F8 t=: that also rescales the three acts.
 # The pace (daily target, end date) is the writing planner's job:
 # =F8 F8 W=, or =M-x org-scribe-plan=.
 

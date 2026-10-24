@@ -354,6 +354,18 @@
      (project-creation-word-target-prompt . "Palabras totales del proyecto: ")
      (goals-total-label . "Objetivo total de palabras")
      (error-word-target-proportions . "org-scribe-word-target-proportions debe tener exactamente tres pesos")
+     (word-target-prompt . "Nuevo objetivo total de palabras: ")
+     (word-target-split-prompt . "Reescalar las partes: ")
+     (word-target-split-keep . "Mantener las proporciones actuales")
+     (word-target-split-reset . "Volver a las proporciones por defecto")
+     (word-target-preview . "¿Fijar el objetivo en %s?
+%s
+¿Aplicar? ")
+     (word-target-preview-line . "  %s: %d → %d")
+     (word-target-cancelled . "Objetivo de palabras sin cambios")
+     (word-target-applied . "Objetivo de palabras fijado en %s (partes: %d; línea de Objetivos del Proyecto: %d; propiedades de objetivo: %d)")
+     (word-target-unsaved . "%s tiene cambios sin guardar: el objetivo se escribió pero el archivo quedó modificado")
+     (error-word-target-reset-unavailable . "No se puede volver a las proporciones por defecto: el proyecto tiene %d partes y las proporciones tienen %d")
      (error-word-target-invalid . "El objetivo de palabras debe ser un número entero positivo")
      (error-word-target-weights . "Los pesos del objetivo de palabras deben ser no negativos y no todos cero")
      (word-count-thousands-separator . ".")

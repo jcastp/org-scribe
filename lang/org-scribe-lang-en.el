@@ -359,6 +359,18 @@
      (project-creation-word-target-prompt . "Total words for this project: ")
      (goals-total-label . "Total word target")
      (error-word-target-proportions . "org-scribe-word-target-proportions must hold exactly three weights")
+     (word-target-prompt . "New total word target: ")
+     (word-target-split-prompt . "Rescale the parts: ")
+     (word-target-split-keep . "Keep the current proportions")
+     (word-target-split-reset . "Reset to the default proportions")
+     (word-target-preview . "Set the word target to %s?
+%s
+Apply? ")
+     (word-target-preview-line . "  %s: %d → %d")
+     (word-target-cancelled . "Word target not changed")
+     (word-target-applied . "Word target set to %s (part objectives: %d; Project Goals line: %d; target properties: %d)")
+     (word-target-unsaved . "%s has unsaved changes: the word target was written but the file was left modified")
+     (error-word-target-reset-unavailable . "Cannot reset to the default proportions: the project has %d parts, the proportions have %d")
      (error-word-target-invalid . "Word target must be a positive whole number")
      (error-word-target-weights . "Word target weights must be non-negative and not all zero")
      (word-count-thousands-separator . ",")

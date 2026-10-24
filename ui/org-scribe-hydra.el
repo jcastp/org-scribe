@@ -156,7 +156,7 @@ _c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all      _2_:
 _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_: Plot         _L_: Links & upkeep…
 ^^               _v_: Navigate    _g_: Plot threads    _y_: Synonyms        _4_: Location     _R_: Relink project
 ^^               _0_: Normal      _j_: Jump to PoV     _x_: Thesaurus       _5_: TODOs        _H_: Health report
-^^               ^^               ^^                   ^^                   _6_: Edits        _W_: Planner…
+^^               ^^               ^^                   _t_: Word target     _6_: Edits        _W_: Planner…
 ^^               ^^               ^^                   ^^                   ^^                _X_: Compile draft
 ^^               ^^               ^^                   ^^                   ^^                _q_: Quit
 "
@@ -191,6 +191,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("d" org-scribe-dictionary-lookup "dictionary")
   ("y" org-scribe-sinonimo "synonyms")
   ("x" org-scribe-thesaurus-lookup "thesaurus")
+  ("t" org-scribe-set-word-target "word target")
 
   ;; Search
   ("1" org-scribe-org-find-pov "find by PoV")

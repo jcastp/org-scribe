@@ -322,6 +322,35 @@ resolving the marker against `default-directory'."
           (let ((n (string-to-number value)))
             (and (> n 0) n)))))))
 
+;; Needs no project-type branch of its own: `org-scribe-scene-level' does it.
+(defun org-scribe--outermost-objective-markers (file)
+  "Return markers, in document order, at FILE's outermost objective headings.
+A heading qualifies when it sits at or above the scene level (per
+`org-scribe-scene-level'), is not under a noexport tag, carries a
+WORD-OBJECTIVE, and has no ancestor that does.  Objectives roll up, so
+the top-most level that sets one is the authoritative one: a novel's
+acts, a short story's scenes.  The health report's objective total and
+`org-scribe-set-word-target' both read this, so they cannot disagree.
+The markers point into FILE's buffer (visited if need be); the caller
+releases them with `set-marker' to nil."
+  (let (markers)
+    (when (and file (file-exists-p file))
+      (with-current-buffer (find-file-noselect file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (let ((scene-level (org-scribe-scene-level)))
+           (org-map-entries
+            (lambda ()
+              (when (and (<= (org-current-level) scene-level)
+                         (not (member "noexport" (org-get-tags)))
+                         (org-entry-get nil "WORD-OBJECTIVE")
+                         (not (save-excursion
+                                (and (org-up-heading-safe)
+                                     (org-entry-get nil "WORD-OBJECTIVE" t)))))
+                (push (point-marker) markers)))
+            nil 'file)))))
+    (nreverse markers)))
+
 (defun org-scribe--set-project-word-target (root n)
   "Record N as the total word target in ROOT's .org-scribe-project marker.
 Signal a `user-error' unless N is a positive integer."
