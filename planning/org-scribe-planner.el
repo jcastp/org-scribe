@@ -247,9 +247,14 @@ or nil if no project is active.")
   ;; Words that count toward the goal but aren't in the manuscript: a typed
   ;; number (OUTSIDE_WORDS), and files counted (OUTSIDE_FILES), each a plist
   ;; (:path P :live t) counted on every sync, or (:path P :count N) counted
-  ;; once.  The written total is the manuscript's count plus these.
+  ;; once.  Kept and shown, never counted (see
+  ;; `org-scribe-planner--written-total').
   (outside-words 0 :type number)
   (outside-files nil :type list)
+  ;; What the ledger holds (WORDS_BASIS): nil for a plan saved before the
+  ;; ledger stopped counting outside words, which may include them;
+  ;; `manuscript' once it holds the manuscript's count only.
+  (words-basis nil)
   (org-heading-marker nil)       ; Marker to org heading
   ;; Alist of (date . plist), plist has :words :note :target.  :words holds
   ;; the manuscript's CUMULATIVE word total as of that date, not that day's
@@ -1316,19 +1321,41 @@ their paths are relative to (see `org-scribe-planner--outside-base')."
        (apply #'+ (mapcar (lambda (entry) (org-scribe-planner--outside-file-words entry base))
                           (org-scribe-plan-outside-files plan))))))
 
-(defun org-scribe-planner--written-total (plan manuscript &optional base)
-  "Return PLAN's written total for a MANUSCRIPT count: manuscript + outside words.
-This is what the ledger (DAILY_WORD_COUNTS) and CURRENT_WORDS hold."
-  (+ manuscript (org-scribe-planner--outside-total plan base)))
+(defun org-scribe-planner--written-total (_plan manuscript &optional _base)
+  "Return the written total for a MANUSCRIPT count: the count itself.
+This is what the ledger (DAILY_WORD_COUNTS) and CURRENT_WORDS hold.
+Words outside the manuscript are reported by
+`org-scribe-planner--outside-total', never added.  The arguments after
+MANUSCRIPT are kept so every caller goes through this one seam."
+  manuscript)
 
 (defun org-scribe-planner--warn-if-below-start (plan)
-  "Warn when PLAN's written total is below its pre-existing words.
-That is the sign of words the plan was told about but can't see: words
-written outside the manuscript that aren't recorded as such."
+  "Warn when PLAN's written total is below its pre-existing words."
   (let ((preexisting (or (org-scribe-plan-preexisting-words plan) 0)))
     (when (< (org-scribe-plan-current-words plan) preexisting)
-      (message "The plan counts %d words, fewer than the %d it started with. If some are outside the manuscript, add them: What changed? → Words outside the manuscript."
+      (message "The plan counts %d words, fewer than the %d it started with."
                (org-scribe-plan-current-words plan) preexisting))))
+
+(defun org-scribe-planner--convert-to-manuscript-basis (plan base)
+  "Convert PLAN, saved when outside words were counted, to manuscript-only.
+Does nothing when `words-basis' is already `manuscript'.  Otherwise the
+outside words (see `org-scribe-planner--outside-total', with BASE) are
+subtracted from every ledger entry, CURRENT_WORDS and PREEXISTING_WORDS,
+so no day shows a jump.  Return the number of words shifted, or nil when
+nothing moved.  Approximation: a live outside file is subtracted at its
+current size, not the size it had on each past day."
+  (unless (eq (org-scribe-plan-words-basis plan) 'manuscript)
+    (let ((outside (org-scribe-planner--outside-total plan base)))
+      (when (> outside 0)
+        (org-scribe-planner--shift-written plan (- outside) t))
+      (setf (org-scribe-plan-words-basis plan) 'manuscript)
+      (and (> outside 0) outside))))
+
+(defun org-scribe-planner--outside-line (plan &optional base)
+  "Return the line saying PLAN's outside words are not counted, or nil if none."
+  (let ((outside (org-scribe-planner--outside-total plan base)))
+    (when (> outside 0)
+      (format "Outside the manuscript: %d words (not counted)" outside))))
 
 (defun org-scribe-planner--manuscript-file ()
   "Return the current project's manuscript file, or nil."
@@ -1381,18 +1408,6 @@ files elsewhere).  Returns the entry added, or nil."
         (setf (org-scribe-plan-outside-files plan)
               (append (org-scribe-plan-outside-files plan) (list entry)))
         entry)))))
-
-(defun org-scribe-planner--read-outside-words (plan base)
-  "Ask about PLAN's words outside the manuscript: a typed number, then files.
-BASE is the directory file paths are stored relative to."
-  (setf (org-scribe-plan-outside-words plan)
-        (org-scribe-planner--read-non-negative-number
-         "Words written elsewhere, not in the manuscript (0 if none): "
-         (or (org-scribe-plan-outside-words plan) 0)))
-  (while (y-or-n-p (if (org-scribe-plan-outside-files plan)
-                       "Count another file? "
-                     "Count the words of files outside the manuscript? "))
-    (org-scribe-planner--add-outside-file plan base)))
 
 (defun org-scribe-planner--describe-outside (plan &optional base)
   "Describe PLAN's words outside the manuscript in a few words."
@@ -1866,7 +1881,7 @@ that has not yet been asked, so no prompt appears in that case either."
                            (file-exists-p (expand-file-name ".org-scribe-project" root)))))
      (list (and in-project (org-scribe-planner--project-title root))
            (and in-project (expand-file-name "plan.org" root)))))
-  (let ((plan (make-org-scribe-plan))
+  (let ((plan (make-org-scribe-plan :words-basis 'manuscript))
         (preset nil))
 
     ;; Get plan title
@@ -1949,7 +1964,6 @@ that has not yet been asked, so no prompt appears in that case either."
             (if (numberp counted)
                 (progn
                   (message "The manuscript has %d words" counted)
-                  (org-scribe-planner--read-outside-words plan base)
                   (org-scribe-planner--written-total plan counted base))
               (org-scribe-planner--read-non-negative-number
                "Words already written (before this plan): " 0)))
@@ -2085,17 +2099,14 @@ the *remaining* words over the *remaining* working days, not the total."
                 (progn (message "The manuscript has %d words" auto) auto)
               (org-scribe-planner--read-non-negative-number
                "Manuscript word count (0 if it's empty): "))))
-         (plan (make-org-scribe-plan))
+         (plan (make-org-scribe-plan :words-basis 'manuscript))
          ;; Outside files are stored relative to the plan's directory: the
          ;; project root, where the plan is saved by default
          (base (file-name-as-directory
                 (expand-file-name (or (and (featurep 'org-scribe)
                                            (ignore-errors (org-scribe-project-root)))
                                       default-directory))))
-         ;; 1b. Words written elsewhere count too
-         (current-words (progn
-                          (org-scribe-planner--read-outside-words plan base)
-                          (org-scribe-planner--written-total plan manuscript-words base))))
+         (current-words (org-scribe-planner--written-total plan manuscript-words base)))
 
     ;; 2. Core parameters
     (setf (org-scribe-plan-title plan)
@@ -2574,6 +2585,8 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
         (when (org-scribe-plan-outside-files plan)
           (org-set-property "OUTSIDE_FILES"
                             (prin1-to-string (org-scribe-plan-outside-files plan))))
+        (when (eq (org-scribe-plan-words-basis plan) 'manuscript)
+          (org-set-property "WORDS_BASIS" "manuscript"))
         (when (org-scribe-plan-custom-goals plan)
           (org-set-property "CUSTOM_GOALS"
                             (mapconcat (lambda (goal) (format "%s:%d" (car goal) (cdr goal)))
@@ -2782,6 +2795,9 @@ recalculation, and is left alone.  Returns non-nil when PLAN was changed."
                 (string-to-number (or (org-entry-get nil "WEEKEND_DAILY") "0")))))
       (setf (org-scribe-plan-outside-words plan)
             (string-to-number (or (org-entry-get nil "OUTSIDE_WORDS") "0")))
+      (setf (org-scribe-plan-words-basis plan)
+            (let ((basis (org-entry-get nil "WORDS_BASIS")))
+              (and basis (eq (intern-soft basis) 'manuscript) 'manuscript)))
       (let ((files (org-entry-get nil "OUTSIDE_FILES")))
         (when files
           ;; Data only: a list of plists, read without evaluating
@@ -2892,6 +2908,14 @@ recalculation, and is left alone.  Returns non-nil when PLAN was changed."
             (message "Merged %d note(s) from schedule table into plan properties"
                      (length table-notes)))))
 
+      ;; Last, so nothing above writes converted numbers without the basis.
+      ;; The next save writes both.
+      (let ((shifted (org-scribe-planner--convert-to-manuscript-basis
+                      plan (org-scribe-planner--outside-base filepath))))
+        (when shifted
+          (message "Plan now counts the manuscript only: %d words outside it are shown but not counted. If the total included them, lower it: What changed? -> Total words."
+                   shifted)))
+
       plan)))
 
 ;;;###autoload
@@ -2970,9 +2994,10 @@ Optional FILEPATH shows the location of the plan file."
         (when (> (or (org-scribe-plan-preexisting-words plan) 0) 0)
           (insert (format "  Written Before: %d (pre-existing, part of the total)\n"
                           (org-scribe-plan-preexisting-words plan))))
-        (unless (and (zerop (or (org-scribe-plan-outside-words plan) 0))
-                     (null (org-scribe-plan-outside-files plan)))
-          (insert (format "  Outside:       %s (counted with the manuscript)\n"
+        (when-let* ((line (org-scribe-planner--outside-line
+                           plan (org-scribe-planner--outside-base filepath))))
+          (insert (format "  %s\n" line))
+          (insert (format "                 (%s)\n"
                           (org-scribe-planner--describe-outside
                            plan (org-scribe-planner--outside-base filepath)))))
         (when-let* ((status (ignore-errors (org-scribe-planner--status plan))))
@@ -4403,7 +4428,6 @@ keep their goals throughout."
 
         ("Words outside the manuscript"
          (let* ((base (org-scribe-planner--outside-base file))
-                (old-total (org-scribe-planner--outside-total plan base))
                 (target (org-scribe-planner--copy-plan plan))
                 (typed (or (org-scribe-plan-outside-words plan) 0))
                 (files (org-scribe-plan-outside-files plan))
@@ -4427,34 +4451,11 @@ keep their goals throughout."
                (setf (org-scribe-plan-outside-files target)
                      (cl-remove path (org-scribe-plan-outside-files target)
                                 :key (lambda (e) (plist-get e :path)) :test #'equal)))))
-           (let* ((difference (- (org-scribe-planner--outside-total target base) old-total))
-                  (new-typed (org-scribe-plan-outside-words target))
-                  (new-files (org-scribe-plan-outside-files target))
-                  (configure (lambda (p)
-                               (setf (org-scribe-plan-outside-words p) new-typed)
-                               (setf (org-scribe-plan-outside-files p) (copy-tree new-files)))))
-             (if (zerop difference)
-                 (progn (funcall configure plan)
-                        (message "Words outside the manuscript: %s (the total is unchanged)"
-                                 (org-scribe-planner--describe-outside plan base)))
-               ;; The record moves by the difference; are these words among
-               ;; the starting words already declared, or new to the plan?
-               (org-scribe-planner--choose-change
-                plan
-                (format "%s%d words outside the manuscript. These words:"
-                        (if (> difference 0) "+" "") difference)
-                `(("Are among the starting words already declared (correct the record)"
-                   . ,(lambda (p) (funcall configure p)
-                        (org-scribe-planner--shift-written p difference)))
-                  ("Are new to the plan, written before it (change the starting words too)"
-                   . ,(lambda (p) (funcall configure p)
-                        (org-scribe-planner--shift-written p difference t))))
-                (org-scribe-planner--copy-plan plan)
-                (lambda (p)
-                  (format "written %d, %d at the start; %s"
-                          (org-scribe-plan-current-words p)
-                          (org-scribe-plan-preexisting-words p)
-                          (org-scribe-planner--describe-status (org-scribe-planner--status p)))))))))
+           ;; Recorded only: the ledger never counts these words
+           (setf (org-scribe-plan-outside-words plan) (org-scribe-plan-outside-words target)
+                 (org-scribe-plan-outside-files plan) (copy-tree (org-scribe-plan-outside-files target)))
+           (message "Words outside the manuscript: %s (shown, not counted)"
+                    (org-scribe-planner--describe-outside plan base))))
 
         ("Writing pattern"
          (let ((choice (org-scribe-planner--read-pattern)))

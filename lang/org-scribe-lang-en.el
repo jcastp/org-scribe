@@ -464,6 +464,7 @@
      (msg-health-chapter-length-table-header . "| Chapter | Words |")
      (msg-health-chapter-length-summary . "Min: %d words · Max: %d words · Mean: %.1f words · Median: %.1f words")
      (msg-health-chapter-length-outlier-legend . "Chapters marked * are more than ~2x the mean or under ~0.5x — informational, not a judgment.")
+     (msg-health-plan-outside . "Outside the manuscript :: %d words (not counted)")
      (msg-health-broken-links-heading . "Broken Links (%d)")
      (msg-health-broken-links-intro . "Scene links whose entity no longer exists (deleted or merged). Relink the scene to the right entity, or remove the link.")
      (msg-health-broken-links-none . "No broken links.")

@@ -3,10 +3,11 @@
 ;;; Commentary:
 ;; Tests for words that count toward the goal but aren't in the manuscript:
 ;; a typed number (OUTSIDE_WORDS) and files counted once or on every sync
-;; (OUTSIDE_FILES).  The written total — ledger and CURRENT_WORDS — is the
-;; manuscript's count plus these.  Covers the syncs, onboarding an empty
-;; manuscript, the new-plan wizard, the "What changed?" option and its
-;; repair of plans made before, and the plan file.
+;; (OUTSIDE_FILES).  They are kept and shown, never counted: the written
+;; total — ledger and CURRENT_WORDS — is the manuscript's count.  Covers the
+;; syncs, onboarding an empty manuscript, the new-plan wizard, the "What
+;; changed?" option, the conversion of plans saved when they were counted,
+;; and the plan file.
 
 ;;; Code:
 
@@ -105,24 +106,23 @@ new-plan wizard and losing every answer typed so far."
       ;; The live file grows; the file counted once doesn't change
       (test-outside--write (expand-file-name "live.txt" dir) "a b c d e")
       (should (= (org-scribe-planner--outside-total plan dir) 155))
-      (should (= (org-scribe-planner--written-total plan 1000 dir) 1155)))))
+      (should (= (org-scribe-planner--written-total plan 1000 dir) 1000)))))
 
 ;;; Syncs
 
-(ert-deftest test-planner-outside-record-total-adds-outside-words ()
-  "The automatic sync records the manuscript plus the words outside it.
-Regression: with 3,672 words declared but not in the manuscript, a sync of
-500 manuscript words gave a day of -3,172 and a plan 3,672 words behind."
+(ert-deftest test-planner-outside-record-total-ignores-outside-words ()
+  "The automatic sync records the manuscript's count, outside words aside.
+A sync of 500 manuscript words is a day of 500 whatever is written elsewhere."
   (test-outside--quietly
     (let* ((plan (test-outside--plan :preexisting-words 3672 :current-words 3672
-                                     :outside-words 3672))
+                                     :outside-words 2000))
            (org-scribe-planner--current-plan plan)
            (org-scribe-planner--current-plan-file "/tmp/unused-plan.org")
            (org-scribe-planner-auto-push-wordcount t)
            (org-scribe-planner-auto-track-daily t)
            (org-scribe-planner-after-progress-update-hook nil))
       (cl-letf (((symbol-function 'org-scribe-planner--ensure-plan-for-current-project) #'ignore))
-        (org-scribe-planner-record-total 500))
+        (org-scribe-planner-record-total 4172))
       (should (= (org-scribe-plan-current-words plan) 4172))
       (should (= (org-scribe-planner--entry-delta
                   (org-scribe-plan-daily-word-counts plan) "2026-10-12" 3672)
@@ -141,8 +141,8 @@ by all of them."
       (org-scribe-planner-update-progress)
       (should (= (org-scribe-plan-current-words plan) 3672)))))
 
-(ert-deftest test-planner-outside-update-progress-adds-outside-words ()
-  "`u' adds the words outside the manuscript to the count it reads."
+(ert-deftest test-planner-outside-update-progress-ignores-outside-words ()
+  "`u' stores the count it reads, outside words aside."
   (let ((dir (file-name-as-directory (make-temp-file "org-scribe-outside-" t))))
     (unwind-protect
         (test-outside--quietly
@@ -154,7 +154,7 @@ by all of them."
                  (org-scribe-planner-wordcount-function (lambda () 800)))
             (test-outside--write file "* P\n:PROPERTIES:\n:TOTAL_WORDS: 80000\n:END:\n")
             (org-scribe-planner-update-progress)
-            (should (= (org-scribe-plan-current-words plan) 4472))))
+            (should (= (org-scribe-plan-current-words plan) 800))))
       (dolist (buffer (buffer-list))
         (when (and (buffer-file-name buffer) (string-prefix-p dir (buffer-file-name buffer)))
           (with-current-buffer buffer (set-buffer-modified-p nil))
@@ -162,20 +162,44 @@ by all of them."
       (delete-directory dir t))))
 
 (ert-deftest test-planner-outside-warns-below-start ()
-  "A written total below the starting words says how to fix it."
+  "A written total below the starting words is reported."
   (let ((shown nil))
     (cl-letf (((symbol-function 'message)
                (lambda (fmt &rest args) (setq shown (apply #'format fmt args)))))
       (org-scribe-planner--warn-if-below-start
        (make-org-scribe-plan :preexisting-words 3672 :current-words 500)))
-    (should (string-match-p "Words outside the manuscript" shown))))
+    (should (string-match-p "fewer than the 3672" shown))))
+
+(ert-deftest test-planner-outside-day-delta-is-manuscript-only ()
+  "Manuscript 10,000 -> 10,500 while an outside file grows 2,000 -> 2,800: 500."
+  (test-outside--in-dir dir
+    (test-outside--write (expand-file-name "research.txt" dir)
+                         (string-join (make-list 2800 "w") " "))
+    (test-outside--quietly
+      (let* ((plan (test-outside--plan
+                    :preexisting-words 10000 :current-words 10000
+                    :words-basis 'manuscript
+                    :outside-files (list (list :path "research.txt" :live t))))
+             (org-scribe-planner--current-plan plan)
+             (org-scribe-planner--current-plan-file (expand-file-name "plan.org" dir))
+             (org-scribe-planner-auto-push-wordcount t)
+             (org-scribe-planner-auto-track-daily t)
+             (org-scribe-planner-after-progress-update-hook nil))
+        (cl-letf (((symbol-function 'org-scribe-planner--ensure-plan-for-current-project) #'ignore))
+          (org-scribe-planner-record-total 10500))
+        (should (= (org-scribe-plan-current-words plan) 10500))
+        (should (= (org-scribe-planner--entry-delta
+                    (org-scribe-plan-daily-word-counts plan) "2026-10-12" 10000)
+                   500))
+        (should (string-match-p
+                 "Outside the manuscript: 2800 words (not counted)"
+                 (org-scribe-planner--outside-line plan dir)))))))
 
 ;;; Creating plans
 
 (ert-deftest test-planner-outside-onboard-empty-manuscript ()
-  "Onboarding an empty manuscript with words written elsewhere.
-The report: an empty manuscript and 3,672 words declared ended up 3,672
-words behind on the first sync."
+  "Onboarding an empty manuscript starts from the manuscript's 0 words.
+Words written elsewhere are not asked about, nor counted."
   (test-outside--quietly
     (let ((org-scribe-planner-after-plan-load-hook nil)
           (org-scribe-planner--current-plan nil)
@@ -184,8 +208,6 @@ words behind on the first sync."
           (numbers (list 80000)))
       (cl-letf (((symbol-function 'org-scribe-planner--read-positive-number)
                  (lambda (&rest _) (pop numbers)))
-                ((symbol-function 'org-scribe-planner--read-non-negative-number)
-                 (lambda (&rest _) 3672))
                 ((symbol-function 'read-string) (lambda (&rest _) "P"))
                 ((symbol-function 'org-scribe-planner--read-date)
                  (lambda (prompt &rest _)
@@ -197,9 +219,10 @@ words behind on the first sync."
                 ((symbol-function 'make-directory) #'ignore))
         (org-scribe-planner-onboard-existing-project))
       (let ((plan org-scribe-planner--current-plan))
-        (should (= (org-scribe-plan-outside-words plan) 3672))
-        (should (= (org-scribe-plan-preexisting-words plan) 3672))
-        (should (= (org-scribe-plan-current-words plan) 3672))
+        (should (eq (org-scribe-plan-words-basis plan) 'manuscript))
+        (should (= (org-scribe-plan-outside-words plan) 0))
+        (should (= (org-scribe-plan-preexisting-words plan) 0))
+        (should (= (org-scribe-plan-current-words plan) 0))
         ;; The first sync of 500 manuscript words is 500 written that day
         (let ((org-scribe-planner--current-plan plan)
               (org-scribe-planner--current-plan-file "/tmp/unused-plan.org")
@@ -208,10 +231,10 @@ words behind on the first sync."
               (org-scribe-planner-after-progress-update-hook nil))
           (cl-letf (((symbol-function 'org-scribe-planner--ensure-plan-for-current-project) #'ignore))
             (org-scribe-planner-record-total 500))
-          (should (= (org-scribe-plan-current-words plan) 4172)))))))
+          (should (= (org-scribe-plan-current-words plan) 500)))))))
 
 (ert-deftest test-planner-outside-wizard-in-project ()
-  "New plan in a project: manuscript count plus words elsewhere."
+  "New plan in a project starts from the manuscript count; nothing is asked about words elsewhere."
   (test-outside--quietly
     (let ((org-scribe-planner-after-plan-load-hook nil)
           (org-scribe-planner--current-plan nil)
@@ -224,14 +247,15 @@ words behind on the first sync."
                      "Total words + Days → Calculate daily words")))
                 ((symbol-function 'org-scribe-planner--read-positive-number) (lambda (&rest _) 30000))
                 ((symbol-function 'org-scribe-planner--read-days) (lambda (&rest _) 10))
-                ((symbol-function 'org-scribe-planner--read-non-negative-number) (lambda (&rest _) 500))
+                ((symbol-function 'org-scribe-planner--read-non-negative-number)
+                 (lambda (&rest _) (error "Asked about words outside the manuscript")))
                 ((symbol-function 'org-scribe-planner--read-date) (lambda (&rest _) "2026-10-12"))
                 ((symbol-function 'y-or-n-p) (lambda (&rest _) nil)))
         (org-scribe-planner-new-plan "P" "/tmp/unused-plan.org"))
       (let ((plan org-scribe-planner--current-plan))
-        (should (= (org-scribe-plan-outside-words plan) 500))
-        (should (= (org-scribe-plan-preexisting-words plan) 1500))
-        (should (= (org-scribe-plan-daily-words plan) 2850))))))
+        (should (= (org-scribe-plan-outside-words plan) 0))
+        (should (= (org-scribe-plan-preexisting-words plan) 1000))
+        (should (= (org-scribe-plan-daily-words plan) 2900))))))
 
 ;;; What changed? → Words outside the manuscript
 
@@ -253,75 +277,129 @@ words behind on the first sync."
     (setf (org-scribe-plan-current-words plan) 500)
     plan))
 
-(ert-deftest test-planner-outside-repair-declared-words ()
-  "Words already declared as starting words: the record is corrected."
+(ert-deftest test-planner-outside-changing-outside-words-moves-no-record ()
+  "Typed words outside the manuscript are recorded; no count moves."
   (let ((plan (test-outside--old-style-plan)))
-    (should (eq (plist-get (test-outside--quietly (org-scribe-planner--status plan)) :status)
-                'behind))
-    (test-outside--change plan '("Words outside the manuscript" "Set the typed number"
-                                 "Are among the starting words")
+    (test-outside--change plan '("Words outside the manuscript" "Set the typed number")
       ((symbol-function 'org-scribe-planner--read-non-negative-number) (lambda (&rest _) 3672)))
     (should (= (org-scribe-plan-outside-words plan) 3672))
-    (should (= (org-scribe-plan-current-words plan) 4172))
+    (should (= (org-scribe-plan-current-words plan) 500))
     (should (= (org-scribe-plan-preexisting-words plan) 3672))
     (should (= (plist-get (cdr (assoc "2026-10-12" (org-scribe-plan-daily-word-counts plan))) :words)
-               4172))))
-
-(ert-deftest test-planner-outside-repair-new-starting-words ()
-  "Words new to the plan: the starting words rise with them, progress doesn't."
-  (let ((plan (test-outside--old-style-plan)))
-    (test-outside--change plan '("Words outside the manuscript" "Set the typed number"
-                                 "Are new to the plan")
-      ((symbol-function 'org-scribe-planner--read-non-negative-number) (lambda (&rest _) 1000)))
-    (should (= (org-scribe-plan-preexisting-words plan) 4672))
-    (should (= (org-scribe-plan-current-words plan) 1500))
-    (should (= (org-scribe-planner--entry-delta
-                (org-scribe-plan-daily-word-counts plan) "2026-10-12"
-                (org-scribe-plan-preexisting-words plan))
-               (org-scribe-planner--entry-delta
-                (list (cons "2026-10-12" (list :words 500))) "2026-10-12" 3672)))))
-
-(ert-deftest test-planner-outside-repair-previews-both ()
-  "Both ways are previewed with the written total and the status."
-  (let ((plan (test-outside--old-style-plan))
-        (offered nil)
-        (answers (list "Words outside the manuscript" "Set the typed number")))
-    (test-outside--quietly
-      (let ((org-scribe-planner--current-plan plan)
-            (org-scribe-planner--current-plan-file "/tmp/unused-plan.org"))
-        (cl-letf (((symbol-function 'org-scribe-planner--read-non-negative-number)
-                   (lambda (&rest _) 3672))
-                  ((symbol-function 'completing-read)
-                   (lambda (_prompt collection &optional predicate &rest _)
-                     (let ((candidates (all-completions "" collection predicate)))
-                       (if answers
-                           (let ((prefix (pop answers)))
-                             (cl-find-if (lambda (c) (string-prefix-p prefix c)) candidates))
-                         (setq offered candidates)
-                         (car candidates))))))
-          (org-scribe-planner-recalculate))))
-    (should (= (length offered) 2))
-    ;; Corrected: today's 500 words put the plan ahead, nothing behind
-    (should (string-match-p "→ written 4172, 3672 at the start; Ahead: \\+500 words" (car offered)))))
+               500))))
 
 (ert-deftest test-planner-outside-add-and-stop-counting-a-file ()
-  "A file added counts toward the total; stopping counting takes it off."
+  "A file added is recorded and shown, moving no count; stopping removes it."
   (test-outside--in-dir dir
     (test-outside--write (expand-file-name "draft.txt" dir) (string-join (make-list 300 "word") " "))
-    (let ((plan (test-outside--old-style-plan))
-          (file (expand-file-name "plan.org" dir)))
+    (let ((plan (test-outside--old-style-plan)))
       (cl-letf (((symbol-function 'org-scribe-planner--outside-base) (lambda (&rest _) dir))
                 ((symbol-function 'read-file-name)
                  (lambda (&rest _) (expand-file-name "draft.txt" dir))))
-        (test-outside--change plan '("Words outside the manuscript" "Add a file"
-                                     "Once" "Are new to the plan"))
+        (test-outside--change plan '("Words outside the manuscript" "Add a file" "Once"))
         (should (equal (org-scribe-plan-outside-files plan) '((:path "draft.txt" :count 300))))
-        (should (= (org-scribe-plan-current-words plan) 800))
-        (test-outside--change plan '("Words outside the manuscript" "Stop counting"
-                                     "draft.txt" "Are new to the plan"))
-        (should-not (org-scribe-plan-outside-files plan))
         (should (= (org-scribe-plan-current-words plan) 500))
-        (ignore file)))))
+        (test-outside--change plan '("Words outside the manuscript" "Stop counting" "draft.txt"))
+        (should-not (org-scribe-plan-outside-files plan))
+        (should (= (org-scribe-plan-current-words plan) 500))))))
+
+;;; Conversion of plans saved when outside words were counted
+
+(defun test-outside--load-file (dir text)
+  "Write TEXT to a plan file in DIR and return the plan loaded from it."
+  (let ((file (expand-file-name "plan.org" dir)))
+    (test-outside--write file text)
+    (org-scribe-planner--load-plan file)))
+
+(defconst test-outside--old-plan-text
+  (concat "* P\n:PROPERTIES:\n:TOTAL_WORDS: 50000\n:DAILY_WORDS: 500\n:DAYS: 100\n"
+          ":START_DATE: 2026-10-10\n:END_DATE: 2027-01-17\n:CURRENT_WORDS: 13300\n"
+          ":PREEXISTING_WORDS: 2000\n:OUTSIDE_WORDS: 2000\n"
+          ":DAILY_WORD_COUNTS: 2026-10-11:12000,2026-10-12:13300\n:END:\n")
+  "A plan saved before the ledger stopped counting outside words.")
+
+(defmacro test-outside--with-loaded (var text &rest body)
+  "Bind VAR to the plan loaded from TEXT in a temporary directory; run BODY."
+  (declare (indent 2))
+  `(test-outside--in-dir dir
+     (let ((,var nil))
+       (unwind-protect
+           (progn (cl-letf (((symbol-function 'message) #'ignore))
+                    (setq ,var (test-outside--load-file dir ,text)))
+                  ,@body)
+         (dolist (buffer (buffer-list))
+           (when (and (buffer-file-name buffer) (string-prefix-p dir (buffer-file-name buffer)))
+             (with-current-buffer buffer (set-buffer-modified-p nil))
+             (kill-buffer buffer)))))))
+
+(ert-deftest test-planner-outside-convert-on-load-shifts-everything ()
+  "Outside words come off every ledger entry, CURRENT_WORDS and the start."
+  (test-outside--with-loaded plan test-outside--old-plan-text
+    (should (equal (mapcar (lambda (e) (plist-get (cdr e) :words))
+                           (org-scribe-planner--sorted-daily-counts
+                            (org-scribe-plan-daily-word-counts plan)))
+                   '(10000 11300)))
+    (should (= (org-scribe-plan-current-words plan) 11300))
+    (should (= (org-scribe-plan-preexisting-words plan) 0))
+    (should (eq (org-scribe-plan-words-basis plan) 'manuscript))))
+
+(ert-deftest test-planner-outside-convert-is-idempotent ()
+  "A plan already marked WORDS_BASIS: manuscript is not shifted."
+  (test-outside--with-loaded plan
+      (replace-regexp-in-string ":OUTSIDE_WORDS: 2000"
+                                ":OUTSIDE_WORDS: 2000\n:WORDS_BASIS: manuscript"
+                                test-outside--old-plan-text t t)
+    (should (= (org-scribe-plan-current-words plan) 13300))
+    (should (= (org-scribe-plan-preexisting-words plan) 2000))))
+
+(ert-deftest test-planner-outside-convert-without-outside-words ()
+  "No outside words: nothing moves, the basis is set, nothing is said."
+  (test-outside--in-dir dir
+    (let ((told nil) (plan nil))
+      (unwind-protect
+          (cl-letf (((symbol-function 'message) (lambda (&rest _) (setq told t))))
+            (setq plan (test-outside--load-file
+                        dir (replace-regexp-in-string ":OUTSIDE_WORDS: 2000\n" ""
+                                                      test-outside--old-plan-text)))
+            (should (= (org-scribe-plan-current-words plan) 13300))
+            (should (eq (org-scribe-plan-words-basis plan) 'manuscript))
+            (should-not told))
+        (dolist (buffer (buffer-list))
+          (when (and (buffer-file-name buffer) (string-prefix-p dir (buffer-file-name buffer)))
+            (with-current-buffer buffer (set-buffer-modified-p nil))
+            (kill-buffer buffer)))))))
+
+(ert-deftest test-planner-outside-convert-roundtrip ()
+  "Load, save, reload: same numbers, and WORDS_BASIS is in the file."
+  (test-outside--with-loaded plan test-outside--old-plan-text
+    (let ((file (expand-file-name "plan.org" dir)))
+      (cl-letf (((symbol-function 'message) #'ignore))
+        (org-scribe-planner--save-plan plan file)
+        (with-temp-buffer
+          (insert-file-contents file)
+          (should (string-match-p "^:WORDS_BASIS: +manuscript" (buffer-string))))
+        (dolist (buffer (buffer-list))
+          (when (equal (buffer-file-name buffer) file)
+            (with-current-buffer buffer (set-buffer-modified-p nil))
+            (kill-buffer buffer)))
+        (let ((again (org-scribe-planner--load-plan file)))
+          (should (= (org-scribe-plan-current-words again) 11300))
+          (should (= (org-scribe-plan-preexisting-words again) 0)))))))
+
+(ert-deftest test-planner-outside-shown-not-counted ()
+  "The plan view says outside words are not counted, only when there are some."
+  (test-outside--in-dir dir
+    (cl-letf (((symbol-function 'org-scribe-planner--get-today-date) (lambda () "2026-10-12")))
+      (let ((with (test-outside--plan :outside-words 2800 :words-basis 'manuscript))
+            (without (test-outside--plan :words-basis 'manuscript))
+            (file (expand-file-name "plan.org" dir)))
+        (org-scribe-planner-show-calendar with file)
+        (with-current-buffer org-scribe-planner-calendar-buffer
+          (should (string-match-p "Outside the manuscript: 2800 words (not counted)"
+                                  (buffer-string))))
+        (org-scribe-planner-show-calendar without file)
+        (with-current-buffer org-scribe-planner-calendar-buffer
+          (should-not (string-match-p "not counted" (buffer-string))))))))
 
 (ert-deftest test-planner-outside-file-default-mode-by-location ()
   "Files inside the project default to every sync; others to once."
@@ -350,6 +428,36 @@ words behind on the first sync."
                 ((symbol-function 'message) #'ignore))
         (should-not (org-scribe-planner--add-outside-file plan dir)))
       (should-not (org-scribe-plan-outside-files plan)))))
+
+(ert-deftest test-planner-outside-manuscript-count-excludes-noexport-apparatus ()
+  "The manuscript total is the scenes' prose, not Project Goals and the like."
+  (skip-unless (and (fboundp 'org-scribe-accurate-wordcount-p)
+                    (org-scribe-accurate-wordcount-p)))
+  (test-outside--in-dir base
+    (let* ((project (expand-file-name "Novel" base))
+           (file (progn (cl-letf (((symbol-function 'message) #'ignore))
+                          (org-scribe-create-novel-project base "Novel" 'en))
+                        (expand-file-name "novel.org" project)))
+           (default-directory project))
+      (unwind-protect
+          (with-current-buffer (find-file-noselect file)
+            (org-with-wide-buffer
+             (goto-char (point-min))
+             (re-search-forward "^\\*\\*\\* .*:ignore:")
+             (org-back-to-heading t)
+             (org-end-of-meta-data t)
+             (insert "One two three four five.\n")
+             (goto-char (point-min))
+             (re-search-forward "^\\* Project Goals")
+             (org-end-of-meta-data t)
+             (insert "Words of apparatus that are never prose.\n"))
+            (cl-letf (((symbol-function 'message) #'ignore))
+              (org-scribe-ews-org-count-words))
+            (should (= (org-scribe-planner--sum-wordcounts file) 5)))
+        (dolist (buffer (buffer-list))
+          (when (and (buffer-file-name buffer) (string-prefix-p base (buffer-file-name buffer)))
+            (with-current-buffer buffer (set-buffer-modified-p nil))
+            (kill-buffer buffer)))))))
 
 ;;; Plan file
 

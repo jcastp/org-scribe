@@ -53,7 +53,7 @@ remove that block. The integration features are built directly into the planner 
 | Change the plan               | New total, length, start date, spare days… previewed first      |
 | Views                         | Calendar, weekly summary, month grid, milestones, dashboards    |
 | Presets                       | Novel draft, NaNoWriMo, short story… as a starting point        |
-| Words written elsewhere       | Count words outside the manuscript too                          |
+| Words written elsewhere       | Recorded and shown, never counted                               |
 | Integration                   | Auto-load, mode line, agenda, health report, plan on new project |
 
 The planner is *opt-in per project*: a project only sees it once you create a plan or enable it (see [[*Turning the Planner On and Off][Turning the Planner On and Off]]).
@@ -116,7 +116,7 @@ Daily words + Days → Calculate total words
 
 "Days available" are calendar days. You can type a number, or a start and an end date.
 
-*3. Words already written.* Inside a project the planner shows your manuscript's word count and asks for /words written elsewhere/ — see [[*Words Written Elsewhere][Words Written Elsewhere]] below. (Outside a project it simply asks how many words are already written.) These are the plan's /starting words/: they count toward the goal, never as a day's writing.
+*3. Words already written.* Inside a project the planner uses your manuscript's word count. (Outside a project it simply asks how many words are already written.) These are the plan's /starting words/: they count toward the goal, never as a day's writing. Words written elsewhere are not counted — see [[*Words Written Elsewhere][Words Written Elsewhere]] below.
 
 *4. Start date.* Today by default.
 
@@ -130,7 +130,7 @@ After each of these the planner keeps the two numbers you gave and recalculates 
 
 ~o~ (Onboard existing project) is for a draft that already has words:
 
-1. It shows your manuscript's word count — 0 is fine, for an empty manuscript — and asks for words written elsewhere.
+1. It shows your manuscript's word count — 0 is fine, for an empty manuscript.
 2. You give the total target and the plan's start date (today by default).
 3. You set the pace: an end date (the daily target follows), or words per day (the end date follows).
 4. Spare days, as above.
@@ -139,21 +139,11 @@ The words already written are the plan's starting words, so the daily target cov
 
 ** Words Written Elsewhere
 
-The planner counts your manuscript. Words that count toward your goal but aren't in it — an earlier draft in another file, pages in a notebook, text you haven't pasted in yet — must be declared, or every sync would miss them and the plan would look behind by exactly that many.
+The plan counts your manuscript's prose, and only that. Words in other places — an earlier draft in another file, pages in a notebook — are not counted, so they never move a day's total or your progress.
 
-When the planner asks for /words written elsewhere/ you can:
+You can still record them: ~F8 F8 W r~ → /Words outside the manuscript/ lets you set a typed number, add a file, or stop counting one. They are kept and shown: the plan view and the health report say "Outside the manuscript: N words (not counted)". Nothing is added to the plan's records.
 
-- *Type a number* — fixed until you change it.
-- *Count files* — point to one or more files. Org files are counted like the manuscript (no headings, drawers or comments), others by words. For each file choose /on every sync/ (a draft you keep adding to; the default for files inside the project) or /once/ (its count now; the default for files elsewhere).
-
-Both add up. From then on, everything the plan records is /the manuscript + these words/.
-
-To change them later — or to fix a plan made before you declared them — use ~F8 F8 W r~ → /Words outside the manuscript/: set the typed number, add a file, or stop counting one. Then say what those words are:
-
-- /Among the starting words already declared/ — you told the plan about them when you created it, but they weren't counted: the record is corrected and the plan stops looking behind.
-- /New to the plan, written before it/ — the starting words rise with them, so your progress doesn't change.
-
-Both are shown with their outcome before you choose. If a sync ever finds fewer words than the plan started with, the planner suggests this option.
+*Plans made before this change* counted those words. When such a plan loads, the planner subtracts them from every recorded day (so no day shows a jump) and tells you so. If your total included them, lower it with /What changed?/ → /Total words/. A file counted /on every sync/ is subtracted at its current size, so a day can differ a little if that file grew.
 
 * Step 3: Write — the Plan Follows
 
@@ -523,7 +513,7 @@ Come back tomorrow: yesterday's goal is now locked, and today's status measures 
 
 ** "The plan says I'm behind by exactly the words I'd already written."
 
-Those words aren't in the manuscript, so every sync misses them. Declare them: ~F8 F8 W r~ → /Words outside the manuscript/ → type the number (or point to the files), then /Among the starting words already declared/. See [[*Words Written Elsewhere][Words Written Elsewhere]].
+The words you'd already written probably aren't in the manuscript, and the plan counts the manuscript only. Lower the total by those words (/What changed?/ → /Total words/), or paste them into the manuscript. See [[*Words Written Elsewhere][Words Written Elsewhere]].
 
 ** "I changed the total and my past days didn't change."
 

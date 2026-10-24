@@ -709,6 +709,31 @@ had met every goal through yesterday was \"Behind\" every morning."
             (should (string-match-p "2026-06-30" content))
             (should (string-match-p "\\(On track\\|Ahead by\\|Behind by\\)" content))))))))
 
+(ert-deftest test-health-report-writing-plan-shows-outside-words ()
+  "Words outside the manuscript are listed in the Writing Plan, as not counted."
+  (require 'org-scribe-planner)
+  (test-health--with-novel-file
+      "** TODO Chapter :ignore:\n*** TODO Scene :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 100\n:END:\n\n"
+    (let* ((plan (make-org-scribe-plan
+                  :title "My Novel" :total-words 80000 :daily-words 500 :days 160
+                  :start-date "2026-01-01" :end-date "2026-06-30" :current-words 100
+                  :outside-words 2800))
+           (org-scribe-planner--current-plan plan))
+      (cl-letf (((symbol-function 'org-scribe-project-structure)
+                 (lambda ()
+                   (list :manuscript-file temp-novel :novel-file temp-novel :plan-file nil
+                         :characters-file nil :locations-file nil))))
+        (org-scribe-project-health)
+        (with-current-buffer (get-buffer "*org-scribe-health*")
+          (should (string-match-p "Outside the manuscript :: 2800 words (not counted)"
+                                  (buffer-string))))
+        (setq org-scribe-planner--current-plan
+              (make-org-scribe-plan :title "My Novel" :total-words 80000 :daily-words 500 :days 160
+                                    :start-date "2026-01-01" :end-date "2026-06-30" :current-words 100))
+        (org-scribe-project-health)
+        (with-current-buffer (get-buffer "*org-scribe-health*")
+          (should-not (string-match-p "not counted" (buffer-string))))))))
+
 ;;; Starting Gate
 ;;
 ;; Six of the gate's eight items can only be self-reported; two are

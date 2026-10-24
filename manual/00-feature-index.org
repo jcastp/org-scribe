@@ -895,7 +895,7 @@ New plans start from a preset (~org-scribe-planner-presets~: Novel draft, NaNoWr
 
 ** Words Written Outside the Manuscript
 
-Words that count toward the goal but aren't in the manuscript — another file, a notebook — are declared when the plan is created, or later via /What changed?/ → /Words outside the manuscript/: a typed number (~OUTSIDE_WORDS~) and/or files (~OUTSIDE_FILES~), each counted on every sync or once. Every count the plan records is the manuscript plus these words. The repair option says whether the words were among the starting words already declared (the record is corrected) or new to the plan (the starting words rise with them), previewing both. A sync that finds fewer words than the plan started with suggests it, and an empty manuscript (0 words) is never recorded.
+Words written outside the manuscript — another file, a notebook — are recorded via /What changed?/ → /Words outside the manuscript/: a typed number (~OUTSIDE_WORDS~) and/or files (~OUTSIDE_FILES~). They are kept and shown ("not counted" in the plan view and the health report), never added: every count the plan records is the manuscript's prose. Plans saved before this (without ~WORDS_BASIS: manuscript~) are converted when loaded: the outside words come off every recorded day, with a message. An empty manuscript (0 words) is never recorded.
 
 *Status*: Fully implemented | *Hydra*: ~W r~ | *Module*: ~planning/org-scribe-planner.el~
 

@@ -119,8 +119,8 @@ today; and DAYS was measured from today while the plan started earlier."
                  ;; target, words per day
                  (test-recalc--answers 30000 1000))
                 ((symbol-function 'org-scribe-planner--read-non-negative-number)
-                 ;; manuscript count (no word counter), words elsewhere
-                 (test-recalc--answers 20000 0))
+                 ;; manuscript count (no word counter)
+                 (test-recalc--answers 20000))
                 ((symbol-function 'read-string) (lambda (&rest _) "P"))
                 ((symbol-function 'org-scribe-planner--read-date)
                  (lambda (&rest _) start))

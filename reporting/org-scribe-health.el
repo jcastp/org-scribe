@@ -44,6 +44,7 @@
 (declare-function org-scribe-planner--get-today-date         "planning/org-scribe-planner")
 (declare-function org-scribe-planner--expected-through       "planning/org-scribe-planner")
 (declare-function org-scribe-planner--add-days               "planning/org-scribe-planner")
+(declare-function org-scribe-planner--outside-total          "planning/org-scribe-planner")
 (defvar org-scribe-planner--current-plan)
 
 ;;; Date Helpers (used by Writing Plan section)
@@ -597,7 +598,11 @@ with clickable ID links back to each scene."
               (insert (format "- Daily target :: %d words\n" daily))
               (insert (format "- End date :: %s\n" end))
               (insert (format "- Days remaining :: %d\n" days-rem))
-              (insert (format "- Status :: %s\n" status))))
+              (insert (format "- Status :: %s\n" status))
+              (when (fboundp 'org-scribe-planner--outside-total)
+                (let ((outside (org-scribe-planner--outside-total plan)))
+                  (when (> outside 0)
+                    (insert (format "- %s\n" (org-scribe-msg 'msg-health-plan-outside outside))))))))
            ;; Plan file exists but has not been loaded yet
            ((plist-get structure :plan-file)
             (insert (format "Plan file found at =%s= but not loaded.\n"

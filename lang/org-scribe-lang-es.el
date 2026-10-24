@@ -459,6 +459,7 @@
      (msg-health-chapter-length-table-header . "| Capítulo | Palabras |")
      (msg-health-chapter-length-summary . "Mín: %d palabras · Máx: %d palabras · Media: %.1f palabras · Mediana: %.1f palabras")
      (msg-health-chapter-length-outlier-legend . "Los capítulos marcados con * superan ~2x la media o no llegan a ~0.5x — informativo, no un juicio.")
+     (msg-health-plan-outside . "Fuera del manuscrito :: %d palabras (no cuentan)")
      (msg-health-broken-links-heading . "Enlaces sin destino (%d)")
      (msg-health-broken-links-intro . "Enlaces de escena cuya entidad ya no existe (borrada o fusionada). Vuelve a enlazar la escena con la entidad correcta o quita el enlace.")
      (msg-health-broken-links-none . "Ningún enlace sin destino.")

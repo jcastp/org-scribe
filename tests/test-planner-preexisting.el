@@ -294,9 +294,8 @@ average of 7,267 words a day."
         (should (string= (org-scribe-plan-end-date plan) (test-pre--day 9)))))))
 
 (ert-deftest test-planner-pre-new-plan-offers-manuscript-count ()
-  "New plan in a project: the manuscript's count is taken as it is, words
-elsewhere are asked for (none by default), and the daily target covers
-only the words left."
+  "New plan in a project: the manuscript's count is taken as it is, nothing
+is asked about words elsewhere, and the daily target covers only the words left."
   (test-pre--without-io
     (let ((org-scribe-planner-wordcount-function (lambda () 20000))
           (offered nil))
@@ -313,8 +312,8 @@ only the words left."
                 ((symbol-function 'y-or-n-p) (lambda (&rest _) nil)))
         (org-scribe-planner-new-plan "P" "/tmp/unused-plan.org"))
       (let ((plan org-scribe-planner--current-plan))
-        ;; The only number asked is the words elsewhere, 0 by default
-        (should (= offered 0))
+        ;; Words elsewhere are not asked about
+        (should-not offered)
         (should (= (org-scribe-plan-preexisting-words plan) 20000))
         (should (= (org-scribe-plan-current-words plan) 20000))
         (should (= (org-scribe-plan-daily-words plan) 1000))))))
