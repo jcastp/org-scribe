@@ -859,6 +859,17 @@ return nil."
          (message "No current plan available")
          nil))))
 
+;;; Project total word target
+
+(declare-function org-scribe-project-word-target "core/org-scribe-core")
+(declare-function org-scribe-set-word-target "templates/org-scribe-project")
+
+(defun org-scribe-planner--project-word-target ()
+  "Return the current project's total word target, or nil.
+The planner is usable without org-scribe, so this is nil there."
+  (and (fboundp 'org-scribe-project-word-target)
+       (ignore-errors (org-scribe-project-word-target))))
+
 ;;; File Selection Helper
 
 (defun org-scribe-planner--project-root ()
@@ -1882,6 +1893,7 @@ that has not yet been asked, so no prompt appears in that case either."
      (list (and in-project (org-scribe-planner--project-title root))
            (and in-project (expand-file-name "plan.org" root)))))
   (let ((plan (make-org-scribe-plan :words-basis 'manuscript))
+        (project-target (org-scribe-planner--project-word-target))
         (preset nil))
 
     ;; Get plan title
@@ -1894,7 +1906,7 @@ that has not yet been asked, so no prompt appears in that case either."
         (let ((settings (cdr preset)))
           (setf (org-scribe-plan-total-words plan)
                 (org-scribe-planner--read-positive-number
-                 "Total words to write: " (plist-get settings :total)))
+                 "Total words to write: " (or project-target (plist-get settings :total))))
           (if (plist-get settings :days)
               (let ((days-result (org-scribe-planner--read-days
                                   "Days available: " (plist-get settings :days))))
@@ -1918,7 +1930,7 @@ that has not yet been asked, so no prompt appears in that case either."
        ;; Total words + Days → Calculate daily words
        ((string-match-p "Calculate daily words" var-choice)
         (setf (org-scribe-plan-total-words plan)
-              (org-scribe-planner--read-positive-number "Total words to write: "))
+              (org-scribe-planner--read-positive-number "Total words to write: " project-target))
         (let ((days-result (org-scribe-planner--read-days "Days available: ")))
           (if (listp days-result)
               ;; User entered dates - extract days and set start/end dates
@@ -1932,7 +1944,7 @@ that has not yet been asked, so no prompt appears in that case either."
        ;; Total words + Daily words → Calculate days needed
        ((string-match-p "Calculate days needed" var-choice)
         (setf (org-scribe-plan-total-words plan)
-              (org-scribe-planner--read-positive-number "Total words to write: "))
+              (org-scribe-planner--read-positive-number "Total words to write: " project-target))
         (setf (org-scribe-plan-daily-words plan)
               (org-scribe-planner--read-positive-number "Words per day you can write: ")))
 
@@ -2113,7 +2125,8 @@ the *remaining* words over the *remaining* working days, not the total."
           (read-string "Project title: "))
     (setf (org-scribe-plan-total-words plan)
           (org-scribe-planner--read-positive-number
-           (format "Total word target (you have %d so far): " current-words)))
+           (format "Total word target (you have %d so far): " current-words)
+           (org-scribe-planner--project-word-target)))
 
     (when (<= (org-scribe-plan-total-words plan) current-words)
       (error "Target (%d) must be greater than words already written (%d)"
@@ -4264,6 +4277,62 @@ weekends off are rest days by rule."
   "The adjustment question asked after a day goal is set or removed.")
 
 ;;;###autoload
+(defun org-scribe-planner--change-total (plan total)
+  "Change PLAN's total to TOTAL, asking which of the days or daily target to keep.
+Each option is previewed (`org-scribe-planner--choose-change').  Return
+the chosen label."
+  (org-scribe-planner--choose-change
+   plan (format "Total %d words: keep" total)
+   `(("Writing days (the daily target changes)"
+      . ,(lambda (p)
+           (setf (org-scribe-plan-total-words p) total)
+           (org-scribe-planner--sync-daily p)))
+     (,(format "Daily target (the end date moves)")
+      . ,(lambda (p)
+           (let ((daily (org-scribe-plan-daily-words p)))
+             (setf (org-scribe-plan-total-words p) total)
+             (org-scribe-planner--calculate-time p daily)))))))
+
+(defun org-scribe-planner-set-total (total)
+  "Change the active plan's total to TOTAL, previewing and saving it.
+This is the entry point for org-scribe, which offers it when the
+project's own word target changes.  Return non-nil when a change was
+applied."
+  (let ((done nil))
+    (org-scribe-planner--with-current-plan (plan file)
+      (let ((backup (org-scribe-planner--copy-plan plan))
+            (finished nil))
+        (unwind-protect
+            (progn
+              (org-scribe-planner--change-total plan total)
+              (org-scribe-planner--save-plan plan file)
+              (org-scribe-planner--refresh-agenda-if-synced plan file)
+              (setq org-scribe-planner--current-plan plan)
+              (setq finished t done t))
+          (unless finished
+            (setq org-scribe-planner--current-plan backup)))))
+    done))
+
+(defvar org-scribe--word-target-offer-planner)
+
+(defun org-scribe-planner--offer-project-total (plan)
+  "Offer to give the project the total PLAN now has.
+Asked only inside an org-scribe project that records a word target
+different from PLAN's total; a project with no target is not asked
+\(nothing is migrated).  Answering yes rescales the project's parts too,
+without asking the planner back."
+  (let ((project-target (org-scribe-planner--project-word-target))
+        (total (org-scribe-plan-total-words plan)))
+    (when (and project-target total
+               (fboundp 'org-scribe-set-word-target)
+               (/= project-target total)
+               (y-or-n-p (format "The project's target is %d words. Change it to %d and rescale its parts too? "
+                                 project-target total)))
+      (condition-case err
+          (let ((org-scribe--word-target-offer-planner nil))
+            (org-scribe-set-word-target (round total) 'keep t))
+        (user-error (message "%s" (cadr err)))))))
+
 (defun org-scribe-planner-recalculate ()
   "Change the active writing plan, previewing the result before applying it.
 A new total, daily target or length asks which of the other two to keep;
@@ -4300,17 +4369,8 @@ keep their goals throughout."
         ("Total words"
          (let ((total (org-scribe-planner--read-positive-number
                        "New total words: " (org-scribe-plan-total-words plan))))
-           (org-scribe-planner--choose-change
-            plan (format "Total %d words: keep" total)
-            `(("Writing days (the daily target changes)"
-               . ,(lambda (p)
-                    (setf (org-scribe-plan-total-words p) total)
-                    (org-scribe-planner--sync-daily p)))
-              (,(format "Daily target (the end date moves)")
-               . ,(lambda (p)
-                    (let ((daily (org-scribe-plan-daily-words p)))
-                      (setf (org-scribe-plan-total-words p) total)
-                      (org-scribe-planner--calculate-time p daily))))))))
+           (org-scribe-planner--change-total plan total)
+           (org-scribe-planner--offer-project-total plan)))
 
         ("Daily words"
          (let ((daily (org-scribe-planner--read-positive-number

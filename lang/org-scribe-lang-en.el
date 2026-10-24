@@ -367,6 +367,7 @@
 %s
 Apply? ")
      (word-target-preview-line . "  %s: %d → %d")
+     (word-target-offer-plan . "The plan aims at %d words. Change it to %d too?")
      (word-target-cancelled . "Word target not changed")
      (word-target-applied . "Word target set to %s (part objectives: %d; Project Goals line: %d; target properties: %d)")
      (word-target-unsaved . "%s has unsaved changes: the word target was written but the file was left modified")

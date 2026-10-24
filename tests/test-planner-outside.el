@@ -233,6 +233,32 @@ Words written elsewhere are not asked about, nor counted."
             (org-scribe-planner-record-total 500))
           (should (= (org-scribe-plan-current-words plan) 500)))))))
 
+(ert-deftest test-planner-outside-onboard-offers-the-project-target ()
+  "Onboarding offers the project's recorded target as the total."
+  (test-outside--quietly
+    (let ((org-scribe-planner-after-plan-load-hook nil)
+          (org-scribe-planner--current-plan nil)
+          (org-scribe-planner--current-plan-file nil)
+          (org-scribe-planner-wordcount-function (lambda () 0))
+          (offered 'unset))
+      (cl-letf (((symbol-function 'org-scribe-planner--project-word-target) (lambda () 50000))
+                ((symbol-function 'org-scribe-planner--read-positive-number)
+                 (lambda (prompt &optional default)
+                   (when (string-match-p "Total word target" prompt) (setq offered default))
+                   (or default 80000)))
+                ((symbol-function 'read-string) (lambda (&rest _) "P"))
+                ((symbol-function 'org-scribe-planner--read-date)
+                 (lambda (prompt &rest _)
+                   (if (string-match-p "start" prompt) "2026-10-12" "2026-12-20")))
+                ((symbol-function 'completing-read)
+                 (lambda (&rest _) "End date → calculate daily words"))
+                ((symbol-function 'y-or-n-p) (lambda (&rest _) nil))
+                ((symbol-function 'read-file-name) (lambda (&rest _) "/tmp/unused-plan.org"))
+                ((symbol-function 'make-directory) #'ignore))
+        (org-scribe-planner-onboard-existing-project))
+      (should (= offered 50000))
+      (should (= (org-scribe-plan-total-words org-scribe-planner--current-plan) 50000)))))
+
 (ert-deftest test-planner-outside-wizard-in-project ()
   "New plan in a project starts from the manuscript count; nothing is asked about words elsewhere."
   (test-outside--quietly

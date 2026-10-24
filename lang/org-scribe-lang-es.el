@@ -362,6 +362,7 @@
 %s
 ¿Aplicar? ")
      (word-target-preview-line . "  %s: %d → %d")
+     (word-target-offer-plan . "El plan apunta a %d palabras. ¿Cambiarlo también a %d?")
      (word-target-cancelled . "Objetivo de palabras sin cambios")
      (word-target-applied . "Objetivo de palabras fijado en %s (partes: %d; línea de Objetivos del Proyecto: %d; propiedades de objetivo: %d)")
      (word-target-unsaved . "%s tiene cambios sin guardar: el objetivo se escribió pero el archivo quedó modificado")

@@ -828,6 +828,36 @@ Only a property that is already there is touched.  Return how many were set."
                                       (file-name-nondirectory (buffer-file-name))))
       (save-buffer))))
 
+(defvar org-scribe--word-target-offer-planner t
+  "Non-nil lets `org-scribe-set-word-target' offer the plan the new total.
+The planner binds it to nil around the call it makes itself, so the two
+offers cannot ask each other in turn.")
+
+(declare-function org-scribe-planner-set-total "planning/org-scribe-planner")
+(defvar org-scribe-planner--current-plan)
+(defvar org-scribe-planner--current-plan-file)
+(declare-function org-scribe-plan-total-words "planning/org-scribe-planner")
+(declare-function org-scribe-planner--plan-file-in-current-project-p "planning/org-scribe-planner")
+
+(defun org-scribe--offer-plan-total (total)
+  "Offer to change the active plan's total to TOTAL, when it differs.
+Asked only when the planner is already loaded, the project's gate is
+`yes' and the active plan belongs to this project: the planner is never
+loaded just to ask."
+  (when (and org-scribe--word-target-offer-planner
+             (featurep 'org-scribe-planner)
+             (eq (org-scribe-planner-gate) 'yes)
+             org-scribe-planner--current-plan
+             org-scribe-planner--current-plan-file
+             (org-scribe-planner--plan-file-in-current-project-p
+              org-scribe-planner--current-plan-file)
+             (/= (org-scribe-plan-total-words org-scribe-planner--current-plan) total)
+             (y-or-n-p (org-scribe-msg
+                        'word-target-offer-plan
+                        (round (org-scribe-plan-total-words org-scribe-planner--current-plan))
+                        total)))
+    (org-scribe-planner-set-total total)))
+
 ;;;###autoload
 (defun org-scribe-set-word-target (total &optional split confirm)
   "Set the project's total word target to TOTAL and rescale its parts.
@@ -898,7 +928,8 @@ is left modified rather than saved."
                         (org-scribe--save-unless-modified-before buffer was-modified)))))))
             (message "%s" (org-scribe-msg 'word-target-applied
                                            (org-scribe--format-word-count total)
-                                           (length markers) goal-lines properties))))
+                                           (length markers) goal-lines properties))
+            (org-scribe--offer-plan-total total)))
       (org-scribe--release-markers markers))))
 
 ;;;###autoload

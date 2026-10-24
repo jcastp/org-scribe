@@ -162,5 +162,30 @@ In BODY, `plan' is the plan created and `questions' the y-or-n-p prompts."
     (should (= (length questions) 1))
     (should (string-match-p "spare" (car questions)))))
 
+;;; The project's total is the default total
+
+(defmacro test-presets--with-project-target (target &rest body)
+  "Run BODY with the current project's recorded word target stubbed as TARGET."
+  (declare (indent 1))
+  `(cl-letf (((symbol-function 'org-scribe-planner--project-word-target)
+              (lambda () ,target)))
+     ,@body))
+
+(ert-deftest test-planner-presets-project-target-is-the-default-total ()
+  "In a project with a recorded target, the preset's total gives way to it."
+  (test-presets--with-project-target 50000
+    (test-presets--wizard '(:start "Novel draft" :yes (nil nil))
+      (should (= (org-scribe-plan-total-words plan) 50000)))))
+
+(ert-deftest test-planner-presets-without-a-project-target-keep-the-preset-total ()
+  (test-presets--with-project-target nil
+    (test-presets--wizard '(:start "Novel draft" :yes (nil nil))
+      (should (= (org-scribe-plan-total-words plan) 80000)))))
+
+(ert-deftest test-planner-presets-project-target-is-offered-from-scratch ()
+  (test-presets--with-project-target 50000
+    (test-presets--wizard '(:start "From scratch" :yes (nil nil) :numbers (nil 500))
+      (should (= (org-scribe-plan-total-words plan) 50000)))))
+
 (provide 'test-planner-presets)
 ;;; test-planner-presets.el ends here

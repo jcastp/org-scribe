@@ -104,7 +104,7 @@ There are two ways in: ~n~ (New plan) for a plan that starts now, and ~o~ (Onboa
 
 *1. Start from a preset, or from scratch.* The first question is /Start from:/. In a novel project the default answer is /Novel draft/ (80,000 words in 60 days); in a short-story project, /Short story/ (5,000 words in a week). The other presets are /NaNoWriMo/ (50,000 in 30 days), /Novella/ (30,000 in 30 days) and two daily habits (1,000 and 500 words a day).
 
-A preset only fills in the answers. Its total and its days (or words per day) are asked with the preset's values ready: ~RET~ keeps them, any number replaces them.
+A preset only fills in the answers. Its total and its days (or words per day) are asked with the preset's values ready: ~RET~ keeps them, any number replaces them. In a project that has a recorded total word count (asked when the project was created; see Lesson 1), that total is offered instead of the preset's, here and in the other ways of making a plan.
 
 *2. From scratch: what do you know?* You give two of the three numbers and the planner works out the third:
 
@@ -136,6 +136,15 @@ After each of these the planner keeps the two numbers you gave and recalculates 
 4. Spare days, as above.
 
 The words already written are the plan's starting words, so the daily target covers only what is left: a 30,000-word goal with 20,000 written, over 10 days, is 1,000 words a day. If you choose a start date in the past, the days before today get no goal.
+
+** One Total for the Project and the Plan
+
+The project's total word count (~F8 F8 t~) and the plan's total are kept in step by two questions, never silently:
+
+- Change the project's total with ~F8 F8 t~ while a plan is active and the plan aims at a different number: you are asked whether to change the plan's total too (you then choose, as for any total change, to keep the writing days or the daily target).
+- Change the plan's total with /What changed?/ → /Total words/ in a project that records a total different from the new one: you are asked whether to change the project's total too, which also rescales its acts or scenes (keeping their proportions).
+
+Each question is asked once; answering ~n~ leaves the other side alone, and the health report then shows the mismatch. A project with no recorded total is never asked, and the planner is never loaded just to ask.
 
 ** Words Written Elsewhere
 

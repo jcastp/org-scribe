@@ -18,12 +18,14 @@
                     (file-name-directory (or load-file-name buffer-file-name))))))
   (add-to-list 'load-path (expand-file-name "core" parent-dir))
   (add-to-list 'load-path (expand-file-name "templates" parent-dir))
-  (add-to-list 'load-path (expand-file-name "reporting" parent-dir)))
+  (add-to-list 'load-path (expand-file-name "reporting" parent-dir))
+  (add-to-list 'load-path (expand-file-name "planning" parent-dir)))
 
 (require 'org-scribe-core)
 (require 'org-scribe-config)
 (require 'org-scribe-project)
 (require 'org-scribe-health)
+(require 'org-scribe-planner)
 
 ;;; Fixture
 
@@ -315,6 +317,130 @@ DIR-VAR is bound to the project directory, which is also `default-directory'."
       (should (= (cdr (org-scribe--health-word-totals novel)) 80000))
       (org-scribe-set-word-target 50000 'reset t)
       (should (= (cdr (org-scribe--health-word-totals novel)) 50000)))))
+
+;;; The planner offers
+
+(defmacro test-word-target--with-plan (dir-var gate &rest body)
+  "Run BODY in an 80,000-word novel with an active 80,000-word plan.
+The planner gate is GATE (a string, or nil for undecided).  Bound in BODY:
+DIR-VAR, the project directory, and `asked', the y-or-n-p prompts, newest
+first.  Answers to y-or-n-p are `yes' (default t)."
+  (declare (indent 2))
+  `(test-word-target--with-project ,dir-var 'novel 'en 80000
+     (when ,gate (org-scribe--project-marker-set ,dir-var "Planner" ,gate))
+     (let* ((plan (make-org-scribe-plan :title "P" :total-words 80000 :days 80
+                                        :start-date "2026-11-01"))
+            (org-scribe-planner--current-plan plan)
+            (org-scribe-planner--current-plan-file (expand-file-name "plan.org" ,dir-var))
+            (asked nil)
+            (yes t))
+       (org-scribe-planner--calculate-missing-variable plan)
+       (cl-letf (((symbol-function 'org-scribe-planner--get-today-date) (lambda () "2026-10-25"))
+                 ((symbol-function 'org-scribe-planner--save-plan) #'ignore)
+                 ((symbol-function 'org-scribe-planner--refresh-agenda-if-synced) #'ignore)
+                 ((symbol-function 'org-scribe-planner-show-calendar) #'ignore)
+                 ((symbol-function 'completing-read)
+                  (lambda (_prompt collection &optional predicate &rest _)
+                    (let ((candidates (all-completions "" collection predicate)))
+                      (or (cl-find-if (lambda (c) (string-prefix-p "Total words" c)) candidates)
+                          (car candidates)))))
+                 ((symbol-function 'y-or-n-p)
+                  (lambda (prompt) (push prompt asked) yes)))
+         ,@body))))
+
+(ert-deftest test-word-target-offer-changes-the-plan-too ()
+  (test-word-target--with-plan dir "yes"
+    (org-scribe-set-word-target 50000 'reset t)
+    (should (= (length asked) 1))
+    (should (string-match-p "plan aims at 80000" (car asked)))
+    (should (= (org-scribe-plan-total-words plan) 50000))))
+
+(ert-deftest test-word-target-offer-declined-leaves-the-plan ()
+  (test-word-target--with-plan dir "yes"
+    (setq yes nil)
+    (org-scribe-set-word-target 50000 'reset t)
+    (should (= (length asked) 1))
+    (should (= (org-scribe-plan-total-words plan) 80000))
+    (should (= (org-scribe-project-word-target dir) 50000))))
+
+(ert-deftest test-word-target-offer-not-asked-when-totals-agree-or-gate-is-no ()
+  (test-word-target--with-plan dir "yes"
+    (org-scribe-set-word-target 80000 'keep t)
+    (should-not asked))
+  (test-word-target--with-plan dir "no"
+    (org-scribe-set-word-target 50000 'reset t)
+    (should-not asked)
+    (should (= (org-scribe-plan-total-words plan) 80000))))
+
+(ert-deftest test-word-target-offer-never-loads-the-planner ()
+  "With the planner not loaded, nothing is asked."
+  (test-word-target--with-plan dir "yes"
+    (let ((featurep (symbol-function 'featurep)))
+      (cl-letf (((symbol-function 'featurep)
+                 (lambda (feature &rest args)
+                   (and (not (eq feature 'org-scribe-planner))
+                        (apply featurep feature args)))))
+        (org-scribe-set-word-target 50000 'reset t)))
+    (should-not asked)
+    (should (= (org-scribe-plan-total-words plan) 80000))))
+
+(defmacro test-word-target--change-total (total &rest body)
+  "Run \"What changed? → Total words\" with TOTAL typed, then BODY."
+  (declare (indent 1))
+  `(cl-letf (((symbol-function 'org-scribe-planner--read-positive-number)
+              (lambda (&rest _) ,total))
+             ((symbol-function 'message) #'ignore))
+     (org-scribe-planner-recalculate)
+     ,@body))
+
+(ert-deftest test-word-target-planner-change-offers-the-project-once ()
+  (test-word-target--with-plan dir "yes"
+    (test-word-target--change-total 55000
+      (should (= (length asked) 1))
+      (should (string-match-p "project's target is 80000" (car asked)))
+      (should (= (org-scribe-plan-total-words plan) 55000))
+      (should (= (org-scribe-project-word-target dir) 55000))
+      (should (= (cdr (org-scribe--health-word-totals
+                       (expand-file-name "novel.org" dir)))
+                 55000)))))
+
+(ert-deftest test-word-target-planner-change-declined-leaves-the-project ()
+  (test-word-target--with-plan dir "yes"
+    (setq yes nil)
+    (test-word-target--change-total 55000
+      (should (= (length asked) 1))
+      (should (= (org-scribe-project-word-target dir) 80000)))))
+
+(ert-deftest test-word-target-planner-change-without-a-recorded-target-asks-nothing ()
+  (test-word-target--with-plan dir "yes"
+    (let ((marker (expand-file-name ".org-scribe-project" dir)))
+      (with-temp-buffer
+        (insert-file-contents marker)
+        (flush-lines "^# Target-words:")
+        (write-region (point-min) (point-max) marker)))
+    (test-word-target--change-total 55000
+      (should-not asked)
+      (should-not (org-scribe-project-word-target dir)))))
+
+(ert-deftest test-word-target-planner-change-to-the-same-total-asks-nothing ()
+  (test-word-target--with-plan dir "yes"
+    (org-scribe--set-project-word-target dir 55000)
+    (test-word-target--change-total 55000
+      (should-not asked))))
+
+(ert-deftest test-word-target-planner-wizard-defaults-to-the-project-target ()
+  (let ((offered nil))
+    (cl-letf (((symbol-function 'org-scribe-planner--project-word-target) (lambda () 50000)))
+      (should (= (org-scribe-planner--project-word-target) 50000)))
+    (cl-letf (((symbol-function 'org-scribe-project-word-target) (lambda (&rest _) 50000))
+              ((symbol-function 'read-number)
+               (lambda (_prompt &optional default) (setq offered default) default)))
+      (should (= (org-scribe-planner--read-positive-number
+                  "Total: " (org-scribe-planner--project-word-target))
+                 50000))
+      (should (= offered 50000)))
+    (cl-letf (((symbol-function 'org-scribe-project-word-target) (lambda (&rest _) nil)))
+      (should-not (org-scribe-planner--project-word-target)))))
 
 (provide 'test-word-target)
 ;;; test-word-target.el ends here
