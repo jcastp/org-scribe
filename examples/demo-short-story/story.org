@@ -58,8 +58,7 @@ maintain here.
 :WORDCOUNT: 0
 :ID:       c6b97f8b-2e9f-431f-b6d3-8f651eabd31e
 :END:
-- [[file:README.org][Project Overview]]
-- [[file:notes.org][Planning & Notes]]
+- [[file:design.org][Design notebook]]
 
 * Story Content
 :PROPERTIES:

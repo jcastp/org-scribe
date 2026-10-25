@@ -380,15 +380,14 @@ scenes keep working.
 *** See One Already Filled In
 
 A brand-new project is all structure and no content, which makes it hard to
-judge what any of these files are *for*. The package ships a worked example,
-three weeks and five scenes into a first draft (it still uses the previous
-multi-file layout, with the parts of the notebook as separate files):
+judge what any of these files are *for*. The package ships a worked example
+of exactly this layout, three weeks and five scenes into a first draft:
 
 - [[file:../examples/demo-novel/README.org][=examples/demo-novel/=]] — /The Morning Routine/
 
-Every kind of content listed above exists there, in real form: a crossed
+Every part listed above exists there with real content in it: a crossed
 Starting Gate in [[file:../examples/demo-novel/design.org][design.org]], thirteen non-negotiables written out in
-[[file:../examples/demo-novel/objects/plot.org][objects/plot.org]], six character profiles with their causal chains, four
+the Plot part of the same notebook, six character profiles with their causal chains, four
 settings with an Echo and a Hazard each, and a manuscript carrying live
 =*EDIT*= markers and planning metadata on every scene.
 

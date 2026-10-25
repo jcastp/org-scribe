@@ -29,8 +29,7 @@ When Dr. Elena Chen receives a cryptic warning from her future self, she must ch
 
 * Project Files
 - [[file:story.org][story.org]] - Main manuscript with word tracking
-- [[file:notes.org][notes.org]] - Character sketches, plot outline, research, and notes
-- [[file:scratchpad.org][scratchpad.org]] - Free-form drafting: loose ideas, and one question branched into alternatives
+- [[file:design.org][design.org]] - The design notebook: character sketches, plot outline, research, and a Scratchpad section with loose ideas and one question branched into alternatives
 
 * Current Status
 - Status :: Drafting
@@ -51,7 +50,7 @@ When Dr. Elena Chen receives a cryptic warning from her future self, she must ch
 This is a demonstration short story project for org-scribe. It showcases:
 - Simple 3-section structure (Opening, Middle, Ending)
 - Integrated word tracking
-- Character and plot planning in notes.org
+- Character and plot planning in design.org
 - ID-based character and location linking in scene properties
 - Science fiction time paradox theme
 

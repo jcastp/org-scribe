@@ -138,7 +138,7 @@ For detailed health reports, use =M-x org-scribe-plot-thread-report= (=F8 F8 L t
 For quick statistics, use =M-x org-scribe-plot-thread-stats= (=F8 F8 L S=).
 
 # Note the comment line the table writes under itself. "Running late" carries
-# :Weight: -1 in objects/plot.org, so it keeps everything except its column
+# :Weight: -1 in the Plot part, so it keeps everything except its column
 # here. Pass :show-hidden t on the #+BEGIN line to render it anyway.
 
 #+BEGIN: plot-thread-timeline
@@ -177,7 +177,7 @@ Symbols:
 
 Update with =C-c C-c= on the #+BEGIN line.
 
-# Marisol Rivera carries :Weight: -1 in objects/characters.org — she is dead
+# Marisol Rivera carries :Weight: -1 in the Characters section — she is dead
 # before the story opens, so a column of blanks would read as a linking bug.
 # The table names her underneath instead.
 
@@ -207,18 +207,7 @@ Update with =C-c C-c= on the #+BEGIN line.
 :WORDCOUNT: 0
 :ID:       1b5599b8-65fd-40c7-8827-2f1f1f5015e9
 :END:
-- [[file:README.org][README - Project Overview]]
-- [[file:design.org][Design - Starting Gate and Core]]
-- [[file:objects/characters.org][Characters]]
-- [[file:objects/plot.org][Plot - the thirteen non-negotiables and the narrative lines]]
-- [[file:objects/locations.org][Settings]]
-- [[file:objects/worldbuilding.org][World]]
-- [[file:objects/objects.org][Objects]]
-- [[file:objects/timeline.org][Timeline]]
-- [[file:notes/notes.org][General Notes]]
-- [[file:notes/research.org][Research]]
-- [[file:revision.org][Revision]]
-- [[file:writing-journal.org][Writing Journal]]
+- [[file:design.org][Design notebook]]
 - [[file:plan.org][Writing plan]]
 
 * Act I :ignore:
@@ -729,7 +718,7 @@ Lie has not moved.
 
 *NOTE*: Check against the plan — this is around 45% and should land right
 before the midpoint. If Chapter 4 runs long, the second quarter is over
-length. See the Quarters section in objects/plot.org.
+length. See the Quarters section in the Plot part.
 #+end_comment
 
 ** TOWRITE Chapter 5 - Six O'Clock :ignore:
@@ -828,7 +817,7 @@ of as a blow.
 twenty-five minutes away, Sam cannot be at the flat at eight and at Bell Lane
 for the assessment later the same morning. Either the call is the only
 contact on Thursdays or the drive is shorter. Design decision, not a prose
-one — see objects/worldbuilding.org.
+one — see the Worldbuilding section.
 #+end_comment
 
 *** TOWRITE Scene 2 - The Watch Has Stopped :ignore:
@@ -1060,7 +1049,7 @@ They always did, now.
 *EDIT*: scene - "recognizing themselves from a month ago" — it is six weeks
 and it is after the loss of the retainer, and neither fact is in the scene.
 The reader should feel the cost sitting quietly under the contentment.
-*NOTE*: Casey is named in objects/characters.org but never named on the page
+*NOTE*: Casey is named in the Characters section but never named on the page
 here. Decide which is right. Naming them makes the ending warmer and slightly
 smaller.
 #+end_comment

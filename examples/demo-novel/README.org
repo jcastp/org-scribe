@@ -9,16 +9,17 @@ A complete org-scribe novel project, filled in, so that you can read a worked
 example instead of a blank template. It is what =M-x org-scribe-create-novel-project=
 produces, three weeks and five scenes later.
 
-Nothing here needs installing. Open any file and read it; open it inside
+This README is a guide to the demo; a real project has only the manuscript
+and the design notebook. Nothing here needs installing. Open any file and read it; open it inside
 Emacs with org-scribe loaded and every command in the tables below works
 against it.
 
 ** Where to start
 
-1. [[file:design.org][design.org]] — the Starting Gate and the Core. Read this first, because the
-   book did.
-2. [[file:objects/plot.org][objects/plot.org]] — the thirteen non-negotiables, filled in, and the four
-   narrative lines.
+1. The Foundations part of [[file:design.org][design.org]] — the Starting Gate and the Core. Read
+   this first, because the book did.
+2. The Plot part of design.org — the thirteen non-negotiables, filled in, and
+   the four narrative lines.
 3. [[file:novel.org][novel.org]] — the manuscript. Five scenes drafted, ten carrying planning
    metadata only.
 4. Then =F8 F8 H= (=org-scribe-project-health=) with any of these files open,
@@ -43,17 +44,17 @@ about here.
 | Feature                              | Where to look                                                                                                                    |
 |--------------------------------------+----------------------------------------------------------------------------------------------------------------------------------|
 | The Starting Gate                    | [[file:design.org][design.org]] — and =F8 F8 H=, which reads the boxes back and measures two of them                                                    |
-| The thirteen non-negotiables         | [[file:objects/plot.org][objects/plot.org]], and the =:Plot-point:= property on every scene                                                                   |
-| The causal chain                     | [[file:objects/characters.org][objects/characters.org]] — Ghost → Lie → Weakness → Desire/Need                                                                    |
-| An opponent who wants the same thing | Dana Okonkwo's profile, and the Main Line in plot.org                                                                            |
-| Settings with an Echo and a Hazard   | [[file:objects/locations.org][objects/locations.org]] — four settings, four Aspects each                                                                         |
+| The thirteen non-negotiables         | the Plot part of [[file:design.org][design.org]], and the =:Plot-point:= property on every scene                                                                   |
+| The causal chain                     | The Cast part of design.org — Ghost → Lie → Weakness → Desire/Need                                                                    |
+| An opponent who wants the same thing | Dana Okonkwo's profile, and the Main Line in the Plot part                                                                            |
+| Settings with an Echo and a Hazard   | The Setting section of design.org — four settings, four Aspects each                                                                         |
 | Hidden entities (=:Weight: -1=)        | Marisol Rivera and the "Running late" thread; see the timeline tables in novel.org and the comment line each writes under itself |
 | Edit markers and the index           | The =#+begin_comment= blocks in [[file:novel.org][novel.org]]; then =F8 F8 6=                                                                            |
 | Unwritten scenes                     | The =*SUMMARY*= markers under TOWRITE headings; then =F8 F8 5=                                                                       |
 | ID linking                           | Every =:PoV:=, =:Characters:=, =:Location:=, =:Plot:= and =:Plot-point:= property                                                          |
 | Character relationships              | The =:RelationshipsData:= properties; then =F8 F8 L V=                                                                               |
 | The writing planner                  | [[file:plan.org][plan.org]], and =# Planner: yes= in =.org-scribe-project=; then =F8 F8 W=                                                                |
-| Column view                          | =C-c C-x C-c= in any file — each sets its own =#+COLUMNS=                                                                            |
+| Column view                          | =C-c C-x C-c= on the Characters, Setting or Plot Threads section — each sets its own =:COLUMNS:=                                                                            |
 
 ** Deliberate imperfections
 
@@ -82,25 +83,22 @@ wrong on purpose and the tools are meant to find them:
 
 - [X] Cross the Starting Gate
 - [ ] Complete first draft
-- [ ] Revision passes 0–9 ([[file:revision.org][revision.org]])
+- [ ] Revision passes 0–9 (the Revision part of [[file:design.org][design.org]])
 - [ ] Beta reader feedback
 - [ ] Final revision
 
 ** Project Structure
 
-- [[file:design.org][design.org]] — *start here*: Starting Gate and Core
+- [[file:design.org][design.org]] — *start here*: the design notebook, in parts
+  - Foundations: the Starting Gate and the Core
+  - Plot: the thirteen non-negotiables and the narrative lines
+  - Cast: six character profiles
+  - World: settings with their Echo and Hazard, the world and how it presses on the Weakness, the symbols and how each one changes, story and backstory chronology
+  - Research: what has been checked, and what is still open
+  - Revision: the ten revision passes
+  - Journal: the drafting diary, including how the design changed
+  - Scratchpad: loose ideas, and two questions branched into alternatives
 - [[file:novel.org][novel.org]] — manuscript, progress tables and timelines
-- [[file:objects/characters.org][objects/characters.org]] — six character profiles
-- [[file:objects/plot.org][objects/plot.org]] — the thirteen non-negotiables and the narrative lines
-- [[file:objects/locations.org][objects/locations.org]] — settings, with their Echo and Hazard
-- [[file:objects/worldbuilding.org][objects/worldbuilding.org]] — the world and how it presses on the Weakness
-- [[file:objects/objects.org][objects/objects.org]] — the symbols, and how each one changes
-- [[file:objects/timeline.org][objects/timeline.org]] — story and backstory chronology
-- [[file:revision.org][revision.org]] — the ten revision passes
-- [[file:writing-journal.org][writing-journal.org]] — the drafting diary, including how the design changed
-- [[file:scratchpad.org][scratchpad.org]] — the unstructured file: loose ideas, and two questions branched into alternatives
-- [[file:notes/notes.org][notes/notes.org]] — scratch: ideas, and which ones were promoted
-- [[file:notes/research.org][notes/research.org]] — what has been checked, and what is still open
 - [[file:plan.org][plan.org]] — the writing planner's schedule and ledger
 
 ** Current Status
@@ -118,7 +116,7 @@ Open the main menu with =F8 F8= (=hydra-org-scribe/body=).
 |-----------+--------------------------------+--------------------------------------------|
 | =F8 F8 s= | =org-scribe-insert-scene=      | Insert a new scene heading with properties |
 | =F8 F8 c= | =org-scribe-insert-chapter=    | Insert a new chapter heading               |
-| =F8 F8 o= | =org-scribe-open-project-file= | Open a project file (characters, plot…)    |
+| =F8 F8 o= | =org-scribe-open-project-file= | Open a project file (design.org, plan.org…)    |
 
 ** Tag the current scene
 Point anywhere inside a scene heading. These write proper ID links into its
@@ -200,7 +198,7 @@ Relationships live in the =:RelationshipsData:= property:
 
 : [[id:...][Name]](type,strength,sentiment); ...
 
-Every character in [[file:objects/characters.org][objects/characters.org]] carries live examples.
+Every character in the Cast part of [[file:design.org][design.org]] carries live examples.
 
 ** Analysis and display
 | Key         | Command                         | What it does                                    |

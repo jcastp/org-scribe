@@ -233,7 +233,7 @@ already filled in. Two ship with the package, in =examples/=:
   Hazard, live =*EDIT*= markers, an active writing plan, and two entities
   deliberately hidden from the timelines with =:Weight: -1=.
 - [[file:examples/demo-short-story/README.org][=examples/demo-short-story/=]] — /The Last Message/, the smaller
-  consolidated layout.
+  two-file layout.
 
 Both are real projects, not screenshots. Open =examples/demo-novel/novel.org=
 in Emacs with org-scribe loaded and every command works against it: =<f8>

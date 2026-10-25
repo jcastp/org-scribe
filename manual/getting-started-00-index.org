@@ -56,7 +56,7 @@ projects that ship with org-scribe, in =examples/=:
 - [[file:../examples/demo-novel/README.org][=examples/demo-novel/=]] — /The Morning Routine/, a full novel project partway
   into a first draft: a crossed Starting Gate, the thirteen non-negotiables,
   six character profiles, live edit markers, an active writing plan.
-- [[file:../examples/demo-short-story/README.org][=examples/demo-short-story/=]] — /The Last Message/, the short-story layout.
+- [[file:../examples/demo-short-story/README.org][=examples/demo-short-story/=]] — /The Last Message/, the short-story layout (also two files).
 
 These are working projects, not illustrations. Open one in Emacs with
 org-scribe loaded and every keystroke in these lessons does something real
