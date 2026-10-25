@@ -157,7 +157,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 ^^               _v_: Navigate    _g_: Plot threads    _y_: Synonyms        _4_: Location     _R_: Relink project
 ^^               _0_: Normal      _j_: Jump to PoV     _x_: Thesaurus       _5_: TODOs        _H_: Health report
 ^^               ^^               ^^                   _t_: Word target     _6_: Edits        _W_: Planner…
-^^               ^^               ^^                   ^^                   ^^                _X_: Compile draft
+^^               ^^               ^^                   _T_: Title           ^^                _X_: Compile draft
 ^^               ^^               ^^                   ^^                   ^^                _q_: Quit
 "
   ;; Insert (most frequent)
@@ -192,6 +192,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("y" org-scribe-sinonimo "synonyms")
   ("x" org-scribe-thesaurus-lookup "thesaurus")
   ("t" org-scribe-set-word-target "word target")
+  ("T" org-scribe-set-title "title")
 
   ;; Search
   ("1" org-scribe-org-find-pov "find by PoV")

@@ -74,7 +74,7 @@ content generation."
 FILEPATH is the path where the file should be created.
 LANGUAGE, if non-nil, overrides `org-scribe-project-language' for
 content generation."
-  (let* ((title (file-name-base (directory-file-name (file-name-directory filepath))))
+  (let* ((title (org-scribe-project-title (file-name-directory filepath)))
          (resolved-language (or language (org-scribe-project-language)))
          (org-scribe-message-language resolved-language))
     (with-temp-file filepath

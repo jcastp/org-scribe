@@ -4313,6 +4313,24 @@ applied."
             (setq org-scribe-planner--current-plan backup)))))
     done))
 
+(defun org-scribe-planner-set-title (title)
+  "Rename the active plan to TITLE and save it.
+This is the entry point for org-scribe, which offers it when the
+project's title changes.  Only the plan's title (the level-1 heading
+of its file) changes.  Return non-nil when the plan was renamed."
+  (let ((done nil))
+    (org-scribe-planner--with-current-plan (plan file)
+      (let ((old (org-scribe-plan-title plan)))
+        (unwind-protect
+            (progn
+              (setf (org-scribe-plan-title plan) title)
+              (org-scribe-planner--save-plan plan file)
+              (setq org-scribe-planner--current-plan plan)
+              (setq done t))
+          (unless done
+            (setf (org-scribe-plan-title plan) old)))))
+    done))
+
 (defvar org-scribe--word-target-offer-planner)
 
 (defun org-scribe-planner--offer-project-total (plan)
@@ -4850,13 +4868,18 @@ Search order:
      ;; 1. Plain plan.org
      ((file-exists-p candidate-1) candidate-1)
      ;; 2. <title>-plan.org derived from the marker file
-     ((let* ((title (org-scribe--project-marker-get root "Writing project"))
-             (slug (when title
-                     (downcase (replace-regexp-in-string "[^[:alnum:]]" "-" title))))
-             (candidate-2 (when slug
-                            (expand-file-name (concat slug "-plan.org") root))))
-        (when (and candidate-2 (file-exists-p candidate-2))
-          candidate-2)))
+     ;; Both the current title and the name at creation are tried, so a
+     ;; plan named before a title change is still found after it.
+     ((cl-find-if
+       #'file-exists-p
+       (mapcar (lambda (title)
+                 (expand-file-name
+                  (concat (downcase (replace-regexp-in-string
+                                     "[^[:alnum:]]" "-" title))
+                          "-plan.org")
+                  root))
+               (delq nil (list (org-scribe--project-marker-get root "Title")
+                               (org-scribe--project-marker-get root "Writing project"))))))
      ;; 3. Any single .org file in ROOT with a TOTAL_WORDS property
      ((cl-find-if
        (lambda (f)
@@ -5061,8 +5084,11 @@ string reads \"[W:actual rest]\", and outside the plan just \"[W:actual]\"."
 ;;; Project title lookup
 
 (defun org-scribe-planner--project-title (root)
-  "Return the project title recorded in ROOT/.org-scribe-project, or nil."
-  (org-scribe--project-marker-get root "Writing project"))
+  "Return the project title recorded in ROOT/.org-scribe-project, or nil.
+The \"# Title:\" line wins over \"# Writing project:\" (the name at
+creation), which a title change leaves alone."
+  (or (org-scribe--project-marker-get root "Title")
+      (org-scribe--project-marker-get root "Writing project")))
 
 ;;; Offer plan creation on project creation
 

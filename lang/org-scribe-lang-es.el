@@ -369,6 +369,18 @@
      (error-word-target-reset-unavailable . "No se puede volver a las proporciones por defecto: el proyecto tiene %d partes y las proporciones tienen %d")
      (error-word-target-invalid . "El objetivo de palabras debe ser un número entero positivo")
      (error-word-target-weights . "Los pesos del objetivo de palabras deben ser no negativos y no todos cero")
+     (title-prompt . "Nuevo título del proyecto: ")
+     (title-preview . "¿Cambiar el título del proyecto de \"%s\" a \"%s\"?
+Se actualizarán %d archivo(s); %d con un título propio se dejarán como están.
+¿Aplicar? ")
+     (title-cancelled . "Título sin cambios")
+     (title-unchanged . "El proyecto ya tiene ese título")
+     (title-applied . "Título del proyecto fijado en \"%s\" (%d archivo(s) actualizados)")
+     (title-left-alone . "Sin tocar, su título no empieza por el anterior: %s")
+     (title-unsaved . "%s tiene cambios sin guardar: el título se escribió pero el archivo quedó modificado")
+     (title-offer-plan . "El plan se llama \"%s\". ¿Renombrarlo también a \"%s\"?")
+     (error-title-empty . "El título no puede estar vacío")
+     (error-title-newline . "El título no puede contener saltos de línea")
      (word-count-thousands-separator . ".")
      (error-not-in-project . "No estás en un proyecto de org-scribe: no hay archivo .org-scribe-project aquí ni en ningún directorio superior")
      (msg-overlays-broken-link . "[enlace sin destino: esta entidad ya no existe]")

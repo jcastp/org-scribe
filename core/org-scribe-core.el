@@ -322,6 +322,59 @@ resolving the marker against `default-directory'."
           (let ((n (string-to-number value)))
             (and (> n 0) n)))))))
 
+;;; Project title
+
+(defun org-scribe--buffer-title-keyword ()
+  "Return the value of the first #+TITLE: line of the current buffer, or nil.
+Searches the whole buffer, ignoring any narrowing; the value is trimmed."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (let ((case-fold-search t))
+        (when (re-search-forward "^#\\+TITLE:[ \t]*\\(.*?\\)[ \t]*$" nil t)
+          (match-string-no-properties 1))))))
+
+(defun org-scribe--file-title-keyword (file)
+  "Return the #+TITLE: value of FILE, or nil.
+Reads a visiting buffer when there is one (so unsaved edits count),
+otherwise the file on disk without visiting it."
+  (when (and file (file-exists-p file))
+    (if-let* ((buffer (find-buffer-visiting file)))
+        (with-current-buffer buffer (org-scribe--buffer-title-keyword))
+      (with-temp-buffer
+        (insert-file-contents file)
+        (org-scribe--buffer-title-keyword)))))
+
+(defun org-scribe--project-title-candidates (&optional root)
+  "Return the titles ROOT's project records, most authoritative first.
+These are the \"# Title:\" marker, the manuscript's #+TITLE:, and the
+\"# Writing project:\" marker (the name at creation), without
+duplicates and without empty values.  Unlike `org-scribe-project-title'
+there is no folder-name fallback, so an empty list means the project
+records no title at all."
+  (let ((root (or root (org-scribe-project-root))))
+    (when root
+      (delete-dups
+       (seq-filter
+        (lambda (s) (and (stringp s) (not (string-empty-p s))))
+        (list (org-scribe--project-marker-get root "Title")
+              (org-scribe--file-title-keyword
+               (org-scribe--resolve-manuscript root 'unknown))
+              (org-scribe--project-marker-get root "Writing project")))))))
+
+(defun org-scribe-project-title (&optional root)
+  "Return the title of ROOT's (default: the current) project.
+Resolved from the \"# Title:\" line of the marker file, else the
+manuscript's #+TITLE:, else the \"# Writing project:\" line, else the
+name of the project directory, so a project created before the title
+could be changed still answers.  Returns nil only when there is no
+project root."
+  (let ((root (or root (org-scribe-project-root))))
+    (when root
+      (or (car (org-scribe--project-title-candidates root))
+          (file-name-nondirectory (directory-file-name root))))))
+
 ;; Needs no project-type branch of its own: `org-scribe-scene-level' does it.
 (defun org-scribe--outermost-objective-markers (file)
   "Return markers, in document order, at FILE's outermost objective headings.

@@ -38,6 +38,7 @@
 (declare-function org-scribe-planner--offer-plan-on-create "org-scribe-planner"
                   (base-dir title &rest _))
 (defvar org-scribe-planner-offer-plan-on-create)
+(defvar org-scribe-compile-output-directory)
 
 ;;; Configuration
 
@@ -358,6 +359,7 @@ This function:
       ;; Create .org-scribe-project marker file for project detection
       (with-temp-file (expand-file-name ".org-scribe-project" project-dir)
         (insert (format "# Writing project: %s\n" title)
+                (format "# Title: %s\n" title)
                 (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
                 (format "# Language: %s\n" language)
                 (format "# Method: %s\n" method)
@@ -462,6 +464,7 @@ This function:
       ;; Create .org-scribe-project marker file for project detection
       (with-temp-file (expand-file-name ".org-scribe-project" project-dir)
         (insert (format "# Writing project: %s\n" title)
+                (format "# Title: %s\n" title)
                 (format "# Type: short-story\n")
                 (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
                 (format "# Language: %s\n" language)
@@ -931,6 +934,184 @@ is left modified rather than saved."
                                            (length markers) goal-lines properties))
             (org-scribe--offer-plan-total total)))
       (org-scribe--release-markers markers))))
+
+;;; Changing the title
+
+(defun org-scribe--validate-title-text (title)
+  "Return an error string if TITLE cannot be a project title, else nil.
+Looser than `org-scribe--validate-project-title': once the title is no
+longer the directory name, only what would corrupt a one-line keyword
+matters, so \"Why Not?\" and \"Part I: Arrival\" are fine."
+  (cond
+   ((string-empty-p (string-trim title))
+    (org-scribe-msg 'error-title-empty))
+   ((string-match-p "[\n\r]" title)
+    (org-scribe-msg 'error-title-newline))))
+
+(defun org-scribe--title-rewrite-value (value old new)
+  "Return VALUE with the leading title OLD replaced by NEW, or nil.
+VALUE is the text of a #+TITLE: line.  It matches when it is OLD
+exactly, or OLD followed by \" - \" and a suffix, which is kept as is.
+Anything else, including a longer title that merely starts with OLD,
+returns nil."
+  (cond
+   ((string= value old) new)
+   ((string-prefix-p (concat old " - ") value)
+    (concat new (substring value (length old))))))
+
+(defun org-scribe--title-candidate-files (root)
+  "Return the absolute Org files of ROOT's project that may carry a title.
+Every Org file in the project and its immediate subdirectories, except
+the compile output directory, whose files are outputs and not the
+writer's."
+  (let ((skip (file-name-as-directory
+               (expand-file-name org-scribe-compile-output-directory root))))
+    (seq-remove
+     (lambda (file) (string-prefix-p skip file))
+     (mapcar (lambda (relative) (expand-file-name relative root))
+             (org-scribe--project-file-candidates root)))))
+
+(defun org-scribe--title-file-status (file olds new)
+  "Return how FILE's #+TITLE: line stands against a change to NEW.
+OLDS are the titles it may start with.  The result is `none' (no
+#+TITLE: line, or a file that does not exist), `current' (already
+NEW), `rewrite' or `alone' (a title that starts with none of OLDS, left
+for the writer)."
+  (let ((value (org-scribe--file-title-keyword file)))
+    (cond
+     ((null value) 'none)
+     (t (let ((result (seq-some (lambda (old)
+                                  (org-scribe--title-rewrite-value value old new))
+                                olds)))
+          (cond ((null result) 'alone)
+                ((string= result value) 'current)
+                (t 'rewrite)))))))
+
+(defun org-scribe--title-set-in-buffer (value-fn)
+  "Replace the first #+TITLE: value of this buffer with (VALUE-FN OLD-VALUE).
+Return non-nil when a line was changed."
+  (org-with-wide-buffer
+   (goto-char (point-min))
+   (let ((case-fold-search t))
+     (when (re-search-forward "^#\\+TITLE:[ \t]*\\(.*?\\)[ \t]*$" nil t)
+       (let ((new-value (funcall value-fn (match-string-no-properties 1))))
+         (when (and new-value (not (string= new-value (match-string-no-properties 1))))
+           (replace-match (concat "#+TITLE: " new-value) t t)
+           t))))))
+
+(defun org-scribe--title-write-file (file value-fn)
+  "Apply `org-scribe--title-set-in-buffer' with VALUE-FN to FILE.
+The file is saved unless its buffer had unsaved edits, in which case it
+is left modified and the writer is told.  Return non-nil when changed."
+  (let ((buffer (find-file-noselect file)))
+    (with-current-buffer buffer
+      (let ((was-modified (buffer-modified-p)))
+        (when (org-scribe--title-set-in-buffer value-fn)
+          (if was-modified
+              (message "%s" (org-scribe-msg 'title-unsaved
+                                             (file-name-nondirectory file)))
+            (save-buffer))
+          t)))))
+
+(defun org-scribe--title-plan-heading-rewrite (plan-file old new)
+  "Rename the first level-1 heading of PLAN-FILE from OLD to NEW.
+Only when it reads exactly OLD.  Return non-nil when changed."
+  (let ((buffer (find-file-noselect plan-file)))
+    (with-current-buffer buffer
+      (let ((was-modified (buffer-modified-p)))
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (when (and (re-search-forward "^\\* \\(.*?\\)[ \t]*$" nil t)
+                    (string= (match-string-no-properties 1) old))
+           (replace-match (concat "* " new) t t)
+           (if was-modified
+               (message "%s" (org-scribe-msg 'title-unsaved
+                                              (file-name-nondirectory plan-file)))
+             (save-buffer))
+           t))))))
+
+(declare-function org-scribe-planner-set-title "planning/org-scribe-planner")
+(declare-function org-scribe-plan-title "planning/org-scribe-planner")
+
+(defun org-scribe--offer-plan-title (root old new)
+  "Carry the title change OLD -> NEW to ROOT's writing plan.
+A plan the planner has loaded for this project is offered the new title
+and renamed through the planner, whose in-memory copy would otherwise
+overwrite an edited file.  A plan file the planner has not loaded gets
+its heading rewritten directly.  The planner is never loaded just for
+this, and a project whose planner gate is `no' is left alone.  A plan
+whose title is not OLD is the writer's own and is left alone too."
+  (unless (eq (org-scribe-planner-gate root) 'no)
+    (if (and (featurep 'org-scribe-planner)
+             org-scribe-planner--current-plan
+             org-scribe-planner--current-plan-file
+             (file-in-directory-p org-scribe-planner--current-plan-file root))
+        (when (and (string= (org-scribe-plan-title org-scribe-planner--current-plan) old)
+                   (y-or-n-p (org-scribe-msg 'title-offer-plan old new)))
+          (org-scribe-planner-set-title new))
+      (let ((plan-file (expand-file-name "plan.org" root)))
+        (when (file-exists-p plan-file)
+          (org-scribe--title-plan-heading-rewrite plan-file old new))))))
+
+;;;###autoload
+(defun org-scribe-set-title (new-title &optional confirm)
+  "Change the project's title to NEW-TITLE everywhere it is recorded.
+Records it in the project marker file, sets the manuscript's #+TITLE:
+to it, and replaces the old title at the start of the #+TITLE: line of
+every other Org file of the project, keeping what follows (\"Title -
+Characters\" becomes \"New - Characters\").  A file whose #+TITLE: does
+not start with the old title is left alone and named in the result.
+The writing plan is renamed too (offered when the planner has it
+loaded).  The project directory, the git history, IDs and word counts
+are never touched.
+
+Unless CONFIRM is non-nil, the change is previewed and confirmed first.
+A file whose buffer had unsaved changes is left modified rather than
+saved."
+  (interactive
+   (let ((root (org-scribe--require-project)))
+     (list (read-string (org-scribe-msg 'title-prompt) (org-scribe-project-title root)))))
+  (let* ((root (org-scribe--require-project))
+         (new (string-trim new-title))
+         (known (org-scribe--project-title-candidates root))
+         (old (org-scribe-project-title root))
+         (olds (or known (list old)))
+         (manuscript (org-scribe--resolve-manuscript root 'unknown))
+         (files (seq-remove (lambda (f) (and manuscript (file-equal-p f manuscript)))
+                            (org-scribe--title-candidate-files root)))
+         (statuses (mapcar (lambda (f) (cons f (org-scribe--title-file-status f olds new)))
+                           files))
+         (to-rewrite (mapcar #'car (seq-filter (lambda (p) (eq (cdr p) 'rewrite)) statuses)))
+         (alone (mapcar #'car (seq-filter (lambda (p) (eq (cdr p) 'alone)) statuses))))
+    (when-let* ((problem (org-scribe--validate-title-text new)))
+      (user-error "%s" problem))
+    (when (and (equal known (list new)) (null to-rewrite))
+      (user-error "%s" (org-scribe-msg 'title-unchanged)))
+    (unless (or confirm
+                (y-or-n-p (org-scribe-msg 'title-preview old new
+                                           (1+ (length to-rewrite))
+                                           (length alone))))
+      (user-error "%s" (org-scribe-msg 'title-cancelled)))
+    (org-scribe--project-marker-set root "Title" new)
+    (let ((changed 0))
+      (when (and manuscript
+                 (org-scribe--title-write-file manuscript (lambda (_) new)))
+        (cl-incf changed))
+      (dolist (file to-rewrite)
+        (when (org-scribe--title-write-file
+               file
+               (lambda (value)
+                 (seq-some (lambda (o) (org-scribe--title-rewrite-value value o new))
+                           olds)))
+          (cl-incf changed)))
+      (message "%s" (org-scribe-msg 'title-applied new changed))
+      (when alone
+        (message "%s" (org-scribe-msg
+                       'title-left-alone
+                       (mapconcat (lambda (f) (file-relative-name f root)) alone ", "))))
+      (dolist (old-title olds)
+        (unless (string= old-title new)
+          (org-scribe--offer-plan-title root old-title new))))))
 
 ;;;###autoload
 (defun org-scribe-insert-chapter (chapter-name)
