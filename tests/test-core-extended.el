@@ -84,12 +84,6 @@ Clears the project type cache before and after."
       '((".org-scribe-project" . "# Type: short-story\n# Title: Test Story\n"))
     (should (eq 'short-story (org-scribe-project-type)))))
 
-(ert-deftest test-core-project-type-objects-dir ()
-  "Test project type detection via objects/ directory."
-  (test-core--with-temp-project
-      (list (concat (org-scribe-lang-dir 'objects 'en) "/"))
-    (should (eq 'novel (org-scribe-project-type)))))
-
 (ert-deftest test-core-project-type-story-org ()
   "Test project type detection via story.org file."
   (test-core--with-temp-project
@@ -121,11 +115,11 @@ Clears the project type cache before and after."
     (should (eq 'unknown (org-scribe-project-type)))))
 
 (ert-deftest test-core-project-type-marker-takes-priority ()
-  "Test that marker file type takes priority over directory heuristics."
-  ;; Marker says short-story but the objects/ dir is also present
+  "Test that marker file type takes priority over manuscript-name heuristics."
+  ;; Marker says short-story but a novel manuscript is also present
   (test-core--with-temp-project
       (list '(".org-scribe-project" . "# Type: short-story\n")
-            (concat (org-scribe-lang-dir 'objects 'en) "/"))
+            "novel.org")
     (should (eq 'short-story (org-scribe-project-type)))))
 
 (ert-deftest test-core-project-type-cached ()
@@ -185,18 +179,12 @@ Clears the project type cache before and after."
   "Test project structure detects novel files correctly."
   (test-core--with-temp-project
       '(("novel.org" . "#+TITLE: Test\n")
-        ("objects/characters.org" . "#+TITLE: Characters\n")
-        ("objects/locations.org" . "#+TITLE: Locations\n")
-        ("objects/plot.org" . "#+TITLE: Plot\n"))
+        ("design.org" . "#+TITLE: Design\n"))
     (let ((structure (org-scribe-project-structure)))
       (should (string-suffix-p "novel.org"
                                (plist-get structure :novel-file)))
-      (should (string-suffix-p "objects/characters.org"
-                               (plist-get structure :characters-file)))
-      (should (string-suffix-p "objects/locations.org"
-                               (plist-get structure :locations-file)))
-      (should (string-suffix-p "objects/plot.org"
-                               (plist-get structure :plot-file))))))
+      (should (string-suffix-p "design.org"
+                               (plist-get structure :design-file))))))
 
 (ert-deftest test-core-project-structure-nil-for-missing ()
   "Test project structure returns nil for missing files."
@@ -205,8 +193,7 @@ Clears the project type cache before and after."
     (let ((structure (org-scribe-project-structure)))
       (should (null (plist-get structure :novel-file)))
       (should (null (plist-get structure :manuscript-file)))
-      (should (null (plist-get structure :characters-file)))
-      (should (null (plist-get structure :locations-file))))))
+      (should (null (plist-get structure :design-file))))))
 
 (ert-deftest test-core-project-structure-short-story-manuscript ()
   "Test that :manuscript-file and :novel-file both resolve story.org.
@@ -242,26 +229,25 @@ for a novel project too, not only for a short story."
                      (plist-get structure :novel-file))))))
 
 (ert-deftest test-core-project-structure-spanish-files ()
-  "Test project structure detects Spanish file names.
-Spanish projects use `objetos/', not `objects/', for the entity
-subdirectory -- localized like `notes/'/`notas/', per the language
-pack's own `:dirs' section (see \"i18n-extended.org\", decision D1)."
+  "Test project structure detects Spanish file names, read from the pack."
   (let ((manuscript (org-scribe-lang-file 'manuscript-novel 'es))
-        (characters (org-scribe-lang-file 'characters 'es))
-        (locations (org-scribe-lang-file 'locations 'es))
-        (plot (org-scribe-lang-file 'plot 'es)))
+        (design (org-scribe-lang-file 'design 'es)))
     (test-core--with-temp-project
         (list (cons manuscript "#+TITLE: Novela\n")
-              (cons characters "#+TITLE: Personajes\n")
-              (cons locations "#+TITLE: Localizaciones\n")
-              (cons plot "#+TITLE: Trama\n"))
+              (cons design "#+TITLE: Diseño\n"))
       (let ((structure (org-scribe-project-structure)))
         (should (string-suffix-p manuscript
                                  (plist-get structure :novel-file)))
-        (should (string-suffix-p characters
-                                 (plist-get structure :characters-file)))
-        (should (string-suffix-p locations
-                                 (plist-get structure :locations-file)))))))
+        (should (string-suffix-p design
+                                 (plist-get structure :design-file)))))))
+
+(ert-deftest test-core-project-structure-has-only-the-two-file-keys ()
+  "The structure names the root, the manuscript (and its synonym), the
+design notebook and the plan -- no per-entity files."
+  (test-core--with-temp-project '()
+    (should (equal '(:root :manuscript-file :novel-file :design-file :plan-file)
+                   (cl-loop for (k _v) on (org-scribe-project-structure) by #'cddr
+                            collect k)))))
 
 (ert-deftest test-core-project-structure-plan-file-present ()
   "Test that :plan-file is non-nil when plan.org exists."

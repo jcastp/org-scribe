@@ -60,48 +60,13 @@ The generated API is covered for every entity at once by
 ;; real function, in test-character-links.el.
 
 (ert-deftest test-plot-thread-file-detection ()
-  "The plot file resolver dispatches on project type.
-Short stories keep their plot threads in the consolidated notes file;
-novels keep them in objects/plot.org.  This is the one entity file
-resolver with a project-type branch, which is why plot does not use the
-generic `:file-fn' the other entities share."
+  "Plot threads live in the design notebook, for every project type."
   (cl-letf (((symbol-function 'org-scribe-project-structure)
-             (lambda () (list :notes-file "/tmp/notes.org"
-                              :plot-file "/tmp/objects/plot.org"))))
-    (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
-      (should (equal (org-scribe--get-plot-thread-file) "/tmp/notes.org")))
-    (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'novel)))
-      (should (equal (org-scribe--get-plot-thread-file) "/tmp/objects/plot.org")))
-    ;; An undetermined project type must not fall into the short-story
-    ;; branch: an unknown project is far likelier to be a novel whose
-    ;; marker file is missing than a short story.
-    (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'unknown)))
-      (should (equal (org-scribe--get-plot-thread-file) "/tmp/objects/plot.org")))))
+             (lambda () (list :design-file "/tmp/design.org"))))
+    (dolist (type '(short-story novel unknown))
+      (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () type)))
+        (should (equal (org-scribe--get-plot-thread-file) "/tmp/design.org"))))))
 
-;;; Integration Tests (require project structure)
-
-(ert-deftest test-plot-thread-database-structure ()
-  "Test that plot thread database returns correct structure."
-  ;; The function should return nil if no plot file exists
-  ;; or a list of (NAME . (ID . HEADING)) tuples
-  (let ((result (org-scribe--get-all-plot-threads)))
-    ;; Result should be either nil or a list
-    (should (or (null result)
-                (listp result)))
-
-    ;; If not nil, each element should be a cons cell
-    (when result
-      (dolist (item result)
-        (should (consp item))
-        (should (stringp (car item)))  ; Name is a string
-        (should (consp (cdr item)))     ; (ID . HEADING) is a cons
-        (should (stringp (cadr item)))  ; ID is a string
-        ))))
-
-;;; Phase 2 Function Tests
-
-;; The three `fboundp' checks that used to live here (report, stats, the
-;; timeline dblock) are folded into `test-plot-links-functions-defined'
 ;; above.
 
 ;;; Health Report Coverage Tests (M2)
@@ -120,7 +85,7 @@ plot module resolves both files without a real project on disk."
            (cl-letf (((symbol-function 'org-scribe-project-structure)
                       (lambda () (list :manuscript-file temp-novel
                                        :novel-file temp-novel
-                                       :plot-file temp-plot)))
+                                       :design-file temp-plot)))
                      ((symbol-function 'org-scribe-project-type)
                       (lambda () 'novel)))
              ,@body))
@@ -139,7 +104,7 @@ Plot property — the very thing the report is meant to flag."
               "*** Scene 1\n:PROPERTIES:\n:Plot: Main Plot\n:END:\n"
               "*** Scene 2\n:PROPERTIES:\n:Plot: Main Plot\n:END:\n"
               "*** Scene 3\n")  ; no Plot property
-      "* Main Plot\n:PROPERTIES:\n:ID: plot-main-001\n:END:\n"
+      "* Plot Threads\n** Main Plot\n:PROPERTIES:\n:ID: plot-main-001\n:END:\n"
     (org-scribe-plot-thread-report)
     (with-current-buffer "*Plot Thread Health Report*"
       (let ((text (buffer-string)))
@@ -160,7 +125,7 @@ case the report exists to catch."
               "*** Scene 2\n"   ; no Plot property
               "*** Scene 3\n"   ; no Plot property
               "*** Scene 4\n")  ; no Plot property
-      "* Main Plot\n:PROPERTIES:\n:ID: plot-main-001\n:END:\n"
+      "* Plot Threads\n** Main Plot\n:PROPERTIES:\n:ID: plot-main-001\n:END:\n"
     (org-scribe-plot-thread-report)
     (with-current-buffer "*Plot Thread Health Report*"
       (let ((text (buffer-string)))
@@ -192,46 +157,30 @@ case the report exists to catch."
 
 ;;; Plot Thread File Resolution Tests
 
-(ert-deftest test-get-plot-thread-file-resolves-spanish-trama-file ()
-  "org-scribe--get-plot-thread-file finds objetos/trama.org in Spanish projects.
-Spanish projects use `objetos/', not `objects/' -- localized like
-`notes/'/`notas/', per the language pack's own `:dirs' section (see
-\"i18n-extended.org\", decision D1)."
-  (let* ((temp-dir (make-temp-file "org-scribe-plot-file-es-" t))
-         (org-scribe--project-type-cache nil)
-         (plot-file (org-scribe-lang-file 'plot 'es)))
-    (unwind-protect
-        (let ((default-directory temp-dir))
-          (make-directory (expand-file-name (org-scribe-lang-dir 'objects 'es) temp-dir) t)
-          (with-temp-file (expand-file-name plot-file temp-dir)
-            (insert "* Trama\n"))
-          (should (equal (file-truename (org-scribe--get-plot-thread-file))
-                         (file-truename (expand-file-name plot-file temp-dir)))))
-      (setq org-scribe--project-type-cache nil)
-      (delete-directory temp-dir t))))
-
-(ert-deftest test-get-plot-thread-file-resolves-english-plot-file ()
-  "org-scribe--get-plot-thread-file finds objects/plot.org in English projects."
-  (let* ((temp-dir (make-temp-file "org-scribe-plot-file-en-" t))
-         (org-scribe--project-type-cache nil))
-    (unwind-protect
-        (let ((default-directory temp-dir))
-          (make-directory (expand-file-name "objects" temp-dir) t)
-          (with-temp-file (expand-file-name "objects/plot.org" temp-dir)
-            (insert "* Plot\n"))
-          (should (equal (file-truename (org-scribe--get-plot-thread-file))
-                         (file-truename (expand-file-name "objects/plot.org" temp-dir)))))
-      (setq org-scribe--project-type-cache nil)
-      (delete-directory temp-dir t))))
+(ert-deftest test-get-plot-thread-file-resolves-design-file ()
+  "org-scribe--get-plot-thread-file finds the design notebook, in each language."
+  (dolist (lang '(en es))
+    (let* ((temp-dir (make-temp-file "org-scribe-plot-file-" t))
+           (org-scribe--project-type-cache nil)
+           (design (org-scribe-lang-file 'design lang)))
+      (unwind-protect
+          (let ((default-directory temp-dir))
+            (with-temp-file (expand-file-name design temp-dir)
+              (insert "* Plot\n"))
+            (should (equal (file-truename (org-scribe--get-plot-thread-file))
+                           (file-truename (expand-file-name design temp-dir)))))
+        (setq org-scribe--project-type-cache nil)
+        (delete-directory temp-dir t)))))
 
 ;;; Heading Predicate Tests
 
 (ert-deftest test-plot-heading-p-detects-top-level ()
-  "org-scribe--plot-heading-p matches a level-1 plot thread heading."
+  "org-scribe--plot-heading-p matches a child of the Plot Threads section."
   (with-temp-buffer
     (org-mode)
-    (insert "* Main Plot\n** Escalation\n")
+    (insert "* Plot\n** Plot Threads\n*** Main Plot\n**** Escalation\n")
     (goto-char (point-min))
+    (search-forward "Main Plot")
     (org-back-to-heading)
     (should (org-scribe--plot-heading-p))))
 
@@ -353,7 +302,7 @@ writer's scenes have."
               "*** Scene 1\n:PROPERTIES:\n:Plot: Main Plot\n:END:\n"
               "*** Scene 2\n:PROPERTIES:\n:Plot:\n:END:\n"
               "*** Scene 3\n:PROPERTIES:\n:Plot:   \n:END:\n")
-      "* Main Plot\n:PROPERTIES:\n:ID: plot-main-001\n:END:\n"
+      "* Plot Threads\n** Main Plot\n:PROPERTIES:\n:ID: plot-main-001\n:END:\n"
     (org-scribe-plot-thread-report)
     (with-current-buffer "*Plot Thread Health Report*"
       (let ((text (buffer-string)))

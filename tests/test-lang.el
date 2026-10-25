@@ -112,10 +112,6 @@ fixture reaches into the variable directly like this."
   "Every registered pack's `:files' section has the same concept keys."
   (org-scribe--test-lang-section-key-sets-match :files))
 
-(ert-deftest test-lang-dirs-key-sets-match ()
-  "Every registered pack's `:dirs' section has the same concept keys."
-  (org-scribe--test-lang-section-key-sets-match :dirs))
-
 (ert-deftest test-lang-properties-key-sets-match ()
   "Every registered pack's `:properties', `:headings', `:templates' and
 `:method-labels' sections each have the same keys across packs."
@@ -154,20 +150,12 @@ registered pack, each compared against the first-registered language."
 
 ;;; Filename hygiene
 
-(ert-deftest test-lang-file-paths-use-declared-dirs ()
-  "Every `:files' value naming a subdirectory uses that pack's own
-`:dirs' spelling for it.  Catches, e.g., a pack that declares
-`:dirs' \\='((objects . \"objets\")) but still writes
-\"objects/personnages.org\" in `:files' -- the English directory name
-under a French pack."
+(ert-deftest test-lang-file-names-have-no-directory ()
+  "No `:files' value contains a slash: a project is a flat set of files in
+its root, so a pack cannot ask for a subdirectory."
   (dolist (lang (org-scribe-languages))
-    (let* ((pack (org-scribe-lang-pack lang))
-           (declared-dirs (mapcar #'cdr (plist-get pack :dirs))))
-      (dolist (row (plist-get pack :files))
-        (let* ((path (cdr row))
-               (slash (string-search "/" path)))
-          (when slash
-            (should (member (substring path 0 slash) declared-dirs))))))))
+    (dolist (row (plist-get (org-scribe-lang-pack lang) :files))
+      (should-not (string-search "/" (cdr row))))))
 
 (ert-deftest test-lang-no-duplicate-filenames-within-pack ()
   "No two concepts in one pack resolve to the same file path."
@@ -222,30 +210,27 @@ almost every key the shipped packs define."
 
 (ert-deftest test-lang-third-language-resolves ()
   "A language registered from nothing but a pack file resolves a real
-project tree end to end.  Builds a project by hand using only the
-`fr' fixture's own spellings (roman.org, objets/, objets/personnages.org)
-and asserts both `org-scribe-project-type' and
-`org-scribe-project-structure' -- reading no French-specific code,
-only the live registry -- find it correctly."
+project tree end to end.  Builds a two-file project by hand using only
+the `fr' fixture's own spellings (roman.org, conception.org) and asserts
+both `org-scribe-project-type' and `org-scribe-project-structure' -- reading
+no French-specific code, only the live registry -- find it correctly."
   (let ((temp-dir (make-temp-file "org-scribe-lang-fr-test-" t))
         (org-scribe--project-type-cache nil)
         (org-scribe--project-language-cache nil))
     (unwind-protect
         (test-lang--with-fr-registered
-          (make-directory (expand-file-name "objets" temp-dir) t)
           (with-temp-file (expand-file-name "roman.org" temp-dir)
             (insert "#+TITLE: Test\n"))
-          (with-temp-file (expand-file-name "objets/personnages.org" temp-dir)
-            (insert "#+TITLE: Personnages\n"))
+          (with-temp-file (expand-file-name "conception.org" temp-dir)
+            (insert "#+TITLE: Conception\n"))
           (let ((default-directory temp-dir))
             ;; No .org-scribe-project marker: type detection must find
-            ;; this via the structural probes (the "objets" directory,
-            ;; then "roman.org"), not a marker line.
+            ;; this via the manuscript name, not a marker line.
             (should (eq 'novel (org-scribe-project-type)))
             (let ((structure (org-scribe-project-structure)))
               (should (string-suffix-p "roman.org" (plist-get structure :manuscript-file)))
-              (should (string-suffix-p "objets/personnages.org"
-                                       (plist-get structure :characters-file))))))
+              (should (string-suffix-p "conception.org"
+                                       (plist-get structure :design-file))))))
       (setq org-scribe--project-type-cache nil)
       (setq org-scribe--project-language-cache nil)
       (delete-directory temp-dir t))))

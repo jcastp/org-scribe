@@ -23,7 +23,7 @@
 ;; Two accessor families, matching the read/write asymmetry the package's
 ;; older alias tables already got right:
 ;;
-;;   - `org-scribe-lang-file' / `-dir' / `-heading' / `-property' /
+;;   - `org-scribe-lang-file' / `-heading' / `-property' /
 ;;     `-template' / `-message' each resolve for ONE language (the
 ;;     project's, by default) -- this is what WRITING a new file, heading,
 ;;     property or message must use, because writing has to commit to
@@ -143,13 +143,6 @@ KEY is not a known concept in that language's pack -- writing a file
 must commit to exactly one language's spelling; see
 `org-scribe-lang-all' for the read-tolerant equivalent."
   (org-scribe--lang-struct :files key language))
-
-(defun org-scribe-lang-dir (key &optional language)
-  "Return the directory name for concept KEY, in LANGUAGE.
-KEY is a symbol such as `objects' or `notes' (see the `:dirs' section
-of `lang/org-scribe-lang-en.el').  LANGUAGE defaults to
-`org-scribe--lang-default'.  Signals an error if KEY is unknown."
-  (org-scribe--lang-struct :dirs key language))
 
 (defun org-scribe-lang-heading (key &optional language)
   "Return the level-1 section heading text for concept KEY, in LANGUAGE.

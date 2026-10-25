@@ -354,7 +354,7 @@ display."
           ;; here.  Fall through to the notes file for any caller that
           ;; asks this function for a file name regardless.
           ('edits (org-scribe-capture-target-file t))
-          ('revision (and root (org-scribe--find-existing-file root "revision.org")))
+          ('revision (plist-get (org-scribe-project-structure) :design-file))
           ((and (pred stringp) path) (and root (expand-file-name path root)))
           ((and (pred functionp) fn) (funcall fn src-file)))
         ;; Unknown value, or a file that could not be located: fall back

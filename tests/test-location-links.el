@@ -97,21 +97,17 @@ in linking/org-scribe-location-links.el."
 ;;; Location File Detection Tests
 
 (ert-deftest test-location-file-detection ()
-  "Test that location file detection works."
-  (let ((file (org-scribe--get-location-file)))
-    (should (stringp file))
-    (should (cl-some (lambda (name) (string-suffix-p name file))
-                      (append (org-scribe-lang-all :files 'locations)
-                              (org-scribe-lang-all :files 'notes-novel)
-                              (org-scribe-lang-all :files 'notes-short))))))
+  "The location file is the project's design notebook."
+  (cl-letf (((symbol-function 'org-scribe-project-structure)
+             (lambda () (list :design-file "/tmp/design.org"))))
+    (should (equal (org-scribe--get-location-file) "/tmp/design.org"))))
 
 ;;; Integration with Capture System Tests
 
-(ert-deftest test-location-file-uses-capture-system ()
-  "Test that location file detection uses capture system."
-  ;; org-scribe--get-location-file should delegate to org-scribe-capture-location-file
-  (should (equal (org-scribe--get-location-file)
-                 (org-scribe-capture-location-file))))
+(ert-deftest test-location-file-is-the-design-file ()
+  "Location file detection delegates to `org-scribe--design-file'."
+  (cl-letf (((symbol-function 'org-scribe--design-file) (lambda () "/tmp/d.org")))
+    (should (equal (org-scribe--get-location-file) "/tmp/d.org"))))
 
 ;;; Spanish Heading Detection Tests
 
@@ -119,8 +115,9 @@ in linking/org-scribe-location-links.el."
   "org-scribe--location-heading-p recognizes the Spanish \"Localización\" heading."
   (with-temp-buffer
     (org-mode)
-    (insert "* Localización Principal 1\n** Descripción General\n")
+    (insert "* Ambientación\n** Localización Principal 1\n*** Descripción General\n")
     (goto-char (point-min))
+    (search-forward "Principal")
     (org-back-to-heading)
     (should (org-scribe--location-heading-p))))
 

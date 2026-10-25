@@ -10,7 +10,7 @@
 ;;   - Formatting relationships back to strings
 ;;   - Plain-list and table display formatting
 ;;   - The interactive add/remove/show/get-all commands, against a
-;;     temp-file fixture with `org-scribe-capture-character-file' and
+;;     temp-file fixture with `org-scribe--design-file' and
 ;;     `org-scribe-project-type' stubbed so the entity-lookup machinery
 ;;     resolves to the fixture instead of a real project.
 
@@ -258,7 +258,7 @@
 ;;; Interactive-command fixture
 ;;
 ;; `org-scribe--get-character-file' and `org-scribe--get-all-characters'
-;; both resolve through `org-scribe-capture-character-file' (see
+;; both resolve through `org-scribe--design-file' (see
 ;; org-scribe-linking-core.el's :file-fn slot), so stubbing that one
 ;; function is enough to point the whole entity-lookup chain at a fixture
 ;; file instead of a real project.
@@ -270,13 +270,13 @@
      (unwind-protect
          (progn
            (with-temp-file temp-file
-             (insert "* Alice\n")
+             (insert "* Characters\n** Alice\n")
              (insert ":PROPERTIES:\n:ID: char-alice-001\n:Role: Protagonist\n:END:\n\n")
-             (insert "* Bob\n")
+             (insert "** Bob\n")
              (insert ":PROPERTIES:\n:ID: char-bob-001\n:Role: Ally\n:END:\n\n")
-             (insert "* Carol\n")
+             (insert "** Carol\n")
              (insert ":PROPERTIES:\n:ID: char-carol-001\n:Role: Rival\n:END:\n\n"))
-           (cl-letf (((symbol-function 'org-scribe-capture-character-file)
+           (cl-letf (((symbol-function 'org-scribe--design-file)
                       (lambda (&optional _create) temp-file))
                      ((symbol-function 'org-scribe-project-type)
                       (lambda () 'novel)))
@@ -346,10 +346,10 @@
   (org-scribe-relationships-test--with-fixture
     (org-scribe--update-character-relationships
      "Alice" '(("char-bob-001" "Bob" "friend")))
-    (with-current-buffer (find-file-noselect (org-scribe-capture-character-file))
+    (with-current-buffer (find-file-noselect (org-scribe--design-file))
       (goto-char (point-min))
-      (re-search-forward "^\\* Bob$")
-      (replace-match "* Robert Lane")
+      (re-search-forward "^\\*\\* Bob$")
+      (replace-match "** Robert Lane")
       (save-buffer))
     (should (= 1 (org-scribe-refresh-relationship-names)))
     (should (equal '(("char-bob-001" "Robert Lane" "friend"))
@@ -361,18 +361,18 @@
 in place, not duplicated under the English name."
   (org-scribe-relationships-test--with-fixture
     (let ((legacy (org-scribe-lang-property 'relationships 'es)))
-      (with-current-buffer (find-file-noselect (org-scribe-capture-character-file))
+      (with-current-buffer (find-file-noselect (org-scribe--design-file))
         (goto-char (point-min))
-        (re-search-forward "^\\* Alice$")
+        (re-search-forward "^\\*\\* Alice$")
         (org-entry-put nil legacy "[[id:char-bob-001][Bob]]|friend")
         (save-buffer))
       (should (equal '(("char-bob-001" "Bob" "friend"))
                      (org-scribe--get-character-relationships-by-name "Alice")))
       (org-scribe--update-character-relationships
        "Alice" '(("char-carol-001" "Carol" "rival")))
-      (with-current-buffer (find-file-noselect (org-scribe-capture-character-file))
+      (with-current-buffer (find-file-noselect (org-scribe--design-file))
         (goto-char (point-min))
-        (re-search-forward "^\\* Alice$")
+        (re-search-forward "^\\*\\* Alice$")
         (should (equal "[[id:char-carol-001][Carol]]|rival" (org-entry-get nil legacy)))
         (should-not (org-entry-get nil (org-scribe--relationships-property-name)))))))
 

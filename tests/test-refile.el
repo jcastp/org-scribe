@@ -91,32 +91,26 @@ variables can be exercised."
     (should (null (org-scribe--project-refile-files)))))
 
 (ert-deftest test-refile-files-novel-project ()
-  "Test that every existing novel-project file is included."
+  "Test that the manuscript, the design notebook and the plan are included."
   (test-refile--with-temp-project
       '(("novel.org" . "#+TITLE: Test\n")
-        ("objects/characters.org" . "#+TITLE: Characters\n")
-        ("objects/locations.org" . "#+TITLE: Locations\n")
-        ("objects/plot.org" . "#+TITLE: Plot\n")
         ("design.org" . "#+TITLE: Design\n")
         ("plan.org" . "# Writing plan\n"))
     (let ((files (org-scribe--project-refile-files)))
-      (should (= 6 (length files)))
+      (should (= 3 (length files)))
       (should (cl-some (lambda (f) (string-suffix-p "novel.org" f)) files))
-      (should (cl-some (lambda (f) (string-suffix-p "objects/characters.org" f)) files))
-      (should (cl-some (lambda (f) (string-suffix-p "objects/locations.org" f)) files))
-      (should (cl-some (lambda (f) (string-suffix-p "objects/plot.org" f)) files))
       (should (cl-some (lambda (f) (string-suffix-p "design.org" f)) files))
       (should (cl-some (lambda (f) (string-suffix-p "plan.org" f)) files)))))
 
 (ert-deftest test-refile-files-short-story-project ()
-  "Test that a consolidated short-story notes.org is included."
+  "Test that a short story's design notebook is included."
   (test-refile--with-temp-project
       '(("story.org" . "#+TITLE: Test\n")
-        ("notes.org" . "#+TITLE: Notes\n"))
+        ("design.org" . "#+TITLE: Design\n"))
     (let ((files (org-scribe--project-refile-files)))
       (should (= 2 (length files)))
       (should (cl-some (lambda (f) (string-suffix-p "story.org" f)) files))
-      (should (cl-some (lambda (f) (string-suffix-p "notes.org" f)) files)))))
+      (should (cl-some (lambda (f) (string-suffix-p "design.org" f)) files)))))
 
 (ert-deftest test-refile-files-excludes-journal-and-readme ()
   "A writing journal and README are never refile sources.
@@ -144,15 +138,15 @@ description\", because nil is not one of the forms it recognizes — only
 that regression is caught here rather than in normal use."
   (test-refile--with-temp-project
       '(("novel.org" . "* Chapter One\n** Scene\nSome text.\n")
-        ("objects/characters.org" . "* Alice\n:PROPERTIES:\n:Role: Protagonist\n:END:\n"))
+        ("design.org" . "* Alice\n:PROPERTIES:\n:Role: Protagonist\n:END:\n"))
     (org-mode)
     (org-scribe--refile-enable)
     (unwind-protect
         (let ((targets (org-refile-get-targets)))
           (should targets)
           (should (cl-some (lambda (tg) (string-suffix-p "novel.org" (nth 1 tg))) targets))
-          (should (cl-some (lambda (tg) (string-suffix-p "characters.org" (nth 1 tg))) targets)))
-      (dolist (rel '("novel.org" "objects/characters.org"))
+          (should (cl-some (lambda (tg) (string-suffix-p "design.org" (nth 1 tg))) targets)))
+      (dolist (rel '("novel.org" "design.org"))
         (let ((buf (get-file-buffer (expand-file-name rel temp-dir))))
           (when buf (kill-buffer buf)))))))
 

@@ -379,13 +379,21 @@ WEIGHTS is an alist of (NAME . WEIGHT); names absent from it get the
 ;;; Heading Predicate Tests
 
 (ert-deftest test-character-heading-p-detects-top-level ()
-  "org-scribe--character-heading-p matches a level-1 character heading."
-  (with-temp-buffer
-    (org-mode)
-    (insert "* Protagonist\n** Physical Description\n")
-    (goto-char (point-min))
-    (org-back-to-heading)
-    (should (org-scribe--character-heading-p))))
+  "org-scribe--character-heading-p matches a child of the Characters
+section, whatever level the section sits at."
+  (dolist (text '("* Characters\n** Protagonist\n*** Physical Description\n"
+                  "* Cast\n** Characters\n*** Protagonist\n**** Physical Description\n"))
+    (with-temp-buffer
+      (org-mode)
+      (insert text)
+      (goto-char (point-min))
+      (search-forward "Protagonist")
+      (org-back-to-heading)
+      (should (org-scribe--character-heading-p))
+      (goto-char (point-min))
+      (search-forward "Characters")
+      (org-back-to-heading)
+      (should-not (org-scribe--character-heading-p)))))
 
 (ert-deftest test-character-heading-p-rejects-subsection ()
   "org-scribe--character-heading-p must not match a subsection under a

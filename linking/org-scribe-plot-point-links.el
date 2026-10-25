@@ -43,15 +43,11 @@
 
 (defun org-scribe--plot-point-heading-p ()
   "Return non-nil if the heading at point is one of the thirteen plot points.
-Plot points are level-2 headings under the level-1 wrapper named by the
-`plot-points' entry of `org-scribe--section-heading-aliases'.
-
-Unlike the other entity predicates this one needs no project-type branch:
-the wrapper heading identifies the section in novel and short-story
-layouts alike, and requiring level 2 keeps the wrapper itself from
-matching and becoming a phantom entity."
-  (and (= (org-current-level) 2)
-       (org-scribe--heading-parent-section-p 'plot-points)))
+Plot points are the headings directly under the section named by the
+`plot-points' entry of the language packs.  The section heading itself
+has a different parent, so it does not match and become a phantom
+entity."
+  (org-scribe--heading-parent-section-p 'plot-points))
 
 ;;; Plot Point File Resolver
 

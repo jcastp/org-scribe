@@ -291,9 +291,7 @@ every save, regardless of `org-scribe-auto-relink'."
     (ignore-errors
       (when-let* ((struct (org-scribe-project-structure))
                   (entity-files
-                   (delq nil (list (plist-get struct :characters-file)
-                                   (plist-get struct :locations-file)
-                                   (plist-get struct :plot-file))))
+                   (delq nil (list (plist-get struct :design-file))))
                   ;; Only act when the saved file is an entity database file.
                   ((member (expand-file-name buffer-file-name)
                            (mapcar #'expand-file-name entity-files)))

@@ -52,29 +52,22 @@ the word is not capitalized, and `string-match-p' honours the buffer's
 
 (defun org-scribe--character-heading-p ()
   "Return non-nil if the heading at point is a character heading.
-Novel projects keep characters as top-level (level 1) headings in
-objects/characters.org.  Short-story projects instead nest them as
-level-2 headings under the \"* Characters\" section of notes.org (see
-the shipped template) — the level-1 wrapper heading itself does not
-count, avoiding a phantom \"Characters\" entity."
-  (if (eq (org-scribe-project-type) 'short-story)
-      (and (= (org-current-level) 2)
-           (org-scribe--heading-parent-section-p 'characters)
-           (or (org-entry-get nil "Role")
-               (org-entry-get nil "TYPE")
-               (string-match-p org-scribe--character-heading-regexp
-                              (org-get-heading t t t t))))
-    (and (= (org-current-level) 1)
-         (or (org-entry-get nil "Role")
-             (org-entry-get nil "TYPE")
-             (string-match-p org-scribe--character-heading-regexp
-                            (org-get-heading t t t t))))))
+Characters are the headings directly under the Characters section of the
+design notebook, at whatever level the layout puts that section.  The
+section heading itself does not count, avoiding a phantom \"Characters\"
+entity.  A direct child counts when it carries a `Role' or `TYPE'
+property, or its text names a character by role."
+  (and (org-scribe--heading-parent-section-p 'characters)
+       (or (org-entry-get nil "Role")
+           (org-entry-get nil "TYPE")
+           (string-match-p org-scribe--character-heading-regexp
+                          (org-get-heading t t t t)))))
 
 ;;; Entity Definition
 
 (org-scribe-define-entity character
   ;; ── Config (entity descriptor) ──────────────────────────────────────
-  :file-fn                  org-scribe-capture-character-file
+  :file-fn                  org-scribe--design-file
   :heading-predicate        org-scribe--character-heading-p
   :properties               (pov characters)
   :msg-added-ids            msg-added-ids

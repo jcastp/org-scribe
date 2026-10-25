@@ -624,25 +624,16 @@ also be part of the initial commit, not a dirty working tree."
 ;;; Project File Navigation Tests
 
 (ert-deftest test-project-file-candidates-scans-project ()
-  "Completion candidates come from disk, not a hardcoded list.
-The design file (design.org / diseno.org) shipped by the method
-templates was missing from the old static list; scanning finds it
-along with anything a future template adds."
+  "Completion candidates come from disk, not a hardcoded list."
   (let* ((manuscript (org-scribe-lang-file 'manuscript-novel 'es))
-         (design (org-scribe-lang-file 'design 'es))
-         (characters (org-scribe-lang-file 'characters 'es))
-         (notes (org-scribe-lang-file 'notes-novel 'es)))
+         (design (org-scribe-lang-file 'design 'es)))
     (test-project--with-temp-base-dir root
-      (make-directory (expand-file-name (org-scribe-lang-dir 'objects 'es) root))
-      (make-directory (expand-file-name (org-scribe-lang-dir 'notes 'es) root))
-      (dolist (file (list manuscript design "README.org" ".org-scribe-project"
-                          characters notes))
+      (dolist (file (list manuscript design "extra.org" ".org-scribe-project"))
         (with-temp-file (expand-file-name file root) (insert "x")))
       (let ((candidates (org-scribe--project-file-candidates root)))
         (should (member design candidates))
         (should (member manuscript candidates))
-        (should (member characters candidates))
-        (should (member notes candidates))
+        (should (member "extra.org" candidates))
         ;; Non-Org files and the marker file are not offered.
         (should-not (member ".org-scribe-project" candidates))
         ;; Sorted, so completion order is stable.
@@ -693,8 +684,10 @@ Sistema's own design file is never touched by this feature."
               ;; Both were substituted with their own TITLE, so compare with
               ;; that difference normalized rather than asserting equality
               ;; on the raw text.
-              (should (string= (replace-regexp-in-string "Novel A" "X" a)
-                               (replace-regexp-in-string "Novel B" "X" b))))
+              (cl-flet ((norm (text title)
+                          (replace-regexp-in-string
+                           ":ID:.*" ":ID:" (replace-regexp-in-string title "X" text))))
+                (should (string= (norm a "Novel A") (norm b "Novel B")))))
           (test-project--kill-file-buffer (expand-file-name "README.org" dir-a))
           (test-project--kill-file-buffer (expand-file-name "README.org" dir-b)))))))
 

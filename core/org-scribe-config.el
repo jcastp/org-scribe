@@ -514,8 +514,7 @@ one prefix argument always mints IDs regardless of this setting)."
 (defcustom org-scribe-refile-project-wide t
   "When non-nil, point `org-refile-targets' at the whole current project.
 Every file `org-scribe-project-structure' resolves for the project —
-the manuscript, the entity files under objects/ (or the consolidated
-notes.org for a short story), design.org, and plan.org — becomes a
+the manuscript, the design notebook, and plan.org — becomes a
 refile target, with every heading level offered (no `:maxlevel'
 restriction). This lets you refile e.g. a loose note directly under
 the right character, or move a scene between chapters, without
@@ -558,8 +557,9 @@ Possible values:
                 built by `org-scribe-search-edits'.  Unlike the other
                 values this is a generated buffer, not a file, and it
                 refreshes whenever you save an Org file in the project.
-- `revision' -- the project revision file, when one exists.
-- a string   -- a project-relative file path, e.g. \"notes/research.org\".
+- `revision' -- the project's design notebook, which holds the revision
+                passes.
+- a string   -- a project-relative file path, e.g. \"scratch.org\".
 - a function -- called with the manuscript file name; must return the
                 file name to display in the pane.
 

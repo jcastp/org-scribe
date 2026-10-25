@@ -16,8 +16,8 @@
 ;; project tree end to end, the seams are real.
 ;;
 ;; Deliberately minimal -- only the keys that test actually exercises
-;; (`:files' manuscript-novel and characters, `:dirs' objects, `:headings'
-;; characters, and two `:messages' entries), not a full pack shaped like
+;; (`:files' manuscript-novel and design, `:headings' characters, and two
+;; `:messages' entries), not a full pack shaped like
 ;; `lang/org-scribe-lang-en.el'.  Unlike the shipped packs, this file does
 ;; NOT self-register on `require': the test registers it explicitly, and
 ;; unregisters it again in an `unwind-protect', so no other test in the
@@ -32,9 +32,7 @@
    :name "Français"
    :files
    '((manuscript-novel . "roman.org")
-     (characters       . "objets/personnages.org"))
-   :dirs
-   '((objects . "objets"))
+     (design           . "conception.org"))
    :headings
    '((characters . "Personnages"))
    :messages

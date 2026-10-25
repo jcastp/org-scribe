@@ -100,7 +100,7 @@ previously misdetected."
 `org-scribe-project-root' cannot answer this: it falls back to
 `default-directory' and is never nil, so a check on it never fires and
 commands went on to treat any directory as a project -- writing a
-`.dir-locals.el' there, or an objects/ folder of entity files next to an
+`.dir-locals.el' there, or other project files next to an
 unrelated Org file.  A project is a root holding a `.org-scribe-project'
 marker, or one whose type `org-scribe-project-type' can determine from
 its files."
@@ -119,17 +119,16 @@ See `org-scribe--project-root-if-any'."
 (defun org-scribe-project-type ()
   "Detect the type of writing project.
 Returns one of:
-  'novel - Novel project (objects/ directory with separate files)
-  'short-story - Short story project (consolidated notes.org)
+  'novel - Novel project (a novel manuscript)
+  'short-story - Short story project (a short-story manuscript)
   'unknown - Cannot determine project type
 
 Detection strategy:
 1. Check cache for this project root
 2. Read .org-scribe-project marker file if it exists (look for Type: line)
-3. Check for a registered language's \"objects\" directory (indicates novel)
-4. Check for a registered language's short-story manuscript (e.g. story.org)
-5. Check for a registered language's novel manuscript (e.g. novel.org)
-6. Return 'unknown if none of the above"
+3. Check for a registered language's short-story manuscript (e.g. story.org)
+4. Check for a registered language's novel manuscript (e.g. novel.org)
+5. Return 'unknown if none of the above"
   (let* ((root (org-scribe-project-root))
          (cache-key (org-scribe--normalize-project-root root))
          (cached (alist-get cache-key org-scribe--project-type-cache nil nil #'string=)))
@@ -145,22 +144,13 @@ Detection strategy:
                   ((equal type-str "novel") 'novel)
                   (t nil))))
 
-              ;; Strategy 2: Check for a localized "objects" directory in
-              ;; any registered language (novel indicator).  Reads every
-              ;; registered pack, not just the two shipped ones, and not
-              ;; scoped to any one language -- there is no marker line to
-              ;; read a language from yet at this point.
-              ((cl-some (lambda (name) (file-directory-p (expand-file-name name root)))
-                        (org-scribe-lang-all :dirs 'objects))
-               'novel)
-
-              ;; Strategy 3: Check for a localized short-story manuscript
+              ;; Strategy 2: Check for a localized short-story manuscript
               ;; (any registered language's `manuscript-short' spelling).
               ((cl-some (lambda (name) (file-exists-p (expand-file-name name root)))
                         (org-scribe-lang-all :files 'manuscript-short))
                'short-story)
 
-              ;; Strategy 4: Check for a localized novel manuscript
+              ;; Strategy 3: Check for a localized novel manuscript
               ;; (any registered language's `manuscript-novel' spelling).
               ((cl-some (lambda (name) (file-exists-p (expand-file-name name root)))
                         (org-scribe-lang-all :files 'manuscript-novel))
@@ -490,14 +480,11 @@ no candidate exists, or when ROOT is nil."
              for full = (expand-file-name name root)
              when (file-exists-p full) return full)))
 
-(defun org-scribe--resolve-dir (root concept)
-  "Return ROOT's directory for CONCEPT, trying the project language first.
-The directory-valued sibling of `org-scribe--resolve': CONCEPT is a key
-of the `:dirs' section of `lang/org-scribe-lang.el', such as `notes'."
-  (when root
-    (cl-loop for name in (org-scribe-lang-all :dirs concept)
-             for full = (expand-file-name name root)
-             when (file-directory-p full) return full)))
+(defun org-scribe--design-file ()
+  "Return the current project's design notebook, or nil.
+Every entity type (characters, settings, plot threads, plot points) lives
+in this one file, so this is the `:file-fn' of every linking entity."
+  (plist-get (org-scribe-project-structure) :design-file))
 
 (defun org-scribe--resolve-manuscript (root type)
   "Return ROOT's manuscript file for project TYPE.
@@ -523,15 +510,7 @@ Returns plist with:
                    no longer means \"novel\" specifically -- it holds the
                    same value as `:manuscript-file' for both project
                    types.  New code should read `:manuscript-file'.
-  :notes-dir     - notes directory
-  :notes-file    - notes file, either shape (a novel's notes/ subdirectory
-                   file, or a short story's root-level file)
-  :characters-file - characters file
-  :locations-file  - locations file
-  :plot-file       - plot file
-  :timeline-file   - timeline file
-  :objects-file    - objects file
-  :design-file     - method design file, or nil
+  :design-file     - the design notebook, or nil
   :plan-file       - writing plan file (in the project root), or nil
 
 Every file name is resolved from the registered language packs (see
@@ -543,17 +522,6 @@ does not exist."
     (list :root root
           :manuscript-file manuscript
           :novel-file manuscript
-          :notes-dir (org-scribe--resolve-dir root 'notes)
-          ;; The novel-subdir shape (`notes-novel') is tried before the
-          ;; short-story root-level shape (`notes-short'), matching the
-          ;; fixed order the two used to be hand-listed in.
-          :notes-file (or (org-scribe--resolve root 'notes-novel)
-                           (org-scribe--resolve root 'notes-short))
-          :characters-file (org-scribe--resolve root 'characters)
-          :locations-file (org-scribe--resolve root 'locations)
-          :plot-file (org-scribe--resolve root 'plot)
-          :timeline-file (org-scribe--resolve root 'timeline)
-          :objects-file (org-scribe--resolve root 'objects)
           :design-file (org-scribe--resolve root 'design)
           :plan-file (org-scribe--resolve root 'plan))))
 
@@ -1039,11 +1007,10 @@ NAME should be a string identifying the function for error messages."
 (defun org-scribe--project-refile-files ()
   "Return every real file in the current project, for `org-refile-targets'.
 Derives the list from `org-scribe-project-structure' rather than probing
-the filesystem again, keeping only its file-valued keys (`:root' and
-`:notes-dir' are directories, not files, so they are excluded) and
-dropping any that resolved to nil because that file does not exist in
+the filesystem again, keeping only its file-valued keys (`:root' is a directory, so it is
+excluded) and dropping any that resolved to nil because that file does not exist in
 this project.  Files `org-scribe-project-structure' never resolves at
-all — README.org, the writing journal — are excluded for free by using
+all — the compile output, say — are excluded for free by using
 it as the sole source of truth here, with no name-based filtering
 needed.
 
@@ -1053,12 +1020,6 @@ so no separate short-story fallback is needed here."
   (let* ((structure (org-scribe-project-structure)))
     (delq nil
           (list (plist-get structure :manuscript-file)
-                (plist-get structure :notes-file)
-                (plist-get structure :characters-file)
-                (plist-get structure :locations-file)
-                (plist-get structure :plot-file)
-                (plist-get structure :timeline-file)
-                (plist-get structure :objects-file)
                 (plist-get structure :design-file)
                 (plist-get structure :plan-file)))))
 
@@ -1111,7 +1072,7 @@ every heading level offered (`t', Org's own \"all headlines\" spelling —
 see `org-scribe--project-refile-files' for the file list itself), and
 outline-path display to `file'
 so a completion candidate names the file it comes from (a scene in the
-manuscript vs. a character in objects/characters.org read identically
+manuscript vs. a character in the design notebook read identically
 by heading text alone).
 
 Deliberately does not touch `org-refile-use-cache'.  An earlier version

@@ -33,38 +33,21 @@
 
 (defun org-scribe--plot-heading-p ()
   "Return non-nil if the heading at point is a plot thread heading.
-Novel projects keep plot threads as top-level (level 1) headings in
-objects/plot.org.  Short-story projects instead nest them as level-2
-headings under the \"* Plot Threads\" section of notes.org (see the
-shipped template and `org-scribe-capture-plot-thread', which files new
-threads there).  Requiring level 2 there also keeps the level-1
-\"Plot Threads\" wrapper heading itself from matching the \"Thread\"
-regexp fallback below and becoming a phantom entity."
-  (if (eq (org-scribe-project-type) 'short-story)
-      (and (= (org-current-level) 2)
-           (org-scribe--heading-parent-section-p 'plot-threads)
-           (or (org-entry-get nil "TYPE")
-               (org-entry-get nil "THREAD-TYPE")
-               (string-match-p "\\(Main Plot\\|Subplot\\|Thread\\|A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\)"
-                              (org-get-heading t t t t))))
-    (and (= (org-current-level) 1)
-         (or (org-entry-get nil "TYPE")
-             (org-entry-get nil "THREAD-TYPE")
-             (string-match-p "\\(Main Plot\\|Subplot\\|Thread\\|A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\)"
-                            (org-get-heading t t t t))))))
+Plot threads are the headings directly under the Plot Threads section of
+the design notebook, at whatever level the layout puts that section.  The
+section heading itself does not count: it would otherwise match the
+\"Thread\" regexp fallback below and become a phantom entity."
+  (and (org-scribe--heading-parent-section-p 'plot-threads)
+       (or (org-entry-get nil "TYPE")
+           (org-entry-get nil "THREAD-TYPE")
+           (string-match-p "\\(Main Plot\\|Subplot\\|Thread\\|A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\)"
+                          (org-get-heading t t t t)))))
 
-;;; Plot Thread File Resolver (custom: inline project-type logic)
+;;; Plot Thread File Resolver
 
 (defun org-scribe--get-plot-thread-file ()
-  "Get the path to the plot threads file for the current project.
-For novels, this is the `plot' concept's own file, named for the
-project's language.  For short stories, this is the notes file (Plot
-section)."
-  (let* ((project-type (org-scribe-project-type))
-         (structure (org-scribe-project-structure)))
-    (if (eq project-type 'short-story)
-        (plist-get structure :notes-file)
-      (plist-get structure :plot-file))))
+  "Get the path to the file holding the plot threads: the design notebook."
+  (org-scribe--design-file))
 
 ;;; Entity Definition
 

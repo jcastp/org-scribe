@@ -313,10 +313,10 @@ This function:
 2. Creates the project directory
 3. Initializes a git repository
 4. Processes all template files with variable substitution
-5. Overlays the chosen method's design file, if it has one
+5. Fills the design notebook's Foundations part from the chosen method
 6. Creates an initial git commit
 7. Registers the project with project.el
-8. Opens the README.org file"
+8. Opens the manuscript"
   (interactive
    (let* ((base-dir (read-directory-name (org-scribe-msg 'project-creation-base-dir)
                                          org-scribe-projects-directory))
@@ -396,8 +396,8 @@ This function:
       ;; Register project with project.el
       (project-remember-project (project-current nil project-dir))
 
-      ;; Open README.org
-      (find-file (expand-file-name "README.org" project-dir))
+      ;; Open the manuscript
+      (find-file (expand-file-name (org-scribe-lang-file 'manuscript-novel language) project-dir))
       (message (org-scribe-msg 'project-creation-success-novel title project-dir))
       (when (called-interactively-p 'any)
         (org-scribe--offer-plan-after-create base-dir title)))))
@@ -1204,16 +1204,15 @@ collide with the project's own scene level."
     (dolist (lang (org-scribe-languages))
       (dolist (row (plist-get (org-scribe-lang-pack lang) :files))
         (unless (member (cdr row) files) (push (cdr row) files))))
-    (dolist (extra '("README.org" "plan.org"))
+    (dolist (extra '("plan.org"))
       (unless (member extra files) (push extra files)))
     (nreverse files))
   "Fallback completion candidates for `org-scribe-open-project-file'.
 Used when no project root can be detected.  Derived, once at load
 time, from the union of every registered language pack's `:files'
-values (see `lang/org-scribe-lang.el'), plus \"README.org\" and
-\"plan.org\" explicitly -- already covered by the union for the two
-shipped packs, added directly so neither can silently drop out if a
-future pack ever omits either key.  Inside a project the candidates
+values (see `lang/org-scribe-lang.el'), plus \"plan.org\" explicitly --
+already covered by the union for the two shipped packs, added directly
+so it cannot silently drop out if a future pack ever omits the key.  Inside a project the candidates
 are scanned from disk instead, so a file created after this constant
 was computed is still offered; a language pack registered after this
 file loaded is not reflected here, but real projects in that language
@@ -1226,7 +1225,7 @@ reads the live registry rather than this fallback list.")
       (org-scribe-project-root)
     (or (when-let* ((project (project-current)))
           (project-root project))
-        (locate-dominating-file default-directory "README.org"))))
+        (locate-dominating-file default-directory ".org-scribe-project"))))
 
 (defun org-scribe--project-file-candidates (&optional root)
   "Return relative paths of Org files under ROOT for completion.
@@ -1251,7 +1250,7 @@ are offered without this function knowing their names.  Falls back to
 ;;;###autoload
 (defun org-scribe-open-project-file (filename)
   "Quickly open a file in the current writing project (novel or short story).
-FILENAME should be relative to project root (e.g., \"objects/characters.org\").
+FILENAME should be relative to project root (e.g., \"design.org\").
 Completion offers the Org files actually present in the project."
   (interactive
    (list (completing-read

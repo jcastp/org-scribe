@@ -40,34 +40,26 @@ and a Hazard, and is the heading the Spanish template ships.")
 
 (defun org-scribe--location-heading-p ()
   "Return non-nil if the heading at point is a location heading.
-Novel projects keep locations as top-level (level 1) headings in
-objects/locations.org.  Short-story projects instead nest them as
-level-2 headings under the \"* Setting\" section of notes.org (see the
-shipped template).  The \"Locations\" subheading itself is a comment-only
-placeholder from the template (\"Location captures go here as
-subheadings\") and is excluded by name so it does not become a phantom
-location entity — its own heading text otherwise matches the same
-\"Location\" regexp as a real entry."
-  (if (eq (org-scribe-project-type) 'short-story)
-      (and (= (org-current-level) 2)
-           (org-scribe--heading-parent-section-p 'setting)
-           (not (member (org-get-heading t t t t)
-                       '("Locations" "Localizaciones")))
-           (or (org-entry-get nil "Type")
-               (org-entry-get nil "TYPE")
-               (string-match-p org-scribe--location-heading-regexp
-                              (org-get-heading t t t t))))
-    (and (= (org-current-level) 1)
-         (or (org-entry-get nil "Type")
-             (org-entry-get nil "TYPE")
-             (string-match-p org-scribe--location-heading-regexp
-                            (org-get-heading t t t t))))))
+Locations are the headings directly under the Setting section of the
+design notebook, at whatever level the layout puts that section.  The
+\"Locations\" subheading of the short-story template is a comment-only
+placeholder (\"Location captures go here as subheadings\") and is
+excluded by name so it does not become a phantom location entity -- its
+own heading text otherwise matches the same \"Location\" regexp as a
+real entry."
+  (and (org-scribe--heading-parent-section-p 'setting)
+       (not (member (org-get-heading t t t t)
+                    '("Locations" "Localizaciones")))
+       (or (org-entry-get nil "Type")
+           (org-entry-get nil "TYPE")
+           (string-match-p org-scribe--location-heading-regexp
+                          (org-get-heading t t t t)))))
 
 ;;; Entity Definition
 
 (org-scribe-define-entity location
   ;; ── Config (entity descriptor) ──────────────────────────────────────
-  :file-fn                  org-scribe-capture-location-file
+  :file-fn                  org-scribe--design-file
   :heading-predicate        org-scribe--location-heading-p
   :properties               (location)
   :msg-added-ids            msg-added-location-ids

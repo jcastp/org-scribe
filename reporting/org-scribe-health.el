@@ -276,35 +276,26 @@ pre-sistema templates have neither, and the caller skips the section."
   (when (and design-file (file-exists-p design-file))
     (with-current-buffer (find-file-noselect design-file)
       (org-with-wide-buffer
-       (goto-char (point-min))
-       (let ((aliases (org-scribe-lang-all :headings 'starting-gate))
-             (found nil)
+       (let ((gate (org-scribe--find-section-heading 'starting-gate))
              (items nil))
-         (org-map-entries
-          (lambda ()
-            (when (and (not found)
-                       (= (org-current-level) 1)
-                       (cl-some (lambda (a)
-                                  (string-equal-ignore-case a (org-get-heading t t t t)))
-                                aliases))
-              (setq found t)
-              (save-restriction
-                (org-narrow-to-subtree)
-                (goto-char (point-min))
-                (while (re-search-forward "^[ \t]*- \\[\\([ X-]\\)\\][ \t]+\\(.*\\)$" nil t)
-                  (let ((checked (string= (match-string 1) "X"))
-                        (label (string-trim (match-string 2))))
-                    ;; Gate labels wrap: "Protagonista y oponente con Fantasma,
-                    ;; Mentira, Debilidad, Deseo y\n  Necesidad".  Absorb the
-                    ;; indented continuation lines, or the label is reported
-                    ;; truncated mid-sentence.
-                    (forward-line 1)
-                    (while (and (not (eobp))
-                                (looking-at "^[ \t]+\\([^ \t\n-].*\\)$"))
-                      (setq label (concat label " " (string-trim (match-string 1))))
-                      (forward-line 1))
-                    (push (cons checked label) items))))))
-          nil 'file)
+         (when gate
+           (goto-char gate)
+           (save-restriction
+             (org-narrow-to-subtree)
+             (goto-char (point-min))
+             (while (re-search-forward "^[ \t]*- \\[\\([ X-]\\)\\][ \t]+\\(.*\\)$" nil t)
+               (let ((checked (string= (match-string 1) "X"))
+                     (label (string-trim (match-string 2))))
+                 ;; Gate labels wrap: "Protagonista y oponente con Fantasma,
+                 ;; Mentira, Debilidad, Deseo y\n  Necesidad".  Absorb the
+                 ;; indented continuation lines, or the label is reported
+                 ;; truncated mid-sentence.
+                 (forward-line 1)
+                 (while (and (not (eobp))
+                             (looking-at "^[ \t]+\\([^ \t\n-].*\\)$"))
+                   (setq label (concat label " " (string-trim (match-string 1))))
+                   (forward-line 1))
+                 (push (cons checked label) items)))))
          (nreverse items))))))
 
 ;; The Starting Gate's two measurable items are identified by matching a
@@ -338,15 +329,15 @@ having an entry for KEY, not only for a genuinely malformed gate."
                 substrings))
      gate-items)))
 
-(defun org-scribe--health-plot-points-with-content (plot-file)
+(defun org-scribe--health-plot-points-with-content (design-file)
   "Return (FILLED . TOTAL) for the thirteen non-negotiables in PLOT-FILE.
 A plot point counts as filled when its body holds at least one line that
 is neither blank nor an Org comment — the shipped template gives every
 one of them a `#' hint, so counting non-empty bodies would report all
 thirteen as done in a brand-new project."
-  (when (and plot-file (file-exists-p plot-file)
+  (when (and design-file (file-exists-p design-file)
              (fboundp 'org-scribe--plot-point-heading-p))
-    (with-current-buffer (find-file-noselect plot-file)
+    (with-current-buffer (find-file-noselect design-file)
       (org-with-wide-buffer
        (let ((total 0) (filled 0))
          (org-map-entries
@@ -505,7 +496,7 @@ with clickable ID links back to each scene."
            (gate-items     (org-scribe--health-gate-items
                             (plist-get structure :design-file)))
            (gate-points    (org-scribe--health-plot-points-with-content
-                            (plist-get structure :plot-file)))
+                            (plist-get structure :design-file)))
            (gate-scenes    (org-scribe--health-scenes-written scenes 3))
            (orphan-chars   (when (fboundp 'org-scribe--get-all-characters)
                              (org-scribe--health-find-orphans
