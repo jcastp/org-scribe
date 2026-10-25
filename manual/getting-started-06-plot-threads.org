@@ -84,6 +84,137 @@ nothing else until you have all thirteen.
 this is a fixed list, identical in every project, and there is no capture
 command for it. You write into the thirteen headings that are already there.
 
+** How to Fill Them In
+
+Each heading ships with a short hint in ~#~ comment lines. Write your own
+text below the hint: one paragraph per point is enough, naming the scene or
+moment if you already know it. The hints are comments, so they are never
+exported or word-counted, and they do not count as content — the health
+report (and box 7 of the Starting Gate) treats a point as done only once it
+has at least one line that is not blank and not a comment. Delete the hints
+whenever you like.
+
+The thirteen are *causal*, not a checklist. Each one is the consequence of
+the one before, so read them in order: if you cannot say why point 7 follows
+from point 6, the hole is in 6, not in 7. They are listed in the order they
+usually fall in the story, though 1, 2, 3 and 5 can overlap or swap inside
+the first quarter.
+
+** The Thirteen, One by One
+
+For each: what it is, what to write, the question to ask yourself, and where
+it usually lands (as a percentage of the story). The percentages are
+guidance, not rules; the quarters themselves are in the "Quarters" section of
+~plot.org~.
+
+*** First quarter: Setup (0–25 %)
+
+1. *Theme Stated* — someone who is /not/ the protagonist says the Theme
+   aloud, and the protagonist ignores it. Write who, to whom, in which scene,
+   in what words. It should sound like a passing remark or a piece of advice,
+   never like the moral of the book. The Theme is the question the story
+   argues; the protagonist's Lie is his wrong answer to it. /Ask:/ if the
+   reader remembered only this line at the end, would it still be what the
+   book was about? /Where:/ the first 10 %.
+
+2. *Weakness, Lie and Need* — where he starts from and what he is wrong
+   about. Take them from his character profile (Ghost → Lie → Weakness →
+   Desire/Need) and show them in scenes. Two things must be visible: the
+   Weakness /working/ (doing its harm) and /costing/ (someone pays for it).
+   The Need is what he must learn; he does not know it yet. /Ask:/ could a
+   reader name his Weakness after chapter one without being told? /Where:/
+   the opening.
+
+3. *Desire* — the external goal he believes will improve his life. It must be
+   concrete and winnable or losable ("win the contract", not "be happy"), and
+   it starts weak and rises, so the stakes grow on their own. Desire (what he
+   wants) and Need (what he lacks) pull in different directions; that gap is
+   the story. /Ask:/ how will the reader see on the page that he has got it
+   or failed to? /Where:/ formed by the end of the first quarter.
+
+4. *Inciting Incident* — an external event that leaves him distinctly worse
+   off and makes him discern a goal. It happens /to/ him; he does not choose
+   it. Write the event and its two consequences: he is clearly worse off, and
+   from there he can see something to aim at. /Ask:/ is it done to him? If he
+   chose it, it belongs at point 6. /Where:/ about 10–15 %.
+
+5. *Opponent* — the most important relationship in the story, because the two
+   fight for the same thing (so only one can have it). Write who opposes him,
+   what they both want, and how the opponent's strength reaches the
+   protagonist's Weakness: the opponent wins where he is weakest, which is
+   why the fight teaches him anything. /Ask:/ if I remove the opponent, does
+   the Weakness stop mattering? /Where:/ introduced in the first quarter,
+   present until the Battle.
+
+6. *Crossing the Threshold* — his own decision to enter the new world. It is
+   a free choice, made with open eyes, into a place, job, relationship or way
+   of living different from the old one. Afterwards there is no going back
+   without a cost. /Ask:/ can I name the boundary he crosses? /Where:/ closes
+   the first quarter, 20–25 %.
+
+*** Second quarter: Reaction (25–50 %)
+
+7. *Plan* — how he means to win. State it in one sentence the reader could
+   repeat, and why it looks sensible to him. It rests on the Lie (he plans as
+   someone who is still wrong), which is exactly why it fails; the opponent
+   is also simply strong. /Ask:/ if the plan worked cleanly, would the Lie
+   survive? It should not be able to. /Where:/ right after the threshold.
+
+8. *Drive* — the actions of the plan, a long stretch running through the
+   second and third quarters. He usually loses, so he takes decisions that
+   are less and less moral; that slide is the cost the Weakness charges him.
+   List the attempts, each of a different /kind/ (persuasion, force, deceit,
+   retreat), with result and price. /Ask:/ do my attempts escalate, or do I
+   have the same scene three times? /Where:/ 25–75 %.
+
+9. *Midpoint* — a false victory or a false defeat. Choose which: he seems to
+   win and the win is hollow, or seems to lose and the loss frees him. The
+   important part is the change in behaviour: up to here he reacted to the
+   opponent, from here he acts. /Ask:/ what does he know or do now that he
+   could not before? /Where:/ closes the second quarter, 45–55 %.
+
+*** Third quarter: Action (50–75 %)
+
+10. *Apparent Defeat* — his lowest point, nearly catastrophic; he believes he
+    has lost. Write what is lost (ally, plan, hope, status) and why it seems
+    final. It must be worse than the Midpoint. The Lie breaks here, which
+    makes the next point possible. /Ask:/ am I, as reader, afraid for him? If
+    not, it is not low enough. /Where:/ closes the third quarter, about 75 %.
+
+*** Fourth quarter: Resolution (75–100 %)
+
+11. *Self-Revelation* — he sees the Lie. It is one point in /two moments/ and
+    a single heading: the *glimpse* begins before the battle (it is what lets
+    him fight differently) and the *confirmation* happens inside it. Write the
+    Lie he held, the truth that replaces it, and what makes him see it. The
+    insight must be his own, reached by what happened to him, and it should
+    answer the Theme from point 1. /Where:/ glimpse between defeat and
+    battle, confirmation in the battle. The template gives you two
+    sub-lines, "Glimpse" and "Confirmation", to fill.
+
+12. *Battle* — the final confrontation between the two ways of understanding
+    the world. Everything converges as through a funnel, in the smallest
+    space possible: the place, who is present (every thread that matters
+    sends someone), what each side stands for. /Ask:/ are opponent and
+    protagonist on the page together? Do the subplots cross here? /Where:/
+    the climax, about 90–95 %.
+
+13. *Moral Decision* — the proof that the self-revelation is real. He chooses
+    between two courses, both with a cost: between two goods or two evils,
+    never between good and evil. Seeing the Lie is easy; acting against it
+    when it hurts is what proves it. /Ask:/ is the right choice also
+    expensive? If the answer is clear and free, it is not a decision.
+    /Where:/ inside or just after the Battle, leading into the new
+    equilibrium.
+
+** Plot Points and Optional Points
+
+Below the thirteen, ~plot.org~ has an "Optional points used" section for the
+ones that are per-story (opening image, allies, tightening noose, final
+image…). Unlike the thirteen, those you add and remove freely; they are not
+entities and nothing links to them. Only the thirteen can be tagged on
+scenes and checked by the health report.
+
 ** Tagging a Scene With Its Plot Point
 
 Once a scene serves one of the thirteen, tag it:
@@ -400,7 +531,7 @@ overnight. That is the own desire.
 ** Example: Main Line
 
 #+BEGIN_EXAMPLE
-* The Water Supply Investigation
+,* The Water Supply Investigation
 :PROPERTIES:
 :THREAD-TYPE: Main
 :Stance: The truth is worth more than anybody's comfort
@@ -419,7 +550,7 @@ spreads citywide — and publish it, whoever it damages.
 ** Example: Subplot
 
 #+BEGIN_EXAMPLE
-* Sam and the Question of Trust
+,* Sam and the Question of Trust
 :PROPERTIES:
 :THREAD-TYPE: Subplot
 :Stance: Loyalty is worth more than the truth

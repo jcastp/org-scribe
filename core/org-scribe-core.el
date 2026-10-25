@@ -939,23 +939,57 @@ exact shape, only for `capture/org-scribe-capture.el''s direct readers
 -- `org-scribe--heading-parent-section-p' below reads the live registry
 instead, via `org-scribe-lang-all'.")
 
+(defun org-scribe--heading-matches-section-p (heading section-key)
+  "Return non-nil if HEADING text equals an alias of SECTION-KEY.
+Comparison is case-insensitive over every registered language's spelling,
+read live via `org-scribe-lang-all'."
+  (cl-some (lambda (alias) (string-equal-ignore-case alias heading))
+           (org-scribe-lang-all :headings section-key)))
+
 (defun org-scribe--heading-parent-section-p (section-key)
-  "Return non-nil if the level-1 parent of the heading at point is SECTION-KEY.
+  "Return non-nil if the immediate parent of the heading at point is SECTION-KEY.
 SECTION-KEY is a symbol such as \\='characters, \\='setting, or
 \\='plot-threads (see the `:headings' section of `lang/org-scribe-lang.el').
-Used by entity heading predicates to recognize short-story projects'
-notes.org layout, where characters/locations/plot threads are nested as
-level-2 headings under a level-1 section rather than being top-level
-headings of their own, as in novel projects.  Matches any localized
-alias for that section, case-insensitively, reading every registered
-language pack live via `org-scribe-lang-all' -- so a language
-registered after this file loaded is still recognized."
+Used by entity heading predicates to recognize entities nested under a
+section heading rather than being top-level headings of their own.  The
+parent may sit at any level: level 1 in a short-story notes file, level 2
+under a part of the design notebook.  Matches any localized alias for
+that section, case-insensitively, reading every registered language pack
+live -- so a language registered after this file loaded is still
+recognized."
   (save-excursion
     (and (org-up-heading-safe)
-         (= (org-current-level) 1)
-         (let ((heading (org-get-heading t t t t)))
-           (cl-some (lambda (alias) (string-equal-ignore-case alias heading))
-                    (org-scribe-lang-all :headings section-key))))))
+         (org-scribe--heading-matches-section-p
+          (org-get-heading t t t t) section-key))))
+
+(defconst org-scribe--section-part
+  '((characters . cast)
+    (setting . world)
+    (objects . world)
+    (timeline . world)
+    (plot-threads . plot-part)
+    (plot-points . plot-part)
+    (starting-gate . foundations))
+  "Section key -> key of the part (level-1 heading) that holds it.
+Used to create a section on demand inside the right part of the design
+notebook.  Part keys are `:headings' entries of the language packs.")
+
+(defun org-scribe--find-section-heading (section-key)
+  "Return the position of the first heading matching SECTION-KEY, or nil.
+The heading may be at any level; its text is compared case-insensitively
+against every registered language's alias for SECTION-KEY.  Searches the
+whole current buffer, ignoring narrowing."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (let (found)
+        (while (and (not found)
+                    (re-search-forward org-heading-regexp nil t))
+          (when (org-scribe--heading-matches-section-p
+                 (org-get-heading t t t t) section-key)
+            (setq found (line-beginning-position))))
+        found))))
 
 ;;; Helper Functions
 

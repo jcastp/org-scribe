@@ -491,6 +491,57 @@ misread as scenes."
   (interactive)
   (ert "^test-core-"))
 
+
+;;; Level-agnostic section recognition
+
+(defmacro test-core--in-org (text &rest body)
+  "Run BODY in an Org buffer holding TEXT, point at the end."
+  (declare (indent 1))
+  `(with-temp-buffer
+     (insert ,text)
+     (delay-mode-hooks (org-mode))
+     (goto-char (point-max))
+     ,@body))
+
+(ert-deftest test-core-parent-section-level-1-parent ()
+  (test-core--in-org "* Characters\n** Alice\n"
+    (should (org-scribe--heading-parent-section-p 'characters))))
+
+(ert-deftest test-core-parent-section-level-2-parent ()
+  (test-core--in-org "* Cast\n** Characters\n*** Alice\n"
+    (should (org-scribe--heading-parent-section-p 'characters))))
+
+(ert-deftest test-core-parent-section-non-matching-parent ()
+  (test-core--in-org "* Cast\n** Setting\n*** Alice\n"
+    (should-not (org-scribe--heading-parent-section-p 'characters))))
+
+(ert-deftest test-core-parent-section-heading-itself-does-not-match ()
+  (test-core--in-org "* Cast\n** Characters\n"
+    (should-not (org-scribe--heading-parent-section-p 'characters))))
+
+(ert-deftest test-core-find-section-heading-any-level ()
+  (test-core--in-org "* Cast\n** Characters\n*** Alice\n* Setting\n"
+    (should (= (org-scribe--find-section-heading 'characters)
+               (save-excursion (goto-char (point-min)) (forward-line 1) (point))))
+    (should (= (org-scribe--find-section-heading 'setting)
+               (save-excursion (goto-char (point-max)) (forward-line -1) (point))))))
+
+(ert-deftest test-core-find-section-heading-case-insensitive-and-missing ()
+  (test-core--in-org "* characters\n"
+    (should (= (org-scribe--find-section-heading 'characters) 1))
+    (should-not (org-scribe--find-section-heading 'timeline))))
+
+(ert-deftest test-core-find-section-heading-ignores-narrowing ()
+  (test-core--in-org "* Intro\n* Characters\n"
+    (goto-char (point-min))
+    (narrow-to-region (point-min) (line-end-position))
+    (should (org-scribe--find-section-heading 'characters))))
+
+(ert-deftest test-core-section-part-keys-are-registered-headings ()
+  (dolist (entry org-scribe--section-part)
+    (should (org-scribe-lang-all :headings (cdr entry)))
+    (should (org-scribe-lang-all :headings (car entry)))))
+
 (provide 'test-core-extended)
 
 ;;; test-core-extended.el ends here
