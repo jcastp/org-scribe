@@ -1,22 +1,8 @@
-#+TITLE: ${TITLE} - Design (The Helix)
-#+AUTHOR: ${AUTHOR}
-#+DATE: ${DATE}
-#+LANGUAGE: en
-#+STARTUP: overview
-
-# Lines starting with # are instructions: do not turn them into prose.
-# This file is for filling in. The full method lives in copo-helice.org.
-#
 # This is the Helix method: use it when you already have a premise and
 # lack the characters to carry it. The other Living Snowflake method, the
 # Matrix, starts from the opposite end — characters without a plot.
-#
-# This file holds the Helix's five levels and everything that has no
-# entities of its own. Characters live in the Cast part, settings in the
-# World part, and the plot — including the thirteen non-negotiables — in the
-# Plot part.
 
-* Starting Gate
+** Starting Gate
 
 # This is the only list that decides when you start writing. In the Helix
 # the gate sits at the close of level 3, not at the end of the method:
@@ -37,39 +23,39 @@
 - [ ] The thirteen non-negotiable plot points
 - [ ] The first three scenes
 
-* The Helix method
+** The Helix method
 
 # Five levels, and each one produces two sibling documents — one for
 # plot, one for character, at the same level of detail — plus a check
 # that crosses them. The difference from the original Snowflake: character
 # gets its own level instead of filling in holes plot already made.
 
-** Rule of scaling
+*** Rule of scaling
 
 # No level is left until both of its documents are written and its check
 # passes. Never write one helix three levels ahead of the other.
 
-** Rule of ownership
+*** Rule of ownership
 
 # Every disaster has an owner: a person and a specific Lie that causes
 # it. If a disaster has no owner, the disaster is badly designed, not
 # missing a character.
 
-** Rule of return
+*** Rule of return
 
 # When a check fails, rewrite at the level where it failed, not the one
 # below it, and do not keep descending until it passes.
 
-* What a living force is
+** What a living force is
 
 # A character is a living force when their next wrong decisions can be
 # deduced from their profile without consulting the plot. Only living
 # forces carry a full profile (Ghost, Lie, Weakness, Trouble, Desire,
 # Need) in the Cast part. Usually two or three turn up.
 
-* LEVEL 1 — The commitment
+** LEVEL 1 — The commitment
 
-** Plot helix
+*** Plot helix
 
 - Novel sentence (~15 words) ::
   # No proper name but the protagonist's.
@@ -80,26 +66,26 @@
   # to stay" is what he needs, not a Desire — a Desire is external,
   # concrete, and wrong).
 
-** Character helix
+*** Character helix
 
 - Protagonist ::
   # NAME believes LIE, and so wants DESIRE.
   # The opponent does not enter yet: they enter at level 2, already
   # defined by the collision.
 
-** Level 1 check
+*** Level 1 check
 
 - [ ] Does the novel sentence carry a wrong belief, or only a situation?
 - [ ] Inversion test: swap the Lie for its opposite and reread the
   sentence. If it still works just as well, the Lie is not holding
   anything up.
 
-* LEVEL 2 — The skeleton and the forces
+** LEVEL 2 — The skeleton and the forces
 
 # The decisive level. Plan to spend noticeably more time here than on
 # the others.
 
-** Plot helix
+*** Plot helix
 
 # A paragraph of N+1 sentences: setup, the N disasters, and the external
 # ending (does he get the Objective or not?).
@@ -110,16 +96,16 @@
 4. Disaster 3 ::
 5. External ending ::
 
-** Character helix
+*** Character helix
 
 # One paragraph per living force, starting with the protagonist: Ghost →
 # Lie → Weakness → Trouble → Desire (Goal · Motivation · Conflict) →
 # Need. The opponent enters here for the first time and must want the
 # same thing as the protagonist, on both levels.
 
-*** Protagonist
+**** Protagonist
 
-*** Opponent
+**** Opponent
 
 # Three checks specific to the opponent, the ones most often skipped:
 # wants the same thing as the protagonist, on both levels — not just the
@@ -127,9 +113,9 @@
 # with real conviction; and ideally their Ghost is the same event as the
 # protagonist's, with the opposite conclusion drawn from it.
 
-*** Other living forces, if any
+**** Other living forces, if any
 
-** Level 2 check
+*** Level 2 check
 
 # Two traps: a disaster nobody causes — the storm, the plague, the royal
 # edict — can exist as backdrop but never counts as a structural
@@ -148,7 +134,7 @@
 |        2 |       |                     |                   |
 |        3 |       |                     |                   |
 
-** The two-endings cross-check
+*** The two-endings cross-check
 
 # The external (last sentence of the plot helix) and the internal (the
 # Need of the character helix) are written without looking at each other
@@ -161,9 +147,9 @@
 
 - Grid cell ::
 
-* LEVEL 3 — The synopsis and the change milestones
+** LEVEL 3 — The synopsis and the change milestones
 
-** Plot helix
+*** Plot helix
 
 # One-page synopsis, split by quarters: Setup (0–25%), Reaction
 # (25–50%), Action (50–75%), Resolution (75–100%).
@@ -188,7 +174,7 @@
   2.
   3.
 
-** Character helix
+*** Character helix
 
 # One page per living force: the chain developed, and its change
 # milestones, each anchored to a concrete point in the synopsis.
@@ -197,7 +183,7 @@
 |------------+--------------------------+---------------|
 |            |                          |               |
 
-** Level 3 check
+*** Level 3 check
 
 # Resist inventing new plot on this page to make it read better — if the
 # synopsis needs something the level-2 paragraph doesn't have, that's a
@@ -208,38 +194,38 @@
 - [ ] Self-revelation arrives before the battle
 - [ ] Ghost test: strip it from the protagonist and reread. What changes?
 
-* LEVEL 4 — Development and the profiles
+** LEVEL 4 — Development and the profiles
 
-** Plot helix
+*** Plot helix
 
 # Four-page synopsis, one page per quarter.
 
-** Character helix
+*** Character helix
 
 # Full profile (section 5 of the unified system) per living force.
 
-** Level 4 check
+*** Level 4 check
 
 - [ ] Owner for every plot point, not only the disasters
 - [ ] The Motivation sounds like the Lie
 - [ ] The Conflict of the Need is not the opponent
 - [ ] The two Weaknesses are distinct
 
-* LEVEL 5 — The scenes
+** LEVEL 5 — The scenes
 
-** Plot helix
+*** Plot helix
 
 | # | Quarter | PoV | Who wants what | What blocks it | How it ends | What drives it |
 |---+---------+-----+------------------+------------------+---------------+------------------|
 
-** Level 5 check
+*** Level 5 check
 
 - [ ] Every scene advances a Desire or presses a Lie
 - [ ] Every change milestone has a scene assigned
 - [ ] PoV distribution is a decision, not an oversight
 - [ ] Pace: no quarter has double the scenes of the others
 
-* Where the plot's weight sits
+** Where the plot's weight sits
 
 # The three disasters, in a table, to see at a glance where the story's
 # weight falls before translating it into scenes. This is not a linkable
@@ -252,31 +238,31 @@
 |        2 |       |                     |                   | Midpoint         |
 |        3 |       |                     |                   | End of quarter III |
 
-* Blank template
+** Blank template
 
 # Copy it per story and work in the copy.
 
-** Level 1
+*** Level 1
 - Novel sentence:
 - Protagonist: ______ believes ______, and so wants ______.
 
-** Level 2
+*** Level 2
 - Plot (N+1 sentences):
 - Living force 1 (protagonist): Ghost / Lie / Weakness / Trouble / Desire / Need
 - Living force 2 (opponent): (same fields)
 
-** Level 3
+*** Level 3
 - One-page synopsis, by quarters.
 - Change milestones per force.
 
-** Level 4
+*** Level 4
 - Four pages, one per quarter.
 - Full profiles.
 
-** Level 5
+*** Level 5
 - Scene list.
 
-* Where to look when something's wrong
+** Where to look when something's wrong
 
 # "Things happen but mean nothing" → level 2, rule of ownership.
 # "The opponent feels like cardboard" → level 2: undefendable Stance, or
@@ -285,7 +271,7 @@
 # "Nothing changes until the very end" → level 3: missing Adjustments
 #   between the Breaks.
 
-* Pending design changes
+** Pending design changes
 
 # One line per deviation, noted without leaving the drafting session. If
 # the story contradicts the design, the story wins: update the document

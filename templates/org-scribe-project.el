@@ -374,13 +374,14 @@ This function:
         (unless (zerop (call-process "git" nil nil nil "init"))
           (warn "Failed to initialize git repository")))
 
-      ;; Process all templates
-      (org-scribe--copy-templates template-dir project-dir variables)
-
-      ;; Overlay the chosen method's design file, if it has one — a no-op
-      ;; for `sistema', whose design file already came from the base copy
-      ;; above and is never touched by another method's presence.
-      (org-scribe--copy-method-overlay method language project-dir variables)
+      ;; Process all templates; the notebook's Foundations part is the
+      ;; method's own fragment (see `org-scribe--foundations-fragment').
+      (org-scribe--copy-templates
+       template-dir project-dir
+       (cons (cons "FOUNDATIONS"
+                   (org-scribe--foundations-fragment
+                    method language template-dir variables))
+             variables))
 
       ;; Linking on by default: mint IDs for the template's entities so the
       ;; user never has to run a separate "setup" step (A7).
@@ -520,64 +521,79 @@ before the planner loads (unbound means its default, t)."
 
 (defun org-scribe--copy-templates (template-dir project-dir variables)
   "Copy and process templates from TEMPLATE-DIR to PROJECT-DIR.
-VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
+VARIABLES is an alist of (NAME . VALUE) pairs for substitution.
+Files ending in `.fragment' are inputs to other templates, not project
+files, and are never copied."
   (dolist (file (directory-files-recursively template-dir ".*"))
-    (let* ((relative-path (file-relative-name file template-dir))
-           ;; Remove .template extension if present
-           (output-path (expand-file-name
-                        (replace-regexp-in-string "\\.template$" "" relative-path)
-                        project-dir)))
+    (unless (string-suffix-p ".fragment" file)
+      (let* ((relative-path (file-relative-name file template-dir))
+             ;; Remove .template extension if present
+             (output-path (expand-file-name
+                           (replace-regexp-in-string "\\.template\\'" "" relative-path)
+                           project-dir)))
 
-      ;; Create parent directory if needed
-      (make-directory (file-name-directory output-path) t)
+        ;; Create parent directory if needed
+        (make-directory (file-name-directory output-path) t)
 
-      ;; Process template or copy file
-      (if (string-match-p "\\.template$" file)
-          (org-scribe--process-template file output-path variables)
-        (copy-file file output-path)))))
+        ;; Process template or copy file
+        (if (string-suffix-p ".template" file)
+            (org-scribe--process-template file output-path variables)
+          (copy-file file output-path))))))
 
-(defun org-scribe--copy-method-overlay (method language project-dir variables)
-  "Overlay METHOD's design-file templates onto PROJECT-DIR, if any.
-LANGUAGE is \\='en or \\='es.  VARIABLES is passed through to
-`org-scribe--process-template' unchanged.
+(defun org-scribe--foundations-fragment (method language base-dir variables)
+  "Return the processed Foundations text for METHOD in LANGUAGE.
+LANGUAGE is \\='en or \\='es.  BASE-DIR is the base template set's
+directory; VARIABLES is passed to `org-scribe--process-template-string'.
 
 METHOD is a key of `org-scribe--methods'.  When its :overlay is nil
-(the case for \\='sistema), this does nothing: the base template set
-copied by `org-scribe--copy-templates' already holds that method's
-design file, and it is not touched.  Otherwise the overlay directory
-at `org-scribe-templates/methods/<overlay>/<language>/' is copied over
-PROJECT-DIR the same way the base set was — same substitution, same
-variables — so a design file it names replaces the base one written a
-moment before.
+(the case for \\='sistema), the fragment is `foundations.fragment' in
+BASE-DIR.  Otherwise it is the one in
+`org-scribe-templates/methods/<overlay>/<language>/'.  Either way it is
+the body of the notebook's Foundations part, substituted into the
+notebook template through the FOUNDATIONS variable; only the Foundations
+part varies between methods.
 
 This is a separate function rather than a parameter on
 `org-scribe--copy-templates' because the base copy is shared with
 `org-scribe-create-short-story-project', which never has a method or
-an overlay (see CLAUDE.md, \\='Q2\\=')."
-  (let ((overlay (plist-get (alist-get method org-scribe--methods) :overlay)))
-    (when overlay
-      (let ((overlay-dir (expand-file-name
-                          (format "../org-scribe-templates/methods/%s/%s"
-                                  overlay (plist-get (org-scribe-lang-pack language) :code))
-                          org-scribe-project-package-directory)))
-        (unless (file-directory-p overlay-dir)
-          (user-error (org-scribe-msg 'error-template-not-found overlay-dir)))
-        (org-scribe--copy-templates overlay-dir project-dir variables)))))
+a fragment."
+  (let* ((overlay (plist-get (alist-get method org-scribe--methods) :overlay))
+         (dir (if overlay
+                  (expand-file-name
+                   (format "../org-scribe-templates/methods/%s/%s"
+                           overlay (plist-get (org-scribe-lang-pack language) :code))
+                   org-scribe-project-package-directory)
+                base-dir))
+         (file (expand-file-name "foundations.fragment" dir)))
+    (unless (file-exists-p file)
+      (user-error (org-scribe-msg 'error-template-not-found file)))
+    (org-scribe--process-template-string
+     (with-temp-buffer
+       (insert-file-contents file)
+       (buffer-string))
+     variables)))
 
-(defun org-scribe--process-template (template-file output-file variables)
-  "Process TEMPLATE-FILE replacing variables, save to OUTPUT-FILE.
-VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
+(defun org-scribe--process-template-string (text variables)
+  "Return TEXT with each `${NAME}' replaced from the VARIABLES alist."
   (with-temp-buffer
-    (insert-file-contents template-file)
-
-    ;; Replace all variables
+    (insert text)
     (dolist (var variables)
       (goto-char (point-min))
       (while (search-forward (format "${%s}" (car var)) nil t)
         (replace-match (cdr var) t t)))
+    (buffer-string)))
 
-    ;; Write processed content
-    (write-region (point-min) (point-max) output-file)))
+(defun org-scribe--process-template (template-file output-file variables)
+  "Process TEMPLATE-FILE replacing variables, save to OUTPUT-FILE.
+VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
+  (let ((text (org-scribe--process-template-string
+               (with-temp-buffer
+                 (insert-file-contents template-file)
+                 (buffer-string))
+               variables)))
+    (with-temp-buffer
+      (insert text)
+      (write-region (point-min) (point-max) output-file))))
 
 ;;; Template Insertion
 

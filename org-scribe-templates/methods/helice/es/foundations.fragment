@@ -1,22 +1,8 @@
-#+TITLE: ${TITLE} - Diseño (La Hélice)
-#+AUTHOR: ${AUTHOR}
-#+DATE: ${DATE}
-#+LANGUAGE: es
-#+STARTUP: overview
-
-# Las líneas que empiezan por # son instrucciones: no las conviertas en prosa.
-# Aquí sólo se rellena. El método completo está en copo-helice.org.
-#
 # Éste es el método de la Hélice: se usa cuando ya tienes una premisa y te
 # faltan los personajes que la sostengan. El otro método del Copo vivo, la
 # Matriz, parte del extremo contrario — de personajes sin trama.
-#
-# Este fichero contiene los cinco niveles de la Hélice y lo que no tiene
-# entidades propias. Los personajes viven en la parte Reparto, los
-# escenarios en la parte Mundo y la trama —incluidos los trece puntos
-# irrenunciables— en la parte Trama.
 
-* Puerta de salida
+** Puerta de salida
 
 # Ésta es la única lista que decide cuándo se empieza a escribir. En la
 # Hélice la puerta está al cerrar el nivel 3, no al final del método: con
@@ -34,40 +20,40 @@
 - [ ] Los trece puntos de trama irrenunciables
 - [ ] Las tres primeras escenas
 
-* El método de la Hélice
+** El método de la Hélice
 
 # Cinco niveles, y en cada uno se escriben dos documentos hermanos —uno de
 # trama y uno de personaje, al mismo grado de detalle— más un chequeo que
 # los cruza. La diferencia con el Snowflake original: el personaje tiene
 # nivel propio, no rellena huecos ya hechos por la trama.
 
-** Regla del escalado
+*** Regla del escalado
 
 # No se baja de nivel hasta que los dos documentos del nivel están
 # escritos y su chequeo pasa. Nunca se escribe una hélice tres niveles por
 # delante de la otra.
 
-** Regla del dueño
+*** Regla del dueño
 
 # Todo desastre tiene un dueño: una persona y una Mentira concreta que lo
 # causa. Si un desastre no tiene dueño, el desastre está mal diseñado, no
 # falta un personaje.
 
-** Regla del retorno
+*** Regla del retorno
 
 # Cuando un chequeo falla, se reescribe en el nivel donde falla, no en el
 # de abajo, y no se sigue bajando hasta que pasa.
 
-* Qué es una fuerza viva
+** Qué es una fuerza viva
 
 # Un personaje es una fuerza viva cuando de su ficha se pueden deducir sus
 # próximas decisiones equivocadas sin consultar la trama. Sólo las fuerzas
 # vivas llevan ficha completa (Fantasma, Mentira, Debilidad, Apuro, Deseo,
 # Necesidad) en la parte Reparto. Suelen salir dos o tres.
 
-* NIVEL 1 — El compromiso
+** NIVEL 1 — El compromiso
 
-** Hélice de trama
+*** Hélice de trama
 
 - Frase de la novela (~15 palabras) ::
   # Sin más nombre propio que el del protagonista.
@@ -78,23 +64,23 @@
   # Deseo ("quiere aprender a quedarse" es lo que necesita, no un Deseo —
   # el Deseo es externo, concreto y equivocado.
 
-** Hélice de personaje
+*** Hélice de personaje
 
 - Protagonista ::
   # NOMBRE cree que MENTIRA, y por eso quiere DESEO.
   # El oponente no entra todavía: entra en el nivel 2, ya definido por el
   # choque.
 
-** Chequeo del nivel 1
+*** Chequeo del nivel 1
 
 - [ ] ¿La frase de la novela contiene una creencia equivocada, o sólo una situación?
 - [ ] Prueba de la inversión: sustituye la Mentira por su contraria y relee la frase. Si sigue funcionando igual, la Mentira no sujeta nada.
 
-* NIVEL 2 — El esqueleto y las fuerzas
+** NIVEL 2 — El esqueleto y las fuerzas
 
 # El nivel decisivo. Cuenta con dedicarle bastante más que a los demás.
 
-** Hélice de trama
+*** Hélice de trama
 
 # Párrafo de N+1 frases: planteamiento, los N desastres, y el final
 # externo (¿consigue el Objetivo o no?).
@@ -105,16 +91,16 @@
 4. Desastre 3 ::
 5. Final externo ::
 
-** Hélice de personaje
+*** Hélice de personaje
 
 # Un párrafo por cada fuerza viva, empezando por el protagonista: Fantasma
 # → Mentira → Debilidad → Apuro → Deseo (Objetivo · Motivación ·
 # Conflicto) → Necesidad. El oponente entra aquí por primera vez y debe
 # querer lo mismo que el protagonista, en los dos niveles.
 
-*** Protagonista
+**** Protagonista
 
-*** Oponente
+**** Oponente
 
 # Tres comprobaciones propias del oponente, las que más se saltan: quiere
 # lo mismo que el protagonista, en los dos niveles —no sólo el mismo
@@ -122,9 +108,9 @@
 # convicción real; e, idealmente, su Fantasma es el mismo suceso que el
 # del protagonista, con la conclusión contraria.
 
-*** Otras fuerzas vivas, si las hay
+**** Otras fuerzas vivas, si las hay
 
-** Chequeo del nivel 2
+*** Chequeo del nivel 2
 
 # Dos trampas: un desastre que no causa nadie —la tormenta, la peste, el
 # edicto real— puede existir como telón de fondo pero nunca cuenta como
@@ -143,7 +129,7 @@
 |        2 |       |                      |                     |
 |        3 |       |                      |                     |
 
-** El cotejo de los dos finales
+*** El cotejo de los dos finales
 
 # El externo (última frase de la hélice de trama) y el interno (la
 # Necesidad de la hélice de personaje) se escriben sin mirarse y se
@@ -156,9 +142,9 @@
 
 - Casilla de la rejilla ::
 
-* NIVEL 3 — La sinopsis y los hitos de cambio
+** NIVEL 3 — La sinopsis y los hitos de cambio
 
-** Hélice de trama
+*** Hélice de trama
 
 # Sinopsis de una página, repartida por cuartiles: Planteamiento (0–25 %),
 # Reacción (25–50 %), Acción (50–75 %), Resolución (75–100 %).
@@ -183,7 +169,7 @@
   2.
   3.
 
-** Hélice de personaje
+*** Hélice de personaje
 
 # Una página por fuerza viva: la cadena desarrollada y sus hitos de
 # cambio, cada uno anclado a un punto concreto de la sinopsis.
@@ -192,7 +178,7 @@
 |----------------+-----------------------+------------|
 |                |                       |            |
 
-** Chequeo del nivel 3
+*** Chequeo del nivel 3
 
 # Resiste la tentación de inventar trama nueva en esta página para que
 # lea mejor: si la sinopsis necesita algo que el párrafo del nivel 2 no
@@ -204,38 +190,38 @@
 - [ ] La auto revelación llega antes de la batalla
 - [ ] Prueba del Fantasma: quítaselo al protagonista y relee. ¿Qué cambia?
 
-* NIVEL 4 — El desarrollo y las fichas
+** NIVEL 4 — El desarrollo y las fichas
 
-** Hélice de trama
+*** Hélice de trama
 
 # Sinopsis de cuatro páginas, una por cuartil.
 
-** Hélice de personaje
+*** Hélice de personaje
 
 # Ficha completa (apartado 5 del sistema unificado) por fuerza viva.
 
-** Chequeo del nivel 4
+*** Chequeo del nivel 4
 
 - [ ] Dueño de cada punto de trama, no sólo de los desastres
 - [ ] La Motivación suena a la Mentira
 - [ ] El Conflicto de la Necesidad no es el oponente
 - [ ] Las dos Debilidades son distintas
 
-* NIVEL 5 — Las escenas
+** NIVEL 5 — Las escenas
 
-** Hélice de trama
+*** Hélice de trama
 
 | # | Cuartil | Punto de vista | Quién quiere qué | Qué lo impide | Cómo termina | Qué mueve |
 |---+---------+-----------------+-------------------+----------------+---------------+-----------|
 
-** Chequeo del nivel 5
+*** Chequeo del nivel 5
 
 - [ ] Toda escena mueve un Deseo o presiona una Mentira
 - [ ] Todo hito de cambio tiene escena asignada
 - [ ] Reparto del punto de vista es una decisión, no un olvido
 - [ ] Ritmo: ningún cuartil al doble de escenas que los otros
 
-* Dónde está el peso de la trama
+** Dónde está el peso de la trama
 
 # Los tres desastres, en una tabla, para saber de un vistazo dónde cae el
 # peso de la historia antes de traducirlo a escenas. No es una entidad
@@ -248,30 +234,30 @@
 |        2 |       |                      |                    | Punto medio     |
 |        3 |       |                      |                    | Fin cuartil III |
 
-* Plantilla en blanco
+** Plantilla en blanco
 # Cópiala por historia y trabaja en la copia.
 
-** Nivel 1
+*** Nivel 1
 - Frase de la novela:
 - Protagonista: ______ cree que ______, y por eso quiere ______.
 
-** Nivel 2
+*** Nivel 2
 - Trama (N+1 frases):
 - Fuerza viva 1 (protagonista): Fantasma / Mentira / Debilidad / Apuro / Deseo / Necesidad
 - Fuerza viva 2 (oponente): (mismos campos)
 
-** Nivel 3
+*** Nivel 3
 - Sinopsis de una página, por cuartiles.
 - Hitos de cambio por fuerza.
 
-** Nivel 4
+*** Nivel 4
 - Cuatro páginas, una por cuartil.
 - Fichas completas.
 
-** Nivel 5
+*** Nivel 5
 - Lista de escenas.
 
-* Dónde mirar cuando algo falla
+** Dónde mirar cuando algo falla
 
 # "Pasan cosas pero no significan nada" → nivel 2, regla del dueño.
 # "El oponente parece de cartón" → nivel 2: Postura indefendible, o
@@ -280,7 +266,7 @@
 # "Nada cambia hasta el final" → nivel 3: faltan Ajustes entre las
 #   Rupturas.
 
-* Cambios pendientes al diseño
+** Cambios pendientes al diseño
 
 # Una línea por desviación, apuntada sin salir de la sesión de borrador.
 # Si la historia contradice el diseño, gana la historia: actualiza el

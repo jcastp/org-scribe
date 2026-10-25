@@ -1,22 +1,8 @@
-#+TITLE: ${TITLE} - Design (The Matrix)
-#+AUTHOR: ${AUTHOR}
-#+DATE: ${DATE}
-#+LANGUAGE: en
-#+STARTUP: overview
-
-# Lines starting with # are instructions: do not turn them into prose.
-# This file is for filling in. The full method lives in copo-matriz.org.
-#
 # This is the Matrix method: use it when what you have are characters and
 # you lack the story. The other Living Snowflake method, the Helix, starts
 # from the opposite end — a premise without characters.
-#
-# This file holds the Matrix's five levels and everything that has no
-# entities of its own. Characters live in the Cast part, settings in the
-# World part, and the plot — including the thirteen non-negotiables — in the
-# Plot part.
 
-* Starting Gate
+** Starting Gate
 
 # In the Matrix the gate sits one level lower than in the Helix: closing
 # level 3 gives you a freshly deduced skeleton that has not yet been
@@ -38,7 +24,7 @@
 - [ ] The thirteen non-negotiable plot points
 - [ ] The first three scenes
 
-* The Matrix method
+** The Matrix method
 
 # The Snowflake turned inside out: instead of scaling the plot and
 # hanging the characters from it, the forces are scaled and the plot is
@@ -53,26 +39,26 @@
 # line of plot appears, and until then you don't know if you have a
 # novel.
 
-** Rule of the arena
+*** Rule of the arena
 
 # There is no deduction without scarcity. Two characters with
 # incompatible Lies but nothing to fight over do not collide: they
 # ignore each other.
 
-** Rule of inevitability
+*** Rule of inevitability
 
 # Among all the possible collisions, pick the one neither force can
 # dodge without ceasing to be who they are.
 
-** Rule of the late hook
+*** Rule of the late hook
 
 # The fifteen-word sellable sentence still gets written, but at the end
 # of level 3 instead of the beginning, and it is a gate: if it does not
 # come out, the census is wrong and you go back to level 1.
 
-* LEVEL 1 — The census and the arena
+** LEVEL 1 — The census and the arena
 
-** The census of forces
+*** The census of forces
 
 # Between two and four living forces, one sentence each:
 # NAME believes LIE, because GHOST.
@@ -88,7 +74,7 @@
 2. ______ believes ______, because ______.
 3. ______ believes ______, because ______.
 
-** The arena
+*** The arena
 
 # Three lines, and they are not optional (rule of the arena).
 
@@ -96,14 +82,14 @@
 - Place and moment where everyone coincides ::
 - Clock (what makes waiting impossible) ::
 
-** Level 1 check
+*** Level 1 check
 
 - [ ] Do the Desires point at the same object, or at least brush against
   it?
 - [ ] Are the Lies incompatible?
 - [ ] Does the clock exist?
 
-* LEVEL 2 — The chains
+** LEVEL 2 — The chains
 
 # One paragraph per living force, expanding the census sentence: Ghost →
 # Lie → Weakness (psychological and moral) → Trouble → Desire (Goal ·
@@ -114,18 +100,18 @@
 # Lie itself and what it would have to admit about the Ghost to let go
 # of it.
 
-** Level 2 check
+*** Level 2 check
 
 - [ ] Deduction test: cover everything else and write that force's next
   two wrong decisions
 - [ ] Defense test: argue each force's Stance with conviction
 - [ ] Symmetry: what does everyone want underneath the object?
 
-* LEVEL 3 — The collision matrix
+** LEVEL 3 — The collision matrix
 
 # The method's characteristic level, and where the plot is born.
 
-** Step 1 — Fill the matrix
+*** Step 1 — Fill the matrix
 
 # One row and one column per force. In cell (A, B), write what A's Lie
 # does to B's Lie when both go after the object in dispute. The
@@ -141,7 +127,7 @@
 | *___* |          | —        |          |
 | *___* |          |          | —        |
 
-** Step 2 — Choose the collisions
+*** Step 2 — Choose the collisions
 
 # As many collisions as your structure has borders (three with four
 # quarters), applying two filters: inevitability and progression
@@ -153,7 +139,7 @@
 | 2 |             |                        | Midpoint                 |
 | 3 |             |                        | End of third quarter     |
 
-** Step 3 — Write the skeleton
+*** Step 3 — Write the skeleton
 
 # The paragraph of N+1 sentences: setup, the N collisions, and the
 # ending. The ending is written twice — external and internal — without
@@ -168,7 +154,7 @@
 - Internal ending ::
 - Grid cell ::
 
-** Step 4 — The hook test
+*** Step 4 — The hook test
 
 # This is a gate, not an exercise. Write the fifteen-word sentence that
 # sums up the novel now. If it does not come out, the problem is at
@@ -179,7 +165,7 @@
 - Who you are promising what ::
 - [ ] It comes out → descend to level 4 · [ ] It does not → back to level 1
 
-** Level 3 check
+*** Level 3 check
 
 - [ ] Every living force owns at least one position (the N collisions
   plus the final battle)
@@ -187,7 +173,7 @@
 - [ ] The progression holds: punish, redouble, cost everything
 - [ ] The hook gate is passed
 
-* LEVEL 4 — The synopsis and the milestones
+** LEVEL 4 — The synopsis and the milestones
 
 # One-page synopsis by quarters, and one page per force with its change
 # milestones, each anchored to a concrete point in the synopsis and
@@ -215,19 +201,19 @@
 |------------+--------------------------+---------------|
 |            |                          |               |
 
-** Level 4 check
+*** Level 4 check
 
 - [ ] Anchoring: no milestone floats free
 - [ ] Self-revelation arrives before the battle
 - [ ] Ghost test: strip it from the protagonist and reread. What changes?
 - [ ] Mix of milestones: not all Breaks, not all Adjustments
 
-* LEVEL 5 — The scenes
+** LEVEL 5 — The scenes
 
 | # | Quarter | PoV | Who wants what | What blocks it | How it ends | What drives it |
 |---+---------+-----+------------------+------------------+---------------+------------------|
 
-** Level 5 check
+*** Level 5 check
 
 - [ ] Every scene advances a Desire or presses a Lie
 - [ ] Every change milestone has a scene assigned
@@ -235,7 +221,7 @@
   that is a decision
 - [ ] Pace: no quarter has double the scenes of the others
 
-* Where the plot's weight sits
+** Where the plot's weight sits
 
 # The chosen collisions, in a table, to see at a glance where the
 # story's weight falls before translating it into scenes. This is not a
@@ -248,30 +234,30 @@
 |         2 |             |                        | Midpoint           |
 |         3 |             |                        | End of quarter III |
 
-* Blank template
+** Blank template
 
 # Copy it per story and work in the copy.
 
-** Level 1
+*** Level 1
 - Census (2–4 forces):
 - Arena: object in dispute / place and moment / clock
 
-** Level 2
+*** Level 2
 - One paragraph per force: Ghost / Lie / Weakness / Trouble / Desire / Need
 
-** Level 3
+*** Level 3
 - Collision matrix and chosen collisions.
 - Skeleton (N+1 sentences).
 - Hook test.
 
-** Level 4
+*** Level 4
 - Synopsis by quarters.
 - Change milestones per force.
 
-** Level 5
+*** Level 5
 - Scene list.
 
-* Where to look when something's wrong
+** Where to look when something's wrong
 
 # "Everyone ignores everyone" → level 1, rule of the arena: missing
 #   object in dispute or missing clock.
@@ -285,7 +271,7 @@
 #   1 (every force owns a position) and level 5 check 3 (PoV
 #   distribution).
 
-* Pending design changes
+** Pending design changes
 
 # One line per deviation, noted without leaving the drafting session. If
 # the story contradicts the design, the story wins: update the document

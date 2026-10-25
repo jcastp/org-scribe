@@ -47,35 +47,23 @@
 ;;; The pairing
 
 (defconst org-scribe-parity--pairs
-  '(("README.org.template"                . "README.org.template")
-    ("novela.org.template"                . "novel.org.template")
+  '(("novela.org.template"                . "novel.org.template")
     ("diseno.org.template"                . "design.org.template")
-    ("revision.org.template"              . "revision.org.template")
-    ("diario-escritura.org.template"      . "writing-journal.org.template")
-    ("objetos/personajes.org.template"    . "objects/characters.org.template")
-    ("objetos/localizaciones.org.template". "objects/locations.org.template")
-    ("objetos/trama.org.template"         . "objects/plot.org.template")
-    ("objetos/construccion-mundo.org.template" . "objects/worldbuilding.org.template")
-    ("objetos/objetos.org.template"       . "objects/objects.org.template")
-    ("objetos/cronologia.org.template"    . "objects/timeline.org.template")
-    ("cuaderno-borradores.org.template"   . "scratchpad.org.template")
-    ("notas/notas.org.template"           . "notes/notes.org.template")
-    ("notas/investigacion.org.template"   . "notes/research.org.template"))
+    ("foundations.fragment"               . "foundations.fragment"))
   "Spanish template -> English template, relative to each set's directory,
-for the novel family.  File names differ between the sets, so the
-pairing cannot be derived and has to be declared.
+for the novel family: the manuscript, the design notebook and the
+notebook's Foundations fragment.  File names differ between the sets, so
+the pairing cannot be derived and has to be declared.
 `test-template-parity-pairing-is-complete' checks that this list accounts
 for every shipped template on both sides.")
 
 (defconst org-scribe-parity--short-story-pairs
   '(("cuento.org.template"              . "story.org.template")
-    ("notas.org.template"               . "notes.org.template")
-    ("README.org.template"              . "README.org.template")
-    ("cuaderno-borradores.org.template" . "scratchpad.org.template"))
+    ("diseno.org.template"              . "design.org.template"))
   "Spanish template -> English template, relative to each set's directory,
 for the short-story family.  Mirrors `org-scribe-parity--pairs' for the
 novel family, kept as a separate list because the two families are never
-compared against each other (see `org-scribe-parity--families') — they
+compared against each other (see `org-scribe-parity--families') -- they
 render two different methods and legitimately differ in sections,
 property sets and design core.")
 
@@ -101,18 +89,14 @@ property sets and design core — only each family's own ES/EN pair must
 stay parallel.")
 
 (defconst org-scribe-parity--known-divergent
-  '(("novel-es/diario-escritura.org.template"
-     . "Habits and the writing calendar live outside the method on purpose, so
-these two were never ports of each other and the migration did not touch
-them.  English is the far longer of the two.  Reconciling them is a
-decision about what the journal is for, not a translation task.")
-    ("novel-es/objetos/objetos.org.template"
-     . "Objects have no counterpart in the method; both files are pre-sistema
-stubs that were never parallel.  English carries Status and
-First-appearance properties Spanish lacks.")
-    ("novel-es/objetos/cronologia.org.template"
-     . "Timeline likewise has no counterpart in the method; English carries an
-extra ID and Type property."))
+  '(("novel-es/diseno.org.template"
+     . "The notebook inherited three divergences from the files it merged.
+The Journal part: habits and the writing calendar live outside the method on
+purpose, so the two journals were never ports of each other, and English is
+the far longer.  The Objects and Timeline sections: no counterpart in the
+method, both pre-sistema stubs; English carries Status, First-appearance, ID
+and Type properties Spanish lacks.  Reconciling them is a decision about
+what those sections are for, not a translation task."))
   "Pairs known to diverge, each with the reason it is tolerated.
 Keys are \"SET/RELATIVE-PATH\" (the Spanish set name, a slash, then the
 Spanish-side path from `org-scribe-parity--pairs' or
@@ -126,17 +110,17 @@ fails when an entry no longer diverges, so a pair that gets fixed cannot
 leave a stale exemption behind that would hide the next regression.")
 
 (defconst org-scribe-parity--method-pairs
-  '(("methods/helice/es/diseno.org.template" . "methods/helice/en/design.org.template")
-    ("methods/matriz/es/diseno.org.template" . "methods/matriz/en/design.org.template"))
-  "Spanish overlay template -> English overlay template, for the plotting
-methods added beside the Sistema (see `org-scribe--methods',
+  '(("methods/helice/es/foundations.fragment" . "methods/helice/en/foundations.fragment")
+    ("methods/matriz/es/foundations.fragment" . "methods/matriz/en/foundations.fragment"))
+  "Spanish Foundations fragment -> English Foundations fragment, for the
+plotting methods added beside the Sistema (see `org-scribe--methods',
 core/org-scribe-core.el).  Kept separate from `org-scribe-parity--pairs'
 because that list's own tests hardcode the \"novel-es\"/\"novel-en\" set
 names in `org-scribe-parity--path'; these files live under
-`org-scribe-templates/methods/' instead, one design file per method per
+`org-scribe-templates/methods/' instead, one fragment per method per
 language, with no base-set counterpart the way `novel-*'s files have.
 `test-template-parity-method-overlay-pairing-is-complete' checks this
-list accounts for every shipped overlay template on both sides, the same
+list accounts for every shipped fragment on both sides, the same
 guarantee `test-template-parity-pairing-is-complete' gives the base sets.")
 
 (defconst org-scribe-parity--all-sets
@@ -200,7 +184,7 @@ by SET rather than a bare filename."
   (let ((dir (expand-file-name (concat "org-scribe-templates/" set)
                                org-scribe-parity--root)))
     (sort (mapcar (lambda (f) (file-relative-name f dir))
-                  (directory-files-recursively dir "\\.template\\'"))
+                  (directory-files-recursively dir "\\.\\(?:template\\|fragment\\)\\'"))
           #'string<)))
 
 ;;; Tests
@@ -344,7 +328,7 @@ overlay tree under `org-scribe-templates/methods/'."
   (let ((es-files (sort (mapcar (lambda (f) (file-relative-name f org-scribe-parity--root))
                                 (directory-files-recursively
                                  (expand-file-name "org-scribe-templates/methods" org-scribe-parity--root)
-                                 "\\.template\\'"))
+                                 "\\.fragment\\'"))
                         #'string<)))
     (should (equal (sort (append (mapcar (lambda (p) (concat "org-scribe-templates/" (car p)))
                                          org-scribe-parity--method-pairs)
@@ -391,17 +375,17 @@ growing a `:PROPERTIES:' drawer the other lacks."
 ;; future template edit cannot silently drop it again.
 
 (defconst org-scribe-parity--method-overlay-levels
-  '(("methods/helice/es/diseno.org.template" . "^\\* NIVEL 3\\b")
-    ("methods/helice/en/design.org.template" . "^\\* LEVEL 3\\b")
-    ("methods/matriz/es/diseno.org.template" . "^\\* NIVEL 4\\b")
-    ("methods/matriz/en/design.org.template" . "^\\* LEVEL 4\\b"))
+  '(("methods/helice/es/foundations.fragment" . "^\\*\\* NIVEL 3\\b")
+    ("methods/helice/en/foundations.fragment" . "^\\*\\* LEVEL 3\\b")
+    ("methods/matriz/es/foundations.fragment" . "^\\*\\* NIVEL 4\\b")
+    ("methods/matriz/en/foundations.fragment" . "^\\*\\* LEVEL 4\\b"))
   "Overlay template (relative to `org-scribe-templates/') -> the regexp
 matching the level heading where that method's own source document
 places the Theme step -- Hélice level 3, Matriz level 4.")
 
 (defun org-scribe-parity--heading-subtree-text (file heading-regexp)
-  "Return the text of FILE from the level-1 heading matching HEADING-REGEXP
-up to the next level-1 heading, or to the end of the buffer.
+  "Return the text of FILE from the level-2 heading matching HEADING-REGEXP
+up to the next level-2 heading, or to the end of the buffer.
 Signals an error if no heading in FILE matches HEADING-REGEXP, since a
 caller asking for a specific level's content getting silent empty text
 back would be a worse failure mode than a loud one."
@@ -412,7 +396,7 @@ back would be a worse failure mode than a loud one."
       (error "No heading matching %S in %s" heading-regexp file))
     (let ((start (line-beginning-position)))
       (goto-char (line-end-position))
-      (if (re-search-forward "^\\* " nil t)
+      (if (re-search-forward "^\\*\\* " nil t)
           (buffer-substring-no-properties start (line-beginning-position))
         (buffer-substring-no-properties start (point-max))))))
 
@@ -459,7 +443,7 @@ deliberately short."
     (dolist (relative (list (car pair) (cdr pair)))
       (let* ((file (expand-file-name (concat "org-scribe-templates/" relative) org-scribe-parity--root))
              (spanish (string-match-p "/es/" relative))
-             (gate-heading (if spanish "^\\* Puerta de salida\\b" "^\\* Starting Gate\\b"))
+             (gate-heading (if spanish "^\\*\\* Puerta de salida\\b" "^\\*\\* Starting Gate\\b"))
              (theme-word (if spanish "Tema" "Theme"))
              (gate (org-scribe-parity--heading-subtree-text file gate-heading)))
         (should-not (string-match-p (concat "- \\[ \\] .*" theme-word) gate))))))
@@ -482,7 +466,8 @@ and properties, not keywords."
   (let (offenders)
     (dolist (set org-scribe-parity--all-sets)
       (let ((expected (if (string-suffix-p "es" set) "es" "en")))
-        (dolist (relative (org-scribe-parity--templates set))
+        (dolist (relative (cl-remove ".fragment" (org-scribe-parity--templates set)
+                                     :test #'string-suffix-p))
           (with-temp-buffer
             (insert-file-contents (org-scribe-parity--path set relative))
             (goto-char (point-min))
@@ -504,13 +489,33 @@ like `es-ES', simply fails to match — and the match relies on
 `#+LANGUAGE:' the templates use.  A template that fails this is not
 broken in any visible way; it just silently keeps the global language."
   (dolist (set org-scribe-parity--all-sets)
-    (dolist (relative (org-scribe-parity--templates set))
+    (dolist (relative (cl-remove ".fragment" (org-scribe-parity--templates set)
+                                 :test #'string-suffix-p))
       (with-temp-buffer
         (insert-file-contents (org-scribe-parity--path set relative))
         (org-mode)
         (goto-char (point-min))
         (should (re-search-forward "^ *#\\+language: +\\([a-z_]+\\) *$"
                                    nil t))))))
+
+;; Fragments carry no keywords, so the language declaration is checked on
+;; the assembled notebook, built with the real creation function.
+(ert-deftest test-template-parity-assembled-notebooks-declare-their-language ()
+  "A created novel project's notebook has the language keyword for every
+method and language, whichever fragment filled its Foundations part."
+  (require 'org-scribe-project)
+  (dolist (lang '(en es))
+    (dolist (method '(sistema helice matriz))
+      (let ((base (make-temp-file "org-scribe-parity-" t)))
+        (unwind-protect
+            (let ((project (expand-file-name "Parity" base)))
+              (org-scribe-create-novel-project base "Parity" lang method)
+              (with-temp-buffer
+                (insert-file-contents
+                 (expand-file-name (org-scribe-lang-file 'design lang) project))
+                (should (re-search-forward
+                         (format "^#\\+LANGUAGE: %s$" lang) nil t))))
+          (delete-directory base t))))))
 
 ;; A fresh story is empty scenes: placeholder prose would be counted as
 ;; words written and compiled into the story as if it were the text.

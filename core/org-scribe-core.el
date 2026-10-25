@@ -240,8 +240,9 @@ symbol (also the literal value written to the \"# Method:\" marker line).
 Each value is a plist:
 
   :overlay    - subdirectory name under `org-scribe-templates/methods/'
-                holding this method's design-file overlay, or nil for
-                `sistema', which ships no overlay (its design file lives
+                holding this method's `foundations.fragment' (the body
+                of the design notebook's Foundations part), or nil for
+                `sistema', which ships no overlay (its fragment lives
                 in the base `novel-en'/`novel-es' template sets and is
                 never modified by another method's presence).
 
@@ -252,7 +253,7 @@ plist keys; they moved to each registered language pack's own
 a third language's labels do not require touching this table -- this
 one is now exactly the symbol + overlay-directory table it should
 always have been.  Adding a method still means adding one entry here
-plus its overlay templates, plus a `:method-labels' entry in every
+plus its Foundations fragments, plus a `:method-labels' entry in every
 registered pack.")
 
 (defun org-scribe-project-method (&optional root)
