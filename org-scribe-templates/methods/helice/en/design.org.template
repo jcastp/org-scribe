@@ -12,9 +12,9 @@
 # Matrix, starts from the opposite end — characters without a plot.
 #
 # This file holds the Helix's five levels and everything that has no
-# entities of its own. Characters live in objects/characters.org, settings
-# in objects/locations.org, and the plot — including the thirteen
-# non-negotiables — in objects/plot.org.
+# entities of its own. Characters live in the Cast part, settings in the
+# World part, and the plot — including the thirteen non-negotiables — in the
+# Plot part.
 
 * Starting Gate
 
@@ -65,7 +65,7 @@
 # A character is a living force when their next wrong decisions can be
 # deduced from their profile without consulting the plot. Only living
 # forces carry a full profile (Ghost, Lie, Weakness, Trouble, Desire,
-# Need) in objects/characters.org. Usually two or three turn up.
+# Need) in the Cast part. Usually two or three turn up.
 
 * LEVEL 1 — The commitment
 
@@ -171,7 +171,7 @@
 # This is where the plot points that are not disasters appear — Theme
 # Stated, Crossing the Threshold, Plan, Drive, Battle, Moral Decision.
 # They are placed between the disasters, not the other way round; the
-# thirteen non-negotiables live in objects/plot.org.
+# thirteen non-negotiables live in the Plot part.
 
 - Theme ::
   # The moral problem, in one sentence. In the Helix it is not declared

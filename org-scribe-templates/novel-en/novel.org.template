@@ -88,16 +88,7 @@ Update with =C-c C-c= on the #+BEGIN line.
 #+END:
 
 * Quick Navigation :ignore:noexport:
-- [[file:README.org][README - Project Overview]]
-- [[file:objects/characters.org][Characters]]
-- [[file:objects/locations.org][Locations]]
-- [[file:objects/objects.org][Objects]]
-- [[file:objects/plot.org][Plot]]
-- [[file:objects/timeline.org][Timeline]]
-- [[file:notes/notes.org][General Notes]]
-- [[file:notes/research.org][Research]]
-- [[file:revision.org][Revision and Feedback]]
-- [[file:writing-journal.org][Writing Journal]]
+- [[file:design.org][Design notebook]]
 
 * Act I :ignore:
 :PROPERTIES:

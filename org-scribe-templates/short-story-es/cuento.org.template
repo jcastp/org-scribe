@@ -39,8 +39,7 @@ tabla en este archivo: =F8 F8 W=, o =M-x org-scribe-plan= para crear o
 cargar un plan.
 
 * Enlaces Rápidos :noexport:
-- [[file:README.org][Resumen del Proyecto]]
-- [[file:notas.org][Planificación y Notas]]
+- [[file:diseno.org][Cuaderno de diseño]]
 
 * Contenido del Cuento
 

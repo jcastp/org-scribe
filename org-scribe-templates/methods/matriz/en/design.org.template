@@ -12,9 +12,9 @@
 # from the opposite end — a premise without characters.
 #
 # This file holds the Matrix's five levels and everything that has no
-# entities of its own. Characters live in objects/characters.org, settings
-# in objects/locations.org, and the plot — including the thirteen
-# non-negotiables — in objects/plot.org.
+# entities of its own. Characters live in the Cast part, settings in the
+# World part, and the plot — including the thirteen non-negotiables — in the
+# Plot part.
 
 * Starting Gate
 
@@ -195,7 +195,7 @@
 #
 # This is where the plot points that are not collisions come in — Theme
 # Stated, Crossing the Threshold, Plan, Drive, Battle, Moral Decision.
-# The thirteen non-negotiables live in objects/plot.org.
+# The thirteen non-negotiables live in the Plot part.
 
 - Theme ::
   # The moral problem, in one sentence. In the Matrix the theme comes

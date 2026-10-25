@@ -12,9 +12,9 @@
 # Hélice, parte del extremo contrario — de una premisa sin personajes.
 #
 # Este fichero contiene los cinco niveles de la Matriz y lo que no tiene
-# entidades propias. Los personajes viven en objetos/personajes.org, los
-# escenarios en objetos/localizaciones.org y la trama —incluidos los trece
-# puntos irrenunciables— en objetos/trama.org.
+# entidades propias. Los personajes viven en la parte Reparto, los
+# escenarios en la parte Mundo y la trama —incluidos los trece puntos
+# irrenunciables— en la parte Trama.
 
 * Puerta de salida
 
@@ -186,7 +186,7 @@
 #
 # Aquí entran los puntos de trama que no son colisiones —susurro del
 # tema, cruzar el umbral, plan, empuje, batalla, decisión moral—. Los
-# trece irrenunciables viven en objetos/trama.org.
+# trece irrenunciables viven en la parte Trama.
 
 - Tema ::
   # El problema moral, en una frase. En la Matriz el tema sale solo: al

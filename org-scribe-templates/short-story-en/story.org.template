@@ -38,8 +38,7 @@ Daily totals are kept by the bundled writing planner rather than by a table
 here: =F8 F8 W=, or =M-x org-scribe-plan= to create or load a plan.
 
 * Quick Links :noexport:
-- [[file:README.org][Project Overview]]
-- [[file:notes.org][Planning & Notes]]
+- [[file:design.org][Design notebook]]
 
 * Story Content
 

@@ -3,15 +3,24 @@
 #+DATE: ${DATE}
 #+LANGUAGE: en
 #+STARTUP: overview
+#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)
 
 # Lines starting with # are instructions: do not turn them into prose.
-# This file is for filling in.
+# This file is for filling in. It is the project's notebook: the manuscript
+# lives in novel.org, everything else lives here, one part (level 1) each:
+#   Foundations — the Starting Gate, the Core and whatever has no entities
+#   Plot        — the thirteen non-negotiables, the narrative lines, the quarters
+#   Cast        — the characters
+#   World       — settings, worldbuilding, objects and the timeline
+#   Research, Revision, Journal, Scratchpad — your working notes
 #
-# It holds the Core and everything that has no entities of its own.
-# Characters live in objects/characters.org, settings in
-# objects/locations.org, and the plot in objects/plot.org.
+# Characters, settings and plot threads are level-3 headings under their
+# section (Characters, Setting, Plot Threads). Keep those section headings as
+# they are: org-scribe finds the entities by them.
 
-* Starting Gate
+* Foundations
+
+** Starting Gate
 
 # This is the only list that decides when you start writing. When these eight
 # boxes are ticked, stop planning and begin. Everything else is discovered by
@@ -33,7 +42,7 @@
 - [ ] The thirteen non-negotiable plot points
 - [ ] The first three scenes
 
-* Core
+** Core
 
 # Twelve questions. Short answers. One page in total.
 # Questions 4 to 7 are the causal chain and are answered in that order,
@@ -80,7 +89,7 @@
 
 - Opponent and their Stance ::
   # Who wants the same thing. Their full chain goes in their own profile, in
-  # objects/characters.org. The Starting Gate requires it.
+  # the Cast part. The Starting Gate requires it.
 
 - Stakes ::
   # What is lost if he fails, and how that gets worse halfway through.
@@ -99,7 +108,7 @@
   # the problem). It does not include the answer to the ending: you know the
   # ending, the premise does not say it. It also serves to pitch the story.
 
-* World Problem
+** World Problem
 
 # What makes the status quo untenable: something affecting the story's world
 # and everything in it. Expressed as an Aspect, so you can invoke it whenever
@@ -113,7 +122,7 @@
 
 - Aspect ::
 
-** Box of complications
+*** Box of complications
 
 # Concrete ways the World Problem can wreck a scene. Having them written down
 # in advance saves you improvising badly halfway through a session.
@@ -123,7 +132,7 @@
 -
 -
 
-* Stakes
+** Stakes
 
 # Every rung must change category, not be "the same but more".
 # Control question: could the protagonist walk away from the story with no
@@ -136,7 +145,7 @@
 | III     |                  |
 | IV      |                  |
 
-* The ending
+** The ending
 
 # Moral movement and external result are independent axes. Crossing them gives
 # six endings, and picking the cell is more precise than picking "happy" or
@@ -156,7 +165,7 @@
   # Gets the Desire / does not get it
 - What that crossing proves about the Theme ::
 
-* Designing principle and archetype
+** Designing principle and archetype
 
 # Optional. Fill it in if it helps; skip it if not.
 
@@ -164,19 +173,21 @@
   # The internal logic that organizes the whole story, in one sentence.
 - Archetype ::
 
-* Point of view
+** Point of view
 
 - Person and tense ::
 - Focalizers ::
 - Distance ::
 - Narrative voice ::
+- Tone ::
+- Style ::
 - Rule for switching ::
 - What this choice forbids me ::
   # With a single focalizer, the reader cannot know anything before he does;
   # with several, you lose tension at every switch. Write it down now, not when
   # you hit it.
 
-** Focalizer control
+*** Focalizer control
 
 # Only if there is more than one. Every focalizer needs an arc of their own, or
 # they are an observer and not a perspective.
@@ -185,7 +196,7 @@
 |-----------+--------+-----+--------------+-----------------------|
 |           |        |     |              |                       |
 
-* Symbols
+** Symbols
 
 # A symbol that does not change is decoration. For each one, how does it change?
 
@@ -195,7 +206,7 @@
 - Of world ::
 - Of action ::
 
-* Pending design changes
+** Pending design changes
 
 # One line per deviation, noted without leaving the drafting session. They are
 # processed between sessions, in one sitting, and struck out.
@@ -207,3 +218,1456 @@
 # they are collected by the edit index (F8 F8 6).
 
 -
+
+# Plot holes, inconsistencies and unanswered questions: mark them in the
+# prose with *EDIT* markers (the `edit' snippet), or list them here, one line each.
+
+* Plot
+
+# The plot is the scaffolding: the common points and rhythms, marks along the
+# route. The plot is not the story. The map is not the territory.
+#
+# Two kinds of heading live here and they do not mix:
+#   - The thirteen non-negotiables, level 3 under their section. They are
+#     fixed: the same thirteen in every story. Do not add or remove any.
+#   - Narrative lines, level 3 under Plot Threads, with :THREAD-TYPE:. Those are
+#     yours: add as many as you need with F8 F8 k g.
+#
+# A line's :Weight: orders the columns of the plot timeline: 1 to 5, lower
+# first; blank sorts last. Put -1 and the line keeps everything except its
+# column — for a running gag you track but do not want on the board. The plot
+# health report ignores Weight entirely: a hidden line is still checked for
+# coverage and gaps.
+
+** The Thirteen Non-Negotiables
+
+# With them the story is complete and causal. Start here and look at nothing
+# else until you have them. They are box 7 of the Starting Gate.
+#
+# How to use this section: under each heading write what happens in YOUR story
+# — one paragraph is enough, naming the scene or the moment if you already
+# know it. Everything after a "#" is guidance and is never counted as
+# content, exported or word-counted; delete it when you no longer need it.
+# Content is the first line that is not a comment.
+#
+# They are causal, not a checklist: each one is the consequence of the one
+# before. Read them in order; if you cannot say why 7 follows from 6, the
+# hole is in 6. Order below is the usual order in the story, though 1, 2, 3
+# and 5 may overlap or swap inside the first quarter.
+#
+# Where they fall (approximate, % of the story):
+#   Q I   Setup       0–25 %   1 to 6   (6 closes it)
+#   Q II  Reaction   25–50 %   7, 8     (9 closes it)
+#   Q III Action     50–75 %   8, 9     (10 closes it)
+#   Q IV  Resolution 75–100 %  11 to 13
+# Once a scene serves one of them, tag it: F8 F8 G. The health report lists
+# any of the thirteen that no scene serves.
+
+*** 1. Theme Stated
+
+# Someone who is not the protagonist states the Theme, and he ignores it.
+#
+# What to write: who says it, to whom, in what scene, and in what words. It
+# should sound like an offhand remark or a piece of advice, never like the
+# moral of the book. The Theme is the question the story argues; the
+# protagonist's Lie is his wrong answer to it.
+# Ask yourself: if the reader remembered only this line at the end, would it
+# still read as the thing the whole book was about?
+# Where: early, usually in the first 10 %.
+
+*** 2. Weakness, Lie and Need
+
+# Where he starts from and what he is wrong about. Seen working, and costing.
+#
+# What to write: take them from his character profile (Ghost → Lie →
+# Weakness → Desire/Need) and show them in scenes, not in description. Two
+# things must be visible: the Weakness doing its harm (working) and someone
+# paying for it (costing). The Need is what he must learn; he does not know it
+# yet.
+# Ask yourself: could a reader name his Weakness after the first chapter
+# without being told? Does it already cost him something?
+# Where: the opening; the Lie is the ground the whole story will undermine.
+
+*** 3. Desire
+
+# The external goal he believes will improve his life. Starts weak and rises.
+#
+# What to write: a concrete goal that can be won or lost, not a feeling
+# ("win the contract", not "be happy"). Then how it grows: it begins as a
+# mild want and becomes the thing he cannot live without, so the stakes rise
+# by themselves through the book.
+# Ask yourself: how will I know on the page that he has got it or failed to?
+# Desire (what he wants) and Need (what he lacks) pull in different
+# directions: that gap is the story.
+# Where: formed by the end of the first quarter; sharpens after the Inciting
+# Incident.
+
+*** 4. Inciting Incident
+
+# An external event that leaves him distinctly worse off and makes him discern
+# a goal. It happens to him: he does not choose it.
+#
+# What to write: the event, and the two consequences it must have — he is
+# clearly worse off than before, and from that position he can see something
+# to aim at (the Desire from point 3 takes shape).
+# Ask yourself: is it something done TO him? If he chose it, it belongs at
+# point 6. If he is not worse off, there is no push.
+# Where: roughly 10–15 %.
+
+*** 5. Opponent
+
+# The most important relationship in the story, because they fight for the same
+# thing. Attacks the Weakness.
+#
+# What to write: who or what opposes him, what exactly they both want (it must
+# be the same thing, so only one can have it), and how the opponent's
+# strength reaches the protagonist's Weakness — the opponent wins where he is
+# weakest, which is why the fight teaches him anything.
+# Ask yourself: if I remove the opponent, does the Weakness stop mattering?
+# If so, the link is right.
+# Where: introduced in the first quarter; present until the Battle.
+
+*** 6. Crossing the Threshold
+
+# His own decision to enter the new world. Closes the first quarter.
+#
+# What to write: the decision, taken freely, and the new world it leads to
+# (a place, a job, a relationship, a way of living) which differs from the
+# old one. After this there is no going back without a cost.
+# Ask yourself: is it his choice, made with open eyes? Can I name the
+# boundary he crosses?
+# Where: the end of the first quarter, 20–25 %.
+
+*** 7. Plan
+
+# How he means to win. It fails, because the opponent is strong.
+#
+# What to write: the plan in a sentence the reader could repeat, and why it
+# looks sensible to him. It rests on the Lie: he plans as someone who is
+# still wrong. That is why it cannot work.
+# Ask yourself: if the plan worked cleanly, would the Lie survive? It should
+# not be able to.
+# Where: right after the threshold, opening the second quarter.
+
+*** 8. Drive
+
+# The actions of the plan. He usually loses, and so takes decisions that are
+# less and less moral. Vary the actions: do not repeat the same kind of attempt.
+#
+# What to write: a list of attempts, each of a different KIND (persuasion,
+# force, deceit, retreat…), each with a result and a price. The slide
+# downward in morality is the cost the Weakness is charging him.
+# Ask yourself: do my attempts escalate, or do I merely have the same scene
+# three times?
+# Where: the longest stretch, spanning the second and third quarters (25–75 %),
+# with the Midpoint in the middle of it.
+
+*** 9. Midpoint
+
+# False victory or false defeat. He stops reacting and starts acting. Closes
+# the second quarter.
+#
+# What to write: choose which — he appears to win (and the win is hollow) or
+# appears to lose (and the loss frees him) — and the change in behaviour: up
+# to here he responded to the opponent; from here he sets the pace.
+# Ask yourself: what does he know or do after this that he could not before?
+# Where: the middle, 45–55 %.
+
+*** 10. Apparent Defeat
+
+# His lowest point, nearly catastrophic. He believes he has lost. Closes the
+# third quarter.
+#
+# What to write: what is lost (ally, plan, hope, status) and why he thinks it
+# is final. It must be worse than the Midpoint. The Lie breaks here, which
+# is what makes the next point possible.
+# Ask yourself: from where I stand as the reader, does he look done? If I am
+# not afraid for him, it is not low enough.
+# Where: about 75 %.
+
+*** 11. Self-Revelation
+
+# He sees the Lie. It is one point in two moments and a single heading: the
+# glimpse begins before the battle — it is what lets him fight differently —
+# and is confirmed inside it.
+#
+# What to write: the Lie he held, the truth that replaces it, and the thing
+# that makes him see it (usually a consequence of the defeat, or something
+# the sequence of revelations has delivered by now). The glimpse is a
+# first, partial seeing; the confirmation is the same seeing tested under
+# pressure.
+# Ask yourself: is the realisation his own, reached by what happened, rather
+# than told to him? Does it answer the Theme from point 1?
+# Where: glimpse between the defeat and the battle; confirmation in the Battle.
+#
+# - Glimpse (before the battle):
+# - Confirmation (inside or just after):
+
+*** 12. Battle
+
+# The final confrontation between the two ways of understanding the world.
+# Everything converges here as through a funnel, in the smallest space possible.
+#
+# What to write: the place, who is present (every thread that matters sends
+# someone), and what each side stands for. The setting should be as tight as
+# you can make it; the fewer rooms, the more it presses. The protagonist
+# fights in a new way, thanks to point 11.
+# Ask yourself: are the opponent and the protagonist on the page together? Do
+# the subplots cross here?
+# Where: the climax, about 90–95 %.
+
+*** 13. Moral Decision
+
+# The proof that the self-revelation is real: he chooses between two courses,
+# both with a cost. Between two goods or between two evils, never between good
+# and evil.
+#
+# What to write: the two options, what each costs him, and which he chooses.
+# Seeing the Lie is easy; acting against it when it hurts is what proves it.
+# Ask yourself: is the right choice also expensive? If the answer is clear and
+# free, it is not a decision.
+# Where: inside or just after the Battle, leading into the new equilibrium.
+
+** Optional points used
+
+# The ones you decide to use, in the place where they belong. Unlike the
+# thirteen, these are per-story: add and remove freely.
+#
+# Opening image, ghost, resistance, promise of the premise, allies, fake ally,
+# opponent's plan, first/second/third revelation, revelation to the audience,
+# tightening noose, ally attack, dark moment, new plan, death of the Weakness,
+# new equilibrium, final image.
+
+-
+
+** Sequence of revelations
+
+# Built backwards from the self-revelation. Logical, escalating, accelerating.
+# A novel needs between seven and ten.
+
+| # | Revelation | Who receives it | Quarter |
+|---+------------+-----------------+---------|
+|   |            |                 |         |
+
+** Quarters
+
+# The rhythm layer: they say how much space each movement takes, not what
+# happens in it. Closing the first quarter may land anywhere from 20 to 25 %.
+# If one quarter runs to twice the length of the others, you have a rhythm
+# problem even if the content is right.
+
+- I Setup (0–25 %) ::
+  # Closes on: crossing the threshold
+- II Reaction (25–50 %) ::
+  # Closes on: midpoint
+- III Action (50–75 %) ::
+  # Closes on: apparent defeat
+- IV Resolution (75–100 %) ::
+  # Closes on: moral decision and new equilibrium
+
+** Plot Threads
+
+*** Main Line
+:PROPERTIES:
+:THREAD-TYPE: Main
+:Stance:
+:STATUS: Planned
+:Weight:
+:END:
+
+**** Desire that drives it
+
+**** Resolution
+
+*** Subplot
+:PROPERTIES:
+:THREAD-TYPE: Subplot
+:Stance:
+:STATUS: Planned
+:Weight:
+:END:
+
+# One for every Stance you want represented that the main line does not already
+# carry. Duplicate this heading — or use F8 F8 k g — for each subplot.
+#
+# At least three crossings with the main line, and one of them at the midpoint,
+# the apparent defeat or the battle. If it never crosses, it is not a subplot:
+# it is another novel inside this one.
+
+- Stance it embodies ::
+- Who carries it ::
+- Own desire ::
+
+**** Crossings with the main line
+
+1.
+2.
+3.
+
+**** Resolution
+
+** Opening and closing order                                        :noexport:
+
+# Type of each line: Setting / Question / Character / Event.
+# The first one opened is the last one closed.
+
+| Line | Type | Opens at | Closes at |
+|------+------+----------+-----------|
+|      |      |          |           |
+
+** Sequences and scenes                                             :noexport:
+
+# The scene list does not live here: it lives in the manuscript, where every
+# scene is a heading with its properties. To see it as a table, open novel.org
+# and use column view (C-c C-x C-c).
+#
+# Scenes are the flesh on the skeleton. Write them in structural order and tag
+# each with the plot point it serves; the ones that serve none are suspect.
+
+* Cast
+
+** Characters
+:PROPERTIES:
+:COLUMNS: %30ITEM(Character) %14Role %20Stance %30Goal
+:END:
+
+# THE HEADING IS THE CHARACTER'S NAME. Replace [Name of the ...] with the name
+# as soon as you have it; the brackets only mark that it is unfilled.
+# The role does not go in the heading: it goes in the :Role: property, which is
+# what org-scribe reads. That is why you can rename a character whenever you
+# like without breaking anything, and why links from scenes keep working
+# afterwards (F8 F8 R refreshes the displayed names).
+#
+# Every character is a level-3 heading directly under the Characters section.
+# Do not nest them deeper: org-scribe recognizes characters that way, and a
+# nested character is invisible to linking, search and the health report.
+#
+# To see who is who at a glance, use column view: C-c C-x C-c shows Role,
+# Stance and Goal beside each name.
+#
+# :Weight: orders the columns of the character timeline: 1 to 5, lower first.
+# Leave it blank and the character simply sorts last, alphabetically among the
+# other blanks. Put -1 and they are left out of the timeline altogether while
+# keeping their profile, their links and their place in every search — for the
+# innkeeper with two lines, whom you want on file but not in a column. The
+# table names anyone it hides in a comment line underneath.
+#
+# Full profile for protagonist and opponent. For the ally the intermediate
+# profile is enough (no Ghost, Need or Plan), and for the fake ally and the
+# supporting characters the reduced one: Concept, Stance, Trouble, one Aspect
+# and the Desire in three parts. Each says what you can delete.
+#
+# Every Aspect is double-edged: a short sentence, in the voice of whoever says
+# it, true, that could equally save or sink them. If it only does one of the
+# two, it is not an Aspect yet.
+
+*** [Name of the protagonist]
+:PROPERTIES:
+:Role: Protagonist
+:Stance:
+:Goal:
+:Age:
+:Occupation:
+:First-appearance:
+:Weight:
+:RelationshipsData:
+:END:
+
+- Concept ::
+  # Who they are and what they do, in one sentence with a voice. How they would
+  # describe themselves.
+- Stance ::
+  # Their position on the Theme. Under the Sistema you take it from the
+  # list already built in the design file; under the Hélice or the Matriz
+  # the Theme is named later (level 3 and level 4 respectively), so write
+  # the position now and check it against the list when it exists. Pick
+  # the one that generates most conflict. Rewrite it in their words.
+- Ghost ::
+  # What happened before the story starts and still hurts.
+- Lie ::
+  # What they concluded from it, still believe, and is not true.
+- Trouble ::
+  # Something immediate that complicates their life and stops them sitting
+  # still. It is theirs; the World Problem is everyone's.
+- Psychological Weakness ::
+  # The internal defect that holds them back, a consequence of the Lie.
+- Moral Weakness ::
+  # Who they harm because of it, and how. One person, one act. Being too
+  # ambitious holds *them* back; their children never seeing them is the moral
+  # harm.
+
+**** Desire
+
+# Wants (Goal), because they believe it will get them (Motivation), but
+# (Conflict) stops them.
+
+- Goal ::
+  # Concrete and external. The reader has to know when it has been achieved and
+  # when it has not. "Being happy" is not a Goal; "stealing King Urdano's
+  # treasure" is.
+- Motivation ::
+  # What they believe achieving it will give them. It comes out of the Lie, and
+  # so it is always false underneath. If what you write is healthy and true,
+  # you have written the Need in the wrong box.
+- Conflict ::
+  # Who or what stands in the way. External here, and almost always the
+  # opponent. If the Conflict has no face, you do not have an opponent yet.
+
+**** Need
+
+# Needs (Goal), because only that will get them (Motivation), but (Conflict)
+# stops them. The same three parts, turned inward.
+
+- Goal ::
+  # A change of behaviour, not an object.
+- Motivation ::
+  # What the Lie prevents them having. It usually names the harm of the Moral
+  # Weakness.
+- Conflict ::
+  # No longer the opponent, but the Lie itself and what they would have to
+  # admit about the Ghost to let it go. If it is the opponent again, the arc is
+  # externalized: nothing that happens inside them will depend on them.
+
+**** Plan
+
+- Plan ::
+  # How they mean to get the Desire. It has to fail: the opponent is strong.
+- Fallback plan ::
+  # More desperate and less clean.
+
+**** Aspects
+
+# Three at most for the protagonist, two for anyone else. More turns the
+# character into a caricature.
+
+- Aspect ::
+- Aspect ::
+- Aspect ::
+- Relationship ::
+  # An Aspect defining their bond with another character, group or organization.
+- Possession ::
+  # A significant object, if any. Usually also their character symbol.
+
+**** Backstory
+
+# A short scene where you *see* who they are, instead of saying what they are.
+# For you, not for the book: it does not have to be good and nobody will read
+# it. A good backstory shows the Ghost in action, or the character facing a
+# moral dilemma they resolve according to their Lie.
+
+**** Interrogation
+
+# One paragraph per question.
+
+1. What would they never do?
+   # The climax should threaten to force them to it.
+2. What do they do when they are alone and nobody is watching?
+   # That is the true self.
+3. What are they wrong about?
+   # The Lie in action.
+4. What would they die for?
+   # The moral core.
+5. Write them a trivial scene.
+   # Ordering a drink, dealing with a minor annoyance. If it comes out generic,
+   # you do not know them yet.
+
+**** Change Milestones
+
+# Every milestone is anchored to a specific plot point. If you cannot say in
+# which scene it happens, it is not a milestone: it is a wish.
+# Adjustment: they learn or gain something; a secondary Aspect changes.
+# Break: they change Stance on the Theme.
+# Design the sequence backwards, from the final transformation.
+
+| Plot point | Type | What changes |
+|------------+------+--------------|
+|            |      |              |
+
+**** Notes
+
+*** [Name of the opponent]
+:PROPERTIES:
+:Role: Opponent
+:Stance:
+:Goal:
+:Age:
+:Occupation:
+:First-appearance:
+:Weight:
+:RelationshipsData:
+:END:
+
+# Full profile. Wants the same thing as the protagonist — that is why they
+# collide — and attacks their Weakness directly. Choose the one who can attack
+# it most viciously.
+# Their Stance has to be defensible: if you cannot argue it yourself with
+# conviction, it is not finished.
+# Do not reveal them all at once: use hierarchies of opponents and show pieces.
+
+- Concept ::
+- Stance ::
+- Ghost ::
+- Lie ::
+- Trouble ::
+- Psychological Weakness ::
+- Moral Weakness ::
+
+**** Desire
+
+# The same Goal as the protagonist.
+
+- Goal ::
+- Motivation ::
+- Conflict ::
+
+**** Need
+
+- Goal ::
+- Motivation ::
+- Conflict ::
+
+**** Plan and counterattacks
+
+**** Aspects
+
+- Aspect ::
+- Aspect ::
+- Relationship ::
+- Possession ::
+
+**** Backstory
+
+**** Change Milestones
+
+| Plot point | Type | What changes |
+|------------+------+--------------|
+|            |      |              |
+
+**** Notes
+
+*** [Name of the ally]
+:PROPERTIES:
+:Role: Ally
+:Stance:
+:Goal:
+:First-appearance:
+:Weight:
+:RelationshipsData:
+:END:
+
+# Intermediate profile: the reduced one plus Lie, Weakness and Relationship.
+# Enough for them to have an interior of their own and carry out the ally
+# attack with authority, without loading them with the full apparatus of an arc.
+# Delete Ghost, Need and Plan if you do not need them.
+
+- Concept ::
+- Stance ::
+- Lie ::
+- Trouble ::
+- Weakness ::
+
+**** Own desire
+
+# Their own, not auxiliary: it cannot be "help the protagonist".
+
+- Goal ::
+- Motivation ::
+- Conflict ::
+
+**** Aspects
+
+- Aspect ::
+- Aspect ::
+- Relationship ::
+
+**** Change Milestones
+
+| Plot point | Type | What changes |
+|------------+------+--------------|
+|            |      |              |
+
+**** Notes
+
+*** [Name of the fake ally]
+:PROPERTIES:
+:Role: Fake-Ally Opponent
+:Stance:
+:Goal:
+:First-appearance:
+:Weight:
+:RelationshipsData:
+:END:
+
+# Looks like an ally and serves the opponent. Reduced profile. Their reveal
+# measures the enemy's real power. It needs both Desires, declared and real.
+
+- Concept ::
+- Stance ::
+- Trouble ::
+
+**** Declared desire
+
+- Goal ::
+- Motivation ::
+- Conflict ::
+  # Usually the protagonist himself, without his knowing it.
+
+**** Real desire
+
+- Goal ::
+- Motivation ::
+- Conflict ::
+
+**** Reveal
+
+- Who they really serve ::
+- When they are revealed ::
+
+**** Aspects
+
+- Aspect ::
+
+**** Notes
+
+*** [Name of the supporting character]
+:PROPERTIES:
+:Role: Thematic Supporting
+:Stance:
+:Goal:
+:First-appearance:
+:Weight:
+:RelationshipsData:
+:END:
+
+# One for every Stance you want represented. Duplicate this whole heading — or
+# use F8 F8 k h — for each of them.
+#
+# Reduced profile. The Desire in three parts is not optional here: it is what
+# distinguishes a character from an extra. Without a Desire, the contrast check
+# cannot be done.
+
+- Concept ::
+- Stance ::
+- Trouble ::
+
+**** Desire
+
+- Goal ::
+- Motivation ::
+- Conflict ::
+
+**** Aspects
+
+- Aspect ::
+
+**** Notes
+
+** Cast Check                                                       :noexport:
+
+# Two different checks, and you need both.
+
+*** Coverage
+
+# Between them, the characters cover the Stances on the list, and each one gets
+# from the story the consequence it deserves. If two share a Stance, either one
+# is surplus or they need differentiating.
+
+| Stance | Who embodies it | What happens to them for holding it |
+|--------+-----------------+-------------------------------------|
+|        |                 |                                     |
+
+*** Contrast
+
+# For each pair of characters, how does A define B by opposition?
+
+- [ ] Each has their own Desire in three parts, and each Conflict has a face:
+  someone specific is stopping them.
+- [ ] Each speaks differently. Test: dialogue with no attributions — do you know
+  who is talking?
+- [ ] None exists only to serve the plot; each is the protagonist of their own
+  story.
+- [ ] Opponent and protagonist are bound by the deepest conflict possible.
+- [ ] They show their personality through acts, not descriptions.
+
+* World
+
+** Setting
+:PROPERTIES:
+:COLUMNS: %30ITEM(Setting) %14Type %30Echo
+:END:
+
+# THE HEADING IS THE PLACE'S NAME. Replace [Name of setting N] with the name as
+# soon as you have it; the brackets only mark that it is unfilled. The
+# classification does not go in the heading: it goes in the :Type: property,
+# which is what org-scribe reads.
+#
+# Every setting is a level-3 heading directly under the Setting section. Do not
+# nest them deeper: org-scribe recognizes settings that way.
+#
+# The world as a whole — the four axes, how it presses on the protagonist's
+# Weakness — lives in the Worldbuilding section. This section holds the
+# specific places where scenes happen.
+#
+# A setting with no Aspect at all is scenery. In revision Pass 5, settings used
+# only as scenery are candidates for cutting.
+
+*** [Name of setting 1]
+:PROPERTIES:
+:Type: Setting
+:Echo:
+:First-appearance:
+:END:
+
+- Echo ::
+  # How this place reflects the Theme. This is what makes it part of the
+  # argument instead of a backdrop. "Everyone here speaks between the lines."
+- Hazard ::
+  # How this place makes the World Problem worse. "Everyone is looking for
+  # someone to pin the blame on."
+- Character ::
+  # A character Aspect this place activates. "I owe money to half the people
+  # in this room."
+- Symbol ::
+  # The object or detail that charges the scene. "The cup I never get to drink."
+
+**** Description
+
+# What can be seen, heard and smelled. Only what a focalizer would notice while
+# standing there.
+
+**** Scenes that happen here
+
+# Filled in automatically if you link the setting from each scene's Location
+# property (F8 F8 l). Scenes stay linked by ID.
+
+*** [Name of setting 2]
+:PROPERTIES:
+:Type: Setting
+:Echo:
+:First-appearance:
+:END:
+
+- Echo ::
+- Hazard ::
+- Character ::
+- Symbol ::
+
+**** Description
+
+**** Scenes that happen here
+
+*** [Name of setting 3]
+:PROPERTIES:
+:Type: Setting
+:Echo:
+:First-appearance:
+:END:
+
+- Echo ::
+- Hazard ::
+- Character ::
+- Symbol ::
+
+**** Description
+
+**** Scenes that happen here
+
+** Worldbuilding
+
+# The world, not the places. Specific settings — with their Echo and Hazard —
+# are in the Setting section.
+#
+# Develop only what the story is going to use. A whole world documented and
+# absent from the page is time that did not go into the draft.
+
+*** The world in one line
+
+# What distinguishes it from ours, or from any other. One sentence.
+
+*** Physical element developed
+
+# One. Geography, climate, architecture, technology, the body. Whichever the
+# plot needs: if the weather never forces anyone to decide anything, do not
+# develop it.
+
+*** Cultural elements developed
+
+# Whichever the plot needs: power, money, religion, language, customs, family,
+# work, justice.
+
+-
+-
+
+*** How the world presses on the protagonist's Weakness
+
+# The question that turns worldbuilding into story. If the world does not press
+# where the protagonist is weak, it is expensive scenery.
+#
+# Cardinal rule: the world serves the character. Any decision about setting has
+# to be justifiable with "because this forces the character to face their
+# Weakness".
+
+*** Rules and limits
+
+# What cannot be done in this world, and what it costs to break it. Rules with
+# no cost are not rules.
+
+-
+
+If fantasy/sci-fi, rules I must keep consistent:
+
+**** Magic System
+
+**** Technology
+
+**** Society
+
+*** Research pending
+
+# What you need to check before writing the scene that uses it. Not before.
+
+- [ ]
+
+** Objects
+
+*** Magical/Special Objects
+
+**** Object 1
+:PROPERTIES:
+:Type: Weapon/Artifact/etc.
+:Owner:
+:First-appearance:
+:Status:
+:END:
+
+***** Physical Description
+
+***** Origin
+
+***** Properties
+
+***** Importance in the Plot
+
+***** Object History
+
+***** Symbolism
+
+***** Current location
+
+***** Rules and limitations
+
+***** Notes
+
+*** Symbolic Objects
+
+**** Symbolic Object 1
+:PROPERTIES:
+:Type: Weapon/Artifact/etc.
+:Owner:
+:First-appearance:
+:Status:
+:END:
+
+***** Physical Description
+
+***** Origin
+
+***** Properties
+
+***** Importance in the Plot
+
+***** Object History
+
+***** Symbolism
+
+***** Current location
+
+***** Rules and limitations
+
+***** Notes
+
+*** Relevant Everyday Objects
+
+** Timeline
+
+*** Timeline Overview
+:PROPERTIES:
+:CUSTOM_ID: timeline-overview
+:END:
+
+**** Story Timeline
+| Event | Date/Time | Characters | Location | Notes |
+|-------+-----------+------------+----------+-------|
+|       |           |            |          |       |
+
+*** Detailed Events
+
+**** Event 01
+:PROPERTIES:
+:ID:
+:Type:
+:Relevance:
+:Date:
+:Time:
+:Duration:
+:Characters:
+:Location:
+:Chapter:
+:END:
+
+***** Description
+
+***** Consequences
+
+***** Connections
+
+***** Notes
+
+*** Backstory Timeline
+**** Past Event 01
+:PROPERTIES:
+:ID:
+:Type:
+:Relevance:
+:Date:
+:Time:
+:Duration:
+:Characters:
+:Location:
+:Chapter:
+:END:
+
+* Research
+
+** Research Topics
+
+*** Topic 01
+:PROPERTIES:
+:CATEGORY:
+:PRIORITY:
+:STATUS:
+:END:
+
+**** Questions to Answer
+-
+
+**** Sources
+-
+
+**** Key Findings
+
+**** How This Applies to Story
+
+** Reference Materials
+
+*** Books
+
+*** Articles/Websites
+
+*** Interviews/Consultations
+
+*** Visual References
+
+** Fact Checking
+| Fact | Source | Verified | Notes |
+|------+--------+----------+-------|
+|      |        |          |       |
+
+** Inspiration
+
+*** Similar Works
+
+- Book/Movie 1 :: What do I like about this work?
+- Book/Movie 2 :: What do I want to avoid?
+
+*** Inspiring Quotes
+
+*** Writing Music
+
+- Playlist ::
+
+* Revision
+
+# Ten passes, always top-down: do not polish the sentences of a scene you may
+# end up cutting. The Critic is in charge here, and only here.
+#
+# The design is the checklist. Every pass ends with a pointer: when something
+# fails, you do not go back to the beginning, you go back to the section that
+# designed it.
+
+** Revision log
+
+# One line per pass. Note what you found and which section it sends you back to.
+
+| Pass | Date | What I found | Section I go back to |
+|------+------+--------------+----------------------|
+|    0 |      | Rest         | —                    |
+|    1 |      |              | —                    |
+|    2 |      |              |                      |
+|    3 |      |              |                      |
+|    4 |      |              |                      |
+|    5 |      |              |                      |
+|    6 |      |              |                      |
+|    7 |      |              |                      |
+|    8 |      |              | —                    |
+|    9 |      |              |                      |
+
+** Pass 0 — Rest
+
+Let the draft sit for at least two weeks. Distance is the only thing that turns
+the Creator into the Critic, and there is no shortcut. Write something else in
+the meantime.
+
+- Date the draft was put away ::
+- Date you may come back ::
+
+** Pass 1 — The dream test
+
+Read the whole manuscript in as few sittings as possible. Mark every point where
+you fall out of the dream: you get bored, you get lost, you do not believe it.
+*Fix nothing.* Only mark.
+
+Those marks are the roadmap for the eight passes that follow.
+
+*** Marks
+
+# One line per fall: where, and what kind (boredom, confusion, disbelief). No
+# diagnosis yet.
+
+-
+
+** Pass 2 — Theme and structure
+
+- [ ] Is every Stance on the list embodied by someone?
+- [ ] Does every Stance receive the consequence the story says it deserves?
+- [ ] Does the protagonist begin and end on different Stances?
+- [ ] Does the theme emerge through action, or is there preaching?
+- [ ] If you framed the theme as a question, what is the statement that answers
+  what you actually wrote? This is the last chance to write it down.
+- [ ] Are all thirteen non-negotiables present, each in its own quarter?
+- [ ] Are the quarters balanced in length?
+- [ ] Are the promises of the first quarter kept?
+- [ ] Is progress steady, or are there dead zones?
+- [ ] Does the sequence of revelations accelerate, each hitting harder than the
+  last?
+- [ ] Are there scenes that could be cut or merged?
+
+If it fails → section 1 (Theme and Stances) and section 9 (Plot).
+
+*** Notes
+
+** Pass 3 — Characters
+
+- [ ] Does every main character have a Ghost, a Lie, a Weakness and a Need?
+- [ ] Is the moral Weakness visible in concrete acts against concrete people?
+- [ ] Is the Weakness clearly the cause of their failures?
+- [ ] Does the opponent want the same thing as the protagonist, and fight hard
+  enough?
+- [ ] Is their Stance defensible? Could you argue it yourself?
+- [ ] Is every change milestone anchored to a specific scene?
+- [ ] Does every named character have their Desire in three parts —Goal,
+  Motivation and Conflict— and is the ally's their own rather than auxiliary?
+- [ ] Read all of one character's scenes back to back, one character at a time.
+  Does their arc make sense on its own? Is their voice consistent? Is the
+  change believable?
+- [ ] Are there redundant supporting characters?
+- [ ] Are any of them defined so rigidly they can no longer surprise?
+
+If it fails → section 5 (Characters).
+
+*** Notes
+
+** Pass 4 — Scenes and sequels
+
+- [ ] Does every scene have a desire, an opposition and an outcome?
+- [ ] What is each scene's Gap: what did the character expect, and what did the
+  world give them? If there is no gap, either add one or cut the scene.
+- [ ] Does something change in every scene? If not, cut it or merge it.
+- [ ] Does it enter late and leave early?
+- [ ] Does it advance plot, arc or theme? If it does none of the three, it is
+  surplus.
+- [ ] Does every scene have a clear emotional core, and connect to the theme?
+- [ ] Is there a sequel after every important scene?
+- [ ] Does each sequel's decision chain into the next scene's desire?
+- [ ] Is anything striking but irrelevant stealing attention?
+
+If it fails → section 11 (Scenes and sequels).
+
+*** Notes
+
+** Pass 5 — World and symbols
+
+- [ ] Does every setting have at least one Aspect?
+- [ ] Are any settings used as scenery only?
+- [ ] Does the World Problem show up in every scene, even in the background?
+  Scenes where it appears in no way at all are candidates for cutting.
+- [ ] Do the symbols change over the course of the story?
+
+If it fails → section 7 (World and settings) and section 8 (Symbols).
+
+*** Notes
+
+** Pass 6 — Stakes and tension
+
+- [ ] Is it clear what is lost if the protagonist fails?
+- [ ] Do the stakes escalate quarter by quarter, changing category at every
+  step?
+- [ ] Could the protagonist walk away from the story without consequences? If
+  they could, there are no stakes.
+- [ ] Is there any chapter with no tension of any kind?
+- [ ] Do chapters close on a hook —a question, a partial revelation, an imminent
+  decision, a threat— rather than on a summary?
+- [ ] Is there variation in pace, or is the tension uniform?
+
+If it fails → section 2 (World Problem and Stakes) and section 12 (Chapters and
+pace).
+
+*** Notes
+
+** Pass 7 — Point of view and dialogue
+
+- [ ] Is the point of view respected? Are there jumps inside a scene?
+- [ ] Have you planned any scene this point of view cannot carry?
+- [ ] Do the important conversations have a moral layer, and not just a melody?
+- [ ] Do the characters sound different from one another?
+- [ ] Read all the dialogue aloud: is anyone saying exactly what they mean? If
+  so, add layers.
+- [ ] Do actions contradict words anywhere?
+- [ ] Does the reader understand more than any character, where you want them
+  to?
+
+If the point of view fails → section 6 (Point of view). If the dialogue fails →
+Symphonic dialogue, in Level 3 of the method.
+
+*** Notes
+
+** Pass 8 — Line
+
+Now, at last: sentence by sentence. It is the longest pass and the only one that
+does not send you back to a design section, because prose is checked against the
+craft of Level 3.
+
+Start with emotion, which is still scene-level, and work down to the sentence:
+
+- [ ] Walk every emotional peak. Is the emotion named or created? For every
+  fear, grief, joy or rage, is there a physical anchor?
+- [ ] Mark every "thought", "realized", "knew". Replace them with sensory
+  evidence.
+- [ ] Mark every explanation that follows a shown moment. If the showing works,
+  cut the telling. (RUE — Resist the Urge to Explain.)
+- [ ] And then the detail: see the line-pass layer.
+
+*** Things I need to improve
+
+# Your own list of recurring defects. It lives here and not in the method on
+# purpose: it grows with every revision and is of no use to anyone else. End
+# every Pass 8 by reviewing it, and add whatever you found this time.
+
+-
+
+List of filler words or words I use too much:
+
+-
+
+** Pass 9 — Beta readers and final draft
+
+Between two and five readers. More is not better: noise grows with numbers.
+
+*** Who
+
+The right reader reads what you write, can articulate *why* something does not
+work —not just that they did not like it— and separates their preferences from
+the text's real problems. Avoid anyone who tells you what you want to hear,
+anyone who filters what they read through their own insecurities, and anyone who
+leaves you hanging in uncertainty.
+
+| Reader | Contact | Sent | Received | Fits what I write |
+|--------+---------+------+----------+-------------------|
+|        |         |      |          |                   |
+
+*** What to ask
+
+- *Structure*: holes, inconsistencies, confusion? On what page did it start to
+  slow down? Is the ending satisfying? Did the transformation feel earned? Is
+  any promise from the first quarter left unkept?
+- *Characters*: did you care about the protagonist? Did you believe their
+  decisions? Did you understand the opponent? Did any of them feel flat or
+  redundant?
+- *Prose*: info dumps, and where? Slow or overwritten stretches? Unnatural
+  dialogue?
+
+*** How to read it
+
+Feedback is information, not instructions.
+
+- *Pattern versus noise.* If three readers flag the same thing in the same
+  scene, there is a real problem: fix it even if you dislike the solution they
+  propose. If only one flags it, look at the context.
+- *Symptom versus cause.* Readers diagnose symptoms. "Chapter 7 bored me" is a
+  symptom; the cause may be a scene with no Gap, a stalled arc, or uniform pace.
+  Your job is to trace the cause.
+- *When it contradicts your intention.* Either your intention is not reaching
+  the page, or that reader is not your reader. To tell them apart: are they
+  describing what you wanted them to feel? If they do not describe it, it is an
+  execution problem. If they describe it but dislike it, it is a question of
+  fit.
+- *What nobody flags and you know is wrong.* That feedback exists and is the
+  most valuable of all. After reading the notes, sit alone with the manuscript
+  and listen to your own critical voice.
+
+*** Feedback received
+
+**** Reader 1
+
+**** Reader 2
+
+*** Final draft
+
+Incorporate by gravity: structure before scene, scene before line. Do not touch
+a line while a structural problem remains unresolved. Every large change can
+create problems downstream: when you cut a character, restructure a stretch or
+change a revelation, reread everything around it before moving on.
+
+And when you are convinced it is as good as you can make it, now, with the skill
+you have now, let it go. A finished imperfect story teaches more than an
+unfinished perfect one.
+
+- [ ] Structure resolved
+- [ ] Scenes resolved
+- [ ] Line resolved
+- [ ] Released
+
+* Journal
+
+** About This Journal
+
+This journal is a space for qualitative reflections on your creative process.
+Use it to document insights, challenges, breakthroughs, and lessons learned.
+
+For quantitative tracking (word counts, daily progress), see [[file:novel.org][novel.org]].
+
+** Session Notes
+
+*** ${DATE}
+:PROPERTIES:
+:SESSION-START:
+:SESSION-END:
+:WORDS-WRITTEN:
+:MOOD:
+:END:
+
+**** Goal for today
+- Words to write:
+- Words written:
+  
+**** What I worked on
+
+**** Mental State (1-10):
+
+**** Energy Level (1-10):
+
+**** What went well
+
+**** Challenges encountered
+
+**** Next Session Goals
+
+**** Post-Writing Reflection
+
+***** Momentum Level (1-10):
+
+***** Satisfaction with Today's Work (1-10):
+
+***** What to Remember for Tomorrow
+
+** Weekly Progress Update (If End of Week)
+
+*** Week [NUMBER] Summary
+- Total words this week:
+- Target was:
+- Difference:
+- Scenes completed:
+
+**** Quick Weekly Reflection
+***** What worked well this week:
+
+***** What to adjust next week:
+
+***** Momentum check (1-10):
+
+**** Qualitative Assessment
+
+***** What Went Well 🎉
+****** Top 3 Wins
+1.
+2.
+3.
+
+****** Unexpected Successes
+
+****** Process Improvements That Worked
+
+****** Personal Breakthroughs
+
+***** Challenges Faced 🔧
+****** Top 3 Challenges
+1.
+2.
+3.
+
+****** Why They Were Challenging
+
+****** How I Addressed Them
+
+****** Still Unresolved
+
+***** What I Learned 📚
+****** About Writing
+
+****** About My Story
+
+****** About My Characters
+
+****** About My Process
+
+****** About Myself
+
+**** Weekly Reflection Questions
+
+***** What surprised me most this week?
+
+***** What am I most proud of?
+
+***** What was hardest?
+
+***** What did I avoid? Why?
+
+***** What do I need to let go of?
+
+***** What do I need to embrace?
+
+***** Am I enjoying this?
+
+***** Why am I writing this story?
+(Revisit occasionally)
+
+** Monthly Reviews
+
+*** Month 1 - ${DATE}
+
+**** What went well
+
+**** What was difficult
+
+**** Lessons learned
+
+**** Goals for next month
+
+** Writing Experiments
+
+Track new techniques, styles, or approaches you're trying.
+
+*** Experiment 1
+:PROPERTIES:
+:DATE: ${DATE}
+:TECHNIQUE:
+:RESULT:
+:END:
+
+**** Description
+
+**** Outcome
+
+**** Will I use this again?
+
+** Breakthroughs & Insights
+
+*** ${DATE}
+
+** Challenges & How I Overcame Them
+
+*** ${DATE}
+
+** Character Development Journey
+
+Notes on how your understanding of characters evolved during writing.
+
+** Plot Evolution
+
+How the plot changed from your initial plan.
+
+** Process Notes
+
+Reflections on your writing habits, productivity patterns, what works for you.
+
+* Scratchpad
+
+# This file has no structure, and it is not meant to acquire one.
+#
+# Nothing written here is counted, exported, or read by any org-scribe
+# command.  The word count walks the manuscript only; compilation reads
+# the manuscript only; the entity resolvers work from fixed file names,
+# so a character sketched here stays invisible to the linking layer until
+# you move it somewhere real.  Sketch someone who may not exist.  Draft a
+# scene you will throw away.  Ask the stupid question.  Argue with
+# yourself in writing.
+#
+# Refile what survives with C-c C-w, which offers every heading in every
+# file of the project.  Delete the rest without ceremony.
+#
+# Open this file from anywhere in the project with F8 F8 o.
+#
+#
+# BRANCHING A QUESTION
+#
+# When a question turns out to have more than one answer, give it a
+# heading and tag it :branch:.  Each answer is a child heading carrying a
+# state, cycled with C-c C-t:
+#
+#   OPEN       still live, not yet explored
+#   EXPLORING  being written out right now
+#   CHOSEN     this is the one
+#   REJECTED   ruled out, with the reason kept
+#
+# Keep rejected branches.  Why-not is worth as much as why, and deleting
+# one only means re-deriving it in three months.  REJECTED and CHOSEN are
+# done states, so a settled question folds away without losing its
+# reasoning.
+#
+# The outcomes of an answer are that answer's children.  Nest as deep as
+# the question actually goes.
+#
+# These four keywords are deliberately outside the project's TODO
+# vocabulary, so an open question never turns up in the TODO search
+# (F8 F8 5).  Speculation is not work in progress.
+#
+# :ABOUT: holds an ID link to whatever the question concerns — a
+# character, a thread, a scene — so the question is reachable from that
+# side too, and survives a rename.  Leave it empty when the question is
+# not yet about anything in particular.
+#
+# The shape below is an example.  Copy it, or delete it once you have
+# your own.
+
+** Loose ideas
+
+*** Potential Scenes
+
+*** Interesting Dialogues
+
+*** Descriptions
+
+** What if <the question>?                                          :branch:
+:PROPERTIES:
+:ABOUT:
+:END:
+
+# What makes this a real question, and what is at stake in the answer.
+
+*** OPEN A. <first answer>
+
+**** OPEN <an outcome of A, if it has one>
+
+*** OPEN B. <second answer>
+
+*** OPEN C. <third answer>

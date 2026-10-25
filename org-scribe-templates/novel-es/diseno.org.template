@@ -3,15 +3,24 @@
 #+DATE: ${DATE}
 #+LANGUAGE: es
 #+STARTUP: overview
+#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)
 
 # Las líneas que empiezan por # son instrucciones: no las conviertas en prosa.
-# Aquí sólo se rellena. El método completo está en sistema-unificado.org.
+# Aquí sólo se rellena. Es el cuaderno del proyecto: el manuscrito está en
+# novela.org y todo lo demás vive aquí, una parte (nivel 1) cada cosa:
+#   Fundamentos — la Puerta de salida, el Núcleo y lo que no tiene entidades
+#   Trama       — los trece irrenunciables, las líneas narrativas, los cuartiles
+#   Reparto     — los personajes
+#   Mundo       — escenarios, construcción del mundo, objetos y cronología
+#   Investigación, Revisión, Diario, Borradores — tus notas de trabajo
 #
-# Este fichero contiene el Núcleo y lo que no tiene entidades propias. Los
-# personajes viven en objetos/personajes.org, los escenarios en
-# objetos/localizaciones.org y la trama en objetos/trama.org.
+# Personajes, escenarios e hilos de trama son encabezados de nivel 3 bajo su
+# sección (Personajes, Ambientación, Hilos de la Trama). Deja esos encabezados
+# de sección tal cual: org-scribe encuentra las entidades por ellos.
 
-* Puerta de salida
+* Fundamentos
+
+** Puerta de salida
 
 # Ésta es la única lista que decide cuándo se empieza a escribir. Cuando estas
 # ocho casillas estén marcadas, deja de planificar y empieza. Todo lo demás se
@@ -34,7 +43,7 @@
 - [ ] Los trece puntos de trama irrenunciables
 - [ ] Las tres primeras escenas
 
-* Núcleo
+** Núcleo
 
 # Doce preguntas. Respuestas cortas. Una página en total.
 # Las preguntas 4 a 7 son la cadena causal y se responden en ese orden, porque
@@ -81,7 +90,7 @@
 
 - Oponente y su Postura ::
   # Quién quiere lo mismo. Su cadena completa se rellena en su ficha, en
-  # objetos/personajes.org. La puerta de salida la exige.
+  # la parte Reparto. La puerta de salida la exige.
 
 - Apuestas ::
   # Qué se pierde si fracasa, y cómo empeora a mitad de la historia. Concreto,
@@ -100,7 +109,7 @@
   # el problema). No incluye la respuesta del final: el final lo sabes tú, la
   # premisa no lo dice. Sirve además para contar la historia fuera.
 
-* Problema del Mundo
+** Problema del Mundo
 
 # Lo que hace que el statu quo no pueda seguir: algo que afecta al mundo de la
 # historia y a todo lo que contiene. Se expresa como Aspecto, para poder
@@ -114,7 +123,7 @@
 
 - Aspecto ::
 
-** Caja de complicaciones
+*** Caja de complicaciones
 
 # Maneras concretas en que el Problema del Mundo puede estropear una escena.
 # Tenerlas escritas de antemano evita improvisar mal a mitad de sesión.
@@ -124,7 +133,7 @@
 -
 -
 
-* Apuestas
+** Apuestas
 
 # Cada peldaño debe cambiar de categoría, no ser "lo mismo pero más".
 # Pregunta de control: ¿podría el protagonista abandonar la historia sin
@@ -137,7 +146,7 @@
 | III     |                   |
 | IV      |                   |
 
-* El final
+** El final
 
 # Movimiento moral y resultado externo son ejes independientes. Cruzarlos da
 # seis finales, y elegir la casilla es más preciso que elegir "final feliz" o
@@ -157,7 +166,7 @@
   # Consigue el Deseo / no lo consigue
 - Qué demuestra ese cruce sobre el Tema ::
 
-* Principio diseñador y arquetipo
+** Principio diseñador y arquetipo
 
 # Opcional. Rellénalo si te ayuda; sáltatelo si no.
 
@@ -165,18 +174,20 @@
   # La lógica interna que organiza la historia entera en una frase.
 - Arquetipo ::
 
-* Punto de vista
+** Punto de vista
 
 - Persona y tiempo ::
 - Focalizadores ::
 - Distancia ::
 - Voz narradora ::
+- Tono ::
+- Estilo ::
 - Regla de cambio ::
 - Lo que esta elección me prohíbe ::
   # Con un solo focalizador, el lector no puede saber nada antes que él; con
   # varios, pierdes tensión en cada cambio. Anótalo ahora, no cuando te choques.
 
-** Control de focalizadores
+*** Control de focalizadores
 
 # Sólo si hay más de uno. Cada focalizador necesita arco propio, o es un
 # observador y no una perspectiva.
@@ -185,7 +196,7 @@
 |-------------+-------+------+---------------+----------------|
 |             |       |      |               |                |
 
-* Símbolos
+** Símbolos
 
 # Un símbolo que no cambia es decoración. Para cada uno, ¿cómo cambia?
 
@@ -195,7 +206,7 @@
 - De mundo ::
 - De acción ::
 
-* Cambios pendientes al diseño
+** Cambios pendientes al diseño
 
 # Una línea por desviación, apuntada sin salir de la sesión de borrador. Se
 # procesan entre sesiones, en una sola sentada, y se tachan.
@@ -207,3 +218,1317 @@
 # comentario; se recogen con el índice de ediciones (F8 F8 6).
 
 -
+
+# Agujeros de trama, inconsistencias y preguntas sin respuesta: márcalos en la
+# prosa con marcadores *EDIT* (el snippet `edit'), o anótalos aquí, una línea cada uno.
+
+* Trama
+
+# La trama es el andamio: los puntos y ritmos comunes, marcas sobre la ruta.
+# La trama no es la historia. El mapa no es el territorio.
+#
+# Dos clases de encabezado viven aquí y no se mezclan:
+#   - Los trece irrenunciables, de nivel 3 bajo su apartado. Son fijos: los
+#     mismos trece en toda historia. No añadas ni quites.
+#   - Las líneas argumentales, de nivel 3 bajo Hilos de la Trama, con
+#     :THREAD-TYPE:. Son tuyas: añade las que necesites con F8 F8 k g.
+#
+# El :Weight: de una línea ordena las columnas de la cronología de tramas: de 1
+# a 5, menor primero; vacío va al final. Pon -1 y la línea conserva todo menos
+# su columna — para un chiste recurrente que sigues pero no quieres en el
+# tablero. El informe de salud de tramas ignora el Weight por completo: una
+# línea oculta se sigue revisando por cobertura y huecos.
+
+** Los trece irrenunciables
+
+# Con ellos la historia es completa y causal. Empieza por ellos y no mires nada
+# más hasta tenerlos. Son la casilla 7 de la puerta de salida.
+#
+# Cómo usar este apartado: bajo cada encabezado escribe qué ocurre en TU
+# historia; un párrafo basta, nombrando la escena o el momento si ya lo sabes.
+# Todo lo que sigue a un "#" es guía: no cuenta como contenido, no se exporta
+# ni se cuenta como palabras; bórralo cuando ya no lo necesites. Contenido es
+# la primera línea que no es un comentario.
+#
+# Son causales, no una lista de control: cada uno es consecuencia del
+# anterior. Léelos en orden; si no sabes decir por qué el 7 sigue al 6, el
+# hueco está en el 6. El orden de abajo es el habitual en la historia, aunque
+# el 1, el 2, el 3 y el 5 pueden solaparse o cambiar de sitio en el primer
+# cuartil.
+#
+# Dónde caen (aproximado, % de la historia):
+#   C I   Planteamiento 0–25 %    1 a 6   (el 6 lo cierra)
+#   C II  Reacción     25–50 %    7, 8    (el 9 lo cierra)
+#   C III Acción       50–75 %    8, 9    (el 10 lo cierra)
+#   C IV  Resolución   75–100 %   11 a 13
+# Cuando una escena sirva a uno de ellos, márcala: F8 F8 G. El informe de
+# salud lista los que ninguna escena sirve.
+
+*** 1. Susurro del tema
+
+# Alguien que no es el protagonista enuncia el Tema, y él lo desoye.
+#
+# Qué escribir: quién lo dice, a quién, en qué escena y con qué palabras.
+# Debe sonar a comentario de pasada o a consejo, nunca a moraleja del libro.
+# El Tema es la pregunta que la historia discute; la Mentira del protagonista
+# es su respuesta equivocada.
+# Pregúntate: si al final el lector solo recordara esta frase, ¿seguiría
+# leyéndose como aquello de lo que trataba todo el libro?
+# Dónde: pronto, normalmente en el primer 10 %.
+
+*** 2. Debilidad, Mentira y Necesidad
+
+# De dónde parte y en qué se equivoca. Se ve funcionando, y costando.
+#
+# Qué escribir: tómalas de su ficha de personaje (Fantasma → Mentira →
+# Debilidad → Deseo/Necesidad) y muéstralas en escenas, no en descripción.
+# Deben verse dos cosas: la Debilidad haciendo daño (funcionando) y alguien
+# pagándolo (costando). La Necesidad es lo que debe aprender; todavía no lo
+# sabe.
+# Pregúntate: ¿podría el lector nombrar su Debilidad tras el primer capítulo
+# sin que se la cuenten? ¿Le cuesta ya algo?
+# Dónde: la apertura; la Mentira es el suelo que la historia irá socavando.
+
+*** 3. Deseo
+
+# La meta externa que cree que mejorará su vida. Empieza floja y sube.
+#
+# Qué escribir: una meta concreta que se puede ganar o perder, no un
+# sentimiento ("ganar el contrato", no "ser feliz"). Y cómo crece: empieza
+# como un querer leve y se vuelve algo sin lo que no puede vivir, de modo que
+# lo que está en juego sube solo a lo largo del libro.
+# Pregúntate: ¿cómo sabrá el lector, en la página, que lo ha logrado o ha
+# fracasado? Deseo (lo que quiere) y Necesidad (lo que le falta) tiran en
+# direcciones distintas: ese desajuste es la historia.
+# Dónde: formado al final del primer cuartil; se afila tras el Evento
+# incitador.
+
+*** 4. Evento incitador
+
+# Un suceso externo que le deja bastante peor y le hace discernir un objetivo.
+# Le ocurre: no lo elige.
+#
+# Qué escribir: el suceso y las dos consecuencias que debe tener: queda
+# claramente peor que antes y, desde esa posición, ve algo hacia lo que
+# apuntar (el Deseo del punto 3 toma forma).
+# Pregúntate: ¿se lo hacen A él? Si lo eligió, pertenece al punto 6. Si no
+# queda peor, no hay empuje.
+# Dónde: hacia el 10–15 %.
+
+*** 5. Oponente
+
+# La relación más importante de la historia, porque luchan por lo mismo. Ataca
+# la Debilidad.
+#
+# Qué escribir: quién o qué se le opone, qué quieren exactamente ambos (ha de
+# ser lo mismo, de modo que solo uno puede tenerlo) y cómo la fuerza del
+# oponente llega hasta la Debilidad del protagonista: el oponente gana donde
+# él es más débil, y por eso la lucha le enseña algo.
+# Pregúntate: si quito al oponente, ¿deja de importar la Debilidad? Si es así,
+# el vínculo está bien.
+# Dónde: se presenta en el primer cuartil; está presente hasta la Batalla.
+
+*** 6. Cruzar el umbral
+
+# Decisión propia de entrar en el mundo nuevo. Cierra el primer cuartil.
+#
+# Qué escribir: la decisión, tomada con libertad, y el mundo nuevo al que lleva
+# (un lugar, un trabajo, una relación, una forma de vivir) distinto del
+# anterior. Después no hay vuelta atrás sin coste.
+# Pregúntate: ¿es elección suya, con los ojos abiertos? ¿Puedo nombrar la
+# frontera que cruza?
+# Dónde: final del primer cuartil, 20–25 %.
+
+*** 7. Plan
+
+# Cómo pretende ganar. Falla, porque el oponente es fuerte.
+#
+# Qué escribir: el plan en una frase que el lector pueda repetir, y por qué le
+# parece sensato. Se apoya en la Mentira: planea como quien sigue
+# equivocado. Por eso no puede funcionar.
+# Pregúntate: si el plan funcionara limpiamente, ¿sobreviviría la Mentira? No
+# debería poder.
+# Dónde: justo tras el umbral, abriendo el segundo cuartil.
+
+*** 8. Empuje
+
+# Las acciones del plan. Suele perder, y por eso toma decisiones cada vez menos
+# morales. Que las acciones varíen: no repitas el mismo tipo de intento.
+#
+# Qué escribir: una lista de intentos, cada uno de un TIPO distinto
+# (persuasión, fuerza, engaño, retirada…), con su resultado y su precio. El
+# descenso moral es el coste que le cobra la Debilidad.
+# Pregúntate: ¿mis intentos escalan, o tengo la misma escena tres veces?
+# Dónde: el tramo más largo, entre el segundo y el tercer cuartil (25–75 %),
+# con el Punto medio en mitad.
+
+*** 9. Punto medio
+
+# Falsa victoria o falsa derrota. Deja de reaccionar y empieza a actuar. Cierra
+# el segundo cuartil.
+#
+# Qué escribir: elige cuál: parece ganar (y la victoria es hueca) o parece
+# perder (y la pérdida lo libera), y el cambio de conducta: hasta aquí
+# respondía al oponente; desde aquí marca el ritmo.
+# Pregúntate: ¿qué sabe o hace tras esto que antes no podía?
+# Dónde: la mitad, 45–55 %.
+
+*** 10. Aparente derrota
+
+# Su punto más bajo, casi catastrófico. Cree que ha perdido. Cierra el tercer
+# cuartil.
+#
+# Qué escribir: qué se pierde (aliado, plan, esperanza, posición) y por qué
+# cree que es definitivo. Debe ser peor que el Punto medio. Aquí se rompe la
+# Mentira, lo que hace posible el siguiente punto.
+# Pregúntate: como lector, ¿lo veo acabado? Si no temo por él, no es lo
+# bastante bajo.
+# Dónde: hacia el 75 %.
+
+*** 11. Autorrevelación
+
+# Ve la Mentira. Es un punto en dos tiempos y un solo encabezado: el atisbo
+# empieza antes de la batalla —es lo que le permite pelear de otra manera— y se
+# confirma dentro de ella.
+#
+# Qué escribir: la Mentira que sostenía, la verdad que la sustituye y lo que
+# le hace verla (normalmente una consecuencia de la derrota, o algo que la
+# secuencia de revelaciones ya ha entregado). El atisbo es un primer ver,
+# parcial; la confirmación es ese mismo ver puesto a prueba bajo presión.
+# Pregúntate: ¿es un descubrimiento suyo, alcanzado por lo ocurrido, en vez de
+# algo que le cuentan? ¿Responde al Tema del punto 1?
+# Dónde: atisbo entre la derrota y la batalla; confirmación en la Batalla.
+#
+# - Atisbo (antes de la batalla):
+# - Confirmación (dentro o justo después):
+
+*** 12. Batalla
+
+# El enfrentamiento final entre las dos maneras de entender el mundo. Todo
+# converge aquí como un embudo, en el espacio más reducido posible.
+#
+# Qué escribir: el lugar, quién está presente (cada hilo importante envía a
+# alguien) y qué representa cada bando. El escenario debe ser lo más
+# estrecho que puedas; cuantas menos estancias, más aprieta. El protagonista
+# pelea de otra manera, gracias al punto 11.
+# Pregúntate: ¿coinciden en la página el oponente y el protagonista? ¿Se
+# cruzan aquí las tramas secundarias?
+# Dónde: el clímax, hacia el 90–95 %.
+
+*** 13. Decisión moral
+
+# La prueba de que la autorrevelación es real: elige entre dos rumbos, ambos con
+# coste. Entre dos bienes o entre dos males, nunca entre el bien y el mal.
+#
+# Qué escribir: las dos opciones, lo que cuesta cada una y cuál elige. Ver la
+# Mentira es fácil; actuar contra ella cuando duele es lo que lo prueba.
+# Pregúntate: ¿la elección correcta es también cara? Si la respuesta es clara
+# y gratis, no es una decisión.
+# Dónde: dentro de la Batalla o justo después, desembocando en el nuevo
+# equilibrio.
+
+** Puntos opcionales usados
+
+# Los que decidas usar, en el sitio donde les toca ocurrir. A diferencia de los
+# trece, éstos son por historia: añade y quita libremente.
+#
+# Imagen de apertura, Fantasma, resistencia, promesa de la premisa, aliados,
+# falso aliado, plan del oponente, primera/segunda/tercera revelación,
+# revelación a la audiencia, cerco, ataque de aliado, momento oscuro, nuevo
+# plan, muerte de la Debilidad, nuevo equilibrio, imagen final.
+
+-
+
+** Secuencia de revelaciones
+
+# Construida hacia atrás desde la autorrevelación. Lógica, creciente, acelerada.
+# Una novela necesita entre siete y diez.
+
+| # | Revelación | Quién la recibe | Cuartil |
+|---+------------+-----------------+---------|
+|   |            |                 |         |
+
+** Cuartiles
+
+# La capa de ritmo: dicen cuánto espacio ocupa cada movimiento, no qué ocurre en
+# él. El cierre del primer cuartil admite la banda del 20 al 25 %.
+# Si un cuartil se te va al doble de extensión que los otros, tienes un problema
+# de ritmo aunque el contenido sea correcto.
+
+- I Planteamiento (0–25 %) ::
+  # Cierra en: cruzar el umbral
+- II Reacción (25–50 %) ::
+  # Cierra en: punto medio
+- III Acción (50–75 %) ::
+  # Cierra en: aparente derrota
+- IV Resolución (75–100 %) ::
+  # Cierra en: decisión moral y nuevo equilibrio
+
+** Hilos de la Trama
+
+*** Línea principal
+:PROPERTIES:
+:THREAD-TYPE: Principal
+:Stance:
+:STATUS: Planificado
+:Weight:
+:END:
+
+**** Deseo que la mueve
+
+**** Resolución
+
+*** Subtrama
+:PROPERTIES:
+:THREAD-TYPE: Subtrama
+:Stance:
+:STATUS: Planificado
+:Weight:
+:END:
+
+# Una por cada Postura que quieras ver representada y que no lleve ya la línea
+# principal. Duplica este encabezado —o usa F8 F8 k g— para cada subtrama.
+#
+# Mínimo tres cruces con la línea principal, y al menos uno en el punto medio,
+# la aparente derrota o la batalla. Si no cruza, no es una subtrama: es otra
+# novela dentro de ésta.
+
+- Postura que encarna ::
+- Quién la lleva ::
+- Deseo propio ::
+
+**** Cruces con la línea principal
+
+1.
+2.
+3.
+
+**** Resolución
+
+** Orden de apertura y cierre                                       :noexport:
+
+# Tipo de cada línea: Entorno / Pregunta / Personaje / Suceso.
+# La primera que se abre es la última que se cierra.
+
+| Línea | Tipo | Se abre en | Se cierra en |
+|-------+------+------------+--------------|
+|       |      |            |              |
+
+** Secuencias y escenas                                             :noexport:
+
+# La escaleta no vive aquí: vive en el manuscrito, donde cada escena es un
+# encabezado con sus propiedades. Para verla como tabla, abre novela.org y usa
+# la vista de columnas (C-c C-x C-c).
+#
+# Las escenas son la carne sobre el esqueleto. Escríbelas en orden estructural y
+# etiqueta cada una con el punto de trama al que sirve; las que no sirven a
+# ninguno son sospechosas.
+
+* Reparto
+
+** Personajes
+:PROPERTIES:
+:COLUMNS: %30ITEM(Personaje) %14Role %20Stance %30Goal
+:END:
+
+# EL ENCABEZADO ES EL NOMBRE DEL PERSONAJE. Sustituye [Nombre del ...] por el
+# nombre en cuanto lo tengas; los corchetes sólo marcan que está sin rellenar.
+# El papel no va en el encabezado: va en la propiedad :Role:, que es la que
+# org-scribe lee. Por eso puedes renombrar a un personaje cuando quieras sin
+# romper nada, y por eso los enlaces desde las escenas siguen funcionando
+# después (F8 F8 R actualiza los nombres mostrados).
+#
+# Cada personaje es un encabezado de nivel 3 directamente bajo la sección
+# Personajes. No los anides más: org-scribe reconoce los personajes por ahí, y un personaje anidado es invisible para los
+# enlaces, las búsquedas y el informe de salud.
+#
+# Para ver de un vistazo quién es quién, usa la vista de columnas: C-c C-x C-c
+# muestra Role, Stance y Goal al lado de cada nombre.
+#
+# :Weight: ordena las columnas de la cronología de personajes: de 1 a 5, menor
+# primero. Déjala vacía y el personaje va al final, por orden alfabético entre
+# los demás vacíos. Pon -1 y queda fuera de la cronología por completo, sin
+# perder su ficha, sus enlaces ni su sitio en las búsquedas — para el posadero
+# de dos frases, que quieres tener fichado pero no en una columna. La tabla
+# nombra debajo, en una línea de comentario, a quien haya ocultado.
+#
+# Ficha completa para protagonista y oponente. Para el aliado basta la ficha
+# intermedia (sin Fantasma, Necesidad ni Plan) y para el falso aliado y los
+# secundarios la reducida: Concepto, Postura, Apuro, un Aspecto y el Deseo en
+# tres partes. Se indica en cada uno qué puedes borrar.
+#
+# Todo Aspecto tiene doble filo: una frase corta, en la voz de quien la dice,
+# verdadera, que pueda tanto salvarle como hundirle. Si sólo sirve para una de
+# las dos cosas, todavía no es un Aspecto.
+
+*** [Nombre del protagonista]
+:PROPERTIES:
+:Role: Protagonist
+:Stance:
+:Goal:
+:Age:
+:Occupation:
+:First-appearance:
+:Weight:
+:RelationshipsData:
+:END:
+
+- Concepto ::
+  # Quién es y a qué se dedica, en una frase con voz. Cómo se describiría él
+  # mismo.
+- Postura ::
+  # Su posición ante el Tema. En el Sistema la tomas de la lista ya
+  # construida en el archivo de diseño; en la Hélice o la Matriz el Tema
+  # se nombra más tarde (nivel 3 y nivel 4), así que escribe la posición
+  # ahora y cotéjala con la lista cuando exista. Elige la que más
+  # conflicto le genere. Reescríbela con sus palabras.
+- Fantasma ::
+  # Qué le ocurrió antes de que empiece la historia y todavía le duele.
+- Mentira ::
+  # Qué concluyó de aquello, sigue creyendo, y no es verdad.
+- Apuro ::
+  # Algo inmediato que le complica la vida y le impide quedarse quieto. Es suyo;
+  # el Problema del Mundo es de todos.
+- Debilidad psicológica ::
+  # El defecto interno que le retiene, consecuencia de la Mentira.
+- Debilidad moral ::
+  # A quién hace daño por culpa de lo anterior, y cómo. Una persona, un acto.
+  # Ser demasiado ambicioso le retiene a él; que sus hijos no le vean nunca es
+  # el daño moral.
+
+**** Deseo
+
+# Desea (Objetivo), porque cree que así conseguirá (Motivación), pero
+# (Conflicto) se lo impide.
+
+- Objetivo ::
+  # Concreto y externo. El lector tiene que saber cuándo se ha conseguido y
+  # cuándo no. "Ser feliz" no es un Objetivo; "robar el tesoro del rey Urdano" sí.
+- Motivación ::
+  # Lo que cree que le dará conseguirlo. Sale de la Mentira, y por eso siempre
+  # es falsa en el fondo. Si al escribirla te sale algo sano y cierto, has
+  # escrito la Necesidad en la casilla equivocada.
+- Conflicto ::
+  # Quién o qué se interpone. Aquí es externo, y casi siempre el oponente. Si el
+  # Conflicto no tiene cara, todavía no tienes oponente.
+
+**** Necesidad
+
+# Necesita (Objetivo), porque sólo así conseguirá (Motivación), pero
+# (Conflicto) se lo impide. Las mismas tres partes, giradas hacia dentro.
+
+- Objetivo ::
+  # Un cambio de conducta, no un objeto.
+- Motivación ::
+  # Lo que la Mentira le impide tener. Suele nombrar el daño de la Debilidad moral.
+- Conflicto ::
+  # Ya no es el oponente, sino la propia Mentira y lo que tendría que admitir
+  # del Fantasma para soltarla. Si vuelve a ser el oponente, el arco está
+  # externalizado: nada de lo que le pase por dentro dependerá de él.
+
+**** Plan
+
+- Plan ::
+  # Cómo pretende conseguir el Deseo. Tiene que fallar: el oponente es fuerte.
+- Plan de repuesto ::
+  # Más desesperado y menos limpio.
+
+**** Aspectos
+
+# Máximo tres para el protagonista, dos para los demás. Más convierte al
+# personaje en caricatura.
+
+- Aspecto ::
+- Aspecto ::
+- Aspecto ::
+- Relación ::
+  # Un Aspecto que define su vínculo con otro personaje, grupo u organización.
+- Posesión ::
+  # Un objeto significativo, si aplica. Suele ser también su símbolo de personaje.
+
+**** Trasfondo
+
+# Una escena corta donde se vea quién es, en vez de decir lo que es. Para ti,
+# no para el libro: no tiene que ser buena y nadie va a leerla. Un buen
+# trasfondo muestra el Fantasma en acción, o al personaje ante un dilema moral
+# que resuelve según su Mentira.
+
+**** Interrogatorio
+
+# Un párrafo por pregunta.
+
+1. ¿Qué es lo que jamás haría?
+   # El clímax debería amenazar con obligarle a ello.
+2. ¿Qué hace cuando está solo y nadie le mira?
+   # Ése es el verdadero yo.
+3. ¿En qué está equivocado?
+   # La Mentira en acción.
+4. ¿Por qué moriría?
+   # El núcleo moral.
+5. Escríbele una escena trivial.
+   # Pidiendo de beber, lidiando con una molestia menor. Si sale genérica,
+   # todavía no le conoces.
+
+**** Hitos de cambio
+
+# Todo hito va anclado a un punto de trama concreto. Si no puedes decir en qué
+# escena ocurre, no es un hito: es un deseo.
+# Ajuste: aprende o consigue algo; cambia un Aspecto secundario.
+# Ruptura: cambia de Postura ante el Tema.
+# Diseña la secuencia hacia atrás, desde la transformación final.
+
+| Punto de trama | Tipo | Qué cambia |
+|----------------+------+------------|
+|                |      |            |
+
+**** Notas
+
+*** [Nombre del oponente]
+:PROPERTIES:
+:Role: Opponent
+:Stance:
+:Goal:
+:Age:
+:Occupation:
+:First-appearance:
+:Weight:
+:RelationshipsData:
+:END:
+
+# Ficha completa. Quiere lo mismo que el protagonista —por eso chocan— y ataca
+# directamente su Debilidad. Elige al que pueda atacarla con más saña.
+# Su Postura tiene que ser defendible: si no puedes argumentarla tú mismo con
+# convicción, todavía no está terminada.
+# No lo reveles entero de golpe: usa jerarquías de oponentes y muestra piezas.
+
+- Concepto ::
+- Postura ::
+- Fantasma ::
+- Mentira ::
+- Apuro ::
+- Debilidad psicológica ::
+- Debilidad moral ::
+
+**** Deseo
+
+# El mismo Objetivo que el protagonista.
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+**** Necesidad
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+**** Plan y contraataques
+
+**** Aspectos
+
+- Aspecto ::
+- Aspecto ::
+- Relación ::
+- Posesión ::
+
+**** Trasfondo
+
+**** Hitos de cambio
+
+| Punto de trama | Tipo | Qué cambia |
+|----------------+------+------------|
+|                |      |            |
+
+**** Notas
+
+*** [Nombre del aliado]
+:PROPERTIES:
+:Role: Ally
+:Stance:
+:Goal:
+:First-appearance:
+:Weight:
+:RelationshipsData:
+:END:
+
+# Ficha intermedia: la reducida más Mentira, Debilidad y Relación. Basta para
+# que tenga interior propio y ejecute el ataque de aliado con autoridad, sin
+# cargarle el aparato completo del arco.
+# Borra Fantasma, Necesidad y Plan si no los necesitas.
+
+- Concepto ::
+- Postura ::
+- Mentira ::
+- Apuro ::
+- Debilidad ::
+
+**** Deseo propio
+
+# Propio, no auxiliar: no puede ser "ayudar al protagonista".
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+**** Aspectos
+
+- Aspecto ::
+- Aspecto ::
+- Relación ::
+
+**** Hitos de cambio
+
+| Punto de trama | Tipo | Qué cambia |
+|----------------+------+------------|
+|                |      |            |
+
+**** Notas
+
+*** [Nombre del falso aliado]
+:PROPERTIES:
+:Role: Fake-Ally Opponent
+:Stance:
+:Goal:
+:First-appearance:
+:Weight:
+:RelationshipsData:
+:END:
+
+# Parece aliado y sirve al oponente. Ficha reducida. Su revelación mide el poder
+# real del enemigo. Necesita los dos Deseos, el declarado y el real.
+
+- Concepto ::
+- Postura ::
+- Apuro ::
+
+**** Deseo declarado
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+  # Suele ser el propio protagonista, sin que él lo sepa.
+
+**** Deseo real
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+**** Revelación
+
+- A quién sirve en realidad ::
+- Cuándo se revela ::
+
+**** Aspectos
+
+- Aspecto ::
+
+**** Notas
+
+*** [Nombre del secundario]
+:PROPERTIES:
+:Role: Thematic Supporting
+:Stance:
+:Goal:
+:First-appearance:
+:Weight:
+:RelationshipsData:
+:END:
+
+# Uno por cada Postura que quieras ver representada. Duplica este encabezado
+# entero —o usa F8 F8 k h— para cada uno.
+#
+# Ficha reducida. El Deseo en tres partes no es opcional aquí: es lo que
+# distingue a un personaje de un figurante. Sin Deseo, la comprobación de
+# contraste no se puede hacer.
+
+- Concepto ::
+- Postura ::
+- Apuro ::
+
+**** Deseo
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+**** Aspectos
+
+- Aspecto ::
+
+**** Notas
+
+** Comprobación del elenco                                          :noexport:
+
+# Dos comprobaciones distintas, y hacen falta las dos.
+
+*** De cobertura
+
+# Entre todos los personajes cubres las Posturas de la lista, y cada una recibe
+# de la historia la consecuencia que merece. Si dos comparten Postura, o uno
+# sobra o hay que diferenciarlos.
+
+| Postura | Quién la encarna | Qué le pasa por sostenerla |
+|---------+------------------+----------------------------|
+|         |                  |                            |
+
+*** De contraste
+
+# Para cada par de personajes, ¿cómo define A a B por oposición?
+
+- [ ] Cada uno tiene su propio Deseo con las tres partes, y el Conflicto de cada
+  uno tiene cara: alguien concreto se lo impide.
+- [ ] Cada uno habla distinto. Prueba: diálogo sin acotaciones, ¿sabes quién
+  habla?
+- [ ] Ninguno existe sólo para servir a la trama; cada uno es el protagonista de
+  su propia historia.
+- [ ] Oponente y protagonista están unidos por el conflicto más profundo posible.
+- [ ] Muestran su personalidad con actos, no con descripciones.
+
+* Mundo
+
+** Ambientación
+:PROPERTIES:
+:COLUMNS: %30ITEM(Escenario) %14Type %30Echo
+:END:
+
+# EL ENCABEZADO ES EL NOMBRE DEL LUGAR. Sustituye [Nombre del escenario N] por
+# el nombre en cuanto lo tengas; los corchetes sólo marcan que está sin
+# rellenar. La clasificación no va en el encabezado: va en la propiedad :Type:,
+# que es la que org-scribe lee.
+#
+# Cada escenario es un encabezado de nivel 3 directamente bajo la sección
+# Ambientación. No los anides más: org-scribe reconoce los escenarios por ahí.
+#
+# El mundo entero —los cuatro ejes, cómo presiona la Debilidad del
+# protagonista— vive en la sección Construcción del mundo. Aquí van los lugares concretos donde
+# ocurren escenas.
+#
+# Un escenario sin ningún Aspecto es decorado. En el Pase 5 de revisión, los
+# escenarios usados sólo como decorado son candidatos a corte.
+
+*** [Nombre del escenario 1]
+:PROPERTIES:
+:Type: Escenario
+:Echo:
+:First-appearance:
+:END:
+
+- Eco ::
+  # Cómo este lugar refleja el Tema. Es lo que lo convierte en parte del
+  # argumento y no en un fondo. "Todo el mundo aquí habla entre líneas."
+- Escollo ::
+  # Cómo este lugar empeora el Problema del Mundo. "Todos buscan a alguien a
+  # quien cargarle las culpas."
+- Personaje ::
+  # Un Aspecto de personaje que este lugar activa. "Tengo deudas con la mitad de
+  # los presentes."
+- Símbolo ::
+  # El objeto o detalle que carga la escena. "La copa que no llego a beber."
+
+**** Descripción
+
+# Qué se ve, se oye y se huele. Sólo lo que un focalizador notaría estando ahí.
+
+**** Escenas que ocurren aquí
+
+# Se rellena solo si enlazas el escenario desde la propiedad Localizacion de
+# cada escena (F8 F8 l). Las escenas quedan enlazadas por ID.
+
+*** [Nombre del escenario 2]
+:PROPERTIES:
+:Type: Escenario
+:Echo:
+:First-appearance:
+:END:
+
+- Eco ::
+- Escollo ::
+- Personaje ::
+- Símbolo ::
+
+**** Descripción
+
+**** Escenas que ocurren aquí
+
+*** [Nombre del escenario 3]
+:PROPERTIES:
+:Type: Escenario
+:Echo:
+:First-appearance:
+:END:
+
+- Eco ::
+- Escollo ::
+- Personaje ::
+- Símbolo ::
+
+**** Descripción
+
+**** Escenas que ocurren aquí
+
+** Construcción del mundo
+
+# El mundo, no los lugares. Los escenarios concretos —con su Eco y su Escollo—
+# están en la sección Ambientación.
+#
+# Desarrolla sólo lo que la historia va a usar. Un mundo entero documentado y
+# ausente de la página es tiempo que no se ha ido al borrador.
+
+*** El mundo en una línea
+
+# Qué lo distingue de éste, o de cualquier otro. Una frase.
+
+*** Elemento físico desarrollado
+
+# Uno. Geografía, clima, arquitectura, tecnología, el cuerpo. El que la trama
+# necesite: si el clima no obliga a nadie a decidir nada, no lo desarrolles.
+
+*** Elementos culturales desarrollados
+
+# Los que la trama necesite: poder, dinero, religión, lengua, costumbres,
+# familia, trabajo, justicia.
+
+-
+-
+
+*** Cómo el mundo presiona la Debilidad del protagonista
+
+# La pregunta que convierte el worldbuilding en historia. Si el mundo no aprieta
+# donde el protagonista es débil, es un decorado caro.
+#
+# Regla cardinal: el mundo sirve al personaje. Cualquier decisión sobre
+# escenario tiene que poder justificarse con "porque esto obliga al personaje a
+# enfrentarse a su Debilidad".
+
+*** Reglas y límites
+
+# Lo que en este mundo no se puede hacer, y qué cuesta romperlo. Las reglas sin
+# coste no son reglas.
+
+-
+
+Si es fantasía/ciencia ficción, reglas que debo mantener consistentes:
+
+**** Sistema de Magia
+
+**** Tecnología
+
+**** Sociedad
+
+*** Investigación pendiente
+
+# Lo que necesitas comprobar antes de escribir la escena que lo usa. No antes.
+
+- [ ]
+
+** Objetos
+
+*** Objetos Mágicos/Especiales
+
+**** Objeto 1
+:PROPERTIES:
+:TIPO: Arma/Artefacto/etc.
+:POSEEDOR:
+:END:
+
+***** Descripción Física
+
+***** Origen
+
+***** Propiedades/Poderes
+
+***** Importancia en la Trama
+
+***** Historia del Objeto
+
+*** Objetos Simbólicos
+
+**** Objeto Simbólico 1
+
+***** Descripción
+
+***** Simbolismo
+
+***** Papel en la Historia
+
+*** Objetos Cotidianos Relevantes
+
+** Línea Temporal
+
+*** Resumen de la Cronología
+:PROPERTIES:
+:CUSTOM_ID: timeline-overview
+:END:
+
+**** Cronología de la Historia
+| Evento | Fecha/Hora | Personajes | Localización | Notas |
+|--------+------------+------------+--------------+-------|
+|        |            |            |              |       |
+
+*** Eventos Detallados
+
+**** Evento 01
+:PROPERTIES:
+:DATE:
+:TIME:
+:DURATION:
+:CHARACTERS:
+:LOCATION:
+:CHAPTER:
+:END:
+
+***** Descripción
+
+***** Consecuencias
+
+*** Cronología del Trasfondo
+**** Evento Pasado 01
+:PROPERTIES:
+:DATE:
+:RELEVANCE:
+:END:
+
+* Investigación
+
+** Temas de Investigación
+
+*** Tema 01
+:PROPERTIES:
+:CATEGORY:
+:PRIORITY:
+:STATUS:
+:END:
+
+**** Preguntas a Responder
+-
+
+**** Fuentes
+-
+
+**** Hallazgos Clave
+
+**** Cómo Aplica a la Historia
+
+** Materiales de Referencia
+
+*** Libros
+
+*** Artículos/Sitios Web
+
+*** Entrevistas/Consultas
+
+*** Referencias Visuales
+
+** Verificación de Hechos
+| Hecho | Fuente | Verificado | Notas |
+|-------+--------+------------+-------|
+|       |        |            |       |
+
+** Inspiración
+
+*** Obras Similares
+
+- Libro/Película 1 :: ¿Qué me gusta de esta obra?
+- Libro/Película 2 :: ¿Qué quiero evitar?
+
+*** Citas Inspiradoras
+
+*** Música para Escribir
+
+- Playlist ::
+
+* Revisión
+
+# Diez pases, siempre de arriba abajo: no pules las frases de una escena que
+# quizá acabes borrando. Aquí manda el Crítico, y sólo aquí.
+#
+# El diseño es la lista de comprobación. Cada pase termina con un puntero: si
+# algo falla, no vuelves al principio, vuelves al apartado que lo diseñó.
+
+** Registro de revisión
+
+# Una línea por pase. Anota qué has encontrado y a qué apartado te devuelve.
+
+| Pase | Fecha | Qué he encontrado | A qué apartado vuelvo |
+|------+-------+-------------------+-----------------------|
+|    0 |       | Descanso          | —                     |
+|    1 |       |                   | —                     |
+|    2 |       |                   |                       |
+|    3 |       |                   |                       |
+|    4 |       |                   |                       |
+|    5 |       |                   |                       |
+|    6 |       |                   |                       |
+|    7 |       |                   |                       |
+|    8 |       |                   | —                     |
+|    9 |       |                   |                       |
+
+** Pase 0 — Descanso
+
+Deja el borrador reposar al menos dos semanas. La distancia es lo único que
+convierte al Creador en Crítico, y no hay atajo. Escribe otra cosa mientras
+tanto.
+
+- Fecha en que guardas el borrador ::
+- Fecha en que puedes volver ::
+
+** Pase 1 — Test del sueño
+
+Lee el manuscrito entero en las menos sesiones posibles. Marca cada punto donde
+te caes fuera del sueño: te aburres, te pierdes, no te lo crees. *No arregles
+nada.* Sólo marca.
+
+Esas marcas son la hoja de ruta de los ocho pases siguientes.
+
+*** Marcas
+
+# Una línea por caída: dónde, y de qué tipo (aburrimiento, confusión,
+# incredulidad). Sin diagnóstico todavía.
+
+-
+
+** Pase 2 — Tema y estructura
+
+- [ ] ¿Está cada Postura de la lista encarnada por alguien?
+- [ ] ¿Recibe cada Postura la consecuencia que la historia dice que merece?
+- [ ] ¿Empieza y termina el protagonista en Posturas distintas?
+- [ ] ¿Emerge el tema a través de la acción, o hay prédicas?
+- [ ] Si formulaste el tema como pregunta, ¿cuál es la afirmación que responde
+  lo que has escrito? Ésta es la última oportunidad de escribirla.
+- [ ] ¿Están los trece puntos irrenunciables, y cada uno en su cuartil?
+- [ ] ¿Están los cuartiles equilibrados en extensión?
+- [ ] ¿Se cumplen las promesas del primer cuartil?
+- [ ] ¿Es constante el progreso, o hay zonas muertas?
+- [ ] ¿Se acelera la secuencia de revelaciones, y golpea cada una más que la
+  anterior?
+- [ ] ¿Hay escenas que se puedan cortar o fundir?
+
+Si falla → apartado 1 (Tema y Posturas) y apartado 9 (Trama).
+
+*** Notas
+
+** Pase 3 — Personajes
+
+- [ ] ¿Tiene cada personaje principal Fantasma, Mentira, Debilidad y Necesidad?
+- [ ] ¿Es la Debilidad moral visible en actos concretos contra personas
+  concretas?
+- [ ] ¿Es la Debilidad claramente la causa de sus fracasos?
+- [ ] ¿Quiere el oponente lo mismo que el protagonista, y pelea con fuerza
+  suficiente?
+- [ ] ¿Es defendible su Postura? ¿Podrías argumentarla tú?
+- [ ] ¿Está cada hito de cambio anclado a una escena concreta?
+- [ ] ¿Tiene cada personaje con nombre su Deseo en tres partes —Objetivo,
+  Motivación y Conflicto—, y el del aliado es propio y no auxiliar?
+- [ ] Lee seguidas todas las escenas de un personaje, uno por uno. ¿Su arco
+  tiene sentido por separado? ¿Su voz es constante? ¿La evolución se cree?
+- [ ] ¿Hay secundarios redundantes?
+- [ ] ¿Están definidos tan rígidamente que ya no pueden sorprender?
+
+Si falla → apartado 5 (Personajes).
+
+*** Notas
+
+** Pase 4 — Escenas y secuelas
+
+- [ ] ¿Tiene cada escena un deseo, una oposición y un resultado?
+- [ ] ¿Cuál es la brecha de cada escena: qué esperaba el personaje y qué le dio
+  el mundo? Si no hay brecha, o la añades o la cortas.
+- [ ] ¿Cambia algo en cada escena? Si no, córtala o fúndela con otra.
+- [ ] ¿Entra tarde y sale pronto?
+- [ ] ¿Avanza trama, arco o tema? Si no hace ninguna de las tres, sobra.
+- [ ] ¿Tiene cada escena un núcleo emocional claro, y se conecta con el tema?
+- [ ] ¿Hay secuela después de cada escena importante?
+- [ ] ¿Encadena cada decisión de secuela con el deseo de la escena siguiente?
+- [ ] ¿Hay algún elemento llamativo e irrelevante robando la atención?
+
+Si falla → apartado 11 (Escenas y secuelas).
+
+*** Notas
+
+** Pase 5 — Mundo y símbolos
+
+- [ ] ¿Tiene cada escenario al menos un Aspecto?
+- [ ] ¿Hay escenarios usados sólo como decorado?
+- [ ] ¿Se manifiesta el Problema del Mundo en cada escena, aunque sea de fondo?
+  Las escenas donde no aparece de ninguna manera son candidatas a corte.
+- [ ] ¿Cambian los símbolos a lo largo de la historia?
+
+Si falla → apartado 7 (Mundo y escenarios) y apartado 8 (Símbolos).
+
+*** Notas
+
+** Pase 6 — Apuestas y tensión
+
+- [ ] ¿Se sabe qué se pierde si fracasa?
+- [ ] ¿Escala de cuartil en cuartil, y cambia de categoría en cada peldaño?
+- [ ] ¿Podría el protagonista abandonar la historia sin consecuencias? Si
+  podría, no hay apuestas.
+- [ ] ¿Hay algún capítulo sin tensión de ningún tipo?
+- [ ] ¿Cierran los capítulos en gancho —pregunta, revelación parcial, decisión
+  inminente, amenaza— y no en resumen?
+- [ ] ¿Hay variación de ritmo, o es tensión uniforme?
+
+Si falla → apartado 2 (Problema del Mundo y Apuestas) y apartado 12 (Capítulos
+y ritmo).
+
+*** Notas
+
+** Pase 7 — Punto de vista y diálogo
+
+- [ ] ¿Se respeta el punto de vista? ¿Hay saltos dentro de una escena?
+- [ ] ¿Has planificado alguna escena que este punto de vista no puede sostener?
+- [ ] ¿Tienen las conversaciones importantes capa moral, y no sólo melodía?
+- [ ] ¿Suenan distintos los personajes entre sí?
+- [ ] Lee todo el diálogo en voz alta: ¿hay alguien diciendo exactamente lo que
+  quiere decir? Si lo hay, añade capas.
+- [ ] ¿Contradicen las acciones a las palabras en algún momento?
+- [ ] ¿Comprende el lector más que cualquier personaje, donde quieres que lo
+  haga?
+
+Si falla el punto de vista → apartado 6 (Punto de vista). Si falla el diálogo →
+Diálogo sinfónico, en el Nivel 3 del método.
+
+*** Notas
+
+** Pase 8 — Línea
+
+Ahora sí: frase a frase. Es el pase más largo y el único que no vuelve a un
+apartado de diseño, porque la prosa se revisa contra el oficio del Nivel 3.
+
+Empieza por la emoción, que todavía es de escena, y baja a la frase:
+
+- [ ] Recorre cada pico emocional. ¿La emoción se nombra o se crea? Para cada
+  miedo, duelo, alegría o rabia, ¿hay un ancla física?
+- [ ] Marca cada "pensó", "se dio cuenta", "supo". Sustitúyelos por evidencia
+  sensorial.
+- [ ] Marca cada explicación que siga a un momento mostrado. Si lo mostrado
+  funciona, corta lo contado.
+- [ ] Y después, el detalle: ver la capa del pase de línea.
+
+*** Cosas que debo mejorar
+
+# Tu lista de defectos propios. Está aquí y no en el método a propósito: crece
+# con cada revisión y no le sirve a nadie más. Termina cada Pase 8 revisándola,
+# y añade lo que hayas encontrado esta vez.
+
+-
+
+Lista de muletillas o palabras que uso demasiado:
+
+-
+
+** Pase 9 — Lectores beta y borrador final
+
+Entre dos y cinco lectores. Más no es mejor: el ruido crece con la cantidad.
+
+*** A quién
+
+El lector adecuado lee lo que tú escribes, sabe articular *por qué* algo no
+funciona —y no sólo que no le gusta— y distingue sus preferencias de los
+problemas reales del texto. Evita a quien te diga lo que quieres oír, a quien
+filtre lo que lee a través de sus propias inseguridades, y a quien te deje
+colgado en la incertidumbre.
+
+| Lector | Contacto | Enviado | Recibido | Encaja con lo que escribo |
+|--------+----------+---------+----------+---------------------------|
+|        |          |         |          |                           |
+
+*** Qué preguntar
+
+- *Estructura*: ¿agujeros, incoherencias, confusión? ¿En qué página empezó a
+  ralentizarse? ¿Satisface el final? ¿Se sentía merecida la transformación?
+  ¿Hay alguna promesa del primer cuartil sin cumplir?
+- *Personajes*: ¿te importó el protagonista? ¿Te creíste sus decisiones?
+  ¿Entendiste al oponente? ¿Alguno se sintió plano o redundante?
+- *Prosa*: ¿volcados de información, y dónde? ¿Tramos lentos o sobreescritos?
+  ¿Diálogo poco natural?
+
+*** Cómo leerlo
+
+El feedback es información, no instrucciones.
+
+- *Patrón frente a ruido.* Si tres lectores señalan lo mismo en la misma escena,
+  hay un problema real: arréglalo aunque no te guste la solución que proponen.
+  Si lo señala uno solo, mira el contexto.
+- *Síntoma frente a causa.* Los lectores diagnostican síntomas. "El capítulo 7
+  me aburrió" es un síntoma; la causa puede ser una escena sin brecha, un arco
+  estancado o un ritmo uniforme. Tu trabajo es rastrear la causa.
+- *Cuando contradice tu intención.* O tu intención no está llegando al texto, o
+  ese lector no es tu lector. Para distinguirlo: ¿está describiendo lo que
+  querías que sintiera? Si no lo describe, es problema de ejecución. Si lo
+  describe pero no le gusta, es cuestión de encaje.
+- *Lo que nadie señala y tú sabes que está mal.* Ese feedback existe y es el más
+  valioso de todos. Después de leer las notas, siéntate a solas con el
+  manuscrito y escucha tu propia voz crítica.
+
+*** Comentarios recibidos
+
+**** Lector 1
+
+**** Lector 2
+
+*** Borrador final
+
+Incorpora por gravedad: estructura antes que escena, escena antes que línea. No
+toques una línea mientras quede un problema estructural sin resolver. Cada
+cambio grande puede crear problemas aguas abajo: cuando cortes un personaje,
+reestructures un tramo o cambies una revelación, relee entero lo que haya
+alrededor antes de seguir.
+
+Y cuando estés convencido de que está tan bien como puedes dejarlo tú, ahora y
+con la destreza que tienes ahora, suéltalo. Una historia imperfecta terminada
+enseña más que una perfecta sin terminar.
+
+- [ ] Estructura resuelta
+- [ ] Escenas resueltas
+- [ ] Línea resuelta
+- [ ] Soltado
+
+* Diario
+
+** Sobre Este Diario
+
+Este diario es un espacio para reflexiones cualitativas sobre tu proceso creativo.
+Úsalo para documentar ideas, desafíos, avances y lecciones aprendidas.
+
+Para el seguimiento cuantitativo (conteo de palabras, progreso diario), consulta [[file:novela.org][novela.org]].
+
+** Notas de Sesión
+
+*** ${DATE}
+:PROPERTIES:
+:INICIO-SESION:
+:FIN-SESION:
+:PALABRAS-ESCRITAS:
+:ESTADO-ANIMO:
+:END:
+
+**** En qué trabajé
+
+**** Progreso y Desafíos
+
+**** Objetivos para la Próxima Sesión
+
+** Revisiones Mensuales
+
+*** Mes 1 - ${DATE}
+
+**** Qué fue bien
+
+**** Qué fue difícil
+
+**** Lecciones aprendidas
+
+**** Objetivos para el próximo mes
+
+** Experimentos de Escritura
+
+Rastrea nuevas técnicas, estilos o enfoques que estás probando.
+
+*** Experimento 1
+:PROPERTIES:
+:FECHA: ${DATE}
+:TECNICA:
+:RESULTADO:
+:END:
+
+**** Descripción
+
+**** Resultado
+
+**** ¿Lo volveré a usar?
+
+** Avances e Ideas
+
+*** ${DATE}
+
+** Desafíos y Cómo Los Superé
+
+*** ${DATE}
+
+** Viaje de Desarrollo de Personajes
+
+Notas sobre cómo evolucionó tu comprensión de los personajes durante la escritura.
+
+** Evolución de la Trama
+
+Cómo cambió la trama desde tu plan inicial.
+
+** Notas de Proceso
+
+Reflexiones sobre tus hábitos de escritura, patrones de productividad, qué funciona para ti.
+
+* Borradores
+
+# Este archivo no tiene estructura, y no pretende llegar a tenerla.
+#
+# Nada de lo que escribas aquí se cuenta, se exporta ni lo lee ninguna
+# orden de org-scribe.  El recuento de palabras recorre solo el
+# manuscrito; la compilación lee solo el manuscrito; los resolutores de
+# entidades trabajan con nombres de archivo fijos, así que un personaje
+# esbozado aquí es invisible para el sistema de enlaces hasta que lo
+# muevas a su sitio.  Esboza a alguien que quizá no exista.  Escribe una
+# escena que vas a tirar.  Haz la pregunta tonta.  Discute contigo mismo
+# por escrito.
+#
+# Refila lo que sobreviva con C-c C-w, que ofrece todos los encabezados
+# de todos los archivos del proyecto.  Borra el resto sin ceremonia.
+#
+# Abre este archivo desde cualquier punto del proyecto con F8 F8 o.
+#
+#
+# RAMIFICAR UNA PREGUNTA
+#
+# Cuando una pregunta resulta tener más de una respuesta, dale un
+# encabezado y etiquétalo :branch:.  Cada respuesta es un encabezado hijo
+# con un estado, que se cambia con C-c C-t:
+#
+#   OPEN       sigue viva, aún sin explorar
+#   EXPLORING  la estás desarrollando ahora mismo
+#   CHOSEN     es esta
+#   REJECTED   descartada, conservando el motivo
+#
+# Conserva las ramas descartadas.  El porqué-no vale tanto como el
+# porqué, y borrar una solo significa volver a deducirla dentro de tres
+# meses.  REJECTED y CHOSEN son estados finales, así que una pregunta ya
+# resuelta se pliega sin perder su razonamiento.
+#
+# Las consecuencias de una respuesta son los hijos de esa respuesta.
+# Anida tan hondo como llegue de verdad la pregunta.
+#
+# Estas cuatro palabras clave quedan deliberadamente fuera del vocabulario
+# TODO del proyecto, de modo que una pregunta abierta nunca aparece en la
+# búsqueda de TODOs (F8 F8 5).  Especular no es trabajo en curso.
+#
+# :ABOUT: guarda un enlace ID a aquello de lo que trata la pregunta — un
+# personaje, un hilo, una escena — para que la pregunta sea accesible
+# también desde ese lado, y sobreviva a un cambio de nombre.  Déjala
+# vacía mientras la pregunta no trate aún de nada en concreto.
+#
+# La forma de abajo es un ejemplo.  Cópiala, o bórrala en cuanto tengas
+# la tuya.
+
+** Ideas sueltas
+
+*** Escenas Potenciales
+
+*** Diálogos Interesantes
+
+*** Descripciones
+
+** ¿Y si <la pregunta>?                                             :branch:
+:PROPERTIES:
+:ABOUT:
+:END:
+
+# Qué hace que esto sea una pregunta de verdad, y qué está en juego en la
+# respuesta.
+
+*** OPEN A. <primera respuesta>
+
+**** OPEN <una consecuencia de A, si la tiene>
+
+*** OPEN B. <segunda respuesta>
+
+*** OPEN C. <tercera respuesta>
