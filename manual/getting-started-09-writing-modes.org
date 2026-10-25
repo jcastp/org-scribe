@@ -340,15 +340,15 @@ Perfect for:
 │  (left)      │    (center)                │   (right)       │
 │              │                            │                 │
 │ 📁 project/  │ #+TITLE: My Novel          │ * Contents      │
-│  📁 objects/ │                            │   ** Act I      │
-│   📄 chars   │ * Act I                    │     *** Ch 1    │
-│   📄 plot    │ ** Chapter 1               │     *** Ch 2    │
-│   📄 locs    │ *** Scene 1 - Morning      │   ** Act II     │
-│  📁 notes/   │                            │     *** Ch 3    │
-│   📄 notes   │ Alex woke up feeling...    │     *** Ch 4    │
-│   📄 research│                            │   ** Act III    │
-│  📄 novel    │ The coffee was cold.       │     *** Ch 5    │
-│  📄 README   │                            │                 │
+│  📄 design   │                            │   ** Act I      │
+│  📄 novel    │ * Act I                    │     *** Ch 1    │
+│              │ ** Chapter 1               │     *** Ch 2    │
+│              │ *** Scene 1 - Morning      │   ** Act II     │
+│              │                            │     *** Ch 3    │
+│              │ Alex woke up feeling...    │     *** Ch 4    │
+│              │                            │   ** Act III    │
+│              │ The coffee was cold.       │     *** Ch 5    │
+│              │                            │                 │
 │              │ *** Scene 2 - Coffee       │ (Click to jump) │
 │              │                            │                 │
 │  (Click file │ Sam entered the shop...    │                 │
@@ -416,9 +416,9 @@ Perfect for:
 *Scenario*: Writing a scene, need to check character details.
 
 1. ~F8 F8 v~ (activate Navigate mode)
-2. Left panel (treemacs) → click ~objects/characters.org~
-3. Character file opens in center
-4. Read character details
+2. Left panel (treemacs) → click ~design.org~
+3. The design notebook opens in center
+4. Jump to the Characters section and read the details
 5. Left panel → click ~novel.org~
 6. Manuscript returns to center
 7. Continue writing with fresh details
@@ -586,7 +586,7 @@ Perfect for:
 *Purpose*: Companion notes for manuscript
 
 *Shows*:
-- The project notes file — ~notes/notes.org~ (~notas/notas.org~ in Spanish projects), or ~notes.org~ for short stories
+- The design notebook — ~design.org~ (~diseno.org~ in Spanish projects)
 - The same file your captures go to, so notes written here and notes captured with ~F8 F8 n~ land in one place
 - Your revision notes, ideas, TODOs
 
@@ -608,14 +608,14 @@ The right panel is configurable through ~org-scribe-editing-right-panel~:
 
 | Value             | Right panel shows                                          |
 |-------------------+------------------------------------------------------------|
-| ~notes~ (default) | The project notes file                                     |
+| ~notes~ (default) | The design notebook                                        |
 | ~edits~           | A live index of your inline edit markers (see lesson 14)   |
-| ~revision~        | The project's ~revision.org~                               |
-| a string          | A project-relative path, e.g. ~"notes/research.org"~       |
+| ~revision~        | The design notebook (where the Revision part lives)        |
+| a string          | A project-relative path, e.g. ~"plan.org"~                  |
 | a function        | Called with the manuscript file name; returns a file       |
 
 #+BEGIN_SRC elisp
-;; Show revision.org instead of the notes file
+;; Show the design notebook, by its revision alias
 (setq org-scribe-editing-right-panel 'revision)
 
 ;; Or keep a live list of everything still to fix beside the manuscript
@@ -624,9 +624,9 @@ The right panel is configurable through ~org-scribe-editing-right-panel~:
 
 The ~edits~ value is worth trying during a revision pass: it is the only option that isn't a file you write into, but a generated index that rebuilds itself every time you save. Mark a passage with ~*EDIT*~, save, and it appears in the panel; delete the marker, save, and it disappears. Because markers live in comment blocks they are easy to skim past in the manuscript itself, which is exactly why having them listed beside it helps.
 
-If the requested file cannot be found, the panel falls back to the project notes file rather than opening nothing.
+If the requested file cannot be found, the panel falls back to the design notebook rather than opening nothing.
 
-*Note*: this panel used to show a per-manuscript companion file (~novel.org~ → ~novel-notes.org~) that existed to hold org-remark annotations. org-remark support has been removed — use inline ~*EDIT*~ / ~*NOTE*~ markers and ~F8 F8~ then ~6~ instead — so the panel now defaults to the project notes file. Any existing ~novel-notes.org~ in your projects is left untouched; open it normally if it holds content you want.
+*Note*: this panel used to show a per-manuscript companion file (~novel.org~ → ~novel-notes.org~) that existed to hold org-remark annotations. org-remark support has been removed — use inline ~*EDIT*~ / ~*NOTE*~ markers and ~F8 F8~ then ~6~ instead — so the panel now defaults to the design notebook. Any existing ~novel-notes.org~ in your projects is left untouched; open it normally if it holds content you want.
 
 ** How It Works
 
@@ -651,7 +651,7 @@ If the requested file cannot be found, the panel falls back to the project notes
 
 1. Open ~novel.org~
 2. ~F8 F8 e~ (activate Editing mode)
-3. ~notes/notes.org~ opens automatically (right panel)
+3. ~design.org~ opens automatically (right panel)
 4. In notes panel, write:
    #+BEGIN_EXAMPLE
    * Chapter 3 Revision
@@ -671,8 +671,8 @@ If the requested file cannot be found, the panel falls back to the project notes
 
 ** About the Notes File
 
-Editing mode's right panel is your project's notes file - ~notes/notes.org~
-(~notas/notas.org~ in Spanish projects), or ~notes.org~ for short stories.
+Editing mode's right panel is your project's design notebook - ~design.org~
+(~diseno.org~ in Spanish projects).
 It is created automatically if it doesn't exist yet. This is the same file
 ~F8 F8 n~ captures into, so notes typed in the panel and notes captured from
 elsewhere all end up in one place.
@@ -1147,7 +1147,7 @@ applies to Editing mode as well as Navigate mode.
 ** "Editing mode notes file opens in wrong place"
 
 *Expected behavior*:
-- The panel shows the project notes file: ~notes/notes.org~, ~notas/notas.org~, or ~notes.org~ for short stories
+- The panel shows the design notebook: ~design.org~ or ~diseno.org~
 - The file is found relative to the *project root*, not the manuscript's directory
 
 If opening elsewhere:

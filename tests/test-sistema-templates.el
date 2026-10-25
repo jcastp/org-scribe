@@ -15,11 +15,11 @@
 ;;    templates ship (`Los trece irrenunciables', `Cuartiles', and so on),
 ;;    which would otherwise become phantom entities.
 ;;
-;; 2. The shipped novel-es templates satisfy the contract the entity
-;;    predicates impose: characters and settings are level-1 headings
-;;    carrying an explicit Role/Type, plot threads carry THREAD-TYPE, and
-;;    the thirteen non-negotiables are level 2 so they do not collide with
-;;    the plot-thread predicate.
+;; 2. The shipped novel-es design notebook satisfies the contract the
+;;    entity predicates impose: characters, settings and plot threads sit
+;;    directly under their section heading carrying an explicit
+;;    Role/Type/THREAD-TYPE, and the thirteen non-negotiables sit under
+;;    theirs without colliding with the plot-thread predicate.
 ;;
 ;; The second group parses the real shipped template files rather than
 ;; fixtures, so a template edit that breaks entity recognition fails here
@@ -56,15 +56,32 @@
                     org-scribe-test--root))
 
 (defmacro org-scribe-test--with-template (relative &rest body)
-  "Visit template RELATIVE in `org-mode' and run BODY with point at start."
+  "Visit template RELATIVE in `org-mode' and run BODY with point at start.
+A `${FOUNDATIONS}' placeholder is filled from the `foundations.fragment'
+beside the template, so the buffer holds the whole notebook."
   (declare (indent 1))
   `(let ((file (org-scribe-test--template ,relative)))
      (should (file-exists-p file))
      (with-temp-buffer
        (insert-file-contents file)
+       (let ((fragment (expand-file-name "foundations.fragment"
+                                         (file-name-directory file))))
+         (when (and (file-exists-p fragment)
+                    (search-forward "${FOUNDATIONS}" nil t))
+           (replace-match (with-temp-buffer
+                            (insert-file-contents fragment)
+                            (buffer-string))
+                          t t)))
        (org-mode)
        (goto-char (point-min))
        ,@body)))
+
+(defun org-scribe-test--section-subtree (title)
+  "Narrow the current buffer to the first heading whose text is TITLE."
+  (goto-char (point-min))
+  (should (re-search-forward (format "^\\*+ %s\\(?: +:.*\\)?$" (regexp-quote title)) nil t))
+  (org-back-to-heading t)
+  (org-narrow-to-subtree))
 
 (defun org-scribe-test--headings (level)
   "Return the heading texts at LEVEL in the current buffer."
@@ -126,27 +143,26 @@ an ID on a structural heading."
 (ert-deftest test-sistema-es-design-file-exists ()
   "The new diseno.org template ships and carries the Starting Gate."
   (org-scribe-test--with-template "novel-es/diseno.org.template"
-    (let ((headings (org-scribe-test--headings 1)))
-      (should (member "Puerta de salida" headings))
-      (should (member "Núcleo" headings))
-      (should (member "Premisa" (append headings (list "Premisa")))))
+    (should (member "Fundamentos" (org-scribe-test--headings 1)))
+    (should (member "Puerta de salida" (org-scribe-test--headings 2)))
+    (should (member "Núcleo" (org-scribe-test--headings 2)))
     ;; The gate has exactly eight boxes: it is the one list that decides
     ;; when writing starts, and losing one silently lowers the bar.
-    (goto-char (point-min))
+    (org-scribe-test--section-subtree "Puerta de salida")
     (should (= 8 (how-many "^- \\[ \\]" (point-min) (point-max))))))
 
-(ert-deftest test-sistema-es-characters-are-level-1-with-role ()
-  "Every character in the Spanish template is level 1 with an explicit Role.
-This is the contract in `org-scribe--character-heading-p'; a nested
-character is invisible to linking, capture and the health report."
-  (org-scribe-test--with-template "novel-es/objetos/personajes.org.template"
+(ert-deftest test-sistema-es-characters-are-recognised-with-role ()
+  "Every character in the Spanish notebook sits under its section with a Role.
+This is the contract in `org-scribe--character-heading-p'; a character
+anywhere else is invisible to linking, capture and the health report."
+  (org-scribe-test--with-template "novel-es/diseno.org.template"
     (let ((roles '("Protagonist" "Opponent" "Ally"
                    "Fake-Ally Opponent" "Thematic Supporting"))
           (found nil))
       (org-map-entries
        (lambda ()
          (when-let* ((role (org-entry-get nil "Role")))
-           (should (= 1 (org-current-level)))
+           (should (org-scribe--character-heading-p))
            (push role found))))
       (should (equal roles (nreverse found))))))
 
@@ -160,7 +176,7 @@ and lose the only human-readable label the file has.
 
 The placeholders must also be distinct from one another, for the same
 reason as the settings above — completion is keyed on display name."
-  (org-scribe-test--with-template "novel-es/objetos/personajes.org.template"
+  (org-scribe-test--with-template "novel-es/diseno.org.template"
     (let (names)
       (org-map-entries
        (lambda ()
@@ -182,25 +198,26 @@ reason as the settings above — completion is keyed on display name."
 
 (ert-deftest test-sistema-es-cast-check-is-not-a-character ()
   "The Comprobación del elenco heading does not become a phantom character."
-  (org-scribe-test--with-template "novel-es/objetos/personajes.org.template"
+  (org-scribe-test--with-template "novel-es/diseno.org.template"
     (goto-char (point-min))
-    (should (re-search-forward "^\\* Comprobación del elenco" nil t))
+    (should (re-search-forward "^\\*+ Comprobación del elenco" nil t))
     (should-not (org-entry-get nil "Role"))
+    (should-not (org-scribe--character-heading-p))
     (should-not (string-match-p org-scribe--character-heading-regexp
                                 (org-get-heading t t t t)))))
 
-(ert-deftest test-sistema-es-settings-are-level-1-with-type ()
-  "Every Escenario in the Spanish template is level 1 with an explicit Type.
+(ert-deftest test-sistema-es-settings-are-recognised-with-type ()
+  "Every Escenario in the Spanish notebook sits under its section with a Type.
 Their headings must also be distinct: entity completion is keyed on the
 display name, so three placeholders all called \"Escenario\" would
 collapse into one selectable item and every link would resolve to the
 first."
-  (org-scribe-test--with-template "novel-es/objetos/localizaciones.org.template"
+  (org-scribe-test--with-template "novel-es/diseno.org.template"
     (let (names)
       (org-map-entries
        (lambda ()
          (when (org-entry-get nil "Type")
-           (should (= 1 (org-current-level)))
+           (should (org-scribe--location-heading-p))
            (push (org-get-heading t t t t) names))))
       ;; Three worked settings ship, matching the plantilla.  Headings are
       ;; name placeholders, not the classification: that lives in `Type'.
@@ -209,16 +226,13 @@ first."
                        "[Nombre del escenario 3]")
                      (nreverse names))))))
 
-(ert-deftest test-sistema-es-thirteen-non-negotiables-are-level-2 ()
-  "The thirteen are level-2 headings under their wrapper.
-Level 1 would put them beside plot threads, where only the heading text
-would tell them apart (see opus-mi-sistema.org section 11.1)."
-  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
-    (goto-char (point-min))
-    (should (re-search-forward "^\\* Los trece irrenunciables" nil t))
-    (let ((subs (save-restriction
-                  (org-narrow-to-subtree)
-                  (org-scribe-test--headings 2))))
+(ert-deftest test-sistema-es-thirteen-non-negotiables-sit-under-their-wrapper ()
+  "The thirteen are the children of their wrapper, one level below it.
+Beside the plot threads only the heading text would tell them apart
+(see opus-mi-sistema.org section 11.1)."
+  (org-scribe-test--with-template "novel-es/diseno.org.template"
+    (org-scribe-test--section-subtree "Los trece irrenunciables")
+    (let ((subs (org-scribe-test--headings 3)))
       (should (= 13 (length subs)))
       (should (string-match-p "\\`1\\. Susurro del tema" (car subs)))
       (should (string-match-p "\\`13\\. Decisión moral" (car (last subs)))))))
@@ -227,32 +241,33 @@ would tell them apart (see opus-mi-sistema.org section 11.1)."
   "Self-revelation is a single heading, not split into two.
 It is \"un punto en dos tiempos\", but the count thirteen is load-bearing
 in the method's own name for the set."
-  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
-    (should (= 1 (how-many "^\\*\\* 11\\. Autorrevelación" (point-min) (point-max))))
-    (should (= 0 (how-many "^\\*\\* 1[45]\\." (point-min) (point-max))))))
+  (org-scribe-test--with-template "novel-es/diseno.org.template"
+    (should (= 1 (how-many "^\\*+ 11\\. Autorrevelación" (point-min) (point-max))))
+    (should (= 0 (how-many "^\\*+ 1[45]\\. " (point-min) (point-max))))))
 
 (ert-deftest test-sistema-es-plot-threads-carry-thread-type ()
   "Exactly the two shipped narrative lines carry THREAD-TYPE.
-The structural wrappers in trama.org must not, or they would each become
-a phantom plot-thread entity with an ID minted at project creation."
-  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
+The structural wrappers in the Plot part must not, or they would each
+become a phantom plot-thread entity with an ID minted at project creation."
+  (org-scribe-test--with-template "novel-es/diseno.org.template"
     (let (threads)
       (org-map-entries
        (lambda ()
          (when (org-entry-get nil "THREAD-TYPE")
-           (should (= 1 (org-current-level)))
+           (should (org-scribe--plot-heading-p))
            (push (org-get-heading t t t t) threads))))
       (should (equal '("Línea principal" "Subtrama") (nreverse threads))))))
 
 (ert-deftest test-sistema-es-plot-wrappers-are-not-threads ()
-  "The structural level-1 headings in trama.org fail the plot predicate."
-  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
+  "The structural headings of the Plot part fail the plot predicate."
+  (org-scribe-test--with-template "novel-es/diseno.org.template"
     (dolist (heading '("Los trece irrenunciables" "Puntos opcionales usados"
                        "Secuencia de revelaciones" "Cuartiles"
                        "Orden de apertura y cierre" "Secuencias y escenas"))
-      (should-not (string-match-p
-                   "\\(Main Plot\\|Subplot\\|Thread\\|A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\)"
-                   heading)))))
+      (goto-char (point-min))
+      (should (re-search-forward
+               (format "^\\*+ %s\\(?: +:.*\\)?$" (regexp-quote heading)) nil t))
+      (should-not (org-scribe--plot-heading-p)))))
 
 (ert-deftest test-sistema-no-template-ships-export-config ()
   "No shipped template carries export configuration, in any template set.
@@ -297,13 +312,9 @@ This is the assumption that made removing the export blocks safe."
       (should-not (string-match-p "planning metadata" out)))))
 
 (ert-deftest test-sistema-es-templates-substitute-cleanly ()
-  "Every sistema template declares TITLE and AUTHOR placeholders."
+  "Both sistema templates declare TITLE and AUTHOR placeholders."
   (dolist (relative '("novel-es/diseno.org.template"
-                      "novel-es/objetos/personajes.org.template"
-                      "novel-es/objetos/localizaciones.org.template"
-                      "novel-es/objetos/construccion-mundo.org.template"
-                      "novel-es/objetos/trama.org.template"
-                      "novel-es/revision.org.template"))
+                      "novel-es/novela.org.template"))
     (let ((raw (with-temp-buffer
                  (insert-file-contents (org-scribe-test--template relative))
                  (buffer-string))))
@@ -455,7 +466,7 @@ with an ID minted at project creation."
 (ert-deftest test-sistema-es-thirteen-are-recognized-as-plot-points ()
   "All thirteen shipped non-negotiables satisfy the plot-point predicate,
 and nothing else in the plot file does."
-  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
+  (org-scribe-test--with-template "novel-es/diseno.org.template"
     (let (points)
       (org-map-entries
        (lambda ()
@@ -465,9 +476,9 @@ and nothing else in the plot file does."
 
 (ert-deftest test-sistema-plot-points-and-threads-do-not-overlap ()
   "No heading is both a plot point and a plot thread.
-They share a file, so a heading matching both predicates would be minted
+They share a notebook, so a heading matching both predicates would be minted
 twice and appear in two completion lists."
-  (org-scribe-test--with-template "novel-es/objetos/trama.org.template"
+  (org-scribe-test--with-template "novel-es/diseno.org.template"
     (org-map-entries
      (lambda ()
        (should-not (and (org-scribe--plot-point-heading-p)
@@ -504,13 +515,13 @@ is exactly wrong and looks plausible."
 Shipping the property is what makes `-1' discoverable: it is a display
 knob nothing else reveals, and a writer who never sees the key never
 learns they can keep a walk-on part out of the timeline."
-  (dolist (relative '("novel-en/objects/characters.org.template"
-                      "novel-es/objetos/personajes.org.template"))
+  (dolist (relative '("novel-en/design.org.template"
+                      "novel-es/diseno.org.template"))
     (org-scribe-test--with-template relative
       (let ((roles 0) (weights 0))
         (org-map-entries
          (lambda ()
-           (when (and (= (org-current-level) 1)
+           (when (and (org-scribe--character-heading-p)
                       (org-entry-get nil "Role"))
              (cl-incf roles)
              (when (org-entry-get nil "Weight")
@@ -520,8 +531,8 @@ learns they can keep a walk-on part out of the timeline."
 
 (ert-deftest test-templates-ship-weight-on-every-plot-thread ()
   "Every narrative line in both plot templates carries a `:Weight:' line."
-  (dolist (relative '("novel-en/objects/plot.org.template"
-                      "novel-es/objetos/trama.org.template"))
+  (dolist (relative '("novel-en/design.org.template"
+                      "novel-es/diseno.org.template"))
     (org-scribe-test--with-template relative
       (let ((threads 0) (weights 0))
         (org-map-entries
@@ -538,7 +549,7 @@ learns they can keep a walk-on part out of the timeline."
 Zero sorts ahead of every real weight, so if a blank value were read as a
 number, every template character would silently jump to the first columns
 of the timeline — with nothing in the file to explain why."
-  (org-scribe-test--with-template "novel-en/objects/characters.org.template"
+  (org-scribe-test--with-template "novel-en/design.org.template"
     (org-map-entries
      (lambda ()
        (when-let* ((weight (org-entry-get nil "Weight")))

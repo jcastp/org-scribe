@@ -591,14 +591,14 @@ Place timeline sections in your manuscript after:
 - Word count tables
 - Before main manuscript content
 
-*Or* create separate ~timeline.org~ file in your project for detailed analysis.
+*Or* keep a block in the Timeline section of ~design.org~ for detailed analysis.
 
 ** Multiple Timelines
 
 You can have multiple timeline blocks:
 - One in ~novel.org~ (quick reference)
-- One in ~timeline.org~ (detailed analysis)
-- One per act (in separate files)
+- One in ~design.org~ (detailed analysis)
+- One per act (in separate sections)
 
 All show same data - choose what fits your workflow!
 

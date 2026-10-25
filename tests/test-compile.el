@@ -296,14 +296,14 @@ normally, the same as anywhere else in the manuscript."
 
 (ert-deftest test-compile-flattens-links-into-the-notes ()
   "A link into the writer's notes reaches the reader as its description.
-Kept, txt appended \"See file ../objects/characters.org\" after it and md
+Kept, txt appended \"See file ../design.org\" after it and md
 linked to a file that does not exist; a web link is the writer's own
 business and is kept."
   (org-scribe-compile-test--with-project "novel" "novel.org"
       (concat "#+TITLE: T\n\n* Act I :ignore:\n"
               "** The [[id:no-such-id][Ash]] chapter :ignore:\n*** Scene 1 :ignore:\n"
               "Nell walked out, and [[id:no-such-id][Ash]] followed with "
-              "[[*Lamp][the lamp]] and [[file:objects/characters.org][her notes]], "
+              "[[*Lamp][the lamp]] and [[file:design.org][her notes]], "
               "past [[https://example.com][the pier]].\n")
     (org-scribe-compile 'clean 'org)
     (let ((out (org-scribe-compile-test--intermediate root "novel")))

@@ -261,7 +261,7 @@ still caught.  Docstrings and comments in shipped code are not exempt
 -- see \"i18n-extended.org\", Step 9: an explanatory Spanish example in
 a comment is exactly as fragile as one in a resolver, since neither is
 checked against the packs, and this project's own history (the
-`org-scribe--methods' labels, the `--section-heading-aliases' comment)
+`org-scribe--methods' labels)
 is that an unindexed example rots exactly like code does.  The fix,
 each time this test finds something, is to reword the prose, not to
 carve out an exemption."

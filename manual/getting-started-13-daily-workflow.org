@@ -326,10 +326,10 @@ happen here.
 
 Mid-scene, you realize: "The mysterious package should contain her mother's old letters!"
 
-Press ~F8 F8~ then ~n~ (general note). This is a plain TODO entry, filed under a "Notes" heading in your project's notes file - no properties drawer, just a timestamp and your text:
+Press ~F8 F8~ then ~n~ (general note). This is a plain heading, filed under the Scratchpad part of your design notebook - no properties drawer and no TODO keyword, just a timestamp and your text:
 
 #+BEGIN_EXAMPLE
-,** TODO Package Contents
+,** Package Contents
    [2025-11-16 Sun]
    The package Sam receives in chapter 3 should contain letters from Alex's
    mother, written before she died. This ties into the mystery subplot.
@@ -695,7 +695,7 @@ Review:
 
 Look through notes you captured during the week:
 
-1. Open ~notes/notes.org~ or your notes file
+1. Open ~design.org~ and go to the Scratchpad part
 2. Read through new entries
 3. Act on urgent ones:
    - Research needed? Add to research list

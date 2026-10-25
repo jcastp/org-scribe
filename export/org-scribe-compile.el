@@ -241,7 +241,7 @@ after the END marker).  See `org-scribe--compile-link-replacement'.")
 A link into the writer's own notes -- an `id:' link to a character, a
 heading or custom-id link, a `file:' link to a notes file -- means
 nothing to a reader: kept, the txt backend appended \"See file
-../objects/characters.org\" after it, md pointed at a file that does not
+../design.org\" after it, md pointed at a file that does not
 exist, and one whose target had been deleted aborted the whole compile
 with Org's \"Unable to resolve link\".  Such a link becomes its
 description.  Web and mail links are kept too unless

@@ -373,14 +373,14 @@ Put this in your init file:
 
 ** What the Right Panel Shows
 
-By default Editing mode's right pane shows your project notes file. ~org-scribe-editing-right-panel~ changes that:
+By default Editing mode's right pane shows your design notebook. ~org-scribe-editing-right-panel~ changes that:
 
 | Value           | Right panel shows                                         |
 |-----------------+-----------------------------------------------------------|
-| ~notes~ (default) | The project notes file, the same one captures write to    |
+| ~notes~ (default) | The design notebook, the same one captures write to       |
 | ~edits~           | A live index of your inline edit markers, rebuilt on save |
-| ~revision~        | The project's ~revision.org~                                |
-| a string        | A project-relative path, e.g. ~"notes/research.org"~        |
+| ~revision~        | The design notebook (where the Revision part lives)         |
+| a string        | A project-relative path, e.g. ~"plan.org"~                   |
 | a function      | Called with the manuscript file name; returns a file      |
 
 #+BEGIN_SRC emacs-lisp
@@ -388,7 +388,7 @@ By default Editing mode's right pane shows your project notes file. ~org-scribe-
 (setq org-scribe-editing-right-panel 'edits)
 #+END_SRC
 
-If the requested file can't be found, the pane falls back to the notes file rather than opening nothing.
+If the requested file can't be found, the pane falls back to the design notebook rather than opening nothing.
 
 * Customizing Edit Markers
 
@@ -867,14 +867,14 @@ What they need to grow
 Remember the differences:
 
 *Novel templates* (~org-scribe-templates/novel-en/~):
-- 12-13 files
-- Separate objects/ directory
+- 2 files: the manuscript and the design notebook
+- The notebook is organised in parts
 - Complex structure
 
 *Short story templates* (~org-scribe-templates/short-story-en/~):
-- 3 files
+- 2 files: the manuscript and the design notebook
 - Simplified structure
-- Combined notes file
+- The notebook has sections but no parts
 
 Modify the appropriate set for your needs!
 
@@ -960,10 +960,10 @@ Set where new projects are created:
 
 ** File and Directory Name Preferences
 
-Project file and directory names are not configurable. org-scribe
+Project file names are not configurable. org-scribe
 resolves them from the registered language packs (one per language,
 under ~lang/~ in the package's own source) — ~novel.org~ / ~novela.org~
-for the manuscript, ~notes/~ / ~notas/~ for the notes directory, and so
+for the manuscript, ~design.org~ / ~diseno.org~ for the design notebook, and so
 on — and the manuscript concept also drives project type detection, so
 renaming it would leave the project unrecognized. Keep the names the
 template gave you.

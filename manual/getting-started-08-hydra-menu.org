@@ -232,7 +232,7 @@ Let's explore each category in detail.
 
 | Key | Command         | What It Does                                   |
 |-----+-----------------+------------------------------------------------|
-| ~n~   | Capture note    | Quick note into the project notes file         |
+| ~n~   | Capture note    | Quick note into the design notebook          |
 | ~k~   | Capture entity… | Open capture submenu (character, location…)    |
 | ~L~   | Links & upkeep… | Open linking and relationship submenu          |
 | ~R~   | Relink project  | Add IDs, link names, refresh display names     |

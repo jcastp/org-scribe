@@ -52,9 +52,10 @@ This is worth stating plainly, because it's easy to assume a "method" changes
 your whole project:
 
 #+BEGIN_QUOTE
-Choosing La Hélice or La Matriz changes *one file*: ~design.org~
-(~diseno.org~ in Spanish projects). Everything else — ~novel.org~, ~notes/~,
-and every file under ~objects/~ — is identical to a Sistema project's.
+Choosing La Hélice or La Matriz changes *one part of one file*: the Foundations
+part of ~design.org~ (~diseno.org~ in Spanish projects). Everything else —
+~novel.org~ and every other part of the notebook — is identical to a Sistema
+project's.
 #+END_QUOTE
 
 That's not an accident or a simplification for this guide — it follows
@@ -318,11 +319,11 @@ under all three methods.
    and pick a different method than your main project uses.
 2. Open its ~design.org~ (or ~diseno.org~) and compare it side by side with
    your main project's.
-3. Confirm for yourself that ~novel.org~ and everything under ~objects/~ look
-   the same in both — copy one of your own characters' profiles into the new
-   project's ~objects/characters.org~ and see that nothing about it needs to
-   change.
-4. Scroll to the bottom of the new ~design.org~/~diseno.org~ and read its
+3. Confirm for yourself that ~novel.org~ and every part of the notebook except
+   Foundations look the same in both — copy one of your own characters'
+   profiles into the new project's Characters section and see that nothing
+   about it needs to change.
+4. Scroll to the bottom of the new Foundations part and read its
    "Where to look when something's wrong" section — it's a useful reference
    to bookmark once you're actually working through the levels.
 5. Delete the throwaway project once you're done; nothing about it is worth

@@ -595,7 +595,7 @@ as a template artifact present from project creation."
 Novel creation always minted IDs; short-story creation did not, and every
 entity getter skips an ID-less heading — so a fresh short story had no
 characters to set as PoV, and the health report reported \"no orphaned
-characters\" while three placeholders sat in the notes file.  The IDs must
+characters\" while three placeholders sat in the design file.  The IDs must
 also be part of the initial commit, not a dirty working tree."
   (require 'org-scribe-character-links)
   (require 'org-scribe-location-links)
@@ -603,7 +603,7 @@ also be part of the initial commit, not a dirty working tree."
     (test-project--with-temp-base-dir base-dir
       (let* ((title (format "Story %s" language))
              (project-dir (expand-file-name title base-dir))
-             (notes (expand-file-name (org-scribe-lang-file 'notes-short language)
+             (notes (expand-file-name (org-scribe-lang-file 'design language)
                                       project-dir)))
         (org-scribe-create-short-story-project base-dir title language)
         (unwind-protect
@@ -889,7 +889,6 @@ DIR-VAR is bound to the project directory."
     (let ((novel (test-project--read dir "novel.org")))
       (should (equal (test-project--objectives novel) '(12500 3000 500 25000 12500)))
       (should (string-match-p "^- Total word target :: 50,000$" novel)))
-    (should (string-match-p "^:TARGET-WORDCOUNT: 50000$" (test-project--read dir "README.org")))
     (dolist (file (directory-files-recursively dir "\\.org$"))
       (should-not (string-match-p "\\${" (test-project--read file))))))
 
@@ -910,8 +909,6 @@ DIR-VAR is bound to the project directory."
       (let ((story (test-project--read dir "story.org")))
         (should (equal (test-project--objectives story) (cdr case)))
         (should (string-match-p (format "^:TARGET_WORDCOUNT: %d$" (car case)) story)))
-      (should (string-match-p (format "^:TARGET_WORDCOUNT: %d$" (car case))
-                              (test-project--read dir "README.org")))
       (should (= (org-scribe-project-word-target dir) (car case))))))
 
 (ert-deftest test-project-word-target-bad-proportions-leave-nothing-behind ()

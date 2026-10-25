@@ -143,8 +143,8 @@ It is short on purpose. Three properties and four one-line Aspects carry
 almost everything; the prose section is for what you can see, hear and smell
 when you are standing there.
 
-The settings file that ships with a new novel project
-(~objects/locations.org~) uses the same shape, so a setting you capture and a
+The "Setting" section of the design notebook that ships with a new project
+(~design.org~) uses the same shape, so a setting you capture and a
 setting you fill in by hand look identical.
 
 *The important idea*: a setting is not a backdrop. It has a job in the
@@ -194,7 +194,7 @@ the heading — the heading is the *name* of the place.
 
 A short restatement of the setting's Echo (see below), kept in a property so
 it shows up in column view beside the setting's name. The shipped
-~#+COLUMNS:~ line in ~objects/locations.org~ displays exactly three things:
+~#+COLUMNS:~ line on the "Setting" section of ~design.org~ displays exactly three things:
 the name, the ~:Type:~, and this.
 
 *Tip*: keep it to a few words here and write the full version in the ~Echo ::~
@@ -227,8 +227,8 @@ Most of what they held has a better home:
 | ~:Importance:~           | how often you actually link the setting to scenes           |
 | ~:Owner:~                | *Description*, or a character link in the scene that shows it |
 | ~:Accessibility:~      | *Description*, when it constrains a scene                     |
-| ~:Setting:~              | ~objects/worldbuilding.org~, which holds the world as a whole |
-| ~:Climate:~ ~:Population:~ | ~objects/worldbuilding.org~                                   |
+| ~:Setting:~              | the World part of ~design.org~, which holds the world as a whole |
+| ~:Climate:~ ~:Population:~ | the World part of ~design.org~                                |
 
 * Section 2: The Four Aspects
 
@@ -478,13 +478,12 @@ would notice standing in the room. ~Notes~ can stay empty.
 
 When done, press: ~C-c C-c~
 
-This saves the location profile to:
-- **Novel project**: ~objects/locations.org~
-- **Short story project**: ~notes.org~ (under "Setting → Locations")
+This saves the location profile to ~design.org~, under the "Setting" section
+(in the World part for a novel project).
 
 ** Step 6: Verify It Saved
 
-Open your locations file and find your new location entry. It should be a level-1 heading with an ID.
+Open ~design.org~ and find your new location entry. It should be a heading directly under "Setting", with an ID.
 
 * Linking Locations to Scenes
 
@@ -785,7 +784,7 @@ Let's practice location management end-to-end.
 ** Success Criteria
 
 ✓ You captured 2 location profiles with IDs
-✓ Location files (objects/locations.org or notes.org) contain your locations
+✓ The "Setting" section of design.org contains your locations
 ✓ At least 2 scenes have linked locations in their properties
 ✓ You can jump from scene to location profile and back
 ✓ Search finds scenes by location
@@ -906,12 +905,11 @@ Example: The rooftop where the protagonist makes a crucial decision - appears on
 ** "I captured a location but can't find it"
 
 *** Problem
-The location was captured but doesn't appear in the locations file.
+The location was captured but doesn't appear under "Setting" in design.org.
 
 *** Solution
-1. Check the correct file:
-   - Novel: ~objects/locations.org~
-   - Short story: ~notes.org~ (under "Setting → Locations")
+1. Check the correct place: the "Setting" section of ~design.org~
+   (~diseno.org~ in Spanish)
 2. Open the file and search: ~C-s~ then type location name
 3. If not found, the capture might have failed - try again
 
@@ -922,8 +920,8 @@ Pressing F8 F8 l shows empty list.
 
 *** Solution
 1. Ensure you have captured at least one location
-2. Open objects/locations.org or notes.org
-3. Verify locations are level-1 headings with ~:ID:~ properties
+2. Open design.org
+3. Verify locations are headings directly under "Setting", with ~:ID:~ properties
 4. If IDs are missing, run: ~M-x org-scribe-add-location-ids~
 
 ** "Search finds no scenes for a location I know I linked"
@@ -1041,7 +1039,7 @@ For complex settings (entire neighborhoods, buildings with multiple rooms):
   street from")
 - Consider sketching a map (store in Notes as an image link)
 - If the whole geography matters to the book, it belongs in
-  ~objects/worldbuilding.org~ rather than in any one setting's profile
+  the World part of ~design.org~ rather than in any one setting's profile
 
 ** 4. Balance Familiarity and Novelty
 

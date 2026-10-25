@@ -23,7 +23,7 @@ By the end of this lesson, you'll have:
 
 ✓ A project with at least one scene written
 ✓ At least one character in your story
-✓ Your manuscript file and notes/plan files accessible
+✓ Your manuscript and design notebook accessible
 
 ** Quick Check
 
@@ -76,7 +76,7 @@ Before capturing, let's see where characters live.
 
 ** Short Story Projects
 
-Characters go in ~notes.org~ under the "Characters" heading:
+Characters go in ~design.org~ (~diseno.org~ in Spanish) under the "Characters" heading:
 
 #+BEGIN_EXAMPLE
  * Characters
@@ -91,24 +91,28 @@ All characters in one file, organized by role.
 
 ** Novel Projects
 
-Characters get their own file: ~objects/characters.org~
+Characters live in the same design notebook, in its Cast part, under the
+"Characters" section:
 
 #+BEGIN_EXAMPLE
-,* [Character Name]
+,* Cast
+,** Characters
+,*** [Character Name]
   [All details]
 
-,* [Another Character Name]
+,*** [Another Character Name]
   [All details]
 #+END_EXAMPLE
 
-Dedicated file for extensive character database.
+Leave the "Cast" and "Characters" headings as they are: org-scribe finds your
+characters as the headings directly under "Characters".
 
 ** Opening Your Character File
 
 *Quick navigation*:
 1. Press ~F8 F8~ (Hydra menu)
 2. Press ~o~ (Open file)
-3. Select ~characters.org~ or ~notes.org~
+3. Select ~design.org~
 4. Press Enter
 
 Or use ~C-x C-f~ and navigate manually.
@@ -214,7 +218,7 @@ After the last prompt, you'll see a complete character profile template:
 ,** Notes
 #+END_EXAMPLE
 
-(In the shipped ~objects/characters.org~ there is one more section,
+(In the shipped ~design.org~ there is one more section,
 *Interrogation* — five questions covered later in this lesson. The capture
 template leaves it out to keep mid-drafting capture quick; add it by hand if
 you want it.)
@@ -228,8 +232,8 @@ section walks through it.
 ** Step 5: Save and File
 
 The capture is automatically filed to the correct location:
-- *Short story*: ~notes.org~ under "Characters"
-- *Novel*: ~objects/characters.org~ as a top-level heading
+- *Short story*: ~design.org~, under "Characters"
+- *Novel*: ~design.org~, under "Characters" in the Cast part
 
 Press ~C-c C-c~ to finalize the capture (or just save the file).
 
@@ -305,7 +309,7 @@ protagonist's.
 A short form of their Desire's Goal (below), kept here so it shows in column
 view.
 
-Try ~C-c C-x C-c~ in ~objects/characters.org~: the shipped ~#+COLUMNS:~ line
+Try ~C-c C-x C-c~ on the "Characters" heading of ~design.org~: the shipped ~#+COLUMNS:~ line
 displays Character, Role, Stance and Goal side by side. That view — everyone's
 position and everyone's want, on one screen — is the fastest way to see whether
 your cast is actually pulling in different directions.
@@ -379,7 +383,7 @@ profile has better places for them than a one-word field — the *Concept* line,
 or the *Backstory*. Nothing in org-scribe reads the property, so adding it
 back by hand is harmless but does nothing.
 
-(Short story projects are the exception: their consolidated ~notes.org~ still
+(Short story projects are the exception: their ~design.org~ still
 ships a character stub with ~:AGE:~ and ~:GENDER:~. The short story templates
 have not been moved to the method's profile shape.)
 
@@ -561,7 +565,7 @@ dilemma and resolving it according to their Lie.
 
 ** Interrogation
 
-Five questions, one paragraph each. (In the shipped ~characters.org~; add it
+Five questions, one paragraph each. (In the shipped ~design.org~; add it
 by hand to a captured character.)
 
 1. *What would they never do?* — the climax should threaten to force them to it.
@@ -1224,8 +1228,8 @@ The linking system works regardless!
 *Check*:
 1. Are you in a writing project? (look for .writing-project file)
 2. Is project type detected correctly?
-3. For short stories: Does notes.org exist?
-4. For novels: Does objects/ directory exist?
+3. Does design.org (diseno.org in Spanish) exist? If not, capture creates it
+4. Does it have a "Characters" heading? If not, capture adds one
 
 *Solution*: Make sure you're in the project directory when capturing.
 
@@ -1274,7 +1278,7 @@ The linking system works regardless!
 Excellent work! You've completed Lesson 4. You now know:
 
 ✓ Why character profiles matter (consistency, reference, tracking)
-✓ Where characters are stored (notes.org vs objects/characters.org)
+✓ Where characters are stored (the "Characters" section of design.org)
 ✓ How to capture characters (~F8 F8 k h~)
 ✓ All parts of the character profile (causal chain, Desire and Need, Plan,
   Aspects, Change Milestones)

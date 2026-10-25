@@ -246,5 +246,5 @@ glossary without it gets relitigated by whoever touches it next.
   ship with org-scribe. If an English method document is ever exported,
   =:layer:= / =:ref:= is the obvious pair.
 - =Línea principal= / =Main Line= and =Subtrama= / =Subplot= are heading text in
-  the plot file, and read as names rather than classifications; the
+  the design notebook, and read as names rather than classifications; the
   classification lives in =:THREAD-TYPE:=.

@@ -248,8 +248,7 @@ Suitable for CI/CD pipelines and automated testing."
   (ert (concat "^test-capture-"
                "\\|^test-character-\\(?:capture\\|template\\)"
                "\\|^test-location-\\(?:capture\\|template\\)"
-               "\\|^test-object-\\|^test-timeline-\\|^test-plot-thread-template"
-               "\\|^test-create-novel-capture-file\\|^test-create-short-story-notes-file")))
+               "\\|^test-object-\\|^test-timeline-\\|^test-plot-thread-template")))
 
 ;;;###autoload
 (defun org-scribe-run-modes-tests ()

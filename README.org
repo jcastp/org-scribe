@@ -86,21 +86,17 @@ names /are/ localized (=:Trama:= vs =:Plot:=), because you see those every day i
 the property drawer and in column view.
 
 #+BEGIN_QUOTE
-*Breaking change for existing Spanish novel projects.* Previous versions
-named the Spanish entity directory =objects/=, identical to the English one,
-and never translated =objects/worldbuilding.org=. Both are now localized:
-=objetos/= and =objetos/construccion-mundo.org=, matching every other file
-and directory name in a Spanish project. There is no automatic migration —
-run this once, in the project's root, on any Spanish novel project created
-before this release:
-
-#+BEGIN_SRC bash
-git mv objects objetos
-git mv objetos/worldbuilding.org objetos/construccion-mundo.org
-#+END_SRC
-
-New Spanish projects already use =objetos/=. English projects and Spanish
-short-story projects are unaffected.
+*Breaking change for projects in the old layout.* Earlier versions made a
+novel project a manuscript beside an =objects/= (=objetos/=) directory of
+entity files, a =notes/= directory, a README, a revision file, a journal and a
+scratchpad. They are now the /parts/ of one design notebook, =design.org=
+(=diseno.org=). There is no automatic migration. To merge an existing project
+by hand: paste each old file under its part's heading in the notebook
+(Plot, Cast, World, Research, Revision, Journal, Scratchpad), demote the
+entity headings from level 1 to level 3 so each sits directly under its
+section (=Characters=, =Setting=, ...), delete the old files, and run
+=M-x org-id-update-id-locations=. IDs survive the move, so the links in your
+scenes keep working. New projects already use the two-file layout.
 #+END_QUOTE
 
 * Installation
@@ -283,31 +279,27 @@ This creates a complete project structure:
 
 #+begin_example
 MyNovel/
-├── README.org             # Project overview and navigation
 ├── .dir-locals.el         # Spelling dictionary for the whole project
-├── design.org             # ← START HERE: Starting Gate and the Core
-├── novel.org              # Main manuscript with progress tracking
-├── revision.org           # The ten revision passes
-├── writing-journal.org    # Reflective writing journal
-├── objects/               # Planning documents
-│   ├── characters.org     # Character profiles (full profile per role)
-│   ├── plot.org           # The thirteen non-negotiables + narrative lines
-│   ├── locations.org      # Settings, each with Echo and Hazard
-│   ├── worldbuilding.org  # The world and how it presses on the Weakness
-│   ├── timeline.org
-│   └── objects.org
-└── notes/                 # Research and notes
-    ├── notes.org
-    └── research.org
+├── .gitignore
+├── .org-scribe-project    # Project marker file
+├── design.org             # ← START HERE: the design notebook
+└── novel.org              # Main manuscript with progress tracking
 #+end_example
 
-Spanish projects have the same structure with localized file *and directory*
-names (=diseno.org=, =novela.org=, =objetos/personajes.org=, and so on —
-note =objetos/=, not =objects/=).
+Spanish projects have the same structure with localized file names
+(=diseno.org=, =novela.org=).
 
-*Open =design.org= first.* It holds the /Starting Gate/ — the one checklist that
-decides when you stop planning and start writing — and the twelve questions of
-the Core. Everything else is filled in as you need it.
+The design notebook is one file organised in /parts/: Foundations (the Starting
+Gate and the Core), Plot (the thirteen non-negotiables and the narrative lines),
+Cast (character profiles, each with the full profile of its role), World
+(settings with Echo and Hazard, the world, objects, timeline), Research,
+Revision (the ten passes), Journal and Scratchpad. Characters, settings and
+plot threads are headings directly under their section, which is how
+org-scribe finds them; leave the section headings as they are.
+
+*Open =design.org= first.* Its Foundations part holds the /Starting Gate/ — the
+one checklist that decides when you stop planning and start writing — and the
+twelve questions of the Core. Everything else is filled in as you need it.
 
 The project includes:
 - Pre-configured word count tracking
@@ -319,25 +311,23 @@ The project includes:
 
 =M-x org-scribe-create-short-story-project=
 
-This creates a smaller, consolidated project structure:
+This creates a smaller project structure:
 
 #+begin_example
 MyStory/
-├── README.org             # Project overview and navigation
 ├── .gitignore             # Keeps compiled output and build artifacts out of git
 ├── story.org              # Manuscript, with front matter and word-count tracking
-├── notes.org              # Characters, Setting, Plot Threads, Objects, Timeline, and more
-└── scratchpad.org         # A place for chaotic notes; nothing reads it
+└── design.org             # Seed, Characters, Setting, Plot Threads, Objects, Timeline, and more
 #+end_example
 
 Spanish projects have the same structure with localized file names
-(=cuento.org=, =notas.org=, =cuaderno-borradores.org=).
+(=cuento.org=, =diseno.org=).
 
-Unlike a novel project, there is no =objects/= directory: characters, locations
-and plot threads are level-2 headings nested under =* Characters=, =* Setting=
-and =* Plot Threads= in =notes.org= rather than living in their own files.
-Capturing a new character, location, object, or timeline event
-(=F8 F8 k=) files it under the matching section of =notes.org= automatically.
+Characters, locations and plot threads are headings nested under =* Characters=,
+=* Setting= and =* Plot Threads= in =design.org=. Capturing a new character,
+location, object, or timeline event (=F8 F8 k=) files it under the matching
+section of =design.org= automatically. A short story's design notebook has the
+same sections as a novel's but keeps them at the top level, with no parts.
 
 The manuscript's scenes (=** Opening=, =** Middle=, =** Ending= to start —
 add more with =F8 F8 s=) carry the same eighteen-property scene metadata
@@ -397,8 +387,8 @@ above, or one of two others built on the same vocabulary —
 - *La Matriz* ("the Matrix") — start from characters and let the plot get
   deduced from how they collide.
 
-Choosing one only changes =design.org=/=diseno.org=; =novel.org=, =notes/= and every
-file under =objects/= are identical regardless of method, since both new
+Choosing one only changes the Foundations part of =design.org=/=diseno.org=;
+=novel.org= and every other part of the notebook are identical regardless of method, since both new
 methods reuse the Sistema's character profile, its thirteen non-negotiables
 and its four quarters rather than replacing them. The Spanish↔English
 vocabulary for the two methods — /fuerza viva/, /desastre/, /colisión/, and the
@@ -484,7 +474,7 @@ insert one at.
 
 =M-x org-scribe-open-project-file= or =F8 F8 o=
 
-Opens project files with completion (novel.org, objects/characters.org, notes/notes.org, etc.)
+Opens project files with completion (novel.org, design.org, plan.org)
 
 *** Customize Templates
 
@@ -519,9 +509,9 @@ Opens treemacs (file tree) and imenu-list (document outline) for easy navigation
 Three-pane layout:
 - Left: Document outline (imenu-list)
 - Center: Main document
-- Right: The project notes file (=notes/notes.org=), the same file captures write to
+- Right: The design notebook (=design.org=), the same file captures write to
 
-Set =org-scribe-editing-right-panel= to show something else in the right pane: =revision= for the project's =revision.org=, a project-relative path string, or a function receiving the manuscript file name and returning the file to display.
+Set =org-scribe-editing-right-panel= to show something else in the right pane: =revision= for the design notebook (where the Revision part lives), a project-relative path string, or a function receiving the manuscript file name and returning the file to display.
 
 ** Word Counting
 
@@ -612,7 +602,7 @@ When you update the word count table (with =C-c C-c= on the #+BEGIN line), progr
 *** Overview
 
 Scene properties link character names directly to their full profiles in
-=objects/characters.org=. Click a character name in a scene to jump to its
+the design notebook (=design.org=). Click a character name in a scene to jump to its
 detailed profile.
 
 This works *automatically* — you do not opt into or maintain a "linking
@@ -677,13 +667,13 @@ Benefits:
 
 *** Updating Link Display Names
 
-When you rename a character in =objects/characters.org=, the ID links still work (they're ID-based), but the display text shows the old name. Update the display names to match your current database:
+When you rename a character in =design.org=, the ID links still work (they're ID-based), but the display text shows the old name. Update the display names to match your current database:
 
 *Update All Link Names* (=F8 F8 R= or =M-x org-scribe-relink-project=):
 - Refreshes display names for all entity types (characters, locations, plot threads) in one pass
 
 *Example Workflow*:
-1. Rename "Alex Rivera" to "Alexandra Rivera" in =objects/characters.org=
+1. Rename "Alex Rivera" to "Alexandra Rivera" in =design.org=
 2. Press =F8 F8 R= (or =M-x org-scribe-relink-project=)
 3. All scenes updated: =[[id:char-alex-001][Alexandra Rivera]]=
 4. Links still work, now with correct names!
@@ -805,7 +795,7 @@ Track your main plot and subplots across your novel using ID-based links. The pl
 
 For existing projects:
 1. =M-x org-scribe-setup-plot-thread-links= or press =F8 F8 L p=
-2. Adds unique IDs to all plot threads in =objects/plot.org=
+2. Adds unique IDs to all plot threads in =design.org=
 3. Optionally converts existing scenes to use links
 
 For new plot threads:
@@ -930,7 +920,7 @@ After:
 #+end_example
 
 Benefits:
-- Click to navigate to plot thread details in =objects/plot.org=
+- Click to navigate to plot thread details in =design.org=
 - Links survive plot thread renames
 - Timeline and health reports automatically track all scenes
 - Identify plot issues before they become problems
@@ -948,7 +938,7 @@ Setup, analysis, and display options are in the Links & upkeep submenu (=F8 F8 L
 - =t= - Health report
 - =S= - Statistics
 
-Note: To update plot thread display names after renaming threads in =objects/plot.org=, use =F8 F8 R= (or =F8 F8 L R=, or =M-x org-scribe-relink-project=).
+Note: To update plot thread display names after renaming threads in =design.org=, use =F8 F8 R= (or =F8 F8 L R=, or =M-x org-scribe-relink-project=).
 
 *** Best Practices
 
@@ -1398,9 +1388,10 @@ The package provides specialized capture templates for different types of conten
 - =org-scribe-capture-timeline= (F8 F8 t) - Capture timeline events for chronology tracking
 - =org-scribe-capture-plot-thread= (F8 F8 g) - Capture plot threads as they emerge during writing
 
-These functions automatically route captures to the appropriate file based on project type:
-- **Novel projects**: Separate files in =objects/= directory (e.g., =objects/characters.org=, =objects/plot.org=)
-- **Short story projects**: Consolidated =notes.org= file with appropriate sections
+These functions file every capture into the design notebook, under the section
+for that kind of entity (=Characters=, =Setting=, =Plot Threads=, ...). If a
+section is missing it is created, in the project's language, in the right
+part. General notes (=F8 F8 w=) go under the Scratchpad part.
 
 Template content — headlines, prompts, and section headings — is generated in
 whichever language the *project* is in (its own =# Language:= marker, not
@@ -1411,16 +1402,16 @@ All captured items automatically receive unique IDs for use with the linking sys
 
 ** The Scratchpad
 
-Every project ships a =scratchpad.org= (=cuaderno-borradores.org= in Spanish
-projects) at its root. Open it from anywhere in the project with =F8 F8 o=.
+Every project's design notebook ends with a Scratchpad part (=Borradores= in
+Spanish projects). Open the notebook from anywhere in the project with
+=F8 F8 o=.
 
 *** What it is for
 
-It is the one file in the project that asks nothing of you. Every other file is
-read by something — the manuscript by the word count and the compiler,
-=objects/= by the entity resolvers, and in a short story project =notes.org= by
-capture and linking both — so there was nowhere to put a thought that is not yet
-any of those things.
+It is the one part of the notebook that asks nothing of you. Every other part is
+read by something — the manuscript by the word count and the compiler, the
+entity sections by the linking system — so there was nowhere to put a thought
+that is not yet any of those things.
 
 Write drafts, fragments of dialogue with no scene to live in, "what if"
 questions, arguments with yourself. Sketch a character who may not exist. Draft
@@ -1434,18 +1425,16 @@ This is the point, not an oversight:
   =WORDCOUNT= properties, your progress tables, or the planner's ledger.
 - =org-scribe-compile= reads the manuscript only, so nothing here can leak into
   an export.
-- The entity resolvers work from fixed file names, so a character sketched here
-  is invisible to the linking system until you move it somewhere real.
+- The entity resolvers look only at the headings directly under the entity
+  sections, so a character sketched here is invisible to the linking system
+  until you move it into the Cast part.
 
 *** Refiling out of it
 
 Refile what survives with =C-c C-w=, which inside an org-scribe project offers
-every heading in every file — so a scene drafted here goes straight into a
-chapter, a character sketch into =objects/characters.org=. Delete the rest
+every heading in the manuscript and the notebook — so a scene drafted here goes
+straight into a chapter, a character sketch under =Characters=. Delete the rest
 without ceremony.
-
-The scratchpad is a refile /source/ only. Nothing can be refiled /into/ it, and
-it does not clutter your refile completion list.
 
 *** Branching a question
 
@@ -1476,7 +1465,7 @@ obvious Need and it is boring.
    it in two months.
 #+END_EXAMPLE
 
-The file declares four states, cycled with =C-c C-t=:
+The notebook declares four states, cycled with =C-c C-t=:
 
 | State       | Meaning                             |
 |-------------+-------------------------------------|
@@ -1488,7 +1477,7 @@ The file declares four states, cycled with =C-c C-t=:
 Three things about this are deliberate:
 
 - *These four keywords never appear in your TODO search.* They are declared
-  file-locally and are outside =org-scribe-todo-keywords=, so =F8 F8 5= keeps
+  in the notebook's header and are outside =org-scribe-todo-keywords=, so =F8 F8 5= keeps
   showing real work rather than filling up with your musings. Speculation is not
   work in progress.
 - *=CHOSEN= and =REJECTED= are done states*, so a settled question folds away
@@ -1636,25 +1625,11 @@ while keeping their prose — see [[file:manual/getting-started-11-exporting.org
 #+begin_example
 project-root/
 ├── .org-scribe-project    # Project marker file
-├── README.org            # Project overview
-├── design.org            # The Starting Gate and the Core (or diseno.org for Spanish)
-├── novel.org             # Main manuscript with progress tracking (or novela.org for Spanish)
-├── scratchpad.org        # Unstructured drafts and ideas (or cuaderno-borradores.org for Spanish)
-├── revision.org          # Revision tracking
-├── writing-journal.org   # Reflective writing journal (or diario-escritura.org for Spanish)
-├── objects/                 # Planning documents (or objetos/ for Spanish)
-│   ├── characters.org    # Character profiles (personajes.org)
-│   ├── locations.org     # World building (localizaciones.org)
-│   ├── plot.org         # Story structure (trama.org)
-│   ├── timeline.org     # Chronology (cronologia.org)
-│   ├── worldbuilding.org # World as a whole (construccion-mundo.org)
-│   └── objects.org      # Important items (objetos.org)
-└── notes/               # Notes and research (or notas/ for Spanish)
-    ├── notes.org        # General notes (notas.org)
-    └── research.org     # Research tracking (investigacion.org)
+├── design.org            # The design notebook (or diseno.org for Spanish)
+└── novel.org             # Main manuscript with progress tracking (or novela.org for Spanish)
 #+end_example
 
-Every one of those file and directory names — for every language, not only
+Every one of those file names — for every language, not only
 English and Spanish — comes from a registered *language pack* (=lang/=), not
 a hardcoded list; see =CLAUDE.md='s "Language Packs" section for the
 mechanism and how to add another language.

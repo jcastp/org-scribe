@@ -38,6 +38,12 @@ SPEC is (ROOT-VAR TITLE KIND LANGUAGE), KIND being `novel' or `short'."
                (if (eq ,(nth 2 spec) 'novel)
                    (org-scribe-create-novel-project ,base ,(nth 1 spec) ,(nth 3 spec))
                  (org-scribe-create-short-story-project ,base ,(nth 1 spec) ,(nth 3 spec))))
+             ;; Creation leaves the manuscript open; tests write files directly.
+             (dolist (buf (buffer-list))
+               (when-let* ((file (buffer-file-name buf)))
+                 (when (string-prefix-p ,base file)
+                   (with-current-buffer buf (set-buffer-modified-p nil))
+                   (kill-buffer buf))))
              (let ((default-directory (file-name-as-directory ,(nth 0 spec))))
                ,@body))
          (dolist (buf (buffer-list))
@@ -162,21 +168,21 @@ SPEC is (ROOT-VAR TITLE KIND LANGUAGE), KIND being `novel' or `short'."
 
 (ert-deftest test-title-set-prefix-collision-is-left-alone ()
   (test-title--with-project (root "Dune" 'novel 'en)
-    (let ((file (expand-file-name "notes/notes.org" root)))
-      (with-temp-file file (insert "#+TITLE: Dunes - Notes\n"))
+    (let ((file (expand-file-name "design.org" root)))
+      (with-temp-file file (insert "#+TITLE: Dunes - Design\n"))
       (test-title--set "Arrakis")
-      (should (equal (org-scribe--file-title-keyword file) "Dunes - Notes")))))
+      (should (equal (org-scribe--file-title-keyword file) "Dunes - Design")))))
 
 (ert-deftest test-title-set-hand-edited-title-is-left-alone-and-reported ()
   (test-title--with-project (root "Old Name" 'novel 'en)
-    (let ((file (expand-file-name "notes/notes.org" root))
+    (let ((file (expand-file-name "design.org" root))
           (messages nil))
       (with-temp-file file (insert "#+TITLE: My own heading\n"))
       (cl-letf (((symbol-function 'message)
                  (lambda (fmt &rest args) (push (apply #'format fmt args) messages))))
         (org-scribe-set-title "New Name" t))
       (should (equal (org-scribe--file-title-keyword file) "My own heading"))
-      (should (seq-some (lambda (m) (string-match-p "notes/notes.org" m)) messages)))))
+      (should (seq-some (lambda (m) (string-match-p "design.org" m)) messages)))))
 
 (ert-deftest test-title-set-handles-regexp-characters-and-apostrophes ()
   (test-title--with-project (root "Old (v.2)" 'novel 'en)
@@ -191,7 +197,7 @@ SPEC is (ROOT-VAR TITLE KIND LANGUAGE), KIND being `novel' or `short'."
 
 (ert-deftest test-title-set-unsaved-buffer-stays-modified ()
   (test-title--with-project (root "Old Name" 'novel 'en)
-    (let* ((file (expand-file-name "README.org" root))
+    (let* ((file (expand-file-name "design.org" root))
            (buffer (find-file-noselect file)))
       (with-current-buffer buffer
         (goto-char (point-max))
@@ -199,8 +205,8 @@ SPEC is (ROOT-VAR TITLE KIND LANGUAGE), KIND being `novel' or `short'."
       (test-title--set "New Name")
       (with-current-buffer buffer
         (should (buffer-modified-p))
-        (should (equal (org-scribe--buffer-title-keyword) "New Name - Project Overview")))
-      (should (equal (org-scribe--file-title-keyword file) "New Name - Project Overview"))
+        (should (equal (org-scribe--buffer-title-keyword) "New Name - Design")))
+      (should (equal (org-scribe--file-title-keyword file) "New Name - Design"))
       (should-not (string-match-p "New Name" (let ((s (with-temp-buffer
                                                          (insert-file-contents file)
                                                          (buffer-string))))

@@ -37,25 +37,25 @@ This package organizes features into the following categories:
 
 ** Novel Project Creation (~org-scribe-create-novel-project~)
 
-Creates a complete novel project structure from customizable templates. This function sets up a comprehensive 12-13 file project including the main manuscript (novel.org), statistics tracking, revision notes, and separate planning files for characters, locations, plot, timeline, and objects. The project is automatically initialized as a git repository with an initial commit, and all templates support variable substitution for title, author, and date. The structure supports both English and Spanish workflows.
+Creates a complete novel project structure from customizable templates. This function sets up a two-file project: the main manuscript (novel.org, with statistics tracking) and a design notebook (design.org) organised in parts for the Foundations, plot, cast, world, research, revision, journal and a scratchpad. The project is automatically initialized as a git repository with an initial commit, and all templates support variable substitution for title, author, and date. The structure supports both English and Spanish workflows.
 
 *Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~templates/org-scribe-project.el~
 
 ** Plotting Method Selection (~org-scribe-project-method~)
 
-Novel project creation also prompts for which plotting method to deploy: the Sistema unificado (the default, and the one every other lesson assumes), La Hélice ("start from a premise"), or La Matriz ("start from characters"). All three are built on the same underlying vocabulary — the causal chain, the thirteen non-negotiables, the four quarters — so the choice only changes ~design.org~/~diseno.org~; the manuscript, notes and every file under ~objects/~ are identical regardless of method. The choice is recorded as a ~# Method:~ line in ~.org-scribe-project~ and read via ~org-scribe-project-method~, which — like the per-project language — resolves to the Sistema for any project with no such line, so nothing created before this feature existed changes behavior. See [[file:getting-started-18-plotting-methods.org][Lesson 18]] for a full walkthrough of each method's five levels, and ~docs/glossary.org~ for the Spanish↔English vocabulary specific to the two new methods.
+Novel project creation also prompts for which plotting method to deploy: the Sistema unificado (the default, and the one every other lesson assumes), La Hélice ("start from a premise"), or La Matriz ("start from characters"). All three are built on the same underlying vocabulary — the causal chain, the thirteen non-negotiables, the four quarters — so the choice only changes the Foundations part of ~design.org~/~diseno.org~; the manuscript and every other part of the notebook are identical regardless of method. The choice is recorded as a ~# Method:~ line in ~.org-scribe-project~ and read via ~org-scribe-project-method~, which — like the per-project language — resolves to the Sistema for any project with no such line, so nothing created before this feature existed changes behavior. See [[file:getting-started-18-plotting-methods.org][Lesson 18]] for a full walkthrough of each method's five levels, and ~docs/glossary.org~ for the Spanish↔English vocabulary specific to the two new methods.
 
 *Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~core/org-scribe-core.el~, ~templates/org-scribe-project.el~
 
 ** Short Story Project Creation (~org-scribe-create-short-story-project~)
 
-Creates a minimal short story project structure optimized for shorter works (1,000-20,000 words). Unlike novel projects, short story projects have no ~objects/~ directory: they ship README.org, .gitignore, story.org (or cuento.org for Spanish), a consolidated notes.org file that combines character sketches, plot outline, and research, and a scratchpad.org file for chaotic notes. Word counting is integrated directly into the story file rather than maintained separately. The manuscript's scenes carry the same scene-metadata property drawer, the same ~:ignore:~ tag, and the same TODO keyword vocabulary a novel's scenes do, so word counting, linking, search, and the health report treat a short story exactly like a novel — only the plotting method itself (Sistema/Hélice/Matriz) has not been adapted to short-story scale. This streamlined structure reduces overhead for quick projects while maintaining essential planning features.
+Creates a minimal short story project structure optimized for shorter works (1,000-20,000 words). Like novel projects, short story projects are two files: story.org (or cuento.org for Spanish) and a design notebook, design.org (diseno.org), whose sections combine character sketches, plot outline, research and a scratchpad for chaotic notes (plus .gitignore). Word counting is integrated directly into the story file rather than maintained separately. The manuscript's scenes carry the same scene-metadata property drawer, the same ~:ignore:~ tag, and the same TODO keyword vocabulary a novel's scenes do, so word counting, linking, search, and the health report treat a short story exactly like a novel — only the plotting method itself (Sistema/Hélice/Matriz) has not been adapted to short-story scale. This streamlined structure reduces overhead for quick projects while maintaining essential planning features.
 
 *Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~templates/org-scribe-project.el~
 
 ** Project Type Detection (~org-scribe-project-type~)
 
-Automatically detects whether a project is a novel, short story, or unknown type by examining the directory structure and marker files. Detection checks for the .org-scribe-project marker file first, then looks for characteristic indicators: the presence of an entity directory (~objects/~ in an English project, ~objetos/~ in a Spanish one) suggests a novel, while a short-story manuscript (~story.org~/~cuento.org~) indicates a short story — every registered language's own spelling is checked, not just English's. This detection is cached per project root for performance and enables other features (like capture functions) to adapt their behavior based on project type.
+Automatically detects whether a project is a novel, short story, or unknown type by examining the directory structure and marker files. Detection checks for the .org-scribe-project marker file first, then looks for the manuscript: a short-story manuscript (~story.org~/~cuento.org~) indicates a short story, a novel manuscript (~novel.org~/~novela.org~) a novel — every registered language's own spelling is checked, not just English's. This detection is cached per project root for performance and enables other features (like capture functions) to adapt their behavior based on project type.
 
 *Status*: Fully implemented | *Hydra*: N/A (internal function) | *Module*: ~core/org-scribe-core.el~
 
@@ -65,15 +65,15 @@ Provides quick navigation to any file in the current writing project using compl
 
 *Status*: Fully implemented | *Hydra*: ~o~ (Insert section) | *Module*: ~templates/org-scribe-project.el~
 
-** Project Scratchpad (~scratchpad.org~)
+** Project Scratchpad (the last part of ~design.org~)
 
-An unstructured file shipped at the root of every project (~cuaderno-borradores.org~ in Spanish projects) for drafts, fragments, "what if" questions and ideas that have nowhere to live yet. It is the only file in a project that is read by nothing: the word count walks the manuscript, compilation reads the manuscript, and the entity resolvers work from fixed file names, so a character sketched here stays invisible to the linking system until it is moved somewhere real. It is a refile /source/ only — ~C-c C-w~ out of it reaches every heading in every project file, while nothing can be refiled into it. The file also ships a convention for *branching a question*: a heading tagged ~:branch:~ with one child heading per answer, each carrying a file-local state (~OPEN~, ~EXPLORING~, ~CHOSEN~, ~REJECTED~) cycled with ~C-c C-t~, and the outcomes of an answer nested as its children. Those four keywords sit outside ~org-scribe-todo-keywords~ on purpose, so open questions never appear in the project TODO search. An optional ~:ABOUT:~ property carries an ID link to the character or plot thread the question concerns.
+An unstructured part of the design notebook, shipped in every project (~Borradores~ in Spanish projects) for drafts, fragments, "what if" questions and ideas that have nowhere to live yet. It is the only part of a project that is read by nothing: the word count walks the manuscript, compilation reads the manuscript, and the entity resolvers look only under the entity sections, so a character sketched here stays invisible to the linking system until it is moved somewhere real. ~C-c C-w~ out of it reaches every heading in the manuscript and the notebook. The part also ships a convention for *branching a question*: a heading tagged ~:branch:~ with one child heading per answer, each carrying one of the notebook's states (~OPEN~, ~EXPLORING~, ~CHOSEN~, ~REJECTED~) cycled with ~C-c C-t~, and the outcomes of an answer nested as its children. Those four keywords sit outside ~org-scribe-todo-keywords~ on purpose, so open questions never appear in the project TODO search. An optional ~:ABOUT:~ property carries an ID link to the character or plot thread the question concerns.
 
-*Status*: Fully implemented | *Hydra*: ~o~ (Insert section, via project file navigation) | *Module*: ~org-scribe-templates/*/~ (template only — no code)
+*Status*: Fully implemented | *Hydra*: ~o~ (Insert section, via project file navigation) | *Module*: ~org-scribe-templates/*/~ (template only — no code), plus the note capture in ~capture/org-scribe-capture.el~
 
 ** Template Language Selection (~org-scribe-template-language~)
 
-Controls which language templates are used when creating new projects. Set to ~'en~ for English templates (novel.org, notes/, characters.org) or ~'es~ for Spanish templates (novela.org, notas/, personajes.org). This affects both novel and short story project creation. Template directories are structured as org-scribe-templates/novel-en/, novel-es/, short-story-en/, and short-story-es/, allowing complete bilingual support throughout the package.
+Controls which language templates are used when creating new projects. Set to ~'en~ for English templates (novel.org, design.org) or ~'es~ for Spanish templates (novela.org, diseno.org). This affects both novel and short story project creation. Template directories are structured as org-scribe-templates/novel-en/, novel-es/, short-story-en/, and short-story-es/, allowing complete bilingual support throughout the package.
 
 *Status*: Fully implemented | *Hydra*: N/A (configuration) | *Module*: ~templates/org-scribe-project.el~
 
@@ -160,49 +160,49 @@ The package uses two standard properties for word count management: ~:WORDCOUNT:
 
 ** Project-Aware Note Capture (~org-scribe-capture-to-file~)
 
-Captures quick notes to the appropriate notes file for the current project type. For novel projects, notes go to notes/notes.org under a "Notes" heading. For short story projects, notes go to the consolidated notes.org file under its "Notes" heading. The capture template includes a timestamp and supports initial content from the region. Files are auto-created if missing with proper structure. This provides a quick way to capture ideas without leaving the writing flow.
+Captures quick notes into the design notebook. Notes go under the Scratchpad part as plain headings (no TODO keyword, no ID). The capture template includes a timestamp and supports initial content from the region. Files are auto-created if missing with proper structure. This provides a quick way to capture ideas without leaving the writing flow.
 
 *Status*: Fully implemented | *Hydra*: ~n~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
 
 ** Character Profile Capture (~org-scribe-capture-character~)
 
-Opens a comprehensive character capture template that prompts for all essential character information: name, role (protagonist/antagonist/supporting/minor), age, gender, occupation, and first appearance chapter. The template includes structured sections for physical description, personality traits, background, goals/motivation/conflict (both internal and external), character arc, and relationships. Characters are automatically assigned unique IDs via ~%(org-id-new)~ for the linking system. Captures go to objects/characters.org (novels) or notes.org under "Characters" (short stories).
+Opens a comprehensive character capture template that prompts for all essential character information: name, role (protagonist/antagonist/supporting/minor), age, gender, occupation, and first appearance chapter. The template includes structured sections for physical description, personality traits, background, goals/motivation/conflict (both internal and external), character arc, and relationships. Characters are automatically assigned unique IDs via ~%(org-id-new)~ for the linking system. Captures go to design.org, under its "Characters" section.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8 k h~ (Manage → Capture entity submenu) | *Module*: ~capture/org-scribe-capture.el~
 
 ** Location Profile Capture (~org-scribe-capture-location~)
 
-Captures detailed location profiles with prompts for name, type (city/building/room/natural/region/country), importance (major/supporting/minor), first appearance, climate, and population. The template includes sections for general description, geography, cultural aspects & society, history, notable features, plot importance, specific places, atmosphere & mood, and map references. Locations receive automatic unique IDs for the linking system. Captures go to objects/locations.org (novels) or notes.org under "Setting" (short stories) — a level-2 heading alongside the section's own placeholder entries, not nested a level deeper under them.
+Captures detailed location profiles with prompts for name, type (city/building/room/natural/region/country), importance (major/supporting/minor), first appearance, climate, and population. The template includes sections for general description, geography, cultural aspects & society, history, notable features, plot importance, specific places, atmosphere & mood, and map references. Locations receive automatic unique IDs for the linking system. Captures go to design.org, under its "Setting" section — a sibling of the section's own placeholder entries, not nested under them.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8 k l~ (Manage → Capture entity submenu) | *Module*: ~capture/org-scribe-capture.el~
 
 ** Object Profile Capture (~org-scribe-capture-object~)
 
-Captures important objects with prompts for name, type (magical/artifact/weapon/tool/symbolic/technology), owner, first appearance, and status (active/lost/destroyed/hidden). The template structures sections for physical description, origin, properties, plot importance, object history, symbolism, current location, and rules & limitations. Objects get unique IDs automatically. Particularly useful for tracking magical items, MacGuffins, symbolic objects, or important props. Captures go to objects/objects.org (novels) or notes.org under "Objects" (short stories).
+Captures important objects with prompts for name, type (magical/artifact/weapon/tool/symbolic/technology), owner, first appearance, and status (active/lost/destroyed/hidden). The template structures sections for physical description, origin, properties, plot importance, object history, symbolism, current location, and rules & limitations. Objects get unique IDs automatically. Particularly useful for tracking magical items, MacGuffins, symbolic objects, or important props. Captures go to design.org, under its "Objects" section.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8 k b~ (Manage → Capture entity submenu, "oBject") | *Module*: ~capture/org-scribe-capture.el~
 
 ** Timeline Event Capture (~org-scribe-capture-timeline~)
 
-Captures story timeline events with prompts for event name, type (action/revelation/character/world/backstory), relevance level, date/time in story, duration, characters involved, location, and chapter. The template includes sections for description, consequences, and connections to other events. Events receive automatic unique IDs. This is essential for tracking complex timelines, multiple plot threads, or stories with non-linear narratives. Captures go to objects/timeline.org (novels) or notes.org under "Timeline" (short stories).
+Captures story timeline events with prompts for event name, type (action/revelation/character/world/backstory), relevance level, date/time in story, duration, characters involved, location, and chapter. The template includes sections for description, consequences, and connections to other events. Events receive automatic unique IDs. This is essential for tracking complex timelines, multiple plot threads, or stories with non-linear narratives. Captures go to design.org, under its "Timeline" section.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8 k t~ (Manage → Capture entity submenu) | *Module*: ~capture/org-scribe-capture.el~
 
 ** Plot Thread Profile Capture (~org-scribe-capture-plot-thread~)
 
-Captures plot thread profiles with prompts for name and type (Main Plot, Subplot, Arc, Theme, or Motif). The template includes sections for description, connection to the main plot, key scenes where the thread appears, and resolution notes. Plot threads receive automatic unique IDs for the linking system. This capture is intentionally minimal - designed to quickly record a new thread when you notice it emerging during writing, with the intention to elaborate during planning sessions. Captures go to objects/plot.org (novels) or notes.org under "Plot Threads" (short stories) — a section distinct from "Plot Outline," which holds the Premise/Setup/Central Conflict/Resolution prose, not captured threads.
+Captures plot thread profiles with prompts for name and type (Main Plot, Subplot, Arc, Theme, or Motif). The template includes sections for description, connection to the main plot, key scenes where the thread appears, and resolution notes. Plot threads receive automatic unique IDs for the linking system. This capture is intentionally minimal - designed to quickly record a new thread when you notice it emerging during writing, with the intention to elaborate during planning sessions. Captures go to design.org, under its "Plot Threads" section — distinct from "Plot Outline," which holds the Premise/Setup/Central Conflict/Resolution prose, not captured threads.
 
 *Status*: Fully implemented | *Hydra*: ~F8 F8 k g~ (Manage → Capture entity submenu) | *Module*: ~capture/org-scribe-capture.el~
 
 ** Auto-Creation of Target Files
 
-All capture functions automatically create their target files if they don't exist. For novel projects, separate objects/ files are created with appropriate structure. For short story projects, a comprehensive notes.org file is created with all necessary headings (Characters, Plot Outline, Setting → Locations, Objects, Timeline, Research, Revision Notes, Random Ideas). This ensures capture works even in brand new or minimal projects, reducing friction for writers who prefer to build structure as they write.
+All capture functions automatically create the design notebook if it doesn't exist, and create the target section (in the project's language, inside its part for a novel) if the notebook lacks it. A notebook created this way holds only the section headings. This ensures capture works even in brand new or minimal projects, reducing friction for writers who prefer to build structure as they write.
 
 *Status*: Fully implemented | *Hydra*: N/A (automatic) | *Module*: ~capture/org-scribe-capture.el~
 
 ** Bilingual Capture Support
 
-Capture functions automatically detect and work with both English and Spanish project structures. File and directory names both adapt: ~objects/characters.org~ becomes ~objetos/personajes.org~, and likewise for locations, plot, timeline and objects — the Spanish set uses ~objetos/~, not ~objects/~, throughout. The template *content* itself — headlines, ~%^{...}~ prompts, and section headings — is also fully localized: it follows ~org-scribe-project-language~, which reads the project's own ~# Language:~ marker in ~.org-scribe-project~ (falling back to ~org-scribe-template-language~ only when the project predates that marker). This allows Spanish-language writers to work entirely in their native language while using all package features, regardless of the global ~org-scribe-message-language~ UI setting.
+Capture functions automatically detect and work with both English and Spanish project structures. File names and section headings both adapt: ~design.org~ becomes ~diseno.org~, and the Characters section becomes Personajes. The template *content* itself — headlines, ~%^{...}~ prompts, and section headings — is also fully localized: it follows ~org-scribe-project-language~, which reads the project's own ~# Language:~ marker in ~.org-scribe-project~ (falling back to ~org-scribe-template-language~ only when the project predates that marker). This allows Spanish-language writers to work entirely in their native language while using all package features, regardless of the global ~org-scribe-message-language~ UI setting.
 
 *Status*: Fully implemented | *Hydra*: N/A (automatic) | *Module*: ~capture/org-scribe-capture.el~
 
@@ -245,13 +245,13 @@ Provides the same ID-based linking infrastructure for locations as exists for ch
 
 ** Set Scene Locations (~org-scribe-set-scene-locations~)
 
-Scans objects/locations.org (or notes.org for short stories) for all location entries with ~:Type:~ properties and IDs, presents them in a multi-select completion menu, and inserts comma-separated ID links in the ~:Location:~ property. Locations can include cities, buildings, rooms, natural settings, regions, or countries. Multiple locations per scene are supported (useful for travel scenes or scenes that span locations). The menu shows location names extracted from heading text or ~:NAME:~ properties.
+Scans design.org for all location entries with ~:Type:~ properties and IDs, presents them in a multi-select completion menu, and inserts comma-separated ID links in the ~:Location:~ property. Locations can include cities, buildings, rooms, natural settings, regions, or countries. Multiple locations per scene are supported (useful for travel scenes or scenes that span locations). The menu shows location names extracted from heading text or ~:NAME:~ properties.
 
 *Status*: Fully implemented | *Hydra*: ~l~ (Tag Scene section, "set locations") | *Module*: ~linking/org-scribe-location-links.el~
 
 ** Plot Thread ID-Based Linking
 
-Provides ID-based linking for plot threads, enabling tracking of which plot lines appear in which scenes. Plot thread profiles in objects/plot.org receive automatic IDs. The ~org-scribe-set-scene-plot-threads~ function presents a multi-select menu of all plot threads and inserts ID links into the scene's ~:Plot:~ property. This enables generating plot thread timelines (showing which scenes advance which plots), analyzing plot distribution, and identifying gaps in plot coverage.
+Provides ID-based linking for plot threads, enabling tracking of which plot lines appear in which scenes. Plot thread profiles in design.org receive automatic IDs. The ~org-scribe-set-scene-plot-threads~ function presents a multi-select menu of all plot threads and inserts ID links into the scene's ~:Plot:~ property. This enables generating plot thread timelines (showing which scenes advance which plots), analyzing plot distribution, and identifying gaps in plot coverage.
 
 *Status*: Fully implemented | *Hydra*: ~g~ (Tag Scene section) plus ~F8 F8 L p~ for one-time setup | *Module*: ~linking/org-scribe-plot-links.el~
 
@@ -773,7 +773,7 @@ Names the hunspell dictionary used to reduce inflected words to their dictionary
 
 ** Automatic Directory Creation
 
-~org-scribe-create-dirs-automatically~ (default: t) controls whether the package automatically creates directories (like objects/, notes/, research/) when they're needed by capture functions or searches. When nil, functions will error if directories don't exist, giving writers full control over project structure. When t (default), convenience is prioritized - directories are created as needed.
+~org-scribe-create-dirs-automatically~ (default: t) controls whether the package automatically creates directories when they're needed by capture functions or searches. When nil, functions will error if directories don't exist, giving writers full control over project structure. When t (default), convenience is prioritized - directories are created as needed.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
@@ -809,7 +809,7 @@ Whether the edit index lists categories that currently have no markers (default:
 
 ** Editing Mode Right Panel (~org-scribe-editing-right-panel~)
 
-Selects what ~org-scribe-editing-mode~ displays in its right pane. ~notes~ (the default) shows the project notes file, the same file captures write to. ~edits~ shows a live index of inline edit markers that rebuilds itself whenever an Org file in the project is saved - the only value that is a generated buffer rather than a file. ~revision~ shows the project's ~revision.org~. A string is treated as a project-relative file path; a function is called with the manuscript file name and must return the file to display. If a requested file cannot be located, the pane falls back to the project notes file rather than opening nothing. Before org-remark support was removed, this pane always showed a per-manuscript companion file (~novel.org~ → ~novel-notes.org~) that existed only as an annotation sink.
+Selects what ~org-scribe-editing-mode~ displays in its right pane. ~notes~ (the default) shows the design notebook, the same file captures write to. ~edits~ shows a live index of inline edit markers that rebuilds itself whenever an Org file in the project is saved - the only value that is a generated buffer rather than a file. ~revision~ shows the design notebook (where the Revision part lives). A string is treated as a project-relative file path; a function is called with the manuscript file name and must return the file to display. If a requested file cannot be located, the pane falls back to the design notebook rather than opening nothing. Before org-remark support was removed, this pane always showed a per-manuscript companion file (~novel.org~ → ~novel-notes.org~) that existed only as an annotation sink.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 

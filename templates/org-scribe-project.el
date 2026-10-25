@@ -883,7 +883,7 @@ loaded just to ask."
 Records TOTAL in the project marker file, rewrites the outermost
 WORD-OBJECTIVE headings (a novel's acts, a short story's scenes), the
 Project Goals total line, and any target word count property in the
-manuscript or the README.  Chapter and scene objectives, IDs and the
+manuscript.  Chapter and scene objectives, IDs and the
 writing plan are never touched.
 
 SPLIT is `keep' (the current proportions) or `reset' (the proportions
@@ -923,7 +923,7 @@ is left modified rather than saved."
             (user-error "%s" (org-scribe-msg 'word-target-cancelled)))
           (org-scribe--set-project-word-target root total)
           (let ((goal-lines 0) (properties 0))
-            ;; The manuscript: objectives, goals line and properties, one save
+            ;; objectives, goals line and properties, one save
             (when (and file (file-exists-p file))
               (let ((buffer (find-file-noselect file)))
                 (with-current-buffer buffer
@@ -935,16 +935,6 @@ is left modified rather than saved."
                     (cl-incf goal-lines (org-scribe--update-total-goal-line total))
                     (cl-incf properties (org-scribe--update-total-properties total))
                     (org-scribe--save-unless-modified-before buffer was-modified)))))
-            ;; The README, only where the property already exists
-            (let ((readme (expand-file-name "README.org" root)))
-              (when (file-exists-p readme)
-                (let ((buffer (find-file-noselect readme)))
-                  (with-current-buffer buffer
-                    (let ((was-modified (buffer-modified-p))
-                          (count (org-scribe--update-total-properties total)))
-                      (cl-incf properties count)
-                      (when (> count 0)
-                        (org-scribe--save-unless-modified-before buffer was-modified)))))))
             (message "%s" (org-scribe-msg 'word-target-applied
                                            (org-scribe--format-word-count total)
                                            (length markers) goal-lines properties))

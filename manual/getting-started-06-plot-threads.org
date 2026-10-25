@@ -57,8 +57,8 @@ Plot thread profiles help you:
 
 * The Thirteen Non-Negotiables
 
-Before anything about threads, there is a second thing in ~objects/plot.org~,
-and it comes first in the file for a reason.
+Before anything about threads, there is a second thing in the Plot part of
+~design.org~, and it comes first for a reason.
 
 ** What They Are
 
@@ -105,7 +105,7 @@ the first quarter.
 For each: what it is, what to write, the question to ask yourself, and where
 it usually lands (as a percentage of the story). The percentages are
 guidance, not rules; the quarters themselves are in the "Quarters" section of
-~plot.org~.
+the Plot part of ~design.org~.
 
 *** First quarter: Setup (0–25 %)
 
@@ -209,7 +209,7 @@ guidance, not rules; the quarters themselves are in the "Quarters" section of
 
 ** Plot Points and Optional Points
 
-Below the thirteen, ~plot.org~ has an "Optional points used" section for the
+Below the thirteen, the Plot part has an "Optional points used" section for the
 ones that are per-story (opening image, allies, tightening noose, final
 image…). Unlike the thirteen, those you add and remove freely; they are not
 entities and nothing links to them. Only the thirteen can be tagged on
@@ -403,12 +403,12 @@ and this body:
 ,** Notes
 #+END_EXAMPLE
 
-The same shape is already in ~objects/plot.org~ when the project is created,
+The same shape is already in ~design.org~ when the project is created,
 under *Main Line* and *Subplot*, so a thread you capture and a thread you fill
 in by hand match.
 
 *Plot threads are not the same thing as plot points.* The thirteen
-non-negotiable plot points also live in ~objects/plot.org~, at the top, and
+non-negotiable plot points also live in the Plot part of ~design.org~, at the top, and
 they are a fixed list that ships with every project — you tag scenes with them
 but never create new ones. Threads are yours to add. Both are covered in this
 lesson; the plot points are covered earlier, under "The Thirteen
@@ -885,20 +885,20 @@ Add any quick notes:
 
 When done, press: ~C-c C-c~
 
-This saves the plot thread profile to:
-- **Novel project**: ~objects/plot.org~, as a *top-level* heading
-- **Short story project**: ~notes.org~, nested under the "Plot Threads"
-  section (or its Spanish equivalent, matching whichever your project uses)
+This saves the plot thread profile to ~design.org~, nested under the "Plot
+Threads" section (or its Spanish equivalent, matching whichever your project
+uses; in a novel that section is in the Plot part).
 
-The level matters in a novel: org-scribe only recognizes a plot thread if its
-heading is level 1, the same rule that applies to characters and settings. Do
-not demote a thread under another heading — it disappears from completion,
+The position matters: org-scribe only recognizes a plot thread if its heading
+is directly under "Plot Threads", the same rule that applies to characters and
+settings. Do not move a thread under another heading — it disappears from completion,
 searches and reports.
 
 ** Step 9: Verify It Saved
 
-Open your plot file and find your new plot thread entry. In a novel it should
-be a level-1 heading with an ID property:
+Open ~design.org~ and find your new plot thread entry. It should be a heading
+directly under "Plot Threads", with an ID property (shown here as it would
+look in a short story; in a novel it is two levels deeper):
 
 #+BEGIN_EXAMPLE
 * Sam and the Question of Trust
@@ -920,7 +920,7 @@ If you have an existing project with plot threads but no IDs, use the setup wiza
 Use: ~M-x org-scribe-setup-plot-thread-links~
 
 This wizard:
-1. Adds IDs to all plot threads in your plot file
+1. Adds IDs to all plot threads in your design notebook
 2. Ensures the capture hook is active for future plot threads
 3. Optionally links existing scenes (converts plain text to ID links)
 
@@ -934,7 +934,7 @@ If you prefer to set up manually:
 
 Use: ~M-x org-scribe-add-plot-thread-ids~
 
-Opens your plot file (~objects/plot.org~ or ~notes.org~) and adds unique IDs to all plot thread headings that don't have one.
+Opens ~design.org~ and adds unique IDs to all plot thread headings that don't have one.
 
 *** Step 2: Link Existing Scenes (Optional)
 
@@ -966,7 +966,7 @@ Once you have plot thread profiles with IDs, link them to scenes.
 
 Or use: ~M-x org-scribe-set-scene-plot-threads~
 
-4. You'll see a completion menu of all plot threads from your plot file
+4. You'll see a completion menu of all plot threads from your design notebook
 5. Select plot threads (press ~RET~ on empty line when done)
    - First thread: ~Main Mystery - Water Sabotage~ → ~Enter~
    - Second thread: ~Romance~ → ~Enter~
@@ -974,8 +974,7 @@ Or use: ~M-x org-scribe-set-scene-plot-threads~
 6. The scene's ~:Plot:~ property is updated with ID links
 
 The function reads from:
-- Novel: ~objects/plot.org~
-- Short story: ~notes.org~ (Plot section)
+- ~design.org~, the "Plot Threads" section
 
 And automatically creates ID links in the format: ~[[id:abc123][Thread Name]]~
 
@@ -1099,7 +1098,7 @@ ID links have two parts:
 - *ID*: ~id:plot-main-001~ (never changes)
 - *Display text*: ~[Main Mystery]~ (what you see)
 
-If you rename a plot thread in ~plot.org~:
+If you rename a plot thread in ~design.org~:
 - The ID still works (links don't break!)
 - But the display text shows the old name
 
@@ -1112,7 +1111,7 @@ Updates plot thread link display names in the current scene to match current nam
 Example:
 #+BEGIN_EXAMPLE
 Before: :Plot: [[id:plot-main-001][Main Plot]]
-        (you renamed "Main Plot" to "Primary Storyline" in plot.org)
+        (you renamed "Main Plot" to "Primary Storyline" in design.org)
 After:  :Plot: [[id:plot-main-001][Primary Storyline]]
 #+END_EXAMPLE
 
@@ -1123,7 +1122,7 @@ Use: ~M-x org-scribe-update-all-plot-link-names~
 Updates plot thread link display names throughout the entire manuscript.
 
 This is useful after:
-- Renaming multiple plot threads in plot.org
+- Renaming multiple plot threads in design.org
 - Refactoring your plot structure
 - Merging or splitting plot threads
 
@@ -1146,13 +1145,13 @@ Or use: ~M-x org-scribe-org-find-plot~
 
 The search function provides two input modes depending on your project setup:
 
-*** If plot.org exists (recommended):
+*** If design.org exists (recommended):
 - Completion menu with fuzzy matching
 - Shows all plot threads from your plot database
 - Type partial name: ~myst~ matches ~Main Mystery - Water Sabotage~
 - Also accepts free text for ad-hoc searches
 
-*** If no plot file:
+*** If no design notebook:
 - Free text input with substring matching
 - Type any text to search in Plot properties
 - Example: ~mystery~ finds scenes with "mystery" in Plot property
@@ -1503,7 +1502,7 @@ Let's practice plot thread management end-to-end.
 ** Success Criteria
 
 ✓ You captured 3 plot thread profiles with IDs
-✓ Plot files (objects/plot.org or notes.org) contain your plots
+✓ The "Plot Threads" section of design.org contains your plots
 ✓ At least 3 scenes have linked plot threads
 ✓ You can jump from scene to plot profile and back
 ✓ Search finds scenes by plot thread
@@ -1646,12 +1645,10 @@ You can track themes as "Thematic Threads" in the plot system if you want to ens
 ** "I captured a plot thread but can't find it"
 
 *** Problem
-The plot thread was captured but doesn't appear in the plot file.
+The plot thread was captured but doesn't appear in design.org.
 
 *** Solution
-1. Check the correct file:
-   - Novel: ~objects/plot.org~
-   - Short story: ~notes.org~ (under "Plot Outline")
+1. Check the correct place: the "Plot Threads" section of ~design.org~
 2. Open the file and search: ~C-s~ then type plot name
 3. If not found, the capture might have failed - try again
 
@@ -1662,7 +1659,7 @@ Using ~org-scribe-set-scene-plot-threads~ shows empty list.
 
 *** Solution
 1. Ensure you have captured at least one plot thread
-2. Open objects/plot.org or notes.org
+2. Open design.org
 3. Verify plot threads have ~:ID:~ properties
 4. If IDs are missing, run: ~M-x org-scribe-add-plot-thread-ids~
 5. Or run the setup wizard: ~M-x org-scribe-setup-plot-thread-links~
@@ -1685,7 +1682,7 @@ Dynamic block ~#+BEGIN: plot-thread-timeline~ generates but shows no data.
 
 *** Solution
 1. Verify at least one scene has a ~:Plot:~ property with ID link
-2. Check the plot profiles exist in plot.org and have ~:ID:~ properties
+2. Check the plot profiles exist in design.org and have ~:ID:~ properties
 3. Put cursor on ~#+BEGIN: plot-thread-timeline~ and press ~C-c C-c~ again
 4. If still blank, check for errors in messages buffer (~*Messages*~)
 5. Verify you're using ~plot-thread-timeline~ (not ~plot-timeline~)
@@ -1699,7 +1696,7 @@ Dynamic block ~#+BEGIN: plot-thread-timeline~ generates but shows no data.
 1. Verify Plot properties use ID links: ~[[id:abc][Name]]~
 2. If using plain text, the search extracts names from links
 3. Try searching for exact plot thread name (case-insensitive)
-4. Check that plot threads have matching names in plot.org
+4. Check that plot threads have matching names in design.org
 5. The search uses substring matching - partial names should work
 
 * Quick Reference

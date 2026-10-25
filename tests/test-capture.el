@@ -170,7 +170,7 @@ org-capture shifts the whole template relative to its target, so a
   "Outside a project, commands that need one refuse, and write no files.
 `org-scribe-project-root' falls back to the current directory, so these
 used to treat any folder as a project: a .dir-locals.el written there,
-objects/ entity files created next to an unrelated Org file, and a raw
+entity files created next to an unrelated Org file, and a raw
 error from the plot setup commands."
   (let* ((dir (file-name-as-directory (make-temp-file "loose-" t)))
          (default-directory dir))

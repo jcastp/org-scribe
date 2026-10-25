@@ -158,6 +158,11 @@ DIR-VAR is bound to the project directory, which is also `default-directory'."
              (if (eq ,kind 'novel)
                  (org-scribe-create-novel-project base "P" ,language nil ,target)
                (org-scribe-create-short-story-project base "P" ,language ,target)))
+           ;; Creation leaves the manuscript open; tests write files directly.
+           (dolist (buf (buffer-list))
+             (when (and (buffer-file-name buf) (string-prefix-p base (buffer-file-name buf)))
+               (with-current-buffer buf (set-buffer-modified-p nil))
+               (kill-buffer buf)))
            (let ((default-directory ,dir-var))
              (cl-letf (((symbol-function 'message) #'ignore))
                ,@body)))
@@ -196,8 +201,6 @@ DIR-VAR is bound to the project directory, which is also `default-directory'."
       (let ((novel (test-word-target--text dir "novel.org")))
         (should (equal (test-word-target--objectives novel) '(12500 3000 500 25000 12500)))
         (should (string-match-p "^- Total word target :: 50,000$" novel)))
-      (should (string-match-p "^:TARGET-WORDCOUNT: 50000$"
-                              (test-word-target--text dir "README.org")))
       (should (= ids (test-word-target--count-ids dir))))))
 
 (ert-deftest test-word-target-set-keeps-hand-edited-proportions ()
@@ -274,8 +277,7 @@ DIR-VAR is bound to the project directory, which is also `default-directory'."
     (org-scribe-set-word-target 8000 'reset t)
     (should (equal (test-word-target--objectives (test-word-target--text dir "story.org"))
                    '(2000 4000 2000)))
-    (should (string-match-p "^:TARGET_WORDCOUNT: 8000$" (test-word-target--text dir "story.org")))
-    (should (string-match-p "^:TARGET_WORDCOUNT: 8000$" (test-word-target--text dir "README.org")))))
+    (should (string-match-p "^:TARGET_WORDCOUNT: 8000$" (test-word-target--text dir "story.org")))))
 
 (ert-deftest test-word-target-set-spanish-goals-line ()
   (test-word-target--with-project dir 'novel 'es 80000

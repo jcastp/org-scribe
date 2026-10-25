@@ -751,7 +751,7 @@ with clickable ID links back to each scene."
 
         ;; ── Orphaned entities ─────────────────────────────────────────────────
         (insert "* Orphaned Entities\n\n")
-        (insert "Entities defined in their database file but not linked in any scene.\n\n")
+        (insert "Entities defined in the design notebook but not linked in any scene.\n\n")
 
         (insert (format "** Orphaned Characters (%d)\n\n" (length orphan-chars)))
         (if orphan-chars

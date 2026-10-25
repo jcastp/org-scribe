@@ -48,14 +48,12 @@ If you see this message, you're ready! If not, make sure you've installed the pa
 - Stories requiring detailed planning and world-building
 
 *What you get*:
-- 13 files organized in a structured hierarchy
-- A design file (~design.org~) holding the Starting Gate and the Core — the
-  file you open first
-- Separate planning files for characters, locations, plot, timeline, objects
-- Statistics tracking section with word count tables
-- Revision notes file
-- Research and notes directories
-- Main manuscript file (novel.org or novela.org)
+- 2 files, plus the hidden project files
+- A design notebook (~design.org~) organised in parts: Foundations (the
+  Starting Gate and the Core — where you start), Plot, Cast, World, Research,
+  Revision, Journal and a Scratchpad
+- Main manuscript file (novel.org or novela.org), with the statistics tracking
+  section and word count tables
 
 ** Short Story Projects (Minimal Template)
 
@@ -66,10 +64,10 @@ If you see this message, you're ready! If not, make sure you've installed the pa
 - Stories with fewer characters and simpler plots
 
 *What you get*:
-- 3 essential files
+- 2 essential files
 - Main story file (story.org or cuento.org) with integrated word tracking
-- Consolidated notes file (combines characters, plot, locations in one place)
-- README file
+- A design notebook (~design.org~) combining characters, plot, locations,
+  research and a scratchpad in one place, as sections
 
 *Recommendation for beginners*: Start with a short story project to learn the basics. You can always create a novel project later!
 
@@ -126,7 +124,7 @@ Template language: en
 #+END_EXAMPLE
 
 *What to do*:
-- Type or select ~en~ for English templates, or ~es~ for Spanish templates (~notas.org~, ~personajes.org~, etc.)
+- Type or select ~en~ for English templates, or ~es~ for Spanish templates (~diseno.org~, ~cuento.org~, etc.)
 - Press ~Tab~ to see both options, or just press ~Enter~ to accept the suggested default
 - Press ~Enter~ to confirm
 
@@ -139,20 +137,20 @@ The package will now:
 2. Copy and process template files
 3. Initialize a git repository
 4. Create an initial commit
-5. Open the README.org file
+5. Open the manuscript
 
 You'll see messages in the minibuffer showing progress. This takes just a few seconds.
 
 ** Step 6: Success!
 
 When complete, you'll see:
-- The README.org file opens in your buffer
+- The manuscript opens in your buffer
 - A message: *"Novel project '<title>' created successfully at <path>"*
 - Your new project is ready!
 
 * Exploring Your Short Story Project
 
-Let's look at what was created. You should now be looking at the README.org file.
+Let's look at what was created. You should now be looking at the story file.
 
 ** The Project Structure
 
@@ -163,21 +161,11 @@ The Morning Routine/           (your project folder)
 ├── .git/                      (version control - automatic!)
 ├── .org-scribe-project        (marker file - identifies this as a writing project)
 ├── .dir-locals.el             (spelling dictionary for every file in the project)
-├── README.org                 (overview and quick links - YOU ARE HERE)
-├── story.org                  (your main manuscript)
-├── scratchpad.org             (a free-form place for drafts and ideas)
-└── notes.org                  (planning: characters, plot, locations, etc.)
+├── story.org                  (your main manuscript - YOU ARE HERE)
+└── design.org                 (the design notebook: planning, research and a scratchpad)
 #+END_EXAMPLE
 
 ** Understanding Each File
-
-*** README.org (Currently Open)
-This file provides:
-- Project overview
-- Quick navigation links to other files
-- Progress tracking and milestones
-
-*What to do*: Read through it now. It has helpful links and tips!
 
 *** story.org (Your Manuscript)
 This is where you'll write your actual story.
@@ -187,18 +175,18 @@ This is where you'll write your actual story.
 - Three-section structure (Opening, Middle, Ending)
 - Scene templates with properties (PoV, Characters, Location, etc.)
 - Integrated word count tracking table
+- A quick navigation link to the design notebook
 
 No export configuration ships in the templates — it carried absolute paths and
 LaTeX classes that were personal to one machine. Add your own ~#+LATEX_CLASS~
 and friends if you export; Lesson 11 covers it.
 
 *What to do now*:
-1. Look at the README.org file (currently open)
-2. Find the link that says: ~[[file:story.org][Main Story File]]~
-3. Click it (or press ~C-c C-o~ while cursor is on the link)
-4. You'll jump to story.org!
+1. Find the Quick Navigation link that says: ~[[file:design.org][Design notebook]]~
+2. Click it (or press ~C-c C-o~ while cursor is on the link)
+3. You'll jump to design.org!
 
-*** notes.org (Planning & Research)
+*** design.org (Planning & Research)
 This is your planning hub, containing:
 - Characters section (with protagonist template)
 - Plot Outline section
@@ -208,16 +196,17 @@ This is your planning hub, containing:
 - Research & References section
 - Revision Notes section
 - Random Ideas & Inspiration section
+- A Scratchpad section at the end
 
 *What to do later*: We'll explore this in Lesson 4 (Capturing Characters).
 
-*** scratchpad.org (Your Free-Form Space)
+*** The Scratchpad (Your Free-Form Space)
 
-Notice that ~notes.org~ above is not actually free-form: its Characters and
-Setting sections are read by the linking system and filed into by capture, so a
-stray sketch there becomes a half-real entity.
+Notice that most of ~design.org~ is not free-form: its Characters and Setting
+sections are read by the linking system and filed into by capture, so a stray
+sketch there becomes a half-real entity.
 
-~scratchpad.org~ is the file that asks nothing of you. No structure, no
+The Scratchpad section at the end asks nothing of you. No structure, no
 properties, nothing reads it. Drafts, fragments, "what if" questions, arguments
 with yourself — put them here, and refile out what survives with ~C-c C-w~.
 
@@ -262,8 +251,8 @@ that choice, so project creation writes it once, at the project root:
 ((nil . ((ispell-local-dictionary . "en_US"))))
 #+END_EXAMPLE
 
-*What this does for you*: every file in the project — the manuscript, the notes,
-the planning files, the writing journal, and anything you create later — spell
+*What this does for you*: every file in the project — the manuscript, the design notebook,
+and anything you create later — spell
 checks against the right dictionary, without you setting anything per file.
 Emacs applies it silently; it will not ask you to approve it.
 
@@ -343,53 +332,47 @@ planner's job (~F8 F8 W~).
 
 ** Novel Project Structure
 
-A novel project has more files:
+A novel project has the same two files, but its design notebook is organised in parts:
 
 #+BEGIN_EXAMPLE
 My Fantasy Novel/
 ├── .git/
 ├── .org-scribe-project
 ├── .dir-locals.el             (spelling dictionary for every file in the project)
-├── README.org                 (overview and navigation)
-├── design.org                 (START HERE: the Starting Gate and the Core)
-├── novel.org                  (main manuscript - word count and progress tracking live here, not a separate file)
-├── scratchpad.org             (a free-form place for drafts and ideas)
-├── writing-journal.org        (a journal for reflecting on your writing process)
-├── revision.org               (the revision passes)
-├── objects/                      (planning directory)
-│   ├── characters.org         (character profiles)
-│   ├── locations.org          (settings, each with its Echo and Hazard)
-│   ├── worldbuilding.org      (deeper world-building notes)
-│   ├── plot.org               (the thirteen non-negotiables and the narrative lines)
-│   ├── timeline.org           (story timeline and events)
-│   └── objects.org            (important objects/MacGuffins)
-└── notes/                     (notes directory)
-    ├── notes.org              (general notes)
-    └── research.org           (research and references)
+├── design.org                 (START HERE: the design notebook)
+└── novel.org                  (main manuscript - word count and progress tracking live here, not a separate file)
 #+END_EXAMPLE
 
-A Spanish project has exactly the same structure with localized file *and
-directory* names: ~diseno.org~, ~novela.org~, ~diario-escritura.org~,
-~objetos/~ instead of ~objects/~ (holding ~personajes.org~,
-~localizaciones.org~, ~trama.org~, ~cronologia.org~, ~objetos.org~, and
-~construccion-mundo.org~), and ~notas/~ instead of ~notes/~.
+A Spanish project has exactly the same structure with localized file names:
+~diseno.org~ and ~novela.org~.
+
+Inside ~design.org~ the notebook is divided into parts, each a top-level
+heading:
+
+| Part                 | What it holds                                                   |
+|----------------------+-----------------------------------------------------------------|
+| Foundations          | The Starting Gate and the Core — start here                     |
+| Plot                 | The thirteen non-negotiables, the quarters, the plot threads     |
+| Cast                 | Character profiles                                              |
+| World                | Settings (each with its Echo and Hazard), the world, objects, timeline |
+| Research             | Research topics, reference material, fact checking              |
+| Revision             | The revision passes                                             |
+| Journal              | A journal for reflecting on your writing process                |
+| Scratchpad           | A free-form place for drafts and ideas                          |
+
+Characters, settings and plot threads are headings directly under their section
+(Characters, Setting, Plot Threads). Leave those section headings as they are:
+that is how org-scribe finds your entities.
 
 #+BEGIN_QUOTE
-*Breaking change for existing Spanish novel projects.* Before this release,
-the Spanish entity directory was named ~objects/~ — the same as the English
-one — and ~objects/worldbuilding.org~ was never translated. Both are now
-localized (~objetos/~, ~objetos/construccion-mundo.org~), matching every
-other file and directory name in a Spanish project. There is no automatic
-migration; a Spanish project created with an older version needs:
-
-#+BEGIN_SRC bash
-cd /path/to/your/project
-git mv objects objetos
-git mv objetos/worldbuilding.org objetos/construccion-mundo.org
-#+END_SRC
-
-New Spanish projects created with this version already use ~objetos/~ and
-need nothing done. English projects are entirely unaffected.
+*Breaking change for projects in the old layout.* Earlier versions made a
+novel project a manuscript beside an ~objects/~ directory, a ~notes/~ directory,
+a README, a revision file, a journal and a scratchpad. There is no automatic
+migration. To merge an existing project by hand: paste each old file under its
+part's heading in ~design.org~, demote the entity headings from level 1 to level
+3 so each sits directly under its section, delete the old files, and run
+~M-x org-id-update-id-locations~. IDs survive the move, so the links in your
+scenes keep working.
 #+END_QUOTE
 
 (A ~plan.org~ does *not* appear here — it's created separately, on demand, only once you opt into the bundled writing planner; see Lesson 16.)
@@ -397,12 +380,13 @@ need nothing done. English projects are entirely unaffected.
 *** See One Already Filled In
 
 A brand-new project is all structure and no content, which makes it hard to
-judge what any of these files are *for*. The package ships a worked example
-of exactly this layout, three weeks and five scenes into a first draft:
+judge what any of these files are *for*. The package ships a worked example,
+three weeks and five scenes into a first draft (it still uses the previous
+multi-file layout, with the parts of the notebook as separate files):
 
 - [[file:../examples/demo-novel/README.org][=examples/demo-novel/=]] — /The Morning Routine/
 
-Every file listed above exists there with real content in it: a crossed
+Every kind of content listed above exists there, in real form: a crossed
 Starting Gate in [[file:../examples/demo-novel/design.org][design.org]], thirteen non-negotiables written out in
 [[file:../examples/demo-novel/objects/plot.org][objects/plot.org]], six character profiles with their causal chains, four
 settings with an Echo and a Hazard each, and a manuscript carrying live
@@ -436,9 +420,9 @@ quarters):
 Press ~Tab~ to see all three, or ~Enter~ to accept the Sistema default.
 
 *What changes, and what does not*: the method you pick only changes
-~design.org~ (~diseno.org~ in Spanish) — the file this lesson tells you to
-open first. Every other file in the structure above —~novel.org~, ~notes/~,
-and everything under ~objects/~ — is identical no matter which method you
+the Foundations part of ~design.org~ (~diseno.org~ in Spanish) — the part this
+lesson tells you to open first. Everything else in the structure above —
+~novel.org~ and every other part of the notebook — is identical no matter which method you
 choose, because both Hélice and Matriz reuse the Sistema's character profile,
 its thirteen non-negotiables and its quarters rather than replacing them.
 
@@ -498,10 +482,10 @@ one before: the Ghost produces the Lie, the Lie produces the Weakness, and the
 Weakness generates the Desire. If one does not fit the one beside it, the wrong
 one is usually the one above.
 
-The rest of ~design.org~ covers what has no file of its own — the World
+The rest of Foundations covers what has no section of its own — the World
 Problem, the stakes, the ending, point of view, symbols. Characters, settings
-and plot each have their own file under ~objects/~, and you fill those in as
-you need them.
+and plot each have their own part further down the notebook (Cast, World,
+Plot), and you fill those in as you need them.
 
 *Vocabulary*: terms like /Ghost/, /Lie/, /Weakness/, /Stance/, /Echo/ and
 /Hazard/ are used in a precise sense, and most are restored from named English
@@ -520,19 +504,19 @@ Choose the novel template if:
 - You have multiple characters with complex relationships
 - You need detailed world-building
 - You have multiple plot threads to track
-- You want separate files for different aspects of planning
+- You want separate parts for different aspects of planning
 
 ** Novel vs. Short Story: Which Should I Use?
 
 | Aspect         | Short Story Template     | Novel Template                                 |
 |----------------+--------------------------+------------------------------------------------|
-| *Complexity*     | Simple, 3 files          | Complex, 12-13 files                           |
+| *Complexity*     | Simple, 2 files          | Complex, 2 files with a long notebook          |
 | *Word Count*     | 1,000-20,000             | 50,000+                                        |
-| *Planning*       | Consolidated notes.org   | Separate objects/ files                        |
+| *Planning*       | Sections of design.org   | Parts of design.org                            |
 | *Best For*       | Quick projects, learning | Long-form, detailed novels                     |
 | *Word Tracking*  | In story.org             | In novel.org (dynamic block, no separate file) |
 | *Learning Curve* | Gentle                   | Steeper                                        |
-| *Overhead*       | Minimal                  | More files to manage                           |
+| *Overhead*       | Minimal                  | A longer notebook to maintain                  |
 
 *Recommendation*: Start with short story template to learn, then try novel template for your big project!
 
@@ -547,14 +531,12 @@ Project creation prompts you for a language interactively each time — you don'
 ** English Templates Create:
 - novel.org (main manuscript)
 - story.org (short story)
-- notes/ directory
-- characters.org, locations.org, plot.org, etc.
+- design.org (design notebook)
 
 ** Spanish Templates Create:
 - novela.org (manuscrito principal)
 - cuento.org (cuento corto)
-- notas/ directorio
-- personajes.org, localizaciones.org, trama.org, etc.
+- diseno.org (cuaderno de diseño)
 
 ** Changing Template Language
 
@@ -663,7 +645,7 @@ Before Lesson 2, try this:
 
 1. Create a second short story project (for practice)
 2. Explore all the template files
-3. Click the links in README.org to jump between files
+3. Click the links at the top of the manuscript to jump to the design notebook
 4. Read the comments and instructions in the template files
 5. Write a few sentences in different scenes
 
@@ -693,9 +675,8 @@ Take your time! There's no rush. When you feel comfortable with project creation
 1. Use ~M-x dired~ to open the project directory
 2. You should see:
    - .org-scribe-project file
-   - README.org
    - story.org or novel.org
-   - notes.org (short story) or objects/ directory (novel)
+   - design.org
 
 ** How to delete a test project
 
@@ -709,7 +690,7 @@ Take your time! There's no rush. When you feel comfortable with project creation
 
 1. Use ~C-x C-f~ (find-file)
 2. Navigate to: ~~/org-scribe/Your-Project-Title/~
-3. Open ~README.org~ or ~story.org~/~novel.org~
+3. Open ~story.org~/~novel.org~ (or ~design.org~)
 4. The ~.org-scribe-project~ marker ensures the package recognizes it
 
 * Getting Help

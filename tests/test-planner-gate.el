@@ -307,9 +307,7 @@ when the project's gate is 'no."
                      (lambda ()
                        (list :manuscript-file temp-novel
                              :novel-file temp-novel
-                             :plan-file nil
-                             :characters-file nil
-                             :locations-file nil)))
+                             :plan-file nil)))
                     ((symbol-function 'org-scribe-planner-gate) (lambda (&rest _) 'no)))
             (org-scribe-project-health)
             (with-current-buffer (get-buffer "*org-scribe-health*")
@@ -327,9 +325,7 @@ when the project's gate is 'no."
                      (lambda ()
                        (list :manuscript-file temp-novel
                              :novel-file temp-novel
-                             :plan-file nil
-                             :characters-file nil
-                             :locations-file nil)))
+                             :plan-file nil)))
                     ((symbol-function 'org-scribe-planner-gate) (lambda (&rest _) nil)))
             (org-scribe-project-health)
             (with-current-buffer (get-buffer "*org-scribe-health*")

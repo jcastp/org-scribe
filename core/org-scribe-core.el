@@ -895,18 +895,7 @@ load-path change) is picked up without restarting Emacs."
        (progn ,@body)
      (user-error (org-scribe-msg 'error-feature-not-available ',feature))))
 
-;;; Short-story Entity Heading Helper
-
-(defconst org-scribe--section-heading-aliases
-  (org-scribe--pack-derived-alist :headings :heading-variants)
-  "Canonical section key -> localized level-1 heading aliases.
-Mirrors `org-scribe--scene-property-aliases': English and Spanish project
-templates use different literal heading text for the same section.
-Derived from the registered language packs; see
-`org-scribe--pack-derived-alist'.  Kept, in this
-exact shape, only for `capture/org-scribe-capture.el''s direct readers
--- `org-scribe--heading-parent-section-p' below reads the live registry
-instead, via `org-scribe-lang-all'.")
+;;; Entity Section Helpers
 
 (defun org-scribe--heading-matches-section-p (heading section-key)
   "Return non-nil if HEADING text equals an alias of SECTION-KEY.

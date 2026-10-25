@@ -256,10 +256,7 @@ plainly is a short story."
                  (list :manuscript-file temp-novel
                        :novel-file temp-novel
                        :plan-file nil
-                       :design-file nil
-                       :plot-file nil
-                       :characters-file nil
-                       :locations-file nil))))
+                       :design-file nil))))
       (should-not (condition-case nil (progn (org-scribe-project-health) nil)
                     (error t)))
       (with-current-buffer (get-buffer "*org-scribe-health*")
@@ -303,9 +300,7 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
                  (list :manuscript-file temp-novel
-                       :novel-file temp-novel
-                       :characters-file nil
-                       :locations-file nil))))
+                       :novel-file temp-novel))))
       (org-scribe-project-health)
       (with-current-buffer (get-buffer "*org-scribe-health*")
         (let ((content (buffer-string)))
@@ -327,9 +322,7 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
                  (list :manuscript-file temp-novel
-                       :novel-file temp-novel
-                       :characters-file nil
-                       :locations-file nil))))
+                       :novel-file temp-novel))))
       (org-scribe-project-health)
       (let ((buf (get-buffer "*org-scribe-health*")))
         (should buf)
@@ -410,9 +403,7 @@ Chapter Three (100) is the only outlier (< 0.5 * mean = 600)."
                 (lambda ()
                   (list :manuscript-file temp-novel
                         :novel-file temp-novel
-                        :plan-file nil
-                        :characters-file nil
-                        :locations-file nil))))
+                        :plan-file nil))))
        (org-scribe-project-health)
        (with-current-buffer (get-buffer "*org-scribe-health*")
          ,@body))))
@@ -453,9 +444,7 @@ Chapter Three (100) is the only outlier (< 0.5 * mean = 600)."
                (lambda ()
                  (list :manuscript-file temp-novel
                        :novel-file temp-novel
-                       :plan-file nil
-                       :characters-file nil
-                       :locations-file nil))))
+                       :plan-file nil))))
       (org-scribe-project-health)
       (with-current-buffer (get-buffer "*org-scribe-health*")
         (should (string-match-p "(no PoV)" (buffer-string)))))))
@@ -499,9 +488,7 @@ and the outlier legend line is shown."
                (lambda ()
                  (list :manuscript-file temp-novel
                        :novel-file temp-novel
-                       :plan-file nil
-                       :characters-file nil
-                       :locations-file nil))))
+                       :plan-file nil))))
       (org-scribe-project-health)
       (with-current-buffer (get-buffer "*org-scribe-health*")
         (should-not (string-match-p "Chapters marked" (buffer-string)))))))
@@ -645,9 +632,7 @@ had met every goal through yesterday was \"Behind\" every morning."
                  (lambda ()
                    (list :manuscript-file temp-novel
                          :novel-file temp-novel
-                         :plan-file nil
-                         :characters-file nil
-                         :locations-file nil))))
+                         :plan-file nil))))
         (org-scribe-project-health)
         (with-current-buffer (get-buffer "*org-scribe-health*")
           (let ((content (buffer-string)))
@@ -666,9 +651,7 @@ had met every goal through yesterday was \"Behind\" every morning."
                      (lambda ()
                        (list :manuscript-file temp-novel
                              :novel-file temp-novel
-                             :plan-file plan-file
-                             :characters-file nil
-                             :locations-file nil))))
+                             :plan-file plan-file))))
             (org-scribe-project-health)
             (with-current-buffer (get-buffer "*org-scribe-health*")
               (let ((content (buffer-string)))
@@ -695,9 +678,7 @@ had met every goal through yesterday was \"Behind\" every morning."
                  (lambda ()
                    (list :manuscript-file temp-novel
                          :novel-file temp-novel
-                         :plan-file nil
-                         :characters-file nil
-                         :locations-file nil))))
+                         :plan-file nil))))
         (org-scribe-project-health)
         (with-current-buffer (get-buffer "*org-scribe-health*")
           (let ((content (buffer-string)))
@@ -722,7 +703,7 @@ had met every goal through yesterday was \"Behind\" every morning."
       (cl-letf (((symbol-function 'org-scribe-project-structure)
                  (lambda ()
                    (list :manuscript-file temp-novel :novel-file temp-novel :plan-file nil
-                         :characters-file nil :locations-file nil))))
+))))
         (org-scribe-project-health)
         (with-current-buffer (get-buffer "*org-scribe-health*")
           (should (string-match-p "Outside the manuscript :: 2800 words (not counted)"
@@ -754,7 +735,7 @@ WORD-TARGET stubs `org-scribe-project-word-target'; PLAN is the active plan."
                 ((symbol-function 'org-scribe-project-structure)
                  (lambda ()
                    (list :manuscript-file temp-novel :novel-file temp-novel
-                         :plan-file nil :characters-file nil :locations-file nil))))
+                         :plan-file nil))))
         (org-scribe-project-health)
         (with-current-buffer (get-buffer "*org-scribe-health*")
           (buffer-string))))))

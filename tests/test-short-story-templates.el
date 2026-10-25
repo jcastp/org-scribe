@@ -4,7 +4,7 @@
 
 ;;; Commentary:
 
-;; Tests for the short-story notes.org / notas.org templates' entity
+;; Tests for the short-story design.org / diseno.org templates' entity
 ;; recognition, modelled on tests/test-sistema-templates.el.
 ;;
 ;; The point of this file, specifically, is the scenario the shipped
@@ -95,19 +95,19 @@ no heading-aware navigation at all."
   "The protagonist is still recognized as a character after the
 placeholder heading is replaced with a real name -- because recognition
 now goes through :Role:, not the word \"Protagonist\" in the heading."
-  (org-scribe-ss-test--with-template "short-story-en/notes.org.template"
+  (org-scribe-ss-test--with-template "short-story-en/design.org.template"
     (org-scribe-ss-test--rename-heading "Protagonist: [Name]" "Mara Ilić")
     (should (org-scribe-ss-test--heading-recognized-p
              "Mara Ilić" #'org-scribe--character-heading-p))))
 
 (ert-deftest test-short-story-en-supporting-character-survives-rename ()
-  (org-scribe-ss-test--with-template "short-story-en/notes.org.template"
+  (org-scribe-ss-test--with-template "short-story-en/design.org.template"
     (org-scribe-ss-test--rename-heading "Supporting Character: [Name]" "Devon Ashworth")
     (should (org-scribe-ss-test--heading-recognized-p
              "Devon Ashworth" #'org-scribe--character-heading-p))))
 
 (ert-deftest test-short-story-en-antagonist-survives-rename ()
-  (org-scribe-ss-test--with-template "short-story-en/notes.org.template"
+  (org-scribe-ss-test--with-template "short-story-en/design.org.template"
     (org-scribe-ss-test--rename-heading "Antagonist: [Name]" "Corvin Blackwell")
     (should (org-scribe-ss-test--heading-recognized-p
              "Corvin Blackwell" #'org-scribe--character-heading-p))))
@@ -117,7 +117,7 @@ now goes through :Role:, not the word \"Protagonist\" in the heading."
 must resolve to the heading text, not the empty string, for every
 character the template ships as-is (no rename needed to expose this
 one -- the bug was in the template's own shipped shape)."
-  (org-scribe-ss-test--with-template "short-story-en/notes.org.template"
+  (org-scribe-ss-test--with-template "short-story-en/design.org.template"
     (let (names)
       (org-map-entries
        (lambda ()
@@ -133,7 +133,7 @@ one -- the bug was in the template's own shipped shape)."
   "The main location is still recognized after the placeholder heading
 is replaced with a real place name -- recognition now goes through
 :Type:, not the word \"Location\" in the heading."
-  (org-scribe-ss-test--with-template "short-story-en/notes.org.template"
+  (org-scribe-ss-test--with-template "short-story-en/design.org.template"
     (org-scribe-ss-test--rename-heading "Main Location(s)" "The Salt Marsh Inn")
     (should (org-scribe-ss-test--heading-recognized-p
              "The Salt Marsh Inn" #'org-scribe--location-heading-p))))
@@ -141,19 +141,19 @@ is replaced with a real place name -- recognition now goes through
 ;;; Spanish: characters survive a rename
 
 (ert-deftest test-short-story-es-protagonist-survives-rename ()
-  (org-scribe-ss-test--with-template "short-story-es/notas.org.template"
+  (org-scribe-ss-test--with-template "short-story-es/diseno.org.template"
     (org-scribe-ss-test--rename-heading "Protagonista: [Nombre]" "Marisol Aguirre")
     (should (org-scribe-ss-test--heading-recognized-p
              "Marisol Aguirre" #'org-scribe--character-heading-p))))
 
 (ert-deftest test-short-story-es-supporting-character-survives-rename ()
-  (org-scribe-ss-test--with-template "short-story-es/notas.org.template"
+  (org-scribe-ss-test--with-template "short-story-es/diseno.org.template"
     (org-scribe-ss-test--rename-heading "Personaje Secundario: [Nombre]" "Tomás Rivadeneira")
     (should (org-scribe-ss-test--heading-recognized-p
              "Tomás Rivadeneira" #'org-scribe--character-heading-p))))
 
 (ert-deftest test-short-story-es-antagonist-survives-rename ()
-  (org-scribe-ss-test--with-template "short-story-es/notas.org.template"
+  (org-scribe-ss-test--with-template "short-story-es/diseno.org.template"
     (org-scribe-ss-test--rename-heading "Antagonista: [Nombre]" "Ezequiel Duarte")
     (should (org-scribe-ss-test--heading-recognized-p
              "Ezequiel Duarte" #'org-scribe--character-heading-p))))
@@ -162,7 +162,7 @@ is replaced with a real place name -- recognition now goes through
   "Per docs/glossary.org, :Role: property values are English in both
 template sets -- this is not a localization gap, it is policy, so the
 Spanish template must not carry a translated value like \"Protagonista\"."
-  (org-scribe-ss-test--with-template "short-story-es/notas.org.template"
+  (org-scribe-ss-test--with-template "short-story-es/diseno.org.template"
     (let (roles)
       (org-map-entries
        (lambda ()
@@ -174,7 +174,7 @@ Spanish template must not carry a translated value like \"Protagonista\"."
 ;;; Spanish: location survives a rename
 
 (ert-deftest test-short-story-es-main-location-survives-rename ()
-  (org-scribe-ss-test--with-template "short-story-es/notas.org.template"
+  (org-scribe-ss-test--with-template "short-story-es/diseno.org.template"
     (org-scribe-ss-test--rename-heading "Ubicación(es) Principal(es)" "La Posada del Cabo")
     (should (org-scribe-ss-test--heading-recognized-p
              "La Posada del Cabo" #'org-scribe--location-heading-p))))
@@ -185,8 +185,8 @@ Spanish template must not carry a translated value like \"Protagonista\"."
   "Neither shipped short-story template carries a :NAME:/:NOMBRE: property
 any more -- the heading is the entity's name, per the template contract
 every other entity type in this package follows."
-  (dolist (relative '("short-story-en/notes.org.template"
-                      "short-story-es/notas.org.template"))
+  (dolist (relative '("short-story-en/design.org.template"
+                      "short-story-es/diseno.org.template"))
     (with-temp-buffer
       (insert-file-contents (org-scribe-ss-test--template relative))
       (goto-char (point-min))
@@ -200,8 +200,8 @@ predicate actually reads.  Case-sensitive on purpose: locations do carry
 a mixed-case :Type: (the property `org-scribe--location-heading-p'
 reads), and `case-fold-search' defaults to t, so a case-insensitive
 search here would also -- wrongly -- flag that one."
-  (dolist (relative '("short-story-en/notes.org.template"
-                      "short-story-es/notas.org.template"))
+  (dolist (relative '("short-story-en/design.org.template"
+                      "short-story-es/diseno.org.template"))
     (with-temp-buffer
       (insert-file-contents (org-scribe-ss-test--template relative))
       (goto-char (point-min))
