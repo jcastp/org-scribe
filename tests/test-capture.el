@@ -24,29 +24,7 @@
 
 ;;; Function Availability Tests
 
-(ert-deftest test-capture-functions-defined ()
-  "Test that all public capture functions are defined."
-  ;; Main capture functions
-  (should (fboundp 'org-scribe-capture-to-file))
-  (should (fboundp 'org-scribe-capture-character))
-  (should (fboundp 'org-scribe-capture-location))
-  (should (fboundp 'org-scribe-capture-object))
-  (should (fboundp 'org-scribe-capture-timeline))
-
-  ;; Target file detection functions
-  (should (fboundp 'org-scribe-capture-target-file))
-  (should (fboundp 'org-scribe-capture-character-file))
-  (should (fboundp 'org-scribe-capture-location-file))
-  (should (fboundp 'org-scribe-capture-object-file))
-  (should (fboundp 'org-scribe-capture-timeline-file)))
-
 ;;; Helper Function Tests
-
-(ert-deftest test-capture-helper-functions-defined ()
-  "Test that helper functions are defined."
-  (should (fboundp 'org-scribe--create-short-story-notes-file))
-  (should (fboundp 'org-scribe--create-novel-capture-file))
-  (should (fboundp 'org-scribe--create-capture-file)))
 
 ;;; Capture Template Tests
 
@@ -82,125 +60,6 @@
 
 ;;; File Creation Tests
 
-(ert-deftest test-create-short-story-notes-file ()
-  "Test creation of short story notes file."
-  (let ((temp-file (make-temp-file "test-notes-" nil ".org")))
-    (unwind-protect
-        (progn
-          (org-scribe--create-short-story-notes-file temp-file 'en)
-
-          ;; Verify file was created
-          (should (file-exists-p temp-file))
-
-          ;; Verify content has key sections
-          (with-temp-buffer
-            (insert-file-contents temp-file)
-            (let ((content (buffer-string)))
-              ;; Check has metadata and main sections
-              (should (string-match-p "TITLE" content))
-              (should (string-match-p "AUTHOR" content))
-              (should (string-match-p "Characters" content))
-              (should (string-match-p "Plot" content))
-              (should (string-match-p "Setting" content))
-              ;; The protagonist entity satisfies the template contract:
-              ;; classified by :Role:, not :TYPE:, and named by its
-              ;; heading, not a blank :NAME:.  See docs/glossary.org for
-              ;; why :Role:'s value is English even here.
-              (should (string-match-p ":Role: Protagonist" content))
-              (should-not (string-match-p ":TYPE:" content))
-              (should-not (string-match-p ":NAME:" content)))))
-
-      ;; Cleanup
-      (when (file-exists-p temp-file)
-        (delete-file temp-file)))))
-
-(ert-deftest test-create-novel-capture-file-characters ()
-  "Test creation of novel characters file."
-  (let ((temp-file (make-temp-file "test-characters-" nil ".org")))
-    (unwind-protect
-        (progn
-          (org-scribe--create-novel-capture-file temp-file 'characters 'en)
-
-          ;; Verify file was created
-          (should (file-exists-p temp-file))
-
-          ;; Verify content has expected headers
-          (with-temp-buffer
-            (insert-file-contents temp-file)
-            (let ((content (buffer-string)))
-              (should (string-match-p "Character" content))
-              (should (string-match-p "TITLE" content))
-              (should (string-match-p "AUTHOR" content))
-              (should (string-match-p "DATE" content)))))
-
-      ;; Cleanup
-      (when (file-exists-p temp-file)
-        (delete-file temp-file)))))
-
-(ert-deftest test-create-novel-capture-file-locations ()
-  "Test creation of novel locations file."
-  (let ((temp-file (make-temp-file "test-locations-" nil ".org")))
-    (unwind-protect
-        (progn
-          (org-scribe--create-novel-capture-file temp-file 'locations 'en)
-
-          (with-temp-buffer
-            (insert-file-contents temp-file)
-            (let ((content (buffer-string)))
-              (should (string-match-p "Location" content))
-              (should (string-match-p "TITLE" content)))))
-
-      (when (file-exists-p temp-file)
-        (delete-file temp-file)))))
-
-(ert-deftest test-create-novel-capture-file-objects ()
-  "Test creation of novel objects file."
-  (let ((temp-file (make-temp-file "test-objects-" nil ".org")))
-    (unwind-protect
-        (progn
-          (org-scribe--create-novel-capture-file temp-file 'objects 'en)
-
-          (with-temp-buffer
-            (insert-file-contents temp-file)
-            (let ((content (buffer-string)))
-              (should (string-match-p "Object" content))
-              (should (string-match-p "TITLE" content)))))
-
-      (when (file-exists-p temp-file)
-        (delete-file temp-file)))))
-
-(ert-deftest test-create-novel-capture-file-timeline ()
-  "Test creation of novel timeline file."
-  (let ((temp-file (make-temp-file "test-timeline-" nil ".org")))
-    (unwind-protect
-        (progn
-          (org-scribe--create-novel-capture-file temp-file 'timeline 'en)
-
-          (with-temp-buffer
-            (insert-file-contents temp-file)
-            (let ((content (buffer-string)))
-              (should (string-match-p "Timeline" content))
-              (should (string-match-p "TITLE" content)))))
-
-      (when (file-exists-p temp-file)
-        (delete-file temp-file)))))
-
-(ert-deftest test-create-novel-capture-file-notes ()
-  "Test creation of novel notes file."
-  (let ((temp-file (make-temp-file "test-notes-" nil ".org")))
-    (unwind-protect
-        (progn
-          (org-scribe--create-novel-capture-file temp-file 'notes 'en)
-
-          (with-temp-buffer
-            (insert-file-contents temp-file)
-            (let ((content (buffer-string)))
-              (should (string-match-p "Note" content))
-              (should (string-match-p "TITLE" content)))))
-
-      (when (file-exists-p temp-file)
-        (delete-file temp-file)))))
-
 ;;; Target File Detection Tests
 
 (ert-deftest test-capture-target-file-detection ()
@@ -209,90 +68,6 @@
   (let ((target (org-scribe-capture-target-file)))
     (should (stringp target))
     (should (string-match-p "\\.org$" target))))
-
-(ert-deftest test-capture-target-file-finds-existing-root-notas ()
-  "A Spanish short-story project's general note capture must find the
-project's own root-level notas.org, not fall through to whatever buffer
-the capture happens to be invoked from.
-
-Regression test: `org-scribe-capture-target-file' only ever checked
-notes/notes.org, notas/notas.org, novel-notes.org and root notes.org --
-never root notas.org, which is exactly what
-`org-scribe-templates/short-story-es/notas.org.template' ships.  Since
-org-capture's `file+headline' target resolves a function target via
-`org-capture-expand-file' by calling it with no arguments (so
-CREATE-IF-MISSING is always nil on that path), a fresh Spanish
-short-story project matched none of the four checks and the \"w\"
-general-note template filed into the current buffer (e.g. cuento.org)
-instead of notas.org."
-  (let* ((temp-dir (make-temp-file "test-ss-proj-es-notas-" t))
-         (notas-file (expand-file-name (org-scribe-lang-file 'notes-short 'es) temp-dir)))
-    (unwind-protect
-        (progn
-          (with-temp-file notas-file (insert "* Notas\n"))
-          (cl-letf (((symbol-function 'org-scribe-project-root)
-                     (lambda () temp-dir))
-                    ((symbol-function 'org-scribe-project-language)
-                     (lambda () 'es)))
-            (should (string= (org-scribe-capture-target-file) notas-file))))
-      (delete-directory temp-dir t))))
-
-(ert-deftest test-capture-target-file-create-if-missing-spanish-creates-notas ()
-  "With no consolidated notes file yet, a Spanish project's general note
-capture creates notas.org, not notes.org, when CREATE-IF-MISSING is
-non-nil -- mirroring the fallback naming already fixed for
-`org-scribe--capture-entity-file' (see
-`test-capture-create-if-missing-short-story-spanish-creates-notas')."
-  (let* ((temp-dir (make-temp-file "test-ss-proj-es-create-notas-" t))
-         (expected-file (expand-file-name (org-scribe-lang-file 'notes-short 'es) temp-dir))
-         (wrong-file (expand-file-name (org-scribe-lang-file 'notes-short 'en) temp-dir)))
-    (unwind-protect
-        (cl-letf (((symbol-function 'org-scribe-project-root)
-                   (lambda () temp-dir))
-                  ((symbol-function 'org-scribe-project-language)
-                   (lambda () 'es)))
-          (should-not (file-exists-p expected-file))
-          (let ((result (org-scribe-capture-target-file t)))
-            (should (file-exists-p expected-file))
-            (should-not (file-exists-p wrong-file))
-            (should (string= result expected-file))))
-      (delete-directory temp-dir t))))
-
-(ert-deftest test-capture-character-file-detection ()
-  "Test that character file detection works."
-  (let ((target (org-scribe-capture-character-file)))
-    (should (stringp target))
-    (should (or (string-match-p "characters\\.org$" target)
-                (string-match-p "personajes\\.org$" target)
-                (string-match-p "notes\\.org$" target)
-                (string-match-p "notas\\.org$" target)))))
-
-(ert-deftest test-capture-location-file-detection ()
-  "Test that location file detection works."
-  (let ((target (org-scribe-capture-location-file)))
-    (should (stringp target))
-    (should (or (string-match-p "locations\\.org$" target)
-                (string-match-p "localizaciones\\.org$" target)
-                (string-match-p "notes\\.org$" target)
-                (string-match-p "notas\\.org$" target)))))
-
-(ert-deftest test-capture-object-file-detection ()
-  "Test that object file detection works."
-  (let ((target (org-scribe-capture-object-file)))
-    (should (stringp target))
-    (should (or (string-match-p "objects\\.org$" target)
-                (string-match-p "objetos\\.org$" target)
-                (string-match-p "notes\\.org$" target)
-                (string-match-p "notas\\.org$" target)))))
-
-(ert-deftest test-capture-timeline-file-detection ()
-  "Test that timeline file detection works."
-  (let ((target (org-scribe-capture-timeline-file)))
-    (should (stringp target))
-    (should (or (string-match-p "timeline\\.org$" target)
-                (string-match-p "cronologia\\.org$" target)
-                (string-match-p "notes\\.org$" target)
-                (string-match-p "notas\\.org$" target)))))
 
 ;;; Template Structure Tests
 
@@ -458,199 +233,17 @@ error from the plot setup commands."
 ;;; File Creation Routing — both project types
 ;;; ─────────────────────────────────────────────
 
-(ert-deftest test-capture-create-file-dispatcher-short-story ()
-  "Test that the file dispatcher creates a short-story notes file."
-  (let ((temp-file (make-temp-file "test-notes-ss-" nil ".org")))
-    (unwind-protect
-        (progn
-          (delete-file temp-file)  ; start clean
-          (org-scribe--create-capture-file temp-file 'short-story 'characters)
-          (should (file-exists-p temp-file))
-          (with-temp-buffer
-            (insert-file-contents temp-file)
-            ;; Short-story notes file contains Characters section
-            (should (string-match-p "Characters" (buffer-string)))
-            (should (string-match-p "Plot" (buffer-string)))
-            (should (string-match-p "Setting" (buffer-string)))))
-      (when (file-exists-p temp-file)
-        (delete-file temp-file)))))
-
-(ert-deftest test-capture-create-file-dispatcher-novel ()
-  "Test that the file dispatcher creates an individual novel capture file."
-  (let ((temp-file (make-temp-file "test-chars-novel-" nil ".org")))
-    (unwind-protect
-        (progn
-          (delete-file temp-file)
-          (org-scribe--create-capture-file temp-file 'novel 'characters)
-          (should (file-exists-p temp-file))
-          (with-temp-buffer
-            (insert-file-contents temp-file)
-            ;; Novel individual file has the entity-type title
-            (should (string-match-p "Character" (buffer-string)))
-            (should (string-match-p "TITLE" (buffer-string)))))
-      (when (file-exists-p temp-file)
-        (delete-file temp-file)))))
-
-(ert-deftest test-capture-create-file-dispatcher-plot-any-type ()
-  "Test that the plot dispatcher creates a plot file regardless of project type."
-  (let ((temp-file (make-temp-file "test-plot-" nil ".org")))
-    (unwind-protect
-        (progn
-          (delete-file temp-file)
-          ;; Plot gets its own structure even for short-story projects
-          (org-scribe--create-capture-file temp-file 'short-story 'plot)
-          (should (file-exists-p temp-file))
-          (with-temp-buffer
-            (insert-file-contents temp-file)
-            (should (string-match-p "Plot" (buffer-string)))))
-      (when (file-exists-p temp-file)
-        (delete-file temp-file)))))
-
 ;;; ─────────────────────────────────────────────
 ;;; create-if-missing — auto-creates target file
 ;;; ─────────────────────────────────────────────
-
-(ert-deftest test-capture-create-if-missing-novel-creates-objects-dir ()
-  "Test that character-file with create-if-missing creates file for a novel project."
-  (let* ((temp-dir (make-temp-file "test-novel-proj-" t))
-         (expected-file (expand-file-name "objects/characters.org" temp-dir)))
-    (unwind-protect
-        (cl-letf (((symbol-function 'org-scribe-project-root)
-                   (lambda () temp-dir))
-                  ((symbol-function 'org-scribe-project-type)
-                   (lambda () 'novel)))
-          ;; File must not exist before the call
-          (should-not (file-exists-p expected-file))
-          (let ((result (org-scribe-capture-character-file t)))
-            (should (file-exists-p expected-file))
-            (should (string-match-p "characters\\.org$" result))))
-      (delete-directory temp-dir t))))
-
-(ert-deftest test-capture-create-if-missing-short-story-creates-notes ()
-  "Test that character-file with create-if-missing creates notes.org for short stories."
-  (let* ((temp-dir (make-temp-file "test-ss-proj-" t))
-         (expected-file (expand-file-name "notes.org" temp-dir)))
-    (unwind-protect
-        (cl-letf (((symbol-function 'org-scribe-project-root)
-                   (lambda () temp-dir))
-                  ((symbol-function 'org-scribe-project-type)
-                   (lambda () 'short-story)))
-          (should-not (file-exists-p expected-file))
-          (let ((result (org-scribe-capture-character-file t)))
-            (should (file-exists-p expected-file))
-            (should (string-match-p "notes\\.org$" result))))
-      (delete-directory temp-dir t))))
-
-(ert-deftest test-capture-create-if-missing-short-story-spanish-creates-notas ()
-  "A Spanish short-story project with no consolidated notes file yet gets
-notas.org created, not notes.org.
-Regression test: `org-scribe--capture-entity-file' used to hardcode
-\"notes.org\" as the fallback name whenever neither candidate existed on
-disk, ignoring the project's own `# Language: es' marker entirely.  A
-brand-new project created via `org-scribe-create-short-story-project'
-never hits this path (its templates ship notas.org from the start), but
-any Spanish short-story project missing that file -- one predating a
-fix, one assembled by hand, or one where the file was deleted -- did,
-and every entity captured into it (plot threads included) landed in an
-English-named file a Spanish project should never have."
-  (let* ((temp-dir (make-temp-file "test-ss-proj-es-" t))
-         (expected-file (expand-file-name (org-scribe-lang-file 'notes-short 'es) temp-dir))
-         (wrong-file (expand-file-name (org-scribe-lang-file 'notes-short 'en) temp-dir)))
-    (unwind-protect
-        (cl-letf (((symbol-function 'org-scribe-project-root)
-                   (lambda () temp-dir))
-                  ((symbol-function 'org-scribe-project-type)
-                   (lambda () 'short-story))
-                  ((symbol-function 'org-scribe-project-language)
-                   (lambda () 'es)))
-          (should-not (file-exists-p expected-file))
-          (let ((result (org-scribe-capture-plot-thread-file t)))
-            (should (file-exists-p expected-file))
-            (should-not (file-exists-p wrong-file))
-            (should (string-match-p "notas\\.org$" result))))
-      (delete-directory temp-dir t))))
 
 ;;; ─────────────────────────────────────────────
 ;;; Project-type routing — without filesystem
 ;;; ─────────────────────────────────────────────
 
-(ert-deftest test-capture-character-file-routes-short-story ()
-  "Test that short-story projects route character capture to notes.org."
-  (let* ((temp-dir (make-temp-file "test-route-ss-" t)))
-    (unwind-protect
-        (cl-letf (((symbol-function 'org-scribe-project-root)
-                   (lambda () temp-dir))
-                  ((symbol-function 'org-scribe-project-type)
-                   (lambda () 'short-story)))
-          (let ((result (org-scribe-capture-character-file)))
-            ;; No notes.org exists yet, so it falls back to the default name
-            (should (string-match-p "notes\\.org$" result))))
-      (delete-directory temp-dir t))))
-
-(ert-deftest test-capture-character-file-routes-novel ()
-  "Test that novel projects route character capture to objects/characters.org."
-  (let* ((temp-dir (make-temp-file "test-route-novel-" t))
-         (char-file (expand-file-name "objects/characters.org" temp-dir)))
-    (unwind-protect
-        (progn
-          ;; Pre-create the file so cl-find-if can find it
-          (make-directory (expand-file-name "objects" temp-dir) t)
-          (write-region "" nil char-file)
-          (cl-letf (((symbol-function 'org-scribe-project-root)
-                     (lambda () temp-dir))
-                    ((symbol-function 'org-scribe-project-type)
-                     (lambda () 'novel)))
-            (let ((result (org-scribe-capture-character-file)))
-              (should (string-match-p "characters\\.org$" result)))))
-      (delete-directory temp-dir t))))
-
-(ert-deftest test-capture-character-file-novel-spanish-fallback-uses-personajes ()
-  "A Spanish novel project with no entity files yet gets
-objetos/personajes.org as its fallback target, not objects/characters.org.
-Same regression class as the short-story notas.org/notes.org case: the
-fallback used to hardcode the English stem regardless of
-`org-scribe-project-language'.  Spanish projects use `objetos/', not
-`objects/' -- localized like `notes/'/`notas/', per the language pack's
-own `:dirs' section (see \"i18n-extended.org\", decision D1)."
-  (let* ((temp-dir (make-temp-file "test-route-novel-es-" t)))
-    (unwind-protect
-        (cl-letf (((symbol-function 'org-scribe-project-root)
-                   (lambda () temp-dir))
-                  ((symbol-function 'org-scribe-project-type)
-                   (lambda () 'novel))
-                  ((symbol-function 'org-scribe-project-language)
-                   (lambda () 'es)))
-          (let ((result (org-scribe-capture-character-file)))
-            (should (string-match-p "objetos/personajes\\.org$" result))))
-      (delete-directory temp-dir t))))
-
 ;;; ─────────────────────────────────────────────
 ;;; Regression: project root resolution
 ;;; ─────────────────────────────────────────────
-
-(ert-deftest test-capture-uses-org-scribe-root-not-project-current ()
-  "Entity file resolution uses org-scribe-project-root, not project-current.
-Regression: previously used project-current, which returns the git repo root
-when the writing project lives inside a larger repository.  The fix replaces
-that call with org-scribe-project-root, which finds the .org-scribe-project
-marker and returns the actual writing project directory."
-  (let* ((project-root (make-temp-file "test-capture-project-" t))
-         (git-root     (make-temp-file "test-capture-git-" t)))
-    (unwind-protect
-        (cl-letf (((symbol-function 'org-scribe-project-root)
-                   (lambda () project-root))
-                  ((symbol-function 'org-scribe-project-type)
-                   (lambda () 'novel))
-                  ;; Simulate project-current pointing at a *different* (wrong) root
-                  ((symbol-function 'project-current)
-                   (lambda (&rest _) `(vc Git . ,git-root))))
-          (let ((result (org-scribe--capture-entity-file 'characters)))
-            ;; Must resolve under the org-scribe writing-project root
-            (should (string-prefix-p project-root result))
-            ;; Must NOT resolve under the git repo root
-            (should-not (string-prefix-p git-root result))))
-      (delete-directory project-root t)
-      (delete-directory git-root t))))
 
 ;;; ─────────────────────────────────────────────
 ;;; ID assignment on finalisation
@@ -667,12 +260,8 @@ marker and returns the actual writing project directory."
           (with-current-buffer (find-file-noselect temp-file)
             (unwind-protect
                 (let ((org-capture-mode t))
-                  (cl-letf (((symbol-function 'org-scribe-capture-character-file)
-                             (lambda (&rest _) temp-file))
-                            ((symbol-function 'org-scribe-capture-location-file)
-                             (lambda (&rest _) "/nonexistent-loc.org"))
-                            ((symbol-function 'org-scribe-capture-plot-thread-file)
-                             (lambda (&rest _) "/nonexistent-plot.org")))
+                  (cl-letf (((symbol-function 'org-scribe-capture-target-file)
+                             (lambda (&rest _) temp-file)))
                     (org-scribe--capture-finalize-add-entity-id)
                     ;; The hook must have added an :ID: property
                     (should (string-match-p ":ID:" (buffer-string)))))
@@ -692,12 +281,8 @@ marker and returns the actual writing project directory."
           (with-current-buffer (find-file-noselect temp-file)
             (unwind-protect
                 (let ((org-capture-mode t))
-                  (cl-letf (((symbol-function 'org-scribe-capture-character-file)
-                             (lambda (&rest _) temp-file))
-                            ((symbol-function 'org-scribe-capture-location-file)
-                             (lambda (&rest _) "/nonexistent-loc.org"))
-                            ((symbol-function 'org-scribe-capture-plot-thread-file)
-                             (lambda (&rest _) "/nonexistent-plot.org")))
+                  (cl-letf (((symbol-function 'org-scribe-capture-target-file)
+                             (lambda (&rest _) temp-file)))
                     (org-scribe--capture-finalize-add-entity-id)
                     ;; The original ID must still be present and unchanged
                     (should (string-match-p fixed-id (buffer-string)))))
@@ -726,71 +311,6 @@ marker and returns the actual writing project directory."
 ;;; --capture-goto-section (H10)
 ;;; ─────────────────────────────────────────────
 ;; Note capture files under a top-level Notes heading
-
-(ert-deftest test-capture-goto-notes-section-ignores-nested-notes-headings ()
-  "A `*** Notes' inside a character profile is not the Notes section.
-The note template used `file+headline', which takes the first heading of
-that text at any level, so in a short story's single notes file a note
-went inside whichever profile came first."
-  (with-temp-buffer
-    (org-mode)
-    (insert "* Characters\n** Alice\n*** Notes\n- a profile field\n")
-    (insert "* Plot\n")
-    (org-scribe--capture-goto-notes-section)
-    (should (org-at-heading-p))
-    (should (= 1 (org-current-level)))
-    (should (string= "Notes" (org-get-heading t t t t)))
-    ;; created at the end, not reused from the profile
-    (should (= (point) (save-excursion (goto-char (point-max))
-                                       (forward-line -1) (point))))))
-
-(ert-deftest test-capture-goto-notes-section-finds-existing-section-in-any-language ()
-  "An existing top-level Notes/Notas heading is reused, not duplicated."
-  (dolist (heading '("Notes" "Notas"))
-    (with-temp-buffer
-      (org-mode)
-      (insert (format "* Characters\n** Alice\n*** Notas\n* %s\n** TODO earlier\n* Plot\n" heading))
-      (org-scribe--capture-goto-notes-section)
-      (should (string= heading (org-get-heading t t t t)))
-      (should (= 1 (org-current-level)))
-      (should (= 1 (how-many (format "^\\* %s$" heading) (point-min) (point-max)))))))
-
-(ert-deftest test-capture-note-in-short-story-is-filed-at-top-level-notes ()
-  "End to end: a captured note lands under `* Notes', not in a character.
-Runs the real `org-capture' against a short-story notes file whose first
-character profile has a `*** Notes' sub-heading — the shape every captured
-character produces."
-  (let* ((root (make-temp-file "test-capture-note-" t))
-         (notes (expand-file-name "notes.org" root)))
-    (unwind-protect
-        (progn
-          (with-temp-file (expand-file-name ".org-scribe-project" root)
-            (insert "# Writing project: Note Test\n# Type: short-story\n# Language: en\n"))
-          (with-temp-file (expand-file-name "story.org" root) (insert "* Story\n"))
-          (with-temp-file notes
-            (insert "* Characters\n** Alice\n*** Notes\n- profile\n* Plot Threads\n"))
-          (let ((default-directory (file-name-as-directory root)))
-            (org-scribe-project-type-cache-clear root)
-            (let ((org-capture-templates (org-scribe-capture-templates)))
-              (org-capture nil "w")
-              (insert "the letter is forged")
-              (org-capture-finalize)))
-          (with-current-buffer (find-file-noselect notes)
-            (revert-buffer t t)
-            (goto-char (point-min))
-            (re-search-forward "the letter is forged")
-            (org-back-to-heading t)
-            (should (= 2 (org-current-level)))
-            (should (equal "Notes" (save-excursion (org-up-heading-safe)
-                                                   (org-get-heading t t t t))))
-            (should (= 1 (save-excursion (org-up-heading-safe) (org-current-level))))
-            (should-not (string-match-p
-                         "the letter is forged"
-                         (save-excursion (goto-char (point-min))
-                                         (re-search-forward "^\\*\\* Alice")
-                                         (buffer-substring (point) (progn (org-end-of-subtree) (point))))))))
-      (when (get-file-buffer notes) (with-current-buffer (get-file-buffer notes) (set-buffer-modified-p nil)) (kill-buffer (get-file-buffer notes)))
-      (delete-directory root t))))
 
 ;;; ─────────────────────────────────────────────
 ;; org-scribe--capture-goto-section positions point so a `file+function'
@@ -910,19 +430,6 @@ create a redundant English \"Timeline\" section."
       (should (string= (org-get-heading t t t t) "Línea Temporal"))
       (should-not (string-match-p "\\* Timeline" (buffer-string))))))
 
-(ert-deftest test-capture-goto-section-novel-lands-on-blank-line ()
-  "In a novel-project buffer, point ends up on a blank line at buffer end,
-not on a heading — so the capture files as a flat top-level entry,
-matching the level-1-only novel heading predicates and the previous
-plain `file' target's append behavior."
-  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'novel)))
-    (with-temp-buffer
-      (org-mode)
-      (insert "* Alice\n:PROPERTIES:\n:Role: Protagonist\n:END:\n")
-      (org-scribe--capture-goto-section 'characters)
-      (should-not (org-at-heading-p))
-      (should (eobp)))))
-
 ;;; ─────────────────────────────────────────────
 ;;; Language-aware capture templates (i18n)
 ;;; ─────────────────────────────────────────────
@@ -981,54 +488,6 @@ is Spanish without the caller having to know about it."
   (cl-letf (((symbol-function 'org-scribe-project-language) (lambda () 'es)))
     (should (string-match-p "Nombre del Personaje"
                             (nth 4 (car (org-scribe-character-capture-templates)))))))
-
-(ert-deftest test-create-short-story-notes-file-spanish ()
-  "Test that the short-story notes.org file is created with Spanish headings."
-  (let ((temp-file (make-temp-file "test-notes-es-" nil ".org")))
-    (unwind-protect
-        (progn
-          (org-scribe--create-short-story-notes-file temp-file 'es)
-          (with-temp-buffer
-            (insert-file-contents temp-file)
-            (let ((content (buffer-string)))
-              (should (string-match-p "Personajes" content))
-              (should (string-match-p "Ambientación" content))
-              (should-not (string-match-p "\\* Characters" content))
-              ;; The property drawer itself does not localize: :Role:'s
-              ;; value is English even in a Spanish project (see
-              ;; docs/glossary.org), and there is no :NAME:/:TYPE: to
-              ;; regress back to.
-              (should (string-match-p ":Role: Protagonist" content))
-              (should-not (string-match-p ":TYPE:" content))
-              (should-not (string-match-p ":NAME:" content)))))
-      (when (file-exists-p temp-file)
-        (delete-file temp-file)))))
-
-(ert-deftest test-create-novel-capture-file-characters-spanish ()
-  "Test that the novel characters file title is localized to Spanish."
-  (let ((temp-file (make-temp-file "test-characters-es-" nil ".org")))
-    (unwind-protect
-        (progn
-          (org-scribe--create-novel-capture-file temp-file 'characters 'es)
-          (with-temp-buffer
-            (insert-file-contents temp-file)
-            (should (string-match-p "Base de Datos de Personajes" (buffer-string)))))
-      (when (file-exists-p temp-file)
-        (delete-file temp-file)))))
-
-(ert-deftest test-capture-target-file-create-spanish-notes ()
-  "Test that the fallback notes.org file created by
-`org-scribe-capture-target-file' uses Spanish headings for a Spanish project."
-  (let ((temp-dir (make-temp-file "test-target-es-" t)))
-    (unwind-protect
-        (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () temp-dir))
-                  ((symbol-function 'org-scribe-project-language) (lambda () 'es)))
-          (let ((target (org-scribe-capture-target-file t)))
-            (with-temp-buffer
-              (insert-file-contents target)
-              (should (string-match-p "Notas de Escritura" (buffer-string)))
-              (should (string-match-p "\\* Notas" (buffer-string))))))
-      (delete-directory temp-dir t))))
 
 ;;; ─────────────────────────────────────────────
 ;;; Weight prompt
@@ -1117,6 +576,298 @@ The blank is what the templates ship too, and
 translated key would make the property invisible to the timeline."
   (let ((template-string (nth 4 (car (org-scribe-character-capture-templates 'es)))))
     (should (string-match-p ":Weight: %\\^{Peso" template-string))))
+
+
+;;; ─────────────────────────────────────────────
+;;; The design notebook as capture target (M5)
+;;; ─────────────────────────────────────────────
+
+(ert-deftest test-capture-functions-defined ()
+  "Every public capture command and the single target-file function exist;
+the per-entity file functions are gone."
+  (dolist (fn '(org-scribe-capture-to-file org-scribe-capture-character
+                org-scribe-capture-location org-scribe-capture-object
+                org-scribe-capture-timeline org-scribe-capture-plot-thread
+                org-scribe-capture-target-file
+                org-scribe--create-notebook-file))
+    (should (fboundp fn)))
+  (dolist (fn '(org-scribe-capture-character-file org-scribe-capture-location-file
+                org-scribe-capture-object-file org-scribe-capture-timeline-file
+                org-scribe-capture-plot-thread-file org-scribe--capture-entity-file
+                org-scribe--create-capture-file org-scribe--create-plot-file
+                org-scribe--create-short-story-notes-file
+                org-scribe--create-novel-capture-file))
+    (should-not (fboundp fn))))
+
+(defun test-capture--notebook (type language)
+  "Return the text of a notebook created for TYPE and LANGUAGE."
+  (let ((file (make-temp-file "test-notebook-" nil ".org")))
+    (unwind-protect
+        (progn
+          (delete-file file)
+          (org-scribe--create-notebook-file file type language)
+          (with-temp-buffer (insert-file-contents file) (buffer-string)))
+      (when (file-exists-p file) (delete-file file)))))
+
+(ert-deftest test-create-notebook-file-novel-has-parts-and-sections ()
+  "A novel notebook nests the five capturable sections inside their parts."
+  (let ((text (test-capture--notebook 'novel 'en)))
+    (should (string-match-p "^#\\+TITLE: " text))
+    (should (string-match-p "^#\\+AUTHOR: " text))
+    (should (string-match-p "^\\* Plot\n\n\\*\\* Plot Threads\n" text))
+    (should (string-match-p "^\\* Cast\n\n\\*\\* Characters\n" text))
+    (should (string-match-p "^\\* World\n\n\\*\\* Setting\n\n\\*\\* Objects\n\n\\*\\* Timeline\n" text))))
+
+(ert-deftest test-create-notebook-file-short-story-has-level-one-sections ()
+  "A short-story notebook has the same sections at level 1, in no part."
+  (let ((text (test-capture--notebook 'short-story 'en)))
+    (dolist (heading '("Characters" "Setting" "Plot Threads" "Objects" "Timeline"))
+      (should (string-match-p (format "^\\* %s$" heading) text)))
+    (should-not (string-match-p "^\\*\\* " text))
+    (should-not (string-match-p "^\\* \\(Cast\\|World\\|Plot\\)$" text))))
+
+(ert-deftest test-create-notebook-file-carries-no-placeholders-or-prose ()
+  "Only headings and the file header: no entity, drawer or comment."
+  (dolist (type '(novel short-story))
+    (let ((text (test-capture--notebook type 'en)))
+      (should-not (string-match-p "^:PROPERTIES:\\|^#[^+]\\|^- " text)))))
+
+(ert-deftest test-create-notebook-file-is-spanish-for-a-spanish-project ()
+  "Headings come from the Spanish pack, and no English section is written."
+  (let ((novel (test-capture--notebook 'novel 'es))
+        (story (test-capture--notebook 'short-story 'es)))
+    (should (string-match-p "^\\* Reparto\n\n\\*\\* Personajes\n" novel))
+    (should (string-match-p "^\\* Mundo\n\n\\*\\* Ambientación\n" novel))
+    (should (string-match-p "^\\* Trama\n\n\\*\\* Hilos de la Trama\n" novel))
+    (should (string-match-p "^\\* Personajes$" story))
+    (dolist (text (list novel story))
+      (should-not (string-match-p "^\\*+ \\(Characters\\|Setting\\|Cast\\|World\\)" text)))))
+
+(ert-deftest test-create-notebook-file-sections-are-recognized ()
+  "What it writes is what the section finder matches, in both layouts."
+  (dolist (type '(novel short-story))
+    (dolist (lang '(en es))
+      (with-temp-buffer
+        (org-mode)
+        (insert (test-capture--notebook type lang))
+        (dolist (key org-scribe--notebook-sections)
+          (should (org-scribe--find-section-heading key)))))))
+
+(ert-deftest test-capture-target-file-finds-the-design-file-in-any-project-type ()
+  "Every capture, for a novel or a short story, goes to the one design file."
+  (dolist (type '(novel short-story))
+    (let ((dir (make-temp-file "test-target-" t)))
+      (unwind-protect
+          (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () dir))
+                    ((symbol-function 'org-scribe-project-type) (lambda () type)))
+            (let ((design (expand-file-name "diseno.org" dir)))
+              (with-temp-file design (insert "* Reparto\n"))
+              (should (string= design (org-scribe-capture-target-file)))))
+        (delete-directory dir t)))))
+
+(ert-deftest test-capture-target-file-create-if-missing-uses-the-project-language ()
+  "A missing notebook is created under the project language's file name."
+  (dolist (spec '((es . "diseno.org") (en . "design.org")))
+    (let ((dir (make-temp-file "test-target-create-" t)))
+      (unwind-protect
+          (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () dir))
+                    ((symbol-function 'org-scribe-project-type) (lambda () 'novel))
+                    ((symbol-function 'org-scribe-project-language) (lambda () (car spec))))
+            (let ((result (org-scribe-capture-target-file t)))
+              (should (string= result (expand-file-name (cdr spec) dir)))
+              (should (file-exists-p result))))
+        (delete-directory dir t)))))
+
+(ert-deftest test-capture-target-file-uses-org-scribe-root-not-project-current ()
+  "The notebook is resolved under `org-scribe-project-root', not the VC root."
+  (let ((project-root (make-temp-file "test-capture-project-" t))
+        (git-root (make-temp-file "test-capture-git-" t)))
+    (unwind-protect
+        (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () project-root))
+                  ((symbol-function 'org-scribe-project-type) (lambda () 'novel))
+                  ((symbol-function 'project-current)
+                   (lambda (&rest _) `(vc Git . ,git-root))))
+          (let ((result (org-scribe-capture-target-file)))
+            (should (string-prefix-p project-root result))
+            (should-not (string-prefix-p git-root result))))
+      (delete-directory project-root t)
+      (delete-directory git-root t))))
+
+;;; goto-section: any level, created under its part
+
+(ert-deftest test-capture-goto-section-lands-on-existing-heading-at-any-level ()
+  (dolist (text '("* Characters\n** Alice\n* Plot\n"
+                  "* Cast\n** Characters\n*** Alice\n* Plot\n"))
+    (with-temp-buffer
+      (org-mode)
+      (insert text)
+      (org-scribe--capture-goto-section 'characters)
+      (should (org-at-heading-p))
+      (should (string= "Characters" (org-get-heading t t t t))))))
+
+(ert-deftest test-capture-goto-section-creates-missing-section-under-its-part ()
+  "With the part present, the section is its last child, one level deeper."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Cast\n** Cast Check\n*** Coverage\n* World\n** Setting\n")
+    (org-scribe--capture-goto-section 'characters)
+    (should (org-at-heading-p))
+    (should (string= "Characters" (org-get-heading t t t t)))
+    (should (= 2 (org-current-level)))
+    (org-up-heading-safe)
+    (should (string= "Cast" (org-get-heading t t t t)))
+    ;; last child of Cast, before World
+    (should (string-match-p "\\*\\*\\* Coverage\n\\*\\* Characters\n\\* World"
+                            (buffer-string)))))
+
+(ert-deftest test-capture-goto-section-creates-at-level-one-when-no-part ()
+  "With no part in the file (the short-story shape) the section is level 1."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Plot Threads\n\n")
+    (org-scribe--capture-goto-section 'setting)
+    (should (= 1 (org-current-level)))
+    (should (string= "Setting" (org-get-heading t t t t)))))
+
+(ert-deftest test-capture-goto-section-uses-project-language-spelling ()
+  "A missing section is written in the project's language, and an existing
+one in another language's spelling is reused rather than duplicated."
+  (cl-letf (((symbol-function 'org-scribe-project-language) (lambda () 'es)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Reparto\n")
+      (org-scribe--capture-goto-section 'characters)
+      (should (string= "Personajes" (org-get-heading t t t t)))
+      (should (= 2 (org-current-level))))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Cast\n** Characters\n")
+      (org-scribe--capture-goto-section 'characters)
+      (should (string= "Characters" (org-get-heading t t t t)))
+      (should-not (string-match-p "Personajes" (buffer-string))))))
+
+(ert-deftest test-capture-goto-section-ignores-narrowing ()
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Intro\n* Characters\n")
+    (goto-char (point-min))
+    (narrow-to-region (point-min) (line-end-position))
+    (org-scribe--capture-goto-section 'characters)
+    (should (string= "Characters" (org-get-heading t t t t)))))
+
+(ert-deftest test-capture-goto-notes-section-is-the-scratchpad-part ()
+  "General notes go to the Scratchpad part, created at level 1 if missing."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Cast\n** Characters\n*** Notes\n* Scratchpad\n** Loose ideas\n")
+    (org-scribe--capture-goto-notes-section)
+    (should (string= "Scratchpad" (org-get-heading t t t t))))
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Cast\n")
+    (org-scribe--capture-goto-notes-section)
+    (should (= 1 (org-current-level)))
+    (should (string= "Scratchpad" (org-get-heading t t t t)))))
+
+;;; End to end through the real `org-capture'
+
+(defmacro test-capture--with-notebook (language type text &rest body)
+  "Run BODY in a temp project of TYPE and LANGUAGE whose design file holds TEXT.
+Binds `notebook' to the file."
+  (declare (indent 3))
+  `(let* ((root (make-temp-file "test-capture-e2e-" t))
+          (manuscript (org-scribe-lang-file 'manuscript-novel ,language))
+          (notebook (expand-file-name (org-scribe-lang-file 'design ,language) root)))
+     (unwind-protect
+         (progn
+           (with-temp-file (expand-file-name ".org-scribe-project" root)
+             (insert (format "# Writing project: T\n# Type: %s\n# Language: %s\n" ,type ,language)))
+           (with-temp-file (expand-file-name manuscript root) (insert "* Act\n"))
+           (with-temp-file notebook (insert ,text))
+           (let ((default-directory (file-name-as-directory root)))
+             (org-scribe-project-type-cache-clear root)
+             ,@body))
+       (when (get-file-buffer notebook)
+         (with-current-buffer (get-file-buffer notebook) (set-buffer-modified-p nil))
+         (kill-buffer (get-file-buffer notebook)))
+       (delete-directory root t))))
+
+(defun test-capture--capture-character ()
+  "Capture a character through the real template, answering every prompt."
+  (cl-letf (((symbol-function 'read-string) (lambda (&rest _) "Alice"))
+            ((symbol-function 'completing-read) (lambda (&rest _) "Alice")))
+    (let ((org-capture-templates (org-scribe-character-capture-templates)))
+      (org-capture nil "c")
+      (org-capture-finalize))))
+
+(ert-deftest test-capture-character-lands-at-level-three-under-characters ()
+  "A captured novel character is a level-3 child of `** Characters' in Cast,
+with its sub-headings shifted to level 4, and is recognized as a character."
+  (test-capture--with-notebook 'en 'novel "* Cast\n** Characters\n*** Bob\n* World\n"
+    (test-capture--capture-character)
+    (with-current-buffer (find-file-noselect notebook)
+      (revert-buffer t t)
+      (goto-char (point-min))
+      (re-search-forward "^\\*+ Alice$")
+      (should (= 3 (org-current-level)))
+      (should (string= "Characters" (save-excursion (org-up-heading-safe)
+                                                    (org-get-heading t t t t))))
+      (should (org-scribe--character-heading-p))
+      (should (string-match-p "^\\*\\*\\*\\* " (buffer-substring (point) (point-max))))
+      ;; before the next part
+      (should (< (point) (save-excursion (re-search-forward "^\\* World")))))))
+
+(ert-deftest test-capture-character-creates-its-section-under-the-part ()
+  "With no `Characters' section, it is created under Cast first."
+  (test-capture--with-notebook 'en 'novel "* Cast\n* World\n"
+    (test-capture--capture-character)
+    (with-current-buffer (find-file-noselect notebook)
+      (revert-buffer t t)
+      (goto-char (point-min))
+      (re-search-forward "^\\*+ Alice$")
+      (should (= 3 (org-current-level)))
+      (org-up-heading-safe)
+      (should (string= "Characters" (org-get-heading t t t t)))
+      (should (= 2 (org-current-level)))
+      (org-up-heading-safe)
+      (should (string= "Cast" (org-get-heading t t t t))))))
+
+(ert-deftest test-capture-character-spanish-project-gets-spanish-sections ()
+  (test-capture--with-notebook 'es 'novel "* Reparto\n"
+    (test-capture--capture-character)
+    (with-current-buffer (find-file-noselect notebook)
+      (revert-buffer t t)
+      (should (string-match-p "^\\*\\* Personajes$" (buffer-string)))
+      (should-not (string-match-p "Characters" (buffer-string))))))
+
+(ert-deftest test-capture-character-in-a-short-story-lands-at-level-two ()
+  (test-capture--with-notebook 'en 'short-story "* Characters\n** Bob\n* Plot Threads\n"
+    (test-capture--capture-character)
+    (with-current-buffer (find-file-noselect notebook)
+      (revert-buffer t t)
+      (goto-char (point-min))
+      (re-search-forward "^\\*+ Alice$")
+      (should (= 2 (org-current-level)))
+      (should (org-scribe--character-heading-p)))))
+
+(ert-deftest test-capture-note-is-filed-in-the-scratchpad-and-gets-no-id ()
+  "A general note lands under the Scratchpad part, not inside a character
+profile's own `Notes' sub-heading, and is not given an entity ID."
+  (test-capture--with-notebook 'en 'novel
+      "* Cast\n** Characters\n*** Alice\n**** Notes\n- profile\n* Scratchpad\n** Loose ideas\n"
+    (let ((org-capture-templates (org-scribe-capture-templates)))
+      (org-capture nil "w")
+      (insert "the letter is forged")
+      (org-capture-finalize))
+    (with-current-buffer (find-file-noselect notebook)
+      (revert-buffer t t)
+      (goto-char (point-min))
+      (re-search-forward "the letter is forged")
+      (org-back-to-heading t)
+      (should (= 2 (org-current-level)))
+      (should (string= "Scratchpad" (save-excursion (org-up-heading-safe)
+                                                    (org-get-heading t t t t))))
+      (should-not (org-entry-get nil "ID")))))
 
 ;;; ─────────────────────────────────────────────
 ;;; Run tests

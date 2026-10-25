@@ -185,26 +185,25 @@ so a test that needs a repo path cannot compute one for itself.")
          (progn
            (with-temp-file (expand-file-name ".org-scribe-project" ,dir-var)
              (insert "Type: novel\n"))
-           (make-directory (expand-file-name "notes" ,dir-var) t)
-           (with-temp-file (expand-file-name "notes/notes.org" ,dir-var)
-             (insert "#+TITLE: Notes\n"))
+           (with-temp-file (expand-file-name "design.org" ,dir-var)
+             (insert "#+TITLE: Design\n"))
            (let ((default-directory ,dir-var))
              ,@body))
        (delete-directory ,dir-var t))))
 
 (ert-deftest test-modes-right-panel-defaults-to-notes ()
-  "The default `notes' value resolves to the project notes file."
+  "The default `notes' value resolves to the design notebook."
   (org-scribe-test--with-project dir
     (let ((org-scribe-editing-right-panel 'notes))
-      (should (string= (expand-file-name "notes/notes.org" dir)
+      (should (string= (expand-file-name "design.org" dir)
                        (org-scribe--editing-right-panel-file
                         (expand-file-name "novel.org" dir)))))))
 
 (ert-deftest test-modes-right-panel-string-is-project-relative ()
   "A string value is expanded relative to the project root."
   (org-scribe-test--with-project dir
-    (let ((org-scribe-editing-right-panel "notes/research.org"))
-      (should (string= (expand-file-name "notes/research.org" dir)
+    (let ((org-scribe-editing-right-panel "scratch.org"))
+      (should (string= (expand-file-name "scratch.org" dir)
                        (org-scribe--editing-right-panel-file
                         (expand-file-name "novel.org" dir)))))))
 
@@ -219,29 +218,19 @@ so a test that needs a repo path cannot compute one for itself.")
                         (expand-file-name "novel.org" dir))))
       (should (string= (expand-file-name "novel.org" dir) seen)))))
 
-(ert-deftest test-modes-right-panel-revision-falls-back-when-absent ()
-  "`revision' falls back to the notes file when no revision.org exists."
+(ert-deftest test-modes-right-panel-revision-is-the-design-notebook ()
+  "`revision' resolves to the design notebook, which holds the passes."
   (org-scribe-test--with-project dir
     (let ((org-scribe-editing-right-panel 'revision))
-      (should (string= (expand-file-name "notes/notes.org" dir)
-                       (org-scribe--editing-right-panel-file
-                        (expand-file-name "novel.org" dir)))))))
-
-(ert-deftest test-modes-right-panel-revision-found-when-present ()
-  "`revision' resolves to revision.org when the project has one."
-  (org-scribe-test--with-project dir
-    (with-temp-file (expand-file-name "revision.org" dir)
-      (insert "#+TITLE: Revision\n"))
-    (let ((org-scribe-editing-right-panel 'revision))
-      (should (string= (expand-file-name "revision.org" dir)
+      (should (string= (expand-file-name "design.org" dir)
                        (org-scribe--editing-right-panel-file
                         (expand-file-name "novel.org" dir)))))))
 
 (ert-deftest test-modes-right-panel-unknown-value-falls-back ()
-  "An unrecognised value falls back to the notes file, never nil."
+  "An unrecognised value falls back to the design notebook, never nil."
   (org-scribe-test--with-project dir
     (let ((org-scribe-editing-right-panel 'nonsense))
-      (should (string= (expand-file-name "notes/notes.org" dir)
+      (should (string= (expand-file-name "design.org" dir)
                        (org-scribe--editing-right-panel-file
                         (expand-file-name "novel.org" dir)))))))
 
