@@ -114,9 +114,9 @@ PROPERTY is a canonical scene property key (e.g. \\='pov); every
 localized alias for it (see `org-scribe-scene-property-aliases') is
 checked so the search works regardless of the project's language."
   (when (string-empty-p (string-trim term))
-    (user-error (org-scribe-msg error-key)))
+    (user-error "%s" (org-scribe-msg error-key)))
   (unless (org-scribe--org-ql-available-p)
-    (user-error (org-scribe-msg 'error-org-ql-required)))
+    (user-error "%s" (org-scribe-msg 'error-org-ql-required)))
   (org-scribe--with-plain-tags
     (org-ql-search (current-buffer)
       `(and (heading)
@@ -183,7 +183,7 @@ Results are grouped by file for easy navigation.
 Requires org-ql package to be installed."
   (interactive)
   (unless (org-scribe--org-ql-available-p)
-    (user-error (org-scribe-msg 'error-org-ql-required)))
+    (user-error "%s" (org-scribe-msg 'error-org-ql-required)))
   (let* ((project-root (or (org-scribe-project-root)
                           (file-name-directory (or (buffer-file-name) default-directory))))
          (org-files (directory-files-recursively project-root "\\.org$")))
@@ -193,7 +193,7 @@ Requires org-ql package to be installed."
             `(todo ,@org-scribe-todo-keywords)
             :title "TODO items in writing project"
             :super-groups '((:auto-category t))))
-      (message (org-scribe-msg 'msg-no-org-files project-root)))))
+      (message "%s" (org-scribe-msg 'msg-no-org-files project-root)))))
 
 ;;;###autoload
 (defun org-scribe-search-edits-rgrep ()
@@ -492,7 +492,7 @@ In the index buffer, `g' refreshes and `q' buries it."
               (save-excursion
                 (goto-char (point-min))
                 (not (re-search-forward "^\\*\\*\\* " nil t))))
-            (message (org-scribe-msg 'edits-index-none-found
+            (message "%s" (org-scribe-msg 'edits-index-none-found
                                      (abbreviate-file-name root)))
           (pop-to-buffer buffer))))))
 

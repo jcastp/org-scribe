@@ -700,7 +700,7 @@ Look through notes you captured during the week:
 3. Act on urgent ones:
    - Research needed? Add to research list
    - Character development? Add to character file
-   - Plot change? Note in revision file
+   - Plot change? Note in design notebook (Revision part)
 
 *** 5. Plan Next Week (5 minutes)
 

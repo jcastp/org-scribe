@@ -3044,7 +3044,6 @@ Optional FILEPATH shows the location of the plan file."
           (dolist (day schedule)
             (let* ((date (plist-get day :date))
                    (current-daily-words (plist-get day :words))
-                   (cumulative (plist-get day :cumulative))
                    (is-spare (plist-get day :is-spare-day))
                    (daily-entry (assoc date daily-counts))
                    (daily-data (when daily-entry (cdr daily-entry)))
@@ -4693,8 +4692,7 @@ Tracks actual progress and calculates expected dates for unreached milestones."
                   (setq actual-date (car entry)))))
 
           ;; Calculate expected date for unreached milestone
-          (let ((remaining-words (- milestone-words cumulative-actual))
-                (projection-total cumulative-actual))
+          (let ((projection-total cumulative-actual))
 
             (dolist (day schedule)
               (let* ((date (plist-get day :date))
@@ -5068,6 +5066,10 @@ The target is today's own goal from the schedule: on a spare day the
 string reads \"[W:actual rest]\", and outside the plan just \"[W:actual]\"."
   (when-let* ((plan org-scribe-planner--current-plan)
               (_ (eq (ignore-errors (org-scribe-planner-gate)) 'yes))
+              ;; A plan left over from another project shows nothing here.
+              (_ (or (null org-scribe-planner--current-plan-file)
+                     (org-scribe-planner--plan-file-in-current-project-p
+                      org-scribe-planner--current-plan-file)))
               (today (org-scribe-planner--get-today-date))
               (actual (org-scribe-planner--entry-delta
                        (org-scribe-plan-daily-word-counts plan) today

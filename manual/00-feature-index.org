@@ -423,7 +423,7 @@ The template system processes directories of .template files recursively, perfor
 
 ** Template Customization
 
-Users can customize templates by editing files in ~org-scribe-template-directory~ (defaults to the package's org-scribe-templates/ directory). Changes affect all new projects created after modification. Templates can include any org-mode features: dynamic blocks, formulas, custom properties, keywords, export settings, etc. The ~org-scribe-edit-templates~ function provides quick access to the template directory for customization.
+Users can customize templates by editing the files in the package's org-scribe-templates/ directory (~M-x org-scribe-edit-templates~ opens it). Changes affect all new projects created after modification. Templates can include any org-mode features: dynamic blocks, formulas, custom properties, keywords, export settings, etc. The ~org-scribe-edit-templates~ function provides quick access to the template directory for customization.
 
 *Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~templates/org-scribe-project.el~
 
@@ -686,12 +686,6 @@ A minor mode that provides the package's keybindings. When enabled in an org-mod
 :PROPERTIES:
 :CUSTOM_ID: configuration
 :END:
-
-** Template Directory (~org-scribe-template-directory~)
-
-Points to the directory containing project templates (novel-en/, novel-es/, short-story-en/, short-story-es/). Defaults to the package's bundled templates but can be customized to point to user templates. This allows writers to maintain custom project structures while still using the package's project creation functions. Templates are processed recursively with variable substitution for ${TITLE}, ${AUTHOR}, and ${DATE}.
-
-*Status*: Fully implemented | *Type*: defcustom | *Module*: ~templates/org-scribe-project.el~
 
 ** Spelling Dictionaries (~org-scribe-ispell-dictionaries~)
 

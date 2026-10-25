@@ -40,6 +40,7 @@
 (declare-function org-scribe-plan-daily-words   "planning/org-scribe-planner")
 (declare-function org-scribe-plan-start-date    "planning/org-scribe-planner")
 (declare-function org-scribe-plan-end-date      "planning/org-scribe-planner")
+(declare-function org-scribe-planner--ensure-plan-for-current-project "planning/org-scribe-planner")
 (declare-function org-scribe-planner--generate-day-schedule "planning/org-scribe-planner")
 (declare-function org-scribe-planner--get-today-date         "planning/org-scribe-planner")
 (declare-function org-scribe-planner--expected-through       "planning/org-scribe-planner")
@@ -66,7 +67,7 @@
     (max 0 (round (/ (float-time (time-subtract today start)) 86400)))))
 
 (defun org-scribe--health-plan-status (plan)
-  "Return 'On track', 'Ahead by N words' or 'Behind by N words' for PLAN.
+  "Return \"On track\", \"Ahead by N words\" or \"Behind by N words\" for PLAN.
 Expected words are computed by walking PLAN's day schedule up to and
 including yesterday, skipping spare days — matching
 `org-scribe-planner--show-progress-report' — instead of the naive
@@ -459,7 +460,7 @@ with clickable ID links back to each scene."
     (unless manuscript-file
       ;; Outside a project, say so rather than "no manuscript in this project".
       (org-scribe--require-project)
-      (user-error (org-scribe-msg 'msg-relink-no-novel)))
+      (user-error "%s" (org-scribe-msg 'msg-relink-no-novel)))
 
     ;; Collect all data before opening the buffer
     (let* ((scenes         (org-scribe--health-collect-scene-data manuscript-file))
@@ -559,7 +560,9 @@ with clickable ID links back to each scene."
                                                          total-obj word-target))))))
         (if progress
             (progn
-              (insert (format "- Word objective :: %d\n" total-obj))
+              ;; Same number as the project's word target: one line says it.
+              (unless (eql total-obj (org-scribe-project-word-target))
+                (insert (format "- Word objective :: %d\n" total-obj)))
               (insert (format "- Progress :: %.1f%%\n" progress)))
           (insert "- Word objective :: /not set/\n"))
         (when-let* ((hint (org-scribe--health-dir-locals-hint)))
@@ -571,6 +574,9 @@ with clickable ID links back to each scene."
         ;; planner (gate = 'no); undecided (nil) keeps prior behavior.
         (when (and (featurep 'org-scribe-planner)
                    (not (eq (org-scribe-planner-gate) 'no)))
+          ;; The active plan is a session global: drop one that belongs to
+          ;; another project (and load this project's own) before reading it.
+          (org-scribe-planner--ensure-plan-for-current-project)
           (insert "* Writing Plan\n\n")
           (cond
            ;; Plan is active in memory

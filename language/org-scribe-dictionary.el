@@ -62,7 +62,7 @@ Shared by the definition and synonym lookups so both feel like one tool."
      conjugations)
     (insert "#+end_example\n\n")))
 
-(defun org-scribe-rae-format-result (json-data palabra)
+(defun org-scribe-rae-format-result (json-data _palabra)
   "Format the JSON-DATA response from RAE API into an org-mode buffer.
 PALABRA is the word that was looked up."
   (let* ((data (gethash "data" json-data))
@@ -130,7 +130,7 @@ Displays the word definition, etymology, and meanings in a buffer.
 Includes improved error handling for network issues."
   (interactive "sPalabra a buscar en la RAE: ")
   (when (string-empty-p (string-trim palabra))
-    (user-error (org-scribe-msg 'error-word-empty)))
+    (user-error "%s" (org-scribe-msg 'error-word-empty)))
   (let* ((url (format "https://rae-api.com/api/words/%s"
                       (url-hexify-string palabra)))
          (buffer-name (format "*RAE: %s*" palabra))
@@ -142,7 +142,7 @@ Includes improved error handling for network issues."
          (unwind-protect
              (org-scribe-with-error-handling "org-scribe-rae-api-lookup"
                (if (plist-get status :error)
-                   (message (org-scribe-msg 'error-word-lookup (plist-get status :error)))
+                   (message "%s" (org-scribe-msg 'error-word-lookup (plist-get status :error)))
                  ;; Move past HTTP headers
                  (goto-char (point-min))
                  (re-search-forward "^$")
@@ -171,7 +171,7 @@ Includes improved error handling for network issues."
                          (goto-char (point-min)))
                        (display-buffer output-buffer))
                      (json-error
-                      (message (org-scribe-msg 'error-word-parse err)))))))
+                      (message "%s" (org-scribe-msg 'error-word-parse err)))))))
            (when (buffer-live-p response-buffer)
              (kill-buffer response-buffer)))))
      (list palabra buffer-name)
@@ -191,7 +191,7 @@ Includes improved error handling for network issues."
          (unwind-protect
              (org-scribe-with-error-handling "org-scribe-rae-api-random"
                (if (plist-get status :error)
-                   (message (org-scribe-msg 'error-random-word (plist-get status :error)))
+                   (message "%s" (org-scribe-msg 'error-random-word (plist-get status :error)))
                  (goto-char (point-min))
                  (re-search-forward "^$")
                  ;; Extract and decode the response body as UTF-8
@@ -207,7 +207,7 @@ Includes improved error handling for network issues."
                          (when palabra
                            (org-scribe-rae-api-lookup palabra)))
                      (json-error
-                      (message (org-scribe-msg 'error-random-word-parse err)))))))
+                      (message "%s" (org-scribe-msg 'error-random-word-parse err)))))))
            (when (buffer-live-p response-buffer)
              (kill-buffer response-buffer))))))))
 
@@ -237,7 +237,7 @@ so a lookup for one lands on the lemma's article and the writer must be told."
         (kill-buffer buffer)
         (eww url)))
     (unless (string-equal-ignore-case headword word)
-      (message (org-scribe-msg 'msg-dictionary-lemma-used word headword)))
+      (message "%s" (org-scribe-msg 'msg-dictionary-lemma-used word headword)))
     t))
 
 (defun org-scribe--wikcionario-report-miss (word)
@@ -255,7 +255,7 @@ so a lookup for one lands on the lemma's article and the writer must be told."
           (goto-char (point-min))
           (read-only-mode 1))
         (org-scribe--side-window buffer))
-    (message (org-scribe-msg 'msg-dictionary-not-found word))))
+    (message "%s" (org-scribe-msg 'msg-dictionary-not-found word))))
 
 ;;;###autoload
 (defun org-scribe-dictionary-lookup (palabra &optional reprobe)
@@ -270,7 +270,7 @@ server — use it after starting kiwix-serve mid-session, since availability is
 probed once and then trusted so that lookups cost no latency."
   (interactive "sPalabra a buscar: \nP")
   (when (string-empty-p (string-trim palabra))
-    (user-error (org-scribe-msg 'error-word-empty)))
+    (user-error "%s" (org-scribe-msg 'error-word-empty)))
   (let* ((backend org-scribe-dictionary-backend)
          (local (unless (eq backend 'rae-api)
                   (org-scribe-wikcionario-available-p reprobe))))
@@ -282,11 +282,11 @@ probed once and then trusted so that lookups cost no latency."
       (org-scribe--wikcionario-report-miss palabra))
      ;; Offline-only: name the service, since that is the actionable part.
      ((eq backend 'wikcionario)
-      (message (org-scribe-msg 'error-wikcionario-unreachable
+      (message "%s" (org-scribe-msg 'error-wikcionario-unreachable
                                org-scribe-wikcionario-url)))
      (t
       (when (eq backend 'auto)
-        (message (org-scribe-msg 'msg-dictionary-fallback-online palabra)))
+        (message "%s" (org-scribe-msg 'msg-dictionary-fallback-online palabra)))
       (org-scribe-rae-api-lookup palabra)))))
 
 ;;; Synonym Lookup
@@ -336,7 +336,7 @@ unlabelled senses would otherwise be indistinguishable from one another."
       (use-local-map (copy-keymap (or (current-local-map) (make-sparse-keymap))))
       (local-set-key (kbd "q") #'quit-window))
     (when substituted
-      (message (org-scribe-msg 'msg-thesaurus-lemma-used palabra headword)))
+      (message "%s" (org-scribe-msg 'msg-thesaurus-lemma-used palabra headword)))
     (org-scribe--side-window buffer)))
 
 (defun org-scribe--sinonimo-wordreference (palabra)
@@ -363,7 +363,7 @@ installed or has no entry for PALABRA — a word absent from the local data
 should still get an answer rather than a shrug."
   (interactive "s¿Qué palabra quieres buscar? ")
   (when (string-empty-p (string-trim palabra))
-    (user-error (org-scribe-msg 'error-word-empty)))
+    (user-error "%s" (org-scribe-msg 'error-word-empty)))
   (let* ((backend org-scribe-thesaurus-backend)
          (entry (unless (eq backend 'wordreference)
                   (org-scribe-mythes-lookup-entry palabra))))
@@ -372,7 +372,7 @@ should still get an answer rather than a shrug."
       (org-scribe--sinonimo-render-mythes palabra (cdr entry) (car entry)))
      ;; Offline-only: report the reason rather than silently going online.
      ((eq backend 'mythes)
-      (message (org-scribe-msg
+      (message "%s" (org-scribe-msg
                 (if (org-scribe-mythes-available-p)
                     'msg-thesaurus-no-synonyms
                   'error-thesaurus-not-found)
@@ -381,7 +381,7 @@ should still get an answer rather than a shrug."
                   org-scribe-mythes-directory))))
      (t
       (when (and (eq backend 'auto) (org-scribe-mythes-available-p))
-        (message (org-scribe-msg 'msg-thesaurus-fallback-online palabra)))
+        (message "%s" (org-scribe-msg 'msg-thesaurus-fallback-online palabra)))
       (org-scribe--sinonimo-wordreference palabra)))))
 
 ;;;###autoload
@@ -395,7 +395,7 @@ threw a void-function error instead of degrading."
   (interactive)
   (if (fboundp 'powerthesaurus-lookup-dwim)
       (call-interactively #'powerthesaurus-lookup-dwim)
-    (message (org-scribe-msg 'msg-command-unavailable "powerthesaurus"))))
+    (message "%s" (org-scribe-msg 'msg-command-unavailable "powerthesaurus"))))
 
 (provide 'org-scribe-dictionary)
 

@@ -139,3 +139,8 @@ Open links sub-menu with =F8 F8 L=.
 |------------+--------------------------------+-----------------------------------------------------|
 | =F8 F8 LC= | =org-scribe-column-view-toggle= | Toggle org-column-view (shows clean names, not IDs) |
 | =F8 F8 LT= | =org-scribe-overlays-mode=     | Toggle entity tooltips in echo area (opt-in)        |
+
+** About the plan
+
+[[file:plan.org][plan.org]] is a frozen snapshot (May to June 2026). The health report shows it as past
+its end date and behind schedule; that is the demo's age, not a fault. Create your own with =F8 F8 W=.

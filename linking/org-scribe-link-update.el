@@ -7,10 +7,9 @@
 ;;; Commentary:
 
 ;; Provides functions to update the display names of ID links when
-;; entities are renamed in database files (characters.org, locations.org,
-;; plot.org).
+;; entities are renamed in the project's design notebook.
 ;;
-;; When you rename a character from "Alex" to "Alexandra" in characters.org,
+;; When you rename a character from "Alex" to "Alexandra" in the notebook,
 ;; the ID links still work (they're ID-based), but the display text shows
 ;; the old name. These functions refresh the display text to match the
 ;; current database names.
@@ -70,7 +69,7 @@ This is the format returned by org-scribe--get-all-characters and similar.
 Returns a hash table: {ID: NAME, ...}
 
 Example:
-  Input:  '((\"Alex Rivera\" . (\"char-alex-001\" . \"Alex Rivera\"))
+  Input:  \\='((\"Alex Rivera\" . (\"char-alex-001\" . \"Alex Rivera\"))
            (\"Sam Chen\" . (\"char-sam-002\" . \"Sam Chen\")))
   Output: Hash table: {\"char-alex-001\" -> \"Alex Rivera\",
                        \"char-sam-002\" -> \"Sam Chen\"}"
@@ -208,7 +207,7 @@ Returns the number of scenes updated."
            (when any-updated
              (setq count (1+ count)))))
        nil 'file))
-    (message (org-scribe-msg 'msg-updated-all-links-scene count (org-scribe-plural count "")))
+    (message "%s" (org-scribe-msg 'msg-updated-all-links-scene count (org-scribe-plural count "")))
     count))
 
 ;;; One-Shot Project Relink (registry-driven)
@@ -245,7 +244,7 @@ manuscript buffer is saved when changes were made."
   ;; Phases 2 & 3 operate on the manuscript.
   (let ((manuscript-file (plist-get (org-scribe-project-structure) :manuscript-file)))
     (if (not (and manuscript-file (file-exists-p manuscript-file)))
-        (user-error (org-scribe-msg 'msg-relink-no-novel))
+        (user-error "%s" (org-scribe-msg 'msg-relink-no-novel))
       (with-current-buffer (find-file-noselect manuscript-file)
         ;; Phase 2 — convert plain names to links for every entity type.
         (dolist (entry org-scribe-entity-registry)

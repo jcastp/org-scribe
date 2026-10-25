@@ -99,7 +99,9 @@ wrong on purpose and the tools are meant to find them:
   - Journal: the drafting diary, including how the design changed
   - Scratchpad: loose ideas, and two questions branched into alternatives
 - [[file:novel.org][novel.org]] — manuscript, progress tables and timelines
-- [[file:plan.org][plan.org]] — the writing planner's schedule and ledger
+- [[file:plan.org][plan.org]] — the writing planner's schedule and ledger. It is a frozen snapshot
+  (May to August 2026), so the health report shows the plan as past its end date and
+  behind schedule; that is the demo's age, not a fault. Create your own with =F8 F8 W=.
 
 ** Current Status
 

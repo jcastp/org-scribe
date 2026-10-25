@@ -108,7 +108,7 @@ outline at chapters, and org-scribe's scenes are level 3. See
 
 ** Marker Convention
 
-Revision produces two different kinds of writing: notes *about* the manuscript, which belong in the notes file, and notes *inside* the manuscript, attached to the exact sentence that needs work. This section is about the second kind.
+Revision produces two different kinds of writing: notes *about* the manuscript, which belong in the design notebook, and notes *inside* the manuscript, attached to the exact sentence that needs work. This section is about the second kind.
 
 The convention is to write them inside an Org comment block:
 
@@ -223,7 +223,7 @@ There is no bundled snippet for ~*SUMMARY*~ for the same reason; if you use one,
 
 ** Setting Up Your Revision Notes File
 
-The first time you use editing mode, the notes file is blank. Set it up:
+The first time you use editing mode, the design notebook is blank. Set it up:
 
 #+BEGIN_EXAMPLE
 #+TITLE: Novel Revision Notes
@@ -622,7 +622,7 @@ Your workflow:
 
 ** Scene Revision Checklist Template
 
-Add this to your notes file for each scene:
+Add this to your design notebook for each scene:
 
 #+BEGIN_EXAMPLE
 ,*** Scene 1 - Opening
@@ -1120,7 +1120,7 @@ View all revision work at once:
 
 ** Progress Tracking
 
-In notes file, track overall progress:
+In the design notebook, track overall progress:
 
 #+BEGIN_EXAMPLE
 ,* Revision Progress

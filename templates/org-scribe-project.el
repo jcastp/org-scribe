@@ -48,44 +48,31 @@
        (buffer-file-name)))
   "Directory where this file is located.")
 
-(defcustom org-scribe-template-directory
-  (expand-file-name "../org-scribe-templates/novel-en" org-scribe-project-package-directory)
-  "Directory containing novel project templates.
-By default, uses the novel-en (English) templates. Change to
-'novel-es' for Spanish templates, or provide a custom path."
-  :type 'directory
-  :group 'org-scribe)
-
 (defcustom org-scribe-template-language 'en
   "Default language for novel templates.
-Can be 'en for English or 'es for Spanish.
-This is used to automatically set the template directory."
+Can be \\='en for English or \\='es for Spanish.
+It selects which template set new projects are created from."
   :type '(choice (const :tag "English" en)
                  (const :tag "Spanish" es))
-  :group 'org-scribe
-  :set (lambda (symbol value)
-         (set-default symbol value)
-         ;; Update template directory when language changes
-         (setq org-scribe-template-directory
-               (expand-file-name
-                (concat "../org-scribe-templates/" (org-scribe-lang-template 'novel value))
-                org-scribe-project-package-directory))))
-
-(defcustom org-scribe-short-story-template-directory
-  (expand-file-name "../org-scribe-templates/short-story-en" org-scribe-project-package-directory)
-  "Directory containing short story project templates.
-By default, uses the short-story-en (English) templates."
-  :type 'directory
   :group 'org-scribe)
 
 ;;; Project Creation
 
 (defun org-scribe--validate-project-title (title)
   "Validate TITLE for use as a directory name.
-Returns nil if valid, otherwise returns an error message."
+Returns nil if valid, otherwise returns an error message.
+The title is also the directory name, hence the filesystem rules; a
+title the directory cannot carry (a colon, a question mark) can be set
+afterwards with `org-scribe-set-title', whose rule is looser."
   (cond
    ((string-empty-p (string-trim title))
     "Title cannot be empty or contain only whitespace")
+   ((string-match-p "[\n\r]" title)
+    "Title cannot span more than one line")
+   ((not (string= title (string-trim title)))
+    "Title cannot start or end with whitespace")
+   ((> (string-bytes title) 200)
+    "Title is too long to be a directory name")
    ((string-match-p "[/\\]" title)
     "Title cannot contain path separators (/ or \\)")
    ((string-match-p ":" title)
@@ -97,6 +84,26 @@ Returns nil if valid, otherwise returns an error message."
    ((string-match-p "\\.\\." title)
     "Title cannot contain double dots (..)")
    (t nil)))
+
+(defun org-scribe--default-author ()
+  "Return the author name for a new manuscript.
+`org-scribe-author-name' when set (it is what the Shunn front matter
+uses, so both outputs agree), else `user-full-name', else \"Author\"."
+  (cond ((and (boundp 'org-scribe-author-name)
+              (stringp org-scribe-author-name)
+              (not (string-empty-p org-scribe-author-name)))
+         org-scribe-author-name)
+        ((and (boundp 'user-full-name) (stringp user-full-name)
+              (not (string-empty-p user-full-name)))
+         user-full-name)
+        (t "Author")))
+
+(defun org-scribe--git (&rest args)
+  "Run git with ARGS in `default-directory'; return t on success.
+A missing git executable is not an error: git is optional, and a
+missing program must not abort a creation half way."
+  (and (executable-find "git")
+       (zerop (apply #'call-process "git" nil nil nil args))))
 
 (defun org-scribe--auto-setup-links (project-dir)
   "Give every template entity in PROJECT-DIR a stable ID.
@@ -114,7 +121,10 @@ must never make project creation fail."
   ;; new project; drop any stale cached type for this root first.
   (org-scribe-project-type-cache-clear project-dir)
   (ignore-errors
-    (let ((default-directory (file-name-as-directory project-dir)))
+    ;; Routine bookkeeping: keep it out of the echo area and *Messages*.
+    (let ((default-directory (file-name-as-directory project-dir))
+          (inhibit-message t)
+          (message-log-max nil))
       (dolist (entry org-scribe-entity-registry)
         (let* ((entity (cdr entry))
                (file (funcall (plist-get entity :file-fn))))
@@ -336,22 +346,26 @@ This function:
                         org-scribe-project-package-directory)))
 
     (unless (file-directory-p template-dir)
-      (user-error (org-scribe-msg 'error-template-not-found template-dir)))
+      (user-error "%s" (org-scribe-msg 'error-template-not-found template-dir)))
 
     ;; Validate title
     (let ((validation-error (org-scribe--validate-project-title title)))
       (when validation-error
         (user-error "%s" validation-error)))
 
-    (let* ((project-dir (expand-file-name title base-dir))
+    (let* ((project-dir (expand-file-name (concat "./" title) base-dir))
            (variables `(("TITLE" . ,title)
-                       ("AUTHOR" . ,(if (boundp 'user-full-name) user-full-name "Author"))
+                       ("AUTHOR" . ,(org-scribe--default-author))
                        ("DATE" . ,(format-time-string "%Y-%m-%d"))
-                       ,@(org-scribe--word-target-variables target-words language))))
+                       ,@(org-scribe--word-target-variables target-words language)))
+           ;; Resolved before anything is written, so a missing fragment
+           ;; cannot leave a half-built directory behind.
+           (foundations (org-scribe--foundations-fragment
+                         method language template-dir variables)))
 
       ;; Check if project already exists
       (when (file-exists-p project-dir)
-        (user-error (org-scribe-msg 'project-already-exists project-dir)))
+        (user-error "%s" (org-scribe-msg 'project-already-exists project-dir)))
 
       ;; Create project directory
       (make-directory project-dir t)
@@ -371,17 +385,14 @@ This function:
 
       ;; Initialize git repository
       (let ((default-directory project-dir))
-        (unless (zerop (call-process "git" nil nil nil "init"))
-          (warn "Failed to initialize git repository")))
+        (unless (org-scribe--git "init")
+          (warn "%s" "Failed to initialize git repository")))
 
       ;; Process all templates; the notebook's Foundations part is the
       ;; method's own fragment (see `org-scribe--foundations-fragment').
       (org-scribe--copy-templates
        template-dir project-dir
-       (cons (cons "FOUNDATIONS"
-                   (org-scribe--foundations-fragment
-                    method language template-dir variables))
-             variables))
+       (cons (cons "FOUNDATIONS" foundations) variables))
 
       ;; Linking on by default: mint IDs for the template's entities so the
       ;; user never has to run a separate "setup" step (A7).
@@ -389,16 +400,16 @@ This function:
 
       ;; Create initial git commit
       (let ((default-directory project-dir))
-        (when (zerop (call-process "git" nil nil nil "add" "."))
-          (call-process "git" nil nil nil "commit" "-m"
-                       (format "Initial commit: %s" title))))
+        (when (org-scribe--git "add" ".")
+          (org-scribe--git "commit" "-m"
+                           (format "Initial commit: %s" title))))
 
       ;; Register project with project.el
       (project-remember-project (project-current nil project-dir))
 
       ;; Open the manuscript
       (find-file (expand-file-name (org-scribe-lang-file 'manuscript-novel language) project-dir))
-      (message (org-scribe-msg 'project-creation-success-novel title project-dir))
+      (message "%s" (org-scribe-msg 'project-creation-success-novel title project-dir))
       (when (called-interactively-p 'any)
         (org-scribe--offer-plan-after-create base-dir title)))))
 
@@ -441,23 +452,23 @@ This function:
                       org-scribe-project-package-directory)))
 
     (unless (file-directory-p template-dir)
-      (user-error (org-scribe-msg 'error-template-not-found template-dir)))
+      (user-error "%s" (org-scribe-msg 'error-template-not-found template-dir)))
 
     ;; Validate title
     (let ((validation-error (org-scribe--validate-project-title title)))
       (when validation-error
         (user-error "%s" validation-error)))
 
-    (let* ((project-dir (expand-file-name title base-dir))
+    (let* ((project-dir (expand-file-name (concat "./" title) base-dir))
            (variables `(("TITLE" . ,title)
-                       ("AUTHOR" . ,(if (boundp 'user-full-name) user-full-name "Author"))
+                       ("AUTHOR" . ,(org-scribe--default-author))
                        ("DATE" . ,(format-time-string "%Y-%m-%d"))
                        ,@(org-scribe--word-target-variables target-words language)))
            (story-file (org-scribe-lang-file 'manuscript-short language)))
 
       ;; Check if project already exists
       (when (file-exists-p project-dir)
-        (user-error (org-scribe-msg 'project-already-exists project-dir)))
+        (user-error "%s" (org-scribe-msg 'project-already-exists project-dir)))
 
       ;; Create project directory
       (make-directory project-dir t)
@@ -477,8 +488,8 @@ This function:
 
       ;; Initialize git repository
       (let ((default-directory project-dir))
-        (unless (zerop (call-process "git" nil nil nil "init"))
-          (warn "Failed to initialize git repository")))
+        (unless (org-scribe--git "init")
+          (warn "%s" "Failed to initialize git repository")))
 
       ;; Process all templates
       (org-scribe--copy-templates template-dir project-dir variables)
@@ -492,16 +503,16 @@ This function:
 
       ;; Create initial git commit
       (let ((default-directory project-dir))
-        (when (zerop (call-process "git" nil nil nil "add" "."))
-          (call-process "git" nil nil nil "commit" "-m"
-                       (format "Initial commit: %s" title))))
+        (when (org-scribe--git "add" ".")
+          (org-scribe--git "commit" "-m"
+                           (format "Initial commit: %s" title))))
 
       ;; Register project with project.el
       (project-remember-project (project-current nil project-dir))
 
       ;; Open the story file
       (find-file (expand-file-name story-file project-dir))
-      (message (org-scribe-msg 'project-creation-success-short-story title project-dir))
+      (message "%s" (org-scribe-msg 'project-creation-success-short-story title project-dir))
       (when (called-interactively-p 'any)
         (org-scribe--offer-plan-after-create base-dir title)))))
 
@@ -566,7 +577,7 @@ a fragment."
                 base-dir))
          (file (expand-file-name "foundations.fragment" dir)))
     (unless (file-exists-p file)
-      (user-error (org-scribe-msg 'error-template-not-found file)))
+      (user-error "%s" (org-scribe-msg 'error-template-not-found file)))
     (org-scribe--process-template-string
      (with-temp-buffer
        (insert-file-contents file)
@@ -575,13 +586,14 @@ a fragment."
 
 (defun org-scribe--process-template-string (text variables)
   "Return TEXT with each `${NAME}' replaced from the VARIABLES alist."
-  (with-temp-buffer
-    (insert text)
-    (dolist (var variables)
-      (goto-char (point-min))
-      (while (search-forward (format "${%s}" (car var)) nil t)
-        (replace-match (cdr var) t t)))
-    (buffer-string)))
+  ;; One pass over the text, so a value that itself contains a `${...}'
+  ;; token (a title) is never rewritten, whatever the variable order.
+  (replace-regexp-in-string
+   "\\${\\([^}]+\\)}"
+   (lambda (match)
+     (let ((var (assoc (match-string 1 match) variables)))
+       (if var (cdr var) match)))
+   text t t))
 
 (defun org-scribe--process-template (template-file output-file variables)
   "Process TEMPLATE-FILE replacing variables, save to OUTPUT-FILE.
@@ -650,18 +662,54 @@ So, in a buffer with a heading at or above point, climb to the enclosing
 heading of LEVEL or higher (the scene when adding a scene, the chapter
 when adding a chapter, whichever is nearer) and insert at the end of its
 subtree: after the scene point is in, or as the last scene of the chapter
-point is on.  Before the first heading there is nothing to nest under, so
-the new heading goes at the start of the current line, as it always did."
-  (if (org-before-first-heading-p)
-      (beginning-of-line)
+point is on.
+
+From the preamble (where a freshly opened manuscript has point) or from
+`noexport' apparatus such as Project Goals, there is nothing to nest
+under: a heading inserted there is in no act, or inherits `noexport' and
+is dropped from every export and compile while still being counted.  The
+new heading then goes after the last narrative heading of LEVEL, i.e.
+the last scene of the last act.  If the buffer has none, it goes at the
+start of the current line, as it always did."
+  (cond
+   ((org-scribe--outside-narrative-p)
+    (unless (org-scribe--goto-end-of-last-narrative-heading level)
+      (when (org-before-first-heading-p) (beginning-of-line))))
+   (t
     (org-back-to-heading t)
     (while (and (> (org-current-level) level)
                 (org-up-heading-safe)))
     (org-end-of-subtree t)
     (if (eobp)
         (unless (bolp) (insert "\n"))
-      (forward-line 1)))
+      (forward-line 1))))
   (point))
+
+(defun org-scribe--outside-narrative-p ()
+  "Non-nil when point is in the preamble or inside `noexport' apparatus."
+  (or (org-before-first-heading-p)
+      (save-excursion
+        (org-back-to-heading t)
+        (member "noexport" (org-get-tags)))))
+
+(defun org-scribe--goto-end-of-last-narrative-heading (level)
+  "Move point past the last narrative heading of LEVEL; return non-nil if found.
+Narrative means not under `noexport'.  Return nil, leaving point alone,
+when the buffer has no such heading."
+  (let ((found nil))
+    (save-excursion
+      (goto-char (point-max))
+      (while (and (not found)
+                  (re-search-backward (format "^\\*\\{%d\\}[ \t]" level) nil t))
+        (unless (member "noexport" (org-get-tags))
+          (setq found (point)))))
+    (when found
+      (goto-char found)
+      (org-end-of-subtree t)
+      (if (eobp)
+          (unless (bolp) (insert "\n"))
+        (forward-line 1))
+      t)))
 
 (defun org-scribe--chapterless-container-at-point ()
   "Return the title of the act point is on when it has no chapter yet.
@@ -688,8 +736,8 @@ before the first heading."
 Point may be anywhere: in the middle of prose, on a scene or chapter
 heading, in a scene's drawer.  The scene goes at the end of the scene
 point is in, or at the end of the chapter point is on (see
-`org-scribe--goto-insertion-point'); before the first heading it goes at
-the start of the current line.  With point on an act, the scene goes at
+`org-scribe--goto-insertion-point'); before the first heading, or in `noexport' apparatus, it goes after
+the last scene of the last act.  With point on an act, the scene goes at
 the end of the act's last chapter; an act with no chapter yet gets one
 first (its name is asked for), since a scene directly under an act
 compiled as part of the previous act's last chapter.
@@ -704,7 +752,7 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 
   ;; Validate we're in org-mode
   (unless (derived-mode-p 'org-mode)
-    (user-error (org-scribe-msg 'not-in-org-mode)))
+    (user-error "%s" (org-scribe-msg 'not-in-org-mode)))
 
   ;; Use default title if scene-name is empty
   (when (string-empty-p (string-trim scene-name))
@@ -729,8 +777,9 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
          (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag)))
          (template (format "%s TODO %s%s
 :PROPERTIES:
-%s
+:WORDCOUNT: 0
 :WORD-OBJECTIVE: 500
+%s
 :END:
 
 {{{scene-break}}}
@@ -749,7 +798,7 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
     ;; heading occupies exactly one line regardless of its star count or
     ;; tag, so this offset holds for every project type.
     (goto-char start-pos)
-    (forward-line 2)  ; Move to PoV line
+    (forward-line 4)  ; Move to PoV line
     (end-of-line)     ; Move to end of line (after :PoV:)
     ;; Org needs whitespace between a property name and its value: a name
     ;; typed straight after ":PoV:" makes ":PoV:Xoán", which is not a
@@ -1138,10 +1187,10 @@ collide with the project's own scene level."
 
   ;; Validate we're in org-mode
   (unless (derived-mode-p 'org-mode)
-    (user-error (org-scribe-msg 'not-in-org-mode)))
+    (user-error "%s" (org-scribe-msg 'not-in-org-mode)))
 
   (unless (org-scribe-chapter-level)
-    (user-error (org-scribe-msg 'insert-chapter-no-chapters)))
+    (user-error "%s" (org-scribe-msg 'insert-chapter-no-chapters)))
 
   ;; Use default title if chapter-name is empty
   (when (string-empty-p (string-trim chapter-name))
@@ -1154,14 +1203,15 @@ collide with the project's own scene level."
          (scene-stars (make-string (plist-get levels :scene) ?*))
          (template (format "%s TODO %s%s
 :PROPERTIES:
-:WORD-OBJECTIVE: 3000
 :WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
 :END:
 
 %s TODO %s%s
 :PROPERTIES:
-%s
+:WORDCOUNT: 0
 :WORD-OBJECTIVE: 500
+%s
 :END:
 
 {{{scene-break}}}
@@ -1177,12 +1227,12 @@ collide with the project's own scene level."
     ;; turned `org-refile-use-cache' on.
     (org-scribe--refile-invalidate-cache)
 
-    ;; Position cursor at first scene's :PoV: property (line 8 from
+    ;; Position cursor at first scene's :PoV: property (line 10 from
     ;; start).  Like the scene heading above, a heading's star count and
     ;; tag do not change how many lines it occupies, so this offset holds
     ;; regardless of project type.
     (goto-char start-pos)
-    (forward-line 8)
+    (forward-line 10)
     (end-of-line)
     (insert " ")  ; see `org-scribe--insert-scene-template'
     (org-fold-show-context)))
@@ -1218,23 +1268,14 @@ reads the live registry rather than this fallback list.")
         (locate-dominating-file default-directory ".org-scribe-project"))))
 
 (defun org-scribe--project-file-candidates (&optional root)
-  "Return relative paths of Org files under ROOT for completion.
-Scans ROOT and its immediate subdirectories (skipping hidden ones),
-so files added by a newer template — such as the method design file —
-are offered without this function knowing their names.  Falls back to
+  "Return relative names of the Org files in ROOT for completion.
+A project is flat, so only ROOT itself is scanned (hidden files and the
+compile output directory are not offered).  Falls back to
 `org-scribe--known-project-files' when ROOT is nil or holds no Org files."
   (let ((found
          (when (and root (file-directory-p root))
-           (let (files)
-             (dolist (entry (directory-files root nil "\\`[^.]" t))
-               (let ((full (expand-file-name entry root)))
-                 (cond
-                  ((file-directory-p full)
-                   (dolist (sub (directory-files full nil "\\.org\\'" t))
-                     (push (concat entry "/" sub) files)))
-                  ((string-suffix-p ".org" entry)
-                   (push entry files)))))
-             (sort files #'string<)))))
+           (sort (directory-files root nil "\\`[^.].*\\.org\\'" t)
+                 #'string<))))
     (or found org-scribe--known-project-files)))
 
 ;;;###autoload
@@ -1254,18 +1295,21 @@ Completion offers the Org files actually present in the project."
               (find-file full-path)
             (when (yes-or-no-p (org-scribe-msg 'file-not-found filename))
               (find-file full-path))))
-      (message (org-scribe-msg 'not-in-novel-project)))))
+      (message "%s" (org-scribe-msg 'not-in-novel-project)))))
 
 ;;; Utility Functions
 
 ;;;###autoload
 (defun org-scribe-edit-templates ()
-  "Open the novel template directory for editing.
-This allows you to customize the templates used for new projects."
+  "Open the package's template directory for editing.
+Edits apply to every project created afterwards; the directory is the
+package's own copy, not a setting."
   (interactive)
-  (if (file-directory-p org-scribe-template-directory)
-      (dired org-scribe-template-directory)
-    (user-error (org-scribe-msg 'error-template-not-found org-scribe-template-directory))))
+  (let ((dir (expand-file-name "../org-scribe-templates"
+                               org-scribe-project-package-directory)))
+    (if (file-directory-p dir)
+        (dired dir)
+      (user-error "%s" (org-scribe-msg 'error-template-not-found dir)))))
 
 ;;;###autoload
 (defun org-scribe-register-projects (directory)
@@ -1273,7 +1317,7 @@ This allows you to customize the templates used for new projects."
 This is useful for adding novels created before project.el integration."
   (interactive "DBase directory containing novel projects: ")
   (let ((count (project-remember-projects-under directory t)))
-    (message (org-scribe-msg 'msg-projects-registered count directory))))
+    (message "%s" (org-scribe-msg 'msg-projects-registered count directory))))
 
 ;;; Backwards Compatibility Aliases
 

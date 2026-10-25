@@ -117,15 +117,15 @@ Specifically designed for the :PoV: property in scene headings."
   (let* ((chars (org-scribe--get-all-characters))
          (char-names (mapcar #'car chars)))
     (if (null char-names)
-        (message (org-scribe-msg 'error-no-characters-found))
+        (message "%s" (org-scribe-msg 'error-no-characters-found))
       (let* ((selected (completing-read (org-scribe-msg 'prompt-select-pov) char-names nil t))
              (entry (assoc selected chars))
              (id (cadr entry)))
         (if id
             (progn
               (org-scribe-scene-property-set 'pov (org-scribe--format-id-link id selected))
-              (message (org-scribe-msg 'msg-set-pov selected)))
-          (message (org-scribe-msg 'error-no-id-for-character selected)))))))
+              (message "%s" (org-scribe-msg 'msg-set-pov selected)))
+          (message "%s" (org-scribe-msg 'error-no-id-for-character selected)))))))
 
 ;;;###autoload
 (defun org-scribe-jump-to-pov-character ()
@@ -139,9 +139,9 @@ Follows the ID link in the :PoV: property."
         (if (string-match "\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]" pov)
             (let ((id (match-string 1 pov)))
               (org-scribe--goto-entity-id id (match-string 2 pov))
-              (message (org-scribe-msg 'msg-jump-to-pov)))
-          (message (org-scribe-msg 'error-pov-not-link))))
-    (message (org-scribe-msg 'error-no-pov-property))))
+              (message "%s" (org-scribe-msg 'msg-jump-to-pov)))
+          (message "%s" (org-scribe-msg 'error-pov-not-link))))
+    (message "%s" (org-scribe-msg 'error-no-pov-property))))
 
 ;;; Custom Link/Update Functions (handle both PoV + Characters)
 
@@ -156,13 +156,13 @@ Updates both :PoV: and :Characters: properties."
           (updated-chars (org-scribe--link-characters-in-property 'characters)))
       (cond
        ((and updated-pov updated-chars)
-        (message (org-scribe-msg 'msg-updated-pov-and-chars)))
+        (message "%s" (org-scribe-msg 'msg-updated-pov-and-chars)))
        (updated-pov
-        (message (org-scribe-msg 'msg-updated-pov)))
+        (message "%s" (org-scribe-msg 'msg-updated-pov)))
        (updated-chars
-        (message (org-scribe-msg 'msg-updated-characters)))
+        (message "%s" (org-scribe-msg 'msg-updated-characters)))
        (t
-        (message (org-scribe-msg 'msg-no-updates-needed)))))))
+        (message "%s" (org-scribe-msg 'msg-no-updates-needed)))))))
 
 ;;;###autoload
 (defun org-scribe-link-all-scene-characters ()
@@ -181,7 +181,7 @@ Processes all headings with :PoV: or :Characters: properties."
              (when (or updated-pov updated-chars)
                (setq count (1+ count))))))
        nil 'file)
-      (message (org-scribe-msg 'msg-updated-links count (org-scribe-plural count ""))))))
+      (message "%s" (org-scribe-msg 'msg-updated-links count (org-scribe-plural count ""))))))
 
 ;;; Update Link Display Names (custom: handles PoV + Characters with 4-state messaging)
 
@@ -201,13 +201,13 @@ Returns t if any updates were made, nil otherwise."
            (updated-chars (org-scribe--update-links-in-property 'characters id-map)))
       (cond
        ((and updated-pov updated-chars)
-        (message (org-scribe-msg 'msg-updated-pov-and-chars-link-names)))
+        (message "%s" (org-scribe-msg 'msg-updated-pov-and-chars-link-names)))
        (updated-pov
-        (message (org-scribe-msg 'msg-updated-pov-link-names)))
+        (message "%s" (org-scribe-msg 'msg-updated-pov-link-names)))
        (updated-chars
-        (message (org-scribe-msg 'msg-updated-characters-link-names)))
+        (message "%s" (org-scribe-msg 'msg-updated-characters-link-names)))
        (t
-        (message (org-scribe-msg 'msg-no-link-updates "character"))))
+        (message "%s" (org-scribe-msg 'msg-no-link-updates "character"))))
       (or updated-pov updated-chars))))
 
 ;;;###autoload
@@ -229,7 +229,7 @@ Returns the number of scenes updated."
              (when (or updated-pov updated-chars)
                (setq count (1+ count))))))
        nil 'file)
-      (message (org-scribe-msg 'msg-updated-all-link-names "character"
+      (message "%s" (org-scribe-msg 'msg-updated-all-link-names "character"
                               count (org-scribe-plural count "")))
       count)))
 

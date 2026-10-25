@@ -91,7 +91,7 @@ message at every startup was noise."
   (advice-add 'org-columns--displayed-value :filter-return
               #'org-scribe--column-view-advice)
   (unless quiet
-    (message (org-scribe-msg 'msg-column-view-enabled))))
+    (message "%s" (org-scribe-msg 'msg-column-view-enabled))))
 
 (defun org-scribe-column-view-disable ()
   "Disable ID link stripping in column view.
@@ -99,7 +99,7 @@ Removes advice from `org-columns--displayed-value'."
   (interactive)
   (advice-remove 'org-columns--displayed-value
                  #'org-scribe--column-view-advice)
-  (message (org-scribe-msg 'msg-column-view-disabled)))
+  (message "%s" (org-scribe-msg 'msg-column-view-disabled)))
 
 (defun org-scribe-column-view-toggle ()
   "Toggle ID link stripping in column view."

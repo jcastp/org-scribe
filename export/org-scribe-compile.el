@@ -583,7 +583,7 @@ KEYWORDS is the alist `org-collect-keywords' returns: NAME to a list of
 every occurrence, in document order."
   (cadr (assoc name keywords)))
 
-(defun org-scribe--compile-to-org (blocks keywords &optional style root format)
+(defun org-scribe--compile-to-org (blocks keywords &optional style root _format)
   "Return the intermediate Org document for BLOCKS with KEYWORDS.
 STYLE `shunn' additionally prepends the Shunn front matter, inserts the
 LaTeX running-header preamble (inert outside PDF output), and appends a
@@ -659,7 +659,7 @@ A bare `with-temp-file' -- writing straight to disk, bypassing any buffer
 -- is exactly what an earlier version of this function did, and it broke
 the one workflow this module's own design argues for: opening the
 intermediate to see whether a compile looks wrong (see CLAUDE.md,
-'Manuscript Compilation').  The write leaves that buffer's file modtime
+\"Manuscript Compilation\").  The write leaves that buffer's file modtime
 stale, so the very next thing that visits the same path --
 `org-scribe--compile-export', when FILE is also the export source --
 blocks on Emacs's interactive \"File ... changed on disk.  Reread from

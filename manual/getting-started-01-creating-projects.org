@@ -114,7 +114,8 @@ Short story title:
 - Use simple titles (letters, numbers, spaces, hyphens)
 - Avoid special characters: * ? < > | " ' : / \
 - Don't start with a dot (.)
-- The title will become the project folder name
+- The title will become the project folder name, on one line with no leading or trailing spaces
+- Need a colon or a question mark in the real title ("Dune: Part Two")? Create the project with a plain title, then change it with ~F8 F8 T~ (~org-scribe-set-title~), which accepts any one-line title
 
 ** Step 4: Choose the Template Language
 
@@ -581,6 +582,7 @@ Then restart Emacs or evaluate the line with ~C-x C-e~. The prompt will still ap
 1. Use only letters, numbers, spaces, and hyphens
 2. Remove characters like: * ? < > | " ' : / \
 3. Don't start the title with a dot (.)
+4. If the real title needs those characters, create the project with a plain one and rename it with ~F8 F8 T~
 
 ** Can't find the created project
 
@@ -665,7 +667,7 @@ Take your time! There's no rush. When you feel comfortable with project creation
 | Variable                      | Default       | What It Controls           |
 |-------------------------------+---------------+----------------------------|
 | ~org-scribe-template-language~  | ~'en~           | Template language (en/es)  |
-| ~org-scribe-template-directory~ | (package dir) | Where templates are stored |
+| ~org-scribe-template-language~ | ='en= | Template set for new projects |
 
 * Troubleshooting Tips
 

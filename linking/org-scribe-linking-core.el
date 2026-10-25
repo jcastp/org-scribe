@@ -185,7 +185,7 @@ ENTITY is an entity descriptor plist."
              (org-id-get-create)
              (setq count (1+ count)))))
        nil 'file)
-      (message (org-scribe-msg (plist-get entity :msg-added-ids)
+      (message "%s" (org-scribe-msg (plist-get entity :msg-added-ids)
                                count (org-scribe-plural count ""))))))
 
 (defun org-scribe--add-entity-ids (entity)
@@ -193,11 +193,11 @@ ENTITY is an entity descriptor plist."
 ENTITY is an entity descriptor plist."
   (let ((file (funcall (plist-get entity :file-fn))))
     (if (not (file-exists-p file))
-        (message (org-scribe-msg (plist-get entity :error-no-file)))
+        (message "%s" (org-scribe-msg (plist-get entity :error-no-file)))
       (with-current-buffer (find-file-noselect file)
         (org-scribe--add-ids-to-all-entities entity)
         (save-buffer)
-        (message (org-scribe-msg (plist-get entity :msg-ids-updated) file))))))
+        (message "%s" (org-scribe-msg (plist-get entity :msg-ids-updated) file))))))
 
 (defun org-scribe--entity-completion-items (items)
   "Return ITEMS relabeled for completion, disambiguating duplicate names.
@@ -231,7 +231,7 @@ ENTITY is an entity descriptor plist."
                 (org-scribe--get-all-entities entity)))
          (names (mapcar #'car items)))
     (if (null names)
-        (message (org-scribe-msg (plist-get entity :error-none-found)))
+        (message "%s" (org-scribe-msg (plist-get entity :error-none-found)))
       (let* ((selected (completing-read
                         (org-scribe-msg (plist-get entity :prompt-select))
                         names nil t))
@@ -241,8 +241,8 @@ ENTITY is an entity descriptor plist."
         (if id
             (progn
               (insert (org-scribe--format-id-link id name))
-              (message (org-scribe-msg 'msg-inserted-link name)))
-          (message (org-scribe-msg (plist-get entity :error-no-id) selected)))))))
+              (message "%s" (org-scribe-msg 'msg-inserted-link name)))
+          (message "%s" (org-scribe-msg (plist-get entity :error-no-id) selected)))))))
 
 (defun org-scribe--insert-multiple-entity-links (entity)
   "Insert multiple entity links separated by commas.
@@ -253,7 +253,7 @@ ENTITY is an entity descriptor plist."
          selected-labels
          links)
     (if (null names)
-        (message (org-scribe-msg (plist-get entity :error-none-found)))
+        (message "%s" (org-scribe-msg (plist-get entity :error-none-found)))
       (while (let ((choice (completing-read
                             (org-scribe-msg (plist-get entity :prompt-select-multi))
                             names nil nil)))
@@ -271,10 +271,10 @@ ENTITY is an entity descriptor plist."
       (if links
           (progn
             (insert (string-join links ", "))
-            (message (org-scribe-msg (plist-get entity :msg-inserted-links)
+            (message "%s" (org-scribe-msg (plist-get entity :msg-inserted-links)
                                      (length links)
                                      (org-scribe-plural (length links) ""))))
-        (message (org-scribe-msg (plist-get entity :msg-no-selected)))))))
+        (message "%s" (org-scribe-msg (plist-get entity :msg-no-selected)))))))
 
 (defun org-scribe--set-scene-entity (entity property)
   "Set PROPERTY to multiple entity ID links via completion.
@@ -288,7 +288,7 @@ PROPERTY is a canonical scene property key (e.g. \\='characters)."
          links
          selected-names)
     (if (null names)
-        (message (org-scribe-msg (plist-get entity :error-none-found)))
+        (message "%s" (org-scribe-msg (plist-get entity :error-none-found)))
       (while (let ((choice (completing-read
                             (org-scribe-msg (plist-get entity :prompt-select-multi))
                             names nil nil)))
@@ -310,9 +310,9 @@ PROPERTY is a canonical scene property key (e.g. \\='characters)."
       (if links
           (progn
             (org-scribe-scene-property-set property (string-join links ", "))
-            (message (org-scribe-msg (plist-get entity :msg-set)
+            (message "%s" (org-scribe-msg (plist-get entity :msg-set)
                                      (string-join selected-names ", "))))
-        (message (org-scribe-msg (plist-get entity :msg-no-selected)))))))
+        (message "%s" (org-scribe-msg (plist-get entity :msg-no-selected)))))))
 
 (defun org-scribe--link-entity-in-property (entity property)
   "Convert entity names to ID links in PROPERTY of current heading.
@@ -344,9 +344,9 @@ Uses the first property in the entity's :properties list."
            (updated (org-scribe--link-entity-in-property entity property)))
       (cond
        (updated
-        (message (org-scribe-msg (plist-get entity :msg-updated-single))))
+        (message "%s" (org-scribe-msg (plist-get entity :msg-updated-single))))
        (t
-        (message (org-scribe-msg (plist-get entity :msg-no-updates))))))))
+        (message "%s" (org-scribe-msg (plist-get entity :msg-no-updates))))))))
 
 (defun org-scribe--link-all-scene-entities (entity)
   "Convert entity names to ID links in all scenes in current buffer.
@@ -365,7 +365,7 @@ ENTITY is an entity descriptor plist."
              (when any-updated
                (setq count (1+ count))))))
        nil 'file)
-      (message (org-scribe-msg (plist-get entity :msg-updated-links)
+      (message "%s" (org-scribe-msg (plist-get entity :msg-updated-links)
                                count (org-scribe-plural count ""))))))
 
 (defun org-scribe--setup-entity-links (entity add-ids-fn link-all-fn)
@@ -374,7 +374,7 @@ ENTITY is an entity descriptor plist.
 ADD-IDS-FN is the function to call to add IDs.
 LINK-ALL-FN is the function to call to link all scenes."
   (org-scribe--require-project)
-  (message (org-scribe-msg (plist-get entity :msg-setting-up)))
+  (message "%s" (org-scribe-msg (plist-get entity :msg-setting-up)))
   (funcall add-ids-fn)
   (when (y-or-n-p (org-scribe-msg (plist-get entity :question-link-existing)))
     (let ((manuscript-file (plist-get (org-scribe-project-structure) :manuscript-file)))
@@ -382,7 +382,7 @@ LINK-ALL-FN is the function to call to link all scenes."
         (with-current-buffer (find-file-noselect manuscript-file)
           (funcall link-all-fn)
           (save-buffer)))))
-  (message (org-scribe-msg (plist-get entity :msg-setup-complete))))
+  (message "%s" (org-scribe-msg (plist-get entity :msg-setup-complete))))
 
 (defun org-scribe--update-entity-link-names (entity)
   "Update entity link display names in current scene.
@@ -399,8 +399,8 @@ Returns t if any updates were made."
         (when (org-scribe--update-links-in-property prop id-map)
           (setq any-updated t)))
       (if any-updated
-          (message (org-scribe-msg (plist-get entity :msg-updated-link-names)))
-        (message (org-scribe-msg 'msg-no-link-updates
+          (message "%s" (org-scribe-msg (plist-get entity :msg-updated-link-names)))
+        (message "%s" (org-scribe-msg 'msg-no-link-updates
                                  (plist-get entity :msg-no-link-updates-type))))
       any-updated)))
 
@@ -425,7 +425,7 @@ Returns the number of scenes updated."
              (when any-updated
                (setq count (1+ count))))))
        nil 'file)
-      (message (org-scribe-msg 'msg-updated-all-link-names
+      (message "%s" (org-scribe-msg 'msg-updated-all-link-names
                                (plist-get entity :msg-updated-all-type)
                                count (org-scribe-plural count "")))
       count)))

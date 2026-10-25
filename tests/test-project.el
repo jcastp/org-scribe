@@ -475,22 +475,108 @@ would collide with the project's own scene level."
       ;; Nothing was inserted.
       (should (string-empty-p (buffer-string))))))
 
-;;; Configuration Tests
+;;; Insertion from the preamble / apparatus, title and creation hardening
 
-(ert-deftest test-template-directory-configured ()
-  "Test that template directory is configured."
-  (should (boundp 'org-scribe-template-directory))
-  (should (stringp org-scribe-template-directory)))
+(defconst test-project--act-doc
+  "#+TITLE: T
+
+* Project Goals :ignore:noexport:
+Notes.
+* Act I
+** Chapter 1
+*** TODO One :ignore:
+Text.
+* Act II
+** Chapter 2
+*** TODO Two :ignore:
+More.
+"
+  "A minimal manuscript: apparatus first, then two acts.")
+
+(defmacro test-project--with-novel-buffer (&rest body)
+  "Run BODY in an Org buffer holding `test-project--act-doc' as a novel."
+  (declare (indent 0))
+  `(with-temp-buffer
+     (insert test-project--act-doc)
+     (org-mode)
+     (cl-letf (((symbol-function 'org-scribe-project-levels)
+                (lambda (&optional _) '(:chapter 2 :scene 3 :scene-tag "ignore"))))
+       ,@body)))
+
+(ert-deftest test-insert-scene-from-preamble-goes-after-last-scene ()
+  (test-project--with-novel-buffer
+    (goto-char (point-min))
+    (org-scribe-insert-scene "Fresh")
+    (let ((text (buffer-string)))
+      (should (string-match-p "More\\.\n\\*\\*\\* TODO Fresh" text))
+      (should-not (string-match-p "\\`\\*\\*\\* TODO Fresh" text)))
+    (org-back-to-heading t)
+    (should (equal "Fresh" (org-get-heading t t t t)))
+    (should-not (member "noexport" (org-get-tags)))))
+
+(ert-deftest test-insert-scene-from-noexport-apparatus-leaves-it-alone ()
+  (test-project--with-novel-buffer
+    (goto-char (point-min))
+    (search-forward "Notes.")
+    (org-scribe-insert-scene "Fresh")
+    (goto-char (point-min))
+    (re-search-forward "^\\*\\*\\* TODO Fresh")
+    (should-not (member "noexport" (org-get-tags)))
+    (should (equal "Act II" (save-excursion
+                              (org-up-heading-safe) (org-up-heading-safe)
+                              (org-get-heading t t t t))))))
+
+(ert-deftest test-insert-chapter-from-preamble-goes-in-last-act ()
+  (test-project--with-novel-buffer
+    (goto-char (point-min))
+    (org-scribe-insert-chapter "Late")
+    (goto-char (point-min))
+    (re-search-forward "^\\*\\* TODO Late")
+    (should (equal "Act II" (save-excursion
+                              (org-up-heading-safe)
+                              (org-get-heading t t t t))))))
+
+(ert-deftest test-validate-title-rejects-newline-and-padding ()
+  (should (org-scribe--validate-project-title "Multi\nline"))
+  (should (org-scribe--validate-project-title "  Padded  "))
+  (should (org-scribe--validate-project-title (make-string 400 ?a)))
+  (should-not (org-scribe--validate-project-title "Plain Title")))
+
+(ert-deftest test-process-template-string-is-single-pass ()
+  "A value holding another variable's token is not rewritten."
+  (should (equal "Dollar ${AUTHOR} X / Ana"
+                 (org-scribe--process-template-string
+                  "${TITLE} / ${AUTHOR}"
+                  '(("TITLE" . "Dollar ${AUTHOR} X") ("AUTHOR" . "Ana")))))
+  (should (equal "${UNKNOWN}"
+                 (org-scribe--process-template-string "${UNKNOWN}" nil))))
+
+(ert-deftest test-default-author-prefers-configured-author-name ()
+  (let ((org-scribe-author-name "Ana Perez") (user-full-name "jcastp"))
+    (should (equal "Ana Perez" (org-scribe--default-author))))
+  (let ((org-scribe-author-name nil) (user-full-name "jcastp"))
+    (should (equal "jcastp" (org-scribe--default-author))))
+  (let ((org-scribe-author-name "") (user-full-name ""))
+    (should (equal "Author" (org-scribe--default-author)))))
+
+(ert-deftest test-create-novel-project-percent-title-and-no-git ()
+  "A `%' in the title and a missing git neither abort nor half-build."
+  (test-project--with-temp-base-dir base
+    (let ((exec-path nil)
+          (process-environment (cons "PATH=/nonexistent" process-environment)))
+      (cl-letf (((symbol-function 'project-remember-project) #'ignore)
+                ((symbol-function 'find-file) #'ignore))
+        (org-scribe-create-novel-project base "50% Off" 'en 'sistema 80000)))
+    (let ((dir (expand-file-name "50% Off" base)))
+      (should (file-exists-p (expand-file-name "novel.org" dir)))
+      (should (file-exists-p (expand-file-name ".org-scribe-project" dir))))))
+
+;;; Configuration Tests
 
 (ert-deftest test-template-language-configured ()
   "Test that template language is configured."
   (should (boundp 'org-scribe-template-language))
   (should (memq org-scribe-template-language '(en es))))
-
-(ert-deftest test-short-story-template-directory-configured ()
-  "Test that short story template directory is configured."
-  (should (boundp 'org-scribe-short-story-template-directory))
-  (should (stringp org-scribe-short-story-template-directory)))
 
 ;;; Backward Compatibility Tests
 
@@ -517,24 +603,13 @@ would collide with the project's own scene level."
 
 ;;; Integration Tests (require actual template files)
 
-(ert-deftest test-template-directory-exists ()
-  "Test that default template directory exists."
-  ;; This test may fail if templates are not installed
-  ;; but it's useful for catching installation issues
-  (when (boundp 'org-scribe-template-directory)
-    (should (or (file-directory-p org-scribe-template-directory)
-                (message "Warning: Template directory not found at %s"
-                        org-scribe-template-directory)))))
-
 (ert-deftest test-template-no-plan-org-in-any-template ()
   "No template directory ships a plan.org file (Phase 4: per-project planner gate).
 A project only gets a plan.org once it explicitly opts into the planner
 via `org-scribe-planner-new-plan' or the offer-on-create prompt — never
 as a template artifact present from project creation."
-  ;; org-scribe-template-directory = <repo>/org-scribe-templates/novel-en
-  ;; Its parent is the org-scribe-templates/ root.
-  (let ((templates-root (file-name-directory
-                         (directory-file-name org-scribe-template-directory))))
+  (let ((templates-root (expand-file-name
+                         "../org-scribe-templates/" org-scribe-project-package-directory)))
     (dolist (dir '("novel-en" "novel-es" "short-story-en" "short-story-es"))
       (let ((plan (expand-file-name "plan.org" (expand-file-name dir templates-root))))
         (should-not (file-exists-p plan))))))
@@ -651,10 +726,8 @@ includes the design file under both language names."
   "Every Org file the novel templates ship appears in the fallback list.
 A template that adds a file must not silently drop out of completion
 for users outside a detectable project."
-  ;; org-scribe-template-directory = <repo>/org-scribe-templates/novel-en;
-  ;; its parent is the org-scribe-templates/ root.
-  (let ((templates-root (file-name-directory
-                         (directory-file-name org-scribe-template-directory))))
+  (let ((templates-root (expand-file-name
+                         "../org-scribe-templates/" org-scribe-project-package-directory)))
     (dolist (set '("novel-en" "novel-es"))
       (let ((dir (expand-file-name set templates-root)))
         (dolist (file (directory-files-recursively dir "\\.org\\.template\\'"))

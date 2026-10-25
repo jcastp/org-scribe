@@ -452,8 +452,8 @@ Files into the design notebook's Scratchpad part."
 
 ;;;###autoload
 (defun org-scribe-capture-character ()
-  "Capture a character profile to the characters file.
-Automatically determines the appropriate characters file based on project structure.
+  "Capture a character profile to the design notebook.
+Files it under the matching section, creating the section if needed.
 Creates a comprehensive character template with prompts for:
 - Name, Role, Age, Gender, Occupation
 - Physical description
@@ -468,8 +468,8 @@ Creates a comprehensive character template with prompts for:
 
 ;;;###autoload
 (defun org-scribe-capture-location ()
-  "Capture a location profile to the locations file.
-Automatically determines the appropriate locations file based on project structure.
+  "Capture a location profile to the design notebook.
+Files it under the matching section, creating the section if needed.
 Creates a comprehensive location template with prompts for:
 - Name, Type, Importance, Climate, Population
 - Physical description
@@ -484,8 +484,8 @@ Creates a comprehensive location template with prompts for:
 
 ;;;###autoload
 (defun org-scribe-capture-object ()
-  "Capture an important object to the objects file.
-Automatically determines the appropriate objects file based on project structure.
+  "Capture an important object to the design notebook.
+Files it under the matching section, creating the section if needed.
 Creates a comprehensive object template with prompts for:
 - Name, Type, Owner, Status
 - Physical description
@@ -500,8 +500,8 @@ Creates a comprehensive object template with prompts for:
 
 ;;;###autoload
 (defun org-scribe-capture-timeline ()
-  "Capture a timeline event to the timeline file.
-Automatically determines the appropriate timeline file based on project structure.
+  "Capture a timeline event to the design notebook.
+Files it under the matching section, creating the section if needed.
 Creates a comprehensive timeline event template with prompts for:
 - Event name, Date/time, Story day, Chapter
 - Location and characters involved
@@ -515,8 +515,8 @@ Creates a comprehensive timeline event template with prompts for:
 
 ;;;###autoload
 (defun org-scribe-capture-plot-thread ()
-  "Capture a plot thread to the plot file.
-Automatically determines the appropriate plot file based on project structure.
+  "Capture a plot thread to the design notebook.
+Files it under the matching section, creating the section if needed.
 Creates a plot thread entry with:
 - Name and Type (Main Plot, Subplot, etc.)
 - Auto-generated ID for linking

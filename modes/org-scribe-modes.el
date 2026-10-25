@@ -128,19 +128,19 @@ this command drives."
      ;; Turn the active layout (if any) off.
      ((null target)
       (when current (funcall (org-scribe--workspace-mode current) -1))
-      (message (org-scribe-msg 'msg-workspace-normal)))
+      (message "%s" (org-scribe-msg 'msg-workspace-normal)))
      ;; Reject unknown layout names.
      ((not (org-scribe--workspace-mode target))
-      (user-error (org-scribe-msg 'error-unknown-workspace target)))
+      (user-error "%s" (org-scribe-msg 'error-unknown-workspace target)))
      ;; Selecting the active layout toggles it off.
      ((eq target current)
       (funcall (org-scribe--workspace-mode target) -1)
-      (message (org-scribe-msg 'msg-workspace-normal)))
+      (message "%s" (org-scribe-msg 'msg-workspace-normal)))
      ;; Switch to the requested layout.  Activating it deactivates any
      ;; other layout via `org-scribe--deactivate-other-modes'.
      (t
       (funcall (org-scribe--workspace-mode target) 1)
-      (message (org-scribe-msg 'msg-workspace-set (symbol-name target)))))))
+      (message "%s" (org-scribe-msg 'msg-workspace-set (symbol-name target)))))))
 
 ;;; Writing Environment Mode (Base)
 
@@ -162,7 +162,7 @@ install into an error."
   (when theme
     (if (not (or (custom-theme-p theme)
                  (memq theme (custom-available-themes))))
-        (message (org-scribe-msg 'msg-theme-unavailable (symbol-name theme)))
+        (message "%s" (org-scribe-msg 'msg-theme-unavailable (symbol-name theme)))
       (if (fboundp 'consult-theme)
           (consult-theme theme)
         (mapc #'disable-theme custom-enabled-themes)
@@ -177,7 +177,7 @@ install into an error."
   ;; signalled `void-variable' after the theme and font had already
   ;; changed, leaving the session half-switched.
   (unless (require 'writeroom-mode nil t)
-    (user-error (org-scribe-msg 'error-writeroom-required)))
+    (user-error "%s" (org-scribe-msg 'error-writeroom-required)))
   (display-line-numbers-mode 1)
   (org-scribe--apply-theme org-scribe-env-work-theme)
   ;; Check if fontaine is available
@@ -399,8 +399,7 @@ Applies theme, column width, and font preset."
          (right-perc  org-scribe-editing-right-width-percent)
          (src-file
           (or (buffer-file-name)
-              (user-error (org-scribe-msg 'error-no-org-file))))
-         (frame-w    (frame-width))
+              (user-error "%s" (org-scribe-msg 'error-no-org-file))))
          (right-w    (org-scribe-window-perc right-perc))
          (left-w     (org-scribe-window-perc left-perc)))
 

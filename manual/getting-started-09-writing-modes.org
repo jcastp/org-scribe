@@ -371,7 +371,7 @@ Perfect for:
 *Use for*:
 - Opening character profiles
 - Switching to plot document
-- Accessing notes files
+- Accessing the design notebook
 - Managing project files
 
 *Actions*:
@@ -501,7 +501,7 @@ Activates: ~F8 F8 e~
 *Advanced three-panel layout*:
 - Left: ~imenu-list~ (document outline - 25% width)
 - Center: Current manuscript (50% width)
-- Right: Companion notes file (25% width)
+- Right: Design notebook (25% width)
 - Applies editing-optimized theme and fonts
 - Centers text with margins
 
@@ -512,7 +512,7 @@ Activates: ~F8 F8 e~
 Perfect for:
 - Revision sessions (second draft onward)
 - Editing with annotations
-- Keeping a companion notes file open next to the manuscript
+- Keeping a design notebook open next to the manuscript
 - Comparing manuscript to planning notes
 - Serious structural editing
 
@@ -599,7 +599,7 @@ Perfect for:
 ** Notes File Creation
 
 When you activate Editing mode:
-1. If the project notes file exists → opens it
+1. If the design notebook exists → opens it
 2. If it doesn't exist → creates it automatically, with a title and a top-level notes heading
 
 ** Showing Something Else in the Right Panel
@@ -708,7 +708,7 @@ manuscript.
 1. Open your manuscript
 2. Press ~F8 F8 e~
 3. Observe the three-panel layout
-4. Notice the notes file on the right
+4. Notice the design notebook on the right
 5. Try typing a note in the right panel
 6. Click outline items on the left
 7. See cursor jump in center
@@ -819,7 +819,7 @@ Let's practice using all four modes.
    - ~F8 F8 e~
    - Add a note in right panel: "* Test note"
    - Click outline items on left
-   - Notice how notes file persists
+   - Notice how design notebook persists
    - ~F8 F8 e~ (exit)
 
 ** Exercise 2: Mode Switching (3 minutes)
@@ -1019,7 +1019,7 @@ It's the most popular for daily writing because:
 - Distraction-Free (~m~) works anywhere
 - Focus (~f~) works in any org-mode file
 - Navigate (~v~) needs a project (any project.el project)
-- Editing (~e~) works with any file (creates matching notes file)
+- Editing (~e~) works with any file (creates design notebook)
 
 Best experience is within a proper writing project!
 
@@ -1144,7 +1144,7 @@ applies to Editing mode as well as Navigate mode.
 - For treemacs: ~M-x customize-variable RET treemacs-width~
 - Adjust and restart Navigate mode
 
-** "Editing mode notes file opens in wrong place"
+** "Editing mode design notebook opens in wrong place"
 
 *Expected behavior*:
 - The panel shows the design notebook: ~design.org~ or ~diseno.org~
@@ -1153,7 +1153,7 @@ applies to Editing mode as well as Navigate mode.
 If opening elsewhere:
 - Check that the project root is detected: the ~.org-scribe-project~ marker file should be present
 - Check ~org-scribe-editing-right-panel~ - if set to a path string or a function, the panel shows that instead
-- If the requested file can't be found, the panel falls back to the project notes file
+- If the requested file can't be found, the panel falls back to the design notebook
 - Make sure the manuscript is saved to disk (not an unnamed buffer)
 
 ** "Themes don't change when mode activates"

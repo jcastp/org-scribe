@@ -236,7 +236,6 @@ Accordingly, :days-elapsed counts the days before today and
          ;; Where the manuscript should stand at the end of yesterday
          (expected-by-today (org-scribe-planner--expected-through
                              plan (org-scribe-planner--add-days today -1)))
-         (days-completed 0)
          (expected-days 0)
          (days-elapsed 0)
          (days-remaining 0))

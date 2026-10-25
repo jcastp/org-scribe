@@ -204,6 +204,31 @@ a (temporary, local) Spanish table."
     (should (string= "Enlace insertado a Alicia"
                      (org-scribe-msg 'msg-inserted-link "Alicia")))))
 
+;;; Regrowth guard: message text is never a format string
+
+(ert-deftest test-messages-no-msg-used-as-format-string ()
+  "No shipped .el file passes `org-scribe-msg' output as a format string.
+`org-scribe-msg' returns already-formatted text, so a `%' coming from a
+title, a name or a path would be read as a directive by `message',
+`user-error', `error' or `warn' and signal after the work was done.
+The call must be `(message \"%s\" (org-scribe-msg ...))'."
+  (let* ((root (locate-dominating-file
+                (or load-file-name buffer-file-name default-directory)
+                "org-scribe.el"))
+         (default-directory root)
+         (offenders nil))
+    (dolist (file (split-string
+                   (shell-command-to-string "git ls-files '*.el'") "\n" t))
+      (unless (string-prefix-p "tests/" file)
+        (with-temp-buffer
+          (insert-file-contents file)
+          (goto-char (point-min))
+          (while (re-search-forward
+                  "(\\(?:message\\|user-error\\|error\\|warn\\)[ \t\n]+(org-scribe-msg"
+                  nil t)
+            (push (format "%s:%d" file (line-number-at-pos)) offenders)))))
+    (should-not offenders)))
+
 ;;; Run tests
 
 (defun org-scribe-messages-run-tests ()

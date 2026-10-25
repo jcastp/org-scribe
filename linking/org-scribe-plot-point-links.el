@@ -112,9 +112,9 @@ plot file, not two files."
          (points (when prop (org-scribe--property-to-list prop))))
     (cond
      ((null prop)
-      (message (org-scribe-msg 'msg-no-plot-point-property)))
+      (message "%s" (org-scribe-msg 'msg-no-plot-point-property)))
      ((null points)
-      (message (org-scribe-msg 'msg-no-plot-point-property)))
+      (message "%s" (org-scribe-msg 'msg-no-plot-point-property)))
      (t
       (let* ((all (org-scribe--get-all-plot-points))
              (name (if (= 1 (length points))
@@ -124,7 +124,7 @@ plot file, not two files."
              (entry (alist-get name all nil nil #'string=)))
         (if (and entry (car entry))
             (org-scribe--goto-entity-id (car entry) name)
-          (user-error (org-scribe-msg 'error-no-id-for-plot-point) name)))))))
+          (user-error "%s" (org-scribe-msg 'error-no-id-for-plot-point name))))))))
 
 (provide 'org-scribe-plot-point-links)
 ;;; org-scribe-plot-point-links.el ends here

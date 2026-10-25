@@ -105,14 +105,14 @@ If Plot property has multiple threads, prompts for selection."
                        (org-scribe--property-to-list plot-prop))))
     (cond
      ((null plot-prop)
-      (message (org-scribe-msg 'msg-no-plot-property)))
+      (message "%s" (org-scribe-msg 'msg-no-plot-property)))
      ((null thread-list)
-      (message (org-scribe-msg 'msg-no-plot-threads-in-property)))
+      (message "%s" (org-scribe-msg 'msg-no-plot-threads-in-property)))
      ((= (length thread-list) 1)
       (let ((thread-name (car thread-list)))
         (if (string-match "\\[\\[id:\\([^]]+\\)\\]\\[" plot-prop)
             (org-scribe--goto-entity-id (match-string 1 plot-prop) thread-name)
-          (message (org-scribe-msg 'msg-plot-not-id-link thread-name)))))
+          (message "%s" (org-scribe-msg 'msg-plot-not-id-link thread-name)))))
      (t
       (let* ((selected (completing-read (org-scribe-msg 'prompt-jump-to-plot) thread-list nil t))
              (threads (org-scribe--get-all-plot-threads))
@@ -120,7 +120,7 @@ If Plot property has multiple threads, prompts for selection."
              (id (cadr entry)))
         (if id
             (org-scribe--goto-entity-id id selected)
-          (message (org-scribe-msg 'error-no-id-for-plot selected))))))))
+          (message "%s" (org-scribe-msg 'error-no-id-for-plot selected))))))))
 
 ;;; Plot Thread Timeline and Analytics
 
@@ -210,7 +210,7 @@ regardless of whether it carries a Plot property, so it can be used as
 the denominator for plot-thread coverage percentages."
   (length (org-scribe--get-all-scenes (lambda () t))))
 
-(defun org-scribe--get-thread-status (thread-name appearances all-scenes total-scenes)
+(defun org-scribe--get-thread-status (_thread-name appearances all-scenes total-scenes)
   "Get status symbol and warnings for THREAD-NAME.
 APPEARANCES is list of scenes containing thread.
 ALL-SCENES is the list of scenes carrying a Plot property, used to
@@ -318,7 +318,7 @@ Opens a new buffer with the report."
           (insert "All scenes have Plot properties assigned.\n"))))
     (pop-to-buffer report-buffer)
     (goto-char (point-min))
-    (message (org-scribe-msg 'msg-plot-health-report))))
+    (message "%s" (org-scribe-msg 'msg-plot-health-report))))
 
 ;;;###autoload
 (defun org-scribe-plot-thread-stats ()
@@ -338,7 +338,7 @@ Opens a new buffer with the report."
              (warnings (cdr status-info)))
         (when warnings
           (setq warning-count (1+ warning-count)))))
-    (message (org-scribe-msg 'msg-plot-stats
+    (message "%s" (org-scribe-msg 'msg-plot-stats
                               thread-count scene-count warning-count))))
 
 ;;; Legacy Aliases

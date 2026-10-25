@@ -190,7 +190,7 @@ If fewer than MIN-CHARS characters exist, displays a message and returns nil."
   (let* ((all-chars (org-scribe--get-all-characters))
          (char-names (mapcar #'car all-chars)))
     (if (< (length char-names) min-chars)
-        (message (org-scribe-msg (if (zerop (length char-names))
+        (message "%s" (org-scribe-msg (if (zerop (length char-names))
                                      'error-no-characters-found
                                    'msg-no-other-characters)))
       (let* ((source-name (completing-read (org-scribe-msg 'prompt-relationship-from-character)
@@ -211,7 +211,7 @@ Prompts for source character, target character, and relationship type."
                                      all-chars))
             (other-char-names (mapcar #'car other-chars)))
        (if (null other-char-names)
-           (message (org-scribe-msg 'msg-no-other-characters))
+           (message "%s" (org-scribe-msg 'msg-no-other-characters))
          ;; Ask for target character
          (let* ((target-name (completing-read (org-scribe-msg 'prompt-relationship-to-character)
                                               other-char-names nil t))
@@ -227,7 +227,7 @@ Prompts for source character, target character, and relationship type."
                 (all-rels (append existing-rels (list new-rel))))
            ;; Update the source character's relationships
            (org-scribe--update-character-relationships source-name all-rels)
-           (message (org-scribe-msg 'msg-added-relationship
+           (message "%s" (org-scribe-msg 'msg-added-relationship
                                     rel-type source-name target-name))))))))
 
 ;;;###autoload
@@ -239,7 +239,7 @@ Prompts for source character, then which relationship to remove."
    1
    (lambda (_all-chars source-name existing-rels)
      (if (null existing-rels)
-         (message (org-scribe-msg 'msg-no-relationships))
+         (message "%s" (org-scribe-msg 'msg-no-relationships))
        ;; Ask which relationship to remove
        (let* ((rel-choices (mapcar (lambda (rel)
                                      (format "%s (%s)"
@@ -253,7 +253,7 @@ Prompts for source character, then which relationship to remove."
                                       (cl-subseq existing-rels (1+ selected-idx)))))
          ;; Update the source character's relationships
          (org-scribe--update-character-relationships source-name remaining-rels)
-         (message (org-scribe-msg 'msg-removed-relationship source-name selected)))))))
+         (message "%s" (org-scribe-msg 'msg-removed-relationship source-name selected)))))))
 
 ;;; Display
 
@@ -289,14 +289,14 @@ ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
          (char-names (mapcar #'car all-chars)))
 
     (if (null char-names)
-        (message (org-scribe-msg 'error-no-characters-found))
+        (message "%s" (org-scribe-msg 'error-no-characters-found))
       ;; Ask for which character to view
       (let* ((char-name (completing-read (org-scribe-msg 'prompt-relationship-from-character)
                                         char-names nil t))
              (relationships (org-scribe--get-character-relationships-by-name char-name)))
 
         (if (null relationships)
-            (message (org-scribe-msg 'error-no-relationships char-name))
+            (message "%s" (org-scribe-msg 'error-no-relationships char-name))
           (let ((list-text (org-scribe--format-relationship-list char-name relationships))
                 (buf-name (format "*Relationships: %s*" char-name)))
             (with-current-buffer (get-buffer-create buf-name)
@@ -313,7 +313,7 @@ ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
   (interactive)
   (let ((all-rels (org-scribe--get-all-relationships)))
     (if (null all-rels)
-        (message (org-scribe-msg 'msg-no-relationships-in-project))
+        (message "%s" (org-scribe-msg 'msg-no-relationships-in-project))
       (let ((table (org-scribe--format-relationship-table all-rels))
             (buf-name "*All Character Relationships*"))
         (with-current-buffer (get-buffer-create buf-name)
@@ -390,7 +390,7 @@ Ensures all characters have IDs and adds empty RelationshipsData properties."
             nil 'file)
            (when (> count 0)
              (save-buffer))
-           (message (org-scribe-msg 'msg-relationship-setup-complete
+           (message "%s" (org-scribe-msg 'msg-relationship-setup-complete
                                    count
                                    (org-scribe-plural count "")))))))))
 

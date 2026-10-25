@@ -27,14 +27,14 @@
 ;; see `lang/org-scribe-lang.el'.
 ;;
 ;; Usage:
-;;   (org-scribe-msg 'default-scene-name)
+;;   (org-scribe-msg \\='default-scene-name)
 ;;   => "New scene"                (English, the default)
 ;;
 ;;   (let ((org-scribe-message-language 'es))
-;;     (org-scribe-msg 'default-scene-name))
+;;     (org-scribe-msg \\='default-scene-name))
 ;;   => "Escena nueva"
 ;;
-;;   (org-scribe-msg 'msg-inserted-link "Alex")
+;;   (org-scribe-msg \\='msg-inserted-link "Alex")
 ;;   => "Inserted link to Alex"
 
 ;;; Code:
@@ -97,13 +97,13 @@ English too — this function never signals an error for an unregistered
 key.
 
 Examples:
-  (org-scribe-msg 'default-scene-name)
+  (org-scribe-msg \\='default-scene-name)
   => \"New scene\"
 
-  (org-scribe-msg 'msg-inserted-link \"Alex\")
+  (org-scribe-msg \\='msg-inserted-link \"Alex\")
   => \"Inserted link to Alex\"
 
-  (org-scribe-msg 'msg-updated-links 5 \"s\")
+  (org-scribe-msg \\='msg-updated-links 5 \"s\")
   => \"Updated character links in 5 scenes\""
   (let* ((table (if (eq org-scribe-message-language 'es)
                     org-scribe-messages-es
@@ -118,7 +118,7 @@ Examples:
 (defun org-scribe-plural (count singular-suffix)
   "Return appropriate plural suffix based on COUNT.
 SINGULAR-SUFFIX is the suffix to use when COUNT is 1 (usually empty string).
-Otherwise returns 's'.
+Otherwise returns \"s\".
 
 Examples:
   (org-scribe-plural 1 \"\") => \"\"

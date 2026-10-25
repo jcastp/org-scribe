@@ -30,6 +30,10 @@
 
 ;;; Code:
 
+(declare-function posframe-hide "posframe")
+(declare-function posframe-show "posframe")
+(declare-function posframe-poshandler-point-bottom-left-corner "posframe")
+
 (require 'org)
 (require 'org-id)
 (require 'org-scribe-messages)
@@ -275,11 +279,11 @@ automatically for all `org-scribe-mode' buffers, set:
   (if org-scribe-overlays-mode
       (progn
         (add-hook 'post-command-hook #'org-scribe--overlays-post-command nil t)
-        (message (org-scribe-msg 'msg-overlays-enabled)))
+        (message "%s" (org-scribe-msg 'msg-overlays-enabled)))
     (remove-hook 'post-command-hook #'org-scribe--overlays-post-command t)
     (org-scribe--overlays-clear)
     (setq org-scribe--overlays-last-id nil)
-    (message (org-scribe-msg 'msg-overlays-disabled))))
+    (message "%s" (org-scribe-msg 'msg-overlays-disabled))))
 
 ;;; Auto-enable integration
 

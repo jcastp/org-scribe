@@ -130,7 +130,7 @@ this direction rather than the planner monkey-patching this function."
       (unless skip-id-creation
         (org-id-get-create)))))
   (unless (org-scribe-accurate-wordcount-p)
-    (message (org-scribe-msg 'msg-wordcount-degraded)))
+    (message "%s" (org-scribe-msg 'msg-wordcount-degraded)))
   (when (featurep 'org-scribe-planner)
     (let ((total (and (boundp 'org-scribe-planner-wordcount-function)
                       org-scribe-planner-wordcount-function
@@ -175,10 +175,10 @@ plain word count otherwise."
   (interactive)
   (let* ((scope (if (org-at-heading-p) 'tree nil))
          (count (org-scribe--refresh-scene-wordcounts scope)))
-    (message (org-scribe-msg 'msg-scenes-wordcount-updated count
+    (message "%s" (org-scribe-msg 'msg-scenes-wordcount-updated count
                              (org-scribe-plural count "")))
     (unless (org-scribe-accurate-wordcount-p)
-      (message (org-scribe-msg 'msg-wordcount-degraded)))))
+      (message "%s" (org-scribe-msg 'msg-wordcount-degraded)))))
 
 ;;; Unified Word-Count Dispatcher
 
@@ -200,11 +200,11 @@ refresh WORDCOUNT on scene headings in the current subtree or buffer
    ((equal arg '(16)) (org-scribe-update-scene-wordcounts))
    ((equal arg '(4))  (org-scribe-ews-org-count-words))
    ((use-region-p)
-    (message (org-scribe-msg 'msg-wordcount-region
+    (message "%s" (org-scribe-msg 'msg-wordcount-region
                              (org-scribe--count-words-region
                               (region-beginning) (region-end)))))
    (t
-    (message (org-scribe-msg 'msg-wordcount-buffer
+    (message "%s" (org-scribe-msg 'msg-wordcount-buffer
                              (org-scribe--count-words-region
                               (point-min) (point-max)))))))
 
@@ -256,7 +256,7 @@ every save, regardless of `org-scribe-auto-wordcount'."
 ;;; Dynamic Block for Word Count Table
 
 ;;;###autoload
-(defun org-dblock-write:org-generate-wordcount-table (params)
+(defun org-dblock-write:org-generate-wordcount-table (_params)
   "Generate a table with heading names, word counts, objectives, and progress.
 This is a dynamic block function that can be inserted with:
   #+BEGIN: org-generate-wordcount-table
@@ -268,7 +268,7 @@ The table shows:
 - Objective (from WORD-OBJECTIVE property, optional)
 - Progress (auto-calculated percentage when objective is set)
 
-Sections tagged with 'noexport' are excluded."
+Sections tagged with \"noexport\" are excluded."
   (interactive)
   ;; Execute the function of counting words, add the WORDCOUNT property,
   ;; and update the current word count (accurately when org-context-extended

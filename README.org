@@ -1643,7 +1643,7 @@ See =M-x customize-group RET org-scribe RET= for all customization options.
 Key variables:
 
 ** Project & Templates
-- =org-scribe-template-directory= - Location of project templates (default: novel-en)
+- =org-scribe-template-language= - Template set for new projects (=en= or =es=)
 - =org-scribe-template-language= - Default language for templates ('en or 'es)
 - =org-scribe-stories-directory= - Where writing exercise files are created
 

@@ -723,31 +723,13 @@ If you write in both languages, you can:
 
 Now you have dedicated commands for each language!
 
-** Custom Template Directories
+** Custom Templates
 
-Use your own customized templates:
-
-#+BEGIN_SRC emacs-lisp
-;; Point to your custom template directory
-(setq org-scribe-template-directory
-      (expand-file-name "~/my-org-scribe-templates/novel/"))
-
-(setq org-scribe-short-story-template-directory
-      (expand-file-name "~/my-org-scribe-templates/short-story/"))
-#+END_SRC
-
-*How to create custom templates*:
-
-1. Copy existing templates:
-   #+BEGIN_SRC bash
-   cp -r ~/.emacs.d/elpa/org-scribe-*/org-scribe-templates/novel-en ~/my-templates/
-   #+END_SRC
-
-2. Modify files in ~~/my-templates/~
-
-3. Point ~org-scribe-template-directory~ to your custom location
-
-4. Create projects - your templates are used!
+There is no setting that points creation at another template directory:
+projects are always created from the package's own =org-scribe-templates/=.
+To customize them, edit that copy (~M-x org-scribe-edit-templates~ opens it in
+Dired); changes apply to every project created afterwards. Keep a copy of
+your edits, since a package upgrade replaces the directory.
 
 * Modifying Project Templates
 
@@ -1032,9 +1014,6 @@ Here's a full, commented configuration you can adapt:
 
 ;; Language (en or es)
 (setq org-scribe-template-language 'en)                   ; English templates
-
-;; Custom template directories (optional)
-;; (setq org-scribe-template-directory "~/my-templates/novel/")
 
 ;; -----------------------------------------------------------------------------
 ;; LANGUAGE TOOLS

@@ -550,7 +550,7 @@ touches buffer contents or runs on every save, it only changes what
   "What to display in the right pane of `org-scribe-editing-mode'.
 
 Possible values:
-- `notes'    -- the project notes file, as chosen by
+- `notes'    -- the design notebook, as chosen by
                 `org-scribe-capture-target-file' (the same file
                 org-scribe captures write to).
 - `edits'    -- a live index of the project's inline edit markers, as
@@ -566,10 +566,10 @@ Possible values:
 The pane used to show a per-manuscript companion file (\"novel.org\" ->
 \"novel-notes.org\") that existed only as an org-remark annotation sink.
 org-remark support has been removed and inline edit markers replaced it,
-so the pane now defaults to the project notes file instead."
-  :type '(choice (const :tag "Project notes file" notes)
+so the pane now defaults to the design notebook instead."
+  :type '(choice (const :tag "Design notebook" notes)
                  (const :tag "Live edit marker index" edits)
-                 (const :tag "Project revision file" revision)
+                 (const :tag "Design notebook (revision passes)" revision)
                  (string :tag "Project-relative file path")
                  (function :tag "Function returning a file name"))
   :group 'org-scribe)

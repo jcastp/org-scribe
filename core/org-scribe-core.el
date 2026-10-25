@@ -119,16 +119,16 @@ See `org-scribe--project-root-if-any'."
 (defun org-scribe-project-type ()
   "Detect the type of writing project.
 Returns one of:
-  'novel - Novel project (a novel manuscript)
-  'short-story - Short story project (a short-story manuscript)
-  'unknown - Cannot determine project type
+  \\='novel - Novel project (a novel manuscript)
+  \\='short-story - Short story project (a short-story manuscript)
+  \\='unknown - Cannot determine project type
 
 Detection strategy:
 1. Check cache for this project root
 2. Read .org-scribe-project marker file if it exists (look for Type: line)
 3. Check for a registered language's short-story manuscript (e.g. story.org)
 4. Check for a registered language's novel manuscript (e.g. novel.org)
-5. Return 'unknown if none of the above"
+5. Return \\='unknown if none of the above"
   (let* ((root (org-scribe-project-root))
          (cache-key (org-scribe--normalize-project-root root))
          (cached (alist-get cache-key org-scribe--project-type-cache nil nil #'string=)))
@@ -893,7 +893,7 @@ load-path change) is picked up without restarting Emacs."
   (declare (indent 1))
   `(if (org-scribe-check-feature ',feature)
        (progn ,@body)
-     (user-error (org-scribe-msg 'error-feature-not-available ',feature))))
+     (user-error "%s" (org-scribe-msg 'error-feature-not-available ',feature))))
 
 ;;; Entity Section Helpers
 
