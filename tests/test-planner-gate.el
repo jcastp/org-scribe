@@ -267,6 +267,45 @@ even if a valid plan.org sits right there in the project root."
         (when test-planner-gate--faked-org-scribe
           (setq features (delq 'org-scribe features)))))))
 
+(ert-deftest test-planner-gate-auto-load-is-not-reentrant ()
+  "Loading the plan does not load it again from inside the load.
+Visiting plan.org turns on `org-scribe-mode' there, whose hook calls
+--auto-load-plan before the outer call has set the current plan; the plan
+was loaded twice and the after-load hook ran twice."
+  (test-planner-gate--with-project root
+    (org-scribe--project-marker-set root "Planner" "yes")
+    (let* ((plan-file (expand-file-name "plan.org" root))
+           (org-scribe-planner--current-plan nil)
+           (org-scribe-planner--current-plan-file nil)
+           (hook-runs 0)
+           (loads 0)
+           (org-scribe-planner-after-plan-load-hook
+            (list (lambda (&rest _) (cl-incf hook-runs))))
+           (real-load (symbol-function 'org-scribe-planner--load-plan))
+           (test-planner-gate--faked-org-scribe (not (featurep 'org-scribe))))
+      (unwind-protect
+          (progn
+            (when test-planner-gate--faked-org-scribe (push 'org-scribe features))
+            (org-scribe-planner--save-plan
+             (make-org-scribe-plan :title "Once" :total-words 1000
+                                   :daily-words 100 :days 10
+                                   :start-date "2026-01-01" :end-date "2026-01-10"
+                                   :current-words 0)
+             plan-file)
+            (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () root))
+                      ((symbol-function 'org-scribe-planner--load-plan)
+                       (lambda (file)
+                         (cl-incf loads)
+                         ;; What org-scribe-mode-hook does in plan.org.
+                         (org-scribe-planner--auto-load-plan)
+                         (funcall real-load file))))
+              (org-scribe-planner--auto-load-plan))
+            (should org-scribe-planner--current-plan)
+            (should (= 1 loads))
+            (should (= 1 hook-runs)))
+        (when test-planner-gate--faked-org-scribe
+          (setq features (delq 'org-scribe features)))))))
+
 ;;; Enable/disable commands flip the marker line
 
 (ert-deftest test-planner-gate-enable-for-project-writes-yes ()

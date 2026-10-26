@@ -124,28 +124,71 @@ Written: 1,400 on Nov 2, 1,500 on Nov 3, nothing on Nov 4, 900 on Nov 5,
                     '(:started t :ended t :written 560 :goal 1000))
                    "560 ✗ 56%")))
 
-(ert-deftest test-planner-views-expected-total-after-a-rebase ()
-  "A recalculation from progress shifts the expected series from today on;
-the past days before the first entry still start from the pre-existing
-words.  With the adjustment applied from the start, the first day of a
-plan read a negative expected total."
-  (let ((anchor (list nil nil))
-        (today "2026-11-10"))
-    (cl-letf (((symbol-function 'org-scribe-planner--get-today-date) (lambda () today)))
-      ;; A past day: unchanged.
-      (should (= 1120 (org-scribe-planner--anchor-expected
-                       anchor '(:date "2026-11-01" :words 1000 :cumulative -3880) 1120)))
-      ;; Today, with no entry seen: the schedule's own (adjusted) figure.
-      (should (= 5000 (org-scribe-planner--anchor-expected
-                       anchor '(:date "2026-11-10" :words 1000 :cumulative 6000) 9120)))
-      ;; After that, the running total is kept.
-      (should (= 7000 (org-scribe-planner--anchor-expected
-                       anchor '(:date "2026-11-11" :words 1000 :cumulative 7000) 7000))))
-    ;; A series an entry has anchored keeps its running total at today.
-    (let ((anchor (list t nil)))
-      (cl-letf (((symbol-function 'org-scribe-planner--get-today-date) (lambda () today)))
-        (should (= 4321 (org-scribe-planner--anchor-expected
-                         anchor '(:date "2026-11-10" :words 1000 :cumulative 6000) 4321)))))))
+(ert-deftest test-planner-views-planned-total-after-a-rebase ()
+  "A recalculation from progress shifts the planned total from today on;
+a past day is measured against the plan as it stood.  With the adjustment
+applied from the start, the first day of a plan read a negative total."
+  (let ((plan (make-org-scribe-plan :title "T" :schedule-adjustment 5000)))
+    (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
+               (lambda () "2026-11-10")))
+      (should (= 1120 (org-scribe-planner--planned-total
+                       plan '(:date "2026-11-01" :words 1000 :cumulative -3880))))
+      (should (= 6000 (org-scribe-planner--planned-total
+                       plan '(:date "2026-11-10" :words 1000 :cumulative 6000)))))))
+
+(defun test-views--column (rows header)
+  "Return the cells under HEADER in the Org table ROWS (lists of cells)."
+  (let ((index (cl-position header (car rows) :test #'string=)))
+    (mapcar (lambda (row) (nth index row)) (cdr rows))))
+
+(ert-deftest test-planner-views-schedule-table-splits-planned-and-actual ()
+  "The plan file's schedule shows the planned and the actual totals apart.
+One \"Cumulative\" column mixed them: it fell after a missed day and ended
+short of the plan's total."
+  (test-views--on "2026-11-09"
+    (let ((plan (test-views--plan))
+          (file (make-temp-file "test-views-plan-" nil ".org")))
+      (unwind-protect
+          (progn
+            (org-scribe-planner--save-plan plan file)
+            (with-current-buffer (find-file-noselect file)
+              (goto-char (point-min))
+              (re-search-forward "^\\*\\* Schedule")
+              (re-search-forward "^|")
+              (let* ((rows (seq-remove (lambda (row) (eq row 'hline))
+                                       (org-table-to-lisp)))
+                     (dates (test-views--column rows "Date"))
+                     (planned (mapcar #'string-to-number
+                                      (test-views--column rows "Planned total")))
+                     (actual (test-views--column rows "Actual total")))
+                (should (equal planned (sort (copy-sequence planned) #'<=)))
+                (should (= 14000 (car (last planned))))
+                (should (string= "" (nth (cl-position "2026-11-04" dates :test #'string=) actual)))
+                (should (string= "3800" (nth (cl-position "2026-11-05" dates :test #'string=) actual))))
+              (kill-buffer)))
+        (delete-file file)))))
+
+(ert-deftest test-planner-views-calendar-planned-total-never-falls ()
+  "The calendar's planned total is the plan's, not a projection from the
+last entry, so a missed day does not make it fall."
+  (test-views--on "2026-11-09"
+    (let ((plan (test-views--plan)))
+      (org-scribe-planner-show-calendar plan)
+      (with-current-buffer org-scribe-planner-calendar-buffer
+        (let ((text (buffer-string))
+              (totals nil))
+          (should (string-match-p "Planned Total" text))
+          (should-not (string-match-p "Expected Total" text))
+          (with-temp-buffer
+            (insert text)
+            (goto-char (point-min))
+            (while (re-search-forward
+                    "^  [0-9-]+ ([A-Za-z ]+) +\\(?:REST\\|[0-9]+ words\\) +\\([0-9]+\\) words" nil t)
+              (push (string-to-number (match-string 1)) totals)))
+          (setq totals (nreverse totals))
+          (should (= 14 (length totals)))
+          (should (equal totals (sort (copy-sequence totals) #'<=)))
+          (should (= 14000 (car (last totals)))))))))
 
 (ert-deftest test-planner-views-weekly-summary-ended-week-ignores-rebase ()
   "A finished week keeps its planned total after a recalculation from
@@ -181,7 +224,14 @@ progress; only the current and future weeks follow the rebased plan."
         (let ((text (buffer-string)))
           (should (string-match-p "| Week | Dates +| Days written |" text))
           (should (string-match-p "| +2 | 11-02 – 11-08 | 4/5 +|" text))
-          (should (string-match-p "-1800 |" text)))))))
+          (should (string-match-p "-1800 |" text))
+          ;; Aligned: a full separator rule, and every row the same width.
+          (should (string-match-p "^|-+\\+-" text))
+          (let ((widths (delete-dups
+                         (mapcar #'string-width
+                                 (seq-filter (lambda (line) (string-prefix-p "|" line))
+                                             (split-string text "\n"))))))
+            (should (= 1 (length widths)))))))))
 
 ;;; Month grid
 
@@ -239,6 +289,46 @@ Sunday, so every day sat one column to the right."
           ;; Week 1 begins on Sunday Nov 1, week 2 on Sunday Nov 8
           (should (string-match-p "Week 1:\n.*\n.*\n  2026-11-01" text))
           (should (string-match-p "Week 2:\n.*\n.*\n  2026-11-08" text)))))))
+
+;;; Views select their window
+
+(ert-deftest test-planner-views-open-in-the-selected-window ()
+  "Every view selects its window, so its q (and other keys) work at once.
+They used `display-buffer', which left focus in the manuscript."
+  (cl-letf (((symbol-function 'org-scribe-planner--get-today-date) (lambda () "2026-11-09"))
+            ((symbol-function 'org-scribe-planner--gnuplot-available-p) (lambda () nil)))
+    (save-window-excursion
+      (test-views--with-current (test-views--plan)
+        (dolist (view '((org-scribe-planner-show-weekly-summary . "*Writing Plan Weekly*")
+                        (org-scribe-planner-show-month-calendar . "*Writing Plan Months*")
+                        (org-scribe-planner-show-milestones . nil)
+                        (org-scribe-planner-show-progress-dashboard . "*Writing Dashboard*")
+                        (org-scribe-planner-show-heatmap . "*Writing Heatmap*")))
+          (delete-other-windows)
+          (with-temp-buffer
+            (switch-to-buffer (current-buffer))
+            (let ((manuscript (current-buffer)))
+              (funcall (car view))
+              (should-not (eq (window-buffer (selected-window)) manuscript))
+              (when (cdr view)
+                (should (string= (cdr view)
+                                 (buffer-name (window-buffer (selected-window)))))))))
+        (delete-other-windows)
+        (org-scribe-planner-show-calendar (test-views--plan))
+        (should (eq (window-buffer (selected-window))
+                    (get-buffer org-scribe-planner-calendar-buffer)))))))
+
+(ert-deftest test-planner-views-split-dashboards-keep-their-grid ()
+  "The split view still puts four different dashboards in its four windows."
+  (cl-letf (((symbol-function 'org-scribe-planner--get-today-date) (lambda () "2026-11-09"))
+            ((symbol-function 'org-scribe-planner--gnuplot-available-p) (lambda () nil))
+            ((symbol-function 'message) #'ignore))
+    (save-window-excursion
+      (test-views--with-current (test-views--plan)
+        (org-scribe-planner-show-split-dashboards)
+        (let ((buffers (mapcar #'window-buffer (window-list))))
+          (should (= 4 (length buffers)))
+          (should (= 4 (length (delete-dups (copy-sequence buffers))))))))))
 
 (provide 'test-planner-views)
 ;;; test-planner-views.el ends here

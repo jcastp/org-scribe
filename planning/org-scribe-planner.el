@@ -1056,21 +1056,17 @@ The result is memoised on the engine's own result."
           (setq org-scribe-planner--schedule-cache (cons engine result))
           result)))))
 
-(defun org-scribe-planner--anchor-expected (anchor day expected)
-  "Return the running expected total to use before adding DAY's goal.
-ANCHOR is a two-element list the caller keeps across days: its car is
-non-nil once a ledger entry has anchored the series on an actual total,
-its cadr once today has been reached.  On the first day from today on,
-a series no entry has anchored yet switches to the schedule's own
-figure, which carries the adjustment of the last recalculation from
-progress; otherwise EXPECTED is returned unchanged."
-  (if (or (cadr anchor)
-          (string< (plist-get day :date) (org-scribe-planner--get-today-date)))
-      expected
-    (setcar (cdr anchor) t)
-    (if (car anchor)
-        expected
-      (- (plist-get day :cumulative) (plist-get day :words)))))
+(defun org-scribe-planner--planned-total (plan day)
+  "Return where PLAN's manuscript should stand at the end of DAY, as planned.
+DAY is a plist from `org-scribe-planner--generate-day-schedule'.  From
+today on that is its :cumulative.  A past day is measured against the plan
+as it stood, without the schedule adjustment of a later recalculation from
+progress, as a finished week is in `org-scribe-planner--weekly-summary':
+with it, the first days of a rebased plan read a negative total."
+  (if (string< (plist-get day :date) (org-scribe-planner--get-today-date))
+      (+ (plist-get day :cumulative)
+         (or (org-scribe-plan-schedule-adjustment plan) 0))
+    (plist-get day :cumulative)))
 
 (defun org-scribe-planner--expected-through (plan date)
   "Return where PLAN's manuscript should stand at the end of DATE.
@@ -1622,13 +1618,16 @@ yesterday.  Weeks start on `org-scribe-planner-week-start-day'."
                                 (cond ((null difference) "")
                                       ((> difference 0) (format "+%d" difference))
                                       (t (number-to-string difference))))))))
+          ;; Find the table by search, not a line count: the legend above
+          ;; it moved it down, and `org-table-align' off the table did
+          ;; nothing, leaving it ragged.
           (goto-char (point-min))
-          (forward-line 2)
+          (re-search-forward "^|")
           (org-table-align)
           (goto-char (point-min))
           (setq buffer-read-only t)
           (local-set-key (kbd "q") #'quit-window)
-          (display-buffer (current-buffer)))))))
+          (pop-to-buffer (current-buffer)))))))
 
 (defconst org-scribe-planner--month-cell-width 9
   "Width of a day's cell in the month grid.")
@@ -1722,7 +1721,7 @@ brackets."
                                   (1+ (mod (nth 1 parts) 12))))))
           (goto-char (point-min))
           (special-mode)
-          (display-buffer (current-buffer)))))))
+          (pop-to-buffer (current-buffer)))))))
 
 ;;; Locked past goals and recalculation from progress
 
@@ -2417,13 +2416,24 @@ Returns an alist of (date . note) pairs for entries with notes."
       (when (re-search-forward "^\\*\\* Schedule" nil t)
         ;; Find the table start
         (when (re-search-forward "^|.*Date.*Target.*Notes.*|" nil t)
+          (let* ((header (split-string (match-string 0) "|"))
+                 ;; Find Notes by its header, not a fixed position: the
+                 ;; table gained a column, and plan files saved before
+                 ;; that still have the old one until they are saved again.
+                 (before-notes (- (cl-position "Notes" header
+                                               :test (lambda (name cell)
+                                                       (string= name (string-trim cell))))
+                                  2))
+                 (row-regexp (concat "^|[[:space:]]+\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)[[:space:]]+|"
+                                     (apply #'concat (make-list before-notes "[^|]*|"))
+                                     "[[:space:]]*\\([^|]+?\\)[[:space:]]*|")))
           ;; Skip the separator line (|------+-----+....|)
           (forward-line 1)
           ;; Now we should be at the first data row - skip separator
           (when (looking-at "^|[-+]+|")
             (forward-line 1))
           ;; Parse table rows
-          (while (looking-at "^|[[:space:]]+\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)[[:space:]]+|[^|]*|[^|]*|[^|]*|[^|]*|[[:space:]]*\\([^|]+?\\)[[:space:]]*|")
+          (while (looking-at row-regexp)
             (let* ((date (match-string 1))
                    (note-raw (match-string 2))
                    ;; Trim whitespace from note, then reverse the pipe
@@ -2436,7 +2446,7 @@ Returns an alist of (date . note) pairs for entries with notes."
                         (not (string-empty-p note))
                         (not (member note '("Spare day" "Rest day"))))
                 (push (cons date note) notes-alist)))
-            (forward-line 1))))
+            (forward-line 1)))))
       ;; Return in chronological order
       (nreverse notes-alist))))
 
@@ -2624,18 +2634,13 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
         (goto-char (point-max))
         (insert "\n** Schedule\n\n")
         (let ((schedule (org-scribe-planner--generate-day-schedule plan))
-              (daily-counts (org-scribe-plan-daily-word-counts plan))
-              (cumulative-actual 0)
-              ;; The manuscript starts at its pre-existing words.  The
-              ;; schedule adjustment of a recalculation from progress is
-              ;; applied from today on (see
-              ;; `org-scribe-planner--anchor-expected'): applied from the
-              ;; start, it showed a negative expected total for the past
-              ;; days before the first entry.
-              (expected-total (or (org-scribe-plan-preexisting-words plan) 0))
-              (anchor (list nil nil)))
-          (insert "| Date | Target | Cumulative | Actual | Progress % | Notes |\n")
-          (insert "|------+--------+------------+--------+------------+-------|\n")
+              (daily-counts (org-scribe-plan-daily-word-counts plan)))
+          ;; Planned and actual totals in two columns.  One "Cumulative"
+          ;; column used to show the actual total on days with an entry
+          ;; and a projection from it on the others, so it fell after a
+          ;; missed day and ended short of the plan's total.
+          (insert "| Date | Target | Planned total | Actual total | Actual | Progress % | Notes |\n")
+          (insert "|------+--------+---------------+--------------+--------+------------+-------|\n")
           (dolist (day schedule)
             (let* ((date (plist-get day :date))
                    (daily-entry (assoc date daily-counts))
@@ -2657,24 +2662,14 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                                   (format "%.1f%%" (* 100.0 (/ (float actual) target)))
                                 "")))
 
-              ;; Calculate cumulative the same way as in the report
-              (setq expected-total
-                    (org-scribe-planner--anchor-expected anchor day expected-total))
-              (if actual
-                  ;; Has actual data - the entry's own cumulative total IS
-                  ;; the cumulative-to-date; expected matches it
-                  (progn
-                    (setq cumulative-actual (plist-get daily-data :words))
-                    (setq expected-total cumulative-actual)
-                    (setcar anchor t))
-                ;; No actual data - add daily target to expected (skip spare days)
-                (unless is-spare
-                  (setq expected-total (+ expected-total target))))
-
-              (insert (format "| %s | %s | %d | %s | %s | %s |\n"
+              (insert (format "| %s | %s | %d | %s | %s | %s | %s |\n"
                              date
                              (if is-spare "REST" (number-to-string target))
-                             expected-total
+                             (org-scribe-planner--planned-total plan day)
+                             ;; The entry's :words is the manuscript total
+                             ;; as of that date; a note-only entry has none.
+                             (let ((total (plist-get daily-data :words)))
+                               (if (numberp total) (number-to-string total) ""))
                              (if actual (number-to-string actual) "")
                              percentage
                              (cond
@@ -3031,15 +3026,7 @@ Optional FILEPATH shows the location of the plan file."
               (week-num 1)
               (week-words 0)
               (prev-week-start nil)
-              (cumulative-actual 0)
-              ;; The manuscript starts at its pre-existing words.  The
-              ;; schedule adjustment of a recalculation from progress is
-              ;; applied from today on (see
-              ;; `org-scribe-planner--anchor-expected'): applied from the
-              ;; start, it showed a negative expected total for the past
-              ;; days before the first entry.
-              (expected-total (or (org-scribe-plan-preexisting-words plan) 0))
-              (anchor (list nil nil)))
+              (cumulative-actual 0))
 
           (dolist (day schedule)
             (let* ((date (plist-get day :date))
@@ -3072,19 +3059,10 @@ Optional FILEPATH shows the location of the plan file."
                                 ""))
                    (face (if is-spare 'org-agenda-dimmed-todo-face 'default)))
 
-              ;; Update cumulative actual word count and expected total.
               ;; daily-data's :words IS already the cumulative total as of
               ;; this date, so no summation — just carry it forward.
-              (setq expected-total
-                    (org-scribe-planner--anchor-expected anchor day expected-total))
-              (if actual
-                  (progn
-                    (setq cumulative-actual (plist-get daily-data :words))
-                    (setq expected-total cumulative-actual)
-                    (setcar anchor t))
-                ;; No actual data - add daily target to expected (skip spare days)
-                (unless is-spare
-                  (setq expected-total (+ expected-total current-daily-words))))
+              (when actual
+                (setq cumulative-actual (plist-get daily-data :words)))
 
               ;; Week header (on the first day of the week)
               (when (or is-monday (null prev-week-start))
@@ -3094,7 +3072,7 @@ Optional FILEPATH shows the location of the plan file."
                         (format "  %-25s  %-13s  %-15s  %-15s  %-23s  %s\n"
                                "Date (Day)"
                                "Daily Target"
-                               "Expected Total"
+                               "Planned Total"
                                "Actual Total"
                                "Daily Actual"
                                "Notes")
@@ -3115,7 +3093,10 @@ Optional FILEPATH shows the location of the plan file."
               ;; Day entry with columnar formatting
               (let* ((date-col (format "%s (%-9s)" date day-name))
                      (target-col (if is-spare "REST" (format "%d words" display-target)))
-                     (expected-col (format "%d words" expected-total))
+                     ;; The plan's own figure, not a projection from the
+                     ;; last entry: that one fell after a missed day.
+                     (expected-col (format "%d words"
+                                           (org-scribe-planner--planned-total plan day)))
                      (cumulative-actual-col (if (> cumulative-actual 0)
                                                (format "%d words" cumulative-actual)
                                              ""))
@@ -3171,7 +3152,8 @@ Optional FILEPATH shows the location of the plan file."
         (insert "  [v] velocity  [h] heatmap\n"))
 
       (goto-char (point-min))
-      (display-buffer buffer))))
+      ;; Select it, so its keys ([q] quit, ...) work at once.
+      (pop-to-buffer buffer))))
 
 (defvar org-scribe-planner-calendar-mode-map
   (let ((map (make-sparse-keymap)))
@@ -4781,7 +4763,7 @@ Tracks actual progress and calculates expected dates for unreached milestones."
           (goto-char (point-min))
           (require 'org-scribe-planner-dashboards)
           (org-scribe-planner-dashboard-mode)
-          (display-buffer (current-buffer)))))))
+          (pop-to-buffer (current-buffer)))))))
 
 ;;; Active Plan Management
 
@@ -4887,17 +4869,27 @@ Search order:
            (re-search-forward "^:TOTAL_WORDS:" nil t)))
        (directory-files root t "\\.org$" t))))))
 
+(defvar org-scribe-planner--auto-loading nil
+  "Non-nil while `org-scribe-planner--auto-load-plan' is loading a plan.")
+
 (defun org-scribe-planner--auto-load-plan ()
   "Try to auto-load the plan associated with the current org-scribe project.
 Silently does nothing if the project has not opted into the planner
 \(see `org-scribe-planner-gate'), no plan candidate is found, or a plan
-is already active."
+is already active.
+
+It also does nothing when called from inside its own load: visiting the
+plan file turns on `org-scribe-mode' there, whose hook calls this again
+before the outer call has set the current plan, so the plan was loaded
+twice (two messages, past goals locked and the after-load hook run twice)."
   (when (and (featurep 'org-scribe)
+             (not org-scribe-planner--auto-loading)
              (not org-scribe-planner--current-plan))
     (when-let* ((root (org-scribe-project-root))
                 (_ (eq (org-scribe-planner-gate root) 'yes))
                 (plan-file (org-scribe-planner--find-plan-file root))
-                (plan (ignore-errors (org-scribe-planner--load-plan plan-file))))
+                (plan (let ((org-scribe-planner--auto-loading t))
+                        (ignore-errors (org-scribe-planner--load-plan plan-file)))))
       (org-scribe-planner--lock-past-goals plan)
       (setq org-scribe-planner--current-plan plan)
       (setq org-scribe-planner--current-plan-file plan-file)

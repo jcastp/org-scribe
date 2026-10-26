@@ -298,7 +298,9 @@ beginning, and displayed after BODY executes."
        ,@body
        (goto-char (point-min))
        (org-scribe-planner-dashboard-mode)
-       (display-buffer (current-buffer))
+       ;; Select the window too: every view says "Press 'q' to close",
+       ;; and with `display-buffer' alone q only worked after C-x o.
+       (pop-to-buffer (current-buffer))
        (current-buffer))))
 
 ;;; Dashboard Mode
@@ -445,9 +447,13 @@ beginning, and displayed after BODY executes."
                                             'shadow))))
               (insert (format "  Longest streak: %s\n"
                             (org-scribe-planner--count-text (plist-get streak :longest) "day" "days")))
-              (insert (format "  Average velocity: %s words/day (%d days logged)\n"
+              ;; Say what the average is over: it is divided by every
+              ;; elapsed writing day, missed ones included, not only by
+              ;; the days with words.
+              (insert (format "  Average velocity: %s words/day (over %d writing days, %d with words)\n"
                             (propertize (format "%.0f" avg-velocity)
                                       'face 'org-scheduled)
+                            (plist-get velocity :elapsed-days)
                             days-logged))
               (insert (format "  Recent velocity: %.0f words/day (last 7 days)\n"
                             recent-velocity))
@@ -1220,7 +1226,8 @@ Shows every Nth date to avoid overcrowding. MAX-LABELS defaults to 10."
                                 days-logged (plist-get velocity :elapsed-days)))
                 (insert (format "  Total words:      %s\n"
                               (org-scribe-planner--format-number total)))
-                (insert (format "  Average:          %.0f words/day\n" avg))
+                (insert (format "  Average:          %.0f words/day (over %d writing days)\n"
+                                avg (plist-get velocity :elapsed-days)))
                 (insert (format "  Recent (7 days):  %.0f words/day\n" recent))
                 (insert (format "  Target:           %s words/day\n"
                               (org-scribe-planner--format-number target)))
@@ -1335,11 +1342,13 @@ written: their status is `exceeded', `met', `partial' or `missed' (see
   "Calculate consistency score for PLAN.
 Returns a plist with :score (0-100), :days-logged, :working-days, :rate:
 the share of the plan's writing days so far on which some words were
-written.  Future days and rest days don't count."
-  (let* ((statuses (org-scribe-planner--plan-day-statuses plan))
-         (written (org-scribe-planner--words-by-date plan))
-         (working-days (length statuses))
-         (days-logged (cl-count-if (lambda (s) (> (gethash (car s) written 0) 0)) statuses))
+written.  The days are those of `org-scribe-planner--elapsed-daily-words',
+as for the velocity: today counts once it has words.  Counting only the
+days that are due left today out until its goal was met, so this read
+\"4 / 7\" beside the velocity's \"5 of 8\" on the same day."
+  (let* ((elapsed (org-scribe-planner--elapsed-daily-words plan))
+         (working-days (length elapsed))
+         (days-logged (cl-count-if (lambda (day) (> (cdr day) 0)) elapsed))
          (rate (if (> working-days 0)
                    (/ (* 100.0 days-logged) working-days)
                  0)))
@@ -1416,7 +1425,7 @@ Shows day-of-week patterns, consistency scores, and target achievement rates."
               (insert (format "  Score: %s (%s)\n"
                             (propertize (format "%d%%" score) 'face score-face)
                             (propertize grade 'face score-face)))
-              (insert (format "  Days logged: %d / %d working days\n"
+              (insert (format "  Days logged: %d / %d writing days\n"
                             (plist-get consistency :days-logged)
                             (plist-get consistency :working-days)))
               (insert "  ")
@@ -2195,35 +2204,38 @@ Shows progress, velocity, and performance dashboards side by side."
       ;; Delete other windows to get a clean slate
       (delete-other-windows)
 
-      ;; Create a 2x2 grid layout
-      ;; Top half: Progress Dashboard (left) | Velocity Trends (right)
-      ;; Bottom half: Performance Analytics (left) | Velocity Chart (right)
+      ;; Create a 2x2 grid layout.  Each dashboard goes in the selected
+      ;; window, the one just prepared: `pop-to-buffer' alone may choose
+      ;; another window and select it.
+      (let ((display-buffer-overriding-action '(display-buffer-same-window)))
+        ;; Top half: Progress Dashboard (left) | Velocity Trends (right)
+        ;; Bottom half: Performance Analytics (left) | Velocity Chart (right)
 
-      ;; Split into top and bottom
-      (split-window-below)
+        ;; Split into top and bottom
+        (split-window-below)
 
-      ;; Work on top window - split into left and right
-      (select-window (frame-first-window))
-      (split-window-right)
+        ;; Work on top window - split into left and right
+        (select-window (frame-first-window))
+        (split-window-right)
 
-      ;; Top-left: Progress Dashboard
-      (select-window (frame-first-window))
-      (org-scribe-planner-show-progress-dashboard)
+        ;; Top-left: Progress Dashboard
+        (select-window (frame-first-window))
+        (org-scribe-planner-show-progress-dashboard)
 
-      ;; Top-right: Velocity Trends
-      (other-window 1)
-      (org-scribe-planner-show-velocity-trends)
+        ;; Top-right: Velocity Trends
+        (other-window 1)
+        (org-scribe-planner-show-velocity-trends)
 
-      ;; Work on bottom window - split into left and right
-      (other-window 1)
-      (split-window-right)
+        ;; Work on bottom window - split into left and right
+        (other-window 1)
+        (split-window-right)
 
-      ;; Bottom-left: Performance Analytics
-      (org-scribe-planner-show-performance-analytics)
+        ;; Bottom-left: Performance Analytics
+        (org-scribe-planner-show-performance-analytics)
 
-      ;; Bottom-right: Velocity Chart
-      (other-window 1)
-      (org-scribe-planner-show-velocity-chart)
+        ;; Bottom-right: Velocity Chart
+        (other-window 1)
+        (org-scribe-planner-show-velocity-chart))
 
       ;; Balance windows for equal sizing
       (balance-windows)
@@ -2257,15 +2269,24 @@ Shows progress, velocity, and performance dashboards side by side."
                        (month (nth 1 date-parts))
                        (day-num (nth 2 date-parts))
                        (dow (calendar-day-of-week (list month day-num year)))
-                       (performance (org-scribe-planner--day-status plan date written))
+                       (performance
+                        (let ((status (org-scribe-planner--day-status plan date written)))
+                          ;; Today below its goal is not due yet, but it is
+                          ;; not "still to come" either: it has its own mark.
+                          (if (and (eq status 'future)
+                                   (string= date (org-scribe-planner--get-today-date)))
+                              'today
+                            status)))
                        (char (pcase performance
                               ('rest ?·)
+                              ('today ?◐)
                               ('future ?□)
                               ((or 'met 'exceeded) ?█)
                               ('partial ?▓)
                               (_ ?░)))
                        (face (pcase performance
                               ('rest 'org-agenda-dimmed-todo-face)
+                              ('today 'org-agenda-date-today)
                               ('future 'shadow)
                               ((or 'met 'exceeded) 'org-done)
                               ('partial 'org-scheduled)
@@ -2301,6 +2322,7 @@ Shows progress, velocity, and performance dashboards side by side."
             (insert "  " (propertize "█ " 'face 'org-done) "Met target (100%+)\n")
             (insert "  " (propertize "▓ " 'face 'org-scheduled) "Partial (75-99%)\n")
             (insert "  " (propertize "░ " 'face 'org-warning) "Missed (<75%, or a net cut)\n")
+            (insert "  " (propertize "◐ " 'face 'org-agenda-date-today) "Today, under way (below its goal)\n")
             (insert "  " (propertize "□ " 'face 'shadow) "Still to come\n")
             (insert "  " (propertize "· " 'face 'org-agenda-dimmed-todo-face) "Rest day\n\n")
 

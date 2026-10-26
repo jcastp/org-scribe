@@ -202,14 +202,16 @@ Below it, every day of the plan, week by week:
 
 #+BEGIN_EXAMPLE
 Week 2:
-  Date (Day)                 Daily Target   Expected Total   Actual Total     Daily Actual             Notes
+  Date (Day)                 Daily Target   Planned Total    Actual Total     Daily Actual             Notes
   2026-11-02 (Monday   )     1400 words     1400 words       1400 words       1400 words [100.0%] ✓
-  2026-11-03 (Tuesday  )     1400 words     2900 words       2900 words       1500 words [107.1%] ✓
-  2026-11-04 (Wednesday)     1400 words     4300 words                        0 ✗
-  2026-11-05 (Thursday )     1400 words     3800 words       3800 words       900 words [64.3%] ✗
-  2026-11-06 (Friday   )     1400 words     5200 words       5200 words       1400 words [100.0%] ✓
-  2026-11-07 (Saturday )     REST           5200 words                                                 (rest day)
+  2026-11-03 (Tuesday  )     1400 words     2800 words       2900 words       1500 words [107.1%] ✓
+  2026-11-04 (Wednesday)     1400 words     4200 words       2900 words       0 ✗
+  2026-11-05 (Thursday )     1400 words     5600 words       3800 words       900 words [64.3%] ✗
+  2026-11-06 (Friday   )     1400 words     7000 words       5200 words       1400 words [100.0%] ✓
+  2026-11-07 (Saturday )     REST           7000 words       5200 words                                (rest day)
 #+END_EXAMPLE
+
+/Planned Total/ is where the plan says the manuscript should stand at the end of each day; /Actual Total/ is where it stands. After a recalculation from progress the planned total follows the new plan from today on, while past days keep the plan as it was.
 
 ✓ means the day's goal was met, ~ partial (75% or more), ✗ missed. Rest days say /(spare day)/ or /(rest day)/; a day with a goal of its own says /(day goal)/; your notes appear in their place.
 
@@ -420,10 +422,10 @@ The heatmap, the achievement rate, the weekly summary and the calendar's ✓ ~ �
 
 ,** Schedule
 
-|       Date | Target | Cumulative | Actual | Progress % | Notes            |
-|------------+--------+------------+--------+------------+------------------|
-| 2026-10-12 |   1177 |       4849 |   4542 |     385.9% |                  |
-| 2026-10-18 |   REST |      11916 |        |            | Sundays are free |
+|       Date | Target | Planned total | Actual total | Actual | Progress % | Notes            |
+|------------+--------+---------------+--------------+--------+------------+------------------|
+| 2026-10-12 |   1177 |          4849 |         8214 |   4542 |     385.9% |                  |
+| 2026-10-18 |   REST |         10734 |              |        |            | Sundays are free |
 #+END_EXAMPLE
 
 The main properties:

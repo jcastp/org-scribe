@@ -608,7 +608,9 @@ with clickable ID links back to each scene."
               (insert (format "- Daily target :: %d words\n" daily))
               (insert (format "- End date :: %s\n" end))
               (insert (format "- Days remaining :: %d\n" days-rem))
-              (insert (format "- Status :: %s\n" status))
+              ;; Expected words run through yesterday (today isn't due
+              ;; yet), unlike the mode line's today figure: say so.
+              (insert (format "- Status (through yesterday) :: %s\n" status))
               (let ((word-target (org-scribe-project-word-target)))
                 (when (and word-target (/= target word-target))
                   (insert (format "- %s\n" (org-scribe-msg 'msg-health-plan-target-mismatch

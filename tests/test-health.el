@@ -688,7 +688,10 @@ had met every goal through yesterday was \"Behind\" every morning."
             (should (string-match-p "23456" content))
             (should (string-match-p "500" content))
             (should (string-match-p "2026-06-30" content))
-            (should (string-match-p "\\(On track\\|Ahead by\\|Behind by\\)" content))))))))
+            (should (string-match-p "\\(On track\\|Ahead by\\|Behind by\\)" content))
+            ;; The status counts through yesterday, unlike the mode line's
+            ;; today figure, and says so.
+            (should (string-match-p "Status (through yesterday) ::" content))))))))
 
 (ert-deftest test-health-report-writing-plan-shows-outside-words ()
   "Words outside the manuscript are listed in the Writing Plan, as not counted."

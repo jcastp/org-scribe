@@ -155,6 +155,18 @@ table-notes parser used to merge hand-edited notes back into the plan."
             (kill-buffer)))
       (delete-directory temp-dir t))))
 
+(ert-deftest test-planner-schedule-notes-read-from-old-table-layout ()
+  "Notes are still read from a plan file saved with the old six-column
+Schedule table (one \"Cumulative\" column), until it is saved again."
+  (with-temp-buffer
+    (insert "** Schedule\n\n"
+            "|       Date | Target | Cumulative | Actual | Progress % | Notes     |\n"
+            "|------------+--------+------------+--------+------------+-----------|\n"
+            "| 2026-10-12 |   1177 |       4849 |   4542 |     385.9% | good day  |\n"
+            "| 2026-10-18 |   REST |      11916 |        |            | Rest day  |\n")
+    (should (equal '(("2026-10-12" . "good day"))
+                   (org-scribe-planner--parse-schedule-table)))))
+
 (ert-deftest test-planner-roundtrip-spare-day-note-stays-note-only ()
   "A note-only spare-day entry must not gain a fake :words 0 on load (H8).
 Regression test: `--add-spare-day-note' creates entries with no :words

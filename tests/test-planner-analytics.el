@@ -161,6 +161,38 @@ Regression: the average divided by the days logged only (6), giving 950."
       (should (= (plist-get tuesday :count) 1))
       (should (= (plist-get tuesday :average) 0.0)))))
 
+(ert-deftest test-planner-analytics-dashboards-agree-on-today-under-way ()
+  "With words today below its goal, the dashboards count the same days and
+say what they count.  Consistency left today out (\"6 / 7\") while the
+velocity counted it (\"7 of 8\"), the progress average named only the
+days with words, and the heatmap drew today as still to come."
+  (test-analytics--on "2026-11-08"
+    (let* ((plan (test-analytics--plan '(("2026-11-01" . 1000) ("2026-11-02" . 2000)
+                                         ("2026-11-04" . 3000) ("2026-11-05" . 3700)
+                                         ("2026-11-06" . 4700) ("2026-11-07" . 5700)
+                                         ("2026-11-08" . 6200))))
+           (org-scribe-planner--current-plan plan)
+           (org-scribe-planner--current-plan-file "/tmp/unused-plan.org")
+           (consistency (org-scribe-planner--calculate-consistency-score plan))
+           (velocity (org-scribe-planner--calculate-velocity plan)))
+      (should (= (plist-get consistency :working-days) (plist-get velocity :elapsed-days)))
+      (should (= (plist-get consistency :days-logged) (plist-get velocity :days-logged)))
+      (should (= 8 (plist-get consistency :working-days)))
+      (should (= 7 (plist-get consistency :days-logged)))
+      (cl-letf (((symbol-function 'display-buffer) #'ignore))
+        (org-scribe-planner-show-progress-dashboard)
+        (with-current-buffer "*Writing Dashboard*"
+          (should (string-match-p "words/day (over 8 writing days, 7 with words)"
+                                  (buffer-string))))
+        (org-scribe-planner-show-performance-analytics)
+        (with-current-buffer "*Performance Analytics*"
+          (should (string-match-p "Days logged: 7 / 8 writing days" (buffer-string))))
+        (org-scribe-planner-show-heatmap)
+        (with-current-buffer "*Writing Heatmap*"
+          (should (string-match-p "◐ Today, under way" (buffer-string)))
+          ;; Sunday Nov 8 closes the second week row, after Nov 2-7.
+          (should (string-match-p "◐ \n" (buffer-string))))))))
+
 ;;; Dashboards render
 
 (ert-deftest test-planner-analytics-dashboards-render ()
