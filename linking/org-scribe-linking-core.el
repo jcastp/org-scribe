@@ -173,7 +173,7 @@ Returns the weight as a float, or 999.0 if not found, blank or non-numeric."
 
 (defun org-scribe--add-ids-to-all-entities (entity)
   "Add IDs to all entity headings in current buffer.
-ENTITY is an entity descriptor plist."
+ENTITY is an entity descriptor plist.  Returns the number of IDs added."
   (save-excursion
     (goto-char (point-min))
     (let ((count 0)
@@ -186,18 +186,22 @@ ENTITY is an entity descriptor plist."
              (setq count (1+ count)))))
        nil 'file)
       (message "%s" (org-scribe-msg (plist-get entity :msg-added-ids)
-                               count (org-scribe-plural count ""))))))
+                               count (org-scribe-plural count "")))
+      count)))
 
 (defun org-scribe--add-entity-ids (entity)
   "Add unique IDs to all entities in the database file.
-ENTITY is an entity descriptor plist."
+ENTITY is an entity descriptor plist.  Returns the number of IDs added,
+or nil when there is no database file."
   (let ((file (funcall (plist-get entity :file-fn))))
     (if (not (file-exists-p file))
-        (message "%s" (org-scribe-msg (plist-get entity :error-no-file)))
+        (progn (message "%s" (org-scribe-msg (plist-get entity :error-no-file)))
+               nil)
       (with-current-buffer (find-file-noselect file)
-        (org-scribe--add-ids-to-all-entities entity)
-        (save-buffer)
-        (message "%s" (org-scribe-msg (plist-get entity :msg-ids-updated) file))))))
+        (let ((count (org-scribe--add-ids-to-all-entities entity)))
+          (save-buffer)
+          (message "%s" (org-scribe-msg (plist-get entity :msg-ids-updated) file))
+          count)))))
 
 (defun org-scribe--entity-completion-items (items)
   "Return ITEMS relabeled for completion, disambiguating duplicate names.
@@ -350,7 +354,8 @@ Uses the first property in the entity's :properties list."
 
 (defun org-scribe--link-all-scene-entities (entity)
   "Convert entity names to ID links in all scenes in current buffer.
-ENTITY is an entity descriptor plist."
+ENTITY is an entity descriptor plist.  Returns the number of scenes
+changed."
   (save-excursion
     (goto-char (point-min))
     (let ((count 0)
@@ -366,7 +371,8 @@ ENTITY is an entity descriptor plist."
                (setq count (1+ count))))))
        nil 'file)
       (message "%s" (org-scribe-msg (plist-get entity :msg-updated-links)
-                               count (org-scribe-plural count ""))))))
+                               count (org-scribe-plural count "")))
+      count)))
 
 (defun org-scribe--setup-entity-links (entity add-ids-fn link-all-fn)
   "Set up entity linking system for current project.

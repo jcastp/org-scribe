@@ -335,6 +335,47 @@ The parser dropped it, so the next add rewrote the property without it."
                      ("char-carol-001" "Carol" "rival"))
                    (org-scribe--get-character-relationships-by-name "Alice")))))
 
+(ert-deftest test-relationships-default-to-character-at-point ()
+  "The source character defaults to the one point is on: inside its
+profile at any depth, or the PoV of the scene point is in.  The prompt
+used to start empty even on the character's own heading."
+  (org-scribe-relationships-test--with-fixture
+    (let ((all-chars (org-scribe--get-all-characters)))
+      (with-current-buffer (find-file-noselect temp-file)
+        ;; On Bob's heading; then in a section inside Carol's profile
+        ;; (appended at the end, so under the last character).
+        (goto-char (point-max))
+        (insert "*** Notes\nsome notes\n")
+        (goto-char (point-min))
+        (re-search-forward "^\\*\\* Bob")
+        (should (equal "Bob" (org-scribe--relationship-character-at-point all-chars)))
+        (re-search-forward "^\\*\\*\\* Notes")
+        (forward-line 1)
+        (should (equal "Carol" (org-scribe--relationship-character-at-point all-chars)))
+        (set-buffer-modified-p nil))
+      (with-temp-buffer
+        (delay-mode-hooks (org-mode))
+        (insert "#+TITLE: T\n* Chapter\n** Scene\n:PROPERTIES:\n:PoV: [[id:char-carol-001][Carol]]\n:END:\ntext\n"
+                "** Other scene\n:PROPERTIES:\n:PoV: Alice\n:END:\n")
+        (goto-char (point-min))
+        (should-not (org-scribe--relationship-character-at-point all-chars))
+        (re-search-forward "^text")
+        (should (equal "Carol" (org-scribe--relationship-character-at-point all-chars)))
+        (goto-char (point-max))
+        (should (equal "Alice" (org-scribe--relationship-character-at-point all-chars)))
+        ;; The commands offer it as the default, so RET picks it.
+        (let (default)
+          (cl-letf (((symbol-function 'completing-read)
+                     (lambda (_prompt _collection &optional _pred _req _init _hist def)
+                       (setq default def)
+                       (signal 'quit nil))))
+            (dolist (command '(org-scribe-add-relationship
+                               org-scribe-remove-relationship
+                               org-scribe-show-character-relationships))
+              (setq default nil)
+              (ignore-errors (condition-case nil (funcall command) (quit nil)))
+              (should (equal "Alice" default)))))))))
+
 (ert-deftest test-relationships-add-then-remove ()
   "org-scribe-remove-relationship deletes the selected entry only."
   (org-scribe-relationships-test--with-fixture

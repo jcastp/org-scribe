@@ -276,6 +276,69 @@ instead of Org's raw \"Cannot find entry with ID\"."
       (let ((err (should-error (org-scribe-jump-to-pov-character) :type 'user-error)))
         (should (string-match-p "Nell Varga" (cadr err)))))))
 
+;;; Relink: one summary, every change counted
+
+(defmacro test-link-update--with-relink-project (&rest body)
+  "Run BODY in a small English novel project, `root' bound to its root.
+The notebook has Alice and Bob; Alice is related to Bob; the one scene
+names Alice in plain text."
+  (declare (indent 0))
+  `(let* ((root (file-name-as-directory (make-temp-file "test-relink-" t)))
+          (default-directory root)
+          (org-id-locations-file (expand-file-name ".org-id-locations" root))
+          (org-id-track-globally nil))
+     (unwind-protect
+         (progn
+           (with-temp-file (expand-file-name ".org-scribe-project" root)
+             (insert "# Type: novel\n# Language: en\n"))
+           (with-temp-file (expand-file-name "design.org" root)
+             (insert "* Cast\n** Characters\n"
+                     "*** Alice\n:PROPERTIES:\n:ID: char-alice\n:Role: Protagonist\n"
+                     ":RelationshipsData: [[id:char-bob][Bob]]|friend\n:END:\n"
+                     "*** Bob\n:PROPERTIES:\n:ID: char-bob\n:Role: Ally\n:END:\n"))
+           (with-temp-file (expand-file-name "novel.org" root)
+             (insert "* Act :ignore:\n** Chapter :ignore:\n*** Scene :ignore:\n"
+                     ":PROPERTIES:\n:PoV: Alice\n:END:\ntext\n"))
+           (org-scribe-project-type-cache-clear)
+           ,@body)
+       (dolist (file '("design.org" "novel.org"))
+         (when-let* ((buffer (find-buffer-visiting (expand-file-name file root))))
+           (with-current-buffer buffer (set-buffer-modified-p nil))
+           (kill-buffer buffer)))
+       (org-scribe-project-type-cache-clear)
+       (delete-directory root t))))
+
+(defun test-link-update--relink-messages ()
+  "Run `org-scribe-relink-project'; return the lines it logged."
+  (let ((org-scribe-message-language 'en)
+        (start (with-current-buffer (messages-buffer) (point-max))))
+    (org-scribe-relink-project)
+    (with-current-buffer (messages-buffer)
+      (split-string (buffer-substring-no-properties start (point-max)) "\n" t))))
+
+(ert-deftest test-link-update-relink-reports-once-and-counts-everything ()
+  "Relink logs one summary line, and counts what it changed, relationships
+included.  It printed a dozen per-type lines even with nothing to do, and
+a rename that only reached the relationships was reported as 0 scenes."
+  (test-link-update--with-relink-project
+    ;; First run: Alice's plain-text PoV becomes a link.
+    (let ((lines (test-link-update--relink-messages)))
+      (should (= 1 (length lines)))
+      (should (string-match-p "scenes with names linked 1" (car lines))))
+    ;; Nothing left to do: one line saying so.
+    (let ((lines (test-link-update--relink-messages)))
+      (should (= 1 (length lines)))
+      (should (string-match-p "nothing to change" (car lines))))
+    ;; Rename Bob: only Alice's relationship mentions him.
+    (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+      (goto-char (point-min))
+      (re-search-forward "^\\*\\*\\* Bob$")
+      (replace-match "*** Robert Lane")
+      (save-buffer))
+    (let ((lines (test-link-update--relink-messages)))
+      (should (= 1 (length lines)))
+      (should (string-match-p "characters with relationships refreshed 1" (car lines))))))
+
 (provide 'test-link-update)
 
 ;;; test-link-update.el ends here

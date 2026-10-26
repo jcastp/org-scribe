@@ -199,6 +199,41 @@ list of (ID NAME TYPE) tuples."
 
 ;;; Interactive Relationship Management
 
+(defun org-scribe--relationship-character-at-point (all-chars)
+  "Return the name of the character point is on, or nil.
+ALL-CHARS is the alist from `org-scribe--get-all-characters'.  Walking up
+from point, the first heading that is a character's own entry (its ID is
+one of ALL-CHARS), or that carries a PoV naming a known character, wins:
+so a character's profile at any depth, or a scene, gives a character."
+  (when (and (derived-mode-p 'org-mode) (not (org-before-first-heading-p)))
+    (let ((by-id (lambda (id)
+                   (car (seq-find (lambda (c) (equal (cadr c) id)) all-chars))))
+          (by-pov (lambda (pov)
+                    (if (string-match "\\[\\[id:\\([^]]+\\)\\]" pov)
+                        (car (seq-find (lambda (c) (equal (cadr c) (match-string 1 pov)))
+                                       all-chars))
+                      (car (assoc (string-trim pov) all-chars))))))
+      (save-excursion
+        (org-back-to-heading t)
+        (catch 'found
+          (while t
+            (let ((id (org-entry-get nil "ID"))
+                  (pov (org-scribe-scene-property-get 'pov)))
+              (when-let* ((name (or (and id (funcall by-id id))
+                                    (and pov (funcall by-pov pov)))))
+                (throw 'found name)))
+            (unless (org-up-heading-safe)
+              (throw 'found nil))))))))
+
+(defun org-scribe--read-relationship-character (char-names all-chars)
+  "Read a character name from CHAR-NAMES, defaulting to the one at point.
+ALL-CHARS is the alist from `org-scribe--get-all-characters'.  The
+prompt used to start empty even with point on the character's heading."
+  (let ((default (org-scribe--relationship-character-at-point all-chars)))
+    (completing-read (format-prompt (org-scribe-msg 'prompt-relationship-from-character)
+                                    default)
+                     char-names nil t nil nil default)))
+
 (defun org-scribe--with-source-character (min-chars action-fn)
   "Select a source character and call ACTION-FN with the selection.
 ACTION-FN is called with (ALL-CHARS SOURCE-NAME EXISTING-RELS).
@@ -209,8 +244,7 @@ If fewer than MIN-CHARS characters exist, displays a message and returns nil."
         (message "%s" (org-scribe-msg (if (zerop (length char-names))
                                      'error-no-characters-found
                                    'msg-no-other-characters)))
-      (let* ((source-name (completing-read (org-scribe-msg 'prompt-relationship-from-character)
-                                           char-names nil t))
+      (let* ((source-name (org-scribe--read-relationship-character char-names all-chars))
              (existing-rels (org-scribe--get-character-relationships-by-name source-name)))
         (funcall action-fn all-chars source-name existing-rels)))))
 
@@ -305,8 +339,7 @@ ALL-RELATIONSHIPS is alist of (CHAR-NAME . RELATIONSHIPS)."
     (if (null char-names)
         (message "%s" (org-scribe-msg 'error-no-characters-found))
       ;; Ask for which character to view
-      (let* ((char-name (completing-read (org-scribe-msg 'prompt-relationship-from-character)
-                                        char-names nil t))
+      (let* ((char-name (org-scribe--read-relationship-character char-names all-chars))
              (relationships (org-scribe--get-character-relationships-by-name char-name)))
 
         (if (null relationships)

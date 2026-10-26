@@ -231,40 +231,51 @@ For each entity type registered in `org-scribe-entity-registry'
 This one command replaces the per-entity add-ids / link-all /
 update-names maintenance commands — and, being driven off the registry,
 automatically covers new entity types with no change here.  The
-manuscript buffer is saved when changes were made."
+manuscript buffer is saved when changes were made.
+
+The phases' own messages are silenced, as at project creation: a relink
+with nothing to do printed a dozen lines.  One summary counts what each
+phase changed, relationships included — a rename that only touched them
+used to be reported as \"0 scenes\"."
   (interactive)
   (org-scribe--require-project)
   (require 'org-scribe-linking-core)
-  ;; Phase 1 — make sure every entity has an ID in its database file.
-  (dolist (entry org-scribe-entity-registry)
-    (let* ((entity (cdr entry))
-           (file (funcall (plist-get entity :file-fn))))
-      (when (and file (file-exists-p file))
-        (org-scribe--add-entity-ids entity))))
-  ;; Phases 2 & 3 operate on the manuscript.
   (let ((manuscript-file (plist-get (org-scribe-project-structure) :manuscript-file)))
-    (if (not (and manuscript-file (file-exists-p manuscript-file)))
-        (user-error "%s" (org-scribe-msg 'msg-relink-no-novel))
-      (with-current-buffer (find-file-noselect manuscript-file)
-        ;; Phase 2 — convert plain names to links for every entity type.
+    (unless (and manuscript-file (file-exists-p manuscript-file))
+      (user-error "%s" (org-scribe-msg 'msg-relink-no-novel)))
+    (let ((ids 0) (linked 0) (refreshed 0) (relationships 0) broken)
+      (let ((inhibit-message t)
+            (message-log-max nil))
+        ;; Phase 1 — make sure every entity has an ID in its database file.
         (dolist (entry org-scribe-entity-registry)
-          (org-scribe--link-all-scene-entities (cdr entry)))
-        ;; Phase 3 — refresh stale display names (already registry-driven),
-        ;; in scenes and in the names stored with character relationships.
-        (when (fboundp 'org-scribe-refresh-relationship-names)
-          (org-scribe-refresh-relationship-names))
-        (let ((count (org-scribe-update-all-link-names))
-              (broken (length (org-scribe--find-broken-links))))
+          (let* ((entity (cdr entry))
+                 (file (funcall (plist-get entity :file-fn))))
+            (when (and file (file-exists-p file))
+              (setq ids (+ ids (or (org-scribe--add-entity-ids entity) 0))))))
+        ;; Phases 2 & 3 operate on the manuscript.
+        (with-current-buffer (find-file-noselect manuscript-file)
+          ;; Phase 2 — convert plain names to links for every entity type.
+          (dolist (entry org-scribe-entity-registry)
+            (setq linked (+ linked (org-scribe--link-all-scene-entities (cdr entry)))))
+          ;; Phase 3 — refresh stale display names (already registry-driven),
+          ;; in scenes and in the names stored with character relationships.
+          (when (fboundp 'org-scribe-refresh-relationship-names)
+            (setq relationships (org-scribe-refresh-relationship-names)))
+          (setq refreshed (org-scribe-update-all-link-names))
+          (setq broken (length (org-scribe--find-broken-links)))
           (when (buffer-modified-p)
-            (save-buffer))
-          (message "%s%s"
-                   (org-scribe-msg 'msg-relink-complete
-                                   count (org-scribe-plural count "")
+            (save-buffer))))
+      (message "%s%s"
+               (if (zerop (+ ids linked refreshed relationships))
+                   (org-scribe-msg 'msg-relink-nothing
                                    (file-name-nondirectory manuscript-file))
-                   (if (> broken 0)
-                       (org-scribe-msg 'msg-relink-broken-links
-                                       broken (org-scribe-plural broken ""))
-                     "")))))))
+                 (org-scribe-msg 'msg-relink-complete
+                                 (file-name-nondirectory manuscript-file)
+                                 ids linked refreshed relationships))
+               (if (> broken 0)
+                   (org-scribe-msg 'msg-relink-broken-links
+                                   broken (org-scribe-plural broken ""))
+                 "")))))
 
 ;;; Auto-propagation on entity file save
 

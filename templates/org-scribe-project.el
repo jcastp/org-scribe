@@ -523,12 +523,35 @@ used to be advice the planner installed on them when it loaded, and the
 planner is autoloaded, so a fresh session never offered a plan; the
 advice also fired for programmatic calls.  Honours
 `org-scribe-planner-offer-plan-on-create', which a writer may have set
-before the planner loads (unbound means its default, t)."
-  (when (if (boundp 'org-scribe-planner-offer-plan-on-create)
-            org-scribe-planner-offer-plan-on-create
-          t)
-    (when (require 'org-scribe-planner nil t)
-      (org-scribe-planner--offer-plan-on-create project-dir title))))
+before the planner loads (unbound means its default, t).
+
+Whatever the answer changed — the Planner and Plan lines of the marker,
+plan.org — is committed afterwards (see
+`org-scribe--commit-plan-offer'), even if the offer is cut short, so a
+new project's repository is clean."
+  (unwind-protect
+      (when (if (boundp 'org-scribe-planner-offer-plan-on-create)
+                org-scribe-planner-offer-plan-on-create
+              t)
+        (when (require 'org-scribe-planner nil t)
+          (org-scribe-planner--offer-plan-on-create project-dir title)))
+    (org-scribe--commit-plan-offer project-dir title)))
+
+(defun org-scribe--commit-plan-offer (project-dir title)
+  "Commit what the plan offer changed in PROJECT-DIR, if anything.
+The initial commit is made before the offer, so accepting left
+plan.org untracked and the marker modified, and declining left the
+marker modified.  Does nothing when PROJECT-DIR is not a git
+repository, git is missing, or nothing changed."
+  (let ((default-directory (file-name-as-directory project-dir)))
+    (when (and (file-directory-p (expand-file-name ".git"))
+               (org-scribe--git "add" "-A")
+               ;; Exit status 1: something is staged.
+               (not (org-scribe--git "diff" "--cached" "--quiet")))
+      (org-scribe--git "commit" "-m"
+                       (if (file-exists-p (expand-file-name "plan.org"))
+                           (format "Add writing plan: %s" title)
+                         (format "Record planner choice: %s" title))))))
 
 (defun org-scribe--copy-templates (template-dir project-dir variables)
   "Copy and process templates from TEMPLATE-DIR to PROJECT-DIR.
@@ -1292,16 +1315,37 @@ compile output directory are not offered).  Falls back to
                  #'string<))))
     (or found org-scribe--known-project-files)))
 
+(defun org-scribe--open-file-default (root candidates)
+  "Return the file `org-scribe-open-project-file' offers by default.
+The manuscript, or the design notebook when the current buffer already
+visits the manuscript, provided it is one of CANDIDATES (relative to
+ROOT); nil otherwise."
+  (when root
+    (let* ((structure (org-scribe-project-structure))
+           (manuscript (plist-get structure :manuscript-file))
+           (file (if (and manuscript buffer-file-name
+                          (file-equal-p manuscript buffer-file-name))
+                     (plist-get structure :design-file)
+                   manuscript)))
+      (when file
+        (car (member (file-relative-name file root) candidates))))))
+
 ;;;###autoload
 (defun org-scribe-open-project-file (filename)
   "Quickly open a file in the current writing project (novel or short story).
 FILENAME should be relative to project root (e.g., \"design.org\").
-Completion offers the Org files actually present in the project."
+Completion offers the Org files actually present in the project, and
+only those; the default is the manuscript, or the design notebook from
+the manuscript.  An empty answer used to open the project root in Dired."
   (interactive
-   (list (completing-read
-          "Open file: "
-          (org-scribe--project-file-candidates
-           (org-scribe--open-file-project-root)))))
+   (let* ((root (org-scribe--open-file-project-root))
+          (candidates (org-scribe--project-file-candidates root))
+          (default (org-scribe--open-file-default root candidates)))
+     (list (completing-read
+            (format-prompt (org-scribe-msg 'file-open-prompt) default)
+            candidates nil t nil nil default))))
+  (when (string-empty-p filename)
+    (user-error "%s" (org-scribe-msg 'error-no-file-chosen)))
   (let ((project-root (org-scribe--open-file-project-root)))
     (if project-root
         (let ((full-path (expand-file-name filename project-root)))

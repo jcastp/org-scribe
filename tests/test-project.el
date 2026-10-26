@@ -683,6 +683,115 @@ as a template artifact present from project creation."
           (should (file-exists-p (expand-file-name "novel.org" project-dir)))
         (test-project--kill-file-buffer (expand-file-name "README.org" project-dir))))))
 
+(defun test-project--git-output (dir &rest args)
+  "Return the output of git ARGS run in DIR."
+  (let ((default-directory (file-name-as-directory dir)))
+    (with-output-to-string
+      (with-current-buffer standard-output
+        (apply #'call-process "git" nil t nil args)))))
+
+(ert-deftest test-create-novel-project-repo-clean-after-plan-offer ()
+  "Whatever the plan offer writes is committed: accepting (marker lines and
+plan.org), declining (the Planner: no line), or quitting midway.  The
+initial commit came before the offer, so the new repository was dirty."
+  (skip-unless (executable-find "git"))
+  ;; Load it first: loading it later would replace the stub below.
+  (require 'org-scribe-planner)
+  (let ((process-environment
+         (append '("GIT_AUTHOR_NAME=T" "GIT_AUTHOR_EMAIL=t@example.org"
+                   "GIT_COMMITTER_NAME=T" "GIT_COMMITTER_EMAIL=t@example.org")
+                 process-environment))
+        (org-scribe-planner-offer-plan-on-create t))
+    (dolist (answer '(accept decline quit))
+      (test-project--with-temp-base-dir base-dir
+        (let ((project-dir (expand-file-name "My Novel" base-dir)))
+          (org-scribe-create-novel-project base-dir "My Novel" 'en 'sistema 80000)
+          (unwind-protect
+              (progn
+                (should (string-empty-p (test-project--git-output project-dir "status" "--porcelain")))
+                (cl-letf (((symbol-function 'org-scribe-planner--offer-plan-on-create)
+                           (lambda (dir _title)
+                             (pcase answer
+                               ('accept
+                                (with-temp-file (expand-file-name "plan.org" dir) (insert "* Plan\n"))
+                                (org-scribe--project-marker-set dir "Planner" "yes")
+                                (org-scribe--project-marker-set dir "Plan" "plan.org"))
+                               ('decline
+                                (org-scribe--project-marker-set dir "Planner" "no"))
+                               ('quit
+                                (org-scribe--project-marker-set dir "Planner" "yes")
+                                (signal 'quit nil))))))
+                  (condition-case nil
+                      (org-scribe--offer-plan-after-create project-dir "My Novel")
+                    (quit nil)))
+                (should (string-empty-p (test-project--git-output project-dir "status" "--porcelain")))
+                (should (= 2 (length (split-string (test-project--git-output
+                                                    project-dir "log" "--oneline")
+                                                   "\n" t))))
+                (when (eq answer 'accept)
+                  (should (string-match-p "plan.org" (test-project--git-output
+                                                      project-dir "ls-files")))))
+            (test-project--kill-file-buffer (expand-file-name "novel.org" project-dir))))))))
+
+(ert-deftest test-create-project-plan-offer-commits-nothing-when-nothing-changed ()
+  "No second commit when the offer changes nothing (offer turned off)."
+  (skip-unless (executable-find "git"))
+  ;; Load it first, so the `let' below binds its (special) variable.
+  (require 'org-scribe-planner)
+  (let ((process-environment
+         (append '("GIT_AUTHOR_NAME=T" "GIT_AUTHOR_EMAIL=t@example.org"
+                   "GIT_COMMITTER_NAME=T" "GIT_COMMITTER_EMAIL=t@example.org")
+                 process-environment))
+        (org-scribe-planner-offer-plan-on-create nil))
+    (test-project--with-temp-base-dir base-dir
+      (let ((project-dir (expand-file-name "My Novel" base-dir)))
+        (org-scribe-create-novel-project base-dir "My Novel" 'en 'sistema 80000)
+        (unwind-protect
+            (progn
+              (org-scribe--offer-plan-after-create project-dir "My Novel")
+              (should (= 1 (length (split-string (test-project--git-output
+                                                  project-dir "log" "--oneline")
+                                                 "\n" t)))))
+          (test-project--kill-file-buffer (expand-file-name "novel.org" project-dir)))))))
+
+(ert-deftest test-open-project-file-prompt-default-and-match ()
+  "F8 F8 o prompts from the pack, defaults to the manuscript (the notebook
+from the manuscript), requires a match, and opens nothing on an empty
+answer.  It used a literal English prompt with no default and no match,
+so RET opened the project root in Dired."
+  (test-project--with-temp-base-dir base-dir
+    (let ((root (file-name-as-directory base-dir))
+          (org-scribe-message-language 'es)
+          seen)
+      (with-temp-file (expand-file-name ".org-scribe-project" root)
+        (insert "# Type: novel\n# Language: en\n"))
+      (dolist (file '("novel.org" "design.org"))
+        (with-temp-file (expand-file-name file root) (insert "* H\n")))
+      (org-scribe-project-type-cache-clear)
+      (unwind-protect
+          (cl-letf (((symbol-function 'completing-read)
+                     (lambda (prompt collection _pred require-match _init _hist default)
+                       (setq seen (list prompt require-match default collection))
+                       "")))
+            (let ((default-directory root))
+              (with-temp-buffer
+                (setq default-directory root)
+                (should-error (call-interactively #'org-scribe-open-project-file)
+                              :type 'user-error)
+                (should (string-prefix-p "Abrir archivo" (nth 0 seen)))
+                (should (eq t (nth 1 seen)))
+                (should (equal "novel.org" (nth 2 seen)))
+                (should (member "design.org" (nth 3 seen)))
+                (should-not (derived-mode-p 'dired-mode)))
+              (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+                (should-error (call-interactively #'org-scribe-open-project-file)
+                              :type 'user-error)
+                (should (equal "design.org" (nth 2 seen)))
+                (kill-buffer))))
+        (org-scribe-project-type-cache-clear)
+        (when-let* ((dired (get-buffer (file-name-nondirectory (directory-file-name root)))))
+          (kill-buffer dired))))))
+
 (ert-deftest test-create-short-story-project-spanish-templates ()
   "Creating a short story project with LANGUAGE \\='es uses cuento.org."
   (test-project--with-temp-base-dir base-dir
