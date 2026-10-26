@@ -932,9 +932,11 @@ variables exactly as the base copy does."
 loudly rather than leaving the Foundations part empty."
   (let ((org-scribe-project-package-directory
          (file-name-as-directory (make-temp-file "org-scribe-empty-pkg-" t))))
-    (should-error
-     (org-scribe--foundations-fragment 'helice 'en "/unused/" '(("TITLE" . "T")))
-     :type 'user-error)))
+    (unwind-protect
+        (should-error
+         (org-scribe--foundations-fragment 'helice 'en "/unused/" '(("TITLE" . "T")))
+         :type 'user-error)
+      (delete-directory org-scribe-project-package-directory t))))
 
 (ert-deftest test-project-copy-templates-skips-fragments ()
   "`org-scribe--copy-templates' never copies a *.fragment file."

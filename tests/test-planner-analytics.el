@@ -193,6 +193,45 @@ days with words, and the heatmap drew today as still to come."
           ;; Sunday Nov 8 closes the second week row, after Nov 2-7.
           (should (string-match-p "◐ \n" (buffer-string))))))))
 
+;;; Chart image files
+
+(ert-deftest test-planner-analytics-chart-file-reused-and-deleted-with-buffer ()
+  "A gnuplot chart reuses one PNG across refreshes and deletes it with its
+buffer; with no gnuplot, no file is made at all.  A fresh PNG was left in
+the temporary directory on every view or refresh, and an empty one when
+gnuplot was missing."
+  (let* ((temporary-file-directory
+          (file-name-as-directory (make-temp-file "test-charts-" t)))
+         (org-scribe-planner--chart-files nil)
+         (pngs (lambda () (directory-files temporary-file-directory nil "\\.png\\'"))))
+    (unwind-protect
+        (test-analytics--on "2026-11-08"
+          (let ((org-scribe-planner--current-plan (test-analytics--week))
+                (org-scribe-planner--current-plan-file "/tmp/unused-plan.org")
+                (gnuplot nil))
+            (cl-letf (((symbol-function 'display-buffer) #'ignore)
+                      ((symbol-function 'pop-to-buffer) #'ignore)
+                      ((symbol-function 'message) #'ignore)
+                      ((symbol-function 'org-scribe-planner--gnuplot-available-p)
+                       (lambda () gnuplot))
+                      ((symbol-function 'org-scribe-planner--generate-gnuplot-cumulative)
+                       (lambda (_plan file) (with-temp-file file (insert "png")) t)))
+              ;; No gnuplot: nothing is created.
+              (org-scribe-planner-show-cumulative-progress)
+              (should-not (funcall pngs))
+              ;; Two views, one file.
+              (setq gnuplot t)
+              (org-scribe-planner-show-cumulative-progress)
+              (org-scribe-planner-show-cumulative-progress)
+              (should (= 1 (length (funcall pngs))))
+              (with-current-buffer "*Cumulative Progress*"
+                (should (string-match-p "deleted when this buffer is closed" (buffer-string))))
+              ;; Closing the buffer deletes it.
+              (kill-buffer "*Cumulative Progress*")
+              (should-not (funcall pngs))
+              (should-not org-scribe-planner--chart-files))))
+      (delete-directory temporary-file-directory t))))
+
 ;;; Dashboards render
 
 (ert-deftest test-planner-analytics-dashboards-render ()

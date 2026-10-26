@@ -635,10 +635,12 @@ An *EDIT* marker carries a category before a \" - \" separator:
 
 `org-scribe-search-edits' groups the index by these categories.  A
 marker whose category is absent, empty, or not in this list (after
-resolving it through `org-scribe--edit-category-aliases', so a
+resolving it through `org-scribe-edit-category-canonical', so a
 localized spelling such as \"diseño\" still matches \"design\") is
 grouped under a catch-all \"other\" heading rather than being dropped,
-so a typo moves a marker but never hides it.
+so a typo moves a marker but never hides it.  The index headings and the
+`edit' snippet's prompt use the project language's spelling (see
+`org-scribe-edit-category-display').
 
 *NOTE* markers have no category and are listed in their own section."
   :type '(repeat string)

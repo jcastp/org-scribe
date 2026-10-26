@@ -143,7 +143,15 @@
 ;;;###autoload
 (defun org-scribe-run-tests-batch ()
   "Load and run all org-scribe tests in batch mode.
-Suitable for CI/CD pipelines and automated testing."
+Suitable for CI/CD pipelines and automated testing.
+
+Temporary files go to a directory of their own, deleted when the run
+exits, so a test that forgets to clean up leaves nothing in /tmp.  TMPDIR
+is set too, for the tests that start a fresh Emacs."
+  (let ((dir (make-temp-file "org-scribe-tests-" t)))
+    (setq temporary-file-directory (file-name-as-directory dir))
+    (setenv "TMPDIR" dir)
+    (add-hook 'kill-emacs-hook (lambda () (delete-directory dir t))))
   (org-scribe-load-tests)
   (ert-run-tests-batch-and-exit t))
 

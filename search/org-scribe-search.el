@@ -107,12 +107,22 @@ match on tags, so the results themselves do not change."
   (declare (indent 0))
   `(let ((org-use-tag-inheritance nil)) ,@body))
 
+(defconst org-scribe--search-title-keys
+  '((pov . search-title-pov)
+    (characters . search-title-characters)
+    (plot . search-title-plot)
+    (location . search-title-location))
+  "Message key of the result title for each searchable scene property.")
+
 (defun org-scribe--search-property (term error-key property)
   "Search for TERM in PROPERTY across headings in current buffer.
 ERROR-KEY is the message key for empty input validation.
 PROPERTY is a canonical scene property key (e.g. \\='pov); every
 localized alias for it (see `org-scribe-scene-property-aliases') is
-checked so the search works regardless of the project's language."
+checked so the search works regardless of the project's language.
+
+The view is titled after the search (\"PoV: Marina Soler\"); without a
+title org-ql names the buffer and its header after the raw query."
   (when (string-empty-p (string-trim term))
     (user-error "%s" (org-scribe-msg error-key)))
   (unless (org-scribe--org-ql-available-p)
@@ -121,7 +131,9 @@ checked so the search works regardless of the project's language."
     (org-ql-search (current-buffer)
       `(and (heading)
             (let ((val (org-scribe-scene-property-get ',property)))
-              (org-scribe--property-contains-p val ,term))))))
+              (org-scribe--property-contains-p val ,term)))
+      :title (org-scribe-msg (alist-get property org-scribe--search-title-keys)
+                             (string-trim term)))))
 
 ;;; Property-based scene search (PoV / Characters / Plot / Location)
 ;;
@@ -191,7 +203,7 @@ Requires org-ql package to be installed."
         (org-scribe--with-plain-tags
           (org-ql-search org-files
             `(todo ,@org-scribe-todo-keywords)
-            :title "TODO items in writing project"
+            :title (org-scribe-msg 'search-title-todos)
             :super-groups '((:auto-category t))))
       (message "%s" (org-scribe-msg 'msg-no-org-files project-root)))))
 
@@ -374,6 +386,10 @@ manuscript."
   (let* ((edits (seq-filter (lambda (m) (equal "EDIT" (plist-get m :type))) markers))
          (notes (seq-filter (lambda (m) (equal "NOTE" (plist-get m :type))) markers))
          (other-label (org-scribe-msg 'edits-index-other-category))
+         ;; Headings use the project language's spelling, the one the
+         ;; `edit' snippet offers; markers are grouped by canonical name.
+         (language (let ((default-directory (file-name-as-directory root)))
+                     (org-scribe-project-language)))
          ;; Known categories first, in configured order, then the
          ;; catch-all bucket.
          (categories (append org-scribe-edit-categories (list nil))))
@@ -387,7 +403,10 @@ manuscript."
                          edits)))
         (when (or in-category
                   (and category org-scribe-edits-index-show-empty-categories))
-          (insert (format "** %s\n" (or category other-label)))
+          (insert (format "** %s\n"
+                          (if category
+                              (org-scribe-edit-category-display category language)
+                            other-label)))
           (dolist (marker in-category)
             (org-scribe--edits-insert-marker marker root 3)))))
     (insert (format "\n* %s\n" (org-scribe-msg 'edits-index-section-notes)))
@@ -504,8 +523,15 @@ In the index buffer, `g' refreshes and `q' buries it."
 ;; variable the index groups by, so the prompt and the grouping cannot
 ;; drift apart.
 
-;; Tempel is an optional dependency: declared, never required.
+;; Tempel is an optional dependency: declared, and only loaded by
+;; `org-scribe-tempel-setup'.
 (defvar tempel-path)
+
+(defun org-scribe-edit-category-choices ()
+  "Return `org-scribe-edit-categories' spelled in the project's language.
+The `edit' snippet prompts with these, so a writer is offered the
+spelling the index heads its sections with."
+  (mapcar #'org-scribe-edit-category-display org-scribe-edit-categories))
 
 (defconst org-scribe--search-source-directory
   (file-name-directory (or load-file-name buffer-file-name))
@@ -539,10 +565,12 @@ rather than using `add-to-list', which would fail on a string.  Calling
 this twice is harmless.
 
 Signals a `user-error' when Tempel is not installed; the markers are
-plain text and can always be typed by hand."
+plain text and can always be typed by hand.  Tempel is loaded if it is
+installed but not loaded yet: checking only that `tempel-path' was bound
+refused \[org-scribe-tempel-setup] in exactly that case."
   (interactive)
-  (unless (boundp 'tempel-path)
-    (user-error "Tempel is not installed or not yet loaded"))
+  (unless (or (require 'tempel nil t) (boundp 'tempel-path))
+    (user-error "%s" (org-scribe-msg 'error-tempel-required)))
   (let ((file (org-scribe-tempel-snippets-file))
         (paths (if (listp tempel-path) tempel-path (list tempel-path))))
     (unless (member file paths)

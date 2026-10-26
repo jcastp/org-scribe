@@ -726,6 +726,20 @@ already-canonical category safely."
        (org-scribe--edit-category-canonical-keys))
       category))
 
+(defun org-scribe-edit-category-display (category &optional language)
+  "Return the canonical *EDIT* CATEGORY spelled in LANGUAGE.
+LANGUAGE defaults to the project's (`org-scribe-project-language').  This
+is the spelling shown in the edit index and offered by the `edit'
+snippet, so a Spanish project sees \"trama\" rather than \"plot\"; both
+are recognized when reading (see `org-scribe-edit-category-canonical').
+A category the pack does not spell -- one a writer added to
+`org-scribe-edit-categories' -- is returned unchanged."
+  (or (alist-get (intern-soft category)
+                 (plist-get (org-scribe-lang-pack
+                             (or language (org-scribe-project-language)))
+                            :edit-categories))
+      category))
+
 (defun org-scribe-project-language ()
   "Return the language symbol (\\='en or \\='es) for the current project.
 Reads the \"# Language:\" line from the project's .org-scribe-project

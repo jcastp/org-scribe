@@ -1382,7 +1382,8 @@ directly instead of leaving it stale, and does not prompt."
           (should (equal (buffer-string) "* fresh content\n"))
           (should-not (buffer-modified-p))
           (should (eq buf (current-buffer))))
-      (kill-buffer buf))))
+      (kill-buffer buf)
+      (delete-file file))))
 
 (ert-deftest test-compile-write-intermediate-with-no-existing-buffer-writes-the-file ()
   "With no buffer visiting the path, this is a plain file write, as before."

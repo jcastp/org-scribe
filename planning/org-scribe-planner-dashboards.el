@@ -706,27 +706,85 @@ plot '%s' using 1:2 with lines ls 1 title 'Ideal Burndown', \\
        (message "Error generating gnuplot chart: %s" (error-message-string err))
        nil))))
 
+;;; Chart image files
+
+(defvar org-scribe-planner--chart-files nil
+  "Alist of (BUFFER-NAME . FILE): the image each gnuplot chart buffer shows.")
+
+(defun org-scribe-planner--chart-file (buffer-name prefix)
+  "Return the PNG file the chart buffer BUFFER-NAME draws into.
+The same file is reused on every refresh and deleted with the buffer (see
+`org-scribe-planner--delete-chart-file').  A fresh temporary file per view
+used to be left behind each time: one PNG per view or refresh.  PREFIX
+names a new file."
+  (let ((file (cdr (assoc buffer-name org-scribe-planner--chart-files))))
+    (unless (and file (file-exists-p file))
+      (setq file (make-temp-file prefix nil ".png"))
+      (setf (alist-get buffer-name org-scribe-planner--chart-files nil nil #'string=)
+            file))
+    file))
+
+(defun org-scribe-planner--forget-chart-file (buffer-name)
+  "Delete the chart image of BUFFER-NAME, if there is one."
+  (when-let* ((cell (assoc buffer-name org-scribe-planner--chart-files)))
+    (ignore-errors (delete-file (cdr cell)))
+    (setq org-scribe-planner--chart-files
+          (delq cell org-scribe-planner--chart-files))))
+
+(defun org-scribe-planner--delete-chart-file ()
+  "Delete the chart image of the buffer being killed.
+Runs on `kill-buffer-hook'."
+  (when org-scribe-planner--chart-files
+    (org-scribe-planner--forget-chart-file (buffer-name))))
+
+(defun org-scribe-planner--delete-all-chart-files ()
+  "Delete every chart image still on disk.  Runs on `kill-emacs-hook'."
+  (dolist (cell org-scribe-planner--chart-files)
+    (org-scribe-planner--forget-chart-file (car cell))))
+
+(add-hook 'kill-buffer-hook #'org-scribe-planner--delete-chart-file)
+(add-hook 'kill-emacs-hook #'org-scribe-planner--delete-all-chart-files)
+
+(defun org-scribe-planner--insert-chart-image (file)
+  "Insert the PNG FILE, read afresh.
+The file name is reused on refresh, so the cached image is flushed first;
+otherwise a refresh would show the old chart."
+  (when (display-graphic-p)
+    (let ((image (create-image file)))
+      (image-flush image)
+      (insert-image image))))
+
+(defun org-scribe-planner--insert-chart-file-note (file)
+  "Say where the chart FILE is, and that it goes with the buffer."
+  (insert (propertize "Chart file: " 'face 'org-level-2))
+  (insert (format "%s\n" file))
+  (insert (propertize "  (deleted when this buffer is closed; copy it to keep it)\n\n"
+                      'face 'shadow)))
+
 ;;;###autoload
 (defun org-scribe-planner-show-burndown-gnuplot ()
   "Display burndown chart using gnuplot (high quality)."
   (interactive)
   (org-scribe-planner--with-current-plan (plan _)
 
-    (let* (             (output-file (make-temp-file "org-scribe-burndown" nil ".png")))
+    ;; The file is only made once gnuplot is there to draw into it: made
+    ;; first, an empty PNG was left behind whenever it was not.
+    (let ((buffer-name "*Burndown Chart (Gnuplot)*"))
 
         (if (org-scribe-planner--gnuplot-available-p)
-            (if (org-scribe-planner--generate-gnuplot-burndown plan output-file)
+            (if (org-scribe-planner--generate-gnuplot-burndown
+                 plan (org-scribe-planner--chart-file buffer-name "org-scribe-burndown"))
                 (progn
                   ;; Display image in buffer
-                  (org-scribe-planner--with-dashboard-buffer "*Burndown Chart (Gnuplot)*"
+                  (org-scribe-planner--with-dashboard-buffer buffer-name
                     (org-scribe-planner--insert-dashboard-header "BURNDOWN CHART (GNUPLOT)" plan 75)
 
-                      (when (display-graphic-p)
-                        (insert-image (create-image output-file)))
+                      (org-scribe-planner--insert-chart-image
+                       (org-scribe-planner--chart-file buffer-name "org-scribe-burndown"))
 
                       (insert "\n\n")
-                      (insert (propertize "Chart saved to: " 'face 'org-level-2))
-                      (insert (format "%s\n\n" output-file))
+                      (org-scribe-planner--insert-chart-file-note
+                       (org-scribe-planner--chart-file buffer-name "org-scribe-burndown"))
 
                       (insert (propertize "Interpretation:\n" 'face 'org-level-2))
                       (insert "  • Green line = Ideal burndown (linear decline)\n")
@@ -737,8 +795,9 @@ plot '%s' using 1:2 with lines ls 1 title 'Ideal Burndown', \\
                       (insert "  • Lines diverging = Falling further behind\n\n")
 
                     (insert (make-string 75 ?═) "\n")
-                    (insert (propertize "Press 'q' to close | 'r' to refresh | 's' to save\n"
+                    (insert (propertize "Press 'q' to close | 'r' to refresh\n"
                                       'face 'shadow))))
+              (org-scribe-planner--forget-chart-file buffer-name)
               (message "Failed to generate gnuplot chart, falling back to ASCII")
               (org-scribe-planner-show-burndown-ascii))
           (message "Gnuplot not found, falling back to ASCII version")
@@ -830,10 +889,12 @@ plot '%s' using 1:2 with lines ls 1 title 'Planned Progress', \\
   (interactive)
   (org-scribe-planner--with-current-plan (plan _)
 
-    (let* (             (output-file (make-temp-file "org-scribe-cumulative" nil ".png")))
+    ;; As for the burndown: no file until gnuplot is there to draw it.
+    (let ((buffer-name "*Cumulative Progress*"))
 
         (if (org-scribe-planner--gnuplot-available-p)
-            (if (org-scribe-planner--generate-gnuplot-cumulative plan output-file)
+            (if (org-scribe-planner--generate-gnuplot-cumulative
+                 plan (org-scribe-planner--chart-file buffer-name "org-scribe-cumulative"))
                 (progn
                   ;; Calculate current stats
                   (let* ((position (org-scribe-planner--calculate-schedule-position plan))
@@ -842,11 +903,11 @@ plot '%s' using 1:2 with lines ls 1 title 'Planned Progress', \\
                          (words-ahead (plist-get position :words-ahead)))
 
                     ;; Display image in buffer
-                    (org-scribe-planner--with-dashboard-buffer "*Cumulative Progress*"
+                    (org-scribe-planner--with-dashboard-buffer buffer-name
                       (org-scribe-planner--insert-dashboard-header "CUMULATIVE PROGRESS CHART" plan 75)
 
-                        (when (display-graphic-p)
-                          (insert-image (create-image output-file)))
+                        (org-scribe-planner--insert-chart-image
+                         (org-scribe-planner--chart-file buffer-name "org-scribe-cumulative"))
 
                         (insert "\n\n")
                         (insert (propertize "Current Status\n" 'face 'org-level-2))
@@ -861,8 +922,8 @@ plot '%s' using 1:2 with lines ls 1 title 'Planned Progress', \\
                                         sign
                                         (org-scribe-planner--format-number words-ahead))))
 
-                        (insert (propertize "Chart saved to: " 'face 'org-level-2))
-                        (insert (format "%s\n\n" output-file))
+                        (org-scribe-planner--insert-chart-file-note
+                         (org-scribe-planner--chart-file buffer-name "org-scribe-cumulative"))
 
                         (insert (propertize "Interpretation:\n" 'face 'org-level-2))
                         (insert "  • Green dashed line = Planned cumulative progress\n")
@@ -876,6 +937,7 @@ plot '%s' using 1:2 with lines ls 1 title 'Planned Progress', \\
                       (insert (make-string 75 ?═) "\n")
                       (insert (propertize "Press 'q' to close | 'r' to refresh | 'c' to calendar\n"
                                         'face 'shadow)))))
+              (org-scribe-planner--forget-chart-file buffer-name)
               (message "Failed to generate cumulative progress chart"))
           (message "Gnuplot not available. Install gnuplot to use this feature.")))))
 

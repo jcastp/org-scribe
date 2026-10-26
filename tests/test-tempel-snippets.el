@@ -101,10 +101,29 @@ of exports and out of word counts."
 (ert-deftest test-tempel-snippets-edit-reads-category-variable ()
   "The `edit' snippet prompts from `org-scribe-edit-categories'.
 Reading the variable rather than hardcoding the list is what keeps the
-prompt and the index grouping from drifting apart."
+prompt and the index grouping from drifting apart.  It reads it through
+`org-scribe-edit-category-choices', which spells it in the project's
+language."
   (let ((form (seq-find (lambda (f) (and (consp f) (eq 'edit (car f))))
                         (org-scribe-test--tempel-forms))))
-    (should (string-match-p "org-scribe-edit-categories" (format "%S" form)))))
+    (should (string-match-p "org-scribe-edit-category-choices" (format "%S" form)))
+    (should (string-match-p "org-scribe-edit-categories"
+                            (format "%S" (symbol-function 'org-scribe-edit-category-choices))))))
+
+(ert-deftest test-tempel-snippets-offer-the-project-language-spelling ()
+  "A Spanish project is offered \"trama\", not \"plot\", and every
+spelling offered parses back to its category."
+  (cl-letf (((symbol-function 'org-scribe-project-language) (lambda () 'es)))
+    (let ((choices (org-scribe-edit-category-choices)))
+      (should (equal choices '("trama" "escena" "personaje" "prosa" "diseño")))
+      (cl-mapc (lambda (choice category)
+                 (should (equal category
+                                (plist-get (car (org-scribe--edits-parse-block
+                                                 (format "*EDIT*: %s - body" choice)))
+                                           :category))))
+               choices org-scribe-edit-categories)))
+  (cl-letf (((symbol-function 'org-scribe-project-language) (lambda () 'en)))
+    (should (equal (org-scribe-edit-category-choices) org-scribe-edit-categories))))
 
 (ert-deftest test-tempel-snippets-produce-parseable-markers ()
   "Markers shaped like the snippets' output parse as the index expects.
@@ -136,7 +155,27 @@ disagreed about the separator, markers would silently land in `other'."
 (ert-deftest test-tempel-setup-errors-without-tempel ()
   "`org-scribe-tempel-setup' fails clearly when Tempel is absent."
   (skip-unless (not (boundp 'tempel-path)))
-  (should-error (org-scribe-tempel-setup) :type 'user-error))
+  (cl-letf (((symbol-function 'require)
+             (let ((real (symbol-function 'require)))
+               (lambda (feature &rest args)
+                 (unless (eq feature 'tempel) (apply real feature args))))))
+    (should-error (org-scribe-tempel-setup) :type 'user-error)))
+
+(ert-deftest test-tempel-setup-loads-installed-tempel ()
+  "Setup loads Tempel when it is installed but not loaded yet.
+It checked only that `tempel-path' was bound, and refused in exactly
+that case."
+  (let ((loaded nil)
+        (real (symbol-function 'require)))
+    (cl-letf (((symbol-function 'require)
+               (lambda (feature &rest args)
+                 (if (eq feature 'tempel)
+                     (setq loaded t)
+                   (apply real feature args)))))
+      (let ((tempel-path "~/.emacs.d/templates"))
+        (should (member (org-scribe-tempel-snippets-file) (org-scribe-tempel-setup)))
+        (should (member "~/.emacs.d/templates" tempel-path))
+        (should loaded)))))
 
 ;;; org-scribe-tempel-setup: `tempel-path' normalization
 ;;

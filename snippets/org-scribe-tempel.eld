@@ -28,14 +28,17 @@ org-mode
 
 ;; *EDIT*: <category> - <text>
 ;;
-;; The category list comes from `org-scribe-edit-categories', so
+;; The category list comes from `org-scribe-edit-categories', spelled in
+;; the project's language (`org-scribe-edit-category-choices'), so
 ;; customizing that variable updates both this prompt and the grouping in
 ;; `org-scribe-search-edits' — the prompt and the index cannot drift
-;; apart.  The prompt accepts anything you type; an unknown or empty
-;; category simply groups the marker under "other".
+;; apart.  The prompt accepts anything you type, English spellings
+;; included; an unknown or empty category simply groups the marker under
+;; "other".
 (edit
  "#+begin_comment" n
- "*EDIT*: " (p (concat (completing-read "Type: " org-scribe-edit-categories)
+ "*EDIT*: " (p (concat (completing-read (org-scribe-msg 'prompt-edit-category)
+                                        (org-scribe-edit-category-choices))
                        " - ")
                type)
  p n

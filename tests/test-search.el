@@ -159,6 +159,33 @@ interactive results buffer `org-ql-search' renders."
       (when (file-exists-p temp-dir)
         (delete-directory temp-dir t)))))
 
+(ert-deftest test-search-property-views-are-titled-after-the-search ()
+  "Each property search names its view after what was searched.
+Untitled, org-ql named the buffer and its header after the raw query:
+\"*Org QL View: (and (heading) (let ((val ...\"."
+  (skip-unless (locate-library "org-ql"))
+  (with-temp-buffer
+    (delay-mode-hooks (org-mode))
+    (insert "* Scene :ignore:\n:PROPERTIES:\n:PoV: Marina Soler\n:Characters: Marina Soler\n"
+            ":Plot: Main\n:Location: Faro\n:END:\n")
+    (let ((org-scribe-message-language 'en))
+      (dolist (search '((org-scribe-org-find-pov "Marina Soler" "PoV: Marina Soler")
+                        (org-scribe-org-find-character "Marina Soler" "Character: Marina Soler")
+                        (org-scribe-org-find-plot "Main" "Plot thread: Main")
+                        (org-scribe-org-find-location "Faro" "Location: Faro")))
+        (let ((before (buffer-list)))
+          (save-window-excursion
+            (funcall (nth 0 search) (nth 1 search)))
+          (let ((views (seq-difference (buffer-list) before)))
+            (unwind-protect
+                (progn
+                  (should (seq-find (lambda (b) (string-search (nth 2 search) (buffer-name b)))
+                                    views))
+                  (should-not (seq-find (lambda (b) (string-search "scene-property-get"
+                                                                   (buffer-name b)))
+                                        (buffer-list))))
+              (mapc #'kill-buffer views))))))))
+
 (ert-deftest test-search-views-do-not-repeat-inherited-tags ()
   "A scene under a chapter with the same tag is listed with the tag once."
   (skip-unless (locate-library "org-ql"))
@@ -316,6 +343,27 @@ localized."
     (should (equal '("plot" "scene" "character" "prose" "plot")
                    (mapcar (lambda (m) (plist-get m :category))
                            (org-scribe-test--markers dir))))))
+
+(ert-deftest test-search-edits-index-headings-follow-project-language ()
+  "A Spanish project's index heads its categories in Spanish.
+They printed `org-scribe-edit-categories' literally (\"** plot\") beside
+Spanish section titles, though the Spanish spelling is recognized."
+  (org-scribe-test--with-edits-project dir
+      "* Escena 1\n#+begin_comment\n*EDIT*: plot - a\n*EDIT*: diseño - b\n#+end_comment\n"
+    (with-temp-file (expand-file-name ".org-scribe-project" dir)
+      (insert "Type: novel\n# Language: es\n"))
+    (org-scribe-project-type-cache-clear)
+    (let ((index (org-scribe--edits-build dir)))
+      (unwind-protect
+          (with-current-buffer index
+            (let ((text (buffer-string)))
+              (dolist (heading '("trama" "escena" "personaje" "prosa" "diseño"))
+                (should (string-match-p (format "^\\*\\* %s$" heading) text)))
+              (should-not (string-match-p "^\\*\\* plot$" text))
+              ;; The markers are still grouped under their category.
+              (should (string-match-p "^\\*\\* trama\n\\*\\*\\* " text))))
+        (kill-buffer index)
+        (org-scribe-project-type-cache-clear)))))
 
 (ert-deftest test-search-edits-index-reads-unsaved-buffer ()
   "A marker added but not saved yet is found, with its line in the buffer."
