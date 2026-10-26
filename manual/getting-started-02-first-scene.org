@@ -152,23 +152,30 @@ A complete scene template appears! It looks like this:
 #+BEGIN_EXAMPLE
 ,*** TODO Scene 1 - The Alarm Goes Off
 :PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 500
 :PoV:
 :Characters:
 :Plot:
+:Plot-point:
 :Timeline:
 :Location:
 :Description:
 :Summary:
 :Scene-motivation:
 :Conflict-source:
+:Gap:
 :What-is-at-stake:
+:World-problem:
 :Emotion:
+:Tension-level:
+:Outcome:
+:Sequel-decision:
 :Comment:
-:WORD-OBJECTIVE: 500
 :END:
 #+END_EXAMPLE
 
-Note: there is no ~:WORDCOUNT:~ property yet at this point — it only appears once you run a word-count command (~F8 F8 w~/~F8 F8 a~) for the first time. ~:WORD-OBJECTIVE:~ does start pre-filled with a default of ~500~, which you can change to fit the scene.
+Note: ~:WORDCOUNT:~ starts at ~0~ and is refreshed by the word-count commands (~F8 F8 w~/~F8 F8 a~). ~:WORD-OBJECTIVE:~ starts pre-filled with a default of ~500~, which you can change to fit the scene.
 
 *Congratulations!* You've inserted your first scene template!
 
@@ -241,6 +248,24 @@ Let's look at each property and what it's for:
 - Find plot gaps
 - Balance multiple storylines
 
+*** ~:Plot-point:~
+*What it is*: Which of the thirteen non-negotiable plot points this scene serves, if any.
+
+*Example*: set it with ~F8 F8 G~ (it stores an ID link); see Lesson 6.
+
+*Why it matters*:
+- The project health report lists plot points that no scene serves
+- Jump from a scene to the plot point it carries
+
+*** ~:Timeline:~
+*What it is*: When the scene happens in story time (a date, a day number, "Three days later").
+
+*Example*: ~Day 3, morning~
+
+*Why it matters*:
+- Keep story chronology straight when scenes are written out of order
+- Spot impossible sequences during revision
+
 ** Planning Properties (Use During Revision!)
 
 These properties help you plan and revise scenes:
@@ -265,15 +290,40 @@ What's the conflict or tension?
 
 *Example*: ~Internal conflict - wanting sleep vs. needing to wake up~
 
+*** ~:Gap:~
+The distance between what the character expected and what the world gave them (McKee's term). A scene with no gap either needs one or should be cut.
+
+*Example*: ~Alex expects an easy morning; the alarm never rang~
+
 *** ~:What-is-at-stake:~
 What does the character stand to lose?
 
 *Example*: ~Professional reputation if late to meeting~
 
+*** ~:World-problem:~
+The problem the world of the story poses in this scene, beyond the character's own conflict (see the glossary term /World Problem/).
+
+*Example*: ~The city transport strike makes every route unreliable~
+
 *** ~:Emotion:~
 The emotional tone of the scene
 
 *Example*: ~Anxious, rushed, frustrated~
+
+*** ~:Tension-level:~
+How tense the scene is, in whatever scale you prefer (a number, or low/medium/high). Comparing it across scenes shows whether the pace varies or stays uniform.
+
+*Example*: ~4~ or ~high~
+
+*** ~:Outcome:~
+How the scene ends: what changed, and how the situation differs from the start.
+
+*Example*: ~Alex leaves late and without the report~
+
+*** ~:Sequel-decision:~
+The decision the character reaches in the sequel that follows the scene (Swain's reaction → dilemma → decision). It should chain into the next scene's desire.
+
+*Example*: ~Skip breakfast and take a taxi~
 
 *** ~:Comment:~
 Your notes to yourself
@@ -735,6 +785,8 @@ The more you practice, the more natural it becomes!
 
 *Useful* (use during planning):
 - ~:Plot:~ - Which plot threads?
+- ~:Plot-point:~ - Which non-negotiable does it serve?
+- ~:Timeline:~ - When in story time?
 - ~:Description:~ - One-line summary
 - ~:WORD-OBJECTIVE:~ - Target word count
 
@@ -742,8 +794,13 @@ The more you practice, the more natural it becomes!
 - ~:Summary:~ - Longer description
 - ~:Scene-motivation:~ - Why this scene?
 - ~:Conflict-source:~ - What's the tension?
+- ~:Gap:~ - Expectation vs. what happens
 - ~:What-is-at-stake:~ - What can they lose?
+- ~:World-problem:~ - What the world throws at them
 - ~:Emotion:~ - Scene's emotional tone
+- ~:Tension-level:~ - How tense is it?
+- ~:Outcome:~ - How does it end?
+- ~:Sequel-decision:~ - What do they decide next?
 - ~:Comment:~ - Your notes
 
 ** Writing Modes Quick Guide
