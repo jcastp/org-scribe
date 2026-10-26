@@ -191,6 +191,40 @@ ARGS are extra slots for `make-org-scribe-plan', overriding the defaults."
       (org-scribe-planner-recalculate-end-date plan "/tmp/unused-plan.org")
       (should (string= (org-scribe-plan-end-date plan) (test-recalc--day 5))))))
 
+(ert-deftest test-planner-recalculation-starts-today-when-today-unchanged ()
+  "An entry for today with no net change doesn't start the day.
+Regression: a count synced on save recorded today's total before any
+writing, so \"adjust remaining\" started tomorrow and locked today."
+  (let ((plan (test-recalc--running-plan
+               :current-words 5000
+               :daily-word-counts (list (cons (test-recalc--day -1) (list :words 5000 :note ""))
+                                        (cons (test-recalc--day 0) (list :words 5000 :note ""))))))
+    (should (string= (org-scribe-planner--default-recalculation-date plan)
+                     (test-recalc--day 0)))))
+
+(ert-deftest test-planner-recalculation-starts-tomorrow-after-a-cut ()
+  "A net cut today counts as work on the day: the change starts tomorrow."
+  (let ((plan (test-recalc--running-plan
+               :current-words 4800
+               :daily-word-counts (list (cons (test-recalc--day -1) (list :words 5000 :note ""))
+                                        (cons (test-recalc--day 0) (list :words 4800 :note ""))))))
+    (should (string= (org-scribe-planner--default-recalculation-date plan)
+                     (test-recalc--day 1)))))
+
+(ert-deftest test-planner-adjust-remaining-preview-names-what-it-locks ()
+  "The preview counts the newly locked days and says through which date,
+not \"Past days locked\" for a day that is today."
+  (let* ((plan (test-recalc--running-plan
+                :current-words 6000
+                :daily-word-counts (list (cons (test-recalc--day 0) (list :words 6000 :note "")))))
+         (as-of (org-scribe-planner--default-recalculation-date plan))
+         (preview (org-scribe-planner--copy-plan plan)))
+    (should (string= as-of (test-recalc--day 1)))
+    (org-scribe-planner--rebase-keeping-end-date preview as-of)
+    (let ((text (org-scribe-planner--describe-remaining-days-change plan preview as-of)))
+      (should-not (string-match-p "Past days locked" text))
+      (should (string-match-p (format "locked, through %s" (test-recalc--day 0)) text)))))
+
 (ert-deftest test-planner-adjust-end-date-skips-spare-days ()
   "Spare days between today and the new end date push it out."
   (test-recalc--without-io

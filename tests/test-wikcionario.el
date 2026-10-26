@@ -338,11 +338,55 @@ round trip, and the writer could not tell the two apart."
                (lambda (&rest _) nil))
               ((symbol-function 'org-scribe--wikcionario-report-miss)
                (lambda (&rest _) (setq reported t)))
+              ((symbol-function 'y-or-n-p) (lambda (&rest _) nil))
               ((symbol-function 'org-scribe-rae-api-lookup)
                (lambda (&rest _) (setq rae t))))
       (org-scribe-dictionary-lookup "xyzzyqwerty")
       (should reported)
       (should-not rae))))
+
+(defun test-wikcionario--miss-with-answer (backend answer)
+  "Look up a word the local server lacks under BACKEND, answering ANSWER.
+Return (ASKED . RAE): whether the RAE was offered and whether it was used."
+  (let ((org-scribe-dictionary-backend backend)
+        (asked nil) (rae nil))
+    (cl-letf (((symbol-function 'org-scribe-wikcionario-available-p)
+               (lambda (&rest _) t))
+              ((symbol-function 'org-scribe-wikcionario-resolve)
+               (lambda (&rest _) nil))
+              ((symbol-function 'org-scribe--wikcionario-report-miss) #'ignore)
+              ((symbol-function 'y-or-n-p)
+               (lambda (&rest _) (setq asked t) answer))
+              ((symbol-function 'org-scribe-rae-api-lookup)
+               (lambda (&rest _) (setq rae t))))
+      (org-scribe-dictionary-lookup "gasóleo")
+      (cons asked rae))))
+
+(ert-deftest test-wikcionario-backend-local-miss-offers-the-rae ()
+  "Under `auto', a local miss offers the RAE, and goes there on yes only."
+  (should (equal (test-wikcionario--miss-with-answer 'auto t) '(t . t)))
+  (should (equal (test-wikcionario--miss-with-answer 'auto nil) '(t . nil))))
+
+(ert-deftest test-wikcionario-backend-offline-only-miss-offers-nothing ()
+  "With the backend forced offline, a miss does not offer the RAE."
+  (should (equal (test-wikcionario--miss-with-answer 'wikcionario t) '(nil . nil))))
+
+(ert-deftest test-wikcionario-miss-drops-forms-of-the-missing-word ()
+  "A suggestion whose lemma is the missing word is dropped.
+Regression: a miss on `gasóleo' suggested only `gasóleos', a stub
+pointing at the missing article."
+  (cl-letf (((symbol-function 'org-scribe-lemmas)
+             (lambda (w) (cdr (assoc w '(("gasóleos" "gasóleo")
+                                        ("gasolina" "gasolina")))))))
+    (should (equal (org-scribe--wikcionario-useful-suggestions
+                    "gasóleo" '("gasóleos" "gasolina"))
+                   '("gasolina")))))
+
+(ert-deftest test-wikcionario-miss-keeps-suggestions-without-lemmatizer ()
+  (cl-letf (((symbol-function 'org-scribe--wikcionario-lemmas) (lambda (_) nil)))
+    (should (equal (org-scribe--wikcionario-useful-suggestions
+                    "gasóleo" '("gasóleos"))
+                   '("gasóleos")))))
 
 (ert-deftest test-wikcionario-backend-offline-only-never-goes-online ()
   "With the backend forced offline, an unreachable server reports, not falls back."

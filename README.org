@@ -61,7 +61,7 @@
   - Three-pane editing layout
 - *Search Functions*: Find scenes by POV, character, location, or plot keywords using org-ql (handles ID links)
 - *Edit Marker Index*: Collects the =*EDIT*= / =*NOTE*= markers you leave inline while drafting into one navigable buffer, grouped by category, each linking back to its exact line. Markers live in Org comment blocks, so they never reach your exported manuscript and never inflate your word counts
-- *Dictionary Tools*: definitions and synonyms that both work *offline* when the local data is installed — a Wikcionario served by kiwix-serve for definitions, the system thesaurus for synonyms — falling back to the online RAE and WordReference otherwise. Inflected words resolve either way, so looking up =corriendo= finds =correr=
+- *Dictionary Tools*: definitions and synonyms that both work *offline* when the local data is installed — a Wikcionario served by kiwix-serve for definitions, the system thesaurus for synonyms — falling back to the online RAE otherwise. Inflected words resolve either way, so looking up =corriendo= finds =correr=
 - *Capture System*: Project-aware note capture that finds the right notes file; character/location/object/timeline/plot-thread templates are fully localized to the project's own language (English/Spanish), independent of your global UI language setting
 - *Project Health Report*: =org-scribe-project-health= aggregates the Starting Gate (how many of its eight items are done, two of them measured rather than self-reported), word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, plot points no scene serves yet, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
@@ -73,7 +73,7 @@
 
 Full support for English/Spanish bilingual writing:
 - Spanish definitions: offline via a local Wikcionario, or the RAE online
-- Synonym lookup: offline via the system thesaurus, or WordReference online
+- Synonym lookup: offline via the system thesaurus, or the RAE online
 - Bilingual project structure support: every project file and directory name — the manuscript, the entity directory (=objects=/=objetos=), the notes directory (=notes=/=notas=) — is resolved from a per-language pack, not hardcoded
 - Bilingual UI: every command prompt, message, and error is available in Spanish too — set =(setq org-scribe-message-language 'es)= (default =en=)
 - Bilingual capture templates: character/location/object/timeline/plot-thread capture prompts and headings automatically match *the project's own language* (read from the =# Language:= line in =.org-scribe-project=), not the global =org-scribe-message-language= setting — a Spanish novel gets Spanish capture prompts even if your own UI language is English
@@ -155,7 +155,7 @@ their data files directly — there is nothing to require or configure.
 
 | Package         | Gives you                                                | Debian/Ubuntu                    |
 |-----------------+-----------------------------------------------------------+-----------------------------------|
-| =mythes-es=       | Offline synonyms, replacing the WordReference web page   | =sudo apt install mythes-es=       |
+| =mythes-es=       | Offline synonyms, without a network round trip           | =sudo apt install mythes-es=       |
 | =hunspell=        | Inflected words resolve (=corriendo= → =correr=)           | =sudo apt install hunspell-es=     |
 | =kiwix-tools=     | Offline definitions, replacing the online RAE            | =sudo apt install kiwix-tools=     |
 | a LaTeX distribution | PDF output from =org-scribe-compile= (=F8 F8 X=)      | =sudo apt install texlive=         |
@@ -1356,15 +1356,15 @@ so. Without it, only the exact word you typed is looked up.
 **** Online (fallback)
 
 With no thesaurus data installed, or for a word that has no local entry,
-the WordReference page opens in the side window as before. You are never
-left without an answer.
+the synonyms the online RAE gives for each sense are shown in the same side
+window. You are never left without an answer.
 
 **** Choosing explicitly
 
 #+begin_src emacs-lisp
 ;; 'auto (default) — offline when available, online otherwise
 ;; 'mythes        — offline only, never touch the network
-;; 'wordreference — always use WordReference
+;; 'rae-api       — always use the online RAE
 (setq org-scribe-thesaurus-backend 'auto)
 
 ;; Only if your thesaurus data lives somewhere unusual

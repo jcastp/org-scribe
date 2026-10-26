@@ -16,6 +16,7 @@
 (require 'json)
 (require 'url)
 (require 'org)
+(require 'seq)
 (require 'eww)
 (require 'org-scribe-core)
 (require 'org-scribe-config)
@@ -79,9 +80,42 @@ the word the writer is already on instead of making them retype it."
      conjugations)
     (insert "#+end_example\n\n")))
 
+(defun org-scribe--rae-strip-homonym-index (word)
+  "Return WORD without the RAE's trailing homonym index (`luz1' -> `luz')."
+  (replace-regexp-in-string "\\([^0-9]\\)[0-9]+\\'" "\\1" word))
+
+(defun org-scribe--rae-sense-label (sense)
+  "Return SENSE's grammatical label as the RAE writes it, or nil.
+The label is the abbreviations in the sense's `raw' text between its
+number and its description (\"m.\", \"intr.\", \"adj. coloq.\"): the
+dictionary's own Spanish, and more accurate than the API's English
+`category', which tags some adjective senses as nouns.  When the
+description cannot be found in `raw', the leading run of abbreviations
+is taken instead."
+  (let* ((raw (gethash "raw" sense))
+         (description (gethash "description" sense))
+         (body (and (stringp raw)
+                    (replace-regexp-in-string "\\`[0-9]+\\. *" "" raw)))
+         (start (and body (stringp description) (> (length description) 0)
+                     (string-search description body)))
+         (label (cond
+                 (start (substring body 0 start))
+                 ((and body (string-match
+                             "\\`\\(?:[[:alpha:]]+\\. +\\)+" body))
+                  (match-string 0 body)))))
+    (when label
+      (org-string-nw-p (string-trim label)))))
+
 (defun org-scribe-rae-format-result (json-data _palabra)
   "Format the JSON-DATA response from RAE API into an org-mode buffer.
-PALABRA is the word that was looked up."
+PALABRA is the word that was looked up.
+
+Three things in the API data are cleaned up rather than shown as they
+come: the etymology is the `raw' sentence, not the `text' field (which
+lists the etymons bare: \"pharus,pháros,pháros\"); a sense is labelled
+with the RAE's own abbreviations (`org-scribe--rae-sense-label'), not
+the API's English category; and synonyms and antonyms lose the homonym
+index the RAE uses to tell entries apart (`luz1')."
   (let* ((data (gethash "data" json-data))
          (word (gethash "word" data))
          (meanings (gethash "meanings" data)))
@@ -96,8 +130,8 @@ PALABRA is the word that was looked up."
         ;; Etymology - origin is an object with 'text' or 'raw' field
         (when origin
           (insert "* Etimología\n")
-          (let ((origin-text (or (gethash "text" origin)
-                                 (gethash "raw" origin))))
+          (let ((origin-text (or (org-string-nw-p (gethash "raw" origin))
+                                 (org-string-nw-p (gethash "text" origin)))))
             (when origin-text
               (insert (format "%s\n\n" origin-text)))))
 
@@ -111,12 +145,15 @@ PALABRA is the word that was looked up."
                   (synonyms (gethash "synonyms" sense))
                   (antonyms (gethash "antonyms" sense)))
 
-              ;; Build category string
-              (let ((cat-str (cond
-                              ((and category verb-category)
-                               (format "/%s %s/" category verb-category))
-                              (category (format "/%s/" category))
-                              (t ""))))
+              ;; Build category string: the RAE's own label, the API's
+              ;; category only when the label cannot be read
+              (let ((cat-str (if-let* ((label (org-scribe--rae-sense-label sense)))
+                                 (format "/%s/" label)
+                               (cond
+                                ((and category verb-category)
+                                 (format "/%s %s/" category verb-category))
+                                (category (format "/%s/" category))
+                                (t "")))))
                 (insert (format "** %d. %s\n" sense-num cat-str)))
 
               ;; Description (this is the actual definition)
@@ -126,12 +163,14 @@ PALABRA is the word that was looked up."
               ;; Synonyms
               (when (and synonyms (> (length synonyms) 0))
                 (insert (format "*** Sinónimos: %s\n\n"
-                                (mapconcat 'identity synonyms ", "))))
+                                (mapconcat #'org-scribe--rae-strip-homonym-index
+                                           synonyms ", "))))
 
               ;; Antonyms
               (when (and antonyms (> (length antonyms) 0))
                 (insert (format "*** Antónimos: %s\n\n"
-                                (mapconcat 'identity antonyms ", "))))
+                                (mapconcat #'org-scribe--rae-strip-homonym-index
+                                           antonyms ", "))))
 
               (setq sense-num (1+ sense-num)))))
 
@@ -139,6 +178,53 @@ PALABRA is the word that was looked up."
         (when conjugations
           (insert "* Conjugaciones\n\n")
           (org-scribe-rae-format-conjugations conjugations))))))
+
+;; One request path for both users of the words endpoint, the definition
+;; lookup and the synonym fallback, so the response-buffer cleanup and the
+;; error reporting are written once.
+
+(defun org-scribe--rae-fetch (palabra on-json)
+  "Fetch PALABRA from the RAE API and call ON-JSON with the parsed response.
+ON-JSON receives the response as a hash table (keys are strings, arrays
+are lists, JSON false is nil), whether or not the word was found: its
+\"ok\" key says.  The API answers a missing word with HTTP 404 and a JSON
+body, which `url-retrieve' reports as an error; that one is parsed like
+any answer, so a miss reads as a miss.  Any other network error, and a
+parse error, is reported in the echo area instead.  The HTTP response
+buffer is always killed."
+  (let ((url (format "https://rae-api.com/api/words/%s" (url-hexify-string palabra)))
+        (url-request-method "GET"))
+    (url-retrieve
+     url
+     (lambda (status)
+       (let ((response-buffer (current-buffer)))
+         (unwind-protect
+             (org-scribe-with-error-handling "org-scribe--rae-fetch"
+               (if (and (plist-get status :error)
+                        (not (equal (plist-get status :error) '(error http 404))))
+                   (message "%s" (org-scribe-msg 'error-word-lookup (plist-get status :error)))
+                 ;; Move past HTTP headers
+                 (goto-char (point-min))
+                 (re-search-forward "^$")
+                 ;; Extract and decode the response body as UTF-8
+                 (let ((decoded-body (decode-coding-string
+                                      (buffer-substring-no-properties (point) (point-max))
+                                      'utf-8)))
+                   (condition-case err
+                       (let ((json-data (let ((json-object-type 'hash-table)
+                                              (json-array-type 'list)
+                                              (json-key-type 'string)
+                                              ;; Or "ok": false would be true
+                                              (json-false nil))
+                                          (json-read-from-string decoded-body))))
+                         (funcall on-json json-data))
+                     (json-error
+                      (message "%s" (org-scribe-msg 'error-word-parse err)))))))
+           (when (buffer-live-p response-buffer)
+             (kill-buffer response-buffer)))))
+     nil
+     nil   ; no SILENT
+     t)))  ; INHIBIT-COOKIES
 
 ;;;###autoload
 (defun org-scribe-rae-api-lookup (palabra)
@@ -148,52 +234,24 @@ Includes improved error handling for network issues."
   (interactive (list (org-scribe--read-lookup-word 'prompt-rae-word)))
   (when (string-empty-p (string-trim palabra))
     (user-error "%s" (org-scribe-msg 'error-word-empty)))
-  (let* ((url (format "https://rae-api.com/api/words/%s"
-                      (url-hexify-string palabra)))
-         (buffer-name (format "*RAE: %s*" palabra))
-         (url-request-method "GET"))
-    (url-retrieve
-     url
-     (lambda (status palabra buffer-name)
-       (let ((response-buffer (current-buffer)))
-         (unwind-protect
-             (org-scribe-with-error-handling "org-scribe-rae-api-lookup"
-               (if (plist-get status :error)
-                   (message "%s" (org-scribe-msg 'error-word-lookup (plist-get status :error)))
-                 ;; Move past HTTP headers
-                 (goto-char (point-min))
-                 (re-search-forward "^$")
-                 ;; Extract and decode the response body as UTF-8
-                 (let* ((body-start (point))
-                        (raw-body (buffer-substring-no-properties body-start (point-max)))
-                        (decoded-body (decode-coding-string raw-body 'utf-8)))
-                   (condition-case err
-                       (let* ((json-object-type 'hash-table)
-                              (json-array-type 'list)
-                              (json-key-type 'string)
-                              (json-data (json-read-from-string decoded-body))
-                              (ok (gethash "ok" json-data))
-                              (output-buffer (get-buffer-create buffer-name)))
-                       (with-current-buffer output-buffer
-                         (erase-buffer)
-                         (org-mode)
-                         (if ok
-                             (org-scribe-rae-format-result json-data palabra)
-                           ;; Word not found - show suggestions
-                           (let ((suggestions (gethash "suggestions" json-data)))
-                             (insert (format "* %s\n\n" (org-scribe-msg 'msg-word-not-found palabra)))
-                             (insert (format "** %s\n" (org-scribe-msg 'msg-word-suggestions)))
-                             (dolist (suggestion suggestions)
-                               (insert (format "- %s\n" suggestion)))))
-                         (goto-char (point-min)))
-                       (display-buffer output-buffer))
-                     (json-error
-                      (message "%s" (org-scribe-msg 'error-word-parse err)))))))
-           (when (buffer-live-p response-buffer)
-             (kill-buffer response-buffer)))))
-     (list palabra buffer-name)
-     nil   ; no SILENT
-     t)))  ; INHIBIT-COOKIES
+  (org-scribe--rae-fetch
+   palabra
+   (lambda (json-data)
+     (let ((output-buffer (get-buffer-create (format "*RAE: %s*" palabra))))
+       (with-current-buffer output-buffer
+         (erase-buffer)
+         (org-mode)
+         (if (gethash "ok" json-data)
+             (org-scribe-rae-format-result json-data palabra)
+           ;; Word not found - show suggestions
+           (let ((suggestions (gethash "suggestions" json-data)))
+             (insert (format "* %s\n\n" (org-scribe-msg 'msg-word-not-found palabra)))
+             (when suggestions
+               (insert (format "** %s\n" (org-scribe-msg 'msg-word-suggestions)))
+               (dolist (suggestion suggestions)
+                 (insert (format "- %s\n" suggestion))))))
+         (goto-char (point-min)))
+       (display-buffer output-buffer)))))
 
 ;;;###autoload
 (defun org-scribe-rae-api-random ()
@@ -257,9 +315,22 @@ so a lookup for one lands on the lemma's article and the writer must be told."
       (message "%s" (org-scribe-msg 'msg-dictionary-lemma-used word headword)))
     t))
 
+(defun org-scribe--wikcionario-useful-suggestions (word suggestions)
+  "Return SUGGESTIONS for a missing WORD without WORD's own inflected forms.
+Wikcionario keeps a stub for every form, so a miss on `gasóleo' suggests
+`gasóleos', a stub pointing at the very article that is missing.  A
+suggestion is dropped when its lemma is WORD; without a lemmatizer
+nothing is dropped."
+  (seq-remove (lambda (suggestion)
+                (and (not (string-equal-ignore-case suggestion word))
+                     (seq-some (lambda (lemma) (string-equal-ignore-case lemma word))
+                               (org-scribe--wikcionario-lemmas suggestion))))
+              suggestions))
+
 (defun org-scribe--wikcionario-report-miss (word)
   "Report that WORD has no local entry, offering suggestions when there are any."
-  (if-let* ((suggestions (org-scribe-wikcionario-suggest word)))
+  (if-let* ((suggestions (org-scribe--wikcionario-useful-suggestions
+                          word (org-scribe-wikcionario-suggest word))))
       (let ((buffer (get-buffer-create (format "*Dictionary: %s*" word))))
         (with-current-buffer buffer
           (let ((inhibit-read-only t))
@@ -296,8 +367,12 @@ probed once and then trusted so that lookups cost no latency."
      ((and local (org-scribe--wikcionario-show palabra)))
      ;; Local server is up but has no entry: report it rather than silently
      ;; going online, which would make a coverage gap look like a network hop.
+     ;; Under `auto' the RAE is offered, asked rather than taken.
      (local
-      (org-scribe--wikcionario-report-miss palabra))
+      (org-scribe--wikcionario-report-miss palabra)
+      (when (and (eq backend 'auto)
+                 (y-or-n-p (org-scribe-msg 'prompt-dictionary-try-rae palabra)))
+        (org-scribe-rae-api-lookup palabra)))
      ;; Offline-only: name the service, since that is the actionable part.
      ((eq backend 'wikcionario)
       (message "%s" (org-scribe-msg 'error-wikcionario-unreachable
@@ -310,12 +385,17 @@ probed once and then trusted so that lookups cost no latency."
 ;;; Synonym Lookup
 
 ;; Two backends, selected by `org-scribe-thesaurus-backend': the offline
-;; MyThes thesaurus (`org-scribe-mythes.el') and the original WordReference
-;; page rendered with eww.  Both present their result in the same side
-;; window, so the command feels identical either way.
+;; MyThes thesaurus (`org-scribe-mythes.el') and the per-sense synonyms of
+;; the online RAE API.  Both are rendered by the same function into the same
+;; Org side window, so the command feels identical either way.  (The online
+;; backend used to be the WordReference page in eww, until WordReference
+;; began answering HTTP 418 to every client and the page came up blank.)
 
 (defun org-scribe--sinonimo-render-mythes (palabra groups &optional headword)
-  "Render GROUPS, the MyThes meaning groups for PALABRA, in a side window.
+  "Render GROUPS, the meaning groups for PALABRA, in a side window.
+GROUPS is a list of (LABEL . SYNONYMS), LABEL possibly nil: what
+`org-scribe-mythes-lookup-entry' returns, and what
+`org-scribe--rae-synonym-groups' builds from the RAE API.
 
 HEADWORD is the entry that actually answered.  When it differs from PALABRA
 — because the lookup fell back to a lemma — the substitution is stated in
@@ -357,33 +437,55 @@ unlabelled senses would otherwise be indistinguishable from one another."
       (message "%s" (org-scribe-msg 'msg-thesaurus-lemma-used palabra headword)))
     (org-scribe--side-window buffer)))
 
-(defun org-scribe--sinonimo-wordreference (palabra)
-  "Open the WordReference synonym page for PALABRA in a side window."
-  (let ((url (concat "https://www.wordreference.com/sinonimos/" palabra))
-        ;; eww replaces this placeholder with its own buffer once it loads.
-        (temp-buffer (generate-new-buffer "*temp-sinonimos*")))
-    (let ((side-window (org-scribe--side-window temp-buffer)))
-      (with-selected-window side-window
-        (eww url)
-        (kill-buffer temp-buffer)
-        (read-only-mode 1)
-        (use-local-map (copy-keymap (current-local-map)))
-        (local-set-key (kbd "q") #'quit-window)))))
+(defun org-scribe--rae-synonym-groups (json-data)
+  "Return the synonym groups in JSON-DATA, an RAE API response.
+Each sense with synonyms gives one (LABEL . SYNONYMS) group, LABEL being
+the RAE's own abbreviation (`org-scribe--rae-sense-label') and each
+synonym stripped of its homonym index.  Duplicate groups are dropped, as
+for MyThes."
+  (let ((groups nil))
+    (dolist (meaning (gethash "meanings" (gethash "data" json-data)))
+      (dolist (sense (gethash "senses" meaning))
+        (when-let* ((synonyms (gethash "synonyms" sense)))
+          (push (cons (org-scribe--rae-sense-label sense)
+                      (delete-dups (mapcar #'org-scribe--rae-strip-homonym-index synonyms)))
+                groups))))
+    (org-scribe--mythes-dedupe (nreverse groups))))
+
+(defun org-scribe--sinonimo-rae (palabra)
+  "Show the RAE API's synonyms for PALABRA in the synonyms side window.
+The answer arrives asynchronously.  When the API resolves an inflected
+form to its entry, the headword differs from PALABRA and the renderer
+says so, as for a lemma in MyThes.  A word with no entry, or an entry
+with no synonyms, is reported in the echo area: never a blank buffer."
+  (org-scribe--rae-fetch
+   palabra
+   (lambda (json-data)
+     (let ((groups (and (gethash "ok" json-data)
+                        (org-scribe--rae-synonym-groups json-data))))
+       (if groups
+           (org-scribe--sinonimo-render-mythes
+            palabra groups
+            (org-scribe--rae-strip-homonym-index
+             (or (gethash "word" (gethash "data" json-data)) palabra)))
+         (message "%s" (org-scribe-msg 'msg-thesaurus-no-synonyms palabra)))))))
 
 ;;;###autoload
 (defun org-scribe-sinonimo (palabra)
   "Busca sinónimos de PALABRA en una ventana lateral.
 
-Uses the offline MyThes thesaurus or the online WordReference page
+Uses the offline MyThes thesaurus or the synonyms of the online RAE API
 according to `org-scribe-thesaurus-backend'.  Under the default `auto',
-MyThes is tried first and WordReference is used when the thesaurus is not
+MyThes is tried first and the RAE is used when the thesaurus is not
 installed or has no entry for PALABRA — a word absent from the local data
 should still get an answer rather than a shrug."
   (interactive (list (org-scribe--read-lookup-word 'prompt-synonym-word)))
   (when (string-empty-p (string-trim palabra))
     (user-error "%s" (org-scribe-msg 'error-word-empty)))
-  (let* ((backend org-scribe-thesaurus-backend)
-         (entry (unless (eq backend 'wordreference)
+  (let* ((backend (if (eq org-scribe-thesaurus-backend 'wordreference)
+                      'rae-api  ; the former online backend's name
+                    org-scribe-thesaurus-backend))
+         (entry (unless (eq backend 'rae-api)
                   (org-scribe-mythes-lookup-entry palabra))))
     (cond
      (entry
@@ -400,7 +502,7 @@ should still get an answer rather than a shrug."
      (t
       (when (and (eq backend 'auto) (org-scribe-mythes-available-p))
         (message "%s" (org-scribe-msg 'msg-thesaurus-fallback-online palabra)))
-      (org-scribe--sinonimo-wordreference palabra)))))
+      (org-scribe--sinonimo-rae palabra)))))
 
 ;;;###autoload
 (defun org-scribe-thesaurus-lookup ()

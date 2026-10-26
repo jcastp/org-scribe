@@ -7,10 +7,9 @@
 ;; Tests for org-scribe-dictionary.el.
 ;; Covers module loading, function availability, and input validation.
 ;;
-;; Note: Functions that make network requests (RAE API, WordReference)
-;; are not tested here as they require external connectivity.
-;; The formatting functions (rae-format-result, rae-format-conjugations)
-;; are tested with mock data.
+;; Note: nothing here touches the network.  Functions that call the RAE
+;; API run against a mocked `url-retrieve'; the formatting functions
+;; (rae-format-result, rae-format-conjugations) are tested with mock data.
 
 ;;; Code:
 
@@ -154,6 +153,89 @@
       (should (search-forward "Etimología" nil t))
       (should (search-forward "árabe" nil t)))))
 
+(defun test-dictionary--json-from (sense-plist &optional origin-plist)
+  "Return mock RAE JSON for `faro' with one sense from SENSE-PLIST.
+ORIGIN-PLIST, when given, fills the meaning's origin."
+  (let ((sense (make-hash-table :test 'equal))
+        (meaning (make-hash-table :test 'equal))
+        (data (make-hash-table :test 'equal))
+        (json (make-hash-table :test 'equal)))
+    (cl-loop for (k v) on sense-plist by #'cddr do (puthash k v sense))
+    (when origin-plist
+      (let ((origin (make-hash-table :test 'equal)))
+        (cl-loop for (k v) on origin-plist by #'cddr do (puthash k v origin))
+        (puthash "origin" origin meaning)))
+    (puthash "senses" (list sense) meaning)
+    (puthash "word" "faro" data)
+    (puthash "meanings" (list meaning) data)
+    (puthash "data" data json)
+    json))
+
+(defun test-dictionary--render (json)
+  "Return the text `org-scribe-rae-format-result' writes for JSON."
+  (with-temp-buffer
+    (org-mode)
+    (org-scribe-rae-format-result json "faro")
+    (buffer-string)))
+
+;; Real response fields for `faro', sense 2, captured from rae-api.com.
+(defconst test-dictionary--faro-sense
+  '("raw" "2. m. Farol con potente reverbero.Sin.:fanal, farol, foco, lámpara, linterna, luz1."
+    "category" "noun" "gender" "masculine"
+    "description" "Farol con potente reverbero"
+    "synonyms" ("fanal" "farol" "luz1")))
+
+(ert-deftest test-dictionary-format-result-etymology-is-the-raw-sentence ()
+  "The etymology is the `raw' sentence, not the bare `text' list.
+Regression: it showed \"pharus,pháros,pháros\"."
+  (let ((out (test-dictionary--render
+              (test-dictionary--json-from
+               test-dictionary--faro-sense
+               '("raw" "Del lat. pharus, y este del gr. φάρος pháros."
+                 "text" "pharus,pháros,pháros")))))
+    (should (string-match-p "Del lat\\. pharus, y este del gr\\." out))
+    (should-not (string-match-p "pharus,pháros" out))))
+
+(ert-deftest test-dictionary-format-result-etymology-falls-back-to-text ()
+  (let ((out (test-dictionary--render
+              (test-dictionary--json-from test-dictionary--faro-sense
+                                          '("raw" "" "text" "pharus")))))
+    (should (string-match-p "^pharus$" out))))
+
+(ert-deftest test-dictionary-format-result-label-is-the-rae-abbreviation ()
+  "A sense is labelled with the RAE's own Spanish abbreviation.
+Regression: it showed the API's English category (/noun/)."
+  (let ((out (test-dictionary--render (test-dictionary--json-from test-dictionary--faro-sense))))
+    (should (string-match-p "^\\*\\* 1\\. /m\\./$" out))
+    (should-not (string-match-p "noun" out))))
+
+(ert-deftest test-dictionary-sense-label-reads-several-abbreviations ()
+  (should (equal (org-scribe--rae-sense-label
+                  (test-dictionary--json-sense
+                   '("raw" "17. adj. coloq. De posición social y económica elevada. Casa, gente bien."
+                     "description" "De posición social y económica elevada")))
+                 "adj. coloq."))
+  ;; Description not found in `raw': the leading abbreviations
+  (should (equal (org-scribe--rae-sense-label
+                  (test-dictionary--json-sense
+                   '("raw" "6. m. pl. Der. Cosas materiales." "description" "Otra cosa")))
+                 "m. pl. Der."))
+  ;; No `raw': no label (the category is used instead)
+  (should-not (org-scribe--rae-sense-label
+               (test-dictionary--json-sense '("description" "De color azul.")))))
+
+(defun test-dictionary--json-sense (plist)
+  "Return a sense hash table from PLIST."
+  (let ((sense (make-hash-table :test 'equal)))
+    (cl-loop for (k v) on plist by #'cddr do (puthash k v sense))
+    sense))
+
+(ert-deftest test-dictionary-format-result-strips-homonym-index ()
+  "Synonyms lose the RAE's homonym index.  Regression: `luz1'."
+  (let ((out (test-dictionary--render (test-dictionary--json-from test-dictionary--faro-sense))))
+    (should (string-match-p "Sinónimos: fanal, farol, luz$" out))
+    (should-not (string-match-p "luz1" out))))
+
 ;;; org-scribe-rae-format-conjugations Tests (with mock data)
 
 (ert-deftest test-dictionary-format-conjugations-inserts-example-block ()
@@ -233,6 +315,82 @@ buffer must be cleaned up too."
                    (org-scribe-rae-api-random))))
     (should (= 2 (length buffers)))
     (should (cl-every (lambda (b) (not (buffer-live-p b))) buffers))))
+
+;;; Online synonyms (the RAE API)
+
+(defconst test-dictionary--corriendo-json
+  "{\"ok\":true,\"data\":{\"word\":\"correr\",\"meanings\":[{\"senses\":[
+{\"raw\":\"2. intr. Ir deprisa. Esas motos corren mucho.Sin.:acelerar, volar.\",
+ \"description\":\"Ir deprisa\",\"category\":\"verb\",\"synonyms\":[\"acelerar\",\"volar\"]},
+{\"raw\":\"11. intr. Dicho de una paga: Ir devengándose.\",
+ \"description\":\"Dicho de una paga: Ir devengándose\",\"synonyms\":null},
+{\"raw\":\"14. intr. Pasar por la oficina.Sin.:recurrir1.\",
+ \"description\":\"Pasar por la oficina\",\"synonyms\":[\"recurrir1\"]}]}]}}"
+  "An RAE response shaped like the real one for `corriendo'.")
+
+(ert-deftest test-dictionary-rae-synonym-groups ()
+  "Each sense with synonyms is one group, labelled the RAE's way."
+  (let* ((json-object-type 'hash-table) (json-array-type 'list) (json-key-type 'string)
+         (json (json-read-from-string test-dictionary--corriendo-json)))
+    (should (equal (org-scribe--rae-synonym-groups json)
+                   '(("intr." "acelerar" "volar") ("intr." "recurrir"))))))
+
+(ert-deftest test-dictionary-sinonimo-rae-renders-like-mythes ()
+  "The RAE's synonyms go through the MyThes renderer, headword disclosed.
+Regression: the online fallback was the WordReference page, which
+answers HTTP 418, so eww showed a blank buffer."
+  (let ((rendered nil))
+    (cl-letf (((symbol-function 'org-scribe--sinonimo-render-mythes)
+               (lambda (&rest args) (setq rendered args))))
+      (let ((buffers (test-dictionary--with-mocked-http test-dictionary--corriendo-json
+                       (org-scribe--sinonimo-rae "corriendo"))))
+        (should (cl-every (lambda (b) (not (buffer-live-p b))) buffers))))
+    (should (equal rendered
+                   '("corriendo" (("intr." "acelerar" "volar") ("intr." "recurrir"))
+                     "correr")))))
+
+(ert-deftest test-dictionary-sinonimo-rae-reports-a-miss ()
+  "No entry, or no synonyms: a message, never a blank buffer."
+  (dolist (body '("{\"ok\":false,\"suggestions\":[]}"
+                  "{\"ok\":true,\"data\":{\"word\":\"xyzzyq\",\"meanings\":[]}}"))
+    (let ((rendered nil) (said nil))
+      (cl-letf (((symbol-function 'org-scribe--sinonimo-render-mythes)
+                 (lambda (&rest _) (setq rendered t)))
+                ((symbol-function 'message)
+                 (lambda (fmt &rest args) (setq said (apply #'format fmt args)))))
+        (test-dictionary--with-mocked-http body
+          (let ((org-scribe-message-language 'en))
+            (org-scribe--sinonimo-rae "xyzzyq"))))
+      (should-not rendered)
+      (should (string-match-p "No synonyms found for: xyzzyq" said)))))
+
+(ert-deftest test-dictionary-rae-fetch-reads-a-404-miss-as-a-miss ()
+  "A missing word is HTTP 404 with a JSON body: ON-JSON sees \"ok\" as nil.
+Regression: the 404 was reported as a lookup error, and JSON false was
+read as `:json-false', which is true, so a miss was rendered as an entry."
+  (let ((seen 'unset))
+    (cl-letf (((symbol-function 'url-retrieve)
+               (lambda (_url callback &optional cbargs &rest _)
+                 (with-temp-buffer
+                   (insert "HTTP/1.1 404 Not Found\n\n"
+                           "{\"error\":\"NOT_FOUND\",\"ok\":false,\"suggestions\":null}")
+                   (apply callback '(:error (error http 404)) cbargs)))))
+      (org-scribe--rae-fetch "xyzzyq" (lambda (json) (setq seen (gethash "ok" json 'absent)))))
+    (should (null seen))))
+
+(ert-deftest test-dictionary-rae-fetch-reports-other-errors ()
+  "Any error but a 404 is reported, and ON-JSON is not called."
+  (let ((called nil) (said nil))
+    (cl-letf (((symbol-function 'url-retrieve)
+               (lambda (_url callback &optional cbargs &rest _)
+                 (with-temp-buffer
+                   (apply callback '(:error (error http 500)) cbargs))))
+              ((symbol-function 'message)
+               (lambda (fmt &rest args) (setq said (apply #'format fmt args)))))
+      (let ((org-scribe-message-language 'en))
+        (org-scribe--rae-fetch "faro" (lambda (_) (setq called t)))))
+    (should-not called)
+    (should (string-match-p "500" said))))
 
 ;;; Optional dependency: powerthesaurus
 

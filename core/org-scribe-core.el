@@ -599,18 +599,20 @@ could not be determined.  See `org-scribe-project-levels'."
 (defun org-scribe-scene-match (&optional type)
   "Return an `org-map-entries' MATCH string selecting TYPE's scenes.
 When TYPE's scene level carries a tag (see `org-scribe-project-levels'),
-the match is \"LEVEL=<scene>+<tag>\".  When it does not, the match is
-\"LEVEL=<scene>-noexport\" instead of a bare \"LEVEL=<scene>\" -- the
-`-noexport' exclusion is load-bearing here, not decorative: an untagged
-project's apparatus headings (e.g. a short story's \"Synopsis\" or \"Word
-Count Tracking\" under a :noexport: wrapper) sit at the very same level
-as its scenes, and only the :noexport: tag -- inherited by Org's default
-tag inheritance -- tells them apart from a real scene."
+the match is \"LEVEL=<scene>+<tag>-noexport\".  When it does not, the
+match is \"LEVEL=<scene>-noexport\" instead of a bare \"LEVEL=<scene>\".
+The `-noexport' exclusion is load-bearing in both, not decorative:
+apparatus headings sit at the very same level as the scenes (a short
+story's \"Synopsis\" or \"Word Count Tracking\", a novel's \"Writing
+Sessions\" under \"Progress Tracking\"), and only the :noexport: tag --
+inherited by Org's default tag inheritance -- tells them apart from a real
+scene.  A tag alone does not: the novel's apparatus wrapper carries
+:ignore: too, which its children inherit."
   (let* ((levels (org-scribe-project-levels type))
          (level (plist-get levels :scene))
          (tag (plist-get levels :scene-tag)))
     (if tag
-        (format "LEVEL=%d+%s" level tag)
+        (format "LEVEL=%d+%s-noexport" level tag)
       (format "LEVEL=%d-noexport" level))))
 
 ;;; Language-Pack-Derived Alias Tables

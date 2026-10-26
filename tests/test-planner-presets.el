@@ -17,9 +17,11 @@
 (defmacro test-presets--wizard (answers &rest body)
   "Run BODY around the new-plan wizard with I/O stubbed.
 ANSWERS is a plist: :start (preset label prefix or \"From scratch\"),
-:yes (list of y-or-n-p answers, in order), :numbers (answers to the
-number prompts; nil means accept the default), :type (the project type).
-In BODY, `plan' is the plan created and `questions' the y-or-n-p prompts."
+:pattern (the pattern chosen; nil accepts the default), :yes (list of
+y-or-n-p answers, in order), :numbers (answers to the number prompts;
+nil means accept the default), :type (the project type).
+In BODY, `plan' is the plan created and `questions' the pattern and
+y-or-n-p prompts, in order."
   (declare (indent 1))
   `(let* ((org-scribe-planner-after-plan-load-hook nil)
           (org-scribe-planner--current-plan nil)
@@ -28,17 +30,24 @@ In BODY, `plan' is the plan created and `questions' the y-or-n-p prompts."
           (yes (plist-get ,answers :yes))
           (numbers (plist-get ,answers :numbers))
           (start (plist-get ,answers :start))
+          (pattern (plist-get ,answers :pattern))
           (questions nil))
      (cl-letf (((symbol-function 'org-scribe-project-type)
                 (lambda () (or (plist-get ,answers :type) 'unknown)))
                ((symbol-function 'completing-read)
-                (lambda (prompt collection &rest _)
-                  (if (string-prefix-p "Start from" prompt)
-                      (or (cl-find-if (lambda (c) (string-prefix-p start c))
-                                      (all-completions "" collection))
-                          start)
-                    ;; Scratch plans: total and days known
-                    "Total words + Daily words → Calculate days needed")))
+                (lambda (prompt collection &rest rest)
+                  (cond
+                   ((string-prefix-p "Start from" prompt)
+                    (or (cl-find-if (lambda (c) (string-prefix-p start c))
+                                    (all-completions "" collection))
+                        start))
+                   ((string-prefix-p "Writing pattern" prompt)
+                    (push prompt questions)
+                    (if pattern
+                        (cdr (assq pattern org-scribe-planner--patterns))
+                      (nth 4 rest)))
+                   ;; Scratch plans: total and days known
+                   (t "Total words + Daily words → Calculate days needed"))))
                ((symbol-function 'org-scribe-planner--read-positive-number)
                 (lambda (_prompt &optional default) (or (pop numbers) default)))
                ((symbol-function 'org-scribe-planner--read-non-negative-number)
@@ -97,7 +106,7 @@ In BODY, `plan' is the plan created and `questions' the y-or-n-p prompts."
 
 (ert-deftest test-planner-presets-short-story-with-suggestions ()
   "Short story preset, its rising pattern and weekend goal accepted."
-  (test-presets--wizard '(:start "Short story" :yes (t t nil) :type short-story)
+  (test-presets--wizard '(:start "Short story" :yes (t nil) :type short-story)
     (should (= (org-scribe-plan-total-words plan) 5000))
     (should (string= (org-scribe-plan-end-date plan) "2026-11-08"))
     (should (eq (org-scribe-plan-pattern plan) 'rising))
@@ -105,19 +114,36 @@ In BODY, `plan' is the plan created and `questions' the y-or-n-p prompts."
     ;; 1.5 × the 714 words a day of a flat week
     (should (= (org-scribe-plan-weekend-daily plan) 1071))
     (should (= (apply #'+ (test-presets--goals plan)) 5000))
-    (should (string-match-p "suggested rising pattern" (nth 0 questions)))
+    (should (string-match-p "Writing pattern (suggested: rising)" (nth 0 questions)))
     (should (string-match-p "Suggested weekends: a goal of their own" (nth 1 questions)))))
 
 (ert-deftest test-planner-presets-suggestions-declined ()
   "Declining the suggestions leaves the plan steady, with ordinary weekends."
-  (test-presets--wizard '(:start "Short story" :yes (nil nil nil))
+  (test-presets--wizard '(:start "Short story" :pattern flat :yes (nil nil))
     (should (eq (org-scribe-plan-pattern plan) 'flat))
     (should (eq (org-scribe-plan-weekend-mode plan) 'same))
     (should (= (apply #'+ (test-presets--goals plan)) 5000))))
 
+(ert-deftest test-planner-presets-pattern-kept-by-default ()
+  "The preset's pattern is the default answer: accepting it keeps it.
+It used to be a yes-or-no question, where a stray \"n\" dropped it."
+  (test-presets--wizard '(:start "Novel draft" :yes (nil) :type novel)
+    (should (eq (org-scribe-plan-pattern plan) 'valley))
+    (should (equal (org-scribe-plan-pattern-config plan) '(:peak 1.5 :valley 0.7)))
+    (should (string-match-p "Writing pattern (suggested: valley)" (nth 0 questions)))
+    ;; Weekends `same': the spare-days question follows
+    (should (= (length questions) 2))))
+
+(ert-deftest test-planner-presets-pattern-can-change ()
+  "Another pattern than the preset's can be chosen."
+  (test-presets--wizard '(:start "Novel draft" :pattern mountain :yes (nil))
+    (should (eq (org-scribe-plan-pattern plan) 'mountain))
+    (should (= (apply #'+ (test-presets--goals plan)) 80000))))
+
 (ert-deftest test-planner-presets-values-can-change ()
   "The preset's numbers are defaults: a different total and length are kept."
-  (test-presets--wizard '(:start "Novel draft" :yes (nil nil) :numbers (90000 90))
+  (test-presets--wizard '(:start "Novel draft" :pattern flat :yes (nil)
+                                :numbers (90000 90))
     (should (= (org-scribe-plan-total-words plan) 90000))
     (should (= (org-scribe-plan-writing-days plan) 90))
     (should (= (org-scribe-plan-daily-words plan) 1000))))
@@ -136,14 +162,14 @@ In BODY, `plan' is the plan created and `questions' the y-or-n-p prompts."
   "Default valley pattern and weekends off, accepted; the days follow."
   (let ((org-scribe-planner-default-pattern 'valley)
         (org-scribe-planner-default-weekend-mode 'rest))
-    (test-presets--wizard '(:start "From scratch" :yes (t t nil) :numbers (10000 1000))
+    (test-presets--wizard '(:start "From scratch" :yes (t nil) :numbers (10000 1000))
       (should (eq (org-scribe-plan-pattern plan) 'valley))
       (should (equal (org-scribe-plan-pattern-config plan) '(:peak 1.5 :valley 0.7)))
       (should (eq (org-scribe-plan-weekend-mode plan) 'rest))
       ;; 10 weekdays from Monday Nov 2, the weekends off: Friday Nov 13
       (should (string= (org-scribe-plan-end-date plan) "2026-11-13"))
       (should (= (apply #'+ (test-presets--goals plan)) 10000))
-      (should (string-match-p "default valley pattern" (nth 0 questions))))))
+      (should (string-match-p "Writing pattern (default: valley)" (nth 0 questions))))))
 
 (ert-deftest test-planner-presets-default-intensity-and-weekend-goal ()
   "The default intensity and weekend goal are used."
@@ -151,7 +177,7 @@ In BODY, `plan' is the plan created and `questions' the y-or-n-p prompts."
         (org-scribe-planner-default-pattern-intensity 'extreme)
         (org-scribe-planner-default-weekend-mode 'different)
         (org-scribe-planner-default-weekend-daily 2000))
-    (test-presets--wizard '(:start "From scratch" :yes (t t nil) :numbers (14000 1000))
+    (test-presets--wizard '(:start "From scratch" :yes (t nil) :numbers (14000 1000))
       (should (equal (org-scribe-plan-pattern-config plan) '(:start 0.3 :end 2.0)))
       (should (= (org-scribe-plan-weekend-daily plan) 2000)))))
 

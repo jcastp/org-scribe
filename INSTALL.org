@@ -135,7 +135,7 @@ there is nothing to configure once they are present.
 *** Offline synonyms (=mythes=)
 
 Installs the LibreOffice thesaurus data that =org-scribe-sinonimo= reads
-instead of loading WordReference over the network.
+instead of asking the online RAE.
 
 #+begin_src sh
 # Debian / Ubuntu
@@ -155,7 +155,7 @@ sudo pacman -S mythes-es
 
 Data lands in =/usr/share/mythes/=. Nothing else is required: with the data
 present, synonym lookups become instant and work offline; without it,
-org-scribe falls back to WordReference exactly as before.
+org-scribe asks the online RAE for synonyms instead.
 
 *** Lemmatization (=hunspell=)
 
@@ -282,9 +282,9 @@ Install writeroom-mode:
   :ensure t)
 #+end_src
 
-** Synonyms still open a web page after installing mythes
+** Synonyms still go online after installing mythes
 
-=org-scribe-sinonimo= falls back to WordReference when it cannot find the
+=org-scribe-sinonimo= falls back to the online RAE when it cannot find the
 thesaurus data. Check what it sees:
 
 #+begin_src emacs-lisp
@@ -307,7 +307,7 @@ If both return =nil=:
    #+end_src
 
 If =org-scribe-mythes-available-p= returns =t= but a particular word still
-opens WordReference, that word simply has no entry in the thesaurus — the
+goes to the RAE, that word simply has no entry in the thesaurus — the
 fallback is working as intended, and the echo area says so.
 
 ** Inflected words find no synonyms

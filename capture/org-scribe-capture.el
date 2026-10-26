@@ -161,6 +161,16 @@ nothing of the writer.  Leaves point ON the heading line, so the capture
 is filed under it.  See `org-scribe--capture-goto-section'."
   (org-scribe--capture-goto-section 'scratchpad-part))
 
+(defun org-scribe--capture-table (header)
+  "Return HEADER, an Org table row, with a separator and an empty row.
+The separator and the empty row are as wide as HEADER's cells, so the
+captured table reads like the template's without a TAB to realign it."
+  (let ((widths (mapcar #'string-width
+                        (butlast (cdr (split-string header "|"))))))
+    (concat header "\n"
+            "|" (mapconcat (lambda (w) (make-string w ?-)) widths "+") "|\n"
+            "|" (mapconcat (lambda (w) (make-string w ?\s)) widths "|") "|\n")))
+
 ;;; Capture Templates
 ;;
 ;; The template lists below were plain `defvar's until the templates
@@ -274,8 +284,7 @@ incompatible profile shapes."
            "%?\n\n"
            "** " (m 'capture-char-milestones) "\n\n"
            "# " (m 'capture-char-milestones-hint) "\n\n"
-           (m 'capture-char-milestone-header) "\n"
-           "|---|\n\n"
+           (org-scribe--capture-table (m 'capture-char-milestone-header)) "\n"
            "** " (m 'capture-char-notes) "\n"))
          :empty-lines 1)))))
 
@@ -435,12 +444,25 @@ see `linking/org-scribe-plot-point-links.el'."
   "Ensure the capture target file exists, then run org-capture.
 FILE-FN is called with t to create the target file if missing.
 TEMPLATES is bound to `org-capture-templates' for the capture session.
-KEY is the template key to select directly; if nil, present the full menu."
+KEY is the template key to select directly; if nil, present the full menu.
+
+Org places every entry with `org-paste-subtree', which echoes \"Clipboard
+pasted as level N subtree\": noise for a capture, where nothing came from
+the clipboard.  The message is kept out of the echo area (it still
+reaches *Messages*) for this capture only."
   (funcall file-fn t)
   (let ((org-capture-templates templates))
-    (if key
-        (org-capture nil key)
-      (org-capture))))
+    (advice-add 'org-paste-subtree :around #'org-scribe--capture-quiet-paste)
+    (unwind-protect
+        (if key
+            (org-capture nil key)
+          (org-capture))
+      (advice-remove 'org-paste-subtree #'org-scribe--capture-quiet-paste))))
+
+(defun org-scribe--capture-quiet-paste (orig &rest args)
+  "Call ORIG with ARGS, keeping its messages out of the echo area."
+  (let ((inhibit-message t))
+    (apply orig args)))
 
 ;;;###autoload
 (defun org-scribe-capture-to-file ()

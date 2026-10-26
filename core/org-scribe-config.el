@@ -172,20 +172,20 @@ The default is nil, which leaves the current theme untouched.  See
 (defcustom org-scribe-thesaurus-backend 'auto
   "Where `org-scribe-sinonimo' looks up synonyms.
 
-`mythes'        use only the offline MyThes thesaurus;
-`wordreference' use only the online WordReference page;
-`auto'          use MyThes when its data files are installed, and fall
-                back to WordReference otherwise, or when a word has no
-                local entry.
+`mythes'  use only the offline MyThes thesaurus;
+`rae-api' use only the synonyms of the online rae-api.com service;
+`auto'    use MyThes when its data files are installed, and fall back
+          to the RAE otherwise, or when a word has no local entry.
 
-The default is `auto', so a user who has not installed MyThes data sees
-exactly the previous online behaviour, and one who has gets the offline
-lookup without configuring anything.
+The default is `auto', so a user who has not installed MyThes data still
+gets synonyms online, and one who has gets the offline lookup without
+configuring anything.  The former value `wordreference' is read as
+`rae-api': the WordReference page no longer answers.
 
 Install the data on Debian/Ubuntu with `apt install mythes-es'."
   :type '(choice (const :tag "Offline MyThes only" mythes)
-                 (const :tag "Online WordReference only" wordreference)
-                 (const :tag "MyThes, falling back to WordReference" auto))
+                 (const :tag "Online RAE API only" rae-api)
+                 (const :tag "MyThes, falling back to the RAE" auto))
   :group 'org-scribe)
 
 (defcustom org-scribe-mythes-directory "/usr/share/mythes/"

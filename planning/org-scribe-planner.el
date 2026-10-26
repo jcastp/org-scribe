@@ -1748,11 +1748,15 @@ keep their goal.  Returns the number of days newly locked."
 
 (defun org-scribe-planner--default-recalculation-date (plan)
   "Return the first day a recalculation from progress may change in PLAN.
-Today, or tomorrow when today already has a word count: the day has
-started, so it is locked with the past."
-  (let ((today (org-scribe-planner--get-today-date)))
-    (if (numberp (org-scribe-planner--get-entry-words
-                  (assoc today (org-scribe-plan-daily-word-counts plan))))
+Today, or tomorrow when words have been written today (a net change,
+cuts included): the day has started, so it is locked with the past.
+An entry for today with no change is not a start: a count synced on
+save records one before any writing."
+  (let* ((today (org-scribe-planner--get-today-date))
+         (delta (org-scribe-planner--entry-delta
+                 (org-scribe-plan-daily-word-counts plan) today
+                 (or (org-scribe-plan-preexisting-words plan) 0))))
+    (if (and delta (/= delta 0))
         (org-scribe-planner--add-days today 1)
       today)))
 
@@ -1835,15 +1839,21 @@ story) is the default answer."
       config)))
 
 (defun org-scribe-planner--offer-pattern (plan pattern intensity why)
-  "Ask whether PLAN uses PATTERN at INTENSITY; apply it on yes.
-WHY says where the suggestion comes from.  Does nothing for `flat'."
-  (when (and pattern (not (eq pattern 'flat))
-             (y-or-n-p (format "Use the %s %s pattern (%s)? " why pattern
-                               (cdr (assq pattern org-scribe-planner--patterns)))))
-    (setf (org-scribe-plan-pattern plan) pattern)
-    (setf (org-scribe-plan-pattern-config plan)
-          (org-scribe-planner--pattern-config-for pattern intensity))
-    t))
+  "Ask which pattern PLAN uses, PATTERN being the default; apply it at INTENSITY.
+WHY says where the suggestion comes from.  Asks nothing for `flat'.
+The question is a choice with PATTERN as the default, not a yes-or-no:
+a preset names its pattern, and a stray \"n\" dropped it.  Returns
+non-nil when the plan gets a pattern other than `flat'."
+  (when (and pattern (not (eq pattern 'flat)))
+    (let* ((default (cdr (assq pattern org-scribe-planner--patterns)))
+           (answer (completing-read (format "Writing pattern (%s: %s): " why pattern)
+                                    (mapcar #'cdr org-scribe-planner--patterns)
+                                    nil t nil nil default))
+           (chosen (or (car (rassoc answer org-scribe-planner--patterns)) pattern)))
+      (setf (org-scribe-plan-pattern plan) chosen)
+      (setf (org-scribe-plan-pattern-config plan)
+            (org-scribe-planner--pattern-config-for chosen intensity))
+      (not (eq chosen 'flat)))))
 
 (defun org-scribe-planner--offer-weekends (plan mode why)
   "Ask whether PLAN's weekends follow MODE; apply it on yes.
@@ -4072,7 +4082,11 @@ taken out.  Refuses fewer days than PLAN's locked (past) writing days."
             (if (>= change 0) "+" "") change
             (if (>= change 0) "+" "")
             (if (> old-daily 0) (* 100.0 (/ (float change) old-daily)) 0.0)
-            (if (> newly-locked 0) (format ". Past days locked: %d" newly-locked) "")
+            (if (> newly-locked 0)
+                (format ". %d more day%s locked, through %s" newly-locked
+                        (if (= newly-locked 1) "" "s")
+                        (org-scribe-planner--add-days as-of -1))
+              "")
             (org-scribe-plan-end-date preview))))
 
 ;;;###autoload

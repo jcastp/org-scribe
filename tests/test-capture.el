@@ -887,6 +887,49 @@ profile's own `Notes' sub-heading, and is not given an entity ID."
                                                     (org-get-heading t t t t))))
       (should-not (org-entry-get nil "ID")))))
 
+;;; The milestones table and Org's paste message
+
+(ert-deftest test-capture-table-has-separator-and-row-as-wide-as-header ()
+  "The separator and the empty row match the header's cells, as in the template."
+  (should (string= (org-scribe--capture-table "| Punto de trama | Tipo | Qué cambia |")
+                   (concat "| Punto de trama | Tipo | Qué cambia |\n"
+                           "|----------------+------+------------|\n"
+                           "|                |      |            |\n"))))
+
+(ert-deftest test-capture-character-milestones-table-is-complete ()
+  "A captured character's milestones table has a full separator and a row.
+Regression: it was written as the header and a bare `|---|'."
+  (test-capture--with-notebook 'es 'novel "* Reparto\n** Personajes\n"
+    (test-capture--capture-character)
+    (with-current-buffer (find-file-noselect notebook)
+      (revert-buffer t t)
+      (let ((text (buffer-string)))
+        (should (string-match-p
+                 (regexp-quote (concat "| Punto de trama | Tipo | Qué cambia |\n"
+                                       "|----------------+------+------------|\n"
+                                       "|                |      |            |\n"))
+                 text))
+        (should-not (string-match-p "^|---|$" text))))))
+
+(ert-deftest test-capture-does-not-echo-clipboard-pasted ()
+  "Org's \"Clipboard pasted as level N subtree\" stays out of the echo area,
+and the advice that hides it is gone once the capture is over."
+  (test-capture--with-notebook 'en 'novel "* Cast\n** Characters\n"
+    (let ((echoed nil))
+      (cl-letf* ((real-message (symbol-function 'message))
+                 ((symbol-function 'message)
+                  (lambda (fmt &rest args)
+                    (unless inhibit-message
+                      (push (and fmt (apply #'format fmt args)) echoed))
+                    (apply real-message fmt args)))
+                 ((symbol-function 'read-string) (lambda (&rest _) "Alice"))
+                 ((symbol-function 'completing-read) (lambda (&rest _) "Alice")))
+        (org-scribe-capture-character)
+        (org-capture-finalize))
+      (should-not (cl-some (lambda (m) (and m (string-match-p "Clipboard pasted" m)))
+                           echoed))
+      (should-not (advice-member-p #'org-scribe--capture-quiet-paste 'org-paste-subtree)))))
+
 ;;; ─────────────────────────────────────────────
 ;;; Run tests
 ;;; ─────────────────────────────────────────────

@@ -207,6 +207,30 @@ scenes under an untagged level-1 container) rather than an invented one."
       (org-next-visible-heading 1)  ; Opening
       (should (equal (org-entry-get nil "WORDCOUNT") "77")))))
 
+(ert-deftest test-wordcount-update-scene-wordcounts-novel-excludes-noexport-apparatus ()
+  "A novel's \"Writing Sessions\" is not counted as a scene.  It sits at the
+scene level under \"Progress Tracking :ignore:noexport:\" and inherits
+:ignore:, so the tag alone matched it and it gained a WORDCOUNT drawer."
+  (cl-letf (((symbol-function 'featurep)
+             (let ((orig (symbol-function 'featurep)))
+               (lambda (feature &rest args)
+                 (if (eq feature 'org-context-extended)
+                     t
+                   (apply orig feature args)))))
+            ((symbol-function 'org-context-count-words)
+             (lambda (&rest _) 55))
+            ((symbol-function 'org-scribe-project-type)
+             (lambda () 'novel)))
+    (with-temp-buffer
+      (org-mode)
+      (insert "* Progress Tracking :ignore:noexport:\n** Sessions\n*** Writing Sessions\n\n")
+      (insert "* Act :ignore:\n** Chapter :ignore:\n*** TODO Scene 1 :ignore:\ntext\n")
+      (goto-char (point-min))
+      (should (= 1 (org-scribe--refresh-scene-wordcounts nil)))
+      (goto-char (point-min))
+      (re-search-forward "^\\*\\*\\* Writing Sessions")
+      (should-not (org-entry-get nil "WORDCOUNT")))))
+
 (ert-deftest test-wordcount-update-scene-wordcounts-short-story-excludes-untagged-apparatus ()
   "A short story's own front-matter apparatus (the shipped template's
 \"Word Count Tracking\", under a :noexport:-tagged level-1 wrapper) sits

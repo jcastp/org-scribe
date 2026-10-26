@@ -277,37 +277,39 @@ Skipped unless both the thesaurus and hunspell are installed."
 ;; lookup running against the system thesaurus, and the assertions stop meaning
 ;; anything.
 
-(ert-deftest test-mythes-backend-wordreference-skips-local-lookup ()
-  "With the backend forced online, the local thesaurus is never consulted."
-  (let ((org-scribe-thesaurus-backend 'wordreference)
-        (looked-up nil)
-        (opened nil))
-    (cl-letf (((symbol-function 'org-scribe-mythes-lookup-entry)
-               (lambda (&rest _) (setq looked-up t) nil))
-              ((symbol-function 'org-scribe--sinonimo-wordreference)
-               (lambda (&rest _) (setq opened t))))
-      (org-scribe-sinonimo "abandonar")
-      (should-not looked-up)
-      (should opened))))
+(ert-deftest test-mythes-backend-rae-skips-local-lookup ()
+  "With the backend forced online, the local thesaurus is never consulted.
+The former value `wordreference' is read the same way."
+  (dolist (backend '(rae-api wordreference))
+    (let ((org-scribe-thesaurus-backend backend)
+          (looked-up nil)
+          (opened nil))
+      (cl-letf (((symbol-function 'org-scribe-mythes-lookup-entry)
+                 (lambda (&rest _) (setq looked-up t) nil))
+                ((symbol-function 'org-scribe--sinonimo-rae)
+                 (lambda (&rest _) (setq opened t))))
+        (org-scribe-sinonimo "abandonar")
+        (should-not looked-up)
+        (should opened)))))
 
 (ert-deftest test-mythes-backend-auto-falls-back-online-on-miss ()
-  "Under `auto', a word absent from the local data still opens WordReference."
+  "Under `auto', a word absent from the local data still goes to the RAE."
   (let ((org-scribe-thesaurus-backend 'auto)
         (opened nil))
     (cl-letf (((symbol-function 'org-scribe-mythes-lookup-entry) (lambda (&rest _) nil))
               ((symbol-function 'org-scribe-mythes-available-p) (lambda () t))
-              ((symbol-function 'org-scribe--sinonimo-wordreference)
+              ((symbol-function 'org-scribe--sinonimo-rae)
                (lambda (&rest _) (setq opened t))))
       (org-scribe-sinonimo "inexistente")
       (should opened))))
 
 (ert-deftest test-mythes-backend-mythes-never-goes-online ()
-  "With the backend forced offline, a miss reports rather than opening eww."
+  "With the backend forced offline, a miss reports rather than going online."
   (let ((org-scribe-thesaurus-backend 'mythes)
         (opened nil))
     (cl-letf (((symbol-function 'org-scribe-mythes-lookup-entry) (lambda (&rest _) nil))
               ((symbol-function 'org-scribe-mythes-available-p) (lambda () t))
-              ((symbol-function 'org-scribe--sinonimo-wordreference)
+              ((symbol-function 'org-scribe--sinonimo-rae)
                (lambda (&rest _) (setq opened t))))
       (org-scribe-sinonimo "inexistente")
       (should-not opened))))
@@ -321,7 +323,7 @@ Skipped unless both the thesaurus and hunspell are installed."
                (lambda (&rest _) '("abandonar" ("tr." "dejar" "soltar"))))
               ((symbol-function 'org-scribe--sinonimo-render-mythes)
                (lambda (&rest _) (setq rendered t)))
-              ((symbol-function 'org-scribe--sinonimo-wordreference)
+              ((symbol-function 'org-scribe--sinonimo-rae)
                (lambda (&rest _) (setq opened t))))
       (org-scribe-sinonimo "abandonar")
       (should rendered)

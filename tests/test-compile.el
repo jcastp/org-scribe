@@ -1452,6 +1452,80 @@ levels cannot silently also change the other's."
     (should (= (plist-get levels :chapter) 2))
     (should (= (plist-get levels :scene) 3))))
 
+;;; The done message and the format prompt
+
+(defun org-scribe-compile-test--done-message (thunk)
+  "Call THUNK and return the last message it shows."
+  (let ((last nil))
+    (cl-letf (((symbol-function 'message)
+               (lambda (fmt &rest args)
+                 (setq last (and fmt (apply #'format fmt args))))))
+      (funcall thunk))
+    last))
+
+(ert-deftest test-compile-short-story-done-message-has-no-chapters ()
+  "A short story has no chapters, so the message counts scenes only.
+Regression: it read \"Compiled 0 chapters and 1 scene\"."
+  (org-scribe-compile-test--with-project "short-story" "story.org"
+      org-scribe-compile-test--short-story
+    (let ((org-scribe-message-language 'en)
+          (msg (org-scribe-compile-test--done-message
+                (lambda () (org-scribe-compile 'clean 'org)))))
+      (should (string-prefix-p "Compiled 3 scenes to " msg))
+      (should-not (string-match-p "chapter" msg)))))
+
+(ert-deftest test-compile-novel-done-message-counts-chapters ()
+  (org-scribe-compile-test--with-project "novel" "novel.org"
+      org-scribe-compile-test--novel
+    (let ((org-scribe-message-language 'en)
+          (msg (org-scribe-compile-test--done-message
+                (lambda () (org-scribe-compile 'clean 'org)))))
+      (should (string-match-p "\\`Compiled [0-9]+ chapters? and [0-9]+ scenes? to " msg)))))
+
+(defun org-scribe-compile-test--offered-formats (style missing)
+  "Return the formats the prompt offers for STYLE with MISSING executables."
+  (let ((offered nil))
+    (cl-letf (((symbol-function 'executable-find)
+               (lambda (name &rest _) (unless (member name missing) (concat "/usr/bin/" name))))
+              ((symbol-function 'completing-read)
+               (lambda (_prompt collection &rest _)
+                 (setq offered (all-completions "" collection))
+                 (car offered))))
+      (org-scribe--compile-read-format style))
+    offered))
+
+(ert-deftest test-compile-format-prompt-leaves-out-a-missing-toolchain ()
+  "Without pdflatex, `pdf' is not offered; with it, it is.
+Regression: it was offered, then refused."
+  (let ((without (org-scribe-compile-test--offered-formats 'clean '("pdflatex")))
+        (with (org-scribe-compile-test--offered-formats 'clean nil)))
+    (should-not (member "pdf" without))
+    (should (member "pdf" with))
+    (should (member "txt" without))
+    (should (member "org" without))))
+
+(ert-deftest test-compile-format-prompt-shunn-leaves-out-a-missing-toolchain ()
+  (let ((offered (org-scribe-compile-test--offered-formats 'shunn '("pdflatex" "pandoc"))))
+    (should-not (member "pdf" offered))
+    (should-not (member "docx" offered))
+    (should (member "txt" offered))))
+
+(ert-deftest test-compile-format-prompt-leaves-out-a-missing-library ()
+  "A format whose Elisp library cannot be found is not offered either."
+  ;; A loaded library counts as present whatever `locate-library' says,
+  ;; so `ox-epub' is also made to look unloaded.
+  (cl-letf* ((real-featurep (symbol-function 'featurep))
+             ((symbol-function 'featurep)
+              (lambda (feature &rest args)
+                (unless (eq feature 'ox-epub) (apply real-featurep feature args))))
+             (real-locate (symbol-function 'locate-library))
+             ((symbol-function 'locate-library)
+              (lambda (lib &rest args)
+                (unless (equal lib "ox-epub") (apply real-locate lib args)))))
+    (let ((offered (org-scribe-compile-test--offered-formats 'clean nil)))
+      (should-not (member "epub" offered))
+      (should (member "md" offered)))))
+
 ;;; Messages
 
 (ert-deftest test-compile-messages-exist-in-both-languages ()
@@ -1460,7 +1534,7 @@ levels cannot silently also change the other's."
                  compile-no-manuscript compile-empty
                  compile-style-unsupported compile-format-unknown
                  compile-backend-missing compile-unsafe-scene-break
-                 compile-done compile-shunn-format-unsupported
+                 compile-done compile-done-scenes compile-shunn-format-unsupported
                  compile-shunn-author-missing compile-shunn-preamble-malformed))
     (should (assq key org-scribe-messages-en))
     (should (assq key org-scribe-messages-es))))

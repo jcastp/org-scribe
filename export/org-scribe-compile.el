@@ -910,16 +910,32 @@ that keeps every other style file out of the shipped templates).")
   (intern (completing-read (org-scribe-msg 'compile-prompt-style)
                            '("clean" "shunn") nil t nil nil "clean")))
 
+(defun org-scribe--compile-format-available-p (format)
+  "Return non-nil when FORMAT's library and executable are both present.
+The library is looked up with `locate-library', not `require': asking
+which formats to offer must not load every export backend.  This is
+the prompt's filter only; `org-scribe-compile' still refuses a missing
+toolchain by name for a caller that passes FORMAT directly."
+  (let* ((spec (alist-get format org-scribe--compile-formats))
+         (library (plist-get spec :library))
+         (executable (plist-get spec :executable)))
+    (and spec
+         (or (null library) (featurep library) (locate-library (symbol-name library)))
+         (or (null executable) (executable-find executable)))))
+
 (defun org-scribe--compile-read-format (&optional style)
   "Prompt for an output format, returning its symbol.
 When STYLE is `shunn', only `org-scribe--compile-shunn-formats' is
 offered -- excluding a doomed choice from completion up front, rather
 than letting the writer pick `md' and then explaining why it was
-refused."
-  (let ((choices (if (eq style 'shunn)
-                     (mapcar #'symbol-name org-scribe--compile-shunn-formats)
-                   (mapcar (lambda (entry) (symbol-name (car entry)))
-                           org-scribe--compile-formats))))
+refused.  For the same reason a format whose library or executable is
+missing (`org-scribe--compile-format-available-p') is left out;
+`org-scribe-setup-check' says what it needs."
+  (let ((choices (mapcar #'symbol-name
+                         (seq-filter #'org-scribe--compile-format-available-p
+                                     (if (eq style 'shunn)
+                                         org-scribe--compile-shunn-formats
+                                       (mapcar #'car org-scribe--compile-formats))))))
     (intern (completing-read (org-scribe-msg 'compile-prompt-format)
                              choices nil t nil nil
                              (if (member "txt" choices) "txt" (car choices))))))
@@ -1132,10 +1148,16 @@ your behalf."
                       (concat base "." (plist-get spec :extension))
                       directory))
                    intermediate)))
-            (message "%s" (org-scribe-msg 'compile-done
-                                          chapters (org-scribe-plural chapters "")
-                                          scenes (org-scribe-plural scenes "")
-                                          (abbreviate-file-name output)))
+            ;; A form with no chapter level (a short story) reports
+            ;; its scenes only: "0 chapters" read as a missing part.
+            (message "%s" (if (org-scribe-chapter-level)
+                              (org-scribe-msg 'compile-done
+                                              chapters (org-scribe-plural chapters "")
+                                              scenes (org-scribe-plural scenes "")
+                                              (abbreviate-file-name output))
+                            (org-scribe-msg 'compile-done-scenes
+                                            scenes (org-scribe-plural scenes "")
+                                            (abbreviate-file-name output))))
             output))))))
 
 (provide 'org-scribe-compile)
