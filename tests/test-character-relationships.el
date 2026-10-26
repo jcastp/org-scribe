@@ -299,6 +299,42 @@
       (should (string= "Bob" (nth 1 (car rels))))
       (should (string= "mentor" (nth 2 (car rels)))))))
 
+(ert-deftest test-relationships-add-asks-again-on-empty-type ()
+  "A blank relationship type is asked again rather than stored.
+It used to be announced as added, stored with nothing after \"|\", and
+then never shown."
+  (org-scribe-relationships-test--with-fixture
+    (cl-letf (((symbol-function 'completing-read)
+               (let ((answers '("Alice" "Bob" "" "  " "mentor")))
+                 (lambda (&rest _args)
+                   (pop answers))))
+              ((symbol-function 'sit-for) #'ignore))
+      (org-scribe-add-relationship))
+    (let ((rels (org-scribe--get-character-relationships-by-name "Alice")))
+      (should (equal '(("char-bob-001" "Bob" "mentor")) rels)))))
+
+(ert-deftest test-relationships-stored-empty-type-survives-next-add ()
+  "An entry stored with an empty type by an older version is kept.
+The parser dropped it, so the next add rewrote the property without it."
+  (should (equal '("char-bob-001" "Bob" "")
+                 (org-scribe--parse-single-relationship
+                  "[[id:char-bob-001][Bob]]|")))
+  (org-scribe-relationships-test--with-fixture
+    (with-current-buffer (find-file-noselect temp-file)
+      (goto-char (point-min))
+      (re-search-forward "^\\*\\* Alice")
+      (org-set-property (org-scribe--relationships-property-name)
+                        "[[id:char-bob-001][Bob]]|")
+      (save-buffer))
+    (cl-letf (((symbol-function 'completing-read)
+               (let ((answers '("Alice" "Carol" "rival")))
+                 (lambda (&rest _args)
+                   (pop answers)))))
+      (org-scribe-add-relationship))
+    (should (equal '(("char-bob-001" "Bob" "")
+                     ("char-carol-001" "Carol" "rival"))
+                   (org-scribe--get-character-relationships-by-name "Alice")))))
+
 (ert-deftest test-relationships-add-then-remove ()
   "org-scribe-remove-relationship deletes the selected entry only."
   (org-scribe-relationships-test--with-fixture

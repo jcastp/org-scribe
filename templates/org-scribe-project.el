@@ -36,7 +36,7 @@
 (declare-function org-scribe-project-structure "org-scribe-core")
 (declare-function org-scribe-project-type-cache-clear "org-scribe-core")
 (declare-function org-scribe-planner--offer-plan-on-create "org-scribe-planner"
-                  (base-dir title &rest _))
+                  (project-dir title))
 (defvar org-scribe-planner-offer-plan-on-create)
 (defvar org-scribe-compile-output-directory)
 
@@ -66,23 +66,23 @@ title the directory cannot carry (a colon, a question mark) can be set
 afterwards with `org-scribe-set-title', whose rule is looser."
   (cond
    ((string-empty-p (string-trim title))
-    "Title cannot be empty or contain only whitespace")
+    (org-scribe-msg 'error-empty-title))
    ((string-match-p "[\n\r]" title)
-    "Title cannot span more than one line")
+    (org-scribe-msg 'error-title-newline))
    ((not (string= title (string-trim title)))
-    "Title cannot start or end with whitespace")
+    (org-scribe-msg 'error-title-padded))
    ((> (string-bytes title) 200)
-    "Title is too long to be a directory name")
+    (org-scribe-msg 'error-title-too-long))
    ((string-match-p "[/\\]" title)
-    "Title cannot contain path separators (/ or \\)")
+    (org-scribe-msg 'error-path-separator))
    ((string-match-p ":" title)
-    "Title cannot contain colons (:)")
+    (org-scribe-msg 'error-title-colon))
    ((string-match-p "[*?<>|\"']" title)
-    "Title cannot contain special characters (* ? < > | \" ')")
+    (org-scribe-msg 'error-title-special-chars))
    ((string-match-p "^\\." title)
-    "Title cannot start with a dot (.)")
+    (org-scribe-msg 'error-title-dot))
    ((string-match-p "\\.\\." title)
-    "Title cannot contain double dots (..)")
+    (org-scribe-msg 'error-title-double-dot))
    (t nil)))
 
 (defun org-scribe--default-author ()
@@ -386,7 +386,7 @@ This function:
       ;; Initialize git repository
       (let ((default-directory project-dir))
         (unless (org-scribe--git "init")
-          (warn "%s" "Failed to initialize git repository")))
+          (warn "%s" (org-scribe-msg 'warn-git-init-failed))))
 
       ;; Process all templates; the notebook's Foundations part is the
       ;; method's own fragment (see `org-scribe--foundations-fragment').
@@ -411,7 +411,7 @@ This function:
       (find-file (expand-file-name (org-scribe-lang-file 'manuscript-novel language) project-dir))
       (message "%s" (org-scribe-msg 'project-creation-success-novel title project-dir))
       (when (called-interactively-p 'any)
-        (org-scribe--offer-plan-after-create base-dir title)))))
+        (org-scribe--offer-plan-after-create project-dir title)))))
 
 ;;;###autoload
 (defun org-scribe-create-short-story-project (base-dir title &optional language target-words)
@@ -489,7 +489,7 @@ This function:
       ;; Initialize git repository
       (let ((default-directory project-dir))
         (unless (org-scribe--git "init")
-          (warn "%s" "Failed to initialize git repository")))
+          (warn "%s" (org-scribe-msg 'warn-git-init-failed))))
 
       ;; Process all templates
       (org-scribe--copy-templates template-dir project-dir variables)
@@ -514,10 +514,10 @@ This function:
       (find-file (expand-file-name story-file project-dir))
       (message "%s" (org-scribe-msg 'project-creation-success-short-story title project-dir))
       (when (called-interactively-p 'any)
-        (org-scribe--offer-plan-after-create base-dir title)))))
+        (org-scribe--offer-plan-after-create project-dir title)))))
 
-(defun org-scribe--offer-plan-after-create (base-dir title)
-  "Offer a writing plan for the project TITLE just created under BASE-DIR.
+(defun org-scribe--offer-plan-after-create (project-dir title)
+  "Offer a writing plan for the project TITLE just created in PROJECT-DIR.
 Called by the two creation commands when run interactively.  The offer
 used to be advice the planner installed on them when it loaded, and the
 planner is autoloaded, so a fresh session never offered a plan; the
@@ -528,7 +528,7 @@ before the planner loads (unbound means its default, t)."
             org-scribe-planner-offer-plan-on-create
           t)
     (when (require 'org-scribe-planner nil t)
-      (org-scribe-planner--offer-plan-on-create base-dir title))))
+      (org-scribe-planner--offer-plan-on-create project-dir title))))
 
 (defun org-scribe--copy-templates (template-dir project-dir variables)
   "Copy and process templates from TEMPLATE-DIR to PROJECT-DIR.
@@ -668,29 +668,46 @@ From the preamble (where a freshly opened manuscript has point) or from
 `noexport' apparatus such as Project Goals, there is nothing to nest
 under: a heading inserted there is in no act, or inherits `noexport' and
 is dropped from every export and compile while still being counted.  The
-new heading then goes after the last narrative heading of LEVEL, i.e.
-the last scene of the last act.  If the buffer has none, it goes at the
-start of the current line, as it always did."
-  (cond
-   ((org-scribe--outside-narrative-p)
-    (unless (org-scribe--goto-end-of-last-narrative-heading level)
-      (when (org-before-first-heading-p) (beginning-of-line))))
-   (t
-    (org-back-to-heading t)
-    (while (and (> (org-current-level) level)
-                (org-up-heading-safe)))
-    (org-end-of-subtree t)
-    (if (eobp)
-        (unless (bolp) (insert "\n"))
-      (forward-line 1))))
+new heading then goes after the last narrative heading of LEVEL: after
+the last scene written so far, in whichever act holds it (in a fresh
+novel that is Act I, since the later acts ship empty).  If the buffer
+has none, it goes at the end of the apparatus heading point is in, or at
+the start of the current line before the first heading."
+  (unless (and (org-scribe--outside-narrative-p)
+               (org-scribe--goto-end-of-last-narrative-heading level))
+    (if (org-before-first-heading-p)
+        (beginning-of-line)
+      (org-back-to-heading t)
+      (while (and (> (org-current-level) level)
+                  (org-up-heading-safe)))
+      (org-scribe--goto-after-subtree)))
   (point))
+
+(defun org-scribe--goto-after-subtree ()
+  "Move point to the line after the subtree of the heading at point."
+  (org-end-of-subtree t)
+  (if (eobp)
+      (unless (bolp) (insert "\n"))
+    (forward-line 1)))
+
+(defun org-scribe--heading-under-noexport-p ()
+  "Non-nil when the heading at point or one of its ancestors is `noexport'.
+Reads each heading's own tags rather than relying on tag inheritance,
+which a writer may have turned off (`org-use-tag-inheritance') or
+narrowed (`org-tags-exclude-from-inheritance'); export drops a
+`noexport' subtree whatever those settings say, and so must this."
+  (save-excursion
+    (org-back-to-heading t)
+    (let ((found nil))
+      (while (progn (when (member "noexport" (org-get-tags nil t))
+                      (setq found t))
+                    (and (not found) (org-up-heading-safe))))
+      found)))
 
 (defun org-scribe--outside-narrative-p ()
   "Non-nil when point is in the preamble or inside `noexport' apparatus."
   (or (org-before-first-heading-p)
-      (save-excursion
-        (org-back-to-heading t)
-        (member "noexport" (org-get-tags)))))
+      (org-scribe--heading-under-noexport-p)))
 
 (defun org-scribe--goto-end-of-last-narrative-heading (level)
   "Move point past the last narrative heading of LEVEL; return non-nil if found.
@@ -701,14 +718,11 @@ when the buffer has no such heading."
       (goto-char (point-max))
       (while (and (not found)
                   (re-search-backward (format "^\\*\\{%d\\}[ \t]" level) nil t))
-        (unless (member "noexport" (org-get-tags))
+        (unless (org-scribe--heading-under-noexport-p)
           (setq found (point)))))
     (when found
       (goto-char found)
-      (org-end-of-subtree t)
-      (if (eobp)
-          (unless (bolp) (insert "\n"))
-        (forward-line 1))
+      (org-scribe--goto-after-subtree)
       t)))
 
 (defun org-scribe--chapterless-container-at-point ()
@@ -736,8 +750,8 @@ before the first heading."
 Point may be anywhere: in the middle of prose, on a scene or chapter
 heading, in a scene's drawer.  The scene goes at the end of the scene
 point is in, or at the end of the chapter point is on (see
-`org-scribe--goto-insertion-point'); before the first heading, or in `noexport' apparatus, it goes after
-the last scene of the last act.  With point on an act, the scene goes at
+`org-scribe--goto-insertion-point'); before the first heading, or in
+`noexport' apparatus, it goes after the last scene written so far.  With point on an act, the scene goes at
 the end of the act's last chapter; an act with no chapter yet gets one
 first (its name is asked for), since a scene directly under an act
 compiled as part of the previous act's last chapter.

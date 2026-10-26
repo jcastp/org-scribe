@@ -455,7 +455,8 @@ The report opens in the *org-scribe-health* buffer as an Org-mode file
 with clickable ID links back to each scene."
   (interactive)
   (let* ((structure (org-scribe-project-structure))
-         (manuscript-file (plist-get structure :manuscript-file)))
+         (manuscript-file (plist-get structure :manuscript-file))
+         (root (org-scribe-project-root)))
 
     (unless manuscript-file
       ;; Outside a project, say so rather than "no manuscript in this project".
@@ -538,6 +539,12 @@ with clickable ID links back to each scene."
       (with-current-buffer (get-buffer-create "*org-scribe-health*")
         (erase-buffer)
         (org-mode)
+        ;; The buffer is reused across projects and keeps the directory it
+        ;; was created in; the lookups below (plan, gate, word target, plot
+        ;; points) resolve the project from it, so point it at this one.
+        (setq default-directory
+              (file-name-as-directory
+               (or root (file-name-directory manuscript-file))))
 
         ;; Header
         (insert "#+TITLE: Project Health Report\n")

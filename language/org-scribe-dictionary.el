@@ -40,6 +40,23 @@ Shared by the definition and synonym lookups so both feel like one tool."
 
 ;;; RAE Dictionary API
 
+(defun org-scribe--word-at-point-or-region ()
+  "Return the active region's text, else the word at point, else nil."
+  (let ((word (if (use-region-p)
+                  (buffer-substring-no-properties (region-beginning) (region-end))
+                (thing-at-point 'word t))))
+    (when word
+      (let ((word (string-trim word)))
+        (unless (string-empty-p word) word)))))
+
+(defun org-scribe--read-lookup-word (prompt-key)
+  "Read the word to look up, prompting with the message PROMPT-KEY.
+The region, or else the word at point, is the default, so RET looks up
+the word the writer is already on instead of making them retype it."
+  (let ((default (org-scribe--word-at-point-or-region)))
+    (read-string (format-prompt (org-scribe-msg prompt-key) default)
+                 nil nil default)))
+
 (defun org-scribe-rae-format-conjugations (conjugations)
   "Format verb conjugations from the RAE API response."
   (when conjugations
@@ -128,7 +145,7 @@ PALABRA is the word that was looked up."
   "Look up PALABRA in the RAE dictionary using the API.
 Displays the word definition, etymology, and meanings in a buffer.
 Includes improved error handling for network issues."
-  (interactive "sPalabra a buscar en la RAE: ")
+  (interactive (list (org-scribe--read-lookup-word 'prompt-rae-word)))
   (when (string-empty-p (string-trim palabra))
     (user-error "%s" (org-scribe-msg 'error-word-empty)))
   (let* ((url (format "https://rae-api.com/api/words/%s"
@@ -268,7 +285,8 @@ is tried first and the RAE used when it is not running.
 With a prefix argument, REPROBE discards the cached availability of the local
 server — use it after starting kiwix-serve mid-session, since availability is
 probed once and then trusted so that lookups cost no latency."
-  (interactive "sPalabra a buscar: \nP")
+  (interactive (list (org-scribe--read-lookup-word 'prompt-dictionary-word)
+                     current-prefix-arg))
   (when (string-empty-p (string-trim palabra))
     (user-error "%s" (org-scribe-msg 'error-word-empty)))
   (let* ((backend org-scribe-dictionary-backend)
@@ -361,7 +379,7 @@ according to `org-scribe-thesaurus-backend'.  Under the default `auto',
 MyThes is tried first and WordReference is used when the thesaurus is not
 installed or has no entry for PALABRA — a word absent from the local data
 should still get an answer rather than a shrug."
-  (interactive "s¿Qué palabra quieres buscar? ")
+  (interactive (list (org-scribe--read-lookup-word 'prompt-synonym-word)))
   (when (string-empty-p (string-trim palabra))
     (user-error "%s" (org-scribe-msg 'error-word-empty)))
   (let* ((backend org-scribe-thesaurus-backend)

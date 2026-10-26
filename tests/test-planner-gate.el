@@ -138,7 +138,7 @@
             (insert "# Writing project: Gated Novel\n# Type: novel\n"))
           (cl-letf (((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
                     ((symbol-function 'org-scribe-planner-new-plan) (lambda (&rest _) nil)))
-            (org-scribe-planner--offer-plan-on-create base-dir title))
+            (org-scribe-planner--offer-plan-on-create project-dir title))
           (should (eq 'yes (org-scribe-planner-gate project-dir))))
       (delete-directory base-dir t))))
 
@@ -157,7 +157,7 @@ and never calls `org-scribe-planner-new-plan'."
           (cl-letf (((symbol-function 'yes-or-no-p) (lambda (&rest _) nil))
                     ((symbol-function 'org-scribe-planner-new-plan)
                      (lambda (&rest _) (setq new-plan-called t))))
-            (org-scribe-planner--offer-plan-on-create base-dir title))
+            (org-scribe-planner--offer-plan-on-create project-dir title))
           (should-not new-plan-called)
           (should (eq 'no (org-scribe-planner-gate project-dir))))
       (delete-directory base-dir t))))
@@ -284,6 +284,41 @@ even if a valid plan.org sits right there in the project root."
     (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () root)))
       (org-scribe-planner-disable-for-project))
     (should (eq 'no (org-scribe-planner-gate root)))))
+
+(ert-deftest test-planner-gate-org-scribe-plan-asks-before-showing-loaded-plan ()
+  "org-scribe-plan offers to enable a disabled project even when a plan is loaded.
+Disabling leaves the plan in memory; the gate must still be checked first,
+or the calendar of a disabled project is shown without asking."
+  (test-planner-gate--with-project root
+    (org-scribe--project-marker-set root "Planner" "no")
+    (let ((org-scribe-planner--current-plan (make-org-scribe-plan :title "Gate Test Novel"))
+          (org-scribe-planner--current-plan-file (expand-file-name "plan.org" root))
+          (asked nil)
+          (calendar-shown nil))
+      (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () root))
+                ((symbol-function 'yes-or-no-p) (lambda (&rest _) (setq asked t) nil))
+                ((symbol-function 'org-scribe-planner-show-calendar)
+                 (lambda (&rest _) (setq calendar-shown t))))
+        (org-scribe-plan))
+      (should asked)
+      (should-not calendar-shown)
+      (should (eq 'no (org-scribe-planner-gate root))))))
+
+(ert-deftest test-planner-gate-org-scribe-plan-enable-then-shows-loaded-plan ()
+  "Accepting the offer opens the gate and then shows the loaded plan."
+  (test-planner-gate--with-project root
+    (org-scribe--project-marker-set root "Planner" "no")
+    (let ((org-scribe-planner--current-plan (make-org-scribe-plan :title "Gate Test Novel"))
+          (org-scribe-planner--current-plan-file (expand-file-name "plan.org" root))
+          (calendar-shown nil))
+      (cl-letf (((symbol-function 'org-scribe-project-root) (lambda () root))
+                ((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
+                ((symbol-function 'org-scribe-planner--lock-past-goals) #'ignore)
+                ((symbol-function 'org-scribe-planner-show-calendar)
+                 (lambda (&rest _) (setq calendar-shown t))))
+        (org-scribe-plan))
+      (should calendar-shown)
+      (should (eq 'yes (org-scribe-planner-gate root))))))
 
 (ert-deftest test-planner-gate-enable-errors-outside-project ()
   "org-scribe-planner-enable-for-project errors when not in an org-scribe project."

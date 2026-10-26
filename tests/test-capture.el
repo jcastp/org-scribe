@@ -599,6 +599,24 @@ the per-entity file functions are gone."
                 org-scribe--create-novel-capture-file))
     (should-not (fboundp fn))))
 
+(ert-deftest test-capture-commands-select-their-template-directly ()
+  "Every capture command names its template key, so `org-capture' never
+shows its selection menu.  The note capture used to pass none, which gave
+the writer a one-item menu (and Org's \"Customize org-capture-templates\")."
+  (dolist (fn '(org-scribe-capture-to-file org-scribe-capture-character
+                org-scribe-capture-location org-scribe-capture-object
+                org-scribe-capture-timeline org-scribe-capture-plot-thread))
+    (let (captured)
+      (cl-letf (((symbol-function 'org-scribe--require-project) #'ignore)
+                ((symbol-function 'org-scribe-capture-target-file) #'ignore)
+                ((symbol-function 'org-scribe-project-language) (lambda (&rest _) 'en))
+                ((symbol-function 'org-capture)
+                 (lambda (&optional _goto keys)
+                   (setq captured (list keys (mapcar #'car org-capture-templates))))))
+        (funcall fn))
+      (should (stringp (car captured)))
+      (should (member (car captured) (cadr captured))))))
+
 (defun test-capture--notebook (type language)
   "Return the text of a notebook created for TYPE and LANGUAGE."
   (let ((file (make-temp-file "test-notebook-" nil ".org")))

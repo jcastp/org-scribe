@@ -447,8 +447,10 @@ KEY is the template key to select directly; if nil, present the full menu."
   "Capture notes to writing project or file.
 Files into the design notebook's Scratchpad part."
   (interactive)
+  ;; Pass the key: with none, `org-capture' shows its template menu even
+  ;; for a single template (plus Org's "Customize org-capture-templates").
   (org-scribe--run-capture #'org-scribe-capture-target-file
-                           (org-scribe-capture-templates)))
+                           (org-scribe-capture-templates) "w"))
 
 ;;;###autoload
 (defun org-scribe-capture-character ()

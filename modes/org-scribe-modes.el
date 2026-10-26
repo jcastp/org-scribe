@@ -150,6 +150,11 @@ this command drives."
 (defvar-local org-scribe-env--saved-writeroom-width nil
   "Global value of `writeroom-width' saved before org-scribe-env overrode it.")
 
+(defvar-local org-scribe-env--saved-line-numbers 'unset
+  "Whether `display-line-numbers-mode' was on before org-scribe-env started.
+The symbol `unset' means nothing was saved, so deactivating leaves line
+numbers alone: nil is a real saved state (they were off).")
+
 (defun org-scribe--apply-theme (theme)
   "Switch to THEME, degrading gracefully instead of erroring.
 
@@ -178,6 +183,11 @@ install into an error."
   ;; changed, leaving the session half-switched.
   (unless (require 'writeroom-mode nil t)
     (user-error "%s" (org-scribe-msg 'error-writeroom-required)))
+  ;; Save the writer's own setting once, so switching between `write' and
+  ;; `focus' (each deactivating the other first) keeps the original.
+  (when (eq org-scribe-env--saved-line-numbers 'unset)
+    (setq org-scribe-env--saved-line-numbers
+          (bound-and-true-p display-line-numbers-mode)))
   (display-line-numbers-mode 1)
   (org-scribe--apply-theme org-scribe-env-work-theme)
   ;; Check if fontaine is available
@@ -190,7 +200,10 @@ install into an error."
 
 (defun org-scribe-env--deactivate ()
   "Deactivate writing environment and restore previous settings."
-  (display-line-numbers-mode -1)
+  ;; Restore line numbers as they were, rather than forcing them off.
+  (unless (eq org-scribe-env--saved-line-numbers 'unset)
+    (display-line-numbers-mode (if org-scribe-env--saved-line-numbers 1 -1))
+    (setq org-scribe-env--saved-line-numbers 'unset))
   ;; Restore theme
   (org-scribe--apply-theme org-scribe-env-normal-theme)
   ;; Restore font
@@ -225,13 +238,17 @@ with customized settings optimized for focused writing."
 (defvar-local org-scribe-env--narrowed nil
   "Track if buffer was narrowed by org-scribe-env-mode-focus.")
 
+(defun org-scribe-env-focus--check-section ()
+  "Signal a `user-error' when there is no section at point to focus on.
+With point above the first heading there is nothing to narrow to, and
+Org's own error (\"Before first heading\") says nothing about what to do."
+  (when (and (derived-mode-p 'org-mode) (org-before-first-heading-p))
+    (user-error "%s" (org-scribe-msg 'focus-no-heading))))
+
 (defun org-scribe-env-focus--activate ()
   "Activate writing environment and narrow to current org section."
-  ;; Refuse before switching theme and font: with point above the first
-  ;; heading there is no section to narrow to, and Org's own error
-  ;; ("Before first heading") says nothing about what to do.
-  (when (and (derived-mode-p 'org-mode) (org-before-first-heading-p))
-    (user-error "%s" (org-scribe-msg 'focus-no-heading)))
+  ;; Refuse before switching theme and font.
+  (org-scribe-env-focus--check-section)
   ;; First activate the base writing environment
   (org-scribe-env--activate)
   ;; Then add narrowing if in org-mode
@@ -259,6 +276,14 @@ it narrows the buffer to the current org section at point."
   :global nil
   (if org-scribe-writing-env-mode-focus
       (progn
+        ;; Refuse before leaving the active workspace: deactivating first
+        ;; dropped a writer out of `write' (and re-applied the normal
+        ;; theme and font) for a focus that was then refused.
+        (condition-case err
+            (org-scribe-env-focus--check-section)
+          (user-error
+           (setq org-scribe-writing-env-mode-focus nil)
+           (signal (car err) (cdr err))))
         (org-scribe--deactivate-other-modes 'org-scribe-writing-env-mode-focus)
         (condition-case err
             (org-scribe-env-focus--activate)
@@ -491,6 +516,7 @@ visual settings (theme, column width, font preset)."
   "Emergency cleanup of writing environment state.
 This is called on kill-buffer-hook to ensure state is cleaned up."
   (setq org-scribe-env--writeroom-active nil
+        org-scribe-env--saved-line-numbers 'unset
         org-scribe-env--narrowed nil
         org-scribe-editing--saved-config nil))
 

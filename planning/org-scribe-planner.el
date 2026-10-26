@@ -5065,15 +5065,18 @@ some other path ever loads a plan into a gated-off project.
 The target is today's own goal from the schedule: on a spare day the
 string reads \"[W:actual rest]\", and outside the plan just \"[W:actual]\"."
   (when-let* ((plan org-scribe-planner--current-plan)
-              (_ (eq (ignore-errors (org-scribe-planner-gate)) 'yes))
-              ;; A plan left over from another project shows nothing here.
-              (_ (or (null org-scribe-planner--current-plan-file)
-                     (org-scribe-planner--plan-file-in-current-project-p
-                      org-scribe-planner--current-plan-file)))
               (today (org-scribe-planner--get-today-date))
               (actual (org-scribe-planner--entry-delta
                        (org-scribe-plan-daily-word-counts plan) today
-                       (org-scribe-plan-preexisting-words plan))))
+                       (org-scribe-plan-preexisting-words plan)))
+              ;; The gate and the plan's project are checked last: both look
+              ;; the project up on disk, and the mode line is evaluated on
+              ;; every redisplay.  A plan left over from another project
+              ;; shows nothing here.
+              (_ (eq (ignore-errors (org-scribe-planner-gate)) 'yes))
+              (_ (or (null org-scribe-planner--current-plan-file)
+                     (org-scribe-planner--plan-file-in-current-project-p
+                      org-scribe-planner--current-plan-file))))
     (let ((day (cl-find today
                         (ignore-errors (org-scribe-planner--generate-day-schedule plan))
                         :key (lambda (d) (plist-get d :date))
@@ -5094,31 +5097,28 @@ creation), which a title change leaves alone."
 
 ;;; Offer plan creation on project creation
 
-(defun org-scribe-planner--offer-plan-on-create (base-dir title &rest _)
-  "Offer to create a writing plan for the project just created under BASE-DIR.
-BASE-DIR and TITLE are the first two arguments of
-`org-scribe-create-novel-project' / `org-scribe-create-short-story-project'
-\(both call it, through `org-scribe--offer-plan-after-create', when run
-interactively).  BASE-DIR is the *parent* directory the creation
-command was given, not the new project's own directory — mirror the
-`(expand-file-name title base-dir)' computation those functions use
-internally to get the actual project directory, so that
-`org-scribe-planner-new-plan' is called with an explicit TITLE and
-SAVE-PATH of <project>/plan.org instead of falling back to generic
-prompts and `org-scribe-planner-directory'.
+(defun org-scribe-planner--offer-plan-on-create (project-dir title)
+  "Offer to create a writing plan for the project just created in PROJECT-DIR.
+TITLE is the project's title.  Both creation commands call it, through
+`org-scribe--offer-plan-after-create', when run interactively, passing
+the directory they created rather than letting this function recompute
+it from the parent directory and the title: the two computations
+disagreed for a title such as \"~user\", which the creation commands
+keep under the parent directory and `expand-file-name' alone turns into
+that user's home.  `org-scribe-planner-new-plan' is called with TITLE
+and a SAVE-PATH of PROJECT-DIR/plan.org.
 
 Also records the answer in the project's marker file as \"# Planner:
 yes\" or \"# Planner: no\" (see `org-scribe-planner-gate'), so a decline
 is remembered — the project is never asked again, and every other
 gate-aware feature (auto-load, mode line, health report) stays off
 until the author explicitly enables it later."
-  (let ((project-dir (expand-file-name title base-dir)))
-    (if (yes-or-no-p (format "Create a writing plan for \"%s\" with org-scribe-planner? "
-                             title))
-        (progn
-          (org-scribe--project-marker-set project-dir "Planner" "yes")
-          (org-scribe-planner-new-plan title (expand-file-name "plan.org" project-dir)))
-      (org-scribe--project-marker-set project-dir "Planner" "no"))))
+  (if (yes-or-no-p (format "Create a writing plan for \"%s\" with org-scribe-planner? "
+                           title))
+      (progn
+        (org-scribe--project-marker-set project-dir "Planner" "yes")
+        (org-scribe-planner-new-plan title (expand-file-name "plan.org" project-dir)))
+    (org-scribe--project-marker-set project-dir "Planner" "no")))
 
 ;;; Wire up all features (only when org-scribe is present)
 
@@ -5169,18 +5169,22 @@ file exists, offer to create one.  Falls back to
                           (file-exists-p
                            (expand-file-name ".org-scribe-project" root)))))
     (cond
-     ;; Plan already active — show it
-     (org-scribe-planner--current-plan
-      (org-scribe-planner--lock-past-goals org-scribe-planner--current-plan)
-      (org-scribe-planner-show-calendar org-scribe-planner--current-plan
-                                        org-scribe-planner--current-plan-file))
-     ;; In a project that has declined the planner — offer to enable first
+     ;; In a project that has declined the planner — offer to enable first.
+     ;; This must come before the active-plan branch:
+     ;; `org-scribe-planner-disable-for-project' leaves the plan in memory,
+     ;; so checking for an active plan first showed a disabled project's
+     ;; calendar without ever asking.
      ((and in-project (eq (org-scribe-planner-gate root) 'no))
       (if (yes-or-no-p "The planner is disabled for this project.  Enable it? ")
           (progn
             (org-scribe--project-marker-set root "Planner" "yes")
             (org-scribe-plan))
         (message "org-scribe-planner: staying disabled for this project.")))
+     ;; Plan already active — show it
+     (org-scribe-planner--current-plan
+      (org-scribe-planner--lock-past-goals org-scribe-planner--current-plan)
+      (org-scribe-planner-show-calendar org-scribe-planner--current-plan
+                                        org-scribe-planner--current-plan-file))
      ;; In project with a valid saved plan file — load silently, then show
      ((and in-project
            (org-scribe-planner--plan-file-valid-p

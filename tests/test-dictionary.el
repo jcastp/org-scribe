@@ -256,6 +256,55 @@ void-function error on any install without that optional package."
       (org-scribe-thesaurus-lookup))
     (should called)))
 
+;;; The word to look up defaults to the one the writer is on
+
+(defvar test-dictionary--prompt nil)
+
+(defun test-dictionary--interactive-args (fn)
+  "Return FN's interactive arguments, with RET answered at the prompt.
+`read-string' is stubbed to return its DEFAULT, as RET does; the prompt
+it was given is recorded in `test-dictionary--prompt'."
+  (cl-letf (((symbol-function 'read-string)
+             (lambda (prompt &optional _initial _history default &rest _)
+               (setq test-dictionary--prompt prompt)
+               (or default ""))))
+    (advice-eval-interactive-spec (cadr (interactive-form fn)))))
+
+
+(ert-deftest test-dictionary-lookups-default-to-word-at-point ()
+  "RET in the dictionary, RAE and synonym prompts looks up the word at point.
+They used to prompt with an empty minibuffer, so the writer retyped a word
+already on screen, accents included."
+  (dolist (fn '(org-scribe-dictionary-lookup org-scribe-rae-api-lookup
+                org-scribe-sinonimo))
+    (with-temp-buffer
+      (insert "La canción del faro")
+      (goto-char 6)
+      (should (equal "canción" (car (test-dictionary--interactive-args fn))))
+      (should (string-match-p "canción" test-dictionary--prompt)))))
+
+(ert-deftest test-dictionary-lookups-default-to-region ()
+  "An active region is the default, so a phrase can be looked up."
+  (with-temp-buffer
+    (transient-mark-mode 1)
+    (insert "dijo a bocajarro que no")
+    (set-mark 6)
+    (goto-char 17)
+    (activate-mark)
+    (should (equal "a bocajarro"
+                   (car (test-dictionary--interactive-args
+                         #'org-scribe-sinonimo))))))
+
+(ert-deftest test-dictionary-lookup-prompts-are-localized ()
+  "The prompts come from the language pack, not literals in the spec."
+  (with-temp-buffer
+    (let ((org-scribe-message-language 'en))
+      (should (equal "" (car (test-dictionary--interactive-args
+                              #'org-scribe-dictionary-lookup))))
+      (should (string-prefix-p (org-scribe-msg 'prompt-dictionary-word)
+                               test-dictionary--prompt))
+      (should-not (string-match-p "default" test-dictionary--prompt)))))
+
 ;;; Run tests
 
 (defun org-scribe-dictionary-run-tests ()

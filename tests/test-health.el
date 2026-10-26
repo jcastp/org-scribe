@@ -781,6 +781,47 @@ WORD-TARGET stubs `org-scribe-project-word-target'; PLAN is the active plan."
       (should-not (string-match-p "Writing Plan" content))
       (should-not (string-match-p "Target mismatch" content)))))
 
+;;; The report buffer is reused across projects
+
+(ert-deftest test-health-second-project-does-not-read-the-first ()
+  "Running the report in project B after project A reports B, not A.
+The report buffer outlives a run and kept the directory of the first
+project, so the plan, gate, word target and plot-point lookups made
+inside it resolved A's project."
+  (require 'org-scribe-planner)
+  (let* ((repo (locate-dominating-file
+                (or load-file-name buffer-file-name default-directory)
+                "org-scribe.el"))
+         (tmp (make-temp-file "org-scribe-health-two-" t))
+         (org-id-locations-file (expand-file-name "ids" tmp))
+         (org-scribe-planner--current-plan nil)
+         (org-scribe-planner--current-plan-file nil)
+         (opened nil))
+    (unwind-protect
+        (progn
+          (dolist (demo '("demo-novel" "demo-short-story"))
+            (copy-directory (expand-file-name (concat "examples/" demo) repo)
+                            (expand-file-name demo tmp) nil t t))
+          (when (get-buffer "*org-scribe-health*")
+            (kill-buffer "*org-scribe-health*"))
+          (dolist (file '("demo-novel/novel.org" "demo-short-story/story.org"))
+            (let ((buf (find-file-noselect (expand-file-name file tmp))))
+              (push buf opened)
+              (with-current-buffer buf
+                (org-scribe-mode 1)
+                (org-scribe-project-health))))
+          (with-current-buffer "*org-scribe-health*"
+            (let ((content (buffer-string)))
+              (should (string-match-p "^- Title :: The Last Message$" content))
+              (should-not (string-match-p "The Morning Routine" content))
+              (should-not (string-match-p "Plot Points With No Scene" content)))))
+      (dolist (buf opened)
+        (with-current-buffer buf (set-buffer-modified-p nil))
+        (kill-buffer buf))
+      (when (get-buffer "*org-scribe-health*")
+        (kill-buffer "*org-scribe-health*"))
+      (delete-directory tmp t))))
+
 ;;; Starting Gate
 ;;
 ;; Six of the gate's eight items can only be self-reported; two are

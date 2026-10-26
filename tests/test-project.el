@@ -536,6 +536,37 @@ More.
                               (org-up-heading-safe)
                               (org-get-heading t t t t))))))
 
+(ert-deftest test-insert-scene-from-apparatus-ignores-tag-inheritance-settings ()
+  "Apparatus is recognised with tag inheritance off or narrowed."
+  (dolist (setting '((org-use-tag-inheritance . nil)
+                     (org-tags-exclude-from-inheritance . ("noexport"))))
+    (with-temp-buffer
+      (insert "* Progress :ignore:noexport:\n** Daily\nLog.\n"
+              "* Act I\n** Chapter 1\n*** TODO One :ignore:\nText.\n")
+      (org-mode)
+      (cl-letf (((symbol-function 'org-scribe-project-levels)
+                 (lambda (&optional _) '(:chapter 2 :scene 3 :scene-tag "ignore"))))
+        (set (make-local-variable (car setting)) (cdr setting))
+        (goto-char (point-min))
+        (search-forward "Log.")
+        (org-scribe-insert-scene "Fresh")
+        (org-back-to-heading t)
+        (should (equal "Fresh" (org-get-heading t t t t)))
+        (org-up-heading-safe)
+        (should (equal "Chapter 1" (org-get-heading t t t t)))))))
+
+(ert-deftest test-insert-scene-in-apparatus-without-narrative-is-not-glued ()
+  "With no narrative heading at all, the scene still starts on its own line."
+  (with-temp-buffer
+    (insert "#+TITLE: x\n* Goals :noexport:\nSome text here\n")
+    (org-mode)
+    (cl-letf (((symbol-function 'org-scribe-project-levels)
+               (lambda (&optional _) '(:chapter 2 :scene 3 :scene-tag "ignore"))))
+      (goto-char (point-min))
+      (search-forward "Some te")
+      (org-scribe-insert-scene "C")
+      (should (string-match-p "^Some text here\n\\*\\*\\* TODO C" (buffer-string))))))
+
 (ert-deftest test-validate-title-rejects-newline-and-padding ()
   (should (org-scribe--validate-project-title "Multi\nline"))
   (should (org-scribe--validate-project-title "  Padded  "))

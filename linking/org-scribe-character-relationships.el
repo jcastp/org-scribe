@@ -49,13 +49,17 @@
 (defun org-scribe--parse-single-relationship (rel-string)
   "Parse a single relationship string into components.
 REL-STRING should be in format: [[id:...][Name]]|TYPE
-Returns (ID NAME TYPE) or nil if parsing fails."
+Returns (ID NAME TYPE) or nil if parsing fails.
+
+An empty TYPE parses as \"\": older versions accepted an empty answer
+and stored such entries, and dropping them here made them invisible and
+deleted them on the character's next add or remove."
   (when (and rel-string (string-match
-                         "\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]|\\(.+\\)"
+                         "\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]|\\(.*\\)"
                          rel-string))
     (list (match-string 1 rel-string)     ; ID
           (match-string 2 rel-string)     ; Name
-          (match-string 3 rel-string))))  ; Type
+          (string-trim (match-string 3 rel-string)))))  ; Type
 
 (defun org-scribe--parse-relationships (rel-property-value)
   "Parse relationship property value into list of relationships.
@@ -97,6 +101,18 @@ Returns a string suitable for :RelationshipsData: property."
    "; "))
 
 ;;; Character Relationship Database
+
+(defun org-scribe--read-relationship-type ()
+  "Read a relationship type, asking again until it is not blank.
+An empty type used to be announced as added and then never shown."
+  (let (type)
+    (while (string-empty-p
+            (setq type (string-trim
+                        (completing-read (org-scribe-msg 'prompt-relationship-type)
+                                         org-scribe-relationship-types nil nil))))
+      (message "%s" (org-scribe-msg 'msg-relationship-type-required))
+      (sit-for 1))
+    type))
 
 (defun org-scribe--relationships-property-name ()
   "Return the property name new relationship data is written under.
@@ -218,9 +234,7 @@ Prompts for source character, target character, and relationship type."
                 (target-entry (assoc target-name all-chars))
                 (target-id (cadr target-entry))
                 ;; Ask for relationship type
-                (rel-type (completing-read (org-scribe-msg 'prompt-relationship-type)
-                                           org-scribe-relationship-types
-                                           nil nil))
+                (rel-type (org-scribe--read-relationship-type))
                 ;; Create new relationship tuple
                 (new-rel (list target-id target-name rel-type))
                 ;; Add to existing relationships

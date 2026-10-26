@@ -278,8 +278,9 @@ One file, downloaded once, from https://library.kiwix.org (search for
 "Wikcionario"):
 
 #+BEGIN_SRC sh
-mkdir -p ~/zim
-wget -P ~/zim https://download.kiwix.org/zim/wiktionary/wiktionary_es_all_nopic.zim
+  mkdir -p ~/zim
+  # this is the latest one at the time of writing this manual. Check yours
+  wget -P ~/zim https://download.kiwix.org/zim/wiktionary/wiktionary_es_all_nopic_2026-06.zim -O wiktionary_es_all_nopic.zim
 #+END_SRC
 
 Choose the ~nopic~ flavour: it is 566 MB against 997 MB, has /more/ articles

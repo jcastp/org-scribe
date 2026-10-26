@@ -269,17 +269,11 @@ of the default-directory argument, so old markers keep working."
 ;;; Tests for --offer-plan-on-create (H11)
 
 (ert-deftest test-planner-offer-plan-on-create-uses-project-dir-not-base-dir ()
-  "new-plan must be called with a save-path under the *new project's*
-directory, not the parent BASE-DIR it was given.
-Regression test for H11: `org-scribe-planner--offer-plan-on-create' is
-installed as :after advice on `org-scribe-create-novel-project', whose
-signature is (base-dir title &optional language) — the first argument is
-the parent directory the project was created under, e.g.
-\"/tmp/projects\", not the project's own directory, e.g.
-\"/tmp/projects/My Novel\".  Since Phase 6a replaced the project-aware
-prompt-rebinding advice with explicit arguments, this now means
-`org-scribe-planner-new-plan' must receive TITLE and SAVE-PATH computed
-from the project directory directly, not derived from `default-directory'."
+  "new-plan must be called with a save-path under the new project's directory.
+Regression test for H11, when the offer recomputed the project directory
+from the parent directory and the title; it now receives the directory
+the creation command made (see
+`test-planner-offer-plan-on-create-tilde-title-stays-in-project')."
   (let* ((base-dir (make-temp-file "test-offer-plan-base-" t))
          (title "My Novel")
          (project-dir (expand-file-name title base-dir))
@@ -292,11 +286,38 @@ from the project directory directly, not derived from `default-directory'."
           (cl-letf (((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
                     ((symbol-function 'org-scribe-planner-new-plan)
                      (lambda (&rest args) (setq new-plan-args args))))
-            (org-scribe-planner--offer-plan-on-create base-dir title))
+            (org-scribe-planner--offer-plan-on-create project-dir title))
           (should (equal new-plan-args
                         (list title (expand-file-name "plan.org" project-dir))))
           ;; The gate is opened too — see test-planner-gate.el for the
           ;; dedicated accept/decline coverage of this behavior.
+          (should (eq 'yes (org-scribe-planner-gate project-dir))))
+      (delete-directory base-dir t))))
+
+(ert-deftest test-planner-offer-plan-on-create-tilde-title-stays-in-project ()
+  "Interactive creation with a title like \"~user\" puts the plan in the project.
+`expand-file-name' turns \"~user\" into that user's home, so an offer
+that recomputed the directory from the title wrote plan.org there."
+  (let* ((base-dir (make-temp-file "test-offer-plan-tilde-" t))
+         (title (concat "~" (user-login-name)))
+         (project-dir (expand-file-name (concat "./" title) base-dir))
+         ;; test-compile.el turns the offer off globally.
+         (org-scribe-planner-offer-plan-on-create t)
+         (new-plan-args nil))
+    (unwind-protect
+        (cl-letf (((symbol-function 'read-directory-name) (lambda (&rest _) base-dir))
+                  ((symbol-function 'read-string) (lambda (&rest _) title))
+                  ((symbol-function 'completing-read) (lambda (&rest _) "en"))
+                  ((symbol-function 'org-scribe--read-method) (lambda (&rest _) 'sistema))
+                  ((symbol-function 'org-scribe--read-word-target) (lambda (&rest _) 80000))
+                  ((symbol-function 'project-remember-project) #'ignore)
+                  ((symbol-function 'find-file) #'ignore)
+                  ((symbol-function 'yes-or-no-p) (lambda (&rest _) t))
+                  ((symbol-function 'org-scribe-planner-new-plan)
+                   (lambda (&rest args) (setq new-plan-args args))))
+          (call-interactively #'org-scribe-create-novel-project)
+          (should (equal (cadr new-plan-args)
+                         (expand-file-name "plan.org" project-dir)))
           (should (eq 'yes (org-scribe-planner-gate project-dir))))
       (delete-directory base-dir t))))
 

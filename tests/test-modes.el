@@ -537,6 +537,59 @@ asserting on that function would fail while the code is correct."
           (should (string-match-p "scene" (cadr err)))
           (should-not activated))))))
 
+;;; Line numbers and refused focus keep the writer's state
+
+(defvar writeroom-width)
+
+(defmacro test-modes--with-stubbed-env (&rest body)
+  "Run BODY with writeroom, theme and font switching stubbed out."
+  (declare (indent 0))
+  `(let ((real-require (symbol-function 'require))
+         (writeroom-width 80))
+     (cl-letf (((symbol-function 'require)
+                (lambda (feature &rest args)
+                  (or (eq feature 'writeroom-mode)
+                      (apply real-require feature args))))
+               ((symbol-function 'writeroom-mode) #'ignore)
+               ((symbol-function 'org-scribe--apply-theme) #'ignore)
+               ((symbol-function 'fontaine-set-preset) #'ignore))
+       ,@body)))
+
+(ert-deftest test-modes-workspace-restores-line-numbers ()
+  "Leaving `write' or `focus' puts line numbers back as they were.
+Deactivation used to force them off, so a writer who keeps line numbers
+on lost them every session; switching write → focus → normal must keep
+the original setting too, not the one `write' had set."
+  (dolist (initially '(t nil))
+    (with-temp-buffer
+      (delay-mode-hooks (org-mode))
+      (insert "* Scene\ntext\n")
+      (goto-char (point-max))
+      (display-line-numbers-mode (if initially 1 -1))
+      (test-modes--with-stubbed-env
+        (org-scribe-writing-env-mode 1)
+        (should display-line-numbers-mode)
+        (org-scribe-writing-env-mode-focus 1)
+        (org-scribe-writing-env-mode-focus -1))
+      (should (eq (and display-line-numbers-mode t) initially)))))
+
+(ert-deftest test-modes-refused-focus-keeps-write-workspace ()
+  "A focus refused for want of a section leaves `write' as it was.
+The other workspaces used to be turned off before the check ran, so a
+mis-aimed focus dropped the writer out of `write'."
+  (with-temp-buffer
+    (delay-mode-hooks (org-mode))
+    (insert "#+TITLE: T\n\n* Scene\ntext\n")
+    (goto-char (point-max))
+    (test-modes--with-stubbed-env
+      (org-scribe-writing-env-mode 1)
+      (goto-char (point-min))
+      (should-error (org-scribe-writing-env-mode-focus 1) :type 'user-error)
+      (should org-scribe-writing-env-mode)
+      (should-not org-scribe-writing-env-mode-focus)
+      (should org-scribe-env--writeroom-active)
+      (org-scribe-writing-env-mode -1))))
+
 (provide 'test-modes)
 
 ;;; test-modes.el ends here
