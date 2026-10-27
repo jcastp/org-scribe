@@ -8,21 +8,9 @@
 
 import { matches, isActive } from '../filters.js';
 import { el } from '../edit.js';
-
-const GROUPS = [
-  { kind: 'character', field: 'characters', title: 'companion-ui-group-characters' },
-  { kind: 'plot', field: 'plot', title: 'companion-ui-group-plots' },
-  { kind: 'location', field: 'location', title: 'companion-ui-group-locations' },
-  { kind: 'object', field: 'objects', title: 'companion-ui-group-objects' },
-  { kind: 'plot-point', field: 'plot-point', title: 'companion-ui-group-plot-points' },
-];
+import { GROUPS, ids, orderEntities } from './matrix.js';
 
 let showHidden = false;
-
-function ids(scene, field) {
-  const value = scene.fields[field];
-  return value && value.links ? value.links.map((link) => link.id) : [];
-}
 
 function editable(scene) {
   return Boolean(scene.id) && !scene.readOnly;
@@ -60,11 +48,6 @@ function toggleLink(scene, group, entityId, ctx) {
 function togglePov(scene, entityId, ctx) {
   const isPov = ids(scene, 'pov').includes(entityId);
   ctx.edit('set-field', { id: scene.id, key: 'pov', links: isPov ? [] : [entityId] });
-}
-
-function byWeight(a, b) {
-  // hidden entities (negative weight) go last, not first
-  return (Boolean(a.hidden) - Boolean(b.hidden)) || (a.weight - b.weight) || a.name.localeCompare(b.name);
 }
 
 function cell(scene, group, entity, flags, ctx) {
@@ -114,9 +97,8 @@ function groupRows(group, scenes, ctx, columns) {
   const { storyline } = ctx.snapshot;
   const all = (ctx.snapshot.entities[group.kind] || []).filter((entity) => entity.id);
   // the plot points keep the method's order; weights and names would give 1, 10, 11…
-  const order = group.kind === 'plot-point' ? (list) => list : (list) => list.sort(byWeight);
-  const shown = order(all.filter((entity) => showHidden || !entity.hidden));
-  const left = order(all.filter((entity) => !showHidden && entity.hidden));
+  const shown = orderEntities(group, all.filter((entity) => showHidden || !entity.hidden));
+  const left = orderEntities(group, all.filter((entity) => !showHidden && entity.hidden));
   const orphans = new Set(storyline.orphans[group.kind] || []);
   const rows = [];
 

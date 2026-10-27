@@ -1244,6 +1244,19 @@
           (should (alist-get key org-scribe-messages-es))))
       (should (> found 1)))))
 
+(ert-deftest test-companion-commands-chapters-tab-is-wired-and-novel-only ()
+  (let ((app (with-temp-buffer
+               (insert-file-contents (expand-file-name "app.js" test-companion-commands--web))
+               (buffer-string))))
+    (should (file-exists-p (expand-file-name "views/chapters.js" test-companion-commands--web)))
+    (should (file-exists-p (expand-file-name "views/matrix.js" test-companion-commands--web)))
+    (should (string-match-p "id: 'chapters', label: 'companion-ui-view-chapters', module: chapters, novelOnly: true" app))
+    (should (string-match-p "type === 'short-story'" app))
+    ;; the view only reads: it never sends a command
+    (should-not (with-temp-buffer
+                  (insert-file-contents (expand-file-name "views/chapters.js" test-companion-commands--web))
+                  (re-search-forward "ctx\\.edit\\|set-field" nil t)))))
+
 (ert-deftest test-companion-commands-web-files-use-no-innerhtml ()
   (dolist (file (directory-files-recursively test-companion-commands--web "\\.js\\'"))
     (with-temp-buffer

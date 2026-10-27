@@ -7,6 +7,7 @@ import { FILTERS, emptyFilters, loadFilters, saveFilters, isActive, setFilterSco
 import * as corkboard from './views/corkboard.js';
 import * as table from './views/table.js';
 import * as storyline from './views/storyline.js';
+import * as chapters from './views/chapters.js';
 import * as forms from './views/forms.js';
 
 const token = new URLSearchParams(location.search).get('t') || '';
@@ -17,6 +18,7 @@ const VIEWS = [
   { id: 'corkboard', label: 'companion-ui-view-corkboard', module: corkboard },
   { id: 'table', label: 'companion-ui-view-table', module: table },
   { id: 'storyline', label: 'companion-ui-view-storyline', module: storyline },
+  { id: 'chapters', label: 'companion-ui-view-chapters', module: chapters, novelOnly: true },
   { id: 'forms', label: 'companion-ui-view-forms', module: forms },
 ];
 
@@ -117,10 +119,23 @@ function showNotice(text) {
   showNotice.timer = setTimeout(() => { notice.hidden = true; }, 6000);
 }
 
+/** The tabs this project has: a short story has no chapters to roll up to. */
+function availableViews() {
+  const type = state.snapshot && state.snapshot.project.type;
+  return VIEWS.filter((view) => !(view.novelOnly && type === 'short-story'));
+}
+
+/** Open the storyline with the scene ID in view. */
+function showInStoryline(id) {
+  state.view = 'storyline';
+  renderAll();
+  if (id) focusCard(id);
+}
+
 function renderTabs() {
   const tabs = $('tabs');
   tabs.replaceChildren();
-  for (const view of VIEWS) {
+  for (const view of availableViews()) {
     const tab = document.createElement('button');
     tab.type = 'button';
     tab.setAttribute('role', 'tab');
@@ -182,7 +197,7 @@ function renderFilters() {
 }
 
 function renderView() {
-  const view = VIEWS.find((candidate) => candidate.id === state.view);
+  const view = availableViews().find((candidate) => candidate.id === state.view) || VIEWS[0];
   const scroll = window.scrollY;
   view.module.render($('view'), {
     snapshot: state.snapshot,
@@ -194,6 +209,7 @@ function renderView() {
     fetchEntity,
     notice: showNotice,
     rerender: renderView,
+    showInStoryline,
     editStarted,
     editEnded,
   });
