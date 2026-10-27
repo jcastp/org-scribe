@@ -7,15 +7,17 @@ import { FILTERS, emptyFilters, loadFilters, saveFilters, isActive } from './fil
 import * as corkboard from './views/corkboard.js';
 import * as table from './views/table.js';
 import * as storyline from './views/storyline.js';
+import * as forms from './views/forms.js';
 
 const token = new URLSearchParams(location.search).get('t') || '';
 const $ = (id) => document.getElementById(id);
 
-// The views, in tab order.  Later phases add the forms.
+// The views, in tab order.  
 const VIEWS = [
   { id: 'corkboard', label: 'companion-ui-view-corkboard', module: corkboard },
   { id: 'table', label: 'companion-ui-view-table', module: table },
   { id: 'storyline', label: 'companion-ui-view-storyline', module: storyline },
+  { id: 'forms', label: 'companion-ui-view-forms', module: forms },
 ];
 
 const state = {
@@ -57,15 +59,19 @@ async function request(path, options = {}) {
   return response.json();
 }
 
-async function command(op, args = {}) {
+async function command(op, args = {}, silent = []) {
   const answer = await request('/api/command', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ op, args }),
   });
-  if (!answer.ok) showNotice(t('companion-ui-command-failed', answer.error.message));
+  if (!answer.ok && !silent.includes(answer.error.code)) {
+    showNotice(t('companion-ui-command-failed', answer.error.message));
+  }
   return answer;
 }
+
+const fetchEntity = (id) => request(`/api/entity?id=${encodeURIComponent(id)}`);
 
 const goto = (id) => command('goto', { id });
 
@@ -73,12 +79,13 @@ const goto = (id) => command('goto', { id });
  * Run an editing command.  Success: the new snapshot arrives with the
  * answer's revision (the 'changed' event also comes); FOCUS names the card to
  * focus afterwards, or the new scene when FOCUS_NEW.  Failure: the notice is
- * shown and the board is drawn again from the last snapshot (the rollback).
+ * shown (unless its code is in SILENT) and the board is drawn again from the
+ * last snapshot (the rollback).  Returns the answer.
  */
-async function edit(op, args, focus = null, focusNew = false) {
+async function edit(op, args, focus = null, focusNew = false, silent = []) {
   let answer;
   try {
-    answer = await command(op, args);
+    answer = await command(op, args, silent);
   } catch (error) {
     answer = { ok: false };
     showNotice(t('companion-ui-connection-lost'));
@@ -86,7 +93,7 @@ async function edit(op, args, focus = null, focusNew = false) {
   if (answer.ok) state.pendingFocus = focusNew ? answer.id : focus;
   await refresh().catch(() => {});
   if (!answer.ok) renderView();
-  return answer.ok;
+  return answer;
 }
 
 // A re-render would throw away a half-typed edit: hold it until the edit ends.
@@ -182,6 +189,7 @@ function renderView() {
     t,
     goto,
     edit,
+    fetchEntity,
     notice: showNotice,
     rerender: renderView,
     editStarted,

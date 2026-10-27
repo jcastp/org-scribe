@@ -145,3 +145,30 @@ main { padding: 0 1.2rem 3rem; }
 .sl-orphan { margin-left: 0.4rem; font-size: 0.7rem; border: 1px dashed var(--warn, #d9822b); border-radius: 999px; padding: 0 0.4rem; color: var(--muted); }
 .sl-hidden-note td { color: var(--muted); font-style: italic; padding: 0.25rem 0.5rem; }
 .legend { color: var(--muted); font-size: 0.8rem; }
+
+/* entity forms */
+.ent-layout { display: grid; grid-template-columns: 16rem 1fr; gap: 1.5rem; align-items: start; }
+.ent-list { position: sticky; top: 4rem; max-height: calc(100vh - 5rem); overflow-y: auto; }
+.ent-group-head { display: flex; justify-content: space-between; align-items: center; margin-top: 0.8rem; }
+.ent-group-head h3 { margin: 0; font-size: 0.95rem; }
+.ent-item { display: block; width: 100%; text-align: left; border: 0; background: transparent; color: inherit; padding: 0.3rem 0.5rem; border-radius: 6px; cursor: pointer; font: inherit; }
+.ent-item:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.ent-item.selected { background: color-mix(in srgb, var(--accent) 18%, transparent); font-weight: 600; }
+.ent-head { display: flex; align-items: center; gap: 1rem; }
+.ent-head h2 { margin: 0; }
+.ent-block { margin-top: 1.2rem; }
+.ent-block h4 { margin: 0 0 0.4rem; }
+.ent-props { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 0.6rem 1rem; }
+.ent-props h4 { grid-column: 1 / -1; }
+.ent-prop, .ent-section label { display: flex; flex-direction: column; gap: 0.2rem; }
+.ent-label { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+.ent-prop input, .ent-prop select, .ent-body { font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 0.3rem 0.5rem; width: 100%; box-sizing: border-box; }
+.ent-body { font-family: ui-monospace, monospace; font-size: 0.85rem; resize: vertical; }
+.ent-section { margin-bottom: 0.9rem; margin-left: calc(var(--depth, 0) * 1rem); }
+.ent-conflict { border: 2px solid var(--warn, #d9822b); border-radius: 8px; padding: 0.6rem; margin-top: 0.4rem; }
+.ent-conflict-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 0.5rem 0; }
+.ent-conflict-actions { display: flex; gap: 0.6rem; }
+.ent-links { list-style: none; padding: 0; margin: 0; }
+.ent-detail { color: var(--muted); }
+.ent-prose { white-space: pre-wrap; font: inherit; margin: 0; }
+@media (max-width: 800px) { .ent-layout { grid-template-columns: 1fr; } .ent-list { position: static; max-height: none; } }

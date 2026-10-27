@@ -41,7 +41,10 @@
     ("set-title" . org-scribe-companion-commands--set-title)
     ("set-todo" . org-scribe-companion-commands--set-todo)
     ("set-field" . org-scribe-companion-commands--set-field)
-    ("create-scene" . org-scribe-companion-commands--create-scene))
+    ("create-scene" . org-scribe-companion-commands--create-scene)
+    ("set-entity-property" . org-scribe-companion-entity--set-property)
+    ("set-entity-section" . org-scribe-companion-entity--set-section)
+    ("capture-entity" . org-scribe-companion-entity--capture))
   "Alist of (OP-NAME . FUNCTION).  FUNCTION takes ROOT and the args plist.")
 
 (define-error 'org-scribe-companion-command-error
@@ -52,9 +55,15 @@
   (signal 'org-scribe-companion-command-error
           (list code (apply #'org-scribe-msg key args))))
 
-(defun org-scribe-companion-commands-error (code message)
-  "Return the failure answer with error CODE (a string) and MESSAGE."
-  (list :ok :false :error (list :code code :message message)))
+(defun org-scribe-companion-commands--fail-with (code extra key &rest args)
+  "Like `--fail', and the error answer also carries the plist EXTRA."
+  (signal 'org-scribe-companion-command-error
+          (list code (apply #'org-scribe-msg key args) extra)))
+
+(defun org-scribe-companion-commands-error (code message &optional extra)
+  "Return the failure answer with error CODE (a string) and MESSAGE.
+EXTRA, a plist, is added to the error."
+  (list :ok :false :error (append (list :code code :message message) extra)))
 
 (defun org-scribe-companion-commands--project-buffers (root)
   "Return the live buffers visiting ROOT's manuscript and design files."
@@ -474,10 +483,13 @@ Returns the answer plist described in the Commentary."
       (condition-case err
           (funcall function root args)
         (org-scribe-companion-command-error
-         (org-scribe-companion-commands-error (nth 1 err) (nth 2 err)))
+         (org-scribe-companion-commands-error (nth 1 err) (nth 2 err) (nth 3 err)))
         (error (org-scribe-companion-commands-error
                 "invalid" (error-message-string err)))))))
 
 (provide 'org-scribe-companion-commands)
+
+;; The entity commands need this file's machinery, so load them after it.
+(require 'org-scribe-companion-entity)
 
 ;;; org-scribe-companion-commands.el ends here

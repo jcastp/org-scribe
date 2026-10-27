@@ -120,7 +120,8 @@
     "test-companion-gate"          ; Switch, per-project gate, module stays unloaded
     "test-companion-model"         ; Project snapshot for the browser
     "test-companion-server"        ; HTTP server, security checks, event stream
-    "test-companion-commands")     ; goto, save, follow mode, web string keys
+    "test-companion-commands"      ; goto, save, follow mode, web string keys
+    "test-companion-entity")       ; Entity forms: properties, section bodies, capture
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()

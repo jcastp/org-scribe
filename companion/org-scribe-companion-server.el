@@ -338,6 +338,12 @@ away: writing to a socket whose peer has closed can block Emacs."
        ((and (equal method "GET") (equal path "/api/strings"))
         (org-scribe-companion-server--respond-json
          proc 200 (org-scribe-companion--strings org-scribe-companion-server--root)))
+       ((and (equal method "GET") (equal path "/api/entity"))
+        (let ((answer (org-scribe-companion-entity-get
+                       org-scribe-companion-server--root
+                       (cadr (assoc "id" query)))))
+          (org-scribe-companion-server--respond-json
+           proc (if (eq (plist-get answer :ok) t) 200 404) answer)))
        ((and (equal method "GET") (equal path "/api/events"))
         (org-scribe-companion-server--subscribe proc))
        ((and (equal method "POST") (equal path "/api/command"))
