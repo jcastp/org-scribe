@@ -8,6 +8,7 @@ import * as corkboard from './views/corkboard.js';
 import * as table from './views/table.js';
 import * as storyline from './views/storyline.js';
 import * as chapters from './views/chapters.js';
+import * as relations from './views/relations.js';
 import * as forms from './views/forms.js';
 
 const token = new URLSearchParams(location.search).get('t') || '';
@@ -19,6 +20,7 @@ const VIEWS = [
   { id: 'table', label: 'companion-ui-view-table', module: table },
   { id: 'storyline', label: 'companion-ui-view-storyline', module: storyline },
   { id: 'chapters', label: 'companion-ui-view-chapters', module: chapters, novelOnly: true },
+  { id: 'relations', label: 'companion-ui-view-relations', module: relations, noFilters: true },
   { id: 'forms', label: 'companion-ui-view-forms', module: forms },
 ];
 
@@ -171,6 +173,9 @@ function select(labelKey, options, value, onChange) {
 function renderFilters() {
   const container = $('filters');
   container.replaceChildren();
+  // the filters pick scenes; a graph of characters has none to pick
+  const current = availableViews().find((candidate) => candidate.id === state.view);
+  container.hidden = Boolean(current && current.noFilters);
   const { entities, todo } = state.snapshot;
   const change = (key) => (value) => { state.filters[key] = value; saveFilters(state.filters); renderView(); };
   for (const filter of FILTERS) {

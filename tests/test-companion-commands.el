@@ -1257,6 +1257,18 @@
                   (insert-file-contents (expand-file-name "views/chapters.js" test-companion-commands--web))
                   (re-search-forward "ctx\\.edit\\|set-field" nil t)))))
 
+(ert-deftest test-companion-commands-relations-tab-is-wired ()
+  (let ((app (with-temp-buffer
+               (insert-file-contents (expand-file-name "app.js" test-companion-commands--web))
+               (buffer-string)))
+        (view (with-temp-buffer
+                (insert-file-contents (expand-file-name "views/relations.js" test-companion-commands--web))
+                (buffer-string))))
+    (should (string-match-p "id: 'relations', label: 'companion-ui-view-relations', module: relations, noFilters: true" app))
+    ;; every change goes through the one command
+    (should (string-match-p "'set-relationship'" view))
+    (should-not (string-match-p "set-field\\|move-node\\|set-entity" view))))
+
 (ert-deftest test-companion-commands-web-files-use-no-innerhtml ()
   (dolist (file (directory-files-recursively test-companion-commands--web "\\.js\\'"))
     (with-temp-buffer

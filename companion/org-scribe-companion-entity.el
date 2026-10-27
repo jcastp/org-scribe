@@ -20,6 +20,8 @@
 ;;   set-entity-section    id, index, title, hash, body: replaces the body
 ;;                         only if its hash still matches (else `conflict',
 ;;                         with the current body in the error)
+;;   set-relationship      source, target, type, old: adds, changes or removes
+;;                         one entry of a character's RelationshipsData
 ;;   capture-entity        kind: starts the existing capture in Emacs
 ;;
 ;; Heading lines, deeper sub-headings and the ID are never touched.  Plot
@@ -37,6 +39,10 @@
 (require 'org-scribe-companion-commands)
 
 (defvar org-scribe-companion-raise-frame)
+(declare-function org-scribe--get-character-relationships "org-scribe-character-relationships")
+(declare-function org-scribe--relationships-to-string "org-scribe-character-relationships")
+(declare-function org-scribe--relationships-property-at-point "org-scribe-character-relationships")
+(declare-function org-scribe--relationships-property-name "org-scribe-character-relationships")
 (declare-function org-scribe-capture-character "org-scribe-capture")
 (declare-function org-scribe-capture-location "org-scribe-capture")
 (declare-function org-scribe-capture-object "org-scribe-capture")
@@ -243,6 +249,69 @@ Returns the success answer."
             (funcall function marker))
           (org-scribe-companion-commands--finish root))
       (set-marker marker nil))))
+
+;;; set-relationship
+
+(defun org-scribe-companion-entity--character-name (root id)
+  "Return the current name of the character ID in ROOT, or refuse the command."
+  (let ((found (org-scribe-companion-entity--find root id)))
+    (unless found
+      (org-scribe-companion-commands--fail "not-found" 'companion-error-not-found (or id "")))
+    (unless (equal (car found) "character")
+      (org-scribe-companion-commands--fail "invalid" 'companion-error-not-a-character))
+    (plist-get (cdr found) :name)))
+
+(defun org-scribe-companion-entity--set-relationship (root args)
+  "Add, change or remove one relationship of a character.
+ARGS: `:source' (the character it is written on), `:target', `:type' and
+`:old'.  Without `:old' the entry (TARGET, TYPE) is added; with `:old' the
+entry (TARGET, OLD) becomes TYPE, or is removed when TYPE is empty.  An
+entry that is no longer there is a `conflict': the page was out of date.
+The link text is the target's current name."
+  (let* ((source (org-scribe-companion-commands--require-id args :source))
+         (target (org-scribe-companion-commands--require-id args :target))
+         (type (or (org-scribe-companion-commands--clean-line
+                    (org-scribe-companion-commands--arg args :type))
+                   ""))
+         (old (org-scribe-companion-commands--clean-line
+               (org-scribe-companion-commands--arg args :old))))
+    (when (equal source target)
+      (org-scribe-companion-commands--fail "invalid" 'companion-error-same-character))
+    (when (string-match-p "|\\|\\[\\[" type)
+      (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-relationship-type))
+    (when (and (null old) (string-empty-p type))
+      (org-scribe-companion-commands--fail "invalid" 'companion-error-missing-arg "type"))
+    (org-scribe-companion-entity--character-name root source)
+    (let ((name (org-scribe-companion-entity--character-name root target))
+          (default-directory root))
+      (org-scribe-companion-entity--editing
+       root source
+       (lambda (_marker)
+         (let* ((entries (org-scribe--get-character-relationships))
+                (same (lambda (entry kind) (and (equal (nth 0 entry) target)
+                                                (equal (nth 2 entry) kind))))
+                (new (list target name type))
+                result)
+           (if (null old)
+               (setq result (if (cl-find-if (lambda (e) (funcall same e type)) entries)
+                                entries
+                              (append entries (list new))))
+             (unless (cl-find-if (lambda (e) (funcall same e old)) entries)
+               (org-scribe-companion-commands--fail "conflict" 'companion-error-relationship-gone))
+             (dolist (entry entries)
+               (cond
+                ((not (funcall same entry old)) (push entry result))
+                ;; changed: unless the new type already exists, which makes it a removal
+                ((and (not (string-empty-p type))
+                      (not (cl-find-if (lambda (e) (and (not (eq e entry)) (funcall same e type)))
+                                       entries)))
+                 (push new result))))
+             (setq result (nreverse result)))
+           (let ((property (or (org-scribe--relationships-property-at-point)
+                               (org-scribe--relationships-property-name))))
+             (if result
+                 (org-entry-put nil property (org-scribe--relationships-to-string result))
+               (org-entry-delete nil property)))))))))
 
 (defun org-scribe-companion-entity--set-property (root args)
   "Set a property of an entity.  ARGS: `:id', `:key', `:value' (one line)."

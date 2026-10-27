@@ -103,6 +103,20 @@
   (should (null (org-scribe--parse-single-relationship "[[id:x][Name]]")))
   (should (null (org-scribe--parse-single-relationship "[[id:x][Name]](friend)"))))
 
+(ert-deftest test-relationships-parse-single-older-shape ()
+  "The older (TYPE,STRENGTH,VALENCE) shape is read, type only."
+  (should (equal '("x" "Name" "neighbour")
+                 (org-scribe--parse-single-relationship
+                  "[[id:x][Name]](neighbour,7,positive)")))
+  (should (equal '("x" "Name" "family")
+                 (org-scribe--parse-single-relationship "[[id:x][Name]](family,10)"))))
+
+(ert-deftest test-relationships-older-shape-is-rewritten-in-the-current-one ()
+  (should (equal "[[id:a][Sam]]|neighbour; [[id:b][Dana]]|rival"
+                 (org-scribe--relationships-to-string
+                  (org-scribe--parse-relationships
+                   "[[id:a][Sam]](neighbour,7,positive); [[id:b][Dana]]|rival")))))
+
 ;;; org-scribe--parse-relationships Tests
 
 (ert-deftest test-relationships-parse-multi-empty ()

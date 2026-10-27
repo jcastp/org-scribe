@@ -465,6 +465,39 @@ SETUP is a function called with the directory.  The directory is the
         (should-not (equal before after))
         (should-not (plist-get after :plotGaps))))))
 
+;;; Relationships
+
+(ert-deftest test-companion-model-characters-carry-their-relationships ()
+  (test-companion-model--with-project root #'test-companion-model--copy-demo
+    (let* ((snapshot (org-scribe-companion--snapshot root))
+           (characters (append (plist-get (plist-get snapshot :entities) :character) nil))
+           (alex (cl-find "char-alex-rivera-001" characters
+                          :key (lambda (e) (plist-get e :id)) :test #'equal))
+           (relationships (append (plist-get alex :relationships) nil)))
+      (should (= 4 (length relationships)))
+      (should (equal '(:target "char-sam-chen-001" :name "Sam Chen" :type "neighbour")
+                     (car relationships)))
+      ;; every character has the key, even with none: the page never checks for it
+      (should (cl-every (lambda (c) (vectorp (plist-get c :relationships))) characters))
+      ;; and the suggestions reach the page
+      (should (member "mentor" (append (plist-get snapshot :relationshipTypes) nil))))))
+
+(ert-deftest test-companion-model-relationships-read-the-older-shape ()
+  (test-companion-model--with-project root #'test-companion-model--copy-demo
+    (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+      (org-with-wide-buffer
+       (goto-char (org-find-property "ID" "char-sam-chen-001"))
+       (org-entry-put nil "RelationshipsData"
+                      "[[id:char-alex-rivera-001][Alex Rivera]](neighbour,7,positive)")))
+    (org-scribe-companion--clear-cache)
+    (let* ((characters (append (plist-get (plist-get (org-scribe-companion--snapshot root) :entities)
+                                          :character)
+                               nil))
+           (sam (cl-find "char-sam-chen-001" characters
+                         :key (lambda (e) (plist-get e :id)) :test #'equal)))
+      (should (equal "neighbour"
+                     (plist-get (aref (plist-get sam :relationships) 0) :type))))))
+
 (ert-deftest test-companion-model-objects-are-a-linked-field-and-entity-kind ()
   (should (equal 'link-many
                  (plist-get (alist-get 'objects org-scribe-companion--field-kinds) :kind)))

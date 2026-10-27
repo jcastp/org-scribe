@@ -624,7 +624,7 @@ prose, which is the only announcement the change gets.
 :Occupation: Freelance graphic designer
 :First-appearance: Chapter 1, Scene 1
 :Weight: 1
-:RelationshipsData: [[id:char-sam-chen-001][Sam Chen]](neighbour,7,positive); [[id:char-dana-okonkwo-001][Dana Okonkwo]](client,8,negative); [[id:char-priya-raman-001][Priya Raman]](colleague,4,positive); [[id:char-marisol-rivera-001][Marisol Rivera]](family,10,positive)
+:RelationshipsData: [[id:char-sam-chen-001][Sam Chen]]|neighbour; [[id:char-dana-okonkwo-001][Dana Okonkwo]]|client; [[id:char-priya-raman-001][Priya Raman]]|colleague; [[id:char-marisol-rivera-001][Marisol Rivera]]|family
 :END:
 
 - Concept :: A designer who has never once been where they said they would
@@ -733,7 +733,7 @@ number, check whether it is really in their head.
 :Occupation: Founder and art director, Okonkwo & Field
 :First-appearance: Chapter 2, Scene 2
 :Weight: 2
-:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]](client,8,negative); [[id:char-priya-raman-001][Priya Raman]](employer,7,negative)
+:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]]|client; [[id:char-priya-raman-001][Priya Raman]]|employer
 :END:
 
 - Concept :: A woman who has not been late in twenty years and has not been
@@ -819,7 +819,7 @@ right about the city, and wrong about what to do inside it.
 :Goal: Get their father's day place confirmed
 :First-appearance: Chapter 1, Scene 2
 :Weight: 3
-:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]](neighbour,7,positive)
+:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]]|neighbour
 :END:
 
 # Intermediate profile: reduced, plus Lie, Weakness and Relationship. Enough
@@ -877,7 +877,7 @@ mistake — one the reader should be able to catch before Alex does.
 :Goal: Be the one Dana calls
 :First-appearance: Chapter 3, Scene 2
 :Weight: 4
-:RelationshipsData: [[id:char-dana-okonkwo-001][Dana Okonkwo]](employer,7,negative); [[id:char-alex-rivera-001][Alex Rivera]](colleague,4,negative)
+:RelationshipsData: [[id:char-dana-okonkwo-001][Dana Okonkwo]]|employer; [[id:char-alex-rivera-001][Alex Rivera]]|colleague
 :END:
 
 # Looks like an ally and serves the opponent. Reduced profile, both Desires.
@@ -929,7 +929,7 @@ the reader cannot be shown Priya deciding. They can be shown a timestamp.
 :Goal: Get through the week without being noticed
 :First-appearance: Chapter 8, Scene 2
 :Weight: 5
-:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]](stranger,2,positive)
+:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]]|stranger
 :END:
 
 # One for every Stance you want represented. Casey carries Alex's opening
@@ -967,7 +967,7 @@ distinction is the whole scene, and Pass 2 checks for it.
 :Goal: (Dead before the story opens)
 :First-appearance: Backstory only
 :Weight: -1
-:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]](family,10,positive)
+:RelationshipsData: [[id:char-alex-rivera-001][Alex Rivera]]|family
 :END:
 
 # :Weight: -1 — kept on file, left out of the character timeline.

@@ -23,9 +23,12 @@
 (require 'org-scribe-core)
 (require 'org-scribe-lang)
 (require 'org-scribe-linking-core)
+(require 'org-scribe-character-relationships)
 
 (defvar org-scribe-companion-todo-colors)
 (defvar org-scribe-entity-registry)
+(defvar org-scribe-relationship-types)
+(declare-function org-scribe--get-character-relationships "org-scribe-character-relationships")
 
 ;;; Scene field kinds
 
@@ -289,6 +292,15 @@ give every plot point a `#' hint, so a non-empty body proves nothing."
     (when (eq symbol 'character)
       (when-let* ((role (org-string-nw-p (org-entry-get nil "Role"))))
         (setq entity (append entity (list :role role)))))
+    (when (eq symbol 'character)
+      ;; Directed: the entity at point is the source.  Targets that are not
+      ;; characters any more stay, so the page can show them as dangling.
+      (setq entity
+            (append entity
+                    (list :relationships
+                          (vconcat
+                           (mapcar (lambda (rel) (list :target (nth 0 rel) :name (nth 1 rel) :type (nth 2 rel)))
+                                   (org-scribe--get-character-relationships)))))))
     (when (eq symbol 'plot-point)
       (setq entity (append entity
                            (list :hasContent (org-scribe-companion--bool
@@ -509,6 +521,7 @@ so asking again without an edit costs a revision check only."
             :buffers (list :manuscript (org-scribe-companion--buffer-info manuscript)
                            :design (org-scribe-companion--buffer-info design))
             :todo (plist-get cache :todo)
+            :relationshipTypes (vconcat org-scribe-relationship-types)
             :sceneFields (org-scribe-companion--scene-fields-json specs)
             :acts (vconcat (plist-get cache :acts))
             :entities (plist-get cache :entities)

@@ -297,5 +297,135 @@
     (should (alist-get key org-scribe-messages-en))
     (should (alist-get key org-scribe-messages-es))))
 
+;;; set-relationship
+
+(defconst test-companion-entity--sam "char-sam-chen-001")
+(defconst test-companion-entity--dana "char-dana-okonkwo-001")
+
+(defun test-companion-entity--rels (root id)
+  "Return the (TARGET . TYPE) pairs written on character ID in ROOT, from the file."
+  (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+    (org-with-wide-buffer
+     (goto-char (org-find-property "ID" id))
+     (mapcar (lambda (r) (cons (nth 0 r) (nth 2 r)))
+             (org-scribe--get-character-relationships)))))
+
+(ert-deftest test-companion-entity-demo-relationships-are-read ()
+  "The demo's data is in the current format: Alex has four, none lost."
+  (test-companion-entity--with-project root
+    (should (= 4 (length (test-companion-entity--rels root test-companion-entity--alex))))
+    (let* ((alex (cl-find test-companion-entity--alex
+                          (append (plist-get (org-scribe-companion--entities) :character) nil)
+                          :key (lambda (e) (plist-get e :id)) :test #'equal)))
+      (should (= 4 (length (plist-get alex :relationships))))
+      (should (equal "neighbour" (plist-get (aref (plist-get alex :relationships) 0) :type))))))
+
+(ert-deftest test-companion-entity-set-relationship-adds ()
+  (test-companion-entity--with-project root
+    (should (eq t (plist-get (test-companion-entity--run
+                              root "set-relationship" :source test-companion-entity--sam
+                              :target test-companion-entity--dana :type "rival")
+                             :ok)))
+    (should (member (cons test-companion-entity--dana "rival")
+                    (test-companion-entity--rels root test-companion-entity--sam)))
+    ;; the link text is the target's current name
+    (should (string-match-p "\\[\\[id:char-dana-okonkwo-001\\]\\[Dana Okonkwo\\]\\]|rival"
+                            (test-companion-entity--design root)))))
+
+(ert-deftest test-companion-entity-set-relationship-duplicate-is-a-no-op ()
+  (test-companion-entity--with-project root
+    (let ((before (test-companion-entity--design root)))
+      (test-companion-entity--run root "set-relationship" :source test-companion-entity--alex
+                                  :target test-companion-entity--sam :type "neighbour")
+      (should (equal before (test-companion-entity--design root))))))
+
+(ert-deftest test-companion-entity-set-relationship-changes-the-type ()
+  (test-companion-entity--with-project root
+    (test-companion-entity--run root "set-relationship" :source test-companion-entity--alex
+                                :target test-companion-entity--sam
+                                :old "neighbour" :type "friend")
+    (let ((rels (test-companion-entity--rels root test-companion-entity--alex)))
+      (should (= 4 (length rels)))
+      (should (member (cons test-companion-entity--sam "friend") rels))
+      (should-not (member (cons test-companion-entity--sam "neighbour") rels))
+      ;; the other entries keep their place
+      (should (equal test-companion-entity--sam (car (car rels)))))))
+
+(ert-deftest test-companion-entity-set-relationship-removes ()
+  (test-companion-entity--with-project root
+    (test-companion-entity--run root "set-relationship" :source test-companion-entity--alex
+                                :target test-companion-entity--sam :old "neighbour" :type "")
+    (should (= 3 (length (test-companion-entity--rels root test-companion-entity--alex))))))
+
+(ert-deftest test-companion-entity-set-relationship-last-removal-drops-the-property ()
+  (test-companion-entity--with-project root
+    (test-companion-entity--run root "set-relationship" :source test-companion-entity--sam
+                                :target test-companion-entity--alex :old "neighbour" :type "")
+    (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+      (org-with-wide-buffer
+       (goto-char (org-find-property "ID" test-companion-entity--sam))
+       (should-not (org-entry-get nil "RelationshipsData"))))))
+
+(ert-deftest test-companion-entity-set-relationship-stale-entry-conflicts ()
+  (test-companion-entity--with-project root
+    (let ((before (test-companion-entity--design root)))
+      (should (equal "conflict"
+                     (test-companion-entity--code
+                      (test-companion-entity--run
+                       root "set-relationship" :source test-companion-entity--alex
+                       :target test-companion-entity--sam :old "enemy" :type "friend"))))
+      (should (equal before (test-companion-entity--design root))))))
+
+(ert-deftest test-companion-entity-set-relationship-refuses ()
+  (test-companion-entity--with-project root
+    (let ((before (test-companion-entity--design root)))
+      (dolist (case (list
+                     ;; (code source target type)
+                     (list "invalid" test-companion-entity--alex test-companion-entity--alex "friend")
+                     (list "invalid" test-companion-entity--alex test-companion-entity--sam "")
+                     (list "invalid" test-companion-entity--alex test-companion-entity--sam "a|b")
+                     (list "invalid" test-companion-entity--alex test-companion-entity--sam "[[x")
+                     (list "not-found" test-companion-entity--alex "nope" "friend")
+                     (list "invalid" "plot-thread-or-other" test-companion-entity--sam "friend")))
+        (should (member (test-companion-entity--code
+                         (test-companion-entity--run root "set-relationship"
+                                                     :source (nth 1 case) :target (nth 2 case)
+                                                     :type (nth 3 case)))
+                        (list (nth 0 case) "not-found"))))
+      (should (equal before (test-companion-entity--design root))))))
+
+(ert-deftest test-companion-entity-set-relationship-needs-two-characters ()
+  "An ID that is not a character (here, a location) is refused."
+  (test-companion-entity--with-project root
+    (let* ((location (plist-get (aref (plist-get (org-scribe-companion--entities) :location) 0) :id)))
+      (should (equal "invalid"
+                     (test-companion-entity--code
+                      (test-companion-entity--run root "set-relationship"
+                                                  :source test-companion-entity--alex
+                                                  :target location :type "friend")))))))
+
+(ert-deftest test-companion-entity-set-relationship-is-one-undo-step ()
+  (test-companion-entity--with-project root
+    (let ((before (test-companion-entity--design root)))
+      (test-companion-entity--run root "set-relationship" :source test-companion-entity--sam
+                                  :target test-companion-entity--dana :type "rival")
+      (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+        (undo-boundary) (undo-start) (undo-more 1) (undo-more 1))
+      (should (equal before (test-companion-entity--design root))))))
+
+(ert-deftest test-companion-entity-old-format-is-not-lost-by-a-new-entry ()
+  "An entry in the older (TYPE,STRENGTH,VALENCE) shape survives an add."
+  (test-companion-entity--with-project root
+    (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+      (org-with-wide-buffer
+       (goto-char (org-find-property "ID" test-companion-entity--sam))
+       (org-entry-put nil "RelationshipsData"
+                      "[[id:char-alex-rivera-001][Alex Rivera]](neighbour,7,positive)")))
+    (test-companion-entity--run root "set-relationship" :source test-companion-entity--sam
+                                :target test-companion-entity--dana :type "client")
+    (should (equal (list (cons test-companion-entity--alex "neighbour")
+                         (cons test-companion-entity--dana "client"))
+                   (test-companion-entity--rels root test-companion-entity--sam)))))
+
 (provide 'test-companion-entity)
 ;;; test-companion-entity.el ends here

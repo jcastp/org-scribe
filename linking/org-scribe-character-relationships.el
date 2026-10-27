@@ -48,18 +48,27 @@
 
 (defun org-scribe--parse-single-relationship (rel-string)
   "Parse a single relationship string into components.
-REL-STRING should be in format: [[id:...][Name]]|TYPE
+REL-STRING should be in format: [[id:...][Name]]|TYPE, or the older
+[[id:...][Name]](TYPE,STRENGTH,VALENCE), of which only TYPE is read.
 Returns (ID NAME TYPE) or nil if parsing fails.
 
 An empty TYPE parses as \"\": older versions accepted an empty answer
 and stored such entries, and dropping them here made them invisible and
 deleted them on the character's next add or remove."
-  (when (and rel-string (string-match
-                         "\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]|\\(.*\\)"
-                         rel-string))
-    (list (match-string 1 rel-string)     ; ID
-          (match-string 2 rel-string)     ; Name
-          (string-trim (match-string 3 rel-string)))))  ; Type
+  (when (and rel-string
+             (string-match "\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]" rel-string))
+    (let ((id (match-string 1 rel-string))
+          (name (match-string 2 rel-string))
+          (rest (substring rel-string (match-end 0))))
+      (cond
+       ((string-prefix-p "|" rest)
+        (list id name (string-trim (substring rest 1))))
+       ;; The older shape, \"(TYPE,STRENGTH,VALENCE)\": only the type is
+       ;; kept.  Writing always uses the \"|TYPE\" form, so an entry read this
+       ;; way is converted the next time its character's relationships are
+       ;; written, instead of being dropped.
+       ((string-match "\\`(\\([^,)]*\\),[^)]*)" rest)
+        (list id name (string-trim (match-string 1 rest))))))))
 
 (defun org-scribe--parse-relationships (rel-property-value)
   "Parse relationship property value into list of relationships.

@@ -48,6 +48,7 @@
     ("create-chapter" . org-scribe-companion-commands--create-chapter)
     ("set-entity-property" . org-scribe-companion-entity--set-property)
     ("set-entity-section" . org-scribe-companion-entity--set-section)
+    ("set-relationship" . org-scribe-companion-entity--set-relationship)
     ("capture-entity" . org-scribe-companion-entity--capture))
   "Alist of (OP-NAME . FUNCTION).  FUNCTION takes ROOT and the args plist.")
 
