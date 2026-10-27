@@ -20,6 +20,7 @@ const state = {
   filters: loadFilters(),
   view: VIEWS[0].id,
   focusId: null,
+  pendingFocus: null,
 };
 
 // ---- strings -------------------------------------------------------------
@@ -63,6 +64,35 @@ async function command(op, args = {}) {
 }
 
 const goto = (id) => command('goto', { id });
+
+/**
+ * Run an editing command.  Success: the new snapshot arrives with the
+ * answer's revision (the 'changed' event also comes); FOCUS names the card to
+ * focus afterwards, or the new scene when FOCUS_NEW.  Failure: the notice is
+ * shown and the board is drawn again from the last snapshot (the rollback).
+ */
+async function edit(op, args, focus = null, focusNew = false) {
+  let answer;
+  try {
+    answer = await command(op, args);
+  } catch (error) {
+    answer = { ok: false };
+    showNotice(t('companion-ui-connection-lost'));
+  }
+  if (answer.ok) state.pendingFocus = focusNew ? answer.id : focus;
+  await refresh().catch(() => {});
+  if (!answer.ok) renderView();
+  return answer.ok;
+}
+
+// A re-render would throw away a half-typed edit: hold it until the edit ends.
+let editing = false;
+let refreshWaiting = false;
+function editStarted() { editing = true; }
+function editEnded() {
+  editing = false;
+  if (refreshWaiting) { refreshWaiting = false; refresh().catch(() => {}); }
+}
 
 // ---- rendering -----------------------------------------------------------
 
@@ -147,8 +177,19 @@ function renderView() {
     focusId: state.focusId,
     t,
     goto,
+    edit,
+    notice: showNotice,
+    rerender: renderView,
+    editStarted,
+    editEnded,
   });
   window.scrollTo(0, scroll);
+  if (state.pendingFocus) {
+    const id = state.pendingFocus;
+    state.pendingFocus = null;
+    const target = [...document.querySelectorAll('.card')].find((node) => node.dataset.id === id);
+    if (target) target.focus();
+  }
 }
 
 function renderHeader() {
@@ -173,6 +214,7 @@ function renderAll() {
 // ---- loading and events --------------------------------------------------
 
 async function refresh() {
+  if (editing) { refreshWaiting = true; return; }
   state.snapshot = await request('/api/project');
   renderAll();
 }

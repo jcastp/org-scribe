@@ -80,3 +80,13 @@ main { padding: 0 1.2rem 3rem; }
 .badge { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); padding: 0.05rem 0.45rem; border-radius: 999px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
 
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+/* editing */
+.card.movable { cursor: grab; }
+.card.drag-ghost, .drag-ghost { opacity: 0.35; }
+.editable { cursor: text; }
+.editable:hover { text-decoration: underline dotted; }
+.card-edit { width: 100%; box-sizing: border-box; font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--accent); border-radius: 4px; padding: 0.25rem 0.4rem; }
+.state-select { align-self: flex-start; font-size: 0.75rem; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: inherit; border-left: 4px solid var(--todo); padding: 0.1rem 0.4rem; max-width: 100%; }
+.add-scene { margin-left: auto; border: 1px dashed var(--line); background: transparent; color: inherit; border-radius: 6px; width: 1.8rem; height: 1.8rem; cursor: pointer; }
+.add-scene:hover { border-color: var(--accent); }

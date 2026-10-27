@@ -1,5 +1,9 @@
 // Corkboard: acts as sections, chapters as rows, scenes as cards.
-// Read-only in this phase.  All text is put in with textContent.
+// Cards drag between chapters (SortableJS, loaded as window.Sortable), titles
+// and summaries edit in place, the state is a dropdown.  Every change is a
+// command to Emacs, which answers with a new snapshot; a refused command
+// re-renders from the last snapshot, which is the rollback.
+// All text is put in with textContent.
 
 import { matches, isActive } from '../filters.js';
 
@@ -46,6 +50,83 @@ function todoChip(heading, ctx) {
   return chip;
 }
 
+/** Replace NODE's text with an editor; COMMIT gets the new value if it changed. */
+function startEdit(node, initial, multiline, commit, ctx) {
+  const editor = el(multiline ? 'textarea' : 'input', 'card-edit');
+  if (multiline) editor.rows = 4;
+  else editor.type = 'text';
+  editor.value = initial;
+  const parent = node.parentNode;
+  let finished = false;
+  const finish = (save) => {
+    if (finished) return;
+    finished = true;
+    editor.replaceWith(node);
+    ctx.editEnded();
+    if (save && editor.value !== initial) commit(editor.value);
+  };
+  editor.addEventListener('keydown', (event) => {
+    event.stopPropagation();
+    if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); finish(true); }
+    if (event.key === 'Escape') { event.preventDefault(); finish(false); }
+  });
+  editor.addEventListener('blur', () => finish(true));
+  ctx.editStarted();
+  parent.replaceChild(editor, node);
+  editor.focus();
+  editor.select();
+}
+
+function stateSelect(scene, ctx) {
+  const select = el('select', 'state-select');
+  select.setAttribute('aria-label', ctx.t('companion-ui-scene-state'));
+  const none = el('option', '', ctx.t('companion-ui-no-todo'));
+  none.value = '';
+  select.append(none);
+  for (const keyword of ctx.snapshot.todo.keywords) {
+    const option = el('option', '', keyword);
+    option.value = keyword;
+    select.append(option);
+  }
+  select.value = scene.todo === null ? '' : scene.todo;
+  select.disabled = !scene.id || scene.readOnly;
+  select.addEventListener('click', (event) => event.stopPropagation());
+  select.addEventListener('dblclick', (event) => event.stopPropagation());
+  select.addEventListener('change', () => {
+    ctx.edit('set-todo', { id: scene.id, state: select.value });
+  });
+  return select;
+}
+
+function editable(scene) {
+  return Boolean(scene.id) && !scene.readOnly;
+}
+
+/** The ID of the card before NODE in its row, '' when it has none (to be first). */
+function previousId(node) {
+  const before = node.previousElementSibling;
+  return before ? before.dataset.id || null : '';
+}
+
+function moveTo(ctx, id, chapterId, after) {
+  if (after === null) {
+    ctx.notice(ctx.t('companion-ui-cannot-place'));
+    ctx.rerender();
+    return;
+  }
+  ctx.edit('move-node', { id, parent: chapterId, after: after || null }, id);
+}
+
+function keyboardMove(event, node, ctx) {
+  const down = event.key === 'ArrowDown';
+  const sibling = down ? node.nextElementSibling : node.previousElementSibling;
+  if (!sibling) return;
+  const anchor = down ? sibling : sibling.previousElementSibling;
+  const chapter = node.closest('.chapter');
+  const after = anchor ? anchor.dataset.id || null : '';
+  moveTo(ctx, node.dataset.id, chapter.dataset.id, after);
+}
+
 function card(scene, ctx) {
   const node = el('article', 'card');
   node.tabIndex = 0;
@@ -55,10 +136,19 @@ function card(scene, ctx) {
   if (scene.todo !== null && ctx.snapshot.todo.done.includes(scene.todo)) node.classList.add('done');
   if (isActive(ctx.filters) && !matches(scene, ctx.filters)) node.classList.add('dimmed');
   if (scene.readOnly) node.classList.add('readonly');
+  if (editable(scene)) node.classList.add('movable');
   if (scene.id === ctx.focusId) node.classList.add('focus');
 
   const head = el('header', 'card-head');
-  head.append(el('h4', 'card-title', scene.title || ctx.t('companion-ui-untitled')));
+  const title = el('h4', 'card-title', scene.title || ctx.t('companion-ui-untitled'));
+  head.append(title);
+  const editTitle = () => startEdit(title, scene.title || '', false,
+    (value) => { if (value.trim()) ctx.edit('set-title', { id: scene.id, title: value }, scene.id); }, ctx);
+  if (editable(scene)) {
+    title.classList.add('editable');
+    title.title = ctx.t('companion-ui-edit-title');
+    title.addEventListener('click', (event) => { event.stopPropagation(); editTitle(); });
+  }
   if (scene.id) {
     const open = el('button', 'open', '↗');
     open.type = 'button';
@@ -73,10 +163,22 @@ function card(scene, ctx) {
   }
   node.append(head);
 
+  node.append(stateSelect(scene, ctx));
+
   const summary = scene.fields.summary;
-  node.append(summary
+  const summaryNode = summary
     ? el('p', 'summary', summary.raw)
-    : el('p', 'summary empty', ctx.t('companion-ui-no-summary')));
+    : el('p', 'summary empty', ctx.t('companion-ui-no-summary'));
+  if (editable(scene)) {
+    summaryNode.classList.add('editable');
+    summaryNode.title = ctx.t('companion-ui-edit-summary');
+    summaryNode.addEventListener('click', (event) => {
+      event.stopPropagation();
+      startEdit(summaryNode, summary ? summary.raw : '', true,
+        (value) => ctx.edit('set-field', { id: scene.id, key: 'summary', value }, scene.id), ctx);
+    });
+  }
+  node.append(summaryNode);
 
   const meta = el('div', 'meta');
   const pov = linkNames(scene, 'pov');
@@ -93,9 +195,31 @@ function card(scene, ctx) {
 
   node.addEventListener('dblclick', () => { if (scene.id) ctx.goto(scene.id); });
   node.addEventListener('keydown', (event) => {
+    if (event.target !== node) return;
     if (event.key === 'Enter' && scene.id) ctx.goto(scene.id);
+    if (event.key === 'F2' && editable(scene)) editTitle();
+    if (event.altKey && editable(scene) && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+      event.preventDefault();
+      keyboardMove(event, node, ctx);
+    }
   });
   return node;
+}
+
+function makeSortable(cards, ctx) {
+  window.Sortable.create(cards, {
+    group: 'scenes',
+    draggable: '.card.movable',
+    filter: 'input, textarea, select, button',
+    preventOnFilter: false,
+    animation: 150,
+    ghostClass: 'drag-ghost',
+    onEnd(event) {
+      if (event.from === event.to && event.oldIndex === event.newIndex) return;
+      const chapter = event.to.closest('.chapter');
+      moveTo(ctx, event.item.dataset.id, chapter.dataset.id, previousId(event.item));
+    },
+  });
 }
 
 function chapterRow(chapter, ctx) {
@@ -106,10 +230,23 @@ function chapterRow(chapter, ctx) {
   const chip = todoChip(chapter, ctx);
   if (chip) head.append(chip);
   head.append(progress(sumWords(chapter.scenes), chapter.objective, ctx));
+  if (chapter.id && !chapter.readOnly) {
+    const add = el('button', 'add-scene', '+');
+    add.type = 'button';
+    const label = ctx.t('companion-ui-new-scene');
+    add.title = label;
+    add.setAttribute('aria-label', label);
+    add.addEventListener('click', () => {
+      const last = [...chapter.scenes].reverse().find((scene) => scene.id);
+      ctx.edit('create-scene', { parent: chapter.id, after: last ? last.id : null }, null, true);
+    });
+    head.append(add);
+  }
   row.append(head);
   const cards = el('div', 'cards');
   for (const scene of chapter.scenes) cards.append(card(scene, ctx));
   row.append(cards);
+  if (chapter.id && !chapter.readOnly && window.Sortable) makeSortable(cards, ctx);
   return row;
 }
 

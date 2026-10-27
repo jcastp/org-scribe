@@ -807,12 +807,16 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
           (org-edit-headline scene-name)))
     (org-scribe--insert-scene-template scene-name)))
 
-(defun org-scribe--insert-scene-template (scene-name)
-  "Insert the scene template named SCENE-NAME; see `org-scribe-insert-scene'."
+(defun org-scribe--scene-template (scene-name)
+  "Return the text of a new scene named SCENE-NAME: heading and property drawer.
+The heading is a TODO at the project's scene level, tagged as the project
+type does, and the drawer holds the empty scene properties in the
+project's language.  Shared by `org-scribe-insert-scene' and the visual
+companion's `create-scene', which inserts it at an exact place."
   (let* ((levels (org-scribe-project-levels))
          (stars (make-string (plist-get levels :scene) ?*))
-         (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag)))
-         (template (format "%s TODO %s%s
+         (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag))))
+    (format "%s TODO %s%s
 :PROPERTIES:
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 500
@@ -820,7 +824,12 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 :END:
 
 {{{scene-break}}}
-" stars scene-name tag (org-scribe--scene-property-drawer-lines)))
+" stars scene-name tag (org-scribe--scene-property-drawer-lines))))
+
+(defun org-scribe--insert-scene-template (scene-name)
+  "Insert the scene template named SCENE-NAME; see `org-scribe-insert-scene'."
+  (let* ((levels (org-scribe-project-levels))
+         (template (org-scribe--scene-template scene-name))
          (start-pos (org-scribe--goto-insertion-point
                      (plist-get levels :scene))))
 

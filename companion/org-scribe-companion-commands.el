@@ -4,13 +4,19 @@
 
 ;;; Commentary:
 
-;; The operations the browser can ask for through POST /api/command.
-;; Phase 3 has `goto' (show a heading in Emacs) and `save'.  The editing
-;; operations arrive in the phases that need them; any other name is
-;; `unsupported'.
+;; The operations the browser can ask for through POST /api/command:
+;;   goto, save                         show a heading / save the buffers
+;;   move-node, set-title, set-todo,
+;;   set-field, create-scene            edit the manuscript
+;; Any other name is `unsupported'.  (Entity edits arrive in a later phase.)
 ;;
 ;; Headings are found by ID, only in the project's manuscript and design
-;; files, never by position.
+;; files, never by position.  Every editing command
+;;   - validates before it touches the buffer;
+;;   - runs in the wide buffer (a narrowing in the user's window does not
+;;     hide the target) and as one undo step, undone whole if it fails;
+;;   - refuses `noexport' apparatus and anything outside the manuscript;
+;;   - saves nothing, unless `org-scribe-companion-auto-save' is on.
 ;;
 ;; A command's answer is a plist: (:ok t :revision REV ...) or
 ;; (:ok :false :error (:code CODE :message TEXT)), ready for `json-serialize'.
@@ -24,11 +30,27 @@
 (require 'org-scribe-companion-model)
 
 (defvar org-scribe-companion-raise-frame)
+(defvar org-scribe-companion-auto-save)
+(defvar org-todo-log-states)
+(declare-function org-scribe--scene-template "org-scribe-project")
 
 (defconst org-scribe-companion-commands--operations
   '(("goto" . org-scribe-companion-commands--goto)
-    ("save" . org-scribe-companion-commands--save))
+    ("save" . org-scribe-companion-commands--save)
+    ("move-node" . org-scribe-companion-commands--move-node)
+    ("set-title" . org-scribe-companion-commands--set-title)
+    ("set-todo" . org-scribe-companion-commands--set-todo)
+    ("set-field" . org-scribe-companion-commands--set-field)
+    ("create-scene" . org-scribe-companion-commands--create-scene))
   "Alist of (OP-NAME . FUNCTION).  FUNCTION takes ROOT and the args plist.")
+
+(define-error 'org-scribe-companion-command-error
+  "Companion command refused" 'user-error)
+
+(defun org-scribe-companion-commands--fail (code key &rest args)
+  "Refuse the command with error CODE and the message KEY formatted with ARGS."
+  (signal 'org-scribe-companion-command-error
+          (list code (apply #'org-scribe-msg key args))))
 
 (defun org-scribe-companion-commands-error (code message)
   "Return the failure answer with error CODE (a string) and MESSAGE."
@@ -96,14 +118,328 @@ reveals it, and raises the frame when `org-scribe-companion-raise-frame'."
       (when (buffer-modified-p) (save-buffer))))
   (org-scribe-companion-commands--ok root))
 
+;;; Editing machinery
+
+(defmacro org-scribe-companion-commands--in-wide (buffer &rest body)
+  "Run BODY in BUFFER, ignoring any narrowing."
+  (declare (indent 1))
+  `(with-current-buffer ,buffer (org-with-wide-buffer ,@body)))
+
+(defmacro org-scribe-companion-commands--at (marker &rest body)
+  "Run BODY with point at MARKER, in its buffer, ignoring any narrowing."
+  (declare (indent 1))
+  `(org-scribe-companion-commands--in-wide (marker-buffer ,marker)
+     (goto-char ,marker)
+     ,@body))
+
+(defun org-scribe-companion-commands--manuscript-buffer (root)
+  "Return the buffer visiting the manuscript of the project at ROOT."
+  (let* ((default-directory root)
+         (file (plist-get (org-scribe-project-structure) :manuscript-file)))
+    (if (and file (file-exists-p file))
+        (find-file-noselect file)
+      (org-scribe-companion-commands--fail "not-found" 'companion-error-no-manuscript))))
+
+(defmacro org-scribe-companion-commands--with-edit (buffer &rest body)
+  "Run BODY in BUFFER, widened, as one undo step that is undone if BODY fails."
+  (declare (indent 1))
+  `(let ((handle (prepare-change-group ,buffer))
+         (undo-outer-limit nil)
+         (undo-limit most-positive-fixnum)
+         (undo-strong-limit most-positive-fixnum)
+         (success nil))
+     (unwind-protect
+         (with-current-buffer ,buffer
+           (activate-change-group handle)
+           (prog1 (org-with-wide-buffer ,@body)
+             (setq success t)))
+       (if success
+           (progn (accept-change-group handle)
+                  (undo-amalgamate-change-group handle))
+         (cancel-change-group handle)))))
+
+(defun org-scribe-companion-commands--arg (args key)
+  "Return the value of KEY in the plist ARGS, or nil."
+  (and (listp args) (plist-get args key)))
+
+(defun org-scribe-companion-commands--require-id (args key)
+  "Return the ID string under KEY in ARGS, or refuse as invalid."
+  (or (org-scribe-companion-commands--arg-string args key)
+      (org-scribe-companion-commands--fail
+       "invalid" 'companion-error-missing-arg (substring (symbol-name key) 1))))
+
+(defun org-scribe-companion-commands--heading (root buffer id)
+  "Return a marker at the editable heading ID in BUFFER, the manuscript of ROOT.
+Refuses with `not-found' when the project has no such heading, and with
+`read-only' when it is in the design notebook or is `noexport' apparatus."
+  (let ((marker (org-scribe-companion-commands--in-wide buffer
+                  (when-let* ((pos (org-find-property "ID" id)))
+                    (copy-marker pos)))))
+    (cond
+     (marker
+      (when (org-scribe-companion-commands--at marker (member "noexport" (org-get-tags)))
+        (set-marker marker nil)
+        (org-scribe-companion-commands--fail "read-only" 'companion-error-read-only id))
+      marker)
+     ((org-scribe-companion-commands--find root id)
+      (org-scribe-companion-commands--fail "read-only" 'companion-error-read-only id))
+     (t (org-scribe-companion-commands--fail "not-found" 'companion-error-not-found id)))))
+
+(defun org-scribe-companion-commands--level (marker)
+  "Return the outline level of the heading at MARKER."
+  (org-scribe-companion-commands--at marker (org-current-level)))
+
+(defun org-scribe-companion-commands--finish (root)
+  "Return the success answer for ROOT, saving first when `auto-save' is on."
+  (when org-scribe-companion-auto-save
+    (org-scribe-companion-commands--save root nil))
+  (org-scribe-companion-commands--ok root))
+
+(defun org-scribe-companion-commands--clean-line (value)
+  "Return VALUE, a string, as one trimmed line, or nil when it is not a string.
+Runs of whitespace, newlines included, become single spaces: a property
+or a heading holds one line."
+  (and (stringp value)
+       (string-trim (replace-regexp-in-string "[ \t\n\r]+" " " value))))
+
+;;; Where a heading goes
+
+(defun org-scribe-companion-commands--first-act-position ()
+  "Return the position before the first act (non-`noexport' level-1 heading).
+The end of the buffer when there is none.  Point moves."
+  (goto-char (point-min))
+  (catch 'found
+    (while (re-search-forward "^\\* " nil t)
+      (unless (member "noexport" (org-get-tags))
+        (throw 'found (line-beginning-position))))
+    (point-max)))
+
+(defun org-scribe-companion-commands--insertion-point (parent after)
+  "Return the position (a line start) where a new child of PARENT goes.
+PARENT and AFTER are markers or nil.  After AFTER's subtree when given;
+else first among PARENT's children (before the first child, or at the
+end of PARENT's subtree when it has none); with no PARENT either, before
+the first act."
+  (save-excursion
+    (cond
+     (after (goto-char after) (org-end-of-subtree t t) (point))
+     (parent (goto-char parent) (outline-next-heading) (point))
+     (t (org-scribe-companion-commands--first-act-position)))))
+
+(defun org-scribe-companion-commands--check-after (parent after level)
+  "Refuse with `conflict' unless AFTER is a child of PARENT at LEVEL.
+PARENT is a marker, or nil for the acts.  The usual cause is a view that
+went out of date while the browser was open."
+  (unless (org-scribe-companion-commands--at after
+            (and (= (org-current-level) level)
+                 (if parent
+                     (save-excursion (and (org-up-heading-safe)
+                                          (= (point) (marker-position parent))))
+                   t)))
+    (org-scribe-companion-commands--fail "conflict" 'companion-error-conflict-after)))
+
+(defun org-scribe-companion-commands--insert-at (position text)
+  "Insert TEXT, whole lines, at POSITION (a line start), keeping lines apart."
+  (goto-char position)
+  (when (and (eobp) (not (bolp))) (insert "\n"))
+  (insert text)
+  (unless (bolp) (insert "\n")))
+
+;;; move-node
+
+(defun org-scribe-companion-commands--move-node (root args)
+  "Move a heading and its subtree.  ARGS: `:id', `:parent', `:after'.
+A scene goes under a chapter, a chapter under an act, an act to the top
+level (no `:parent').  `:after' is the ID of the sibling it follows, or
+nil for first.  The subtree moves as it is: drawer, ID, tags, body."
+  (let* ((buffer (org-scribe-companion-commands--manuscript-buffer root))
+         (id (org-scribe-companion-commands--require-id args :id))
+         (parent-id (org-scribe-companion-commands--arg-string args :parent))
+         (after-id (org-scribe-companion-commands--arg-string args :after))
+         (node (org-scribe-companion-commands--heading root buffer id))
+         (parent (and parent-id (org-scribe-companion-commands--heading root buffer parent-id)))
+         (after (and after-id (org-scribe-companion-commands--arg-heading root buffer after-id))))
+    (unwind-protect
+        (let ((level (org-scribe-companion-commands--level node)))
+          (unless (memq level (list 1 (org-scribe-chapter-level) (org-scribe-scene-level)))
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-move
+                                                 (org-scribe-companion-commands--at node (org-get-heading t t t t))))
+          (unless (if parent
+                      (= (org-scribe-companion-commands--level parent) (1- level))
+                    (= level 1))
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-move
+                                                 (org-scribe-companion-commands--at node (org-get-heading t t t t))))
+          (when (equal after-id id)
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-move
+                                                 (org-scribe-companion-commands--at node (org-get-heading t t t t))))
+          (when after
+            (org-scribe-companion-commands--check-after parent after level))
+          (org-scribe-companion-commands--with-edit buffer
+            (let* ((beg (org-scribe-companion-commands--at node (org-back-to-heading t) (point)))
+                   (end (org-scribe-companion-commands--at node (org-end-of-subtree t t) (point)))
+                   (target (org-scribe-companion-commands--insertion-point parent after)))
+              (unless (or (= target beg) (= target end))
+                (let ((text (buffer-substring beg end))
+                      (spot (copy-marker target)))
+                  (delete-region beg end)
+                  (org-scribe-companion-commands--insert-at spot text)
+                  (set-marker spot nil)))))
+          (org-scribe-companion-commands--finish root))
+      (dolist (marker (list node parent after)) (when marker (set-marker marker nil))))))
+
+(defun org-scribe-companion-commands--arg-heading (root buffer id)
+  "Like `--heading', but an AFTER heading that is gone is a `conflict'."
+  (condition-case err
+      (org-scribe-companion-commands--heading root buffer id)
+    (org-scribe-companion-command-error
+     (if (equal (nth 1 err) "not-found")
+         (org-scribe-companion-commands--fail "conflict" 'companion-error-conflict-after)
+       (signal (car err) (cdr err))))))
+
+;;; set-title, set-todo, set-field
+
+(defun org-scribe-companion-commands--set-title (root args)
+  "Replace a heading's text.  ARGS: `:id', `:title'.
+TODO state, priority and tags stay."
+  (let* ((buffer (org-scribe-companion-commands--manuscript-buffer root))
+         (id (org-scribe-companion-commands--require-id args :id))
+         (raw (org-scribe-companion-commands--arg args :title))
+         (title (org-scribe-companion-commands--clean-line raw))
+         (node (org-scribe-companion-commands--heading root buffer id)))
+    (unwind-protect
+        (progn
+          (when (or (null title) (string-empty-p title)
+                    (string-match-p "\\`\\*" title))
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-title))
+          (org-scribe-companion-commands--with-edit buffer
+            (org-scribe-companion-commands--at node
+              (unless (equal title (org-get-heading t t t t))
+                (org-edit-headline title))))
+          (org-scribe-companion-commands--finish root))
+      (set-marker node nil))))
+
+(defun org-scribe-companion-commands--quiet-log-states (states)
+  "Return STATES, `org-todo-log-states', with note prompts made plain timestamps.
+A browser change must not open a note buffer in the writer's Emacs; the
+timestamp of a `!' state is kept."
+  (mapcar (lambda (entry)
+            (list (car entry)
+                  (if (eq (nth 1 entry) 'note) 'time (nth 1 entry))
+                  (if (eq (nth 2 entry) 'note) 'time (nth 2 entry))))
+          states))
+
+(defun org-scribe-companion-commands--set-todo (root args)
+  "Set a heading's TODO state.  ARGS: `:id', `:state' (a keyword, or \"\" for none).
+Goes through `org-todo', so CLOSED stamps and the file's logging settings
+apply, except that a state asking for a note logs a timestamp instead."
+  (let* ((buffer (org-scribe-companion-commands--manuscript-buffer root))
+         (id (org-scribe-companion-commands--require-id args :id))
+         (state (org-scribe-companion-commands--arg args :state))
+         (node (org-scribe-companion-commands--heading root buffer id)))
+    (unwind-protect
+        (progn
+          (unless (stringp state)
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-missing-arg "state"))
+          (unless (or (string-empty-p state)
+                      (with-current-buffer buffer (member state org-todo-keywords-1)))
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-state state))
+          (org-scribe-companion-commands--with-edit buffer
+            (org-scribe-companion-commands--at node
+              (unless (equal (or (org-get-todo-state) "") state)
+                (condition-case err
+                    (let ((org-todo-log-states
+                           (org-scribe-companion-commands--quiet-log-states org-todo-log-states)))
+                      (org-todo (if (string-empty-p state) 'none state)))
+                  (user-error
+                   (org-scribe-companion-commands--fail
+                    "invalid" 'companion-error-todo-refused (error-message-string err)))))))
+          (org-scribe-companion-commands--finish root))
+      (set-marker node nil))))
+
+(defun org-scribe-companion-commands--set-field (root args)
+  "Set a scene property.  ARGS: `:id' (a scene), `:key' (canonical), `:value'.
+Text fields only; the value is flattened to one line.  The property name
+written is the one already on the heading, else the project language's."
+  (let* ((buffer (org-scribe-companion-commands--manuscript-buffer root))
+         (id (org-scribe-companion-commands--require-id args :id))
+         (key-name (org-scribe-companion-commands--arg-string args :key))
+         (value (org-scribe-companion-commands--clean-line
+                 (org-scribe-companion-commands--arg args :value)))
+         (node (org-scribe-companion-commands--heading root buffer id)))
+    (unwind-protect
+        (let* ((default-directory root)
+               (spec (and key-name
+                          (assq (intern-soft key-name)
+                                (org-scribe-companion--field-specs)))))
+          (unless value
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-missing-arg "value"))
+          (unless spec
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-key
+                                                 (or key-name "")))
+          (unless (eq (nth 1 spec) 'text)
+            (org-scribe-companion-commands--fail "unsupported" 'companion-error-invalid-key
+                                                 key-name))
+          (unless (= (org-scribe-companion-commands--level node) (org-scribe-scene-level))
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-not-a-scene id))
+          (org-scribe-companion-commands--with-edit buffer
+            (org-scribe-companion-commands--at node
+              (unless (equal value (org-scribe-scene-property-get (car spec)))
+                (org-scribe-scene-property-set (car spec) value))))
+          (org-scribe-companion-commands--finish root))
+      (set-marker node nil))))
+
+;;; create-scene
+
+(defun org-scribe-companion-commands--create-scene (root args)
+  "Add a scene to a chapter.  ARGS: `:parent' (chapter ID), `:after', `:title'.
+The text is the one `org-scribe-insert-scene' inserts.  The answer carries
+the new scene's `:id'."
+  (require 'org-scribe-project)
+  (let* ((buffer (org-scribe-companion-commands--manuscript-buffer root))
+         (parent-id (org-scribe-companion-commands--require-id args :parent))
+         (after-id (org-scribe-companion-commands--arg-string args :after))
+         (raw-title (org-scribe-companion-commands--arg args :title))
+         (title (if (stringp raw-title)
+                    (org-scribe-companion-commands--clean-line raw-title)
+                  ""))
+         (parent (org-scribe-companion-commands--heading root buffer parent-id))
+         (after (and after-id (org-scribe-companion-commands--arg-heading root buffer after-id)))
+         new-id)
+    (unwind-protect
+        (progn
+          (unless (eql (org-scribe-companion-commands--level parent)
+                       (org-scribe-chapter-level))
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-not-a-chapter))
+          (when after
+            (org-scribe-companion-commands--check-after
+             parent after (org-scribe-scene-level)))
+          (when (string-empty-p title) (setq title (org-scribe-msg 'default-scene-name)))
+          (org-scribe-companion-commands--with-edit buffer
+            (let* ((default-directory root)
+                   (position (org-scribe-companion-commands--insertion-point parent after))
+                   (spot (copy-marker position)))
+              (org-scribe-companion-commands--insert-at
+               spot (org-scribe--scene-template title))
+              (goto-char spot)
+              (setq new-id (org-id-get-create))
+              (set-marker spot nil)))
+          (append (org-scribe-companion-commands--finish root) (list :id new-id)))
+      (dolist (marker (list parent after)) (when marker (set-marker marker nil))))))
+
 (defun org-scribe-companion-commands-run (op args root)
   "Run the operation OP (a string) with the plist ARGS for the project at ROOT.
 Returns the answer plist described in the Commentary."
-  (let ((function (cdr (assoc op org-scribe-companion-commands--operations))))
-    (if function
-        (funcall function root args)
-      (org-scribe-companion-commands-error
-       "unsupported" (org-scribe-msg 'companion-error-unsupported-op (format "%s" op))))))
+  (let ((function (cdr (assoc op org-scribe-companion-commands--operations)))
+        (root (file-name-as-directory (expand-file-name root))))
+    (if (null function)
+        (org-scribe-companion-commands-error
+         "unsupported" (org-scribe-msg 'companion-error-unsupported-op (format "%s" op)))
+      (condition-case err
+          (funcall function root args)
+        (org-scribe-companion-command-error
+         (org-scribe-companion-commands-error (nth 1 err) (nth 2 err)))
+        (error (org-scribe-companion-commands-error
+                "invalid" (error-message-string err)))))))
 
 (provide 'org-scribe-companion-commands)
 
