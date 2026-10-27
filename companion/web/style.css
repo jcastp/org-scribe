@@ -64,6 +64,8 @@ main { padding: 0 1.2rem 3rem; }
 .todo-chip.done { opacity: 0.6; }
 
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.8rem; margin-top: 0.6rem; }
+.cards { min-height: 3rem; }
+.cards:empty { border: 1px dashed var(--line); border-radius: 8px; }
 .card { --todo: var(--todo-default); background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--todo); border-radius: 8px; padding: 0.6rem 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
 .card.done { opacity: 0.78; }
 .card.dimmed { opacity: 0.22; }

@@ -536,8 +536,11 @@ the new scene's `:id'."
 (defun org-scribe-companion-commands-run (op args root)
   "Run the operation OP (a string) with the plist ARGS for the project at ROOT.
 Returns the answer plist described in the Commentary."
-  (let ((function (cdr (assoc op org-scribe-companion-commands--operations)))
-        (root (file-name-as-directory (expand-file-name root))))
+  (let* ((function (cdr (assoc op org-scribe-companion-commands--operations)))
+         (root (file-name-as-directory (expand-file-name root)))
+         ;; error notices are in the project's language, as the page is
+         (org-scribe-message-language (let ((default-directory root))
+                                        (org-scribe-project-language))))
     (if (null function)
         (org-scribe-companion-commands-error
          "unsupported" (org-scribe-msg 'companion-error-unsupported-op (format "%s" op)))

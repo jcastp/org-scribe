@@ -658,6 +658,17 @@
                     root "move-node" :id test-companion-commands--scene-1
                     :parent parent :after nil))))))))
 
+(ert-deftest test-companion-commands-notices-follow-the-project-language ()
+  (test-companion-commands--with-project root
+    (let ((marker (expand-file-name ".org-scribe-project" root)))
+      (with-temp-file marker
+        (insert "# Writing project: Prueba\n# Type: novel\n# Language: es\n"))
+      (org-scribe-project-type-cache-clear)
+      (let ((org-scribe-message-language 'en)
+            (answer (test-companion-commands--run root "no-such-op")))
+        (should (equal (format (org-scribe-lang-message 'companion-error-unsupported-op 'es) "no-such-op")
+                       (plist-get (plist-get answer :error) :message)))))))
+
 ;;; set-field
 
 (ert-deftest test-companion-commands-set-field-changes-only-that-line ()

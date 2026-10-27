@@ -111,8 +111,10 @@ function rowHeader(entity, group, ctx, info) {
 function groupRows(group, scenes, ctx, columns) {
   const { storyline } = ctx.snapshot;
   const all = (ctx.snapshot.entities[group.kind] || []).filter((entity) => entity.id);
-  const shown = all.filter((entity) => showHidden || !entity.hidden).sort(byWeight);
-  const left = all.filter((entity) => !showHidden && entity.hidden).sort(byWeight);
+  // the plot points keep the method's order; weights and names would give 1, 10, 11…
+  const order = group.kind === 'plot-point' ? (list) => list : (list) => list.sort(byWeight);
+  const shown = order(all.filter((entity) => showHidden || !entity.hidden));
+  const left = order(all.filter((entity) => !showHidden && entity.hidden));
   const orphans = new Set(storyline.orphans[group.kind] || []);
   const rows = [];
 

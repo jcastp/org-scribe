@@ -163,6 +163,7 @@ Each is (:id :name :detail): DETAIL is whatever follows the link, as written."
   "Return a plist of property name to the vector of values its template offers.
 Read from the capture prompts (\"Label|first|second\"), in the project's
 language, so the form offers what the templates do."
+  (let ((org-scribe-message-language (org-scribe-project-language)))
   (cl-flet ((options (key)
               (let ((parts (split-string (org-scribe-msg key) "|")))
                 (vconcat (cdr parts)))))
@@ -173,7 +174,7 @@ language, so the form offers what the templates do."
       ("plot" (append (list :THREAD-TYPE (options 'capture-pt-type-prompt))
                       (when (org-scribe-msg 'capture-pt-status-prompt)
                         (list :STATUS (options 'capture-pt-status-prompt)))))
-      (_ nil))))
+      (_ nil)))))
 
 (defun org-scribe-companion-entity--appears-in (root id)
   "Return the scenes of ROOT that link to the entity ID, as a vector."
@@ -189,6 +190,8 @@ language, so the form offers what the templates do."
   "Return the form data of entity ID in ROOT, or a failure answer."
   (let* ((root (file-name-as-directory (expand-file-name root)))
          (default-directory root)
+         ;; messages and choices follow the project, not the user's UI language
+         (org-scribe-message-language (org-scribe-project-language))
          (found (and (stringp id) (org-scribe-companion-entity--find root id)))
          (marker (and found (org-scribe-companion-entity--marker root id))))
     (if (not marker)

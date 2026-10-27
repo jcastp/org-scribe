@@ -82,10 +82,24 @@ function previousId(node) {
   return before ? before.dataset.id || null : '';
 }
 
+/** At a chapter's edge, Alt+Up/Down moves the scene to the neighbouring chapter:
+ * the end of the one before, the start of the one after. */
+function moveToNeighbourChapter(node, down, ctx) {
+  const chapters = [...document.querySelectorAll('.chapter')];
+  const next = chapters[chapters.indexOf(node.closest('.chapter')) + (down ? 1 : -1)];
+  if (!next || !next.dataset.id) return;
+  let after = '';
+  if (!down) {
+    const last = [...next.querySelectorAll('.card')].pop();
+    after = last ? last.dataset.id || null : '';
+  }
+  moveTo(ctx, node.dataset.id, next.dataset.id, after);
+}
+
 function keyboardMove(event, node, ctx) {
   const down = event.key === 'ArrowDown';
   const sibling = down ? node.nextElementSibling : node.previousElementSibling;
-  if (!sibling) return;
+  if (!sibling) { moveToNeighbourChapter(node, down, ctx); return; }
   const anchor = down ? sibling : sibling.previousElementSibling;
   const chapter = node.closest('.chapter');
   const after = anchor ? anchor.dataset.id || null : '';

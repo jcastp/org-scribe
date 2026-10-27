@@ -53,8 +53,10 @@ function sortValue(scene, key) {
   if (key === 'todo') return scene.todo || '';
   if (key === 'words') return scene.words;
   if (key === 'objective') return scene.objective || 0;
+  // link fields sort by the names shown, never by the IDs inside the raw text
   const value = scene.fields[key];
-  return value ? (value.raw || '').toLowerCase() : '';
+  if (!value) return '';
+  return (value.links ? fieldNames(scene, key).join(', ') : value.raw || '').toLowerCase();
 }
 
 function sorted(scenes) {

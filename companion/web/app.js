@@ -25,6 +25,7 @@ const state = {
   snapshot: null,
   filters: emptyFilters(),
   project: null,
+  stringsLanguage: null,
   view: VIEWS[0].id,
   focusId: null,
   pendingFocus: null,
@@ -229,6 +230,12 @@ function renderAll() {
 async function refresh() {
   if (editing) { refreshWaiting = true; return; }
   state.snapshot = await request('/api/project');
+  const { language } = state.snapshot;
+  if (state.stringsLanguage && state.stringsLanguage !== language) {   // another project
+    state.strings = await request('/api/strings');
+    applyStrings();
+  }
+  state.stringsLanguage = language;
   const { root } = state.snapshot.project;
   if (state.project !== root) {          // first load: this project's own saved state
     state.project = root;
