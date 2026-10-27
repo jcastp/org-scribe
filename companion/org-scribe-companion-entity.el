@@ -47,7 +47,12 @@
     ("plot" . org-scribe-capture-plot-thread))
   "Entity kind -> the capture command that creates one.")
 
-(defconst org-scribe-companion-entity--protected-properties '("ID" "RELATIONSHIPSDATA")
+(defconst org-scribe-companion-entity--protected-properties
+  '("ID" "RELATIONSHIPSDATA"
+    ;; Org's special properties: writing one through `org-entry-put' does
+    ;; more than set a drawer line (SCHEDULED=FINISHED became a timestamp)
+    "TODO" "TAGS" "PRIORITY" "CATEGORY" "ARCHIVE" "SCHEDULED" "DEADLINE"
+    "CLOSED" "TIMESTAMP" "TIMESTAMP_IA" "CLOCKSUM" "BLOCKED" "ITEM" "FILE" "ALLTAGS")
   "Properties a form never writes (upcased).")
 
 ;;; Lookup

@@ -164,3 +164,15 @@ Turning the switch on and answering the gate then loads it."
 
 (provide 'test-companion-gate)
 ;;; test-companion-gate.el ends here
+
+(ert-deftest test-companion-gate-setup-check-reports-the-companion ()
+  (test-companion-gate--with-project "novel" root
+    (let ((org-scribe-companion-enable nil))
+      (org-scribe-setup-check)
+      (with-current-buffer "*org-scribe setup*"
+        (let ((text (buffer-string)))
+          (should (string-match-p "^\\* Visual companion" text))
+          (should (string-match-p "\\[ \\] =org-scribe-companion-enable=" text))
+          (should (string-match-p "this project" text))
+          (should (string-match-p "\\[ \\] server" text))))
+      (kill-buffer "*org-scribe setup*"))))

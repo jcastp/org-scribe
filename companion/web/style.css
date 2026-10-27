@@ -128,7 +128,7 @@ main { padding: 0 1.2rem 3rem; }
 .storyline { border-collapse: separate; border-spacing: 0; font-size: 0.85rem; }
 .storyline th, .storyline td { padding: 0; }
 .sl-corner, .sl-name { position: sticky; left: 0; background: var(--bg); z-index: 1; min-width: 12rem; text-align: left; padding: 0.2rem 0.5rem; }
-.sl-chapter { font-weight: 600; font-size: 0.78rem; border-left: 2px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 0; padding: 0.2rem 0.4rem; }
+.sl-chapter { font-weight: 600; font-size: 0.78rem; border-left: 2px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; word-break: break-word; min-width: 7rem; padding: 0.2rem 0.4rem; }
 .sl-scene { border-left: 1px solid var(--line); min-width: 1.8rem; text-align: center; }
 .sl-scene.chapter-start { border-left: 2px solid var(--line); }
 .sl-scene.focus { outline: 2px solid var(--focus); }

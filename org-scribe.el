@@ -287,8 +287,30 @@ onboarding a single, self-explanatory step."
                         (url (alist-get feature org-scribe--package-urls)))
               (insert (format "  install: %s\n" url)))))
         (insert "\n"))
+      (org-scribe--setup-check-companion)
       (goto-char (point-min)))
     (display-buffer (current-buffer))))
+
+(defun org-scribe--setup-check-companion ()
+  "Insert the visual companion's state: the global switch, this project's
+gate and the server.  Reads the switch and the gate only; never loads the
+companion module."
+  (insert "* Visual companion\n"
+          (format "- [%s] =org-scribe-companion-enable= — global switch (off: the module is never loaded)\n"
+                  (if org-scribe-companion-enable "X" " ")))
+  (let ((gate (and (not (eq (org-scribe-project-type) 'unknown))
+                   (org-scribe-companion-gate))))
+    (insert (format "- [%s] this project — %s\n"
+                    (if (eq gate 'yes) "X" " ")
+                    (cond ((eq (org-scribe-project-type) 'unknown) "not inside an org-scribe project")
+                          ((eq gate 'yes) "opted in (# Companion: yes)")
+                          ((eq gate 'no) "opted out (# Companion: no)")
+                          (t "undecided: asked the first time it is opened")))))
+  (insert (format "- [%s] server — %s\n\n"
+                  (if (and (featurep 'org-scribe-companion)
+                           (org-scribe-companion-server-running-p))
+                      "X" " ")
+                  "running now (F8 F8 B opens it; F8 F8 B again after stopping restarts it)")))
 
 (provide 'org-scribe)
 

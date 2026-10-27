@@ -281,17 +281,17 @@ function toggle(id, rerender) {
   rerender();
 }
 
-function groupRow(node, className, span, ctx) {
+function groupRow(node, key, className, span, ctx) {
   const row = el('tr', className);
   if (node.id) row.dataset.id = node.id;
   const cell = el('td');
   cell.colSpan = span;
-  const open = !collapsed.has(node.id);
+  const open = !collapsed.has(key);
   const button = el('button', 'twisty', open ? '▾' : '▸');
   button.type = 'button';
   button.setAttribute('aria-expanded', String(open));
   button.setAttribute('aria-label', ctx.t('companion-ui-collapse'));
-  button.addEventListener('click', () => toggle(node.id, ctx.rerender));
+  button.addEventListener('click', () => toggle(key, ctx.rerender));
   cell.append(button, el('span', 'group-title', node.title || ''));
   row.append(cell);
   return row;
@@ -402,21 +402,24 @@ export function render(container, ctx) {
   const span = 4 + columns.length;
   const table = el('table', 'outline');
   table.append(header(columns, ctx));
-  for (const act of acts) {
+  acts.forEach((act, actIndex) => {
+    // an implicit act or chapter has no ID: its place stands in for one
+    const actKey = act.id || `act#${actIndex}`;
     const actBody = el('tbody', 'act-body');
-    actBody.append(groupRow(act, 'act-row', span, ctx));
+    actBody.append(groupRow(act, actKey, 'act-row', span, ctx));
     table.append(actBody);
-    if (collapsed.has(act.id)) continue;
-    for (const chapter of act.chapters) {
+    if (collapsed.has(actKey)) return;
+    act.chapters.forEach((chapter, chapterIndex) => {
+      const chapterKey = chapter.id || `${actKey}/chapter#${chapterIndex}`;
       const body = el('tbody', 'chapter-body');
       if (chapter.id) body.dataset.id = chapter.id;
-      body.append(groupRow(chapter, 'chapter-row', span, ctx));
-      if (!collapsed.has(chapter.id)) {
+      body.append(groupRow(chapter, chapterKey, 'chapter-row', span, ctx));
+      if (!collapsed.has(chapterKey)) {
         for (const scene of sorted(chapter.scenes)) body.append(sceneRow(scene, columns, ctx));
       }
       table.append(body);
       if (chapter.id && !chapter.readOnly && !prefs.sort && window.Sortable) makeSortable(body, ctx);
-    }
-  }
+    });
+  });
   container.append(table);
 }
