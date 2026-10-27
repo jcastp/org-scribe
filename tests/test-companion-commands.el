@@ -669,6 +669,33 @@
         (should (equal (format (org-scribe-lang-message 'companion-error-unsupported-op 'es) "no-such-op")
                        (plist-get (plist-get answer :error) :message)))))))
 
+(ert-deftest test-companion-commands-set-title-refuses-org-prefixes ()
+  (test-companion-commands--with-project root
+    (let ((original (test-companion-commands--text root "novel.org")))
+      (dolist (title '("COMMENT Hidden" "COMMENT" "[#A] Urgent" "* Heading"))
+        (should (equal "invalid"
+                       (test-companion-commands--code
+                        (test-companion-commands--run
+                         root "set-title" :id test-companion-commands--scene-1 :title title)))))
+      (should (equal original (test-companion-commands--text root "novel.org")))
+      ;; words that merely start alike are fine
+      (should (test-companion-commands--ok-p
+               (test-companion-commands--run
+                root "set-title" :id test-companion-commands--scene-1 :title "COMMENTARY"))))))
+
+(ert-deftest test-companion-commands-new-scene-is-named-in-the-project-language ()
+  (test-companion-commands--with-project root
+    (with-temp-file (expand-file-name ".org-scribe-project" root)
+      (insert "# Writing project: Prueba\n# Type: novel\n# Language: es\n"))
+    (org-scribe-project-type-cache-clear)
+    (let ((org-scribe-message-language 'en))
+      (should (test-companion-commands--ok-p
+               (test-companion-commands--run
+                root "create-scene"
+                :parent (test-companion-commands--id root "Chapter 1 - Three Alarms")
+                :title "")))
+      (should (string-match-p "Escena nueva" (test-companion-commands--text root "novel.org"))))))
+
 ;;; set-field
 
 (ert-deftest test-companion-commands-set-field-changes-only-that-line ()

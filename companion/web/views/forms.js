@@ -22,7 +22,8 @@ let loaded = null;        // { id, revision, data }
 let conflict = null;      // { id, index, mine, current, hash, title }
 
 function byWeight(a, b) {
-  return (a.weight - b.weight) || a.name.localeCompare(b.name);
+  // hidden entities (negative weight) go last, not first
+  return (Boolean(a.hidden) - Boolean(b.hidden)) || (a.weight - b.weight) || a.name.localeCompare(b.name);
 }
 
 // ---- list ------------------------------------------------------------------

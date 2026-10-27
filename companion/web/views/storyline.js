@@ -62,7 +62,8 @@ function togglePov(scene, entityId, ctx) {
 }
 
 function byWeight(a, b) {
-  return (a.weight - b.weight) || a.name.localeCompare(b.name);
+  // hidden entities (negative weight) go last, not first
+  return (Boolean(a.hidden) - Boolean(b.hidden)) || (a.weight - b.weight) || a.name.localeCompare(b.name);
 }
 
 function cell(scene, group, entity, flags, ctx) {

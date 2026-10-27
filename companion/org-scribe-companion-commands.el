@@ -328,6 +328,12 @@ nil for first.  The subtree moves as it is: drawer, ID, tags, body."
 
 ;;; set-title, set-todo, set-field
 
+;; Org reads a heading's text: these prefixes would not stay part of the title.
+(defun org-scribe-companion-commands--title-parsed-p (title)
+  "Non-nil when Org would read TITLE as more than text: a leading `*', the
+COMMENT keyword (the scene is dropped from export) or a priority cookie."
+  (string-match-p "\\`\\(?:\\*\\|COMMENT\\(?: \\|\\'\\)\\|\\[#[A-Z0-9]+\\]\\)" title))
+
 (defun org-scribe-companion-commands--set-title (root args)
   "Replace a heading's text.  ARGS: `:id', `:title'.
 TODO state, priority and tags stay."
@@ -339,7 +345,7 @@ TODO state, priority and tags stay."
     (unwind-protect
         (progn
           (when (or (null title) (string-empty-p title)
-                    (string-match-p "\\`\\*" title))
+                    (org-scribe-companion-commands--title-parsed-p title))
             (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-title))
           (org-scribe-companion-commands--with-edit buffer
             (org-scribe-companion-commands--at node
@@ -520,7 +526,9 @@ the new scene's `:id'."
           (when after
             (org-scribe-companion-commands--check-after
              parent after (org-scribe-scene-level)))
-          (when (string-empty-p title) (setq title (org-scribe-msg 'default-scene-name)))
+          (when (org-scribe-companion-commands--title-parsed-p title)
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-title))
+          (when (string-empty-p title) (setq title (org-scribe--content-msg 'default-scene-name)))
           (org-scribe-companion-commands--with-edit buffer
             (let* ((default-directory root)
                    (position (org-scribe-companion-commands--insertion-point parent after))

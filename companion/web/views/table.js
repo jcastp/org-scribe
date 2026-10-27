@@ -248,9 +248,9 @@ function titleCell(scene, ctx) {
   return cell;
 }
 
-function numberCell(value, className) {
+function numberCell(value, className, language) {
   const cell = el('td', `cell number ${className}`);
-  cell.textContent = value ? value.toLocaleString() : '';
+  cell.textContent = value ? value.toLocaleString(language) : '';
   return cell;
 }
 
@@ -270,7 +270,7 @@ function sceneRow(scene, columns, ctx) {
   }
   row.append(titleCell(scene, ctx), stateCell(scene, ctx));
   for (const field of columns) row.append(fieldCell(scene, field, ctx));
-  row.append(numberCell(scene.words, 'words'), numberCell(scene.objective, 'objective'));
+  row.append(numberCell(scene.words, 'words', ctx.snapshot.language), numberCell(scene.objective, 'objective', ctx.snapshot.language));
   return row;
 }
 

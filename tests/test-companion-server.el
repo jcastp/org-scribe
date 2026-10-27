@@ -489,6 +489,12 @@ HOST and ORIGIN override the defaults; BODY and CONTENT-TYPE make a request body
         (should (memq #'org-scribe-companion--on-change after-change-functions))
         (should (= 1 (cl-count buffer org-scribe-companion--hooked-buffers)))))))
 
+(ert-deftest test-companion-server-disabling-the-project-stops-its-server ()
+  (test-companion-server--with-server root
+    (should (org-scribe-companion-server-running-p))
+    (org-scribe-companion-disable-for-project)
+    (should-not (org-scribe-companion-server-running-p))))
+
 ;;; Lifecycle
 
 (ert-deftest test-companion-server-start-is-idempotent-and-token-is-fresh ()

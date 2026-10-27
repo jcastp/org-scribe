@@ -768,6 +768,12 @@ before the first heading."
             title))))))
 
 ;;;###autoload
+;; A new heading is the project's text, whatever language the UI is in.
+(defun org-scribe--content-msg (key &rest args)
+  "Return message KEY, with ARGS, in the project's language."
+  (let ((org-scribe-message-language (org-scribe-project-language)))
+    (apply #'org-scribe-msg key args)))
+
 (defun org-scribe-insert-scene (scene-name)
   "Insert a scene template with SCENE-NAME after the scene point is in.
 Point may be anywhere: in the middle of prose, on a scene or chapter
@@ -793,7 +799,7 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 
   ;; Use default title if scene-name is empty
   (when (string-empty-p (string-trim scene-name))
-    (setq scene-name (org-scribe-msg 'default-scene-name)))
+    (setq scene-name (org-scribe--content-msg 'default-scene-name)))
 
   (if-let* ((act (org-scribe--chapterless-container-at-point)))
       ;; `org-scribe-insert-chapter' adds the chapter at the end of the
@@ -1240,7 +1246,7 @@ collide with the project's own scene level."
 
   ;; Use default title if chapter-name is empty
   (when (string-empty-p (string-trim chapter-name))
-    (setq chapter-name (org-scribe-msg 'default-chapter-name)))
+    (setq chapter-name (org-scribe--content-msg 'default-chapter-name)))
 
   ;; Define and insert combined chapter + first scene template
   (let* ((levels (org-scribe-project-levels))
@@ -1261,7 +1267,7 @@ collide with the project's own scene level."
 :END:
 
 {{{scene-break}}}
-" chapter-stars chapter-name tag scene-stars (org-scribe-msg 'default-scene-name) tag
+" chapter-stars chapter-name tag scene-stars (org-scribe--content-msg 'default-scene-name) tag
   (org-scribe--scene-property-drawer-lines)))
          (start-pos (org-scribe--goto-insertion-point
                      (plist-get levels :chapter))))

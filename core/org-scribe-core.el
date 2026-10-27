@@ -304,6 +304,11 @@ Writes \"# Companion: no\" in .org-scribe-project."
   (interactive)
   (let ((root (org-scribe--require-project)))
     (org-scribe--project-marker-set root "Companion" "no")
+    ;; a server still serving this project would go on accepting edits
+    (when (and (featurep 'org-scribe-companion)
+               (org-scribe-companion-server-running-p)
+               (file-equal-p (org-scribe-companion-server-root) root))
+      (org-scribe-companion--stop))
     (message "%s" (org-scribe-msg 'companion-disabled-for-project))))
 
 ;;; Plotting Method

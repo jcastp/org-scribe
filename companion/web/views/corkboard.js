@@ -29,8 +29,8 @@ function linkNames(scene, field) {
 function progress(words, objective, ctx) {
   const wrap = el('div', 'progress');
   const text = objective
-    ? ctx.t('companion-ui-words-of', words.toLocaleString(), objective.toLocaleString())
-    : ctx.t('companion-ui-words', words.toLocaleString());
+    ? ctx.t('companion-ui-words-of', words.toLocaleString(ctx.snapshot.language), objective.toLocaleString(ctx.snapshot.language))
+    : ctx.t('companion-ui-words', words.toLocaleString(ctx.snapshot.language));
   wrap.append(el('span', 'progress-text', text));
   if (objective) {
     const bar = el('div', 'bar');
