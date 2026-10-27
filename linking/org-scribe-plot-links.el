@@ -141,6 +141,10 @@ Returns list of scene entries."
                 (member thread-name (nth 2 scene)))
               scenes))
 
+(defconst org-scribe-plot-thread-gap-threshold 5
+  "A plot thread absent for more than this many scenes in a row is flagged.
+Used by `org-scribe-plot-thread-report' and by the companion's storyline.")
+
 (defun org-scribe--calculate-thread-gap (appearances all-scenes)
   "Calculate largest gap in APPEARANCES across ALL-SCENES.
 Returns the maximum number of consecutive scenes where thread is absent."
@@ -230,7 +234,7 @@ Returns (STATUS-SYMBOL . WARNINGS-LIST)."
     (when (< coverage-pct 30)
       (setq status "⚠️")
       (push (format "Low coverage (%.1f%%)" coverage-pct) warnings))
-    (when (and gap (> gap 5))
+    (when (and gap (> gap org-scribe-plot-thread-gap-threshold))
       (setq status "⚠️")
       (push (format "Gap of %d scenes" gap) warnings))
     (when (= scene-count 1)

@@ -399,6 +399,67 @@ cache with `org-scribe-companion--clear-cache' after changing them.")
         :colors (cl-loop for (keyword . color) in org-scribe-companion-todo-colors
                          append (list (org-scribe-companion--keyword keyword) color))))
 
+;;; Storyline data
+
+(defvar org-scribe-plot-thread-gap-threshold)
+
+(defun org-scribe-companion--scene-list (acts)
+  "Return every scene of ACTS (the manuscript walk), in order."
+  (cl-loop for act in (append acts nil)
+           append (cl-loop for chapter in (append (plist-get act :chapters) nil)
+                           append (append (plist-get chapter :scenes) nil))))
+
+(defun org-scribe-companion--field-ids (scene key)
+  "Return the entity IDs in field KEY (a keyword) of SCENE."
+  (mapcar (lambda (link) (plist-get link :id))
+          (append (plist-get (plist-get (plist-get scene :fields) key) :links) nil)))
+
+(defun org-scribe-companion--plot-gaps (scenes)
+  "Return a plist of plot thread ID to its largest gap over SCENES.
+Same rule as `org-scribe--calculate-thread-gap': the scenes counted are
+those carrying a Plot property, and the gap is the longest run of them
+between two appearances of the thread.  Threads in fewer than two scenes
+get 0."
+  (let* ((with-plot (cl-remove-if-not
+                     (lambda (scene) (plist-get (plist-get (plist-get scene :fields) :plot) :raw))
+                     scenes))
+         (positions (make-hash-table :test 'equal))
+         result)
+    (cl-loop for scene in with-plot for index from 0
+             do (dolist (id (org-scribe-companion--field-ids scene :plot))
+                  (push index (gethash id positions))))
+    (maphash (lambda (id found)
+               (let ((found (nreverse found)) (gap 0))
+                 (cl-loop for (a b) on found while b
+                          do (setq gap (max gap (- b a 1))))
+                 (setq result (plist-put result (org-scribe-companion--keyword id) gap))))
+             positions)
+    result))
+
+(defun org-scribe-companion--orphans (scenes entities)
+  "Return ENTITIES' IDs, per kind, that no scene in SCENES refers to.
+Kinds: character, location, plot-point (the ones `org-scribe-health' checks)."
+  (let ((used (make-hash-table :test 'equal)))
+    (dolist (scene scenes)
+      (dolist (key '(:pov :characters :location :plot :plot-point))
+        (dolist (id (org-scribe-companion--field-ids scene key))
+          (puthash id t used))))
+    (cl-loop for kind in '(:character :location :plot-point)
+             append (list kind
+                          (vconcat
+                           (cl-loop for entity across (or (plist-get entities kind) [])
+                                    for id = (plist-get entity :id)
+                                    when (and (stringp id) (not (gethash id used)))
+                                    collect id))))))
+
+(defun org-scribe-companion--storyline (acts entities)
+  "Return the `storyline' entry for ACTS and ENTITIES."
+  (require 'org-scribe-plot-links)
+  (let ((scenes (org-scribe-companion--scene-list acts)))
+    (list :gapThreshold org-scribe-plot-thread-gap-threshold
+          :plotGaps (org-scribe-companion--plot-gaps scenes)
+          :orphans (org-scribe-companion--orphans scenes entities))))
+
 (defun org-scribe-companion--snapshot (&optional root)
   "Return the snapshot plist of the project at ROOT (default: the current).
 Cached per project and per half (see `org-scribe-companion--snapshot-cache'),
@@ -423,9 +484,15 @@ so asking again without an edit costs a revision check only."
           (setq cache (plist-put cache :acts (org-scribe-companion--walk-manuscript specs)))
           (setq cache (plist-put cache :todo (org-scribe-companion--todo-info))))
         (setq cache (plist-put cache :m (car revisions))))
-      (unless (equal (plist-get cache :d) (cdr revisions))
-        (setq cache (plist-put cache :entities (org-scribe-companion--entities)))
-        (setq cache (plist-put cache :d (cdr revisions))))
+      (let ((redo-entities (not (equal (plist-get cache :d) (cdr revisions)))))
+        (when redo-entities
+          (setq cache (plist-put cache :entities (org-scribe-companion--entities)))
+          (setq cache (plist-put cache :d (cdr revisions))))
+        (when (or redo-entities (not (equal (plist-get cache :sm) (car revisions))))
+          (setq cache (plist-put cache :storyline
+                                 (org-scribe-companion--storyline
+                                  (plist-get cache :acts) (plist-get cache :entities))))
+          (setq cache (plist-put cache :sm (car revisions)))))
       (setf (alist-get root org-scribe-companion--snapshot-cache nil nil #'equal) cache)
       (list :revision (org-scribe-companion--format-revision revisions)
             :language (symbol-name language)
@@ -438,7 +505,8 @@ so asking again without an edit costs a revision check only."
             :todo (plist-get cache :todo)
             :sceneFields (org-scribe-companion--scene-fields-json specs)
             :acts (vconcat (plist-get cache :acts))
-            :entities (plist-get cache :entities)))))
+            :entities (plist-get cache :entities)
+            :storyline (plist-get cache :storyline)))))
 
 ;;; Strings for the browser
 

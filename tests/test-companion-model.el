@@ -27,6 +27,7 @@
 (require 'org-scribe-location-links)
 (require 'org-scribe-plot-links)
 (require 'org-scribe-plot-point-links)
+(require 'org-scribe-search)
 (require 'org-scribe-companion)
 
 (defconst test-companion-model--repo
@@ -408,6 +409,61 @@ SETUP is a function called with the directory.  The directory is the
                  companion-debug-buffer-name))
     (should (alist-get key org-scribe-messages-en))
     (should (alist-get key org-scribe-messages-es))))
+
+;;; Storyline data (Phase 6)
+
+(ert-deftest test-companion-model-storyline-gaps-match-the-plot-thread-report ()
+  (test-companion-model--with-project root #'test-companion-model--copy-demo
+    (let* ((snapshot (org-scribe-companion--snapshot root))
+           (gaps (plist-get (plist-get snapshot :storyline) :plotGaps))
+           (checked 0))
+      (should (= org-scribe-plot-thread-gap-threshold
+                 (plist-get (plist-get snapshot :storyline) :gapThreshold)))
+      (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+        (let ((scenes (org-scribe--get-all-scenes-with-plots)))
+          (dolist (thread (org-scribe--get-all-plot-threads))
+            (let ((appearances (org-scribe--find-thread-in-scenes (car thread) scenes)))
+              (when appearances
+                (cl-incf checked)
+                (should (equal (org-scribe--calculate-thread-gap appearances scenes)
+                               (plist-get gaps (org-scribe-companion--keyword (cadr thread))))))))))
+      (should (> checked 0)))))
+
+(ert-deftest test-companion-model-storyline-orphans-match-the-health-report ()
+  (require 'org-scribe-health)
+  (test-companion-model--with-project root #'test-companion-model--copy-demo
+    (let* ((snapshot (org-scribe-companion--snapshot root))
+           (orphans (plist-get (plist-get snapshot :storyline) :orphans))
+           (structure (org-scribe-project-structure))
+           (refs (org-scribe--health-collect-referenced-ids
+                  (plist-get structure :manuscript-file))))
+      (cl-loop for (kind getter) in '((:character org-scribe--get-all-characters)
+                                      (:location org-scribe--get-all-locations)
+                                      (:plot-point org-scribe--get-all-plot-points))
+               do (let* ((expected (sort (copy-sequence (org-scribe--health-find-orphans
+                                                        (funcall getter) refs))
+                                         #'string<))
+                         (names (sort (mapcar
+                                       (lambda (id)
+                                         (plist-get
+                                          (cl-find id (plist-get (plist-get snapshot :entities) kind)
+                                                   :key (lambda (e) (plist-get e :id))
+                                                   :test #'equal)
+                                          :name))
+                                       (append (plist-get orphans kind) nil))
+                                      #'string<)))
+                    (should (equal expected names)))))))
+
+(ert-deftest test-companion-model-storyline-follows-edits ()
+  (test-companion-model--with-project root #'test-companion-model--copy-demo
+    (let ((before (plist-get (org-scribe-companion--snapshot root) :storyline)))
+      (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (while (re-search-forward "^:Plot: .*$" nil t) (replace-match ":Plot:"))))
+      (let ((after (plist-get (org-scribe-companion--snapshot root) :storyline)))
+        (should-not (equal before after))
+        (should-not (plist-get after :plotGaps))))))
 
 (provide 'test-companion-model)
 ;;; test-companion-model.el ends here

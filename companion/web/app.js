@@ -6,14 +6,16 @@
 import { FILTERS, emptyFilters, loadFilters, saveFilters, isActive } from './filters.js';
 import * as corkboard from './views/corkboard.js';
 import * as table from './views/table.js';
+import * as storyline from './views/storyline.js';
 
 const token = new URLSearchParams(location.search).get('t') || '';
 const $ = (id) => document.getElementById(id);
 
-// The views, in tab order.  Later phases add the storyline and forms.
+// The views, in tab order.  Later phases add the forms.
 const VIEWS = [
   { id: 'corkboard', label: 'companion-ui-view-corkboard', module: corkboard },
   { id: 'table', label: 'companion-ui-view-table', module: table },
+  { id: 'storyline', label: 'companion-ui-view-storyline', module: storyline },
 ];
 
 const state = {
