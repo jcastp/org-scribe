@@ -1,0 +1,161 @@
+#+TITLE: Lesson 19: The Visual Companion
+#+AUTHOR: Javier Castilla
+#+DATE: 2026-10-27
+#+STARTUP: overview
+
+* Welcome to Lesson 19!
+
+Everything so far happened inside Emacs. This lesson is about an optional extra
+for the moments when you want to /see/ the whole book at once: a page in your
+browser with a corkboard, an outline table, a storyline chart and forms for your
+characters, locations and plot threads.
+
+The page does not replace Emacs and does not keep a copy of your work. Every
+change you make there is handed to Emacs, which makes it in the buffer you
+already know, so undo, saving and git work exactly as before.
+
+By the end of this lesson, you'll know how to:
+- Turn the companion on, for Emacs and for one project
+- Open it and read the four views
+- Move scenes, rename them, and change their state from the page
+- Link characters, locations and plot threads to scenes by clicking
+- Edit a character's profile in a form
+- Understand what happens when Emacs and the page disagree
+
+*Prerequisites*: Lesson 1 (a novel project with scenes) and Lesson 4 (characters).
+The demo novel in =examples/demo-novel/= is a good place to try everything.
+
+* Part 1: Turning It On
+
+Two switches, both off until you decide:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-companion-enable t)
+#+END_SRC
+
+in your init file, then, in the project, press:
+
+#+BEGIN_EXAMPLE
+F8 F8 B    →  Open the visual companion
+#+END_EXAMPLE
+
+The first time in a project, Emacs asks whether this project may use the
+companion and remembers the answer as a ~# Companion: yes~ line in
+~.org-scribe-project~. If some headings have no ~:ID:~, it offers to add them:
+the page can only move or edit what it can address.
+
+Your browser opens a page. Keep Emacs open: it is the one doing the work.
+
+~M-x org-scribe-companion-stop~ ends it. If you restart Emacs or the server,
+reopen the page from Emacs (the link carries a one-time token).
+
+* Part 2: The Corkboard
+
+Acts are sections, chapters are rows, scenes are cards. A card shows the title,
+the state, the summary, the PoV and plot-point badges, and a word-count bar.
+
+- *Drag* a card to another place in its chapter or into another chapter.
+  Keyboard: focus the card and press ~Alt+Up~ / ~Alt+Down~.
+- *Click the title or the summary* to edit it. ~Enter~ saves, ~Escape~ cancels.
+- The *state dropdown* sets the scene's TODO keyword.
+- The ~+~ at the end of a chapter heading adds a scene.
+- The ~↗~ button (or a double click) shows the scene in Emacs.
+
+Filters at the top (PoV, character, plot thread, location, state) dim the cards
+that do not match.
+
+Try it: drag Scene 2 above Scene 1 in Chapter 1, then switch to Emacs and look at
+~novel.org~. The whole subtree moved, with its properties and logbook, and the
+buffer is marked as modified. Press ~C-/~ once: it is back.
+
+* Part 3: The Table
+
+One row per scene. Choose the columns with the *Columns* button (your choice is
+remembered). Click a header to sort inside each chapter (dragging rows is off
+while sorted).
+
+- Text fields (summary, timeline, emotion, ...) edit in place.
+- Link fields (PoV, characters, plot threads, plot points, locations) open a
+  picker listing the entities of that kind, with a search box. Pick, press
+  *Done*: Emacs writes proper ~[[id:...][Name]]~ links.
+- *Colour by* state or by PoV.
+
+* Part 4: The Storyline
+
+Scenes run across (numbered, grouped by chapter); characters, plot threads,
+locations and plot points run down.
+
+| Mark  | Meaning                          |
+|-------+----------------------------------|
+| ●     | The character is the PoV         |
+| •     | Present in the scene             |
+| empty | Absent                           |
+
+Click a cell to add or remove the link. ~Shift+click~ on a character sets (or
+clears) the PoV. Click a row name or a scene number to open it in Emacs.
+
+Two warnings come for free: a plot thread absent for more than five scenes in a
+row is shaded (the same rule as the plot-thread health report), and a plot point
+that no scene serves gets a "No scene uses it" badge.
+
+Entities with a negative ~:Weight:~ are not drawn, but they are never silently
+dropped: a line under the group says "Not shown (hidden): ...", and a checkbox
+shows them.
+
+* Part 5: Entity Forms
+
+The *Entities* tab lists characters, locations, plot threads and the thirteen
+plot points. Pick one:
+
+- *Properties* are the heading's property drawer. Role, thread type and status
+  are dropdowns offering the values the capture templates use.
+- *Sections* are the text under the entity: its description, and each
+  sub-heading (Desire, Need, Plan, Backstory, ...). They are raw org text; the
+  heading lines themselves are never changed.
+- *Relationships* and *Appears in* list the links and the scenes; click to open.
+- Plot points are method prose: you can read them here, and edit them in Emacs.
+- The ~+~ next to a group runs the usual capture command in Emacs.
+
+** When Emacs and the Page Disagree
+
+Each section remembers a fingerprint of the text it showed you. If you change
+that section in Emacs while the form is open and then save from the page, the
+page does /not/ overwrite your Emacs edit: it shows both versions side by side
+and asks whether to keep yours or use the one from Emacs.
+
+* Part 6: Saving, Undo, and Following
+
+- The page never saves your files unless you press *Save* (or set
+  ~org-scribe-companion-auto-save~). The header tells you when there are unsaved
+  changes in Emacs.
+- Each change is one undo step in the buffer.
+- As you move point through the manuscript, the matching card or row is
+  highlighted (~org-scribe-companion-follow~).
+- Changing the state to a keyword that logs a note (such as ~TOREVIEW(j@/!)~)
+  records a time stamp instead, so no note window opens while you work in the
+  browser.
+
+* Part 7: Options and Safety
+
+An app-style window without browser chrome:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-companion-browser-function #'org-scribe-companion-browse-app-mode)
+#+END_SRC
+
+The server listens only on your own machine, behind a random token that changes
+on every start, and understands a short fixed list of commands. Nothing is
+loaded from the internet.
+
+* Exercises
+
+1. Open the demo novel's companion. Move Chapter 1's second scene to the first
+   position and undo it from Emacs.
+2. In the Table, add the *Location* column and set a scene's location with the picker.
+3. In the Storyline, find the plot thread with the longest gap and click one of
+   its empty cells inside the gap.
+4. In Entities, change Alex's Role, then open ~design.org~ and find the one line that changed.
+
+* What's Next
+
+This was the last lesson. Come back to the [[file:getting-started-00-index.org][index]] to revisit any topic.

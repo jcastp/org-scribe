@@ -1019,6 +1019,18 @@
       (should (alist-get key org-scribe-messages-en))
       (should (alist-get key org-scribe-messages-es)))))
 
+(ert-deftest test-companion-commands-every-data-i18n-key-exists-in-both-languages ()
+  (with-temp-buffer
+    (insert-file-contents (expand-file-name "index.html" test-companion-commands--web))
+    (goto-char (point-min))
+    (let ((found 0))
+      (while (re-search-forward "data-i18n=\"\\([^\"]+\\)\"" nil t)
+        (cl-incf found)
+        (let ((key (intern (match-string 1))))
+          (should (alist-get key org-scribe-messages-en))
+          (should (alist-get key org-scribe-messages-es))))
+      (should (> found 1)))))
+
 (ert-deftest test-companion-commands-web-files-use-no-innerhtml ()
   (dolist (file (directory-files-recursively test-companion-commands--web "\\.js\\'"))
     (with-temp-buffer

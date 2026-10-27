@@ -29,6 +29,7 @@ This package organizes features into the following categories:
 12. [[#ui-navigation][UI & Navigation]] - Hydra menu and keybindings
 13. [[#configuration][Configuration]] - Customization options
 14. [[#integrations][Writing Planner]] - Bundled goal-oriented writing plan module
+15. [[#visual-companion][Visual Companion]] - Optional browser corkboard, table, storyline and entity forms
 
 * Project Management
 :PROPERTIES:
@@ -904,6 +905,21 @@ If your init file still contains the following snippet from before the planner w
 (with-eval-after-load 'org-scribe-planner
   (require 'org-scribe-planner-integration))
 #+END_SRC
+
+* Visual Companion
+:PROPERTIES:
+:CUSTOM_ID: visual-companion
+:END:
+
+** Visual Companion (~org-scribe-companion-open~)
+
+An optional, opt-in browser page for seeing and rearranging the project: a corkboard (scenes as cards you drag, rename and re-state), an outline table (every scene property editable, link fields through a picker), a storyline chart (characters, plot threads, locations and plot points against the scenes, with gap and orphan warnings) and entity forms (the property drawer and each profile section of a character, location or plot thread). Emacs stays the only program that reads and writes the project files: the page sends ID-addressed commands, each one a single undo step in the buffer, and nothing is saved unless you press Save or set ~org-scribe-companion-auto-save~. A section edit made on a stale copy is refused and both versions are shown.
+
+Two switches keep it out of the way: ~org-scribe-companion-enable~ (global, default ~nil~; while it is off the module is never loaded) and a per-project ~# Companion: yes~ line in ~.org-scribe-project~, asked once. The server listens on 127.0.0.1 only, behind a random per-start token, with Host and Origin checks. Novels only. Open it with ~F8 F8 B~; stop it with ~M-x org-scribe-companion-stop~; ~org-scribe-companion-show-scene~ highlights the scene at point in the page.
+
+*Status*: Fully implemented | *Hydra*: ~B~ | *Module*: ~companion/~ | *Tests*: ~tests/test-companion-*.el~
+
+See [[file:getting-started-19-companion.org][Lesson 19]] for a step-by-step tutorial.
 
 * Feature Statistics
 

@@ -20,6 +20,7 @@
 - *Project-Wide Spelling Dictionary*: a generated =.dir-locals.el= points every file in the project at the dictionary for its language, with no per-file setup and no local-variables prompt ([[*Spelling dictionary for the whole project][details]])
 - *Scratchpad*: one unstructured file per project for drafts, "what if" questions and ideas with nowhere to live yet — plus a convention for branching a question into alternatives and exploring each ([[*The Scratchpad][details]])
 - *Git Integration*: Projects automatically initialized with git
+- *Visual Companion (opt-in)*: a browser corkboard, outline table, storyline and entity forms next to Emacs, which stays the only program that touches your files ([[*Visual Companion (opt-in)][details]])
 
 *** Writing Tools
 - *Character Linking*: ID-based links between scenes and character profiles
@@ -1770,6 +1771,73 @@ Tag the current scene's properties with ID-based links:
 - =T= - Toggle entity tooltips (=org-scribe-overlays-mode=)
 
 - =q= / =Q= - Back to main menu / Quit
+
+* Visual Companion (opt-in)
+
+** What It Is
+
+An optional browser page that shows your project the way a corkboard does, next to Emacs. It has four views:
+
+- *Corkboard*: acts, chapters and scenes as cards. Drag a card to move the scene; click a title or a summary to edit it; change a scene's state from the card.
+- *Table*: one row per scene, with the columns you choose (PoV, characters, plot threads, plot points, summary, ...). Link fields open a picker over the characters, locations or plot threads of the project.
+- *Storyline*: scenes across, characters, plot threads, locations and plot points down. Click a cell to add or remove the link. Long gaps in a plot thread are highlighted; plot points no scene uses are flagged. Entities with a negative =Weight= are left out, with a "not shown" line.
+- *Entities*: a form for each character, location and plot thread: the property drawer, and the body of each profile section.
+
+*Emacs stays the only program that reads and writes your files.* The page asks Emacs to change a heading by its =ID=; Emacs does it in the buffer, as one undo step, and leaves saving to you (the Save button, or =org-scribe-companion-auto-save=). If you edit the same text in Emacs and in the browser, a section edit that would overwrite your Emacs changes is refused and both versions are shown.
+
+** Enabling It
+
+Two switches, both off by default:
+
+1. Globally, in your init file:
+
+   #+BEGIN_SRC emacs-lisp
+   (setq org-scribe-companion-enable t)
+   #+END_SRC
+
+2. Per project: the first time you open the companion in a novel it asks once, and records =# Companion: yes= (or =no=) in =.org-scribe-project=. =M-x org-scribe-companion-enable-for-project= and =org-scribe-companion-disable-for-project= flip it later.
+
+While the global switch is off, the companion code is never even loaded. Short stories are not supported yet (the page is built around acts, chapters and scenes).
+
+Then =F8 F8 B= (or =M-x org-scribe-companion-open=) starts the server and opens the page. Scenes need an =ID= to be addressable; the companion offers to add the missing ones the first time. =M-x org-scribe-companion-stop= stops it.
+
+** Using It
+
+- Moving point in the manuscript highlights that scene in the page (=org-scribe-companion-follow=).
+- The arrow button on a card, row or entity opens it in Emacs; double-click a card does the same.
+- Keyboard: on a focused card, =Alt+Up= / =Alt+Down= moves it; =F2= edits its title; =Enter= opens it in Emacs.
+- In the Entities view, the =+= buttons run the usual capture commands (=org-scribe-capture-character=, ...) in Emacs: there is no second way of creating entities.
+
+** Browser Options
+
+#+BEGIN_SRC emacs-lisp
+;; Default: a normal tab (browse-url).
+;; An app window without browser chrome (tries chromium, google-chrome, ...):
+(setq org-scribe-companion-browser-function #'org-scribe-companion-browse-app-mode)
+(setq org-scribe-companion-app-mode-browsers '("chromium" "brave-browser"))
+
+;; Any function that takes the URL:
+(setq org-scribe-companion-browser-function
+      (lambda (url) (start-process "companion" nil "firefox" "--new-window" url)))
+#+END_SRC
+
+| Variable                              | Default       | Meaning                                                         |
+|---------------------------------------+---------------+-----------------------------------------------------------------|
+| =org-scribe-companion-enable=         | =nil=         | Global switch                                                   |
+| =org-scribe-companion-port=           | =35920=       | Preferred port; the next free ones are tried                    |
+| =org-scribe-companion-browser-function= | =browse-url= | How the page is shown                                           |
+| =org-scribe-companion-follow=         | =t=           | Highlight the scene at point                                    |
+| =org-scribe-companion-raise-frame=    | =t=           | Raise Emacs when the browser asks to go to a heading            |
+| =org-scribe-companion-auto-save=      | =nil=         | Save after every command instead of leaving it to you           |
+| =org-scribe-companion-todo-colors=    | (see source)  | CSS colour per TODO keyword                                     |
+
+** Security
+
+- The server listens on =127.0.0.1= only, never on the network.
+- Every start generates a random token. It travels in the URL you are sent to and in a header on each request; a request without it is refused. Because the token changes on every start, a page left open cannot reconnect to a restarted server: open it again from Emacs.
+- Requests are checked for the right =Host= and, for commands, =Origin=, which blocks other web pages from talking to it.
+- Commands are limited to a fixed list (move, rename, set a field, ...); they address headings by =ID=, refuse the =noexport= apparatus, and never run arbitrary code or read arbitrary files. Bodies over 1 MB are rejected.
+- No JavaScript is loaded from the internet: the one library (SortableJS, MIT) is vendored in =companion/web/vendor/=.
 
 * Writing Planner
 

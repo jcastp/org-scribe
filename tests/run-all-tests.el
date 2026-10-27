@@ -242,6 +242,16 @@ is set too, for the tests that start a fresh Emacs."
   (ert "^test-dir-locals-"))
 
 ;;;###autoload
+(defun org-scribe-run-companion-tests ()
+  "Run the visual companion tests (companion/): gate, model, server, commands, entity."
+  (interactive)
+  (let ((dir (file-name-directory (or load-file-name buffer-file-name))))
+    (dolist (file '("test-companion-gate" "test-companion-model" "test-companion-server"
+                    "test-companion-commands" "test-companion-entity"))
+      (load-file (expand-file-name (concat file ".el") dir))))
+  (ert "^test-companion-"))
+
+;;;###autoload
 (defun org-scribe-run-refile-tests ()
   "Run project-wide refile target tests only."
   (interactive)

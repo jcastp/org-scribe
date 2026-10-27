@@ -300,6 +300,18 @@ Every other lesson teaches you to put something in its proper place. This one co
 - Keeping rejected options, with their reasons, instead of deleting them
 - Why your speculation never shows up in the TODO search
 
+*** [[file:getting-started-19-companion.org][Lesson 19: The Visual Companion]] /(Optional)/
+*Time: 25 minutes*
+
+An optional browser page for seeing the whole book at once: a corkboard, an outline table, a storyline chart and entity forms. Emacs stays the only program that reads and writes your files; the page only asks it to move a scene, change a link or edit a profile section.
+
+*You'll learn:*
+- Turning the companion on for Emacs and for one project
+- Moving, renaming and re-stating scenes from the corkboard
+- Editing scene fields and links in the table
+- Reading and clicking the storyline, with its gap and orphan warnings
+- Editing a character in a form, and what happens when Emacs and the page disagree
+
 * Quick Reference
 
 ** Essential Keybindings
