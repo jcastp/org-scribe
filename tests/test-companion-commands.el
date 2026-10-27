@@ -827,9 +827,84 @@
                  companion-error-conflict-after companion-error-invalid-title
                  companion-error-invalid-state companion-error-todo-refused
                  companion-error-invalid-key companion-error-not-a-scene
-                 companion-error-not-a-chapter))
+                 companion-error-not-a-chapter companion-error-unknown-entity))
     (should (alist-get key org-scribe-messages-en))
     (should (alist-get key org-scribe-messages-es))))
+
+;;; set-field with links (Phase 5)
+
+(defconst test-companion-commands--sam "char-sam-chen-001")
+
+(defun test-companion-commands--field (root title key)
+  (plist-get (plist-get (test-companion-commands--scene-data root title) :fields)
+             (intern (concat ":" key))))
+
+(ert-deftest test-companion-commands-set-field-links-many-writes-id-links ()
+  (test-companion-commands--with-project root
+    (should (test-companion-commands--ok-p
+             (test-companion-commands--run
+              root "set-field" :id test-companion-commands--scene-1 :key "characters"
+              :links (vector test-companion-commands--sam test-companion-commands--alex))))
+    (should (string-match-p
+             "^:Characters: +\\[\\[id:char-sam-chen-001\\]\\[Sam[^]]*\\]\\], \\[\\[id:char-alex-rivera-001\\]\\[Alex[^]]*\\]\\]$"
+             (test-companion-commands--subtree root "Scene 1 - The Alarm")))
+    (let ((links (plist-get (test-companion-commands--field root "Scene 1 - The Alarm" "characters")
+                            :links)))
+      (should (equal (list test-companion-commands--sam test-companion-commands--alex)
+                     (mapcar (lambda (l) (plist-get l :id)) links))))))
+
+(ert-deftest test-companion-commands-set-field-links-one-and-clear ()
+  (test-companion-commands--with-project root
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "pov"
+     :links (vector test-companion-commands--sam))
+    (should (equal test-companion-commands--sam
+                   (plist-get (aref (plist-get (test-companion-commands--field
+                                                root "Scene 1 - The Alarm" "pov") :links) 0)
+                              :id)))
+    ;; two for a link-one field is refused
+    (should (equal "invalid"
+                   (test-companion-commands--code
+                    (test-companion-commands--run
+                     root "set-field" :id test-companion-commands--scene-1 :key "pov"
+                     :links (vector test-companion-commands--sam test-companion-commands--alex)))))
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "pov" :links [])
+    (should-not (test-companion-commands--field root "Scene 1 - The Alarm" "pov"))))
+
+(ert-deftest test-companion-commands-set-field-links-reject-unknown-or-wrong-kind ()
+  (test-companion-commands--with-project root
+    (let ((original (test-companion-commands--text root "novel.org")))
+      (dolist (links (list (vector "no-such-entity")
+                           ;; a location ID in a character field
+                           (vector "loc-coffee-shop-001")
+                           (vector 5)))
+        (should (equal "invalid"
+                       (test-companion-commands--code
+                        (test-companion-commands--run
+                         root "set-field" :id test-companion-commands--scene-1
+                         :key "characters" :links links)))))
+      (should (equal original (test-companion-commands--text root "novel.org"))))))
+
+(ert-deftest test-companion-commands-set-field-links-keep-names-with-commas-and-unlinked ()
+  (test-companion-commands--with-project root
+    ;; rename Alex to a name with a comma and brackets, as an author might
+    (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+      (org-with-wide-buffer
+       (goto-char (point-min))
+       (re-search-forward "^\\*\\*\\* Alex Rivera$")
+       (replace-match "*** Rivera, Alex [the founder]")))
+    (org-scribe-companion--clear-cache)
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "characters"
+     :links (vector test-companion-commands--alex test-companion-commands--sam)
+     :unlinked (vector "Someone"))
+    (let ((field (test-companion-commands--field root "Scene 1 - The Alarm" "characters")))
+      (should (equal (list test-companion-commands--alex test-companion-commands--sam)
+                     (mapcar (lambda (l) (plist-get l :id)) (plist-get field :links))))
+      (should (equal "Rivera, Alex [the founder]"
+                     (plist-get (aref (plist-get field :links) 0) :name)))
+      (should (equal ["Someone"] (plist-get field :unlinked))))))
 
 ;;; Follow mode
 

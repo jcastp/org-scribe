@@ -356,34 +356,71 @@ apply, except that a state asking for a note logs a timestamp instead."
           (org-scribe-companion-commands--finish root))
       (set-marker node nil))))
 
+(defun org-scribe-companion-commands--link-value (root spec args)
+  "Return the property text for the link field SPEC from ARGS, or refuse.
+ARGS has `:links', a vector of entity IDs, and optionally `:unlinked', a
+vector of plain names kept after them.  Each ID must name an entity of the
+field's kind; the link text is that entity's current name."
+  (let* ((links (plist-get args :links))
+         (unlinked (plist-get args :unlinked))
+         (entities (plist-get (org-scribe-companion--snapshot root) :entities))
+         (kind (org-scribe-companion--keyword (symbol-name (nth 2 spec))))
+         (known (append (plist-get entities kind) nil))
+         (seen nil)
+         (items nil))
+    (unless (vectorp links)
+      (org-scribe-companion-commands--fail "unsupported" 'companion-error-invalid-key
+                                           (symbol-name (car spec))))
+    (seq-doseq (id links)
+      (let ((entity (and (stringp id)
+                         (cl-find id known :key (lambda (e) (plist-get e :id)) :test #'equal))))
+        (unless entity
+          (org-scribe-companion-commands--fail
+           "invalid" 'companion-error-unknown-entity (format "%s" id)))
+        (unless (member id seen)
+          (push id seen)
+          (push (org-link-make-string (concat "id:" id) (plist-get entity :name)) items))))
+    (when (and (eq (nth 1 spec) 'link-one) (> (length items) 1))
+      (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-key
+                                           (symbol-name (car spec))))
+    (when (vectorp unlinked)
+      (seq-doseq (name unlinked)
+        (when-let* ((clean (and (stringp name)
+                                (org-string-nw-p (org-scribe-companion-commands--clean-line name)))))
+          (push clean items))))
+    (mapconcat #'identity (nreverse items) ", ")))
+
 (defun org-scribe-companion-commands--set-field (root args)
-  "Set a scene property.  ARGS: `:id' (a scene), `:key' (canonical), `:value'.
-Text fields only; the value is flattened to one line.  The property name
-written is the one already on the heading, else the project language's."
+  "Set a scene property.  ARGS: `:id' (a scene), `:key' (canonical), and
+`:value' (text fields, flattened to one line) or `:links' (link fields, IDs).
+The property name written is the one already on the heading, else the
+project language's."
   (let* ((buffer (org-scribe-companion-commands--manuscript-buffer root))
          (id (org-scribe-companion-commands--require-id args :id))
          (key-name (org-scribe-companion-commands--arg-string args :key))
-         (value (org-scribe-companion-commands--clean-line
-                 (org-scribe-companion-commands--arg args :value)))
          (node (org-scribe-companion-commands--heading root buffer id)))
     (unwind-protect
         (let* ((default-directory root)
                (spec (and key-name
                           (assq (intern-soft key-name)
-                                (org-scribe-companion--field-specs)))))
-          (unless value
-            (org-scribe-companion-commands--fail "invalid" 'companion-error-missing-arg "value"))
+                                (org-scribe-companion--field-specs))))
+               value)
           (unless spec
             (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-key
                                                  (or key-name "")))
-          (unless (eq (nth 1 spec) 'text)
-            (org-scribe-companion-commands--fail "unsupported" 'companion-error-invalid-key
-                                                 key-name))
           (unless (= (org-scribe-companion-commands--level node) (org-scribe-scene-level))
             (org-scribe-companion-commands--fail "invalid" 'companion-error-not-a-scene id))
+          (if (eq (nth 1 spec) 'text)
+              (progn
+                (setq value (org-scribe-companion-commands--clean-line
+                             (org-scribe-companion-commands--arg args :value)))
+                (unless value
+                  (org-scribe-companion-commands--fail
+                   "invalid" 'companion-error-missing-arg "value")))
+            (setq value (org-scribe-companion-commands--link-value root spec args)))
           (org-scribe-companion-commands--with-edit buffer
             (org-scribe-companion-commands--at node
-              (unless (equal value (org-scribe-scene-property-get (car spec)))
+              (unless (equal value (or (org-scribe-scene-property-get (car spec)) ""))
                 (org-scribe-scene-property-set (car spec) value))))
           (org-scribe-companion-commands--finish root))
       (set-marker node nil))))

@@ -77,7 +77,9 @@ it (see `org-scribe--split-property-list')."
   (let (links unlinked)
     (dolist (item (org-scribe--split-property-list raw))
       (if (string-match org-scribe-companion--id-link-regexp item)
-          (push (list :id (match-string 1 item) :name (match-string 2 item))
+          (push (list :id (match-string 1 item)
+                      ;; Org adds a zero-width space after a name ending in "]"
+                      :name (string-remove-suffix "\u200b" (match-string 2 item)))
                 links)
         (push item unlinked)))
     (cons (nreverse links) (nreverse unlinked))))

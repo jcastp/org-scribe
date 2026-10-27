@@ -6,6 +6,7 @@
 // All text is put in with textContent.
 
 import { matches, isActive } from '../filters.js';
+import { startEdit, moveTo } from '../edit.js';
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -50,33 +51,6 @@ function todoChip(heading, ctx) {
   return chip;
 }
 
-/** Replace NODE's text with an editor; COMMIT gets the new value if it changed. */
-function startEdit(node, initial, multiline, commit, ctx) {
-  const editor = el(multiline ? 'textarea' : 'input', 'card-edit');
-  if (multiline) editor.rows = 4;
-  else editor.type = 'text';
-  editor.value = initial;
-  const parent = node.parentNode;
-  let finished = false;
-  const finish = (save) => {
-    if (finished) return;
-    finished = true;
-    editor.replaceWith(node);
-    ctx.editEnded();
-    if (save && editor.value !== initial) commit(editor.value);
-  };
-  editor.addEventListener('keydown', (event) => {
-    event.stopPropagation();
-    if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); finish(true); }
-    if (event.key === 'Escape') { event.preventDefault(); finish(false); }
-  });
-  editor.addEventListener('blur', () => finish(true));
-  ctx.editStarted();
-  parent.replaceChild(editor, node);
-  editor.focus();
-  editor.select();
-}
-
 function stateSelect(scene, ctx) {
   const select = el('select', 'state-select');
   select.setAttribute('aria-label', ctx.t('companion-ui-scene-state'));
@@ -106,15 +80,6 @@ function editable(scene) {
 function previousId(node) {
   const before = node.previousElementSibling;
   return before ? before.dataset.id || null : '';
-}
-
-function moveTo(ctx, id, chapterId, after) {
-  if (after === null) {
-    ctx.notice(ctx.t('companion-ui-cannot-place'));
-    ctx.rerender();
-    return;
-  }
-  ctx.edit('move-node', { id, parent: chapterId, after: after || null }, id);
 }
 
 function keyboardMove(event, node, ctx) {
