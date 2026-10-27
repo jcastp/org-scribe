@@ -74,6 +74,7 @@
     "test-search-links"            ; Link extraction helpers
     "test-character-links"         ; Character linking
     "test-location-links"          ; Location linking
+    "test-object-links"            ; Object linking
     "test-plot-links"              ; Plot thread linking
     "test-character-relationships" ; Character relationship system
     "test-link-update"             ; Link display name updates
@@ -272,7 +273,7 @@ is set too, for the tests that start a fresh Emacs."
   (ert (concat "^test-capture-"
                "\\|^test-character-\\(?:capture\\|template\\)"
                "\\|^test-location-\\(?:capture\\|template\\)"
-               "\\|^test-object-\\|^test-timeline-\\|^test-plot-thread-template")))
+               "\\|^test-object-\\(?:capture\\|template\\|and\\)\\|^test-timeline-\\|^test-plot-thread-template")))
 
 ;;;###autoload
 (defun org-scribe-run-modes-tests ()
@@ -341,11 +342,12 @@ is set too, for the tests that start a fresh Emacs."
   (let ((tests-dir (file-name-directory (or load-file-name buffer-file-name))))
     (load-file (expand-file-name "test-character-links.el" tests-dir))
     (load-file (expand-file-name "test-location-links.el" tests-dir))
+    (load-file (expand-file-name "test-object-links.el" tests-dir))
     (load-file (expand-file-name "test-plot-links.el" tests-dir))
     (load-file (expand-file-name "test-character-relationships.el" tests-dir))
     (load-file (expand-file-name "test-link-update.el" tests-dir))
     (load-file (expand-file-name "test-column-view.el" tests-dir)))
-  (ert "^test-character-\\|^test-location-\\|^test-plot-\\|^test-relationships-\\|^test-link-update-\\|^test-column-"))
+  (ert "^test-character-\\|^test-location-\\|^test-object-links-\\|^test-plot-\\|^test-relationships-\\|^test-link-update-\\|^test-column-"))
 
 ;;;###autoload
 (defun org-scribe-run-messages-tests ()

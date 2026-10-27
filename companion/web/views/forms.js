@@ -12,6 +12,7 @@ import { el } from '../edit.js';
 const KINDS = [
   { kind: 'character', title: 'companion-ui-group-characters', create: 'companion-ui-new-character' },
   { kind: 'location', title: 'companion-ui-group-locations', create: 'companion-ui-new-location' },
+  { kind: 'object', title: 'companion-ui-group-objects', create: 'companion-ui-new-object' },
   { kind: 'plot', title: 'companion-ui-group-plots', create: 'companion-ui-new-plot' },
   { kind: 'plot-point', title: 'companion-ui-group-plot-points', create: null },
 ];

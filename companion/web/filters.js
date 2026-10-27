@@ -33,10 +33,11 @@ export const FILTERS = [
   { key: 'character', field: 'characters', entity: 'character', label: 'companion-ui-filter-character' },
   { key: 'plot', field: 'plot', entity: 'plot', label: 'companion-ui-filter-plot' },
   { key: 'location', field: 'location', entity: 'location', label: 'companion-ui-filter-location' },
+  { key: 'object', field: 'objects', entity: 'object', label: 'companion-ui-filter-object' },
 ];
 
 export function emptyFilters() {
-  return { pov: '', character: '', plot: '', location: '', todo: '' };
+  return { pov: '', character: '', plot: '', location: '', object: '', todo: '' };
 }
 
 export function loadFilters() {

@@ -92,6 +92,7 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            (org-scribe-character-links       . "linking/org-scribe-character-links")
            (org-scribe-character-relationships . "linking/org-scribe-character-relationships")
            (org-scribe-location-links        . "linking/org-scribe-location-links")
+           (org-scribe-object-links          . "linking/org-scribe-object-links")
            (org-scribe-plot-links            . "linking/org-scribe-plot-links")
            ;; Plot points load after plot threads: they share the plot file
            ;; resolver, and org-scribe--get-plot-point-file forwards to it.

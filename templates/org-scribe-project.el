@@ -633,7 +633,7 @@ VARIABLES is an alist of (NAME . VALUE) pairs for substitution."
 ;;; Template Insertion
 
 (defconst org-scribe--scene-property-keys
-  '(pov characters plot plot-point timeline location description summary
+  '(pov characters plot plot-point timeline location objects description summary
     scene-motivation conflict-source gap what-is-at-stake world-problem
     emotion tension-level outcome sequel-decision comment)
   "Canonical scene property keys, in the order they appear in a scene drawer.

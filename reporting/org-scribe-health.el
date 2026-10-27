@@ -23,6 +23,7 @@
 ;; Entity getter functions (from linking modules, loaded before this file)
 (declare-function org-scribe--get-all-characters "linking/org-scribe-character-links")
 (declare-function org-scribe--get-all-locations "linking/org-scribe-location-links")
+(declare-function org-scribe--get-all-objects "linking/org-scribe-object-links")
 (declare-function org-scribe--get-all-plot-threads "linking/org-scribe-plot-links")
 (declare-function org-scribe--get-all-plot-points "linking/org-scribe-plot-point-links")
 (declare-function org-scribe--find-broken-links "linking/org-scribe-link-update")
@@ -247,7 +248,7 @@ property listed here, or all of its entities are reported as orphaned."
            (org-map-entries
             (lambda ()
               (when (= (org-current-level) scene-level)
-                (dolist (prop '(pov characters location plot plot-point))
+                (dolist (prop '(pov characters location objects plot plot-point))
                   (when-let* ((val (org-scribe-scene-property-get prop)))
                     (let ((pos 0))
                       (while (string-match "\\[\\[id:\\([^]]+\\)\\]" val pos)
@@ -409,6 +410,28 @@ be picked, and every link goes to the first one."
           (push (cons (car entry) 1) counts))))
     (seq-filter (lambda (cell) (> (cdr cell) 1)) (nreverse counts))))
 
+(defun org-scribe--health-nested-objects (design-file)
+  "Return the names of objects in DESIGN-FILE left in the old nested layout.
+The old notebook put objects one level below a subsection of Objects
+\(\"Symbolic Objects\"), which the object linker does not read.  A heading
+counts when it carries `Type', its parent has none, and that parent sits
+directly under the Objects section.  Nil when there are none."
+  (when (and design-file (file-exists-p design-file))
+    (with-current-buffer (find-file-noselect design-file)
+      (org-with-wide-buffer
+       (let (names)
+         (org-map-entries
+          (lambda ()
+            (when (and (org-entry-get nil "Type")
+                       (not (org-scribe--heading-parent-section-p 'objects))
+                       (save-excursion
+                         (and (org-up-heading-safe)
+                              (not (org-entry-get nil "Type"))
+                              (org-scribe--heading-parent-section-p 'objects))))
+              (push (org-get-heading t t t t) names)))
+          nil 'file)
+         (nreverse names))))))
+
 (defun org-scribe--health-find-orphans (entities referenced-ids)
   "Return list of entity names not present in REFERENCED-IDS.
 ENTITIES is an alist (NAME . (ID . HEADING)) as returned by
@@ -487,6 +510,8 @@ with clickable ID links back to each scene."
                                 . org-scribe--get-all-characters)
                                (msg-health-duplicate-kind-location
                                 . org-scribe--get-all-locations)
+                               (msg-health-duplicate-kind-object
+                                . org-scribe--get-all-objects)
                                (msg-health-duplicate-kind-plot-thread
                                 . org-scribe--get-all-plot-threads)))))
            ;; Links whose entity was deleted: nothing else reports them.
@@ -506,6 +531,11 @@ with clickable ID links back to each scene."
            (orphan-locs    (when (fboundp 'org-scribe--get-all-locations)
                              (org-scribe--health-find-orphans
                               (org-scribe--get-all-locations) ref-ids)))
+           (orphan-objs    (when (fboundp 'org-scribe--get-all-objects)
+                             (org-scribe--health-find-orphans
+                              (org-scribe--get-all-objects) ref-ids)))
+           (old-objects    (org-scribe--health-nested-objects
+                            (plist-get structure :design-file)))
            ;; An orphaned plot point is one of the thirteen non-negotiables
            ;; that no scene serves — the method's own check, mechanized.
            (orphan-points  (when (fboundp 'org-scribe--get-all-plot-points)
@@ -778,6 +808,16 @@ with clickable ID links back to each scene."
         (if orphan-locs
             (dolist (name orphan-locs) (insert (format "- %s\n" name)))
           (insert "No orphaned locations.\n"))
+        (insert "\n")
+
+        (insert (format "** Orphaned Objects (%d)\n\n" (length orphan-objs)))
+        (if orphan-objs
+            (dolist (name orphan-objs) (insert (format "- %s\n" name)))
+          (insert "No orphaned objects.\n"))
+        (when old-objects
+          (insert (format "\n%s\n"
+                          (org-scribe-msg 'msg-health-old-objects-layout
+                                          (mapconcat #'identity old-objects ", ")))))
         (insert "\n")
 
         ;; Only shown when the project actually defines plot points, so

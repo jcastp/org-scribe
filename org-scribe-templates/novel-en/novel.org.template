@@ -113,6 +113,7 @@ Update with =C-c C-c= on the #+BEGIN line.
 :Plot-point:
 :Timeline:
 :Location:
+:Objects:
 :Description:
 :Summary:
 :Scene-motivation:

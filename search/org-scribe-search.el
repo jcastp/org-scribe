@@ -26,6 +26,7 @@
 (declare-function org-ql-search "org-ql")
 (declare-function org-scribe--get-all-characters "linking/org-scribe-character-links")
 (declare-function org-scribe--get-all-locations "linking/org-scribe-location-links")
+(declare-function org-scribe--get-all-objects "linking/org-scribe-object-links")
 (declare-function org-scribe--get-all-plot-threads "linking/org-scribe-plot-links")
 
 ;;; Helper Functions for ID Links
@@ -111,7 +112,8 @@ match on tags, so the results themselves do not change."
   '((pov . search-title-pov)
     (characters . search-title-characters)
     (plot . search-title-plot)
-    (location . search-title-location))
+    (location . search-title-location)
+    (objects . search-title-object))
   "Message key of the result title for each searchable scene property.")
 
 (defun org-scribe--search-property (term error-key property)
@@ -183,6 +185,17 @@ Requires org-ql package."
           'org-scribe-location-links #'org-scribe--get-all-locations
           'search-loc-prompt 'search-loc-prompt-free)))
   (org-scribe--search-property loc 'error-empty-location 'location))
+
+;;;###autoload
+(defun org-scribe-org-find-object (obj)
+  "Show sparse tree of scenes with OBJECT OBJ.
+Uses completion from the objects database when available.
+Requires org-ql package."
+  (interactive
+   (list (org-scribe--read-search-term
+          'org-scribe-object-links #'org-scribe--get-all-objects
+          'search-obj-prompt 'search-obj-prompt-free)))
+  (org-scribe--search-property obj 'error-empty-object 'objects))
 
 ;;; Recursive TODO Search
 

@@ -53,6 +53,7 @@ cargar un plan.
 :Punto-de-trama:
 :Linea-temporal:
 :Localizacion:
+:Objetos:
 :Descripcion:
 :Resumen:
 :Motivacion-escena:
@@ -81,6 +82,7 @@ cargar un plan.
 :Punto-de-trama:
 :Linea-temporal:
 :Localizacion:
+:Objetos:
 :Descripcion:
 :Resumen:
 :Motivacion-escena:
@@ -109,6 +111,7 @@ cargar un plan.
 :Punto-de-trama:
 :Linea-temporal:
 :Localizacion:
+:Objetos:
 :Descripcion:
 :Resumen:
 :Motivacion-escena:

@@ -113,6 +113,7 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :Punto-de-trama:
 :Linea-temporal:
 :Localizacion:
+:Objetos:
 :Descripcion:
 :Resumen:
 :Motivacion-escena:

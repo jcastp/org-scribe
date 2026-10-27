@@ -13,6 +13,7 @@ const GROUPS = [
   { kind: 'character', field: 'characters', title: 'companion-ui-group-characters' },
   { kind: 'plot', field: 'plot', title: 'companion-ui-group-plots' },
   { kind: 'location', field: 'location', title: 'companion-ui-group-locations' },
+  { kind: 'object', field: 'objects', title: 'companion-ui-group-objects' },
   { kind: 'plot-point', field: 'plot-point', title: 'companion-ui-group-plot-points' },
 ];
 

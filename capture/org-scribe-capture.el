@@ -143,10 +143,9 @@ See `org-scribe--capture-goto-section'."
 
 (defun org-scribe--capture-goto-objects-section ()
   "Move point to where a new object capture should be filed.
-No entity predicate reads this section (objects are not a linked entity
-type in this package); it exists so a captured object lands in the
-Objects section instead of at the end of the buffer.  See
-`org-scribe--capture-goto-section'."
+Objects are a linked entity type (`org-scribe-object-links'): a captured
+object is filed as an immediate child of this section, and its `Type'
+property is what makes it one.  See `org-scribe--capture-goto-section'."
   (org-scribe--capture-goto-section 'objects))
 
 (defun org-scribe--capture-goto-timeline-section ()

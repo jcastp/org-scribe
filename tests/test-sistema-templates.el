@@ -45,6 +45,7 @@
 
 (require 'org-scribe-character-links)
 (require 'org-scribe-location-links)
+(require 'org-scribe-object-links)
 (require 'org-scribe-plot-links)
 (require 'org-scribe-plot-point-links)
 
@@ -216,7 +217,9 @@ first."
     (let (names)
       (org-map-entries
        (lambda ()
-         (when (org-entry-get nil "Type")
+         ;; Objects carry a Type too; they are a different entity kind.
+         (when (and (org-entry-get nil "Type")
+                    (not (org-scribe--object-heading-p)))
            (should (org-scribe--location-heading-p))
            (push (org-get-heading t t t t) names))))
       ;; Three worked settings ship, matching the plantilla.  Headings are

@@ -79,6 +79,9 @@
       (require 'org-scribe-location-links)
       (message "✓ org-scribe-location-links loaded successfully")
 
+      (require 'org-scribe-object-links)
+      (message "✓ org-scribe-object-links loaded successfully")
+
       (require 'org-scribe-plot-links)
       (message "✓ org-scribe-plot-links loaded successfully")
 

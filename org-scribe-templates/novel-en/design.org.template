@@ -830,63 +830,86 @@ If fantasy/sci-fi, rules I must keep consistent:
 
 ** Objects
 
-*** Magical/Special Objects
+# Each object is an immediate child of this heading; :Type: says which kind
+# (Magical/Special, Symbolic or Everyday). Replace the placeholder names.
 
-**** Object 1
+*** Object 1
 :PROPERTIES:
-:Type: Weapon/Artifact/etc.
+:Type: Magical/Special
 :Owner:
 :First-appearance:
 :Status:
 :END:
 
-***** Physical Description
+**** Physical Description
 
-***** Origin
+**** Origin
 
-***** Properties
+**** Properties
 
-***** Importance in the Plot
+**** Importance in the Plot
 
-***** Object History
+**** Object History
 
-***** Symbolism
+**** Symbolism
 
-***** Current location
+**** Current location
 
-***** Rules and limitations
+**** Rules and limitations
 
-***** Notes
+**** Notes
 
-*** Symbolic Objects
-
-**** Symbolic Object 1
+*** Symbolic Object 1
 :PROPERTIES:
-:Type: Weapon/Artifact/etc.
+:Type: Symbolic
 :Owner:
 :First-appearance:
 :Status:
 :END:
 
-***** Physical Description
+**** Physical Description
 
-***** Origin
+**** Origin
 
-***** Properties
+**** Properties
 
-***** Importance in the Plot
+**** Importance in the Plot
 
-***** Object History
+**** Object History
 
-***** Symbolism
+**** Symbolism
 
-***** Current location
+**** Current location
 
-***** Rules and limitations
+**** Rules and limitations
 
-***** Notes
+**** Notes
 
-*** Relevant Everyday Objects
+*** Everyday Object 1
+:PROPERTIES:
+:Type: Everyday
+:Owner:
+:First-appearance:
+:Status:
+:END:
+
+**** Physical Description
+
+**** Origin
+
+**** Properties
+
+**** Importance in the Plot
+
+**** Object History
+
+**** Symbolism
+
+**** Current location
+
+**** Rules and limitations
+
+**** Notes
 
 ** Timeline
 

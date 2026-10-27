@@ -34,7 +34,8 @@
     (characters :kind link-many :entity character)
     (plot       :kind link-many :entity plot)
     (plot-point :kind link-many :entity plot-point)
-    (location   :kind link-many :entity location))
+    (location   :kind link-many :entity location)
+    (objects    :kind link-many :entity object))
   "How the browser edits the scene properties that link to an entity.
 Decided from the setter the linking module uses for each key:
 `org-scribe-set-pov-character' sets one link; `org-scribe--set-scene-entity'
@@ -272,6 +273,7 @@ give every plot point a `#' hint, so a non-empty body proves nothing."
 (defconst org-scribe-companion--entity-sections
   '((character . characters)
     (location . setting)
+    (object . objects)
     (plot . plot-threads)
     (plot-point . plot-points))
   "Entity kind -> the `:headings' key of the section its headings sit under.")
@@ -442,13 +444,13 @@ get 0."
 
 (defun org-scribe-companion--orphans (scenes entities)
   "Return ENTITIES' IDs, per kind, that no scene in SCENES refers to.
-Kinds: character, location, plot-point (the ones `org-scribe-health' checks)."
+Kinds: character, location, object, plot-point (the ones `org-scribe-health' checks)."
   (let ((used (make-hash-table :test 'equal)))
     (dolist (scene scenes)
-      (dolist (key '(:pov :characters :location :plot :plot-point))
+      (dolist (key '(:pov :characters :location :objects :plot :plot-point))
         (dolist (id (org-scribe-companion--field-ids scene key))
           (puthash id t used))))
-    (cl-loop for kind in '(:character :location :plot-point)
+    (cl-loop for kind in '(:character :location :object :plot-point)
              append (list kind
                           (vconcat
                            (cl-loop for entity across (or (plist-get entities kind) [])

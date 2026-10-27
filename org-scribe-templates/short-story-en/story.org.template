@@ -52,6 +52,7 @@ here: =F8 F8 W=, or =M-x org-scribe-plan= to create or load a plan.
 :Plot-point:
 :Timeline:
 :Location:
+:Objects:
 :Description:
 :Summary:
 :Scene-motivation:
@@ -80,6 +81,7 @@ here: =F8 F8 W=, or =M-x org-scribe-plan= to create or load a plan.
 :Plot-point:
 :Timeline:
 :Location:
+:Objects:
 :Description:
 :Summary:
 :Scene-motivation:
@@ -108,6 +110,7 @@ here: =F8 F8 W=, or =M-x org-scribe-plan= to create or load a plan.
 :Plot-point:
 :Timeline:
 :Location:
+:Objects:
 :Description:
 :Summary:
 :Scene-motivation:

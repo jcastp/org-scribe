@@ -465,6 +465,15 @@ SETUP is a function called with the directory.  The directory is the
         (should-not (equal before after))
         (should-not (plist-get after :plotGaps))))))
 
+(ert-deftest test-companion-model-objects-are-a-linked-field-and-entity-kind ()
+  (should (equal 'link-many
+                 (plist-get (alist-get 'objects org-scribe-companion--field-kinds) :kind)))
+  (should (equal 'object
+                 (plist-get (alist-get 'objects org-scribe-companion--field-kinds) :entity)))
+  (should (eq 'objects (alist-get 'object org-scribe-companion--entity-sections)))
+  (should (assq 'object org-scribe-entity-registry))
+  (should (assoc "object" org-scribe-companion-entity--capture-commands)))
+
 (provide 'test-companion-model)
 ;;; test-companion-model.el ends here
 

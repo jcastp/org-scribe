@@ -39,11 +39,13 @@
 (defvar org-scribe-companion-raise-frame)
 (declare-function org-scribe-capture-character "org-scribe-capture")
 (declare-function org-scribe-capture-location "org-scribe-capture")
+(declare-function org-scribe-capture-object "org-scribe-capture")
 (declare-function org-scribe-capture-plot-thread "org-scribe-capture")
 
 (defconst org-scribe-companion-entity--capture-commands
   '(("character" . org-scribe-capture-character)
     ("location" . org-scribe-capture-location)
+    ("object" . org-scribe-capture-object)
     ("plot" . org-scribe-capture-plot-thread))
   "Entity kind -> the capture command that creates one.")
 
@@ -187,7 +189,7 @@ language, so the form offers what the templates do."
     (dolist (scene (org-scribe-companion--scene-list
                     (plist-get (org-scribe-companion--snapshot root) :acts)))
       (when (cl-some (lambda (key) (member id (org-scribe-companion--field-ids scene key)))
-                     '(:pov :characters :location :plot :plot-point))
+                     '(:pov :characters :location :objects :plot :plot-point))
         (push (list :id (plist-get scene :id) :title (plist-get scene :title)) found)))
     (vconcat (nreverse found))))
 

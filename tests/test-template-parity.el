@@ -93,10 +93,11 @@ stay parallel.")
      . "The notebook inherited three divergences from the files it merged.
 The Journal part: habits and the writing calendar live outside the method on
 purpose, so the two journals were never ports of each other, and English is
-the far longer.  The Objects and Timeline sections: no counterpart in the
-method, both pre-sistema stubs; English carries Status, First-appearance, ID
-and Type properties Spanish lacks.  Reconciling them is a decision about
-what those sections are for, not a translation task."))
+the far longer.  The Timeline section: no counterpart in the method, a
+pre-sistema stub; English carries ID, Type and other properties Spanish
+lacks.  Reconciling it is a decision about what the section is for, not a
+translation task.  (Objects was reconciled when it became a linked entity
+type: both languages now share one flat tree.)"))
   "Pairs known to diverge, each with the reason it is tolerated.
 Keys are \"SET/RELATIVE-PATH\" (the Spanish set name, a slash, then the
 Spanish-side path from `org-scribe-parity--pairs' or

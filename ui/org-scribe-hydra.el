@@ -41,6 +41,9 @@
 (declare-function org-scribe-capture-to-file "capture/org-scribe-capture")
 (declare-function org-scribe-capture-character "capture/org-scribe-capture")
 (declare-function org-scribe-capture-location "capture/org-scribe-capture")
+(declare-function org-scribe-set-scene-objects "linking/org-scribe-object-links")
+(declare-function org-scribe-setup-object-links "linking/org-scribe-object-links")
+(declare-function org-scribe-org-find-object "search/org-scribe-search")
 (declare-function org-scribe-capture-object "capture/org-scribe-capture")
 (declare-function org-scribe-capture-timeline "capture/org-scribe-capture")
 (declare-function org-scribe-capture-plot-thread "capture/org-scribe-capture")
@@ -119,6 +122,7 @@ _R_: Relink everything    _c_: Characters        _a_: Add relationship       _t_
 _j_: Jump to plot thread  _o_: Locations         _x_: Remove relationship    _S_: Plot statistics
 _J_: Jump to plot point   _p_: Plot threads      _v_: View relationships     _C_: Column view toggle
 _D_: Spelling dictionary  _P_: Plot points       _V_: View all relationships _T_: Tooltips toggle
+^^                        _b_: Objects           ^^
 ^^                        _r_: Relationships
 _q_: Back to main menu    _Q_: Quit
 "
@@ -130,6 +134,7 @@ _q_: Back to main menu    _Q_: Quit
   ;; One-time set-up per entity type
   ("c" org-scribe-setup-character-links "char setup")
   ("o" org-scribe-setup-location-links "loc setup")
+  ("b" org-scribe-setup-object-links "object setup")
   ("p" org-scribe-setup-plot-thread-links "plot setup")
   ("P" org-scribe-setup-plot-point-links "plot point setup")
   ("r" org-scribe-setup-character-relationships "rel setup")
@@ -156,8 +161,8 @@ _c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all      _2_:
 _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_: Plot         _L_: Links & upkeep…
 ^^               _v_: Navigate    _g_: Plot threads    _y_: Synonyms        _4_: Location     _R_: Relink project
 ^^               _0_: Normal      _j_: Jump to PoV     _x_: Thesaurus       _5_: TODOs        _H_: Health report
-^^               ^^               ^^                   _t_: Word target     _6_: Edits        _W_: Planner…
-^^               ^^               ^^                   _T_: Title           ^^                _X_: Compile draft
+^^               ^^               _b_: Objects         _t_: Word target     _6_: Edits        _W_: Planner…
+^^               ^^               ^^                   _T_: Title           _7_: Object       _X_: Compile draft
 ^^               ^^               ^^                   ^^                   ^^                _B_: Board…
 ^^               ^^               ^^                   ^^                   ^^                _q_: Quit
 "
@@ -179,6 +184,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("p" org-scribe-set-pov-character "set PoV")
   ("h" org-scribe-set-scene-characters "set characters")
   ("l" org-scribe-set-scene-locations "set locations")
+  ("b" org-scribe-set-scene-objects "set objects")
   ("g" org-scribe-set-scene-plot-threads "set plot threads")
   ("G" org-scribe-set-scene-plot-points "set plot point")
   ("j" org-scribe-jump-to-pov-character "jump to PoV")
@@ -202,6 +208,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("4" org-scribe-org-find-location "find by location")
   ("5" org-scribe-search-todos-recursive "find TODOs")
   ("6" org-scribe-search-edits "find edits and notes")
+  ("7" org-scribe-org-find-object "find by object")
 
   ;; Manage
   ("n" org-scribe-capture-to-file "capture note")

@@ -825,35 +825,86 @@ Si es fantasía/ciencia ficción, reglas que debo mantener consistentes:
 
 ** Objetos
 
-*** Objetos Mágicos/Especiales
+# Cada objeto es hijo directo de este encabezado; :Type: indica de qué clase
+# (Mágico/Especial, Simbólico o Cotidiano). Sustituya los nombres de ejemplo.
 
-**** Objeto 1
+*** Objeto 1
 :PROPERTIES:
-:TIPO: Arma/Artefacto/etc.
-:POSEEDOR:
+:Type: Mágico/Especial
+:Owner:
+:First-appearance:
+:Status:
 :END:
 
-***** Descripción Física
+**** Descripción Física
 
-***** Origen
+**** Origen
 
-***** Propiedades/Poderes
+**** Propiedades/Poderes
 
-***** Importancia en la Trama
+**** Importancia en la Trama
 
-***** Historia del Objeto
+**** Historia del Objeto
 
-*** Objetos Simbólicos
+**** Simbolismo
 
-**** Objeto Simbólico 1
+**** Ubicación actual
 
-***** Descripción
+**** Reglas y límites
 
-***** Simbolismo
+**** Notas
 
-***** Papel en la Historia
+*** Objeto Simbólico 1
+:PROPERTIES:
+:Type: Simbólico
+:Owner:
+:First-appearance:
+:Status:
+:END:
 
-*** Objetos Cotidianos Relevantes
+**** Descripción Física
+
+**** Origen
+
+**** Propiedades/Poderes
+
+**** Importancia en la Trama
+
+**** Historia del Objeto
+
+**** Simbolismo
+
+**** Ubicación actual
+
+**** Reglas y límites
+
+**** Notas
+
+*** Objeto Cotidiano 1
+:PROPERTIES:
+:Type: Cotidiano
+:Owner:
+:First-appearance:
+:Status:
+:END:
+
+**** Descripción Física
+
+**** Origen
+
+**** Propiedades/Poderes
+
+**** Importancia en la Trama
+
+**** Historia del Objeto
+
+**** Simbolismo
+
+**** Ubicación actual
+
+**** Reglas y límites
+
+**** Notas
 
 ** Línea Temporal
 
