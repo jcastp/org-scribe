@@ -10,9 +10,9 @@
 ;;
 ;; The user-facing checks (switch, project type, per-project gate) live in
 ;; `org-scribe-companion-open' in core/org-scribe-core.el, so that with the
-;; switch off this file is never loaded.  So far (Phase 1) the companion
-;; can build the project snapshot and show it as JSON; there is no server
-;; yet.
+;; switch off this file is never loaded.  This file starts and stops the
+;; server, keeps the browser told about changes (buffer hooks, debounced),
+;; and opens the browser.
 
 ;;; Code:
 
@@ -24,6 +24,9 @@
 (require 'org-scribe-companion-model)
 (require 'org-scribe-companion-commands)
 (require 'org-scribe-companion-server)
+
+(defvar org-scribe-companion-browser-function)
+(defvar org-scribe-companion-app-mode-browsers)
 
 ;;; Headings without an ID
 
@@ -100,13 +103,101 @@ Meant for development.  Available once the companion module is loaded
         (goto-char (point-min))))
     (pop-to-buffer buffer)))
 
-;;; Opening
+;;; Telling the browser about changes
+
+(defvar org-scribe-companion--debounce-seconds 0.7
+  "Seconds without a change before the browser is told.")
+
+(defvar org-scribe-companion--hooked-buffers nil
+  "The buffers that carry the change hooks.")
+
+(defvar org-scribe-companion--debounce-timer nil)
+(defvar org-scribe-companion--last-revision nil
+  "The revision last sent in a `changed' event.")
+
+(defun org-scribe-companion--announce-change ()
+  "Send `changed' with the current revision, unless it was already sent."
+  (setq org-scribe-companion--debounce-timer nil)
+  (when-let* ((root (org-scribe-companion-server-root)))
+    (with-demoted-errors "org-scribe-companion: %S"
+      (let ((revision (org-scribe-companion--revision-string root)))
+        (unless (equal revision org-scribe-companion--last-revision)
+          (setq org-scribe-companion--last-revision revision)
+          (org-scribe-companion-server-broadcast "changed" (list :revision revision)))))))
+
+(defun org-scribe-companion--on-change (&rest _)
+  "Schedule a `changed' event.  Does no work itself: it only restarts a timer."
+  (when (timerp org-scribe-companion--debounce-timer)
+    (cancel-timer org-scribe-companion--debounce-timer))
+  (setq org-scribe-companion--debounce-timer
+        (run-at-time org-scribe-companion--debounce-seconds nil
+                     #'org-scribe-companion--announce-change)))
+
+(defun org-scribe-companion--install-hooks (root)
+  "Hook the manuscript and design buffers of the project at ROOT."
+  (org-scribe-companion--remove-hooks)
+  (let* ((default-directory (file-name-as-directory root))
+         (structure (org-scribe-project-structure)))
+    (dolist (file (list (plist-get structure :manuscript-file)
+                        (plist-get structure :design-file)))
+      (when (and file (file-exists-p file))
+        (with-current-buffer (find-file-noselect file)
+          (add-hook 'after-change-functions #'org-scribe-companion--on-change nil t)
+          (add-hook 'after-save-hook #'org-scribe-companion--on-change nil t)
+          (push (current-buffer) org-scribe-companion--hooked-buffers))))))
+
+(defun org-scribe-companion--remove-hooks ()
+  "Unhook every buffer hooked by `org-scribe-companion--install-hooks'."
+  (dolist (buffer org-scribe-companion--hooked-buffers)
+    (when (buffer-live-p buffer)
+      (with-current-buffer buffer
+        (remove-hook 'after-change-functions #'org-scribe-companion--on-change t)
+        (remove-hook 'after-save-hook #'org-scribe-companion--on-change t))))
+  (setq org-scribe-companion--hooked-buffers nil)
+  (when (timerp org-scribe-companion--debounce-timer)
+    (cancel-timer org-scribe-companion--debounce-timer))
+  (setq org-scribe-companion--debounce-timer nil))
+
+;;; Start, stop, open
+
+(defun org-scribe-companion--start (root)
+  "Serve the project at ROOT, starting the server if needed; return the URL.
+One server serves one project at a time: starting for another project
+switches to it and tells the browser."
+  (let ((root (file-name-as-directory (expand-file-name root))))
+    (cond
+     ((not (org-scribe-companion-server-running-p))
+      (org-scribe-companion-server-start root)
+      (add-hook 'kill-emacs-hook #'org-scribe-companion--stop))
+     ((not (equal root (org-scribe-companion-server-root)))
+      (org-scribe-companion-server-set-root root)))
+    (setq org-scribe-companion--last-revision nil)
+    (org-scribe-companion--install-hooks root)
+    (org-scribe-companion--announce-change)
+    (org-scribe-companion-server-url)))
+
+(defun org-scribe-companion--stop ()
+  "Stop the server and unhook the buffers.  Returns non-nil if it was running."
+  (let ((was-running (org-scribe-companion-server-running-p)))
+    (org-scribe-companion--remove-hooks)
+    (org-scribe-companion-server-stop)
+    (remove-hook 'kill-emacs-hook #'org-scribe-companion--stop)
+    was-running))
+
+(defun org-scribe-companion-browse-app-mode (url)
+  "Show URL in a browser app window, without browser chrome.
+Tries each executable of `org-scribe-companion-app-mode-browsers' with
+--app=URL; falls back to `browse-url'."
+  (if-let* ((browser (cl-some #'executable-find org-scribe-companion-app-mode-browsers)))
+      (start-process "org-scribe-companion-browser" nil browser (concat "--app=" url))
+    (browse-url url)))
 
 (defun org-scribe-companion--open (root)
-  "Start the companion for the project at ROOT and show it.
-So far this only offers to add missing IDs; the server is not there yet."
+  "Offer to add missing IDs, serve the project at ROOT, and open the browser."
   (org-scribe-companion--ensure-ids root)
-  (message "%s" (org-scribe-msg 'companion-not-implemented)))
+  (let ((url (org-scribe-companion--start root)))
+    (funcall org-scribe-companion-browser-function url)
+    (message "%s" (org-scribe-msg 'companion-opened url))))
 
 (provide 'org-scribe-companion)
 

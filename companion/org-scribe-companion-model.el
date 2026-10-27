@@ -356,6 +356,18 @@ unweighted default 999.0 and is not hidden."
   (cons (org-scribe-companion--buffer-revision (plist-get structure :manuscript-file))
         (org-scribe-companion--buffer-revision (plist-get structure :design-file))))
 
+(defun org-scribe-companion--format-revision (revisions)
+  "Return the revision string for REVISIONS, a (MANUSCRIPT . DESIGN) pair."
+  (format "m%s-d%s" (car revisions) (cdr revisions)))
+
+(defun org-scribe-companion--revision-string (root)
+  "Return the current revision string of the project at ROOT, without a snapshot.
+The same string the snapshot carries in `:revision', for a fraction of
+the cost."
+  (let ((default-directory (file-name-as-directory (expand-file-name root))))
+    (org-scribe-companion--format-revision
+     (org-scribe-companion--revisions (org-scribe-project-structure)))))
+
 (defvar org-scribe-companion--snapshot-cache nil
   "Alist of (ROOT . PLIST): what was last computed for each project.
 PLIST holds `:m' (manuscript revision), `:acts' and `:todo' for the
@@ -413,7 +425,7 @@ so asking again without an edit costs a revision check only."
         (setq cache (plist-put cache :entities (org-scribe-companion--entities)))
         (setq cache (plist-put cache :d (cdr revisions))))
       (setf (alist-get root org-scribe-companion--snapshot-cache nil nil #'equal) cache)
-      (list :revision (format "m%s-d%s" (car revisions) (cdr revisions))
+      (list :revision (org-scribe-companion--format-revision revisions)
             :language (symbol-name language)
             :project (list :title (org-scribe-companion--or-null
                                    (org-scribe-project-title root))
@@ -425,6 +437,22 @@ so asking again without an edit costs a revision check only."
             :sceneFields (org-scribe-companion--scene-fields-json specs)
             :acts (vconcat (plist-get cache :acts))
             :entities (plist-get cache :entities)))))
+
+;;; Strings for the browser
+
+(defun org-scribe-companion--strings (root)
+  "Return the `companion-*' messages of ROOT's language as a plist.
+Keys are keywords named like the message keys.  A message missing in the
+project's language falls back to English.  The values are the raw
+templates: the browser fills in any `%s'."
+  (let* ((default-directory (file-name-as-directory (expand-file-name root)))
+         (language (org-scribe-project-language))
+         (english (plist-get (org-scribe-lang-pack 'en) :messages))
+         (own (plist-get (org-scribe-lang-pack language) :messages)))
+    (cl-loop for (key . text) in english
+             when (string-prefix-p "companion-" (symbol-name key))
+             append (list (org-scribe-companion--keyword (symbol-name key))
+                          (or (alist-get key own) text)))))
 
 (defun org-scribe-companion--snapshot-json (&optional root)
   "Return the snapshot of the project at ROOT as a JSON string."

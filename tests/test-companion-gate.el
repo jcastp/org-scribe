@@ -20,10 +20,13 @@
                     (file-name-directory (or load-file-name buffer-file-name))))))
   (add-to-list 'load-path (expand-file-name "core" parent-dir))
   (add-to-list 'load-path (expand-file-name "lang" parent-dir))
+  (add-to-list 'load-path (expand-file-name "linking" parent-dir))
+  (add-to-list 'load-path (expand-file-name "search" parent-dir))
   (add-to-list 'load-path (expand-file-name "companion" parent-dir)))
 
 (require 'org-scribe-config)
 (require 'org-scribe-core)
+(require 'org-scribe-companion)
 
 (defconst test-companion-gate--repo
   (file-name-directory
@@ -33,25 +36,19 @@
 
 (defmacro test-companion-gate--with-project (type root-var &rest body)
   "Run BODY in a temp project of TYPE, with ROOT-VAR bound to its root.
-`default-directory' is the project root; the companion switch is on."
+`default-directory' is the project root; the companion switch is on, and
+`org-scribe-companion--open' is stubbed so that no server starts."
   (declare (indent 2))
   `(let* ((,root-var (file-name-as-directory (make-temp-file "test-companion-gate-" t)))
           (default-directory ,root-var)
           (org-scribe-companion-enable t))
      (unwind-protect
-         (progn
+         (cl-letf (((symbol-function 'org-scribe-companion--open) #'ignore))
            (with-temp-file (expand-file-name ".org-scribe-project" ,root-var)
              (insert "# Writing project: Gate Test\n# Type: " ,type "\n"))
-           (with-temp-file (expand-file-name "novel.org" ,root-var)
-             (insert "* Act I\n:PROPERTIES:\n:ID: gate-test-act\n:END:\n"))
            (org-scribe-project-type-cache-clear)
            ,@body)
        (org-scribe-project-type-cache-clear)
-       (dolist (buffer (buffer-list))
-         (when (and (buffer-file-name buffer)
-                    (string-prefix-p ,root-var (buffer-file-name buffer)))
-           (with-current-buffer buffer (set-buffer-modified-p nil))
-           (kill-buffer buffer)))
        (delete-directory ,root-var t))))
 
 ;;; Gate read and write
@@ -118,7 +115,8 @@
   (dolist (key '(companion-error-disabled companion-error-novels-only
                  companion-ask-enable companion-ask-reenable
                  companion-staying-disabled companion-enabled-for-project
-                 companion-disabled-for-project companion-not-implemented))
+                 companion-disabled-for-project companion-opened companion-stopped
+                 companion-not-running))
     (should (alist-get key org-scribe-messages-en))
     (should (alist-get key org-scribe-messages-es))))
 
@@ -135,13 +133,17 @@ Turning the switch on and answering the gate then loads it."
   (load (expand-file-name \"test-load.el\" repo) nil t)
   (with-temp-file (expand-file-name \".org-scribe-project\" base)
     (insert \"# Writing project: Probe\\n# Type: novel\\n\"))
-  (with-temp-file (expand-file-name \"novel.org\" base) (insert \"* Act\\n\"))
+  (with-temp-file (expand-file-name \"novel.org\" base)
+    (insert \"* Act\\n:PROPERTIES:\\n:ID: probe-act\\n:END:\\n\"))
   (let ((default-directory (file-name-as-directory base)) off-error on)
     (setq off-error (condition-case e (org-scribe-companion-open) (user-error (cadr e))))
     (let ((before (featurep 'org-scribe-companion)))
       (fset 'yes-or-no-p (lambda (_) t))
-      (setq org-scribe-companion-enable t)
+      (setq org-scribe-companion-enable t
+            org-scribe-companion-port 0
+            org-scribe-companion-browser-function #'ignore)
       (org-scribe-companion-open)
+      (org-scribe-companion-stop)
       (princ (format \"RESULT:%%S\"
                      (list :error off-error :before before
                            :after (featurep 'org-scribe-companion)

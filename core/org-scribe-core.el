@@ -251,6 +251,19 @@ that with the switch off the module is never loaded."
       (require 'org-scribe-companion)
       (org-scribe-companion--open root))))
 
+(declare-function org-scribe-companion--stop "org-scribe-companion")
+
+(defun org-scribe-companion-stop ()
+  "Stop the visual companion's server, if it is running.
+Lives here, like `org-scribe-companion-open', so that stopping it never
+loads the module: if the module is not loaded, nothing is running."
+  (interactive)
+  (message "%s" (org-scribe-msg
+                 (if (and (featurep 'org-scribe-companion)
+                          (org-scribe-companion--stop))
+                     'companion-stopped
+                   'companion-not-running))))
+
 (defun org-scribe--companion-gate-open-p (root)
   "Return non-nil when ROOT has the companion enabled, asking if needed.
 An undecided project is asked once and the answer is recorded; a project

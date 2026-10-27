@@ -118,7 +118,8 @@
     "test-planner-outside"         ; Words outside the manuscript
     ;; Visual companion (companion/)
     "test-companion-gate"          ; Switch, per-project gate, module stays unloaded
-    "test-companion-model")        ; Project snapshot for the browser
+    "test-companion-model"         ; Project snapshot for the browser
+    "test-companion-server")       ; HTTP server, security checks, event stream
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
