@@ -42,9 +42,16 @@
          (progn
            (with-temp-file (expand-file-name ".org-scribe-project" ,root-var)
              (insert "# Writing project: Gate Test\n# Type: " ,type "\n"))
+           (with-temp-file (expand-file-name "novel.org" ,root-var)
+             (insert "* Act I\n:PROPERTIES:\n:ID: gate-test-act\n:END:\n"))
            (org-scribe-project-type-cache-clear)
            ,@body)
        (org-scribe-project-type-cache-clear)
+       (dolist (buffer (buffer-list))
+         (when (and (buffer-file-name buffer)
+                    (string-prefix-p ,root-var (buffer-file-name buffer)))
+           (with-current-buffer buffer (set-buffer-modified-p nil))
+           (kill-buffer buffer)))
        (delete-directory ,root-var t))))
 
 ;;; Gate read and write

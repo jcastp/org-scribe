@@ -117,7 +117,8 @@
     "test-planner-presets"         ; Preset plans, new-plan defaults
     "test-planner-outside"         ; Words outside the manuscript
     ;; Visual companion (companion/)
-    "test-companion-gate")         ; Switch, per-project gate, module stays unloaded
+    "test-companion-gate"          ; Switch, per-project gate, module stays unloaded
+    "test-companion-model")        ; Project snapshot for the browser
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()

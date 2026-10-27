@@ -517,6 +517,11 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (companion-enabled-for-project . "org-scribe-companion: activado en este proyecto.")
      (companion-disabled-for-project . "org-scribe-companion: desactivado en este proyecto.")
      (companion-not-implemented . "org-scribe-companion: todavía no está implementado.")
+     (companion-error-no-manuscript . "El proyecto no tiene manuscrito que mostrar.")
+     (companion-ask-add-ids . "%d encabezado(s) del manuscrito no tienen ID.  ¿Añadirlos? ")
+     (companion-ids-added . "org-scribe-companion: añadidos %d ID(s).")
+     (companion-ids-missing-note . "org-scribe-companion: %d encabezado(s) sin ID se mostrarán en solo lectura.")
+     (companion-debug-buffer-name . "*snapshot del companion de org-scribe*")
      (plural-empty . "")
      (plural-s . "s")))
   "The Spanish language pack.  Read only through the accessors in
