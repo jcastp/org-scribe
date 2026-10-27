@@ -264,6 +264,15 @@ loads the module: if the module is not loaded, nothing is running."
                      'companion-stopped
                    'companion-not-running))))
 
+(declare-function org-scribe-companion--show-scene "org-scribe-companion")
+
+(defun org-scribe-companion-show-scene ()
+  "Show the scene at point in the visual companion, if it is running."
+  (interactive)
+  (if (featurep 'org-scribe-companion)
+      (org-scribe-companion--show-scene)
+    (user-error "%s" (org-scribe-msg 'companion-not-running))))
+
 (defun org-scribe--companion-gate-open-p (root)
   "Return non-nil when ROOT has the companion enabled, asking if needed.
 An undecided project is asked once and the answer is recorded; a project

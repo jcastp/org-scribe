@@ -25,6 +25,7 @@
 (require 'org-scribe-companion-commands)
 (require 'org-scribe-companion-server)
 
+(defvar org-scribe-companion-follow)
 (defvar org-scribe-companion-browser-function)
 (defvar org-scribe-companion-app-mode-browsers)
 
@@ -137,13 +138,15 @@ Meant for development.  Available once the companion module is loaded
   "Hook the manuscript and design buffers of the project at ROOT."
   (org-scribe-companion--remove-hooks)
   (let* ((default-directory (file-name-as-directory root))
-         (structure (org-scribe-project-structure)))
-    (dolist (file (list (plist-get structure :manuscript-file)
-                        (plist-get structure :design-file)))
+         (structure (org-scribe-project-structure))
+         (manuscript (plist-get structure :manuscript-file)))
+    (dolist (file (list manuscript (plist-get structure :design-file)))
       (when (and file (file-exists-p file))
         (with-current-buffer (find-file-noselect file)
           (add-hook 'after-change-functions #'org-scribe-companion--on-change nil t)
           (add-hook 'after-save-hook #'org-scribe-companion--on-change nil t)
+          (when (equal file manuscript)
+            (add-hook 'post-command-hook #'org-scribe-companion--follow nil t))
           (push (current-buffer) org-scribe-companion--hooked-buffers))))))
 
 (defun org-scribe-companion--remove-hooks ()
@@ -152,11 +155,51 @@ Meant for development.  Available once the companion module is loaded
     (when (buffer-live-p buffer)
       (with-current-buffer buffer
         (remove-hook 'after-change-functions #'org-scribe-companion--on-change t)
-        (remove-hook 'after-save-hook #'org-scribe-companion--on-change t))))
+        (remove-hook 'after-save-hook #'org-scribe-companion--on-change t)
+        (remove-hook 'post-command-hook #'org-scribe-companion--follow t))))
   (setq org-scribe-companion--hooked-buffers nil)
   (when (timerp org-scribe-companion--debounce-timer)
     (cancel-timer org-scribe-companion--debounce-timer))
   (setq org-scribe-companion--debounce-timer nil))
+
+;;; Follow mode
+
+(defvar org-scribe-companion--last-focus nil
+  "The ID last sent in a `focus' event.")
+
+(defun org-scribe-companion--scene-id-at-point ()
+  "Return the ID of the scene (or chapter, or act) point is in, or nil.
+The nearest heading at or above the scene level, going up from point."
+  (when (derived-mode-p 'org-mode)
+    (save-excursion
+      (ignore-errors
+        (org-back-to-heading t)
+        (let ((limit (org-scribe-scene-level)))
+          (while (and (> (org-current-level) limit) (org-up-heading-safe)))
+          (and (<= (org-current-level) limit) (org-id-get)))))))
+
+(defun org-scribe-companion--follow ()
+  "Tell the browser which scene point moved to, when it changed.
+Runs on `post-command-hook' in the manuscript buffer; does nothing unless
+a browser is listening and `org-scribe-companion-follow' is on."
+  (when (and org-scribe-companion-follow
+             (org-scribe-companion-server-subscribed-p))
+    (let ((id (org-scribe-companion--scene-id-at-point)))
+      (when (and id (not (equal id org-scribe-companion--last-focus)))
+        (setq org-scribe-companion--last-focus id)
+        (org-scribe-companion-server-broadcast "focus" (list :id id))))))
+
+(defun org-scribe-companion--show-scene ()
+  "Tell the browser to show the card of the scene at point.
+Works even when follow mode is off or the scene was already shown."
+  (interactive)
+  (let ((id (org-scribe-companion--scene-id-at-point)))
+    (cond ((not (org-scribe-companion-server-running-p))
+           (user-error "%s" (org-scribe-msg 'companion-not-running)))
+          ((null id)
+           (user-error "%s" (org-scribe-msg 'companion-error-no-scene-here)))
+          (t (setq org-scribe-companion--last-focus id)
+             (org-scribe-companion-server-broadcast "focus" (list :id id))))))
 
 ;;; Start, stop, open
 
@@ -171,7 +214,8 @@ switches to it and tells the browser."
       (add-hook 'kill-emacs-hook #'org-scribe-companion--stop))
      ((not (equal root (org-scribe-companion-server-root)))
       (org-scribe-companion-server-set-root root)))
-    (setq org-scribe-companion--last-revision nil)
+    (setq org-scribe-companion--last-revision nil
+          org-scribe-companion--last-focus nil)
     (org-scribe-companion--install-hooks root)
     (org-scribe-companion--announce-change)
     (org-scribe-companion-server-url)))

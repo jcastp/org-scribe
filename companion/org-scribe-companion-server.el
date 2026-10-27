@@ -63,6 +63,10 @@
   (and org-scribe-companion-server--process
        (process-live-p org-scribe-companion-server--process)))
 
+(defun org-scribe-companion-server-subscribed-p ()
+  "Return non-nil when at least one browser is listening for events."
+  (and org-scribe-companion-server--subscribers t))
+
 (defun org-scribe-companion-server-port () "The port served on." org-scribe-companion-server--port)
 (defun org-scribe-companion-server-token () "The token of this start." org-scribe-companion-server--token)
 (defun org-scribe-companion-server-root () "The project root served." org-scribe-companion-server--root)

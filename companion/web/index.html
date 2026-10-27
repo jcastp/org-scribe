@@ -7,10 +7,18 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <main>
-    <p id="status"></p>
-    <h1 id="title"></h1>
-  </main>
+  <header class="topbar">
+    <h1 id="project-title"></h1>
+    <nav id="tabs" role="tablist"></nav>
+    <div class="save-area">
+      <span id="save-state" class="chip" role="status"></span>
+      <button id="save-button" type="button" data-i18n="companion-ui-save"></button>
+    </div>
+  </header>
+  <div id="banner" class="banner" role="alert" hidden data-i18n="companion-ui-connection-lost"></div>
+  <div id="notice" class="banner notice" role="status" hidden></div>
+  <section id="filters" class="filters" aria-label="filters"></section>
+  <main id="view"></main>
   <script type="module" src="/static/app.js"></script>
 </body>
 </html>

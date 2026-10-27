@@ -138,6 +138,15 @@ HOST and ORIGIN override the defaults; BODY and CONTENT-TYPE make a request body
       (should (= 200 (car css)))
       (should (string-match-p "text/css" (nth 1 css))))))
 
+(ert-deftest test-companion-server-serves-every-web-module ()
+  "The ES modules the page imports are all reachable under /static/."
+  (test-companion-server--with-server root
+    (dolist (path '("/static/filters.js" "/static/views/corkboard.js"))
+      (let ((result (test-companion-server--get path :token nil)))
+        (should (= 200 (car result)))
+        (should (string-match-p "text/javascript" (nth 1 result)))
+        (should (string-match-p "export" (nth 2 result)))))))
+
 (ert-deftest test-companion-server-project-with-token ()
   (test-companion-server--with-server root
     (let* ((result (test-companion-server--get "/api/project"))
