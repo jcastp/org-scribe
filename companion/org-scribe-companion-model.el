@@ -379,9 +379,13 @@ more often (every drag), and walking the design notebook is the costlier
 half.  Language and todo colours are not part of the revision; clear the
 cache with `org-scribe-companion--clear-cache' after changing them.")
 
+(defvar org-scribe-companion--json-cache nil
+  "Alist of (ROOT REVISION . JSON): the last snapshot serialized per project.")
+
 (defun org-scribe-companion--clear-cache ()
   "Forget all cached snapshots."
-  (setq org-scribe-companion--snapshot-cache nil))
+  (setq org-scribe-companion--snapshot-cache nil
+        org-scribe-companion--json-cache nil))
 
 ;;; Snapshot
 
@@ -525,8 +529,19 @@ templates: the browser fills in any `%s'."
                           (or (alist-get key own) text)))))
 
 (defun org-scribe-companion--snapshot-json (&optional root)
-  "Return the snapshot of the project at ROOT as a JSON string."
-  (json-serialize (org-scribe-companion--snapshot root)))
+  "Return the snapshot of the project at ROOT as a JSON string.
+The string is kept per project and revision: serializing a large novel costs
+more than finding that nothing changed."
+  (let* ((root (file-name-as-directory
+                (expand-file-name (or root (org-scribe-project-root)))))
+         (cached (alist-get root org-scribe-companion--json-cache nil nil #'equal)))
+    (if (and cached (equal (car cached) (org-scribe-companion--revision-string root)))
+        (cdr cached)
+      (let* ((snapshot (org-scribe-companion--snapshot root))
+             (json (json-serialize snapshot)))
+        (setf (alist-get root org-scribe-companion--json-cache nil nil #'equal)
+              (cons (plist-get snapshot :revision) json))
+        json))))
 
 (provide 'org-scribe-companion-model)
 

@@ -7,7 +7,7 @@
 import { matches, isActive } from '../filters.js';
 import { el, startEdit, moveTo } from '../edit.js';
 
-const STORE = 'org-scribe.table';
+let STORE = 'org-scribe.table';
 const DEFAULT_COLUMNS = ['pov', 'characters', 'plot-point', 'summary'];
 
 function load(key, fallback) {
@@ -28,6 +28,15 @@ const prefs = {
   colour: load('colour', 'todo'),
   sort: load('sort', null),          // { key, dir } | null
 };
+
+/** Keep the preferences per project: the origin is shared by all of them. */
+export function useProject(root) {
+  STORE = `org-scribe.table:${root}`;
+  prefs.columns = load('columns', DEFAULT_COLUMNS);
+  prefs.colour = load('colour', 'todo');
+  prefs.sort = load('sort', null);
+}
+
 const collapsed = new Set();          // IDs of collapsed acts and chapters
 
 // ---- cell content ----------------------------------------------------------

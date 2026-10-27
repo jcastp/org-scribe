@@ -106,8 +106,10 @@ Meant for development.  Available once the companion module is loaded
 
 ;;; Telling the browser about changes
 
-(defvar org-scribe-companion--debounce-seconds 0.7
-  "Seconds without a change before the browser is told.")
+(defvar org-scribe-companion--debounce-seconds 1.5
+  "Seconds without a change before the browser is told.
+Each event makes the page refetch the project, which Emacs builds while the
+writer waits; a longer pause keeps that to real pauses in typing.")
 
 (defvar org-scribe-companion--hooked-buffers nil
   "The buffers that carry the change hooks.")

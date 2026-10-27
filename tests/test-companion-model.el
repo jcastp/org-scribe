@@ -467,3 +467,17 @@ SETUP is a function called with the directory.  The directory is the
 
 (provide 'test-companion-model)
 ;;; test-companion-model.el ends here
+
+(ert-deftest test-companion-model-json-is-kept-per-revision ()
+  (test-companion-model--with-project root #'test-companion-model--copy-demo
+    (let ((first (org-scribe-companion--snapshot-json root))
+          (count 0))
+      (cl-letf (((symbol-function 'json-serialize)
+                 (lambda (&rest _) (cl-incf count) "{}")))
+        (should (equal first (org-scribe-companion--snapshot-json root)))
+        (should (= 0 count))
+        (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+          (goto-char (point-max))
+          (insert "\n"))
+        (org-scribe-companion--snapshot-json root)
+        (should (= 1 count))))))

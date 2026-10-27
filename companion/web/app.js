@@ -3,7 +3,7 @@
 // parses org: Emacs sends display-ready data.  All visible text comes from
 // /api/strings (data-i18n attributes and t()).
 
-import { FILTERS, emptyFilters, loadFilters, saveFilters, isActive } from './filters.js';
+import { FILTERS, emptyFilters, loadFilters, saveFilters, isActive, setFilterScope, pruneFilters } from './filters.js';
 import * as corkboard from './views/corkboard.js';
 import * as table from './views/table.js';
 import * as storyline from './views/storyline.js';
@@ -23,7 +23,8 @@ const VIEWS = [
 const state = {
   strings: {},
   snapshot: null,
-  filters: loadFilters(),
+  filters: emptyFilters(),
+  project: null,
   view: VIEWS[0].id,
   focusId: null,
   pendingFocus: null,
@@ -228,6 +229,14 @@ function renderAll() {
 async function refresh() {
   if (editing) { refreshWaiting = true; return; }
   state.snapshot = await request('/api/project');
+  const { root } = state.snapshot.project;
+  if (state.project !== root) {          // first load: this project's own saved state
+    state.project = root;
+    setFilterScope(root);
+    state.filters = loadFilters();
+    table.useProject(root);
+  }
+  if (pruneFilters(state.filters, state.snapshot)) saveFilters(state.filters);
   renderAll();
 }
 
