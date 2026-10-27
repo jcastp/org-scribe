@@ -886,6 +886,49 @@
                          :key "characters" :links links)))))
       (should (equal original (test-companion-commands--text root "novel.org"))))))
 
+(ert-deftest test-companion-commands-set-field-links-keep-a-dangling-link ()
+  (test-companion-commands--with-project root
+    ;; a link to an entity that no longer exists must not block the field
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "characters"
+     :links (vector test-companion-commands--alex))
+    (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+      (org-with-wide-buffer
+        (goto-char (point-min))
+        (re-search-forward "^\\*\\*\\* FINISHED Scene 1 - The Alarm")
+        (org-entry-put nil "Characters"
+                       "[[id:char-alex-rivera-001][Alex]], [[id:char-deleted-999][Old Friend]]")))
+    (should (test-companion-commands--ok-p
+             (test-companion-commands--run
+              root "set-field" :id test-companion-commands--scene-1 :key "characters"
+              :links (vector test-companion-commands--alex "char-deleted-999"
+                             test-companion-commands--sam))))
+    (should (string-match-p
+             "\\[\\[id:char-deleted-999\\]\\[Old Friend\\]\\]"
+             (test-companion-commands--subtree root "Scene 1 - The Alarm")))
+    ;; an ID that was never linked there is still refused
+    (should (equal "invalid"
+                   (test-companion-commands--code
+                    (test-companion-commands--run
+                     root "set-field" :id test-companion-commands--scene-1
+                     :key "characters" :links (vector "char-other-000")))))))
+
+(ert-deftest test-companion-commands-set-field-links-keep-existing-link-text ()
+  (test-companion-commands--with-project root
+    (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+      (org-with-wide-buffer
+        (goto-char (point-min))
+        (re-search-forward "^\\*\\*\\* FINISHED Scene 1 - The Alarm")
+        (org-entry-put nil "Characters"
+                       "[[id:char-sam-chen-001][Sammy]], [[id:char-alex-rivera-001][Al]]")))
+    (should (test-companion-commands--ok-p
+             (test-companion-commands--run
+              root "set-field" :id test-companion-commands--scene-1 :key "characters"
+              :links (vector test-companion-commands--sam test-companion-commands--alex))))
+    (should (string-match-p
+             "\\[\\[id:char-sam-chen-001\\]\\[Sammy\\]\\], \\[\\[id:char-alex-rivera-001\\]\\[Al\\]\\]"
+             (test-companion-commands--subtree root "Scene 1 - The Alarm")))))
+
 (ert-deftest test-companion-commands-set-field-links-keep-names-with-commas-and-unlinked ()
   (test-companion-commands--with-project root
     ;; rename Alex to a name with a comma and brackets, as an author might
@@ -895,6 +938,9 @@
        (re-search-forward "^\\*\\*\\* Alex Rivera$")
        (replace-match "*** Rivera, Alex [the founder]")))
     (org-scribe-companion--clear-cache)
+    ;; start from an empty field: a link already there would keep its own text
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "characters" :links [])
     (test-companion-commands--run
      root "set-field" :id test-companion-commands--scene-1 :key "characters"
      :links (vector test-companion-commands--alex test-companion-commands--sam)

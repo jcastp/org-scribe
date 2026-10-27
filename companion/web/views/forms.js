@@ -86,7 +86,9 @@ function propertyField(entity, property, ctx) {
   }
   const save = () => {
     if (input.value === property.value) return;
-    ctx.edit('set-entity-property', { id: entity.id, key: property.name, value: input.value });
+    const value = input.value;
+    ctx.edit('set-entity-property', { id: entity.id, key: property.name, value })
+      .then((answer) => { if (answer.ok) property.value = value; });
   };
   input.addEventListener('focus', () => ctx.editStarted());
   input.addEventListener('blur', () => { ctx.editEnded(); if (input.tagName !== 'SELECT') save(); });
@@ -116,7 +118,10 @@ function sectionField(entity, section, ctx) {
       id: entity.id, index: section.index, title: section.title,
       hash: section.hash, body: area.value,
     }, null, false, ['conflict']);
-    if (!answer.ok && answer.error.code === 'conflict') {
+    if (answer.ok) {
+      section.body = answer.body;
+      section.hash = answer.hash;
+    } else if (answer.error.code === 'conflict') {
       conflict = {
         id: entity.id, index: section.index, title: section.title, mine: area.value,
         current: answer.error.current, hash: answer.error.hash || null,

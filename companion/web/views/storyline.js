@@ -76,7 +76,7 @@ function cell(scene, group, entity, flags, ctx) {
   button.setAttribute('aria-pressed', String(present));
   button.setAttribute('aria-label', `${entity.name} / ${scene.title}`);
   button.title = `${entity.name} / ${scene.title}`;
-  if (pov) { button.classList.add('pov'); button.textContent = '●'; button.title += ` (${ctx.t('companion-ui-pov')})`; }
+  if (pov) { button.classList.add('pov'); button.textContent = present ? '●' : '○'; button.title += ` (${ctx.t('companion-ui-pov')})`; }
   else if (present) { button.classList.add('present'); button.textContent = '•'; }
   if (!editable(scene)) button.disabled = true;
   button.addEventListener('click', (event) => {

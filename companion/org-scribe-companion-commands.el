@@ -365,8 +365,23 @@ apply, except that a state asking for a note logs a timestamp instead."
           (org-scribe-companion-commands--finish root))
       (set-marker node nil))))
 
-(defun org-scribe-companion-commands--link-value (root spec args)
+(defun org-scribe-companion-commands--existing-link (id current)
+  "Return the link to ID written in the property text CURRENT, or nil."
+  (when (stringp current)
+    (let ((start 0) found)
+      (while (and (not found)
+                  (string-match org-link-bracket-re current start))
+        (setq start (match-end 0))
+        (when (equal (match-string 1 current) (concat "id:" id))
+          (setq found (match-string 0 current))))
+      found)))
+
+(defun org-scribe-companion-commands--link-value (root spec args &optional current)
   "Return the property text for the link field SPEC from ARGS, or refuse.
+CURRENT is the property's present text: a link in it keeps its text as
+written (renames are `org-scribe-update-all-link-names''s job), and one to an
+ID that names no entity (deleted since) is kept too, so it cannot block every
+edit of the field.
 ARGS has `:links', a vector of entity IDs, and optionally `:unlinked', a
 vector of plain names kept after them.  Each ID must name an entity of the
 field's kind; the link text is that entity's current name."
@@ -381,14 +396,20 @@ field's kind; the link text is that entity's current name."
       (org-scribe-companion-commands--fail "unsupported" 'companion-error-invalid-key
                                            (symbol-name (car spec))))
     (seq-doseq (id links)
-      (let ((entity (and (stringp id)
-                         (cl-find id known :key (lambda (e) (plist-get e :id)) :test #'equal))))
-        (unless entity
+      (let* ((entity (and (stringp id)
+                          (cl-find id known :key (lambda (e) (plist-get e :id)) :test #'equal)))
+             (existing (and (stringp id)
+                            (org-scribe-companion-commands--existing-link id current)))
+             (dangling (and (not entity) existing)))
+        (unless (or entity dangling)
           (org-scribe-companion-commands--fail
            "invalid" 'companion-error-unknown-entity (format "%s" id)))
         (unless (member id seen)
           (push id seen)
-          (push (org-link-make-string (concat "id:" id) (plist-get entity :name)) items))))
+          ;; a link already in the field keeps the text the writer gave it
+          (push (or existing
+                    (org-link-make-string (concat "id:" id) (plist-get entity :name)))
+                items))))
     (when (and (eq (nth 1 spec) 'link-one) (> (length items) 1))
       (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-key
                                            (symbol-name (car spec))))
@@ -426,7 +447,10 @@ project language's."
                 (unless value
                   (org-scribe-companion-commands--fail
                    "invalid" 'companion-error-missing-arg "value")))
-            (setq value (org-scribe-companion-commands--link-value root spec args)))
+            (setq value (org-scribe-companion-commands--link-value
+                         root spec args
+                         (org-scribe-companion-commands--at node
+                           (org-scribe-scene-property-get (car spec))))))
           (org-scribe-companion-commands--with-edit buffer
             (org-scribe-companion-commands--at node
               (unless (equal value (or (org-scribe-scene-property-get (car spec)) ""))

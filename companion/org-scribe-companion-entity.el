@@ -275,8 +275,14 @@ is a `conflict' and the error carries the current body."
     (setq body (replace-regexp-in-string "\r\n?" "\n" body))
     (when (string-match-p "^\\*+ " body)
       (org-scribe-companion-commands--fail "invalid" 'companion-error-body-heading))
-    (let ((default-directory root))
-      (org-scribe-companion-entity--editing
+    (let ((default-directory root)
+          (new (if (or (string-empty-p body) (string-suffix-p "\n" body))
+                   body
+                 (concat body "\n"))))
+      ;; The answer carries the body and hash now stored, so the form need not
+      ;; wait for a refresh before its next save.
+      (append
+       (org-scribe-companion-entity--editing
        root id
        (lambda (marker)
          (let* ((sections (org-scribe-companion-entity--sections))
@@ -289,16 +295,14 @@ is a `conflict' and the error carries the current body."
               "conflict" (list :current (plist-get section :body)
                                :hash (plist-get section :hash))
               'companion-error-section-conflict))
-           (let ((new (if (or (string-empty-p body) (string-suffix-p "\n" body))
-                          body
-                        (concat body "\n"))))
-             (unless (equal new (plist-get section :body))
-               (goto-char marker)
-               (dotimes (_ index) (outline-next-heading))
-               (let ((bounds (org-scribe-companion-entity--body-bounds)))
-                 (delete-region (car bounds) (cdr bounds))
-                 (goto-char (car bounds))
-                 (insert new))))))))))
+           (unless (equal new (plist-get section :body))
+             (goto-char marker)
+             (dotimes (_ index) (outline-next-heading))
+             (let ((bounds (org-scribe-companion-entity--body-bounds)))
+               (delete-region (car bounds) (cdr bounds))
+               (goto-char (car bounds))
+               (insert new))))))
+       (list :body new :hash (org-scribe-companion-entity--hash new))))))
 
 (defun org-scribe-companion-entity--capture (root args)
   "Start the capture for a new entity of the kind in ARGS (`:kind') in Emacs.

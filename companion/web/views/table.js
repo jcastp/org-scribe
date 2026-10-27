@@ -121,11 +121,12 @@ function openPicker(cell, scene, field, ctx) {
     panel.remove();
     ctx.editEnded();
     if (!apply) return;
-    const before = [...(current.links || []).map((link) => link.id)].join();
-    const ids = entities.filter((entity) => chosen.has(entity.id)).map((entity) => entity.id);
-    // keep the ids that are not in the list (hidden by a filter of the project)
-    for (const id of chosen) if (!ids.includes(id)) ids.push(id);
-    if (ids.join() === before) return;
+    // the writer's own order stays; ids added now follow, in entity order
+    // (ids not in the list, hidden by a filter or dangling, stay where they were)
+    const before = (current.links || []).map((link) => link.id);
+    const ids = before.filter((id) => chosen.has(id));
+    for (const entity of entities) if (chosen.has(entity.id) && !ids.includes(entity.id)) ids.push(entity.id);
+    if (ids.join() === before.join()) return;
     ctx.edit('set-field', {
       id: scene.id, key: field.key, links: ids, unlinked: current.unlinked || [],
     }, scene.id);
