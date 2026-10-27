@@ -41,7 +41,7 @@ section heading itself does not count: it would otherwise match the
        (or (org-entry-get nil "TYPE")
            (org-entry-get nil "THREAD-TYPE")
            (string-match-p "\\(Main Plot\\|Subplot\\|Thread\\|A-[Pp]lot\\|B-[Pp]lot\\|C-[Pp]lot\\)"
-                          (org-get-heading t t t t)))))
+                          (org-scribe--heading-text)))))
 
 ;;; Plot Thread File Resolver
 
@@ -130,8 +130,8 @@ Each entry is (SCENE-HEADING CHAPTER-HEADING PLOT-THREADS-LIST)."
   (org-scribe--get-all-scenes
    (lambda ()
      (when-let* ((plot-prop (org-scribe-scene-property-get 'plot)))
-       (list (org-get-heading t t t t)
-             (save-excursion (org-up-heading-safe) (org-get-heading t t t t))
+       (list (org-scribe--heading-text)
+             (save-excursion (org-up-heading-safe) (org-scribe--heading-text))
              (org-scribe--property-to-list plot-prop))))))
 
 (defun org-scribe--find-thread-in-scenes (thread-name scenes)
@@ -310,9 +310,9 @@ Opens a new buffer with the report."
              (org-scribe--get-all-scenes
               (lambda ()
                 (unless (org-scribe-scene-property-get 'plot)
-                  (list (org-get-heading t t t t)
+                  (list (org-scribe--heading-text)
                         (save-excursion (org-up-heading-safe)
-                                        (org-get-heading t t t t))))))))
+                                        (org-scribe--heading-text))))))))
         (if scenes-without-plot
             (progn
               (insert (format "Found %d scene(s) without Plot property:\n\n"

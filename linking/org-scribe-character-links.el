@@ -61,7 +61,7 @@ property, or its text names a character by role."
        (or (org-entry-get nil "Role")
            (org-entry-get nil "TYPE")
            (string-match-p org-scribe--character-heading-regexp
-                          (org-get-heading t t t t)))))
+                          (org-scribe--heading-text)))))
 
 ;;; Entity Definition
 
@@ -244,8 +244,8 @@ Each entry is (SCENE-HEADING CHAPTER-HEADING POV-NAME CHARACTERS-LIST)."
      (let ((pov-prop (org-scribe-scene-property-get 'pov))
            (chars-prop (org-scribe-scene-property-get 'characters)))
        (when (or pov-prop chars-prop)
-         (list (org-get-heading t t t t)
-               (save-excursion (org-up-heading-safe) (org-get-heading t t t t))
+         (list (org-scribe--heading-text)
+               (save-excursion (org-up-heading-safe) (org-scribe--heading-text))
                (when pov-prop (org-scribe--extract-link-text pov-prop))
                (when chars-prop (org-scribe--property-to-list chars-prop))))))))
 

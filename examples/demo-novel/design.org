@@ -3,7 +3,6 @@
 #+DATE: 2026-05-01
 #+LANGUAGE: en
 #+STARTUP: overview
-#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)
 
 # Lines starting with # are instructions: do not turn them into prose.
 # This file is the project's notebook: the manuscript lives in novel.org,

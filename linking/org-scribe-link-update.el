@@ -168,7 +168,7 @@ every link reported as broken."
                 (let ((target (match-string 1 value))
                       (name (or (match-string 2 value) (match-string 1 value))))
                   (unless (gethash target known)
-                    (push (list :heading (org-get-heading t t t t)
+                    (push (list :heading (org-scribe--heading-text)
                                 :scene-id (org-entry-get nil "ID")
                                 :property (org-scribe-scene-property-name (car pm))
                                 :name name

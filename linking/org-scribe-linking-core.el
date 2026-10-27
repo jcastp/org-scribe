@@ -64,7 +64,7 @@ heading at point is used as before."
       (unless (and (= (org-current-level) scene-level)
                    (or (null tag) (member tag (org-get-tags nil t))))
         (user-error "%s" (org-scribe-msg 'error-not-in-scene
-                                         (org-get-heading t t t t)))))))
+                                         (org-scribe--heading-text)))))))
 
 (defun org-scribe--goto-entity-id (id name)
   "Visit the entity with ID, or signal a `user-error' naming NAME.
@@ -86,7 +86,7 @@ captured from that template resolves to the empty string instead of its
 heading text, and every one of them collapses into a single
 indistinguishable completion candidate."
   (or (org-string-nw-p (or (org-entry-get nil "NAME") ""))
-      (org-get-heading t t t t)))
+      (org-scribe--heading-text)))
 
 (defun org-scribe--create-entity-link (name id-alist)
   "Create an ID link for NAME using ID-ALIST.
@@ -114,7 +114,7 @@ ENTITY is an entity descriptor plist."
             (let ((id (org-id-get))
                   (name (org-scribe--entity-name-at-point)))
               (when (and id name (funcall pred))
-                (push (cons name (cons id (org-get-heading t t t t))) result))))
+                (push (cons name (cons id (org-scribe--heading-text))) result))))
           nil 'file))))
     (nreverse result)))
 

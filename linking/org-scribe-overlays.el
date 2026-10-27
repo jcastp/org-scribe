@@ -134,7 +134,7 @@ Dispatches on entity type detected from heading properties:
     (with-current-buffer (find-file-noselect file)
       (save-excursion
         (goto-char pos)
-        (let* ((name        (org-get-heading t t t t))
+        (let* ((name        (org-scribe--heading-text))
                ;; Plot thread: explicit THREAD-TYPE, or TYPE whose value looks
                ;; like a plot category (guards against location :Type: City).
                (thread-type (or (org-scribe--overlays-prop "THREAD-TYPE")

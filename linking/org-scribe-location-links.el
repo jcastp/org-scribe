@@ -48,12 +48,12 @@ excluded by name so it does not become a phantom location entity -- its
 own heading text otherwise matches the same \"Location\" regexp as a
 real entry."
   (and (org-scribe--heading-parent-section-p 'setting)
-       (not (member (org-get-heading t t t t)
+       (not (member (org-scribe--heading-text)
                     '("Locations" "Localizaciones")))
        (or (org-entry-get nil "Type")
            (org-entry-get nil "TYPE")
            (string-match-p org-scribe--location-heading-regexp
-                          (org-get-heading t t t t)))))
+                          (org-scribe--heading-text)))))
 
 ;;; Entity Definition
 

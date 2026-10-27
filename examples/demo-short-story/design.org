@@ -3,7 +3,6 @@
 #+DATE: 2025-01-14
 #+LANGUAGE: en
 #+STARTUP: overview
-#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)
 
 * Characters
 

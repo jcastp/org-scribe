@@ -3,7 +3,6 @@
 #+DATE: ${DATE}
 #+LANGUAGE: en
 #+STARTUP: overview
-#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)
 
 # Lines starting with # are instructions: do not turn them into prose.
 # This file is for filling in. It is the project's notebook: the manuscript

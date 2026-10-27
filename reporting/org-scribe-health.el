@@ -428,7 +428,7 @@ directly under the Objects section.  Nil when there are none."
                          (and (org-up-heading-safe)
                               (not (org-entry-get nil "Type"))
                               (org-scribe--heading-parent-section-p 'objects))))
-              (push (org-get-heading t t t t) names)))
+              (push (org-scribe--heading-text) names)))
           nil 'file)
          (nreverse names))))))
 

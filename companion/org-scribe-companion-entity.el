@@ -139,7 +139,7 @@ to the next heading of any level."
          (body (buffer-substring-no-properties (car bounds) (cdr bounds))))
     (list :index index
           :level (org-current-level)
-          :title (org-get-heading t t t t)
+          :title (org-scribe--heading-text)
           :body body
           :hash (org-scribe-companion-entity--hash body))))
 

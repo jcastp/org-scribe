@@ -3,7 +3,6 @@
 #+DATE: ${DATE}
 #+LANGUAGE: es
 #+STARTUP: overview
-#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)
 
 # Las líneas que empiezan por # son instrucciones: no las conviertas en prosa.
 # Aquí sólo se rellena. Es el cuaderno del proyecto: el manuscrito está en

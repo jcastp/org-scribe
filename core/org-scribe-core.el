@@ -1012,6 +1012,29 @@ read live via `org-scribe-lang-all'."
   (cl-some (lambda (alias) (string-equal-ignore-case alias heading))
            (org-scribe-lang-all :headings section-key)))
 
+(defvar org-scribe-todo-keywords)
+
+(defun org-scribe--heading-text ()
+  "Return the heading at point without tags, priority or a TODO keyword.
+`org-get-heading' only strips the keywords the buffer itself declares,
+and the design notebook declares its own `#+TODO:' set (OPEN, EXPLORING,
+...), so a writer's `** TODO Mr Smith' kept its \"TODO\" and every link
+to the entity read \"TODO Mr Smith\".  Also strip any word of
+`org-scribe-todo-keywords' or `org-todo-keywords-1', so an entity marked
+as pending is still named for itself."
+  (let ((text (org-get-heading t t t t))
+        (keywords (delete-dups
+                   (append org-scribe-todo-keywords
+                           (bound-and-true-p org-todo-keywords-1)
+                           (default-value 'org-todo-keywords-1)))))
+    (if (and keywords
+             (string-match (concat "\\`\\(?:"
+                                   (regexp-opt keywords)
+                                   "\\)\\(?:[ \t]+\\|\\'\\)")
+                           text))
+        (string-trim-left (substring text (match-end 0)))
+      text)))
+
 (defun org-scribe--heading-parent-section-p (section-key)
   "Return non-nil if the immediate parent of the heading at point is SECTION-KEY.
 SECTION-KEY is a symbol such as \\='characters, \\='setting, or
