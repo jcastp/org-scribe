@@ -134,23 +134,49 @@ Meant for development.  Available once the companion module is loaded
         (run-at-time org-scribe-companion--debounce-seconds nil
                      #'org-scribe-companion--announce-change)))
 
+(dolist (function '(org-scribe-companion--on-change org-scribe-companion--follow))
+  ;; survive `kill-all-local-variables' (`revert-buffer', `org-mode-restart')
+  (put function 'permanent-local-hook t))
+
+(defun org-scribe-companion--project-files (root)
+  "Return (MANUSCRIPT DESIGN) file names of the project at ROOT."
+  (let* ((default-directory (file-name-as-directory root))
+         (structure (org-scribe-project-structure)))
+    (list (plist-get structure :manuscript-file) (plist-get structure :design-file))))
+
+(defun org-scribe-companion--hook-buffer (manuscript-p)
+  "Add the change hooks to the current buffer; follow mode if MANUSCRIPT-P."
+  (add-hook 'after-change-functions #'org-scribe-companion--on-change nil t)
+  (add-hook 'after-save-hook #'org-scribe-companion--on-change nil t)
+  (when manuscript-p
+    (add-hook 'post-command-hook #'org-scribe-companion--follow nil t))
+  (unless (memq (current-buffer) org-scribe-companion--hooked-buffers)
+    (push (current-buffer) org-scribe-companion--hooked-buffers)))
+
+(defun org-scribe-companion--hook-visited-file ()
+  "Hook a project file that was opened again after the companion started.
+On `find-file-hook': killing and reopening a file loses its buffer-local hooks."
+  (when-let* ((root (org-scribe-companion-server-root))
+              (file (buffer-file-name)))
+    (pcase-let ((`(,manuscript ,design) (org-scribe-companion--project-files root)))
+      (cond ((and manuscript (file-equal-p file manuscript))
+             (org-scribe-companion--hook-buffer t))
+            ((and design (file-equal-p file design))
+             (org-scribe-companion--hook-buffer nil))))))
+
 (defun org-scribe-companion--install-hooks (root)
   "Hook the manuscript and design buffers of the project at ROOT."
   (org-scribe-companion--remove-hooks)
-  (let* ((default-directory (file-name-as-directory root))
-         (structure (org-scribe-project-structure))
-         (manuscript (plist-get structure :manuscript-file)))
-    (dolist (file (list manuscript (plist-get structure :design-file)))
+  (pcase-let ((`(,manuscript ,design) (org-scribe-companion--project-files root)))
+    (dolist (file (list manuscript design))
       (when (and file (file-exists-p file))
         (with-current-buffer (find-file-noselect file)
-          (add-hook 'after-change-functions #'org-scribe-companion--on-change nil t)
-          (add-hook 'after-save-hook #'org-scribe-companion--on-change nil t)
-          (when (equal file manuscript)
-            (add-hook 'post-command-hook #'org-scribe-companion--follow nil t))
-          (push (current-buffer) org-scribe-companion--hooked-buffers))))))
+          (org-scribe-companion--hook-buffer (equal file manuscript))))))
+  (add-hook 'find-file-hook #'org-scribe-companion--hook-visited-file))
 
 (defun org-scribe-companion--remove-hooks ()
   "Unhook every buffer hooked by `org-scribe-companion--install-hooks'."
+  (remove-hook 'find-file-hook #'org-scribe-companion--hook-visited-file)
   (dolist (buffer org-scribe-companion--hooked-buffers)
     (when (buffer-live-p buffer)
       (with-current-buffer buffer

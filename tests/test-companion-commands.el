@@ -605,6 +605,59 @@
       (test-companion-commands--undo-once root)
       (should (equal original (test-companion-commands--text root "novel.org"))))))
 
+(ert-deftest test-companion-commands-set-todo-logs-at-once-and-for-each-change ()
+  "The log line is written by the command, not at the writer's next keystroke."
+  (test-companion-commands--with-project root
+    (test-companion-commands--run
+     root "set-todo" :id test-companion-commands--scene-1 :state "TOREVIEW")
+    (test-companion-commands--run
+     root "set-todo" :id test-companion-commands--scene-2 :state "REDO")
+    (should-not (memq #'org-add-log-note (default-value 'post-command-hook)))
+    (should (string-match-p "State \"TOREVIEW\""
+                            (test-companion-commands--subtree root "Scene 1 - The Alarm")))
+    (should (string-match-p "State \"REDO\""
+                            (test-companion-commands--subtree
+                             root "Scene 2 - Coffee Shop Encounter")))))
+
+(ert-deftest test-companion-commands-move-keeps-the-running-clock ()
+  (test-companion-commands--with-project root
+    (require 'org-clock)
+    (let ((buffer (find-file-noselect (expand-file-name "novel.org" root)))
+          (org-clock-persist nil))
+      (with-current-buffer buffer
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (re-search-forward "^\\*\\*\\* FINISHED Scene 1 - The Alarm")
+         (org-back-to-heading t)
+         (org-clock-in)))
+      (unwind-protect
+          (progn
+            (should (test-companion-commands--ok-p
+                     (test-companion-commands--run
+                      root "move-node" :id test-companion-commands--scene-1
+                      :parent (test-companion-commands--id root "Chapter 2 - What It Costs")
+                      :after nil)))
+            (should (eq buffer (marker-buffer org-clock-marker)))
+            (should (with-current-buffer buffer (org-with-wide-buffer
+                     (goto-char org-clock-hd-marker)
+                     (beginning-of-line)
+                     (looking-at "\\*\\*\\* [A-Z]* *Scene 1 - The Alarm"))))
+            (should (with-current-buffer buffer (org-with-wide-buffer
+                     (goto-char org-clock-marker)
+                     (save-excursion (beginning-of-line) (looking-at ".*CLOCK:"))))))
+        (let ((org-log-note-clock-out nil)) (ignore-errors (org-clock-out nil t)))))))
+
+(ert-deftest test-companion-commands-quick-moves-keep-lookups-working ()
+  (test-companion-commands--with-project root
+    (let ((chapter-2 (test-companion-commands--id root "Chapter 2 - What It Costs"))
+          (chapter-1 (test-companion-commands--id root "Chapter 1 - Three Alarms")))
+      (dotimes (_ 30)
+        (dolist (parent (list chapter-2 chapter-1))
+          (should (test-companion-commands--ok-p
+                   (test-companion-commands--run
+                    root "move-node" :id test-companion-commands--scene-1
+                    :parent parent :after nil))))))))
+
 ;;; set-field
 
 (ert-deftest test-companion-commands-set-field-changes-only-that-line ()

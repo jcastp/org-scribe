@@ -472,6 +472,23 @@ HOST and ORIGIN override the defaults; BODY and CONTENT-TYPE make a request body
       (should-not (org-scribe-companion-server-running-p))
       (should (null org-scribe-companion--hooked-buffers)))))
 
+;;; Change hooks survive buffer resets
+
+(ert-deftest test-companion-server-hooks-survive-revert-and-reopen ()
+  (test-companion-server--with-server root
+    (let* ((file (expand-file-name "design.org" root))
+           (buffer (find-file-noselect file)))
+      (with-current-buffer buffer
+        (should (memq #'org-scribe-companion--on-change after-change-functions))
+        (kill-all-local-variables)
+        (org-mode)
+        (should (memq #'org-scribe-companion--on-change after-change-functions)))
+      (kill-buffer buffer)
+      (setq buffer (find-file-noselect file))
+      (with-current-buffer buffer
+        (should (memq #'org-scribe-companion--on-change after-change-functions))
+        (should (= 1 (cl-count buffer org-scribe-companion--hooked-buffers)))))))
+
 ;;; Lifecycle
 
 (ert-deftest test-companion-server-start-is-idempotent-and-token-is-fresh ()

@@ -256,6 +256,22 @@ went out of date while the browser was open."
 
 ;;; move-node
 
+(defun org-scribe-companion-commands--clock-offsets (beg end)
+  "Return the running clock's markers inside BEG..END as (VARIABLE . OFFSET).
+Deleting the text would collapse them; `--restore-clock' puts them back."
+  (let (found)
+    (dolist (variable '(org-clock-marker org-clock-hd-marker))
+      (let ((marker (and (boundp variable) (symbol-value variable))))
+        (when (and (markerp marker) (eq (marker-buffer marker) (current-buffer))
+                   (>= (marker-position marker) beg) (< (marker-position marker) end))
+          (push (cons variable (- (marker-position marker) beg)) found))))
+    found))
+
+(defun org-scribe-companion-commands--restore-clock (offsets start)
+  "Point the clock markers in OFFSETS back into the text now beginning at START."
+  (pcase-dolist (`(,variable . ,offset) offsets)
+    (set-marker (symbol-value variable) (+ start offset) (current-buffer))))
+
 (defun org-scribe-companion-commands--move-node (root args)
   "Move a heading and its subtree.  ARGS: `:id', `:parent', `:after'.
 A scene goes under a chapter, a chapter under an act, an act to the top
@@ -289,10 +305,15 @@ nil for first.  The subtree moves as it is: drawer, ID, tags, body."
                    (target (org-scribe-companion-commands--insertion-point parent after)))
               (unless (or (= target beg) (= target end))
                 (let ((text (buffer-substring beg end))
-                      (spot (copy-marker target)))
+                      (spot (copy-marker target))
+                      (clock (org-scribe-companion-commands--clock-offsets beg end)))
                   (delete-region beg end)
                   (org-scribe-companion-commands--insert-at spot text)
-                  (set-marker spot nil)))))
+                  (org-scribe-companion-commands--restore-clock clock (marker-position spot))
+                  (set-marker spot nil)
+                  ;; a raw delete and insert leave Org's element cache out of
+                  ;; step, and the next lookup by ID would then miss a heading
+                  (org-element-cache-reset)))))
           (org-scribe-companion-commands--finish root))
       (dolist (marker (list node parent after)) (when marker (set-marker marker nil))))))
 
@@ -337,6 +358,21 @@ timestamp of a `!' state is kept."
                   (if (eq (nth 2 entry) 'note) 'time (nth 2 entry))))
           states))
 
+(defun org-scribe-companion-commands--flush-log-note ()
+  "Write the log line `org-todo' left pending, now.
+`org-todo' defers it to `org-add-log-note' on `post-command-hook', which would
+run at the writer's next keystroke, in whatever buffer they are in, and keep
+only the last of several pending notes.  The states have been made quiet, so
+the note is a plain line and needs no window."
+  (when (memq #'org-add-log-note (default-value 'post-command-hook))
+    (remove-hook 'post-command-hook #'org-add-log-note)
+    (setq org-log-setup nil
+          org-log-note-window-configuration (current-window-configuration))
+    (move-marker org-log-note-return-to (point))
+    (let ((inhibit-message t)
+          (org-note-abort nil))
+      (with-temp-buffer (org-store-log-note)))))
+
 (defun org-scribe-companion-commands--set-todo (root args)
   "Set a heading's TODO state.  ARGS: `:id', `:state' (a keyword, or \"\" for none).
 Goes through `org-todo', so CLOSED stamps and the file's logging settings
@@ -358,7 +394,8 @@ apply, except that a state asking for a note logs a timestamp instead."
                 (condition-case err
                     (let ((org-todo-log-states
                            (org-scribe-companion-commands--quiet-log-states org-todo-log-states)))
-                      (org-todo (if (string-empty-p state) 'none state)))
+                      (org-todo (if (string-empty-p state) 'none state))
+                      (org-scribe-companion-commands--flush-log-note))
                   (user-error
                    (org-scribe-companion-commands--fail
                     "invalid" 'companion-error-todo-refused (error-message-string err)))))))
