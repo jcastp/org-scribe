@@ -889,6 +889,82 @@
                        :after test-companion-commands--scene-1 :title "x"))))
       (should (equal original (test-companion-commands--text root "novel.org"))))))
 
+;;; create-chapter
+
+(ert-deftest test-companion-commands-create-chapter-at-the-end-of-an-act ()
+  (test-companion-commands--with-project root
+    (let* ((answer (test-companion-commands--run
+                    root "create-chapter"
+                    :parent (test-companion-commands--id root "Act I")
+                    :after (test-companion-commands--id root "Chapter 2 - What It Costs")
+                    :title "Interlude"))
+           (id (plist-get answer :id)))
+      (should (test-companion-commands--ok-p answer))
+      (should (stringp id))
+      (should (equal '("Chapter 1 - Three Alarms" "Chapter 2 - What It Costs" "Interlude")
+                     (mapcar #'car (cdr (assoc "Act I" (test-companion-commands--order root))))))
+      (should (null (test-companion-commands--chapter-scenes root "Interlude")))
+      (let ((text (test-companion-commands--subtree root "Interlude")))
+        (should (string-prefix-p "** TODO Interlude :ignore:\n" text))
+        (should (string-match-p (format ":ID:       %s" (regexp-quote id)) text))
+        (should (string-match-p ":WORD-OBJECTIVE: 3000" text))
+        (should-not (string-match-p "scene-break" text))))))
+
+(ert-deftest test-companion-commands-create-chapter-first-default-title-and-one-undo ()
+  (test-companion-commands--with-project root
+    (let ((original (test-companion-commands--text root "novel.org")))
+      (test-companion-commands--run
+       root "create-chapter" :parent (test-companion-commands--id root "Act I")
+       :after nil :title "  ")
+      (should (equal (org-scribe--content-msg 'default-chapter-name)
+                     (car (car (cdr (assoc "Act I" (test-companion-commands--order root)))))))
+      (test-companion-commands--undo-once root)
+      (should (equal original (test-companion-commands--text root "novel.org"))))))
+
+(ert-deftest test-companion-commands-create-chapter-refuses ()
+  (test-companion-commands--with-project root
+    (let ((original (test-companion-commands--text root "novel.org")))
+      (dolist (case (list
+                     (list "invalid" (test-companion-commands--id root "Chapter 1 - Three Alarms") nil "x")
+                     (list "invalid" test-companion-commands--scene-1 nil "x")
+                     (list "read-only" "a6dffc06-711f-431e-bc46-6aad18e9af06" nil "x")
+                     (list "conflict" (test-companion-commands--id root "Act I")
+                           (test-companion-commands--id root "Chapter 3 - Day One") "x")
+                     (list "invalid" (test-companion-commands--id root "Act I") nil "* x")))
+        (should (equal (nth 0 case)
+                       (test-companion-commands--code
+                        (test-companion-commands--run
+                         root "create-chapter" :parent (nth 1 case)
+                         :after (nth 2 case) :title (nth 3 case))))))
+      (should (equal original (test-companion-commands--text root "novel.org"))))))
+
+(ert-deftest test-companion-commands-move-a-chapter-to-the-first-position ()
+  (test-companion-commands--with-project root
+    (should (test-companion-commands--ok-p
+             (test-companion-commands--run
+              root "move-node" :id (test-companion-commands--id root "Chapter 2 - What It Costs")
+              :parent (test-companion-commands--id root "Act I") :after nil)))
+    (should (equal '("Chapter 2 - What It Costs" "Chapter 1 - Three Alarms")
+                   (mapcar #'car (cdr (assoc "Act I" (test-companion-commands--order root))))))))
+
+(ert-deftest test-companion-commands-move-a-chapter-after-one-from-another-act-conflicts ()
+  (test-companion-commands--with-project root
+    (should (equal "conflict"
+                   (test-companion-commands--code
+                    (test-companion-commands--run
+                     root "move-node" :id (test-companion-commands--id root "Chapter 1 - Three Alarms")
+                     :parent (test-companion-commands--id root "Act I")
+                     :after (test-companion-commands--id root "Chapter 3 - Day One")))))))
+
+(ert-deftest test-companion-commands-insert-chapter-template-keeps-its-text ()
+  (let ((org-scribe-project-type-cache nil))
+    (cl-letf (((symbol-function 'org-scribe-project-levels)
+               (lambda () '(:chapter 2 :scene 3 :scene-tag "ignore"))))
+      (should (equal "** TODO C :ignore:\n:PROPERTIES:\n:WORDCOUNT: 0\n:WORD-OBJECTIVE: 3000\n:END:\n"
+                     (org-scribe--chapter-template "C")))
+      (should (string-prefix-p "** TODO C :ignore:\n:PROPERTIES:\n:WORDCOUNT: 0\n:WORD-OBJECTIVE: 3000\n:END:\n\n*** TODO S :ignore:\n"
+                               (org-scribe--chapter-template "C" "S"))))))
+
 (ert-deftest test-companion-commands-create-scene-in-a-spanish-project-uses-its-language ()
   (test-companion-commands--with-spanish root
     (let ((answer (test-companion-commands--run

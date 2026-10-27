@@ -1220,6 +1220,35 @@ saved."
         (unless (string= old-title new)
           (org-scribe--offer-plan-title root old-title new))))))
 
+(defun org-scribe--chapter-template (chapter-name &optional first-scene)
+  "Return the text of a new chapter named CHAPTER-NAME: heading and drawer.
+With FIRST-SCENE (a name), the chapter holds that scene, as
+`org-scribe-insert-chapter' inserts it; without, the chapter is empty, as
+the visual companion's `create-chapter' adds it.  Headings are TODO at
+the project's levels, tagged as the project type does."
+  (let* ((levels (org-scribe-project-levels))
+         (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag)))
+         (chapter-stars (make-string (plist-get levels :chapter) ?*)))
+    (concat
+     (format "%s TODO %s%s
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
+:END:
+" chapter-stars chapter-name tag)
+     (when first-scene
+       (format "
+%s TODO %s%s
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 500
+%s
+:END:
+
+{{{scene-break}}}
+" (make-string (plist-get levels :scene) ?*) first-scene tag
+  (org-scribe--scene-property-drawer-lines))))))
+
 ;;;###autoload
 (defun org-scribe-insert-chapter (chapter-name)
   "Insert a chapter template with CHAPTER-NAME after the chapter point is in.
@@ -1250,25 +1279,8 @@ collide with the project's own scene level."
 
   ;; Define and insert combined chapter + first scene template
   (let* ((levels (org-scribe-project-levels))
-         (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag)))
-         (chapter-stars (make-string (plist-get levels :chapter) ?*))
-         (scene-stars (make-string (plist-get levels :scene) ?*))
-         (template (format "%s TODO %s%s
-:PROPERTIES:
-:WORDCOUNT: 0
-:WORD-OBJECTIVE: 3000
-:END:
-
-%s TODO %s%s
-:PROPERTIES:
-:WORDCOUNT: 0
-:WORD-OBJECTIVE: 500
-%s
-:END:
-
-{{{scene-break}}}
-" chapter-stars chapter-name tag scene-stars (org-scribe--content-msg 'default-scene-name) tag
-  (org-scribe--scene-property-drawer-lines)))
+         (template (org-scribe--chapter-template
+                    chapter-name (org-scribe--content-msg 'default-scene-name)))
          (start-pos (org-scribe--goto-insertion-point
                      (plist-get levels :chapter))))
 

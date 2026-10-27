@@ -7,7 +7,8 @@
 ;; The operations the browser can ask for through POST /api/command:
 ;;   goto, save                         show a heading / save the buffers
 ;;   move-node, set-title, set-todo,
-;;   set-field, create-scene            edit the manuscript
+;;   set-field, create-scene,
+;;   create-chapter                     edit the manuscript
 ;; Any other name is `unsupported'.  (Entity edits arrive in a later phase.)
 ;;
 ;; Headings are found by ID, only in the project's manuscript and design
@@ -33,6 +34,8 @@
 (defvar org-scribe-companion-auto-save)
 (defvar org-todo-log-states)
 (declare-function org-scribe--scene-template "org-scribe-project")
+(declare-function org-scribe--chapter-template "org-scribe-project")
+(declare-function org-scribe--refile-invalidate-cache "org-scribe-core")
 
 (defconst org-scribe-companion-commands--operations
   '(("goto" . org-scribe-companion-commands--goto)
@@ -42,6 +45,7 @@
     ("set-todo" . org-scribe-companion-commands--set-todo)
     ("set-field" . org-scribe-companion-commands--set-field)
     ("create-scene" . org-scribe-companion-commands--create-scene)
+    ("create-chapter" . org-scribe-companion-commands--create-chapter)
     ("set-entity-property" . org-scribe-companion-entity--set-property)
     ("set-entity-section" . org-scribe-companion-entity--set-section)
     ("capture-entity" . org-scribe-companion-entity--capture))
@@ -538,6 +542,49 @@ the new scene's `:id'."
               (goto-char spot)
               (setq new-id (org-id-get-create))
               (set-marker spot nil)))
+          (org-scribe--refile-invalidate-cache)
+          (append (org-scribe-companion-commands--finish root) (list :id new-id)))
+      (dolist (marker (list parent after)) (when marker (set-marker marker nil))))))
+
+;;; create-chapter
+
+(defun org-scribe-companion-commands--create-chapter (root args)
+  "Add an empty chapter to an act.  ARGS: `:parent' (act ID), `:after', `:title'.
+The text is `org-scribe--chapter-template' without a first scene.  The
+answer carries the new chapter's `:id'."
+  (require 'org-scribe-project)
+  (let* ((buffer (org-scribe-companion-commands--manuscript-buffer root))
+         (parent-id (org-scribe-companion-commands--require-id args :parent))
+         (after-id (org-scribe-companion-commands--arg-string args :after))
+         (raw-title (org-scribe-companion-commands--arg args :title))
+         (title (if (stringp raw-title)
+                    (org-scribe-companion-commands--clean-line raw-title)
+                  ""))
+         (parent (org-scribe-companion-commands--heading root buffer parent-id))
+         (after (and after-id (org-scribe-companion-commands--arg-heading root buffer after-id)))
+         new-id)
+    (unwind-protect
+        (progn
+          (unless (org-scribe-chapter-level)
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-no-chapters))
+          (unless (eql (org-scribe-companion-commands--level parent) 1)
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-not-an-act))
+          (when after
+            (org-scribe-companion-commands--check-after
+             parent after (org-scribe-chapter-level)))
+          (when (org-scribe-companion-commands--title-parsed-p title)
+            (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-title))
+          (when (string-empty-p title) (setq title (org-scribe--content-msg 'default-chapter-name)))
+          (org-scribe-companion-commands--with-edit buffer
+            (let* ((default-directory root)
+                   (position (org-scribe-companion-commands--insertion-point parent after))
+                   (spot (copy-marker position)))
+              (org-scribe-companion-commands--insert-at
+               spot (org-scribe--chapter-template title))
+              (goto-char spot)
+              (setq new-id (org-id-get-create))
+              (set-marker spot nil)))
+          (org-scribe--refile-invalidate-cache)
           (append (org-scribe-companion-commands--finish root) (list :id new-id)))
       (dolist (marker (list parent after)) (when marker (set-marker marker nil))))))
 

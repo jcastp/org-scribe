@@ -35,12 +35,12 @@ export function startEdit(node, initial, multiline, commit, ctx) {
   editor.select();
 }
 
-export function moveTo(ctx, id, chapterId, after) {
+export function moveTo(ctx, id, parentId, after) {
   if (after === null) {
     ctx.notice(ctx.t('companion-ui-cannot-place'));
     ctx.rerender();
     return;
   }
-  ctx.edit('move-node', { id, parent: chapterId, after: after || null }, id);
+  ctx.edit('move-node', { id, parent: parentId, after: after || null }, id);
 }
 

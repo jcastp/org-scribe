@@ -1,5 +1,6 @@
 // Corkboard: acts as sections, chapters as rows, scenes as cards.
-// Cards drag between chapters (SortableJS, loaded as window.Sortable), titles
+// Cards drag between chapters and chapters (by their handle) within and across
+// acts (SortableJS, loaded as window.Sortable), titles
 // and summaries edit in place, the state is a dropdown.  Every change is a
 // command to Emacs, which answers with a new snapshot; a refused command
 // re-renders from the last snapshot, which is the rollback.
@@ -201,11 +202,75 @@ function makeSortable(cards, ctx) {
   });
 }
 
+/** Alt+Up/Down moves a chapter; at an act's edge it crosses to the end of the
+ * previous act or the start of the next one. */
+function keyboardMoveChapter(event, row, ctx) {
+  const down = event.key === 'ArrowDown';
+  const sibling = down ? row.nextElementSibling : row.previousElementSibling;
+  if (sibling && sibling.classList.contains('chapter')) {
+    const anchor = down ? sibling : sibling.previousElementSibling;
+    const after = anchor && anchor.classList.contains('chapter') ? anchor.dataset.id || null : '';
+    moveTo(ctx, row.dataset.id, row.closest('.act').dataset.id, after);
+    return;
+  }
+  const acts = [...document.querySelectorAll('.act')].filter((act) => act.dataset.id);
+  const next = acts[acts.indexOf(row.closest('.act')) + (down ? 1 : -1)];
+  if (!next) return;
+  let after = '';
+  if (!down) {
+    const last = [...next.querySelectorAll('.chapter')].pop();
+    after = last ? last.dataset.id || null : '';
+  }
+  moveTo(ctx, row.dataset.id, next.dataset.id, after);
+}
+
+function makeChapterSortable(chapters, ctx) {
+  window.Sortable.create(chapters, {
+    group: 'chapters',
+    handle: '.chapter-handle',
+    draggable: '.chapter.movable',
+    animation: 150,
+    ghostClass: 'drag-ghost',
+    // tall rows are awkward to drag: fold the cards away meanwhile
+    onStart() { document.body.classList.add('dragging-chapter'); },
+    onEnd(event) {
+      document.body.classList.remove('dragging-chapter');
+      if (event.from === event.to && event.oldIndex === event.newIndex) return;
+      const act = event.to.closest('.act');
+      moveTo(ctx, event.item.dataset.id, act.dataset.id, previousId(event.item));
+    },
+  });
+}
+
 function chapterRow(chapter, ctx) {
   const row = el('div', 'chapter');
   if (chapter.id) row.dataset.id = chapter.id;
+  const changeable = editable(chapter);
+  if (changeable) row.classList.add('movable');
   const head = el('div', 'chapter-head');
-  head.append(el('h3', 'chapter-title', chapter.title || ctx.t('companion-ui-untitled')));
+  if (changeable) {
+    head.tabIndex = 0;
+    const handle = el('span', 'chapter-handle', '⠿');
+    handle.title = ctx.t('companion-ui-move-chapter');
+    head.append(handle);
+  }
+  const title = el('h3', 'chapter-title', chapter.title || ctx.t('companion-ui-untitled'));
+  head.append(title);
+  const editTitle = () => startEdit(title, chapter.title || '', false,
+    (value) => { if (value.trim()) ctx.edit('set-title', { id: chapter.id, title: value }, chapter.id); }, ctx);
+  if (changeable) {
+    title.classList.add('editable');
+    title.title = ctx.t('companion-ui-edit-title');
+    title.addEventListener('click', (event) => { event.stopPropagation(); editTitle(); });
+    head.addEventListener('keydown', (event) => {
+      if (event.target !== head) return;
+      if (event.key === 'F2') editTitle();
+      if (event.altKey && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+        event.preventDefault();
+        keyboardMoveChapter(event, row, ctx);
+      }
+    });
+  }
   const chip = todoChip(chapter, ctx);
   if (chip) head.append(chip);
   head.append(progress(sumWords(chapter.scenes), chapter.objective, ctx));
@@ -232,8 +297,7 @@ function chapterRow(chapter, ctx) {
 export function render(container, ctx) {
   container.replaceChildren();
   const acts = ctx.snapshot.acts;
-  const total = acts.reduce((n, act) => n + act.chapters.reduce((m, c) => m + c.scenes.length, 0), 0);
-  if (total === 0) {
+  if (acts.length === 0) {
     container.append(el('p', 'empty', ctx.t('companion-ui-empty')));
     return;
   }
@@ -246,8 +310,23 @@ export function render(container, ctx) {
     if (chip) head.append(chip);
     const words = sumWords(act.chapters.flatMap((chapter) => chapter.scenes));
     head.append(progress(words, act.objective, ctx));
+    if (act.id && !act.readOnly) {
+      const add = el('button', 'add-scene', '+');
+      add.type = 'button';
+      const label = ctx.t('companion-ui-new-chapter');
+      add.title = label;
+      add.setAttribute('aria-label', label);
+      add.addEventListener('click', () => {
+        const last = [...act.chapters].reverse().find((chapter) => chapter.id);
+        ctx.edit('create-chapter', { parent: act.id, after: last ? last.id : null }, null, true);
+      });
+      head.append(add);
+    }
     section.append(head);
-    for (const chapter of act.chapters) section.append(chapterRow(chapter, ctx));
+    const chapters = el('div', 'chapters');
+    for (const chapter of act.chapters) chapters.append(chapterRow(chapter, ctx));
+    section.append(chapters);
+    if (act.id && !act.readOnly && window.Sortable) makeChapterSortable(chapters, ctx);
     container.append(section);
   }
 }

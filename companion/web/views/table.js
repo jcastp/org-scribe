@@ -394,7 +394,7 @@ export function render(container, ctx) {
   const fields = ctx.snapshot.sceneFields.filter((field) => field.key !== 'weight');
   const columns = fields.filter((field) => prefs.columns.includes(field.key));
   const acts = ctx.snapshot.acts;
-  if (!acts.some((act) => act.chapters.some((chapter) => chapter.scenes.length))) {
+  if (acts.length === 0) {
     container.append(el('p', 'empty', ctx.t('companion-ui-empty')));
     return;
   }

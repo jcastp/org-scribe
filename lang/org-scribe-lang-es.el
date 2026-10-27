@@ -560,6 +560,8 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (companion-ui-untitled . "(sin título)")
      (companion-ui-plot-point . "Punto de trama")
      (companion-ui-new-scene . "Nueva escena")
+     (companion-ui-new-chapter . "Nuevo capítulo")
+     (companion-ui-move-chapter . "Arrastrar para mover el capítulo")
      (companion-ui-edit-title . "Clic para editar el título")
      (companion-ui-edit-summary . "Clic para editar el resumen")
      (companion-ui-scene-state . "Estado de la escena")
@@ -617,6 +619,8 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (companion-error-section-conflict . "Esa sección ha cambiado en Emacs entretanto")
      (companion-error-not-a-scene . "El encabezado %s no es una escena.")
      (companion-error-not-a-chapter . "Solo se puede añadir una escena a un capítulo.")
+     (companion-error-no-chapters . "A este proyecto no se le pueden añadir capítulos.")
+     (companion-error-not-an-act . "Solo se puede añadir un capítulo a un acto.")
      (plural-empty . "")
      (plural-s . "s")))
   "The Spanish language pack.  Read only through the accessors in
