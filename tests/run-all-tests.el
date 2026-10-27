@@ -115,7 +115,9 @@
     "test-planner-views"           ; Weekly summary, month grid, week start
     "test-planner-start-date"      ; Moving the start date
     "test-planner-presets"         ; Preset plans, new-plan defaults
-    "test-planner-outside")        ; Words outside the manuscript
+    "test-planner-outside"         ; Words outside the manuscript
+    ;; Visual companion (companion/)
+    "test-companion-gate")         ; Switch, per-project gate, module stays unloaded
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()

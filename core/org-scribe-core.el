@@ -219,6 +219,71 @@ still check the gate first."
           ((equal value "no") 'no)
           (t nil))))
 
+(defun org-scribe-companion-gate (&optional root)
+  "Return the per-project visual-companion opt-in state.
+Returns \\='yes, \\='no, or nil (undecided) read from the \"# Companion:\"
+line of ROOT's (default: the current project's) .org-scribe-project
+marker file.  Lives here, like `org-scribe-planner-gate', so callers that
+must not load the companion module can check it first."
+  (let* ((root (or root (org-scribe-project-root)))
+         (value (org-scribe--project-marker-get root "Companion")))
+    (cond ((equal value "yes") 'yes)
+          ((equal value "no") 'no)
+          (t nil))))
+
+(defvar org-scribe-companion-enable)
+(declare-function org-scribe-companion--open "org-scribe-companion")
+
+(defun org-scribe-companion-open ()
+  "Open the visual companion for the current project in the browser.
+Checks, in this order, that `org-scribe-companion-enable' is on, that the
+project is a novel, and that the project has opted in (asking once when
+it has not decided, see `org-scribe-companion-gate').  Only then is the
+companion module loaded.  This command lives here, not in the module, so
+that with the switch off the module is never loaded."
+  (interactive)
+  (unless org-scribe-companion-enable
+    (user-error "%s" (org-scribe-msg 'companion-error-disabled)))
+  (let ((root (org-scribe--require-project)))
+    (unless (eq (org-scribe-project-type) 'novel)
+      (user-error "%s" (org-scribe-msg 'companion-error-novels-only)))
+    (when (org-scribe--companion-gate-open-p root)
+      (require 'org-scribe-companion)
+      (org-scribe-companion--open root))))
+
+(defun org-scribe--companion-gate-open-p (root)
+  "Return non-nil when ROOT has the companion enabled, asking if needed.
+An undecided project is asked once and the answer is recorded; a project
+that said no is offered to change its mind."
+  (pcase (org-scribe-companion-gate root)
+    ('yes t)
+    ('no
+     (when (yes-or-no-p (org-scribe-msg 'companion-ask-reenable))
+       (org-scribe--project-marker-set root "Companion" "yes")
+       t))
+    (_
+     (if (yes-or-no-p (org-scribe-msg 'companion-ask-enable))
+         (progn (org-scribe--project-marker-set root "Companion" "yes") t)
+       (org-scribe--project-marker-set root "Companion" "no")
+       (message "%s" (org-scribe-msg 'companion-staying-disabled))
+       nil))))
+
+(defun org-scribe-companion-enable-for-project ()
+  "Enable the visual companion for the current project.
+Writes \"# Companion: yes\" in .org-scribe-project."
+  (interactive)
+  (let ((root (org-scribe--require-project)))
+    (org-scribe--project-marker-set root "Companion" "yes")
+    (message "%s" (org-scribe-msg 'companion-enabled-for-project))))
+
+(defun org-scribe-companion-disable-for-project ()
+  "Disable the visual companion for the current project.
+Writes \"# Companion: no\" in .org-scribe-project."
+  (interactive)
+  (let ((root (org-scribe--require-project)))
+    (org-scribe--project-marker-set root "Companion" "no")
+    (message "%s" (org-scribe-msg 'companion-disabled-for-project))))
+
 ;;; Plotting Method
 
 (defconst org-scribe--methods

@@ -119,6 +119,13 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
   (add-to-list 'load-path planning-dir)
   (load (expand-file-name "org-scribe-planner-autoloads" planning-dir) nil :nomessage))
 
+;; Visual companion (companion/) — off until `org-scribe-companion-enable'.
+;; Only the load path and the (cheap) autoloads file are set up here; the
+;; module itself is required by `org-scribe-companion-open' after its checks.
+(let ((companion-dir (expand-file-name "companion" org-scribe--source-directory)))
+  (add-to-list 'load-path companion-dir)
+  (load (expand-file-name "org-scribe-companion-autoloads" companion-dir) nil :nomessage))
+
 ;; To disable individual integration features before the planner loads:
 ;;   (setq org-scribe-planner-auto-load-plan nil)   ; no auto-load on project open
 ;;   (setq org-scribe-planner-auto-push-wordcount nil) ; no push after word count

@@ -158,6 +158,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 ^^               _0_: Normal      _j_: Jump to PoV     _x_: Thesaurus       _5_: TODOs        _H_: Health report
 ^^               ^^               ^^                   _t_: Word target     _6_: Edits        _W_: Planner…
 ^^               ^^               ^^                   _T_: Title           ^^                _X_: Compile draft
+^^               ^^               ^^                   ^^                   ^^                _B_: Board…
 ^^               ^^               ^^                   ^^                   ^^                _q_: Quit
 "
   ;; Insert (most frequent)
@@ -209,6 +210,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("R" org-scribe-relink-project "relink project")
   ("H" org-scribe-project-health "project health report")
   ("X" org-scribe-compile "compile manuscript")
+  ("B" org-scribe-companion-open "board (visual companion)")
   ("W" (lambda ()
          (interactive)
          (if (eq (org-scribe-planner-gate) 'no)

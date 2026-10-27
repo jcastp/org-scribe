@@ -655,6 +655,78 @@ outstanding in each.  When nil, only categories with markers appear."
   :type 'boolean
   :group 'org-scribe)
 
+;;; Visual companion
+
+(defcustom org-scribe-companion-enable nil
+  "Master switch for the visual companion.
+While nil, the companion module is never loaded and nothing runs:
+`org-scribe-companion-open' and the hydra key B only explain how to turn
+it on.  Set it to t to use the companion (a corkboard, outline table,
+storyline and entity forms shown in a browser tab, with Emacs as the only
+program that reads and writes the project files).  A project must also
+opt in, once, with a \"# Companion: yes\" line in .org-scribe-project
+(asked the first time the companion is opened there)."
+  :type 'boolean
+  :group 'org-scribe)
+
+(defcustom org-scribe-companion-port 35920
+  "Preferred TCP port of the companion's local server.
+The server listens on 127.0.0.1 only.  When the port is taken, the next
+free ports are tried."
+  :type 'integer
+  :group 'org-scribe)
+
+(defcustom org-scribe-companion-browser-function #'browse-url
+  "Function called with the companion's URL to show it.
+`browse-url' opens a normal browser tab.  `org-scribe-companion-browse-app-mode'
+opens a window without browser chrome instead."
+  :type '(choice (const :tag "Normal browser tab" browse-url)
+                 (const :tag "Browser app window" org-scribe-companion-browse-app-mode)
+                 (function :tag "Other function"))
+  :group 'org-scribe)
+
+(defcustom org-scribe-companion-app-mode-browsers
+  '("chromium" "google-chrome" "brave-browser" "microsoft-edge")
+  "Executables `org-scribe-companion-browse-app-mode' tries, in order.
+The first one found is started with --app=URL.  When none is found, the
+URL is opened with `browse-url'."
+  :type '(repeat string)
+  :group 'org-scribe)
+
+(defcustom org-scribe-companion-follow t
+  "When non-nil, the companion highlights the scene where point is in Emacs."
+  :type 'boolean
+  :group 'org-scribe)
+
+(defcustom org-scribe-companion-raise-frame t
+  "When non-nil, raise the Emacs frame when the browser asks to go to a heading."
+  :type 'boolean
+  :group 'org-scribe)
+
+(defcustom org-scribe-companion-auto-save nil
+  "When non-nil, save the project buffers after each companion command.
+By default the companion edits buffers and leaves saving to you."
+  :type 'boolean
+  :group 'org-scribe)
+
+(defcustom org-scribe-companion-todo-colors
+  '(("TODO" . "#b45309")
+    ("TOWRITE" . "#2563eb")
+    ("TOREVIEW" . "#7c3aed")
+    ("REDO" . "#dc2626")
+    ("RESTRUCTURE" . "#db2777")
+    ("FINISHED" . "#6b7280")
+    ("PURGE" . "#9ca3af")
+    ("OPEN" . "#2563eb")
+    ("EXPLORING" . "#7c3aed")
+    ("CHOSEN" . "#6b7280")
+    ("REJECTED" . "#9ca3af"))
+  "Alist of TODO keyword to CSS colour, used by the companion's cards.
+Done states are muted so they read as finished; REDO and RESTRUCTURE
+stand out.  Keywords not listed get a neutral colour."
+  :type '(alist :key-type string :value-type string)
+  :group 'org-scribe)
+
 (provide 'org-scribe-config)
 
 ;;; org-scribe-config.el ends here
