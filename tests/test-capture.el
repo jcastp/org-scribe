@@ -536,7 +536,9 @@ profile, not the novel ficha -- one notes file, one profile shape."
         (should (string-match-p "^:Gender:$" filled))
         (should (string-match-p (if (eq lang 'es) "^- Personalidad ::" "^- Personality ::")
                                 filled))
-        (should-not (string-match-p "Ghost\\|Fantasma\\|Hélice\\|:Stance:\\|:Weight:" filled))))))
+        ;; Weight is shared with the novel: it orders the timeline columns.
+        (should (string-match-p "^:Weight: *$" filled))
+        (should-not (string-match-p "Ghost\\|Fantasma\\|Hélice\\|:Stance:" filled))))))
 
 (ert-deftest test-short-story-location-capture-matches-template ()
   "In a short-story project a captured location gets the template's own
@@ -579,6 +581,16 @@ profile (Description / Important details / Atmosphere), not the Aspects."
   (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'novel)))
     (should (string-match-p ":Stance:"
                             (nth 4 (car (org-scribe-plot-thread-capture-templates 'en)))))))
+
+(ert-deftest test-short-story-character-capture-prompts-for-weight ()
+  "The short-story character capture asks for Weight, in both languages."
+  (dolist (lang '(en es))
+    (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+      (let ((template (nth 4 (car (org-scribe-character-capture-templates lang)))))
+        (should (string-match-p ":Weight: %\\^{" template))
+        (should (string-match-p ":Weight: -1$"
+                                (org-scribe-test--fill-template template "-1")))
+        (should-not (string-match-p ":Stance:" template))))))
 
 (ert-deftest test-weight-prompt-accepts-empty-answer ()
   "Declining the Weight prompt leaves the property blank, not zero.

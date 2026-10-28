@@ -11,6 +11,7 @@
 :Role: Protagonist
 :Age:
 :Gender:
+:Weight:
 :END:
 
 - Personality ::
@@ -22,6 +23,7 @@
 ** Supporting Character: [Name]
 :PROPERTIES:
 :Role: Supporting
+:Weight:
 :END:
 
 - Role ::
@@ -31,6 +33,7 @@
 ** Antagonist: [Name]
 :PROPERTIES:
 :Role: Antagonist
+:Weight:
 :END:
 
 - Role ::

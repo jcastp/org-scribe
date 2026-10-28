@@ -514,12 +514,14 @@ is exactly wrong and looks plausible."
 ;;; The Weight property in shipped templates
 
 (ert-deftest test-templates-ship-weight-on-every-character ()
-  "Every character profile in both novel templates carries a `:Weight:' line.
+  "Every character profile in the notebook templates carries a `:Weight:' line.
 Shipping the property is what makes `-1' discoverable: it is a display
 knob nothing else reveals, and a writer who never sees the key never
 learns they can keep a walk-on part out of the timeline."
   (dolist (relative '("novel-en/design.org.template"
-                      "novel-es/diseno.org.template"))
+                      "novel-es/diseno.org.template"
+                      "short-story-en/design.org.template"
+                      "short-story-es/diseno.org.template"))
     (org-scribe-test--with-template relative
       (let ((roles 0) (weights 0))
         (org-map-entries
@@ -533,9 +535,11 @@ learns they can keep a walk-on part out of the timeline."
         (should (= roles weights))))))
 
 (ert-deftest test-templates-ship-weight-on-every-plot-thread ()
-  "Every narrative line in both plot templates carries a `:Weight:' line."
+  "Every narrative line in the notebook templates carries a `:Weight:' line."
   (dolist (relative '("novel-en/design.org.template"
-                      "novel-es/diseno.org.template"))
+                      "novel-es/diseno.org.template"
+                      "short-story-en/design.org.template"
+                      "short-story-es/diseno.org.template"))
     (org-scribe-test--with-template relative
       (let ((threads 0) (weights 0))
         (org-map-entries

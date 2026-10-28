@@ -11,6 +11,7 @@
 :Role: Protagonist
 :Age:
 :Gender:
+:Weight:
 :END:
 
 - Personalidad ::
@@ -22,6 +23,7 @@
 ** Personaje Secundario: [Nombre]
 :PROPERTIES:
 :Role: Supporting
+:Weight:
 :END:
 
 - Papel ::
@@ -31,6 +33,7 @@
 ** Antagonista: [Nombre]
 :PROPERTIES:
 :Role: Antagonist
+:Weight:
 :END:
 
 - Papel ::
