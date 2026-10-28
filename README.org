@@ -953,7 +953,7 @@ Note: To update plot thread display names after renaming threads in =design.org=
 
 *** Overview
 
-Track character appearances across your manuscript using a visual timeline. See at a glance which characters appear in which scenes, who has the PoV, and identify coverage gaps. The scene scan itself is project-type aware, so this works the same way in a short story as in a novel — the short-story manuscript template just does not ship the dynamic block by default (a short story's short scene count makes coverage easy to see by eye); add it to =story.org=/=cuento.org= yourself if you want it.
+Track character appearances across your manuscript using a visual timeline. See at a glance which characters appear in which scenes, who has the PoV, and identify coverage gaps. The scene scan itself is project-type aware, so this works the same way in a short story as in a novel — the short-story manuscript template ships both timeline blocks (=plot-thread-timeline= and =character-timeline=) in its front matter, as the novel's does.
 
 *** Quick Start
 
@@ -965,7 +965,7 @@ Character timeline uses the existing character properties you're already setting
    :Characters: [[id:char-alice-001][Alice]], [[id:char-bob-002][Bob]]
    #+end_example
 
-2. Add timeline block to your =novel.org= (already in template):
+2. Add timeline block to your manuscript (already in the novel and short-story templates):
    #+begin_example
    #+BEGIN: character-timeline
    #+END:

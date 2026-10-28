@@ -37,6 +37,29 @@ To update word count, use:
 Daily totals are kept by the bundled writing planner rather than by a table
 here: =F8 F8 W=, or =M-x org-scribe-plan= to create or load a plan.
 
+** Plot Thread Analysis
+
+This table shows which plot threads appear in which scenes.
+Update with =C-c C-c= on the #+BEGIN line.
+
+For detailed health reports, use =M-x org-scribe-plot-thread-report=.
+
+#+BEGIN: plot-thread-timeline
+#+END:
+
+** Character Timeline
+
+This table shows which characters appear in which scenes.
+
+Symbols:
+- ★ = Point of View character
+- ● = Present in scene
+
+Update with =C-c C-c= on the #+BEGIN line.
+
+#+BEGIN: character-timeline
+#+END:
+
 * Quick Links :noexport:
 - [[file:design.org][Design notebook]]
 

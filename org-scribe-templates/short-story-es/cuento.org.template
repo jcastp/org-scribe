@@ -38,6 +38,29 @@ Los totales diarios los lleva el planificador de escritura incluido, no una
 tabla en este archivo: =F8 F8 W=, o =M-x org-scribe-plan= para crear o
 cargar un plan.
 
+** Análisis de Tramas
+
+Esta tabla muestra qué hilos argumentales aparecen en cada escena.
+Actualiza con =C-c C-c= en la línea #+BEGIN.
+
+Para reportes detallados de salud, usa =M-x org-scribe-plot-thread-report=.
+
+#+BEGIN: plot-thread-timeline
+#+END:
+
+** Línea Temporal de Personajes
+
+Esta tabla muestra qué personajes aparecen en cada escena.
+
+Símbolos:
+- ★ = Personaje con Punto de Vista
+- ● = Presente en la escena
+
+Actualiza con =C-c C-c= en la línea #+BEGIN.
+
+#+BEGIN: character-timeline
+#+END:
+
 * Enlaces Rápidos :noexport:
 - [[file:diseno.org][Cuaderno de diseño]]
 
