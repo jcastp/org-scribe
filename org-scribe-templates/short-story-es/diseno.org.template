@@ -6,7 +6,7 @@
 
 * Personajes
 
-** Protagonista: [Nombre]
+** [Protagonista]
 :PROPERTIES:
 :Role: Protagonist
 :Age:
@@ -20,7 +20,7 @@
 - Rasgo característico ::
 - Trasfondo ::
 
-** Personaje Secundario: [Nombre]
+** [Personaje secundario]
 :PROPERTIES:
 :Role: Supporting
 :Weight:
@@ -30,7 +30,7 @@
 - Relación con el protagonista ::
 - Rasgo clave ::
 
-** Antagonista: [Nombre]
+** [Antagonista]
 :PROPERTIES:
 :Role: Antagonist
 :Weight:
@@ -85,7 +85,7 @@ Rastrea los hilos de la trama y líneas narrativas aquí. Usa =F8 F8 k g= para c
 
 * Ambientación
 
-** Ubicación(es) Principal(es)
+** [Escenario principal]
 :PROPERTIES:
 :Type: Escenario
 :Time-period:

@@ -6,7 +6,7 @@
 
 * Characters
 
-** Protagonist: [Name]
+** [Protagonist]
 :PROPERTIES:
 :Role: Protagonist
 :Age:
@@ -20,7 +20,7 @@
 - Key trait/quirk ::
 - Background ::
 
-** Supporting Character: [Name]
+** [Supporting character]
 :PROPERTIES:
 :Role: Supporting
 :Weight:
@@ -30,7 +30,7 @@
 - Relationship to protagonist ::
 - Key trait ::
 
-** Antagonist: [Name]
+** [Antagonist]
 :PROPERTIES:
 :Role: Antagonist
 :Weight:
@@ -85,7 +85,7 @@ Track plot threads and storylines here. Use =F8 F8 k g= to capture new threads a
 
 * Setting
 
-** Main Location(s)
+** [Main setting]
 :PROPERTIES:
 :Type: Setting
 :Time-period:

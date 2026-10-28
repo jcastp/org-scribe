@@ -9,7 +9,7 @@
 ;;
 ;; The point of this file, specifically, is the scenario the shipped
 ;; templates used to fail: a writer replaces a placeholder heading
-;; (\"Protagonist: [Name]\", \"Main Location(s)\") with the entity's real
+;; (\"[Protagonist]\", \"[Main setting]\") with the entity's real
 ;; name.  Before the templates carried an explicit :Role:/:Type: property,
 ;; recognition fell back to matching the placeholder's own heading text
 ;; against a regexp -- so the entity was found only until the writer did
@@ -96,19 +96,19 @@ no heading-aware navigation at all."
 placeholder heading is replaced with a real name -- because recognition
 now goes through :Role:, not the word \"Protagonist\" in the heading."
   (org-scribe-ss-test--with-template "short-story-en/design.org.template"
-    (org-scribe-ss-test--rename-heading "Protagonist: [Name]" "Mara Ilić")
+    (org-scribe-ss-test--rename-heading "[Protagonist]" "Mara Ilić")
     (should (org-scribe-ss-test--heading-recognized-p
              "Mara Ilić" #'org-scribe--character-heading-p))))
 
 (ert-deftest test-short-story-en-supporting-character-survives-rename ()
   (org-scribe-ss-test--with-template "short-story-en/design.org.template"
-    (org-scribe-ss-test--rename-heading "Supporting Character: [Name]" "Devon Ashworth")
+    (org-scribe-ss-test--rename-heading "[Supporting character]" "Devon Ashworth")
     (should (org-scribe-ss-test--heading-recognized-p
              "Devon Ashworth" #'org-scribe--character-heading-p))))
 
 (ert-deftest test-short-story-en-antagonist-survives-rename ()
   (org-scribe-ss-test--with-template "short-story-en/design.org.template"
-    (org-scribe-ss-test--rename-heading "Antagonist: [Name]" "Corvin Blackwell")
+    (org-scribe-ss-test--rename-heading "[Antagonist]" "Corvin Blackwell")
     (should (org-scribe-ss-test--heading-recognized-p
              "Corvin Blackwell" #'org-scribe--character-heading-p))))
 
@@ -134,7 +134,7 @@ one -- the bug was in the template's own shipped shape)."
 is replaced with a real place name -- recognition now goes through
 :Type:, not the word \"Location\" in the heading."
   (org-scribe-ss-test--with-template "short-story-en/design.org.template"
-    (org-scribe-ss-test--rename-heading "Main Location(s)" "The Salt Marsh Inn")
+    (org-scribe-ss-test--rename-heading "[Main setting]" "The Salt Marsh Inn")
     (should (org-scribe-ss-test--heading-recognized-p
              "The Salt Marsh Inn" #'org-scribe--location-heading-p))))
 
@@ -142,19 +142,19 @@ is replaced with a real place name -- recognition now goes through
 
 (ert-deftest test-short-story-es-protagonist-survives-rename ()
   (org-scribe-ss-test--with-template "short-story-es/diseno.org.template"
-    (org-scribe-ss-test--rename-heading "Protagonista: [Nombre]" "Marisol Aguirre")
+    (org-scribe-ss-test--rename-heading "[Protagonista]" "Marisol Aguirre")
     (should (org-scribe-ss-test--heading-recognized-p
              "Marisol Aguirre" #'org-scribe--character-heading-p))))
 
 (ert-deftest test-short-story-es-supporting-character-survives-rename ()
   (org-scribe-ss-test--with-template "short-story-es/diseno.org.template"
-    (org-scribe-ss-test--rename-heading "Personaje Secundario: [Nombre]" "Tomás Rivadeneira")
+    (org-scribe-ss-test--rename-heading "[Personaje secundario]" "Tomás Rivadeneira")
     (should (org-scribe-ss-test--heading-recognized-p
              "Tomás Rivadeneira" #'org-scribe--character-heading-p))))
 
 (ert-deftest test-short-story-es-antagonist-survives-rename ()
   (org-scribe-ss-test--with-template "short-story-es/diseno.org.template"
-    (org-scribe-ss-test--rename-heading "Antagonista: [Nombre]" "Ezequiel Duarte")
+    (org-scribe-ss-test--rename-heading "[Antagonista]" "Ezequiel Duarte")
     (should (org-scribe-ss-test--heading-recognized-p
              "Ezequiel Duarte" #'org-scribe--character-heading-p))))
 
@@ -175,7 +175,7 @@ Spanish template must not carry a translated value like \"Protagonista\"."
 
 (ert-deftest test-short-story-es-main-location-survives-rename ()
   (org-scribe-ss-test--with-template "short-story-es/diseno.org.template"
-    (org-scribe-ss-test--rename-heading "Ubicación(es) Principal(es)" "La Posada del Cabo")
+    (org-scribe-ss-test--rename-heading "[Escenario principal]" "La Posada del Cabo")
     (should (org-scribe-ss-test--heading-recognized-p
              "La Posada del Cabo" #'org-scribe--location-heading-p))))
 
