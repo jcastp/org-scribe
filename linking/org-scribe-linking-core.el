@@ -510,7 +510,7 @@ Entities with a negative weight are omitted; use
 (defun org-scribe--chapter-suffix (chapter)
   "Return \" (Chapter: CHAPTER)\", or \"\" when the project has no chapter level."
   (if (org-scribe-chapter-level)
-      (format " (Chapter: %s)" chapter)
+      (org-scribe-msg 'msg-chapter-suffix chapter)
     ""))
 
 (defun org-scribe--render-presence-table (entities scenes cell-fn &optional hidden)

@@ -233,13 +233,13 @@ Returns (STATUS-SYMBOL . WARNINGS-LIST)."
         (gap (org-scribe--calculate-thread-gap appearances all-scenes)))
     (when (< coverage-pct 30)
       (setq status "⚠️")
-      (push (format "Low coverage (%.1f%%)" coverage-pct) warnings))
+      (push (org-scribe-msg 'msg-plot-report-low-coverage coverage-pct) warnings))
     (when (and gap (> gap org-scribe-plot-thread-gap-threshold))
       (setq status "⚠️")
-      (push (format "Gap of %d scenes" gap) warnings))
+      (push (org-scribe-msg 'msg-plot-report-gap gap) warnings))
     (when (= scene-count 1)
       (setq status "⚠️")
-      (push "Only in 1 scene" warnings))
+      (push (org-scribe-msg 'msg-plot-report-single) warnings))
     (cons status warnings)))
 
 ;;;###autoload
@@ -248,24 +248,27 @@ Returns (STATUS-SYMBOL . WARNINGS-LIST)."
 Analyzes thread coverage, gaps, and warnings.
 Opens a new buffer with the report."
   (interactive)
-  (let* ((report-buffer (get-buffer-create "*Plot Thread Health Report*"))
+  (let* (;; The report is written in the project's language, whatever
+         ;; `org-scribe-message-language' says.
+         (org-scribe-message-language (org-scribe-project-language))
+         (report-buffer (get-buffer-create "*Plot Thread Health Report*"))
          (threads (org-scribe--get-all-plot-threads))
          (scenes (org-scribe--get-all-scenes-with-plots))
          (total-scene-count (org-scribe--get-scene-count)))
     (with-current-buffer report-buffer
       (erase-buffer)
       (org-mode)
-      (insert "#+TITLE: Plot Thread Health Report\n")
+      (insert "#+TITLE: " (org-scribe-msg 'msg-plot-report-title) "\n")
       (insert "#+DATE: " (format-time-string "%Y-%m-%d %H:%M") "\n")
       (insert "#+STARTUP: overview\n\n")
-      (insert "* Summary\n\n")
-      (insert (format "- Total plot threads: %d\n" (length threads)))
-      (insert (format "- Total scenes: %d\n" total-scene-count))
-      (insert (format "- Scenes with plot threads: %d\n" (length scenes)))
+      (insert (format "* %s\n\n" (org-scribe-msg 'msg-plot-report-summary)))
+      (insert "- " (org-scribe-msg 'msg-plot-report-total-threads (length threads)) "\n")
+      (insert "- " (org-scribe-msg 'msg-plot-report-total-scenes total-scene-count) "\n")
+      (insert "- " (org-scribe-msg 'msg-plot-report-scenes-with-threads (length scenes)) "\n")
       (insert "\n")
       (if (null scenes)
-          (insert "** No scenes with Plot properties found.\n\n")
-        (insert "* Thread Details\n\n")
+          (insert "** " (org-scribe-msg 'msg-plot-report-no-scenes) "\n\n")
+        (insert (format "* %s\n\n" (org-scribe-msg 'msg-plot-report-details)))
         (dolist (thread threads)
           (let* ((thread-name (car thread))
                  (thread-id (cadr thread))
@@ -285,22 +288,25 @@ Opens a new buffer with the report."
             ;; real plot-thread heading, or `org-id-goto' could start
             ;; jumping to this report instead.
             (insert (format "- ID: %s\n" thread-id))
-            (insert (format "- Scenes: %d of %d (%.1f%%)\n"
-                           scene-count total-scene-count coverage-pct))
+            (insert "- " (org-scribe-msg 'msg-plot-report-scenes-of
+                                         scene-count total-scene-count coverage-pct)
+                    "\n")
             (when appearances
-              (insert (format "- First appearance: %s%s\n"
-                             (nth 0 (car appearances))
-                             (org-scribe--chapter-suffix (nth 1 (car appearances)))))
-              (insert (format "- Last appearance: %s%s\n"
-                             (nth 0 (car (last appearances)))
-                             (org-scribe--chapter-suffix
-                              (nth 1 (car (last appearances)))))))
+              (insert "- " (org-scribe-msg 'msg-plot-report-first
+                                           (nth 0 (car appearances))
+                                           (org-scribe--chapter-suffix (nth 1 (car appearances))))
+                      "\n")
+              (insert "- " (org-scribe-msg 'msg-plot-report-last
+                                           (nth 0 (car (last appearances)))
+                                           (org-scribe--chapter-suffix
+                                            (nth 1 (car (last appearances)))))
+                      "\n"))
             (when warnings
-              (insert "\n*Warnings:*\n")
+              (insert (format "\n*%s*\n" (org-scribe-msg 'msg-plot-report-warnings)))
               (dolist (warning warnings)
                 (insert (format "- ⚠️ %s\n" warning))))
             (insert "\n"))))
-      (insert "* Scenes Without Plot Threads\n\n")
+      (insert (format "* %s\n\n" (org-scribe-msg 'msg-plot-report-without-heading)))
       (let ((scenes-without-plot
              ;; Reuses `org-scribe--get-all-scenes' rather than its own
              ;; `org-map-entries' walk, so it inherits that function's
@@ -316,12 +322,13 @@ Opens a new buffer with the report."
                                         (org-scribe--heading-text))))))))
         (if scenes-without-plot
             (progn
-              (insert (format "Found %d scene(s) without Plot property:\n\n"
-                             (length scenes-without-plot)))
+              (insert (org-scribe-msg 'msg-plot-report-without-found
+                                      (length scenes-without-plot))
+                      "\n\n")
               (dolist (scene scenes-without-plot)
                 (insert (format "- %s%s\n" (car scene)
                                 (org-scribe--chapter-suffix (cadr scene))))))
-          (insert "All scenes have Plot properties assigned.\n"))))
+          (insert (org-scribe-msg 'msg-plot-report-without-none) "\n"))))
     (pop-to-buffer report-buffer)
     (goto-char (point-min))
     (message "%s" (org-scribe-msg 'msg-plot-health-report))))
@@ -330,7 +337,8 @@ Opens a new buffer with the report."
 (defun org-scribe-plot-thread-stats ()
   "Display quick statistics for plot threads."
   (interactive)
-  (let* ((threads (org-scribe--get-all-plot-threads))
+  (let* ((org-scribe-message-language (org-scribe-project-language))
+         (threads (org-scribe--get-all-plot-threads))
          (scenes (org-scribe--get-all-scenes-with-plots))
          (thread-count (length threads))
          (scene-count (length scenes))

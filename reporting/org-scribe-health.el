@@ -83,9 +83,9 @@ the day is over, so it never makes the plan look behind."
          (expected (org-scribe-planner--expected-through
                     plan (org-scribe-planner--add-days today -1))))
     (let ((delta (- expected (org-scribe-plan-current-words plan))))
-      (cond ((> delta 0) (format "Behind by %d words" delta))
-            ((< delta 0) (format "Ahead by %d words" (- delta)))
-            (t "On track")))))
+      (cond ((> delta 0) (org-scribe-msg 'msg-health-plan-behind delta))
+            ((< delta 0) (org-scribe-msg 'msg-health-plan-ahead (- delta)))
+            (t (org-scribe-msg 'msg-health-plan-on-track))))))
 
 ;;; Internal Helpers
 
@@ -398,8 +398,7 @@ disagrees with the prose.  Returns nil when there is nothing to say."
       (let ((file (expand-file-name ".dir-locals.el" root)))
         (cond
          ((not (file-exists-p file))
-          (format "not set (expected %s) — run =M-x org-scribe-update-dir-locals="
-                  expected))
+          (org-scribe-msg 'msg-health-dir-locals-missing expected))
          (t
           (let ((found (ignore-errors
                          (alist-get 'ispell-local-dictionary
@@ -408,10 +407,9 @@ disagrees with the prose.  Returns nil when there is nothing to say."
                                                      (read (current-buffer))))))))
             (cond
              ((null found)
-              (format "no dictionary in .dir-locals.el (expected %s)" expected))
+              (org-scribe-msg 'msg-health-dir-locals-empty expected))
              ((not (equal found expected))
-              (format "%s in .dir-locals.el, but the project language says %s"
-                      found expected))
+              (org-scribe-msg 'msg-health-dir-locals-differs found expected))
              (t nil)))))))))
 
 (defun org-scribe--health-duplicate-names (entities)
@@ -467,17 +465,18 @@ project type with a real chapter level (a novel) -- see
 \"chapter\" is really its own single level-1 manuscript wrapper (e.g.
 \"Story Content\"), and printing that on every line names nothing
 useful."
-  (insert (format "** Scenes missing %s (%d scene%s)\n\n"
-                  label
-                  (length scenes-list)
-                  (org-scribe-plural (length scenes-list) "")))
+  (insert (format "** %s\n\n"
+                  (org-scribe-msg 'msg-health-missing-scenes
+                                  label
+                                  (length scenes-list)
+                                  (org-scribe-plural (length scenes-list) ""))))
   (if (null scenes-list)
-      (insert (format "All scenes have =%s= set.\n\n" prop-name))
+      (insert (org-scribe-msg 'msg-health-missing-none prop-name) "\n\n")
     (dolist (s scenes-list)
       (if (org-scribe-chapter-level)
-          (insert (format "- %s  (chapter: /%s/)\n"
+          (insert (format "- %s  %s\n"
                           (org-scribe--health-scene-link (nth 0 s) (nth 2 s))
-                          (or (nth 1 s) "?")))
+                          (org-scribe-msg 'msg-health-chapter-suffix (or (nth 1 s) "?"))))
         (insert (format "- %s\n"
                         (org-scribe--health-scene-link (nth 0 s) (nth 2 s))))))
     (insert "\n")))
@@ -562,7 +561,10 @@ locations, and a list of all open TODO scenes.
 The report opens in the *org-scribe-health* buffer as an Org-mode file
 with clickable ID links back to each scene."
   (interactive)
-  (let* ((structure (org-scribe-project-structure))
+  (let* (;; The report is written in the project's language, whatever
+         ;; `org-scribe-message-language' says.
+         (org-scribe-message-language (org-scribe-project-language))
+         (structure (org-scribe-project-structure))
          (manuscript-file (plist-get structure :manuscript-file))
          (root (org-scribe-project-root)))
 
@@ -662,16 +664,17 @@ with clickable ID links back to each scene."
                (or root (file-name-directory manuscript-file))))
 
         ;; Header
-        (insert "#+TITLE: Project Health Report\n")
+        (insert "#+TITLE: " (org-scribe-msg 'msg-health-title) "\n")
         (insert (format "#+DATE: %s\n" (format-time-string "%Y-%m-%d %H:%M")))
         (insert "#+STARTUP: overview\n\n")
 
         ;; ── Overview ─────────────────────────────────────────────────────────
-        (insert "* Overview\n\n")
-        (insert (format "- Manuscript :: [[file:%s][%s]]\n"
+        (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-overview-heading)))
+        (insert (format "- %s :: [[file:%s][%s]]\n"
+                        (org-scribe-msg 'msg-health-label-manuscript)
                         manuscript-file (file-name-nondirectory manuscript-file)))
-        (insert (format "- Total scenes :: %d\n" scene-count))
-        (insert (format "- Words written :: %d\n" total-words))
+        (insert (format "- %s :: %d\n" (org-scribe-msg 'msg-health-label-total-scenes) scene-count))
+        (insert (format "- %s :: %d\n" (org-scribe-msg 'msg-health-label-words-written) total-words))
         (let ((word-target (org-scribe-project-word-target)))
           (when word-target
             (insert (format "- %s\n" (org-scribe-msg 'msg-health-word-target word-target)))
@@ -684,11 +687,15 @@ with clickable ID links back to each scene."
             (progn
               ;; Same number as the project's word target: one line says it.
               (unless (eql total-obj (org-scribe-project-word-target))
-                (insert (format "- Word objective :: %d\n" total-obj)))
-              (insert (format "- Progress :: %.1f%%\n" progress)))
-          (insert "- Word objective :: /not set/\n"))
+                (insert (format "- %s :: %d\n"
+                                (org-scribe-msg 'msg-health-label-word-objective) total-obj)))
+              (insert (format "- %s :: %.1f%%\n"
+                              (org-scribe-msg 'msg-health-label-progress) progress)))
+          (insert (format "- %s :: /%s/\n"
+                          (org-scribe-msg 'msg-health-label-word-objective)
+                          (org-scribe-msg 'msg-health-not-set))))
         (when-let* ((hint (org-scribe--health-dir-locals-hint)))
-          (insert (format "- Spelling dictionary :: %s\n" hint)))
+          (insert (format "- %s :: %s\n" (org-scribe-msg 'msg-health-label-spelling) hint)))
         (insert "\n")
 
         ;; ── Writing Plan ─────────────────────────────────────────────────────
@@ -699,7 +706,7 @@ with clickable ID links back to each scene."
           ;; The active plan is a session global: drop one that belongs to
           ;; another project (and load this project's own) before reading it.
           (org-scribe-planner--ensure-plan-for-current-project)
-          (insert "* Writing Plan\n\n")
+          (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-plan-heading)))
           (cond
            ;; Plan is active in memory
            (org-scribe-planner--current-plan
@@ -717,15 +724,15 @@ with clickable ID links back to each scene."
                                  (1+ (org-scribe--health-days-until end))
                                0))
                    (status  (org-scribe--health-plan-status plan)))
-              (insert (format "- Title :: %s\n" title))
-              (insert (format "- Target :: %d words\n" target))
-              (insert (format "- Current :: %d words (%.1f%%)\n" current pct))
-              (insert (format "- Daily target :: %d words\n" daily))
-              (insert (format "- End date :: %s\n" end))
-              (insert (format "- Days remaining :: %d\n" days-rem))
+              (insert "- " (org-scribe-msg 'msg-health-plan-title title) "\n")
+              (insert "- " (org-scribe-msg 'msg-health-plan-target target) "\n")
+              (insert "- " (org-scribe-msg 'msg-health-plan-current current pct) "\n")
+              (insert "- " (org-scribe-msg 'msg-health-plan-daily daily) "\n")
+              (insert "- " (org-scribe-msg 'msg-health-plan-end end) "\n")
+              (insert "- " (org-scribe-msg 'msg-health-plan-days-remaining days-rem) "\n")
               ;; Expected words run through yesterday (today isn't due
               ;; yet), unlike the mode line's today figure: say so.
-              (insert (format "- Status (through yesterday) :: %s\n" status))
+              (insert "- " (org-scribe-msg 'msg-health-plan-status status) "\n")
               (let ((word-target (org-scribe-project-word-target)))
                 (when (and word-target (/= target word-target))
                   (insert (format "- %s\n" (org-scribe-msg 'msg-health-plan-target-mismatch
@@ -736,12 +743,13 @@ with clickable ID links back to each scene."
                     (insert (format "- %s\n" (org-scribe-msg 'msg-health-plan-outside outside))))))))
            ;; Plan file exists but has not been loaded yet
            ((plist-get structure :plan-file)
-            (insert (format "Plan file found at =%s= but not loaded.\n"
-                            (file-name-nondirectory (plist-get structure :plan-file))))
-            (insert "Run =M-x org-scribe-plan= to load it.\n"))
+            (insert (org-scribe-msg 'msg-health-plan-not-loaded
+                                    (file-name-nondirectory (plist-get structure :plan-file)))
+                    "\n")
+            (insert (org-scribe-msg 'msg-health-plan-load-hint) "\n"))
            ;; No plan at all
            (t
-            (insert "No active plan.  Create one with =M-x org-scribe-plan=.\n")))
+            (insert (org-scribe-msg 'msg-health-plan-none) "\n")))
           (insert "\n"))
 
         ;; ── Scene status breakdown ────────────────────────────────────────────
@@ -751,16 +759,17 @@ with clickable ID links back to each scene."
         (when gate-items
           (let ((ticked (seq-count #'car gate-items))
                 (total  (length gate-items)))
-            (insert (format "* Starting Gate (%d of %d)\n\n" ticked total))
-            (insert "The one checklist that decides when planning stops.\n\n")
+            (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-gate-heading ticked total)))
+            (insert (org-scribe-msg 'msg-health-gate-intro) "\n\n")
             (dolist (item gate-items)
               (insert (format "- [%s] %s\n" (if (car item) "X" " ") (cdr item))))
             (insert "\n")
             ;; The two measurable items, reported whether or not they are ticked.
             (when gate-points
-              (insert (format "Plot points with content: *%d of %d*.\n"
-                              (car gate-points) (cdr gate-points))))
-            (insert (format "First three scenes written: *%d of 3*.\n" gate-scenes))
+              (insert (org-scribe-msg 'msg-health-gate-points
+                                      (car gate-points) (cdr gate-points))
+                      "\n"))
+            (insert (org-scribe-msg 'msg-health-gate-scenes gate-scenes) "\n")
             ;; Disagreements between the tick and the measurement, in both
             ;; directions.  Shown, not resolved.
             (let ((notes nil)
@@ -770,33 +779,32 @@ with clickable ID links back to each scene."
                 (let ((ticked-p (car plot-points-item))
                       (done-p   (= (car gate-points) (cdr gate-points))))
                   (cond ((and ticked-p (not done-p))
-                         (push (format "plot points are ticked but %d of %d are still empty"
-                                       (- (cdr gate-points) (car gate-points))
-                                       (cdr gate-points))
+                         (push (org-scribe-msg 'msg-health-gate-note-points-ticked
+                                             (- (cdr gate-points) (car gate-points))
+                                             (cdr gate-points))
                                notes))
                         ((and (not ticked-p) done-p)
-                         (push "all thirteen plot points have content but the box is unticked"
+                         (push (org-scribe-msg 'msg-health-gate-note-points-unticked)
                                notes)))))
               (when first-scenes-item
                 (let ((ticked-p (car first-scenes-item))
                       (done-p   (>= gate-scenes 3)))
                   (cond ((and ticked-p (not done-p))
-                         (push (format "first three scenes are ticked but only %d written"
-                                       gate-scenes)
+                         (push (org-scribe-msg 'msg-health-gate-note-scenes-ticked gate-scenes)
                                notes))
                         ((and (not ticked-p) done-p)
-                         (push "the first three scenes are written but the box is unticked"
+                         (push (org-scribe-msg 'msg-health-gate-note-scenes-unticked)
                                notes)))))
               (when notes
-                (insert "\nWorth a look: ")
-                (insert (mapconcat #'identity (nreverse notes) "; "))
-                (insert ".\n")))
+                (insert "\n" (org-scribe-msg 'msg-health-gate-worth-a-look
+                                              (mapconcat #'identity (nreverse notes) "; "))
+                        "\n")))
             (when (= ticked total)
-              (insert "\n*The gate is crossed. Stop planning.*\n"))
+              (insert "\n" (org-scribe-msg 'msg-health-gate-crossed) "\n"))
             (insert "\n")))
 
-        (insert "* Scenes by Status\n\n")
-        (insert "| Status | Count |\n")
+        (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-status-heading)))
+        (insert (org-scribe-msg 'msg-health-status-table-header) "\n")
         (insert "|--------+-------|\n")
         (maphash (lambda (state count)
                    (insert (format "| %-6s | %5d |\n" state count)))
@@ -847,7 +855,7 @@ with clickable ID links back to each scene."
             (insert (format "%s\n\n" (org-scribe-msg 'msg-health-chapter-length-outlier-legend)))))
 
         ;; ── Missing properties ────────────────────────────────────────────────
-        (insert "* Missing Scene Properties\n\n")
+        (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-missing-heading)))
         (org-scribe--health-insert-missing-list "PoV" miss-pov "PoV")
         (org-scribe--health-insert-missing-list "Plot" miss-plot "Plot")
         (org-scribe--health-insert-missing-list "Location" miss-location "Location")
@@ -883,25 +891,28 @@ with clickable ID links back to each scene."
           (insert "\n"))
 
         ;; ── Orphaned entities ─────────────────────────────────────────────────
-        (insert "* Orphaned Entities\n\n")
-        (insert "Entities defined in the design notebook but not linked in any scene.\n\n")
+        (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-orphans-heading)))
+        (insert (org-scribe-msg 'msg-health-orphans-intro) "\n\n")
 
-        (insert (format "** Orphaned Characters (%d)\n\n" (length orphan-chars)))
+        (insert (format "** %s\n\n" (org-scribe-msg 'msg-health-orphan-characters
+                                                    (length orphan-chars))))
         (if orphan-chars
             (dolist (name orphan-chars) (insert (format "- %s\n" name)))
-          (insert "No orphaned characters.\n"))
+          (insert (org-scribe-msg 'msg-health-orphan-characters-none) "\n"))
         (insert "\n")
 
-        (insert (format "** Orphaned Locations (%d)\n\n" (length orphan-locs)))
+        (insert (format "** %s\n\n" (org-scribe-msg 'msg-health-orphan-locations
+                                                    (length orphan-locs))))
         (if orphan-locs
             (dolist (name orphan-locs) (insert (format "- %s\n" name)))
-          (insert "No orphaned locations.\n"))
+          (insert (org-scribe-msg 'msg-health-orphan-locations-none) "\n"))
         (insert "\n")
 
-        (insert (format "** Orphaned Objects (%d)\n\n" (length orphan-objs)))
+        (insert (format "** %s\n\n" (org-scribe-msg 'msg-health-orphan-objects
+                                                    (length orphan-objs))))
         (if orphan-objs
             (dolist (name orphan-objs) (insert (format "- %s\n" name)))
-          (insert "No orphaned objects.\n"))
+          (insert (org-scribe-msg 'msg-health-orphan-objects-none) "\n"))
         (when old-objects
           (insert (format "\n%s\n"
                           (org-scribe-msg 'msg-health-old-objects-layout
@@ -913,11 +924,12 @@ with clickable ID links back to each scene."
         ;; empty section reporting nothing.
         (when (and (fboundp 'org-scribe--get-all-plot-points)
                    (org-scribe--get-all-plot-points))
-          (insert (format "** Plot Points With No Scene (%d)\n\n" (length orphan-points)))
-          (insert "Non-negotiables that no scene serves yet.\n\n")
+          (insert (format "** %s\n\n" (org-scribe-msg 'msg-health-orphan-points
+                                                      (length orphan-points))))
+          (insert (org-scribe-msg 'msg-health-orphan-points-intro) "\n\n")
           (if orphan-points
               (dolist (name orphan-points) (insert (format "- %s\n" name)))
-            (insert "Every plot point is served by at least one scene.\n"))
+            (insert (org-scribe-msg 'msg-health-orphan-points-none) "\n"))
           (insert "\n"))
 
         ;; ── Open TODOs ────────────────────────────────────────────────────────
@@ -925,15 +937,16 @@ with clickable ID links back to each scene."
         ;; with a real chapter level; for a short story it would print the
         ;; manuscript's own level-1 container heading (e.g. "Story Content")
         ;; on every single line, which names nothing useful.
-        (insert (format "* Open TODO Scenes (%d)\n\n" (length open-todos)))
+        (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-open-heading
+                                                   (length open-todos))))
         (if (null open-todos)
-            (insert "All scenes are marked DONE.\n")
+            (insert (org-scribe-msg 'msg-health-open-none) "\n")
           (dolist (s open-todos)
             (if (org-scribe-chapter-level)
-                (insert (format "- [%s] %s  (chapter: /%s/)\n"
+                (insert (format "- [%s] %s  %s\n"
                                 (or (nth 3 s) "?")
                                 (org-scribe--health-scene-link (nth 0 s) (nth 2 s))
-                                (or (nth 1 s) "?")))
+                                (org-scribe-msg 'msg-health-chapter-suffix (or (nth 1 s) "?"))))
               (insert (format "- [%s] %s\n"
                               (or (nth 3 s) "?")
                               (org-scribe--health-scene-link (nth 0 s) (nth 2 s)))))))
@@ -942,7 +955,7 @@ with clickable ID links back to each scene."
         (org-table-map-tables #'org-table-align t)
         (goto-char (point-min))
         (pop-to-buffer (current-buffer))
-        (message "Project health report generated.")))))
+        (message "%s" (org-scribe-msg 'msg-health-generated))))))
 
 (provide 'org-scribe-health)
 

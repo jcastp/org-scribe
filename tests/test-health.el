@@ -313,6 +313,22 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
           (should (string-match-p "FINISHED" content))
           (should (string-match-p "PURGE" content)))))))
 
+(ert-deftest test-health-report-follows-project-language ()
+  "The report is in the project's language, not `org-scribe-message-language'."
+  (test-health--with-novel-file
+      "** TODO Chapter :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 5000\n:END:\n\n*** TODO Scene :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 300\n:END:\n\nSome words.\n"
+    (cl-letf (((symbol-function 'org-scribe-project-structure)
+               (lambda () (list :manuscript-file temp-novel :novel-file temp-novel)))
+              ((symbol-function 'org-scribe-project-language) (lambda () 'es)))
+      (let ((org-scribe-message-language 'en))
+        (org-scribe-project-health))
+      (with-current-buffer "*org-scribe-health*"
+        (let ((content (buffer-string)))
+          (should (string-match-p "Informe de salud del proyecto" content))
+          (should (string-match-p "Escenas por estado" content))
+          (should (string-match-p "Personajes huérfanos" content))
+          (should-not (string-match-p "Scenes by Status\\|Orphaned" content)))))))
+
 ;;; Integration: report buffer is created
 
 (ert-deftest test-health-report-buffer-created ()

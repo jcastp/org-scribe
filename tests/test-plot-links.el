@@ -311,6 +311,24 @@ writer's scenes have."
         (should-not (string-match-p "All scenes have Plot" text))))
     (kill-buffer "*Plot Thread Health Report*")))
 
+(ert-deftest test-plot-report-follows-project-language ()
+  "The report is in the project's language, not `org-scribe-message-language'."
+  (test-plot--with-novel-and-plot-files
+      (concat "* Chapter 1\n"
+              "*** Scene 1\n:PROPERTIES:\n:Plot: Main Plot\n:END:\n"
+              "*** Scene 2\n")
+      "* Plot Threads\n** Main Plot\n:PROPERTIES:\n:ID: plot-main-001\n:END:\n"
+    (cl-letf (((symbol-function 'org-scribe-project-language) (lambda () 'es)))
+      (let ((org-scribe-message-language 'en))
+        (org-scribe-plot-thread-report))
+      (with-current-buffer "*Plot Thread Health Report*"
+        (let ((text (buffer-string)))
+          (should (string-match-p "Total de escenas: 2" text))
+          (should (string-match-p "Primera aparición: Scene 1 (Capítulo: Chapter 1)" text))
+          (should (string-match-p "Se encontraron 1 escena(s) sin propiedad Plot" text))
+          (should-not (string-match-p "Total scenes\\|Warnings" text))))
+      (kill-buffer "*Plot Thread Health Report*"))))
+
 (ert-deftest test-presence-table-and-suffix-drop-chapter-in-short-story ()
   "With no chapter level, the table has no Chapter column and no suffix."
   (let ((scenes '(("Scene 1" "Story Content"))))
