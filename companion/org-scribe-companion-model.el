@@ -30,7 +30,7 @@
 
 (defvar org-scribe-companion-todo-colors)
 (defvar org-scribe-entity-registry)
-(defvar org-scribe-relationship-types)
+(declare-function org-scribe-relationship-type-choices "org-scribe-character-relationships")
 (declare-function org-scribe--get-character-relationships "org-scribe-character-relationships")
 
 ;;; Scene field kinds
@@ -547,7 +547,7 @@ so asking again without an edit costs a revision check only."
                            :design (org-scribe-companion--buffer-info design))
             :todo (org-scribe-companion--todo-with-colors (plist-get cache :todo) root)
             :colors (org-scribe-companion-colors-resolve root (plist-get cache :entities))
-            :relationshipTypes (vconcat org-scribe-relationship-types)
+            :relationshipTypes (vconcat (org-scribe-relationship-type-choices))
             :sceneFields (org-scribe-companion--scene-fields-json specs)
             :acts (vconcat (plist-get cache :acts))
             :entities (plist-get cache :entities)

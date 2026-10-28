@@ -91,6 +91,10 @@
    '((day . "Day")
      (night . "Night")
      (year . "Year"))
+   :relationship-types
+   '("mentor" "mentee" "opponent" "rival" "friend" "family" "lover" "enemy"
+     "ally" "partner" "colleague" "acquaintance" "subordinate" "superior"
+     "student" "teacher" "sibling" "parent" "child" "spouse")
    :edit-categories
    '((plot . "plot")
      (scene . "scene")

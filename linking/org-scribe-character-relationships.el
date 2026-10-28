@@ -38,11 +38,16 @@
 
 ;;; Relationship Type Definitions
 
-(defvar org-scribe-relationship-types
-  '("mentor" "mentee" "opponent" "rival" "friend" "family" "lover" "enemy" "ally"
-    "partner" "colleague" "acquaintance" "subordinate" "superior"
-    "student" "teacher" "sibling" "parent" "child" "spouse")
-  "Common relationship types for character relationships.")
+(defvar org-scribe-relationship-types)
+
+(defun org-scribe-relationship-type-choices ()
+  "Return the relationship types to suggest, as a list of strings.
+`org-scribe-relationship-types' when the writer set it, else the list in
+the project language's pack, else the English one."
+  (or org-scribe-relationship-types
+      (plist-get (org-scribe-lang-pack (org-scribe-project-language))
+                 :relationship-types)
+      (plist-get (org-scribe-lang-pack 'en) :relationship-types)))
 
 ;;; Parsing Functions
 
@@ -118,7 +123,7 @@ An empty type used to be announced as added and then never shown."
     (while (string-empty-p
             (setq type (string-trim
                         (completing-read (org-scribe-msg 'prompt-relationship-type)
-                                         org-scribe-relationship-types nil nil))))
+                                         (org-scribe-relationship-type-choices) nil nil))))
       (message "%s" (org-scribe-msg 'msg-relationship-type-required))
       (sit-for 1))
     type))

@@ -16,6 +16,18 @@
   :group 'org
   :prefix "org-scribe-")
 
+;;; Relationships
+
+(defcustom org-scribe-relationship-types nil
+  "Relationship types offered when linking two characters.
+Nil (the default) offers the list of the project's language, from its
+language pack; set it to a list of strings to use your own in every
+project.  Types already written in the project are always accepted, and
+the companion page adds them to its suggestions."
+  :type '(choice (const :tag "The project language's list" nil)
+                 (repeat string))
+  :group 'org-scribe)
+
 ;;; Messages
 
 (defcustom org-scribe-message-language 'en

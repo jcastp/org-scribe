@@ -58,8 +58,19 @@
 (ert-deftest test-relationships-variables-defined ()
   "Test that the relationship type variable is defined."
   (should (boundp 'org-scribe-relationship-types))
-  (should (listp org-scribe-relationship-types))
-  (should (> (length org-scribe-relationship-types) 0)))
+  (should (> (length (org-scribe-relationship-type-choices)) 0)))
+
+(ert-deftest test-relationships-type-choices-follow-the-project-language ()
+  (let ((org-scribe-relationship-types nil))
+    (cl-letf (((symbol-function 'org-scribe-project-language) (lambda (&rest _) 'es)))
+      (should (member "amigo" (org-scribe-relationship-type-choices)))
+      (should-not (member "friend" (org-scribe-relationship-type-choices))))
+    (cl-letf (((symbol-function 'org-scribe-project-language) (lambda (&rest _) 'en)))
+      (should (member "friend" (org-scribe-relationship-type-choices))))))
+
+(ert-deftest test-relationships-own-types-win-over-the-pack ()
+  (let ((org-scribe-relationship-types '("kin" "foe")))
+    (should (equal '("kin" "foe") (org-scribe-relationship-type-choices)))))
 
 ;;; org-scribe--parse-single-relationship Tests
 
