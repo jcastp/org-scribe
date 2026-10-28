@@ -113,6 +113,25 @@
         (should (string-match-p "Undated (1)" text))
         (should (string-match-p "later .*C" text))))))
 
+(ert-deftest test-chronology-dblock-says-why-an-entry-is-undated ()
+  (test-chrono--with-project ""
+      '(("A" "Day 1") ("Blank" "") ("Typo" "Dya 3") ("Stamp" "<2026-03-14>")) ""
+    (with-temp-buffer
+      (org-mode)
+      (insert "#+BEGIN: story-chronology\n#+END:\n")
+      (goto-char (point-min))
+      (org-update-dblock)
+      (let ((text (buffer-string)))
+        (should (string-match-p "Why undated" text))
+        (should (string-match-p "Typo .*cannot be read" text))
+        (should (string-match-p "Stamp .*needs Day 1" text))
+        (should (string-match-p "Blank .*no story time" text))
+        ;; the ones the writer tried to date come before the blank ones
+        (should (< (string-match "Typo" text) (string-match "Blank" text)))
+        (should (< (string-match "Stamp" text) (string-match "Blank" text)))
+        ;; the dated table keeps its own header
+        (should (string-match-p "| Jump |" text))))))
+
 (ert-deftest test-chronology-dblock-can-leave-events-out ()
   (test-chrono--with-project "" '(("A" "Day 1"))
       "* Timeline\n** Old\n:PROPERTIES:\n:Date: Year -9\n:END:\n"

@@ -117,10 +117,26 @@ before it.  Entries carry `:kind', `:heading', `:chapter', `:text',
           (t (let ((h (max 1 (/ minutes 60))))
                (org-scribe-msg 'chrono-jump-hours h (org-scribe-plural h "")))))))
 
+(defun org-scribe-chronology--reason (problem)
+  "Say in words why an entry with PROBLEM (`blank', `unreadable', `no-anchor') is undated."
+  (if (memq problem '(blank unreadable no-anchor))
+      (org-scribe-msg (intern (format "chrono-reason-%s" problem)))
+    ""))
+
+(defun org-scribe-chronology--undated-order (entries)
+  "Return undated ENTRIES with the ones the writer tried to date first.
+Unreadable and anchorless values come before blank ones, each group in its
+reading order, so a typo is not buried under dozens of scenes with no time."
+  (let ((attempted (seq-remove (lambda (e) (eq (plist-get e :problem) 'blank)) entries))
+        (blank (seq-filter (lambda (e) (eq (plist-get e :problem) 'blank)) entries)))
+    (append attempted blank)))
+
 (defun org-scribe-chronology--row (entry total jumps)
   "Insert the table row of ENTRY (TOTAL scenes; JUMPS from the collector)."
   (let* ((scene-p (eq (plist-get entry :kind) 'scene))
-         (note (cond ((not scene-p)
+         (note (cond ((null (plist-get entry :key))
+                      (org-scribe-chronology--reason (plist-get entry :problem)))
+                     ((not scene-p)
                       (if (< (plist-get entry :key) 0)
                           (org-scribe-msg 'chrono-backstory)
                         ""))
@@ -137,9 +153,11 @@ before it.  Entries carry `:kind', `:heading', `:chapter', `:text',
                       "")
                     (org-scribe--escape-table-cell note)))))
 
-(defun org-scribe-chronology--insert-table (entries total jumps)
-  "Insert the header and a row per entry of ENTRIES, then align the table."
-  (insert (org-scribe-msg 'chrono-table-header) "\n|-\n")
+(defun org-scribe-chronology--insert-table (entries total jumps &optional undated)
+  "Insert the header and a row per entry of ENTRIES, then align the table.
+With UNDATED the last column says why an entry has no story time."
+  (insert (org-scribe-msg (if undated 'chrono-table-header-undated 'chrono-table-header))
+          "\n|-\n")
   (dolist (entry entries)
     (org-scribe-chronology--row entry total jumps))
   (org-table-align))
@@ -163,7 +181,8 @@ PARAMS may contain `:events nil' to leave the notebook's events out."
       (when undated
         (when ordered (goto-char (org-table-end)))
         (insert "\n" (org-scribe-msg 'chrono-undated (length undated)) "\n")
-        (org-scribe-chronology--insert-table undated total jumps)))))
+        (org-scribe-chronology--insert-table
+         (org-scribe-chronology--undated-order undated) total jumps t)))))
 
 (provide 'org-scribe-chronology)
 
