@@ -167,10 +167,10 @@ Words or phrases I tend to overuse:
 
 * Scratchpad
 
-# This file has no structure, and it is not meant to acquire one.
+# This part has no structure, and it is not meant to acquire one.
 #
 # It is the one place in the project that asks nothing of you.  The rest
-# of this file is not free-form: its Characters and Setting sections are
+# of this notebook is not free-form: its Characters and Setting sections are
 # read by the linking layer and filed into by capture, so a stray sketch
 # there becomes a half-real entity.  Put it here instead.
 #
@@ -185,7 +185,7 @@ Words or phrases I tend to overuse:
 # Refile what survives with C-c C-w, which offers every heading in every
 # file of the project.  Delete the rest without ceremony.
 #
-# Open this file from anywhere in the project with F8 F8 o.
+# Open this notebook from anywhere in the project with F8 F8 o.
 #
 #
 # BRANCHING A QUESTION

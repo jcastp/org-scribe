@@ -1424,7 +1424,7 @@ Reflections on your writing habits, productivity patterns, what works for you.
 
 * Scratchpad
 
-# This file has no structure, and it is not meant to acquire one.
+# This part has no structure, and it is not meant to acquire one.
 #
 # Nothing written here is counted, exported, or read by any org-scribe
 # command.  The word count walks the manuscript only; compilation reads
@@ -1437,7 +1437,7 @@ Reflections on your writing habits, productivity patterns, what works for you.
 # Refile what survives with C-c C-w, which offers every heading in every
 # file of the project.  Delete the rest without ceremony.
 #
-# Open this file from anywhere in the project with F8 F8 o.
+# Open this notebook from anywhere in the project with F8 F8 o.
 #
 #
 # BRANCHING A QUESTION

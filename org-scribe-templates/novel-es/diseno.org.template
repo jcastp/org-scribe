@@ -1311,7 +1311,7 @@ Reflexiones sobre tus hábitos de escritura, patrones de productividad, qué fun
 
 * Borradores
 
-# Este archivo no tiene estructura, y no pretende llegar a tenerla.
+# Esta parte no tiene estructura, y no pretende llegar a tenerla.
 #
 # Nada de lo que escribas aquí se cuenta, se exporta ni lo lee ninguna
 # orden de org-scribe.  El recuento de palabras recorre solo el
@@ -1325,7 +1325,7 @@ Reflexiones sobre tus hábitos de escritura, patrones de productividad, qué fun
 # Refila lo que sobreviva con C-c C-w, que ofrece todos los encabezados
 # de todos los archivos del proyecto.  Borra el resto sin ceremonia.
 #
-# Abre este archivo desde cualquier punto del proyecto con F8 F8 o.
+# Abre este cuaderno desde cualquier punto del proyecto con F8 F8 o.
 #
 #
 # RAMIFICAR UNA PREGUNTA

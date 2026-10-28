@@ -167,10 +167,10 @@ Palabras o frases que tiendo a usar en exceso:
 
 * Borradores
 
-# Este archivo no tiene estructura, y no pretende llegar a tenerla.
+# Esta parte no tiene estructura, y no pretende llegar a tenerla.
 #
 # Es el único sitio del proyecto que no te pide nada.  El resto de este
-# archivo no es libre: sus secciones de Personajes y Ambientación las lee
+# cuaderno no es libre: sus secciones de Personajes y Ambientación las lee
 # el sistema de enlaces y en ellas archiva la captura, así que un esbozo
 # suelto ahí se convierte en una entidad a medias.  Ponlo aquí.
 #
@@ -186,7 +186,7 @@ Palabras o frases que tiendo a usar en exceso:
 # Refila lo que sobreviva con C-c C-w, que ofrece todos los encabezados
 # de todos los archivos del proyecto.  Borra el resto sin ceremonia.
 #
-# Abre este archivo desde cualquier punto del proyecto con F8 F8 o.
+# Abre este cuaderno desde cualquier punto del proyecto con F8 F8 o.
 #
 #
 # RAMIFICAR UNA PREGUNTA
