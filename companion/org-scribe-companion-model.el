@@ -490,13 +490,13 @@ get 0."
 
 (defun org-scribe-companion--orphans (scenes entities)
   "Return ENTITIES' IDs, per kind, that no scene in SCENES refers to.
-Kinds: character, location, object, plot-point (the ones `org-scribe-health' checks)."
+Kinds: character, location, object, plot, plot-point (the ones `org-scribe-health' checks)."
   (let ((used (make-hash-table :test 'equal)))
     (dolist (scene scenes)
       (dolist (key '(:pov :characters :location :objects :plot :plot-point))
         (dolist (id (org-scribe-companion--field-ids scene key))
           (puthash id t used))))
-    (cl-loop for kind in '(:character :location :object :plot-point)
+    (cl-loop for kind in '(:character :location :object :plot :plot-point)
              append (list kind
                           (vconcat
                            (cl-loop for entity across (or (plist-get entities kind) [])

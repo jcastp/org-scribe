@@ -444,6 +444,7 @@ SETUP is a function called with the directory.  The directory is the
                   (plist-get structure :manuscript-file))))
       (cl-loop for (kind getter) in '((:character org-scribe--get-all-characters)
                                       (:location org-scribe--get-all-locations)
+                                      (:plot org-scribe--get-all-plot-threads)
                                       (:plot-point org-scribe--get-all-plot-points))
                do (let* ((expected (sort (copy-sequence (org-scribe--health-find-orphans
                                                         (funcall getter) refs))
