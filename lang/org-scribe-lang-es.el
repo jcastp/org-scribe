@@ -594,6 +594,8 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (msg-health-orphan-locations-none . "No hay localizaciones huérfanas.")
      (msg-health-orphan-objects . "Objetos huérfanos (%d)")
      (msg-health-orphan-objects-none . "No hay objetos huérfanos.")
+     (msg-health-orphan-threads . "Hilos de trama huérfanos (%d)")
+     (msg-health-orphan-threads-none . "No hay hilos de trama huérfanos.")
      (msg-health-orphan-points . "Puntos de trama sin escena (%d)")
      (msg-health-orphan-points-intro . "Irrenunciables que ninguna escena sirve todavía.")
      (msg-health-orphan-points-none . "Todos los puntos de trama los sirve al menos una escena.")

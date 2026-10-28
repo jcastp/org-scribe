@@ -396,6 +396,23 @@ duplicates the section is left out."
         (with-current-buffer (get-buffer "*org-scribe-health*")
           (should-not (string-match-p "Duplicate Names" (buffer-string))))))))
 
+(ert-deftest test-health-report-lists-orphaned-plot-threads ()
+  "A plot thread no scene links is listed; a linked one is not."
+  (test-health--with-novel-file
+      (concat "** Chapter :ignore:\n*** TODO Scene :ignore:\n:PROPERTIES:\n"
+              ":Plot: [[id:t1][Main]]\n:END:\n\nWords.\n")
+    (let ((threads '(("Main" "t1" . "Main") ("Loose" "t2" . "Loose")))
+          (org-scribe-message-language 'en))
+      (cl-letf (((symbol-function 'org-scribe-project-structure)
+                 (lambda () (list :manuscript-file temp-novel :novel-file temp-novel)))
+                ((symbol-function 'org-scribe--get-all-plot-threads) (lambda () threads)))
+        (org-scribe-project-health)
+        (with-current-buffer (get-buffer "*org-scribe-health*")
+          (let ((text (buffer-string)))
+            (should (string-match-p "^\\*\\* Orphaned Plot Threads (1)$" text))
+            (should (string-match-p "^- Loose$" text))
+            (should-not (string-match-p "^- Main$" text))))))))
+
 ;;; Text-level statistics: per-PoV word share and chapter length spread
 
 (defmacro test-health--with-stats-fixture (&rest body)

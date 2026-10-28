@@ -621,6 +621,9 @@ with clickable ID links back to each scene."
            (orphan-objs    (when (fboundp 'org-scribe--get-all-objects)
                              (org-scribe--health-find-orphans
                               (org-scribe--get-all-objects) ref-ids)))
+           (orphan-threads (when (fboundp 'org-scribe--get-all-plot-threads)
+                             (org-scribe--health-find-orphans
+                              (org-scribe--get-all-plot-threads) ref-ids)))
            (old-objects    (org-scribe--health-nested-objects
                             (plist-get structure :design-file)))
            ;; An orphaned plot point is one of the thirteen non-negotiables
@@ -917,6 +920,13 @@ with clickable ID links back to each scene."
           (insert (format "\n%s\n"
                           (org-scribe-msg 'msg-health-old-objects-layout
                                           (mapconcat #'identity old-objects ", ")))))
+        (insert "\n")
+
+        (insert (format "** %s\n\n" (org-scribe-msg 'msg-health-orphan-threads
+                                                    (length orphan-threads))))
+        (if orphan-threads
+            (dolist (name orphan-threads) (insert (format "- %s\n" name)))
+          (insert (org-scribe-msg 'msg-health-orphan-threads-none) "\n"))
         (insert "\n")
 
         ;; Only shown when the project actually defines plot points, so
