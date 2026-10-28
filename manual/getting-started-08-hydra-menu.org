@@ -83,9 +83,11 @@ When you open the menu, you'll see:
 _s_: Scene       _m_: Write       _p_: PoV             _w_: Count words     _1_: by PoV       _n_: Capture note
 _c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all      _2_: Character    _k_: Capture entity…
 _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_: Plot         _L_: Links & upkeep…
-                 _v_: Navigate    _g_: Plot threads    _y_: Synonyms        _4_: Location     _R_: Relink project
-                 _0_: Normal      _j_: Jump to PoV     _x_: Thesaurus       _5_: TODOs        _H_: Health report
-                                                       _t_: Word target     _6_: Edits        _W_: Planner…
+                 _v_: Navigate    _b_: Objects         _y_: Synonyms        _4_: Location     _R_: Relink project
+                 _0_: Normal      _g_: Plot threads    _x_: Thesaurus       _5_: TODOs        _H_: Health report
+                                  _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
+                                  _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
+                                                       _S_: Story time                        _B_: Board…
                                                                                               _q_: Quit
 #+END_EXAMPLE
 
@@ -157,7 +159,9 @@ Let's explore each category in detail.
 | ~p~   | PoV          | Set the PoV character for this scene     |
 | ~h~   | Characters   | Set all characters present in this scene |
 | ~l~   | Locations    | Set the location(s) for this scene       |
+| ~b~   | Objects      | Set the objects present in this scene    |
 | ~g~   | Plot threads | Set plot threads active in this scene    |
+| ~G~   | Plot point   | Set the plot point (of the thirteen) this scene serves |
 | ~j~   | Jump to PoV  | Jump to the PoV character's profile      |
 
 *When to use*:
@@ -179,6 +183,8 @@ Let's explore each category in detail.
 | ~y~   | Synonyms    | Find synonyms (Spanish/English)                      |
 | ~x~   | Thesaurus   | English thesaurus lookup (requires powerthesaurus)   |
 | ~t~   | Word target | Change the project's total word count and rescale its parts |
+| ~T~   | Title       | Rename the project (marker, manuscript title, plan)  |
+| ~S~   | Story time  | Choose how scenes write their =:Timeline:= (relative, dates, invented calendar) |
 
 *When to use*:
 - After writing → ~w~ (check word count quickly)
@@ -208,6 +214,7 @@ Let's explore each category in detail.
 | ~4~   | Location  | Find all scenes in a location           |
 | ~5~   | TODOs     | Find all TODO items in project          |
 | ~6~   | Edits     | Index inline edit/note markers in project |
+| ~7~   | Object    | Find scenes that feature an object      |
 
 *When to use*:
 - "Where did Alex appear?" → ~2~ (character search)
@@ -584,7 +591,7 @@ Don't try to learn everything at once!
 
 *Try one new feature per week*:
 - Week 1: Master ~m~ (writing mode)
-- Week 2: Learn Tag Scene keys (p, h, l, g)
+- Week 2: Learn Tag Scene keys (p, h, l, b, g, G)
 - Week 3: Try ~2~ (character search)
 - Week 4: Explore ~L~ (links submenu, run ~R~ to relink project)
 - Week 5: Use ~3~ (plot search)
