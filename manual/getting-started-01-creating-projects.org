@@ -173,7 +173,7 @@ This is where you'll write your actual story.
 
 *What it contains*:
 - Title and metadata (#+TITLE, #+AUTHOR, etc.)
-- Three-section structure (Opening, Middle, Ending)
+- One starting scene under "Story Content", which holds the whole word target (add more with F8 F8 s)
 - Scene templates with properties (PoV, Characters, Location, etc.)
 - Integrated word count tracking table
 - A quick navigation link to the design notebook

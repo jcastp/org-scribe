@@ -505,7 +505,7 @@ A heading qualifies when it sits at or above the scene level (per
 `org-scribe-scene-level'), is not under a noexport tag, carries a
 WORD-OBJECTIVE, and has no ancestor that does.  Objectives roll up, so
 the top-most level that sets one is the authoritative one: a novel's
-acts, a short story's scenes.  The health report's objective total and
+acts, a short story's single `Story Content' container.  The health report's objective total and
 `org-scribe-set-word-target' both read this, so they cannot disagree.
 The markers point into FILE's buffer (visited if need be); the caller
 releases them with `set-marker' to nil."

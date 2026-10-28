@@ -330,8 +330,8 @@ location, object, or timeline event (=F8 F8 k=) files it under the matching
 section of =design.org= automatically. A short story's design notebook has the
 same sections as a novel's but keeps them at the top level, with no parts.
 
-The manuscript's scenes (=** Opening=, =** Middle=, =** Ending= to start —
-add more with =F8 F8 s=) carry the same eighteen-property scene metadata
+The manuscript starts with one scene (=** Scene 1=; add more with =F8 F8 s=)
+under =* Story Content=, which holds the whole word target. Scenes carry the same eighteen-property scene metadata
 drawer, the same =:ignore:= tag, and the same TODO vocabulary
 (=TODO=/=TOWRITE=/=TOREVIEW=/=REDO=/=RESTRUCTURE=/=FINISHED=/=PURGE=) a novel's
 scenes do — word counting, search, linking, and the health report all work

@@ -274,10 +274,22 @@ DIR-VAR is bound to the project directory, which is also `default-directory'."
 
 (ert-deftest test-word-target-set-short-story ()
   (test-word-target--with-project dir 'short-story 'en 5000
-    (org-scribe-set-word-target 8000 'reset t)
+    (org-scribe-set-word-target 8000 'keep t)
     (should (equal (test-word-target--objectives (test-word-target--text dir "story.org"))
-                   '(2000 4000 2000)))
+                   '(8000)))
     (should (string-match-p "^:TARGET_WORDCOUNT: 8000$" (test-word-target--text dir "story.org")))))
+
+(ert-deftest test-word-target-short-story-health-objective-is-the-target ()
+  "The health report's objective is the container's, however many scenes follow."
+  (test-word-target--with-project dir 'short-story 'en 5000
+    (require 'org-scribe-health)
+    (let ((story (expand-file-name "story.org" dir)))
+      (should (= (cdr (org-scribe--health-word-totals story)) 5000))
+      (with-current-buffer (find-file-noselect story)
+        (goto-char (point-max))
+        (insert "\n** TODO Another :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 500\n:END:\n")
+        (should (= (cdr (org-scribe--health-word-totals story)) 5000))
+        (set-buffer-modified-p nil)))))
 
 (ert-deftest test-word-target-set-spanish-goals-line ()
   (test-word-target--with-project dir 'novel 'es 80000

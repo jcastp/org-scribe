@@ -63,6 +63,7 @@ maintain here.
 * Story Content
 :PROPERTIES:
 :WORDCOUNT: 532
+:WORD-OBJECTIVE: 5000
 :ID:       5cb576d8-7976-4d56-8ef8-6c941dce8f54
 :END:
 

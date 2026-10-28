@@ -279,28 +279,34 @@ number with at least one word for each outermost part."
                                 default)))
     answer))
 
-(defun org-scribe--word-target-variables (target-words language)
+(defun org-scribe--word-target-variables (target-words language &optional type)
   "Return the template variables for a project of TARGET-WORDS in LANGUAGE.
 TOTAL_WORDS (plain digits), TOTAL_WORDS_FMT (with LANGUAGE's thousands
-separator) and PART1_WORDS..PART3_WORDS (the exact split by
-`org-scribe-word-target-proportions').  Signal a `user-error' for a bad
-total or for proportions that are not exactly three weights; callers run
-this before creating anything on disk."
-  (unless (and (integerp target-words)
-               (>= target-words org-scribe--word-target-parts))
-    (user-error "%s" (org-scribe-msg 'error-word-target-invalid)))
-  (unless (= (length org-scribe-word-target-proportions)
-             org-scribe--word-target-parts)
-    (user-error "%s" (org-scribe-msg 'error-word-target-proportions)))
-  (let ((parts (org-scribe--split-word-target
-                target-words org-scribe-word-target-proportions)))
-    (when (memq 0 parts)
+separator) and, unless TYPE is `short-story', PART1_WORDS..PART3_WORDS
+\(the exact split by `org-scribe-word-target-proportions').  A short
+story has one repeatable scene and keeps the whole target on its
+container heading, so it has no parts to split into.  Signal a
+`user-error' for a bad total or, for a novel, for proportions that are
+not exactly three weights; callers run this before creating anything on
+disk."
+  (let ((short (eq type 'short-story)))
+    (unless (and (integerp target-words)
+                 (>= target-words (if short 1 org-scribe--word-target-parts)))
       (user-error "%s" (org-scribe-msg 'error-word-target-invalid)))
-    `(("TOTAL_WORDS" . ,(number-to-string target-words))
-      ("TOTAL_WORDS_FMT" . ,(org-scribe--format-word-count target-words language))
-      ,@(cl-loop for part in parts
-                 for i from 1
-                 collect (cons (format "PART%d_WORDS" i) (number-to-string part))))))
+    (unless (or short
+                (= (length org-scribe-word-target-proportions)
+                   org-scribe--word-target-parts))
+      (user-error "%s" (org-scribe-msg 'error-word-target-proportions)))
+    (let ((parts (unless short
+                   (org-scribe--split-word-target
+                    target-words org-scribe-word-target-proportions))))
+      (when (memq 0 parts)
+        (user-error "%s" (org-scribe-msg 'error-word-target-invalid)))
+      `(("TOTAL_WORDS" . ,(number-to-string target-words))
+        ("TOTAL_WORDS_FMT" . ,(org-scribe--format-word-count target-words language))
+        ,@(cl-loop for part in parts
+                   for i from 1
+                   collect (cons (format "PART%d_WORDS" i) (number-to-string part)))))))
 
 ;;;###autoload
 (defun org-scribe-create-novel-project (base-dir title &optional language method target-words)
@@ -463,7 +469,7 @@ This function:
            (variables `(("TITLE" . ,title)
                        ("AUTHOR" . ,(org-scribe--default-author))
                        ("DATE" . ,(format-time-string "%Y-%m-%d"))
-                       ,@(org-scribe--word-target-variables target-words language)))
+                       ,@(org-scribe--word-target-variables target-words language 'short-story)))
            (story-file (org-scribe-lang-file 'manuscript-short language)))
 
       ;; Check if project already exists
@@ -983,7 +989,7 @@ loaded just to ask."
 (defun org-scribe-set-word-target (total &optional split confirm)
   "Set the project's total word target to TOTAL and rescale its parts.
 Records TOTAL in the project marker file, rewrites the outermost
-WORD-OBJECTIVE headings (a novel's acts, a short story's scenes), the
+WORD-OBJECTIVE headings (a novel's acts, a short story's container), the
 Project Goals total line, and any target word count property in the
 manuscript.  Chapter and scene objectives, IDs and the
 writing plan are never touched.

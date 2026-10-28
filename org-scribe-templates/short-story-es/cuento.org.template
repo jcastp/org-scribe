@@ -65,11 +65,14 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 - [[file:diseno.org][Cuaderno de diseño]]
 
 * Contenido del Cuento
-
-** TODO Inicio :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: ${PART1_WORDS}
+:WORD-OBJECTIVE: ${TOTAL_WORDS}
+:END:
+
+** TODO Escena 1 :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
 :PoV:
 :Personajes:
 :Trama:
@@ -91,62 +94,6 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :Comentario:
 :END:
 
-# Escribe aquí el inicio...
+# Escribe aquí tu primera escena.  F8 F8 s añade la siguiente.
 
 {{{scene-break}}}
-
-** TODO Desarrollo :ignore:
-:PROPERTIES:
-:WORDCOUNT: 0
-:WORD-OBJECTIVE: ${PART2_WORDS}
-:PoV:
-:Personajes:
-:Trama:
-:Punto-de-trama:
-:Linea-temporal:
-:Localizacion:
-:Objetos:
-:Descripcion:
-:Resumen:
-:Motivacion-escena:
-:Fuente-conflicto:
-:Brecha:
-:Que-esta-en-juego:
-:Problema-mundo:
-:Emocion:
-:Nivel-tension:
-:Resultado:
-:Decision-secuela:
-:Comentario:
-:END:
-
-# Continúa la historia...
-
-{{{scene-break}}}
-
-** TODO Final :ignore:
-:PROPERTIES:
-:WORDCOUNT: 0
-:WORD-OBJECTIVE: ${PART3_WORDS}
-:PoV:
-:Personajes:
-:Trama:
-:Punto-de-trama:
-:Linea-temporal:
-:Localizacion:
-:Objetos:
-:Descripcion:
-:Resumen:
-:Motivacion-escena:
-:Fuente-conflicto:
-:Brecha:
-:Que-esta-en-juego:
-:Problema-mundo:
-:Emocion:
-:Nivel-tension:
-:Resultado:
-:Decision-secuela:
-:Comentario:
-:END:
-
-# La resolución...

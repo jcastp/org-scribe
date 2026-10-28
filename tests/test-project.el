@@ -1119,7 +1119,8 @@ DIR-VAR is bound to the project directory."
                             (test-project--read dir (org-scribe-lang-file 'manuscript-novel 'es))))))
 
 (ert-deftest test-project-word-target-short-story ()
-  (dolist (case '((5000 . (1250 2500 1250)) (8000 . (2000 4000 2000))))
+  "A short story keeps the whole target on its container; the scene has none."
+  (dolist (case '((5000 . (5000)) (8000 . (8000))))
     (test-project--with-created dir 'short-story "Story" 'en (car case)
       (let ((story (test-project--read dir "story.org")))
         (should (equal (test-project--objectives story) (cdr case)))
@@ -1131,9 +1132,14 @@ DIR-VAR is bound to the project directory."
     (let ((org-scribe-word-target-proportions '(1 1)))
       (should-error (org-scribe-create-novel-project base "Novel" 'en nil 50000)
                     :type 'user-error)
-      (should-error (org-scribe-create-short-story-project base "Story" 'en 5000)
-                    :type 'user-error)
       (should-not (directory-files base nil "\\`[^.]")))))
+
+(ert-deftest test-project-word-target-short-story-ignores-proportions ()
+  "A short story is not split, so unusable proportions do not block it."
+  (let ((org-scribe-word-target-proportions '(1 1)))
+    (test-project--with-created dir 'short-story "Story" 'en 5000
+      (should (equal (test-project--objectives (test-project--read dir "story.org"))
+                     '(5000))))))
 
 (ert-deftest test-project-word-target-bad-total-leaves-nothing-behind ()
   (test-project--with-temp-base-dir base

@@ -64,11 +64,14 @@ Update with =C-c C-c= on the #+BEGIN line.
 - [[file:design.org][Design notebook]]
 
 * Story Content
-
-** TODO Opening :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: ${PART1_WORDS}
+:WORD-OBJECTIVE: ${TOTAL_WORDS}
+:END:
+
+** TODO Scene 1 :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
 :PoV:
 :Characters:
 :Plot:
@@ -90,62 +93,6 @@ Update with =C-c C-c= on the #+BEGIN line.
 :Comment:
 :END:
 
-# Write your opening here...
+# Write your first scene here.  F8 F8 s adds the next one.
 
 {{{scene-break}}}
-
-** TODO Middle :ignore:
-:PROPERTIES:
-:WORDCOUNT: 0
-:WORD-OBJECTIVE: ${PART2_WORDS}
-:PoV:
-:Characters:
-:Plot:
-:Plot-point:
-:Timeline:
-:Location:
-:Objects:
-:Description:
-:Summary:
-:Scene-motivation:
-:Conflict-source:
-:Gap:
-:What-is-at-stake:
-:World-problem:
-:Emotion:
-:Tension-level:
-:Outcome:
-:Sequel-decision:
-:Comment:
-:END:
-
-# Continue the story...
-
-{{{scene-break}}}
-
-** TODO Ending :ignore:
-:PROPERTIES:
-:WORDCOUNT: 0
-:WORD-OBJECTIVE: ${PART3_WORDS}
-:PoV:
-:Characters:
-:Plot:
-:Plot-point:
-:Timeline:
-:Location:
-:Objects:
-:Description:
-:Summary:
-:Scene-motivation:
-:Conflict-source:
-:Gap:
-:What-is-at-stake:
-:World-problem:
-:Emotion:
-:Tension-level:
-:Outcome:
-:Sequel-decision:
-:Comment:
-:END:
-
-# The resolution...

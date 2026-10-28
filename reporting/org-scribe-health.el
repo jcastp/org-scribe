@@ -160,8 +160,9 @@ level's figures restate the one above (a novel's acts, then their
 chapters, then their scenes); adding levels together would double-count,
 and picking a fixed level reported a chapter-level 8,000 against an
 80,000-word project.  The top-most level that sets an objective is the
-authoritative one -- the acts in a shipped novel, the scenes in a short
-story, which has nothing above them."
+authoritative one -- the acts in a shipped novel, the `Story Content'
+container in a shipped short story (scenes added later carry their own
+objectives, which roll up into it)."
   (let ((words 0) (obj 0))
     (when (and novel-file (file-exists-p novel-file))
       (with-current-buffer (find-file-noselect novel-file)

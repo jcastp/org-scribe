@@ -74,7 +74,8 @@ in its .org-scribe-project file (see `org-scribe-project-word-target')."
 
 (defcustom org-scribe-word-target-proportions '(25 50 25)
   "Weights for splitting a project's total among its outermost parts.
-The acts of a novel, the three scenes of a short story.  Only the
+The three acts of a novel; a short story keeps its whole target on one
+container heading and does not use this.  Only the
 ratios matter: (1 2 1) is the same as (25 50 25)."
   :type '(repeat (number :tag "Weight"))
   :group 'org-scribe)
