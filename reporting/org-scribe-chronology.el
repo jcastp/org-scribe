@@ -61,13 +61,15 @@ is the story-time context."
                      events)))
            (nreverse events)))))))
 
-(defun org-scribe-chronology--entry (kind heading chapter text context index)
-  "Return an entry plist of KIND (`scene' or `event') parsed from TEXT."
+(defun org-scribe-chronology--entry (kind heading chapter text context index
+                                          &optional id)
+  "Return an entry plist of KIND (`scene' or `event') parsed from TEXT.
+ID is the scene's `:ID:', when it has one."
   (let ((parsed (and text (org-scribe-story-time-key text context))))
     (list :kind kind :heading heading :chapter chapter :text text
           :key (plist-get parsed :key)
           :problem (unless parsed (org-scribe-story-time-problem text context))
-          :index index)))
+          :index index :id id)))
 
 (defun org-scribe-chronology-collect (&optional with-events)
   "Return the project's chronology as a plist.
@@ -76,7 +78,8 @@ Keys: `:scenes' (reading order), `:events' (only when WITH-EVENTS),
 `:undated' (the rest, in reading order, events last) and `:jumps', an alist
 of (INDEX . MINUTES-BACK) for each scene earlier than the dated scene read
 before it.  Entries carry `:kind', `:heading', `:chapter', `:text',
-`:key', `:problem' (`blank', `unreadable' or `no-anchor') and `:index'."
+`:key', `:problem' (`blank', `unreadable' or `no-anchor'), `:index' and
+`:id' (a scene's, when it has one)."
   (let* ((context (org-scribe-story-time-context))
          (index 0)
          (scenes
@@ -86,7 +89,8 @@ before it.  Entries carry `:kind', `:heading', `:chapter', `:text',
              (org-scribe-chronology--entry
               'scene (org-scribe--heading-text)
               (save-excursion (and (org-up-heading-safe) (org-scribe--heading-text)))
-              (org-scribe-scene-property-get 'timeline) context index))))
+              (org-scribe-scene-property-get 'timeline) context index
+              (org-entry-get nil "ID")))))
          (events (when with-events (org-scribe-chronology--collect-events context)))
          (all (append scenes events))
          (dated (seq-filter (lambda (e) (plist-get e :key)) all))

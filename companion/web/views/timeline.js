@@ -11,6 +11,7 @@
 // textContent.
 
 import { el, startEdit } from '../edit.js';
+import { matches, isActive } from '../filters.js';
 
 const DAY = 1440;
 const YEAR = 365;
@@ -42,7 +43,7 @@ function readingScenes(ctx) {
           dayLabel: entry.dayLabel || null,
           problem: entry.problem || (raw ? 'unreadable' : 'blank'),
           readOnly: !scene.id || scene.readOnly,
-          chapter: chapter.title,
+          chapter: chapter.title, source: scene,
         });
       }
     }
@@ -76,6 +77,10 @@ function timeText(scene, ctx) {
 
 function card(item, ctx) {
   const node = el('div', `tl-card ${item.kind}`);
+  // a filter dims what it does not pick; notebook events can never match one
+  if (isActive(ctx.filters) && (item.kind === 'event' || !matches(item.source, ctx.filters))) {
+    node.classList.add('dimmed');
+  }
   if (item.id) node.dataset.id = item.id;
   const top = el('div', 'tl-top');
   if (item.kind === 'scene') {

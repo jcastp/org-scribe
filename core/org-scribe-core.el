@@ -933,14 +933,55 @@ plot-thread report was counting every such scene as having a plot thread
   (cl-some (lambda (prop) (org-string-nw-p (org-entry-get nil prop)))
            (org-scribe-scene-property-aliases canonical-key)))
 
+(defvar org-scribe--scene-property-keys)
+
+(defun org-scribe--property-line-region (name)
+  "Return (BEG . END) of the line of property NAME in the entry's drawer, or nil.
+END includes the newline.  Point is not moved."
+  (when-let* ((block (org-get-property-block)))
+    (save-excursion
+      (goto-char (car block))
+      (when (re-search-forward
+             (format "^[ \t]*:%s:\\(?: \\|$\\)" (regexp-quote name)) (cdr block) t)
+        (cons (line-beginning-position) (min (point-max) (1+ (line-end-position))))))))
+
+(defun org-scribe--move-scene-property-into-place (canonical-key name)
+  "Move the drawer line NAME, a new CANONICAL-KEY property, to the template's place.
+`org-set-property' appends to the end of the drawer, so a property an old
+scene lacked would land after the Comment line.  The line goes after the
+nearest earlier key of `org-scribe--scene-property-keys' the drawer has, else
+before the nearest later one; a key outside the list stays where it is."
+  (when-let* ((keys (bound-and-true-p org-scribe--scene-property-keys))
+              (tail (memq canonical-key keys))
+              (region (org-scribe--property-line-region name)))
+    (let ((text (buffer-substring (car region) (cdr region))))
+      (cl-flet ((line-of (key)
+                  (cl-some #'org-scribe--property-line-region
+                           (org-scribe-scene-property-aliases key))))
+        (save-excursion
+          (let ((anchor-after (cl-some #'line-of (reverse (butlast keys (length tail)))))
+                (anchor-before (cl-some #'line-of (cdr tail))))
+            (when (or anchor-after anchor-before)
+              (delete-region (car region) (cdr region))
+              ;; the regions were found before the deletion: look them up again
+              (let ((target (if anchor-after
+                                (cdr (cl-some #'line-of (reverse (butlast keys (length tail)))))
+                              (car (cl-some #'line-of (cdr tail))))))
+                (goto-char target)
+                (insert text)))))))))
+
 (defun org-scribe-scene-property-set (canonical-key value)
   "Set scene property CANONICAL-KEY to VALUE at point.
 Writes to whichever localized alias is already present on the heading;
 if none is set yet, writes the alias matching the current project's
-language (see `org-scribe-scene-property-name')."
+language (see `org-scribe-scene-property-name') and puts it where the
+scene template does, not at the end of the drawer."
   (let* ((aliases (org-scribe-scene-property-aliases canonical-key))
-         (existing (cl-find-if (lambda (prop) (org-entry-get nil prop)) aliases)))
-    (org-set-property (or existing (org-scribe-scene-property-name canonical-key)) value)))
+         (existing (cl-find-if (lambda (prop) (org-entry-get nil prop)) aliases))
+         (name (or existing (org-scribe-scene-property-name canonical-key))))
+    (org-set-property name value)
+    (unless existing
+      (org-scribe--move-scene-property-into-place canonical-key name))))
 
 ;;; Comma-Separated Property Lists
 

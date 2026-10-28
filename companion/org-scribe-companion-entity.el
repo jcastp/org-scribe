@@ -187,6 +187,8 @@ language, so the form offers what the templates do."
       ("plot" (append (list :THREAD-TYPE (options 'capture-pt-type-prompt))
                       (when (org-scribe-msg 'capture-pt-status-prompt)
                         (list :STATUS (options 'capture-pt-status-prompt)))))
+      ("object" (list :Type (options 'capture-obj-type-prompt)
+                      :Status (options 'capture-obj-status-prompt)))
       (_ nil)))))
 
 (defun org-scribe-companion-entity--appears-in (root id)

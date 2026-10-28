@@ -251,7 +251,7 @@
     (org-scribe-companion-colors-set-pin root 'role "Ally" "#00AA00")
     (org-scribe-companion-colors-set-pin root 'role "mentor" "#0000AA")
     (should (equal (org-scribe--project-marker-get-all root "Companion-color")
-                   '("role #00aa00 Ally" "role #0000aa mentor")))
+                   '("role #00aa00 Ally" "role #0000aa Mentor")))
     (org-scribe-companion-colors-set-pin root 'role "MENTOR" nil)
     (should (equal (org-scribe--project-marker-get-all root "Companion-color")
                    '("role #00aa00 Ally")))))
@@ -403,6 +403,26 @@
     (test-companion-colors--run root "set-color" :kind "all")
     (should-not (org-scribe-companion-colors-pins root))
     (should (eq (org-scribe-companion-colors-theme root) 'okabe-ito))))
+
+(ert-deftest test-companion-colors-set-color-warns-about-a-low-contrast-pin ()
+  (test-companion-colors--with-project root
+    (let ((answer (test-companion-colors--run root "set-color" :kind "role"
+                                              :value "Protagonist" :color "#00ff00")))
+      (should (eq (plist-get answer :ok) t))
+      (should (string-match-p "#00ff00" (plist-get answer :warning)))
+      (should (member "role #00ff00 Protagonist"
+                      (org-scribe--project-marker-get-all root "Companion-color"))))
+    (let ((answer (test-companion-colors--run root "set-color" :kind "role"
+                                              :value "Protagonist" :color "#808080")))
+      (should (eq (plist-get answer :ok) t))
+      (should-not (plist-get answer :warning)))))
+
+(ert-deftest test-companion-colors-repinning-keeps-the-first-spelling ()
+  (test-companion-colors--with-project root
+    (test-companion-colors--run root "set-color" :kind "role" :value "Protagonist" :color "#0b5394")
+    (test-companion-colors--run root "set-color" :kind "role" :value "protagonist " :color "#7a1f1f")
+    (should (equal '("role #7a1f1f Protagonist")
+                   (org-scribe--project-marker-get-all root "Companion-color")))))
 
 (ert-deftest test-companion-colors-set-color-pins-a-pov-by-character-id ()
   (test-companion-colors--with-project root

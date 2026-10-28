@@ -129,23 +129,51 @@ cannot tell the page that they changed."
                                              (org-scribe--project-marker-get-all root "Companion-color"))))
              0 8))
 
+;;; Contrast of a pinned colour
+
+(defconst org-scribe-companion-colors-surfaces '("#ffffff" "#222427")
+  "The page's `--surface' in light and dark mode (companion/web/style.css).")
+
+(defconst org-scribe-companion-colors-min-contrast 3.0
+  "The contrast a colour keeps against the page (WCAG 1.4.11).")
+
+(defun org-scribe-companion-colors--luminance (hex)
+  "Return the relative luminance of HEX (#rrggbb)."
+  (let ((linear (mapcar (lambda (start)
+                          (let ((c (/ (string-to-number (substring hex start (+ start 2)) 16)
+                                      255.0)))
+                            (if (<= c 0.03928) (/ c 12.92) (expt (/ (+ c 0.055) 1.055) 2.4))))
+                        '(1 3 5))))
+    (+ (* 0.2126 (nth 0 linear)) (* 0.7152 (nth 1 linear)) (* 0.0722 (nth 2 linear)))))
+
+(defun org-scribe-companion-colors-contrast (hex)
+  "Return the lower of HEX's contrast ratios against the page in both modes."
+  (let ((l (org-scribe-companion-colors--luminance hex)))
+    (apply #'min
+           (mapcar (lambda (surface)
+                     (let ((ls (org-scribe-companion-colors--luminance surface)))
+                       (/ (+ (max l ls) 0.05) (+ (min l ls) 0.05))))
+                   org-scribe-companion-colors-surfaces))))
+
 ;;; Writing the marker
 
 (defun org-scribe-companion-colors-set-pin (root kind value color)
   "Pin COLOR (#rrggbb, or nil to remove) for VALUE of KIND in ROOT's marker.
 KIND is `warn', `focus', `role', `reltype' or `pov'; VALUE is ignored for
-the first two.  Any earlier pin for the same item goes."
+the first two.  Any earlier pin for the same item goes, and its spelling of VALUE is kept."
   (let* ((key (and (not (memq kind '(warn focus)))
                    (org-scribe-companion-colors--normalize kind value)))
+         (spelling (and key (string-trim value)))
          (lines (cl-loop for line in (org-scribe--project-marker-get-all root "Companion-color")
                          for pin = (org-scribe-companion-colors--parse-pin line)
                          ;; unreadable lines are the writer's: keep them
-                         unless (and pin (eq (nth 0 pin) kind) (equal (nth 1 pin) key))
-                         collect line)))
+                         if (and pin (eq (nth 0 pin) kind) (equal (nth 1 pin) key))
+                         do (setq spelling (nth 3 pin))   ; keep how it was first written
+                         else collect line)))
     (when color
       (setq lines (append lines
                           (list (if key
-                                    (format "%s %s %s" kind (downcase color) (string-trim value))
+                                    (format "%s %s %s" kind (downcase color) spelling)
                                   (format "%s %s" kind (downcase color)))))))
     (org-scribe--project-marker-set-all root "Companion-color" lines)))
 

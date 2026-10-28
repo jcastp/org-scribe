@@ -153,6 +153,30 @@
         (should (string-match-p "D (Dya 3)" text))
         (should (string-match-p "Jumps back in time (1) :: B ↶ 20 days" text))))))
 
+(ert-deftest test-chronology-health-section-is-one-line-before-story-time-starts ()
+  (test-chrono--with-project "" '(("A" "") ("B" "") ("C" "")) ""
+    (with-temp-buffer
+      (org-scribe--health-insert-story-time)
+      (let ((text (buffer-string)))
+        (should (string-match-p "Scenes with a story time :: 0 of 3" text))
+        (should (string-match-p "No scene has a story time yet" text))
+        (should-not (string-match-p "no story time (3)" text))))))
+
+(ert-deftest test-chronology-health-section-links-the-scenes ()
+  (test-chrono--with-project "" '(("A" "Day 1") ("B" "") ("C" "Dya 3")) ""
+    (let ((file (expand-file-name "novel.org" root))
+          (n 0))
+      (with-temp-buffer
+        (insert-file-contents file)
+        (while (search-forward ":PROPERTIES:\n" nil t)
+          (insert (format ":ID: sc-%d\n" (cl-incf n))))
+        (write-region nil nil file)))
+    (let ((entries (plist-get (org-scribe-chronology-collect) :scenes)))
+      (should (cl-every (lambda (e) (plist-get e :id)) entries)))
+    (with-temp-buffer
+      (org-scribe--health-insert-story-time)
+      (should (string-match-p "\\[\\[id:[^]]+\\]\\[B\\]\\]" (buffer-string))))))
+
 (ert-deftest test-chronology-health-section-absent-without-scenes ()
   (test-chrono--with-project "" '() ""
     (with-temp-buffer

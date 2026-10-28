@@ -227,10 +227,34 @@ function geometry(link, radii) {
   };
   const a = towards(start, control, rStart);
   const b = towards(end, control, rEnd + (link.directed ? 3 : 0));
-  return {
-    d: `M ${a.x} ${a.y} Q ${control.x} ${control.y} ${b.x} ${b.y}`,
-    label: { x: 0.25 * a.x + 0.5 * control.x + 0.25 * b.x, y: 0.25 * a.y + 0.5 * control.y + 0.25 * b.y },
-  };
+  // the point of the curve at t (0 = start, 1 = end)
+  const at = (t) => ({
+    x: (1 - t) * (1 - t) * a.x + 2 * (1 - t) * t * control.x + t * t * b.x,
+    y: (1 - t) * (1 - t) * a.y + 2 * (1 - t) * t * control.y + t * t * b.y,
+  });
+  return { d: `M ${a.x} ${a.y} Q ${control.x} ${control.y} ${b.x} ${b.y}`, at };
+}
+
+// Rough boxes of what a label should stay clear of: each node's circle and
+// the name written under it (about 6.5px a letter at 12px).
+function obstacles(model) {
+  return model.nodes.map((node) => {
+    const p = positions.get(node.id);
+    const half = Math.max(node.r, (node.name.length * 6.5) / 2);
+    return { left: p.x - half, right: p.x + half, top: p.y - node.r, bottom: p.y + node.r + 18 };
+  });
+}
+
+/** Where on the line to write TEXT: the middle, or the nearest spot clear of the nodes. */
+function labelSpot(geo, text, boxes) {
+  const halfW = (text.length * 5.5) / 2 + 2;
+  const clear = (point) => !boxes.some((box) => point.x + halfW > box.left && point.x - halfW < box.right
+    && point.y + 3 > box.top && point.y - 11 < box.bottom);
+  for (const t of [0.5, 0.4, 0.6, 0.32, 0.68, 0.25, 0.75]) {
+    const point = geo.at(t);
+    if (clear(point)) return point;
+  }
+  return geo.at(0.5);
 }
 
 // ---- panels and actions ------------------------------------------------------
@@ -441,8 +465,11 @@ function drawGraph(model, links, ctx) {
   });
 
   const place = () => {
+    const boxes = obstacles(model);
     for (const line of lines) {
-      const { d, label } = geometry(line.link, radii);
+      const geo = geometry(line.link, radii);
+      const { d } = geo;
+      const label = labelSpot(geo, line.link.type, boxes);
       line.hit.setAttribute('d', d);
       line.path.setAttribute('d', d);
       line.label.setAttribute('x', label.x);

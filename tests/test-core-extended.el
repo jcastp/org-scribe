@@ -581,6 +581,20 @@ misread as scenes."
     (should (string-suffix-p "*** New\n# Local Variables:\n# x: 1\n# End:\n"
                              (buffer-string)))))
 
+(ert-deftest test-core-scene-property-set-puts-a-new-property-in-the-templates-place ()
+  "An old scene lacking :Objects: gets it between Location and Description."
+  (with-temp-buffer
+    (insert "* TODO S\n:PROPERTIES:\n:ID: x\n:WORDCOUNT: 0\n:POV:\n:Location:\n"
+            ":Description:\n:Comment:\n:END:\ntext\n")
+    (org-mode)
+    (goto-char (point-min))
+    (org-scribe-scene-property-set 'objects "[[id:o][Ring]]")
+    (should (string-match-p ":Location:\n:Objects: +\\[\\[id:o\\]\\[Ring\\]\\]\n:Description:"
+                            (buffer-string)))
+    ;; a second write changes it in place
+    (org-scribe-scene-property-set 'objects "none")
+    (should (string-match-p ":Location:\n:Objects: +none\n:Description:" (buffer-string)))))
+
 (provide 'test-core-extended)
 
 ;;; test-core-extended.el ends here

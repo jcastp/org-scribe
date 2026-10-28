@@ -22,7 +22,7 @@ const VIEWS = [
   { id: 'table', label: 'companion-ui-view-table', module: table },
   { id: 'storyline', label: 'companion-ui-view-storyline', module: storyline },
   { id: 'chapters', label: 'companion-ui-view-chapters', module: chapters, novelOnly: true },
-  { id: 'timeline', label: 'companion-ui-view-timeline', module: timeline, noFilters: true },
+  { id: 'timeline', label: 'companion-ui-view-timeline', module: timeline },
   { id: 'relations', label: 'companion-ui-view-relations', module: relations, noFilters: true },
   { id: 'forms', label: 'companion-ui-view-forms', module: forms },
 ];
@@ -77,6 +77,7 @@ async function command(op, args = {}, silent = []) {
   if (!answer.ok && !silent.includes(answer.error.code)) {
     showNotice(t('companion-ui-command-failed', answer.error.message));
   }
+  if (answer.ok && answer.warning) showNotice(answer.warning);
   return answer;
 }
 

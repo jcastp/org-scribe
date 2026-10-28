@@ -639,7 +639,15 @@ the buffers' undo steps: the page offers a reset instead."
     (org-scribe-companion--clear-cache)
     (when (fboundp 'org-scribe-companion--announce-change)
       (org-scribe-companion--announce-change))
-    (org-scribe-companion-commands--ok root)))
+    (let ((answer (org-scribe-companion-commands--ok root))
+          (ratio (and color (org-scribe-companion-colors-hex-p color)
+                      (org-scribe-companion-colors-contrast color))))
+      ;; a pin is the writer's choice: accepted, with a warning when it will
+      ;; be hard to read on the page
+      (if (and ratio (< ratio org-scribe-companion-colors-min-contrast))
+          (append answer (list :warning (org-scribe-msg 'companion-warning-low-contrast
+                                                        (downcase color) ratio)))
+        answer))))
 
 (defun org-scribe-companion-commands-run (op args root)
   "Run the operation OP (a string) with the plist ARGS for the project at ROOT.

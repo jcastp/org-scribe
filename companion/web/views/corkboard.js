@@ -320,9 +320,14 @@ export function render(container, ctx) {
       const label = ctx.t('companion-ui-new-chapter');
       add.title = label;
       add.setAttribute('aria-label', label);
+      // the title is asked before the chapter exists: Escape (or nothing
+      // typed) leaves no stray heading behind
       add.addEventListener('click', () => {
         const last = [...act.chapters].reverse().find((chapter) => chapter.id);
-        ctx.edit('create-chapter', { parent: act.id, after: last ? last.id : null }, null, true);
+        startEdit(add, '', false, (title) => {
+          if (!title.trim()) return;
+          ctx.edit('create-chapter', { parent: act.id, after: last ? last.id : null, title });
+        }, ctx, label);
       });
       head.append(add);
     }

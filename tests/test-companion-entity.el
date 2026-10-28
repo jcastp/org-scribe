@@ -81,6 +81,12 @@
 
 ;;; Reading
 
+(ert-deftest test-companion-entity-object-form-offers-the-captures-choices ()
+  (test-companion-entity--with-project root
+    (let ((choices (org-scribe-companion-entity--choices "object")))
+      (should (member "Symbolic" (append (plist-get choices :Type) nil)))
+      (should (member "Lost" (append (plist-get choices :Status) nil))))))
+
 (ert-deftest test-companion-entity-get-returns-properties-sections-and-scenes ()
   (test-companion-entity--with-project root
     (let ((data (org-scribe-companion-entity-get root test-companion-entity--alex)))

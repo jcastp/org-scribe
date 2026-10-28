@@ -75,6 +75,7 @@ body.dragging-chapter .cards { display: none; }
 .card { --todo: var(--todo-default); background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--todo); border-radius: 8px; padding: 0.6rem 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
 .card.done { opacity: 0.78; }
 .card.dimmed { opacity: 0.22; }
+.tl-card.dimmed { opacity: 0.25; }
 .card.focus { outline: 3px solid var(--focus); outline-offset: 1px; }
 .card.readonly { border-style: dashed; border-left-style: solid; }
 .card-head { display: flex; justify-content: space-between; align-items: start; gap: 0.5rem; }

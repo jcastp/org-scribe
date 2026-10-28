@@ -496,10 +496,12 @@ nothing for a project with no scenes."
                                    scenes)))
          (names (lambda (entries &optional with-text)
                   (mapconcat (lambda (e)
-                               (if with-text
-                                   (format "%s (%s)" (plist-get e :heading)
-                                           (plist-get e :text))
-                                 (plist-get e :heading)))
+                               (let ((link (org-scribe--health-scene-link
+                                            (plist-get e :heading)
+                                            (plist-get e :id))))
+                                 (if with-text
+                                     (format "%s (%s)" link (plist-get e :text))
+                                   link)))
                              entries ", ")))
          (missing (funcall by-problem 'blank))
          (unreadable (funcall by-problem 'unreadable))
@@ -514,7 +516,11 @@ nothing for a project with no scenes."
                                  (length no-anchor))
                               total)
               "\n\n")
-      (when missing
+      ;; a project that has not started on story time gets one line, not a
+      ;; list of every scene
+      (when (= (length missing) total)
+        (insert (org-scribe-msg 'msg-health-story-time-none) "\n\n"))
+      (when (and missing (< (length missing) total))
         (insert (org-scribe-msg 'msg-health-story-time-missing
                                 (length missing) (funcall names missing))
                 "\n\n"))
