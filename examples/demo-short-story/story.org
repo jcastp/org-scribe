@@ -72,7 +72,7 @@ maintain here.
 :WORD-OBJECTIVE: 1250
 :PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
 :Characters:
-:Plot:
+:Plot: [[id:plot-main-line-20250114-001][Main Line]]
 :Plot-point:
 :Timeline: Day 1, 03:47
 :Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
@@ -118,7 +118,7 @@ Except she was about to test exactly that tomorrow morning.
 :WORD-OBJECTIVE: 2500
 :PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
 :Characters:
-:Plot:
+:Plot: [[id:plot-main-line-20250114-001][Main Line]]
 :Plot-point:
 :Timeline: Day 1, 04:15
 :Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
@@ -160,7 +160,7 @@ Either way, she was trapped.
 :WORD-OBJECTIVE: 1250
 :PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
 :Characters:
-:Plot:
+:Plot: [[id:plot-main-line-20250114-001][Main Line]]
 :Plot-point:
 :Timeline: Day 2, 09:00
 :Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]

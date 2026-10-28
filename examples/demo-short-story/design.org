@@ -79,6 +79,22 @@ The cascade stabilizes into a permanent quantum temporal field. She hasn't destr
 - Grief and impossible communication
 - The weight of being right
 
+* Plot Threads
+
+** Main Line
+:PROPERTIES:
+:ID:       plot-main-line-20250114-001
+:THREAD-TYPE: Main
+:STATUS: Planned
+:FIRST-APPEARANCE: Opening
+:Weight:
+:END:
+
+- Description :: Elena receives a warning from her future self and has to decide whether to obey it.
+- Carried by :: Elena
+- Where it starts :: The message arrives at 03:47.
+- Where it resolves :: She sends the message herself, closing the loop.
+
 * Setting
 
 ** Main Location(s)
