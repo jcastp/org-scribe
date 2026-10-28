@@ -1067,13 +1067,52 @@ as pending is still named for itself."
                    (append org-scribe-todo-keywords
                            (bound-and-true-p org-todo-keywords-1)
                            (default-value 'org-todo-keywords-1)))))
+    ;; Org keywords are case-sensitive: "Todo o nada" and "Open Range" are
+    ;; names, not a keyword followed by a name.
     (if (and keywords
-             (string-match (concat "\\`\\(?:"
-                                   (regexp-opt keywords)
-                                   "\\)\\(?:[ \t]+\\|\\'\\)")
-                           text))
+             (let ((case-fold-search nil))
+               (string-match (concat "\\`\\(?:"
+                                     (regexp-opt keywords)
+                                     "\\)\\(?:[ \t]+\\|\\'\\)")
+                             text)))
         (string-trim-left (substring text (match-end 0)))
       text)))
+
+;;; Trailing file-local variables
+
+(defun org-scribe--local-variables-start ()
+  "Return the line start of the buffer's closing Local Variables block, or nil.
+Spell checkers such as jinx keep the writer's word list in a
+\"# Local Variables:\" ... \"# End:\" block at the end of the file.  Org
+reads it as the body of the last heading, but Emacs only honours it
+within the last few thousand characters, so it must stay at the end of
+the file whatever happens to the last scene."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-max))
+      (when (re-search-backward "^# Local Variables:[ \t]*$" nil t)
+        (let ((start (point)))
+          (when (re-search-forward "^# End:[ \t]*$" nil t)
+            start))))))
+
+(defun org-scribe--clamp-before-local-variables (position start)
+  "Return POSITION, or the start of the Local Variables block if that is earlier.
+START is where the subtree begins: a block that precedes it is not this
+subtree's to give up."
+  (let ((block (org-scribe--local-variables-start)))
+    (if (and block (< start block) (> position block))
+        block
+      position)))
+
+(defun org-scribe--end-of-subtree-position ()
+  "Return where the subtree at point ends, not counting a trailing Local Variables block.
+Like `org-end-of-subtree' with INVISIBLE-OK and TO-HEADING, which gives
+the start of the next heading (or the end of the buffer)."
+  (save-excursion
+    (let ((start (progn (org-back-to-heading t) (point))))
+      (org-end-of-subtree t t)
+      (org-scribe--clamp-before-local-variables (point) start))))
 
 (defun org-scribe--heading-parent-section-p (section-key)
   "Return non-nil if the immediate parent of the heading at point is SECTION-KEY.

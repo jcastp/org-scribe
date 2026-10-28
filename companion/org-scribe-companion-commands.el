@@ -241,8 +241,11 @@ end of PARENT's subtree when it has none); with no PARENT either, before
 the first act."
   (save-excursion
     (cond
-     (after (goto-char after) (org-end-of-subtree t t) (point))
-     (parent (goto-char parent) (outline-next-heading) (point))
+     (after (goto-char after) (org-scribe--end-of-subtree-position))
+     (parent (goto-char parent)
+            (let ((start (point)))
+              (outline-next-heading)
+              (org-scribe--clamp-before-local-variables (point) start)))
      (t (org-scribe-companion-commands--first-act-position)))))
 
 (defun org-scribe-companion-commands--check-after (parent after level)
@@ -311,7 +314,7 @@ nil for first.  The subtree moves as it is: drawer, ID, tags, body."
             (org-scribe-companion-commands--check-after parent after level))
           (org-scribe-companion-commands--with-edit buffer
             (let* ((beg (org-scribe-companion-commands--at node (org-back-to-heading t) (point)))
-                   (end (org-scribe-companion-commands--at node (org-end-of-subtree t t) (point)))
+                   (end (org-scribe-companion-commands--at node (org-scribe--end-of-subtree-position)))
                    (target (org-scribe-companion-commands--insertion-point parent after)))
               (unless (or (= target beg) (= target end))
                 (let ((text (buffer-substring beg end))

@@ -708,10 +708,11 @@ the start of the current line before the first heading."
 
 (defun org-scribe--goto-after-subtree ()
   "Move point to the line after the subtree of the heading at point."
-  (org-end-of-subtree t)
-  (if (eobp)
-      (unless (bolp) (insert "\n"))
-    (forward-line 1)))
+  (let ((end (org-scribe--end-of-subtree-position)))
+    (goto-char end)
+    ;; A subtree ending at the Local Variables block ends at its line start;
+    ;; any other ends at the next heading, or at the end of the buffer.
+    (when (and (eobp) (not (bolp))) (insert "\n"))))
 
 (defun org-scribe--heading-under-noexport-p ()
   "Non-nil when the heading at point or one of its ancestors is `noexport'.

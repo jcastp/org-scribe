@@ -530,6 +530,57 @@ misread as scenes."
     (should (org-scribe-lang-all :headings (cdr entry)))
     (should (org-scribe-lang-all :headings (car entry)))))
 
+(ert-deftest test-core-heading-text-strips-keywords-only-in-capitals ()
+  "A keyword is stripped; an ordinary word spelled like one is a name."
+  (with-temp-buffer
+    (insert "#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)\n"
+            "* TODO Mr Smith\n* Todo o nada\n* Open Range\n"
+            "* Chosen One\n* Waiting Room\n* Redo Street\n* OPEN Question\n")
+    (org-mode)
+    (goto-char (point-min))
+    (let (names)
+      (while (outline-next-heading)
+        (push (org-scribe--heading-text) names))
+      (should (equal (nreverse names)
+                     '("Mr Smith" "Todo o nada" "Open Range" "Chosen One"
+                       "Waiting Room" "Redo Street" "Question"))))))
+
+(ert-deftest test-core-end-of-subtree-stops-before-local-variables ()
+  "The last subtree does not include the file-local variables block."
+  (with-temp-buffer
+    (insert "* A\ntext\n* B\nprose\n\n# Local Variables:\n# x: 1\n# End:\n")
+    (org-mode)
+    (goto-char (point-min))
+    (let ((block (save-excursion (search-forward "# Local Variables:")
+                                 (line-beginning-position))))
+      (should (= block (org-scribe--local-variables-start)))
+      (should (= (save-excursion (search-forward "* B") (org-scribe--end-of-subtree-position))
+                 block))
+      ;; the earlier subtree is unaffected
+      (should (= (org-scribe--end-of-subtree-position)
+                 (save-excursion (search-forward "* B") (line-beginning-position)))))))
+
+(ert-deftest test-core-end-of-subtree-without-a-block-is-unchanged ()
+  (with-temp-buffer
+    (insert "* A\ntext\n* B\nprose\n")
+    (org-mode)
+    (goto-char (point-min))
+    (should-not (org-scribe--local-variables-start))
+    (search-forward "* B")
+    (should (= (org-scribe--end-of-subtree-position) (point-max)))))
+
+(ert-deftest test-core-goto-after-subtree-stays-above-local-variables ()
+  "Inserting after the last subtree must not put text below the block."
+  (with-temp-buffer
+    (insert "* A\n** B\nprose\n# Local Variables:\n# x: 1\n# End:\n")
+    (org-mode)
+    (goto-char (point-min))
+    (search-forward "** B")
+    (org-scribe--goto-after-subtree)
+    (insert "*** New\n")
+    (should (string-suffix-p "*** New\n# Local Variables:\n# x: 1\n# End:\n"
+                             (buffer-string)))))
+
 (provide 'test-core-extended)
 
 ;;; test-core-extended.el ends here

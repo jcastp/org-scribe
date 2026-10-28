@@ -889,6 +889,74 @@
                        :after test-companion-commands--scene-1 :title "x"))))
       (should (equal original (test-companion-commands--text root "novel.org"))))))
 
+;;; A trailing Local Variables block stays at the end of the file
+
+(defconst test-companion-commands--lv-block
+  "# Local Variables:\n# jinx-local-words: \"Alex Rivera\"\n# End:\n"
+  "What jinx appends to a manuscript.")
+
+(defun test-companion-commands--add-lv-block (root)
+  "Append the Local Variables block to ROOT's manuscript, on disk."
+  (let ((file (expand-file-name "novel.org" root)))
+    (with-temp-buffer
+      (insert-file-contents file)
+      (goto-char (point-max))
+      (unless (bolp) (insert "\n"))
+      (insert test-companion-commands--lv-block)
+      (write-region (point-min) (point-max) file nil 'silent))
+    (org-scribe-companion--clear-cache)))
+
+(defun test-companion-commands--ends-with-lv-block-p (root)
+  (string-suffix-p test-companion-commands--lv-block
+                   (test-companion-commands--text root "novel.org")))
+
+(ert-deftest test-companion-commands-moving-the-last-scene-leaves-the-local-variables-block ()
+  (test-companion-commands--with-project root
+    (test-companion-commands--add-lv-block root)
+    (let* ((last (car (last (cdr (car (last (cdr (car (last (test-companion-commands--order root))))))))))
+           (chapter (car (car (last (cdr (car (last (test-companion-commands--order root)))))))))
+      (should (test-companion-commands--ends-with-lv-block-p root))
+      (should (test-companion-commands--ok-p
+               (test-companion-commands--run
+                root "move-node"
+                :id (test-companion-commands--id root last)
+                :parent (test-companion-commands--id root chapter))))
+      (should (test-companion-commands--ends-with-lv-block-p root))
+      (should-not (string-match-p
+                   "Local Variables"
+                   (test-companion-commands--subtree root last))))))
+
+(ert-deftest test-companion-commands-moving-a-scene-after-the-last-one-stays-above-the-block ()
+  (test-companion-commands--with-project root
+    (test-companion-commands--add-lv-block root)
+    (let* ((order (test-companion-commands--order root))
+           (last-chapter (car (car (last (cdr (car (last order)))))))
+           (last-scene (car (last (cdr (car (last (cdr (car (last order))))))))))
+      (should (test-companion-commands--ok-p
+               (test-companion-commands--run
+                root "move-node"
+                :id (test-companion-commands--id root "Scene 2 - Coffee Shop Encounter")
+                :parent (test-companion-commands--id root last-chapter)
+                :after (test-companion-commands--id root last-scene))))
+      (should (test-companion-commands--ends-with-lv-block-p root)))))
+
+(ert-deftest test-companion-commands-new-chapter-and-scene-at-the-end-stay-above-the-block ()
+  (test-companion-commands--with-project root
+    (test-companion-commands--add-lv-block root)
+    (let* ((order (test-companion-commands--order root))
+           (act (car (car (last order))))
+           (chapter (car (car (last (cdr (car (last order))))))))
+      (should (test-companion-commands--ok-p
+               (test-companion-commands--run
+                root "create-chapter" :parent (test-companion-commands--id root act)
+                :after (test-companion-commands--id root chapter) :title "Last one")))
+      (should (test-companion-commands--ends-with-lv-block-p root))
+      (should (test-companion-commands--ok-p
+               (test-companion-commands--run
+                root "create-scene" :parent (test-companion-commands--id root "Last one")
+                :title "Final")))
+      (should (test-companion-commands--ends-with-lv-block-p root)))))
+
 ;;; create-chapter
 
 (ert-deftest test-companion-commands-create-chapter-at-the-end-of-an-act ()
