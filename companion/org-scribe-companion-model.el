@@ -23,6 +23,8 @@
 (require 'org-scribe-core)
 (require 'org-scribe-lang)
 (require 'org-scribe-linking-core)
+(require 'org-scribe-story-time)
+(require 'org-scribe-chronology)
 (require 'org-scribe-character-relationships)
 
 (defvar org-scribe-companion-todo-colors)
@@ -525,7 +527,48 @@ so asking again without an edit costs a revision check only."
             :sceneFields (org-scribe-companion--scene-fields-json specs)
             :acts (vconcat (plist-get cache :acts))
             :entities (plist-get cache :entities)
-            :storyline (plist-get cache :storyline)))))
+            :storyline (plist-get cache :storyline)
+            :storyTime (org-scribe-companion--story-time (plist-get cache :acts))))))
+
+;;; Story time
+
+(defun org-scribe-companion--story-entry (heading text id context)
+  "Return the story-time plist of one scene or event for the browser.
+HEADING and TEXT are the title and the `:Timeline:' text, ID the scene's
+ID (nil for an event or a scene without one); CONTEXT is the story-time
+context.  The key is computed here so the parser exists once, in Lisp."
+  (let ((parsed (and text (org-scribe-story-time-key text context))))
+    (list :id (org-scribe-companion--or-null id)
+          :title heading
+          :text (or text "")
+          :key (if parsed (plist-get parsed :key) :null)
+          :problem (if parsed
+                       :null
+                     (org-scribe-companion--or-null
+                      (and text (symbol-name
+                                 (org-scribe-story-time-problem text context))))))))
+
+(defun org-scribe-companion--story-time (acts)
+  "Return the `storyTime' object for ACTS, the walked manuscript.
+`:scenes' holds every scene in reading order with its key (or null and
+the reason), `:events' the design notebook's Timeline events."
+  (let* ((context (org-scribe-story-time-context))
+         scenes)
+    (dolist (act acts)
+      (seq-doseq (chapter (plist-get act :chapters))
+        (seq-doseq (scene (plist-get chapter :scenes))
+          (let ((raw (plist-get (plist-get (plist-get scene :fields) :timeline) :raw)))
+            (push (org-scribe-companion--story-entry
+                   (plist-get scene :title) raw
+                   (let ((id (plist-get scene :id))) (and (stringp id) id))
+                   context)
+                  scenes)))))
+    (list :scenes (vconcat (nreverse scenes))
+          :events (vconcat
+                   (mapcar (lambda (e)
+                             (org-scribe-companion--story-entry
+                              (plist-get e :heading) (plist-get e :text) nil context))
+                           (org-scribe-chronology--collect-events context))))))
 
 ;;; Strings for the browser
 

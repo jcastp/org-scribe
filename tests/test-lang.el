@@ -115,7 +115,7 @@ fixture reaches into the variable directly like this."
 (ert-deftest test-lang-properties-key-sets-match ()
   "Every registered pack's `:properties', `:headings', `:templates' and
 `:method-labels' sections each have the same keys across packs."
-  (dolist (section '(:properties :headings :templates :method-labels))
+  (dolist (section '(:properties :headings :templates :method-labels :story-time))
     (org-scribe--test-lang-section-key-sets-match section)))
 
 ;;; Message parity (see this file's Commentary for why this duplicates

@@ -507,6 +507,22 @@ SETUP is a function called with the directory.  The directory is the
   (should (assq 'object org-scribe-entity-registry))
   (should (assoc "object" org-scribe-companion-entity--capture-commands)))
 
+;;; Story time
+
+(ert-deftest test-companion-model-snapshot-carries-story-time ()
+  "Each scene gets a key from the one Lisp parser; events come from the notebook."
+  (test-companion-model--with-project root #'test-companion-model--copy-demo
+    (let* ((story (plist-get (org-scribe-companion--snapshot root) :storyTime))
+           (scenes (append (plist-get story :scenes) nil))
+           (first (car scenes)))
+      (should (> (length scenes) 3))
+      (should (equal "Day 1, 06:30" (plist-get first :text)))
+      (should (= (+ 390) (plist-get first :key)))
+      ;; Same JSON round trip the browser gets.
+      (should (json-serialize (org-scribe-companion--snapshot root)))
+      (should (cl-some (lambda (e) (equal "Day 25, 09:00" (plist-get e :text)))
+                       (append (plist-get story :events) nil))))))
+
 (provide 'test-companion-model)
 ;;; test-companion-model.el ends here
 

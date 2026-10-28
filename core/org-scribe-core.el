@@ -1056,6 +1056,7 @@ recognized."
     (setting . world)
     (objects . world)
     (timeline . world)
+    (calendar . world)
     (plot-threads . plot-part)
     (plot-points . plot-part)
     (starting-gate . foundations))

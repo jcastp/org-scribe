@@ -86,6 +86,8 @@
     "test-lemma"                   ; Hunspell lemmatization
     "test-wikcionario"             ; Local Wikcionario definitions
     "test-health"                  ; Project health report
+    "test-story-time"              ; Story-time parser
+    "test-chronology"              ; Story-chronology block, health lines, calendar
     "test-overlays"                ; Entity tooltip system
     "test-tempel-snippets"         ; Bundled Tempel snippets
     "test-sistema-templates"       ; Sistema template set + entity recognition
@@ -396,6 +398,15 @@ is set too, for the tests that start a fresh Emacs."
   (load-file (expand-file-name "test-health.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (ert "^test-health-"))
+
+;;;###autoload
+(defun org-scribe-run-story-time-tests ()
+  "Run story-time parser and chronology tests only."
+  (interactive)
+  (dolist (file '("test-story-time.el" "test-chronology.el"))
+    (load-file (expand-file-name file
+                                 (file-name-directory (or load-file-name buffer-file-name)))))
+  (ert "^test-\\(story-time\\|chronology\\)-"))
 
 ;;;###autoload
 (defun org-scribe-run-compile-tests ()

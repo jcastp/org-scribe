@@ -8,6 +8,7 @@ import * as corkboard from './views/corkboard.js';
 import * as table from './views/table.js';
 import * as storyline from './views/storyline.js';
 import * as chapters from './views/chapters.js';
+import * as timeline from './views/timeline.js';
 import * as relations from './views/relations.js';
 import * as forms from './views/forms.js';
 
@@ -20,6 +21,7 @@ const VIEWS = [
   { id: 'table', label: 'companion-ui-view-table', module: table },
   { id: 'storyline', label: 'companion-ui-view-storyline', module: storyline },
   { id: 'chapters', label: 'companion-ui-view-chapters', module: chapters, novelOnly: true },
+  { id: 'timeline', label: 'companion-ui-view-timeline', module: timeline, noFilters: true },
   { id: 'relations', label: 'companion-ui-view-relations', module: relations, noFilters: true },
   { id: 'forms', label: 'companion-ui-view-forms', module: forms },
 ];

@@ -157,6 +157,29 @@ body.dragging-chapter .cards { display: none; }
 .sl-hidden-note td { color: var(--muted); font-style: italic; padding: 0.25rem 0.5rem; }
 .legend { color: var(--muted); font-size: 0.8rem; }
 
+/* timeline */
+.tl-scroll { overflow-x: auto; padding-bottom: 0.5rem; }
+.tl-lane { display: flex; align-items: flex-start; gap: 0.5rem; min-width: min-content; }
+.tl-column { flex: 0 0 11rem; border-left: 2px solid var(--line); padding-left: 0.4rem; }
+.tl-day { margin: 0 0 0.4rem; font-size: 0.8rem; font-weight: 600; }
+.tl-gap { flex: 0 0 auto; align-self: center; color: var(--muted); font-size: 0.8rem; font-style: italic; writing-mode: vertical-rl; padding: 0.5rem 0; }
+.tl-card { border: 1px solid var(--line); border-radius: 6px; padding: 0.3rem 0.45rem; margin-bottom: 0.4rem; background: color-mix(in srgb, var(--accent) 6%, var(--bg)); }
+.tl-card.event { border-style: dashed; background: transparent; }
+.tl-top { display: flex; align-items: baseline; gap: 0.35rem; flex-wrap: wrap; font-size: 0.78rem; }
+.tl-position { font-weight: 600; color: var(--accent); }
+.tl-back { color: var(--warn, #d9822b); font-weight: 700; }
+.tl-time, .tl-title { all: unset; cursor: pointer; }
+.tl-time { color: var(--muted); }
+.tl-time.empty { font-style: italic; }
+.tl-time:disabled, .tl-title:disabled { cursor: default; }
+.tl-time:focus-visible, .tl-title:focus-visible { outline: 2px solid var(--accent); }
+.tl-event-time { color: var(--muted); font-style: italic; }
+.tl-title { display: block; font-size: 0.9rem; margin-top: 0.15rem; }
+.tl-undated { margin-top: 1.2rem; border-top: 1px solid var(--line); padding-top: 0.6rem; }
+.tl-undated-cards { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tl-undated-cards .tl-card { flex: 0 0 11rem; }
+.tl-problem { display: block; margin-top: 0.2rem; font-size: 0.72rem; color: var(--warn, #d9822b); }
+
 /* entity forms */
 .ent-layout { display: grid; grid-template-columns: 16rem 1fr; gap: 1.5rem; align-items: start; }
 .ent-list { position: sticky; top: 4rem; max-height: calc(100vh - 5rem); overflow-y: auto; }

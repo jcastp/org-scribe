@@ -1,0 +1,157 @@
+;;; test-chronology.el --- Tests for the story-chronology view -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;; Builds a small flat project on disk (marker, manuscript, notebook) and
+;; checks the collector, the dynamic block and the health lines.
+
+;;; Code:
+
+(require 'ert)
+(require 'org)
+(require 'cl-lib)
+(require 'org-scribe)
+
+(defun test-chrono--scene (title timeline)
+  (format "*** TODO %s :ignore:\n:PROPERTIES:\n:Timeline: %s\n:END:\nText.\n"
+          title timeline))
+
+(defmacro test-chrono--with-project (marker-extra scenes notebook &rest body)
+  "Run BODY inside a temp project.  SCENES is a list of (TITLE TIMELINE)."
+  (declare (indent 3))
+  `(let* ((root (file-name-as-directory (make-temp-file "test-chrono-" t)))
+          (default-directory root))
+     (unwind-protect
+         (progn
+           (with-temp-file (expand-file-name ".org-scribe-project" root)
+             (insert "# Type: novel\n# Language: en\n" ,marker-extra))
+           (with-temp-file (expand-file-name "novel.org" root)
+             (insert "* Act One\n** TODO Chapter One :ignore:\n")
+             (dolist (s ,scenes)
+               (insert (test-chrono--scene (car s) (cadr s)))))
+           (with-temp-file (expand-file-name "design.org" root)
+             (insert ,notebook))
+           (org-scribe-project-type-cache-clear)
+           ,@body)
+       (dolist (b (buffer-list))
+         (when (and (buffer-file-name b)
+                    (string-prefix-p root (buffer-file-name b)))
+           (with-current-buffer b (set-buffer-modified-p nil))
+           (kill-buffer b)))
+       (delete-directory root t))))
+
+(defun test-chrono--titles (entries)
+  (mapcar (lambda (e) (plist-get e :heading)) entries))
+
+(ert-deftest test-chronology-orders-scenes-in-story-order ()
+  (test-chrono--with-project "" '(("A" "Day 3") ("B" "Day 1") ("C" "Night 1")) ""
+    (let ((data (org-scribe-chronology-collect)))
+      (should (equal '("B" "C" "A") (test-chrono--titles (plist-get data :ordered))))
+      (should (null (plist-get data :undated))))))
+
+(ert-deftest test-chronology-ties-keep-reading-order ()
+  (test-chrono--with-project "" '(("A" "Day 2") ("B" "Day 2") ("C" "Day 1")) ""
+    (should (equal '("C" "A" "B")
+                   (test-chrono--titles
+                    (plist-get (org-scribe-chronology-collect) :ordered))))))
+
+(ert-deftest test-chronology-jumps-are-measured-against-the-scene-read-before ()
+  (test-chrono--with-project ""
+      '(("A" "Day 25") ("B" "Day 5") ("C" "Day 6") ("D" "Year -9")) ""
+    (let ((jumps (plist-get (org-scribe-chronology-collect) :jumps)))
+      (should (equal '(2 4) (mapcar #'car jumps)))
+      (should (= (* 20 1440) (cdr (assq 2 jumps)))))))
+
+(ert-deftest test-chronology-undated-scenes-are-kept-and-explained ()
+  (test-chrono--with-project ""
+      '(("A" "Day 1") ("B" "") ("C" "Dya 3") ("D" "<2026-03-14>")) ""
+    (let* ((data (org-scribe-chronology-collect))
+           (undated (plist-get data :undated)))
+      (should (equal '("B" "C" "D") (test-chrono--titles undated)))
+      (should (equal '(blank unreadable no-anchor)
+                     (mapcar (lambda (e) (plist-get e :problem)) undated))))))
+
+(ert-deftest test-chronology-dates-project-reads-timestamps ()
+  (test-chrono--with-project "# Story-time: dates\n# Story-day-one: 2026-03-14\n"
+      '(("A" "<2026-03-16 Mon>") ("B" "Day 1") ("C" "<2026-03-13 Fri>")) ""
+    (should (equal '("C" "B" "A")
+                   (test-chrono--titles
+                    (plist-get (org-scribe-chronology-collect) :ordered))))))
+
+(ert-deftest test-chronology-calendar-project ()
+  (test-chrono--with-project "# Story-time: calendar\n"
+      '(("A" "14 Frostmoon 312") ("B" "Day 1") ("C" "4 Thawmoon 312"))
+      "* Calendar\n:PROPERTIES:\n:ERA: AE\n:DAY-ONE: 3 Thawmoon 312\n:END:\n| Month | Days |\n|-------+------|\n| Frostmoon | 30 |\n| Thawmoon | 31 |\n"
+    (should (equal '("A" "B" "C")
+                   (test-chrono--titles
+                    (plist-get (org-scribe-chronology-collect) :ordered))))))
+
+(ert-deftest test-chronology-events-join-date-and-time ()
+  (test-chrono--with-project "" '(("A" "Day 1"))
+      "* Timeline\n** Event one\n:PROPERTIES:\n:Date: Day 25\n:Time: 09:00\n:END:\n** Old\n:PROPERTIES:\n:Date: Year -9\n:END:\n** Recurring\n:PROPERTIES:\n:Date: Every Thursday\n:END:\n"
+    (let ((data (org-scribe-chronology-collect t)))
+      (should (equal '("Old" "A" "Event one")
+                     (test-chrono--titles (plist-get data :ordered))))
+      (should (equal "Day 25, 09:00"
+                     (plist-get (nth 2 (plist-get data :ordered)) :text)))
+      (should (equal '("Recurring") (test-chrono--titles (plist-get data :undated))))
+      ;; Events are optional.
+      (should (null (plist-get (org-scribe-chronology-collect) :events))))))
+
+(ert-deftest test-chronology-dblock-renders-table-jump-and-undated ()
+  (test-chrono--with-project "" '(("A" "Day 25") ("B" "Day 5") ("C" "later"))
+      "* Timeline\n** Old\n:PROPERTIES:\n:Date: Year -9\n:END:\n"
+    (with-temp-buffer
+      (org-mode)
+      (insert "#+BEGIN: story-chronology\n#+END:\n")
+      (goto-char (point-min))
+      (org-update-dblock)
+      (let ((text (buffer-string)))
+        (should (string-match-p "Year -9 .*Old .*backstory" text))
+        (should (string-match-p "Day 5 .*B .*2/3 .*↶ 20 days" text))
+        (should (string-match-p "Undated (1)" text))
+        (should (string-match-p "later .*C" text))))))
+
+(ert-deftest test-chronology-dblock-can-leave-events-out ()
+  (test-chrono--with-project "" '(("A" "Day 1"))
+      "* Timeline\n** Old\n:PROPERTIES:\n:Date: Year -9\n:END:\n"
+    (with-temp-buffer
+      (org-mode)
+      (insert "#+BEGIN: story-chronology :events nil\n#+END:\n")
+      (goto-char (point-min))
+      (org-update-dblock)
+      (should-not (string-match-p "Old" (buffer-string))))))
+
+(ert-deftest test-chronology-health-section-names-the-problems ()
+  (test-chrono--with-project ""
+      '(("A" "Day 25") ("B" "Day 5") ("C" "") ("D" "Dya 3")) ""
+    (with-temp-buffer
+      (org-scribe--health-insert-story-time)
+      (let ((text (buffer-string)))
+        (should (string-match-p "Scenes with a story time :: 2 of 4" text))
+        (should (string-match-p "no story time (1) :: C" text))
+        (should (string-match-p "D (Dya 3)" text))
+        (should (string-match-p "Jumps back in time (1) :: B ↶ 20 days" text))))))
+
+(ert-deftest test-chronology-health-section-absent-without-scenes ()
+  (test-chrono--with-project "" '() ""
+    (with-temp-buffer
+      (org-scribe--health-insert-story-time)
+      (should (equal "" (buffer-string))))))
+
+(ert-deftest test-chronology-calendar-create-writes-heading-and-marker ()
+  (test-chrono--with-project "" '(("A" "3 Thawmoon 312"))
+      "* World\n** Setting\n"
+    (org-scribe-calendar-create "AE" "3 Thawmoon 312")
+    (should (equal "calendar" (org-scribe--project-marker-get root "Story-time")))
+    (with-temp-buffer
+      (insert-file-contents (expand-file-name "design.org" root))
+      (should (string-match-p "^\\*\\* Calendar$" (buffer-string)))
+      (should (string-match-p ":ERA: AE" (buffer-string)))
+      (should (string-match-p ":DAY-ONE: 3 Thawmoon 312" (buffer-string))))
+    ;; A second call refuses instead of duplicating.
+    (should-error (org-scribe-calendar-create "AE" "3 Thawmoon 312")
+                  :type 'user-error)))
+
+(provide 'test-chronology)
+;;; test-chronology.el ends here

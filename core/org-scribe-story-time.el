@@ -1,0 +1,359 @@
+;;; org-scribe-story-time.el --- Story time parser for org-scribe -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2025 Javier Castilla
+
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+
+;; A pure parser, with no UI, for the text a writer puts in a scene's
+;; `:Timeline:' property.  It is to story time what `org-scribe-mythes.el'
+;; is to the thesaurus: a string in, data out, testable in batch with no
+;; project.
+;;
+;; Three things are kept apart.  The *notation* is what the writer typed and
+;; is never rewritten.  The *key* is one integer computed from it, in
+;; minutes from the start of Day 1 (negative before it); every view sorts on
+;; the key alone.  The *display* is always the notation.  A value that cannot
+;; be read gets no key, is never guessed, and goes to an \"undated\" group.
+;;
+;; Notations:
+;;
+;;   Day 3 / Day 3, 14:00      relative days (no Day 0: Day -1 is the day
+;;   Night 3 / Night 3, 02:00  before Day 1).  Night N runs from Day N's
+;;   Year -9 / Year -9, Day 40 evening to Day N+1's dawn.  A year is 365 days
+;;                             for sorting only.
+;;   <2026-03-14 Sat 18:00>    an Org timestamp, counted from the project's
+;;                             Day 1 date.
+;;   14 Frostmoon 312, 18:00   a date in the writer's invented calendar.
+;;
+;; The words (Day/Night/Year) come from the language packs' `:story-time'
+;; section; every registered language's spelling is accepted, accents
+;; optional, case ignored.  A Day with no clock sorts at 06:00 and a Night
+;; with none at 20:00; a clock time always wins.
+;;
+;; `org-scribe-story-time-key' takes a CONTEXT, a plist built once per run
+;; by `org-scribe-story-time-context':
+;;
+;;   :mode      `relative' (default), `dates' or `calendar'
+;;   :day-one   absolute day number (see `calendar-absolute-from-gregorian')
+;;              of Day 1, for timestamps; nil when the project has no anchor
+;;   :calendar  (:months ((NAME . DAYS) ...) :era ERA :day-one N) or nil,
+;;              N being Day 1's day count in that calendar
+
+;;; Code:
+
+(require 'cl-lib)
+(require 'calendar)
+(require 'org)
+(require 'ucs-normalize)
+(require 'org-scribe-core)
+(require 'org-scribe-lang)
+
+(defconst org-scribe-story-time--minutes-per-day 1440)
+(defconst org-scribe-story-time--days-per-year 365
+  "Length of a year, for sorting only; the display keeps the writer's text.")
+(defconst org-scribe-story-time--default-day-clock 360
+  "Minutes after midnight at which a Day with no clock sorts (06:00).")
+(defconst org-scribe-story-time--default-night-clock 1200
+  "Minutes after midnight at which a Night with no clock sorts (20:00).")
+
+;;; Text normalization
+
+(defun org-scribe-story-time--normalize (string)
+  "Return STRING lowercased, without accents, with a plain minus sign."
+  (let ((s (replace-regexp-in-string
+            "[−‒–]" "-"
+            (downcase (ucs-normalize-NFD-string string)))))
+    (replace-regexp-in-string "[̀-ͯ]" "" s)))
+
+(defun org-scribe-story-time--words (concept)
+  "Return the normalized spellings of CONCEPT in every registered language."
+  (delete-dups
+   (mapcar #'org-scribe-story-time--normalize
+           (or (org-scribe-lang-all :story-time concept) nil))))
+
+(defun org-scribe-story-time--alternation (words)
+  "Return a regexp matching any of WORDS."
+  (regexp-opt words))
+
+;;; Clock
+
+(defun org-scribe-story-time--clock (hours minutes)
+  "Return HOURS and MINUTES (strings or nil) as minutes after midnight, or nil.
+Nil when the clock is absent or out of range."
+  (when (and hours minutes)
+    (let ((h (string-to-number hours))
+          (m (string-to-number minutes)))
+      (when (and (<= 0 h 23) (<= 0 m 59))
+        (+ (* h 60) m)))))
+
+(defconst org-scribe-story-time--clock-regexp
+  "\\(?:\\([0-9]\\{1,2\\}\\):\\([0-9][0-9]\\)\\)"
+  "Matches HH:MM; groups are the hours and the minutes.")
+
+;;; Relative notation
+
+(defun org-scribe-story-time--day-start (n)
+  "Return the minute at which relative day N starts (no Day 0), or nil for 0."
+  (cond ((> n 0) (* (1- n) org-scribe-story-time--minutes-per-day))
+        ((< n 0) (* n org-scribe-story-time--minutes-per-day))))
+
+(defun org-scribe-story-time--year-start (n)
+  "Return the minute at which year N starts (no year 0), or nil for 0."
+  (let ((days org-scribe-story-time--days-per-year))
+    (cond ((> n 0) (* (1- n) days org-scribe-story-time--minutes-per-day))
+          ((< n 0) (* n days org-scribe-story-time--minutes-per-day)))))
+
+(defun org-scribe-story-time--parse-relative (text)
+  "Parse the already normalized TEXT as Year/Day/Night notation, or nil."
+  (let* ((year (org-scribe-story-time--alternation
+                (org-scribe-story-time--words 'year)))
+         (day (org-scribe-story-time--alternation
+               (org-scribe-story-time--words 'day)))
+         (night (org-scribe-story-time--alternation
+                 (org-scribe-story-time--words 'night)))
+         (re (concat "\\`[ \t]*"
+                     "\\(?:" year "[ \t]+\\(-?[0-9]+\\)\\)?[ \t,]*"
+                     "\\(?:\\(" day "\\|" night "\\)[ \t]+\\(-?[0-9]+\\)\\)?[ \t,]*"
+                     org-scribe-story-time--clock-regexp "?[ \t,]*\\'")))
+    (when (string-match re text)
+      (let* ((y (and (match-string 1 text) (string-to-number (match-string 1 text))))
+             (word (match-string 2 text))
+             (d (and (match-string 3 text) (string-to-number (match-string 3 text))))
+             (clock-text (match-string 4 text))
+             (clock (org-scribe-story-time--clock
+                     (match-string 4 text) (match-string 5 text)))
+             (night-p (and word (string-match-p (concat "\\`\\(?:" night "\\)\\'") word))))
+        (when (and (or y d)
+                   (not (and clock-text (null clock))))
+          (org-scribe-story-time--combine y d night-p clock))))))
+
+(defun org-scribe-story-time--combine (year day night-p clock)
+  "Return (:key :precision) from YEAR, DAY, NIGHT-P and CLOCK, or nil.
+YEAR and DAY are integers or nil; CLOCK is minutes after midnight or nil."
+  (let ((base 0) (valid t))
+    (when year
+      (let ((ys (org-scribe-story-time--year-start year)))
+        (if ys (setq base ys) (setq valid nil))))
+    (when (and valid day)
+      (let ((ds (if year
+                    ;; Within a year, Day N is the Nth day of it (no Day 0).
+                    (and (> day 0)
+                         (* (1- day) org-scribe-story-time--minutes-per-day))
+                  (org-scribe-story-time--day-start day))))
+        (if ds (setq base (+ base ds)) (setq valid nil))))
+    (when valid
+      (let* ((offset (cond
+                      (clock
+                       (if (and night-p (< clock 720))
+                           (+ clock org-scribe-story-time--minutes-per-day)
+                         clock))
+                      (night-p org-scribe-story-time--default-night-clock)
+                      (day org-scribe-story-time--default-day-clock)
+                      (t 0))))
+        (list :key (+ base offset)
+              :precision (cond (clock 'clock) (day 'day) (t 'year)))))))
+
+;;; Org timestamps
+
+(defun org-scribe-story-time--parse-timestamp (text context)
+  "Parse an Org timestamp in TEXT against CONTEXT's Day 1 date, or nil."
+  (when (string-match
+         "[<[]\\([0-9]\\{4\\}\\)-\\([0-9][0-9]\\)-\\([0-9][0-9]\\)\\(?: [^]> 0-9]+\\)?\\(?: \\([0-9]\\{1,2\\}\\):\\([0-9][0-9]\\)\\)?[^]>]*[]>]"
+         text)
+    (let ((day-one (plist-get context :day-one))
+          (year (string-to-number (match-string 1 text)))
+          (month (string-to-number (match-string 2 text)))
+          (day (string-to-number (match-string 3 text)))
+          (clock (org-scribe-story-time--clock (match-string 4 text)
+                                               (match-string 5 text))))
+      (when (and day-one (<= 1 month 12) (<= 1 day 31))
+        (list :key (+ (* (- (calendar-absolute-from-gregorian
+                             (list month day year))
+                            day-one)
+                         org-scribe-story-time--minutes-per-day)
+                      (or clock org-scribe-story-time--default-day-clock))
+              :precision (if clock 'clock 'day))))))
+
+;;; Invented calendar
+
+(defun org-scribe-story-time--calendar-count (calendar year month-index day)
+  "Return the day count of YEAR, MONTH-INDEX (0-based), DAY in CALENDAR."
+  (let* ((months (plist-get calendar :months))
+         (year-length (apply #'+ (mapcar #'cdr months)))
+         (before (apply #'+ (mapcar #'cdr (seq-take months month-index)))))
+    (+ (* year year-length) before (1- day))))
+
+(defun org-scribe-story-time--parse-calendar (text context)
+  "Parse TEXT as a date in CONTEXT's invented calendar, or nil.
+TEXT is already normalized."
+  (when-let* ((calendar (plist-get context :calendar))
+              (months (plist-get calendar :months))
+              (names (mapcar (lambda (m) (org-scribe-story-time--normalize (car m)))
+                             months))
+              (era (plist-get calendar :era))
+              (day-one (plist-get calendar :day-one)))
+    (let ((re (concat "\\`[ \t]*\\([0-9]+\\)[ \t]+"
+                      "\\(" (org-scribe-story-time--alternation names) "\\)"
+                      "[ \t]+\\(-?[0-9]+\\)"
+                      (if (org-string-nw-p era)
+                          (concat "\\(?:[ \t]+" (regexp-quote
+                                                 (org-scribe-story-time--normalize era))
+                                  "\\)?")
+                        "")
+                      "\\(?:[ \t]*,[ \t]*" org-scribe-story-time--clock-regexp "\\)?"
+                      "[ \t,]*\\'")))
+      (when (string-match re text)
+        (let* ((day (string-to-number (match-string 1 text)))
+               (index (cl-position (match-string 2 text) names :test #'string=))
+               (year (string-to-number (match-string 3 text)))
+               (clock-text (match-string 4 text))
+               (clock (org-scribe-story-time--clock (match-string 4 text)
+                                                    (match-string 5 text))))
+          (when (and (<= 1 day (cdr (nth index months)))
+                     (not (and clock-text (null clock))))
+            (list :key (+ (* (- (org-scribe-story-time--calendar-count
+                                 calendar year index day)
+                                day-one)
+                             org-scribe-story-time--minutes-per-day)
+                          (or clock org-scribe-story-time--default-day-clock))
+                  :precision (if clock 'clock 'day))))))))
+
+;;; Public entry points
+
+(defun org-scribe-story-time-key (string context)
+  "Return (:key MINUTES :precision day|clock|year) for STRING, or nil.
+CONTEXT is the plist described in the Commentary.  Nil means the text
+cannot be placed: it is blank, unreadable, or a date with no anchor to
+count from.  See `org-scribe-story-time-problem' for which."
+  (when (org-string-nw-p string)
+    (or (org-scribe-story-time--parse-timestamp string context)
+        (let ((text (org-scribe-story-time--normalize string)))
+          (or (org-scribe-story-time--parse-relative text)
+              (org-scribe-story-time--parse-calendar text context))))))
+
+(defun org-scribe-story-time-problem (string context)
+  "Say why STRING has no key under CONTEXT.
+Returns nil when it has one, `blank' for an empty value, `no-anchor' for a
+timestamp or calendar date with no Day 1 to count from, `unreadable'
+otherwise."
+  (cond ((not (org-string-nw-p string)) 'blank)
+        ((org-scribe-story-time-key string context) nil)
+        ((string-match-p "[<[][0-9]\\{4\\}-[0-9][0-9]-[0-9][0-9]" string)
+         (if (plist-get context :day-one) 'unreadable 'no-anchor))
+        (t 'unreadable)))
+
+;;; Context from the project
+
+(defun org-scribe-story-time-mode (&optional root)
+  "Return the main notation of ROOT's project: `relative', `dates' or `calendar'.
+Read from the \"# Story-time:\" line of the marker file.  A missing or
+unrecognized value is `relative', so every earlier project is unchanged."
+  (let* ((value (and root (org-scribe--project-marker-get root "Story-time")))
+         (mode (and value (intern-soft (downcase (string-trim value))))))
+    (if (memq mode '(relative dates calendar)) mode 'relative)))
+
+(defun org-scribe-story-time--read-calendar (file)
+  "Return the calendar described by the Calendar heading of FILE, or nil.
+The result is (:months ((NAME . DAYS) ...) :era ERA :day-one N)."
+  (when (and file (file-exists-p file))
+    (with-current-buffer (find-file-noselect file)
+      (org-with-wide-buffer
+       (when-let* ((pos (org-scribe--find-section-heading 'calendar)))
+         (goto-char pos)
+         (let* ((era (org-entry-get nil "ERA"))
+                (day-one (org-entry-get nil "DAY-ONE"))
+                (end (save-excursion (org-end-of-subtree t t) (point)))
+                months)
+           (save-restriction
+             (narrow-to-region pos end)
+             (goto-char (point-min))
+             (when (re-search-forward org-table-line-regexp nil t)
+               (dolist (row (ignore-errors (org-table-to-lisp)))
+                 (when (and (listp row) (= (length row) 2)
+                            (org-string-nw-p (car row))
+                            (string-match-p "\\`[0-9]+\\'" (string-trim (cadr row)))
+                            (not (string-match-p "\\`[0-9]+\\'" (string-trim (car row)))))
+                   (push (cons (string-trim (car row))
+                               (string-to-number (cadr row)))
+                         months)))))
+           (setq months (nreverse months))
+           (when months
+             (let ((calendar (list :months months :era era)))
+               (list :months months :era era
+                     :day-one (and (org-string-nw-p day-one)
+                                   (org-scribe-story-time--calendar-date-count
+                                    calendar day-one)))))))))))
+
+(defun org-scribe-story-time--calendar-date-count (calendar text)
+  "Return the day count of the date TEXT written in CALENDAR, or nil."
+  (let ((context (list :calendar (append calendar (list :day-one 0)))))
+    (when-let* ((parsed (org-scribe-story-time--parse-calendar
+                         (org-scribe-story-time--normalize text) context)))
+      ;; The key counted from day-one 0 with the default clock; undo both.
+      (/ (- (plist-get parsed :key) org-scribe-story-time--default-day-clock)
+         org-scribe-story-time--minutes-per-day))))
+
+(defun org-scribe-story-time--parse-date (string)
+  "Return the absolute day number of the YYYY-MM-DD STRING, or nil."
+  (when (and string
+             (string-match "\\`[ \t]*\\([0-9]\\{4\\}\\)-\\([0-9][0-9]\\)-\\([0-9][0-9]\\)"
+                           string))
+    (let ((y (string-to-number (match-string 1 string)))
+          (m (string-to-number (match-string 2 string)))
+          (d (string-to-number (match-string 3 string))))
+      (when (and (<= 1 m 12) (<= 1 d 31))
+        (calendar-absolute-from-gregorian (list m d y))))))
+
+(defun org-scribe-story-time-context (&optional root)
+  "Return the story-time CONTEXT of ROOT's project (default: the current one)."
+  (let* ((root (or root (org-scribe-project-root)))
+         (mode (org-scribe-story-time-mode root))
+         (design (plist-get (org-scribe-project-structure) :design-file))
+         (calendar (and (eq mode 'calendar)
+                        (org-scribe-story-time--read-calendar design))))
+    (list :mode mode
+          :day-one (org-scribe-story-time--parse-date
+                    (org-scribe--project-marker-get root "Story-day-one"))
+          :calendar calendar)))
+
+;;; Opt-in invented calendar
+
+(declare-function org-scribe--capture-goto-section "capture/org-scribe-capture")
+
+;;;###autoload
+(defun org-scribe-calendar-create (era day-one)
+  "Add a Calendar heading to the design notebook and switch to it.
+ERA names the era (\"AE\") and DAY-ONE is Day 1 written as a date of the
+calendar (\"3 Thawmoon 312\").  The heading goes in the World part with an
+empty month table for the writer to fill, and the project's \"# Story-time:\"
+marker becomes `calendar'.  Not shipped in the templates: an empty month
+table in every contemporary novel would be noise."
+  (interactive
+   (list (read-string (org-scribe-msg 'calendar-prompt-era))
+         (read-string (org-scribe-msg 'calendar-prompt-day-one))))
+  (let ((design (plist-get (org-scribe-project-structure) :design-file))
+        (root (org-scribe-project-root)))
+    (unless (and design (file-exists-p design))
+      (user-error "%s" (org-scribe-msg 'calendar-no-notebook)))
+    (with-current-buffer (find-file-noselect design)
+      (when (org-scribe--find-section-heading 'calendar)
+        (user-error "%s" (org-scribe-msg 'calendar-exists)))
+      (org-with-wide-buffer
+       (org-scribe--capture-goto-section 'calendar)
+       (org-end-of-subtree t t)
+       (unless (bolp) (insert "\n"))
+       (insert (format ":PROPERTIES:\n:ERA: %s\n:DAY-ONE: %s\n:END:\n"
+                       (string-trim era) (string-trim day-one))
+               "| Month | Days |\n|-------+------|\n|       |      |\n")
+       (forward-line -1)
+       (org-table-align))
+      (save-buffer))
+    (org-scribe--project-marker-set root "Story-time" "calendar")
+    (message "%s" (org-scribe-msg 'calendar-created
+                                  (file-name-nondirectory design)))))
+
+(provide 'org-scribe-story-time)
+
+;;; org-scribe-story-time.el ends here

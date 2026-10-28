@@ -19,6 +19,7 @@
 (require 'org-scribe-core)
 (require 'org-scribe-messages)
 (require 'org-scribe-search)
+(require 'org-scribe-chronology)
 
 ;; Entity getter functions (from linking modules, loaded before this file)
 (declare-function org-scribe--get-all-characters "linking/org-scribe-character-links")
@@ -465,6 +466,62 @@ useful."
                         (org-scribe--health-scene-link (nth 0 s) (nth 2 s))))))
     (insert "\n")))
 
+;;; Story time
+
+(defun org-scribe--health-insert-story-time ()
+  "Insert the Story Time section: scenes with no time, unreadable ones, jumps.
+Flashbacks are listed, not flagged: a jump back is information, and the
+list still lets a typo such as Day 23 for Day 32 stand out.  Inserts
+nothing for a project with no scenes."
+  (let* ((data (org-scribe-chronology-collect))
+         (scenes (plist-get data :scenes))
+         (total (length scenes))
+         (by-problem (lambda (problem)
+                       (seq-filter (lambda (e) (eq (plist-get e :problem) problem))
+                                   scenes)))
+         (names (lambda (entries &optional with-text)
+                  (mapconcat (lambda (e)
+                               (if with-text
+                                   (format "%s (%s)" (plist-get e :heading)
+                                           (plist-get e :text))
+                                 (plist-get e :heading)))
+                             entries ", ")))
+         (missing (funcall by-problem 'blank))
+         (unreadable (funcall by-problem 'unreadable))
+         (no-anchor (funcall by-problem 'no-anchor))
+         (jumps (plist-get data :jumps))
+         (jump-scenes (seq-filter (lambda (e) (assq (plist-get e :index) jumps))
+                                  scenes)))
+    (when (> total 0)
+      (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-story-time-heading)))
+      (insert (org-scribe-msg 'msg-health-story-time-summary
+                              (- total (length missing) (length unreadable)
+                                 (length no-anchor))
+                              total)
+              "\n\n")
+      (when missing
+        (insert (org-scribe-msg 'msg-health-story-time-missing
+                                (length missing) (funcall names missing))
+                "\n\n"))
+      (when unreadable
+        (insert (org-scribe-msg 'msg-health-story-time-unreadable
+                                (length unreadable) (funcall names unreadable t))
+                "\n\n"))
+      (when no-anchor
+        (insert (org-scribe-msg 'msg-health-story-time-no-anchor
+                                (length no-anchor) (funcall names no-anchor t))
+                "\n\n"))
+      (when jump-scenes
+        (insert (org-scribe-msg
+                 'msg-health-story-time-flashbacks (length jump-scenes)
+                 (mapconcat
+                  (lambda (e)
+                    (format "%s %s" (plist-get e :heading)
+                            (org-scribe-chronology--distance
+                             (cdr (assq (plist-get e :index) jumps)))))
+                  jump-scenes ", "))
+                "\n\n")))))
+
 ;;; Main Report Function
 
 ;;;###autoload
@@ -766,6 +823,9 @@ with clickable ID links back to each scene."
         (org-scribe--health-insert-missing-list "PoV" miss-pov "PoV")
         (org-scribe--health-insert-missing-list "Plot" miss-plot "Plot")
         (org-scribe--health-insert-missing-list "Location" miss-location "Location")
+
+        ;; ── Story time ────────────────────────────────────────────────────────
+        (org-scribe--health-insert-story-time)
 
         ;; ── Broken links ──────────────────────────────────────────────────────
         (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-broken-links-heading

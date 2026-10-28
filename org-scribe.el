@@ -72,6 +72,8 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            (org-scribe-messages    . "core/org-scribe-messages")
            (org-scribe-core        . "core/org-scribe-core")
            (org-scribe-config      . "core/org-scribe-config")
+           ;; Story-time parser (pure; reads only the language packs and core)
+           (org-scribe-story-time  . "core/org-scribe-story-time")
            ;; Project creation and templates
            (org-scribe-project     . "templates/org-scribe-project")
            ;; Feature modules
@@ -101,6 +103,7 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            ;; Overlay tooltips (opt-in via org-scribe-overlays-enable)
            (org-scribe-overlays    . "linking/org-scribe-overlays")
            ;; Project health report (depends on the linking getters above)
+           (org-scribe-chronology  . "reporting/org-scribe-chronology")
            (org-scribe-health      . "reporting/org-scribe-health")
            ;; Export and UI
            (org-scribe-export      . "export/org-scribe-export")
