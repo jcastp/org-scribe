@@ -40,7 +40,7 @@ function dataCell(chapter, group, entity, filtering, ctx) {
   const here = scenes.filter((scene) => appears(scene, group, entity));
   const pov = group.kind === 'character'
     ? scenes.filter((scene) => ids(scene, 'pov').includes(entity.id)).length : 0;
-  if (filtering && scenes.length === 0) td.classList.add('dimmed');
+  if ((filtering || chapter.scenes.length === 0) && scenes.length === 0) td.classList.add('dimmed');
   if (here.length) {
     td.textContent = pov ? `${here.length} (${pov}P)` : String(here.length);
     const share = Math.round(15 + 60 * (here.length / chapter.scenes.length));
@@ -114,7 +114,9 @@ function header(chapters, ctx) {
   numbers.append(el('th', 'sl-corner'));
   chapters.forEach((chapter, index) => {
     const th = el('th', 'sl-scene chapter-start', String(index + 1));
-    th.title = chapter.title;
+    th.title = chapter.scenes.length ? chapter.title
+      : ctx.t('companion-ui-chapters-empty', chapter.title);
+    if (!chapter.scenes.length) th.classList.add('dimmed');
     numbers.append(th);
   });
   numbers.append(el('th', 'sl-scene chapter-start', ctx.t('companion-ui-chapters-total')));
@@ -128,7 +130,8 @@ export function render(container, ctx) {
   const chapters = [];
   for (const act of ctx.snapshot.acts) {
     for (const chapter of act.chapters) {
-      if (!chapter.scenes.length) continue;
+      // an empty chapter keeps its column, so a number is always the chapter's
+      // place in the book
       const first = chapter.scenes.find((scene) => scene.id);
       chapters.push({
         ...chapter, act: act.id || act.title, actTitle: act.title,

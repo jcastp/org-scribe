@@ -676,6 +676,7 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (companion-ui-not-shown . "No se muestran (ocultas): %s")
      (companion-ui-storyline-legend . "Clic: presente o ausente. Mayús+clic en un personaje: punto de vista.")
      (companion-ui-view-chapters . "Capítulos")
+     (companion-ui-chapters-empty . "%s (aún sin escenas)")
      (companion-ui-chapters-total . "Total")
      (companion-ui-chapters-legend . "Escenas por capítulo en las que aparece la entidad; (nP) = escenas con el punto de vista de ese personaje. El sombreado es la parte de las escenas del capítulo. Clic en una celda para ver esas escenas en la línea argumental. Los filtros cuentan solo las escenas que coinciden.")
      (companion-ui-chapters-cell . "%s / %s: %d de %d escenas")

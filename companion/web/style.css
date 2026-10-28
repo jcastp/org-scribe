@@ -154,6 +154,7 @@ body.dragging-chapter .cards { display: none; }
 .chapters .ch-cell { text-align: center; min-width: 3.2rem; border-bottom: 1px solid var(--line); border-left: 1px solid color-mix(in srgb, var(--line) 50%, transparent); height: 1.6rem; font-size: 0.85rem; }
 .chapters .ch-cell.filled { background: color-mix(in srgb, var(--accent) var(--share), var(--bg)); cursor: pointer; }
 .chapters .ch-cell.dimmed { opacity: 0.25; }
+.chapters th.dimmed { opacity: 0.45; }
 .chapters .ch-cell:focus-visible { outline: 2px solid var(--accent); }
 .chapters .ch-total { text-align: center; font-weight: 600; border-left: 2px solid var(--line); border-bottom: 1px solid var(--line); }
 .sl-hidden-note td { color: var(--muted); font-style: italic; padding: 0.25rem 0.5rem; }
