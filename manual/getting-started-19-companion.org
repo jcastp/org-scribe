@@ -7,7 +7,7 @@
 
 Everything so far happened inside Emacs. This lesson is about an optional extra
 for the moments when you want to /see/ the whole book at once: a page in your
-browser with a corkboard, an outline table, a storyline chart and forms for your
+browser with a corkboard, an outline table, a storyline chart, a chapter overview, a story-time timeline, a relationship graph and forms for your
 characters, locations and plot threads.
 
 The page does not replace Emacs and does not keep a copy of your work. Every
@@ -16,7 +16,7 @@ already know, so undo, saving and git work exactly as before.
 
 By the end of this lesson, you'll know how to:
 - Turn the companion on, for Emacs and for one project
-- Open it and read the four views
+- Open it and read the seven tabs
 - Move scenes, rename them, and change their state from the page
 - Link characters, locations and plot threads to scenes by clicking
 - Edit a character's profile in a form
@@ -59,6 +59,11 @@ the state, the summary, the PoV and plot-point badges, and a word-count bar.
 - *Click the title or the summary* to edit it. ~Enter~ saves, ~Escape~ cancels.
 - The *state dropdown* sets the scene's TODO keyword.
 - The ~+~ at the end of a chapter heading adds a scene.
+- The ~+~ on an act header adds an empty chapter (heading only, no first
+  scene); the title editor opens straight away.
+- *Drag a chapter by its handle* (⠿) within its act or into another one;
+  keyboard: ~Alt+Up~ / ~Alt+Down~, which crosses to the neighbouring act at
+  an edge. Cards fold away while you drag.
 - The ~↗~ button (or a double click) shows the scene in Emacs.
 
 Filters at the top (PoV, character, plot thread, location, state) dim the cards
@@ -79,6 +84,8 @@ while sorted).
   picker listing the entities of that kind, with a search box. Pick, press
   *Done*: Emacs writes proper ~[[id:...][Name]]~ links.
 - *Colour by* state or by PoV.
+- The *Objects* field works like the other link fields. In Emacs the same
+  link is set with ~F8 F8 b~ (Tag Scene) and searched with ~F8 F8 7~.
 
 * Part 4: The Storyline
 
@@ -101,6 +108,46 @@ that no scene serves gets a "No scene uses it" badge.
 Entities with a negative ~:Weight:~ are not drawn, but they are never silently
 dropped: a line under the group says "Not shown (hidden): ...", and a checkbox
 shows them.
+
+** The Chapters Tab
+
+The storyline rolled up to chapters: chapters run across (the act above, the
+number below, the title on hover), characters, locations, objects, plot
+threads and plot points run down. A cell is the number of that chapter's
+scenes where the entity appears; for a character, ~3 (2P)~ means three scenes,
+two of them from that character's PoV. Shading shows the share of the
+chapter's scenes, and the last column is the total. The tab only reads: click a
+cell to open the storyline at that chapter's first scene, a row name to open
+the entity in Emacs. With a filter on, only matching scenes are counted and a
+chapter with none is dimmed. Empty chapters keep their column, so a number is
+always the chapter's place in the book.
+
+** The Relations Tab
+
+Characters are nodes and ~:RelationshipsData:~ entries are typed lines, drawn
+from the data each time, so the graph cannot drift from the notebook.
+
+- Click a character, then another, to add a relationship (type suggestions
+  come from ~org-scribe-relationship-types~, the project language's list, and
+  the types already in use).
+- Click a line to change its type or remove the entry.
+- Two characters related both ways with the same type share one plain line;
+  different types are drawn as two arrows. A target that is no longer a
+  character is drawn as a dashed ghost node.
+- Layout is not stored, and this tab has no scene filters. A table under the
+  graph lists the same data.
+
+Each change is one undo step in Emacs and is not saved until you save.
+
+** Colours
+
+The *Colours* button opens a dialog: pick one of four themes (Default,
+Okabe-Ito for colour blindness, High contrast, Muted; each has a light and a
+dark variant) and, if you wish, a colour for a role, a relationship type or a
+PoV character. A swatch picks the theme's Nth colour; the free colour dialog
+pins an exact colour and warns when its contrast is poor. Choices are written
+to ~.org-scribe-project~ so they travel with the project; *Reset* removes
+them. Warnings and the "scene in Emacs" highlight have their own colours.
 
 * Part 5: Entity Forms
 
@@ -148,6 +195,10 @@ group at the end with the reason. The same data is available as a
 in the Story Time section of the health report. The page notices a change of
 notation at once.
 
+Press ~F8 F8 S~ to see the same data from Emacs: the notation is a project
+setting, and the health report (~F8 F8 H~) gains a *Story Time* section
+listing scenes with no time, unreadable values and jumps back in time.
+
 * Part 6: Saving, Undo, and Following
 
 - The page never saves your files unless you press *Save* (or set
@@ -174,6 +225,9 @@ loaded from the internet.
 
 * Exercises
 
+0. Open the Chapters tab and find the character who appears in the most
+   chapters; then open the Relations tab and add a relationship by clicking
+   two characters.
 1. Open the demo novel's companion. Move Chapter 1's second scene to the first
    position and undo it from Emacs.
 2. In the Table, add the *Location* column and set a scene's location with the picker.

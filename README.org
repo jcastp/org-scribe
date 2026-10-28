@@ -18,9 +18,9 @@
 - *Template Customization*: Edit templates to match your workflow
 - *Bilingual Support*: English and Spanish templates included, structurally identical and test-enforced
 - *Project-Wide Spelling Dictionary*: a generated =.dir-locals.el= points every file in the project at the dictionary for its language, with no per-file setup and no local-variables prompt ([[*Spelling dictionary for the whole project][details]])
-- *Scratchpad*: one unstructured file per project for drafts, "what if" questions and ideas with nowhere to live yet — plus a convention for branching a question into alternatives and exploring each ([[*The Scratchpad][details]])
+- *Scratchpad*: one unstructured part of the design notebook for drafts, "what if" questions and ideas with nowhere to live yet — plus a convention for branching a question into alternatives and exploring each ([[*The Scratchpad][details]])
 - *Git Integration*: Projects automatically initialized with git
-- *Visual Companion (opt-in)*: a browser corkboard, outline table, storyline and entity forms next to Emacs, which stays the only program that touches your files ([[*Visual Companion (opt-in)][details]])
+- *Visual Companion (opt-in)*: a browser corkboard, outline table, storyline, chapter overview, story-time timeline, relationship graph and entity forms next to Emacs, which stays the only program that touches your files ([[*Visual Companion (opt-in)][details]])
 
 *** Writing Tools
 - *Character Linking*: ID-based links between scenes and character profiles
@@ -1133,8 +1133,8 @@ Generates an aggregated health snapshot of the current project — novel or
 short story — and opens it in the =*org-scribe-health*= buffer as a
 browsable org file with clickable =[[id:...]]= links back to each scene.
 
-The report contains seven sections (plus an optional eighth when the bundled
-writing planner is active for the project); one of the seven, *Chapter Length
+The report contains the sections below, plus a Writing Plan section when the bundled
+writing planner is active and a Story Time section when scenes have a =:Timeline:=; one of the seven, *Chapter Length
 Spread*, only appears for a project type that has chapters:
 
 | Section                            | What it shows                                                                                                       |
@@ -1147,6 +1147,7 @@ Spread*, only appears for a project type that has chapters:
 | *Missing Properties*                 | Scenes lacking =:PoV:=, =:Plot:=, or =:Location:= — linked                                                          |
 | *Orphaned Entities*                  | Characters/locations in their database but not linked in any scene                                                  |
 | *Open TODO Scenes*                   | Full list with state labels and clickable scene links                                                               |
+| *Story Time* (when used)             | Scenes with a story time, scenes without, unreadable values (with the reason), dates lacking a Day 1, and jumps back in time (listed, never flagged) |
 
 In a short-story project — which has no chapters — the Chapter Length Spread
 section is omitted entirely, and the =(chapter: ...)= annotation that would
@@ -1383,11 +1384,11 @@ Automatically finds the right notes file in your project structure.
 
 The package provides specialized capture templates for different types of content:
 
-- =org-scribe-capture-character= (F8 F8 h) - Capture character profiles with comprehensive templates
-- =org-scribe-capture-location= (F8 F8 l) - Capture location details for world building
-- =org-scribe-capture-object= (F8 F8 b) - Capture important objects in your story
-- =org-scribe-capture-timeline= (F8 F8 t) - Capture timeline events for chronology tracking
-- =org-scribe-capture-plot-thread= (F8 F8 g) - Capture plot threads as they emerge during writing
+- =org-scribe-capture-character= (F8 F8 k h) - Capture character profiles with comprehensive templates
+- =org-scribe-capture-location= (F8 F8 k l) - Capture location details for world building
+- =org-scribe-capture-object= (F8 F8 k b) - Capture important objects in your story
+- =org-scribe-capture-timeline= (F8 F8 k t) - Capture timeline events for chronology tracking
+- =org-scribe-capture-plot-thread= (F8 F8 k g) - Capture plot threads as they emerge during writing
 
 These functions file every capture into the design notebook, under the section
 for that kind of entity (=Characters=, =Setting=, =Plot Threads=, ...). If a
@@ -1706,6 +1707,7 @@ Tag the current scene's properties with ID-based links:
 - =p= - Set PoV character
 - =h= - Set scene characters (multi-select)
 - =l= - Set scene locations (multi-select)
+- =b= - Set scene objects (multi-select)
 - =g= - Set scene plot threads (multi-select)
 - =j= - Jump to PoV character's profile
 
@@ -1715,6 +1717,8 @@ Tag the current scene's properties with ID-based links:
 - =d= - RAE dictionary lookup (Spanish)
 - =y= - Synonym lookup (Spanish / English)
 - =x= - English thesaurus (requires =powerthesaurus=)
+- =t= - Set the project word target; =T= - set the title
+- =S= - Set the story-time notation (relative, dates, invented calendar)
 
 *** Search
 - =1= - Find scenes by PoV character
@@ -1723,6 +1727,7 @@ Tag the current scene's properties with ID-based links:
 - =4= - Find scenes by location
 - =5= - Find all TODOs in the project
 - =6= - Index all inline edit/note markers (=C-u= for the plain-text fallback)
+- =7= - Find scenes by object
 
 *** Manage
 - =n= - Capture a quick note
@@ -1754,6 +1759,7 @@ Tag the current scene's properties with ID-based links:
 *One-time set-up per entity type:*
 - =c= - Setup character linking system
 - =o= - Setup location linking system
+- =b= - Setup object linking system
 - =p= - Setup plot thread linking system
 - =P= - Setup plot point linking system
 - =r= - Setup character relationships system
@@ -1776,11 +1782,14 @@ Tag the current scene's properties with ID-based links:
 
 ** What It Is
 
-An optional browser page that shows your project the way a corkboard does, next to Emacs. It has four views:
+An optional browser page that shows your project the way a corkboard does, next to Emacs. It has seven tabs:
 
-- *Corkboard*: acts, chapters and scenes as cards. Drag a card to move the scene; click a title or a summary to edit it; change a scene's state from the card.
+- *Corkboard*: acts, chapters and scenes as cards. Drag a card to move the scene, drag a chapter by its handle (within or across acts), and add an empty chapter with the =+= on an act header; click a title or a summary to edit it; change a scene's state from the card.
 - *Table*: one row per scene, with the columns you choose (PoV, characters, plot threads, plot points, summary, ...). Link fields open a picker over the characters, locations or plot threads of the project.
 - *Storyline*: scenes across, characters, plot threads, locations and plot points down. Click a cell to add or remove the link. Long gaps in a plot thread are highlighted; plot points no scene uses are flagged. Entities with a negative =Weight= are left out, with a "not shown" line.
+- *Chapters*: the storyline rolled up to chapters. Chapters across, entities down; each cell counts the chapter's scenes where the entity appears (=nP= = n of them from that character's PoV), shaded by share, with a total column. Read-only: a cell opens the storyline at that chapter.
+- *Timeline*: scenes placed by *story time*, one column per occupied day with markers for gaps. Click the time on a card to change the scene's =:Timeline:= property. Scenes whose time cannot be read go to a "no date" group with the reason.
+- *Relations*: the characters as nodes and their =:RelationshipsData:= as typed lines, drawn from the data. Click a character, then another, to add a relationship; click a line to change its type or remove it. Same-type pairs in both directions are one plain line. Positions are not stored.
 - *Entities*: a form for each character, location and plot thread: the property drawer, and the body of each profile section.
 
 *Emacs stays the only program that reads and writes your files.* The page asks Emacs to change a heading by its =ID=; Emacs does it in the buffer, as one undo step, and leaves saving to you (the Save button, or =org-scribe-companion-auto-save=). If you edit the same text in Emacs and in the browser, a section edit that would overwrite your Emacs changes is refused and both versions are shown.
@@ -1807,6 +1816,20 @@ Then =F8 F8 B= (or =M-x org-scribe-companion-open=) starts the server and opens 
 - The arrow button on a card, row or entity opens it in Emacs; double-click a card does the same.
 - Keyboard: on a focused card, =Alt+Up= / =Alt+Down= moves it; =F2= edits its title; =Enter= opens it in Emacs.
 - In the Entities view, the =+= buttons run the usual capture commands (=org-scribe-capture-character=, ...) in Emacs: there is no second way of creating entities.
+
+** Story Time
+
+The Timeline tab reads each scene's =:Timeline:= text. Choose the notation with =F8 F8 S= (=org-scribe-set-story-time=), recorded as =# Story-time:= in =.org-scribe-project=:
+
+- *relative* (default): =Day 3=, =Day 3, 14:00=, =Night 3, 02:00=, =Year -9, Day 40=. There is no Day 0 (=Day -1= is the day before Day 1).
+- *dates*: Org timestamps, counted from a =# Story-day-one: YYYY-MM-DD= it asks for.
+- *calendar*: your invented calendar, read from a Calendar heading in the design notebook (=:ERA:=, =:DAY-ONE:=, a month/days table). =M-x org-scribe-calendar-create= adds it the first time you choose this notation.
+
+A remark may follow after a comma (=Day 3, 14:00, in the cellar=); it must start with a letter and is ignored for sorting. What you typed is never rewritten. Recurring events, ranges and free prose stay "undated". The same data feeds a =#+BEGIN: story-chronology= dynamic block (add =:events nil= to leave the notebook's Timeline events out) and the *Story Time* section of the health report.
+
+** Colours
+
+The *Colours* button opens a dialog with four themes (Default, Okabe-Ito colour-blind safe, High contrast, Muted), each with a light and a dark variant, plus per-item colours for roles, relationship types and PoV characters. Choices are stored in =.org-scribe-project= (=# Companion-theme:=, =# Companion-color:=), so they travel with the project; /Reset/ removes them. TODO-state colours remain configurable through =org-scribe-companion-todo-colors=.
 
 ** Browser Options
 
