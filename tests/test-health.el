@@ -513,6 +513,15 @@ and the outlier legend line is shown."
     (should (equal (org-scribe--health-chapter-word-totals scenes)
                   '(("Ch1" . 500) ("Ch2" . 400))))))
 
+(ert-deftest test-health-chapter-word-totals-keeps-same-titled-chapters-apart ()
+  "Two chapters with one title are two rows, not one summed row."
+  (let ((scenes (list (list "S1" "Chapter" nil "DONE" t nil nil nil 300 "A" "id-1")
+                      (list "S2" "Chapter" nil "DONE" t nil nil nil 200 "A" "id-1")
+                      (list "S3" "Chapter" nil "DONE" t nil nil nil 400 "A" "id-2")
+                      (list "S4" "Other" nil "DONE" t nil nil nil 50 "A" "id-3"))))
+    (should (equal (org-scribe--health-chapter-word-totals scenes)
+                   '(("Chapter" . 500) ("Chapter (2)" . 400) ("Other" . 50))))))
+
 (ert-deftest test-health-median-odd-length ()
   "Median of an odd-length list is the middle value."
   (should (= (org-scribe--health-median '(3 1 2)) 2)))

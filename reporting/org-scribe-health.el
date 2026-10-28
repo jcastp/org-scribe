@@ -100,7 +100,9 @@ Falls back to plain HEADING text when ID is nil."
   "Scan NOVEL-FILE and return a list of scene data plists.
 Each element is a list:
   (HEADING CHAPTER ID TODO-STATE HAS-POV HAS-CHARS HAS-PLOT HAS-LOCATION
-   WORDCOUNT POV-NAME)
+   WORDCOUNT POV-NAME CHAPTER-KEY)
+CHAPTER-KEY tells two chapters with the same title apart: the chapter's
+ID, or its position when it has none.
 WORDCOUNT is the scene's :WORDCOUNT: property as a number (0 if unset).
 POV-NAME is the resolved display text of the PoV property (via
 `org-scribe--extract-link-text', so an ID link or plain name both
@@ -126,6 +128,9 @@ story's manuscript."
                        (chapter (save-excursion
                                   (org-up-heading-safe)
                                   (org-get-heading t t t t)))
+                       (chapter-key (save-excursion
+                                      (and (org-up-heading-safe)
+                                           (or (org-id-get) (point)))))
                        (pov (org-scribe-scene-property-get 'pov))
                        (chars (org-scribe-scene-property-get 'characters))
                        (plot (org-scribe-scene-property-get 'plot))
@@ -138,7 +143,8 @@ story's manuscript."
                               (and plot (not (string-empty-p (string-trim plot))))
                               (and loc (not (string-empty-p (string-trim loc))))
                               wordcount
-                              pov-name)
+                              pov-name
+                              chapter-key)
                         scenes))))
             nil 'file)))))
     (nreverse scenes)))
@@ -208,17 +214,26 @@ localized \"(no PoV)\" label, which doubles as a missing-property signal."
   "Group SCENES by chapter and sum their WORDCOUNT.
 SCENES is a list as returned by `org-scribe--health-collect-scene-data'.
 Returns a list of (CHAPTER . WORDS), in order of each chapter's first
-appearance in SCENES."
+appearance in SCENES.  Chapters are told apart by their key (the last
+element of a scene, see `org-scribe--health-collect-scene-data'), not by
+title: two chapters both called \"Chapter\" are two rows, the later ones
+shown as \"Chapter (2)\".  A scene with no key is grouped by title."
   (let ((totals (make-hash-table :test 'equal))
+        (titles (make-hash-table :test 'equal))
+        (seen (make-hash-table :test 'equal))
         (order nil))
     (dolist (s scenes)
-      (let ((chapter (or (nth 1 s) "?"))
-            (wc (or (nth 8 s) 0)))
-        (unless (gethash chapter totals)
-          (push chapter order)
-          (puthash chapter 0 totals))
-        (puthash chapter (+ (gethash chapter totals) wc) totals)))
-    (mapcar (lambda (chapter) (cons chapter (gethash chapter totals)))
+      (let* ((title (or (nth 1 s) "?"))
+             (key (or (nth 10 s) title))
+             (wc (or (nth 8 s) 0)))
+        (unless (gethash key totals)
+          (push key order)
+          (puthash key 0 totals)
+          (let ((n (1+ (gethash title seen 0))))
+            (puthash title n seen)
+            (puthash key (if (> n 1) (format "%s (%d)" title n) title) titles)))
+        (puthash key (+ (gethash key totals) wc) totals)))
+    (mapcar (lambda (key) (cons (gethash key titles) (gethash key totals)))
             (nreverse order))))
 
 (defun org-scribe--health-median (numbers)
