@@ -378,10 +378,13 @@ unweighted default 999.0 and is not hidden."
 (defun org-scribe-companion--format-revision (revisions)
   "Return the revision string for REVISIONS, a (MANUSCRIPT . DESIGN) pair.
 Ends with the colour settings' revision: they live in the marker file, so
-no buffer tick changes when the writer picks a colour.  Reads the project
+no buffer tick changes when the writer picks a colour; the story-time
+notation and Day 1 date are marker lines too.  Reads the project
 at `default-directory'."
-  (format "m%s-d%s-c%s" (car revisions) (cdr revisions)
-          (org-scribe-companion-colors-revision (org-scribe-project-root))))
+  (let ((root (org-scribe-project-root)))
+    (format "m%s-d%s-t%s-c%s" (car revisions) (cdr revisions)
+            (org-scribe-story-time-revision root)
+            (org-scribe-companion-colors-revision root))))
 
 (defun org-scribe-companion--revision-string (root)
   "Return the current revision string of the project at ROOT, without a snapshot.

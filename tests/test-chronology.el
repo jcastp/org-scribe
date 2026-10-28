@@ -11,6 +11,7 @@
 (require 'org)
 (require 'cl-lib)
 (require 'org-scribe)
+(require 'org-scribe-companion-model)
 
 (defun test-chrono--scene (title timeline)
   (format "*** TODO %s :ignore:\n:PROPERTIES:\n:Timeline: %s\n:END:\nText.\n"
@@ -152,6 +153,40 @@
     ;; A second call refuses instead of duplicating.
     (should-error (org-scribe-calendar-create "AE" "3 Thawmoon 312")
                   :type 'user-error)))
+
+;;; org-scribe-set-story-time
+
+(ert-deftest test-chronology-set-story-time-dates-writes-both-marker-lines ()
+  (test-chrono--with-project "" '(("A" "<2026-03-14 Sat 18:00>")) ""
+    (org-scribe-set-story-time 'dates "2026-03-10")
+    (should (equal "dates" (org-scribe--project-marker-get root "Story-time")))
+    (should (equal "2026-03-10" (org-scribe--project-marker-get root "Story-day-one")))
+    (should (eq 'dates (org-scribe-story-time-mode root)))
+    ;; the scene is now placed: it had no Day 1 before
+    (should (plist-get (car (plist-get (org-scribe-chronology-collect) :ordered)) :key))))
+
+(ert-deftest test-chronology-set-story-time-refuses-a-bad-day-one-and-writes-nothing ()
+  (test-chrono--with-project "" '(("A" "Day 1")) ""
+    (should-error (org-scribe-set-story-time 'dates "next tuesday") :type 'user-error)
+    (should-error (org-scribe-set-story-time 'dates nil) :type 'user-error)
+    (should-not (org-scribe--project-marker-get root "Story-time"))
+    (should-not (org-scribe--project-marker-get root "Story-day-one"))))
+
+(ert-deftest test-chronology-set-story-time-relative-and-existing-calendar ()
+  (test-chrono--with-project "# Story-time: dates\n" '(("A" "Day 1"))
+      "* World\n** Calendar\n:PROPERTIES:\n:ERA: EC\n:DAY-ONE: 1 Thaw 1\n:END:\n| M | D |\n|---+---|\n| Thaw | 30 |\n"
+    (org-scribe-set-story-time 'relative)
+    (should (eq 'relative (org-scribe-story-time-mode root)))
+    (org-scribe-set-story-time 'calendar)
+    (should (eq 'calendar (org-scribe-story-time-mode root)))))
+
+(ert-deftest test-chronology-story-time-revision-follows-the-marker-lines ()
+  (test-chrono--with-project "" '(("A" "Day 1")) ""
+    (let ((before (org-scribe-story-time-revision root)))
+      (org-scribe--project-marker-set root "Story-day-one" "2026-03-10")
+      (should-not (equal before (org-scribe-story-time-revision root)))
+      (should (string-match-p "-t[0-9a-f]\\{8\\}-c[0-9a-f]\\{8\\}\\'"
+                              (org-scribe-companion--revision-string root))))))
 
 (provide 'test-chronology)
 ;;; test-chronology.el ends here

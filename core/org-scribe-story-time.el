@@ -318,6 +318,65 @@ The result is (:months ((NAME . DAYS) ...) :era ERA :day-one N)."
                     (org-scribe--project-marker-get root "Story-day-one"))
           :calendar calendar)))
 
+;;; Settings
+
+(defun org-scribe-story-time-revision (root)
+  "Return a short string that changes when ROOT's story-time settings do.
+They live in the marker file, so no buffer tick tells the companion page."
+  (substring (secure-hash 'md5 (format "%S" (list (org-scribe--project-marker-get root "Story-time")
+                                                  (org-scribe--project-marker-get root "Story-day-one"))))
+             0 8))
+
+(declare-function org-scribe-companion--announce-change "org-scribe-companion")
+(declare-function org-scribe-companion--clear-cache "org-scribe-companion-model")
+
+(defun org-scribe-story-time--mode-choices ()
+  "Return the alist (LABEL . MODE) offered by `org-scribe-set-story-time'."
+  (mapcar (lambda (mode)
+            (cons (org-scribe-msg (intern (format "story-time-mode-%s" mode))) mode))
+          '(relative dates calendar)))
+
+;;;###autoload
+(defun org-scribe-set-story-time (mode &optional day-one)
+  "Choose how this project's scenes write their `:Timeline:' text.
+MODE is `relative' (Day 3, 14:00), `dates' (Org timestamps, counted from
+DAY-ONE, a YYYY-MM-DD string) or `calendar' (the writer's invented
+calendar; the notebook's Calendar heading is created first when it is
+missing).  Written to the project's marker file, which the companion
+page notices."
+  (interactive
+   (let* ((root (org-scribe--require-project))
+          (label (completing-read (org-scribe-msg 'story-time-prompt-mode)
+                                  (mapcar #'car (org-scribe-story-time--mode-choices))
+                                  nil t))
+          (mode (cdr (assoc label (org-scribe-story-time--mode-choices)))))
+     (list mode
+           (when (eq mode 'dates)
+             (read-string (org-scribe-msg 'story-time-prompt-day-one)
+                          (org-scribe--project-marker-get root "Story-day-one"))))))
+  (let ((root (org-scribe--require-project)))
+    (pcase mode
+      ('relative (org-scribe--project-marker-set root "Story-time" "relative"))
+      ('dates
+       (unless (and day-one (org-scribe-story-time--parse-date day-one))
+         (user-error "%s" (org-scribe-msg 'story-time-invalid-day-one (or day-one ""))))
+       (org-scribe--project-marker-set root "Story-day-one" (string-trim day-one))
+       (org-scribe--project-marker-set root "Story-time" "dates"))
+      ('calendar
+       (if (let ((design (plist-get (org-scribe-project-structure) :design-file)))
+             (and design (file-exists-p design)
+                  (with-current-buffer (find-file-noselect design)
+                    (org-with-wide-buffer (org-scribe--find-section-heading 'calendar)))))
+           (org-scribe--project-marker-set root "Story-time" "calendar")
+         (call-interactively #'org-scribe-calendar-create)))
+      (_ (user-error "%s" (org-scribe-msg 'story-time-prompt-mode))))
+    (when (featurep 'org-scribe-companion-model)
+      (org-scribe-companion--clear-cache))
+    (when (featurep 'org-scribe-companion)
+      (org-scribe-companion--announce-change))
+    (message "%s" (org-scribe-msg 'story-time-set
+                                  (car (rassq mode (org-scribe-story-time--mode-choices)))))))
+
 ;;; Opt-in invented calendar
 
 (declare-function org-scribe--capture-goto-section "capture/org-scribe-capture")

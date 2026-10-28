@@ -123,6 +123,24 @@ that section in Emacs while the form is open and then save from the page, the
 page does /not/ overwrite your Emacs edit: it shows both versions side by side
 and asks whether to keep yours or use the one from Emacs.
 
+** The Timeline Tab and Story Time
+
+The *Timeline* tab places scenes by *story time*: what you write in a scene's
+~:Timeline:~ property (click the time on a card to change it). Press
+~F8 F8 S~ (~org-scribe-set-story-time~) to choose the notation:
+
+- *relative*: ~Day 3~, ~Day 3, 14:00~, ~Night 3, 02:00~, ~Year -9, Day 40~
+  (the default; no Day 0, ~Day -1~ is the day before Day 1);
+- *dates*: Org timestamps, counted from a Day 1 date it asks for (YYYY-MM-DD);
+- *invented calendar*: dates in your own calendar, set up the first time you
+  choose it.
+
+A scene whose time cannot be read, or that has none, goes to the "no date"
+group at the end with the reason. The same data is available as a
+~#+BEGIN: story-chronology~ dynamic block in any Org file of the project, and
+in the Story Time section of the health report. The page notices a change of
+notation at once.
+
 * Part 6: Saving, Undo, and Following
 
 - The page never saves your files unless you press *Save* (or set

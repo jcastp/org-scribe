@@ -163,7 +163,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 ^^               _0_: Normal      _j_: Jump to PoV     _x_: Thesaurus       _5_: TODOs        _H_: Health report
 ^^               ^^               _b_: Objects         _t_: Word target     _6_: Edits        _W_: Planner…
 ^^               ^^               ^^                   _T_: Title           _7_: Object       _X_: Compile draft
-^^               ^^               ^^                   ^^                   ^^                _B_: Board…
+^^               ^^               ^^                   _S_: Story time      ^^                _B_: Board…
 ^^               ^^               ^^                   ^^                   ^^                _q_: Quit
 "
   ;; Insert (most frequent)
@@ -200,6 +200,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("x" org-scribe-thesaurus-lookup "thesaurus")
   ("t" org-scribe-set-word-target "word target")
   ("T" org-scribe-set-title "title")
+  ("S" org-scribe-set-story-time "story time")
 
   ;; Search
   ("1" org-scribe-org-find-pov "find by PoV")
