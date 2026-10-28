@@ -94,7 +94,7 @@ The cascade stabilizes into a permanent quantum temporal field. She hasn't destr
 
 ** Locations
 
-<!-- Location captures go here as subheadings -->
+# Location captures go here as subheadings
 
 ** Time Period
 Near future—2047. Quantum computing is common, but quantum communication through time is still theoretical.
@@ -108,11 +108,11 @@ Near future—2047. Quantum computing is common, but quantum communication throu
 
 * Objects
 
-<!-- Important objects in the story - quantum entanglement chamber, encryption keys, etc. -->
+# Important objects in the story - quantum entanglement chamber, encryption keys, etc.
 
 * Timeline
 
-<!-- Timeline of story events - March 15-16, 2047 -->
+# Timeline of story events - March 15-16, 2047
 
 * Research & References
 
