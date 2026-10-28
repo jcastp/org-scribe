@@ -455,8 +455,12 @@ table in every contemporary novel would be noise."
        (unless (bolp) (insert "\n"))
        (insert (format ":PROPERTIES:\n:ERA: %s\n:DAY-ONE: %s\n:END:\n"
                        (string-trim era) (string-trim day-one))
-               "| Month | Days |\n|-------+------|\n|       |      |\n")
-       (forward-line -1)
+               (let ((org-scribe-message-language (org-scribe-project-language)))
+                 (format "| %s | %s |\n|-+-|\n| | |\n\n"
+                         (org-scribe-msg 'calendar-table-month)
+                         (org-scribe-msg 'calendar-table-days))))
+       ;; the table's last row, above the blank line that keeps the next heading apart
+       (forward-line -2)
        (org-table-align))
       (save-buffer))
     (org-scribe--project-marker-set root "Story-time" "calendar")

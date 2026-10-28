@@ -538,6 +538,8 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (msg-health-story-time-flashbacks . "Saltos atrás en el tiempo (%d) :: %s")
      (calendar-prompt-era . "Nombre de la era (p. ej. EA): ")
      (calendar-prompt-day-one . "Día 1 como fecha de este calendario (p. ej. 3 Lunadeshielo 312): ")
+     (calendar-table-month . "Mes")
+     (calendar-table-days . "Días")
      (calendar-exists . "El cuaderno de diseño ya tiene un encabezado Calendario")
      (calendar-created . "Calendario creado en %s; rellene su tabla de meses")
      (calendar-no-notebook . "Este proyecto no tiene cuaderno de diseño")

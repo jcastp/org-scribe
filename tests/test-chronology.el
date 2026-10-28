@@ -173,6 +173,21 @@
     (should-error (org-scribe-calendar-create "AE" "3 Thawmoon 312")
                   :type 'user-error)))
 
+(ert-deftest test-chronology-calendar-table-is-in-the-project-language-and-set-apart ()
+  (test-chrono--with-project "" '(("A" "Day 1"))
+      "* Mundo\n** Ambientación\n* Investigación\n"
+    (with-temp-file (expand-file-name ".org-scribe-project" root)
+      (insert "# Type: novel\n# Language: es\n"))
+    (org-scribe-project-type-cache-clear)
+    (org-scribe-calendar-create "EC" "3 Deshielo 312")
+    (with-temp-buffer
+      (insert-file-contents (expand-file-name "design.org" root))
+      (let ((text (buffer-string)))
+        (should (string-match-p "| Mes +| Días +|" text))
+        (should-not (string-match-p "Month" text))
+        ;; a blank line between the table and the next part
+        (should (string-match-p "|\n\n\\* Investigación" text))))))
+
 ;;; org-scribe-set-story-time
 
 (ert-deftest test-chronology-set-story-time-dates-writes-both-marker-lines ()
