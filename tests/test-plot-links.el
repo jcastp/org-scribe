@@ -311,6 +311,24 @@ writer's scenes have."
         (should-not (string-match-p "All scenes have Plot" text))))
     (kill-buffer "*Plot Thread Health Report*")))
 
+(ert-deftest test-presence-table-and-suffix-drop-chapter-in-short-story ()
+  "With no chapter level, the table has no Chapter column and no suffix."
+  (let ((scenes '(("Scene 1" "Story Content"))))
+    (cl-letf (((symbol-function 'org-scribe-chapter-level) (lambda (&optional _) nil)))
+      (with-temp-buffer
+        (org-mode)
+        (org-scribe--render-presence-table '("Main") scenes (lambda (_e _s) "X"))
+        (should-not (string-match-p "Chapter\\|Story Content" (buffer-string)))
+        (should (string-match-p "Scene 1" (buffer-string))))
+      (should (equal "" (org-scribe--chapter-suffix "Story Content"))))
+    (cl-letf (((symbol-function 'org-scribe-chapter-level) (lambda (&optional _) 2)))
+      (with-temp-buffer
+        (org-mode)
+        (org-scribe--render-presence-table '("Main") scenes (lambda (_e _s) "X"))
+        (should (string-match-p "Chapter" (buffer-string)))
+        (should (string-match-p "Story Content" (buffer-string))))
+      (should (equal " (Chapter: C)" (org-scribe--chapter-suffix "C"))))))
+
 (provide 'test-plot-links)
 
 ;;; test-plot-links.el ends here

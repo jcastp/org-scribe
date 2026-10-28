@@ -288,12 +288,13 @@ Opens a new buffer with the report."
             (insert (format "- Scenes: %d of %d (%.1f%%)\n"
                            scene-count total-scene-count coverage-pct))
             (when appearances
-              (insert (format "- First appearance: %s (Chapter: %s)\n"
+              (insert (format "- First appearance: %s%s\n"
                              (nth 0 (car appearances))
-                             (nth 1 (car appearances))))
-              (insert (format "- Last appearance: %s (Chapter: %s)\n"
+                             (org-scribe--chapter-suffix (nth 1 (car appearances)))))
+              (insert (format "- Last appearance: %s%s\n"
                              (nth 0 (car (last appearances)))
-                             (nth 1 (car (last appearances))))))
+                             (org-scribe--chapter-suffix
+                              (nth 1 (car (last appearances)))))))
             (when warnings
               (insert "\n*Warnings:*\n")
               (dolist (warning warnings)
@@ -318,7 +319,8 @@ Opens a new buffer with the report."
               (insert (format "Found %d scene(s) without Plot property:\n\n"
                              (length scenes-without-plot)))
               (dolist (scene scenes-without-plot)
-                (insert (format "- %s (Chapter: %s)\n" (car scene) (cadr scene)))))
+                (insert (format "- %s%s\n" (car scene)
+                                (org-scribe--chapter-suffix (cadr scene))))))
           (insert "All scenes have Plot properties assigned.\n"))))
     (pop-to-buffer report-buffer)
     (goto-char (point-min))

@@ -507,6 +507,12 @@ Entities with a negative weight are omitted; use
 `org-scribe--partition-entities-by-weight' to get at them."
   (car (org-scribe--partition-entities-by-weight items weight-fn)))
 
+(defun org-scribe--chapter-suffix (chapter)
+  "Return \" (Chapter: CHAPTER)\", or \"\" when the project has no chapter level."
+  (if (org-scribe-chapter-level)
+      (format " (Chapter: %s)" chapter)
+    ""))
+
 (defun org-scribe--render-presence-table (entities scenes cell-fn &optional hidden)
   "Insert an org table showing ENTITIES across SCENES.
 ENTITIES is the list of column header strings.
@@ -515,20 +521,23 @@ CELL-FN is called with (entity-name scene) and should return the cell string.
 HIDDEN, when non-nil, is a list of names left out of the table because of
 a negative Weight; they are named in a trailing Org comment line so the
 omission is visible in the buffer without being exported or word-counted."
-  (insert "| Scene | Chapter |")
-  (dolist (entity entities)
-    (insert (format " %s |" (org-scribe--escape-table-cell entity))))
-  (insert "\n|-------+---------+")
-  (dolist (_ entities)
-    (insert "--------+"))
-  (insert "\n")
-  (dolist (scene scenes)
-    (insert (format "| %s | %s |"
-                    (org-scribe--escape-table-cell (nth 0 scene))
-                    (org-scribe--escape-table-cell (nth 1 scene))))
+  ;; A project with no chapter level (a short story) has no Chapter column:
+  ;; its every cell would name the one container.
+  (let ((chapters (org-scribe-chapter-level)))
+    (insert (if chapters "| Scene | Chapter |" "| Scene |"))
     (dolist (entity entities)
-      (insert (format " %s |" (org-scribe--escape-table-cell (funcall cell-fn entity scene)))))
-    (insert "\n"))
+      (insert (format " %s |" (org-scribe--escape-table-cell entity))))
+    (insert (if chapters "\n|-------+---------+" "\n|-------+"))
+    (dolist (_ entities)
+      (insert "--------+"))
+    (insert "\n")
+    (dolist (scene scenes)
+      (insert (format "| %s |" (org-scribe--escape-table-cell (nth 0 scene))))
+      (when chapters
+        (insert (format " %s |" (org-scribe--escape-table-cell (nth 1 scene)))))
+      (dolist (entity entities)
+        (insert (format " %s |" (org-scribe--escape-table-cell (funcall cell-fn entity scene)))))
+      (insert "\n")))
   (org-table-align)
   (when hidden
     ;; `org-table-align' leaves point inside the table; the note has to land

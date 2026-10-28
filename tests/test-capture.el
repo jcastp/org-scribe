@@ -970,6 +970,15 @@ and the advice that hides it is gone once the capture is over."
   (interactive)
   (ert "^test-capture-\\|^test-create-\\|^test-character-\\|^test-location-\\|^test-object-\\|^test-timeline-"))
 
+(ert-deftest test-timeline-capture-omits-chapter-without-chapter-level ()
+  "A short story's timeline capture neither asks for nor writes :Chapter:."
+  (cl-letf (((symbol-function 'org-scribe-chapter-level) (lambda (&optional _) nil)))
+    (should-not (string-match-p ":Chapter:"
+                                (nth 4 (car (org-scribe-timeline-capture-templates 'en))))))
+  (cl-letf (((symbol-function 'org-scribe-chapter-level) (lambda (&optional _) 2)))
+    (should (string-match-p ":Chapter:"
+                            (nth 4 (car (org-scribe-timeline-capture-templates 'en)))))))
+
 (provide 'test-capture)
 
 ;;; test-capture.el ends here

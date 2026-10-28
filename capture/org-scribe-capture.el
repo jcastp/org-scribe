@@ -391,7 +391,9 @@ The sub-headings are one level below the event; see
            ":Duration:\n"
            ":Characters: %^{" (m 'capture-tl-characters-prompt) "}\n"
            ":Location: %^{" (m 'capture-tl-location-prompt) "}\n"
-           ":Chapter: %^{" (m 'capture-tl-chapter-prompt) "}\n"
+           (if (org-scribe-chapter-level)
+               (concat ":Chapter: %^{" (m 'capture-tl-chapter-prompt) "}\n")
+             "")
            ":END:\n\n"
            "** " (m 'capture-tl-description) "\n%?\n\n"
            "** " (m 'capture-tl-consequences) "\n-\n\n"
