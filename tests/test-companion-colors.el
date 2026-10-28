@@ -273,23 +273,57 @@
 
 ;;; Assignment
 
-(ert-deftest test-companion-colors-assign-hands-out-slots-in-order ()
-  (should (equal (org-scribe-companion-colors-assign '("a" "b" "c") nil '("#1" "#2" "#3"))
-                 '(("a" :index 0) ("b" :index 1) ("c" :index 2)))))
+(defun test-companion-colors--index (result key)
+  (plist-get (cdr (assoc key result)) :index))
+
+(ert-deftest test-companion-colors-assign-gives-distinct-slots-and-keeps-the-order ()
+  (let* ((palette '("#1" "#2" "#3" "#4" "#5" "#6" "#7" "#8"))
+         (result (org-scribe-companion-colors-assign '("a" "b" "c" "d") nil palette)))
+    (should (equal (mapcar #'car result) '("a" "b" "c" "d")))
+    (should (= 4 (length (delete-dups (mapcar (lambda (e) (plist-get (cdr e) :index)) result)))))
+    (should-not (cl-some (lambda (e) (plist-get (cdr e) :reused)) result))))
 
 (ert-deftest test-companion-colors-assign-skips-slots-a-pin-uses ()
-  (should (equal (org-scribe-companion-colors-assign '("a" "b" "c") '(("b" . "#2")) '("#1" "#2" "#3"))
-                 '(("a" :index 0) ("b" :color "#2") ("c" :index 2)))))
+  (let* ((palette '("#1" "#2" "#3" "#4"))
+         (result (org-scribe-companion-colors-assign '("a" "b" "c") '(("b" . "#2")) palette)))
+    (should (equal (plist-get (cdr (assoc "b" result)) :color) "#2"))
+    (should-not (eql 1 (test-companion-colors--index result "a")))
+    (should-not (eql 1 (test-companion-colors--index result "c")))))
 
 (ert-deftest test-companion-colors-assign-marks-repeats-when-the-palette-runs-out ()
-  (should (equal (org-scribe-companion-colors-assign '("a" "b" "c") nil '("#1" "#2"))
-                 '(("a" :index 0) ("b" :index 1) ("c" :index 0 :reused t)))))
+  (let ((result (org-scribe-companion-colors-assign '("a" "b" "c") nil '("#1" "#2"))))
+    (should (= 1 (cl-count-if (lambda (e) (plist-get (cdr e) :reused)) result)))
+    (should (= 2 (length (delete-dups (mapcar (lambda (e) (plist-get (cdr e) :index)) result)))))))
+
+(ert-deftest test-companion-colors-assign-does-not-depend-on-the-order-of-the-keys ()
+  (let ((palette '("#1" "#2" "#3" "#4" "#5" "#6" "#7" "#8")))
+    (should (equal (sort (copy-sequence (org-scribe-companion-colors-assign '("a" "b" "c" "d" "e") nil palette))
+                         (lambda (x y) (string< (car x) (car y))))
+                   (sort (copy-sequence (org-scribe-companion-colors-assign '("e" "c" "a" "d" "b") nil palette))
+                         (lambda (x y) (string< (car x) (car y))))))))
+
+(ert-deftest test-companion-colors-assign-adding-a-value-leaves-most-others-alone ()
+  "A new value that sorts first used to shift every later one."
+  (let* ((palette '("#1" "#2" "#3" "#4" "#5" "#6" "#7" "#8"))
+         (before (org-scribe-companion-colors-assign
+                  '("ally" "friend" "opponent" "partner" "rival") nil palette))
+         (after (org-scribe-companion-colors-assign
+                 '("ally" "amigo" "friend" "opponent" "partner" "rival") nil palette))
+         (same (cl-count-if (lambda (e) (equal (cdr e) (cdr (assoc (car e) after)))) before)))
+    ;; only a value whose slot the new one takes may move
+    (should (>= same 4))))
+
+(ert-deftest test-companion-colors-assign-rank-belongs-to-the-value ()
+  (let ((palette '("#1" "#2" "#3" "#4")))
+    (should (= (plist-get (cdr (assoc "rival" (org-scribe-companion-colors-assign '("rival") nil palette))) :rank)
+               (plist-get (cdr (assoc "rival" (org-scribe-companion-colors-assign
+                                               '("amigo" "rival" "ally") '(("ally" . "#9") ) palette))) :rank)))))
 
 (ert-deftest test-companion-colors-assign-survives-a-palette-that-is-all-pinned ()
   (let ((result (org-scribe-companion-colors-assign
                  '("a" "b") '(("x" . "#1") ("y" . "#2")) '("#1" "#2"))))
     (should (equal (mapcar #'car result) '("a" "b")))
-    (should (eq (plist-get (cdr (assoc "a" result)) :index) 0))))
+    (should (memq (plist-get (cdr (assoc "a" result)) :index) '(0 1)))))
 
 ;;; Snapshot
 

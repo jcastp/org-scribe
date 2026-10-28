@@ -43,11 +43,13 @@ export function colorOf(kind, value) {
   return entry.color || colors.palette[mode()][entry.index % colors.palette[mode()].length];
 }
 
-/** The position of a value among all those of KIND, for the non-colour cue. */
+/** A number that belongs to the value itself, for the non-colour cue (line
+ *  pattern, node shape): Emacs derives it from the value, so adding another
+ *  value never changes it. */
 export function rankOf(kind, value) {
   if (!colors) return 0;
-  const keys = Object.keys(colors[kind]).sort();
-  return Math.max(0, keys.indexOf(keyOf(kind, value)));
+  const entry = colors[kind][keyOf(kind, value)];
+  return entry && Number.isInteger(entry.rank) ? entry.rank : 0;
 }
 
 /** The colour of TODO keyword, light or dark as the page is. */

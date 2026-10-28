@@ -181,29 +181,54 @@ any other keyword keeps the customized colour."
 
 ;;; Assigning palette slots
 
+(defun org-scribe-companion-colors--hash (key)
+  "Return a number from KEY that is the same in every session and project."
+  (string-to-number (substring (secure-hash 'md5 key) 0 6) 16))
+
 (defun org-scribe-companion-colors-assign (keys pinned palette)
   "Return an alist (KEY . ENTRY) giving every one of KEYS a colour.
-KEYS is the list of normalized values, in the order slots are handed out.
-PINNED is an alist (KEY . COLOR) of the ones with a colour of their own;
-their ENTRY is (:color COLOR).  The rest take PALETTE's slots (a list of
-colours) in order, skipping a slot a pin already uses; their ENTRY is
-\(:index N), plus (:reused t) once the slots run round and a colour repeats."
+KEYS is the list of normalized values, PINNED an alist (KEY . COLOR) of the
+ones with a colour of their own; their ENTRY is (:color COLOR :rank N).
+The rest take one of PALETTE's slots (a list of colours), skipping a slot
+a pin already uses; their ENTRY is (:index N :rank N), plus (:reused t)
+once every slot is taken and a colour repeats.
+
+A value's slot starts from a hash of the value itself, not from its place
+in the list, so adding a value does not recolour the others.  Only a value
+whose slot is already taken moves on to the next free one, and values are
+settled in hash order, so the result does not depend on the order of KEYS.
+:rank is the same hash, for the cues that do not depend on colour (line
+pattern, node shape).  The result follows the order of KEYS."
   (let* ((taken (mapcar (lambda (pin) (downcase (cdr pin))) pinned))
          (slots (cl-loop for color in palette
                          for index from 0
                          unless (member (downcase color) taken) collect index))
          (slots (or slots (number-sequence 0 (1- (length palette)))))
-         (count 0)
-         result)
-    (dolist (key keys)
-      (if-let* ((pin (assoc key pinned)))
-          (push (cons key (list :color (cdr pin))) result)
-        (let ((slot (nth (mod count (length slots)) slots)))
-          (push (cons key (append (list :index slot)
-                                  (and (>= count (length slots)) (list :reused t))))
-                result)
-          (cl-incf count))))
-    (nreverse result)))
+         (count (length slots))
+         (used nil)
+         (chosen nil))
+    (dolist (item (sort (cl-loop for key in keys
+                                 unless (assoc key pinned)
+                                 collect (cons (org-scribe-companion-colors--hash key) key))
+                        (lambda (a b) (or (< (car a) (car b))
+                                          (and (= (car a) (car b)) (string< (cdr a) (cdr b)))))))
+      (let* ((hash (car item))
+             (start (mod hash count))
+             (slot (cl-loop for step below count
+                            for candidate = (nth (mod (+ start step) count) slots)
+                            unless (memq candidate used) return candidate))
+             (reused (null slot)))
+        (setq slot (or slot (nth start slots)))
+        (unless reused (push slot used))
+        (push (cons (cdr item) (append (list :index slot :rank hash)
+                                       (and reused (list :reused t))))
+              chosen)))
+    (mapcar (lambda (key)
+              (if-let* ((pin (assoc key pinned)))
+                  (cons key (list :color (cdr pin)
+                                  :rank (org-scribe-companion-colors--hash key)))
+                (cons key (cdr (assoc key chosen)))))
+            keys)))
 
 ;;; The snapshot's `colors'
 
