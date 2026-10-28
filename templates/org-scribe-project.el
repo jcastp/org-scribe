@@ -825,7 +825,9 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 The heading is a TODO at the project's scene level, tagged as the project
 type does, and the drawer holds the empty scene properties in the
 project's language.  Shared by `org-scribe-insert-scene' and the visual
-companion's `create-scene', which inserts it at an exact place."
+companion's `create-scene', which inserts it at an exact place.
+The scene break closes the body, after a gap for the prose, as in the
+shipped scenes."
   (let* ((levels (org-scribe-project-levels))
          (stars (make-string (plist-get levels :scene) ?*))
          (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag)))
@@ -840,6 +842,7 @@ companion's `create-scene', which inserts it at an exact place."
 :WORDCOUNT: 0
 %s%s
 :END:
+
 
 {{{scene-break}}}
 " stars scene-name tag objective (org-scribe--scene-property-drawer-lines))))

@@ -178,6 +178,13 @@
       ;; Check scene break macro
       (should (string-match-p "{{{scene-break}}}" content)))))
 
+(ert-deftest test-insert-scene-template-closes-with-the-scene-break ()
+  "The scene break comes after the body's gap, as in the shipped scenes."
+  (with-temp-buffer
+    (org-mode)
+    (org-scribe-insert-scene "Opening Scene")
+    (should (string-match-p ":END:\n\n\n{{{scene-break}}}\n\\'" (buffer-string)))))
+
 (ert-deftest test-insert-scene-template-has-no-beat-property ()
   "Inserted scenes carry no `:Beat:'/`:Ritmo:' property.
 The drawer used to ship a free-text beat field beside `:Plot-point:' —
