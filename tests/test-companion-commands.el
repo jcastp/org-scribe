@@ -1422,6 +1422,16 @@
     (should (string-match-p "'set-relationship'" view))
     (should-not (string-match-p "set-field\\|move-node\\|set-entity" view))))
 
+(ert-deftest test-companion-commands-views-hide-plot-points-when-there-are-none ()
+  "Table, storyline, chapters and forms leave plot points out when none exist."
+  (dolist (view '("table" "storyline" "chapters" "forms"))
+    (let ((text (with-temp-buffer
+                  (insert-file-contents
+                   (expand-file-name (format "views/%s.js" view) test-companion-commands--web))
+                  (buffer-string))))
+      (should (string-match-p "hasPlotPoints\\|visibleGroups" text))
+      (should-not (string-match-p "for (const group of GROUPS)" text)))))
+
 (ert-deftest test-companion-commands-web-files-use-no-innerhtml ()
   (dolist (file (directory-files-recursively test-companion-commands--web "\\.js\\'"))
     (with-temp-buffer

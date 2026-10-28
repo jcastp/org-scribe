@@ -9,6 +9,17 @@ export const GROUPS = [
   { kind: 'plot-point', field: 'plot-point', title: 'companion-ui-group-plot-points' },
 ];
 
+/** True when the project has plot points: a short story has none, and a
+ * novel whose writer deleted them has none either, so nothing is shown. */
+export function hasPlotPoints(ctx) {
+  return (ctx.snapshot.entities['plot-point'] || []).length > 0;
+}
+
+/** GROUPS without the plot points when the project has none. */
+export function visibleGroups(ctx) {
+  return GROUPS.filter((group) => group.kind !== 'plot-point' || hasPlotPoints(ctx));
+}
+
 /** The IDs a scene links in FIELD. */
 export function ids(scene, field) {
   const value = scene.fields[field];

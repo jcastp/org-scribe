@@ -8,7 +8,7 @@
 
 import { matches, isActive } from '../filters.js';
 import { el } from '../edit.js';
-import { GROUPS, ids, orderEntities } from './matrix.js';
+import { visibleGroups, ids, orderEntities } from './matrix.js';
 
 let showHidden = false;
 
@@ -184,7 +184,7 @@ export function render(container, ctx) {
   const table = el('table', 'storyline');
   table.append(header(acts, scenes, ctx));
   const body = el('tbody');
-  for (const group of GROUPS) {
+  for (const group of visibleGroups(ctx)) {
     for (const row of groupRows(group, scenes, ctx, scenes.length)) body.append(row);
   }
   table.append(body);

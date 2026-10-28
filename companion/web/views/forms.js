@@ -8,6 +8,7 @@
 // All text is put in with textContent.
 
 import { el } from '../edit.js';
+import { hasPlotPoints } from './matrix.js';
 
 const KINDS = [
   { kind: 'character', title: 'companion-ui-group-characters', create: 'companion-ui-new-character' },
@@ -32,6 +33,7 @@ function byWeight(a, b) {
 function list(ctx) {
   const side = el('nav', 'ent-list');
   for (const { kind, title, create } of KINDS) {
+    if (kind === 'plot-point' && !hasPlotPoints(ctx)) continue;
     const group = el('section', 'ent-group');
     const head = el('div', 'ent-group-head');
     head.append(el('h3', '', ctx.t(title)));

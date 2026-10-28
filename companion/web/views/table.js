@@ -7,6 +7,7 @@
 import { todoColor, colorOf, legendSwatch } from '../colors.js';
 import { matches, isActive } from '../filters.js';
 import { el, startEdit, moveTo, sceneParent } from '../edit.js';
+import { hasPlotPoints } from './matrix.js';
 
 let STORE = 'org-scribe.table';
 const DEFAULT_COLUMNS = ['pov', 'characters', 'plot-point', 'summary'];
@@ -408,7 +409,9 @@ function povLegend(ctx) {
 
 export function render(container, ctx) {
   container.replaceChildren();
-  const fields = ctx.snapshot.sceneFields.filter((field) => field.key !== 'weight');
+  const fields = ctx.snapshot.sceneFields
+    .filter((field) => field.key !== 'weight')
+    .filter((field) => field.key !== 'plot-point' || hasPlotPoints(ctx));
   const columns = fields.filter((field) => prefs.columns.includes(field.key));
   const acts = ctx.snapshot.acts;
   if (acts.length === 0) {
