@@ -696,6 +696,32 @@
                 :title "")))
       (should (string-match-p "Escena nueva" (test-companion-commands--text root "novel.org"))))))
 
+(ert-deftest test-companion-commands-default-names-ignore-the-current-buffer-directory ()
+  "A request runs in whatever buffer is current, not in the project."
+  (test-companion-commands--with-project root
+    (with-temp-file (expand-file-name ".org-scribe-project" root)
+      (insert "# Writing project: Prueba\n# Type: novel\n# Language: es\n"))
+    (org-scribe-project-type-cache-clear)
+    (let ((elsewhere (file-name-as-directory (make-temp-file "elsewhere-" t))))
+      (unwind-protect
+          (with-temp-buffer
+            (setq default-directory elsewhere)
+            (should (test-companion-commands--ok-p
+                     (test-companion-commands--run
+                      root "create-scene"
+                      :parent (test-companion-commands--id root "Chapter 1 - Three Alarms")
+                      :title "")))
+            (should (test-companion-commands--ok-p
+                     (test-companion-commands--run
+                      root "create-chapter"
+                      :parent (test-companion-commands--id root "Act I")
+                      :title "")))
+            (let ((text (test-companion-commands--text root "novel.org")))
+              (should (string-match-p "Escena nueva" text))
+              (should (string-match-p "Capítulo nuevo" text))
+              (should-not (string-match-p "New scene\\|New chapter" text))))
+        (delete-directory elsewhere t)))))
+
 ;;; set-field
 
 (ert-deftest test-companion-commands-set-field-changes-only-that-line ()

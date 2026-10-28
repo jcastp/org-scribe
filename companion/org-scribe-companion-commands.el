@@ -541,7 +541,8 @@ the new scene's `:id'."
              parent after (org-scribe-scene-level)))
           (when (org-scribe-companion-commands--title-parsed-p title)
             (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-title))
-          (when (string-empty-p title) (setq title (org-scribe--content-msg 'default-scene-name)))
+          (when (string-empty-p title) (setq title (let ((default-directory root))
+                                           (org-scribe--content-msg 'default-scene-name))))
           (org-scribe-companion-commands--with-edit buffer
             (let* ((default-directory root)
                    (position (org-scribe-companion-commands--insertion-point parent after))
@@ -583,7 +584,8 @@ answer carries the new chapter's `:id'."
              parent after (org-scribe-chapter-level)))
           (when (org-scribe-companion-commands--title-parsed-p title)
             (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-title))
-          (when (string-empty-p title) (setq title (org-scribe--content-msg 'default-chapter-name)))
+          (when (string-empty-p title) (setq title (let ((default-directory root))
+                                           (org-scribe--content-msg 'default-chapter-name))))
           (org-scribe-companion-commands--with-edit buffer
             (let* ((default-directory root)
                    (position (org-scribe-companion-commands--insertion-point parent after))
