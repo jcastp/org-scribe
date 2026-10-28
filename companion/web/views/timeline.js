@@ -39,6 +39,7 @@ function readingScenes(ctx) {
         scenes.push({
           kind: 'scene', id: scene.id, title: scene.title, text: raw,
           key: entry.key === undefined ? null : entry.key,
+          dayLabel: entry.dayLabel || null,
           problem: entry.problem || (raw ? 'unreadable' : 'blank'),
           readOnly: !scene.id || scene.readOnly,
           chapter: chapter.title,
@@ -67,7 +68,8 @@ function timeText(scene, ctx) {
   if (scene.readOnly) { button.disabled = true; return button; }
   button.addEventListener('click', () => {
     startEdit(button, scene.text, false,
-      (value) => ctx.edit('set-field', { id: scene.id, key: 'timeline', value }, scene.id), ctx);
+      (value) => ctx.edit('set-field', { id: scene.id, key: 'timeline', value }, scene.id), ctx,
+      ctx.t('companion-ui-timeline-hint'));
   });
   return button;
 }
@@ -118,7 +120,8 @@ export function render(container, ctx) {
   markJumps(scenes);
   const events = ctx.snapshot.storyTime.events.map((event) => ({
     kind: 'event', id: null, title: event.title, text: event.text,
-    key: event.key === undefined ? null : event.key, problem: event.problem,
+    key: event.key === undefined ? null : event.key, dayLabel: event.dayLabel || null,
+    problem: event.problem,
   }));
 
   const dated = [...scenes, ...events].filter((item) => item.key !== null);
@@ -143,7 +146,8 @@ export function render(container, ctx) {
       lane.append(gap);
     }
     const node = el('section', 'tl-column');
-    node.append(el('h3', 'tl-day', dayLabel(column.index, ctx)));
+    const named = column.items.find((item) => item.dayLabel);
+    node.append(el('h3', 'tl-day', named ? named.dayLabel : dayLabel(column.index, ctx)));
     for (const item of column.items) node.append(card(item, ctx));
     lane.append(node);
   });
@@ -158,7 +162,8 @@ export function render(container, ctx) {
     for (const item of undated) {
       const node = card(item, ctx);
       const reason = problemText(item, ctx);
-      if (reason && item.kind === 'scene') node.append(el('span', 'tl-problem', reason));
+      // a blank scene's button already says so; only say more when there is more
+      if (reason && item.kind === 'scene' && item.problem !== 'blank') node.append(el('span', 'tl-problem', reason));
       cards.append(node);
     }
     group.append(cards);

@@ -105,5 +105,45 @@
 (ert-deftest test-story-time-mode-defaults-to-relative ()
   (should (eq 'relative (org-scribe-story-time-mode nil))))
 
+;;; Naming a day
+
+(ert-deftest test-story-time-bare-iso-date-counts-as-a-timestamp ()
+  (let ((ctx (list :mode 'dates :day-one (calendar-absolute-from-gregorian '(3 10 2026)))))
+    (should (equal (plist-get (org-scribe-story-time-key "2026-03-14" ctx) :key)
+                   (plist-get (org-scribe-story-time-key "<2026-03-14>" ctx) :key)))
+    (should (org-scribe-story-time-key "2026-03-14 18:00" ctx))
+    (should (eq 'no-anchor (org-scribe-story-time-problem "2026-03-14" (list :mode 'dates))))))
+
+(ert-deftest test-story-time-day-label-names-far-off-years ()
+  (let* ((ctx (list :mode 'relative))
+         (parsed (org-scribe-story-time-key "Year -9, Day 40" ctx)))
+    (let ((org-scribe-message-language 'en))
+      (cl-letf (((symbol-function 'org-scribe-project-language) (lambda (&rest _) 'en)))
+        (should (equal "Year -9, Day 40" (org-scribe-story-time-day-label parsed ctx)))
+        (should (equal "Year -9" (org-scribe-story-time-day-label
+                                  (org-scribe-story-time-key "Year -9" ctx) ctx)))
+        (should-not (org-scribe-story-time-day-label
+                     (org-scribe-story-time-key "Day 3" ctx) ctx))))))
+
+(ert-deftest test-story-time-day-label-gives-the-date-in-dates-mode ()
+  (let ((ctx (list :mode 'dates :day-one (calendar-absolute-from-gregorian '(3 10 2026)))))
+    (should (equal "2026-03-14"
+                   (org-scribe-story-time-day-label
+                    (org-scribe-story-time-key "<2026-03-14 18:00>" ctx) ctx)))
+    (should (equal "2026-03-12"
+                   (org-scribe-story-time-day-label
+                    (org-scribe-story-time-key "Day 3" ctx) ctx)))))
+
+(ert-deftest test-story-time-day-label-gives-the-calendar-date ()
+  (let* ((months '(("Thaw" . 30) ("Sow" . 30) ("Frost" . 30)))
+         (ctx (list :mode 'calendar
+                    :calendar (list :months months :era "EC" :day-one 28082))))
+    (should (equal "6 Thaw 312"
+                   ;; Day 1 is count 28082 = 312*90+2, i.e. "3 Thaw 312"; +3 days
+                   (org-scribe-story-time-day-label (list :key (* 3 1440)) ctx)))
+    (should (equal "1 Sow 312"
+                   (org-scribe-story-time-day-label (list :key (* 28 1440)) ctx)))))
+
+
 (provide 'test-story-time)
 ;;; test-story-time.el ends here

@@ -153,12 +153,21 @@ YEAR and DAY are integers or nil; CLOCK is minutes after midnight or nil."
                       (day org-scribe-story-time--default-day-clock)
                       (t 0))))
         (list :key (+ base offset)
-              :precision (cond (clock 'clock) (day 'day) (t 'year)))))))
+              :precision (cond (clock 'clock) (day 'day) (t 'year))
+              ;; kept so a far-off day can be named by its year
+              :year year :day (and year day))))))
 
 ;;; Org timestamps
 
+(defconst org-scribe-story-time--bare-date-regexp
+  "\\`[ \t]*\\([0-9]\\{4\\}-[0-9][0-9]-[0-9][0-9]\\(?: [0-9]\\{1,2\\}:[0-9][0-9]\\)?\\)[ \t]*\\'"
+  "A date typed without Org's angle brackets: 2026-03-14 or 2026-03-14 18:00.")
+
 (defun org-scribe-story-time--parse-timestamp (text context)
-  "Parse an Org timestamp in TEXT against CONTEXT's Day 1 date, or nil."
+  "Parse an Org timestamp in TEXT against CONTEXT's Day 1 date, or nil.
+A bare YYYY-MM-DD (with an optional clock) counts as one."
+  (when (string-match org-scribe-story-time--bare-date-regexp text)
+    (setq text (format "<%s>" (match-string 1 text))))
   (when (string-match
          "[<[]\\([0-9]\\{4\\}\\)-\\([0-9][0-9]\\)-\\([0-9][0-9]\\)\\(?: [^]> 0-9]+\\)?\\(?: \\([0-9]\\{1,2\\}\\):\\([0-9][0-9]\\)\\)?[^]>]*[]>]"
          text)
@@ -242,7 +251,48 @@ otherwise."
         ((org-scribe-story-time-key string context) nil)
         ((string-match-p "[<[][0-9]\\{4\\}-[0-9][0-9]-[0-9][0-9]" string)
          (if (plist-get context :day-one) 'unreadable 'no-anchor))
+        ((string-match-p org-scribe-story-time--bare-date-regexp string)
+         (if (plist-get context :day-one) 'unreadable 'no-anchor))
         (t 'unreadable)))
+
+;;; Naming a day
+
+(defun org-scribe-story-time--calendar-day-name (calendar count)
+  "Return day COUNT of CALENDAR written as \"14 Frostmoon 312\", or nil."
+  (when-let* ((months (plist-get calendar :months))
+              (year-length (apply #'+ (mapcar #'cdr months)))
+              ((> year-length 0)))
+    (let* ((year (floor count year-length))
+           (rest (- count (* year year-length)))
+           (index 0))
+      (while (and (< index (1- (length months))) (>= rest (cdr (nth index months))))
+        (setq rest (- rest (cdr (nth index months))))
+        (setq index (1+ index)))
+      (format "%d %s %d" (1+ rest) (car (nth index months)) year))))
+
+(defun org-scribe-story-time-day-label (parsed context)
+  "Name the day of PARSED (the plist `org-scribe-story-time-key' returns).
+Returns the date for a project that counts in `dates' or `calendar', the
+year and day for a time written with a year (\"Year -9, Day 40\"), and nil
+for plain relative days, which the page numbers itself."
+  (let ((day (floor (plist-get parsed :key) org-scribe-story-time--minutes-per-day))
+        (mode (plist-get context :mode)))
+    (cond
+     ((and (eq mode 'dates) (plist-get context :day-one))
+      (pcase-let ((`(,m ,d ,y) (calendar-gregorian-from-absolute
+                                (+ (plist-get context :day-one) day))))
+        (format "%04d-%02d-%02d" y m d)))
+     ((and (eq mode 'calendar)
+           (integerp (plist-get (plist-get context :calendar) :day-one)))
+      (org-scribe-story-time--calendar-day-name
+       (plist-get context :calendar)
+       (+ (plist-get (plist-get context :calendar) :day-one) day)))
+     ((plist-get parsed :year)
+      (let ((org-scribe-message-language (org-scribe-project-language)))
+        (if (plist-get parsed :day)
+            (org-scribe-msg 'story-time-label-year-day
+                            (plist-get parsed :year) (plist-get parsed :day))
+          (org-scribe-msg 'story-time-label-year (plist-get parsed :year))))))))
 
 ;;; Context from the project
 

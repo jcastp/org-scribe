@@ -9,11 +9,12 @@ export function el(tag, className, text) {
 }
 
 /** Replace NODE's text with an editor; COMMIT gets the new value if it changed. */
-export function startEdit(node, initial, multiline, commit, ctx) {
+export function startEdit(node, initial, multiline, commit, ctx, placeholder) {
   const editor = el(multiline ? 'textarea' : 'input', 'card-edit');
   if (multiline) editor.rows = 4;
   else editor.type = 'text';
   editor.value = initial;
+  if (placeholder) editor.placeholder = placeholder;
   const parent = node.parentNode;
   let finished = false;
   const finish = (save) => {

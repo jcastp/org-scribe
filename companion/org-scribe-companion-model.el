@@ -566,6 +566,8 @@ context.  The key is computed here so the parser exists once, in Lisp."
           :title heading
           :text (or text "")
           :key (if parsed (plist-get parsed :key) :null)
+          :dayLabel (org-scribe-companion--or-null
+                     (and parsed (org-scribe-story-time-day-label parsed context)))
           :problem (if parsed
                        :null
                      (org-scribe-companion--or-null
