@@ -36,6 +36,12 @@ export function startEdit(node, initial, multiline, commit, ctx, placeholder) {
   editor.select();
 }
 
+/** The ID a scene is added or moved under: its chapter's, or the act's when the
+ * project has no chapters (the chapter is then only a pass-through). */
+export function sceneParent(chapter) {
+  return chapter.passthrough ? chapter.containerId : chapter.id;
+}
+
 export function moveTo(ctx, id, parentId, after) {
   if (after === null) {
     ctx.notice(ctx.t('companion-ui-cannot-place'));

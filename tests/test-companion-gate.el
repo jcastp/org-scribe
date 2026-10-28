@@ -76,14 +76,13 @@
       (should-not asked)
       (should (null (org-scribe-companion-gate root))))))
 
-(ert-deftest test-companion-gate-short-story-refused-without-asking ()
+(ert-deftest test-companion-gate-short-story-asks-like-a-novel ()
   (test-companion-gate--with-project "short-story" root
-    (let ((asked nil))
-      (cl-letf (((symbol-function 'yes-or-no-p) (lambda (_) (setq asked t) t)))
-        (let ((err (should-error (org-scribe-companion-open) :type 'user-error)))
-          (should (equal (cadr err) (org-scribe-msg 'companion-error-novels-only)))))
-      (should-not asked)
-      (should (null (org-scribe-companion-gate root))))))
+    (let ((asked 0))
+      (cl-letf (((symbol-function 'yes-or-no-p) (lambda (_) (cl-incf asked) t)))
+        (org-scribe-companion-open)
+        (should (eq 'yes (org-scribe-companion-gate root)))
+        (should (= 1 asked))))))
 
 (ert-deftest test-companion-gate-undecided-asks-once-and-records-yes ()
   (test-companion-gate--with-project "novel" root
@@ -112,7 +111,7 @@
 ;;; Messages exist in both languages
 
 (ert-deftest test-companion-gate-messages-in-both-languages ()
-  (dolist (key '(companion-error-disabled companion-error-novels-only
+  (dolist (key '(companion-error-disabled
                  companion-ask-enable companion-ask-reenable
                  companion-staying-disabled companion-enabled-for-project
                  companion-disabled-for-project companion-opened companion-stopped

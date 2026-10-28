@@ -533,8 +533,10 @@ the new scene's `:id'."
          new-id)
     (unwind-protect
         (progn
+          ;; the heading a scene sits under: a chapter, or the act when the
+          ;; project type has no chapter level
           (unless (eql (org-scribe-companion-commands--level parent)
-                       (org-scribe-chapter-level))
+                       (1- (org-scribe-scene-level)))
             (org-scribe-companion-commands--fail "invalid" 'companion-error-not-a-chapter))
           (when after
             (org-scribe-companion-commands--check-after

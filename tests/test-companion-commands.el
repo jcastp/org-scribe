@@ -41,6 +41,9 @@
 (defconst test-companion-commands--alex "char-alex-rivera-001"
   "ID of a character in the demo design notebook.")
 
+(defvar test-companion-commands--demo "demo-novel"
+  "The example project `test-companion-commands--with-project' copies.")
+
 (defmacro test-companion-commands--with-project (root-var &rest body)
   "Run BODY with a copy of the demo novel at ROOT-VAR (not serving)."
   (declare (indent 1))
@@ -52,7 +55,8 @@
           (org-scribe-companion-raise-frame nil))
      (unwind-protect
          (save-window-excursion
-           (copy-directory (expand-file-name "examples/demo-novel" test-companion-commands--repo)
+           (copy-directory (expand-file-name (concat "examples/" test-companion-commands--demo)
+                                          test-companion-commands--repo)
                            ,root-var t t t)
            (org-scribe-project-type-cache-clear)
            (org-scribe-companion--clear-cache)
@@ -982,6 +986,61 @@
                 root "create-scene" :parent (test-companion-commands--id root "Last one")
                 :title "Final")))
       (should (test-companion-commands--ends-with-lv-block-p root)))))
+
+;;; A short story: scenes sit directly under the act
+
+(defmacro test-companion-commands--with-short-story (root-var &rest body)
+  "Like `test-companion-commands--with-project', on the demo short story."
+  (declare (indent 1))
+  `(let ((test-companion-commands--demo "demo-short-story"))
+     (test-companion-commands--with-project ,root-var ,@body)))
+
+(defun test-companion-commands--act-scenes (root)
+  "Return the scene titles of the first act of ROOT's manuscript, in order."
+  (let ((act (aref (plist-get (org-scribe-companion--snapshot root) :acts) 0)))
+    (cl-loop for chapter across (plist-get act :chapters)
+             append (cl-loop for scene across (plist-get chapter :scenes)
+                             collect (plist-get scene :title)))))
+
+(ert-deftest test-companion-commands-short-story-create-scene-under-the-act ()
+  (test-companion-commands--with-short-story root
+    (let* ((act-id (test-companion-commands--id root "Story Content"))
+           (answer (test-companion-commands--run
+                    root "create-scene" :parent act-id
+                    :after (test-companion-commands--id root "Opening")
+                    :title "Interlude")))
+      (should (test-companion-commands--ok-p answer))
+      (should (equal '("Opening" "Interlude" "Middle" "Ending")
+                     (test-companion-commands--act-scenes root)))
+      (should (string-match-p "^\\*\\* TODO Interlude :ignore:$"
+                              (test-companion-commands--text root "story.org"))))))
+
+(ert-deftest test-companion-commands-short-story-move-scene-within-the-act ()
+  (test-companion-commands--with-short-story root
+    (let ((answer (test-companion-commands--run
+                   root "move-node"
+                   :id (test-companion-commands--id root "Ending")
+                   :parent (test-companion-commands--id root "Story Content")
+                   :after nil)))
+      (should (test-companion-commands--ok-p answer))
+      (should (equal '("Ending" "Opening" "Middle")
+                     (test-companion-commands--act-scenes root))))))
+
+(ert-deftest test-companion-commands-short-story-has-no-chapters-to-create ()
+  (test-companion-commands--with-short-story root
+    (let ((answer (test-companion-commands--run
+                   root "create-chapter"
+                   :parent (test-companion-commands--id root "Story Content")
+                   :title "Chapter")))
+      (should (equal "invalid" (test-companion-commands--code answer))))))
+
+(ert-deftest test-companion-commands-create-scene-still-needs-a-chapter-in-a-novel ()
+  "In a novel an act cannot take a scene directly."
+  (test-companion-commands--with-project root
+    (let* ((act (aref (plist-get (org-scribe-companion--snapshot root) :acts) 0))
+           (answer (test-companion-commands--run
+                    root "create-scene" :parent (plist-get act :id) :title "Nope")))
+      (should (equal "invalid" (test-companion-commands--code answer))))))
 
 ;;; create-chapter
 

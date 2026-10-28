@@ -4,8 +4,8 @@
 
 ;;; Commentary:
 
-;; Pure functions that turn a novel project into the snapshot the browser
-;; shows (see the companion implementation plan, "Data model").  No
+;; Pure functions that turn a novel or short-story project into the snapshot
+;; the browser shows (see the companion implementation plan, "Data model").  No
 ;; networking and no writing: the snapshot is built from the manuscript and
 ;; design buffers as they are, saved or not.
 ;;
@@ -218,6 +218,13 @@ field specs."
              (setq chapter (list :id :null :title "" :todo :null :words 0
                                  :objective :null :readOnly t :implicit t
                                  :scenes nil))
+             ;; A project with no chapter level (a short story) keeps its
+             ;; scenes straight under the act: the page draws no chapter and
+             ;; addresses the act when it adds or moves a scene.
+             (unless chapter-level
+               (setq chapter (append chapter
+                                     (list :passthrough t
+                                           :containerId (plist-get act :id)))))
              (plist-put act :chapters (cons chapter (plist-get act :chapters))))))
       (org-with-wide-buffer
        (goto-char (point-min))
@@ -231,7 +238,9 @@ field specs."
               (unless (member "noexport" (org-get-tags))
                 (setq act (append (org-scribe-companion--heading-plist props)
                                   (list :chapters nil)))
-                (push act acts)))
+                (push act acts)
+                ;; with no chapter level an empty act still takes scenes
+                (unless chapter-level (ensure-chapter))))
              ((member "noexport" (org-get-tags)))
              ((eql level chapter-level)
               (ensure-act)

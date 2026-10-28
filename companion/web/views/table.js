@@ -6,7 +6,7 @@
 
 import { todoColor, colorOf, legendSwatch } from '../colors.js';
 import { matches, isActive } from '../filters.js';
-import { el, startEdit, moveTo } from '../edit.js';
+import { el, startEdit, moveTo, sceneParent } from '../edit.js';
 
 let STORE = 'org-scribe.table';
 const DEFAULT_COLUMNS = ['pov', 'characters', 'plot-point', 'summary'];
@@ -429,13 +429,17 @@ export function render(container, ctx) {
     act.chapters.forEach((chapter, chapterIndex) => {
       const chapterKey = chapter.id || `${actKey}/chapter#${chapterIndex}`;
       const body = el('tbody', 'chapter-body');
-      if (chapter.id) body.dataset.id = chapter.id;
-      body.append(groupRow(chapter, chapterKey, 'chapter-row', span, ctx));
+      const parent = sceneParent(chapter);
+      if (parent) body.dataset.id = parent;
+      // a pass-through chapter keeps its (hidden) row, so the drag rules
+      // that look for the row above the first scene still hold
+      body.append(groupRow(chapter, chapterKey,
+                           chapter.passthrough ? 'chapter-row passthrough' : 'chapter-row', span, ctx));
       if (!collapsed.has(chapterKey)) {
         for (const scene of sorted(chapter.scenes)) body.append(sceneRow(scene, columns, ctx));
       }
       table.append(body);
-      if (chapter.id && !chapter.readOnly && !prefs.sort && window.Sortable) makeSortable(body, ctx);
+      if (parent && (chapter.passthrough || !chapter.readOnly) && !prefs.sort && window.Sortable) makeSortable(body, ctx);
     });
   });
   container.append(table);

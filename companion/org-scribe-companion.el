@@ -5,8 +5,8 @@
 ;;; Commentary:
 
 ;; Entry point of the optional visual companion: a browser front end for a
-;; novel project, with Emacs as the only program that reads and writes the
-;; project files.  Off until `org-scribe-companion-enable' is set.
+;; novel or short-story project, with Emacs as the only program that reads
+;; and writes the project files.  Off until `org-scribe-companion-enable' is set.
 ;;
 ;; The user-facing checks (switch, project type, per-project gate) live in
 ;; `org-scribe-companion-open' in core/org-scribe-core.el, so that with the

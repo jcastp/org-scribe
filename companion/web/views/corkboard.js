@@ -8,7 +8,7 @@
 
 import { todoColor, textOn } from '../colors.js';
 import { matches, isActive } from '../filters.js';
-import { startEdit, moveTo } from '../edit.js';
+import { startEdit, moveTo, sceneParent } from '../edit.js';
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -246,7 +246,34 @@ function makeChapterSortable(chapters, ctx) {
   });
 }
 
+/** A "new scene" button for the container PARENT_ID, adding after the last of SCENES. */
+function addSceneButton(parentId, scenes, ctx) {
+  const add = el('button', 'add-scene', '+');
+  add.type = 'button';
+  const label = ctx.t('companion-ui-new-scene');
+  add.title = label;
+  add.setAttribute('aria-label', label);
+  add.addEventListener('click', () => {
+    const last = [...scenes].reverse().find((scene) => scene.id);
+    ctx.edit('create-scene', { parent: parentId, after: last ? last.id : null }, null, true);
+  });
+  return add;
+}
+
+/** Scenes straight under the act (a project with no chapters): cards only. */
+function passthroughRow(chapter, ctx) {
+  const row = el('div', 'chapter passthrough');
+  const parent = sceneParent(chapter);
+  if (parent) row.dataset.id = parent;
+  const cards = el('div', 'cards');
+  for (const scene of chapter.scenes) cards.append(card(scene, ctx));
+  row.append(cards);
+  if (parent && window.Sortable) makeSortable(cards, ctx);
+  return row;
+}
+
 function chapterRow(chapter, ctx) {
+  if (chapter.passthrough) return passthroughRow(chapter, ctx);
   const row = el('div', 'chapter');
   if (chapter.id) row.dataset.id = chapter.id;
   const changeable = editable(chapter);
@@ -278,18 +305,7 @@ function chapterRow(chapter, ctx) {
   const chip = todoChip(chapter, ctx);
   if (chip) head.append(chip);
   head.append(progress(sumWords(chapter.scenes), chapter.objective, ctx));
-  if (chapter.id && !chapter.readOnly) {
-    const add = el('button', 'add-scene', '+');
-    add.type = 'button';
-    const label = ctx.t('companion-ui-new-scene');
-    add.title = label;
-    add.setAttribute('aria-label', label);
-    add.addEventListener('click', () => {
-      const last = [...chapter.scenes].reverse().find((scene) => scene.id);
-      ctx.edit('create-scene', { parent: chapter.id, after: last ? last.id : null }, null, true);
-    });
-    head.append(add);
-  }
+  if (chapter.id && !chapter.readOnly) head.append(addSceneButton(chapter.id, chapter.scenes, ctx));
   row.append(head);
   const cards = el('div', 'cards');
   for (const scene of chapter.scenes) cards.append(card(scene, ctx));
@@ -314,7 +330,12 @@ export function render(container, ctx) {
     if (chip) head.append(chip);
     const words = sumWords(act.chapters.flatMap((chapter) => chapter.scenes));
     head.append(progress(words, act.objective, ctx));
-    if (act.id && !act.readOnly) {
+    const passthrough = act.chapters.find((chapter) => chapter.passthrough);
+    if (passthrough) {
+      // no chapters here: the act's own button adds a scene
+      const parent = sceneParent(passthrough);
+      if (parent) head.append(addSceneButton(parent, passthrough.scenes, ctx));
+    } else if (act.id && !act.readOnly) {
       const add = el('button', 'add-scene', '+');
       add.type = 'button';
       const label = ctx.t('companion-ui-new-chapter');

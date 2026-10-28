@@ -528,6 +528,27 @@ SETUP is a function called with the directory.  The directory is the
       (should (cl-some (lambda (e) (equal "Day 25, 09:00" (plist-get e :text)))
                        (append (plist-get story :events) nil))))))
 
+(ert-deftest test-companion-model-short-story-scenes-pass-through-the-act ()
+  "A project with no chapter level hands the page the act as scene parent."
+  (test-companion-model--with-project root
+      (lambda (root)
+        (copy-directory (expand-file-name "examples/demo-short-story"
+                                          test-companion-model--repo)
+                        root t t t))
+    (let* ((snapshot (org-scribe-companion--snapshot root))
+           (act (aref (plist-get snapshot :acts) 0))
+           (chapter (aref (plist-get act :chapters) 0)))
+      (should (equal "short-story" (plist-get (plist-get snapshot :project) :type)))
+      (should (eq t (plist-get chapter :passthrough)))
+      (should (equal (plist-get act :id) (plist-get chapter :containerId)))
+      (should (= 3 (length (plist-get chapter :scenes)))))))
+
+(ert-deftest test-companion-model-novel-chapters-do-not-pass-through ()
+  (test-companion-model--with-project root #'test-companion-model--copy-demo
+    (let ((act (aref (plist-get (org-scribe-companion--snapshot root) :acts) 0)))
+      (seq-doseq (chapter (plist-get act :chapters))
+        (should-not (plist-member chapter :passthrough))))))
+
 (provide 'test-companion-model)
 ;;; test-companion-model.el ends here
 

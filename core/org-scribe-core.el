@@ -276,8 +276,8 @@ must not load the companion module can check it first."
 
 (defun org-scribe-companion-open ()
   "Open the visual companion for the current project in the browser.
-Checks, in this order, that `org-scribe-companion-enable' is on, that the
-project is a novel, and that the project has opted in (asking once when
+Checks, in this order, that `org-scribe-companion-enable' is on, that
+there is a project, and that the project has opted in (asking once when
 it has not decided, see `org-scribe-companion-gate').  Only then is the
 companion module loaded.  This command lives here, not in the module, so
 that with the switch off the module is never loaded."
@@ -285,8 +285,6 @@ that with the switch off the module is never loaded."
   (unless org-scribe-companion-enable
     (user-error "%s" (org-scribe-msg 'companion-error-disabled)))
   (let ((root (org-scribe--require-project)))
-    (unless (eq (org-scribe-project-type) 'novel)
-      (user-error "%s" (org-scribe-msg 'companion-error-novels-only)))
     (when (org-scribe--companion-gate-open-p root)
       (require 'org-scribe-companion)
       (org-scribe-companion--open root))))

@@ -25,6 +25,11 @@ By the end of this lesson, you'll know how to:
 *Prerequisites*: Lesson 1 (a novel project with scenes) and Lesson 4 (characters).
 The demo novel in =examples/demo-novel/= is a good place to try everything.
 
+A short story works too. It has no chapters, so its scenes sit directly under
+the =Story Content= heading: the corkboard and the table show them without a
+chapter row, the =+= in the act header adds a scene, and there is no Chapters
+tab. =examples/demo-short-story/= is the one to try.
+
 * Part 1: Turning It On
 
 Two switches, both off until you decide:
