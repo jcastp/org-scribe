@@ -274,6 +274,17 @@ linking and the health report."
         ;; `org-scribe-scene-match' tests in test-core-extended.el).
         (should (string-match-p ":PoV:" content))))))
 
+(ert-deftest test-insert-scene-short-story-has-no-word-objective ()
+  "A short-story scene gets no `:WORD-OBJECTIVE:', like the shipped Scene 1.
+The whole target sits on the container; the 500 default is a novel's."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+    (with-temp-buffer
+      (org-mode)
+      (org-scribe-insert-scene "Opening")
+      (should-not (string-match-p "WORD-OBJECTIVE" (buffer-string)))
+      ;; Point still lands after :PoV:.
+      (should (looking-back ":PoV: " (line-beginning-position))))))
+
 (ert-deftest test-insert-scene-short-story-tag-matches-project-levels ()
   "The tag on an inserted short-story scene -- present or absent -- must
 follow `org-scribe-project-levels' `:scene-tag' for that project type,

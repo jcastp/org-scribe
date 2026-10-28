@@ -828,16 +828,21 @@ project's language.  Shared by `org-scribe-insert-scene' and the visual
 companion's `create-scene', which inserts it at an exact place."
   (let* ((levels (org-scribe-project-levels))
          (stars (make-string (plist-get levels :scene) ?*))
-         (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag))))
+         (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag)))
+         ;; A project with no chapter level (a short story) puts the whole
+         ;; target on its container, as the shipped Scene 1 does; the 500
+         ;; default is a novel's.
+         (objective (if (plist-get levels :chapter)
+                        ":WORD-OBJECTIVE: 500\n"
+                      "")))
     (format "%s TODO %s%s
 :PROPERTIES:
 :WORDCOUNT: 0
-:WORD-OBJECTIVE: 500
-%s
+%s%s
 :END:
 
 {{{scene-break}}}
-" stars scene-name tag (org-scribe--scene-property-drawer-lines))))
+" stars scene-name tag objective (org-scribe--scene-property-drawer-lines))))
 
 (defun org-scribe--insert-scene-template (scene-name)
   "Insert the scene template named SCENE-NAME; see `org-scribe-insert-scene'."
@@ -857,7 +862,7 @@ companion's `create-scene', which inserts it at an exact place."
     ;; heading occupies exactly one line regardless of its star count or
     ;; tag, so this offset holds for every project type.
     (goto-char start-pos)
-    (forward-line 4)  ; Move to PoV line
+    (re-search-forward "^:PoV:" nil t)  ; Move to PoV line
     (end-of-line)     ; Move to end of line (after :PoV:)
     ;; Org needs whitespace between a property name and its value: a name
     ;; typed straight after ":PoV:" makes ":PoV:Xoán", which is not a
