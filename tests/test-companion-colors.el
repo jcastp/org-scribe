@@ -417,6 +417,36 @@
       (should (eq (plist-get answer :ok) t))
       (should-not (plist-get answer :warning)))))
 
+(ert-deftest test-companion-colors-a-swatch-pins-a-slot-that-follows-the-mode ()
+  (test-companion-colors--with-project root
+    (let ((answer (test-companion-colors--run root "set-color" :kind "role"
+                                              :value "Protagonist" :color "slot:3")))
+      (should (eq (plist-get answer :ok) t))
+      (should-not (plist-get answer :warning)))
+    (should (member "role slot:3 Protagonist"
+                    (org-scribe--project-marker-get-all root "Companion-color")))
+    (should (equal '((role "protagonist" "slot:3" "Protagonist"))
+                   (org-scribe-companion-colors-pins root)))
+    (let ((entry (cl-getf (plist-get (plist-get (org-scribe-companion--snapshot root) :colors) :role)
+                          :protagonist)))
+      (should (eq 3 (plist-get entry :index)))
+      (should-not (plist-get entry :color)))
+    ;; the other roles keep off that slot
+    (let ((assigned (org-scribe-companion-colors-assign
+                     '("a" "b" "c" "d" "e" "f" "g") '(("x" . "slot:3"))
+                     '("1" "2" "3" "4" "5" "6" "7" "8"))))
+      (should-not (cl-some (lambda (e) (eql 3 (plist-get (cdr e) :index))) assigned)))
+    ;; a warning colour as a slot is the theme's colour in each mode
+    (test-companion-colors--run root "set-color" :kind "warn" :color "slot:1")
+    (let ((warn (plist-get (plist-get (org-scribe-companion--snapshot root) :colors) :warn)))
+      (should (equal (plist-get warn :light) "#b45309"))
+      (should (equal (plist-get warn :dark) "#e0883a")))
+    (should (equal "invalid"
+                   (plist-get (plist-get (test-companion-colors--run
+                                          root "set-color" :kind "warn" :color "slot:x")
+                                         :error)
+                              :code)))))
+
 (ert-deftest test-companion-colors-repinning-keeps-the-first-spelling ()
   (test-companion-colors--with-project root
     (test-companion-colors--run root "set-color" :kind "role" :value "Protagonist" :color "#0b5394")

@@ -269,7 +269,11 @@ ARGS: `:source' (the character it is written on), `:target', `:type' and
 `:old'.  Without `:old' the entry (TARGET, TYPE) is added; with `:old' the
 entry (TARGET, OLD) becomes TYPE, or is removed when TYPE is empty.  An
 entry that is no longer there is a `conflict': the page was out of date.
-The link text is the target's current name."
+The link text is the target's current name.  Types are compared without
+case (\"Rival\" is \"rival\").  Only an addition needs the
+target to be a character: an entry pointing at one that was deleted (a
+ghost on the page) can still be changed or removed, keeping its stored
+name."
   (let* ((source (org-scribe-companion-commands--require-id args :source))
          (target (org-scribe-companion-commands--require-id args :target))
          (type (or (org-scribe-companion-commands--clean-line
@@ -284,20 +288,24 @@ The link text is the target's current name."
     (when (and (null old) (string-empty-p type))
       (org-scribe-companion-commands--fail "invalid" 'companion-error-missing-arg "type"))
     (org-scribe-companion-entity--character-name root source)
-    (let ((name (org-scribe-companion-entity--character-name root target))
+    (let ((name (if old
+                    (let ((found (org-scribe-companion-entity--find root target)))
+                      (and (equal (car found) "character") (plist-get (cdr found) :name)))
+                  (org-scribe-companion-entity--character-name root target)))
           (default-directory root))
       (org-scribe-companion-entity--editing
        root source
        (lambda (_marker)
          (let* ((entries (org-scribe--get-character-relationships))
                 (same (lambda (entry kind) (and (equal (nth 0 entry) target)
-                                                (equal (nth 2 entry) kind))))
-                (new (list target name type))
+                                                (string= (downcase (or (nth 2 entry) ""))
+                                                         (downcase kind)))))
+                (new (lambda (entry) (list target (or name (nth 1 entry)) type)))
                 result)
            (if (null old)
                (setq result (if (cl-find-if (lambda (e) (funcall same e type)) entries)
                                 entries
-                              (append entries (list new))))
+                              (append entries (list (funcall new nil)))))
              (unless (cl-find-if (lambda (e) (funcall same e old)) entries)
                (org-scribe-companion-commands--fail "conflict" 'companion-error-relationship-gone))
              (dolist (entry entries)
@@ -307,7 +315,7 @@ The link text is the target's current name."
                 ((and (not (string-empty-p type))
                       (not (cl-find-if (lambda (e) (and (not (eq e entry)) (funcall same e type)))
                                        entries)))
-                 (push new result))))
+                 (push (funcall new entry) result))))
              (setq result (nreverse result)))
            (let ((property (or (org-scribe--relationships-property-at-point)
                                (org-scribe--relationships-property-name))))

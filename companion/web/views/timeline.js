@@ -111,6 +111,7 @@ function problemText(item, ctx) {
     blank: 'companion-ui-timeline-blank',
     unreadable: 'companion-ui-timeline-unreadable',
     'no-anchor': 'companion-ui-timeline-no-anchor',
+    'calendar-incomplete': 'companion-ui-timeline-calendar-incomplete',
   }[item.problem];
   return key ? ctx.t(key) : '';
 }

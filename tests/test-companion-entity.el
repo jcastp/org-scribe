@@ -372,6 +372,52 @@
        (goto-char (org-find-property "ID" test-companion-entity--sam))
        (should-not (org-entry-get nil "RelationshipsData"))))))
 
+(defun test-companion-entity--orphan-marisol (root)
+  "Point Alex's family entry at an ID that is no character any more."
+  (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+    (org-with-wide-buffer
+     (goto-char (point-min))
+     (search-forward "char-marisol-rivera-001][Marisol")
+     (replace-match "char-gone-999][Marisol")))
+  (org-scribe-companion--clear-cache))
+
+(ert-deftest test-companion-entity-set-relationship-removes-an-entry-to-a-deleted-character ()
+  (test-companion-entity--with-project root
+    (test-companion-entity--orphan-marisol root)
+    (should (eq t (plist-get (test-companion-entity--run
+                              root "set-relationship" :source test-companion-entity--alex
+                              :target "char-gone-999" :old "family" :type "")
+                             :ok)))
+    (should-not (assoc "char-gone-999" (test-companion-entity--rels root test-companion-entity--alex)))
+    (should (= 3 (length (test-companion-entity--rels root test-companion-entity--alex))))))
+
+(ert-deftest test-companion-entity-set-relationship-changes-an-entry-to-a-deleted-character ()
+  (test-companion-entity--with-project root
+    (test-companion-entity--orphan-marisol root)
+    (should (eq t (plist-get (test-companion-entity--run
+                              root "set-relationship" :source test-companion-entity--alex
+                              :target "char-gone-999" :old "family" :type "aunt")
+                             :ok)))
+    (should (member (cons "char-gone-999" "aunt")
+                    (test-companion-entity--rels root test-companion-entity--alex)))
+    ;; the stored name stays as the link text
+    (should (string-match-p "\\[\\[id:char-gone-999\\]\\[Marisol Rivera\\]\\]|aunt"
+                            (test-companion-entity--design root)))
+    ;; adding one still needs a real character
+    (should (equal "not-found"
+                   (test-companion-entity--code
+                    (test-companion-entity--run
+                     root "set-relationship" :source test-companion-entity--alex
+                     :target "char-gone-999" :type "cousin"))))))
+
+(ert-deftest test-companion-entity-set-relationship-types-compare-without-case ()
+  (test-companion-entity--with-project root
+    (let ((before (length (test-companion-entity--rels root test-companion-entity--alex))))
+      ;; Alex already has "neighbour" for Sam
+      (test-companion-entity--run root "set-relationship" :source test-companion-entity--alex
+                                  :target test-companion-entity--sam :type "Neighbour")
+      (should (= before (length (test-companion-entity--rels root test-companion-entity--alex)))))))
+
 (ert-deftest test-companion-entity-set-relationship-stale-entry-conflicts ()
   (test-companion-entity--with-project root
     (let ((before (test-companion-entity--design root)))

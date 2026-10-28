@@ -135,6 +135,13 @@ The *Timeline* tab places scenes by *story time*: what you write in a scene's
 - *invented calendar*: dates in your own calendar, set up the first time you
   choose it.
 
+You may add a remark after a comma: ~Day 3, 14:00, in the cellar~ is placed
+at Day 3, 14:00, and the remark is ignored for sorting and shown as you wrote
+it. A remark must start with a letter (so ~Day 3, 25:00~ stays unreadable
+instead of being placed on Day 3) and not with ~Day~, ~Night~ or ~Year~. This
+applies to the relative notation and to your invented calendar; Org
+timestamps do not take a remark.
+
 A scene whose time cannot be read, or that has none, goes to the "no date"
 group at the end with the reason. The same data is available as a
 ~#+BEGIN: story-chronology~ dynamic block in any Org file of the project, and

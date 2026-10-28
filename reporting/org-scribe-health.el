@@ -506,6 +506,7 @@ nothing for a project with no scenes."
          (missing (funcall by-problem 'blank))
          (unreadable (funcall by-problem 'unreadable))
          (no-anchor (funcall by-problem 'no-anchor))
+         (incomplete (funcall by-problem 'calendar-incomplete))
          (jumps (plist-get data :jumps))
          (jump-scenes (seq-filter (lambda (e) (assq (plist-get e :index) jumps))
                                   scenes)))
@@ -513,7 +514,7 @@ nothing for a project with no scenes."
       (insert (format "* %s\n\n" (org-scribe-msg 'msg-health-story-time-heading)))
       (insert (org-scribe-msg 'msg-health-story-time-summary
                               (- total (length missing) (length unreadable)
-                                 (length no-anchor))
+                                 (length no-anchor) (length incomplete))
                               total)
               "\n\n")
       ;; a project that has not started on story time gets one line, not a
@@ -528,6 +529,10 @@ nothing for a project with no scenes."
         (insert (org-scribe-msg 'msg-health-story-time-unreadable
                                 (length unreadable) (funcall names unreadable t))
                 "\n\n"))
+      (when incomplete
+        (insert (org-scribe-msg 'msg-health-story-time-calendar-incomplete
+                                (length incomplete) (funcall names incomplete t))
+                "\n\n"))
       (when no-anchor
         (insert (org-scribe-msg 'msg-health-story-time-no-anchor
                                 (length no-anchor) (funcall names no-anchor t))
@@ -537,7 +542,8 @@ nothing for a project with no scenes."
                  'msg-health-story-time-flashbacks (length jump-scenes)
                  (mapconcat
                   (lambda (e)
-                    (format "%s %s" (plist-get e :heading)
+                    (format "%s %s" (org-scribe--health-scene-link
+                                     (plist-get e :heading) (plist-get e :id))
                             (org-scribe-chronology--distance
                              (cdr (assq (plist-get e :index) jumps)))))
                   jump-scenes ", "))

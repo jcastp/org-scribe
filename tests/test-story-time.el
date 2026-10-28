@@ -144,6 +144,66 @@
     (should (equal "1 Sow 312"
                    (org-scribe-story-time-day-label (list :key (* 28 1440)) ctx)))))
 
+(ert-deftest test-story-time-remark-after-a-comma-is-ignored-for-sorting ()
+  (let ((ctx '(:mode relative)))
+    (should (equal (org-scribe-story-time-key "Day 3, 14:00" ctx)
+                   (org-scribe-story-time-key "Day 3, 14:00, in the cellar" ctx)))
+    (should (equal (org-scribe-story-time-key "Day 3" ctx)
+                   (org-scribe-story-time-key "Día 3, por la mañana" ctx)))
+    (should (equal (org-scribe-story-time-key "Year -9, Day 40" ctx)
+                   (org-scribe-story-time-key "Year -9, Day 40, flashback" ctx)))))
+
+(ert-deftest test-story-time-remark-never-hides-a-bad-time ()
+  (let ((ctx '(:mode relative)))
+    (dolist (text '("Day 3, 25:00" "Day 3, Night 4" "Day 3, 14h" "Dya 3, in the cellar"))
+      (should-not (org-scribe-story-time-key text ctx))
+      (should (eq 'unreadable (org-scribe-story-time-problem text ctx))))))
+
+(ert-deftest test-story-time-remark-after-a-calendar-date ()
+  (let ((ctx (list :mode 'calendar
+                   :calendar '(:months (("Thaw" . 30) ("Sow" . 30)) :era "AE" :day-one 0))))
+    (should (equal (org-scribe-story-time-key "5 Thaw 312" ctx)
+                   (org-scribe-story-time-key "5 Thaw 312, the feast" ctx)))))
+
+(ert-deftest test-story-time-problem-names-a-calendar-that-cannot-place-dates ()
+  (let ((months '(("Thaw" . 30) ("Sow" . 30))))
+    ;; no usable Calendar at all (heading missing or table empty)
+    (should (eq 'calendar-incomplete
+                (org-scribe-story-time-problem "5 Thaw 312" (list :mode 'calendar))))
+    ;; months but a DAY-ONE that did not parse
+    (should (eq 'calendar-incomplete
+                (org-scribe-story-time-problem
+                 "5 Thaw 312" (list :mode 'calendar
+                                    :calendar (list :months months :era "AE" :day-one nil)))))
+    ;; a complete calendar: a real typo stays a typo
+    (should (eq 'unreadable
+                (org-scribe-story-time-problem
+                 "5 Thwa 312" (list :mode 'calendar
+                                    :calendar (list :months months :era "AE" :day-one 0)))))
+    ;; text that is not shaped like a calendar date is still just unreadable
+    (should (eq 'unreadable
+                (org-scribe-story-time-problem "por la tarde" (list :mode 'calendar))))
+    ;; relative notation keeps working in calendar mode
+    (should-not (org-scribe-story-time-problem "Day 3" (list :mode 'calendar)))))
+
+(ert-deftest test-story-time-timestamp-must-be-the-whole-value ()
+  (let ((ctx (list :mode 'dates :day-one (calendar-absolute-from-gregorian '(3 14 2026)))))
+    (should (org-scribe-story-time-key "<2026-03-10 Tue 09:00>" ctx))
+    (should (org-scribe-story-time-key "  2026-03-10 " ctx))
+    ;; a stamp inside prose, and a range, are not times to sort on
+    (should-not (org-scribe-story-time-key "Recuerda <2026-03-10> de niña" ctx))
+    (should-not (org-scribe-story-time-key "<2026-03-14>--<2026-03-20>" ctx))
+    (should (eq 'unreadable (org-scribe-story-time-problem "<2026-03-14>--<2026-03-20>" ctx)))
+    (should (eq 'unreadable (org-scribe-story-time-problem "Recuerda <2026-03-10>" (list :mode 'dates))))))
+
+(ert-deftest test-story-time-refuses-days-the-month-does-not-have ()
+  (let ((ctx (list :mode 'dates :day-one (calendar-absolute-from-gregorian '(3 14 2026)))))
+    (should-not (org-scribe-story-time-key "<2026-02-31>" ctx))
+    (should-not (org-scribe-story-time-key "<2026-02-29>" ctx))
+    (should (org-scribe-story-time-key "<2028-02-29>" ctx))
+    (should (equal 739689 (org-scribe-story-time--parse-date "2026-03-14")))
+    (should-not (org-scribe-story-time--parse-date "2026-02-31"))
+    (should-not (org-scribe-story-time--parse-date "2026-03-14xyz"))))
 
 (provide 'test-story-time)
 ;;; test-story-time.el ends here

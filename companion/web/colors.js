@@ -52,6 +52,14 @@ export function rankOf(kind, value) {
   return entry && Number.isInteger(entry.rank) ? entry.rank : 0;
 }
 
+/** A pin's colour as CSS: a slot (`slot:3`) is the palette's colour for this mode. */
+export function cssColor(pinned) {
+  const match = /^slot:(\d+)$/.exec(pinned || '');
+  if (!match || !colors) return pinned;
+  const palette = colors.palette[mode()];
+  return palette[Number(match[1]) % palette.length];
+}
+
 /** The colour of TODO keyword, light or dark as the page is. */
 export function todoColor(snapshot, keyword) {
   if (keyword === null || keyword === undefined) return null;
@@ -122,15 +130,17 @@ export function chooser(spec, ctx, done) {
   const box = el('div', 'colour-chooser');
   const palette = colors ? colors.palette[mode()] : [];
   const row = el('div', 'colour-swatches');
-  for (const color of palette) {
+  // a swatch pins the palette *slot*, not its hex: the slot is the matching
+  // colour in the light and in the dark page
+  palette.forEach((color, slot) => {
     const swatch = el('button', 'colour-swatch');
     swatch.type = 'button';
     swatch.style.background = color;
     swatch.title = color;
     swatch.setAttribute('aria-label', color);
-    swatch.addEventListener('click', () => { done(); pin(spec, color, ctx); });
+    swatch.addEventListener('click', () => { done(); pin(spec, `slot:${slot}`, ctx); });
     row.append(swatch);
-  }
+  });
   const free = el('input', 'colour-free');
   free.type = 'color';
   const now = spec.kind === 'warn' || spec.kind === 'focus' ? colors[spec.kind][mode()] : colorOf(spec.kind, spec.value);
@@ -218,7 +228,7 @@ export function renderPanel(container, ctx) {
     const label = `${ctx.t(`companion-ui-color-kind-${entry.kind}`)}: ${ctx.nameFor(entry.kind, entry.value)}`;
     const button = el('button', 'colour-key dot');
     button.type = 'button';
-    button.style.setProperty('--swatch', entry.color);
+    button.style.setProperty('--swatch', cssColor(entry.color));
     button.setAttribute('aria-label', ctx.t('companion-ui-color-pick', label));
     button.addEventListener('click', () => openPicker(button, { kind: entry.kind, value: entry.value, label }, ctx));
     const reset = el('button', '', ctx.t('companion-ui-color-reset'));

@@ -108,17 +108,20 @@ function buildLinks(entries) {
     const [a, b] = entry.source < entry.target ? [entry.source, entry.target] : [entry.target, entry.source];
     const key = `${a}\u0000${b}`;
     if (!pairs.has(key)) pairs.set(key, { a, b, forward: new Set(), backward: new Set() });
-    (entry.source === a ? pairs.get(key).forward : pairs.get(key).backward).add(entry.type);
+    // "Rival" and "rival" are one type (colours ignore case too)
+    const side = entry.source === a ? pairs.get(key).forward : pairs.get(key).backward;
+    if (![...side].some((type) => type.toLowerCase() === entry.type.toLowerCase())) side.add(entry.type);
   }
   const links = [];
   for (const pair of pairs.values()) {
     const group = [];
+    const other = (set, type) => [...set].find((t) => t.toLowerCase() === type.toLowerCase());
     for (const type of pair.forward) {
-      if (pair.backward.has(type)) group.push({ a: pair.a, b: pair.b, type, directed: false });
+      if (other(pair.backward, type)) group.push({ a: pair.a, b: pair.b, type, directed: false });
       else group.push({ a: pair.a, b: pair.b, type, directed: true, from: pair.a, to: pair.b });
     }
     for (const type of pair.backward) {
-      if (!pair.forward.has(type)) group.push({ a: pair.a, b: pair.b, type, directed: true, from: pair.b, to: pair.a });
+      if (!other(pair.forward, type)) group.push({ a: pair.a, b: pair.b, type, directed: true, from: pair.b, to: pair.a });
     }
     group.forEach((link, index) => { link.index = index; link.total = group.length; links.push(link); });
   }
@@ -367,8 +370,12 @@ function pairPanel(model, ctx) {
   }
   const add = el('button', '', ctx.t('companion-ui-relations-add'));
   add.type = 'button';
+  // a character that no longer exists cannot be the end of a new line
+  const both = model.byId.has(panel.a) && model.byId.has(panel.b);
+  add.disabled = !both;
+  if (!both) add.title = ctx.t('companion-ui-relations-dangling');
   add.addEventListener('click', () => {
-    if (model.byId.has(panel.a) && model.byId.has(panel.b)) openPanel({ kind: 'add', source: panel.a, target: panel.b }, ctx);
+    if (both) openPanel({ kind: 'add', source: panel.a, target: panel.b }, ctx);
   });
   box.append(add, closeButton(ctx));
   return box;
@@ -607,8 +614,12 @@ export function render(container, ctx) {
     wrap.append(drawGraph(model, links, ctx));
     container.append(wrap);
   }
-  if (panel && panel.kind === 'add') container.append(addPanel(model, ctx));
-  if (panel && panel.kind === 'pair') container.append(pairPanel(model, ctx));
+  const shown = panel && (panel.kind === 'add' ? addPanel(model, ctx) : pairPanel(model, ctx));
+  if (shown) {
+    container.append(shown);
+    // the graph is tall: bring the form into view instead of leaving it below the fold
+    queueMicrotask(() => shown.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
+  }
   if (model.alone.length) container.append(strip(model, ctx));
   if (model.entries.length) container.append(table(model, ctx));
 }

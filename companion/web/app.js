@@ -229,9 +229,10 @@ function renderView() {
     state.pendingFocus = null;
     const target = [...document.querySelectorAll('.card, .chapter')].find((node) => node.dataset.id === id);
     if (target && target.classList.contains('chapter')) {
-      // a new chapter: straight into its title
-      const title = target.querySelector('.chapter-title');
-      if (title.classList.contains('editable')) title.click();
+      // a new chapter: bring it into view and put the focus on its header
+      target.scrollIntoView({ block: 'nearest' });
+      const head = target.querySelector('.chapter-head');
+      if (head) head.focus();
     } else if (target) {
       target.focus();
     }

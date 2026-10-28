@@ -78,7 +78,7 @@ Keys: `:scenes' (reading order), `:events' (only when WITH-EVENTS),
 `:undated' (the rest, in reading order, events last) and `:jumps', an alist
 of (INDEX . MINUTES-BACK) for each scene earlier than the dated scene read
 before it.  Entries carry `:kind', `:heading', `:chapter', `:text',
-`:key', `:problem' (`blank', `unreadable' or `no-anchor'), `:index' and
+`:key', `:problem' (`blank', `unreadable', `no-anchor' or `calendar-incomplete'), `:index' and
 `:id' (a scene's, when it has one)."
   (let* ((context (org-scribe-story-time-context))
          (index 0)
@@ -122,8 +122,8 @@ before it.  Entries carry `:kind', `:heading', `:chapter', `:text',
                (org-scribe-msg 'chrono-jump-hours h (org-scribe-plural h "")))))))
 
 (defun org-scribe-chronology--reason (problem)
-  "Say in words why an entry with PROBLEM (`blank', `unreadable', `no-anchor') is undated."
-  (if (memq problem '(blank unreadable no-anchor))
+  "Say in words why an entry with PROBLEM (`blank', `unreadable', `no-anchor', `calendar-incomplete') is undated."
+  (if (memq problem '(blank unreadable no-anchor calendar-incomplete))
       (org-scribe-msg (intern (format "chrono-reason-%s" problem)))
     ""))
 
@@ -150,7 +150,11 @@ reading order, so a typo is not buried under dozens of scenes with no time."
                      (t ""))))
     (insert (format "| %s | %s | %s | %s | %s |\n"
                     (org-scribe--escape-table-cell (or (plist-get entry :text) ""))
-                    (org-scribe--escape-table-cell (plist-get entry :heading))
+                    (org-scribe--escape-table-cell
+                     (if (plist-get entry :id)
+                         (org-link-make-string (concat "id:" (plist-get entry :id))
+                                               (plist-get entry :heading))
+                       (plist-get entry :heading)))
                     (org-scribe--escape-table-cell (or (plist-get entry :chapter) ""))
                     (if scene-p
                         (format "%d/%d" (plist-get entry :index) total)
@@ -187,6 +191,18 @@ PARAMS may contain `:events nil' to leave the notebook's events out."
         (insert "\n" (org-scribe-msg 'chrono-undated (length undated)) "\n")
         (org-scribe-chronology--insert-table
          (org-scribe-chronology--undated-order undated) total jumps t)))))
+
+;; Offered by `org-insert-dblock' (C-c C-x x) too.
+(with-eval-after-load 'org
+  (when (fboundp 'org-dynamic-block-define)
+    (org-dynamic-block-define "story-chronology" #'org-scribe-chronology-insert-block)))
+
+(defun org-scribe-chronology-insert-block ()
+  "Insert an empty story-chronology dynamic block at point and fill it."
+  (interactive)
+  (insert "#+BEGIN: story-chronology\n#+END:\n")
+  (forward-line -2)
+  (org-update-dblock))
 
 (provide 'org-scribe-chronology)
 

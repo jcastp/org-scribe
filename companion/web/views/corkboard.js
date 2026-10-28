@@ -326,7 +326,7 @@ export function render(container, ctx) {
         const last = [...act.chapters].reverse().find((chapter) => chapter.id);
         startEdit(add, '', false, (title) => {
           if (!title.trim()) return;
-          ctx.edit('create-chapter', { parent: act.id, after: last ? last.id : null, title });
+          ctx.edit('create-chapter', { parent: act.id, after: last ? last.id : null, title }, null, true);
         }, ctx, label);
       });
       head.append(add);

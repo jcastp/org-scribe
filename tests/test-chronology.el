@@ -72,6 +72,24 @@
       (should (equal '(blank unreadable no-anchor)
                      (mapcar (lambda (e) (plist-get e :problem)) undated))))))
 
+(ert-deftest test-chronology-calendar-with-a-bad-day-one-says-so ()
+  (test-chrono--with-project "# Story-time: calendar\n"
+      '(("A" "5 Thaw 312") ("B" "Day 2")) 
+      "* World\n** Calendar\n:PROPERTIES:\n:ERA: AE\n:DAY-ONE: 3 Thwa 312\n:END:\n| Month | Days |\n|-+-|\n| Thaw | 30 |\n| Sow | 30 |\n"
+    (let ((undated (plist-get (org-scribe-chronology-collect) :undated)))
+      (should (equal '(calendar-incomplete)
+                     (mapcar (lambda (e) (plist-get e :problem)) undated))))
+    (with-temp-buffer
+      (org-scribe--health-insert-story-time)
+      (should (string-match-p "Calendar cannot place (1)" (buffer-string)))
+      (should (string-match-p "DAY-ONE" (buffer-string))))
+    (with-temp-buffer
+      (org-mode)
+      (insert "#+BEGIN: story-chronology\n#+END:\n")
+      (goto-char (point-min))
+      (org-update-dblock)
+      (should (string-match-p "needs months and a DAY-ONE" (buffer-string))))))
+
 (ert-deftest test-chronology-dates-project-reads-timestamps ()
   (test-chrono--with-project "# Story-time: dates\n# Story-day-one: 2026-03-14\n"
       '(("A" "<2026-03-16 Mon>") ("B" "Day 1") ("C" "<2026-03-13 Fri>")) ""
@@ -183,6 +201,64 @@
       (org-scribe--health-insert-story-time)
       (should (equal "" (buffer-string))))))
 
+(defun test-chrono--add-ids (root)
+  "Give every scene of ROOT's manuscript an :ID: sc-N."
+  (let ((file (expand-file-name "novel.org" root)) (n 0))
+    (with-temp-buffer
+      (insert-file-contents file)
+      (while (search-forward ":PROPERTIES:\n" nil t)
+        (insert (format ":ID: sc-%d\n" (cl-incf n))))
+      (write-region nil nil file))))
+
+(ert-deftest test-chronology-block-and-health-jumps-link-the-scenes ()
+  (test-chrono--with-project "" '(("A" "Day 25") ("B" "Day 5")) ""
+    (test-chrono--add-ids root)
+    (with-temp-buffer
+      (org-mode)
+      (insert "#+BEGIN: story-chronology\n#+END:\n")
+      (goto-char (point-min))
+      (org-update-dblock)
+      (should (string-match-p "\\[\\[id:sc-2\\]\\[B\\]\\]" (buffer-string))))
+    (with-temp-buffer
+      (org-scribe--health-insert-story-time)
+      (should (string-match-p "\\[\\[id:sc-2\\]\\[B\\]\\] ↶" (buffer-string))))))
+
+(ert-deftest test-chronology-block-is-offered-by-insert-dblock ()
+  (should (assoc "story-chronology" org-dynamic-block-alist)))
+
+(ert-deftest test-chronology-calendar-day-one-before-year-zero-keeps-its-day ()
+  (let ((cal '(:months (("Thaw" . 30) ("Sow" . 30)) :era "AE")))
+    (should (equal -59 (org-scribe-story-time--calendar-date-count cal "2 Thaw -1")))
+    (should (equal -59 (org-scribe-story-time--calendar-date-count cal "2 Thaw -1, 14:00")))))
+
+(ert-deftest test-chronology-story-time-context-reads-the-calendar-of-its-root ()
+  (test-chrono--with-project "# Story-time: calendar\n" '(("A" "5 Thaw 312"))
+      "* World\n** Calendar\n:PROPERTIES:\n:ERA: AE\n:DAY-ONE: 3 Thaw 312\n:END:\n| Month | Days |\n|-+-|\n| Thaw | 30 |\n"
+    (let ((default-directory temporary-file-directory))
+      (should (plist-get (plist-get (org-scribe-story-time-context root) :calendar) :months)))))
+
+(ert-deftest test-chronology-calendar-create-refuses-before-asking ()
+  (test-chrono--with-project "" '(("A" "Day 1"))
+      "* World\n** Calendar\n:PROPERTIES:\n:ERA: AE\n:END:\n"
+    (let (asked)
+      (cl-letf (((symbol-function 'read-string)
+                 (lambda (&rest _) (setq asked t) "x")))
+        (should-error (call-interactively #'org-scribe-calendar-create)
+                      :type 'user-error))
+      (should-not asked))))
+
+(ert-deftest test-chronology-calendar-create-leaves-the-writers-unsaved-edits-unsaved ()
+  (test-chrono--with-project "" '(("A" "Day 1")) "* World\n"
+    (let ((buffer (find-file-noselect (expand-file-name "design.org" root))))
+      (with-current-buffer buffer
+        (goto-char (point-max))
+        (insert "unsaved note\n"))
+      (org-scribe-calendar-create "AE" "3 Thawmoon 312")
+      (should (buffer-modified-p buffer))
+      (with-temp-buffer
+        (insert-file-contents (expand-file-name "design.org" root))
+        (should-not (string-match-p "unsaved note" (buffer-string)))))))
+
 (ert-deftest test-chronology-calendar-create-writes-heading-and-marker ()
   (test-chrono--with-project "" '(("A" "3 Thawmoon 312"))
       "* World\n** Setting\n"
@@ -227,6 +303,8 @@
   (test-chrono--with-project "" '(("A" "Day 1")) ""
     (should-error (org-scribe-set-story-time 'dates "next tuesday") :type 'user-error)
     (should-error (org-scribe-set-story-time 'dates nil) :type 'user-error)
+    (should-error (org-scribe-set-story-time 'dates "2026-02-31") :type 'user-error)
+    (should-error (org-scribe-set-story-time 'dates "2026-03-14xyz") :type 'user-error)
     (should-not (org-scribe--project-marker-get root "Story-time"))
     (should-not (org-scribe--project-marker-get root "Story-day-one"))))
 

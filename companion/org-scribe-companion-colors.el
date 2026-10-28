@@ -23,7 +23,10 @@
 ;;           character's ID so a rename keeps it), or `warn'/`focus' (no
 ;;           VALUE: the colour of the page's warnings and focus ring).
 ;;
-;; A pin is one colour for light and dark; a theme's palette has both.
+;; A pin is a free colour (#rrggbb, one colour for light and dark) or a
+;; palette slot (slot:N, the theme's Nth colour in whichever mode the page is
+;; in).  The picker's swatches pin slots, so a chosen swatch stays readable on
+;; both pages; only the system colour dialog pins a hex value.
 
 ;;; Code:
 
@@ -85,6 +88,19 @@ both modes.")
   "Non-nil when STRING is a colour written #rrggbb."
   (and (stringp string) (string-match-p "\\`#[0-9a-fA-F]\\{6\\}\\'" string)))
 
+(defun org-scribe-companion-colors-slot-p (string)
+  "Non-nil when STRING is a palette slot written slot:N."
+  (and (stringp string) (string-match-p "\\`slot:[0-9]+\\'" string)))
+
+(defun org-scribe-companion-colors--slot-number (string)
+  "Return N of the palette slot STRING, \"slot:N\"."
+  (string-to-number (substring string 5)))
+
+(defun org-scribe-companion-colors-color-p (string)
+  "Non-nil when STRING is a colour a pin can hold: #rrggbb or slot:N."
+  (or (org-scribe-companion-colors-hex-p string)
+      (org-scribe-companion-colors-slot-p string)))
+
 (defun org-scribe-companion-colors--normalize (kind value)
   "Return the key VALUE has among the pins of KIND.
 A role or relationship type compares without case or edge spaces; a PoV is
@@ -97,7 +113,7 @@ a character ID and is compared as written."
 TEXT is the value as written (nil for `warn' and `focus'), KEY its
 normalized form."
   (setq line (string-trim line))
-  (when (string-match "\\`\\([a-z]+\\)[ \t]+\\(#[0-9a-fA-F]\\{6\\}\\)\\(?:[ \t]+\\(.*\\)\\)?\\'" line)
+  (when (string-match "\\`\\([a-z]+\\)[ \t]+\\(#[0-9a-fA-F]\\{6\\}\\|slot:[0-9]+\\)\\(?:[ \t]+\\(.*\\)\\)?\\'" line)
     (let* ((kind (intern-soft (downcase (match-string 1 line))))
            (color (downcase (match-string 2 line)))
            (text (and (match-string 3 line) (string-trim (match-string 3 line)))))
@@ -216,7 +232,8 @@ any other keyword keeps the customized colour."
 (defun org-scribe-companion-colors-assign (keys pinned palette)
   "Return an alist (KEY . ENTRY) giving every one of KEYS a colour.
 KEYS is the list of normalized values, PINNED an alist (KEY . COLOR) of the
-ones with a colour of their own; their ENTRY is (:color COLOR :rank N).
+ones with a colour of their own, COLOR being #rrggbb (ENTRY (:color COLOR
+:rank N)) or slot:N (ENTRY (:index N :rank N :pinned t)).
 The rest take one of PALETTE's slots (a list of colours), skipping a slot
 a pin already uses; their ENTRY is (:index N :rank N), plus (:reused t)
 once every slot is taken and a colour repeats.
@@ -228,9 +245,13 @@ settled in hash order, so the result does not depend on the order of KEYS.
 :rank is the same hash, for the cues that do not depend on colour (line
 pattern, node shape).  The result follows the order of KEYS."
   (let* ((taken (mapcar (lambda (pin) (downcase (cdr pin))) pinned))
+         (slot-pins (cl-loop for pin in pinned
+                             when (org-scribe-companion-colors-slot-p (cdr pin))
+                             collect (org-scribe-companion-colors--slot-number (cdr pin))))
          (slots (cl-loop for color in palette
                          for index from 0
-                         unless (member (downcase color) taken) collect index))
+                         unless (or (member (downcase color) taken) (memq index slot-pins))
+                         collect index))
          (slots (or slots (number-sequence 0 (1- (length palette)))))
          (count (length slots))
          (used nil)
@@ -253,8 +274,14 @@ pattern, node shape).  The result follows the order of KEYS."
               chosen)))
     (mapcar (lambda (key)
               (if-let* ((pin (assoc key pinned)))
-                  (cons key (list :color (cdr pin)
-                                  :rank (org-scribe-companion-colors--hash key)))
+                  (cons key
+                        (if (org-scribe-companion-colors-slot-p (cdr pin))
+                            (list :index (mod (org-scribe-companion-colors--slot-number (cdr pin))
+                                              (max 1 (length palette)))
+                                  :rank (org-scribe-companion-colors--hash key)
+                                  :pinned t)
+                          (list :color (cdr pin)
+                                :rank (org-scribe-companion-colors--hash key))))
                 (cons key (cdr (assoc key chosen)))))
             keys)))
 
@@ -299,12 +326,21 @@ only those on screen, so a filter never moves a colour."
          (pinned-of (lambda (kind)
                       (cl-loop for pin in pins
                                when (eq (nth 0 pin) kind) collect (cons (nth 1 pin) (nth 2 pin)))))
+         (dark (org-scribe-companion-colors--theme-palette theme :dark))
          (ui (lambda (kind)
                (let* ((defaults (alist-get kind org-scribe-companion-colors--ui-defaults))
                       (pin (cl-find kind pins :key #'car))
-                      (chosen (and pin (nth 2 pin))))
-                 (list :light (or chosen (plist-get defaults :light))
-                       :dark (or chosen (plist-get defaults :dark))
+                      (chosen (and pin (nth 2 pin)))
+                      ;; a slot is the theme's colour of that number in each mode
+                      (slot (and chosen (org-scribe-companion-colors-slot-p chosen)
+                                 (mod (org-scribe-companion-colors--slot-number chosen)
+                                      (length light)))))
+                 (list :light (cond (slot (nth slot light))
+                                    (chosen chosen)
+                                    (t (plist-get defaults :light)))
+                       :dark (cond (slot (nth slot dark))
+                                   (chosen chosen)
+                                   (t (plist-get defaults :dark)))
                        :pinned (if chosen t :false))))))
     (list :theme (symbol-name theme)
           :themes (vconcat (mapcar #'symbol-name (org-scribe-companion-colors-theme-names)))

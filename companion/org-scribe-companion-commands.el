@@ -623,7 +623,7 @@ the buffers' undo steps: the page offers a reset instead."
      ((equal kind "all")
       (org-scribe-companion-colors-clear-pins root))
      ((memq symbol '(warn focus role reltype pov))
-      (when (and color (not (org-scribe-companion-colors-hex-p color)))
+      (when (and color (not (org-scribe-companion-colors-color-p color)))
         (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-color color))
       (unless (memq symbol '(warn focus))
         (when (or (null value) (string-empty-p value))
