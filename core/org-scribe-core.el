@@ -202,6 +202,46 @@ nothing if the marker file does not exist."
             (insert (format "# %s: %s\n" key value))))
         (write-region (point-min) (point-max) marker-file nil 'silent)))))
 
+(defun org-scribe--project-marker-get-all (root key)
+  "Return every value recorded for KEY in ROOT's .org-scribe-project file.
+Like `org-scribe--project-marker-get', but for a key that may repeat: the
+trimmed values of all the \"# KEY: value\" lines, in file order.  nil when
+the marker file or the key is missing."
+  (let ((marker-file (expand-file-name ".org-scribe-project" root))
+        (regexp (concat "^# " (regexp-quote key) ": \\(.*\\)$"))
+        values)
+    (when (file-exists-p marker-file)
+      (with-temp-buffer
+        (insert-file-contents marker-file)
+        (goto-char (point-min))
+        (let ((case-fold-search t))
+          (while (re-search-forward regexp nil t)
+            (push (string-trim (match-string 1)) values)))))
+    (nreverse values)))
+
+(defun org-scribe--project-marker-set-all (root key values)
+  "Replace every \"# KEY: ...\" line of ROOT's marker file with VALUES.
+VALUES is a list of strings, one line each; nil just removes the lines.
+The new lines take the place of the first old one (or go at the end), and
+every other line is kept.  Does nothing if the marker file does not exist."
+  (let ((marker-file (expand-file-name ".org-scribe-project" root))
+        (regexp (concat "^# " (regexp-quote key) ": .*\n?")))
+    (when (file-exists-p marker-file)
+      (with-temp-buffer
+        (insert-file-contents marker-file)
+        (goto-char (point-min))
+        (let ((case-fold-search t)
+              (spot nil))
+          (while (re-search-forward regexp nil t)
+            (unless spot (setq spot (copy-marker (match-beginning 0))))
+            (replace-match ""))
+          (if spot
+              (goto-char spot)
+            (goto-char (point-max))
+            (unless (or (bobp) (bolp)) (insert "\n")))
+          (dolist (value values) (insert (format "# %s: %s\n" key value))))
+        (write-region (point-min) (point-max) marker-file nil 'silent)))))
+
 (defun org-scribe-planner-gate (&optional root)
   "Return the per-project writing-planner opt-in state.
 Returns \\='yes, \\='no, or nil (undecided) read from the \"# Planner:\"

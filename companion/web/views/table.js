@@ -4,6 +4,7 @@
 // kind; rows drag between chapters.  Sorting happens here, on the client, and
 // is applied inside each chapter.  All text is put in with textContent.
 
+import { todoColor, colorOf, legendSwatch } from '../colors.js';
 import { matches, isActive } from '../filters.js';
 import { el, startEdit, moveTo } from '../edit.js';
 
@@ -71,12 +72,10 @@ function sorted(scenes) {
   });
 }
 
-function povHue(scene) {
+/** The ID and name of a scene's PoV character, or null. */
+function povOf(scene) {
   const pov = scene.fields.pov;
-  if (!pov || !pov.links || !pov.links.length) return null;
-  let hash = 0;
-  for (const char of pov.links[0].id) hash = (hash * 31 + char.charCodeAt(0)) % 360;
-  return hash;
+  return pov && pov.links && pov.links.length ? pov.links[0] : null;
 }
 
 // ---- link picker -----------------------------------------------------------
@@ -261,13 +260,9 @@ function sceneRow(scene, columns, ctx) {
   if (scene.readOnly) row.classList.add('readonly');
   if (scene.id === ctx.focusId) row.classList.add('focus');
   if (isActive(ctx.filters) && !matches(scene, ctx.filters)) row.classList.add('dimmed');
-  if (prefs.colour === 'pov') {
-    const hue = povHue(scene);
-    if (hue !== null) row.style.setProperty('--row', `hsl(${hue} 55% 50%)`);
-  } else {
-    const color = scene.todo !== null && ctx.snapshot.todo.colors[scene.todo];
-    if (color) row.style.setProperty('--row', color);
-  }
+  const pov = povOf(scene);
+  const color = prefs.colour === 'pov' ? pov && colorOf('pov', pov.id) : todoColor(ctx.snapshot, scene.todo);
+  if (color) row.style.setProperty('--row', color);
   row.append(titleCell(scene, ctx), stateCell(scene, ctx));
   for (const field of columns) row.append(fieldCell(scene, field, ctx));
   row.append(numberCell(scene.words, 'words', ctx.snapshot.language), numberCell(scene.objective, 'objective', ctx.snapshot.language));
@@ -386,7 +381,29 @@ function toolbar(fields, ctx) {
   select.addEventListener('change', () => { prefs.colour = select.value; save('colour', prefs.colour); ctx.rerender(); });
   colour.append(select);
   bar.append(chooser, colour);
+  if (prefs.colour === 'pov') bar.append(povLegend(ctx));
   return bar;
+}
+
+/** The PoV characters of the scenes, each with a swatch that changes its colour. */
+function povLegend(ctx) {
+  const box = el('div', 'colour-legend');
+  box.append(el('strong', '', ctx.t('companion-ui-pov-legend')));
+  const seen = new Map();
+  for (const act of ctx.snapshot.acts) {
+    for (const chapter of act.chapters) {
+      for (const scene of chapter.scenes) {
+        const pov = povOf(scene);
+        if (pov && !seen.has(pov.id)) seen.set(pov.id, pov.name);
+      }
+    }
+  }
+  for (const [id, name] of seen) {
+    const item = el('span', 'rel-key');
+    item.append(legendSwatch({ kind: 'pov', value: id, label: name }, 'dot', ctx), document.createTextNode(name));
+    box.append(item);
+  }
+  return box;
 }
 
 export function render(container, ctx) {

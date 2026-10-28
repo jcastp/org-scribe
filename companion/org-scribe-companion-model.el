@@ -26,6 +26,7 @@
 (require 'org-scribe-story-time)
 (require 'org-scribe-chronology)
 (require 'org-scribe-character-relationships)
+(require 'org-scribe-companion-colors)
 
 (defvar org-scribe-companion-todo-colors)
 (defvar org-scribe-entity-registry)
@@ -375,8 +376,12 @@ unweighted default 999.0 and is not hidden."
         (org-scribe-companion--buffer-revision (plist-get structure :design-file))))
 
 (defun org-scribe-companion--format-revision (revisions)
-  "Return the revision string for REVISIONS, a (MANUSCRIPT . DESIGN) pair."
-  (format "m%s-d%s" (car revisions) (cdr revisions)))
+  "Return the revision string for REVISIONS, a (MANUSCRIPT . DESIGN) pair.
+Ends with the colour settings' revision: they live in the marker file, so
+no buffer tick changes when the writer picks a colour.  Reads the project
+at `default-directory'."
+  (format "m%s-d%s-c%s" (car revisions) (cdr revisions)
+          (org-scribe-companion-colors-revision (org-scribe-project-root))))
 
 (defun org-scribe-companion--revision-string (root)
   "Return the current revision string of the project at ROOT, without a snapshot.
@@ -392,8 +397,10 @@ PLIST holds `:m' (manuscript revision), `:acts' and `:todo' for the
 manuscript half, `:d' (design revision) and `:entities' for the design
 half.  The halves are cached apart because the manuscript changes much
 more often (every drag), and walking the design notebook is the costlier
-half.  Language and todo colours are not part of the revision; clear the
-cache with `org-scribe-companion--clear-cache' after changing them.")
+half.  The language is not part of the revision; clear the cache with
+`org-scribe-companion--clear-cache' after changing it.  Colours are: the
+TODO colours and the `colors' entry are computed on every snapshot, and
+the colour settings are part of the revision string.")
 
 (defvar org-scribe-companion--json-cache nil
   "Alist of (ROOT REVISION . JSON): the last snapshot serialized per project.")
@@ -418,6 +425,19 @@ cache with `org-scribe-companion--clear-cache' after changing them.")
         :done (vconcat org-done-keywords)
         :colors (cl-loop for (keyword . color) in org-scribe-companion-todo-colors
                          append (list (org-scribe-companion--keyword keyword) color))))
+
+(defun org-scribe-companion--todo-with-colors (todo root)
+  "Return TODO, the cached `todo' entry, with ROOT's theme colours.
+`:colors' is for the light page, `:colorsDark' for the dark one.  Done here
+and not in the cache, which only follows buffer ticks."
+  (let ((colors (org-scribe-companion-colors-todo root))
+        (plist (lambda (alist)
+                 (cl-loop for (keyword . color) in alist
+                          append (list (org-scribe-companion--keyword keyword) color)))))
+    (list :keywords (plist-get todo :keywords)
+          :done (plist-get todo :done)
+          :colors (funcall plist (car colors))
+          :colorsDark (funcall plist (cdr colors)))))
 
 ;;; Storyline data
 
@@ -522,7 +542,8 @@ so asking again without an edit costs a revision check only."
                            :type (symbol-name (org-scribe-project-type)))
             :buffers (list :manuscript (org-scribe-companion--buffer-info manuscript)
                            :design (org-scribe-companion--buffer-info design))
-            :todo (plist-get cache :todo)
+            :todo (org-scribe-companion--todo-with-colors (plist-get cache :todo) root)
+            :colors (org-scribe-companion-colors-resolve root (plist-get cache :entities))
             :relationshipTypes (vconcat org-scribe-relationship-types)
             :sceneFields (org-scribe-companion--scene-fields-json specs)
             :acts (vconcat (plist-get cache :acts))

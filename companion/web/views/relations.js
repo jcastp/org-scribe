@@ -11,6 +11,7 @@
 // data.  Every change is a set-relationship command to Emacs.
 // All text is put in with textContent.
 
+import { colorOf, rankOf, legendSwatch } from '../colors.js';
 import { el } from '../edit.js';
 import { ids } from './matrix.js';
 
@@ -32,15 +33,29 @@ function svg(tag, attributes = {}, text) {
   return node;
 }
 
-function hash(text) {
-  let value = 7;
-  for (const character of text.toLowerCase()) value = (value * 31 + character.codePointAt(0)) % 100003;
-  return value;
-}
+// Colour comes from Emacs (theme, pins, distinct palette slots).  A second cue
+// that does not depend on colour: a role also has a node shape and a type a
+// line pattern, by its position among all of them.
+const FALLBACK = 'var(--todo-default)';
+const typeColour = (type) => colorOf('reltype', type) || FALLBACK;
+const roleColour = (role) => (role ? colorOf('role', role) || FALLBACK : FALLBACK);
+const DASHES = ['', '9 4', '2 4', '10 4 2 4', '5 3', '1 3'];
+const dashOf = (type) => DASHES[rankOf('reltype', type) % DASHES.length];
+const SHAPES = ['circle', 'square', 'diamond', 'triangle', 'hexagon', 'triangle-down'];
+const shapeOf = (role) => (role ? SHAPES[1 + (rankOf('role', role) % (SHAPES.length - 1))] : 'circle');
 
-const hue = (text) => hash(text) % 360;
-const typeColour = (type) => `hsl(${hue(type)} 60% 52%)`;
-const roleColour = (role) => (role ? `hsl(${hue(role)} 50% 58%)` : 'var(--todo-default)');
+/** The outline of SHAPE around the origin, fitting a circle of radius R. */
+function shapePath(shape, r) {
+  const points = {
+    square: [[-0.85, -0.85], [0.85, -0.85], [0.85, 0.85], [-0.85, 0.85]],
+    diamond: [[0, -1.15], [1.15, 0], [0, 1.15], [-1.15, 0]],
+    triangle: [[0, -1.15], [1.05, 0.85], [-1.05, 0.85]],
+    'triangle-down': [[0, 1.15], [1.05, -0.85], [-1.05, -0.85]],
+    hexagon: [[1, 0], [0.5, 0.87], [-0.5, 0.87], [-1, 0], [-0.5, -0.87], [0.5, -0.87]],
+  }[shape];
+  if (!points) return `M ${-r} 0 a ${r} ${r} 0 1 0 ${2 * r} 0 a ${r} ${r} 0 1 0 ${-2 * r} 0 z`;
+  return `${points.map(([x, y], index) => `${index ? 'L' : 'M'} ${(x * r).toFixed(1)} ${(y * r).toFixed(1)}`).join(' ')} z`;
+}
 
 // ---- the data -------------------------------------------------------------
 
@@ -344,9 +359,19 @@ function legend(model, links, ctx) {
     box.append(el('strong', '', ctx.t('companion-ui-relations-role-legend')));
     for (const role of roles) {
       const item = el('span', 'rel-key');
-      const dot = el('span', 'rel-dot');
-      dot.style.background = roleColour(role);
-      item.append(dot, document.createTextNode(role || ctx.t('companion-ui-relations-no-role')));
+      const name = role || ctx.t('companion-ui-relations-no-role');
+      if (role) {
+        item.append(legendSwatch({ kind: 'role', value: role, label: name }, 'shape', ctx, (button) => {
+          const mark = svg('svg', { viewBox: '-10 -10 20 20', width: 16, height: 16, 'aria-hidden': 'true' });
+          mark.append(svg('path', { d: shapePath(shapeOf(role), 8) }));
+          button.append(mark);
+        }));
+      } else {
+        const dot = el('span', 'rel-dot');
+        dot.style.background = FALLBACK;
+        item.append(dot);
+      }
+      item.append(document.createTextNode(name));
       box.append(item);
     }
   }
@@ -355,9 +380,11 @@ function legend(model, links, ctx) {
     box.append(el('strong', '', ctx.t('companion-ui-relations-type-legend')));
     for (const type of types) {
       const item = el('span', 'rel-key');
-      const line = el('span', 'rel-swatch');
-      line.style.background = typeColour(type);
-      item.append(line, document.createTextNode(type));
+      item.append(legendSwatch({ kind: 'reltype', value: type, label: type }, 'line', ctx, (button) => {
+        const mark = svg('svg', { viewBox: '0 0 30 6', width: 30, height: 6, 'aria-hidden': 'true' });
+        mark.append(svg('line', { x1: 0, y1: 3, x2: 30, y2: 3, 'stroke-dasharray': dashOf(type) }));
+        button.append(mark);
+      }), document.createTextNode(type));
       box.append(item);
     }
   }
@@ -397,6 +424,7 @@ function drawGraph(model, links, ctx) {
       ctx.t('companion-ui-relations-from-to', a, b), link.type));
     const hit = svg('path', { class: 'rel-hit' });
     const path = svg('path', { class: 'rel-path', stroke: typeColour(link.type) });
+    if (dashOf(link.type)) path.setAttribute('stroke-dasharray', dashOf(link.type));
     if (link.directed) path.setAttribute('marker-end', `url(#${markers.get(link.type)})`);
     const label = svg('text', { class: 'rel-label' }, link.type);
     const ends = link.directed
@@ -427,9 +455,9 @@ function drawGraph(model, links, ctx) {
     const group = svg('g', { class: 'rel-node', tabindex: 0, role: 'button', 'aria-label': node.name });
     if (node.ghost) group.classList.add('ghost');
     if (node.id === selected) group.classList.add('selected');
-    const circle = svg('circle', { r: node.r });
+    const circle = svg('path', { class: 'rel-shape', d: shapePath(node.ghost ? 'circle' : shapeOf(node.role), node.r) });
     if (!node.ghost) circle.setAttribute('fill', roleColour(node.role));
-    const title = svg('title', {}, node.ghost ? ctx.t('companion-ui-relations-dangling') : node.name);
+    const title = svg('title', {}, node.ghost ? ctx.t('companion-ui-relations-dangling') : (node.role ? `${node.name} (${node.role})` : node.name));
     const text = svg('text', { class: 'rel-name', y: node.r + 14 }, node.name);
     group.append(title, circle, text);
     nodeLayer.append(group);

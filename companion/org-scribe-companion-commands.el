@@ -9,6 +9,8 @@
 ;;   move-node, set-title, set-todo,
 ;;   set-field, create-scene,
 ;;   create-chapter                     edit the manuscript
+;;   set-color                          the page's theme and pinned colours
+;;                                      (written to .org-scribe-project)
 ;; Any other name is `unsupported'.  (Entity edits arrive in a later phase.)
 ;;
 ;; Headings are found by ID, only in the project's manuscript and design
@@ -29,6 +31,7 @@
 (require 'org-scribe-messages)
 (require 'org-scribe-core)
 (require 'org-scribe-companion-model)
+(require 'org-scribe-companion-colors)
 
 (defvar org-scribe-companion-raise-frame)
 (defvar org-scribe-companion-auto-save)
@@ -36,6 +39,7 @@
 (declare-function org-scribe--scene-template "org-scribe-project")
 (declare-function org-scribe--chapter-template "org-scribe-project")
 (declare-function org-scribe--refile-invalidate-cache "org-scribe-core")
+(declare-function org-scribe-companion--announce-change "org-scribe-companion")
 
 (defconst org-scribe-companion-commands--operations
   '(("goto" . org-scribe-companion-commands--goto)
@@ -46,6 +50,7 @@
     ("set-field" . org-scribe-companion-commands--set-field)
     ("create-scene" . org-scribe-companion-commands--create-scene)
     ("create-chapter" . org-scribe-companion-commands--create-chapter)
+    ("set-color" . org-scribe-companion-commands--set-color)
     ("set-entity-property" . org-scribe-companion-entity--set-property)
     ("set-entity-section" . org-scribe-companion-entity--set-section)
     ("set-relationship" . org-scribe-companion-entity--set-relationship)
@@ -588,6 +593,48 @@ answer carries the new chapter's `:id'."
           (org-scribe--refile-invalidate-cache)
           (append (org-scribe-companion-commands--finish root) (list :id new-id)))
       (dolist (marker (list parent after)) (when marker (set-marker marker nil))))))
+
+(defun org-scribe-companion-commands--set-color (root args)
+  "Change the page's colours for the project at ROOT.  ARGS: `:kind', `:value', `:color'.
+KIND is `theme' (COLOR names the theme), `warn' or `focus', `role',
+`reltype' or `pov' (VALUE names the item; a PoV by character ID), or `all'
+\(remove every pinned colour).  COLOR is #rrggbb, or empty to remove the pin.
+The choice is written to the project's marker file, so it is not one of
+the buffers' undo steps: the page offers a reset instead."
+  (let* ((kind (org-scribe-companion-commands--arg-string args :kind))
+         (value (org-scribe-companion-commands--clean-line
+                 (org-scribe-companion-commands--arg args :value)))
+         (color (org-scribe-companion-commands--arg-string args :color))
+         (symbol (and kind (intern-soft kind))))
+    (unless (file-exists-p (expand-file-name ".org-scribe-project" root))
+      (org-scribe-companion-commands--fail "invalid" 'companion-error-no-marker))
+    (cond
+     ((equal kind "theme")
+      (let ((theme (and color (intern-soft color))))
+        (unless (and theme (memq theme (org-scribe-companion-colors-theme-names)))
+          (org-scribe-companion-commands--fail
+           "invalid" 'companion-error-invalid-theme (or color "")))
+        (org-scribe-companion-colors-set-theme root theme)))
+     ((equal kind "all")
+      (org-scribe-companion-colors-clear-pins root))
+     ((memq symbol '(warn focus role reltype pov))
+      (when (and color (not (org-scribe-companion-colors-hex-p color)))
+        (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-color color))
+      (unless (memq symbol '(warn focus))
+        (when (or (null value) (string-empty-p value))
+          (org-scribe-companion-commands--fail "invalid" 'companion-error-missing-arg "value"))
+        (when (and (eq symbol 'pov)
+                   (not (cl-some (lambda (character) (equal (plist-get character :id) value))
+                                 (plist-get (plist-get (org-scribe-companion--snapshot root) :entities)
+                                            :character))))
+          (org-scribe-companion-commands--fail "not-found" 'companion-error-not-a-character)))
+      (org-scribe-companion-colors-set-pin root symbol value color))
+     (t (org-scribe-companion-commands--fail
+         "invalid" 'companion-error-invalid-color-kind (or kind ""))))
+    (org-scribe-companion--clear-cache)
+    (when (fboundp 'org-scribe-companion--announce-change)
+      (org-scribe-companion--announce-change))
+    (org-scribe-companion-commands--ok root)))
 
 (defun org-scribe-companion-commands-run (op args root)
   "Run the operation OP (a string) with the plist ARGS for the project at ROOT.

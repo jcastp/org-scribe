@@ -6,6 +6,7 @@
 // re-renders from the last snapshot, which is the rollback.
 // All text is put in with textContent.
 
+import { todoColor, textOn } from '../colors.js';
 import { matches, isActive } from '../filters.js';
 import { startEdit, moveTo } from '../edit.js';
 
@@ -46,8 +47,11 @@ function progress(words, objective, ctx) {
 function todoChip(heading, ctx) {
   if (heading.todo === null) return null;
   const chip = el('span', 'todo-chip', heading.todo);
-  const color = ctx.snapshot.todo.colors[heading.todo];
-  if (color) chip.style.setProperty('--todo', color);
+  const color = todoColor(ctx.snapshot, heading.todo);
+  if (color) {
+    chip.style.setProperty('--todo', color);
+    chip.style.setProperty('--todo-text', textOn(color));
+  }
   if (ctx.snapshot.todo.done.includes(heading.todo)) chip.classList.add('done');
   return chip;
 }
@@ -111,7 +115,7 @@ function card(scene, ctx) {
   const node = el('article', 'card');
   node.tabIndex = 0;
   if (scene.id) node.dataset.id = scene.id;
-  const color = scene.todo !== null && ctx.snapshot.todo.colors[scene.todo];
+  const color = todoColor(ctx.snapshot, scene.todo);
   if (color) node.style.setProperty('--todo', color);
   if (scene.todo !== null && ctx.snapshot.todo.done.includes(scene.todo)) node.classList.add('done');
   if (isActive(ctx.filters) && !matches(scene, ctx.filters)) node.classList.add('dimmed');

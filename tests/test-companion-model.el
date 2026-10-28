@@ -347,7 +347,12 @@ SETUP is a function called with the directory.  The directory is the
     (let ((first (org-scribe-companion--snapshot))
           (second (org-scribe-companion--snapshot)))
       (should (equal (plist-get first :revision) (plist-get second :revision)))
-      (should (eq (plist-get first :todo) (plist-get second :todo)))
+      ;; the TODO colours are built on every call (they follow the theme), the
+      ;; keywords come from the cached manuscript half
+      (should (equal (plist-get first :todo) (plist-get second :todo)))
+      (should (eq (plist-get (plist-get first :todo) :keywords)
+                  (plist-get (plist-get second :todo) :keywords)))
+      (should (eq (plist-get first :storyline) (plist-get second :storyline)))
       (should (eq (plist-get first :entities) (plist-get second :entities))))))
 
 (ert-deftest test-companion-model-edit-changes-revision-and-only-its-half ()

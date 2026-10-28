@@ -11,6 +11,7 @@ import * as chapters from './views/chapters.js';
 import * as timeline from './views/timeline.js';
 import * as relations from './views/relations.js';
 import * as forms from './views/forms.js';
+import * as colours from './colors.js';
 
 const token = new URLSearchParams(location.search).get('t') || '';
 const $ = (id) => document.getElementById(id);
@@ -216,6 +217,7 @@ function renderView() {
     fetchEntity,
     notice: showNotice,
     rerender: renderView,
+    nameFor,
     showInStoryline,
     editStarted,
     editEnded,
@@ -247,8 +249,34 @@ function renderHeader() {
   $('save-button').disabled = !unsaved;
 }
 
+/** The name to show for a colour pin: a PoV pin holds the character's ID. */
+function nameFor(kind, value) {
+  if (kind !== 'pov') return value;
+  const character = (state.snapshot.entities.character || []).find((entity) => entity.id === value);
+  return character ? character.name : value;
+}
+
+const panelContext = () => ({
+  t, edit, editStarted, editEnded, nameFor, closePanel: () => toggleColours(false),
+});
+
+function renderColours() {
+  const panel = $('colors-panel');
+  if (!panel.hidden) colours.renderPanel(panel, panelContext());
+}
+
+function toggleColours(show) {
+  const panel = $('colors-panel');
+  panel.hidden = !show;
+  $('colors-button').setAttribute('aria-expanded', String(show));
+  colours.closePicker();
+  renderColours();
+}
+
 function renderAll() {
+  colours.setColors(state.snapshot.colors);
   renderHeader();
+  renderColours();
   renderTabs();
   renderFilters();
   renderView();
@@ -299,6 +327,10 @@ function connect() {
   events.addEventListener('bye', () => { events.close(); $('banner').hidden = false; });
   events.addEventListener('error', () => { $('banner').hidden = false; });
 }
+
+$('colors-button').addEventListener('click', () => toggleColours($('colors-panel').hidden));
+// light <-> dark: the palette slots and the warning colours change with it
+colours.onModeChange(() => { if (state.snapshot) renderAll(); });
 
 $('save-button').addEventListener('click', async () => {
   const answer = await command('save');

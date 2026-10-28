@@ -1,0 +1,279 @@
+;;; org-scribe-companion-colors.el --- Visual companion: colour themes and pins -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2026 Javier Castilla
+
+;;; Commentary:
+
+;; What colour the browser draws things in.  Pure data and functions, no
+;; networking: the snapshot carries the result (`org-scribe-companion-colors-resolve')
+;; and the page only looks colours up.
+;;
+;; Three layers, from the loosest to the most specific:
+;;
+;;   theme   a palette (the same length in a light and a dark variant) and
+;;           colours for the TODO states, named by `# Companion-theme:' in
+;;           .org-scribe-project.  The default theme has no TODO colours of
+;;           its own: `org-scribe-companion-todo-colors' stays the source.
+;;   assign  a value with no colour of its own (a role, a relationship
+;;           type, a PoV character) takes the palette's slots in order, so
+;;           no two share a colour until the palette runs out.
+;;   pin     `# Companion-color: KIND #rrggbb VALUE' lines fix one item's
+;;           colour.  KIND is `role', `reltype' or `pov' (VALUE last, so a
+;;           role with spaces needs no quoting; a PoV is keyed by the
+;;           character's ID so a rename keeps it), or `warn'/`focus' (no
+;;           VALUE: the colour of the page's warnings and focus ring).
+;;
+;; A pin is one colour for light and dark; a theme's palette has both.
+
+;;; Code:
+
+(require 'cl-lib)
+(require 'subr-x)
+(require 'org-scribe-core)
+
+(defvar org-scribe-companion-todo-colors)
+
+;;; Themes
+
+(defconst org-scribe-companion-colors--todo-slots
+  '(("TODO" . 1) ("TOWRITE" . 0) ("TOREVIEW" . 5) ("REDO" . 3)
+    ("RESTRUCTURE" . 6) ("FINISHED" . 4) ("PURGE" . 4)
+    ("OPEN" . 0) ("EXPLORING" . 3) ("CHOSEN" . 4) ("REJECTED" . 4))
+  "Which palette slot each shipped TODO keyword takes in a non-default theme.
+Slot 4 is the neutral one in every palette, so a done state reads as
+finished; the others are kept apart in every theme that has them.")
+
+(defconst org-scribe-companion-colors--themes
+  '((default
+     :light ("#2b5f9e" "#b45309" "#2f7d4f" "#8e3b8e" "#6b7280" "#0f766e" "#7c3aed" "#a16207")
+     :dark  ("#7fb0ec" "#e0883a" "#5cc082" "#c77bc7" "#a0a8b5" "#4fc3b5" "#a98bf5" "#d4a63a"))
+    (okabe-ito
+     ;; Okabe & Ito (2008), each colour moved in lightness until it keeps 3:1
+     ;; against the page in its own mode and all eight stay apart when
+     ;; simulated for deuteranopia (the test checks both).
+     :light ("#0072b2" "#c38700" "#009e73" "#cc79a7" "#4b4b4b" "#4d9cc9" "#847d24" "#2f6380")
+     :dark  ("#6fbfec" "#e69f00" "#008662" "#d55e00" "#c3c3c3" "#0072b2" "#847d24" "#eaae80"))
+    (high-contrast
+     :light ("#0030c0" "#b84a00" "#006b2e" "#a0005f" "#333333" "#006b7a" "#5a2ca0" "#6b4a00")
+     :dark  ("#7aa2ff" "#ffa24d" "#5fe08a" "#ff7ac0" "#e6e6e6" "#4fd8e8" "#c4a0ff" "#e8c46a"))
+    (muted
+     :light ("#4f7399" "#a8794a" "#5f8a6a" "#9a6a88" "#6f6f6f" "#5a8a96" "#7d6b9a" "#8a7f4a")
+     :dark  ("#8fb0d0" "#d3a97c" "#8fb89a" "#c79bb8" "#b0b0b0" "#8cbcc6" "#b3a0cf" "#c2b87c")))
+  "Alist of (THEME :light PALETTE :dark PALETTE), PALETTEs lists of #rrggbb.
+The two palettes of a theme have the same length, so one slot index serves
+both modes.")
+
+(defconst org-scribe-companion-colors--ui-defaults
+  '((warn  :light "#b85c00" :dark "#e8913a")
+    (focus :light "#b07d00" :dark "#f2c14e"))
+  "The warning and focus colours when the project pins none, per mode.")
+
+(defun org-scribe-companion-colors-theme-names ()
+  "Return the theme symbols, default first."
+  (mapcar #'car org-scribe-companion-colors--themes))
+
+(defun org-scribe-companion-colors--theme-palette (theme mode)
+  "Return THEME's palette for MODE (`:light' or `:dark'), a list."
+  (plist-get (alist-get theme org-scribe-companion-colors--themes) mode))
+
+;;; Reading the marker
+
+(defconst org-scribe-companion-colors--kinds '(warn focus role reltype pov)
+  "The kinds a `Companion-color' line can have.")
+
+(defun org-scribe-companion-colors-hex-p (string)
+  "Non-nil when STRING is a colour written #rrggbb."
+  (and (stringp string) (string-match-p "\\`#[0-9a-fA-F]\\{6\\}\\'" string)))
+
+(defun org-scribe-companion-colors--normalize (kind value)
+  "Return the key VALUE has among the pins of KIND.
+A role or relationship type compares without case or edge spaces; a PoV is
+a character ID and is compared as written."
+  (let ((text (string-trim value)))
+    (if (eq kind 'pov) text (downcase text))))
+
+(defun org-scribe-companion-colors--parse-pin (line)
+  "Return (KIND KEY COLOR TEXT) for the Companion-color LINE, or nil if unreadable.
+TEXT is the value as written (nil for `warn' and `focus'), KEY its
+normalized form."
+  (setq line (string-trim line))
+  (when (string-match "\\`\\([a-z]+\\)[ \t]+\\(#[0-9a-fA-F]\\{6\\}\\)\\(?:[ \t]+\\(.*\\)\\)?\\'" line)
+    (let* ((kind (intern-soft (downcase (match-string 1 line))))
+           (color (downcase (match-string 2 line)))
+           (text (and (match-string 3 line) (string-trim (match-string 3 line)))))
+      (when (memq kind org-scribe-companion-colors--kinds)
+        (cond
+         ((memq kind '(warn focus)) (list kind nil color nil))
+         ((and text (not (string-empty-p text)))
+          (list kind (org-scribe-companion-colors--normalize kind text) color text)))))))
+
+(defun org-scribe-companion-colors-theme (root)
+  "Return the theme symbol ROOT's marker names, `default' when none or unknown."
+  (let ((name (org-scribe--project-marker-get root "Companion-theme")))
+    (or (and name (let ((theme (intern-soft name)))
+                    (and theme (assq theme org-scribe-companion-colors--themes) theme)))
+        'default)))
+
+(defun org-scribe-companion-colors-pins (root)
+  "Return the readable pins of ROOT as a list of (KIND KEY COLOR TEXT).
+Lines that cannot be read are skipped, like every marker reader here."
+  (delq nil (mapcar #'org-scribe-companion-colors--parse-pin
+                    (org-scribe--project-marker-get-all root "Companion-color"))))
+
+(defun org-scribe-companion-colors-revision (root)
+  "Return a short string that changes when ROOT's colour settings do.
+Colours live in the marker file, not in a buffer, so the buffer ticks
+cannot tell the page that they changed."
+  (substring (secure-hash 'md5 (format "%S"
+                                       (list (org-scribe--project-marker-get root "Companion-theme")
+                                             (org-scribe--project-marker-get-all root "Companion-color"))))
+             0 8))
+
+;;; Writing the marker
+
+(defun org-scribe-companion-colors-set-pin (root kind value color)
+  "Pin COLOR (#rrggbb, or nil to remove) for VALUE of KIND in ROOT's marker.
+KIND is `warn', `focus', `role', `reltype' or `pov'; VALUE is ignored for
+the first two.  Any earlier pin for the same item goes."
+  (let* ((key (and (not (memq kind '(warn focus)))
+                   (org-scribe-companion-colors--normalize kind value)))
+         (lines (cl-loop for line in (org-scribe--project-marker-get-all root "Companion-color")
+                         for pin = (org-scribe-companion-colors--parse-pin line)
+                         ;; unreadable lines are the writer's: keep them
+                         unless (and pin (eq (nth 0 pin) kind) (equal (nth 1 pin) key))
+                         collect line)))
+    (when color
+      (setq lines (append lines
+                          (list (if key
+                                    (format "%s %s %s" kind (downcase color) (string-trim value))
+                                  (format "%s %s" kind (downcase color)))))))
+    (org-scribe--project-marker-set-all root "Companion-color" lines)))
+
+(defun org-scribe-companion-colors-clear-pins (root)
+  "Remove every pin from ROOT's marker file; the theme stays."
+  (org-scribe--project-marker-set-all root "Companion-color" nil))
+
+(defun org-scribe-companion-colors-set-theme (root theme)
+  "Record THEME, a symbol, as ROOT's theme."
+  (org-scribe--project-marker-set root "Companion-theme" (symbol-name theme)))
+
+;;; TODO colours
+
+(defun org-scribe-companion-colors-todo (root)
+  "Return (LIGHT . DARK), two alists of (KEYWORD . COLOR), for ROOT's theme.
+The default theme gives `org-scribe-companion-todo-colors' in both modes.
+Another theme colours the keywords of `org-scribe-companion-colors--todo-slots';
+any other keyword keeps the customized colour."
+  (let* ((theme (org-scribe-companion-colors-theme root))
+         (custom (copy-alist org-scribe-companion-todo-colors))
+         (light (org-scribe-companion-colors--theme-palette theme :light))
+         (dark (org-scribe-companion-colors--theme-palette theme :dark)))
+    (if (eq theme 'default)
+        (cons custom custom)
+      (let ((fixed-light (mapcar (lambda (slot) (cons (car slot) (nth (cdr slot) light)))
+                                 org-scribe-companion-colors--todo-slots))
+            (fixed-dark (mapcar (lambda (slot) (cons (car slot) (nth (cdr slot) dark)))
+                                org-scribe-companion-colors--todo-slots)))
+        (cons (append fixed-light
+                      (cl-remove-if (lambda (entry) (assoc (car entry) fixed-light)) custom))
+              (append fixed-dark
+                      (cl-remove-if (lambda (entry) (assoc (car entry) fixed-dark)) custom)))))))
+
+;;; Assigning palette slots
+
+(defun org-scribe-companion-colors-assign (keys pinned palette)
+  "Return an alist (KEY . ENTRY) giving every one of KEYS a colour.
+KEYS is the list of normalized values, in the order slots are handed out.
+PINNED is an alist (KEY . COLOR) of the ones with a colour of their own;
+their ENTRY is (:color COLOR).  The rest take PALETTE's slots (a list of
+colours) in order, skipping a slot a pin already uses; their ENTRY is
+\(:index N), plus (:reused t) once the slots run round and a colour repeats."
+  (let* ((taken (mapcar (lambda (pin) (downcase (cdr pin))) pinned))
+         (slots (cl-loop for color in palette
+                         for index from 0
+                         unless (member (downcase color) taken) collect index))
+         (slots (or slots (number-sequence 0 (1- (length palette)))))
+         (count 0)
+         result)
+    (dolist (key keys)
+      (if-let* ((pin (assoc key pinned)))
+          (push (cons key (list :color (cdr pin))) result)
+        (let ((slot (nth (mod count (length slots)) slots)))
+          (push (cons key (append (list :index slot)
+                                  (and (>= count (length slots)) (list :reused t))))
+                result)
+          (cl-incf count))))
+    (nreverse result)))
+
+;;; The snapshot's `colors'
+
+(defun org-scribe-companion-colors--values (entities)
+  "Return (ROLES RELTYPES POVS) for ENTITIES, the snapshot's entities plist.
+Each is the list of normalized values to colour, in the order slots are
+handed out: roles and types alphabetical, PoV in notebook order."
+  (let* ((characters (append (plist-get entities :character) nil))
+         (roles (cl-loop for character in characters
+                         for role = (plist-get character :role)
+                         when (and (stringp role) (not (string-empty-p (string-trim role))))
+                         collect (org-scribe-companion-colors--normalize 'role role)))
+         ;; Only the types in use: the suggestion list has twenty, which would
+         ;; run the palette round before the writer had drawn one line.
+         (types (cl-loop for character in characters
+                         append (cl-loop for rel across (or (plist-get character :relationships) [])
+                                         for type = (plist-get rel :type)
+                                         when (and (stringp type) (not (string-empty-p type)))
+                                         collect (org-scribe-companion-colors--normalize 'reltype type))))
+         (povs (cl-loop for character in characters
+                        for id = (plist-get character :id)
+                        when (stringp id) collect id)))
+    (list (sort (delete-dups roles) #'string<)
+          (sort (delete-dups types) #'string<)
+          (delete-dups povs))))
+
+(defun org-scribe-companion-colors--entries-plist (entries)
+  "Return ENTRIES, an alist (KEY . PLIST), as a plist keyed by keywords."
+  (cl-loop for (key . entry) in entries
+           append (list (intern (concat ":" key)) entry)))
+
+(defun org-scribe-companion-colors-resolve (root entities)
+  "Return the snapshot's `colors' plist for ROOT, whose entities are ENTITIES.
+Covers every role, relationship type and PoV character of the project, not
+only those on screen, so a filter never moves a colour."
+  (let* ((theme (org-scribe-companion-colors-theme root))
+         (pins (org-scribe-companion-colors-pins root))
+         (light (org-scribe-companion-colors--theme-palette theme :light))
+         (values (org-scribe-companion-colors--values entities))
+         (pinned-of (lambda (kind)
+                      (cl-loop for pin in pins
+                               when (eq (nth 0 pin) kind) collect (cons (nth 1 pin) (nth 2 pin)))))
+         (ui (lambda (kind)
+               (let* ((defaults (alist-get kind org-scribe-companion-colors--ui-defaults))
+                      (pin (cl-find kind pins :key #'car))
+                      (chosen (and pin (nth 2 pin))))
+                 (list :light (or chosen (plist-get defaults :light))
+                       :dark (or chosen (plist-get defaults :dark))
+                       :pinned (if chosen t :false))))))
+    (list :theme (symbol-name theme)
+          :themes (vconcat (mapcar #'symbol-name (org-scribe-companion-colors-theme-names)))
+          :palettes (cl-loop for (name . _) in org-scribe-companion-colors--themes
+                             append (list (intern (concat ":" (symbol-name name)))
+                                          (list :light (vconcat (org-scribe-companion-colors--theme-palette name :light))
+                                                :dark (vconcat (org-scribe-companion-colors--theme-palette name :dark)))))
+          :palette (list :light (vconcat light)
+                         :dark (vconcat (org-scribe-companion-colors--theme-palette theme :dark)))
+          :warn (funcall ui 'warn)
+          :focus (funcall ui 'focus)
+          :role (org-scribe-companion-colors--entries-plist
+                 (org-scribe-companion-colors-assign (nth 0 values) (funcall pinned-of 'role) light))
+          :reltype (org-scribe-companion-colors--entries-plist
+                    (org-scribe-companion-colors-assign (nth 1 values) (funcall pinned-of 'reltype) light))
+          :pov (org-scribe-companion-colors--entries-plist
+                (org-scribe-companion-colors-assign (nth 2 values) (funcall pinned-of 'pov) light))
+          :pins (vconcat (cl-loop for pin in pins
+                                  collect (list :kind (symbol-name (nth 0 pin))
+                                                :value (or (nth 3 pin) :null)
+                                                :color (nth 2 pin)))))))
+
+(provide 'org-scribe-companion-colors)
+
+;;; org-scribe-companion-colors.el ends here
