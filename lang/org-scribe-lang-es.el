@@ -485,6 +485,7 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (error-no-id-for-plot . "No se encontró ID para %s")
      (error-no-plot-point-file . "No se encontró el archivo de trama. Cree primero los trece irrenunciables.")
      (error-no-plot-points-found . "No se encontraron puntos de trama. Añada IDs con org-scribe-add-plot-point-ids.")
+     (error-no-plot-points-in-project . "Este proyecto no tiene puntos de trama (un cuento no los tiene).")
      (error-no-id-for-plot-point . "No se encontró ID para %s")
      (error-template-not-found . "No se encontró el directorio de plantillas: %s")
      (error-org-ql-required . "El paquete org-ql es necesario para las funciones de búsqueda")

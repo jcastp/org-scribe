@@ -91,12 +91,12 @@ plot file, not two files."
   :add-ids-name             org-scribe-add-plot-point-ids
   :insert-link-name         org-scribe-insert-plot-point-link
   :insert-multi-name        org-scribe-insert-multiple-plot-point-links
-  :set-scene-name           org-scribe-set-scene-plot-points
+  :set-scene-name           org-scribe--set-scene-plot-points
   :set-scene-property       plot-point
   :link-in-prop-name        org-scribe--link-plot-points-in-property
   :link-scene-name          org-scribe-link-scene-plot-points
   :link-all-name            org-scribe-link-all-scene-plot-points
-  :setup-name               org-scribe-setup-plot-point-links
+  :setup-name               org-scribe--setup-plot-point-links
   :setup-add-ids-fn         org-scribe-add-plot-point-ids
   :setup-link-all-fn        org-scribe-link-all-scene-plot-points
   :update-names-name        org-scribe-update-plot-point-link-names
@@ -104,10 +104,33 @@ plot file, not two files."
 
 ;;; Plot-Point-Specific Functions
 
+(defun org-scribe--require-plot-points ()
+  "Signal a `user-error' unless the project has plot points.
+A short story has none (the thirteen belong to the novel's method), and
+so does a project whose plot file lacks the wrapper.  Without this the
+commands below ran, reported success and linked nothing."
+  (unless (org-scribe--get-all-plot-points)
+    (user-error "%s" (org-scribe-msg 'error-no-plot-points-in-project))))
+
+;;;###autoload
+(defun org-scribe-setup-plot-point-links ()
+  "Set up plot point linking, unless the project has no plot points."
+  (interactive)
+  (org-scribe--require-plot-points)
+  (org-scribe--setup-plot-point-links))
+
+;;;###autoload
+(defun org-scribe-set-scene-plot-points ()
+  "Set the plot points the scene at point serves, unless there are none."
+  (interactive)
+  (org-scribe--require-plot-points)
+  (org-scribe--set-scene-plot-points))
+
 ;;;###autoload
 (defun org-scribe-jump-to-plot-point ()
   "Jump to the plot point this scene serves, from the scene heading."
   (interactive)
+  (org-scribe--require-plot-points)
   (let* ((prop (org-scribe-scene-property-get 'plot-point))
          (points (when prop (org-scribe--property-to-list prop))))
     (cond

@@ -559,5 +559,34 @@ of the timeline — with nothing in the file to explain why."
          (should (string-empty-p (string-trim weight)))
          (should (null (org-scribe--parse-weight weight))))))))
 
+(ert-deftest test-sistema-plot-point-commands-refuse-without-plot-points ()
+  "The setup, set and jump commands refuse when the project has no plot points.
+A short story has none; before the guard `org-scribe-setup-plot-point-links'
+reported \"setup complete\" having linked nothing."
+  (cl-letf (((symbol-function 'org-scribe--get-all-plot-points) (lambda () nil))
+            ((symbol-function 'org-scribe--setup-plot-point-links)
+             (lambda () (ert-fail "setup ran without plot points")))
+            ((symbol-function 'org-scribe--set-scene-plot-points)
+             (lambda () (ert-fail "set ran without plot points"))))
+    (dolist (command '(org-scribe-setup-plot-point-links
+                       org-scribe-set-scene-plot-points
+                       org-scribe-jump-to-plot-point))
+      (let ((err (should-error (funcall command) :type 'user-error)))
+        (should (equal (cadr err)
+                       (org-scribe-msg 'error-no-plot-points-in-project)))))))
+
+(ert-deftest test-sistema-plot-point-commands-run-with-plot-points ()
+  "With plot points present the guarded commands reach the generated ones."
+  (let (ran)
+    (cl-letf (((symbol-function 'org-scribe--get-all-plot-points)
+               (lambda () '(("One" . ("id" . "h")))))
+              ((symbol-function 'org-scribe--setup-plot-point-links)
+               (lambda () (push 'setup ran)))
+              ((symbol-function 'org-scribe--set-scene-plot-points)
+               (lambda () (push 'set ran))))
+      (org-scribe-setup-plot-point-links)
+      (org-scribe-set-scene-plot-points)
+      (should (equal ran '(set setup))))))
+
 (provide 'test-sistema-templates)
 ;;; test-sistema-templates.el ends here
