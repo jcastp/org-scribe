@@ -3,7 +3,7 @@
 #+DATE: 2025-01-14
 #+LANGUAGE: en
 #+STARTUP: overview
-#+TODO: TODO(t) DRAFT(d) REVISING(r) | DONE(x) SUBMITTED(s)
+#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(p@/!)
 #+COLUMNS: %40ITEM(Section) %12WORDCOUNT %12PoV %40Summary
 #+MACRO: scene-break SCENE-BREAK
 
@@ -66,13 +66,29 @@ maintain here.
 :ID:       5cb576d8-7976-4d56-8ef8-6c941dce8f54
 :END:
 
-** DONE Opening
+** FINISHED Opening :ignore:
 :PROPERTIES:
-:PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
-:Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
-:Timeline: March 15, 2047, 3:47 AM
-:Summary: Elena discovers an encrypted quantum message on her lab computer that could only have been sent by someone with intimate knowledge of her work—herself.
 :WORDCOUNT: 218
+:WORD-OBJECTIVE: 1250
+:PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
+:Characters:
+:Plot:
+:Plot-point:
+:Timeline: Day 1, 03:47
+:Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
+:Objects:
+:Description:
+:Summary: Elena discovers an encrypted quantum message on her lab computer that could only have been sent by someone with intimate knowledge of her work—herself.
+:Scene-motivation:
+:Conflict-source:
+:Gap:
+:What-is-at-stake:
+:World-problem:
+:Emotion:
+:Tension-level:
+:Outcome:
+:Sequel-decision:
+:Comment:
 :ID:       b6f30a4f-64ae-454c-86db-76ba8e0c8c7e
 :END:
 
@@ -96,13 +112,29 @@ Except she was about to test exactly that tomorrow morning.
 
 {{{scene-break}}}
 
-** DRAFT Middle
+** TOREVIEW Middle :ignore:
 :PROPERTIES:
-:PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
-:Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
-:Timeline: March 15, 2047, 4:15 AM - 11:30 AM
-:Summary: Elena debates whether to trust the message. She consults her notes, discovers the theoretical possibility of a causality loop, and makes her decision.
 :WORDCOUNT: 226
+:WORD-OBJECTIVE: 2500
+:PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
+:Characters:
+:Plot:
+:Plot-point:
+:Timeline: Day 1, 04:15
+:Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
+:Objects:
+:Description:
+:Summary: Elena debates whether to trust the message. She consults her notes, discovers the theoretical possibility of a causality loop, and makes her decision.
+:Scene-motivation:
+:Conflict-source:
+:Gap:
+:What-is-at-stake:
+:World-problem:
+:Emotion:
+:Tension-level:
+:Outcome:
+:Sequel-decision:
+:Comment:
 :ID:       0dba07f3-bac7-4070-9965-f8ab66c80f61
 :END:
 
@@ -122,13 +154,29 @@ Either way, she was trapped.
 
 {{{scene-break}}}
 
-** TODO Ending
+** TODO Ending :ignore:
 :PROPERTIES:
-:PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
-:Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
-:Timeline: March 16, 2047, 9:00 AM - 4:23 PM
-:Summary: Elena runs the test despite the warning, discovers the cascade effect, and realizes she must send the message that started it all, completing the loop.
 :WORDCOUNT: 88
+:WORD-OBJECTIVE: 1250
+:PoV: [[id:char-elena-chen-20250114-001][Dr. Elena Chen]]
+:Characters:
+:Plot:
+:Plot-point:
+:Timeline: Day 2, 09:00
+:Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
+:Objects:
+:Description:
+:Summary: Elena runs the test despite the warning, discovers the cascade effect, and realizes she must send the message that started it all, completing the loop.
+:Scene-motivation:
+:Conflict-source:
+:Gap:
+:What-is-at-stake:
+:World-problem:
+:Emotion:
+:Tension-level:
+:Outcome:
+:Sequel-decision:
+:Comment:
 :ID:       588afbaa-3e03-49e6-aa3e-dc8475c07a50
 :END:
 

@@ -793,6 +793,26 @@ WORD-TARGET stubs `org-scribe-project-word-target'; PLAN is the active plan."
       (should-not (string-match-p "Writing Plan" content))
       (should-not (string-match-p "Target mismatch" content)))))
 
+;;; The shipped demos still match the scene shape the package reads
+
+(ert-deftest test-health-shipped-demos-have-scenes ()
+  "Each shipped demo has scenes as `org-scribe-scene-match' sees them.
+The short-story demo once predated the `:ignore:' tag on scenes and so
+counted as an empty story everywhere."
+  (let ((repo (locate-dominating-file
+               (or load-file-name buffer-file-name default-directory)
+               "org-scribe.el")))
+    (dolist (spec '(("demo-novel" "novel.org" novel)
+                    ("demo-short-story" "story.org" short-story)))
+      (with-temp-buffer
+        (insert-file-contents
+         (expand-file-name (concat "examples/" (car spec) "/" (nth 1 spec)) repo))
+        (org-mode)
+        (cl-letf (((symbol-function 'org-scribe-project-type)
+                   (lambda () (nth 2 spec))))
+          (should (> (length (org-map-entries #'point (org-scribe-scene-match)))
+                     0)))))))
+
 ;;; The report buffer is reused across projects
 
 (ert-deftest test-health-second-project-does-not-read-the-first ()
