@@ -561,6 +561,25 @@ profile (Description / Important details / Atmosphere), not the Aspects."
     (should (string-match-p ":Weight: -1"
                             (org-scribe-test--fill-template template-string "-1")))))
 
+(ert-deftest test-short-story-plot-thread-capture-has-no-novel-method-fields ()
+  "A short story's thread has its own shape: no Stance, no crossings."
+  (dolist (lang '(en es))
+    (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'short-story)))
+      (let* ((template (nth 4 (car (org-scribe-plot-thread-capture-templates lang))))
+             (filled (org-scribe-test--fill-template template "-1")))
+        (should (string-match-p "^:THREAD-TYPE: " filled))
+        (should (string-match-p "^:Weight: -1$" filled))
+        (should (string-match-p "^:ID: " filled))
+        (should-not (string-match-p ":Stance:\\|^\\*\\* \\|1\\.$" filled))
+        (should (string-match-p (if (eq lang 'en) "^- Where it starts ::$" "^- Dónde empieza ::$")
+                                filled))))))
+
+(ert-deftest test-novel-plot-thread-capture-keeps-stance ()
+  "The novel's subplot shape is unchanged."
+  (cl-letf (((symbol-function 'org-scribe-project-type) (lambda () 'novel)))
+    (should (string-match-p ":Stance:"
+                            (nth 4 (car (org-scribe-plot-thread-capture-templates 'en)))))))
+
 (ert-deftest test-weight-prompt-accepts-empty-answer ()
   "Declining the Weight prompt leaves the property blank, not zero.
 The blank is what the templates ship too, and

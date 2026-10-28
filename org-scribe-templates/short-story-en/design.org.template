@@ -64,7 +64,21 @@ What's this story really about? What deeper meaning or message?
 
 Track plot threads and storylines here. Use =F8 F8 k g= to capture new threads as they emerge while writing.
 
-# Plot thread captures go here as subheadings
+** Main Line
+:PROPERTIES:
+:THREAD-TYPE: Main
+:STATUS: Planned
+:FIRST-APPEARANCE:
+:Weight:
+:END:
+
+- Description ::
+- Carried by ::
+- Where it starts ::
+- Where it resolves ::
+
+# Rename this to your story's line. Further threads captured with
+# F8 F8 k g go below it.
 
 * Setting
 

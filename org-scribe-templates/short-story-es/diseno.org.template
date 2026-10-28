@@ -64,7 +64,21 @@
 
 Rastrea los hilos de la trama y líneas narrativas aquí. Usa =F8 F8 k g= para capturar nuevos hilos mientras escribes.
 
-# Las capturas de hilos de trama van aquí como subencabezados
+** Línea principal
+:PROPERTIES:
+:THREAD-TYPE: Principal
+:STATUS: Planificado
+:FIRST-APPEARANCE:
+:Weight:
+:END:
+
+- Descripción ::
+- Quién la lleva ::
+- Dónde empieza ::
+- Dónde se resuelve ::
+
+# Renómbrala con la línea de tu cuento. Los hilos que captures con
+# F8 F8 k g van debajo.
 
 * Ambientación
 

@@ -409,13 +409,34 @@ novel inside the first.
 
 Note this captures narrative *lines*, not the thirteen non-negotiables.
 Those are a fixed set shipped by the template and are never captured —
-see `linking/org-scribe-plot-point-links.el'."
-  (let* ((org-scribe-message-language (or language (org-scribe-project-language))))
+see `linking/org-scribe-plot-point-links.el'.
+
+In a short-story project the thread is the short-story notebook's own
+shape (description, who carries it, where it starts and resolves), with
+no Stance or crossings: those are the novel method's vocabulary, and a
+thread filed with them would sit beside placeholder threads of another
+shape in the same notebook."
+  (let* ((org-scribe-message-language (or language (org-scribe-project-language)))
+         (short-story (eq (org-scribe-project-type) 'short-story)))
     (cl-flet ((m (key) (org-scribe-msg key)))
       `(("p" ,(m 'capture-pt-name) entry
          (file+function org-scribe-capture-target-file
                         org-scribe--capture-goto-plot-threads-section)
-         ,(concat
+         ,(if short-story
+              (concat
+               "* %^{" (m 'capture-pt-name-prompt) "}\n"
+               ":PROPERTIES:\n"
+               ":ID: %(org-id-new)\n"
+               ":THREAD-TYPE: %^{" (m 'capture-pt-type-prompt) "}\n"
+               ":STATUS: %^{" (m 'capture-pt-status-prompt) "}\n"
+               ":FIRST-APPEARANCE:\n"
+               ":Weight: %^{" (m 'capture-pt-weight-prompt) "}\n"
+               ":END:\n\n"
+               "- " (m 'capture-ss-pt-description) " %?\n"
+               "- " (m 'capture-ss-pt-carried-by) "\n"
+               "- " (m 'capture-ss-pt-starts) "\n"
+               "- " (m 'capture-ss-pt-resolves) "\n")
+          (concat
            "* %^{" (m 'capture-pt-name-prompt) "}\n"
            ":PROPERTIES:\n"
            ":ID: %(org-id-new)\n"
@@ -434,7 +455,7 @@ see `linking/org-scribe-plot-point-links.el'."
            "# " (m 'capture-pt-crossings-hint) "\n\n"
            "1.\n2.\n3.\n\n"
            "** " (m 'capture-pt-resolution) "\n\n"
-           "** " (m 'capture-pt-notes) "\n")
+           "** " (m 'capture-pt-notes) "\n"))
          :empty-lines 1)))))
 
 ;;; Capture Function
