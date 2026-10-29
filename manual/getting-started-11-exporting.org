@@ -1,7 +1,10 @@
 #+TITLE: Lesson 11: Export Your Manuscript
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-11-exportar.org][Versión en español]]/
 
 * Welcome to Lesson 11!
 
@@ -39,16 +42,16 @@ By the end of this lesson, you'll have:
 
 Different export formats need different tools installed:
 
-- **PDF (LaTeX)**: Requires LaTeX distribution
+- *PDF (LaTeX)*: Requires LaTeX distribution
   - Linux/Mac: TeX Live or MacTeX
   - Windows: MiKTeX
   - Check: ~pdflatex --version~
 
-- **ODT (OpenDocument)**: Built into Emacs (no extra tools needed!)
+- *ODT (OpenDocument)*: Built into Emacs (no extra tools needed!)
 
-- **HTML**: Built into Emacs (no extra tools needed!)
+- *HTML*: Built into Emacs (no extra tools needed!)
 
-- **EPUB**: Requires ~ox-epub~ package
+- *EPUB*: Requires ~ox-epub~ package
   - Install: ~M-x package-install RET ox-epub RET~
 
 Don't worry if you don't have everything - we'll indicate what's needed for each format.
@@ -345,9 +348,9 @@ Each format has variations:
 ** Export Scope
 
 You can export:
-- **Whole buffer**: Default, exports everything
-- **Subtree**: Just current section (with ~C-c C-e C-s~ prefix)
-- **Visible only**: Only expanded headings (with ~C-c C-e C-v~ prefix)
+- *Whole buffer*: Default, exports everything
+- *Subtree*: Just current section (with ~C-c C-e C-s~ prefix)
+- *Visible only*: Only expanded headings (with ~C-c C-e C-v~ prefix)
 
 *For manuscripts*: Usually export whole buffer.
 
@@ -390,12 +393,12 @@ Sam sat in the coffee shop, waiting.
 #+END_EXAMPLE
 
 But each export format needs different scene breaks:
-- **Print (PDF/LaTeX)**: Vertical space (~\vspace~)
-- **HTML**: Multiple line breaks
-- **ASCII/Markdown/Man**: Three asterisks (***)
-- **Word (ODT)**: A centered =***= paragraph
-- **EPUB**: Multiple line breaks (it derives from the HTML backend)
-- **Any other backend**: falls back to the generic 3-newline default
+- *Print (PDF/LaTeX)*: Vertical space (~\vspace~)
+- *HTML*: Multiple line breaks
+- *ASCII/Markdown/Man*: Three asterisks (***)
+- *Word (ODT)*: A centered =***= paragraph
+- *EPUB*: Multiple line breaks (it derives from the HTML backend)
+- *Any other backend*: falls back to the generic 3-newline default
 
 **Manually changing this for each format is tedious!**
 
@@ -471,7 +474,7 @@ By the second cup, Alex had a plan for the day. Well, the outline of a
 plan. More of a vague direction than an actual plan, but it was a start.
 #+END_EXAMPLE
 
-*Three scene breaks* showing:
+*Two scene breaks* showing:
 1. Time jump (20 minutes)
 2. Mood shift (foggy → clearer)
 
@@ -549,8 +552,8 @@ Now chapters show as "Chapter 1" without numbers on sections.
 For specific publisher requirements:
 
 #+BEGIN_EXAMPLE
-#+LATEX_CLASS: article        (shorter works - short story template default)
-#+LATEX_CLASS: memoir_draft   (book-length manuscripts - novel template default)
+#+LATEX_CLASS: article        (shorter works)
+#+LATEX_CLASS: memoir_draft   (book-length manuscripts)
 #+LATEX_CLASS: book           (standard alternative to memoir_draft)
 #+LATEX_CLASS: memoir         (extensive customization)
 #+END_EXAMPLE
@@ -582,7 +585,7 @@ This creates standard manuscript format (1-inch margins, double-spaced).
 
 *Solution*:
 1. Check ~*Org PDF LaTeX Output*~ buffer for errors
-2. Look for ~! ~ in the output (error marker)
+2. Look for a line starting with ~!~ in the output (LaTeX's error marker)
 3. Common issues: special characters, missing packages
 
 *** PDF Looks Wrong
@@ -875,18 +878,9 @@ Essential metadata for e-books:
    #+END_EXAMPLE
 4. Export - cover included!
 
-** Converting EPUB to MOBI (Kindle)
+** Publishing on Kindle
 
-Kindle uses MOBI format, but you can convert:
-
-1. Export to EPUB
-2. Use Calibre (free software) to convert:
-   - Open Calibre
-   - Add book (your .epub)
-   - Click "Convert books"
-   - Choose MOBI format
-   - Convert!
-3. Upload to Kindle Direct Publishing
+Amazon Kindle Direct Publishing accepts EPUB directly (it no longer accepts MOBI), so there is nothing to convert: upload the EPUB you exported.
 
 ** Common EPUB Issues
 
@@ -1095,7 +1089,7 @@ Agents typically want:
 ** Self-Publishing
 
 For Amazon KDP or similar:
-- EPUB or MOBI format
+- EPUB format
 - Proper cover image
 - Complete metadata
 - No manuscript format needed (readers don't care!)
@@ -1103,10 +1097,9 @@ For Amazon KDP or similar:
 *Process*:
 1. Export to EPUB (~C-c C-e e e~)
 2. Validate with EPUBCheck
-3. Convert to MOBI with Calibre (if needed)
-4. Upload to KDP
-5. Preview with Kindle Previewer
-6. Publish!
+3. Upload to KDP
+4. Preview with Kindle Previewer
+5. Publish!
 
 ** Contest Submission
 
@@ -1193,10 +1186,9 @@ Here are complete workflows for common scenarios.
    #+END_EXAMPLE
 3. ~C-c C-e e e~ (export to EPUB)
 4. Validate with EPUBCheck (online tool)
-5. Convert to MOBI with Calibre
-6. Upload to Amazon KDP
-7. Use Kindle Previewer to check
-8. Publish!
+5. Upload to Amazon KDP
+6. Use Kindle Previewer to check
+7. Publish!
 
 ** Workflow 5: Anthology Submission
 
@@ -1235,7 +1227,7 @@ Here are complete workflows for common scenarios.
 *Cause*: Some characters need escaping in LaTeX
 
 *Solution*:
-- Use org entities: ~\tilde~ for ~, ~\nbsp~ for non-breaking space
+- Use Org entities: ~\tilde{}~ for a literal tilde, ~\nbsp~ for a non-breaking space
 - For literal text: ~#+BEGIN_EXPORT latex~ blocks
 - Check encoding: save files as UTF-8
 
@@ -1347,7 +1339,7 @@ In the next lesson, you'll learn:
 
 Reinforce your export skills:
 
-1. **Compile a clean draft**
+1. *Compile a clean draft*
    - ~F8 X~, ~clean~, then choose ~txt~
    - Open the intermediate ~.org~ file in ~export/~ and compare it to
      your working manuscript
@@ -1357,7 +1349,7 @@ Reinforce your export skills:
      or an e-reader app — find a scene break and confirm it stands out
      from ordinary text
 
-2. **Compile a Shunn manuscript**
+2. *Compile a Shunn manuscript*
    - Set ~org-scribe-author-name~ (and, if you like, the rest of your
      contact information)
    - ~F8 X~, ~shunn~, then choose ~txt~ — read through the front
@@ -1367,37 +1359,37 @@ Reinforce your export skills:
    - Add a ~# Running-header:~ line to ~.org-scribe-project~ and compile
      again to see it change
 
-3. **Export to all formats**
+3. *Export to all formats*
    - PDF: ~C-c C-e l p~
    - ODT: ~C-c C-e o o~
    - HTML: ~C-c C-e h o~
    - EPUB: ~C-c C-e e e~ (if installed)
    - Compare results
 
-4. **Add scene breaks**
+4. *Add scene breaks*
    - Find 3 places in manuscript
    - Add ~{{{scene-break}}}~
    - Export to PDF
    - Verify breaks appear correctly
 
-5. **Create submission package**
+5. *Create submission package*
    - First 3 chapters to PDF
    - Standard manuscript format
    - Save as: ~YourName-Title-Sample.pdf~
 
-6. **Customize one format**
+6. *Customize one format*
    - Choose PDF or ODT
    - Add custom formatting
    - Create template for reuse
    - Document settings
 
-7. **Beta reader workflow**
+7. *Beta reader workflow*
    - Export manuscript to ODT
    - Open in Word/LibreOffice
    - Add sample comments
    - Practice workflow
 
-8. **EPUB with cover**
+8. *EPUB with cover*
    - Create or find cover image
    - Add to manuscript
    - Export to EPUB
@@ -1435,7 +1427,7 @@ In template (top of file):
 Exports as:
   LaTeX: \vspace{...}
   HTML: <br><br><br>
-  ODT: Line breaks
+  ODT: a centered *** paragraph
   ASCII: ***
 #+END_EXAMPLE
 

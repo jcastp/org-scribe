@@ -1,7 +1,10 @@
 #+TITLE: Lesson 13: Daily Writing Workflow
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-13-flujo-diario.org][Versión en español]]/
 
 * Welcome to Lesson 13!
 
@@ -402,7 +405,7 @@ As you write, leave breadcrumbs for revision. Write them as *marker comment bloc
 Alex walked into the coffee shop.
 
 ,#+begin_comment
-*NOTE*: continuity - is it raining? Check chapter 1.
+*EDIT*: continuity - is it raining? Check chapter 1.
 ,#+end_comment
 
 She saw Sam sitting in the corner booth.
@@ -499,9 +502,9 @@ End your session with a sense of accomplishment and preparation for tomorrow.
 
 See what you achieved today!
 
-1. Position cursor on today's section (the heading for the chapter or scene you worked on)
+1. Select the text you wrote today (or leave nothing selected to count the whole buffer)
 2. Press ~F8~ then ~w~ (word count)
-3. Read the result: "Subtree 'Chapter 3': 1,247 words"
+3. Read the result in the echo area: "1247 words in region" (or "... words in buffer")
 
 *Celebration moment*: You wrote over 1,000 words today!
 
@@ -676,7 +679,7 @@ Review the table:
 Update plot thread timeline:
 
 1. Navigate to Plot Timeline section
-2. Press ~C-c C-c~ on `#+BEGIN: plot-timeline`
+2. Press ~C-c C-c~ on `#+BEGIN: plot-thread-timeline`
 
 Review:
 
@@ -930,7 +933,7 @@ The standard workflow might not fit everyone. Here are variations:
 *Solutions*:
 - Leave a =*NOTE*: research= marker and keep writing
 - Set research time separate from writing time
-- Use placeholder text: "She used a [TOOL NAME]"
+- Use placeholder text: "She used a TOOL-NAME" (then search for it later)
 - Remember: Fiction doesn't need perfect accuracy
 
 ** Challenge 5: "Progress tracking feels demotivating"
@@ -1021,7 +1024,7 @@ Examples:
 
 ** Commit to Your Workflow
 
-Write your custom workflow in your project's README or notes:
+Write your custom workflow in your design notebook's Scratchpad or in your notes:
 
 #+BEGIN_EXAMPLE
 ,* My Writing Workflow
@@ -1159,7 +1162,7 @@ Head to [[file:getting-started-14-revision-workflow.org][Lesson 14: Revision and
 - ~org-pomodoro~ - Built-in timer for Pomodoro technique
 - ~org-habit~ - Track writing streaks
 - ~org-agenda~ - Plan writing sessions in advance
-- ~writeroom-mode~ - Already included in org-scribe!
+- ~writeroom-mode~ - Used by org-scribe's Write and Focus modes (a required dependency, Lesson 9)
 
 ** Backup and Version Control
 
@@ -1172,7 +1175,6 @@ Head to [[file:getting-started-14-revision-workflow.org][Lesson 14: Revision and
 
 Share your workflow and learn from others:
 - r/writing on Reddit
-- NaNoWriMo forums (November and beyond)
 - Absolute Write forums
 - Local writing groups
 
@@ -1180,7 +1182,7 @@ Share your workflow and learn from others:
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
-- *Lesson Number*: 13 of 16
+- *Lesson Number*: 13 of 19
 - *Part*: 5 - Workflows and Best Practices
 - *Estimated Time*: 15-20 minutes
 - *Difficulty*: Intermediate

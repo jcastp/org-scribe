@@ -1,11 +1,14 @@
 #+TITLE: Lesson 15: Customization and Configuration
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-15-personalizacion.org][Versión en español]]/
 
 * Welcome to Lesson 15!
 
-Congratulations on completing all the core lessons! You now know how to use every feature of ~org-scribe~. This final lesson helps you make the package truly yours by customizing it to match your personal preferences and workflow.
+Congratulations on completing all the core lessons! You now know how to use every feature of ~org-scribe~. This lesson helps you make the package truly yours by customizing it to match your personal preferences and workflow.
 
 The beauty of Emacs is its flexibility - every aspect can be tailored. ~org-scribe~ follows this philosophy, providing dozens of customization options while maintaining sensible defaults.
 
@@ -204,17 +207,12 @@ Define your own presets in your init file:
 #+END_SRC
 
 *Popular writing fonts*:
-- **Monospace**: iA Writer Mono, Fira Code, JetBrains Mono, Source Code Pro
-- **Variable-pitch**: Libre Baskerville, Crimson Text, ET Book, Merriweather
+- *Monospace*: iA Writer Mono, Fira Code, JetBrains Mono, Source Code Pro
+- *Variable-pitch*: Libre Baskerville, Crimson Text, ET Book, Merriweather
 
 *Finding font names*:
 
-Run: ~M-x menu-set-font~ to see available fonts, or:
-
-#+BEGIN_SRC emacs-lisp
-;; List all available fonts
-M-x describe-font RET TAB
-#+END_SRC
+Run ~M-x menu-set-font~ to see the available fonts, or ~M-x describe-font~ to inspect the current one.
 
 *** Adjusting Font Size Only
 
@@ -643,8 +641,8 @@ Controls which templates are used when creating projects:
 #+END_SRC
 
 *What this affects*:
-- Template directory selection (~novel-en~ vs ~novel-es~)
-- File names (~novel.org~ vs ~novela.org~, ~notes~ vs ~notas~)
+- Template set selection (~novel-en~ vs ~novel-es~)
+- File names (~novel.org~ vs ~novela.org~, ~design.org~ vs ~diseno.org~)
 - Template content language
 - Default scene/chapter templates
 
@@ -699,9 +697,7 @@ If you write in both languages, you can:
 ;; In init file, set default
 (setq org-scribe-template-language 'en)
 
-;; When starting Spanish project, temporarily change:
-;; M-x set-variable RET org-scribe-template-language RET 'es RET
-;; Then create project
+(setq org-scribe-template-language 'es)  ; evaluate this before creating a Spanish project
 #+END_SRC
 
 *Option 2: Use both template sets*
@@ -896,7 +892,6 @@ Add to your init file:
 
 Common prefixes available:
 - ~C-c LETTER~ (reserved for user)
-- ~C-c C-LETTER~ (reserved for major modes)
 - ~F5~ through ~F9~ (function keys)
 
 ** Mode-Specific Keybindings
@@ -1175,7 +1170,6 @@ Now you can:
 *Essential files to backup*:
 - ~~/.emacs.d/init.el~ (your main config)
 - ~~/.emacs.d/custom.el~ (if using customize interface)
-- Any custom template directories
 
 *Backup methods*:
 1. Git (recommended)
@@ -1379,9 +1373,7 @@ You now know how to customize every aspect of ~org-scribe~!
 
 ✓ *Language & Templates*
   - English/Spanish template selection
-  - Custom template directories
-  - Modifying existing templates
-  - Adding custom planning files
+  - Modifying existing templates (in a copy, since upgrades replace the package's)
 
 ✓ *Export Settings*
   - Scene break formatting per backend
@@ -1468,14 +1460,14 @@ MAINTENANCE
 
 ** Next Steps
 
-*You've completed all 15 core lessons!*
+*You've completed the core lessons!* Lessons 16 to 19 (planner, scratchpad, plotting methods, companion) are optional.
 
 *What's next*:
-1. **Write!** - Use what you've learned
-2. **Experiment** - Try different customizations
-3. **Share** - Help other writers
-4. **Contribute** - Report bugs, suggest features
-5. **Enjoy** - You have a powerful writing environment!
+1. *Write!* - Use what you've learned
+2. *Experiment* - Try different customizations
+3. *Share* - Help other writers
+4. *Contribute* - Report bugs, suggest features
+5. *Enjoy* - You have a powerful writing environment!
 
 *Optional*: If you want goal-oriented writing plans - target dates, daily word targets, milestones, and progress dashboards - see [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with the Bundled Planner]]. It's bundled with org-scribe but opt-in per project, so nothing changes unless you enable it.
 
@@ -1537,7 +1529,7 @@ MAINTENANCE
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
-- *Lesson Number*: 15 of 17 (Final Core Lesson - Lesson 16 covers the optional bundled planner, Lesson 17 the scratchpad)
+- *Lesson Number*: 15 of 19 (the last core lesson; Lessons 16 to 19 cover the optional planner, scratchpad, plotting methods and companion)
 - *Part*: 5 - Workflows and Best Practices
 - *Estimated Time*: 20-25 minutes
 - *Difficulty*: Beginner to Intermediate
@@ -1545,7 +1537,7 @@ MAINTENANCE
 
 ---
 
-*Congratulations on completing the entire org-scribe tutorial series!*
+*Congratulations on completing the core lessons!*
 
 You now have a complete, powerful, and personalized writing environment. Use it to write amazing stories!
 

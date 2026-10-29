@@ -1,7 +1,10 @@
 #+TITLE: Lesson 19: The Visual Companion
 #+AUTHOR: Javier Castilla
 #+DATE: 2026-10-27
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-19-companion.org][Versión en español]]/
 
 * Welcome to Lesson 19!
 
@@ -52,7 +55,7 @@ the page can only move or edit what it can address.
 Your browser opens a page. Keep Emacs open: it is the one doing the work.
 
 ~M-x org-scribe-companion-stop~ ends it. If you restart Emacs or the server,
-reopen the page from Emacs (the link carries a one-time token).
+reopen the page from Emacs (the link carries a token that is new on every start).
 
 * Part 2: The Corkboard
 
@@ -230,16 +233,33 @@ loaded from the internet.
 
 * Exercises
 
-0. Open the Chapters tab and find the character who appears in the most
+1. Open the Chapters tab and find the character who appears in the most
    chapters; then open the Relations tab and add a relationship by clicking
    two characters.
-1. Open the demo novel's companion. Move Chapter 1's second scene to the first
+2. Open the demo novel's companion. Move Chapter 1's second scene to the first
    position and undo it from Emacs.
-2. In the Table, add the *Location* column and set a scene's location with the picker.
-3. In the Storyline, find the plot thread with the longest gap and click one of
+3. In the Table, add the *Location* column and set a scene's location with the picker.
+4. In the Storyline, find the plot thread with the longest gap and click one of
    its empty cells inside the gap.
-4. In Entities, change Alex's Role, then open ~design.org~ and find the one line that changed.
+5. In Entities, change Alex's Role, then open ~design.org~ and find the one line that changed.
 
 * What's Next
 
 This was the last lesson. Come back to the [[file:getting-started-00-index.org][index]] to revisit any topic.
+
+* About This Lesson
+
+- *Created*: 2026-10-27
+- *Last Updated*: 2026-10-29
+- *Lesson Number*: 19
+- *Part*: 5 - Workflows, Best Practices and Integrations
+- *Estimated Time*: 25 minutes
+- *Difficulty*: Intermediate
+- *Prerequisites*: Lesson 1 (a novel project with scenes) and Lesson 4 (characters)
+
+---
+
+*Previous*: [[file:getting-started-18-plotting-methods.org][Lesson 18: Plotting Methods — La Hélice and La Matriz]]
+*Back to Start*: [[file:getting-started-00-index.org][Getting Started Guide - Index]]
+
+*Lesson 19 Complete!*

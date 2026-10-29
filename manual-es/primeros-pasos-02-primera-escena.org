@@ -1,0 +1,848 @@
+#+TITLE: Lección 2: Escribir tu primera escena
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-02-first-scene.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-02-first-scene.org][English version]]/
+
+* ¡Bienvenido a la Lección 2!
+
+Ahora que ya tienes un proyecto creado, ¡es hora de escribir de verdad! En esta lección aprenderás a escribir escenas con las potentes funciones del paquete.
+
+Al terminar esta lección habrás:
+- Insertado tu primera escena con la plantilla
+- Entendido qué son las propiedades de escena y por qué son útiles
+- Activado el modo Sin distracciones
+- Escrito una escena completa
+- Aprendido el flujo de escritura diario básico
+
+*Tiempo estimado*: 15-20 minutos
+
+* Antes de empezar
+
+** Lo que necesitas
+
+✓ Un proyecto creado en la Lección 1 (cuento o novela)
+✓ Emacs abierto con tu proyecto
+✓ 15 minutos ininterrumpidos para escribir
+
+** Abrir tu manuscrito
+
+Si no tienes abierto el manuscrito:
+
+1. Pulsa ~C-x C-f~ (buscar archivo)
+2. Ve al directorio de tu proyecto
+3. Abre:
+   - *Cuento*: ~cuento.org~
+   - *Novela*: ~novela.org~
+
+¡Ahora deberías ver tu archivo de manuscrito!
+
+* Entender la estructura de tu manuscrito
+
+Antes de insertar escenas, vamos a entender la estructura.
+
+** Estructura de un cuento
+
+Tu archivo ~cuento.org~ tiene una estructura sencilla: una sección de información que no se exporta, un enlace al cuaderno de diseño y el contenido del cuento, con sus escenas:
+
+#+BEGIN_EXAMPLE
+#+TITLE: La rutina matinal
+#+AUTHOR: Tu nombre
+
+,* Información del Cuento :noexport:
+,** Sinopsis
+,** Seguimiento de Palabras
+
+,* Enlaces Rápidos :noexport:
+- [[file:diseno.org][Cuaderno de diseño]]
+
+,* Contenido del Cuento
+,** TODO Escena 1 :ignore:
+   [Aquí va lo que escribas]
+#+END_EXAMPLE
+
+*La jerarquía*:
+- ~*~ (un asterisco) = Sección principal (Contenido del Cuento)
+- ~**~ (dos asteriscos) = Encabezado de escena
+- El texto normal = El contenido de tu historia
+
+** Estructura de una novela
+
+Tu archivo ~novela.org~ tiene una estructura más compleja, en tres actos:
+
+#+BEGIN_EXAMPLE
+#+TITLE: Mi novela de fantasía
+#+AUTHOR: Tu nombre
+
+,* Acto I :ignore:
+,** TODO Capítulo 1 :ignore:
+,*** TODO Escena 1 :ignore:
+    [Aquí va lo que escribas]
+
+,* Acto II :ignore:
+
+,* Acto III :ignore:
+#+END_EXAMPLE
+
+*La jerarquía*:
+- ~*~ (un asterisco) = Acto (Acto I, Acto II, Acto III)
+- ~**~ (dos asteriscos) = Encabezado de capítulo
+- ~***~ (tres asteriscos) = Encabezado de escena
+- El texto normal = El contenido de tu historia
+
+(Delante de esos tres actos, ~novela.org~ lleva además varias secciones que no se exportan (Objetivos del Proyecto, Seguimiento del Progreso, Navegación Rápida), donde viven las tablas de recuento de palabras de la Lección 3.)
+
+** Por qué esta estructura
+
+Esta estructura jerárquica te permite:
+- Plegar y desplegar secciones para ver solo aquello en lo que trabajas
+- Seguir el recuento de palabras a distintos niveles (escena, capítulo, acto)
+- Moverte con rapidez por manuscritos largos
+- Organizar tu historia con claridad
+- Usar las potentes funciones de Org-mode (búsqueda, exportación, etc.)
+
+* Insertar tu primera escena
+
+¡Vamos a añadir una escena nueva a tu manuscrito con la plantilla de escena!
+
+** Paso 1: Colocar el cursor
+
+*En un cuento*:
+1. Ve al encabezado ~* Contenido del Cuento~
+2. Muévete al final de esa línea
+3. Pulsa ~Intro~ para crear una línea nueva
+
+*En una novela*:
+1. Ve a ~** TODO Capítulo 1~ (o al capítulo que quieras)
+2. Muévete al final de esa línea
+3. Pulsa ~Intro~ para crear una línea nueva
+
+** Paso 2: Abrir el menú Hydra
+
+Pulsa ~F8~
+
+Verás aparecer el menú Hydra en la parte inferior de la pantalla (está en inglés; mira la Lección 8 para ver qué hace cada tecla):
+
+#+BEGIN_EXAMPLE
+^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^              ^Search^          ^Manage^
+^^^^---------------------------------------------------------------------------------------------------------------
+_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words     _1_: by PoV       _n_: Capture note
+_c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all      _2_: Character    _k_: Capture entity…
+_o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_: Plot         _L_: Links & upkeep…
+^^               _v_: Navigate    _b_: Objects         _y_: Synonyms        _4_: Location     _R_: Relink project
+^^               _0_: Normal      _g_: Plot threads    _x_: Thesaurus       _5_: TODOs        _H_: Health report
+^^               ^^               _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
+^^               ^^               _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
+^^               ^^               ^^                   _S_: Story time      ^^                _B_: Board…
+^^               ^^               ^^                   ^^                   ^^                _q_: Quit
+#+END_EXAMPLE
+
+*¡Sin pánico!* Este menú te da acceso rápido a todas las funciones. Por ahora solo necesitamos la sección «Insert» (insertar).
+
+** Paso 3: Insertar una escena
+
+1. Pulsa ~s~ (de «Scene», escena)
+2. El menú se cierra
+3. Se te pedirá: ~Nombre de la escena:~
+4. Escribe un título para tu escena (ejemplo: ~Suena la alarma~)
+5. Pulsa ~Intro~
+
+** Paso 4: Ver qué se ha creado
+
+¡Aparece una plantilla de escena completa! Tiene este aspecto:
+
+#+BEGIN_EXAMPLE
+,*** TODO Suena la alarma :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 500
+:PoV:
+:Personajes:
+:Trama:
+:Punto-de-trama:
+:Linea-temporal:
+:Localizacion:
+:Objetos:
+:Descripcion:
+:Resumen:
+:Motivacion-escena:
+:Fuente-conflicto:
+:Brecha:
+:Que-esta-en-juego:
+:Problema-mundo:
+:Emocion:
+:Nivel-tension:
+:Resultado:
+:Decision-secuela:
+:Comentario:
+:END:
+#+END_EXAMPLE
+
+Observa que los nombres de las propiedades de escena van en español (sin tildes ni espacios), salvo ~:PoV:~, ~:WORDCOUNT:~ y ~:WORD-OBJECTIVE:~, que son iguales en los dos idiomas. Un proyecto en inglés lleva ~:Characters:~, ~:Plot:~, ~:Location:~, etc.; el paquete entiende los nombres de los dos idiomas.
+
+Nota: ~:WORDCOUNT:~ empieza en ~0~ y se actualiza con las órdenes de recuento de palabras (~F8 w~/~F8 a~). ~:WORD-OBJECTIVE:~ empieza ya relleno con un valor por defecto de ~500~, que puedes cambiar para ajustarlo a la escena.
+
+*¡Enhorabuena!* ¡Has insertado tu primera plantilla de escena!
+
+** Entender la plantilla
+
+Veamos qué es lo que estás viendo:
+
+*** La línea del encabezado
+#+BEGIN_EXAMPLE
+,*** TODO Suena la alarma :ignore:
+#+END_EXAMPLE
+
+- ~***~ = Nivel de escena (tres asteriscos en las novelas, dos en los cuentos)
+- ~TODO~ = Estado de la escena (puedes cambiarlo a DONE cuando termines)
+- ~Suena la alarma~ = Tu título, tal como lo escribiste: la plantilla no añade ningún «Escena N»
+- ~:ignore:~ = Una etiqueta que hace que al exportar desaparezca el encabezado y se conserve el texto (la Lección 11 lo explica)
+
+*** El bloque de propiedades
+Todo lo que hay entre ~:PROPERTIES:~ y ~:END:~ guarda metadatos sobre tu escena.
+
+*Piensa en las propiedades como fichas de un índice* pegadas a tu escena con información útil.
+
+* Entender las propiedades de escena
+
+Veamos cada propiedad y para qué sirve:
+
+** Propiedades esenciales (¡úsalas!)
+
+*** ~:PoV:~ (punto de vista)
+*Qué es*: ¿Desde la perspectiva de qué personaje está contada esta escena?
+
+*Ejemplo*: ~Alex Rivera~
+
+*Por qué importa*:
+- Para seguir la coherencia del punto de vista
+- Para buscar todas las escenas desde la perspectiva de un personaje
+- Para equilibrar el PoV en historias con varios puntos de vista
+- Para generar cronologías de personajes
+
+*** ~:Personajes:~
+*Qué es*: ¿Qué personajes aparecen en esta escena?
+
+*Ejemplo*: ~Alex Rivera, Sam Chen~
+
+*Por qué importa*:
+- Para seguir las apariciones de los personajes
+- Para encontrar todas las escenas con ciertos personajes
+- Para asegurarte de que los personajes principales aparecen con regularidad
+- Para detectar personajes «olvidados»
+
+*** ~:Localizacion:~
+*Qué es*: ¿Dónde transcurre esta escena?
+
+*Ejemplo*: ~Apartamento de Alex - Dormitorio~
+
+*Por qué importa*:
+- Para seguir la variedad de ambientaciones
+- Para encontrar todas las escenas en un escenario concreto
+- Para asegurarte de que no abusas de un mismo lugar
+- Para mantener la coherencia de las ambientaciones
+
+*** ~:Trama:~
+*Qué es*: ¿Qué hilos de la trama hace avanzar esta escena?
+
+*Ejemplo*: ~Trama principal, Desarrollo del personaje~
+
+*Por qué importa*:
+- Para seguir el avance de la trama
+- Para asegurarte de que se desarrollan todos los hilos de la trama
+- Para encontrar huecos en la trama
+- Para equilibrar varias líneas argumentales
+
+*** ~:Punto-de-trama:~
+*Qué es*: Cuál de los trece puntos de trama irrenunciables sirve esta escena, si sirve alguno.
+
+*Ejemplo*: fíjalo con ~F8 G~ (guarda un enlace por ID); mira la Lección 6.
+
+*Por qué importa*:
+- El informe de salud del proyecto lista los puntos de trama que ninguna escena sirve
+- Para saltar desde una escena al punto de trama que lleva
+
+*** ~:Linea-temporal:~
+*Qué es*: Cuándo ocurre la escena en el tiempo de la historia (una fecha, un número de día, «Tres días después»).
+
+*Ejemplo*: ~Día 3, mañana~
+
+*Por qué importa*:
+- Para mantener recta la cronología de la historia cuando las escenas se escriben desordenadas
+- Para detectar secuencias imposibles durante la revisión
+
+** Propiedades de planificación (¡úsalas al revisar!)
+
+Estas propiedades te ayudan a planificar y revisar las escenas:
+
+*** ~:Descripcion:~
+Descripción de una línea de lo que ocurre
+
+*Ejemplo*: ~Alex pelea con el despertador y lo pospone tres veces~
+
+*** ~:Resumen:~
+Resumen más largo de los acontecimientos de la escena
+
+*Ejemplo*: ~La alarma de Alex suena a las 6:30. Pospone una y otra vez, luchando por despertarse. Por fin se despierta presa del pánico, al darse cuenta de que llega tarde a una reunión importante.~
+
+*** ~:Motivacion-escena:~
+¿Qué impulsa esta escena?
+
+*Ejemplo*: ~Alex necesita levantarse para una reunión importante~
+
+*** ~:Fuente-conflicto:~
+¿Cuál es el conflicto o la tensión?
+
+*Ejemplo*: ~Conflicto interno: querer dormir frente a necesitar despertarse~
+
+*** ~:Brecha:~
+La distancia entre lo que el personaje esperaba y lo que el mundo le dio (término de McKee). Una escena sin brecha necesita una o debería cortarse.
+
+*Ejemplo*: ~Alex espera una mañana tranquila; la alarma no sonó~
+
+*** ~:Que-esta-en-juego:~
+¿Qué se juega el personaje, qué puede perder?
+
+*Ejemplo*: ~Su reputación profesional si llega tarde a la reunión~
+
+*** ~:Problema-mundo:~
+El problema que el mundo de la historia plantea en esta escena, más allá del conflicto propio del personaje (mira el término del glosario /Problema del Mundo/).
+
+*Ejemplo*: ~La huelga del transporte de la ciudad hace poco fiable cualquier ruta~
+
+*** ~:Emocion:~
+El tono emocional de la escena
+
+*Ejemplo*: ~Ansioso, apresurado, frustrado~
+
+*** ~:Nivel-tension:~
+Cuán tensa es la escena, en la escala que prefieras (un número, o bajo/medio/alto). Compararlo entre escenas muestra si el ritmo varía o se mantiene uniforme.
+
+*Ejemplo*: ~4~ o ~alto~
+
+*** ~:Resultado:~
+Cómo termina la escena: qué cambió, y en qué se diferencia la situación de la del principio.
+
+*Ejemplo*: ~Alex sale tarde y sin el informe~
+
+*** ~:Decision-secuela:~
+La decisión a la que llega el personaje en la secuela que sigue a la escena (reacción → dilema → decisión, de Swain). Debería enlazar con el deseo de la escena siguiente.
+
+*Ejemplo*: ~Saltarse el desayuno y coger un taxi~
+
+*** ~:Comentario:~
+Tus notas para ti mismo
+
+*Ejemplo*: ~Asegurarme de mostrar la personalidad de Alex en su reacción a la alarma~
+
+** Propiedades de recuento de palabras
+
+*** ~:WORDCOUNT:~
+*Se calcula solo*: el recuento real de palabras (lo fijarás con una orden)
+
+*** ~:WORD-OBJECTIVE:~
+*Manual*: tu objetivo de palabras para esta escena
+
+*Ejemplo*: ~1500~
+
+* Rellenar las propiedades de tu escena
+
+¡Vamos a rellenar las propiedades de tu escena! No tienes que rellenarlas todas ahora: empieza por las esenciales.
+
+** Paso 1: Añadir el punto de vista
+
+1. Busca la línea ~:PoV:~
+2. Haz clic al final de la línea (después de los dos puntos)
+3. Añade un espacio y escribe el nombre de tu personaje de PoV
+4. Ejemplo: ~:PoV: Alex~
+
+Resultado:
+#+BEGIN_EXAMPLE
+:PoV: Alex
+#+END_EXAMPLE
+
+** Paso 2: Añadir los personajes
+
+1. Busca la línea ~:Personajes:~
+2. Haz clic al final de la línea
+3. Escribe los nombres de los personajes separados por comas
+4. Ejemplo: ~:Personajes: Alex, Sam~
+
+Resultado:
+#+BEGIN_EXAMPLE
+:Personajes: Alex, Sam
+#+END_EXAMPLE
+
+** Paso 3: Añadir la localización
+
+1. Busca la línea ~:Localizacion:~
+2. Añade tu localización
+3. Ejemplo: ~:Localizacion: Apartamento de Alex~
+
+Resultado:
+#+BEGIN_EXAMPLE
+:Localizacion: Apartamento de Alex
+#+END_EXAMPLE
+
+** Paso 4: Fijar un objetivo de palabras (opcional)
+
+1. Busca la línea ~:WORD-OBJECTIVE:~
+2. Añade tu objetivo (una escena suele tener entre 1.000 y 2.000 palabras)
+3. Ejemplo: ~:WORD-OBJECTIVE: 1500~
+
+Resultado:
+#+BEGIN_EXAMPLE
+:WORD-OBJECTIVE: 1500
+#+END_EXAMPLE
+
+** Un consejo rápido: puedes saltarte propiedades
+
+*¡No te sientas obligado a rellenarlo todo!*
+
+Muchos escritores:
+- Rellenan solo PoV, Personajes y Localización mientras escriben el borrador
+- Añaden las demás propiedades durante la revisión
+- Usan las propiedades que encajan con su estilo de planificación
+
+*Mínimo recomendado*: PoV y Localización
+
+* Escribir el contenido de tu escena
+
+Ahora llega lo divertido: ¡escribir tu historia de verdad!
+
+** Dónde escribir
+
+1. Mueve el cursor *debajo* de la línea ~:END:~
+2. Pulsa ~Intro~ para crear líneas en blanco
+3. Empieza a escribir tu escena
+
+Ejemplo:
+
+#+BEGIN_EXAMPLE
+,*** TODO Suena la alarma :ignore:
+:PROPERTIES:
+:PoV: Alex
+:Personajes: Alex
+:Localizacion: Apartamento de Alex
+:WORD-OBJECTIVE: 1500
+:END:
+
+La alarma sonó a las 6:30 de la mañana, y su pitido agudo cortó los sueños de Alex como un cuchillo. Alargó la mano a ciegas, golpeando el teléfono hasta que volvió el silencio.
+
+Solo cinco minutos más.
+
+Pero cinco minutos se convirtieron en diez, luego en quince. Cuando por fin abrió los ojos, el pánico se apoderó de él. La reunión importante era dentro de dos horas, y ni siquiera se había levantado de la cama.
+#+END_EXAMPLE
+
+** Consejos para escribir
+
+1. *Escribe debajo del bloque de propiedades*: nunca dentro de la sección ~:PROPERTIES:...:END:~
+2. *Pulsa Intro para los párrafos nuevos*: como en cualquier editor de texto
+3. *No te preocupes por el formato*: ¡escribe! Ya nos ocuparemos del formato más adelante
+4. *La sintaxis de Org-mode es opcional*: puedes usar /cursiva/, *negrita*, etc., pero el texto plano funciona bien
+5. *Guarda a menudo*: pulsa ~C-x C-s~ para guardar
+
+* Activar el modo Sin distracciones
+
+¡Ahora vamos a hacer que tu entorno de escritura te ayude a concentrarte!
+
+** Qué es el modo Sin distracciones
+
+Este modo:
+- Cambia a un tema optimizado para escribir
+- Centra tu texto en la pantalla
+- Oculta distracciones (la línea de modo, etc.)
+- Usa una fuente más grande y legible
+- Crea un entorno tranquilo y concentrado
+
+¡Piensa en él como en un «modo inmersivo» para escribir!
+
+** Paso 1: Activar el modo de escritura
+
+1. Pulsa ~F8~ para abrir el menú Hydra
+2. Pulsa ~m~ (de «Write», escribir)
+3. ¡El menú se cierra y tu entorno se transforma!
+
+Ahora deberías ver:
+- Un tema distinto (normalmente de colores más suaves)
+- Tu texto centrado en la pantalla
+- Una fuente más grande y legible
+- Un entorno de escritura tranquilo
+- Un indicador en la línea de modo: ~" ✍"~
+
+** Paso 2: Escribir en paz
+
+¡Ahora escribe tu escena! El entorno sin distracciones te ayuda a centrarte en la historia.
+
+Consejos mientras escribes:
+- El menú Hydra sigue funcionando (~F8~)
+- Todavía puedes guardar (~C-x C-s~)
+- Todas las órdenes de Emacs siguen funcionando
+- El entorno solo tiene otro aspecto
+
+** Paso 3: Salir del modo de escritura
+
+Cuando termines de escribir:
+
+1. Pulsa ~F8~ para abrir Hydra
+2. Pulsa ~m~ otra vez (se desactiva)
+3. Vuelve tu entorno normal
+
+*Nota*: también puedes salir ejecutando ~M-x org-scribe-writing-env-mode~ y pulsando Intro.
+
+* Otros modos de escritura
+
+El paquete tiene cuatro modos distintos. Aquí tienes un resumen rápido:
+
+** Modo 1: Sin distracciones (~F8 m~)
+*¡El que acabas de usar!*
+- Cambio de tema
+- Texto centrado
+- Fuente más grande
+- Documento completo visible
+
+*Ideal para*: sesiones de escritura normales
+
+** Modo 2: Enfoque (~F8 f~)
+- Todo lo del modo Sin distracciones
+- *Y además*: se limita a la escena actual
+- Muestra solo la escena en la que trabajas
+- Todo lo demás queda oculto
+
+*Ideal para*: concentrarte a fondo en una escena, sin distraerte con el resto del manuscrito
+
+** Modo 3: Navegación (~F8 v~)
+- Abre el árbol de archivos (todos los del proyecto) a la izquierda
+- Abre el esquema (la estructura del archivo actual) a la derecha
+- El documento principal en el centro
+
+*Ideal para*: moverte entre archivos, ver la estructura del proyecto, trabajar en varias escenas
+
+** Modo 4: Edición (~F8 e~)
+- Disposición de tres paneles
+- Panel izquierdo: un archivo de referencia
+- Centro: el manuscrito principal
+- Panel derecho: otro archivo de referencia
+- Tema de edición luminoso
+
+*Ideal para*: revisar, editar, comparar escenas, consultar notas mientras escribes
+
+** Qué modo debo usar
+
+| Modo                | Cuándo usarlo                                        |
+|---------------------+------------------------------------------------------|
+| Sin distracciones   | Escritura diaria, redactar escenas nuevas            |
+| Enfoque             | Escritura profunda, evitar distracciones, una escena |
+| Navegación          | Planificar, moverte, organizar                       |
+| Edición             | Revisión, comprobar la continuidad, editar           |
+| *Sin modo (normal)* | Ediciones rápidas, trabajar con propiedades, buscar  |
+
+*Recomendación para principiantes*: empieza con el modo Sin distracciones (~F8 m~). ¡Prueba el modo Enfoque cuando te sientas aventurero!
+
+* Insertar capítulos (solo proyectos de novela)
+
+Si trabajas en una novela, querrás añadir capítulos.
+
+** Inserción rápida de un capítulo
+
+1. Ve al encabezado de tu acto (p. ej., ~* Acto I~)
+2. Muévete al final del último capítulo
+3. Pulsa ~F8~ (menú Hydra)
+4. Pulsa ~c~ (de «Chapter», capítulo)
+5. Escribe el título del capítulo cuando se te pida
+6. ¡Aparece una plantilla de capítulo!
+
+Ejemplo de resultado: la inserción de un capítulo también inserta debajo una primera escena lista para rellenar, así que obtienes las dos cosas en un solo paso:
+
+#+BEGIN_EXAMPLE
+,** TODO El descubrimiento :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
+:END:
+
+,*** TODO Escena nueva :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 500
+:PoV:
+:Personajes:
+:Trama:
+:Punto-de-trama:
+:Linea-temporal:
+:Localizacion:
+:Objetos:
+:Descripcion:
+:Resumen:
+:Motivacion-escena:
+:Fuente-conflicto:
+:Brecha:
+:Que-esta-en-juego:
+:Problema-mundo:
+:Emocion:
+:Nivel-tension:
+:Resultado:
+:Decision-secuela:
+:Comentario:
+:END:
+
+{{{scene-break}}}
+#+END_EXAMPLE
+
+El cursor se coloca en la propiedad ~:PoV:~ de la escena nueva, listo para escribir: el mismo lugar de aterrizaje que produce ~org-scribe-insert-scene~. ¡Inserta más escenas bajo este capítulo con ~F8 s~!
+
+* Tu flujo de escritura básico
+
+Aquí tienes un flujo diario sencillo con lo que has aprendido:
+
+** Sesión de escritura de la mañana
+
+1. *Abre tu manuscrito* (~C-x C-f~ → cuento.org o novela.org)
+2. *Ve por donde lo dejaste* (desplázate o usa ~C-s~ para buscar)
+3. *Activa el modo de escritura* (~F8 m~)
+4. *Escribe tu escena*
+5. *Guarda tu trabajo* (~C-x C-s~)
+6. *Sal del modo de escritura* (~F8 m~)
+
+** Añadir una escena nueva a mitad de sesión
+
+1. *Coloca el cursor* donde debe ir la escena nueva
+2. *Abre Hydra* (~F8~)
+3. *Inserta la escena* (~s~)
+4. *Escribe el título*
+5. *Rellena las propiedades esenciales* (PoV, Personajes, Localización)
+6. *Escribe el contenido de la escena*
+7. *Guarda* (~C-x C-s~)
+
+** Después de escribir
+
+1. *Cuenta tus palabras* (¡lo aprenderemos en la Lección 3!)
+2. *Haz commit en git* (opcional, lo veremos más adelante)
+3. *Cierra o deja abierto* para mañana
+
+* Ejercicio práctico (15 minutos)
+
+¡Vamos a practicar todo lo que has aprendido!
+
+** Ejercicio: escribe tres miniescenas
+
+Crea tres escenas muy cortas (100-200 palabras cada una) con esta estructura:
+
+*** Escena 1: Mañana
+- PoV: tu protagonista
+- Localización: dormitorio o cocina
+- Qué pasa: el personaje se despierta o desayuna
+- *Objetivo*: practicar cómo se inserta una escena y se rellenan las propiedades
+
+*** Escena 2: Encuentro
+- PoV: tu protagonista
+- Localización: el exterior (calle, cafetería, parque)
+- Personajes: el protagonista + otra persona
+- Qué pasa: conoce a alguien o ve algo interesante
+- *Objetivo*: practicar escenas con varios personajes
+
+*** Escena 3: Tarde-noche
+- PoV: tu protagonista
+- Localización: distinta de la Escena 1
+- Qué pasa: el personaje reflexiona sobre el día
+- *Objetivo*: practicar la escritura en el modo Sin distracciones
+
+** Pasos:
+
+1. Inserta la Escena 1 (~F8 s~)
+2. Rellena las propiedades
+3. Escribe 100-200 palabras
+4. Activa el modo Sin distracciones (~F8 m~)
+5. Inserta la Escena 2
+6. Rellena las propiedades
+7. Escribe 100-200 palabras (aún en el modo Sin distracciones)
+8. Inserta la Escena 3
+9. Rellena las propiedades
+10. Escribe 100-200 palabras
+11. Sal del modo Sin distracciones (~F8 m~)
+12. Guarda tu trabajo (~C-x C-s~)
+
+*Límite de tiempo*: 15 minutos en total (5 minutos por escena)
+
+¡No te preocupes por la calidad! Esto es práctica. Escribe lo que sea, hasta texto de relleno tipo «Lorem ipsum». El objetivo es aprender el flujo.
+
+* Preguntas frecuentes
+
+** «¿Tengo que rellenar todas las propiedades?»
+
+*¡No!* Rellena lo que te sea útil. Muchos escritores solo usan:
+- PoV
+- Personajes
+- Localización
+
+Las demás propiedades están ahí por si las necesitas, sobre todo durante la revisión.
+
+** «¿Puedo escribir sin usar la plantilla?»
+
+*¡Sí!* Puedes escribir texto plano directamente. Las plantillas solo aportan estructura y metadatos que facilitan buscar y hacer seguimiento más adelante.
+
+** «¿Y si me equivoco en las propiedades?»
+
+¡Las propiedades son fáciles de editar! Solo tienes que hacer clic en la línea y cambiar el texto. Son solo texto, no magia.
+
+** «¿Puedo borrar una escena?»
+
+¡Sí! Borra el encabezado y todo lo que cuelga de él (hasta el siguiente encabezado del mismo nivel o de un nivel superior). Usa ~C-k~ para cortar líneas.
+
+** «¿Por qué mi escena se llama "Escena 1" aunque es la tercera?»
+
+La plantilla no numera. La única escena que se llama «Escena 1» es la primera, que ya viene con el proyecto nuevo; las que insertas con ~F8 s~ llevan exactamente el título que escribes. Puedes cambiar los nombres a mano o ignorarlos: ¡son solo etiquetas!
+
+** «¿Puedo usar otros estados TODO además de TODO y DONE?»
+
+Los usuarios avanzados pueden configurar estados TODO propios, pero TODO/DONE funciona perfectamente para principiantes.
+
+* Solución de problemas
+
+** «El menú Hydra no se abre cuando pulso F8»
+
+*Soluciones*:
+1. Asegúrate de que estás pulsando F8
+2. Prueba ~M-x hydra-org-scribe/body~
+3. Comprueba que org-scribe-mode está activado (busca ~" Write"~ en la línea de modo)
+4. Si hace falta: ~M-x org-scribe-mode~ para activarlo
+
+** «La plantilla de escena se ve rara o incompleta»
+
+*Puede ocurrir si*:
+- Estás en medio del bloque de propiedades cuando insertas
+- La posición del cursor no era la adecuada
+
+*Solución*:
+1. Pulsa ~C-g~ para cancelar
+2. Borra la plantilla incompleta
+3. Coloca bien el cursor (al final de una línea, debajo del encabezado del capítulo o de la sección)
+4. Inténtalo de nuevo
+
+** «No puedo salir del modo de escritura»
+
+*Soluciones*:
+1. Prueba ~F8 m~ otra vez
+2. O: ~M-x org-scribe-writing-env-mode~ para desactivarlo
+3. Reinicia Emacs si sigues atascado (¡tu trabajo está guardado!)
+
+** «Mi texto no se centra en el modo de escritura»
+
+*Es normal si*:
+- La ventana de Emacs es muy ancha
+- No tienes instalado writeroom-mode
+
+*Solución*: ¡el modo sigue funcionando! El tema y la fuente son sus funciones principales.
+
+** «Las propiedades de la escena aparecen como texto normal»
+
+¡Está bien! Las propiedades son texto. Cuando pliegas el encabezado (con Tab en la línea del encabezado), se ocultan. Es el comportamiento normal de Org-mode.
+
+* Lo que has aprendido
+
+¡Excelente trabajo! Has completado la Lección 2. Ahora sabes:
+
+✓ Cómo funciona la estructura del manuscrito (actos, capítulos, escenas)
+✓ Cómo insertar escenas con la plantilla (~F8 s~)
+✓ Qué son las propiedades de escena y por qué son útiles
+✓ Cómo rellenar las propiedades esenciales (PoV, Personajes, Localización)
+✓ Cómo escribir el contenido de la escena debajo de las propiedades
+✓ Cómo activar el modo Sin distracciones (~F8 m~)
+✓ Los cuatro modos de escritura disponibles
+✓ El flujo de escritura diario básico
+✓ Cómo insertar capítulos (novelas)
+
+* Próximos pasos
+
+¿Listo para aprender a seguir tu progreso? ¡Ve a la [[file:primeros-pasos-03-seguimiento-progreso.org][Lección 3: Seguir tu progreso]]!
+
+En la próxima lección aprenderás:
+- A contar palabras con exactitud
+- A fijar objetivos de recuento de palabras
+- A generar tablas de seguimiento del progreso
+- A ver tus estadísticas diarias de escritura
+- A mantener la motivación con un progreso visual
+
+** Práctica antes de seguir
+
+Antes de la Lección 3, refuerza lo aprendido:
+
+1. Escribe al menos 500 palabras en tu proyecto
+2. Prueba los cuatro modos de escritura (sin distracciones, enfoque, navegación y edición)
+3. Inserta 5 escenas distintas con las propiedades completas
+4. Practica el flujo diario: abrir → activar el modo → escribir → guardar → cerrar
+5. Experimenta plegando y desplegando encabezados (tecla Tab en la línea del encabezado)
+
+¡Cuanto más practiques, más natural te resultará!
+
+* Referencia rápida
+
+** Órdenes esenciales
+
+| Orden               | Tecla     | Qué hace                                    |
+|---------------------+-----------+---------------------------------------------|
+| Abrir el menú Hydra | ~F8~      | Acceder a todas las funciones               |
+| Insertar escena     | ~F8 s~    | Añadir una plantilla de escena              |
+| Insertar capítulo   | ~F8 c~    | Añadir un capítulo (novelas)                |
+| Modo de escritura   | ~F8 m~    | Alternar el modo Sin distracciones          |
+| Modo Enfoque        | ~F8 f~    | Alternar el modo Enfoque                    |
+| Guardar archivo     | ~C-x C-s~ | Guardar tu trabajo                          |
+| Plegar encabezado   | ~Tab~     | Ocultar/mostrar el contenido del encabezado |
+
+** Hoja de referencia de las propiedades de escena
+
+*Esenciales* (úsalas siempre):
+- ~:PoV:~ - ¿Desde la perspectiva de quién?
+- ~:Personajes:~ - ¿Quién aparece?
+- ~:Localizacion:~ - ¿Dónde es?
+
+*Útiles* (úsalas al planificar):
+- ~:Trama:~ - ¿Qué hilos de la trama?
+- ~:Punto-de-trama:~ - ¿Qué irrenunciable sirve?
+- ~:Linea-temporal:~ - ¿Cuándo, en el tiempo de la historia?
+- ~:Descripcion:~ - Resumen de una línea
+- ~:WORD-OBJECTIVE:~ - Objetivo de palabras
+
+*Opcionales* (úsalas durante la revisión):
+- ~:Resumen:~ - Descripción más larga
+- ~:Motivacion-escena:~ - ¿Por qué esta escena?
+- ~:Fuente-conflicto:~ - ¿Cuál es la tensión?
+- ~:Brecha:~ - Expectativa frente a lo que ocurre
+- ~:Que-esta-en-juego:~ - ¿Qué pueden perder?
+- ~:Problema-mundo:~ - Lo que el mundo les echa encima
+- ~:Emocion:~ - El tono emocional de la escena
+- ~:Nivel-tension:~ - ¿Cuán tensa es?
+- ~:Resultado:~ - ¿Cómo termina?
+- ~:Decision-secuela:~ - ¿Qué deciden a continuación?
+- ~:Comentario:~ - Tus notas
+
+** Guía rápida de los modos de escritura
+
+| Modo              | Tecla Hydra | Ideal para                         |
+|-------------------+-------------+------------------------------------|
+| Normal            | (ninguna)   | Editar propiedades                 |
+| Sin distracciones | ~m~         | Escritura diaria                   |
+| Enfoque           | ~f~         | Concentración profunda, una escena |
+| Navegación        | ~v~         | Moverte, organizar                 |
+| Edición           | ~e~         | Revisión, archivos de referencia   |
+
+* Consejos para el éxito
+
+1. *Empieza poco a poco*: escribe 250 palabras al día para crear el hábito
+2. *Usa el modo de escritura*: ¡de verdad ayuda a concentrarse!
+3. *No planifiques de más las propiedades*: rellena lo útil, salta el resto
+4. *Guarda a menudo*: ~C-x C-s~ debería ser automático
+5. *Pliega las escenas terminadas*: pulsa Tab en el encabezado para ocultar el contenido
+6. *Una escena cada vez*: no te preocupes aún por toda la historia
+7. *Las propiedades pueden esperar*: ¡puedes rellenarlas durante la revisión!
+
+---
+
+*Anterior*: [[file:primeros-pasos-01-crear-proyectos.org][Lección 1: Crear tu primer proyecto]]
+*Siguiente*: [[file:primeros-pasos-03-seguimiento-progreso.org][Lección 3: Seguir tu progreso]]
+
+*¡Lección 2 completada!* ✓

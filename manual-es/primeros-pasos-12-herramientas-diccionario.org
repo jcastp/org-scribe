@@ -1,0 +1,1020 @@
+#+TITLE: Lección 12: Herramientas de diccionario e idioma
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-12-dictionary-tools.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-12-dictionary-tools.org][English version]]/
+
+* ¡Bienvenido a la Lección 12!
+
+Estás metido de lleno en la escritura y te topas con una palabra que no acaba de sonar bien. ¿Paras, abres un navegador, buscas sinónimos y pierdes el hilo? Ya no. Esta lección te enseña a consultar definiciones, buscar sinónimos y obtener traducciones sin salir de Emacs.
+
+Al terminar la lección habrás:
+- Aprendido a consultar definiciones en español, en línea con la RAE o sin conexión
+- Instalado un tesauro *sin conexión* para que la búsqueda de sinónimos funcione sin red
+- Visto cómo ejecutar un Wikcionario local para tener definiciones sin conexión
+- Descubierto cómo encontrar sinónimos rápidamente en una ventana lateral
+- Entendido las opciones de integración con la traducción
+- Practicado consultas rápidas que no rompen tu ritmo de escritura
+- Personalizado las herramientas de diccionario a tu flujo de trabajo
+
+*Tiempo estimado*: 15-20 minutos
+
+* Antes de empezar
+
+** Lo que necesitas
+
+✓ Un proyecto de escritura abierto (vale cualquiera)
+✓ El archivo de tu manuscrito abierto
+✓ Conexión a internet: para el diccionario de la RAE y, para los sinónimos, *hasta que* instales el tesauro sin conexión que se describe más abajo
+
+** Nota sobre los idiomas
+
+Estas herramientas son especialmente útiles para:
+- *Escritores en español* que usan el diccionario de la RAE para tener definiciones de referencia
+- *Escritores bilingües* que alternan entre idiomas
+- *Escritores en inglés* que buscan sinónimos (para el inglés, ver «Cambiar de idioma» más abajo)
+- *Escritores en una segunda lengua* que comprueban el uso y el significado de las palabras
+
+Las herramientas funcionan con las plantillas en inglés y en español de ~org-scribe~.
+
+** Comprobación rápida
+
+Verifiquemos que el módulo del diccionario está cargado:
+
+1. Pulsa ~M-x~ (Alt+x u Option+x)
+2. Empieza a escribir: ~org-scribe-dictionary-lookup~
+3. Debería aparecer en la lista de completado
+
+Si aparece, estás listo. Las herramientas de diccionario forman parte del paquete principal.
+
+* Entender las herramientas disponibles
+
+~org-scribe~ integra tres tipos de herramientas de idioma:
+
+** 1. Definiciones (sin conexión o en línea)
+
+La consulta de definiciones es una sola orden, ~org-scribe-dictionary-lookup~ (~F8 d~), con dos posibles fuentes detrás:
+
+*En línea: la API de la RAE* (lo predeterminado cuando no hay nada local configurado):
+- Diccionario oficial de la Real Academia Española
+- Fuente de referencia para las definiciones de palabras en español
+- Etimología, varias acepciones, sinónimos, antónimos, conjugaciones verbales
+- Pasa por ~rae-api.com~, un servicio no oficial, y necesita conexión
+
+*Sin conexión: un Wikcionario local* (necesita una configuración única, que se explica más abajo):
+- El Wikcionario en español, servido desde un archivo de tu propio disco
+- Definiciones, etimología, acepciones numeradas con ejemplos de uso, y sinónimos y antónimos por acepción
+- Instantáneo y funciona sin red
+- Las palabras flexionadas se resuelven a su forma de diccionario (~corriendo~ → ~correr~)
+
+*¿Por qué no una RAE sin conexión?* No existe. El diccionario de la RAE tiene derechos de autor y nunca se ha publicado con una licencia libre; por eso mismo la consulta en línea pasa por una API no oficial y no por una oficial. El Wikcionario es la alternativa sin conexión.
+
+*Ideal para*:
+- Escribir en español
+- Comprobar el uso formal y correcto
+- Entender el origen de las palabras
+- Encontrar sinónimos y antónimos mientras redactas
+
+** 2. Sinónimos (sin conexión o en línea)
+
+La búsqueda de sinónimos es una sola orden, ~org-scribe-sinonimo~, con dos posibles fuentes detrás:
+
+*Sin conexión: el tesauro MyThes* (recomendado, necesita una instalación única):
+- Lee un archivo de datos de tu propio disco; sin red, sin esperas
+- Es el mismo tesauro que usa LibreOffice
+- Los resultados aparecen en un búfer de Org con las acepciones agrupadas, de modo que puedes copiar una palabra directamente a tu manuscrito
+- Con ~hunspell~ también instalado, encuentra además las palabras flexionadas (~corriendo~ → ~correr~)
+
+*En línea: los sinónimos de la API de la RAE* (la alternativa, no necesita nada):
+- Se usa automáticamente cuando no tienes datos locales o cuando una palabra no tiene entrada local
+- Se muestra en la misma ventana lateral y con el mismo formato que los resultados sin conexión
+
+No eliges entre ellas en cada consulta. org-scribe prueba primero el tesauro local y recurre a la red si hace falta, así que siempre obtienes una respuesta. La instalación de los datos sin conexión se explica en la sección siguiente.
+
+*Ideal para*:
+- Encontrar rápidamente palabras alternativas
+- Evitar repeticiones
+- Explorar matices de las palabras
+- Recorrer vocabulario relacionado
+
+** 3. Traducción (externa)
+
+*Qué es*:
+- Integración con el paquete ~gt~ (Google Translate para Emacs)
+- No viene incluido en ~org-scribe~, pero funciona a su lado
+- Admite muchos idiomas y motores de traducción
+
+*Ideal para*:
+- Escritores bilingües
+- Escribir en una segunda lengua
+- Comprobaciones rápidas de traducción
+- Proyectos en varios idiomas
+
+*Nota*: la traducción requiere instalar el paquete ~gt~ por separado. Lo veremos al final de la lección.
+
+* Usar el diccionario
+
+Busquemos una palabra en español. La orden es la misma tanto si la definición viene de tu disco como de la RAE en línea: org-scribe elige la fuente.
+
+** Paso 1: Selecciona o escribe una palabra
+
+Tienes dos opciones:
+
+*Opción A: selecciona una palabra de tu texto*:
+1. Coloca el cursor sobre una palabra de tu manuscrito
+2. Pulsa ~M-@~ para seleccionar la palabra (o selecciónala a mano)
+
+*Opción B: busca cualquier palabra*:
+Deja el cursor donde sea: escribirás la palabra cuando se te pida.
+
+** Paso 2: Invoca el diccionario
+
+Pulsa ~F8~ para abrir el menú Hydra y luego ~d~ (de «Dictionary»).
+
+Verás una pregunta:
+#+BEGIN_EXAMPLE
+Palabra a buscar:
+#+END_EXAMPLE
+
+Escribe la palabra en español que quieres consultar y pulsa ~Intro~. (Si tus mensajes están en inglés, la pregunta saldrá en inglés; ver «¿No se encuentra la palabra?» más abajo.)
+
+*¿Qué fuente responde?* Con un Wikcionario local en marcha, responde ese, al instante; si no, se consulta la RAE en línea. Para forzar una u otra en una consulta concreta, mira «Elegir una fuente» al final de esta sección.
+
+** Paso 3: Revisa los resultados
+
+Se abre un búfer nuevo con la definición de la palabra en formato Org. Verás:
+
+#+BEGIN_EXAMPLE
+#+TITLE: escribir
+
+,* Etimología
+Del lat. scribĕre.
+
+,* Definiciones
+
+,** 1. /verbo transitivo/
+Representar las palabras o las ideas con letras u otros signos trazados en papel u otra superficie.
+
+,*** Sinónimos: redactar, anotar, inscribir
+
+,** 2. /verbo transitivo/
+Componer libros, discursos, etc.
+
+,*** Sinónimos: componer, crear, redactar
+
+,** 3. /verbo intransitivo/
+Comunicarse por carta con alguien.
+
+,* Conjugaciones
+
+INDICATIVO:
+  presente:
+    yo: escribo
+    tú: escribes
+    él: escribe
+    nosotros: escribimos
+    vosotros: escribís
+    ellos: escriben
+  ...
+#+END_EXAMPLE
+
+** Qué obtienes
+
+La consulta a la RAE ofrece:
+
+1. *Etimología* (~Etimología~): origen e historia de la palabra
+2. *Definiciones*: acepciones numeradas con su categoría gramatical
+3. *Sinónimos* (~Sinónimos~): palabras alternativas para cada acepción
+4. *Antónimos* (~Antónimos~): significados opuestos (cuando los hay)
+5. *Conjugaciones* (~Conjugaciones~): tablas completas de conjugación (para los verbos)
+
+** Consejos de navegación
+
+El búfer de resultados está en modo Org, así que puedes:
+- Pulsar ~Tab~ en los encabezados para plegar o desplegar secciones
+- Pulsar ~C-c C-n~ / ~C-c C-p~ para saltar entre encabezados
+- Pulsar ~q~ para cerrar el búfer
+- Copiar definiciones directamente a tus notas
+
+** Ejemplo: ¡pruébalo ahora!
+
+Practiquemos:
+
+1. Pulsa ~F8~ y luego ~d~
+2. Escribe: ~buscar~
+3. Pulsa ~Intro~
+4. Explora las definiciones, los sinónimos y las conjugaciones
+5. Fíjate en cómo está organizada la información en encabezados de Org
+
+** ¿No se encuentra la palabra?
+
+Si la palabra no está en el diccionario, verás un encabezado de «no encontrada» y una lista de sugerencias. A diferencia de los encabezados de la definición que se muestran arriba (~Etimología~, ~Definiciones~, etc., que siempre están en español porque describen el contenido del propio diccionario), este mensaje es una de las cadenas de interfaz propias de org-scribe, así que su texto sigue el ajuste ~org-scribe-message-language~ (por defecto, inglés):
+
+#+BEGIN_EXAMPLE
+,* Word not found: buskrar
+
+,** Suggestions:
+- buscar
+- busqué
+- buscará
+#+END_EXAMPLE
+
+Con ~(setq org-scribe-message-language 'es)~, la misma consulta muestra en cambio:
+
+#+BEGIN_EXAMPLE
+,* Palabra no encontrada: buskrar
+
+,** Sugerencias:
+- buscar
+- busqué
+- buscará
+#+END_EXAMPLE
+
+La API ofrece sugerencias de palabras de ortografía parecida. Cierra este búfer y vuelve a intentarlo con una de las sugeridas.
+
+** Descubrir palabras al azar
+
+¿Quieres inspiración o ampliar vocabulario?
+
+Pulsa ~M-x~ y escribe ~org-scribe-rae-api-random~: obtiene una palabra al azar del diccionario de la RAE y muestra su definición. Es estupendo para:
+- Descubrir palabras nuevas
+- Romper un bloqueo de escritor
+- Practicar vocabulario a diario
+- Encontrar inspiración inesperada
+
+* Instalar las definiciones sin conexión (opcional, ~30 minutos)
+
+Es la más pesada de las dos instalaciones sin conexión: una descarga de 566 MB y un servicio en segundo plano. Merece la pena si escribes sin conexión; sáltatela si no: la RAE en línea sigue funcionando, y la instalación del *tesauro* de la sección siguiente es mucho más barata y te ayuda más a menudo mientras redactas.
+
+** Paso 1: Instala kiwix-serve
+
+#+BEGIN_SRC sh
+sudo apt install kiwix-tools      # Debian/Ubuntu
+sudo dnf install kiwix-tools      # Fedora
+sudo pacman -S kiwix-tools        # Arch
+#+END_SRC
+
+** Paso 2: Descarga el Wikcionario
+
+Un solo archivo, que se descarga una vez, desde https://library.kiwix.org (busca «Wikcionario»):
+
+#+BEGIN_SRC sh
+  mkdir -p ~/zim
+  # este es el más reciente en el momento de escribir este manual. Comprueba el tuyo
+  wget https://download.kiwix.org/zim/wiktionary/wiktionary_es_all_nopic_2026-06.zim -O ~/zim/wiktionary_es_all_nopic.zim
+#+END_SRC
+
+Elige la versión ~nopic~: ocupa 566 MB frente a 997 MB, tiene /más/ artículos que la ~maxi~ (948 486) y las imágenes que omite no sirven de nada en un diccionario.
+
+** Paso 3: Ejecuta el servidor
+
+*org-scribe nunca arranca ni detiene este servidor.* Solo comprueba si responde y te avisa si no lo hace. Así Emacs no tiene que supervisar un demonio, pero eso significa que tienes que ejecutarlo tú.
+
+La manera ordenada es una unidad de usuario de systemd, que sobrevive a los reinicios:
+
+#+BEGIN_SRC conf
+# ~/.config/systemd/user/kiwix-serve.service
+[Unit]
+Description=kiwix-serve (local Wikcionario for org-scribe)
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/kiwix-serve --port 8080 %h/zim/wiktionary_es_all_nopic.zim
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+#+END_SRC
+
+#+BEGIN_SRC sh
+systemctl --user daemon-reload
+systemctl --user enable --now kiwix-serve.service
+systemctl --user status kiwix-serve.service
+#+END_SRC
+
+Para probarlo antes de comprometerte con un servicio, ejecútalo en una terminal:
+
+#+BEGIN_SRC sh
+kiwix-serve --port 8080 ~/zim/wiktionary_es_all_nopic.zim
+#+END_SRC
+
+** Paso 4: Verifica
+
+#+BEGIN_SRC emacs-lisp
+(org-scribe-wikcionario-available-p)   ;; => t
+(org-scribe-wikcionario-book)          ;; => "wiktionary_es_all_nopic"
+#+END_SRC
+
+No hay nada más que configurar: org-scribe le pregunta al servidor qué libro contiene. Si lo ejecutas en otro puerto, ajusta ~org-scribe-wikcionario-url~.
+
+** Qué cambia
+
+La misma orden, la misma tecla. Las definiciones llegan ahora al instante y sin conexión, y además:
+
+- *Las palabras flexionadas se resuelven.* Al consultar ~corriendo~ se abre ~correr~ y te lo dice. El Wikcionario sí tiene una página ~corriendo~, pero todo su contenido es «Gerundio de correr»; seguir ese puntero es lo que querías de todos modos.
+- *Una palabra ausente se informa como ausente*, con sugerencias, en lugar de irse en silencio a la red. Esa distinción importa: si no, un hueco en tus datos locales se ve igual que una consulta normal en línea. Con el ajuste por defecto (~auto~), org-scribe te /ofrece/ entonces consultar la RAE en línea.
+
+** Si arrancas el servidor después de Emacs
+
+La disponibilidad se comprueba una vez por sesión y se recuerda, para que las consultas no tengan esperas. Por eso un servidor arrancado más tarde no se detecta. Fuerza una comprobación nueva con un argumento de prefijo:
+
+#+BEGIN_EXAMPLE
+C-u F8 d
+#+END_EXAMPLE
+
+o ejecuta ~M-x org-scribe-wikcionario-clear-cache~.
+
+** Elegir una fuente
+
+#+BEGIN_SRC emacs-lisp
+;; 'auto (por defecto): el servidor local cuando responde, la RAE en línea si no
+;; 'wikcionario    : solo local; nunca consulta la red
+;; 'rae-api        : siempre la RAE en línea
+(setq org-scribe-dictionary-backend 'auto)
+#+END_SRC
+
+~M-x org-scribe-rae-api-lookup~ sigue consultando directamente la RAE cuando quieras esa fuente concreta, diga lo que diga el ajuste del backend.
+
+* Instalar el tesauro sin conexión (10 minutos, una vez)
+
+Es el paso de instalación que más merece la pena de esta lección. Una vez hecho, la búsqueda de sinónimos es instantánea, funciona en un tren sin cobertura y te da resultados mejor organizados que una página web.
+
+** Paso 1: Instala los datos
+
+Los datos del tesauro vienen del gestor de paquetes de tu *sistema operativo*, no de Emacs. Elige tu sistema:
+
+#+BEGIN_SRC sh
+# Debian / Ubuntu / Linux Mint
+sudo apt install mythes-es
+
+# Fedora
+sudo dnf install mythes-es
+
+# Arch / Manjaro
+sudo pacman -S mythes-es
+#+END_SRC
+
+¿Escribes en inglés? Instala ~mythes-en-us~ en su lugar (o además).
+
+*Qué instala*: dos archivos de datos en ~/usr/share/mythes/~, unos 3 MB en total. Es el tesauro de LibreOffice, con licencia libre. Sin paquete de Emacs, sin archivo de configuración, sin cuenta.
+
+** Paso 2: Instala hunspell (recomendado)
+
+Casi seguro que ya lo tienes: es lo que Emacs usa para el corrector ortográfico. Si no:
+
+#+BEGIN_SRC sh
+sudo apt install hunspell hunspell-es      # Debian/Ubuntu
+#+END_SRC
+
+*Por qué importa*: tu manuscrito contiene ~corriendo~, ~oscurecía~, ~abandonadas~. El tesauro está indexado bajo ~correr~, ~oscurecer~, ~abandonar~. hunspell es lo que une ambas cosas. Sin él, buscar un verbo conjugado no encuentra nada, y eso se lee como «esta palabra no tiene sinónimos» y no como «esta palabra necesita su forma de diccionario».
+
+** Paso 3: Verifica
+
+Reinicia Emacs (o simplemente evalúa la comprobación de abajo) y confirma:
+
+#+BEGIN_SRC emacs-lisp
+(org-scribe-mythes-available-p)   ;; => t
+(org-scribe-lemma "corriendo")    ;; => "correr"
+#+END_SRC
+
+Para evaluar una línea: coloca el cursor al final de ella y pulsa ~C-x C-e~. El resultado aparece en el área de eco, en la parte inferior de la pantalla.
+
+Si la primera devuelve ~t~, has terminado: no hay nada más que configurar.
+
+*Si devuelve ~nil~*: mira «Cuando no encuentra los datos» al final de esta sección.
+
+** Qué ha cambiado
+
+Nada en cuanto a cómo lo usas. La misma orden, la misma tecla, la misma ventana lateral. La diferencia está en de dónde viene la respuesta:
+
+| Situación                                | Qué ocurre                        |
+|------------------------------------------+-----------------------------------|
+| La palabra está en tu tesauro local      | Búfer de Org instantáneo, sin red |
+| La palabra está flexionada (~corriendo~) | Encuentra ~correr~ y te lo dice   |
+| La palabra no tiene entrada local        | Recurre a la RAE en línea         |
+| No hay datos locales instalados          | La RAE en línea, como siempre     |
+
+** Cuando no encuentra los datos
+
+Comprueba qué ve org-scribe:
+
+#+BEGIN_SRC emacs-lisp
+(org-scribe-mythes-files)   ;; => ("/usr/share/mythes/th_es_ES_v2.dat" . "...idx")
+#+END_SRC
+
+Si es ~nil~, lista el directorio (~ls /usr/share/mythes/~) y busca un par de archivos llamados ~th_<idioma>_v2.dat~ y ~th_<idioma>_v2.idx~.
+
+Si están en otro sitio, o se llaman según otro idioma:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-mythes-directory "/usr/share/mythes/")
+(setq org-scribe-mythes-language "es_ES")   ; o es_MX, en_US, ...
+#+END_SRC
+
+En Debian y Ubuntu, todas las variantes regionales del español (~es_MX~, ~es_AR~, ~es_CO~ …) son enlaces a los mismos datos, así que poner tu región no cuesta ninguna descarga extra.
+
+* Buscar sinónimos
+
+A veces necesitas alternativas rápido. Una sola orden cubre las dos fuentes.
+
+Los textos que org-scribe añade a estos resultados (el título «Sinónimos: …», «Acepción 1», los avisos) siguen el ajuste ~org-scribe-message-language~, que por defecto es inglés. Los ejemplos de esta lección los muestran con ~(setq org-scribe-message-language 'es)~.
+
+** Paso 1: Invoca la búsqueda de sinónimos
+
+Pulsa ~F8~ para abrir el menú Hydra y luego ~y~ (de «sYnonyms»).
+
+Verás una pregunta:
+#+BEGIN_EXAMPLE
+Palabra de la que buscar sinónimos:
+#+END_EXAMPLE
+
+Escribe tu palabra y pulsa ~Intro~.
+
+** Paso 2a: Leer los resultados sin conexión
+
+Con el tesauro instalado, se abre una ventana lateral con un búfer de Org:
+
+#+BEGIN_EXAMPLE
+┌────────────────────────────┬──────────────────────────────────┐
+│ Tu manuscrito              │ *Sinónimos: abandonar*           │
+│                            │                                  │
+│ Alex abandonó la casa.     │ #+TITLE: Sinónimos: abandonar    │
+│                            │                                  │
+│ ¿"abandonar" otra vez?     │ * Acepción 1 /prnl./             │
+│                            │ abandonarse, dejarse llevar,     │
+│                            │ confiarse, darse, entregarse     │
+│                            │                                  │
+│                            │ * Acepción 2 /tr./               │
+│                            │ desistir, renunciar, marcharse,  │
+│                            │ dejar, ceder, descuidar          │
+│                            │                                  │
+│                            │ * Acepción 3                     │
+│                            │ aparcar, posponer, retrasar      │
+└────────────────────────────┴──────────────────────────────────┘
+#+END_EXAMPLE
+
+*Cómo leer las acepciones*: cada encabezado es un significado distinto. La acepción 2 de arriba es «renunciar a algo»; la 3 es «posponer». Elegir un sinónimo de la acepción equivocada es el error clásico con los tesauros, y la agrupación está ahí para evitarlo.
+
+La mayoría de las entradas en español no llevan etiqueta gramatical, por eso las acepciones van numeradas: el número es a menudo lo único que separa un significado de otro. Cuando /sí/ hay etiqueta, aparece en cursiva (~/tr./~ = verbo transitivo, ~/prnl./~ = pronominal, ~/m./~ = sustantivo masculino, ~/f./~ = sustantivo femenino).
+
+*Es un búfer de Org*, así que todo lo que sabes funciona: ~C-c C-n~ salta a la acepción siguiente, el plegado funciona y puedes copiar una palabra con las teclas de siempre y pegarla en tu manuscrito.
+
+** Paso 2b: Cuando se busca una palabra flexionada
+
+Busca ~corriendo~ y verás esta línea bajo el título:
+
+#+BEGIN_EXAMPLE
+#+TITLE: Sinónimos: correr
+
+# Sin entrada para corriendo; mostrando sinónimos de correr
+#+END_EXAMPLE
+
+El mismo aviso aparece en el área de eco. Es deliberado: preguntaste por una palabra y se te muestra otra, y nunca deberías tener que adivinar si ha ocurrido. (Es un comentario de Org, así que si alguna vez copias el búfer a otro sitio no se exportará ni contará para tu total de palabras.)
+
+Una simple diferencia de mayúsculas (buscar ~Miedo~ y encontrar ~miedo~) *no* se anuncia, porque no se ha sustituido nada significativo.
+
+** Paso 2c: Leer los resultados en línea
+
+Sin datos locales, o para una palabra sin entrada local, org-scribe pregunta por los sinónimos a la API de la RAE y los muestra en la *misma ventana lateral y con el mismo formato* que los resultados sin conexión. Las etiquetas de las acepciones son las abreviaturas propias de la RAE.
+
+#+BEGIN_EXAMPLE
+┌────────────────────────────┬──────────────────────────────────┐
+│ Tu manuscrito              │ *Sinónimos: buscar*              │
+│                            │                                  │
+│ Alex buscó la llave.       │ #+TITLE: Sinónimos: buscar       │
+│ Sam buscó detrás.          │                                  │
+│                            │ * Acepción 1 /tr./               │
+│ «Buscó»: ¡hace falta un    │ indagar, investigar, explorar,   │
+│ sinónimo!                  │ rastrear                         │
+└────────────────────────────┴──────────────────────────────────┘
+#+END_EXAMPLE
+
+La respuesta llega de forma asíncrona. Si la palabra no existe o no tiene sinónimos, se avisa en el área de eco («No se encontraron sinónimos para: …»); nunca queda un búfer en blanco.
+
+(El original inglés dice aquí que el respaldo en línea era una página de WordReference en un navegador eww. Ya no es así: WordReference dejó de responder y el respaldo es la API de la RAE, que se pinta como el resto.)
+
+** Navegación en la ventana lateral
+
+Los resultados, sin conexión o en línea, son un búfer normal de Org:
+- *Desplazarse*: flechas o ~C-n~ / ~C-p~
+- *Acepción siguiente / anterior*: ~C-c C-n~ / ~C-c C-p~
+- *Cerrar la ventana*: ~q~
+
+En ambos casos, ~C-x }~ y ~C-x {~ ajustan el ancho durante la sesión actual.
+
+** Personalizar el ancho de la ventana
+
+Por defecto, la ventana de sinónimos mide 80 caracteres de ancho. Para cambiarlo:
+
+#+BEGIN_SRC elisp
+;; Añade a tu configuración de Emacs
+(setq org-scribe-sinonimo-window-width 100)  ; más ancha
+#+END_SRC
+
+Ajusta el número a tu pantalla y tus preferencias. Vale para los resultados sin conexión y en línea.
+
+** Elegir una fuente explícitamente
+
+Lo predeterminado le sirve a casi todo el mundo: sin conexión cuando se puede, en línea cuando no. Si quieres ser estricto:
+
+#+BEGIN_SRC emacs-lisp
+;; Nunca toca la red: un fallo se informa en lugar de irse a internet.
+;; Bueno en conexiones con tarifa limitada, o cuando quieres saber qué
+;; cubren realmente tus datos locales.
+(setq org-scribe-thesaurus-backend 'mythes)
+
+;; Siempre la API de la RAE, aunque tengas datos locales instalados.
+;; ('wordreference, el valor antiguo, se lee como 'rae-api.)
+(setq org-scribe-thesaurus-backend 'rae-api)
+
+;; El valor por defecto.
+(setq org-scribe-thesaurus-backend 'auto)
+#+END_SRC
+
+** Selección de idioma
+
+*Sin conexión*: indica el idioma del tesauro que instalaste:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-mythes-language "en_US")   ; necesita mythes-en-us instalado
+#+END_SRC
+
+*En línea*: la API de la RAE solo cubre el español. Para sinónimos en inglés, instala los datos de MyThes en inglés o usa ~F8 x~ (ver «Cambiar de idioma» más abajo); también puedes visitar a mano un sitio web con ~M-x eww~, por ejemplo ~https://www.wordreference.com/synonyms/~ seguido de tu palabra.
+
+** Ejemplo: ¡pruébalo ahora!
+
+Busquemos sinónimos:
+
+1. Pulsa ~F8~ y luego ~y~
+2. Escribe: ~hermoso~
+3. Pulsa ~Intro~
+4. Recorre las acepciones: precioso, bello, lindo, etc.
+5. Pulsa ~q~ para cerrar la ventana
+
+Ahora prueba con una forma flexionada: ~F8 y~ y luego ~caminaba~. Si hunspell está instalado, obtendrás la entrada de ~caminar~, con una línea que te lo dice.
+
+** Consejo profesional: mantenla abierta
+
+Puedes dejar abierta la ventana de sinónimos mientras escribes:
+1. Busca una palabra (~F8~ y luego ~y~)
+2. Haz clic en la ventana de tu manuscrito para seguir escribiendo
+3. La ventana de sinónimos sigue visible a la derecha
+4. Busca más palabras según haga falta
+5. Ciérrala al terminar con ~C-x 0~ (con el foco en la ventana de sinónimos)
+
+Así creas un «panel de tesauro» permanente para tu sesión de escritura.
+
+* Integración con la traducción (opcional)
+
+Si escribes en varios idiomas o en una segunda lengua, las herramientas de traducción pueden ser valiosísimas.
+
+** El paquete gt
+
+~org-scribe~ no incluye funciones de traducción, pero funciona sin problemas con el paquete ~gt~ (antes google-translate).
+
+** Instalar gt
+
+Añade a tu configuración de Emacs:
+
+#+BEGIN_SRC elisp
+;; Con straight.el
+(straight-use-package 'gt)
+
+;; O con use-package y MELPA
+(use-package gt
+  :ensure t
+  :config
+  (setq gt-default-translator
+        (gt-translator
+         :taker (gt-taker :text 'word :pick nil)
+         :engines (list (gt-google-engine))
+         :render (gt-buffer-render))))
+#+END_SRC
+
+Después reinicia Emacs o evalúa la configuración.
+
+** Usar gt para traducir
+
+Una vez instalado, puedes usar las órdenes de gt mientras escribes:
+
+*Traducir la palabra bajo el cursor*:
+#+BEGIN_EXAMPLE
+M-x gt-do-translate
+#+END_EXAMPLE
+
+*Traducir una selección*:
+1. Selecciona el texto
+2. ~M-x gt-do-translate~
+3. Elige los idiomas de origen y de destino
+
+*Ejemplos de dirección*:
+- Español → inglés: útil para comprobar si tu prosa en español se traduce con claridad
+- Inglés → español: de ayuda cuando escribes en español pero piensas en inglés
+- Cualquier par de idiomas: gt admite muchos idiomas
+
+** Flujo rápido de traducción
+
+Un flujo práctico para escritores bilingües:
+
+1. Escribe un párrafo en tu idioma de destino
+2. Selecciona el párrafo
+3. ~M-x gt-do-translate~ para traducirlo de vuelta a tu lengua materna
+4. Comprueba si se conserva el significado
+5. Revisa el texto original si la traducción revela torpezas
+
+Esta técnica de «traducción inversa» ayuda a asegurar la claridad.
+
+** Crear un atajo de teclado
+
+Para traducir más rápido, añade un atajo:
+
+#+BEGIN_SRC elisp
+;; Añade a tu configuración
+(global-set-key (kbd "C-c t") 'gt-do-translate)
+#+END_SRC
+
+Ahora ~C-c t~ traduce la palabra bajo el cursor o el texto seleccionado.
+
+** Nota sobre el rendimiento
+
+La traducción requiere conexión a internet y llamadas a una API. Si trabajas sin conexión:
+- Usa el diccionario de la RAE (falla con elegancia sin red, pero funciona en línea)
+- Usa listas locales de sinónimos
+- Guarda en tus archivos de notas las traducciones que necesites a menudo
+
+* Flujos de trabajo prácticos
+
+Veamos cómo integrar estas herramientas en tu proceso de escritura.
+
+** Flujo 1: La comprobación de vocabulario
+
+Estás escribiendo y dudas de una palabra:
+
+1. Selecciona la palabra en tu manuscrito
+2. ~F8~ y luego ~d~: comprueba la definición de la RAE
+3. Revisa los significados: ¿es la acepción correcta?
+4. Si no, ~F8~ y luego ~y~: busca sinónimos
+5. Elige una palabra mejor de la lista de sinónimos
+6. Cierra las ventanas de consulta y continúa
+
+*Tiempo*: 30 segundos. ¡Ritmo mantenido!
+
+** Flujo 2: Arreglar una repetición
+
+Has usado «dijo» cinco veces en una página:
+
+1. Coloca el cursor en el primer «dijo»
+2. ~F8~ y luego ~y~: busca sinónimos
+3. Deja abierta la ventana de sinónimos a la derecha
+4. Recorre cada «dijo» de tu texto
+5. Sustitúyelos por variantes: declaró, afirmó, comentó, expresó, señaló
+6. Cierra la ventana de sinónimos al terminar
+
+*Resultado*: etiquetas de diálogo más variadas, prosa más atractiva.
+
+** Flujo 3: Una inmersión en la etimología
+
+Quieres entender el significado más profundo de una palabra:
+
+1. ~F8~ y luego ~d~: consulta del diccionario
+2. Lee la sección *Etimología*
+3. Entiende las raíces históricas de la palabra
+4. Anota las palabras o significados relacionados
+5. Copia a tu archivo de notas las etimologías interesantes
+6. Usa la palabra con una comprensión más profunda
+
+*Ventaja*: elecciones de palabras más ricas e intencionadas.
+
+** Flujo 4: El escritor bilingüe
+
+Escribes en español pero piensas en inglés:
+
+1. Piensa en la palabra inglesa que quieres
+2. ~M-x gt-do-translate~: tradúcela al español
+3. Mira la traducción al español
+4. ~F8~ y luego ~d~: comprueba la definición de la RAE de la palabra en español
+5. Confirma que tiene exactamente el significado que buscas
+6. Úsala en tu texto
+
+*Precisión*: te asegura que usas la palabra española correcta, no solo una traducción literal.
+
+** Flujo 5: El constructor de vocabulario diario
+
+Como parte de tu rutina diaria de escritura:
+
+1. ~M-x org-scribe-rae-api-random~: obtén una palabra al azar
+2. Lee su definición y su etimología
+3. Intenta usarla en tu sesión de escritura
+4. Mantén una nota de «palabras nuevas» en tu proyecto
+
+*Crecimiento*: ampliar el vocabulario una palabra al día son 365 palabras al año.
+
+* Personalización y consejos
+
+** Resumen de atajos de teclado
+
+Desde el menú Hydra (~F8~):
+
+| Tecla | Herramienta | Velocidad                                 |
+|-------+-------------+-------------------------------------------|
+| d     | Diccionario | Instantáneo sin conexión / media en línea |
+| y     | Sinónimos   | Instantáneo sin conexión / media en línea |
+
+*Consejo*: con el tiempo, ~F8 d~ se vuelve memoria muscular.
+
+** Crear tus propios atajos de teclado
+
+Si usas estas herramientas con frecuencia, crea atajos propios:
+
+#+BEGIN_SRC elisp
+;; Añade a tu configuración de Emacs
+(global-set-key (kbd "C-c d") 'org-scribe-dictionary-lookup)
+(global-set-key (kbd "C-c y") 'org-scribe-sinonimo)
+#+END_SRC
+
+Ahora:
+- ~C-c d~ = Diccionario
+- ~C-c y~ = Sinónimos
+
+Elige atajos que no choquen con los de tus otros paquetes.
+
+** Ajustar el tamaño de las ventanas
+
+El ancho de la ventana de sinónimos se puede personalizar:
+
+#+BEGIN_SRC elisp
+;; Ventana más estrecha (mejor en pantallas grandes)
+(setq org-scribe-sinonimo-window-width 60)
+
+;; Ventana más ancha (mejor para leer entradas completas)
+(setq org-scribe-sinonimo-window-width 100)
+#+END_SRC
+
+Experimenta para encontrar lo que mejor te funciona.
+
+** Uso sin conexión
+
+*Sinónimos*: totalmente sin conexión una vez que instalas ~mythes-es~ (ver «Instalar el tesauro sin conexión» más arriba). Es la única herramienta de idioma que no necesita nada de la red, y la que más usarás mientras redactas.
+
+*Definiciones*: sin conexión una vez que configuras un Wikcionario local (ver «Instalar las definiciones sin conexión» más arriba). Sin eso, las definiciones necesitan conexión.
+
+Ten en cuenta que no existe una copia libre y sin conexión del diccionario *propio de la RAE* (tiene derechos de autor), así que el camino sin conexión usa el Wikcionario. Si te saltas esa configuración, el tesauro sin conexión te sigue dando sinónimos y antónimos, que cubre buena parte de los motivos por los que un escritor recurre a un diccionario a mitad del borrador.
+
+*Traducción*:
+- El paquete ~gt~ requiere internet
+- Alternativa: instala herramientas de traducción sin conexión
+
+Para una sesión de escritura deliberadamente desconectada:
+- Instala ~mythes-es~ y ~hunspell-es~ con antelación: eso cubre los sinónimos por completo
+- Pon ~(setq org-scribe-thesaurus-backend 'mythes)~ para que un fallo se informe de inmediato en lugar de quedarse esperando una petición de red que no puede tener éxito
+- Para las definiciones también, configura el Wikcionario local y pon ~(setq org-scribe-dictionary-backend 'wikcionario)~
+- Con las dos cosas en su sitio, todas las herramientas de idioma salvo la traducción funcionan con la red desenchufada
+- Usa el corrector ortográfico integrado para validar palabras de forma básica
+
+** Cambiar de idioma
+
+Si escribes en varios idiomas, organiza tus herramientas:
+
+*Para español*:
+- ~F8 d~: diccionario (Wikcionario local o RAE)
+- ~F8 y~: sinónimos en español
+
+*Para inglés*:
+- Instala el paquete ~powerthesaurus~ y pulsa ~F8 x~ (ya está asignado en la sección Tools del menú Hydra; no hace nada útil hasta que el paquete esté instalado)
+- O la búsqueda manual en WordReference: ~M-x eww~ → ~https://www.wordreference.com/synonyms/palabra~
+
+*Para traducir*:
+- ~M-x gt-do-translate~ funciona entre cualquier par de idiomas
+
+** Integración con las notas
+
+Guarda las consultas útiles para más adelante:
+
+1. Busca una palabra con ~F8 d~
+2. Copia la definición (selecciona el texto, ~M-w~)
+3. ~F8 n~: captura una nota
+4. Pega la definición
+5. Añade tus reflexiones
+
+Así construyes una base de datos de vocabulario personal en tu proyecto.
+
+* Ejercicio práctico
+
+Practiquemos con las tres herramientas en un escenario realista.
+
+** Ejercicio: mejora este párrafo
+
+Este es un párrafo de ejemplo en español con algunas elecciones de palabras flojas:
+
+#+BEGIN_EXAMPLE
+María caminó hasta la puerta. Estaba triste. Dijo "adiós" con voz triste.
+Juan también estaba triste. El día estaba malo.
+#+END_EXAMPLE
+
+*Problemas*:
+- «Triste» se repite 3 veces
+- «Estaba» se repite 3 veces
+- «Malo» es vago
+- El vocabulario en general es insípido
+
+** Paso 1: Arregla la repetición de «triste»
+
+1. Coloca el cursor en el primer «triste»
+2. ~F8~ y luego ~y~
+3. Escribe: ~triste~
+4. Recorre los sinónimos: melancólica, apesadumbrada, apenada, afligida, desconsolada
+
+Sustituye las tres apariciones de «triste» por variantes:
+- «Estaba melancólica»
+- «Dijo "adiós" con voz apesadumbrada»
+- «Juan también estaba afligido»
+
+** Paso 2: Comprueba el significado de «melancólica»
+
+Asegurémonos de que «melancólica» es la palabra adecuada:
+
+1. ~F8~ y luego ~d~
+2. Escribe: ~melancólico~
+3. Lee la definición: «Que padece melancolía, que denota o incluye este sentimiento»
+4. Perfecto. Encaja con el tono emocional que queremos.
+
+** Paso 3: Mejora «malo»
+
+1. ~F8~ y luego ~y~
+2. Escribe: ~malo~
+3. Sinónimos para el contexto del tiempo: gris, nublado, sombrío, tormentoso
+4. Elige: «El día estaba sombrío»
+
+** Paso 4: Arregla «dijo» con una mejor etiqueta de diálogo
+
+1. ~F8~ y luego ~y~
+2. Escribe: ~dijo~ (se resolverá a ~decir~)
+3. Busca alternativas: susurró, murmuró, pronunció
+4. Elige: «Susurró "adiós"»
+
+** Párrafo mejorado
+
+#+BEGIN_EXAMPLE
+María caminó hasta la puerta. Estaba melancólica. Susurró "adiós"
+con voz apesadumbrada. Juan también estaba afligido. El día estaba sombrío.
+#+END_EXAMPLE
+
+*¡Mucho mejor!* Vocabulario variado, un tono emocional más fuerte, más evocador.
+
+** Tu turno
+
+Prueba este ejercicio con tu propia escritura:
+
+1. Busca un párrafo que hayas escrito hoy
+2. Identifica las palabras repetidas o flojas
+3. Usa ~F8 y~ para encontrar sinónimos
+4. Usa ~F8 d~ para verificar los significados
+5. Sustituye las palabras flojas por alternativas más fuertes
+6. Vuelve a leer el párrafo: ¿notas la mejora?
+
+* Solución de problemas
+
+** «La consulta a la RAE devuelve un error»
+
+*Causas posibles*:
+- No hay conexión a internet (revisa tu red)
+- La API de la RAE está caída temporalmente (inténtalo más tarde)
+- La palabra contiene caracteres especiales (prueba con una grafía simplificada)
+
+*Solución*: usa la búsqueda de sinónimos como respaldo, o consulta temporalmente otro diccionario.
+
+** «La ventana de sinónimos es demasiado estrecha o ancha»
+
+*Solución*:
+#+BEGIN_SRC elisp
+;; Ajusta en tu configuración
+(setq org-scribe-sinonimo-window-width 80)  ; cambia el número según necesites
+#+END_SRC
+
+O redimensiónala a mano con ~C-x }~ (agrandar) y ~C-x {~ (reducir).
+
+** «La traducción no funciona»
+
+*Causas posibles*:
+- El paquete ~gt~ no está instalado
+- No hay conexión a internet
+- El servicio de traducción está bloqueado en tu región
+
+*Solución*:
+1. Verifica la instalación de gt: ~M-x package-list-packages~, busca «gt»
+2. Prueba la traducción manual en la web como alternativa
+3. Considera una VPN si el servicio está bloqueado
+
+** «Demasiadas consultas me rompen el ritmo»
+
+*Solución*: cambia tu enfoque:
+- Primer borrador: escribe sin parar a buscar palabras
+- Segundo borrador: vuelve atrás y mejora la elección de palabras con consultas
+- Así mantienes el flujo creativo y aun así refinas el vocabulario
+
+* Resumen y puntos clave
+
+¡Enhorabuena! Has aprendido a usar las herramientas de idioma integradas sin salir de Emacs.
+
+** Lo que has aprendido
+
+✓ *Diccionario de la RAE* (~F8 d~)
+  - Definiciones oficiales del español
+  - Etimología y origen de las palabras
+  - Sinónimos y antónimos
+  - Conjugaciones verbales
+  - Descubrimiento de palabras al azar
+
+✓ *Sinónimos* (~F8 y~)
+  - Búsquedas rápidas de sinónimos, sin conexión o con la RAE
+  - Ventana lateral para consultar con comodidad
+  - Navega mientras escribes
+  - Compatibilidad con varios idiomas
+
+✓ *Integración con la traducción*
+  - Configuración opcional del paquete ~gt~
+  - Apoyo a la escritura bilingüe
+  - Traducción inversa para comprobar la claridad
+  - Proyectos en varios idiomas
+
+✓ *Flujos de trabajo prácticos*
+  - Comprobar vocabulario mientras escribes
+  - Arreglar repeticiones de palabras
+  - Inmersiones en la etimología
+  - Escritura bilingüe
+  - Construcción diaria de vocabulario
+
+** Buenas prácticas
+
+1. *Libertad en el primer borrador*: no busques todo mientras redactas; mantén el ritmo
+2. *Mejora en la revisión*: usa las consultas a fondo durante la edición, para ganar precisión
+3. *Amplía tu vocabulario*: guarda notas de las palabras nuevas que descubras
+4. *Verifica los significados*: comprueba siempre la definición de la RAE al usar un sinónimo nuevo
+5. *Personaliza las teclas*: crea atajos para las herramientas que más usas
+
+** Tarjeta de referencia rápida
+
+| Tarea                                 | Orden                        | Hydra          |
+|---------------------------------------+------------------------------+----------------|
+| Definición en español                 | org-scribe-dictionary-lookup | F8 d           |
+| Palabra al azar                       | org-scribe-rae-api-random    | orden con M-x  |
+| Sinónimos                             | org-scribe-sinonimo          | F8 y           |
+| Traducción (si está instalada)        | gt-do-translate              | (tecla propia) |
+| Cerrar la ventana de consulta         | (en la ventana) q            | -              |
+| Redimensionar la ventana de sinónimos | C-x } / C-x {                | -              |
+
+** Próximos pasos
+
+Ahora que tienes las herramientas de idioma a mano:
+
+1. Practica con ellas en tu próxima sesión de escritura
+2. Crea atajos de teclado propios si las usas con frecuencia
+3. Construye una lista de vocabulario personal en tus notas
+4. Considera instalar ~gt~ si escribes en varios idiomas
+5. Prueba la práctica diaria de la palabra al azar
+
+** Sigue aprendiendo
+
+¿Listo para establecer un flujo de trabajo diario completo? Pasa a la [[file:primeros-pasos-13-flujo-diario.org][Lección 13: Flujo de escritura diario]] para aprender a unir todas estas funciones en una rutina eficiente.
+
+* Recursos adicionales
+
+** Para escritores en español
+
+- *RAE en línea*: https://rae.es/ (sitio web oficial)
+- *WordReference*: https://www.wordreference.com/sinonimos/ (sinónimos)
+- *Fundéu*: https://www.fundeu.es/ (fundación del español urgente)
+
+** Para escritores en inglés
+
+- *WordReference*: https://www.wordreference.com/synonyms/ (sinónimos en inglés)
+- *Powerthesaurus*: paquete de Emacs para sinónimos en inglés (se instala por separado)
+- *Online Etymology Dictionary*: https://www.etymonline.com/
+
+** Recursos de traducción
+
+- *Paquete gt*: https://github.com/lorniu/gt.el
+- *Google Translate*: https://translate.google.com/ (alternativa web)
+- *DeepL*: https://www.deepl.com/ (traductor alternativo, generalmente más preciso)
+
+** Documentación de Emacs
+
+- ~C-h f org-scribe-rae-api-lookup~: documentación de la función
+- ~C-h f org-scribe-sinonimo~: documentación de la función de sinónimos
+- ~C-h v org-scribe-sinonimo-window-width~: documentación de la variable
+
+* Sobre esta lección
+
+- *Creada*: 2025-11-16
+- *Última actualización*: 2025-11-16
+- *Número de lección*: 12 de 19
+- *Parte*: 4 - Funciones avanzadas
+- *Tiempo estimado*: 15-20 minutos
+- *Dificultad*: de principiante a intermedio
+- *Requisitos previos*: flujo de escritura básico, conexión a internet
+
+¡Feliz escritura, y que siempre encuentres la palabra perfecta! 📖✨

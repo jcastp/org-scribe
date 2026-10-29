@@ -1,7 +1,10 @@
 #+TITLE: Lesson 2: Writing Your First Scene
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-02-primera-escena.org][Versión en español]]/
 
 * Welcome to Lesson 2!
 

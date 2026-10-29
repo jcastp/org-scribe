@@ -1,7 +1,10 @@
 #+TITLE: Lesson 5: Locations and Settings
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-05-lugares-ambientacion.org][Versión en español]]/
 
 * Welcome to Lesson 5!
 
@@ -13,7 +16,6 @@ By the end of this lesson, you'll be able to:
 - Link locations to scenes using ID-based links
 - Search for all scenes set in a specific location
 - Track setting variety across your story
-- Generate location timelines showing when and how locations are used
 
 *Estimated time*: 15-20 minutes
 
@@ -46,12 +48,12 @@ When writing without location tracking, you might:
 ** The Solution: Location Profiles
 
 Location profiles help you:
-1. **Maintain Consistency**: Reference your description instead of contradicting yourself
-2. **Track Usage**: See how often you use each setting
-3. **Balance Variety**: Ensure you're not overusing certain locations
-4. **Quick Reference**: Remember key details when writing a scene
-5. **World-Building**: Build a coherent fictional geography
-6. **Search**: Find all scenes in a specific location instantly
+1. *Maintain Consistency*: Reference your description instead of contradicting yourself
+2. *Track Usage*: See how often you use each setting
+3. *Balance Variety*: Ensure you're not overusing certain locations
+4. *Quick Reference*: Remember key details when writing a scene
+5. *World-Building*: Build a coherent fictional geography
+6. *Search*: Find all scenes in a specific location instantly
 
 * Understanding Location Types
 
@@ -674,55 +676,6 @@ This processes your entire manuscript, converting all matching location names to
 
 *Warning*: Review results! Ambiguous names might match incorrectly.
 
-* TODO Location Timeline
-*NOTE:* This function doesn't exist yet. It's an hallucination.
-
-Like character timelines, you can visualize location usage.
-
-** What Is It?
-
-A table showing which locations appear in which scenes.
-
-** Generating Timeline
-
-In your novel.org file, find the "Location Timeline" section (or create one):
-
-#+BEGIN_EXAMPLE
-,* Progress Tracking
-
-,** TODO Location Timeline
-*NOTE:* This function doesn't exist. It's an hallucination.
-
-#+BEGIN: location-timeline
-#+END:
-#+END_EXAMPLE
-
-Put cursor on ~#+BEGIN:~ line and press: ~C-c C-c~
-
-** TODO Example Output
-*NOTE:* This function doesn't exist. It's an hallucination.
-
-#+BEGIN_EXAMPLE
-| Scene           | Chapter   | Coffee Shop | Apartment | Office | Park |
-|-----------------+-----------+-------------+-----------+--------|------|
-| Scene 1         | Chapter 1 | ●           |           |        |      |
-| Scene 2         | Chapter 1 |             | ●         |        |      |
-| Scene 3         | Chapter 1 | ●           |           |        | ●    |
-| Scene 4         | Chapter 2 |             |           | ●      |      |
-#+END_EXAMPLE
-
-** Interpreting Symbols
-
-- *●* = Scene takes place at this location
-- *(blank)* = Location not used
-
-** Use Cases
-
-1. **Visual Distribution**: See at a glance which locations dominate
-2. **Gap Detection**: Notice locations that appear once then disappear
-3. **Pattern Recognition**: See if certain locations cluster together
-4. **Variety Check**: Ensure you're moving between settings
-
 * Practical Exercise (15 minutes)
 
 Let's practice location management end-to-end.
@@ -827,7 +780,7 @@ Let's practice location management end-to-end.
 
 ** Weekly Maintenance
 
-- Review location timeline
+- Review which locations your scenes use (search by location, Lesson 7)
 - Note locations that need more development
 - Check for forgotten settings
 - Plan scenes in underused locations
@@ -1121,18 +1074,17 @@ Congratulations! You've completed Lesson 5. You now know:
 
 ✓ Why location tracking improves consistency and variety
 ✓ The different types of locations (primary, secondary, minor, atmospheric)
-✓ How to use the location capture template (6 sections)
+✓ How to use the location capture template (the four Aspects, plus Description, Scenes and Notes)
 ✓ All location properties and when to use them
 ✓ How to link locations to scenes using ID-based links
 ✓ How to navigate between scenes and location profiles
 ✓ How to search for all scenes in a specific location
 ✓ How to track setting variety with location audits
-✓ How to generate location timelines
 ✓ How to integrate location management into daily writing
 
 * Next Steps
 
-You're ready for **Lesson 6: Plot Threads and Timeline**!
+You're ready for [[file:getting-started-06-plot-threads.org][Lesson 6: Plot Threads and Timeline]]!
 
 In the next lesson, you'll learn:
 - How to create plot thread profiles

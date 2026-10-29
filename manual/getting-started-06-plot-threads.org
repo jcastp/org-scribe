@@ -1,7 +1,10 @@
 #+TITLE: Lesson 6: Plot Threads and Timeline
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-06-hilos-trama.org][Versión en español]]/
 
 * Welcome to Lesson 6!
 
@@ -48,12 +51,12 @@ When writing without plot thread tracking, you might:
 ** The Solution: Plot Thread Profiles
 
 Plot thread profiles help you:
-1. **Track Development**: See exactly where each plot advances
-2. **Balance Storylines**: Ensure all plots get appropriate attention
-3. **Find Gaps**: Identify long stretches where a plot disappears
-4. **Plan Resolution**: Track which plots are resolved vs. ongoing
-5. **Visualize Structure**: See how plots interweave across your story
-6. **Prevent Forgetting**: Never lose track of a subplot again
+1. *Track Development*: See exactly where each plot advances
+2. *Balance Storylines*: Ensure all plots get appropriate attention
+3. *Find Gaps*: Identify long stretches where a plot disappears
+4. *Plan Resolution*: Track which plots are resolved vs. ongoing
+5. *Visualize Structure*: See how plots interweave across your story
+6. *Prevent Forgetting*: Never lose track of a subplot again
 
 * The Thirteen Non-Negotiables
 
@@ -327,17 +330,17 @@ Not a plot in the traditional sense, but a recurring idea or motif.
 ** Short Story Plot Structure
 
 For short stories (1-10 scenes), you typically have:
-- **One main plot** (the story's focus)
-- **Optional: One subplot** (adds depth, often character-focused)
-- **No minor subplots** (not enough space)
+- *One main plot* (the story's focus)
+- *Optional: One subplot* (adds depth, often character-focused)
+- *No minor subplots* (not enough space)
 
 Keep it simple! Short stories thrive on focused narrative.
 
 ** Novel Plot Structure
 
 For novels (50-70 scenes), a healthy structure might be:
-- **1 main line** (~:THREAD-TYPE: Main~)
-- **3-6 subplots** (~:THREAD-TYPE: Subplot~), of varying weight
+- *1 main line* (~:THREAD-TYPE: Main~)
+- *3-6 subplots* (~:THREAD-TYPE: Subplot~), of varying weight
 
 More than this risks overcomplexity and reader confusion.
 
@@ -363,12 +366,12 @@ Or use: ~M-x org-scribe-capture-plot-thread~
 The template is intentionally minimal — a plot-thread capture records the
 essence quickly while you are writing; it is not a full planning document:
 
-1. **Properties** — thread type, Stance, status, first-appearance
-2. **Stance it embodies / Who carries it** — two lines, at the top of the body
-3. **Own desire** — what the thread wants for itself
-4. **Crossings with the main line** — three or more, numbered
-5. **Resolution** — how it should resolve
-6. **Notes** — quick capture notes (can be messy)
+1. *Properties* — thread type, Stance, status, first-appearance
+2. *Stance it embodies / Who carries it* — two lines, at the top of the body
+3. *Own desire* — what the thread wants for itself
+4. *Crossings with the main line* — three or more, numbered
+5. *Resolution* — how it should resolve
+6. *Notes* — quick capture notes (can be messy)
 
 Let's examine each in detail.
 
@@ -517,7 +520,7 @@ thread wearing two hats.
 *What this thread wants, on its own terms.*
 
 This is the entry that does the real work, and the template is blunt about the
-test it has to pass: **it cannot be "help the protagonist."** A thread whose
+test it has to pass: *it cannot be "help the protagonist."* A thread whose
 desire is to assist the main line is not a subplot, it is a delivery mechanism
 — and readers feel it, because nothing in it is ever at risk for its own sake.
 
@@ -1084,9 +1087,9 @@ You return to your original scene.
 
 While writing:
 - "What's the central question of this plot again?" → Jump to profile, check
-- "What should happen next in this storyline?" → Review development arc
-- "Have I addressed the stakes?" → Check overview section
-- "Which scenes are key for this plot?" → Review key scenes list
+- "What should happen next in this storyline?" → Check its crossings with the main line
+- "What does this line want?" → Read its Own desire section
+- "Which scenes advance this plot?" → Search by plot thread (~F8 3~)
 
 The ID-based linking means you can rename plot threads in the database without breaking scene links!
 
@@ -1402,10 +1405,10 @@ All scenes have Plot properties assigned.
 
 ** How to Use the Report
 
-1. **Run periodically**: Every 10-15 scenes during drafting
-2. **Address warnings**: Fix gaps, plan resolutions
-3. **Adjust as you go**: Add scenes or combine plots to improve health
-4. **Final check**: Before revision, ensure all plots healthy
+1. *Run periodically*: Every 10-15 scenes during drafting
+2. *Address warnings*: Fix gaps, plan resolutions
+3. *Adjust as you go*: Add scenes or combine plots to improve health
+4. *Final check*: Before revision, ensure all plots healthy
 
 The report is generated as an Org-mode buffer, so you can:
 - Navigate between threads using Org commands
@@ -1475,7 +1478,7 @@ Let's practice plot thread management end-to-end.
 1. In a scene with linked plot
 2. Press: ~C-c C-o~ on the Plot property
 3. Jump to plot profile → Success!
-4. Review the development arc
+4. Read its Own desire and Crossings sections
 5. Press: ~C-c &~ to return → Success!
 
 *** Test Search:
@@ -1516,7 +1519,7 @@ Let's practice plot thread management end-to-end.
 ** During Planning
 
 - Capture all major plot threads before drafting
-- Map out key scenes for each plot
+- Write the three crossings with the main line for each subplot
 - Identify where plots intersect
 - Plan resolution timing for each plot
 - Reference plot profiles when outlining
@@ -1526,11 +1529,11 @@ Let's practice plot thread management end-to-end.
 - Before each scene:
   1. Ask: "Which plot(s) develop in this scene?"
   2. Review those plot profiles
-  3. Check development arc - what should happen next?
+  3. Check the thread's crossings - which one comes next?
   4. Link scene to appropriate plot threads
 - After writing a scene:
   - Update plot Notes section (track which scenes written)
-  - Mark off key scenes as completed
+  - Note which crossings are now written
 - Every 10 scenes:
   - Run search for each plot thread
   - Check for large gaps (>5 scenes for main plot, >8 for subplots)
@@ -1559,8 +1562,8 @@ Let's practice plot thread management end-to-end.
 ** Weekly Maintenance
 
 - Review plot thread status (Active? Resolved? On Hold?)
-- Update development arc if story evolved
-- Check which key scenes are written vs. planned
+- Update the crossings and resolution if the story evolved
+- Check which crossings are written vs. planned
 - Note any plot threads that need attention
 - Plan next week's scenes with plot balance in mind
 
@@ -1581,10 +1584,10 @@ You don't need to capture:
 ** Q: How many plot threads is too many?
 
 *A*:
-- **Short story**: 1-2 plots maximum (usually just 1 main plot)
-- **Novella**: 2-3 plots (1 main, 1-2 subplots)
-- **Novel**: 3-6 plots (1 main, 1-2 major subplots, 1-3 minor subplots)
-- **Epic/Series**: Can have more, but not all active simultaneously
+- *Short story*: 1-2 plots maximum (usually just 1 main plot)
+- *Novella*: 2-3 plots (1 main, 1-2 subplots)
+- *Novel*: 3-6 plots (1 main, 1-2 major subplots, 1-3 minor subplots)
+- *Epic/Series*: Can have more, but not all active simultaneously
 
 If you have more than 6 active plot threads, consider:
 - Combining similar plots
@@ -1602,7 +1605,7 @@ If you have more than 6 active plot threads, consider:
 - Original plan: Romance between Alex and Sam
 - Chapter 5: Realized better chemistry with Jordan
 - Changed to: Romance with Jordan, Sam becomes close friend
-- Updated: All properties, development arc, resolution plan
+- Updated: All properties, crossings, resolution
 #+END_EXAMPLE
 
 The profile should reflect your current story, not your original plan.
@@ -1610,11 +1613,11 @@ The profile should reflect your current story, not your original plan.
 ** Q: Should subplots resolve at the same time as the main plot?
 
 *A*: Not necessarily! Common patterns:
-- **Main plot**: Resolves in climax (Scene 40-45 in 45-scene novel)
-- **Character-focused subplot**: Resolves just before or after main plot (Scene 38-43)
-- **Romance subplot**: Often resolves just after main plot (Scene 43-44)
-- **Minor subplot**: Can resolve earlier (Scene 30-35) or stay open-ended
-- **Thematic thread**: Often "resolves" in final reflection scene
+- *Main plot*: Resolves in climax (Scene 40-45 in 45-scene novel)
+- *Character-focused subplot*: Resolves just before or after main plot (Scene 38-43)
+- *Romance subplot*: Often resolves just after main plot (Scene 43-44)
+- *Minor subplot*: Can resolve earlier (Scene 30-35) or stay open-ended
+- *Thematic thread*: Often "resolves" in final reflection scene
 
 What matters: Each plot should feel complete (or intentionally incomplete) by story's end.
 
@@ -1633,8 +1636,8 @@ If >20% of scenes have no plot links, consider:
 ** Q: What's the difference between a plot thread and a theme?
 
 *A*:
-- **Plot thread**: Events that happen, questions that get answered, conflicts that resolve
-- **Theme**: Ideas or messages that emerge from the plot
+- *Plot thread*: Events that happen, questions that get answered, conflicts that resolve
+- *Theme*: Ideas or messages that emerge from the plot
 
 Example:
 - Plot: Alex solves murder mystery
@@ -1791,7 +1794,7 @@ Before you start drafting:
 - Identify your main plot (A-story)
 - Identify 1-2 major subplots (B-stories)
 - Create profiles for these core plots
-- Map out key scenes
+- Write down the main line's turning points
 
 This provides a roadmap even if you deviate later.
 
@@ -1901,8 +1904,8 @@ Congratulations! You've completed Lesson 6. You now know:
 
 ✓ Why plot tracking prevents dropped storylines and ensures balance
 ✓ The different types of plot threads (main, major subplot, minor subplot, thematic)
-✓ How to use the plot thread capture template (6 sections)
-✓ All plot properties and when to use them (7 properties)
+✓ How to use the plot thread capture template (Stance, carrier, Own desire, Crossings, Resolution, Notes)
+✓ All plot properties and when to use them (Thread type, Stance, Status, First appearance, Weight)
 ✓ How to link plot threads to scenes using ID-based links
 ✓ How to navigate between scenes and plot profiles
 ✓ How to search for all scenes advancing a specific plot
@@ -1913,7 +1916,7 @@ Congratulations! You've completed Lesson 6. You now know:
 
 * Next Steps
 
-You're ready for **Lesson 7: Finding What You Need**!
+You're ready for [[file:getting-started-07-searching.org][Lesson 7: Finding What You Need]]!
 
 In the next lesson, you'll learn:
 - Mastering all search functions (character, plot, location, PoV)
@@ -1952,9 +1955,9 @@ Plot threads are the "what happens" of your story - the events, questions, and c
 The plot linking system uses ID-based links (like characters and locations), allowing you to click from scene properties directly to full plot profiles. Combined with plot timelines and health reports, you have complete visibility into your story's structure.
 
 With plot thread management in place, you now have full tracking of:
-- **Who**: Characters
-- **Where**: Locations
-- **What**: Plot threads
+- *Who*: Characters
+- *Where*: Locations
+- *What*: Plot threads
 
 Next, you'll master the search tools that let you slice through your manuscript in any way you need!
 

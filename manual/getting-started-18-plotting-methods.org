@@ -1,7 +1,10 @@
 #+TITLE: Lesson 18: Plotting Methods — La Hélice and La Matriz
 #+AUTHOR: Javier Castilla
 #+DATE: 2026-09-05
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-18-metodos-trama.org][Versión en español]]/
 
 * Welcome to Lesson 18!
 
@@ -19,7 +22,7 @@ By the end of this lesson, you'll know how to:
   and why
 - Confirm that the health report (~F8 H~) checks your Starting Gate the
   same way no matter which method you picked
-- Find the troubleshooting note built into each design file for when a
+- Find the troubleshooting note built into each Foundations part for when a
   level's check keeps failing
 
 *Prerequisites*: Lesson 1 (you need to have created a project, or be about
@@ -38,7 +41,7 @@ and *where the plot comes from*.
 
 | Method             | You start from…               | The plot comes from…                                                  |
 |--------------------+-------------------------------+-----------------------------------------------------------------------|
-| *Sistema unificado*  | A theme and a Stance spectrum | Escalating trama and hanging characters from it                       |
+| *Sistema unificado*  | A theme and a Stance spectrum | Escalating plot and hanging characters from it                       |
 | *La Hélice* (Helix)  | A premise                     | Characters scaled to their own five levels, in parallel with the plot |
 | *La Matriz* (Matrix) | Characters                    | Deducing collisions from characters who cannot avoid each other       |
 
@@ -100,7 +103,7 @@ premise haven't taken shape yet.
 ** The Three Rules
 
 Before the levels, three rules that make this a method rather than a list of
-fields — they're printed at the top of the design file so you always have
+fields — they're printed at the top of the Foundations part so you always have
 them nearby:
 
 - *Rule of scaling*: don't move to the next level until both of the current
@@ -133,7 +136,7 @@ cross-check of the two endings: what the story looks like from the outside
 of the Lie?), written without looking at each other and then crossed in a
 grid.
 
-The design file calls out two traps right where they bite: a disaster that
+The Foundations part calls out two traps right where they bite: a disaster that
 nobody causes — the storm, the plague, the royal edict — can sit in the
 background but never counts as a structural disaster; and the Motivation has
 to sound like the *promise* the Lie makes, so if it reads as sincere, one of
@@ -164,7 +167,7 @@ need them or the draft stalls — not a requirement to start.
 
 Use La Matriz when *what you have are characters* and the story hasn't
 arrived yet — you know two to four people well, but not what happens between
-them. It's also the better fit for a coral story with three or four
+them. It's also the better fit for an ensemble story with three or four
 comparably weighted forces, where La Hélice would tend to sort everyone into
 a single protagonist/opponent pair.
 
@@ -173,7 +176,7 @@ or a commissioned pitch (use La Hélice instead — inverting the method throws
 away what you already have), or if you're working in a genre with strong
 plot expectations — a mechanism thriller, a puzzle mystery — where the
 machinery has to lead and the arc follows. (A one-paragraph version of this
-"weakest fit" note ships right in the design file too, under the method's own
+"weakest fit" note ships right in the Foundations part too, under the method's own
 heading — you don't need to come back to this lesson to be reminded.)
 
 ** The Three Rules
@@ -205,7 +208,7 @@ levels are about character, and the plot is born in the third.
 *Level 3 is the method's signature move.* You fill an N×N matrix — one row
 and column per force — where cell (A, B) says what A's Lie does to B's Lie
 when both go after the same object. A filled cell should read like a
-sentence, not a word — the design file's own example: not "conflict" but
+sentence, not a word — the design notebook's own example: not "conflict" but
 "his signature from years ago is the reason her home doesn't exist anymore."
 From the candidates in that matrix, you pick your collisions by
 inevitability, and only *then* — after the plot has been deduced — do you
@@ -238,7 +241,7 @@ deduced actually holds up as narrative.
 
 Both methods make the same three-or-so structural moments — La Hélice's
 *disasters*, La Matriz's *collisions* — visible in a table near the end of
-the design file:
+the design notebook:
 
 #+BEGIN_EXAMPLE
 | Disaster | Owner | Lie that causes it | Explodes on whom | Position           |
@@ -262,20 +265,22 @@ version does. Track it by eye for now: three rows is not a lot to watch.
 
 * Part 6: When a Check Keeps Failing
 
-Both design files end with a short section, right before ~Pending design
+The Foundations part of both methods ends with a short section, right before ~Pending design
 changes~, for exactly the moment this lesson can't help you with directly —
 you're stuck, a check won't pass, and you don't know which level to go back
 to. It reads a symptom and names the level:
 
 #+BEGIN_EXAMPLE
-* Where to look when something's wrong
+,** Where to look when something's wrong
 
-# "Things happen but mean nothing" → level 2, rule of ownership.
-# "The opponent feels like cardboard" → level 2: undefendable Stance, or
-#   wants a different thing than the protagonist.
-# "The ending doesn't convince me" → level 2, the two-endings cross-check.
-# "Nothing changes until the very end" → level 3: missing Adjustments
-#   between the Breaks.
+,#+begin_comment
+"Things happen but mean nothing" → level 2, rule of ownership.
+"The opponent feels like cardboard" → level 2: undefendable Stance, or
+  wants a different thing than the protagonist.
+"The ending doesn't convince me" → level 2, the two-endings cross-check.
+"Nothing changes until the very end" → level 3: missing Adjustments
+  between the Breaks.
+,#+end_comment
 #+END_EXAMPLE
 
 That's La Hélice's version. La Matriz's covers its own five symptoms instead
@@ -342,6 +347,7 @@ under all three methods.
 ---
 
 *Previous*: [[file:getting-started-17-scratchpad.org][Lesson 17: The Scratchpad and Branching Ideas]]
+*Next*: [[file:getting-started-19-companion.org][Lesson 19: The Visual Companion]]
 *Back to Start*: [[file:getting-started-00-index.org][Getting Started Guide - Index]]
 
 *Lesson 18 Complete!*

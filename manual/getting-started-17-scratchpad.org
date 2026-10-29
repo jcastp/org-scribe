@@ -1,7 +1,10 @@
 #+TITLE: Lesson 17: The Scratchpad and Branching Ideas
 #+AUTHOR: Javier Castilla
 #+DATE: 2026-09-05
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-17-borradores.org][Versión en español]]/
 
 * Welcome to Lesson 17!
 
@@ -81,7 +84,7 @@ way.
 
 * Part 2: Nothing Reads It
 
-This is the part worth trusting, because it's what makes the file safe.
+This is the part worth trusting, because it's what makes the part safe.
 
 ** Your Word Count Is Unaffected
 
@@ -133,7 +136,7 @@ from. So a drafted scene goes straight under a chapter in the manuscript; a
 character sketch goes under Characters; a research question goes into the
 Research part.
 
-Delete the rest without ceremony. That's what the file is for.
+Delete the rest without ceremony. That's what the part is for.
 
 * Part 4: Branching a Question
 

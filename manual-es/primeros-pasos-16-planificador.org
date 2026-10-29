@@ -1,0 +1,655 @@
+#+TITLE: Lección 16: Planificación de objetivos de escritura con el planificador integrado
+#+AUTHOR: Javier Castilla
+#+DATE: 2026-10-12
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-16-planner-integration.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-16-planner-integration.org][English version]]/
+
+* ¡Bienvenido a la Lección 16!
+
+Sabes contar palabras, seguir tablas de progreso y llevar el registro de tus sesiones diarias. Pero ¿no te gustaría que Emacs te dijera /cuántas palabras tienes que escribir hoy/ para terminar tu manuscrito a tiempo? De eso trata esta lección.
+
+~org-scribe-planner~ es un motor de planificación incluido dentro de ~org-scribe~. Le das un objetivo y una fecha límite (o un ritmo diario); él da a cada día su propia meta, sigue el recuento de palabras de tu manuscrito mientras escribes y te dice cómo vas. Cuando la vida se interpone, reorganiza los días que quedan: el pasado se queda como estaba.
+
+*Una advertencia sobre el idioma*: el planificador está hecho en inglés y *no* pasa por el sistema de mensajes del paquete. Aunque tu proyecto esté en español, sus menús, preguntas, avisos y tablas (el menú Hydra ~F8 W~, el calendario, el estado «Ahead/On track/Behind», las vistas previas) salen siempre en inglés. En esta lección los verás tal como los verás en pantalla, y los explicamos al lado en español. Lo que sí está en español es el resto de org-scribe que lo rodea.
+
+Al terminar la lección habrás:
+- Creado un plan de escritura para tu proyecto, desde cero, a partir de un preajuste o para un manuscrito ya empezado
+- Visto cómo tu recuento de palabras se anota solo en el plan
+- Leído tu plan en su calendario, en el resumen semanal, en la cuadrícula del mes y en los paneles
+- Ajustado el plan según tu progreso y cambiado el plan cuando tus planes cambian
+- Entendido cómo cuenta el planificador, para que sus números nunca te sorprendan
+
+*Tiempo estimado*: 30-40 minutos
+
+*Nota*: esta lección cubre un *módulo opcional*. Puedes saltártela si prefieres seguir tus objetivos a mano.
+
+* Antes de empezar
+
+** Lo que necesitas
+
+✓ ~org-scribe~ instalado y funcionando (has completado las Lecciones 1-3)
+✓ Un proyecto con al menos unas cuantas escenas y propiedades de recuento de palabras
+
+Eso es todo. ~org-scribe-planner~ viene dentro de ~org-scribe~ y se carga a demanda la primera vez que ejecutas cualquier orden del planificador: no hay que instalar nada aparte ni escribir ningún ~require~ en tu archivo de inicio.
+
+** Si antes usabas org-scribe-planner-integration
+
+Si tu archivo de inicio contiene:
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'org-scribe-planner
+  (require 'org-scribe-planner-integration))
+#+END_SRC
+
+borra ese bloque. Las funciones de integración están construidas directamente dentro del módulo del planificador, y ese archivo de compatibilidad ya no existe: el ~require~ daría un error de archivo inexistente.
+
+* Qué hace el planificador
+
+| Función                                 | Qué ocurre                                                                                      |
+|-----------------------------------------+-------------------------------------------------------------------------------------------------|
+| Una meta para cada día                  | Cada día tiene su objetivo; juntos suman exactamente el total                                   |
+| Seguimiento del recuento de palabras    | Cada recuento del manuscrito queda anotado en el plan                                           |
+| Días pasados bloqueados                 | Cuando un día termina, su meta no vuelve a cambiar                                              |
+| Patrones, fines de semana, metas de día | Reparte las palabras de forma desigual, descansa los fines de semana, planifica días especiales |
+| Estado                                  | Por delante, en el camino o por detrás: en palabras, % y días de escritura                      |
+| Ajustar según el progreso               | Reparte de nuevo las palabras que quedan, o mueve la fecha final                                |
+| Cambiar el plan                         | Total nuevo, duración, fecha de inicio, días libres... con vista previa                         |
+| Vistas                                  | Calendario, resumen semanal, cuadrícula del mes, hitos, paneles                                 |
+| Presets                                 | Borrador de novela, NaNoWriMo, cuento... como punto de partida                                  |
+| Palabras escritas en otro sitio         | Se anotan y se muestran, nunca se cuentan                                                       |
+| Integración                             | Carga automática, línea de modo, agenda, informe de salud, plan al crear un proyecto            |
+
+El planificador es *opcional por proyecto*: un proyecto solo lo ve cuando creas un plan o lo activas (mira [[*Activar y desactivar el planificador][Activar y desactivar el planificador]]).
+
+* Paso 1: abre el planificador
+
+Abre cualquier archivo de tu proyecto, pulsa ~F8~ para abrir el menú Hydra y pulsa ~W~ para el submenú del planificador:
+
+#+BEGIN_EXAMPLE
+  org-scribe-planner
+  ──────────────────────────────────────────────────
+  p: Open project plan (load or create)
+  n: New plan (fresh start)
+  o: Onboard existing project
+  l: Load plan
+  u: Sync word count (from manuscript)
+  d: Add session note
+  r: Recalculate plan
+  a: Adjust remaining days (keep end date)
+  e: Adjust end date (keep daily words)
+  c: Check progress (adjust if ahead/behind)
+  m: Milestones
+  w: Weekly summary
+  M: Month grid
+  D: Dashboards menu
+  E: Enable for project
+  X: Disable for project
+  q: Back to main menu
+#+END_EXAMPLE
+
+(El menú está en inglés. En orden: abrir el plan del proyecto, plan nuevo, incorporar un proyecto existente, cargar un plan, sincronizar el recuento, añadir una nota de sesión, recalcular, ajustar los días restantes, ajustar la fecha final, comprobar el progreso, hitos, resumen semanal, cuadrícula del mes, menú de paneles, activar y desactivar para el proyecto, volver.)
+
+** La tecla ~p~: tu punto de entrada principal
+
+~p~ (Open project plan, o ~M-x org-scribe-plan~) hace lo adecuado según dónde estés:
+
+- *Plan ya activo* → muestra el calendario del plan
+- *El archivo del plan existe pero no está cargado* → lo carga y después muestra el calendario
+- *Todavía no hay plan* → pregunta «No writing plan found for this project. Create one?» («No se ha encontrado un plan de escritura para este proyecto. ¿Crear uno?»)
+- *Planificador desactivado para este proyecto* → ofrece activarlo primero
+- *No estás en un proyecto de org-scribe* → el flujo habitual de cargar o mostrar
+
+~F8 W p~ es la única orden que necesitas recordar.
+
+* Paso 2: crea tu plan de escritura
+
+Hay dos formas de entrar: ~n~ (New plan) para un plan que empieza ahora, y ~o~ (Onboard existing project) para un manuscrito que ya está en marcha. Las dos guardan el plan como ~plan.org~ en la raíz de tu proyecto.
+
+** Un plan nuevo (~n~)
+
+*1. Empieza desde un preajuste o desde cero.* La primera pregunta es /Start from:/ («Empezar desde:»). En un proyecto de novela la respuesta por defecto es /Novel draft/ (80.000 palabras en 60 días); en un proyecto de cuento, /Short story/ (5.000 palabras en una semana). Los demás preajustes son /NaNoWriMo/ (50.000 en 30 días), /Novella/ (30.000 en 30 días) y dos hábitos diarios (1.000 y 500 palabras al día).
+
+Un preajuste solo rellena las respuestas. Su total y sus días (o palabras por día) se preguntan con los valores del preajuste ya puestos: ~RET~ los conserva, cualquier número los sustituye. En un proyecto que tiene un recuento total de palabras registrado (se pregunta al crear el proyecto; mira la Lección 1), se ofrece ese total en lugar del del preajuste, aquí y en las demás formas de crear un plan.
+
+*2. Desde cero: ¿qué sabes?* Das dos de los tres números y el planificador calcula el tercero:
+
+#+BEGIN_EXAMPLE
+Total words + Days → Calculate daily words
+Total words + Daily words → Calculate days needed
+Daily words + Days → Calculate total words
+#+END_EXAMPLE
+
+(Total de palabras + días → calcula las palabras diarias; total + palabras diarias → calcula los días necesarios; palabras diarias + días → calcula el total.)
+
+Los «días disponibles» son días naturales. Puedes escribir un número, o una fecha de inicio y una final.
+
+*3. Palabras ya escritas.* Dentro de un proyecto, el planificador usa el recuento de palabras de tu manuscrito. (Fuera de un proyecto, simplemente pregunta cuántas palabras hay ya escritas.) Son las /palabras iniciales/ del plan: cuentan para el objetivo, nunca como la escritura de un día. Las palabras escritas en otro sitio no se cuentan; mira [[*Palabras escritas en otro sitio][Palabras escritas en otro sitio]] más abajo.
+
+*4. Fecha de inicio.* Hoy, por defecto.
+
+*5. Patrón y fines de semana.* El patrón y el ajuste de fines de semana que sugiere un preajuste se ofrecen como preguntas de sí o no: por ejemplo, el patrón /rising/ (creciente) del preajuste de cuento y una meta propia para los fines de semana (1,5 × el objetivo diario, que puedes cambiar). A los planes desde cero se les ofrecen tus valores por defecto, si has fijado alguno (mira [[*Ajustes][Ajustes]]).
+
+*6. Días libres.* /Do you want to set spare/break days?/ («¿Quieres fijar días libres o de descanso?») abre un pequeño menú: añadir una fecha, un rango de fechas, todos los fines de semana, todos los sábados o todos los domingos, cada uno con una nota opcional («Navidad»); quitarlos; listarlos.
+
+Tras cada una de estas respuestas el planificador conserva los dos números que diste y recalcula el tercero. Después guarda el plan y muestra su calendario.
+
+** Un manuscrito ya empezado (~o~)
+
+~o~ (Onboard existing project) es para un borrador que ya tiene palabras:
+
+1. Muestra el recuento de palabras de tu manuscrito (0 está bien, para un manuscrito vacío).
+2. Le das el objetivo total y la fecha de inicio del plan (hoy, por defecto).
+3. Fijas el ritmo: una fecha final (el objetivo diario se ajusta), o palabras por día (la fecha final se ajusta).
+4. Días libres, como arriba.
+
+Las palabras ya escritas son las palabras iniciales del plan, así que el objetivo diario cubre solo lo que queda: un objetivo de 30.000 palabras con 20.000 escritas, en 10 días, son 1.000 palabras al día. Si eliges una fecha de inicio pasada, los días anteriores a hoy no tienen meta.
+
+** Un solo total para el proyecto y el plan
+
+El total de palabras del proyecto (~F8 t~) y el total del plan se mantienen sincronizados con dos preguntas, nunca en silencio:
+
+- Si cambias el total del proyecto con ~F8 t~ mientras hay un plan activo y el plan apunta a un número distinto, se te pregunta si quieres cambiar también el total del plan (después eliges, como en cualquier cambio de total, conservar los días de escritura o el objetivo diario).
+- Si cambias el total del plan con /What changed?/ → /Total words/ en un proyecto que registra un total distinto del nuevo, se te pregunta si quieres cambiar también el total del proyecto, lo que además reescala sus actos o escenas (manteniendo sus proporciones).
+
+Cada pregunta se hace una sola vez; responder ~n~ deja el otro lado como está, y el informe de salud muestra entonces la diferencia. A un proyecto sin total registrado nunca se le pregunta, y el planificador nunca se carga solo para preguntar.
+
+** Palabras escritas en otro sitio
+
+El plan cuenta la prosa de tu manuscrito, y nada más. Las palabras que estén en otros lugares (un borrador anterior en otro archivo, páginas de un cuaderno) no se cuentan, así que nunca mueven el total de un día ni tu progreso.
+
+Aun así puedes anotarlas: ~F8 W r~ → /Words outside the manuscript/ te deja fijar un número escrito, añadir un archivo o dejar de contar uno. Se guardan y se muestran: la vista del plan y el informe de salud dicen «Outside the manuscript: N words (not counted)». No se suma nada a los registros del plan.
+
+*Los planes hechos antes de este cambio* sí contaban esas palabras. Cuando se carga un plan así, el planificador las resta de cada día registrado (para que ningún día muestre un salto) y te lo dice. Si tu total las incluía, bájalo con /What changed?/ → /Total words/. Un archivo contado /en cada sincronización/ se resta con su tamaño actual, así que un día puede variar un poco si ese archivo creció.
+
+* Paso 3: escribe; el plan te sigue
+
+** Los recuentos de palabras se anotan solos
+
+Escribe y luego actualiza los recuentos de palabras de tu manuscrito con ~F8 a~. El planificador anota el total nuevo de hoy en ~plan.org~ en silencio: sin mensaje, sin ventana. Varios recuentos en un mismo día solo actualizan la entrada de hoy.
+
+Para anotar en cada guardado, activa el recuento automático de palabras (requiere ~org-context-extended~; hace los guardados algo más lentos):
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-auto-wordcount t)
+#+END_SRC
+
+Para tener confirmación visible, pulsa ~F8 W u~ (Sync word count). Lee el manuscrito, anota el total, vuelve a abrir el calendario e imprime cómo vas:
+
+#+BEGIN_EXAMPLE
+Progress: 12847/80000 words (16.1%) | Ahead: +120 words (+1.2%, +0.1 writing days)
+#+END_EXAMPLE
+
+(Progreso: 12.847 de 80.000 palabras (16,1 %); por delante: +120 palabras (+1,2 %, +0,1 días de escritura).)
+
+Un manuscrito que cuenta 0 palabras lo ignoran las dos vías: un manuscrito vacío no dice nada de lo que has escrito.
+
+** La línea de modo
+
+Cuando hoy ya tiene palabras anotadas, la línea de modo muestra:
+
+#+BEGIN_EXAMPLE
+[W:450/650]      450 words today, against today's goal of 650
+[W:300 rest]     300 words on a rest day
+[W:300]          300 words on a day outside the plan
+#+END_EXAMPLE
+
+(En español: 450 palabras hoy, frente a la meta de hoy de 650; 300 palabras en un día de descanso; 300 palabras en un día fuera del plan.)
+
+** Notas de sesión
+
+Pulsa ~F8 W d~ (Add session note) para anotar un día: «terminé el capítulo 3», «reescribí el comienzo». Pide la fecha (hoy, por defecto), la nota y el recuento de palabras de ese día, ya rellenado con lo que estaba anotado. Cambia el recuento solo cuando no se haya registrado (si escribiste en papel o en otro archivo).
+
+También puedes escribir notas directamente en la columna /Notes/ de la tabla Schedule de ~plan.org~: se vuelven a leer la próxima vez que se carga el plan.
+
+~M-x org-scribe-planner-today~ anota el día de hoy de una vez: lee el manuscrito (o pregunta las palabras de hoy) y una nota.
+
+* Paso 4: mira cómo vas
+
+** El calendario del plan
+
+~F8 W p~ abre el calendario del plan. Arriba, el resumen: palabras totales, objetivo diario (la media, cuando el plan tiene un patrón), el ajuste de fines de semana, días totales y de escritura, fechas de inicio y final, las palabras iniciales y las de otro sitio, el *estado* y las palabras escritas hasta ahora.
+
+Debajo, cada día del plan, semana a semana:
+
+#+BEGIN_EXAMPLE
+Week 2:
+  Date (Day)                 Daily Target   Planned Total    Actual Total     Daily Actual             Notes
+  2026-11-02 (Monday   )     1400 words     1400 words       1400 words       1400 words [100.0%] ✓
+  2026-11-03 (Tuesday  )     1400 words     2800 words       2900 words       1500 words [107.1%] ✓
+  2026-11-04 (Wednesday)     1400 words     4200 words       2900 words       0 ✗
+  2026-11-05 (Thursday )     1400 words     5600 words       3800 words       900 words [64.3%] ✗
+  2026-11-06 (Friday   )     1400 words     7000 words       5200 words       1400 words [100.0%] ✓
+  2026-11-07 (Saturday )     REST           7000 words       5200 words                                (rest day)
+#+END_EXAMPLE
+
+Las columnas, en español: fecha (día), objetivo diario, total planificado, total real, real del día y notas. /Planned Total/ es dónde dice el plan que debería estar el manuscrito al final de cada día; /Actual Total/ es dónde está de verdad. Tras un recálculo según el progreso, el total planificado sigue el plan nuevo desde hoy en adelante, mientras que los días pasados conservan el plan tal como era.
+
+✓ significa que se cumplió la meta del día, ~ parcial (75 % o más), ✗ no cumplida. Los días de descanso dicen /(spare day)/ (día libre) o /(rest day)/ (día de descanso); un día con meta propia dice /(day goal)/; tus notas aparecen en su lugar.
+
+El calendario tiene sus propias teclas:
+
+| Tecla | Abre                           | Tecla   | Abre                               |
+|-------+--------------------------------+---------+------------------------------------|
+| ~u~   | Sincronizar el recuento        | ~D~     | Menú de paneles                    |
+| ~d~   | Nota de sesión                 | ~m~     | Panel multimétrica                 |
+| ~r~   | ¿Qué ha cambiado? (recalcular) | ~p~     | Panel de progreso                  |
+| ~a~   | Ajustar los días restantes     | ~b~     | Burndown (descenso)                |
+| ~e~   | Ajustar la fecha final         | ~g~     | Progreso acumulado                 |
+| ~c~   | Comprobar el progreso          | ~v~ ~V~ | Estadísticas de velocidad, gráfico |
+| ~w~   | Resumen semanal                | ~t~     | Tendencias de velocidad            |
+| ~M~   | Cuadrícula del mes             | ~P~     | Análisis de rendimiento            |
+| ~G~   | Refrescar                      | ~h~     | Mapa de calor                      |
+| ~q~   | Salir                          | ~s~     | Paneles divididos                  |
+
+(En el calendario ~m~ es el panel multimétrica; en el menú ~F8 W~, ~m~ son los hitos.)
+
+** Estado: por delante, en el camino o por detrás
+
+El estado dice /On track/ (en el camino), o /Ahead: +2000 words (+20.0%, +2.0 writing days)/ (por delante), o /Behind: -500 words (-5.0%, -0.5 writing days)/ (por detrás). Dos reglas lo hacen justo:
+
+- *Hoy no vence hasta que termina.* El planificador compara las metas hasta /ayer/ con todo lo que has escrito, /hoy incluido/: tu mañana nunca empieza por detrás, y las palabras de hoy solo pueden ayudar.
+- *Los días de escritura se miden a lo largo de tu propio calendario*, día a día: los días fuertes de un patrón de valle cuentan como tales.
+
+Aparece en el resumen del calendario y después de cada sincronización. ~F8 W c~ (Check progress) te dice lo mismo y, cuando estás por delante o por detrás, ofrece ajustar (mira el [[*Paso 5: ajusta según tu progreso][Paso 5]]).
+
+** Semana a semana, mes a mes
+
+~F8 W w~ (o ~w~ en el calendario) abre el /resumen semanal/, una fila por semana natural:
+
+#+BEGIN_EXAMPLE
+| Week | Dates         | Days written | Rest | Daily goal | Week goal | Written    | Planned total | Actual total |   +/- |
+|------+---------------+--------------+------+------------+-----------+------------+---------------+--------------+-------|
+|    2 | 11-02 – 11-08 | 4/5          |    2 |       1400 |      7000 | 5200 ~ 74% |          7000 |         5200 | -1800 |
+#+END_EXAMPLE
+
+(Semana, fechas, días escritos, descansos, meta diaria, meta de la semana, escrito, total planificado, total real y diferencia.)
+
+La semana en curso se mide hasta ayer, como el estado.
+
+~F8 W M~ (o ~M~) abre la /cuadrícula del mes/: un calendario por mes en el que cada día muestra su meta, su resultado (✓, ✓1500 cuando se supera, ~800 parcial, ✗ no cumplida) y la parte del objetivo total escrita hasta entonces. Hoy aparece entre corchetes, con sus palabras hasta ahora:
+
+#+BEGIN_EXAMPLE
+November 2026
+Mo       Tu       We       Th       Fr       Sa       Su
+2        3        4        5        6        7        8
+1400w    1400w    1400w    1400w    1400w    rest     rest
+✓        ✓1500    ✗        ✗900     ✓
+10%      21%               27%      37%
+
+[9]      10       11       12       13       14       15
+1400w    1400w    1400w    1400w    1400w    rest
+500…
+#+END_EXAMPLE
+
+Las semanas empiezan en lunes; pon ~org-scribe-planner-week-start-day~ para que empiecen en domingo (mira [[*Ajustes][Ajustes]]).
+
+** Hitos
+
+~F8 W m~ muestra los puntos del 25 %, 50 %, 75 % y 100 % de tu objetivo: la fecha en que se alcanzó cada uno, o la fecha en que se espera según el calendario actual, o que no se puede alcanzar antes de la fecha final. Los hitos que tus palabras iniciales ya alcanzan dicen /before the plan/ (antes del plan).
+
+** Paneles
+
+~F8 W D~ abre el menú de paneles (dashboards):
+
+- *Multi-Metric Dashboard*: todo de un vistazo
+- *Progress Dashboard* (texto, o SVG en un Emacs gráfico): progreso global, hoy, estado, ritmo, rachas y cuándo terminarás
+- *Burndown Chart* y *Cumulative Progress*: lo esperado frente a lo real (gnuplot, o texto)
+- *Velocity Statistics*, *Velocity Chart*, *Velocity Trend Analysis*: tu ritmo a 7, 14 y 30 días, su tendencia, el ritmo que necesitas y una puntuación de impulso
+- *Performance Analytics*: constancia, cumplimiento de objetivos y tus mejores y peores días de la semana
+- *Consistency Heatmap*: cada día del plan como un cuadrado de color
+- *Weekly Summary*, *Month Grid*, *Split Dashboard View*, *Show All Dashboards*
+
+/¿Cuándo terminaré?/ El panel de progreso da dos respuestas: a tu ritmo medio y al ritmo de tu última semana, cada una gastada solo en los próximos días de escritura, y si eso cae antes de tu fecha final.
+
+* Paso 5: ajusta según tu progreso
+
+Te has adelantado, o te has quedado atrás. Tres órdenes ajustan el plan a lo que de verdad has escrito. Las tres conservan el pasado como estaba: solo cambian los días desde hoy en adelante (desde mañana, si hoy ya has escrito).
+
+** Comprobar el progreso (~c~)
+
+~F8 W c~ (o ~c~ en el calendario). Si vas en el camino, lo dice. Si estás por delante, ofrece /reducir el objetivo diario/ (conservando la fecha final) o /terminar antes/ (conservando el objetivo diario); si estás por detrás, /aumentar el objetivo diario/ o /ampliar el plazo/. Cada opción muestra su resultado; /conservar el plan como está/ es la opción por defecto.
+
+** Ajustar los días restantes (~a~)
+
+~F8 W a~: conserva la fecha final y reparte las palabras que de verdad te quedan entre los días de escritura que faltan. Primero muestra el cambio y pregunta:
+
+#+BEGIN_EXAMPLE
+From 2026-11-11: 25000 words left over 20 writing days.
+Daily target 1000 → 1250 words (+250, +25.0%). End date 2026-11-30 unchanged. Apply?
+#+END_EXAMPLE
+
+(Desde el 2026-11-11: quedan 25.000 palabras en 20 días de escritura. Objetivo diario 1000 → 1250 palabras (+250, +25,0 %). La fecha final, 2026-11-30, no cambia. ¿Aplicar?)
+
+Después, el plan te cuenta como en el camino a partir de ese punto. Si los fines de semana tienen una meta propia, esta conserva su proporción con la meta de los días laborables.
+
+** Ajustar la fecha final (~e~)
+
+~F8 W e~: el intercambio contrario. Conserva tu objetivo diario y mueve la fecha final para que quepan las palabras que quedan: antes si vas por delante, después si vas por detrás. Se saltan los días de descanso.
+
+#+BEGIN_EXAMPLE
+Daily target 1000 words kept. Writing days 30 → 35.
+End date 2026-11-30 → 2026-12-05: extended by 5 days. Apply?
+#+END_EXAMPLE
+
+(Se conserva el objetivo diario de 1000 palabras. Días de escritura 30 → 35. Fecha final 2026-11-30 → 2026-12-05: ampliada 5 días. ¿Aplicar?)
+
+* Paso 6: cambia el plan
+
+Cuando cambia el propio plan (una fecha límite nueva, unas vacaciones, un objetivo distinto), pulsa ~F8 W r~ (o ~r~ en el calendario). Pregunta /What changed?/ («¿Qué ha cambiado?»):
+
+| Opción                          | Qué hace                                                                                                                                |
+|---------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------|
+| Total words                     | Un objetivo nuevo; después conserva los días de escritura (el objetivo diario se ajusta) o el objetivo diario (la fecha final se mueve) |
+| Daily words                     | Un ritmo nuevo; después conserva el total (la fecha final se mueve) o los días de escritura (el total se ajusta)                        |
+| Days available                  | Una duración nueva; después conserva el total (el objetivo diario se ajusta) o el objetivo diario (el total se ajusta)                  |
+| Two values (third calculated)   | Fija dos de entre total, palabras diarias y días                                                                                        |
+| Start date                      | Mueve el plan antes o después                                                                                                           |
+| Words outside the manuscript    | Mira [[*Palabras escritas en otro sitio][Palabras escritas en otro sitio]]                                                                                                    |
+| Writing pattern                 | Cómo se reparten las palabras entre los días                                                                                            |
+| Weekends                        | Igual que los demás días, una meta propia, o sin escribir                                                                               |
+| Day goal: set / remove / clear  | Una meta para un día concreto                                                                                                           |
+| Add, remove or clear spare days | Días libres                                                                                                                             |
+
+Cada opción se prueba primero en una copia y se muestra con su resultado (/ends 2026-12-01, 1000 words/day, total 30000 words/: termina el 2026-12-01, 1000 palabras al día, total 30.000 palabras), así que eliges sabiendo qué pasará. La primera opción es la de por defecto, y ~C-g~ en cualquier pregunta deja el plan intacto. Los días pasados conservan sus metas elijas lo que elijas.
+
+** Días libres, fines de semana y metas de día
+
+Añadir o quitar días libres, cambiar el ajuste de fines de semana o fijar una meta de día cambia cuántas palabras toca escribir algunos días. El planificador pregunta entonces cómo debe absorberlo el plan:
+
+- *Keep the end date* (conservar la fecha final): cambia el objetivo diario (la opción por defecto)
+- *Move the end date* (mover la fecha final): conserva el objetivo diario
+- *Keep the end date and the daily target* (conservar ambos): cambia el total
+
+Los *fines de semana* pueden ser como los demás días, tener una meta propia (más palabras los sábados y domingos, o menos) o ser días libres. También eliges qué días son el fin de semana: viernes y sábado también sirve.
+
+*Una meta de día* da a una fecha su propio objetivo: más en un día libre, menos en un día ocupado, 0 para convertirlo en día de descanso. No se puede fijar en días pasados, fuera del plan, en días libres ni en fines de semana que ya son días libres: el planificador te dice por qué.
+
+** Patrones de escritura
+
+Un patrón reparte las palabras de forma desigual entre los días de escritura, cada uno /mild/ (suave), /moderate/ (moderado) o /extreme/ (extremo):
+
+| Patrón    | Forma                                                        |
+|-----------+--------------------------------------------------------------|
+| Steady    | La misma meta cada día                                       |
+| Valley    | Empieza alto, afloja a la mitad, termina alto                |
+| Mountain  | Empieza suave, alcanza el máximo a la mitad, afloja al final |
+| Rising    | Las metas crecen con el tiempo                               |
+| Declining | Las metas disminuyen con el tiempo                           |
+| Random    | Metas variadas dentro de un rango                            |
+
+(Steady = constante; Valley = valle; Mountain = montaña; Rising = creciente; Declining = decreciente; Random = aleatorio.)
+
+Cambiar el patrón reorganiza solo los días que quedan por venir. El patrón aleatorio guarda su propia semilla, de modo que sus metas se mantienen iguales de una sesión a otra.
+
+** Mover la fecha de inicio
+
+/Start date/ mueve el plan antes o después. Conserva el número de días de escritura, así que la fecha final también se mueve. Los días libres y las metas de día desde hoy en adelante pueden quedarse en sus fechas (la opción por defecto: la pregunta lista los que quedarían fuera del plan) o moverse con el inicio; los pasados nunca se mueven, ni tampoco las palabras que has escrito.
+
+Antes de aplicar, te avisa de las palabras escritas que quedarían fuera del plan, de los días pasados que se incorporarían a él (quedan bloqueados tal como están) y de los días pasados que quedarían fuera. Un plan ya en marcha se recalcula para que sus días restantes cubran las palabras que quedan.
+
+* Cómo cuenta el planificador
+
+Unas pocas reglas explican todos los números que verás.
+
+** Cada día tiene su propia meta
+
+El plan da a cada día una meta en palabras enteras, y las metas suman exactamente tu total: 10.000 palabras en 7 días son 1.429 cuatro veces y 1.428 tres veces. Los días fijos (días de descanso, metas propias de fin de semana, metas de día, días pasados) conservan sus metas; los demás días se reparten el resto, con la forma del patrón. El /objetivo diario/ que se muestra es la meta de un día corriente.
+
+** La duración del plan son sus días de escritura
+
+El plan guarda cuántos /días de escritura/ tiene; la fecha final se deduce de ellos y de los días libres. Por eso añadir un día libre puede empujar la fecha final o mantenerla, según elijas.
+
+** Los días pasados están bloqueados
+
+Cuando un día termina, su meta no vuelve a cambiar: ni con un total nuevo, ni con un patrón nuevo, ni con días libres nuevos, ni con un recálculo. Tu historial se mantiene honesto, y los cambios solo reorganizan los días por venir.
+
+** Días de descanso
+
+Un día de descanso es cualquier día cuya meta es 0: un día libre, un fin de semana libre, una meta de día de 0. Los días de descanso nunca cuentan como incumplidos, no rompen tu racha y quedan fuera de tu ritmo. Escribir en uno sí cuenta.
+
+** Palabras iniciales
+
+Las palabras escritas antes del plan (en el manuscrito, o declaradas como escritas en otro sitio) son las /palabras iniciales/ del plan. Cuentan para el objetivo y para el porcentaje de finalización, pero nunca son la escritura de un día: tu ritmo, tus rachas y tu mejor día reflejan solo lo que escribes durante el plan.
+
+** Ritmo, días y estados
+
+- Tu *ritmo* son las palabras escritas durante el plan divididas entre tus días de escritura hasta ahora: /los días no escritos cuentan, con 0 palabras/; los días de descanso no.
+- Un día está *cumplido* (met) al llegar a su meta, *parcial* (partial) desde el 75 %, *incumplido* (missed) por debajo de eso o sin nada, y también cuando el manuscrito terminó el día más corto de lo que lo empezó (recortaste más de lo que escribiste). Hoy nunca está incumplido mientras está en curso.
+- El *mejor y el peor día* solo miran los días en que escribiste.
+- La *fecha de finalización estimada* gasta tu ritmo en los próximos días de escritura, saltándose los días de descanso.
+
+El mapa de calor, la tasa de cumplimiento, el resumen semanal y las marcas ✓ ~ ✗ del calendario usan todos estas reglas.
+
+* El archivo del plan
+
+~plan.org~ es un archivo de Org corriente:
+
+#+BEGIN_EXAMPLE
+,* My Novel
+:PROPERTIES:
+:TOTAL_WORDS: 80000
+:DAILY_WORDS: 1177
+:DAYS:     70
+:START_DATE: 2026-10-12
+:END_DATE: 2026-12-20
+:CURRENT_WORDS: 8214
+:PREEXISTING_WORDS: 3672
+:WRITING_DAYS: 62
+:SPARE_DAYS: 2026-10-18,2026-10-25
+:DAILY_WORD_COUNTS: 2026-10-12:8214
+:END:
+
+,** Schedule
+
+|       Date | Target | Planned total | Actual total | Actual | Progress % | Notes            |
+|------------+--------+---------------+--------------+--------+------------+------------------|
+| 2026-10-12 |   1177 |          4849 |         8214 |   4542 |     385.9% |                  |
+| 2026-10-18 |   REST |         10734 |              |        |            | Sundays are free |
+#+END_EXAMPLE
+
+(El archivo está en inglés, también en un proyecto en español: el planificador no usa los paquetes de idioma. El título del plan, en cambio, es el de tu proyecto, y la columna de notas es tuya y puede ir en español.)
+
+Las propiedades principales:
+
+| Propiedad                | Significado                                                             |
+|--------------------------+-------------------------------------------------------------------------|
+| ~TOTAL_WORDS~            | Tu objetivo, incluidas las palabras iniciales                           |
+| ~WRITING_DAYS~           | La duración del plan en días de escritura                               |
+| ~START_DATE~, ~END_DATE~ | La ventana del plan (la fecha final se deduce de los días de escritura) |
+| ~DAYS~                   | Días naturales de principio a fin, con los de descanso                  |
+| ~DAILY_WORDS~            | La meta de un día corriente                                             |
+| ~CURRENT_WORDS~          | Palabras escritas hasta ahora, con las iniciales                        |
+| ~PREEXISTING_WORDS~      | Las palabras iniciales                                                  |
+| ~DAILY_WORD_COUNTS~      | El registro: el total escrito al final de cada día                      |
+| ~SPARE_DAYS~             | Días libres                                                             |
+
+Otras aparecen cuando usas las funciones a las que pertenecen: ~LOCKED_GOALS~ (metas de los días pasados), ~SCHEDULE_ADJUSTMENT~ (la fija un ajuste según el progreso), ~PATTERN~ y ~PATTERN_CONFIG~, ~WEEKEND_MODE~, ~WEEKEND_DAYS~ y ~WEEKEND_DAILY~, ~CUSTOM_GOALS~ (metas de día), ~OUTSIDE_WORDS~ y ~OUTSIDE_FILES~ (palabras escritas en otro sitio).
+
+Prefiere las órdenes del planificador a editar las propiedades a mano: las órdenes las mantienen coherentes. La columna Notes es la excepción: escribe en ella con libertad.
+
+Los planes guardados por versiones anteriores se cargan tal como están: sus días de escritura se calculan a partir de sus fechas, y se conserva un objetivo diario fijado por un recálculo antiguo.
+
+* Ajustes
+
+** Planes nuevos
+
+#+BEGIN_SRC emacs-lisp
+;; Se ofrecen a los planes hechos desde cero (solo se pregunta cuando no es constante / fines de semana corrientes)
+;; Por defecto: 'flat, 'moderate, 'same, '(6 0) y nil
+(setq org-scribe-planner-default-pattern 'valley           ; flat, valley, mountain, rising, declining, random
+      org-scribe-planner-default-pattern-intensity 'mild   ; mild, moderate, extreme
+      org-scribe-planner-default-weekend-mode 'rest        ; same, different, rest
+      org-scribe-planner-default-weekend-days '(6 0)       ; 0 = domingo … 6 = sábado
+      org-scribe-planner-default-weekend-daily nil)        ; nil: 1,5 × el objetivo diario
+#+END_SRC
+
+Los preajustes son una lista personalizable: ~M-x customize-variable RET org-scribe-planner-presets~. Cada uno tiene un nombre, una descripción, un total, días o palabras por día, un patrón y un ajuste de fines de semana sugeridos, y los tipos de proyecto para los que es el de por defecto.
+
+** Vistas y seguimiento
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-planner-week-start-day 0)      ; semanas desde el domingo (por defecto 1, lunes)
+(setq org-scribe-planner-streak-grace-days 2)   ; una racha sobrevive si anotas a la mañana siguiente
+#+END_SRC
+
+** La agenda
+
+~M-x org-scribe-planner-sync-agenda~ añade a ~plan.org~ un TODO «Write N words» («Escribir N palabras») para cada día de escritura del plan y añade el archivo a tu agenda. Una vez sincronizadas, las entradas se regeneran cada vez que cambia el plan; los días de descanso no tienen ninguna.
+
+** Activar y desactivar el planificador
+
+La decisión de un proyecto vive en su archivo ~.org-scribe-project~ como ~# Planner: yes~ o ~# Planner: no~. Crear un plan lo activa. ~F8 W E~ / ~F8 W X~ (o ~M-x org-scribe-planner-enable-for-project~ / ~-disable-for-project~) lo cambian. En un proyecto que lo rechazó, ~F8 W~ ofrece activarlo en lugar de mostrar el menú. Los proyectos creados antes de que existiera esta decisión se comportan como /yes/.
+
+Cuando creas un proyecto (~org-scribe-create-novel-project~ o ~org-scribe-create-short-story-project~), el planificador ofrece crear un plan en el acto. Responder /no/ anota ~# Planner: no~ para que no se te vuelva a preguntar.
+
+** Cómo funciona la carga automática
+
+Cuando abres un archivo de un proyecto, el planificador busca su plan:
+
+0. [@0] La ruta guardada en ~.org-scribe-project~ como ~# Plan:~ (se escribe tras la primera carga; es lo más rápido)
+1. ~<raíz-del-proyecto>/plan.org~
+2. ~<raíz-del-proyecto>/<título-del-proyecto>-plan.org~
+3. Cualquier archivo ~.org~ de la raíz del proyecto con una propiedad ~TOTAL_WORDS~
+
+Si encuentra uno, el plan se carga en silencio (/org-scribe-planner: loaded plan "My Novel"./); si no, no ocurre nada. Pasar a los archivos de otro proyecto cambia a su plan.
+
+** Desactivar funciones por separado
+
+Cada función automática se puede apagar. Fija estas variables *antes* de que el planificador se cargue por primera vez (por ejemplo en ~early-init.el~):
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-planner-auto-load-plan nil         ; no cargar el plan al abrir un archivo del proyecto
+      org-scribe-planner-auto-push-wordcount nil    ; no anotar los recuentos de palabras en el plan
+      org-scribe-planner-auto-track-daily nil       ; no llevar el registro diario automáticamente
+      org-scribe-planner-offer-plan-on-create nil   ; no ofrecer un plan al crear un proyecto
+      org-scribe-planner-show-mode-line nil)        ; sin [W:real/meta] en la línea de modo
+(setq org-scribe-auto-wordcount nil)                ; sin recuento al guardar (el valor por defecto)
+#+END_SRC
+
+* Ejercicio práctico
+
+Hagamos un ciclo completo de planificar, escribir y revisar.
+
+** Ejercicio: tu primera semana planificada
+
+1. *Crea un plan*: abre tu proyecto, pulsa ~F8 W p~, responde /yes/ y empieza desde el preajuste que se ofrece. Acepta sus valores con ~RET~.
+2. *Libra los fines de semana*: ~F8 W r~ → /Weekends/ → /No writing/ → conserva la fecha final. Mira la vista previa: el objetivo diario sube.
+3. *Escribe*: ~F8 m~ para el modo de escritura, escribe unos cientos de palabras, guarda.
+4. *Cuenta*: ~F8 a~. Mira la línea de modo: ~[W:palabras/meta]~.
+5. *Anota*: ~F8 W d~ y escribe lo que hiciste.
+6. *Comprueba*: ~F8 W c~. ¿Por delante? Prueba la vista previa de /finish early/ (terminar antes) y pulsa ~C-g~ para dejar el plan como está.
+7. *Echa un vistazo*: ~F8 W M~ para la cuadrícula del mes, ~F8 W D~ para los paneles.
+
+Vuelve mañana: la meta de ayer ya está bloqueada, y el estado de hoy te mide hasta ayer.
+
+* Preguntas frecuentes
+
+** «El plan dice que voy por detrás justo en las palabras que ya había escrito»
+
+Lo más probable es que las palabras que ya habías escrito no estén en el manuscrito, y el plan cuenta solo el manuscrito. Baja el total en esas palabras (/What changed?/ → /Total words/), o pégalas en el manuscrito. Mira [[*Palabras escritas en otro sitio][Palabras escritas en otro sitio]].
+
+** «Cambié el total y mis días pasados no cambiaron»
+
+Es a propósito: los días pasados están bloqueados. Solo los días por venir toman la meta nueva.
+
+** «La línea de modo no muestra nada, o [W:0/650], aunque escribí hoy»
+
+La línea de modo aparece cuando hoy ya tiene palabras anotadas. Ejecuta ~F8 a~ (o ~F8 W u~). Si las palabras se escribieron en otro sitio (en papel, en otro archivo), anótalas con ~F8 W d~.
+
+** «¿Por qué mi objetivo diario es 1.429 y no 1.500?»
+
+Las metas suman exactamente tu total. 10.000 palabras a un máximo de 1.500 al día llevan 7 días, y 7 días de 1.429 (algunos de 1.428) suman exactamente 10.000.
+
+** «Fijé una meta de día y el plan preguntó cómo ajustar»
+
+Una meta de día cambia cuántas palabras toca ese día; los demás tienen que absorber la diferencia: en las mismas fechas (cambia el objetivo diario), en más o menos días (se mueve la fecha final) o cambiando el total. Cada opción muestra su resultado.
+
+** «¿Puedo usarlo con un proyecto de cuento?»
+
+Sí. El planificador funciona igual en los proyectos de cuento; el preajuste /Short story/ es el que se ofrece primero.
+
+** «Quiero seguir varios proyectos»
+
+Cada proyecto tiene su propio ~plan.org~. Abre un archivo de otro proyecto y el planificador cambia al plan de ese proyecto.
+
+* Solución de problemas
+
+** «La W de la Hydra no hace nada»
+
+- Confirma que hydra está instalado: ~M-: (featurep 'hydra) RET~.
+- Carga el planificador ejecutando ~M-x org-scribe-plan~ una vez.
+
+** «El plan no se carga solo aunque plan.org existe»
+
+- Confirma que estás dentro de un proyecto de org-scribe (el directorio tiene un archivo ~.org-scribe-project~) y que el proyecto no ha rechazado el planificador (~# Planner: no~).
+- Confirma que ~org-scribe-mode~ está activo en el búfer.
+- Confirma que ~org-scribe-planner-auto-load-plan~ vale ~t~, o cárgalo a mano: ~M-x org-scribe-planner-load-plan~.
+
+** «Los recuentos de palabras no llegan al plan tras F8 a»
+
+- Tiene que haber un plan activo: ~F8 W p~ lo carga.
+- Confirma que ~org-scribe-planner-auto-push-wordcount~ y ~org-scribe-planner-auto-track-daily~ valen ~t~.
+- Un manuscrito vacío (0 palabras) se ignora a propósito.
+- Ejecuta ~F8 W u~ para sincronizar a mano y ver el resultado.
+
+** «Me sale un error al cargar org-scribe-planner-integration»
+
+Tu archivo de inicio todavía contiene ~(require 'org-scribe-planner-integration)~. Bórralo: la integración está construida dentro del planificador.
+
+* Lo que has aprendido
+
+¡Has completado la Lección 16!
+
+✓ Cómo crear un plan: desde cero, desde un preajuste o para un borrador en marcha
+✓ Cómo declarar palabras escritas fuera del manuscrito
+✓ Cómo llegan tus recuentos de palabras al plan y qué muestra la línea de modo
+✓ Cómo leer el calendario, el estado, el resumen semanal, la cuadrícula del mes, los hitos y los paneles
+✓ Cómo ajustar según tu progreso (~c~, ~a~, ~e~) y cambiar el plan (~r~), con vistas previas
+✓ Patrones, fines de semana, metas de día, días libres y mover la fecha de inicio
+✓ Las reglas que hay detrás de los números: metas exactas, días pasados bloqueados, días de descanso, palabras iniciales, ritmo
+
+* Referencia rápida
+
+** Teclas del submenú del planificador (F8 W)
+
+| Tecla | Orden                    | Qué hace                                                                    |
+|-------+--------------------------+-----------------------------------------------------------------------------|
+| ~p~   | Open project plan        | Carga o crea el plan; muestra el calendario                                 |
+| ~n~   | New plan                 | Desde un preajuste o desde cero                                             |
+| ~o~   | Onboard existing project | Un plan para un manuscrito ya empezado                                      |
+| ~l~   | Load plan                | Abre un archivo de plan a mano                                              |
+| ~u~   | Sync word count          | Anota ahora el total del manuscrito y muestra el estado                     |
+| ~d~   | Add session note         | Anota un día; corrige un recuento sin registrar                             |
+| ~r~   | Recalculate plan         | ¿Qué ha cambiado? Total, días, inicio, patrón, fines de semana, días libres |
+| ~a~   | Adjust remaining days    | Conserva la fecha final y reparte de nuevo las palabras que quedan          |
+| ~e~   | Adjust end date          | Conserva el objetivo diario; terminar antes o ampliar                       |
+| ~c~   | Check progress           | Por delante, en el camino o por detrás; ofrece los ajustes                  |
+| ~m~   | Milestones               | Cuándo se alcanzaron o se alcanzarán el 25/50/75/100 %                      |
+| ~w~   | Weekly summary           | Cada semana: meta, escrito, total planificado frente a real                 |
+| ~M~   | Month grid               | Un calendario con la meta y el resultado de cada día                        |
+| ~D~   | Dashboards menu          | Progreso, burndown, velocidad, mapa de calor y más                          |
+| ~E~   | Enable for project       | Activa el planificador para este proyecto                                   |
+| ~X~   | Disable for project      | Lo desactiva                                                                |
+| ~q~   | Back to main menu        | Vuelve a la Hydra principal                                                 |
+
+** Un día de escritura con el planificador
+
+| Momento             | Acción                                             | Tecla         |
+|---------------------+----------------------------------------------------+---------------|
+| Al empezar          | Echa un vistazo a la línea de modo o al calendario | ~F8 W p~      |
+| Escribir            | Modo Sin distracciones                             | ~F8 m~        |
+| Después de escribir | Cuenta las palabras: el plan las anota             | ~F8 a~        |
+| Opcional            | Anota lo que hiciste                               | ~F8 W d~      |
+| Cada semana         | Repasa la semana, comprueba el progreso            | ~F8 W w~, ~c~ |
+| Los planes cambian  | Cambia el plan, con vista previa                   | ~F8 W r~      |
+
+---
+
+*Anterior*: [[file:primeros-pasos-15-personalizacion.org][Lección 15: Personalización y configuración]]
+*Siguiente*: [[file:primeros-pasos-17-borradores.org][Lección 17: Borradores y ramificación de ideas]]
+
+*¡Lección 16 completada!*

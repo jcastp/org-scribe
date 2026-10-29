@@ -1,9 +1,12 @@
 #+TITLE: org-scribe - Getting Started Guide
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
 
-* Welcome to Emacs Writing!
+/[[file:../manual-es/primeros-pasos-00-indice.org][Versión en español]]/
+
+* Welcome to org-scribe!
 
 Welcome to ~org-scribe~, a comprehensive toolkit designed to help you write novels and short stories in Emacs using Org-mode. If you're seeing this for the first time, you might feel overwhelmed by all the features available. Don't worry! This guide will walk you through everything step by step, starting from the very beginning.
 
@@ -291,7 +294,7 @@ The writing planner ships bundled inside ~org-scribe~ itself (no separate packag
 *** [[file:getting-started-17-scratchpad.org][Lesson 17: The Scratchpad and Branching Ideas]]
 *Time: 15 minutes*
 
-Every other lesson teaches you to put something in its proper place. This one covers the file that asks nothing of you — and what to do when a question turns out to have three answers. It needs nothing but Lesson 1, so read it whenever you like.
+Every other lesson teaches you to put something in its proper place. This one covers the part of your design notebook that asks nothing of you — and what to do when a question turns out to have three answers. It needs nothing but Lesson 1, so read it whenever you like.
 
 *You'll learn:*
 - Where your project's scratchpad is, and why nothing in the package reads it

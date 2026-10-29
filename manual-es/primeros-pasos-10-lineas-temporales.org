@@ -1,0 +1,977 @@
+#+TITLE: Lección 10: Cronologías de personajes y de la trama
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-10-timelines.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-10-timelines.org][English version]]/
+
+* ¡Bienvenido a la Lección 10!
+
+Hasta ahora has seguido a tus personajes y a tus hilos de la trama en las escenas mediante propiedades. Es hora de visualizar esos datos. Las cronologías te muestran qué personajes aparecen dónde y cómo se desarrollan los hilos de la trama a lo largo de la historia.
+
+Estas tablas visuales te ayudan a detectar problemas:
+- «¿Por qué la mejor amiga de mi protagonista lleva 10 escenas sin aparecer?»
+- «¿Tiene mi subtrama romántica el espacio que necesita?»
+- «¿Están bien resueltos todos mis hilos de la trama?»
+
+Al terminar la lección habrás:
+- Creado tablas de cronología de personajes que muestran quién aparece dónde
+- Creado tablas de cronología de hilos de la trama que muestran el desarrollo de la historia
+- Entendido los símbolos de las cronologías (★ para el PoV, ● para la presencia)
+- Usado las cronologías para detectar huecos y desequilibrios
+- Generado informes de salud de la trama con avisos
+- Fortalecido tu historia con el análisis visual
+
+*Tiempo estimado*: 20 minutos
+
+* Antes de empezar
+
+** Lo que necesitas
+
+✓ Un proyecto de escritura con varias escenas
+✓ Propiedades de personajes en las escenas (~:PoV:~ y ~:Personajes:~)
+✓ Propiedades de hilos de la trama en las escenas (~:Trama:~)
+✓ El sistema de enlaces de personajes configurado (Lección 4)
+✓ Familiaridad básica con los bloques dinámicos de Org
+
+** Comprobación rápida
+
+Abre tu manuscrito y verifica que:
+1. Tienes escritas al menos de 3 a 5 escenas
+2. Las escenas tienen la propiedad ~:PoV:~
+3. Las escenas tienen la propiedad ~:Personajes:~
+4. Las escenas tienen la propiedad ~:Trama:~
+5. Los enlaces de personajes y de la trama son enlaces por ID (no texto plano)
+
+Si te falta algo, repasa la Lección 4 (Personajes) y la Lección 6 (Hilos de la trama).
+
+** Qué son las cronologías
+
+Las cronologías son tablas que se generan solas y muestran:
+- *Cronología de personajes*: qué personajes aparecen en qué escenas
+- *Cronología de hilos de la trama*: qué hilos de la trama están activos en qué escenas
+
+Usan la función de bloques dinámicos de org-mode (~#+BEGIN: ... #+END:~) para generar las tablas a partir de las propiedades de tus escenas.
+
+* Entender los símbolos de las cronologías
+
+Antes de crear cronologías, veamos qué significan sus símbolos.
+
+** Símbolos de la cronología de personajes
+
+| Símbolo | Significado                       | Ejemplo                               |
+|---------+-----------------------------------+---------------------------------------|
+| ★       | Personaje con punto de vista      | Escena desde la perspectiva de Alicia |
+| ●       | Personaje presente (sin ser PoV)  | Bob aparece, pero no es el PoV        |
+| (vacío) | El personaje no está en la escena | Carlos no aparece                     |
+
+** Lógica de los símbolos: el PoV manda
+
+*Regla importante*: si un personaje es el PoV, se muestra como ★ aunque también figure en la propiedad ~:Personajes:~.
+
+Propiedades de escena de ejemplo:
+#+BEGIN_EXAMPLE
+:PoV: Alicia
+:Personajes: Alicia, Bob, Carlos
+#+END_EXAMPLE
+
+La cronología muestra:
+- Alicia: ★ (PoV, no ●, aunque esté en la lista de personajes)
+- Bob: ●
+- Carlos: ●
+
+*¿Por qué?* El PoV implica presencia, así que no hacen falta los dos símbolos. La estrella (★) es más fuerte e importante.
+
+Los símbolos se pueden cambiar con las variables ~org-scribe-timeline-pov-symbol~ y ~org-scribe-timeline-present-symbol~.
+
+** Símbolos de la cronología de hilos de la trama
+
+Los hilos de la trama usan símbolos más sencillos:
+
+| Símbolo | Significado                  | Ejemplo                          |
+|---------+------------------------------+----------------------------------|
+| ●       | Hilo activo en la escena     | La trama principal avanza        |
+| (vacío) | El hilo no está en la escena | La subtrama romántica no aparece |
+
+*Sin distinción de PoV*: los hilos o están presentes o no lo están.
+
+** Ejemplo visual
+
+Así se ve una cronología de personajes:
+
+#+BEGIN_EXAMPLE
+| Scene                    | Chapter    | Alicia | Bob | Carlos |
+|--------------------------+------------+--------+-----+--------|
+| Escena 1 - Mañana        | Capítulo 1 | ★      | ●   |        |
+| Escena 2 - Café          | Capítulo 1 | ●      |     | ●      |
+| Escena 3 - Oficina       | Capítulo 1 | ★      | ●   | ●      |
+| Escena 4 - Confrontación | Capítulo 2 | ★      | ●   |        |
+#+END_EXAMPLE
+
+Las cabeceras de las dos primeras columnas, /Scene/ y /Chapter/, las escribe siempre el bloque dinámico en inglés, aunque tu proyecto esté en español. En un cuento no hay columna de capítulo.
+
+Cómo leer esta tabla:
+- Escena 1: Alicia es el PoV (★), Bob aparece (●), Carlos no está
+- Escena 2: Alicia aparece (●), Carlos aparece (●), Bob no está, no hay PoV
+- Escena 3: Alicia es el PoV (★), Bob y Carlos aparecen (●)
+- Escena 4: Alicia es el PoV (★), Bob aparece (●), Carlos no está
+
+* Crear tu primera cronología de personajes
+
+¡Vamos a generar una cronología de personajes para tu manuscrito!
+
+** Paso 1: Encuentra dónde va la cronología
+
+¡Tu plantilla ya incluye una sección de cronología!
+
+1. Abre tu manuscrito (~novela.org~ o ~cuento.org~)
+2. Busca el encabezado «Línea Temporal de Personajes»
+3. Deberías ver:
+
+#+BEGIN_EXAMPLE
+,** Línea Temporal de Personajes
+
+Esta tabla muestra qué personajes aparecen en cada escena.
+
+Símbolos:
+- ★ = Personaje con Punto de Vista
+- ● = Presente en la escena
+
+Actualiza con =C-c C-c= en la línea #+BEGIN.
+
+#+BEGIN: character-timeline
+#+END:
+#+END_EXAMPLE
+
+*Si no ves esta sección*: puedes añadirla a mano (ver la sección de personalización más adelante).
+
+** Paso 2: Genera la cronología
+
+1. Coloca el cursor en la línea ~#+BEGIN: character-timeline~
+2. Pulsa ~C-c C-c~
+3. Espera 1 o 2 segundos
+4. ¡La tabla se genera!
+
+Ahora deberías ver:
+
+#+BEGIN_EXAMPLE
+#+BEGIN: character-timeline
+| Scene                | Chapter    | Alicia | Bob | Carlos | Dana |
+|----------------------+------------+--------+-----+--------+------|
+| Escena 1 - Apertura  | Capítulo 1 | ★      | ●   |        |      |
+| Escena 2 - Encuentro | Capítulo 1 | ●      |     | ●      |      |
+| Escena 3 - Conflicto | Capítulo 2 | ★      | ●   | ●      | ●    |
+#+END:
+#+END_EXAMPLE
+
+*¡Enhorabuena!* Has creado tu primera cronología.
+
+Las columnas salen ordenadas por la propiedad ~:Weight:~ de cada personaje (de menor a mayor; sin valor, al final). Un ~:Weight:~ negativo (por ejemplo ~-1~) oculta al personaje de la tabla, y bajo la tabla queda una línea de comentario que dice quién falta («Sin mostrar (Weight -1): …»). Para verlos a todos, escribe ~#+BEGIN: character-timeline :show-hidden t~.
+
+** Paso 3: Entiende tu cronología
+
+Mira la cronología generada e identifica:
+
+1. *Columnas de personajes*: una columna por cada personaje que aparece en algún sitio
+2. *Filas de escenas*: una fila por cada escena que tiene propiedades de personajes
+3. *Símbolos*:
+   - ★ = el PoV de esa escena
+   - ● = personaje presente
+   - Vacío = personaje ausente
+
+** Paso 4: Analiza los huecos
+
+Patrones habituales que conviene buscar:
+
+*** El protagonista desaparece
+
+Si tu personaje principal tiene muchas celdas vacías:
+- *Problema*: el protagonista falta en demasiadas escenas
+- *Solución*: o debería aparecer, o estás mostrando demasiadas subtramas
+
+*** Abuso de un personaje secundario
+
+Si un personaje menor aparece en todas partes (todo ●):
+- *Problema*: un personaje menor acapara demasiado protagonismo
+- *Solución*: quítalo de las escenas en las que no es esencial
+
+*** Un personaje se esfuma
+
+Si un personaje aparece al principio y luego tiene muchos vacíos:
+- *Problema*: te has olvidado de este personaje
+- *Solución*: vuelve a incluirlo, o sácalo de la historia como es debido
+
+*** Sin variedad de PoV (novelas con un solo PoV)
+
+Si solo un personaje tiene ★:
+- *Está bien en*: novelas en primera persona o historias con un único PoV
+- *Es un problema si*: querías varios PoV y se te olvidó cambiar
+
+*** Cambios de PoV demasiado frecuentes
+
+Si ★ rebota entre muchos personajes con rapidez:
+- *Problema*: cambios de PoV confusos, sin un personaje en el que centrarse
+- *Solución*: agrupa las escenas de PoV (3 o 4 escenas seguidas con el mismo PoV)
+
+** Paso 5: Actualiza tras los cambios
+
+A medida que escribes más escenas:
+
+1. Pon las propiedades ~:PoV:~ y ~:Personajes:~ en las escenas nuevas
+2. Ve a la sección de la cronología de personajes
+3. Pulsa ~C-c C-c~ en ~#+BEGIN: character-timeline~
+4. ¡La tabla se actualiza con los datos nuevos!
+
+*La cronología es dinámica*: siempre refleja las propiedades actuales de las escenas.
+
+** ¡Pruébalo ahora! (5 minutos)
+
+1. Genera tu cronología de personajes (~C-c C-c~)
+2. Busca huecos (personajes con muchos vacíos)
+3. Identifica tus personajes más y menos usados
+4. Comprueba si el PoV está equilibrado (o es un único PoV a propósito)
+5. Anota lo que has descubierto
+
+* Crear una cronología de hilos de la trama
+
+Las cronologías de hilos de la trama funcionan igual, pero muestran los hilos de la historia en lugar de los personajes.
+
+** Paso 1: Encuentra dónde va la cronología de la trama
+
+En tu manuscrito busca «Análisis de Tramas» (es el encabezado de la plantilla) o añade:
+
+#+BEGIN_EXAMPLE
+,** Análisis de Tramas
+
+Esta tabla muestra qué hilos argumentales aparecen en cada escena.
+
+Símbolo:
+- ● = Hilo activo en esta escena
+
+Actualiza con =C-c C-c= en la línea #+BEGIN.
+
+#+BEGIN: plot-thread-timeline
+#+END:
+#+END_EXAMPLE
+
+** Paso 2: Genera la cronología
+
+1. Coloca el cursor en la línea ~#+BEGIN: plot-thread-timeline~
+2. Pulsa ~C-c C-c~
+3. ¡La tabla se genera!
+
+Ejemplo de resultado:
+
+#+BEGIN_EXAMPLE
+#+BEGIN: plot-thread-timeline
+| Scene                    | Chapter    | Trama principal | Romance | Conspiración |
+|--------------------------+------------+-----------------+---------+--------------|
+| Escena 1 - Descubrimiento | Capítulo 1 | ●              |         | ●            |
+| Escena 2 - Primera cita  | Capítulo 1 |                 | ●       |              |
+| Escena 3 - Investigación | Capítulo 2 | ●               |         | ●            |
+| Escena 4 - Cena          | Capítulo 2 |                 | ●       |              |
+| Escena 5 - Revelación    | Capítulo 3 | ●               | ●       | ●            |
+#+END:
+#+END_EXAMPLE
+
+Los hilos con ~:Weight:~ negativo se ocultan igual que los personajes (con la misma línea de comentario y el mismo ~:show-hidden t~).
+
+** Paso 3: Analiza el equilibrio de la trama
+
+Busca estos patrones:
+
+*** Hilos de una sola escena
+
+Si un hilo aparece solo una vez (un solo ●):
+- *Problema*: el hilo se menciona pero no se desarrolla
+- *Solución*: o lo amplías (más escenas) o lo eliminas
+
+*** Huecos largos
+
+Si un hilo tiene muchas escenas vacías entre dos ●:
+- *Problema*: los lectores olvidarán que este hilo existe
+- *Solución*: añade escenas de recordatorio cada 5 o 7 escenas
+
+*** Hilos sin terminar
+
+Si un hilo aparece al principio pero nunca cerca del final:
+- *Problema*: hilo de la trama sin resolver (¡los lectores lo odian!)
+- *Solución*: añade escenas de resolución en el Acto III
+
+*** Agrupación excesiva
+
+Si todos los hilos aparecen en las mismas escenas:
+- *Problema*: escenas saturadas, narración sin foco
+- *Solución*: reparte los hilos en escenas distintas
+
+*** Ejemplo de buen equilibrio
+
+#+BEGIN_EXAMPLE
+| Escena    | Principal | Romance | Misterio |
+|-----------+-----------+---------+----------|
+| Escena 1  | ●         |         |          |  ← Establece la trama principal
+| Escena 2  | ●         | ●       |          |  ← Introduce el romance
+| Escena 3  | ●         |         | ●        |  ← Introduce el misterio
+| Escena 4  |           | ●       |          |  ← El romance se desarrolla
+| Escena 5  | ●         |         | ●        |  ← Se cruzan la principal y el misterio
+| Escena 6  |           | ●       |          |  ← El romance continúa
+| Escena 7  | ●         | ●       | ●        |  ← Todo converge (¡clímax!)
+#+END_EXAMPLE
+
+*Por qué es bueno*:
+- Cada hilo recibe su espacio
+- Apariciones regulares (ningún hilo desaparece)
+- Los hilos van separados hasta el clímax
+- Se aprecia una progresión clara
+
+** ¡Pruébalo ahora! (5 minutos)
+
+1. Genera la cronología de hilos de la trama
+2. Cuenta en cuántas escenas aparece cada hilo
+3. Mide los huecos (máximo de escenas vacías entre apariciones)
+4. Comprueba si todos los hilos se resuelven cerca del final
+5. Identifica los hilos que necesitan más desarrollo
+
+* El informe de salud de los hilos de la trama
+
+Para un análisis más profundo, ~org-scribe~ incluye un informe de salud automático.
+
+** Qué hace
+
+El informe de salud (~org-scribe-plot-thread-report~) analiza cada hilo de la trama y señala tres condiciones, que se comprueban por separado (un hilo puede cumplir más de una a la vez):
+- *Hilos de una sola aparición*: presentes en exactamente 1 escena
+- *Huecos grandes*: más de 5 escenas entre dos apariciones del hilo
+- *Poca cobertura*: el hilo aparece en menos del 30 % de todas las escenas
+
+No existe una comprobación aparte de «hilo sin resolver» ni de «ausente del acto final»: el informe solo evalúa el porcentaje de cobertura, el tamaño de los huecos y las apariciones en una sola escena.
+
+** Generar el informe
+
+Hay dos maneras de acceder a él:
+
+*** Con el menú Hydra
+
+1. Pulsa ~F8 L~ (submenú «Links & upkeep»)
+2. Pulsa ~t~ (plot health report)
+3. El informe se abre en un búfer nuevo
+
+*** Con la orden directa
+
+1. ~M-x org-scribe-plot-thread-report~
+2. El informe se abre en un búfer nuevo
+
+** Entender el informe
+
+Esto es lo que genera realmente el informe, en el idioma del proyecto. Cada hilo lleva un símbolo de estado (✓ o ⚠️) en su encabezado, su ID, la cobertura de escenas, la primera y la última aparición y, solo si se ha superado algún umbral, un bloque ~*Avisos:*~:
+
+#+BEGIN_EXAMPLE
+#+TITLE: Informe de estado de los hilos de trama
+#+DATE: 2025-11-16 14:30
+#+STARTUP: overview
+
+,* Resumen
+
+- Total de hilos de trama: 3
+- Total de escenas: 12
+- Escenas con hilos de trama: 12
+
+,* Detalle de los hilos
+
+,** ✓ Trama principal
+
+- ID: hilo-principal-001
+- Escenas: 8 de 12 (66.7%)
+- Primera aparición: Escena 1 - Apertura (Capítulo: Capítulo 1)
+- Última aparición: Escena 12 - Clímax (Capítulo: Capítulo 3)
+
+,** ⚠️ Subtrama romántica
+
+- ID: hilo-romance-002
+- Escenas: 4 de 12 (33.3%)
+- Primera aparición: Escena 2 - Encuentro (Capítulo: Capítulo 1)
+- Última aparición: Escena 11 - Confesión (Capítulo: Capítulo 3)
+
+*Avisos:*
+- ⚠️ Hueco de 6 escenas
+
+,** ⚠️ Hilo del misterio
+
+- ID: hilo-misterio-003
+- Escenas: 2 de 12 (16.7%)
+- Primera aparición: Escena 3 - Pista (Capítulo: Capítulo 1)
+- Última aparición: Escena 9 - Segunda pista (Capítulo: Capítulo 2)
+
+*Avisos:*
+- ⚠️ Poca cobertura (16.7%)
+
+,* Escenas sin hilos de trama
+
+Todas las escenas tienen la propiedad Plot.
+#+END_EXAMPLE
+
+Fíjate en que el informe real no trae líneas aparte de «Cobertura: buena/baja», «Hueco máximo», «Estado» ni «Recomendación»: el símbolo ✓/⚠️ del encabezado y la lista opcional de ~*Avisos:*~ son los únicos indicadores de estado. La sección final «Escenas sin hilos de trama» aparece siempre: enumera las escenas que no tienen la propiedad de trama (o confirma que no hay ninguna). Aunque la propiedad de escena se llame ~:Trama:~ en un proyecto en español, el mensaje la nombra como «Plot».
+
+** Tipos de aviso
+
+Hay exactamente tres condiciones de aviso, que se comprueban por separado, así que un mismo hilo puede mostrar más de uno a la vez:
+
+| Aviso              | Criterio                            | Arreglo                        |
+|--------------------+-------------------------------------+--------------------------------|
+| Una sola aparición | Exactamente 1 escena                | Ampliar a 3 o más, o eliminar  |
+| Hueco grande       | Más de 5 escenas entre apariciones  | Añadir escenas de recordatorio |
+| Poca cobertura     | Menos del 30 % de todas las escenas | Añadir escenas de desarrollo   |
+
+** Usar el informe
+
+1. *Lee el resumen*: obtén el número total de hilos
+2. *Revisa cada hilo*: busca los avisos ⚠
+3. *Prioriza los arreglos*: empieza por los hilos con menor porcentaje de cobertura
+4. *Haz los cambios*: añade escenas o elimina hilos
+5. *Vuelve a generar el informe*: comprueba las mejoras
+
+** ¡Pruébalo ahora! (3 minutos)
+
+1. Genera el informe de salud (~F8 L t~)
+2. Lee el resumen
+3. Busca los hilos con avisos
+4. Anota los arreglos necesarios
+5. Cierra el búfer del informe
+
+* Estadísticas rápidas
+
+Para una comprobación rápida sin el informe completo:
+
+** Orden: estadísticas de los hilos de la trama
+
+1. Pulsa ~F8 L S~ (S mayúscula, de «Statistics»)
+2. O bien: ~M-x org-scribe-plot-thread-stats~
+3. Aparece un mensaje en el minibúfer:
+
+#+BEGIN_EXAMPLE
+Hilos de trama: 3 | Escenas: 12 | Hilos con avisos: 2
+#+END_EXAMPLE
+
+*Comprobación rápida de salud*: si hay avisos (> 0), genera el informe completo para investigar.
+
+** Cuándo usar cada cosa
+
+- *Estadísticas*: comprobación diaria rápida (F8 L S)
+- *Informe completo*: revisión semanal, sesiones de edición importantes
+- *Cronología*: planificación visual, edición estructural
+
+* Flujos de trabajo prácticos con las cronologías
+
+Estos son usos reales de las cronologías.
+
+** Flujo 1: Comprobar el equilibrio de personajes (semanal)
+
+*Objetivo*: asegurarte de que todos los personajes principales tienen presencia
+
+1. Genera la cronología de personajes
+2. Cuenta los ★ de cada personaje (escenas de PoV)
+3. Cuenta los ● de cada personaje (apariciones totales)
+4. Compara:
+   - El protagonista debería tener más ★ (PoV único) o la mayoría (varios PoV)
+   - El reparto de apoyo debería tener ● con regularidad
+   - Los personajes menores deberían tener ● ocasionales
+5. Añade escenas para los personajes poco representados
+
+*Ejemplo de hallazgos*:
+- Alicia: 10 ★, 2 ● = 12 apariciones (bien para la protagonista)
+- Bob: 0 ★, 8 ● = 8 apariciones (bien para el compañero)
+- Carlos: 0 ★, 2 ● = solo 2 apariciones (¡necesita más!)
+
+** Flujo 2: Ritmo de los hilos de la trama (mientras escribes el borrador)
+
+*Objetivo*: mantener la presencia de los hilos a lo largo de la historia
+
+1. Genera la cronología de hilos de la trama
+2. Mira la fila de cada hilo
+3. Asegúrate de que ningún hilo falta más de 5 escenas seguidas (el informe de hilos marca los huecos más largos)
+4. Si encuentras un hueco:
+   - Opción A: añade una escena puente
+   - Opción B: añade una mención o referencia en una escena existente
+5. Actualiza la cronología para comprobar el arreglo
+
+*Ejemplo*:
+- Hilo romántico: Escena 2 ● ... Escena 3 ● ... Escena 10 ● (6 escenas seguidas sin él: un hueco que el informe marca)
+- Arreglo: añade un momento romántico en la escena 6 o 7
+
+** Flujo 3: Verificar la estructura por actos
+
+*Objetivo*: asegurarte de que cada acto contiene todos los hilos
+
+1. Genera la cronología de hilos de la trama
+2. Divide visualmente por actos:
+   - Acto I: escenas 1-4
+   - Acto II: escenas 5-10
+   - Acto III: escenas 11-15
+3. Comprueba que cada acto tiene:
+   - Trama principal: todos los actos (continua)
+   - Subtramas: al menos una aparición por acto
+4. Arregla los huecos
+
+*Ejemplo*:
+- La subtrama del misterio aparece en el Acto I y el II, pero falta en el III
+- Problema: ¡no hay resolución!
+- Arreglo: añade una escena de resolución en el Acto III
+
+** Flujo 4: Equilibrio de PoV (novelas con varios PoV)
+
+*Objetivo*: equilibrar la distribución de PoV entre los personajes
+
+1. Genera la cronología de personajes
+2. Cuenta los ★ de cada personaje
+3. Calcula los porcentajes:
+   - Alicia: 6/15 escenas = 40 % de PoV
+   - Bob: 5/15 escenas = 33 % de PoV
+   - Carlos: 4/15 escenas = 27 % de PoV
+4. Decide si el equilibrio es el correcto:
+   - Socios a partes iguales: apunta a un ~33 % cada uno (¡lo conseguido arriba!)
+   - Principal y secundario: reparto 60 %/40 %
+   - Principal y dos secundarios: 50 %/25 %/25 %
+5. Ajusta lo que haga falta
+
+** Flujo 5: Planificar escena por escena (antes de escribir)
+
+*Objetivo*: planificar la distribución de personajes y de tramas
+
+1. Crea escenas vacías con propiedades (todavía sin contenido)
+2. Pon ~:PoV:~, ~:Personajes:~ y ~:Trama:~ en cada escena planificada
+3. Genera las dos cronologías
+4. Revísalas visualmente: ¿tiene sentido el patrón?
+5. Ajusta las propiedades de las escenas antes de escribir
+6. Empieza a escribir con una estructura sólida
+
+*Ventaja*: ¡detectas problemas de estructura antes de escribir miles de palabras!
+
+** Prueba distintos flujos (5 minutos)
+
+Elige uno de los flujos anteriores y:
+1. Genera la(s) cronología(s) necesaria(s)
+2. Haz el análisis
+3. Identifica al menos una mejora
+4. Anota el arreglo
+
+* Personalizar las secciones de cronología
+
+Si tu plantilla no tiene secciones de cronología, añádelas a mano.
+
+** Añadir la sección de cronología de personajes
+
+En tu manuscrito (~novela.org~), añade:
+
+#+BEGIN_SRC org
+,** Línea Temporal de Personajes
+
+Esta tabla muestra qué personajes aparecen en cada escena.
+
+Símbolos:
+- ★ = Personaje con Punto de Vista (implica presencia)
+- ● = Presente en la escena (sin ser PoV)
+
+Actualiza con =C-c C-c= en la línea #+BEGIN.
+
+,#+BEGIN: character-timeline
+,#+END:
+#+END_SRC
+
+** Añadir la sección de cronología de hilos de la trama
+
+De forma parecida:
+
+#+BEGIN_SRC org
+,** Análisis de Tramas
+
+Esta tabla muestra qué hilos argumentales aparecen en cada escena.
+
+Símbolo:
+- ● = Hilo activo en esta escena
+
+Actualiza con =C-c C-c= en la línea #+BEGIN.
+
+,#+BEGIN: plot-thread-timeline
+,#+END:
+#+END_SRC
+
+** Ubicación recomendada
+
+Coloca las secciones de cronología en tu manuscrito después de:
+- La sección de seguimiento del progreso
+- Las tablas de recuento de palabras
+- Antes del contenido principal del manuscrito
+
+*O* mantén un bloque en la sección de cronología de ~diseno.org~ para un análisis detallado.
+
+** Varias cronologías
+
+Puedes tener varios bloques de cronología:
+- Uno en ~novela.org~ (referencia rápida)
+- Uno en ~diseno.org~ (análisis detallado)
+- Uno por acto (en secciones separadas)
+
+Todos muestran los mismos datos: elige lo que encaje con tu flujo de trabajo.
+
+* Análisis avanzado de cronologías
+
+Cuando te sientas cómodo con las cronologías básicas, prueba estas técnicas avanzadas.
+
+** Códigos de color (herramienta externa)
+
+Exporta la cronología a CSV o HTML y usa una hoja de cálculo para colorear:
+1. ★ = verde (PoV)
+2. ● = azul (presente)
+3. Vacío = blanco (ausente)
+
+Los patrones de color muestran el equilibrio al instante.
+
+** Análisis del recuento de escenas
+
+Crea a mano una tabla resumen:
+
+#+BEGIN_EXAMPLE
+| Personaje | PoV (★) | Presente (●) | Total | Porcentaje |
+|-----------+---------+--------------+-------+------------|
+| Alicia    |      10 |            2 |    12 | 80 %        |
+| Bob       |       0 |            8 |     8 | 53 %        |
+| Carlos    |       0 |            3 |     3 | 20 %        |
+|-----------+---------+--------------+-------+------------|
+| Total     |      15 |              |    15 |            |
+#+END_EXAMPLE
+
+** Tabla de análisis de huecos
+
+Sigue los huecos más largos:
+
+#+BEGIN_EXAMPLE
+| Hilo      | Visto por última vez | Próxima aparición | Hueco (escenas) | Estado |
+|-----------+----------------------+-------------------+-----------------+--------|
+| Romance   | Escena 5             | Escena 11         |               6 | ⚠      |
+| Misterio  | Escena 8             | Escena 12         |               4 | ✓      |
+| Principal | Escena 14            | Escena 15         |               1 | ✓      |
+#+END_EXAMPLE
+
+** Lista de comprobación del arco completo
+
+Para cada hilo, verifica:
+
+#+BEGIN_EXAMPLE
+- [ ] El hilo se introduce en el Acto I
+- [ ] El hilo se desarrolla en el Acto II (3 o más escenas)
+- [ ] El hilo tiene un revés o una complicación
+- [ ] El hilo se resuelve en el Acto III
+- [ ] Nunca ausente más de 5 escenas seguidas
+- [ ] Aparece en el acto final
+#+END_EXAMPLE
+
+* Preguntas frecuentes
+
+** «Mi cronología está vacía / no muestra personajes»
+
+*Causas*:
+1. Ninguna escena tiene las propiedades ~:PoV:~ o ~:Personajes:~
+2. Las propiedades tienen texto plano en lugar de enlaces por ID
+3. El cursor no estaba en la línea ~#+BEGIN~ al pulsar ~C-c C-c~
+
+*Soluciones*:
+1. Pon las propiedades de personajes en las escenas (~F8 p~ y ~F8 h~)
+2. Ejecuta la configuración de enlaces de personajes (~F8 L c~)
+3. Coloca el cursor exactamente en la línea ~#+BEGIN: character-timeline~
+
+** «La cronología muestra algunos personajes, pero no todos»
+
+*Causa*: la cronología solo muestra los personajes que aparecen en al menos una escena.
+
+*¡Es lo correcto!* Si existe la ficha de un personaje pero nunca aparece en las escenas, no saldrá en la cronología.
+
+*Otra causa posible*: el personaje tiene un ~:Weight:~ negativo, que lo oculta de la tabla. Busca bajo ella la línea de comentario «Sin mostrar (Weight -1): …» o añade ~:show-hidden t~ al bloque.
+
+*Solución*: añade a ese personaje a las propiedades de las escenas en las que debería aparecer.
+
+** «¿Con qué frecuencia debo actualizar las cronologías?»
+
+*Recomendaciones*:
+
+- *Mientras escribes el borrador*: tras cada 3 a 5 escenas nuevas
+- *Durante la revisión*: cada semana
+- *Antes de enviar*: una vez, para la comprobación final
+- *Comprobación rápida*: cuando quieras (pulsa ~C-c C-c~, es instantáneo)
+
+** «¿Puedo filtrar la cronología para que muestre solo ciertos actos?»
+
+*Ahora mismo*: no hay filtrado automático en los bloques dinámicos
+
+*Alternativas*:
+1. Crea a mano secciones de cronología separadas para cada acto
+2. O copia la cronología a una hoja de cálculo y filtra allí
+3. O genera la cronología, cópiala a un búfer nuevo y borra las filas que no quieras
+
+*Función futura*: están previstos parámetros de filtrado (~:act 1~, ~:chapter 2~).
+
+** «¿Qué distribución de PoV es buena para mi novela?»
+
+*Depende del tipo de historia*:
+
+- *PoV único*: un personaje tiene el 100 % de los ★
+- *PoV doble*: reparto 50/50 (o 60/40 si uno es el principal)
+- *PoV triple*: 33/33/33 (o ponderado, como 50/30/20)
+- *Coral*: 4 o más personajes, repartidos por actos
+
+*No hay una respuesta equivocada*: la coherencia importa más que los porcentajes exactos.
+
+** «¿Debe tener cada escena un hilo de la trama?»
+
+*Las opiniones varían*:
+
+- *Trama estricta*: sí, cada escena hace avanzar la trama
+- *Historias de personajes*: algunas escenas solo desarrollan al personaje
+- *Equilibrado*: la mayoría de las escenas tienen un hilo; alguna escena puramente de personaje está bien
+
+*La cronología te ayuda a decidir*: si ves muchas escenas sin hilos, decide si es intencionado o un problema.
+
+** «¿Puedo tener varias cronologías de trama para distintos tipos de hilo?»
+
+*¡Sí!* Crea bloques dinámicos separados:
+
+#+BEGIN_SRC org
+,** Hilos de la historia principal
+,#+BEGIN: plot-thread-timeline
+,#+END:
+
+,** Hilos de desarrollo de personajes
+[Crea a mano una tabla que siga los arcos internos]
+
+,** Hilos de construcción del mundo
+[Sigue misterios, revelaciones, lore]
+#+END_SRC
+
+Solo el primero se genera solo a partir de las propiedades ~:Trama:~, pero puedes mantener los demás a mano.
+
+* Solución de problemas
+
+** «C-c C-c no genera la tabla»
+
+*Comprueba*:
+1. El cursor está EN la línea ~#+BEGIN:~ (ni antes ni después)
+2. La línea dice exactamente ~#+BEGIN: character-timeline~ o ~#+BEGIN: plot-thread-timeline~
+3. Estás en un búfer de org-mode (~M-x org-mode~ para asegurarte)
+4. El paquete org-scribe está cargado (~M-x org-scribe-version~)
+
+*Prueba*:
+- ~M-x org-dblock-update~ (orden de actualización manual)
+- Revisa el búfer ~*Messages*~ en busca de errores
+
+** «La cronología muestra información equivocada»
+
+*Causas*:
+1. Las propiedades de las escenas no se actualizaron tras editar
+2. Estás viendo una versión antigua
+3. Las propiedades tienen erratas (":Pov:" en lugar de ":PoV:")
+
+*Soluciones*:
+1. Verifica que las propiedades de las escenas son correctas (¡distingue mayúsculas!)
+2. Vuelve a generar la cronología (~C-c C-c~ en la línea ~#+BEGIN~)
+3. Comprueba que los nombres de las propiedades coinciden exactamente: ~:PoV:~, ~:Personajes:~, ~:Trama:~
+
+** «El formato de la tabla se ve roto»
+
+*Síntomas*:
+- Columnas desalineadas
+- Barras verticales (|) de más
+- Org no reconoce la tabla
+
+*Arreglo*:
+1. Pon el cursor en cualquier punto de la tabla
+2. Pulsa ~C-c C-c~ para realinearla
+3. O ~M-x org-table-align~
+
+*Prevención*: deja que el bloque dinámico genere la tabla y no la edites a mano.
+
+** «Los nombres de los personajes salen cortados o mal»
+
+*Causa*: problemas de extracción de enlaces
+
+*Comprueba*:
+1. ¿Usas enlaces por ID? (~[[id:...][Nombre]]~)
+2. ¿O texto plano? (~:Personajes: Alicia, Bob~)
+3. La cronología extrae el texto visible de los enlaces
+
+*Solución*:
+- Enlaces por ID (recomendado): muestra el texto visible del enlace
+- Texto plano: lo muestra tal cual
+- Si sale mal, verifica el formato del enlace o el valor de la propiedad
+
+** «Algunas escenas no aparecen en la cronología»
+
+*Causa*: la cronología solo incluye las escenas con las propiedades pertinentes
+
+La *cronología de personajes* muestra las escenas que tienen:
+- la propiedad ~:PoV:~, O
+- la propiedad ~:Personajes:~
+
+La *cronología de la trama* muestra las escenas que tienen:
+- la propiedad ~:Trama:~
+
+*Es intencionado*: las escenas sin seguimiento de personajes o de trama no se incluyen.
+
+* Lo que has aprendido
+
+¡Excelente trabajo! Has completado la Lección 10. Ahora sabes:
+
+✓ Los dos tipos de cronología (de personajes y de hilos de la trama)
+✓ Los símbolos de las cronologías (★ para el PoV, ● para la presencia)
+✓ Cómo generar cronologías de personajes con ~#+BEGIN: character-timeline~
+✓ Cómo generar cronologías de hilos de la trama con ~#+BEGIN: plot-thread-timeline~
+✓ Cómo leer e interpretar las tablas de cronología
+✓ Los problemas habituales que revelan las cronologías (huecos, desequilibrios, hilos sin resolver)
+✓ Cómo usar el informe de salud de los hilos de la trama (~F8 L t~)
+✓ Las estadísticas rápidas para comprobaciones ágiles (~F8 L S~)
+✓ Flujos de trabajo prácticos para distintas necesidades de análisis
+✓ Cómo personalizar las secciones de cronología de tu manuscrito
+✓ Técnicas avanzadas de análisis para obtener más información
+
+* Próximos pasos
+
+¿Listo para compartir tu trabajo? Pasa a la [[file:primeros-pasos-11-exportar.org][Lección 11: Exportar tu manuscrito]].
+
+En la próxima lección aprenderás a:
+- Usar la macro de salto de escena para dar formato correcto
+- Exportar a LaTeX/PDF para imprimir
+- Exportar a ODT (LibreOffice/Word)
+- Exportar a HTML/EPUB para lectura digital
+- Personalizar los ajustes de exportación
+- Preparar manuscritos para enviarlos
+
+** Práctica antes de seguir
+
+Afianza tus destrezas con las cronologías:
+
+1. *Genera las dos cronologías*
+   - Cronología de personajes
+   - Cronología de hilos de la trama
+   - Estúdialas durante 10 minutos
+
+2. *Encuentra tres problemas*
+   - Huecos de personajes
+   - Problemas de hilos de la trama
+   - Desequilibrios de PoV
+
+3. *Haz mejoras*
+   - Añade escenas para arreglar los huecos
+   - Ajusta las propiedades
+   - Vuelve a generar las cronologías para comprobarlo
+
+4. *Ejecuta el informe de salud*
+   - ~F8 L t~
+   - Lee todos los avisos
+   - Anota los arreglos
+
+5. *Establece una rutina*
+   - Actualiza las cronologías cada 5 escenas escritas
+   - Revisa el informe de salud cada semana
+   - Haz un análisis a fondo cada mes
+
+6. *Exporta la cronología*
+   - Copia la tabla de la cronología
+   - Pégala en una hoja de cálculo
+   - Prueba a colorearla
+   - Imprímela como referencia
+
+Las cronologías son potentes herramientas de diagnóstico: úsalas con regularidad para mantener tu historia equilibrada.
+
+* Referencia rápida
+
+** Generar cronologías
+
+#+BEGIN_EXAMPLE
+Cronología de personajes:
+1. Busca #+BEGIN: character-timeline
+2. Cursor en esa línea
+3. C-c C-c
+
+Cronología de hilos de la trama:
+1. Busca #+BEGIN: plot-thread-timeline
+2. Cursor en esa línea
+3. C-c C-c
+#+END_EXAMPLE
+
+** Guía rápida de símbolos
+
+#+BEGIN_EXAMPLE
+CRONOLOGÍA DE PERSONAJES:
+  ★ = personaje PoV (la perspectiva de este personaje)
+  ● = presente en la escena (sin ser PoV)
+  vacío = no está en esta escena
+
+CRONOLOGÍA DE HILOS DE LA TRAMA:
+  ● = hilo activo en esta escena
+  vacío = el hilo no está en esta escena
+#+END_EXAMPLE
+
+** Órdenes del informe de salud
+
+| Orden                         | Tecla     | Qué muestra                           |
+|-------------------------------+-----------+---------------------------------------|
+| Informe de salud de los hilos | ~F8 L t~  | Análisis completo con avisos          |
+| Estadísticas de los hilos     | ~F8 L S~  | Resumen rápido en una línea           |
+| Tabla de cronología           | ~C-c C-c~ | Cronología visual (en la línea BEGIN) |
+
+** Umbrales de aviso
+
+| Aviso              | Umbral                        | Arreglo recomendado            |
+|--------------------+-------------------------------+--------------------------------|
+| Una sola aparición | Exactamente 1 escena          | Ampliar a 3 o más, o eliminar  |
+| Hueco grande       | Más de 5 escenas              | Añadir escenas de recordatorio |
+| Poca cobertura     | Menos del 30 % de las escenas | Añadir escenas de desarrollo   |
+
+** Patrones de análisis habituales
+
+#+BEGIN_EXAMPLE
+PATRÓN BUENO:
+Trama principal: ● ● ● ● ● ● ● ● ●  (continua)
+Subtrama A:      ●   ●   ●   ●   ●  (huecos regulares)
+Subtrama B:        ●   ●   ● ● ●    (crece hacia el final)
+
+PATRÓN MALO:
+Trama principal: ● ●         ● ● ●  (¡falta el medio!)
+Subtrama A:      ●                  (olvidada)
+Subtrama B:      ● ● ● ● ●          (¡sin resolver!)
+#+END_EXAMPLE
+
+** Lista de comprobación del análisis
+
+#+BEGIN_EXAMPLE
+□ Todos los personajes principales aparecen con regularidad
+□ Ningún personaje desaparece más tiempo del que decidiste (el informe no lo comprueba; 8 escenas es un límite razonable)
+□ La distribución de PoV responde a lo previsto (único/varios)
+□ Todos los hilos de la trama aparecen en cada acto
+□ Ningún hilo con huecos de más de 5 escenas (el informe de salud de la trama los marca)
+□ Todos los hilos se resuelven antes del final
+□ Ningún hilo de una sola aparición (salvo que sea intencionado)
+□ El informe de salud de la trama muestra 0 avisos
+□ Las apariciones de los personajes parecen equilibradas
+□ El avance de la historia se aprecia en la cronología
+#+END_EXAMPLE
+
+* Resumen
+
+Las cronologías de personajes y de la trama son herramientas visuales que revelan la estructura de tu historia de un vistazo. Te ayudan a detectar huecos, desequilibrios e hilos olvidados antes de que lo hagan los lectores.
+
+La clave para usar bien las cronologías:
+1. Genéralas con regularidad (cada pocas escenas)
+2. Léelas con ojo crítico (busca problemas)
+3. Actúa según lo que encuentres (arregla huecos y desequilibrios)
+4. Usa los informes de salud (detección automática de problemas)
+5. Sigue tu progreso (vuelve a generarlas tras los arreglos)
+
+Las cronologías convierten la estructura invisible en patrones visibles: úsalas para fortalecer tu historia.
+
+---
+
+*Anterior*: [[file:primeros-pasos-09-modos-escritura.org][Lección 9: Los modos de escritura en profundidad]]
+*Siguiente*: [[file:primeros-pasos-11-exportar.org][Lección 11: Exportar tu manuscrito]]
+
+*¡Lección 10 completada!*

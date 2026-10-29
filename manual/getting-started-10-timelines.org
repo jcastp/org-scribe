@@ -1,7 +1,10 @@
 #+TITLE: Lesson 10: Character and Plot Timelines
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-10-lineas-temporales.org][Versión en español]]/
 
 * Welcome to Lesson 10!
 
@@ -46,8 +49,8 @@ If you're missing these, review Lesson 4 (Characters) and Lesson 6 (Plot Threads
 ** What Are Timelines?
 
 Timelines are automatically generated tables that show:
-- **Character Timeline**: Which characters appear in which scenes
-- **Plot Thread Timeline**: Which plot threads are active in which scenes
+- *Character Timeline*: Which characters appear in which scenes
+- *Plot Thread Timeline*: Which plot threads are active in which scenes
 
 They use org-mode's dynamic block feature (~#+BEGIN: ... #+END:~) to generate tables from your scene properties.
 
@@ -164,9 +167,9 @@ You should now see:
 
 Look at your generated timeline and identify:
 
-1. **Character columns**: One column per character who appears anywhere
-2. **Scene rows**: One row per scene with character properties
-3. **Symbols**:
+1. *Character columns*: One column per character who appears anywhere
+2. *Scene rows*: One row per scene with character properties
+3. *Symbols*:
    - ★ = This character's PoV
    - ● = Character present
    - Blank = Character absent
@@ -329,9 +332,9 @@ For deeper analysis, ~org-scribe~ includes an automated health report!
 ** What It Does
 
 The health report (~org-scribe-plot-thread-report~) analyzes every plot thread and flags three conditions, checked independently (a thread can trigger more than one at once):
-- **One-appearance threads**: Present in exactly 1 scene
-- **Large gaps**: More than 5 scenes between two appearances of the thread
-- **Low coverage**: Thread appears in less than 30% of all scenes
+- *One-appearance threads*: Present in exactly 1 scene
+- *Large gaps*: More than 5 scenes between two appearances of the thread
+- *Low coverage*: Thread appears in less than 30% of all scenes
 
 There is no separate "unresolved thread" or "missing from final act" check - the report only evaluates coverage percentage, gap size, and single-scene appearances.
 
@@ -413,11 +416,11 @@ There are exactly three warning conditions, checked independently, so a single t
 
 ** Using the Report
 
-1. **Read Summary**: Get overall thread count
-2. **Check each thread**: Look for ⚠ warnings
-3. **Prioritize fixes**: Start with threads showing the lowest coverage percentage
-4. **Make changes**: Add scenes or remove threads
-5. **Regenerate report**: Verify improvements
+1. *Read Summary*: Get overall thread count
+2. *Check each thread*: Look for ⚠ warnings
+3. *Prioritize fixes*: Start with threads showing the lowest coverage percentage
+4. *Make changes*: Add scenes or remove threads
+5. *Regenerate report*: Verify improvements
 
 ** Try It Now! (3 minutes)
 
@@ -445,9 +448,9 @@ Plot threads: 3 | Scenes: 12 | Threads with warnings: 2
 
 ** When to Use
 
-- **Statistics**: Quick daily check (F8 L S)
-- **Full Report**: Weekly review, major editing sessions
-- **Timeline**: Visual planning, structural editing
+- *Statistics*: Quick daily check (F8 L S)
+- *Full Report*: Weekly review, major editing sessions
+- *Timeline*: Visual planning, structural editing
 
 * Practical Timeline Workflows
 
@@ -477,15 +480,15 @@ Here are real-world uses for timelines.
 
 1. Generate plot thread timeline
 2. Look at each thread row
-3. Ensure no gaps > 5 scenes
+3. Ensure no thread is absent for more than 5 scenes in a row (the plot thread report flags longer gaps)
 4. If gap found:
    - Option A: Add bridging scene
    - Option B: Add mention/reference in existing scene
 5. Update timeline to verify fix
 
 *Example*:
-- Romance thread: Scene 2 ● ... Scene 3 ● ... Scene 8 ● (5-scene gap!)
-- Fix: Add romantic moment in Scene 5 or 6
+- Romance thread: Scene 2 ● ... Scene 3 ● ... Scene 10 ● (6 scenes in a row without it: a gap the report flags)
+- Fix: Add a romantic moment in Scene 6 or 7
 
 ** Workflow 3: Act Structure Verification
 
@@ -650,7 +653,7 @@ For each thread, verify:
 - [ ] Thread develops in Act II (3+ scenes)
 - [ ] Thread has setback/complication
 - [ ] Thread resolves in Act III
-- [ ] No gaps > 7 scenes
+- [ ] Never absent for more than 5 scenes in a row
 - [ ] Appears in final act
 #+END_EXAMPLE
 
@@ -680,10 +683,10 @@ For each thread, verify:
 
 *Recommendations*:
 
-- **While drafting**: After every 3-5 new scenes
-- **During revision**: Weekly
-- **Before submission**: Once, for final check
-- **Quick check**: Any time (press ~C-c C-c~, it's instant)
+- *While drafting*: After every 3-5 new scenes
+- *During revision*: Weekly
+- *Before submission*: Once, for final check
+- *Quick check*: Any time (press ~C-c C-c~, it's instant)
 
 ** "Can I filter timeline to show only specific acts?"
 
@@ -700,10 +703,10 @@ For each thread, verify:
 
 *Depends on story type*:
 
-- **Single PoV**: One character has 100% of ★
-- **Dual PoV**: 50/50 split (or 60/40 if one is primary)
-- **Triple PoV**: 33/33/33 (or weighted like 50/30/20)
-- **Ensemble**: 4+ characters, distributed across acts
+- *Single PoV*: One character has 100% of ★
+- *Dual PoV*: 50/50 split (or 60/40 if one is primary)
+- *Triple PoV*: 33/33/33 (or weighted like 50/30/20)
+- *Ensemble*: 4+ characters, distributed across acts
 
 *No wrong answer* - consistency matters more than exact percentages!
 
@@ -711,9 +714,9 @@ For each thread, verify:
 
 *Opinion varies*:
 
-- **Strict plotting**: Yes, every scene advances plot
-- **Character-driven**: Some scenes are just character development
-- **Balanced**: Most scenes have thread, occasional pure character scenes okay
+- *Strict plotting*: Yes, every scene advances plot
+- *Character-driven*: Some scenes are just character development
+- *Balanced*: Most scenes have thread, occasional pure character scenes okay
 
 *Timeline helps you decide*: If you see many scenes with no threads, decide if that's intentional or a problem.
 
@@ -834,32 +837,32 @@ In the next lesson, you'll learn:
 
 Reinforce your timeline skills:
 
-1. **Generate both timelines**
+1. *Generate both timelines*
    - Character timeline
    - Plot thread timeline
    - Study them for 10 minutes
 
-2. **Find three issues**
+2. *Find three issues*
    - Character gaps
    - Plot thread problems
    - PoV imbalances
 
-3. **Make improvements**
+3. *Make improvements*
    - Add scenes to fix gaps
    - Adjust properties
    - Regenerate timelines to verify
 
-4. **Run health report**
+4. *Run health report*
    - ~F8 L t~
    - Read all warnings
    - Make notes about fixes
 
-5. **Establish routine**
+5. *Establish routine*
    - Update timelines after every 5 scenes written
    - Weekly health report check
    - Monthly deep analysis
 
-6. **Export timeline**
+6. *Export timeline*
    - Copy timeline table
    - Paste into spreadsheet
    - Try color coding
@@ -930,10 +933,10 @@ Subplot B:     ● ● ● ● ●          (unresolved!)
 
 #+BEGIN_EXAMPLE
 □ All main characters appear regularly
-□ No character gaps > 8 scenes
+□ No character vanishes for longer than you decided (the report doesn't check this; 8 scenes is a reasonable limit)
 □ PoV distribution matches intent (single/multi)
 □ All plot threads appear in each act
-□ No thread gaps > 7 scenes
+□ No thread gaps > 5 scenes (the plot health report flags them)
 □ All threads resolve by end
 □ No one-appearance threads (unless intentional)
 □ Plot health report shows 0 warnings

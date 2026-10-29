@@ -1,7 +1,10 @@
 #+TITLE: org-scribe Feature Index
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/00-indice-funciones.org][Versión en español]]/
 
 * Introduction
 
@@ -16,7 +19,7 @@ This document provides a comprehensive index of all features in the ~org-scribe~
 This package organizes features into the following categories:
 
 1. [[#project-management][Project Management]] - Creating and organizing writing projects
-2. [[#writing-modes][Writing Modes]] - Distraction-free and specialized writing environments
+2. [[#org-scribe-modes][Writing Modes]] - Distraction-free and specialized writing environments
 3. [[#word-counting-tracking][Word Counting & Tracking]] - Counting words and tracking progress
 4. [[#capture-system][Capture System]] - Quick capture of characters, locations, and notes
 5. [[#linking-system][Linking System]] - ID-based linking for characters, locations, and plot threads; entity tooltips
@@ -80,7 +83,7 @@ Controls which language templates are used when creating new projects. Set to ~'
 
 ** Project Spelling Dictionary (~org-scribe-update-dir-locals~)
 
-Writes a ~.dir-locals.el~ at the project root pinning ~ispell-local-dictionary~ to the project's language, so every file in the project — manuscript, planning files, notes, journal, and anything created later by capture or the planner — spell checks against the right dictionary with no per-file setup. Created automatically alongside the ~.org-scribe-project~ marker file, before the initial git commit; the marker file remains the single source of truth for the language and the dictionary is derived from it. The variable written carries a ~safe-local-variable~ property, so Emacs applies it silently rather than asking the writer to approve a local variables list on every open. The interactive command creates or refreshes the file for an existing project (asking before replacing one), which is how projects created before this feature — or projects whose configured dictionary changed — catch up; the project health report flags a missing or mismatched file. A per-file ~Local Variables~ block still overrides the project-wide setting, and ~guess-language~ overrides both.
+Writes a ~.dir-locals.el~ at the project root pinning ~ispell-local-dictionary~ (and ~jinx-languages~, for jinx users) to the project's language, so every file in the project — manuscript, planning files, notes, journal, and anything created later by capture or the planner — spell checks against the right dictionary with no per-file setup. Created automatically alongside the ~.org-scribe-project~ marker file, before the initial git commit; the marker file remains the single source of truth for the language and the dictionary is derived from it. The variable written carries a ~safe-local-variable~ property, so Emacs applies it silently rather than asking the writer to approve a local variables list on every open. The interactive command creates or refreshes the file for an existing project (asking before replacing one), which is how projects created before this feature — or projects whose configured dictionary changed — catch up; the project health report flags a missing or mismatched file. A per-file ~Local Variables~ block still overrides the project-wide setting, and ~guess-language~ overrides both.
 
 *Status*: Fully implemented | *Hydra*: ~D~ (Links & Upkeep submenu) | *Module*: ~templates/org-scribe-project.el~
 
@@ -173,7 +176,7 @@ Opens a comprehensive character capture template that prompts for all essential 
 
 ** Location Profile Capture (~org-scribe-capture-location~)
 
-Captures detailed location profiles with prompts for name, type (city/building/room/natural/region/country), importance (major/supporting/minor), first appearance, climate, and population. The template includes sections for general description, geography, cultural aspects & society, history, notable features, plot importance, specific places, atmosphere & mood, and map references. Locations receive automatic unique IDs for the linking system. Captures go to design.org, under its "Setting" section — a sibling of the section's own placeholder entries, not nested under them.
+Captures detailed location profiles with prompts for the setting's name, type and first appearance. The template files the method's four setting Aspects (Echo, Hazard, Character and Symbol) and then a Description, a list of the scenes that happen there, and Notes. Locations receive automatic unique IDs for the linking system. Captures go to design.org, under its "Setting" section — a sibling of the section's own placeholder entries, not nested under them.
 
 *Status*: Fully implemented | *Hydra*: ~F8 k l~ (Manage → Capture entity submenu) | *Module*: ~capture/org-scribe-capture.el~
 
@@ -343,7 +346,7 @@ This feature is *off by default*. To activate it automatically whenever ~org-scr
 
 ** Find Scenes by PoV (~org-scribe-org-find-pov~)
 
-Searches the entire manuscript for all scenes with a specific PoV character. Uses org-ql to find headings where the ~:PoV:~ property contains the specified character name (supports both plain text and ID link format via ~org-scribe--property-contains-p~). Results display in an ~*org-ql-search*~ buffer with clickable links to each scene. The search is case-sensitive and partial matches work (searching "Alex" finds "Alex Rivera"). Useful for tracking PoV distribution, checking a character's arc, or finding all scenes written from a particular perspective.
+Searches the entire manuscript for all scenes with a specific PoV character. Uses org-ql to find headings where the ~:PoV:~ property contains the specified character name (supports both plain text and ID link format via ~org-scribe--property-contains-p~). Results display in an ~*org-ql-search*~ buffer with clickable links to each scene. The search is not case-sensitive and partial matches work (searching "Alex" finds "Alex Rivera"). Useful for tracking PoV distribution, checking a character's arc, or finding all scenes written from a particular perspective.
 
 *Status*: Fully implemented | *Hydra*: ~1~ (Search section) | *Module*: ~search/org-scribe-search.el~
 
@@ -537,8 +540,8 @@ always written alongside the output, so a compile that looks wrong is
 inspectable rather than a black box. The scene-break marker
 (~org-scribe-compile-scene-break~, default ~⁂~) and output directory
 (~org-scribe-compile-output-directory~, default ~export~) are both
-customizable; a marker beginning with ~*~ or ~#~ is refused rather than
-emitted, since Org would reparse either as structure rather than text.
+customizable; a marker that Org would reparse as structure (a headline, comment, list item or table row) rather than text is refused rather than
+emitted: the compiler checks it by parsing the real center block it would sit in, before anything is written.
 PDF output always renders the break as three centered asterisks
 regardless of that setting — pdflatex's default fonts don't cover the
 asterism (or the fleuron preset) at all, confirmed by rendering real PDFs
@@ -694,9 +697,9 @@ Maps a project language to the ispell dictionary name recorded in that project's
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
-** Writing Stories Directory (~org-scribe-stories-directory~)
+** Projects Directory (~org-scribe-projects-directory~)
 
-Specifies where writing exercise files will be created (default: ~~/writing/exercises~). This directory is used by functions that generate writing prompts or exercises. Writers who maintain separate directories for exercises vs. actual projects can point this elsewhere to keep exercises organized separately from main work. A sibling variable, ~org-scribe-projects-directory~ (default ~~/writing/~), is the base directory offered when creating a new novel or short story project.
+The base directory (default ~~/writing/~) offered when creating a new novel or short story project.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
@@ -763,12 +766,6 @@ Selects where definitions come from: ~'wikcionario~ reads only a local kiwix-ser
 ** Lemmatization Dictionary (~org-scribe-lemma-dictionary~)
 
 Names the hunspell dictionary used to reduce inflected words to their dictionary form. When nil (the default) it follows ~org-scribe-mythes-language~, so one setting drives both the thesaurus and the morphology. Set it explicitly only when the two should differ, or when hunspell names its dictionary differently from the thesaurus. Run ~M-x org-scribe-lemma-clear-cache~ after installing a dictionary mid-session.
-
-*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
-
-** Automatic Directory Creation
-
-~org-scribe-create-dirs-automatically~ (default: t) controls whether the package automatically creates directories when they're needed by capture functions or searches. When nil, functions will error if directories don't exist, giving writers full control over project structure. When t (default), convenience is prioritized - directories are created as needed.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
@@ -915,7 +912,7 @@ If your init file still contains the following snippet from before the planner w
 
 An optional, opt-in browser page for seeing and rearranging the project: a corkboard (scenes as cards you drag, rename and re-state), an outline table (every scene property editable, link fields through a picker), a storyline chart (characters, plot threads, locations and plot points against the scenes, with gap and orphan warnings) a chapter overview (the storyline rolled up per chapter), a story-time timeline (notation chosen with ~F8 S~: relative, dates or an invented calendar), a relationship graph, a colour-theme dialog and entity forms (the property drawer and each profile section of a character, location or plot thread). Empty chapters can be added and chapters dragged between acts. Scenes also link objects (~F8 b~, search with ~7~). Emacs stays the only program that reads and writes the project files: the page sends ID-addressed commands, each one a single undo step in the buffer, and nothing is saved unless you press Save or set ~org-scribe-companion-auto-save~. A section edit made on a stale copy is refused and both versions are shown.
 
-Two switches keep it out of the way: ~org-scribe-companion-enable~ (global, default ~nil~; while it is off the module is never loaded) and a per-project ~# Companion: yes~ line in ~.org-scribe-project~, asked once. The server listens on 127.0.0.1 only, behind a random per-start token, with Host and Origin checks. Novels only. Open it with ~F8 B~; stop it with ~M-x org-scribe-companion-stop~; ~org-scribe-companion-show-scene~ highlights the scene at point in the page.
+Two switches keep it out of the way: ~org-scribe-companion-enable~ (global, default ~nil~; while it is off the module is never loaded) and a per-project ~# Companion: yes~ line in ~.org-scribe-project~, asked once. The server listens on 127.0.0.1 only, behind a random per-start token, with Host and Origin checks. Novels and short stories alike. Open it with ~F8 B~; stop it with ~M-x org-scribe-companion-stop~; ~org-scribe-companion-show-scene~ highlights the scene at point in the page.
 
 *Status*: Fully implemented | *Hydra*: ~B~ | *Module*: ~companion/~ | *Tests*: ~tests/test-companion-*.el~
 

@@ -1,7 +1,10 @@
 #+TITLE: Lesson 1: Creating Your First Project
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-01-crear-proyectos.org][Versión en español]]/
 
 * Welcome to Lesson 1!
 
@@ -666,8 +669,7 @@ Take your time! There's no rush. When you feel comfortable with project creation
 
 | Variable                      | Default       | What It Controls           |
 |-------------------------------+---------------+----------------------------|
-| ~org-scribe-template-language~  | ~'en~           | Template language (en/es)  |
-| ~org-scribe-template-language~ | ='en= | Template set for new projects |
+| ~org-scribe-template-language~  | ~'en~           | Template set for new projects (en/es) |
 
 * Troubleshooting Tips
 

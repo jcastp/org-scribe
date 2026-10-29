@@ -1,7 +1,10 @@
 #+TITLE: Lesson 14: Revision and Editing Workflow
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-14-flujo-revision.org][Versión en español]]/
 
 * Welcome to Lesson 14!
 
@@ -58,9 +61,9 @@ Revision requires a different mindset than drafting:
 
 This lesson covers three revision levels:
 
-1. **Structural Revision** (Act/Chapter level) - Plot, pacing, character arcs
-2. **Scene Revision** (Scene level) - Individual scenes, dialogue, description
-3. **Line Editing** (Sentence level) - Prose polish, word choice, rhythm
+1. *Structural Revision* (Act/Chapter level) - Plot, pacing, character arcs
+2. *Scene Revision* (Scene level) - Individual scenes, dialogue, description
+3. *Line Editing* (Sentence level) - Prose polish, word choice, rhythm
 
 We'll focus on how ~org-scribe~ supports each level.
 
@@ -813,7 +816,7 @@ Sometimes you need to ADD scenes:
 2. ~F8 s~ (insert scene template)
 3. Fill properties from your notes
 4. Write the scene
-5. Update word count (~F8 w~)
+5. Update word count (~F8 a~)
 6. Check off in notes panel
 
 ** Finding Inconsistencies with Search

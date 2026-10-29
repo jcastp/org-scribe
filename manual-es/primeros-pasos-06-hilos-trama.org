@@ -1,0 +1,1790 @@
+#+TITLE: Lección 6: Hilos de la trama y cronología
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-06-plot-threads.org
+#+SOURCE_COMMIT: c542dfa
+
+/[[file:../manual/getting-started-06-plot-threads.org][English version]]/
+
+* ¡Bienvenido a la Lección 6!
+
+En esta lección aprenderás a seguir varios hilos de la trama a lo largo de tu historia. Tanto si escribes un cuento con una sola línea argumental como una novela compleja con varias tramas entrelazadas, el sistema de seguimiento de la trama te ayuda a lograr un desarrollo equilibrado y a evitar líneas olvidadas.
+
+Al terminar esta lección serás capaz de:
+- Crear fichas de hilos de la trama para la línea principal y las subtramas
+- Entender las propiedades de la trama y cómo usarlas
+- Enlazar hilos de la trama con escenas mediante enlaces por ID
+- Buscar todas las escenas que desarrollan un hilo concreto
+- Generar visualizaciones de la cronología de la trama
+- Comprobar la salud de la trama para encontrar huecos y desequilibrios
+- Asegurar que todos los hilos llegan a una conclusión satisfactoria
+
+*Tiempo estimado*: 20 minutos
+
+* Requisitos previos
+
+Antes de empezar esta lección deberías haber completado:
+- [[file:primeros-pasos-01-crear-proyectos.org][Lección 1: Crear tu primer proyecto]]
+- [[file:primeros-pasos-02-primera-escena.org][Lección 2: Escribir tu primera escena]]
+- [[file:primeros-pasos-04-capturar-personajes.org][Lección 4: Capturar personajes]] (recomendada: es el mismo sistema de enlaces)
+
+Deberías entender:
+- Cómo usar el menú Hydra (F8)
+- Las propiedades básicas de Org-mode
+- Los conceptos del enlace basado en IDs
+- Las propiedades de escena
+
+* Por qué seguir los hilos de la trama
+
+**Respuesta rápida**: el seguimiento de la trama evita líneas argumentales abandonadas, asegura un desarrollo equilibrado y te ayuda a ver el panorama general.
+
+** El problema sin seguimiento de la trama
+
+Si escribes sin seguir los hilos de la trama, puede que:
+- Presentes una subtrama en el capítulo 2 y te olvides de ella hasta el capítulo 15
+- Descubras que tu trama principal solo se desarrolla en el 40 % de las escenas
+- Tengas una subtrama romántica que aparece tres veces y se esfuma
+- Te cueste recordar qué escenas hacen avanzar qué tramas
+- Escribas 10 escenas seguidas centradas en la misma trama (¡agotador!)
+- Termines el borrador y descubras que un hilo importante nunca se resolvió
+
+** La solución: fichas de hilos de la trama
+
+Las fichas de hilos de la trama te ayudan a:
+1. *Seguir el desarrollo*: ve exactamente dónde avanza cada trama
+2. *Equilibrar las líneas argumentales*: asegura que todas las tramas reciben la atención adecuada
+3. *Encontrar huecos*: identifica tramos largos en los que una trama desaparece
+4. *Planificar la resolución*: sigue qué tramas están resueltas y cuáles siguen abiertas
+5. *Visualizar la estructura*: mira cómo se entrelazan las tramas en tu historia
+6. *Evitar olvidos*: no vuelvas a perder el rastro de una subtrama
+
+* Los trece irrenunciables
+
+Antes de hablar de hilos, hay otra cosa en la parte Trama de ~diseno.org~, y va primero por una razón.
+
+** Qué son
+
+Trece puntos de trama que vienen en todo proyecto de novela, ya escritos en la plantilla, esperando a que rellenes sus cuerpos:
+
+| # | Punto de trama                 |  # | Punto de trama   |
+|---+--------------------------------+----+------------------|
+| 1 | Susurro del tema               |  8 | Empuje           |
+| 2 | Debilidad, Mentira y Necesidad |  9 | Punto medio      |
+| 3 | Deseo                          | 10 | Aparente derrota |
+| 4 | Evento incitador               | 11 | Autorrevelación  |
+| 5 | Oponente                       | 12 | Batalla          |
+| 6 | Cruzar el umbral               | 13 | Decisión moral   |
+| 7 | Plan                           |    |                  |
+
+Se llaman irrenunciables porque con ellos la historia está completa y es causal, y sin uno de ellos no lo está. Rellenarlos es la casilla 7 de la Puerta de salida (Lección 1); el consejo de la plantilla es empezar aquí y no mirar nada más hasta tener los trece.
+
+*Nunca los creas ni los borras.* A diferencia de los personajes, los escenarios y los hilos, es una lista fija, idéntica en todos los proyectos, y no hay orden de captura para ella. Escribes en los trece encabezados que ya están ahí.
+
+** Cómo rellenarlos
+
+Cada encabezado trae una pista en un bloque de comentario, que el cuaderno abre plegado: pulsa ~TAB~ sobre su línea ~#+begin_comment~ para leerla, y otra vez para plegarla. Escribe tu propio texto debajo del bloque: un párrafo por punto basta, nombrando la escena o el momento si ya lo sabes. Las pistas son comentarios (las cortas son líneas ~#~, las largas son bloques), así que nunca se exportan ni se cuentan como palabras, y no cuentan como contenido: el informe de salud (y la casilla 7 de la Puerta de salida) da un punto por hecho solo cuando tiene al menos una línea que no esté en blanco ni sea un comentario. Borra las pistas cuando quieras.
+
+Los trece son *causales*, no una lista de control. Cada uno es consecuencia del anterior, así que léelos en orden: si no sabes decir por qué el 7 sigue al 6, el hueco está en el 6, no en el 7. Están en el orden en que suelen caer en la historia, aunque el 1, el 2, el 3 y el 5 pueden solaparse o cambiar de sitio dentro del primer cuartil.
+
+** Los trece, uno por uno
+
+Para cada uno: qué es, qué escribir, la pregunta que debes hacerte y dónde suele caer (como porcentaje de la historia). Los porcentajes son orientativos, no reglas; los cuartiles están en la sección «Cuartiles» de la parte Trama de ~diseno.org~.
+
+*** Primer cuartil: Planteamiento (0–25 %)
+
+1. *Susurro del tema*: alguien que /no/ es el protagonista dice el Tema en voz alta, y el protagonista lo ignora. Escribe quién, a quién, en qué escena, con qué palabras. Debe sonar a comentario de pasada o a consejo, nunca a la moraleja del libro. El Tema es la pregunta que argumenta la historia; la Mentira del protagonista es su respuesta equivocada. /Pregunta:/ si el lector solo recordara esta frase al final, ¿seguiría siendo de lo que trataba el libro? /Dónde:/ el primer 10 %.
+
+2. *Debilidad, Mentira y Necesidad*: de dónde parte y en qué se equivoca. Tómalas de la ficha del personaje (Fantasma → Mentira → Debilidad → Deseo/Necesidad) y muéstralas en escenas. Deben verse dos cosas: la Debilidad /funcionando/ (haciendo su daño) y /costando/ (alguien paga por ella). La Necesidad es lo que debe aprender; todavía no lo sabe. /Pregunta:/ ¿podría un lector nombrar su Debilidad tras el primer capítulo sin que se la cuenten? /Dónde:/ la apertura.
+
+3. *Deseo*: el objetivo externo que cree que mejorará su vida. Debe ser concreto y que se pueda ganar o perder («ganar el contrato», no «ser feliz»), y empieza débil y sube, de modo que lo que está en juego crece solo. Deseo (lo que quiere) y Necesidad (lo que le falta) tiran en direcciones distintas; esa distancia es la historia. /Pregunta:/ ¿cómo verá el lector en la página que lo ha conseguido o ha fracasado? /Dónde:/ formado al final del primer cuartil.
+
+4. *Evento incitador*: un suceso externo que lo deja claramente peor y le hace distinguir un objetivo. Le ocurre /a él/; no lo elige. Escribe el suceso y sus dos consecuencias: queda claramente peor, y desde ahí puede ver algo a lo que apuntar. /Pregunta:/ ¿se lo hacen? Si lo eligió, pertenece al punto 6. /Dónde:/ hacia el 10–15 %.
+
+5. *Oponente*: la relación más importante de la historia, porque los dos luchan por lo mismo (de modo que solo uno puede tenerlo). Escribe quién se opone, qué quieren ambos y cómo la fuerza del oponente llega hasta la Debilidad del protagonista: el oponente gana donde este es más débil, y por eso la lucha le enseña algo. /Pregunta:/ si quito al oponente, ¿deja de importar la Debilidad? /Dónde:/ se presenta en el primer cuartil, presente hasta la Batalla.
+
+6. *Cruzar el umbral*: su propia decisión de entrar en el mundo nuevo. Es una elección libre, hecha con los ojos abiertos, hacia un lugar, trabajo, relación o modo de vida distinto del anterior. Después ya no hay vuelta atrás sin coste. /Pregunta:/ ¿puedo nombrar la frontera que cruza? /Dónde:/ cierra el primer cuartil, 20–25 %.
+
+*** Segundo cuartil: Reacción (25–50 %)
+
+7. *Plan*: cómo piensa ganar. Enúncialo en una frase que el lector pueda repetir, y por qué le parece sensato. Se apoya en la Mentira (planea como alguien que todavía se equivoca), y por eso mismo fracasa; además, el oponente es fuerte. /Pregunta:/ si el plan funcionara limpiamente, ¿sobreviviría la Mentira? No debería poder. /Dónde:/ justo después del umbral.
+
+8. *Empuje*: las acciones del plan, un tramo largo que recorre el segundo y el tercer cuartil. Normalmente pierde, así que toma decisiones cada vez menos morales; ese deslizamiento es el precio que le cobra la Debilidad. Enumera los intentos, cada uno de un /tipo/ distinto (persuasión, fuerza, engaño, retirada), con su resultado y su precio. /Pregunta:/ ¿escalan mis intentos, o tengo la misma escena tres veces? /Dónde:/ 25–75 %.
+
+9. *Punto medio*: una falsa victoria o una falsa derrota. Elige cuál: parece ganar y la victoria es hueca, o parece perder y la pérdida lo libera. Lo importante es el cambio de conducta: hasta aquí reaccionaba al oponente, desde aquí actúa. /Pregunta:/ ¿qué sabe o hace ahora que antes no podía? /Dónde:/ cierra el segundo cuartil, 45–55 %.
+
+*** Tercer cuartil: Acción (50–75 %)
+
+10. *Aparente derrota*: su punto más bajo, casi catastrófico; cree que ha perdido. Escribe qué se pierde (aliado, plan, esperanza, estatus) y por qué parece definitivo. Debe ser peor que el Punto medio. Aquí se rompe la Mentira, lo que hace posible el punto siguiente. /Pregunta:/ ¿temo por él como lector? Si no, no es lo bastante bajo. /Dónde:/ cierra el tercer cuartil, hacia el 75 %.
+
+*** Cuarto cuartil: Resolución (75–100 %)
+
+11. *Autorrevelación*: ve la Mentira. Es un punto en /dos momentos/ y un solo encabezado: el *atisbo* empieza antes de la batalla (es lo que le permite luchar de otra manera) y la *confirmación* ocurre dentro de ella. Escribe la Mentira que sostenía, la verdad que la sustituye y qué hace que la vea. La intuición debe ser suya, alcanzada por lo que le ha pasado, y debería responder al Tema del punto 1. /Dónde:/ atisbo entre la derrota y la batalla, confirmación en la batalla. La plantilla te da dos sublíneas, «Atisbo» y «Confirmación», para rellenar.
+
+12. *Batalla*: la confrontación final entre las dos maneras de entender el mundo. Todo converge como por un embudo, en el espacio más pequeño posible: el lugar, quién está presente (cada hilo que importa envía a alguien), qué representa cada bando. /Pregunta:/ ¿están en la página juntos el oponente y el protagonista? ¿Se cruzan aquí las subtramas? /Dónde:/ el clímax, hacia el 90–95 %.
+
+13. *Decisión moral*: la prueba de que la autorrevelación es real. Elige entre dos caminos, ambos con coste: entre dos bienes o dos males, nunca entre el bien y el mal. Ver la Mentira es fácil; actuar contra ella cuando duele es lo que lo demuestra. /Pregunta:/ ¿la elección correcta es también cara? Si la respuesta es clara y gratuita, no es una decisión. /Dónde:/ dentro de la Batalla o justo después, dando paso al nuevo equilibrio.
+
+** Puntos de trama y puntos opcionales
+
+Debajo de los trece, la parte Trama tiene una sección «Puntos opcionales usados» para los que son propios de cada historia (imagen de apertura, aliados, cerco, imagen final...). A diferencia de los trece, estos los añades y quitas con libertad; no son entidades y nada se enlaza con ellos. Solo los trece se pueden etiquetar en escenas y comprobar con el informe de salud.
+
+** Etiquetar una escena con su punto de trama
+
+Cuando una escena sirve a uno de los trece, etiquétala:
+
+: F8 G     (org-scribe-set-scene-plot-points)
+
+Elige de la lista; la propiedad ~:Punto-de-trama:~ de la escena recibe un enlace por ID, el mismo mecanismo que con las demás entidades (la pregunta es «Seleccionar punto de trama: »). Para ir en sentido contrario, de una escena al punto de trama al que sirve, usa:
+
+: F8 L J   (org-scribe-jump-to-plot-point)
+
+Si tu proyecto es anterior a la configuración de enlaces, ~F8 L P~ crea los IDs una vez.
+
+** Por qué esto importa más de lo que parece
+
+El informe de salud del proyecto (~F8 H~) lista *cada uno de los trece que ninguna escena sirve todavía*. Esa lista es la propia comprobación de completitud del método, mecanizada: un punto de trama que nada sirve es o una escena que no has escrito o un hueco estructural que no has notado. Es lo más útil del informe mientras escribes el borrador.
+
+Para que funcione, el etiquetado tiene que ser real: el informe solo puede contar lo que has enlazado.
+
+* Entender los tipos de hilos de la trama
+
+Los hilos son la otra mitad del archivo, y *esos sí* los creas tú.
+
+Antes de capturar tramas, entiende los distintos tipos. *Son categorías de oficio, no valores de propiedad*: ~:THREAD-TYPE:~ solo ofrece ~Principal~ y ~Subtrama~ (en un proyecto en inglés, ~Main~ y ~Subplot~), y todo lo que no sea la línea principal es una subtrama para org-scribe. Lo que distingue una subtrama de otra es su ~:Stance:~ (la respuesta al Tema que encarna), no una nota con letra.
+
+** Trama principal (historia A)
+
+La línea argumental primaria que impulsa tu narración.
+
+*Características*:
+- Presente en el 60-80 % de las escenas
+- Se relaciona directamente con el objetivo principal del protagonista
+- Alcanza su clímax cerca del final de la historia
+- Determina el género (suspense, romance, misterio, etc.)
+
+*Ejemplos*:
+- Misterio: resolver el asesinato
+- Romance: ¿acabarán juntos?
+- Suspense: detener al villano
+- Literario: la transformación interior del personaje
+
+*Cuándo crearla*: antes del borrador; es la columna vertebral de tu historia.
+
+** Subtrama mayor (historia B)
+
+Una línea argumental secundaria significativa.
+
+*Características*:
+- Presente en el 30-50 % de las escenas
+- A menudo centrada en un personaje (relación, crecimiento personal)
+- Se cruza con la trama principal
+- Tiene su propio arco y resolución
+
+*Ejemplos*:
+- Subtrama romántica en una historia de acción
+- Conflicto familiar en una novela de misterio
+- Desarrollo de una amistad
+- El viaje de un personaje secundario
+
+*Cuándo crearla*: durante la planificación o las primeras escenas del borrador.
+
+** Subtrama menor (historia C)
+
+Una línea más pequeña que añade profundidad.
+
+*Características*:
+- Presente en el 10-30 % de las escenas
+- Puede resolverse del todo o no
+- Aporta textura y complejidad
+- Puede ser temática o centrada en un personaje
+
+*Ejemplos*:
+- La afición o el proyecto paralelo del protagonista
+- La situación política de fondo
+- El pequeño arco de un personaje menor
+- Un chiste recurrente o un motivo
+
+*Cuándo crearla*: según vayan surgiendo durante el borrador.
+
+** Hilo temático
+
+No es una trama en el sentido tradicional, sino una idea o motivo recurrente.
+
+*Características*:
+- Tejido a lo largo de toda la historia
+- Simbólico o filosófico
+- No exige resolución (pero puede tener recompensa)
+- Enriquece el significado
+
+*Ejemplos*:
+- «El significado de hogar»
+- «Naturaleza frente a tecnología»
+- «Redención y perdón»
+- Un símbolo recurrente (un pájaro, un color, un objeto)
+
+*Cuándo crearlo*: cuando notes que el tema va emergiendo.
+
+** Estructura de la trama en un cuento
+
+En un cuento (1-10 escenas) normalmente tienes:
+- *Una trama principal* (el foco de la historia)
+- *Opcional: una subtrama* (añade profundidad, a menudo centrada en un personaje)
+- *Ninguna subtrama menor* (no hay espacio suficiente)
+
+¡Que sea sencillo! Los cuentos prosperan con una narración enfocada.
+
+** Estructura de la trama en una novela
+
+En una novela (50-70 escenas), una estructura sana podría ser:
+- *1 línea principal* (~:THREAD-TYPE: Principal~)
+- *3-6 subtramas* (~:THREAD-TYPE: Subtrama~), de peso variado
+
+Más que esto arriesga una complejidad excesiva y confunde al lector.
+
+Una forma más útil de decidir el número: *una subtrama por cada Postura que quieras ver representada y que la línea principal no lleve ya.* Enumeraste esas Posturas en ~diseno.org~ cuando trabajaste el Tema (al menos cinco, de peor a mejor), y los personajes que las encarnan son, en la expresión del método, la mitad de tu reparto. Las Posturas que sobran son tus subtramas. Contado así, el número sale del libro y no de una regla práctica.
+
+* La plantilla de captura de hilos de la trama
+
+Veamos qué contiene la plantilla de captura de hilos de la trama.
+
+** Acceder a la plantilla
+
+Pulsa: ~F8 k g~ (~F8~ para el menú principal, ~k~ para el submenú de captura de entidades y luego ~g~ para «plot thread»)
+
+O usa: ~M-x org-scribe-capture-plot-thread~
+
+En un proyecto en español la captura se llama «Línea argumental».
+
+** Estructura de la plantilla
+
+La plantilla es mínima a propósito: la captura de un hilo de la trama recoge lo esencial rápidamente mientras escribes; no es un documento de planificación completo:
+
+1. *Propiedades*: tipo de hilo, Postura, estado, primera aparición
+2. *Postura que encarna / Quién la lleva*: dos líneas, arriba del cuerpo
+3. *Deseo propio*: lo que el hilo quiere para sí
+4. *Cruces con la línea principal*: tres o más, numerados
+5. *Resolución*: cómo debería resolverse
+6. *Notas*: notas de captura rápida (pueden ser desordenadas)
+
+Examinemos cada una en detalle.
+
+* Sección 1: Propiedades
+
+Cuando capturas un hilo de la trama con ~org-scribe-capture-plot-thread~, ves estas propiedades:
+
+#+BEGIN_EXAMPLE
+:PROPERTIES:
+:ID: (se genera automáticamente)
+:THREAD-TYPE: Subtrama|Principal
+:Stance:
+:STATUS: Planificado|En curso|Resuelto|Abandonado
+:FIRST-APPEARANCE:
+:Weight:
+:END:
+#+END_EXAMPLE
+
+y este cuerpo (cada campo lleva debajo una línea de pista que empieza por ~#~; aquí se omiten):
+
+#+BEGIN_EXAMPLE
+- Postura que encarna ::
+- Quién la lleva ::
+
+,** Deseo propio
+
+,** Cruces con la línea principal
+
+1.
+2.
+3.
+
+,** Resolución
+
+,** Notas
+#+END_EXAMPLE
+
+La misma forma ya está en ~diseno.org~ cuando se crea el proyecto, bajo *Línea principal* y *Subtrama*, de modo que un hilo capturado y uno rellenado a mano coinciden.
+
+*Los hilos de la trama no son lo mismo que los puntos de trama.* Los trece puntos de trama irrenunciables también viven en la parte Trama de ~diseno.org~, arriba del todo, y son una lista fija que se entrega con todo proyecto: los usas para etiquetar escenas pero nunca creas otros nuevos. Los hilos los añades tú. Ambos se tratan en esta lección; los puntos de trama, antes, bajo «Los trece irrenunciables».
+
+** ~:ID:~ (automático)
+
+Un identificador único para este hilo de la trama, creado automáticamente.
+
+*Ejemplo*: ~3f100618-1c6b-4286-883d-b1deddf0dddd~ (un identificador largo generado por Org)
+
+*Propósito*: permite enlaces en los que se puede hacer clic desde las escenas hasta las fichas de trama.
+
+*No lo fijas tú*: ¡es automático!
+
+** ~:THREAD-TYPE:~
+
+Si es la línea principal del libro o una subtrama.
+
+*Valores que ofrece la captura*:
+- ~Principal~: la línea principal
+- ~Subtrama~
+
+*Ejemplo*: ~Principal~
+
+Solo hay dos, a propósito. Una «trama B» y una «trama C» son ambas subtramas; clasificarlas no te dice nada útil, mientras que la pregunta de verdad (qué Postura encarna este hilo y dónde cruza la línea principal) la responden las dos propiedades siguientes y la sección de Cruces.
+
+*Nota*: esta propiedad es lo que marca el encabezado como hilo de la trama para el sistema de enlaces. No la quites.
+
+** ~:Stance:~
+
+La Postura que encarna este hilo.
+
+Tu Tema es el problema moral del libro; las Posturas son las distintas respuestas a él, listadas de peor a mejor en ~diseno.org~. Una subtrama existe para llevar una de esas respuestas que la línea principal no lleva ya, normalmente a través del personaje que la encarna.
+
+*Ejemplo*: ~La lealtad vale más que la verdad~
+
+*Consejo*: este es el campo más útil de una subtrama. Si no puedes nombrar la Postura que encarna, lo habitual es que tengas una secuencia de sucesos y no un hilo, y a un lector le parecerá prescindible, porque lo es.
+
+** ~:STATUS:~
+
+Estado actual del hilo de la trama.
+
+*Valores que ofrece la captura*:
+- ~Planificado~: aún no introducido en el manuscrito
+- ~En curso~: desarrollándose ahora
+- ~Resuelto~: concluido
+- ~Abandonado~: descartado a propósito
+
+*Ejemplo*: ~En curso~
+
+*Consejo*: actualízalo mientras escribes y usa ~Abandonado~ con honestidad en lugar de borrar el hilo. Un hilo descartado que sigues viendo es una decisión; uno que borraste es un cabo suelto que redescubrirás en la revisión.
+
+** ~:FIRST-APPEARANCE:~
+
+Cuándo aparece por primera vez este hilo de la trama en la historia.
+
+*Formato*: texto libre: capítulo, escena o descripción
+
+*Ejemplos*:
+- ~Capítulo 1, Escena 1~
+- ~Escena inicial~
+- ~Escena 2 - El descubrimiento~
+
+*Consejo*: rellénalo cuando escribas la escena de presentación. La plantilla lo deja en blanco para que lo completes después.
+
+*Y ~:Weight:~* (sin título propio): el orden de la columna de este hilo en la cronología de la trama (más abajo): de ~1.0~ a ~5.0~, el más bajo primero, o ~-1~ para ocultarlo. La captura te lo pregunta («Peso (orden 1-5 en la cronología, -1 para ocultar, RET para ninguno)»). Se explica en detalle en «Cronología de la trama».
+
+* Sección 2: Postura, portador y deseo propio
+
+Tres entradas cortas arriba del hilo, antes de cualquier prosa. Entre ellas deciden si el hilo es de verdad un hilo.
+
+** ~Postura que encarna~
+
+La respuesta al Tema que defiende este hilo. Es el mismo valor que la propiedad ~:Stance:~: la propiedad es lo que aparece en la vista de columnas, y esta línea es donde puedes escribirlo bien.
+
+*Ejemplos*:
+- «Proteges a los tuyos, cueste lo que cueste a todos los demás».
+- «La verdad vale más que la comodidad de cualquiera».
+- «Si no puedes arreglarlo, al menos no lo empeores».
+
+** ~Quién la lleva~
+
+El personaje que encarna esa Postura. Normalmente una persona; el hilo es la forma de lo que le ocurre por lo que cree.
+
+Si dos hilos nombran al mismo portador *y* una Postura parecida, son un solo hilo con dos sombreros.
+
+** ~Deseo propio~
+
+*Lo que este hilo quiere, en sus propios términos.*
+
+Esta es la entrada que hace el trabajo de verdad, y la plantilla es tajante con la prueba que debe superar: *no puede ser «ayudar al protagonista».* Un hilo cuyo deseo es asistir a la línea principal no es una subtrama, es un mecanismo de reparto, y los lectores lo notan, porque nada en él corre peligro por sí mismo.
+
+Pregúntate qué seguiría intentando hacer el portador si la trama principal se esfumara de la noche a la mañana. Ese es el deseo propio.
+
+*Ejemplos*:
+- «Sam quiere que le confíen algo importante, quien sea».
+  (/no/ «Sam quiere ayudar a Alex a investigar»)
+- «Marcus quiere que se corrija el expediente antes de que muera su madre».
+  (/no/ «Marcus quiere oponerse a Alex»)
+
+** Ejemplo: línea principal
+
+#+BEGIN_EXAMPLE
+,* La investigación del suministro de agua
+:PROPERTIES:
+:THREAD-TYPE: Principal
+:Stance: La verdad vale más que la comodidad de cualquiera
+:STATUS: En curso
+:END:
+
+- Postura que encarna :: La verdad vale más que la comodidad de cualquiera.
+- Quién la lleva :: Alex Rivera.
+
+,** Deseo que la mueve
+
+Descubrir quién sabotea el suministro de agua de la ciudad antes de que la
+contaminación se extienda, y publicarlo, perjudique a quien perjudique.
+#+END_EXAMPLE
+
+** Ejemplo: subtrama
+
+#+BEGIN_EXAMPLE
+,* Sam y la cuestión de la confianza
+:PROPERTIES:
+:THREAD-TYPE: Subtrama
+:Stance: La lealtad vale más que la verdad
+:STATUS: En curso
+:END:
+
+- Postura que encarna :: La lealtad vale más que la verdad.
+- Quién la lleva :: Sam.
+
+,** Deseo propio
+
+Sam quiere que le confíen algo importante. No Alex en concreto: cualquiera.
+Y por eso mismo Sam enterrará el único dato que haría estallar el caso.
+#+END_EXAMPLE
+
+Fíjate en que la Postura de la subtrama *contradice* la de la línea principal. Esa es la razón habitual por la que una subtrama se gana su sitio: defiende el otro lado, a través de alguien que cae bien al lector.
+
+* Sección 3: Cruces con la línea principal
+
+¿Dónde toca este hilo al resto del libro?
+
+** Al menos tres, uno de ellos tardío
+
+La forma de una subtrama la define dónde *toca* la línea principal. La plantilla pide al menos tres cruces, numerados, y les pone una condición:
+
+#+BEGIN_QUOTE
+Al menos tres cruces con la línea principal, y uno de ellos en el punto medio, la aparente derrota o la batalla. Si no cruza, no es una subtrama: es otra novela dentro de esta.
+#+END_QUOTE
+
+Esos tres momentos nombrados son los puntos de trama 9, 10 y 12 (ver «Los trece irrenunciables», arriba). Exigir un cruce en uno de ellos es lo que impide que una subtrama corra educadamente junto a la historia principal y se resuelva en su rincón: en el momento de mayor presión del libro, la subtrama tiene que formar parte de lo que lo hace difícil.
+
+** Qué cuenta como cruce
+
+No es «los dos hilos aparecen en esta escena». Un cruce es una escena donde un hilo *cambia lo que ocurre en el otro*:
+
+- El portador de la subtrama hace algo que le cuesta a la línea principal
+- La línea principal obliga al portador de la subtrama a elegir sobre su Postura
+- Un hecho de un hilo cae en el otro y cambia su rumbo
+
+Si puedes cortar la escena y el otro hilo no se resiente, era una coincidencia, no un cruce.
+
+** Ejemplo: cruces de una subtrama
+
+#+BEGIN_EXAMPLE
+,** Cruces con la línea principal
+
+1. Escena 18: Sam avala al sospechoso al que Alex está a punto de acusar. Alex
+   se retira, y la investigación pierde tres semanas. (Lealtad sobre verdad, con coste.)
+2. Escena 24: punto medio. Sam es quien encuentra el registro de manipulación y
+   no lo entrega. El caso se hunde aquí por la subtrama, no a pesar de ella.
+3. Escena 42: batalla. Alex tiene que decidir si usa lo que Sam enterró,
+   sabiendo que acaba con la amistad.
+#+END_EXAMPLE
+
+El cruce 2 cumple la condición: está en el punto medio, y el peor momento de la línea principal lo causa la subtrama.
+
+** Cuánto detalle
+
+- *Mínimo*: tres cruces numerados, una línea cada uno, uno de ellos en el punto medio, la aparente derrota o la batalla
+- *Estándar*: lo anterior, con la escena en la que cae cada uno
+- *Exhaustivo*: lo anterior, más lo que le cuesta cada cruce al portador
+
+*Recomendación*: escribe las tres líneas al crear el hilo. Son el trabajo estructural más barato del libro, y una subtrama que no puede producir tres te está diciendo algo ahora y no en la revisión.
+
+* Sección 4: Encontrar las escenas de un hilo
+
+La plantilla no tiene una sección de «Escenas clave», y es deliberado: una lista de escenas mantenida a mano se queda obsoleta la primera semana de escritura, y una lista obsoleta es peor que ninguna, porque dejas de contrastarla con el manuscrito.
+
+En su lugar, etiqueta cada escena con el hilo al que hace avanzar (~F8 g~) y deja que los enlaces respondan a la pregunta cuando la hagas:
+
+| Quiero                           | Uso                                          |
+|----------------------------------+----------------------------------------------|
+| Todas las escenas de este hilo   | ~F8 3~ (buscar por hilo de la trama)         |
+| Qué hilos recorren qué capítulos | ~F8 L t~ (informe de hilos de la trama)      |
+| Dónde están los huecos           | cronología y estadísticas de la trama, abajo |
+
+Las tres están actualizadas por construcción, porque leen el manuscrito y no una lista que escribiste en el capítulo 3.
+
+*Qué anotar en su lugar*: lo que una búsqueda no puede derivar: que un hilo deba callar durante todo el Acto II, por ejemplo, o que dos de sus escenas deban intercambiar el orden. Son notas sobre la *intención*, y van en *Notas*.
+
+* Sección 5: Resolución
+
+¿Cómo concluye este hilo de la trama?
+
+** Qué incluir
+
+*** Tipo de resolución
+- Definitiva (claramente resuelta)
+- Abierta (ambigua a propósito)
+- Sin resolver (continuará en una secuela)
+- Transformada (la pregunta cambia o deja de ser relevante)
+
+*** Desenlace
+- ¿Qué ocurre?
+- ¿Cómo se responde la pregunta central?
+- Estado del personaje tras la resolución
+
+*** Momento
+- ¿En qué escena(s)?
+- Colocación respecto al clímax principal
+- Notas de ritmo
+
+*** Comprobación de satisfacción
+- ¿Se siente ganada?
+- ¿Es probable que los lectores queden satisfechos?
+- ¿Resonancia temática?
+
+** Ejemplo: resolución de la línea principal
+
+#+BEGIN_EXAMPLE
+,** Resolución
+
+,*** Tipo
+Definitiva: el misterio se resuelve y el saboteador es capturado.
+
+,*** Desenlace
+Se revela que el saboteador es Marcus Chen, cuya familia lo perdió todo cuando
+la agencia de Alex aprobó el proyecto urbanístico hace 10 años. La contaminación
+fue venganza, pero también un intento de sacar a la luz la corrupción actual.
+
+Alex detiene el sabotaje y lleva a Marcus ante la justicia, PERO además reabre
+la investigación del proyecto urbanístico original y encuentra pruebas de
+irregularidades reales. Se hace justicia, pero Alex comprende que el sistema
+falló primero a Marcus.
+
+,*** Momento
+- Revelación: Escena 38 (Capítulo 10, final)
+- Confrontación: Escena 42 (Capítulo 11, clímax)
+- Resolución legal: Escena 45 (Capítulo 12)
+- Resolución emocional: Escena 46 (última escena)
+
+,*** Satisfacción
+- Misterio resuelto: SÍ (quién, por qué y cómo, todo respondido)
+- Lo que estaba en juego, atendido: SÍ (suministro de agua asegurado, verdad expuesta)
+- Recompensa temática: SÍ (la justicia no es simple, los sistemas necesitan reformas)
+- Cierre emocional: SÍ (la culpa de Alex tratada, crecimiento mostrado)
+#+END_EXAMPLE
+
+** Ejemplo: resolución de una subtrama romántica
+
+#+BEGIN_EXAMPLE
+,** Resolución
+
+,*** Tipo
+Definitiva: el estado de la relación queda claro, pero el futuro está abierto.
+
+,*** Desenlace
+Alex y Sam confiesan lo que sienten (Escena 43) después del clímax. Reconocen
+que la relación no será fácil (los dos tienen problemas de confianza), pero se
+comprometen a intentarlo. La historia termina con ellos juntos, esperanzados
+pero realistas.
+
+,*** Momento
+- Avance emocional: Escena 40 (momento vulnerable de Alex)
+- Confesión: Escena 43 (posclímax, Acto III)
+- Última escena juntos: Escena 46 (de la mano, mirando adelante)
+
+,*** Satisfacción
+- Respondido el «¿lo harán o no?»: SÍ (lo harán)
+- Arcos de personaje completos: SÍ (Alex aprendió a confiar, Sam aprendió paciencia)
+- Resonancia temática: SÍ (conexión frente a aislamiento)
+- Se siente ganada: SÍ (desarrollada a lo largo de toda la novela)
+#+END_EXAMPLE
+
+* Sección 6: Notas
+
+Notas del escritor para el seguimiento y la continuidad.
+
+** Qué incluir
+
+- Inspiración y referencias
+- Conexiones temáticas
+- Retos o preocupaciones
+- Recordatorios de revisión
+- Escenas que desarrollan esta trama (anótalas según escribes)
+- Investigación necesaria
+- Finales alternativos considerados
+
+** Ejemplo
+
+#+BEGIN_EXAMPLE
+,** Notas
+
+,*** Inspiración
+Vagamente inspirada en la crisis del agua de Flint, pero ficcionalizada.
+Investigar: delitos medioambientales, sistemas de tratamiento de agua,
+periodismo de investigación.
+
+,*** Conexiones temáticas
+- Conecta con el tema «sistemas frente a individuos»
+- Es paralela al arco personal de Alex (confianza en las instituciones rota)
+- El agua como símbolo: vida, pureza; la contaminación refleja la corrupción de los personajes
+
+,*** Retos
+- Riesgo de resultar demasiado sermoneadora sobre temas medioambientales
+- Equilibrar la simpatía por el saboteador sin excusar el daño
+- Que la ciencia del tratamiento de agua quede clara pero no aburrida
+
+,*** Escenas que desarrollan esta trama
+(Actualizar según escribo)
+- ✓ Escena 1 - Presentación
+- ✓ Escena 4 - Primera víctima
+- ✓ Escena 7 - Pruebas descubiertas
+- ⚠ Escena 12 - Segundo emplazamiento (falta tensión aquí)
+- ✓ Escena 18 - Falsa pista
+- TODO: Escena 24 - Falta el giro del punto medio
+- TODO: Escena 33 - Primer ataque a Alex
+- TODO: Escena 38 - Revelación de la identidad
+- TODO: Escena 42 - Confrontación del clímax
+
+,*** Finales alternativos considerados
+1. El saboteador muere (demasiado oscuro, sin complejidad moral)
+2. El saboteador escapa (insatisfactorio, sin cierre)
+3. Alex se une al saboteador (demasiado extremo para el personaje)
+4. ELEGIDO: Alex lo lleva ante la justicia pero da validez a su queja
+
+,*** Recordatorios de revisión
+- Primer borrador: centrarse en la mecánica del misterio
+- Segundo borrador: profundizar en la motivación del saboteador (¿un flashback?)
+- Pulido: verificar que los detalles del tratamiento de agua son exactos
+#+END_EXAMPLE
+
+* Capturar un hilo de la trama paso a paso
+
+Vamos a crear juntos la ficha de un hilo de la trama con el sistema de captura.
+
+** Paso 1: Invocar la captura
+
+Pulsa: ~F8 k g~ (~F8~ para el menú principal, ~k~ para el submenú de captura de entidades y luego ~g~ para «plot thread»)
+
+O usa: ~M-x org-scribe-capture-plot-thread~
+
+La plantilla de captura se abre con preguntas.
+
+** Paso 2: Responder a las preguntas de la plantilla
+
+La plantilla te pedirá:
+
+Te hace tres preguntas:
+
+1. *Nombre de la línea*: ~Sam y la cuestión de la confianza~
+2. *Tipo*: elige ~Subtrama~ o ~Principal~
+3. *Estado*: elige ~Planificado~, ~En curso~, ~Resuelto~ o ~Abandonado~
+
+(Si tu plantilla incluye la propiedad ~:Weight:~, te hace una pregunta más: «Peso (orden 1-5 en la cronología, -1 para ocultar, RET para ninguno)». Pulsa ~RET~ para dejarlo en blanco.)
+
+Se genera un ID automáticamente con ~%(org-id-new)~: ¡no tienes que hacer nada!
+
+~:Stance:~ y ~:FIRST-APPEARANCE:~ se dejan vacíos para que los rellenes.
+
+** Paso 3: Nombrar la Postura y el portador
+
+Las dos líneas de arriba del cuerpo. Rellénalas antes que nada: si no puedes, el hilo todavía no está listo para existir:
+
+#+BEGIN_EXAMPLE
+- Postura que encarna :: La lealtad vale más que la verdad.
+- Quién la lleva :: Sam.
+#+END_EXAMPLE
+
+Luego copia la Postura en la propiedad ~:Stance:~ para que aparezca en la vista de columnas.
+
+** Paso 4: Deseo propio
+
+Lo que este hilo quiere para sí, recordando que no puede ser «ayudar al protagonista»:
+
+#+BEGIN_EXAMPLE
+,** Deseo propio
+
+Sam quiere que le confíen algo importante. No Alex en concreto:
+cualquiera.
+#+END_EXAMPLE
+
+** Paso 5: Cruces
+
+Al menos tres, uno de ellos en el punto medio, la aparente derrota o la batalla:
+
+#+BEGIN_EXAMPLE
+,** Cruces con la línea principal
+
+1. Escena 18: Sam avala al sospechoso; la investigación pierde tres semanas.
+2. Escena 24 (punto medio): Sam encuentra el registro de manipulación y no lo entrega.
+3. Escena 42 (batalla): Alex debe decidir si usa lo que Sam enterró.
+#+END_EXAMPLE
+
+** Paso 6: Resolución
+
+Planifica cómo se resuelve el hilo:
+
+#+BEGIN_EXAMPLE
+,** Resolución
+
+Sam confiesa antes de que Alex pueda sacarlo a la luz. La amistad sobrevive; la
+creencia de Sam de que la lealtad va por delante de la verdad, no.
+#+END_EXAMPLE
+
+** Paso 7: Notas
+
+Añade las notas rápidas que quieras:
+
+#+BEGIN_EXAMPLE
+,*** Notas
+
+- Investigar sistemas de tratamiento de agua
+- Asegurar que la motivación del saboteador sea simpática
+- Poner en paralelo los problemas de confianza de Alex con el tema de la pureza del agua
+#+END_EXAMPLE
+
+** Paso 8: Finalizar la captura
+
+Cuando termines, pulsa: ~C-c C-c~
+
+Esto guarda la ficha del hilo de la trama en ~diseno.org~, anidada bajo la sección «Hilos de la Trama» (en una novela, esa sección está en la parte Trama).
+
+La posición importa: org-scribe solo reconoce un hilo de la trama si su encabezado está directamente bajo «Hilos de la Trama», la misma regla que se aplica a los personajes y los escenarios. No muevas un hilo bajo otro encabezado: desaparece de los menús de completado, las búsquedas y los informes.
+
+** Paso 9: Comprobar que se guardó
+
+Abre ~diseno.org~ y busca la entrada de tu nuevo hilo de la trama. Debe ser un encabezado directamente bajo «Hilos de la Trama», con una propiedad de ID (aquí se muestra como quedaría en un cuento; en una novela está dos niveles más abajo):
+
+#+BEGIN_EXAMPLE
+,* Sam y la cuestión de la confianza
+:PROPERTIES:
+:ID: 3f100618-1c6b-4286-883d-b1deddf0dddd
+:THREAD-TYPE: Subtrama
+:Stance: La lealtad vale más que la verdad
+:STATUS: En curso
+:FIRST-APPEARANCE:
+:END:
+#+END_EXAMPLE
+
+* Configurar el enlace de hilos de la trama
+
+Si tienes un proyecto con hilos de la trama pero sin IDs, usa el asistente de configuración.
+
+** Asistente de configuración: configuración con una sola orden
+
+Usa: ~M-x org-scribe-setup-plot-thread-links~
+
+Este asistente:
+1. Añade IDs a todos los hilos de la trama de tu cuaderno de diseño
+2. Se asegura de que el gancho de captura esté activo para los futuros hilos
+3. Opcionalmente enlaza las escenas existentes (convierte el texto plano en enlaces por ID)
+
+Ejecútalo una vez al configurar el enlace de hilos por ID en un proyecto existente.
+
+** Pasos manuales de configuración
+
+Si prefieres configurarlo a mano:
+
+*** Paso 1: Añadir IDs a los hilos de la trama
+
+Usa: ~M-x org-scribe-add-plot-thread-ids~
+
+Abre ~diseno.org~ y añade IDs únicos a todos los encabezados de hilos de la trama que no tengan uno.
+
+*** Paso 2: Enlazar las escenas existentes (opcional)
+
+Si tienes escenas con referencias a tramas en texto plano:
+
+Usa: ~M-x org-scribe-link-all-scene-plot-threads~
+
+Convierte todas las referencias de trama en texto plano en enlaces por ID en todo tu manuscrito.
+
+Antes:
+#+BEGIN_EXAMPLE
+:Trama: Misterio principal, Romance
+#+END_EXAMPLE
+
+Después:
+#+BEGIN_EXAMPLE
+:Trama: [[id:abc123][Misterio principal]], [[id:def456][Romance]]
+#+END_EXAMPLE
+
+* Enlazar hilos de la trama con escenas
+
+Una vez que tienes fichas de hilos con IDs, enlázalas con escenas.
+
+** Método 1: fijar la trama con el menú (recomendado)
+
+1. Abre tu manuscrito (~novela.org~ o ~cuento.org~)
+2. Ve al encabezado de una escena
+3. Pulsa: ~F8 g~ (una acción de nivel superior de Tag Scene, no un submenú)
+
+O usa: ~M-x org-scribe-set-scene-plot-threads~
+
+4. Verás un menú de completado con todos los hilos de la trama de tu cuaderno de diseño
+5. Elige hilos (pulsa ~RET~ en una línea vacía cuando termines)
+   - Primer hilo: ~Misterio principal - Sabotaje del agua~ → ~Intro~
+   - Segundo hilo: ~Romance~ → ~Intro~
+   - Terminar: ~Intro~ (en la línea vacía)
+6. La propiedad ~:Trama:~ de la escena se actualiza con enlaces por ID
+
+La función lee de:
+- ~diseno.org~, la sección «Hilos de la Trama»
+
+Y crea automáticamente enlaces por ID con el formato: ~[[id:abc123][Nombre del hilo]]~
+
+** Método 2: insertar un enlace en el cursor
+
+Si estás en el valor de una propiedad y quieres insertar un enlace:
+
+Usa: ~M-x org-scribe-insert-plot-thread-link~
+
+- Selección de un solo hilo con completado
+- Inserta el enlace por ID en el cursor: ~[[id:id-de-la-trama][Nombre de la trama]]~
+
+O para varios hilos:
+
+Usa: ~M-x org-scribe-insert-multiple-plot-thread-links~
+
+- Elige varios hilos seguidos
+- Pulsa ~RET~ en una línea vacía para terminar
+- Inserta enlaces por ID separados por comas
+
+** Método 3: convertir texto plano existente
+
+Si ya tienes nombres de tramas en texto plano en las propiedades:
+
+Usa: ~M-x org-scribe-link-scene-plot-threads~
+
+Esto convierte el texto plano en enlaces por ID en la escena actual:
+
+Antes: ~:Trama: Misterio principal, Romance~
+Después: ~:Trama: [[id:abc][Misterio principal]], [[id:def][Romance]]~
+
+Para todas las escenas del búfer:
+
+Usa: ~M-x org-scribe-link-all-scene-plot-threads~
+
+** Varios hilos de la trama en una escena
+
+¡Muchas escenas desarrollan varias tramas! Formato:
+
+#+BEGIN_EXAMPLE
+:Trama: [[id:plot-main-001][Misterio principal]], [[id:plot-romance-002][Romance]]
+#+END_EXAMPLE
+
+Basta separarlos con comas.
+
+** Ejemplo
+
+Antes:
+#+BEGIN_EXAMPLE
+,*** Escena 12 - Descubrimiento en el segundo emplazamiento
+:PROPERTIES:
+:PoV: [[id:char-alex-001][Alex]]
+:Personajes: [[id:char-alex-001][Alex]], [[id:char-sam-002][Sam]]
+:Localizacion: [[id:loc-depuradora][Depuradora de agua]]
+:Trama: investigación
+:END:
+#+END_EXAMPLE
+
+Después (con el menú):
+#+BEGIN_EXAMPLE
+,*** Escena 12 - Descubrimiento en el segundo emplazamiento
+:PROPERTIES:
+:PoV: [[id:char-alex-001][Alex]]
+:Personajes: [[id:char-alex-001][Alex]], [[id:char-sam-002][Sam]]
+:Localizacion: [[id:loc-depuradora][Depuradora de agua]]
+:Trama: [[id:plot-main-001][Misterio principal]], [[id:plot-romance-002][Romance]]
+:END:
+#+END_EXAMPLE
+
+* Navegar entre escenas e hilos de la trama
+
+** Saltar a la ficha de un hilo de la trama
+
+Cuando estés en una escena con un hilo de la trama enlazado:
+
+1. Mueve el cursor a la línea de la propiedad ~:Trama:~
+2. Pulsa: ~C-c C-o~ (org-open-at-point)
+
+O BIEN
+
+Pulsa: ~F8 L j~ (submenú Links & upkeep, jump)
+
+¡Saltas a la ficha completa del hilo de la trama!
+
+** Saltar con varios hilos de la trama
+
+Si una escena tiene varios hilos de la trama en su propiedad ~:Trama:~:
+
+1. Pulsa: ~M-x org-scribe-jump-to-plot-thread~
+2. Verás un menú de completado: ~Saltar al hilo de trama:~
+3. Elige a qué hilo saltar
+4. Pulsa: ~Intro~
+
+La función detecta automáticamente que hay varios hilos y te pide que elijas.
+
+** Volver a la escena
+
+Después de ver la ficha de la trama:
+
+Pulsa: ~C-c &~ (org-mark-ring-goto)
+
+Vuelves a tu escena original.
+
+** Por qué es útil
+
+Mientras escribes:
+- «¿Cuál era la pregunta central de esta trama?» → salta a la ficha y comprueba
+- «¿Qué debería ocurrir a continuación en esta línea argumental?» → mira sus cruces con la línea principal
+- «¿Qué quiere esta línea?» → lee su sección de Deseo propio
+- «¿Qué escenas hacen avanzar esta trama?» → busca por hilo de la trama (~F8 3~)
+
+El enlace basado en IDs significa que puedes renombrar los hilos de la trama en la base de datos sin romper los enlaces de las escenas.
+
+* Mantener los enlaces de los hilos de la trama
+
+A medida que tu proyecto evoluciona, puede que necesites actualizar los nombres mostrados en los enlaces.
+
+** Cuando los nombres de los enlaces se desincronizan
+
+Los enlaces por ID tienen dos partes:
+- *ID*: ~id:plot-main-001~ (no cambia nunca)
+- *Texto mostrado*: ~[Misterio principal]~ (lo que ves)
+
+Si renombras un hilo de la trama en ~diseno.org~:
+- El ID sigue funcionando (¡los enlaces no se rompen!)
+- Pero el texto mostrado enseña el nombre antiguo
+
+** Actualizar la escena actual
+
+Usa: ~M-x org-scribe-update-plot-link-names~
+
+Actualiza los nombres mostrados de los enlaces de hilos de la trama en la escena actual para que coincidan con los nombres actuales de la base de datos de tramas.
+
+Ejemplo:
+#+BEGIN_EXAMPLE
+Antes:   :Trama: [[id:plot-main-001][Trama principal]]
+         (renombraste «Trama principal» a «Línea argumental primaria» en diseno.org)
+Después: :Trama: [[id:plot-main-001][Línea argumental primaria]]
+#+END_EXAMPLE
+
+** Actualizar todas las escenas
+
+Usa: ~M-x org-scribe-update-all-plot-link-names~
+
+Actualiza los nombres mostrados de los enlaces de hilos de la trama en todo el manuscrito.
+
+Es útil después de:
+- Renombrar varios hilos de la trama en diseno.org
+- Refactorizar la estructura de tu trama
+- Fusionar o dividir hilos de la trama
+
+La función:
+1. Escanea la base de datos de tramas en busca de los nombres actuales
+2. Actualiza el texto mostrado en todas las propiedades ~:Trama:~ de las escenas
+3. Informa del número de escenas actualizadas
+
+* Buscar escenas por hilo de la trama
+
+Encuentra todas las escenas que desarrollan un hilo de la trama concreto con el sistema de búsqueda.
+
+** Orden
+
+Pulsa: ~F8 3~ (buscar por trama)
+
+O usa: ~M-x org-scribe-org-find-plot~
+
+** Método de entrada
+
+La función de búsqueda ofrece dos modos de entrada según cómo esté tu proyecto:
+
+*** Si existe diseno.org (recomendado):
+- Menú de completado con coincidencia difusa («Buscar trama [difuso]: »)
+- Muestra todos los hilos de la trama de tu base de datos de tramas
+- Escribe un nombre parcial: ~miste~ coincide con ~Misterio principal - Sabotaje del agua~
+- También acepta texto libre para búsquedas ad hoc
+
+*** Si no hay cuaderno de diseño:
+- Entrada de texto libre con coincidencia por subcadena («Término de trama [subcadena]: »)
+- Escribe cualquier texto para buscarlo en las propiedades de trama
+- Ejemplo: ~misterio~ encuentra escenas con «misterio» en la propiedad Trama
+
+** Proceso
+
+1. Invoca: ~M-x org-scribe-org-find-plot~
+2. Empieza a escribir el nombre de la trama: ~miste~
+3. El completado muestra: ~Misterio principal - Sabotaje del agua~
+4. Elige: ~Intro~
+5. O escribe texto libre: ~investigación~ → ~Intro~
+
+** Resultados
+
+Se abre un búfer con TODAS las escenas con ese hilo de la trama. Su título es «Hilo de trama: Misterio principal - Sabotaje del agua», y cada escena es un enlace en el que puedes hacer clic:
+
+#+BEGIN_EXAMPLE
+,* Hilo de trama: Misterio principal - Sabotaje del agua
+
+,*** Escena 1 - Lecturas extrañas
+    Capítulo 1: El principio
+
+,*** Escena 4 - Primera víctima
+    Capítulo 1: El principio
+
+,*** Escena 7 - Pruebas de manipulación
+    Capítulo 2: Complicaciones
+
+,*** Escena 12 - Descubrimiento en el segundo emplazamiento
+    Capítulo 3: Escalada
+
+[... etc ...]
+#+END_EXAMPLE
+
+** Casos de uso
+
+- «¿Con qué frecuencia aparece esta trama?» → cuenta las escenas
+- «¿Dónde se desarrolla esta trama?» → mira la distribución de las escenas
+- «¿Hay un hueco en esta línea argumental?» → mira los números de escena (de la Escena 12 a la Escena 24 hay 11 escenas sin esta trama)
+- «¿Qué he escrito hasta ahora para esta trama?» → repasa todas las escenas
+- «Control de continuidad» → asegura una progresión lógica
+
+* Visualización de la cronología de la trama
+
+Genera una tabla que muestre qué hilos de la trama aparecen en qué escenas.
+
+** Qué es
+
+Una representación visual de la distribución de los hilos de la trama a lo largo de tu historia.
+
+** Crear la cronología
+
+En tu archivo ~novela.org~, busca la sección «Análisis de Tramas» (o créala). El bloque en sí es el mismo en todos los idiomas:
+
+#+BEGIN_EXAMPLE
+,** Análisis de Tramas
+
+#+BEGIN: plot-thread-timeline
+#+END:
+#+END_EXAMPLE
+
+Pon el cursor en la línea ~#+BEGIN:~ y pulsa: ~C-c C-c~
+
+El bloque dinámico usa ~org-dblock-write:plot-thread-timeline~ para generar la tabla.
+
+*Orden de las columnas*: los hilos se ordenan por una propiedad ~:Weight:~, de menor a mayor. La captura te la pide y la plantilla la deja en blanco; un hilo en blanco se trata como de peso 999.0, así que por defecto las columnas salen en orden alfabético. Si quieres tu línea principal a la izquierda, dale un número:
+
+#+BEGIN_EXAMPLE
+:Weight: 1.0
+#+END_EXAMPLE
+
+Lo menor va primero. Es solo una preferencia de visualización y nada más la lee, así que úsala únicamente si el orden alfabético te molesta.
+
+*Ocultar un hilo de la tabla*: un hilo que sigues pero para el que no quieres columna (un chiste recurrente, un detalle de fondo) recibe ~-1~ en la pregunta del Peso, o a mano:
+
+#+BEGIN_EXAMPLE
+:Weight: -1
+#+END_EXAMPLE
+
+Vale cualquier valor negativo; ~-1~ es el documentado. El hilo conserva su ID, sus enlaces y su sitio en todas las búsquedas. Debajo de la tabla, el bloque escribe una línea de comentario con lo que ha dejado fuera:
+
+#+BEGIN_EXAMPLE
+# Not shown (Weight -1): Chiste recurrente
+#+END_EXAMPLE
+
+(El texto «Not shown» lo escribe el paquete en inglés incluso en un proyecto en español.) Así una columna que falta nunca tiene por qué ser un misterio. Al ser un comentario de Org, esa línea no se exporta ni se cuenta como palabras. Para verlo todo una vez, añade ~:show-hidden t~ a la línea ~#+BEGIN:~ y refresca con ~C-c C-c~.
+
+Un límite deliberado: *el informe de salud de más abajo ignora el Weight por completo.* Un hilo oculto sigue comprobándose en cobertura, huecos y apariciones en una sola escena, y seguirá produciendo avisos. El Weight decide qué muestra la tabla, no qué hilos se someten al estándar de oficio; si quieres que un hilo menor deje de avisarte, la pregunta es si debería ser un hilo.
+
+** Ejemplo de salida
+
+#+BEGIN_EXAMPLE
+| Scene                | Chapter    | Misterio principal | Romance | Conflicto familiar | Política |
+|----------------------+------------+--------------------+---------+--------------------+----------|
+| Escena 1 - Apertura  | Capítulo 1 | ●                  |         |                    |          |
+| Escena 2 - Encuentro | Capítulo 1 | ●                  | ●       |                    |          |
+| Escena 3 - Casa      | Capítulo 1 |                    |         | ●                  |          |
+| Escena 4 - Víctima   | Capítulo 1 | ●                  | ●       |                    | ●        |
+| Escena 5 - Oficina   | Capítulo 2 | ●                  |         |                    | ●        |
+| Escena 6 - Cita      | Capítulo 2 |                    | ●       |                    |          |
+| Escena 7 - Pruebas   | Capítulo 2 | ●                  |         |                    |          |
+#+END_EXAMPLE
+
+(Las cabeceras «Scene» y «Chapter» las escribe el paquete en inglés incluso en un proyecto en español.)
+
+** Interpretar los símbolos
+
+- *●* = el hilo de la trama se desarrolla en esta escena
+- *(en blanco)* = el hilo de la trama no está presente
+
+** Cómo es una buena distribución
+
+*** Trama principal (historia A)
+Debería aparecer en el 60-80 % de las escenas, con:
+- Presencia constante (sin huecos de más de 5 escenas)
+- Frecuencia creciente hacia el clímax
+- Presente en la apertura y en el cierre
+
+*** Subtrama mayor (historia B)
+Debería aparecer en el 30-50 % de las escenas, con:
+- Presencia regular pero no constante
+- Puede tener huecos de 3-5 escenas
+- Se cruza con la trama principal periódicamente
+- Se resuelve antes que la trama principal o con ella
+
+*** Subtrama menor (historia C)
+Debería aparecer en el 10-30 % de las escenas, con:
+- Presencia intermitente (huecos de 5-10 escenas son aceptables)
+- Se agrupa en torno a ciertas partes de la historia
+- Puede resolverse del todo o no
+
+** Señales de alarma
+
+*** Problemas de la trama principal
+- ❌ Falta en 5 o más escenas seguidas → los lectores olvidan lo que está pasando
+- ❌ Presente en menos del 50 % de las escenas → en realidad no es la trama principal
+- ❌ Falta en la apertura o en el final → problema estructural
+
+*** Problemas de las subtramas
+- ❌ Aparece una vez, desaparece 20 escenas y reaparece → se siente desconectada
+- ❌ Presente en más del 70 % de las escenas → quizá compite con la trama principal por el protagonismo
+- ❌ Introducida demasiado tarde (pasado el 40 %) → no tendrá tiempo de desarrollarse
+
+*** Problemas de estructura general
+- ❌ Todas las tramas en todas las escenas → sobrecargado, sin foco
+- ❌ Las tramas nunca se cruzan → la historia parece varias historias pegadas
+- ❌ Demasiadas tramas (más de 6 en total) → confusión del lector
+
+* Informe de salud de la trama
+
+Comprueba la salud del desarrollo de tus hilos de la trama con el sistema de informes.
+
+Nota: la guía de oficio de arriba (objetivos distintos de cobertura y huecos para cada tipo de trama) es *consejo de escritura para que lo valores a ojo*; el informe automático de abajo aplica una única regla a todos los hilos, sea cual sea su tipo o peso: una cobertura inferior al 30 %, cualquier hueco de más de 5 escenas o aparecer en una sola escena disparan cada uno un aviso. No sabe que a una subtrama C de ritmo más lento «le corresponde» tener huecos mayores; usa la guía de oficio de arriba para juzgar cuáles de sus avisos importan de verdad en cada hilo.
+
+** Qué es un informe de salud de la trama
+
+Un análisis que muestra:
+- Cobertura de cada hilo de la trama (% de escenas)
+- Los huecos más largos entre apariciones
+- Hilos que aparecen en una sola escena
+- Avisos sobre posibles problemas
+
+** Generar el informe
+
+Usa: ~M-x org-scribe-plot-thread-report~ (o ~F8 L t~)
+
+Esto genera un informe completo en Org-mode en un búfer nuevo, escrito en el idioma del proyecto, que muestra:
+- Estadísticas de resumen
+- Análisis por hilo con símbolos de estado
+- Porcentajes de cobertura
+- Primera y última aparición
+- Avisos de problemas
+- Lista de escenas sin hilos de la trama
+
+Para estadísticas rápidas en el minibúfer:
+
+Usa: ~M-x org-scribe-plot-thread-stats~
+
+Muestra: ~Hilos de trama: 4 | Escenas: 42 | Hilos con avisos: 2~
+
+** Ejemplo de informe
+
+#+BEGIN_EXAMPLE
+#+TITLE: Informe de estado de los hilos de trama
+#+DATE: 2025-11-24 15:30
+#+STARTUP: overview
+
+,* Resumen
+
+- Total de hilos de trama: 4
+- Total de escenas: 42
+- Escenas con hilos de trama: 42
+
+,* Detalle de los hilos
+
+,** ✓ Misterio principal - Sabotaje del agua
+- ID: 3f100618-1c6b-4286-883d-b1deddf0aaaa
+- Escenas: 29 de 42 (69.0%)
+- Primera aparición: Escena 1 - Lecturas extrañas (Capítulo: Capítulo 1)
+- Última aparición: Escena 42 - Confrontación (Capítulo: Capítulo 12)
+
+,** ✓ Subtrama romántica
+- ID: 3f100618-1c6b-4286-883d-b1deddf0bbbb
+- Escenas: 19 de 42 (45.2%)
+- Primera aparición: Escena 2 - Conocer a Sam (Capítulo: Capítulo 1)
+- Última aparición: Escena 41 - Confesión (Capítulo: Capítulo 12)
+
+,** ⚠️ Conflicto familiar
+- ID: 3f100618-1c6b-4286-883d-b1deddf0cccc
+- Escenas: 10 de 42 (23.8%)
+- Primera aparición: Escena 3 - Casa (Capítulo: Capítulo 1)
+- Última aparición: Escena 35 - Resolución (Capítulo: Capítulo 10)
+
+*Avisos:*
+- ⚠️ Poca cobertura (23.8%)
+- ⚠️ Hueco de 12 escenas
+
+,** ✓ Corrupción política
+- ID: 3f100618-1c6b-4286-883d-b1deddf0dddd
+- Escenas: 13 de 42 (31.0%)
+- Primera aparición: Escena 4 - Ayuntamiento (Capítulo: Capítulo 1)
+- Última aparición: Escena 38 - Pruebas (Capítulo: Capítulo 11)
+
+,* Escenas sin hilos de trama
+
+Todas las escenas tienen la propiedad Plot.
+#+END_EXAMPLE
+
+** Cómo usar el informe
+
+1. *Ejecútalo periódicamente*: cada 10-15 escenas durante el borrador
+2. *Atiende los avisos*: arregla huecos, planifica resoluciones
+3. *Ajusta sobre la marcha*: añade escenas o combina tramas para mejorar la salud
+4. *Comprobación final*: antes de la revisión, asegura que todas las tramas están sanas
+
+El informe se genera como un búfer de Org-mode, así que puedes:
+- Navegar entre hilos con los comandos de Org
+- Hacer clic en los IDs para saltar a las definiciones de los hilos
+- Tomar notas directamente en el informe
+- Seguir el progreso en el tiempo guardando informes
+
+* Ejercicio práctico (20 minutos)
+
+Practiquemos la gestión de hilos de la trama de principio a fin.
+
+** Parte 1: capturar tres hilos de la trama (10 minutos)
+
+*** Hilo 1: la línea principal
+
+1. Pulsa: ~F8 k g~
+2. Nombre: ~[Tu línea principal: ¿de qué trata tu historia?]~
+3. Rellena las propiedades:
+   - Tipo: ~Principal~
+   - Estado: ~En curso~
+4. Escribe las dos líneas de arriba (2 minutos):
+   - Postura que encarna: la respuesta a tu Tema que argumenta este libro
+   - Quién la lleva: normalmente el protagonista
+5. Escribe el deseo que la mueve (3 minutos)
+6. Pulsa: ~C-c C-c~ para guardar
+
+*** Hilo 2: una subtrama
+
+1. Pulsa: ~F8 k g~
+2. Nombre: ~[Una relación, un viaje interior o un objetivo secundario]~
+3. Rellena las propiedades:
+   - Tipo: ~Subtrama~
+   - Estado: ~Planificado~
+4. Escribe las dos líneas de arriba (2 minutos), y elige una Postura que
+   *contradiga* la de la línea principal
+5. Escribe su deseo propio (2 minutos). Contrástalo con la prueba: no puede ser
+   «ayudar al protagonista»
+6. Escribe tres cruces (3 minutos), uno de ellos en el punto medio, la
+   aparente derrota o la batalla
+7. Pulsa: ~C-c C-c~ para guardar
+
+*** Hilo 3: una subtrama menor
+
+1. Pulsa: ~F8 k g~
+2. Nombre: ~[Una línea argumental más pequeña o un hilo temático]~
+3. Rellena las propiedades:
+   - Tipo: ~Subtrama~
+   - Estado: ~Planificado~
+4. Escribe solo la Postura y el portador (1 minuto): un hilo de este tamaño
+   puede esperar a su deseo y sus cruces hasta que sepas que se queda
+5. Pulsa: ~C-c C-c~ para guardar
+
+** Parte 2: enlazar con escenas (5 minutos)
+
+1. Abre tu manuscrito
+2. Busca o crea 3 escenas
+3. Para cada escena:
+   - Ve a las propiedades de la escena
+   - Pulsa: ~F8 g~ (fijar los hilos de la trama de la escena)
+   - Elige qué trama(s) se desarrollan en esta escena
+   - ¡Algunas escenas pueden tener varias tramas!
+4. Comprueba: que la propiedad ~:Trama:~ ahora tiene enlaces por ID
+
+** Parte 3: probar las herramientas (5 minutos)
+
+*** Probar la navegación:
+1. En una escena con una trama enlazada
+2. Pulsa ~C-c C-o~ sobre la propiedad de trama
+3. Saltas a la ficha de la trama → ¡éxito!
+4. Lee sus secciones de Deseo propio y Cruces
+5. Pulsa ~C-c &~ para volver → ¡éxito!
+
+*** Probar la búsqueda:
+1. Pulsa ~F8 3~
+2. Busca tu trama principal
+3. Mira los resultados → deberían salir las escenas que enlazaste
+4. Pulsa ~q~ para cerrar los resultados
+
+*** Generar la cronología (si tienes 5 o más escenas):
+1. En novela.org, busca o crea la sección «Análisis de Tramas»
+2. Añade:
+   #+BEGIN_EXAMPLE
+   ** Análisis de Tramas
+   #+BEGIN: plot-thread-timeline
+   #+END:
+   #+END_EXAMPLE
+3. Pon el cursor en la línea ~#+BEGIN:~
+4. Pulsa: ~C-c C-c~
+5. ¡Mira la distribución de tus tramas!
+
+*** Ejecutar el informe de salud (opcional):
+1. Pulsa: ~F8 L t~ (submenú Links & upkeep, «plot report»)
+2. Repasa la cobertura y los huecos de la trama
+3. Anota cualquier aviso
+
+** Criterios de éxito
+
+✓ Has capturado 3 fichas de hilos de la trama con IDs
+✓ La sección «Hilos de la Trama» de diseno.org contiene tus tramas
+✓ Al menos 3 escenas tienen hilos de la trama enlazados
+✓ Puedes saltar de la escena a la ficha de la trama y volver
+✓ La búsqueda encuentra escenas por hilo de la trama
+✓ (Opcional) La cronología de la trama muestra tu distribución de tramas
+✓ (Opcional) El informe de salud se ejecuta sin errores
+
+* Integración con tu flujo de escritura diario
+
+** Durante la planificación
+
+- Captura todos los hilos principales de la trama antes del borrador
+- Escribe los tres cruces con la línea principal de cada subtrama
+- Identifica dónde se cruzan las tramas
+- Planifica el momento de resolución de cada trama
+- Consulta las fichas de trama al esquematizar
+
+** Durante el borrador
+
+- Antes de cada escena:
+  1. Pregúntate: «¿Qué trama(s) se desarrollan en esta escena?»
+  2. Repasa esas fichas de trama
+  3. Comprueba los cruces del hilo: ¿cuál toca ahora?
+  4. Enlaza la escena con los hilos de la trama adecuados
+- Después de escribir una escena:
+  - Actualiza la sección de Notas de la trama (anota qué escenas están escritas)
+  - Anota qué cruces ya están escritos
+- Cada 10 escenas:
+  - Haz una búsqueda para cada hilo de la trama
+  - Comprueba si hay huecos grandes (más de 5 escenas en la trama principal, más de 8 en las subtramas)
+  - Ajusta las próximas escenas para atender los huecos
+
+** Durante la revisión
+
+- Busca cada hilo de la trama:
+  - Lee todas las escenas solo de esa trama
+  - Comprueba la progresión lógica
+  - Asegura la escalada y el ritmo
+  - Verifica que la resolución es satisfactoria
+- Ejecuta el informe de salud de la trama:
+  - Atiende todos los avisos
+  - Rellena los huecos o justifícalos
+  - Resuelve los hilos sin resolver o márcalos como intencionados
+- Comprueba la cronología de la trama:
+  - Auditoría visual de la distribución
+  - Identifica tramas abusadas o poco usadas
+  - Asegura una buena variedad de escena a escena
+- Actualiza las fichas de trama:
+  - Anota los cambios hechos durante el borrador
+  - Verifica que la sección de resolución coincide con el final real
+  - Añade recordatorios de revisión para la segunda pasada
+
+** Mantenimiento semanal
+
+- Repasa el estado de los hilos de la trama (¿activos? ¿resueltos? ¿en pausa?)
+- Actualiza los cruces y la resolución si la historia ha evolucionado
+- Comprueba qué cruces están escritos y cuáles planificados
+- Anota los hilos de la trama que necesitan atención
+- Planifica las escenas de la próxima semana con el equilibrio de tramas en mente
+
+* Preguntas frecuentes
+
+** P: ¿Necesito capturar cada pequeña línea argumental?
+
+*R*: ¡No! Captura solo los hilos de la trama que:
+- Abarquen varias escenas (3 o más), O
+- Sean importantes temáticamente, O
+- Necesiten un seguimiento cuidadoso para no olvidarlos
+
+No necesitas capturar:
+- Conflictos de una sola escena
+- Sucesos de fondo sin arco
+- Obstáculos menores que se resuelven al instante
+
+** P: ¿Cuántos hilos de la trama son demasiados?
+
+*R*:
+- *Cuento*: 1-2 tramas como máximo (normalmente solo 1 trama principal)
+- *Novela corta*: 2-3 tramas (1 principal, 1-2 subtramas)
+- *Novela*: 3-6 tramas (1 principal, 1-2 subtramas mayores, 1-3 subtramas menores)
+- *Épica/Serie*: pueden tener más, pero no todas activas a la vez
+
+Si tienes más de 6 hilos de la trama activos, plantéate:
+- Combinar tramas parecidas
+- Recortar las tramas menos importantes
+- Resolver algunas tramas a mitad para hacer sitio a otras nuevas
+
+** P: ¿Y si un hilo de la trama cambia por completo durante el borrador?
+
+*R*: ¡Actualiza la ficha! Es normal. En la sección de Notas, sigue la evolución:
+
+#+BEGIN_EXAMPLE
+,** Notas
+
+,*** Evolución
+- Plan original: romance entre Alex y Sam
+- Capítulo 5: me di cuenta de que hay mejor química con Jordan
+- Cambiado a: romance con Jordan, Sam pasa a ser un amigo cercano
+- Actualizado: todas las propiedades, cruces, resolución
+#+END_EXAMPLE
+
+La ficha debe reflejar tu historia actual, no tu plan original.
+
+** P: ¿Deben resolverse las subtramas al mismo tiempo que la trama principal?
+
+*R*: ¡No necesariamente! Patrones habituales:
+- *Trama principal*: se resuelve en el clímax (Escenas 40-45 en una novela de 45 escenas)
+- *Subtrama centrada en un personaje*: se resuelve justo antes o después de la trama principal (Escenas 38-43)
+- *Subtrama romántica*: suele resolverse justo después de la trama principal (Escenas 43-44)
+- *Subtrama menor*: puede resolverse antes (Escenas 30-35) o quedar abierta
+- *Hilo temático*: suele «resolverse» en una escena final de reflexión
+
+Lo que importa: cada trama debe sentirse completa (o incompleta a propósito) al final de la historia.
+
+** P: ¿Puedo tener escenas sin hilos de la trama enlazados?
+
+*R*: Sí, pero con moderación. Ejemplos habituales:
+- Escenas de puro desarrollo de personaje (aunque a menudo hacen avanzar la trama del viaje interior)
+- Escenas de construcción del mundo o de atmósfera
+- Escenas de transición (viajes, preparación de la escena siguiente)
+
+Si más del 20 % de las escenas no tiene enlaces de trama, plantéate:
+- ¿Son necesarias esas escenas?
+- ¿Podrían hacer avanzar una subtrama mientras hacen su otro trabajo?
+- ¿Deberías crear un hilo de «arco de personaje» con el que enlazarlas?
+
+** P: ¿Cuál es la diferencia entre un hilo de la trama y un tema?
+
+*R*:
+- *Hilo de la trama*: sucesos que ocurren, preguntas que se responden, conflictos que se resuelven
+- *Tema*: ideas o mensajes que emergen de la trama
+
+Ejemplo:
+- Trama: Alex resuelve un misterio de asesinato
+- Tema: la justicia no es blanco o negro
+
+Puedes seguir los temas como «hilos temáticos» en el sistema de tramas si quieres asegurar que se desarrollan a lo largo de la historia.
+
+* Solución de problemas
+
+** «Capturé un hilo de la trama pero no lo encuentro»
+
+*** Problema
+El hilo de la trama se capturó pero no aparece en diseno.org.
+
+*** Solución
+1. Mira en el sitio correcto: la sección «Hilos de la Trama» de ~diseno.org~
+2. Abre el archivo y busca: ~C-s~ y luego escribe el nombre de la trama
+3. Si no está, puede que la captura fallara: inténtalo de nuevo
+
+** «El menú de enlace de tramas no muestra ningún hilo»
+
+*** Problema
+Al usar ~org-scribe-set-scene-plot-threads~ sale una lista vacía.
+
+*** Solución
+1. Asegúrate de haber capturado al menos un hilo de la trama
+2. Abre diseno.org
+3. Verifica que los hilos de la trama tienen propiedades ~:ID:~
+4. Si faltan IDs, ejecuta: ~M-x org-scribe-add-plot-thread-ids~
+5. O ejecuta el asistente de configuración: ~M-x org-scribe-setup-plot-thread-links~
+
+** «El informe de salud de la trama dice "No se encontraron escenas"»
+
+*** Problema
+~org-scribe-plot-thread-report~ no devuelve datos o muestra «No se encontraron escenas con propiedad Plot».
+
+*** Solución
+1. Asegúrate de que las escenas tienen propiedades ~:Trama:~
+2. Verifica que las propiedades de trama usan enlaces por ID (no texto plano)
+3. Comprueba que ejecutas el informe desde el archivo del manuscrito (novela.org o cuento.org)
+4. Si las tramas están en texto plano, conviértelas: ~M-x org-scribe-link-all-scene-plot-threads~
+
+** «La cronología de la trama está en blanco»
+
+*** Problema
+El bloque dinámico ~#+BEGIN: plot-thread-timeline~ se genera pero no muestra datos.
+
+*** Solución
+1. Verifica que al menos una escena tiene una propiedad ~:Trama:~ con un enlace por ID
+2. Comprueba que las fichas de trama existen en diseno.org y tienen propiedades ~:ID:~
+3. Pon el cursor en ~#+BEGIN: plot-thread-timeline~ y pulsa ~C-c C-c~ otra vez
+4. Si sigue en blanco, busca errores en el búfer de mensajes (~*Messages*~)
+5. Verifica que usas ~plot-thread-timeline~ (no ~plot-timeline~)
+
+** «La búsqueda no encuentra resultados pero tengo hilos de la trama»
+
+*** Problema
+~org-scribe-org-find-plot~ no muestra resultados aunque las escenas tienen propiedades de trama.
+
+*** Solución
+1. Verifica que las propiedades de trama usan enlaces por ID: ~[[id:abc][Nombre]]~
+2. Si usas texto plano, la búsqueda extrae los nombres de los enlaces
+3. Prueba a buscar el nombre exacto del hilo de la trama (sin distinguir mayúsculas)
+4. Comprueba que los hilos de la trama tienen nombres coincidentes en diseno.org
+5. La búsqueda usa coincidencia por subcadena: los nombres parciales deberían funcionar
+
+* Referencia rápida
+
+** Atajos de teclado
+
+| Tecla     | Acción                                                                     |
+|-----------+----------------------------------------------------------------------------|
+| ~F8 k g~  | Capturar un hilo de la trama nuevo                                         |
+| ~F8 g~    | Fijar el/los hilo(s) de la trama de la escena (menú)                       |
+| ~F8 L j~  | Saltar al hilo de la trama de la escena                                    |
+| ~F8 R~    | Volver a enlazar el proyecto (todos los tipos de entidad, hilos incluidos) |
+| ~F8 L t~  | Informe de salud de la trama                                               |
+| ~F8 L S~  | Estadísticas de la trama                                                   |
+| ~F8 3~    | Buscar escenas por trama                                                   |
+| ~C-c C-o~ | Seguir el enlace bajo el cursor                                            |
+| ~C-c &~   | Volver del enlace                                                          |
+| ~C-c C-c~ | Finalizar la captura / actualizar la tabla                                 |
+
+** Forma de la plantilla de hilo de la trama
+
+| Parte                         | Propósito                                      | Tiempo de rellenado |
+|-------------------------------+------------------------------------------------+---------------------|
+| ~:THREAD-TYPE:~               | ~Principal~ o ~Subtrama~                       | segundos            |
+| ~:Stance:~                    | La respuesta al Tema que encarna               | 2 minutos           |
+| ~:STATUS:~                    | Planificado / En curso / Resuelto / Abandonado | segundos            |
+| ~Postura que encarna ::~      | Lo mismo, escrito con detalle                  | 2 minutos           |
+| ~Quién la lleva ::~           | El personaje que la encarna                    | 1 minuto            |
+| Deseo propio                  | Lo que quiere para sí                          | 3-5 minutos         |
+| Cruces con la línea principal | Tres o más, uno de ellos tardío                | 5-10 minutos        |
+| Resolución                    | Cómo concluye                                  | 3-5 minutos         |
+| Notas                         | Seguimiento y recordatorios                    | Continuo            |
+
+** Los trece irrenunciables
+
+| Tecla    | Acción                                               |
+|----------+------------------------------------------------------|
+| ~F8 G~   | Etiquetar la escena actual con un punto de trama     |
+| ~F8 L J~ | Saltar de una escena a su punto de trama             |
+| ~F8 L P~ | Crear los IDs de los trece (una vez, si hace falta)  |
+| ~F8 H~   | Informe de salud: qué puntos no sirve ninguna escena |
+
+Nunca los creas ni los borras: vienen con el proyecto.
+
+** Tipos de hilos de la trama
+
+Categorías de oficio, no valores de ~:THREAD-TYPE:~: todo lo que no es la línea principal es una ~Subtrama~.
+
+| Tipo            | Cobertura           | Ejemplo                           |
+|-----------------+---------------------+-----------------------------------|
+| Línea principal | 60-80 %             | Resolver el asesinato             |
+| Subtrama mayor  | 30-50 %             | Subtrama romántica                |
+| Subtrama menor  | 10-30 %             | Conflicto familiar                |
+| Hilo temático   | En toda la historia | Motivo del «significado de hogar» |
+
+** Distribución sana de la trama
+
+| Tipo de trama   | Escenas (novela de 50 escenas) | Hueco máx. | ¿Debe resolverse? |
+|-----------------+--------------------------------+------------+-------------------|
+| Trama principal | 30-40 escenas                  | 5 escenas  | Sí                |
+| Subtrama mayor  | 15-25 escenas                  | 8 escenas  | Normalmente sí    |
+| Subtrama menor  | 5-15 escenas                   | 10 escenas | Opcional          |
+| Tema            | En toda la historia            | N/A        | No                |
+
+** Órdenes habituales
+
+| Comando                                        | Qué hace                                              |
+|------------------------------------------------+-------------------------------------------------------|
+| ~org-scribe-capture-plot-thread~               | Captura un hilo de la trama nuevo con plantilla       |
+| ~org-scribe-set-scene-plot-threads~            | Fija la trama con el menú (selección múltiple)        |
+| ~org-scribe-insert-plot-thread-link~           | Inserta un enlace de trama en el cursor               |
+| ~org-scribe-insert-multiple-plot-thread-links~ | Inserta varios enlaces de trama en el cursor          |
+| ~org-scribe-jump-to-plot-thread~               | Salta a la trama desde la escena                      |
+| ~org-scribe-link-scene-plot-threads~           | Convierte texto plano en enlaces (una escena)         |
+| ~org-scribe-link-all-scene-plot-threads~       | Convierte texto plano en enlaces (todas las escenas)  |
+| ~org-scribe-org-find-plot~                     | Busca escenas por trama (completado difuso)           |
+| ~org-scribe-plot-thread-report~                | Genera el informe de salud completo                   |
+| ~org-scribe-plot-thread-stats~                 | Estadísticas rápidas en el minibúfer                  |
+| ~org-scribe-add-plot-thread-ids~               | Añade IDs a los hilos de la trama existentes          |
+| ~org-scribe-setup-plot-thread-links~           | Asistente de configuración del sistema de enlaces     |
+| ~org-scribe-update-plot-link-names~            | Actualiza los nombres de enlaces en la escena actual  |
+| ~org-scribe-update-all-plot-link-names~        | Actualiza los nombres de enlaces en todas las escenas |
+
+* Consejos para gestionar mejor la trama
+
+** 1. Captura los hilos de la trama pronto
+
+Antes de empezar el borrador:
+- Identifica tu trama principal (historia A)
+- Identifica 1-2 subtramas mayores (historias B)
+- Crea fichas para estas tramas centrales
+- Anota los puntos de giro de la línea principal
+
+Esto te da una hoja de ruta aunque después te desvíes.
+
+** 2. Una escena = 1-3 hilos de la trama como máximo
+
+Cada escena debería hacer avanzar:
+- Normalmente 1-2 hilos de la trama
+- Ocasionalmente 3 (escenas de mucha energía)
+- Nunca más de 3 (ocurre demasiado)
+
+Si una escena intenta hacer avanzar 4 o más tramas, divídela en dos escenas.
+
+** 3. Entreteje las tramas
+
+Las mejores escenas hacen avanzar varias tramas a la vez:
+- La escena desarrolla el misterio principal Y profundiza el romance
+- La escena resuelve una subtrama menor Y complica la trama principal
+- La escena desarrolla un arco de personaje Y presenta un hilo nuevo
+
+Busca oportunidades para que las escenas hagan doble trabajo.
+
+** 4. Usa la regla de tres
+
+Para los puntos de trama importantes, usa la «regla de tres»:
+- Primera mención: planta la semilla
+- Segunda mención: desarróllala
+- Tercera mención: recompensa
+
+Ejemplo: un símbolo misterioso en una trama de misterio:
+- Escena 5: Alex nota el símbolo (plantar)
+- Escena 15: el símbolo aparece otra vez, Alex investiga (desarrollar)
+- Escena 35: se revela el significado del símbolo (recompensa)
+
+Anótalo en *Notas* o, mejor, como tres cruces, si el motivo pertenece a un hilo.
+
+** 5. Equilibra variedad y foco
+
+Una buena distribución de tramas tiene ritmo:
+- Escena 1: trama A
+- Escena 2: trama A + B
+- Escena 3: trama B + C
+- Escena 4: trama A
+- Escena 5: trama A + B + C
+- Escena 6: trama B
+
+Evita:
+- Demasiado de lo mismo: A, A, A, A, A (monótono)
+- Demasiado disperso: A+B+C, A+B+C, A+B+C (agotador)
+
+** 6. Presenta las tramas pronto
+
+Presenta todos los hilos principales de la trama en el primer 25 % de la historia:
+- Trama principal: Escena 1 (o muy cerca)
+- Subtramas mayores: Escenas 2-10
+- Subtramas menores: Escenas 3-15
+
+Presentar tramas nuevas pasado el punto medio es arriesgado: no hay tiempo suficiente para desarrollarlas.
+
+** 7. Escala antes de resolver
+
+Cada hilo de la trama debería escalar antes de resolverse:
+- Las complicaciones aumentan
+- Lo que está en juego sube
+- La tensión crece
+- El personaje lucha más
+
+Si una trama simplemente... termina sin clímax, se siente plana. ¡Construye hasta un pico!
+
+** 8. Resuelve por orden de importancia
+
+Secuencia de resolución habitual:
+1. Las subtramas menores se resuelven primero (hacia el 70-80 %)
+2. Las subtramas mayores, después (hacia el 80-90 %)
+3. La trama principal se resuelve en el clímax (hacia el 90-95 %)
+4. Las secuelas emocionales y el tema, en el desenlace (último 5 %)
+
+Esto crea un efecto en cascada que resulta satisfactorio.
+
+** 9. Sigue la «última mención»
+
+En las Notas de la trama, anota cuándo apareció por última vez cada trama:
+#+BEGIN_EXAMPLE
+,*** Últimas menciones
+- Escena 5: misterio principal desarrollado
+- Escena 8: subtrama romántica (conversación incómoda entre Alex y Sam)
+- Escena 12: misterio principal (¡gran descubrimiento!)
+- Escena 13: conflicto familiar mencionado en un diálogo
+- Escena 17: misterio principal avanzado
+#+END_EXAMPLE
+
+Al escribir la Escena 20 puedes ver: «El conflicto familiar no aparece desde la Escena 13: ¿quizá lo mencione?»
+
+** 10. Pregunta «¿qué está en juego?»
+
+Para cada hilo de la trama, comprueba con regularidad:
+- ¿Está claro lo que está en juego?
+- ¿Es lo bastante importante?
+- ¿Escala?
+- ¿Es personal para el protagonista?
+
+Si lo que está en juego no está claro o es poco, la trama parece poco importante aunque ocurran cosas.
+
+* Lo que has aprendido
+
+¡Enhorabuena! Has completado la Lección 6. Ahora sabes:
+
+✓ Por qué el seguimiento de la trama evita líneas abandonadas y asegura el equilibrio
+✓ Los distintos tipos de hilos de la trama (principal, subtrama mayor, subtrama menor, temático)
+✓ Cómo usar la plantilla de captura de hilos de la trama (Postura, quién la lleva, Deseo propio, Cruces, Resolución, Notas)
+✓ Todas las propiedades de la trama y cuándo usarlas (tipo de hilo, Postura, estado, primera aparición, Peso)
+✓ Cómo enlazar hilos de la trama con escenas mediante enlaces por ID
+✓ Cómo navegar entre escenas y fichas de trama
+✓ Cómo buscar todas las escenas que hacen avanzar una trama concreta
+✓ Cómo generar cronologías de la trama para visualizar la distribución
+✓ Cómo ejecutar informes de salud de la trama para encontrar huecos y desequilibrios
+✓ Cómo es una distribución sana de la trama
+✓ Cómo integrar la gestión de la trama en tu escritura diaria
+
+* Próximos pasos
+
+Ya estás listo para la [[file:primeros-pasos-07-busquedas.org][Lección 7: Encontrar lo que necesitas]].
+
+En la próxima lección aprenderás:
+- A dominar todas las funciones de búsqueda (personaje, trama, localización, PoV)
+- Técnicas avanzadas de búsqueda y filtros
+- A encontrar los TODO en todo el proyecto
+- Flujos de navegación rápida
+- A usar bien los resultados de búsqueda
+- A construir tus propios flujos de búsqueda
+
+** Práctica rápida antes de seguir
+
+Antes de la Lección 7, prueba esto:
+
+1. Captura 2-4 hilos de la trama para tu proyecto:
+   - Una trama principal (obligatoria)
+   - 1-2 subtramas
+   - Opcional: un hilo temático
+2. Enlaza cada trama con 2-3 escenas
+3. Prueba a saltar de la escena a la ficha de la trama y volver
+4. Busca tu trama principal y repasa la distribución de las escenas
+5. Genera una cronología de la trama (si tienes 5 o más escenas)
+6. Ejecuta un informe de salud de la trama y repasa los avisos
+7. Planifica: ¿dónde debería aparecer cada trama a continuación?
+
+¡Tómate tu tiempo! El seguimiento de la trama es crucial en historias complejas. Cuando te sientas cómodo capturando, enlazando, buscando y analizando hilos de la trama, pasa a la Lección 7.
+
+* Resumen
+
+Los hilos de la trama son el «qué ocurre» de tu historia: los sucesos, preguntas y conflictos que impulsan tu narración. Al crear fichas de hilos de la trama:
+- Sigues dónde se desarrolla cada trama en tu manuscrito
+- Aseguras un desarrollo equilibrado (ninguna subtrama olvidada)
+- Encuentras huecos donde las tramas desaparecen demasiado tiempo
+- Visualizas cómo se entrelazan las tramas
+- Compruebas que todas las tramas llegan a conclusiones satisfactorias
+
+El sistema de enlace de tramas usa enlaces por ID (como los personajes y los escenarios), y te permite hacer clic desde las propiedades de la escena hasta las fichas completas de la trama. Combinado con las cronologías y los informes de salud de la trama, tienes visibilidad completa de la estructura de tu historia.
+
+Con la gestión de hilos de la trama en marcha, ya tienes seguimiento completo de:
+- *Quién*: personajes
+- *Dónde*: escenarios
+- *Qué*: hilos de la trama
+
+A continuación dominarás las herramientas de búsqueda que te permiten recorrer tu manuscrito de cualquier manera que necesites.
+
+---
+
+*Anterior*: [[file:primeros-pasos-05-lugares-ambientacion.org][Lección 5: Escenarios y ambientación]]
+*Siguiente*: [[file:primeros-pasos-07-busquedas.org][Lección 7: Encontrar lo que necesitas]]
+
+*¡Lección 6 completada!*

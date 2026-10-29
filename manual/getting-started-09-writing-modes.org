@@ -1,7 +1,10 @@
 #+TITLE: Lesson 9: Writing Modes Deep Dive
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-09-modos-escritura.org][Versión en español]]/
 
 * Welcome to Lesson 9!
 
@@ -29,7 +32,7 @@ By the end of this lesson, you'll have:
 ** Optional Dependencies
 
 Some modes work better with optional packages:
-- *All modes*: ~writeroom-mode~ (required for modes 1-2)
+- *Write and Focus modes*: ~writeroom-mode~ (required)
 - *Navigate mode*: ~treemacs~ and ~imenu-list~ (recommended)
 - *Editing mode*: ~imenu-list~ and ~visual-fill-column~ (recommended)
 - *Theming*: ~consult~ and ~fontaine~ (optional but nice)
@@ -109,7 +112,7 @@ Perfect for:
    - Theme switches (dark/complex → light/minimal)
    - Font increases (easier reading)
    - Text centers on screen
-   - Mode line simplifies
+   - Mode line is hidden
    - Everything but your text fades away
 4. *Write freely!*
 5. *Press* ~F8 m~ again to exit
@@ -364,19 +367,18 @@ Perfect for:
 *** Left Panel: Treemacs (Project Files)
 
 *Shows*:
-- All files in your project
-- Directory structure
+- The files in your project folder (the manuscript and the design notebook)
+- Any other files you keep beside them
 - Icons for file types
 
 *Use for*:
-- Opening character profiles
-- Switching to plot document
-- Accessing the design notebook
+- Switching between the manuscript and the design notebook
+- Opening the plan, if you have one
 - Managing project files
 
 *Actions*:
 - Click file to open
-- Expand/collapse directories
+- Expand/collapse any folders you add
 - See project at a glance
 
 *** Right Panel: Imenu-List (Document Outline)
@@ -667,7 +669,7 @@ If the requested file cannot be found, the panel falls back to the design notebo
 9. Check off items in right panel (notes)
 10. Navigate to next scene via left panel
 11. Repeat revision process
-12. ~F8 e~ when done - layout closes, work saved
+12. Save your work (~C-x C-s~), then ~F8 e~ when done - the layout closes (leaving the mode does not save)
 
 ** About the Notes File
 
@@ -747,7 +749,7 @@ START
 | Outlining               | Project          | See structure clearly           |
 | Writing sprints         | Distraction-Free | Minimal interface, max focus    |
 | Structural editing      | Editing          | Outline + text + notes          |
-| Character checking      | Project          | Jump to character files         |
+| Character checking      | Project          | Jump to the design notebook     |
 | Final polish            | Focus            | One scene at a time, perfecting |
 
 ** By Writer Preference
@@ -849,9 +851,9 @@ Let's practice using all four modes.
    - *Answer*: Focus (~f~) - positioned on Scene 3
    - Do it!
 
-3. *Task*: Check character profile, then continue writing
+3. *Task*: Check a character's profile in the design notebook, then continue writing
    - *Mode choice*: ?
-   - *Answer*: Navigate (~v~) - use treemacs to open character file
+   - *Answer*: Navigate (~v~) - use treemacs to open the design notebook, where the characters live
    - Do it!
 
 4. *Task*: Review Scene 1 with revision checklist
@@ -1100,8 +1102,8 @@ This is advanced - stick with the four built-in modes initially!
 ** "Exiting mode doesn't restore everything"
 
 *Try*:
-1. Activate the mode again: ~F8 X~ (where X is the mode key)
-2. Exit properly: ~F8 X~ again
+1. Activate the mode again (its own key: ~F8 m~, ~F8 f~, ~F8 v~ or ~F8 e~)
+2. Exit properly: press the same key again
 3. If still broken: ~M-x revert-buffer~ or close/reopen file
 
 *Prevention*:
@@ -1207,30 +1209,30 @@ In the next lesson, you'll learn:
 
 Reinforce your mode mastery:
 
-1. **Mode familiarization** (repeat 3 times)
+1. *Mode familiarization* (repeat 3 times)
    - Activate each mode
    - Observe visual changes
    - Write in each mode
    - Exit cleanly
 
-2. **Task-based practice**
+2. *Task-based practice*
    - Write 200 words: use Distraction-Free
    - Rewrite one scene: use Focus
    - Check character notes: use Project
    - Review with notes: use Editing
 
-3. **Speed switching**
+3. *Speed switching*
    - Activate → Exit → Activate different → Exit
    - Build muscle memory
    - Get comfortable with mode transitions
 
-4. **Customization**
+4. *Customization*
    - Try different themes
    - Adjust text widths
    - Find your perfect settings
    - Update your config file
 
-5. **Daily integration**
+5. *Daily integration*
    - Use Distraction-Free for one week straight
    - Build the habit
    - Let it become natural
@@ -1243,11 +1245,11 @@ The modes are powerful tools - the more you use them, the more natural they beco
 
 | Key | Mode                     | Mnemonic            |
 |-----+--------------------------+---------------------|
-| ~m~   | Distraction-Free (write) | **M**ode            |
-| ~f~   | Focus                    | **F**ocus           |
-| ~v~   | Project (navigate)       | Na**v**igate        |
-| ~e~   | Editing                  | **E**diting         |
-| ~0~   | Normal (off)             | none (**0** = normal) |
+| ~m~   | Distraction-Free (write) | *M*ode                 |
+| ~f~   | Focus                    | *F*ocus           |
+| ~v~   | Project (navigate)       | Na*v*igate        |
+| ~e~   | Editing                  | *E*diting         |
+| ~0~   | Normal (off)             | none (*0* = normal) |
 
 All accessed via: ~F8~ then key. All five go through one unified dispatcher, ~org-scribe-workspace~, which takes the layout name as its argument; re-selecting the active layout's key turns it off.
 

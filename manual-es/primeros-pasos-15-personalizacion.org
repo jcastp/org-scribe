@@ -1,0 +1,1541 @@
+#+TITLE: Lección 15: Personalización y configuración
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-15-customization.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-15-customization.org][English version]]/
+
+* ¡Bienvenido a la Lección 15!
+
+¡Enhorabuena por completar las lecciones básicas! Ya sabes usar todas las funciones de ~org-scribe~. Esta lección te ayuda a hacer el paquete realmente tuyo, adaptándolo a tus preferencias y a tu forma de trabajar.
+
+La belleza de Emacs es su flexibilidad: todo se puede adaptar. ~org-scribe~ sigue esa filosofía y ofrece decenas de opciones de personalización, con valores por defecto sensatos.
+
+Al terminar la lección habrás:
+- Personalizado los temas y las fuentes de cada modo de escritura
+- Ajustado las disposiciones de ventanas y los anchos de texto a tu gusto
+- Modificado las plantillas de proyecto para tus necesidades
+- Configurado la exportación para tus formatos de destino
+- Elegido las preferencias de idioma (inglés/español)
+- Creado atajos de teclado propios para acceder más rápido
+- Montado tu configuración personal de ~org-scribe~
+
+*Tiempo estimado*: 20-25 minutos
+
+* Antes de empezar
+
+** Lo que necesitas
+
+✓ Haber completado las Lecciones 1-14 (o al menos haber probado las funciones)
+✓ Una comprensión básica de Emacs Lisp (lo explicaremos sobre la marcha)
+✓ Tu archivo de configuración de Emacs abierto (normalmente ~init.el~ o ~.emacs~)
+✓ Ganas de experimentar
+
+** Entender la configuración de Emacs
+
+Todas las personalizaciones van en tu archivo de configuración de Emacs:
+
+*Ubicaciones habituales*:
+- ~~/.emacs.d/init.el~ (la más común)
+- ~~/.emacs~
+- ~~/.config/emacs/init.el~
+
+*Para encontrar el tuyo*:
+1. En Emacs: ~C-h v user-init-file RET~
+2. El valor que aparece es tu archivo de configuración
+3. Ábrelo: ~C-x C-f~ y pega esa ruta
+
+** Dos formas de personalizar
+
+*Método 1: la interfaz Customize* (apta para principiantes)
+- Pulsa ~M-x customize-group RET org-scribe RET~
+- Pulsa en las opciones y cambia los valores
+- Pulsa «Apply and Save»
+- No hace falta saber Emacs Lisp
+
+*Método 2: configuración directa* (más potente)
+- Edita directamente tu archivo de inicio
+- Añade código Emacs Lisp
+- Más control y más documentación
+- Se puede llevar bajo control de versiones
+
+*¡Esta lección enseña los dos métodos!*
+
+** Nociones básicas de Emacs Lisp (guía rápida)
+
+Verás código como este:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-env-work-theme 'modus-vivendi)
+#+END_SRC
+
+*Cómo se lee*:
+- ~setq~ = «asigna una variable»
+- ~org-scribe-env-work-theme~ = nombre de la variable
+- ~'modus-vivendi~ = valor (el ~'~ significa «símbolo»)
+
+*Tipos de valores*:
+- Símbolo: ~'poet~, ~'leuven~ (nombres de temas o de preajustes)
+- Número: ~80~, ~0.25~ (anchos, porcentajes)
+- Cadena: ~"hola"~ (texto entre comillas)
+- Booleano: ~t~ (verdadero) o ~nil~ (falso)
+
+No te preocupes si esto te confunde: ¡copia los ejemplos!
+
+* Personalizar los modos de escritura
+
+Los modos de escritura (sin distracciones, foco, proyecto y edición) son muy personalizables.
+
+** Temas para los modos de escritura
+
+Cada modo puede usar un tema distinto para señalar visualmente el cambio de modo.
+
+*** Valores por defecto actuales
+
+#+BEGIN_SRC emacs-lisp
+;; Temas por defecto
+(setq org-scribe-env-normal-theme nil)   ; nil = no toca tu tema
+(setq org-scribe-env-work-theme nil)     ; nil = no toca tu tema
+(setq org-scribe-editing-theme 'leuven)  ; Modo Edición (leuven viene con Emacs)
+#+END_SRC
+
+Los temas de los modos de escritura valen ~nil~ por defecto: nada más instalar, entrar en un modo de escritura y salir de él *no* cambia tus colores. Pon en ellos un tema que tengas instalado para activar el cambio de tema. Si el tema que nombras no está instalado, org-scribe lo avisa en el área de eco y conserva tu tema actual en lugar de lanzar un error.
+
+*** Cambiar los temas
+
+*Temas populares para escribir*:
+
+Para el modo Sin distracciones:
+- ~'poet~: minimalista, de alto contraste
+- ~'writeroom~: muy limpio
+- ~'nord~: colores fríos y tranquilizadores
+- ~'zenburn~: bajo contraste, suave para la vista
+- ~'solarized-light~: tema claro clásico y cálido
+- ~'modus-operandi~: tema claro accesible
+
+Para el modo Edición:
+- ~'leuven~: limpio y ordenado (el de por defecto)
+- ~'modus-operandi~: accesible y profesional
+- ~'ef-light~: tema claro moderno
+- ~'spacemacs-light~: limpio y colorido
+
+*Cómo cambiarlos*:
+
+Añade a tu archivo de inicio:
+
+#+BEGIN_SRC emacs-lisp
+;; Personalizar los temas de los modos de escritura
+(setq org-scribe-env-work-theme 'modus-vivendi)    ; Tema oscuro para escribir
+(setq org-scribe-env-normal-theme 'modus-operandi) ; Tema claro normal
+(setq org-scribe-editing-theme 'ef-light)          ; Tema claro para editar
+#+END_SRC
+
+*Probar temas*:
+
+Antes de decidirte, prueba un tema:
+1. ~M-x load-theme RET modus-vivendi RET~
+2. Mira cómo queda
+3. Si te gusta, añádelo a tu configuración
+4. Si no, prueba otro: ~M-x load-theme RET zenburn RET~
+
+*** Temas distintos para el día y la noche
+
+Algunos escritores prefieren temas claros de día y oscuros de noche:
+
+#+BEGIN_SRC emacs-lisp
+;; De día (9:00 - 18:00): temas claros
+(setq org-scribe-env-work-theme 'modus-operandi)
+
+;; De noche (18:00 - 9:00): temas oscuros
+;; (tendrías que cambiar a mano o usar el paquete circadian)
+#+END_SRC
+
+O instala el paquete ~circadian~ para que el cambio sea automático:
+
+#+BEGIN_SRC emacs-lisp
+(use-package circadian
+  :ensure t
+  :config
+  (setq circadian-themes '(("9:00" . modus-operandi)
+                           ("18:00" . modus-vivendi)))
+  (circadian-setup))
+#+END_SRC
+
+** Fuentes para los modos de escritura
+
+¡La tipografía importa! Fuentes distintas para tareas distintas.
+
+*** Presets de fuentes con Fontaine
+
+~org-scribe~ usa el paquete ~fontaine~ para gestionar las fuentes.
+
+*Valores por defecto reales de las variables* (ninguno de estos preajustes de fontaine viene con org-scribe: tienes que definirlos tú con =fontaine-set-presets= antes de que el modo que los usa encuentre nada):
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-env-normal-font 'regular)      ; Edición normal
+(setq org-scribe-env-work-font 'org-scribe-big) ; Modo sin distracciones
+(setq org-scribe-editing-fontaine-preset 'editing)  ; Modo Edición
+#+END_SRC
+
+*** Crear preajustes de fuentes propios
+
+Define tus propios preajustes en tu archivo de inicio:
+
+#+BEGIN_SRC emacs-lisp
+(setq fontaine-presets
+  '((regular
+     :default-height 140)           ; Tamaño normal
+
+    (writing-big
+     :default-family "iA Writer Mono"
+     :default-height 180             ; Más grande para escribir
+     :line-spacing 4)                ; Más espacio entre líneas
+
+    (editing
+     :default-family "Fira Code"
+     :default-height 160
+     :variable-pitch-family "Libre Baskerville"
+     :variable-pitch-height 160)
+
+    (presentation
+     :default-height 220)))          ; Muy grande
+#+END_SRC
+
+*Fuentes populares para escribir*:
+- *Monoespaciadas*: iA Writer Mono, Fira Code, JetBrains Mono, Source Code Pro
+- *De paso variable*: Libre Baskerville, Crimson Text, ET Book, Merriweather
+
+*Encontrar los nombres de las fuentes*:
+
+Ejecuta ~M-x menu-set-font~ para ver las fuentes disponibles, o ~M-x describe-font~ para inspeccionar la actual.
+
+*** Ajustar solo el tamaño de la fuente
+
+Si solo quieres un texto más grande o más pequeño sin cambiar de fuente:
+
+#+BEGIN_SRC emacs-lisp
+;; Agrandar la fuente del modo de escritura
+(setq fontaine-presets
+  '((regular
+     :default-height 140)    ; Por defecto
+    (writing-big
+     :default-height 200)))  ; 200 = más grande (prueba 160, 180, 200, 220)
+#+END_SRC
+
+*Escala de alturas*:
+- 120 = pequeña
+- 140 = normal
+- 160 = mediana-grande
+- 180 = grande
+- 200 = muy grande
+- 220+ = modo presentación
+
+** Ancho del texto (ancho de columna)
+
+Controla lo ancho que aparece el texto, algo decisivo para leer cómodamente.
+
+*** Ancho en el modo de escritura
+
+#+BEGIN_SRC emacs-lisp
+;; Anchos por defecto
+(setq org-scribe-env-work-width 80)     ; Sin distracciones: 80 columnas
+(setq org-scribe-env-normal-width 90)   ; Normal: 90 columnas
+#+END_SRC
+
+*Ajustes*:
+
+#+BEGIN_SRC emacs-lisp
+;; Más estrecho para escribir concentrado
+(setq org-scribe-env-work-width 70)
+
+;; Más ancho si tienes un monitor grande
+(setq org-scribe-env-work-width 100)
+#+END_SRC
+
+*Pautas*:
+- 60-70: muy concentrado, columna estrecha
+- 70-80: lectura cómoda estándar (recomendado)
+- 80-90: algo más ancho
+- 90-100: ancho (bueno para monitores grandes)
+- 100+: muy ancho (se pierde el foco)
+
+*Regla práctica*: de 60 a 90 caracteres por línea es lo óptimo para leer.
+
+*** Ancho en el modo Edición
+
+El modo Edición tiene su propio ajuste de columna de relleno:
+
+#+BEGIN_SRC emacs-lisp
+;; Por defecto
+(setq org-scribe-editing-fill-column-width 90)
+
+;; Ajústalo a tu gusto
+(setq org-scribe-editing-fill-column-width 100)  ; Más ancho, más contexto
+#+END_SRC
+
+** Tamaños de los paneles (modo Edición)
+
+El modo Edición divide la pantalla en tres paneles. Ajusta sus proporciones:
+
+#+BEGIN_SRC emacs-lisp
+;; Por defecto: 25 % / 50 % / 25 %
+(setq org-scribe-editing-left-width-percent 0.25)   ; Panel de esquema (izquierda)
+(setq org-scribe-editing-right-width-percent 0.25)  ; Panel de notas (derecha)
+;; El centro es automático: 1.0 - izquierda - derecha = 0.50 (50 %)
+#+END_SRC
+
+*Disposiciones alternativas*:
+
+Esquema más estrecho, manuscrito más ancho:
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-editing-left-width-percent 0.20)   ; 20 %
+(setq org-scribe-editing-right-width-percent 0.25)  ; 25 %
+;; Centro: 55 %
+#+END_SRC
+
+Notas más estrechas, más protagonismo para el manuscrito:
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-editing-left-width-percent 0.25)   ; 25 %
+(setq org-scribe-editing-right-width-percent 0.20)  ; 20 %
+;; Centro: 55 %
+#+END_SRC
+
+Tres columnas equilibradas:
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-editing-left-width-percent 0.33)   ; 33 %
+(setq org-scribe-editing-right-width-percent 0.33)  ; 33 %
+;; Centro: 34 %
+#+END_SRC
+
+*¡La suma debe ser menor que 1.0!*
+
+** Profundidad del panel de esquema (escenas o capítulos)
+
+El panel de esquema que usan el modo Edición y el modo Navegación se construye con el *índice imenu* de Org, y ese índice se detiene a ~org-imenu-depth~ niveles de profundidad. El valor por defecto de Org es ~2~:
+
+#+BEGIN_SRC emacs-lisp
+;; Mostrar las escenas (nivel 3) en el panel de esquema, no solo actos y capítulos
+(setq org-imenu-depth 3)
+#+END_SRC
+
+Las plantillas de novela de org-scribe ponen los actos en el nivel 1, los capítulos en el nivel 2 y las *escenas en el nivel 3*, así que con el valor por defecto el panel lista los capítulos y se detiene, un nivel antes de los encabezados por los que realmente navegas. Pon ~4~ si además escribes beats por debajo de las escenas; cada nivel extra hace más lento construir el índice y más largo el panel.
+
+El índice se guarda en caché por búfer, así que después de cambiar el valor reinicia Emacs, vuelve a cargar el búfer del manuscrito (~revert-buffer~) o pulsa ~*Rescan*~ en la parte de arriba del panel.
+
+Ten en cuenta que es una variable corriente de Org, no de org-scribe: subirla también mejora ~M-x imenu~, ~consult-imenu~ y todo lo que lea el índice.
+
+** Ejemplo completo de configuración de los modos de escritura
+
+Ponlo en tu archivo de inicio:
+
+#+BEGIN_SRC emacs-lisp
+;;; Personalización de los modos de escritura
+
+;; === TEMAS ===
+(setq org-scribe-env-normal-theme 'modus-operandi)  ; Tema claro normalmente
+(setq org-scribe-env-work-theme 'poet)              ; Tema limpio para escribir
+(setq org-scribe-editing-theme 'leuven)             ; Ordenado para editar
+
+;; === FUENTES ===
+(setq org-scribe-env-normal-font 'regular)
+(setq org-scribe-env-work-font 'writing-big)
+(setq org-scribe-editing-fontaine-preset 'editing)
+
+;; === ANCHOS DE TEXTO ===
+(setq org-scribe-env-work-width 75)                 ; Ancho de lectura cómodo
+(setq org-scribe-env-normal-width 90)               ; Ancho de edición normal
+(setq org-scribe-editing-fill-column-width 90)      ; Ancho del modo Edición
+
+;; === PANELES DEL MODO EDICIÓN ===
+(setq org-scribe-editing-left-width-percent 0.25)   ; Esquema: 25 %
+(setq org-scribe-editing-right-width-percent 0.25)  ; Notas: 25 %
+                                                    ; Manuscrito: 50 % (automático)
+(setq org-scribe-editing-right-panel 'notes)        ; Qué muestra el panel derecho
+
+;; === PROFUNDIDAD DEL PANEL DE ESQUEMA ===
+(setq org-imenu-depth 3)                            ; Lista las escenas, no solo los capítulos
+#+END_SRC
+
+** Qué muestra el panel derecho
+
+Por defecto, el panel derecho del modo Edición muestra tu cuaderno de diseño. ~org-scribe-editing-right-panel~ lo cambia:
+
+| Valor                 | El panel derecho muestra                                             |
+|-----------------------+----------------------------------------------------------------------|
+| ~notes~ (por defecto) | El cuaderno de diseño, el mismo en el que escriben las capturas      |
+| ~edits~               | Un índice vivo de tus marcadores de edición, reconstruido al guardar |
+| ~revision~            | El cuaderno de diseño (donde vive la parte Revisión)                 |
+| una cadena            | Una ruta relativa al proyecto, p. ej. ~"plan.org"~                   |
+| una función           | Se llama con el nombre del manuscrito; devuelve un archivo           |
+
+#+BEGIN_SRC emacs-lisp
+;; Durante una pasada de revisión, ten a mano las ediciones pendientes junto al texto
+(setq org-scribe-editing-right-panel 'edits)
+#+END_SRC
+
+Si no se encuentra el archivo pedido, el panel vuelve al cuaderno de diseño en lugar de quedarse sin abrir nada.
+
+* Personalizar los marcadores de edición
+
+Los marcadores en línea ~*EDIT*~ / ~*NOTE*~ que dejas en el manuscrito (Lección 14) tienen dos ajustes.
+
+** Categorías de los marcadores
+
+Un ~*EDIT*~ lleva una categoría antes del separador ~" - "~, y el índice de ediciones agrupa por ella:
+
+#+BEGIN_SRC emacs-lisp
+;; Por defecto
+(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "design"))
+
+;; Añade las tuyas
+(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "design" "pacing" "research"))
+#+END_SRC
+
+Los valores de la lista son los nombres canónicos en inglés. En un proyecto en español el índice y el fragmento ~edit~ de Tempel muestran la grafía española de las que trae el paquete de idioma (trama, escena, personaje, prosa, diseño); una categoría que añadas tú se muestra tal como la escribas.
+
+Esta única variable gobierna los dos extremos: el índice agrupa por ella y el fragmento ~edit~ de Tempel que se incluye pregunta a partir de ella, de modo que no pueden discrepar. Un marcador sin categoría, con la categoría vacía o con una categoría que no se reconoce va a la sección ~other~: nunca se pierde.
+
+** Categorías vacías en el índice
+
+#+BEGIN_SRC emacs-lisp
+;; Por defecto: mostrar todas las categorías, aunque estén vacías (el índice sirve de lista de comprobación)
+(setq org-scribe-edits-index-show-empty-categories t)
+
+;; Compacto: solo las categorías que tienen marcadores
+(setq org-scribe-edits-index-show-empty-categories nil)
+#+END_SRC
+
+** La alternativa de texto plano
+
+~org-scribe-edit-string~ es la expresión regular que usa ~org-scribe-search-edits-rgrep~ (la variante con ~C-u~ de ~F8 6~), no el índice estructurado. Personalízala si usas estilos de marcador propios:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")
+#+END_SRC
+
+* Personalizar el objetivo de palabras
+
+Un proyecto nuevo pregunta por su recuento total de palabras. Dos opciones dan forma a esa pregunta:
+
+#+BEGIN_SRC emacs-lisp
+;; El total que se ofrece para cada tipo de proyecto (pulsa Intro para aceptarlo)
+(setq org-scribe-default-word-target
+      '((novel . 80000) (short-story . 5000)))
+
+;; Cómo se reparte el total entre las tres partes más externas
+;; (los actos de una novela, las escenas de un cuento). Solo importan las proporciones.
+(setq org-scribe-word-target-proportions '(25 50 25))
+#+END_SRC
+
+~org-scribe-word-target-proportions~ debe contener exactamente tres pesos, porque las plantillas que se incluyen tienen tres partes más externas; la creación del proyecto rechaza cualquier otra cosa antes de escribir un solo archivo.
+
+* Personalizar las herramientas de idioma
+
+Configura las herramientas de diccionario y de sinónimos.
+
+** Ancho de la ventana de sinónimos
+
+La ventana de sinónimos se abre a la derecha. Ajusta su ancho:
+
+#+BEGIN_SRC emacs-lisp
+;; Por defecto
+(setq org-scribe-sinonimo-window-width 80)
+
+;; Más estrecha (bueno para pantallas pequeñas)
+(setq org-scribe-sinonimo-window-width 60)
+
+;; Más ancha (se ve más contenido)
+(setq org-scribe-sinonimo-window-width 100)
+#+END_SRC
+
+Se aplica tanto a los resultados sin conexión como a los de internet.
+
+** Fuente de las definiciones
+
+Las definiciones pueden venir de un Wikcionario local servido por kiwix-serve en lugar de la RAE en línea. La Lección 12 explica la instalación (una descarga de 566 MB y un servicio en segundo plano).
+
+#+BEGIN_SRC emacs-lisp
+;; 'auto (por defecto) — el servidor local si responde, la RAE en línea si no
+;; 'wikcionario        — solo local; nunca consulta la red
+;; 'rae-api            — siempre la RAE en línea
+(setq org-scribe-dictionary-backend 'auto)
+
+;; Dónde escucha el servidor local
+(setq org-scribe-wikcionario-url "http://localhost:8080")
+
+;; Qué ZIM consultar; nil le pregunta al servidor qué está sirviendo
+(setq org-scribe-wikcionario-book nil)
+
+;; Cuánto esperar al servidor local antes de rendirse. Solo se paga en la
+;; primera consulta de la sesión.
+(setq org-scribe-wikcionario-timeout 3)
+#+END_SRC
+
+org-scribe nunca arranca ni supervisa kiwix-serve: lo sondea e informa. La disponibilidad se guarda en caché durante la sesión, así que si arrancas el servidor después de Emacs, pulsa ~C-u~ antes de la consulta (~C-u F8 d~) o ejecuta ~M-x org-scribe-wikcionario-clear-cache~.
+
+** Fuente del tesauro
+
+La búsqueda de sinónimos puede leer un tesauro de tu propio disco en lugar de cargar una página web. Instala los datos con el gestor de paquetes de tu sistema (~sudo apt install mythes-es~ en Debian/Ubuntu) y se usan automáticamente. La Lección 12 explica la instalación y lo que cambia.
+
+#+BEGIN_SRC emacs-lisp
+;; 'auto (por defecto) — sin conexión cuando los datos están instalados, en
+;;                       línea si no, y en línea para una palabra sin entrada local
+;; 'mythes             — solo sin conexión; un fallo se informa, nunca va a internet
+;; 'rae-api            — siempre los sinónimos de la RAE en línea
+(setq org-scribe-thesaurus-backend 'auto)
+#+END_SRC
+
+(El original inglés menciona aquí un valor ~'wordreference~. Ya no existe: WordReference dejó de responder y su lugar lo ocupa la API de la RAE. Si todavía lo tienes en tu configuración, se lee como ~'rae-api~.)
+
+~'mythes~ merece la pena en una conexión de datos limitada, o cuando quieres saber exactamente qué cubren tus datos locales en vez de que los huecos se disimulen.
+
+** Ubicación e idioma del tesauro
+
+Solo hace falta si los datos están en un sitio poco habitual, o si quieres un idioma distinto del de por defecto:
+
+#+BEGIN_SRC emacs-lisp
+;; Dónde viven los pares th_*_v2.dat / th_*_v2.idx
+(setq org-scribe-mythes-directory "/usr/share/mythes/")
+
+;; Cuál leer
+(setq org-scribe-mythes-language "es_ES")   ; es_MX, en_US, ...
+#+END_SRC
+
+Si ningún tesauro coincide exactamente, se usa otra variante del mismo idioma base, así que ~es_MX~ sigue funcionando cuando solo está instalado ~es_ES~.
+
+Comprueba lo que ha encontrado org-scribe con ~(org-scribe-mythes-files)~; ~nil~ significa que no ha encontrado nada.
+
+** Diccionario de lematización
+
+La lematización es lo que permite que la consulta de ~corriendo~ encuentre la entrada del tesauro de ~correr~. Usa hunspell, que muy probablemente ya tienes instalado para la corrección ortográfica, y por defecto sigue el idioma del tesauro.
+
+#+BEGIN_SRC emacs-lisp
+;; nil (por defecto) — sigue a `org-scribe-mythes-language'
+;; O nombra un diccionario de hunspell explícitamente:
+(setq org-scribe-lemma-dictionary "es_ES")
+#+END_SRC
+
+Compruébalo con ~(org-scribe-lemma "corriendo")~, que debería devolver ~"correr"~. Si instalas un diccionario con Emacs ya en marcha, ejecuta ~M-x org-scribe-lemma-clear-cache~ para que lo recoja.
+
+Sin hunspell no se rompe nada: solo se busca la palabra exacta que escribiste.
+
+** Ejemplo de configuración
+
+#+BEGIN_SRC emacs-lisp
+;;; Personalización de las herramientas de idioma
+
+;; Ancho de la ventana lateral (definiciones y sinónimos usan el mismo)
+(setq org-scribe-sinonimo-window-width 70)
+
+;; Preferir las fuentes locales, recurrir a internet si faltan
+(setq org-scribe-dictionary-backend 'auto)
+(setq org-scribe-thesaurus-backend 'auto)
+
+;; Español de México para el tesauro y para la morfología
+(setq org-scribe-mythes-language "es_MX")
+#+END_SRC
+
+* Personalizar los ajustes de exportación
+
+Controla cómo se exporta tu manuscrito a los distintos formatos.
+
+** Formato de los saltos de escena
+
+La macro de salto de escena (~{{{scene-break}}}~) produce una salida distinta según el formato:
+
+#+BEGIN_SRC emacs-lisp
+;; Valores por defecto
+(setq org-scribe-scene-break-replacements
+  '((ascii . "\n***\n\n")
+    (md . "\n***\n\n")
+    (man . "\n***\n\n")
+    (html . "<br><br><br>\n")
+    (epub . "<br><br><br>\n")
+    (odt . "<text:p>***</text:p>\n")
+    (latex . "\\vspace{\\baselineskip}\\vspace{\\baselineskip}\\vspace{\\baselineskip}\n")
+    (t . "\n\n\n")))  ; Por defecto para los demás backends
+#+END_SRC
+
+Este ajuste gobierna la macro ~{{{scene-break}}}~ cuando exportas con las órdenes de exportación de Org. La compilación del manuscrito (~F8 X~, Lección 11) deriva sus saltos de la estructura y los dibuja con su propio ajuste, ~org-scribe-compile-scene-break~; mira la [[file:primeros-pasos-11-exportar.org][Lección 11]].
+
+*** Personalizar los saltos de escena
+
+*¿Quieres asteriscos centrados en LaTeX?*
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-scene-break-replacements
+  '((latex . "\\begin{center}***\\end{center}\n")
+    (html . "<p style='text-align:center;'>***</p>\n")
+    (t . "\n***\n\n")))
+#+END_SRC
+
+*¿Quieres un salto ornamental?*
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-scene-break-replacements
+  '((latex . "\\begin{center}\\text{\\Large ❦}\\end{center}\n")
+    (html . "<p style='text-align:center; font-size: 1.5em;'>❦</p>\n")
+    (t . "\n❦\n\n")))
+#+END_SRC
+
+*¿Quieres un simple espacio en blanco?*
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-scene-break-replacements
+  '((latex . "\\vspace{2\\baselineskip}\n")
+    (html . "<br><br>\n")
+    (t . "\n\n")))
+#+END_SRC
+
+** Ejemplo de configuración de la exportación
+
+#+BEGIN_SRC emacs-lisp
+;;; Personalización de la exportación
+
+;; Saltos de escena: ornamento centrado
+(setq org-scribe-scene-break-replacements
+  '((ascii . "\n***\n\n")
+    (latex . "\\begin{center}\\text{\\Large ❦}\\end{center}\n")
+    (html . "<p style='text-align:center;'>❦</p>\n")
+    (odt . "<text:p>***</text:p>\n")  ; ODT no admite bien el formato sofisticado
+    (t . "\n\n\n")))
+#+END_SRC
+
+* Ajustes de idioma (inglés/español)
+
+~org-scribe~ admite flujos de trabajo tanto en inglés como en español.
+
+** Elegir el idioma de las plantillas
+
+Controla qué plantillas se usan al crear proyectos:
+
+#+BEGIN_SRC emacs-lisp
+;; Por defecto: inglés
+(setq org-scribe-template-language 'en)
+
+;; Para español
+(setq org-scribe-template-language 'es)
+#+END_SRC
+
+*Qué afecta*:
+- La elección del directorio de plantillas (~novel-en~ frente a ~novel-es~)
+- Los nombres de archivo (~novel.org~ frente a ~novela.org~, ~design.org~ frente a ~diseno.org~)
+- El idioma del contenido de las plantillas
+- Las plantillas de escena y de capítulo por defecto
+
+Es solo el idioma con el que se *crea* un proyecto nuevo. Una vez creado, el idioma del proyecto queda anotado en su archivo ~.org-scribe-project~ y de ahí en adelante manda ese, no este ajuste.
+
+Los mensajes de org-scribe (avisos, preguntas, errores) tienen su propio ajuste, independiente, que por defecto es inglés:
+
+#+BEGIN_SRC emacs-lisp
+;; Mensajes de los comandos en español
+(setq org-scribe-message-language 'es)
+#+END_SRC
+
+Los informes y las capturas, en cambio, siguen el idioma del proyecto, no este ajuste (ver Lecciones 3 y 4).
+
+** Diccionario ortográfico por proyecto
+
+Un proyecto está escrito en un solo idioma, así que el diccionario ortográfico pertenece al proyecto y no a cada archivo. Cuando org-scribe crea un proyecto, escribe en la raíz un ~.dir-locals.el~ que fija ~ispell-local-dictionary~, y todos los archivos del proyecto (manuscrito, notas, archivos de planificación y todo lo que añadas después) lo recogen automáticamente, sin preguntar.
+
+El nombre del diccionario que se escribe sale de esta lista de asociación:
+
+#+BEGIN_SRC emacs-lisp
+;; Por defecto
+(setq org-scribe-ispell-dictionaries '((en . "en_US")
+                                       (es . "es_ES")))
+
+;; Variantes regionales
+(setq org-scribe-ispell-dictionaries '((en . "en_GB")
+                                       (es . "es_MX")))
+#+END_SRC
+
+La clave es el idioma del *proyecto* (el de ~.org-scribe-project~), no tu ~org-scribe-template-language~ global, de modo que un proyecto en español conserva su diccionario español aunque tu idioma por defecto sea el inglés. Un idioma sin entrada, o con entrada ~nil~, significa «no escribir ningún diccionario» en lugar de adivinar uno.
+
+Para aplicar un cambio a proyectos que ya existen, o para dar a un proyecto antiguo su primer ~.dir-locals.el~, ejecuta ~M-x org-scribe-update-dir-locals~ (~F8 L D~) dentro del proyecto. Lee el idioma del archivo marcador y pregunta antes de reemplazar un archivo existente. El informe de salud del proyecto avisa en su Resumen de un diccionario ausente o que no coincide.
+
+Si gestionas tú mismo las variables locales de directorio, desactiva todo esto:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-write-dir-locals nil)
+#+END_SRC
+
+Nada más en org-scribe lee el archivo generado: existe únicamente para la corrección ortográfica de Emacs. Un bloque ~# Local Variables:~ en un archivo sigue prevaleciendo sobre él, y ~guess-language~, si lo usas, prevalece sobre ambos.
+
+(La Lección 1 cuenta el mismo mecanismo desde el punto de vista de la creación del proyecto.)
+
+** Configuración bilingüe
+
+Si escribes en los dos idiomas, puedes:
+
+*Opción 1: cambiar según haga falta*
+
+#+BEGIN_SRC emacs-lisp
+;; En el archivo de inicio, fija el valor por defecto
+(setq org-scribe-template-language 'es)
+
+(setq org-scribe-template-language 'en)  ; evalúalo antes de crear un proyecto en inglés
+#+END_SRC
+
+*Opción 2: usar los dos conjuntos de plantillas*
+
+#+BEGIN_SRC emacs-lisp
+;; Define una función para cada idioma
+(defun my-new-english-novel ()
+  "Crea un proyecto de novela en inglés."
+  (interactive)
+  (let ((org-scribe-template-language 'en))
+    (call-interactively 'org-scribe-create-novel-project)))
+
+(defun my-new-spanish-novel ()
+  "Crea un proyecto de novela en español."
+  (interactive)
+  (let ((org-scribe-template-language 'es))
+    (call-interactively 'org-scribe-create-novel-project)))
+#+END_SRC
+
+¡Ahora tienes un comando propio para cada idioma!
+
+** Plantillas propias
+
+No hay ningún ajuste que apunte la creación a otro directorio de plantillas: los proyectos se crean siempre a partir de las ~org-scribe-templates/~ del propio paquete. Para personalizarlas, edita esa copia (~M-x org-scribe-edit-templates~ la abre en Dired); los cambios se aplican a todos los proyectos que crees a partir de entonces. Guarda una copia de tus modificaciones, porque una actualización del paquete reemplaza el directorio.
+
+* Modificar las plantillas de proyecto
+
+Adapta las plantillas a tus necesidades concretas.
+
+** Acceder a las plantillas
+
+*Método 1: con el comando*
+
+#+BEGIN_EXAMPLE
+M-x org-scribe-edit-templates
+#+END_EXAMPLE
+
+Abre el directorio de plantillas en Dired.
+
+*Método 2: ruta directa*
+
+Las plantillas están en el directorio del paquete:
+#+BEGIN_EXAMPLE
+~/.emacs.d/elpa/org-scribe-VERSION/org-scribe-templates/
+#+END_EXAMPLE
+
+** Estructura de las plantillas
+
+Las plantillas usan sustitución de variables:
+
+#+BEGIN_EXAMPLE
+#+TITLE: ${TITLE}
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+END_EXAMPLE
+
+*Variables disponibles*:
+- ~${TITLE}~: título del proyecto, tal como lo escribes
+- ~${AUTHOR}~: sale de la variable ~user-full-name~
+- ~${DATE}~: fecha actual (formato AAAA-MM-DD)
+- ~${TOTAL_WORDS}~, ~${TOTAL_WORDS_FMT}~ (con el separador de miles del idioma) y ~${PART1_WORDS}~ a ~${PART3_WORDS}~: el objetivo de palabras del proyecto y su reparto (ver la sección anterior sobre el objetivo de palabras)
+
+La sustitución es texto plano: no hay condicionales ni bucles.
+
+** Modificaciones habituales de las plantillas
+
+*** Añadir tus objetivos de escritura
+
+Edita ~novela.org.template~ o ~cuento.org.template~:
+
+#+BEGIN_EXAMPLE
+#+TITLE: ${TITLE}
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+STARTUP: overview
+
+,* Objetivos del proyecto
+
+- *Objetivo de palabras*: 80.000 palabras
+- *Fecha límite*: [Añade tu fecha límite]
+- *Objetivo diario*: 1.000 palabras
+- *Género*: [Tu género]
+
+,* El manuscrito
+...
+#+END_EXAMPLE
+
+¡Ahora todos los proyectos incluyen tu sección de objetivos!
+
+(Las plantillas actuales ya traen una sección de objetivos que usa el objetivo de palabras del proyecto; esto es un ejemplo de cómo añadir tus propias líneas, no algo que tengas que hacer.)
+
+*** Personalizar la plantilla de escena
+
+La plantilla de la escena que inserta ~org-scribe-insert-scene~ (~F8 s~) no es un ajuste que puedas asignar con ~setq~: la genera el código, con las propiedades de escena (PoV, personajes, trama, escenario, línea temporal, descripción, emoción, ...) escritas con los nombres del idioma del proyecto. En un proyecto en español el cajón queda así:
+
+#+BEGIN_EXAMPLE
+,*** TODO Título de la escena                                          :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 500
+:PoV:
+:Personajes:
+:Trama:
+:Punto-de-trama:
+:Linea-temporal:
+:Localizacion:
+:Objetos:
+:Descripcion:
+:Resumen:
+:Motivacion-escena:
+:Fuente-conflicto:
+:Brecha:
+:Que-esta-en-juego:
+:Problema-mundo:
+:Emocion:
+:Nivel-tension:
+:Resultado:
+:Decision-secuela:
+:Comentario:
+:END:
+#+END_EXAMPLE
+
+Es el cajón que describe la Lección 2, propiedad por propiedad.
+
+Si quieres una propiedad más (por ejemplo ~:Clima:~ o ~:Emocion-secundaria:~), no hace falta tocar nada: añádela a mano al cajón de la escena. Una propiedad de Org es solo texto, y el resto del paquete ignora las que no conoce. Lo que no se puede cambiar con un ajuste es el conjunto que se inserta por defecto; para eso tendrías que modificar el código del paquete.
+
+*** Añadir archivos de planificación propios
+
+Cada archivo ~.template~ que haya en el directorio de plantillas se copia al proyecto nuevo, así que puedes añadir uno:
+
+1. Crea ~motivaciones.org.template~ en el directorio de plantillas (por ejemplo en ~novel-es/~):
+
+#+BEGIN_EXAMPLE
+#+TITLE: Motivaciones de los personajes - ${TITLE}
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+
+,* Motivaciones del protagonista
+
+,** Objetivos externos
+Lo que quiere en el mundo
+
+,** Necesidades internas
+Lo que necesita para crecer
+
+,* Motivaciones del antagonista
+...
+#+END_EXAMPLE
+
+2. ¡Se incluirá automáticamente en los proyectos de novela nuevos!
+
+Ten en cuenta, eso sí, que un proyecto de org-scribe son dos archivos (el manuscrito y el cuaderno de diseño) y que el paquete solo lee esos dos: un archivo extra queda ahí, a tu disposición, pero ninguna función de org-scribe lo reconoce (no cuenta palabras, no se busca en él, no es un destino de captura). Casi siempre es mejor añadir esas notas como una sección del cuaderno de diseño, por ejemplo en la parte Borradores.
+
+** Plantillas de cuento frente a plantillas de novela
+
+Recuerda las diferencias:
+
+*Plantillas de novela* (~org-scribe-templates/novel-es/~):
+- 2 archivos: el manuscrito y el cuaderno de diseño
+- El cuaderno está organizado en partes
+- Estructura compleja
+
+*Plantillas de cuento* (~org-scribe-templates/short-story-es/~):
+- 2 archivos: el manuscrito y el cuaderno de diseño
+- Estructura simplificada
+- El cuaderno tiene secciones pero no partes
+
+¡Modifica el conjunto que corresponda a tus necesidades!
+
+* Crear atajos de teclado propios
+
+Acelera tu flujo de trabajo con atajos personalizados.
+
+** Atajos globales
+
+Añade a tu archivo de inicio:
+
+#+BEGIN_SRC emacs-lisp
+;;; Atajos propios para escribir
+
+;; Acceso rápido a las funciones de escritura
+(global-set-key (kbd "C-c w m") 'org-scribe-writing-env-mode)  ; Empezar a escribir (sin distracciones)
+(global-set-key (kbd "C-c w e") 'org-scribe-editing-mode)      ; Empezar a editar
+(global-set-key (kbd "C-c w w") 'org-scribe-wordcount)         ; Contar palabras
+(global-set-key (kbd "C-c w n") 'org-scribe-capture-to-file)   ; Nota rápida
+
+;; Herramientas de diccionario
+(global-set-key (kbd "C-c d") 'org-scribe-rae-api-lookup)      ; Diccionario de la RAE
+(global-set-key (kbd "C-c y") 'org-scribe-sinonimo)            ; Sinónimos
+
+;; Herramientas de personajes y de trama
+(global-set-key (kbd "C-c l p") 'org-scribe-set-pov-character)      ; Fijar el PoV
+(global-set-key (kbd "C-c l c") 'org-scribe-set-scene-characters)   ; Fijar los personajes
+(global-set-key (kbd "C-c l j") 'org-scribe-jump-to-pov-character)  ; Saltar al personaje
+
+;; Funciones de búsqueda
+(global-set-key (kbd "C-c s c") 'org-scribe-org-find-character)     ; Buscar por personaje
+(global-set-key (kbd "C-c s p") 'org-scribe-org-find-plot)          ; Buscar por trama
+(global-set-key (kbd "C-c s l") 'org-scribe-org-find-location)      ; Buscar por localización
+#+END_SRC
+
+Los nombres de arriba son los de los comandos reales. Para cambiar de espacio de escritura con una sola tecla también existe el despachador ~org-scribe-workspace~ (es lo que usan las teclas ~F8 m~, ~F8 e~, ...): asígnale una tecla y te pregunta qué disposición quieres.
+
+*¡Elige teclas que no entren en conflicto!*
+
+Prefijos habituales que están libres:
+- ~C-c LETRA~ (reservado al usuario)
+- ~F5~ a ~F9~ (teclas de función)
+
+** Atajos propios de un modo
+
+Solo activos en org-mode:
+
+#+BEGIN_SRC emacs-lisp
+;; Añadir a org-mode-map
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c i s") 'org-scribe-insert-scene)
+  (define-key org-mode-map (kbd "C-c i c") 'org-scribe-insert-chapter))
+#+END_SRC
+
+** Alternativa: usar el menú Hydra
+
+Si te gusta el menú Hydra (~F8~), puedes reasignarlo:
+
+#+BEGIN_SRC emacs-lisp
+;; Cambiar la tecla de la Hydra
+(global-set-key (kbd "C-c m") 'hydra-org-scribe/body)  ; En vez de F8
+
+;; O añadir varias teclas
+(global-set-key (kbd "<f9>") 'hydra-org-scribe/body)   ; F9 también la abre
+#+END_SRC
+
+(~F8~ solo está asignada mientras ~org-scribe-mode~ está activo en el búfer; un atajo global como los de arriba la abre desde cualquier sitio.)
+
+* Personalizar la estructura del proyecto
+
+Ajusta cómo se organizan los proyectos.
+
+** Ubicación por defecto del proyecto
+
+Fija dónde se crean los proyectos nuevos:
+
+#+BEGIN_SRC emacs-lisp
+;; Ahora mismo pregunta por la ubicación
+;; Para fijar una por defecto:
+(defun my-writing-create-novel ()
+  "Crea una novela en mi directorio por defecto."
+  (interactive)
+  (let ((default-directory "~/Documentos/mis-novelas/"))
+    (call-interactively 'org-scribe-create-novel-project)))
+#+END_SRC
+
+** Preferencias de nombres de archivos y directorios
+
+Los nombres de los archivos del proyecto no se pueden configurar. org-scribe los resuelve a partir de los paquetes de idioma registrados (uno por idioma, en ~lang/~ dentro del código del propio paquete): ~novel.org~ / ~novela.org~ para el manuscrito, ~design.org~ / ~diseno.org~ para el cuaderno de diseño, y así sucesivamente. Además, el concepto de manuscrito es lo que permite detectar el tipo de proyecto, así que renombrarlo dejaría el proyecto sin reconocer. Conserva los nombres que te dio la plantilla.
+
+* Configuración del recuento de palabras
+
+Personaliza el comportamiento del recuento de palabras.
+
+** Etiquetas que se ignoran
+
+Excluye secciones del recuento con etiquetas:
+
+#+BEGIN_SRC emacs-lisp
+;; Por defecto
+(setq org-scribe-wordcount-default-ignore-tags '("noexport"))
+
+;; Añade más etiquetas
+(setq org-scribe-wordcount-default-ignore-tags '("noexport" "draft" "cut" "archive"))
+#+END_SRC
+
+Uso en el manuscrito:
+
+#+BEGIN_EXAMPLE
+,*** Escena que se excluye    :noexport:
+¡Esto no se contará!
+
+,*** Versión alternativa   :draft:
+Tampoco se cuenta.
+#+END_EXAMPLE
+
+* Ejemplo completo de configuración
+
+Esta es una configuración completa y comentada que puedes adaptar:
+
+#+BEGIN_SRC emacs-lisp
+;;; ============================================================================
+;;; MI CONFIGURACIÓN DE ORG-SCRIBE
+;;; ============================================================================
+
+;; -----------------------------------------------------------------------------
+;; PERSONALIZACIÓN VISUAL
+;; -----------------------------------------------------------------------------
+
+;; Temas
+(setq org-scribe-env-normal-theme 'modus-operandi)     ; Tema claro para el día
+(setq org-scribe-env-work-theme 'poet)                 ; Minimalista para escribir
+(setq org-scribe-editing-theme 'leuven)                ; Claro para editar
+
+;; Fuentes (requiere el paquete fontaine)
+(setq org-scribe-env-normal-font 'regular)
+(setq org-scribe-env-work-font 'writing-big)
+(setq org-scribe-editing-fontaine-preset 'editing)
+
+;; Anchos de texto
+(setq org-scribe-env-work-width 75)                    ; Lectura cómoda
+(setq org-scribe-env-normal-width 90)
+(setq org-scribe-editing-fill-column-width 90)
+
+;; Tamaños de los paneles del modo Edición
+(setq org-scribe-editing-left-width-percent 0.25)      ; Esquema: 25 %
+(setq org-scribe-editing-right-width-percent 0.25)     ; Notas: 25 %
+
+;; -----------------------------------------------------------------------------
+;; IDIOMA Y PLANTILLAS
+;; -----------------------------------------------------------------------------
+
+;; Idioma de las plantillas y de los mensajes (en o es)
+(setq org-scribe-template-language 'es)                ; Plantillas en español
+(setq org-scribe-message-language 'es)                 ; Mensajes en español
+
+;; -----------------------------------------------------------------------------
+;; HERRAMIENTAS DE IDIOMA
+;; -----------------------------------------------------------------------------
+
+;; Ancho de la ventana de sinónimos
+(setq org-scribe-sinonimo-window-width 70)
+
+;; -----------------------------------------------------------------------------
+;; AJUSTES DE EXPORTACIÓN
+;; -----------------------------------------------------------------------------
+
+;; Saltos de escena: asteriscos centrados
+(setq org-scribe-scene-break-replacements
+  '((ascii . "\n***\n\n")
+    (latex . "\\begin{center}***\\end{center}\n")
+    (html . "<p style='text-align:center;'>***</p>\n")
+    (t . "\n\n\n")))
+
+;; -----------------------------------------------------------------------------
+;; RECUENTO DE PALABRAS
+;; -----------------------------------------------------------------------------
+
+;; Etiquetas que se ignoran en el recuento
+(setq org-scribe-wordcount-default-ignore-tags '("noexport" "draft" "archive"))
+
+;; -----------------------------------------------------------------------------
+;; ATAJOS DE TECLADO
+;; -----------------------------------------------------------------------------
+
+;; Modos de escritura
+(global-set-key (kbd "C-c w m") 'org-scribe-writing-env-mode)
+(global-set-key (kbd "C-c w e") 'org-scribe-editing-mode)
+(global-set-key (kbd "C-c w w") 'org-scribe-wordcount)
+
+;; Diccionario
+(global-set-key (kbd "C-c d") 'org-scribe-rae-api-lookup)
+(global-set-key (kbd "C-c y") 'org-scribe-sinonimo)
+
+;; Enlaces de personajes
+(global-set-key (kbd "C-c l p") 'org-scribe-set-pov-character)
+(global-set-key (kbd "C-c l j") 'org-scribe-jump-to-pov-character)
+
+;; Menú Hydra
+(global-set-key (kbd "<f9>") 'hydra-org-scribe/body)
+
+;; Específicos de org-mode
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c i s") 'org-scribe-insert-scene)
+  (define-key org-mode-map (kbd "C-c i c") 'org-scribe-insert-chapter))
+
+;;; ============================================================================
+;;; FIN DE LA CONFIGURACIÓN DE ORG-SCRIBE
+;;; ============================================================================
+#+END_SRC
+
+* Usar la interfaz Customize
+
+Para quienes prefieren un enfoque gráfico.
+
+** Abrir Customize
+
+1. ~M-x customize-group RET org-scribe RET~
+2. Verás todas las opciones de personalización
+3. Pulsa para desplegar los grupos
+4. Cambia los valores
+5. Pulsa «Apply and Save»
+
+** Grupos de personalización principales
+
+*org-scribe*: grupo principal
+- Estructura del proyecto
+- Ajustes de las plantillas
+- Ajustes de exportación
+
+*org-scribe-env*: ajustes de los modos de escritura
+- Temas
+- Fuentes
+- Anchos de texto
+
+** Personalizar variables concretas
+
+*Para una variable concreta*:
+
+1. ~M-x customize-variable RET org-scribe-env-work-theme RET~
+2. Cambia el valor (menú desplegable o campo de texto)
+3. Pulsa «Apply and Save»
+
+*Ventaja*: no hace falta saber Emacs Lisp
+*Inconveniente*: no puedes añadir comentarios y es más difícil de compartir
+
+* Probar tu configuración
+
+Tras hacer cambios, ¡pruébalos!
+
+** Recargar la configuración
+
+*Método 1: reiniciar Emacs*
+- Cierra Emacs
+- Ábrelo de nuevo
+- Se aplican los cambios
+
+*Método 2: recargar el archivo de configuración*
+- ~M-x load-file RET ~/.emacs.d/init.el RET~
+- Los cambios se aplican sin reiniciar
+
+*Método 3: evaluar una región*
+- Selecciona el código de configuración nuevo
+- ~M-x eval-region RET~
+- Se aplica solo esa sección
+
+** Probar cambios individuales
+
+Probar un cambio de tema:
+
+#+BEGIN_EXAMPLE
+M-x load-theme RET poet RET
+#+END_EXAMPLE
+
+Probar un cambio de ancho:
+
+#+BEGIN_EXAMPLE
+M-x set-variable RET org-scribe-env-work-width RET 70 RET
+#+END_EXAMPLE
+
+Después activa el modo de escritura (~F8 m~) para ver el efecto.
+
+** Deshacer cambios
+
+Si algo se rompe:
+
+1. Abre tu archivo de inicio
+2. Comenta la línea problemática (añade ~;;~ al principio):
+   #+BEGIN_SRC emacs-lisp
+   ;; (setq org-scribe-env-work-theme 'broken-theme)  ; Desactivado
+   #+END_SRC
+3. Recarga la configuración
+4. El problema debería desaparecer
+
+** Llevar tu configuración bajo control de versiones
+
+*Muy recomendable*: ¡mantén tu configuración de Emacs en git!
+
+#+BEGIN_SRC bash
+cd ~/.emacs.d
+git init
+git add init.el
+git commit -m "Configuración inicial de org-scribe"
+#+END_SRC
+
+Así podrás:
+- Probar cambios experimentales sin riesgo
+- Volver atrás si algo se rompe
+- Compartir la configuración entre máquinas
+- Seguir la pista de los cambios que has hecho
+
+* Compartir y copias de seguridad
+
+** Copia de seguridad de tu configuración
+
+*Archivos imprescindibles que copiar*:
+- ~~/.emacs.d/init.el~ (tu configuración principal)
+- ~~/.emacs.d/custom.el~ (si usas la interfaz Customize)
+- Cualquier directorio de plantillas propio
+
+*Métodos de copia*:
+1. Git (recomendado)
+2. Dropbox, Nextcloud o Google Drive
+3. Copias manuales
+4. Un repositorio de «dotfiles» en GitHub o Codeberg
+
+** Compartir tu configuración
+
+Muchos escritores comparten sus configuraciones en internet:
+
+*Ejemplos de repositorios de dotfiles*:
+- https://github.com/search?q=emacs+writing+config
+- https://github.com/search?q=org-scribe-mode
+
+*Para compartir la tuya*:
+1. Crea un repositorio en GitHub o Codeberg
+2. Añade tu init.el
+3. Añade un README que explique tu configuración
+4. ¡Compártela con otros escritores!
+
+** Usar las configuraciones de otros
+
+*¡Ten cuidado!* No copies configuraciones enteras a ciegas.
+
+*Método seguro*:
+1. Lee el código
+2. Entiende qué hace cada sección
+3. Copia solo las partes relevantes
+4. Prueba poco a poco
+5. Adáptalo a tus necesidades
+
+* Solución de problemas de personalización
+
+** «¡Mis cambios no funcionan!»
+
+*Comprueba*:
+1. ¿Has guardado el archivo de inicio? (~C-x C-s~)
+2. ¿Lo has recargado? (~M-x load-file~)
+3. ¿Hay erratas en los nombres de las variables?
+4. ¿Hay errores de sintaxis? (comillas o paréntesis que faltan)
+
+*Encontrar errores de sintaxis*:
+
+Mira en el búfer ~*Messages*~:
+- ~C-h e~ (view-echo-area-messages)
+- Busca mensajes de error en rojo
+
+** «No se encuentra el tema o la fuente»
+
+*Error*: «Cannot find theme 'my-theme'»
+
+*Solución*:
+1. Comprueba que el tema está instalado: ~M-x package-list-packages~
+2. Instálalo si falta: ~M-x package-install RET nombre-del-tema RET~
+3. O quítalo de tu configuración si no lo quieres
+
+*Error*: «Font not available»
+
+*Solución*:
+1. Comprueba que la fuente está instalada en el sistema
+2. Usa ~M-x menu-set-font~ para ver las fuentes disponibles
+3. Actualiza la configuración con el nombre de una fuente disponible
+
+** «La configuración ralentiza Emacs»
+
+*Posibles causas*:
+- Demasiados paquetes que se cargan al arrancar
+- Cambios de tema que disparan operaciones costosas
+
+*Soluciones*:
+1. Usa ~use-package~ con ~:defer t~ para la carga diferida
+2. Mide el arranque: ~M-x emacs-init-time~
+3. Simplifica: desactiva las personalizaciones una por una
+
+** «¡Lo he roto todo!»
+
+*Recuperación de emergencia*:
+
+1. Inicia Emacs con: ~emacs -Q~ (ignora tu configuración)
+2. Abre tu archivo de inicio normalmente
+3. Encuentra la sección problemática y arréglala o coméntala
+4. Guarda
+5. Reinicia Emacs con normalidad
+
+*O bien*: aparta temporalmente el archivo de inicio:
+
+#+BEGIN_SRC bash
+mv ~/.emacs.d/init.el ~/.emacs.d/init.el.backup
+#+END_SRC
+
+Inicia Emacs, arregla la copia y devuélvela a su sitio.
+
+* Ejercicio práctico (15 minutos)
+
+¡Personalicemos tu configuración ahora mismo!
+
+** Ejercicio: crea tu configuración personal
+
+*Objetivo*: montar una configuración propia de ~org-scribe~.
+
+** Paso 1: abre tu archivo de inicio (1 min)
+
+1. ~C-x C-f~ y ~~/.emacs.d/init.el RET~
+2. Ve al final: ~M->~
+3. Añade un comentario:
+   #+BEGIN_SRC emacs-lisp
+   ;;; PERSONALIZACIÓN DE ORG-SCRIBE
+   #+END_SRC
+
+** Paso 2: elige tu tema para escribir (3 min)
+
+1. Prueba unos cuantos temas (solo los ~modus-*~ y ~leuven~ vienen con Emacs; los demás hay que instalarlos antes):
+   - ~M-x load-theme RET poet RET~
+   - ~M-x load-theme RET modus-vivendi RET~
+   - ~M-x load-theme RET zenburn RET~
+2. Elige tu favorito
+3. Añádelo al archivo de inicio:
+   #+BEGIN_SRC emacs-lisp
+   ;; Mi tema para escribir
+   (setq org-scribe-env-work-theme 'poet)  ; Sustitúyelo por el tuyo
+   #+END_SRC
+
+** Paso 3: fija el ancho del texto (2 min)
+
+1. Piensa en el tamaño de tu monitor
+2. Elige un ancho (se recomienda de 60 a 90)
+3. Añádelo al archivo de inicio:
+   #+BEGIN_SRC emacs-lisp
+   ;; Ancho de lectura cómodo
+   (setq org-scribe-env-work-width 75)  ; Ajusta el número
+   #+END_SRC
+
+** Paso 4: añade el ajuste de idioma (1 min)
+
+#+BEGIN_SRC emacs-lisp
+;; Idioma de las plantillas
+(setq org-scribe-template-language 'es)  ; O 'en para inglés
+#+END_SRC
+
+** Paso 5: crea atajos de teclado propios (5 min)
+
+Elige de 3 a 5 funciones que uses más:
+
+#+BEGIN_SRC emacs-lisp
+;; Mis atajos para escribir
+(global-set-key (kbd "C-c w m") 'org-scribe-writing-env-mode)
+(global-set-key (kbd "C-c w w") 'org-scribe-wordcount)
+(global-set-key (kbd "C-c d") 'org-scribe-rae-api-lookup)
+;; ¡Añade más según lo que uses!
+#+END_SRC
+
+** Paso 6: guarda y prueba (3 min)
+
+1. Guarda el archivo de inicio: ~C-x C-s~
+2. Recárgalo: ~M-x load-file RET ~/.emacs.d/init.el RET~
+3. Abre un proyecto de escritura
+4. Prueba el modo de escritura: ~F8 m~
+5. Prueba los atajos: ~C-c w m~
+
+*¿Funciona todo?*
+- ✓ Sí: ¡enhorabuena, configuración lograda!
+- ✗ No: mira en el búfer ~*Messages*~ por si hay errores
+
+** Paso 7: documenta tu configuración (opcional)
+
+Añade comentarios que expliquen tus decisiones:
+
+#+BEGIN_SRC emacs-lisp
+;;; PERSONALIZACIÓN DE ORG-SCRIBE
+;;
+;; Configuración personal del paquete org-scribe
+;; Autor: Tu nombre
+;; Última actualización: 2025-11-16
+;;
+;; Tema: Poet - minimalista y limpio para concentrarse
+;; Ancho: 75 - cómodo en mi monitor de 24"
+;; Idioma: español
+;;
+(setq org-scribe-env-work-theme 'poet)
+;; ... resto de la configuración
+#+END_SRC
+
+*¡Tu yo del futuro te lo agradecerá!*
+
+* Resumen y puntos clave
+
+¡Ya sabes personalizar todos los aspectos de ~org-scribe~!
+
+** Lo que has aprendido
+
+✓ *Personalización visual*
+  - Temas para cada modo de escritura
+  - Presets y tamaños de fuente
+  - Anchos de texto y ajustes de columna
+  - Proporciones de los paneles en el modo Edición
+
+✓ *Idioma y plantillas*
+  - Elección de las plantillas en inglés o español
+  - Modificar las plantillas existentes (en una copia, porque las actualizaciones reemplazan las del paquete)
+
+✓ *Ajustes de exportación*
+  - Formato de los saltos de escena por backend
+  - Estilos de exportación propios
+
+✓ *Atajos de teclado*
+  - Atajos globales para un acceso rápido
+  - Atajos propios de un modo
+  - Atajos propios para la Hydra
+
+✓ *Estructura del proyecto*
+  - Preferencias de nombres de archivo
+  - Organización de directorios
+  - Ubicaciones por defecto
+
+✓ *Métodos de configuración*
+  - Edición directa de Emacs Lisp
+  - La interfaz Customize
+  - Pruebas y depuración
+  - Control de versiones
+
+** Plantilla de configuración esencial
+
+La configuración mínima que necesita la mayoría de los escritores:
+
+#+BEGIN_SRC emacs-lisp
+;;; Configuración mínima de org-scribe
+
+;; Visual
+(setq org-scribe-env-work-theme 'poet)           ; Tu tema preferido
+(setq org-scribe-env-work-width 75)              ; Tu ancho cómodo
+
+;; Idioma
+(setq org-scribe-template-language 'es)          ; 'en o 'es
+(setq org-scribe-message-language 'es)           ; Mensajes en español
+
+;; Acceso rápido
+(global-set-key (kbd "C-c w m") 'org-scribe-writing-env-mode)
+(global-set-key (kbd "C-c w w") 'org-scribe-wordcount)
+#+END_SRC
+
+*¡Eso es todo lo que necesitas para empezar!*
+
+** Filosofía de la personalización
+
+1. *Empieza sencillo*: usa al principio los valores por defecto
+2. *Identifica la fricción*: ¿qué te molesta?
+3. *Personaliza poco a poco*: una cosa cada vez
+4. *Prueba a fondo*: asegúrate de que funciona
+5. *Documenta tus decisiones*: tu yo del futuro necesita contexto
+6. *Comparte lo que funciona*: ayuda a otros escritores
+
+** Tu lista de comprobación de la configuración
+
+#+BEGIN_EXAMPLE
+═══════════════════════════════════════
+  LISTA DE COMPROBACIÓN DE LA
+  CONFIGURACIÓN DE ORG-SCRIBE
+═══════════════════════════════════════
+
+PERSONALIZACIÓN VISUAL
+□ Tema elegido para el modo de escritura
+□ Tema normal elegido
+□ Tema elegido para el modo Edición
+□ Anchos de texto fijados con comodidad
+□ Tamaños de fuente ajustados
+
+IDIOMA Y PLANTILLAS
+□ Idioma de las plantillas fijado (en/es)
+□ Modificaciones de las plantillas (si las hay)
+□ Plantillas propias creadas (si se desea)
+
+FLUJO DE TRABAJO
+□ Atajos esenciales añadidos
+□ Ancho de la ventana de sinónimos fijado
+□ Ajustes de exportación configurados
+
+MANTENIMIENTO
+□ Configuración guardada
+□ Configuración probada
+□ Copia de seguridad de la configuración
+□ Comentarios y documentación añadidos
+
+═══════════════════════════════════════
+#+END_EXAMPLE
+
+** Próximos pasos
+
+*¡Has completado las lecciones básicas!* Las Lecciones 16 a 19 (planificador, borradores, métodos de trama y companion) son opcionales.
+
+*Qué hacer ahora*:
+1. *¡Escribe!*: usa lo que has aprendido
+2. *Experimenta*: prueba personalizaciones distintas
+3. *Comparte*: ayuda a otros escritores
+4. *Contribuye*: informa de errores y sugiere funciones
+5. *Disfruta*: tienes un potente entorno de escritura
+
+*Opcional*: si quieres planes de escritura orientados a objetivos (fechas objetivo, metas diarias de palabras, hitos y paneles de progreso), consulta la [[file:primeros-pasos-16-planificador.org][Lección 16: Planificación de objetivos de escritura con el planificador integrado]].
+
+*Sigue aprendiendo*:
+- Lee la documentación de Emacs: ~C-h i~
+- Explora las funciones de Org-mode: ~C-h i m org RET~
+- Comprueba las actualizaciones de los paquetes con regularidad
+- Únete a las comunidades de escritura en Emacs
+
+* Recursos adicionales
+
+** Recursos sobre la configuración de Emacs
+
+- *Manual de Emacs*: ~C-h r~ (incluido)
+- *Emacs Wiki*: https://www.emacswiki.org/
+- *r/emacs*: https://www.reddit.com/r/emacs/
+- *Emacs StackExchange*: https://emacs.stackexchange.com/
+
+** Colecciones de temas
+
+- *MELPA*: https://melpa.org/#/?q=theme
+- *Emacs Themes*: https://emacsthemes.com/
+- *Temas de Doom Emacs*: https://github.com/doomemacs/themes
+
+** Recursos sobre fuentes
+
+- *Fuentes de programación*: https://www.programmingfonts.org/
+- *Google Fonts*: https://fonts.google.com/
+- *Font Library*: https://fontlibrary.org/
+
+** Recursos sobre Org-mode
+
+- *Manual de Org-mode*: https://orgmode.org/manual/
+- *Worg*: https://orgmode.org/worg/
+- *Org-mode for Writers*: https://blog.eadev.org/org-mode-for-writers/
+
+** Ejemplos de configuraciones
+
+- *Awesome Emacs*: https://github.com/emacs-tw/awesome-emacs
+- *Configuraciones de Emacs*: https://github.com/caisah/emacs.dz
+- *Dotfiles*: https://dotfiles.github.io/
+
+** Obtener ayuda
+
+*Dentro de Emacs*:
+- ~C-h f~: describir una función
+- ~C-h v~: describir una variable
+- ~C-h k~: describir una tecla
+- ~C-h m~: describir un modo
+- ~C-h i~: documentación Info
+
+*En línea*:
+- Incidencias de org-scribe: https://codeberg.org/jcastp/org-scribe/issues
+- La comunidad r/emacs
+- Emacs StackExchange
+- #emacs en IRC/Discord
+
+* Sobre esta lección
+
+- *Creada*: 2025-11-16
+- *Última actualización*: 2025-11-16
+- *Número de lección*: 15 de 19 (la última lección básica; las Lecciones 16 a 19 cubren el planificador, los borradores, los métodos de trama y el companion, todos opcionales)
+- *Parte*: 5 - Flujos de trabajo y buenas prácticas
+- *Tiempo estimado*: 20-25 minutos
+- *Dificultad*: de principiante a intermedia
+- *Requisitos previos*: familiaridad con las funciones de las Lecciones 1-14
+
+---
+
+*¡Enhorabuena por completar las lecciones básicas!*
+
+Ya tienes un entorno de escritura completo, potente y personalizado. ¡Úsalo para escribir historias increíbles!
+
+*Anterior*: [[file:primeros-pasos-14-flujo-revision.org][Lección 14: Flujo de revisión y edición]]
+
+*Siguiente (opcional)*: [[file:primeros-pasos-16-planificador.org][Lección 16: Planificación de objetivos de escritura con el planificador integrado]]
+
+*Volver al inicio*: [[file:primeros-pasos-00-indice.org][Guía de primeros pasos - Índice]]
+
+*¡Tutorial completo!* ¡Feliz escritura!

@@ -1,0 +1,1575 @@
+#+TITLE: Lección 14: Flujo de revisión y edición
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-14-revision-workflow.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-14-revision-workflow.org][English version]]/
+
+* ¡Bienvenido a la Lección 14!
+
+Has terminado tu primer borrador. ¡Enhorabuena! Ahora llega el trabajo decisivo de la revisión, donde la buena escritura se convierte en gran escritura. Por suerte, ~org-scribe~ ofrece potentes herramientas pensadas específicamente para el proceso de revisión.
+
+Revisar no es solo corregir erratas. Es:
+- Encontrar y arreglar incoherencias
+- Reforzar el desarrollo de los personajes
+- Asegurarte de que los hilos de la trama se resuelven bien
+- Mejorar el ritmo y la estructura
+- Pulir la prosa
+
+Esta lección te muestra cómo usar las funciones de ~org-scribe~ para que la revisión sea sistemática, minuciosa e incluso agradable.
+
+Al terminar la lección habrás:
+- Dominado el modo Edición como entorno profesional de revisión
+- Aprendido a encontrar incoherencias con las funciones de búsqueda
+- Usado las cronologías para comprobar el desarrollo de los personajes y el equilibrio de la trama
+- Creado y gestionado listas de tareas de revisión de forma sistemática
+- Desarrollado un flujo de revisión completo
+- Entendido las estrategias de revisión en varias pasadas
+
+*Tiempo estimado*: 20-25 minutos
+
+* Antes de empezar
+
+** Lo que necesitas
+
+✓ Un primer borrador terminado (o al menos varios capítulos)
+✓ Familiaridad con las funciones de búsqueda (Lección 7)
+✓ Comprensión de las cronologías (Lección 10)
+✓ Conocimiento del modo Edición (Lección 9)
+✓ Disposición a ser crítico con tu propio trabajo
+
+** La mentalidad de revisión
+
+Revisar exige una mentalidad distinta de la de redactar:
+
+*Mentalidad de redacción*:
+- Creativa, expansiva
+- «Sí, y...»
+- No pares, no edites
+- Genera material
+
+*Mentalidad de revisión*:
+- Crítica, selectiva
+- «¿Esto es necesario?»
+- Ve despacio, examina de cerca
+- Refina el material
+
+*Importante*: son tareas distintas que requieren estados mentales distintos. ¡No intentes hacer las dos a la vez!
+
+** Tipos de revisión
+
+Esta lección cubre tres niveles de revisión:
+
+1. *Revisión estructural* (nivel de acto/capítulo): trama, ritmo, arcos de los personajes
+2. *Revisión de escenas* (nivel de escena): escenas individuales, diálogo, descripción
+3. *Edición de línea* (nivel de frase): pulido de la prosa, elección de palabras, ritmo
+
+Veremos cómo apoya ~org-scribe~ cada nivel.
+
+* Preparar tu entorno de revisión
+
+** La ventaja del modo Edición
+
+El modo Edición (~F8 e~) crea una disposición profesional de tres paneles:
+
+#+BEGIN_EXAMPLE
+┌──────────────────────────────────────────────────────┐
+│                   MODO EDICIÓN                       │
+├─────────────┬──────────────────────┬─────────────────┤
+│             │                      │                 │
+│  ESQUEMA    │    MANUSCRITO        │  NOTAS          │
+│  (25 %)     │    (50 %)            │  (25 %)         │
+│             │                      │                 │
+│ • Acto I    │  *** Escena 1        │ * Revisión      │
+│   - Cap. 1  │                      │                 │
+│     - Esc 1 │  Alex se despertó    │ ** Escena 1     │
+│     - Esc 2 │  con el sonido de... │ - [X] Ritmo     │
+│   - Cap. 2  │                      │ - [ ] Detalles  │
+│     - Esc 3 │  [Contenido de la    │                 │
+│     - Esc 4 │   escena]            │ ** Escena 2     │
+│             │                      │ - [ ] Reescribir│
+│             │                      │                 │
+└─────────────┴──────────────────────┴─────────────────┘
+#+END_EXAMPLE
+
+**Panel izquierdo** (imenu-list): navega por la estructura de tu manuscrito
+**Panel central**: tu manuscrito, para editar
+**Panel derecho**: notas y listas de comprobación de la revisión
+
+*Nota*: para ver las escenas individuales en el panel izquierdo, como en el dibujo, necesitas ~(setq org-imenu-depth 3)~ en tu archivo de inicio. El valor por defecto de Org, ~2~, detiene el esquema en los capítulos, y las escenas de org-scribe están en el nivel 3. Mira [[file:primeros-pasos-09-modos-escritura.org::*Importante: hacer visibles tus escenas en el esquema][Hacer visibles tus escenas en el esquema]] en el capítulo de los modos de escritura.
+
+** Activar el modo Edición
+
+1. Abre tu manuscrito (~novela.org~ o ~cuento.org~)
+2. Pulsa ~F8 e~
+3. Aparece la disposición de tres paneles
+4. El cuaderno de diseño se abre automáticamente (~diseno.org~)
+
+** Convención de marcadores
+
+La revisión produce dos clases de escritura distintas: las notas *sobre* el manuscrito, que van en el cuaderno de diseño, y las notas *dentro* del manuscrito, pegadas a la frase exacta que necesita trabajo. Esta sección trata de la segunda clase.
+
+La convención es escribirlas dentro de un bloque de comentario de Org:
+
+#+BEGIN_EXAMPLE
+El carruaje llegó antes del amanecer y nadie estaba despierto para recibirlo.
+
+,#+begin_comment
+*EDIT*: prosa - demasiado plano. La llegada debería resultar ominosa.
+,#+end_comment
+#+END_EXAMPLE
+
+La búsqueda de ediciones reconoce dos marcadores:
+
+| Marcador | Úsalo para                                                       |
+|----------+------------------------------------------------------------------|
+| ~*EDIT*~ | Algo que cambiar en una prosa que ya existe                      |
+| ~*NOTE*~ | Algo que recordar o comprobar; no es un cambio propiamente dicho |
+
+Borra el bloque de comentario cuando lo hayas resuelto: así es como se «cierra» un marcador; no hay un estado de hecho aparte que seguir.
+
+*** Escribir marcadores rápidamente
+
+Los marcadores son texto plano, y escribirlos a mano está perfectamente bien. Pero como escribirás cientos a lo largo de un manuscrito, org-scribe incluye fragmentos para [[https://github.com/minad/tempel][Tempel]]:
+
+#+BEGIN_SRC elisp
+(with-eval-after-load 'tempel
+  (org-scribe-tempel-setup))
+#+END_SRC
+
+Después escribe ~edit~ en un búfer de Org y expándelo. Obtienes el bloque de comentario, el marcador y una pregunta por la categoría, rellenada a partir de ~org-scribe-edit-categories~, la misma variable por la que se agrupa el índice, de modo que la pregunta y la agrupación nunca discrepan. Escribe ~note~ para la forma más simple de ~*NOTE*~.
+
+#+BEGIN_QUOTE
+*Tus propios fragmentos están a salvo*: ~org-scribe-tempel-setup~ solo añade un archivo a ~tempel-path~. Nunca lee, modifica ni sustituye tu propio archivo de plantillas. Si ya tienes fragmentos llamados ~edit~ o ~note~, gana el archivo que aparezca primero en ~tempel-path~; org-scribe no intenta resolverlo por ti.
+#+END_QUOTE
+
+Tempel es opcional. Sin él, todo lo demás de esta lección funciona exactamente igual.
+
+*** Categorías
+
+Un ~*EDIT*~ lleva una categoría antes del separador ~" - "~, para que una pasada de revisión pueda abordar un tipo de problema cada vez. Las categorías por defecto son ~plot~, ~scene~, ~character~, ~prose~ y ~design~ (personaliza ~org-scribe-edit-categories~). Cada paquete de idioma escribe cada categoría en su propio idioma (en español: ~trama~, ~escena~, ~personaje~, ~prosa~, ~diseño~), y cada grafía se reconoce en cualquier proyecto; el índice titula sus secciones, y el fragmento ~edit~ ofrece las categorías, en el idioma del proyecto.
+
+~*NOTE*~ no tiene categoría: es un recordatorio, no un trabajo clasificado.
+
+*** El índice de ediciones
+
+~F8~ y luego ~6~ reúne todos los marcadores del proyecto y los agrupa (el búfer se llama ~*org-scribe-edits*~; los enlaces llevan la ruta completa, aquí abreviada):
+
+#+BEGIN_EXAMPLE
+#+TITLE: Marcas de edición
+,* Ediciones
+,** trama
+,*** [[file:novela.org::412][Escena 12]] — novela.org
+    el motivo de Alicia contradice el capítulo 1
+,** personaje
+,*** [[file:novela.org::980][Escena 30]] — novela.org
+    demasiada introspección, recortar a la mitad
+,** prosa
+,** escena
+,** diseño
+
+,* Notas
+,** [[file:novela.org::455][Escena 14]] — novela.org
+   comprobar si Alicia ya sabe lo de la carta
+#+END_EXAMPLE
+
+Cada entrada enlaza con la línea exacta en la que está el marcador. Pulsa ~RET~ en una para saltar allí; ~g~ reconstruye el índice y ~q~ lo oculta. (Una categoría que no se reconoce va a una sección aparte, ~other~ en inglés.)
+
+Tres cosas que conviene saber:
+
+- *Los marcadores de varias líneas se mantienen enteros.* Un marcador que ocupa varias líneas se muestra completo, no solo la línea donde está el ~*EDIT*~.
+- *Una errata mueve un marcador, nunca lo oculta.* Una categoría que no se reconoce (~tarma~) cae en la sección de «otras», con la categoría errónea todavía visible en el texto.
+- *La prosa no puede crear falsos positivos.* El índice lee el árbol de análisis de Org para los bloques de comentario, así que una frase que simplemente menciona ~*NOTE*~ no es un marcador y no se indexa.
+
+Las categorías vacías se listan por defecto, de modo que el índice funciona además como lista de comprobación de lo que queda pendiente en cada una. Pon ~org-scribe-edits-index-show-empty-categories~ a ~nil~ para ocultarlas.
+
+Si tus marcadores no siguen la convención del bloque de comentario, llama a la búsqueda con un argumento de prefijo (~C-u~) para obtener ~org-scribe-search-edits-rgrep~, una búsqueda de texto plano que los encuentra en cualquier sitio, a costa de perder la agrupación.
+
+*** Por qué importa el bloque de comentario
+
+Envolver los marcadores en ~#+begin_comment~ no es decoración. Da dos garantías que el texto en línea sin envolver no da:
+
+1. *Nunca llegan a tus lectores.* Org excluye los bloques de comentario de todos los backends de exportación (ODT, LaTeX, HTML, Markdown). Un marcador escrito como texto suelto en un párrafo es prosa corriente y *aparecerá* en tu manuscrito exportado, en negrita y sin que nada te avise. Esta es la razón más importante de la convención.
+
+2. *Nunca inflan tu recuento de palabras.* org-scribe excluye los bloques de comentario al contar, así que ~:WORDCOUNT:~, tus tablas de progreso y el registro diario del planificador de escritura informan de prosa real. Anota una escena todo lo que quieras: tus cifras siguen siendo honestas.
+
+#+BEGIN_QUOTE
+*Requisito*: la exclusión del recuento de palabras depende del paquete opcional ~org-context-extended~. Sin él, org-scribe recurre a un recuento simple que cuenta *todo*, incluidos tus marcadores. La garantía de exportación es puro comportamiento de Org y siempre se cumple.
+#+END_QUOTE
+
+*** Un tercer marcador: ~*SUMMARY*~
+
+Algunos escritores usan un tercer marcador para una escena que han decidido escribir más adelante:
+
+#+BEGIN_EXAMPLE
+,** TODO Escena 12 - La confrontación
+
+,#+begin_comment
+*SUMMARY*: Alex por fin abre la caja. Sam admite que la carta nunca se envió.
+,#+end_comment
+#+END_EXAMPLE
+
+La búsqueda de ediciones deliberadamente *no* lo reconoce. Esa distinción es lo que organiza todo el sistema de marcadores:
+
+| Marcador    | Anota                 | Vive bajo            | Se encuentra con |
+|-------------+-----------------------+----------------------+------------------|
+| ~*EDIT*~    | prosa que existe      | cualquier escena     | ~F8~ y luego ~6~ |
+| ~*NOTE*~    | prosa que existe      | cualquier escena     | ~F8~ y luego ~6~ |
+| ~*SUMMARY*~ | prosa que *no* existe | un encabezado ~TODO~ | ~F8~ y luego ~5~ |
+
+Una pasada de revisión y una sesión de redacción son trabajos distintos. Mezclar «arregla esta frase» en la misma lista que «escribe esta escena» haría peores las dos listas, así que el índice de ediciones cubre solo las dos primeras filas y la búsqueda de TODO cubre la tercera, donde una escena sin escribir está junto a todas las demás escenas sin escribir.
+
+No hay un fragmento incluido para ~*SUMMARY*~ por la misma razón; si usas uno, guárdalo en tu propio archivo de plantillas.
+
+** Preparar tu archivo de notas de revisión
+
+La primera vez que usas el modo Edición, el cuaderno de diseño está en blanco. Prepáralo:
+
+#+BEGIN_EXAMPLE
+#+TITLE: Notas de revisión de la novela
+#+STARTUP: overview
+
+,* Plan de revisión
+
+,** Pasada 1: revisión estructural
+- [ ] Comprobar la resolución de los hilos de la trama
+- [ ] Verificar que los arcos de los personajes se completan
+- [ ] Revisar el ritmo (usar la cronología)
+- [ ] Asegurarse de que todo lo sembrado da fruto
+
+,** Pasada 2: trabajo a nivel de escena
+- [ ] Reforzar los comienzos
+- [ ] Mejorar el diálogo
+- [ ] Añadir detalles sensoriales
+- [ ] Cortar las escenas innecesarias
+
+,** Pasada 3: edición de línea
+- [ ] Pulir la prosa
+- [ ] Arreglar las palabras débiles
+- [ ] Mejorar el ritmo
+- [ ] Comprobación final de coherencia
+
+,* Notas de escenas
+
+,** Capítulo 1
+
+,*** Escena 1 - Apertura
+- [ ] Ritmo lento: cortar los 2 primeros párrafos
+- [ ] Añadir más detalle sobre el apartamento
+- [ ] La motivación de Alex no está clara: arreglar
+- [ ] Buen diálogo: ¡conservar!
+
+,*** Escena 2 - Encuentro con Sam
+- [ ] Sam aparece demasiado de golpe
+- [ ] Anticiparlo en la Escena 1
+- [ ] Ampliar su conversación
+- [ ] Comprobar: ¿a qué hora del día ocurre?
+
+,* Problemas de personajes
+
+,** Alex (protagonista)
+- Arco: aislada → conectada
+- Problema: motivación débil en el Acto II
+- Arreglo: añadir una escena que muestre por qué le importa
+- Estado: [ ] Sin abordar todavía
+
+,** Sam (secundario)
+- Problema: desaparece durante 8 escenas (Cap. 5-12)
+- Arreglo: añadir una breve aparición en el Cap. 8
+- Estado: [ ] Planificado, no escrito
+
+,* Hilos de la trama
+
+,** Trama principal
+- Resolución: Capítulo 15, Escena 3
+- Estado: ✓ Resuelta
+- Notas: final sólido
+
+,** Subtrama romántica
+- Resolución: Capítulo 14, Escena 2
+- Estado: ✗ PROBLEMA - se siente apresurada
+- Arreglo: añadir una escena de tensión romántica en el Cap. 12
+
+,** Hilo del misterio
+- Resolución: Capítulo 15, Escena 1
+- Estado: ✓ Resuelto
+- Notas: pistas bien sembradas
+
+,* Problemas globales
+- [ ] Confusión de cronología: Día 3 frente a Día 4 en el Capítulo 6
+- [ ] Incoherencia del tiempo: llueve en el Cap. 2, hace sol el mismo día en el Cap. 3
+- [ ] Nombre de un personaje: ¿«Sara» o «Sarah»? (incoherente)
+- [ ] Localización: la cafetería está descrita de forma distinta en el Cap. 1 y en el Cap. 7
+#+END_EXAMPLE
+
+Esto se convierte en tu centro de mando de la revisión.
+
+Los apartados de este ejemplo son los tuyos: el cuaderno de diseño ya trae las partes Revisión y Borradores (ver la Lección 17); puedes poner estas notas en la parte Revisión en lugar de crear apartados de primer nivel nuevos.
+
+** Navegar en el modo Edición
+
+*Panel izquierdo (esquema)*:
+- Haz clic en cualquier encabezado → el centro salta a esa posición
+- Ve la estructura de un vistazo
+- Identifica a simple vista los capítulos largos o cortos
+
+*Panel central (manuscrito)*:
+- Edita tu manuscrito directamente
+- Funcionan las órdenes normales de org-mode
+- Guarda con ~C-x C-s~
+
+*Panel derecho (notas)*:
+- Añade notas de revisión según trabajas
+- Marca las tareas completadas
+- Sigue los problemas globales
+
+*Cambiar el foco entre paneles*:
+- ~C-x o~: pasa a la ventana siguiente
+- O haz clic con el ratón
+
+* Pasada de revisión 1: revisión estructural
+
+La primera pasada es de alto nivel. No edites todavía la prosa: concéntrate en el panorama general.
+
+** Paso 1: Revisa la cobertura de los hilos de la trama
+
+Usa la cronología de la trama para verificar que todos los hilos están bien desarrollados.
+
+1. En tu manuscrito, ve a la sección «Análisis de Tramas»
+2. Busca el bloque dinámico: ~#+BEGIN: plot-thread-timeline~
+3. Coloca el cursor en cualquier punto del bloque
+4. Pulsa ~C-c C-c~ para regenerarlo
+
+Verás algo así:
+
+#+BEGIN_EXAMPLE
+| Scene                    | Chapter    | Trama principal | Romance | Misterio |
+|--------------------------+------------+-----------------+---------+----------|
+| Escena 1 - Apertura      | Capítulo 1 | ●               |         | ●        |
+| Escena 2 - Conoce a Sam  | Capítulo 1 | ●               | ●       |          |
+| Escena 3 - Descubrimiento | Capítulo 2 | ●              |         | ●        |
+| Escena 4 - Cena          | Capítulo 2 |                 | ●       |          |
+| Escena 5 - Revelación    | Capítulo 3 | ●               | ●       | ●        |
+#+END_EXAMPLE
+
+**Qué buscar**:
+
+*Problema: huecos largos*
+#+BEGIN_EXAMPLE
+| Escena 10 - X | Romance | ●       |
+| Escena 11 - Y | Romance |         |  ← Empieza el hueco
+| Escena 12 - Z | Romance |         |
+| Escena 13 - A | Romance |         |
+| Escena 14 - B | Romance |         |  ← ¡4 escenas sin romance!
+| Escena 15 - C | Romance | ●       |  ← Se reanuda
+#+END_EXAMPLE
+
+*Acción*: añade un momento de la subtrama romántica en la Escena 12 o 13
+
+*Problema: un hilo aparece una vez y desaparece*
+#+BEGIN_EXAMPLE
+| Escena 2  | Misterio | ●       |  ← Se introduce
+| Escena 3  | Misterio |         |
+| ...
+| Escena 15 | Misterio | ●       |  ← Se resuelve (¡12 escenas después!)
+#+END_EXAMPLE
+
+*Acción*: añade pistas o avances del misterio en las escenas intermedias
+
+*Problema: cobertura desequilibrada de los hilos*
+#+BEGIN_EXAMPLE
+Trama principal: 15 escenas ✓
+Romance: 8 escenas ✓
+Misterio: 3 escenas ✗ (¡desatendido!)
+#+END_EXAMPLE
+
+*Acción*: eleva el hilo del misterio o degrádalo a trama menor
+
+** Registrar los problemas estructurales
+
+En tu panel de notas (a la derecha), añade los hallazgos:
+
+#+BEGIN_EXAMPLE
+,* Problemas de los hilos de la trama
+
+,** Subtrama romántica
+- Hueco: Escenas 11-14 (4 escenas sin desarrollo)
+- Arreglo: añadir un momento romántico en la Escena 12
+- Dónde añadirlo: después de la escena de la cafetería
+- Tipo: breve intercambio que muestre tensión
+
+,** Hilo del misterio
+- Problema: solo 3 escenas en total; se queda poco desarrollado
+- Opciones:
+  1. Añadir 2-3 escenas de misterio (más trabajo)
+  2. Combinarlo con la trama principal (más limpio)
+  3. Eliminar el misterio por completo (drástico)
+- Decisión: Opción 2 - integrarlo en la trama principal
+- Acción: revisar las escenas existentes para integrar el misterio
+#+END_EXAMPLE
+
+¡Todavía no arregles nada, solo registra!
+
+** Paso 2: Comprueba el desarrollo de los personajes
+
+Usa la cronología de personajes para verificar las apariciones.
+
+1. Ve a la sección «Línea Temporal de Personajes»
+2. Busca ~#+BEGIN: character-timeline~
+3. Pulsa ~C-c C-c~ para regenerarla
+
+#+BEGIN_EXAMPLE
+| Scene                  | Chapter    | Alex | Sam | Jordan | Sara |
+|------------------------+------------+------+-----+--------+------|
+| Escena 1 - Apertura    | Capítulo 1 | ★    | ●   |        |      |
+| Escena 2 - Encuentro   | Capítulo 1 | ★    | ●   | ●      |      |
+| Escena 3 - Conflicto   | Capítulo 2 | ★    |     | ●      | ●    |
+| Escena 4 - Descubrimiento | Capítulo 2 | ★ | ●   |        |      |
+#+END_EXAMPLE
+
+**Recordatorio de símbolos**:
+- ★ = personaje con punto de vista (escena desde su perspectiva)
+- ● = personaje presente (aparece pero no es el PoV)
+
+**Qué buscar**:
+
+*Problema: un personaje secundario se esfuma*
+#+BEGIN_EXAMPLE
+| Escena 1  | Sam | ●       |
+| Escena 2  | Sam | ●       |
+| Escena 3  | Sam |         |  ← Desaparece
+| Escena 4  | Sam |         |
+| ...
+| Escena 12 | Sam | ●       |  ← Reaparece de golpe (¡8 escenas después!)
+#+END_EXAMPLE
+
+*Acción*: añade una aparición o referencia a Sam en la Escena 6 o 7
+
+*Problema: desequilibrio de PoV (novelas con varios PoV)*
+#+BEGIN_EXAMPLE
+PoV de Alex: 12 escenas ★★★★★★★★★★★★
+PoV de Jordan: 2 escenas ★★
+#+END_EXAMPLE
+
+*Acción*: añade más escenas con PoV de Jordan, o haz que Jordan no sea PoV
+
+*Problema: un personaje se introduce demasiado tarde*
+#+BEGIN_EXAMPLE
+| Escenas 1-7  | Sara |     |  ← No está presente
+| Escena 8     | Sara | ●   |  ← Aparece de pronto
+| Escenas 9-15 | Sara | ●●● |  ← Papel importante
+#+END_EXAMPLE
+
+Si Sara es importante, ¡preséntala antes!
+
+*Acción*: añade una mención o aparición de Sara en la Escena 3 o 4
+
+** Registrar los problemas de personajes
+
+En el panel de notas:
+
+#+BEGIN_EXAMPLE
+,* Problemas de desarrollo de personajes
+
+,** Sam (secundario)
+- Problema: ausente en las Escenas 3-11 (¡8 escenas!)
+- Importancia: personaje secundario importante
+- Arreglo: añadir una breve aparición en la Escena 6
+- Tipo: referencia a una llamada o a un mensaje de texto
+- Impacto: mínimo (2 párrafos)
+
+,** Jordan (PoV)
+- Problema: solo 2 escenas de PoV frente a las 12 de Alex
+- Opciones:
+  1. Añadir 3-4 escenas con PoV de Jordan
+  2. Hacer que Jordan no sea PoV (novela de PoV único)
+- Decisión: Opción 2 - esta es la historia de Alex
+- Acción: convertir 2 escenas de Jordan a PoV de Alex
+- Estado: [ ] Todavía sin hacer
+
+,** Sara (introducción tardía)
+- Aparece: Escena 8
+- Papel: importante en los Actos II y III
+- Problema: resulta repentina
+- Arreglo: anticiparla en la Escena 3
+- Método: Alex la menciona en un diálogo
+- Líneas necesarias: 1-2 frases
+#+END_EXAMPLE
+
+** Paso 3: Comprueba la distribución de las escenas
+
+Mira tu esquema (panel izquierdo) para ver el equilibrio estructural:
+
+*Capítulo 1*:
+- Escena 1
+- Escena 2
+- Escena 3
+- Escena 4
+- Escena 5  ← 5 escenas
+
+*Capítulo 2*:
+- Escena 6  ← 1 escena (!!)
+
+*Capítulo 3*:
+- Escena 7
+- Escena 8
+- Escena 9  ← 3 escenas
+
+**Problema**: el Capítulo 2 tiene una sola escena; resulta corto
+
+**Opciones**:
+1. Dividir la Escena 6 del Capítulo 2 en 2 escenas
+2. Mover la Escena 7 del Capítulo 3 al Capítulo 2
+3. Combinar los Capítulos 2 y 3
+4. El Capítulo 2 es corto a propósito (capítulo puente): dejarlo
+
+Regístralo en las notas:
+
+#+BEGIN_EXAMPLE
+,* Problemas estructurales
+
+,** Equilibrio de capítulos
+- Capítulo 1: 5 escenas (bien)
+- Capítulo 2: 1 escena (¡demasiado corto!)
+- Capítulo 3: 3 escenas (bien)
+
+Decisión: mover la Escena 7 al Capítulo 2
+Razón: la Escena 7 es un descubrimiento; prolonga con lógica el conflicto del Capítulo 2
+Acción: [ ] Mover el encabezado «Escena 7» bajo «Capítulo 2»
+#+END_EXAMPLE
+
+** Paso 4: Verifica lo sembrado y su fruto
+
+Busca los elementos que necesitan resolución:
+
+*Busca pistolas de Chéjov*:
+
+~F8~ y luego ~5~ (búsqueda de TODO) solo encuentra los encabezados de Org con palabra clave TODO (~TODO~, ~TOWRITE~, etc.); no detectará los marcadores escritos en la propia prosa. Para eso, usa ~F8~ y luego ~6~ (el índice de ediciones), que reúne los marcadores de todos los bloques de comentario del proyecto.
+
+Escribe los marcadores de siembra y fruto como cualquier otro marcador: dentro de un bloque de comentario, para que nunca lleguen a tu manuscrito exportado ni cuenten para tus totales de palabras (ver [[*Convención de marcadores][Convención de marcadores]]).
+
+#+BEGIN_EXAMPLE
+Sam menciona la caja cerrada con llave del desván y no dice nada más.
+
+,#+begin_comment
+*NOTE*: SIEMBRA - la caja. Fruto en la Escena 12.
+,#+end_comment
+#+END_EXAMPLE
+
+Como ~*NOTE*~ ya lo reconoce el índice, seguir las siembras no necesita ninguna configuración: escribe ~SIEMBRA~, ~ANTICIPO~ o ~FRUTO~ dentro de la nota y repasa los resultados.
+
+Si prefieres tenerlos como una categoría aparte que puedas buscar de forma independiente, personaliza ~org-scribe-edit-string~ para añadirlos. Ojo: esa variable solo la usa la búsqueda de texto plano ~org-scribe-search-edits-rgrep~ (el índice con ~F8 6~ lee la gramática de los marcadores directamente y no la consulta):
+
+#+BEGIN_SRC elisp
+(setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|\\*SETUP\\*\\|\\*PAYOFF\\*")
+#+END_SRC
+
+Hallazgos de ejemplo (así los imprime la búsqueda de texto plano):
+
+#+BEGIN_EXAMPLE
+novela.org:412:  *NOTE*: SIEMBRA - la caja. Fruto en la Escena 12.
+novela.org:781:  *NOTE*: ANTICIPO - ruidos en el desván.
+novela.org:1298: *NOTE*: FRUTO - Alex abre la caja.
+#+END_EXAMPLE
+
+**Comprueba**: ¡cada SIEMBRA necesita su FRUTO!
+
+*Lista de comprobación manual en las notas*:
+
+#+BEGIN_EXAMPLE
+,* Lista de siembras y frutos
+
+,** Objetos físicos
+- [ ] El relicario de la madre (siembra: Escena 1) → Fruto: ?
+- [X] El paquete misterioso (siembra: Escena 2) → Fruto: Escena 10 ✓
+- [ ] Un número de teléfono extraño (siembra: Escena 5) → Fruto: ?
+
+,** Promesas al lector
+- [X] ¿Quién envió las cartas? → Resuelto: Escena 12 ✓
+- [ ] ¿Qué le pasó a la madre de Alex? → ¡Todavía sin resolver!
+- [ ] ¿Traicionará Sam a Alex? → ¡Sin abordar!
+
+,** Objetivos de los personajes
+- [ ] Alex quiere encontrar la verdad → Estado: ¿abandonado en el Acto II?
+- [X] Sam necesita proteger un secreto → Estado: revelado en el Acto III ✓
+- [ ] Jordan busca redención → Estado: ¡sin resolver!
+#+END_EXAMPLE
+
+¡Los elementos sin marcar son problemas por arreglar!
+
+** Resumen de la pasada estructural
+
+Tras la Pasada 1, tus notas deberían tener:
+- Los huecos de los hilos de la trama identificados
+- Los problemas de aparición de personajes anotados
+- Los problemas de equilibrio de capítulos registrados
+- Las siembras y frutos que faltan, listados
+
+*Todavía no arregles nada*: ¡primero reúne todos los problemas!
+
+* Pasada de revisión 2: trabajo a nivel de escena
+
+Ahora baja a las escenas individuales. Aquí es donde el modo Edición brilla.
+
+** Usar el modo Edición para revisar escenas
+
+Tu flujo:
+
+1. *Panel izquierdo*: haz clic en el encabezado de una escena
+2. *Panel central*: la escena aparece para editarla
+3. *Panel derecho*: lee tus notas sobre esta escena
+4. *Edita en el centro*: haz las mejoras
+5. *Panel derecho*: marca las tareas completadas
+6. *Repite* con la escena siguiente
+
+** Plantilla de lista de comprobación de revisión de escenas
+
+Añade esto a tu cuaderno de diseño para cada escena:
+
+#+BEGIN_EXAMPLE
+,*** Escena 1 - Apertura
+
+,**** Gancho inicial
+- [ ] ¿La primera frase atrapa la atención?
+- [ ] ¿Se establece con claridad el género y el tono?
+- [ ] ¿Está claro el evento incitador?
+
+,**** Personaje
+- [ ] ¿Es distinta la voz del personaje PoV?
+- [ ] ¿Está clara la motivación?
+- [ ] ¿Se muestra el estado emocional (no se cuenta)?
+
+,**** Ambientación
+- [ ] ¿Se establece pronto el lugar?
+- [ ] ¿Hay detalles sensoriales (3 o más sentidos)?
+- [ ] ¿Está clara la hora del día?
+
+,**** Trama
+- [ ] ¿La escena hace avanzar la trama?
+- [ ] ¿Hay conflicto?
+- [ ] ¿Está claro lo que está en juego?
+- [ ] ¿La escena termina con impulso hacia adelante?
+
+,**** Diálogo
+- [ ] ¿Suena distinto cada personaje?
+- [ ] ¿Son necesarias las acotaciones? (¿se podrían cortar?)
+- [ ] ¿Hay subtexto?
+- [ ] ¿Ritmo natural?
+
+,**** Prosa
+- [ ] ¿Verbos fuertes (no los débiles «estar»/«ser»)?
+- [ ] ¿Voz activa (no pasiva)?
+- [ ] ¿Se cortaron las palabras innecesarias?
+- [ ] ¿Variedad en las frases?
+
+,**** Técnica
+- [ ] ¿PoV coherente (sin saltar de cabeza en cabeza)?
+- [ ] ¿Tiempo verbal coherente?
+- [ ] ¿Cronología coherente con las escenas anteriores?
+#+END_EXAMPLE
+
+** Mejorar los comienzos de escena
+
+Busca comienzos de escena débiles:
+
+1. En el panel central, colócate en el encabezado de una escena
+2. Lee el primer párrafo
+3. Pregúntate: ¿engancha esto al lector?
+
+*Ejemplo de comienzo débil*:
+
+#+BEGIN_EXAMPLE
+,*** Escena 5 - El descubrimiento
+
+Alex se despertó. Salió de la cama. Fue al baño y se lavó los dientes.
+Luego bajó la escalera.
+#+END_EXAMPLE
+
+*Problemas*:
+- Actividades rutinarias aburridas
+- Verbos débiles («se despertó», «fue»)
+- Ni conflicto ni tensión
+- Nada en juego
+
+*Comienzo mejorado*:
+
+#+BEGIN_EXAMPLE
+,*** Escena 5 - El descubrimiento
+
+El grito despertó a Alex a las 3 de la madrugada. Se incorporó de golpe, con
+el corazón martilleándole. Otra vez no. Otra pesadilla sobre el accidente, no.
+
+Salvo que el grito no había estado en su sueño.
+
+Venía del piso de abajo.
+#+END_EXAMPLE
+
+*Mejor*:
+- Tensión inmediata (el grito)
+- Emoción del personaje (miedo)
+- Misterio (¿qué hay abajo?)
+- Impulso hacia adelante (el lector tiene que seguir)
+
+** Reforzar el diálogo
+
+Usa las herramientas de diccionario para mejorar el diálogo:
+
+1. Coloca el cursor sobre el diálogo
+2. ~F8 d~ (diccionario): comprueba el significado de las palabras
+3. ~F8 y~ (sinónimos): busca mejores acotaciones de diálogo
+
+*Ejemplo de revisión*:
+
+Antes:
+#+BEGIN_EXAMPLE
+—No te creo —dijo Alex.
+—Es verdad —dijo Sam.
+—Demuéstralo —dijo Alex.
+#+END_EXAMPLE
+
+Después de usar la búsqueda de sinónimos:
+#+BEGIN_EXAMPLE
+—No te creo —espetó Alex.
+—Es verdad. —La voz de Sam era apenas un susurro.
+Alex se inclinó hacia delante.
+—Demuéstralo.
+#+END_EXAMPLE
+
+*Mejoras*:
+- Acotaciones de diálogo variadas
+- Lenguaje corporal añadido
+- La acción rompe el diálogo
+- Intercambio más dinámico
+
+** Cortar escenas innecesarias
+
+A veces la mejor revisión es suprimir.
+
+*Corta una escena si*:
+- No hace avanzar la trama
+- No desarrolla a un personaje
+- No revela información
+- Se podría resumir en una frase
+- El lector no la echará de menos
+
+*Cómo comprobarlo*:
+
+Pregúntate: «Si borro esta escena, ¿qué se pierde?»
+
+Si la respuesta es «Nada importante» → ¡córtala!
+
+*Proceso*:
+1. En el esquema (panel izquierdo), identifica la escena sospechosa
+2. En el centro, lee la escena con espíritu crítico
+3. En las notas (derecha), registra la decisión:
+
+#+BEGIN_EXAMPLE
+,** Escena 4 - Almuerzo en el café
+- Propósito: Alex y Sam almuerzan
+- ¿Hace avanzar la trama? No
+- ¿Desarrollo de personaje? Mínimo
+- ¿Información nueva? No
+- Decisión: CORTAR
+- Sustitución: breve mención en la Escena 5 («Después de almorzar...»)
+- Estado: [ ] Todavía sin cortar
+#+END_EXAMPLE
+
+Marca la escena con la etiqueta ~ARCHIVE~ para ocultarla sin borrarla:
+
+#+BEGIN_EXAMPLE
+,*** Escena 4 - Almuerzo en el café    :ARCHIVE:
+#+END_EXAMPLE
+
+Después ~C-c C-x a~ (org-archive-subtree) la mueve al archivo de archivado.
+
+** Añadir las escenas que faltan
+
+A veces necesitas AÑADIR escenas:
+
+*Lista de comprobación en las notas*:
+
+#+BEGIN_EXAMPLE
+,* Escenas por añadir
+
+,** Escena nueva: el pasado de Sam
+- Insertar después de: Escena 8
+- Propósito: explicar por qué Sam ayuda a Alex
+- PoV: Sam
+- Localización: el apartamento de Sam
+- Contenido: escena retrospectiva con la hermana de Sam
+- Extensión: ~800 palabras
+- Estado: [ ] Sin escribir
+
+,** Escena nueva: tensión romántica
+- Insertar después de: Escena 12
+- Propósito: desarrollar la subtrama romántica
+- PoV: Alex
+- Localización: la azotea
+- Contenido: conversación bajo las estrellas
+- Extensión: ~600 palabras
+- Estado: [ ] Sin escribir
+#+END_EXAMPLE
+
+*Para insertarla*:
+
+1. En el panel central, ve al punto de inserción
+2. ~F8 s~ (insertar la plantilla de escena)
+3. Rellena las propiedades a partir de tus notas
+4. Escribe la escena
+5. Actualiza el recuento de palabras (~F8 a~)
+6. Márcala en el panel de notas
+
+** Encontrar incoherencias con la búsqueda
+
+Usa las funciones de búsqueda para cazar errores:
+
+*Búsqueda por personaje* (~F8~ y luego ~2~):
+
+#+BEGIN_EXAMPLE
+Personaje a buscar: Sara
+#+END_EXAMPLE
+
+Los resultados muestran todas las escenas de Sara. Comprueba:
+- ¿Está escrito «Sara» o «Sarah» de forma coherente?
+- ¿Su descripción coincide entre escenas?
+- ¿Su forma de hablar se mantiene?
+
+*Búsqueda por localización* (~F8~ y luego ~4~):
+
+#+BEGIN_EXAMPLE
+Localización a buscar: Cafetería
+#+END_EXAMPLE
+
+Los resultados muestran todas las escenas de la cafetería. Comprueba:
+- ¿Está descrita la distribución de forma coherente?
+- ¿Los mismos detalles ambientales?
+- ¿La misma hora del día si es la misma visita?
+
+*Registrar los arreglos en las notas*:
+
+#+BEGIN_EXAMPLE
+,* Incoherencias encontradas
+
+,** Nombres de personajes
+- Escena 2: «Sara» (correcto)
+- Escena 7: «Sarah» (¡errata!)
+- Escena 12: «Sara» (correcto)
+- Arreglo: cambiar «Sarah» por «Sara» en la Escena 7
+- Estado: [ ] Sin arreglar
+
+,** Localización: la cafetería
+- Escena 1: «...en la esquina de la calle Mayor con la 5.ª»
+- Escena 7: «...en la esquina de la calle Mayor con la 7.ª» (¡error!)
+- Arreglo: decidir qué cruce (probablemente la 5.ª)
+- Estado: [ ] Sin decidir
+#+END_EXAMPLE
+
+** Resumen de la pasada de escenas
+
+Tras la Pasada 2, deberías tener:
+- Cada escena comprobada con la lista de revisión
+- Los comienzos débiles reforzados
+- El diálogo mejorado
+- Las escenas innecesarias marcadas para borrar
+- Las escenas que faltan identificadas y listadas
+- Las incoherencias catalogadas
+
+* Pasada de revisión 3: edición de línea
+
+La pasada final pule la prosa a nivel de frase.
+
+** Lectura línea a línea
+
+Lee despacio, en voz alta si puedes:
+
+1. *Panel izquierdo*: selecciona la escena
+2. *Panel central*: lee cada frase
+3. Marca los problemas en línea:
+
+#+BEGIN_EXAMPLE
+Alex caminó [VERBO DÉBIL: ¿avanzó? ¿se apresuró?] hacia la puerta y la abrió.
+Sam estaba [DÉBIL: ¿permanecía?] allí con un paquete en las manos
+[REDUNDANTE: «en las manos» se sobrentiende]. Estaba [PASIVA: ¿«parecía»?]
+nervioso.
+#+END_EXAMPLE
+
+(Estos corchetes de ejemplo son solo para ilustrar. En tu manuscrito real, escribe estas anotaciones como marcadores en un bloque de comentario, como se explicó antes en «Convención de marcadores».)
+
+** Problemas habituales de prosa que arreglar
+
+*** Verbos débiles
+
+*Búsqueda*: busca «estaba», «era», «es», «están»
+
+#+BEGIN_EXAMPLE
+C-s estaba RET
+#+END_EXAMPLE
+
+Muchos casos necesitan verbos más fuertes:
+
+Antes: «Estaba enfadada»
+Después: «Hervía de rabia»
+
+Antes: «La puerta estaba abierta»
+Después: «La puerta colgaba entornada»
+
+*** Voz pasiva
+
+*Búsqueda*: busca el patrón «fue [participio]»
+
+Antes: «La carta fue abierta por Alex»
+Después: «Alex rasgó la carta»
+
+Antes: «La cena estaba siendo preparada»
+Después: «El cocinero preparaba la cena»
+
+*Nota*: a veces la voz pasiva es correcta. No cambies automáticamente todos los casos (en español, además, la pasiva es menos frecuente que en inglés: revisa sobre todo la pasiva con «ser» y los gerundios en cadena).
+
+*** Palabras filtro
+
+Crean distancia entre el lector y el personaje:
+
+- vio
+- oyó
+- sintió
+- pensó
+- se dio cuenta
+- se preguntó
+- parecía
+- daba la impresión
+
+*Ejemplo*:
+
+Antes: «Alex oyó un portazo»
+Después: «Un portazo»
+
+Antes: «Sintió que el corazón se le aceleraba»
+Después: «El corazón se le aceleró»
+
+Estamos en el PoV de Alex: ¡sabemos que ella oye y siente estas cosas!
+
+*** Repetición
+
+Usa la búsqueda para encontrar palabras repetidas:
+
+#+BEGIN_EXAMPLE
+C-s de pronto RET
+(pulsa C-s repetidamente para ver todos los casos)
+#+END_EXAMPLE
+
+Si «de pronto» aparece 15 veces en un capítulo, ¡corta la mayoría!
+
+*Seguimiento en las notas*:
+
+#+BEGIN_EXAMPLE
+,* Palabras abusadas
+
+,** Capítulo 1
+- «de pronto»: 8 veces (reducir a 2-3)
+- «solo»: 12 veces (reducir a 3-4)
+- «realmente»: 6 veces (cortar todas)
+
+,** Capítulo 2
+- «muy»: 9 veces (sustituir por adjetivos más fuertes)
+- «que»: 23 veces (probar a cortar; muchas sobran)
+#+END_EXAMPLE
+
+** Usar las herramientas de idioma en la revisión
+
+Durante la edición de línea, usa mucho las herramientas de diccionario:
+
+*Encontrar mejores palabras*:
+
+1. Detecta una palabra débil: «La casa era grande»
+2. ~F8 y~ (sinónimos)
+3. Busca: «grande»
+4. Encuentra alternativas: enorme, vasta, extensa, descomunal
+5. Elige la que mejor encaje: «La casa se extendía por todo el solar»
+
+*Comprobar significados*:
+
+1. Dudas sobre una elección de palabra: «melancólico»
+2. ~F8 d~ (diccionario)
+3. Lee la definición
+4. Confirma que es el tono emocional adecuado
+5. Conserva o cambia según el matiz
+
+** Ritmo y velocidad
+
+Lee las frases en voz alta:
+
+*Comprueba*:
+- Variedad en las frases (mezcla cortas y largas)
+- Longitud de los párrafos (varíala)
+- Estructuras repetitivas
+
+*Antes (monótono)*:
+
+#+BEGIN_EXAMPLE
+Alex caminó hasta la puerta. La abrió despacio. Vio a Sam allí parado.
+Parecía nervioso. Le preguntó qué quería.
+#+END_EXAMPLE
+
+¡Todas las frases tienen la misma longitud y estructura!
+
+*Después (variado)*:
+
+#+BEGIN_EXAMPLE
+Alex se acercó a la puerta y la entreabrió. Sam esperaba allí, inquieto.
+
+—¿Qué quieres? —preguntó.
+#+END_EXAMPLE
+
+Estructura de frases variada, mejor ritmo.
+
+** Comprobación final de coherencia
+
+Crea una lista maestra en las notas:
+
+#+BEGIN_EXAMPLE
+,* Lista final de coherencia
+
+,** Detalles de personajes
+- [ ] La edad de Alex es coherente (32 en todo el texto)
+- [ ] El color de pelo de Alex (castaño oscuro en todas las escenas)
+- [ ] El puesto de trabajo de Alex (el mismo en todas partes)
+- [ ] El color de ojos de Sam (azules, no marrones)
+
+,** Cronología
+- [ ] Día 1: lunes (todas las referencias coinciden)
+- [ ] Día 2: martes (tiempo: lluvioso)
+- [ ] Día 3: miércoles (tiempo: aclarando)
+- [ ] Día 4: jueves (todo bien fechado)
+
+,** Localizaciones
+- [ ] Cafetería: calle Mayor con la 5.ª (no la 7.ª)
+- [ ] Apartamento de Alex: tercer piso (no el segundo)
+- [ ] Oficina: centro (no la zona norte)
+
+,** Elementos de la trama
+- [ ] Llega el paquete: Escena 2 (se menciona bien después)
+- [ ] Se revelan las cartas: Escena 10 (la cronología cuadra)
+- [ ] Confrontación final: Escena 15 (todos los hilos se resuelven)
+
+,** Nombres y términos
+- [ ] «Sara» escrito siempre igual (no «Sarah»)
+- [ ] Nombre de la empresa: «TechCorp» (no «TechCo»)
+- [ ] Nombre del aparato: «analizador» (no «analisador»)
+#+END_EXAMPLE
+
+¡Recórrela sistemáticamente!
+
+* Gestionar las tareas de revisión
+
+El sistema de TODO de org-mode es perfecto para seguir el trabajo de revisión.
+
+** Configurar las palabras clave TODO
+
+Añade al principio del archivo de tu manuscrito:
+
+#+BEGIN_EXAMPLE
+#+TODO: DRAFT | REVISED POLISHED
+#+TODO: FIX EXPAND CUT | DONE
+#+END_EXAMPLE
+
+Son palabras clave tuyas, que se quedan en inglés como todas las palabras clave TODO. Ten en cuenta que no figuran en ~org-scribe-todo-keywords~ (la lista que lee ~F8 5~), así que esa búsqueda no las listará; para verlas, usa la agenda de TODO que se describe más abajo.
+
+** Marcar las escenas con estados TODO
+
+A medida que avanzas en la revisión:
+
+*Escena todavía sin revisar*:
+#+BEGIN_EXAMPLE
+,*** DRAFT Escena 1 - Apertura
+#+END_EXAMPLE
+
+*Escena revisada pero que necesita pulido*:
+#+BEGIN_EXAMPLE
+,*** REVISED Escena 2 - Encuentro
+#+END_EXAMPLE
+
+*Escena completamente terminada*:
+#+BEGIN_EXAMPLE
+,*** POLISHED Escena 3 - Descubrimiento
+#+END_EXAMPLE
+
+** Marcadores de problemas
+
+Marca problemas concretos:
+
+#+BEGIN_EXAMPLE
+,*** FIX Escena 4 - Pasado
+- Problema: ritmo demasiado lento
+- Acción: cortar los 3 primeros párrafos
+
+,*** EXPAND Escena 5 - Confrontación
+- Problema: diálogo demasiado breve
+- Acción: añadir 200 palabras de discusión
+
+,*** CUT Escena 6 - Relleno
+- Problema: no hace avanzar la trama
+- Acción: archivar esta escena
+#+END_EXAMPLE
+
+** Usar la agenda de TODO
+
+Mira todo el trabajo de revisión de una vez:
+
+1. ~C-c a t~ (lista de TODO de org-agenda)
+2. Ve todas las escenas por estado:
+   - Todas las escenas DRAFT (todavía sin revisar)
+   - Todas las escenas FIX (problemas identificados)
+   - Todas las escenas EXPAND (necesitan más contenido)
+   - Todas las escenas CUT (por borrar)
+
+3. Pulsa ~RET~ en cualquier elemento para saltar a él
+4. Recorre la lista de forma sistemática
+
+** Seguimiento del progreso
+
+En el cuaderno de diseño, sigue el progreso global:
+
+#+BEGIN_EXAMPLE
+,* Progreso de la revisión
+
+,** Pasada 1: estructural (20 %)
+- [X] Cronología de la trama revisada
+- [X] Cronología de personajes revisada
+- [X] Problemas estructurales identificados
+- [ ] Problemas estructurales arreglados
+- [ ] Cronología verificada de nuevo
+
+,** Pasada 2: a nivel de escena (60 %)
+- [5/15] escenas del Acto I revisadas
+- [0/12] escenas del Acto II revisadas
+- [0/8] escenas del Acto III revisadas
+
+,** Pasada 3: edición de línea (0 %)
+- [ ] Capítulo 1
+- [ ] Capítulo 2
+- [ ] Capítulo 3
+...
+
+,** Estado general
+- Escenas totales: 35
+- Escenas revisadas: 5 (14 %)
+- Restantes: 30 (86 %)
+- Fecha objetivo de finalización: 2 semanas
+#+END_EXAMPLE
+
+¡Actualízalo con regularidad para mantener la motivación!
+
+* Flujo de revisión completo
+
+Este es un enfoque sistemático que integra todas las herramientas:
+
+** Semana 1: pasada estructural
+
+*Lunes*:
+1. Abre el manuscrito
+2. ~F8 e~ (activa el modo Edición)
+3. Genera la cronología de la trama (~C-c C-c~)
+4. Registra los problemas en el panel de notas
+5. Tiempo de trabajo: 2 horas
+6. Sal del modo (~F8 e~)
+
+*Martes*:
+1. ~F8 e~
+2. Genera la cronología de personajes (~C-c C-c~)
+3. Registra los problemas en el panel de notas
+4. Tiempo de trabajo: 2 horas
+
+*Miércoles*:
+1. ~F8 e~
+2. Revisa la estructura de capítulos (panel de esquema)
+3. Identifica las escenas por cortar o añadir
+4. Regístralo en el panel de notas
+5. Tiempo de trabajo: 2 horas
+
+*Jueves*:
+1. Revisa todas las notas estructurales
+2. Prioriza los problemas (alta/media/baja)
+3. Crea un plan de acción
+4. Tiempo de trabajo: 1 hora
+
+*Viernes*:
+1. ~F8 e~
+2. Empieza a arreglar los problemas estructurales
+3. Añade las escenas que faltan
+4. Fusiona o divide capítulos según haga falta
+5. Tiempo de trabajo: 3 horas
+
+** Semanas 2-3: pasada a nivel de escena
+
+*Rutina diaria (lunes a viernes)*:
+
+Sesión de mañana (1-2 horas):
+1. ~F8 e~
+2. Selecciona la siguiente escena DRAFT (panel de esquema)
+3. Lee la escena frente a la lista (panel de notas)
+4. Identifica los problemas
+5. Todavía no arregles: solo marca los problemas
+
+Sesión de tarde (1-2 horas):
+1. Vuelve a las escenas marcadas por la mañana
+2. Haz las ediciones
+3. Refuerza los comienzos
+4. Mejora el diálogo
+5. Añade detalles sensoriales
+6. Marca la escena como REVISED
+
+Objetivo: 2-3 escenas por día
+
+** Semana 4: pasada de edición de línea
+
+*Rutina diaria (lunes a viernes)*:
+
+Sesión de día completo (4-6 horas):
+1. ~F8 e~
+2. Lee la escena en voz alta
+3. Arregla los verbos débiles
+4. Elimina la voz pasiva
+5. Corta las palabras filtro
+6. Mejora el ritmo
+7. Usa ~F8 y~ para buscar sinónimos
+8. Usa ~F8 d~ para verificar palabras
+9. Marca la escena como POLISHED
+
+Objetivo: 3-5 escenas por día
+
+** Semana 5: comprobación final
+
+*Lunes y martes*: lectura completa del manuscrito
+- Lee como lector (no como escritor)
+- Marca los problemas que queden
+- No pares a arreglar (mantén el flujo)
+
+*Miércoles y jueves*: arregla los problemas de la lectura
+- Recorre los problemas marcados
+- Comprobaciones finales de coherencia
+- Actualiza las tablas de seguimiento
+
+*Viernes*: finalización
+- Verifica que todos los TODO están resueltos
+- Genera el recuento final de palabras
+- Actualiza el progreso al 100 %
+- ¡Celebra!
+
+* Ejemplos de estrategias de varias pasadas
+
+Cada escritor usa un enfoque de revisión distinto:
+
+** El método de tres pasadas
+
+*Pasada 1 - Macro (1-2 semanas)*:
+- Estructura de la trama
+- Arcos de los personajes
+- Ritmo
+- Grandes adiciones y cortes
+
+*Pasada 2 - Micro (2-3 semanas)*:
+- Escena por escena
+- Diálogo
+- Descripción
+- Párrafos individuales
+
+*Pasada 3 - Pulido (1 semana)*:
+- Nivel de frase
+- Elección de palabras
+- Ritmo
+- Limpieza final
+
+** El método de cinco pasadas
+
+*Pasada 1 - Trama*: solo la estructura de la historia
+*Pasada 2 - Personajes*: solo el desarrollo de los personajes
+*Pasada 3 - Escenas*: mejoras a nivel de escena
+*Pasada 4 - Prosa*: edición de línea
+*Pasada 5 - Coherencia*: limpieza final
+
+Cada pasada = 1 semana
+
+** El método de un capítulo cada vez
+
+Para cada capítulo:
+1. Revisión estructural (1 día)
+2. Mejoras de escenas (2-3 días)
+3. Edición de línea (1-2 días)
+4. Comprobación final (1 día)
+
+Completa un capítulo del todo antes de pasar al siguiente.
+
+*Ventaja*: cada capítulo queda totalmente terminado sobre la marcha
+*Desventaja*: es más difícil mantener la coherencia general
+
+** Elige tu enfoque
+
+*Redactores rápidos*: varias pasadas (más rondas, más rápidas)
+*Artesanos lentos*: un capítulo cada vez (menos rondas, a fondo)
+*Planificadores*: pasadas separadas para trama, personajes y prosa
+*Escritores de brújula*: revisión intensiva todo en uno
+
+*Experimenta para encontrar lo que te funciona.*
+
+* Ejercicio práctico (20 minutos)
+
+Practiquemos el flujo de revisión con una escena de ejemplo.
+
+** Preparación (2 minutos)
+
+1. Abre tu manuscrito
+2. Busca una escena que quieras revisar
+3. ~F8 e~ (activa el modo Edición)
+4. En el panel de notas, crea una sección para esta escena
+
+** Comprobación estructural (3 minutos)
+
+En el panel de notas, responde:
+
+#+BEGIN_EXAMPLE
+,*** Escena [X] - [Título]
+
+Estructural:
+- ¿Hace avanzar la trama? Sí / No / Cómo: __________
+- ¿Desarrollo de personaje? Sí / No / Cómo: __________
+- ¿Se revela información nueva? Sí / No / Cuál: __________
+- ¿Se podría cortar sin pérdida? Sí / No
+- ¿Cronología coherente? Sí / No / Problema: __________
+#+END_EXAMPLE
+
+** Revisión a nivel de escena (10 minutos)
+
+Lee la escena y comprueba:
+
+#+BEGIN_EXAMPLE
+Comienzo:
+- ¿La primera línea engancha al lector? Sí / No
+- ¿Está claro el objetivo de la escena? Sí / No
+- Arreglo: __________
+
+Personaje:
+- ¿PoV coherente? Sí / No
+- ¿Voz distinta? Sí / No
+- ¿Motivación clara? Sí / No
+- Arreglo: __________
+
+Diálogo:
+- ¿Suena natural? Sí / No
+- ¿Son necesarias las acotaciones? Sí / No
+- ¿Hay subtexto? Sí / No
+- Arreglo: __________
+
+Ambientación:
+- ¿Está claro el lugar? Sí / No
+- ¿Detalles sensoriales? (Cuántos: _____)
+- Arreglo: __________
+
+Final:
+- ¿Impulso hacia adelante? Sí / No
+- ¿Gancho para la escena siguiente? Sí / No
+- Arreglo: __________
+#+END_EXAMPLE
+
+** Haz una mejora (5 minutos)
+
+Elige el problema mayor y arréglalo ahora:
+
+*Si el comienzo es débil*:
+- Reescribe el primer párrafo
+- Añade conflicto o tensión
+- Corta el carraspeo inicial
+
+*Si el diálogo es plano*:
+- Añade subtexto a un intercambio
+- Usa ~F8 y~ para mejorar las acotaciones
+- Añade acciones de apoyo
+
+*Si la ambientación es escasa*:
+- Añade 2-3 detalles sensoriales
+- ¿Qué huele, oye o siente el personaje?
+
+** Marcar como completado
+
+En las notas:
+#+BEGIN_EXAMPLE
+- [X] Escena revisada
+- [X] Problema principal arreglado
+- Estado: REVISED (lista para la edición de línea más adelante)
+#+END_EXAMPLE
+
+En el manuscrito, cambia el estado TODO:
+#+BEGIN_EXAMPLE
+,*** REVISED Escena [X] - [Título]
+#+END_EXAMPLE
+
+*¡Acabas de completar un ciclo de revisión!*
+
+Repite este proceso con cada escena de tu manuscrito.
+
+* Resumen y puntos clave
+
+La revisión transforma tu primer borrador en un manuscrito pulido con herramientas y enfoques sistemáticos.
+
+** Lo que has aprendido
+
+✓ *El modo Edición* (~F8 e~)
+  - Disposición profesional de tres paneles
+  - Esquema, manuscrito y notas
+  - Navega y edita a la vez
+  - Sigue el progreso de la revisión
+
+✓ *Estrategia de revisión en tres pasadas*
+  - Pasada 1: estructural (trama, personajes, ritmo)
+  - Pasada 2: a nivel de escena (comienzos, diálogo, detalles)
+  - Pasada 3: edición de línea (pulido de la prosa, coherencia)
+
+✓ *Análisis con cronologías*
+  - Cronología de la trama → encontrar huecos en los hilos
+  - Cronología de personajes → encontrar problemas de aparición
+  - El análisis visual revela problemas
+
+✓ *Funciones de búsqueda para la coherencia*
+  - Búsqueda por personaje (coherencia de nombres)
+  - Búsqueda por localización (coherencia de detalles)
+  - Búsqueda por trama (desarrollo de los hilos)
+  - Encontrar y arreglar incoherencias
+
+✓ *Gestión de TODO*
+  - Marcar las escenas por estado de revisión
+  - Seguir los problemas (FIX, EXPAND, CUT)
+  - Usar org-agenda para tener una visión de conjunto
+  - Seguimiento sistemático del progreso
+
+✓ *Técnicas de edición de línea*
+  - Eliminar verbos débiles
+  - Cortar la voz pasiva
+  - Quitar palabras filtro
+  - Mejorar el ritmo y la variedad
+  - Usar las herramientas de idioma (~F8 d/y~)
+
+** El flujo de revisión de un vistazo
+
+| Pasada             | Foco                 | Herramientas                 | Tiempo    |
+|--------------------+----------------------+------------------------------+-----------|
+| Estructural        | Trama y personajes   | Cronologías, notas           | 1 semana  |
+| A nivel de escena  | Escenas individuales | Modo Edición, listas         | 2 semanas |
+| Edición de línea   | Pulido de la prosa   | Diccionario, búsqueda        | 1 semana  |
+| Comprobación final | Coherencia           | Búsqueda, lista en las notas | 3 días    |
+
+*Tiempo total de revisión: ~4-5 semanas para una novela*
+
+** Buenas prácticas
+
+1. *Separa la creación de la revisión*: no revises mientras redactas
+2. *Usa el modo Edición de forma constante*: un entorno profesional importa
+3. *Trabaja de forma sistemática*: no saltes al azar
+4. *Registra antes de arreglar*: identifica todos los problemas antes de resolver ninguno
+5. *Haz descansos*: unos ojos frescos detectan más problemas
+6. *Lee en voz alta*: el oído capta lo que el ojo no ve
+7. *Sigue el progreso*: mantén la motivación con una finalización visible
+8. *Confía en el proceso*: la revisión convierte la buena escritura en gran escritura
+
+** Tu lista de comprobación de la revisión
+
+Imprímela y tenla a la vista:
+
+#+BEGIN_EXAMPLE
+═══════════════════════════════════════
+  LISTA DE COMPROBACIÓN DE LA REVISIÓN
+═══════════════════════════════════════
+
+PASADA 1: ESTRUCTURAL
+□ Generar la cronología de la trama (C-c C-c)
+□ Comprobar cobertura y huecos de los hilos
+□ Generar la cronología de personajes (C-c C-c)
+□ Comprobar las apariciones de personajes
+□ Revisar el equilibrio de capítulos
+□ Verificar siembras y frutos
+□ Registrar todos los problemas en las notas
+□ Priorizar los arreglos
+
+PASADA 2: A NIVEL DE ESCENA
+□ Activar el modo Edición (F8 e)
+□ Revisar cada escena con la lista
+□ Reforzar los comienzos
+□ Mejorar el diálogo
+□ Añadir detalles sensoriales
+□ Cortar las escenas innecesarias
+□ Añadir las escenas que faltan
+□ Encontrar incoherencias (búsqueda)
+□ Marcar las escenas REVISED
+
+PASADA 3: EDICIÓN DE LÍNEA
+□ Leer en voz alta, frase por frase
+□ Arreglar los verbos débiles (buscar «estaba»)
+□ Eliminar la voz pasiva
+□ Quitar las palabras filtro
+□ Comprobar la repetición de palabras
+□ Usar diccionario/sinónimos (F8 d/y)
+□ Mejorar el ritmo y la variedad
+□ Marcar las escenas POLISHED
+
+COMPROBACIÓN FINAL
+□ Lectura completa del manuscrito
+□ Lista de coherencia
+□ Todos los TODO resueltos
+□ Recuento final de palabras
+□ ¡Celebrar que has terminado!
+
+═══════════════════════════════════════
+#+END_EXAMPLE
+
+** Próximos pasos
+
+¿Listo para personalizar el paquete a tus preferencias? Pasa a la [[file:primeros-pasos-15-personalizacion.org][Lección 15: Personalización y configuración]].
+
+En la próxima lección aprenderás a:
+- Personalizar los temas y las fuentes de los modos de escritura
+- Ajustar las disposiciones y los anchos de ventana
+- Modificar las plantillas según tus necesidades
+- Configurar los ajustes de exportación
+- Crear atajos de teclado propios
+
+* Recursos adicionales
+
+** Libros sobre revisión
+
+- *«Self-Editing for Fiction Writers»*, de Renni Browne y Dave King: técnicas esenciales
+- *«Revision and Self-Editing»*, de James Scott Bell: un enfoque sistemático
+- *«The First Five Pages»*, de Noah Lukeman: lo que buscan los editores
+- *«Stein on Writing»*, de Sol Stein: dominio de la edición de línea
+
+** Recursos en línea
+
+- *Autocrit*: https://www.autocrit.com/ - análisis automático de manuscritos (en inglés)
+- *ProWritingAid*: https://prowritingaid.com/ - corrector de estilo
+- *Grammarly*: https://www.grammarly.com/ - gramática y estilo (en inglés)
+
+** Herramientas de Emacs para la revisión
+
+- *Los marcadores de edición propios de org-scribe*: marcadores ~*EDIT*~ / ~*NOTE*~ en bloques de comentario más ~F8~ y luego ~6~. No hace falta ningún paquete extra, y nunca se exportan ni afectan al recuento de palabras (ver [[*Convención de marcadores][Convención de marcadores]])
+- *org-remark*: sistema de anotaciones para notas de revisión, si prefieres anotar con resaltados; org-scribe no se conecta con él
+- *writegood-mode*: resalta la voz pasiva, las palabras débiles y los duplicados (en inglés)
+- *flyspell-mode*: corrector ortográfico sobre la marcha
+- *langtool*: integración de corrección gramatical
+
+** Estrategias de revisión
+
+- *La revisión en una pasada de Holly Lisle*: https://hollylisle.com/one-pass-manuscript-revision/
+- *El método del copo de nieve*: https://www.advancedfictionwriting.com/articles/snowflake-method/
+- *El proceso de revisión de K.M. Weiland*: https://www.helpingwritersbecomeauthors.com/
+
+* Sobre esta lección
+
+- *Creada*: 2025-11-16
+- *Última actualización*: 2025-11-16
+- *Número de lección*: 14 de 16
+- *Parte*: 5 - Flujos de trabajo y buenas prácticas
+- *Tiempo estimado*: 20-25 minutos
+- *Dificultad*: de intermedia a avanzada
+- *Requisitos previos*: primer borrador terminado, familiaridad con las Lecciones 7, 9 y 10
+
+El proceso de revisión es donde la buena escritura se convierte en gran escritura. Usa estas herramientas con método, confía en el proceso y observa cómo se transforma tu manuscrito.

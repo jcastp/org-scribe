@@ -1,7 +1,10 @@
 #+TITLE: Lesson 12: Dictionary and Language Tools
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-12-herramientas-diccionario.org][Versión en español]]/
 
 * Welcome to Lesson 12!
 
@@ -280,7 +283,7 @@ One file, downloaded once, from https://library.kiwix.org (search for
 #+BEGIN_SRC sh
   mkdir -p ~/zim
   # this is the latest one at the time of writing this manual. Check yours
-  wget -P ~/zim https://download.kiwix.org/zim/wiktionary/wiktionary_es_all_nopic_2026-06.zim -O wiktionary_es_all_nopic.zim
+  wget https://download.kiwix.org/zim/wiktionary/wiktionary_es_all_nopic_2026-06.zim -O ~/zim/wiktionary_es_all_nopic.zim
 #+END_SRC
 
 Choose the ~nopic~ flavour: it is 566 MB against 997 MB, has /more/ articles
@@ -538,10 +541,10 @@ the WordReference page instead.
 ┌────────────────────────────┬────────────────────┐
 │ Your manuscript            │ WordReference      │
 │                            │                    │
-│ Alex walked to the door.   │ buscar:            │
-│ Sam walked behind.         │                    │
+│ Alex buscó la llave.       │ buscar:            │
+│ Sam buscó detrás.          │                    │
 │                            │ Synonyms:          │
-│ "Walked" - need synonym!   │ - indagar          │
+│ "Buscó" - need synonym!    │ - indagar          │
 │                            │ - investigar       │
 │                            │ - explorar         │
 │                            │ - rastrear         │
@@ -1030,7 +1033,7 @@ Congratulations! You've learned how to use integrated language tools without lea
 
 | Task                       | Command                   | Hydra        |
 |----------------------------+---------------------------+--------------|
-| Spanish definition         | org-scribe-rae-api-lookup | F8 d      |
+| Spanish definition         | org-scribe-dictionary-lookup | F8 d      |
 | Random word                | org-scribe-rae-api-random | M-x command  |
 | Synonyms                   | org-scribe-sinonimo       | F8 y      |
 | Translation (if installed) | gt-do-translate           | (custom key) |
@@ -1081,9 +1084,9 @@ Ready to establish a complete daily workflow? Head to [[file:getting-started-13-
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
-- *Lesson Number*: 12 of 16
+- *Lesson Number*: 12 of 19
 - *Part*: 4 - Advanced Features
-- *Estimated Time*: 10-15 minutes
+- *Estimated Time*: 15-20 minutes
 - *Difficulty*: Beginner to Intermediate
 - *Prerequisites*: Basic writing workflow, internet connection
 

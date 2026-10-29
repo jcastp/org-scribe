@@ -1,0 +1,203 @@
+#+TITLE: Manual de org-scribe en español
+#+AUTHOR: Javier Castilla
+#+DATE: 2026-10-29
+#+LANGUAGE: es
+#+STARTUP: overview
+
+* Qué es esto
+
+La versión en español del manual de =manual/=: las mismas lecciones, en el
+mismo orden, con la misma estructura de títulos. Está escrito para quien
+trabaja con un /proyecto en español/ (=novela.org=, =diseno.org=, mensajes en
+español), así que los ejemplos muestran lo que verás en tu pantalla, no una
+traducción literal del inglés.
+
+Este archivo es la ficha de trabajo del manual: el mapa de archivos, las
+convenciones y la terminología. No es una lección.
+
+* Mapa de archivos
+
+Es la única fuente del emparejamiento entre los dos manuales: las pruebas
+(=tests/test-manual-es.el=) lo leen. Estados: =pendiente= (no existe aún),
+=traducido= (existe, sin revisar), =revisado= (aprobado).
+
+| Inglés (=manual/=)                          | Español (=manual-es/=)                         | Estado    |
+|---------------------------------------------+------------------------------------------------+-----------|
+| =00-feature-index.org=                      | =00-indice-funciones.org=                      | traducido |
+| =getting-started-00-index.org=              | =primeros-pasos-00-indice.org=                 | traducido |
+| =getting-started-01-creating-projects.org=  | =primeros-pasos-01-crear-proyectos.org=        | traducido |
+| =getting-started-02-first-scene.org=        | =primeros-pasos-02-primera-escena.org=         | traducido |
+| =getting-started-03-tracking-progress.org=  | =primeros-pasos-03-seguimiento-progreso.org=   | traducido |
+| =getting-started-04-capturing-characters.org= | =primeros-pasos-04-capturar-personajes.org=  | traducido |
+| =getting-started-05-locations-settings.org= | =primeros-pasos-05-lugares-ambientacion.org=   | traducido |
+| =getting-started-06-plot-threads.org=       | =primeros-pasos-06-hilos-trama.org=            | traducido |
+| =getting-started-07-searching.org=          | =primeros-pasos-07-busquedas.org=              | traducido |
+| =getting-started-08-hydra-menu.org=         | =primeros-pasos-08-menu-hydra.org=             | traducido |
+| =getting-started-09-writing-modes.org=      | =primeros-pasos-09-modos-escritura.org=        | traducido |
+| =getting-started-10-timelines.org=          | =primeros-pasos-10-lineas-temporales.org=      | traducido |
+| =getting-started-11-exporting.org=          | =primeros-pasos-11-exportar.org=               | traducido |
+| =getting-started-12-dictionary-tools.org=   | =primeros-pasos-12-herramientas-diccionario.org= | traducido |
+| =getting-started-13-daily-workflow.org=     | =primeros-pasos-13-flujo-diario.org=           | traducido |
+| =getting-started-14-revision-workflow.org=  | =primeros-pasos-14-flujo-revision.org=         | traducido |
+| =getting-started-15-customization.org=      | =primeros-pasos-15-personalizacion.org=        | traducido |
+| =getting-started-16-planner-integration.org= | =primeros-pasos-16-planificador.org=          | traducido |
+| =getting-started-17-scratchpad.org=         | =primeros-pasos-17-borradores.org=             | traducido |
+| =getting-started-18-plotting-methods.org=   | =primeros-pasos-18-metodos-trama.org=          | traducido |
+| =getting-started-19-companion.org=          | =primeros-pasos-19-companion.org=              | traducido |
+
+Los nombres de archivo llevan solo ASCII (sin =ñ= ni tildes), como
+=diseno.org=, y conservan el número de la lección.
+
+* Convenciones de cada archivo
+
+** Cabecera
+
+#+begin_example
+#+TITLE: Lección 4: Capturar personajes
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-04-capturing-characters.org
+#+SOURCE_COMMIT: c542dfa
+#+end_example
+
+- =#+DATE:= conserva la fecha del original inglés.
+- =#+SOURCE_COMMIT:= es el último commit que tocó el original cuando se
+  terminó la traducción. El informe de sincronización lo usa para saber qué
+  ha cambiado desde entonces.
+- La primera línea del cuerpo, en los dos manuales, es el enlace al archivo
+  hermano: =/[[file:../manual/…][English version]]/= en los archivos en
+  español y =/[[file:../manual-es/…][Versión en español]]/= en los ingleses.
+  El enlace inglés se añade cuando aterriza la traducción, no antes.
+
+** Estructura
+
+- *Mismo árbol de títulos que el original*: el mismo número de títulos de
+  cada nivel, en el mismo orden. Dividir o fusionar una sección exige una
+  razón escrita aquí.
+- Los =CUSTOM_ID= no se traducen.
+- *Los cajones =:ID:= del original no se copian.* Org guarda los IDs en una base
+  de datos global: dos encabezados con el mismo ID harían que un enlace saltase
+  al archivo equivocado. El encabezado español va sin cajón de propiedades.
+- Los enlaces entre lecciones apuntan a los nombres españoles. Un enlace con
+  búsqueda de título (=::*Título=) usa el texto español del título.
+- *Nada de enlaces a números de línea* (=archivo.org::412=) en ninguno de los
+  dos manuales, salvo dentro de bloques =EXAMPLE=, donde reproducen lo que
+  imprime la herramienta (que sí escribe números de línea).
+- Los enlaces a =../examples/demo-novel/…= siguen apuntando a la demo
+  inglesa hasta que existan =demo-novela/= y =demo-cuento/=.
+- Los nombres propios de los ejemplos se castellanizan cuando tienen forma
+  española (Alice → Alicia, con ID =char-alicia-001=); los de las demos
+  inglesas (Alex Rivera) se dejan hasta que existan las demos españolas.
+- Los bloques =EXAMPLE= que muestran un proyecto, una captura, un mensaje o
+  un informe se reescriben en español; los menús Hydra y del planificador se
+  dejan tal cual (están en inglés) y se explican al lado.
+
+** Qué se traduce y qué no
+
+Se traduce lo que en un proyecto en español sale en español: nombres de
+archivo (=novela.org=, =diseno.org=), títulos de sección del paquete de
+idioma (Personajes, Puerta de salida…), propiedades de /escena/ (=:Trama:=,
+=:Localizacion:=…), mensajes, plantillas de captura, notación de tiempo de la
+historia (=Día 3=), categorías de marcadores de edición.
+
+No se traduce: propiedades de /entidad/ y sus valores (=:Role:=, =:Type:=,
+=:THREAD-TYPE:=, =:Weight:=), palabras clave TODO y el vocabulario de ramas de
+Borradores (=OPEN=, =EXPLORING=, =CHOSEN=, =REJECTED=, =:branch:=,
+=:ABOUT:=), nombres de órdenes, funciones y variables, teclas, código Elisp
+(solo sus comentarios) y los menús Hydra y del planificador.
+
+Fuentes de verdad, por orden: el paquete de idioma =lang/org-scribe-lang-es.el=,
+las plantillas =-es=, =docs/glossary.org= y la tabla de abajo. Si el manual y
+el código discrepan, manda el código, y el fallo del original inglés se
+anota para corregirlo aparte.
+
+* Terminología
+
+El vocabulario del método sale de =docs/glossary.org= y no se negocia. Para el
+resto, esta tabla se fija una vez y crece con las lecciones. Registro: tú,
+español de España.
+
+| Inglés                    | Español                       | Nota                                   |
+|---------------------------+-------------------------------+----------------------------------------|
+| Getting Started Guide     | Guía de primeros pasos        |                                        |
+| Lesson                    | Lección                       |                                        |
+| Feature Index             | Índice de funciones           |                                        |
+| design notebook           | cuaderno de diseño            | coincide con =diseno.org=                |
+| manuscript                | manuscrito                    |                                        |
+| scene / chapter / part    | escena / capítulo / parte     | /act/ → acto                             |
+| capture                   | captura / capturar            |                                        |
+| word count                | recuento de palabras          | como en los mensajes del paquete       |
+| word target               | objetivo de palabras          |                                        |
+| edit marker               | marcador de edición           |                                        |
+| scratchpad                | Borradores                    | nombre de la parte en el paquete       |
+| Starting Gate             | Puerta de salida              | título del paquete                     |
+| non-negotiables           | irrenunciables                | título del paquete                     |
+| plot thread               | hilo de la trama              | título del paquete                     |
+| setting (entity)          | escenario                     | como el glosario y la captura          |
+| setting (section)         | Ambientación                  | solo el nombre de la sección           |
+| location (scene property) | localización                  | propiedad =:Localizacion:= y las órdenes =F8 l=, =F8 4= |
+| health report             | informe de salud del proyecto | comprobar el título en el paquete      |
+| writing planner           | planificador                  | como en los mensajes del paquete       |
+| companion                 | companion (visual)            | como en los mensajes del paquete       |
+| writing mode / workspace  | modo / espacio de escritura   |                                        |
+| distraction-free          | sin distracciones             |                                        |
+| heading                   | encabezado                    | como en las plantillas =-es=             |
+| refile (verb)             | refilar                       | =C-c C-w=                                |
+| exit gate (Hélice/Matriz) | puerta de salida              | la sección se llama «Puerta de salida» |
+| quarters                  | cuartiles                     | glosario                               |
+| living force              | fuerza viva                   | glosario                               |
+| hydra menu                | menú Hydra                    | «Hydra» con mayúscula; «hydra» solo el paquete |
+| PoV                       | PoV                           | es el nombre de la propiedad           |
+| link / ID link            | enlace / enlace por ID        |                                        |
+| orphan                    | huérfano                      |                                        |
+| export / compile          | exportar / compilar           |                                        |
+
+** Títulos de las lecciones
+
+Fijados en la Fase 1 (los usan los enlaces «Anterior/Siguiente» de todas las
+lecciones):
+
+| N.º | Título                                                                 |
+|-----+------------------------------------------------------------------------|
+|   1 | Crear tu primer proyecto                                               |
+|   2 | Escribir tu primera escena                                             |
+|   3 | Seguir tu progreso                                                     |
+|   4 | Capturar personajes                                                    |
+|   5 | Escenarios y ambientación                                              |
+|   6 | Hilos de la trama y cronología                                         |
+|   7 | Encontrar lo que necesitas                                             |
+|   8 | El menú Hydra                                                          |
+|   9 | Los modos de escritura en profundidad                                  |
+|  10 | Cronologías de personajes y de la trama                                |
+|  11 | Exportar tu manuscrito                                                 |
+|  12 | Herramientas de diccionario e idioma                                   |
+|  13 | Flujo de escritura diario                                              |
+|  14 | Flujo de revisión y edición                                            |
+|  15 | Personalización y configuración                                        |
+|  16 | Planificación de objetivos de escritura con el planificador integrado  |
+|  17 | Borradores y ramificación de ideas                                     |
+|  18 | Métodos de trama — La Hélice y La Matriz                               |
+|  19 | El companion visual                                                    |
+
+* Mantener los dos manuales al día
+
+Las pruebas estructurales (=tests/test-manual-es.el=) comprueban, para cada
+fila que ya no esté =pendiente=: que el archivo existe y sus cabeceras son
+correctas, que los dos manuales tienen la misma secuencia de niveles de
+título, que los enlaces relativos y las búsquedas de título se resuelven, que
+no hay enlaces a números de línea y que cada archivo enlaza a su hermano.
+Se ejecutan con =(org-scribe-run-manual-es-tests)=.
+
+El /informe de sincronización/ no es una prueba, para que corregir una errata
+en inglés no rompa nada: lista los archivos cuyo original ha cambiado desde
+su =#+SOURCE_COMMIT:=, con los commits pendientes.
+
+#+begin_src sh
+emacs -batch -l tests/test-manual-es.el -f org-scribe-manual-es-sync-report
+#+end_src
+
+Dentro de Emacs: =M-x org-scribe-manual-es-sync-report= tras cargar ese
+archivo. Si el cambio del original no necesita traducción (una errata), sube
+el =#+SOURCE_COMMIT:= a mano.

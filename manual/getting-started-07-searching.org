@@ -1,7 +1,10 @@
 #+TITLE: Lesson 7: Finding What You Need
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-07-busquedas.org][Versión en español]]/
 
 * Welcome to Lesson 7!
 
@@ -47,10 +50,10 @@ In a 50-scene novel (typical length: 50,000-80,000 words):
 - Finding that TODO you left yourself weeks ago is a guessing game
 
 This is:
-- **Time-consuming**: 30+ minutes of manual searching
-- **Error-prone**: Easy to miss scenes while scrolling
-- **Frustrating**: Interrupts writing flow
-- **Limiting**: You avoid checking things because it's too much work
+- *Time-consuming*: 30+ minutes of manual searching
+- *Error-prone*: Easy to miss scenes while scrolling
+- *Frustrating*: Interrupts writing flow
+- *Limiting*: You avoid checking things because it's too much work
 
 ** The Solution: Property-Based Search
 
@@ -62,10 +65,10 @@ With the search functions, you can:
 - Locate TODOs across entire project
 
 This is:
-- **Fast**: 5-10 seconds per search
-- **Accurate**: Finds every match automatically
-- **Seamless**: Doesn't interrupt flow
-- **Empowering**: You check things because it's easy
+- *Fast*: 5-10 seconds per search
+- *Accurate*: Finds every match automatically
+- *Seamless*: Doesn't interrupt flow
+- *Empowering*: You check things because it's easy
 
 * The Four Core Searches
 
@@ -106,11 +109,11 @@ Find all scenes narrated from a specific character's perspective.
 
 ** When to Use
 
-- **PoV Balance**: Check how many scenes each PoV character gets
-- **Character Voice**: Review all scenes from one PoV to check voice consistency
-- **Arc Review**: See a character's journey from their own perspective
-- **Planning**: Decide which character should narrate the next scene
-- **Revision**: Ensure each PoV character has enough page time
+- *PoV Balance*: Check how many scenes each PoV character gets
+- *Character Voice*: Review all scenes from one PoV to check voice consistency
+- *Arc Review*: See a character's journey from their own perspective
+- *Planning*: Decide which character should narrate the next scene
+- *Revision*: Ensure each PoV character has enough page time
 
 ** How to Search
 
@@ -141,7 +144,7 @@ Or use: ~M-x org-scribe-org-find-pov~
 ** Interpreting Results
 
 The results show:
-- **Scene titles**: Full scene headings
+- *Scene titles*: Full scene headings
 
 ** Using Results
 
@@ -202,11 +205,11 @@ Find all scenes where a character appears (regardless of whose PoV).
 
 ** When to Use
 
-- **Character Coverage**: How often does this character appear?
-- **Relationship Tracking**: Find all scenes between two characters
-- **Arc Verification**: Does this character have enough presence?
-- **Continuity**: What has happened to this character so far?
-- **Planning**: When should this character reappear?
+- *Character Coverage*: How often does this character appear?
+- *Relationship Tracking*: Find all scenes between two characters
+- *Arc Verification*: Does this character have enough presence?
+- *Continuity*: What has happened to this character so far?
+- *Planning*: When should this character reappear?
 
 ** How to Search
 
@@ -319,11 +322,11 @@ Find all scenes that develop a specific plot thread.
 
 ** When to Use
 
-- **Plot Distribution**: How often does this plot appear?
-- **Gap Detection**: Are there long stretches where this plot vanishes?
-- **Arc Review**: Read all scenes for one plot in sequence
-- **Pacing Check**: Does this plot escalate properly?
-- **Planning**: Where should this plot develop next?
+- *Plot Distribution*: How often does this plot appear?
+- *Gap Detection*: Are there long stretches where this plot vanishes?
+- *Arc Review*: Read all scenes for one plot in sequence
+- *Pacing Check*: Does this plot escalate properly?
+- *Planning*: Where should this plot develop next?
 
 ** How to Search
 
@@ -446,11 +449,11 @@ Find all scenes set in a specific location.
 
 ** When to Use
 
-- **Location Usage**: How often do you use this setting?
-- **Variety Check**: Are you overusing one location?
-- **Continuity**: What's happened at this location so far?
-- **Setting Balance**: Ensure diverse locations across story
-- **Planning**: When should you return to this location?
+- *Location Usage*: How often do you use this setting?
+- *Variety Check*: Are you overusing one location?
+- *Continuity*: What's happened at this location so far?
+- *Setting Balance*: Ensure diverse locations across story
+- *Planning*: When should you return to this location?
 
 ** How to Search
 
@@ -572,10 +575,10 @@ Find all TODO items across your entire project.
 
 ** When to Use
 
-- **Before writing session**: What did I leave myself to fix?
-- **After drafting**: What notes did I leave during flow?
-- **Revision planning**: What needs attention?
-- **Project status**: How many loose ends remain?
+- *Before writing session*: What did I leave myself to fix?
+- *After drafting*: What notes did I leave during flow?
+- *Revision planning*: What needs attention?
+- *Project status*: How many loose ends remain?
 
 ** What Are TODOs?
 
@@ -596,7 +599,7 @@ Press: ~F8 5~
 
 Or use: ~M-x org-scribe-search-todos-recursive~
 
-Or Org's built-in: ~C-c a t~ (agenda todo list)
+Org's own agenda todo list (~M-x org-todo-list~) shows the same headings, but only in files that are in your agenda.
 
 ** Example Results
 
@@ -616,10 +619,10 @@ Or Org's built-in: ~C-c a t~ (agenda todo list)
 ** Using TODO Results
 
 *** Prioritize by Type
-- **FIXME**: Structural problems - address before continuing
-- **RESEARCH**: Look these up in batch (dedicated research session)
-- **REVISE**: Save for revision pass
-- **TODO**: Address as you encounter them
+- *FIXME*: Structural problems - address before continuing
+- *RESEARCH*: Look these up in batch (dedicated research session)
+- *REVISE*: Save for revision pass
+- *TODO*: Address as you encounter them
 
 *** Clear Before Major Milestones
 Before finishing first draft: Clear all manuscript TODOs
@@ -644,10 +647,10 @@ Navigate to Scene 7 heading:
 
 Add below the heading:
 ,*** Scene 7 - Evidence of Tampering
-,**** TODO Timeline issue - Alex arrives at 9 AM but lab doesn't open until 10
     :PROPERTIES:
     ...
     :END:
+,**** TODO Timeline issue - Alex arrives at 9 AM but lab doesn't open until 10
 
 Continue writing Scene 15!
 #+END_EXAMPLE
@@ -666,9 +669,9 @@ Both are searches over the whole project; they simply cover different stages of 
 
 ** When to Use
 
-- **Mid-draft flagging**: Mark a passage as needing work without breaking your writing flow
-- **Revision prep**: Collect every flagged passage across the whole project before a revision pass
-- **Continuity notes**: Leave yourself a reminder about something to double-check later
+- *Mid-draft flagging*: Mark a passage as needing work without breaking your writing flow
+- *Revision prep*: Collect every flagged passage across the whole project before a revision pass
+- *Continuity notes*: Leave yourself a reminder about something to double-check later
 
 ** What Are Edit/Note Markers?
 
@@ -968,35 +971,35 @@ Get comfortable with the results navigation cycle:
 
 ** Before Writing
 
-- **Review TODOs**: Check what you left yourself to fix (F8 5)
-- **Check last appearance**: If writing Character X, search when they last appeared
-- **Verify plot status**: If developing Plot Y, search to see what's happened so far
+- *Review TODOs*: Check what you left yourself to fix (F8 5)
+- *Check last appearance*: If writing Character X, search when they last appeared
+- *Verify plot status*: If developing Plot Y, search to see what's happened so far
 
 ** During Writing
 
-- **Quick reference**: Jump to character/location profile without breaking flow
-- **Continuity check**: "When did they last meet?" → Search and find it
-- **Add TODOs**: Leave notes for later without stopping to fix
+- *Quick reference*: Jump to character/location profile without breaking flow
+- *Continuity check*: "When did they last meet?" → Search and find it
+- *Add TODOs*: Leave notes for later without stopping to fix
 
 ** After Writing Session
 
-- **Update TODOs**: Mark completed items as DONE
-- **Quick audit**: Search the plot/character you just wrote to verify coverage
-- **Plan next session**: Identify gaps, decide what needs attention next
+- *Update TODOs*: Mark completed items as DONE
+- *Quick audit*: Search the plot/character you just wrote to verify coverage
+- *Plan next session*: Identify gaps, decide what needs attention next
 
 ** During Revision
 
-- **Systematic review**: Search each character and read all their scenes sequentially
-- **Plot coherence**: Search each plot thread and verify logical progression
-- **Consistency check**: Search location and ensure descriptions match
-- **Clean TODOs**: Work through all FIXME and REVISE items
+- *Systematic review*: Search each character and read all their scenes sequentially
+- *Plot coherence*: Search each plot thread and verify logical progression
+- *Consistency check*: Search location and ensure descriptions match
+- *Clean TODOs*: Work through all FIXME and REVISE items
 
 ** Weekly Planning
 
-- **Coverage audit**: Run all searches, check percentages
-- **Balance adjustment**: Identify overused/underused characters, plots, locations
-- **Gap filling**: Find large gaps, plan scenes to fill them
-- **Structure check**: Use searches to verify act structure (balanced across acts?)
+- *Coverage audit*: Run all searches, check percentages
+- *Balance adjustment*: Identify overused/underused characters, plots, locations
+- *Gap filling*: Find large gaps, plan scenes to fill them
+- *Structure check*: Use searches to verify act structure (balanced across acts?)
 
 * Common Questions
 
@@ -1041,8 +1044,8 @@ Each search finds all scenes where that value appears (even if other values are 
 ** Q: Can I save search results?
 
 *A*: Yes, two methods:
-1. **Manual**: Copy results buffer content to a notes file
-2. **Org-ql**: Use ~C-c C-e~ in results to export to different formats (requires org-ql package)
+1. *Manual*: Copy results buffer content to a notes file
+2. *Org-ql*: Use ~C-c C-e~ in results to export to different formats (requires org-ql package)
 
 For recurring searches, consider creating custom org-ql queries (advanced).
 
@@ -1228,7 +1231,7 @@ This reveals character roles and can suggest opportunities for variety.
 
 For deep analysis:
 1. Search for Character X
-2. Generate character timeline (F8... character timeline)
+2. Generate the character timeline (a ~#+BEGIN: character-timeline~ block, Lesson 10)
 3. Compare: Does search match timeline? (should!)
 4. Use timeline for visual overview, search for detailed review
 
@@ -1242,7 +1245,13 @@ If you frequently search the same things, consider creating custom commands:
   (org-scribe-org-find-pov "Alex Rivera"))
 #+END_SRC
 
-Bind to key: ~C-c a~ now runs Alex PoV search instantly.
+Then give it a key. ~C-c LETTER~ is reserved for you, but ~C-c a~ is Org's agenda, so use a two-key sequence under a prefix of your own:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c s a") #'my/search-alex)
+#+END_SRC
+
+~C-c s a~ now runs the Alex PoV search instantly.
 
 ** 9. Search During Planning
 
@@ -1277,7 +1286,7 @@ Congratulations! You've completed Lesson 7. You now know:
 
 * Next Steps
 
-You're ready for **Lesson 8: The Hydra Menu**!
+You're ready for *Lesson 8: The Hydra Menu*!
 
 In the next lesson, you'll learn:
 - Accessing all features quickly via the unified keyboard menu
@@ -1310,11 +1319,11 @@ Searching transforms how you work with your manuscript. Instead of manually scro
 - All TODO items you've left yourself
 
 This enables:
-- **Fast continuity checks**: "When did they last meet?"
-- **Structural analysis**: "Does this plot appear often enough?"
-- **Balance verification**: "Is PoV distribution fair?"
-- **Efficient revision**: "Let me review all mystery plot scenes in sequence"
-- **Planning**: "Where should this character appear next?"
+- *Fast continuity checks*: "When did they last meet?"
+- *Structural analysis*: "Does this plot appear often enough?"
+- *Balance verification*: "Is PoV distribution fair?"
+- *Efficient revision*: "Let me review all mystery plot scenes in sequence"
+- *Planning*: "Where should this character appear next?"
 
 The search functions are powered by org-ql and work seamlessly with both plain text properties and ID-based links. Combined with the linking system (characters, locations, plots), you have complete navigability through your manuscript.
 

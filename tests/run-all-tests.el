@@ -94,6 +94,7 @@
     "test-short-story-templates"   ; Short-story template set + entity recognition
     "test-template-parity"         ; novel-en / novel-es structural parity
     "test-template-references"     ; Template F8-key/command references are real
+    "test-manual-es"               ; manual-es/ stays paired with manual/
     ;; Writing planner (planning/org-scribe-planner.el)
     "test-planner-calculation"     ; Calculation engine
     "test-planner-io"              ; Plan save/load round-trips
@@ -338,6 +339,14 @@ is set too, for the tests that start a fresh Emacs."
   (load-file (expand-file-name "test-template-references.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (ert "^test-template-references-"))
+
+;;;###autoload
+(defun org-scribe-run-manual-es-tests ()
+  "Run the Spanish manual pairing tests only (manual-es/ against manual/)."
+  (interactive)
+  (load-file (expand-file-name "test-manual-es.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-manual-es-"))
 
 ;;;###autoload
 (defun org-scribe-run-linking-tests ()

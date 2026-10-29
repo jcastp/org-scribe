@@ -1,7 +1,10 @@
 #+TITLE: Lesson 8: The Hydra Menu
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-08-menu-hydra.org][Versión en español]]/
 
 * Welcome to Lesson 8!
 
@@ -461,7 +464,7 @@ Popular choices:
 
 | Keybinding | Pros                            | Cons                         |
 |------------+---------------------------------+------------------------------|
-| ~F8~      | Default, unlikely to conflict   | Requires two presses         |
+| ~F8~      | Default, unlikely to conflict   | Single key                   |
 | ~C-c w~      | Fast, single combo              | Might conflict with org      |
 | ~C-c C-w~    | Similar to other org commands   | Might conflict               |
 | ~s-w~        | Super key, unlikely to conflict | Not all keyboards have Super |
@@ -603,7 +606,7 @@ Gradual exploration prevents overwhelm!
 
 *Possible causes*:
 1. ~org-scribe-mode~ not active
-   - Check mode line for "Writing"
+   - Check mode line for "Write"
    - Activate: ~M-x org-scribe-mode~
 
 2. Keybinding not set
@@ -769,7 +772,7 @@ Take your time! The Hydra menu is your primary interface to ~org-scribe~ - maste
 | Key | Command           | Use When                                |
 |-----+-------------------+-----------------------------------------|
 | ~p~   | Open project plan | Start/continue daily planning session   |
-| ~u~   | Update progress   | Push current total to plan manually     |
+| ~u~   | Sync word count | Push current total to plan manually     |
 | ~r~   | Recalculate plan  | After a productive or unproductive week |
 | ~m~   | Milestones        | Viewing/setting word count checkpoints  |
 | ~D~   | Dashboards menu   | Progress charts and analytics           |

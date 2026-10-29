@@ -1,0 +1,1376 @@
+#+TITLE: Lección 11: Exportar tu manuscrito
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-11-exporting.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-11-exporting.org][English version]]/
+
+* ¡Bienvenido a la Lección 11!
+
+Has escrito tu manuscrito en org-mode y ahora toca compartirlo con el mundo. Tanto si lo envías a editoriales, lo compartes con lectores beta o lo publicas tú mismo, necesitas exportar tu trabajo a formatos estándar.
+
+El potente sistema de exportación de org-mode puede transformar tu manuscrito en documentos profesionales en varios formatos, y ~org-scribe~ añade funciones pensadas para la escritura creativa, como el formato correcto de los saltos de escena.
+
+Al terminar la lección habrás:
+- Compilado un borrador limpio y legible con ~org-scribe-compile~, el camino más rápido de un manuscrito de trabajo a algo que puedes dar a un lector
+- Compilado un manuscrito listo para enviar en formato estándar (Shunn), con un bloque de contacto real, el recuento de palabras y la cabecera corrida
+- Compilado un EPUB con estilo, con saltos de escena que destacan del texto normal
+- Entendido el sistema de exportación de org-mode para todo lo que compile todavía no hace (control total del formato, portadas y metadatos de EPUB)
+- Aprendido a usar la macro de salto de escena para dar un formato profesional
+- Exportado tu manuscrito a PDF (mediante LaTeX)
+- Exportado a un formato compatible con Word (ODT)
+- Creado versiones en HTML y EPUB para la lectura digital
+- Personalizado los ajustes de exportación para distintos requisitos
+
+*Tiempo estimado*: 25-30 minutos
+
+* Antes de empezar
+
+** Lo que necesitas
+
+✓ Un manuscrito con al menos una escena completa
+✓ Tu proyecto de escritura abierto
+✓ Comprender la estructura de tu manuscrito (de las lecciones anteriores)
+
+** Dependencias opcionales
+
+Cada formato de exportación necesita herramientas distintas:
+
+- *PDF (LaTeX)*: requiere una distribución de LaTeX
+  - Linux/Mac: TeX Live o MacTeX
+  - Windows: MiKTeX
+  - Comprobación: ~pdflatex --version~
+
+- *ODT (OpenDocument)*: viene con Emacs (no hace falta nada más)
+
+- *HTML*: viene con Emacs (no hace falta nada más)
+
+- *EPUB*: requiere el paquete ~ox-epub~
+  - Instalación: ~M-x package-install RET ox-epub RET~
+
+No te preocupes si no tienes todo: indicaremos qué necesita cada formato.
+
+* Compilar un borrador limpio (empieza aquí)
+
+Antes de recurrir al despachador de exportación de Org, prueba primero ~org-scribe-compile~. Resuelve el problema que tiene la mayoría de los escritores en este punto: «quiero un documento legible con lo que llevo escrito», no «quiero configurar LaTeX».
+
+** Por qué no exportar sin más el archivo de trabajo
+
+El manuscrito en el que has estado escribiendo es un *espacio de trabajo*, no un manuscrito. Tiene secciones de apoyo, un cajón de propiedades de dieciocho campos en cada escena y etiquetas ~:ignore:~ en los actos, los capítulos *y* las escenas. Si exportas ese archivo directamente (~C-c C-e~) sin ~org-scribe-compile~ y no has instalado por separado ~ox-extra~ (ver más abajo), obtendrás encabezados ~TODO Escena 3~ en bruto en la salida; y aun con ~ox-extra~ instalado obtendrás un muro de prosa indiferenciado *sin ninguna división en capítulos*, porque ~:ignore:~ está en los encabezados de capítulo igual que en los de escena.
+
+~org-scribe-compile~ lo resuelve de otra manera: primero *transforma* el manuscrito en un documento intermedio limpio (se descartan los actos, los capítulos se conservan como encabezados visibles reales, las escenas se silencian y se insertan saltos entre ellas automáticamente) y solo después entrega ese documento limpio a los exportadores de Org.
+
+** Cómo usarlo
+
+#+BEGIN_EXAMPLE
+F8 X          (o M-x org-scribe-compile)
+
+Estilo de compilación:  clean / shunn
+Compilar el manuscrito a:  org / txt / md / odt / pdf / docx / epub
+#+END_EXAMPLE
+
+Los nombres de los estilos (~clean~ y ~shunn~) y de los formatos no se traducen. Las preguntas salen en el idioma de los mensajes que tengas configurado.
+
+Elige ~clean~ (el primero que vemos) y un formato, y org-scribe escribe dos archivos en ~export/~, bajo la raíz de tu proyecto (se crea automáticamente; conviene añadirlo a ~.gitignore~):
+
+- La salida ya renderizada, p. ej. ~novela-clean.odt~ o ~novela-clean.pdf~
+- El intermedio limpio, p. ej. ~novela-clean.org~, que se escribe siempre, sea cual sea el formato elegido. Si la salida se ve mal, abre primero este archivo: te dice si el problema está en la transformación o en el renderizador.
+
+~org~, ~txt~, ~md~ y ~odt~ no necesitan nada más que Emacs. ~pdf~ necesita una distribución de LaTeX (~pdflatex~ en tu PATH), ~docx~ necesita la herramienta de línea de órdenes ~pandoc~ y ~epub~ necesita el paquete opcional de Emacs ~ox-epub~ (~M-x package-install RET ox-epub RET~; a diferencia de los demás, no viene con Org). Todos son opcionales y ~M-x org-scribe-setup-check~ los informa. Si falta alguno, compile se niega nombrando la herramienta, en vez de escribir un archivo parcial o roto:
+
+#+BEGIN_EXAMPLE
+No se puede compilar a docx: `pandoc' no está disponible
+#+END_EXAMPLE
+
+** Qué obtienes
+
+- Actos: omitidos (son una estructura de planificación, no de lectura)
+- Capítulos: se conservan como encabezados reales: «Capítulo 1», no «TODO Capítulo 1 :ignore:»
+- Escenas: silenciosas, con un salto insertado automáticamente entre escenas consecutivas del mismo capítulo: nada que escribir, ningún sitio donde olvidarlo
+- Cajones de propiedades, bloques dinámicos (tablas de recuento de palabras) y marcadores ~*EDIT*~/~*NOTE*~: todo eliminado, no solo oculto a la exportación
+
+** El marcador de salto de escena
+
+El salto por defecto es ~⁂~ (el asterismo, U+2042). Cámbialo con:
+
+#+BEGIN_EXAMPLE
+(setq org-scribe-compile-scene-break "· · ·")
+#+END_EXAMPLE
+
+o con ~M-x customize-group RET org-scribe RET~, que ofrece algunos preajustes con nombre (asterismo, tres puntos, raya, signo de sección, flor) además del texto libre. Se rechazan dos formas en lugar de corromper en silencio tu manuscrito: cualquier cosa que empiece por ~*~ (Org la reinterpreta como un encabezado, incluso dentro de un bloque centrado) y cualquier cosa que empiece por ~#~ (un comentario de Org, que desaparecería sin dejar rastro).
+
+*El PDF es la única excepción*: siempre muestra tres asteriscos centrados (~* * *~) como salto, sea cual sea este ajuste. Las fuentes por defecto de pdflatex no tienen ningún glifo para el asterismo (ni para el preajuste de la flor): no es un error, simplemente queda un espacio en blanco donde debería estar el salto, y no hay una manera fiable de comprobar desde Emacs qué glifos cubre una fuente cualquiera. Tres asteriscos es además el salto de escena tradicional del manuscrito impreso, así que el PDF no pierde nada por no coincidir con tus otros formatos.
+
+*El EPUB no tiene ese problema*: es Unicode de principio a fin, así que cualquier marcador que hayas puesto se ve exactamente como lo configuraste. Lo que el EPUB recibe en su lugar es un estilo propio: un salto de escena compilado lleva una clase CSS distinta, en lugar de parecer un párrafo centrado corriente, de modo que en un lector electrónico se lee como un salto deliberado. Un bloque centrado que hayas escrito tú (un epígrafe, unos versos) conserva su estilo normal.
+
+** ¡Pruébalo ahora! (2 minutos)
+
+1. Abre tu manuscrito
+2. ~F8 X~, ~clean~ y elige ~txt~
+3. Abre el archivo resultante en ~export/~: fíjate en los encabezados de capítulo, los saltos de escena y la ausencia total de ~TODO~ o de cajones de propiedades
+4. Repite con ~odt~ y ábrelo en LibreOffice o Word
+5. Si tienes una distribución de LaTeX instalada, prueba también ~pdf~
+6. Si tienes ~ox-epub~ instalado, prueba ~epub~ y ábrelo en una aplicación de lectura o en Calibre; comprueba que el salto de escena se distingue visualmente del texto normal
+
+* Compilar un manuscrito para enviar (formato Shunn)
+
+El «formato Shunn» (por William Shunn, que escribió la guía de referencia) es lo que la mayoría de editoriales, agentes y revistas anglosajonas entienden por «formato estándar de manuscrito»: un bloque de contacto sencillo y sobrio, un recuento de palabras redondeado, doble espacio, márgenes generosos y una cabecera corrida en cada página salvo la primera. El estilo ~shunn~ de ~org-scribe-compile~ lo produce directamente a partir de tu manuscrito, sin una pasada aparte de formato para envíos.
+
+Es un estándar del mundo editorial en inglés: si envías a una editorial o revista en español, consulta antes sus normas de presentación, que a menudo difieren.
+
+** Configura tu identidad de autor una vez
+
+Antes de tu primera compilación ~shunn~, dile a org-scribe quién eres. Es por autor, no por proyecto: configúralo una sola vez en tu archivo de inicio:
+
+#+BEGIN_EXAMPLE
+(setq org-scribe-author-name "Julia Alcalde Domingo")
+(setq org-scribe-author-address '("Calle del Olmo, 123" "28004 Madrid"))
+(setq org-scribe-author-email "julia@example.com")
+(setq org-scribe-author-phone "555-0100")
+#+END_EXAMPLE
+
+Solo ~org-scribe-author-name~ es obligatorio; el resto es opcional y simplemente se omite del bloque de contacto si no está configurado. ¿Envías a través de un agente? Sus datos de contacto sustituyen a los tuyos en la página:
+
+#+BEGIN_EXAMPLE
+(setq org-scribe-author-agent '("Pat Agente" "Agencia Literaria Casa"
+                                "Calle de la Imprenta, 456" "08001 Barcelona"))
+#+END_EXAMPLE
+
+Compilar en ~shunn~ sin ~org-scribe-author-name~ configurado se rechaza, no se aproxima: un manuscrito para enviar con el bloque de contacto en blanco sería peor que un error explícito que te diga qué configurar.
+
+** Detalles por proyecto (opcional)
+
+Dos líneas del archivo ~.org-scribe-project~ de tu proyecto personalizan detalles que el formato Shunn necesita y que son propios de *este* manuscrito, no tuyos como autor. Añádelas a mano; todavía no hay una orden específica:
+
+#+BEGIN_EXAMPLE
+# Pen-name: J.A. Domingo
+# Running-header: MAREA
+#+END_EXAMPLE
+
+- ~Pen-name~ (seudónimo): se muestra en la línea de autoría («por ...») en lugar de tu nombre legal. El bloque de contacto sigue llevando tu nombre legal: un cheque se extiende al nombre del bloque de contacto, no al de la línea de autoría.
+- ~Running-header~ (cabecera corrida): la palabra clave de «Apellido / PALABRA / página» en lo alto de cada página salvo la primera. Sin esta línea, org-scribe deriva una automáticamente de la primera palabra de tu título, así que no tienes que fijarla para tener una cabecera que funcione; solo para cambiar lo que dice.
+
+** Compilar
+
+#+BEGIN_EXAMPLE
+F8 X
+Estilo de compilación:  shunn
+Compilar el manuscrito a:  org / txt / pdf / docx
+#+END_EXAMPLE
+
+~md~, ~odt~ y ~epub~ no se ofrecen para ~shunn~: Markdown no tiene maquetación de página a la que aplicar un estándar de envío, la compatibilidad con ODT necesita un archivo de estilos que org-scribe todavía no incluye, y el EPUB es de texto fluido: no hay una página fija que describa un formato estándar de manuscrito.
+
+** Qué obtienes
+
+Todos los formatos ~shunn~ comparten el mismo encabezado inicial: tu bloque de contacto (o el de tu agente), el recuento de palabras redondeado a la centena más cercana («unas 47 800 palabras»; en un proyecto en español sale «unas N palabras») y tu título centrado con «por ...» debajo. El manuscrito termina con un «FIN» centrado.
+
+El *PDF* obtiene además un formato de página real: márgenes de 1 pulgada, doble espacio y la cabecera corrida desde la página 2. Es lo más parecido a lo que espera una editorial y necesita una distribución de LaTeX (~pdflatex~ en tu PATH).
+
+El *DOCX* (mediante pandoc) obtiene el mismo contenido de encabezado, pero *no* el formato de página: ni doble espacio ni márgenes forzados. Los documentos de Word reciben ese tipo de estilo de una plantilla de referencia, y org-scribe no incluye ninguna a la que apuntar pandoc (por la misma razón por la que nunca ha fijado a mano el nombre de un estilo de ODT: uno equivocado arriesga corromper el documento, no solo que se vea sencillo). Si el DOCX con formato completo de manuscrito es importante para un envío, compila ~pdf~ o exporta directamente a ODT y aplica tu propia plantilla (ver «Ajustes específicos de ODT» más abajo).
+
+El *texto plano* y el intermedio *org* obtienen el contenido del encabezado sin ningún modelo de página: en un .txt no existe el concepto de márgenes ni de doble espacio. Algunos portales de envío piden específicamente texto plano, así que es un destino real y no solo una ayuda para depurar.
+
+** Personalizar el aspecto de la cabecera corrida
+
+El LaTeX que hay detrás de la cabecera y el interlineado del PDF vive en una sola variable personalizable, construida solo con paquetes estándar de LaTeX (~geometry~, ~setspace~, ~fancyhdr~, todos incluidos en una instalación básica de ~texlive-latex-recommended~; no hay que instalar nada más):
+
+#+BEGIN_EXAMPLE
+(setq org-scribe-compile-shunn-latex-preamble
+      "\\usepackage[margin=1.25in]{geometry}
+\\usepackage{setspace}
+\\doublespacing
+\\usepackage{fancyhdr}
+\\pagestyle{fancy}
+\\fancyhf{}
+\\fancyhead[R]{%s / %s / \\thepage}
+\\renewcommand{\\headrulewidth}{0pt}")
+#+END_EXAMPLE
+
+(Este ejemplo cambia el margen a 1,25 pulgadas; el valor por defecto es 1 pulgada.)
+
+Conserva los dos marcadores ~%s~ (se rellenan con tu apellido y con la palabra clave de la cabecera corrida, en ese orden): una personalización a la que le falte alguno se rechaza con un error que nombra el problema, en lugar de compilar en silencio un PDF con la cabecera rota.
+
+** ¡Pruébalo ahora! (3 minutos)
+
+1. Configura ~org-scribe-author-name~ (y, si quieres, la dirección y el correo) en el búfer ~*scratch*~ o con ~M-x eval-expression~
+2. ~F8 X~, ~shunn~ y elige ~txt~: lee el encabezado que sale
+3. Si tienes una distribución de LaTeX, prueba ~pdf~ y busca la cabecera corrida desde la página 2
+4. Añade una línea ~# Pen-name:~ a ~.org-scribe-project~ y compila de nuevo: confirma que cambia la línea de autoría pero no el bloque de contacto
+
+* Exportación directa con el despachador de Org
+
+Para un PDF con control manual completo, para EPUB o para un control fino que ninguno de los dos estilos de compile ofrece todavía, exporta el archivo de trabajo directamente con el despachador de Org. Es el camino «avanzado»: más configuración, más formatos, más preparación manual.
+
+* Entender la exportación de org-mode
+
+Antes de exportar, veamos cómo funciona.
+
+** El despachador de exportación
+
+Org-mode tiene una interfaz de exportación unificada:
+
+1. Abre tu manuscrito
+2. Pulsa ~C-c C-e~ (org-export-dispatch)
+3. Verás el menú de exportación (en inglés; es el de Org):
+
+#+BEGIN_EXAMPLE
+Org Export Dispatcher
+─────────────────────────────────────────────────────
+
+[b] Export to buffer       [l] Export to LaTeX
+[h] Export to HTML         [o] Export to ODT
+[p] Export to PDF          [t] Export to plain text
+[m] Export to Markdown     [e] Export to EPUB (if installed)
+
+[q] Quit
+#+END_EXAMPLE
+
+*¡Este es tu centro de mando de la exportación!*
+
+** Entender las opciones de exportación
+
+Cada formato tiene variantes:
+
+| Secuencia de teclas | Qué hace                                 |
+|---------------------+------------------------------------------|
+| ~C-c C-e l o~       | Exporta a LaTeX y abre el archivo        |
+| ~C-c C-e l l~       | Exporta a LaTeX (sin abrir)              |
+| ~C-c C-e l p~       | Exporta a PDF (LaTeX → PDF)              |
+| ~C-c C-e h h~       | Exporta a HTML (un solo archivo)         |
+| ~C-c C-e h o~       | Exporta a HTML y abre en el navegador    |
+| ~C-c C-e o o~       | Exporta a ODT y abre en LibreOffice/Word |
+
+*Patrón*: primera letra = formato, segunda letra = acción
+
+** Alcance de la exportación
+
+Puedes exportar:
+- *Todo el búfer*: lo predeterminado, exporta todo
+- *Un subárbol*: solo la sección actual (con el prefijo ~C-c C-e C-s~)
+- *Solo lo visible*: solo los encabezados desplegados (con el prefijo ~C-c C-e C-v~)
+
+*Para manuscritos*: normalmente se exporta todo el búfer.
+
+** Qué se exporta
+
+- Etiqueta ~:ignore:~ en los encabezados → se excluye el título del encabezado, se incluye el contenido. Esto *no* es comportamiento básico de Org: requiere el paquete opcional ~ox-extra~ (parte de ~org-contrib~; ~M-x package-install RET org-contrib~). org-scribe lo activa automáticamente para tu manuscrito siempre que esté instalado (=export/org-scribe-export.el=); sin él, ~:ignore:~ no hace nada y el encabezado en bruto, con su palabra clave TODO, se exporta tal cual. ~M-x org-scribe-setup-check~ te dice si está presente.
+- Etiqueta ~:noexport:~ en los encabezados → se excluyen el encabezado y su contenido. Esta *sí* es de Org básico (~org-export-exclude-tags~ vale por defecto ~("noexport")~).
+- ~#+OPTIONS: toc:nil~ → sin tabla de contenidos
+- ~#+OPTIONS: todo:nil tags:nil~ → se eliminan las palabras clave TODO y las etiquetas de los encabezados exportados (viene en la plantilla de tu manuscrito, de modo que un encabezado de escena que en el búfer todavía dice «TODO» se exporta como prosa normal)
+- ~#+EXCLUDE_TAGS: noexport~ → etiquetas que se excluyen
+
+*Tu plantilla ya trae configuradas las etiquetas ~:ignore:~/~:noexport:~ y la línea ~#+OPTIONS~: instala ~org-contrib~ una vez y la exportación simplemente funciona.*
+
+* La macro de salto de escena
+
+Los saltos de escena son cruciales en la ficción: indican cambios de tiempo, lugar o PoV dentro de un capítulo.
+
+** El problema
+
+En tu manuscrito escribes:
+#+BEGIN_EXAMPLE
+Alex salió. La puerta se cerró tras él.
+
+[SALTO DE ESCENA - Más tarde, esa noche]
+
+Sam estaba sentado en la cafetería, esperando.
+#+END_EXAMPLE
+
+Pero cada formato de exportación necesita un salto distinto:
+- *Impresión (PDF/LaTeX)*: espacio vertical (~\vspace~)
+- *HTML*: varios saltos de línea
+- *ASCII/Markdown/Man*: tres asteriscos (***)
+- *Word (ODT)*: un párrafo centrado con =***=
+- *EPUB*: varios saltos de línea (deriva del backend HTML)
+- *Cualquier otro backend*: recurre al valor genérico por defecto de 3 saltos de línea
+
+*¡Cambiarlo a mano para cada formato es tedioso!*
+
+** La solución: la macro de salto de escena
+
+~org-scribe~ ofrece una macro que se convierte automáticamente al formato adecuado.
+
+*** Cómo funciona
+
+1. Tu plantilla tiene esta línea al principio:
+   #+BEGIN_EXAMPLE
+   #+MACRO: scene-break SCENE-BREAK
+   #+END_EXAMPLE
+
+2. En tu manuscrito, usa:
+   #+BEGIN_EXAMPLE
+   {{{scene-break}}}
+   #+END_EXAMPLE
+
+3. Al exportar:
+   - LaTeX: se convierte en ~\vspace{...}~ (espacio vertical)
+   - HTML: se convierte en ~<br><br><br>~ (saltos de línea)
+   - ASCII/Markdown/Man: se convierte en ~***~
+   - ODT: se convierte en un párrafo centrado con =***=
+   - EPUB: se convierte en ~<br><br><br>~ (como HTML)
+   - Cualquier otro backend sin entrada propia: recurre al valor genérico por defecto (tres saltos de línea)
+
+** Usar los saltos de escena
+
+Sustituye los saltos de escena manuales por la macro:
+
+*** Antes (manual)
+#+BEGIN_EXAMPLE
+Alex salió.
+
+***
+
+Sam estaba esperando.
+#+END_EXAMPLE
+
+*** Después (macro)
+#+BEGIN_EXAMPLE
+Alex salió.
+
+{{{scene-break}}}
+
+Sam estaba esperando.
+#+END_EXAMPLE
+
+** Ejemplo de salto de escena
+
+Este es un fragmento real de manuscrito:
+
+#+BEGIN_EXAMPLE
+,*** Escena 1 - Mañana
+:PROPERTIES:
+:PoV: Alex
+:END:
+
+Alex entró a trompicones en la cocina, con los ojos medio cerrados. Café. Necesito café.
+
+La cafetera empezó a gorgotear. Mientras trabajaba, Alex miró por la ventana
+la mañana gris. Otro lunes.
+
+{{{scene-break}}}
+
+Veinte minutos después, con el café en la mano, Alex se sentía casi humano. El primer
+sorbo siempre era el mejor: ese momento en que la niebla empezaba a levantarse.
+
+{{{scene-break}}}
+
+Con la segunda taza, Alex ya tenía un plan para el día. Bueno, el esbozo de un
+plan. Más una vaga dirección que un plan de verdad, pero era un comienzo.
+#+END_EXAMPLE
+
+*Dos saltos de escena* que muestran:
+1. Un salto en el tiempo (20 minutos)
+2. Un cambio de ánimo (confuso → más claro)
+
+Al exportar, cada formato recibe automáticamente el salto que le corresponde.
+
+Esta macro es la manera de escribir un salto *dentro* de una exportación directa. Con ~org-scribe-compile~ no la necesitas entre escenas (los inserta solo); sí sigue sirviendo para un salto en mitad del cuerpo de una escena, que compile convierte en un salto real.
+
+** ¡Pruébalo ahora! (2 minutos)
+
+1. Abre tu manuscrito
+2. Busca una escena con un salto de tiempo o de lugar
+3. Añade ~{{{scene-break}}}~ entre las dos partes
+4. Guarda el archivo
+5. Lo exportaremos en las secciones siguientes
+
+* Exportar a PDF (mediante LaTeX)
+
+El PDF es el patrón oro para la impresión y los envíos a editoriales.
+
+** Requisitos
+
+- Una distribución de LaTeX instalada (TeX Live, MacTeX o MiKTeX)
+- Comprobación: ~pdflatex --version~ en la terminal
+
+** Paso 1: Comprueba la configuración de LaTeX
+
+Añade los ajustes de LaTeX a tu manuscrito (no vienen por defecto):
+
+#+BEGIN_EXAMPLE
+#+LATEX_CLASS: memoir_draft
+#+LATEX_HEADER:
+#+LATEX_HEADER_EXTRA:
+#+END_EXAMPLE
+
+*Nota*: las plantillas de proyecto no incluyen ninguna configuración de exportación; ese bloque se quitó a propósito (llevaba rutas absolutas personales y una clase de LaTeX que no se distribuye). ~memoir_draft~ (una variante de ~memoir~ orientada a borradores, buena para manuscritos del tamaño de un libro) y ~article~ (mejor para obras breves) son opciones razonables que puedes añadir tú; si ~memoir_draft~ no está en tu distribución de LaTeX, usa una clase estándar como ~book~ o ~article~ (ver «Clase de LaTeX personalizada» más abajo).
+
+** Paso 2: Exporta a PDF
+
+1. Abre tu manuscrito (~novela.org~ o ~cuento.org~)
+2. Pulsa ~C-c C-e~ (despachador de exportación)
+3. Pulsa ~l~ (LaTeX)
+4. Pulsa ~p~ (PDF)
+5. Espera a la compilación (10-30 segundos)
+6. ¡El PDF aparece en el mismo directorio!
+
+*Secuencia completa*: ~C-c C-e l p~
+
+** Qué obtienes
+
+El PDF incluye:
+- Página de título (a partir de ~#+TITLE~ y ~#+AUTHOR~)
+- Capítulos y escenas con formato automático
+- Saltos de página adecuados
+- Saltos de escena como espacio vertical
+- Aspecto profesional, de libro
+
+** Personalizar la salida en PDF
+
+*** Quitar la tabla de contenidos
+
+Añade a tu manuscrito:
+#+BEGIN_EXAMPLE
+#+OPTIONS: toc:nil
+#+END_EXAMPLE
+
+*** Cambiar la numeración de los capítulos
+
+Añade:
+#+BEGIN_EXAMPLE
+#+OPTIONS: num:nil
+#+END_EXAMPLE
+
+Ahora los capítulos se muestran sin números en las secciones.
+
+*** Clase de LaTeX personalizada
+
+Para requisitos concretos de una editorial:
+
+#+BEGIN_EXAMPLE
+#+LATEX_CLASS: article        (obras más breves)
+#+LATEX_CLASS: memoir_draft   (manuscritos del tamaño de un libro)
+#+LATEX_CLASS: book           (alternativa estándar a memoir_draft)
+#+LATEX_CLASS: memoir         (personalización extensa)
+#+END_EXAMPLE
+
+*** Añadir paquetes de LaTeX
+
+Para un formato especial:
+
+#+BEGIN_EXAMPLE
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{margin=1in}
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \doublespacing
+#+END_EXAMPLE
+
+Esto crea un formato estándar de manuscrito (márgenes de 1 pulgada, a doble espacio).
+
+** Problemas habituales con el PDF
+
+*** «No se encuentra la orden LaTeX»
+
+*Problema*: LaTeX no está instalado
+
+*Solución*: instala TeX Live (Linux/Mac) o MiKTeX (Windows)
+
+*** «No se crea el PDF»
+
+*Problema*: error de compilación de LaTeX
+
+*Solución*:
+1. Revisa el búfer ~*Org PDF LaTeX Output*~ en busca de errores
+2. Busca una línea que empiece por ~!~ en la salida (la marca de error de LaTeX)
+3. Causas habituales: caracteres especiales, paquetes que faltan
+
+*** El PDF se ve mal
+
+*Problema*: la clase de LaTeX o los ajustes no coinciden
+
+*Solución*:
+1. Prueba ~#+LATEX_CLASS: article~ para una maquetación más sencilla
+2. Quita temporalmente las cabeceras de LaTeX personalizadas
+3. Exporta primero un documento de prueba mínimo
+
+** ¡Pruébalo ahora! (3 minutos)
+
+1. Abre tu manuscrito
+2. ~C-c C-e l p~ (exportar a PDF)
+3. Espera a la compilación
+4. Abre el PDF
+5. Comprueba: página de título, capítulos, saltos de escena
+6. Anota el formato que quieras cambiar
+
+* Exportar a ODT (formato Word)
+
+ODT (OpenDocument Text) se abre en LibreOffice, Google Docs y Microsoft Word.
+
+** Requisitos
+
+- Ninguno. La exportación a ODT viene con Emacs
+- Para abrirlo: LibreOffice (gratuito) o Microsoft Word
+
+** Paso 1: Exporta a ODT
+
+1. Abre tu manuscrito
+2. ~C-c C-e~ (despachador de exportación)
+3. ~o~ (ODT)
+4. ~o~ (exportar y abrir)
+5. El archivo se abre en tu editor de ODT por defecto
+
+*Secuencia completa*: ~C-c C-e o o~
+
+** Qué obtienes
+
+El archivo ODT incluye:
+- Encabezados con formato (capítulos como Título 1, escenas como Título 2)
+- Saltos de escena (espacio vertical o ***)
+- Metadatos (título, autor)
+- Párrafos editables
+
+*Importante*: el ODT es totalmente editable; puedes hacer los retoques finales en LibreOffice o Word.
+
+** Personalizar la salida en ODT
+
+*** Usar una plantilla de estilos propia
+
+Las editoriales profesionales suelen exigir un formato concreto. Puedes usar una plantilla de ODT:
+
+1. Crea tu formato en LibreOffice (fuentes, márgenes, cabeceras)
+2. Guárdalo como plantilla: ~mi-manuscrito.ott~
+3. En tu archivo org, añade:
+   #+BEGIN_EXAMPLE
+   #+ODT_STYLES_FILE: "~/org-scribe/plantillas/mi-manuscrito.ott"
+   #+END_EXAMPLE
+4. Exporta: se aplica tu formato.
+
+*** Plantilla de formato de manuscrito
+
+Formato estándar de manuscrito:
+- Courier o Times New Roman de 12 pt
+- A doble espacio
+- Márgenes de 1 pulgada
+- Cabecera con números de página
+
+Créalo una vez en LibreOffice, guárdalo como .ott y reutilízalo en todos tus manuscritos.
+
+** Usos habituales del ODT
+
+*** Formato para lectores beta
+
+Los lectores beta suelen preferir el formato Word:
+1. Exporta a ODT
+2. Añade instrucciones para los comentarios
+3. Compártelo por correo o con Google Drive
+4. Ellos editan y comentan en Word
+5. Tú incorporas sus comentarios en org-mode
+
+*** Envío a una editorial
+
+Muchas editoriales aceptan .docx o .odt:
+1. Consulta las normas de la editorial
+2. Exporta a ODT
+3. Ábrelo en LibreOffice o Word
+4. Haz los retoques finales de formato
+5. Guarda como .docx si lo piden
+6. ¡Envíalo!
+
+*** Envío a un agente
+
+Los agentes literarios suelen querer:
+- Times New Roman de 12 pt
+- A doble espacio
+- Cabecera con nombre, título y número de página
+
+Usa una plantilla de ODT para esto.
+
+** ¡Pruébalo ahora! (2 minutos)
+
+1. Abre el manuscrito
+2. ~C-c C-e o o~ (exportar a ODT y abrir)
+3. El archivo se abre en LibreOffice o Word
+4. Comprueba el formato
+5. Prueba a editar un párrafo (¡es totalmente editable!)
+6. Cierra sin guardar (seguiremos trabajando en org)
+
+* Exportar a HTML
+
+HTML es perfecto para la publicación web, los blogs y el intercambio digital.
+
+** Requisitos
+
+- Ninguno. La exportación a HTML viene con Emacs
+- Para verlo: cualquier navegador web
+
+** Paso 1: Exporta a HTML
+
+1. Abre el manuscrito
+2. ~C-c C-e~ (despachador de exportación)
+3. ~h~ (HTML)
+4. ~h~ (exportar a archivo) O ~o~ (exportar y abrir en el navegador)
+
+*Secuencia completa*: ~C-c C-e h o~ (abrir en el navegador)
+
+** Qué obtienes
+
+El archivo HTML incluye:
+- Encabezados con formato (<h1>, <h2>, etc.)
+- Párrafos con el espaciado adecuado
+- Saltos de escena como saltos de línea
+- Navegación (si la tabla de contenidos está activada)
+- Presentación con estilos CSS
+
+** Personalizar la salida en HTML
+
+*** Añadir una hoja de estilos
+
+Para un aspecto profesional:
+
+#+BEGIN_EXAMPLE
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css"/>
+#+END_EXAMPLE
+
+Crea ~style.css~ con:
+#+BEGIN_SRC css
+body {
+    font-family: Georgia, serif;
+    line-height: 1.6;
+    max-width: 40em;
+    margin: 2em auto;
+    padding: 0 1em;
+}
+
+h1, h2 {
+    font-family: 'Helvetica Neue', sans-serif;
+}
+
+p {
+    text-align: justify;
+    margin-bottom: 1em;
+}
+#+END_SRC
+
+Ahora tu HTML tiene un aspecto profesional.
+
+*** HTML5 frente a XHTML
+
+Para navegadores modernos:
+#+BEGIN_EXAMPLE
+#+HTML_DOCTYPE: html5
+#+END_EXAMPLE
+
+Para compatibilidad con EPUB:
+#+BEGIN_EXAMPLE
+#+HTML_DOCTYPE: xhtml
+#+END_EXAMPLE
+
+*** Tabla de contenidos
+
+Activar o desactivar la tabla de contenidos:
+#+BEGIN_EXAMPLE
+#+OPTIONS: toc:t      (mostrar la tabla)
+#+OPTIONS: toc:nil    (ocultar la tabla)
+#+OPTIONS: toc:2      (profundidad de la tabla = 2 niveles)
+#+END_EXAMPLE
+
+** Usos habituales del HTML
+
+*** Serial web
+
+Publica tu novela capítulo a capítulo en línea:
+1. Exporta cada capítulo a HTML
+2. Añade enlaces de navegación
+3. Súbelos a un sitio web o blog
+4. Comparte los enlaces con los lectores
+
+*** Avance digital
+
+Ofrece a los lectores un avance:
+1. Exporta los 3 primeros capítulos a HTML
+2. Añade un enlace de «compra el libro» al final
+3. Compártelo por correo o en tu sitio web
+4. Un formato bonito y accesible
+
+*** Versión de archivo
+
+Conserva una versión legible en la web:
+- Exporta el manuscrito completo a HTML
+- Guárdalo en Dropbox o en la nube
+- Accesible desde cualquier dispositivo
+- No hace falta ningún programa especial
+
+** ¡Pruébalo ahora! (2 minutos)
+
+1. Abre el manuscrito
+2. ~C-c C-e h o~ (exportar y abrir en el navegador)
+3. Comprueba el aspecto en el navegador
+4. Prueba a recorrer los capítulos
+5. Fíjate en los saltos de escena (varios saltos de línea)
+
+* Exportar a EPUB (libros electrónicos)
+
+EPUB es el formato estándar de los lectores electrónicos (Kindle, Kobo, Apple Books).
+
+** Requisitos
+
+- El paquete ~ox-epub~
+- Instalación: ~M-x package-install RET ox-epub RET~
+
+** Paso 1: Comprueba la configuración de EPUB
+
+Añade los ajustes de EPUB a tu manuscrito (no vienen por defecto):
+
+#+BEGIN_EXAMPLE
+#+UID: identificador-unico
+#+Subject: Ficción
+#+Description: Una novela sobre...
+#+Publisher: Tu nombre
+#+License: Todos los derechos reservados
+#+EPUBCOVER: cover.jpg
+#+HTML_DOCTYPE: xhtml
+#+END_EXAMPLE
+
+** Paso 2: Exporta a EPUB
+
+1. Abre el manuscrito
+2. ~C-c C-e~ (despachador de exportación)
+3. ~e~ (EPUB, si ox-epub está instalado)
+4. ~e~ (exportar a archivo)
+
+*Secuencia completa*: ~C-c C-e e e~
+
+** Qué obtienes
+
+Un archivo .epub que:
+- Se abre en cualquier lector electrónico
+- Tiene navegación por capítulos
+- Incluye metadatos (autor, título, descripción)
+- Admite saltos de escena
+- Funciona en Kindle (tras la conversión)
+
+** Metadatos del EPUB
+
+Metadatos esenciales para los libros electrónicos:
+
+#+BEGIN_EXAMPLE
+#+TITLE: El título de tu novela
+#+AUTHOR: Tu nombre
+#+DATE: 2025
+#+DESCRIPTION: Un relato apasionante sobre...
+#+Subject: Ficción / Literatura
+#+Publisher: Autoedición
+#+License: Copyright 2025 Tu nombre
+#+UID: tu-novela-2025-01-01
+#+END_EXAMPLE
+
+** Añadir una imagen de portada
+
+1. Crea la imagen de portada: ~cover.jpg~ (recomendado: 1600x2400 píxeles)
+2. Colócala en el directorio del manuscrito
+3. Añade al manuscrito:
+   #+BEGIN_EXAMPLE
+   #+EPUBCOVER: cover.jpg
+   #+END_EXAMPLE
+4. Exporta: la portada queda incluida.
+
+** Publicar en Kindle
+
+Amazon Kindle Direct Publishing acepta EPUB directamente (ya no acepta MOBI), así que no hay nada que convertir: sube el EPUB que exportaste.
+
+** Problemas habituales con el EPUB
+
+*** «La exportación a EPUB no está disponible»
+
+*Problema*: el paquete ox-epub no está instalado
+
+*Solución*: ~M-x package-install RET ox-epub RET~
+
+*** Errores de validación del EPUB
+
+*Problema*: algunos lectores son estrictos con el formato EPUB
+
+*Solución*:
+1. Usa la herramienta EPUBCheck (en línea o descargable)
+2. Corrige los errores que informe
+3. Normalmente: un DOCTYPE de HTML adecuado y metadatos válidos
+
+*** La imagen de portada no aparece
+
+*Problema*: la ruta de la imagen es incorrecta o no existe
+
+*Solución*:
+1. Comprueba que la imagen existe: ~cover.jpg~ en el directorio del manuscrito
+2. Usa una ruta relativa: ~#+EPUBCOVER: cover.jpg~
+3. Verifica el formato de la imagen: JPG o PNG
+
+** ¡Pruébalo ahora! (si ox-epub está instalado)
+
+1. Abre el manuscrito
+2. Añade una imagen de portada (opcional)
+3. ~C-c C-e e e~ (exportar a EPUB)
+4. Ábrelo en Calibre o en una aplicación de lectura
+5. Comprueba: portada, capítulos, navegación, saltos de escena
+
+* Personalizar los ajustes de exportación
+
+Las plantillas de proyecto no traen nada de esto configurado: se deja a propósito para que lo añadas tú proyecto a proyecto, en lugar de fijarlo en la plantilla (consulta [[file:00-indice-funciones.org][el índice de funciones]] para ver por qué). Esto es lo que puedes añadir.
+
+** Añadir una sección de ajustes de exportación
+
+Un lugar cómodo para tener juntos estos ajustes es una sección propia, etiquetada para que nunca aparezca en tu salida:
+
+#+BEGIN_EXAMPLE
+,* Configuración de exportación :ignore:noexport:
+#+END_EXAMPLE
+
+Añade debajo las líneas ~#+OPTIONS~/~#+LATEX_HEADER~/etc. de más abajo, o en cualquier otro punto del archivo antes del contenido al que afectan: Org las lee sea cual sea su posición.
+
+** Opciones generales de exportación
+
+#+BEGIN_EXAMPLE
+#+OPTIONS: ':t *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK")
+#+OPTIONS: date:t e:t email:nil f:t inline:t num:t p:nil pri:nil
+#+OPTIONS: prop:nil stat:t tags:t tasks:t tex:t timestamp:t title:t
+#+OPTIONS: toc:2 todo:t |:t
+#+END_EXAMPLE
+
+*Qué significan*:
+
+| Opción      | Significado                                        |
+|-------------+----------------------------------------------------|
+| ~H:3~       | Profundidad de encabezados (3 niveles como máximo) |
+| ~num:t~     | Numerar los encabezados                            |
+| ~toc:2~     | Tabla de contenidos (2 niveles de profundidad)     |
+| ~author:t~  | Incluir el nombre del autor                        |
+| ~date:t~    | Incluir la fecha                                   |
+| ~email:nil~ | No incluir el correo                               |
+| ~tags:t~    | Incluir las etiquetas en la exportación            |
+| ~todo:t~    | Incluir las palabras clave TODO                    |
+
+** Personalizaciones habituales
+
+*** Quitar la tabla de contenidos
+
+Cambia a:
+#+BEGIN_EXAMPLE
+#+OPTIONS: toc:nil
+#+END_EXAMPLE
+
+*** Ocultar las palabras clave TODO
+
+Cambia a:
+#+BEGIN_EXAMPLE
+#+OPTIONS: todo:nil
+#+END_EXAMPLE
+
+Ahora las escenas marcadas como ~*** TODO Escena 3~ se exportan como ~*** Escena 3~
+
+*** Desactivar la numeración de secciones
+
+Cambia a:
+#+BEGIN_EXAMPLE
+#+OPTIONS: num:nil
+#+END_EXAMPLE
+
+*** Incluir el correo electrónico
+
+Cambia a:
+#+BEGIN_EXAMPLE
+#+OPTIONS: email:t
+#+END_EXAMPLE
+
+** Ajustes específicos de LaTeX
+
+#+BEGIN_EXAMPLE
+#+LATEX_CLASS: memoir_draft
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{margin=1in}
+#+END_EXAMPLE
+
+Añade más cabeceras para necesidades concretas de formato.
+
+** Ajustes específicos de ODT
+
+#+BEGIN_EXAMPLE
+#+ODT_STYLES_FILE: "~/plantillas/manuscrito.ott"
+#+END_EXAMPLE
+
+Apunta a tu plantilla personalizada.
+
+** Ajustes específicos de HTML
+
+#+BEGIN_EXAMPLE
+#+HTML_HEAD: <link rel="stylesheet" href="style.css"/>
+#+HTML_HEAD_EXTRA: <meta name="viewport" content="width=device-width">
+#+END_EXAMPLE
+
+Añade CSS y metaetiquetas propios.
+
+** Ajustes específicos de EPUB
+
+#+BEGIN_EXAMPLE
+#+EPUBCOVER: cover.jpg
+#+Subject: Ficción / Ciencia ficción
+#+Publisher: Tu editorial
+#+License: CC-BY-SA 4.0
+#+END_EXAMPLE
+
+Metadatos completos para libros electrónicos profesionales.
+
+* Preparar un envío a una editorial
+
+Cada editorial tiene requisitos distintos. Así te adaptas.
+
+** Formato estándar de manuscrito (formato Shunn)
+
+La mayoría de las editoriales piden:
+- Times New Roman o Courier de 12 pt
+- A doble espacio
+- Márgenes de 1 pulgada en todos los lados
+- Cabecera: Apellido / TÍTULO / n.º de página
+- Primera página: datos de contacto arriba a la izquierda
+
+*** Configuración de LaTeX para el formato Shunn
+
+Añade a tu manuscrito:
+
+#+BEGIN_SRC org
+,#+LATEX_HEADER: \usepackage{geometry}
+,#+LATEX_HEADER: \geometry{margin=1in}
+,#+LATEX_HEADER: \usepackage{setspace}
+,#+LATEX_HEADER: \doublespacing
+,#+LATEX_HEADER: \usepackage{fancyhdr}
+,#+LATEX_HEADER: \pagestyle{fancy}
+,#+LATEX_HEADER: \fancyhead[L]{Tu nombre}
+,#+LATEX_HEADER: \fancyhead[C]{TÍTULO DE LA NOVELA}
+,#+LATEX_HEADER: \fancyhead[R]{\thepage}
+#+END_SRC
+
+*** Configuración de ODT para el formato Shunn
+
+1. Exporta a ODT
+2. Ábrelo en LibreOffice
+3. Formato → Estilo de página → Encabezado/Pie de página
+4. Añade un encabezado con nombre, título y número de página
+5. Formato → Párrafo → Interlineado → Doble
+6. Formato → Página → Márgenes → 1 pulgada en todos
+7. Guárdalo como plantilla (.ott)
+8. ¡Reutilízala en todos tus envíos!
+
+** Envío a un agente
+
+Los agentes suelen querer:
+- Carta de presentación (archivo aparte)
+- Sinopsis (1-2 páginas)
+- Los 3 primeros capítulos o 50 páginas
+- Formato estándar de manuscrito
+
+*Proceso*:
+1. Usa la exportación de subárbol para los 3 primeros capítulos:
+   - Coloca el cursor en el Capítulo 1
+   - ~C-c C-e C-s~ (alcance de subárbol)
+   - ~o o~ (exportar a ODT)
+2. Crea a mano la carta de presentación
+3. Crea a mano la sinopsis
+4. Combínalo todo según las instrucciones del agente
+
+** Autoedición
+
+Para Amazon KDP o similares:
+- Formato EPUB
+- Imagen de portada adecuada
+- Metadatos completos
+- No hace falta el formato de manuscrito (¡a los lectores les da igual!)
+
+*Proceso*:
+1. Exporta a EPUB (~C-c C-e e e~)
+2. Valida con EPUBCheck
+3. Súbelo a KDP
+4. Previsualiza con Kindle Previewer
+5. ¡Publica!
+
+** Envío a un concurso
+
+Los concursos literarios suelen tener requisitos estrictos:
+- Envío anónimo (sin nombre de autor)
+- Un formato concreto (normalmente PDF)
+- Límite de páginas
+- Márgenes e interlineado concretos
+
+*Proceso*:
+1. Quita temporalmente ~#+AUTHOR~
+2. Pon ~#+OPTIONS: author:nil~
+3. Añade los ajustes de LaTeX propios del concurso
+4. Exporta a PDF
+5. Verifica el número de páginas
+6. ¡Envíalo!
+
+* Flujos de exportación prácticos
+
+Estos son flujos completos para situaciones habituales.
+
+** Flujo 1: Copia rápida para lectores beta (ODT)
+
+*Objetivo*: compartir el borrador con lectores beta
+
+1. Abre el manuscrito
+2. Añade al principio:
+   #+BEGIN_EXAMPLE
+   #+OPTIONS: todo:nil toc:nil
+   #+END_EXAMPLE
+3. Añade una nota:
+   #+BEGIN_EXAMPLE
+   * Instrucciones para lectores beta :ignore:
+   ¡Gracias por leer! Por favor, añade comentarios y sugerencias directamente
+   en este documento y envíamelo de vuelta por correo.
+   #+END_EXAMPLE
+4. ~C-c C-e o o~ (exportar a ODT)
+5. Envía el archivo a los lectores beta
+6. Ellos leen en Word o LibreOffice y añaden comentarios
+7. Recibes los comentarios
+
+** Flujo 2: PDF profesional para un agente
+
+*Objetivo*: paquete de presentación con capítulos de muestra
+
+1. Verifica los ajustes del formato Shunn (ver arriba)
+2. Coloca el cursor en el encabezado del Acto I
+3. ~C-c C-e C-s~ (activa la exportación de subárbol)
+4. ~l p~ (exportar el subárbol a PDF)
+5. Revisa el PDF: cabeceras, interlineado, márgenes
+6. Guárdalo como: ~TuNombre-TituloNovela-Muestra.pdf~
+7. Adjúntalo al correo de presentación
+
+** Flujo 3: Publicación de un serial web
+
+*Objetivo*: publicar capítulos en línea cada semana
+
+1. Crea una plantilla de capítulo con navegación:
+   #+BEGIN_EXAMPLE
+   * Navegación entre capítulos :ignore:
+   [[file:capitulo-01.html][← Anterior]] | [[file:index.html][Índice]] | [[file:capitulo-03.html][Siguiente →]]
+   #+END_EXAMPLE
+2. Para cada capítulo:
+   - Coloca el cursor en el encabezado del capítulo
+   - ~C-c C-e C-s h h~ (exportar el subárbol a HTML)
+   - Renómbralo: ~capitulo-02.html~
+3. Crea index.html (el índice)
+4. Sube todos los archivos HTML a tu sitio web
+5. Comparte los enlaces de los capítulos en redes sociales
+
+** Flujo 4: EPUB para autoedición
+
+*Objetivo*: publicar en Amazon KDP
+
+1. Diseña la portada (1600x2400 px): ~cover.jpg~
+2. Añade todos los metadatos del EPUB:
+   #+BEGIN_EXAMPLE
+   #+EPUBCOVER: cover.jpg
+   #+DESCRIPTION: Una novela absorbente sobre...
+   #+Subject: Ficción / Literatura
+   #+Publisher: Tu nombre
+   #+LICENSE: Copyright 2025 Tu nombre
+   #+UID: tu-novela-2025
+   #+END_EXAMPLE
+3. ~C-c C-e e e~ (exportar a EPUB)
+4. Valida con EPUBCheck (herramienta en línea)
+5. Súbelo a Amazon KDP
+6. Compruébalo con Kindle Previewer
+7. ¡Publica!
+
+** Flujo 5: Envío a una antología
+
+*Objetivo*: enviar un solo cuento a una antología
+
+1. Escribe el cuento en ~cuento.org~
+2. Consulta las normas de la antología (formato, extensión)
+3. Exporta al formato requerido (normalmente PDF o DOC)
+4. Para PDF:
+   - ~C-c C-e l p~
+   - Comprueba el número de páginas frente al límite
+5. Para DOC:
+   - ~C-c C-e o o~ (ODT)
+   - Ábrelo en LibreOffice
+   - Guárdalo como .docx
+6. Sigue las instrucciones de envío
+7. ¡Envíalo!
+
+* Problemas habituales de exportación y soluciones
+
+** Problema: la exportación crea varios archivos
+
+*Síntoma*: al exportar se crean ~novela.tex~, ~novela.aux~, ~novela.log~, etc.
+
+*Causa*: LaTeX crea archivos intermedios
+
+*Solución*:
+- Es normal en la exportación a PDF
+- Comparte solo el archivo .pdf
+- Borra los intermedios si quieres: ~rm novela.{tex,aux,log}~
+
+** Problema: los caracteres especiales rompen la exportación
+
+*Síntoma*: la exportación falla con un error de «carácter desconocido»
+
+*Causa*: algunos caracteres necesitan escaparse en LaTeX
+
+*Solución*:
+- Usa entidades de Org: ~\tilde{}~ para una tilde literal, ~\nbsp~ para el espacio de no separación
+- Para texto literal: bloques ~#+BEGIN_EXPORT latex~
+- Revisa la codificación: guarda los archivos en UTF-8
+
+** Problema: los saltos de escena no aparecen
+
+*Síntoma*: los saltos de escena se muestran literalmente como «SCENE-BREAK»
+
+*Causa*: la macro no está definida o no funciona
+
+*Solución*:
+1. Comprueba que al principio del archivo está: ~#+MACRO: scene-break SCENE-BREAK~
+2. Verifica que usas ~{{{scene-break}}}~ y no ~{{{scene break}}}~ (¡sin espacio!)
+3. Confirma que ~org-scribe~ está cargado: ~M-x org-scribe-version~
+4. El reemplazo solo se aplica dentro de un contexto de org-scribe: o bien el archivo está bajo un proyecto con un archivo marcador ~.org-scribe-project~, o bien ~org-scribe-mode~ está activo en el búfer. Fuera de eso, el texto literal ~SCENE-BREAK~ se deja tal cual (para no afectar a otros archivos org).
+
+** Problema: la exportación muestra palabras clave TODO o encabezados de escena en bruto
+
+*Síntoma*: el PDF/ODT muestra «TODO Escena 3» en lugar de «Escena 3», o el propio título de la escena o del capítulo aparece en la salida donde esperabas solo el texto del cuerpo.
+
+*Causa*: o falta ~#+OPTIONS: todo:nil~ (ya viene en la plantilla del manuscrito: comprueba que no se haya borrado), o ~ox-extra~ no está instalado, de modo que la etiqueta ~:ignore:~ que debería descartar el título del encabezado no tiene efecto. Ejecuta ~M-x org-scribe-setup-check~ para ver cuál es.
+
+*Solución*:
+- Confirma que ~#+OPTIONS: todo:nil tags:nil~ está cerca del principio del archivo del manuscrito.
+- Instala ~org-contrib~ (~M-x package-install RET org-contrib~) para tener ~ox-extra~. org-scribe activa su extra ~ignore-headlines~ para tu manuscrito automáticamente en cuanto esté en el load-path; no hace falta más configuración.
+
+** Problema: los capítulos no se numeran bien
+
+*Síntoma*: los capítulos aparecen como «1.1» en lugar de «Capítulo 1»
+
+*Causa*: el estilo de numeración de los encabezados
+
+*Solución*:
+- Para LaTeX: usa ~\chapter~ en lugar de ~\section~
+- Cambia los niveles de encabezado: * = capítulo, ** = escena
+- O desactiva la numeración: ~#+OPTIONS: num:nil~
+
+** Problema: las imágenes no aparecen en la exportación
+
+*Síntoma*: las imágenes se ven como enlaces rotos
+
+*Causa*: las rutas de las imágenes son incorrectas
+
+*Solución*:
+- Usa rutas relativas: ~[[./images/mapa.png]]~
+- O rutas absolutas: ~[[file:/ruta/completa/a/imagen.png]]~
+- Verifica que las imágenes existen antes de exportar
+
+** Problema: el EPUB no valida
+
+*Síntoma*: EPUBCheck informa de errores
+
+*Causa*: XHTML no válido o faltan metadatos
+
+*Solución*:
+1. Pon ~#+HTML_DOCTYPE: xhtml~
+2. Añade todos los metadatos obligatorios (UID, título, autor)
+3. Corrige los errores de HTML que se informen
+4. Vuelve a validar hasta que salga limpio
+
+* Lo que has aprendido
+
+¡Fantástico trabajo! Has completado la Lección 11. Ahora sabes:
+
+✓ Compilar un borrador limpio con ~org-scribe-compile~ (~F8 X~), el camino más rápido del archivo de trabajo a un documento legible
+✓ Compilar un manuscrito listo para enviar con el estilo ~shunn~: un bloque de contacto real, recuento de palabras redondeado y (en PDF) una cabecera corrida, generados directamente de tu manuscrito
+✓ Compilar un EPUB con estilo con ~org-scribe-compile~, con saltos de escena que se leen como saltos deliberados y no como texto centrado corriente
+✓ Cómo funciona el sistema de exportación de org-mode
+✓ El despachador de exportación (~C-c C-e~) y las opciones de formato
+✓ Usar la macro de salto de escena (~{{{scene-break}}}~)
+✓ Exportar a PDF mediante LaTeX (~C-c C-e l p~)
+✓ Exportar a ODT para Word (~C-c C-e o o~)
+✓ Exportar a HTML para la web (~C-c C-e h h~)
+✓ Exportar a EPUB para lectores electrónicos (~C-c C-e e e~)
+✓ Personalizar los ajustes de exportación según tus necesidades
+✓ Preparar manuscritos para enviar a editoriales o agentes, de las dos maneras: el estilo ~shunn~ de ~org-scribe-compile~ y las cabeceras manuales de LaTeX para tener control total en la exportación directa
+✓ El formato estándar de manuscrito (formato Shunn)
+✓ Flujos completos para distintos escenarios de exportación
+✓ Resolver los problemas habituales de exportación
+
+* Próximos pasos
+
+¿Listo para potenciar tu escritura con herramientas de idioma? Pasa a la [[file:primeros-pasos-12-herramientas-diccionario.org][Lección 12: Herramientas de diccionario e idioma]].
+
+En la próxima lección aprenderás a:
+- Consultar el diccionario de la RAE
+- Buscar sinónimos (en español y en inglés)
+- La integración con la traducción
+- Consultas rápidas sin romper el ritmo
+- Herramientas de tesauro (PowerThesaurus)
+- Detección de idioma y corrector ortográfico
+
+** Práctica antes de seguir
+
+Afianza tus destrezas de exportación:
+
+1. *Compila un borrador limpio*
+   - ~F8 X~, ~clean~ y elige ~txt~
+   - Abre el archivo ~.org~ intermedio en ~export/~ y compáralo con tu manuscrito de trabajo
+   - Prueba ~odt~ y ábrelo en LibreOffice o Word
+   - Si tienes LaTeX o pandoc instalados, prueba también ~pdf~ y ~docx~
+   - Si tienes ~ox-epub~ instalado, prueba ~epub~ y ábrelo en Calibre o en una aplicación de lectura; busca un salto de escena y confirma que destaca del texto normal
+
+2. *Compila un manuscrito Shunn*
+   - Configura ~org-scribe-author-name~ (y, si quieres, el resto de tus datos de contacto)
+   - ~F8 X~, ~shunn~ y elige ~txt~: lee el encabezado
+   - Si tienes una distribución de LaTeX instalada, prueba ~pdf~ y comprueba la cabecera corrida en la página 2
+   - Añade una línea ~# Running-header:~ a ~.org-scribe-project~ y compila de nuevo para ver el cambio
+
+3. *Exporta a todos los formatos*
+   - PDF: ~C-c C-e l p~
+   - ODT: ~C-c C-e o o~
+   - HTML: ~C-c C-e h o~
+   - EPUB: ~C-c C-e e e~ (si está instalado)
+   - Compara los resultados
+
+4. *Añade saltos de escena*
+   - Encuentra 3 sitios en el manuscrito
+   - Añade ~{{{scene-break}}}~
+   - Exporta a PDF
+   - Verifica que los saltos aparecen bien
+
+5. *Crea un paquete de envío*
+   - Los 3 primeros capítulos a PDF
+   - Formato estándar de manuscrito
+   - Guárdalo como: ~TuNombre-Titulo-Muestra.pdf~
+
+6. *Personaliza un formato*
+   - Elige PDF u ODT
+   - Añade formato personalizado
+   - Crea una plantilla para reutilizarla
+   - Documenta los ajustes
+
+7. *Flujo con lectores beta*
+   - Exporta el manuscrito a ODT
+   - Ábrelo en Word o LibreOffice
+   - Añade comentarios de ejemplo
+   - Practica el flujo
+
+8. *EPUB con portada*
+   - Crea o busca una imagen de portada
+   - Añádela al manuscrito
+   - Exporta a EPUB
+   - Compruébalo en una aplicación de lectura
+
+Exportar es la manera de compartir tu trabajo: domina estas destrezas para presentar tu escritura de forma profesional.
+
+* Referencia rápida
+
+** Orden de compilación
+
+| Secuencia de teclas | Acción                                                                                                                                           |
+|---------------------+--------------------------------------------------------------------------------------------------------------------------------------------------|
+| ~F8 X~              | ~M-x org-scribe-compile~: pregunta el estilo (clean/shunn) y luego el formato (org/txt/md/odt/pdf/docx/epub; shunn solo ofrece org/txt/pdf/docx) |
+
+** Órdenes de exportación esenciales
+
+| Secuencia de teclas | Formato | Acción                                  |
+|---------------------+---------+-----------------------------------------|
+| ~C-c C-e l p~       | PDF     | Exportar mediante LaTeX                 |
+| ~C-c C-e o o~       | ODT     | Exportar y abrir en Word                |
+| ~C-c C-e h h~       | HTML    | Exportar a un archivo HTML              |
+| ~C-c C-e h o~       | HTML    | Exportar y abrir en el navegador        |
+| ~C-c C-e e e~       | EPUB    | Exportar a formato de libro electrónico |
+
+** Uso del salto de escena
+
+#+BEGIN_EXAMPLE
+En el manuscrito:
+  {{{scene-break}}}
+
+En la plantilla (principio del archivo):
+  #+MACRO: scene-break SCENE-BREAK
+
+Se exporta como:
+  LaTeX: \vspace{...}
+  HTML: <br><br><br>
+  ODT: un párrafo centrado con ***
+  ASCII: ***
+#+END_EXAMPLE
+
+** Opciones de exportación habituales
+
+#+BEGIN_EXAMPLE
+#+OPTIONS: toc:nil          (sin tabla de contenidos)
+#+OPTIONS: num:nil          (sin números de sección)
+#+OPTIONS: todo:nil         (ocultar las palabras clave TODO)
+#+OPTIONS: author:t         (incluir el autor)
+#+OPTIONS: date:t           (incluir la fecha)
+#+OPTIONS: email:nil        (ocultar el correo)
+#+OPTIONS: H:3              (profundidad de encabezados 3)
+#+END_EXAMPLE
+
+** Configuración rápida del formato Shunn
+
+#+BEGIN_EXAMPLE
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{margin=1in}
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \doublespacing
+#+LATEX_HEADER: \usepackage{courier}
+#+LATEX_HEADER: \renewcommand{\familydefault}{\ttdefault}
+#+END_EXAMPLE
+
+** Exportación de un subárbol
+
+#+BEGIN_EXAMPLE
+1. Coloca el cursor en el encabezado
+2. C-c C-e C-s (activa el alcance de subárbol)
+3. Elige el formato (l p, o o, h h, etc.)
+4. Solo se exporta esa sección
+#+END_EXAMPLE
+
+** Prefijos de alcance de la exportación
+
+| Prefijo   | Alcance         | Ejemplo           |
+|-----------+-----------------+-------------------|
+| (ninguno) | Todo el búfer   | ~C-c C-e l p~     |
+| ~C-s~     | Subárbol actual | ~C-c C-e C-s l p~ |
+| ~C-v~     | Solo lo visible | ~C-c C-e C-v l p~ |
+| ~C-b~     | Solo el cuerpo  | ~C-c C-e C-b l p~ |
+
+** Guía para elegir formato
+
+#+BEGIN_EXAMPLE
+Necesito:                        → Uso:
+─────────────────────────────────────────────────
+Borrador legible rápido, sin líos → org-scribe-compile, clean (txt/md/odt)
+Enviar a editorial/agente        → org-scribe-compile, shunn (pdf): bloque de contacto
+                                    completo, interlineado y cabecera corrida ya hechos
+Compartir con lectores beta      → org-scribe-compile, clean (odt o docx)
+Publicar en línea/blog           → HTML (exportación directa)
+Autopublicar un libro electrónico → org-scribe-compile, clean (epub, si ox-epub está
+                                    instalado), o exportación directa a EPUB para
+                                    portadas y metadatos
+Libro impreso (KDP)              → PDF (exportación directa, para control total de LaTeX)
+Compartir con un grupo de escritura → org-scribe-compile, clean (odt o pdf)
+Archivar una versión legible     → HTML, u org-scribe-compile, clean (md)
+Enviar a un concurso             → org-scribe-compile, shunn (pdf), o exportación directa
+                                    para controlar exactamente el número de páginas
+Enviar a un editor               → org-scribe-compile, clean (docx u odt),
+                                    totalmente editable
+#+END_EXAMPLE
+
+* Resumen
+
+Tienes dos maneras de sacar un manuscrito de org-scribe. Empieza por ~org-scribe-compile~ (~F8 X~): el estilo ~clean~ no necesita configuración y produce org/txt/md/odt/epub en segundos (el epub con saltos de escena con estilo propio, si ~ox-epub~ está instalado), y el estilo ~shunn~ (una vez configurada tu identidad de autor) produce un manuscrito listo para enviar (org/txt/pdf/docx) con un bloque de contacto real, recuento de palabras y cabecera corrida, generado directamente de tu archivo de trabajo. Los dos estilos dejan un intermedio inspeccionable que puedes revisar cuando algo se ve mal. Recurre a la exportación directa de Org (~C-c C-e~) cuando necesites HTML o una configuración que ninguno de los dos estilos de compile ofrece todavía: hojas de estilo HTML, metadatos y portadas de EPUB, o LaTeX ajustado a mano más allá de lo que cubre ~org-scribe-compile-shunn-latex-preamble~.
+
+La clave para exportar con éxito:
+1. Prueba primero ~org-scribe-compile~: ~clean~ para un borrador rápido, ~shunn~ cuando estés listo para enviar
+2. En la exportación directa, usa la macro de salto de escena para saltos independientes del formato
+3. Comprende los requisitos del formato de destino
+4. Personaliza los ajustes de exportación en tu manuscrito (no vienen por defecto)
+5. Prueba las exportaciones pronto y a menudo
+6. Valida la salida antes de compartirla
+
+Tu manuscrito está listo para el mundo: ¡exporta con confianza!
+
+---
+
+*Anterior*: [[file:primeros-pasos-10-lineas-temporales.org][Lección 10: Cronologías de personajes y de la trama]]
+*Siguiente*: [[file:primeros-pasos-12-herramientas-diccionario.org][Lección 12: Herramientas de diccionario e idioma]]
+
+*¡Lección 11 completada!*

@@ -1,0 +1,749 @@
+#+TITLE: Lección 1: Crear tu primer proyecto
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-01-creating-projects.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-01-creating-projects.org][English version]]/
+
+* ¡Bienvenido a la Lección 1!
+
+En esta lección vas a crear tu primer proyecto de escritura con ~org-scribe~. Es la base de todo lo demás: todas las demás funciones trabajan dentro de la estructura de un proyecto.
+
+Al terminar esta lección habrás:
+- Creado un proyecto completo de novela o de cuento
+- Entendido la estructura de archivos del proyecto
+- Abierto y explorado los archivos de plantilla
+- Escrito tu primera frase en el manuscrito
+
+*Tiempo estimado*: 10-15 minutos
+
+* Antes de empezar
+
+** Comprueba que estás listo
+
+Comprueba que tienes:
+- ✓ Emacs abierto y funcionando
+- ✓ El paquete ~org-scribe~ instalado y cargado
+- ✓ Un directorio donde guardar tus proyectos de escritura (en los ejemplos usaremos ~~/org-scribe/~)
+
+** Una prueba rápida
+
+Vamos a verificar que el paquete se ha cargado bien:
+
+1. Pulsa ~M-x~ (Alt+x u Option+x)
+2. Empieza a escribir: ~org-scribe-version~
+3. Pulsa Intro
+
+Deberías ver un mensaje como: *«org-scribe version 0.9.0»*
+
+Si ves este mensaje, ¡estás listo! Si no, asegúrate de haber instalado bien el paquete.
+
+* Entender los tipos de proyecto
+
+~org-scribe~ ofrece dos tipos de proyecto:
+
+** Proyectos de novela (plantilla completa)
+
+*Ideal para*:
+- Ficción larga (más de 50.000 palabras)
+- Historias complejas con varios personajes y tramas
+- Historias que exigen una planificación detallada y construcción de mundo
+
+*Qué obtienes*:
+- 2 archivos, más los archivos ocultos del proyecto
+- Un cuaderno de diseño (~diseno.org~) organizado en partes: Fundamentos (la
+  Puerta de salida y el Núcleo, por donde se empieza), Trama, Reparto, Mundo,
+  Investigación, Revisión, Diario y Borradores
+- El archivo principal del manuscrito (novela.org, o novel.org en inglés), con la sección de
+  seguimiento de estadísticas y las tablas de recuento de palabras
+
+** Proyectos de cuento (plantilla mínima)
+
+*Ideal para*:
+- Ficción breve (1.000-20.000 palabras)
+- Relatos de una sola sentada
+- Proyectos o ejercicios rápidos de escritura
+- Historias con pocos personajes y tramas más sencillas
+
+*Qué obtienes*:
+- 2 archivos esenciales
+- El archivo principal del cuento (cuento.org, o story.org en inglés) con el seguimiento de palabras integrado
+- Un cuaderno de diseño (~diseno.org~) que reúne en un solo lugar, como
+  secciones, los personajes, la trama, los escenarios, la investigación y
+  unos borradores
+
+*Recomendación para principiantes*: empieza con un proyecto de cuento para aprender lo básico. ¡Siempre puedes crear un proyecto de novela más adelante!
+
+* Crear un proyecto de cuento
+
+Vamos a crear tu primer proyecto: un cuento. Recorreremos cada paso.
+
+** Paso 1: Invocar la función de creación
+
+1. Pulsa ~M-x~ (esto abre el minibúfer, donde Emacs espera una orden)
+2. Escribe: ~org-scribe-create-short-story-project~
+3. Pulsa ~Intro~
+
+*Consejo*: ¡puedes usar el completado con Tab! Escribe ~org-scribe-cre~ y pulsa Tab para ver las órdenes disponibles.
+
+** Paso 2: Elegir el directorio base
+
+Emacs te pregunta:
+#+BEGIN_EXAMPLE
+Directorio base del proyecto: ~/org-scribe/
+#+END_EXAMPLE
+
+(Con el idioma de los mensajes en español; ver «Cómo funciona» más abajo. En inglés
+dice ~Base directory for project:~.)
+
+Aquí es donde se creará la carpeta de tu proyecto.
+
+*Qué hacer*:
+- Pulsa ~Intro~ para aceptar el valor por defecto (~~/org-scribe/~)
+- O escribe otra ruta (como ~~/Documentos/org-scribe/~ o ~~/mis-cuentos/~)
+- Pulsa ~Intro~
+
+El directorio se creará si no existe.
+
+** Paso 3: Escribir el título del cuento
+
+Emacs te pregunta:
+#+BEGIN_EXAMPLE
+Título del relato:
+#+END_EXAMPLE
+
+*Qué hacer*:
+- Escribe el título de tu cuento (por ejemplo: ~La rutina matinal~)
+- Pulsa ~Intro~
+
+*Pautas para el título*:
+- Usa títulos sencillos (letras, números, espacios, guiones)
+- Evita los caracteres especiales: * ? < > | " ' : / \
+- No empieces con un punto (.)
+- El título se convertirá en el nombre de la carpeta del proyecto, en una sola línea y sin espacios al principio ni al final
+- ¿Necesitas dos puntos o un signo de interrogación en el título real («Dune: Parte Dos»)? Crea el proyecto con un título sencillo y cámbialo después con ~F8 T~ (~org-scribe-set-title~), que acepta cualquier título de una sola línea
+
+** Paso 4: Elegir el idioma de la plantilla
+
+Emacs te pregunta, con completado:
+#+BEGIN_EXAMPLE
+Idioma de la plantilla: en
+#+END_EXAMPLE
+
+*Qué hacer*:
+- Escribe o selecciona ~en~ para las plantillas en inglés, o ~es~ para las plantillas en español (~diseno.org~, ~cuento.org~, etc.)
+- Pulsa ~Tab~ para ver las dos opciones, o simplemente ~Intro~ para aceptar la sugerida
+- Pulsa ~Intro~ para confirmar
+
+La opción sugerida sale de la variable ~org-scribe-template-language~, pero puedes elegir el otro idioma aquí cuando quieras: esta pregunta aparece en cada creación de proyecto, así que nunca quedas atado a un idioma proyecto tras proyecto. Lo que elijas se registra en el archivo marcador ~.org-scribe-project~ de ese proyecto, de modo que se recuerda para él desde entonces. Mira [[*Soporte bilingüe (inglés/español)][Soporte bilingüe]] más abajo para los detalles.
+
+** Paso 5: Esperar a que termine
+
+El paquete ahora:
+1. Crea el directorio del proyecto
+2. Copia y procesa los archivos de plantilla
+3. Inicializa un repositorio git
+4. Crea un commit inicial
+5. Abre el manuscrito
+
+Verás mensajes en el minibúfer con el progreso. Tarda solo unos segundos.
+
+** Paso 6: ¡Éxito!
+
+Cuando termine, verás:
+- El manuscrito abierto en tu búfer
+- Un mensaje: *«Proyecto de relato «La rutina matinal» creado correctamente en <ruta>»*
+- ¡Tu nuevo proyecto está listo!
+
+* Explorar tu proyecto de cuento
+
+Veamos qué se ha creado. Ahora deberías estar mirando el archivo del cuento.
+
+** La estructura del proyecto
+
+Tu nuevo proyecto tiene esta estructura:
+
+#+BEGIN_EXAMPLE
+La rutina matinal/             (la carpeta de tu proyecto)
+├── .git/                      (control de versiones: ¡automático!)
+├── .org-scribe-project        (archivo marcador: identifica esto como un proyecto de escritura)
+├── .dir-locals.el             (diccionario ortográfico para todos los archivos del proyecto)
+├── cuento.org                 (tu manuscrito principal: AQUÍ ESTÁS)
+└── diseno.org                 (el cuaderno de diseño: planificación, investigación y borradores)
+#+END_EXAMPLE
+
+** Entender cada archivo
+
+*** cuento.org (tu manuscrito)
+Aquí es donde escribirás tu cuento.
+
+*Qué contiene*:
+- El título y los metadatos (#+TITLE, #+AUTHOR, etc.)
+- Una escena inicial bajo «Contenido del Cuento», que carga con todo el objetivo de palabras (añade más con F8 s)
+- Plantillas de escena con propiedades (PoV, Personajes, Localizacion, etc.)
+- Una tabla integrada de seguimiento del recuento de palabras
+- Un enlace de navegación rápida al cuaderno de diseño
+
+Las plantillas no traen ninguna configuración de exportación: llevaba rutas
+absolutas y clases de LaTeX propias de una sola máquina. Añade tus propios
+~#+LATEX_CLASS~ y compañía si exportas; la Lección 11 lo explica.
+
+*Qué hacer ahora*:
+1. Busca el enlace de Navegación rápida que dice: ~[[file:diseno.org][Cuaderno de diseño]]~
+2. Haz clic en él (o pulsa ~C-c C-o~ con el cursor sobre el enlace)
+3. ¡Saltarás a diseno.org!
+
+*** diseno.org (planificación e investigación)
+Es tu centro de planificación, y contiene:
+- La sección Personajes (con una plantilla de protagonista)
+- La sección Esquema de la Trama
+- La sección Hilos de la Trama
+- La sección Ambientación (con una subsección de escenarios)
+- La sección Objetos
+- La sección Línea Temporal
+- La sección Investigación y Referencias
+- La sección Notas de Revisión
+- La sección Ideas Aleatorias e Inspiración
+- Unos Borradores al final
+
+*Qué hacer más adelante*: lo exploraremos en la Lección 4 (Capturar personajes).
+
+*** Los Borradores (tu espacio libre)
+
+Fíjate en que la mayor parte de ~diseno.org~ no es de forma libre: sus secciones
+Personajes y Ambientación las lee el sistema de enlaces y la captura archiva en
+ellas, de modo que un esbozo suelto ahí se convierte en una entidad a medias.
+
+La sección Borradores del final no te exige nada. Ni estructura, ni propiedades;
+nada la lee. Borradores, fragmentos, preguntas «¿y si…?», discusiones contigo
+mismo: ponlo aquí y refila lo que sobreviva con ~C-c C-w~.
+
+*Qué hacer más adelante*: la Lección 17 lo cubre, incluido cómo ramificar una
+pregunta en alternativas y explorar cada una.
+
+** El archivo marcador .org-scribe-project
+
+Este archivo oculto le dice a Emacs: «¡este directorio es un proyecto de escritura!»
+
+*Qué hace*:
+- Permite la detección del proyecto
+- Permite que las funciones de captura encuentren los archivos correctos
+- Guarda el tipo de proyecto (novela o cuento)
+- Registra el idioma de plantilla del proyecto
+- Registra si el planificador de escritura está activado en este proyecto
+
+*Qué aspecto tiene justo después de crearlo*:
+#+BEGIN_EXAMPLE
+# Writing project: La rutina matinal
+# Title: La rutina matinal
+# Type: short-story
+# Created: 2026-10-29
+# Language: es
+# Target-words: 5000
+#+END_EXAMPLE
+
+(Un proyecto de novela no lleva la línea ~# Type:~, y añade ~# Method:~ con el método de trama elegido.)
+
+- ~# Language:~ - el idioma que elegiste en la pregunta del Paso 4 (~en~ o ~es~). Es lo que lee ~org-scribe-project-language~, de modo que las plantillas de captura, los nombres de las propiedades de escena y las demás funciones que dependen del idioma del proyecto se mantienen coherentes en este proyecto aunque más adelante cambies el valor global ~org-scribe-template-language~.
+- ~# Planner:~ - se añade automáticamente cuando activas el planificador de escritura integrado (aceptando la oferta de «¿crear un plan?», ejecutando ~M-x org-scribe-plan~, o con ~org-scribe-planner-enable-for-project~/~org-scribe-planner-disable-for-project~). Su valor es ~yes~ o ~no~; la línea no existe («sin decidir») hasta que eliges. Mira la [[file:primeros-pasos-16-planificador.org][Lección 16: Planificación de objetivos de escritura]] para los detalles.
+- ~# Plan:~ - se añade automáticamente la primera vez que se localiza un archivo de plan para este proyecto, y guarda su ruta (normalmente ~plan.org~) para que las búsquedas futuras no tengan que recorrer el directorio del proyecto. También solo existe cuando ya hay un plan.
+
+*Importante*: ¡no borres este archivo! El paquete lo necesita, y editar a mano las líneas ~# Language:~ o ~# Planner:~ también funciona, siempre que conserves el formato ~# Clave: valor~.
+
+** El archivo .dir-locals.el (tu diccionario ortográfico)
+
+Tu proyecto está escrito en un solo idioma: lo elegiste en el Paso 4 y quedó
+registrado en el archivo marcador que acabas de leer. El diccionario ortográfico
+se deduce de esa elección, así que la creación del proyecto lo escribe una vez,
+en la raíz del proyecto:
+
+#+BEGIN_EXAMPLE
+;;; Directory Local Variables            -*- no-byte-compile: t -*-
+;;; Written by org-scribe.  Language: es (see .org-scribe-project).
+;;; Regenerate with M-x org-scribe-update-dir-locals.
+
+((nil . ((ispell-local-dictionary . "es_ES")
+         (jinx-languages . "es_ES"))))
+#+END_EXAMPLE
+
+*Qué hace por ti*: todos los archivos del proyecto —el manuscrito, el cuaderno de
+diseño y cualquiera que crees más adelante— se revisan con el diccionario
+correcto, sin que tengas que configurar nada por archivo. Emacs lo aplica en
+silencio; no te pedirá que lo apruebes. ~ispell-local-dictionary~ es para ispell
+y flyspell, y ~jinx-languages~ para jinx.
+
+*Si quieres una variante regional distinta* (inglés británico, español de México),
+díselo a org-scribe una vez, antes de crear proyectos:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-ispell-dictionaries '((en . "en_GB") (es . "es_MX")))
+#+END_SRC
+
+Luego ejecuta ~M-x org-scribe-update-dir-locals~ dentro de cualquier proyecto
+existente para reescribir su archivo. También puedes editar a mano el nombre del
+diccionario en ~.dir-locals.el~: nada en org-scribe lo vuelve a leer.
+
+*Cosas que conviene saber*:
+- Los proyectos creados con versiones antiguas de org-scribe no tienen este archivo.
+  ~M-x org-scribe-update-dir-locals~ (o ~F8 L D~) lo crea, leyendo el idioma de
+  ~.org-scribe-project~. El informe de salud del proyecto (~F8 H~) te avisa cuando
+  falta o cuando no coincide con el idioma del proyecto.
+- Un archivo concreto puede seguir contradiciendo al proyecto: un bloque
+  ~# Local Variables:~ al final de ese archivo prevalece. Útil para un archivo de
+  investigación lleno de citas en otro idioma.
+- Si usas el paquete ~guess-language~, este detecta el idioma por párrafo y
+  anula a ambos, que es justo lo que quieres de él.
+- La revisión ortográfica *dentro* de un búfer de captura no ve este ajuste,
+  porque la captura trabaja en un tipo especial de búfer que no recoge los
+  ajustes del directorio. Revisa la ortografía después de archivar la captura.
+
+** Integración con git
+
+¡Tu proyecto es automáticamente un repositorio git!
+
+*Qué significa esto*:
+- Todos los cambios quedan registrados
+- Puedes ver el historial de tu escritura
+- Puedes volver a versiones anteriores si hace falta
+- Puedes subirlo a GitHub/GitLab como copia de seguridad
+
+*No te preocupes si no sabes git*: funciona solo. ¡Puedes aprenderlo más adelante!
+
+* Crear un proyecto de novela
+
+Si prefieres crear un proyecto de novela completo, el proceso es casi idéntico:
+
+** Pasos rápidos
+
+1. Pulsa ~M-x~
+2. Escribe: ~org-scribe-create-novel-project~
+3. Pulsa ~Intro~
+4. Elige el directorio base (p. ej., ~~/escritura/~)
+5. Escribe el título de la novela (p. ej., ~Mi novela de fantasía~)
+6. Elige el idioma de la plantilla (~en~ o ~es~)
+7. Elige un método de trama: el predeterminado, /Sistema unificado/, o uno de los
+   otros dos, /La Hélice/ («se parte de una premisa») y /La Matriz/ («se parte
+   de personajes»); mira [[*Elegir un método de trama][Elegir un método de trama]] más abajo
+8. Escribe el total de palabras del proyecto (80.000 por defecto; pulsa
+   ~Intro~ para aceptarlo); mira [[*El total de palabras][El total de palabras]] más abajo
+9. Espera a que termine
+10. ¡Explora!
+
+** El total de palabras
+
+Los dos tipos de proyecto preguntan al crearse por el *total de palabras* del
+proyecto. Se guarda en el archivo ~.org-scribe-project~ (la línea ~# Target-words:~)
+y sirve para dimensionar las partes más externas del manuscrito: los tres actos
+de una novela, o las tres escenas de un cuento, reciben el 25 % / 50 % / 25 % del
+total. Para 50.000 palabras, los actos de una novela son 12.500 / 25.000 / 12.500.
+La lista de Objetivos del Proyecto de una novela muestra también el total. Los
+objetivos de capítulo y de escena (3.000 y 500) no cambian.
+
+El valor por defecto es 80.000 palabras para una novela y 5.000 para un cuento;
+cámbialo con ~org-scribe-default-word-target~, y el reparto con
+~org-scribe-word-target-proportions~ (mira la Lección 15).
+
+El ritmo —objetivo diario y fecha de fin— no se fija aquí: eso es cosa del
+planificador de escritura (~F8 W~).
+
+** Estructura de un proyecto de novela
+
+Un proyecto de novela tiene los mismos dos archivos, pero su cuaderno de diseño está organizado en partes:
+
+#+BEGIN_EXAMPLE
+Mi novela de fantasía/
+├── .git/
+├── .org-scribe-project
+├── .dir-locals.el             (diccionario ortográfico para todos los archivos del proyecto)
+├── diseno.org                 (EMPIEZA AQUÍ: el cuaderno de diseño)
+└── novela.org                 (manuscrito principal: el recuento de palabras y el seguimiento del progreso viven aquí, no en un archivo aparte)
+#+END_EXAMPLE
+
+Un proyecto en inglés tiene exactamente la misma estructura con los nombres de
+archivo en inglés: ~design.org~ y ~novel.org~.
+
+Dentro de ~diseno.org~ el cuaderno se divide en partes, cada una un encabezado de
+primer nivel:
+
+| Parte         | Qué contiene                                                                                          |
+|---------------+-------------------------------------------------------------------------------------------------------|
+| Fundamentos   | La Puerta de salida y el Núcleo: empieza por aquí                                                     |
+| Trama         | Los trece irrenunciables, los cuartiles, los hilos de la trama                                        |
+| Reparto       | Las fichas de personaje                                                                               |
+| Mundo         | Ambientaciones (cada una con su Eco y su Escollo), la construcción del mundo, objetos, línea temporal |
+| Investigación | Temas de investigación, material de referencia, verificación de hechos                                |
+| Revisión      | Los pases de revisión                                                                                 |
+| Diario        | Un diario para reflexionar sobre tu proceso de escritura                                              |
+| Borradores    | Un lugar libre para borradores e ideas                                                                |
+
+Los personajes, las ambientaciones y los hilos de la trama son encabezados
+directamente bajo su sección (Personajes, Ambientación, Hilos de la Trama). Deja
+esos encabezados de sección tal como están: así encuentra org-scribe tus
+entidades.
+
+#+BEGIN_QUOTE
+*Cambio incompatible para los proyectos con el diseño antiguo.* Las versiones
+anteriores hacían de un proyecto de novela un manuscrito junto a un directorio
+~objects/~, un directorio ~notes/~, un README, un archivo de revisión, un diario
+y unos borradores. No hay migración automática. Para fusionar a mano un proyecto
+existente: pega cada archivo antiguo bajo el encabezado de su parte en
+~diseno.org~, baja los encabezados de las entidades del nivel 1 al nivel 3 para
+que cada uno quede directamente bajo su sección, borra los archivos antiguos y
+ejecuta ~M-x org-id-update-id-locations~. Los IDs sobreviven al traslado, así
+que los enlaces de tus escenas siguen funcionando.
+#+END_QUOTE
+
+(Un ~plan.org~ *no* aparece aquí: se crea aparte, a petición, solo cuando activas el planificador de escritura integrado; mira la Lección 16.)
+
+*** Mira uno ya relleno
+
+Un proyecto recién creado es todo estructura y nada de contenido, lo que hace
+difícil juzgar para qué sirve cada archivo. El paquete incluye un ejemplo
+trabajado de esta misma estructura, a las tres semanas y cinco escenas de un
+primer borrador:
+
+- [[file:../examples/demo-novel/README.org][=examples/demo-novel/=]] — /The Morning Routine/ (por ahora en inglés)
+
+Todas las partes enumeradas arriba existen ahí con contenido real: una Puerta de
+salida cruzada en [[file:../examples/demo-novel/design.org][design.org]], los trece irrenunciables escritos en la parte
+Trama del mismo cuaderno, seis fichas de personaje con sus cadenas causales,
+cuatro ambientaciones con un Eco y un Escollo cada una, y un manuscrito con
+marcadores =*EDIT*= vivos y metadatos de planificación en cada escena.
+
+Ábrelo en Emacs junto a tu proyecto nuevo y compara los dos archivos lado a lado.
+Es también el sitio más seguro para probar por primera vez cualquier orden de
+esta guía: es una demo, y ~git checkout examples/~ deshace cualquier cosa que
+hagas en ella.
+
+** Elegir un método de trama
+
+El Paso 7 de arriba hace una pregunta más que los proyectos de novela reciben y
+los de cuento no: qué *método de trama* desplegar.
+
+#+BEGIN_EXAMPLE
+Método de trama: Sistema unificado (por defecto)
+#+END_EXAMPLE
+
+Se ofrecen tres opciones, todas construidas sobre el mismo vocabulario de fondo
+(Fantasma → Mentira → Debilidad → Deseo/Necesidad, los trece irrenunciables, los
+cuatro cuartiles):
+
+- *Sistema unificado* (el predeterminado): el método que usan el resto de las
+  lecciones de esta guía y la novela de demostración.
+- *La Hélice* («the Helix»): para cuando ya tienes una premisa y necesitas
+  construir los personajes que la sostengan.
+- *La Matriz* («the Matrix»): para cuando ya tienes personajes y necesitas que la
+  trama salga de cómo chocan.
+
+Pulsa ~Tab~ para ver los tres, o ~Intro~ para aceptar el Sistema por defecto.
+
+*Qué cambia y qué no*: el método que elijas solo cambia la parte Fundamentos de
+~diseno.org~ (~design.org~ en inglés), la parte que esta lección te dice que abras
+primero. Todo lo demás de la estructura de arriba —~novela.org~ y las demás
+partes del cuaderno— es idéntico elijas el método que elijas, porque La Hélice y
+La Matriz reutilizan la ficha de personaje del Sistema, sus trece irrenunciables
+y sus cuartiles en lugar de sustituirlos.
+
+Tu elección se registra en ~.org-scribe-project~ como una línea ~# Method:~, igual
+que el idioma se registra como ~# Language:~, de modo que se recuerda para este
+proyecto sin que tengas que hacer nada más. Es una elección única al crearlo, no
+un ajuste que se cambie a mitad de proyecto: el resto de esta guía da por hecho el
+Sistema unificado.
+
+*¿Tienes curiosidad por La Hélice o La Matriz?* La [[file:primeros-pasos-18-metodos-trama.org][Lección 18]] recorre en detalle los
+cinco niveles de cada método, cuando ya tengas un proyecto donde probarlos.
+
+** Empieza por diseno.org
+
+Las plantillas de novela no son un andamio en blanco: implementan un método de
+escritura concreto, y ~diseno.org~ (~design.org~ en los proyectos en inglés) es
+donde empieza ese método. Ábrelo antes que nada.
+
+Contiene dos cosas.
+
+*** La Puerta de salida
+
+Una lista de comprobación, al principio del archivo, cuyo único trabajo es
+decirte cuándo dejar de planificar y empezar a escribir:
+
+#+BEGIN_EXAMPLE
+,** Puerta de salida
+
+- [ ] Tema y al menos cinco Posturas
+- [ ] Protagonista y oponente con Fantasma, Mentira, Debilidad, Deseo y
+  Necesidad
+- [ ] Apuestas
+- [ ] Final elegido
+- [ ] Punto de vista decidido
+- [ ] Premisa
+- [ ] Los trece puntos de trama irrenunciables
+- [ ] Las tres primeras escenas
+#+END_EXAMPLE
+
+Cuando esas ocho casillas estén marcadas, empiezas. Todo lo demás se descubre
+escribiendo. La puerta existe porque planificar no tiene un final natural —
+siempre hay una cosa más que resolver— y un proyecto que nunca la cruza nunca
+llega a ser un borrador.
+
+Dos de las ocho se *miden* en lugar de declararse: ~F8 H~
+(~org-scribe-project-health~) cuenta cuántos de los trece puntos de trama has
+rellenado de verdad, y cuántas de las tres primeras escenas tienen un recuento de
+palabras distinto de cero. Cuando la medición no coincide con tu marca, en uno u
+otro sentido, el informe de salud lo dice y te lo deja a ti. Una casilla marcada
+sobre diez puntos de trama vacíos merece saberse; también una casilla sin marcar
+sobre trece llenos. Mira la Lección 3 para el informe completo.
+
+*** El Núcleo
+
+Doce preguntas, respuestas cortas, una página en total. Las preguntas 4 a 7 son
+una cadena causal y se responden en ese orden, porque cada una sale de la
+anterior: el Fantasma produce la Mentira, la Mentira produce la Debilidad y la
+Debilidad genera el Deseo. Si una no encaja con la de al lado, la equivocada
+suele ser la de más arriba.
+
+El resto de Fundamentos cubre lo que no tiene sección propia: el Problema del
+Mundo, las apuestas, el final, el punto de vista, los símbolos. Los personajes,
+las ambientaciones y la trama tienen cada uno su propia parte más abajo en el
+cuaderno (Reparto, Mundo, Trama), y los rellenas según los necesites.
+
+*Vocabulario*: términos como /Fantasma/, /Mentira/, /Debilidad/, /Postura/, /Eco/ y
+/Escollo/ se usan en un sentido preciso, y la mayoría se han recuperado de fuentes
+inglesas con nombre propio en lugar de inventarse. [[file:../docs/glossary.org][docs/glossary.org]] da la
+definición término a término y la correspondencia español↔inglés. Consúltalo
+antes de renombrar nada: un sinónimo suele recrear una ambigüedad que el método
+había eliminado.
+
+Las líneas que empiezan por ~#~ en todo el archivo son instrucciones para ti, no
+contenido. Déjalas o bórralas como prefieras: son comentarios de Org, así que
+nunca se exportan y el contador de palabras las ignora.
+
+** Cuándo usar la plantilla de novela
+
+Elige la plantilla de novela si:
+- Planeas una obra de más de 50.000 palabras
+- Tienes varios personajes con relaciones complejas
+- Necesitas una construcción de mundo detallada
+- Tienes varios hilos de la trama que seguir
+- Quieres partes separadas para distintos aspectos de la planificación
+
+** Novela o cuento: ¿cuál debo usar?
+
+| Aspecto                   | Plantilla de cuento         | Plantilla de novela                                 |
+|---------------------------+-----------------------------+-----------------------------------------------------|
+| *Complejidad*             | Sencilla, 2 archivos        | Compleja, 2 archivos con un cuaderno largo          |
+| *Recuento*                | 1.000-20.000                | 50.000+                                             |
+| *Planificación*           | Secciones de diseno.org     | Partes de diseno.org                                |
+| *Ideal para*              | Proyectos rápidos, aprender | Novelas largas y detalladas                         |
+| *Seguimiento de palabras* | En cuento.org               | En novela.org (bloque dinámico, sin archivo aparte) |
+| *Curva de aprendizaje*    | Suave                       | Más empinada                                        |
+| *Carga de mantenimiento*  | Mínima                      | Un cuaderno más largo que mantener                  |
+
+*Recomendación*: ¡empieza con la plantilla de cuento para aprender y luego prueba la de novela para tu gran proyecto!
+
+* Soporte bilingüe (inglés/español)
+
+¡El paquete admite plantillas en inglés y en español!
+
+** Cómo funciona
+
+La creación del proyecto te pregunta el idioma de forma interactiva cada vez: no tienes que preconfigurar nada para obtener un proyecto en español. El valor por defecto que se ofrece lo controla la variable de configuración ~org-scribe-template-language~ (por defecto ~'en~), y el idioma que elijas de verdad se registra en el archivo marcador ~.org-scribe-project~ del nuevo proyecto (como una línea ~# Language:~), de modo que se recuerda por proyecto: las plantillas de captura, los nombres de las propiedades de escena y las demás funciones que dependen del idioma del proyecto siguen luego ese ajuste del proyecto, y no solo el valor global por defecto.
+
+Hay un segundo ajuste que no hay que confundir con este: ~org-scribe-message-language~ (por defecto ~'en~) decide en qué idioma te hablan los mensajes y los mensajes de petición de org-scribe, como los de este tutorial («Directorio base del proyecto:», «Título del relato:»…). Para verlos en español, añade a tu configuración:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-message-language 'es)
+#+END_SRC
+
+Los dos ajustes son independientes: puedes tener un proyecto en español con los mensajes en inglés, o al revés. Las plantillas de captura son la excepción útil: siguen siempre el idioma del *proyecto*, no el de los mensajes. El menú Hydra, en cambio, está en inglés en ambos casos (Lección 8).
+
+** Las plantillas en inglés crean:
+- novel.org (manuscrito principal)
+- story.org (cuento)
+- design.org (cuaderno de diseño)
+
+** Las plantillas en español crean:
+- novela.org (manuscrito principal)
+- cuento.org (cuento corto)
+- diseno.org (cuaderno de diseño)
+
+** Cambiar el idioma de las plantillas
+
+No necesitas configurar nada para crear un proyecto en español: basta con elegir ~es~ en la pregunta del idioma que se muestra en el Paso 4.
+
+Si creas proyectos en español la mayor parte del tiempo, puedes cambiar la opción *por defecto* que se ofrece en esa pregunta añadiendo esto a tu configuración de Emacs (~init.el~ o ~.emacs~):
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-template-language 'es)
+#+END_SRC
+
+Luego reinicia Emacs o evalúa la línea con ~C-x C-e~. La pregunta seguirá apareciendo en cada creación de proyecto: esto solo cambia qué opción viene preseleccionada.
+
+** Proyectos bilingües
+
+*Importante*: elige el idioma antes de crear el proyecto. El paquete detecta el idioma comprobando qué archivos existen (novel.org o novela.org), así que mezclar idiomas en un mismo proyecto puede confundir la detección.
+
+* Problemas habituales y soluciones
+
+** «Template directory not found»
+
+*Problema*: el paquete no encuentra los archivos de plantilla.
+
+*Solución*:
+1. Asegúrate de que ~org-scribe~ está bien instalado
+2. Comprueba que el directorio org-scribe-templates/ existe en la instalación del paquete
+3. Prueba ~M-x package-reinstall RET org-scribe RET~
+
+** «Project directory already exists»
+
+*Problema*: intentas crear un proyecto con un nombre que ya existe.
+
+*Solución*:
+1. Elige otro título/nombre
+2. O borra el directorio existente si era una prueba
+3. O añade un número de versión (p. ej., «Mi cuento v2»)
+
+** «Invalid project title»
+
+*Problema*: tu título contiene caracteres especiales.
+
+*Solución*:
+1. Usa solo letras, números, espacios y guiones
+2. Quita caracteres como: * ? < > | " ' : / \
+3. No empieces el título con un punto (.)
+4. Si el título real necesita esos caracteres, crea el proyecto con uno sencillo y renómbralo con ~F8 T~
+
+(Con los mensajes en español, estos avisos salen traducidos, por ejemplo «¡El directorio del proyecto «…» ya existe!»; aquí aparecen con el texto en inglés para que los reconozcas si tu Emacs los muestra así.)
+
+** No encuentro el proyecto creado
+
+*Problema*: el proyecto se creó pero no sabes dónde.
+
+*Solución*:
+1. Mira el directorio base que indicaste
+2. Por defecto es ~~/org-scribe/~
+3. Tu proyecto está en: ~~/org-scribe/Titulo-de-tu-proyecto/~
+4. Usa ~M-x dired~ para recorrer directorios
+
+* Tu primera sesión de escritura
+
+Ahora que tienes un proyecto, ¡vamos a escribir algo!
+
+** Un ejercicio rápido (5 minutos)
+
+1. *Abre tu manuscrito*:
+   - Si creaste un cuento: abre ~cuento.org~
+   - Si creaste una novela: abre ~novela.org~
+
+2. *Busca la primera escena*:
+   - Busca un encabezado como: ~*** TODO Escena 1~
+   - O crea uno (lo aprenderemos en la Lección 2)
+
+3. *Escribe una frase*:
+   - Haz clic debajo del encabezado de la escena
+   - ¡Escribe lo que quieras! Por ejemplo: «El despertador sonó a las 6:30, como cada mañana».
+
+4. *Guarda el archivo*:
+   - Pulsa ~C-x C-s~
+
+5. *¡Celébralo!*
+   - ¡Acabas de escribir tu primera frase en ~org-scribe~!
+
+* Lo que has aprendido
+
+¡Enhorabuena! Has completado la Lección 1. Ahora sabes:
+
+✓ La diferencia entre proyectos de novela y de cuento
+✓ Cómo crear un proyecto con ~org-scribe-create-short-story-project~ o ~org-scribe-create-novel-project~
+✓ Para qué sirve cada archivo de plantilla
+✓ Cómo moverte entre los archivos del proyecto
+✓ Cómo está organizada la estructura del proyecto
+✓ Que tu proyecto es automáticamente un repositorio git
+✓ ¡Cómo escribir tu primera frase!
+
+* Próximos pasos
+
+¡Estás listo para la [[file:primeros-pasos-02-primera-escena.org][Lección 2: Escribir tu primera escena]]!
+
+En la próxima lección aprenderás:
+- A usar el modo Sin distracciones
+- A insertar plantillas de escena y de capítulo
+- Qué son las propiedades de escena y por qué son útiles
+- Tu flujo de escritura diario básico
+
+** Práctica antes de seguir
+
+Antes de la Lección 2, prueba esto:
+
+1. Crea un segundo proyecto de cuento (para practicar)
+2. Explora todos los archivos de plantilla
+3. Haz clic en los enlaces del principio del manuscrito para saltar al cuaderno de diseño
+4. Lee los comentarios y las instrucciones de los archivos de plantilla
+5. Escribe unas cuantas frases en escenas distintas
+
+¡Tómate tu tiempo! No hay prisa. Cuando te sientas cómodo con la creación de proyectos y la navegación, pasa a la Lección 2.
+
+* Referencia: todas las órdenes de creación de proyectos
+
+** Órdenes interactivas
+
+| Orden                                   | Qué hace                                      |
+|-----------------------------------------+-----------------------------------------------|
+| ~org-scribe-create-novel-project~       | Crea un proyecto de novela                    |
+| ~org-scribe-create-short-story-project~ | Crea un proyecto de cuento                    |
+| ~org-scribe-open-project-file~          | Navegación rápida a los archivos del proyecto |
+
+** Variables de configuración
+
+| Variable                       | Por defecto | Qué controla                                      |
+|--------------------------------+-------------+---------------------------------------------------|
+| ~org-scribe-template-language~ | ~'en~       | Juego de plantillas para proyectos nuevos (en/es) |
+
+* Consejos para resolver problemas
+
+** Cómo verificar que tu proyecto se creó bien
+
+1. Usa ~M-x dired~ para abrir el directorio del proyecto
+2. Deberías ver:
+   - El archivo .org-scribe-project
+   - cuento.org o novela.org
+   - diseno.org
+
+** Cómo borrar un proyecto de prueba
+
+1. Cierra todos los archivos de ese proyecto
+2. Usa ~M-x dired~ para ir al directorio padre
+3. Marca la carpeta del proyecto con ~d~
+4. Ejecuta el borrado con ~x~
+5. Confirma con ~yes~
+
+** Cómo reabrir un proyecto más adelante
+
+1. Usa ~C-x C-f~ (find-file)
+2. Ve a: ~~/org-scribe/Titulo-de-tu-proyecto/~
+3. Abre ~cuento.org~/~novela.org~ (o ~diseno.org~)
+4. El marcador ~.org-scribe-project~ hace que el paquete reconozca el proyecto
+
+* Obtener ayuda
+
+Si te atascas:
+
+1. Consulta el [[file:primeros-pasos-00-indice.org][Índice del tutorial]] para ver las demás lecciones
+2. Consulta el [[file:00-indice-funciones.org][Índice de funciones]] para la documentación detallada de cada función
+3. Usa ~C-h f~ seguido del nombre de una función para obtener ayuda
+4. Pregunta en la comunidad de Emacs o abre una incidencia
+
+* Resumen
+
+¡Has dado tu primer gran paso en ~org-scribe~! Ahora tienes un proyecto de verdad con una estructura adecuada, control de versiones y archivos de plantilla listos para tu historia.
+
+En las próximas lecciones aprenderás a usar de verdad todos estos archivos. Pero por ahora, date una palmadita en la espalda: ¡ya estás oficialmente configurado y listo para escribir!
+
+---
+
+*Anterior*: [[file:primeros-pasos-00-indice.org][Índice del tutorial]]
+*Siguiente*: [[file:primeros-pasos-02-primera-escena.org][Lección 2: Escribir tu primera escena]]
+
+*¡Lección 1 completada!*

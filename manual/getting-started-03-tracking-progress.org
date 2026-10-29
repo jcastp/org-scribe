@@ -1,7 +1,10 @@
 #+TITLE: Lesson 3: Tracking Your Progress
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-03-seguimiento-progreso.org][Versión en español]]/
 
 * Welcome to Lesson 3!
 
@@ -316,8 +319,7 @@ rescale the parts (the acts of a novel, the scenes of a short story):
 
 You see each part's old and new objective before anything is written. The
 command then updates the project's total, those part objectives, the Project
-Goals total line and any target word count property in the manuscript and
-README. Chapter and scene objectives, IDs and your writing plan are not
+Goals total line and any target word count property in the manuscript. Chapter and scene objectives, IDs and your writing plan are not
 changed. If the manuscript has unsaved edits, the file is left modified
 rather than saved.
 
@@ -370,7 +372,7 @@ If you'd still rather keep a simple hand-maintained log, nothing stops you from 
 
 For automated daily tracking without maintaining tables by hand, see [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with org-scribe-planner]] — the bundled writing planner pushes live word counts and daily deltas automatically.
 
-Note: word counting itself only runs when you ask for it (~F8 a~ or ~F8 w~) unless you've opted into ~org-scribe-auto-wordcount~, which is *off by default*. Setting it to ~t~ makes saving ~novel.org~/~novela.org~ silently recount words and sync the plan on every save — convenient, but it makes saves a bit slower since it recounts every heading in the buffer. See Lesson 16's "Optional: Automatic Update on Every Save" section for details and how to turn it back off.
+Note: word counting itself only runs when you ask for it (~F8 a~ or ~F8 w~) unless you've opted into ~org-scribe-auto-wordcount~, which is *off by default*. Setting it to ~t~ makes saving ~novel.org~/~novela.org~ silently recount words and sync the plan on every save — convenient, but it makes saves a bit slower since it recounts every heading in the buffer. Lesson 16's "Word Counts Are Recorded Automatically" section shows how to turn it on; set it back to ~nil~ to turn it off.
 
 *Don't worry if you skip it* - manual tracking works great!
 

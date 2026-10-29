@@ -1,0 +1,1461 @@
+#+TITLE: Lección 4: Capturar personajes
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-04-capturing-characters.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-04-capturing-characters.org][English version]]/
+
+* ¡Bienvenido a la Lección 4!
+
+Tu historia está llena de gente (o de alienígenas, o de dragones, o de muebles parlantes...). ¡Seguirles la pista a todos puede ser un reto! Esta lección te enseña a crear fichas de personaje detalladas y a enlazarlas con tus escenas.
+
+Al terminar esta lección habrás:
+- Creado tu primera ficha de personaje con la plantilla de captura
+- Entendido todas las secciones de la plantilla de personaje
+- Aprendido cómo funciona el sistema de enlaces basado en IDs
+- Fijado el PoV y las propiedades de personaje con un solo clic
+- Buscado todas las escenas en las que aparece un personaje
+- Generado una cronología de personajes que muestra quién aparece dónde
+
+*Tiempo estimado*: 20 minutos
+
+* Antes de empezar
+
+** Qué necesitas
+
+✓ Un proyecto con al menos una escena escrita
+✓ Al menos un personaje en tu historia
+✓ Tu manuscrito y tu cuaderno de diseño al alcance
+
+** Comprobación rápida
+
+Piensa en tu personaje principal:
+- ¿Cómo se llama?
+- ¿Qué papel juega? (protagonista, antagonista, secundario)
+- ¿Qué quiere?
+
+Todavía no necesitas todos los detalles: ¡los iremos desarrollando juntos!
+
+* Por qué importan las fichas de personaje
+
+Antes de capturar personajes, veamos por qué esto ayuda a tu escritura.
+
+** El problema sin fichas
+
+Cuando los personajes viven solo en tu cabeza o están repartidos por las escenas:
+- «¿De qué color tenía los ojos Alex?»
+- «Espera, ¿Sam tiene 32 o 35?»
+- «¿Llegué a contar el pasado de Jordan?»
+- «¿En qué escenas aparece realmente María?»
+- «¡Llevo diez capítulos sin mostrar a mi antagonista!»
+
+** La solución: fichas centralizadas
+
+Con fichas de personaje:
+- ✓ Todos los detalles en un solo lugar (¡sin incoherencias!)
+- ✓ Un clic desde las escenas hasta la ficha completa
+- ✓ Búsqueda de todas las escenas en las que aparece un personaje
+- ✓ Seguimiento de las apariciones de cada personaje a lo largo de la historia
+- ✓ Planificación sistemática de los arcos de personaje
+- ✓ Ningún secundario olvidado
+
+** Ventajas en la práctica
+
+*Durante la escritura*:
+- Consulta rápida: «¿A qué se dedica Alex?»
+- Coherencia: el mismo color de ojos cada vez
+- Desarrollo: planificar el arco mantiene el crecimiento del personaje en su sitio
+
+*Durante la revisión*:
+- Encuentra todas las escenas de Alex (comprueba el equilibrio de PoV)
+- Encuentra todas las escenas con Alex Y Sam (comprueba cómo se desarrolla su relación)
+- Genera la cronología de personajes (asegúrate de que los protagonistas aparecen con regularidad)
+- Identifica personajes «olvidados» (¿solo aparecen una vez?)
+
+* Entender los archivos de personajes
+
+Antes de capturar, veamos dónde viven los personajes.
+
+** Proyectos de cuento
+
+Los personajes van en ~diseno.org~ (~design.org~ en inglés), bajo el encabezado «Personajes»:
+
+#+BEGIN_EXAMPLE
+,* Personajes
+,** [Protagonista]
+  [Los detalles de tu personaje]
+
+,** [Personaje secundario]
+  [Los detalles de tu personaje]
+
+,** [Antagonista]
+  [Los detalles de tu personaje]
+#+END_EXAMPLE
+
+Todos los personajes en un solo archivo, organizados por papel.
+
+** Proyectos de novela
+
+Los personajes viven en el mismo cuaderno de diseño, en su parte Reparto, bajo
+la sección «Personajes»:
+
+#+BEGIN_EXAMPLE
+,* Reparto
+,** Personajes
+,*** [Nombre del personaje]
+  [Todos los detalles]
+
+,*** [Nombre de otro personaje]
+  [Todos los detalles]
+#+END_EXAMPLE
+
+Deja los encabezados «Reparto» y «Personajes» tal como están: org-scribe
+encuentra a tus personajes como los encabezados que cuelgan directamente de
+«Personajes».
+
+** Abrir tu archivo de personajes
+
+*Navegación rápida*:
+1. Pulsa ~F8~ (menú Hydra)
+2. Pulsa ~o~ (abrir archivo)
+3. Elige ~diseno.org~
+4. Pulsa Intro
+
+O usa ~C-x C-f~ y navega a mano.
+
+* Capturar tu primer personaje
+
+¡Vamos a crear una ficha de personaje con la plantilla de captura!
+
+** Paso 1: Activar la captura de personaje
+
+Desde cualquier punto de tu proyecto:
+
+1. Pulsa ~F8~ (menú Hydra)
+2. Pulsa ~k~ (submenú de captura de entidades)
+3. Pulsa ~h~ (de «cHaracter», sí, la ~h~ es un poco rara, ¡pero la ~c~ ya estaba ocupada!)
+
+El menú se cierra y aparece una pregunta.
+
+** Paso 2: Escribir el nombre del personaje
+
+Verás:
+#+BEGIN_EXAMPLE
+Nombre del personaje:
+#+END_EXAMPLE
+
+Escribe el nombre de tu personaje (por ejemplo, ~Alex Rivera~) y pulsa Intro.
+
+** Paso 3: Responder a las preguntas
+
+La plantilla te pide la información clave. Responde a cada pregunta:
+
+1. *Papel*: elige entre ~Thematic Supporting~, ~Protagonist~, ~Opponent~, ~Ally~ y
+   ~Fake-Ally Opponent~ (los valores del papel se quedan en inglés: son lo que
+   lee el paquete)
+   - Ejemplo: ~Protagonist~
+
+2. *Edad*: la edad del personaje
+   - Ejemplo: ~28~
+
+3. *Ocupación*: a qué se dedica
+   - Ejemplo: ~Diseñador gráfico autónomo~
+
+4. *Primera aparición*: cuándo aparece por primera vez
+   - Ejemplo: ~Capítulo 1~ o ~Apertura~
+
+5. *Peso*: el orden de su columna en la cronología (de 1 a 5; ~-1~ para
+   ocultarlo; ~RET~ para dejarlo en blanco). La pregunta dice «Peso (orden 1-5
+   en la cronología, -1 para ocultar, RET para ninguno)». Más abajo se explica
+   con detalle.
+
+Pulsa Intro después de cada pregunta.
+
+** Paso 4: ¡Aparece la plantilla!
+
+Tras la última pregunta verás una plantilla completa de ficha de personaje (cada
+campo lleva debajo unas líneas de pista que empiezan por ~#~; aquí se omiten
+para que quepa):
+
+#+BEGIN_EXAMPLE
+,* Alex Rivera
+:PROPERTIES:
+:ID: 3f100618-1c6b-4286-883d-b1deddf0aaaa
+:Role: Protagonist
+:Stance:
+:Goal:
+:Age: 28
+:Occupation: Diseñador gráfico autónomo
+:First-appearance: Capítulo 1
+:Weight:
+:RelationshipsData:
+:END:
+
+- Concepto ::
+- Postura ::
+- Fantasma ::
+- Mentira ::
+- Apuro ::
+- Debilidad psicológica ::
+- Debilidad moral ::
+
+,** Deseo
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+,** Necesidad
+
+- Objetivo ::
+- Motivación ::
+- Conflicto ::
+
+,** Plan
+
+- Plan ::
+- Plan de repuesto ::
+
+,** Aspectos
+
+- Aspecto ::
+- Aspecto ::
+- Relación ::
+- Posesión ::
+
+,** Trasfondo
+
+,** Hitos de cambio
+
+| Punto de trama | Tipo | Qué cambia |
+|---|
+
+,** Notas
+#+END_EXAMPLE
+
+(En el ~diseno.org~ que trae la plantilla hay una sección más,
+*Interrogatorio*, con cinco preguntas que se explican más adelante en esta
+lección. La plantilla de captura la deja fuera para que capturar a mitad de
+escritura sea rápido; añádela a mano si la quieres.)
+
+*La forma es el método.* Esto no es una ficha genérica de personaje con los
+campos renombrados: las siete primeras líneas son una *cadena causal*, en la
+que cada elemento produce el siguiente, y los dos bloques de tres partes que
+vienen después son la misma pregunta hecha hacia fuera y hacia dentro.
+Rellenarla en orden es el sentido de todo. La sección siguiente la recorre.
+
+** Paso 5: Guardar y archivar
+
+La captura se archiva sola en el lugar correcto:
+- *Cuento*: ~diseno.org~, bajo «Personajes»
+- *Novela*: ~diseno.org~, bajo «Personajes» en la parte Reparto
+
+Pulsa ~C-c C-c~ para finalizar la captura (o simplemente guarda el archivo).
+
+* Entender la plantilla de personaje
+
+Exploremos cada sección y qué poner en ella.
+
+** El bloque de propiedades
+
+#+BEGIN_EXAMPLE
+:PROPERTIES:
+:ID: 3f100618-1c6b-4286-883d-b1deddf0aaaa
+:Role: Protagonist
+:Stance:
+:Goal:
+:Age: 28
+:Occupation: Diseñador gráfico autónomo
+:First-appearance: Capítulo 1
+:Weight:
+:RelationshipsData:
+:END:
+#+END_EXAMPLE
+
+Los nombres de las propiedades de un personaje (~:Role:~, ~:Stance:~...) se
+quedan en inglés aunque el proyecto esté en español: son identificadores que
+lee el paquete. Lo que escribes tú como valor sí va en tu idioma.
+
+*** ~:ID:~: el enlace mágico (¡se genera solo!)
+
+Este identificador único se *crea automáticamente* y es la clave del sistema de enlaces.
+
+*Qué hace*:
+- Crea un ID único para este personaje
+- Permite enlazar desde las escenas hasta esta ficha
+- Permite buscar y navegar
+- No cambia nunca, aunque renombres al personaje
+
+*Importante*: ¡no lo borres ni lo modifiques! Lo ha generado el sistema por ti.
+
+*** ~:Role:~: la función del personaje
+
+La función de tu personaje en la historia:
+
+- *Protagonist* (protagonista): la historia trata de él o ella
+- *Opponent* (oponente): quiere lo mismo, y es la razón por la que el
+  protagonista no puede limitarse a conseguirlo
+- *Ally* (aliado): está con el protagonista, y suele ser quien dice lo que
+  este no quiere oír
+- *Fake-Ally Opponent* (falso aliado): parece un aliado y no lo es
+- *Thematic Supporting* (secundario temático): existe para encarnar una de las
+  Posturas ante el Tema
+
+Los dos últimos merecen una pausa. No son «personajes menores»: cada uno tiene
+un trabajo en el argumento del libro. Un secundario temático es la forma de que
+una Postura a la que no vas a dar una trama secundaria acabe diciéndose en voz
+alta, por alguien que cree en ella.
+
+*Nota*: esta propiedad es lo que marca el encabezado como personaje para el
+sistema de enlaces. Consérvala, y conserva el *nombre* en el encabezado: el
+papel no va ahí. Esa separación es la razón por la que renombrar a un personaje
+nunca rompe un enlace.
+
+*** ~:Stance:~: su respuesta al Tema
+
+Dónde se sitúa este personaje ante el problema moral del libro, con sus propias
+palabras. Tu Tema y sus Posturas están en ~diseno.org~ (Lección 1): con el
+Sistema ya están hechas antes de que empieces a capturar personajes; con La
+Hélice o La Matriz se nombran más tarde (nivel 3 / nivel 4; ver la Lección 18),
+así que escribe ahora la Postura y compárala con la lista cuando exista.
+
+Es la propiedad más útil de la ficha. Te dice si tienes un reparto o una
+multitud: dos personajes con la misma Postura son, para los fines del libro, el
+mismo personaje, por muy distintos que sean sus trabajos y sus peinados.
+
+Elige, para cada personaje, la Postura que más conflicto genere con la del
+protagonista.
+
+*** ~:Goal:~: lo que quieren, en la propiedad
+
+Una forma breve del Objetivo de su Deseo (más abajo), guardada aquí para que
+aparezca en la vista de columnas.
+
+Prueba ~C-c C-x C-c~ sobre el encabezado «Personajes» de ~diseno.org~: la línea
+~#+COLUMNS:~ que trae la plantilla muestra juntas las columnas Personaje, Role, Stance
+y Goal. Esa vista (la postura y el deseo de todos en una pantalla) es la forma
+más rápida de ver si tu reparto tira de verdad en direcciones distintas.
+
+*** Otras propiedades
+
+La plantilla rellenó estas con tus respuestas:
+- ~:Age:~: la edad del personaje
+- ~:Occupation:~: a qué se dedica
+- ~:First-appearance:~: cuándo aparece
+
+~:RelationshipsData:~ la gestionan por ti los comandos de relaciones (se
+explican más adelante en esta lección): no la edites a mano.
+
+El resto puedes editarlo cuando quieras.
+
+*** Opcional: ~:Weight:~ para ordenar la cronología
+
+La captura te lo pregunta y la plantilla lo deja en blanco. Controla el orden de
+las columnas en la cronología de personajes: de ~1.0~ a ~5.0~, el más bajo
+primero. Pulsa ~RET~ en la pregunta para dejarlo en blanco: un peso en blanco se
+trata como 999.0, así que el personaje queda al final, por orden alfabético
+entre los demás en blanco. Ese es el valor por defecto, y por eso una
+cronología sin tocar sale en orden alfabético.
+
+Es una preferencia de visualización. Nada más lo lee: ni las búsquedas ni el
+informe de salud.
+
+*** Opcional: ~:Weight: -1~ para dejar a un personaje fuera de la cronología
+
+Una novela acumula papeles de relleno: el posadero con dos frases, el sargento
+de la mesa, el perro del vecino. Es muy posible que quieras una entrada de
+archivo para cada uno, para no confundir sus nombres, y sin embargo no quieras
+una columna para cada uno en la cronología, donde treinta columnas casi vacías
+entierran las diez que importan.
+
+Responde ~-1~ en la pregunta del Peso cuando los captures, o añádelo a mano después:
+
+#+BEGIN_EXAMPLE
+:Weight: -1
+#+END_EXAMPLE
+
+Conservan su ficha, su ID, sus enlaces desde las escenas y su sitio en todas las
+búsquedas e informes. Simplemente dejan de tener columna. Vale cualquier valor
+negativo, pero ~-1~ es el que conviene usar.
+
+La cronología no esconde que está escondiendo algo. Debajo de la tabla escribe
+una línea con los nombres de quienes se quedaron fuera:
+
+#+BEGIN_EXAMPLE
+# Not shown (Weight -1): Sargento de la mesa, Posadero
+#+END_EXAMPLE
+
+(El texto «Not shown» sale en inglés incluso en un proyecto en español.) Esa
+línea empieza por ~#~, lo que la convierte en un comentario de Org: la ves en
+el búfer, y es invisible para las exportaciones y para el recuento de
+palabras, el mismo truco que usan los marcadores ~*EDIT*~.
+
+Para ver la tabla completa una vez sin editar ninguna propiedad, añade
+~:show-hidden t~ a la cabecera del bloque y refresca con ~C-c C-c~:
+
+#+BEGIN_EXAMPLE
+,#+BEGIN: character-timeline :show-hidden t
+,#+END:
+#+END_EXAMPLE
+
+La misma convención sirve para los hilos de la trama; ver la lección 6.
+
+*** Una nota sobre ~:Gender:~
+
+Las plantillas de novela y la captura de personaje ya no incluyen una propiedad
+~:Gender:~. Los pronombres y la presentación forman parte de quién es un
+personaje, y la ficha tiene mejores sitios para ellos que un campo de una
+palabra: la línea de *Concepto*, o el *Trasfondo*. Nada en org-scribe lee esa
+propiedad, así que añadirla a mano es inofensivo pero no hace nada.
+
+(Los proyectos de cuento son la excepción: su ~diseno.org~ todavía incluye un
+personaje de muestra con ~:Age:~ y ~:Gender:~. Las plantillas de cuento no se
+han llevado a la forma de ficha del método.)
+
+** La cadena causal
+
+Las siete líneas de arriba del cuerpo no son una lista de rasgos. Son una
+cadena, y *cada eslabón produce el siguiente*:
+
+#+BEGIN_EXAMPLE
+Fantasma  →  Mentira  →  Debilidad  →  Deseo
+#+END_EXAMPLE
+
+Respóndelas en orden. Si dos no encajan, lo que falla suele ser lo que está
+*por encima*: una Mentira que no se sigue del Fantasma significa que tienes el
+Fantasma equivocado, no la Mentira equivocada.
+
+*** Concepto
+
+Quién es y qué hace, en una frase, con voz propia. Cómo se describiría a sí
+mismo.
+
+- Ejemplo: «Un diseñador que jamás ha terminado nada antes de la noche en que
+  vencía, y que ha decidido que eso es una personalidad».
+
+*** Postura
+
+Su posición ante el Tema, con sus palabras. El mismo valor que la propiedad
+~:Stance:~.
+
+- Ejemplo: «Ser fiable es cosa de gente que no tiene nada mejor que ofrecer».
+
+*** Fantasma
+
+Lo que ocurrió antes de que empiece la historia y todavía duele. *Un hecho
+concreto, no un clima*: «mi abuela murió hace dos años y no fui a verla ese
+último mes», y no «una infancia infeliz».
+
+La prueba es si podrías filmarlo.
+
+*** Mentira
+
+Lo que concluyó del Fantasma, todavía cree, y *no es verdad*.
+
+- Ejemplo: «Si me comprometo a fondo con algo y aun así fracaso, eso demuestra
+  que no valgo. Mejor no comprometerse a fondo».
+
+La Mentira es de donde cuelga toda la psicología del personaje. Tiene que ser
+falsa: una conclusión verdadera es una lección, no una Mentira, y no produce
+ningún arco.
+
+*** Apuro
+
+Algo inmediato que complica su vida y le impide quedarse quieto.
+
+*Solo suyo.* El Problema del Mundo de ~diseno.org~ es de todos; el Apuro es de
+esta persona. Existe para que la historia pueda empezar sin esperar a que llegue
+la trama.
+
+- Ejemplo: «Seis meses de retraso con el alquiler, y el cliente que podría
+  arreglarlo es aquel al que le falló con la entrega».
+
+*** Debilidad psicológica
+
+El defecto interno que lo frena: consecuencia de la Mentira.
+
+- Ejemplo: «Evita todo lo que se pueda medir».
+
+*** Debilidad moral
+
+*A quién perjudica por ello, y cómo. Una persona, un acto.*
+
+Es la que los escritores se saltan, y es la que más importa. Fíjate en la
+diferencia que marca la plantilla: ser demasiado ambicioso te frena *a ti*, y
+eso es psicológico. Que tus hijos no te vean nunca es el daño *moral*. Un
+personaje con solo una debilidad psicológica es simpático pero inerte; uno que
+le cuesta algo a otra persona tiene un arco que merece la pena mirar.
+
+- Ejemplo: «Sam lo cubre, una y otra vez, y Alex se lo permite, sabiendo lo que
+  le cuesta a Sam en su propia reputación».
+
+** Deseo y Necesidad
+
+Dos bloques con las mismas tres partes, preguntadas primero hacia fuera y luego
+hacia dentro. La plantilla te da la frase que hay que rellenar:
+
+#+BEGIN_QUOTE
+Quiere (Objetivo), porque cree que le dará (Motivación), pero (Conflicto) se lo
+impide.
+#+END_QUOTE
+
+*** Deseo: hacia fuera
+
+*Objetivo*: concreto y externo. El lector tiene que saber cuándo se ha
+conseguido y cuándo no. «Ser feliz» no es un Objetivo; «robar el tesoro del rey
+Urdano», «conseguir el puesto de directora» o «comprar el coche más caro» sí lo
+son.
+
+*Motivación*: lo que cree que le dará conseguirlo. Sale de la Mentira, así que
+por debajo siempre es falsa. *Si lo que escribes aquí es sano y verdadero, has
+escrito la Necesidad en la casilla equivocada.*
+
+*Conflicto*: quién o qué se interpone. Externo y casi siempre el oponente. *Si
+el Conflicto no tiene cara, todavía no tienes un oponente.*
+
+*** Necesidad: hacia dentro
+
+Las mismas tres partes, vueltas hacia dentro:
+
+*Objetivo*: un cambio de conducta, no un objeto.
+
+*Motivación*: lo que la Mentira le impide tener. Suele nombrar el daño de la
+Debilidad moral.
+
+*Conflicto*: ya no es el oponente, sino *la propia Mentira*, y lo que tendría
+que admitir sobre el Fantasma para soltarla. *Si el Conflicto aquí vuelve a
+ser el oponente, el arco está externalizado*: nada de lo que ocurra dentro del
+personaje dependerá del personaje, y el final se sentirá como algo que se le
+hizo.
+
+*** Ejemplo
+
+#+BEGIN_EXAMPLE
+,** Deseo
+
+- Objetivo :: Conseguir la cuenta de Kestrel y conservarla un año entero.
+- Motivación :: Así nadie podrá decir que no se puede contar con él.
+- Conflicto :: Marcus, que lleva la cuenta y recuerda la entrega que falló.
+
+,** Necesidad
+
+- Objetivo :: Pedir ayuda antes de que la cosa esté ya ardiendo.
+- Motivación :: Dejar de gastar el crédito de Sam en lugar de construir el suyo.
+- Conflicto :: Admitir que el mes que faltó con su abuela fue una elección, no
+  un accidente de agenda.
+#+END_EXAMPLE
+
+Fíjate en que la motivación del Deseo es *falsa* («así nadie podrá decir...») y
+en que el Conflicto de la Necesidad es el Fantasma, no Marcus. Para eso sirven
+las dos casillas.
+
+** Plan
+
+- *Plan*: cómo piensa conseguir el Deseo. *Tiene que fallar*: el oponente es
+  fuerte, y un plan que funciona es una historia que termina en el capítulo tres.
+- *Plan de repuesto*: más desesperado y menos limpio. Suele ser donde la
+  Debilidad moral tiene su escena.
+
+** Aspectos
+
+Frases cortas, de doble filo, con la voz del propio personaje.
+
+La regla que fija la plantilla: *un Aspecto es verdadero y puede salvarlo o
+hundirlo por igual.* Si solo hace una de las dos cosas, todavía no es un
+Aspecto: es una fortaleza o un defecto, y esos son menos útiles porque la
+historia solo puede gastarlos una vez.
+
+- Tres como máximo para el protagonista, dos para los demás. Más convierte al
+  personaje en una caricatura.
+- *Relación*: un Aspecto que define su vínculo con otro personaje, un grupo o
+  una organización.
+- *Posesión*: un objeto significativo, si lo hay; suele ser también su símbolo.
+
+*Ejemplo*:
+#+BEGIN_EXAMPLE
+- Aspecto :: Puedo convencer a cualquiera de que me dé una semana más.
+- Aspecto :: Noto exactamente de qué se avergüenza la gente.
+- Relación :: Sam nunca ha dejado que fracase en público.
+- Posesión :: El reloj de mi abuela, que nunca he llevado a arreglar.
+#+END_EXAMPLE
+
+Cada uno corta por los dos lados: conseguir otra semana a base de labia es
+encanto y evasión; notar la vergüenza ajena es empatía y es un arma.
+
+** Trasfondo
+
+Una escena breve en la que *ves* quién es, en lugar de decir qué es.
+
+Es para ti, no para el libro: no tiene que ser buena y nadie la leerá. Una buena
+muestra el Fantasma ocurriendo, o al personaje frente a un dilema moral y
+resolviéndolo según su Mentira.
+
+** Interrogatorio
+
+Cinco preguntas, un párrafo cada una. (Está en el ~diseno.org~ que trae la plantilla;
+añádela a mano a un personaje capturado.)
+
+1. *¿Qué no haría jamás?*: el clímax debería amenazar con obligarlo a hacerlo.
+2. *¿Qué hace cuando está solo y nadie lo ve?*: ese es el yo verdadero.
+3. *¿En qué se equivoca?*: la Mentira en acción.
+4. *¿Por qué moriría?*: el núcleo moral.
+5. *Escríbele una escena trivial.*: pedir una bebida, lidiar con una molestia
+   menor. Si te sale genérica, todavía no lo conoces.
+
+La pregunta 5 es la prueba honesta de toda la ficha.
+
+** Hitos de cambio
+
+Una tabla, que sustituye al antiguo «arco del personaje» en texto libre:
+
+#+BEGIN_EXAMPLE
+| Punto de trama   | Tipo    | Qué cambia                              |
+|------------------+---------+-----------------------------------------|
+| Punto medio      | Ajuste  | Deja de tapar la entrega que falló      |
+| Aparente derrota | Ruptura | Admite el mes con la abuela             |
+| Decisión moral   | Ruptura | Rechaza la cuenta para proteger a Sam   |
+#+END_EXAMPLE
+
+Dos reglas la hacen más útil que un arco en prosa:
+
+1. *Cada hito está anclado a un punto de trama*: uno de los trece (Lección 6).
+   *Si no sabes decir en qué escena ocurre, no es un hito: es un deseo.* Esta
+   es la frase que atrapa el arco que solo existe en la cabeza del escritor.
+2. *El Tipo es Ajuste o Ruptura.* Un Ajuste es aprender o conseguir algo, y se
+   mueve un Aspecto secundario. Una Ruptura es cambiar de *Postura ante el
+   Tema*, y esas son raras, sostienen la estructura y deberían poder contarse
+   con los dedos de una mano.
+
+Diseña la secuencia hacia atrás, desde la transformación final.
+
+** Relaciones
+
+No hay una sección de «Relaciones» en texto libre en la ficha: las relaciones se
+siguen de forma estructurada en la propiedad ~:RelationshipsData:~, que
+gestionan los comandos de relaciones que se explican más adelante en esta
+lección. Te dan una lista por personaje y una tabla de todo el proyecto, y
+sobreviven al cambio de nombre, cosa que el texto libre no hace.
+
+Lo que sí sigue yendo en prosa es una relación que en realidad es un *Aspecto*
+(«Sam nunca ha dejado que fracase en público»), que va en la sección de
+Aspectos de arriba.
+
+** La sección de Notas
+
+#+BEGIN_EXAMPLE
+,** Notas
+-
+#+END_EXAMPLE
+
+Tus notas personales:
+- Voz y estilo de diálogo
+- Cosas que recordar
+- Notas de revisión
+- Ideas para desarrollar
+
+*Ejemplo*:
+#+BEGIN_EXAMPLE
+- Monólogo interior: autocrítico, algo sarcástico, observador
+- Diálogo: sincero, a veces azorado, usa el humor como defensa
+- Recordar: Alex dice «más o menos» de todo (muletilla)
+- TODO: desarrollar más su relación con sus padres
+#+END_EXAMPLE
+
+* Rellenar la ficha de tu personaje
+
+¡No tienes que rellenarlo todo de golpe!
+
+** Ficha mínima (5 minutos)
+
+Lo imprescindible:
+- Nombre (encabezado)
+- Papel y edad (propiedades: ¡ya rellenadas!)
+- Concepto (quién es, en una frase)
+- Fantasma y Mentira (qué le hirió y qué concluyó de ello)
+- Meta (lo que quiere, concreto y externo)
+
+¡Con esto basta para empezar a escribir!
+
+** Ficha completa (20-30 minutos)
+
+Rellena todas las secciones cuando:
+- Estés planificando antes de escribir
+- Desarrolles personajes complejos
+- Durante la revisión (para entender mejor a los personajes)
+- Solo para los personajes principales (el reparto secundario puede tener fichas mínimas)
+
+** Enfoque práctico
+
+1. *Antes de escribir*: ficha mínima
+2. *Mientras escribes*: añade detalles según vayan surgiendo
+3. *Durante la revisión*: rellena huecos, asegura la coherencia
+
+¡La ficha crece con tu comprensión del personaje!
+
+* El sistema de enlaces basado en IDs
+
+Ahora viene la parte realmente buena: ¡enlazar personajes con escenas!
+
+** Qué es el enlace basado en IDs
+
+¿Recuerdas esa propiedad ~:ID:~? Esto es lo que permite:
+
+*Enfoque tradicional*:
+- Escribir el nombre del personaje en la propiedad ~:PoV:~
+- Escribir los nombres de los personajes en la propiedad ~:Personajes:~
+- Esperar haberlo escrito igual todas las veces
+- Búsqueda manual
+
+*Enlace basado en IDs*:
+- Eliges el personaje en un menú
+- El sistema inserta el enlace por ID automáticamente
+- Haces clic en el enlace para saltar a la ficha del personaje
+- Las búsquedas funcionan aunque renombres al personaje
+- Generación de la cronología de personajes
+
+** Cómo se ven los enlaces
+
+En las propiedades de tu escena, en lugar de texto plano:
+#+BEGIN_EXAMPLE
+:PoV: Alex Rivera
+:Personajes: Alex Rivera, Sam Chen
+#+END_EXAMPLE
+
+Obtienes enlaces por ID en los que se puede hacer clic:
+#+BEGIN_EXAMPLE
+:PoV: [[id:char-alex-rivera-001][Alex Rivera]]
+:Personajes: [[id:char-alex-rivera-001][Alex Rivera]], [[id:char-sam-chen-002][Sam Chen]]
+#+END_EXAMPLE
+
+(Los IDs reales que genera la captura son identificadores largos, como el
+~3f100618-...~ de arriba; aquí se usan unos cortos para que se lea bien.)
+
+*Lo que ves en el archivo*: ~[[id:...][Alex Rivera]]~
+*Lo que ves en la vista de columnas*: solo «Alex Rivera» (¡limpio!)
+
+** Ventajas de los enlaces por ID
+
+1. *Clic para navegar*: pulsa ~C-c C-o~ sobre el nombre de un personaje → saltas a su ficha
+2. *Vuelta fácil*: pulsa ~C-c &~ para regresar
+3. *A prueba de cambios de nombre*: cambia «Alex» por «Alexander» en la ficha y todos los enlaces siguen funcionando
+4. *Búsquedas inteligentes*: encuentra todas las escenas con un personaje, sea cual sea el formato del enlace
+5. *Generación de cronologías*: seguimiento automático de las apariciones de los personajes
+6. *Coherencia*: ¡no puedes escribirlo mal si lo eliges en un menú!
+
+* Fijar los personajes PoV (la forma fácil)
+
+¡En lugar de escribir nombres de personajes, usa el sistema de menús!
+
+** Paso 1: Colócate en tu escena
+
+Abre tu manuscrito (~cuento.org~ o ~novela.org~) y pon el cursor en el encabezado de una escena.
+
+** Paso 2: Fijar el personaje PoV
+
+Desde el menú Hydra principal, pulsa ~p~ («set PoV») directamente: es una acción de nivel superior de Tag Scene, no un submenú:
+
+1. Pulsa ~F8~ (menú Hydra)
+2. Pulsa ~p~ (fijar personaje PoV)
+
+Verás un menú de completado con todos tus personajes:
+#+BEGIN_EXAMPLE
+Seleccionar personaje PoV: [Alex Rivera] [Sam Chen] [Jordan Lee]
+#+END_EXAMPLE
+
+** Paso 3: Elegir el personaje
+
+Empieza a escribir el nombre (por ejemplo, «Alex») y pulsa Tab o Intro para elegirlo.
+
+*¡Magia!* La propiedad ~:PoV:~ queda ahora así, y el mensaje «PoV establecido en Alex Rivera» te lo confirma:
+#+BEGIN_EXAMPLE
+:PoV: [[id:char-alex-rivera-001][Alex Rivera]]
+#+END_EXAMPLE
+
+¡Hecho! Sin escribir, sin erratas, ¡con enlace automático!
+
+* Fijar los personajes de la escena (varios personajes)
+
+Para la propiedad ~:Personajes:~ (quién aparece en la escena):
+
+** Paso 1: Fijar los personajes de la escena
+
+Desde el menú Hydra principal, pulsa ~h~ («set characters») directamente: es una acción de nivel superior de Tag Scene, no un submenú.
+
+** Paso 2: Selección múltiple de personajes
+
+Verás la misma lista de personajes, pero ahora puedes elegir varios:
+
+1. Escribe o elige el primer personaje (por ejemplo, «Alex») y pulsa Intro
+2. Escribe o elige el segundo personaje (por ejemplo, «Sam») y pulsa Intro
+3. Escribe o elige un tercer personaje si hace falta y pulsa Intro
+4. Pulsa Intro en una pregunta vacía para terminar
+
+** Paso 3: Resultado
+
+La propiedad ~:Personajes:~ tiene ahora enlaces por ID separados por comas:
+#+BEGIN_EXAMPLE
+:Personajes: [[id:char-alex-rivera-001][Alex Rivera]], [[id:char-sam-chen-002][Sam Chen]]
+#+END_EXAMPLE
+
+*¡Precioso!* Todos los personajes enlazados con un solo comando.
+
+* Saltar a las fichas de personaje
+
+¿Necesitas comprobar un detalle de un personaje mientras escribes?
+
+** Desde la propiedad de la escena
+
+1. Pon el cursor sobre el nombre de un personaje en ~:PoV:~ o ~:Personajes:~
+2. Pulsa ~C-c C-o~ (org-open-at-point)
+3. *¡Zas!* Estás en la ficha del personaje
+
+** Con el menú
+
+1. Cursor en el encabezado de la escena
+2. ~F8 j~ (saltar al personaje PoV: una acción de nivel superior de Tag Scene)
+3. *¡Zas!* En la ficha del personaje PoV
+
+** Volver a la escena
+
+Después de consultar la información del personaje:
+1. Pulsa ~C-c &~ (org-mark-ring-goto)
+2. ¡Vuelves a tu escena!
+
+*Flujo de trabajo*: escribes una escena → necesitas comprobar el color de ojos → ~C-c C-o~ → ves la ficha → ~C-c &~ → de vuelta a escribir. ¡Tres segundos!
+
+* Buscar las apariciones de un personaje
+
+¡Encuentra todas las escenas en las que aparece un personaje concreto!
+
+** Paso 1: Abrir el menú de búsqueda
+
+Pulsa ~F8~ (menú Hydra principal)
+
+Mira la sección «Search»:
+#+BEGIN_EXAMPLE
+^Search^
+_1_: POV
+_2_: Character
+_3_: Plot
+_4_: Location
+_5_: TODOs
+#+END_EXAMPLE
+
+(Los menús Hydra están en inglés en todos los proyectos.)
+
+** Paso 2: Buscar por personaje
+
+Pulsa ~2~ (de «Character»)
+
+** Paso 3: Escribir el nombre del personaje
+
+Te aparecerá la pregunta:
+#+BEGIN_EXAMPLE
+Buscar personaje [difuso]:
+#+END_EXAMPLE
+
+Escribe el nombre del personaje (por ejemplo, «Alex») y pulsa Intro. (La pregunta
+se llama «[difuso]» cuando eliges entre los personajes que existen, y «Nombre
+del personaje [subcadena]» cuando buscas por un fragmento de texto.)
+
+** Paso 4: Ver los resultados
+
+Se abre un búfer que muestra todas las escenas en las que aparece Alex (ya sea como PoV o en la propiedad Personajes):
+
+#+BEGIN_EXAMPLE
+,* Personaje: Alex
+
+,** Escena 1 - Suena el despertador
+   :PoV: Alex Rivera
+
+,** Escena 2 - Encuentro en la cafetería
+   :Personajes: Alex Rivera, Sam Chen
+
+,** Escena 5 - La decisión
+   :PoV: Alex Rivera
+#+END_EXAMPLE
+
+*Haz clic en cualquier escena* para saltar a ella.
+
+** Otras búsquedas de personajes
+
+*Búsqueda solo por PoV* (~F8 1~):
+- Encuentra todas las escenas desde la perspectiva de Alex
+- Útil para comprobar el equilibrio de PoV en historias con varios PoV
+
+*La diferencia*:
+- Búsqueda «1» (PoV): solo las escenas en las que Alex es el punto de vista
+- Búsqueda «2» (Character): todas las escenas en las que aparece Alex (como PoV o no)
+
+* Visualización de la cronología de personajes
+
+¡Mira de un vistazo qué personajes aparecen en qué escenas!
+
+** Qué es una cronología de personajes
+
+Una tabla que muestra:
+- Filas: tus escenas (en orden de historia)
+- Columnas: tus personajes
+- Símbolos: ★ (personaje PoV) o ● (aparece en la escena)
+
+Ejemplo:
+#+BEGIN_EXAMPLE
+| Escena                    | Capítulo   | Alex | Sam | Jordan |
+|---------------------------+------------+------+-----+--------|
+| Escena 1 - Despertador    | Capítulo 1 | ★    |     |        |
+| Escena 2 - Cafetería      | Capítulo 1 | ★    | ●   |        |
+| Escena 3 - Reunión        | Capítulo 1 | ●    |     | ●      |
+| Escena 4 - Noche          | Capítulo 2 | ★    | ●   |        |
+#+END_EXAMPLE
+
+(Las cabeceras de la tabla, «Scene» y «Chapter», las escribe el paquete en
+inglés; aquí se ponen en español solo para que se lea mejor el ejemplo.)
+
+Cómo leer la tabla:
+- ★ = este personaje es el PoV
+- ● = este personaje aparece (pero no es el PoV)
+- (en blanco) = el personaje no aparece
+
+** Generar la cronología de personajes
+
+*** Paso 1: Encontrar el bloque de la cronología
+
+*Cuento*: en ~cuento.org~, desplázate hasta la sección «Línea Temporal de Personajes»
+*Novela*: en ~novela.org~, desplázate hasta la sección «Línea Temporal de Personajes» (está bajo el seguimiento del progreso)
+
+Verás:
+#+BEGIN_EXAMPLE
+,** Línea Temporal de Personajes
+
+#+BEGIN: character-timeline
+#+END:
+#+END_EXAMPLE
+
+*** Paso 2: Generar la cronología
+
+1. Pon el cursor sobre la línea ~#+BEGIN: character-timeline~
+2. Pulsa ~C-c C-c~
+3. ¡La tabla se genera sola!
+
+** Usar la cronología
+
+*Qué buscar*:
+
+1. *Cobertura de personajes*: ¿aparecen los principales con regularidad?
+2. *Distribución del PoV*: ¿está equilibrado (si hay varios PoV)?
+3. *Personajes olvidados*: ¿algún personaje con un solo ●?
+4. *Detección de huecos*: ¿tramos largos sin algún personaje?
+5. *Seguimiento de relaciones*: ¿cuándo comparten escenas dos personajes?
+
+*Ejemplos de conclusiones*:
+- «Jordan solo aparece en una escena: ¿lo recorto o lo desarrollo más?»
+- «Alex lleva cinco escenas sin ser PoV: ¡hora de cambiar de perspectiva!»
+- «Sam aparece en todas las escenas: ¿estoy abusando de este personaje?»
+
+* Relaciones entre personajes (seguimiento estructurado)
+
+** Qué son las relaciones estructuradas entre personajes
+
+org-scribe ofrece un potente sistema para seguir datos estructurados de relación entre personajes.
+
+Cada relación incluye:
+- *Personaje destino*: enlazado por ID, así que sigue siendo válido aunque se renombre
+- *Tipo*: mentor, rival, amigo, familia, amante, enemigo, aliado, etc.
+
+Estos datos estructurados permiten:
+- Gestión interactiva de relaciones
+- Una vista de lista simple por personaje y una vista de tabla de todo el proyecto
+
+** Configuración rápida
+
+Para proyectos existentes con personajes:
+1. ~F8 L r~ (o ~M-x org-scribe-setup-character-relationships~)
+2. Añade la propiedad ~:RelationshipsData:~ a todos los personajes
+3. ¡Listo para añadir relaciones!
+
+Verás un mensaje como «Propiedad RelationshipsData añadida a 3 personajes».
+
+** Añadir una relación
+
+~F8 L a~ (o ~M-x org-scribe-add-relationship~)
+
+*Las preguntas interactivas te guían*:
+
+1. *Personaje de origen*: «Alex Rivera»
+2. *Personaje de destino*: «Sam Chen»
+3. *Tipo de relación*: «mentor» (de una lista de tipos habituales, o escribe el tuyo)
+
+*Resultado*: «Relación de tipo mentor añadida: Alex Rivera → Sam Chen»
+
+La relación se guarda en la propiedad ~:RelationshipsData:~ de Alex (este
+nombre de propiedad es el mismo en todos los proyectos, también en los de
+español):
+#+BEGIN_EXAMPLE
+:RelationshipsData: [[id:char-sam-002][Sam Chen]]|mentor
+#+END_EXAMPLE
+
+** Tipos de relación habituales
+
+El sistema sugiere estos tipos habituales (pero puedes usar cualquier texto):
+
+- =mentor= / =aprendiz=: enseñar y aprender
+- =amigo=: amistad
+- =rival= / =oponente=: competencia
+- =familia= / =hermano= / =progenitor= / =hijo=: vínculos familiares
+- =amante= / =pareja= / =cónyuge=: romance
+- =aliado=: trabajar juntos
+- =enemigo=: oposición
+- =colega= / =conocido=: profesionales o de trato ocasional
+- =superior= / =subordinado=: jerarquía
+- =profesor= / =estudiante=: enseñanza formal
+
+(En un proyecto en español la lista de sugerencias sale en español, como aquí.
+Lo que escribas se guarda tal cual: si cambias de idioma después, tus tipos
+antiguos no se tocan.)
+
+** Ver las relaciones
+
+*** Un solo personaje (~F8 L v~)
+
+Mira las relaciones de un personaje como una lista simple:
+
+#+BEGIN_EXAMPLE
+Relationships for Alex Rivera:
+
+  - mentor: Sam Chen
+  - rival: Jordan Lee
+  - amigo: Dana Park
+#+END_EXAMPLE
+
+(El encabezado de esta vista lo escribe el paquete en inglés incluso en un
+proyecto en español; los tipos son los que tú hayas guardado.)
+
+*** Todas las relaciones (~F8 L V~)
+
+Mira la tabla completa de relaciones de todo el proyecto:
+
+| Character   | Related To  | Type     |
+|-------------+-------------+----------|
+| Alex Rivera | Sam Chen    | mentor   |
+| Alex Rivera | Jordan Lee  | rival    |
+| Sam Chen    | Alex Rivera | aprendiz |
+| Jordan Lee  | Alex Rivera | rival    |
+
+(Las cabeceras de esta tabla también salen en inglés.)
+
+No hay ningún grafo dentro de Emacs (ni Graphviz/dot, ni árbol ASCII). El dibujo vive en el companion visual: su pestaña *Relations* (~F8 B~) dibuja los personajes como nodos y estas relaciones como líneas con tipo, directamente desde los datos, de modo que no puede desajustarse del cuaderno. Una relación guardada en los dos sentidos con el mismo tipo se dibuja como una línea simple; si los tipos son distintos, son dos flechas. Haz clic en un personaje y luego en otro para añadir una relación; haz clic en una línea para cambiar el tipo o quitar la entrada. Cada cambio es un paso de deshacer en Emacs y no se guarda hasta que guardes. Además, las relaciones ya no guardan una fuerza (1-5) ni un sentimiento (positivo/negativo/neutro), solo una terna dirigida origen → destino → tipo; si quieres anotar intensidad o valencia, ponla en el *tipo* mismo de la relación (por ejemplo «aliado-cercano» frente a «aliado») o en prosa en otro punto del encabezado del personaje. Los cuadernos escritos en la forma antigua ~(tipo,fuerza,valencia)~ se siguen leyendo (solo el tipo) y se reescriben en la forma actual la próxima vez que cambien las relaciones de ese personaje.
+
+** Casos de uso prácticos
+
+*** Análisis de la red de personajes
+
+*Identifica personajes aislados*: recorre la tabla de ~F8 L V~ en busca de personajes que nunca aparecen en ninguno de los dos lados de una relación.
+
+*Encuentra personajes centrales*: los personajes que aparecen en muchas filas (como origen o como destino) son los más conectados; comprueba si tu protagonista y tu antagonista lo están lo bastante.
+
+*** Coherencia de la historia
+
+*Comprueba la simetría de las relaciones*: ¿la entrada de Alex pone a Sam como «mentor»? ¿Y la entrada de Sam pone a Alex como «aprendiz»? Como cada lado guarda su relación por separado, es fácil que se desincronicen: la tabla de todas las relaciones es la forma más rápida de detectar una pareja unilateral o contradictoria.
+
+*** Planificar la evolución de las relaciones
+
+Usa las relaciones para seguir cómo cambian los vínculos a lo largo de la historia:
+
+1. Añade una relación cuando dos personajes se conectan por primera vez (~F8 L a~)
+2. Quítala (~F8 L x~) y vuelve a añadirla con otro tipo si la relación cambia de naturaleza (por ejemplo «conocido» → «amigo» → «mentor»)
+3. Quítala del todo si termina
+
+** Quitar relaciones
+
+~F8 L x~ (o ~M-x org-scribe-remove-relationship~)
+
+1. Elige el personaje que vas a modificar
+2. Elige de la lista qué relación quitar
+3. ¡Confirmado! (el mensaje es del estilo «Relación de mentor eliminada: Alex Rivera»)
+
+** Datos de relaciones en las propiedades del personaje
+
+Las relaciones se guardan en la propiedad ~:RelationshipsData:~ con este formato:
+
+#+BEGIN_EXAMPLE
+,* Alex Rivera
+:PROPERTIES:
+:ID: char-alicia-001
+:RelationshipsData: [[id:char-sam-002][Sam]]|mentor; [[id:char-jordan-003][Jordan]]|rival
+:END:
+#+END_EXAMPLE
+
+*Formato*: ~[[id:ID-DESTINO][Nombre]]|tipo~
+
+- Usa enlaces por ID (¡estables ante cambios de nombre!)
+- Varias relaciones separadas por punto y coma
+- Legible por personas
+- Editable a mano si hace falta
+
+** Ejercicio: construir una red de relaciones
+
+¡Practiquemos con los tres personajes del ejercicio anterior!
+
+*** Parte 1: añadir relaciones (5 minutos)
+
+1. ~F8 L a~ (añadir relación)
+   - Origen: el protagonista
+   - Destino: un personaje secundario
+   - Tipo: elige el adecuado (¿amigo? ¿mentor? ¿aliado?)
+
+2. Añade la relación inversa (cómo ve el personaje secundario al protagonista)
+   - Origen: el personaje secundario
+   - Destino: el protagonista
+   - ¡Un tipo distinto está bien! (por ejemplo, protagonista → «mentor», personaje secundario → «aprendiz»)
+
+3. Añade una relación entre el personaje secundario y el menor
+   - A tu elección: ¿cómo se relacionan?
+
+*** Parte 2: ver las relaciones (3 minutos)
+
+1. ~F8 L v~ (ver un solo personaje)
+   - Elige a tu protagonista
+   - ¡Mira su lista de relaciones!
+
+2. ~F8 L V~ (ver todas las relaciones)
+   - Mira la tabla completa
+   - Comprueba la simetría o asimetría
+
+* Ejercicio práctico (20 minutos)
+
+¡Practiquemos el flujo de trabajo completo con personajes!
+
+** Ejercicio: crear tres personajes y enlazarlos
+
+*** Parte 1: crear los personajes (10 minutos)
+
+1. *Crea al protagonista*:
+   - ~F8 k h~ (capturar personaje)
+   - Escribe el nombre, responde a las preguntas
+   - Rellena la ficha mínima (5 minutos)
+
+2. *Crea un personaje secundario*:
+   - ~F8 k h~
+   - Otro papel (por ejemplo, ~Ally~)
+   - Ficha rápida (3 minutos)
+
+3. *Crea un personaje menor*:
+   - ~F8 k h~
+   - Papel: ~Thematic Supporting~
+   - Información mínima (2 minutos)
+
+*** Parte 2: enlazar con las escenas (5 minutos)
+
+1. *Abre el manuscrito*
+2. *Ve a la primera escena*:
+   - ~F8 p~ (fijar el PoV al protagonista)
+
+3. *Ve a la segunda escena*:
+   - ~F8 p~ (fijar el PoV)
+   - ~F8 h~ (fijar varios personajes de la escena)
+
+4. *Ve a la tercera escena*:
+   - Enlaza otros personajes
+
+*** Parte 3: probar la navegación y la búsqueda (5 minutos)
+
+1. *Saltar a la ficha*:
+   - Cursor sobre el enlace del personaje
+   - ~C-c C-o~ (abrir)
+   - ~C-c &~ (volver)
+
+2. *Buscar un personaje*:
+   - ~F8 2~ (buscar por personaje)
+   - Escribe el nombre del protagonista
+   - ¡Mira todas sus escenas!
+
+3. *Generar la cronología*:
+   - Busca la sección de la cronología de personajes
+   - ~C-c C-c~ sobre el bloque
+   - ¡Mira tus apariciones de personajes visualizadas!
+
+* Integrar los personajes en tu flujo de trabajo diario
+
+Cómo usar las funciones de personajes mientras escribes:
+
+** Durante la planificación (antes de escribir)
+
+1. Crea fichas de personaje (aunque sean mínimas)
+2. Trabaja la cadena causal: Fantasma → Mentira → Debilidad → Deseo
+3. Rellena Deseo y Necesidad, y comprueba que el Conflicto de la Necesidad es la Mentira
+4. Ancla cada Hito de cambio a un punto de trama
+5. Anota las relaciones clave
+
+** Mientras escribes el borrador
+
+1. Inserta una escena (~F8 s~)
+2. Fija el PoV (~F8 p~): ¡selección rápida en el menú!
+3. Fija los personajes (~F8 h~): ¡selección múltiple!
+4. Escribe la escena
+5. Salta a la ficha si hace falta (~C-c C-o~)
+6. Vuelve y sigue escribiendo (~C-c &~)
+
+** Durante la revisión
+
+1. Busca un personaje (~F8 2~)
+2. Repasa todas sus escenas
+3. Comprueba la coherencia del arco
+4. Actualiza la ficha del personaje con lo nuevo que hayas descubierto
+5. Genera la cronología de personajes
+6. Busca huecos o abusos
+7. Asegúrate de que todos los personajes principales aparecen con regularidad
+
+* Preguntas frecuentes
+
+** «¿Necesito una ficha para cada personaje?»
+
+*¡No!* Niveles de prioridad:
+
+- *Protagonista*: ficha completa
+- *Oponente*: ficha completa; lleva la mitad del argumento
+- *Aliado*: intermedia (sin Fantasma, Necesidad ni Plan)
+- *Falso aliado* y *secundario temático*: reducida (Concepto, Postura, Apuro,
+  un Aspecto, Deseo)
+- *Personajes de fondo*: no hace falta ficha (camarero, empleado, etc.)
+
+** «¿Puedo enlazar más tarde nombres de personajes en texto plano?»
+
+*¡Sí!* El paquete incluye conversión por lotes:
+
+- ~F8 R~ (volver a enlazar el proyecto) enlaza todas las escenas automáticamente
+- Recorre tu manuscrito en busca de nombres de personajes
+- Convierte el texto plano en enlaces por ID
+- Un solo comando, todo el manuscrito actualizado
+
+** «¿Y si cambio el nombre de un personaje?»
+
+*¡Fácil!*
+
+1. Ve a la ficha del personaje
+2. Cambia el encabezado (el nombre)
+3. Los enlaces por ID siguen funcionando (¡usan el ID, no el nombre!)
+4. Pulsa ~F8 R~ (volver a enlazar el proyecto) para actualizar los enlaces.
+5. Todas las escenas mostrarán ahora el nombre nuevo
+
+*¡No hace falta actualizar cada escena a mano!*
+
+** «¿Puedo tener varios personajes PoV?»
+
+*¡Sí!* Patrones habituales:
+
+- *PoV único*: la perspectiva de un solo personaje de principio a fin
+- *Varios PoV rotatorios*: un PoV distinto en cada escena o capítulo
+- *PoV doble*: dos perspectivas principales
+- *Coral*: muchos personajes PoV
+
+Basta con fijar ~:PoV:~ en quien tenga la perspectiva en cada escena.
+
+** «¿Cómo trato a los personajes que aún no tienen nombre?»
+
+*Estrategias*:
+
+1. Usa un marcador: «Desconocido misterioso», «El detective»
+2. Usa el papel: «Oponente», «Falso aliado»
+3. Usa un nombre provisional: «Bob» (cámbialo luego)
+4. Crea la ficha cuando sepas el nombre
+
+¡El sistema de enlaces funciona igual!
+
+** «¡La lista de personajes del menú está vacía!»
+
+*Causas*:
+1. Todavía no has capturado ningún personaje (¡crea uno!)
+2. Los personajes no tienen IDs (ejecuta ~F8 R~ para añadirlos)
+3. Tienes abierto el archivo equivocado (debes estar en un proyecto de escritura)
+
+*Arreglo rápido*: ~F8 L c~ (configurar el sistema de enlaces)
+
+* Solución de problemas
+
+** «La captura de personaje pone al personaje en el archivo equivocado»
+
+*Comprueba*:
+1. ¿Estás en un proyecto de escritura? (busca el archivo ~.org-scribe-project~)
+2. ¿Se detecta bien el tipo de proyecto?
+3. ¿Existe ~diseno.org~? Si no, la captura lo crea
+4. ¿Tiene un encabezado «Personajes»? Si no, la captura lo añade
+
+*Solución*: asegúrate de estar en el directorio del proyecto al capturar.
+
+** «No puedo elegir un personaje en el menú: la lista está vacía»
+
+*Causas*:
+1. Los personajes no tienen IDs
+2. El archivo de personajes no tiene el formato correcto
+
+*Solución*:
+1. ~F8 R~ (añadir IDs a todos los personajes)
+2. Asegúrate de que los personajes tienen la propiedad ~:Role:~ o ~:Type:~
+
+** «El enlace no salta a la ficha del personaje»
+
+*Comprueba*:
+1. ¿Tiene la ficha del personaje la propiedad ~:ID:~?
+2. ¿Es único el valor de ~:ID:~?
+3. ¿Está el cursor justo sobre el texto del enlace?
+
+*Solución*:
+1. Haz clic directamente sobre el nombre del personaje en el enlace
+2. O usa ~F8 j~ para saltar al personaje PoV
+
+** «La cronología de personajes no muestra ningún personaje»
+
+*Causas*:
+1. Las escenas no tienen fijadas las propiedades ~:PoV:~ o ~:Personajes:~
+2. Las propiedades tienen texto plano en lugar de enlaces por ID
+3. Hay que actualizar el bloque dinámico
+
+*Solución*:
+1. Fija las propiedades de personajes en las escenas (~F8 p~ y ~F8 h~)
+2. Actualiza la tabla (~C-c C-c~ sobre la línea #+BEGIN)
+
+** «La plantilla de ficha de personaje está incompleta»
+
+*Si la plantilla de captura parece mal*:
+
+1. Asegúrate de que org-scribe está actualizado
+2. Prueba ~M-x org-scribe-capture-character~ directamente
+3. Comprueba que la captura se ha finalizado (~C-c C-c~)
+
+* Lo que has aprendido
+
+¡Excelente trabajo! Has completado la Lección 4. Ahora sabes:
+
+✓ Por qué importan las fichas de personaje (coherencia, consulta, seguimiento)
+✓ Dónde se guardan los personajes (la sección «Personajes» de diseno.org)
+✓ Cómo capturar personajes (~F8 k h~)
+✓ Todas las partes de la ficha de personaje (cadena causal, Deseo y Necesidad,
+  Plan, Aspectos, Hitos de cambio)
+✓ Qué contienen la ficha mínima y la completa
+✓ Cómo funciona el enlace basado en IDs (los IDs únicos permiten funciones inteligentes)
+✓ Cómo fijar el personaje PoV (~F8 p~)
+✓ Cómo fijar los personajes de la escena (~F8 h~)
+✓ Cómo saltar a las fichas de personaje (~C-c C-o~)
+✓ Cómo buscar todas las escenas con un personaje (~F8 2~)
+✓ Cómo generar cronologías de personajes (C-c C-c sobre el bloque)
+✓ Cómo añadir relaciones estructuradas entre personajes (~F8 L a~)
+✓ Cómo ver las relaciones (~F8 L v~/~V~)
+✓ Cómo usar los datos de relaciones para analizar la historia
+✓ Cómo integrar los personajes en tu flujo de trabajo diario
+
+* Próximos pasos
+
+¿Listo para construir el mundo de tu historia? ¡Pasa a la [[file:primeros-pasos-05-lugares-ambientacion.org][Lección 5: Escenarios y ambientación]]!
+
+En la próxima lección aprenderás:
+- A crear fichas detalladas de escenarios
+- A enlazar escenarios con escenas
+- A buscar escenas por escenario
+- A seguir la variedad de escenarios
+- A usar los escenarios para reforzar la atmósfera
+- A gestionar tu base de datos de escenarios
+
+** Práctica antes de seguir
+
+Refuerza tus habilidades con personajes:
+
+1. *Crea fichas* para todos los personajes principales (aunque sean breves)
+2. *Enlaza personajes* con todas las escenas existentes
+3. *Practica la navegación*: salta a las fichas y vuelve 10 veces
+4. *Practica la búsqueda*: encuentra todas las escenas de cada personaje principal
+5. *Genera la cronología*: mira cómo se reparten los personajes
+6. *Rellena una ficha completa*: elige a tu protagonista y dedícale 30 minutos
+7. *Planifica el arco del personaje*: usa la sección de Hitos de cambio para trazar su recorrido
+
+Cuanto más detalladas sean tus fichas de personaje, más coherentes y vívidos serán tus personajes.
+
+* Referencia rápida
+
+** Órdenes de personajes
+
+| Comando                    | Tecla     | Qué hace                                     |
+|----------------------------+-----------+----------------------------------------------|
+| Capturar personaje         | ~F8 k h~  | Crea la ficha de personaje                   |
+| Fijar personaje PoV        | ~F8 p~    | Elige el PoV en un menú                      |
+| Fijar personajes de escena | ~F8 h~    | Selección múltiple de personajes             |
+| Saltar al personaje PoV    | ~F8 j~    | Va a la ficha del PoV                        |
+| Añadir relación            | ~F8 L a~  | Añade una relación estructurada              |
+| Quitar relación            | ~F8 L x~  | Quita una relación                           |
+| Ver relaciones             | ~F8 L v~  | Muestra las relaciones de un personaje       |
+| Ver todas las relaciones   | ~F8 L V~  | Muestra las relaciones de todo el proyecto   |
+| Configurar relaciones      | ~F8 L r~  | Inicializa el sistema de relaciones          |
+| Buscar por personaje       | ~F8 2~    | Encuentra todas las escenas con el personaje |
+| Buscar por PoV             | ~F8 1~    | Encuentra escenas por PoV                    |
+| Seguir enlace              | ~C-c C-o~ | Salta al personaje enlazado                  |
+| Volver del enlace          | ~C-c &~   | Vuelve al lugar anterior                     |
+| Generar cronología         | ~C-c C-c~ | Actualiza la cronología (sobre el bloque)    |
+
+** Forma de la plantilla de personaje
+
+| Parte                            | Cuándo se rellena | Para qué sirve                                             |
+|----------------------------------+-------------------+------------------------------------------------------------|
+| Propiedades                      | En la captura     | ID, Role, Stance, Goal, edad, oficio                       |
+| Concepto                         | Planificando      | Quién es, en una frase                                     |
+| Postura                          | Planificando      | Su respuesta al Tema                                       |
+| Fantasma → Mentira → Debilidades | Planificando      | La cadena causal                                           |
+| Deseo                            | Planificando      | Objetivo / Motivación / Conflicto, hacia fuera             |
+| Necesidad                        | Planificando      | Las mismas tres, hacia dentro                              |
+| Plan                             | Planificando      | Cómo lo intenta y cómo fracasa                             |
+| Aspectos                         | Planificando      | De doble filo, con su voz                                  |
+| Trasfondo                        | Planificando      | Una escena, solo para ti                                   |
+| Interrogatorio                   | Planificando      | Cinco preguntas (solo en el archivo que trae la plantilla) |
+| Hitos de cambio                  | Planificando      | Arco, anclado a puntos de trama                            |
+| Notas                            | Cuando quieras    | Voz, recordatorios, ideas                                  |
+
+** Guía de profundidad de la ficha
+
+La propia plantilla dice qué partes puede omitir cada papel:
+
+| Papel               | Ficha      | Omitir                                                |
+|---------------------+------------+-------------------------------------------------------|
+| Protagonista        | Completa   | nada                                                  |
+| Oponente            | Completa   | nada                                                  |
+| Aliado              | Intermedia | Fantasma, Necesidad, Plan                             |
+| Falso aliado        | Reducida   | todo salvo Concepto, Postura, Apuro, 1 Aspecto, Deseo |
+| Secundario temático | Reducida   | igual que arriba                                      |
+
+El protagonista y el oponente lo tienen todo porque el argumento del libro corre
+entre ellos. Un personaje de relleno no necesita ficha.
+
+** Símbolos de la cronología de personajes
+
+| Símbolo     | Significado                                   |
+|-------------+-----------------------------------------------|
+| ★           | Personaje PoV (punto de vista en esta escena) |
+| ●           | Presente (aparece pero no es el PoV)          |
+| (en blanco) | Ausente (no aparece en esta escena)           |
+
+* Consejos para el éxito con los personajes
+
+1. *Empieza con lo mínimo*: no pases horas con las fichas antes de escribir
+2. *Desarrolla mientras escribes*: añade detalles según los personajes se revelen
+3. *Acierta con la cadena*: Fantasma → Mentira → Debilidad → Deseo es lo mínimo
+   para un personaje que pueda sostener un arco
+4. *Enlaza siempre*: usa el menú (~F8 p~) en lugar de escribir nombres
+5. *Comprueba la coherencia*: salta a las fichas cuando describas a los personajes
+6. *Sigue las apariciones*: usa la cronología para equilibrar el tiempo en escena
+7. *Revisa las fichas*: actualízalas tras el borrador, cuando conozcas mejor a los personajes
+8. *Distingue las voces*: usa la sección de Notas para patrones de habla y muletillas
+9. *Sigue las relaciones*: usa las relaciones estructuradas (~F8 L a~) para mantener los vínculos entre personajes
+10. *Revisa la tabla*: usa ~F8 L V~ de vez en cuando para detectar personajes aislados o sobreconectados
+11. *Comprueba la simetría*: asegúrate de que los dos lados de una relación coinciden
+12. *Busca a menudo*: repasa todas las escenas de un personaje durante la revisión
+
+** Recuerda
+
+*Tus personajes son el corazón de tu historia.* El tiempo que inviertas en entenderlos, incluso con fichas mínimas, hará tu historia más rica, más coherente y más emotiva.
+
+---
+
+*Anterior*: [[file:primeros-pasos-03-seguimiento-progreso.org][Lección 3: Seguir tu progreso]]
+*Siguiente*: [[file:primeros-pasos-05-lugares-ambientacion.org][Lección 5: Escenarios y ambientación]]
+
+*¡Lección 4 completada!* ✓

@@ -1,0 +1,1143 @@
+#+TITLE: Lección 5: Escenarios y ambientación
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-05-locations-settings.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-05-locations-settings.org][English version]]/
+
+* ¡Bienvenido a la Lección 5!
+
+En esta lección aprenderás a crear y gestionar fichas de escenario para los escenarios de tu historia. Igual que los personajes, los escenarios se pueden capturar, enlazar con escenas y buscar en todo tu manuscrito.
+
+Al terminar esta lección serás capaz de:
+- Crear fichas de escenario detalladas con la plantilla de captura
+- Entender todas las propiedades de un escenario y cuándo usarlas
+- Enlazar escenarios con escenas mediante enlaces por ID
+- Buscar todas las escenas ambientadas en un escenario concreto
+- Seguir la variedad de escenarios a lo largo de tu historia
+
+*Tiempo estimado*: 15-20 minutos
+
+* Requisitos previos
+
+Antes de empezar esta lección deberías haber completado:
+- [[file:primeros-pasos-01-crear-proyectos.org][Lección 1: Crear tu primer proyecto]]
+- [[file:primeros-pasos-02-primera-escena.org][Lección 2: Escribir tu primera escena]]
+- [[file:primeros-pasos-04-capturar-personajes.org][Lección 4: Capturar personajes]] (recomendada: los conceptos de enlace son los mismos)
+
+Deberías entender:
+- Cómo usar el menú Hydra (F8)
+- Las propiedades básicas de Org-mode
+- El enlace basado en IDs (de la lección de personajes)
+- Las propiedades de escena
+
+* Por qué capturar escenarios
+
+**Respuesta rápida**: los escenarios anclan tu historia en el espacio físico y ayudan a mantener la coherencia.
+
+** El problema sin seguimiento de escenarios
+
+Si escribes sin seguir los escenarios, puede que:
+- Describas una cafetería como «pequeña y acogedora» en el capítulo 1 y como «amplia, de techos altos» en el 5
+- Olvides qué escenas ocurren en el piso del protagonista
+- Descubras que has ambientado 15 escenas seguidas en el mismo lugar (¡aburrido!)
+- Te cueste recordar qué detalles has revelado de un lugar
+- Tengas una geografía incoherente (el parque que unas veces está en el centro y otras en las afueras)
+
+** La solución: fichas de escenario
+
+Las fichas de escenario te ayudan a:
+1. *Mantener la coherencia*: consulta tu descripción en lugar de contradecirte
+2. *Seguir el uso*: ve cuántas veces usas cada escenario
+3. *Equilibrar la variedad*: asegúrate de no abusar de ciertos lugares
+4. *Consultar rápido*: recuerda los detalles clave al escribir una escena
+5. *Construir el mundo*: levanta una geografía ficticia coherente
+6. *Buscar*: encuentra al instante todas las escenas de un lugar concreto
+
+* Entender los tipos de escenario
+
+Antes de capturar escenarios, entiende los distintos tipos:
+
+** Escenarios principales
+
+Escenarios que aparecen con frecuencia a lo largo de tu historia.
+
+*Ejemplos*:
+- La casa o el piso del protagonista
+- El lugar de trabajo principal
+- El colegio o la universidad
+- Un lugar central de reunión (cafetería, parque, etc.)
+
+*Cuándo crearlas*: antes del borrador o durante las primeras escenas.
+
+** Escenarios secundarios
+
+Escenarios que aparecen varias veces pero con menos frecuencia.
+
+*Ejemplos*:
+- El piso de un amigo
+- Un restaurante favorito
+- Una estación de metro
+- La biblioteca
+
+*Cuándo crearlas*: a medida que escribes escenas en esos lugares.
+
+** Escenarios menores
+
+Escenarios que aparecen una o dos veces pero conviene recordar.
+
+*Ejemplos*:
+- El vestíbulo de un hotel para una conversación clave
+- La azotea donde ocurre un hecho crucial
+- Una esquina concreta
+
+*Cuándo crearlas*: cuando la coherencia importa incluso en apariciones breves.
+
+** Escenarios atmosféricos
+
+Escenarios que definen el ánimo o el mundo de tu historia.
+
+*Ejemplos*:
+- La mansión encantada (terror)
+- El puente de mando de la nave (ciencia ficción)
+- El castillo medieval (fantasía)
+- La oficina de la empresa (drama contemporáneo)
+
+*Cuándo crearlas*: pronto, en la planificación: dan forma al tono de tu historia.
+
+* La plantilla de captura de escenarios
+
+Veamos qué contiene la plantilla de captura de escenarios.
+
+** Acceder a la plantilla
+
+Pulsa: ~F8 k l~ (~F8~ para el menú principal, ~k~ para el submenú de captura de entidades y luego ~l~ para «location»)
+
+O usa: ~M-x org-scribe-capture-location~
+
+En un proyecto en español la captura se llama «Escenario» y los términos de la plantilla salen en español, como en el ejemplo de abajo.
+
+** Estructura de la plantilla
+
+Esto es lo que la plantilla de captura inserta de verdad (cada campo lleva
+debajo líneas de pista que empiezan por ~#~; aquí se omiten):
+
+#+BEGIN_EXAMPLE
+,* Nombre del escenario
+:PROPERTIES:
+:ID: (se genera automáticamente)
+:Type:
+:Echo:
+:First-appearance:
+:END:
+
+- Eco ::
+- Escollo ::
+- Personaje ::
+- Símbolo ::
+
+,** Descripción
+
+,** Escenas que ocurren aquí
+
+,** Notas
+#+END_EXAMPLE
+
+Es corta a propósito. Tres propiedades y cuatro Aspectos de una línea llevan
+casi todo el peso; la sección de prosa es para lo que ves, oyes y hueles cuando
+estás allí.
+
+La sección «Ambientación» del cuaderno de diseño que trae la plantilla de un proyecto
+nuevo (~diseno.org~) usa la misma forma, de modo que un escenario capturado y
+uno rellenado a mano se ven idénticos.
+
+*La idea importante*: un escenario no es un telón de fondo. Tiene un trabajo en
+el argumento de la historia, y los cuatro Aspectos son ese trabajo puesto por
+escrito. Un escenario sin ningún Aspecto es decorado, y en las pasadas de
+revisión los escenarios que solo sirven de decorado son candidatos a recortarse.
+
+* Sección 1: Propiedades
+
+Al capturar un escenario verás estas tres propiedades:
+
+#+BEGIN_EXAMPLE
+:PROPERTIES:
+:ID: (se genera automáticamente)
+:Type:
+:Echo:
+:First-appearance:
+:END:
+#+END_EXAMPLE
+
+Los nombres de las propiedades (~:Type:~, ~:Echo:~...) se quedan en inglés
+aunque el proyecto esté en español: los lee el paquete.
+
+** ~:ID:~ (automático)
+
+Un identificador único para este escenario, creado automáticamente.
+
+*Ejemplo*: ~3f100618-1c6b-4286-883d-b1deddf0cccc~ (un identificador largo
+generado por Org)
+
+*Propósito*: permite enlaces en los que se puede hacer clic desde las escenas hasta las fichas de escenario.
+
+*No lo fijas tú*: ¡es automático!
+
+** ~:Type:~
+
+Qué clase de lugar es. El aviso de la captura es de texto libre, así que usa las
+categorías que le vayan a tu historia: la propiedad existe para que org-scribe
+distinga un encabezado de escenario de cualquier otra cosa del archivo, y para
+que puedas agrupar escenarios en la vista de columnas.
+
+*Ejemplos*: ~Vivienda~, ~Negocio~, ~Público~, ~Institución~, ~Natural~, ~Transporte~
+
+*Consejo*: usa categorías amplias. Los detalles van en la descripción.
+
+*Nota*: esta propiedad es lo que convierte el encabezado en un escenario para
+el sistema de enlaces. No la borres, y no pongas la categoría en el encabezado:
+el encabezado es el *nombre* del lugar.
+
+** ~:Echo:~
+
+Una versión breve del Eco del escenario (ver más abajo), guardada en una
+propiedad para que aparezca en la vista de columnas junto al nombre. La línea
+~#+COLUMNS:~ que trae la plantilla en la sección «Ambientación» de ~diseno.org~ muestra
+exactamente tres cosas: el nombre, el ~:Type:~ y esta.
+
+*Consejo*: aquí resúmelo en pocas palabras y escribe la versión completa en la
+línea ~Eco ::~ del cuerpo.
+
+** ~:First-appearance:~
+
+Cuándo ven los lectores este escenario por primera vez.
+
+*Formato*: ~Capítulo X, Escena Y~ o ~Título de la escena~
+
+*Ejemplos*:
+- ~Capítulo 1, Escena 2~
+- ~Escena 3 - El encuentro en la cafetería~
+- ~Escena inicial~
+
+*Consejo*: rellénalo cuando enlaces el escenario con su primera escena.
+
+** Propiedades que ya no existen
+
+Las versiones anteriores de las plantillas tenían ~:Importance:~, ~:Climate:~,
+~:Population:~, ~:Setting:~, ~:Accessibility:~, ~:Owner:~ y ~:Atmosphere:~.
+Han desaparecido. Nada las lee, y volver a añadirlas no hace nada.
+
+La mayor parte de lo que contenían tiene ahora mejor sitio:
+
+| Propiedad antigua          | Adónde va ahora                                                          |
+|----------------------------+--------------------------------------------------------------------------|
+| ~:Atmosphere:~             | los Aspectos *Eco* y *Símbolo*: ánimo con un trabajo que hacer           |
+| ~:Importance:~             | cuántas veces enlazas de verdad el escenario con escenas                 |
+| ~:Owner:~                  | la *Descripción*, o un enlace a un personaje en la escena que lo muestra |
+| ~:Accessibility:~          | la *Descripción*, cuando condiciona una escena                           |
+| ~:Setting:~                | la parte Mundo de ~diseno.org~, que contiene el mundo en su conjunto     |
+| ~:Climate:~ ~:Population:~ | la parte Mundo de ~diseno.org~                                           |
+
+* Sección 2: Los cuatro Aspectos
+
+Este es el corazón de la ficha de escenario.
+
+Los cuatro Aspectos van arriba de la ficha, antes de cualquier prosa. Cada uno
+es una línea. Son lo que convierte un lugar en parte del argumento de la
+historia en lugar de un escenario donde ocurren cosas, y son la razón de que
+esta plantilla sea mucho más corta que una ficha genérica de escenario:
+cuatro líneas afiladas hacen más trabajo que tres párrafos de descripción.
+
+Escríbelos en el orden dado: el Eco sale de tu Tema, y los demás se apoyan en él.
+
+** Eco
+
+*Cómo este lugar refleja el Tema.*
+
+Tu Tema es el problema moral del libro, escrito en ~diseno.org~. El Eco es ese
+problema apareciendo en el mundo físico: en lo que el lugar permite, premia o
+castiga.
+
+Es el Aspecto que hace que un escenario sea parte del argumento y no un telón
+de fondo. Si no puedes escribirlo, pregúntate si necesitas el lugar, o si una
+escena ambientada aquí podría ocurrir en cualquier otro sitio sin perder nada.
+
+*Ejemplos*:
+- ~Aquí todo el mundo habla entre líneas.~
+- ~Nadie está nunca solo el tiempo suficiente para pensar.~
+- ~Las normas están a la vista y nadie las cumple.~
+
+** Escollo
+
+*Cómo este lugar empeora el Problema del Mundo.*
+
+El Problema del Mundo es la presión que el mundo ejerce sobre todos los que
+viven en él, y también está anotado en ~diseno.org~. El Escollo (Hazard, en la
+propiedad y en el método) es la aportación de este lugar: lo que hace más
+difícil, más arriesgado o más caro.
+
+El Escollo es lo que genera escenas. Un lugar con un Escollo de verdad produce
+conflicto por sí solo, sin que tengas que organizar que alguien entre con una
+pistola.
+
+*Ejemplos*:
+- ~Todos buscan a alguien a quien echar la culpa.~
+- ~Lo que se dice aquí llega a oídos equivocados antes del anochecer.~
+- ~No puedes irte sin que te vean irte.~
+
+** Personaje
+
+*Un Aspecto de personaje que este lugar activa.*
+
+Los personajes también tienen Aspectos (Lección 4). Esta línea nombra el que
+este lugar saca a la luz: el rasgo, la deuda o la historia que aquí se vuelve
+inevitable.
+
+Es lo que hace que un escenario importe a una persona *concreta*. La misma sala
+puede ser neutra para un personaje e intolerable para otro, y esa diferencia
+suele ser donde está la escena.
+
+*Ejemplos*:
+- ~Le debo dinero a la mitad de los que están en esta sala.~
+- ~Aquí me dijeron que nunca llegaría a nada.~
+- ~Aquí todos me siguen llamando por el nombre de mi padre.~
+
+** Símbolo
+
+*El objeto o detalle que carga la escena.*
+
+Una cosa concreta que el lector pueda ver. No un ánimo: un sustantivo. Te da
+algo a lo que volver, y lleva el Eco sin que nadie tenga que enunciarlo.
+
+*Ejemplos*:
+- ~La taza que nunca llego a beber.~
+- ~El reloj que va diez minutos adelantado desde hace años.~
+- ~La silla en la que nadie se sienta.~
+
+** Ejemplo: la cafetería
+
+#+BEGIN_EXAMPLE
+,* Cafetería del Centro
+:PROPERTIES:
+:ID: 3f100618-1c6b-4286-883d-b1deddf0cccc
+:Type: Negocio
+:Echo: Pertenecer pagando cada día
+:First-appearance: Capítulo 1, Escena 1
+:END:
+
+- Eco :: Aquí todos pertenecen, mientras sigan consumiendo algo.
+- Escollo :: Los habituales se fijan en todo, y ninguno se lo calla.
+- Personaje :: La necesidad de Alex de que lo reconozcan sin tener que pedirlo.
+- Símbolo :: La pizarra con los nombres de los habituales.
+#+END_EXAMPLE
+
+Fíjate en cuánto más estrecho es esto que «una cafetería bohemia y acogedora».
+El Eco compromete el lugar con el argumento del libro, el Escollo garantiza que
+el lugar genere problemas, y el Símbolo da a cada escena ambientada aquí algo a
+lo que señalar.
+
+*Un escenario sin ningún Aspecto es decorado.* No es una regla inventada para
+la plantilla: es una prueba de revisión. Cuando llegues a las pasadas de
+revisión, los escenarios sin Aspectos son los primeros candidatos a recortarse,
+porque no se perdería nada trasladando sus escenas a otro sitio.
+
+* Sección 3: Descripción
+
+Lo que se ve, se oye y se huele, y *solo lo que un focalizador notaría estando
+allí*.
+
+Esa restricción es todo el sentido de la sección. No estás escribiendo un
+informe de topógrafo; estás escribiendo lo que percibe una persona concreta, lo
+que significa que los detalles ya están filtrados por quién es y qué quiere.
+Una descripción escrita así se puede llevar casi directamente a una escena.
+
+** Qué incluir
+
+- Lo que el personaje PoV registraría de verdad al entrar
+- Sonido y olor, no solo vista: son los sentidos que la prosa suele olvidar
+- Detalles que los Aspectos de arriba hayan vuelto relevantes
+
+** Ejemplo: la cafetería
+
+#+BEGIN_EXAMPLE
+,** Descripción
+
+Estrecha y profunda, paredes de ladrillo, suelo de madera recuperada. Sillas
+vintage desparejadas alrededor de mesitas redondas. La pared del fondo son
+estanterías del suelo al techo: los clientes dejan libros, se llevan libros.
+Grandes ventanales a la calle: inundados de luz por la mañana, en penumbra a
+media tarde.
+
+La máquina de espresso domina la barra, cromo y cobre, siempre sisando. Café
+recién molido, canela de la vitrina de bollería, abrigos mojados cuando llueve.
+Música indie baja, tintineo de cerámica, la campanilla de la puerta.
+
+Alex se fija en la pizarra antes que en nada más, cada vez.
+#+END_EXAMPLE
+
+** Cuánto detalle
+
+Menos de lo que crees. Los Aspectos llevan el significado; esta sección solo
+tiene que darte material concreto suficiente para escribir.
+
+- *Mínimo*: la impresión sensorial dominante, más lo que necesite el Símbolo
+- *Estándar*: lo anterior, más la distribución y dos o tres sentidos
+- *Exhaustivo*: lo anterior, más cómo cambia con la hora del día o la estación
+
+*Recomendación*: escribe el mínimo al capturar y amplíalo la primera vez que
+ambientes una escena allí. La descripción escrita antes de necesitarla suele
+ser descripción que nunca usas.
+
+* Sección 4: Escenas que ocurren aquí
+
+Una lista de las escenas ambientadas en este lugar.
+
+No la mantienes a mano. Etiqueta cada escena con su propiedad de escenario
+(~F8 l~) y el enlace va de la escena al escenario; buscar por localización
+(~F8 4~, que se explica más adelante en esta lección) te da la lista cuando la
+pides, actualizada por construcción.
+
+Conserva la sección para lo que la búsqueda no puede decirte: una nota de que
+tres escenas de aquí ocurren en la misma semana, por ejemplo, o de que el
+lugar se usa dos veces en el Acto I y luego nunca más.
+
+* Sección 5: Notas
+
+Notas del escritor para la continuidad y los recordatorios.
+
+** Qué incluir
+
+- Detalles de continuidad (qué se ha revelado al lector, y cuándo)
+- Planes futuros (cosas que tienen que ocurrir aquí más adelante)
+- Investigación necesaria
+- Inspiración del mundo real
+- Cambios con el tiempo, si el lugar evoluciona
+
+** Ejemplo: la cafetería
+
+#+BEGIN_EXAMPLE
+,** Notas
+
+,*** Revelado al lector
+- [Capítulo 1] Ventanales, máquina de espresso, paredes de ladrillo, pizarra
+- [Capítulo 3] La pared de estanterías
+- [Capítulo 5] La mesa de siempre de Alex (rincón del fondo a la izquierda)
+
+,*** Por revelar
+- Entrada por el callejón de atrás (necesaria para la huida del capítulo 12)
+
+,*** Evolución
+Capítulo 14: la reforman. Pintura nueva, mismos muebles, y la pizarra
+desaparece, y con ella el Símbolo, a propósito.
+#+END_EXAMPLE
+
+* Capturar un escenario paso a paso
+
+Vamos a crear juntos una ficha de escenario.
+
+** Paso 1: Invocar la captura
+
+Pulsa: ~F8 k l~
+
+Verás: ~Nombre del escenario:~
+
+** Paso 2: Escribir el nombre del escenario
+
+Escribe: ~Cafetería del Centro~
+
+Pulsa: ~Intro~
+
+La plantilla de captura se abre en un búfer nuevo.
+
+** Paso 3: Rellenar las propiedades
+
+Te salen dos avisos, y nada más:
+
+1. ~Tipo~ → escribe ~Negocio~
+2. ~Primera aparición~ → pulsa ~Intro~ para dejarlo en blanco por ahora
+   (rellénalo cuando enlaces el escenario con su primera escena)
+
+Pulsa ~Intro~ para aceptar cada uno. El ~:ID:~ se genera por ti, y ~:Echo:~ se
+deja vacío para que lo rellenes después de escribir el Aspecto Eco en el cuerpo.
+
+** Paso 4: Rellenar los Aspectos
+
+El cursor queda en la sección *Descripción*, pero haz primero los cuatro
+Aspectos: de ellos cuelga todo lo demás:
+
+#+BEGIN_EXAMPLE
+- Eco :: Aquí todos pertenecen, mientras sigan consumiendo algo.
+- Escollo :: Los habituales se fijan en todo, y ninguno se lo calla.
+- Personaje :: La necesidad de Alex de que lo reconozcan sin tener que pedirlo.
+- Símbolo :: La pizarra con los nombres de los habituales.
+#+END_EXAMPLE
+
+Luego copia una versión abreviada del Eco en la propiedad ~:Echo:~, para que
+aparezca en la vista de columnas.
+
+*Si solo puedes con uno*, que sea el Eco: es el que decide si el lugar tiene
+sitio en el libro. Los demás pueden esperar a que ambientes allí una escena.
+
+Por último, escribe unas líneas en *Descripción*: lo que notaría un personaje
+PoV al estar en la sala. ~Notas~ puede quedarse vacío.
+
+** Paso 5: Finalizar la captura
+
+Cuando termines, pulsa: ~C-c C-c~
+
+Esto guarda la ficha de escenario en ~diseno.org~, bajo la sección
+«Ambientación» (en la parte Mundo para un proyecto de novela).
+
+** Paso 6: Comprobar que se guardó
+
+Abre ~diseno.org~ y busca tu nueva entrada de escenario. Debe ser un encabezado directamente bajo «Ambientación», con un ID.
+
+* Enlazar escenarios con escenas
+
+Una vez que tienes fichas de escenario, enlázalas con escenas.
+
+** Método 1: fijar el escenario con el menú (recomendado)
+
+1. Abre tu manuscrito (~novela.org~ o ~cuento.org~)
+2. Ve al encabezado de una escena
+3. Pulsa: ~F8 l~ (una acción de nivel superior de Tag Scene, no un submenú)
+
+O usa: ~M-x org-scribe-set-scene-locations~
+
+4. Verás un menú con todos los escenarios («Seleccionar escenario (RET para terminar): »)
+5. Elige una: pulsa ~Intro~
+6. La propiedad ~:Localizacion:~ de la escena se actualiza con un enlace por ID
+
+** Método 2: enlazar a mano
+
+Si prefieres escribir:
+
+1. Ve a las propiedades de la escena
+2. Busca o añade: ~:Localizacion:~
+3. Escribe: ~[[id:id-de-la-localizacion][Nombre del escenario]]~
+
+Esto exige conocer el ID del escenario. ¡El método del menú es más fácil!
+
+** Ejemplo
+
+Antes:
+#+BEGIN_EXAMPLE
+,*** Escena 1 - Rutina matinal
+:PROPERTIES:
+:PoV: [[id:char-alex-001][Alex]]
+:Localizacion: la cafetería
+:END:
+#+END_EXAMPLE
+
+Después (con el menú):
+#+BEGIN_EXAMPLE
+,*** Escena 1 - Rutina matinal
+:PROPERTIES:
+:PoV: [[id:char-alex-001][Alex]]
+:Localizacion: [[id:loc-cafeteria-001][Cafetería del Centro]]
+:END:
+#+END_EXAMPLE
+
+(El nombre de esta propiedad de escena sí está localizado: ~:Localizacion:~ en
+un proyecto en español, ~:Location:~ en uno en inglés. Si abres un proyecto con
+el nombre del otro idioma, org-scribe lo sigue reconociendo.)
+
+* Navegar entre escenas y escenarios
+
+** Saltar a la ficha del escenario
+
+Cuando estés en una escena con un escenario enlazado:
+
+1. Mueve el cursor a la línea de la propiedad ~:Localizacion:~
+2. Pulsa: ~C-c C-o~ (org-open-at-point)
+
+¡Saltas a la ficha completa del escenario! (A diferencia de los personajes PoV y los hilos de la trama, no hay una tecla del menú Hydra dedicada para saltar a un escenario: el modo de hacerlo es seguir el enlace con Org.)
+
+** Volver a la escena
+
+Después de ver la ficha del escenario:
+
+Pulsa: ~C-c &~ (org-mark-ring-goto)
+
+Vuelves a tu escena original.
+
+** Por qué es útil
+
+Mientras escribes:
+- «Espera, ¿de qué color son las paredes?» → salta a la ficha, comprueba y vuelve
+- «¿A qué olía este sitio?» → consulta rápida
+- «¿De quién es este local?» → mira la propiedad
+
+* Buscar escenas por escenario
+
+Encuentra todas las escenas ambientadas en un escenario concreto.
+
+** Orden
+
+Pulsa: ~F8 4~ (buscar por localización)
+
+O usa: ~M-x org-scribe-org-find-location~
+
+** Proceso
+
+1. Verás: ~Buscar localización [difuso]:~
+2. Empieza a escribir el nombre: ~Cafe~
+3. Aparecen los escenarios que coinciden
+4. Elige una: ~Cafetería del Centro~
+5. Pulsa: ~Intro~
+
+** Resultados
+
+Se abre un búfer con TODAS las escenas con ese escenario. Su título es
+«Localización: Cafetería del Centro» y cada escena es un enlace en el que puedes
+hacer clic:
+
+#+BEGIN_EXAMPLE
+,* Localización: Cafetería del Centro
+
+,*** Escena 1 - Rutina matinal
+    Capítulo 1: El principio
+
+,*** Escena 5 - Un encuentro inesperado
+    Capítulo 2: Complicaciones
+
+,*** Escena 12 - La confrontación
+    Capítulo 4: Punto crítico
+#+END_EXAMPLE
+
+** Casos de uso
+
+- «¿Dónde he usado este lugar?» → mira la lista completa
+- «¿Estoy abusando de este escenario?» → cuenta las escenas
+- «¿Qué ha pasado aquí hasta ahora?» → repasa todas las escenas
+- «Control de continuidad» → asegura descripciones coherentes
+
+* Seguir la variedad de escenarios
+
+Evita ambientar demasiadas escenas en el mismo lugar.
+
+** El problema
+
+Es fácil recurrir siempre a los mismos escenarios:
+- 10 escenas en el piso de Alex
+- 8 escenas en la cafetería
+- 2 escenas en todos los demás sitios juntos
+
+Esto aburre a los lectores (¡y a ti!).
+
+** La solución: auditoría de escenarios
+
+Comprueba de vez en cuando cómo se reparten los escenarios:
+
+1. Busca cada escenario principal (F8 4)
+2. Cuenta las escenas por escenario
+3. Identifica los escenarios abusados
+4. Planifica escenas en los escenarios poco usados
+
+** Reparto saludable (novela)
+
+Para una novela de 50-70 escenas:
+- 3-5 escenarios principales: 5-10 escenas cada uno
+- 5-10 escenarios secundarios: 2-4 escenas cada uno
+- 10-20 escenarios menores: 1 escena cada uno
+
+** Ejemplo de auditoría
+
+#+BEGIN_EXAMPLE
+Auditoría de escenarios (30 escenas escritas):
+
+Principales:
+- Cafetería: 6 escenas ✓ (equilibrado)
+- Piso de Alex: 11 escenas ⚠ (¡demasiadas!)
+- Oficina: 4 escenas ✓ (equilibrado)
+
+Secundarias:
+- Librería de Sam: 3 escenas ✓
+- Parque del Retiro: 2 escenas ✓
+- Metro: 1 escena ✓
+
+Menores:
+- El loft de Jordan: 1 escena ✓
+- Galería de arte: 1 escena ✓
+- Bar de la azotea: 1 escena ✓
+
+Acción: ¡escribir las próximas 3 escenas fuera del piso de Alex!
+#+END_EXAMPLE
+
+* Convertir escenas existentes
+
+¿Ya tienes escenas con escenarios en texto plano?
+
+** Convertir una escena
+
+1. Ve a la escena con el escenario en texto plano
+2. Ejecuta: ~M-x org-scribe-link-scene-locations~ (no está enlazado directamente en el menú Hydra)
+
+Esto busca el nombre del escenario en tus fichas y lo sustituye por un enlace por ID.
+
+** Convertir todas las escenas (por lotes)
+
+El camino más fácil es ~F8 R~ (o ~F8 L R~): ~org-scribe-relink-project~ convierte los nombres en texto plano en enlaces por ID (y añade los IDs que faltan, y refresca los nombres mostrados) en *todos* los tipos de entidad, escenarios incluidos, de una sola pasada.
+
+Si quieres convertir específicamente solo las localizaciones, ejecuta directamente ~M-x org-scribe-link-all-scene-locations~.
+
+Esto procesa todo tu manuscrito, convirtiendo en enlaces por ID todos los nombres de escenario que coinciden.
+
+*Advertencia*: ¡revisa los resultados! Los nombres ambiguos pueden coincidir de forma incorrecta.
+
+* Ejercicio práctico (15 minutos)
+
+Practiquemos la gestión de escenarios de principio a fin.
+
+** Parte 1: capturar dos escenarios (7 minutos)
+
+*** Escenario 1: el hogar
+
+1. Pulsa: ~F8 k l~
+2. Nombre: ~[Piso/casa del protagonista]~
+3. Rellena las propiedades:
+   - Tipo: Vivienda
+   - Primera aparición: déjala en blanco
+4. Escribe los cuatro Aspectos, una línea cada uno:
+   - Eco: cómo este lugar refleja tu Tema
+   - Escollo: cómo empeora las cosas a quien está en él
+   - Personaje: qué saca a relucir en el protagonista
+   - Símbolo: un objeto concreto al que podrías volver
+5. Escribe 1 párrafo de descripción: lo que nota aquí el protagonista
+6. Pulsa: ~C-c C-c~ para guardar
+
+*** Escenario 2: un lugar público
+
+1. Pulsa: ~F8 k l~
+2. Nombre: ~[Parque/Restaurante/Biblioteca/Tienda, a tu elección]~
+3. Rellena las propiedades:
+   - Tipo: Público o Negocio
+   - Primera aparición: déjala en blanco
+4. Escribe de nuevo los cuatro Aspectos, y haz que el *Escollo* de este lugar
+   tire en la dirección opuesta al del escenario 1. Dos escenarios que
+   ponen en peligro a un personaje del mismo modo son un solo escenario
+5. Escribe 1 párrafo de descripción
+6. Pulsa: ~C-c C-c~ para guardar
+
+** Parte 2: enlazar con escenas (4 minutos)
+
+1. Abre tu manuscrito
+2. Busca o crea una escena
+3. Pulsa: ~F8 l~ (fijar localizaciones de la escena)
+4. Elige el escenario 1
+5. Comprueba que la propiedad ~:Localizacion:~ ahora tiene un enlace por ID
+6. Ve a otra escena
+7. Repite con el escenario 2
+
+** Parte 3: probar la navegación y la búsqueda (4 minutos)
+
+*** Probar la navegación:
+1. En una escena con un escenario enlazado
+2. Pulsa ~C-c C-o~ sobre la propiedad de escenario
+3. Saltas a la ficha del escenario → ¡éxito!
+4. Pulsa ~C-c &~ para volver → ¡éxito!
+
+*** Probar la búsqueda:
+1. Pulsa ~F8 4~
+2. Busca uno de tus escenarios
+3. Mira los resultados → deberían salir las escenas que acabas de enlazar
+4. Pulsa ~q~ para cerrar los resultados
+
+** Criterios de éxito
+
+✓ Has capturado 2 fichas de escenario con IDs
+✓ La sección «Ambientación» de diseno.org contiene tus escenarios
+✓ Al menos 2 escenas tienen escenarios enlazados en sus propiedades
+✓ Puedes saltar de la escena a la ficha del escenario y volver
+✓ La búsqueda encuentra escenas por escenario
+
+* Integración con tu flujo de escritura diario
+
+** Durante la planificación
+
+- Captura los escenarios principales antes del borrador
+- Incluye detalles sensoriales para la inmersión
+- Anota la importancia y las conexiones
+- Consúltalas al esquematizar escenas
+
+** Durante el borrador
+
+- Antes de escribir una escena en un escenario:
+  1. Salta a la ficha del escenario
+  2. Repasa los detalles sensoriales
+  3. Comprueba las notas de continuidad
+  4. Vuelve y escribe la escena
+- Después de usar un escenario por primera vez:
+  - Rellena la propiedad ~:First-appearance:~
+- Cuando introduzcas un escenario nuevo a mitad del borrador:
+  - Haz una pausa, pulsa F8 k l
+  - Captura rápida (versión de 5 minutos)
+  - Enlázala con la escena enseguida
+
+** Durante la revisión
+
+- Busca cada escenario para comprobar la coherencia:
+  - ¿Son coherentes las descripciones?
+  - ¿Coinciden los detalles sensoriales?
+  - ¿Hay contradicciones?
+- Comprueba la variedad:
+  - Haz una auditoría del reparto de escenarios
+  - Reescribe o mueve escenas si abusas de un escenario
+- Actualiza las fichas:
+  - Añade los detalles revelados durante el borrador
+  - Actualiza la sección de Notas con lo que sabe el lector
+
+** Mantenimiento semanal
+
+- Revisa qué escenarios usan tus escenas (búsqueda por escenario, Lección 7)
+- Anota los escenarios que necesitan más desarrollo
+- Comprueba si hay escenarios olvidados
+- Planifica escenas en los escenarios poco usados
+
+* Preguntas frecuentes
+
+** P: ¿Necesito una ficha para cada escenario?
+
+*R*: ¡No! Solo para los escenarios que:
+- Aparezcan más de una vez, O
+- Tengan un significado importante en la historia, O
+- Necesiten una descripción coherente
+
+No necesitas fichas para:
+- Menciones breves («pasaron junto a una ferretería»)
+- Escenarios genéricos («un restaurante» sin detalles concretos)
+- Escenarios de una línea («la acera»)
+
+** P: ¿Cuánto detalle debe tener la Descripción?
+
+*R*: Menos del que esperas. Los cuatro Aspectos llevan el significado, así que
+la descripción solo tiene que darte material concreto para escribir: lo
+bastante para visualizar el espacio, echar mano de un sonido o un olor a mitad
+de escena y mantener la coherencia.
+
+Para la mayoría de los escenarios basta un párrafo corto. Profundiza solo en
+los lugares donde el lector pasa tiempo de verdad, y a ser posible *después* de
+haber escrito una escena allí, cuando sabes qué detalles has usado realmente.
+
+** P: ¿Y si mi escenario cambia durante la historia?
+
+*R*: ¡Actualiza la ficha! En la sección de Notas, sigue la evolución:
+
+#+BEGIN_EXAMPLE
+,** Notas
+
+,*** Evolución
+- [Capítulos 1-5]: Desorden, platos en el fregadero, ropa por todas partes
+- [Capítulo 6]: Alex limpia (punto de inflexión)
+- [Capítulos 7-12]: Ordenado, plantas en el alféizar, todo en su sitio
+#+END_EXAMPLE
+
+Esto te ayuda a recordar qué versión del escenario existe en cada punto de la historia.
+
+** P: ¿Puedo tener varias escenas en «Piso» sin ser más específico?
+
+*R*: Sí, pero plantéate desglosarlo:
+- Piso de Alex - Salón
+- Piso de Alex - Dormitorio
+- Piso de Alex - Cocina
+
+Cada uno puede tener su propia ficha con detalles concretos. Esto da más variedad y una puesta en escena más clara.
+
+** P: ¿Debo enlazar escenarios genéricos como «Calle» o «Coche»?
+
+*R*: Normalmente no. Enlaza instancias concretas:
+- «La calle Mayor» (si es un escenario recurrente)
+- «El coche de Alex» (si es importante y reaparece)
+- «El tren de la línea roja» (si es un lugar habitual)
+
+No enlaces «una calle» ni «un coche» genéricos: no necesitan seguimiento de coherencia.
+
+** P: ¿Cómo trato los escenarios que solo existen en una escena pero son importantes?
+
+*R*: Crea una ficha con:
+- Un Eco y un Símbolo afilados: un lugar que sostiene una escena crucial los
+  necesita más que uno recurrente
+- Una descripción detallada (porque es importante)
+- Una nota en *Notas* sobre por qué importa esa única escena
+
+Ejemplo: la azotea donde el protagonista toma una decisión crucial aparece una sola vez, pero necesita una descripción vívida y peso emocional.
+
+* Solución de problemas
+
+** «Capturé un escenario pero no la encuentro»
+
+*** Problema
+El escenario se capturó pero no aparece bajo «Ambientación» en diseno.org.
+
+*** Solución
+1. Mira en el sitio correcto: la sección «Ambientación» de ~diseno.org~
+   (~design.org~ en inglés, sección «Setting»)
+2. Abre el archivo y busca: ~C-s~ y luego escribe el nombre del escenario
+3. Si no está, puede que la captura fallara: inténtalo de nuevo
+
+** «El menú de enlace de escenarios no muestra ninguno»
+
+*** Problema
+Al pulsar F8 l sale una lista vacía.
+
+*** Solución
+1. Asegúrate de haber capturado al menos un escenario
+2. Abre diseno.org
+3. Comprueba que los escenarios son encabezados directamente bajo «Ambientación», con propiedades ~:ID:~
+4. Si faltan IDs, ejecuta: ~M-x org-scribe-add-location-ids~
+
+** «La búsqueda no encuentra escenas de un escenario que sé que enlacé»
+
+*** Problema
+La búsqueda devuelve 0 resultados pese a las escenas enlazadas.
+
+*** Solución
+1. Abre una escena que debería tener este escenario
+2. Mira la propiedad ~:Localizacion:~
+3. Comprueba que es un enlace por ID: ~[[id:...][Nombre]]~
+4. Si es texto plano, ejecuta: ~M-x org-scribe-link-scene-locations~
+5. Prueba la búsqueda otra vez
+
+** «Saltar al escenario no funciona»
+
+*** Problema
+~C-c C-o~ sobre la propiedad de escenario no salta.
+
+*** Solución
+1. Asegúrate de que la propiedad de escenario es un enlace por ID (con sintaxis ~[[id:...]]~)
+2. Pon el cursor justo sobre el texto del enlace
+3. Comprueba que la ficha del escenario sigue existiendo y tiene ese ID
+4. Si el ID está huérfano, vuelve a enlazar a mano
+
+* Referencia rápida
+
+** Atajos de teclado
+
+| Tecla     | Acción                                                                          |
+|-----------+---------------------------------------------------------------------------------|
+| ~F8 k l~  | Capturar un escenario nuevo                                                     |
+| ~F8 l~    | Fijar la(s) localización(es) de la escena (menú)                                |
+| ~F8 R~    | Volver a enlazar el proyecto (todos los tipos de entidad, escenarios incluidos) |
+| ~F8 4~    | Buscar escenas por localización                                                 |
+| ~C-c C-o~ | Seguir el enlace bajo el cursor                                                 |
+| ~C-c &~   | Volver del enlace                                                               |
+| ~C-c C-c~ | Finalizar la captura / actualizar la tabla                                      |
+
+No hay una tecla dedicada para «saltar al escenario»: seguir el enlace de escenario con ~C-c C-o~ es la única forma de ir de una escena a una ficha de escenario.
+
+** Forma de la plantilla de escenario
+
+| Parte                    | Propósito                                                         |
+|--------------------------+-------------------------------------------------------------------|
+| ~:Type:~                 | Qué clase de lugar es; también marca el encabezado como escenario |
+| ~:Echo:~                 | Forma breve del Eco, para la vista de columnas                    |
+| ~:First-appearance:~     | Dónde lo ve el lector por primera vez                             |
+| ~Eco ::~                 | Cómo el lugar refleja el Tema                                     |
+| ~Escollo ::~             | Cómo empeora el Problema del Mundo                                |
+| ~Personaje ::~           | Un Aspecto de personaje que activa                                |
+| ~Símbolo ::~             | El detalle concreto que carga la escena                           |
+| Descripción              | Lo que un focalizador vería, oiría y olería                       |
+| Escenas que ocurren aquí | Notas que la búsqueda por escenario no puede derivar              |
+| Notas                    | Continuidad y recordatorios del escritor                          |
+
+** Profundidad de la ficha de escenario
+
+| Profundidad | Qué escribes                                     | Cuándo                            |
+|-------------+--------------------------------------------------+-----------------------------------|
+| Mínima      | Solo el Eco                                      | Al capturar, siempre              |
+| Estándar    | Los cuatro Aspectos + unas líneas de descripción | Antes de escribir una escena allí |
+| Completa    | Lo anterior, más notas sobre lo ya revelado      | Cuando el lugar reaparece         |
+
+Un escenario usado una vez, con un Eco y nada más, está perfectamente terminado.
+
+** Tipos de escenario
+
+~:Type:~ es texto libre: estas son solo opciones habituales.
+
+| Tipo        | Ejemplos                                 |
+|-------------+------------------------------------------|
+| Vivienda    | Piso, casa, residencia de estudiantes    |
+| Negocio     | Cafetería, oficina, tienda               |
+| Público     | Parque, calle, biblioteca                |
+| Institución | Colegio, hospital, edificio del gobierno |
+| Transporte  | Coche, tren, autobús, avión              |
+| Natural     | Bosque, playa, montaña, río              |
+
+** Órdenes habituales
+
+| Comando                               | Qué hace                                                                                                                                                                                             |
+|---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ~org-scribe-capture-location~         | Captura una ficha de localización nueva                                                                                                                                                              |
+| ~org-scribe-set-scene-locations~      | Fija la localización con el menú                                                                                                                                                                     |
+| ~org-scribe-link-scene-locations~     | Enlaza la localización de la escena actual                                                                                                                                                           |
+| ~org-scribe-link-all-scene-locations~ | Enlaza por lotes todas las escenas                                                                                                                                                                   |
+| ~org-scribe-relink-project~           | Añade los IDs que faltan, enlaza nombres en texto plano y refresca los nombres mostrados en todos los tipos de entidad (la sustituta moderna, de una sola orden, de las cuatro funciones anteriores) |
+| ~org-scribe-org-find-location~        | Busca escenas por localización                                                                                                                                                                       |
+| ~org-scribe-add-location-ids~         | Añade IDs a las localizaciones existentes                                                                                                                                                            |
+
+* Consejos para gestionar mejor los escenarios
+
+** 1. Captura pronto, rellena después
+
+Cuando aparezca un escenario nuevo en tu borrador:
+- Captúrala enseguida (solo nombre y propiedades básicas)
+- Rellena la descripción detallada más tarde, durante la revisión
+- Así evitas olvidarte de ella
+
+** 2. Usa inspiración del mundo real
+
+Basa los escenarios ficticios en lugares reales:
+- Visítalos y toma notas (o usa la memoria)
+- Fotografía detalles
+- Registra impresiones sensoriales
+- Cámbialos lo bastante para hacerlos tuyos
+
+Cita el lugar real en tu sección de Notas.
+
+** 3. Crea un mapa mental
+
+Para escenarios complejos (barrios enteros, edificios con varias salas):
+- Anota las relaciones espaciales en *Notas* («encima de», «enfrente de»)
+- Plantéate dibujar un mapa (guárdalo en Notas como enlace a una imagen)
+- Si toda la geografía importa para el libro, su sitio es la parte Mundo de
+  ~diseno.org~ y no la ficha de un escenario concreto
+
+** 4. Equilibra familiaridad y novedad
+
+- Escenarios familiares (casa, trabajo) → menos descripción, más emoción
+- Escenarios nuevos (primeras visitas) → más descripción, reacción del personaje
+
+Actualiza tu ficha para anotar qué escenas establecen el escenario y cuáles lo revisitan.
+
+** 5. Aprovecha los detalles sensoriales
+
+Para cada escenario, identifica su sentido característico:
+- Cafetería → olfato (café, bollería)
+- Oficina → oído (teléfonos, teclados, aire acondicionado)
+- Bosque → tacto (corteza áspera, aire fresco)
+- Playa → oído (olas, gaviotas) + tacto (arena, viento)
+
+Empieza por ese sentido al escribir escenas allí.
+
+** 6. Sigue los detalles revelados
+
+En la sección de Notas, mantén una lista de lo que sabe el lector:
+#+BEGIN_EXAMPLE
+,*** Revelado al lector
+- [Capítulo 1] La puerta de entrada es azul
+- [Capítulo 3] La cocina tiene una ventana grande
+- [Capítulo 5] Tabla del suelo que cruje en el pasillo
+- [Capítulo 8] Estantería en el salón
+#+END_EXAMPLE
+
+Esto evita:
+- Revelar el mismo detalle dos veces («como si fuera la primera vez»)
+- Contradecir descripciones anteriores
+
+** 7. Usa el escenario como personaje
+
+Los escenarios importantes pueden funcionar como personajes:
+- Tienen personalidad (atmósfera)
+- Afectan emocionalmente a los personajes
+- Pueden cambiar con el tiempo
+- Participan en la historia
+
+Trata el hogar de tu protagonista o un lugar central de reunión con el mismo cuidado que a un personaje secundario.
+
+** 8. Audita con regularidad
+
+Cada 10-15 escenas, haz una auditoría de escenarios:
+- ¿Qué escenarios dominan?
+- ¿Cuáles no se han usado en 20 o más escenas?
+- ¿Hay demasiados escenarios de una sola vez?
+- ¿Necesitas fusionar escenarios parecidos?
+
+** 9. Conecta los escenarios temáticamente
+
+Agrupa los escenarios por tema o función:
+- «Espacios seguros» frente a «zonas de peligro»
+- «Público» frente a «privado»
+- «Pasado» (lugares de la infancia) frente a «presente»
+- «Vida laboral» frente a «vida en casa»
+
+Esta agrupación es en realidad una pregunta sobre Ecos: dos escenarios del
+mismo grupo suelen hacerse eco del Tema desde el mismo lado. Compara sus líneas
+~Eco ::~ y, si dicen lo mismo, plantéate si necesitas los dos.
+
+** 10. Deja que los escenarios te sorprendan
+
+A veces inventarás un escenario para una sola escena y se volverá importante:
+- Un escenario de fondo se convierte en un escenario clave
+- Un escenario menor revela profundidad de un personaje
+- Una escena de relleno en un lugar nuevo despierta ideas de trama
+
+Cuando ocurra, sube de nivel el escenario:
+- Rellena los Aspectos que te saltaste: un lugar con peso de verdad necesita los cuatro
+- Amplía la descripción
+- Planifica más escenas allí
+
+* Lo que has aprendido
+
+¡Enhorabuena! Has completado la Lección 5. Ahora sabes:
+
+✓ Por qué el seguimiento de escenarios mejora la coherencia y la variedad
+✓ Los distintos tipos de escenario (principal, secundaria, menor, atmosférica)
+✓ Cómo usar la plantilla de captura de escenarios (los cuatro Aspectos, más Descripción, Escenas y Notas)
+✓ Todas las propiedades de un escenario y cuándo usarlas
+✓ Cómo enlazar escenarios con escenas mediante enlaces por ID
+✓ Cómo navegar entre escenas y fichas de escenario
+✓ Cómo buscar todas las escenas de un escenario concreto
+✓ Cómo seguir la variedad de escenarios con auditorías de escenarios
+✓ Cómo integrar la gestión de escenarios en tu escritura diaria
+
+* Próximos pasos
+
+Ya estás listo para la [[file:primeros-pasos-06-hilos-trama.org][Lección 6: Hilos de la trama y cronología]].
+
+En la próxima lección aprenderás:
+- A crear fichas de hilos de la trama
+- A seguir varias líneas argumentales a lo largo de tu historia
+- A enlazar hilos de la trama con escenas
+- A generar cronologías de la trama e informes de salud
+- A asegurar un desarrollo equilibrado de la trama
+- A encontrar huecos en la progresión de la trama
+
+** Práctica rápida antes de seguir
+
+Antes de la Lección 6, prueba esto:
+
+1. Captura 3-5 escenarios para tu proyecto:
+   - Al menos un escenario principal
+   - Al menos dos escenarios secundarios
+2. Enlaza cada escenario con 1-2 escenas
+3. Prueba a saltar de la escena a la ficha y volver
+4. Busca un escenario y repasa qué escenas lo usan
+5. Haz una auditoría de escenarios:
+   - Cuenta las escenas por escenario
+   - Identifica tu escenario más usado
+   - Identifica los escenarios poco usados
+
+¡Tómate tu tiempo! El trabajo con los escenarios es la base de una escritura inmersiva. Cuando te sientas cómodo capturando, enlazando y buscando escenarios, pasa a la Lección 6.
+
+* Resumen
+
+Los escenarios anclan tu historia en el espacio físico y ayudan a los lectores a visualizar tu mundo. Al crear fichas de escenario:
+- Mantienes la coherencia entre varias escenas
+- Sigues la variedad de escenarios para evitar repeticiones
+- Consultas rápido los detalles mientras escribes
+- Construyes una geografía ficticia coherente
+- Buscas al instante todas las escenas de un escenario
+
+El sistema de enlace de escenarios usa enlaces por ID, igual que los personajes, y te permite ir con un clic desde las propiedades de la escena hasta las fichas completas de escenario. Así es fácil comprobar detalles, asegurar la coherencia y gestionar escenarios complejos.
+
+Con la gestión de escenarios en marcha, tu historia ya tiene seguidos tanto el *quién* (personajes) como el *dónde* (escenarios). A continuación aprenderás a seguir el *qué ocurre* con los hilos de la trama.
+
+---
+
+*Anterior*: [[file:primeros-pasos-04-capturar-personajes.org][Lección 4: Capturar personajes]]
+*Siguiente*: [[file:primeros-pasos-06-hilos-trama.org][Lección 6: Hilos de la trama y cronología]]
+
+*¡Lección 5 completada!*

@@ -1,0 +1,714 @@
+#+TITLE: Lección 3: Seguir tu progreso
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-03-tracking-progress.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-03-tracking-progress.org][English version]]/
+
+* ¡Bienvenido a la Lección 3!
+
+Has creado un proyecto y escrito tus primeras escenas. ¡Ahora toca seguir tu progreso! Ver crecer tu recuento de palabras es una de las partes más motivadoras de escribir, y este paquete lo pone fácil.
+
+Al terminar esta lección habrás:
+- Aprendido a contar palabras con exactitud (sin contar los metadatos de Org)
+- Fijado objetivos de palabras para tus escenas y capítulos
+- Generado tablas de seguimiento del progreso que se actualizan solas
+- Entendido tus estadísticas de escritura
+- Montado un flujo diario de seguimiento
+
+*Tiempo estimado*: 15-20 minutos
+
+* Antes de empezar
+
+** Lo que necesitas
+
+✓ Un proyecto con al menos una escena escrita (de la Lección 2)
+✓ Al menos 200 palabras de contenido real de la historia
+✓ Tu archivo de manuscrito abierto (cuento.org o novela.org)
+
+** Una comprobación rápida
+
+Abre tu manuscrito y asegúrate de tener:
+- Al menos un encabezado de escena
+- Algo de texto real de la historia debajo del bloque de propiedades
+- El archivo guardado (~C-x C-s~)
+
+¿Listo? ¡Vamos a seguir tu progreso!
+
+* Por qué contar palabras en Org-mode es especial
+
+Antes de contar palabras, vamos a entender por qué el recuento de este paquete es diferente.
+
+** El problema del recuento normal
+
+Si usas el ~M-x count-words~ incorporado de Emacs, cuenta *todo*:
+- El texto de tu historia ✓ (¡bien!)
+- Los encabezados de escena ✗ (no es historia)
+- Los nombres de las propiedades ✗ (metadatos)
+- Los valores de las propiedades ✗ (metadatos)
+- Las palabras clave de Org ✗ (#+TITLE, etc.)
+- Los comentarios ✗ (no es historia)
+
+Esto te da una cifra inflada e inexacta.
+
+** Ejemplo: qué se cuenta
+
+Mira esta escena:
+
+#+BEGIN_EXAMPLE
+,*** TODO La alarma :ignore:
+:PROPERTIES:
+:PoV: Alex
+:Personajes: Alex, Sam
+:Localizacion: Apartamento
+:Descripcion: Alex se despierta tarde
+:WORDCOUNT:
+:WORD-OBJECTIVE: 1500
+:END:
+
+La alarma sonó a las 6:30. Alex gruñó y pulsó el botón de repetición.
+Cinco minutos más no le harían daño.
+#+END_EXAMPLE
+
+*Recuento normal*: ~44 palabras (¡incluye todos los metadatos!)
+*Recuento exacto*: ~22 palabras (¡solo la historia!)
+
+** La solución: un recuento que entiende el contexto
+
+Este paquete usa ~org-context-extended~ para contar solo el contenido narrativo real. Sabe qué es metadato y qué es historia, y te da cifras exactas para:
+- Requisitos de editoriales (necesitan exactamente 50.000 palabras para una novela)
+- Concursos (límites de palabras estrictos)
+- Objetivos personales (escribir 500 palabras hoy)
+- Seguimiento del progreso (un 30 % completado significa progreso real de la historia)
+
+* Recuento rápido (interactivo)
+
+Empecemos por la forma más rápida de comprobar tu recuento de palabras.
+
+** Paso 1: Colocar el cursor
+
+Coloca el cursor en cualquier punto de una escena (en el encabezado o en el contenido).
+
+** Paso 2: Contar palabras
+
+Pulsa ~F8~ para abrir el menú Hydra y luego ~w~ (de «Count words»)
+
+Verás en el minibúfer un mensaje como:
+
+#+BEGIN_EXAMPLE
+2108 palabras en el búfer
+#+END_EXAMPLE
+
+(Si hay una región seleccionada, cuenta solo la región y el mensaje dice «… palabras en la región». Con los mensajes en inglés dice «words in buffer».)
+
+*¡Eso es todo!* Rápido y fácil.
+
+** Qué se cuenta
+
+Esta orden cuenta la ventana actual:
+- si la ventana muestra todo el archivo novela.org, contará todo.
+- si la ventana está en el modo Enfoque, o estrechada, obtendrás el recuento de la sección en foco.
+
+** ¡Pruébalo ahora!
+
+1. Con el modo de escritura activado, pulsa ~F8 w~, de «Count words».
+2. Esto contará todo tu manuscrito.
+3. Con el modo Enfoque activado, pulsa ~F8 w~, de «Count words».
+4. Esto contará solo tu sección en foco.
+
+* Añadir propiedades de recuento de palabras
+
+Los recuentos rápidos son estupendos para comprobar el progreso, pero queremos *guardar* los recuentos en propiedades para el seguimiento y las tablas.
+
+** Entender las dos propiedades
+
+*** ~:WORDCOUNT:~
+- Recuento de palabras real, calculado automáticamente
+- Lo fijas con una orden
+- Se actualiza cuando vuelves a contar
+- Se usa en las tablas de progreso
+
+*** ~:WORD-OBJECTIVE:~
+- Tu meta/objetivo
+- Lo fijas tú a mano
+- No cambia a menos que lo cambies tú
+- Se usa para calcular el porcentaje completado
+
+** Paso 1: Fijar tu objetivo (manual)
+
+Primero, decide el objetivo de palabras de una escena.
+
+*Longitudes típicas de escena*:
+- Escena corta: 500-1.000 palabras
+- Escena media: 1.000-1.500 palabras
+- Escena larga: 1.500-2.500 palabras
+- Escena épica: más de 2.500 palabras
+
+Digamos que quieres 1.500 palabras para tu escena.
+
+1. Busca la línea ~:WORD-OBJECTIVE:~ en las propiedades de tu escena
+2. Haz clic al final de la línea
+3. Escribe: ~1500~
+
+Resultado:
+#+BEGIN_EXAMPLE
+:WORD-OBJECTIVE: 1500
+#+END_EXAMPLE
+
+Haz esto con cada escena de la que quieras seguir el progreso.
+
+** Paso 2: Calcular el recuento real (automático)
+
+Ahora vamos a añadir el recuento de palabras real.
+
+1. Pulsa ~F8~ para Hydra
+2. Pulsa ~a~ («Update all counts», actualizar todos los recuentos)
+
+*Importante*: ~a~ está asociada a ~org-scribe-ews-org-count-words~, que recalcula ~:WORDCOUNT:~ en *cada* encabezado de todo el búfer, no solo en la escena bajo el cursor; la posición del cursor no cambia el alcance. También crea una propiedad ~:ID:~ nueva en cualquier encabezado que no la tenga. Si quieres refrescar solo las escenas del capítulo/acto actual (o todo el búfer limitado a escenas, sin tocar los agregados de capítulo/acto), coloca el cursor ahí y pulsa ~F8 w~ (el despachador ~org-scribe-wordcount~) con un doble argumento prefijo, ~C-u C-u~, en su lugar.
+
+Después de ejecutar ~a~, la propiedad de tu escena queda así:
+
+#+BEGIN_EXAMPLE
+:WORDCOUNT: 347
+#+END_EXAMPLE
+
+*¡Magia!* La propiedad ya está rellena.
+
+** Paso 3: Ver tu progreso
+
+Mira ahora tus propiedades:
+
+#+BEGIN_EXAMPLE
+:WORDCOUNT: 347
+:WORD-OBJECTIVE: 1500
+#+END_EXAMPLE
+
+Cálculo mental: 347 ÷ 1500 = ¡un 23 % completado!
+
+Pero podemos hacerlo mejor: ¡vamos a hacer tablas que lo calculen solas!
+
+** Actualizar los recuentos de palabras
+
+A medida que escribes más, actualiza tu recuento de palabras:
+
+1. ~F8 a~ (refresca todos los encabezados del búfer, alcance de todo el manuscrito)
+2. ¡Las propiedades ~:WORDCOUNT:~ se actualizan!
+
+Hazlo después de cada sesión de escritura o cuando quieras comprobar tu progreso.
+
+* Tablas de seguimiento del progreso
+
+Ahora viene lo realmente genial: ¡las tablas de progreso automáticas!
+
+** Entender las tablas de progreso
+
+Las tablas de progreso muestran:
+- La estructura jerárquica (Acto → Capítulo → Escena)
+- El recuento de palabras actual (de las propiedades ~:WORDCOUNT:~)
+- El recuento objetivo (de las propiedades ~:WORD-OBJECTIVE:~)
+- El porcentaje completado (¡calculado automáticamente!)
+
+Las tablas se actualizan cuando pulsas ~C-c C-c~ sobre el bloque.
+
+** Dónde encontrar la tabla de progreso
+
+*** Proyectos de cuento
+
+Abre tu archivo ~cuento.org~. La tabla está arriba, en la sección «Información del Cuento» (que no se exporta), bajo el encabezado «Seguimiento de Palabras».
+
+Verás:
+
+#+BEGIN_EXAMPLE
+,** Seguimiento de Palabras
+
+#+BEGIN: org-generate-wordcount-table
+| Encabezado    | Wordcount |
+|---------------+-----------|
+|               |           |
+#+END:
+#+END_EXAMPLE
+
+*** Proyectos de novela
+
+Abre tu archivo ~novela.org~.
+
+Busca la sección «Seguimiento del Progreso», bajo el encabezado «Conteo de Palabras y Progreso», con el mismo bloque dinámico.
+
+** Actualizar tu tabla de progreso
+
+1. Busca la línea ~#+BEGIN: org-generate-wordcount-table~
+2. Coloca el cursor en cualquier punto de esa línea
+3. Pulsa ~C-c C-c~
+
+¡La tabla se regenera con los datos actuales!
+
+** Entender la tabla
+
+Tras actualizarla, verás algo como esto (el bloque escribe las cabeceras de columna en inglés, también en un proyecto en español):
+
+#+BEGIN_EXAMPLE
+#+BEGIN: org-generate-wordcount-table
+| Heading                   | Wordcount | Objective | Progress |
+|---------------------------+-----------+-----------+----------|
+| └> [[Acto I]]                |       847 |     20000 |       4% |
+| └--> [[Capítulo 1]]          |       847 |      3000 |      28% |
+| └----> [[Escena 1]]          |       347 |      1500 |      23% |
+| └----> [[Escena 2]]          |       500 |      1500 |      33% |
+| └> [[Acto II]]               |         0 |     40000 |       0% |
+| └> [[Acto III]]              |         0 |     20000 |       0% |
+#+END:
+#+END_EXAMPLE
+
+Cómo leer la tabla:
+- *Heading*: la estructura de tu manuscrito (escenas, capítulos, actos); una fila por cada encabezado que tenga alguna de las dos propiedades, en el orden del documento
+- *Wordcount*: el recuento de palabras actual (de las propiedades ~:WORDCOUNT:~)
+- *Objective*: el recuento objetivo (de las propiedades ~:WORD-OBJECTIVE:~)
+- *Progress*: el porcentaje completado (calculado automáticamente)
+
+Nota: este bloque dinámico *no* calcula una fila de TOTAL ni suma por su cuenta los recuentos de las escenas en su capítulo: cada fila refleja simplemente las propiedades ~:WORDCOUNT:~/~:WORD-OBJECTIVE:~ de ese mismo encabezado. Si quieres un total y un porcentaje de todo el manuscrito, usa la sección *Resumen* del informe de salud del proyecto (mira más abajo).
+
+** El informe de salud del proyecto
+
+Para una vista de todo el manuscrito más allá de cualquier tabla, ejecuta ~M-x org-scribe-project-health~ (o ~F8 H~). Reúne un *Resumen* (total de palabras escritas frente al total de objetivos de capítulo, con un porcentaje global que evita la doble cuenta que daría una suma ingenua de escenas y capítulos), *Escenas por estado*, *Reparto de Palabras por PoV*, *Dispersión de Longitud de Capítulos* (mín/máx/media/mediana), *Propiedades de escena que faltan*, *Entidades huérfanas* y *Escenas TODO abiertas*, además de una sección *Plan de escritura* cuando el planificador integrado (Lección 16) está activo en el proyecto. Es la forma más rápida de responder a «¿cuánto he escrito de verdad y qué sigue necesitando atención?» sin rebuscar entre tablas por escena.
+
+* Fijar objetivos (planificar tu historia)
+
+Para obtener porcentajes de progreso con sentido, necesitas objetivos en cada nivel.
+
+** Objetivos por escena
+
+Para cada escena, añade ~:WORD-OBJECTIVE:~ según su importancia. Estos números se muestran como ejemplo de lo que podrían ser:
+- Escena de transición rápida: 500
+- Escena estándar: 1.000-1.500
+- Escena importante: 2.000+
+
+** Objetivos por capítulo (novelas)
+
+Para cada capítulo, fija un objetivo que sea la suma de sus escenas:
+- El Capítulo 1 tiene 3 escenas estándar × 1.500 = 4.500
+- Fija ~:WORD-OBJECTIVE: 4500~ en el encabezado del Capítulo 1
+
+** Objetivos por sección/acto
+
+Estos números se muestran como ejemplos:
+
+Para las secciones principales:
+- Planteamiento: ~3.000
+- Nudo: ~5.000
+- Desenlace: ~2.000
+
+O, en las novelas, los tres actos reparten el total del proyecto en un 25 % / 50 % / 25 % (para una novela de 80.000 palabras: 20.000 / 40.000 / 20.000; para 50.000: 12.500 / 25.000 / 12.500). El total se pregunta al crear el proyecto.
+
+** Objetivo total de la historia
+
+*Cuento*: 2.000-15.000 palabras es lo habitual
+*Novela corta*: 15.000-50.000 palabras
+*Novela*: 50.000-120.000 palabras
+*Novela épica*: más de 120.000 palabras
+
+¡Fija objetivos que coincidan con la longitud que buscas!
+
+** Cambiar la longitud de tu novela
+
+¿Has decidido que tu novela de 80.000 palabras debería ser de 50.000? Pulsa ~F8 t~
+(~M-x org-scribe-set-word-target~). Te pide el nuevo total y cómo reescalar las partes (los actos de una novela, las escenas de un cuento):
+
+- /Mantener las proporciones actuales/: si habías hecho el Acto II más largo que la mitad, se queda así.
+- /Volver a las proporciones por defecto/: 25 % / 50 % / 25 % (solo se ofrece cuando el proyecto tiene tantas partes como proporciones).
+
+Ves el objetivo antiguo y el nuevo de cada parte antes de que se escriba nada. Después la orden actualiza el total del proyecto, esos objetivos de las partes, la línea del total en Objetivos del Proyecto y cualquier propiedad de objetivo de palabras del manuscrito. Los objetivos de capítulo y de escena, los IDs y tu plan de escritura no cambian. Si el manuscrito tiene ediciones sin guardar, el archivo se deja modificado en lugar de guardarse.
+
+** Ejercicio rápido de configuración
+
+Vamos a fijar objetivos para tu proyecto actual:
+
+1. Abre tu manuscrito
+2. Para cada encabezado de escena:
+   - Añade ~:WORD-OBJECTIVE: 1500~ (o tu objetivo)
+3. Para cada sección/capítulo:
+   - Añade ~:WORD-OBJECTIVE:~ (la suma de sus escenas)
+4. Calcula tu objetivo total
+5. Guarda (~C-x C-s~)
+6. Actualiza la tabla de progreso (~C-c C-c~ sobre el bloque de la tabla)
+7. ¡Mira tu progreso!
+
+* Seguimiento diario del progreso
+
+Además del seguimiento por escena/capítulo, puedes seguir tus sesiones diarias de escritura.
+
+** Dónde viven los totales diarios
+
+La sección «Seguimiento Diario de Palabras» de tu plantilla no contiene ninguna tabla. Los totales diarios son el registro del *planificador*: ábrelo con ~F8 W~, o ~M-x org-scribe-plan~ para crear o cargar el plan del proyecto. A partir de entonces, cada recuento de palabras que ejecutes registra el total de ese día, y el planificador informa del objetivo diario, de si vas al día y de cuántos días quedan; mira la [[file:primeros-pasos-16-planificador.org][Lección 16]].
+
+Deliberadamente solo hay un lugar en el proyecto que cuenta palabras (la tabla de progreso de arriba, generada a partir de las propiedades ~:WORDCOUNT:~) y un lugar que las sigue a lo largo del tiempo (el plan). Las plantillas anteriores traían además una tabla para el paquete externo =org-tracktable= y una sección de «Análisis de productividad» rellenada a mano; ambas han desaparecido, porque un paquete que quizá no está instalado y unas cifras que el planificador calcula por ti son dos formas de hacer que el seguimiento parezca trabajo.
+
+Si aun así prefieres llevar un registro sencillo a mano, nada te lo impide: añade tu propia tabla:
+
+#+BEGIN_EXAMPLE
+,** Registro diario de escritura
+
+| Fecha      | Palabras escritas | Total de palabras | Notas           |
+|------------+-------------------+-------------------+-----------------|
+| 2025-11-16 |               500 |               500 | Empecé la novela |
+| 2025-11-17 |               750 |              1250 | Capítulo 1      |
+#+END_EXAMPLE
+
+*Método manual* (sencillo):
+
+1. Al final de tu sesión de escritura
+2. Anota tu recuento de palabras (~F8 w~ o ~F8 a~)
+3. Añade una fila nueva a la tabla:
+   - Fecha: la de hoy
+   - Palabras escritas: lo que has escrito hoy
+   - Total de palabras: el total acumulado
+   - Notas: en qué trabajaste
+
+** Seguimiento automático (avanzado)
+
+Para un seguimiento diario automático sin mantener tablas a mano, mira la [[file:primeros-pasos-16-planificador.org][Lección 16: Planificación de objetivos de escritura con el planificador integrado]]: el planificador de escritura integrado empuja solo los recuentos de palabras en vivo y los incrementos diarios.
+
+Nota: el recuento de palabras solo se ejecuta cuando lo pides (~F8 a~ o ~F8 w~), salvo que hayas activado ~org-scribe-auto-wordcount~, que está *desactivado por defecto*. Ponerlo a ~t~ hace que guardar ~novel.org~/~novela.org~ vuelva a contar las palabras en silencio y sincronice el plan en cada guardado: es cómodo, pero hace los guardados un poco más lentos, porque recuenta cada encabezado del búfer. La sección «Los recuentos de palabras se anotan solos» de la Lección 16 explica cómo activarlo; vuelve a ponerlo a ~nil~ para desactivarlo.
+
+*No te preocupes si te lo saltas*: ¡el seguimiento manual funciona de maravilla!
+
+** Por qué seguir el progreso diario
+
+Ventajas:
+- Ver el impulso (rachas de escritura)
+- Identificar los días/horas más productivos
+- Mantener la motivación viendo crecer el total
+- Medir tu producción diaria media
+- Fijar plazos realistas
+
+Psicología: ¡ver subir los números es increíblemente motivador!
+
+* Ejercicio práctico (15 minutos)
+
+Vamos a juntar todo en un flujo real de seguimiento.
+
+** Ejercicio: escribir y hacer seguimiento
+
+1. *Escribe 200 palabras*
+   - Abre tu manuscrito
+   - Busca una escena que necesite más contenido
+   - Activa el modo de escritura (~F8 m~)
+   - Escribe 200 palabras
+   - Sal del modo de escritura (~F8 m~)
+   - Guarda (~C-x C-s~)
+
+2. *Actualiza el recuento de palabras*
+   - Cursor sobre el encabezado de la escena
+   - ~F8 a~ (añade/actualiza ~:WORDCOUNT:~)
+   - Mira la propiedad: ¡tu recuento ha subido!
+
+3. *Actualiza la tabla de progreso*
+   - Ve a la sección de seguimiento del progreso
+   - Busca la línea ~#+BEGIN: org-generate-wordcount-table~
+   - Cursor en esa línea
+   - ~C-c C-c~
+   - ¡Mira cómo se regenera la tabla con los números nuevos!
+
+4. *Registra tu sesión*
+   - Si usas el planificador (~F8 W~), el total de hoy ya está registrado: compruébalo con ~F8 W u~ (sincronizar el recuento) y añade una nota con ~F8 W d~
+   - Si llevas un registro a mano, añade una fila con la fecha de hoy, las palabras escritas, el total acumulado y en qué trabajaste
+
+5. *¡Celébralo!*
+   - Acabas de completar un ciclo de seguimiento entero
+   - Tu progreso ya está documentado
+   - ¡Puedes ver tu crecimiento!
+
+* Entender tus estadísticas
+
+Vamos a interpretar lo que significan tus datos de progreso.
+
+** Qué significan los porcentajes de progreso
+
+| Progreso | Significado                                         |
+|----------+-----------------------------------------------------|
+| 0-10 %   | Recién empezado, mucho trabajo por delante          |
+| 10-25 %  | Primeras etapas, encontrando tu ritmo               |
+| 25-50 %  | Avanzando con solidez, la historia va tomando forma |
+| 50-75 %  | ¡Pasada la mitad! El impulso crece                  |
+| 75-90 %  | Último empujón, ya se ve la meta                    |
+| 90-100 % | ¡Casi terminado! Últimas escenas                    |
+| 100 %+   | ¡Primer borrador completo! (o objetivo superado)    |
+
+** Un ritmo de escritura realista
+
+*¡No te asustes si el progreso parece lento!*
+
+Velocidades de escritura típicas:
+- Principiante: 250-500 palabras/hora
+- Intermedio: 500-1.000 palabras/hora
+- Con experiencia: 1.000-2.000 palabras/hora
+- Escritores rápidos de borrador: más de 2.000 palabras/hora
+
+¡La calidad importa más que la velocidad!
+
+** Interpretar las estadísticas diarias
+
+Si haces seguimiento diario:
+
+*Escritores constantes*: 500 palabras/día = 15.000 palabras/mes = una novela en 3-4 meses
+*Escritores de fin de semana*: 2.000 palabras/fin de semana = 8.000 palabras/mes = una novela en 6-7 meses
+*Escritores esporádicos*: variable, pero el seguimiento ayuda a encontrar patrones
+
+** Usar las estadísticas para planificar
+
+Con tu media diaria de palabras puedes predecir:
+
+*Fecha de finalización* = (Palabras que faltan) ÷ (Media de palabras por día)
+
+Ejemplo:
+- Objetivo: 50.000 palabras
+- Actual: 10.000 palabras
+- Faltan: 40.000 palabras
+- Media: 500 palabras/día
+- Días necesarios: 40.000 ÷ 500 = 80 días (~3 meses)
+
+* Flujo diario de seguimiento
+
+Aquí tienes una rutina diaria recomendada que incluye el seguimiento.
+
+** Por la mañana (antes de escribir)
+
+1. Abre el manuscrito
+2. Mira el progreso de ayer en la tabla
+3. Fija el objetivo de hoy (palabras o escenas)
+4. Activa el modo de escritura (~F8 m~)
+
+** Mientras escribes (tiempo variable)
+
+1. Escribe sin interrupciones
+2. No te obsesiones con el recuento de palabras a mitad de sesión
+3. Céntrate en la historia
+
+** Después de escribir (5 minutos)
+
+1. Sal del modo de escritura (~F8 m~)
+2. Guarda tu trabajo (~C-x C-s~)
+3. Recuento rápido (~F8 w~) para ver el total de la sesión
+4. Actualiza las propiedades de las escenas (~F8 a~)
+5. Actualiza la tabla de progreso (~C-c C-c~ sobre la tabla)
+6. Registra la sesión: el planificador anota el total por ti (~F8 W~); añade una nota con ~F8 W d~
+7. Anota qué fue bien y qué toca después
+
+** Revisión semanal (10 minutos)
+
+1. Actualiza todas las propiedades de recuento de palabras
+2. Regenera la tabla de progreso
+3. Revisa el registro diario: ¿algún patrón?
+4. Ajusta los objetivos si hace falta
+5. Planifica las escenas de la semana que viene
+
+* Preguntas frecuentes
+
+** «¿Por qué mis recuentos no coinciden con Microsoft Word?»
+
+Cada programa cuenta de forma distinta:
+- Palabras con guion: ¿una o dos?
+- Contracciones: ¿una palabra o dos?
+- Metadatos: ¿incluidos o excluidos?
+
+*Solución*: sé coherente. Usa el recuento de este paquete para el seguimiento, y los de otras herramientas para el envío si te lo exigen.
+
+** «¡Mi tabla de progreso muestra 0 % en todo!»
+
+*Causas*:
+- No hay propiedades ~:WORDCOUNT:~ fijadas (usa ~F8 a~)
+- No hay propiedades ~:WORD-OBJECTIVE:~ fijadas (añádelas a mano)
+- La tabla no se ha actualizado (pulsa ~C-c C-c~)
+
+*Solución*: ¡sigue el ejercicio de configuración de esta lección!
+
+** «¿Puedo cambiar los objetivos a mitad de historia?»
+
+*¡Sí!* Los objetivos son solo metas:
+- ¿La historia se alarga? Sube los objetivos
+- ¿Una escena sobra? Baja o quita el objetivo
+- Actualiza la propiedad y regenera la tabla
+
+** «¿Debo contar las palabras borradas?»
+
+*¡Una cuestión filosófica!*
+
+- Algunos escritores cuentan en bruto (todo lo escrito, incluido lo borrado)
+- Algunos cuentan en neto (el recuento final del manuscrito)
+- Las tablas de progreso muestran el neto (lo que de verdad hay)
+- Los registros diarios pueden llevar el bruto (lo que escribiste ese día)
+
+¡Elige lo que te motive!
+
+** «¿Qué objetivo diario de palabras es realista?»
+
+*Depende de tu situación*:
+- Escritores a tiempo completo: 1.000-2.000/día
+- A tiempo parcial (1-2 horas): 500-1.000/día
+- Agenda apretada: 250-500/día
+- Solo fines de semana: 2.000-3.000/sesión
+
+*Empieza poco a poco* (250 palabras/día) ¡y ve subiendo!
+
+** «¿Cómo cuento rápidamente las palabras de todo el manuscrito?»
+
+1. Pon el cursor en la línea del título del documento (arriba del archivo)
+2. ~F8 w~
+3. Obtendrás el recuento total
+
+¡O mira el *Resumen* del informe de salud (~F8 H~), que da el total de palabras escritas!
+
+* Solución de problemas
+
+** «C-c C-c sobre la tabla no funciona»
+
+*Soluciones*:
+1. Asegúrate de que el cursor está *en* la línea ~#+BEGIN:~, no solo cerca
+2. Comprueba que la línea dice exactamente ~org-generate-wordcount-table~
+3. Prueba ~M-x org-dblock-update~
+
+** «El recuento de palabras parece erróneo o demasiado bajo»
+
+*Comprueba*:
+1. Que ejecutaste ~F8 a~ sobre el encabezado de la escena (no dentro del contenido)
+2. Que la propiedad ~:WORDCOUNT:~ está dentro de ~:PROPERTIES:...:END:~
+3. Que hay contenido real debajo del bloque de propiedades
+4. Que guardaste el archivo (~C-x C-s~) y volviste a contar
+
+** «El progreso muestra más del 100 %»
+
+*¡Está bien!*
+- Has superado tu objetivo (¡buen trabajo!)
+- Puedes subir el objetivo
+- O alegrarte de haber escrito más de lo previsto
+
+** «Se rompe el formato de la tabla del registro diario»
+
+*Las tablas de Org necesitan*:
+- Barras verticales (~|~) alineadas
+- Separador de cabecera (~|---|~)
+
+*Arreglo rápido*:
+1. Pon el cursor en la tabla
+2. Pulsa ~Tab~ para realinear
+3. O ~C-c C-c~ para reformatear
+
+** «F8 a no añade el recuento de palabras»
+
+*Posibles causas*:
+1. El cursor no está en una línea de encabezado
+2. No hay contenido debajo de las propiedades
+3. El nivel del encabezado es incorrecto (debería ser el nivel de escena)
+
+*Solución*: pon el cursor directamente sobre los asteriscos del encabezado de la escena y vuelve a intentarlo.
+
+* Lo que has aprendido
+
+¡Fantástico trabajo! Has completado la Lección 3. Ahora sabes:
+
+✓ Por qué importa contar las palabras con exactitud (excluye los metadatos)
+✓ Cómo hacer un recuento rápido (~F8 w~)
+✓ Cómo añadir propiedades de recuento de palabras (~F8 a~)
+✓ La diferencia entre ~:WORDCOUNT:~ (real) y ~:WORD-OBJECTIVE:~ (objetivo)
+✓ Cómo fijar objetivos para escenas, capítulos y toda tu historia
+✓ Cómo generar y actualizar tablas de seguimiento del progreso
+✓ Cómo leer e interpretar los porcentajes de progreso
+✓ Cómo llevar un registro diario de escritura
+✓ Tu flujo diario de seguimiento completo
+✓ Cómo usar las estadísticas para planificar y motivarte
+
+* Próximos pasos
+
+¿Listo para organizar tus personajes? ¡Ve a la [[file:primeros-pasos-04-capturar-personajes.org][Lección 4: Capturar personajes]]!
+
+En la próxima lección aprenderás:
+- A crear fichas de personaje detalladas con rapidez
+- La plantilla de captura de personajes y todas sus secciones
+- A enlazar personajes con escenas (enlaces por ID)
+- A buscar todas las escenas en las que aparece un personaje
+- La generación de cronologías de personajes
+- A gestionar tu base de datos de personajes
+
+** Práctica antes de seguir
+
+Refuerza tus habilidades de seguimiento:
+
+1. *Escribe 500 palabras* y haz su seguimiento de principio a fin
+2. *Fija objetivos* para todas tus escenas existentes
+3. *Genera la tabla de progreso* y haz una captura de pantalla (¡motivación!)
+4. *Empieza el registro diario*: comprométete con una semana
+5. *Actualiza los recuentos* después de cada sesión
+6. *Calcula* cuándo terminarás tu primer borrador (¡a ver si te motiva!)
+7. *Revisa cada semana*: ¿cuál es tu media de palabras al día?
+
+Hacer seguimiento del progreso crea hábito: cuanto más lo hagas, más motivado estarás.
+
+* Referencia rápida
+
+** Órdenes esenciales de seguimiento
+
+| Orden                           | Tecla     | Qué hace                              |
+|---------------------------------+-----------+---------------------------------------|
+| Recuento rápido                 | ~F8 w~    | Cuenta el subárbol actual             |
+| Añadir propiedad de recuento    | ~F8 a~    | Fija la propiedad :WORDCOUNT:         |
+| Actualizar la tabla de progreso | ~C-c C-c~ | Regenera la tabla (cursor sobre ella) |
+
+** Propiedades de recuento de palabras
+
+| Propiedad          | La fija   | Para qué sirve              |
+|--------------------+-----------+-----------------------------|
+| ~:WORDCOUNT:~      | Una orden | Recuento real (automático)  |
+| ~:WORD-OBJECTIVE:~ | A mano    | Recuento objetivo (tu meta) |
+
+** Objetivos de palabras habituales
+
+| Nivel          | Rango habitual          |
+|----------------+-------------------------|
+| Escena         | 500-2.500 palabras      |
+| Capítulo       | 3.000-6.000 palabras    |
+| Acto (novelas) | 20.000-40.000 palabras  |
+| Cuento         | 2.000-15.000 palabras   |
+| Novela corta   | 15.000-50.000 palabras  |
+| Novela         | 50.000-120.000 palabras |
+
+** Objetivos diarios de escritura
+
+| Tipo de escritor          | Objetivo diario realista |
+|---------------------------+--------------------------|
+| Principiante              | 250-500 palabras         |
+| Intermedio                | 500-1.000 palabras       |
+| Con experiencia           | 1.000-2.000 palabras     |
+| A tiempo completo         | 2.000+ palabras          |
+| Guerrero de fin de semana | 2.000-3.000/sesión       |
+
+* Consejos para triunfar en el seguimiento
+
+1. *Haz seguimiento a diario*: ¡incluso 100 palabras cuentan!
+2. *Celebra los hitos*: cada 5.000 palabras, cada 25 % de progreso
+3. *No te obsesiones mientras escribes*: cuenta después, no durante
+4. *Sé constante*: siempre el mismo método de recuento
+5. *Revisa cada semana*: busca patrones en tu productividad
+6. *Ajusta los objetivos*: ¿demasiado fáciles? Súbelos. ¿Demasiado difíciles? Bájalos.
+7. *Comparte tu progreso*: cuéntale a alguien tus hitos
+8. *Visualiza el final*: usa el porcentaje para ver la meta
+9. *Mide también el tiempo*: ¿cuánto tardaste en escribir 500 palabras?
+10. *Perdónate los malos días*: ¡mañana es un recuento nuevo!
+
+** La motivación a través de los números
+
+«No rompas la cadena», el consejo de Jerry Seinfeld:
+- Escribe todos los días (aunque sean solo 100 palabras)
+- Anótalo
+- Mira crecer la racha
+- ¡No rompas la cadena!
+
+Tu registro diario es tu cadena: ¡sigue con ella!
+
+---
+
+*Anterior*: [[file:primeros-pasos-02-primera-escena.org][Lección 2: Escribir tu primera escena]]
+*Siguiente*: [[file:primeros-pasos-04-capturar-personajes.org][Lección 4: Capturar personajes]]
+
+*¡Lección 3 completada!* ✓

@@ -1,0 +1,1310 @@
+#+TITLE: Lección 9: Los modos de escritura en profundidad
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-09-writing-modes.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-09-writing-modes.org][English version]]/
+
+* ¡Bienvenido a la Lección 9!
+
+Has usado el modo de escritura (~F8 m~) en todas las lecciones anteriores, pero ~org-scribe~ ofrece en realidad *cuatro modos distintos* para flujos de trabajo distintos. Cada modo transforma tu entorno de una manera propia para apoyar una tarea concreta.
+
+En esta lección exploraremos los cuatro modos en detalle y aprenderás cuándo usar cada uno.
+
+Al terminar la lección habrás:
+- Entendido los cuatro modos de escritura y su propósito
+- Conocido las funciones específicas de cada uno
+- Practicado el cambio eficiente de un modo a otro
+- Descubierto qué modo encaja con tu manera de escribir
+- Ajustado los modos a tus preferencias
+
+*Tiempo estimado*: 15-20 minutos
+
+* Antes de empezar
+
+** Lo que necesitas
+
+✓ Un proyecto de escritura abierto con al menos una escena
+✓ Algo de texto escrito (se recomiendan más de 200 palabras)
+✓ Familiaridad con el menú Hydra (~F8~)
+
+** Dependencias opcionales
+
+Algunos modos funcionan mejor con paquetes opcionales:
+- *Modos Sin distracciones y Enfoque*: ~writeroom-mode~ (imprescindible)
+- *Modo Navegación*: ~treemacs~ e ~imenu-list~ (recomendados)
+- *Modo Edición*: ~imenu-list~ y ~visual-fill-column~ (recomendados)
+- *Temas y fuentes*: ~consult~ y ~fontaine~ (opcionales, pero cómodos)
+
+No te preocupes si no tienes todos: te explicaremos qué función necesita qué.
+
+* Los cuatro modos de escritura
+
+~org-scribe~ ofrece cuatro modos que se excluyen entre sí:
+
+** Tabla resumen
+
+| Modo              | Tecla | Propósito                      | Ideal para                                 |
+|-------------------+-------+--------------------------------+--------------------------------------------|
+| Sin distracciones | ~m~   | Escritura limpia y concentrada | Escritura diaria, primeros borradores      |
+| Enfoque           | ~f~   | Una sola sección cada vez      | Trabajo intenso sobre una escena           |
+| Navegación        | ~v~   | Navegar y escribir a la vez    | Proyectos complejos, saltar entre archivos |
+| Edición           | ~e~   | Disposición de tres paneles    | Revisión, integrar notas                   |
+
+(En el menú Hydra, que está en inglés, las etiquetas son /Write/, /Focus/, /Navigate/ y /Edit/.)
+
+** Exclusión mutua
+
+*Importante*: ¡solo puede haber un modo activo a la vez!
+
+Cuando activas un modo:
+1. Cualquier otro modo activo se desactiva automáticamente
+2. Los ajustes anteriores se restauran antes de que el nuevo modo se active
+3. Así se evitan conflictos y el estado se mantiene limpio
+
+*Qué significa en la práctica*:
+- ~F8 m~ con el modo Enfoque activo → Enfoque termina, Sin distracciones se activa
+- ~F8 v~ con el modo Edición activo → Edición termina, Navegación se activa
+- Activar de nuevo el mismo modo → lo desactiva (se comporta como un interruptor)
+
+** Resumen rápido
+
+Antes de entrar en detalle, esto es lo esencial de cada modo:
+
+1. *Sin distracciones* (~m~): un lienzo limpio, sin distracciones, solo tú y las palabras
+2. *Enfoque* (~f~): como Sin distracciones, pero muestra solo la sección actual
+3. *Navegación* (~v~): dos paneles de navegación y el área de escritura (visión de conjunto y detalle)
+4. *Edición* (~e~): tres paneles: esquema, manuscrito y notas (revisión en serio)
+
+* Modo 1: Escritura sin distracciones
+
+** Qué hace
+
+Se activa con: ~F8 m~
+
+*Cambios visuales*:
+- Cambia a un tema limpio y minimalista (si has configurado uno; ver más abajo)
+- Cambia la fuente al preajuste de escritura (más grande y legible)
+- Activa ~writeroom-mode~ (centra el texto y oculta la línea de modo)
+- Muestra números de línea
+- Estrecha el ancho del texto a una lectura cómoda (por defecto 80 columnas, configurable)
+
+*El resultado*: un lienzo de escritura limpio, centrado y sin distracciones.
+
+*Nota*: por defecto ~org-scribe-env-work-theme~ vale ~nil~, así que el modo *no cambia de tema* hasta que elijas uno. Una instalación nueva no debe intentar cargar un tema que quizá no tengas. Los ejemplos de esta lección usan ~poet~, pero tienes que instalarlo y configurarlo tú.
+
+** Cuándo usarlo
+
+Perfecto para:
+- Sesiones de escritura diarias (tu modo por defecto)
+- Escribir el primer borrador (no hace falta nada más)
+- Entrar en estado de flujo
+- Sprints de escritura cronometrados
+- Cuando quieres concentrarte solo en las palabras
+
+*No es lo ideal para*:
+- Moverte entre escenas (no hay esquema visible)
+- Consultar referencias (no ves las notas)
+- Editar la estructura (necesitas una vista más amplia)
+
+** Cómo funciona
+
+1. *Antes de activarlo*: Emacs normal, con tu tema, tus ventanas, etc.
+2. *Pulsa* ~F8 m~
+3. *La pantalla cambia*:
+   - El tema cambia (si has configurado uno)
+   - La fuente crece (se lee mejor)
+   - El texto se centra en la pantalla
+   - La línea de modo se oculta
+   - Todo salvo tu texto se desvanece
+4. *¡Escribe con libertad!*
+5. *Pulsa* ~F8 m~ otra vez para salir
+6. *Todo se restaura*: tema, fuente, ventanas, todo vuelve a la normalidad
+
+** Comparación visual
+
+#+BEGIN_EXAMPLE
+ANTES DEL MODO SIN DISTRACCIONES:
+┌────────────────────────────────────────────────┐
+│ Archivo Editar ... [menús] ...                 │
+├─────────┬──────────────────────────────────────┤
+│ Lateral │ *** Capítulo 1                       │
+│         │ Texto texto texto texto texto texto  │
+│ - Arch. │ texto texto texto texto texto texto  │
+│ - Búf.  │ texto texto texto texto texto texto  │
+│ - ...   │                                      │
+│         │ *** Capítulo 2                       │
+│         │ Más texto...                         │
+├─────────┴──────────────────────────────────────┤
+│ [Indicadores de modo] [Batería] [Hora] ...     │
+└────────────────────────────────────────────────┘
+
+DESPUÉS DEL MODO SIN DISTRACCIONES (F8 m):
+┌────────────────────────────────────────────────┐
+│                                                │
+│                                                │
+│            *** Capítulo 1                      │
+│                                                │
+│            Texto texto texto                   │
+│            texto texto texto                   │
+│            texto texto texto                   │
+│            texto texto texto                   │
+│                                                │
+│            *** Capítulo 2                      │
+│                                                │
+│            Más texto...                        │
+│                                                │
+│                                                │
+│                                                │
+└────────────────────────────────────────────────┘
+#+END_EXAMPLE
+
+** Variables de personalización
+
+Controlan el aspecto del modo Sin distracciones:
+
+#+BEGIN_SRC emacs-lisp
+;; Tema mientras escribes (por defecto nil: no cambia el tema)
+(setq org-scribe-env-work-theme 'poet)  ; o modus-operandi, etc.
+
+;; Tema normal (se restaura al salir)
+(setq org-scribe-env-normal-theme 'ef-deuteranopia-dark)
+
+;; Preajuste de fuente mientras escribes (requiere fontaine)
+(setq org-scribe-env-work-font 'org-scribe-big)
+
+;; Preajuste de fuente normal
+(setq org-scribe-env-normal-font 'regular)
+
+;; Ancho del texto (columnas)
+(setq org-scribe-env-work-width 80)  ; más estrecho = más concentración
+#+END_SRC
+
+** ¡Pruébalo ahora!
+
+1. Abre tu manuscrito
+2. Pulsa ~F8 m~
+3. Observa la transformación
+4. Escribe 100 palabras (vive el entorno)
+5. Pulsa ~F8 m~ otra vez
+6. Fíjate en cómo se restaura todo
+
+* Modo 2: Modo Enfoque
+
+** Qué hace
+
+Se activa con: ~F8 f~
+
+*Todo lo del modo Sin distracciones, MÁS*:
+- Restringe el búfer a la sección de Org actual
+- Muestra *solo* la escena o el capítulo en el que está el cursor
+- Todo lo demás desaparece temporalmente
+
+*El resultado*: enfoque láser sobre una sola sección.
+
+** Cuándo usarlo
+
+Perfecto para:
+- Trabajo intenso sobre una escena
+- Reescribir una sección difícil
+- Cuando el resto del manuscrito te distrae
+- El pulido final de escenas concretas
+- Desbloquearte en una sección problemática
+
+*No es lo ideal para*:
+- Primeros borradores (quizá quieras ver el contexto)
+- Saltar de una escena a otra (tendrías que ampliar, navegar y restringir de nuevo)
+- Comprobar la continuidad (necesitas ver otras escenas)
+
+** La diferencia con el modo Sin distracciones
+
+| Aspecto          | Sin distracciones              | Modo Enfoque              |
+|------------------+--------------------------------+---------------------------|
+| *Visibilidad*    | Todo el manuscrito             | Solo la sección actual    |
+| *Desplazamiento* | Puedes ir a cualquier sitio    | Solo dentro de la sección |
+| *Navegación*     | Todos los encabezados visibles | Solo el encabezado actual |
+| *Modelo mental*  | «Trabajo en el manuscrito»     | «Trabajo en ESTA escena»  |
+| *Cuándo salir*   | Al acabar la sesión            | Al terminar la sección    |
+
+** Cómo funciona
+
+1. *Coloca el cursor* en la escena o el capítulo que quieres enfocar
+2. *Pulsa* ~F8 f~
+3. *El búfer se restringe*:
+   - Solo es visible el subárbol actual
+   - Todo lo demás queda oculto (¡no borrado!)
+   - El desplazamiento se limita al contenido visible
+   - Además, todos los efectos del modo Sin distracciones
+4. *Trabaja esa sección*
+5. *Pulsa* ~F8 f~ otra vez para salir
+6. *El búfer se amplía*: se ve de nuevo todo el manuscrito y se restaura el entorno normal
+
+** Comparación visual
+
+#+BEGIN_EXAMPLE
+MANUSCRITO COMPLETO (antes del modo Enfoque):
+┌────────────────────────────────┐
+│ * Acto I                       │
+│ ** Capítulo 1                  │
+│ *** Escena 1 - Mañana          │ ← Cursor aquí
+│ Texto de la escena 1...        │
+│                                │
+│ *** Escena 2 - Café            │
+│ Texto de la escena 2...        │
+│                                │
+│ ** Capítulo 2                  │
+│ *** Escena 3 - Oficina         │
+│ Texto de la escena 3...        │
+└────────────────────────────────┘
+
+DESPUÉS DEL MODO ENFOQUE (F8 f):
+┌────────────────────────────────┐
+│                                │
+│                                │
+│     *** Escena 1 - Mañana      │
+│                                │
+│     Texto de la escena 1...    │
+│     Texto de la escena 1...    │
+│     Texto de la escena 1...    │
+│                                │
+│                                │
+│                                │
+│                                │
+└────────────────────────────────┘
+  ¡Todo lo demás está oculto temporalmente!
+#+END_EXAMPLE
+
+** Flujo de trabajo práctico
+
+*Situación*: la escena 3 necesita reescribirse, pero ver las demás te distrae.
+
+1. Ve al encabezado de la escena 3
+2. ~F8 f~ (activa el modo Enfoque)
+3. Ahora ves SOLO la escena 3
+4. Reescríbela a fondo
+5. ~F8 f~ (sal)
+6. Vuelves a ver el manuscrito completo
+7. Ve a la escena 4
+8. ~F8 f~ (enfoca la escena 4)
+9. Repite...
+
+** Personalización
+
+El modo Enfoque usa la misma configuración que el modo Sin distracciones:
+- Los mismos ajustes de tema
+- Los mismos ajustes de fuente
+- Los mismos ajustes de ancho
+
+¡No hace falta una configuración aparte!
+
+** ¡Pruébalo ahora!
+
+1. Abre el manuscrito
+2. Ve al encabezado de una escena concreta
+3. Pulsa ~F8 f~
+4. Fíjate: solo se ve esa escena
+5. Intenta desplazarte: no puedes salir de la escena
+6. Pulsa ~F8 f~ para salir
+7. Vuelve a verse el manuscrito completo
+
+* Modo 3: Modo Navegación
+
+** Qué hace
+
+Se activa con: ~F8 v~
+
+*Cambios en la disposición*:
+- Abre ~treemacs~ a la izquierda (árbol de archivos del proyecto)
+- Abre ~imenu-list~ a la derecha (esquema del archivo actual)
+- El búfer principal queda en el centro (tu manuscrito)
+- Disposición de tres paneles para navegar y escribir
+
+*El resultado*: visión de la estructura del proyecto, esquema del documento y área de escritura.
+
+En el código y en algunas tablas en inglés este modo se llama /Project/ (el modo es ~org-scribe-project-mode~); en el menú Hydra es /Navigate/. Es el mismo modo.
+
+** Cuándo usarlo
+
+Perfecto para:
+- Proyectos complejos con muchos archivos
+- Saltar entre los archivos de planificación y el manuscrito
+- Moverte con rapidez por manuscritos largos
+- Cuando necesitas una visión de la estructura
+- Gestionar muchos capítulos o secciones
+
+*No es lo ideal para*:
+- Escribir sin más (los paneles distraen)
+- Pantallas pequeñas (queda apretado)
+- Cuentos (complejidad innecesaria)
+
+** Diagrama de la disposición
+
+#+BEGIN_EXAMPLE
+┌─────────────────────────────────────────────────────────────┐
+│                          MARCO DE EMACS                     │
+├──────────────┬────────────────────────────┬─────────────────┤
+│              │                            │                 │
+│  TREEMACS    │    BÚFER PRINCIPAL         │   IMENU-LIST    │
+│  (izquierda) │    (centro)                │   (derecha)     │
+│              │                            │                 │
+│ 📁 proyecto/ │ #+TITLE: Mi novela         │ * Contenido     │
+│  📄 diseno   │                            │   ** Acto I     │
+│  📄 novela   │ * Acto I                   │     *** Cap. 1  │
+│              │ ** Capítulo 1              │     *** Cap. 2  │
+│              │ *** Escena 1 - Mañana      │   ** Acto II    │
+│              │                            │     *** Cap. 3  │
+│              │ Alex se despertó con...    │     *** Cap. 4  │
+│              │                            │   ** Acto III   │
+│              │ El café estaba frío.       │     *** Cap. 5  │
+│              │                            │                 │
+│              │ *** Escena 2 - Café        │ (clic para ir)  │
+│              │                            │                 │
+│  (clic en un │ Sam entró en la cafetería..│                 │
+│   archivo    │                            │                 │
+│   para abrir)│                            │                 │
+│              │                            │                 │
+└──────────────┴────────────────────────────┴─────────────────┘
+         ↑               ↑                           ↑
+  Archivos del proyecto  Tu área de escritura   Esquema del documento
+#+END_EXAMPLE
+
+** Los dos paneles de navegación
+
+*** Panel izquierdo: Treemacs (archivos del proyecto)
+
+*Muestra*:
+- Los archivos de la carpeta del proyecto (el manuscrito y el cuaderno de diseño)
+- Cualquier otro archivo que guardes junto a ellos
+- Iconos por tipo de archivo
+
+*Úsalo para*:
+- Cambiar entre el manuscrito y el cuaderno de diseño
+- Abrir el plan, si tienes uno
+- Acceder al cuaderno de diseño
+- Gestionar los archivos del proyecto
+
+*Acciones*:
+- Clic en un archivo para abrirlo
+- Expandir y contraer las carpetas que añadas
+- Ver el proyecto de un vistazo
+
+*** Panel derecho: Imenu-List (esquema del documento)
+
+*Muestra*:
+- Los encabezados del archivo actual
+- La estructura jerárquica
+- Actos → Capítulos → Escenas
+
+*Úsalo para*:
+- Saltar a una escena concreta
+- Ver la estructura del manuscrito
+- Navegar rápido dentro del archivo
+
+*Acciones*:
+- Clic en un encabezado para saltar
+- Ver en qué punto de la historia estás
+- Moverte por documentos largos
+
+** Cómo funciona
+
+1. *Pulsa* ~F8 v~
+2. *El marco se divide en tres*:
+   - Se abre Treemacs (izquierda)
+   - Se abre Imenu-list (derecha)
+   - El búfer actual se queda en el centro
+   - El foco permanece en el centro (listo para escribir)
+3. *Usa los paneles de navegación cuando los necesites*:
+   - Clic en Treemacs para abrir archivos
+   - Clic en Imenu-list para saltar dentro del archivo
+   - Sigue trabajando en el panel central
+4. *Pulsa* ~F8 v~ otra vez para salir
+5. *Los paneles se cierran*: vuelves a la vista normal de un solo búfer
+
+** Ejemplo de flujo de trabajo
+
+*Situación*: escribes una escena y necesitas consultar los datos de un personaje.
+
+1. ~F8 v~ (activa el modo Navegación)
+2. Panel izquierdo (treemacs) → clic en ~diseno.org~
+3. El cuaderno de diseño se abre en el centro
+4. Ve a la sección Personajes y lee los datos
+5. Panel izquierdo → clic en ~novela.org~
+6. El manuscrito vuelve al centro
+7. Sigue escribiendo con los detalles frescos
+8. ~F8 v~ (sal) cuando ya no necesites navegar
+
+** Dependencias
+
+El modo Navegación *requiere*:
+- el paquete ~treemacs~
+- el paquete ~imenu-list~
+
+Si no están instalados:
+- El modo se activa igualmente
+- Aparecen mensajes de aviso
+- Algunas funciones no funcionan
+
+*Para instalarlos* (con package.el):
+#+BEGIN_SRC emacs-lisp
+M-x package-install RET treemacs RET
+M-x package-install RET imenu-list RET
+#+END_SRC
+
+** Importante: hacer visibles tus escenas en el esquema
+
+Por defecto, *el panel de esquema no muestra tus escenas*. Verás los actos y los capítulos, y nada por debajo. Casi todo el mundo se sorprende la primera vez.
+
+La causa es una variable de Org, no un ajuste de org-scribe. ~imenu-list~ construye su esquema a partir del *índice imenu* de Org, y ese índice se detiene en la profundidad que marca ~org-imenu-depth~, cuyo valor por defecto es *2*:
+
+#+BEGIN_EXAMPLE
+* Acto I                      ← nivel 1  (se muestra)
+** TODO Capítulo 1            ← nivel 2  (se muestra)
+*** TODO Escena 1             ← nivel 3  (NO se muestra por defecto)
+*** TODO Escena 2             ← nivel 3  (NO se muestra por defecto)
+#+END_EXAMPLE
+
+Las plantillas de novela de org-scribe colocan las *escenas en el nivel 3*, justo un nivel más allá del límite. Como las escenas son la unidad por la que realmente navegas, el panel resulta mucho menos útil hasta que subes el límite.
+
+*La solución*: añade esto a tu archivo de inicio:
+
+#+BEGIN_SRC emacs-lisp
+;; Mostrar las escenas (nivel 3) en el panel de esquema, no solo actos y capítulos
+(setq org-imenu-depth 3)
+#+END_SRC
+
+Usa ~4~ si escribes subencabezados dentro de las escenas (golpes de acción o «beats») y quieres que también aparezcan. Los valores mayores hacen más lento el índice y más largo el panel, así que súbelo solo lo necesario.
+
+*Después de cambiarlo*, el índice de un archivo ya abierto queda en caché. Reinicia Emacs, o revierte el búfer del manuscrito (~M-x revert-buffer~), o pulsa ~*Rescan*~ en la parte superior del panel de imenu-list.
+
+Esto afecta *tanto* al modo Navegación como al modo Edición, porque los dos construyen su panel de esquema con el mismo índice. También afecta a ~M-x imenu~ y a cualquier interfaz de completado que lo use (por ejemplo ~consult-imenu~), así que subirlo mejora la navegación por los encabezados en todo Org, no solo dentro de org-scribe.
+
+*Un caso aparte*: en un cuento las escenas están en el nivel 2, así que con el valor por defecto ya se ven.
+
+** ¡Pruébalo ahora!
+
+1. Abre tu manuscrito
+2. Pulsa ~F8 v~
+3. Mira los tres paneles
+4. Haz clic en un encabezado de imenu-list (panel derecho)
+5. Observa cómo salta el cursor en el búfer principal
+6. Haz clic en un archivo de treemacs (panel izquierdo), si lo tienes
+7. Pulsa ~F8 v~ para salir
+
+* Modo 4: Modo Edición
+
+** Qué hace
+
+Se activa con: ~F8 e~
+
+*Disposición avanzada de tres paneles*:
+- Izquierda: ~imenu-list~ (esquema del documento, 25 % del ancho)
+- Centro: el manuscrito actual (50 % del ancho)
+- Derecha: el cuaderno de diseño (25 % del ancho)
+- Aplica un tema y fuentes pensados para editar
+- Centra el texto con márgenes
+
+*El resultado*: un entorno de edición profesional con las notas al lado.
+
+** Cuándo usarlo
+
+Perfecto para:
+- Sesiones de revisión (del segundo borrador en adelante)
+- Editar con anotaciones
+- Tener el cuaderno de diseño abierto junto al manuscrito
+- Comparar el manuscrito con las notas de planificación
+- Edición estructural en serio
+
+*No es lo ideal para*:
+- Escribir el primer borrador (demasiado complejo)
+- Pantallas pequeñas (necesita anchura)
+- Ediciones rápidas (es excesivo)
+- Sesiones de escritura diarias (usa Sin distracciones)
+
+** Diagrama de la disposición
+
+#+BEGIN_EXAMPLE
+┌───────────────────────────────────────────────────────────────────────┐
+│                            MARCO DE EMACS                             │
+├─────────────┬──────────────────────────────┬──────────────────────────┤
+│             │                              │                          │
+│ IMENU-LIST  │    MANUSCRITO                │    CUADERNO DE DISEÑO    │
+│ (25 %)      │    (50 %)                    │    (25 %)                │
+│             │                              │                          │
+│ * Contenido │  #+TITLE: Mi novela          │ #+TITLE: Mi novela       │
+│   ** Acto I │                              │                          │
+│   *** Cap.1 │    * Acto I                  │ * Revisión               │
+│   *** Cap.2 │    ** Capítulo 1             │                          │
+│   ** Acto II│    *** Escena 1 - Mañana     │ ** Escena 1              │
+│   *** Cap.3 │                              │ - Arreglar el ritmo      │
+│             │    Alex se despertó con...   │ - Añadir detalles        │
+│ (esquema)   │                              │   sensoriales            │
+│             │    La alarma llevaba...      │ - Mostrar, no contar     │
+│             │                              │                          │
+│             │    *** Escena 2 - Café       │ ** Capítulo 1            │
+│             │                              │ - En general: muy lento  │
+│             │    Sam entró en la...        │ - Recortar 500 palabras  │
+│             │                              │                          │
+│             │                              │ * Notas de personajes    │
+│             │                              │ - Motivación de Alex     │
+│             │                              │   débil                  │
+│             │                              │                          │
+└─────────────┴──────────────────────────────┴──────────────────────────┘
+      ↑                    ↑                              ↑
+  Navegación        Área principal de edición     Tus notas de revisión
+#+END_EXAMPLE
+
+** Los tres paneles explicados
+
+*** Panel izquierdo: Imenu-List (esquema)
+
+*Propósito*: navegar por la estructura del manuscrito
+
+*Muestra*:
+- Todos los encabezados del manuscrito
+- La organización jerárquica
+
+*Úsalo para*:
+- Saltar a las escenas
+- Ver la estructura
+- Navegar rápido
+
+*** Panel central: búfer principal (manuscrito)
+
+*Propósito*: tu área de edición real
+
+*Muestra*:
+- El manuscrito que estás editando
+- Centrado y con márgenes para que se lea bien
+
+*Úsalo para*:
+- Hacer correcciones
+- Leer escenas
+- El trabajo principal de revisión
+
+*** Panel derecho: archivo de notas
+
+*Propósito*: notas de acompañamiento del manuscrito
+
+*Muestra*:
+- El cuaderno de diseño: ~diseno.org~ (~design.org~ en los proyectos en inglés)
+- El mismo archivo al que van tus capturas, así que las notas que escribes aquí y las que capturas con ~F8 n~ acaban en un solo sitio
+- Tus notas de revisión, ideas y tareas pendientes
+
+*Úsalo para*:
+- Escribir notas de edición
+- Seguir los problemas por corregir
+- Anotar ideas
+- Gestionar la lista de comprobación de la revisión
+
+** Creación del archivo de notas
+
+Cuando activas el modo Edición:
+1. Si el cuaderno de diseño existe → se abre
+2. Si no existe → se crea automáticamente, con un título y un encabezado de notas de primer nivel
+
+** Mostrar otra cosa en el panel derecho
+
+El panel derecho se configura con ~org-scribe-editing-right-panel~:
+
+| Valor             | El panel derecho muestra                                           |
+|-------------------+--------------------------------------------------------------------|
+| ~notes~ (defecto) | El cuaderno de diseño                                              |
+| ~edits~           | Un índice en vivo de tus marcadores de edición (ver la lección 14) |
+| ~revision~        | El cuaderno de diseño (donde vive la parte Revisión)               |
+| una cadena        | Una ruta relativa al proyecto, p. ej. ~"plan.org"~                 |
+| una función       | Se llama con el nombre del manuscrito y devuelve un archivo        |
+
+#+BEGIN_SRC elisp
+;; Mostrar el cuaderno de diseño, con su alias de revisión
+(setq org-scribe-editing-right-panel 'revision)
+
+;; O mantener junto al manuscrito una lista en vivo de todo lo que queda por corregir
+(setq org-scribe-editing-right-panel 'edits)
+#+END_SRC
+
+Merece la pena probar el valor ~edits~ durante una pasada de revisión: es la única opción que no es un archivo en el que escribes, sino un índice generado que se reconstruye solo cada vez que guardas. Marca un pasaje con ~*EDIT*~, guarda, y aparece en el panel; borra el marcador, guarda, y desaparece. Como los marcadores viven en bloques de comentario, es fácil pasarlos por alto en el propio manuscrito, y por eso ayuda verlos listados al lado.
+
+Si no se encuentra el archivo pedido, el panel vuelve al cuaderno de diseño en lugar de no abrir nada.
+
+*Nota*: este panel mostraba antes un archivo de acompañamiento por manuscrito (~novela.org~ → ~novela-notes.org~) que existía para guardar las anotaciones de org-remark. El soporte de org-remark se ha eliminado (usa los marcadores en línea ~*EDIT*~ / ~*NOTE*~ y ~F8~ y después ~6~), así que ahora el panel muestra por defecto el cuaderno de diseño. Cualquier ~novela-notes.org~ que ya tengas en tus proyectos no se toca: ábrelo con normalidad si contiene algo que quieras conservar.
+
+** Cómo funciona
+
+1. *Abre tu manuscrito* (p. ej., ~novela.org~)
+2. *Pulsa* ~F8 e~
+3. *El marco se divide en tres*:
+   - Se cierran todas las demás ventanas
+   - Aparece imenu-list (izquierda, 25 %)
+   - Tu manuscrito se queda en el centro (50 %)
+   - El archivo de notas se abre o se crea (derecha, 25 %)
+4. *Se aplica el perfil visual*:
+   - El tema cambia al de edición (por defecto: ~leuven~)
+   - La fuente cambia al preajuste de edición
+   - El texto se centra con márgenes
+5. *Edita con libertad* y salta de un panel a otro
+6. *Pulsa* ~F8 e~ para salir
+7. *Se restaura la disposición anterior*: ventanas, tema y fuente, todo vuelve
+
+** Ejemplo de flujo de trabajo
+
+*Situación*: revisas el capítulo 3 con notas concretas.
+
+1. Abre ~novela.org~
+2. ~F8 e~ (activa el modo Edición)
+3. ~diseno.org~ se abre automáticamente (panel derecho)
+4. En el panel de notas, escribe:
+   #+BEGIN_EXAMPLE
+   * Revisión del capítulo 3
+   ** Escena 1
+   - [ ] Arreglar el ritmo (demasiado lento)
+   - [ ] Añadir diálogo
+   - [ ] Mostrar la reacción de Alex
+   #+END_EXAMPLE
+5. Haz clic en «Escena 1» en el panel izquierdo (imenu-list)
+6. El panel central salta a la escena 1
+7. Lee la escena mientras consultas las notas
+8. Haz las correcciones en el panel central
+9. Marca los puntos resueltos en el panel derecho (notas)
+10. Ve a la escena siguiente con el panel izquierdo
+11. Repite el proceso de revisión
+12. Guarda tu trabajo (~C-x C-s~) y pulsa ~F8 e~ al terminar: la disposición se cierra (salir del modo no guarda)
+
+** Sobre el archivo de notas
+
+El panel derecho del modo Edición es el cuaderno de diseño de tu proyecto: ~diseno.org~ (~design.org~ en los proyectos en inglés). Se crea automáticamente si todavía no existe. Es el mismo archivo al que captura ~F8 n~, así que las notas escritas en el panel y las capturadas desde cualquier otro sitio acaban en un solo lugar.
+
+Para las notas que pertenecen a *una frase concreta* y no al proyecto en su conjunto, no uses este panel: escribe un marcador en línea en el propio manuscrito y encuéntralo después con ~F8~ y luego ~6~. Consulta la lección 14, «Convención de marcadores».
+
+org-scribe no se integra con ~org-remark~ ni con ningún otro paquete de anotaciones: el panel derecho es un archivo Org normal abierto junto a tu manuscrito.
+
+** Variables de personalización
+
+#+BEGIN_SRC emacs-lisp
+;; Anchos de los paneles (porcentajes; su suma debe ser menor que 1.0)
+(setq org-scribe-editing-left-width-percent 0.25)   ; 25 % para el esquema
+(setq org-scribe-editing-right-width-percent 0.25)  ; 25 % para las notas
+
+;; Tema del modo Edición (por defecto leuven; nil no cambia el tema)
+(setq org-scribe-editing-theme 'leuven)  ; o modus-operandi, etc.
+
+;; Ancho de columna para centrar el texto
+(setq org-scribe-editing-fill-column-width 90)
+
+;; Preajuste de fuente (requiere fontaine)
+(setq org-scribe-editing-fontaine-preset 'editing)
+#+END_SRC
+
+** ¡Pruébalo ahora!
+
+1. Abre tu manuscrito
+2. Pulsa ~F8 e~
+3. Observa la disposición de tres paneles
+4. Fíjate en el cuaderno de diseño a la derecha
+5. Prueba a escribir una nota en el panel derecho
+6. Haz clic en los elementos del esquema de la izquierda
+7. Mira cómo salta el cursor en el centro
+8. Pulsa ~F8 e~ para salir
+
+* Elegir el modo adecuado
+
+Esta es una guía para decidir qué modo usar en cada momento.
+
+** Árbol de decisión
+
+#+BEGIN_EXAMPLE
+INICIO
+  |
+  ├─ ¿Escribes el primer borrador? ──→ SÍ ──→ Sin distracciones (m)
+  │                                    NO ↓
+  │
+  ├─ ¿Una escena necesita trabajo intenso? ──→ SÍ ──→ Enfoque (f)
+  │                                            NO ↓
+  │
+  ├─ ¿Saltas a menudo entre archivos? ──→ SÍ ──→ Navegación (v)
+  │                                       NO ↓
+  │
+  └─ ¿Revisión seria con notas? ──→ SÍ ──→ Edición (e)
+                                    NO ──→ ¡No hace falta ningún modo!
+#+END_EXAMPLE
+
+** Según el tipo de tarea
+
+| Tarea                         | Mejor modo        | Por qué                                |
+|-------------------------------+-------------------+----------------------------------------|
+| Escritura diaria              | Sin distracciones | Limpio, concentrado, sin distracciones |
+| Reescribir una escena difícil | Enfoque           | Enfoque láser en una sección           |
+| Investigar mientras escribes  | Navegación        | Cambiar de archivo con facilidad       |
+| Revisión del segundo borrador | Edición           | Notas y manuscrito lado a lado         |
+| Esquematizar                  | Navegación        | Ver la estructura con claridad         |
+| Sprints de escritura          | Sin distracciones | Interfaz mínima, máxima concentración  |
+| Edición estructural           | Edición           | Esquema, texto y notas                 |
+| Comprobar un personaje        | Navegación        | Saltar al cuaderno de diseño           |
+| Pulido final                  | Enfoque           | Una escena cada vez, perfeccionándola  |
+
+** Según tu preferencia como escritor
+
+*** «Me gusta la sencillez»
+→ Modo Sin distracciones para todo
+→ De vez en cuando, Enfoque para las escenas difíciles
+
+*** «Necesito navegar»
+→ Modo Navegación como modo por defecto
+→ Cambia a Sin distracciones cuando de verdad vayas a escribir
+
+*** «Soy un editor serio»
+→ Modo Edición para todo el trabajo de revisión
+→ Sin distracciones para el material nuevo
+
+*** «Lo quiero todo»
+→ Aprende a cambiar de modo con soltura
+→ Usa la herramienta adecuada para cada tarea
+
+** Combinar los modos con tu flujo de trabajo
+
+*Rutina de la mañana*:
+1. ~F8 v~: comprueba qué toca escribir (visión del proyecto)
+2. Ve a la escena de hoy
+3. ~F8 m~: cambia a sin distracciones
+4. Escribe durante una hora
+5. ~F8 m~: sal y comprueba tu progreso
+
+*Rutina de revisión*:
+1. ~F8 e~: activa el modo Edición
+2. Repasa las notas en el panel derecho
+3. Avanza por la lista de comprobación de la revisión
+4. Haz las correcciones en el panel central
+5. Actualiza las notas sobre la marcha
+6. ~F8 e~: sal cuando termines
+
+* Ejercicios prácticos (15 minutos)
+
+Vamos a practicar con los cuatro modos.
+
+** Ejercicio 1: Recorrido por los modos (5 minutos)
+
+*Objetivo*: vivir el entorno propio de cada modo
+
+1. *Sin distracciones*:
+   - Abre el manuscrito
+   - ~F8 m~
+   - Escribe 50 palabras
+   - Fíjate: limpio, centrado, minimalista
+   - ~F8 m~ (sal)
+
+2. *Enfoque*:
+   - Colócate en el encabezado de una escena
+   - ~F8 f~
+   - Escribe 50 palabras
+   - Fíjate: solo se ve esta escena
+   - Intenta desplazarte más allá de los límites de la escena (¡no puedes!)
+   - ~F8 f~ (sal)
+
+3. *Navegación*:
+   - ~F8 v~
+   - Haz clic en distintos encabezados de imenu-list
+   - Mira cómo salta el cursor
+   - Fíjate en la disposición de tres paneles
+   - ~F8 v~ (sal)
+
+4. *Edición*:
+   - ~F8 e~
+   - Añade una nota en el panel derecho: «* Nota de prueba»
+   - Haz clic en los elementos del esquema de la izquierda
+   - Fíjate en cómo persiste el cuaderno de diseño
+   - ~F8 e~ (sal)
+
+** Ejercicio 2: Cambiar de modo (3 minutos)
+
+*Objetivo*: practicar las transiciones fluidas
+
+1. ~F8 m~ → Sin distracciones activo
+2. ~F8 v~ → Sin distracciones termina, Navegación se activa
+3. ~F8 f~ → Navegación termina, Enfoque se activa
+4. ~F8 e~ → Enfoque termina, Edición se activa
+5. ~F8 m~ → Edición termina, Sin distracciones se activa
+6. ~F8 m~ → Sin distracciones termina (se desactiva)
+
+*Fíjate*: cada transición es limpia, ¡no queda ningún estado residual!
+
+** Ejercicio 3: Elegir el modo según la tarea (7 minutos)
+
+*Objetivo*: elegir el modo en función de la tarea
+
+1. *Tarea*: escribir 100 palabras en la escena 2
+   - *¿Qué modo?*: ?
+   - *Respuesta*: Sin distracciones (~m~)
+   - ¡Hazlo!
+
+2. *Tarea*: reescribir el comienzo de la escena 3 (solo el primer párrafo)
+   - *¿Qué modo?*: ?
+   - *Respuesta*: Enfoque (~f~), colocado en la escena 3
+   - ¡Hazlo!
+
+3. *Tarea*: comprobar la ficha de un personaje y seguir escribiendo
+   - *¿Qué modo?*: ?
+   - *Respuesta*: Navegación (~v~): usa treemacs para abrir el cuaderno de diseño
+   - ¡Hazlo!
+
+4. *Tarea*: revisar la escena 1 con una lista de comprobación de revisión
+   - *¿Qué modo?*: ?
+   - *Respuesta*: Edición (~e~): notas en el panel derecho
+   - ¡Hazlo!
+
+** Ejercicio 4: Crea tu hoja de referencia de modos
+
+Haz tu propia guía rápida:
+
+#+BEGIN_EXAMPLE
+MIS PREFERENCIAS DE MODO:
+
+Escritura diaria: ___________
+Ediciones rápidas: __________
+Revisión: ___________________
+Investigación: ______________
+Navegación: _________________
+Escenas problemáticas: ______
+Modo por defecto: ___________
+#+END_EXAMPLE
+
+¡Rellénala según tus preferencias!
+
+* Personalización avanzada
+
+** Personalizar los modos Sin distracciones y Enfoque
+
+Los dos modos usan las mismas variables:
+
+#+BEGIN_SRC emacs-lisp
+;; En tu init.el o .emacs:
+
+;; === TEMAS ===
+;; Tema del modo de escritura (limpio, minimalista); por defecto nil
+(setq org-scribe-env-work-theme 'poet)
+;; Opciones: poet, modus-operandi, ef-light, leuven
+
+;; Tema normal (el que usas habitualmente en Emacs); por defecto nil
+(setq org-scribe-env-normal-theme 'modus-vivendi)
+;; Usa el tema que uses normalmente
+
+;; === FUENTES (requiere el paquete fontaine) ===
+;; Preajuste de fuente del modo de escritura
+(setq org-scribe-env-work-font 'org-scribe-big)
+
+;; Preajuste de fuente normal
+(setq org-scribe-env-normal-font 'regular)
+
+;; === ANCHO DEL TEXTO ===
+;; Ancho del modo de escritura (columnas)
+(setq org-scribe-env-work-width 80)
+;; 60-70: muy estrecho, concentración intensa
+;; 80: clásico, cómodo
+;; 90-100: más ancho, más contexto
+
+;; Ancho del modo normal (se usa poco)
+(setq org-scribe-env-normal-width 90)
+#+END_SRC
+
+** Personalizar el modo Edición
+
+El modo Edición tiene sus propios ajustes:
+
+#+BEGIN_SRC emacs-lisp
+;; === TAMAÑO DE LOS PANELES ===
+;; Ancho del panel izquierdo (imenu-list)
+(setq org-scribe-editing-left-width-percent 0.25)  ; 25 %
+
+;; Ancho del panel derecho (notas)
+(setq org-scribe-editing-right-width-percent 0.25) ; 25 %
+
+;; (El panel central es automático: 1.0 - izquierdo - derecho)
+
+;; === ESTILO VISUAL ===
+;; Tema de edición
+(setq org-scribe-editing-theme 'leuven)
+;; Buenas opciones: leuven, modus-operandi, ef-light
+
+;; Ancho de la columna de texto
+(setq org-scribe-editing-fill-column-width 90)
+;; Más ancho que en el modo de escritura (más contexto para editar)
+
+;; Preajuste de fuente (requiere fontaine)
+(setq org-scribe-editing-fontaine-preset 'editing)
+#+END_SRC
+
+** Ejemplo: configuración de enfoque estrecho
+
+Para una concentración intensa y estrecha:
+
+#+BEGIN_SRC emacs-lisp
+;; Muy estrecho, muy minimalista
+(setq org-scribe-env-work-theme 'poet)
+(setq org-scribe-env-work-width 60)  ; ¡Muy estrecho!
+(setq org-scribe-env-work-font 'writing-huge)
+#+END_SRC
+
+** Ejemplo: configuración de edición ancha
+
+Para tener más contexto durante la revisión:
+
+#+BEGIN_SRC emacs-lisp
+;; Paneles más anchos, más información
+(setq org-scribe-editing-left-width-percent 0.20)   ; esquema más estrecho
+(setq org-scribe-editing-right-width-percent 0.30)  ; notas más anchas
+(setq org-scribe-editing-fill-column-width 100)     ; texto ancho
+#+END_SRC
+
+** Preajustes de fuente (Fontaine)
+
+Si usas Fontaine, define los preajustes en tu configuración:
+
+#+BEGIN_SRC emacs-lisp
+(setq fontaine-presets
+      '((regular
+         :default-height 120)
+        (org-scribe-big
+         :default-family "iA Writer Quattro"  ; o la que prefieras
+         :default-height 160                  ; más grande para escribir
+         :line-spacing 0.3)                   ; más espacio entre líneas
+        (writing-huge
+         :default-height 180)
+        (editing
+         :default-height 140                  ; tamaño medio
+         :line-spacing 0.2)))
+#+END_SRC
+
+El preajuste de escritura por defecto se llama ~org-scribe-big~; si lo defines con otro nombre, indícaselo a ~org-scribe-env-work-font~.
+
+** Temas recomendados
+
+*** Para escribir (sin distracciones)
+- ~poet~: pensado para prosa, muy limpio
+- ~modus-operandi~: muy accesible, minimalista
+- ~ef-light~: suave, descansa la vista
+- El valor por defecto de ~writeroom-mode~: ultra minimalista
+
+*** Para editar
+- ~leuven~: profesional, estructura clara
+- ~modus-operandi~: coherente, accesible
+- ~dichromacy~: alto contraste para editar
+- ~ef-light~: suave pero claro
+
+*** Para el trabajo normal
+- ¡El que uses normalmente!
+- Los modos restauran tu tema habitual automáticamente
+
+* Preguntas frecuentes
+
+** «¿Qué modo debo usar para escribir cada día?»
+
+*Respuesta*: el modo Sin distracciones (~F8 m~).
+
+Es el más popular para la escritura diaria porque:
+- Su interfaz es limpia y minimalista
+- Es fácil de activar y desactivar
+- No hay paneles de navegación que distraigan
+- Se ve todo el manuscrito (puedes desplazarte para consultar escenas anteriores)
+- Se alterna rápido (la misma tecla entra y sale)
+
+** «¿Puedo usar los modos de escritura fuera de un proyecto de org-scribe?»
+
+*Respuesta*: técnicamente sí, pero algunas funciones requieren la estructura de proyecto.
+
+- Sin distracciones (~m~) funciona en cualquier sitio
+- Enfoque (~f~) funciona en cualquier archivo de org-mode
+- Navegación (~v~) necesita un proyecto (cualquier proyecto de project.el)
+- Edición (~e~) funciona con cualquier archivo (crea el cuaderno de diseño)
+
+¡La mejor experiencia es dentro de un proyecto de escritura como Dios manda!
+
+** «¿Los modos guardan mi tema y mi fuente de forma permanente?»
+
+*Respuesta*: no, los cambios son temporales.
+
+- Los modos cambian el tema y la fuente al activarse
+- Los ajustes originales se guardan
+- Al salir del modo se restauran
+- Tu configuración real de Emacs no cambia
+
+Es intencionado: ¡los modos son entornos temporales!
+
+** «¿Por qué no puedo tener el modo Navegación y el modo Sin distracciones a la vez?»
+
+*Respuesta*: porque sus objetivos chocan.
+
+- Sin distracciones lo oculta todo → mínimo
+- Navegación muestra paneles → máximo de navegación
+- Son enfoques opuestos
+- La exclusión mutua evita confusiones
+
+¡Elige la herramienta adecuada para lo que tienes entre manos!
+
+** «¿Puedo personalizar qué paneles muestra el modo Edición?»
+
+*Respuesta*: los paneles son fijos (imenu-list y notas), aunque el panel derecho puede mostrar otras cosas (ver «Mostrar otra cosa en el panel derecho»).
+
+Además puedes:
+- Ajustar el ancho de los paneles (porcentajes)
+- Elegir otro tema
+- Cambiar el ancho del texto
+- Usar otra fuente
+
+*Mejora futura*: está previsto poder personalizar el contenido de los paneles.
+
+** «¿Y si no tengo treemacs ni imenu-list instalados?»
+
+*Respuesta*: los modos gestionan con elegancia la falta de paquetes.
+
+- Modo Navegación (~v~): muestra un aviso y faltan algunas funciones
+- Modo Edición (~e~): funciona, pero sin el panel de imenu-list
+- Sin distracciones y Enfoque (~m~ / ~f~): requieren writeroom-mode (muestran un error)
+
+Instala los paquetes recomendados para disfrutar de la experiencia completa.
+
+** «¿Puedo crear mi propio modo?»
+
+*Respuesta*: ¡los usuarios avanzados, sí!
+
+Estudia los modos existentes en ~modes/org-scribe-modes.el~:
+1. Crea un modo menor
+2. Añade una entrada a la tabla ~org-scribe-workspace-layouts~: esta única fuente de verdad deriva automáticamente la lista de exclusión mutua (~org-scribe-exclusive-modes~) y conecta tu nueva disposición con el despachador unificado ~org-scribe-workspace~, así que ya no tienes que tocar a mano dos listas o funciones distintas
+3. Guarda y restaura el estado como corresponde
+
+Es un tema avanzado: al principio quédate con los cuatro modos incorporados.
+
+* Solución de problemas
+
+** «El modo se activa pero se ve mal o roto»
+
+*Comprueba*:
+1. ¿Tienes instalados los paquetes necesarios?
+   - Sin distracciones y Enfoque necesitan: ~writeroom-mode~
+   - Navegación necesita: ~treemacs~ e ~imenu-list~
+   - Edición necesita: ~imenu-list~
+
+2. ¿Están instalados los temas?
+   - ~M-x customize-themes~ muestra los disponibles
+   - Instala los que falten con tu gestor de paquetes
+
+3. ¿Es suficientemente ancho el marco?
+   - El modo Edición necesita más de 120 columnas
+   - El modo Navegación necesita más de 100 columnas
+   - ¿Terminal estrecho? Los modos pueden verse apretados
+
+** «Al salir del modo no se restaura todo»
+
+*Prueba*:
+1. Activa el modo otra vez (con su propia tecla: ~F8 m~, ~F8 f~, ~F8 v~ o ~F8 e~)
+2. Sal correctamente: pulsa la misma tecla de nuevo
+3. Si sigue roto: ~M-x revert-buffer~ o cierra y vuelve a abrir el archivo
+
+*Prevención*:
+- Sal siempre de los modos con la misma tecla con la que los activaste
+- No mates búfers mientras hay un modo activo
+- No cierres Emacs a la fuerza dentro de un modo de escritura
+
+** «El modo Enfoque no restringe / se queda ancho»
+
+*Causas*:
+1. El cursor no está en un encabezado de Org
+2. No estás en un búfer de org-mode
+3. Estás en el nivel superior (no se puede restringir a todo el archivo)
+
+*Solución*:
+- Coloca el cursor en el encabezado de una escena o un capítulo (*** o **)
+- Asegúrate de que el búfer está en ~org-mode~
+- Prueba desde un encabezado más profundo (no desde el título del documento)
+
+** «El panel de esquema no muestra mis escenas»
+
+*Causa*: el valor por defecto de ~org-imenu-depth~ en Org es ~2~, así que el índice se detiene en los capítulos. Las escenas de org-scribe están en el nivel 3.
+
+*Solución*:
+#+BEGIN_SRC emacs-lisp
+(setq org-imenu-depth 3)
+#+END_SRC
+Después revierte el búfer del manuscrito o pulsa ~*Rescan*~ en la parte superior del panel: el índice antiguo se queda en caché hasta que lo hagas.
+
+Consulta [[*Importante: hacer visibles tus escenas en el esquema][Hacer visibles tus escenas en el esquema]] para ver la explicación completa. Vale tanto para el modo Edición como para el modo Navegación.
+
+** «Los paneles del modo Navegación son demasiado anchos o estrechos»
+
+*Solución*:
+- El tamaño de los paneles lo controlan los propios paquetes
+- Para imenu-list: ~M-x customize-variable RET imenu-list-size~
+- Para treemacs: ~M-x customize-variable RET treemacs-width~
+- Ajusta y reinicia el modo Navegación
+
+** «El cuaderno de diseño del modo Edición se abre en un sitio equivocado»
+
+*Comportamiento esperado*:
+- El panel muestra el cuaderno de diseño: ~diseno.org~ o ~design.org~
+- El archivo se busca a partir de la *raíz del proyecto*, no del directorio del manuscrito
+
+Si se abre en otro sitio:
+- Comprueba que se detecta la raíz del proyecto: debe existir el archivo marcador ~.org-scribe-project~
+- Revisa ~org-scribe-editing-right-panel~: si es una ruta o una función, el panel muestra eso
+- Si no se encuentra el archivo pedido, el panel vuelve al cuaderno de diseño
+- Asegúrate de que el manuscrito está guardado en disco (no es un búfer sin nombre)
+
+** «Los temas no cambian al activar el modo»
+
+*Causas posibles*:
+1. El tema no está instalado
+2. El paquete consult no está disponible (se usa una alternativa)
+3. No has configurado la variable del tema (por defecto vale ~nil~ y el modo de escritura no cambia de tema)
+
+*Soluciones*:
+#+BEGIN_SRC emacs-lisp
+;; Comprobar el tema actual
+(custom-enabled-themes)
+
+;; Probar a mano el cambio de tema
+(load-theme 'poet t)
+
+;; Instalar consult para un cambio de tema más fluido
+M-x package-install RET consult RET
+#+END_SRC
+
+* Lo que has aprendido
+
+¡Fantástico trabajo! Has completado la Lección 9. Ahora sabes:
+
+✓ Los cuatro modos de escritura y el propósito de cada uno
+✓ El modo Sin distracciones (~m~) para escribir cada día
+✓ El modo Enfoque (~f~) para trabajar a fondo una sola sección
+✓ El modo Navegación (~v~) para navegar y escribir
+✓ El modo Edición (~e~) para revisar con notas
+✓ Que los modos se excluyen entre sí (solo uno a la vez)
+✓ Cuándo usar cada modo según la tarea
+✓ Cómo pasar de uno a otro con fluidez
+✓ Las opciones de personalización de cada modo
+✓ Flujos de trabajo habituales que combinan varios modos
+✓ Cómo resolver los problemas con los modos
+
+* Próximos pasos
+
+¿Listo para visualizar tu historia? Pasa a la [[file:primeros-pasos-10-lineas-temporales.org][Lección 10: Cronologías de personajes y de la trama]].
+
+En la próxima lección aprenderás a:
+- Crear tablas de cronología de personajes
+- Crear tablas de cronología de hilos de la trama
+- Entender los símbolos de las cronologías (★ para el PoV, ● para la presencia)
+- Usar las cronologías para comprobar el equilibrio de la historia
+- Detectar huecos en las apariciones de los personajes
+- Analizar la cobertura de los hilos de la trama
+
+** Práctica antes de seguir
+
+Afianza el dominio de los modos:
+
+1. *Familiarízate con los modos* (repite 3 veces)
+   - Activa cada modo
+   - Observa los cambios visuales
+   - Escribe en cada modo
+   - Sal limpiamente
+
+2. *Práctica por tareas*
+   - Escribe 200 palabras: usa Sin distracciones
+   - Reescribe una escena: usa Enfoque
+   - Consulta las notas de un personaje: usa Navegación
+   - Revisa con notas: usa Edición
+
+3. *Cambios rápidos*
+   - Activa → Sal → Activa otro → Sal
+   - Crea memoria muscular
+   - Acostúmbrate a las transiciones entre modos
+
+4. *Personalización*
+   - Prueba distintos temas
+   - Ajusta el ancho del texto
+   - Encuentra tu configuración ideal
+   - Actualiza tu archivo de configuración
+
+5. *Integración diaria*
+   - Usa Sin distracciones una semana seguida
+   - Crea el hábito
+   - Deja que se vuelva natural
+
+Los modos son herramientas potentes: cuanto más los uses, más naturales te resultarán.
+
+* Referencia rápida
+
+** Teclas de activación de los modos
+
+| Tecla | Modo                         | Regla mnemotécnica     |
+|-------+------------------------------+------------------------|
+| ~m~   | Sin distracciones (escribir) | *M*odo                 |
+| ~f~   | Enfoque                      | *F*oco                 |
+| ~v~   | Navegación (/Project/)       | Na*v*egación           |
+| ~e~   | Edición                      | *E*dición              |
+| ~0~   | Normal (apagado)             | ninguna (*0* = normal) |
+
+Todas se usan así: ~F8~ y después la tecla. Las cinco pasan por un único despachador, ~org-scribe-workspace~, que recibe como argumento el nombre de la disposición; volver a elegir la tecla de la disposición activa la desactiva.
+
+** Tabla comparativa de modos
+
+| Función               | Sin distr. | Enfoque | Navegación | Edición |
+|-----------------------+------------+---------+------------+---------|
+| Texto centrado        | ✓          | ✓       | -          | ✓       |
+| Cambio de tema        | ✓          | ✓       | -          | ✓       |
+| Cambio de fuente      | ✓          | ✓       | -          | ✓       |
+| Restricción           | -          | ✓       | -          | -       |
+| Paneles de navegación | -          | -       | ✓          | ✓       |
+| Panel de notas        | -          | -       | -          | ✓       |
+| Nivel de distracción  | Mínimo     | Ninguno | Medio      | Medio   |
+| Ideal para            | Escribir   | Enfocar | Navegar    | Editar  |
+
+** Guía rápida de decisión
+
+#+BEGIN_EXAMPLE
+¿Qué quiero hacer?
+
+ESCRIBIR → m (Sin distracciones)
+  └─ ¿Una escena necesita trabajo? → f (Enfoque)
+
+NAVEGAR → v (Navegación)
+  └─ ¿Entre archivos? → v
+  └─ ¿Dentro de un archivo? → v (panel de imenu-list)
+
+REVISAR → e (Edición)
+  └─ ¿Con notas? → e
+  └─ ¿Solo leer? → m (más limpio)
+#+END_EXAMPLE
+
+** Órdenes esenciales
+
+#+BEGIN_EXAMPLE
+Activar modos: F8 + (m/f/v/e)
+Salir del modo: F8 + (la misma tecla) [interruptor]
+Forzar la salida de todos: (no hace falta: ¡los modos se portan bien!)
+
+Navegar en el modo Enfoque:
+  Ampliar: C-x n w (¡pero eso le quita sentido!)
+  Mejor: sal del modo Enfoque, navega y vuelve a entrar
+
+Redimensionar paneles (Navegación/Edición):
+  Personaliza las variables (ver la sección de personalización)
+#+END_EXAMPLE
+
+* Resumen
+
+Los modos de escritura transforman tu entorno de Emacs para apoyar distintas tareas de escritura. El modo Sin distracciones crea un lienzo limpio para la escritura diaria. El modo Enfoque se concentra como un láser en una sola sección. El modo Navegación añade navegación para los proyectos complejos. El modo Edición ofrece un entorno de revisión profesional con notas.
+
+La clave para dominarlos es:
+1. Entender qué hace cada modo
+2. Elegir el modo adecuado para cada tarea
+3. Practicar las transiciones fluidas
+4. Encontrar tu modo preferido para cada tipo de tarea
+5. Personalizar los modos a tu gusto
+
+Empieza por lo sencillo (solo el modo Sin distracciones) y explora los demás a medida que lo necesites.
+
+---
+
+*Anterior*: [[file:primeros-pasos-08-menu-hydra.org][Lección 8: El menú Hydra]]
+*Siguiente*: [[file:primeros-pasos-10-lineas-temporales.org][Lección 10: Cronologías de personajes y de la trama]]
+
+*¡Lección 9 completada!*

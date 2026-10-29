@@ -1,0 +1,426 @@
+#+TITLE: org-scribe - Guía de primeros pasos
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-00-index.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-00-index.org][English version]]/
+
+* ¡Bienvenido a org-scribe!
+
+Te damos la bienvenida a ~org-scribe~, un conjunto completo de herramientas para
+escribir novelas y cuentos en Emacs con Org-mode. Si lo estás viendo por primera
+vez, puede que te abrumen tantas funciones. ¡No te preocupes! Esta guía te lleva de
+la mano paso a paso, empezando desde el principio.
+
+** Sobre esta guía
+
+Este tutorial está pensado para escritores que:
+- Acaban de instalar ~org-scribe~
+- Quieren ponerse a escribir enseguida
+- Necesitan una introducción amable a las funciones del paquete
+- Prefieren aprender haciendo a leer documentación técnica
+
+No necesitas aprenderlo todo de golpe. La guía presenta las funciones en un orden
+lógico, empezando por lo esencial y añadiendo poco a poco las capacidades más
+avanzadas.
+
+** Qué aprenderás
+
+Al terminar este tutorial sabrás:
+- Crear y organizar proyectos de novela o de cuento
+- Escribir en entornos sin distracciones
+- Llevar el control de tus personajes, escenarios e hilos de la trama
+- Contar palabras y vigilar tu progreso
+- Buscar y moverte por tu manuscrito con eficacia
+- Usar las potentes funciones de enlaces para conectar tu planificación con tu
+  escritura
+
+** Requisitos previos
+
+Antes de empezar, asegúrate de tener:
+
+✓ Emacs 29.1 o superior instalado
+✓ Org-mode 9.6 o superior (viene con Emacs)
+✓ El paquete ~org-scribe~ instalado
+✓ Familiaridad básica con Emacs (abrir archivos, moverse)
+✓ Familiaridad básica con Org-mode (encabezados, propiedades; lo iremos
+  explicando sobre la marcha)
+
+** Cómo usar esta guía
+
+La guía se organiza en lecciones progresivas. Cada lección se apoya en las
+anteriores, así que te recomendamos seguirlas por orden:
+
+1. Empieza por la Lección 1 (Crear tu primer proyecto)
+2. Haz los ejercicios de cada lección
+3. Pasa a la siguiente cuando te sientas cómodo
+4. Vuelve a repasar temas concretos cuando lo necesites
+
+Siempre puedes consultar el [[file:00-indice-funciones.org][Índice de funciones]] para ver la lista completa de
+funciones disponibles.
+
+** Lee con los proyectos de demostración
+
+Todas las lecciones de abajo describen algo que puedes ver funcionando en los dos
+proyectos de demostración que se distribuyen con org-scribe, en =examples/=:
+
+- [[file:../examples/demo-novel/README.org][=examples/demo-novel/=]] — /The Morning Routine/, un proyecto de novela completo,
+  a medio primer borrador: una Puerta de salida cruzada, los trece
+  irrenunciables, seis fichas de personaje, marcadores de edición vivos y un plan
+  de escritura activo.
+- [[file:../examples/demo-short-story/README.org][=examples/demo-short-story/=]] — /The Last Message/, la estructura de cuento
+  (también de dos archivos).
+
+(Las demos están, por ahora, en inglés; la versión española está en
+preparación.)
+
+Son proyectos que funcionan, no ilustraciones. Ábrelos en Emacs con org-scribe
+cargado y cada pulsación de estas lecciones hace algo real sobre ellos, lo que es
+un sitio mucho mejor para pulsar =<f8> H= por primera vez que un proyecto tuyo con
+cuatro palabras.
+
+Nada de lo que hagas en ellos puede afectar a tu propio trabajo, así que
+experimenta con libertad; =git checkout examples/= los deja como estaban.
+
+* Lecciones del tutorial
+
+** Parte 1: Lo esencial (¡empieza aquí!)
+
+*** [[file:primeros-pasos-01-crear-proyectos.org][Lección 1: Crear tu primer proyecto]]
+*Tiempo: 10 minutos*
+
+Aprende a crear un proyecto de novela o de cuento a partir de plantillas. Es tu
+primer paso: todo lo demás se apoya en esta base.
+
+*Aprenderás:*
+- A crear un proyecto de novela (plantilla completa con archivos de planificación)
+- A crear un proyecto de cuento (plantilla mínima)
+- A entender la estructura del proyecto
+- A orientarte por los archivos de la plantilla
+
+*** [[file:primeros-pasos-18-metodos-trama.org][Lección 18: Métodos de trama — La Hélice y La Matriz]] /(Opcional)/
+*Tiempo: 25 minutos*
+
+La creación de un proyecto de novela pregunta qué método de trama usar. Esta
+lección recorre las otras dos opciones además de la predeterminada —La Hélice
+(se parte de una premisa) y La Matriz (se parte de personajes)—, sus cinco
+niveles cada una, y qué cambian exactamente (un archivo) frente a qué dejan
+intacto (todo lo demás).
+
+*Aprenderás:*
+- Cuándo recurrir a La Hélice, a La Matriz o al Sistema predeterminado
+- Los cinco niveles de La Hélice, en orden, y dónde está su puerta de salida
+- Los cinco niveles de La Matriz, en orden, y por qué su puerta de salida está
+  un nivel más tarde
+- Por qué la tabla de «desastres»/«colisiones» es deliberadamente prosa llana,
+  y no una entidad enlazada
+- Que la comprobación de la Puerta de salida del informe de salud (~F8 H~)
+  funciona igual con los tres métodos
+- Adónde te lleva la nota de resolución de problemas incorporada a cada archivo
+  de diseño cuando la comprobación de un nivel no pasa
+
+*** [[file:primeros-pasos-02-primera-escena.org][Lección 2: Escribir tu primera escena]]
+*Tiempo: 15 minutos*
+
+¡A escribir! Aprende a usar los modos de escritura para escribir sin
+distracciones, y a insertar escenas y capítulos con plantillas.
+
+*Aprenderás:*
+- A activar el modo Sin distracciones
+- A insertar plantillas de escena y de capítulo
+- A entender las propiedades de la escena (PoV, Personajes, Localización, etc.)
+- El flujo de escritura básico
+
+*** [[file:primeros-pasos-03-seguimiento-progreso.org][Lección 3: Seguir tu progreso]]
+*Tiempo: 10 minutos*
+
+Aprende a contar palabras con exactitud y a seguir tu progreso diario. ¡Mira
+cuánto te falta para tus objetivos!
+
+*Aprenderás:*
+- El recuento de palabras exacto (sin contar los metadatos de Org)
+- A fijar objetivos de recuento de palabras
+- A generar tablas de seguimiento del progreso
+- A entender el panel de estadísticas
+
+** Parte 2: Organizar tu historia
+
+*** [[file:primeros-pasos-04-capturar-personajes.org][Lección 4: Capturar personajes]]
+*Tiempo: 20 minutos*
+
+Crea fichas de personaje detalladas con rapidez y aprende a enlazarlas con tus
+escenas.
+
+*Aprenderás:*
+- A usar la plantilla de captura de personajes
+- A crear fichas de personaje con todos los datos esenciales
+- A entender el sistema de enlaces de personajes
+- A fijar el PoV y los personajes de la escena con un solo clic
+
+*** [[file:primeros-pasos-05-lugares-ambientacion.org][Lección 5: Escenarios y ambientación]]
+*Tiempo: 15 minutos*
+
+Construye el mundo de tu historia capturando los detalles de los escenarios y
+enlazándolas con las escenas.
+
+*Aprenderás:*
+- A crear fichas de escenario
+- A enlazar escenarios con escenas
+- A encontrar todas las escenas de un escenario concreto
+- A seguir la variedad de ambientaciones
+
+*** [[file:primeros-pasos-06-hilos-trama.org][Lección 6: Hilos de la trama y cronología]]
+*Tiempo: 20 minutos*
+
+Sigue varias líneas argumentales y asegúrate de que se desarrollan como es
+debido a lo largo de tu historia.
+
+*Aprenderás:*
+- A crear fichas de hilos de la trama
+- A enlazar hilos de la trama con escenas
+- A generar visualizaciones de la cronología de la trama
+- A usar el informe de salud de la trama para encontrar huecos
+
+** Parte 3: Moverte y buscar
+
+*** [[file:primeros-pasos-07-busquedas.org][Lección 7: Encontrar lo que necesitas]]
+*Tiempo: 15 minutos*
+
+Domina las funciones de búsqueda para localizar escenas por personaje, trama,
+escenario o PoV.
+
+*Aprenderás:*
+- A buscar por personaje (¿quién aparece dónde?)
+- A buscar por hilo de la trama (¿dónde se desarrolla esta trama?)
+- A buscar por localización (todas las escenas en la cafetería)
+- A buscar por PoV (todas las escenas desde la perspectiva de Alex)
+- A encontrar los TODO de todo tu proyecto
+
+*** [[file:primeros-pasos-08-menu-hydra.org][Lección 8: El menú Hydra]]
+*Tiempo: 10 minutos*
+
+Aprende a acceder rápidamente a todas las funciones con el menú de teclado
+unificado.
+
+*Aprenderás:*
+- A abrir el menú Hydra (F8)
+- A entender cómo se organiza el menú
+- Los atajos de teclado más comunes
+- A personalizar las asignaciones de teclas
+
+** Parte 4: Funciones avanzadas
+
+*** [[file:primeros-pasos-09-modos-escritura.org][Lección 9: Los modos de escritura en profundidad]]
+*Tiempo: 15 minutos*
+
+Explora los cuatro modos de escritura y cuándo usar cada uno.
+
+*Aprenderás:*
+- El modo Sin distracciones (inmersión total)
+- El modo Enfoque (una escena cada vez)
+- El modo Navegación (paneles de navegación)
+- El modo Edición (disposición de tres paneles)
+- A personalizar los modos a tu gusto
+
+*** [[file:primeros-pasos-10-lineas-temporales.org][Lección 10: Cronologías de personajes y de la trama]]
+*Tiempo: 20 minutos*
+
+Genera cronologías visuales que muestran las apariciones de los personajes y el
+desarrollo de la trama.
+
+*Aprenderás:*
+- A crear tablas de cronología de personajes
+- A crear tablas de cronología de hilos de la trama
+- A interpretar los símbolos de las cronologías (★ para PoV, ● para presencia)
+- A usar las cronologías para comprobar el equilibrio de la historia
+
+*** [[file:primeros-pasos-11-exportar.org][Lección 11: Exportar tu manuscrito]]
+*Tiempo: 15 minutos*
+
+Aprende a exportar tu trabajo terminado a varios formatos, con el formato
+correcto de los saltos de escena.
+
+*Aprenderás:*
+- A usar la macro de salto de escena
+- A exportar a LaTeX/PDF
+- A exportar a ODT (LibreOffice/Word)
+- A exportar a HTML/EPUB
+- A personalizar los ajustes de exportación
+
+*** [[file:primeros-pasos-12-herramientas-diccionario.org][Lección 12: Herramientas de diccionario e idioma]]
+*Tiempo: 15-20 minutos*
+
+Usa mientras escribes el diccionario de español, los sinónimos y las herramientas
+de traducción integrados, incluido un tesauro que funciona sin ninguna conexión.
+
+*Aprenderás:*
+- La consulta al diccionario de la RAE
+- A instalar un tesauro sin conexión, para que los sinónimos no necesiten red
+- La búsqueda de sinónimos (español e inglés)
+- La integración de traducción
+- Consultas rápidas sin romper el hilo
+
+** Parte 5: Flujos de trabajo, buenas prácticas e integraciones
+
+*** [[file:primeros-pasos-13-flujo-diario.org][Lección 13: Flujo de escritura diario]]
+*Tiempo: 15 minutos*
+
+Establece una rutina diaria eficiente con las funciones del paquete.
+
+*Aprenderás:*
+- El flujo diario recomendado
+- Por la mañana: prepararte para escribir
+- Mientras escribes: capturas y búsquedas rápidas
+- Por la tarde: seguir el progreso y planificar
+- Cada semana: revisión y mantenimiento
+
+*** [[file:primeros-pasos-14-flujo-revision.org][Lección 14: Flujo de revisión y edición]]
+*Tiempo: 20 minutos*
+
+Usa las funciones del paquete como apoyo en el trabajo de revisión y edición.
+
+*Aprenderás:*
+- A usar el modo Edición para revisar
+- A encontrar incoherencias con las funciones de búsqueda
+- A comprobar el desarrollo de los personajes con las cronologías
+- A analizar el equilibrio de la trama y de los personajes con las cronologías
+- A gestionar los TODO de revisión
+
+*** [[file:primeros-pasos-15-personalizacion.org][Lección 15: Personalización y configuración]]
+*Tiempo: 20 minutos*
+
+Adapta el paquete a tus preferencias personales y a tu forma de trabajar.
+
+*Aprenderás:*
+- A personalizar temas y fuentes de los modos de escritura
+- A ajustar las disposiciones y los anchos de ventana
+- A modificar las plantillas según tus necesidades
+- A configurar los ajustes de exportación
+- Los ajustes de idioma (inglés/español)
+
+*** [[file:primeros-pasos-16-planificador.org][Lección 16: Planificación de objetivos de escritura con el planificador integrado]] /(Opcional)/
+*Tiempo: 30-40 minutos*
+
+El planificador de escritura se distribuye dentro del propio ~org-scribe~ (no hay
+ningún paquete aparte que instalar). Da a cada día su propio objetivo, sigue tu
+recuento de palabras mientras escribes, te dice si vas adelantado o atrasado y
+remodela los días que quedan cuando tus planes cambian: lo activas por proyecto y
+ya está listo.
+
+*Aprenderás:*
+- A crear un plan a partir de un preajuste, desde cero o para un manuscrito ya en
+  marcha
+- A declarar las palabras escritas fuera del manuscrito
+- Cómo llegan los recuentos de palabras al plan tras ~F8 a~, y qué muestra la
+  línea de modo
+- A leer el calendario, el estado, el resumen semanal, la cuadrícula del mes, los
+  hitos y los paneles
+- A ajustar según tu progreso (~c~, ~a~, ~e~) y a cambiar el plan (~r~), con
+  vistas previas
+- Patrones, fines de semana, objetivos por día, días libres y cómo mover la fecha
+  de inicio
+- Cómo cuenta el planificador: objetivos diarios exactos, días pasados bloqueados,
+  días de descanso, palabras iniciales
+- A activar y desactivar el planificador y cada una de sus funciones
+
+*** [[file:primeros-pasos-17-borradores.org][Lección 17: Borradores y ramificación de ideas]]
+*Tiempo: 15 minutos*
+
+Todas las demás lecciones te enseñan a poner cada cosa en su sitio. Esta trata del
+archivo que no te exige nada, y de qué hacer cuando una pregunta resulta tener
+tres respuestas. Solo necesita la Lección 1, así que léela cuando quieras.
+
+*Aprenderás:*
+- Dónde están los borradores de tu proyecto, y por qué nada en el paquete los lee
+- A refilar lo aprovechable a tus archivos de verdad con ~C-c C-w~
+- A ramificar una pregunta en alternativas y explorar cada una
+- A conservar las opciones descartadas, con sus motivos, en vez de borrarlas
+- Por qué tus especulaciones nunca aparecen en la búsqueda de TODO
+
+*** [[file:primeros-pasos-19-companion.org][Lección 19: El companion visual]] /(Opcional)/
+*Tiempo: 25 minutos*
+
+Una página de navegador opcional para ver el libro entero de una vez: un corcho,
+una tabla-esquema, un gráfico de líneas argumentales y formularios de entidades.
+Emacs sigue siendo el único programa que lee y escribe tus archivos; la página
+solo le pide que mueva una escena, cambie un enlace o edite una sección de una
+ficha.
+
+*Aprenderás:*
+- A activar el companion para Emacs y para un proyecto
+- A mover, renombrar y cambiar de estado escenas desde el corcho
+- A editar campos y enlaces de las escenas en la tabla
+- A leer y pulsar la línea argumental, con sus avisos de huecos y de huérfanos
+- A editar un personaje en un formulario, y qué pasa cuando Emacs y la página no
+  coinciden
+
+* Referencia rápida
+
+** Atajos de teclado esenciales
+
+| Tecla       | Acción                        |
+|-------------+-------------------------------|
+| F8          | Abrir el menú Hydra           |
+| C-c W       | Captura rápida de notas       |
+| C-c C-o     | Seguir el enlace en el cursor |
+| C-c &       | Volver de un enlace           |
+| C-c C-c     | Actualizar el bloque dinámico |
+| C-c C-x C-c | Alternar la vista de columnas |
+
+** Teclas habituales del menú Hydra
+
+Desde el menú Hydra (F8). El menú muestra sus etiquetas en inglés (ver la
+Lección 8); aquí van explicadas:
+
+| Tecla | Acción                                        | Tecla | Acción                        |
+|-------+-----------------------------------------------+-------+-------------------------------|
+| s     | Insertar escena                               |     m | Modo de escritura             |
+| c     | Insertar capítulo                             |     f | Modo Enfoque                  |
+| n     | Capturar nota                                 |     w | Contar palabras               |
+| p     | Fijar el PoV (etiquetar la escena actual)     |     1 | Buscar por PoV                |
+| h     | Fijar personajes (etiquetar la escena)        |     2 | Buscar por personaje          |
+| l     | Fijar localizaciones (etiquetar la escena)    |     3 | Buscar por trama              |
+| g     | Fijar hilos de la trama (etiquetar la escena) |     4 | Buscar por localización       |
+| k     | Submenú de captura de entidades…              |     5 | Buscar TODO                   |
+| L     | Submenú de enlaces y mantenimiento…           |     6 | Buscar ediciones/notas        |
+| R     | Volver a enlazar el proyecto                  |     H | Informe de salud del proyecto |
+| W     | Submenú del planificador de escritura (*)     |     q | Salir del menú                |
+
+(*) Se distribuye con org-scribe; solo es accesible cuando el planificador está
+activado en el proyecto actual (ver la [[file:primeros-pasos-16-planificador.org][Lección 16]]).
+
+Capturar un personaje, un escenario, un objeto, un evento de la cronología o
+un hilo de la trama nuevos está un nivel más abajo, con ~k~ y la misma letra (por
+ejemplo ~F8 k h~ para un personaje nuevo); las letras de primer nivel de arriba,
+en cambio, etiquetan la escena *actual* con una entidad ya existente.
+
+** Obtener ayuda
+
+Si te atascas o tienes dudas:
+
+1. Consulta el [[file:00-indice-funciones.org][Índice de funciones]] para ver descripciones detalladas de cada función
+2. Visita la lección concreta que cubre tu tema
+3. Usa la ayuda integrada de Emacs: ~C-h f~ (describir función) o ~C-h k~
+   (describir tecla)
+4. Informa de los problemas en: https://codeberg.org/jcastp/org-scribe/issues
+
+* Próximos pasos
+
+¿Listo para empezar? Ve a la [[file:primeros-pasos-01-crear-proyectos.org][Lección 1: Crear tu primer proyecto]] y crea tu primer
+proyecto de novela o de cuento.
+
+No te sientas obligado a completar todas las lecciones de una vez. Tómate tu
+tiempo, experimenta y, sobre todo, ¡escribe!
+
+* Sobre este tutorial
+
+- *Creado*: 2025-11-16
+- *Última actualización*: 2026-09-05
+- *Versión del paquete*: 0.9.0
+- *Tiempo total estimado*: ~4,75 horas (a tu ritmo)
+- *Dificultad*: De principiante a intermedio
+
+¡Feliz escritura!

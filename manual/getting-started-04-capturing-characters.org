@@ -1,7 +1,10 @@
 #+TITLE: Lesson 4: Capturing Characters
 #+AUTHOR: Javier Castilla
 #+DATE: 2025-11-16
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-04-capturar-personajes.org][Versión en español]]/
 
 * Welcome to Lesson 4!
 
@@ -480,11 +483,11 @@ and when it has not. "Being happy" is not a Goal; "stealing King Urdano's
 treasure", "Get the Director's position", or "Buy the most expensive car" are.
 
 *Motivation*: what they believe achieving it will give them. It comes out of
-the Lie, so it is always false underneath. **If what you write here is healthy
-and true, you have written the Need in the wrong box.**
+the Lie, so it is always false underneath. *If what you write here is healthy
+and true, you have written the Need in the wrong box.*
 
 *Conflict*: who or what stands in the way. External, and almost always the
-opponent. **If the Conflict has no face, you do not have an opponent yet.**
+opponent. *If the Conflict has no face, you do not have an opponent yet.*
 
 *** Need — Inward
 
@@ -496,8 +499,8 @@ The same three parts, turned inward:
 the Moral Weakness.
 
 *Conflict*: no longer the opponent, but *the Lie itself*, and what they would
-have to admit about the Ghost to let it go. **If the Conflict here is the
-opponent again, the arc is externalized** — nothing that happens inside the
+have to admit about the Ghost to let it go. *If the Conflict here is the
+opponent again, the arc is externalized* — nothing that happens inside the
 character will depend on the character, and the ending will feel like something
 that was done to them.
 
@@ -524,7 +527,7 @@ for.
 
 ** Plan
 
-- *Plan*: how they mean to get the Desire. **It has to fail** — the opponent
+- *Plan*: how they mean to get the Desire. *It has to fail* — the opponent
   is strong, and a plan that works is a story that ends in chapter three.
 - *Fallback plan*: more desperate and less clean. This is usually where the
   Moral Weakness gets its scene.
@@ -593,8 +596,8 @@ A table, replacing the old free-text "character arc":
 Two rules make this more useful than a prose arc:
 
 1. *Every milestone is anchored to a plot point* — one of the thirteen
-   (Lesson 6). **If you cannot say in which scene it happens, it is not a
-   milestone: it is a wish.** This is the sentence that catches the arc that
+   (Lesson 6). *If you cannot say in which scene it happens, it is not a
+   milestone: it is a wish.* This is the sentence that catches the arc that
    exists only in the writer's head.
 2. *Type is either Adjustment or Break.* An Adjustment is learning or gaining
    something, and a secondary Aspect shifts. A Break is changing *Stance on
@@ -645,9 +648,9 @@ You don't have to fill everything immediately!
 Essential information:
 - Name (heading)
 - Role, Age, Gender (properties - already filled!)
-- Main traits (3-5 adjectives)
-- Desire (what they want)
-- Initial state and final state (character arc endpoints)
+- Concept (who they are, in one sentence)
+- Ghost and Lie (what hurt them, and what they concluded from it)
+- Goal (what they want, concrete and external)
 
 This is enough to start writing!
 
@@ -921,7 +924,7 @@ You'll see:
 
 ** What are Structured Character Relationships?
 
-Beyond the free-form "Relationships" section in character profiles, org-scribe provides a powerful system for tracking structured relationship data between characters.
+org-scribe provides a powerful system for tracking structured relationship data between characters.
 
 Each relationship includes:
 - *Target character*: linked by ID, so it stays valid across renaming
@@ -944,13 +947,13 @@ For existing projects with characters:
 
 *Interactive prompts guide you*:
 
-1. *From character*: "Alice Rivera"
+1. *From character*: "Alex Rivera"
 2. *To character*: "Sam Chen"
 3. *Relationship type*: "mentor" (from a list of common types, or type your own)
 
-*Result*: "Added mentor relationship: Alice Rivera → Sam Chen"
+*Result*: "Added mentor relationship: Alex Rivera → Sam Chen"
 
-The relationship is stored in Alice's =:RelationshipsData:= property:
+The relationship is stored in Alex's =:RelationshipsData:= property:
 #+BEGIN_EXAMPLE
 :RelationshipsData: [[id:char-sam-002][Sam Chen]]|mentor
 #+END_EXAMPLE
@@ -976,7 +979,7 @@ The system suggests these common types (but you can use any text):
 View one character's relationships as a plain list:
 
 #+BEGIN_EXAMPLE
-Relationships for Alice Rivera:
+Relationships for Alex Rivera:
 
   - mentor: Sam Chen
   - rival: Jordan Lee
@@ -989,10 +992,10 @@ View complete relationship table for the entire project:
 
 | Character    | Related To   | Type   |
 |--------------+--------------+--------|
-| Alice Rivera | Sam Chen     | mentor |
-| Alice Rivera | Jordan Lee   | rival  |
-| Sam Chen     | Alice Rivera | mentee |
-| Jordan Lee   | Alice Rivera | rival  |
+| Alex Rivera | Sam Chen     | mentor |
+| Alex Rivera | Jordan Lee   | rival  |
+| Sam Chen     | Alex Rivera | mentee |
+| Jordan Lee   | Alex Rivera | rival  |
 
 There is no graph in Emacs itself (no Graphviz/dot, no ASCII tree). The drawing lives in the visual companion: its *Relations* tab (~F8 B~) draws the characters as nodes and these relationships as typed lines, straight from the data, so it can't drift from the notebook. A relationship stored both ways with the same type is drawn as one plain line; different types are two arrows. Click a character and then another to add a relationship; click a line to change a type or remove an entry. Each change is one undo step in Emacs and is not saved until you save. Relationships also no longer track a strength (1-5) or sentiment (positive/negative/neutral) value, only a directed source → target → type triple; if you want to note intensity or valence, put it in the relationship *type* itself (e.g. "close-ally" vs "ally") or in prose elsewhere on the character's heading. Notebooks written in the older ~(type,strength,valence)~ shape are still read (the type only) and are rewritten in the current shape the next time that character's relationships change.
 
@@ -1006,7 +1009,7 @@ There is no graph in Emacs itself (no Graphviz/dot, no ASCII tree). The drawing 
 
 *** Story Consistency
 
-*Check relationship symmetry*: does Alice's entry list Sam as "mentor"? Does Sam's own entry list Alice back as "mentee"? Since each side stores its own relationship independently, it's easy for them to drift out of sync — the all-relationships table is the fastest way to spot a one-sided or contradictory pair.
+*Check relationship symmetry*: does Alex's entry list Sam as "mentor"? Does Sam's own entry list Alex back as "mentee"? Since each side stores its own relationship independently, it's easy for them to drift out of sync — the all-relationships table is the fastest way to spot a one-sided or contradictory pair.
 
 *** Planning Relationship Evolution
 
@@ -1029,7 +1032,7 @@ Use relationships to track how connections change over the story:
 Relationships are stored in the ~:RelationshipsData:~ property using this format:
 
 #+BEGIN_EXAMPLE
-,* Alice Rivera
+,* Alex Rivera
 :PROPERTIES:
 :ID: char-alice-001
 :RelationshipsData: [[id:char-sam-002][Sam]]|mentor; [[id:char-jordan-003][Jordan]]|rival

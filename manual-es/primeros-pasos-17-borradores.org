@@ -1,0 +1,286 @@
+#+TITLE: Lección 17: Borradores y ramificación de ideas
+#+AUTHOR: Javier Castilla
+#+DATE: 2026-09-05
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-17-scratchpad.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-17-scratchpad.org][English version]]/
+
+* ¡Bienvenido a la Lección 17!
+
+Todas las demás lecciones de esta guía te han enseñado a poner cada cosa en su
+sitio: un personaje bajo la sección Personajes de ~diseno.org~, una escena en el
+manuscrito, un hilo de la trama con su propio perfil y sus propios cruces.
+
+Esta lección trata de lo contrario. Cubre la única parte del cuaderno de diseño
+que no te exige nada, y una convención para el momento más desordenado de la
+escritura: cuando una pregunta resulta tener tres respuestas y no tienes ni idea
+de cuál es la buena.
+
+Al terminar esta lección sabrás:
+- Abrir y usar los borradores de tu proyecto
+- Por qué nada en el paquete los lee, y por qué eso importa
+- Refilar lo aprovechable a tus archivos de verdad
+- Ramificar una pregunta en alternativas y explorar cada una
+- Mantener tus especulaciones fuera de tu lista de TODO
+
+*Requisitos previos*: Lección 1 (necesitas un proyecto). Todo lo demás es
+opcional: puedes leer esta lección en cualquier momento, una vez que exista tu
+primer proyecto.
+
+* Parte 1: Encontrar los Borradores
+
+** Abrirlos
+
+Todo proyecto trae unos, como última parte del cuaderno de diseño:
+
+- Proyectos en inglés: el encabezado ~Scratchpad~ de ~design.org~
+- Proyectos en español: el encabezado ~Borradores~ de ~diseno.org~
+
+Abre el cuaderno desde cualquier punto del proyecto:
+
+#+BEGIN_EXAMPLE
+F8 o    →  luego elige diseno.org de la lista
+#+END_EXAMPLE
+
+y salta al último encabezado. Las notas rápidas que tomas con la captura de
+notas también se archivan ahí.
+
+Esa es toda la interfaz. No hay una tecla propia ni un submenú. Es una parte de
+un archivo, y es a propósito: lo que define a los borradores es que no tienen
+ninguna maquinaria asociada.
+
+** Por qué los necesitas
+
+Mira lo que le pasa a un pensamiento suelto en cualquier otro archivo:
+
+| Si lo escribes en…    | Se convierte en…                                 |
+|-----------------------+--------------------------------------------------|
+| El manuscrito         | Palabras en tu recuento y en tu progreso diario  |
+| La sección Personajes | Un personaje que el sistema de enlaces te ofrece |
+| La parte Fundamentos  | Parte de la Puerta de salida con la que te miden |
+
+Fíjate en que el cuaderno es un solo archivo, así que sus otras partes parecen
+igual de libres. No lo son: las secciones Personajes y Ambientación las lee la
+capa de enlaces y la captura archiva en ellas. Un esbozo a medias ahí se
+convierte en un personaje a medias.
+
+Así que no había dónde poner un pensamiento que todavía no es nada de eso. Ahora
+lo hay.
+
+** Qué poner en ellos
+
+Cualquier cosa, con cualquier forma:
+
+- Una pregunta del tipo «¿y si…?» que todavía no sabes responder
+- Un fragmento de diálogo sin escena donde vivir
+- Una escena que piensas tirar sin remordimientos
+- Un personaje que quizá no exista
+- Una discusión contigo mismo sobre si el capítulo 9 funciona
+- Una lista, un garabato, tres palabras y un signo de interrogación
+
+No hay plantilla que rellenar ni encabezado obligatorio. La parte trae un par de
+encabezados de ejemplo; bórralos en cuanto te estorben.
+
+* Parte 2: Nada los lee
+
+Esta es la parte en la que conviene confiar, porque es lo que hace segura
+esta parte.
+
+** Tu recuento de palabras no se altera
+
+~F8 a~ recorre tu *manuscrito*. No toca los borradores. Diez mil palabras de
+borradores abandonados aquí no aparecerán en:
+
+- Tus propiedades ~WORDCOUNT~
+- Tu tabla de seguimiento del progreso
+- El registro diario del planificador de escritura
+- Los totales del informe de salud del proyecto
+
+** Tus exportaciones no se alteran
+
+~org-scribe-compile~ (Lección 11) lee el manuscrito y nada más. No hay ningún
+camino por el que el contenido de los borradores llegue a un PDF, un EPUB o un
+original para enviar. No puedes publicar por accidente tus notas para ti mismo.
+
+** Tus listas de entidades no se alteran
+
+El sistema de enlaces encuentra personajes, escenarios e hilos de la trama
+mirando los encabezados que cuelgan directamente de sus secciones. Los
+borradores no son una de ellas.
+
+Así que puedes escribir:
+
+#+BEGIN_EXAMPLE
+* ¿Y si hay una hermana?
+
+Más joven. Distanciada. O quizá es ella la que se fue, y Alicia es la
+que se quedó. Probar las dos.
+#+END_EXAMPLE
+
+…y «hermana» no aparecerá en tu lista de completado de personajes, no contará
+como entidad huérfana en el informe de salud y no estorbará en ninguna parte.
+Se vuelve real cuando —y solo cuando— la mueves.
+
+* Parte 3: Sacar lo aprovechable
+
+** Refilar
+
+Cuando algo de los borradores merece la pena, refílalo:
+
+#+BEGIN_EXAMPLE
+C-c C-w    →  refilar el encabezado en el cursor
+#+END_EXAMPLE
+
+Dentro de un proyecto de org-scribe, ~C-c C-w~ ofrece *todos los encabezados del
+manuscrito y del cuaderno de diseño*, y cada candidato lleva la etiqueta del
+archivo del que procede. Así, una escena redactada va directa bajo un capítulo
+del manuscrito; un esbozo de personaje va bajo Personajes; una pregunta de
+investigación va a la parte Investigación.
+
+Borra el resto sin ceremonia. Para eso está esta parte.
+
+* Parte 4: Ramificar una pregunta
+
+** El problema
+
+Algunas preguntas tienen una sola respuesta y la encuentras pensando un minuto.
+Otras tienen tres respuestas plausibles, y la única manera de saber cuál es la
+buena es seguir cada una lo bastante lejos para ver adónde lleva.
+
+Ese segundo tipo es difícil de sostener en la cabeza y fácil de perder. Exploras
+la opción B, decides que está mal y, cuatro meses después, vuelves a descubrir
+la opción B y la exploras otra vez, porque nunca anotaste *por qué* estaba mal.
+
+** La forma
+
+Dale a la pregunta un encabezado y etiquétalo ~:branch:~. Haz de cada respuesta
+un encabezado hijo con un estado. Las consecuencias de una respuesta son los
+hijos de esa respuesta.
+
+#+BEGIN_EXAMPLE
+* ¿Y si la Necesidad de Alicia no es el perdón?                    :branch:
+:PROPERTIES:
+:ABOUT:    [[id:char-alicia-001][Alicia]]
+:END:
+
+Su Mentira es «si mantengo la paz, nadie se va». El perdón es la
+Necesidad obvia y es aburrida.
+
+** CHOSEN A. Necesita dejar de protegerlo
+*** OPEN A1. La protección nunca se la pidió nadie
+*** OPEN A2. Él lo sabe, y se lo ha estado permitiendo
+** OPEN B. Necesita que la crean
+   Barata: se desploma en el mismo golpe que el capítulo 3.
+** REJECTED C. Necesita perdonarlo
+   Deja redundante al Fantasma. Dejo esto aquí para no volver a
+   deducirlo dentro de dos meses.
+#+END_EXAMPLE
+
+Anida tan hondo como llegue de verdad la pregunta. Una rama de una rama de una
+rama no tiene nada de raro: es solo una pregunta cuya respuesta ha planteado
+otra pregunta.
+
+** Los cuatro estados
+
+El cuaderno de diseño los declara en su cabecera, así que funcionan ahí y en
+ningún otro sitio. Cámbialos cíclicamente con ~C-c C-t~ sobre el encabezado:
+
+| Estado      | Significado                       | Cuándo usarlo                        |
+|-------------+-----------------------------------+--------------------------------------|
+| ~OPEN~      | Sigue viva, aún sin explorar      | Has nombrado la opción, nada más     |
+| ~EXPLORING~ | La estás desarrollando ahora      | Hoy estás siguiendo esta             |
+| ~CHOSEN~    | Es esta                           | Has decidido                         |
+| ~REJECTED~  | Descartada, conservando el motivo | Has decidido /en contra/: di por qué |
+
+~CHOSEN~ y ~REJECTED~ son estados *finales*, así que una pregunta resuelta se
+pliega y deja de estorbar cuando contraes el archivo, pero conserva todo lo que
+cuelga de ella.
+
+** Conserva tus ramas descartadas
+
+La tentación fuerte es borrar la opción C en cuanto la descartas. No lo hagas.
+
+El porqué-no vale tanto como el porqué. Una rama descartada con su motivo
+adjunto es lo que te evita pasar una tarde redescubriéndola, y a menudo es lo
+que explica una decisión que ya no recuerdas haber tomado. Te cuesta tres líneas
+plegadas.
+
+** Tu lista de TODO sigue limpia
+
+Este es el detalle que hace esto usable en el día a día.
+
+~F8 5~ (Buscar TODO, Lección 7) recorre todos los archivos ~.org~ de tu
+proyecto, borradores incluidos. Pero solo encuentra las palabras clave de
+~org-scribe-todo-keywords~: ~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~,
+~TOREVIEW~, ~REDO~, ~RESTRUCTURE~.
+
+~OPEN~, ~EXPLORING~, ~CHOSEN~ y ~REJECTED~ *no* están en esa lista a propósito.
+Así que por muchas preguntas abiertas que se acumulen en tus borradores, la
+búsqueda de TODO sigue mostrando trabajo de verdad.
+
+Especular no es trabajo en curso. Si algún día añades estas palabras clave a
+~org-scribe-todo-keywords~, perderás esa separación.
+
+** Enlazar una pregunta con aquello de lo que trata
+
+La propiedad opcional ~:ABOUT:~ guarda un enlace por ID a aquello a lo que se
+refiere la pregunta: un personaje, un hilo de la trama, una escena:
+
+#+BEGIN_EXAMPLE
+:PROPERTIES:
+:ABOUT:    [[id:char-alicia-001][Alicia]]
+:END:
+#+END_EXAMPLE
+
+Como es un enlace por ID de verdad, sobrevive a un cambio de nombre del
+personaje, y ~C-c C-o~ sobre él salta a su perfil. Déjala vacía mientras la
+pregunta no trate aún de nada en concreto.
+
+La forma más fácil de obtener el enlace es copiarlo de una propiedad de escena
+que ya hayas etiquetado, o ejecutar ~M-x org-store-link~ sobre el encabezado
+del personaje y luego ~C-c C-l~ aquí para insertarlo.
+
+** Una nota sobre el idioma
+
+En un proyecto en español, el nombre del archivo, los encabezados y toda la
+prosa están en español, pero las cuatro palabras clave de estado, la etiqueta
+~:branch:~ y la propiedad ~:ABOUT:~ se quedan en inglés.
+
+Es coherente con el resto del paquete: los nombres que lee el software son
+ingleses en los dos idiomas, igual que ~:TARGET_WORDCOUNT:~. Y significa además
+que la convención se lee igual en los dos proyectos de un escritor bilingüe.
+
+* Pruébalo ahora
+
+1. Abre los borradores de tu proyecto con ~F8 o~.
+2. Borra la rama de ejemplo del final.
+3. Escribe una pregunta sobre tu historia que de verdad no hayas respondido.
+4. Dale tres respuestas como encabezados hijos, todas ~OPEN~.
+5. Elige la que menos te guste y escribe una línea sobre por qué. Márcala
+   ~REJECTED~.
+6. Elige la que más te guste, márcala ~EXPLORING~ y escribe diez minutos
+   debajo de ella.
+
+Nada de lo que escribas se contará, se exportará ni será notado por ninguna
+otra parte del paquete. Ese es el objetivo.
+
+* Sobre esta lección
+
+- *Creada*: 2026-09-05
+- *Última actualización*: 2026-09-05
+- *Número de lección*: 17
+- *Parte*: 5 - Flujos de trabajo, buenas prácticas e integraciones
+- *Tiempo estimado*: 15 minutos
+- *Dificultad*: Principiante
+- *Requisitos previos*: Lección 1 (necesitas un proyecto para tener borradores)
+
+---
+
+*Anterior*: [[file:primeros-pasos-16-planificador.org][Lección 16: Planificación de objetivos de escritura con el planificador integrado]]
+*Siguiente*: [[file:primeros-pasos-18-metodos-trama.org][Lección 18: Métodos de trama — La Hélice y La Matriz]]
+*Volver al inicio*: [[file:primeros-pasos-00-indice.org][Guía de primeros pasos - Índice]]
+
+*¡Lección 17 completada!*

@@ -1,0 +1,1295 @@
+#+TITLE: Lección 7: Encontrar lo que necesitas
+#+AUTHOR: Javier Castilla
+#+DATE: 2025-11-16
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-07-searching.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-07-searching.org][English version]]/
+
+* ¡Bienvenido a la Lección 7!
+
+En esta lección dominarás las funciones de búsqueda que te permiten recorrer tu manuscrito de la manera que necesites. Tanto si compruebas la continuidad como si planificas tu próxima escena o haces una revisión a fondo, buscar bien marca la diferencia entre horas de búsqueda manual y respuestas al instante.
+
+Al terminar esta lección serás capaz de:
+- Buscar todas las escenas desde el punto de vista de un personaje concreto
+- Encontrar cada escena en la que aparece un personaje (no solo como PoV)
+- Localizar todas las escenas que desarrollan un hilo de la trama concreto
+- Encontrar todas las escenas ambientadas en un escenario concreto
+- Buscar elementos TODO en todo tu proyecto
+- Encontrar los marcadores *EDIT*/*NOTE* que dejaste en el texto mientras escribías
+- Combinar búsquedas para consultas complejas
+- Usar bien los resultados de búsqueda al escribir y al revisar
+
+*Tiempo estimado*: 15 minutos
+
+* Requisitos previos
+
+Antes de empezar esta lección deberías haber completado:
+- [[file:primeros-pasos-01-crear-proyectos.org][Lección 1: Crear tu primer proyecto]]
+- [[file:primeros-pasos-02-primera-escena.org][Lección 2: Escribir tu primera escena]]
+- [[file:primeros-pasos-04-capturar-personajes.org][Lección 4: Capturar personajes]] (recomendada)
+- [[file:primeros-pasos-05-lugares-ambientacion.org][Lección 5: Escenarios y ambientación]] (recomendada)
+- [[file:primeros-pasos-06-hilos-trama.org][Lección 6: Hilos de la trama y cronología]] (recomendada)
+
+Deberías tener:
+- Al menos 3-5 escenas en tu manuscrito
+- Algunas escenas con las propiedades PoV, Personajes, Localizacion o Trama fijadas
+- Una comprensión básica de las propiedades de escena
+
+* Por qué importa buscar
+
+**Respuesta rápida**: a medida que crece tu manuscrito, buscar se vuelve imprescindible para encontrar escenas, comprobar la coherencia y mantener el control de tu historia.
+
+** El problema sin búsqueda
+
+En una novela de 50 escenas (extensión típica: 50.000-80.000 palabras):
+- Encontrar todas las escenas con un personaje exige leer a mano 50 encabezados de escena
+- Comprobar cuánto aparece un escenario significa recorrer todo el manuscrito
+- Verificar el equilibrio de PoV exige contar a mano
+- Seguir el desarrollo de un hilo de la trama necesita una hoja de cálculo aparte
+- Encontrar aquel TODO que te dejaste hace semanas es cuestión de adivinar
+
+Esto es:
+- *Lento*: más de 30 minutos de búsqueda manual
+- *Propenso a errores*: es fácil saltarse escenas al desplazarte
+- *Frustrante*: interrumpe el flujo de escritura
+- *Limitante*: evitas comprobar cosas porque da demasiado trabajo
+
+** La solución: búsqueda por propiedades
+
+Con las funciones de búsqueda puedes:
+- Encontrar en segundos todas las escenas con un personaje
+- Comprobar al instante la distribución de un hilo de la trama
+- Verificar el uso de un escenario con una sola orden
+- Repasar todas las escenas PoV de un personaje
+- Localizar los TODO de todo el proyecto
+
+Esto es:
+- *Rápido*: 5-10 segundos por búsqueda
+- *Exacto*: encuentra cada coincidencia automáticamente
+- *Fluido*: no interrumpe el flujo
+- *Útil*: compruebas las cosas porque es fácil
+
+* Las cuatro búsquedas básicas
+
+El paquete ofrece cuatro funciones de búsqueda principales, cada una centrada en una propiedad distinta de la escena.
+
+** Tabla resumen
+
+| Tipo de búsqueda | Tecla Hydra | Comando                         | Propiedad que busca |
+|------------------+-------------+---------------------------------+---------------------|
+| PoV              | F8 1        | ~org-scribe-org-find-pov~       | ~:PoV:~             |
+| Personaje        | F8 2        | ~org-scribe-org-find-character~ | ~:Personajes:~      |
+| Trama            | F8 3        | ~org-scribe-org-find-plot~      | ~:Trama:~           |
+| Localización     | F8 4        | ~org-scribe-org-find-location~  | ~:Localizacion:~    |
+
+(Los nombres de las propiedades son los de un proyecto en español; en uno en inglés son ~:Characters:~, ~:Plot:~ y ~:Location:~. Las búsquedas reconocen los de cualquier idioma.)
+
+Otras dos búsquedas completan la sección Search del menú Hydra (se explican más adelante en esta lección): ~F8 5~ para los elementos TODO y ~F8 6~ para los marcadores =*EDIT*=/=*NOTE*= dentro del texto (~org-scribe-search-edits~, que analiza los bloques de comentario de Org en lugar de consultar propiedades).
+
+** Patrón común
+
+Las cuatro búsquedas funcionan igual:
+1. Invoca la búsqueda (pulsa la tecla del menú Hydra o ejecuta el comando)
+2. Escribe el término de búsqueda (con completado)
+3. Mira los resultados en un búfer dedicado
+4. Navega a las escenas desde los resultados
+5. Cierra los resultados cuando termines
+
+** Qué buscan
+
+Todas las búsquedas recorren el archivo de tu manuscrito (~novela.org~, ~novel.org~, ~cuento.org~ o ~story.org~) en busca de encabezados de escena (de nivel 3 en una novela, de nivel 2 en un cuento) con valores de propiedad coincidentes.
+
+Funcionan con:
+- ✓ Valores de propiedad en texto plano («Alex Rivera»)
+- ✓ Enlaces por ID ([[id:char-alex-001][Alex Rivera]])
+- ✓ Varios valores en una misma propiedad (separados por comas)
+
+* Búsqueda 1: por punto de vista (PoV)
+
+Encuentra todas las escenas narradas desde la perspectiva de un personaje concreto.
+
+** Cuándo usarla
+
+- *Equilibrio de PoV*: comprueba cuántas escenas recibe cada personaje PoV
+- *Voz del personaje*: repasa todas las escenas de un PoV para comprobar la coherencia de la voz
+- *Revisión del arco*: mira el viaje de un personaje desde su propia perspectiva
+- *Planificación*: decide qué personaje debería narrar la próxima escena
+- *Revisión*: asegúrate de que cada personaje PoV tiene suficiente tiempo en la página
+
+** Cómo buscar
+
+Pulsa: ~F8 1~
+
+O usa: ~M-x org-scribe-org-find-pov~
+
+** El proceso
+
+1. Verás un aviso: ~Buscar personaje PoV [difuso]: ~ (o ~Personaje (PoV) [subcadena]: ~ si usas la variante de texto libre)
+2. Empieza a escribir el nombre de un personaje: ~Alex~
+3. Aparecen los nombres que coinciden (con completado)
+4. Elige: ~Alex Rivera~
+5. Pulsa: ~Intro~
+
+** Ejemplo de resultados
+
+El resultado es una vista de org-ql titulada «PoV: Alex Rivera», con una línea por escena: la palabra clave TODO (si la tiene), el título y las etiquetas.
+
+#+BEGIN_EXAMPLE
+  FINISHED Escena 1 - El despertador                                                  :ignore:
+  FINISHED Escena 2 - Encuentro en la cafetería                                       :ignore:
+  TODO Escena 1 - La decisión                                                         :ignore:
+  TOWRITE Escena 1 - Primer intento                                                   :ignore:
+  TOWRITE Escena 1 - Charla de café                                                   :ignore:
+  TOWRITE Escena 2 - Encontrar el equilibrio                                          :ignore:
+  TODO Escena 1 - Vuelta al principio                                                 :ignore:
+#+END_EXAMPLE
+
+** Interpretar los resultados
+
+Los resultados muestran:
+- *Títulos de escena*: los encabezados completos de las escenas
+
+** Usar los resultados
+
+*** Comprobar el equilibrio
+Si tienes varios personajes PoV, busca cada uno:
+- Alex: 12 escenas (60 %)
+- Sam: 5 escenas (25 %)
+- Jordan: 3 escenas (15 %)
+
+¿Está equilibrado? Para un protagonista, el 60 % está bien. Para dos protagonistas, apunta a un 40-60 % cada uno.
+
+*** Navegar a las escenas
+En el búfer de resultados:
+- Haz clic en el encabezado de una escena para saltar a ella
+- O usa: ~C-c C-o~ sobre una línea de escena
+- O: flechas + Intro
+
+*** Leer en secuencia
+Lee solo las escenas de Alex en orden para:
+- Comprobar la coherencia de la voz
+- Verificar la progresión del arco del personaje
+- Asegurar la continuidad emocional
+- Encontrar contradicciones
+
+** Casos de uso habituales
+
+*** Ejemplo 1: comprobación del equilibrio de PoV
+#+BEGIN_EXAMPLE
+Escribes una novela con dos protagonistas. Buscas los dos PoV:
+- Maya: 18 escenas
+- Chen: 8 escenas
+
+Problema: ¡desequilibrio! Chen necesita más escenas o Maya necesita menos.
+Acción: planificar 4-5 escenas más con PoV de Chen.
+#+END_EXAMPLE
+
+*** Ejemplo 2: coherencia de la voz
+#+BEGIN_EXAMPLE
+Buscas el PoV de Alex y lees las 15 escenas en secuencia.
+Notas: las escenas 1-7 tienen una voz interior sarcástica, pero las 8-15 son serias.
+
+Problema: cambio de voz sin explicación.
+Acción: o añadir un punto de inflexión que justifique el cambio, o revisar las escenas posteriores para recuperar el sarcasmo.
+#+END_EXAMPLE
+
+*** Ejemplo 3: evitar el latigazo de PoV
+#+BEGIN_EXAMPLE
+Buscas el PoV de Alex: escenas 1, 2, 3, 4, 5, 15, 16...
+¡Hueco de la escena 5 a la 15 = 9 escenas!
+
+Problema: los lectores pueden olvidar la situación de Alex tras 9 escenas lejos.
+Acción: plantearse mover la escena 15 antes o añadir una escena con PoV de Alex hacia la 10.
+#+END_EXAMPLE
+
+* Búsqueda 2: por aparición de personajes
+
+Encuentra todas las escenas en las que aparece un personaje (sea cual sea el PoV).
+
+** Cuándo usarla
+
+- *Cobertura del personaje*: ¿con qué frecuencia aparece este personaje?
+- *Seguimiento de relaciones*: encuentra todas las escenas entre dos personajes
+- *Verificación del arco*: ¿tiene este personaje suficiente presencia?
+- *Continuidad*: ¿qué le ha pasado a este personaje hasta ahora?
+- *Planificación*: ¿cuándo debería reaparecer este personaje?
+
+** Cómo buscar
+
+Pulsa: ~F8 2~
+
+O usa: ~M-x org-scribe-org-find-character~
+
+** El proceso
+
+1. Verás un aviso: ~Buscar personaje [difuso]: ~ (o ~Nombre del personaje [subcadena]: ~)
+2. Empieza a escribir: ~Sam~
+3. Aparecen los nombres que coinciden
+4. Elige: ~Sam Chen~
+5. Pulsa: ~Intro~
+
+** Ejemplo de resultados
+
+La vista se titula «Personaje: Sam Chen» y lista, con el mismo formato de una línea por escena, todas las escenas que coinciden:
+
+#+BEGIN_EXAMPLE
+  DONE Escena 2 - Lecturas extrañas                                                   :ignore:
+  DONE Escena 3 - Encuentro en la cafetería                                           :ignore:
+  DONE Escena 12 - Descubrimiento en el segundo emplazamiento                         :ignore:
+  DONE Escena 17 - Ayuda inesperada                                                   :ignore:
+  DONE Escena 20 - La tensión crece                                                   :ignore:
+  TODO Escena 28 - Traición                                                           :ignore:
+  TODO Escena 43 - Reconciliación                                                     :ignore:
+  TODO Escena 46 - Un nuevo comienzo                                                  :ignore:
+#+END_EXAMPLE
+
+El paquete no escribe totales ni porcentajes: los sacas tú contando las líneas (8 escenas aquí) y comparando con el total de escenas de tu manuscrito.
+
+** Qué muestra
+
+La búsqueda de personajes encuentra las escenas en las que el personaje aparece en:
+- la propiedad ~:PoV:~ (es el personaje PoV)
+- la propiedad ~:Personajes:~ (aparece pero no es el PoV)
+
+Esto te da una cobertura completa de dónde aparece un personaje en tu historia.
+
+** Interpretar los resultados
+
+*** Apariciones totales
+8 escenas de (digamos) 40 en total = 20 % de presencia.
+- ¿Es adecuado para un personaje secundario? Sí.
+- ¿Para un interés romántico? Quizá demasiado poco: debería ser un 30-40 %.
+- ¿Para un personaje menor? Más o menos bien.
+
+*** Distribución
+Fíjate en los huecos:
+- Escenas 3 a 12 = 8 escenas
+- Escenas 20 a 28 = 7 escenas
+
+Si los huecos son demasiado largos, los lectores olvidan al personaje.
+
+*** PoV frente a aparición
+Sam es PoV solo en 2 escenas pero aparece en 8.
+- Es habitual en los personajes secundarios
+- Participan en la historia pero sobre todo a través de los ojos del protagonista
+
+** Casos de uso habituales
+
+*** Ejemplo 1: un personaje desaparecido
+#+BEGIN_EXAMPLE
+Buscas a Jordan y encuentras:
+- Escenas 4, 7, 9 (Acto I)
+- Escenas 35, 38, 40 (Acto III)
+
+Problema: ¡Jordan desaparece durante 25 escenas (de la 9 a la 35)!
+Acción: o añadir apariciones de Jordan en el Acto II, o justificar la ausencia en un diálogo («Jordan ha estado de viaje»).
+#+END_EXAMPLE
+
+*** Ejemplo 2: equilibrio del interés romántico
+#+BEGIN_EXAMPLE
+Tu subtrama romántica presenta a Alex y Sam. Buscas a los dos:
+- Alex: 25 escenas (protagonista)
+- Sam: 8 escenas
+
+Para una subtrama romántica, Sam debería aparecer en al menos 12-15 escenas (30-40 %).
+Acción: añadir a Sam a 4-6 escenas más, o replantearse si esta es una subtrama romántica importante.
+#+END_EXAMPLE
+
+*** Ejemplo 3: comprobación de continuidad
+#+BEGIN_EXAMPLE
+Estás escribiendo la escena 30 y quieres referirte a la última vez que Alex vio a Sam.
+Buscas a Sam: la última aparición fue en la escena 20.
+
+Consultas las notas de la escena 20: discutieron sobre cómo enfocar la investigación.
+Ahora puedes escribir la escena 30 con la continuidad correcta: «Era la primera vez que veía a Sam desde la discusión.»
+#+END_EXAMPLE
+
+* Búsqueda 3: por hilo de la trama
+
+Encuentra todas las escenas que desarrollan un hilo de la trama concreto.
+
+** Cuándo usarla
+
+- *Distribución de la trama*: ¿con qué frecuencia aparece esta trama?
+- *Detección de huecos*: ¿hay tramos largos en los que esta trama desaparece?
+- *Revisión del arco*: lee en secuencia todas las escenas de una trama
+- *Control del ritmo*: ¿escala bien esta trama?
+- *Planificación*: ¿dónde debería desarrollarse esta trama a continuación?
+
+** Cómo buscar
+
+Pulsa: ~F8 3~
+
+O usa: ~M-x org-scribe-org-find-plot~
+
+** El proceso
+
+1. Verás un aviso: ~Buscar trama [difuso]: ~ (o ~Término de trama [subcadena]: ~)
+2. Empieza a escribir: ~Misterio~
+3. Aparecen los hilos de la trama que coinciden
+4. Elige: ~Misterio principal - Sabotaje del agua~
+5. Pulsa: ~Intro~
+
+** Ejemplo de resultados
+
+La vista se titula «Hilo de trama: Misterio principal - Sabotaje del agua»:
+
+#+BEGIN_EXAMPLE
+  DONE Escena 1 - Rutina matinal                                                      :ignore:
+  DONE Escena 4 - Primera víctima                                                     :ignore:
+  DONE Escena 7 - Pruebas de manipulación                                             :ignore:
+  DONE Escena 9 - Resultados del laboratorio                                          :ignore:
+  DONE Escena 12 - Descubrimiento en el segundo emplazamiento                         :ignore:
+  DONE Escena 15 - Siguiendo la pista                                                 :ignore:
+  [... etc ...]
+  TODO Escena 42 - Confrontación                                                      :ignore:
+  TODO Escena 45 - Secuelas                                                           :ignore:
+  TODO Escena 46 - Reflexión                                                          :ignore:
+#+END_EXAMPLE
+
+La búsqueda no etiqueta cada escena con su función en la trama («incidente desencadenante», «clímax»...); eso lo anotas tú en las Notas del hilo o con los puntos de trama (Lección 6). Para cobertura y huecos calculados automáticamente, usa el informe de salud de la trama (~F8 L t~).
+
+** Interpretar los resultados
+
+*** Porcentaje de cobertura
+18 escenas de 40 = 45 %.
+- Para una trama principal: debería ser del 60-80 %. ¡Es BAJO!
+- Para una subtrama mayor: el 30-50 % está bien. Sería correcto para una historia B.
+- Para una subtrama menor: sería alto (lo típico es el 10-30 %).
+
+**Acción**: si esta es tu trama principal al 45 %, tienes que añadirla a 8-10 escenas más.
+
+*** Análisis de huecos
+Mira los números de escena:
+- Escena 1, 4, 7, 9, 12, 15, 18, 21, 24...
+
+Ningún hueco de más de 3 escenas hasta el Acto III. ¡Buen ritmo!
+
+Pero si ves:
+- Escena 7... Escena 18 (hueco de 10 escenas) → ¡problema!
+
+*** Hitos de la trama
+Si has anotado en cada escena su función en la trama (incidente desencadenante, avance, clímax, etc.), puedes comprobar si están los hitos importantes:
+- ✓ Incidente desencadenante (Escena 1)
+- ✓ Giro del punto medio (Escena 24)
+- ✓ Gran revelación (Escena 38)
+- ✓ Clímax (Escena 42)
+- ✓ Resolución (Escena 45)
+
+Si falta alguno, la estructura de tu trama puede resultar incompleta.
+
+** Casos de uso habituales
+
+*** Ejemplo 1: una subtrama olvidada
+#+BEGIN_EXAMPLE
+Buscas la «Subtrama romántica» y encuentras:
+- Escenas 2, 5, 8 (Acto I)
+- Escenas 43, 45 (Acto III)
+
+Problema: ¡el romance aparece en el Acto I, desaparece más de 30 escenas y reaparece!
+Acción: añadir 4-6 escenas de romance en el Acto II para mantener la continuidad.
+#+END_EXAMPLE
+
+*** Ejemplo 2: comprobación de la escalada de la trama
+#+BEGIN_EXAMPLE
+Buscas la trama principal y lees las 18 escenas en secuencia.
+Notas: las escenas 15-21 se sienten parecidas, con la misma intensidad y el mismo tipo de escena.
+
+Problema: el punto medio no escala bien.
+Acción: subir lo que está en juego en la escena 21: añadir peligro personal o un revés importante.
+#+END_EXAMPLE
+
+*** Ejemplo 3: planificar la próxima escena
+#+BEGIN_EXAMPLE
+Vas a escribir la escena 30. Buscas tu subtrama política:
+la última aparición fue en la escena 22.
+
+¡Es un hueco de 8 escenas: hora de recuperarla!
+Acción: que la escena 30 desarrolle la subtrama política.
+#+END_EXAMPLE
+
+* Búsqueda 4: por localización
+
+Encuentra todas las escenas ambientadas en un escenario concreto.
+
+** Cuándo usarla
+
+- *Uso del escenario*: ¿con qué frecuencia usas este escenario?
+- *Control de la variedad*: ¿estás abusando de un escenario?
+- *Continuidad*: ¿qué ha pasado en este escenario hasta ahora?
+- *Equilibrio de escenarios*: asegura la diversidad de escenarios en la historia
+- *Planificación*: ¿cuándo deberías volver a este escenario?
+
+** Cómo buscar
+
+Pulsa: ~F8 4~
+
+O usa: ~M-x org-scribe-org-find-location~
+
+** El proceso
+
+1. Verás un aviso: ~Buscar localización [difuso]: ~ (o ~Localización [subcadena]: ~)
+2. Empieza a escribir: ~Cafe~
+3. Aparecen los escenarios que coinciden
+4. Elige: ~Cafetería del Centro~
+5. Pulsa: ~Intro~
+
+** Ejemplo de resultados
+
+La vista se titula «Localización: Cafetería del Centro»:
+
+#+BEGIN_EXAMPLE
+  DONE Escena 1 - Rutina matinal                                                      :ignore:
+  DONE Escena 3 - Encuentro en la cafetería                                           :ignore:
+  DONE Escena 11 - Reagruparse                                                        :ignore:
+  DONE Escena 23 - Refugio seguro                                                     :ignore:
+  TODO Escena 41 - Vuelta a la normalidad                                             :ignore:
+  TODO Escena 46 - Un nuevo comienzo                                                  :ignore:
+#+END_EXAMPLE
+
+Contando: 6 escenas de 40 = 15 %; primera aparición en la escena 1, última en la 46. El escenario aparece en la apertura y en el cierre (estructura de «paréntesis»).
+
+** Interpretar los resultados
+
+*** Frecuencia de uso
+6 escenas de 40 = 15 %.
+- Para un escenario principal: razonable (10-20 %)
+- Para un escenario secundario: alto (lo típico es el 5-10 %)
+- Para un escenario menor: muy alto (deberían ser 1-3 escenas)
+
+*** Patrón de distribución
+Fíjate en el reparto:
+- Acto I: 2 escenas
+- Acto II: 2 escenas
+- Acto III: 2 escenas
+
+¡Buena distribución! El escenario aparece a lo largo de toda la historia.
+
+Pero si ves:
+- Acto I: 5 escenas
+- Acto II: 1 escena
+- Acto III: 0 escenas
+
+Problema: el escenario domina al principio y desaparece después. Se siente desequilibrado.
+
+*** Estructura de paréntesis
+La primera escena (Escena 1) y la última (Escena 46) ocurren en la cafetería.
+Es un «paréntesis» intencionado: muestra el viaje y el regreso.
+
+** Casos de uso habituales
+
+*** Ejemplo 1: abuso de un escenario
+#+BEGIN_EXAMPLE
+Buscas «Piso de Alex» y encuentras 18 escenas (de 40 en total).
+
+Problema: ¡el 45 % de tu historia ocurre en un solo lugar! Es demasiado.
+Acción: mover 6-8 escenas a otras localizaciones O combinar varias escenas del piso en menos escenas.
+#+END_EXAMPLE
+
+*** Ejemplo 2: control de la variedad
+#+BEGIN_EXAMPLE
+Buscas cada localización principal:
+- Piso: 12 escenas
+- Oficina: 10 escenas
+- Cafetería: 6 escenas
+Total: 28 escenas (de 40)
+
+Problema: el 70 % de las escenas ocurren en solo 3 localizaciones. La historia se siente repetitiva.
+Acción: añadir 4-6 localizaciones nuevas para las escenas restantes, o usar más las localizaciones secundarias existentes.
+#+END_EXAMPLE
+
+*** Ejemplo 3: comprobación de continuidad
+#+BEGIN_EXAMPLE
+Escribes la escena 30 en la cafetería. Buscas «Cafetería»:
+- Última aparición: escena 23
+- En la escena 23: Alex discutió con el camarero
+
+Ahora puedes escribir la escena 30 con continuidad: «El camarero apartó la mirada cuando Alex entró, todavía molesto por la semana pasada.»
+#+END_EXAMPLE
+
+*** Ejemplo 4: regreso simbólico
+#+BEGIN_EXAMPLE
+Tu cafetería representa la «vida normal». Buscas y encuentras:
+- Escenas 1-3 (establecen la normalidad)
+- Escena 23 (punto medio: Alex busca consuelo)
+- Escena 46 (resolución: vuelta a la paz)
+
+Este patrón estructural muestra el viaje del personaje lejos de la normalidad y de vuelta a ella. ¡Intencionado y eficaz!
+#+END_EXAMPLE
+
+* Búsqueda 5: encontrar los TODO
+
+Encuentra todos los elementos TODO de todo tu proyecto.
+
+** Cuándo usarla
+
+- *Antes de una sesión de escritura*: ¿qué me dejé por arreglar?
+- *Después del borrador*: ¿qué notas dejé durante el flujo?
+- *Planificación de la revisión*: ¿qué necesita atención?
+- *Estado del proyecto*: ¿cuántos cabos sueltos quedan?
+
+** Qué son los TODO
+
+En Org-mode, los TODO son palabras clave especiales al principio de los encabezados:
+
+#+BEGIN_EXAMPLE
+,** TODO Arreglar la cronología aquí: Alex llega demasiado rápido
+,** TOREVIEW Este diálogo suena forzado
+,** TOWRITE Escribir la escena del laboratorio
+,** REDO Ampliar esta escena: necesita más emoción
+#+END_EXAMPLE
+
+Las palabras clave que busca org-scribe son las de ~org-scribe-todo-keywords~: ~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~, ~TOREVIEW~, ~REDO~ y ~RESTRUCTURE~ (se pueden personalizar). Las palabras clave de estado «terminado» (~DONE~, ~FINISHED~) no se buscan: la búsqueda lista lo que está pendiente. Las palabras clave TODO se quedan en inglés en todos los proyectos.
+
+** Cómo buscar
+
+Pulsa: ~F8 5~
+
+O usa: ~M-x org-scribe-search-todos-recursive~
+
+La lista de TODO de la agenda de Org (~M-x org-todo-list~) muestra los mismos encabezados, pero solo en los archivos que estén en tu agenda.
+
+** Ejemplo de resultados
+
+La vista se titula «Tareas pendientes del proyecto» y recorre todos los archivos ~.org~ del proyecto:
+
+#+BEGIN_EXAMPLE
+ Archivo: novela.org
+  TODO Capítulo 2                                                                      :ignore:
+  TODO Escena 1 - La decisión                                                          :ignore:
+  TOWRITE Capítulo 3                                                                   :ignore:
+  TOWRITE Escena 1 - Primer intento                                                    :ignore:
+  TOWRITE Capítulo 4 - Aprender y ajustar                                              :ignore:
+  TOWRITE Escena 1 - Charla de café                                                    :ignore:
+  TOWRITE Escena 2 - Encontrar el equilibrio                                           :ignore:
+  TODO Capítulo 5 - La nueva normalidad                                                :ignore:
+  TODO Escena 1 - Vuelta al principio                                                  :ignore:
+#+END_EXAMPLE
+
+** Usar los resultados de TODO
+
+*** Priorizar por tipo
+- *TOREVIEW*: problemas de contenido ya escrito: atiéndelos antes de seguir
+- *TOWRITE*: escenas por escribir
+- *REDO* / *RESTRUCTURE*: déjalos para la pasada de revisión
+- *TODO*: atiéndelos según te los encuentres
+
+*** Despejar antes de los grandes hitos
+Antes de terminar el primer borrador: despeja todos los TODO del manuscrito
+Antes de enviarlo: despeja todos los TODO de todo el proyecto
+
+*** Ritual diario de escritura
+Al empezar cada sesión: mira los TODO y elige 1-2 para arreglar antes de escribir contenido nuevo.
+
+** Añadir marcas TODO mientras escribes
+
+Mientras estás en pleno flujo, no pares a arreglar cosas: deja marcas TODO:
+
+#+BEGIN_EXAMPLE
+Estás escribiendo la Escena 15 y te das cuenta de que la Escena 7 tiene un problema de cronología.
+¡No pares! Añade un TODO:
+
+Ve al encabezado de la Escena 7:
+,*** Escena 7 - Pruebas de manipulación
+    :PROPERTIES:
+    ...
+    :END:
+
+Añade debajo del encabezado:
+,*** Escena 7 - Pruebas de manipulación
+    :PROPERTIES:
+    ...
+    :END:
+,**** TODO Problema de cronología: Alex llega a las 9 pero el laboratorio no abre hasta las 10
+
+¡Sigue escribiendo la Escena 15!
+#+END_EXAMPLE
+
+Más tarde, cuando busques los TODO, lo encontrarás y lo arreglarás.
+
+* Búsqueda 6: encontrar marcadores de edición y de nota
+
+Encuentra todos los marcadores ~*EDIT*~ o ~*NOTE*~ que hay dentro del texto en todo tu proyecto.
+
+** En qué se diferencia de la búsqueda de TODO
+
+La Búsqueda 5 (TODO) busca *palabras clave* TODO de Org al principio de los encabezados: cosas que has decidido *escribir*. La Búsqueda 6 encuentra marcadores que dejaste *dentro* de prosa que ya has escrito, unidos a la frase que necesita trabajo.
+
+Ambas son búsquedas sobre todo el proyecto; simplemente cubren etapas distintas del trabajo.
+
+** Cuándo usarla
+
+- *Marcar a mitad de borrador*: marca un pasaje como pendiente de trabajo sin romper el flujo de escritura
+- *Preparar la revisión*: reúne todos los pasajes marcados de todo el proyecto antes de una pasada de revisión
+- *Notas de continuidad*: déjate un recordatorio de algo que comprobar más tarde
+
+** Qué son los marcadores de edición y de nota
+
+Un marcador se escribe dentro de un bloque de comentario de Org, justo después del pasaje al que se refiere:
+
+#+BEGIN_EXAMPLE
+Alex entró en la cafetería.
+
+,#+begin_comment
+*NOTE*: comprobar que es la misma cafetería del capítulo 2
+,#+end_comment
+
+La confrontación ocurrió demasiado rápido.
+
+,#+begin_comment
+*EDIT*: escena - falta otro golpe aquí antes de la revelación
+,#+end_comment
+#+END_EXAMPLE
+
+No pares de escribir para arreglar el pasaje: deja el marcador y sigue.
+
+El bloque de comentario no es un adorno opcional. Es lo que mantiene los marcadores fuera de tu manuscrito exportado y de tus recuentos de palabras. Un marcador escrito como texto normal en un párrafo es prosa corriente y *aparecerá* en tu libro exportado. La Lección 14 cubre la convención completa, incluidos los fragmentos ~edit~ y ~note~ que escriben el bloque por ti.
+
+Un ~*EDIT*~ lleva además una categoría antes de un separador ~" - "~ (por defecto, en un proyecto en español: ~trama~, ~escena~, ~personaje~, ~prosa~, ~diseño~; en uno en inglés: ~plot~, ~scene~, ~character~, ~prose~, ~design~), de modo que una pasada de revisión pueda abordar un tipo de problema cada vez. ~*NOTE*~ no tiene categoría: es un recordatorio, no un trabajo clasificado.
+
+** Cómo buscar
+
+Pulsa: ~F8 6~
+
+O usa: ~M-x org-scribe-search-edits~
+
+Esto reúne todos los marcadores de todos los archivos ~.org~ bajo la raíz de tu proyecto y construye un índice agrupado por tipo y categoría.
+
+** Ejemplo de resultados
+
+El índice sale en un proyecto en español con su idioma (el archivo está en el búfer ~*org-scribe-edits*~; los enlaces llevan la ruta completa, aquí abreviada):
+
+#+BEGIN_EXAMPLE
+#+TITLE: Marcas de edición
+#+STARTUP: showall
+# RET o mouse-1 abre la marca en el manuscrito.  g actualiza, q oculta.
+,* Ediciones
+,** trama
+,*** [[file:novela.org::312][Escena 12]] — novela.org
+    el motivo de Alicia contradice el capítulo 1
+,** escena
+,*** [[file:novela.org::420][Escena 14]] — novela.org
+    falta otro golpe aquí antes de la revelación
+,** personaje
+,** prosa
+,** diseño
+
+,* Notas
+,** [[file:novela.org::145][Escena 3]] — novela.org
+   comprobar que es la misma cafetería del capítulo 2
+#+END_EXAMPLE
+
+Cada entrada muestra la escena de la que procede y enlaza con la línea exacta. Las categorías vacías también se listan, para que veas de un vistazo qué tipos de problema están pendientes y cuáles despejados.
+
+** Usar los resultados
+
+- ~RET~ sobre una entrada salta a ese marcador en el manuscrito
+- ~TAB~ pliega y despliega secciones: pliega ~Notas~ mientras trabajas con ~Ediciones~, o pliega todo para ver solo los encabezados de categoría
+- ~g~ reconstruye el índice tras hacer arreglos
+- ~q~ oculta el búfer
+
+Trabaja una categoría, borrando cada bloque de comentario según lo resuelves (así se «cierra» un marcador: no hay un estado de hecho aparte), y luego pulsa ~g~ para confirmar que la categoría está vacía.
+
+También puedes mantener el índice abierto junto a tu manuscrito mientras trabajas: pon ~org-scribe-editing-right-panel~ a ~edits~ y se convierte en el panel derecho del modo Editing, reconstruyéndose cada vez que guardas (Lección 9).
+
+** Personalizar los marcadores
+
+Las categorías salen de ~org-scribe-edit-categories~:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "pacing"))
+#+END_SRC
+
+Un marcador cuya categoría falta, está vacía o no se reconoce se agrupa bajo ~otras~ en lugar de descartarse: una errata mueve un marcador, nunca lo esconde.
+
+Si tus marcadores *no* siguen la convención del bloque de comentario (proyectos antiguos, o un estilo de marcador propio), llama a la búsqueda con un argumento de prefijo (~C-u F8 6~) para obtener ~org-scribe-search-edits-rgrep~, una búsqueda de texto plano que los encuentra en cualquier sitio. Esa alternativa es la que usa ~org-scribe-edit-string~:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")
+#+END_SRC
+
+* Combinar búsquedas
+
+Para consultas avanzadas, combina varias búsquedas.
+
+** Patrón: búsquedas secuenciales
+
+*** Ejemplo 1: un personaje en una trama concreta
+¿Quieres encontrar todas las escenas en las que aparece Sam Y se desarrolla la trama romántica?
+
+1. Busca al personaje Sam (F8 2) → obtienes 8 escenas
+2. Escanea a mano los resultados en busca de escenas que mencionen también el romance
+3. Anota los números de escena: escenas 3, 8, 17, 20, 28, 43
+
+Resultado: 6 escenas en las que están Sam Y el romance.
+
+*** Ejemplo 2: un personaje PoV en un escenario concreto
+¿Quieres todas las escenas desde el PoV de Alex que ocurren en la cafetería?
+
+1. Busca el PoV de Alex (F8 1) → obtienes 25 escenas
+2. Escanea los resultados en busca de escenas con «Cafetería del Centro»
+3. Anota los números de escena: escenas 1, 3, 23, 41
+
+Resultado: 4 escenas con PoV de Alex en la cafetería.
+
+** Patrón: búsquedas comparativas
+
+*** Ejemplo 3: la cobertura de dos personajes
+Compara con qué frecuencia aparecen dos personajes:
+
+1. Busca a Maya (F8 2) → 18 escenas
+2. Busca a Chen (F8 2) → 8 escenas
+3. Compara: Maya aparece 2,25 veces más que Chen
+
+Resultado: plantéate añadir más escenas de Chen para equilibrar.
+
+*** Ejemplo 4: todos los personajes PoV
+Encuentra todos los personajes PoV y su cobertura:
+
+1. Busca el PoV de Alex (F8 1) → 25 escenas (63 %)
+2. Busca el PoV de Sam (F8 1) → 10 escenas (25 %)
+3. Busca el PoV de Jordan (F8 1) → 5 escenas (12 %)
+
+Resultado: buena distribución para un protagonista más dos PoV secundarios.
+
+** Patrón: análisis de huecos
+
+*** Ejemplo 5: ausencia de una subtrama
+Encuentra dónde falta una subtrama:
+
+1. Busca la trama «Conflicto familiar» (F8 3) → escenas 3, 7, 12, 28, 35
+2. Fíjate en los huecos: de la escena 12 a la 28 = ¡hueco de 15 escenas!
+3. Revisa esas escenas (13-27) en busca de oportunidades para añadir conflicto familiar
+
+Resultado: añadir una referencia a la familia en la escena 18 y una escena familiar completa hacia la 20.
+
+* Leer y usar los resultados de búsqueda
+
+** El búfer de resultados
+
+Los resultados aparecen en un búfer de resultados de org-ql, titulado con tu búsqueda («PoV: Alex Rivera», «Localización: Cafetería del Centro»...). El nombre interno del búfer, del estilo ~*Org QL View: ...*~, depende de la versión de org-ql que tengas instalada.
+
+** Navegar por los resultados
+
+| Tecla     | Acción                                            |
+|-----------+---------------------------------------------------|
+| ~n~       | Siguiente resultado                               |
+| ~p~       | Resultado anterior                                |
+| ~RET~     | Saltar a la escena bajo el cursor                 |
+| ~C-c C-o~ | Seguir el enlace bajo el cursor                   |
+| ~g~       | Refrescar / volver a ejecutar la búsqueda         |
+| ~q~       | Salir del búfer de resultados                     |
+| ~C-x 1~   | Maximizar los resultados (ocultar otras ventanas) |
+
+** Flujo de trabajo: revisar y editar
+
+Patrón habitual:
+1. Ejecuta una búsqueda (por ejemplo, F8 2 para un personaje)
+2. Los resultados aparecen en una ventana dividida
+3. Pulsa ~n~ para resaltar el primer resultado
+4. Pulsa ~RET~ para saltar a esa escena en el manuscrito
+5. Lee o edita la escena
+6. Pulsa ~C-x 0~ para cerrar la ventana de la escena (vuelves a los resultados)
+7. Pulsa ~n~ para el siguiente resultado
+8. Repite
+
+Esto te permite revisar con eficacia todas las escenas que coinciden.
+
+** Flujo de trabajo: tomar notas
+
+Para la revisión:
+1. Ejecuta una búsqueda
+2. Abre un búfer de notas junto a los resultados
+3. Para cada resultado:
+   - Repasa la escena
+   - Toma notas de los cambios necesarios
+4. Tras repasar todos los resultados:
+   - Cierra los resultados
+   - Trabaja tus notas, arreglando los problemas
+
+** Flujo de trabajo: contar y analizar
+
+Para el análisis estructural:
+1. Ejecuta una búsqueda
+2. Cuenta los resultados (las líneas del búfer)
+3. Anota los números de escena
+4. Calcula:
+   - El porcentaje sobre el total de escenas
+   - El tamaño de los huecos entre apariciones
+   - La distribución por actos
+5. Toma decisiones de planificación a partir de los datos
+
+* Ejercicio práctico (15 minutos)
+
+Practiquemos los cinco tipos de búsqueda.
+
+** Parte 1: ejecutar todas las búsquedas básicas (5 minutos)
+
+*** Búsqueda 1: PoV
+1. Pulsa: ~F8 1~
+2. Busca el PoV de tu protagonista
+3. Cuenta los resultados
+4. Anota: ¿cuántas escenas de este PoV? _______
+5. Calcula el porcentaje: _____ / total de escenas = _____ %
+6. Pulsa ~q~ para cerrar los resultados
+
+*** Búsqueda 2: personaje
+1. Pulsa: ~F8 2~
+2. Busca un personaje secundario
+3. Cuenta los resultados
+4. Anota: ¿cuántas escenas con este personaje? _______
+5. Busca huecos grandes entre los números de escena
+6. Pulsa ~q~ para cerrar los resultados
+
+*** Búsqueda 3: trama
+1. Pulsa: ~F8 3~
+2. Busca tu trama principal
+3. Cuenta los resultados
+4. Anota: ¿cuántas escenas desarrollan la trama principal? _______
+5. Calcula la cobertura: _____ %
+6. Comprueba si hay huecos de más de 5 escenas
+7. Pulsa ~q~ para cerrar los resultados
+
+*** Búsqueda 4: localización
+1. Pulsa: ~F8 4~
+2. Busca tu escenario más usado
+3. Cuenta los resultados
+4. Anota: ¿cuántas escenas en este escenario? _______
+5. ¿Son demasiadas? (más del 20 % podría serlo)
+6. Pulsa ~q~ para cerrar los resultados
+
+*** Búsqueda 5: TODO
+1. Pulsa: ~F8 5~
+2. Mira todos los elementos TODO
+3. Cuéntalos
+4. Anota: ¿cuántos TODO? _______
+5. Identifica cuáles atender hoy
+6. Pulsa ~q~ para cerrar los resultados
+
+** Parte 2: análisis combinado (5 minutos)
+
+*** Análisis de cobertura
+1. Para tu trama principal: ____ % de cobertura
+   - Debería ser del 60-80 % para la trama principal
+   - ¿Está la tuya en el rango? SÍ / NO
+   - Si NO, ¿cuántas escenas hay que añadir? _______
+
+2. Para el PoV de tu protagonista: ____ % de cobertura
+   - Debería ser del 50-80 % para un solo protagonista
+   - ¿Está el tuyo en el rango? SÍ / NO
+
+*** Comprobación del equilibrio
+1. Lista todos los personajes con su número de escenas:
+   - Personaje 1: _____ escenas
+   - Personaje 2: _____ escenas
+   - Personaje 3: _____ escenas
+
+2. ¿Es adecuado el equilibrio para sus papeles? SÍ / NO
+
+3. ¿Algún personaje aparece demasiado o muy poco? _______
+
+*** Análisis de huecos
+1. Mira los resultados de tu trama principal
+2. Encuentra el hueco más grande (escenas consecutivas sin esta trama)
+3. Hueco más grande: _____ escenas (de la Escena ___ a la Escena ___)
+4. ¿Es demasiado grande? (más de 5 escenas es preocupante para la trama principal)
+5. Si SÍ, planifica añadir una escena: la Escena _____ debería desarrollar esta trama
+
+** Parte 3: práctica de navegación (5 minutos)
+
+*** Ejercicio de flujo de trabajo
+1. Ejecuta cualquier búsqueda (personaje, trama o escenario)
+2. Aparecen los resultados
+3. Pulsa ~n~ para resaltar el primer resultado
+4. Pulsa ~RET~ para saltar a esa escena
+5. Lee el encabezado de la escena y el primer párrafo
+6. Pulsa ~C-x 0~ para cerrar la ventana de la escena (vuelves a los resultados)
+7. Pulsa ~n~ para el siguiente resultado
+8. Pulsa ~RET~ para saltar
+9. Repite 3-4 veces
+10. Pulsa ~q~ para cerrar los resultados
+
+*** Objetivo
+Sentirte cómodo con el ciclo de navegación de los resultados:
+- Buscar → Resultados → Navegar → Revisar → Siguiente → Repetir → Cerrar
+
+** Criterios de éxito
+
+✓ Has ejecutado con éxito los 5 tipos de búsqueda
+✓ Sabes leer e interpretar los recuentos de resultados
+✓ Sabes identificar porcentajes de cobertura
+✓ Sabes detectar huecos en las apariciones de tramas y personajes
+✓ Sabes navegar de los resultados a las escenas y volver
+✓ Entiendes cómo es una distribución sana
+
+* Integración con tu flujo de escritura diario
+
+** Antes de escribir
+
+- *Repasa los TODO*: mira qué te dejaste por arreglar (F8 5)
+- *Comprueba la última aparición*: si vas a escribir sobre el personaje X, busca cuándo apareció por última vez
+- *Verifica el estado de la trama*: si vas a desarrollar la trama Y, busca qué ha pasado hasta ahora
+
+** Mientras escribes
+
+- *Consulta rápida*: salta a la ficha de un personaje o escenario sin romper el flujo
+- *Comprobación de continuidad*: «¿cuándo se vieron por última vez?» → busca y encuéntralo
+- *Añade marcas TODO*: déjate notas para luego sin parar a arreglar
+
+** Después de una sesión de escritura
+
+- *Actualiza los TODO*: marca como DONE los elementos completados
+- *Auditoría rápida*: busca la trama o el personaje que acabas de escribir para verificar la cobertura
+- *Planifica la próxima sesión*: identifica huecos, decide qué necesita atención a continuación
+
+** Durante la revisión
+
+- *Repaso sistemático*: busca cada personaje y lee todas sus escenas en secuencia
+- *Coherencia de la trama*: busca cada hilo y verifica la progresión lógica
+- *Control de coherencia*: busca un escenario y asegura que las descripciones coinciden
+- *Limpia los TODO*: trabaja todos los elementos TOREVIEW y REDO
+
+** Planificación semanal
+
+- *Auditoría de cobertura*: ejecuta todas las búsquedas y mira los porcentajes
+- *Ajuste del equilibrio*: identifica los personajes, tramas y escenarios abusados o poco usados
+- *Rellenar huecos*: encuentra huecos grandes y planifica escenas para rellenarlos
+- *Control de la estructura*: usa las búsquedas para verificar la estructura por actos (¿está equilibrada entre actos?)
+
+* Preguntas frecuentes
+
+** P: ¿Puedo buscar varios personajes a la vez?
+
+*R*: No directamente, pero puedes hacer búsquedas secuenciales:
+1. Busca al personaje A → 10 escenas
+2. Busca al personaje B → 8 escenas
+3. Anota qué números de escena coinciden (escenas con los dos personajes)
+
+Para consultas complejas, plantéate exportar a una hoja de cálculo o usar org-ql directamente (avanzado).
+
+** P: ¿Cómo busco nombres parciales?
+
+*R*: La búsqueda usa completado, así que escribir una parte funciona:
+- Escribe «Al» → muestra «Alex Rivera», «Alicia», «Alberto»
+- Escribe «Sam» → muestra «Sam Chen», «Samanta»
+
+Escribe lo justo para identificar sin ambigüedad el personaje, la trama o el escenario.
+
+** P: ¿Funcionan las búsquedas con propiedades en texto plano (sin enlace)?
+
+*R*: ¡Sí! Las búsquedas funcionan con:
+- ✓ Texto plano: ~:PoV: Alex Rivera~
+- ✓ Enlaces por ID: ~:PoV: [[id:char-alex-001][Alex Rivera]]~
+- ✓ Mezcla: algunas escenas enlazadas, otras en texto plano
+
+El sistema extrae automáticamente el texto mostrado de los enlaces.
+
+** P: ¿Y si una escena tiene varias tramas o varios personajes?
+
+*R*: ¡Funciona bien! Ejemplo:
+#+BEGIN_EXAMPLE
+:Trama: [[id:plot-main-001][Misterio]], [[id:plot-romance-002][Romance]]
+#+END_EXAMPLE
+
+Buscar «Misterio» encuentra esta escena.
+Buscar «Romance» también encuentra esta escena.
+
+Cada búsqueda encuentra todas las escenas donde aparece ese valor (aunque haya también otros valores).
+
+** P: ¿Puedo guardar los resultados de búsqueda?
+
+*R*: Sí, de dos maneras:
+1. *Manual*: copia el contenido del búfer de resultados a un archivo de notas
+2. *Org-ql*: usa ~C-c C-e~ en los resultados para exportar a otros formatos (requiere el paquete org-ql)
+
+Para búsquedas recurrentes, plantéate crear consultas de org-ql a medida (avanzado).
+
+** P: ¿Por qué mis búsquedas no encuentran nada?
+
+*R*: Comprueba:
+1. ¿Están los encabezados de escena en el nivel correcto (nivel 3, ***, en una novela; nivel 2, **, en un cuento)?
+2. ¿Tienen las escenas la propiedad que buscas (:PoV:, :Trama:, etc.)?
+3. ¿Están bien escritos los valores de las propiedades?
+4. ¿Ejecutas la búsqueda desde el archivo del manuscrito (novela.org / cuento.org)?
+
+Abre directamente el archivo del manuscrito y comprueba la propiedad con ~C-c C-x p~ (=org-set-property=, que además muestra el valor actual): no hay una orden de diagnóstico dedicado para esto.
+
+* Solución de problemas
+
+** «La búsqueda devuelve 0 resultados pero sé que las escenas tienen esa propiedad»
+
+*** Problema
+La búsqueda no encuentra nada aunque las escenas tienen la propiedad.
+
+*** Solución
+1. Abre una escena que esperas encontrar
+2. Comprueba exactamente el nombre de la propiedad:
+   - ¿Es ~:PoV:~ o ~:POV:~? (¡importan las mayúsculas!)
+   - ¿Es ~:Personajes:~ o ~:Personaje:~? (plural frente a singular)
+3. Verifica el valor de la propiedad:
+   - Comprueba la ortografía: «Alex Rivera» frente a «Alex River»
+   - Comprueba el formato del enlace: ¿existe el enlace?
+4. Vuelve a ejecutar la búsqueda con el valor exacto de la propiedad
+
+** «La búsqueda encuentra escenas que no espero»
+
+*** Problema
+La búsqueda devuelve escenas que no parecen coincidir.
+
+*** Solución
+1. Repasa los resultados con cuidado
+2. Comprueba si la propiedad aparece en:
+   - El cajón de propiedades principal (esperado)
+   - Subencabezados bajo la escena (puede ser inesperado)
+3. Comprueba las coincidencias parciales:
+   - Buscar «Alex» puede encontrar «Alex Rivera» Y «Alexandra»
+
+Normalmente es el comportamiento correcto, pero verifica que tu término de búsqueda es lo bastante específico.
+
+** «El búfer de resultados muestra un formato roto»
+
+*** Problema
+Los resultados no se muestran bien (caracteres raros, estructura rota).
+
+*** Solución
+1. Asegúrate de tener instalado el paquete org-ql
+2. Actualiza org-ql a la última versión
+3. Comprueba la versión de Emacs (hace falta la 29.1+)
+4. Prueba ~M-x org-ql-search-refresh~ en el búfer de resultados
+
+** «La navegación desde los resultados no funciona»
+
+*** Problema
+Pulsar RET o C-c C-o en los resultados no salta a la escena.
+
+*** Solución
+1. Asegúrate de que el cursor está en una línea de escena (no en el encabezado de capítulo o acto)
+2. Prueba a hacer clic directamente en el título de la escena
+3. Comprueba que el archivo del manuscrito sigue existiendo y que las escenas no se han movido
+4. Si los enlaces están rotos, prueba a volver a ejecutar la búsqueda (~g~ en el búfer de resultados)
+
+* Referencia rápida
+
+** Atajos de búsqueda
+
+| Tecla  | Tipo de búsqueda           | Propiedad que busca                        |
+|--------+----------------------------+--------------------------------------------|
+| ~F8 1~ | PoV                        | ~:PoV:~                                    |
+| ~F8 2~ | Personaje                  | ~:Personajes:~                             |
+| ~F8 3~ | Trama                      | ~:Trama:~                                  |
+| ~F8 4~ | Localización               | ~:Localizacion:~                           |
+| ~F8 5~ | Elementos TODO             | palabras clave TODO                        |
+| ~F8 6~ | Marcadores de edición/nota | =*EDIT*=/=*NOTE*= en bloques de comentario |
+
+** Navegación por el búfer de resultados
+
+| Tecla     | Acción                   |
+|-----------+--------------------------|
+| ~n~       | Siguiente resultado      |
+| ~p~       | Resultado anterior       |
+| ~RET~     | Saltar a la escena       |
+| ~C-c C-o~ | Seguir el enlace         |
+| ~g~       | Refrescar la búsqueda    |
+| ~q~       | Salir de los resultados  |
+| ~C-x 1~   | Maximizar los resultados |
+
+** Objetivos de cobertura sana
+
+| Tipo de elemento               | Cobertura recomendada | Hueco máx. |
+|--------------------------------+-----------------------+------------|
+| Trama principal                | 60-80 %               | 5 escenas  |
+| Subtrama mayor                 | 30-50 %               | 8 escenas  |
+| Subtrama menor                 | 10-30 %               | 10 escenas |
+| PoV del protagonista           | 50-80 %               | 8 escenas  |
+| PoV secundario                 | 20-40 %               | 10 escenas |
+| Personaje de interés romántico | 30-50 %               | 8 escenas  |
+| Personaje secundario           | 15-30 %               | 10 escenas |
+| Localización principal         | 10-20 %               | N/A        |
+| Localización secundaria        | 5-10 %                | N/A        |
+
+** Órdenes habituales
+
+| Comando                             | Qué hace                                             |
+|-------------------------------------+------------------------------------------------------|
+| ~org-scribe-org-find-pov~           | Busca por PoV                                        |
+| ~org-scribe-org-find-character~     | Busca por personaje                                  |
+| ~org-scribe-org-find-plot~          | Busca por hilo de la trama                           |
+| ~org-scribe-org-find-location~      | Busca por localización                               |
+| ~org-scribe-search-todos-recursive~ | Encuentra todos los elementos TODO                   |
+| ~org-scribe-search-edits~           | Encuentra los marcadores de edición/nota en el texto |
+
+* Consejos para buscar mejor
+
+** 1. Busca antes de escribir
+
+Antes de escribir una escena con el personaje X:
+1. Busca la última aparición de X
+2. Salta a esa escena
+3. Repasa lo que ocurrió
+4. Ahora escribe la escena nueva con la continuidad correcta
+
+** 2. Usa las búsquedas para la edición estructural
+
+Durante la revisión, busca sistemáticamente cada elemento:
+- Día 1: busca y repasa todos los personajes PoV
+- Día 2: busca y repasa todos los hilos de la trama
+- Día 3: busca y repasa todos los personajes principales
+- Día 4: busca y repasa todos los escenarios
+
+** 3. Crea una hoja de cálculo de cobertura
+
+Ejecuta todas las búsquedas y anota:
+| Elemento           | Escenas | Porcentaje | Notas                        |
+|--------------------+---------+------------+------------------------------|
+| Trama principal    |      28 | 70 %       | ✓ Bien                       |
+| Subtrama romántica |      12 | 30 %       | ✓ Bien                       |
+| Subtrama familiar  |       8 | 20 %       | ⚠ Gran hueco Esc. 10-25      |
+| PoV de Alex        |      25 | 63 %       | ✓ Bien                       |
+| PoV de Sam         |      10 | 25 %       | ✓ Bien                       |
+| Alex (personaje)   |      30 | 75 %       | ✓ Protagonista               |
+| Sam (personaje)    |      15 | 38 %       | ✓ Interés romántico          |
+| Jordan (personaje) |       6 | 15 %       | ⚠ Desaparecido en el Acto II |
+
+Esto te da una visión estructural de un vistazo.
+
+** 4. Fija objetivos de cobertura
+
+Antes del borrador, fija metas:
+- Trama principal: aparecer como mínimo en 30 escenas (60 %)
+- Subtrama romántica: aparecer en 15 escenas (30 %)
+- PoV de Alex: 25 escenas (50 %)
+- PoV de Sam: 15 escenas (30 %)
+
+Según escribes, busca de vez en cuando y comprueba si vas por buen camino.
+
+** 5. Usa los tipos de TODO con coherencia
+
+Desarrolla un sistema:
+- ~TODO~: tareas generales
+- ~TOREVIEW~: contenido que revisar
+- ~REDO~: contenido roto o equivocado, a rehacer
+- ~RESTRUCTURE~: cambios de estructura
+- ~WAITING~: depende de algo externo (una investigación, por ejemplo)
+
+Después busca por tipo y, si hace falta, limita la lista con org-ql: encuentra todos los WAITING para una sesión de investigación enfocada.
+
+** 6. Busca para reconocer patrones
+
+Busca un personaje y fíjate en los patrones:
+- ¿Aparece siempre con el mismo otro personaje?
+- ¿Solo aparece en ciertos escenarios?
+- ¿Solo está en ciertos hilos de la trama?
+
+Esto revela los papeles de los personajes y puede sugerir oportunidades de variedad.
+
+** 7. Combina la búsqueda con la cronología
+
+Para un análisis profundo:
+1. Busca al personaje X
+2. Genera la cronología de personajes (un bloque ~#+BEGIN: character-timeline~, Lección 10)
+3. Compara: ¿coincide la búsqueda con la cronología? (¡debería!)
+4. Usa la cronología para la visión visual y la búsqueda para el repaso detallado
+
+** 8. Guarda las búsquedas habituales
+
+Si buscas con frecuencia las mismas cosas, plantéate crear comandos propios:
+#+BEGIN_SRC emacs-lisp
+(defun my/search-alex ()
+  "Busca rápidamente las escenas con PoV de Alex."
+  (interactive)
+  (org-scribe-org-find-pov "Alex Rivera"))
+#+END_SRC
+
+Ahora dale una tecla. ~C-c LETRA~ está reservado para ti, pero ~C-c a~ es la agenda de Org, así que usa una secuencia de dos teclas bajo un prefijo propio:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c s a") #'my/search-alex)
+#+END_SRC
+
+~C-c s a~ ejecuta al instante la búsqueda del PoV de Alex.
+
+** 9. Busca durante la planificación
+
+Usa las búsquedas también mientras planificas o esquematizas:
+- «Quiero escribir una escena con PoV de Sam. ¿Cuándo tuvo Sam PoV por última vez?» → busca
+- «¿Debería la próxima escena desarrollar el misterio o el romance?» → busca ambos y mira cuál necesita atención
+
+** 10. Confía en los datos
+
+Si las búsquedas muestran:
+- La trama principal solo en el 40 % de las escenas → no funciona como trama principal
+- Un personaje aparece una vez y desaparece 30 escenas → los lectores lo olvidarán
+- Un escenario usado en el 35 % de las escenas → demasiado repetitivo
+
+No racionalices: ajusta la historia para que coincida con patrones sanos.
+
+* Lo que has aprendido
+
+¡Enhorabuena! Has completado la Lección 7. Ahora sabes:
+
+✓ Por qué buscar es esencial para gestionar manuscritos largos
+✓ Los cuatro tipos básicos de búsqueda (PoV, personaje, trama, localización)
+✓ Cómo buscar elementos TODO en tu proyecto
+✓ Cómo encontrar marcadores *EDIT*/*NOTE* en el texto de todo tu proyecto
+✓ Cómo interpretar los resultados de búsqueda (% de cobertura, huecos, distribución)
+✓ Cómo navegar eficazmente por los resultados (siguiente, saltar, volver)
+✓ Cómo son los porcentajes de cobertura sanos para distintos elementos
+✓ Cómo combinar búsquedas para análisis complejos
+✓ Cómo integrar la búsqueda en tu flujo de escritura diario
+✓ Cómo usar las búsquedas para la edición estructural durante la revisión
+✓ Consejos para buscar mejor y reconocer patrones
+
+* Próximos pasos
+
+Ya estás listo para la *Lección 8: El menú Hydra*.
+
+En la próxima lección aprenderás:
+- A acceder rápidamente a todas las funciones con el menú de teclado unificado
+- A entender la organización del menú y sus secciones
+- Los atajos de teclado habituales y sus mnemotecnias
+- A personalizar el menú Hydra para tu flujo de trabajo
+- A crear tus propios comandos de acceso rápido
+
+** Práctica rápida antes de seguir
+
+Antes de la Lección 8, prueba esto:
+
+1. Ejecuta los 5 tipos de búsqueda en tu manuscrito actual
+2. Crea una hoja de cálculo de cobertura (elemento, número de escenas, porcentaje)
+3. Identifica un hueco o un desequilibrio
+4. Planifica cómo arreglarlo (añadir escenas, mover escenas o recortar escenas)
+5. Practica el flujo buscar → navegar → revisar → siguiente
+6. Añade 3-5 elementos TODO a tu manuscrito para practicar
+7. Busca los TODO y atiende al menos uno
+
+¡Tómate tu tiempo! Buscar es una habilidad que mejora con la práctica. Cuando te sientas cómodo encontrando cualquier cosa de tu manuscrito en segundos, pasa a la Lección 8.
+
+* Resumen
+
+Buscar transforma tu forma de trabajar con el manuscrito. En lugar de desplazarte a mano por decenas de escenas esperando encontrar algo, puedes localizar al instante:
+- Todas las escenas de un PoV concreto
+- Todas las escenas en las que aparece un personaje
+- Todas las escenas que desarrollan un hilo de la trama
+- Todas las escenas de una localización
+- Todos los elementos TODO que te has dejado
+
+Esto permite:
+- *Comprobaciones rápidas de continuidad*: «¿cuándo se vieron por última vez?»
+- *Análisis estructural*: «¿aparece esta trama con la frecuencia suficiente?»
+- *Verificación del equilibrio*: «¿es justa la distribución de PoV?»
+- *Revisión eficaz*: «déjame repasar en secuencia todas las escenas de la trama del misterio»
+- *Planificación*: «¿dónde debería aparecer este personaje a continuación?»
+
+Las funciones de búsqueda funcionan con org-ql y valen igual para propiedades en texto plano que para enlaces por ID. Combinadas con el sistema de enlaces (personajes, escenarios, tramas), tienes plena capacidad de navegación por tu manuscrito.
+
+Dominar la búsqueda es dominar tu manuscrito: no volverás a perder el rastro de ningún elemento.
+
+---
+
+*Anterior*: [[file:primeros-pasos-06-hilos-trama.org][Lección 6: Hilos de la trama y cronología]]
+*Siguiente*: [[file:primeros-pasos-08-menu-hydra.org][Lección 8: El menú Hydra]]
+
+*¡Lección 7 completada!*

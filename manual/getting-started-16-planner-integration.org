@@ -1,7 +1,10 @@
 #+TITLE: Lesson 16: Writing Goal Planning with org-scribe-planner
 #+AUTHOR: Javier Castilla
 #+DATE: 2026-10-12
+#+LANGUAGE: en
 #+STARTUP: overview
+
+/[[file:../manual-es/primeros-pasos-16-planificador.org][Versión en español]]/
 
 * Welcome to Lesson 16!
 

@@ -1,0 +1,352 @@
+#+TITLE: Lección 18: Métodos de trama — La Hélice y La Matriz
+#+AUTHOR: Javier Castilla
+#+DATE: 2026-09-05
+#+LANGUAGE: es
+#+STARTUP: overview
+#+SOURCE: ../manual/getting-started-18-plotting-methods.org
+#+SOURCE_COMMIT: 6a76f0a
+
+/[[file:../manual/getting-started-18-plotting-methods.org][English version]]/
+
+* ¡Bienvenido a la Lección 18!
+
+La Lección 1 mencionaba, en un párrafo, que la creación de un proyecto pregunta
+*qué método de trama* usar. Esta lección es ese párrafo desarrollado: qué son los
+tres métodos, cuándo se gana el sueldo cada uno, qué te piden de verdad sus cinco
+niveles y —lo que más importa si ya tienes un proyecto— qué cambia exactamente y
+qué no cuando eliges uno.
+
+Al terminar esta lección sabrás:
+- Decidir cuál de los tres métodos encaja con la historia que vas a escribir
+- Leer y rellenar, en orden, los cinco niveles de La Hélice
+- Leer y rellenar, en orden, los cinco niveles de La Matriz
+- Reconocer lo único que los dos métodos nuevos deliberadamente *no*
+  automatizan, y por qué
+- Comprobar que el informe de salud (~F8 H~) revisa tu Puerta de salida de la
+  misma manera, hayas elegido el método que hayas elegido
+- Encontrar la nota de resolución de problemas que trae la parte Fundamentos de cada método
+  para cuando la comprobación de un nivel no deja de fallar
+
+*Requisitos previos*: Lección 1 (haber creado un proyecto, o estar a punto de
+hacerlo). Nada más de esta guía depende del método que elijas: todas las demás
+lecciones funcionan igual con los tres.
+
+*Tiempo estimado*: 25 minutos para leerla, más para usar de verdad un método.
+
+* Parte 1: Tres métodos, un solo vocabulario
+
+Todos los métodos disponibles al crear un proyecto se construyen sobre el mismo
+vocabulario de fondo: una cadena causal por personaje (Fantasma → Mentira →
+Debilidad → Deseo/Necesidad), los trece irrenunciables y los cuatro cuartiles que
+estructuran tu novela. Se diferencian solo en *el orden en que rellenas las cosas*
+y en *de dónde sale la trama*.
+
+| Método               | Empiezas por…                     | La trama sale de…                                                          |
+|----------------------+-----------------------------------+----------------------------------------------------------------------------|
+| *Sistema unificado*  | Un tema y un espectro de Posturas | Una trama que escala y de la que cuelgan los personajes                    |
+| *La Hélice* (Helix)  | Una premisa                       | Personajes escalados por sus propios cinco niveles, en paralelo a la trama |
+| *La Matriz* (Matrix) | Los personajes                    | Deducir colisiones a partir de personajes que no pueden evitarse           |
+
+El *Sistema unificado* es el predeterminado y el que suponen todas las demás
+lecciones de esta guía: es el que usa la novela de demostración
+(~examples/demo-novel/~). Esta lección trata de los otros dos.
+
+** Qué cambia realmente
+
+Conviene decirlo claro, porque es fácil suponer que un «método» cambia todo tu
+proyecto:
+
+#+BEGIN_QUOTE
+Elegir La Hélice o La Matriz cambia *una parte de un archivo*: la parte
+Fundamentos de ~diseno.org~ (~design.org~ en los proyectos en inglés). Todo lo
+demás —~novela.org~ y las demás partes del cuaderno— es idéntico al de un
+proyecto con el Sistema.
+#+END_QUOTE
+
+No es un accidente ni una simplificación de esta guía: se sigue directamente del
+vocabulario compartido de arriba. Los dos métodos nuevos importan del Sistema la
+ficha de personaje, los trece irrenunciables y los cuatro cuartiles en lugar de
+sustituirlos, así que nada aguas abajo del archivo de diseño —captura, enlaces,
+informe de salud, compilación, planificador— necesita saber ni preocuparse de qué
+método elegiste. La Lección 4 (captura de personajes), la Lección 6 (hilos de la
+trama), la Lección 11 (exportar) y todas las demás de esta guía funcionan
+exactamente igual en cualquier caso.
+
+* Parte 2: Elegir al crear el proyecto
+
+La pregunta por el método aparece como el paso 7 de la creación de un proyecto de
+novela (ver Lección 1):
+
+#+BEGIN_EXAMPLE
+Método de trama: Sistema unificado (por defecto)
+#+END_EXAMPLE
+
+Pulsa ~Tab~ para ver los tres, o ~Intro~ para aceptar el Sistema por defecto. Tu
+elección se escribe en ~.org-scribe-project~ como una línea ~# Method:~ (el mismo
+mecanismo que registra el idioma de tu proyecto), así que es una decisión que se
+toma una vez y se recuerda para ese proyecto desde entonces.
+
+*Esta pregunta solo aparece en proyectos de novela.* Los proyectos de cuento no
+ofrecen elegir método; conservan su estructura mínima actual.
+
+Si no sabes cuál elegir, lee el apartado «Cuándo usarla» de cada método más
+abajo, o empieza sin más con el Sistema unificado: no pierdes nada por probar los
+otros dos más adelante en un proyecto nuevo, porque la elección se hace una sola
+vez, al crear cada proyecto.
+
+* Parte 3: La Hélice
+
+** Cuándo usarla
+
+Usa La Hélice cuando *ya tienes una premisa* —una frase como «un pirata que lleva
+veinte años sin detenerse debe quedarse quieto para destruir al magistrado que
+quemó su pueblo»— y los personajes que vivirían esa premisa todavía no han tomado
+forma.
+
+** Las tres reglas
+
+Antes de los niveles, tres reglas que hacen de esto un método y no una lista de
+campos; están impresas al principio de la parte Fundamentos para que las tengas
+siempre a mano:
+
+- *Regla del escalado*: no pases al nivel siguiente hasta que los dos documentos
+  del nivel actual (uno de trama, otro de personaje) estén escritos y su
+  comprobación pase. Nunca escribas uno tres niveles por delante del otro.
+- *Regla del dueño*: todo desastre tiene un dueño: una persona concreta y una
+  Mentira concreta que lo causa. Si un desastre no tiene dueño, está mal
+  diseñado el desastre; no es que falte un personaje.
+- *Regla del retorno*: cuando una comprobación falla, reescribe en el nivel donde
+  falló, no en el de debajo, y no sigas descendiendo hasta que pase.
+
+** Los cinco niveles
+
+Cada nivel (salvo el último) produce *dos documentos hermanos* —uno sobre la
+trama y otro sobre el personaje, al mismo nivel de detalle— más una comprobación
+que los cruza.
+
+| Nivel | Lado de la trama                                                           | Lado del personaje                                                   |
+|-------+----------------------------------------------------------------------------+----------------------------------------------------------------------|
+|     1 | La frase de la novela, de ~15 palabras                                     | Solo la Mentira y el Deseo del protagonista                          |
+|     2 | Planteamiento + 3 desastres + final externo                                | Cadena completa, primero el protagonista y luego el oponente         |
+|     3 | Sinopsis de una página por cuartiles, con el Tema y las Posturas nombrados | Una página por fuerza, con hitos de cambio                           |
+|     4 | Sinopsis de cuatro páginas                                                 | Ficha completa por fuerza                                            |
+|     5 | Lista de escenas                                                           | (integrado en las columnas de PoV/motivación de la lista de escenas) |
+
+*El nivel 2 es el decisivo*: dedícale más tiempo que a ningún otro. Produce los
+tres desastres (ver la Parte 5 más abajo), cada uno con su dueño, y el cotejo de
+los dos finales: cómo se ve la historia desde fuera (¿consigue el protagonista el
+Objetivo?) y desde dentro (¿suelta la Mentira?), escritos sin mirarse el uno al
+otro y luego cruzados en una cuadrícula.
+
+La parte Fundamentos señala dos trampas justo donde muerden: un desastre que nadie
+causa —la tormenta, la peste, el edicto real— puede estar de fondo, pero nunca
+cuenta como desastre estructural; y la Motivación tiene que sonar a la *promesa*
+que hace la Mentira, de modo que, si suena sincera, uno de los dos campos está
+mal. También detalla, bajo el encabezado del Oponente, las tres comprobaciones que
+más se saltan: quiere lo mismo que el protagonista (no solo el mismo objeto: lo
+mismo que hay debajo), su Postura se puede defender con convicción real y, lo
+ideal, su Fantasma es el mismo Fantasma del protagonista, pero con la conclusión
+opuesta.
+
+*El nivel 3 es también donde se nombra tu Tema.* A diferencia del Sistema, que lo
+nombra antes de que exista ningún personaje, La Hélice lo deduce tarde, de lo que
+ya tienes: la Mentira del protagonista, la Postura del oponente y el cotejo de los
+dos finales. Nómbralo aquí, y construye la lista de Posturas leyendo las
+posiciones que ya ocupan tus fuerzas vivas, en lugar de construir primero la lista
+y repartir después el reparto para llenarla. Si capturaste antes (nivel 2) la
+~:Stance:~ de un personaje, ese valor fue necesariamente provisional: contrástalo
+con la lista ahora que existe.
+
+** La Puerta de salida
+
+Puedes empezar a redactar cuando *el nivel 3 esté cerrado y su comprobación
+pase*, y tus tres primeras escenas estén escritas. Los niveles 4 y 5 están para
+cuando los necesites o el borrador se atasque; no son un requisito para empezar.
+
+* Parte 4: La Matriz
+
+** Cuándo usarla
+
+Usa La Matriz cuando *lo que tienes son personajes* y la historia aún no ha
+llegado: conoces bien a dos o cuatro personas, pero no lo que ocurre entre ellas.
+También encaja mejor en una historia coral con tres o cuatro fuerzas de peso
+comparable, donde La Hélice tendería a ordenar a todos en una única pareja
+protagonista/oponente.
+
+Dos situaciones en que es la herramienta equivocada: si partes de una premisa o
+de un encargo ya formulado (usa La Hélice: invertir el método tira lo que ya
+tienes), o si trabajas en un género con fuertes expectativas de trama —un thriller
+de mecanismo, un misterio de rompecabezas— donde la maquinaria tiene que ir
+delante y el arco detrás. (Una versión de un párrafo de esta nota de «peor
+encaje» viene también en la propia parte Fundamentos, bajo el encabezado del
+método; no hace falta volver a esta lección para recordarla.)
+
+** Las tres reglas
+
+- *Regla de la arena*: no hay deducción sin escasez. Dos personajes con Mentiras
+  incompatibles pero nada por lo que pelear no colisionan: simplemente se
+  ignoran. Por eso el nivel 1 pide un objeto en disputa, y un lugar y un momento
+  en que todos tengan que estar a la vez.
+- *Regla de la inevitabilidad*: entre todas las colisiones posibles, elige la que
+  ninguna fuerza puede esquivar sin dejar de ser quien es. Esto sustituye al gusto
+  del autor como criterio de selección.
+- *Regla del gancho tardío*: la frase vendible de quince palabras se sigue
+  escribiendo, pero al *final* del nivel 3 en lugar de al principio, y es una
+  puerta: si no sale, vuelve al nivel 1.
+
+** Los cinco niveles
+
+El orden de dependencias está *invertido* respecto a La Hélice: los dos primeros
+niveles tratan del personaje, y la trama nace en el tercero.
+
+| Nivel | Lo que produces                                                                                  |
+|-------+--------------------------------------------------------------------------------------------------|
+|     1 | El censo (2–4 enunciados de una línea, uno por fuerza) y la arena (objeto, lugar/momento, reloj) |
+|     2 | Una cadena completa por fuerza: Fantasma → Mentira → Debilidad → Apuro → Deseo → Necesidad       |
+|     3 | La matriz de colisiones, las colisiones que eliges de ella, el esqueleto y la prueba del gancho  |
+|     4 | Sinopsis de una página por cuartiles, con el Tema y las Posturas nombrados y los hitos de cambio |
+|     5 | Lista de escenas                                                                                 |
+
+*El nivel 3 es el movimiento característico del método.* Rellenas una matriz N×N
+—una fila y una columna por fuerza— en la que la casilla (A, B) dice qué le hace
+la Mentira de A a la Mentira de B cuando ambos van tras el mismo objeto. Una
+casilla rellena debe leerse como una frase, no como una palabra; el propio ejemplo
+del cuaderno de diseño: no «conflicto», sino «su firma de hace años es la razón de
+que su casa ya no exista». De los candidatos de esa matriz eliges tus colisiones
+por inevitabilidad, y solo *entonces* —una vez deducida la trama— escribes el
+gancho de quince palabras. Si no sale, no es un problema del nivel 3 que haya que
+forzar: es señal de que el censo del nivel 1 estaba mal (falta una fuerza, falta
+un reloj), y vuelves allí.
+
+El propio censo trae un ejemplo trabajado del patrón que premia: dos personajes
+que de niños perdieron algo a manos de una autoridad, uno concluyendo «sigue
+moviéndote, no pares nunca» y el otro «ponte del lado que firma los papeles»; la
+misma herida, la lección opuesta, y colisionan sin que ninguno lo intente.
+
+*El nivel 4 es también donde se nombra tu Tema*, y aquí sale solo: deducir la
+trama a partir de Mentiras incompatibles produce el Tema sin haberlo declarado
+antes. Nombrarlo en este nivel es poner palabras a aquello sobre lo que la matriz
+de colisiones lleva discutiendo desde el nivel 3. Construye la lista de Posturas
+del mismo modo —toma la Postura de cada fuerza de su Mentira— en lugar de
+repartir personajes para llenar una lista decidida de antemano.
+
+** La Puerta de salida
+
+La puerta está *un nivel más tarde* que la de La Hélice: al cerrar el nivel 4, no
+el 3. Es deliberado: cerrar aquí el nivel 3 te da un esqueleto recién deducido de
+la matriz que todavía no se ha contrastado con el ritmo real de una sinopsis. El
+nivel 4 es donde este método comprueba que lo deducido se sostiene como relato.
+
+* Parte 5: Dónde está el peso de la trama
+
+Los dos métodos hacen visibles los mismos tres o así momentos estructurales
+—los *desastres* de La Hélice, las *colisiones* de La Matriz— en una tabla cerca
+del final del cuaderno de diseño:
+
+#+BEGIN_EXAMPLE
+| Desastre | Dueño | Mentira que lo causa | A quién le estalla | Posición        |
+|----------+-------+----------------------+--------------------+-----------------|
+|        1 |       |                      |                    | Fin cuartil I   |
+|        2 |       |                      |                    | Punto medio     |
+|        3 |       |                      |                    | Fin cuartil III |
+#+END_EXAMPLE
+
+Esta tabla es deliberadamente *solo una tabla*: prosa llana en ~diseno.org~, no una
+entidad enlazada como los personajes, los escenarios y los hilos de la trama.
+Nada en org-scribe comprueba automáticamente que cada fuerza posea uno, ni que
+cada desastre tenga una escena. Está para que, de un vistazo, sepas dónde cae el
+peso de tu historia antes de traducirlo a escenas reales: una nota de trabajo,
+igual que la propia tabla de Apuestas del Sistema, no una cuarta o quinta cosa que
+siga el sistema de enlaces.
+
+Si quieres las comprobaciones de titularidad y de cobertura que te daría una
+entidad enlazada, es un deseo razonable; simplemente no es lo que hace esta
+versión. Síguelo a ojo por ahora: tres filas no son muchas para vigilar.
+
+* Parte 6: Cuando una comprobación no deja de fallar
+
+La parte Fundamentos de los dos métodos termina con una sección corta, justo antes de
+~Cambios pendientes al diseño~, para el momento exacto en que esta lección no
+puede ayudarte directamente: estás atascado, una comprobación no pasa y no sabes
+a qué nivel volver. Lee un síntoma y nombra el nivel:
+
+#+BEGIN_EXAMPLE
+** Dónde mirar cuando algo falla
+
+,#+begin_comment
+"Pasan cosas pero no significan nada" → nivel 2, regla del dueño.
+"El oponente parece de cartón" → nivel 2: Postura indefendible, o
+  quiere algo distinto que el protagonista.
+"El final no me convence" → nivel 2, el cotejo de los dos finales.
+"Nada cambia hasta el final" → nivel 3: faltan Ajustes entre las
+  Rupturas.
+,#+end_comment
+#+END_EXAMPLE
+
+Esa es la versión de La Hélice. La de La Matriz cubre sus propios cinco síntomas
+—«todos ignoran a todos» apunta a la regla de la arena del nivel 1, «sigo
+eligiendo yo la colisión» apunta a la regla de la inevitabilidad del nivel 3, y
+así—, porque los dos métodos fallan en sitios distintos: el punto débil de La
+Hélice suele ser el oponente o el cotejo de los finales (ambos, nivel 2); el de
+La Matriz suele ser la arena o la propia matriz (niveles 1 y 3).
+
+Está adaptada del material de origen de cada método —la tabla «Diagnóstico
+rápido» de ~copo-helice.org~ y la tabla «Riesgos y sus mitigaciones» de
+~copo-matriz.org~—, condensada en los pocos síntomas que más probablemente te
+encuentres. Léela antes de dar por hecho que una comprobación está mal: suele
+estar señalando el nivel de arriba.
+
+* Parte 7: La Puerta de salida funciona igual
+
+Elijas el método que elijas, ~F8 H~ (el informe de salud del proyecto) se abre
+con tu sección *Puerta de salida* exactamente igual que en un proyecto con el
+Sistema: se leen tus propias casillas y se informa, junto a ellas, de dos
+elementos medidos, sea cual sea el método o el idioma: cuántos de los trece puntos
+de trama tienen contenido de verdad y cuántas de tus tres primeras escenas tienen
+un recuento de palabras distinto de cero.
+
+La única diferencia es *dónde* está la puerta y qué pide:
+
+| Método  | La puerta se cierra…                            |
+|---------+-------------------------------------------------|
+| Sistema | Ocho elementos, sin estructura de niveles       |
+| Hélice  | Al final del nivel 3, más tres escenas escritas |
+| Matriz  | Al final del nivel 4, más tres escenas escritas |
+
+No tienes que hacer nada distinto para conseguirlo: el informe de salud encuentra
+tu sección Puerta de salida y sus dos elementos medidos por lo que dicen, no
+contando casillas en un orden fijo, así que funciona igual con los tres métodos.
+
+* Pruébalo ahora
+
+1. Crea un segundo proyecto de usar y tirar (~M-x org-scribe-create-novel-project~)
+   y elige un método distinto del que usa tu proyecto principal.
+2. Abre su ~diseno.org~ y compáralo, lado a lado, con el de tu proyecto
+   principal.
+3. Comprueba por ti mismo que ~novela.org~ y todas las partes del cuaderno salvo
+   Fundamentos son iguales en los dos: copia la ficha de uno de tus personajes a
+   la sección Personajes del proyecto nuevo y verás que nada de ella necesita
+   cambiar.
+4. Baja hasta el final de la nueva parte Fundamentos y lee su sección «Dónde mirar
+   cuando algo falla»: es una referencia útil para marcar cuando ya estés
+   recorriendo los niveles de verdad.
+5. Borra el proyecto de usar y tirar cuando termines; nada de él merece la pena
+   conservar, salvo que decidas escribir de verdad esa historia.
+
+* Sobre esta lección
+
+- *Creada*: 2026-09-05
+- *Última actualización*: 2026-09-05
+- *Número de lección*: 18
+- *Parte*: 1 - Lo esencial (léela en cualquier momento tras la Lección 1)
+- *Tiempo estimado*: 25 minutos
+- *Dificultad*: Principiante
+- *Requisitos previos*: Lección 1 (estar creando o comparando proyectos)
+
+---
+
+*Anterior*: [[file:primeros-pasos-17-borradores.org][Lección 17: Borradores y ramificación de ideas]]
+*Siguiente*: [[file:primeros-pasos-19-companion.org][Lección 19: El companion visual]]
+*Volver al inicio*: [[file:primeros-pasos-00-indice.org][Guía de primeros pasos - Índice]]
+
+*¡Lección 18 completada!*
