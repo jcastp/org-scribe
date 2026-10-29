@@ -7,13 +7,44 @@
 import { el } from './edit.js';
 
 const query = window.matchMedia('(prefers-color-scheme: dark)');
+const APPEARANCE_KEY = 'org-scribe.appearance';
+const handlers = [];
 let colors = null;
 
-/** Light or dark, as the browser says now. */
-export const mode = () => (query.matches ? 'dark' : 'light');
+/** The saved Appearance choice: 'light', 'dark', or 'system' (the default). */
+export function appearance() {
+  try {
+    const saved = localStorage.getItem(APPEARANCE_KEY);
+    return saved === 'light' || saved === 'dark' ? saved : 'system';
+  } catch (error) { return 'system'; }
+}
 
-/** Call HANDLER when the system switches between light and dark. */
+function applyAppearance() {
+  const choice = appearance();
+  if (choice === 'system') delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = choice;
+}
+applyAppearance();
+
+/** Light or dark: the Appearance choice, else as the browser says now. */
+export const mode = () => {
+  const choice = appearance();
+  return choice === 'system' ? (query.matches ? 'dark' : 'light') : choice;
+};
+
+/** Save CHOICE (light, dark or system), apply it and tell the mode listeners. */
+export function setAppearance(choice) {
+  try {
+    if (choice === 'light' || choice === 'dark') localStorage.setItem(APPEARANCE_KEY, choice);
+    else localStorage.removeItem(APPEARANCE_KEY);
+  } catch (error) { /* private mode: lasts until reload only */ }
+  applyAppearance();
+  handlers.forEach((handler) => handler());
+}
+
+/** Call HANDLER when the mode changes: the system switches, or Appearance is set. */
 export function onModeChange(handler) {
+  handlers.push(handler);
   query.addEventListener('change', handler);
 }
 
@@ -185,6 +216,20 @@ export function renderPanel(container, ctx) {
   close.addEventListener('click', () => ctx.closePanel());
   head.append(close);
   container.append(head);
+
+  const looks = el('fieldset', 'colours-appearance');
+  looks.append(el('legend', '', ctx.t('companion-ui-appearance')));
+  for (const choice of ['system', 'light', 'dark']) {
+    const label = el('label', 'colours-mode');
+    const radio = el('input');
+    radio.type = 'radio';
+    radio.name = 'appearance';
+    radio.checked = choice === appearance();
+    radio.addEventListener('change', () => setAppearance(choice));
+    label.append(radio, el('span', '', ctx.t(`companion-ui-appearance-${choice}`)));
+    looks.append(label);
+  }
+  container.append(looks);
 
   const themes = el('fieldset', 'colours-themes');
   themes.append(el('legend', '', ctx.t('companion-ui-colors-theme')));
