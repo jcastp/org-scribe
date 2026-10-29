@@ -8,17 +8,17 @@
 
 /[[file:../manual/getting-started-11-exporting.org][English version]]/
 
-* ¡Bienvenido a la Lección 11!
+* Te damos la bienvenida a la Lección 11
 
-Has escrito tu manuscrito en org-mode y ahora toca compartirlo con el mundo. Tanto si lo envías a editoriales, lo compartes con lectores beta o lo publicas tú mismo, necesitas exportar tu trabajo a formatos estándar.
+Has escrito tu manuscrito en Org y ahora toca compartirlo con el mundo. Tanto si lo envías a editoriales, lo compartes con lectores beta o lo autopublicas, necesitas exportar tu trabajo a formatos estándar.
 
-El potente sistema de exportación de org-mode puede transformar tu manuscrito en documentos profesionales en varios formatos, y ~org-scribe~ añade funciones pensadas para la escritura creativa, como el formato correcto de los saltos de escena.
+El potente sistema de exportación de Org puede transformar tu manuscrito en documentos profesionales en varios formatos, y ~org-scribe~ añade funciones pensadas para la escritura creativa, como el formato correcto de los saltos de escena.
 
 Al terminar la lección habrás:
 - Compilado un borrador limpio y legible con ~org-scribe-compile~, el camino más rápido de un manuscrito de trabajo a algo que puedes dar a un lector
 - Compilado un manuscrito listo para enviar en formato estándar (Shunn), con un bloque de contacto real, el recuento de palabras y la cabecera corrida
 - Compilado un EPUB con estilo, con saltos de escena que destacan del texto normal
-- Entendido el sistema de exportación de org-mode para todo lo que compile todavía no hace (control total del formato, portadas y metadatos de EPUB)
+- Entendido el sistema de exportación de Org para todo lo que compile todavía no hace (control total del formato, portadas y metadatos de EPUB)
 - Aprendido a usar la macro de salto de escena para dar un formato profesional
 - Exportado tu manuscrito a PDF (mediante LaTeX)
 - Exportado a un formato compatible con Word (ODT)
@@ -106,7 +106,7 @@ o con ~M-x customize-group RET org-scribe RET~, que ofrece algunos preajustes co
 
 *El EPUB no tiene ese problema*: es Unicode de principio a fin, así que cualquier marcador que hayas puesto se ve exactamente como lo configuraste. Lo que el EPUB recibe en su lugar es un estilo propio: un salto de escena compilado lleva una clase CSS distinta, en lugar de parecer un párrafo centrado corriente, de modo que en un lector electrónico se lee como un salto deliberado. Un bloque centrado que hayas escrito tú (un epígrafe, unos versos) conserva su estilo normal.
 
-** ¡Pruébalo ahora! (2 minutos)
+** Pruébalo ahora (2 minutos)
 
 1. Abre tu manuscrito
 2. ~F8 X~, ~clean~ y elige ~txt~
@@ -193,7 +193,7 @@ El LaTeX que hay detrás de la cabecera y el interlineado del PDF vive en una so
 
 Conserva los dos marcadores ~%s~ (se rellenan con tu apellido y con la palabra clave de la cabecera corrida, en ese orden): una personalización a la que le falte alguno se rechaza con un error que nombra el problema, en lugar de compilar en silencio un PDF con la cabecera rota.
 
-** ¡Pruébalo ahora! (3 minutos)
+** Pruébalo ahora (3 minutos)
 
 1. Configura ~org-scribe-author-name~ (y, si quieres, la dirección y el correo) en el búfer ~*scratch*~ o con ~M-x eval-expression~
 2. ~F8 X~, ~shunn~ y elige ~txt~: lee el encabezado que sale
@@ -202,15 +202,15 @@ Conserva los dos marcadores ~%s~ (se rellenan con tu apellido y con la palabra c
 
 * Exportación directa con el despachador de Org
 
-Para un PDF con control manual completo, para EPUB o para un control fino que ninguno de los dos estilos de compile ofrece todavía, exporta el archivo de trabajo directamente con el despachador de Org. Es el camino «avanzado»: más configuración, más formatos, más preparación manual.
+Para un PDF con control manual completo, para EPUB o para un control fino que ninguno de los dos estilos de ~org-scribe-compile~ ofrece todavía, exporta el archivo de trabajo directamente con el despachador de Org. Es el camino «avanzado»: más configuración, más formatos, más preparación manual.
 
-* Entender la exportación de org-mode
+* Entender la exportación de Org
 
 Antes de exportar, veamos cómo funciona.
 
 ** El despachador de exportación
 
-Org-mode tiene una interfaz de exportación unificada:
+Org tiene una interfaz de exportación unificada:
 
 1. Abre tu manuscrito
 2. Pulsa ~C-c C-e~ (org-export-dispatch)
@@ -228,7 +228,7 @@ Org Export Dispatcher
 [q] Quit
 #+END_EXAMPLE
 
-*¡Este es tu centro de mando de la exportación!*
+*Este es tu centro de mando de la exportación.*
 
 ** Entender las opciones de exportación
 
@@ -284,10 +284,10 @@ Pero cada formato de exportación necesita un salto distinto:
 - *HTML*: varios saltos de línea
 - *ASCII/Markdown/Man*: tres asteriscos (***)
 - *Word (ODT)*: un párrafo centrado con =***=
-- *EPUB*: varios saltos de línea (deriva del backend HTML)
-- *Cualquier otro backend*: recurre al valor genérico por defecto de 3 saltos de línea
+- *EPUB*: varios saltos de línea (deriva del motor de exportación HTML)
+- *Cualquier otro motor de exportación*: recurre al valor genérico por defecto de 3 saltos de línea
 
-*¡Cambiarlo a mano para cada formato es tedioso!*
+*Cambiarlo a mano para cada formato es tedioso.*
 
 ** La solución: la macro de salto de escena
 
@@ -311,7 +311,7 @@ Pero cada formato de exportación necesita un salto distinto:
    - ASCII/Markdown/Man: se convierte en ~***~
    - ODT: se convierte en un párrafo centrado con =***=
    - EPUB: se convierte en ~<br><br><br>~ (como HTML)
-   - Cualquier otro backend sin entrada propia: recurre al valor genérico por defecto (tres saltos de línea)
+   - Cualquier otro motor de exportación sin entrada propia: recurre al valor genérico por defecto (tres saltos de línea)
 
 ** Usar los saltos de escena
 
@@ -369,7 +369,7 @@ Al exportar, cada formato recibe automáticamente el salto que le corresponde.
 
 Esta macro es la manera de escribir un salto *dentro* de una exportación directa. Con ~org-scribe-compile~ no la necesitas entre escenas (los inserta solo); sí sigue sirviendo para un salto en mitad del cuerpo de una escena, que compile convierte en un salto real.
 
-** ¡Pruébalo ahora! (2 minutos)
+** Pruébalo ahora (2 minutos)
 
 1. Abre tu manuscrito
 2. Busca una escena con un salto de tiempo o de lugar
@@ -379,7 +379,7 @@ Esta macro es la manera de escribir un salto *dentro* de una exportación direct
 
 * Exportar a PDF (mediante LaTeX)
 
-El PDF es el patrón oro para la impresión y los envíos a editoriales.
+El PDF es la referencia para la impresión y los envíos a editoriales.
 
 ** Requisitos
 
@@ -405,7 +405,7 @@ Añade los ajustes de LaTeX a tu manuscrito (no vienen por defecto):
 3. Pulsa ~l~ (LaTeX)
 4. Pulsa ~p~ (PDF)
 5. Espera a la compilación (10-30 segundos)
-6. ¡El PDF aparece en el mismo directorio!
+6. El PDF aparece en el mismo directorio
 
 *Secuencia completa*: ~C-c C-e l p~
 
@@ -486,7 +486,7 @@ Esto crea un formato estándar de manuscrito (márgenes de 1 pulgada, a doble es
 2. Quita temporalmente las cabeceras de LaTeX personalizadas
 3. Exporta primero un documento de prueba mínimo
 
-** ¡Pruébalo ahora! (3 minutos)
+** Pruébalo ahora (3 minutos)
 
 1. Abre tu manuscrito
 2. ~C-c C-e l p~ (exportar a PDF)
@@ -557,7 +557,7 @@ Los lectores beta suelen preferir el formato Word:
 2. Añade instrucciones para los comentarios
 3. Compártelo por correo o con Google Drive
 4. Ellos editan y comentan en Word
-5. Tú incorporas sus comentarios en org-mode
+5. Tú incorporas sus comentarios en Org
 
 *** Envío a una editorial
 
@@ -567,7 +567,7 @@ Muchas editoriales aceptan .docx o .odt:
 3. Ábrelo en LibreOffice o Word
 4. Haz los retoques finales de formato
 5. Guarda como .docx si lo piden
-6. ¡Envíalo!
+6. Envíalo
 
 *** Envío a un agente
 
@@ -578,13 +578,13 @@ Los agentes literarios suelen querer:
 
 Usa una plantilla de ODT para esto.
 
-** ¡Pruébalo ahora! (2 minutos)
+** Pruébalo ahora (2 minutos)
 
 1. Abre el manuscrito
 2. ~C-c C-e o o~ (exportar a ODT y abrir)
 3. El archivo se abre en LibreOffice o Word
 4. Comprueba el formato
-5. Prueba a editar un párrafo (¡es totalmente editable!)
+5. Prueba a editar un párrafo (es totalmente editable)
 6. Cierra sin guardar (seguiremos trabajando en org)
 
 * Exportar a HTML
@@ -601,7 +601,7 @@ HTML es perfecto para la publicación web, los blogs y el intercambio digital.
 1. Abre el manuscrito
 2. ~C-c C-e~ (despachador de exportación)
 3. ~h~ (HTML)
-4. ~h~ (exportar a archivo) O ~o~ (exportar y abrir en el navegador)
+4. ~h~ (exportar a archivo) o bien ~o~ (exportar y abrir en el navegador)
 
 *Secuencia completa*: ~C-c C-e h o~ (abrir en el navegador)
 
@@ -669,7 +669,7 @@ Activar o desactivar la tabla de contenidos:
 
 ** Usos habituales del HTML
 
-*** Serial web
+*** Novela por entregas en la web
 
 Publica tu novela capítulo a capítulo en línea:
 1. Exporta cada capítulo a HTML
@@ -693,7 +693,7 @@ Conserva una versión legible en la web:
 - Accesible desde cualquier dispositivo
 - No hace falta ningún programa especial
 
-** ¡Pruébalo ahora! (2 minutos)
+** Pruébalo ahora (2 minutos)
 
 1. Abre el manuscrito
 2. ~C-c C-e h o~ (exportar y abrir en el navegador)
@@ -797,7 +797,7 @@ Amazon Kindle Direct Publishing acepta EPUB directamente (ya no acepta MOBI), as
 2. Usa una ruta relativa: ~#+EPUBCOVER: cover.jpg~
 3. Verifica el formato de la imagen: JPG o PNG
 
-** ¡Pruébalo ahora! (si ox-epub está instalado)
+** Pruébalo ahora (si ox-epub está instalado)
 
 1. Abre el manuscrito
 2. Añade una imagen de portada (opcional)
@@ -950,7 +950,7 @@ Añade a tu manuscrito:
 5. Formato → Párrafo → Interlineado → Doble
 6. Formato → Página → Márgenes → 1 pulgada en todos
 7. Guárdalo como plantilla (.ott)
-8. ¡Reutilízala en todos tus envíos!
+8. Reutilízala en todos tus envíos
 
 ** Envío a un agente
 
@@ -975,14 +975,14 @@ Para Amazon KDP o similares:
 - Formato EPUB
 - Imagen de portada adecuada
 - Metadatos completos
-- No hace falta el formato de manuscrito (¡a los lectores les da igual!)
+- No hace falta el formato de manuscrito (a los lectores les da igual)
 
 *Proceso*:
 1. Exporta a EPUB (~C-c C-e e e~)
 2. Valida con EPUBCheck
 3. Súbelo a KDP
 4. Previsualiza con Kindle Previewer
-5. ¡Publica!
+5. Publica
 
 ** Envío a un concurso
 
@@ -998,7 +998,7 @@ Los concursos literarios suelen tener requisitos estrictos:
 3. Añade los ajustes de LaTeX propios del concurso
 4. Exporta a PDF
 5. Verifica el número de páginas
-6. ¡Envíalo!
+6. Envíalo
 
 * Flujos de exportación prácticos
 
@@ -1071,7 +1071,7 @@ Estos son flujos completos para situaciones habituales.
 4. Valida con EPUBCheck (herramienta en línea)
 5. Súbelo a Amazon KDP
 6. Compruébalo con Kindle Previewer
-7. ¡Publica!
+7. Publica
 
 ** Flujo 5: Envío a una antología
 
@@ -1079,16 +1079,16 @@ Estos son flujos completos para situaciones habituales.
 
 1. Escribe el cuento en ~cuento.org~
 2. Consulta las normas de la antología (formato, extensión)
-3. Exporta al formato requerido (normalmente PDF o DOC)
+3. Exporta al formato requerido (normalmente PDF o DOCX)
 4. Para PDF:
    - ~C-c C-e l p~
    - Comprueba el número de páginas frente al límite
-5. Para DOC:
+5. Para DOCX:
    - ~C-c C-e o o~ (ODT)
    - Ábrelo en LibreOffice
    - Guárdalo como .docx
 6. Sigue las instrucciones de envío
-7. ¡Envíalo!
+7. Envíalo
 
 * Problemas habituales de exportación y soluciones
 
@@ -1122,7 +1122,7 @@ Estos son flujos completos para situaciones habituales.
 
 *Solución*:
 1. Comprueba que al principio del archivo está: ~#+MACRO: scene-break SCENE-BREAK~
-2. Verifica que usas ~{{{scene-break}}}~ y no ~{{{scene break}}}~ (¡sin espacio!)
+2. Verifica que usas ~{{{scene-break}}}~ y no ~{{{scene break}}}~ (sin espacio)
 3. Confirma que ~org-scribe~ está cargado: ~M-x org-scribe-version~
 4. El reemplazo solo se aplica dentro de un contexto de org-scribe: o bien el archivo está bajo un proyecto con un archivo marcador ~.org-scribe-project~, o bien ~org-scribe-mode~ está activo en el búfer. Fuera de eso, el texto literal ~SCENE-BREAK~ se deja tal cual (para no afectar a otros archivos org).
 
@@ -1172,12 +1172,12 @@ Estos son flujos completos para situaciones habituales.
 
 * Lo que has aprendido
 
-¡Fantástico trabajo! Has completado la Lección 11. Ahora sabes:
+Has completado la Lección 11. Ahora sabes:
 
 ✓ Compilar un borrador limpio con ~org-scribe-compile~ (~F8 X~), el camino más rápido del archivo de trabajo a un documento legible
 ✓ Compilar un manuscrito listo para enviar con el estilo ~shunn~: un bloque de contacto real, recuento de palabras redondeado y (en PDF) una cabecera corrida, generados directamente de tu manuscrito
 ✓ Compilar un EPUB con estilo con ~org-scribe-compile~, con saltos de escena que se leen como saltos deliberados y no como texto centrado corriente
-✓ Cómo funciona el sistema de exportación de org-mode
+✓ Cómo funciona el sistema de exportación de Org
 ✓ El despachador de exportación (~C-c C-e~) y las opciones de formato
 ✓ Usar la macro de salto de escena (~{{{scene-break}}}~)
 ✓ Exportar a PDF mediante LaTeX (~C-c C-e l p~)
@@ -1192,7 +1192,7 @@ Estos son flujos completos para situaciones habituales.
 
 * Próximos pasos
 
-¿Listo para potenciar tu escritura con herramientas de idioma? Pasa a la [[file:primeros-pasos-12-herramientas-diccionario.org][Lección 12: Herramientas de diccionario e idioma]].
+¿Quieres potenciar tu escritura con herramientas de idioma? Pasa a la [[file:primeros-pasos-12-herramientas-diccionario.org][Lección 12: Herramientas de diccionario e idioma]].
 
 En la próxima lección aprenderás a:
 - Consultar el diccionario de la RAE
@@ -1259,7 +1259,7 @@ Exportar es la manera de compartir tu trabajo: domina estas destrezas para prese
 
 * Referencia rápida
 
-** Orden de compilación
+** La orden de compilar
 
 | Secuencia de teclas | Acción                                                                                                                                           |
 |---------------------+--------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -1350,13 +1350,13 @@ Compartir con un grupo de escritura → org-scribe-compile, clean (odt o pdf)
 Archivar una versión legible     → HTML, u org-scribe-compile, clean (md)
 Enviar a un concurso             → org-scribe-compile, shunn (pdf), o exportación directa
                                     para controlar exactamente el número de páginas
-Enviar a un editor               → org-scribe-compile, clean (docx u odt),
+Enviar a tu corrector            → org-scribe-compile, clean (docx u odt),
                                     totalmente editable
 #+END_EXAMPLE
 
 * Resumen
 
-Tienes dos maneras de sacar un manuscrito de org-scribe. Empieza por ~org-scribe-compile~ (~F8 X~): el estilo ~clean~ no necesita configuración y produce org/txt/md/odt/epub en segundos (el epub con saltos de escena con estilo propio, si ~ox-epub~ está instalado), y el estilo ~shunn~ (una vez configurada tu identidad de autor) produce un manuscrito listo para enviar (org/txt/pdf/docx) con un bloque de contacto real, recuento de palabras y cabecera corrida, generado directamente de tu archivo de trabajo. Los dos estilos dejan un intermedio inspeccionable que puedes revisar cuando algo se ve mal. Recurre a la exportación directa de Org (~C-c C-e~) cuando necesites HTML o una configuración que ninguno de los dos estilos de compile ofrece todavía: hojas de estilo HTML, metadatos y portadas de EPUB, o LaTeX ajustado a mano más allá de lo que cubre ~org-scribe-compile-shunn-latex-preamble~.
+Tienes dos maneras de sacar un manuscrito de org-scribe. Empieza por ~org-scribe-compile~ (~F8 X~): el estilo ~clean~ no necesita configuración y produce org/txt/md/odt/epub en segundos (el epub con saltos de escena con estilo propio, si ~ox-epub~ está instalado), y el estilo ~shunn~ (una vez configurada tu identidad de autor) produce un manuscrito listo para enviar (org/txt/pdf/docx) con un bloque de contacto real, recuento de palabras y cabecera corrida, generado directamente de tu archivo de trabajo. Los dos estilos dejan un intermedio inspeccionable que puedes revisar cuando algo se ve mal. Recurre a la exportación directa de Org (~C-c C-e~) cuando necesites HTML o una configuración que ninguno de los dos estilos de ~org-scribe-compile~ ofrece todavía: hojas de estilo HTML, metadatos y portadas de EPUB, o LaTeX ajustado a mano más allá de lo que cubre ~org-scribe-compile-shunn-latex-preamble~.
 
 La clave para exportar con éxito:
 1. Prueba primero ~org-scribe-compile~: ~clean~ para un borrador rápido, ~shunn~ cuando estés listo para enviar
@@ -1366,7 +1366,7 @@ La clave para exportar con éxito:
 5. Prueba las exportaciones pronto y a menudo
 6. Valida la salida antes de compartirla
 
-Tu manuscrito está listo para el mundo: ¡exporta con confianza!
+Tu manuscrito está listo para el mundo: exporta con confianza.
 
 ---
 

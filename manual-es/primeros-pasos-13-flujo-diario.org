@@ -8,7 +8,7 @@
 
 /[[file:../manual/getting-started-13-daily-workflow.org][English version]]/
 
-* ¡Bienvenido a la Lección 13!
+* Te damos la bienvenida a la Lección 13
 
 Ya conoces cada una de las funciones de ~org-scribe~. Ahora toca unirlas en un flujo de trabajo diario coherente que maximice tu productividad y tu creatividad.
 
@@ -35,7 +35,7 @@ Al terminar la lección tendrás:
 
 ** Filosofía: tu flujo de trabajo es personal
 
-El flujo que se presenta aquí es un *punto de partida recomendado*, no una prescripción rígida. Cada escritor es distinto:
+El flujo que se presenta aquí es un *punto de partida recomendado*, no una prescripción rígida. Cada cual escribe a su manera:
 
 - Unos escriben por la mañana, otros por la noche
 - Unos planifican a fondo, otros descubren mientras escriben
@@ -51,9 +51,9 @@ Un buen flujo de trabajo quita obstáculos entre tú y tu escritura:
 - ✓ Automatiza las tareas repetitivas
 - ✓ Mantiene la concentración y el flujo
 - ✓ Da retroalimentación regular (seguimiento del progreso)
-- ✓ Se siente natural, no forzado
+- ✓ Resulta natural, no forzado
 
-Si una parte de este flujo te resulta incómoda, ¡sáltatela! El mejor flujo de trabajo es el que de verdad usas.
+Si una parte de este flujo te resulta incómoda, sáltatela. El mejor flujo de trabajo es el que de verdad usas.
 
 * El flujo diario de tres fases
 
@@ -67,7 +67,7 @@ Tu día de escritura tiene tres fases bien diferenciadas:
 - Abrir tu proyecto
 - Repasar el progreso de ayer
 - Fijar el objetivo de hoy
-- Activar el modo de escritura
+- Activar el modo Sin distracciones
 
 ** Fase 2: Escritura activa - 30-120 minutos
 
@@ -115,7 +115,7 @@ C-x C-f ~/org-scribe/mi-novela/novela.org
 alias escribir="emacs ~/org-scribe/mi-novela/novela.org &"
 #+END_SRC
 
-Ahora, escribir `escribir` en tu terminal abre tu manuscrito al instante.
+Ahora, escribir ~escribir~ en tu terminal abre tu manuscrito al instante.
 
 ** Paso 2: Repasa el trabajo de ayer (2 minutos)
 
@@ -146,11 +146,11 @@ Mira cómo vas:
 Ejemplo de tabla de progreso que podrías ver:
 
 #+BEGIN_EXAMPLE
-| Heading                   | Wordcount | Objective | Progress |
-|---------------------------+-----------+-----------+----------|
-| └> [[Acto I]]             |     12500 |     15000 |      83% |
-| └> [[Acto II]]            |      3400 |     20000 |      17% |
-| └> [[Acto III]]           |         0 |     15000 |       0% |
+| Heading         | Wordcount | Objective | Progress |
+|-----------------+-----------+-----------+----------|
+| └> [[Acto I]]   |     12500 |     15000 | 83%      |
+| └> [[Acto II]]  |      3400 |     20000 | 17%      |
+| └> [[Acto III]] |         0 |     15000 | 0%       |
 #+END_EXAMPLE
 
 (Las cabeceras de columna de esta tabla las genera el bloque dinámico en inglés. El total del proyecto lo da el informe de salud, no esta tabla.)
@@ -177,7 +177,7 @@ Decide qué vas a lograr hoy:
 # TODO: Objetivo de hoy: terminar la Escena 3 y empezar la Escena 4 (500 palabras)
 #+END_EXAMPLE
 
-** Paso 5: Activa el modo de escritura (30 segundos)
+** Paso 5: Activa el modo Sin distracciones (30 segundos)
 
 Entra en tu entorno sin distracciones preferido:
 
@@ -213,11 +213,11 @@ Elige lo que mejor te ayude a concentrarte.
 □ Leer los dos últimos párrafos escritos
 □ Mirar la tabla de progreso
 □ Fijar el objetivo de hoy
-□ Activar el modo de escritura
+□ Activar el modo Sin distracciones
 
 *Tiempo total: 5 minutos*
 
-¡Ya estás listo para escribir!
+Ya puedes ponerte a escribir.
 
 * Fase 2: Escritura activa (30-120 minutos)
 
@@ -255,7 +255,7 @@ Tu actividad principal es sencilla:
 
 4. *Repite*
 
-** Capturas rápidas: tus preservadores del flujo
+** Capturas rápidas: para no perder el hilo
 
 Cuando te llega la inspiración a mitad de escritura, captúrala rápido sin salir de tu manuscrito:
 
@@ -382,12 +382,12 @@ Durante la escritura activa, minimiza las consultas. Pero a veces necesitas la p
 
 *** Cuándo buscar palabras
 
-*SÍ busques* mientras escribes:
+*Sí busques* mientras escribes:
 - La palabra exacta te está en la punta de la lengua
 - Estás eligiendo entre dos palabras parecidas
 - Una palabra equivocada confundiría al lector más adelante
 
-*NO busques* mientras escribes:
+*No busques* mientras escribes:
 - Mejoras menores en la elección de palabras (se arreglan en la revisión)
 - Investigación extensa (deja un marcador =*NOTE*= y sigue)
 - Sinónimos perfectos (acércate lo bastante, y pule después)
@@ -414,7 +414,7 @@ Mientras escribes, deja migas de pan para la revisión. Escríbelas como *bloque
 Alex entró en la cafetería.
 
 ,#+begin_comment
-*EDIT*: continuidad - ¿está lloviendo? Comprobar el capítulo 1.
+*NOTE*: ¿está lloviendo? Comprobar el capítulo 1.
 ,#+end_comment
 
 Vio a Sam sentado en el reservado del rincón.
@@ -432,7 +432,7 @@ Existen dos marcadores:
 
 Si usas Tempel (la Lección 14 muestra la configuración de una línea), escribe =note= o =edit= y pulsa la tecla de expansión: el fragmento escribe el bloque entero y, para =edit=, te pregunta la categoría. Escribir el bloque a mano funciona igual de bien.
 
-Más tarde, ~F8 6~ lista todos los marcadores del proyecto, agrupados por categoría, para que ninguna de estas migas de pan se pierda. ¡Son regalos para tu yo editor del futuro!
+Más tarde, ~F8 6~ lista todos los marcadores del proyecto, agrupados por categoría, para que ninguna de estas migas de pan se pierda. Te lo agradecerás cuando revises.
 
 ** La integración con Pomodoro
 
@@ -460,7 +460,9 @@ Estás a mitad de una escena y no sabes qué ocurre después:
 
 *Opción 1: saltar adelante*:
 #+BEGIN_EXAMPLE
-[ESCENA INCOMPLETA - Retomar después de la confrontación]
+,#+begin_comment
+*NOTE*: escena incompleta. Retomar después de la confrontación.
+,#+end_comment
 
 ,*** Escena siguiente - Las consecuencias
 #+END_EXAMPLE
@@ -471,22 +473,31 @@ Escribe lo que *sí* sabes y luego vuelve al hueco.
 Date permiso para escribir mal. Lo arreglarás después:
 
 #+BEGIN_EXAMPLE
-Sam le cuenta a Alex lo de aquello. [Esto es un diálogo malísimo, arreglar luego]
-Alex reacciona con sorpresa. [Describir esto mejor en la revisión]
+Sam le cuenta a Alex lo de aquello.
+
+,#+begin_comment
+*NOTE*: diálogo malísimo, arreglar luego.
+,#+end_comment
+
+Alex reacciona con sorpresa.
+
+,#+begin_comment
+*NOTE*: describir esto mejor en la revisión.
+,#+end_comment
 #+END_EXAMPLE
 
 Escribir mal es mejor que no escribir. La revisión lo arregla todo.
 
 *Opción 3: esquema rápido*:
 #+BEGIN_EXAMPLE
-# Esquema del resto de la escena:
-# - Sam revela el secreto de las cartas
-# - Alex no la cree al principio
-# - Sam muestra pruebas
-# - Alex comprende que todo lo que entendía estaba equivocado
-# - La escena termina con Alex marchándose de golpe
-
-[Escribir la escena de verdad más tarde]
+,#+begin_comment
+*NOTE*: esquema del resto de la escena. Escribirla de verdad más tarde.
+- Sam revela el secreto de las cartas
+- Alex no la cree al principio
+- Sam muestra pruebas
+- Alex comprende que todo lo que entendía estaba equivocado
+- La escena termina con Alex marchándose de golpe
+,#+end_comment
 #+END_EXAMPLE
 
 Después pasa a la escena siguiente que más te entusiasme.
@@ -501,9 +512,9 @@ Durante tu sesión:
 □ Dejar marcadores de nota/edición para la revisión
 □ No editar el trabajo de ayer
 □ Hacer descansos cortos (5 min por hora)
-□ Parar al alcanzar tu objetivo O tu límite de tiempo
+□ Parar al alcanzar tu objetivo o tu límite de tiempo
 
-*Recuerda*: ¡el impulso importa más que la perfección!
+*Recuerda*: el impulso importa más que la perfección.
 
 * Fase 3: Cierre vespertino (10 minutos)
 
@@ -511,13 +522,13 @@ Termina tu sesión con una sensación de logro y preparándote para mañana.
 
 ** Paso 1: Cuenta tus palabras (1 minuto)
 
-¡Mira lo que has logrado hoy!
+Mira lo que has logrado hoy.
 
 1. Selecciona el texto que escribiste hoy (o no selecciones nada para contar todo el búfer)
 2. Pulsa ~F8~ y luego ~w~ (recuento de palabras)
 3. Lee el resultado en el área de eco: «1247 palabras en la región» (o «… palabras en el búfer»)
 
-*Momento de celebración*: ¡hoy has escrito más de 1000 palabras!
+*Momento de celebración*: hoy has escrito más de 1000 palabras.
 
 ** Paso 2: Actualiza todos los recuentos (1 minuto)
 
@@ -535,7 +546,7 @@ Antes:                          Después:
 | Acto II |  3400 | 20000 |  17% | → | Acto II |  4647 | 20000 |  23% |
 #+END_EXAMPLE
 
-Has pasado del 17 % al 23 % en el Acto II: ¡progreso!
+Has pasado del 17 % al 23 % en el Acto II: progreso.
 
 ** Paso 3: Comprueba tu total diario (1 minuto)
 
@@ -553,7 +564,7 @@ Lee lo que escribiste y planifica el día siguiente:
 
 1. *Repaso rápido*:
    - Recorre lo escrito hoy
-   - No edites (¡resiste el impulso!)
+   - No edites (resiste el impulso)
    - Solo lee y aprecia
    - Anota los problemas importantes para la revisión
 
@@ -579,7 +590,7 @@ Lee lo que escribiste y planifica el día siguiente:
 
 ** Paso 5: Guarda y haz copia de seguridad (2 minutos)
 
-¡Protege tu trabajo!
+Protege tu trabajo.
 
 *** Guarda tus archivos
 
@@ -617,32 +628,32 @@ Si no usas git:
 - Un servicio de copia de seguridad en la nube
 - Enviarte el manuscrito por correo
 
-*Regla*: ¡nunca termines un día sin tu trabajo en al menos 2 sitios!
+*Regla*: nunca termines un día sin tu trabajo en al menos 2 sitios.
 
 ** Paso 6: Cierra con atención (30 segundos)
 
 Sal de tu entorno de escritura:
 
-1. Pulsa ~F8~ y luego ~0~ (vuelta al modo Normal; o pulsa ~m~ otra vez para desactivar el modo de escritura)
+1. Pulsa ~F8~ y luego ~0~ (vuelta al modo Normal; o pulsa ~m~ otra vez para desactivar el modo Sin distracciones)
 2. Aparece tu Emacs normal
 3. Cierra Emacs o pasa a otro trabajo
 
-*Transición mental*: has terminado de escribir por hoy. ¡Descansa!
+*Transición mental*: has terminado de escribir por hoy. Descansa.
 
 ** Lista de comprobación vespertina
 
 □ Contar las palabras de hoy
 □ Actualizar todos los recuentos (F8 a)
 □ Mirar el total diario del planificador (F8 W)
-□ Repasar el trabajo de hoy (¡sin editar!)
+□ Repasar el trabajo de hoy (sin editar)
 □ Dejar una nota para mañana
 □ Guardar todos los archivos
 □ Hacer commit en git (o copia de seguridad)
-□ Salir del modo de escritura
+□ Salir del modo Sin distracciones
 
 *Tiempo total: 10 minutos*
 
-*Sensación: ¡logro!*
+*Sensación: logro*
 
 * Revisión semanal (30 minutos, una vez por semana)
 
@@ -668,17 +679,17 @@ Ejecuta ~M-x org-scribe-project-health~ (o ~F8 H~) y valora:
 Abre tu manuscrito y actualiza la cronología de personajes:
 
 1. Ve a la sección «Línea Temporal de Personajes»
-2. Colócate en el bloque dinámico: `#+BEGIN: character-timeline`
+2. Colócate en el bloque dinámico: ~#+BEGIN: character-timeline~
 3. Pulsa ~C-c C-c~ para regenerarlo
 
 Revisa la tabla:
 
 #+BEGIN_EXAMPLE
-| Scene                | Alex | Sam | Jordan |
-|----------------------+------+-----+--------|
-| Escena 1 - Apertura  | ★    | ●   |        |
-| Escena 2 - Encuentro | ★    | ●   | ●      |
-| Escena 3 - Revelación | ★   | ●   |        |
+| Scene                 | Alex | Sam | Jordan |
+|-----------------------+------+-----+--------|
+| Escena 1 - Apertura   | ★    | ●   |        |
+| Escena 2 - Encuentro  | ★    | ●   | ●      |
+| Escena 3 - Revelación | ★    | ●   |        |
 #+END_EXAMPLE
 
 *Preguntas que hacerte*:
@@ -691,16 +702,16 @@ Revisa la tabla:
 Actualiza la cronología de hilos de la trama:
 
 1. Ve a la sección «Análisis de Tramas»
-2. Pulsa ~C-c C-c~ en `#+BEGIN: plot-thread-timeline`
+2. Pulsa ~C-c C-c~ en ~#+BEGIN: plot-thread-timeline~
 
 Revisa:
 
 #+BEGIN_EXAMPLE
-| Scene                | Trama principal | Romance | Misterio |
-|----------------------+-----------------+---------+----------|
-| Escena 1 - Apertura  | ●               |         | ●        |
-| Escena 2 - Encuentro | ●               | ●       |          |
-| Escena 3 - Revelación | ●              |         | ●        |
+| Scene                 | Trama principal | Romance | Misterio |
+|-----------------------+-----------------+---------+----------|
+| Escena 1 - Apertura   | ●               |         | ●        |
+| Escena 2 - Encuentro  | ●               | ●       |          |
+| Escena 3 - Revelación | ●               |         | ●        |
 #+END_EXAMPLE
 
 *Preguntas que hacerte*:
@@ -737,7 +748,7 @@ Fija los objetivos de la semana que viene:
 - [ ] Escribir la escena de la revelación de Sam
 - [ ] Escribir la escena de la reacción de Alex
 - [ ] Investigar: costumbres de la escritura de cartas en los años 90
-- [ ] Revisar: ¿el ritmo se siente bien?
+- [ ] Revisar: ¿funciona el ritmo?
 #+END_EXAMPLE
 
 *** 6. Celebra los logros (5 minutos)
@@ -746,10 +757,10 @@ Tómate un tiempo para apreciar tu progreso:
 
 - Lee tu párrafo favorito de esta semana
 - Fíjate en las mejoras de tu escritura
-- Reconoce la constancia (¡te presentaste!)
+- Reconoce la constancia (¡te sentaste a escribir!)
 - Prémiate (un capricho, un descanso, lo que te motive)
 
-*Autocompasión*: si no cumpliste tu objetivo semanal, no pasa nada. ¡Progreso por encima de perfección!
+*Autocompasión*: si no cumpliste tu objetivo semanal, no pasa nada. Progreso por encima de perfección.
 
 ** Resumen de la revisión semanal
 
@@ -764,160 +775,160 @@ Tómate un tiempo para apreciar tu progreso:
 
 *Beneficio: perspectiva global, correcciones de rumbo, motivación*
 
-* Variaciones del flujo para distintos escritores
+* Variaciones del flujo para distintos estilos
 
 Puede que el flujo estándar no le encaje a todo el mundo. Estas son algunas variaciones:
 
-** El escritor de brújula (descubridor)
+** De brújula (descubridor)
 
 *Planificación mínima, máxima espontaneidad*
 
-**Mañana (3 min)**:
+*Mañana (3 min)*:
 - Abrir el manuscrito
 - Leer el último párrafo
-- Activar el modo de escritura
+- Activar el modo Sin distracciones
 - Empezar a escribir (sin fijar objetivos, solo escribir)
 
-**Escritura activa**:
+*Escritura activa*:
 - Escribir lo que venga
 - Capturar personajes y escenarios según aparecen
 - No planificar con antelación
 - Seguir la historia adonde lleve
 
-**Tarde (5 min)**:
+*Tarde (5 min)*:
 - Contar palabras
 - Guardar y copia de seguridad rápidas
-- ¡Y ya está!
+- Y ya está
 
-**Semanal**: un repaso breve, con una planificación menos formal
- 
-** El planificador (el de los planes detallados)
+*Semanal*: un repaso breve, con una planificación menos formal
+
+** De mapa (planificación detallada)
 
 *Planificación extensa, ejecución estructurada*
 
-**Mañana (10 min)**:
+*Mañana (10 min)*:
 - Repasar el esquema de la escena de hoy
 - Mirar las notas de personajes
 - Revisar la cronología
 - Fijar objetivos concretos de escena
-- Activar el modo de escritura
+- Activar el modo Sin distracciones
 
-**Escritura activa**:
+*Escritura activa*:
 - Seguir el esquema de cerca
 - Capturas frecuentes para los detalles nuevos
 - Consultar a menudo las fichas de personajes
 - Mantener la coherencia de la cronología
 
-**Tarde (15 min)**:
+*Tarde (15 min)*:
 - Actualizar todos los recuentos y mirar el planificador
 - Contrastar con el esquema
 - Ajustar el plan si hace falta
 - Actualizar las notas de revisión
 
-**Semanal**: revisión detallada, ajustar el esquema, planificar los capítulos siguientes
+*Semanal*: revisión detallada, ajustar el esquema, planificar los capítulos siguientes
 
-** El velocista (borrador rápido)
+** A toda velocidad (borrador rápido)
 
 *Mucho volumen, ritmo rápido*
 
-**Mañana (2 min)**:
+*Mañana (2 min)*:
 - Abrir el manuscrito
-- Activar el modo de escritura
+- Activar el modo Sin distracciones
 - Iniciar el temporizador
-- ¡ADELANTE!
+- A escribir
 
-**Escritura activa**:
+*Escritura activa*:
 - Escribir lo más rápido posible
 - Capturas mínimas (basta con soltar un marcador de nota)
 - Sin consultas (seguir tecleando)
 - No releer nada
 - Varios pomodoros seguidos
 
-**Tarde (5 min)**:
-- Contar palabras (¡cifras grandes!)
+*Tarde (5 min)*:
+- Contar palabras (cifras grandes)
 - Guardar
 - Listo
 
-**Semanal**: revisión de panorama general, pero sin frenar
+*Semanal*: revisión de panorama general, pero sin frenar
 
-** El pulidor (artesano cuidadoso)
+** Con pulido lento (cuidado artesanal)
 
 *Lento, deliberado, primer borrador de alta calidad*
 
-**Mañana (10 min)**:
+*Mañana (10 min)*:
 - Releer el trabajo de ayer
 - Hacer ediciones menores
 - Fijar el objetivo de hoy (puede ser de solo 200-300 palabras)
 - Activar el modo Enfoque
 
-**Escritura activa**:
+*Escritura activa*:
 - Escribir despacio y con cuidado
 - Consultas frecuentes al diccionario
 - Frases trabajadas
 - Varias pasadas de revisión por párrafo
 - Pocas palabras, mucha calidad
 
-**Tarde (15 min)**:
+*Tarde (15 min)*:
 - Varias lecturas del trabajo de hoy
 - Pulir y editar
 - Actualizar el seguimiento
 - Notas detalladas
 
-**Semanal**: menos cantidad, más revisión de la calidad
+*Semanal*: menos cantidad, más revisión de la calidad
 
 ** El de poco tiempo
 
 *Solo 30 minutos al día disponibles*
 
-**Mañana (0 min)**:
+*Mañana (0 min)*:
 - Sin rutina matinal
 - Meterse directamente
 
-**Escritura activa (25 min)**:
+*Escritura activa (25 min)*:
 - Cada segundo cuenta
 - Capturas mínimas
 - Escribir en fragmentos de frase si hace falta
 - Parar a mitad de frase si no hay más remedio
 
-**Tarde (5 min)**:
+*Tarde (5 min)*:
 - Recuento rápido
 - Una nota de una línea para mañana
 - Guardar
 
-**Semanal (1 hora)**:
+*Semanal (1 hora)*:
 - Hacer todo el seguimiento y la planificación que te saltaste a diario
 - Repasar y organizar las notas
 
-** El escritor de atracón (guerrero de fin de semana)
+** Por atracones (escribir solo el fin de semana)
 
 *Escribe en sesiones largas, pocos días por semana*
 
-**Inicio de sesión (10 min)**:
+*Inicio de sesión (10 min)*:
 - Repaso completo de la historia hasta ahora
 - Revisar todas las cronologías
 - Fijar un objetivo ambicioso para la sesión (2000 palabras o más)
 - Preparar comida y agua
 
-**Escritura activa (3-4 horas)**:
+*Escritura activa (3-4 horas)*:
 - Varias escenas en una sola sesión
 - Descansar cada hora
 - Capturas rápidas
 - El impulso es la clave
 
-**Fin de sesión (20 min)**:
+*Fin de sesión (20 min)*:
 - Contarlo todo
 - Actualizar todas las tablas
 - Notas extensas para la próxima sesión
 - Guardar y copia de seguridad
 
-**Semanal**: no aplica (las sesiones SON la revisión semanal)
+*Semanal*: no aplica (las sesiones son la revisión semanal)
 
 * Retos habituales del flujo de trabajo
 
 ** Reto 1: «No consigo ser constante»
 
 *Soluciones*:
-- Baja tu objetivo diario (¡100 palabras está bien!)
+- Baja tu objetivo diario (100 palabras está bien)
 - Escribe a la misma hora cada día (crea hábito)
 - Sigue tu racha (no rompas la cadena)
 - Quita fricción (abrir el proyecto con una sola pulsación)
@@ -928,7 +939,7 @@ Puede que el flujo estándar no le encaje a todo el mundo. Estas son algunas var
 *Soluciones*:
 - Pon un temporizador para planificar (5 minutos como máximo)
 - Sáltate de vez en cuando el repaso matinal
-- Haz las capturas DESPUÉS de la sesión de escritura
+- Haz las capturas después de la sesión de escritura
 - Recuerda: las notas organizadas no escriben el libro
 
 ** Reto 3: «No paro de editar el trabajo de ayer»
@@ -936,7 +947,7 @@ Puede que el flujo estándar no le encaje a todo el mundo. Estas son algunas var
 *Soluciones*:
 - Usa ~F8 f~ (modo Enfoque): solo ves la escena actual
 - Salta al final de inmediato (~M->~)
-- Fíjate una regla: ¡nada de subir!
+- Fíjate una regla: nada de subir
 - Empieza cada sesión con una escena nueva
 - Reserva la edición para el tiempo de revisión
 
@@ -952,17 +963,17 @@ Puede que el flujo estándar no le encaje a todo el mundo. Estas son algunas var
 
 *Soluciones*:
 - Sigue las palabras escritas (no el % del objetivo)
-- Celebra los pequeños logros (¡cualquier escritura es buena!)
+- Celebra los pequeños logros (cualquier escritura es buena)
 - Usa objetivos de tiempo en vez de recuento de palabras
 - Sáltate el seguimiento si te perjudica más de lo que te ayuda
-- Recuerda: cada escritor tiene su propio ritmo
+- Recuerda: cada cual tiene su propio ritmo
 
 ** Reto 6: «El flujo de trabajo me parece demasiado rígido»
 
 *Soluciones*:
 - Elige solo los pasos que te funcionan
 - Modifica el flujo para que encaje con tu estilo
-- Algunos días, sáltate el flujo entero: ¡simplemente escribe!
+- Algunos días, sáltate el flujo entero: simplemente escribe.
 - Los flujos de trabajo te sirven a ti, no al revés
 
 * Construir tu flujo de trabajo personal
@@ -980,7 +991,7 @@ Imagina tu día de escritura perfecto. Responde a estas preguntas:
    - 20-30 min / 1 hora / 2 o más horas / Todo el día
 
 3. *¿Cuánta planificación necesito?*
-   - Ninguna (escritor de brújula) / Algo / Detallada (planificador)
+   - Ninguna (de brújula) / Algo / Detallada (de mapa)
 
 4. *¿Cuál es mi objetivo diario realista?*
    - 100-250 palabras / 250-500 / 500-1000 / 1000 o más
@@ -989,7 +1000,7 @@ Imagina tu día de escritura perfecto. Responde a estas preguntas:
    - Recuento de palabras / Escenas terminadas / Tiempo dedicado / Racha
 
 6. *¿Qué me descarrila?*
-   - Editar / Investigar / Redes sociales / Dudas sobre mí mismo
+   - Editar / Investigar / Redes sociales / Inseguridad
 
 ** Diseña tu rutina matinal
 
@@ -1008,7 +1019,7 @@ Ejemplos:
 - Abrir el manuscrito y leer el último párrafo
 - Mirar el recuento de palabras de ayer
 - Fijar el objetivo de hoy
-- Activar el modo de escritura
+- Activar el modo Sin distracciones
 - Preparar un café
 - Cerrar el navegador
 - Iniciar el temporizador
@@ -1036,7 +1047,7 @@ Ejemplos:
 
 ** Comprométete con tu flujo de trabajo
 
-Escribe tu flujo personalizado en el Cuaderno de borradores de tu cuaderno de diseño o en tus notas:
+Escribe tu flujo personalizado en el cuaderno de diseño (parte Borradores) o en tus notas:
 
 #+BEGIN_EXAMPLE
 ,* Mi flujo de escritura
@@ -1047,7 +1058,7 @@ Escribe tu flujo personalizado en el Cuaderno de borradores de tu cuaderno de di
 - Paso 3
 
 ,** Escritura activa
-- Objetivo: X palabras O X tiempo
+- Objetivo: X palabras o X tiempo
 - Herramientas que usar: [lista]
 - Cosas que evitar: [lista]
 
@@ -1081,9 +1092,9 @@ Ya tienes un marco completo para la productividad de escritura diaria.
   - Celebración de los logros
 
 ✓ *Variaciones del flujo*
-  - Brújula frente a planificador
-  - Velocista frente a pulidor
-  - De poco tiempo frente a atracón
+  - De brújula frente a de mapa
+  - A toda velocidad frente a con pulido lento
+  - De poco tiempo frente a por atracones
   - Personalización para tu estilo
 
 ✓ *Integración de herramientas*
@@ -1108,7 +1119,7 @@ Ya tienes un marco completo para la productividad de escritura diaria.
 3. *Separa la creación de la edición*: escribe ahora, arregla después
 4. *Sigue el progreso*: lo que se mide, mejora
 5. *Celebra los logros*: reconoce cada sesión de escritura
-6. *Personaliza con libertad*: tu flujo debe sentirse natural
+6. *Personaliza con libertad*: tu flujo debe resultar natural
 7. *Perdónate*: los días perdidos ocurren; simplemente reinicia
 
 ** Tu lista de comprobación del flujo de trabajo
@@ -1121,7 +1132,7 @@ Crea una tarjeta de referencia para tu escritorio:
 ═══════════════════════════════════════
 
 MAÑANA (5 min)
-□ Abrir el manuscrito (orden escribir)
+□ Abrir el manuscrito (alias escribir)
 □ Leer el último párrafo
 □ Mirar el progreso
 □ Fijar objetivo: ____ palabras
@@ -1131,7 +1142,7 @@ ESCRITURA (__ min/horas)
 □ Escribir de forma continua
 □ Capturas rápidas (F8 k h/l, F8 n para una nota)
 □ Dejar marcadores de nota para después
-□ ¡Sin editar!
+□ Sin editar
 
 TARDE (10 min)
 □ Contar palabras (F8 w)
@@ -1143,7 +1154,7 @@ TARDE (10 min)
 ═══════════════════════════════════════
 Racha actual: ___ días
 Total de palabras: _____
-¡Tú puedes! ✍
+Tú puedes.
 ═══════════════════════════════════════
 #+END_EXAMPLE
 
@@ -1157,10 +1168,10 @@ Pasa a la [[file:primeros-pasos-14-flujo-revision.org][Lección 14: Flujo de rev
 
 ** Libros de productividad para escritores
 
-- *«La guerra del arte»* (/The War of Art/), de Steven Pressfield: cómo vencer la resistencia
-- *«Pájaro a pájaro»* (/Bird by Bird/), de Anne Lamott: la práctica diaria de la escritura
-- *«Mientras escribo»* (/On Writing/), de Stephen King: la rutina y la disciplina del escritor
-- *«La vida de escritor»* (/The Writing Life/), de Annie Dillard: una mirada honesta al día del escritor
+- /La guerra del arte/ (/The War of Art/), de Steven Pressfield: cómo vencer la resistencia
+- /Pájaro a pájaro/ (/Bird by Bird/), de Anne Lamott: la práctica diaria de la escritura
+- /Mientras escribo/ (/On Writing/), de Stephen King: la rutina y la disciplina del escritor
+- /The Writing Life/, de Annie Dillard: una mirada honesta al día a día de quien escribe
 
 ** Técnicas de gestión del tiempo
 
@@ -1195,7 +1206,7 @@ Comparte tu flujo y aprende de los demás:
 - *Creada*: 2025-11-16
 - *Última actualización*: 2025-11-16
 - *Número de lección*: 13 de 19
-- *Parte*: 5 - Flujos de trabajo y buenas prácticas
+- *Parte*: 5 - Flujos de trabajo, buenas prácticas e integraciones
 - *Tiempo estimado*: 15-20 minutos
 - *Dificultad*: intermedia
 - *Requisitos previos*: conocer las funciones de las Lecciones 1-12

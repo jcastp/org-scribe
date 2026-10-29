@@ -8,7 +8,7 @@
 
 /[[file:../manual/getting-started-12-dictionary-tools.org][English version]]/
 
-* ¡Bienvenido a la Lección 12!
+* Te damos la bienvenida a la Lección 12
 
 Estás metido de lleno en la escritura y te topas con una palabra que no acaba de sonar bien. ¿Paras, abres un navegador, buscas sinónimos y pierdes el hilo? Ya no. Esta lección te enseña a consultar definiciones, buscar sinónimos y obtener traducciones sin salir de Emacs.
 
@@ -34,10 +34,10 @@ Al terminar la lección habrás:
 ** Nota sobre los idiomas
 
 Estas herramientas son especialmente útiles para:
-- *Escritores en español* que usan el diccionario de la RAE para tener definiciones de referencia
-- *Escritores bilingües* que alternan entre idiomas
-- *Escritores en inglés* que buscan sinónimos (para el inglés, ver «Cambiar de idioma» más abajo)
-- *Escritores en una segunda lengua* que comprueban el uso y el significado de las palabras
+- *Quien escribe en español* y usa el diccionario de la RAE para tener definiciones de referencia
+- *Quien escribe en dos idiomas* y alterna entre ellos
+- *Quien escribe en inglés* y busca sinónimos (para el inglés, ver «Cambiar de idioma» más abajo)
+- *Quien escribe en una segunda lengua* y comprueba el uso y el significado de las palabras
 
 Las herramientas funcionan con las plantillas en inglés y en español de ~org-scribe~.
 
@@ -49,7 +49,7 @@ Verifiquemos que el módulo del diccionario está cargado:
 2. Empieza a escribir: ~org-scribe-dictionary-lookup~
 3. Debería aparecer en la lista de completado
 
-Si aparece, estás listo. Las herramientas de diccionario forman parte del paquete principal.
+Si aparece, todo está en orden. Las herramientas de diccionario forman parte del paquete principal.
 
 * Entender las herramientas disponibles
 
@@ -200,7 +200,7 @@ El búfer de resultados está en modo Org, así que puedes:
 - Pulsar ~q~ para cerrar el búfer
 - Copiar definiciones directamente a tus notas
 
-** Ejemplo: ¡pruébalo ahora!
+** Ejemplo: pruébalo ahora
 
 Practiquemos:
 
@@ -242,11 +242,11 @@ La API ofrece sugerencias de palabras de ortografía parecida. Cierra este búfe
 
 Pulsa ~M-x~ y escribe ~org-scribe-rae-api-random~: obtiene una palabra al azar del diccionario de la RAE y muestra su definición. Es estupendo para:
 - Descubrir palabras nuevas
-- Romper un bloqueo de escritor
+- Superar un bloqueo
 - Practicar vocabulario a diario
 - Encontrar inspiración inesperada
 
-* Instalar las definiciones sin conexión (opcional, ~30 minutos)
+* Instalar las definiciones sin conexión (opcional, unos 30 minutos)
 
 Es la más pesada de las dos instalaciones sin conexión: una descarga de 566 MB y un servicio en segundo plano. Merece la pena si escribes sin conexión; sáltatela si no: la RAE en línea sigue funcionando, y la instalación del *tesauro* de la sección siguiente es mucho más barata y te ayuda más a menudo mientras redactas.
 
@@ -296,7 +296,7 @@ systemctl --user enable --now kiwix-serve.service
 systemctl --user status kiwix-serve.service
 #+END_SRC
 
-Para probarlo antes de comprometerte con un servicio, ejecútalo en una terminal:
+Para probarlo antes de instalarlo como servicio, ejecútalo en una terminal:
 
 #+BEGIN_SRC sh
 kiwix-serve --port 8080 ~/zim/wiktionary_es_all_nopic.zim
@@ -315,7 +315,7 @@ No hay nada más que configurar: org-scribe le pregunta al servidor qué libro c
 
 La misma orden, la misma tecla. Las definiciones llegan ahora al instante y sin conexión, y además:
 
-- *Las palabras flexionadas se resuelven.* Al consultar ~corriendo~ se abre ~correr~ y te lo dice. El Wikcionario sí tiene una página ~corriendo~, pero todo su contenido es «Gerundio de correr»; seguir ese puntero es lo que querías de todos modos.
+- *Las palabras flexionadas se resuelven.* Al consultar ~corriendo~ se abre ~correr~ y te lo dice. El Wikcionario sí tiene una página ~corriendo~, pero todo su contenido es «Gerundio de correr»; seguir esa remisión es lo que querías de todos modos.
 - *Una palabra ausente se informa como ausente*, con sugerencias, en lugar de irse en silencio a la red. Esa distinción importa: si no, un hueco en tus datos locales se ve igual que una consulta normal en línea. Con el ajuste por defecto (~auto~), org-scribe te /ofrece/ entonces consultar la RAE en línea.
 
 ** Si arrancas el servidor después de Emacs
@@ -488,14 +488,13 @@ Sin datos locales, o para una palabra sin entrada local, org-scribe pregunta por
 │ Alex buscó la llave.       │ #+TITLE: Sinónimos: buscar       │
 │ Sam buscó detrás.          │                                  │
 │                            │ * Acepción 1 /tr./               │
-│ «Buscó»: ¡hace falta un    │ indagar, investigar, explorar,   │
+│ «Buscó»: hace falta un     │ indagar, investigar, explorar,   │
 │ sinónimo!                  │ rastrear                         │
 └────────────────────────────┴──────────────────────────────────┘
 #+END_EXAMPLE
 
 La respuesta llega de forma asíncrona. Si la palabra no existe o no tiene sinónimos, se avisa en el área de eco («No se encontraron sinónimos para: …»); nunca queda un búfer en blanco.
 
-(El original inglés dice aquí que el respaldo en línea era una página de WordReference en un navegador eww. Ya no es así: WordReference dejó de responder y el respaldo es la API de la RAE, que se pinta como el resto.)
 
 ** Navegación en la ventana lateral
 
@@ -545,7 +544,7 @@ Lo predeterminado le sirve a casi todo el mundo: sin conexión cuando se puede, 
 
 *En línea*: la API de la RAE solo cubre el español. Para sinónimos en inglés, instala los datos de MyThes en inglés o usa ~F8 x~ (ver «Cambiar de idioma» más abajo); también puedes visitar a mano un sitio web con ~M-x eww~, por ejemplo ~https://www.wordreference.com/synonyms/~ seguido de tu palabra.
 
-** Ejemplo: ¡pruébalo ahora!
+** Ejemplo: pruébalo ahora
 
 Busquemos sinónimos:
 
@@ -557,7 +556,7 @@ Busquemos sinónimos:
 
 Ahora prueba con una forma flexionada: ~F8 y~ y luego ~caminaba~. Si hunspell está instalado, obtendrás la entrada de ~caminar~, con una línea que te lo dice.
 
-** Consejo profesional: mantenla abierta
+** Consejo: mantenla abierta
 
 Puedes dejar abierta la ventana de sinónimos mientras escribes:
 1. Busca una palabra (~F8~ y luego ~y~)
@@ -642,7 +641,7 @@ Ahora ~C-c t~ traduce la palabra bajo el cursor o el texto seleccionado.
 ** Nota sobre el rendimiento
 
 La traducción requiere conexión a internet y llamadas a una API. Si trabajas sin conexión:
-- Usa el diccionario de la RAE (falla con elegancia sin red, pero funciona en línea)
+- Usa el diccionario de la RAE (avisa sin romper nada si no hay red, y funciona en línea)
 - Usa listas locales de sinónimos
 - Guarda en tus archivos de notas las traducciones que necesites a menudo
 
@@ -661,7 +660,7 @@ Estás escribiendo y dudas de una palabra:
 5. Elige una palabra mejor de la lista de sinónimos
 6. Cierra las ventanas de consulta y continúa
 
-*Tiempo*: 30 segundos. ¡Ritmo mantenido!
+*Tiempo*: 30 segundos, sin perder el ritmo.
 
 ** Flujo 2: Arreglar una repetición
 
@@ -689,7 +688,7 @@ Quieres entender el significado más profundo de una palabra:
 
 *Ventaja*: elecciones de palabras más ricas e intencionadas.
 
-** Flujo 4: El escritor bilingüe
+** Flujo 4: Escribir en dos idiomas
 
 Escribes en español pero piensas en inglés:
 
@@ -702,7 +701,7 @@ Escribes en español pero piensas en inglés:
 
 *Precisión*: te asegura que usas la palabra española correcta, no solo una traducción literal.
 
-** Flujo 5: El constructor de vocabulario diario
+** Flujo 5: Una palabra nueva cada día
 
 Como parte de tu rutina diaria de escritura:
 
@@ -719,10 +718,10 @@ Como parte de tu rutina diaria de escritura:
 
 Desde el menú Hydra (~F8~):
 
-| Tecla | Herramienta | Velocidad                                 |
-|-------+-------------+-------------------------------------------|
-| d     | Diccionario | Instantáneo sin conexión / media en línea |
-| y     | Sinónimos   | Instantáneo sin conexión / media en línea |
+| Tecla | Herramienta | Velocidad                                         |
+|-------+-------------+---------------------------------------------------|
+| d     | Diccionario | Instantánea sin conexión; algo más lenta en línea |
+| y     | Sinónimos   | Instantánea sin conexión; algo más lenta en línea |
 
 *Consejo*: con el tiempo, ~F8 d~ se vuelve memoria muscular.
 
@@ -811,7 +810,7 @@ Practiquemos con las tres herramientas en un escenario realista.
 Este es un párrafo de ejemplo en español con algunas elecciones de palabras flojas:
 
 #+BEGIN_EXAMPLE
-María caminó hasta la puerta. Estaba triste. Dijo "adiós" con voz triste.
+María caminó hasta la puerta. Estaba triste. Dijo «adiós» con voz triste.
 Juan también estaba triste. El día estaba malo.
 #+END_EXAMPLE
 
@@ -830,8 +829,8 @@ Juan también estaba triste. El día estaba malo.
 
 Sustituye las tres apariciones de «triste» por variantes:
 - «Estaba melancólica»
-- «Dijo "adiós" con voz apesadumbrada»
-- «Juan también estaba afligido»
+- «Dijo “adiós” con voz apesadumbrada»
+- «Juan estaba afligido»
 
 ** Paso 2: Comprueba el significado de «melancólica»
 
@@ -847,23 +846,23 @@ Asegurémonos de que «melancólica» es la palabra adecuada:
 1. ~F8~ y luego ~y~
 2. Escribe: ~malo~
 3. Sinónimos para el contexto del tiempo: gris, nublado, sombrío, tormentoso
-4. Elige: «El día estaba sombrío»
+4. Elige: «El día era sombrío»
 
 ** Paso 4: Arregla «dijo» con una mejor etiqueta de diálogo
 
 1. ~F8~ y luego ~y~
 2. Escribe: ~dijo~ (se resolverá a ~decir~)
 3. Busca alternativas: susurró, murmuró, pronunció
-4. Elige: «Susurró "adiós"»
+4. Elige: «Susurró “adiós”»
 
 ** Párrafo mejorado
 
 #+BEGIN_EXAMPLE
-María caminó hasta la puerta. Estaba melancólica. Susurró "adiós"
-con voz apesadumbrada. Juan también estaba afligido. El día estaba sombrío.
+María caminó hasta la puerta. Estaba melancólica. Susurró «adiós»
+con voz apesadumbrada. Juan estaba afligido. El día era sombrío.
 #+END_EXAMPLE
 
-*¡Mucho mejor!* Vocabulario variado, un tono emocional más fuerte, más evocador.
+*Mucho mejor.* Vocabulario variado, un tono emocional más fuerte, más evocador.
 
 ** Tu turno
 
@@ -907,7 +906,7 @@ O redimensiónala a mano con ~C-x }~ (agrandar) y ~C-x {~ (reducir).
 *Solución*:
 1. Verifica la instalación de gt: ~M-x package-list-packages~, busca «gt»
 2. Prueba la traducción manual en la web como alternativa
-3. Considera una VPN si el servicio está bloqueado
+3. Plantéate usar una VPN si el servicio está bloqueado
 
 ** «Demasiadas consultas me rompen el ritmo»
 
@@ -918,7 +917,7 @@ O redimensiónala a mano con ~C-x }~ (agrandar) y ~C-x {~ (reducir).
 
 * Resumen y puntos clave
 
-¡Enhorabuena! Has aprendido a usar las herramientas de idioma integradas sin salir de Emacs.
+Enhorabuena: has aprendido a usar las herramientas de idioma integradas sin salir de Emacs.
 
 ** Lo que has aprendido
 
@@ -979,17 +978,17 @@ Ahora que tienes las herramientas de idioma a mano:
 
 ** Sigue aprendiendo
 
-¿Listo para establecer un flujo de trabajo diario completo? Pasa a la [[file:primeros-pasos-13-flujo-diario.org][Lección 13: Flujo de escritura diario]] para aprender a unir todas estas funciones en una rutina eficiente.
+¿Quieres establecer un flujo de trabajo diario completo? Pasa a la [[file:primeros-pasos-13-flujo-diario.org][Lección 13: Flujo de escritura diario]] para aprender a unir todas estas funciones en una rutina eficiente.
 
 * Recursos adicionales
 
-** Para escritores en español
+** Si escribes en español
 
 - *RAE en línea*: https://rae.es/ (sitio web oficial)
 - *WordReference*: https://www.wordreference.com/sinonimos/ (sinónimos)
 - *Fundéu*: https://www.fundeu.es/ (fundación del español urgente)
 
-** Para escritores en inglés
+** Si escribes en inglés
 
 - *WordReference*: https://www.wordreference.com/synonyms/ (sinónimos en inglés)
 - *Powerthesaurus*: paquete de Emacs para sinónimos en inglés (se instala por separado)
@@ -1017,4 +1016,4 @@ Ahora que tienes las herramientas de idioma a mano:
 - *Dificultad*: de principiante a intermedio
 - *Requisitos previos*: flujo de escritura básico, conexión a internet
 
-¡Feliz escritura, y que siempre encuentres la palabra perfecta! 📖✨
+¡A escribir, y que siempre encuentres la palabra perfecta!
