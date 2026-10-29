@@ -420,7 +420,7 @@ This one variable drives both ends: the index groups by it, and the bundled Temp
 
 ** The Plain-Text Fallback
 
-~org-scribe-edit-string~ is the regexp used by ~org-scribe-search-edits-rgrep~ (the ~C-u~ variant of ~F8 F8 6~), not by the structured index. Customize it if you use marker styles of your own:
+~org-scribe-edit-string~ is the regexp used by ~org-scribe-search-edits-rgrep~ (the ~C-u~ variant of ~F8 6~), not by the structured index. Customize it if you use marker styles of your own:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")
@@ -490,7 +490,7 @@ background service).
 
 org-scribe never starts or supervises kiwix-serve — it probes and reports.
 Availability is cached per session, so if you start the server after Emacs,
-press ~C-u~ before the lookup (~C-u F8 F8 d~) or run
+press ~C-u~ before the lookup (~C-u F8 d~) or run
 ~M-x org-scribe-wikcionario-clear-cache~.
 
 ** Thesaurus Source
@@ -674,7 +674,7 @@ dictionary even when your default is English. A language with no entry, or an
 entry of ~nil~, means "write no dictionary" rather than guessing one.
 
 To apply a change to projects that already exist, or to give an older project
-its first ~.dir-locals.el~, run ~M-x org-scribe-update-dir-locals~ (~F8 F8 L D~)
+its first ~.dir-locals.el~, run ~M-x org-scribe-update-dir-locals~ (~F8 L D~)
 inside the project. It reads the language from the marker file and asks before
 replacing an existing file. The project health report flags a missing or
 mismatched dictionary in its Overview.
@@ -912,11 +912,11 @@ Only active in org-mode:
 
 ** Alternative: Use the Hydra
 
-If you like the Hydra menu (~F8 F8~), you can rebind it:
+If you like the Hydra menu (~F8~), you can rebind it:
 
 #+BEGIN_SRC emacs-lisp
 ;; Change Hydra binding
-(global-set-key (kbd "C-c m") 'hydra-org-scribe/body)  ; Instead of F8 F8
+(global-set-key (kbd "C-c m") 'hydra-org-scribe/body)  ; Instead of F8
 
 ;; Or add multiple bindings
 (global-set-key (kbd "<f9>") 'hydra-org-scribe/body)   ; F9 also opens it
@@ -1137,7 +1137,7 @@ Test a width change:
 M-x set-variable RET org-scribe-env-work-width RET 70 RET
 #+END_EXAMPLE
 
-Then activate writing mode (~F8 F8 m~) to see the effect.
+Then activate writing mode (~F8 m~) to see the effect.
 
 ** Reverting Changes
 
@@ -1336,7 +1336,7 @@ Pick 3-5 features you use most:
 1. Save init file: ~C-x C-s~
 2. Reload: ~M-x load-file RET ~/.emacs.d/init.el RET~
 3. Open a writing project
-4. Test writing mode: ~F8 F8 m~
+4. Test writing mode: ~F8 m~
 5. Test keybindings: ~C-c w m~
 
 *Does everything work?*

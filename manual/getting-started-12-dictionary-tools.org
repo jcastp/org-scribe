@@ -53,7 +53,7 @@ If you see it, you're ready! The dictionary tools are part of the core package.
 
 ** 1. Definitions (offline or online)
 
-Definition lookup is one command, ~org-scribe-dictionary-lookup~ (~F8 F8 d~),
+Definition lookup is one command, ~org-scribe-dictionary-lookup~ (~F8 d~),
 with two possible sources behind it:
 
 *Online — the RAE API* (the default when nothing local is set up):
@@ -142,7 +142,7 @@ Just have your cursor anywhere - you'll type the word when prompted.
 
 ** Step 2: Invoke the Dictionary
 
-Press ~F8 F8~ to open the Hydra menu, then press ~d~ (for "Dictionary")
+Press ~F8~ to open the Hydra menu, then press ~d~ (for "Dictionary")
 
 You'll see a prompt:
 #+BEGIN_EXAMPLE
@@ -215,7 +215,7 @@ The results buffer is in Org-mode, so you can:
 
 Let's practice:
 
-1. Press ~F8 F8~ then ~d~
+1. Press ~F8~ then ~d~
 2. Type: ~buscar~
 3. Press ~Enter~
 4. Explore the definitions, synonyms, and conjugations
@@ -349,7 +349,7 @@ cost no waiting. A server started later is therefore not noticed. Force a
 fresh check with a prefix argument:
 
 #+BEGIN_EXAMPLE
-C-u F8 F8 d
+C-u F8 d
 #+END_EXAMPLE
 
 or run ~M-x org-scribe-wikcionario-clear-cache~.
@@ -465,7 +465,7 @@ Sometimes you need alternatives quickly. One command covers both sources.
 
 ** Step 1: Invoke Synonym Search
 
-Press ~F8 F8~ to open the Hydra menu, then press ~y~ (for "sYnonyms")
+Press ~F8~ to open the Hydra menu, then press ~y~ (for "sYnonyms")
 
 You'll see a prompt:
 #+BEGIN_EXAMPLE
@@ -608,19 +608,19 @@ visit the English site manually — ~M-x eww~, then
 
 Let's find synonyms:
 
-1. Press ~F8 F8~ then ~y~
+1. Press ~F8~ then ~y~
 2. Type: ~hermoso~ (beautiful)
 3. Press ~Enter~
 4. Browse the senses: precioso, bello, lindo, etc.
 5. Press ~q~ to close the window
 
-Now try an inflected form — ~F8 F8 y~, then ~caminaba~. If hunspell is
+Now try an inflected form — ~F8 y~, then ~caminaba~. If hunspell is
 installed you'll get the entry for ~caminar~, with a line telling you so.
 
 ** Pro Tip: Keep It Open
 
 You can keep the synonym window open while you write:
-1. Look up a word (~F8 F8~ then ~y~)
+1. Look up a word (~F8~ then ~y~)
 2. Click on your manuscript window to continue writing
 3. The synonym window stays visible on the right
 4. Look up more words as needed
@@ -715,9 +715,9 @@ Let's see how to integrate these tools into your writing process.
 You're writing and unsure about a word:
 
 1. Select the word in your manuscript
-2. ~F8 F8~ then ~d~ - Check RAE definition
+2. ~F8~ then ~d~ - Check RAE definition
 3. Review meanings - is this the right sense?
-4. If not, ~F8 F8~ then ~y~ - Find synonyms
+4. If not, ~F8~ then ~y~ - Find synonyms
 5. Pick a better word from the synonym list
 6. Close the lookup windows and continue
 
@@ -728,7 +728,7 @@ You're writing and unsure about a word:
 You've used "said" five times in one page:
 
 1. Position cursor on the first "said"
-2. ~F8 F8~ then ~y~ - Look up synonyms
+2. ~F8~ then ~y~ - Look up synonyms
 3. Keep the synonym window open on the right
 4. Go through each "said" in your text
 5. Replace with variations: declaró, afirmó, comentó, expresó, señaló
@@ -740,7 +740,7 @@ You've used "said" five times in one page:
 
 You want to understand a word's deeper meaning:
 
-1. ~F8 F8~ then ~d~ - RAE lookup
+1. ~F8~ then ~d~ - RAE lookup
 2. Read the *Etimología* section
 3. Understand the word's historical roots
 4. Note any related words or meanings
@@ -756,7 +756,7 @@ You're writing in Spanish but thinking in English:
 1. Think of the English word you want
 2. ~M-x gt-do-translate~ - Translate to Spanish
 3. See the Spanish translation
-4. ~F8 F8~ then ~d~ - Check RAE definition of the Spanish word
+4. ~F8~ then ~d~ - Check RAE definition of the Spanish word
 5. Confirm it has the exact meaning you want
 6. Use it in your text
 
@@ -777,14 +777,14 @@ As part of your daily writing routine:
 
 ** Keyboard Shortcuts Summary
 
-From the Hydra menu (~F8 F8~):
+From the Hydra menu (~F8~):
 
 | Key | Tool       | Speed                           |
 |-----+------------+---------------------------------|
 | d   | Dictionary | Instant offline / medium online |
 | y   | Synonyms   | Instant offline / medium online |
 
-*Tip*: After a while, ~F8 F8 d~ becomes muscle memory!
+*Tip*: After a while, ~F8 d~ becomes muscle memory!
 
 ** Creating Your Own Keybindings
 
@@ -850,11 +850,11 @@ For a deliberately disconnected writing session:
 If you write in multiple languages, organize your tools:
 
 *For Spanish*:
-- ~F8 F8 d~ - RAE dictionary
-- ~F8 F8 y~ - Spanish synonyms
+- ~F8 d~ - RAE dictionary
+- ~F8 y~ - Spanish synonyms
 
 *For English*:
-- Install the ~powerthesaurus~ package, then press ~F8 F8 x~ (already bound in the hydra's Tools section — it just does nothing useful until the package is installed)
+- Install the ~powerthesaurus~ package, then press ~F8 x~ (already bound in the hydra's Tools section — it just does nothing useful until the package is installed)
 - Or manual WordReference: ~M-x eww~ → ~https://www.wordreference.com/synonyms/word~
 
 *For Translation*:
@@ -864,9 +864,9 @@ If you write in multiple languages, organize your tools:
 
 Save useful lookups for later:
 
-1. Look up a word with ~F8 F8 d~
+1. Look up a word with ~F8 d~
 2. Copy the definition (select text, ~M-w~)
-3. ~F8 F8 n~ - Capture a note
+3. ~F8 n~ - Capture a note
 4. Paste the definition
 5. Add your thoughts
 
@@ -894,7 +894,7 @@ Juan también estaba triste. El día estaba malo.
 ** Step 1: Fix "triste" Repetition
 
 1. Position cursor on the first "triste"
-2. ~F8 F8~ then ~y~
+2. ~F8~ then ~y~
 3. Type: ~triste~
 4. Browse synonyms: melancólica, apesadumbrada, apenada, afligida, desconsolada
 
@@ -907,21 +907,21 @@ Replace the three instances of "triste" with variations:
 
 Let's make sure "melancólica" is right:
 
-1. ~F8 F8~ then ~d~
+1. ~F8~ then ~d~
 2. Type: ~melancólico~
 3. Read definition: "Que padece melancolía, que denota o incluye este sentimiento"
 4. Perfect! It fits the emotional tone we want.
 
 ** Step 3: Improve "malo"
 
-1. ~F8 F8~ then ~y~
+1. ~F8~ then ~y~
 2. Type: ~malo~
 3. Synonyms for weather context: gris, nublado, sombrío, tormentoso
 4. Choose: "El día estaba sombrío" (the day was gloomy)
 
 ** Step 4: Fix "dijo" with Better Dialogue Tag
 
-1. ~F8 F8~ then ~y~
+1. ~F8~ then ~y~
 2. Type: ~dijo~
 3. Find alternatives: susurró, murmuró, pronunció
 4. Choose: "Susurró 'adiós'" (whispered goodbye)
@@ -941,8 +941,8 @@ Try this exercise with your own writing:
 
 1. Find a paragraph you wrote today
 2. Identify repeated or weak words
-3. Use ~F8 F8 y~ to find synonyms
-4. Use ~F8 F8 d~ to verify meanings
+3. Use ~F8 y~ to find synonyms
+4. Use ~F8 d~ to verify meanings
 5. Replace weak words with stronger alternatives
 6. Read the paragraph again - notice the improvement?
 
@@ -992,14 +992,14 @@ Congratulations! You've learned how to use integrated language tools without lea
 
 ** What You Learned
 
-✓ *RAE Dictionary* (~F8 F8 d~)
+✓ *RAE Dictionary* (~F8 d~)
   - Official Spanish definitions
   - Etymology and word origins
   - Synonyms and antonyms
   - Verb conjugations
   - Random word discovery
 
-✓ *WordReference Synonyms* (~F8 F8 y~)
+✓ *WordReference Synonyms* (~F8 y~)
   - Quick synonym lookups
   - Side window for easy reference
   - Browse while writing
@@ -1030,9 +1030,9 @@ Congratulations! You've learned how to use integrated language tools without lea
 
 | Task                       | Command                   | Hydra        |
 |----------------------------+---------------------------+--------------|
-| Spanish definition         | org-scribe-rae-api-lookup | F8 F8 d      |
+| Spanish definition         | org-scribe-rae-api-lookup | F8 d      |
 | Random word                | org-scribe-rae-api-random | M-x command  |
-| Synonyms                   | org-scribe-sinonimo       | F8 F8 y      |
+| Synonyms                   | org-scribe-sinonimo       | F8 y      |
 | Translation (if installed) | gt-do-translate           | (custom key) |
 | Close lookup window        | (in window) q             | -            |
 | Resize synonym window      | C-x } / C-x {             | -            |

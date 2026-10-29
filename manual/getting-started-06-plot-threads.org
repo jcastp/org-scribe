@@ -26,7 +26,7 @@ Before starting this lesson, you should have completed:
 - [[file:getting-started-04-capturing-characters.org][Lesson 4: Capturing Characters]] (recommended - same linking system)
 
 You should understand:
-- How to use the Hydra menu (F8 F8)
+- How to use the Hydra menu (F8)
 - Basic Org-mode properties
 - ID-based linking concepts
 - Scene properties
@@ -219,19 +219,19 @@ scenes and checked by the health report.
 
 Once a scene serves one of the thirteen, tag it:
 
-: F8 F8 G     (org-scribe-set-scene-plot-points)
+: F8 G     (org-scribe-set-scene-plot-points)
 
 Pick from the list; the scene's ~:Plot-point:~ property gets an ID link, the
 same mechanism as every other entity. To go the other way — from a scene to
 the plot point it serves — use:
 
-: F8 F8 L J   (org-scribe-jump-to-plot-point)
+: F8 L J   (org-scribe-jump-to-plot-point)
 
-If your project predates the linking setup, ~F8 F8 L P~ mints the IDs once.
+If your project predates the linking setup, ~F8 L P~ mints the IDs once.
 
 ** Why This Matters More Than It Looks
 
-The project health report (~F8 F8 H~) lists *every one of the thirteen that no
+The project health report (~F8 H~) lists *every one of the thirteen that no
 scene serves yet*. That single list is the method's own completeness check,
 mechanized: a plot point nothing serves is either a scene you have not written
 or a structural hole you have not noticed. It is the most useful thing in the
@@ -352,7 +352,7 @@ Let's explore what's in the plot thread capture template.
 
 ** Accessing the Template
 
-Press: ~F8 F8 k g~ (F8 twice for the main menu, ~k~ for the capture-entity submenu, then ~g~ for "plot thread")
+Press: ~F8 k g~ (F8 twice for the main menu, ~k~ for the capture-entity submenu, then ~g~ for "plot thread")
 
 Or use: ~M-x org-scribe-capture-plot-thread~
 
@@ -639,13 +639,13 @@ hand-maintained list of scenes goes stale the first week of drafting, and a
 stale list is worse than none, because you stop checking it against the
 manuscript.
 
-Instead, tag each scene with the thread it advances (~F8 F8 g~) and let the
+Instead, tag each scene with the thread it advances (~F8 g~) and let the
 links answer the question whenever you ask it:
 
 | Want                                    | Use                                       |
 |-----------------------------------------+-------------------------------------------|
-| Every scene on this thread              | ~F8 F8 3~ (search by plot thread)         |
-| Which threads run through which chapters | ~F8 F8 L t~ (plot thread report)          |
+| Every scene on this thread              | ~F8 3~ (search by plot thread)         |
+| Which threads run through which chapters | ~F8 L t~ (plot thread report)          |
 | Where the gaps are                      | plot timeline and statistics, below       |
 
 All three are current by construction, because they read the manuscript rather
@@ -801,7 +801,7 @@ Let's create a plot thread profile together using the implemented capture system
 
 ** Step 1: Invoke Capture
 
-Press: ~F8 F8 k g~ (F8 twice for the main menu, ~k~ for the capture-entity submenu, then ~g~ for "plot thread")
+Press: ~F8 k g~ (F8 twice for the main menu, ~k~ for the capture-entity submenu, then ~g~ for "plot thread")
 
 Or use: ~M-x org-scribe-capture-plot-thread~
 
@@ -962,7 +962,7 @@ Once you have plot thread profiles with IDs, link them to scenes.
 
 1. Open your manuscript (novel.org or story.org)
 2. Navigate to a scene heading
-3. Press: ~F8 F8 g~ (a top-level Tag Scene action — not a submenu)
+3. Press: ~F8 g~ (a top-level Tag Scene action — not a submenu)
 
 Or use: ~M-x org-scribe-set-scene-plot-threads~
 
@@ -1055,7 +1055,7 @@ When in a scene with a linked plot thread:
 
 OR
 
-Press: ~F8 F8 L j~ (Links & upkeep submenu, jump)
+Press: ~F8 L j~ (Links & upkeep submenu, jump)
 
 You jump to the full plot thread profile!
 
@@ -1137,7 +1137,7 @@ Find all scenes that develop a specific plot thread using the search system.
 
 ** Command
 
-Press: ~F8 F8 3~ (search by plot)
+Press: ~F8 3~ (search by plot)
 
 Or use: ~M-x org-scribe-org-find-plot~
 
@@ -1419,7 +1419,7 @@ Let's practice plot thread management end-to-end.
 
 *** Plot Thread 1: The Main Line
 
-1. Press: ~F8 F8 k g~
+1. Press: ~F8 k g~
 2. Name: ~[Your main line - what's your story about?]~
 3. Fill properties:
    - Type: ~Main~
@@ -1432,7 +1432,7 @@ Let's practice plot thread management end-to-end.
 
 *** Plot Thread 2: A Subplot
 
-1. Press: ~F8 F8 k g~
+1. Press: ~F8 k g~
 2. Name: ~[A relationship, internal journey, or secondary goal]~
 3. Fill properties:
    - Type: ~Subplot~
@@ -1447,7 +1447,7 @@ Let's practice plot thread management end-to-end.
 
 *** Plot Thread 3: A Smaller Subplot
 
-1. Press: ~F8 F8 k g~
+1. Press: ~F8 k g~
 2. Name: ~[A smaller storyline or thematic thread]~
 3. Fill properties:
    - Type: ~Subplot~
@@ -1462,7 +1462,7 @@ Let's practice plot thread management end-to-end.
 2. Find or create 3 scenes
 3. For each scene:
    - Navigate to scene properties
-   - Press: ~F8 F8 g~ (set scene plot threads)
+   - Press: ~F8 g~ (set scene plot threads)
    - Select which plot(s) develop in this scene
    - Some scenes can have multiple plots!
 4. Verify: Check that ~:Plot:~ property now has ID links
@@ -1477,7 +1477,7 @@ Let's practice plot thread management end-to-end.
 5. Press: ~C-c &~ to return → Success!
 
 *** Test Search:
-1. Press: ~F8 F8 3~
+1. Press: ~F8 3~
 2. Search for your main plot
 3. See results → Should show scene(s) you linked
 4. Press ~q~ to close results
@@ -1495,7 +1495,7 @@ Let's practice plot thread management end-to-end.
 5. View your plot distribution!
 
 *** Run Health Report (optional):
-1. Press: ~F8 F8 L t~ (Links & upkeep submenu, "plot report")
+1. Press: ~F8 L t~ (Links & upkeep submenu, "plot report")
 2. Review plot coverage and gaps
 3. Note any warnings
 
@@ -1705,13 +1705,13 @@ Dynamic block ~#+BEGIN: plot-thread-timeline~ generates but shows no data.
 
 | Key       | Action                                                |
 |-----------+-------------------------------------------------------|
-| ~F8 F8 k g~ | Capture new plot thread                               |
-| ~F8 F8 g~   | Set scene's plot thread(s) (menu)                     |
-| ~F8 F8 L j~ | Jump to scene's plot thread                           |
-| ~F8 F8 R~   | Relink project (all entity types, incl. plot threads) |
-| ~F8 F8 L t~ | Plot health report                                    |
-| ~F8 F8 L S~ | Plot statistics                                       |
-| ~F8 F8 3~   | Search scenes by plot                                 |
+| ~F8 k g~ | Capture new plot thread                               |
+| ~F8 g~   | Set scene's plot thread(s) (menu)                     |
+| ~F8 L j~ | Jump to scene's plot thread                           |
+| ~F8 R~   | Relink project (all entity types, incl. plot threads) |
+| ~F8 L t~ | Plot health report                                    |
+| ~F8 L S~ | Plot statistics                                       |
+| ~F8 3~   | Search scenes by plot                                 |
 | ~C-c C-o~   | Follow link at point                                  |
 | ~C-c &~     | Return from link                                      |
 | ~C-c C-c~   | Finalize capture / update table                       |
@@ -1734,10 +1734,10 @@ Dynamic block ~#+BEGIN: plot-thread-timeline~ generates but shows no data.
 
 | Key         | Action                                    |
 |-------------+-------------------------------------------|
-| ~F8 F8 G~   | Tag the current scene with a plot point   |
-| ~F8 F8 L J~ | Jump from a scene to its plot point       |
-| ~F8 F8 L P~ | Mint IDs for the thirteen (once, if needed) |
-| ~F8 F8 H~   | Health report: which points no scene serves |
+| ~F8 G~   | Tag the current scene with a plot point   |
+| ~F8 L J~ | Jump from a scene to its plot point       |
+| ~F8 L P~ | Mint IDs for the thirteen (once, if needed) |
+| ~F8 H~   | Health report: which points no scene serves |
 
 You never create or delete these — they ship with the project.
 

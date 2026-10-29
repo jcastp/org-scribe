@@ -89,7 +89,7 @@ Place your cursor anywhere in a scene (on the heading or in the content).
 
 ** Step 2: Count Words
 
-Press ~F8 F8~ to open the Hydra menu, then press ~w~ (for "Words count")
+Press ~F8~ to open the Hydra menu, then press ~w~ (for "Words count")
 
 You'll see a message in the minibuffer like:
 
@@ -107,9 +107,9 @@ This command counts the current window:
   
 ** Try It Now!
 
-1. With the writing mode enabled, press ~F8 F8 w~, for "Words count".
+1. With the writing mode enabled, press ~F8 w~, for "Words count".
 2. This will count your whole manuscript count.
-3. With the focus mode enables, press ~F8 F8 w~, for "Words count".
+3. With the focus mode enables, press ~F8 w~, for "Words count".
 4. This will count your focused section.   
 
 * Adding Word Count Properties
@@ -157,10 +157,10 @@ Do this for each scene where you want to track progress.
 
 Now let's add the actual word count.
 
-1. Press ~F8 F8~ for Hydra
+1. Press ~F8~ for Hydra
 2. Press ~a~ ("update all counts")
 
-*Important*: ~a~ is bound to ~org-scribe-ews-org-count-words~, which recomputes ~:WORDCOUNT:~ on *every* heading in the whole buffer — not just the scene under point, and cursor position doesn't matter for scope. It also mints a fresh ~:ID:~ property on any heading that's missing one. If you want to refresh only the scenes in the current chapter/act (or the whole buffer scoped to scenes only, leaving chapter/act aggregates untouched), place point there and press ~F8 F8 w~ (the ~org-scribe-wordcount~ dispatcher) with a double prefix argument, ~C-u C-u~, instead.
+*Important*: ~a~ is bound to ~org-scribe-ews-org-count-words~, which recomputes ~:WORDCOUNT:~ on *every* heading in the whole buffer — not just the scene under point, and cursor position doesn't matter for scope. It also mints a fresh ~:ID:~ property on any heading that's missing one. If you want to refresh only the scenes in the current chapter/act (or the whole buffer scoped to scenes only, leaving chapter/act aggregates untouched), place point there and press ~F8 w~ (the ~org-scribe-wordcount~ dispatcher) with a double prefix argument, ~C-u C-u~, instead.
 
 After running ~a~, your scene property looks like:
 
@@ -187,7 +187,7 @@ But we can do better - let's make tables that calculate this automatically!
 
 As you write more, update your word count:
 
-1. ~F8 F8 a~ (refreshes every heading in the buffer, whole-manuscript scope)
+1. ~F8 a~ (refreshes every heading in the buffer, whole-manuscript scope)
 2. The ~:WORDCOUNT:~ properties update!
 
 Do this after each writing session or when you want to check progress.
@@ -262,7 +262,7 @@ Note: this dynamic block does *not* compute a TOTAL row or roll scene counts up 
 
 ** The Project Health Report
 
-For a manuscript-wide view beyond any single table, run ~M-x org-scribe-project-health~ (or ~F8 F8 H~). It aggregates an *Overview* (total words written vs. total chapter objectives, with an overall percentage that avoids the double-counting a naive scene+chapter sum would produce), *Scenes by Status*, *Per-PoV Word Share*, *Chapter Length Spread* (min/max/mean/median), *Missing Scene Properties*, *Orphaned Entities*, and *Open TODO Scenes* — plus a *Writing Plan* section when the bundled planner (Lesson 16) is active for the project. It's the fastest way to answer "how much have I actually written, and what still needs attention?" without hunting through per-scene tables.
+For a manuscript-wide view beyond any single table, run ~M-x org-scribe-project-health~ (or ~F8 H~). It aggregates an *Overview* (total words written vs. total chapter objectives, with an overall percentage that avoids the double-counting a naive scene+chapter sum would produce), *Scenes by Status*, *Per-PoV Word Share*, *Chapter Length Spread* (min/max/mean/median), *Missing Scene Properties*, *Orphaned Entities*, and *Open TODO Scenes* — plus a *Writing Plan* section when the bundled planner (Lesson 16) is active for the project. It's the fastest way to answer "how much have I actually written, and what still needs attention?" without hunting through per-scene tables.
 
 * Setting Up Objectives (Planning Your Story)
 
@@ -305,7 +305,7 @@ Set objectives that match your target length!
 
 ** Changing the Length of Your Novel
 
-Decided your 80,000-word novel should be 50,000? Press ~F8 F8 t~
+Decided your 80,000-word novel should be 50,000? Press ~F8 t~
 (~M-x org-scribe-set-word-target~). It asks for the new total and how to
 rescale the parts (the acts of a novel, the scenes of a short story):
 
@@ -341,7 +341,7 @@ Beyond scene/chapter tracking, you can track daily writing sessions.
 
 ** Where Daily Totals Live
 
-Your template's "Daily Word Tracking" section holds no table. Daily totals are the *planner's* ledger: open it with ~F8 F8 W~, or ~M-x org-scribe-plan~ to create or load the project's plan. From then on, every word count you run records that day's total, and the planner reports the daily target, whether you are on track, and how many days remain — see [[file:getting-started-16-planner-integration.org][Lesson 16]].
+Your template's "Daily Word Tracking" section holds no table. Daily totals are the *planner's* ledger: open it with ~F8 W~, or ~M-x org-scribe-plan~ to create or load the project's plan. From then on, every word count you run records that day's total, and the planner reports the daily target, whether you are on track, and how many days remain — see [[file:getting-started-16-planner-integration.org][Lesson 16]].
 
 There is deliberately only one place in the project that counts words (the progress table above, generated from ~:WORDCOUNT:~ properties) and one place that tracks them over time (the plan). Earlier templates also shipped a table for the external =org-tracktable= package and a hand-filled "Productivity Analysis" section; both are gone, because a package that isn't installed and figures the planner computes for you are two ways of making tracking feel like work.
 
@@ -359,7 +359,7 @@ If you'd still rather keep a simple hand-maintained log, nothing stops you from 
 *Manual method* (simple):
 
 1. At the end of your writing session
-2. Note your word count (~F8 F8 w~ or ~F8 F8 a~)
+2. Note your word count (~F8 w~ or ~F8 a~)
 3. Add a new row to the table:
    - Date: Today's date
    - Words Written: What you wrote today
@@ -370,7 +370,7 @@ If you'd still rather keep a simple hand-maintained log, nothing stops you from 
 
 For automated daily tracking without maintaining tables by hand, see [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning with org-scribe-planner]] — the bundled writing planner pushes live word counts and daily deltas automatically.
 
-Note: word counting itself only runs when you ask for it (~F8 F8 a~ or ~F8 F8 w~) unless you've opted into ~org-scribe-auto-wordcount~, which is *off by default*. Setting it to ~t~ makes saving ~novel.org~/~novela.org~ silently recount words and sync the plan on every save — convenient, but it makes saves a bit slower since it recounts every heading in the buffer. See Lesson 16's "Optional: Automatic Update on Every Save" section for details and how to turn it back off.
+Note: word counting itself only runs when you ask for it (~F8 a~ or ~F8 w~) unless you've opted into ~org-scribe-auto-wordcount~, which is *off by default*. Setting it to ~t~ makes saving ~novel.org~/~novela.org~ silently recount words and sync the plan on every save — convenient, but it makes saves a bit slower since it recounts every heading in the buffer. See Lesson 16's "Optional: Automatic Update on Every Save" section for details and how to turn it back off.
 
 *Don't worry if you skip it* - manual tracking works great!
 
@@ -394,14 +394,14 @@ Let's put everything together in a real tracking workflow.
 1. *Write 200 words*
    - Open your manuscript
    - Find a scene that needs more content
-   - Activate writing mode (~F8 F8 m~)
+   - Activate writing mode (~F8 m~)
    - Write 200 words
-   - Exit writing mode (~F8 F8 m~)
+   - Exit writing mode (~F8 m~)
    - Save (~C-x C-s~)
 
 2. *Update word count*
    - Cursor on scene heading
-   - ~F8 F8 a~ (adds/updates ~:WORDCOUNT:~)
+   - ~F8 a~ (adds/updates ~:WORDCOUNT:~)
    - Check the property - your count increased!
 
 3. *Update progress table*
@@ -412,7 +412,7 @@ Let's put everything together in a real tracking workflow.
    - Watch the table regenerate with new numbers!
 
 4. *Log your session*
-   - If you use the planner (~F8 F8 W~), today's total is already recorded — check it with ~F8 F8 W u~ (sync word count) and add a note with ~F8 F8 W d~
+   - If you use the planner (~F8 W~), today's total is already recorded — check it with ~F8 W u~ (sync word count) and add a note with ~F8 W d~
    - If you keep a hand-maintained log instead, add a row with today's date, the words written, the cumulative total, and what you worked on
 
 5. *Celebrate!*
@@ -478,7 +478,7 @@ Here's a recommended daily routine that includes tracking.
 1. Open manuscript
 2. Check yesterday's progress in the table
 3. Set today's goal (words or scenes)
-4. Activate writing mode (~F8 F8 m~)
+4. Activate writing mode (~F8 m~)
 
 ** During Writing (Variable time)
 
@@ -488,12 +488,12 @@ Here's a recommended daily routine that includes tracking.
 
 ** After Writing (5 minutes)
 
-1. Exit writing mode (~F8 F8 m~)
+1. Exit writing mode (~F8 m~)
 2. Save your work (~C-x C-s~)
-3. Quick count (~F8 F8 w~) to see session total
-4. Update scene properties (~F8 F8 a~)
+3. Quick count (~F8 w~) to see session total
+4. Update scene properties (~F8 a~)
 5. Update progress table (~C-c C-c~ on table)
-6. Log the session — the planner records the total for you (~F8 F8 W~); add a note with ~F8 F8 W d~
+6. Log the session — the planner records the total for you (~F8 W~); add a note with ~F8 W d~
 7. Note what went well/what's next
 
 ** Weekly Review (10 minutes)
@@ -518,7 +518,7 @@ Different programs count differently:
 ** "My progress table shows 0% for everything!"
 
 *Causes*:
-- No ~:WORDCOUNT:~ properties set (use ~F8 F8 a~)
+- No ~:WORDCOUNT:~ properties set (use ~F8 a~)
 - No ~:WORD-OBJECTIVE:~ properties set (add manually)
 - Table hasn't been updated (press ~C-c C-c~)
 
@@ -555,7 +555,7 @@ Choose what motivates you!
 ** "How do I count words for the whole manuscript quickly?"
 
 1. Put cursor on the document title line (top of file)
-2. ~F8 F8 w~
+2. ~F8 w~
 3. You'll get the total count
 
 Or check the TOTAL row in your progress table!
@@ -572,7 +572,7 @@ Or check the TOTAL row in your progress table!
 ** "Word count seems wrong/too low"
 
 *Check*:
-1. You ran ~F8 F8 a~ on the scene heading (not inside content)
+1. You ran ~F8 a~ on the scene heading (not inside content)
 2. The ~:WORDCOUNT:~ property is inside ~:PROPERTIES:...:END:~
 3. You have actual content below the properties block
 4. You saved the file (~C-x C-s~) and recounted
@@ -595,7 +595,7 @@ Or check the TOTAL row in your progress table!
 2. Press ~Tab~ to realign
 3. Or ~C-c C-c~ to reformat
 
-** "F8 F8 a doesn't add word count"
+** "F8 a doesn't add word count"
 
 *Possible causes*:
 1. Cursor not on a heading line
@@ -609,8 +609,8 @@ Or check the TOTAL row in your progress table!
 Fantastic work! You've completed Lesson 3. You now know:
 
 ✓ Why accurate word counting matters (excludes metadata)
-✓ How to quick count (~F8 F8 w~)
-✓ How to add word count properties (~F8 F8 a~)
+✓ How to quick count (~F8 w~)
+✓ How to add word count properties (~F8 a~)
 ✓ The difference between ~:WORDCOUNT:~ (actual) and ~:WORD-OBJECTIVE:~ (target)
 ✓ How to set objectives for scenes, chapters, and your whole story
 ✓ How to generate and update progress tracking tables
@@ -651,8 +651,8 @@ Tracking progress is habit-forming - the more you do it, the more motivated you'
 
 | Command                 | Key     | What It Does                    |
 |-------------------------+---------+---------------------------------|
-| Quick word count        | ~F8 F8 w~ | Count current subtree           |
-| Add word count property | ~F8 F8 a~ | Set :WORDCOUNT: property        |
+| Quick word count        | ~F8 w~ | Count current subtree           |
+| Add word count property | ~F8 a~ | Set :WORDCOUNT: property        |
 | Update progress table   | ~C-c C-c~ | Regenerate table (cursor on it) |
 
 ** Word Count Properties

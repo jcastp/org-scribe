@@ -75,12 +75,12 @@ The package provides four main search functions, each focusing on a different sc
 
 | Search Type | Hydra Key | Command                       | Searches Property |
 |-------------+-----------+-------------------------------+-------------------|
-| PoV         | F8 F8 1   | ~org-scribe-org-find-pov~       | ~:PoV:~             |
-| Character   | F8 F8 2   | ~org-scribe-org-find-character~ | ~:Characters:~      |
-| Plot        | F8 F8 3   | ~org-scribe-org-find-plot~      | ~:Plot:~            |
-| Location    | F8 F8 4   | ~org-scribe-org-find-location~  | ~:Location:~        |
+| PoV         | F8 1   | ~org-scribe-org-find-pov~       | ~:PoV:~             |
+| Character   | F8 2   | ~org-scribe-org-find-character~ | ~:Characters:~      |
+| Plot        | F8 3   | ~org-scribe-org-find-plot~      | ~:Plot:~            |
+| Location    | F8 4   | ~org-scribe-org-find-location~  | ~:Location:~        |
 
-Two more searches round out the Search section of the hydra (covered later in this lesson): ~F8 F8 5~ for TODO items and ~F8 F8 6~ for inline =*EDIT*=/=*NOTE*= markers (~org-scribe-search-edits~, which parses Org comment blocks rather than querying properties).
+Two more searches round out the Search section of the hydra (covered later in this lesson): ~F8 5~ for TODO items and ~F8 6~ for inline =*EDIT*=/=*NOTE*= markers (~org-scribe-search-edits~, which parses Org comment blocks rather than querying properties).
 
 ** Common Pattern
 
@@ -114,7 +114,7 @@ Find all scenes narrated from a specific character's perspective.
 
 ** How to Search
 
-Press: ~F8 F8 1~
+Press: ~F8 1~
 
 Or use: ~M-x org-scribe-org-find-pov~
 
@@ -210,7 +210,7 @@ Find all scenes where a character appears (regardless of whose PoV).
 
 ** How to Search
 
-Press: ~F8 F8 2~
+Press: ~F8 2~
 
 Or use: ~M-x org-scribe-org-find-character~
 
@@ -327,7 +327,7 @@ Find all scenes that develop a specific plot thread.
 
 ** How to Search
 
-Press: ~F8 F8 3~
+Press: ~F8 3~
 
 Or use: ~M-x org-scribe-org-find-plot~
 
@@ -454,7 +454,7 @@ Find all scenes set in a specific location.
 
 ** How to Search
 
-Press: ~F8 F8 4~
+Press: ~F8 4~
 
 Or use: ~M-x org-scribe-org-find-location~
 
@@ -592,7 +592,7 @@ Keywords include: TODO, DONE, FIXME, RESEARCH, REVISE, NOTE (customizable).
 
 ** How to Search
 
-Press: ~F8 F8 5~
+Press: ~F8 5~
 
 Or use: ~M-x org-scribe-search-todos-recursive~
 
@@ -696,7 +696,7 @@ An ~*EDIT*~ also carries a category before a ~" - "~ separator (~plot~, ~scene~,
 
 ** How to Search
 
-Press: ~F8 F8 6~
+Press: ~F8 6~
 
 Or use: ~M-x org-scribe-search-edits~
 
@@ -744,7 +744,7 @@ The categories come from ~org-scribe-edit-categories~:
 
 A marker whose category is missing, empty or unrecognized is grouped under ~other~ rather than dropped - a typo moves a marker, it never hides one.
 
-If your markers *don't* follow the comment-block convention - older projects, or a marker style of your own - call the search with a prefix argument (~C-u F8 F8 6~) to get ~org-scribe-search-edits-rgrep~, a plain-text search that finds them anywhere. That fallback is the one that uses ~org-scribe-edit-string~:
+If your markers *don't* follow the comment-block convention - older projects, or a marker style of your own - call the search with a prefix argument (~C-u F8 6~) to get ~org-scribe-search-edits-rgrep~, a plain-text search that finds them anywhere. That fallback is the one that uses ~org-scribe-edit-string~:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")
@@ -759,7 +759,7 @@ For advanced queries, combine multiple searches.
 *** Example 1: Character in Specific Plot
 Want to find all scenes where Sam appears AND the romance plot develops?
 
-1. Search for character Sam (F8 F8 2) → Get 8 scenes
+1. Search for character Sam (F8 2) → Get 8 scenes
 2. Manually scan results for scenes that also mention romance
 3. Note scene numbers: Scenes 3, 8, 17, 20, 28, 43
 
@@ -768,7 +768,7 @@ Result: 6 scenes where Sam AND romance both present.
 *** Example 2: PoV Character in Specific Location
 Want all scenes from Alex's PoV that happen at the coffee shop?
 
-1. Search for PoV Alex (F8 F8 1) → Get 25 scenes
+1. Search for PoV Alex (F8 1) → Get 25 scenes
 2. Scan results for scenes with "Downtown Coffee Collective"
 3. Note scene numbers: Scenes 1, 3, 23, 41
 
@@ -779,8 +779,8 @@ Result: 4 scenes with Alex PoV at coffee shop.
 *** Example 3: Two Characters' Coverage
 Compare how often two characters appear:
 
-1. Search for Maya (F8 F8 2) → 18 scenes
-2. Search for Chen (F8 F8 2) → 8 scenes
+1. Search for Maya (F8 2) → 18 scenes
+2. Search for Chen (F8 2) → 8 scenes
 3. Compare: Maya appears 2.25x more than Chen
 
 Result: Consider adding more Chen scenes for balance.
@@ -788,9 +788,9 @@ Result: Consider adding more Chen scenes for balance.
 *** Example 4: All PoV Characters
 Find all PoV characters and their coverage:
 
-1. Search for Alex PoV (F8 F8 1) → 25 scenes (63%)
-2. Search for Sam PoV (F8 F8 1) → 10 scenes (25%)
-3. Search for Jordan PoV (F8 F8 1) → 5 scenes (12%)
+1. Search for Alex PoV (F8 1) → 25 scenes (63%)
+2. Search for Sam PoV (F8 1) → 10 scenes (25%)
+3. Search for Jordan PoV (F8 1) → 5 scenes (12%)
 
 Result: Good distribution for protagonist + two supporting PoVs.
 
@@ -799,7 +799,7 @@ Result: Good distribution for protagonist + two supporting PoVs.
 *** Example 5: Subplot Absence
 Find where a subplot is missing:
 
-1. Search for "Family Conflict" plot (F8 F8 3) → Scenes 3, 7, 12, 28, 35
+1. Search for "Family Conflict" plot (F8 3) → Scenes 3, 7, 12, 28, 35
 2. Notice gaps: Scene 12 to 28 = 15-scene gap!
 3. Check those scenes (13-27) for opportunities to add family conflict
 
@@ -826,7 +826,7 @@ Search results appear in an org-ql results buffer (named after your query, e.g. 
 ** Workflow: Review and Edit
 
 Common pattern:
-1. Run search (e.g., F8 F8 2 for character)
+1. Run search (e.g., F8 2 for character)
 2. Results appear in split window
 3. Press ~n~ to highlight first result
 4. Press ~RET~ to jump to that scene in manuscript
@@ -868,7 +868,7 @@ Let's practice all five search types.
 ** Part 1: Run All Core Searches (5 minutes)
 
 *** Search 1: PoV
-1. Press: ~F8 F8 1~
+1. Press: ~F8 1~
 2. Search for your protagonist's PoV
 3. Count results (shown at bottom)
 4. Note: How many scenes from this PoV? _______
@@ -876,7 +876,7 @@ Let's practice all five search types.
 6. Press ~q~ to close results
 
 *** Search 2: Character
-1. Press: ~F8 F8 2~
+1. Press: ~F8 2~
 2. Search for a secondary character
 3. Count results
 4. Note: How many scenes with this character? _______
@@ -884,7 +884,7 @@ Let's practice all five search types.
 6. Press ~q~ to close results
 
 *** Search 3: Plot
-1. Press: ~F8 F8 3~
+1. Press: ~F8 3~
 2. Search for your main plot
 3. Count results
 4. Note: How many scenes develop main plot? _______
@@ -893,7 +893,7 @@ Let's practice all five search types.
 7. Press ~q~ to close results
 
 *** Search 4: Location
-1. Press: ~F8 F8 4~
+1. Press: ~F8 4~
 2. Search for your most-used location
 3. Count results
 4. Note: How many scenes at this location? _______
@@ -901,7 +901,7 @@ Let's practice all five search types.
 6. Press ~q~ to close results
 
 *** Search 5: TODO
-1. Press: ~F8 F8 5~
+1. Press: ~F8 5~
 2. View all TODO items
 3. Count them
 4. Note: How many TODOs? _______
@@ -968,7 +968,7 @@ Get comfortable with the results navigation cycle:
 
 ** Before Writing
 
-- **Review TODOs**: Check what you left yourself to fix (F8 F8 5)
+- **Review TODOs**: Check what you left yourself to fix (F8 5)
 - **Check last appearance**: If writing Character X, search when they last appeared
 - **Verify plot status**: If developing Plot Y, search to see what's happened so far
 
@@ -1116,12 +1116,12 @@ Pressing RET or C-c C-o in results doesn't jump to scene.
 
 | Key     | Search Type       | Searches Property            |
 |---------+-------------------+------------------------------|
-| ~F8 F8 1~ | PoV               | ~:PoV:~                        |
-| ~F8 F8 2~ | Character         | ~:Characters:~                 |
-| ~F8 F8 3~ | Plot              | ~:Plot:~                       |
-| ~F8 F8 4~ | Location          | ~:Location:~                   |
-| ~F8 F8 5~ | TODO items        | TODO keywords                |
-| ~F8 F8 6~ | Edit/note markers | =*EDIT*=/=*NOTE*= in comment blocks |
+| ~F8 1~ | PoV               | ~:PoV:~                        |
+| ~F8 2~ | Character         | ~:Characters:~                 |
+| ~F8 3~ | Plot              | ~:Plot:~                       |
+| ~F8 4~ | Location          | ~:Location:~                   |
+| ~F8 5~ | TODO items        | TODO keywords                |
+| ~F8 6~ | Edit/note markers | =*EDIT*=/=*NOTE*= in comment blocks |
 
 ** Results Buffer Navigation
 
@@ -1228,7 +1228,7 @@ This reveals character roles and can suggest opportunities for variety.
 
 For deep analysis:
 1. Search for Character X
-2. Generate character timeline (F8 F8... character timeline)
+2. Generate character timeline (F8... character timeline)
 3. Compare: Does search match timeline? (should!)
 4. Use timeline for visual overview, search for detailed review
 

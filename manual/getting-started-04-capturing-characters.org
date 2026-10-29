@@ -110,7 +110,7 @@ characters as the headings directly under "Characters".
 ** Opening Your Character File
 
 *Quick navigation*:
-1. Press ~F8 F8~ (Hydra menu)
+1. Press ~F8~ (Hydra menu)
 2. Press ~o~ (Open file)
 3. Select ~design.org~
 4. Press Enter
@@ -125,7 +125,7 @@ Let's create a character profile using the capture template!
 
 From anywhere in your project:
 
-1. Press ~F8 F8~ (Hydra menu)
+1. Press ~F8~ (Hydra menu)
 2. Press ~k~ (Capture entity submenu)
 3. Press ~h~ (for "cHaracter" - yes, the 'h' is a bit weird, but 'c' was taken!)
 
@@ -726,7 +726,7 @@ Open your manuscript (story.org or novel.org) and put cursor on a scene heading.
 
 From the main Hydra menu, press ~p~ ("set PoV") directly — this is a top-level Tag Scene action, not a submenu:
 
-1. Press ~F8 F8~ (Hydra menu)
+1. Press ~F8~ (Hydra menu)
 2. Press ~p~ (Set PoV character)
 
 You'll see a completion menu with all your characters:
@@ -784,7 +784,7 @@ Need to check a character detail while writing?
 ** Using the Menu
 
 1. Cursor on scene heading
-2. ~F8 F8 j~ (jump to PoV character — a top-level Tag Scene action)
+2. ~F8 j~ (jump to PoV character — a top-level Tag Scene action)
 3. *Boom!* At the PoV character's profile
 
 ** Return to Scene
@@ -801,7 +801,7 @@ Find all scenes featuring a specific character!
 
 ** Step 1: Open Search Menu
 
-Press ~F8 F8~ (main Hydra menu)
+Press ~F8~ (main Hydra menu)
 
 Look at the "Search" section:
 #+BEGIN_EXAMPLE
@@ -847,7 +847,7 @@ A buffer opens showing all scenes where Alex appears (either as PoV or in Charac
 
 ** Other Character Searches
 
-*Search by PoV only* (~F8 F8 1~):
+*Search by PoV only* (~F8 1~):
 - Find all scenes from Alex's perspective
 - Useful for checking PoV balance in multi-PoV stories
 
@@ -934,13 +934,13 @@ This structured data enables:
 ** Quick Setup
 
 For existing projects with characters:
-1. ~F8 F8 L r~ (or ~M-x org-scribe-setup-character-relationships~)
+1. ~F8 L r~ (or ~M-x org-scribe-setup-character-relationships~)
 2. Adds ~:RelationshipsData:~ property to all characters
 3. Ready to add relationships!
 
 ** Adding a Relationship
 
-~F8 F8 L a~ (or ~M-x org-scribe-add-relationship~)
+~F8 L a~ (or ~M-x org-scribe-add-relationship~)
 
 *Interactive prompts guide you*:
 
@@ -971,7 +971,7 @@ The system suggests these common types (but you can use any text):
 
 ** Viewing Relationships
 
-*** Single Character (~F8 F8 L v~)
+*** Single Character (~F8 L v~)
 
 View one character's relationships as a plain list:
 
@@ -983,7 +983,7 @@ Relationships for Alice Rivera:
   - friend: Dana Park
 #+END_EXAMPLE
 
-*** All Relationships (~F8 F8 L V~)
+*** All Relationships (~F8 L V~)
 
 View complete relationship table for the entire project:
 
@@ -994,13 +994,13 @@ View complete relationship table for the entire project:
 | Sam Chen     | Alice Rivera | mentee |
 | Jordan Lee   | Alice Rivera | rival  |
 
-There is no graph in Emacs itself (no Graphviz/dot, no ASCII tree). The drawing lives in the visual companion: its *Relations* tab (~F8 F8 B~) draws the characters as nodes and these relationships as typed lines, straight from the data, so it can't drift from the notebook. A relationship stored both ways with the same type is drawn as one plain line; different types are two arrows. Click a character and then another to add a relationship; click a line to change a type or remove an entry. Each change is one undo step in Emacs and is not saved until you save. Relationships also no longer track a strength (1-5) or sentiment (positive/negative/neutral) value, only a directed source → target → type triple; if you want to note intensity or valence, put it in the relationship *type* itself (e.g. "close-ally" vs "ally") or in prose elsewhere on the character's heading. Notebooks written in the older ~(type,strength,valence)~ shape are still read (the type only) and are rewritten in the current shape the next time that character's relationships change.
+There is no graph in Emacs itself (no Graphviz/dot, no ASCII tree). The drawing lives in the visual companion: its *Relations* tab (~F8 B~) draws the characters as nodes and these relationships as typed lines, straight from the data, so it can't drift from the notebook. A relationship stored both ways with the same type is drawn as one plain line; different types are two arrows. Click a character and then another to add a relationship; click a line to change a type or remove an entry. Each change is one undo step in Emacs and is not saved until you save. Relationships also no longer track a strength (1-5) or sentiment (positive/negative/neutral) value, only a directed source → target → type triple; if you want to note intensity or valence, put it in the relationship *type* itself (e.g. "close-ally" vs "ally") or in prose elsewhere on the character's heading. Notebooks written in the older ~(type,strength,valence)~ shape are still read (the type only) and are rewritten in the current shape the next time that character's relationships change.
 
 ** Practical Use Cases
 
 *** Character Network Analysis
 
-*Identify isolated characters*: scan ~F8 F8 L V~'s table for characters who never appear as either side of a relationship.
+*Identify isolated characters*: scan ~F8 L V~'s table for characters who never appear as either side of a relationship.
 
 *Find central characters*: characters appearing in many rows (as source or target) are your most-connected — check whether your protagonist/antagonist are sufficiently connected.
 
@@ -1012,13 +1012,13 @@ There is no graph in Emacs itself (no Graphviz/dot, no ASCII tree). The drawing 
 
 Use relationships to track how connections change over the story:
 
-1. Add a relationship when two characters first connect (~F8 F8 L a~)
-2. Remove it (~F8 F8 L x~) and re-add it with a new type if the relationship changes kind (e.g. "acquaintance" → "friend" → "mentor")
+1. Add a relationship when two characters first connect (~F8 L a~)
+2. Remove it (~F8 L x~) and re-add it with a new type if the relationship changes kind (e.g. "acquaintance" → "friend" → "mentor")
 3. Remove it entirely if it ends
 
 ** Removing Relationships
 
-~F8 F8 L x~ (or ~M-x org-scribe-remove-relationship~)
+~F8 L x~ (or ~M-x org-scribe-remove-relationship~)
 
 1. Select character to modify
 2. Choose which relationship to remove from the list
@@ -1049,7 +1049,7 @@ Let's practice with your three characters from the earlier exercise!
 
 *** Part 1: Add Relationships (5 minutes)
 
-1. ~F8 F8 L a~ (add relationship)
+1. ~F8 L a~ (add relationship)
    - From: Protagonist
    - To: Supporting character
    - Type: Choose appropriate (friend? mentor? ally?)
@@ -1064,11 +1064,11 @@ Let's practice with your three characters from the earlier exercise!
 
 *** Part 2: View Relationships (3 minutes)
 
-1. ~F8 F8 L v~ (view single character)
+1. ~F8 L v~ (view single character)
    - Select your protagonist
    - See their relationship list!
 
-2. ~F8 F8 L V~ (view all relationships)
+2. ~F8 L V~ (view all relationships)
    - See the complete table
    - Check for symmetry/asymmetry
 
@@ -1081,17 +1081,17 @@ Let's practice the complete character workflow!
 *** Part 1: Create Characters (10 minutes)
 
 1. *Create protagonist*:
-   - ~F8 F8 k h~ (capture character)
+   - ~F8 k h~ (capture character)
    - Enter name, fill prompts
    - Fill minimum profile (5 minutes)
 
 2. *Create supporting character*:
-   - ~F8 F8 k h~
+   - ~F8 k h~
    - Different role (Supporting)
    - Quick profile (3 minutes)
 
 3. *Create minor character*:
-   - ~F8 F8 k h~
+   - ~F8 k h~
    - Role: Minor
    - Bare minimum info (2 minutes)
 
@@ -1099,11 +1099,11 @@ Let's practice the complete character workflow!
 
 1. *Open manuscript*
 2. *Go to first scene*:
-   - ~F8 F8 p~ (set PoV to protagonist)
+   - ~F8 p~ (set PoV to protagonist)
 
 3. *Go to second scene*:
-   - ~F8 F8 p~ (set PoV)
-   - ~F8 F8 h~ (set scene characters to multiple)
+   - ~F8 p~ (set PoV)
+   - ~F8 h~ (set scene characters to multiple)
 
 4. *Go to third scene*:
    - Link different characters
@@ -1116,7 +1116,7 @@ Let's practice the complete character workflow!
    - ~C-c &~ (return)
 
 2. *Search for character*:
-   - ~F8 F8 2~ (search by character)
+   - ~F8 2~ (search by character)
    - Enter protagonist's name
    - See all their scenes!
 
@@ -1139,16 +1139,16 @@ How to use character features while writing:
 
 ** While Drafting
 
-1. Insert scene (~F8 F8 s~)
-2. Set PoV (~F8 F8 p~) - quick menu selection!
-3. Set characters (~F8 F8 h~) - multi-select!
+1. Insert scene (~F8 s~)
+2. Set PoV (~F8 p~) - quick menu selection!
+3. Set characters (~F8 h~) - multi-select!
 4. Write scene
 5. Jump to profile if needed (~C-c C-o~)
 6. Return and continue writing (~C-c &~)
 
 ** During Revision
 
-1. Search for character (~F8 F8 2~)
+1. Search for character (~F8 2~)
 2. Review all their scenes
 3. Check arc consistency
 4. Update character profile with new insights
@@ -1173,7 +1173,7 @@ How to use character features while writing:
 
 *Yes!* The package includes batch conversion:
 
-- ~F8 F8 R~ (relink project) links all scenes automatically
+- ~F8 R~ (relink project) links all scenes automatically
 - Scans your manuscript for character names
 - Converts plain text to ID links
 - One command, entire manuscript updated
@@ -1185,7 +1185,7 @@ How to use character features while writing:
 1. Go to character profile
 2. Change the heading (the name)
 3. ID links still work (they use the ID, not the name!)
-4. Press ~F8 F8 R~ (relink project) to update the links.
+4. Press ~F8 R~ (relink project) to update the links.
 5. All scenes will show now the new name
 
 *No need to update each scene manually!*
@@ -1216,10 +1216,10 @@ The linking system works regardless!
 
 *Causes*:
 1. No characters captured yet (create one!)
-2. Characters lack IDs (run ~F8 F8 R~ to add IDs)
+2. Characters lack IDs (run ~F8 R~ to add IDs)
 3. Wrong file open (must be in writing project)
 
-*Quick fix*: ~F8 F8 L c~ (setup linking system)
+*Quick fix*: ~F8 L c~ (setup linking system)
 
 * Troubleshooting
 
@@ -1240,7 +1240,7 @@ The linking system works regardless!
 2. Characters file not formatted correctly
 
 *Solution*:
-1. ~F8 F8 R~ (add IDs to all characters)
+1. ~F8 R~ (add IDs to all characters)
 2. Make sure characters have ~:Role:~ or ~:TYPE:~ property
 
 ** "Link doesn't jump to character profile"
@@ -1252,7 +1252,7 @@ The linking system works regardless!
 
 *Solution*:
 1. Click directly on character name in the link
-2. Or use ~F8 F8 j~ to jump to PoV character
+2. Or use ~F8 j~ to jump to PoV character
 
 ** "Character timeline shows no characters"
 
@@ -1262,7 +1262,7 @@ The linking system works regardless!
 3. Need to update the dynamic block
 
 *Solution*:
-1. Set character properties in scenes (~F8 F8 p~ and ~F8 F8 h~)
+1. Set character properties in scenes (~F8 p~ and ~F8 h~)
 2. Update table (~C-c C-c~ on #+BEGIN line)
 
 ** "Character profile template is incomplete"
@@ -1279,18 +1279,18 @@ Excellent work! You've completed Lesson 4. You now know:
 
 ✓ Why character profiles matter (consistency, reference, tracking)
 ✓ Where characters are stored (the "Characters" section of design.org)
-✓ How to capture characters (~F8 F8 k h~)
+✓ How to capture characters (~F8 k h~)
 ✓ All parts of the character profile (causal chain, Desire and Need, Plan,
   Aspects, Change Milestones)
 ✓ What minimum vs. full profiles contain
 ✓ How ID-based linking works (unique IDs enable smart features)
-✓ How to set PoV character (~F8 F8 p~)
-✓ How to set scene characters (~F8 F8 h~)
+✓ How to set PoV character (~F8 p~)
+✓ How to set scene characters (~F8 h~)
 ✓ How to jump to character profiles (~C-c C-o~)
-✓ How to search for all scenes with a character (~F8 F8 2~)
+✓ How to search for all scenes with a character (~F8 2~)
 ✓ How to generate character timelines (C-c C-c on block)
-✓ How to add structured character relationships (~F8 F8 L a~)
-✓ How to view relationships (~F8 F8 L v~/~V~)
+✓ How to add structured character relationships (~F8 L a~)
+✓ How to view relationships (~F8 L v~/~V~)
 ✓ How to use relationship data for story analysis
 ✓ How to integrate characters into your daily workflow
 
@@ -1326,17 +1326,17 @@ The more detailed your character profiles, the more consistent and vivid your ch
 
 | Command                | Key       | What It Does                   |
 |------------------------+-----------+--------------------------------|
-| Capture character      | ~F8 F8 k h~ | Create character profile       |
-| Set PoV character      | ~F8 F8 p~   | Select PoV from menu           |
-| Set scene characters   | ~F8 F8 h~   | Multi-select characters        |
-| Jump to PoV character  | ~F8 F8 j~   | Go to PoV profile              |
-| Add relationship       | ~F8 F8 L a~ | Add structured relationship    |
-| Remove relationship    | ~F8 F8 L x~ | Remove a relationship          |
-| View relationships     | ~F8 F8 L v~ | Show character's relationships |
-| View all relationships | ~F8 F8 L V~ | Show all project relationships |
-| Setup relationships    | ~F8 F8 L r~ | Initialize relationship system |
-| Search by character    | ~F8 F8 2~   | Find all scenes with character |
-| Search by PoV          | ~F8 F8 1~   | Find scenes by PoV             |
+| Capture character      | ~F8 k h~ | Create character profile       |
+| Set PoV character      | ~F8 p~   | Select PoV from menu           |
+| Set scene characters   | ~F8 h~   | Multi-select characters        |
+| Jump to PoV character  | ~F8 j~   | Go to PoV profile              |
+| Add relationship       | ~F8 L a~ | Add structured relationship    |
+| Remove relationship    | ~F8 L x~ | Remove a relationship          |
+| View relationships     | ~F8 L v~ | Show character's relationships |
+| View all relationships | ~F8 L V~ | Show all project relationships |
+| Setup relationships    | ~F8 L r~ | Initialize relationship system |
+| Search by character    | ~F8 2~   | Find all scenes with character |
+| Search by PoV          | ~F8 1~   | Find scenes by PoV             |
 | Follow link            | ~C-c C-o~   | Jump to linked character       |
 | Return from link       | ~C-c &~     | Return to previous location    |
 | Generate char timeline | ~C-c C-c~   | Update timeline (on block)     |
@@ -1387,13 +1387,13 @@ runs between them. A walk-on needs no profile at all.
 2. *Develop while writing* - Add details as characters reveal themselves
 3. *Get the chain right* - Ghost → Lie → Weakness → Desire is the minimum for a
    character who can carry an arc
-4. *Link always* - Use the menu (~F8 F8 p~) instead of typing names
+4. *Link always* - Use the menu (~F8 p~) instead of typing names
 5. *Check consistency* - Jump to profiles when describing characters
 6. *Track appearances* - Use timeline to ensure balanced screen time
 7. *Revise profiles* - Update after drafting when you know characters better
 8. *Distinguish voices* - Use Notes section for speech patterns/catchphrases
-9. *Track relationships* - Use structured relationships (~F8 F8 L a~) to maintain character connections
-10. *Review the table* - Use ~F8 F8 L V~ periodically to spot isolated or over-connected characters
+9. *Track relationships* - Use structured relationships (~F8 L a~) to maintain character connections
+10. *Review the table* - Use ~F8 L V~ periodically to spot isolated or over-connected characters
 11. *Check symmetry* - Make sure both sides of a relationship agree with each other
 12. *Search often* - Review all scenes for a character during revision
 

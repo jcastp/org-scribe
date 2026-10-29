@@ -41,7 +41,7 @@ Two switches, both off until you decide:
 in your init file, then, in the project, press:
 
 #+BEGIN_EXAMPLE
-F8 F8 B    →  Open the visual companion
+F8 B    →  Open the visual companion
 #+END_EXAMPLE
 
 The first time in a project, Emacs asks whether this project may use the
@@ -90,7 +90,7 @@ while sorted).
   *Done*: Emacs writes proper ~[[id:...][Name]]~ links.
 - *Colour by* state or by PoV.
 - The *Objects* field works like the other link fields. In Emacs the same
-  link is set with ~F8 F8 b~ (Tag Scene) and searched with ~F8 F8 7~.
+  link is set with ~F8 b~ (Tag Scene) and searched with ~F8 7~.
 
 * Part 4: The Storyline
 
@@ -179,7 +179,7 @@ and asks whether to keep yours or use the one from Emacs.
 
 The *Timeline* tab places scenes by *story time*: what you write in a scene's
 ~:Timeline:~ property (click the time on a card to change it). Press
-~F8 F8 S~ (~org-scribe-set-story-time~) to choose the notation:
+~F8 S~ (~org-scribe-set-story-time~) to choose the notation:
 
 - *relative*: ~Day 3~, ~Day 3, 14:00~, ~Night 3, 02:00~, ~Year -9, Day 40~
   (the default; no Day 0, ~Day -1~ is the day before Day 1);
@@ -200,8 +200,8 @@ group at the end with the reason. The same data is available as a
 in the Story Time section of the health report. The page notices a change of
 notation at once.
 
-Press ~F8 F8 S~ to see the same data from Emacs: the notation is a project
-setting, and the health report (~F8 F8 H~) gains a *Story Time* section
+Press ~F8 S~ to see the same data from Emacs: the notation is a project
+setting, and the health report (~F8 H~) gains a *Story Time* section
 listing scenes with no time, unreadable values and jumps back in time.
 
 * Part 6: Saving, Undo, and Following

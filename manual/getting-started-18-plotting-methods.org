@@ -17,7 +17,7 @@ By the end of this lesson, you'll know how to:
 - Read and fill in La Matriz's five levels, in order
 - Recognize the one thing both new methods deliberately do *not* automate,
   and why
-- Confirm that the health report (~F8 F8 H~) checks your Starting Gate the
+- Confirm that the health report (~F8 H~) checks your Starting Gate the
   same way no matter which method you picked
 - Find the troubleshooting note built into each design file for when a
   level's check keeps failing
@@ -293,7 +293,7 @@ usually pointing at the level above.
 
 * Part 7: The Starting Gate Still Works the Same Way
 
-Whichever method you picked, ~F8 F8 H~ (the project health report) opens
+Whichever method you picked, ~F8 H~ (the project health report) opens
 with your *Starting Gate* section exactly as it does for a Sistema project —
 your own checkboxes read back, plus two measured items reported alongside
 them regardless of the method or the language: how many of the thirteen

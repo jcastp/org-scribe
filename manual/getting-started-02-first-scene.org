@@ -119,7 +119,7 @@ Let's add a new scene to your manuscript using the scene template!
 
 ** Step 2: Open the Hydra Menu
 
-Press ~F8 F8~ (press F8 twice quickly)
+Press ~F8~ (press F8 twice quickly)
 
 You'll see the Hydra menu appear at the bottom of your screen:
 
@@ -177,7 +177,7 @@ A complete scene template appears! It looks like this:
 :END:
 #+END_EXAMPLE
 
-Note: ~:WORDCOUNT:~ starts at ~0~ and is refreshed by the word-count commands (~F8 F8 w~/~F8 F8 a~). ~:WORD-OBJECTIVE:~ starts pre-filled with a default of ~500~, which you can change to fit the scene.
+Note: ~:WORDCOUNT:~ starts at ~0~ and is refreshed by the word-count commands (~F8 w~/~F8 a~). ~:WORD-OBJECTIVE:~ starts pre-filled with a default of ~500~, which you can change to fit the scene.
 
 *Congratulations!* You've inserted your first scene template!
 
@@ -253,7 +253,7 @@ Let's look at each property and what it's for:
 *** ~:Plot-point:~
 *What it is*: Which of the thirteen non-negotiable plot points this scene serves, if any.
 
-*Example*: set it with ~F8 F8 G~ (it stores an ID link); see Lesson 6.
+*Example*: set it with ~F8 G~ (it stores an ID link); see Lesson 6.
 
 *Why it matters*:
 - The project health report lists plot points that no scene serves
@@ -456,7 +456,7 @@ Think of it as "immersive mode" for writing!
 
 ** Step 1: Activate Writing Mode
 
-1. Press ~F8 F8~ to open the Hydra menu
+1. Press ~F8~ to open the Hydra menu
 2. Press ~m~ (for "Mode (write)")
 3. The menu closes and your environment transforms!
 
@@ -472,7 +472,7 @@ You should now see:
 Now write your scene! The distraction-free environment helps you focus on the story.
 
 Tips while writing:
-- The Hydra menu still works (~F8 F8~)
+- The Hydra menu still works (~F8~)
 - You can still save (~C-x C-s~)
 - All Emacs commands still work
 - The environment just looks different
@@ -481,7 +481,7 @@ Tips while writing:
 
 When you're done writing:
 
-1. Press ~F8 F8~ to open Hydra
+1. Press ~F8~ to open Hydra
 2. Press ~m~ again (toggle off)
 3. Your normal environment returns
 
@@ -491,7 +491,7 @@ When you're done writing:
 
 The package has four different modes. Here's a quick overview:
 
-** Mode 1: Distraction-Free Mode (~F8 F8 m~)
+** Mode 1: Distraction-Free Mode (~F8 m~)
 *What you just used!*
 - Theme change
 - Centered text
@@ -500,7 +500,7 @@ The package has four different modes. Here's a quick overview:
 
 *Best for*: Normal writing sessions
 
-** Mode 2: Focus Mode (~F8 F8 f~)
+** Mode 2: Focus Mode (~F8 f~)
 - Everything from distraction-free mode
 - *PLUS*: Narrows to current scene only
 - Shows only the scene you're working on
@@ -508,14 +508,14 @@ The package has four different modes. Here's a quick overview:
 
 *Best for*: Deep focus on one scene, avoiding distractions from the rest of your manuscript
 
-** Mode 3: Navigate Mode (~F8 F8 v~)
+** Mode 3: Navigate Mode (~F8 v~)
 - Opens file tree (all project files) on the left
 - Opens outline (current file structure) on the right
 - Main document in center
 
 *Best for*: Navigating between files, seeing project structure, working on multiple scenes
 
-** Mode 4: Editing Mode (~F8 F8 e~)
+** Mode 4: Editing Mode (~F8 e~)
 - Three-panel layout
 - Left panel: Reference file
 - Center: Main manuscript
@@ -534,7 +534,7 @@ The package has four different modes. Here's a quick overview:
 | Editing          | Revision, checking continuity, editing        |
 | *No mode (normal)* | Quick edits, working on properties, searching |
 
-*Recommendation for beginners*: Start with distraction-free mode (~F8 F8 m~). Try focus mode when you feel adventurous!
+*Recommendation for beginners*: Start with distraction-free mode (~F8 m~). Try focus mode when you feel adventurous!
 
 * Inserting Chapters (Novel Projects Only)
 
@@ -544,7 +544,7 @@ If you're working on a novel, you might want to add chapters.
 
 1. Go to your Act heading (e.g., ~* Act I - Setup~)
 2. Move to the end of the last chapter
-3. Press ~F8 F8~ (Hydra menu)
+3. Press ~F8~ (Hydra menu)
 4. Press ~c~ (for Chapter)
 5. Enter chapter title when prompted
 6. A chapter template appears!
@@ -578,7 +578,7 @@ Example result — chapter insertion also auto-inserts a ready-to-fill first sce
 {{{scene-break}}}
 #+END_EXAMPLE
 
-Point lands on the new scene's ~:PoV:~ property, ready for input — the same landing spot ~org-scribe-insert-scene~ produces. Insert additional scenes under this chapter using ~F8 F8 s~!
+Point lands on the new scene's ~:PoV:~ property, ready for input — the same landing spot ~org-scribe-insert-scene~ produces. Insert additional scenes under this chapter using ~F8 s~!
 
 * Your Basic Writing Workflow
 
@@ -588,15 +588,15 @@ Here's a simple daily workflow using what you've learned:
 
 1. *Open your manuscript* (~C-x C-f~ → story.org or novel.org)
 2. *Navigate to where you left off* (scroll or use ~C-s~ to search)
-3. *Activate writing mode* (~F8 F8 m~)
+3. *Activate writing mode* (~F8 m~)
 4. *Write your scene*
 5. *Save your work* (~C-x C-s~)
-6. *Exit writing mode* (~F8 F8 m~)
+6. *Exit writing mode* (~F8 m~)
 
 ** Adding a New Scene Mid-Session
 
 1. *Position cursor* where the new scene should go
-2. *Open Hydra* (~F8 F8~)
+2. *Open Hydra* (~F8~)
 3. *Insert scene* (~s~)
 4. *Enter title*
 5. *Fill in essential properties* (PoV, Characters, Location)
@@ -638,17 +638,17 @@ Create three very short scenes (100-200 words each) with this structure:
 
 ** Steps:
 
-1. Insert Scene 1 (~F8 F8 s~)
+1. Insert Scene 1 (~F8 s~)
 2. Fill properties
 3. Write 100-200 words
-4. Activate distraction-free mode (~F8 F8 m~)
+4. Activate distraction-free mode (~F8 m~)
 5. Insert Scene 2
 6. Fill properties
 7. Write 100-200 words (still in distraction-free mode)
 8. Insert Scene 3
 9. Fill properties
 10. Write 100-200 words
-11. Exit distraction-free mode (~F8 F8 m~)
+11. Exit distraction-free mode (~F8 m~)
 12. Save your work (~C-x C-s~)
 
 *Time limit*: 15 minutes total (5 minutes per scene)
@@ -688,10 +688,10 @@ Advanced users can configure custom TODO states, but TODO/DONE works perfectly f
 
 * Troubleshooting
 
-** "The Hydra menu won't open when I press F8 F8"
+** "The Hydra menu won't open when I press F8"
 
 *Solutions*:
-1. Make sure you're pressing F8 twice quickly
+1. Make sure you're pressing F8
 2. Try ~M-x hydra-org-scribe/body~ instead
 3. Check that org-scribe-mode is enabled (look for ~" Write"~ in the modeline)
 4. If needed: ~M-x org-scribe-mode~ to enable it
@@ -711,7 +711,7 @@ Advanced users can configure custom TODO states, but TODO/DONE works perfectly f
 ** "I can't exit writing mode"
 
 *Solutions*:
-1. Try ~F8 F8 m~ again
+1. Try ~F8 m~ again
 2. Or: ~M-x org-scribe-writing-env-mode~ to toggle it off
 3. Restart Emacs if stuck (your work is saved!)
 
@@ -732,11 +732,11 @@ This is fine! Properties are text. When you fold the heading (using Tab on the h
 Excellent work! You've completed Lesson 2. You now know:
 
 ✓ How manuscript structure works (Acts, Chapters, Scenes)
-✓ How to insert scenes using the template (~F8 F8 s~)
+✓ How to insert scenes using the template (~F8 s~)
 ✓ What scene properties are and why they're useful
 ✓ How to fill in essential properties (PoV, Characters, Location)
 ✓ How to write scene content below the properties
-✓ How to activate distraction-free writing mode (~F8 F8 m~)
+✓ How to activate distraction-free writing mode (~F8 m~)
 ✓ The four different writing modes available
 ✓ Basic daily writing workflow
 ✓ How to insert chapters (novels)
@@ -770,11 +770,11 @@ The more you practice, the more natural it becomes!
 
 | Command         | Key     | What It Does               |
 |-----------------+---------+----------------------------|
-| Open Hydra menu | ~F8 F8~   | Access all features        |
-| Insert scene    | ~F8 F8 s~ | Add scene template         |
-| Insert chapter  | ~F8 F8 c~ | Add chapter (novels)       |
-| Writing mode    | ~F8 F8 m~ | Toggle distraction-free    |
-| Focus mode      | ~F8 F8 f~ | Toggle focus mode          |
+| Open Hydra menu | ~F8~   | Access all features        |
+| Insert scene    | ~F8 s~ | Add scene template         |
+| Insert chapter  | ~F8 c~ | Add chapter (novels)       |
+| Writing mode    | ~F8 m~ | Toggle distraction-free    |
+| Focus mode      | ~F8 f~ | Toggle focus mode          |
 | Save file       | ~C-x C-s~ | Save your work             |
 | Fold heading    | ~Tab~     | Hide/show heading contents |
 

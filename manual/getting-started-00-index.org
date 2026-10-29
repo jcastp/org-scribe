@@ -60,7 +60,7 @@ projects that ship with org-scribe, in =examples/=:
 
 These are working projects, not illustrations. Open one in Emacs with
 org-scribe loaded and every keystroke in these lessons does something real
-against it — which is a much better place to press =<f8> <f8> H= for the
+against it — which is a much better place to press =<f8> H= for the
 first time than a project of your own with four words in it.
 
 Nothing in them can affect your own work, so experiment freely; =git
@@ -96,7 +96,7 @@ exactly what they change (one file) versus what they leave untouched
 - La Matriz's five levels, in order, and why its exit gate is one level later
 - Why the "disasters"/"collisions" table is deliberately plain prose, not a
   linked entity
-- That the Starting Gate health check (~F8 F8 H~) works identically under
+- That the Starting Gate health check (~F8 H~) works identically under
   all three methods
 - Where each design file's built-in troubleshooting note points you when a
   level's check won't pass
@@ -181,7 +181,7 @@ Master the search functions to quickly locate scenes by character, plot, locatio
 Learn to access all features quickly using the unified keyboard menu.
 
 *You'll learn:*
-- Opening the Hydra menu (F8 F8)
+- Opening the Hydra menu (F8)
 - Understanding menu organization
 - Common keyboard shortcuts
 - Customizing keybindings
@@ -281,7 +281,7 @@ The writing planner ships bundled inside ~org-scribe~ itself (no separate packag
 *You'll learn:*
 - Creating a plan from a preset, from scratch, or for a manuscript already in progress
 - Declaring words written outside the manuscript
-- How word counts reach the plan after ~F8 F8 a~, and what the mode line shows
+- How word counts reach the plan after ~F8 a~, and what the mode line shows
 - Reading the calendar, status, weekly summary, month grid, milestones and dashboards
 - Adjusting from your progress (~c~, ~a~, ~e~) and changing the plan (~r~), with previews
 - Patterns, weekends, day goals, spare days and moving the start date
@@ -318,7 +318,7 @@ An optional browser page for seeing the whole book at once: a corkboard, an outl
 
 | Key         | Action               |
 |-------------+----------------------|
-| F8 F8       | Open Hydra menu      |
+| F8       | Open Hydra menu      |
 | C-c W       | Quick note capture   |
 | C-c C-o     | Follow link at point |
 | C-c &       | Return from link     |
@@ -327,7 +327,7 @@ An optional browser page for seeing the whole book at once: a corkboard, an outl
 
 ** Common Hydra Menu Keys
 
-From the Hydra menu (F8 F8):
+From the Hydra menu (F8):
 
 | Key | Action                       | Key | Action                |
 |-----+------------------------------+-----+-----------------------|
@@ -345,7 +345,7 @@ From the Hydra menu (F8 F8):
 
 (*) Bundled with org-scribe — only reachable once the planner is enabled for the current project (see [[file:getting-started-16-planner-integration.org][Lesson 16]]).
 
-Capturing a new character/location/object/timeline event/plot thread is one level deeper, via ~k~ then the same letter (e.g. ~F8 F8 k h~ for a new character) — the top-level letters above tag the *current* scene with an existing entity instead.
+Capturing a new character/location/object/timeline event/plot thread is one level deeper, via ~k~ then the same letter (e.g. ~F8 k h~ for a new character) — the top-level letters above tag the *current* scene with an existing entity instead.
 
 ** Getting Help
 

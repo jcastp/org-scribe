@@ -14,10 +14,10 @@
 # Things worth opening this file to see:
 #   C-c C-x C-c   column view — Plot-point and Gap beside every scene
 #   C-c C-c       on any #+BEGIN: line below, to regenerate the tables
-#   F8 F8 6       the edit index, built from the *EDIT* and *NOTE* markers
+#   F8 6       the edit index, built from the *EDIT* and *NOTE* markers
 #                 in the comment blocks scattered through the scenes
-#   F8 F8 5       every unwritten scene, with its *SUMMARY* marker
-#   F8 F8 H       the project health report
+#   F8 5       every unwritten scene, with its *SUMMARY* marker
+#   F8 H       the project health report
 #
 # The markers live inside #+begin_comment blocks on purpose. That keeps them
 # out of every export backend and out of the word counts, so WORDCOUNT below
@@ -36,7 +36,7 @@
 
 # These four numbers are a statement of intent, written once. The writing
 # planner has taken them over — this project opted in (# Planner: yes in
-# .org-scribe-project), so F8 F8 W opens the calendar and every word count
+# .org-scribe-project), so F8 W opens the calendar and every word count
 # records the day's total in plan.org.
 
 * Progress Tracking :ignore:noexport:
@@ -93,11 +93,11 @@ Update it with =C-c C-c= on the #+BEGIN line.
 :END:
 
 Daily totals are kept by the bundled writing planner, not by a table here.
-Open it with =F8 F8 W=, or =M-x org-scribe-plan=.
+Open it with =F8 W=, or =M-x org-scribe-plan=.
 
 This project has a plan ([[file:plan.org][plan.org]]) and the gate is open, so every word count
 you run here records that day's cumulative total in its ledger. The
-planner's dashboards (=F8 F8 W=, then =D=) draw the progress curve, velocity,
+planner's dashboards (=F8 W=, then =D=) draw the progress curve, velocity,
 best day and writing streak from that ledger.
 
 ** Time Tracking
@@ -134,8 +134,8 @@ CLOCK: [2026-05-01 Fri 06:15]--[2026-05-01 Fri 07:40] =>  1:25
 This table shows which plot threads appear in which scenes.
 Update with =C-c C-c= on the #+BEGIN line.
 
-For detailed health reports, use =M-x org-scribe-plot-thread-report= (=F8 F8 L t=).
-For quick statistics, use =M-x org-scribe-plot-thread-stats= (=F8 F8 L S=).
+For detailed health reports, use =M-x org-scribe-plot-thread-report= (=F8 L t=).
+For quick statistics, use =M-x org-scribe-plot-thread-stats= (=F8 L S=).
 
 # Note the comment line the table writes under itself. "Running late" carries
 # :Weight: -1 in the Plot part, so it keeps everything except its column

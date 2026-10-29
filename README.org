@@ -39,7 +39,7 @@
 - *Plot Point Linking*: tag each scene with the non-negotiable plot point it serves
   - The thirteen points ship with every novel project, already linkable
   - The health report lists any point no scene serves yet — the method's own check, mechanized
-  - =F8 F8 G= to tag a scene, =F8 F8 L J= to jump from a scene to its point
+  - =F8 G= to tag a scene, =F8 L J= to jump from a scene to its point
 - *Plot Thread Linking*: ID-based links for plot threads and subplots
   - Track main plot and subplots across your novel
   - Timeline visualization showing plot distribution
@@ -52,7 +52,7 @@
 - *Entity Tooltips* (opt-in): Inline character information without opening a new buffer
   - Moving point onto any =[[id:...]]= link shows Role, Age, Goal, Motivation just after the link (inline by default; =org-scribe-overlays-display= also offers a posframe or the echo area)
   - Enabled with =(setq org-scribe-overlays-enable t)= — off by default
-  - Toggle manually with =M-x org-scribe-overlays-mode= or =F8 F8 L T= (Links & upkeep → Tooltips)
+  - Toggle manually with =M-x org-scribe-overlays-mode= or =F8 L T= (Links & upkeep → Tooltips)
 - *Word Counting*: Accurate word counting that excludes Org-mode metadata (comments, properties, drawers)
 - *Scene-level Word Count Update*: =org-scribe-update-scene-wordcounts= updates =:WORDCOUNT:= on every scene heading in the current subtree without touching chapter or act headings (=M-x org-scribe-update-scene-wordcounts=)
 - *Writing Modes*: Four mutually exclusive modes for different workflows:
@@ -64,9 +64,9 @@
 - *Edit Marker Index*: Collects the =*EDIT*= / =*NOTE*= markers you leave inline while drafting into one navigable buffer, grouped by category, each linking back to its exact line. Markers live in Org comment blocks, so they never reach your exported manuscript and never inflate your word counts
 - *Dictionary Tools*: definitions and synonyms that both work *offline* when the local data is installed — a Wikcionario served by kiwix-serve for definitions, the system thesaurus for synonyms — falling back to the online RAE otherwise. Inflected words resolve either way, so looking up =corriendo= finds =correr=
 - *Capture System*: Project-aware note capture that finds the right notes file; character/location/object/timeline/plot-thread templates are fully localized to the project's own language (English/Spanish), independent of your global UI language setting
-- *Project Health Report*: =org-scribe-project-health= aggregates the Starting Gate (how many of its eight items are done, two of them measured rather than self-reported), word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, plot points no scene serves yet, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 F8 H=)
+- *Project Health Report*: =org-scribe-project-health= aggregates the Starting Gate (how many of its eight items are done, two of them measured rather than self-reported), word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, plot points no scene serves yet, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
-- *Manuscript Compilation*: =org-scribe-compile= (=F8 F8 X=) turns the working file — apparatus sections, act/chapter/scene structure, property drawers, edit markers and all — into a clean, readable document. Chapters become visible headings, scenes stay silent, breaks between them are derived from structure rather than typed. Formats: Org, plain text, Markdown, ODT need nothing beyond Emacs; PDF (via a LaTeX distribution) and DOCX (via pandoc) are available when those optional tools are installed, reported by =org-scribe-setup-check= like any other optional dependency. The intermediate =.org= file is always kept beside the output, so a compile that looks wrong is inspectable
+- *Manuscript Compilation*: =org-scribe-compile= (=F8 X=) turns the working file — apparatus sections, act/chapter/scene structure, property drawers, edit markers and all — into a clean, readable document. Chapters become visible headings, scenes stay silent, breaks between them are derived from structure rather than typed. Formats: Org, plain text, Markdown, ODT need nothing beyond Emacs; PDF (via a LaTeX distribution) and DOCX (via pandoc) are available when those optional tools are installed, reported by =org-scribe-setup-check= like any other optional dependency. The intermediate =.org= file is always kept beside the output, so a compile that looks wrong is inspectable
 - *Hydra Menu*: Unified keyboard-driven menu for quick access to all functions
 - *Writing Planner* (bundled): Connect writing goal planning to your manuscript — auto-loads plans, pushes live word counts, shows daily progress in the mode line, and adds a planner sub-menu at =W=. Available automatically; no separate install needed.
 
@@ -143,7 +143,7 @@ active and which are missing, with install hints.
   keywords and heading titles. org-scribe activates =ox-extra='s
   =ignore-headlines= automatically once it is installed — nothing else
   to configure.
-- [[https://melpa.org/#/ox-epub][ox-epub]] - EPUB output from =org-scribe-compile= (=F8 F8 X=). Not
+- [[https://melpa.org/#/ox-epub][ox-epub]] - EPUB output from =org-scribe-compile= (=F8 X=). Not
   bundled with Org, unlike every other format =org-scribe-compile=
   offers. Without it, =epub= is simply not offered by name in
   =org-scribe-setup-check= and refused with a clear message if requested
@@ -159,8 +159,8 @@ their data files directly — there is nothing to require or configure.
 | =mythes-es=       | Offline synonyms, without a network round trip           | =sudo apt install mythes-es=       |
 | =hunspell=        | Inflected words resolve (=corriendo= → =correr=)           | =sudo apt install hunspell-es=     |
 | =kiwix-tools=     | Offline definitions, replacing the online RAE            | =sudo apt install kiwix-tools=     |
-| a LaTeX distribution | PDF output from =org-scribe-compile= (=F8 F8 X=)      | =sudo apt install texlive=         |
-| =pandoc=          | DOCX output from =org-scribe-compile= (=F8 F8 X=)         | =sudo apt install pandoc=          |
+| a LaTeX distribution | PDF output from =org-scribe-compile= (=F8 X=)      | =sudo apt install texlive=         |
+| =pandoc=          | DOCX output from =org-scribe-compile= (=F8 X=)         | =sudo apt install pandoc=          |
 
 All five are optional and independent. With none installed, dictionary and
 synonym lookup behave exactly as they always have, and =org-scribe-compile=
@@ -215,7 +215,7 @@ the graceful fallback.
   (setq org-scribe-stories-directory "~/writing/exercises")
 
   ;; The one keybinding you need — everything hangs off this menu
-  (global-set-key (kbd "<f8> <f8>") 'hydra-org-scribe/body))
+  (global-set-key (kbd "<f8>") 'hydra-org-scribe/body))
 #+end_src
 
 After loading, run =M-x org-scribe-setup-check= to confirm what is active.
@@ -237,8 +237,7 @@ already filled in. Two ship with the package, in =examples/=:
   two-file layout.
 
 Both are real projects, not screenshots. Open =examples/demo-novel/novel.org=
-in Emacs with org-scribe loaded and every command works against it: =<f8>
-<f8> H= for the health report, =6= for the edit index, =5= for the unwritten
+in Emacs with org-scribe loaded and every command works against it: =<f8> H= for the health report, =6= for the edit index, =5= for the unwritten
 scenes, =C-c C-x C-c= for column view. Nothing needs installing and nothing
 you do there touches your own work.
 
@@ -257,7 +256,7 @@ they find something.
 ** Working in an Existing Project
 
 1. Open an org-mode file in your project
-2. Press =<f8> <f8>= to open the hydra menu
+2. Press =<f8>= to open the hydra menu
 3. Try a writing workspace: press =m= for the distraction-free "write" workspace
 4. Use =w= to count words in the current section
 5. Insert scenes with =s= or chapters with =c=
@@ -326,19 +325,19 @@ Spanish projects have the same structure with localized file names
 
 Characters, locations and plot threads are headings nested under =* Characters=,
 =* Setting= and =* Plot Threads= in =design.org=. Capturing a new character,
-location, object, or timeline event (=F8 F8 k=) files it under the matching
+location, object, or timeline event (=F8 k=) files it under the matching
 section of =design.org= automatically. A short story's design notebook has the
 same sections as a novel's but keeps them at the top level, with no parts.
 
-The manuscript starts with one scene (=** Scene 1=; add more with =F8 F8 s=)
+The manuscript starts with one scene (=** Scene 1=; add more with =F8 s=)
 under =* Story Content=, which holds the whole word target. Scenes carry the same eighteen-property scene metadata
 drawer, the same =:ignore:= tag, and the same TODO vocabulary
 (=TODO=/=TOWRITE=/=TOREVIEW=/=REDO=/=RESTRUCTURE=/=FINISHED=/=PURGE=) a novel's
 scenes do — word counting, search, linking, and the health report all work
-the same way regardless of project type. The one thing =F8 F8 c= (insert
+the same way regardless of project type. The one thing =F8 c= (insert
 chapter) cannot do here is insert a chapter: a short story has no chapter
 level, so it refuses with a clear message instead of inserting a heading that
-would collide with the scene level — use =F8 F8 s= for the next scene instead.
+would collide with the scene level — use =F8 s= for the next scene instead.
 
 *The writing method itself has not been adapted to short-story scale yet* — see
 "Short story projects still use the previous structure" below — but every
@@ -445,7 +444,7 @@ To use a regional variant, set the mapping before creating projects:
 Set =org-scribe-write-dir-locals= to nil if you manage directory-local
 variables yourself; nothing else in org-scribe reads the file.
 
-- =M-x org-scribe-update-dir-locals= (=F8 F8 L D=) creates or refreshes the
+- =M-x org-scribe-update-dir-locals= (=F8 L D=) creates or refreshes the
   file for the current project, reading the language from
   =.org-scribe-project=. Use it on projects created before org-scribe
   generated the file, or after changing the mapping above. An existing file is
@@ -462,8 +461,8 @@ variables yourself; nothing else in org-scribe reads the file.
 
 While working in your manuscript:
 
-- =M-x org-scribe-insert-scene= or =F8 F8 s=: Insert a scene with metadata properties (PoV, Characters, Plot, Location, etc.)
-- =M-x org-scribe-insert-chapter= or =F8 F8 c=: Insert a chapter heading with word count properties and an empty first scene; cursor lands at the scene's =:PoV:= line ready to fill in
+- =M-x org-scribe-insert-scene= or =F8 s=: Insert a scene with metadata properties (PoV, Characters, Plot, Location, etc.)
+- =M-x org-scribe-insert-chapter= or =F8 c=: Insert a chapter heading with word count properties and an empty first scene; cursor lands at the scene's =:PoV:= line ready to fill in
 
 Both commands read the current project's own outline shape rather than
 assuming a novel's: a scene lands at level 3 in a novel and level 2 in a
@@ -473,7 +472,7 @@ insert one at.
 
 *** Quick Project File Access
 
-=M-x org-scribe-open-project-file= or =F8 F8 o=
+=M-x org-scribe-open-project-file= or =F8 o=
 
 Opens project files with completion (novel.org, design.org, plan.org)
 
@@ -487,7 +486,7 @@ Opens the template directory for editing. Customize templates to match your work
 
 *** Distraction-Free Mode (=org-scribe-writing-env-mode=)
 
-Press =F8 F8 m= or use the hydra menu.
+Press =F8 m= or use the hydra menu.
 
 Changes:
 - Switches to writing theme
@@ -497,7 +496,7 @@ Changes:
 
 *** Focus Mode (=org-scribe-writing-env-mode-focus=)
 
-Press =F8 F8 f= or use the hydra menu.
+Press =F8 f= or use the hydra menu.
 
 Like distraction-free mode, but also narrows to the current org section.
 
@@ -518,14 +517,14 @@ Set =org-scribe-editing-right-panel= to show something else in the right pane: =
 
 *** Count Words in Selection or Buffer
 
-=M-x org-scribe-wordcount= or press =F8 F8 w= in hydra
+=M-x org-scribe-wordcount= or press =F8 w= in hydra
 
 With no prefix: reports the word count for the active region, or for the whole
-buffer.  With =C-u=: runs the full heading update (same as =F8 F8 a=).
+buffer.  With =C-u=: runs the full heading update (same as =F8 a=).
 
 *** Update All Word Count Properties
 
-=M-x org-scribe-ews-org-count-words= or press =F8 F8 a= in hydra
+=M-x org-scribe-ews-org-count-words= or press =F8 a= in hydra
 
 Refreshes the =WORDCOUNT= property on every heading in the buffer and, when the
 writing planner is active, silently syncs today's word delta to =plan.org=.
@@ -615,7 +614,7 @@ writing.
 
 *** Tagging a Scene (the everyday flow)
 
-From the main menu (=F8 F8=), with point on a scene heading:
+From the main menu (=F8=), with point on a scene heading:
 
 - =p= — *set PoV character*: pick one character; the =:PoV:= property gets
   an ID link.
@@ -631,7 +630,7 @@ That is all most writers ever need. There is no separate "link" step.
 If you wrote scenes with plain character names (not via the tagging
 commands above), one command upgrades the whole project in a single pass:
 
-- =F8 F8 L R= (=M-x org-scribe-relink-project=) — mints any missing IDs,
+- =F8 L R= (=M-x org-scribe-relink-project=) — mints any missing IDs,
   converts plain names to ID links, and refreshes display names across
   *every* entity type (characters, locations, plot threads) at once.
 
@@ -670,23 +669,23 @@ Benefits:
 
 When you rename a character in =design.org=, the ID links still work (they're ID-based), but the display text shows the old name. Update the display names to match your current database:
 
-*Update All Link Names* (=F8 F8 R= or =M-x org-scribe-relink-project=):
+*Update All Link Names* (=F8 R= or =M-x org-scribe-relink-project=):
 - Refreshes display names for all entity types (characters, locations, plot threads) in one pass
 
 *Example Workflow*:
 1. Rename "Alex Rivera" to "Alexandra Rivera" in =design.org=
-2. Press =F8 F8 R= (or =M-x org-scribe-relink-project=)
+2. Press =F8 R= (or =M-x org-scribe-relink-project=)
 3. All scenes updated: =[[id:char-alex-001][Alexandra Rivera]]=
 4. Links still work, now with correct names!
 
 *** Character Linking Hydra Menu
 
-Scene-tagging commands are in the main menu (=F8 F8=):
+Scene-tagging commands are in the main menu (=F8=):
 - =p= - Set PoV character
 - =h= - Set scene characters
 - =j= - Jump to PoV character
 
-Set-up, relationships, and display options are in the Links & upkeep submenu (=F8 F8 L=):
+Set-up, relationships, and display options are in the Links & upkeep submenu (=F8 L=):
 - =R= - Relink project (add IDs, link names, refresh display names)
 - =c= - Setup character linking system
 - =a= - Add relationship
@@ -710,13 +709,13 @@ graph rendering.
 *** Quick Start
 
 For existing projects:
-1. =M-x org-scribe-setup-character-relationships= or press =F8 F8 L r=
+1. =M-x org-scribe-setup-character-relationships= or press =F8 L r=
 2. Adds =RelationshipsData= property to all characters
 3. Start adding relationships!
 
 *** Adding Relationships
 
-*Add a Relationship* (=F8 F8 L a= or =M-x org-scribe-add-relationship=):
+*Add a Relationship* (=F8 L a= or =M-x org-scribe-add-relationship=):
 1. Select source character (the character who has the relationship)
 2. Select target character (the character they're related to)
 3. Choose relationship type (mentor, rival, friend, family, lover, enemy, ally, etc.)
@@ -727,17 +726,17 @@ For existing projects:
 - Type: mentor
 - Result: "Added mentor relationship: Alice → Bob"
 
-*Remove a Relationship* (=F8 F8 L x= or =M-x org-scribe-remove-relationship=):
+*Remove a Relationship* (=F8 L x= or =M-x org-scribe-remove-relationship=):
 1. Select character to modify
 2. Choose which relationship to remove
 
 *** Viewing Relationships
 
-*View Single Character* (=F8 F8 L v= or =M-x org-scribe-show-character-relationships=):
+*View Single Character* (=F8 L v= or =M-x org-scribe-show-character-relationships=):
 - Select a character
 - Displays a plain list of their relationships (type: name)
 
-*View All Relationships* (=F8 F8 L V= or =M-x org-scribe-show-all-relationships=):
+*View All Relationships* (=F8 L V= or =M-x org-scribe-show-all-relationships=):
 - Shows complete relationship table for entire project
 - Sortable org-mode table format
 - See all connections at a glance
@@ -795,7 +794,7 @@ Track your main plot and subplots across your novel using ID-based links. The pl
 *** Quick Start
 
 For existing projects:
-1. =M-x org-scribe-setup-plot-thread-links= or press =F8 F8 L p=
+1. =M-x org-scribe-setup-plot-thread-links= or press =F8 L p=
 2. Adds unique IDs to all plot threads in =design.org=
 3. Optionally converts existing scenes to use links
 
@@ -805,14 +804,14 @@ For new plot threads:
 
 *** Setting Scene Plot Threads
 
-*Set Scene Plot Threads* (=F8 F8 g= from main menu, or =M-x org-scribe-set-scene-plot-threads=):
+*Set Scene Plot Threads* (=F8 g= from main menu, or =M-x org-scribe-set-scene-plot-threads=):
 1. Position on scene heading
-2. Press =F8 F8 g=
+2. Press =F8 g=
 3. Select plot threads one by one (main plot, subplots)
 4. Press RET to finish
 5. Plot property updated with ID links
 
-*Jump to Plot Thread* (=F8 F8 L j= or =M-x org-scribe-jump-to-plot-thread=):
+*Jump to Plot Thread* (=F8 L j= or =M-x org-scribe-jump-to-plot-thread=):
 - Jump from scene to plot thread definition
 - Press =C-c &= to return to scene
 
@@ -848,7 +847,7 @@ The ● symbol shows where each plot thread appears, making it easy to spot:
 
 Generate a comprehensive health report for all plot threads:
 
-=M-x org-scribe-plot-thread-report= or press =F8 F8 L t=
+=M-x org-scribe-plot-thread-report= or press =F8 L t=
 
 This generates a buffer showing:
 - Total plot threads and scenes
@@ -898,7 +897,7 @@ This generates a buffer showing:
 
 Get quick statistics in the minibuffer:
 
-=M-x org-scribe-plot-thread-stats= or press =F8 F8 L S=
+=M-x org-scribe-plot-thread-stats= or press =F8 L S=
 
 Shows:
 - Total threads
@@ -928,18 +927,18 @@ Benefits:
 
 *** Plot Thread Hydra Menu
 
-Set-scene and jump commands are in the main menu (=F8 F8=):
+Set-scene and jump commands are in the main menu (=F8=):
 - =g= - Set scene plot threads
 - =j= - Jump to PoV character (see Tag Scene column)
 
-Setup, analysis, and display options are in the Links & upkeep submenu (=F8 F8 L=):
+Setup, analysis, and display options are in the Links & upkeep submenu (=F8 L=):
 - =R= - Relink project (add IDs, update display names across all types)
 - =p= - Setup plot thread linking system
 - =j= - Jump to plot thread
 - =t= - Health report
 - =S= - Statistics
 
-Note: To update plot thread display names after renaming threads in =design.org=, use =F8 F8 R= (or =F8 F8 L R=, or =M-x org-scribe-relink-project=).
+Note: To update plot thread display names after renaming threads in =design.org=, use =F8 R= (or =F8 L R=, or =M-x org-scribe-relink-project=).
 
 *** Best Practices
 
@@ -1101,7 +1100,7 @@ This feature is *off by default*.  To enable it automatically whenever
 
 You can also toggle tooltips manually at any time:
 - =M-x org-scribe-overlays-mode= — toggle in the current buffer
-- =F8 F8 L T= — toggle via the Links & upkeep submenu
+- =F8 L T= — toggle via the Links & upkeep submenu
 
 *** What the Tooltip Shows
 
@@ -1127,7 +1126,7 @@ a /different/ ID.
 
 ** Project Health Report
 
-=M-x org-scribe-project-health= or press =F8 F8 H= in hydra
+=M-x org-scribe-project-health= or press =F8 H= in hydra
 
 Generates an aggregated health snapshot of the current project — novel or
 short story — and opens it in the =*org-scribe-health*= buffer as a
@@ -1179,7 +1178,7 @@ story.
 
 ** Search Functions
 
-All search functions are available via the hydra menu (=F8 F8=):
+All search functions are available via the hydra menu (=F8=):
 
 - =1=: Find scenes by POV character
 - =2=: Find scenes with character
@@ -1223,7 +1222,7 @@ The carriage arrived before dawn, and nobody was awake to meet it.
 
 Delete the comment block once you have dealt with it — that is how a marker is "closed"; there is no separate done state.
 
-An =*EDIT*= carries a category before a =" - "= separator. =M-x org-scribe-search-edits= (=F8 F8= then =6=) collects every marker in the project and groups them:
+An =*EDIT*= carries a category before a =" - "= separator. =M-x org-scribe-search-edits= (=F8= then =6=) collects every marker in the project and groups them:
 
 #+begin_example
 ,* Edits
@@ -1274,7 +1273,7 @@ See lesson 14 of the manual for the full revision workflow, including the relate
 
 *** Definitions
 
-=M-x org-scribe-dictionary-lookup= or press =F8 F8 d= in hydra
+=M-x org-scribe-dictionary-lookup= or press =F8 d= in hydra
 
 Looks up a Spanish word, from one of two sources.
 
@@ -1322,7 +1321,7 @@ local data would be indistinguishable from a normal network lookup.
 
 *** Synonyms
 
-=M-x org-scribe-sinonimo= or press =F8 F8 y= in hydra
+=M-x org-scribe-sinonimo= or press =F8 y= in hydra
 
 Opens synonyms in a side window, from one of two sources.
 
@@ -1384,16 +1383,16 @@ Automatically finds the right notes file in your project structure.
 
 The package provides specialized capture templates for different types of content:
 
-- =org-scribe-capture-character= (F8 F8 k h) - Capture character profiles with comprehensive templates
-- =org-scribe-capture-location= (F8 F8 k l) - Capture location details for world building
-- =org-scribe-capture-object= (F8 F8 k b) - Capture important objects in your story
-- =org-scribe-capture-timeline= (F8 F8 k t) - Capture timeline events for chronology tracking
-- =org-scribe-capture-plot-thread= (F8 F8 k g) - Capture plot threads as they emerge during writing
+- =org-scribe-capture-character= (F8 k h) - Capture character profiles with comprehensive templates
+- =org-scribe-capture-location= (F8 k l) - Capture location details for world building
+- =org-scribe-capture-object= (F8 k b) - Capture important objects in your story
+- =org-scribe-capture-timeline= (F8 k t) - Capture timeline events for chronology tracking
+- =org-scribe-capture-plot-thread= (F8 k g) - Capture plot threads as they emerge during writing
 
 These functions file every capture into the design notebook, under the section
 for that kind of entity (=Characters=, =Setting=, =Plot Threads=, ...). If a
 section is missing it is created, in the project's language, in the right
-part. General notes (=F8 F8 w=) go under the Scratchpad part.
+part. General notes (=F8 w=) go under the Scratchpad part.
 
 Template content — headlines, prompts, and section headings — is generated in
 whichever language the *project* is in (its own =# Language:= marker, not
@@ -1406,7 +1405,7 @@ All captured items automatically receive unique IDs for use with the linking sys
 
 Every project's design notebook ends with a Scratchpad part (=Borradores= in
 Spanish projects). Open the notebook from anywhere in the project with
-=F8 F8 o=.
+=F8 o=.
 
 *** What it is for
 
@@ -1479,7 +1478,7 @@ The notebook declares four states, cycled with =C-c C-t=:
 Three things about this are deliberate:
 
 - *These four keywords never appear in your TODO search.* They are declared
-  in the notebook's header and are outside =org-scribe-todo-keywords=, so =F8 F8 5= keeps
+  in the notebook's header and are outside =org-scribe-todo-keywords=, so =F8 5= keeps
   showing real work rather than filling up with your musings. Speculation is not
   work in progress.
 - *=CHOSEN= and =REJECTED= are done states*, so a settled question folds away
@@ -1502,7 +1501,7 @@ problems and are not alternatives to each other.
 
 *** Compiling a clean draft (=org-scribe-compile=)
 
-=M-x org-scribe-compile= (=F8 F8 X=) is the recommended path for a document
+=M-x org-scribe-compile= (=F8 X=) is the recommended path for a document
 you would actually hand to a reader. The working file is a workspace, not a
 manuscript — apparatus sections, an eighteen-field property drawer per scene,
 act and chapter and scene headings all marked =:ignore:=, edit markers in
@@ -1670,13 +1669,13 @@ Key variables:
 
 Default keybindings when =org-scribe-mode= is active:
 
-- =F8 F8= - Open hydra menu
+- =F8= - Open hydra menu
 - =C-c W= - Capture note
 
-** Hydra Menu (F8 F8)
+** Hydra Menu (F8)
 
 The hydra menu provides quick access to all functions organized into 6 columns.
-Open it with =F8 F8= while =org-scribe-mode= is active.
+Open it with =F8= while =org-scribe-mode= is active.
 
 #+begin_example
 ^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^              ^Search^          ^Manage^
@@ -1740,7 +1739,7 @@ Tag the current scene's properties with ID-based links:
 - =W= - Writing planner submenu
 - =X= - Compile manuscript (=org-scribe-compile=; prompts for output format)
 
-**** Capture Entity Submenu (F8 F8 k)
+**** Capture Entity Submenu (F8 k)
 
 - =h= - Capture character profile
 - =l= - Capture location
@@ -1750,7 +1749,7 @@ Tag the current scene's properties with ID-based links:
 - =n= - Capture general note
 - =q= / =Q= - Back to main menu / Quit
 
-**** Links & Upkeep Submenu (F8 F8 L)
+**** Links & Upkeep Submenu (F8 L)
 
 *Whole-project upkeep:*
 - =R= - Relink entire project (add IDs, link plain names, refresh display names)
@@ -1810,7 +1809,7 @@ Two switches, both off by default:
 
 While the global switch is off, the companion code is never even loaded. Short stories are not supported yet (the page is built around acts, chapters and scenes).
 
-Then =F8 F8 B= (or =M-x org-scribe-companion-open=) starts the server and opens the page. Scenes need an =ID= to be addressable; the companion offers to add the missing ones the first time. =M-x org-scribe-companion-stop= stops it.
+Then =F8 B= (or =M-x org-scribe-companion-open=) starts the server and opens the page. Scenes need an =ID= to be addressable; the companion offers to add the missing ones the first time. =M-x org-scribe-companion-stop= stops it.
 
 ** Using It
 
@@ -1821,7 +1820,7 @@ Then =F8 F8 B= (or =M-x org-scribe-companion-open=) starts the server and opens 
 
 ** Story Time
 
-The Timeline tab reads each scene's =:Timeline:= text. Choose the notation with =F8 F8 S= (=org-scribe-set-story-time=), recorded as =# Story-time:= in =.org-scribe-project=:
+The Timeline tab reads each scene's =:Timeline:= text. Choose the notation with =F8 S= (=org-scribe-set-story-time=), recorded as =# Story-time:= in =.org-scribe-project=:
 
 - *relative* (default): =Day 3=, =Day 3, 14:00=, =Night 3, 02:00=, =Year -9, Day 40=. There is no Day 0 (=Day -1= is the day before Day 1).
 - *dates*: Org timestamps, counted from a =# Story-day-one: YYYY-MM-DD= it asks for.
@@ -1878,7 +1877,7 @@ A project only sees the planner after explicitly opting in — no prompts, no mo
 
 - Declining the "Create a writing plan?" prompt on project creation writes =no= — the project is never asked again.
 - Accepting that prompt, or creating/loading a plan manually via =M-x org-scribe-plan=, writes =yes=.
-- =M-x org-scribe-planner-enable-for-project= / =M-x org-scribe-planner-disable-for-project= (hydra =F8 F8 W E= / =X=) flip the marker directly at any time.
+- =M-x org-scribe-planner-enable-for-project= / =M-x org-scribe-planner-disable-for-project= (hydra =F8 W E= / =X=) flip the marker directly at any time.
 - An *undecided* project (no =# Planner:= line yet) behaves exactly as before this gate existed — only an explicit decline turns features off.
 
 ** What It Does
@@ -1895,7 +1894,7 @@ When you enter an org-scribe project whose gate is =yes=, the planner silently l
 *** 2. Live Word Count Bridge
 
 - =org-scribe-planner-update-progress= reads totals directly from =WORDCOUNT= properties in the manuscript — no manual prompt.
-- After running =org-scribe-ews-org-count-words= (=F8 F8 a=), the active plan is updated and saved silently.
+- After running =org-scribe-ews-org-count-words= (=F8 a=), the active plan is updated and saved silently.
 
 *** 3. Automatic Update on Every Save
 
@@ -1918,7 +1917,7 @@ Inside an org-scribe project, planner commands require no file-path decisions:
 - =org-scribe-planner-load-plan= loads =plan.org= from the project root directly — no file picker.
 - Both commands fall back to their normal interactive prompts when run outside a project.
 
-The primary way to open your plan is =M-x org-scribe-plan= (or =F8 F8 W p=):
+The primary way to open your plan is =M-x org-scribe-plan= (or =F8 W p=):
 
 - *Plan already active* → shows the calendar immediately.
 - *Plan file exists but not loaded* → loads it silently, then shows the calendar.
@@ -1933,7 +1932,7 @@ After creating a new novel or short story project, you are offered the option to
 
 *Starting mid-draft.* A plan records the words already in the manuscript as
 its pre-existing words (=PREEXISTING_WORDS=). New plans ask for them, with the
-manuscript's current count as the default; =F8 F8 W o= (Onboard existing
+manuscript's current count as the default; =F8 W o= (Onboard existing
 project) reads them from the manuscript and starts the plan today. They count
 toward the goal and the completion percentage, and "expected" starts from
 them, but they are never one day's writing: the first sync records only the
@@ -1947,7 +1946,7 @@ Day goals are whole words that add up exactly to the goal (10,000 words over
 7 days is 1,429 four times and 1,428 three times). The words can follow a
 pattern (valley, mountain, rising, declining, random), weekends can have a
 goal of their own or be days off, and single days can have their own goal —
-all through =F8 F8 W r= (What changed?). New plans can start from a preset
+all through =F8 W r= (What changed?). New plans can start from a preset
 (novel draft, NaNoWriMo, novella, short story, daily habits), with the one for
 the project's type offered first, and defaults for pattern and weekends can be
 set once (=org-scribe-planner-default-pattern= and friends). Words written outside
@@ -1959,7 +1958,7 @@ days.
 
 *** 6. Planner Hydra Sub-menu (=W=)
 
-Press =F8 F8 W= to open the planner sub-menu. If the project has declined the planner, this key offers to enable it first instead of opening the submenu.
+Press =F8 W= to open the planner sub-menu. If the project has declined the planner, this key offers to enable it first instead of opening the submenu.
 
 - =p= - Open project plan (load or create)
 - =n= - New plan

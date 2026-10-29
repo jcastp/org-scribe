@@ -5,7 +5,7 @@
 
 * Welcome to Lesson 9!
 
-You've been using writing mode (~F8 F8 m~) throughout the previous lessons, but ~org-scribe~ actually offers *four different modes* for different writing workflows. Each mode transforms your environment in unique ways to support specific tasks.
+You've been using writing mode (~F8 m~) throughout the previous lessons, but ~org-scribe~ actually offers *four different modes* for different writing workflows. Each mode transforms your environment in unique ways to support specific tasks.
 
 In this lesson, we'll explore all four modes in detail and learn when to use each one.
 
@@ -24,7 +24,7 @@ By the end of this lesson, you'll have:
 
 ✓ A writing project open with at least one scene
 ✓ Some written content (200+ words recommended)
-✓ Familiarity with the Hydra menu (~F8 F8~)
+✓ Familiarity with the Hydra menu (~F8~)
 
 ** Optional Dependencies
 
@@ -59,8 +59,8 @@ When you activate a mode:
 3. This prevents conflicts and maintains clean state
 
 *What this means*:
-- ~F8 F8 m~ when Focus Mode is active → Focus exits, Distraction-Free activates
-- ~F8 F8 v~ when Editing Mode is active → Editing exits, Project activates
+- ~F8 m~ when Focus Mode is active → Focus exits, Distraction-Free activates
+- ~F8 v~ when Editing Mode is active → Editing exits, Project activates
 - Activating the same mode again → Exits that mode (toggle behavior)
 
 ** Quick Summary
@@ -76,7 +76,7 @@ Before we dive deep, here's the essence of each mode:
 
 ** What It Does
 
-Activates: ~F8 F8 m~
+Activates: ~F8 m~
 
 *Visual changes*:
 - Switches to clean, minimal theme (default: ~poet~)
@@ -104,7 +104,7 @@ Perfect for:
 ** How It Works
 
 1. *Before activation*: Normal Emacs with your usual theme, windows, etc.
-2. *Press* ~F8 F8 m~
+2. *Press* ~F8 m~
 3. *Screen changes*:
    - Theme switches (dark/complex → light/minimal)
    - Font increases (easier reading)
@@ -112,7 +112,7 @@ Perfect for:
    - Mode line simplifies
    - Everything but your text fades away
 4. *Write freely!*
-5. *Press* ~F8 F8 m~ again to exit
+5. *Press* ~F8 m~ again to exit
 6. *Everything restores*: Theme, font, windows - all back to normal
 
 ** Visual Comparison
@@ -133,7 +133,7 @@ BEFORE DISTRACTION-FREE MODE:
 │ [Mode indicators] [Battery] [Time] ...         │
 └────────────────────────────────────────────────┘
 
-AFTER DISTRACTION-FREE MODE (F8 F8 m):
+AFTER DISTRACTION-FREE MODE (F8 m):
 ┌────────────────────────────────────────────────┐
 │                                                │
 │                                                │
@@ -177,17 +177,17 @@ Control how Distraction-Free mode looks:
 ** Try It Now!
 
 1. Open your manuscript
-2. Press ~F8 F8 m~
+2. Press ~F8 m~
 3. Observe the transformation
 4. Write 100 words (experience the environment)
-5. Press ~F8 F8 m~ again
+5. Press ~F8 m~ again
 6. Notice how everything restores
 
 * Mode 2: Focus Mode
 
 ** What It Does
 
-Activates: ~F8 F8 f~
+Activates: ~F8 f~
 
 *Everything from Distraction-Free mode, PLUS*:
 - Narrows buffer to current org section
@@ -223,14 +223,14 @@ Perfect for:
 ** How It Works
 
 1. *Position cursor* on the scene/chapter you want to focus on
-2. *Press* ~F8 F8 f~
+2. *Press* ~F8 f~
 3. *Buffer narrows*:
    - Only current subtree visible
    - Everything else hidden (not deleted!)
    - Scrolling limited to visible content
    - Plus all Distraction-Free mode effects
 4. *Work on that section*
-5. *Press* ~F8 F8 f~ again to exit
+5. *Press* ~F8 f~ again to exit
 6. *Buffer widens*: Full manuscript visible again + normal environment restored
 
 ** Visual Comparison
@@ -251,7 +251,7 @@ FULL MANUSCRIPT (before Focus Mode):
 │ Text of scene 3...             │
 └────────────────────────────────┘
 
-AFTER FOCUS MODE (F8 F8 f):
+AFTER FOCUS MODE (F8 f):
 ┌────────────────────────────────┐
 │                                │
 │                                │
@@ -273,13 +273,13 @@ AFTER FOCUS MODE (F8 F8 f):
 *Scenario*: Scene 3 needs rewriting, but seeing other scenes distracts you.
 
 1. Navigate to Scene 3 heading
-2. ~F8 F8 f~ (activate Focus mode)
+2. ~F8 f~ (activate Focus mode)
 3. Now you see ONLY Scene 3
 4. Rewrite intensively
-5. ~F8 F8 f~ (exit)
+5. ~F8 f~ (exit)
 6. Full manuscript visible again
 7. Navigate to Scene 4
-8. ~F8 F8 f~ (focus on Scene 4)
+8. ~F8 f~ (focus on Scene 4)
 9. Repeat...
 
 ** Customization
@@ -295,17 +295,17 @@ No separate configuration needed!
 
 1. Open manuscript
 2. Navigate to a specific scene heading
-3. Press ~F8 F8 f~
+3. Press ~F8 f~
 4. Notice: only that scene visible
 5. Try scrolling - you can't leave the scene
-6. Press ~F8 F8 f~ to exit
+6. Press ~F8 f~ to exit
 7. Full manuscript visible again
 
 * Mode 3: Navigate Mode
 
 ** What It Does
 
-Activates: ~F8 F8 v~
+Activates: ~F8 v~
 
 *Layout changes*:
 - Opens ~treemacs~ on the left (project file tree)
@@ -398,7 +398,7 @@ Perfect for:
 
 ** How It Works
 
-1. *Press* ~F8 F8 v~
+1. *Press* ~F8 v~
 2. *Frame splits into three*:
    - Treemacs opens (left)
    - Imenu-list opens (right)
@@ -408,21 +408,21 @@ Perfect for:
    - Click treemacs to open files
    - Click imenu-list to jump within file
    - Keep working in center panel
-4. *Press* ~F8 F8 v~ again to exit
+4. *Press* ~F8 v~ again to exit
 5. *Panels close*: Back to normal single-buffer view
 
 ** Workflow Example
 
 *Scenario*: Writing a scene, need to check character details.
 
-1. ~F8 F8 v~ (activate Navigate mode)
+1. ~F8 v~ (activate Navigate mode)
 2. Left panel (treemacs) → click ~design.org~
 3. The design notebook opens in center
 4. Jump to the Characters section and read the details
 5. Left panel → click ~novel.org~
 6. Manuscript returns to center
 7. Continue writing with fresh details
-8. ~F8 F8 v~ (exit) when navigation not needed
+8. ~F8 v~ (exit) when navigation not needed
 
 ** Dependencies
 
@@ -485,18 +485,18 @@ improves heading navigation throughout Org, not only inside org-scribe.
 ** Try It Now!
 
 1. Open your manuscript
-2. Press ~F8 F8 v~
+2. Press ~F8 v~
 3. Look at the three panels
 4. Click a heading in imenu-list (right panel)
 5. See cursor jump in main buffer
 6. Click a file in treemacs (left panel) if available
-7. Press ~F8 F8 v~ to exit
+7. Press ~F8 v~ to exit
 
 * Mode 4: Editing Mode
 
 ** What It Does
 
-Activates: ~F8 F8 e~
+Activates: ~F8 e~
 
 *Advanced three-panel layout*:
 - Left: ~imenu-list~ (document outline - 25% width)
@@ -587,7 +587,7 @@ Perfect for:
 
 *Shows*:
 - The design notebook — ~design.org~ (~diseno.org~ in Spanish projects)
-- The same file your captures go to, so notes written here and notes captured with ~F8 F8 n~ land in one place
+- The same file your captures go to, so notes written here and notes captured with ~F8 n~ land in one place
 - Your revision notes, ideas, TODOs
 
 *Use for*:
@@ -626,12 +626,12 @@ The ~edits~ value is worth trying during a revision pass: it is the only option 
 
 If the requested file cannot be found, the panel falls back to the design notebook rather than opening nothing.
 
-*Note*: this panel used to show a per-manuscript companion file (~novel.org~ → ~novel-notes.org~) that existed to hold org-remark annotations. org-remark support has been removed — use inline ~*EDIT*~ / ~*NOTE*~ markers and ~F8 F8~ then ~6~ instead — so the panel now defaults to the design notebook. Any existing ~novel-notes.org~ in your projects is left untouched; open it normally if it holds content you want.
+*Note*: this panel used to show a per-manuscript companion file (~novel.org~ → ~novel-notes.org~) that existed to hold org-remark annotations. org-remark support has been removed — use inline ~*EDIT*~ / ~*NOTE*~ markers and ~F8~ then ~6~ instead — so the panel now defaults to the design notebook. Any existing ~novel-notes.org~ in your projects is left untouched; open it normally if it holds content you want.
 
 ** How It Works
 
 1. *Open your manuscript* (e.g., ~novel.org~)
-2. *Press* ~F8 F8 e~
+2. *Press* ~F8 e~
 3. *Frame splits into three*:
    - All other windows close
    - Imenu-list appears (left, 25%)
@@ -642,7 +642,7 @@ If the requested file cannot be found, the panel falls back to the design notebo
    - Font changes to editing preset
    - Text centering with margins
 5. *Edit freely*, jump between panels
-6. *Press* ~F8 F8 e~ to exit
+6. *Press* ~F8 e~ to exit
 7. *Previous layout restores*: Windows, theme, font - all back
 
 ** Workflow Example
@@ -650,7 +650,7 @@ If the requested file cannot be found, the panel falls back to the design notebo
 *Scenario*: Revising Chapter 3 with specific notes.
 
 1. Open ~novel.org~
-2. ~F8 F8 e~ (activate Editing mode)
+2. ~F8 e~ (activate Editing mode)
 3. ~design.org~ opens automatically (right panel)
 4. In notes panel, write:
    #+BEGIN_EXAMPLE
@@ -667,19 +667,19 @@ If the requested file cannot be found, the panel falls back to the design notebo
 9. Check off items in right panel (notes)
 10. Navigate to next scene via left panel
 11. Repeat revision process
-12. ~F8 F8 e~ when done - layout closes, work saved
+12. ~F8 e~ when done - layout closes, work saved
 
 ** About the Notes File
 
 Editing mode's right panel is your project's design notebook - ~design.org~
 (~diseno.org~ in Spanish projects).
 It is created automatically if it doesn't exist yet. This is the same file
-~F8 F8 n~ captures into, so notes typed in the panel and notes captured from
+~F8 n~ captures into, so notes typed in the panel and notes captured from
 elsewhere all end up in one place.
 
 For notes that belong to a *specific sentence* rather than to the project as
 a whole, don't use this panel - write an inline marker in the manuscript
-itself and find them later with ~F8 F8~ then ~6~. See lesson 14, "Marker
+itself and find them later with ~F8~ then ~6~. See lesson 14, "Marker
 Convention".
 
 org-scribe does not integrate with ~org-remark~ or any other annotation
@@ -706,13 +706,13 @@ manuscript.
 ** Try It Now!
 
 1. Open your manuscript
-2. Press ~F8 F8 e~
+2. Press ~F8 e~
 3. Observe the three-panel layout
 4. Notice the design notebook on the right
 5. Try typing a note in the right panel
 6. Click outline items on the left
 7. See cursor jump in center
-8. Press ~F8 F8 e~ to exit
+8. Press ~F8 e~ to exit
 
 * Choosing the Right Mode
 
@@ -771,19 +771,19 @@ START
 ** Combining Modes with Workflow
 
 *Morning routine*:
-1. ~F8 F8 v~ - Check what needs writing (project overview)
+1. ~F8 v~ - Check what needs writing (project overview)
 2. Navigate to today's scene
-3. ~F8 F8 m~ - Switch to distraction-free
+3. ~F8 m~ - Switch to distraction-free
 4. Write for 1 hour
-5. ~F8 F8 m~ - Exit, check progress
+5. ~F8 m~ - Exit, check progress
 
 *Revision routine*:
-1. ~F8 F8 e~ - Activate editing mode
+1. ~F8 e~ - Activate editing mode
 2. Review notes in right panel
 3. Work through revision checklist
 4. Make edits in center panel
 5. Update notes as you go
-6. ~F8 F8 e~ - Exit when done
+6. ~F8 e~ - Exit when done
 
 * Practical Exercises (15 minutes)
 
@@ -795,43 +795,43 @@ Let's practice using all four modes.
 
 1. *Distraction-Free*:
    - Open manuscript
-   - ~F8 F8 m~
+   - ~F8 m~
    - Write 50 words
    - Notice: clean, centered, minimal
-   - ~F8 F8 m~ (exit)
+   - ~F8 m~ (exit)
 
 2. *Focus*:
    - Position on a scene heading
-   - ~F8 F8 f~
+   - ~F8 f~
    - Write 50 words
    - Notice: only this scene visible
    - Try scrolling past scene boundaries (you can't!)
-   - ~F8 F8 f~ (exit)
+   - ~F8 f~ (exit)
 
 3. *Project*:
-   - ~F8 F8 v~
+   - ~F8 v~
    - Click different headings in imenu-list
    - See cursor jump
    - Notice three-panel layout
-   - ~F8 F8 v~ (exit)
+   - ~F8 v~ (exit)
 
 4. *Editing*:
-   - ~F8 F8 e~
+   - ~F8 e~
    - Add a note in right panel: "* Test note"
    - Click outline items on left
    - Notice how design notebook persists
-   - ~F8 F8 e~ (exit)
+   - ~F8 e~ (exit)
 
 ** Exercise 2: Mode Switching (3 minutes)
 
 *Goal*: Practice smooth transitions
 
-1. ~F8 F8 m~ → Distraction-Free active
-2. ~F8 F8 v~ → Distraction-Free exits, Project activates
-3. ~F8 F8 f~ → Navigate exits, Focus activates
-4. ~F8 F8 e~ → Focus exits, Editing activates
-5. ~F8 F8 m~ → Editing exits, Distraction-Free activates
-6. ~F8 F8 m~ → Distraction-Free exits (toggle off)
+1. ~F8 m~ → Distraction-Free active
+2. ~F8 v~ → Distraction-Free exits, Project activates
+3. ~F8 f~ → Navigate exits, Focus activates
+4. ~F8 e~ → Focus exits, Editing activates
+5. ~F8 m~ → Editing exits, Distraction-Free activates
+6. ~F8 m~ → Distraction-Free exits (toggle off)
 
 *Notice*: Each transition is clean - no leftover state!
 
@@ -1003,7 +1003,7 @@ If using Fontaine, define presets in your config:
 
 ** "Which mode should I use for daily writing?"
 
-*Answer*: Distraction-Free mode (~F8 F8 m~)
+*Answer*: Distraction-Free mode (~F8 m~)
 
 It's the most popular for daily writing because:
 - Clean, minimal interface
@@ -1100,8 +1100,8 @@ This is advanced - stick with the four built-in modes initially!
 ** "Exiting mode doesn't restore everything"
 
 *Try*:
-1. Activate the mode again: ~F8 F8 X~ (where X is the mode key)
-2. Exit properly: ~F8 F8 X~ again
+1. Activate the mode again: ~F8 X~ (where X is the mode key)
+2. Exit properly: ~F8 X~ again
 3. If still broken: ~M-x revert-buffer~ or close/reopen file
 
 *Prevention*:
@@ -1249,7 +1249,7 @@ The modes are powerful tools - the more you use them, the more natural they beco
 | ~e~   | Editing                  | **E**diting         |
 | ~0~   | Normal (off)             | none (**0** = normal) |
 
-All accessed via: ~F8 F8~ then key. All five go through one unified dispatcher, ~org-scribe-workspace~, which takes the layout name as its argument; re-selecting the active layout's key turns it off.
+All accessed via: ~F8~ then key. All five go through one unified dispatcher, ~org-scribe-workspace~, which takes the layout name as its argument; re-selecting the active layout's key turns it off.
 
 ** Mode Comparison Chart
 
@@ -1284,8 +1284,8 @@ REVISE → e (Editing)
 ** Essential Commands
 
 #+BEGIN_EXAMPLE
-Activate modes: F8 F8 + (m/f/v/e)
-Exit mode: F8 F8 + (same key) [toggles]
+Activate modes: F8 + (m/f/v/e)
+Exit mode: F8 + (same key) [toggles]
 Force exit all: (none needed - modes are well-behaved!)
 
 Navigation in Focus mode:

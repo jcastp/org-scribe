@@ -80,7 +80,7 @@ document to Org's own exporters.
 ** Using It
 
 #+BEGIN_EXAMPLE
-F8 F8 X          (or M-x org-scribe-compile)
+F8 X          (or M-x org-scribe-compile)
 
 Compile style:  clean / shunn
 Compile the manuscript to:  org / txt / md / odt / pdf / docx / epub
@@ -152,7 +152,7 @@ with its plain styling.
 ** Try It Now! (2 minutes)
 
 1. Open your manuscript
-2. ~F8 F8 X~, ~clean~, then choose ~txt~
+2. ~F8 X~, ~clean~, then choose ~txt~
 3. Open the resulting file in ~export/~ — notice the chapter headings,
    the scene breaks, and the complete absence of ~TODO~ or property
    drawers
@@ -219,7 +219,7 @@ editing of the marker file — there's no dedicated command yet:
 ** Compiling
 
 #+BEGIN_EXAMPLE
-F8 F8 X
+F8 X
 Compile style:  shunn
 Compile the manuscript to:  org / txt / pdf / docx
 #+END_EXAMPLE
@@ -287,7 +287,7 @@ compiling a PDF with a broken header.
 
 1. Set ~org-scribe-author-name~ (and, if you like, the address/email)
    in your ~*scratch*~ buffer or ~M-x eval-expression~
-2. ~F8 F8 X~, ~shunn~, then choose ~txt~ — read the front matter that
+2. ~F8 X~, ~shunn~, then choose ~txt~ — read the front matter that
    comes out
 3. If you have a LaTeX distribution, try ~pdf~ and look for the running
    header starting on page 2
@@ -1309,7 +1309,7 @@ which.
 
 Fantastic work! You've completed Lesson 11. You now know:
 
-✓ Compiling a clean draft with ~org-scribe-compile~ (~F8 F8 X~) — the
+✓ Compiling a clean draft with ~org-scribe-compile~ (~F8 X~) — the
   fastest path from working file to readable document
 ✓ Compiling a submission-ready manuscript with the ~shunn~ style — a
   real contact block, rounded word count, and (for PDF) a running
@@ -1348,7 +1348,7 @@ In the next lesson, you'll learn:
 Reinforce your export skills:
 
 1. **Compile a clean draft**
-   - ~F8 F8 X~, ~clean~, then choose ~txt~
+   - ~F8 X~, ~clean~, then choose ~txt~
    - Open the intermediate ~.org~ file in ~export/~ and compare it to
      your working manuscript
    - Try ~odt~ and open it in LibreOffice/Word
@@ -1360,7 +1360,7 @@ Reinforce your export skills:
 2. **Compile a Shunn manuscript**
    - Set ~org-scribe-author-name~ (and, if you like, the rest of your
      contact information)
-   - ~F8 F8 X~, ~shunn~, then choose ~txt~ — read through the front
+   - ~F8 X~, ~shunn~, then choose ~txt~ — read through the front
      matter
    - If you have a LaTeX distribution installed, try ~pdf~ and check for
      the running header on page 2
@@ -1411,7 +1411,7 @@ Exporting is how you share your work - master these skills to present your writi
 
 | Key Sequence | Action                                              |
 |--------------+------------------------------------------------------|
-| ~F8 F8 X~      | ~M-x org-scribe-compile~: prompts for style (clean/shunn), then format (org/txt/md/odt/pdf/docx/epub — shunn offers only org/txt/pdf/docx) |
+| ~F8 X~      | ~M-x org-scribe-compile~: prompts for style (clean/shunn), then format (org/txt/md/odt/pdf/docx/epub — shunn offers only org/txt/pdf/docx) |
 
 ** Essential Export Commands
 
@@ -1505,7 +1505,7 @@ Send to editor                → org-scribe-compile, clean (docx or odt),
 * Summary
 
 You have two ways to get a manuscript out of org-scribe. Start with
-~org-scribe-compile~ (~F8 F8 X~): the ~clean~ style needs no configuration
+~org-scribe-compile~ (~F8 X~): the ~clean~ style needs no configuration
 and produces org/txt/md/odt/epub in seconds (epub with its own styled
 scene breaks, if ~ox-epub~ is installed), and the ~shunn~ style — once your
 author identity is set up — produces a submission-ready manuscript

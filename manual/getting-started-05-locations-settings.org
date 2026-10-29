@@ -25,7 +25,7 @@ Before starting this lesson, you should have completed:
 - [[file:getting-started-04-capturing-characters.org][Lesson 4: Capturing Characters]] (recommended - same linking concepts)
 
 You should understand:
-- How to use the Hydra menu (F8 F8)
+- How to use the Hydra menu (F8)
 - Basic Org-mode properties
 - ID-based linking (from character lesson)
 - Scene properties
@@ -110,7 +110,7 @@ Let's explore what's in the location capture template.
 
 ** Accessing the Template
 
-Press: ~F8 F8 k l~ (F8 twice for the main menu, ~k~ for the capture-entity submenu, then ~l~ for "location")
+Press: ~F8 k l~ (F8 twice for the main menu, ~k~ for the capture-entity submenu, then ~l~ for "location")
 
 Or use: ~M-x org-scribe-capture-location~
 
@@ -384,8 +384,8 @@ to be description you never use.
 A list of the scenes set in this place.
 
 You do not maintain this by hand. Tag each scene with its ~Location~ property
-(~F8 F8 l~) and the link runs from the scene to the setting; searching by
-location (~F8 F8 4~, covered later in this lesson) gives you the list on
+(~F8 l~) and the link runs from the scene to the setting; searching by
+location (~F8 4~, covered later in this lesson) gives you the list on
 demand, current by construction.
 
 Keep the section for anything the search cannot tell you — a note that three
@@ -428,7 +428,7 @@ Let's create a location profile together.
 
 ** Step 1: Invoke Capture
 
-Press: ~F8 F8 k l~
+Press: ~F8 k l~
 
 You'll see: ~Capture location name:~
 
@@ -493,7 +493,7 @@ Once you have location profiles, link them to scenes.
 
 1. Open your manuscript (novel.org or story.org)
 2. Navigate to a scene heading
-3. Press: ~F8 F8 l~ (a top-level Tag Scene action — not a submenu)
+3. Press: ~F8 l~ (a top-level Tag Scene action — not a submenu)
 
 Or use: ~M-x org-scribe-set-scene-locations~
 
@@ -563,7 +563,7 @@ Find all scenes set in a specific location.
 
 ** Command
 
-Press: ~F8 F8 4~ (search by location)
+Press: ~F8 4~ (search by location)
 
 Or use: ~M-x org-scribe-org-find-location~
 
@@ -618,7 +618,7 @@ This gets boring for readers (and you!).
 
 Periodically check location distribution:
 
-1. Search each primary location (F8 F8 4)
+1. Search each primary location (F8 4)
 2. Count scenes per location
 3. Identify overused settings
 4. Plan scenes in underused locations
@@ -666,7 +666,7 @@ This finds the location name in your profiles and replaces it with an ID link.
 
 ** Convert All Scenes (Batch)
 
-The easiest path is ~F8 F8 R~ (or ~F8 F8 L R~) — ~org-scribe-relink-project~ converts plain-text names to ID links (and adds missing IDs, and refreshes display names) across *every* entity type, including locations, in one pass.
+The easiest path is ~F8 R~ (or ~F8 L R~) — ~org-scribe-relink-project~ converts plain-text names to ID links (and adds missing IDs, and refreshes display names) across *every* entity type, including locations, in one pass.
 
 If you specifically want only locations converted, run ~M-x org-scribe-link-all-scene-locations~ directly.
 
@@ -731,7 +731,7 @@ Let's practice location management end-to-end.
 
 *** Location 1: Home Setting
 
-1. Press: ~F8 F8 k l~
+1. Press: ~F8 k l~
 2. Name: ~[Protagonist's Apartment/House]~
 3. Fill properties:
    - Type: Residence
@@ -746,7 +746,7 @@ Let's practice location management end-to-end.
 
 *** Location 2: Public Setting
 
-1. Press: ~F8 F8 k l~
+1. Press: ~F8 k l~
 2. Name: ~[Park/Restaurant/Library/Store - your choice]~
 3. Fill properties:
    - Type: Public or Business
@@ -761,7 +761,7 @@ Let's practice location management end-to-end.
 
 1. Open your manuscript
 2. Find or create a scene
-3. Press: ~F8 F8 l~ (set scene locations)
+3. Press: ~F8 l~ (set scene locations)
 4. Select Location 1
 5. Verify the ~:Location:~ property now has an ID link
 6. Navigate to another scene
@@ -776,7 +776,7 @@ Let's practice location management end-to-end.
 4. Press: ~C-c &~ to return → Success!
 
 *** Test Search:
-1. Press: ~F8 F8 4~
+1. Press: ~F8 4~
 2. Search for one of your locations
 3. See results → Should show scene(s) you just linked
 4. Press ~q~ to close results
@@ -808,7 +808,7 @@ Let's practice location management end-to-end.
 - After using a location for first time:
   - Fill in ~:First-appearance:~ property
 - When introducing a new location mid-draft:
-  - Pause, press F8 F8 k l
+  - Pause, press F8 k l
   - Quick capture (5-minute version)
   - Link to scene immediately
 
@@ -916,7 +916,7 @@ The location was captured but doesn't appear under "Setting" in design.org.
 ** "Location linking menu shows no locations"
 
 *** Problem
-Pressing F8 F8 l shows empty list.
+Pressing F8 l shows empty list.
 
 *** Solution
 1. Ensure you have captured at least one location
@@ -953,10 +953,10 @@ Search returns 0 results despite linked scenes.
 
 | Key       | Action                                             |
 |-----------+----------------------------------------------------|
-| ~F8 F8 k l~ | Capture new location                               |
-| ~F8 F8 l~   | Set scene's location(s) (menu)                     |
-| ~F8 F8 R~   | Relink project (all entity types, incl. locations) |
-| ~F8 F8 4~   | Search scenes by location                          |
+| ~F8 k l~ | Capture new location                               |
+| ~F8 l~   | Set scene's location(s) (menu)                     |
+| ~F8 R~   | Relink project (all entity types, incl. locations) |
+| ~F8 4~   | Search scenes by location                          |
 | ~C-c C-o~   | Follow link at point                               |
 | ~C-c &~     | Return from link                                   |
 | ~C-c C-c~   | Finalize capture / update table                    |

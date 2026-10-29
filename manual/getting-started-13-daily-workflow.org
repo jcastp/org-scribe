@@ -136,7 +136,7 @@ See where you stand:
 1. Open your manuscript (~novel.org~ or ~story.org~) and find the "Progress Tracking" section with the ~#+BEGIN: org-generate-wordcount-table~ dynamic block
 2. Look at your progress table (press ~C-c C-c~ on the ~#+BEGIN~ line to refresh it first)
 3. Note your current total word count
-4. For a manuscript-wide total and percentage (rather than per-heading numbers), run ~M-x org-scribe-project-health~ (or ~F8 F8 H~) instead
+4. For a manuscript-wide total and percentage (rather than per-heading numbers), run ~M-x org-scribe-project-health~ (or ~F8 H~) instead
 
 Example progress table you might see:
 
@@ -176,7 +176,7 @@ Decide what you'll accomplish today:
 
 Enter your preferred distraction-free environment:
 
-Press ~F8 F8~ then ~m~ (for distraction-free writing mode)
+Press ~F8~ then ~m~ (for distraction-free writing mode)
 
 Your screen transforms:
 
@@ -196,8 +196,8 @@ Before:                          After:
 #+END_EXAMPLE
 
 *Alternative modes*:
-- Focus mode (~F8 F8~ then ~f~) - Current scene only
-- Navigate mode (~F8 F8~ then ~v~) - With navigation panel
+- Focus mode (~F8~ then ~f~) - Current scene only
+- Navigate mode (~F8~ then ~v~) - With navigation panel
 - Normal mode - No special environment
 
 Choose what helps you concentrate best!
@@ -243,7 +243,7 @@ Your main activity is simple:
    - Reach a natural stopping point
    - Leave a note if you know what comes next
 
-3. *Insert next scene* (~F8 F8~ then ~s~)
+3. *Insert next scene* (~F8~ then ~s~)
    - Use the scene template
    - Fill in quick properties (PoV, Location)
    - Start writing immediately
@@ -258,7 +258,7 @@ When inspiration strikes mid-writing, capture it quickly without leaving your ma
 
 You're writing and think: "Sam needs a sister!"
 
-*Don't stop writing.* Just press ~F8 F8~ then ~k~ (capture-entity submenu) then ~h~ (character):
+*Don't stop writing.* Just press ~F8~ then ~k~ (capture-entity submenu) then ~h~ (character):
 
 #+BEGIN_EXAMPLE
 Capture character template appears:
@@ -294,7 +294,7 @@ remind you tomorrow why you wanted this character at all.
 
 You're writing a scene in a coffee shop and realize you need more details:
 
-Press ~F8 F8~ then ~k~ (capture-entity submenu) then ~l~ (location):
+Press ~F8~ then ~k~ (capture-entity submenu) then ~l~ (location):
 
 #+BEGIN_EXAMPLE
 ,* Downtown Coffee Shop
@@ -326,7 +326,7 @@ happen here.
 
 Mid-scene, you realize: "The mysterious package should contain her mother's old letters!"
 
-Press ~F8 F8~ then ~n~ (general note). This is a plain heading, filed under the Scratchpad part of your design notebook - no properties drawer and no TODO keyword, just a timestamp and your text:
+Press ~F8~ then ~n~ (general note). This is a plain heading, filed under the Scratchpad part of your design notebook - no properties drawer and no TODO keyword, just a timestamp and your text:
 
 #+BEGIN_EXAMPLE
 ,** Package Contents
@@ -342,7 +342,7 @@ Captured! Now keep writing the current scene.
 
 "Wait, what day is this scene happening?"
 
-Press ~F8 F8~ then ~k~ (capture-entity submenu) then ~t~ (timeline event):
+Press ~F8~ then ~k~ (capture-entity submenu) then ~t~ (timeline event):
 
 #+BEGIN_EXAMPLE
 ,* Tuesday Morning - Coffee Shop Meeting
@@ -385,7 +385,7 @@ During active writing, minimize lookups. But sometimes you need the right word *
 When you must look up a word:
 
 1. Type the approximate word: "She felt melancholic"
-2. Press ~F8 F8~ then ~d~ (dictionary)
+2. Press ~F8~ then ~d~ (dictionary)
 3. Read definition quickly: "Yes, that's right"
 4. Close lookup buffer: ~q~
 5. Continue writing
@@ -478,7 +478,7 @@ Then move to the next scene you're excited about.
 During your session:
 
 □ Write continuously
-□ Use quick captures for ideas (~F8 F8 k~ + ~h~/~l~/~t~, or ~F8 F8 n~ for a general note)
+□ Use quick captures for ideas (~F8 k~ + ~h~/~l~/~t~, or ~F8 n~ for a general note)
 □ Minimal lookups - mark [CHECK] instead
 □ Leave TODO markers for revision
 □ Don't edit yesterday's work
@@ -496,7 +496,7 @@ End your session with a sense of accomplishment and preparation for tomorrow.
 See what you achieved today!
 
 1. Position cursor on today's section (the heading for the chapter or scene you worked on)
-2. Press ~F8 F8~ then ~w~ (word count)
+2. Press ~F8~ then ~w~ (word count)
 3. Read the result: "Subtree 'Chapter 3': 1,247 words"
 
 *Celebration moment*: You wrote over 1,000 words today!
@@ -606,7 +606,7 @@ If not using git:
 
 Exit your writing environment:
 
-1. Press ~F8 F8~ then ~0~ (back to Normal - or press ~m~ again to toggle writing mode off)
+1. Press ~F8~ then ~0~ (back to Normal - or press ~m~ again to toggle writing mode off)
 2. Your normal Emacs appears
 3. Close Emacs or switch to other work
 
@@ -639,7 +639,7 @@ Choose a consistent time when you can reflect without rushing.
 
 *** 1. Review Progress (5 minutes)
 
-Run ~M-x org-scribe-project-health~ (or ~F8 F8 H~) and assess:
+Run ~M-x org-scribe-project-health~ (or ~F8 H~) and assess:
 
 - *Word count*: "I wrote 3,500 words this week"
 - *Scenes completed*: "Finished 5 scenes"
@@ -917,7 +917,7 @@ The standard workflow might not fit everyone. Here are variations:
 ** Challenge 3: "I keep editing yesterday's work"
 
 *Solutions*:
-- Use ~F8 F8 f~ (focus mode) - only see current scene
+- Use ~F8 f~ (focus mode) - only see current scene
 - Jump to end immediately (~M->~)
 - Set a rule: No scrolling up!
 - Start each session with new scene
@@ -1108,20 +1108,20 @@ MORNING (5 min)
 □ Read last paragraph
 □ Check progress
 □ Set goal: ____ words
-□ Activate mode (F8 F8 m)
+□ Activate mode (F8 m)
 
 WRITING (__ min/hours)
 □ Write continuously
-□ Quick captures (F8 F8 k h/l, F8 F8 n for a note)
+□ Quick captures (F8 k h/l, F8 n for a note)
 □ Mark [TODO] for later
 □ No editing!
 
 EVENING (10 min)
-□ Count words (F8 F8 w)
+□ Count words (F8 w)
 □ Update table (C-c C-c)
 □ Note for tomorrow
 □ Save + backup
-□ Exit mode (F8 F8 0)
+□ Exit mode (F8 0)
 
 ═══════════════════════════════════════
 Current streak: ___ days

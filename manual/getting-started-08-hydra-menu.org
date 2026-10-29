@@ -5,7 +5,7 @@
 
 * Welcome to Lesson 8!
 
-By now you've used the Hydra menu many times throughout the previous lessons. You've pressed ~F8 F8~ to insert scenes, count words, search for characters, and more. But you might not fully understand how the menu is organized or what all those options do.
+By now you've used the Hydra menu many times throughout the previous lessons. You've pressed ~F8~ to insert scenes, count words, search for characters, and more. But you might not fully understand how the menu is organized or what all those options do.
 
 In this lesson, we'll take a comprehensive tour of the Hydra menu - your command center for all ~org-scribe~ features.
 
@@ -30,9 +30,8 @@ By the end of this lesson, you'll have:
 
 Can you open the Hydra menu?
 
-1. Press ~F8~ once
-2. Press ~F8~ again
-3. You should see the menu appear
+1. Press ~F8~
+2. You should see the menu appear
 
 If you see the menu, you're ready! If not, make sure ~org-scribe-mode~ is active.
 
@@ -67,12 +66,11 @@ The menu is called a "Hydra" because:
 
 ** The Default Keybinding
 
-Press: ~F8 F8~ (F8 twice)
+Press: ~F8~
 
-*Why F8 twice?*
+*Why F8?*
 - F8 is easy to reach
-- Double-tap prevents accidental activation
-- Consistent with other Emacs conventions (like C-c C-c)
+- A single keypress opens the menu
 
 ** What You'll See
 
@@ -264,7 +262,7 @@ Let's explore each category in detail.
 
 When you press ~k~, ~L~, or ~W~, you enter a submenu with more options.
 
-** Capture Entity Submenu (F8 F8 k)
+** Capture Entity Submenu (F8 k)
 
 #+BEGIN_EXAMPLE
 ^Capture into project^
@@ -286,7 +284,7 @@ _q_: Back to main menu            _Q_: Quit
 
 *When to use*: Mid-writing, when you invent a new character or place and want to record it without losing your flow.
 
-** Links & Upkeep Submenu (F8 F8 L)
+** Links & Upkeep Submenu (F8 L)
 
 #+BEGIN_EXAMPLE
 ^Whole project^          ^Set up linking^       ^Relationships^             ^Analysis & Display^
@@ -313,7 +311,7 @@ _q_: Back to main menu    _Q_: Quit
 
 Note: there is no relationship dynamic-block/graph-visualization feature anymore — relationships are viewed only via ~v~/~V~ above.
 
-** Planner Submenu (F8 F8 W)
+** Planner Submenu (F8 W)
 
 #+BEGIN_EXAMPLE
   org-scribe-planner
@@ -347,28 +345,28 @@ Here are the most frequent Hydra workflows you'll use.
 
 ** Daily Writing Session
 
-1. ~F8 F8 m~ - Activate writing mode (distraction-free)
+1. ~F8 m~ - Activate writing mode (distraction-free)
 2. Write your scene...
-3. ~F8 F8 m~ - Exit writing mode (or ~F8 F8 0~)
-4. ~F8 F8 w~ - Quick word count check
-5. ~F8 F8 a~ - Update all word count properties (syncs plan too)
+3. ~F8 m~ - Exit writing mode (or ~F8 0~)
+4. ~F8 w~ - Quick word count check
+5. ~F8 a~ - Update all word count properties (syncs plan too)
 
 *Muscle memory*: m → write → m → w → a
 
 ** Starting a New Scene
 
-1. ~F8 F8 s~ - Insert scene template
-2. ~F8 F8 p~ - Set PoV character (from menu)
-3. ~F8 F8 h~ - Set scene characters (multi-select)
-4. ~F8 F8 l~ - Set location (from menu)
-5. ~F8 F8 g~ - Set plot threads (from menu)
-6. ~F8 F8 m~ - Start writing!
+1. ~F8 s~ - Insert scene template
+2. ~F8 p~ - Set PoV character (from menu)
+3. ~F8 h~ - Set scene characters (multi-select)
+4. ~F8 l~ - Set location (from menu)
+5. ~F8 g~ - Set plot threads (from menu)
+6. ~F8 m~ - Start writing!
 
 *Efficient workflow*: s → p → h → l → g → m
 
 ** Tracking Progress
 
-1. ~F8 F8 a~ - Update all heading word count properties
+1. ~F8 a~ - Update all heading word count properties
 2. Navigate to the word count table
 3. ~C-c C-c~ - Refresh the table (regular Org command, not Hydra)
 
@@ -376,7 +374,7 @@ Here are the most frequent Hydra workflows you'll use.
 
 ** Finding Character Scenes
 
-1. ~F8 F8 2~ - Search by character
+1. ~F8 2~ - Search by character
 2. Select character from list
 3. Review results
 4. ~C-c C-o~ - Jump to a scene
@@ -387,9 +385,9 @@ Here are the most frequent Hydra workflows you'll use.
 ** Looking Up a Word (Spanish Writers)
 
 1. Place cursor on word
-2. ~F8 F8 d~ - RAE dictionary lookup
+2. ~F8 d~ - RAE dictionary lookup
 3. Read definition
-4. OR ~F8 F8 y~ - Find synonyms
+4. OR ~F8 y~ - Find synonyms
 5. Choose better word
 
 *Language tools*: d (definition) or y (synonyms)
@@ -400,7 +398,7 @@ Let's practice using the Hydra menu systematically.
 
 ** Exercise 1: Menu Exploration
 
-1. *Open Hydra*: ~F8 F8~
+1. *Open Hydra*: ~F8~
 2. *Look at each column* - don't press anything yet
 3. *Identify*:
    - Which key inserts a scene? (~s~)
@@ -413,41 +411,41 @@ Let's practice using the Hydra menu systematically.
 
 ** Exercise 2: Navigation Practice
 
-1. *Open Hydra*: ~F8 F8~
+1. *Open Hydra*: ~F8~
 2. *Enter capture submenu*: ~k~
 3. *Look at options* - which key captures a character? (~h~)
 4. *Quit submenu*: ~Q~
-5. *Open Hydra*: ~F8 F8~
+5. *Open Hydra*: ~F8~
 6. *Enter links submenu*: ~L~
 7. *Notice the Relink command* - what does ~R~ do? (relink whole project)
 8. *Return to main*: ~q~
-9. *Open planner*: ~F8 F8 W~
+9. *Open planner*: ~F8 W~
 10. *Quit*: ~q~
 
 ** Exercise 3: Common Actions
 
-1. *Insert a scene*: ~F8 F8 s~
-2. *Set PoV character*: ~F8 F8 p~ → select character
-3. *Count words*: ~F8 F8 w~
-4. *Update all counts*: ~F8 F8 a~
-5. *Search for a character*: ~F8 F8 2~ → select character
+1. *Insert a scene*: ~F8 s~
+2. *Set PoV character*: ~F8 p~ → select character
+3. *Count words*: ~F8 w~
+4. *Update all counts*: ~F8 a~
+5. *Search for a character*: ~F8 2~ → select character
 
 ** Exercise 4: Build Muscle Memory
 
 Repeat this sequence 3 times without looking at notes:
 
-1. ~F8 F8~ (open)
+1. ~F8~ (open)
 2. ~m~ (writing mode)
-3. ~F8 F8~ (open again)
+3. ~F8~ (open again)
 4. ~m~ (exit writing mode)
-5. ~F8 F8~ (open)
+5. ~F8~ (open)
 6. ~w~ (count words)
 
-*Goal*: Make "F8 F8" + single letter feel natural
+*Goal*: Make "F8" + single letter feel natural
 
 * Customizing the Hydra Keybinding
 
-The default keybinding is ~F8 F8~, but you can change it.
+The default keybinding is ~F8~, but you can change it.
 
 ** Why Customize?
 
@@ -463,7 +461,7 @@ Popular choices:
 
 | Keybinding | Pros                            | Cons                         |
 |------------+---------------------------------+------------------------------|
-| ~F8 F8~      | Default, unlikely to conflict   | Requires two presses         |
+| ~F8~      | Default, unlikely to conflict   | Requires two presses         |
 | ~C-c w~      | Fast, single combo              | Might conflict with org      |
 | ~C-c C-w~    | Similar to other org commands   | Might conflict               |
 | ~s-w~        | Super key, unlikely to conflict | Not all keyboards have Super |
@@ -496,9 +494,9 @@ Add to your Emacs configuration (~init.el~ or ~.emacs~):
 
 ** Recommended Keybinding
 
-If you're unsure, stick with ~F8 F8~:
+If you're unsure, stick with ~F8~:
 - ✓ Unlikely to conflict
-- ✓ Easy to remember (double-tap)
+- ✓ Easy to remember
 - ✓ Default in documentation
 - ✓ Consistent for all users
 
@@ -532,7 +530,7 @@ Change only if you have a specific reason!
 Print this cheat sheet:
 
 #+BEGIN_EXAMPLE
-HYDRA QUICK REFERENCE (F8 F8)
+HYDRA QUICK REFERENCE (F8)
 
 INSERT     WORKSPACE   TAG SCENE   TOOLS       SEARCH      MANAGE
 s: Scene   m: Write    p: PoV      w: Count    1: PoV      n: Note
@@ -558,7 +556,7 @@ Don't try to learn everything at once!
 
 1. *Forgetting to open Hydra first*
    - Wrong: Just pressing ~m~
-   - Right: ~F8 F8~ then ~m~
+   - Right: ~F8~ then ~m~
 
 2. *Using ~w~ when you meant ~a~*
    - ~w~ only reports — it does not update heading properties
@@ -570,7 +568,7 @@ Don't try to learn everything at once!
 
 4. *Expecting actions to repeat*
    - Hydra closes after one action (by design)
-   - Re-open for next action: ~F8 F8~
+   - Re-open for next action: ~F8~
 
 5. *Not using submenus*
    - Many powerful features are in ~k~, ~L~, ~W~
@@ -579,10 +577,10 @@ Don't try to learn everything at once!
 ** Speed Tips
 
 *Fastest workflows*:
-- Scene + writing: ~F8 F8 s ... F8 F8 m~
-- Quick count: ~F8 F8 w~
-- Full update: ~F8 F8 a~
-- Character search: ~F8 F8 2~
+- Scene + writing: ~F8 s ... F8 m~
+- Quick count: ~F8 w~
+- Full update: ~F8 a~
+- Character search: ~F8 2~
 
 *Auto-update shortcut*:
 - Add =(setq org-scribe-auto-wordcount t)= to your init file so word counts (and the plan) update silently every time you save — then you never need to press ~a~ manually again.
@@ -601,7 +599,7 @@ Gradual exploration prevents overwhelm!
 
 * Troubleshooting
 
-** "F8 F8 doesn't do anything"
+** "F8 doesn't do anything"
 
 *Possible causes*:
 1. ~org-scribe-mode~ not active
@@ -610,7 +608,7 @@ Gradual exploration prevents overwhelm!
 
 2. Keybinding not set
    - Check if Hydra package is installed
-   - Verify keybinding: ~C-h k F8 F8~
+   - Verify keybinding: ~C-h k F8~
 
 3. Conflict with another package
    - Try ~M-x hydra-org-scribe/body~ directly
@@ -642,7 +640,7 @@ Gradual exploration prevents overwhelm!
 
 *Don't panic*:
 1. Press ~C-g~ to cancel the command
-2. Press ~F8 F8~ to re-open Hydra
+2. Press ~F8~ to re-open Hydra
 3. Press the correct key
 
 *No harm done* - most commands are safe to cancel!
@@ -667,7 +665,7 @@ Gradual exploration prevents overwhelm!
 Excellent work! You've completed Lesson 8. You now know:
 
 ✓ What the Hydra menu is and why it's useful
-✓ How to open it (~F8 F8~)
+✓ How to open it (~F8~)
 ✓ The six functional categories (Insert, Workspace, Tag Scene, Tools, Search, Manage)
 ✓ What each menu option does
 ✓ How to navigate submenus (Capture, Links & upkeep, Planner)
@@ -697,12 +695,12 @@ Reinforce your Hydra skills:
    - Close your eyes and recite them
 
 2. *Practice your daily workflow*
-   - F8 F8 s (scene)
-   - F8 F8 m (write mode)
+   - F8 s (scene)
+   - F8 m (write mode)
    - Write 100 words
-   - F8 F8 m (exit)
-   - F8 F8 w (count)
-   - F8 F8 a (update all / save count)
+   - F8 m (exit)
+   - F8 w (count)
+   - F8 a (update all / save count)
 
 3. *Explore submenus*
    - Visit all three submenus (k, L, W)
@@ -742,7 +740,7 @@ Take your time! The Hydra menu is your primary interface to ~org-scribe~ - maste
 
 ** Submenu Quick Reference
 
-*** Capture Entity (~F8 F8 k~)
+*** Capture Entity (~F8 k~)
 
 | Key | Command        | Use When                           |
 |-----+----------------+------------------------------------|
@@ -753,7 +751,7 @@ Take your time! The Hydra menu is your primary interface to ~org-scribe~ - maste
 | ~g~   | Plot thread    | Defining a new plot thread         |
 | ~n~   | Note           | Quick free-text project note       |
 
-*** Links & Upkeep (~F8 F8 L~)
+*** Links & Upkeep (~F8 L~)
 
 | Key | Command             | Use When                              |
 |-----+---------------------+---------------------------------------|
@@ -766,7 +764,7 @@ Take your time! The Hydra menu is your primary interface to ~org-scribe~ - maste
 | ~C~   | Column view toggle  | Clean display of ID links in columns  |
 | ~T~   | Tooltips toggle     | Show entity info on ID links          |
 
-*** Planner (~F8 F8 W~)
+*** Planner (~F8 W~)
 
 | Key | Command           | Use When                                |
 |-----+-------------------+-----------------------------------------|
@@ -780,27 +778,27 @@ Take your time! The Hydra menu is your primary interface to ~org-scribe~ - maste
 
 #+BEGIN_EXAMPLE
 Daily Writing:
-  F8 F8 m → write → F8 F8 m → F8 F8 w → F8 F8 a
+  F8 m → write → F8 m → F8 w → F8 a
 
 New Scene:
-  F8 F8 s → F8 F8 p → F8 F8 h → F8 F8 l → F8 F8 g → F8 F8 m
+  F8 s → F8 p → F8 h → F8 l → F8 g → F8 m
 
 Progress Check:
-  F8 F8 a → navigate → C-c C-c
+  F8 a → navigate → C-c C-c
 
 Character Research:
-  F8 F8 2 → select → C-c C-o → read → C-c &
+  F8 2 → select → C-c C-o → read → C-c &
 #+END_EXAMPLE
 
 * Summary
 
-The Hydra menu is your command center for ~org-scribe~. Instead of memorizing dozens of command names, you can press ~F8 F8~ and see all available options organized into six clear categories.
+The Hydra menu is your command center for ~org-scribe~. Instead of memorizing dozens of command names, you can press ~F8~ and see all available options organized into six clear categories.
 
 The key to mastery is:
 1. Understand the six categories
 2. Learn your daily workflow keys (s, m, p/h/l/g, w, a)
 3. Gradually explore submenus (k, L, W)
-4. Practice until ~F8 F8~ becomes muscle memory
+4. Practice until ~F8~ becomes muscle memory
 
 Don't try to memorize everything at once. Start with the essentials and expand your knowledge as you need new features!
 

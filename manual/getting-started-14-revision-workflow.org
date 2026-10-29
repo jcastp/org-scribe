@@ -68,7 +68,7 @@ We'll focus on how ~org-scribe~ supports each level.
 
 ** The Editing Mode Advantage
 
-Editing mode (~F8 F8 e~) creates a professional three-panel layout:
+Editing mode (~F8 e~) creates a professional three-panel layout:
 
 #+BEGIN_EXAMPLE
 ┌──────────────────────────────────────────────────────┐
@@ -102,7 +102,7 @@ outline at chapters, and org-scribe's scenes are level 3. See
 ** Activating Editing Mode
 
 1. Open your manuscript (~novel.org~ or ~story.org~)
-2. Press ~F8 F8 e~
+2. Press ~F8 e~
 3. Three-panel layout appears
 4. The design notebook opens automatically (~design.org~)
 
@@ -154,7 +154,7 @@ An ~*EDIT*~ carries a category before a ~" - "~ separator, so that a revision pa
 
 *** The Edit Index
 
-~F8 F8~ then ~6~ collects every marker in the project and groups them:
+~F8~ then ~6~ collects every marker in the project and groups them:
 
 #+BEGIN_EXAMPLE
 ,* Edits
@@ -213,9 +213,9 @@ This is deliberately *not* matched by the edit search. The distinction is what o
 
 | Marker      | Annotates                   | Lives under      | Found by       |
 |-------------+-----------------------------+------------------+----------------|
-| ~*EDIT*~    | prose that exists           | any scene        | ~F8 F8~ then ~6~ |
-| ~*NOTE*~    | prose that exists           | any scene        | ~F8 F8~ then ~6~ |
-| ~*SUMMARY*~ | prose that does *not* exist | a ~TODO~ heading | ~F8 F8~ then ~5~ |
+| ~*EDIT*~    | prose that exists           | any scene        | ~F8~ then ~6~ |
+| ~*NOTE*~    | prose that exists           | any scene        | ~F8~ then ~6~ |
+| ~*SUMMARY*~ | prose that does *not* exist | a ~TODO~ heading | ~F8~ then ~5~ |
 
 A revision pass and a drafting session are different work. Mixing "fix this sentence" into the same list as "write this scene" would make both lists less useful, so the edit index covers the first two rows only and the TODO search covers the third - where an unwritten scene sits alongside every other unwritten scene.
 
@@ -542,7 +542,7 @@ Search for elements that need resolution:
 
 *Search for Chekhov's Guns*:
 
-~F8 F8~ then ~5~ (TODO search) only finds Org TODO-keyword headings (~TODO~, ~TOWRITE~, etc.) - it won't catch markers written in the prose itself. For those, use ~F8 F8~ then ~6~ (the edit index), which collects markers from every comment block in the project.
+~F8~ then ~5~ (TODO search) only finds Org TODO-keyword headings (~TODO~, ~TOWRITE~, etc.) - it won't catch markers written in the prose itself. For those, use ~F8~ then ~6~ (the edit index), which collects markers from every comment block in the project.
 
 Write setup/payoff markers the same way as any other marker: inside a comment block, so they never reach your exported manuscript and never count toward your word totals (see [[*Marker Convention][Marker Convention]]).
 
@@ -713,8 +713,8 @@ It came from downstairs.
 Use dictionary tools for dialogue improvement:
 
 1. Position cursor on dialogue
-2. ~F8 F8 d~ (dictionary) - Check word meanings
-3. ~F8 F8 y~ (synonyms) - Find better dialogue tags
+2. ~F8 d~ (dictionary) - Check word meanings
+3. ~F8 y~ (synonyms) - Find better dialogue tags
 
 *Example revision*:
 
@@ -810,17 +810,17 @@ Sometimes you need to ADD scenes:
 *To insert*:
 
 1. In center panel, go to insertion point
-2. ~F8 F8 s~ (insert scene template)
+2. ~F8 s~ (insert scene template)
 3. Fill properties from your notes
 4. Write the scene
-5. Update word count (~F8 F8 w~)
+5. Update word count (~F8 w~)
 6. Check off in notes panel
 
 ** Finding Inconsistencies with Search
 
 Use search functions to catch errors:
 
-*Search by character* (~F8 F8~ then ~2~):
+*Search by character* (~F8~ then ~2~):
 
 #+BEGIN_EXAMPLE
 Search for character: Sarah
@@ -831,7 +831,7 @@ Results show all Sarah scenes. Check:
 - Does her description match across scenes?
 - Does her speech pattern stay consistent?
 
-*Search by location* (~F8 F8~ then ~4~):
+*Search by location* (~F8~ then ~4~):
 
 #+BEGIN_EXAMPLE
 Search for location: Coffee Shop
@@ -976,7 +976,7 @@ During line editing, use dictionary tools heavily:
 *Finding better words*:
 
 1. Spot weak word: "The house was big"
-2. ~F8 F8 y~ (synonyms)
+2. ~F8 y~ (synonyms)
 3. Search: "big"
 4. Find alternatives: enormous, vast, sprawling, cavernous
 5. Pick best fit: "The house sprawled across the lot"
@@ -984,7 +984,7 @@ During line editing, use dictionary tools heavily:
 *Checking meanings*:
 
 1. Unsure about word choice: "melancholic"
-2. ~F8 F8 d~ (dictionary)
+2. ~F8 d~ (dictionary)
 3. Read definition
 4. Confirm it's the right emotional tone
 5. Keep or change based on nuance
@@ -1160,20 +1160,20 @@ Here's a systematic approach integrating all tools:
 
 *Monday*:
 1. Open manuscript
-2. ~F8 F8 e~ (activate editing mode)
+2. ~F8 e~ (activate editing mode)
 3. Generate plot timeline (~C-c C-c~)
 4. Record issues in notes panel
 5. Work time: 2 hours
-6. Exit mode (~F8 F8 e~)
+6. Exit mode (~F8 e~)
 
 *Tuesday*:
-1. ~F8 F8 e~
+1. ~F8 e~
 2. Generate character timeline (~C-c C-c~)
 3. Record issues in notes panel
 4. Work time: 2 hours
 
 *Wednesday*:
-1. ~F8 F8 e~
+1. ~F8 e~
 2. Review chapter structure (outline panel)
 3. Identify scenes to cut/add
 4. Record in notes panel
@@ -1186,7 +1186,7 @@ Here's a systematic approach integrating all tools:
 4. Work time: 1 hour
 
 *Friday*:
-1. ~F8 F8 e~
+1. ~F8 e~
 2. Begin fixing structural issues
 3. Add missing scenes
 4. Merge/split chapters as needed
@@ -1197,7 +1197,7 @@ Here's a systematic approach integrating all tools:
 *Daily routine (Mon-Fri)*:
 
 Morning session (1-2 hours):
-1. ~F8 F8 e~
+1. ~F8 e~
 2. Select next DRAFT scene (outline panel)
 3. Read scene against checklist (notes panel)
 4. Identify problems
@@ -1218,14 +1218,14 @@ Target: 2-3 scenes per day
 *Daily routine (Mon-Fri)*:
 
 Full day session (4-6 hours):
-1. ~F8 F8 e~
+1. ~F8 e~
 2. Read scene aloud
 3. Fix weak verbs
 4. Eliminate passive voice
 5. Cut filter words
 6. Improve rhythm
-7. Use ~F8 F8 y~ for synonym lookup
-8. Use ~F8 F8 d~ for word verification
+7. Use ~F8 y~ for synonym lookup
+8. Use ~F8 d~ for word verification
 9. Mark scene as POLISHED
 
 Target: 3-5 scenes per day
@@ -1312,7 +1312,7 @@ Let's practice the revision workflow with a sample scene.
 
 1. Open your manuscript
 2. Find a scene you want to revise
-3. ~F8 F8 e~ (activate editing mode)
+3. ~F8 e~ (activate editing mode)
 4. In notes panel, create section for this scene
 
 ** Structural Check (3 minutes)
@@ -1374,7 +1374,7 @@ Pick the biggest issue and fix it now:
 
 *If dialogue is flat*:
 - Add subtext to one exchange
-- Use ~F8 F8 y~ to improve dialogue tags
+- Use ~F8 y~ to improve dialogue tags
 - Add action beats
 
 *If setting is sparse*:
@@ -1405,7 +1405,7 @@ Revision transforms your first draft into a polished manuscript using systematic
 
 ** What You Learned
 
-✓ *Editing Mode* (~F8 F8 e~)
+✓ *Editing Mode* (~F8 e~)
   - Three-panel professional layout
   - Outline + Manuscript + Notes
   - Navigate and edit simultaneously
@@ -1438,7 +1438,7 @@ Revision transforms your first draft into a polished manuscript using systematic
   - Cut passive voice
   - Remove filter words
   - Improve rhythm and variety
-  - Use language tools (~F8 F8 d/y~)
+  - Use language tools (~F8 d/y~)
 
 ** The Revision Workflow at a Glance
 
@@ -1482,7 +1482,7 @@ PASS 1: STRUCTURAL
 □ Prioritize fixes
 
 PASS 2: SCENE-LEVEL
-□ Activate editing mode (F8 F8 e)
+□ Activate editing mode (F8 e)
 □ Review each scene against checklist
 □ Strengthen openings
 □ Improve dialogue
@@ -1498,7 +1498,7 @@ PASS 3: LINE EDITING
 □ Eliminate passive voice
 □ Remove filter words
 □ Check word repetition
-□ Use dictionary/synonyms (F8 F8 d/y)
+□ Use dictionary/synonyms (F8 d/y)
 □ Improve rhythm & variety
 □ Mark scenes POLISHED
 
@@ -1540,7 +1540,7 @@ In the next lesson, you'll learn:
 
 ** Emacs Tools for Revision
 
-- *org-scribe's own edit markers*: comment-block ~*EDIT*~ / ~*NOTE*~ markers plus ~F8 F8~ then ~6~ - no extra package needed, and they never export or affect word counts (see [[*Marker Convention][Marker Convention]])
+- *org-scribe's own edit markers*: comment-block ~*EDIT*~ / ~*NOTE*~ markers plus ~F8~ then ~6~ - no extra package needed, and they never export or affect word counts (see [[*Marker Convention][Marker Convention]])
 - *org-remark*: Annotation system for revision notes, if you prefer highlight-based annotation; org-scribe does not wire itself to it
 - *writegood-mode*: Highlights passive voice, weasel words, duplicates
 - *flyspell-mode*: On-the-fly spell checking

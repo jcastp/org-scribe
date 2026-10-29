@@ -36,7 +36,7 @@ Every project ships one, as the last part of the design notebook:
 Open the notebook from anywhere in the project:
 
 #+BEGIN_EXAMPLE
-F8 F8 o    →  then pick design.org from the list
+F8 o    →  then pick design.org from the list
 #+END_EXAMPLE
 
 and jump to the last heading. Quick notes captured with the note capture are
@@ -85,7 +85,7 @@ This is the part worth trusting, because it's what makes the file safe.
 
 ** Your Word Count Is Unaffected
 
-~F8 F8 a~ walks your *manuscript*. It doesn't touch the scratchpad. Ten thousand
+~F8 a~ walks your *manuscript*. It doesn't touch the scratchpad. Ten thousand
 words of abandoned drafting here will not show up in:
 
 - Your ~WORDCOUNT~ properties
@@ -202,7 +202,7 @@ costs you three folded lines.
 
 Here's the detail that makes this usable day to day.
 
-~F8 F8 5~ (Search TODOs, Lesson 7) scans every ~.org~ file in your project,
+~F8 5~ (Search TODOs, Lesson 7) scans every ~.org~ file in your project,
 scratchpad included. But it only matches the keywords in
 ~org-scribe-todo-keywords~ — ~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~,
 ~TOREVIEW~, ~REDO~, ~RESTRUCTURE~.
@@ -245,7 +245,7 @@ the convention reads the same in a bilingual writer's two projects.
 
 * Try It Now
 
-1. Open your project's scratchpad with ~F8 F8 o~.
+1. Open your project's scratchpad with ~F8 o~.
 2. Delete the example branch at the bottom.
 3. Write down a question about your story you genuinely haven't answered.
 4. Give it three answers as child headings, all ~OPEN~.

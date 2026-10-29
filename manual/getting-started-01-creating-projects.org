@@ -115,7 +115,7 @@ Short story title:
 - Avoid special characters: * ? < > | " ' : / \
 - Don't start with a dot (.)
 - The title will become the project folder name, on one line with no leading or trailing spaces
-- Need a colon or a question mark in the real title ("Dune: Part Two")? Create the project with a plain title, then change it with ~F8 F8 T~ (~org-scribe-set-title~), which accepts any one-line title
+- Need a colon or a question mark in the real title ("Dune: Part Two")? Create the project with a plain title, then change it with ~F8 T~ (~org-scribe-set-title~), which accepts any one-line title
 
 ** Step 4: Choose the Template Language
 
@@ -173,7 +173,7 @@ This is where you'll write your actual story.
 
 *What it contains*:
 - Title and metadata (#+TITLE, #+AUTHOR, etc.)
-- One starting scene under "Story Content", which holds the whole word target (add more with F8 F8 s)
+- One starting scene under "Story Content", which holds the whole word target (add more with F8 s)
 - Scene templates with properties (PoV, Characters, Location, etc.)
 - Integrated word count tracking table
 - A quick navigation link to the design notebook
@@ -270,8 +270,8 @@ rewrite its file. You can also just edit the dictionary name in
 
 *Things worth knowing*:
 - Projects created with older versions of org-scribe don't have this file.
-  ~M-x org-scribe-update-dir-locals~ (or ~F8 F8 L D~) creates it, reading the
-  language from ~.org-scribe-project~. The project health report (~F8 F8 H~)
+  ~M-x org-scribe-update-dir-locals~ (or ~F8 L D~) creates it, reading the
+  language from ~.org-scribe-project~. The project health report (~F8 H~)
   tells you when it's missing or when it disagrees with the project language.
 - A single file can still override the project: a ~# Local Variables:~ block at
   the end of that file wins. Handy for a research file full of quotations in
@@ -329,7 +329,7 @@ change it with ~org-scribe-default-word-target~, and the split with
 ~org-scribe-word-target-proportions~ (see Lesson 15).
 
 The pace — daily target and end date — is not set here: that is the writing
-planner's job (~F8 F8 W~).
+planner's job (~F8 W~).
 
 ** Novel Project Structure
 
@@ -466,7 +466,7 @@ writing. The gate exists because planning has no natural end — there is always
 one more thing to work out — and a project that never crosses it never becomes
 a draft.
 
-Two of the eight are *measured* rather than self-reported: ~F8 F8 H~
+Two of the eight are *measured* rather than self-reported: ~F8 H~
 (~org-scribe-project-health~) counts how many of the thirteen plot points you
 have actually filled in, and how many of the first three scenes have a non-zero
 word count. Where the measurement disagrees with your tick — in either
@@ -582,7 +582,7 @@ Then restart Emacs or evaluate the line with ~C-x C-e~. The prompt will still ap
 1. Use only letters, numbers, spaces, and hyphens
 2. Remove characters like: * ? < > | " ' : / \
 3. Don't start the title with a dot (.)
-4. If the real title needs those characters, create the project with a plain one and rename it with ~F8 F8 T~
+4. If the real title needs those characters, create the project with a plain one and rename it with ~F8 T~
 
 ** Can't find the created project
 
