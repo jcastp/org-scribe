@@ -8,9 +8,9 @@
 
 /[[file:../manual/getting-started-00-index.org][English version]]/
 
-* ¡Bienvenido a org-scribe!
+* Te damos la bienvenida a org-scribe
 
-Te damos la bienvenida a ~org-scribe~, un conjunto completo de herramientas para
+Esto es ~org-scribe~, un conjunto completo de herramientas para
 escribir novelas y cuentos en Emacs con Org-mode. Si lo estás viendo por primera
 vez, puede que te abrumen tantas funciones. ¡No te preocupes! Esta guía te lleva de
 la mano paso a paso, empezando desde el principio.
@@ -79,7 +79,7 @@ preparación.)
 
 Son proyectos que funcionan, no ilustraciones. Ábrelos en Emacs con org-scribe
 cargado y cada pulsación de estas lecciones hace algo real sobre ellos, lo que es
-un sitio mucho mejor para pulsar =<f8> H= por primera vez que un proyecto tuyo con
+un sitio mucho mejor para pulsar ~F8 H~ por primera vez que un proyecto tuyo con
 cuatro palabras.
 
 Nada de lo que hagas en ellos puede afectar a tu propio trabajo, así que
@@ -329,13 +329,14 @@ ya está listo.
 *** [[file:primeros-pasos-17-borradores.org][Lección 17: Borradores y ramificación de ideas]]
 *Tiempo: 15 minutos*
 
-Todas las demás lecciones te enseñan a poner cada cosa en su sitio. Esta trata del
-archivo que no te exige nada, y de qué hacer cuando una pregunta resulta tener
+Todas las demás lecciones te enseñan a poner cada cosa en su sitio. Esta trata de la
+parte del cuaderno de diseño que
+no te exige nada, y de qué hacer cuando una pregunta resulta tener
 tres respuestas. Solo necesita la Lección 1, así que léela cuando quieras.
 
 *Aprenderás:*
 - Dónde están los borradores de tu proyecto, y por qué nada en el paquete los lee
-- A refilar lo aprovechable a tus archivos de verdad con ~C-c C-w~
+- A refilar lo aprovechable a su lugar definitivo con ~C-c C-w~
 - A ramificar una pregunta en alternativas y explorar cada una
 - A conservar las opciones descartadas, con sus motivos, en vez de borrarlas
 - Por qué tus especulaciones nunca aparecen en la búsqueda de TODO
@@ -353,7 +354,7 @@ ficha.
 - A activar el companion para Emacs y para un proyecto
 - A mover, renombrar y cambiar de estado escenas desde el corcho
 - A editar campos y enlaces de las escenas en la tabla
-- A leer y pulsar la línea argumental, con sus avisos de huecos y de huérfanos
+- A leer la línea argumental y hacer clic en ella, con sus avisos de huecos y de huérfanos
 - A editar un personaje en un formulario, y qué pasa cuando Emacs y la página no
   coinciden
 
@@ -409,10 +410,10 @@ Si te atascas o tienes dudas:
 
 * Próximos pasos
 
-¿Listo para empezar? Ve a la [[file:primeros-pasos-01-crear-proyectos.org][Lección 1: Crear tu primer proyecto]] y crea tu primer
+¿Quieres empezar? Ve a la [[file:primeros-pasos-01-crear-proyectos.org][Lección 1: Crear tu primer proyecto]] y crea tu primer
 proyecto de novela o de cuento.
 
-No te sientas obligado a completar todas las lecciones de una vez. Tómate tu
+No hace falta completar todas las lecciones de una vez. Tómate tu
 tiempo, experimenta y, sobre todo, ¡escribe!
 
 * Sobre este tutorial
@@ -423,4 +424,4 @@ tiempo, experimenta y, sobre todo, ¡escribe!
 - *Tiempo total estimado*: ~4,75 horas (a tu ritmo)
 - *Dificultad*: De principiante a intermedio
 
-¡Feliz escritura!
+¡A escribir!

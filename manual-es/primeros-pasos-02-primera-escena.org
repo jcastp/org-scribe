@@ -39,7 +39,7 @@ Si no tienes abierto el manuscrito:
    - *Cuento*: ~cuento.org~
    - *Novela*: ~novela.org~
 
-¡Ahora deberías ver tu archivo de manuscrito!
+Ahora deberías ver tu archivo de manuscrito.
 
 * Entender la estructura de tu manuscrito
 
@@ -107,7 +107,7 @@ Esta estructura jerárquica te permite:
 
 * Insertar tu primera escena
 
-¡Vamos a añadir una escena nueva a tu manuscrito con la plantilla de escena!
+Vamos a añadir una escena nueva a tu manuscrito con la plantilla de escena.
 
 ** Paso 1: Colocar el cursor
 
@@ -147,13 +147,13 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 
 1. Pulsa ~s~ (de «Scene», escena)
 2. El menú se cierra
-3. Se te pedirá: ~Nombre de la escena:~
+3. Emacs te pregunta: ~Nombre de la escena:~
 4. Escribe un título para tu escena (ejemplo: ~Suena la alarma~)
 5. Pulsa ~Intro~
 
 ** Paso 4: Ver qué se ha creado
 
-¡Aparece una plantilla de escena completa! Tiene este aspecto:
+Aparece una plantilla de escena completa. Tiene este aspecto:
 
 #+BEGIN_EXAMPLE
 ,*** TODO Suena la alarma :ignore:
@@ -205,7 +205,7 @@ Veamos qué es lo que estás viendo:
 *** El bloque de propiedades
 Todo lo que hay entre ~:PROPERTIES:~ y ~:END:~ guarda metadatos sobre tu escena.
 
-*Piensa en las propiedades como fichas de un índice* pegadas a tu escena con información útil.
+*Piensa en las propiedades como fichas de cartulina* pegadas a tu escena con información útil.
 
 * Entender las propiedades de escena
 
@@ -335,7 +335,7 @@ La decisión a la que llega el personaje en la secuela que sigue a la escena (re
 *Ejemplo*: ~Saltarse el desayuno y coger un taxi~
 
 *** ~:Comentario:~
-Tus notas para ti mismo
+Tus notas para ti
 
 *Ejemplo*: ~Asegurarme de mostrar la personalidad de Alex en su reacción a la alarma~
 
@@ -351,7 +351,7 @@ Tus notas para ti mismo
 
 * Rellenar las propiedades de tu escena
 
-¡Vamos a rellenar las propiedades de tu escena! No tienes que rellenarlas todas ahora: empieza por las esenciales.
+Vamos a rellenar las propiedades de tu escena. No tienes que rellenarlas todas ahora: empieza por las esenciales.
 
 ** Paso 1: Añadir el punto de vista
 
@@ -401,7 +401,7 @@ Resultado:
 
 ** Un consejo rápido: puedes saltarte propiedades
 
-*¡No te sientas obligado a rellenarlo todo!*
+*No hace falta rellenarlo todo*
 
 Muchos escritores:
 - Rellenan solo PoV, Personajes y Localización mientras escriben el borrador
@@ -412,7 +412,7 @@ Muchos escritores:
 
 * Escribir el contenido de tu escena
 
-Ahora llega lo divertido: ¡escribir tu historia de verdad!
+Ahora llega lo divertido: escribir tu historia de verdad.
 
 ** Dónde escribir
 
@@ -442,13 +442,13 @@ Pero cinco minutos se convirtieron en diez, luego en quince. Cuando por fin abri
 
 1. *Escribe debajo del bloque de propiedades*: nunca dentro de la sección ~:PROPERTIES:...:END:~
 2. *Pulsa Intro para los párrafos nuevos*: como en cualquier editor de texto
-3. *No te preocupes por el formato*: ¡escribe! Ya nos ocuparemos del formato más adelante
+3. *No te preocupes por el formato*: escribe. Ya nos ocuparemos del formato más adelante
 4. *La sintaxis de Org-mode es opcional*: puedes usar /cursiva/, *negrita*, etc., pero el texto plano funciona bien
 5. *Guarda a menudo*: pulsa ~C-x C-s~ para guardar
 
 * Activar el modo Sin distracciones
 
-¡Ahora vamos a hacer que tu entorno de escritura te ayude a concentrarte!
+Ahora vamos a hacer que tu entorno de escritura te ayude a concentrarte.
 
 ** Qué es el modo Sin distracciones
 
@@ -461,11 +461,11 @@ Este modo:
 
 ¡Piensa en él como en un «modo inmersivo» para escribir!
 
-** Paso 1: Activar el modo de escritura
+** Paso 1: Activar el modo Sin distracciones
 
 1. Pulsa ~F8~ para abrir el menú Hydra
 2. Pulsa ~m~ (de «Write», escribir)
-3. ¡El menú se cierra y tu entorno se transforma!
+3. El menú se cierra y tu entorno se transforma
 
 Ahora deberías ver:
 - Un tema distinto (normalmente de colores más suaves)
@@ -476,7 +476,7 @@ Ahora deberías ver:
 
 ** Paso 2: Escribir en paz
 
-¡Ahora escribe tu escena! El entorno sin distracciones te ayuda a centrarte en la historia.
+Ahora escribe tu escena. El entorno sin distracciones te ayuda a centrarte en la historia.
 
 Consejos mientras escribes:
 - El menú Hydra sigue funcionando (~F8~)
@@ -484,13 +484,13 @@ Consejos mientras escribes:
 - Todas las órdenes de Emacs siguen funcionando
 - El entorno solo tiene otro aspecto
 
-** Paso 3: Salir del modo de escritura
+** Paso 3: Salir del modo Sin distracciones
 
 Cuando termines de escribir:
 
-1. Pulsa ~F8~ para abrir Hydra
+1. Pulsa ~F8~ para abrir el menú Hydra
 2. Pulsa ~m~ otra vez (se desactiva)
-3. Vuelve tu entorno normal
+3. Tu entorno vuelve a la normalidad
 
 *Nota*: también puedes salir ejecutando ~M-x org-scribe-writing-env-mode~ y pulsando Intro.
 
@@ -541,7 +541,7 @@ El paquete tiene cuatro modos distintos. Aquí tienes un resumen rápido:
 | Edición             | Revisión, comprobar la continuidad, editar           |
 | *Sin modo (normal)* | Ediciones rápidas, trabajar con propiedades, buscar  |
 
-*Recomendación para principiantes*: empieza con el modo Sin distracciones (~F8 m~). ¡Prueba el modo Enfoque cuando te sientas aventurero!
+*Recomendación para principiantes*: empieza con el modo Sin distracciones (~F8 m~). Prueba el modo Enfoque cuando quieras algo más ambicioso.
 
 * Insertar capítulos (solo proyectos de novela)
 
@@ -554,7 +554,7 @@ Si trabajas en una novela, querrás añadir capítulos.
 3. Pulsa ~F8~ (menú Hydra)
 4. Pulsa ~c~ (de «Chapter», capítulo)
 5. Escribe el título del capítulo cuando se te pida
-6. ¡Aparece una plantilla de capítulo!
+6. Aparece una plantilla de capítulo
 
 Ejemplo de resultado: la inserción de un capítulo también inserta debajo una primera escena lista para rellenar, así que obtienes las dos cosas en un solo paso:
 
@@ -593,7 +593,7 @@ Ejemplo de resultado: la inserción de un capítulo también inserta debajo una 
 {{{scene-break}}}
 #+END_EXAMPLE
 
-El cursor se coloca en la propiedad ~:PoV:~ de la escena nueva, listo para escribir: el mismo lugar de aterrizaje que produce ~org-scribe-insert-scene~. ¡Inserta más escenas bajo este capítulo con ~F8 s~!
+El cursor queda en la propiedad ~:PoV:~ de la escena nueva, listo para escribir: el mismo lugar de aterrizaje que produce ~org-scribe-insert-scene~. ¡Inserta más escenas bajo este capítulo con ~F8 s~!
 
 * Tu flujo de escritura básico
 
@@ -603,15 +603,15 @@ Aquí tienes un flujo diario sencillo con lo que has aprendido:
 
 1. *Abre tu manuscrito* (~C-x C-f~ → cuento.org o novela.org)
 2. *Ve por donde lo dejaste* (desplázate o usa ~C-s~ para buscar)
-3. *Activa el modo de escritura* (~F8 m~)
+3. *Activa el modo Sin distracciones* (~F8 m~)
 4. *Escribe tu escena*
 5. *Guarda tu trabajo* (~C-x C-s~)
-6. *Sal del modo de escritura* (~F8 m~)
+6. *Sal del modo Sin distracciones* (~F8 m~)
 
 ** Añadir una escena nueva a mitad de sesión
 
 1. *Coloca el cursor* donde debe ir la escena nueva
-2. *Abre Hydra* (~F8~)
+2. *Abre el menú Hydra* (~F8~)
 3. *Inserta la escena* (~s~)
 4. *Escribe el título*
 5. *Rellena las propiedades esenciales* (PoV, Personajes, Localización)
@@ -620,8 +620,8 @@ Aquí tienes un flujo diario sencillo con lo que has aprendido:
 
 ** Después de escribir
 
-1. *Cuenta tus palabras* (¡lo aprenderemos en la Lección 3!)
-2. *Haz commit en git* (opcional, lo veremos más adelante)
+1. *Cuenta tus palabras* (lo aprenderemos en la Lección 3)
+2. *Haz un commit en git* (opcional, lo veremos más adelante)
 3. *Cierra o deja abierto* para mañana
 
 * Ejercicio práctico (15 minutos)
@@ -668,7 +668,7 @@ Crea tres escenas muy cortas (100-200 palabras cada una) con esta estructura:
 
 *Límite de tiempo*: 15 minutos en total (5 minutos por escena)
 
-¡No te preocupes por la calidad! Esto es práctica. Escribe lo que sea, hasta texto de relleno tipo «Lorem ipsum». El objetivo es aprender el flujo.
+No te preocupes por la calidad: esto es práctica. Escribe lo que sea, hasta texto de relleno tipo «Lorem ipsum». El objetivo es aprender el flujo.
 
 * Preguntas frecuentes
 
@@ -687,15 +687,15 @@ Las demás propiedades están ahí por si las necesitas, sobre todo durante la r
 
 ** «¿Y si me equivoco en las propiedades?»
 
-¡Las propiedades son fáciles de editar! Solo tienes que hacer clic en la línea y cambiar el texto. Son solo texto, no magia.
+Las propiedades son fáciles de editar. Solo tienes que hacer clic en la línea y cambiar el texto. Son solo texto, no magia.
 
 ** «¿Puedo borrar una escena?»
 
 ¡Sí! Borra el encabezado y todo lo que cuelga de él (hasta el siguiente encabezado del mismo nivel o de un nivel superior). Usa ~C-k~ para cortar líneas.
 
-** «¿Por qué mi escena se llama "Escena 1" aunque es la tercera?»
+** «¿Por qué mi escena se llama “Escena 1” aunque es la tercera?»
 
-La plantilla no numera. La única escena que se llama «Escena 1» es la primera, que ya viene con el proyecto nuevo; las que insertas con ~F8 s~ llevan exactamente el título que escribes. Puedes cambiar los nombres a mano o ignorarlos: ¡son solo etiquetas!
+La plantilla no numera. La única escena que se llama «Escena 1» es la primera, que ya viene con el proyecto nuevo; las que insertas con ~F8 s~ llevan exactamente el título que escribes. Puedes cambiar los nombres a mano o ignorarlos: son solo etiquetas.
 
 ** «¿Puedo usar otros estados TODO además de TODO y DONE?»
 
@@ -723,14 +723,14 @@ Los usuarios avanzados pueden configurar estados TODO propios, pero TODO/DONE fu
 3. Coloca bien el cursor (al final de una línea, debajo del encabezado del capítulo o de la sección)
 4. Inténtalo de nuevo
 
-** «No puedo salir del modo de escritura»
+** «No puedo salir del modo Sin distracciones»
 
 *Soluciones*:
 1. Prueba ~F8 m~ otra vez
 2. O: ~M-x org-scribe-writing-env-mode~ para desactivarlo
-3. Reinicia Emacs si sigues atascado (¡tu trabajo está guardado!)
+3. Reinicia Emacs si sigues atascado (tu trabajo está guardado)
 
-** «Mi texto no se centra en el modo de escritura»
+** «Mi texto no se centra en el modo Sin distracciones»
 
 *Es normal si*:
 - La ventana de Emacs es muy ancha
@@ -740,7 +740,7 @@ Los usuarios avanzados pueden configurar estados TODO propios, pero TODO/DONE fu
 
 ** «Las propiedades de la escena aparecen como texto normal»
 
-¡Está bien! Las propiedades son texto. Cuando pliegas el encabezado (con Tab en la línea del encabezado), se ocultan. Es el comportamiento normal de Org-mode.
+Está bien: las propiedades son texto. Cuando pliegas el encabezado (con Tab en la línea del encabezado), se ocultan. Es el comportamiento normal de Org-mode.
 
 * Lo que has aprendido
 
@@ -758,7 +758,7 @@ Los usuarios avanzados pueden configurar estados TODO propios, pero TODO/DONE fu
 
 * Próximos pasos
 
-¿Listo para aprender a seguir tu progreso? ¡Ve a la [[file:primeros-pasos-03-seguimiento-progreso.org][Lección 3: Seguir tu progreso]]!
+¿Quieres aprender a seguir tu progreso? Ve a la [[file:primeros-pasos-03-seguimiento-progreso.org][Lección 3: Seguir tu progreso]].
 
 En la próxima lección aprenderás:
 - A contar palabras con exactitud
@@ -772,7 +772,7 @@ En la próxima lección aprenderás:
 Antes de la Lección 3, refuerza lo aprendido:
 
 1. Escribe al menos 500 palabras en tu proyecto
-2. Prueba los cuatro modos de escritura (sin distracciones, enfoque, navegación y edición)
+2. Prueba los cuatro modos (sin distracciones, enfoque, navegación y edición)
 3. Inserta 5 escenas distintas con las propiedades completas
 4. Practica el flujo diario: abrir → activar el modo → escribir → guardar → cerrar
 5. Experimenta plegando y desplegando encabezados (tecla Tab en la línea del encabezado)
@@ -833,12 +833,12 @@ Antes de la Lección 3, refuerza lo aprendido:
 * Consejos para el éxito
 
 1. *Empieza poco a poco*: escribe 250 palabras al día para crear el hábito
-2. *Usa el modo de escritura*: ¡de verdad ayuda a concentrarse!
+2. *Usa el modo Sin distracciones*: ayuda de verdad a concentrarse
 3. *No planifiques de más las propiedades*: rellena lo útil, salta el resto
 4. *Guarda a menudo*: ~C-x C-s~ debería ser automático
 5. *Pliega las escenas terminadas*: pulsa Tab en el encabezado para ocultar el contenido
 6. *Una escena cada vez*: no te preocupes aún por toda la historia
-7. *Las propiedades pueden esperar*: ¡puedes rellenarlas durante la revisión!
+7. *Las propiedades pueden esperar*: puedes rellenarlas durante la revisión
 
 ---
 

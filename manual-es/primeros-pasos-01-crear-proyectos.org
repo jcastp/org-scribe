@@ -22,7 +22,7 @@ Al terminar esta lección habrás:
 
 * Antes de empezar
 
-** Comprueba que estás listo
+** Comprueba que todo está listo
 
 Comprueba que tienes:
 - ✓ Emacs abierto y funcionando
@@ -39,7 +39,7 @@ Vamos a verificar que el paquete se ha cargado bien:
 
 Deberías ver un mensaje como: *«org-scribe version 0.9.0»*
 
-Si ves este mensaje, ¡estás listo! Si no, asegúrate de haber instalado bien el paquete.
+Si ves este mensaje, todo está listo. Si no, asegúrate de haber instalado bien el paquete.
 
 * Entender los tipos de proyecto
 
@@ -75,7 +75,7 @@ Si ves este mensaje, ¡estás listo! Si no, asegúrate de haber instalado bien e
   secciones, los personajes, la trama, los escenarios, la investigación y
   unos borradores
 
-*Recomendación para principiantes*: empieza con un proyecto de cuento para aprender lo básico. ¡Siempre puedes crear un proyecto de novela más adelante!
+*Recomendación para principiantes*: empieza con un proyecto de cuento para aprender lo básico. Siempre puedes crear un proyecto de novela más adelante.
 
 * Crear un proyecto de cuento
 
@@ -155,8 +155,8 @@ Verás mensajes en el minibúfer con el progreso. Tarda solo unos segundos.
 
 Cuando termine, verás:
 - El manuscrito abierto en tu búfer
-- Un mensaje: *«Proyecto de relato «La rutina matinal» creado correctamente en <ruta>»*
-- ¡Tu nuevo proyecto está listo!
+- Un mensaje: ~Proyecto de relato «La rutina matinal» creado correctamente en <ruta>~
+- Tu nuevo proyecto, listo para escribir
 
 * Explorar tu proyecto de cuento
 
@@ -182,12 +182,12 @@ Aquí es donde escribirás tu cuento.
 
 *Qué contiene*:
 - El título y los metadatos (#+TITLE, #+AUTHOR, etc.)
-- Una escena inicial bajo «Contenido del Cuento», que carga con todo el objetivo de palabras (añade más con F8 s)
+- Una escena inicial bajo «Contenido del Cuento», que carga con todo el objetivo de palabras (añade más con ~F8 s~)
 - Plantillas de escena con propiedades (PoV, Personajes, Localizacion, etc.)
 - Una tabla integrada de seguimiento del recuento de palabras
 - Un enlace de navegación rápida al cuaderno de diseño
 
-Las plantillas no traen ninguna configuración de exportación: llevaba rutas
+Las plantillas no traen configuración de exportación: la que traían antes llevaba rutas
 absolutas y clases de LaTeX propias de una sola máquina. Añade tus propios
 ~#+LATEX_CLASS~ y compañía si exportas; la Lección 11 lo explica.
 
@@ -218,7 +218,7 @@ Personajes y Ambientación las lee el sistema de enlaces y la captura archiva en
 ellas, de modo que un esbozo suelto ahí se convierte en una entidad a medias.
 
 La sección Borradores del final no te exige nada. Ni estructura, ni propiedades;
-nada la lee. Borradores, fragmentos, preguntas «¿y si…?», discusiones contigo
+nada la lee. Borradores, fragmentos, preguntas «¿y si…?», conversaciones contigo
 mismo: ponlo aquí y refila lo que sobreviva con ~C-c C-w~.
 
 *Qué hacer más adelante*: la Lección 17 lo cubre, incluido cómo ramificar una
@@ -302,7 +302,7 @@ diccionario en ~.dir-locals.el~: nada en org-scribe lo vuelve a leer.
 
 ** Integración con git
 
-¡Tu proyecto es automáticamente un repositorio git!
+Tu proyecto es automáticamente un repositorio git.
 
 *Qué significa esto*:
 - Todos los cambios quedan registrados
@@ -310,7 +310,7 @@ diccionario en ~.dir-locals.el~: nada en org-scribe lo vuelve a leer.
 - Puedes volver a versiones anteriores si hace falta
 - Puedes subirlo a GitHub/GitLab como copia de seguridad
 
-*No te preocupes si no sabes git*: funciona solo. ¡Puedes aprenderlo más adelante!
+*No te preocupes si no sabes git*: funciona solo. Puedes aprenderlo más adelante.
 
 * Crear un proyecto de novela
 
@@ -433,9 +433,9 @@ cuatro cuartiles):
 
 - *Sistema unificado* (el predeterminado): el método que usan el resto de las
   lecciones de esta guía y la novela de demostración.
-- *La Hélice* («the Helix»): para cuando ya tienes una premisa y necesitas
+- *La Hélice* (/the Helix/ en los proyectos en inglés): para cuando ya tienes una premisa y necesitas
   construir los personajes que la sostengan.
-- *La Matriz* («the Matrix»): para cuando ya tienes personajes y necesitas que la
+- *La Matriz* (/the Matrix/ en los proyectos en inglés): para cuando ya tienes personajes y necesitas que la
   trama salga de cómo chocan.
 
 Pulsa ~Tab~ para ver los tres, o ~Intro~ para aceptar el Sistema por defecto.
@@ -484,8 +484,8 @@ decirte cuándo dejar de planificar y empezar a escribir:
 #+END_EXAMPLE
 
 Cuando esas ocho casillas estén marcadas, empiezas. Todo lo demás se descubre
-escribiendo. La puerta existe porque planificar no tiene un final natural —
-siempre hay una cosa más que resolver— y un proyecto que nunca la cruza nunca
+escribiendo. La puerta existe porque planificar no tiene un final natural
+—siempre hay una cosa más que resolver— y un proyecto que nunca la cruza nunca
 llega a ser un borrador.
 
 Dos de las ocho se *miden* en lugar de declararse: ~F8 H~
@@ -541,17 +541,17 @@ Elige la plantilla de novela si:
 | *Curva de aprendizaje*    | Suave                       | Más empinada                                        |
 | *Carga de mantenimiento*  | Mínima                      | Un cuaderno más largo que mantener                  |
 
-*Recomendación*: ¡empieza con la plantilla de cuento para aprender y luego prueba la de novela para tu gran proyecto!
+*Recomendación*: empieza con la plantilla de cuento para aprender y luego prueba la de novela para tu gran proyecto.
 
 * Soporte bilingüe (inglés/español)
 
-¡El paquete admite plantillas en inglés y en español!
+El paquete admite plantillas en inglés y en español.
 
 ** Cómo funciona
 
 La creación del proyecto te pregunta el idioma de forma interactiva cada vez: no tienes que preconfigurar nada para obtener un proyecto en español. El valor por defecto que se ofrece lo controla la variable de configuración ~org-scribe-template-language~ (por defecto ~'en~), y el idioma que elijas de verdad se registra en el archivo marcador ~.org-scribe-project~ del nuevo proyecto (como una línea ~# Language:~), de modo que se recuerda por proyecto: las plantillas de captura, los nombres de las propiedades de escena y las demás funciones que dependen del idioma del proyecto siguen luego ese ajuste del proyecto, y no solo el valor global por defecto.
 
-Hay un segundo ajuste que no hay que confundir con este: ~org-scribe-message-language~ (por defecto ~'en~) decide en qué idioma te hablan los mensajes y los mensajes de petición de org-scribe, como los de este tutorial («Directorio base del proyecto:», «Título del relato:»…). Para verlos en español, añade a tu configuración:
+Hay un segundo ajuste que no hay que confundir con este: ~org-scribe-message-language~ (por defecto ~'en~) decide en qué idioma te hablan los mensajes y las preguntas de org-scribe, como los de este tutorial («Directorio base del proyecto:», «Título del relato:»…). Para verlos en español, añade a tu configuración:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-message-language 'es)
@@ -615,7 +615,7 @@ Luego reinicia Emacs o evalúa la línea con ~C-x C-e~. La pregunta seguirá apa
 3. No empieces el título con un punto (.)
 4. Si el título real necesita esos caracteres, crea el proyecto con uno sencillo y renómbralo con ~F8 T~
 
-(Con los mensajes en español, estos avisos salen traducidos, por ejemplo «¡El directorio del proyecto «…» ya existe!»; aquí aparecen con el texto en inglés para que los reconozcas si tu Emacs los muestra así.)
+(Con los mensajes en español, estos avisos salen traducidos, por ejemplo ~¡El directorio del proyecto «…» ya existe!~; aquí aparecen con el texto en inglés para que los reconozcas si tu Emacs los muestra así.)
 
 ** No encuentro el proyecto creado
 
@@ -665,7 +665,7 @@ Ahora que tienes un proyecto, ¡vamos a escribir algo!
 
 * Próximos pasos
 
-¡Estás listo para la [[file:primeros-pasos-02-primera-escena.org][Lección 2: Escribir tu primera escena]]!
+Ya puedes pasar a la [[file:primeros-pasos-02-primera-escena.org][Lección 2: Escribir tu primera escena]].
 
 En la próxima lección aprenderás:
 - A usar el modo Sin distracciones
@@ -683,7 +683,7 @@ Antes de la Lección 2, prueba esto:
 4. Lee los comentarios y las instrucciones de los archivos de plantilla
 5. Escribe unas cuantas frases en escenas distintas
 
-¡Tómate tu tiempo! No hay prisa. Cuando te sientas cómodo con la creación de proyectos y la navegación, pasa a la Lección 2.
+Tómate tu tiempo, no hay prisa. Cuando hayas cogido soltura con la creación de proyectos y la navegación, pasa a la Lección 2.
 
 * Referencia: todas las órdenes de creación de proyectos
 
@@ -739,7 +739,7 @@ Si te atascas:
 
 ¡Has dado tu primer gran paso en ~org-scribe~! Ahora tienes un proyecto de verdad con una estructura adecuada, control de versiones y archivos de plantilla listos para tu historia.
 
-En las próximas lecciones aprenderás a usar de verdad todos estos archivos. Pero por ahora, date una palmadita en la espalda: ¡ya estás oficialmente configurado y listo para escribir!
+En las próximas lecciones aprenderás a usar de verdad todos estos archivos. Pero por ahora, date un respiro: ya tienes todo preparado para escribir.
 
 ---
 

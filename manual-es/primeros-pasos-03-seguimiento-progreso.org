@@ -10,7 +10,7 @@
 
 * ¡Bienvenido a la Lección 3!
 
-Has creado un proyecto y escrito tus primeras escenas. ¡Ahora toca seguir tu progreso! Ver crecer tu recuento de palabras es una de las partes más motivadoras de escribir, y este paquete lo pone fácil.
+Has creado un proyecto y escrito tus primeras escenas. Ahora toca seguir tu progreso. Ver crecer tu recuento de palabras es una de las partes más motivadoras de escribir, y este paquete lo pone fácil.
 
 Al terminar esta lección habrás:
 - Aprendido a contar palabras con exactitud (sin contar los metadatos de Org)
@@ -36,7 +36,7 @@ Abre tu manuscrito y asegúrate de tener:
 - Algo de texto real de la historia debajo del bloque de propiedades
 - El archivo guardado (~C-x C-s~)
 
-¿Listo? ¡Vamos a seguir tu progreso!
+Vamos a seguir tu progreso.
 
 * Por qué contar palabras en Org-mode es especial
 
@@ -73,8 +73,8 @@ La alarma sonó a las 6:30. Alex gruñó y pulsó el botón de repetición.
 Cinco minutos más no le harían daño.
 #+END_EXAMPLE
 
-*Recuento normal*: ~44 palabras (¡incluye todos los metadatos!)
-*Recuento exacto*: ~22 palabras (¡solo la historia!)
+*Recuento normal*: unas 44 palabras (incluye todos los metadatos)
+*Recuento exacto*: unas 22 palabras (solo la historia)
 
 ** La solución: un recuento que entiende el contexto
 
@@ -110,7 +110,7 @@ Verás en el minibúfer un mensaje como:
 
 Esta orden cuenta la ventana actual:
 - si la ventana muestra todo el archivo novela.org, contará todo.
-- si la ventana está en el modo Enfoque, o estrechada, obtendrás el recuento de la sección en foco.
+- si la ventana está en el modo Enfoque, o restringida a una sección (narrowing), obtendrás el recuento de la sección en foco.
 
 ** ¡Pruébalo ahora!
 
@@ -164,7 +164,7 @@ Haz esto con cada escena de la que quieras seguir el progreso.
 
 Ahora vamos a añadir el recuento de palabras real.
 
-1. Pulsa ~F8~ para Hydra
+1. Pulsa ~F8~ para abrir el menú Hydra
 2. Pulsa ~a~ («Update all counts», actualizar todos los recuentos)
 
 *Importante*: ~a~ está asociada a ~org-scribe-ews-org-count-words~, que recalcula ~:WORDCOUNT:~ en *cada* encabezado de todo el búfer, no solo en la escena bajo el cursor; la posición del cursor no cambia el alcance. También crea una propiedad ~:ID:~ nueva en cualquier encabezado que no la tenga. Si quieres refrescar solo las escenas del capítulo/acto actual (o todo el búfer limitado a escenas, sin tocar los agregados de capítulo/acto), coloca el cursor ahí y pulsa ~F8 w~ (el despachador ~org-scribe-wordcount~) con un doble argumento prefijo, ~C-u C-u~, en su lugar.
@@ -296,9 +296,9 @@ Para cada capítulo, fija un objetivo que sea la suma de sus escenas:
 Estos números se muestran como ejemplos:
 
 Para las secciones principales:
-- Planteamiento: ~3.000
-- Nudo: ~5.000
-- Desenlace: ~2.000
+- Planteamiento: unas 3.000
+- Nudo: unas 5.000
+- Desenlace: unas 2.000
 
 O, en las novelas, los tres actos reparten el total del proyecto en un 25 % / 50 % / 25 % (para una novela de 80.000 palabras: 20.000 / 40.000 / 20.000; para 50.000: 12.500 / 25.000 / 12.500). El total se pregunta al crear el proyecto.
 
@@ -368,7 +368,7 @@ Si aun así prefieres llevar un registro sencillo a mano, nada te lo impide: añ
 
 ** Seguimiento automático (avanzado)
 
-Para un seguimiento diario automático sin mantener tablas a mano, mira la [[file:primeros-pasos-16-planificador.org][Lección 16: Planificación de objetivos de escritura con el planificador integrado]]: el planificador de escritura integrado empuja solo los recuentos de palabras en vivo y los incrementos diarios.
+Para un seguimiento diario automático sin mantener tablas a mano, mira la [[file:primeros-pasos-16-planificador.org][Lección 16: Planificación de objetivos de escritura con el planificador integrado]]: el planificador integrado recibe automáticamente cada recuento de palabras y calcula lo escrito cada día.
 
 Nota: el recuento de palabras solo se ejecuta cuando lo pides (~F8 a~ o ~F8 w~), salvo que hayas activado ~org-scribe-auto-wordcount~, que está *desactivado por defecto*. Ponerlo a ~t~ hace que guardar ~novel.org~/~novela.org~ vuelva a contar las palabras en silencio y sincronice el plan en cada guardado: es cómodo, pero hace los guardados un poco más lentos, porque recuenta cada encabezado del búfer. La sección «Los recuentos de palabras se anotan solos» de la Lección 16 explica cómo activarlo; vuelve a ponerlo a ~nil~ para desactivarlo.
 
@@ -383,7 +383,7 @@ Ventajas:
 - Medir tu producción diaria media
 - Fijar plazos realistas
 
-Psicología: ¡ver subir los números es increíblemente motivador!
+Psicología: ver subir los números es muy motivador.
 
 * Ejercicio práctico (15 minutos)
 
@@ -621,7 +621,7 @@ Cada programa cuenta de forma distinta:
 
 * Próximos pasos
 
-¿Listo para organizar tus personajes? ¡Ve a la [[file:primeros-pasos-04-capturar-personajes.org][Lección 4: Capturar personajes]]!
+¿Quieres organizar tus personajes? Ve a la [[file:primeros-pasos-04-capturar-personajes.org][Lección 4: Capturar personajes]].
 
 En la próxima lección aprenderás:
 - A crear fichas de personaje detalladas con rapidez
@@ -681,7 +681,7 @@ Hacer seguimiento del progreso crea hábito: cuanto más lo hagas, más motivado
 | Intermedio                | 500-1.000 palabras       |
 | Con experiencia           | 1.000-2.000 palabras     |
 | A tiempo completo         | 2.000+ palabras          |
-| Guerrero de fin de semana | 2.000-3.000/sesión       |
+| Escritor de fin de semana | 2.000-3.000/sesión       |
 
 * Consejos para triunfar en el seguimiento
 
@@ -694,7 +694,7 @@ Hacer seguimiento del progreso crea hábito: cuanto más lo hagas, más motivado
 7. *Comparte tu progreso*: cuéntale a alguien tus hitos
 8. *Visualiza el final*: usa el porcentaje para ver la meta
 9. *Mide también el tiempo*: ¿cuánto tardaste en escribir 500 palabras?
-10. *Perdónate los malos días*: ¡mañana es un recuento nuevo!
+10. *Perdónate los malos días*: mañana será otro día.
 
 ** La motivación a través de los números
 
