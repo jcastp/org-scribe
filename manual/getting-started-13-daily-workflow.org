@@ -80,7 +80,7 @@ Your writing day has three distinct phases:
 
 *Activities*:
 - Count words
-- Update tracking tables
+- Update all counts (the planner records the day)
 - Review what you wrote
 - Plan next session
 - Backup/commit
@@ -377,7 +377,7 @@ During active writing, minimize lookups. But sometimes you need the right word *
 
 *DON'T look up* during writing:
 - Minor word choice improvements (fix in revision)
-- Extensive research (mark with [CHECK] and continue)
+- Extensive research (leave a =*NOTE*= marker and continue)
 - Perfect synonyms (get close enough, polish later)
 
 *** Quick Lookup Pattern
@@ -392,29 +392,33 @@ When you must look up a word:
 
 *Time: 15 seconds*
 
-If you're not sure: "She felt melancholic [CHECK - or use different word?]" and keep going.
+If you're not sure, leave a =note= marker (see "Leaving Markers for Revision" below) and keep going.
 
-** Managing TODO Markers
+** Leaving Markers for Revision
 
-As you write, leave breadcrumbs for revision:
+As you write, leave breadcrumbs for revision. Write them as *marker comment blocks*, never as bracketed text in the prose itself. Text such as =[CHECK]= typed into a paragraph is counted as prose, is exported with the manuscript, and the edit search cannot see it. A marker inside a comment block does none of those (see Lesson 14, "Marker Convention"):
 
 #+BEGIN_EXAMPLE
-Alex walked into the coffee shop. [CHECK: Is it raining? Continuity.]
+Alex walked into the coffee shop.
 
-She saw Sam sitting in the corner booth. [TODO: Describe Sam's expression -
-nervous? eager? What emotion sets up the conflict?]
+,#+begin_comment
+*NOTE*: continuity - is it raining? Check chapter 1.
+,#+end_comment
 
-"I found something," Sam said, sliding the envelope across the table.
-[RESEARCH: What do old letters look like when they've been stored for 20 years?]
+She saw Sam sitting in the corner booth.
+
+,#+begin_comment
+*EDIT*: description - Sam's expression: nervous? eager? Set up the conflict.
+,#+end_comment
 #+END_EXAMPLE
 
-Markers to use:
-- `[CHECK]` - Verify continuity or facts
-- `[TODO]` - Something to add/expand
-- `[RESEARCH]` - Need factual information
-- `[REVISE]` - This section needs rewriting
+Two markers exist:
+- =*NOTE*: text= - something to remember, check or research. No category.
+- =*EDIT*: category - text= - something to change in prose that already exists.
 
-These are gifts to your future editing self!
+If you use Tempel (Lesson 14 shows the one-line setup), type =note= or =edit= and press the expand key: the snippet writes the whole block and, for =edit=, asks for the category. Typing the block by hand works just as well.
+
+Later, ~F8 6~ lists every marker in the project, grouped by category, so none of these breadcrumbs gets lost. They are gifts to your future editing self!
 
 ** The Pomodoro Integration
 
@@ -479,8 +483,8 @@ During your session:
 
 □ Write continuously
 □ Use quick captures for ideas (~F8 k~ + ~h~/~l~/~t~, or ~F8 n~ for a general note)
-□ Minimal lookups - mark [CHECK] instead
-□ Leave TODO markers for revision
+□ Minimal lookups - leave a note marker instead
+□ Leave note/edit markers for revision
 □ Don't edit yesterday's work
 □ Take short breaks (5 min per hour)
 □ Stop when you reach your goal OR time limit
@@ -501,16 +505,16 @@ See what you achieved today!
 
 *Celebration moment*: You wrote over 1,000 words today!
 
-** Step 2: Update Tracking Tables (2 minutes)
+** Step 2: Update All Counts (1 minute)
 
-Update your project statistics:
+Refresh the word count on every heading at once:
 
-1. Open your manuscript (~novel.org~ or ~story.org~)
-2. Navigate to the "Progress Tracking" section's word count table (~#+BEGIN: org-generate-wordcount-table~)
-3. Position cursor on the ~#+BEGIN~ line
-4. Press ~C-c C-c~ to update
+1. Press ~F8~ then ~a~ (update all counts)
+2. Every scene and chapter gets a fresh =WORDCOUNT=. Edit markers and notes inside comment blocks are not counted, only prose.
 
-The table recalculates:
+If you want the counts to stay fresh without thinking about it, set ~org-scribe-auto-wordcount~ to ~t~ (Lesson 16): saving the manuscript then refreshes them silently.
+
+The "Progress Tracking" table in your manuscript is generated from those counts. To see it, put the cursor on its ~#+BEGIN: org-generate-wordcount-table~ line and press ~C-c C-c~:
 
 #+BEGIN_EXAMPLE
 Before:                         After:
@@ -519,21 +523,15 @@ Before:                         After:
 
 You went from 32% to 34% - progress!
 
-** Step 3: Update Daily Tracking (2 minutes)
+** Step 3: Check Your Daily Total (1 minute)
 
-If you keep a daily tracking table by hand:
+You do not keep a daily table by hand. Daily totals, targets and streaks are the planner's job (Lesson 16). When the planner is enabled for the project, every count you run in Step 2 records today's total automatically, and the planner works out how much you wrote today from the day before.
 
-1. Navigate to your daily tracking table
-2. Add today's entry:
+1. Press ~F8~ then ~W~ (planner)
+2. Look at today's line: words written against today's goal
+3. Streak tracking: "That's 7 days in a row!"
 
-#+BEGIN_EXAMPLE
-| Date       | Words | Total | Scene              |
-|------------+-------+-------+--------------------|
-| 2025-11-15 | 823   | 15900 | Chapter 3, Scene 1 |
-| 2025-11-16 | 1247  | 17147 | Chapter 3, Scene 2 | ← Today!
-#+END_EXAMPLE
-
-*Streak tracking*: "That's 7 days in a row!"
+Without a plan, skip this step; the progress table above is enough. ~M-x org-scribe-plan~ sets one up whenever you want it.
 
 ** Step 4: Review and Plan (3 minutes)
 
@@ -546,13 +544,17 @@ Read what you wrote and plan tomorrow:
    - Note any major issues for revision
 
 2. *Leave a note for tomorrow*:
-   At the end of your last scene:
+   At the end of your last scene, leave a note marker (a comment block, so it is neither counted nor exported):
 
    #+BEGIN_EXAMPLE
-   [Stopped here on 2025-11-16. Next: Sam reveals the truth about
+   ,#+begin_comment
+   *NOTE*: Stopped here on 2025-11-16. Next: Sam reveals the truth about
    the letters. Alex's reaction should be disbelief first, then slowly
-   accepting. Good emotional tension. Remember to show, not tell.]
+   accepting. Good emotional tension. Remember to show, not tell.
+   ,#+end_comment
    #+END_EXAMPLE
+
+   Tomorrow, ~F8 6~ lists it with every other marker.
 
 3. *Plan tomorrow's session*:
    #+BEGIN_EXAMPLE
@@ -573,7 +575,7 @@ If you modified multiple files (manuscript + notes), save all:
 
 *** Git Commit (Recommended)
 
-If your project uses git (created with ~writing-create-novel-project~):
+If your project uses git (~org-scribe-create-novel-project~ and ~org-scribe-create-short-story-project~ initialise a repository for you):
 
 #+BEGIN_SRC bash
 # From the project directory
@@ -615,8 +617,8 @@ Exit your writing environment:
 ** Evening Checklist
 
 □ Count today's words
-□ Update progress table
-□ Add daily tracking entry
+□ Update all counts (F8 a)
+□ Check the planner's daily total (F8 W)
 □ Review today's work (no editing!)
 □ Leave note for tomorrow
 □ Save all files
@@ -792,7 +794,7 @@ The standard workflow might not fit everyone. Here are variations:
 - Maintain timeline consistency
 
 **Evening (15 min)**:
-- Update all tracking tables
+- Update all counts and check the planner
 - Review against outline
 - Adjust plan if needed
 - Update revision notes
@@ -811,7 +813,7 @@ The standard workflow might not fit everyone. Here are variations:
 
 **Active Writing**:
 - Write as fast as possible
-- Minimal captures (just mark [TODO])
+- Minimal captures (just drop a note marker)
 - No lookups (just keep typing)
 - Don't reread anything
 - Multiple pomodoros back-to-back
@@ -926,7 +928,7 @@ The standard workflow might not fit everyone. Here are variations:
 ** Challenge 4: "I get distracted by research"
 
 *Solutions*:
-- Mark [RESEARCH] and keep writing
+- Leave a =*NOTE*: research= marker and keep writing
 - Set research time separate from writing time
 - Use placeholder text: "She used a [TOOL NAME]"
 - Remember: Fiction doesn't need perfect accuracy
@@ -1011,7 +1013,7 @@ My Evening Routine (10 min):
 
 Examples:
 - Count today's words
-- Update progress table
+- Update all counts (~F8 a~)
 - Save and backup
 - Leave note for tomorrow
 - Celebrate (check off calendar)
@@ -1081,7 +1083,7 @@ You now have a complete framework for daily writing productivity!
 |---------+--------+----------------------------------------------|
 | Morning | 5 min  | Open, review, set goal, activate mode        |
 | Writing | 30-120 | Write, quick captures, minimal interruptions |
-| Evening | 10 min | Count words, update tables, plan, backup     |
+| Evening | 10 min | Count words, update counts, plan, backup     |
 | Weekly  | 30 min | Review timelines, plan week, celebrate       |
 
 ** Best Practices
@@ -1113,12 +1115,12 @@ MORNING (5 min)
 WRITING (__ min/hours)
 □ Write continuously
 □ Quick captures (F8 k h/l, F8 n for a note)
-□ Mark [TODO] for later
+□ Leave note markers for later
 □ No editing!
 
 EVENING (10 min)
 □ Count words (F8 w)
-□ Update table (C-c C-c)
+□ Update all counts (F8 a)
 □ Note for tomorrow
 □ Save + backup
 □ Exit mode (F8 0)
