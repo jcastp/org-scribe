@@ -65,7 +65,7 @@
 
 * Hilos de la Trama
 
-Rastrea los hilos de la trama y líneas narrativas aquí. Usa =F8 F8 k g= para capturar nuevos hilos mientras escribes.
+Rastrea los hilos de la trama y líneas narrativas aquí. Usa =F8 k g= para capturar nuevos hilos mientras escribes.
 
 ** Línea principal
 :PROPERTIES:
@@ -81,7 +81,7 @@ Rastrea los hilos de la trama y líneas narrativas aquí. Usa =F8 F8 k g= para c
 - Dónde se resuelve ::
 
 # Renómbrala con la línea de tu cuento. Los hilos que captures con
-# F8 F8 k g van debajo.
+# F8 k g van debajo.
 
 * Ambientación
 
@@ -203,7 +203,7 @@ Palabras o frases que tiendo a usar en exceso:
 # Refila lo que sobreviva con C-c C-w, que ofrece todos los encabezados
 # de todos los archivos del proyecto.  Borra el resto sin ceremonia.
 #
-# Abre este cuaderno desde cualquier punto del proyecto con F8 F8 o.
+# Abre este cuaderno desde cualquier punto del proyecto con F8 o.
 #
 #
 # RAMIFICAR UNA PREGUNTA
@@ -227,7 +227,7 @@ Palabras o frases que tiendo a usar en exceso:
 #
 # Estas cuatro palabras clave quedan deliberadamente fuera del vocabulario
 # TODO del proyecto, de modo que una pregunta abierta nunca aparece en la
-# búsqueda de TODOs (F8 F8 5).  Especular no es trabajo en curso.
+# búsqueda de TODOs (F8 5).  Especular no es trabajo en curso.
 #
 # :ABOUT: guarda un enlace ID a aquello de lo que trata la pregunta — un
 # personaje, un hilo, una escena — para que la pregunta sea accesible

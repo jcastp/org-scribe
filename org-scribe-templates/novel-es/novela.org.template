@@ -14,9 +14,9 @@
 - Fecha de inicio :: ${DATE}
 
 # El total es el del proyecto (su archivo marcador, línea "Target-words").
-# Cámbialo con =F8 F8 t=: eso también reescala los tres actos.
+# Cámbialo con =F8 t=: eso también reescala los tres actos.
 # El ritmo (objetivo diario, fecha de fin) es cosa del planificador de
-# escritura: =F8 F8 W=, o =M-x org-scribe-plan=.
+# escritura: =F8 W=, o =M-x org-scribe-plan=.
 
 * Seguimiento del Progreso :ignore:noexport:
 
@@ -29,7 +29,7 @@ Esta tabla muestra tu conteo de palabras, objetivos y progreso por sección.
 Actualízala con =C-c C-c= en la línea #+BEGIN.
 
 # Esta tabla es el único lugar donde el proyecto cuenta palabras. Se genera
-# a partir de las propiedades =WORDCOUNT= que refresca =F8 F8 a=, así que
+# a partir de las propiedades =WORDCOUNT= que refresca =F8 a=, así que
 # nunca está desactualizada a propósito. Los totales diarios, los objetivos
 # y las rachas son tarea del planificador (más abajo), no de una segunda tabla.
 
@@ -42,12 +42,12 @@ Actualízala con =C-c C-c= en la línea #+BEGIN.
 ** Seguimiento Diario de Palabras
 
 Los totales diarios los lleva el planificador de escritura incluido, no una
-tabla en este archivo. Ábrelo con =F8 F8 W=, o con =M-x org-scribe-plan=
+tabla en este archivo. Ábrelo con =F8 W=, o con =M-x org-scribe-plan=
 para crear o cargar el plan del proyecto.
 
 Cuando existe un plan, cada conteo de palabras registra el total de ese día
 en su registro, y el planificador informa del objetivo diario, de si vas al
-día y de cuántos días quedan. Sus paneles (=F8 F8 W=, luego =D=) dibujan la curva de
+día y de cuántos días quedan. Sus paneles (=F8 W=, luego =D=) dibujan la curva de
 progreso, la velocidad, el mejor día y la racha de escritura a partir de ese
 registro: cifras que vale la pena leer, y que no vale la pena teclear a mano.
 

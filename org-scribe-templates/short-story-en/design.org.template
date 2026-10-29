@@ -65,7 +65,7 @@ What's this story really about? What deeper meaning or message?
 
 * Plot Threads
 
-Track plot threads and storylines here. Use =F8 F8 k g= to capture new threads as they emerge while writing.
+Track plot threads and storylines here. Use =F8 k g= to capture new threads as they emerge while writing.
 
 ** Main Line
 :PROPERTIES:
@@ -81,7 +81,7 @@ Track plot threads and storylines here. Use =F8 F8 k g= to capture new threads a
 - Where it resolves ::
 
 # Rename this to your story's line. Further threads captured with
-# F8 F8 k g go below it.
+# F8 k g go below it.
 
 * Setting
 
@@ -202,7 +202,7 @@ Words or phrases I tend to overuse:
 # Refile what survives with C-c C-w, which offers every heading in every
 # file of the project.  Delete the rest without ceremony.
 #
-# Open this notebook from anywhere in the project with F8 F8 o.
+# Open this notebook from anywhere in the project with F8 o.
 #
 #
 # BRANCHING A QUESTION
@@ -226,7 +226,7 @@ Words or phrases I tend to overuse:
 #
 # These four keywords are deliberately outside the project's TODO
 # vocabulary, so an open question never turns up in the TODO search
-# (F8 F8 5).  Speculation is not work in progress.
+# (F8 5).  Speculation is not work in progress.
 #
 # :ABOUT: holds an ID link to whatever the question concerns — a
 # character, a thread, a scene — so the question is reachable from that

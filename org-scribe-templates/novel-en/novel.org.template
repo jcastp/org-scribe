@@ -14,9 +14,9 @@
 - Start date :: ${DATE}
 
 # The total is the project's own (its marker file, line "Target-words").
-# Change it with =F8 F8 t=: that also rescales the three acts.
+# Change it with =F8 t=: that also rescales the three acts.
 # The pace (daily target, end date) is the writing planner's job:
-# =F8 F8 W=, or =M-x org-scribe-plan=.
+# =F8 W=, or =M-x org-scribe-plan=.
 
 * Progress Tracking :ignore:noexport:
 
@@ -29,7 +29,7 @@ This table shows your word count, objectives, and progress by section.
 Update it with =C-c C-c= on the #+BEGIN line.
 
 # This table is the one place the project counts words. It is generated
-# from the =WORDCOUNT= properties that =F8 F8 a= refreshes, so it is never
+# from the =WORDCOUNT= properties that =F8 a= refreshes, so it is never
 # out of date on purpose. Daily totals, targets and streaks are the
 # planner's job (below), not a second table's.
 
@@ -42,12 +42,12 @@ Update it with =C-c C-c= on the #+BEGIN line.
 ** Daily Word Tracking
 
 Daily totals are kept by the bundled writing planner, not by a table here.
-Open it with =F8 F8 W=, or =M-x org-scribe-plan= to create or load the
+Open it with =F8 W=, or =M-x org-scribe-plan= to create or load the
 project's plan.
 
 Once a plan exists, every word count you run records that day's total in
 its ledger, and the planner reports the daily target, whether you are on
-track, and how many days remain. Its dashboards (=F8 F8 W=, then =D=) draw the
+track, and how many days remain. Its dashboards (=F8 W=, then =D=) draw the
 progress curve, velocity, best day and writing streak from that ledger —
 figures worth reading, and not worth typing in by hand.
 

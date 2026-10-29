@@ -30,7 +30,7 @@ ${FOUNDATIONS}
 #   - The thirteen non-negotiables, level 3 under their section. They are
 #     fixed: the same thirteen in every story. Do not add or remove any.
 #   - Narrative lines, level 3 under Plot Threads, with :THREAD-TYPE:. Those are
-#     yours: add as many as you need with F8 F8 k g.
+#     yours: add as many as you need with F8 k g.
 #
 # A line's :Weight: orders the columns of the plot timeline: 1 to 5, lower
 # first; blank sorts last. Put -1 and the line keeps everything except its
@@ -59,7 +59,7 @@ ${FOUNDATIONS}
 #   Q II  Reaction   25–50 %   7, 8     (9 closes it)
 #   Q III Action     50–75 %   8, 9     (10 closes it)
 #   Q IV  Resolution 75–100 %  11 to 13
-# Once a scene serves one of them, tag it: F8 F8 G. The health report lists
+# Once a scene serves one of them, tag it: F8 G. The health report lists
 # any of the thirteen that no scene serves.
 
 *** 1. Theme Stated
@@ -287,7 +287,7 @@ ${FOUNDATIONS}
 :END:
 
 # One for every Stance you want represented that the main line does not already
-# carry. Duplicate this heading — or use F8 F8 k g — for each subplot.
+# carry. Duplicate this heading — or use F8 k g — for each subplot.
 #
 # At least three crossings with the main line, and one of them at the midpoint,
 # the apparent defeat or the battle. If it never crosses, it is not a subplot:
@@ -335,7 +335,7 @@ ${FOUNDATIONS}
 # The role does not go in the heading: it goes in the :Role: property, which is
 # what org-scribe reads. That is why you can rename a character whenever you
 # like without breaking anything, and why links from scenes keep working
-# afterwards (F8 F8 R refreshes the displayed names).
+# afterwards (F8 R refreshes the displayed names).
 #
 # Every character is a level-3 heading directly under the Characters section.
 # Do not nest them deeper: org-scribe recognizes characters that way, and a
@@ -639,7 +639,7 @@ ${FOUNDATIONS}
 :END:
 
 # One for every Stance you want represented. Duplicate this whole heading — or
-# use F8 F8 k h — for each of them.
+# use F8 k h — for each of them.
 #
 # Reduced profile. The Desire in three parts is not optional here: it is what
 # distinguishes a character from an extra. Without a Desire, the contrast check
@@ -737,7 +737,7 @@ ${FOUNDATIONS}
 **** Scenes that happen here
 
 # Filled in automatically if you link the setting from each scene's Location
-# property (F8 F8 l). Scenes stay linked by ID.
+# property (F8 l). Scenes stay linked by ID.
 
 *** [Name of setting 2]
 :PROPERTIES:
@@ -1437,7 +1437,7 @@ Reflections on your writing habits, productivity patterns, what works for you.
 # Refile what survives with C-c C-w, which offers every heading in every
 # file of the project.  Delete the rest without ceremony.
 #
-# Open this notebook from anywhere in the project with F8 F8 o.
+# Open this notebook from anywhere in the project with F8 o.
 #
 #
 # BRANCHING A QUESTION
@@ -1461,7 +1461,7 @@ Reflections on your writing habits, productivity patterns, what works for you.
 #
 # These four keywords are deliberately outside the project's TODO
 # vocabulary, so an open question never turns up in the TODO search
-# (F8 F8 5).  Speculation is not work in progress.
+# (F8 5).  Speculation is not work in progress.
 #
 # :ABOUT: holds an ID link to whatever the question concerns — a
 # character, a thread, a scene — so the question is reachable from that

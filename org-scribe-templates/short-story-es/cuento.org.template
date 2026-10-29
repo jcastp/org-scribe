@@ -30,11 +30,11 @@
 #+END:
 
 Para actualizar el recuento de palabras, usa:
-- =F8 F8 w= (org-scribe-wordcount, contar ahora)
-- =F8 F8 a= (org-scribe-ews-org-count-words, actualizar todos los encabezados)
+- =F8 w= (org-scribe-wordcount, contar ahora)
+- =F8 a= (org-scribe-ews-org-count-words, actualizar todos los encabezados)
 
 Los totales diarios los lleva el planificador de escritura incluido, no una
-tabla en este archivo: =F8 F8 W=, o =M-x org-scribe-plan= para crear o
+tabla en este archivo: =F8 W=, o =M-x org-scribe-plan= para crear o
 cargar un plan.
 
 ** Análisis de Tramas
@@ -93,6 +93,6 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :Comentario:
 :END:
 
-# Escribe aquí tu primera escena.  F8 F8 s añade la siguiente.
+# Escribe aquí tu primera escena.  F8 s añade la siguiente.
 
 {{{scene-break}}}

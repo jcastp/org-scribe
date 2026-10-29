@@ -30,11 +30,11 @@
 #+END:
 
 To update word count, use:
-- =F8 F8 w= (org-scribe-wordcount, count now)
-- =F8 F8 a= (org-scribe-ews-org-count-words, refresh all headings)
+- =F8 w= (org-scribe-wordcount, count now)
+- =F8 a= (org-scribe-ews-org-count-words, refresh all headings)
 
 Daily totals are kept by the bundled writing planner rather than by a table
-here: =F8 F8 W=, or =M-x org-scribe-plan= to create or load a plan.
+here: =F8 W=, or =M-x org-scribe-plan= to create or load a plan.
 
 ** Plot Thread Analysis
 
@@ -92,6 +92,6 @@ Update with =C-c C-c= on the #+BEGIN line.
 :Comment:
 :END:
 
-# Write your first scene here.  F8 F8 s adds the next one.
+# Write your first scene here.  F8 s adds the next one.
 
 {{{scene-break}}}
