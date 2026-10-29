@@ -1021,6 +1021,21 @@ congratulate the writer for the template."
     (let ((result (org-scribe--health-plot-points-with-content temp-file)))
       (should (equal '(1 . 3) result)))))
 
+(ert-deftest test-health-plot-points-hint-blocks-do-not-count-as-content ()
+  "A long hint is a comment block; its lines are not content either.
+They do not start with `#', so a check that skipped only `#' lines would
+count every block as written."
+  (test-health--with-file
+      (concat "* The Thirteen Non-Negotiables\n"
+              "** 1. Theme Stated\n\n#+begin_comment\nSomeone states the Theme.\n"
+              "Who says it, to whom.\n#+end_comment\n\n"
+              "** 2. Weakness, Lie and Need\n\n#+BEGIN_COMMENT\nA hint.\n#+END_COMMENT\n"
+              "Real content after the hint.\n\n"
+              "** 3. Desire\n\n# A short hint.\n#+begin_comment\nA long one.\n#+end_comment\n")
+      "test-health-plot-"
+    (let ((result (org-scribe--health-plot-points-with-content temp-file)))
+      (should (equal '(1 . 3) result)))))
+
 (ert-deftest test-health-scenes-written-counts-first-n ()
   "Only the first N scenes count, and only those with a word count."
   (let ((scenes (list (list "S1" "C1" nil nil nil nil nil nil 500 nil)

@@ -349,11 +349,10 @@ having an entry for KEY, not only for a genuinely malformed gate."
      gate-items)))
 
 (defun org-scribe--health-plot-points-with-content (design-file)
-  "Return (FILLED . TOTAL) for the thirteen non-negotiables in PLOT-FILE.
-A plot point counts as filled when its body holds at least one line that
-is neither blank nor an Org comment — the shipped template gives every
-one of them a `#' hint, so counting non-empty bodies would report all
-thirteen as done in a brand-new project."
+  "Return (FILLED . TOTAL) for the thirteen non-negotiables in DESIGN-FILE.
+A plot point counts as filled when its body holds real content, as
+`org-scribe--body-has-content-p' decides: hints, whether `#' lines or
+comment blocks, are not content."
   (when (and design-file (file-exists-p design-file)
              (fboundp 'org-scribe--plot-point-heading-p))
     (with-current-buffer (find-file-noselect design-file)
@@ -363,16 +362,8 @@ thirteen as done in a brand-new project."
           (lambda ()
             (when (org-scribe--plot-point-heading-p)
               (cl-incf total)
-              (let ((body (save-excursion
-                            (org-end-of-meta-data t)
-                            (buffer-substring-no-properties
-                             (point) (save-excursion (org-end-of-subtree t t) (point))))))
-                (when (cl-some (lambda (line)
-                                 (let ((l (string-trim line)))
-                                   (and (not (string-empty-p l))
-                                        (not (string-prefix-p "#" l)))))
-                               (split-string body "\n"))
-                  (cl-incf filled)))))
+              (when (org-scribe--body-has-content-p)
+                (cl-incf filled))))
           nil 'file)
          (when (> total 0) (cons filled total)))))))
 

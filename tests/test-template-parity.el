@@ -320,6 +320,78 @@ template would quietly re-create all three problems."
             (push (concat set "/" relative) offenders)))))
     (should-not offenders)))
 
+;;; Hint layout
+;;
+;; Long guidance in the design notebook is a folded comment block, short
+;; guidance a `#' line beside its field.  These three keep it that way: a
+;; wall of `#' lines added to a template would bring back the clutter, a
+;; marker-shaped line inside a hint block would turn up in the edit index,
+;; and a line starting with `*' would end the block as a heading.
+
+(defconst org-scribe-parity--long-hint-lines 6
+  "A run of this many `#' lines in a notebook template must be a block.")
+
+(defun org-scribe-parity--manuscript-p (relative)
+  "Non-nil when RELATIVE names a manuscript template, not a notebook."
+  (member (file-name-sans-extension (file-name-nondirectory relative))
+          (append (org-scribe-lang-all :files 'manuscript-novel)
+                  (org-scribe-lang-all :files 'manuscript-short))))
+
+(ert-deftest test-template-parity-notebook-hints-have-no-walls ()
+  "No notebook template or fragment has a run of 6+ `#' lines.
+Such a run belongs in a `#+begin_comment' block, which the notebook
+opens folded (`hideblocks').  Manuscripts are exempt: they are not
+folded, and their few hints stay as lines."
+  (let (offenders)
+    (dolist (set org-scribe-parity--all-sets)
+      (dolist (relative (org-scribe-parity--templates set))
+        (unless (org-scribe-parity--manuscript-p relative)
+          (with-temp-buffer
+            (insert-file-contents (org-scribe-parity--path set relative))
+            (let ((run 0))
+              (dolist (line (split-string (buffer-string) "\n"))
+                (if (string-match-p "\\`[ \t]*#\\(?: \\|\\'\\)" line)
+                    (when (= (cl-incf run) org-scribe-parity--long-hint-lines)
+                      (push (concat set "/" relative) offenders))
+                  (setq run 0))))))))
+    (should-not offenders)))
+
+(ert-deftest test-template-parity-hint-blocks-are-inert ()
+  "No line in a template's comment block starts like a marker or a heading.
+The edit index reads every comment block in the project and keeps lines
+starting with *EDIT*: or *NOTE*:, so a hint shaped like one would be
+listed as a real marker; a line starting with `*' is a heading to Org
+and would end the block."
+  (let (offenders)
+    (dolist (set org-scribe-parity--all-sets)
+      (dolist (relative (org-scribe-parity--templates set))
+        (with-temp-buffer
+          (insert-file-contents (org-scribe-parity--path set relative))
+          (let ((case-fold-search t) (in-block nil))
+            (dolist (line (split-string (buffer-string) "\n"))
+              (cond
+               ((string-match-p "\\`[ \t]*#\\+begin_comment" line) (setq in-block t))
+               ((string-match-p "\\`[ \t]*#\\+end_comment" line) (setq in-block nil))
+               ((and in-block
+                     (or (string-prefix-p "*" line)
+                         (string-match-p "\\`[ \t]*\\*\\(?:EDIT\\|NOTE\\)\\*:" line)))
+                (push (concat set "/" relative ": " line) offenders))))))))
+    (should-not offenders)))
+
+(ert-deftest test-template-parity-notebooks-open-with-hints-folded ()
+  "Every notebook template opens its hint blocks folded."
+  (let (offenders)
+    (dolist (set org-scribe-parity--all-sets)
+      (dolist (relative (org-scribe-parity--templates set))
+        (unless (or (org-scribe-parity--manuscript-p relative)
+                    (string-suffix-p ".fragment" relative))
+          (with-temp-buffer
+            (insert-file-contents (org-scribe-parity--path set relative))
+            (goto-char (point-min))
+            (unless (re-search-forward "^#\\+STARTUP:.*\\bhideblocks\\b" nil t)
+              (push (concat set "/" relative) offenders))))))
+    (should-not offenders)))
+
 ;;; The plotting-method overlays
 
 (ert-deftest test-template-parity-method-overlay-pairing-is-complete ()

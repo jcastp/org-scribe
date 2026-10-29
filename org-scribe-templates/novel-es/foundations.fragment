@@ -1,15 +1,17 @@
 ** Puerta de salida
 
-# Ésta es la única lista que decide cuándo se empieza a escribir. Cuando estas
-# ocho casillas estén marcadas, deja de planificar y empieza. Todo lo demás se
-# descubre escribiendo, y lo que se descubre escribiendo es mejor que lo que se
-# decide en una tabla.
-#
-# Las seis primeras salen del Núcleo de aquí abajo; las dos últimas, no.
-#
-# Si llevas tres semanas sin escribir narrativa, no estás diseñando: estás
-# diseñando para no escribir. Vuelve a esta lista y comprueba si ya la habías
-# cruzado.
+#+begin_comment
+Ésta es la única lista que decide cuándo se empieza a escribir. Cuando estas
+ocho casillas estén marcadas, deja de planificar y empieza. Todo lo demás se
+descubre escribiendo, y lo que se descubre escribiendo es mejor que lo que se
+decide en una tabla.
+
+Las seis primeras salen del Núcleo de aquí abajo; las dos últimas, no.
+
+Si llevas tres semanas sin escribir narrativa, no estás diseñando: estás
+diseñando para no escribir. Vuelve a esta lista y comprueba si ya la habías
+cruzado.
+#+end_comment
 
 - [ ] Tema y al menos cinco Posturas
 - [ ] Protagonista y oponente con Fantasma, Mentira, Debilidad, Deseo y
@@ -89,15 +91,17 @@
 
 ** Problema del Mundo
 
-# Lo que hace que el statu quo no pueda seguir: algo que afecta al mundo de la
-# historia y a todo lo que contiene. Se expresa como Aspecto, para poder
-# invocarlo cuando necesites complicar una escena.
-#
-# No es decoración: en la revisión, cada escena donde no se manifiesta de
-# ninguna manera —ni siquiera de fondo— es candidata a corte.
-#
-# No confundir con el Apuro: el Apuro es de un personaje, el Problema es de
-# todos.
+#+begin_comment
+Lo que hace que el statu quo no pueda seguir: algo que afecta al mundo de la
+historia y a todo lo que contiene. Se expresa como Aspecto, para poder
+invocarlo cuando necesites complicar una escena.
+
+No es decoración: en la revisión, cada escena donde no se manifiesta de
+ninguna manera —ni siquiera de fondo— es candidata a corte.
+
+No confundir con el Apuro: el Apuro es de un personaje, el Problema es de
+todos.
+#+end_comment
 
 - Aspecto ::
 
@@ -126,16 +130,18 @@
 
 ** El final
 
-# Movimiento moral y resultado externo son ejes independientes. Cruzarlos da
-# seis finales, y elegir la casilla es más preciso que elegir "final feliz" o
-# "final triste".
-#
-#              | Consigue el Deseo        | No lo consigue
-#  Ascenso     | Victoria completa        | Victoria moral, derrota externa
-#  Caída       | Gana y ya no le sirve    | Tragedia completa
-#  Resistencia | El mundo le da la razón  | Paga el precio entero
-#
-# Si eliges Resistencia, los trece puntos irrenunciables no se leen igual.
+#+begin_comment
+Movimiento moral y resultado externo son ejes independientes. Cruzarlos da
+seis finales, y elegir la casilla es más preciso que elegir "final feliz" o
+"final triste".
+
+             | Consigue el Deseo        | No lo consigue
+ Ascenso     | Victoria completa        | Victoria moral, derrota externa
+ Caída       | Gana y ya no le sirve    | Tragedia completa
+ Resistencia | El mundo le da la razón  | Paga el precio entero
+
+Si eliges Resistencia, los trece puntos irrenunciables no se leen igual.
+#+end_comment
 
 - Movimiento moral ::
   # Ascenso / Caída / Resistencia
@@ -186,14 +192,16 @@
 
 ** Cambios pendientes al diseño
 
-# Una línea por desviación, apuntada sin salir de la sesión de borrador. Se
-# procesan entre sesiones, en una sola sentada, y se tachan.
-#
-# Si la historia contradice el diseño, gana la historia: actualiza el documento
-# y sigue. El mapa no es el territorio.
-#
-# En el manuscrito, usa marcas *EDIT*: diseño - ... dentro de un bloque de
-# comentario; se recogen con el índice de ediciones (F8 6).
+#+begin_comment
+Una línea por desviación, apuntada sin salir de la sesión de borrador. Se
+procesan entre sesiones, en una sola sentada, y se tachan.
+
+Si la historia contradice el diseño, gana la historia: actualiza el documento
+y sigue. El mapa no es el territorio.
+
+En el manuscrito, usa marcas *EDIT*: diseño - ... dentro de un bloque de
+comentario; se recogen con el índice de ediciones (F8 6).
+#+end_comment
 
 -
 

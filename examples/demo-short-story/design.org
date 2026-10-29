@@ -2,7 +2,7 @@
 #+AUTHOR: Demo Writer
 #+DATE: 2025-01-14
 #+LANGUAGE: en
-#+STARTUP: overview
+#+STARTUP: overview hideblocks
 
 * Characters
 
@@ -211,17 +211,19 @@ Comments:
 
 * Scratchpad
 
-# This part has no structure, and it is not meant to acquire one.
-#
-# It is the one part of the notebook that asks nothing of you.  Its Characters
-# and Setting sections are read by the linking layer and filed into by
-# capture, so a stray sketch there becomes a half-real entity.  Put it here
-# instead.
-#
-# Nothing written here is counted, exported, or read by any org-scribe
-# command.  Refile what survives with C-c C-w; delete the rest.
-#
-# See Lesson 17 in the manual for the branching convention below.
+#+begin_comment
+This part has no structure, and it is not meant to acquire one.
+
+It is the one part of the notebook that asks nothing of you.  Its Characters
+and Setting sections are read by the linking layer and filed into by
+capture, so a stray sketch there becomes a half-real entity.  Put it here
+instead.
+
+Nothing written here is counted, exported, or read by any org-scribe
+command.  Refile what survives with C-c C-w; delete the rest.
+
+See Lesson 17 in the manual for the branching convention below.
+#+end_comment
 
 ** Loose ideas
 

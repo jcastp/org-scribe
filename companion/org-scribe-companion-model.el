@@ -266,19 +266,6 @@ field specs."
 
 ;;; Entities
 
-(defun org-scribe-companion--has-content-p ()
-  "Return non-nil when the heading at point has a line of real content.
-A line counts when it is neither blank nor an Org comment: the templates
-give every plot point a `#' hint, so a non-empty body proves nothing."
-  (let ((body (save-excursion
-                (org-end-of-meta-data t)
-                (buffer-substring-no-properties
-                 (point) (save-excursion (org-end-of-subtree t t) (point))))))
-    (cl-some (lambda (line)
-               (let ((l (string-trim line)))
-                 (and (not (string-empty-p l)) (not (string-prefix-p "#" l)))))
-             (split-string body "\n"))))
-
 ;; Every entity heading predicate in the linking modules asks "is my parent
 ;; heading this section?" (`org-scribe--heading-parent-section-p'), and that
 ;; question costs a language-pack lookup per heading.  Knowing which section
@@ -316,7 +303,7 @@ give every plot point a `#' hint, so a non-empty body proves nothing."
     (when (eq symbol 'plot-point)
       (setq entity (append entity
                            (list :hasContent (org-scribe-companion--bool
-                                              (org-scribe-companion--has-content-p))))))
+                                              (org-scribe--body-has-content-p))))))
     entity))
 
 (defun org-scribe-companion--entities ()

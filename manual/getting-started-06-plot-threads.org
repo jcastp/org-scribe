@@ -86,13 +86,15 @@ command for it. You write into the thirteen headings that are already there.
 
 ** How to Fill Them In
 
-Each heading ships with a short hint in ~#~ comment lines. Write your own
-text below the hint: one paragraph per point is enough, naming the scene or
-moment if you already know it. The hints are comments, so they are never
-exported or word-counted, and they do not count as content — the health
-report (and box 7 of the Starting Gate) treats a point as done only once it
-has at least one line that is not blank and not a comment. Delete the hints
-whenever you like.
+Each heading ships with a hint in a comment block, which the notebook opens
+folded: press ~TAB~ on its ~#+begin_comment~ line to read it, and again to
+fold it. Write your own text below the block: one paragraph per point is
+enough, naming the scene or moment if you already know it. Hints are comments
+(short ones are ~#~ lines, long ones are blocks), so they are never exported
+or word-counted, and they do not count as content — the health report (and
+box 7 of the Starting Gate) treats a point as done only once it has at least
+one line that is not blank and not a comment. Delete the hints whenever you
+like.
 
 The thirteen are *causal*, not a checklist. Each one is the consequence of
 the one before, so read them in order: if you cannot say why point 7 follows

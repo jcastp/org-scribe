@@ -1,15 +1,17 @@
 ** Starting Gate
 
-# This is the only list that decides when you start writing. When these eight
-# boxes are ticked, stop planning and begin. Everything else is discovered by
-# writing, and what is discovered by writing is better than what is decided in
-# a table.
-#
-# The first six come from the Core below; the last two do not.
-#
-# If you have gone three weeks without writing narrative, you are not
-# designing: you are designing in order not to write. Come back to this list
-# and check whether you had already crossed it.
+#+begin_comment
+This is the only list that decides when you start writing. When these eight
+boxes are ticked, stop planning and begin. Everything else is discovered by
+writing, and what is discovered by writing is better than what is decided in
+a table.
+
+The first six come from the Core below; the last two do not.
+
+If you have gone three weeks without writing narrative, you are not
+designing: you are designing in order not to write. Come back to this list
+and check whether you had already crossed it.
+#+end_comment
 
 - [ ] Theme and at least five Stances
 - [ ] Protagonist and opponent with Ghost, Lie, Weakness, Desire and Need
@@ -88,15 +90,17 @@
 
 ** World Problem
 
-# What makes the status quo untenable: something affecting the story's world
-# and everything in it. Expressed as an Aspect, so you can invoke it whenever
-# you need to complicate a scene.
-#
-# It is not decoration: in revision, every scene where it does not show up in
-# any way — not even in the background — is a candidate for cutting.
-#
-# Not to be confused with Trouble: Trouble belongs to a character, the World
-# Problem belongs to everyone.
+#+begin_comment
+What makes the status quo untenable: something affecting the story's world
+and everything in it. Expressed as an Aspect, so you can invoke it whenever
+you need to complicate a scene.
+
+It is not decoration: in revision, every scene where it does not show up in
+any way — not even in the background — is a candidate for cutting.
+
+Not to be confused with Trouble: Trouble belongs to a character, the World
+Problem belongs to everyone.
+#+end_comment
 
 - Aspect ::
 
@@ -125,16 +129,18 @@
 
 ** The ending
 
-# Moral movement and external result are independent axes. Crossing them gives
-# six endings, and picking the cell is more precise than picking "happy" or
-# "sad".
-#
-#            | Gets the Desire         | Does not get it
-#  Rise      | Complete victory        | Moral victory, external defeat
-#  Fall      | Wins and it is no use   | Complete tragedy
-#  Resistance| The world proves him right | He pays the full price
-#
-# If you choose Resistance, the thirteen non-negotiables do not read the same.
+#+begin_comment
+Moral movement and external result are independent axes. Crossing them gives
+six endings, and picking the cell is more precise than picking "happy" or
+"sad".
+
+           | Gets the Desire         | Does not get it
+ Rise      | Complete victory        | Moral victory, external defeat
+ Fall      | Wins and it is no use   | Complete tragedy
+ Resistance| The world proves him right | He pays the full price
+
+If you choose Resistance, the thirteen non-negotiables do not read the same.
+#+end_comment
 
 - Moral movement ::
   # Rise / Fall / Resistance
@@ -186,14 +192,16 @@
 
 ** Pending design changes
 
-# One line per deviation, noted without leaving the drafting session. They are
-# processed between sessions, in one sitting, and struck out.
-#
-# If the story contradicts the design, the story wins: update the document and
-# carry on. The map is not the territory.
-#
-# In the manuscript, use *EDIT*: design - ... markers inside a comment block;
-# they are collected by the edit index (F8 6).
+#+begin_comment
+One line per deviation, noted without leaving the drafting session. They are
+processed between sessions, in one sitting, and struck out.
+
+If the story contradicts the design, the story wins: update the document and
+carry on. The map is not the territory.
+
+In the manuscript, use *EDIT*: design - ... markers inside a comment block;
+they are collected by the edit index (F8 6).
+#+end_comment
 
 -
 

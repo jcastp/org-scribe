@@ -1117,6 +1117,34 @@ as pending is still named for itself."
         (string-trim-left (substring text (match-end 0)))
       text)))
 
+(defun org-scribe--body-has-content-p ()
+  "Return non-nil when the heading at point has a line of real content.
+A line counts when it is not blank, not an Org comment line and not
+inside a comment block.  The templates give every plot point a hint,
+short ones as `#' lines and long ones as a folded comment block, so a
+non-empty body proves nothing: a test that skipped only `#' lines would
+count every hint block as written, and report a brand-new project's
+thirteen plot points as done.  The whole subtree is read."
+  (let ((body (save-excursion
+                (org-end-of-meta-data t)
+                (buffer-substring-no-properties
+                 (point) (save-excursion (org-end-of-subtree t t) (point)))))
+        (case-fold-search t)
+        (in-block nil))
+    (cl-some (lambda (line)
+               (let ((l (string-trim line)))
+                 (cond
+                  (in-block
+                   (when (string-match-p "\\`#\\+end_comment\\b" l)
+                     (setq in-block nil))
+                   nil)
+                  ((string-match-p "\\`#\\+begin_comment\\b" l)
+                   (setq in-block t)
+                   nil)
+                  (t (and (not (string-empty-p l))
+                          (not (string-prefix-p "#" l)))))))
+             (split-string body "\n"))))
+
 ;;; Trailing file-local variables
 
 (defun org-scribe--local-variables-start ()

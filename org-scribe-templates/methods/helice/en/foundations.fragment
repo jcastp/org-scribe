@@ -4,14 +4,16 @@
 
 ** Starting Gate
 
-# This is the only list that decides when you start writing. In the Helix
-# the gate sits at the close of level 3, not at the end of the method:
-# with protagonist and opponent cross-checked, the ending chosen and the
-# plot points placed, everything else is discovered by writing.
-#
-# If you have gone three weeks without writing narrative, you are not
-# designing: you are designing in order not to write. Come back to this
-# list and check whether you had already crossed it.
+#+begin_comment
+This is the only list that decides when you start writing. In the Helix
+the gate sits at the close of level 3, not at the end of the method:
+with protagonist and opponent cross-checked, the ending chosen and the
+plot points placed, everything else is discovered by writing.
+
+If you have gone three weeks without writing narrative, you are not
+designing: you are designing in order not to write. Come back to this
+list and check whether you had already crossed it.
+#+end_comment
 
 - [ ] Protagonist and opponent with Ghost, Lie, Weakness, Desire and
   Need, their Stances cross-checked
@@ -58,13 +60,15 @@
 *** Plot helix
 
 - Novel sentence (~15 words) ::
-  # No proper name but the protagonist's.
-  #
-  # Two failure modes: a sentence that describes the world, not the
-  # protagonist ("A kingdom torn by civil war…" — whose kingdom, wanting
-  # what?); and writing the Need in the Desire's blank ("wants to learn
-  # to stay" is what he needs, not a Desire — a Desire is external,
-  # concrete, and wrong).
+  #+begin_comment
+  No proper name but the protagonist's.
+
+  Two failure modes: a sentence that describes the world, not the
+  protagonist ("A kingdom torn by civil war…" — whose kingdom, wanting
+  what?); and writing the Need in the Desire's blank ("wants to learn
+  to stay" is what he needs, not a Desire — a Desire is external,
+  concrete, and wrong).
+  #+end_comment
 
 *** Character helix
 
@@ -151,13 +155,15 @@
 
 *** Plot helix
 
-# One-page synopsis, split by quarters: Setup (0–25%), Reaction
-# (25–50%), Action (50–75%), Resolution (75–100%).
-#
-# This is where the plot points that are not disasters appear — Theme
-# Stated, Crossing the Threshold, Plan, Drive, Battle, Moral Decision.
-# They are placed between the disasters, not the other way round; the
-# thirteen non-negotiables live in the Plot part.
+#+begin_comment
+One-page synopsis, split by quarters: Setup (0–25%), Reaction
+(25–50%), Action (50–75%), Resolution (75–100%).
+
+This is where the plot points that are not disasters appear — Theme
+Stated, Crossing the Threshold, Plan, Drive, Battle, Moral Decision.
+They are placed between the disasters, not the other way round; the
+thirteen non-negotiables live in the Plot part.
+#+end_comment
 
 - Theme ::
   # The moral problem, in one sentence. In the Helix it is not declared
@@ -264,20 +270,24 @@
 
 ** Where to look when something's wrong
 
-# "Things happen but mean nothing" → level 2, rule of ownership.
-# "The opponent feels like cardboard" → level 2: undefendable Stance, or
-#   wants a different thing than the protagonist.
-# "The ending doesn't convince me" → level 2, the two-endings cross-check.
-# "Nothing changes until the very end" → level 3: missing Adjustments
-#   between the Breaks.
+#+begin_comment
+"Things happen but mean nothing" → level 2, rule of ownership.
+"The opponent feels like cardboard" → level 2: undefendable Stance, or
+  wants a different thing than the protagonist.
+"The ending doesn't convince me" → level 2, the two-endings cross-check.
+"Nothing changes until the very end" → level 3: missing Adjustments
+  between the Breaks.
+#+end_comment
 
 ** Pending design changes
 
-# One line per deviation, noted without leaving the drafting session. If
-# the story contradicts the design, the story wins: update the document
-# and carry on.
-#
-# In the manuscript, use *EDIT*: design - ... markers inside a comment
-# block; they are collected by the edit index (F8 6).
+#+begin_comment
+One line per deviation, noted without leaving the drafting session. If
+the story contradicts the design, the story wins: update the document
+and carry on.
+
+In the manuscript, use *EDIT*: design - ... markers inside a comment
+block; they are collected by the edit index (F8 6).
+#+end_comment
 
 -

@@ -2,20 +2,22 @@
 #+AUTHOR: ${AUTHOR}
 #+DATE: ${DATE}
 #+LANGUAGE: en
-#+STARTUP: overview
+#+STARTUP: overview hideblocks
 
-# Lines starting with # are instructions: do not turn them into prose.
-# This file is for filling in. It is the project's notebook: the manuscript
-# lives in novel.org, everything else lives here, one part (level 1) each:
-#   Foundations — the Starting Gate, the Core and whatever has no entities
-#   Plot        — the thirteen non-negotiables, the narrative lines, the quarters
-#   Cast        — the characters
-#   World       — settings, worldbuilding, objects and the timeline
-#   Research, Revision, Journal, Scratchpad — your working notes
-#
-# Characters, settings and plot threads are level-3 headings under their
-# section (Characters, Setting, Plot Threads). Keep those section headings as
-# they are: org-scribe finds the entities by them.
+#+begin_comment
+Lines starting with # are instructions: do not turn them into prose.
+This file is for filling in. It is the project's notebook: the manuscript
+lives in novel.org, everything else lives here, one part (level 1) each:
+  Foundations — the Starting Gate, the Core and whatever has no entities
+  Plot        — the thirteen non-negotiables, the narrative lines, the quarters
+  Cast        — the characters
+  World       — settings, worldbuilding, objects and the timeline
+  Research, Revision, Journal, Scratchpad — your working notes
+
+Characters, settings and plot threads are level-3 headings under their
+section (Characters, Setting, Plot Threads). Keep those section headings as
+they are: org-scribe finds the entities by them.
+#+end_comment
 
 * Foundations
 
@@ -23,219 +25,252 @@ ${FOUNDATIONS}
 
 * Plot
 
-# The plot is the scaffolding: the common points and rhythms, marks along the
-# route. The plot is not the story. The map is not the territory.
-#
-# Two kinds of heading live here and they do not mix:
-#   - The thirteen non-negotiables, level 3 under their section. They are
-#     fixed: the same thirteen in every story. Do not add or remove any.
-#   - Narrative lines, level 3 under Plot Threads, with :THREAD-TYPE:. Those are
-#     yours: add as many as you need with F8 k g.
-#
-# A line's :Weight: orders the columns of the plot timeline: 1 to 5, lower
-# first; blank sorts last. Put -1 and the line keeps everything except its
-# column — for a running gag you track but do not want on the board. The plot
-# health report ignores Weight entirely: a hidden line is still checked for
-# coverage and gaps.
+#+begin_comment
+The plot is the scaffolding: the common points and rhythms, marks along the
+route. The plot is not the story. The map is not the territory.
+
+Two kinds of heading live here and they do not mix:
+  - The thirteen non-negotiables, level 3 under their section. They are
+    fixed: the same thirteen in every story. Do not add or remove any.
+  - Narrative lines, level 3 under Plot Threads, with :THREAD-TYPE:. Those are
+    yours: add as many as you need with F8 k g.
+
+A line's :Weight: orders the columns of the plot timeline: 1 to 5, lower
+first; blank sorts last. Put -1 and the line keeps everything except its
+column — for a running gag you track but do not want on the board. The plot
+health report ignores Weight entirely: a hidden line is still checked for
+coverage and gaps.
+#+end_comment
 
 ** The Thirteen Non-Negotiables
 
-# With them the story is complete and causal. Start here and look at nothing
-# else until you have them. They are box 7 of the Starting Gate.
-#
-# How to use this section: under each heading write what happens in YOUR story
-# — one paragraph is enough, naming the scene or the moment if you already
-# know it. Everything after a "#" is guidance and is never counted as
-# content, exported or word-counted; delete it when you no longer need it.
-# Content is the first line that is not a comment.
-#
-# They are causal, not a checklist: each one is the consequence of the one
-# before. Read them in order; if you cannot say why 7 follows from 6, the
-# hole is in 6. Order below is the usual order in the story, though 1, 2, 3
-# and 5 may overlap or swap inside the first quarter.
-#
-# Where they fall (approximate, % of the story):
-#   Q I   Setup       0–25 %   1 to 6   (6 closes it)
-#   Q II  Reaction   25–50 %   7, 8     (9 closes it)
-#   Q III Action     50–75 %   8, 9     (10 closes it)
-#   Q IV  Resolution 75–100 %  11 to 13
-# Once a scene serves one of them, tag it: F8 G. The health report lists
-# any of the thirteen that no scene serves.
+#+begin_comment
+With them the story is complete and causal. Start here and look at nothing
+else until you have them. They are box 7 of the Starting Gate.
+
+How to use this section: under each heading write what happens in YOUR story
+— one paragraph is enough, naming the scene or the moment if you already
+know it. Guidance (a line starting with "#", or a block like this one)
+is never counted as content, exported or word-counted; delete it when you
+no longer need it. Content is the first line outside the guidance. TAB on
+a #+begin_comment line opens or folds its block.
+
+They are causal, not a checklist: each one is the consequence of the one
+before. Read them in order; if you cannot say why 7 follows from 6, the
+hole is in 6. Order below is the usual order in the story, though 1, 2, 3
+and 5 may overlap or swap inside the first quarter.
+
+Where they fall (approximate, % of the story):
+  Q I   Setup       0–25 %   1 to 6   (6 closes it)
+  Q II  Reaction   25–50 %   7, 8     (9 closes it)
+  Q III Action     50–75 %   8, 9     (10 closes it)
+  Q IV  Resolution 75–100 %  11 to 13
+Once a scene serves one of them, tag it: F8 G. The health report lists
+any of the thirteen that no scene serves.
+#+end_comment
 
 *** 1. Theme Stated
 
-# Someone who is not the protagonist states the Theme, and he ignores it.
-#
-# What to write: who says it, to whom, in what scene, and in what words. It
-# should sound like an offhand remark or a piece of advice, never like the
-# moral of the book. The Theme is the question the story argues; the
-# protagonist's Lie is his wrong answer to it.
-# Ask yourself: if the reader remembered only this line at the end, would it
-# still read as the thing the whole book was about?
-# Where: early, usually in the first 10 %.
+#+begin_comment
+Someone who is not the protagonist states the Theme, and he ignores it.
+
+What to write: who says it, to whom, in what scene, and in what words. It
+should sound like an offhand remark or a piece of advice, never like the
+moral of the book. The Theme is the question the story argues; the
+protagonist's Lie is his wrong answer to it.
+Ask yourself: if the reader remembered only this line at the end, would it
+still read as the thing the whole book was about?
+Where: early, usually in the first 10 %.
+#+end_comment
 
 *** 2. Weakness, Lie and Need
 
-# Where he starts from and what he is wrong about. Seen working, and costing.
-#
-# What to write: take them from his character profile (Ghost → Lie →
-# Weakness → Desire/Need) and show them in scenes, not in description. Two
-# things must be visible: the Weakness doing its harm (working) and someone
-# paying for it (costing). The Need is what he must learn; he does not know it
-# yet.
-# Ask yourself: could a reader name his Weakness after the first chapter
-# without being told? Does it already cost him something?
-# Where: the opening; the Lie is the ground the whole story will undermine.
+#+begin_comment
+Where he starts from and what he is wrong about. Seen working, and costing.
+
+What to write: take them from his character profile (Ghost → Lie →
+Weakness → Desire/Need) and show them in scenes, not in description. Two
+things must be visible: the Weakness doing its harm (working) and someone
+paying for it (costing). The Need is what he must learn; he does not know it
+yet.
+Ask yourself: could a reader name his Weakness after the first chapter
+without being told? Does it already cost him something?
+Where: the opening; the Lie is the ground the whole story will undermine.
+#+end_comment
 
 *** 3. Desire
 
-# The external goal he believes will improve his life. Starts weak and rises.
-#
-# What to write: a concrete goal that can be won or lost, not a feeling
-# ("win the contract", not "be happy"). Then how it grows: it begins as a
-# mild want and becomes the thing he cannot live without, so the stakes rise
-# by themselves through the book.
-# Ask yourself: how will I know on the page that he has got it or failed to?
-# Desire (what he wants) and Need (what he lacks) pull in different
-# directions: that gap is the story.
-# Where: formed by the end of the first quarter; sharpens after the Inciting
-# Incident.
+#+begin_comment
+The external goal he believes will improve his life. Starts weak and rises.
+
+What to write: a concrete goal that can be won or lost, not a feeling
+("win the contract", not "be happy"). Then how it grows: it begins as a
+mild want and becomes the thing he cannot live without, so the stakes rise
+by themselves through the book.
+Ask yourself: how will I know on the page that he has got it or failed to?
+Desire (what he wants) and Need (what he lacks) pull in different
+directions: that gap is the story.
+Where: formed by the end of the first quarter; sharpens after the Inciting
+Incident.
+#+end_comment
 
 *** 4. Inciting Incident
 
-# An external event that leaves him distinctly worse off and makes him discern
-# a goal. It happens to him: he does not choose it.
-#
-# What to write: the event, and the two consequences it must have — he is
-# clearly worse off than before, and from that position he can see something
-# to aim at (the Desire from point 3 takes shape).
-# Ask yourself: is it something done TO him? If he chose it, it belongs at
-# point 6. If he is not worse off, there is no push.
-# Where: roughly 10–15 %.
+#+begin_comment
+An external event that leaves him distinctly worse off and makes him discern
+a goal. It happens to him: he does not choose it.
+
+What to write: the event, and the two consequences it must have — he is
+clearly worse off than before, and from that position he can see something
+to aim at (the Desire from point 3 takes shape).
+Ask yourself: is it something done TO him? If he chose it, it belongs at
+point 6. If he is not worse off, there is no push.
+Where: roughly 10–15 %.
+#+end_comment
 
 *** 5. Opponent
 
-# The most important relationship in the story, because they fight for the same
-# thing. Attacks the Weakness.
-#
-# What to write: who or what opposes him, what exactly they both want (it must
-# be the same thing, so only one can have it), and how the opponent's
-# strength reaches the protagonist's Weakness — the opponent wins where he is
-# weakest, which is why the fight teaches him anything.
-# Ask yourself: if I remove the opponent, does the Weakness stop mattering?
-# If so, the link is right.
-# Where: introduced in the first quarter; present until the Battle.
+#+begin_comment
+The most important relationship in the story, because they fight for the same
+thing. Attacks the Weakness.
+
+What to write: who or what opposes him, what exactly they both want (it must
+be the same thing, so only one can have it), and how the opponent's
+strength reaches the protagonist's Weakness — the opponent wins where he is
+weakest, which is why the fight teaches him anything.
+Ask yourself: if I remove the opponent, does the Weakness stop mattering?
+If so, the link is right.
+Where: introduced in the first quarter; present until the Battle.
+#+end_comment
 
 *** 6. Crossing the Threshold
 
-# His own decision to enter the new world. Closes the first quarter.
-#
-# What to write: the decision, taken freely, and the new world it leads to
-# (a place, a job, a relationship, a way of living) which differs from the
-# old one. After this there is no going back without a cost.
-# Ask yourself: is it his choice, made with open eyes? Can I name the
-# boundary he crosses?
-# Where: the end of the first quarter, 20–25 %.
+#+begin_comment
+His own decision to enter the new world. Closes the first quarter.
+
+What to write: the decision, taken freely, and the new world it leads to
+(a place, a job, a relationship, a way of living) which differs from the
+old one. After this there is no going back without a cost.
+Ask yourself: is it his choice, made with open eyes? Can I name the
+boundary he crosses?
+Where: the end of the first quarter, 20–25 %.
+#+end_comment
 
 *** 7. Plan
 
-# How he means to win. It fails, because the opponent is strong.
-#
-# What to write: the plan in a sentence the reader could repeat, and why it
-# looks sensible to him. It rests on the Lie: he plans as someone who is
-# still wrong. That is why it cannot work.
-# Ask yourself: if the plan worked cleanly, would the Lie survive? It should
-# not be able to.
-# Where: right after the threshold, opening the second quarter.
+#+begin_comment
+How he means to win. It fails, because the opponent is strong.
+
+What to write: the plan in a sentence the reader could repeat, and why it
+looks sensible to him. It rests on the Lie: he plans as someone who is
+still wrong. That is why it cannot work.
+Ask yourself: if the plan worked cleanly, would the Lie survive? It should
+not be able to.
+Where: right after the threshold, opening the second quarter.
+#+end_comment
 
 *** 8. Drive
 
-# The actions of the plan. He usually loses, and so takes decisions that are
-# less and less moral. Vary the actions: do not repeat the same kind of attempt.
-#
-# What to write: a list of attempts, each of a different KIND (persuasion,
-# force, deceit, retreat…), each with a result and a price. The slide
-# downward in morality is the cost the Weakness is charging him.
-# Ask yourself: do my attempts escalate, or do I merely have the same scene
-# three times?
-# Where: the longest stretch, spanning the second and third quarters (25–75 %),
-# with the Midpoint in the middle of it.
+#+begin_comment
+The actions of the plan. He usually loses, and so takes decisions that are
+less and less moral. Vary the actions: do not repeat the same kind of attempt.
+
+What to write: a list of attempts, each of a different KIND (persuasion,
+force, deceit, retreat…), each with a result and a price. The slide
+downward in morality is the cost the Weakness is charging him.
+Ask yourself: do my attempts escalate, or do I merely have the same scene
+three times?
+Where: the longest stretch, spanning the second and third quarters (25–75 %),
+with the Midpoint in the middle of it.
+#+end_comment
 
 *** 9. Midpoint
 
-# False victory or false defeat. He stops reacting and starts acting. Closes
-# the second quarter.
-#
-# What to write: choose which — he appears to win (and the win is hollow) or
-# appears to lose (and the loss frees him) — and the change in behaviour: up
-# to here he responded to the opponent; from here he sets the pace.
-# Ask yourself: what does he know or do after this that he could not before?
-# Where: the middle, 45–55 %.
+#+begin_comment
+False victory or false defeat. He stops reacting and starts acting. Closes
+the second quarter.
+
+What to write: choose which — he appears to win (and the win is hollow) or
+appears to lose (and the loss frees him) — and the change in behaviour: up
+to here he responded to the opponent; from here he sets the pace.
+Ask yourself: what does he know or do after this that he could not before?
+Where: the middle, 45–55 %.
+#+end_comment
 
 *** 10. Apparent Defeat
 
-# His lowest point, nearly catastrophic. He believes he has lost. Closes the
-# third quarter.
-#
-# What to write: what is lost (ally, plan, hope, status) and why he thinks it
-# is final. It must be worse than the Midpoint. The Lie breaks here, which
-# is what makes the next point possible.
-# Ask yourself: from where I stand as the reader, does he look done? If I am
-# not afraid for him, it is not low enough.
-# Where: about 75 %.
+#+begin_comment
+His lowest point, nearly catastrophic. He believes he has lost. Closes the
+third quarter.
+
+What to write: what is lost (ally, plan, hope, status) and why he thinks it
+is final. It must be worse than the Midpoint. The Lie breaks here, which
+is what makes the next point possible.
+Ask yourself: from where I stand as the reader, does he look done? If I am
+not afraid for him, it is not low enough.
+Where: about 75 %.
+#+end_comment
 
 *** 11. Self-Revelation
 
-# He sees the Lie. It is one point in two moments and a single heading: the
-# glimpse begins before the battle — it is what lets him fight differently —
-# and is confirmed inside it.
-#
-# What to write: the Lie he held, the truth that replaces it, and the thing
-# that makes him see it (usually a consequence of the defeat, or something
-# the sequence of revelations has delivered by now). The glimpse is a
-# first, partial seeing; the confirmation is the same seeing tested under
-# pressure.
-# Ask yourself: is the realisation his own, reached by what happened, rather
-# than told to him? Does it answer the Theme from point 1?
-# Where: glimpse between the defeat and the battle; confirmation in the Battle.
-#
-# - Glimpse (before the battle):
-# - Confirmation (inside or just after):
+#+begin_comment
+He sees the Lie. It is one point in two moments and a single heading: the
+glimpse begins before the battle — it is what lets him fight differently —
+and is confirmed inside it.
+
+What to write: the Lie he held, the truth that replaces it, and the thing
+that makes him see it (usually a consequence of the defeat, or something
+the sequence of revelations has delivered by now). The glimpse is a
+first, partial seeing; the confirmation is the same seeing tested under
+pressure.
+Ask yourself: is the realisation his own, reached by what happened, rather
+than told to him? Does it answer the Theme from point 1?
+Where: glimpse between the defeat and the battle; confirmation in the Battle.
+
+- Glimpse (before the battle):
+- Confirmation (inside or just after):
+#+end_comment
 
 *** 12. Battle
 
-# The final confrontation between the two ways of understanding the world.
-# Everything converges here as through a funnel, in the smallest space possible.
-#
-# What to write: the place, who is present (every thread that matters sends
-# someone), and what each side stands for. The setting should be as tight as
-# you can make it; the fewer rooms, the more it presses. The protagonist
-# fights in a new way, thanks to point 11.
-# Ask yourself: are the opponent and the protagonist on the page together? Do
-# the subplots cross here?
-# Where: the climax, about 90–95 %.
+#+begin_comment
+The final confrontation between the two ways of understanding the world.
+Everything converges here as through a funnel, in the smallest space possible.
+
+What to write: the place, who is present (every thread that matters sends
+someone), and what each side stands for. The setting should be as tight as
+you can make it; the fewer rooms, the more it presses. The protagonist
+fights in a new way, thanks to point 11.
+Ask yourself: are the opponent and the protagonist on the page together? Do
+the subplots cross here?
+Where: the climax, about 90–95 %.
+#+end_comment
 
 *** 13. Moral Decision
 
-# The proof that the self-revelation is real: he chooses between two courses,
-# both with a cost. Between two goods or between two evils, never between good
-# and evil.
-#
-# What to write: the two options, what each costs him, and which he chooses.
-# Seeing the Lie is easy; acting against it when it hurts is what proves it.
-# Ask yourself: is the right choice also expensive? If the answer is clear and
-# free, it is not a decision.
-# Where: inside or just after the Battle, leading into the new equilibrium.
+#+begin_comment
+The proof that the self-revelation is real: he chooses between two courses,
+both with a cost. Between two goods or between two evils, never between good
+and evil.
+
+What to write: the two options, what each costs him, and which he chooses.
+Seeing the Lie is easy; acting against it when it hurts is what proves it.
+Ask yourself: is the right choice also expensive? If the answer is clear and
+free, it is not a decision.
+Where: inside or just after the Battle, leading into the new equilibrium.
+#+end_comment
 
 ** Optional points used
 
-# The ones you decide to use, in the place where they belong. Unlike the
-# thirteen, these are per-story: add and remove freely.
-#
-# Opening image, ghost, resistance, promise of the premise, allies, fake ally,
-# opponent's plan, first/second/third revelation, revelation to the audience,
-# tightening noose, ally attack, dark moment, new plan, death of the Weakness,
-# new equilibrium, final image.
+#+begin_comment
+The ones you decide to use, in the place where they belong. Unlike the
+thirteen, these are per-story: add and remove freely.
+
+Opening image, ghost, resistance, promise of the premise, allies, fake ally,
+opponent's plan, first/second/third revelation, revelation to the audience,
+tightening noose, ally attack, dark moment, new plan, death of the Weakness,
+new equilibrium, final image.
+#+end_comment
 
 -
 
@@ -286,12 +321,14 @@ ${FOUNDATIONS}
 :Weight:
 :END:
 
-# One for every Stance you want represented that the main line does not already
-# carry. Duplicate this heading — or use F8 k g — for each subplot.
-#
-# At least three crossings with the main line, and one of them at the midpoint,
-# the apparent defeat or the battle. If it never crosses, it is not a subplot:
-# it is another novel inside this one.
+#+begin_comment
+One for every Stance you want represented that the main line does not already
+carry. Duplicate this heading — or use F8 k g — for each subplot.
+
+At least three crossings with the main line, and one of them at the midpoint,
+the apparent defeat or the battle. If it never crosses, it is not a subplot:
+it is another novel inside this one.
+#+end_comment
 
 - Stance it embodies ::
 - Who carries it ::
@@ -316,12 +353,14 @@ ${FOUNDATIONS}
 
 ** Sequences and scenes                                             :noexport:
 
-# The scene list does not live here: it lives in the manuscript, where every
-# scene is a heading with its properties. To see it as a table, open novel.org
-# and use column view (C-c C-x C-c).
-#
-# Scenes are the flesh on the skeleton. Write them in structural order and tag
-# each with the plot point it serves; the ones that serve none are suspect.
+#+begin_comment
+The scene list does not live here: it lives in the manuscript, where every
+scene is a heading with its properties. To see it as a table, open novel.org
+and use column view (C-c C-x C-c).
+
+Scenes are the flesh on the skeleton. Write them in structural order and tag
+each with the plot point it serves; the ones that serve none are suspect.
+#+end_comment
 
 * Cast
 
@@ -330,35 +369,37 @@ ${FOUNDATIONS}
 :COLUMNS: %30ITEM(Character) %14Role %20Stance %30Goal
 :END:
 
-# THE HEADING IS THE CHARACTER'S NAME. Replace [Name of the ...] with the name
-# as soon as you have it; the brackets only mark that it is unfilled.
-# The role does not go in the heading: it goes in the :Role: property, which is
-# what org-scribe reads. That is why you can rename a character whenever you
-# like without breaking anything, and why links from scenes keep working
-# afterwards (F8 R refreshes the displayed names).
-#
-# Every character is a level-3 heading directly under the Characters section.
-# Do not nest them deeper: org-scribe recognizes characters that way, and a
-# nested character is invisible to linking, search and the health report.
-#
-# To see who is who at a glance, use column view: C-c C-x C-c shows Role,
-# Stance and Goal beside each name.
-#
-# :Weight: orders the columns of the character timeline: 1 to 5, lower first.
-# Leave it blank and the character simply sorts last, alphabetically among the
-# other blanks. Put -1 and they are left out of the timeline altogether while
-# keeping their profile, their links and their place in every search — for the
-# innkeeper with two lines, whom you want on file but not in a column. The
-# table names anyone it hides in a comment line underneath.
-#
-# Full profile for protagonist and opponent. For the ally the intermediate
-# profile is enough (no Ghost, Need or Plan), and for the fake ally and the
-# supporting characters the reduced one: Concept, Stance, Trouble, one Aspect
-# and the Desire in three parts. Each says what you can delete.
-#
-# Every Aspect is double-edged: a short sentence, in the voice of whoever says
-# it, true, that could equally save or sink them. If it only does one of the
-# two, it is not an Aspect yet.
+#+begin_comment
+THE HEADING IS THE CHARACTER'S NAME. Replace [Name of the ...] with the name
+as soon as you have it; the brackets only mark that it is unfilled.
+The role does not go in the heading: it goes in the :Role: property, which is
+what org-scribe reads. That is why you can rename a character whenever you
+like without breaking anything, and why links from scenes keep working
+afterwards (F8 R refreshes the displayed names).
+
+Every character is a level-3 heading directly under the Characters section.
+Do not nest them deeper: org-scribe recognizes characters that way, and a
+nested character is invisible to linking, search and the health report.
+
+To see who is who at a glance, use column view: C-c C-x C-c shows Role,
+Stance and Goal beside each name.
+
+:Weight: orders the columns of the character timeline: 1 to 5, lower first.
+Leave it blank and the character simply sorts last, alphabetically among the
+other blanks. Put -1 and they are left out of the timeline altogether while
+keeping their profile, their links and their place in every search — for the
+innkeeper with two lines, whom you want on file but not in a column. The
+table names anyone it hides in a comment line underneath.
+
+Full profile for protagonist and opponent. For the ally the intermediate
+profile is enough (no Ghost, Need or Plan), and for the fake ally and the
+supporting characters the reduced one: Concept, Stance, Trouble, one Aspect
+and the Desire in three parts. Each says what you can delete.
+
+Every Aspect is double-edged: a short sentence, in the voice of whoever says
+it, true, that could equally save or sink them. If it only does one of the
+two, it is not an Aspect yet.
+#+end_comment
 
 *** [Name of the protagonist]
 :PROPERTIES:
@@ -496,12 +537,14 @@ ${FOUNDATIONS}
 :RelationshipsData:
 :END:
 
-# Full profile. Wants the same thing as the protagonist — that is why they
-# collide — and attacks their Weakness directly. Choose the one who can attack
-# it most viciously.
-# Their Stance has to be defensible: if you cannot argue it yourself with
-# conviction, it is not finished.
-# Do not reveal them all at once: use hierarchies of opponents and show pieces.
+#+begin_comment
+Full profile. Wants the same thing as the protagonist — that is why they
+collide — and attacks their Weakness directly. Choose the one who can attack
+it most viciously.
+Their Stance has to be defensible: if you cannot argue it yourself with
+conviction, it is not finished.
+Do not reveal them all at once: use hierarchies of opponents and show pieces.
+#+end_comment
 
 - Concept ::
 - Stance ::
@@ -638,12 +681,14 @@ ${FOUNDATIONS}
 :RelationshipsData:
 :END:
 
-# One for every Stance you want represented. Duplicate this whole heading — or
-# use F8 k h — for each of them.
-#
-# Reduced profile. The Desire in three parts is not optional here: it is what
-# distinguishes a character from an extra. Without a Desire, the contrast check
-# cannot be done.
+#+begin_comment
+One for every Stance you want represented. Duplicate this whole heading — or
+use F8 k h — for each of them.
+
+Reduced profile. The Desire in three parts is not optional here: it is what
+distinguishes a character from an extra. Without a Desire, the contrast check
+cannot be done.
+#+end_comment
 
 - Concept ::
 - Stance ::
@@ -695,20 +740,22 @@ ${FOUNDATIONS}
 :COLUMNS: %30ITEM(Setting) %14Type %30Echo
 :END:
 
-# THE HEADING IS THE PLACE'S NAME. Replace [Name of setting N] with the name as
-# soon as you have it; the brackets only mark that it is unfilled. The
-# classification does not go in the heading: it goes in the :Type: property,
-# which is what org-scribe reads.
-#
-# Every setting is a level-3 heading directly under the Setting section. Do not
-# nest them deeper: org-scribe recognizes settings that way.
-#
-# The world as a whole — the four axes, how it presses on the protagonist's
-# Weakness — lives in the Worldbuilding section. This section holds the
-# specific places where scenes happen.
-#
-# A setting with no Aspect at all is scenery. In revision Pass 5, settings used
-# only as scenery are candidates for cutting.
+#+begin_comment
+THE HEADING IS THE PLACE'S NAME. Replace [Name of setting N] with the name as
+soon as you have it; the brackets only mark that it is unfilled. The
+classification does not go in the heading: it goes in the :Type: property,
+which is what org-scribe reads.
+
+Every setting is a level-3 heading directly under the Setting section. Do not
+nest them deeper: org-scribe recognizes settings that way.
+
+The world as a whole — the four axes, how it presses on the protagonist's
+Weakness — lives in the Worldbuilding section. This section holds the
+specific places where scenes happen.
+
+A setting with no Aspect at all is scenery. In revision Pass 5, settings used
+only as scenery are candidates for cutting.
+#+end_comment
 
 *** [Name of setting 1]
 :PROPERTIES:
@@ -799,12 +846,14 @@ ${FOUNDATIONS}
 
 *** How the world presses on the protagonist's Weakness
 
-# The question that turns worldbuilding into story. If the world does not press
-# where the protagonist is weak, it is expensive scenery.
-#
-# Cardinal rule: the world serves the character. Any decision about setting has
-# to be justifiable with "because this forces the character to face their
-# Weakness".
+#+begin_comment
+The question that turns worldbuilding into story. If the world does not press
+where the protagonist is weak, it is expensive scenery.
+
+Cardinal rule: the world serves the character. Any decision about setting has
+to be justifiable with "because this forces the character to face their
+Weakness".
+#+end_comment
 
 *** Rules and limits
 
@@ -1010,12 +1059,14 @@ If fantasy/sci-fi, rules I must keep consistent:
 
 * Revision
 
-# Ten passes, always top-down: do not polish the sentences of a scene you may
-# end up cutting. The Critic is in charge here, and only here.
-#
-# The design is the checklist. Every pass ends with a pointer: when something
-# fails, you do not go back to the beginning, you go back to the section that
-# designed it.
+#+begin_comment
+Ten passes, always top-down: do not polish the sentences of a scene you may
+end up cutting. The Critic is in charge here, and only here.
+
+The design is the checklist. Every pass ends with a pointer: when something
+fails, you do not go back to the beginning, you go back to the section that
+designed it.
+#+end_comment
 
 ** Revision log
 
@@ -1424,52 +1475,54 @@ Reflections on your writing habits, productivity patterns, what works for you.
 
 * Scratchpad
 
-# This part has no structure, and it is not meant to acquire one.
-#
-# Nothing written here is counted, exported, or read by any org-scribe
-# command.  The word count walks the manuscript only; compilation reads
-# the manuscript only; the entity resolvers work from fixed file names,
-# so a character sketched here stays invisible to the linking layer until
-# you move it somewhere real.  Sketch someone who may not exist.  Draft a
-# scene you will throw away.  Ask the stupid question.  Argue with
-# yourself in writing.
-#
-# Refile what survives with C-c C-w, which offers every heading in every
-# file of the project.  Delete the rest without ceremony.
-#
-# Open this notebook from anywhere in the project with F8 o.
-#
-#
-# BRANCHING A QUESTION
-#
-# When a question turns out to have more than one answer, give it a
-# heading and tag it :branch:.  Each answer is a child heading carrying a
-# state, cycled with C-c C-t:
-#
-#   OPEN       still live, not yet explored
-#   EXPLORING  being written out right now
-#   CHOSEN     this is the one
-#   REJECTED   ruled out, with the reason kept
-#
-# Keep rejected branches.  Why-not is worth as much as why, and deleting
-# one only means re-deriving it in three months.  REJECTED and CHOSEN are
-# done states, so a settled question folds away without losing its
-# reasoning.
-#
-# The outcomes of an answer are that answer's children.  Nest as deep as
-# the question actually goes.
-#
-# These four keywords are deliberately outside the project's TODO
-# vocabulary, so an open question never turns up in the TODO search
-# (F8 5).  Speculation is not work in progress.
-#
-# :ABOUT: holds an ID link to whatever the question concerns — a
-# character, a thread, a scene — so the question is reachable from that
-# side too, and survives a rename.  Leave it empty when the question is
-# not yet about anything in particular.
-#
-# The shape below is an example.  Copy it, or delete it once you have
-# your own.
+#+begin_comment
+This part has no structure, and it is not meant to acquire one.
+
+Nothing written here is counted, exported, or read by any org-scribe
+command.  The word count walks the manuscript only; compilation reads
+the manuscript only; the entity resolvers work from fixed file names,
+so a character sketched here stays invisible to the linking layer until
+you move it somewhere real.  Sketch someone who may not exist.  Draft a
+scene you will throw away.  Ask the stupid question.  Argue with
+yourself in writing.
+
+Refile what survives with C-c C-w, which offers every heading in every
+file of the project.  Delete the rest without ceremony.
+
+Open this notebook from anywhere in the project with F8 o.
+
+
+BRANCHING A QUESTION
+
+When a question turns out to have more than one answer, give it a
+heading and tag it :branch:.  Each answer is a child heading carrying a
+state, cycled with C-c C-t:
+
+  OPEN       still live, not yet explored
+  EXPLORING  being written out right now
+  CHOSEN     this is the one
+  REJECTED   ruled out, with the reason kept
+
+Keep rejected branches.  Why-not is worth as much as why, and deleting
+one only means re-deriving it in three months.  REJECTED and CHOSEN are
+done states, so a settled question folds away without losing its
+reasoning.
+
+The outcomes of an answer are that answer's children.  Nest as deep as
+the question actually goes.
+
+These four keywords are deliberately outside the project's TODO
+vocabulary, so an open question never turns up in the TODO search
+(F8 5).  Speculation is not work in progress.
+
+:ABOUT: holds an ID link to whatever the question concerns — a
+character, a thread, a scene — so the question is reachable from that
+side too, and survives a rename.  Leave it empty when the question is
+not yet about anything in particular.
+
+The shape below is an example.  Copy it, or delete it once you have
+your own.
+#+end_comment
 
 ** Loose ideas
 

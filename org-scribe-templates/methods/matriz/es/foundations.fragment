@@ -4,14 +4,16 @@
 
 ** Puerta de salida
 
-# En la Matriz la puerta está un nivel más abajo que en la Hélice: al
-# cerrar el nivel 3 tienes un esqueleto recién deducido que todavía no se
-# ha probado contra el ritmo de una sinopsis. El nivel 4 es donde este
-# método comprueba que lo deducido se sostiene como narración.
-#
-# Si llevas tres semanas sin escribir narrativa, no estás diseñando: estás
-# diseñando para no escribir. Vuelve a esta lista y comprueba si ya la
-# habías cruzado.
+#+begin_comment
+En la Matriz la puerta está un nivel más abajo que en la Hélice: al
+cerrar el nivel 3 tienes un esqueleto recién deducido que todavía no se
+ha probado contra el ritmo de una sinopsis. El nivel 4 es donde este
+método comprueba que lo deducido se sostiene como narración.
+
+Si llevas tres semanas sin escribir narrativa, no estás diseñando: estás
+diseñando para no escribir. Vuelve a esta lista y comprueba si ya la
+habías cruzado.
+#+end_comment
 
 - [ ] Censo (2–4 fuerzas) y arena (objeto en disputa, lugar y momento, reloj)
 - [ ] Cadenas completas por fuerza (Fantasma → Mentira → Debilidad → Apuro → Deseo → Necesidad)
@@ -23,18 +25,20 @@
 
 ** El método de la Matriz
 
-# El Snowflake dado la vuelta: en lugar de escalar la trama y colgar de
-# ella a los personajes, se escalan las fuerzas y la trama se deduce de
-# ellas. Cinco niveles, los mismos que la Hélice, pero con el orden de
-# dependencia invertido: los dos primeros son de personaje, la trama nace
-# en el tercero.
-#
-# Ajuste más débil: un protagonista claro y nadie más a su peso (la
-# matriz se convierte en una fila y no deduce nada); un género donde la
-# maquinaria de la trama tiene que mandar (un misterio de enigma, un
-# golpe); o un plazo ajustado — es el más lento de los tres métodos hasta
-# que aparece la primera línea de trama, y hasta entonces no sabes si
-# tienes novela.
+#+begin_comment
+El Snowflake dado la vuelta: en lugar de escalar la trama y colgar de
+ella a los personajes, se escalan las fuerzas y la trama se deduce de
+ellas. Cinco niveles, los mismos que la Hélice, pero con el orden de
+dependencia invertido: los dos primeros son de personaje, la trama nace
+en el tercero.
+
+Ajuste más débil: un protagonista claro y nadie más a su peso (la
+matriz se convierte en una fila y no deduce nada); un género donde la
+maquinaria de la trama tiene que mandar (un misterio de enigma, un
+golpe); o un plazo ajustado — es el más lento de los tres métodos hasta
+que aparece la primera línea de trama, y hasta entonces no sabes si
+tienes novela.
+#+end_comment
 
 *** Regla de la arena
 
@@ -56,15 +60,17 @@
 
 *** El censo de fuerzas
 
-# Entre dos y cuatro fuerzas vivas, una frase cada una:
-# NOMBRE cree que MENTIRA, porque FANTASMA.
-#
-# Recomendación fuerte: que al menos dos fuerzas compartan el mismo
-# Fantasma con la conclusión contraria. Ejemplo del patrón que esto
-# premia: dos personajes a los que de niños una autoridad les quitó algo,
-# uno concluyendo "hay que seguir moviéndose, no pararse nunca" y el otro
-# "hay que estar del lado que firma los papeles" — la misma herida,
-# lecciones contrarias, y van a colisionar sin que ninguno lo pretenda.
+#+begin_comment
+Entre dos y cuatro fuerzas vivas, una frase cada una:
+NOMBRE cree que MENTIRA, porque FANTASMA.
+
+Recomendación fuerte: que al menos dos fuerzas compartan el mismo
+Fantasma con la conclusión contraria. Ejemplo del patrón que esto
+premia: dos personajes a los que de niños una autoridad les quitó algo,
+uno concluyendo "hay que seguir moviéndose, no pararse nunca" y el otro
+"hay que estar del lado que firma los papeles" — la misma herida,
+lecciones contrarias, y van a colisionar sin que ninguno lo pretenda.
+#+end_comment
 
 1. ______ cree que ______, porque ______.
 2. ______ cree que ______, porque ______.
@@ -86,13 +92,15 @@
 
 ** NIVEL 2 — Las cadenas
 
-# Un párrafo por fuerza viva, expandiendo la frase del censo: Fantasma →
-# Mentira → Debilidad (psicológica y moral) → Apuro → Deseo (Objetivo ·
-# Motivación · Conflicto) → Necesidad.
-#
-# La Motivación es la promesa que le hace la Mentira, y por tanto es falsa
-# en el fondo. En la Necesidad, el Conflicto no es otro personaje: es la
-# propia Mentira y lo que tendría que admitir del Fantasma para soltarla.
+#+begin_comment
+Un párrafo por fuerza viva, expandiendo la frase del censo: Fantasma →
+Mentira → Debilidad (psicológica y moral) → Apuro → Deseo (Objetivo ·
+Motivación · Conflicto) → Necesidad.
+
+La Motivación es la promesa que le hace la Mentira, y por tanto es falsa
+en el fondo. En la Necesidad, el Conflicto no es otro personaje: es la
+propia Mentira y lo que tendría que admitir del Fantasma para soltarla.
+#+end_comment
 
 *** Chequeo del nivel 2
 
@@ -106,13 +114,15 @@
 
 *** Paso 1 — Rellenar la matriz
 
-# Una fila y una columna por fuerza. En la casilla (A, B) se escribe qué
-# le hace la Mentira de A a la Mentira de B cuando ambos van a por el
-# objeto en disputa. La diagonal se deja vacía.
-#
-# Una casilla rellena se lee como una frase, no como una palabra: no
-# "conflicto", sino "su firma de hace veinte años es la razón de que la
-# casa de ella ya no exista".
+#+begin_comment
+Una fila y una columna por fuerza. En la casilla (A, B) se escribe qué
+le hace la Mentira de A a la Mentira de B cuando ambos van a por el
+objeto en disputa. La diagonal se deja vacía.
+
+Una casilla rellena se lee como una frase, no como una palabra: no
+"conflicto", sino "su firma de hace veinte años es la razón de que la
+casa de ella ya no exista".
+#+end_comment
 
 |     | *a ___* | *a ___* | *a ___* |
 |-----+-------+-------+-------|
@@ -166,13 +176,15 @@
 
 ** NIVEL 4 — La sinopsis y los hitos
 
-# Sinopsis de una página por cuartiles, y una página por fuerza con sus
-# hitos de cambio, cada uno anclado a un punto concreto de la sinopsis y
-# marcado como Ruptura o Ajuste.
-#
-# Aquí entran los puntos de trama que no son colisiones —susurro del
-# tema, cruzar el umbral, plan, empuje, batalla, decisión moral—. Los
-# trece irrenunciables viven en la parte Trama.
+#+begin_comment
+Sinopsis de una página por cuartiles, y una página por fuerza con sus
+hitos de cambio, cada uno anclado a un punto concreto de la sinopsis y
+marcado como Ruptura o Ajuste.
+
+Aquí entran los puntos de trama que no son colisiones —susurro del
+tema, cruzar el umbral, plan, empuje, batalla, decisión moral—. Los
+trece irrenunciables viven en la parte Trama.
+#+end_comment
 
 - Tema ::
   # El problema moral, en una frase. En la Matriz el tema sale solo: al
@@ -249,25 +261,29 @@
 
 ** Dónde mirar cuando algo falla
 
-# "Todos se ignoran entre sí" → nivel 1, regla de la arena: falta objeto
-#   en disputa o falta reloj.
-# "Sigo eligiendo yo la colisión" → nivel 3, regla de la inevitabilidad:
-#   ninguna de las candidatas era de verdad inevitable.
-# "El gancho no sale" → nivel 1: falta objeto en disputa, falta reloj, o
-#   falta una fuerza.
-# "Nada cambia hasta el final" → nivel 4: faltan Ajustes entre las
-#   Rupturas.
-# "El elenco se dispersa, cuatro voces y ningún foco" → chequeo 1 del
-#   nivel 3 (toda fuerza es dueña de una posición) y chequeo 3 del
-#   nivel 5 (reparto del punto de vista).
+#+begin_comment
+"Todos se ignoran entre sí" → nivel 1, regla de la arena: falta objeto
+  en disputa o falta reloj.
+"Sigo eligiendo yo la colisión" → nivel 3, regla de la inevitabilidad:
+  ninguna de las candidatas era de verdad inevitable.
+"El gancho no sale" → nivel 1: falta objeto en disputa, falta reloj, o
+  falta una fuerza.
+"Nada cambia hasta el final" → nivel 4: faltan Ajustes entre las
+  Rupturas.
+"El elenco se dispersa, cuatro voces y ningún foco" → chequeo 1 del
+  nivel 3 (toda fuerza es dueña de una posición) y chequeo 3 del
+  nivel 5 (reparto del punto de vista).
+#+end_comment
 
 ** Cambios pendientes al diseño
 
-# Una línea por desviación, apuntada sin salir de la sesión de borrador.
-# Si la historia contradice el diseño, gana la historia: actualiza el
-# documento y sigue.
-#
-# En el manuscrito, usa marcas *EDIT*: diseño - ... dentro de un bloque de
-# comentario; se recogen con el índice de ediciones (F8 6).
+#+begin_comment
+Una línea por desviación, apuntada sin salir de la sesión de borrador.
+Si la historia contradice el diseño, gana la historia: actualiza el
+documento y sigue.
+
+En el manuscrito, usa marcas *EDIT*: diseño - ... dentro de un bloque de
+comentario; se recogen con el índice de ediciones (F8 6).
+#+end_comment
 
 -

@@ -4,14 +4,16 @@
 
 ** Puerta de salida
 
-# Ésta es la única lista que decide cuándo se empieza a escribir. En la
-# Hélice la puerta está al cerrar el nivel 3, no al final del método: con
-# protagonista y oponente cotejados, el final elegido y los puntos de trama
-# situados, todo lo demás se descubre escribiendo.
-#
-# Si llevas tres semanas sin escribir narrativa, no estás diseñando: estás
-# diseñando para no escribir. Vuelve a esta lista y comprueba si ya la
-# habías cruzado.
+#+begin_comment
+Ésta es la única lista que decide cuándo se empieza a escribir. En la
+Hélice la puerta está al cerrar el nivel 3, no al final del método: con
+protagonista y oponente cotejados, el final elegido y los puntos de trama
+situados, todo lo demás se descubre escribiendo.
+
+Si llevas tres semanas sin escribir narrativa, no estás diseñando: estás
+diseñando para no escribir. Vuelve a esta lista y comprueba si ya la
+habías cruzado.
+#+end_comment
 
 - [ ] Protagonista y oponente con Fantasma, Mentira, Debilidad, Deseo y Necesidad, con las Posturas cotejadas
 - [ ] Los tres desastres, cada uno con dueño y progresión (castiga, redobla, cuesta todo)
@@ -56,13 +58,15 @@
 *** Hélice de trama
 
 - Frase de la novela (~15 palabras) ::
-  # Sin más nombre propio que el del protagonista.
-  #
-  # Dos fallos frecuentes: una frase que describe el mundo, no al
-  # protagonista ("Un reino desgarrado por la guerra civil…" — ¿de quién
-  # es el reino, y qué quiere?); y escribir la Necesidad en el hueco del
-  # Deseo ("quiere aprender a quedarse" es lo que necesita, no un Deseo —
-  # el Deseo es externo, concreto y equivocado.
+  #+begin_comment
+  Sin más nombre propio que el del protagonista.
+
+  Dos fallos frecuentes: una frase que describe el mundo, no al
+  protagonista ("Un reino desgarrado por la guerra civil…" — ¿de quién
+  es el reino, y qué quiere?); y escribir la Necesidad en el hueco del
+  Deseo ("quiere aprender a quedarse" es lo que necesita, no un Deseo —
+  el Deseo es externo, concreto y equivocado.
+  #+end_comment
 
 *** Hélice de personaje
 
@@ -146,13 +150,15 @@
 
 *** Hélice de trama
 
-# Sinopsis de una página, repartida por cuartiles: Planteamiento (0–25 %),
-# Reacción (25–50 %), Acción (50–75 %), Resolución (75–100 %).
-#
-# Es aquí donde aparecen los puntos de trama que no son desastres
-# —susurro del tema, cruzar el umbral, plan, empuje, batalla, decisión
-# moral—. Se sitúan entre los desastres, no al revés; los trece
-# irrenunciables viven en la parte Trama.
+#+begin_comment
+Sinopsis de una página, repartida por cuartiles: Planteamiento (0–25 %),
+Reacción (25–50 %), Acción (50–75 %), Resolución (75–100 %).
+
+Es aquí donde aparecen los puntos de trama que no son desastres
+—susurro del tema, cruzar el umbral, plan, empuje, batalla, decisión
+moral—. Se sitúan entre los desastres, no al revés; los trece
+irrenunciables viven en la parte Trama.
+#+end_comment
 
 - Tema ::
   # El problema moral, en una frase. En la Hélice no se declara al
@@ -259,20 +265,24 @@
 
 ** Dónde mirar cuando algo falla
 
-# "Pasan cosas pero no significan nada" → nivel 2, regla del dueño.
-# "El oponente parece de cartón" → nivel 2: Postura indefendible, o
-#   quiere algo distinto que el protagonista.
-# "El final no me convence" → nivel 2, el cotejo de los dos finales.
-# "Nada cambia hasta el final" → nivel 3: faltan Ajustes entre las
-#   Rupturas.
+#+begin_comment
+"Pasan cosas pero no significan nada" → nivel 2, regla del dueño.
+"El oponente parece de cartón" → nivel 2: Postura indefendible, o
+  quiere algo distinto que el protagonista.
+"El final no me convence" → nivel 2, el cotejo de los dos finales.
+"Nada cambia hasta el final" → nivel 3: faltan Ajustes entre las
+  Rupturas.
+#+end_comment
 
 ** Cambios pendientes al diseño
 
-# Una línea por desviación, apuntada sin salir de la sesión de borrador.
-# Si la historia contradice el diseño, gana la historia: actualiza el
-# documento y sigue.
-#
-# En el manuscrito, usa marcas *EDIT*: diseño - ... dentro de un bloque de
-# comentario; se recogen con el índice de ediciones (F8 6).
+#+begin_comment
+Una línea por desviación, apuntada sin salir de la sesión de borrador.
+Si la historia contradice el diseño, gana la historia: actualiza el
+documento y sigue.
+
+En el manuscrito, usa marcas *EDIT*: diseño - ... dentro de un bloque de
+comentario; se recogen con el índice de ediciones (F8 6).
+#+end_comment
 
 -

@@ -4,14 +4,16 @@
 
 ** Starting Gate
 
-# In the Matrix the gate sits one level lower than in the Helix: closing
-# level 3 gives you a freshly deduced skeleton that has not yet been
-# tested against a synopsis's pace. Level 4 is where this method checks
-# that what was deduced holds up as narrative.
-#
-# If you have gone three weeks without writing narrative, you are not
-# designing: you are designing in order not to write. Come back to this
-# list and check whether you had already crossed it.
+#+begin_comment
+In the Matrix the gate sits one level lower than in the Helix: closing
+level 3 gives you a freshly deduced skeleton that has not yet been
+tested against a synopsis's pace. Level 4 is where this method checks
+that what was deduced holds up as narrative.
+
+If you have gone three weeks without writing narrative, you are not
+designing: you are designing in order not to write. Come back to this
+list and check whether you had already crossed it.
+#+end_comment
 
 - [ ] Census (2–4 forces) and arena (object in dispute, place and
   moment, clock)
@@ -26,18 +28,20 @@
 
 ** The Matrix method
 
-# The Snowflake turned inside out: instead of scaling the plot and
-# hanging the characters from it, the forces are scaled and the plot is
-# deduced from them. Five levels, the same as the Helix, but with the
-# dependency order reversed: the first two are about character, the plot
-# is born in the third.
-#
-# Weakest fit: a single clear protagonist and no one else at the same
-# weight (the matrix becomes one row and deduces nothing); a genre where
-# the plot mechanism has to lead (a puzzle mystery, a heist); or a tight
-# deadline — this is the slowest of the three methods until the first
-# line of plot appears, and until then you don't know if you have a
-# novel.
+#+begin_comment
+The Snowflake turned inside out: instead of scaling the plot and
+hanging the characters from it, the forces are scaled and the plot is
+deduced from them. Five levels, the same as the Helix, but with the
+dependency order reversed: the first two are about character, the plot
+is born in the third.
+
+Weakest fit: a single clear protagonist and no one else at the same
+weight (the matrix becomes one row and deduces nothing); a genre where
+the plot mechanism has to lead (a puzzle mystery, a heist); or a tight
+deadline — this is the slowest of the three methods until the first
+line of plot appears, and until then you don't know if you have a
+novel.
+#+end_comment
 
 *** Rule of the arena
 
@@ -60,15 +64,17 @@
 
 *** The census of forces
 
-# Between two and four living forces, one sentence each:
-# NAME believes LIE, because GHOST.
-#
-# Strong recommendation: have at least two forces share the same Ghost
-# with the opposite conclusion. Example of the pattern this rewards: two
-# characters who each lost something to an authority as children, one
-# concluding "keep moving, never stop" and the other "get on the side
-# that signs the papers" — same wound, opposite lesson, and they will
-# collide without either of them trying to.
+#+begin_comment
+Between two and four living forces, one sentence each:
+NAME believes LIE, because GHOST.
+
+Strong recommendation: have at least two forces share the same Ghost
+with the opposite conclusion. Example of the pattern this rewards: two
+characters who each lost something to an authority as children, one
+concluding "keep moving, never stop" and the other "get on the side
+that signs the papers" — same wound, opposite lesson, and they will
+collide without either of them trying to.
+#+end_comment
 
 1. ______ believes ______, because ______.
 2. ______ believes ______, because ______.
@@ -91,14 +97,16 @@
 
 ** LEVEL 2 — The chains
 
-# One paragraph per living force, expanding the census sentence: Ghost →
-# Lie → Weakness (psychological and moral) → Trouble → Desire (Goal ·
-# Motivation · Conflict) → Need.
-#
-# The Motivation is the promise the Lie makes, and so it is false at
-# bottom. In the Need, the Conflict is not another character: it is the
-# Lie itself and what it would have to admit about the Ghost to let go
-# of it.
+#+begin_comment
+One paragraph per living force, expanding the census sentence: Ghost →
+Lie → Weakness (psychological and moral) → Trouble → Desire (Goal ·
+Motivation · Conflict) → Need.
+
+The Motivation is the promise the Lie makes, and so it is false at
+bottom. In the Need, the Conflict is not another character: it is the
+Lie itself and what it would have to admit about the Ghost to let go
+of it.
+#+end_comment
 
 *** Level 2 check
 
@@ -113,13 +121,15 @@
 
 *** Step 1 — Fill the matrix
 
-# One row and one column per force. In cell (A, B), write what A's Lie
-# does to B's Lie when both go after the object in dispute. The
-# diagonal is left blank.
-#
-# A filled cell reads like a sentence, not a word: not "conflict" but
-# "his signature from years ago is the reason her home doesn't exist
-# anymore."
+#+begin_comment
+One row and one column per force. In cell (A, B), write what A's Lie
+does to B's Lie when both go after the object in dispute. The
+diagonal is left blank.
+
+A filled cell reads like a sentence, not a word: not "conflict" but
+"his signature from years ago is the reason her home doesn't exist
+anymore."
+#+end_comment
 
 |     | *to ___* | *to ___* | *to ___* |
 |-----+----------+----------+----------|
@@ -175,13 +185,15 @@
 
 ** LEVEL 4 — The synopsis and the milestones
 
-# One-page synopsis by quarters, and one page per force with its change
-# milestones, each anchored to a concrete point in the synopsis and
-# marked as a Break or an Adjustment.
-#
-# This is where the plot points that are not collisions come in — Theme
-# Stated, Crossing the Threshold, Plan, Drive, Battle, Moral Decision.
-# The thirteen non-negotiables live in the Plot part.
+#+begin_comment
+One-page synopsis by quarters, and one page per force with its change
+milestones, each anchored to a concrete point in the synopsis and
+marked as a Break or an Adjustment.
+
+This is where the plot points that are not collisions come in — Theme
+Stated, Crossing the Threshold, Plan, Drive, Battle, Moral Decision.
+The thirteen non-negotiables live in the Plot part.
+#+end_comment
 
 - Theme ::
   # The moral problem, in one sentence. In the Matrix the theme comes
@@ -259,25 +271,29 @@
 
 ** Where to look when something's wrong
 
-# "Everyone ignores everyone" → level 1, rule of the arena: missing
-#   object in dispute or missing clock.
-# "I keep choosing the collision myself" → level 3, rule of
-#   inevitability: none of the candidates was truly unavoidable.
-# "The hook won't come out" → level 1: missing object in dispute,
-#   missing clock, or missing force.
-# "Nothing changes until the very end" → level 4: missing Adjustments
-#   between the Breaks.
-# "The cast feels scattered, four voices and no focus" → level 3 check
-#   1 (every force owns a position) and level 5 check 3 (PoV
-#   distribution).
+#+begin_comment
+"Everyone ignores everyone" → level 1, rule of the arena: missing
+  object in dispute or missing clock.
+"I keep choosing the collision myself" → level 3, rule of
+  inevitability: none of the candidates was truly unavoidable.
+"The hook won't come out" → level 1: missing object in dispute,
+  missing clock, or missing force.
+"Nothing changes until the very end" → level 4: missing Adjustments
+  between the Breaks.
+"The cast feels scattered, four voices and no focus" → level 3 check
+  1 (every force owns a position) and level 5 check 3 (PoV
+  distribution).
+#+end_comment
 
 ** Pending design changes
 
-# One line per deviation, noted without leaving the drafting session. If
-# the story contradicts the design, the story wins: update the document
-# and carry on.
-#
-# In the manuscript, use *EDIT*: design - ... markers inside a comment
-# block; they are collected by the edit index (F8 6).
+#+begin_comment
+One line per deviation, noted without leaving the drafting session. If
+the story contradicts the design, the story wins: update the document
+and carry on.
+
+In the manuscript, use *EDIT*: design - ... markers inside a comment
+block; they are collected by the edit index (F8 6).
+#+end_comment
 
 -
