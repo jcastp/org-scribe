@@ -272,7 +272,7 @@ Nota: este bloque dinámico *no* calcula una fila de TOTAL ni suma por su cuenta
 
 ** El informe de salud del proyecto
 
-Para una vista de todo el manuscrito más allá de cualquier tabla, ejecuta ~M-x org-scribe-project-health~ (o ~F8 H~). Reúne un *Resumen* (total de palabras escritas frente al total de objetivos de capítulo, con un porcentaje global que evita la doble cuenta que daría una suma ingenua de escenas y capítulos), *Escenas por estado*, *Reparto de Palabras por PoV*, *Dispersión de Longitud de Capítulos* (mín/máx/media/mediana), *Propiedades de escena que faltan*, *Entidades huérfanas* y *Escenas TODO abiertas*, además de una sección *Plan de escritura* cuando el planificador integrado (Lección 16) está activo en el proyecto. Es la forma más rápida de responder a «¿cuánto he escrito de verdad y qué sigue necesitando atención?» sin rebuscar entre tablas por escena.
+Para una vista de todo el manuscrito más allá de cualquier tabla, ejecuta ~M-x org-scribe-project-health~ (o ~F8 H~). Reúne un *Resumen* (total de palabras escritas frente al total de objetivos de capítulo, con un porcentaje global que evita la doble cuenta que daría una suma ingenua de escenas y capítulos), *Escenas por estado*, *Reparto de palabras por PoV*, *Dispersión de la longitud de los capítulos* (mín/máx/media/mediana), *Propiedades de escena que faltan*, *Entidades huérfanas* y *Escenas TODO abiertas*, además de una sección *Plan de escritura* cuando el planificador integrado (Lección 16) está activo en el proyecto. Es la forma más rápida de responder a «¿cuánto he escrito de verdad y qué sigue necesitando atención?» sin rebuscar entre tablas por escena.
 
 * Fijar objetivos (planificar tu historia)
 

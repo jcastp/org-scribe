@@ -400,7 +400,7 @@ But each export format needs different scene breaks:
 - *EPUB*: Multiple line breaks (it derives from the HTML backend)
 - *Any other backend*: falls back to the generic 3-newline default
 
-**Manually changing this for each format is tedious!**
+*Manually changing this for each format is tedious!*
 
 ** The Solution: Scene Break Macro
 

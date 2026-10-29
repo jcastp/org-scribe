@@ -577,9 +577,9 @@ Agrega las estadísticas de todo el proyecto en un único búfer ~*org-scribe-he
 
 4. *Escenas por estado*: un recuento de las escenas agrupadas por su palabra clave TODO de org (TODO, DONE o cualquier palabra clave propia). Muestra de un vistazo cuánto del borrador está completo.
 
-5. *Reparto de Palabras por PoV*: escenas y palabras agrupadas por el nombre resuelto del personaje PoV, con el porcentaje de cada PoV sobre el total de palabras del manuscrito. Las escenas sin PoV se agrupan en una fila «(sin PoV)», que sirve además de señal de propiedad ausente.
+5. *Reparto de palabras por PoV*: escenas y palabras agrupadas por el nombre resuelto del personaje PoV, con el porcentaje de cada PoV sobre el total de palabras del manuscrito. Las escenas sin PoV se agrupan en una fila «(sin PoV)», que sirve además de señal de propiedad ausente.
 
-6. *Dispersión de Longitud de Capítulos* (solo novelas): los totales de palabras por capítulo más una línea de resumen con la longitud mínima, máxima, media y mediana de los capítulos, y con los capítulos atípicos (más o menos el doble de la media, o menos de la mitad) señalados para que se les preste atención. Se omite por completo en un cuento, que no tiene capítulos que dispersar.
+6. *Dispersión de la longitud de los capítulos* (solo novelas): los totales de palabras por capítulo más una línea de resumen con la longitud mínima, máxima, media y mediana de los capítulos, y con los capítulos atípicos (más o menos el doble de la media, o menos de la mitad) señalados para que se les preste atención. Se omite por completo en un cuento, que no tiene capítulos que dispersar.
 
 7. *Propiedades de escena que faltan*: tres subsecciones que listan las escenas que carecen de un valor de ~:PoV:~, de trama o de localización, respectivamente. Cada entrada es un enlace ~[[id:...][Encabezado de la escena]]~, seguido del nombre del capítulo padre en una novela; las entradas de un cuento no llevan ese sufijo, porque no hay capítulo que nombrar.
 

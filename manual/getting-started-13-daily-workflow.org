@@ -449,7 +449,9 @@ You're mid-scene and don't know what happens next:
 
 *Option 1 - Skip Ahead*:
 #+BEGIN_EXAMPLE
-[SCENE INCOMPLETE - Pick up after the confrontation]
+,#+begin_comment
+*NOTE*: scene incomplete. Pick up after the confrontation.
+,#+end_comment
 
 ,*** Next Scene - The Aftermath
 #+END_EXAMPLE
@@ -460,22 +462,31 @@ Write what you *do* know, then return to the gap.
 Give yourself permission to write badly. You can fix it later:
 
 #+BEGIN_EXAMPLE
-Sam tells Alex about the thing. [This is terrible dialogue, fix later]
-Alex reacts with surprise. [Describe this better in revision]
+Sam tells Alex about the thing.
+
+,#+begin_comment
+*NOTE*: terrible dialogue, fix later.
+,#+end_comment
+
+Alex reacts with surprise.
+
+,#+begin_comment
+*NOTE*: describe this better in revision.
+,#+end_comment
 #+END_EXAMPLE
 
 Bad writing is better than no writing. Revision fixes everything.
 
 *Option 3 - Quick Outline*:
 #+BEGIN_EXAMPLE
-# Outline for rest of scene:
-# - Sam reveals the secret about the letters
-# - Alex doesn't believe her at first
-# - Sam shows proof
-# - Alex realizes her whole understanding was wrong
-# - Scene ends with Alex leaving abruptly
-
-[Write the actual scene later]
+,#+begin_comment
+*NOTE*: outline for the rest of the scene; write it for real later.
+- Sam reveals the secret about the letters
+- Alex doesn't believe her at first
+- Sam shows proof
+- Alex realizes her whole understanding was wrong
+- Scene ends with Alex leaving abruptly
+,#+end_comment
 #+END_EXAMPLE
 
 Then move to the next scene you're excited about.
@@ -760,119 +771,119 @@ The standard workflow might not fit everyone. Here are variations:
 
 *Minimal planning, maximum spontaneity*
 
-**Morning (3 min)**:
+*Morning (3 min)*:
 - Open manuscript
 - Read last paragraph
 - Activate writing mode
 - Start writing (no goal setting, just write)
 
-**Active Writing**:
+*Active Writing*:
 - Write whatever comes
 - Capture characters/locations as they appear
 - Don't plan ahead
 - Follow the story where it leads
 
-**Evening (5 min)**:
+*Evening (5 min)*:
 - Count words
 - Quick save/backup
 - That's it!
 
-**Weekly**: Brief check-in, less formal planning
+*Weekly*: Brief check-in, less formal planning
  
 ** The Plotter (Detailed Planner)
 
 *Extensive planning, structured execution*
 
-**Morning (10 min)**:
+*Morning (10 min)*:
 - Review outline for today's scene
 - Check character notes
 - Review timeline
 - Set specific scene goals
 - Activate writing mode
 
-**Active Writing**:
+*Active Writing*:
 - Follow outline closely
 - Frequent captures for new details
 - Check character sheets often
 - Maintain timeline consistency
 
-**Evening (15 min)**:
+*Evening (15 min)*:
 - Update all counts and check the planner
 - Review against outline
 - Adjust plan if needed
 - Update revision notes
 
-**Weekly**: Detailed review, adjust outline, plan next chapters
+*Weekly*: Detailed review, adjust outline, plan next chapters
 
 ** The Sprinter (Fast Drafter)
 
 *High volume, fast pace*
 
-**Morning (2 min)**:
+*Morning (2 min)*:
 - Open manuscript
 - Activate writing mode
 - Start timer
 - GO!
 
-**Active Writing**:
+*Active Writing*:
 - Write as fast as possible
 - Minimal captures (just drop a note marker)
 - No lookups (just keep typing)
 - Don't reread anything
 - Multiple pomodoros back-to-back
 
-**Evening (5 min)**:
+*Evening (5 min)*:
 - Count words (big numbers!)
 - Save
 - Done
 
-**Weekly**: Big picture review, but don't slow down
+*Weekly*: Big picture review, but don't slow down
 
 ** The Polisher (Careful Crafter)
 
 *Slow, deliberate, high quality first draft*
 
-**Morning (10 min)**:
+*Morning (10 min)*:
 - Reread yesterday's work
 - Make minor edits
 - Set today's goal (may be just 200-300 words)
 - Activate focus mode
 
-**Active Writing**:
+*Active Writing*:
 - Write slowly and carefully
 - Frequent dictionary lookups
 - Crafted sentences
 - Multiple revision passes on each paragraph
 - Low word count, high quality
 
-**Evening (15 min)**:
+*Evening (15 min)*:
 - Multiple reads of today's work
 - Polish and edit
 - Update tracking
 - Detailed notes
 
-**Weekly**: Less about quantity, more about quality review
+*Weekly*: Less about quantity, more about quality review
 
 ** The Part-Timer (Limited Time)
 
 *Only 30 minutes per day available*
 
-**Morning (0 min)**:
+*Morning (0 min)*:
 - No morning routine
 - Jump straight in
 
-**Active Writing (25 min)**:
+*Active Writing (25 min)*:
 - Every second counts
 - Minimal captures
 - Write in sentence fragments if needed
 - Stop mid-sentence if you must
 
-**Evening (5 min)**:
+*Evening (5 min)*:
 - Quick count
 - One-line note for tomorrow
 - Save
 
-**Weekly (1 hour)**:
+*Weekly (1 hour)*:
 - Do all the tracking/planning you skipped daily
 - Review and organize notes
 
@@ -880,25 +891,25 @@ The standard workflow might not fit everyone. Here are variations:
 
 *Writes in long sessions, few days per week*
 
-**Session Start (10 min)**:
+*Session Start (10 min)*:
 - Full review of story so far
 - Check all timelines
 - Set ambitious session goal (2000+ words)
 - Prepare snacks and water
 
-**Active Writing (3-4 hours)**:
+*Active Writing (3-4 hours)*:
 - Multiple scenes in one session
 - Take breaks every hour
 - Quick captures
 - Momentum is key
 
-**Session End (20 min)**:
+*Session End (20 min)*:
 - Count everything
 - Update all tables
 - Extensive notes for next session
 - Save and backup
 
-**Weekly**: Not applicable (sessions ARE the weekly review)
+*Weekly*: Not applicable (sessions ARE the weekly review)
 
 * Common Workflow Challenges
 
@@ -1183,7 +1194,7 @@ Share your workflow and learn from others:
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
 - *Lesson Number*: 13 of 19
-- *Part*: 5 - Workflows and Best Practices
+- *Part*: 5 - Workflows, Best Practices and Integrations
 - *Estimated Time*: 15-20 minutes
 - *Difficulty*: Intermediate
 - *Prerequisites*: Familiarity with features from Lessons 1-12

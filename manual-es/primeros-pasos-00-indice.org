@@ -67,15 +67,15 @@ funciones disponibles.
 Todas las lecciones de abajo describen algo que puedes ver funcionando en los dos
 proyectos de demostración que se distribuyen con org-scribe, en =examples/=:
 
-- [[file:../examples/demo-novel/README.org][=examples/demo-novel/=]] — /The Morning Routine/, un proyecto de novela completo,
+- [[file:../examples/demo-novela/README.org][=examples/demo-novela/=]] — /La rutina matinal/, un proyecto de novela completo,
   a medio primer borrador: una Puerta de salida cruzada, los trece
   irrenunciables, seis fichas de personaje, marcadores de edición vivos y un plan
   de escritura activo.
-- [[file:../examples/demo-short-story/README.org][=examples/demo-short-story/=]] — /The Last Message/, la estructura de cuento
+- [[file:../examples/demo-cuento/README.org][=examples/demo-cuento/=]] — /El último mensaje/, la estructura de cuento
   (también de dos archivos).
 
-(Las demos están, por ahora, en inglés; la versión española está en
-preparación.)
+(Cada una tiene su versión en inglés, con la misma historia: =demo-novel/= y
+=demo-short-story/=.)
 
 Son proyectos que funcionan, no ilustraciones. Ábrelos en Emacs con org-scribe
 cargado y cada pulsación de estas lecciones hace algo real sobre ellos, lo que es

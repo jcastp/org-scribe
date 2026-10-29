@@ -6,7 +6,7 @@
 
 #+begin_comment
 Las líneas que empiezan por # son instrucciones: no las conviertas en prosa.
-Aquí sólo se rellena. Es el cuaderno del proyecto: el manuscrito está en
+Aquí solo se rellena. Es el cuaderno del proyecto: el manuscrito está en
 novela.org y todo lo demás vive aquí, una parte (nivel 1) cada cosa:
   Fundamentos — la Puerta de salida, el Núcleo y lo que no tiene entidades
   Trama       — los trece irrenunciables, las líneas narrativas, los cuartiles
@@ -371,7 +371,7 @@ ninguno son sospechosas.
 
 #+begin_comment
 EL ENCABEZADO ES EL NOMBRE DEL PERSONAJE. Sustituye [Nombre del ...] por el
-nombre en cuanto lo tengas; los corchetes sólo marcan que está sin rellenar.
+nombre en cuanto lo tengas; los corchetes solo marcan que está sin rellenar.
 El papel no va en el encabezado: va en la propiedad :Role:, que es la que
 org-scribe lee. Por eso puedes renombrar a un personaje cuando quieras sin
 romper nada, y por eso los enlaces desde las escenas siguen funcionando
@@ -397,7 +397,7 @@ secundarios la reducida: Concepto, Postura, Apuro, un Aspecto y el Deseo en
 tres partes. Se indica en cada uno qué puedes borrar.
 
 Todo Aspecto tiene doble filo: una frase corta, en la voz de quien la dice,
-verdadera, que pueda tanto salvarle como hundirle. Si sólo sirve para una de
+verdadera, que pueda tanto salvarle como hundirle. Si solo sirve para una de
 las dos cosas, todavía no es un Aspecto.
 #+end_comment
 
@@ -454,7 +454,7 @@ las dos cosas, todavía no es un Aspecto.
 
 **** Necesidad
 
-# Necesita (Objetivo), porque sólo así conseguirá (Motivación), pero
+# Necesita (Objetivo), porque solo así conseguirá (Motivación), pero
 # (Conflicto) se lo impide. Las mismas tres partes, giradas hacia dentro.
 
 - Objetivo ::
@@ -725,7 +725,7 @@ contraste no se puede hacer.
   uno tiene cara: alguien concreto se lo impide.
 - [ ] Cada uno habla distinto. Prueba: diálogo sin acotaciones, ¿sabes quién
   habla?
-- [ ] Ninguno existe sólo para servir a la trama; cada uno es el protagonista de
+- [ ] Ninguno existe solo para servir a la trama; cada uno es el protagonista de
   su propia historia.
 - [ ] Oponente y protagonista están unidos por el conflicto más profundo posible.
 - [ ] Muestran su personalidad con actos, no con descripciones.
@@ -739,7 +739,7 @@ contraste no se puede hacer.
 
 #+begin_comment
 EL ENCABEZADO ES EL NOMBRE DEL LUGAR. Sustituye [Nombre del escenario N] por
-el nombre en cuanto lo tengas; los corchetes sólo marcan que está sin
+el nombre en cuanto lo tengas; los corchetes solo marcan que está sin
 rellenar. La clasificación no va en el encabezado: va en la propiedad :Type:,
 que es la que org-scribe lee.
 
@@ -751,7 +751,7 @@ protagonista— vive en la sección Construcción del mundo. Aquí van los lugar
 ocurren escenas.
 
 Un escenario sin ningún Aspecto es decorado. En el Pase 5 de revisión, los
-escenarios usados sólo como decorado son candidatos a corte.
+escenarios usados solo como decorado son candidatos a corte.
 #+end_comment
 
 *** [Nombre del escenario 1]
@@ -819,7 +819,7 @@ escenarios usados sólo como decorado son candidatos a corte.
 # El mundo, no los lugares. Los escenarios concretos —con su Eco y su Escollo—
 # están en la sección Ambientación.
 #
-# Desarrolla sólo lo que la historia va a usar. Un mundo entero documentado y
+# Desarrolla solo lo que la historia va a usar. Un mundo entero documentado y
 # ausente de la página es tiempo que no se ha ido al borrador.
 
 *** El mundo en una línea
@@ -1042,7 +1042,7 @@ Si es fantasía/ciencia ficción, reglas que debo mantener consistentes:
 
 #+begin_comment
 Diez pases, siempre de arriba abajo: no pules las frases de una escena que
-quizá acabes borrando. Aquí manda el Crítico, y sólo aquí.
+quizá acabes borrando. Aquí manda el Crítico, y solo aquí.
 
 El diseño es la lista de comprobación. Cada pase termina con un puntero: si
 algo falla, no vuelves al principio, vuelves al apartado que lo diseñó.
@@ -1150,7 +1150,7 @@ Si falla → apartado 11 (Escenas y secuelas).
 ** Pase 5 — Mundo y símbolos
 
 - [ ] ¿Tiene cada escenario al menos un Aspecto?
-- [ ] ¿Hay escenarios usados sólo como decorado?
+- [ ] ¿Hay escenarios usados solo como decorado?
 - [ ] ¿Se manifiesta el Problema del Mundo en cada escena, aunque sea de fondo?
   Las escenas donde no aparece de ninguna manera son candidatas a corte.
 - [ ] ¿Cambian los símbolos a lo largo de la historia?
@@ -1179,7 +1179,7 @@ y ritmo).
 
 - [ ] ¿Se respeta el punto de vista? ¿Hay saltos dentro de una escena?
 - [ ] ¿Has planificado alguna escena que este punto de vista no puede sostener?
-- [ ] ¿Tienen las conversaciones importantes capa moral, y no sólo melodía?
+- [ ] ¿Tienen las conversaciones importantes capa moral, y no solo melodía?
 - [ ] ¿Suenan distintos los personajes entre sí?
 - [ ] Lee todo el diálogo en voz alta: ¿hay alguien diciendo exactamente lo que
   quiere decir? Si lo hay, añade capas.
@@ -1226,7 +1226,7 @@ Entre dos y cinco lectores. Más no es mejor: el ruido crece con la cantidad.
 *** A quién
 
 El lector adecuado lee lo que tú escribes, sabe articular *por qué* algo no
-funciona —y no sólo que no le gusta— y distingue sus preferencias de los
+funciona —y no solo que no le gusta— y distingue sus preferencias de los
 problemas reales del texto. Evita a quien te diga lo que quieres oír, a quien
 filtre lo que lee a través de sus propias inseguridades, y a quien te deje
 colgado en la incertidumbre.
@@ -1368,14 +1368,14 @@ Esta parte no tiene estructura, y no pretende llegar a tenerla.
 Nada de lo que escribas aquí se cuenta, se exporta ni lo lee ninguna
 orden de org-scribe.  El recuento de palabras recorre solo el
 manuscrito; la compilación lee solo el manuscrito; los resolutores de
-entidades trabajan con nombres de archivo fijos, así que un personaje
+entidades solo miran los hijos directos de sus secciones, así que un personaje
 esbozado aquí es invisible para el sistema de enlaces hasta que lo
 muevas a su sitio.  Esboza a alguien que quizá no exista.  Escribe una
 escena que vas a tirar.  Haz la pregunta tonta.  Discute contigo mismo
 por escrito.
 
 Refila lo que sobreviva con C-c C-w, que ofrece todos los encabezados
-de todos los archivos del proyecto.  Borra el resto sin ceremonia.
+del manuscrito y del cuaderno.  Borra el resto sin ceremonia.
 
 Abre este cuaderno desde cualquier punto del proyecto con F8 o.
 
@@ -1391,8 +1391,8 @@ con un estado, que se cambia con C-c C-t:
   CHOSEN     es esta
   REJECTED   descartada, conservando el motivo
 
-Conserva las ramas descartadas.  El porqué-no vale tanto como el
-porqué, y borrar una solo significa volver a deducirla dentro de tres
+Conserva las ramas descartadas.  Saber por qué no vale tanto como saber por
+qué, y borrar una solo significa volver a deducirla dentro de tres
 meses.  REJECTED y CHOSEN son estados finales, así que una pregunta ya
 resuelta se pliega sin perder su razonamiento.
 

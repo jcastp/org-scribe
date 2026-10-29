@@ -1,0 +1,2376 @@
+#+TITLE: La rutina matinal - Diseño
+#+AUTHOR: Autora de ejemplo
+#+DATE: 2026-05-01
+#+LANGUAGE: es
+#+STARTUP: overview hideblocks
+
+#+begin_comment
+Las líneas que empiezan por # son instrucciones: no las conviertas en prosa.
+Aquí solo se rellena. Es el cuaderno del proyecto: el manuscrito está en
+novela.org y todo lo demás vive aquí, una parte (nivel 1) cada cosa:
+  Fundamentos — la Puerta de salida, el Núcleo y lo que no tiene entidades
+  Trama       — los trece irrenunciables, las líneas narrativas, los cuartiles
+  Reparto     — los personajes
+  Mundo       — escenarios, construcción del mundo, objetos y cronología
+  Investigación, Revisión, Diario, Borradores — tus notas de trabajo
+
+Personajes, escenarios e hilos de trama son encabezados de nivel 3 bajo su
+sección (Personajes, Ambientación, Hilos de la Trama). Deja esos encabezados
+de sección tal cual: org-scribe encuentra las entidades por ellos.
+#+end_comment
+
+* Fundamentos
+
+#+begin_comment
+Esto es un *ejemplo trabajado*. En un proyecto que crees tú, este archivo
+llega vacío, con los comentarios de instrucciones en su sitio y todos los
+campos en blanco. Aquí está rellenado para que veas qué aspecto tiene una
+Puerta de salida cruzada antes de que tengas que producir la tuya.
+
+Los comentarios de instrucciones se han conservado solo donde explican por
+qué una respuesta tiene la forma que tiene.
+#+end_comment
+
+** Puerta de salida
+
+#+begin_comment
+Esta es la única lista que decide cuándo se empieza a escribir. Son ocho
+casillas; cuando estén marcadas, deja de planificar.
+
+=F8 H= (org-scribe-project-health) te devuelve estas casillas leídas, y mide
+por su cuenta dos de ellas: cuántos de los trece irrenunciables tienen
+contenido y cuántas de las tres primeras escenas están escritas. Donde la
+medición y tu marca no coinciden, el informe lo dice y deja la discrepancia
+a la vista.
+
+La casilla 7 se deja aquí sin marcar a propósito, aunque los trece puntos de
+trama están rellenos, para que la demo te enseñe qué aspecto tiene esa
+discrepancia en el informe.
+#+end_comment
+
+- [X] Tema y al menos cinco Posturas
+- [X] Protagonista y oponente con Fantasma, Mentira, Debilidad, Deseo y
+  Necesidad
+- [X] Apuestas
+- [X] Final elegido
+- [X] Punto de vista decidido
+- [X] Premisa
+- [ ] Los trece puntos de trama irrenunciables
+- [X] Las tres primeras escenas
+
+** Núcleo
+
+- Tema ::
+  Si te niegas a dar forma a tus días, se la entregas a quien te la pida
+  primero.
+
+- Posturas ::
+  # De peor a mejor. Cada una la lleva alguien: eso es lo que convirtió esta
+  # lista en un reparto. Mira la tabla de cobertura en la sección Personajes.
+  1. El tiempo es lo que los demás te quitan. La única defensa es no
+     prometerle a nadie nada que lleve una hora pegada. (Alex, al principio)
+  2. Estar disponible es lealtad. Quien siempre contesta merece el trabajo.
+     (Dana)
+  3. Conserva tus propias horas asegurándote de no deberle ninguna a nadie.
+     (Priya)
+  4. Una rutina es una disciplina que te debes a ti mismo, y mantenerla te
+     hace mejor que quienes no la tienen. (Sam, al principio)
+  5. La forma que le das al día es lo que te permite estar, de forma fiable,
+     en algún sitio para alguien. (Sam, al final, y Alex, al final)
+
+- Protagonista y su Postura inicial ::
+  Alex Rivera, en la Postura 1.
+
+- Fantasma ::
+  La mañana en que murió Marisol. Alex había prometido estar en el centro de
+  cuidados paliativos a las nueve. Perdió la mañana como perdía todas las
+  mañanas —tres alarmas, una ducha que se alargó, un mensaje de un cliente
+  contestado en la escalera— y llegó a las once. Ella murió a las diez y
+  cuarenta.
+
+- Mentira ::
+  Los relojes son crueles, y mirar uno es dejar que te acuse. El tiempo no se
+  puede sujetar; planificarlo es una manera de fingir lo contrario, y ese
+  fingimiento es lo que vuelve insoportable la pérdida.
+
+- Debilidad psicológica ::
+  Alex no asume ningún compromiso que lleve una hora pegada. Dice «a lo largo
+  de esta semana», «me paso por allí», «antes de que acabe el día», y lo dice
+  todo en serio.
+
+- Debilidad moral ::
+  Alex gasta las mañanas de Sam en lugar de las suyas. En concreto: le pide a
+  Sam que se encargue por Alex, otra vez, de la entrega del mensajero de las
+  8:00, que es justo la hora en que Sam tiene que estar libre para atender la
+  llamada del centro de día sobre su padre.
+
+- Deseo ::
+  Ganar el contrato de doce meses de Kestrel, el único que acabaría con el
+  ir tirando. Se presenta a las nueve de la mañana, dentro de tres semanas.
+
+- Necesidad ::
+  Dar forma al día y conservar una hora que prometieron.
+
+- Oponente y su Postura ::
+  Dana Okonkwo, en la Postura 2. Quiere lo mismo que quiere Alex: el control
+  de las mañanas de Alex. Alex quiere ser su dueña; Dana necesita poder
+  gastarlas. La cadena completa, en la sección Personajes.
+
+- Apuestas ::
+  Si Alex fracasa: el contrato de Kestrel se lo lleva otra persona y el ir
+  tirando se vuelve permanente; el padre de Sam pierde el hueco de la
+  valoración y, con él, la plaza del centro de día; y Alex se convierte,
+  demostrablemente, en una persona que cuesta a los demás sus mañanas.
+
+- Final ::
+  Ascenso, y no consigue el Deseo. Mira «El final», más abajo.
+
+- Punto de vista ::
+  Tercera persona limitada, en pasado, un solo focalizador: Alex.
+
+- Premisa ::
+  Cuando una ciudad paga la disponibilidad en lugar del tiempo, un diseñador
+  autónomo crónicamente impuntual debe dar forma a sus días para cumplir la
+  única promesa que no se puede aplazar.
+
+** Problema del Mundo
+
+# Expresado como Aspecto, para poder invocarlo y complicar cualquier escena.
+
+- Aspecto ::
+  Aquí a nadie le pagan por su tiempo; a todos les pagan por su
+  disponibilidad.
+
+*** Caja de complicaciones
+
+- Un mensaje de un cliente llega a las 6:40 y se lee antes de que hierva el
+  agua.
+- Una «llamada rápida, diez minutos» se cuela en mitad del único bloque
+  ininterrumpido del día.
+- La plataforma de autónomos ordena por tiempo mediano de respuesta, y la
+  clasificación es pública.
+- El alquiler se cobra el día 1; las facturas se cobran el 30, cuando se
+  cobran.
+
+** Apuestas
+
+# Cada peldaño cambia de categoría, no de grado.
+
+| Cuartil | Qué está en juego                                                        |
+|---------+--------------------------------------------------------------------------|
+| I       | Dinero. La cuenta de Halloran y luego el alquiler.                       |
+| II      | Confianza. Sam deja de pedirle nada a Alex, lo cual es peor que una bronca. |
+| III     | La vida de otra persona. El padre de Sam pierde la plaza.                |
+| IV      | Quién es Alex. Dos promesas a las nueve, un solo coche, y una de ellas rota. |
+
+** El final
+
+- Movimiento moral ::
+  Ascenso.
+- Postura inicial → Postura final ::
+  1 → 5.
+- Resultado externo ::
+  No consigue el Deseo. Alex pierde la presentación de Kestrel y le cede el
+  contrato a Priya.
+- Qué demuestra ese cruce sobre el Tema ::
+  Que la forma de un día no es una técnica de productividad. Es el único
+  mecanismo con el que se puede cumplir una promesa hecha a otra persona, y
+  cuesta algo real, o no demuestra nada.
+
+** Principio diseñador y arquetipo
+
+- Principio diseñador ::
+  Una persona que nunca ha mirado un reloj aprende a hacerlo, hora a hora, y
+  la última hora que cumple es la que le cuesta todo lo que intentaba
+  comprar con las demás.
+- Arquetipo ::
+  El penitente.
+
+** Punto de vista
+
+- Persona y tiempo ::
+  Tercera persona limitada, en pasado.
+- Focalizadores ::
+  Solo Alex.
+- Distancia ::
+  Cercana, pero nunca dentro del pensamiento mientras se forma: Alex es una
+  persona que no mira las cosas de frente, y la prosa tampoco.
+- Voz narradora ::
+  Seca, casi en presente, dada a contar. Alex narra en minutos.
+- Regla de cambio ::
+  No hay cambio. Un solo focalizador.
+- Lo que esta elección me prohíbe ::
+  El lector nunca puede ver a Dana calcular: cada una de sus jugadas tiene
+  que ser legible desde fuera, por lo que dice y por cuándo lo envía. Y la
+  traición de Priya no se puede narrar: tiene que verse en el registro, en
+  una marca de tiempo que se le pueda enseñar a Alex.
+
+*** Decisiones creativas
+
+**** Punto de vista
+
+- Narrador :: Tercera persona limitada, un solo focalizador (Alex).
+- Tiempo :: Pasado.
+- Consecuencia :: La traición de Priya no se puede dramatizar, solo
+  demostrar. Es una restricción que el diseño asumió a propósito; mira
+  diseno.org, «Lo que esta elección me prohíbe».
+
+**** Tono
+
+Seco y contable. Alex narra en minutos, y la aritmética desaparece de la
+prosa en la última escena sin comentario. Esa desaparición es el cierre del
+hilo «Con retraso» (lleva =:Weight: -1= en la parte Trama: se sigue, pero sin
+columna en el tablero).
+
+**** Estilo
+
+Escenas cortas. Entrar tarde, salir pronto. El libro tiene 80.000 palabras y
+ninguna escena pasa de 1.200.
+
+** Símbolos
+
+# Un símbolo que no cambia es decoración.
+
+- De la historia ::
+  El reloj de pulsera de Marisol. Mecánico: se para si no se le da cuerda,
+  todos los días, a mano. La rutina no es una metáfora del reloj; el reloj es
+  la rutina.
+- De personaje ::
+  El cuaderno de papel de Sam. Alex lo lee como serenidad durante la mayor
+  parte del libro. Es el registro de un cuidador.
+- De cambio ::
+  El reloj se para en la aparente derrota, la mañana en que Sam pierde la
+  llamada. Alex le da cuerda en la decisión moral, y esa es toda la
+  autorrevelación en un solo gesto.
+- De mundo ::
+  La insignia de notificaciones. Un número que solo sube.
+- De acción ::
+  Hacer la cama. Absurdo en el Acto I, sincero en el Acto III, y el mismo
+  acto.
+
+** Cambios pendientes al diseño
+
+# Una línea por desviación, apuntada sin salir de la sesión de borrador.
+# En el manuscrito, usa marcas *EDIT*: diseño - ... dentro de un bloque de
+# comentario; se recogen con el índice de ediciones (F8 6).
+
+- Casey iba a ser el desconocido azorado de la última escena y nada más.
+  Al escribir la escena, resultó que necesitaba una Postura propia, así que
+  ahora está en la tabla de cobertura.
+- El paro del reloj estaba en el esquema en el punto medio. Funciona mejor en
+  la aparente derrota: demasiado pronto, y el lector se pasa el tercer cuarto
+  esperándolo.
+
+*** Problemas a resolver
+
+**** Agujeros de trama detectados
+
+- Geografía de Bell Lane. Si queda a veinticinco minutos, ¿puede Sam estar en
+  el piso a las ocho *y* en Bell Lane más tarde esa misma mañana? Marcado en
+  novela.org, Capítulo 6 Escena 1, con un marcador *EDIT*: trama. Resolver en
+  la sección Construcción del mundo antes de redactar, no durante.
+
+**** Inconsistencias
+
+- El reloj se describe haciendo tictac en el Capítulo 2 Escena 1 y con una
+  alarma en el Capítulo 3 Escena 1. Ambas cosas contradicen el diseño y ambas
+  ya están marcadas. Pulsa =F8 6= y lee la categoría =trama=.
+
+**** Preguntas sin respuesta
+
+- ¿Se nombra a Casey en la página en la escena final, o se deja como «una
+  persona joven»? Nombrar a Casey es más cálido y algo más pequeño. Marcado con un
+  marcador *NOTE* al final de novela.org.
+- ¿Obtiene Dana un momento de simpatía del lector, o ninguno? La Postura
+  tiene que ser discutible en ambos casos, pero simpatía y discutibilidad no
+  son la misma cosa.
+
+* Trama
+
+#+begin_comment
+Un ejemplo trabajado. Aquí viven dos clases de encabezado y no se mezclan:
+
+  - Los trece irrenunciables, de nivel 2 bajo su sección. Son fijos: los
+    mismos trece en toda historia. Las escenas apuntan a ellos con la
+    propiedad :Punto-de-trama:, y el informe de salud (F8 H) enumera los de
+    los trece que ninguna escena sirve.
+
+  - Las líneas narrativas, de nivel 3 con :THREAD-TYPE:. Son tuyas. Las
+    escenas apuntan a ellas con la propiedad :Trama: (F8 g), y se convierten
+    en las columnas de la cronología de tramas de novela.org.
+
+Prueba F8 L t para el informe de estado de las tramas, y F8 L J para saltar
+a un punto de trama desde una escena.
+
+La línea «Con retraso» de más abajo lleva :Weight: -1, así que conserva todo
+menos su columna en la tabla de la cronología. Fíjate en que el informe de
+estado de las tramas la sigue analizando: el Weight gobierna las tablas,
+nunca el análisis.
+#+end_comment
+
+** Los trece irrenunciables
+
+*** 1. Susurro del tema
+:PROPERTIES:
+:ID: es-pp-01-theme-stated
+:END:
+
+Sam, en la cola de la cafetería, Capítulo 1 Escena 2: «Lo apunto todos los
+días. Suena rígido, pero en realidad es bastante liberador». Alex se ríe y lo
+archiva entre las aficiones de otra gente. El tema lo enuncia alguien que no
+es el protagonista, y se ignora.
+
+*** 2. Debilidad, Mentira y Necesidad
+:PROPERTIES:
+:ID: es-pp-02-weakness-lie-need
+:END:
+
+Las tres alarmas, Capítulo 1 Escena 1: la Debilidad en funcionamiento. Luego
+la reunión de las 9:00 a la que Alex llega a tiempo y a la que entra sin las notas de
+la presentación: la Debilidad pasando factura. La Mentira se ve en el reloj,
+que lleva puesto y al que nunca da cuerda.
+
+*** 3. Deseo
+:PROPERTIES:
+:ID: es-pp-03-desire
+:END:
+
+Dana nombra el contrato de Kestrel en una llamada a las 6:40 de la mañana:
+doce meses, un cliente, un alcance. Empieza débil —Alex da por hecho que no
+es para ellos— y crece durante tres cuartos del libro.
+
+*** 4. Evento incitador
+:PROPERTIES:
+:ID: es-pp-04-inciting-incident
+:END:
+
+La cuenta de Halloran se pierde por una entrega del mensajero a las 8:00 que
+Alex le pidió a Sam que cubriera y que Sam, esa vez, no pudo cubrir. Le
+ocurre *a* Alex, lo deja claramente peor y es la primera vez que el coste
+recae sobre otra persona.
+
+*** 5. Oponente
+:PROPERTIES:
+:ID: es-pp-05-opponent
+:END:
+
+Dana enuncia su Postura al otro lado de un escritorio —«la estructura es un
+lujo; los demás atendemos la llamada»— y le ofrece a Alex más trabajo en
+justo las condiciones que garantizan que Alex nunca podrá ser fiable. Quiere
+las mismas ocho horas que quiere Alex, y ataca la Debilidad elogiándola.
+
+*** 6. Cruzar el umbral
+:PROPERTIES:
+:ID: es-pp-06-crossing-threshold
+:END:
+
+La decisión propia de Alex, a solas en el sofá: encuentra el reloj de Marisol
+bajo el montón de correo, se lo abrocha, escribe «Día 1» en lo alto de un
+cuaderno y pone una alarma a una hora declarada. Cierra el primer cuarto.
+
+*** 7. Plan
+:PROPERTIES:
+:ID: es-pp-07-plan
+:END:
+
+Copiar la rutina de Sam exactamente, al minuto, y ser visiblemente fiable
+durante tres semanas para que Dana no tenga argumentos cuando se decida el
+contrato. Fracasa, porque es un plan para impresionar al oponente y no para
+cambiar.
+
+*** 8. Empuje
+:PROPERTIES:
+:ID: es-pp-08-drive
+:END:
+
+Tres semanas de intentos, cada uno de una clase: la imitación (Capítulo 3),
+la negociación (Alex intenta recomprar las mañanas trabajando de noche) y el
+encubrimiento (Alex empieza a mentir sobre por qué no está disponible). Cada
+uno pierde, y cada uno cuesta un poco más de terreno moral.
+
+*** 9. Punto medio
+:PROPERTIES:
+:ID: es-pp-09-midpoint
+:END:
+
+Falsa victoria. Alex entrega dos veces a tiempo y Dana la elogia delante de
+todo el estudio, y luego reserva una llamada a las 6:00 «ya que estás
+levantada». Alex la rechaza. Es la primera negativa del libro: deja de
+reaccionar y empieza a actuar. Cierra el segundo cuarto.
+
+*** 10. Aparente derrota
+:PROPERTIES:
+:ID: es-pp-10-apparent-defeat
+:END:
+
+Sam pierde la llamada del jueves porque Alex le pidió que se encargara de la
+entrega, y la plaza de Bell Lane pasa al siguiente nombre de la lista. En la
+misma hora le reenvían a Alex una cadena de mensajes con las marcas de
+tiempo a la vista, y ve que Priya lleva un año pasándole a Dana sus huecos
+libres. El reloj se ha parado. Punto más bajo; cierra el tercer cuarto.
+
+*** 11. Autorrevelación
+:PROPERTIES:
+:ID: es-pp-11-self-revelation
+:END:
+
+- Atisbo (antes de la batalla): Alex da cuerda al reloj. Es lo primero que
+  hace a una hora declarada porque dijo que lo haría, y la Mentira se
+  deshace en el gesto: el reloj no se llevó la mañana en que murió Marisol.
+  La gastó Alex.
+- Confirmación (dentro de la batalla): Alex dice una hora en voz alta, a
+  Dana, y la cumple.
+
+*** 12. Batalla
+:PROPERTIES:
+:ID: es-pp-12-battle
+:END:
+
+El vestíbulo de la agencia a las 8:40. La presentación es en la cuarta planta
+a las nueve; el coche está en el bordillo y Bell Lane queda a veinticinco
+minutos en coche. Dana argumenta por los dos años de los que nunca ha
+hablado, y argumenta bien. Todo el libro converge en un vestíbulo y once
+minutos.
+
+*** 13. Decisión moral
+:PROPERTIES:
+:ID: es-pp-13-moral-decision
+:END:
+
+Dos bienes, ambos con un coste: la presentación de Kestrel, que acabaría con
+el ir tirando y permitiría a Alex devolverle a Sam lo suyo en la única
+moneda que tiene Alex, o el viaje a la valoración, que es la hora que Alex
+prometió y la última disponible. Alex conduce. Priya se queda con el
+contrato.
+
+** Puntos opcionales usados
+
+- Imagen inicial: una alarma silenciada sin que se abra ningún ojo.
+- Fantasma: entregado tarde y a trozos, nunca como escena de flashback.
+- Ataque del aliado: Sam, en la aparente derrota: «no estás construyendo una
+  rutina, estás construyendo una manera de sentirte mejor con las mismas
+  mañanas».
+- Revelación al público: el lector ve las marcas de tiempo reenviadas una
+  escena antes de que Alex las lea bien.
+- Muerte de la Debilidad: se da cuerda al reloj.
+- Nuevo equilibrio: la cafetería, seis semanas después, con Casey.
+- Imagen final: Alex mira el reloj a propósito, y tiene tiempo.
+
+** Secuencia de revelaciones
+
+# Construida hacia atrás desde la autorrevelación. Ocho, en escalada y cada
+# vez más rápidas.
+
+|   # | Revelación                                                  | Quién la recibe | Cuartil |
+|-----+-------------------------------------------------------------+-----------------+---------|
+|   1 | Sam era exactamente como Alex                               | Alex            | I       |
+|   2 | La entrega de Halloran era una hora que Sam necesitaba      | Alex            | I       |
+|   3 | Dana decide sola el contrato                                | Alex            | II      |
+|   4 | El cuaderno es el registro de un cuidador, no una agenda    | Lector          | II      |
+|   5 | Dana conoce los huecos libres de Alex antes de que los ofrezca | Lector       | III     |
+|   6 | El padre de Sam tiene una plaza pendiente de una llamada    | Alex            | III     |
+|   7 | Priya le ha estado pasando los huecos a Dana                | Alex            | III     |
+|   8 | Alex gastó la mañana en que murió Marisol; nada se la llevó | Alex            | IV      |
+
+** Cuartiles
+
+- I Planteamiento (0–25 %) ::
+  Capítulos 1–2. Cierra en el cruce del umbral: «Día 1» y una alarma puesta
+  a una hora declarada.
+- II Reacción (25–50 %) ::
+  Capítulos 3–4. Cierra en el punto medio: la llamada de las 6:00 rechazada.
+- III Acción (50–75 %) ::
+  Capítulos 5–6. Cierra en la aparente derrota: la llamada del jueves perdida
+  y las marcas de tiempo.
+- IV Resolución (75–100 %) ::
+  Capítulos 7–8. Cierra en la decisión moral y el nuevo equilibrio.
+
+** Hilos de la Trama
+
+*** Línea principal
+:PROPERTIES:
+:ID: es-plot-main-line-001
+:THREAD-TYPE: Principal
+:Stance: Una forma te permite estar en algún sitio para alguien
+:STATUS: En curso
+:Weight: 1
+:END:
+
+Alex contra Dana por las mismas ocho horas. Va de la llamada de las 6:40 al
+vestíbulo de las 8:40, y es la línea que lleva el tema.
+
+**** Deseo que la mueve
+
+Alex quiere el contrato de Kestrel porque cree que un dinero estable
+mantendrá unidos los días. Dana quiere a Alex sin contrato porque un estudio
+a una cuenta de cerrar sobrevive gracias a gente que contesta.
+
+**** Resolución
+
+Alex lo pierde. Priya se queda con el contrato, y la pérdida es la prueba: la
+forma de un día solo vale algo si mantenerla cuesta.
+
+*** Los jueves de Sam
+:PROPERTIES:
+:ID: es-plot-sams-thursdays-001
+:THREAD-TYPE: Subtrama
+:Stance: Una rutina es una disciplina que te debes
+:STATUS: En curso
+:Weight: 2
+:END:
+
+- Postura que encarna :: 4 → 5. Sam empieza sosteniendo la rutina como una
+  virtud y termina sosteniéndola como un andamio, dicho en voz alta.
+- Quién la lleva :: Sam Chen.
+- Deseo propio :: La plaza confirmada en el centro de día de Bell Lane, que
+  exige las llamadas de los jueves a las 8:00 y una valoración en persona.
+
+**** Cruces con la línea principal
+
+1. Capítulo 1, Escena 2: Sam enuncia el tema en la cola de la cafetería, y
+   Alex oye una afición.
+2. Capítulo 2, Escena 2: Alex le pide a Sam que cubra la entrega de las 8:00.
+   Es el evento incitador desde el lado de Alex y la primera grieta desde el
+   de Sam.
+3. Capítulo 6: la llamada del jueves perdida. Es la aparente derrota, así que
+   el cruce cae en uno de los tres puntos que exige el método.
+
+**** Resolución
+
+La valoración se reprograma una vez, a unas nueve en punto que no pueden
+volver a moverse, y esa es la cita de la decisión moral.
+
+*** El contrato de Kestrel
+:PROPERTIES:
+:ID: es-plot-kestrel-retainer-001
+:THREAD-TYPE: Subtrama
+:Stance: No le debas nunca una hora a nadie
+:STATUS: En curso
+:Weight: 3
+:END:
+
+- Postura que encarna :: 3. Priya conserva sus horas sin deberle ninguna a
+  nadie, y el contrato es lo que le compra esa estrategia.
+- Quién la lleva :: Priya Raman.
+- Deseo propio :: Ser el nombre al que Dana llama primero, de forma
+  permanente y por escrito.
+
+**** Cruces con la línea principal
+
+1. Capítulo 3, Escena 2: Priya ofrece solidaridad y hace dos preguntas sobre
+   la agenda de Alex.
+2. Capítulo 5: Dana reserva un hueco que Alex no le había ofrecido a nadie.
+3. Capítulo 6: las marcas de tiempo reenviadas. Aparente derrota.
+
+**** Resolución
+
+Lo consigue, en las condiciones en que lleva tres años viviendo, y lo último
+que el lector le ve hacer es contestar un mensaje a las 6:40.
+
+*** Con retraso
+:PROPERTIES:
+:ID: es-plot-running-late-001
+:THREAD-TYPE: Subtrama
+:Stance: El tiempo es lo que los demás te quitan
+:STATUS: En curso
+:Weight: -1
+:END:
+
+#+begin_comment
+:Weight: -1: se sigue, pero se deja fuera a propósito del tablero de la
+cronología.
+
+El chiste recurrente: cada capítulo abre con una hora declarada y con un
+número de minutos de retraso de Alex. Merece seguimiento por coherencia (los
+números se encogen a lo largo del libro y luego dejan de importar), y no
+merece una columna propia junto a las tres líneas de verdad. El informe de
+estado de las tramas la sigue comprobando por cobertura y huecos.
+#+end_comment
+
+- Postura que encarna :: 1, en la propia narración y no en una boca.
+- Quién la lleva :: El narrador, contando.
+- Deseo propio :: n/a: es una línea de motivo, no una línea de historia.
+
+**** Cruces con la línea principal
+
+1. Cada apertura de capítulo.
+2. Capítulo 7: el primer capítulo que abre con una hora a la que Alex no
+   llega tarde.
+3. Capítulo 8: abre con una hora y sin ningún número.
+
+**** Resolución
+
+La cuenta se detiene. En la última escena no hay aritmética en ningún lugar
+de la prosa, que es el único anuncio que recibe el cambio.
+
+** Orden de apertura y cierre                                       :noexport:
+
+| Línea                | Tipo      | Abre en                | Cierra en           |
+|----------------------+-----------+------------------------+---------------------|
+| Con retraso          | Personaje | Cap. 1, primera línea  | Cap. 8, última escena |
+| Línea principal      | Pregunta  | Cap. 2, la llamada de las 6:40 | Cap. 8, el vestíbulo |
+| Los jueves de Sam    | Personaje | Cap. 1, Escena 2       | Cap. 8, Bell Lane   |
+| El contrato de Kestrel | Evento  | Cap. 3, Escena 2       | Cap. 8, la presentación |
+
+** Secuencias y escenas                                             :noexport:
+
+# La lista de escenas vive en el manuscrito, no aquí. Abre novela.org y usa
+# la vista de columnas (C-c C-x C-c) para verla como una tabla: la línea
+# COLUMNS de allí está preparada para mostrar Punto-de-trama y Brecha junto a
+# cada escena.
+
+* Reparto
+
+** Personajes
+:PROPERTIES:
+:COLUMNS: %30ITEM(Personaje) %14Role %20Stance %30Goal
+:END:
+
+#+begin_comment
+Un ejemplo trabajado. Seis personajes, cada uno con la profundidad de ficha
+que pide el método: completa para el protagonista y el oponente,
+intermedia para el aliado, reducida para el falso aliado y los secundarios.
+
+Cosas que probar en este archivo:
+  C-c C-x C-c   vista de columnas: Role, Stance y Goal junto a cada nombre
+  F8 L v        relaciones del personaje bajo el cursor
+  F8 L V        el mapa completo de relaciones
+  F8 2          todas las escenas en las que aparece un personaje
+
+Fíjate en Marisol Rivera, al final: :Weight: -1. Está muerta antes de que
+empiece la historia, así que no tiene columna en la cronología de personajes
+de novela.org, pero conserva su ficha, sus enlaces y su sitio en todas las
+búsquedas. La cronología la nombra en una línea de comentario debajo de la
+tabla, para que una columna ausente no se tome nunca por un fallo de
+enlace.
+#+end_comment
+
+*** Alex Rivera
+:PROPERTIES:
+:ID: es-char-alex-rivera-001
+:Role: Protagonist
+:Stance: No prometas a nadie una hora
+:Goal: Ganar el contrato de Kestrel
+:Age: 28
+:Occupation: Diseñadora gráfica autónoma
+:First-appearance: Capítulo 1, Escena 1
+:Weight: 1
+:RelationshipsData: [[id:es-char-sam-chen-001][Sam Chen]]|vecino; [[id:es-char-dana-okonkwo-001][Dana Okonkwo]]|cliente; [[id:es-char-priya-raman-001][Priya Raman]]|colega; [[id:es-char-marisol-rivera-001][Marisol Rivera]]|familia
+:END:
+
+- Concepto :: Una diseñadora que nunca ha estado donde dijo que estaría, y que
+  nunca ha querido dejar tirado a nadie.
+- Postura :: «Las horas no son mías. Si no prometo ninguna, nadie puede
+  llevarse una.»
+- Fantasma :: La mañana en que murió Marisol. Alex prometió las nueve. Tres
+  alarmas, una ducha larga, un mensaje de un cliente contestado en la
+  escalera. Las once. Ella murió a las diez y cuarenta.
+- Mentira :: Los relojes son crueles, y mirar uno es dejar que te acuse. El
+  tiempo no se puede sujetar; planificarlo solo empeora perderlo.
+- Apuro :: El alquiler se cobra el día 1. Dos facturas están a noventa días y
+  el estudio que las debe ha dejado de contestar.
+- Debilidad psicológica :: No pega una hora a ningún compromiso. «A lo largo
+  de esta semana.» «Me paso por allí.» «Antes de que acabe el día.»
+- Debilidad moral :: Gasta las mañanas de Sam en lugar de las suyas. Le pide
+  a Sam que se encargue de la entrega del mensajero de las 8:00, justo la
+  hora en que Sam tiene que estar libre para la llamada del centro de día.
+
+**** Deseo
+
+- Objetivo :: Ganar el contrato de doce meses de Kestrel. La presentación es
+  a las nueve, dentro de tres semanas.
+- Motivación :: Que, cuando el dinero sea estable, los días se sostengan
+  solos. (Sale de la Mentira, así que es falsa en el fondo: pone la forma del
+  día en manos del dinero y no de Alex.)
+- Conflicto :: Dana, que decide quién se queda con el contrato y necesita a
+  Alex disponible, no reservada.
+
+**** Necesidad
+
+- Objetivo :: Dar forma al día y conservar una hora que prometió.
+- Motivación :: Ser alguien con quien se pueda contar a una hora concreta, que
+  es exactamente con lo que Sam ha dejado de contar.
+- Conflicto :: La Mentira, y lo que Alex tendría que admitir sobre la mañana
+  en que murió Marisol: que el reloj no se llevó aquella mañana. Se la llevó
+  ella.
+
+**** Plan
+
+- Plan :: Copiar exactamente la rutina de Sam, al minuto, y ser visiblemente
+  fiable durante tres semanas para que Dana se quede sin argumentos.
+- Plan de repuesto :: Atender las llamadas de las 6:00. Estar tan disponible
+  que conceder el contrato salga más barato que negarlo.
+
+**** Aspectos
+
+- Aspecto :: «Hago mi mejor trabajo a las dos de la madrugada.» Es verdad, y
+  es la frase con la que Dana la compra.
+- Aspecto :: No soporta ver llegar tarde a otra persona.
+- Aspecto :: El reloj de Marisol en la muñeca, sin cuerda.
+- Relación :: Sam, del 4B, tiene una llave del piso de Alex, y Alex nunca ha
+  tenido que pedir las cosas dos veces.
+- Posesión :: El reloj. Mecánico: se para si no se le da cuerda a mano todos
+  los días.
+
+**** Trasfondo
+
+Alex tiene diecinueve años, está en la mesa de la cocina del piso de Marisol
+y lleva allí desde las siete porque los horarios del autobús solo permiten
+eso. Marisol entra a las ocho, prepara té para dos sin preguntar, y se
+sientan. A las nueve menos diez deja la taza, dice «tengo médico a las nueve y media»,
+se levanta y se va. Alex recuerda aquella hora con más claridad que nada de
+lo que ella dijo, y nunca ha entendido por qué ese recuerdo le suena a
+acusación.
+
+**** Interrogatorio
+
+1. ¿Qué es lo que jamás haría?
+   Decir una hora en voz alta y luego no estar allí. Es la única promesa que
+   Alex trata como irrompible, y por eso ha organizado una vida en la que no
+   hace ninguna.
+2. ¿Qué hace cuando está sola y nadie la mira?
+   Contar. Minutos hasta la puerta, minutos hasta la reunión, minutos que
+   quedan. Alex narra toda su vida en aritmética y nunca ha escrito nada de
+   ello.
+3. ¿En qué está equivocada?
+   En que la mañana en que murió Marisol se la quitaron. La gastó.
+4. ¿Por qué moriría?
+   Por no ser la razón de que otra persona se pierda algo.
+5. Escríbele una escena trivial.
+   Al pedir un café, Alex dice «lo que sea más rápido», y luego espera cuatro
+   minutos por lo más rápido mientras un café de filtro aguarda listo en la
+   barra.
+
+**** Hitos de cambio
+
+| Punto de trama      | Tipo   | Qué cambia                                                    |
+|---------------------+--------+---------------------------------------------------------------|
+| 6. Cruzar el umbral | Ajuste | Escribe «Día 1» y pone una alarma a una hora declarada        |
+| 9. Punto medio      | Ajuste | Deja de pedir permiso para no estar disponible; empieza a rechazar horas |
+| 10. Aparente derrota | Ajuste | Aprende lo que costó de verdad una hora de Sam               |
+| 11. Autorrevelación | Ruptura | Postura 1 → 5. El reloj no se llevó aquella mañana           |
+| 13. Decisión moral  | Ruptura | Conserva una hora al precio de aquello para lo que servían las horas |
+
+**** Notas
+
+La cuenta es la voz. Si una escena desde el punto de vista de Alex no contiene
+ningún número, comprueba si de verdad está en su cabeza.
+
+*** Dana Okonkwo
+:PROPERTIES:
+:ID: es-char-dana-okonkwo-001
+:Role: Opponent
+:Stance: Estar disponible es lealtad
+:Goal: Tener a Alex localizable en vez de con contrato
+:Age: 44
+:Occupation: Fundadora y directora de arte, Okonkwo & Field
+:First-appearance: Capítulo 2, Escena 2
+:Weight: 2
+:RelationshipsData: [[id:es-char-alex-rivera-001][Alex Rivera]]|cliente; [[id:es-char-priya-raman-001][Priya Raman]]|empleadora
+:END:
+
+- Concepto :: Una mujer que no ha llegado tarde en veinte años y que no ha
+  estado libre en veinte años, y ya no sabe distinguir una cosa de la otra.
+- Postura :: «La estructura es un lujo para quien ya tiene dinero. Los demás
+  atendemos la llamada.»
+- Fantasma :: 2009. Mantuvo vivo el estudio durante la crisis siendo la que
+  contestaba, a cualquier hora, durante dos años, y no perdió nada salvo todo
+  lo que no era el estudio.
+- Mentira :: Estar disponible es lealtad. Quien protege sus horas las protege
+  de ella.
+- Apuro :: Okonkwo & Field está a una cuenta perdida de cerrar, y Kestrel es
+  esa cuenta.
+- Debilidad psicológica :: No puede soltar nada que lleve una fecha límite
+  encima, y por eso es el cuello de botella de su propia agencia.
+- Debilidad moral :: Compra las mañanas ajenas con elogios y lo llama
+  oportunidad. Priya lleva tres años con un contrato de localizable a
+  cualquier hora y no se ha tomado vacaciones en dos.
+
+**** Deseo
+
+# El mismo Objetivo que el del protagonista: las dos van detrás de las
+# mañanas de Alex.
+
+- Objetivo :: El control de las mañanas de Alex: Alex localizable para Kestrel,
+  a cualquier hora, y no con contrato a un alcance fijo de doce meses.
+- Motivación :: Que un estudio sobrevive gracias a quienes contestan, y que
+  está protegiendo a Alex de un contrato que no tiene la estabilidad para
+  sostener.
+- Conflicto :: Alex, en cuanto empieza a nombrar horas.
+
+**** Necesidad
+
+- Objetivo :: Soltar una fecha límite de sus manos y ver cómo la cumple otra
+  persona.
+- Motivación :: Los dos años de los que no habla, y lo que le costó de verdad
+  contestar a todas sus horas.
+- Conflicto :: La Mentira. Si estar disponible no es lealtad, tampoco lo
+  fueron aquellos dos años, y no tiene nombre para lo que fueron.
+
+**** Plan y contraataques
+
+Halagar directamente la Debilidad: Alex hace su mejor trabajo a las dos de la
+madrugada, y Dana es la única clienta que lo entiende. Cuando Alex empieza a
+rechazar horas, escalar: una llamada de las 6:00 reservada como cortesía, un
+elogio público que hace que rechazarla parezca ingratitud y, por último, la
+propia presentación fijada a las nueve de la única mañana que Alex ya tiene
+prometida a otro sitio.
+
+**** Aspectos
+
+- Aspecto :: «Nunca he incumplido un plazo.» Dicho como credencial, oído como
+  amenaza, y las dos cosas son ciertas.
+- Aspecto :: Contesta siempre en menos de cuatro minutos, y todo el mundo lo
+  ha notado.
+- Relación :: Priya le debe una carrera, y se lo han dicho una vez, que fue
+  suficiente.
+- Posesión :: Un teléfono que nunca está boca abajo.
+
+**** Trasfondo
+
+Marzo de 2009, la una y diez de la madrugada. Dana contesta la llamada de un
+cliente borracho que quiere hablar de un logotipo. Habla del logotipo durante
+cincuenta minutos. La cuenta se queda. Apunta la hora en el margen del
+encargo, y todavía conserva el encargo.
+
+**** Hitos de cambio
+
+| Punto de trama       | Tipo    | Qué cambia                                              |
+|----------------------+---------+---------------------------------------------------------|
+| 9. Punto medio       | Ajuste  | Deja de pedirle a Alex y empieza a reservarla           |
+| 12. Batalla          | Ajuste  | Dice en voz alta los dos años por primera vez           |
+| 13. Decisión moral   | —       | No cambia de Postura. Ve marcharse a Alex y reserva la sala para las nueve y diez |
+
+**** Notas
+
+Su Postura tiene que ser discutible. Si un lector termina el libro pensando
+que Dana simplemente se equivocaba, el tema se ha predicado en lugar de
+demostrarse: tiene razón sobre la ciudad y se equivoca sobre qué hacer dentro
+de ella.
+
+*** Sam Chen
+:PROPERTIES:
+:ID: es-char-sam-chen-001
+:Role: Ally
+:Stance: Una rutina es una disciplina que te debes
+:Goal: Conseguir que confirmen la plaza de día de su padre
+:First-appearance: Capítulo 1, Escena 2
+:Weight: 3
+:RelationshipsData: [[id:es-char-alex-rivera-001][Alex Rivera]]|vecino
+:END:
+
+# Ficha intermedia: la reducida, más Mentira, Debilidad y Relación. Suficiente
+# interior para sostener el ataque del aliado con autoridad.
+
+- Concepto :: El vecino del 4B que parece la serenidad y es, en realidad, un
+  pilar que sostiene la casa.
+- Postura :: «Guardo las mañanas porque soy de las personas que las guardan.»
+  (Al principio. Se convierte en la Postura 5 hacia el final, y la distancia
+  entre las dos es todo el arco de Sam.)
+- Mentira :: Que la rutina es una virtud y no un andamio, y que necesitarla
+  sería una debilidad que conviene ocultar.
+- Apuro :: Su padre sufrió un ictus hace catorce meses. El centro de día llama
+  a las 8:00 los jueves, y solo a las 8:00.
+- Debilidad :: No dice que necesita algo. Reorganiza una semana entera antes
+  que pedirlo.
+
+**** Deseo propio
+
+# El suyo, no un deseo auxiliar. No puede ser «ayudar al protagonista».
+
+- Objetivo :: Conseguir la plaza de día confirmada en el centro de Bell Lane,
+  que exige las llamadas de los jueves y una valoración en persona.
+- Motivación :: Recuperar cuatro horas al día, y un padre que esté en un
+  sitio con gente dentro.
+- Conflicto :: La responsable de admisiones del centro, una lista de espera y,
+  como acaba resultando, Alex, que no deja de gastar la hora de las ocho.
+
+**** Aspectos
+
+- Aspecto :: «He aprendido a reconocer las señales.» Con amabilidad y atención, y con
+  un poco de orgullo.
+- Aspecto :: El cuaderno va a todas partes y nunca se lo enseña a nadie.
+- Relación :: Alex nunca ha preguntado para qué sirve el cuaderno, y Sam nunca
+  se ha ofrecido a contarlo.
+
+**** Hitos de cambio
+
+| Punto de trama       | Tipo    | Qué cambia                                          |
+|----------------------+---------+-----------------------------------------------------|
+| 10. Aparente derrota | Ajuste  | Dice en voz alta, una vez, para qué era la hora     |
+| 12. Batalla          | Ruptura | Postura 4 → 5. Le pide algo a Alex directamente     |
+
+**** Notas
+
+Sam no es un mentor. Sam es una persona que lleva una operación más ajustada
+que la de Alex por razones por las que Alex no ha preguntado, y la lectura de
+mentor es un error de Alex, uno que el lector debería poder detectar antes que
+ella.
+
+*** Priya Raman
+:PROPERTIES:
+:ID: es-char-priya-raman-001
+:Role: Fake-Ally Opponent
+:Stance: No le debas nunca una hora a nadie
+:Goal: Ser a quien llame Dana
+:First-appearance: Capítulo 3, Escena 2
+:Weight: 4
+:RelationshipsData: [[id:es-char-dana-okonkwo-001][Dana Okonkwo]]|empleadora; [[id:es-char-alex-rivera-001][Alex Rivera]]|colega
+:END:
+
+# Parece una aliada y sirve al oponente. Ficha reducida, con los dos Deseos.
+
+- Concepto :: La autónoma dos plantas más abajo, que se queja de Dana con más
+  soltura que nadie y que nunca le ha dicho que no.
+- Postura :: «Conservo mis horas asegurándome de no deberle ninguna a nadie.»
+- Apuro :: Tres años con un contrato de localizable a cualquier hora, y la
+  aritmética solo sale si sigue siendo el nombre más fiable de la lista.
+
+**** Deseo declarado
+
+- Objetivo :: Sacar a Alex de debajo de Dana. Solidaridad, copas, batallitas.
+- Motivación :: Nadie debería tener que vivir así, y lo dice en serio.
+- Conflicto :: La propia Alex, sin que esta lo sepa: cada hora que Alex
+  recupera es una hora que Priya tiene que cubrir.
+
+**** Deseo real
+
+- Objetivo :: El contrato de Kestrel.
+- Motivación :: Tres años de disponibilidad solo valen algo si acaban en un
+  contrato, y tiene que acabar pronto.
+- Conflicto :: Alex, que es mejor en el trabajo y peor en todo lo demás, y que
+  acaba de empezar a mejorar en todo lo demás.
+
+**** Revelación
+
+- A quién sirve en realidad :: A Dana, y antes que a nadie, a sí misma. Ha
+  estado pasándole a Dana los huecos libres de Alex desde el principio, que es
+  como Dana siempre ha sabido exactamente cuándo se podía reservar a Alex.
+- Cuándo se revela :: En la aparente derrota, en un mensaje reenviado con las
+  marcas de tiempo a la vista.
+
+**** Aspectos
+
+- Aspecto :: «Tenemos que apoyarnos.» Sincera cada vez que lo dice, y no le
+  ha costado nunca nada.
+
+**** Notas
+
+La revelación tiene que ser *documental*, no narrada: con un solo focalizador,
+al lector no se le puede mostrar a Priya decidiendo. Se le puede mostrar una
+marca de tiempo.
+
+*** Casey Mbeki
+:PROPERTIES:
+:ID: es-char-casey-mbeki-001
+:Role: Thematic Supporting
+:Stance: No prometas a nadie una hora
+:Goal: Pasar la semana sin llamar la atención
+:First-appearance: Capítulo 8, Escena 2
+:Weight: 5
+:RelationshipsData: [[id:es-char-alex-rivera-001][Alex Rivera]]|desconocido
+:END:
+
+# Uno por cada Postura que quieras ver representada. Casey lleva la Postura
+# inicial de Alex, que es lo que da sentido a la última escena: la rueda sigue
+# girando, y ahora Alex es la otra persona que está en ella.
+
+- Concepto :: Veintitrés años, cuatro meses en un primer empleo, y ya la
+  convicción de que el truco es estar localizable.
+- Postura :: «El tiempo es lo que los demás te quitan.» (La Postura 1 de Alex,
+  intacta, en otra boca.)
+- Apuro :: Una evaluación del periodo de prueba dentro de seis semanas y un
+  jefe que escribe los fines de semana.
+
+**** Deseo
+
+- Objetivo :: Superar el periodo de prueba sin que nadie decida que da
+  problemas.
+- Motivación :: El empleo es el piso, y el piso no se negocia.
+- Conflicto :: Un jefe cuya única medida del compromiso es el tiempo de
+  respuesta.
+
+**** Aspectos
+
+- Aspecto :: «No pasa nada, no estaba haciendo nada.» Dicho por reflejo, y
+  nunca cierto.
+
+**** Notas
+
+Casey no es una lección impartida. Alex ofrece, y no sermonea: la distinción
+es toda la escena, y el Pase 2 la comprueba.
+
+*** Marisol Rivera
+:PROPERTIES:
+:ID: es-char-marisol-rivera-001
+:Role: Thematic Supporting
+:Stance: Las horas no son tuyas para guardarlas, solo para gastarlas bien
+:Goal: (Muerta antes de que empiece la historia)
+:First-appearance: Solo en el trasfondo
+:Weight: -1
+:RelationshipsData: [[id:es-char-alex-rivera-001][Alex Rivera]]|familia
+:END:
+
+#+begin_comment
+:Weight: -1: se conserva en el archivo, pero fuera de la cronología de
+personajes.
+
+Aparece solo en el Fantasma, en el reloj y en una mesa de cocina
+recordada. No debería ocupar una columna en una tabla de quién está presente
+en cada escena, porque la respuesta es «en ninguna» y una columna en blanco
+se lee como un fallo de enlace. Todo lo demás sobre ella sigue funcionando:
+la búsqueda la encuentra, los enlaces se resuelven y la cronología la nombra
+debajo de sí misma.
+#+end_comment
+
+- Concepto :: La abuela de Alex, que nunca tuvo prisa y nunca llegó pronto.
+- Postura :: «No puedes quedártelas. Solo puedes elegir en qué las gastas.»
+- Apuro :: (Ninguno. Es la única persona de este libro que no tenía ninguno.)
+
+**** Deseo
+
+- Objetivo :: Té por la mañana, paseo por la tarde, llamada de los domingos,
+  por ese orden, todos los días, hasta que ya no pudo.
+- Motivación :: Que un día con forma es un día que se puede entregar a alguien.
+- Conflicto :: El tiempo, que perdió en las condiciones en que todo el mundo lo
+  pierde.
+
+**** Aspectos
+
+- Aspecto :: «Tengo médico a las nueve y media.» Una frase con una hora dentro, dicha
+  sin disculparse, que Alex nunca ha sido capaz de decir.
+
+**** Notas
+
+Es la Postura que defiende el libro, sostenida antes de que empiece, por
+alguien que nunca tuvo que explicarla. Por eso no debe aparecer en la página:
+el argumento tiene que construirlo Alex, no heredarlo.
+
+** Comprobación del elenco                                          :noexport:
+
+*** De cobertura
+
+| Postura                                       | Quién la encarna              | Qué le pasa por sostenerla                                    |
+|-----------------------------------------------+-------------------------------+---------------------------------------------------------------|
+| 1. No prometas a nadie una hora               | Alex (al principio)           | Pierde dos veces la mañana que importaba antes de aprender   |
+| 1. No prometas a nadie una hora               | Casey                         | Nada, todavía. Ese es el sentido de la última escena          |
+| 2. Estar disponible es lealtad                | Dana                          | Conserva la agencia, termina el libro sola en una sala reservada |
+| 3. No le debas nunca una hora a nadie         | Priya                         | Consigue el contrato, y el contrato es el castigo             |
+| 4. Una rutina es una disciplina que te debes  | Sam (al principio)            | Casi pierde la plaza de su padre por negarse a pedir          |
+| 5. Una forma te permite estar para alguien    | Sam (al final), Alex (al final) | Pierde el contrato, conserva la hora                        |
+
+*** De contraste
+
+- [X] Cada una tiene su propio Deseo en tres partes, y cada Conflicto tiene
+  cara: alguien concreto se lo impide.
+- [X] Cada una habla de manera distinta. Alex cuenta, Dana enumera
+  credenciales, Sam rebaja, Priya ofrece solidaridad, Casey se disculpa.
+- [X] Ninguna existe solo para servir a la trama; cada una es la protagonista
+  de su propia historia.
+- [X] Oponente y protagonista están unidos por el conflicto más hondo posible:
+  quieren las mismas ocho horas.
+- [ ] Muestran su personalidad con actos, no con descripciones. Todavía no:
+  mira los marcadores *EDIT*: personaje en novela.org, Capítulo 3.
+
+* Mundo
+
+** Ambientación
+:PROPERTIES:
+:COLUMNS: %30ITEM(Escenario) %14Type %30Echo
+:END:
+
+#+begin_comment
+Un ejemplo trabajado. Cuatro escenarios, cada uno con los cuatro Aspectos
+que pide el método: un Eco (cómo el lugar refleja el Tema), un Escollo (cómo
+empeora el Problema del Mundo), un Aspecto de personaje que activa y un
+Símbolo.
+
+Un escenario sin ningún Aspecto es decorado, y el Pase 5 de la revisión lo
+recorta. Por eso ha desaparecido la quinta localización que llevaba este
+proyecto —una ciudad mediana genérica con un clima y una cifra de
+población—: nada en ella reflejaba el tema, presionaba a nadie ni aparecía
+en una escena.
+
+El mundo en su conjunto vive en la sección Construcción del mundo. Esta
+sección contiene los lugares concretos donde ocurren las escenas.
+
+Prueba C-c C-x C-c para la vista de columnas, y F8 4 para encontrar todas
+las escenas ambientadas en uno de ellos.
+#+end_comment
+
+*** El piso de Alex (4A)
+:PROPERTIES:
+:ID: es-loc-alex-flat-001
+:Type: Escenario
+:Echo: Un día sin bordes en ninguna parte
+:First-appearance: Capítulo 1, Escena 1
+:END:
+
+- Eco :: Nada en este piso marca la diferencia entre una hora y la siguiente.
+  Las persianas están igual de cerradas a las siete que a mediodía, el
+  escritorio queda a cuatro pasos de la cama y no hay ninguna habitación en la
+  que tengas que estar para hacer algo concreto.
+- Escollo :: El trabajo está siempre al alcance de la mano, así que estar
+  disponible no cuesta nada y, por tanto, nunca se rechaza.
+- Personaje :: «Hago mi mejor trabajo a las dos de la madrugada»: el piso es
+  el único sitio donde eso es cómodamente cierto, que es como se sigue
+  siendo cierto.
+- Símbolo :: La cama sin hacer. En el Acto I resulta absurdo que alguien la
+  haga. En el Acto III Alex la hace, y es el mismo acto.
+
+**** Descripción
+
+Una habitación y media. Un escritorio pegado a la ventana y una cama contra la
+pared de detrás, de modo que girar la silla es todo el trayecto al trabajo. El
+correo se acumula sobre la mesita en una pendiente con geología propia; el
+reloj está debajo durante todo el primer cuarto. El hervidor es el objeto más
+ruidoso del piso y lo único que marca una hora con fiabilidad.
+
+**** Escenas que ocurren aquí
+
+Enlazadas automáticamente desde la propiedad :Localizacion: de cada escena
+(F8 l). Ahora mismo: Capítulo 1 Escena 1, Capítulo 2 Escena 1, Capítulo 3
+Escena 1, Capítulo 4 Escena 2, Capítulo 7 Escena 1.
+
+*** La cafetería de la esquina
+:PROPERTIES:
+:ID: es-loc-coffee-shop-001
+:Type: Escenario
+:Echo: Todos aquí van de camino a estar en algún sitio a una hora
+:First-appearance: Capítulo 1, Escena 2
+:END:
+
+- Eco :: La única sala del libro donde toda la ciudad funciona a la vista con
+  horas declaradas, y Alex es la única persona de la cola que no sabe a qué
+  hora tiene que estar en ningún sitio.
+- Escollo :: La cola es un lugar donde sale el teléfono. Cada mensaje de la
+  mañana que Alex contesta en este libro lo contesta de pie en esta fila.
+- Personaje :: El «he aprendido a reconocer las señales» de Sam: esa amabilidad
+  atenta y algo orgullosa que solo funciona en una sala llena de desconocidos.
+- Símbolo :: El pedido que cantan por el nombre. Alguien dice tu nombre más o
+  menos a la hora a la que dijo que lo haría, y es la transacción más fiable
+  del día de Alex.
+
+**** Descripción
+
+Estrecha, ruidosa y organizada hasta el último centímetro detrás del
+mostrador. Tres personas en la cola a las 7:45 y vacía a las 7:05, un hecho
+que Alex descubre mucho más tarde de lo que debería. Dos mesas, siempre
+ocupadas por gente que llegó antes.
+
+**** Escenas que ocurren aquí
+
+Capítulo 1 Escena 2, Capítulo 4 Escena 1, Capítulo 8 Escena 2.
+
+*** Okonkwo & Field
+:PROPERTIES:
+:ID: es-loc-agency-001
+:Type: Escenario
+:Echo: Un lugar donde estar disponible es la moneda visible
+:First-appearance: Capítulo 2, Escena 2
+:END:
+
+- Eco :: Aquí nadie tiene una hora fija, y todos están siempre. El estudio
+  demuestra el negativo del tema: entrega tu forma a quien te la pida primero
+  y no te irás nunca.
+- Escollo :: El Problema del Mundo en su forma más pura: una sala que paga por
+  estar localizable. Cualquier escena ambientada aquí se puede complicar
+  simplemente haciendo que alguien conteste un mensaje.
+- Personaje :: El «nunca he incumplido un plazo» de Dana, que es una
+  credencial en este edificio y en ningún otro.
+- Símbolo :: El reloj del vestíbulo, que va cuatro minutos adelantado desde
+  hace años porque a Dana le gusta así.
+
+**** Descripción
+
+Cuarta planta, una sala larga y un vestíbulo con un ascensor que tarda noventa
+segundos. Escritorios sin nombre. El reloj sobre la recepción es analógico, a
+propósito, y está mal, a propósito.
+
+**** Escenas que ocurren aquí
+
+Capítulo 2 Escena 2, Capítulo 5 Escena 1, Capítulo 8 Escena 1: la batalla, que
+ocurre en el vestíbulo y no arriba, porque once minutos es toda la escena.
+
+*** Centro de Día de Bell Lane
+:PROPERTIES:
+:ID: es-loc-bell-lane-001
+:Type: Escenario
+:Echo: La única institución del libro que guarda sus propias horas
+:First-appearance: Capítulo 6, Escena 1
+:END:
+
+- Eco :: Bell Lane llama a las 8:00 los jueves y no llamará a las 8:10. Es lo
+  único de la historia con una forma que no se doblega ante la
+  disponibilidad de nadie, y esa rigidez es el argumento del tema.
+- Escollo :: Una lista de espera. Cualquier hora perdida aquí no se
+  reprograma, se reasigna a un nombre más abajo.
+- Personaje :: La negativa de Sam a pedir nada, para la que el proceso de
+  admisión no está diseñado.
+- Símbolo :: La propia lista, en una tablilla con nombres.
+
+**** Descripción
+
+Una antigua escuela primaria con las marcas de altura todavía en un marco de
+puerta. Luminosa, corta de personal y organizada en torno a un horario
+clavado junto a la puerta que todo el mundo lee y nadie cuestiona.
+
+**** Escenas que ocurren aquí
+
+Capítulo 6 Escena 1, Capítulo 8 Escena 1 (el destino, a veinticinco minutos
+del vestíbulo).
+
+** Construcción del mundo
+
+#+begin_comment
+Un ejemplo trabajado. El mundo, no los lugares: los escenarios concretos,
+con su Eco y su Escollo, están en la sección Ambientación.
+
+El realismo contemporáneo necesita este apartado tanto como la fantasía, y lo
+hace peor con más frecuencia: la tentación es saltárselo porque «es solo una
+ciudad». La sección que importa es «Cómo el mundo presiona la Debilidad del
+protagonista». Si un mundo no presiona donde el protagonista es débil, es un
+decorado caro, y eso es tan cierto de una economía de encargos puntuales como
+de un sistema de magia.
+#+end_comment
+
+*** El mundo en una línea
+
+Una ciudad que ha dejado, en silencio, de comprar el tiempo de la gente y ha
+empezado a comprar su disponibilidad.
+
+*** Elemento físico desarrollado
+
+La distancia y los veinticinco minutos. Todo en este libro está a un número
+conocido de minutos de todo lo demás, y la trama gira en torno a uno de ellos:
+del vestíbulo de la agencia a Bell Lane hay veinticinco minutos en coche y no
+existe ninguna versión de la mañana en la que se cumplan las dos citas de las
+nueve. La geografía se desarrolla exactamente hasta aquí y no más, porque es lo
+único que la trama le pide.
+
+*** Elementos culturales desarrollados
+
+- El trabajo. Nadie en este libro tiene empleador salvo Priya, y tiene uno al
+  que no se le permite llamar así. Se paga por proyecto, se factura a treinta
+  días y se cobra a noventa, de modo que la unidad real de intercambio no es el
+  dinero, sino la promesa de estar localizable la próxima vez.
+- Los cuidados. La otra institución que funciona con la misma escasez. Bell
+  Lane tiene las horas y no el personal; Sam tiene la voluntad y no las horas.
+  Las dos economías nunca se encuentran, salvo a través de personas que están
+  en ambas, que en este libro son Sam y, al final, Alex.
+
+*** Cómo el mundo presiona la Debilidad del protagonista
+
+La Debilidad de Alex es que no pega una hora a ningún compromiso. Una ciudad
+que premia la disponibilidad no castiga eso: lo *paga*. El defecto de Alex es,
+en esta economía concreta, un rasgo con valor de mercado, y todos los actores
+del libro que se benefician de él lo dicen en voz alta y con buena intención.
+
+Esa es la presión: el mundo no se opone a la Debilidad de Alex, la subvenciona.
+Las únicas fuerzas que exigen una hora declarada son el teléfono de un centro
+de día y el reloj de una mujer muerta, y ambas son, según los criterios de esta
+ciudad, obsoletas.
+
+*** Reglas y límites
+
+- Una hora perdida en Bell Lane no se reprograma. Pasa al siguiente nombre de
+  la lista. Esto cuesta una plaza, y las plazas no vuelven.
+- Un contrato en Okonkwo & Field lo concede una persona y nunca se negocia.
+  Rechazar una hora no va contra ninguna regla; simplemente se recuerda.
+- El reloj es mecánico. Sin cuerda durante más de unas treinta y seis horas,
+  se para, y no avisa de que se ha parado. Es una regla con un coste y es la
+  razón de que el objeto esté en el libro.
+
+Realismo contemporáneo, de modo que las reglas son sociales y no físicas, y
+viven en la sección Construcción del mundo. Las tres que condicionan la trama:
+
+- Una hora perdida en Bell Lane pasa al siguiente nombre de la lista.
+- Un contrato en Okonkwo & Field lo concede una persona y nunca se negocia.
+- El reloj funciona unas treinta y seis horas y no avisa.
+
+*** Investigación pendiente
+
+# Solo lo necesario antes de escribir la escena que lo usa.
+
+- [X] Procedimiento de valoración de un centro de día para adultos y
+  comportamiento habitual de las listas de espera: mira la parte
+  Investigación.
+- [ ] Qué hace exactamente un reloj de pulsera mecánico de los años sesenta
+  cuando se queda sin cuerda, y cuánto tarda. Hace falta antes del Capítulo 6
+  Escena 2, no antes.
+- [ ] Clasificación por tiempo de respuesta en las plataformas de autónomos:
+  ¿es pública, y para quién? Hace falta solo para el Capítulo 5.
+
+** Objetos
+
+#+begin_comment
+Los objetos no son un tipo de entidad enlazado: no hay enlaces por ID desde
+las escenas a este archivo, y nada de lo que hay aquí aparece en el informe de
+salud. Es un archivo de referencia, que se rellena con F8 k b.
+
+Por eso la disciplina útil es conservar solo los objetos que hacen algo. Cada
+uno de estos es uno de los cinco símbolos nombrados en diseno.org, y cada uno
+cambia a lo largo del libro. Un símbolo que no cambia es decoración, y la
+decoración pertenece al borrador, no a un archivo.
+#+end_comment
+
+*** Objetos Simbólicos
+
+**** El reloj de pulsera de Marisol
+:PROPERTIES:
+:Type: Símbolo de la historia / Símbolo de cambio
+:Owner: Alex Rivera (heredado)
+:First-appearance: Capítulo 2, Escena 1
+:Status: Parado durante los dos primeros tercios del libro
+:END:
+
+***** Descripción Física
+
+Un reloj de pulsera mecánico de los años sesenta con una correa de cuero
+gastada, pequeño para los estándares actuales, con una esfera que se ha
+amarilleado por igual. Sin pila, sin alarma, sin fecha. Funciona unas treinta y
+seis horas con la cuerda completa y no avisa antes de pararse.
+
+***** Origen
+
+Marisol Rivera lo llevó cada día durante cincuenta años. Lleva dos años bajo
+el montón de correo de la mesita de Alex.
+
+***** Importancia en la Trama
+
+Es la rutina, no una metáfora de ella. A un reloj mecánico hay que darle cuerda
+a mano, más o menos a la misma hora, todos los días, o deja de dar la hora
+bien sin que nadie se entere. Todo lo que el libro sostiene sobre los días ya es
+cierto de este objeto.
+
+***** Historia del Objeto
+
+- Capítulo 2, Escena 1 :: Lo encuentra bajo el correo. Alex se lo pone y no le
+  da cuerda.
+- Capítulos 3–5 :: Lo lleva a diario, sin cuerda. Da la hora bien dos veces al
+  día y Alex nunca lo nota, porque no lo comprueba.
+- Capítulo 6, Escena 2 :: Alex lo mira bien por primera vez. Marca las 8:00 a
+  las once menos veinte de la noche.
+- Capítulo 7, Escena 1 :: Le da cuerda. Cuarenta segundos, mal, y es toda la
+  autorrevelación.
+- Capítulo 8, Escena 2 :: Le da cuerda cada mañana, sin comentarlo.
+
+***** Simbolismo
+
+De la historia, y del cambio. Las dos cosas son el mismo objeto a propósito:
+lo que representa el tema es también lo que visiblemente se transforma.
+
+***** Reglas y límites
+
+Treinta y seis horas. No anuncia que se ha parado. Mira la sección
+Construcción del mundo, «Reglas y límites»: una regla sin coste no es una
+regla, y esta le cuesta a Alex el momento en que por fin lee la esfera.
+
+***** Notas
+
+Ahora mismo hay dos errores de continuidad en el borrador: el Capítulo 2
+Escena 1 dice que el reloj «sigue dando tictacs», y el Capítulo 3 Escena 1 le
+pone una alarma. Ambos están marcados con marcadores *EDIT*: trama en
+novela.org y saldrán en el índice de ediciones (=F8 6=).
+
+**** El cuaderno de Sam
+:PROPERTIES:
+:Type: Símbolo de personaje
+:Owner: Sam Chen
+:First-appearance: Capítulo 1, Escena 2
+:Status: No se abre en la página hasta el Capítulo 6
+:END:
+
+***** Descripción Física
+
+Pequeño, de papel, de tapa blanda y lleno. Una goma elástica alrededor. Sam lo
+saca en compañía y no lo abre.
+
+***** Importancia en la Trama
+
+Es el único malentendido deliberado del libro. Durante cinco capítulos el
+lector ve, a través de Alex, el emblema de una vida bien organizada. En el
+Capítulo 6 se abre y es un registro de medicación que se remonta catorce meses.
+
+***** Simbolismo
+
+De personaje: para Sam, y por error para Alex, que ha estado aspirando a un
+objeto cuyo contenido nunca preguntó. La lectura de mentor es un error de
+Alex y el cuaderno es donde se guarda.
+
+***** Reglas y límites
+
+Tiene que verse pronto, a menudo y sin abrirse nunca. Si una sola línea del
+Acto I insinúa su contenido, la revelación del Capítulo 6 pasa a ser una
+confirmación en lugar de una corrección.
+
+***** Notas
+
+Emparejado con el reloj a propósito: un objeto que hay que mantener a diario,
+otro que registra ese mantenimiento. Alex adquiere los dos, en ese orden.
+
+*** Objetos Cotidianos Relevantes
+
+**** La cama sin hacer
+:PROPERTIES:
+:Type: Símbolo de acción
+:Owner: Alex Rivera
+:First-appearance: Capítulo 1, Escena 1
+:Status: Hecha desde el Capítulo 3, con sentido desde el Capítulo 7
+:END:
+
+El mismo acto tres veces, significando algo distinto cada vez: absurdo en el
+Acto I, hecho de cara a un público de una sola persona en el Acto II, sincero
+en el Acto III. Es el símbolo más barato del libro y el que más trabajo hace
+por palabra.
+
+**** La insignia de notificaciones
+:PROPERTIES:
+:Type: Símbolo de mundo
+:Owner: Todo el mundo
+:First-appearance: Capítulo 1, Escena 2
+:Status: Constante
+:END:
+
+Un número que solo sube. Es el Problema del Mundo convertido en objeto, y se
+puede poner en cualquier escena que necesite complicarse: mira la Caja de
+complicaciones en diseno.org.
+
+**** El reloj del vestíbulo de Okonkwo & Field
+:PROPERTIES:
+:Type: Detalle de escenario
+:Owner: Dana Okonkwo
+:First-appearance: Capítulo 2, Escena 3
+:Status: Cuatro minutos adelantado, desde hace años, a propósito
+:END:
+
+Toda la Postura de Dana en un mueble. Solo importa una vez, en el Capítulo 8
+Escena 1, cuando Alex conoce los cuatro minutos y los tiene en cuenta.
+
+** Línea Temporal
+
+#+begin_comment
+Se rellena con F8 k t. Igual que la sección Objetos, es una sección de
+referencia y no un tipo de entidad enlazado: las escenas llevan una cadena
+simple en :Linea-temporal: ("Día 23, 08:00"), no un enlace por ID a este
+archivo.
+
+Se gana el sitio en un libro cuya trama gira en torno a las horas. Cada
+entrada de abajo existe porque alguna escena depende de que sea cierta.
+#+end_comment
+
+*** Resumen de la Cronología
+:PROPERTIES:
+:CUSTOM_ID: timeline-overview
+:END:
+
+**** Cronología de la Historia
+
+| Evento                               | Fecha/Hora    | Personajes        | Localización        | Notas                                  |
+|--------------------------------------+---------------+-------------------+---------------------+----------------------------------------|
+| Tres alarmas                         | Día 1, 06:30  | Alex              | Piso de Alex        | Imagen de apertura                     |
+| Sam enuncia el tema                  | Día 1, 07:45  | Alex, Sam         | Cafetería           | Irrenunciable 1                        |
+| La reunión de las 9:00, sin notas    | Día 1, 09:00  | Alex              | (fuera de página)   | Irrenunciable 2, el coste              |
+| Aparece el reloj                     | Día 1, 20:30  | Alex              | Piso de Alex        | Irrenunciable 6                        |
+| La entrega que Sam rechaza           | Día 2, 08:00  | Alex, Sam         | Piso de Alex        | Irrenunciable 4                        |
+| Se pierde Halloran                   | Día 2, 11:00  | —                 | (fuera de página)   | Consecuencia, la misma mañana          |
+| Dana nombra a Kestrel                | Día 2, 18:20  | Alex, Dana        | Okonkwo & Field     | Irrenunciables 3 y 5                   |
+| Primer intento de rutina             | Día 3, 06:00  | Alex              | Piso de Alex        | Irrenunciable 7                        |
+| Las dos preguntas de Priya           | Día 4, 13:00  | Alex, Priya       | Okonkwo & Field     | Se establece la falsa aliada           |
+| Charla de café                       | Día 9, 07:05  | Alex, Sam         | Cafetería           | La cafetería está vacía a las 07:05    |
+| Una rutina que aguanta               | Día 12, 06:15 | Alex              | Piso de Alex        | Cuatro días, dos entregas tempranas    |
+| El elogio y la negativa              | Día 16, 17:00 | Alex, Dana, Priya | Okonkwo & Field     | Irrenunciable 9, cierra el cuartil II  |
+| La llamada del jueves perdida        | Día 23, 08:00 | Alex, Sam         | Bell Lane           | Irrenunciable 10, cierra el cuartil III |
+| Las marcas de hora reenviadas        | Día 23, 22:40 | Alex, Priya       | Piso de Alex        | Revelación de Priya; el reloj se ha parado |
+| Le da cuerda al reloj                | Día 24, 06:00 | Alex, Sam         | Piso de Alex        | Irrenunciable 11, el atisbo            |
+| El vestíbulo                         | Día 25, 08:40 | Alex, Dana        | Okonkwo & Field     | Irrenunciables 12 y 13                 |
+| La valoración                        | Día 25, 09:00 | Sam               | Bell Lane           | Fuera de página, a propósito           |
+| Cafetería, seis semanas después      | Día 67, 07:00 | Alex, Sam, Casey  | Cafetería           | Nuevo equilibrio, imagen final         |
+
+*** Eventos Detallados
+
+**** La llamada del jueves
+:PROPERTIES:
+:ID: es-tl-thursday-call-001
+:Type: Cita recurrente
+:Relevance: Crítica
+:Date: Todos los jueves
+:Time: 08:00
+:Duration: Menos de cinco minutos
+:Characters: Sam Chen
+:Location: Centro de Día de Bell Lane (por teléfono)
+:Chapter: Se establece en el cap. 2, se pierde en el cap. 6
+:END:
+
+***** Descripción
+
+Bell Lane llama a las ocho los jueves para confirmar la plaza provisional de la
+semana siguiente. Suena dos veces, con un minuto de diferencia, y no vuelve a
+sonar hasta el jueves siguiente.
+
+***** Consecuencias
+
+Dos ausencias seguidas bajan el nombre al final de la lista. Sam pierde una en
+el capítulo 6 y ya había perdido otra, sin comentarlo, la semana del
+capítulo 2; por eso aquí una sola ausencia es fatal, y el lector puede
+deducirlo en una segunda lectura.
+
+***** Conexiones
+
+Es la hora inamovible en torno a la que se organiza todo el libro. Alex la
+gasta tres veces: capítulo 2 escena 2 (rechazada), capítulo 6 escena 1
+(concedida, y fatal) y capítulo 7 escena 1 (devuelta, con un número pegado).
+
+***** Notas
+
+Importa que dure cinco minutos. Es una hora *pequeña*, y ese es el punto: lo
+que Alex ha ido tomando nunca es grande.
+
+**** La cita de valoración
+:PROPERTIES:
+:ID: es-tl-assessment-001
+:Type: Cita única
+:Relevance: Crítica
+:Date: Día 25
+:Time: 09:00
+:Duration: 90 minutos, en persona
+:Characters: Sam Chen, el padre de Sam
+:Location: Centro de Día de Bell Lane
+:Chapter: Cap. 7 (ofrecida), cap. 8 (cumplida)
+:END:
+
+***** Descripción
+
+Reprogramada una vez tras la llamada perdida, a unas nueve en punto que ya no
+se puede mover. A veinticinco minutos en coche de Okonkwo & Field.
+
+***** Consecuencias
+
+Choca exactamente con la presentación de Kestrel, que es la decisión moral. La
+colisión tiene que estar *dispuesta por el mundo*, no por Dana: si Dana fija la
+presentación para atrapar a Alex, la decisión pasa a ser una respuesta a una
+villana en lugar de una elección entre dos bienes.
+
+***** Conexiones
+
+Mira diseno.org, «El final»: Alex mantiene esta cita y pierde el contrato.
+
+***** Notas
+
+La cita en sí no se dramatiza nunca. El lector ve a Alex conducir y no ve Bell
+Lane, porque la escena trata de la marcha.
+
+*** Cronología del Trasfondo
+
+**** La mañana en que murió Marisol
+:PROPERTIES:
+:ID: es-tl-marisol-001
+:Type: El Fantasma
+:Relevance: Crítica
+:Date: Dos años antes del Día 1
+:Time: 09:00 prometidas, 10:40 murió, 11:00 llegó
+:Duration: Una mañana
+:Characters: Alex Rivera, Marisol Rivera
+:Location: Residencia de cuidados paliativos (sin nombre, sin mostrar)
+:Chapter: Entregada en fragmentos a lo largo del libro; en orden solo en el cap. 7
+:END:
+
+***** Descripción
+
+Alex prometió las nueve. Tres alarmas, una ducha que se alargó, un mensaje de
+un cliente contestado en la escalera. Las once. Ella murió a las diez y
+cuarenta.
+
+***** Consecuencias
+
+La Mentira: que los relojes son crueles y que el tiempo no se puede sujetar.
+De ella se deriva todo el comportamiento del Acto I.
+
+***** Conexiones
+
+No se escribe nunca como escena retrospectiva. Llega en fragmentos —una muñeca
+desnuda en el capítulo 1, media frase en el capítulo 4— y se monta en el orden
+correcto una sola vez, en el capítulo 7, lo que convierte ese montaje en la
+autorrevelación.
+
+***** Notas
+
+El lector debería tener todas las piezas antes del capítulo 7 y tampoco
+haberlas puesto en orden.
+
+**** La mesa de la cocina, nueve años antes
+:PROPERTIES:
+:ID: es-tl-kitchen-table-001
+:Type: Escena de trasfondo (solo para la autora)
+:Relevance: Secundaria
+:Date: Nueve años antes del Día 1
+:Time: 07:00–08:50
+:Duration: Dos horas
+:Characters: Alex Rivera, Marisol Rivera
+:Location: Piso de Marisol
+:Chapter: No está en el libro
+:END:
+
+***** Descripción
+
+Mira el apartado Trasfondo del perfil de Alex en la sección Personajes. Alex a
+los diecinueve años, pronto por los horarios del autobús; Marisol a las ocho;
+té; y a las nueve menos diez, «tengo médico a las nueve y media», y se va.
+
+***** Consecuencias
+
+Ninguna en la trama. Existe para que la autora sepa cómo suena una hora dicha
+en voz alta en esta familia.
+
+***** Notas
+
+Escrita para la autora, no para el libro. No tiene que ser buena y no va a
+entrar.
+
+* Investigación
+
+#+begin_comment
+La disciplina que necesita este archivo es la resta. Investiga lo que necesites
+antes de escribir la escena que lo usa, y no antes: mira la sección
+Construcción del mundo, «Investigación pendiente», donde viven los puntos
+abiertos como lista de comprobación.
+
+Este archivo guarda lo que ya tiene respuesta, y las respuestas son cortas a
+propósito: una nota de investigación más larga que la escena a la que sirve es
+una manera de no escribir la escena.
+#+end_comment
+
+** Temas de Investigación
+
+*** Valoración en centros de día para adultos y listas de espera
+:PROPERTIES:
+:CATEGORY: Cuidados
+:PRIORITY: Alta
+:STATUS: Respondido — necesario para los caps. 6 y 8
+:END:
+
+**** Preguntas a Responder
+
+- ¿Cómo se asigna una plaza y qué ocurre en realidad cuando se pierde el
+  contacto?
+- ¿Hay una valoración presencial de verdad, y se puede reprogramar?
+- ¿Qué intervalo es plausible entre ambas?
+
+**** Fuentes
+
+- Páginas de servicios sociales para adultos de la administración local
+  (procedimiento de plaza provisional).
+- Una conversación con la directora de un centro de día, notas no citables.
+
+**** Hallazgos Clave
+
+- Las plazas provisionales se mantienen mientras haya contacto periódico; el
+  silencio prolongado baja el nombre en la lista en lugar de borrarlo.
+- La valoración presencial es real y es la puerta. Se puede reprogramar una
+  vez, y la segunda oferta no es negociable en cuanto a la hora.
+- Entre una y otra, de dos a tres semanas es lo normal.
+
+**** Cómo Aplica a la Historia
+
+Es todo el mecanismo del último cuarto. La trama necesita una cita que (a) no
+se pueda mover, (b) se haya reprogramado por algo que hizo Alex y (c) choque
+con la presentación por casualidad y no por diseño de Dana. Las tres cosas son
+ciertas en el procedimiento real, y por eso la colisión no parece dispuesta.
+
+*** Comportamiento del reloj de pulsera mecánico
+:PROPERTIES:
+:CATEGORY: Objetos
+:PRIORITY: Media
+:STATUS: Abierto — necesario antes del cap. 6 escena 2
+:END:
+
+**** Preguntas a Responder
+
+- ¿Cuánto funciona un mecanismo de cuerda manual de los años sesenta con la
+  cuerda completa?
+- ¿Qué hace al agotarse: se retrasa antes de pararse?
+- ¿Funcionaría siquiera después de dos años en un cajón?
+
+**** Fuentes
+
+- Pendiente: un relojero, una tarde.
+
+**** Hallazgos Clave
+
+Provisional: unas treinta y seis a cuarenta horas, y pierde tiempo antes de
+parar en lugar de pararse en seco. Si es así, Alex podría andar horas con un
+reloj que va mal sin que se note, lo cual es mejor que el borrador actual y
+debería entrar.
+
+**** Cómo Aplica a la Historia
+
+Todo el símbolo del cambio depende de ello. Ten en cuenta que el borrador
+contradice ahora mismo hasta la respuesta provisional dos veces (mira los
+marcadores *EDIT*: trama en novela.org), así que es el único punto abierto que
+ya está costando algo.
+
+*** Clasificación por tiempo de respuesta en plataformas de autónomos
+:PROPERTIES:
+:CATEGORY: Trabajo
+:PRIORITY: Baja
+:STATUS: Abierto — necesario solo para el cap. 5
+:END:
+
+**** Preguntas a Responder
+
+- ¿Se muestra públicamente el tiempo medio de respuesta, o solo al cliente?
+- ¿Decae, y en qué plazo?
+
+**** Cómo Aplica a la Historia
+
+Una línea en la Caja de complicaciones de diseno.org. Si la respuesta es «solo
+al cliente», la complicación sigue funcionando, pero la tiene que entregar Dana
+y no verla Alex, lo que, con un único focalizador, cambia cómo se construye la
+escena.
+
+** Materiales de Referencia
+
+*** Libros
+
+- Truby, /The Anatomy of Story/: la cadena causal y el oponente que quiere lo
+  mismo. Ambas cosas sostienen este libro.
+- Swain, /Techniques of the Selling Writer/: escena y secuela; la propiedad
+  =:Decision-secuela:= de cada escena es suya.
+
+*** Artículos/Sitios Web
+
+- Páginas de procedimiento de servicios sociales para adultos de la
+  administración local (mira arriba).
+
+*** Entrevistas/Consultas
+
+- Directora de un centro de día, veinte minutos, por teléfono. No citable, y
+  tampoco para los agradecimientos sin preguntar.
+- Relojero: todavía no.
+
+** Verificación de Hechos
+
+| Hecho                                         | Fuente                        | Verificado | Notas                                        |
+|-----------------------------------------------+-------------------------------+------------+----------------------------------------------|
+| Las plazas provisionales caducan por falta de contacto | Página de procedimiento | Sí         | Dos ausencias, no una: afecta al cap. 6      |
+| La valoración se puede reprogramar una vez    | Directora del centro de día   | Sí         | La segunda oferta es fija; esa es la trama   |
+| La cuerda manual dura ~36 h                   | —                             | No         | Provisional. Necesario antes del cap. 6 esc. 2 |
+| La clasificación por respuesta es pública     | —                             | No         | Prioridad baja; solo cap. 5                  |
+
+* Revisión
+
+#+begin_comment
+Un ejemplo trabajado, y deliberadamente *temprano*: este proyecto va por la
+quinta parte de un primer borrador, así que aquí todavía no hay nada marcado.
+El archivo llega con los pases vacíos y sigue así hasta que empieza el Pase 0.
+
+Se incluye en la demo igualmente porque la forma importa antes de usarla. Diez
+pases, siempre de arriba abajo: no pulas las frases de una escena que quizá
+acabes cortando. Cada pase termina con un puntero de vuelta al apartado de
+diseno.org que diseñó lo que falló.
+
+Fíjate en dónde viven las comprobaciones. Las mecánicas —si cada escena tiene
+etiquetas, si cada punto de trama tiene escena, si algo ha quedado huérfano—
+son cosa del informe de salud (F8 H) y no se repiten aquí. Lo que hay aquí es
+todo lo que solo puede decidir un lector.
+#+end_comment
+
+** Registro de revisión
+
+| Pase | Fecha | Qué he encontrado | A qué apartado vuelvo |
+|------+-------+-------------------+-----------------------|
+|    0 |       | Descanso          | —                     |
+|    1 |       |                   | —                     |
+|    2 |       |                   |                       |
+|    3 |       |                   |                       |
+|    4 |       |                   |                       |
+|    5 |       |                   |                       |
+|    6 |       |                   |                       |
+|    7 |       |                   |                       |
+|    8 |       |                   | —                     |
+|    9 |       |                   |                       |
+
+** Pase 0 — Descanso
+
+Deja reposar el borrador al menos dos semanas. La distancia es lo único que
+convierte al Creador en Crítico, y no hay atajo. Mientras tanto, escribe otra
+cosa.
+
+- Fecha en que aparté el borrador :: (todavía no: primer borrador en marcha)
+- Fecha en que puedo volver ::
+
+** Pase 1 — Test del sueño
+
+Lee el manuscrito entero en las menos sesiones posibles. Marca cada punto en el
+que salgas del sueño: te aburres, te pierdes, no te lo crees. *No arregles
+nada.* Solo marca.
+
+*** Marcas
+
+# Una línea por salida: dónde y de qué tipo. Todavía sin diagnóstico.
+
+-
+
+** Pase 2 — Tema y estructura
+
+- [ ] ¿Está cada Postura de la lista encarnada por alguien?
+- [ ] ¿Recibe cada Postura la consecuencia que la historia dice que merece?
+- [ ] ¿Empieza y termina la protagonista en Posturas distintas?
+- [ ] ¿El tema surge a través de la acción, o hay sermón?
+- [ ] Si formularas el tema como pregunta, ¿cuál es la afirmación que responde a
+  lo que has escrito en realidad?
+- [ ] ¿Están los trece irrenunciables, cada uno en su cuartil?
+- [ ] ¿Están equilibrados los cuartiles en longitud?
+- [ ] ¿Se cumplen las promesas del primer cuartil?
+- [ ] ¿El avance es constante, o hay zonas muertas?
+- [ ] ¿La secuencia de revelaciones se acelera, golpeando cada una más fuerte que
+  la anterior?
+- [ ] ¿Hay escenas que se puedan cortar o fundir?
+
+Si falla → diseno.org, Núcleo (Tema y Posturas) y la parte de Trama.
+
+*** Notas
+
+Sabido de antemano, por el borrador: el capítulo 4 corre el riesgo de alargarse,
+lo que empujaría el punto medio más allá de la mitad. Está señalado con un
+marcador *NOTE* en novela.org, capítulo 4 escena 2. Revisa la sección Cuartiles
+antes de este pase y no durante él.
+
+** Pase 3 — Personajes
+
+- [ ] ¿Tiene cada personaje principal un Fantasma, una Mentira, una Debilidad y
+  una Necesidad?
+- [ ] ¿Se ve la Debilidad moral en actos concretos contra personas concretas?
+- [ ] ¿Es claramente la Debilidad la causa de sus fracasos?
+- [ ] ¿Quiere el oponente lo mismo que la protagonista, y pelea lo bastante
+  fuerte?
+- [ ] ¿Es defendible su Postura? ¿Podrías argumentarla tú?
+- [ ] ¿Está cada hito de cambio anclado a una escena concreta?
+- [ ] ¿Tiene cada personaje con nombre su Deseo en tres partes, y es el del
+  aliado propio y no auxiliar?
+- [ ] Lee todas las escenas de un personaje seguidas, un personaje cada vez.
+  (=F8 2= construye esa lista.) ¿Tiene sentido su arco por sí solo?
+- [ ] ¿Hay personajes secundarios redundantes?
+- [ ] ¿Alguno está definido con tanta rigidez que ya no puede sorprender?
+
+Si falla → la sección Personajes.
+
+*** Notas
+
+La lista de contraste de la comprobación del reparto, en la sección Personajes,
+ya tiene una casilla sin marcar («muestran su personalidad con actos, no con
+descripciones»), con las escenas problemáticas señaladas con marcadores
+*EDIT*: personaje. Empieza este pase ejecutando el índice de ediciones (=F8 6=)
+y leyendo esa categoría primero.
+
+** Pase 4 — Escenas y secuelas
+
+- [ ] ¿Tiene cada escena un deseo, una oposición y un resultado?
+- [ ] ¿Cuál es la Brecha de cada escena: qué esperaba el personaje y qué le dio
+  el mundo? Si no hay brecha, añade una o corta la escena.
+- [ ] ¿Cambia algo en cada escena?
+- [ ] ¿Entra tarde y sale pronto?
+- [ ] ¿Hace avanzar la trama, el arco o el tema?
+- [ ] ¿Tiene cada escena un núcleo emocional claro y se conecta con el tema?
+- [ ] ¿Hay una secuela tras cada escena importante?
+- [ ] ¿Encadena la decisión de cada secuela con el deseo de la escena siguiente?
+- [ ] ¿Hay algo llamativo pero irrelevante que robe atención?
+
+Si falla → diseno.org y la parte de Trama.
+
+*** Notas
+
+Las propiedades =:Brecha:= y =:Decision-secuela:= están rellenas en todas las
+escenas de novela.org, así que buena parte de este pase se puede leer en la
+vista de columnas (=C-c C-x C-c=) antes de abrir una sola escena. La línea
+COLUMNS ya está preparada para mostrar la Brecha junto al Punto-de-trama.
+
+** Pase 5 — Mundo y símbolos
+
+- [ ] ¿Tiene cada escenario al menos un Aspecto?
+- [ ] ¿Hay escenarios usados solo como decorado?
+- [ ] ¿Aparece el Problema del Mundo en cada escena, aunque sea de fondo?
+- [ ] ¿Cambian los símbolos a lo largo de la historia?
+
+Si falla → la sección Ambientación y la sección Símbolos.
+
+*** Notas
+
+Ya se cortó un escenario por estas razones durante el borrador: una ciudad
+mediana con clima y cifra de población y sin Eco, Escollo ni escena. La
+propiedad =:Problema-mundo:= de cada escena hace mecánica la tercera
+comprobación: cualquier escena con esa propiedad vacía es candidata.
+
+** Pase 6 — Apuestas y tensión
+
+- [ ] ¿Está claro qué se pierde si la protagonista fracasa?
+- [ ] ¿Escalan las apuestas cuartil a cuartil, cambiando de categoría en cada
+  paso?
+- [ ] ¿Podría la protagonista abandonar la historia sin consecuencias?
+- [ ] ¿Hay algún capítulo sin tensión de ningún tipo?
+- [ ] ¿Cierran los capítulos con un gancho en lugar de con un resumen?
+- [ ] ¿Hay variación de ritmo, o la tensión es uniforme?
+
+Si falla → diseno.org, Apuestas.
+
+*** Notas
+
+La propiedad =:Nivel-tension:= está rellena en todas las escenas, de 1 a 10.
+Leer la columna de arriba abajo es la versión más rápida de la última
+comprobación de esta lista; el borrador actual va 2, 2, 4, 6, 5, 4, 3, 3, 2, 7,
+9, 8, 6, 10, 1.
+
+** Pase 7 — Punto de vista y diálogo
+
+- [ ] ¿Se respeta el punto de vista? ¿Hay saltos dentro de una escena?
+- [ ] ¿Has planeado alguna escena que este punto de vista no pueda sostener?
+- [ ] ¿Tienen las conversaciones importantes una capa moral, y no solo una
+  melodía?
+- [ ] ¿Suenan distintos los personajes entre sí?
+- [ ] Lee todo el diálogo en voz alta: ¿alguien dice exactamente lo que piensa?
+- [ ] ¿Hay acciones que contradigan las palabras?
+- [ ] ¿Entiende el lector más que cualquier personaje, donde tú quieres que lo
+  haga?
+
+Si falla el punto de vista → diseno.org, Punto de vista.
+
+*** Notas
+
+Un único focalizador, así que la segunda comprobación tiene dientes: la
+revelación de Priya se *diseñó* alrededor de eso (una cadena reenviada con
+marcas de hora en lugar de una escena en la que ella decide). Comprueba que no
+se haya colado nada que solo funcione desde la cabeza de Dana o de Priya.
+
+** Pase 8 — Línea
+
+Ahora sí: frase a frase.
+
+- [ ] Recorre cada pico emocional. ¿La emoción se nombra o se crea?
+- [ ] Marca cada «pensó», «se dio cuenta», «supo». Sustitúyelos por evidencia
+  sensorial.
+- [ ] Marca cada explicación que siga a un momento mostrado. (RUE.)
+- [ ] Y después, el detalle.
+
+*** Cosas que debo mejorar
+
+# Tu lista de defectos propios. Crece con cada revisión y no le sirve a nadie
+# más.
+
+- Explicar un símbolo en la frase siguiente a usarlo. Ya señalado una vez, en
+  novela.org capítulo 6 escena 2: «nada de "y Alex comprendió que"».
+- Abrir párrafos consecutivos con el mismo sustantivo. El capítulo 1 escena 1
+  lo hace tres veces.
+- Adverbios en las acotaciones de diálogo en los primeros borradores de las
+  escenas de Sam en concreto, donde la calidez hace el trabajo que debería hacer
+  la línea.
+
+Muletillas y tics para buscar en el Pase 8:
+
+- «de algún modo»
+- «simplemente»
+- «parecía»
+- «y Alex comprendió/se dio cuenta/supo»: la lista RUE; mira la parte de
+  Revisión, Pase 8.
+
+** Pase 9 — Lectores beta y borrador final
+
+Entre dos y cinco lectores. Más no es mejor.
+
+*** A quién
+
+| Lector | Contacto | Enviado | Recibido | Encaja con lo que escribo |
+|--------+----------+---------+----------+---------------------------|
+|        |          |         |          |                           |
+
+*** Qué preguntar
+
+- *Estructura*: ¿agujeros, incoherencias, confusión? ¿Dónde se ralentizó? ¿Satisface
+  el final? ¿Se sintió merecida la transformación?
+- *Personajes*: ¿te importó Alex? ¿Te creíste la elección en el vestíbulo?
+  ¿Entendiste a Dana? ¿Fue justa la revelación de Priya?
+- *Prosa*: ¿volcados de información, y dónde? ¿Tramos lentos o sobreescritos?
+  ¿Diálogo poco natural?
+
+*** Cómo leerlo
+
+El feedback es información, no instrucciones. Patrón frente a ruido; síntoma
+frente a causa; y el feedback que nadie te da y que ya sabes que es cierto.
+
+*** Comentarios recibidos
+
+**** Lector 1
+
+**** Lector 2
+
+*** Borrador final
+
+- [ ] Estructura resuelta
+- [ ] Escenas resueltas
+- [ ] Línea resuelta
+- [ ] Soltado
+
+* Diario
+
+** Sobre Este Diario
+
+Reflexiones cualitativas sobre el proceso: intuiciones, obstáculos, decisiones
+y lo que costaron.
+
+Los números no están aquí. Los recuentos de palabras, los totales diarios, la
+racha y la velocidad son cosa del planificador de escritura: mira
+[[file:plan.org][plan.org]], o abre =F8 W=. Este proyecto tiene el planificador
+activado, así que cada recuento que se ejecuta en novela.org se registra allí,
+y una segunda tabla llevada a mano sería solo un segundo sitio donde equivocarse.
+
+** Notas de Sesión
+
+*** 2026-05-01
+:PROPERTIES:
+:SESSION-START: 06:15
+:SESSION-END: 07:40
+:WORDS-WRITTEN: 167
+:MOOD: Nerviosa
+:END:
+
+**** En qué trabajé
+
+La escena de la alarma. Tres alarmas y una persona que no mira el reloj. Salió
+rápido porque es lo único de este libro que he vivido.
+
+**** Qué fue bien
+
+La cuenta. Alex narra en minutos y no lo decidí yo: pasó en el primer párrafo y
+es evidentemente la voz.
+
+**** Desafíos encontrados
+
+No tengo oponente. Tengo a una persona con una mala costumbre y a un vecino
+simpático, y eso es un artículo de revista, no una novela. Nadie quiere lo que
+quiere Alex.
+
+**** Objetivos para la Próxima Sesión
+
+- [X] Encontrar al oponente
+- [X] Escribir el tema como una frase con un riesgo dentro
+
+*** 2026-05-04
+:PROPERTIES:
+:SESSION-START: 06:00
+:SESSION-END: 09:20
+:WORDS-WRITTEN: 280
+:MOOD: Lo resolví
+:END:
+
+**** En qué trabajé
+
+Capítulo 1 terminado, y luego tres horas en diseno.org, que fue el trabajo de
+verdad.
+
+**** Qué fue bien
+
+Escribir las Posturas de peor a mejor resolvió el reparto en una sola sentada.
+Cinco posiciones sobre «de quién son tus horas», y cuatro de ellas sin nadie
+que las sostuviera. Dana salió de la Postura 2 ya formada: quiere las mismas
+ocho horas que quiere Alex, que es la colisión que le faltaba al libro. Priya
+salió de la Postura 3. Casey salió de la Postura 1, lo que dio por fin a la
+última escena una razón de existir más allá de ser un bonito círculo.
+
+**** Desafíos encontrados
+
+Sam. La Postura 4 es «una rutina es una disciplina que te debes a ti misma», y
+sostenerla volvió a Sam insoportable: una persona serena repartiendo consejos.
+Lo dejé de un día para otro.
+
+**** Reflexión Tras Escribir
+
+***** Qué recordar para mañana
+
+El aliado necesita un deseo que no sea «ayudar a la protagonista». Sam todavía
+no tiene uno.
+
+*** 2026-05-05
+:PROPERTIES:
+:SESSION-START: 06:10
+:SESSION-END: 08:05
+:WORDS-WRITTEN: 264
+:MOOD: Tranquila
+:END:
+
+**** En qué trabajé
+
+La Decisión, y todo el problema de Sam.
+
+**** Qué fue bien
+
+Sam no es una mentora. Sam lleva una operación más ajustada que la de Alex por
+razones que Alex nunca ha preguntado, y el cuaderno es un registro de
+medicación. En cuanto lo escribí, existió la segunda mitad del libro: Bell Lane,
+la llamada del jueves, la valoración y una decisión moral con dos bienes dentro
+en lugar de una lección.
+
+Lo cual significa también que la lectura de mentora es *un error de Alex*, y el
+lector debería darse cuenta antes que ella. Es un libro mucho mejor que el que
+esbocé el viernes.
+
+**** Desafíos encontrados
+
+El reloj. Escribí «el reloj seguía dando tictacs, de algún modo», y es una
+línea preciosa y está mal: es mecánico, ha estado dos años bajo el correo y no
+puede estar funcionando. Lo señalé en lugar de arreglarlo: la regla es que las
+sesiones de borrador no se convierten en sesiones de diseño.
+
+**** Objetivos para la Próxima Sesión
+
+- [X] Anotar el problema del reloj en el manuscrito y seguir
+- [ ] Redactar el capítulo 2 escena 2, la entrega
+
+*** 2026-05-06
+:PROPERTIES:
+:SESSION-START: 05:50
+:SESSION-END: 10:30
+:WORDS-WRITTEN: 310
+:MOOD: Temeraria
+:END:
+
+**** En qué trabajé
+
+Salté al final y redacté Círculo completo fuera de orden, porque lo veía y la
+escena de la entrega que tenía que escribir es difícil.
+
+**** Qué fue bien
+
+Funciona, y me dijo algo: no hay aritmética en ninguna parte. Alex ha dejado de
+contar. No fue una decisión, y ahora lo es: el hilo de «Con retraso» se cierra
+porque la cuenta se detiene, y no recibe ningún anuncio.
+
+**** Desafíos encontrados
+
+Escribir el final tan pronto significa que ahora el medio tiene que
+merecérselo. Además: evité la escena de la entrega, y la escena de la entrega
+es aquella en la que Alex hace la cosa verdaderamente poco amable. Darme
+cuenta de la evitación es probablemente lo más útil que pasó hoy.
+
+**** Reflexión Tras Escribir
+
+***** Satisfacción con el trabajo de hoy (1-10):
+
+7 por las páginas, 4 por la disciplina.
+
+***** Qué recordar para mañana
+
+Escribir la entrega. No suavizar la petición. Alex tiene que caer bien mientras
+la hace o el libro pasa a tratar de una persona egoísta, que es un libro más
+pequeño.
+
+*** 2026-05-07
+:PROPERTIES:
+:SESSION-START: 06:00
+:SESSION-END: 07:30
+:WORDS-WRITTEN: 269
+:MOOD: Cumplidora
+:END:
+
+**** En qué trabajé
+
+Primer intento: Alex copiando la rutina de Sam al minuto y fracasando. De vuelta
+en secuencia, y la escena de la entrega sigue sin escribir.
+
+**** Qué fue bien
+
+El Plan es imitación, que es por lo que tiene que fallar, y escribirlo así fue
+más fácil de lo que esperaba. Alex no fracasa porque sea débil. Fracasa porque
+construyó la rutina para impresionar a una oponente.
+
+**** Desafíos encontrados
+
+Segundo error con el reloj en cinco días: le puse una alarma. Señalado, no
+arreglado.
+
+Además escribí un final blando para la escena: Alex solo está decepcionada.
+Eso es una consecuencia que falta, no un estado de ánimo, y ahora es un
+marcador *EDIT*: escena.
+
+**** Objetivos para la Próxima Sesión
+
+- [ ] La entrega. Se acabó evitarla
+
+** Avances e Ideas
+
+*** 2026-05-05
+
+El cuaderno de Sam es un registro de medicación. Una línea, y reestructuró la
+segunda mitad.
+
+*** 2026-05-06
+
+La cuenta se detiene. El motivo se cierra por ausencia, y la ausencia no
+necesita ninguna línea.
+
+** Evolución de la Trama
+
+Cómo cambió la trama respecto al esquema inicial:
+
+- La parada del reloj pasó del punto medio a la derrota aparente. En el punto
+  medio, el lector se pasa el tercer cuarto entero esperándola.
+- Casey era un desconocido sin nombre en la última escena. Ahora lleva la
+  Postura 1 y está en la tabla de Cobertura.
+- No había Priya. El hilo de Kestrel necesitaba a alguien que sostuviera la
+  Postura 3, y una falsa aliada es la única manera de revelar cómo la oponente
+  sabía siempre qué mañanas tenía libres Alex sin romper el punto de vista
+  único.
+
+** Notas de Proceso
+
+Dos horas, de 06:00 a 08:00, antes de contestar a nadie. Lo cual es o un buen
+hábito de escritura o el caso más claro de escribir lo que necesitas aprender
+que he visto nunca en mi propio trabajo.
+
+* Borradores
+
+#+begin_comment
+Esta parte no tiene estructura, y no pretende llegar a tenerla.
+
+Nada de lo que escribas aquí se cuenta, se exporta ni lo lee ninguna orden de
+org-scribe. Esboza a alguien que quizá no exista. Redacta una escena que vas a
+tirar. Refila lo que sobreviva con C-c C-w; borra el resto.
+
+Mira la lección 17 del manual para la convención de ramas de abajo.
+#+end_comment
+
+** Ideas sueltas
+
+Sam cuenta cosas en voz alta cuando está nerviosa. Escalones, plantas, los
+segundos de un semáforo. Alex nunca lo ha notado. Pruébalo en la escena de la
+entrega del mensajero y mira si se lee como un tic o como un reproche.
+
+El tiempo: debería llover exactamente una vez, y Alex debería llegar a tiempo
+para ello.
+
+Una escena que sean solo los dos mensajes de voz del centro de cuidados, uno
+tras otro, con tres semanas de diferencia. Sin prosa alrededor. Probablemente
+demasiado ingeniosa. Conservarla igualmente.
+
+«Esta semana, en algún momento»: Sam lo repite plano, sin la entonación de
+pregunta. Ese es todo el argumento y son cinco palabras.
+
+*** Escenas posibles
+
+**** Cafetería a las 07:05 frente a las 07:45
+La misma sala con veinte minutos de diferencia es otra sala. Alex lo descubre
+absurdamente tarde, y es la ilustración más barata posible del tema.
+
+Estado: PROMOVIDA — es el capítulo 4 escena 1.
+
+**** La crisis de trabajo de Alex, en directo
+Una videollamada con un cliente mientras Alex está visiblemente desbordada,
+para que las apuestas profesionales sean concretas y no contadas.
+
+Estado: Rechazada. La pérdida de Halloran ya hace esto, y lo hace *a* Alex en
+lugar de ante un público. Dos de estas aplanarían la escalada: mira la tabla de
+Apuestas en diseno.org, donde el cuartil I es dinero y solo el cuartil I es
+dinero.
+
+**** La vulnerabilidad de Sam
+Sam parece demasiado perfecta. Hace falta que Sam lleve algo más difícil que
+Alex, no que sea serena.
+
+Estado: PROMOVIDA, y reestructuró el libro. Sam no es una mentora: el cuaderno
+es un registro de medicación, la rutina es un andamio y la lectura de mentora es
+un error de Alex. Todo lo que viene después —Bell Lane, la llamada del jueves, la
+decisión moral— salió de esta nota.
+
+**** El reloj se para
+¿Y si el reloj se para? Idea original: Alex entra en pánico y luego comprende que
+ha interiorizado la rutina y ya no necesita el símbolo.
+
+Estado: PROMOVIDA, invertida. La versión autocomplaciente era demasiado
+pesada. Se para porque Alex nunca le dio cuerda —el descuido es el punto— y la
+recuperación es darle cuerda, no trascenderlo. Mira diseno.org, Símbolos.
+
+*** Diálogos interesantes
+
+**** Alex, interior
+«Cinco minutos más no harán daño»: la mentira repetida, que debería aparecer
+exactamente dos veces: capítulo 1 y, en otro contexto, capítulo 6.
+
+«Más o menos vale»: sobre los calcetines, sobre la factura, sobre la hora.
+
+**** Sam
+«Yo era exactamente como tú»: la frase clave. Alex la repite literalmente en la
+última escena, que es la única señal que recibe el final de que la rueda sigue
+girando.
+
+«Constrúyelo alrededor de lo que no se puede mover»: Sam describiendo su propia
+vida sin decirlo.
+
+**** Dana
+«Tu mejor trabajo lo haces a las dos de la madrugada. Por eso te llamo a ti»:
+un elogio, una compra y un ataque a la Debilidad, todo en una línea.
+
+«Yo nunca he incumplido un plazo»: la credencial.
+
+**** Casey
+«No pasa nada, no estaba haciendo nada»: reflejo, nunca verdad, y la propia
+Postura 1 de Alex en otra boca.
+
+** ¿Y si Alex acepta la entrega de las 8:00?                      :branch:
+:PROPERTIES:
+:ABOUT:    [[id:es-char-alex-rivera-001][Alex Rivera]]
+:END:
+
+# El diseño dice que Alex le pide a Sam que la haga. Pero la Debilidad moral
+# cae con más fuerza si Alex la acepta y aun así llega tarde: el fracaso es
+# entonces solo de Alex, sin nadie a quien haber pedido.
+
+*** REJECTED A. Alex la acepta y llega a tiempo
+
+Mata la Debilidad moral en el capítulo 2, que es lo único que hace razonable la
+sospecha de Dana. También deja sin ganarse la escena de la presentación: Alex
+ya habría cambiado antes de que se enuncie la Necesidad.
+
+*** CHOSEN B. Alex la acepta y llega cuarenta minutos tarde
+
+Sam pierde igualmente la llamada del centro de cuidados, pero ahora no hay nadie
+a quien culpar, y Alex tiene que quedarse con eso. El mismo momento, una excusa
+menos.
+
+**** CHOSEN B1. Sam no lo menciona
+
+El silencio es peor. Además prepara el capítulo 7, donde Sam por fin lo
+menciona y Alex ha olvidado a qué mañana se refiere.
+
+**** REJECTED B2. Sam lo menciona esa tarde
+
+Gasta el material demasiado pronto. Para el capítulo 7 ya no queda nada que
+detonar.
+
+*** REJECTED C. Alex se olvida de pedirlo, y Sam la cubre igualmente
+
+Convierte a Sam en una santa y a Alex en una simple despistada. El libro no
+trata de despistes.
+
+** ¿Y si el contrato de Kestrel nunca está disponible de verdad?     :branch:
+:PROPERTIES:
+:ABOUT:    [[id:es-char-dana-okonkwo-001][Dana Okonkwo]]
+:END:
+
+# Dana necesita a Alex disponible, no reservada. Hay una versión en la que el
+# contrato es una correa que Dana nunca piensa soltar.
+
+*** OPEN A. Dana siempre pensó dársela a otra persona
+
+La más limpia, y convierte a Dana en Oponente y no en obstáculo. Pero corre el
+riesgo de leerse como un giro, y este libro no tiene sitio para giros.
+
+*** OPEN B. El contrato existe pero ya se ha recortado a seis meses
+
+Nadie mintió. Todos salen disminuidos. Probablemente la versión honesta.
+
+*** EXPLORING C. Dana de verdad no se decide, y lo dice en el capítulo 9
+
+Entonces la presentación no es una prueba que Alex pasa o suspende, es un espejo.
+Merece media hora para ver si sobrevive al contacto con la escena.
+
+**** OPEN C1. Alex lo oye como permiso para dejar de intentarlo
+
+**** OPEN C2. Alex lo oye bien, por una vez, y es la primera señal de que la Necesidad ha calado

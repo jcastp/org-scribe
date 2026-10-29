@@ -1,0 +1,147 @@
+#+TITLE: El último mensaje - Resumen del proyecto
+#+AUTHOR: Autora de ejemplo
+#+DATE: 2025-01-14
+#+STARTUP: overview
+
+* Información del cuento
+:PROPERTIES:
+:PROJECT_START: 2025-01-14
+:GENRE: Ciencia ficción
+:TARGET_WORDCOUNT: 5000
+:CURRENT_WORDCOUNT: 892
+:STATUS: Redactando
+:DEADLINE: 2025-02-14
+:END:
+
+** Sinopsis
+Una física cuántica recibe un mensaje de su yo del futuro que le advierte de un experimento catastrófico, pero seguir la advertencia crea justo la paradoja que debía evitar.
+
+** Logline
+Cuando la Dra. Elena Chen recibe una críptica advertencia de su yo del futuro, debe elegir entre evitar un desastre o preservar la línea temporal que envió el mensaje.
+
+* Objetivos de escritura
+- [X] Completar el esquema y la planificación
+- [X] Escribir el primer borrador
+- [ ] Pasada de revisión
+- [ ] Comentarios de lectores beta (opcional)
+- [ ] Pulido final
+- [ ] Enviar a [Revista Prospectiva]
+
+* Archivos del proyecto
+- [[file:cuento.org][cuento.org]] - El manuscrito, con seguimiento de palabras
+- [[file:diseno.org][diseno.org]] - El cuaderno de diseño: fichas de personajes, esquema de la trama, investigación y una sección de Borradores con ideas sueltas y una pregunta ramificada en alternativas
+
+* Estado actual
+- Estado :: Redactando
+- Recuento actual de palabras :: 572
+- Inicio :: 2025-01-14
+- Última actualización :: 2025-01-14
+- Fecha prevista de finalización :: 2025-02-14
+
+* Hitos
+| Fecha      | Hito      | Estado   |
+|------------+-----------+----------|
+| 2025-01-14 | Esquema   | DONE     |
+| 2025-01-21 | Borrador  | PROGRESS |
+| 2025-01-28 | Revisión  | TODO     |
+| 2025-02-14 | Terminado | TODO     |
+
+* Notas
+Este es un proyecto de cuento de demostración para org-scribe, en español. Muestra:
+- Una estructura sencilla de tres secciones (Apertura, Nudo, Desenlace)
+- Seguimiento de palabras integrado
+- Planificación de personajes y trama en diseno.org
+- Enlaces por ID de personajes y localizaciones en las propiedades de las escenas
+- Un tema de ciencia ficción: la paradoja temporal
+
+Es la versión en español de la demo inglesa =examples/demo-short-story/=: la misma historia, con nombres de archivo, encabezados y propiedades de un proyecto en español.
+
+* Órdenes disponibles
+
+Abre el menú principal con =F8= (=hydra-org-scribe/body=). Los menús Hydra están en inglés; aquí se explican al lado.
+
+** Insertar
+| Tecla  | Orden                          | Qué hace                                         |
+|--------+--------------------------------+--------------------------------------------------|
+| =F8 s= | =org-scribe-insert-scene=      | Inserta un encabezado de escena nuevo con propiedades |
+| =F8 c= | =org-scribe-insert-chapter=    | Inserta un encabezado de capítulo nuevo          |
+| =F8 o= | =org-scribe-open-project-file= | Abre un archivo del proyecto (notas, cuento…)    |
+
+** Etiquetar la escena actual (el enlazado de cada día)
+Colócate en cualquier punto de un encabezado de escena y usa estas órdenes para asignar enlaces por ID.
+
+| Tecla  | Orden                               | Qué hace                                       |
+|--------+-------------------------------------+------------------------------------------------|
+| =F8 p= | =org-scribe-set-pov-character=      | Fija el enlace de :PoV: desde la lista de personajes |
+| =F8 h= | =org-scribe-set-scene-characters=   | Fija los enlaces de :Personajes:               |
+| =F8 l= | =org-scribe-set-scene-locations=    | Fija los enlaces de :Localizacion:             |
+| =F8 g= | =org-scribe-set-scene-plot-threads= | Fija los enlaces de hilos en :Trama:           |
+| =F8 j= | =org-scribe-jump-to-pov-character= | Salta a la ficha del personaje PoV             |
+
+** Modos de escritura (Workspace)
+| Tecla  | Qué hace                                                         |
+|--------+------------------------------------------------------------------|
+| =F8 m= | Modo Sin distracciones                                           |
+| =F8 f= | Modo Enfoque (reduce la vista a la sección actual)               |
+| =F8 e= | Modo Edición (notas y manuscrito lado a lado)                    |
+| =F8 v= | Modo Navegación (árbol + esquema)                                |
+| =F8 0= | Vuelve a la disposición normal                                   |
+
+** Recuento y seguimiento de palabras
+| Tecla  | Orden                  | Qué hace                                                        |
+|--------+------------------------+-----------------------------------------------------------------|
+| =F8 w= | =org-scribe-wordcount= | Cuenta palabras (=C-u= actualiza todas las propiedades WORDCOUNT) |
+| =F8 W= | =org-scribe-plan=      | Abre o crea el planificador incluido (sigue solo las palabras diarias) |
+
+** Búsqueda (con org-ql)
+| Tecla  | Orden                               | Qué hace                                        |
+|--------+-------------------------------------+-------------------------------------------------|
+| =F8 1= | =org-scribe-org-find-pov=           | Busca todas las escenas de un personaje PoV     |
+| =F8 2= | =org-scribe-org-find-character=     | Busca las escenas en las que aparece un personaje |
+| =F8 3= | =org-scribe-org-find-plot=          | Busca escenas por hilo de la trama              |
+| =F8 4= | =org-scribe-org-find-location=      | Busca escenas por localización                  |
+| =F8 5= | =org-scribe-search-todos-recursive= | Busca todas las escenas TODO / sin escribir     |
+| =F8 6= | =org-scribe-search-edits=           | Busca marcadores de edición y notas             |
+
+** Capturar entidades nuevas
+Abre el submenú de captura con =F8 k=.
+
+| Tecla    | Orden                            | Qué hace                              |
+|----------+----------------------------------+---------------------------------------|
+| =F8 k h= | =org-scribe-capture-character=   | Captura la ficha de un personaje nuevo |
+| =F8 k l= | =org-scribe-capture-location=    | Captura un escenario nuevo            |
+| =F8 k g= | =org-scribe-capture-plot-thread= | Captura un hilo de la trama nuevo     |
+| =F8 k b= | =org-scribe-capture-object=      | Captura un objeto importante          |
+| =F8 k t= | =org-scribe-capture-timeline=    | Captura un evento de la línea temporal |
+| =F8 k n= | =org-scribe-capture-to-file=     | Captura una nota libre                |
+
+** Mantenimiento de los enlaces
+Abre el submenú de enlaces con =F8 L=.
+
+| Tecla    | Orden                                      | Qué hace                                                 |
+|----------+--------------------------------------------+----------------------------------------------------------|
+| =F8 L R= | =org-scribe-relink-project=                | De una pasada: añade IDs, enlaza nombres y refresca todas las entidades |
+| =F8 L v= | =org-scribe-show-character-relationships=  | Muestra las relaciones del personaje bajo el cursor      |
+| =F8 L V= | =org-scribe-show-all-relationships=        | Muestra el mapa completo de relaciones                   |
+
+** Informe de salud
+| Tecla  | Orden                       | Qué hace                                                                   |
+|--------+-----------------------------+----------------------------------------------------------------------------|
+| =F8 H= | =org-scribe-project-health= | Informe agregado: progreso de palabras, propiedades que faltan, entidades huérfanas |
+
+** Herramientas de diccionario y de idioma
+| Tecla  | Orden                        | Qué hace                              |
+|--------+------------------------------+---------------------------------------|
+| =F8 d= | =org-scribe-dictionary-lookup= | Consulta de definiciones en español |
+| =F8 y= | =org-scribe-sinonimo=        | Sinónimos en español                  |
+| =F8 x= | =powerthesaurus-lookup-dwim= | Tesauro inglés (powerthesaurus)       |
+
+** Opciones de visualización
+| Tecla    | Orden                           | Qué hace                                                      |
+|----------+---------------------------------+---------------------------------------------------------------|
+| =F8 L C= | =org-scribe-column-view-toggle= | Alterna la vista de columnas (muestra nombres limpios, no IDs) |
+| =F8 L T= | =org-scribe-overlays-mode=      | Alterna los globos informativos en el área de eco (opcional)  |
+
+** Sobre el plan
+
+[[file:plan.org][plan.org]] es una instantánea congelada (de mayo a junio de 2026). El informe de salud lo muestra pasado de su fecha final y con retraso; eso es la antigüedad de la demo, no un fallo. Crea el tuyo con =F8 W=.

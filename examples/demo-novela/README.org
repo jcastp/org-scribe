@@ -1,0 +1,229 @@
+#+TITLE: La rutina matinal - Resumen del proyecto
+#+AUTHOR: Autora de ejemplo
+#+DATE: 2026-05-01
+#+STARTUP: overview
+
+* Qué es este proyecto
+
+Un proyecto de novela de org-scribe completo y relleno, para que puedas leer un
+ejemplo trabajado en lugar de una plantilla en blanco. Es lo que produce
+=M-x org-scribe-create-novel-project= tres semanas y cinco escenas después.
+
+Es la versión en español de la demo *The Morning Routine*: la misma historia, las
+mismas escenas, el mismo plan y los mismos marcadores de edición, como un
+proyecto real en español (archivos =novela.org= y =diseno.org=, propiedades de
+escena en español).
+
+Este README es una guía de la demo; un proyecto real solo tiene el manuscrito y
+el cuaderno de diseño. No hay nada que instalar. Abre cualquier archivo y léelo;
+ábrelo dentro de Emacs con org-scribe cargado y todas las órdenes de las tablas
+de abajo funcionan sobre él.
+
+** Por dónde empezar
+
+1. La parte Fundamentos de [[file:diseno.org][diseno.org]]: la Puerta de salida y el Núcleo. Léela
+   primero, porque el libro empezó así.
+2. La parte Trama de diseno.org: los trece irrenunciables, rellenos, y las
+   cuatro líneas narrativas.
+3. [[file:novela.org][novela.org]]: el manuscrito. Cinco escenas redactadas, diez con solo sus
+   metadatos de planificación.
+4. Después =F8 H= (=org-scribe-project-health=) con cualquiera de estos archivos
+   abierto, y lee lo que la herramienta saca de él.
+
+** Sinopsis
+
+Alex Rivera nunca ha estado donde dijo que estaría, y nunca ha querido
+fallarle a nadie. En una ciudad que paga la disponibilidad y no el tiempo, eso
+es un rasgo con valor de mercado, y las dos personas que más se benefician de
+él son el cliente que necesita a Alex localizable a cualquier hora y quien vive
+en 4B y lleva en silencio la única hora que Alex no deja de gastar.
+
+Tema: /si te niegas a dar forma a tus días, le entregas esa forma a quien la
+pida primero./
+
+* Qué demuestra este proyecto
+
+Cada una de estas cosas merece que abras el archivo correspondiente para verla,
+en lugar de leer aquí sobre ella.
+
+| Función                                    | Dónde mirar                                                                                                                       |
+|--------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------|
+| La Puerta de salida                        | [[file:diseno.org][diseno.org]], y =F8 H=, que relee las casillas y mide dos de ellas                                                                    |
+| Los trece irrenunciables                   | La parte Trama de [[file:diseno.org][diseno.org]], y la propiedad =:Punto-de-trama:= de cada escena                                                                  |
+| La cadena causal                           | La parte Reparto de diseno.org: Fantasma → Mentira → Debilidad → Deseo/Necesidad                                                  |
+| Una oponente que quiere lo mismo           | El perfil de Dana Okonkwo, y la Línea principal en la parte Trama                                                                 |
+| Escenarios con un Eco y un Escollo         | La sección Ambientación de diseno.org: cuatro escenarios, cuatro Aspectos cada uno                                                |
+| Entidades ocultas (=:Weight: -1=)          | Marisol Rivera y el hilo «Con retraso»; mira las tablas de línea temporal de novela.org y la línea de comentario que cada una escribe debajo |
+| Marcadores de edición y su índice          | Los bloques =#+begin_comment= de [[file:novela.org][novela.org]]; luego =F8 6=                                                                            |
+| Escenas sin escribir                       | Los marcadores =*SUMMARY*= bajo los encabezados TOWRITE; luego =F8 5=                                                             |
+| Enlaces por ID                             | Cada propiedad =:PoV:=, =:Personajes:=, =:Localizacion:=, =:Trama:= y =:Punto-de-trama:=                                           |
+| Relaciones entre personajes                | Las propiedades =:RelationshipsData:=; luego =F8 L V=                                                                             |
+| El planificador de escritura               | [[file:plan.org][plan.org]], y =# Planner: yes= en =.org-scribe-project=; luego =F8 W=                                                                  |
+| Vista de columnas                          | =C-c C-x C-c= en la sección Personajes, Ambientación o Hilos de la Trama: cada una define su propio =:COLUMNS:=                    |
+
+** Imperfecciones deliberadas
+
+La demo es un proyecto a medio borrador, no uno terminado, así que varias cosas
+están mal a propósito y las herramientas están pensadas para encontrarlas:
+
+- La casilla 7 de la Puerta de salida está sin marcar aunque los trece puntos de
+  trama están escritos. =F8 H= informa del desacuerdo y no lo resuelve.
+- El reloj se describe haciendo tictac en una escena y con alarma en otra; las
+  dos contradicen [[file:diseno.org][diseno.org]]. Ambas están señaladas con marcadores
+  =*EDIT*: trama= y aparecen en el índice de ediciones.
+- Una casilla de la Comprobación del reparto está sin marcar, con las escenas
+  problemáticas señaladas con =*EDIT*: personaje=.
+- Varios de los trece puntos de trama no los sirve ninguna escena todavía. El
+  informe de salud los lista.
+
+* Información del Proyecto
+:PROPERTIES:
+:PROJECT_START: 2026-05-01
+:GENRE: Ficción contemporánea
+:TARGET-WORDCOUNT: 80000
+:DEADLINE: 2026-08-03
+:END:
+
+** Objetivos de Escritura
+
+- [X] Cruzar la Puerta de salida
+- [ ] Completar el primer borrador
+- [ ] Pases de revisión 0–9 (la parte Revisión de [[file:diseno.org][diseno.org]])
+- [ ] Comentarios de lectores beta
+- [ ] Revisión final
+
+** Estructura del Proyecto
+
+- [[file:diseno.org][diseno.org]]: *empieza aquí*. El cuaderno de diseño, por partes
+  - Fundamentos: la Puerta de salida y el Núcleo
+  - Trama: los trece irrenunciables y las líneas narrativas
+  - Reparto: seis perfiles de personaje
+  - Mundo: escenarios con su Eco y su Escollo, el mundo y cómo presiona la Debilidad, los símbolos y cómo cambia cada uno, cronología de la historia y del trasfondo
+  - Investigación: lo que se ha comprobado y lo que sigue abierto
+  - Revisión: los diez pases de revisión
+  - Diario: el diario del borrador, incluido cómo cambió el diseño
+  - Borradores: ideas sueltas y dos preguntas ramificadas en alternativas
+- [[file:novela.org][novela.org]]: manuscrito, tablas de progreso y líneas temporales
+- [[file:plan.org][plan.org]]: el calendario y el registro del planificador de escritura. Es una
+  instantánea congelada (de mayo a agosto de 2026), así que el informe de salud
+  muestra el plan como pasado de su fecha de fin y con retraso; es la edad de la
+  demo, no un fallo. Crea el tuyo con =F8 W=.
+
+** Estado Actual
+
+Estado: Redacción
+Posición: Acto I completo, Acto II empezado. Cinco escenas de quince, 1.384 palabras de 80.000
+Última actualización: 2026-05-07
+
+* Órdenes Disponibles
+
+Abre el menú principal con =F8= (=hydra-org-scribe/body=).
+
+** Insertar
+| Tecla  | Orden                          | Qué hace                                         |
+|--------+--------------------------------+--------------------------------------------------|
+| =F8 s= | =org-scribe-insert-scene=      | Inserta un encabezado de escena con propiedades  |
+| =F8 c= | =org-scribe-insert-chapter=    | Inserta un encabezado de capítulo                |
+| =F8 o= | =org-scribe-open-project-file= | Abre un archivo del proyecto (diseno.org, plan.org…) |
+
+** Etiquetar la escena actual
+Con el cursor en cualquier punto de un encabezado de escena. Escriben enlaces por
+ID correctos en sus propiedades.
+
+| Tecla  | Orden                               | Qué hace                                         |
+|--------+-------------------------------------+--------------------------------------------------|
+| =F8 p= | =org-scribe-set-pov-character=      | Pone el enlace =:PoV:= desde la lista de personajes |
+| =F8 h= | =org-scribe-set-scene-characters=   | Pone los enlaces de =:Personajes:=               |
+| =F8 l= | =org-scribe-set-scene-locations=    | Pone los enlaces de =:Localizacion:=             |
+| =F8 g= | =org-scribe-set-scene-plot-threads= | Pone los enlaces de hilos en =:Trama:=           |
+| =F8 G= | =org-scribe-set-scene-plot-points=  | Pone los enlaces de =:Punto-de-trama:=           |
+| =F8 j= | =org-scribe-jump-to-pov-character=  | Salta a la ficha del personaje con PoV           |
+
+** Entornos de trabajo
+| Tecla  | Orden                              | Qué hace                                         |
+|--------+------------------------------------+--------------------------------------------------|
+| =F8 m= | =(org-scribe-workspace 'write)=    | Sin distracciones                                |
+| =F8 f= | =(org-scribe-workspace 'focus)=    | Enfoque: estrecha la vista a la sección actual   |
+| =F8 e= | =(org-scribe-workspace 'edit)=     | Edición: notas y manuscrito lado a lado          |
+| =F8 v= | =(org-scribe-workspace 'navigate)= | Navegación del proyecto: árbol y esquema         |
+| =F8 0= | =(org-scribe-workspace 'normal)=   | Vuelve a la disposición normal                   |
+
+** Conteo y planificación
+| Tecla  | Orden                            | Qué hace                                                  |
+|--------+----------------------------------+-----------------------------------------------------------|
+| =F8 w= | =org-scribe-wordcount=           | Cuenta palabras (=C-u= refresca cada propiedad =WORDCOUNT=) |
+| =F8 a= | =org-scribe-ews-org-count-words= | Refresca =WORDCOUNT= en cada encabezado y sincroniza el plan |
+| =F8 W= | =org-scribe-plan=                | El planificador de escritura. Este proyecto lo tiene activado |
+
+** Búsqueda
+| Tecla  | Orden                               | Qué hace                                         |
+|--------+-------------------------------------+--------------------------------------------------|
+| =F8 1= | =org-scribe-org-find-pov=           | Escenas por personaje con PoV                    |
+| =F8 2= | =org-scribe-org-find-character=     | Escenas en las que aparece un personaje          |
+| =F8 3= | =org-scribe-org-find-plot=          | Escenas por hilo argumental                      |
+| =F8 4= | =org-scribe-org-find-location=      | Escenas por escenario                            |
+| =F8 5= | =org-scribe-search-todos-recursive= | Escenas sin escribir, con su =*SUMMARY*=         |
+| =F8 6= | =org-scribe-search-edits=           | El índice de ediciones, agrupado por categoría   |
+
+** Capturar entidades nuevas
+Submenú: =F8 k=.
+
+| Tecla     | Orden                            | Qué hace                              |
+|-----------+----------------------------------+---------------------------------------|
+| =F8 k h=  | =org-scribe-capture-character=   | Un personaje nuevo, con su ficha completa |
+| =F8 k l=  | =org-scribe-capture-location=    | Un escenario nuevo, con sus Aspectos  |
+| =F8 k g=  | =org-scribe-capture-plot-thread= | Una línea narrativa nueva             |
+| =F8 k b=  | =org-scribe-capture-object=      | Un objeto importante                  |
+| =F8 k t=  | =org-scribe-capture-timeline=    | Un evento de la línea temporal        |
+| =F8 k n=  | =org-scribe-capture-to-file=     | Una nota libre                        |
+
+Deliberadamente no hay captura de puntos de trama: los trece irrenunciables son
+un conjunto fijo, idéntico en todos los proyectos, y lo entrega la plantilla.
+
+** Enlaces y mantenimiento
+Submenú: =F8 L=.
+
+| Tecla     | Orden                                       | Qué hace                                             |
+|-----------+---------------------------------------------+------------------------------------------------------|
+| =F8 L R=  | =org-scribe-relink-project=                 | Una sola pasada: añade IDs, enlaza nombres, refresca todo |
+| =F8 L c=  | =org-scribe-setup-character-links=          | IDs y enlaces de los personajes                      |
+| =F8 L o=  | =org-scribe-setup-location-links=           | IDs y enlaces de los escenarios                      |
+| =F8 L p=  | =org-scribe-setup-plot-thread-links=        | IDs y enlaces de las líneas narrativas               |
+| =F8 L P=  | =org-scribe-setup-plot-point-links=         | IDs y enlaces de los trece irrenunciables            |
+| =F8 L r=  | =org-scribe-setup-character-relationships=  | Prepara las propiedades de relación                  |
+| =F8 L j=  | =org-scribe-jump-to-plot-thread=            | De una escena a su línea narrativa                   |
+| =F8 L J=  | =org-scribe-jump-to-plot-point=             | De una escena a su punto de trama                    |
+
+** Relaciones entre personajes
+| Tecla     | Orden                                     | Qué hace                                        |
+|-----------+-------------------------------------------+-------------------------------------------------|
+| =F8 L a=  | =org-scribe-add-relationship=             | Añade una relación al personaje bajo el cursor  |
+| =F8 L x=  | =org-scribe-remove-relationship=          | Quita una                                       |
+| =F8 L v=  | =org-scribe-show-character-relationships= | Las muestra para el personaje bajo el cursor    |
+| =F8 L V=  | =org-scribe-show-all-relationships=       | El mapa completo                                |
+
+Las relaciones viven en la propiedad =:RelationshipsData:=:
+
+: [[id:...][Nombre]](tipo,intensidad,sentimiento); ...
+
+Cada personaje de la parte Reparto de [[file:diseno.org][diseno.org]] lleva ejemplos reales.
+
+** Análisis y visualización
+| Tecla     | Orden                           | Qué hace                                           |
+|-----------+---------------------------------+----------------------------------------------------|
+| =F8 L t=  | =org-scribe-plot-thread-report= | Cobertura, huecos y líneas de una sola escena      |
+| =F8 L S=  | =org-scribe-plot-thread-stats=  | Estadísticas rápidas por línea                     |
+| =F8 L C=  | =org-scribe-column-view-toggle= | Vista de columnas, con nombres en lugar de enlaces por ID |
+| =F8 L T=  | =org-scribe-overlays-mode=      | Información emergente de entidades en el área de eco (opcional) |
+| =F8 H=    | =org-scribe-project-health=     | El informe de todo el proyecto                     |
+
+Con =org-scribe-overlays-mode= activo, al poner el cursor sobre cualquier enlace
+=[[id:...]]= el área de eco muestra el Rol, la Edad, el Objetivo y la Motivación de
+esa entidad.
+
+** Diccionario e idioma
+| Tecla  | Orden                          | Qué hace                                                |
+|--------+--------------------------------+---------------------------------------------------------|
+| =F8 d= | =org-scribe-dictionary-lookup= | Consulta de definiciones (Wikcionario sin conexión, o RAE) |
+| =F8 y= | =org-scribe-sinonimo=          | Sinónimos (MyThes sin conexión, o RAE)                  |
+| =F8 x= | =org-scribe-thesaurus-lookup=  | Tesauro en inglés (powerthesaurus, opcional)            |

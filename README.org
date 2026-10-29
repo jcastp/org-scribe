@@ -212,7 +212,6 @@ the graceful fallback.
   ;; Optional appearance tweaks
   (setq org-scribe-env-work-theme 'poet)
   (setq org-scribe-env-normal-theme 'ef-deuteranopia-dark)
-  (setq org-scribe-stories-directory "~/writing/exercises")
 
   ;; The one keybinding you need — everything hangs off this menu
   (global-set-key (kbd "<f8>") 'hydra-org-scribe/body))
@@ -235,6 +234,10 @@ already filled in. Two ship with the package, in =examples/=:
   deliberately hidden from the timelines with =:Weight: -1=.
 - [[file:examples/demo-short-story/README.org][=examples/demo-short-story/=]] — /The Last Message/, the smaller
   two-file layout.
+
+Both also exist in Spanish, as real Spanish projects with the same story:
+=examples/demo-novela/= (/La rutina matinal/) and =examples/demo-cuento/=
+(/El último mensaje/).
 
 Both are real projects, not screenshots. Open =examples/demo-novel/novel.org=
 in Emacs with org-scribe loaded and every command works against it: =<f8> H= for the health report, =6= for the edit index, =5= for the unwritten
@@ -1645,8 +1648,6 @@ Key variables:
 
 ** Project & Templates
 - =org-scribe-template-language= - Template set for new projects (=en= or =es=)
-- =org-scribe-template-language= - Default language for templates ('en or 'es)
-- =org-scribe-stories-directory= - Where writing exercise files are created
 
 ** Writing Modes
 - =org-scribe-env-work-theme= - Theme for writing modes

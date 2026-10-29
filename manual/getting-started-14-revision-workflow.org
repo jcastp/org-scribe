@@ -93,9 +93,9 @@ Editing mode (~F8 e~) creates a professional three-panel layout:
 └─────────────┴──────────────────────┴─────────────────┘
 #+END_EXAMPLE
 
-**Left panel** (imenu-list): Navigate your manuscript structure
-**Center panel**: Your manuscript for editing
-**Right panel**: Revision notes and checklists
+*Left panel* (imenu-list): Navigate your manuscript structure
+*Center panel*: Your manuscript for editing
+*Right panel*: Revision notes and checklists
 
 *Note*: to see individual scenes in the left panel as drawn above, you need
 ~(setq org-imenu-depth 3)~ in your init file. Org's default of ~2~ stops the
@@ -353,7 +353,7 @@ You'll see something like:
 | Scene 5 - Revelation   | Chapter 3 | ●         | ●       | ●       |
 #+END_EXAMPLE
 
-**What to look for**:
+*What to look for*:
 
 *Problem: Long gaps*
 #+BEGIN_EXAMPLE
@@ -428,11 +428,11 @@ Use the character timeline to verify character appearances.
 | Scene 4 - Discovery    | Chapter 2 | ★    | ●   |        |       |
 #+END_EXAMPLE
 
-**Symbols reminder**:
+*Symbols reminder*:
 - ★ = Point of View character (this scene from their perspective)
 - ● = Character present (appears but not PoV)
 
-**What to look for**:
+*What to look for*:
 
 *Problem: Secondary character vanishes*
 #+BEGIN_EXAMPLE
@@ -516,9 +516,9 @@ Look at your outline (left panel) for structural balance:
 - Scene 8
 - Scene 9  ← 3 scenes
 
-**Problem**: Chapter 2 has only 1 scene - feels short
+*Problem*: Chapter 2 has only 1 scene - feels short
 
-**Options**:
+*Options*:
 1. Split Chapter 2 Scene 6 into 2 scenes
 2. Move Scene 7 from Chapter 3 to Chapter 2
 3. Combine Chapters 2 & 3
@@ -573,7 +573,7 @@ novel.org:781:  *NOTE*: FORESHADOW - noises from the attic.
 novel.org:1298: *NOTE*: PAYOFF - Alex opens the box.
 #+END_EXAMPLE
 
-**Check**: Every SETUP needs a PAYOFF!
+*Check*: Every SETUP needs a PAYOFF!
 
 *Manual check list in notes*:
 
@@ -1559,8 +1559,8 @@ In the next lesson, you'll learn:
 
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
-- *Lesson Number*: 14 of 16
-- *Part*: 5 - Workflows and Best Practices
+- *Lesson Number*: 14 of 19
+- *Part*: 5 - Workflows, Best Practices and Integrations
 - *Estimated Time*: 20-25 minutes
 - *Difficulty*: Intermediate to Advanced
 - *Prerequisites*: Completed first draft, familiarity with Lessons 7, 9, 10

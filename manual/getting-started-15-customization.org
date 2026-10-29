@@ -1385,8 +1385,6 @@ You now know how to customize every aspect of ~org-scribe~!
   - Custom Hydra bindings
 
 ✓ *Project Structure*
-  - File name preferences
-  - Directory organization
   - Default locations
 
 ✓ *Configuration Methods*
@@ -1530,7 +1528,7 @@ MAINTENANCE
 - *Created*: 2025-11-16
 - *Last Updated*: 2025-11-16
 - *Lesson Number*: 15 of 19 (the last core lesson; Lessons 16 to 19 cover the optional planner, scratchpad, plotting methods and companion)
-- *Part*: 5 - Workflows and Best Practices
+- *Part*: 5 - Workflows, Best Practices and Integrations
 - *Estimated Time*: 20-25 minutes
 - *Difficulty*: Beginner to Intermediate
 - *Prerequisites*: Familiarity with features from Lessons 1-14

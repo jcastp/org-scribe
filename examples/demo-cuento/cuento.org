@@ -1,0 +1,183 @@
+#+TITLE: El último mensaje
+#+AUTHOR: Autora de ejemplo
+#+DATE: 2025-01-14
+#+LANGUAGE: es
+#+STARTUP: overview
+#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
+#+COLUMNS: %40ITEM(Sección) %12WORDCOUNT %12PoV %30Personajes %20Trama %40Resumen %40Comentario
+#+MACRO: scene-break SCENE-BREAK
+#+OPTIONS: todo:nil tags:nil
+
+* Información del Cuento :noexport:
+:PROPERTIES:
+:GENRE: Ciencia ficción
+:TARGET_WORDCOUNT: 5000
+:STATUS: Borrador
+:DEADLINE: 2025-02-14
+:WORDCOUNT: 0
+:ID:       fceaa8f6-9565-48a9-a654-0fce81d4b6c6
+:END:
+
+** Sinopsis
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       4b01ac45-269a-44ab-affe-0b58f6a87bde
+:END:
+Una física cuántica recibe un mensaje de su yo del futuro que le advierte de un experimento catastrófico, pero seguir la advertencia crea justo la paradoja que debía evitar.
+
+** Seguimiento de Palabras
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       e6cd8a28-675e-4503-a9bf-8c7a091c6a98
+:END:
+
+# Esto muestra tu recuento de palabras por secciones:
+# Tabla para llevar el control de palabras por sección
+#+BEGIN: org-generate-wordcount-table
+| Heading                 | Wordcount | Objective | Progress |
+|-------------------------+-----------+-----------+----------|
+| └> [[Contenido del Cuento]] |       572 |      5000 |      11% |
+| └--> [[Apertura]]           |       251 |      1250 |      20% |
+| └--> [[Nudo]]               |       230 |      2500 |       9% |
+| └--> [[Desenlace]]          |        91 |      1250 |       7% |
+
+#+END:
+
+
+Para actualizar el recuento de palabras, usa:
+- =F8 w= (org-scribe-wordcount, contar ahora)
+- =F8 a= (org-scribe-ews-org-count-words, actualizar todos los encabezados)
+
+Los totales diarios los lleva el planificador de escritura incluido, no una
+tabla en este archivo: =F8 W=, o =M-x org-scribe-plan= para crear o
+cargar un plan.
+
+* Enlaces Rápidos :noexport:
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       bd76781f-d3e6-4e1f-86d3-bf48be802533
+:END:
+- [[file:diseno.org][Cuaderno de diseño]]
+
+* Contenido del Cuento
+:PROPERTIES:
+:WORDCOUNT: 572
+:WORD-OBJECTIVE: 5000
+:ID:       4463ce01-88d1-435a-a2e4-ff30e4833734
+:END:
+
+** FINISHED Apertura :ignore:
+:PROPERTIES:
+:WORDCOUNT: 251
+:WORD-OBJECTIVE: 1250
+:PoV: [[id:es-char-elena-chen-20250114-001][Dra. Elena Chen]]
+:Personajes:
+:Trama: [[id:es-plot-main-line-20250114-001][Línea principal]]
+:Punto-de-trama:
+:Linea-temporal: Día 1, 03:47
+:Localizacion: [[id:es-loc-cern-lab-20250114-001][Laboratorio de Investigación Cuántica del CERN]]
+:Objetos:
+:Descripcion:
+:Resumen: Elena descubre en el ordenador del laboratorio un mensaje cuántico cifrado que solo pudo enviar alguien con un conocimiento íntimo de su trabajo: ella misma.
+:Motivacion-escena:
+:Fuente-conflicto:
+:Brecha:
+:Que-esta-en-juego:
+:Problema-mundo:
+:Emocion:
+:Nivel-tension:
+:Resultado:
+:Decision-secuela:
+:Comentario:
+:ID:       f6be451a-0540-45ab-b51a-08db05973924
+:END:
+
+La cámara de entrelazamiento cuántico zumbaba con su frecuencia habitual de medianoche, un sonido que Elena Chen había llegado a encontrar reconfortante durante los últimos tres años. A las 3:47 de la madrugada el laboratorio era solo suyo, o eso creía, hasta que el terminal contiguo a la cámara dio el aviso de un mensaje entrante.
+
+No era un correo. No era un texto. Era una transmisión cuántica directa a través del mismo sistema que ella estaba construyendo, un sistema que todavía no debería ser capaz de recibir nada.
+
+El mensaje estaba cifrado, pero no con ningún protocolo estándar. El algoritmo le resultaba familiar de un modo que le erizó la piel. Era su propio método de cifrado, el que desarrollaba en privado, el que no había compartido con nadie.
+
+Tecleó su clave privada con dedos temblorosos.
+
+El mensaje se descifró al instante:
+
+/NO REALICES LA PRUEBA DE MAÑANA. LA CASCADA SERÁ IRREVERSIBLE. NO HAY MANERA DE DESHACER LO QUE VIENE. CONFÍA EN MÍ. TIENES QUE CONFIAR EN TI./
+
+/—E. Chen, 16 de marzo de 2047, 16:23 (tu línea temporal +12 h 39 min)/
+
+Elena miró fijamente la marca de tiempo. Doce horas y treinta y nueve minutos a partir de ahora. El mensaje afirmaba venir de su propio futuro, un futuro que, según todas las leyes de la física que ella comprendía, no debería poder enviar mensajes hacia atrás en el tiempo.
+
+Salvo que ella estaba a punto de poner a prueba justamente eso a la mañana siguiente.
+
+{{{scene-break}}}
+
+** TOREVIEW Nudo :ignore:
+:PROPERTIES:
+:WORDCOUNT: 230
+:WORD-OBJECTIVE: 2500
+:PoV: [[id:es-char-elena-chen-20250114-001][Dra. Elena Chen]]
+:Personajes:
+:Trama: [[id:es-plot-main-line-20250114-001][Línea principal]]
+:Punto-de-trama:
+:Linea-temporal: Día 1, 04:15
+:Localizacion: [[id:es-loc-cern-lab-20250114-001][Laboratorio de Investigación Cuántica del CERN]]
+:Objetos:
+:Descripcion:
+:Resumen: Elena duda si fiarse del mensaje. Consulta sus notas, descubre la posibilidad teórica de un bucle causal y toma una decisión.
+:Motivacion-escena:
+:Fuente-conflicto:
+:Brecha:
+:Que-esta-en-juego:
+:Problema-mundo:
+:Emocion:
+:Nivel-tension:
+:Resultado:
+:Decision-secuela:
+:Comentario:
+:ID:       7624387a-bf75-4e54-88f9-7b8bdcffc4ba
+:END:
+
+Elena pasó la hora siguiente abriendo sus registros experimentales y cotejando cada variable de la prueba prevista para mañana. Las calibraciones del campo cuántico, los vectores de desplazamiento temporal, los coeficientes de entrelazamiento: todo estaba exactamente como lo había planeado durante meses.
+
+Pero ¿y si la advertencia era real?
+
+Si su yo del futuro había enviado de verdad ese mensaje, el experimento tendría éxito. Significaba que la comunicación temporal hacia atrás era posible. Y también que algo saldría catastróficamente mal.
+
+Volvió a abrir sus modelos teóricos, los que había mantenido en privado porque rozaban lo imposible. Allí, enterrado en las matemáticas, lo encontró: un bucle causal. Si el experimento tenía éxito y ella enviaba una advertencia hacia atrás, crearía un bucle temporal estable, uno en el que la advertencia misma se convertía en el catalizador del desastre que predecía.
+
+A las 11 de la mañana, Elena había tomado su decisión. Archivó todos los datos experimentales, redactó una explicación detallada de sus razones y se dispuso a cancelar la prueba.
+
+Pero, cuando alargó la mano hacia el protocolo de cancelación, un pensamiento la dejó helada: si no realizaba la prueba, nunca enviaría la advertencia. Y si nunca enviaba la advertencia, no habría motivo para cancelar la prueba. El bucle se rompería, la causalidad se restablecería y la prueba de mañana seguiría adelante exactamente como estaba previsto.
+
+Fuera como fuese, estaba atrapada.
+
+{{{scene-break}}}
+
+** TODO Desenlace :ignore:
+:PROPERTIES:
+:WORDCOUNT: 91
+:WORD-OBJECTIVE: 1250
+:PoV: [[id:es-char-elena-chen-20250114-001][Dra. Elena Chen]]
+:Personajes:
+:Trama: [[id:es-plot-main-line-20250114-001][Línea principal]]
+:Punto-de-trama:
+:Linea-temporal: Día 2, 09:00
+:Localizacion: [[id:es-loc-cern-lab-20250114-001][Laboratorio de Investigación Cuántica del CERN]]
+:Objetos:
+:Descripcion:
+:Resumen: Elena realiza la prueba a pesar de la advertencia, descubre el efecto cascada y comprende que debe enviar el mensaje que lo empezó todo, cerrando el bucle.
+:Motivacion-escena:
+:Fuente-conflicto:
+:Brecha:
+:Que-esta-en-juego:
+:Problema-mundo:
+:Emocion:
+:Nivel-tension:
+:Resultado:
+:Decision-secuela:
+:Comentario:
+:ID:       aabe6a68-900c-4359-833b-9facc8815abd
+:END:
+
+[Pendiente de escribir: Elena sigue adelante con el experimento. La cascada empieza exactamente como se advertía. Tiene 12 horas y 39 minutos para enviar el mensaje antes de que el campo temporal colapse. Comprende que su decisión de realizar la prueba a pesar de la advertencia no fue libre albedrío, sino determinismo. El mensaje no la avisaba para evitar la cascada; aseguraba que la cascada ocurriera exactamente como debía. Envía el mensaje, cierra el bucle y entiende ahora que algunos sucesos en el tiempo son puntos fijos que tienen que ocurrir.]

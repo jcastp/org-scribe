@@ -202,7 +202,7 @@ escena que vas a tirar.  Haz la pregunta tonta.  Discute contigo mismo
 por escrito.
 
 Refila lo que sobreviva con C-c C-w, que ofrece todos los encabezados
-de todos los archivos del proyecto.  Borra el resto sin ceremonia.
+del manuscrito y del cuaderno.  Borra el resto sin ceremonia.
 
 Abre este cuaderno desde cualquier punto del proyecto con F8 o.
 
@@ -218,8 +218,8 @@ con un estado, que se cambia con C-c C-t:
   CHOSEN     es esta
   REJECTED   descartada, conservando el motivo
 
-Conserva las ramas descartadas.  El porqué-no vale tanto como el
-porqué, y borrar una solo significa volver a deducirla dentro de tres
+Conserva las ramas descartadas.  Saber por qué no vale tanto como saber por
+qué, y borrar una solo significa volver a deducirla dentro de tres
 meses.  REJECTED y CHOSEN son estados finales, así que una pregunta ya
 resuelta se pliega sin perder su razonamiento.
 

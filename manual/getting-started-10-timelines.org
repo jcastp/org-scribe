@@ -487,8 +487,8 @@ Here are real-world uses for timelines.
 5. Update timeline to verify fix
 
 *Example*:
-- Romance thread: Scene 2 ● ... Scene 3 ● ... Scene 10 ● (6 scenes in a row without it: a gap the report flags)
-- Fix: Add a romantic moment in Scene 6 or 7
+- Romance thread: Scene 2 ● ... Scene 9 ● (6 scenes in a row without it: a gap the report flags)
+- Fix: Add a romantic moment in Scene 5 or 6
 
 ** Workflow 3: Act Structure Verification
 

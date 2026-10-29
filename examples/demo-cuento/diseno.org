@@ -1,0 +1,269 @@
+#+TITLE: El último mensaje - Diseño
+#+AUTHOR: Autora de ejemplo
+#+DATE: 2025-01-14
+#+LANGUAGE: es
+#+STARTUP: overview hideblocks
+
+* Personajes
+
+** Protagonista: Dra. Elena Chen
+:PROPERTIES:
+:ID:       es-char-elena-chen-20250114-001
+:TYPE: Protagonist
+:NAME: Dra. Elena Chen
+:AGE: 34
+:GENDER: Female
+:Role: Protagonist
+:RelationshipsData: [[id:es-char-marcus-webb-20250114-002][Dr. Webb]](superior,6,positive)
+:END:
+
+- Personalidad :: Brillante, metódica, algo obsesiva con su trabajo. Le pesa la responsabilidad de lo que descubre.
+- Objetivo :: Completar con éxito el experimento de comunicación temporal cuántica que podría revolucionar la física.
+- Conflicto :: Debe elegir entre fiarse de un mensaje que dice venir de su yo del futuro o llevar adelante el experimento que le costó años planificar.
+- Rasgo característico :: Trabaja siempre sola y de noche cuando necesita pensar a fondo. Bebe té Earl Grey de forma obsesiva.
+- Trasfondo :: Niña prodigio de la física; perdió a su madre por un alzhéimer precoz. La mueve el deseo de «comunicarse a través de distancias imposibles»: metafóricamente con su madre perdida, literalmente con la mecánica cuántica.
+
+** Personaje secundario: Dr. Marcus Webb
+:PROPERTIES:
+:ID:       es-char-marcus-webb-20250114-002
+:TYPE: Supporting
+:NAME: Dr. Marcus Webb
+:Role: Supporting
+:RelationshipsData: [[id:es-char-elena-chen-20250114-001][Dra. Chen]](subordinate,6,positive)
+:END:
+
+- Papel :: Director del laboratorio, supervisor y mentor de Elena
+- Relación con el protagonista :: Apoya a Elena, pero con cautela. No sabe nada de las teorías privadas de ella sobre la causalidad inversa.
+- Rasgo clave :: Reacio al riesgo; prefiere el avance gradual a los saltos arriesgados
+
+** Antagonista: La paradoja misma
+:PROPERTIES:
+:TYPE: Antagonist
+:NAME: El bucle causal
+:END:
+
+- Papel :: La paradoja fundamental de la comunicación temporal hacia atrás
+- Qué quiere :: Conservarse a sí misma, asegurar su propia existencia
+- Por qué se opone al protagonista :: Cualquier intento de Elena de evitar la cascada garantiza que ocurra; la paradoja la atrapa en el determinismo
+
+* Esquema de la Trama
+
+** Premisa
+¿Y si recibieras una advertencia de tu yo del futuro, pero hacerle caso creara justo el desastre que intentas evitar?
+
+** Planteamiento
+Elena está a pocos días de probar la comunicación temporal cuántica. Ha trabajado en secreto en los aspectos de causalidad inversa. El laboratorio está en silencio, ella está sola y todo está listo.
+
+** Incidente Desencadenante
+Recibe un mensaje cuántico cifrado a través de su propio sistema —de ella misma, 12 horas y 39 minutos en el futuro— que le advierte de que no haga la prueba de mañana.
+
+** Conflicto Central
+¿Debe fiarse del mensaje y cancelar el experimento, o el mensaje es parte de una elaborada broma o una alucinación por falta de sueño?
+
+El conflicto más profundo: si el mensaje es real, cancelar la prueba crea una paradoja (sin prueba no hay cascada, sin cascada no hay advertencia, sin advertencia no hay cancelación, y la prueba se hace de todos modos). Si lo ignora y realiza la prueba, quizá cause exactamente lo que describía la advertencia.
+
+** Clímax
+Elena realiza la prueba. La cascada empieza: un campo cuántico que se sostiene a sí mismo y comienza a deshilachar el espacio-tiempo local. Tiene exactamente 12 horas y 39 minutos antes del colapso total.
+
+Comprende que el mensaje no era una advertencia para evitar la cascada. Era un paso necesario para asegurar que la cascada ocurriera exactamente como debía. Tiene que enviar la advertencia para cerrar el bucle temporal estable.
+
+** Resolución
+Elena envía el mensaje a su yo del pasado y cierra el bucle. Entiende ahora que nunca tuvo elección: en el instante en que recibió el mensaje, sus actos pasaron a ser puntos fijos en el tiempo. El libre albedrío era una ilusión creada por una información incompleta.
+
+La cascada se estabiliza en un campo temporal cuántico permanente. No ha destruido el espacio-tiempo: ha creado un puente a través de él. Pero el precio es saber que está atrapada en un universo determinista.
+
+** Temas
+- Determinismo frente a libre albedrío
+- El precio del conocimiento
+- Las paradojas como rasgos, no como fallos
+- El duelo y la comunicación imposible
+- El peso de tener razón
+
+* Hilos de la Trama
+
+** Línea principal
+:PROPERTIES:
+:ID:       es-plot-main-line-20250114-001
+:THREAD-TYPE: Principal
+:STATUS: Planificado
+:FIRST-APPEARANCE: Apertura
+:Weight:
+:END:
+
+- Descripción :: Elena recibe una advertencia de su yo del futuro y tiene que decidir si obedecerla.
+- Quién la lleva :: Elena
+- Dónde empieza :: El mensaje llega a las 03:47.
+- Dónde se resuelve :: Ella misma envía el mensaje y cierra el bucle.
+
+* Ambientación
+
+** Escenario principal
+:PROPERTIES:
+:ID:       es-loc-cern-lab-20250114-001
+:LOCATION_NAME: Laboratorio de Investigación Cuántica del CERN
+:TIME_PERIOD: 2047
+:END:
+
+- Descripción :: Instalación de investigación subterránea en Ginebra. Estéril, clínica, pero la cámara de entrelazamiento cuántico tiene un resplandor azul de otro mundo, procedente del campo de contención.
+- Detalles importantes :: El laboratorio zumba siempre, con una frecuencia concreta que acaba resultando reconfortante. De noche está aislado, varias plantas bajo tierra, perfecto para experimentos secretos.
+- Atmósfera :: Al principio científica y serena; se vuelve claustrofóbica a medida que Elena comprende que está atrapada en una secuencia de hechos predeterminada.
+
+** Localizaciones
+
+# Las capturas de localizaciones van aquí como subencabezados
+
+** Período Temporal
+Futuro cercano: 2047. La computación cuántica es corriente, pero la comunicación cuántica a través del tiempo sigue siendo teórica.
+
+** Reglas del Mundo
+[Para fantasía/ciencia ficción: ¿qué reglas deben mantenerse consistentes?]
+
+- Magia/Tecnología :: El entrelazamiento cuántico permite la comunicación instantánea a través del espacio. La comunicación temporal hacia atrás es teóricamente posible, pero exige una energía enorme y una calibración perfecta del campo. La «cascada» es un efecto de campo cuántico desbocado que desestabiliza el espacio-tiempo local.
+- Sociedad/Cultura :: La comunidad de los físicos es competitiva pero colaboradora. El CERN sigue siendo la principal institución de investigación. El trabajo de Elena es tan puntero que mantiene parte de él en privado.
+- Limitaciones :: No se puede cambiar el pasado, solo completarlo. Los bucles temporales estables son posibles, pero las paradojas se resuelven por determinismo. El libre albedrío puede ser una ilusión en un universo con causalidad inversa.
+
+* Objetos
+
+# Las capturas de objetos van aquí si es necesario: la cámara de entrelazamiento cuántico, las claves de cifrado, etc.
+
+* Línea Temporal
+
+# Línea temporal de los sucesos del cuento: 15 y 16 de marzo de 2047
+
+* Investigación y Referencias
+
+** Fuentes
+- «El ladrón cuántico», de Hannu Rajaniemi (para el tono y los conceptos cuánticos)
+- Principio de autoconsistencia de Nóvikov (física)
+- Paradojas de bootstrap y bucles temporales estables
+- Distribución y protocolos de las instalaciones de investigación del CERN
+
+** Datos a Recordar
+- El entrelazamiento cuántico no permite en realidad la comunicación más rápida que la luz en la física convencional
+- El cuento lo resuelve con un «entrelazamiento temporal» como extensión especulativa
+- Las matemáticas no tienen que ser perfectas, pero la lógica interna sí debe ser coherente
+
+** Detalles Interesantes
+- La marca de tiempo concreta (12 horas 39 minutos) debe tener sentido: es lo que tarda la cascada en estabilizarse
+- El método de cifrado privado de Elena se basa en la fecha de nacimiento de su madre
+- El zumbido de la cámara cuántica es de 432 Hz, una frecuencia a la que algunos atribuyen propiedades especiales
+
+* Notas de Revisión
+
+** Borrador 1 - Problemas a Resolver
+- [X] Establecer el carácter y la motivación de Elena en la apertura
+- [ ] Dar más tensión al nudo: el debate interno de Elena necesita urgencia
+- [ ] ¡Hay que escribir el final! Apuntar a unas 1500 palabras
+- [ ] Añadir detalles sensoriales por todas partes: ¿a qué huele el laboratorio? ¿Cómo suena?
+- [ ] Aclarar la ciencia lo justo para que sea creíble, sin que se convierta en una clase
+
+** Comentarios de Lectores Beta
+
+*** Lector 1
+Fecha: [Pendiente]
+Comentarios:
+
+*** Lector 2
+Fecha: [Pendiente]
+Comentarios:
+
+** Cambios Realizados
+- Más caracterización de Elena en la apertura
+- Añadido el detalle del té Earl Grey
+- La marca de tiempo es ahora más concreta y significativa
+
+* Ideas Aleatorias e Inspiración
+
+** Escenas Potenciales
+- Elena encuentra los viejos apuntes de investigación de su madre (¿quizá como flashback?)
+- Un momento en que casi llama a Marcus, pero decide no hacerlo
+- El comienzo de la cascada: el espectáculo visual
+
+** Líneas/Diálogos Interesantes
+- «Confía en mí. Tienes que confiar en ti.» (La paradoja central del mensaje)
+- «Algunos sucesos del tiempo no son elecciones. Son inevitabilidades.»
+- «El universo no tiene agujeros de guion. Tiene bucles estables.»
+
+** Finales Alternativos
+1. Final oscuro: la cascada no se estabiliza y Elena muere sabiendo que la causó
+2. Final ambiguo: ¿recibió de verdad un mensaje o fue una alucinación?
+3. Final esperanzado: el campo estable le permite comunicarse con el pasado de su madre (¿demasiado sentimental?)
+
+** Notas de Estilo
+- Tono :: Thriller científico con trasfondo filosófico. Descripciones clínicas en contraste con el estado emocional de Elena.
+- Elección de PdV :: Tercera persona limitada, pegada a la perspectiva de Elena
+- Tiempo verbal :: Pasado
+- Distancia narrativa :: Cercana: estamos en su cabeza, pero conservamos cierta objetividad
+
+** Palabras/Frases a Evitar
+- «Cuántico» demasiadas veces (variar con «campo temporal», «entrelazamiento», etc.)
+- Volcados de información sobre la ciencia
+- Descripciones recargadas de la tecnología
+
+* Música/Atmósfera para Escribir
+- Lista de reproducción :: Electrónica ambiental (Aphex Twin, «Selected Ambient Works»), algo con un zumbido constante
+- Estado de ánimo :: Noche cerrada, aislamiento, tensión intelectual que crece hasta el pavor existencial
+
+* Obras Similares como Referencia
+- Cuento/Libro 1 :: «Historia de tu vida», de Ted Chiang. Lo que me gusta: cómo trata el determinismo y el tiempo, y el núcleo emocional bajo la ciencia.
+- Cuento/Libro 2 :: «Todos vosotros, zombis», de Robert Heinlein. Lo que quiero evitar: que la paradoja sea tan ingeniosa que sacrifique al personaje.
+- Cuento/Libro 3 :: «El mercader y la puerta del alquimista», de Ted Chiang. Me encanta cómo trata el viaje en el tiempo como algo inevitable, no modificable.
+
+* Borradores
+
+#+begin_comment
+Esta parte no tiene estructura, y no pretende llegar a tenerla.
+
+Es el único sitio del proyecto que no te pide nada.  El resto de este
+cuaderno no es libre: sus secciones de Personajes y Ambientación las lee
+el sistema de enlaces y en ellas archiva la captura, así que un esbozo
+suelto ahí se convierte en una entidad a medias.  Ponlo aquí.
+
+Nada de lo que escribas aquí se cuenta, se exporta ni lo lee ninguna
+orden de org-scribe.  Refila lo que sobreviva con C-c C-w; borra el resto.
+
+Mira la Lección 17 del manual para la convención de ramas que sigue.
+#+end_comment
+
+** Ideas sueltas
+
+El mensaje debería ser más corto de lo que el lector espera. Nueve palabras
+como mucho. Todo lo demás es Elena decidiendo qué significan.
+
+El laboratorio a las 04:00. Nadie. La cafetera es lo único en marcha y lleva
+encendida toda la noche, lo que significa que alguien pensaba volver.
+
+No explicar la física. El cuento no va de si funciona.
+
+Las tres últimas líneas: lo hace de todos modos. No es desafío: simplemente
+se queda sin razones para no hacerlo.
+
+
+** ¿Y si Elena nunca comprueba que el mensaje es suyo?                :branch:
+:PROPERTIES:
+:ABOUT:
+:END:
+
+# La escena de verificación es el momento más obvio y probablemente el más
+# aburrido.  ¿Qué pierde el cuento sin ella?
+
+*** REJECTED A. Lo verifica y todo cuadra
+
+Convierte el cuento en un procedimiento policial. El lector deja de hacerse la
+pregunta sobre la que gira todo.
+
+*** EXPLORING B. Ni lo intenta
+
+Entonces el cuento trata de lo que ella ya estaba dispuesta a creer, que es la
+historia secreta que hay debajo. Le cuesta al lector una certeza cuya pérdida
+quizá no perdone.
+
+**** OPEN B1. Una línea que reconoce que podría comprobarlo, y no lo hace
+
+**** OPEN B2. Ni se le pasa por la cabeza
+
+Más difícil, mejor, y hace de ella alguien concreto en vez de alguien sensato.
+
+*** OPEN C. Lo intenta y el resultado es ambiguo
+
+Quiere ser las dos cosas. Probablemente no es ninguna.

@@ -80,11 +80,6 @@ ratios matter: (1 2 1) is the same as (25 50 25)."
   :type '(repeat (number :tag "Weight"))
   :group 'org-scribe)
 
-(defcustom org-scribe-create-dirs-automatically t
-  "When non-nil, create directories (characters/, research/) automatically."
-  :type 'boolean
-  :group 'org-scribe)
-
 (defcustom org-scribe-ispell-dictionaries
   '((en . "en_US")
     (es . "es_ES"))
@@ -123,12 +118,6 @@ org-scribe reads the generated file."
 (defcustom org-scribe-projects-directory
   (expand-file-name "~/writing/")
   "Default base directory proposed when creating a new novel or short story project."
-  :type 'directory
-  :group 'org-scribe)
-
-(defcustom org-scribe-stories-directory
-  (expand-file-name "~/writing/exercises")
-  "Directory where writing exercise files will be created."
   :type 'directory
   :group 'org-scribe)
 

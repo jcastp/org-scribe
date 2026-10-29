@@ -1,7 +1,7 @@
 ** Puerta de salida
 
 #+begin_comment
-Ésta es la única lista que decide cuándo se empieza a escribir. Cuando estas
+Esta es la única lista que decide cuándo se empieza a escribir. Cuando estas
 ocho casillas estén marcadas, deja de planificar y empieza. Todo lo demás se
 descubre escribiendo, y lo que se descubre escribiendo es mejor que lo que se
 decide en una tabla.
@@ -173,7 +173,7 @@ Si eliges Resistencia, los trece puntos irrenunciables no se leen igual.
 
 *** Control de focalizadores
 
-# Sólo si hay más de uno. Cada focalizador necesita arco propio, o es un
+# Solo si hay más de uno. Cada focalizador necesita arco propio, o es un
 # observador y no una perspectiva.
 
 | Focalizador | Deseo | Arco | Escenas suyas | Sabe / No sabe |

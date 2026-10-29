@@ -1,0 +1,1073 @@
+#+TITLE: La rutina matinal
+#+AUTHOR: Autora de ejemplo
+#+DATE: 2026-05-01
+#+LANGUAGE: es
+#+STARTUP: overview
+#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
+#+COLUMNS: %40ITEM(Escena) %9WORDCOUNT %12PoV %16Trama %20Punto-de-trama %30Brecha %20Resultado %14Emocion
+#+MACRO: scene-break SCENE-BREAK
+#+OPTIONS: todo:nil tags:nil
+
+# Un manuscrito de ejemplo trabajado. Ocho capítulos esbozados, cinco escenas
+# redactadas y el resto con solo sus metadatos de planificación.
+#
+# Cosas que merece la pena ver abriendo este archivo:
+#   C-c C-x C-c   vista de columnas: Punto-de-trama y Brecha junto a cada escena
+#   C-c C-c       sobre cualquier línea #+BEGIN: de abajo, para regenerar las tablas
+#   F8 6          el índice de ediciones, construido con los marcadores *EDIT*
+#                 y *NOTE* de los bloques de comentario repartidos por las escenas
+#   F8 5          cada escena sin escribir, con su marcador *SUMMARY*
+#   F8 H          el informe de salud del proyecto
+#
+# Los marcadores viven dentro de bloques #+begin_comment a propósito. Eso los
+# deja fuera de todos los motores de exportación y de los recuentos de
+# palabras, así que el WORDCOUNT de abajo es prosa real y nada más.
+
+* Objetivos del Proyecto :ignore:noexport:
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       e9bafdba-4013-43d8-9fc3-8e47f99feb3f
+:END:
+
+- Objetivo total de palabras :: 80.000
+- Fecha de inicio :: 2026-05-01
+- Fecha prevista de finalización :: 2026-08-03
+- Objetivo diario de palabras :: 1.200
+
+# Estas cuatro cifras son una declaración de intenciones, escrita una sola vez.
+# El planificador de escritura se ha hecho cargo: este proyecto lo activó
+# (# Planner: yes en .org-scribe-project), así que F8 W abre el calendario y
+# cada recuento de palabras anota el total del día en plan.org.
+
+* Seguimiento del Progreso :ignore:noexport:
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       31719e94-b44a-4ecf-97ed-e8295437b347
+:END:
+
+** Conteo de Palabras y Progreso
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       af3fef62-17b4-4d35-a288-7cdad8367fe9
+:END:
+
+Esta tabla muestra tu conteo de palabras, objetivos y progreso por sección.
+Actualízala con =C-c C-c= en la línea #+BEGIN.
+
+#+BEGIN: org-generate-wordcount-table
+| Heading                                     | Wordcount | Objective | Progress |
+|---------------------------------------------+-----------+-----------+----------|
+| └> [[Acto I]]                                   |       759 |     20000 |       4% |
+| └--> [[Capítulo 1 - Tres alarmas]]              |       466 |      3000 |      16% |
+| └----> [[Escena 1 - La alarma]]                 |       179 |       500 |      36% |
+| └----> [[Escena 2 - Encuentro en la cafetería]] |       287 |       800 |      36% |
+| └--> [[Capítulo 2 - Lo que cuesta]]             |       293 |      3000 |      10% |
+| └----> [[Escena 1 - La decisión]]               |       293 |       800 |      37% |
+| └----> [[Escena 2 - La entrega]]                |         0 |       800 |       0% |
+| └----> [[Escena 3 - Condiciones]]               |         0 |       800 |       0% |
+| └> [[Acto II]]                                  |       272 |     40000 |       1% |
+| └--> [[Capítulo 3 - Primer día]]                |       272 |      3000 |       9% |
+| └----> [[Escena 1 - Primer intento]]            |       272 |       800 |      34% |
+| └----> [[Escena 2 - Solidaridad]]               |         0 |       800 |       0% |
+| └--> [[Capítulo 4 - Ajustes]]                   |         0 |      3000 |       0% |
+| └----> [[Escena 1 - Charla de café]]            |         0 |       800 |       0% |
+| └----> [[Escena 2 - Encontrar el equilibrio]]   |         0 |       800 |       0% |
+| └--> [[Capítulo 5 - Las seis en punto]]         |         0 |      3000 |       0% |
+| └----> [[Escena 1 - El elogio]]                 |         0 |       800 |       0% |
+| └--> [[Capítulo 6 - Jueves]]                    |         0 |      3000 |       0% |
+| └----> [[Escena 1 - Jueves]]                    |         0 |      1000 |       0% |
+| └----> [[Escena 2 - El reloj se ha parado]]     |         0 |       800 |       0% |
+| └> [[Acto III]]                                 |       353 |     20000 |       2% |
+| └--> [[Capítulo 7 - Dar cuerda]]                |         0 |      3000 |       0% |
+| └----> [[Escena 1 - Dar cuerda]]                |         0 |       800 |       0% |
+| └--> [[Capítulo 8 - La nueva normalidad]]       |       353 |      3000 |      12% |
+| └----> [[Escena 1 - Once minutos]]              |         0 |      1200 |       0% |
+| └----> [[Escena 2 - Círculo completo]]          |       353 |       800 |      44% |
+
+#+END:
+
+** Seguimiento Diario de Palabras
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       6f056f3b-c835-4e7a-9446-efee7d1a8720
+:END:
+
+Los totales diarios los lleva el planificador de escritura incluido, no una
+tabla aquí. Ábrelo con =F8 W=, o con =M-x org-scribe-plan=.
+
+Este proyecto tiene un plan ([[file:plan.org][plan.org]]) y la puerta está abierta, así que
+cada conteo de palabras que ejecutes aquí anota en su registro el total
+acumulado de ese día. Los paneles del planificador (=F8 W=, luego =D=) dibujan
+la curva de progreso, la velocidad, el mejor día y la racha de escritura a
+partir de ese registro.
+
+** Seguimiento de Tiempo
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       73ade4b4-7acd-4e19-98ae-0f2d33e68d0c
+:END:
+
+Para registrar tiempo de escritura, usa:
+- =C-c C-x C-i= (org-clock-in)
+- =C-c C-x C-o= (org-clock-out)
+
+*** Sesiones de Escritura
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       c00801a7-6744-419f-9c83-8e99069a47f9
+:END:
+
+**** 2026-05-01 Primera sesión
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       97bc311b-10a1-45e8-b0aa-10704df0cbbc
+:END:
+:LOGBOOK:
+CLOCK: [2026-05-01 Fri 06:15]--[2026-05-01 Fri 07:40] =>  1:25
+:END:
+
+** Análisis de Tramas
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       85d2529f-916d-4ae8-9827-51f30ca055f4
+:END:
+
+Esta tabla muestra qué hilos argumentales aparecen en cada escena.
+Actualiza con =C-c C-c= en la línea #+BEGIN.
+
+Para informes detallados de salud, usa =M-x org-scribe-plot-thread-report= (=F8 L t=).
+Para estadísticas rápidas, usa =M-x org-scribe-plot-thread-stats= (=F8 L S=).
+
+# Fíjate en la línea de comentario que la tabla escribe bajo sí misma. «Con
+# retraso» lleva :Weight: -1 en la parte Trama, así que conserva todo salvo su
+# columna aquí. Pasa :show-hidden t en la línea #+BEGIN para mostrarla igualmente.
+
+#+BEGIN: plot-thread-timeline
+| Scene                                | Chapter                          | Línea principal | Los jueves de Sam | El contrato de Kestrel |
+|--------------------------------------+----------------------------------+-----------------+-------------------+------------------------|
+| Escena 1 - La alarma                 | Capítulo 1 - Tres alarmas        |                 |                   |                        |
+| Escena 2 - Encuentro en la cafetería | Capítulo 1 - Tres alarmas        |                 | ●                 |                        |
+| Escena 1 - La decisión               | Capítulo 2 - Lo que cuesta       | ●               |                   |                        |
+| Escena 2 - La entrega                | Capítulo 2 - Lo que cuesta       | ●               | ●                 |                        |
+| Escena 3 - Condiciones               | Capítulo 2 - Lo que cuesta       | ●               |                   |                        |
+| Escena 1 - Primer intento            | Capítulo 3 - Primer día          | ●               |                   |                        |
+| Escena 2 - Solidaridad               | Capítulo 3 - Primer día          |                 |                   | ●                      |
+| Escena 1 - Charla de café            | Capítulo 4 - Ajustes             | ●               | ●                 |                        |
+| Escena 2 - Encontrar el equilibrio   | Capítulo 4 - Ajustes             | ●               |                   |                        |
+| Escena 1 - El elogio                 | Capítulo 5 - Las seis en punto   | ●               |                   | ●                      |
+| Escena 1 - Jueves                    | Capítulo 6 - Jueves              | ●               | ●                 | ●                      |
+| Escena 2 - El reloj se ha parado     | Capítulo 6 - Jueves              | ●               |                   |                        |
+| Escena 1 - Dar cuerda                | Capítulo 7 - Dar cuerda          | ●               | ●                 |                        |
+| Escena 1 - Once minutos              | Capítulo 8 - La nueva normalidad | ●               | ●                 | ●                      |
+| Escena 2 - Círculo completo          | Capítulo 8 - La nueva normalidad | ●               | ●                 |                        |
+# Not shown (Weight -1): Con retraso
+
+#+END:
+
+** Línea Temporal de Personajes
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       7b9af3dc-7785-4bbb-b0b4-41674289d669
+:END:
+
+Esta tabla muestra qué personajes aparecen en cada escena.
+
+Símbolos:
+- ★ = Personaje con Punto de Vista
+- ● = Presente en la escena
+
+Actualiza con =C-c C-c= en la línea #+BEGIN.
+
+# Marisol Rivera lleva :Weight: -1 en la sección Personajes: está muerta antes
+# de que empiece la historia, así que una columna en blanco parecería un fallo
+# de enlace. La tabla la nombra debajo en su lugar.
+
+#+BEGIN: character-timeline
+| Scene                                | Chapter                          | Alex | Casey | Dana | Priya | Sam |
+|--------------------------------------+----------------------------------+------+-------+------+-------+-----|
+| Escena 1 - La alarma                 | Capítulo 1 - Tres alarmas        | ★    |       |      |       |     |
+| Escena 2 - Encuentro en la cafetería | Capítulo 1 - Tres alarmas        | ★    |       |      |       | ●   |
+| Escena 1 - La decisión               | Capítulo 2 - Lo que cuesta       | ★    |       |      |       |     |
+| Escena 2 - La entrega                | Capítulo 2 - Lo que cuesta       | ★    |       |      |       | ●   |
+| Escena 3 - Condiciones               | Capítulo 2 - Lo que cuesta       | ★    |       | ●    |       |     |
+| Escena 1 - Primer intento            | Capítulo 3 - Primer día          | ★    |       |      |       |     |
+| Escena 2 - Solidaridad               | Capítulo 3 - Primer día          | ★    |       |      | ●     |     |
+| Escena 1 - Charla de café            | Capítulo 4 - Ajustes             | ★    |       |      |       | ●   |
+| Escena 2 - Encontrar el equilibrio   | Capítulo 4 - Ajustes             | ★    |       |      |       |     |
+| Escena 1 - El elogio                 | Capítulo 5 - Las seis en punto   | ★    |       | ●    | ●     |     |
+| Escena 1 - Jueves                    | Capítulo 6 - Jueves              | ★    |       |      |       | ●   |
+| Escena 2 - El reloj se ha parado     | Capítulo 6 - Jueves              | ★    |       |      | ●     |     |
+| Escena 1 - Dar cuerda                | Capítulo 7 - Dar cuerda          | ★    |       |      |       | ●   |
+| Escena 1 - Once minutos              | Capítulo 8 - La nueva normalidad | ★    |       | ●    |       |     |
+| Escena 2 - Círculo completo          | Capítulo 8 - La nueva normalidad | ★    | ●     |      |       | ●   |
+
+#+END:
+
+* Navegación Rápida :ignore:noexport:
+:PROPERTIES:
+:WORDCOUNT: 0
+:ID:       7d0a7019-b560-4939-bc4a-fca592b8ad0e
+:END:
+- [[file:diseno.org][Cuaderno de diseño]]
+- [[file:plan.org][Plan de escritura]]
+
+* Acto I :ignore:
+:PROPERTIES:
+:CUSTOM_ID: acto-1
+:WORDCOUNT: 759
+:WORD-OBJECTIVE: 20000
+:ID:       21103cd3-d106-4aee-a0aa-cf62e37ed819
+:END:
+
+** FINISHED Capítulo 1 - Tres alarmas :ignore:
+:PROPERTIES:
+:WORDCOUNT: 466
+:WORD-OBJECTIVE: 3000
+:ID:       75c4e6dd-dd21-4257-be0f-e47a76f9a0f0
+:END:
+
+*** FINISHED Escena 1 - La alarma :ignore:
+:PROPERTIES:
+:WORDCOUNT: 179
+:WORD-OBJECTIVE: 500
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]]
+:Trama: [[id:es-plot-running-late-001][Con retraso]]
+:Punto-de-trama: [[id:es-pp-02-weakness-lie-need][2. Debilidad, Mentira y Necesidad]]
+:Linea-temporal: Día 1, 06:30
+:Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Descripcion: Alex se despierta tres veces y se levanta una
+:Resumen: La alarma suena a las 6:30, a las 6:45 y a las 7:00. Alex está despierta para la tercera y tiene una reunión a las nueve.
+:Motivacion-escena: Alex quiere treinta minutos más
+:Fuente-conflicto: Alex contra un reloj que se niega a mirar
+:Brecha: Alex espera que la mañana aguante; la mañana ya se ha ido
+:Que-esta-en-juego: La reunión de las 9:00, y la cuenta de Halloran que hay detrás
+:Problema-mundo: El primer mensaje del día llega antes que la primera alarma
+:Emocion: Calidez, luego pánico
+:Nivel-tension: 2
+:Resultado: Alex se levanta, con setenta minutos de retraso sobre una hora que nunca nombró
+:Decision-secuela: Ninguna. Alex todavía no cree que haya una decisión disponible
+:Comentario: Imagen de apertura: una alarma silenciada sin abrir un solo ojo
+:ID:       38d2bdb6-ca6f-4a20-99ba-e9840b3a3780
+:END:
+
+El zumbido áspero de la alarma atravesó el sueño de Alex. Sin abrir los ojos,
+una mano salió disparada de debajo de las sábanas y tanteó la mesilla hasta que
+los dedos dieron con la superficie lisa del teléfono. Un gesto practicado.
+Silencio.
+
+Cinco minutos más no harían daño.
+
+La habitación volvió a quedarse en una quietud tranquila, rota solo por el
+zumbido suave del tráfico de la calle. Por la rendija de las cortinas, la luz
+temprana trazaba una línea fina en el techo. Alex se subió la manta hasta la
+barbilla y se hundió más en el calor.
+
+La alarma volvió a sonar. Esta vez Alex entreabrió un ojo para fulminar el
+aparato. Las 6:45. Todavía era pronto. Otro gesto.
+
+Cuando la tercera alarma sonó a las 7:00, el pánico por fin se abrió paso entre
+la niebla del sueño. Alex se incorporó de golpe, con el corazón desbocado. La
+reunión. Aquella reunión tan importante a las 9:00, y todavía tenía que
+ducharse, encontrar algo que ponerse, desayunar...
+
+El caos de siempre había empezado.
+
+#+begin_comment
+*NOTE*: La escena funciona, pero el Fantasma no está en ella por ninguna parte.
+El reloj de Marisol está bajo el montón de correo de la habitación de al lado y
+el lector todavía no tiene motivos para que le importe. Considera una línea: la
+muñeca de Alex, desnuda, notada y descartada.
+*EDIT*: prosa - Tres párrafos abren con la alarma, la habitación y la alarma.
+Varía los puntos de entrada.
+#+end_comment
+
+{{{scene-break}}}
+
+*** FINISHED Escena 2 - Encuentro en la cafetería :ignore:
+:PROPERTIES:
+:WORDCOUNT: 287
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]], [[id:es-char-sam-chen-001][Sam]]
+:Trama: [[id:es-plot-sams-thursdays-001][Los jueves de Sam]]
+:Punto-de-trama: [[id:es-pp-01-theme-stated][1. Susurro del tema]]
+:Linea-temporal: Día 1, 07:45
+:Localizacion: [[id:es-loc-coffee-shop-001][La cafetería de la esquina]]
+:Descripcion: Sam enuncia el tema y Alex oye una afición
+:Resumen: En la cola del café, Alex se encuentra con Sam, de 4B, que cuenta que apunta cada día su rutina matinal y que lo llama liberador.
+:Motivacion-escena: Alex quiere un café en menos de cinco minutos
+:Fuente-conflicto: La aritmética de Alex contra la calma de Sam
+:Brecha: Alex espera dos minutos de cortesía entre vecinos; recibe la tesis del libro y no la reconoce
+:Que-esta-en-juego: Nada todavía, y por eso el tema se puede enunciar aquí sin riesgo
+:Problema-mundo: Todos los de la cola están contestando a algo
+:Emocion: Estrés, luego una curiosidad que no quería
+:Nivel-tension: 2
+:Resultado: Alex deja de contar minutos mientras dura una conversación
+:Decision-secuela: Alex archiva la rutina entre las aficiones de otros
+:Comentario: Irrenunciable 1. Enunciado por alguien que no es la protagonista, e ignorado
+:ID:       cf4e88a9-0b2d-437f-ad9d-f0db327db814
+:END:
+
+Alex irrumpió en la cafetería a las 7:47, ya calculando minutos de cabeza. Pedir
+el café: dos minutos. Esperarlo: tres. Ir al trote hasta la oficina: ocho. Eso
+dejaba exactamente cero minutos para que nada saliera mal.
+
+La cola tenía tres personas. Cómo no.
+
+—¿Mala mañana? —preguntó una voz amable a su espalda.
+
+Alex se volvió y encontró a Sam, de 4B, con un aspecto imposiblemente impecable:
+camisa planchada y una sonrisa de verdad. Sam siempre parecía haberse levantado
+a una hora razonable y tener tiempo para cosas como «desayunar» y «leer las
+noticias».
+
+—¿Tanto se nota? —preguntó Alex, intentando alisarse el pelo peinado a toda
+prisa.
+
+A Sam se le arrugaron los ojos de diversión.
+
+—He aprendido a reconocer las señales. Los calcetines desparejados son una
+pista definitiva.
+
+Alex bajó la vista. Azul marino y negro. Más o menos valía, había pensado al
+vestirse a oscuras para no encender la luz cegadora del techo.
+
+—Deberías probar a levantarte antes —sugirió Sam, pero con un tono suave, sin
+juzgar—. Yo era exactamente como tú.
+
+—¿Tú? ¿En serio? —Alex no podía imaginarlo.
+
+—En serio. Luego empecé una rutina matinal. Lo cambió todo.
+
+Sam sacó de la bolsa una libreta pequeña, una libreta de papel de verdad, no una
+aplicación.
+
+—La apunto cada día. Suena rígido, pero en realidad es bastante liberador.
+
+Antes de que Alex pudiera responder, la barista cantó el pedido de Sam. Sam
+recogió el café con un gesto de cabeza y se dio la vuelta.
+
+—Piénsalo. Nos vemos, Alex.
+
+Cuando Sam se fue, Alex se fijó en algo: había estado tan absorta en la
+conversación que había dejado de contar minutos mentalmente. Solo por un
+momento, el caos de la mañana se había detenido.
+
+#+begin_comment
+*NOTE*: La libreta tiene que poder leerse dos veces. Aquí es serenidad. En el
+Capítulo 6 el lector descubre que es el registro de una persona que cuida, y
+esta escena tiene que sostener esa lectura sin haberla insinuado.
+*EDIT*: personaje - Sam es demasiado cálido aquí. La Postura 4 es una
+disciplina sostenida con cierto orgullo, y nada de eso se ve. Una línea
+ligeramente superior.
+#+end_comment
+
+** TOWRITE Capítulo 2 - Lo que cuesta :ignore:
+:PROPERTIES:
+:WORDCOUNT: 293
+:WORD-OBJECTIVE: 3000
+:ID:       e2408e70-cd5f-44fe-b862-a473916580ca
+:END:
+
+*** FINISHED Escena 1 - La decisión :ignore:
+:PROPERTIES:
+:WORDCOUNT: 293
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]]
+:Punto-de-trama: [[id:es-pp-06-crossing-threshold][6. Cruzar el umbral]]
+:Linea-temporal: Día 1, 20:30
+:Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Descripcion: Alex encuentra el reloj y escribe Día 1
+:Resumen: Tras un día de casi-desastres, Alex descubre el reloj de Marisol bajo el correo, se lo pone y fija una alarma a una hora declarada.
+:Motivacion-escena: Alex quiere que el día haya sido culpa de otra persona
+:Fuente-conflicto: El miedo a nombrar una hora frente a la evidencia del día
+:Brecha: Alex espera buscar una técnica; encuentra el Fantasma bajo el montón de correo
+:Que-esta-en-juego: Si cambia algo en absoluto
+:Problema-mundo: Las facturas siguen a noventa días
+:Emocion: Agotamiento, luego una nostalgia que se vuelve determinación
+:Nivel-tension: 4
+:Resultado: Alex se abrocha el reloj y escribe «Día 1»
+:Decision-secuela: Poner la alarma a las seis. Decir la hora en voz alta, una vez, a nadie
+:Comentario: Irrenunciable 6. Decisión propia de Alex: cierra el primer cuartil
+:ID:       076989b5-d23f-459f-8359-208ba7120334
+:END:
+
+El día había sido un borrón de casi-desastres y pequeños percances. Alex había
+llegado a tiempo a la reunión, pero se había olvidado las notas de la
+presentación. La comida había sido una barrita de cereales en el escritorio. Y al
+volver a casa se había dado cuenta de que llevaba la camisa del revés todo el día
+y nadie se lo había dicho.
+
+Ahora, sentada en el sofá con las sobras de la comida para llevar, Alex notó el
+peso del día instalarse sobre sus hombros. Aquello no podía seguir siendo su
+vida.
+
+Las palabras de Sam resonaron en su cabeza: «Yo era exactamente como tú».
+
+Alex sacó el teléfono para buscar rutinas matinales, pero se detuvo cuando algo
+le llamó la atención: un destello de metal que asomaba bajo el montón de correo
+de la mesita. Apartó los sobres y descubrió un viejo reloj de pulsera, el que
+había sido de su abuela.
+
+El reloj seguía dando tictacs, de algún modo. La esfera marcaba las 8:43 de la
+tarde y, mientras Alex miraba, la manecilla del segundero hizo su paciente
+recorrido. Constante. Fiable. Regular.
+
+Su abuela nunca había tenido prisa, nunca había andado agobiada. Siempre había
+tenido tiempo para lo que importaba: el té de la mañana, los paseos de la
+tarde, las llamadas del domingo. Había llevado ese reloj todos los días, y todos
+los días había parecido tener horas de sobra.
+
+Alex se abrochó el reloj en la muñeca. La correa de cuero estaba suave de puro
+vieja, cómoda contra la piel. Sacó una libreta, una de repuesto del cajón de los
+trastos, nada sofisticado como la de Sam, pero serviría.
+
+En lo alto de la primera página escribió: «Día 1».
+
+Mañana por la mañana sería distinto.
+
+#+begin_comment
+*EDIT*: trama - «El reloj seguía dando tictacs, de algún modo» contradice el
+diseño. Es mecánico y lleva dos años bajo el correo; no puede estar
+funcionando. Tiene que estar parado aquí y recibir cuerda por primera vez en el
+Capítulo 7, o el símbolo del cambio no tiene nada de lo que cambiar.
+*EDIT*: diseño - Si el reloj está parado aquí, que Alex lo ponga en hora
+significa elegir una hora en la que creer, la misma tarde en que escribe «Día
+1». Eso es mejor que lo que hay en el esquema. Actualizar diseno.org, Símbolos.
+#+end_comment
+
+*** TOWRITE Escena 2 - La entrega :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]], [[id:es-char-sam-chen-001][Sam]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]], [[id:es-plot-sams-thursdays-001][Los jueves de Sam]]
+:Punto-de-trama: [[id:es-pp-04-inciting-incident][4. Evento incitador]]
+:Linea-temporal: Día 2, 08:00
+:Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Descripcion: Alex le pide a Sam que reciba al mensajero y pierde la cuenta igualmente
+:Resumen: Alex le pide a Sam que firme la entrega de las pruebas de Halloran a las ocho. Sam no puede, esta vez, y no dice por qué. El mensajero se va; la cuenta también.
+:Motivacion-escena: Alex quiere una hora más de sueño y conservar la cuenta
+:Fuente-conflicto: La petición de Alex contra la incapacidad de Sam de negarse con claridad
+:Brecha: Alex espera que Sam diga que sí, como siempre; Sam dice «esta mañana no» y no da ninguna razón
+:Que-esta-en-juego: La cuenta de Halloran, y el alquiler que hay detrás
+:Problema-mundo: La ventana del mensajero es de quince minutos y a nadie le pagan por esperar en ella
+:Emocion: Irritación, luego una vergüenza que Alex no examina
+:Nivel-tension: 6
+:Resultado: La cuenta se pierde. Le ocurre *a* Alex: no lo eligió
+:Decision-secuela: Alex decide que el problema es que necesita un sistema, no que haya gastado la hora de otra persona
+:Comentario: Irrenunciable 4. Ojo: la Debilidad moral ya está dentro, sin comentar
+:ID:       ddf97e02-a4be-43ba-b322-9d25b363620b
+:END:
+
+#+begin_comment
+*SUMMARY*: Las ocho de la mañana. Alex llama a la puerta de 4B con la camisa de
+ayer y le pide a Sam que reciba al mensajero: las pruebas de Halloran, firma
+obligatoria, ventana de quince minutos. Sam ya se ha vestido y ya tiene el teléfono
+en la mano, y dice «esta mañana no», que es lo primero que Sam le ha negado
+nunca a Alex. Sin dar razón. Alex no la pide. Alex vuelve a la cama veinticinco
+minutos; el mensajero llega a las 8:06 y se va a las 8:07, y a las once la
+cuenta de Halloran está con otra persona.
+
+El lector debería poder ver, y Alex no, que Sam está junto a un teléfono
+esperando a que suene exactamente a las ocho.
+
+*NOTE*: Esta es la escena que concreta la Debilidad moral. No suavices la
+petición: Alex tiene que caer genuinamente bien mientras la hace, o el libro
+pasa a tratar de una persona egoísta, que es un libro distinto y mucho más
+pequeño.
+#+end_comment
+
+*** TOWRITE Escena 3 - Condiciones :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]], [[id:es-char-dana-okonkwo-001][Dana]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]]
+:Punto-de-trama: [[id:es-pp-03-desire][3. Deseo]], [[id:es-pp-05-opponent][5. Oponente]]
+:Linea-temporal: Día 2, 18:20
+:Localizacion: [[id:es-loc-agency-001][Okonkwo & Field]]
+:Descripcion: Dana enuncia su Postura y ofrece exactamente la ayuda equivocada
+:Resumen: Dana se entera de lo de Halloran, es amable al respecto, nombra el contrato de Kestrel y explica por qué Alex no es de las que aceptan contratos.
+:Motivacion-escena: Alex quiere trabajo que reemplace lo que ha perdido hoy
+:Fuente-conflicto: Dana, que quiere las mismas ocho horas que quiere Alex
+:Brecha: Alex espera compasión o un trabajo; recibe las dos cosas, en términos que garantizan la Debilidad
+:Que-esta-en-juego: El contrato de Kestrel, nombrada aquí por primera vez
+:Problema-mundo: La sala está llena de gente que está allí desde las siete y seguirá a las nueve
+:Emocion: Gratitud, y debajo algo que Alex no sabe nombrar
+:Nivel-tension: 5
+:Resultado: Alex se va con más trabajo y menos contrato del que vino a buscar
+:Decision-secuela: Alex decide ganarse el contrato superando la duda
+:Comentario: Irrenunciables 3 y 5. Dana ataca la Debilidad elogiándola
+:ID:       5438d521-f6ce-4f1f-9182-c52c0cd3b0cc
+:END:
+
+#+begin_comment
+*SUMMARY*: El despacho de Dana a las seis y veinte de la tarde, que es mitad de
+su jornada. Ya se ha enterado de lo de Halloran. Es cálida y concreta, y dice la
+frase que compra a Alex durante las próximas cien páginas: «tu mejor trabajo lo
+haces a las dos de la madrugada; por eso te llamo a ti y no a ellos». Luego,
+Kestrel: doce meses, un cliente, un alcance, presentación en tres semanas. Y
+después, con suavidad, por qué Alex no es de las que llevan un contrato: los
+contratos son para quien tiene forma en su semana, y Alex es mejor que eso, más
+libre que eso.
+
+Alex se va con tres semanas de trabajo a destajo y la creencia de que el contrato
+es algo que te dan por ser fiable, y no algo que te niegan por estar disponible.
+
+*EDIT*: personaje - La Postura de Dana tiene que poder discutirse aquí, no solo
+ser encantadora. Tiene razón sobre la ciudad. Dale una frase sobre 2009 que
+retire de inmediato.
+#+end_comment
+
+* Acto II :ignore:
+:PROPERTIES:
+:CUSTOM_ID: acto-2
+:WORDCOUNT: 272
+:WORD-OBJECTIVE: 40000
+:ID:       215eb485-aff0-4281-ad83-34c446fe1b32
+:END:
+
+** TOWRITE Capítulo 3 - Primer día :ignore:
+:PROPERTIES:
+:WORDCOUNT: 272
+:WORD-OBJECTIVE: 3000
+:ID:       e5540500-bcbc-4c06-bdd4-a698c73fa579
+:END:
+
+*** FINISHED Escena 1 - Primer intento :ignore:
+:PROPERTIES:
+:WORDCOUNT: 272
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]], [[id:es-plot-running-late-001][Con retraso]]
+:Punto-de-trama: [[id:es-pp-07-plan][7. Plan]]
+:Linea-temporal: Día 3, 06:00
+:Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Descripcion: Alex copia la rutina de Sam al minuto y no encaja
+:Resumen: Alex se despierta a las seis sin posponer, hace la cama, intenta meditar y a las siete y media está agotada y llega tarde.
+:Motivacion-escena: Alex quiere demostrar que el cambio ya está hecho
+:Fuente-conflicto: Los viejos hábitos contra un sistema prestado
+:Brecha: Alex espera que la rutina produzca calma; produce una forma nueva de ir con retraso
+:Que-esta-en-juego: La creencia de Alex en que puede ser una persona que hace esto
+:Problema-mundo: La rutina no tiene defensa contra un mensaje a las 6:40
+:Emocion: Determinación que se desvanece en decepción
+:Nivel-tension: 4
+:Resultado: Tarde otra vez, y esta vez con esfuerzo gastado
+:Decision-secuela: Alex decide que el problema es que lo hizo de forma imperfecta
+:Comentario: Irrenunciable 7. El Plan es imitación, por eso tiene que fallar
+:ID:       454b184f-f076-40b7-8ce8-c19fc317d719
+:END:
+
+La alarma sonó a las 6:00 en punto. Esta vez Alex no la pospuso. También había
+puesto la alarma del reloj, de refuerzo, y el suave tictac de alguna manera le
+había hecho más fácil despertarse.
+
+Se sentó de inmediato, intentando ignorar lo cansada que estaba. Según los
+artículos que había leído la noche anterior, el primer paso era hacer la cama.
+Algo sobre empezar el día con un logro.
+
+Alex estiró las sábanas y las alisó. Ya. Logro conseguido.
+
+Lo siguiente en la lista: meditación. Se sentó con las piernas cruzadas sobre la
+cama recién hecha y cerró los ojos. La aplicación que se había descargado decía
+que había que «concentrarse en la respiración y despejar la mente».
+
+Despejar la mente. Claro. Facilísimo.
+
+Salvo que su mente ya iba a mil: ¿he puesto la cafetera? ¿Qué me pongo? ¿Debería
+haberme comprado esa aplicación de meditación cara en lugar de esta gratuita?
+¿Respiro demasiado fuerte? ¿Lo estoy haciendo mal?
+
+Después de lo que parecieron una hora y probablemente fueron tres minutos, Alex
+se rindió y miró el reloj. Las 6:12. El horario de la rutina decía que la
+meditación debía durar quince minutos, pero tenía que seguir o se retrasaría.
+
+La mañana continuó a trompicones. Los estiramientos de yoga resultaban torpes sin
+instrucciones de verdad. La receta de desayuno saludable tardó el doble de lo
+previsto. La «ducha consciente» solo le hizo preocuparse por la factura del agua.
+
+A las 7:30 Alex estaba agotada y volvía a llegar tarde, pero esta vez, además del
+caos, había decepción. Lo había intentado hacer todo bien y aun así no había
+funcionado.
+
+#+begin_comment
+*EDIT*: trama - «También había puesto la alarma del reloj»: el reloj es
+mecánico y no tiene alarma. Es el mismo problema que en el Capítulo 2 Escena 1.
+Corta la cláusula; el tictac basta y es mejor.
+*EDIT*: escena - La Brecha es correcta, pero el resultado es blando. Alex
+debería perderse algo concreto por llegar tarde aquí, no solo sentir decepción.
+Una llamada de quince minutos a las 7:45 que atiende Priya en su lugar.
+#+end_comment
+
+{{{scene-break}}}
+
+*** TOWRITE Escena 2 - Solidaridad :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]], [[id:es-char-priya-raman-001][Priya]]
+:Trama: [[id:es-plot-kestrel-retainer-001][El contrato de Kestrel]]
+:Punto-de-trama: [[id:es-pp-08-drive][8. Empuje]]
+:Linea-temporal: Día 4, 13:00
+:Localizacion: [[id:es-loc-agency-001][Okonkwo & Field]]
+:Descripcion: Priya se presenta como la única otra persona que lo entiende
+:Resumen: Priya encuentra a Alex en la escalera, comparte con soltura su queja sobre Dana y hace dos preguntas concretas sobre qué mañanas tiene libres Alex.
+:Motivacion-escena: Alex quiere que le digan que ella no es el problema
+:Fuente-conflicto: El deseo declarado de Priya contra el real
+:Brecha: Alex espera una aliada y la tiene, y ese es exactamente el problema
+:Que-esta-en-juego: Cada hora libre que le queda a Alex
+:Problema-mundo: La solidaridad no cuesta nada cuando la moneda es la disponibilidad de otros
+:Emocion: Alivio, luego una calidez que parecerá otra en la relectura
+:Nivel-tension: 3
+:Resultado: Alex le cuenta a Priya toda su semana
+:Decision-secuela: Alex decide que ha encontrado una amiga
+:Comentario: La falsa aliada. Las dos preguntas son toda la escena; lo demás es tapadera
+:ID:       9bf8b8a4-34de-43b5-8a5e-1af61f532161
+:END:
+
+#+begin_comment
+*SUMMARY*: La escalera, la una de la tarde, porque el ascensor tarda noventa
+segundos y Priya nunca lo espera. Es graciosa sobre Dana de una manera en que
+nadie lo ha sido con Alex antes: la respuesta a los cuatro minutos, los elogios
+que son facturas. Alex se ríe por primera vez en el libro.
+
+Luego: «¿Qué mañanas tienes libres de verdad? Dejaré de ofrecerte cosas en los
+días que no». Y Alex se lo cuenta. Todas.
+
+*NOTE*: Se supone que el lector no lo capta en la primera pasada. Se supone que
+lo capta en el Capítulo 6 y vuelve atrás. Lo cual significa que las dos
+preguntas tienen que ser *las líneas más naturales de la escena*, enterradas en
+amabilidad, no separadas por una pausa.
+#+end_comment
+
+** TOWRITE Capítulo 4 - Ajustes :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
+:ID:       6dc15b3c-2fbb-4cd2-9a12-2012c2f52737
+:END:
+
+*** TOWRITE Escena 1 - Charla de café :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]], [[id:es-char-sam-chen-001][Sam]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]], [[id:es-plot-sams-thursdays-001][Los jueves de Sam]]
+:Punto-de-trama: [[id:es-pp-08-drive][8. Empuje]]
+:Linea-temporal: Día 9, 07:05
+:Localizacion: [[id:es-loc-coffee-shop-001][La cafetería de la esquina]]
+:Descripcion: Sam explica que una rutina no es un horario que se copia
+:Resumen: Alex admite que la imitación falló. Sam dice que una rutina se construye alrededor de lo único que no se puede mover, y se niega a decir qué es lo suyo.
+:Motivacion-escena: Alex quiere el sistema de Sam, esta vez bien
+:Fuente-conflicto: El perfeccionismo de Alex contra la negativa de Sam a explicarse
+:Brecha: Alex espera un horario mejor; le dicen que busque lo inamovible, y no tiene nada así
+:Que-esta-en-juego: Si Alex lo intenta otra vez o no
+:Problema-mundo: La cafetería está vacía a las 7:05, cosa que Alex no sabía
+:Emocion: Vulnerabilidad, alivio y una pregunta sin respuesta
+:Nivel-tension: 3
+:Resultado: Alex deja de copiar y empieza a buscar su propia hora inamovible
+:Decision-secuela: Alex decide que lo inamovible es la presentación de Kestrel. Se equivoca, y no lo descubrirá hasta el Capítulo 8
+:Comentario: La aliada habla con autoridad porque Sam describe su propia vida sin decirlo
+:ID:       1234c640-8ee9-40f9-b418-7c9a0984e563
+:END:
+
+#+begin_comment
+*SUMMARY*: Alex ha venido a las siete y cinco porque Sam lo mencionó una vez, y
+la cafetería está vacía, y eso por sí solo es una pequeña revelación. Alex
+confiesa la imitación fallida entera, con gracia, esperando que le digan que fue
+un buen intento.
+
+Sam no consuela. «Lo construiste alrededor de lo que te gustaría ser.
+Constrúyelo alrededor de lo que no se puede mover». Alex pregunta qué es lo de
+Sam. Sam dice «algo de los jueves» y cambia de tema, y la libreta sigue cerrada
+sobre la mesa entre las dos.
+
+*EDIT*: personaje - La Postura 4 de Sam debería verse al máximo aquí. Hay una
+versión de esta frase que es generosa y otra que es un poco superior, y la
+superior es la verdadera en este punto del libro.
+#+end_comment
+
+*** TOWRITE Escena 2 - Encontrar el equilibrio :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]]
+:Punto-de-trama: [[id:es-pp-08-drive][8. Empuje]]
+:Linea-temporal: Día 12, 06:15
+:Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Descripcion: Una rutina que es de Alex, y que aguanta cuatro días
+:Resumen: Alex construye una rutina corta alrededor de una hora fija propia y funciona, dos veces, y entrega dos trabajos antes de tiempo.
+:Motivacion-escena: Alex quiere una semana que pueda señalar
+:Fuente-conflicto: Interno: aceptar una versión más pequeña que el ideal
+:Brecha: Alex espera sentirse disminuida con la versión pequeña; siente lo contrario
+:Que-esta-en-juego: Un cambio sostenible, y la prueba que Alex piensa enseñarle a Dana
+:Problema-mundo: Dos de las cuatro mañanas siguen interrumpidas antes de las siete
+:Emocion: Paz, luego un orgullo dirigido a la persona equivocada
+:Nivel-tension: 2
+:Resultado: Dos entregas tempranas. Alex empieza a contar la racha
+:Decision-secuela: Alex decide enseñarle la racha a Dana
+:Comentario: La falsa victoria empieza aquí y da fruto en el punto medio
+:ID:       1cf3ea98-c6c3-4c2a-b013-513dc6d1c005
+:END:
+
+#+begin_comment
+*SUMMARY*: Cama hecha, hervidor, veinte minutos en el escritorio antes de que el
+teléfono salga del modo avión. Esa es toda la rutina. Son cuatro cosas y aguanta
+cuatro días, y los dos trabajos salen antes de tiempo.
+
+La última línea tiene que dejar al lector ligeramente inquieto: Alex no está
+guardando las mañanas para sí misma, las está acumulando como prueba para Dana.
+La Mentira no se ha movido.
+
+*NOTE*: Compruébalo con el plan: esto va hacia el 45 % y debería caer justo antes
+del punto medio. Si el Capítulo 4 se alarga, el segundo cuartil se pasa de
+longitud. Mira la sección Cuartiles en la parte Trama.
+#+end_comment
+
+** TOWRITE Capítulo 5 - Las seis en punto :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
+:ID:       adc27883-dc00-4de9-a303-dfe031138620
+:END:
+
+*** TOWRITE Escena 1 - El elogio :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]], [[id:es-char-dana-okonkwo-001][Dana]], [[id:es-char-priya-raman-001][Priya]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]], [[id:es-plot-kestrel-retainer-001][El contrato de Kestrel]]
+:Punto-de-trama: [[id:es-pp-09-midpoint][9. Punto medio]]
+:Linea-temporal: Día 16, 17:00
+:Localizacion: [[id:es-loc-agency-001][Okonkwo & Field]]
+:Descripcion: Elogio en público, y una llamada a las seis reservada como cortesía
+:Resumen: Dana elogia a Alex delante del estudio y la cita para una llamada a las 6:00 «ya que estás despierta». Alex se niega, por primera vez.
+:Motivacion-escena: Alex quiere que se reconozca su racha, y lo consigue
+:Fuente-conflicto: Dana, convirtiendo la nueva fiabilidad de Alex en más disponibilidad
+:Brecha: Alex espera que la racha le compre un contrato; le compra una alarma más temprana
+:Que-esta-en-juego: Si el cambio es para Alex o para Dana
+:Problema-mundo: Una cita hecha ante testigos no se puede rechazar en privado
+:Emocion: Orgullo que se agria en claridad
+:Nivel-tension: 7
+:Resultado: Alex dice que no en voz alta, en una sala, y la sala lo oye
+:Decision-secuela: Alex deja de pedir permiso para no estar disponible y empieza a declinar
+:Comentario: Irrenunciable 9. Falsa victoria; Alex deja de reaccionar y empieza a actuar. Cierra el cuartil II
+:ID:       8b39f5b5-3b19-433e-9448-d93a299f9b5c
+:END:
+
+#+begin_comment
+*SUMMARY*: Las cinco de la tarde, el estudio medio lleno. Dana dice lo amable en
+voz alta —tres semanas, todo antes de tiempo, así es como se ve cuando alguien
+lo quiere— y luego, con el mismo aliento y la misma calidez, «así que atenderás
+la llamada de Kestrel el jueves a las seis, ya que estás despierta».
+
+La trampa es que es un elogio. Rechazarlo es rechazar el halago.
+
+Alex lo rechaza. No bien: demasiado rápido, un poco demasiado alto, y con una
+razón que no es la verdadera. Priya, al fondo, apunta algo.
+
+*EDIT*: escena - La negativa necesita un coste dentro de la escena, no solo
+después. Dana debería darle la llamada a Priya en el acto, con calidez, delante
+de Alex.
+#+end_comment
+
+** TOWRITE Capítulo 6 - Jueves :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
+:ID:       4302ef40-4c5f-497d-8a47-16652d13a4d2
+:END:
+
+*** TOWRITE Escena 1 - Jueves :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 1000
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]], [[id:es-char-sam-chen-001][Sam]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]], [[id:es-plot-sams-thursdays-001][Los jueves de Sam]], [[id:es-plot-kestrel-retainer-001][El contrato de Kestrel]]
+:Punto-de-trama: [[id:es-pp-10-apparent-defeat][10. Aparente derrota]]
+:Linea-temporal: Día 23, 08:00
+:Localizacion: [[id:es-loc-bell-lane-001][Centro de Día de Bell Lane]]
+:Descripcion: La llamada que no se atiende, y lo que es la libreta
+:Resumen: Alex le pide a Sam la entrega una última vez. Sam la recibe, pierde la llamada de las 8:00 y la plaza de Bell Lane pasa al siguiente nombre.
+:Motivacion-escena: Alex quiere cuarenta minutos para preparar la presentación
+:Fuente-conflicto: La necesidad de Alex contra la única hora que Sam no puede dar
+:Brecha: Alex espera un favor sin consecuencias; descubre el precio cuando ya está pagado
+:Que-esta-en-juego: La plaza del padre de Sam, que no vuelve
+:Problema-mundo: La lista baja; a nadie le pagan por guardar un sitio
+:Emocion: Impaciencia, luego el ataque de la aliada, luego algo para lo que Alex no tiene palabra
+:Nivel-tension: 9
+:Resultado: Se pierde la plaza. Sam dice para qué era la hora
+:Decision-secuela: Ninguna disponible. Alex no está en condiciones de decidir nada
+:Comentario: Irrenunciable 10, y el ataque de la aliada. Cierra el cuartil III
+:ID:       e8096279-ffde-4bea-85f4-259ed13ed8f5
+:END:
+
+#+begin_comment
+*SUMMARY*: Alex pide. Sam dice que sí —el primer sí desde el Capítulo 2 y el
+equivocado—, recibe al mensajero a las ocho, y el teléfono suena a las 8:00 y a
+las 8:01 y no vuelve a sonar. A las once la plaza ya no existe.
+
+El ataque de la aliada, y debería ser silencioso: «No estás construyendo una
+rutina. Has encontrado una forma más agradable de tener las mismas mañanas». Y
+luego, porque Sam nunca se lo ha dicho a nadie: qué son los jueves. La libreta
+se abre. Es un registro de horas de medicación, y se remonta catorce meses.
+
+*NOTE*: El lector tiene que ir media página por delante de Alex aquí y no más.
+Si va una escena entera por delante, el ataque de la aliada cae como
+confirmación en lugar de como golpe.
+*EDIT*: trama - Comprueba la geografía antes de redactar. Si Bell Lane está a
+veinticinco minutos, Sam no puede estar en el piso a las ocho y en Bell Lane
+para la valoración más tarde esa misma mañana. O la llamada es el único
+contacto de los jueves, o el trayecto es más corto. Es una decisión de diseño,
+no de prosa: mira la sección Construcción del mundo.
+#+end_comment
+
+*** TOWRITE Escena 2 - El reloj se ha parado :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]], [[id:es-char-priya-raman-001][Priya]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]]
+:Punto-de-trama: [[id:es-pp-10-apparent-defeat][10. Aparente derrota]]
+:Linea-temporal: Día 23, 22:40
+:Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Descripcion: Una cadena de mensajes reenviados con las marcas de hora puestas
+:Resumen: Un reenvío equivocado le muestra a Alex un año de Priya pasándole a Dana sus mañanas libres. Alex mira el reloj y se ha parado.
+:Motivacion-escena: Alex quiere dejar de estar en este día
+:Fuente-conflicto: La evidencia, con la que no se puede discutir
+:Brecha: Alex espera estar a solas con lo que le hizo a Sam; descubre que a ella también la estaban gastando
+:Que-esta-en-juego: La última explicación de Alex para su propia vida
+:Problema-mundo: Todo el esquema es legible en marcas de hora porque eso es lo que esta ciudad registra
+:Emocion: Entumecimiento, y luego una claridad muy fría
+:Nivel-tension: 8
+:Resultado: La Mentira pierde su último apoyo. El reloj se ha parado
+:Decision-secuela: Todavía ninguna. La decisión es el capítulo siguiente
+:Comentario: La revelación de Priya, documental y no narrada: lo exige el focalizador único
+:ID:       6c3a6c3c-3b36-44ed-95e4-2aeedbd05710
+:END:
+
+#+begin_comment
+*SUMMARY*: Las once menos veinte de la noche. Un reenvío que Priya no quería
+enviar, con la cadena intacta debajo: un año de «Alex está libre martes y jueves
+por la mañana», cada uno con su marca de hora, cada uno a menos de cuatro
+minutos de la respuesta de Dana.
+
+Alex no se enfurece. Alex cuenta, como siempre cuenta, y la cifra da catorce
+meses, que es también el tiempo que Sam lleva con la libreta, y la coincidencia
+es lo más cerca que está este libro de una declaración de tesis.
+
+Luego el reloj. Las 8:00, y son las once menos veinte de la noche, y lleva
+parado desde la mañana.
+
+*NOTE*: El símbolo hace todo su trabajo en dos líneas y no hay que explicarlo.
+Nada de «y Alex comprendió que». El Pase 8 buscará exactamente esa frase.
+#+end_comment
+
+* Acto III :ignore:
+:PROPERTIES:
+:CUSTOM_ID: acto-3
+:WORDCOUNT: 353
+:WORD-OBJECTIVE: 20000
+:ID:       c53b6882-a4ac-45b3-bdaf-173844d20432
+:END:
+
+** TOWRITE Capítulo 7 - Dar cuerda :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
+:ID:       b256e4b4-7cac-4aac-ad66-3de8f0cbc953
+:END:
+
+*** TOWRITE Escena 1 - Dar cuerda :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]], [[id:es-char-sam-chen-001][Sam]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]], [[id:es-plot-sams-thursdays-001][Los jueves de Sam]]
+:Punto-de-trama: [[id:es-pp-11-self-revelation][11. Autorrevelación]]
+:Linea-temporal: Día 24, 06:00
+:Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Descripcion: Alex da cuerda al reloj y ofrece una hora con un número pegado
+:Resumen: Alex da cuerda al reloj por primera vez, ve lo que ocurrió de verdad la mañana en que murió Marisol y le ofrece a Sam llevarle en coche a las nueve.
+:Motivacion-escena: Alex quiere devolver una hora, algo que nunca ha hecho
+:Fuente-conflicto: La Mentira, y lo que cuesta admitirla
+:Brecha: Alex espera que dar cuerda se sienta como una penitencia; se siente como una aritmética que por fin cuadra
+:Que-esta-en-juego: La autorrevelación misma: si es real o un estado de ánimo
+:Problema-mundo: La valoración reprogramada es a las nueve, y la presentación también
+:Emocion: Duelo, y luego algo más firme
+:Nivel-tension: 6
+:Resultado: Alex dice «las nueve» en voz alta a otra persona y lo dice en serio
+:Decision-secuela: Alex no le cuenta a Sam lo de la presentación
+:Comentario: Irrenunciable 11, el atisbo. La confirmación llega en el vestíbulo
+:ID:       a769b7bf-25f0-43b7-b173-73bce58eb483
+:END:
+
+#+begin_comment
+*SUMMARY*: Las seis de la mañana, el piso, el reloj sobre la mesa. Darle cuerda
+lleva unos cuarenta segundos y Alex lo hace mal la primera vez.
+
+Aquí aterriza el Fantasma, completo y por primera vez en orden: la promesa de
+las nueve, las tres alarmas, la ducha, el mensaje contestado en la escalera, las
+once, las diez y cuarenta. Y lo que Alex nunca se ha permitido poner en esa
+secuencia: que nada se llevó la mañana. La gastó, poco a poco, una persona
+tomando decisiones.
+
+Luego 4B, y la oferta: la valoración es el viernes a las nueve, Alex conducirá,
+Alex estará abajo a las ocho y veinte. Una hora declarada, dicha en voz alta, a
+alguien.
+
+No menciona que la presentación de Kestrel es el viernes a las nueve.
+
+*EDIT*: prosa - Que Alex no llore aquí. La autorrevelación es una *corrección de
+una secuencia*, no una catarsis, y la prosa debería estar en su punto más plano
+en esta página.
+#+end_comment
+
+** TOWRITE Capítulo 8 - La nueva normalidad :ignore:
+:PROPERTIES:
+:WORDCOUNT: 353
+:WORD-OBJECTIVE: 3000
+:ID:       1ed5cb18-29da-48eb-9207-f3a7b11b4de7
+:END:
+
+*** TOWRITE Escena 1 - Once minutos :ignore:
+:PROPERTIES:
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 1200
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]], [[id:es-char-dana-okonkwo-001][Dana]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]], [[id:es-plot-sams-thursdays-001][Los jueves de Sam]], [[id:es-plot-kestrel-retainer-001][El contrato de Kestrel]]
+:Punto-de-trama: [[id:es-pp-12-battle][12. Batalla]], [[id:es-pp-13-moral-decision][13. Decisión moral]]
+:Linea-temporal: Día 25, 08:40
+:Localizacion: [[id:es-loc-agency-001][Okonkwo & Field]]
+:Descripcion: El vestíbulo, el ascensor, el coche y once minutos
+:Resumen: Dana defiende la presentación y la defiende bien. Alex elige el trayecto, pierde el contrato y dice la hora en voz alta.
+:Motivacion-escena: Alex quiere las dos cosas, y no puede tener las dos
+:Fuente-conflicto: Dana, y el hecho de que no se equivoca con el dinero
+:Brecha: Alex espera tener que defender su elección; descubre que no hay argumento, solo la elección
+:Que-esta-en-juego: Todo, en los cuatro peldaños a la vez
+:Problema-mundo: Veinticinco minutos son veinticinco minutos y ninguna disponibilidad los acorta
+:Emocion: Miedo, luego la calma particular de una decisión ya tomada
+:Nivel-tension: 10
+:Resultado: Alex conduce. Priya se queda con la presentación y, tres días después, con el contrato
+:Decision-secuela: Alex anota la hora en la libreta. La primera entrada que no es un recuento de palabras
+:Comentario: Irrenunciables 12 y 13 en una sola escena. Dos bienes, los dos costosos
+:ID:       d031fcde-626f-42d7-bd08-2505f253d6c6
+:END:
+
+#+begin_comment
+*SUMMARY*: El vestíbulo a las 8:40, ascensor de noventa segundos, presentación en
+la cuarta a las nueve, el coche en la acera, Bell Lane a veinticinco minutos. El
+reloj sobre recepción va cuatro minutos adelantado y Alex ya lo sabe.
+
+Dana baja. No es cruel y no es tonta: defiende el argumento que Alex habría
+hecho hace un mes, y lo defiende mejor: el contrato es el dinero que permitiría a
+Alex ayudar a Sam de verdad, durante un año, y no durante una sola mañana. Y
+entonces, una vez, dice lo de 2009, y esta vez no lo retira.
+
+Alex dice: «Dije las nueve». Que es la confirmación de la autorrevelación, y son
+tres palabras, y es todo el libro.
+
+Alex conduce.
+
+*NOTE*: Las dos opciones deben ser *bienes*. Si el lector ve una respuesta
+correcta, esto no es una decisión moral, es un obstáculo. El contrato de verdad
+habría ayudado más a Sam, en dinero, durante un año. Eso tiene que ser cierto y
+estar dicho.
+*EDIT*: trama - Priya debería verse arriba a través del cristal del vestíbulo,
+ya esperando, con antelación. Una línea, sin comentarla.
+#+end_comment
+
+*** FINISHED Escena 2 - Círculo completo :ignore:
+:PROPERTIES:
+:WORDCOUNT: 353
+:WORD-OBJECTIVE: 800
+:PoV: [[id:es-char-alex-rivera-001][Alex]]
+:Personajes: [[id:es-char-alex-rivera-001][Alex]], [[id:es-char-sam-chen-001][Sam]], [[id:es-char-casey-mbeki-001][Casey]]
+:Trama: [[id:es-plot-main-line-001][Línea principal]], [[id:es-plot-sams-thursdays-001][Los jueves de Sam]], [[id:es-plot-running-late-001][Con retraso]]
+:Punto-de-trama: [[id:es-pp-13-moral-decision][13. Decisión moral]]
+:Linea-temporal: Día 67, 07:00
+:Localizacion: [[id:es-loc-coffee-shop-001][La cafetería de la esquina]]
+:Descripcion: El nuevo equilibrio, y la rueda que sigue girando
+:Resumen: Seis semanas después, Alex le ofrece a alguien desconocido la frase que Sam una vez le ofreció a ella, sin sermonear, y tiene tiempo.
+:Motivacion-escena: Alex no quiere nada. Ese es el sentido de la escena
+:Fuente-conflicto: Ninguna. Este es el nuevo equilibrio
+:Brecha: Casey espera un juicio; en su lugar le ofrecen algo
+:Que-esta-en-juego: Nada, deliberadamente. Las apuestas se gastaron en la escena anterior
+:Problema-mundo: Sigue siendo verdad, y ahora visiblemente sobrevivible
+:Emocion: Contento, generosidad
+:Nivel-tension: 1
+:Resultado: Alex mira el reloj a propósito
+:Decision-secuela: —
+:Comentario: Imagen final. Ojo: no hay aritmética en toda la escena; el motivo de «Con retraso» se cierra deteniéndose
+:ID:       e90b778d-825a-4abc-9511-a86d86d0ac38
+:END:
+
+Alex entró en la cafetería a las 7:00, puntual. No porque tuviera que estarlo,
+sino porque quería. La rutina matinal ya no era una lista rígida: era un marco
+flexible que hacía que las mañanas se sintieran como un regalo y no como una
+prueba.
+
+Había aprendido a ser flexible. Algunas mañanas incluían meditación, otras no.
+Algunas se levantaba a las 6:00, otras a las 6:30. El reloj de su muñeca, el de
+su abuela, al que daba cuerda a mano cada mañana, le había enseñado que el
+tiempo no consistía en controlar cada minuto. Consistía en estar presente en los
+que importaban.
+
+Hoy no había cola. Alex pidió lo de siempre y se apartó a esperar, sacando la
+libreta pequeña que ahora llevaba a todas partes. No para apuntar cada detalle
+con obsesión, sino para anotar pensamientos, agradecimientos, pequeños momentos
+que merecía la pena recordar.
+
+La puerta se abrió de golpe a su espalda y Alex se volvió para ver entrar a toda
+prisa a alguien joven, con el pelo revuelto, la camisa algo arrugada y los ojos muy
+abiertos, con el pánico particular de quien llega tarde.
+
+Alex sonrió, reconociéndose a sí misma de hace un mes.
+
+—¿Mala mañana? —preguntó con suavidad.
+
+La persona la miró con sobresalto y luego con vergüenza.
+
+—¿Tanto se nota?
+
+—He aprendido a reconocer las señales —dijo Alex, con las palabras de Sam
+saliéndole ya con naturalidad—. Yo era exactamente como tú.
+
+Mientras Alex compartía su historia, sin sermonear, solo ofreciendo, vio cambiar
+algo en la expresión de la otra persona. El mismo cambio que ella había sentido
+aquella primera mañana con Sam: una pausa en el caos, un instante de
+posibilidad.
+
+Cuando Sam entró unos minutos después y vio a Alex hablando con la persona agobiada que acababa de entrar, miró a Alex a
+los ojos y sonrió con complicidad. Alex le devolvió la sonrisa.
+
+La luz de la mañana que entraba por las ventanas de la cafetería parecía un poco
+más cálida, un poco más amable. Alex miró el reloj. Las 7:15. Tenía tiempo de
+sobra.
+
+Ahora siempre lo tenía.
+
+#+begin_comment
+*EDIT*: escena - «reconociéndose a sí misma de hace un mes»: son seis semanas y
+es después de perder el contrato, y ninguna de las dos cosas está en la escena. El
+lector debería sentir el coste posado en silencio bajo el contento.
+*NOTE*: Casey figura en la sección Personajes pero nunca recibe nombre en la
+página aquí. Decide cuál es lo correcto. Nombrar a Casey hace el final más cálido y
+un poco más pequeño.
+#+end_comment

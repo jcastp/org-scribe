@@ -836,7 +836,9 @@ counted as an empty story everywhere."
                (or load-file-name buffer-file-name default-directory)
                "org-scribe.el")))
     (dolist (spec '(("demo-novel" "novel.org" novel)
-                    ("demo-short-story" "story.org" short-story)))
+                    ("demo-short-story" "story.org" short-story)
+                    ("demo-novela" "novela.org" novel)
+                    ("demo-cuento" "cuento.org" short-story)))
       (with-temp-buffer
         (insert-file-contents
          (expand-file-name (concat "examples/" (car spec) "/" (nth 1 spec)) repo))

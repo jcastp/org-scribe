@@ -405,10 +405,10 @@ difícil juzgar para qué sirve cada archivo. El paquete incluye un ejemplo
 trabajado de esta misma estructura, a las tres semanas y cinco escenas de un
 primer borrador:
 
-- [[file:../examples/demo-novel/README.org][=examples/demo-novel/=]] — /The Morning Routine/ (por ahora en inglés)
+- [[file:../examples/demo-novela/README.org][=examples/demo-novela/=]] — /La rutina matinal/
 
 Todas las partes enumeradas arriba existen ahí con contenido real: una Puerta de
-salida cruzada en [[file:../examples/demo-novel/design.org][design.org]], los trece irrenunciables escritos en la parte
+salida cruzada en [[file:../examples/demo-novela/diseno.org][diseno.org]], los trece irrenunciables escritos en la parte
 Trama del mismo cuaderno, seis fichas de personaje con sus cadenas causales,
 cuatro ambientaciones con un Eco y un Escollo cada una, y un manuscrito con
 marcadores =*EDIT*= vivos y metadatos de planificación en cada escena.

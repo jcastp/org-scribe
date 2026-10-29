@@ -49,7 +49,7 @@ y en *de dónde sale la trama*.
 
 El *Sistema unificado* es el predeterminado y el que suponen todas las demás
 lecciones de esta guía: es el que usa la novela de demostración
-(~examples/demo-novel/~). Esta lección trata de los otros dos.
+(~examples/demo-novela/~). Esta lección trata de los otros dos.
 
 ** Qué cambia realmente
 

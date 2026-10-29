@@ -85,11 +85,11 @@ Los nombres de archivo llevan solo ASCII (sin =ñ= ni tildes), como
 - *Nada de enlaces a números de línea* (=archivo.org::412=) en ninguno de los
   dos manuales, salvo dentro de bloques =EXAMPLE=, donde reproducen lo que
   imprime la herramienta (que sí escribe números de línea).
-- Los enlaces a =../examples/demo-novel/…= siguen apuntando a la demo
-  inglesa hasta que existan =demo-novela/= y =demo-cuento/=.
+- Los enlaces a las demos apuntan a las españolas: =../examples/demo-novela/…=
+  y =../examples/demo-cuento/…=.
 - Los nombres propios de los ejemplos se castellanizan cuando tienen forma
-  española (Alice → Alicia, con ID =char-alicia-001=); los de las demos
-  inglesas (Alex Rivera) se dejan hasta que existan las demos españolas.
+  española (Alice → Alicia, con ID =char-alicia-001=); las demos
+  españolas conservan los nombres de las inglesas (Alex Rivera, Sam Chen).
 - Los bloques =EXAMPLE= que muestran un proyecto, una captura, un mensaje o
   un informe se reescriben en español; los menús Hydra y del planificador se
   dejan tal cual (están en inglés) y se explican al lado.

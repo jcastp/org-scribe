@@ -30,13 +30,13 @@ Al terminar esta lección sabrás:
 - Entender qué pasa cuando Emacs y la página no coinciden
 
 *Requisitos previos*: Lección 1 (un proyecto de novela con escenas) y Lección 4
-(personajes). La novela de demostración de =examples/demo-novel/= (en inglés) es
+(personajes). La novela de demostración de =examples/demo-novela/= es
 un buen sitio donde probarlo todo.
 
 Un cuento también sirve. No tiene capítulos, así que sus escenas cuelgan
 directamente del encabezado =Contenido del Cuento=: el corcho y la tabla las
 muestran sin fila de capítulo, el =+= de la cabecera del acto añade una escena y
-no hay pestaña de Capítulos. =examples/demo-short-story/= (en inglés) es la
+no hay pestaña de Capítulos. =examples/demo-cuento/= es la
 demo para probarlo.
 
 * Parte 1: Activarlo
@@ -123,7 +123,7 @@ de una escena para abrirla en Emacs.
 Además, la vista te da dos avisos: un hilo de la trama ausente durante más de cinco
 escenas seguidas aparece sombreado (la misma regla que el informe de estado de los hilos de
 la trama), y un punto de trama que ninguna escena sirve recibe una insignia
-«Ninguna escena la usa».
+«No aparece en ninguna escena».
 
 Las entidades con un ~:Weight:~ negativo no se dibujan, pero nunca se descartan
 en silencio: una línea bajo el grupo dice «No se muestran (ocultas): …», y una
@@ -264,7 +264,7 @@ de internet.
    escena con el selector.
 4. En la Línea argumental, busca el hilo de la trama con el hueco más largo y
    haz clic en una de sus celdas vacías dentro del hueco.
-5. En Entidades, cambia el Role de Alex, luego abre ~design.org~ y encuentra la
+5. En Entidades, cambia el Role de Alex, luego abre ~diseno.org~ y encuentra la
    única línea que cambió.
 
 * Qué sigue

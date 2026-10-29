@@ -38,7 +38,7 @@ You should have:
 
 * Why Searching Matters
 
-**Quick answer**: As your manuscript grows, searching becomes essential for finding scenes, checking consistency, and maintaining control over your story.
+*Quick answer*: As your manuscript grows, searching becomes essential for finding scenes, checking consistency, and maintaining control over your story.
 
 ** The Problem Without Search
 
@@ -392,7 +392,7 @@ Coverage: 18/40 scenes = 45%
 - For a major subplot: 30-50% is good. Would be OK for B-story.
 - For a minor subplot: This would be high (10-30% is typical).
 
-**Action**: If this is your main plot at 45%, you need to add it to 8-10 more scenes.
+*Action*: If this is your main plot at 45%, you need to add it to 8-10 more scenes.
 
 *** Gap Analysis
 Look at scene numbers:

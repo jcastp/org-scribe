@@ -1480,14 +1480,14 @@ This part has no structure, and it is not meant to acquire one.
 
 Nothing written here is counted, exported, or read by any org-scribe
 command.  The word count walks the manuscript only; compilation reads
-the manuscript only; the entity resolvers work from fixed file names,
+the manuscript only; the entity resolvers read only the immediate children of their sections,
 so a character sketched here stays invisible to the linking layer until
 you move it somewhere real.  Sketch someone who may not exist.  Draft a
 scene you will throw away.  Ask the stupid question.  Argue with
 yourself in writing.
 
-Refile what survives with C-c C-w, which offers every heading in every
-file of the project.  Delete the rest without ceremony.
+Refile what survives with C-c C-w, which offers every heading in the manuscript
+and the notebook.  Delete the rest without ceremony.
 
 Open this notebook from anywhere in the project with F8 o.
 

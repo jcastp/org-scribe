@@ -36,7 +36,7 @@ You should understand:
 
 * Why Track Plot Threads?
 
-**Quick answer**: Plot tracking prevents dropped storylines, ensures balanced development, and helps you see the big picture.
+*Quick answer*: Plot tracking prevents dropped storylines, ensures balanced development, and helps you see the big picture.
 
 ** The Problem Without Plot Tracking
 

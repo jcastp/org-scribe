@@ -34,7 +34,7 @@ You should understand:
 
 * Why Capture Locations?
 
-**Quick answer**: Locations ground your story in physical space and help maintain consistency.
+*Quick answer*: Locations ground your story in physical space and help maintain consistency.
 
 ** The Problem Without Location Tracking
 

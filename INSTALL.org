@@ -22,7 +22,6 @@ Add this to your Emacs configuration:
   :config
   ;; Optional: customize settings
   (setq org-scribe-env-work-theme 'poet)
-  (setq org-scribe-stories-directory "~/writing/exercises")
 
   ;; Optional: keybindings
   (global-set-key (kbd "<f8>") 'hydra-org-scribe/body))

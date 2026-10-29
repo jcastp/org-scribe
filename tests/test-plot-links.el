@@ -325,7 +325,7 @@ writer's scenes have."
         (let ((text (buffer-string)))
           (should (string-match-p "Total de escenas: 2" text))
           (should (string-match-p "Primera aparición: Scene 1 (Capítulo: Chapter 1)" text))
-          (should (string-match-p "Se encontraron 1 escena(s) sin propiedad Plot" text))
+          (should (string-match-p "Se encontraron 1 escena(s) sin propiedad Trama" text))
           (should-not (string-match-p "Total scenes\\|Warnings" text))))
       (kill-buffer "*Plot Thread Health Report*"))))
 
