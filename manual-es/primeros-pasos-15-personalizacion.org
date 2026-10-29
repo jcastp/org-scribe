@@ -8,7 +8,7 @@
 
 /[[file:../manual/getting-started-15-customization.org][English version]]/
 
-* ¡Bienvenido a la Lección 15!
+* Te damos la bienvenida a la Lección 15
 
 ¡Enhorabuena por completar las lecciones básicas! Ya sabes usar todas las funciones de ~org-scribe~. Esta lección te ayuda a hacer el paquete realmente tuyo, adaptándolo a tus preferencias y a tu forma de trabajar.
 
@@ -62,7 +62,7 @@ Todas las personalizaciones van en tu archivo de configuración de Emacs:
 - Más control y más documentación
 - Se puede llevar bajo control de versiones
 
-*¡Esta lección enseña los dos métodos!*
+*Esta lección enseña los dos métodos*
 
 ** Nociones básicas de Emacs Lisp (guía rápida)
 
@@ -83,11 +83,11 @@ Verás código como este:
 - Cadena: ~"hola"~ (texto entre comillas)
 - Booleano: ~t~ (verdadero) o ~nil~ (falso)
 
-No te preocupes si esto te confunde: ¡copia los ejemplos!
+No te preocupes si esto te confunde: copia los ejemplos.
 
 * Personalizar los modos de escritura
 
-Los modos de escritura (sin distracciones, foco, proyecto y edición) son muy personalizables.
+Los modos de escritura (Sin distracciones, Enfoque, Navegación y Edición) son muy personalizables.
 
 ** Temas para los modos de escritura
 
@@ -143,7 +143,7 @@ Antes de decidirte, prueba un tema:
 
 *** Temas distintos para el día y la noche
 
-Algunos escritores prefieren temas claros de día y oscuros de noche:
+Hay quien prefiere temas claros de día y oscuros de noche:
 
 #+BEGIN_SRC emacs-lisp
 ;; De día (9:00 - 18:00): temas claros
@@ -166,9 +166,9 @@ O instala el paquete ~circadian~ para que el cambio sea automático:
 
 ** Fuentes para los modos de escritura
 
-¡La tipografía importa! Fuentes distintas para tareas distintas.
+La tipografía importa. Fuentes distintas para tareas distintas.
 
-*** Presets de fuentes con Fontaine
+*** Preajustes de fuentes con Fontaine
 
 ~org-scribe~ usa el paquete ~fontaine~ para gestionar las fuentes.
 
@@ -176,7 +176,7 @@ O instala el paquete ~circadian~ para que el cambio sea automático:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-env-normal-font 'regular)      ; Edición normal
-(setq org-scribe-env-work-font 'org-scribe-big) ; Modo sin distracciones
+(setq org-scribe-env-work-font 'org-scribe-big) ; Modo Sin distracciones
 (setq org-scribe-editing-fontaine-preset 'editing)  ; Modo Edición
 #+END_SRC
 
@@ -235,7 +235,7 @@ Si solo quieres un texto más grande o más pequeño sin cambiar de fuente:
 
 ** Ancho del texto (ancho de columna)
 
-Controla lo ancho que aparece el texto, algo decisivo para leer cómodamente.
+Controla el ancho del texto, algo decisivo para leer cómodamente.
 
 *** Ancho en el modo de escritura
 
@@ -310,7 +310,7 @@ Tres columnas equilibradas:
 ;; Centro: 34 %
 #+END_SRC
 
-*¡La suma debe ser menor que 1.0!*
+*La suma debe ser menor que 1.0*
 
 ** Profundidad del panel de esquema (escenas o capítulos)
 
@@ -478,7 +478,7 @@ org-scribe nunca arranca ni supervisa kiwix-serve: lo sondea e informa. La dispo
 
 ** Fuente del tesauro
 
-La búsqueda de sinónimos puede leer un tesauro de tu propio disco en lugar de cargar una página web. Instala los datos con el gestor de paquetes de tu sistema (~sudo apt install mythes-es~ en Debian/Ubuntu) y se usan automáticamente. La Lección 12 explica la instalación y lo que cambia.
+La búsqueda de sinónimos puede leer un tesauro de tu propio disco en lugar de consultar la RAE en línea. Instala los datos con el gestor de paquetes de tu sistema (~sudo apt install mythes-es~ en Debian/Ubuntu) y se usan automáticamente. La Lección 12 explica la instalación y lo que cambia.
 
 #+BEGIN_SRC emacs-lisp
 ;; 'auto (por defecto) — sin conexión cuando los datos están instalados, en
@@ -488,7 +488,7 @@ La búsqueda de sinónimos puede leer un tesauro de tu propio disco en lugar de 
 (setq org-scribe-thesaurus-backend 'auto)
 #+END_SRC
 
-(El original inglés menciona aquí un valor ~'wordreference~. Ya no existe: WordReference dejó de responder y su lugar lo ocupa la API de la RAE. Si todavía lo tienes en tu configuración, se lee como ~'rae-api~.)
+(Un valor ~'wordreference~ de versiones antiguas ya no existe: WordReference dejó de responder y su lugar lo ocupa la API de la RAE. Si todavía lo tienes en tu configuración, se lee como ~'rae-api~.)
 
 ~'mythes~ merece la pena en una conexión de datos limitada, o cuando quieres saber exactamente qué cubren tus datos locales en vez de que los huecos se disimulen.
 
@@ -631,7 +631,7 @@ Es solo el idioma con el que se *crea* un proyecto nuevo. Una vez creado, el idi
 Los mensajes de org-scribe (avisos, preguntas, errores) tienen su propio ajuste, independiente, que por defecto es inglés:
 
 #+BEGIN_SRC emacs-lisp
-;; Mensajes de los comandos en español
+;; Mensajes de las órdenes en español
 (setq org-scribe-message-language 'es)
 #+END_SRC
 
@@ -697,7 +697,7 @@ Si escribes en los dos idiomas, puedes:
     (call-interactively 'org-scribe-create-novel-project)))
 #+END_SRC
 
-¡Ahora tienes un comando propio para cada idioma!
+Ahora tienes una orden propia para cada idioma.
 
 ** Plantillas propias
 
@@ -709,7 +709,7 @@ Adapta las plantillas a tus necesidades concretas.
 
 ** Acceder a las plantillas
 
-*Método 1: con el comando*
+*Método 1: con la orden*
 
 #+BEGIN_EXAMPLE
 M-x org-scribe-edit-templates
@@ -765,7 +765,7 @@ Edita ~novela.org.template~ o ~cuento.org.template~:
 ...
 #+END_EXAMPLE
 
-¡Ahora todos los proyectos incluyen tu sección de objetivos!
+Ahora todos los proyectos incluyen tu sección de objetivos.
 
 (Las plantillas actuales ya traen una sección de objetivos que usa el objetivo de palabras del proyecto; esto es un ejemplo de cómo añadir tus propias líneas, no algo que tengas que hacer.)
 
@@ -827,7 +827,7 @@ Lo que necesita para crecer
 ...
 #+END_EXAMPLE
 
-2. ¡Se incluirá automáticamente en los proyectos de novela nuevos!
+2. Se incluirá automáticamente en los proyectos de novela nuevos.
 
 Ten en cuenta, eso sí, que un proyecto de org-scribe son dos archivos (el manuscrito y el cuaderno de diseño) y que el paquete solo lee esos dos: un archivo extra queda ahí, a tu disposición, pero ninguna función de org-scribe lo reconoce (no cuenta palabras, no se busca en él, no es un destino de captura). Casi siempre es mejor añadir esas notas como una sección del cuaderno de diseño, por ejemplo en la parte Borradores.
 
@@ -845,7 +845,7 @@ Recuerda las diferencias:
 - Estructura simplificada
 - El cuaderno tiene secciones pero no partes
 
-¡Modifica el conjunto que corresponda a tus necesidades!
+Modifica el conjunto que corresponda a tus necesidades.
 
 * Crear atajos de teclado propios
 
@@ -879,9 +879,9 @@ Añade a tu archivo de inicio:
 (global-set-key (kbd "C-c s l") 'org-scribe-org-find-location)      ; Buscar por localización
 #+END_SRC
 
-Los nombres de arriba son los de los comandos reales. Para cambiar de espacio de escritura con una sola tecla también existe el despachador ~org-scribe-workspace~ (es lo que usan las teclas ~F8 m~, ~F8 e~, ...): asígnale una tecla y te pregunta qué disposición quieres.
+Los nombres de arriba son los de las órdenes reales. Para cambiar de espacio de escritura con una sola tecla también existe el despachador ~org-scribe-workspace~ (es lo que usan las teclas ~F8 m~, ~F8 e~, ...): asígnale una tecla y te pregunta qué disposición quieres.
 
-*¡Elige teclas que no entren en conflicto!*
+*Elige teclas que no entren en conflicto*
 
 Prefijos habituales que están libres:
 - ~C-c LETRA~ (reservado al usuario)
@@ -903,7 +903,7 @@ Solo activos en org-mode:
 Si te gusta el menú Hydra (~F8~), puedes reasignarlo:
 
 #+BEGIN_SRC emacs-lisp
-;; Cambiar la tecla de la Hydra
+;; Cambiar la tecla del menú Hydra
 (global-set-key (kbd "C-c m") 'hydra-org-scribe/body)  ; En vez de F8
 
 ;; O añadir varias teclas
@@ -954,7 +954,7 @@ Uso en el manuscrito:
 
 #+BEGIN_EXAMPLE
 ,*** Escena que se excluye    :noexport:
-¡Esto no se contará!
+Esto no se contará.
 
 ,*** Versión alternativa   :draft:
 Tampoco se cuenta.
@@ -1092,7 +1092,7 @@ Para quienes prefieren un enfoque gráfico.
 
 * Probar tu configuración
 
-Tras hacer cambios, ¡pruébalos!
+Tras hacer cambios, pruébalos.
 
 ** Recargar la configuración
 
@@ -1140,7 +1140,7 @@ Si algo se rompe:
 
 ** Llevar tu configuración bajo control de versiones
 
-*Muy recomendable*: ¡mantén tu configuración de Emacs en git!
+*Muy recomendable*: mantén tu configuración de Emacs en git.
 
 #+BEGIN_SRC bash
 cd ~/.emacs.d
@@ -1172,7 +1172,7 @@ Así podrás:
 
 ** Compartir tu configuración
 
-Muchos escritores comparten sus configuraciones en internet:
+Mucha gente comparte sus configuraciones en internet:
 
 *Ejemplos de repositorios de dotfiles*:
 - https://github.com/search?q=emacs+writing+config
@@ -1182,11 +1182,11 @@ Muchos escritores comparten sus configuraciones en internet:
 1. Crea un repositorio en GitHub o Codeberg
 2. Añade tu init.el
 3. Añade un README que explique tu configuración
-4. ¡Compártela con otros escritores!
+4. Compártela con otras personas.
 
 ** Usar las configuraciones de otros
 
-*¡Ten cuidado!* No copies configuraciones enteras a ciegas.
+*Ten cuidado* No copies configuraciones enteras a ciegas.
 
 *Método seguro*:
 1. Lee el código
@@ -1197,7 +1197,7 @@ Muchos escritores comparten sus configuraciones en internet:
 
 * Solución de problemas de personalización
 
-** «¡Mis cambios no funcionan!»
+** «Mis cambios no funcionan»
 
 *Comprueba*:
 1. ¿Has guardado el archivo de inicio? (~C-x C-s~)
@@ -1213,14 +1213,14 @@ Mira en el búfer ~*Messages*~:
 
 ** «No se encuentra el tema o la fuente»
 
-*Error*: «Cannot find theme 'my-theme'»
+*Error*: ~Cannot find theme 'my-theme'~
 
 *Solución*:
 1. Comprueba que el tema está instalado: ~M-x package-list-packages~
 2. Instálalo si falta: ~M-x package-install RET nombre-del-tema RET~
 3. O quítalo de tu configuración si no lo quieres
 
-*Error*: «Font not available»
+*Error*: ~Font not available~
 
 *Solución*:
 1. Comprueba que la fuente está instalada en el sistema
@@ -1238,7 +1238,7 @@ Mira en el búfer ~*Messages*~:
 2. Mide el arranque: ~M-x emacs-init-time~
 3. Simplifica: desactiva las personalizaciones una por una
 
-** «¡Lo he roto todo!»
+** «Lo he roto todo»
 
 *Recuperación de emergencia*:
 
@@ -1258,7 +1258,7 @@ Inicia Emacs, arregla la copia y devuélvela a su sitio.
 
 * Ejercicio práctico (15 minutos)
 
-¡Personalicemos tu configuración ahora mismo!
+Personalicemos tu configuración ahora mismo.
 
 ** Ejercicio: crea tu configuración personal
 
@@ -1312,7 +1312,7 @@ Elige de 3 a 5 funciones que uses más:
 (global-set-key (kbd "C-c w m") 'org-scribe-writing-env-mode)
 (global-set-key (kbd "C-c w w") 'org-scribe-wordcount)
 (global-set-key (kbd "C-c d") 'org-scribe-rae-api-lookup)
-;; ¡Añade más según lo que uses!
+;; Añade más según lo que uses.
 #+END_SRC
 
 ** Paso 6: guarda y prueba (3 min)
@@ -1324,7 +1324,7 @@ Elige de 3 a 5 funciones que uses más:
 5. Prueba los atajos: ~C-c w m~
 
 *¿Funciona todo?*
-- ✓ Sí: ¡enhorabuena, configuración lograda!
+- ✓ Sí: enhorabuena, configuración lograda.
 - ✗ No: mira en el búfer ~*Messages*~ por si hay errores
 
 ** Paso 7: documenta tu configuración (opcional)
@@ -1346,17 +1346,17 @@ Añade comentarios que expliquen tus decisiones:
 ;; ... resto de la configuración
 #+END_SRC
 
-*¡Tu yo del futuro te lo agradecerá!*
+*Te lo agradecerás cuando vuelvas a esta configuración.*
 
 * Resumen y puntos clave
 
-¡Ya sabes personalizar todos los aspectos de ~org-scribe~!
+Ya sabes personalizar todos los aspectos de ~org-scribe~.
 
 ** Lo que has aprendido
 
 ✓ *Personalización visual*
   - Temas para cada modo de escritura
-  - Presets y tamaños de fuente
+  - Preajustes y tamaños de fuente
   - Anchos de texto y ajustes de columna
   - Proporciones de los paneles en el modo Edición
 
@@ -1371,11 +1371,9 @@ Añade comentarios que expliquen tus decisiones:
 ✓ *Atajos de teclado*
   - Atajos globales para un acceso rápido
   - Atajos propios de un modo
-  - Atajos propios para la Hydra
+  - Atajos propios para el menú Hydra
 
 ✓ *Estructura del proyecto*
-  - Preferencias de nombres de archivo
-  - Organización de directorios
   - Ubicaciones por defecto
 
 ✓ *Métodos de configuración*
@@ -1386,7 +1384,7 @@ Añade comentarios que expliquen tus decisiones:
 
 ** Plantilla de configuración esencial
 
-La configuración mínima que necesita la mayoría de los escritores:
+La configuración mínima que necesita la mayoría de quienes escriben:
 
 #+BEGIN_SRC emacs-lisp
 ;;; Configuración mínima de org-scribe
@@ -1404,7 +1402,7 @@ La configuración mínima que necesita la mayoría de los escritores:
 (global-set-key (kbd "C-c w w") 'org-scribe-wordcount)
 #+END_SRC
 
-*¡Eso es todo lo que necesitas para empezar!*
+*Eso es todo lo que necesitas para empezar*
 
 ** Filosofía de la personalización
 
@@ -1412,8 +1410,8 @@ La configuración mínima que necesita la mayoría de los escritores:
 2. *Identifica la fricción*: ¿qué te molesta?
 3. *Personaliza poco a poco*: una cosa cada vez
 4. *Prueba a fondo*: asegúrate de que funciona
-5. *Documenta tus decisiones*: tu yo del futuro necesita contexto
-6. *Comparte lo que funciona*: ayuda a otros escritores
+5. *Documenta tus decisiones*: dentro de unos meses necesitarás contexto
+6. *Comparte lo que funciona*: ayuda a otras personas que escriben
 
 ** Tu lista de comprobación de la configuración
 
@@ -1451,12 +1449,12 @@ MANTENIMIENTO
 
 ** Próximos pasos
 
-*¡Has completado las lecciones básicas!* Las Lecciones 16 a 19 (planificador, borradores, métodos de trama y companion) son opcionales.
+*Has completado las lecciones básicas* Las Lecciones 16 a 19 (planificador, borradores, métodos de trama y companion) son opcionales.
 
 *Qué hacer ahora*:
-1. *¡Escribe!*: usa lo que has aprendido
+1. *Escribe*: usa lo que has aprendido
 2. *Experimenta*: prueba personalizaciones distintas
-3. *Comparte*: ayuda a otros escritores
+3. *Comparte*: ayuda a otras personas que escriben
 4. *Contribuye*: informa de errores y sugiere funciones
 5. *Disfruta*: tienes un potente entorno de escritura
 
@@ -1464,7 +1462,7 @@ MANTENIMIENTO
 
 *Sigue aprendiendo*:
 - Lee la documentación de Emacs: ~C-h i~
-- Explora las funciones de Org-mode: ~C-h i m org RET~
+- Explora las funciones de Org: ~C-h i m org RET~
 - Comprueba las actualizaciones de los paquetes con regularidad
 - Únete a las comunidades de escritura en Emacs
 
@@ -1489,9 +1487,9 @@ MANTENIMIENTO
 - *Google Fonts*: https://fonts.google.com/
 - *Font Library*: https://fontlibrary.org/
 
-** Recursos sobre Org-mode
+** Recursos sobre Org
 
-- *Manual de Org-mode*: https://orgmode.org/manual/
+- *Manual de Org*: https://orgmode.org/manual/
 - *Worg*: https://orgmode.org/worg/
 - *Org-mode for Writers*: https://blog.eadev.org/org-mode-for-writers/
 
@@ -1521,7 +1519,7 @@ MANTENIMIENTO
 - *Creada*: 2025-11-16
 - *Última actualización*: 2025-11-16
 - *Número de lección*: 15 de 19 (la última lección básica; las Lecciones 16 a 19 cubren el planificador, los borradores, los métodos de trama y el companion, todos opcionales)
-- *Parte*: 5 - Flujos de trabajo y buenas prácticas
+- *Parte*: 5 - Flujos de trabajo, buenas prácticas e integraciones
 - *Tiempo estimado*: 20-25 minutos
 - *Dificultad*: de principiante a intermedia
 - *Requisitos previos*: familiaridad con las funciones de las Lecciones 1-14
@@ -1530,7 +1528,7 @@ MANTENIMIENTO
 
 *¡Enhorabuena por completar las lecciones básicas!*
 
-Ya tienes un entorno de escritura completo, potente y personalizado. ¡Úsalo para escribir historias increíbles!
+Ya tienes un entorno de escritura completo, potente y personalizado. Úsalo para escribir historias increíbles.
 
 *Anterior*: [[file:primeros-pasos-14-flujo-revision.org][Lección 14: Flujo de revisión y edición]]
 
@@ -1538,4 +1536,4 @@ Ya tienes un entorno de escritura completo, potente y personalizado. ¡Úsalo pa
 
 *Volver al inicio*: [[file:primeros-pasos-00-indice.org][Guía de primeros pasos - Índice]]
 
-*¡Tutorial completo!* ¡Feliz escritura!
+*¡Lección 15 completada!* ¡A escribir!

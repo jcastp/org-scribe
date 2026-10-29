@@ -8,24 +8,24 @@
 
 /[[file:../manual/getting-started-19-companion.org][English version]]/
 
-* ¡Bienvenido a la Lección 19!
+* Te damos la bienvenida a la Lección 19
 
 Todo lo que has hecho hasta ahora ocurría dentro de Emacs. Esta lección trata de
 un extra opcional para los momentos en que quieres /ver/ el libro entero de una
-vez: una página en tu navegador con un corcho, una tabla-esquema, un gráfico de
+vez: una página en tu navegador con un corcho, una tabla de esquema, un gráfico de
 líneas argumentales, una vista general de capítulos, una cronología del tiempo
 de la historia, un grafo de relaciones y formularios para tus personajes,
-lugares e hilos de la trama.
+escenarios e hilos de la trama.
 
 La página no sustituye a Emacs ni guarda una copia de tu trabajo. Cada cambio que
-haces en ella se le entrega a Emacs, que lo realiza en el búfer que ya conoces,
+haces en ella se le entrega a Emacs, que lo aplica en el búfer que ya conoces,
 así que deshacer, guardar y git funcionan exactamente igual que antes.
 
 Al terminar esta lección sabrás:
 - Activar el companion, para Emacs y para un proyecto
 - Abrirlo y leer sus siete pestañas
 - Mover escenas, renombrarlas y cambiar su estado desde la página
-- Enlazar personajes, lugares e hilos de la trama con escenas haciendo clic
+- Enlazar personajes, escenarios e hilos de la trama con escenas haciendo clic
 - Editar el perfil de un personaje en un formulario
 - Entender qué pasa cuando Emacs y la página no coinciden
 
@@ -87,14 +87,14 @@ atenúan las tarjetas que no coinciden.
 
 Pruébalo: arrastra la Escena 2 por encima de la Escena 1 en el Capítulo 1, pasa a
 Emacs y mira ~novela.org~. Todo el subárbol se ha movido, con sus propiedades y
-su cuaderno de registro, y el búfer aparece como modificado. Pulsa ~C-/~ una vez:
+su cajón ~LOGBOOK~, y el búfer aparece como modificado. Pulsa ~C-/~ una vez:
 todo vuelve a su sitio.
 
 * Parte 3: La tabla
 
 Una fila por escena. Elige las columnas con el botón *Columnas* (tu elección se
 recuerda). Haz clic en una cabecera para ordenar dentro de cada capítulo
-(arrastrar filas se desactiva mientras está ordenado).
+(arrastrar filas se desactiva mientras la tabla está ordenada).
 
 - Los campos de texto (resumen, línea temporal, emoción…) se editan en el sitio.
 - Los campos de enlace (PoV, personajes, hilos de trama, puntos de trama,
@@ -120,8 +120,8 @@ Haz clic en una celda para añadir o quitar el enlace. ~Mayús+clic~ sobre un
 personaje fija (o quita) el PoV. Haz clic en el nombre de una fila o en el número
 de una escena para abrirla en Emacs.
 
-Vienen dos avisos de regalo: un hilo de la trama ausente durante más de cinco
-escenas seguidas aparece sombreado (la misma regla que el informe de hilos de
+Además, la vista te da dos avisos: un hilo de la trama ausente durante más de cinco
+escenas seguidas aparece sombreado (la misma regla que el informe de estado de los hilos de
 la trama), y un punto de trama que ninguna escena sirve recibe una insignia
 «Ninguna escena la usa».
 
@@ -138,7 +138,7 @@ hacia abajo. Una celda es el número de escenas de ese capítulo en las que
 aparece la entidad; para un personaje, ~3 (2P)~ significa tres escenas, dos de
 ellas desde el punto de vista de ese personaje. El sombreado muestra la
 proporción de las escenas del capítulo, y la última columna es el total. La
-pestaña solo lee: haz clic en una celda para abrir la línea argumental en la
+pestaña es de solo lectura: haz clic en una celda para abrir la línea argumental en la
 primera escena de ese capítulo, o en el nombre de una fila para abrir la entidad
 en Emacs. Con un filtro activo, solo se cuentan las escenas que coinciden y un
 capítulo sin ninguna se atenúa. Los capítulos vacíos conservan su columna, de
@@ -155,7 +155,7 @@ desviarse del cuaderno.
   idioma del proyecto, y de los tipos que ya se usan).
 - Haz clic en una línea para cambiar su tipo o quitar la entrada.
 - Dos personajes relacionados en ambos sentidos con el mismo tipo comparten una
-  sola línea lisa; los tipos distintos se dibujan como dos flechas. Un destino
+  sola línea simple; los tipos distintos se dibujan como dos flechas. Un destino
   que ya no es un personaje se dibuja como un nodo fantasma de trazo discontinuo.
 - La disposición no se guarda, y esta pestaña no tiene filtros de escena. Una
   tabla bajo el grafo lista los mismos datos.
@@ -222,10 +222,10 @@ Una escena cuyo tiempo no se puede leer, o que no tiene ninguno, va al grupo «S
 fecha» del final, con el motivo. Los mismos datos están disponibles como un
 bloque dinámico ~#+BEGIN: story-chronology~ en cualquier archivo Org del
 proyecto, y en la sección «Tiempo de la historia» del informe de salud. La
-página nota enseguida un cambio de notación.
+página detecta enseguida un cambio de notación.
 
 Pulsa ~F8 S~ para ver los mismos datos desde Emacs: la notación es un ajuste del
-proyecto, y el informe de salud (~F8 H~) gana una sección *Tiempo de la historia*
+proyecto, y el informe de salud (~F8 H~) incorpora una sección *Tiempo de la historia*
 que lista las escenas sin tiempo, los valores ilegibles y los saltos atrás en el
 tiempo.
 
@@ -255,7 +255,7 @@ de internet.
 
 * Ejercicios
 
-1. Abre la pestaña Capítulos y busca el personaje que aparece en más capítulos;
+1. Abre la pestaña Capítulos y busca al personaje que aparece en más capítulos;
    luego abre la pestaña Relaciones y añade una relación haciendo clic en dos
    personajes.
 2. Abre el companion de la novela de demostración. Mueve la segunda escena del

@@ -272,7 +272,7 @@ Los saltos de escena son cruciales en la ficción: indican cambios de tiempo, lu
 
 En tu manuscrito escribes:
 #+BEGIN_EXAMPLE
-Alex salió. La puerta se cerró tras él.
+Alex salió. La puerta se cerró tras ella.
 
 [SALTO DE ESCENA - Más tarde, esa noche]
 

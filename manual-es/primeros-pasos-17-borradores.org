@@ -8,7 +8,7 @@
 
 /[[file:../manual/getting-started-17-scratchpad.org][English version]]/
 
-* ¡Bienvenido a la Lección 17!
+* Te damos la bienvenida a la Lección 17
 
 Todas las demás lecciones de esta guía te han enseñado a poner cada cosa en su
 sitio: un personaje bajo la sección Personajes de ~diseno.org~, una escena en el
@@ -34,7 +34,7 @@ primer proyecto.
 
 ** Abrirlos
 
-Todo proyecto trae unos, como última parte del cuaderno de diseño:
+Todo proyecto los trae, como última parte del cuaderno de diseño:
 
 - Proyectos en inglés: el encabezado ~Scratchpad~ de ~design.org~
 - Proyectos en español: el encabezado ~Borradores~ de ~diseno.org~
@@ -56,11 +56,11 @@ ninguna maquinaria asociada.
 
 Mira lo que le pasa a un pensamiento suelto en cualquier otro archivo:
 
-| Si lo escribes en…    | Se convierte en…                                 |
-|-----------------------+--------------------------------------------------|
-| El manuscrito         | Palabras en tu recuento y en tu progreso diario  |
-| La sección Personajes | Un personaje que el sistema de enlaces te ofrece |
-| La parte Fundamentos  | Parte de la Puerta de salida con la que te miden |
+| Si lo escribes en…    | Se convierte en…                                          |
+|-----------------------+-----------------------------------------------------------|
+| El manuscrito         | Palabras en tu recuento y en tu progreso diario           |
+| La sección Personajes | Un personaje que el sistema de enlaces te ofrece          |
+| La parte Fundamentos  | Parte de la Puerta de salida con la que se mide tu avance |
 
 Fíjate en que el cuaderno es un solo archivo, así que sus otras partes parecen
 igual de libres. No lo son: las secciones Personajes y Ambientación las lee la
@@ -78,7 +78,7 @@ Cualquier cosa, con cualquier forma:
 - Un fragmento de diálogo sin escena donde vivir
 - Una escena que piensas tirar sin remordimientos
 - Un personaje que quizá no exista
-- Una discusión contigo mismo sobre si el capítulo 9 funciona
+- Una discusión contigo sobre si el capítulo 9 funciona
 - Una lista, un garabato, tres palabras y un signo de interrogación
 
 No hay plantilla que rellenar ni encabezado obligatorio. La parte trae un par de
@@ -86,8 +86,7 @@ encabezados de ejemplo; bórralos en cuanto te estorben.
 
 * Parte 2: Nada los lee
 
-Esta es la parte en la que conviene confiar, porque es lo que hace segura
-esta parte.
+Esta es la parte en la que conviene confiar, porque es lo que la hace segura.
 
 ** Tu recuento de palabras no se altera
 
@@ -103,7 +102,7 @@ borradores abandonados aquí no aparecerán en:
 
 ~org-scribe-compile~ (Lección 11) lee el manuscrito y nada más. No hay ningún
 camino por el que el contenido de los borradores llegue a un PDF, un EPUB o un
-original para enviar. No puedes publicar por accidente tus notas para ti mismo.
+original para enviar. No puedes publicar por accidente tus notas personales.
 
 ** Tus listas de entidades no se alteran
 
@@ -173,7 +172,7 @@ Necesidad obvia y es aburrida.
 *** OPEN A1. La protección nunca se la pidió nadie
 *** OPEN A2. Él lo sabe, y se lo ha estado permitiendo
 ** OPEN B. Necesita que la crean
-   Barata: se desploma en el mismo golpe que el capítulo 3.
+   Barata: se queda en el mismo momento que el capítulo 3.
 ** REJECTED C. Necesita perdonarlo
    Deja redundante al Fantasma. Dejo esto aquí para no volver a
    deducirlo dentro de dos meses.
@@ -201,16 +200,16 @@ cuelga de ella.
 
 ** Conserva tus ramas descartadas
 
-La tentación fuerte es borrar la opción C en cuanto la descartas. No lo hagas.
+La gran tentación es borrar la opción C en cuanto la descartas. No lo hagas.
 
-El porqué-no vale tanto como el porqué. Una rama descartada con su motivo
+Saber por qué no vale tanto como saber por qué. Una rama descartada con su motivo
 adjunto es lo que te evita pasar una tarde redescubriéndola, y a menudo es lo
 que explica una decisión que ya no recuerdas haber tomado. Te cuesta tres líneas
 plegadas.
 
 ** Tu lista de TODO sigue limpia
 
-Este es el detalle que hace esto usable en el día a día.
+Este es el detalle que hace que esto sirva en el día a día.
 
 ~F8 5~ (Buscar TODO, Lección 7) recorre todos los archivos ~.org~ de tu
 proyecto, borradores incluidos. Pero solo encuentra las palabras clave de
@@ -251,7 +250,7 @@ prosa están en español, pero las cuatro palabras clave de estado, la etiqueta
 
 Es coherente con el resto del paquete: los nombres que lee el software son
 ingleses en los dos idiomas, igual que ~:TARGET_WORDCOUNT:~. Y significa además
-que la convención se lee igual en los dos proyectos de un escritor bilingüe.
+que la convención se lee igual en los dos proyectos de quien escribe en dos idiomas.
 
 * Pruébalo ahora
 
@@ -264,7 +263,7 @@ que la convención se lee igual en los dos proyectos de un escritor bilingüe.
 6. Elige la que más te guste, márcala ~EXPLORING~ y escribe diez minutos
    debajo de ella.
 
-Nada de lo que escribas se contará, se exportará ni será notado por ninguna
+Nada de lo que escribas se contará, se exportará ni lo notará ninguna
 otra parte del paquete. Ese es el objetivo.
 
 * Sobre esta lección

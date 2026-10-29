@@ -8,11 +8,11 @@
 
 /[[file:../manual/getting-started-18-plotting-methods.org][English version]]/
 
-* ¡Bienvenido a la Lección 18!
+* Te damos la bienvenida a la Lección 18
 
 La Lección 1 mencionaba, en un párrafo, que la creación de un proyecto pregunta
 *qué método de trama* usar. Esta lección es ese párrafo desarrollado: qué son los
-tres métodos, cuándo se gana el sueldo cada uno, qué te piden de verdad sus cinco
+tres métodos, cuándo conviene cada uno, qué te piden de verdad sus cinco
 niveles y —lo que más importa si ya tienes un proyecto— qué cambia exactamente y
 qué no cuando eliges uno.
 
@@ -66,7 +66,7 @@ proyecto con el Sistema.
 No es un accidente ni una simplificación de esta guía: se sigue directamente del
 vocabulario compartido de arriba. Los dos métodos nuevos importan del Sistema la
 ficha de personaje, los trece irrenunciables y los cuatro cuartiles en lugar de
-sustituirlos, así que nada aguas abajo del archivo de diseño —captura, enlaces,
+sustituirlos, así que nada de lo que depende del cuaderno de diseño —captura, enlaces,
 informe de salud, compilación, planificador— necesita saber ni preocuparse de qué
 método elegiste. La Lección 4 (captura de personajes), la Lección 6 (hilos de la
 trama), la Lección 11 (exportar) y todas las demás de esta guía funcionan
@@ -126,7 +126,7 @@ que los cruza.
 
 | Nivel | Lado de la trama                                                           | Lado del personaje                                                   |
 |-------+----------------------------------------------------------------------------+----------------------------------------------------------------------|
-|     1 | La frase de la novela, de ~15 palabras                                     | Solo la Mentira y el Deseo del protagonista                          |
+|     1 | La frase de la novela, de unas 15 palabras                                 | Solo la Mentira y el Deseo del protagonista                          |
 |     2 | Planteamiento + 3 desastres + final externo                                | Cadena completa, primero el protagonista y luego el oponente         |
 |     3 | Sinopsis de una página por cuartiles, con el Tema y las Posturas nombrados | Una página por fuerza, con hitos de cambio                           |
 |     4 | Sinopsis de cuatro páginas                                                 | Ficha completa por fuerza                                            |
@@ -153,7 +153,7 @@ nombra antes de que exista ningún personaje, La Hélice lo deduce tarde, de lo 
 ya tienes: la Mentira del protagonista, la Postura del oponente y el cotejo de los
 dos finales. Nómbralo aquí, y construye la lista de Posturas leyendo las
 posiciones que ya ocupan tus fuerzas vivas, en lugar de construir primero la lista
-y repartir después el reparto para llenarla. Si capturaste antes (nivel 2) la
+y buscar después personajes que la llenen. Si capturaste antes (nivel 2) la
 ~:Stance:~ de un personaje, ese valor fue necesariamente provisional: contrástalo
 con la lista ahora que existe.
 
@@ -177,8 +177,8 @@ Dos situaciones en que es la herramienta equivocada: si partes de una premisa o
 de un encargo ya formulado (usa La Hélice: invertir el método tira lo que ya
 tienes), o si trabajas en un género con fuertes expectativas de trama —un thriller
 de mecanismo, un misterio de rompecabezas— donde la maquinaria tiene que ir
-delante y el arco detrás. (Una versión de un párrafo de esta nota de «peor
-encaje» viene también en la propia parte Fundamentos, bajo el encabezado del
+delante y el arco detrás. (Esta advertencia viene también resumida en un
+párrafo en la propia parte Fundamentos, bajo el encabezado del
 método; no hace falta volver a esta lección para recordarla.)
 
 ** Las tres reglas
@@ -189,7 +189,7 @@ método; no hace falta volver a esta lección para recordarla.)
   en que todos tengan que estar a la vez.
 - *Regla de la inevitabilidad*: entre todas las colisiones posibles, elige la que
   ninguna fuerza puede esquivar sin dejar de ser quien es. Esto sustituye al gusto
-  del autor como criterio de selección.
+  personal como criterio de selección.
 - *Regla del gancho tardío*: la frase vendible de quince palabras se sigue
   escribiendo, pero al *final* del nivel 3 en lugar de al principio, y es una
   puerta: si no sale, vuelve al nivel 1.
@@ -211,7 +211,7 @@ niveles tratan del personaje, y la trama nace en el tercero.
 —una fila y una columna por fuerza— en la que la casilla (A, B) dice qué le hace
 la Mentira de A a la Mentira de B cuando ambos van tras el mismo objeto. Una
 casilla rellena debe leerse como una frase, no como una palabra; el propio ejemplo
-del cuaderno de diseño: no «conflicto», sino «su firma de hace años es la razón de
+del cuaderno de diseño: no «conflicto», sino «su firma de hace veinte años es la razón de
 que su casa ya no exista». De los candidatos de esa matriz eliges tus colisiones
 por inevitabilidad, y solo *entonces* —una vez deducida la trama— escribes el
 gancho de quince palabras. Si no sale, no es un problema del nivel 3 que haya que
@@ -219,7 +219,7 @@ forzar: es señal de que el censo del nivel 1 estaba mal (falta una fuerza, falt
 un reloj), y vuelves allí.
 
 El propio censo trae un ejemplo trabajado del patrón que premia: dos personajes
-que de niños perdieron algo a manos de una autoridad, uno concluyendo «sigue
+que de niños perdieron algo a manos de una autoridad, uno saca la lección «sigue
 moviéndote, no pares nunca» y el otro «ponte del lado que firma los papeles»; la
 misma herida, la lección opuesta, y colisionan sin que ninguno lo intente.
 
@@ -239,7 +239,7 @@ nivel 4 es donde este método comprueba que lo deducido se sostiene como relato.
 
 * Parte 5: Dónde está el peso de la trama
 
-Los dos métodos hacen visibles los mismos tres o así momentos estructurales
+Los dos métodos hacen visibles los mismos tres momentos estructurales, más o menos
 —los *desastres* de La Hélice, las *colisiones* de La Matriz— en una tabla cerca
 del final del cuaderno de diseño:
 
@@ -267,7 +267,7 @@ versión. Síguelo a ojo por ahora: tres filas no son muchas para vigilar.
 
 La parte Fundamentos de los dos métodos termina con una sección corta, justo antes de
 ~Cambios pendientes al diseño~, para el momento exacto en que esta lección no
-puede ayudarte directamente: estás atascado, una comprobación no pasa y no sabes
+puede ayudarte directamente: te has atascado, una comprobación no pasa y no sabes
 a qué nivel volver. Lee un síntoma y nombra el nivel:
 
 #+BEGIN_EXAMPLE
@@ -276,7 +276,7 @@ a qué nivel volver. Lee un síntoma y nombra el nivel:
 ,#+begin_comment
 "Pasan cosas pero no significan nada" → nivel 2, regla del dueño.
 "El oponente parece de cartón" → nivel 2: Postura indefendible, o
-  quiere algo distinto que el protagonista.
+  quiere algo distinto del protagonista.
 "El final no me convence" → nivel 2, el cotejo de los dos finales.
 "Nada cambia hasta el final" → nivel 3: faltan Ajustes entre las
   Rupturas.
@@ -285,8 +285,7 @@ a qué nivel volver. Lee un síntoma y nombra el nivel:
 
 Esa es la versión de La Hélice. La de La Matriz cubre sus propios cinco síntomas
 —«todos ignoran a todos» apunta a la regla de la arena del nivel 1, «sigo
-eligiendo yo la colisión» apunta a la regla de la inevitabilidad del nivel 3, y
-así—, porque los dos métodos fallan en sitios distintos: el punto débil de La
+eligiendo yo la colisión» apunta a la regla de la inevitabilidad del nivel 3, etcétera—, porque los dos métodos fallan en sitios distintos: el punto débil de La
 Hélice suele ser el oponente o el cotejo de los finales (ambos, nivel 2); el de
 La Matriz suele ser la arena o la propia matriz (niveles 1 y 3).
 
@@ -301,8 +300,8 @@ estar señalando el nivel de arriba.
 Elijas el método que elijas, ~F8 H~ (el informe de salud del proyecto) se abre
 con tu sección *Puerta de salida* exactamente igual que en un proyecto con el
 Sistema: se leen tus propias casillas y se informa, junto a ellas, de dos
-elementos medidos, sea cual sea el método o el idioma: cuántos de los trece puntos
-de trama tienen contenido de verdad y cuántas de tus tres primeras escenas tienen
+elementos medidos, sea cual sea el método o el idioma: cuántos de los trece
+irrenunciables tienen contenido de verdad y cuántas de tus tres primeras escenas tienen
 un recuento de palabras distinto de cero.
 
 La única diferencia es *dónde* está la puerta y qué pide:
@@ -328,7 +327,7 @@ contando casillas en un orden fijo, así que funciona igual con los tres método
    la sección Personajes del proyecto nuevo y verás que nada de ella necesita
    cambiar.
 4. Baja hasta el final de la nueva parte Fundamentos y lee su sección «Dónde mirar
-   cuando algo falla»: es una referencia útil para marcar cuando ya estés
+   cuando algo falla»: es una referencia para tener a mano cuando ya estés
    recorriendo los niveles de verdad.
 5. Borra el proyecto de usar y tirar cuando termines; nada de él merece la pena
    conservar, salvo que decidas escribir de verdad esa historia.

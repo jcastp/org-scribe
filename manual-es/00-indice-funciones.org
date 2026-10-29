@@ -16,7 +16,7 @@ Es un documento de referencia, no una lección: los nombres de las órdenes, las
 
 *Versión*: 0.9.0 (incluye la funcionalidad de la antigua plantilla emacs-org-scribe-template)
 
-*Resumen del paquete*: ~org-scribe~ es un conjunto completo de herramientas para escritores creativos que trabajan en Org-mode, y ofrece de todo, desde las plantillas de proyecto hasta los filtros de exportación, para novelistas y autores de cuentos.
+*Resumen del paquete*: ~org-scribe~ es un conjunto completo de herramientas para quien escribe ficción y trabaja en Org, y ofrece de todo, desde las plantillas de proyecto hasta los filtros de exportación, tanto para novelas como para cuentos.
 
 *Cómo leer cada entrada*: la línea final de cada función dice su *Estado*, la tecla de la *Hydra* con la que se llega a ella (todas empiezan por ~F8~, el menú que abre ~org-scribe-mode~) y el *Módulo* del código fuente en el que vive.
 
@@ -38,7 +38,7 @@ El paquete organiza sus funciones en las categorías siguientes:
 12. [[#ui-navigation][Interfaz y navegación]]: menú Hydra y atajos de teclado
 13. [[#configuration][Configuración]]: opciones de personalización
 14. [[#integrations][Planificador de escritura]]: módulo integrado de planes de escritura orientados a objetivos
-15. [[#visual-companion][Companion visual]]: corcho, tabla, líneas de la historia y formularios de entidades opcionales en el navegador
+15. [[#visual-companion][Companion visual]]: corcho, tabla, línea argumental y formularios de entidades opcionales en el navegador
 
 * Gestión de proyectos
 :PROPERTIES:
@@ -53,7 +53,7 @@ Crea la estructura completa de un proyecto de novela a partir de plantillas pers
 
 ** Elección del método de trama (~org-scribe-project-method~)
 
-La creación de una novela pregunta además qué método de trama desplegar: el Sistema unificado (el de por defecto, y el que suponen todas las demás lecciones), La Hélice («empezar desde una premisa») o La Matriz («empezar desde los personajes»). Los tres se construyen sobre el mismo vocabulario de fondo (la cadena causal, los trece irrenunciables, los cuatro cuartiles), así que la elección solo cambia la parte Fundamentos de ~diseno.org~: el manuscrito y todas las demás partes del cuaderno son idénticos sea cual sea el método. La elección se anota como una línea ~# Method:~ en ~.org-scribe-project~ y se lee con ~org-scribe-project-method~, que, igual que el idioma de cada proyecto, resuelve al Sistema para cualquier proyecto que no tenga esa línea, de modo que nada de lo creado antes de esta función cambia de comportamiento. Mira la [[file:../manual-es/primeros-pasos-18-metodos-trama.org][Lección 18]] para un recorrido completo por los cinco niveles de cada método, y ~docs/glossary.org~ para el vocabulario español↔inglés propio de los dos métodos nuevos.
+La creación de una novela pregunta además qué método de trama usar: el Sistema unificado (el de por defecto, y el que suponen todas las demás lecciones), La Hélice («se parte de una premisa») o La Matriz («se parte de personajes»). Los tres se construyen sobre el mismo vocabulario de fondo (la cadena causal, los trece irrenunciables, los cuatro cuartiles), así que la elección solo cambia la parte Fundamentos de ~diseno.org~: el manuscrito y todas las demás partes del cuaderno son idénticos sea cual sea el método. La elección se anota como una línea ~# Method:~ en ~.org-scribe-project~ y se lee con ~org-scribe-project-method~, que, igual que el idioma de cada proyecto, toma el Sistema por defecto para cualquier proyecto que no tenga esa línea, de modo que nada de lo creado antes de esta función cambia de comportamiento. Mira la [[file:../manual-es/primeros-pasos-18-metodos-trama.org][Lección 18]] para un recorrido completo por los cinco niveles de cada método, y ~docs/glossary.org~ para el vocabulario español↔inglés propio de los dos métodos nuevos.
 
 *Estado*: totalmente implementado | *Hydra*: no está en el menú (solo interactiva) | *Módulo*: ~core/org-scribe-core.el~, ~templates/org-scribe-project.el~
 
@@ -73,13 +73,13 @@ Detecta automáticamente si un proyecto es una novela, un cuento o de tipo desco
 
 Da acceso rápido a cualquier archivo del proyecto de escritura actual mediante completado. Detecta la raíz del proyecto y ofrece, en una lista con búsqueda, los archivos Org que de verdad existen en él (el manuscrito, el cuaderno de diseño y el plan, si lo hay); el valor por defecto es el manuscrito, o el cuaderno de diseño si ya estás en el manuscrito. Funciona igual con proyectos de novela y de cuento, y con los nombres de archivo de cualquiera de los dos idiomas.
 
-*Estado*: totalmente implementado | *Hydra*: ~o~ (sección Insert, «open project file») | *Módulo*: ~templates/org-scribe-project.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 o~ (sección Insert, «open project file») | *Módulo*: ~templates/org-scribe-project.el~
 
 ** Borradores del proyecto (la última parte de ~diseno.org~)
 
-Una parte sin estructura del cuaderno de diseño, incluida en todos los proyectos (se llama ~Borradores~ en los proyectos en español y ~Scratchpad~ en los de inglés), para borradores, fragmentos, preguntas del tipo «¿y si...?» e ideas que todavía no tienen sitio. Es la única parte de un proyecto que no lee nada: el recuento de palabras recorre el manuscrito, la compilación lee el manuscrito y los resolvedores de entidades solo miran bajo las secciones de entidades, así que un personaje esbozado aquí es invisible para el sistema de enlaces hasta que se traslada a un lugar de verdad. ~C-c C-w~ desde ella llega a todos los encabezados del manuscrito y del cuaderno. La parte incluye además una convención para *ramificar una pregunta*: un encabezado con la etiqueta ~:branch:~ con un encabezado hijo por cada respuesta, y cada uno lleva uno de los estados del cuaderno (~OPEN~, ~EXPLORING~, ~CHOSEN~, ~REJECTED~) que se cambian con ~C-c C-t~, y los resultados de una respuesta se anidan como sus hijos. Esas cuatro palabras clave quedan fuera de ~org-scribe-todo-keywords~ a propósito, de modo que las preguntas abiertas nunca aparecen en la búsqueda de TODO del proyecto. Una propiedad opcional ~:ABOUT:~ guarda un enlace por ID al personaje o al hilo de la trama al que se refiere la pregunta. Mira la [[file:../manual-es/primeros-pasos-17-borradores.org][Lección 17]].
+Una parte sin estructura del cuaderno de diseño, incluida en todos los proyectos (se llama ~Borradores~ en los proyectos en español y ~Scratchpad~ en los de inglés), para borradores, fragmentos, preguntas del tipo «¿y si...?» e ideas que todavía no tienen sitio. Es la única parte de un proyecto que nada lee: el recuento de palabras recorre el manuscrito, la compilación lee el manuscrito y los resolvedores de entidades solo miran bajo las secciones de entidades, así que un personaje esbozado aquí es invisible para el sistema de enlaces hasta que se traslada a un lugar de verdad. ~C-c C-w~ desde ella llega a todos los encabezados del manuscrito y del cuaderno. La parte incluye además una convención para *ramificar una pregunta*: un encabezado con la etiqueta ~:branch:~ con un encabezado hijo por cada respuesta, y cada uno lleva uno de los estados del cuaderno (~OPEN~, ~EXPLORING~, ~CHOSEN~, ~REJECTED~) que se cambian con ~C-c C-t~, y los resultados de una respuesta se anidan como sus hijos. Esas cuatro palabras clave quedan fuera de ~org-scribe-todo-keywords~ a propósito, de modo que las preguntas abiertas nunca aparecen en la búsqueda de TODO del proyecto. Una propiedad opcional ~:ABOUT:~ guarda un enlace por ID al personaje o al hilo de la trama al que se refiere la pregunta. Mira la [[file:../manual-es/primeros-pasos-17-borradores.org][Lección 17]].
 
-*Estado*: totalmente implementado | *Hydra*: ~o~ (sección Insert, a través de la navegación por los archivos del proyecto) | *Módulo*: ~org-scribe-templates/*/~ (solo plantilla, sin código), más la captura de notas de ~capture/org-scribe-capture.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 o~ (sección Insert, a través de la navegación por los archivos del proyecto) | *Módulo*: ~org-scribe-templates/*/~ (solo plantilla, sin código), más la captura de notas de ~capture/org-scribe-capture.el~
 
 ** Elección del idioma de las plantillas (~org-scribe-template-language~)
 
@@ -89,13 +89,13 @@ Controla en qué idioma se usan las plantillas al crear proyectos nuevos. Ponlo 
 
 ** Diccionario ortográfico del proyecto (~org-scribe-update-dir-locals~)
 
-Escribe en la raíz del proyecto un ~.dir-locals.el~ que fija ~ispell-local-dictionary~ (y ~jinx-languages~, para quien use jinx) al idioma del proyecto, de modo que todos los archivos del proyecto (el manuscrito, los archivos de planificación, las notas, el diario y todo lo que se cree después con la captura o el planificador) se corrijan con el diccionario correcto sin configurar nada archivo por archivo. Se crea automáticamente junto con el archivo marcador ~.org-scribe-project~, antes del commit inicial de git; el archivo marcador sigue siendo la única fuente de verdad del idioma y el diccionario se deriva de él. La variable escrita lleva la propiedad ~safe-local-variable~, así que Emacs la aplica en silencio en lugar de pedirle al escritor que apruebe una lista de variables locales cada vez que abre un archivo. La orden interactiva crea o refresca el archivo en un proyecto ya existente (preguntando antes de reemplazar uno), que es como se ponen al día los proyectos creados antes de esta función, o aquellos cuyo diccionario configurado ha cambiado; el informe de salud del proyecto avisa de un archivo ausente o que no coincide. Un bloque ~Local Variables~ en un archivo sigue prevaleciendo sobre el ajuste de todo el proyecto, y ~guess-language~ prevalece sobre los dos.
+Escribe en la raíz del proyecto un ~.dir-locals.el~ que fija ~ispell-local-dictionary~ (y ~jinx-languages~, para quien use jinx) al idioma del proyecto, de modo que todos los archivos del proyecto (el manuscrito, los archivos de planificación, las notas, el diario y todo lo que se cree después con la captura o el planificador) se corrijan con el diccionario correcto sin configurar nada archivo por archivo. Se crea automáticamente junto con el archivo marcador ~.org-scribe-project~, antes del commit inicial de git; el archivo marcador sigue siendo la única fuente de verdad del idioma y el diccionario se deriva de él. La variable escrita lleva la propiedad ~safe-local-variable~, así que Emacs la aplica en silencio en lugar de pedirte que apruebes una lista de variables locales cada vez que abre un archivo. La orden interactiva crea o refresca el archivo en un proyecto ya existente (preguntando antes de reemplazar uno), que es como se ponen al día los proyectos creados antes de esta función, o aquellos cuyo diccionario configurado ha cambiado; el informe de salud del proyecto avisa de un archivo ausente o que no coincide. Un bloque ~Local Variables~ en un archivo sigue prevaleciendo sobre el ajuste de todo el proyecto, y ~guess-language~ prevalece sobre los dos.
 
-*Estado*: totalmente implementado | *Hydra*: ~D~ (submenú Links & Upkeep) | *Módulo*: ~templates/org-scribe-project.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 D~ (submenú Links & Upkeep) | *Módulo*: ~templates/org-scribe-project.el~
 
 ** Integración con git
 
-Inicializa automáticamente un repositorio git en los proyectos nuevos y crea un commit inicial después de procesar las plantillas. Esto da control de versiones desde el principio de un proyecto y permite al escritor seguir los cambios de su manuscrito y de sus documentos de planificación. El archivo marcador ~.org-scribe-project~ se incluye en el commit inicial. Los proyectos se pueden subir fácilmente a repositorios remotos para tener copia de seguridad y colaborar.
+Inicializa automáticamente un repositorio git en los proyectos nuevos y crea un commit inicial después de procesar las plantillas. Esto da control de versiones desde el principio de un proyecto y te permite seguir los cambios de tu manuscrito y de tus documentos de planificación. El archivo marcador ~.org-scribe-project~ se incluye en el commit inicial. Los proyectos se pueden subir fácilmente a repositorios remotos para tener copia de seguridad y colaborar.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (automática) | *Módulo*: ~templates/org-scribe-project.el~
 
@@ -108,25 +108,25 @@ Inicializa automáticamente un repositorio git en los proyectos nuevos y crea un
 
 Activa un entorno de escritura sin distracciones optimizado para sesiones de escritura concentrada. Este modo cambia a un tema de escritura especializado (personalizable con ~org-scribe-env-work-theme~), aplica un preajuste de fuente mayor pensado para org-scribe y activa writeroom-mode con el texto centrado en un ancho cómodo (80 columnas por defecto). El modo cambia la presentación visual sin afectar al contenido de los archivos, y todos los ajustes se restauran automáticamente al desactivarlo. Solo puede haber un modo de escritura activo a la vez, para mantener limpio el estado. Mira la [[file:../manual-es/primeros-pasos-09-modos-escritura.org][Lección 9]].
 
-*Estado*: totalmente implementado | *Hydra*: ~m~ (sección Workspace) | *Módulo*: ~modes/org-scribe-modes.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 m~ (sección Workspace) | *Módulo*: ~modes/org-scribe-modes.el~
 
 ** Modo de escritura con foco (~org-scribe-writing-env-mode-focus~)
 
 Amplía el modo Sin distracciones añadiendo un estrechamiento automático a la sección actual de Org. Crea un entorno de máxima concentración en el que solo se ve la escena o el capítulo actual, sin las distracciones del resto del manuscrito. El modo activa el entorno completo sin distracciones (tema, fuente, writeroom) y después estrecha el búfer al subárbol de Org en el que está el cursor. Al desactivarlo, vuelve a ensanchar el búfer a la vista completa y restaura el entorno normal.
 
-*Estado*: totalmente implementado | *Hydra*: ~f~ (sección Workspace) | *Módulo*: ~modes/org-scribe-modes.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 f~ (sección Workspace) | *Módulo*: ~modes/org-scribe-modes.el~
 
 ** Modo de escritura de proyecto (~org-scribe-project-mode~)
 
-Abre un entorno de navegación del proyecto que muestra a la vez treemacs (el árbol de archivos del proyecto) e imenu-list (el esquema del archivo actual) en ventanas laterales. Crea una disposición de tres paneles: árbol de archivos a la izquierda, el documento principal en el centro y el esquema del documento a la derecha. Es ideal para navegar por proyectos grandes y documentos largos. El modo trata con elegancia las dependencias que falten (treemacs, imenu-list) con avisos si no están disponibles. El foco vuelve automáticamente al búfer original tras abrir los paneles laterales.
+Abre un entorno de navegación del proyecto que muestra a la vez treemacs (el árbol de archivos del proyecto) e imenu-list (el esquema del archivo actual) en ventanas laterales. Crea una disposición de tres paneles: árbol de archivos a la izquierda, el documento principal en el centro y el esquema del documento a la derecha. Es ideal para navegar por proyectos grandes y documentos largos. El modo tolera bien las dependencias que falten (treemacs, imenu-list) con avisos si no están disponibles. El foco vuelve automáticamente al búfer original tras abrir los paneles laterales.
 
-*Estado*: totalmente implementado | *Hydra*: ~v~ (sección Workspace, «navigate») | *Módulo*: ~modes/org-scribe-modes.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 v~ (sección Workspace, «navigate») | *Módulo*: ~modes/org-scribe-modes.el~
 
 ** Modo Edición (~org-scribe-editing-mode~)
 
 Crea una disposición especializada de tres paneles optimizada para el trabajo de edición y revisión. El documento principal aparece en el centro con un formato cómodo de visual-fill-column, mientras que los paneles laterales de la izquierda y de la derecha muestran el esquema y el cuaderno de diseño (o un índice vivo de los marcadores de edición, según ~org-scribe-editing-right-panel~). Este modo usa un tema de edición claro (por defecto, leuven) para ver con nitidez el marcado y la estructura. Los anchos de los paneles se personalizan con ~org-scribe-editing-left-width-percent~ y ~org-scribe-editing-right-width-percent~. El modo incluye soporte de preajustes de fuente mediante fontaine para una claridad óptima al editar. Mira la [[file:../manual-es/primeros-pasos-14-flujo-revision.org][Lección 14]].
 
-*Estado*: totalmente implementado | *Hydra*: ~e~ (sección Workspace) | *Módulo*: ~modes/org-scribe-modes.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 e~ (sección Workspace) | *Módulo*: ~modes/org-scribe-modes.el~
 
 ** Exclusión mutua de los modos
 
@@ -141,25 +141,25 @@ Los cuatro modos de escritura son mutuamente excluyentes: activar uno desactiva 
 
 ** Recuento de palabras preciso (~org-scribe-ews-org-count-words~)
 
-Ofrece un recuento de palabras preciso que excluye los metadatos de Org-mode (propiedades, cajones, comentarios, palabras clave, etiquetas) para contar solo el contenido narrativo. Delega en ~org-context-extended~ para un recuento exacto y consciente del contexto. Puede contar el encabezado actual y añadir el recuento como propiedad ~:WORDCOUNT:~, contar el búfer entero o contar desde el encabezado actual hacia abajo, con todos sus subencabezados. Esta función rellena las propiedades que alimentan las tablas de seguimiento del progreso y garantiza la exactitud del recuento a los escritores que usan muchos metadatos de Org. Mira la [[file:../manual-es/primeros-pasos-03-seguimiento-progreso.org][Lección 3]].
+Ofrece un recuento de palabras preciso que excluye los metadatos de Org (propiedades, cajones, comentarios, palabras clave, etiquetas) para contar solo el contenido narrativo. Delega en ~org-context-extended~ para un recuento exacto que tiene en cuenta el contexto. Puede contar el encabezado actual y añadir el recuento como propiedad ~:WORDCOUNT:~, contar el búfer entero o contar desde el encabezado actual hacia abajo, con todos sus subencabezados. Esta función rellena las propiedades que alimentan las tablas de seguimiento del progreso y garantiza la exactitud del recuento a quien usa muchos metadatos de Org. Mira la [[file:../manual-es/primeros-pasos-03-seguimiento-progreso.org][Lección 3]].
 
-*Estado*: totalmente implementado | *Hydra*: ~a~ (sección Tools) | *Módulo*: ~counting/org-scribe-wordcount.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 a~ (sección Tools) | *Módulo*: ~counting/org-scribe-wordcount.el~
 
 ** Visualización interactiva del recuento (~org-scribe-wordcount~)
 
-Muestra un recuento de palabras interactivo de la región o del búfer actual, delegando en ~org-context-extended~ cuando está disponible para obtener cifras exactas que excluyen los metadatos de Org (con un recuento simple, y un aviso, cuando falta ese paquete). Es el despachador unificado de recuento de palabras del propio org-scribe, no una llamada directa al paquete externo: sin argumento de prefijo solo informa de un recuento; con ~C-u~ actualiza ~:WORDCOUNT:~ en todos los encabezados del búfer (~org-scribe-ews-org-count-words~); con ~C-u C-u~ lo actualiza solo en los encabezados de nivel de escena del subárbol actual (~org-scribe-update-scene-wordcounts~).
+Muestra un recuento de palabras interactivo de la región o del búfer actual, delegando en ~org-context-extended~ cuando está disponible para obtener cifras exactas que excluyen los metadatos de Org (con un recuento simple, y un aviso, cuando falta ese paquete). Es la orden única de recuento de palabras del propio org-scribe, no una llamada directa al paquete externo: sin argumento de prefijo solo informa de un recuento; con ~C-u~ actualiza ~:WORDCOUNT:~ en todos los encabezados del búfer (~org-scribe-ews-org-count-words~); con ~C-u C-u~ lo actualiza solo en los encabezados de nivel de escena del subárbol actual (~org-scribe-update-scene-wordcounts~).
 
-*Estado*: totalmente implementado | *Hydra*: ~w~ (sección Tools) | *Módulo*: ~counting/org-scribe-wordcount.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 w~ (sección Tools) | *Módulo*: ~counting/org-scribe-wordcount.el~
 
 ** Tablas de seguimiento del progreso (~org-generate-wordcount-table~)
 
-Genera tablas dinámicas de seguimiento del progreso que combinan los recuentos de palabras de las propiedades ~:WORDCOUNT:~ con los objetivos de las propiedades ~:WORD-OBJECTIVE:~ para calcular automáticamente los porcentajes de avance. Las tablas muestran la estructura jerárquica (actos → capítulos → escenas) con columnas para el recuento actual, el objetivo y el progreso calculado automáticamente. Las tablas se crean con ~#+BEGIN: org-generate-wordcount-table~ y se actualizan pulsando ~C-c C-c~; este bloque dinámico está implementado directamente en org-scribe, no en ningún paquete externo.
+Genera bloques dinámicos de seguimiento del progreso que combinan los recuentos de palabras de las propiedades ~:WORDCOUNT:~ con los objetivos de las propiedades ~:WORD-OBJECTIVE:~ para calcular automáticamente los porcentajes de avance. Las tablas muestran la estructura jerárquica (actos → capítulos → escenas) con columnas para el recuento actual, el objetivo y el progreso calculado automáticamente. Las tablas se crean con ~#+BEGIN: org-generate-wordcount-table~ y se actualizan pulsando ~C-c C-c~; este bloque dinámico está implementado directamente en org-scribe, no en ningún paquete externo.
 
 *Estado*: totalmente implementado | *Hydra*: no está en el menú (bloque dinámico, se actualiza con ~C-c C-c~) | *Módulo*: ~counting/org-scribe-wordcount.el~
 
 ** Propiedades del recuento de palabras
 
-El paquete usa dos propiedades estándar para gestionar el recuento de palabras: ~:WORDCOUNT:~ (recuento real, calculado automáticamente) y ~:WORD-OBJECTIVE:~ (objetivo, fijado a mano). Esas propiedades habilitan las potentes funciones de org-mode basadas en propiedades, como los resúmenes de la vista de columnas, las búsquedas y los bloques dinámicos. Se pueden añadir a un encabezado de cualquier nivel (escena, capítulo, acto o la novela entera), lo que da flexibilidad en el nivel de detalle del seguimiento. Las propiedades se integran con el sistema de enlaces: aparecen en los resultados de búsqueda y en la vista de columnas. Son iguales en los dos idiomas.
+El paquete usa dos propiedades estándar para gestionar el recuento de palabras: ~:WORDCOUNT:~ (recuento real, calculado automáticamente) y ~:WORD-OBJECTIVE:~ (objetivo, fijado a mano). Esas propiedades habilitan las potentes funciones de Org basadas en propiedades, como los resúmenes de la vista de columnas, las búsquedas y los bloques dinámicos. Se pueden añadir a un encabezado de cualquier nivel (escena, capítulo, acto o la novela entera), lo que da flexibilidad en el nivel de detalle del seguimiento. Las propiedades se integran con el sistema de enlaces: aparecen en los resultados de búsqueda y en la vista de columnas. Son iguales en los dos idiomas.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (estándar de propiedades) | *Módulo*: varios módulos
 
@@ -172,7 +172,7 @@ El paquete usa dos propiedades estándar para gestionar el recuento de palabras:
 
 Captura notas rápidas en el cuaderno de diseño. Las notas van bajo la parte Borradores como encabezados simples (sin palabra clave TODO y sin ID). La plantilla de captura incluye una marca de tiempo y admite contenido inicial tomado de la región. Los archivos se crean automáticamente, con su estructura, si faltan. Es una forma rápida de capturar ideas sin salir del flujo de escritura.
 
-*Estado*: totalmente implementado | *Hydra*: ~n~ (sección Capture) | *Módulo*: ~capture/org-scribe-capture.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 n~ (sección Capture) | *Módulo*: ~capture/org-scribe-capture.el~
 
 ** Captura de la ficha de un personaje (~org-scribe-capture-character~)
 
@@ -182,7 +182,7 @@ Abre la plantilla de captura de la ficha de un personaje, que sigue la cadena ca
 
 ** Captura de la ficha de una localización (~org-scribe-capture-location~)
 
-Captura la ficha de un escenario con preguntas por el nombre, el tipo y la primera aparición, y las secciones Descripción, Escenas que ocurren aquí y Notas; los cuatro aspectos del escenario del método (Eco, Peligro, Personaje y Símbolo) se rellenan en el propio cuaderno. Los escenarios reciben IDs únicos automáticos para el sistema de enlaces. Las capturas van a ~diseno.org~, bajo su sección «Ambientación», como hermanas de las entradas de muestra de la propia sección, no anidadas bajo ellas. Mira la [[file:../manual-es/primeros-pasos-05-lugares-ambientacion.org][Lección 5]].
+Captura la ficha de un escenario con preguntas por el nombre, el tipo y la primera aparición, y las secciones Descripción, Escenas que ocurren aquí y Notas, más los cuatro aspectos del escenario del método (Eco, Escollo, Personaje y Símbolo). Los escenarios reciben IDs únicos automáticos para el sistema de enlaces. Las capturas van a ~diseno.org~, bajo su sección «Ambientación», como hermanas de las entradas de muestra de la propia sección, no anidadas bajo ellas. Mira la [[file:../manual-es/primeros-pasos-05-lugares-ambientacion.org][Lección 5]].
 
 *Estado*: totalmente implementado | *Hydra*: ~F8 k l~ (Manage → submenú Capture entity) | *Módulo*: ~capture/org-scribe-capture.el~
 
@@ -206,13 +206,13 @@ Captura la ficha de un hilo de la trama (una subtrama) con preguntas por el nomb
 
 ** Creación automática de los archivos de destino
 
-Todas las funciones de captura crean automáticamente el cuaderno de diseño si no existe, y crean la sección de destino (en el idioma del proyecto, dentro de su parte en una novela) si el cuaderno no la tiene. Un cuaderno creado así contiene solo los encabezados de las secciones. Esto garantiza que la captura funcione incluso en proyectos totalmente nuevos o mínimos, y reduce la fricción para los escritores que prefieren construir la estructura según escriben.
+Todas las funciones de captura crean automáticamente el cuaderno de diseño si no existe, y crean la sección de destino (en el idioma del proyecto, dentro de su parte en una novela) si el cuaderno no la tiene. Un cuaderno creado así contiene solo los encabezados de las secciones. Esto garantiza que la captura funcione incluso en proyectos totalmente nuevos o mínimos, y reduce la fricción para quienes prefieren construir la estructura según escriben.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (automática) | *Módulo*: ~capture/org-scribe-capture.el~
 
 ** Soporte bilingüe de la captura
 
-Las funciones de captura detectan automáticamente las estructuras de proyecto en español y en inglés y trabajan con ellas. Los nombres de archivo y los títulos de sección se adaptan: ~design.org~ pasa a ser ~diseno.org~, y la sección Characters pasa a ser Personajes. El *contenido* mismo de las plantillas (los encabezados, las preguntas ~%^{...}~ y los títulos de sección) también está totalmente localizado: sigue a ~org-scribe-project-language~, que lee la línea ~# Language:~ del propio archivo ~.org-scribe-project~ (y recurre a ~org-scribe-template-language~ solo cuando el proyecto es anterior a esa línea). Esto permite a los escritores en español trabajar por completo en su lengua mientras usan todas las funciones del paquete, sea cual sea el ajuste global ~org-scribe-message-language~ de la interfaz.
+Las funciones de captura detectan automáticamente las estructuras de proyecto en español y en inglés y trabajan con ellas. Los nombres de archivo y los títulos de sección se adaptan: ~design.org~ pasa a ser ~diseno.org~, y la sección Characters pasa a ser Personajes. El *contenido* mismo de las plantillas (los encabezados, las preguntas ~%^{...}~ y los títulos de sección) también está totalmente localizado: sigue a ~org-scribe-project-language~, que lee la línea ~# Language:~ del propio archivo ~.org-scribe-project~ (y recurre a ~org-scribe-template-language~ solo cuando el proyecto es anterior a esa línea). Esto permite trabajar por completo en su lengua mientras usan todas las funciones del paquete, sea cual sea el ajuste global ~org-scribe-message-language~ de la interfaz.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (automática) | *Módulo*: ~capture/org-scribe-capture.el~
 
@@ -225,51 +225,51 @@ Las funciones de captura detectan automáticamente las estructuras de proyecto e
 
 Ofrece enlaces por ID entre las propiedades de escena y las fichas de personajes, de modo que se puede ir con un clic desde las propiedades ~:PoV:~ y ~:Personajes:~ de una escena (~:Characters:~ en un proyecto en inglés) directamente al encabezado de la ficha del personaje. Los personajes capturados con ~org-scribe-capture-character~ reciben automáticamente IDs únicos mediante ~%(org-id-new)~ en la plantilla. Las funciones de menú (~org-scribe-set-pov-character~, ~org-scribe-set-scene-characters~) permiten elegir personajes de una lista con búsqueda e insertan los enlaces por ID automáticamente. Los enlaces son estables ante los cambios de nombre de un personaje y funcionan con el seguimiento de enlaces nativo de org (~C-c C-o~). Mira la [[file:../manual-es/primeros-pasos-04-capturar-personajes.org][Lección 4]].
 
-*Estado*: totalmente implementado | *Hydra*: sección Tag Scene (~p~/~h~/~j~) más ~F8 L c~ para la configuración única | *Módulo*: ~linking/org-scribe-character-links.el~
+*Estado*: totalmente implementado | *Hydra*: sección Tag Scene (~F8 p~/~F8 h~/~F8 j~) más ~F8 L c~ para la configuración única | *Módulo*: ~linking/org-scribe-character-links.el~
 
 ** Fijar el personaje PoV (~org-scribe-set-pov-character~)
 
 Recorre el cuaderno de diseño en busca de todas las fichas de personaje (identificadas por las propiedades ~:Role:~ o ~:TYPE:~ y por IDs únicos), las presenta en un menú de completado e inserta el personaje elegido como enlace por ID en la propiedad ~:PoV:~ de la escena actual. El formato del enlace es ~[[id:unique-id][Nombre del personaje]]~, que da legibilidad y navegación estable a la vez. Esta función ahorra tiempo frente a escribir a mano los nombres y asegura la coherencia en todo el manuscrito.
 
-*Estado*: totalmente implementado | *Hydra*: ~p~ (sección Tag Scene, «set PoV») | *Módulo*: ~linking/org-scribe-character-links.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 p~ (sección Tag Scene, «set PoV») | *Módulo*: ~linking/org-scribe-character-links.el~
 
 ** Fijar los personajes de la escena (~org-scribe-set-scene-characters~)
 
-Parecida a fijar el PoV, pero permite elegir varios personajes para la propiedad ~:Personajes:~. Los personajes se presentan en un menú de completado en el que puedes elegir varios nombres (uno cada vez, pulsando RET entre elecciones y una entrada vacía para terminar). La función crea enlaces por ID separados por comas, como ~[[id:id1][Alicia]], [[id:id2][Beto]]~, en la propiedad de personajes. Así se sabe qué personajes aparecen en cada escena, lo que permite generar la cronología de personajes y buscar por personaje.
+Parecida a fijar el PoV, pero permite elegir varios personajes para la propiedad ~:Personajes:~. Los personajes se presentan en un menú de completado en el que puedes elegir varios nombres (uno cada vez, pulsando ~Intro~ entre elecciones y una entrada vacía para terminar). La función crea enlaces por ID separados por comas, como ~[[id:id1][Alicia]], [[id:id2][Beto]]~, en la propiedad de personajes. Así se sabe qué personajes aparecen en cada escena, lo que permite generar la cronología de personajes y buscar por personaje.
 
 El etiquetado no es aditivo. Al fijar los personajes de la escena, la lista se vacía y se vuelve a crear desde cero con los personajes que hayas elegido en esa acción de etiquetado.
 
-*Estado*: totalmente implementado | *Hydra*: ~h~ (sección Tag Scene, «set characters») | *Módulo*: ~linking/org-scribe-character-links.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 h~ (sección Tag Scene, «set characters») | *Módulo*: ~linking/org-scribe-character-links.el~
 
 ** Saltar al personaje PoV (~org-scribe-jump-to-pov-character~)
 
 Lee la propiedad ~:PoV:~ del encabezado de la escena actual, extrae el ID del enlace y navega directamente a la ficha de ese personaje con la navegación por ID de org. Funciona dentro del mismo archivo y entre archivos. Tras saltar puedes volver al punto de partida con ~C-c &~ (org-mark-ring-goto). Da acceso inmediato a los detalles del personaje mientras escribes las escenas y evita buscar a mano en el cuaderno.
 
-*Estado*: totalmente implementado | *Hydra*: ~j~ (sección Tag Scene, «jump to PoV») | *Módulo*: ~linking/org-scribe-character-links.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 j~ (sección Tag Scene, «jump to PoV») | *Módulo*: ~linking/org-scribe-character-links.el~
 
 ** Enlaces por ID de escenarios
 
 Ofrece la misma infraestructura de enlaces por ID para las localizaciones que existe para los personajes. Las fichas de localización capturadas con ~org-scribe-capture-location~ reciben IDs únicos automáticos. La función ~org-scribe-set-scene-locations~ presenta un menú de selección múltiple con todas las localizaciones del proyecto e inserta los enlaces por ID en la propiedad ~:Localizacion:~ de la escena (~:Location:~ en un proyecto en inglés). Así se puede ir con un clic a las fichas detalladas de localización, y se pueden buscar todas las escenas ambientadas en un lugar concreto. Mira la [[file:../manual-es/primeros-pasos-05-lugares-ambientacion.org][Lección 5]].
 
-*Estado*: totalmente implementado | *Hydra*: ~l~ (sección Tag Scene) más ~F8 L o~ para la configuración única | *Módulo*: ~linking/org-scribe-location-links.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 l~ (sección Tag Scene) más ~F8 L o~ para la configuración única | *Módulo*: ~linking/org-scribe-location-links.el~
 
 ** Fijar las localizaciones de la escena (~org-scribe-set-scene-locations~)
 
 Recorre ~diseno.org~ en busca de todas las entradas de escenario con propiedades ~:Type:~ y con IDs, las presenta en un menú de completado de selección múltiple e inserta enlaces por ID separados por comas en la propiedad de localización. Los escenarios pueden ser ciudades, edificios, habitaciones, entornos naturales, regiones o países. Se admiten varios escenarios por escena (útil para escenas de viaje o que abarcan varios lugares). El menú muestra los nombres de los escenarios, extraídos del texto del encabezado o de las propiedades ~:NAME:~.
 
-*Estado*: totalmente implementado | *Hydra*: ~l~ (sección Tag Scene, «set locations») | *Módulo*: ~linking/org-scribe-location-links.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 l~ (sección Tag Scene, «set locations») | *Módulo*: ~linking/org-scribe-location-links.el~
 
 ** Enlaces por ID de hilos de la trama
 
 Ofrece enlaces por ID para los hilos de la trama, lo que permite seguir qué líneas argumentales aparecen en qué escenas. Las fichas de hilo de la trama de ~diseno.org~ reciben IDs automáticos. La función ~org-scribe-set-scene-plot-threads~ presenta un menú de selección múltiple con todos los hilos e inserta enlaces por ID en la propiedad ~:Trama:~ de la escena (~:Plot:~ en un proyecto en inglés). Permite generar cronologías de hilos (que muestran qué escenas hacen avanzar qué tramas), analizar la distribución de la trama e identificar huecos en su cobertura. Mira la [[file:../manual-es/primeros-pasos-06-hilos-trama.org][Lección 6]].
 
-*Estado*: totalmente implementado | *Hydra*: ~g~ (sección Tag Scene) más ~F8 L p~ para la configuración única | *Módulo*: ~linking/org-scribe-plot-links.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 g~ (sección Tag Scene) más ~F8 L p~ para la configuración única | *Módulo*: ~linking/org-scribe-plot-links.el~
 
 ** Fijar los hilos de la trama de la escena (~org-scribe-set-scene-plot-threads~)
 
-Recorre el cuaderno de diseño en busca de todas las entradas de hilo de la trama (encabezados con la propiedad ~:THREAD-TYPE:~, además de un ID único), las presenta en un menú de selección múltiple e inserta enlaces por ID en la propiedad de trama, como ~[[id:id1][Trama principal]], [[id:id2][Subtrama romántica]]~. Es habitual que una escena tenga varios hilos en narraciones complejas. Esta función ayuda a los escritores a asegurarse de que los hilos avanzan con regularidad y de que no se abandona ni se olvida ninguna trama.
+Recorre el cuaderno de diseño en busca de todas las entradas de hilo de la trama (encabezados con la propiedad ~:THREAD-TYPE:~, además de un ID único), las presenta en un menú de selección múltiple e inserta enlaces por ID en la propiedad de trama, como ~[[id:id1][Trama principal]], [[id:id2][Subtrama romántica]]~. Es habitual que una escena tenga varios hilos en narraciones complejas. Esta función sirve para asegurarse de que los hilos avanzan con regularidad y de que no se abandona ni se olvida ninguna trama.
 
-*Estado*: totalmente implementado | *Hydra*: ~g~ (sección Tag Scene, «set plot threads») | *Módulo*: ~linking/org-scribe-plot-links.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 g~ (sección Tag Scene, «set plot threads») | *Módulo*: ~linking/org-scribe-plot-links.el~
 
 ** Saltar a un hilo de la trama (~org-scribe-jump-to-plot-thread~)
 
@@ -291,19 +291,19 @@ Genera una tabla, en un bloque dinámico, que muestra qué hilos de la trama apa
 
 ** Informe de salud de los hilos de la trama (~org-scribe-plot-thread-report~)
 
-Analiza todos los hilos de la trama del manuscrito y genera un informe de salud que identifica posibles problemas: hilos con poca cobertura (menos del 30 % de las escenas), hilos con grandes huecos (más de 5 escenas sin aparecer) e hilos que solo aparecen una vez. El informe se muestra en un búfer temporal. Ayuda a los escritores a detectar los hilos descuidados y los problemas de ritmo antes de que se conviertan en problemas estructurales.
+Analiza todos los hilos de la trama del manuscrito y genera un informe de salud que identifica posibles problemas: hilos con poca cobertura (menos del 30 % de las escenas), hilos con grandes huecos (más de 5 escenas sin aparecer) e hilos que solo aparecen una vez. El informe se muestra en un búfer temporal. Sirve para detectar los hilos descuidados y los problemas de ritmo antes de que se conviertan en problemas estructurales.
 
 *Estado*: totalmente implementado | *Hydra*: ~F8 L t~ (submenú Links & upkeep, «plot report») | *Módulo*: ~linking/org-scribe-plot-links.el~
 
 ** Estadísticas de los hilos de la trama (~org-scribe-plot-thread-stats~)
 
-Muestra en el minibúfer estadísticas rápidas del uso de los hilos de la trama: el número total de hilos distintos del manuscrito, el número total de escenas con etiquetas de hilo y los recuentos de apariciones de cada hilo, ordenados por frecuencia. Es un chequeo rápido sin abrir un búfer de informe completo, útil para tener una instantánea de la distribución de la trama durante la redacción o la revisión.
+Muestra en el minibúfer estadísticas rápidas del uso de los hilos de la trama: el número total de hilos distintos del manuscrito, el número total de escenas con etiquetas de hilo y los recuentos de apariciones de cada hilo, ordenados por frecuencia. Es una comprobación rápida sin abrir un búfer de informe completo, útil para tener una instantánea de la distribución de la trama durante la redacción o la revisión.
 
 *Estado*: totalmente implementado | *Hydra*: ~F8 L S~ (submenú Links & upkeep, «plot stats») | *Módulo*: ~linking/org-scribe-plot-links.el~
 
 ** Conversión de enlaces por lotes
 
-Ofrece funciones para convertir en bloque las referencias de texto plano existentes a personajes, escenarios y tramas en enlaces por ID. ~org-scribe-link-scene-characters~ convierte la escena actual, mientras que ~org-scribe-link-all-scene-characters~ procesa todo el manuscrito. Para cada valor de propiedad, la función busca el nombre en la base de datos (el cuaderno de diseño), encuentra el ID correspondiente y sustituye el texto plano por enlaces por ID. Es útil al migrar proyectos existentes al sistema de enlaces, o cuando el escritor usa al principio texto plano y quiere pasar más tarde a referencias enlazadas.
+Ofrece funciones para convertir en bloque las referencias de texto plano existentes a personajes, escenarios y tramas en enlaces por ID. ~org-scribe-link-scene-characters~ convierte la escena actual, mientras que ~org-scribe-link-all-scene-characters~ procesa todo el manuscrito. Para cada valor de propiedad, la función busca el nombre en la base de datos (el cuaderno de diseño), encuentra el ID correspondiente y sustituye el texto plano por enlaces por ID. Es útil al migrar proyectos existentes al sistema de enlaces, o cuando se usa al principio texto plano y quiere pasar más tarde a referencias enlazadas.
 
 *Estado*: totalmente implementado | *Hydra*: sin asignación directa: la sustituye la única orden ~org-scribe-relink-project~ (~F8 R~ o ~F8 L R~), que hace esta conversión para todos los tipos de entidad de una sola pasada; llama a estas funciones con ~M-x~ si necesitas actuar solo sobre un tipo de entidad o sobre la escena actual | *Módulo*: los tres módulos de enlaces
 
@@ -323,7 +323,7 @@ Cada módulo de enlaces ofrece una función que añade IDs únicos a las fichas 
 
 Refresca el texto visible de todos los enlaces por ID de las propiedades de escena para que coincida con los nombres actuales de las entidades, añade los IDs que faltan y enlaza los valores de propiedad que sigan en texto plano, todo en una sola pasada guiada por el registro de entidades, para todos los tipos. Cuando renombras un personaje, un escenario o un hilo de la trama en el cuaderno de diseño, los enlaces por ID siguen funcionando (se basan en el ID), pero el texto visible muestra el nombre antiguo. Esta función recorre la base de datos de cada tipo de entidad para obtener los nombres actuales y después actualiza las propiedades ~:PoV:~, de personajes, de escenario y de trama de todas las escenas del manuscrito, en una sola pasada. Informa del número de escenas actualizadas. Esta única orden sustituyó a las antiguas funciones separadas de añadir IDs, enlazar y actualizar nombres de cada entidad, y es ahora la acción principal de mantenimiento.
 
-*Estado*: totalmente implementado | *Hydra*: ~R~ (sección Manage, también ~F8 L R~) | *Módulo*: ~linking/org-scribe-link-update.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 R~ (sección Manage, también ~F8 L R~) | *Módulo*: ~linking/org-scribe-link-update.el~
 
 ** Seguimiento de las relaciones entre personajes (~org-scribe-add-relationship~)
 
@@ -333,15 +333,15 @@ Ofrece un seguimiento estructurado de las relaciones entre personajes, guardadas
 
 ** Visualización de las relaciones entre personajes
 
-Muestra las relaciones entre personajes para analizarlas y planificar. ~org-scribe-show-character-relationships~ muestra una lista simple de las relaciones del personaje elegido. ~org-scribe-show-all-relationships~ presenta todas las relaciones del proyecto como una tabla de org-mode con formato, con columnas para el personaje, la relación con y el tipo.
+Muestra las relaciones entre personajes para analizarlas y planificar. ~org-scribe-show-character-relationships~ muestra una lista simple de las relaciones del personaje elegido. ~org-scribe-show-all-relationships~ presenta todas las relaciones del proyecto como una tabla de Org con formato, con columnas para el personaje, el personaje relacionado y el tipo.
 
 *Estado*: totalmente implementado | *Hydra*: ~F8 L v~, ~F8 L V~ (submenú Links & upkeep) | *Módulo*: ~linking/org-scribe-character-relationships.el~
 
 ** Globos informativos de entidades (~org-scribe-overlays-mode~)
 
-Un modo menor local al búfer que muestra información de la entidad (en línea tras el enlace por defecto; ~org-scribe-overlays-display~ ofrece también un posframe o el área de eco) cuando el cursor se mueve sobre cualquier enlace ~[[id:...][Nombre]]~ de una propiedad de escena. En los enlaces de personajes, el globo muestra el Role, la Age, el Goal y la Motivation de la ficha del personaje; en los demás tipos de entidad muestra el nombre del encabezado. La búsqueda se agrupa con un pequeño retardo mediante ~org-scribe--overlays-last-id~: moverte a lo largo del mismo enlace no provoca lecturas repetidas de archivos.
+Un modo menor local al búfer que muestra información de la entidad (en línea tras el enlace por defecto; ~org-scribe-overlays-display~ ofrece también un posframe o el área de eco) cuando el cursor se mueve sobre cualquier enlace ~[[id:...][Nombre]]~ de una propiedad de escena. En los enlaces de personajes, el globo muestra las propiedades Role, Age, Goal y Motivation de la ficha del personaje; en los demás tipos de entidad muestra el nombre del encabezado. La búsqueda se agrupa con un pequeño retardo mediante ~org-scribe--overlays-last-id~: moverte a lo largo del mismo enlace no provoca lecturas repetidas de archivos.
 
-Esta función está *desactivada por defecto*. Para activarla automáticamente siempre que ~org-scribe-mode~ esté activo, el usuario pone ~(setq org-scribe-overlays-enable t)~ en su archivo de inicio. Se puede alternar en cualquier momento en cada búfer con ~M-x org-scribe-overlays-mode~ o con la tecla ~T~ del submenú Links & upkeep (~F8 L T~). El modo menor se carga siempre (lo requiere ~org-scribe.el~) pero nunca se activa si no se habilita explícitamente, así que no supone ninguna sobrecarga para quien no opta por él.
+Esta función está *desactivada por defecto*. Para activarla automáticamente siempre que ~org-scribe-mode~ esté activo, se pone ~(setq org-scribe-overlays-enable t)~ en su archivo de inicio. Se puede alternar en cualquier momento en cada búfer con ~M-x org-scribe-overlays-mode~ o con la tecla ~T~ del submenú Links & upkeep (~F8 L T~). El modo menor se carga siempre (lo requiere ~org-scribe.el~) pero nunca se activa si no se habilita explícitamente, así que no supone ninguna sobrecarga para quien no opta por él.
 
 *Estado*: totalmente implementado (opcional) | *Hydra*: ~F8 L T~ (submenú Links & upkeep, alternar) | *Módulo*: ~linking/org-scribe-overlays.el~
 
@@ -354,37 +354,37 @@ Esta función está *desactivada por defecto*. Para activarla automáticamente s
 
 Busca en todo el manuscrito las escenas con un personaje PoV concreto. Usa org-ql para encontrar los encabezados cuya propiedad ~:PoV:~ contiene el nombre del personaje indicado (admite tanto texto plano como enlaces por ID, mediante ~org-scribe--property-contains-p~). Los resultados se muestran en un búfer ~*org-ql-search*~ con enlaces pulsables a cada escena. La búsqueda no distingue mayúsculas y minúsculas y admite coincidencias parciales (buscar «Alex» encuentra «Alex Rivera»). Es útil para seguir la distribución de los PoV, comprobar el arco de un personaje o encontrar todas las escenas escritas desde una perspectiva concreta. Mira la [[file:../manual-es/primeros-pasos-07-busquedas.org][Lección 7]].
 
-*Estado*: totalmente implementado | *Hydra*: ~1~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 1~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
 
 ** Buscar escenas por personaje (~org-scribe-org-find-character~)
 
 Busca todas las escenas en las que aparece un personaje concreto (en la propiedad ~:PoV:~ o en la de personajes). Usa org-ql con una consulta OR para comprobar las dos propiedades. Trata tanto los nombres de personaje en texto plano como los enlaces por ID. Los resultados muestran todas las escenas en las que está el personaje, sea el PoV o un personaje secundario de la escena. Es esencial para seguir las apariciones de los personajes, asegurarse de que los principales aparecen con regularidad y encontrar todas las escenas para revisar un arco de personaje.
 
-*Estado*: totalmente implementado | *Hydra*: ~2~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 2~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
 
 ** Buscar escenas por hilo de la trama (~org-scribe-org-find-plot~)
 
-Busca todas las escenas etiquetadas con un hilo de la trama concreto en la propiedad de trama (~:Trama:~ en un proyecto en español). Acepta coincidencias parciales, así que buscar «Romance» encuentra «Subtrama romántica» si el nombre la contiene. Trata tanto el texto plano como los enlaces por ID. Los resultados se muestran en orden cronológico (por posición en el manuscrito) y enseñan cómo se desarrolla un hilo a lo largo de la historia. Ayuda a los escritores a comprobar el ritmo de la trama, identificar huecos en su cobertura y asegurarse de que todos los hilos se resuelven al final.
+Busca todas las escenas etiquetadas con un hilo de la trama concreto en la propiedad ~:Trama:~ (~:Plot:~ en un proyecto en inglés). Acepta coincidencias parciales, así que buscar «romántica» encuentra «Subtrama romántica». Trata tanto el texto plano como los enlaces por ID. Los resultados se muestran en orden cronológico (por posición en el manuscrito) y enseñan cómo se desarrolla un hilo a lo largo de la historia. Sirve para comprobar el ritmo de la trama, identificar huecos en su cobertura y asegurarse de que todos los hilos se resuelven al final.
 
-*Estado*: totalmente implementado | *Hydra*: ~3~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 3~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
 
 ** Buscar escenas por localización (~org-scribe-org-find-location~)
 
 Busca todas las escenas ambientadas en una localización concreta mediante la propiedad ~:Localizacion:~ (~:Location:~ en un proyecto en inglés). Admite coincidencias parciales y trata tanto el texto plano como los enlaces por ID. Los resultados muestran todas las escenas de esa localización en el orden del manuscrito. Es útil para comprobar la variedad de escenarios (¿hay demasiadas escenas en el mismo lugar?), asegurarse de que las localizaciones se aprovechan bien y encontrar todas las escenas que revisar cuando cambian los detalles de un lugar. Se puede buscar una localización amplia (como «París») o una concreta (como «La cafetería»). Hay además una búsqueda equivalente por objeto, ~org-scribe-org-find-object~ (~7~ en la sección Search).
 
-*Estado*: totalmente implementado | *Hydra*: ~4~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 4~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
 
 ** Búsqueda recursiva de TODO (~org-scribe-search-todos-recursive~)
 
 Busca de forma recursiva en todo el proyecto todos los elementos TODO, reuniéndolos del manuscrito, de los archivos de planificación, de las notas y de cualquier otro archivo Org del proyecto. Usa org-ql para encontrar los encabezados con estados TODO (los de ~org-scribe-todo-keywords~) y los muestra en un único búfer consolidado en el que se puede buscar. Da un seguimiento de los TODO de todo el proyecto sin mantener un archivo de tareas aparte. Es útil para encontrar notas de revisión, agujeros de la trama que arreglar, investigación pendiente o cualquier otra tarea etiquetada repartida por los archivos del proyecto. Los estados de las ramas de Borradores (~OPEN~, ~EXPLORING~, ~CHOSEN~, ~REJECTED~) quedan fuera a propósito.
 
-*Estado*: totalmente implementado | *Hydra*: ~5~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 5~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
 
 ** Índice de marcadores de edición (~org-scribe-search-edits~)
 
-Reúne todos los marcadores ~*EDIT*~ y ~*NOTE*~ escritos dentro de un bloque ~#+begin_comment~ en todos los archivos .org bajo la raíz del proyecto y los presenta en un búfer de Org navegable: los marcadores ~*EDIT*~ agrupados por categoría (~org-scribe-edit-categories~, por defecto plot/scene/character/prose/design, con un cajón de sastre ~other~ para las categorías ausentes o no reconocidas; en un proyecto en español se muestran como trama/escena/personaje/prosa/diseño) y los ~*NOTE*~ en una sección propia. Cada entrada enlaza con la línea exacta del origen. Se construye recorriendo el árbol de análisis de Org en busca de elementos ~comment-block~ en lugar de buscar texto, lo que da cuerpos de marcador completos aunque ocupen varias líneas, el encabezado de escena que contiene cada marcador y la inmunidad a los falsos positivos de una prosa que simplemente menciona ~*NOTE*~. Los marcadores ~*SUMMARY*~ se excluyen a propósito: describen escenas sin escribir y pertenecen a la búsqueda de TODO. En el búfer del índice ~g~ lo refresca y ~q~ lo oculta; con un argumento de prefijo la orden ejecuta en su lugar la alternativa ~rgrep~. También está disponible como el valor ~edits~ de ~org-scribe-editing-right-panel~, donde se refresca en cada guardado. ~org-scribe-search-edits-recursive~ sigue existiendo como alias. Mira la [[file:../manual-es/primeros-pasos-14-flujo-revision.org][Lección 14]].
+Reúne todos los marcadores ~*EDIT*~ y ~*NOTE*~ escritos dentro de un bloque ~#+begin_comment~ en todos los archivos .org bajo la raíz del proyecto y los presenta en un búfer de Org navegable: los marcadores ~*EDIT*~ agrupados por categoría (~org-scribe-edit-categories~, por defecto plot/scene/character/prose/design, con un cajón de sastre ~other~ para las categorías ausentes o no reconocidas; en un proyecto en español se muestran como trama/escena/personaje/prosa/diseño, y el cajón de sastre como ~otras~) y los ~*NOTE*~ en una sección propia. Cada entrada enlaza con la línea exacta del origen. Se construye recorriendo el árbol de análisis de Org en busca de elementos ~comment-block~ en lugar de buscar texto, lo que da cuerpos de marcador completos aunque ocupen varias líneas, el encabezado de escena que contiene cada marcador y la inmunidad a los falsos positivos de una prosa que simplemente menciona ~*NOTE*~. Los marcadores ~*SUMMARY*~ se excluyen a propósito: describen escenas sin escribir y pertenecen a la búsqueda de TODO. En el búfer del índice ~g~ lo refresca y ~q~ lo oculta; con un argumento de prefijo la orden ejecuta en su lugar la alternativa ~rgrep~. También está disponible como el valor ~edits~ de ~org-scribe-editing-right-panel~, donde se refresca en cada guardado. ~org-scribe-search-edits-recursive~ sigue existiendo como alias. Mira la [[file:../manual-es/primeros-pasos-14-flujo-revision.org][Lección 14]].
 
-*Estado*: totalmente implementado | *Hydra*: ~6~ (sección Search, «find edits and notes») | *Módulo*: ~search/org-scribe-search.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 6~ (sección Search, «find edits and notes») | *Módulo*: ~search/org-scribe-search.el~
 
 ** Fragmentos de Tempel incluidos (~org-scribe-tempel-setup~)
 
@@ -394,13 +394,13 @@ Incluye los fragmentos ~edit~ y ~note~ en ~snippets/org-scribe-tempel.eld~, que 
 
 ** Buscar notas de edición (~org-scribe-search-edits-rgrep~)
 
-Busca de forma recursiva en todo el proyecto marcadores de edición en línea y notas de revisión con ~rgrep~. El patrón de búsqueda se configura con ~org-scribe-edit-string~ (la expresión regular por defecto coincide con las cadenas ~*EDIT*~ o ~*NOTE*~ en cualquier punto de los archivos .org). Los resultados aparecen en un búfer de grep con referencias archivo:línea pulsables. Los escritores usan ~*EDIT*~ o ~*NOTE*~ en línea mientras redactan para marcar pasajes que necesitan revisión sin interrumpir el flujo; esta función reúne después todos esos marcadores de todo el proyecto para una sesión de revisión concentrada. Los marcadores se escriben por convención dentro de un bloque ~#+begin_comment~, lo que los mantiene fuera de todos los backends de exportación y de los recuentos de palabras (mira la Lección 14, «Convención de marcadores»). La búsqueda abarca deliberadamente todo el proyecto; fuera de un proyecto de escritura recurre al directorio del búfer actual en lugar de fallar.
+Busca de forma recursiva en todo el proyecto marcadores de edición en línea y notas de revisión con ~rgrep~. El patrón de búsqueda se configura con ~org-scribe-edit-string~ (la expresión regular por defecto coincide con las cadenas ~*EDIT*~ o ~*NOTE*~ en cualquier punto de los archivos .org). Los resultados aparecen en un búfer de grep con referencias archivo:línea pulsables. Se usan ~*EDIT*~ o ~*NOTE*~ en línea mientras redactan para marcar pasajes que necesitan revisión sin interrumpir el flujo; esta función reúne después todos esos marcadores de todo el proyecto para una sesión de revisión concentrada. Los marcadores se escriben por convención dentro de un bloque ~#+begin_comment~, lo que los mantiene fuera de todos los motores de exportación y de los recuentos de palabras (mira la Lección 14, «Convención de marcadores»). La búsqueda abarca deliberadamente todo el proyecto; fuera de un proyecto de escritura recurre al directorio del búfer actual en lugar de fallar.
 
-*Estado*: totalmente implementado | *Hydra*: ~C-u~ y después ~6~ (la variante con prefijo de la sección Search) | *Módulo*: ~search/org-scribe-search.el~
+*Estado*: totalmente implementado | *Hydra*: ~C-u~ y después ~F8 6~ (la variante con prefijo de la sección Search) | *Módulo*: ~search/org-scribe-search.el~
 
 ** Extracción del texto de los enlaces por ID (~org-scribe--extract-link-text~)
 
-Función auxiliar interna que extrae el texto visible de los enlaces por ID, y trata enlaces sueltos, varios enlaces separados por comas y mezclas de texto plano y enlaces. Para ~[[id:abc123][Alicia Ríos]]~ devuelve «Alicia Ríos». Para ~[[id:abc][Alicia]], [[id:def][Beto]]~ devuelve «Alicia, Beto». Esta función la usan las funciones de búsqueda, la vista de columnas y la generación de cronologías para presentar texto limpio al usuario manteniendo por debajo la infraestructura de enlaces. La función es a prueba de bombas con los espacios en blanco y cubre los casos límite.
+Función auxiliar interna que extrae el texto visible de los enlaces por ID, y trata enlaces sueltos, varios enlaces separados por comas y mezclas de texto plano y enlaces. Para ~[[id:abc123][Alicia Ríos]]~ devuelve «Alicia Ríos». Para ~[[id:abc][Alicia]], [[id:def][Beto]]~ devuelve «Alicia, Beto». Esta función la usan las funciones de búsqueda, la vista de columnas y la generación de cronologías para presentar texto limpio al usuario manteniendo por debajo la infraestructura de enlaces. La función tolera bien los espacios en blanco y cubre los casos límite.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (auxiliar interna) | *Módulo*: ~search/org-scribe-search.el~
 
@@ -413,29 +413,29 @@ Función auxiliar interna que extrae el texto visible de los enlaces por ID, y t
 
 Inserta una plantilla de escena completa con estado TODO, un título provisional y propiedades de escena exhaustivas. El cursor puede estar en cualquier sitio: la escena va al final de la escena en la que estás, o al final del capítulo cuando el cursor está en el encabezado del capítulo, nunca en medio de un párrafo. La plantilla incluye, en un proyecto en español: ~:PoV:~, ~:Personajes:~, ~:Trama:~, ~:Punto-de-trama:~, ~:Linea-temporal:~, ~:Localizacion:~, ~:Objetos:~, ~:Descripcion:~, ~:Resumen:~, ~:Motivacion-escena:~, ~:Fuente-conflicto:~, ~:Brecha:~, ~:Que-esta-en-juego:~, ~:Problema-mundo:~, ~:Emocion:~, ~:Nivel-tension:~, ~:Resultado:~, ~:Decision-secuela:~, ~:Comentario:~, ~:WORDCOUNT:~ y ~:WORD-OBJECTIVE:~ (en un proyecto en inglés: ~:Characters:~, ~:Plot:~, ~:Plot-point:~, ~:Timeline:~, ~:Location:~, ~:Objects:~, ~:Description:~, ~:Summary:~, ~:Scene-motivation:~, ~:Conflict-source:~, ~:Gap:~, ~:What-is-at-stake:~, ~:World-problem:~, ~:Emotion:~, ~:Tension-level:~, ~:Outcome:~, ~:Sequel-decision:~, ~:Comment:~). Esas propiedades se integran con las funciones de búsqueda, el sistema de enlaces, el recuento de palabras y el seguimiento del progreso. La función lee la forma del esquema del propio proyecto (~org-scribe-project-levels~) en lugar de suponer la de una novela, de modo que el encabezado que crea cae en el nivel de escena del propio proyecto (el nivel 3, siguiendo la jerarquía acto → capítulo → escena, en una novela; el nivel 2 en un cuento), con la etiqueta ~:ignore:~ en los dos casos. Mira la [[file:../manual-es/primeros-pasos-02-primera-escena.org][Lección 2]].
 
-*Estado*: totalmente implementado | *Hydra*: ~s~ (sección Insert) | *Módulo*: ~templates/org-scribe-project.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 s~ (sección Insert) | *Módulo*: ~templates/org-scribe-project.el~
 
 ** Inserción de la plantilla de capítulo (~org-scribe-insert-chapter~)
 
 Inserta una plantilla de capítulo, después del capítulo en el que estás (también desde dentro de una escena), con estado TODO, una pregunta por el título y las propiedades de nivel de capítulo (~:WORDCOUNT:~, ~:WORD-OBJECTIVE:~), seguida inmediatamente de una primera escena vacía completa (en el nivel de escena del propio proyecto, con todas las propiedades de metadatos de escena y ~{{{scene-break}}}~). Tras la inserción, el cursor queda en la propiedad ~:PoV:~ de la escena nueva, listo para escribir: la misma posición de aterrizaje que produce ~org-scribe-insert-scene~. Así, una sola orden crea la estructura del capítulo y abre una escena para escribir, sin un segundo paso. En un proyecto de cuento, que no tiene nivel de capítulo, la función se niega con un ~user-error~ claro en lugar de insertar un encabezado que chocaría con el nivel de escena: usa ahí ~org-scribe-insert-scene~.
 
-*Estado*: totalmente implementado | *Hydra*: ~c~ (sección Insert) | *Módulo*: ~templates/org-scribe-project.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 c~ (sección Insert) | *Módulo*: ~templates/org-scribe-project.el~
 
 ** Actualización del recuento por escena (~org-scribe-update-scene-wordcounts~)
 
-Actualiza la propiedad ~:WORDCOUNT:~ de todos los encabezados de escena (el nivel de escena del propio proyecto: nivel 3 con la etiqueta ~:ignore:~ en una novela, nivel 2 con la etiqueta ~:ignore:~ en un cuento, mediante ~org-scribe-scene-match~) del subárbol actual, sin modificar los encabezados de capítulo ni de acto. Cuando el cursor está en un encabezado de capítulo o de acto, solo se procesa ese subárbol; cuando no está en ningún encabezado, se actualiza el búfer entero. La función delega en ~org-context-count-words~ (de ~org-context-extended~) para un recuento consciente de los metadatos, con la misma lógica de recuento que ~org-scribe-ews-org-count-words~ pero limitada exclusivamente a las escenas. Esto hace rápido y seguro refrescar los recuentos de las escenas durante una sesión de escritura sin sobrescribir por descuido los agregados de nivel de capítulo.
+Actualiza la propiedad ~:WORDCOUNT:~ de todos los encabezados de escena (el nivel de escena del propio proyecto: nivel 3 con la etiqueta ~:ignore:~ en una novela, nivel 2 con la etiqueta ~:ignore:~ en un cuento, mediante ~org-scribe-scene-match~) del subárbol actual, sin modificar los encabezados de capítulo ni de acto. Cuando el cursor está en un encabezado de capítulo o de acto, solo se procesa ese subárbol; cuando no está en ningún encabezado, se actualiza el búfer entero. La función delega en ~org-context-count-words~ (de ~org-context-extended~) para un recuento que tiene en cuenta los metadatos, con la misma lógica de recuento que ~org-scribe-ews-org-count-words~ pero limitada exclusivamente a las escenas. Esto hace rápido y seguro refrescar los recuentos de las escenas durante una sesión de escritura sin sobrescribir por descuido los agregados de nivel de capítulo.
 
-*Estado*: totalmente implementado | *Hydra*: sin asignación directa: se llega con ~C-u C-u~ sobre ~w~ (el despachador ~org-scribe-wordcount~) | *Módulo*: ~counting/org-scribe-wordcount.el~
+*Estado*: totalmente implementado | *Hydra*: sin asignación directa: se llega con ~C-u C-u~ sobre ~F8 w~ (la orden única ~org-scribe-wordcount~) | *Módulo*: ~counting/org-scribe-wordcount.el~
 
 ** Sistema de plantillas de proyecto
 
-El sistema de plantillas procesa de forma recursiva directorios de archivos ~.template~ y sustituye variables: ~${TITLE}~, ~${AUTHOR}~ y ~${DATE}~, además de las del objetivo de palabras (~${TOTAL_WORDS}~, ~${TOTAL_WORDS_FMT}~ y ~${PART1_WORDS}~ a ~${PART3_WORDS}~) y ~${FOUNDATIONS}~, el hueco donde entra la parte Fundamentos del método elegido. Cada conjunto de plantillas (novela o cuento, en cada idioma) contiene dos archivos: el manuscrito y el cuaderno de diseño; el ~.gitignore~ es una copia simple, sin plantilla, que va a su lado. Los archivos ~.fragment~ son insumos de otras plantillas y nunca se copian al proyecto. El procesado quita la extensión .template, crea los directorios de destino que hagan falta y conserva los permisos de los archivos. Este sistema hace trivial añadir tipos de proyecto nuevos o personalizar los existentes sin cambios de código.
+El sistema de plantillas procesa de forma recursiva directorios de archivos ~.template~ y sustituye variables: ~${TITLE}~, ~${AUTHOR}~ y ~${DATE}~, además de las del objetivo de palabras (~${TOTAL_WORDS}~, ~${TOTAL_WORDS_FMT}~ y ~${PART1_WORDS}~ a ~${PART3_WORDS}~) y ~${FOUNDATIONS}~, el hueco donde entra la parte Fundamentos del método elegido. Cada conjunto de plantillas (novela o cuento, en cada idioma) contiene dos archivos: el manuscrito y el cuaderno de diseño; el ~.gitignore~ es una copia simple, sin plantilla, que va a su lado. Los archivos ~.fragment~ son piezas que se insertan en otras plantillas y nunca se copian al proyecto. El procesado quita la extensión .template, crea los directorios de destino que hagan falta y conserva los permisos de los archivos. Este sistema hace trivial añadir tipos de proyecto nuevos o personalizar los existentes sin cambios de código.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (lo usa la creación de proyectos) | *Módulo*: ~templates/org-scribe-project.el~
 
 ** Personalización de las plantillas
 
-Los usuarios pueden personalizar las plantillas editando los archivos del directorio ~org-scribe-templates/~ del paquete (~M-x org-scribe-edit-templates~ lo abre). Los cambios afectan a todos los proyectos creados después de modificarlas. Las plantillas pueden incluir cualquier función de org-mode: bloques dinámicos, fórmulas, propiedades propias, palabras clave, etc. La función ~org-scribe-edit-templates~ da acceso rápido al directorio de plantillas para personalizarlas. Una actualización del paquete reemplaza ese directorio: guarda una copia de tus cambios. Mira la [[file:../manual-es/primeros-pasos-15-personalizacion.org][Lección 15]].
+Puedes personalizar las plantillas editando los archivos del directorio ~org-scribe-templates/~ del paquete (~M-x org-scribe-edit-templates~ lo abre). Los cambios afectan a todos los proyectos creados después de modificarlas. Las plantillas pueden incluir cualquier función de Org: bloques dinámicos, fórmulas, propiedades propias, palabras clave, etc. La función ~org-scribe-edit-templates~ da acceso rápido al directorio de plantillas para personalizarlas. Una actualización del paquete reemplaza ese directorio: guarda una copia de tus cambios. Mira la [[file:../manual-es/primeros-pasos-15-personalizacion.org][Lección 15]].
 
 *Estado*: totalmente implementado | *Hydra*: no está en el menú (solo interactiva) | *Módulo*: ~templates/org-scribe-project.el~
 
@@ -446,21 +446,21 @@ Los usuarios pueden personalizar las plantillas editando los archivos del direct
 
 ** Consulta de definiciones (~org-scribe-dictionary-lookup~)
 
-El punto de entrada de las definiciones: despacha según ~org-scribe-dictionary-backend~ entre un Wikcionario local servido por kiwix-serve y la API de la RAE en línea. Con el valor por defecto ~'auto~ se usa el servidor local cuando responde y la RAE en caso contrario, así que un escritor que no configura nada ve el comportamiento en línea de siempre. La disponibilidad se sondea una vez por sesión y se guarda en caché para que las consultas no cuesten latencia; un argumento de prefijo fuerza un nuevo sondeo, por si el servidor arrancó después de Emacs. Una palabra que el servidor local no tiene se informa como ausente (con sugerencias del ZIM) en lugar de recurrir en silencio a internet, porque eso haría indistinguible un hueco de los datos locales de una consulta normal en línea. Está asignada a ~d~ en el menú Hydra. Mira la [[file:../manual-es/primeros-pasos-12-herramientas-diccionario.org][Lección 12]].
+El punto de entrada de las definiciones: elige según ~org-scribe-dictionary-backend~ entre un Wikcionario local servido por kiwix-serve y la API de la RAE en línea. Con el valor por defecto ~'auto~ se usa el servidor local cuando responde y la RAE en caso contrario, así que quien no configura nada ve el comportamiento en línea de siempre. La disponibilidad se sondea una vez por sesión y se guarda en caché para que las consultas no cuesten latencia; un argumento de prefijo fuerza un nuevo sondeo, por si el servidor arrancó después de Emacs. Una palabra que el servidor local no tiene se informa como ausente (con sugerencias del ZIM) en lugar de recurrir en silencio a internet, porque eso haría indistinguible un hueco de los datos locales de una consulta normal en línea. Está asignada a ~d~ en el menú Hydra. Mira la [[file:../manual-es/primeros-pasos-12-herramientas-diccionario.org][Lección 12]].
 
-*Estado*: totalmente implementado | *Hydra*: ~d~ (sección Tools) | *Módulo*: ~language/org-scribe-dictionary.el~, ~language/org-scribe-wikcionario.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 d~ (sección Tools) | *Módulo*: ~language/org-scribe-dictionary.el~, ~language/org-scribe-wikcionario.el~
 
 ** Backend local de Wikcionario (~org-scribe-wikcionario-resolve~)
 
 Sirve definiciones desde un ZIM del Wikcionario en español a través de un kiwix-serve local. Descubre el libro servido a partir del catálogo OPDS (leyendo el enlace de contenido, porque el ~<name>~ del catálogo omite el sufijo de variante y da 404), construye las URL de los artículos bajo ~/content/~ y consulta ~/suggest~ para obtener coincidencias aproximadas cuando falla, descartando la entrada sintética «containing '...'» del servidor. Su orden de búsqueda difiere deliberadamente del del módulo de tesauro: el Wikcionario guarda un artículo para *cada* forma flexionada, pero son esbozos que remiten a la forma del diccionario, así que una palabra flexionada se resuelve en el artículo de su lema en lugar de en su propio esbozo. org-scribe nunca arranca, detiene ni supervisa el servidor: sondea una URL y nombra el servicio cuando nada responde.
 
-*Estado*: totalmente implementado | *Hydra*: no está en el menú (lo usa ~d~) | *Módulo*: ~language/org-scribe-wikcionario.el~
+*Estado*: totalmente implementado | *Hydra*: no está en el menú (lo usa ~F8 d~) | *Módulo*: ~language/org-scribe-wikcionario.el~
 
 ** Consulta en el diccionario de la RAE (~org-scribe-rae-api-lookup~)
 
-Consulta la API de la Real Academia Española (RAE) para obtener definiciones de palabras en español y las muestra en una ventana lateral. La función obtiene las entradas completas del diccionario, con definiciones, ejemplos, etimología y conjugaciones verbales (para los verbos). Los resultados se formatean para leerlos bien, con tablas de conjugación y varias acepciones claramente separadas. La consulta usa los puntos de acceso de la API de la RAE y trata correctamente los caracteres propios del español. Es ideal para los escritores en español que necesitan referencias autorizadas del diccionario mientras escriben.
+Consulta la API de la Real Academia Española (RAE) para obtener definiciones de palabras en español y las muestra en una ventana lateral. La función obtiene las entradas completas del diccionario, con definiciones, ejemplos, etimología y conjugaciones verbales (para los verbos). Los resultados se formatean para leerlos bien, con tablas de conjugación y varias acepciones claramente separadas. La consulta usa los puntos de acceso de la API de la RAE y trata correctamente los caracteres propios del español. Es ideal si escribes en español y necesitas referencias autorizadas del diccionario mientras escribes.
 
-*Estado*: totalmente implementado | *Hydra*: ~d~ (sección Tools) | *Módulo*: ~language/org-scribe-dictionary.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 d~ (sección Tools) | *Módulo*: ~language/org-scribe-dictionary.el~
 
 ** Palabra aleatoria de la RAE (~org-scribe-rae-api-random~)
 
@@ -472,29 +472,29 @@ Obtiene una palabra al azar del diccionario de la RAE y muestra su definición c
 
 Muestra sinónimos en una ventana lateral de ancho personalizable (80 columnas por defecto, configurable con ~org-scribe-sinonimo-window-width~), desde una de las dos fuentes que elige ~org-scribe-thesaurus-backend~. Cuando los datos del tesauro MyThes están instalados (~apt install mythes-es~), los resultados vienen del disco (instantáneos, sin conexión) y se muestran en un búfer de Org con los significados agrupados por acepción, de modo que un sinónimo se puede copiar directamente al manuscrito y es más difícil cometer el error clásico de escoger uno de la acepción equivocada. En otro caso, o para una palabra sin entrada local, se usan los sinónimos por acepción de la API de la RAE en línea (la página de WordReference que se cargaba antes ya no se usa: dejó de responder). El valor por defecto ~'auto~ significa que quien no tiene datos instalados obtiene sinónimos en línea, y quien los instala obtiene el camino sin conexión sin configurar nada.
 
-*Estado*: totalmente implementado | *Hydra*: ~y~ (sección Tools, «sYnonyms») | *Módulo*: ~language/org-scribe-dictionary.el~, ~language/org-scribe-mythes.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 y~ (sección Tools, «sYnonyms») | *Módulo*: ~language/org-scribe-dictionary.el~, ~language/org-scribe-mythes.el~
 
 ** Lector del tesauro sin conexión (~org-scribe-mythes-lookup~)
 
-Lee los archivos de tesauro MyThes que distribuyen los paquetes de idioma de LibreOffice y devuelve los grupos de significado como datos. Localiza los archivos él mismo bajo ~org-scribe-mythes-directory~, respeta la codificación que declara cada archivo y guarda en caché su índice para que solo la primera consulta de la sesión pague la carga. Las variantes regionales se resuelven con los datos presentes, de modo que ~es_MX~ funciona cuando solo está instalado ~es_ES~. ~org-scribe-mythes-lookup-entry~ informa además de *qué* cabeza de entrada respondió, para que un lema sustituido se declare en lugar de hacerlo pasar por la palabra que preguntaste.
+Lee los archivos de tesauro MyThes que distribuyen los paquetes de idioma de LibreOffice y devuelve los grupos de significado como datos. Localiza los archivos él mismo bajo ~org-scribe-mythes-directory~, respeta la codificación que declara cada archivo y guarda en caché su índice para que solo la primera consulta de la sesión pague la carga. Las variantes regionales se resuelven con los datos presentes, de modo que ~es_MX~ funciona cuando solo está instalado ~es_ES~. ~org-scribe-mythes-lookup-entry~ informa además de *qué* entrada respondió, para que un lema sustituido se declare en lugar de hacerlo pasar por la palabra que preguntaste.
 
-*Estado*: totalmente implementado | *Hydra*: no está en el menú (lo usa ~y~) | *Módulo*: ~language/org-scribe-mythes.el~
+*Estado*: totalmente implementado | *Hydra*: no está en el menú (lo usa ~F8 y~) | *Módulo*: ~language/org-scribe-mythes.el~
 
 ** Lematización (~org-scribe-lemma~ / ~org-scribe-lemmas~)
 
 Reduce una palabra flexionada a la forma del diccionario bajo la que están indexadas las obras de consulta, mediante el análisis morfológico de hunspell: así, consultar ~corriendo~ encuentra ~correr~ y ~oscurecía~ encuentra ~oscurecer~. Sin ella, la consulta de cualquier verbo conjugado simplemente falla, lo que se lee como «esta palabra no tiene sinónimos» en lugar de «esta palabra necesita su forma del diccionario». Las palabras ambiguas devuelven todas sus lecturas (~casas~ da ~casa~ y ~casar~) para que quien llama pruebe cada una contra su índice en lugar de adivinar. No requiere ninguna dependencia nueva (hunspell ya está presente para la corrección ortográfica) y se degrada en silencio, sin lematización, cuando falta.
 
-*Estado*: totalmente implementado | *Hydra*: no está en el menú (lo usa ~y~) | *Módulo*: ~language/org-scribe-lemma.el~
+*Estado*: totalmente implementado | *Hydra*: no está en el menú (lo usa ~F8 y~) | *Módulo*: ~language/org-scribe-lemma.el~
 
 ** Tesauro en inglés (powerthesaurus)
 
-La integración con el paquete powerthesaurus ofrece búsqueda de sinónimos y antónimos en inglés mediante la API de PowerThesaurus.org. La función ~powerthesaurus-lookup-dwim~ busca la palabra bajo el cursor o pregunta una palabra, y muestra las alternativas en un búfer en el que se puede buscar. Aunque no forma parte del código de org-scribe, el paquete declara esta función para integrarla en el menú Hydra (~org-scribe-thesaurus-lookup~, que avisa si el paquete no está instalado) y que quede accesible junto a las herramientas del español para los escritores bilingües.
+La integración con el paquete powerthesaurus ofrece búsqueda de sinónimos y antónimos en inglés mediante la API de PowerThesaurus.org. La función ~powerthesaurus-lookup-dwim~ busca la palabra bajo el cursor o pregunta una palabra, y muestra las alternativas en un búfer en el que se puede buscar. Aunque no forma parte del código de org-scribe, el paquete declara esta función para integrarla en el menú Hydra (~org-scribe-thesaurus-lookup~, que avisa si el paquete no está instalado) y que quede accesible junto a las herramientas del español para quien escribe en dos idiomas.
 
-*Estado*: opcional (requiere el paquete powerthesaurus) | *Hydra*: ~x~ (sección Tools, funciona una vez instalado) | *Módulo*: dependencia externa
+*Estado*: opcional (requiere el paquete powerthesaurus) | *Hydra*: ~F8 x~ (sección Tools, funciona una vez instalado) | *Módulo*: dependencia externa
 
 ** Traducción (gt)
 
-El paquete declara una integración con el paquete gt (Google Translate) para traducir sobre la marcha entre idiomas. Aunque no ofrece código de traducción propio, org-scribe se asegura de que las herramientas de traducción estén disponibles en el flujo de escritura. Es útil para los escritores bilingües o los que escriben en una segunda lengua y necesitan comprobaciones rápidas de traducción. El paquete gt admite muchos idiomas y varios motores de traducción.
+El paquete declara una integración con el paquete gt (Google Translate) para traducir sobre la marcha entre idiomas. Aunque no ofrece código de traducción propio, org-scribe se asegura de que las herramientas de traducción estén disponibles en el flujo de escritura. Es útil si escribes en dos idiomas o en una segunda lengua y necesitas comprobaciones rápidas de traducción. El paquete gt admite muchos idiomas y varios motores de traducción.
 
 *Estado*: opcional (requiere el paquete gt) | *Hydra*: no está en el menú (disponible si está instalado) | *Módulo*: dependencia externa
 
@@ -505,7 +505,7 @@ El paquete declara una integración con el paquete gt (Google Translate) para tr
 
 ** Filtro de saltos de escena (~org-scribe--export-replace-scene-breaks~)
 
-Sustituye automáticamente los marcadores ~SCENE-BREAK~ por separadores de escena adecuados para cada backend durante la exportación de org. Los escritores añaden ~#+MACRO: scene-break SCENE-BREAK~ a su manuscrito y usan ~{{{scene-break}}}~ donde quieran un salto de escena. Durante la exportación, el filtro sustituye esos marcadores por: ~\n***\n~ para ASCII/Markdown/Man, ~<br><br><br>~ para HTML y EPUB (EPUB deriva del backend HTML), un párrafo con ~***~ centrado para ODT, órdenes ~\vspace~ para LaTeX, o las cadenas propias que se definan en ~org-scribe-scene-break-replacements~. Un backend sin entrada propia recurre al valor genérico por defecto de tres saltos de línea. Así se garantiza un formato coherente de los saltos de escena en los formatos de exportación configurados sin editar las exportaciones a mano. La coincidencia con ~SCENE-BREAK~ distingue mayúsculas y minúsculas (~case-fold-search~ vale nil): resultó necesario al construir el soporte de EPUB de ~org-scribe-compile~, donde una clase CSS llamada ~org-scribe-scene-break~ quedaba destrozada en silencio por la coincidencia sin distinción de mayúsculas del filtro, ya que este se ejecuta sobre *todo* el documento ya generado y no solo donde se usó la macro.
+Sustituye automáticamente los marcadores ~SCENE-BREAK~ por separadores de escena adecuados para cada motor de exportación durante la exportación de org. Se añade ~#+MACRO: scene-break SCENE-BREAK~ a su manuscrito y usan ~{{{scene-break}}}~ donde quieran un salto de escena. Durante la exportación, el filtro sustituye esos marcadores por: ~\n***\n~ para ASCII/Markdown/Man, ~<br><br><br>~ para HTML y EPUB (EPUB deriva del motor de exportación HTML), un párrafo con ~***~ centrado para ODT, órdenes ~\vspace~ para LaTeX, o las cadenas propias que se definan en ~org-scribe-scene-break-replacements~. Un motor de exportación sin entrada propia recurre al valor genérico por defecto de tres saltos de línea. Así se garantiza un formato coherente de los saltos de escena en los formatos de exportación configurados sin editar las exportaciones a mano. La coincidencia con ~SCENE-BREAK~ distingue mayúsculas y minúsculas (~case-fold-search~ vale nil): resultó necesario al construir el soporte de EPUB de ~org-scribe-compile~, donde una clase CSS llamada ~org-scribe-scene-break~ quedaba destrozada en silencio por la coincidencia sin distinción de mayúsculas del filtro, ya que este se ejecuta sobre *todo* el documento ya generado y no solo donde se usó la macro.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (automático al exportar) | *Módulo*: ~export/org-scribe-export.el~
 
@@ -513,11 +513,11 @@ Sustituye automáticamente los marcadores ~SCENE-BREAK~ por separadores de escen
 
 Todos los encabezados de escena y de capítulo de las plantillas de manuscrito que se incluyen llevan la etiqueta ~:ignore:~, pensada para quitar el título del encabezado de la exportación conservando su cuerpo. Org no trata de serie una etiqueta llamada «ignore» (~org-export-exclude-tags~ vale por defecto solo ~("noexport")~), así que esto requiere el extra ~ignore-headlines~ del paquete opcional ~ox-extra~ (parte de ~org-contrib~). Cuando ~ox-extra~ está en el ~load-path~, org-scribe lo activa automáticamente, limitado a los documentos de org-scribe igual que el filtro de saltos de escena (mediante ~org-scribe--export-in-scribe-context-p~): un encabezado con la etiqueta ~:ignore:~ en un archivo Org ajeno nunca se ve afectado solo porque org-scribe esté cargado. Cuando falta ~ox-extra~, la etiqueta es inerte y los manuscritos exportados muestran el encabezado en bruto, con la palabra clave TODO incluida; ~M-x org-scribe-setup-check~ lista ~ox-extra~ entre las dependencias opcionales, de modo que se puede diagnosticar en lugar de ser una sorpresa silenciosa.
 
-*Estado*: totalmente implementado (se degrada con elegancia sin ~ox-extra~) | *Hydra*: no aplica (automático al exportar) | *Módulo*: ~export/org-scribe-export.el~
+*Estado*: totalmente implementado (funciona sin ~ox-extra~) | *Hydra*: no aplica (automático al exportar) | *Módulo*: ~export/org-scribe-export.el~
 
 ** Personalización de los saltos de escena (~org-scribe-scene-break-replacements~)
 
-Una lista de asociación que relaciona los símbolos de los backends de exportación con las cadenas de sustitución: ~'((ascii . "\\n***\\n\\n") (html . "<br><br><br>\\n") (epub . "<br><br><br>\\n") (odt . "<text:p>***</text:p>\\n") (latex . "\\vspace{...}") (t . "\\n\\n\\n"))~. Los usuarios pueden personalizarla para ajustarse a los requisitos de una editorial, a preferencias personales o a necesidades concretas de exportación. La clave ~t~ sirve de valor por defecto para los backends que no se listan expresamente. La entrada ~odt~ omite a propósito el atributo ~text:style-name~: ese atributo es opcional en la especificación ODF, y fijar un nombre de estilo concreto arriesga uno que no exista en la plantilla del lector. Los usuarios avanzados pueden añadir entradas para cualquier otro backend de exportación de org (markdown, etc.).
+Una lista de asociación que relaciona los símbolos de los motores de exportación con las cadenas de sustitución: ~'((ascii . "\\n***\\n\\n") (html . "<br><br><br>\\n") (epub . "<br><br><br>\\n") (odt . "<text:p>***</text:p>\\n") (latex . "\\vspace{...}") (t . "\\n\\n\\n"))~. Puedes personalizarla para ajustarse a los requisitos de una editorial, a preferencias personales o a necesidades concretas de exportación. La clave ~t~ sirve de valor por defecto para los motores de exportación que no se listan expresamente. La entrada ~odt~ omite a propósito el atributo ~text:style-name~: ese atributo es opcional en la especificación ODF, y fijar un nombre de estilo concreto corre el riesgo de nombrar uno que no exista en la plantilla del lector. Quien tenga experiencia puede añadir entradas para cualquier otro motor de exportación de org (markdown, etc.).
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (configuración) | *Módulo*: ~core/org-scribe-config.el~
 
@@ -525,15 +525,15 @@ Una lista de asociación que relaciona los símbolos de los backends de exportac
 
 Convierte el manuscrito de trabajo en un documento limpio y legible, en lugar de exportar directamente el archivo de trabajo. El archivo de trabajo no es en sí un manuscrito: tiene secciones de aparato, un cajón de propiedades de dieciocho campos por escena, encabezados de acto, capítulo y escena etiquetados todos con ~:ignore:~, y marcadores de edición en bloques de comentario. Exportarlo tal cual produce un muro de prosa sin divisiones en capítulos, porque ~:ignore:~ está en los capítulos exactamente igual que en las escenas. La compilación normaliza primero el manuscrito (se quitan los actos, los capítulos se conservan como encabezados visibles de verdad, las escenas se silencian y los saltos se derivan de la estructura entre hermanas en lugar de escribirse a mano) y pasa luego el resultado a los exportadores estándar de Org. Un cuento, que no tiene actos ni capítulos, se compila igual: su propio encabezado contenedor único se elimina y sus escenas se silencian del mismo modo, en el nivel en que ~org-scribe-project-levels~ dice que viven las escenas de ese tipo de proyecto.
 
-Formatos: Org, texto plano, Markdown y ODT no necesitan nada más que Emacs; PDF (mediante ~org-latex-export-to-pdf~) necesita una distribución de LaTeX, DOCX (mediante pandoc, invocado como programa externo) necesita la herramienta ~pandoc~, y EPUB (mediante ~org-epub-export-to-epub~) necesita el paquete opcional ~ox-epub~ (en MELPA; a diferencia de todos los demás formatos de aquí, no viene con Org). Todo eso es opcional, ~M-x org-scribe-setup-check~ lo informa, y lo que falte se rechaza por su nombre (~Cannot compile to docx: `pandoc' is not available~) en lugar de producir un archivo parcial. El archivo ~.org~ intermedio se escribe siempre junto a la salida, de modo que una compilación que parece mal se puede inspeccionar en lugar de ser una caja negra. El marcador de salto de escena (~org-scribe-compile-scene-break~, por defecto ~⁂~) y el directorio de salida (~org-scribe-compile-output-directory~, por defecto ~export~) son personalizables; un marcador que Org volvería a interpretar como estructura (un encabezado, un comentario, un elemento de lista o una fila de tabla) y no como texto se rechaza en lugar de emitirse: el compilador lo comprueba analizando el bloque centrado real en el que iría, antes de escribir nada. La salida en PDF siempre dibuja el salto como tres asteriscos centrados, sea cual sea ese ajuste: las fuentes por defecto de pdflatex no cubren en absoluto el asterismo (ni el preajuste de la flor), lo que se comprobó generando PDF reales y leyéndolos de nuevo con ~pdftotext~ en lugar de fiarse de una compilación limpia: el glifo simplemente no está, sin error y sin rastro visible. EPUB no tiene ese problema de fuentes (es Unicode de punta a punta), así que el marcador configurado se dibuja tal cual; en cambio recibe una clase CSS propia (~org-scribe-scene-break~, con el estilo de una pequeña hoja de estilos distribuida junto a ~org-scribe-compile.el~) que lo distingue de un párrafo centrado corriente, que es lo que siguen recibiendo todos los demás bloques centrados, incluido el que el escritor hubiera escrito por sus propios motivos.
+Formatos: Org, texto plano, Markdown y ODT no necesitan nada más que Emacs; PDF (mediante ~org-latex-export-to-pdf~) necesita una distribución de LaTeX, DOCX (mediante pandoc, invocado como programa externo) necesita la herramienta ~pandoc~, y EPUB (mediante ~org-epub-export-to-epub~) necesita el paquete opcional ~ox-epub~ (en MELPA; a diferencia de todos los demás formatos de aquí, no viene con Org). Todo eso es opcional, ~M-x org-scribe-setup-check~ lo informa, y lo que falte se rechaza por su nombre (~Cannot compile to docx: `pandoc' is not available~) en lugar de producir un archivo parcial. El archivo ~.org~ intermedio se escribe siempre junto a la salida, de modo que una compilación que parece mal se puede inspeccionar en lugar de ser una caja negra. El marcador de salto de escena (~org-scribe-compile-scene-break~, por defecto ~⁂~) y el directorio de salida (~org-scribe-compile-output-directory~, por defecto ~export~) son personalizables; un marcador que Org volvería a interpretar como estructura (un encabezado, un comentario, un elemento de lista o una fila de tabla) y no como texto se rechaza en lugar de emitirse: el compilador lo comprueba analizando el bloque centrado real en el que iría, antes de escribir nada. La salida en PDF siempre dibuja el salto como tres asteriscos centrados, sea cual sea ese ajuste: las fuentes por defecto de pdflatex no cubren en absoluto el asterismo (ni el preajuste de la flor), lo que se comprobó generando PDF reales y leyéndolos de nuevo con ~pdftotext~ en lugar de fiarse de una compilación limpia: el glifo simplemente no está, sin error y sin rastro visible. EPUB no tiene ese problema de fuentes (es Unicode de punta a punta), así que el marcador configurado se dibuja tal cual; en cambio recibe una clase CSS propia (~org-scribe-scene-break~, con el estilo de una pequeña hoja de estilos distribuida junto a ~org-scribe-compile.el~) que lo distingue de un párrafo centrado corriente, que es lo que siguen recibiendo todos los demás bloques centrados, incluido el que hubieras escrito por sus propios motivos.
 
-Dos estilos de compilación: ~clean~ (un borrador legible, lo anterior) y ~shunn~ (el formato de envío, el «manuscrito estándar»): un bloque de contacto, el recuento de palabras redondeado a la centena más próxima, título y firma centrados y, para PDF, márgenes de 1 pulgada, doble espacio y una cabecera corrida con «Apellido / PALABRA / página» desde la página 2. La identidad del autor es por autor (~org-scribe-author-name~/~-address~/~-email~/~-phone~/~-agent~, variables personalizables de ~core/org-scribe-config.el~); el seudónimo y la palabra de la cabecera corrida son por proyecto (marcadores ~# Pen-name:~/~# Running-header:~ en ~.org-scribe-project~, que se leen igual que ya se leen ~Plan~/~Planner~). ~shunn~ se rechaza, diciendo qué falta, sin ~org-scribe-author-name~ definido, y solo se ofrece para ~org~/~txt~/~pdf~/~docx~ (no para ~md~, que no tiene maquetación para un estándar de envío; ni para ~odt~, que todavía no tiene archivo de estilos; ni para ~epub~, que es de maquetación fluida mientras que Shunn es un estándar de página fija). La cabecera corrida y el espaciado del PDF salen de ~org-scribe-compile-shunn-latex-preamble~, una plantilla de LaTeX con solo clases estándar (~geometry~/~setspace~/~fancyhdr~) con dos marcadores ~%s~ para el apellido y la palabra, validada antes de usarse para que una personalización incorrecta se informe por su nombre en lugar de dar datos que faltan en silencio o el error genérico de ~format~ de Elisp. Mira la [[file:../manual-es/primeros-pasos-11-exportar.org][Lección 11]].
+Dos estilos de compilación: ~clean~ (un borrador legible, lo anterior) y ~shunn~ (el formato de envío, el «manuscrito estándar»): un bloque de contacto, el recuento de palabras redondeado a la centena más próxima, título y firma centrados y, para PDF, márgenes de 1 pulgada, doble espacio y una cabecera corrida con «Apellido / PALABRA / página» desde la página 2. Tus datos de autor se fijan una vez, en variables personalizables de ~core/org-scribe-config.el~ (~org-scribe-author-name~/~-address~/~-email~/~-phone~/~-agent~); el seudónimo y la palabra de la cabecera corrida son por proyecto (marcadores ~# Pen-name:~/~# Running-header:~ en ~.org-scribe-project~, que se leen igual que ya se leen ~Plan~/~Planner~). ~shunn~ se rechaza, diciendo qué falta, sin ~org-scribe-author-name~ definido, y solo se ofrece para ~org~/~txt~/~pdf~/~docx~ (no para ~md~, que no tiene maquetación para un estándar de envío; ni para ~odt~, que todavía no tiene archivo de estilos; ni para ~epub~, que es de maquetación fluida mientras que Shunn es un estándar de página fija). La cabecera corrida y el espaciado del PDF salen de ~org-scribe-compile-shunn-latex-preamble~, una plantilla de LaTeX con solo clases estándar (~geometry~/~setspace~/~fancyhdr~) con dos marcadores ~%s~ para el apellido y la palabra, validada antes de usarse para que una personalización incorrecta se informe por su nombre en lugar de dar datos que faltan en silencio o el error genérico de ~format~ de Elisp. Mira la [[file:../manual-es/primeros-pasos-11-exportar.org][Lección 11]].
 
 *Estado*: totalmente implementado para ~clean~ y ~shunn~, en los seis formatos (el DOCX Shunn recibe el contenido de la portada pero ningún formato a nivel de página: no hay documento de referencia que lleve el doble espacio y los márgenes a través de pandoc, con el mismo razonamiento de «no fijar nunca un estilo que podría no existir» que evita que el salto de escena de ODT fije un nombre de estilo) | *Hydra*: ~F8 X~ | *Módulo*: ~export/org-scribe-compile.el~, ~export/org-scribe-epub.css~
 
 ** Las plantillas de proyecto no incluyen configuración de exportación
 
-A diferencia de un diseño anterior, las plantillas de proyecto no llevan deliberadamente ningún bloque de configuración de LaTeX, ODT, HTML ni EPUB: esos bloques existían y se quitaron porque fijaban rutas absolutas personales y una clase de LaTeX que no se distribuía. Quitar con ellos ~#+EXCLUDE_TAGS: noexport~ es seguro: ~org-export-exclude-tags~ ya vale por defecto ~("noexport")~. Los ajustes de exportación (la clase de LaTeX, el archivo de estilos de ODT, los metadatos de EPUB) se dejan para que el escritor los añada por proyecto con los propios ~#+LATEX_CLASS~, ~#+ODT_STYLES_FILE~, etc. de Org; mira la ruta de exportación directa en la [[file:../manual-es/primeros-pasos-11-exportar.org][Lección 11]].
+A diferencia de un diseño anterior, las plantillas de proyecto no llevan deliberadamente ningún bloque de configuración de LaTeX, ODT, HTML ni EPUB: esos bloques existían y se quitaron porque fijaban rutas absolutas personales y una clase de LaTeX que no se distribuía. Quitar con ellos ~#+EXCLUDE_TAGS: noexport~ es seguro: ~org-export-exclude-tags~ ya vale por defecto ~("noexport")~. Los ajustes de exportación (la clase de LaTeX, el archivo de estilos de ODT, los metadatos de EPUB) se dejan para que los añadas por proyecto con los propios ~#+LATEX_CLASS~, ~#+ODT_STYLES_FILE~, etc. de Org; mira la ruta de exportación directa en la [[file:../manual-es/primeros-pasos-11-exportar.org][Lección 11]].
 
 *Estado*: deliberado (mira ~tests/test-template-parity.el~, que fija la ausencia) | *Hydra*: no aplica | *Módulo*: archivos de plantilla
 
@@ -544,7 +544,7 @@ A diferencia de un diseño anterior, las plantillas de proyecto no llevan delibe
 
 ** Eliminación automática de enlaces en la vista de columnas
 
-Al usar la vista de columnas de org-mode (~org-columns~), los enlaces por ID de las propiedades se muestran automáticamente como texto limpio en lugar de con la sintaxis completa del enlace. Por ejemplo, ~[[id:char-alicia-001][Alicia Ríos]]~ se muestra simplemente como «Alicia Ríos» en la columna. Se tratan varios enlaces: ~[[id:char1][Alicia]], [[id:char2][Beto]]~ se muestra como «Alicia, Beto». Esto hace que la vista de columnas sea legible y de aspecto profesional conservando los enlaces subyacentes para la navegación. Funciona con todas las propiedades: PoV, personajes, trama, escenario.
+Al usar la vista de columnas de Org (~org-columns~), los enlaces por ID de las propiedades se muestran automáticamente como texto limpio en lugar de con la sintaxis completa del enlace. Por ejemplo, ~[[id:char-alicia-001][Alicia Ríos]]~ se muestra simplemente como «Alicia Ríos» en la columna. Se tratan varios enlaces: ~[[id:char1][Alicia]], [[id:char2][Beto]]~ se muestra como «Alicia, Beto». Esto hace que la vista de columnas sea legible y de aspecto profesional conservando los enlaces subyacentes para la navegación. Funciona con todas las propiedades: PoV, personajes, trama, escenario.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (automático) | *Módulo*: ~linking/org-scribe-column-view.el~
 
@@ -558,7 +558,7 @@ La eliminación de enlaces se puede alternar con la variable de personalización
 
 Para usar la vista de columnas con proyectos de escritura, añade una línea ~#+COLUMNS~ al archivo del manuscrito que indique qué propiedades mostrar: ~#+COLUMNS: %25ITEM %TODO %PoV %Personajes %Trama %Localizacion~ (en un proyecto en inglés, ~%Characters %Plot %Location~). Pulsa después ~C-c C-x C-c~ para activar la vista de columnas. La pantalla muestra una tabla tipo hoja de cálculo con todos los encabezados y las propiedades indicadas como columnas. Los valores de propiedad con enlaces por ID se muestran limpios gracias a la eliminación automática de enlaces. La vista de columnas es ideal para tener una visión de conjunto de los metadatos de escena o para editar propiedades en bloque.
 
-*Estado*: totalmente implementado (función de org-mode, mejorada por el paquete) | *Hydra*: no aplica (org-mode nativo) | *Módulo*: org-mode nativo + mejora
+*Estado*: totalmente implementado (función de Org, mejorada por el paquete) | *Hydra*: no aplica (Org nativo) | *Módulo*: Org nativo + mejora
 
 * Herramientas de análisis
 :PROPERTIES:
@@ -567,17 +567,17 @@ Para usar la vista de columnas con proyectos de escritura, añade una línea ~#+
 
 ** Informe de salud del proyecto (~org-scribe-project-health~)
 
-Agrega las estadísticas de todo el proyecto en un único búfer ~*org-scribe-health*~ que se muestra como un archivo de org-mode con enlaces ~[[id:...]]~ pulsables hacia las escenas individuales. Funciona con los dos tipos de proyecto (novela y cuento) y lee los niveles de escena y de capítulo propios de cada uno mediante ~org-scribe-project-levels~ en lugar de suponer los de una novela. Las secciones se escriben en el idioma del proyecto; estas son, en orden (algunas solo aparecen cuando corresponde):
+Agrega las estadísticas de todo el proyecto en un único búfer ~*org-scribe-health*~ que se muestra como un archivo de Org con enlaces ~[[id:...]]~ pulsables hacia las escenas individuales. Funciona con los dos tipos de proyecto (novela y cuento) y lee los niveles de escena y de capítulo propios de cada uno mediante ~org-scribe-project-levels~ en lugar de suponer los de una novela. Las secciones se escriben en el idioma del proyecto; estas son, en orden (algunas solo aparecen cuando corresponde):
 
 1. *Resumen*: el nombre del archivo del manuscrito (enlazado), el número total de escenas, las palabras escritas (sumadas en el nivel de escena del propio proyecto), el objetivo de palabras (sumado en el nivel de capítulo cuando el tipo de proyecto lo tiene, o en el nivel de escena cuando no: un cuento, al no tener capítulos, lleva ~:WORD-OBJECTIVE:~ directamente en sus escenas) y el porcentaje de progreso. Este «o lo uno o lo otro» evita la doble cuenta que se produciría si se sumaran juntos los objetivos de capítulo y de escena de una novela. Una línea «Diccionario ortográfico» aparece aquí solo cuando el ~.dir-locals.el~ del proyecto falta o nombra un diccionario que no coincide con el idioma del proyecto: una deriva que de otro modo es invisible hasta que un corrector ortográfico discute con la prosa; ~M-x org-scribe-update-dir-locals~ la arregla. Cuando el proyecto registra un objetivo total de palabras (~# Target-words:~ en ~.org-scribe-project~, fijado al crear el proyecto o con ~F8 t~), el Resumen también lo muestra, y una línea de discrepancia del objetivo cuando los objetivos de las partes no suman esa cifra (se informa, nunca se resuelve: reescala con ~F8 t~). Un proyecto sin objetivo registrado no muestra ninguna de las dos líneas.
 
 2. *Plan de escritura* (opcional): el título del plan, el objetivo de palabras, el recuento actual y el porcentaje, el objetivo diario, la fecha final, los días restantes y el estado (por delante, al día o por detrás, medido hasta ayer), más las palabras fuera del manuscrito (que no se cuentan) y una línea de discrepancia cuando el total del plan difiere del objetivo registrado del proyecto. Solo se muestra cuando hay un plan cargado para el proyecto y el proyecto no ha rechazado el planificador; en otro caso se muestra una pista para crearlo o cargarlo, y la sección se omite por completo en un proyecto que rechazó el planificador. Mira la [[file:../manual-es/primeros-pasos-16-planificador.org][Lección 16]].
 
-3. *Puerta de salida* (en los proyectos que tienen un cuaderno de diseño con esa sección): lee de vuelta las casillas de la lista de comprobación de la Puerta de salida y mide por su cuenta dos de sus ocho puntos: cuántos de los trece irrenunciables tienen contenido real, y cuántas de las tres primeras escenas tienen ya palabras. Cuando una medición no concuerda con la casilla del escritor, en cualquier sentido, el informe lo dice y no lo resuelve. Los proyectos creados con plantillas anteriores al Sistema no tienen esta sección.
+3. *Puerta de salida* (en los proyectos que tienen un cuaderno de diseño con esa sección): lee de vuelta las casillas de la lista de comprobación de la Puerta de salida y mide por su cuenta dos de sus ocho puntos: cuántos de los trece irrenunciables tienen contenido real, y cuántas de las tres primeras escenas tienen ya palabras. Cuando una medición no concuerda con tu casilla, en cualquier sentido, el informe lo dice y no lo resuelve. Los proyectos creados con plantillas anteriores al Sistema no tienen esta sección.
 
 4. *Escenas por estado*: un recuento de las escenas agrupadas por su palabra clave TODO de org (TODO, DONE o cualquier palabra clave propia). Muestra de un vistazo cuánto del borrador está completo.
 
-5. *Reparto de Palabras por PoV*: escenas y palabras agrupadas por el nombre resuelto del personaje PoV, con el porcentaje de cada PoV sobre el total de palabras del manuscrito. Las escenas sin PoV se agrupan en una fila «(no PoV)», que sirve además de señal de propiedad ausente.
+5. *Reparto de Palabras por PoV*: escenas y palabras agrupadas por el nombre resuelto del personaje PoV, con el porcentaje de cada PoV sobre el total de palabras del manuscrito. Las escenas sin PoV se agrupan en una fila «(sin PoV)», que sirve además de señal de propiedad ausente.
 
 6. *Dispersión de Longitud de Capítulos* (solo novelas): los totales de palabras por capítulo más una línea de resumen con la longitud mínima, máxima, media y mediana de los capítulos, y con los capítulos atípicos (más o menos el doble de la media, o menos de la mitad) señalados para que se les preste atención. Se omite por completo en un cuento, que no tiene capítulos que dispersar.
 
@@ -593,9 +593,9 @@ Agrega las estadísticas de todo el proyecto en un único búfer ~*org-scribe-he
 
 12. *Escenas TODO abiertas*: la lista completa de las escenas cuyo estado TODO no es DONE, con la palabra clave del estado entre corchetes y un enlace pulsable a la escena (de nuevo con el sufijo del nombre del capítulo solo en una novela).
 
-La función requiere un proyecto con un archivo de manuscrito detectable (~novel.org~/~novela.org~ para una novela, ~story.org~/~cuento.org~ para un cuento) y tolera con elegancia que falte el cuaderno de diseño. La detección de huérfanos se omite para los tipos de entidad cuyo módulo de enlaces no está cargado. Mira la [[file:../manual-es/primeros-pasos-03-seguimiento-progreso.org][Lección 3]].
+La función requiere un proyecto con un archivo de manuscrito detectable (~novel.org~/~novela.org~ para una novela, ~story.org~/~cuento.org~ para un cuento) y tolera bien que falte el cuaderno de diseño. La detección de huérfanos se omite para los tipos de entidad cuyo módulo de enlaces no está cargado. Mira la [[file:../manual-es/primeros-pasos-03-seguimiento-progreso.org][Lección 3]].
 
-*Estado*: totalmente implementado | *Hydra*: ~H~ (sección Manage, visible en la pista) | *Módulo*: ~reporting/org-scribe-health.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 H~ (sección Manage, visible en la pista) | *Módulo*: ~reporting/org-scribe-health.el~
 
 * Interfaz y navegación
 :PROPERTIES:
@@ -616,19 +616,19 @@ Un submenú al que se llega con ~F8 k~ y que da acceso a las seis órdenes de ca
 
 ** Submenú de enlaces y mantenimiento (~hydra-org-scribe-links/body~)
 
-Se llega a él con ~F8 L~ y cubre todo lo que no es una acción cotidiana de etiquetado de escenas o de captura: el mantenimiento de todo el proyecto (~R~: volver a enlazar todo, que añade los IDs que faltan, enlaza los nombres en texto plano y refresca los nombres visibles en todos los tipos de entidad de una sola pasada; ~D~: el diccionario ortográfico; ~j~ y ~J~: saltar a un hilo de la trama o a un punto de trama), la configuración única por tipo de entidad (~c~: personajes, ~o~: escenarios, ~b~: objetos, ~p~: hilos de la trama, ~P~: puntos de trama, ~r~: relaciones), la gestión de relaciones (~a~: añadir, ~x~: quitar, ~v~: ver las relaciones de un personaje, ~V~: ver todas las relaciones como una tabla) y los análisis y alternadores de visualización (~t~: informe de salud de la trama, ~S~: estadísticas de la trama, ~C~: vista de columnas, ~T~: globos informativos de entidades). Esta orden ~R~ única (que también está asignada en el nivel superior) sustituyó a las antiguas órdenes separadas de añadir IDs, enlazar y actualizar nombres de cada entidad que una versión anterior de este menú exponía aquí por separado.
+Se llega a él con ~F8 L~ y cubre todo lo que no es una acción cotidiana de etiquetado de escenas o de captura: el mantenimiento de todo el proyecto (~R~: volver a enlazar todo, que añade los IDs que faltan, enlaza los nombres en texto plano y refresca los nombres visibles en todos los tipos de entidad de una sola pasada; ~D~: el diccionario ortográfico; ~j~ y ~J~: saltar a un hilo de la trama o a un punto de trama), la configuración única por tipo de entidad (~c~: personajes, ~o~: escenarios, ~b~: objetos, ~p~: hilos de la trama, ~P~: puntos de trama, ~r~: relaciones), la gestión de relaciones (~a~: añadir, ~x~: quitar, ~v~: ver las relaciones de un personaje, ~V~: ver todas las relaciones como una tabla) y los análisis y interruptores de visualización (~t~: informe de salud de la trama, ~S~: estadísticas de la trama, ~C~: vista de columnas, ~T~: globos informativos de entidades). Esta orden ~R~ única (que también está asignada en el nivel superior) sustituyó a las antiguas órdenes separadas de añadir IDs, enlazar y actualizar nombres de cada entidad que una versión anterior de este menú exponía aquí por separado.
 
 *Estado*: totalmente implementado | *Hydra*: ~F8 L~ | *Módulo*: ~ui/org-scribe-hydra.el~
 
 ** Atajos de teclado globales
 
-El paquete ofrece pocos atajos globales para evitar conflictos: ~F8~ para el menú Hydra y ~C-c W~ para la captura rápida de notas. Se configuran mediante los atajos del modo menor ~org-scribe-mode~, de modo que solo están activos en los búferes en los que ese modo lo está. Los usuarios pueden configurar atajos adicionales, pero el paquete se apoya por defecto en el menú Hydra para minimizar la contaminación del espacio de nombres. La función ~org-scribe-setup~ añade un gancho de org-mode que activa el modo menor automáticamente en los búferes de Org. Mira la [[file:../manual-es/primeros-pasos-15-personalizacion.org][Lección 15]] para crear atajos propios.
+El paquete ofrece pocos atajos globales para evitar conflictos: ~F8~ para el menú Hydra y ~C-c W~ para la captura rápida de notas. Se configuran mediante los atajos del modo menor ~org-scribe-mode~, de modo que solo están activos en los búferes en los que ese modo lo está. Puedes configurar atajos adicionales, pero el paquete se apoya por defecto en el menú Hydra para minimizar la contaminación del espacio de nombres. La función ~org-scribe-setup~ añade un gancho de Org que activa el modo menor automáticamente en los búferes de Org. Mira la [[file:../manual-es/primeros-pasos-15-personalizacion.org][Lección 15]] para crear atajos propios.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (atajos básicos) | *Módulo*: ~org-scribe.el~
 
-** Modo de escritura de Emacs (~org-scribe-mode~)
+** Modo menor de org-scribe (~org-scribe-mode~)
 
-Un modo menor que aporta los atajos del paquete. Cuando se activa en un búfer de org-mode, activa la tecla del menú Hydra y la de captura. El modo se puede activar a mano o automáticamente con ~org-scribe-setup~, que lo añade a ~org-mode-hook~. El modo es local al búfer y se integra limpiamente con otras configuraciones de org-mode. Su activación es además lo que dispara la carga automática del plan del planificador y los destinos de refile de todo el proyecto.
+Un modo menor que aporta los atajos del paquete. Cuando se activa en un búfer de Org, activa la tecla del menú Hydra y la de captura. El modo se puede activar a mano o automáticamente con ~org-scribe-setup~, que lo añade a ~org-mode-hook~. El modo es local al búfer y se integra limpiamente con otras configuraciones de Org. Su activación es además lo que dispara la carga automática del plan del planificador y los destinos de refilado de todo el proyecto.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (modo básico) | *Módulo*: ~org-scribe.el~
 
@@ -639,7 +639,7 @@ Un modo menor que aporta los atajos del paquete. Cuando se activa en un búfer d
 
 ** Diccionarios ortográficos (~org-scribe-ispell-dictionaries~)
 
-Relaciona el idioma de un proyecto con el nombre del diccionario de ispell que se anota en el ~.dir-locals.el~ de ese proyecto (por defecto: ~'((en . "en_US") (es . "es_ES"))~). Fija una variante regional (~en_GB~, ~es_MX~, ~es_AR~) para que los proyectos nuevos la usen; ejecuta ~M-x org-scribe-update-dir-locals~ dentro de un proyecto existente para aplicar un cambio en él. La clave es el idioma propio del proyecto, leído de ~.org-scribe-project~, no el valor global por defecto de ~org-scribe-template-language~, de modo que un proyecto en español conserva su diccionario español sea cual sea tu valor por defecto para los proyectos nuevos. Un idioma sin entrada, o con entrada ~nil~, no escribe ningún diccionario en lugar de adivinar uno. Una variable booleana complementaria, ~org-scribe-write-dir-locals~ (por defecto ~t~), desactiva todo el mecanismo para los escritores que gestionan ellos mismos las variables locales de directorio; en cualquier caso, la creación de un proyecto nunca sobrescribe un ~.dir-locals.el~ existente.
+Relaciona el idioma de un proyecto con el nombre del diccionario de ispell que se anota en el ~.dir-locals.el~ de ese proyecto (por defecto: ~'((en . "en_US") (es . "es_ES"))~). Fija una variante regional (~en_GB~, ~es_MX~, ~es_AR~) para que los proyectos nuevos la usen; ejecuta ~M-x org-scribe-update-dir-locals~ dentro de un proyecto existente para aplicar un cambio en él. La clave es el idioma propio del proyecto, leído de ~.org-scribe-project~, no el valor global por defecto de ~org-scribe-template-language~, de modo que un proyecto en español conserva su diccionario español sea cual sea tu valor por defecto para los proyectos nuevos. Un idioma sin entrada, o con entrada ~nil~, no escribe ningún diccionario en lugar de adivinar uno. Una variable booleana complementaria, ~org-scribe-write-dir-locals~ (por defecto ~t~), desactiva todo el mecanismo para quienes gestionan por su cuenta las variables locales de directorio; en cualquier caso, la creación de un proyecto nunca sobrescribe un ~.dir-locals.el~ existente.
 
 *Estado*: totalmente implementado | *Tipo*: defcustom | *Módulo*: ~core/org-scribe-config.el~
 
@@ -651,13 +651,13 @@ El directorio base (por defecto ~~/writing/~) que se ofrece al crear una novela 
 
 ** Temas de los modos de escritura
 
-Tres variables de personalización de temas controlan el entorno visual de los distintos modos de escritura: ~org-scribe-env-normal-theme~ (por defecto: ~nil~), ~org-scribe-env-work-theme~ (por defecto: ~nil~) y ~org-scribe-editing-theme~ (por defecto: ~leuven~). Determinan qué tema se carga al activar el modo Sin distracciones, el modo Enfoque o el modo Edición. Con el valor ~nil~, entrar en un modo de escritura y salir de él no toca tus colores; si el tema que nombras no está instalado, org-scribe lo avisa y conserva tu tema. Los escritores pueden personalizarlos con sus temas preferidos para cada contexto de trabajo. Mira la [[file:../manual-es/primeros-pasos-15-personalizacion.org][Lección 15]].
+Tres variables de personalización de temas controlan el entorno visual de los distintos modos de escritura: ~org-scribe-env-normal-theme~ (por defecto: ~nil~), ~org-scribe-env-work-theme~ (por defecto: ~nil~) y ~org-scribe-editing-theme~ (por defecto: ~leuven~). Determinan qué tema se carga al activar el modo Sin distracciones, el modo Enfoque o el modo Edición. Con el valor ~nil~, entrar en un modo de escritura y salir de él no toca tus colores; si el tema que nombras no está instalado, org-scribe lo avisa y conserva tu tema. Puedes personalizarlos con tus temas preferidos para cada contexto de trabajo. Mira la [[file:../manual-es/primeros-pasos-15-personalizacion.org][Lección 15]].
 
 *Estado*: totalmente implementado | *Tipo*: defcustom | *Módulo*: ~core/org-scribe-config.el~
 
 ** Fuentes de los modos de escritura
 
-Personalización de los preajustes de fuente mediante fontaine: ~org-scribe-env-normal-font~ (por defecto: ~regular~), ~org-scribe-env-work-font~ (por defecto: ~org-scribe-big~) y ~org-scribe-editing-fontaine-preset~ (por defecto: ~editing~). Requieren el paquete fontaine para gestionar los preajustes de fuente, y esos preajustes los define el usuario: ninguno viene con org-scribe. Cada modo cambia a su preajuste configurado, lo que permite tamaños y familias de fuente distintos para redactar, para editar y para el trabajo normal.
+Personalización de los preajustes de fuente mediante fontaine: ~org-scribe-env-normal-font~ (por defecto: ~regular~), ~org-scribe-env-work-font~ (por defecto: ~org-scribe-big~) y ~org-scribe-editing-fontaine-preset~ (por defecto: ~editing~). Requieren el paquete fontaine para gestionar los preajustes de fuente, y esos preajustes los defines tú: ninguno viene con org-scribe. Cada modo cambia a su preajuste configurado, lo que permite tamaños y familias de fuente distintos para redactar, para editar y para el trabajo normal.
 
 *Estado*: totalmente implementado (requiere fontaine) | *Tipo*: defcustom | *Módulo*: ~core/org-scribe-config.el~
 
@@ -669,13 +669,13 @@ Controlan el ancho del texto centrado en writeroom-mode: ~org-scribe-env-work-wi
 
 ** Disposición del modo Edición
 
-Tres ajustes controlan la disposición de tres paneles del modo Edición: ~org-scribe-editing-left-width-percent~ (por defecto: 0,25), ~org-scribe-editing-right-width-percent~ (por defecto: 0,25) y ~org-scribe-editing-fill-column-width~ (por defecto: 90). Los valores de porcentaje determinan el ancho de los paneles laterales como fracciones del ancho del marco, mientras que el ancho de la columna de relleno fija el ajuste visual de línea del panel central. Uso típico: paneles laterales del 25 % para los archivos de referencia, 50 % en el centro para el manuscrito con líneas cómodas de 90 columnas.
+Tres ajustes controlan la disposición de tres paneles del modo Edición: ~org-scribe-editing-left-width-percent~ (por defecto: 0.25), ~org-scribe-editing-right-width-percent~ (por defecto: 0.25) y ~org-scribe-editing-fill-column-width~ (por defecto: 90). Los valores de porcentaje determinan el ancho de los paneles laterales como fracciones del ancho del marco, mientras que el ancho de la columna de relleno fija el ajuste visual de línea del panel central. Uso típico: paneles laterales del 25 % para los archivos de referencia, 50 % en el centro para el manuscrito con líneas cómodas de 90 columnas.
 
 *Estado*: totalmente implementado | *Tipo*: defcustom | *Módulo*: ~core/org-scribe-config.el~
 
 ** Sustitución de los saltos de escena
 
-La lista de asociación ~org-scribe-scene-break-replacements~ relaciona los backends de exportación con las cadenas separadoras de escena. Personalízala para ajustarte a los requisitos de una editorial o a tus preferencias. Personalizaciones habituales: cantidades distintas de asteriscos (~***~ frente a ~* * *~), líneas horizontales en HTML (~<hr>~), saltos de página en LaTeX (~\\clearpage~) o gráficos propios. La clave ~t~ por defecto sirve de valor de reserva para los backends no especificados.
+La lista de asociación ~org-scribe-scene-break-replacements~ relaciona los motores de exportación con las cadenas separadoras de escena. Personalízala para ajustarte a los requisitos de una editorial o a tus preferencias. Personalizaciones habituales: cantidades distintas de asteriscos (~***~ frente a ~* * *~), líneas horizontales en HTML (~<hr>~), saltos de página en LaTeX (~\\clearpage~) o gráficos propios. La clave ~t~ por defecto sirve de valor de reserva para los motores de exportación no especificados.
 
 *Estado*: totalmente implementado | *Tipo*: defcustom | *Módulo*: ~core/org-scribe-config.el~
 
@@ -687,7 +687,7 @@ La lista de asociación ~org-scribe-scene-break-replacements~ relaciona los back
 
 ** Fuente del tesauro (~org-scribe-thesaurus-backend~)
 
-Elige de dónde saca ~org-scribe-sinonimo~ sus sinónimos: ~'mythes~ lee solo los datos MyThes sin conexión, ~'rae-api~ solo el servicio en línea de la RAE, y ~'auto~ (el valor por defecto) prueba primero sin conexión y recurre a internet, tanto cuando no hay datos instalados como cuando una palabra concreta no tiene entrada local. El valor por defecto se eligió para que los escritores que no instalan nada conserven exactamente el comportamiento anterior, mientras que quienes ejecutan ~apt install mythes-es~ obtienen consultas instantáneas sin conexión sin tocar su configuración. Poner ~'mythes~ es útil con una conexión de datos limitada, o para ver con honestidad qué cubren los datos locales en lugar de que una petición web tape los huecos. (El valor antiguo ~'wordreference~ se lee ahora como ~'rae-api~.)
+Elige de dónde saca ~org-scribe-sinonimo~ sus sinónimos: ~'mythes~ lee solo los datos MyThes sin conexión, ~'rae-api~ solo el servicio en línea de la RAE, y ~'auto~ (el valor por defecto) prueba primero sin conexión y recurre a internet, tanto cuando no hay datos instalados como cuando una palabra concreta no tiene entrada local. El valor por defecto se eligió para que quienes no instalan nada conserven exactamente el comportamiento anterior, mientras que quienes ejecutan ~apt install mythes-es~ obtienen consultas instantáneas sin conexión sin tocar su configuración. Poner ~'mythes~ es útil con una conexión de datos limitada, o para ver con honestidad qué cubren los datos locales en lugar de que una petición web tape los huecos. (El valor antiguo ~'wordreference~ se lee ahora como ~'rae-api~.)
 
 *Estado*: totalmente implementado | *Tipo*: defcustom | *Módulo*: ~core/org-scribe-config.el~
 
@@ -711,7 +711,7 @@ Elige de dónde vienen las definiciones: ~'wikcionario~ lee solo un kiwix-serve 
 
 ** Diccionario de lematización (~org-scribe-lemma-dictionary~)
 
-Nombra el diccionario de hunspell que se usa para reducir las palabras flexionadas a su forma del diccionario. Cuando vale nil (el valor por defecto) sigue a ~org-scribe-mythes-language~, de modo que un único ajuste gobierna el tesauro y la morfología. Fíjalo explícitamente solo cuando los dos deban diferir, o cuando hunspell nombre su diccionario de forma distinta que el tesauro. Ejecuta ~M-x org-scribe-lemma-clear-cache~ tras instalar un diccionario a mitad de sesión.
+Nombra el diccionario de hunspell que se usa para reducir las palabras flexionadas a su forma del diccionario. Cuando vale nil (el valor por defecto) sigue a ~org-scribe-mythes-language~, de modo que un único ajuste gobierna el tesauro y la morfología. Fíjalo explícitamente solo cuando los dos deban diferir, o cuando hunspell nombre su diccionario de forma distinta de la del tesauro. Ejecuta ~M-x org-scribe-lemma-clear-cache~ tras instalar un diccionario a mitad de sesión.
 
 *Estado*: totalmente implementado | *Tipo*: defcustom | *Módulo*: ~core/org-scribe-config.el~
 
@@ -723,13 +723,13 @@ Nombra el diccionario de hunspell que se usa para reducir las palabras flexionad
 
 ** Eliminación de enlaces en la vista de columnas
 
-~org-scribe-column-view-strip-links~ (por defecto: t) controla si los enlaces por ID se muestran como texto limpio en la vista de columnas de org. Con t, ~[[id:abc][Nombre]]~ se muestra como «Nombre». Con nil se muestra la sintaxis completa del enlace. Desactivarlo puede ser útil para depurar la estructura de los enlaces o al trabajar en el propio sistema de enlaces, pero la mayoría de los escritores querrán la visualización limpia activada.
+~org-scribe-column-view-strip-links~ (por defecto: t) controla si los enlaces por ID se muestran como texto limpio en la vista de columnas de org. Con t, ~[[id:abc][Nombre]]~ se muestra como «Nombre». Con nil se muestra la sintaxis completa del enlace. Desactivarlo puede ser útil para depurar la estructura de los enlaces o al trabajar en el propio sistema de enlaces, pero la mayoría querrá la visualización limpia activada.
 
 *Estado*: totalmente implementado | *Tipo*: defcustom | *Módulo*: ~linking/org-scribe-column-view.el~
 
 ** Marcador de notas de edición (~org-scribe-edit-string~)
 
-Define el patrón de expresión regular que usa ~org-scribe-search-edits-rgrep~, la búsqueda de texto plano de reserva, para encontrar notas de edición en línea y marcadores de revisión en todo el manuscrito. El índice estructurado (~org-scribe-search-edits~) no usa esta expresión regular: lee la gramática de los marcadores directamente para poder distinguir ~*EDIT*~ de ~*NOTE*~ y leer categorías. El valor por defecto es ~"\\*EDIT\\*\\|\\*NOTE\\*"~, que coincide con ~*EDIT*~ o ~*NOTE*~ en cualquier punto de los archivos .org. Los escritores pueden personalizarlo para adaptarlo a su convención personal: por ejemplo ~"FIXME\\|REVISION\\|TOFIX"~ o cualquier otro marcador que usen para señalar lugares que necesitan atención. El patrón se pasa a ~rgrep~, así que se admite la sintaxis completa de expresiones regulares. Ten en cuenta que el valor por defecto *no* coincide deliberadamente con ~*SUMMARY*~, un marcador relacionado para las escenas planificadas pero aún sin escribir: esas viven bajo encabezados ~TODO~ y se encuentran con la búsqueda de TODO, lo que mantiene separadas las notas sobre prosa ausente de las ediciones de prosa que existe.
+Define el patrón de expresión regular que usa ~org-scribe-search-edits-rgrep~, la búsqueda de texto plano de reserva, para encontrar notas de edición en línea y marcadores de revisión en todo el manuscrito. El índice estructurado (~org-scribe-search-edits~) no usa esta expresión regular: lee la gramática de los marcadores directamente para poder distinguir ~*EDIT*~ de ~*NOTE*~ y leer categorías. El valor por defecto es ~"\\*EDIT\\*\\|\\*NOTE\\*"~, que coincide con ~*EDIT*~ o ~*NOTE*~ en cualquier punto de los archivos .org. Puedes personalizarlo para adaptarlo a su convención personal: por ejemplo ~"FIXME\\|REVISION\\|TOFIX"~ o cualquier otro marcador que usen para señalar lugares que necesitan atención. El patrón se pasa a ~rgrep~, así que se admite la sintaxis completa de expresiones regulares. Ten en cuenta que el valor por defecto *no* coincide deliberadamente con ~*SUMMARY*~, un marcador relacionado para las escenas planificadas pero aún sin escribir: esas viven bajo encabezados ~TODO~ y se encuentran con la búsqueda de TODO, lo que mantiene separadas las notas sobre prosa ausente de las ediciones de prosa que existe.
 
 *Estado*: totalmente implementado | *Tipo*: defcustom | *Módulo*: ~search/org-scribe-search.el~
 
@@ -758,11 +758,11 @@ Elige qué muestra ~org-scribe-editing-mode~ en su panel derecho. ~notes~ (el va
 
 ** Planificador de escritura integrado (~org-scribe-planner~)
 
-Un planificador de escritura completo, orientado a objetivos, incluido directamente dentro de ~org-scribe~ en ~planning/org-scribe-planner.el~. No requiere ninguna instalación aparte. Todas las órdenes públicas llevan cookies ~;;;###autoload~, así que están disponibles en cuanto se instala el paquete sin ningún ~require~ adicional en el archivo de inicio del usuario. Cuando se invoca por primera vez, el planificador se carga a demanda y se conecta solo con org-scribe.
+Un planificador de escritura completo, orientado a objetivos, incluido directamente dentro de ~org-scribe~ en ~planning/org-scribe-planner.el~. No requiere ninguna instalación aparte. Todas las órdenes públicas llevan cookies ~;;;###autoload~, así que están disponibles en cuanto se instala el paquete sin ningún ~require~ adicional en el tu archivo de inicio. Cuando se invoca por primera vez, el planificador se carga a demanda y se conecta solo con org-scribe.
 
-Funciones que ofrece: (1) cargar automáticamente el archivo del plan del proyecto cuando se abre cualquier archivo del proyecto; (2) enviar los recuentos de palabras en vivo al plan después de ejecutar ~org-scribe-ews-org-count-words~; (3) conectar la función de recuento de palabras del planificador para que lea las propiedades ~WORDCOUNT~ del manuscrito; (4) fijar la función de raíz de proyecto del planificador para que los selectores de archivo empiecen en la raíz del proyecto actual; (5) ofrecer crear un plan después de ~org-scribe-create-novel-project~ / ~org-scribe-create-short-story-project~; (6) añadir una subhydra del planificador accesible con ~W~ en el menú Hydra principal; (7) mostrar el objetivo y lo real de hoy en la línea de modo como ~[W:real/objetivo]~.
+Funciones que ofrece: (1) cargar automáticamente el archivo del plan del proyecto cuando se abre cualquier archivo del proyecto; (2) enviar los recuentos de palabras en vivo al plan después de ejecutar ~org-scribe-ews-org-count-words~; (3) conectar la función de recuento de palabras del planificador para que lea las propiedades ~WORDCOUNT~ del manuscrito; (4) fijar la función de raíz de proyecto del planificador para que los selectores de archivo empiecen en la raíz del proyecto actual; (5) ofrecer crear un plan después de ~org-scribe-create-novel-project~ / ~org-scribe-create-short-story-project~; (6) añadir una submenú Hydra del planificador accesible con ~W~ en el menú Hydra principal; (7) mostrar el objetivo y lo real de hoy en la línea de modo como ~[W:real/objetivo]~.
 
-Cada una de estas funciones de integración está además condicionada *por proyecto*: un proyecto solo ve el planificador después de decidirlo explícitamente con una línea ~# Planner: yes~/~# Planner: no~ en ~.org-scribe-project~ (la lee ~org-scribe-planner-gate~ en ~core/org-scribe-core.el~). ~nil~ (sin decidir, el estado de un proyecto creado antes de que existiera esta puerta) conserva el antiguo comportamiento de siempre activo; solo un ~no~ explícito desactiva las funciones. Se activa o desactiva por proyecto con ~org-scribe-planner-enable-for-project~/~org-scribe-planner-disable-for-project~ (teclas de el menú Hydra ~F8 W E~/~F8 W X~).
+Cada una de estas funciones de integración está además condicionada *por proyecto*: un proyecto solo ve el planificador después de decidirlo explícitamente con una línea ~# Planner: yes~/~# Planner: no~ en ~.org-scribe-project~ (la lee ~org-scribe-planner-gate~ en ~core/org-scribe-core.el~). ~nil~ (sin decidir, el estado de un proyecto creado antes de que existiera esta opción) conserva el antiguo comportamiento de siempre activo; solo un ~no~ explícito desactiva las funciones. Se activa o desactiva por proyecto con ~org-scribe-planner-enable-for-project~/~org-scribe-planner-disable-for-project~ (teclas de el menú Hydra ~F8 W E~/~F8 W X~).
 
 Las funciones de integración vienen activadas por defecto. Para desactivarlas globalmente, fija cualquiera de las variables siguientes *antes* de que el planificador se cargue por primera vez (por ejemplo en ~early-init.el~):
 
@@ -775,15 +775,15 @@ Las funciones de integración vienen activadas por defecto. Para desactivarlas g
 (setq org-scribe-auto-wordcount nil)   ; déjalo en nil (por defecto) para desactivar el recuento completo al guardar
 #+END_SRC
 
-*Estado*: totalmente implementado | *Hydra*: submenú ~W~ (se muestra en la sección Manage de la pista principal) | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: submenú ~F8 W~ (se muestra en la sección Manage de la pista principal) | *Módulo*: ~planning/org-scribe-planner.el~
 
 Mira la [[file:../manual-es/primeros-pasos-16-planificador.org][Lección 16]] para un tutorial paso a paso. Recuerda que el planificador está en inglés en todos los proyectos.
 
 ** Punto de entrada unificado del plan (~org-scribe-plan~)
 
-Una única orden con autocarga que despacha según el estado del proyecto: muestra el calendario del plan si ya hay uno activo; carga en silencio el archivo del plan y muestra el calendario si existe un archivo de plan válido para el proyecto actual pero aún no está cargado; ofrece crear un plan si no existe ninguno; recurre a ~org-scribe-planner-show-current-plan~ cuando no se está dentro de un proyecto de org-scribe. Se accede con ~F8 W p~.
+Una única orden con autocarga que elige según el estado del proyecto: muestra el calendario del plan si ya hay uno activo; carga en silencio el archivo del plan y muestra el calendario si existe un archivo de plan válido para el proyecto actual pero aún no está cargado; ofrece crear un plan si no existe ninguno; recurre a ~org-scribe-planner-show-current-plan~ cuando no se está dentro de un proyecto de org-scribe. Se accede con ~F8 W p~.
 
-*Estado*: totalmente implementado | *Hydra*: ~W p~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W p~ | *Módulo*: ~planning/org-scribe-planner.el~
 
 ** Descubrimiento automático del archivo del plan
 
@@ -795,7 +795,7 @@ Cuando se abre cualquier archivo del proyecto, el planificador localiza el archi
 
 Visualizaciones del progreso que se cargan a demanda desde ~planning/org-scribe-planner-dashboards.el~. Ofrece gráficos de progreso, gráficos de descenso (ASCII, SVG, gnuplot), análisis de velocidad, progreso acumulado, análisis de rendimiento, paneles multimétrica y mapas de calor. Se accede con ~F8 W D~ (menú de paneles). No tiene coste de arranque cuando no se usa.
 
-*Estado*: totalmente implementado | *Hydra*: ~W D~ | *Módulo*: ~planning/org-scribe-planner-dashboards.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W D~ | *Módulo*: ~planning/org-scribe-planner-dashboards.el~
 
 ** Motor de calendario día a día
 
@@ -807,37 +807,37 @@ Cada día de un plan recibe su propia meta en palabras enteras, y las metas suma
 
 Un patrón reparte las palabras de forma desigual entre los días de escritura (constante, valle, montaña, creciente, decreciente o aleatorio, este último con semilla, de modo que sus metas son estables), cada uno suave, moderado o extremo. Los fines de semana pueden ser días corrientes, tener una meta propia (~WEEKEND_DAILY~, 1,5 × el objetivo diario por defecto) o ser días libres, con días de fin de semana configurables (~WEEKEND_DAYS~). Una meta de día (~CUSTOM_GOALS~) da a una fecha su propio objetivo, y 0 la convierte en día de descanso. Los días libres (~SPARE_DAYS~) se añaden por fecha, rango, todos los fines de semana, todos los sábados o todos los domingos, cada uno con una nota opcional.
 
-*Estado*: totalmente implementado | *Hydra*: ~W r~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W r~ | *Módulo*: ~planning/org-scribe-planner.el~
 
 ** Cambiar un plan con vistas previas (~org-scribe-planner-recalculate~)
 
 /What changed?/ («¿Qué ha cambiado?»): palabras totales, palabras diarias, días disponibles, dos valores a la vez, la fecha de inicio, las palabras fuera del manuscrito, el patrón de escritura, los fines de semana, una meta de día (fijar, quitar, borrar desde hoy en adelante) o los días libres (añadir, quitar, borrar). Cada opción se prueba en una copia y se muestra con su resultado antes de que elijas; los cambios que alteran cuántas palabras toca escribir algunos días preguntan si conservar la fecha final, moverla o conservar la fecha final y el objetivo diario. Mover la fecha de inicio conserva los días de escritura, deja que los días libres y las metas de día futuros se queden en sus fechas o se muevan con ella, y avisa de las palabras escritas o los días pasados que queden fuera. ~C-g~ en cualquier pregunta deja el plan intacto.
 
-*Estado*: totalmente implementado | *Hydra*: ~W r~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W r~ | *Módulo*: ~planning/org-scribe-planner.el~
 
 ** Estado y ajuste según el progreso (~org-scribe-planner-check-progress~)
 
-El estado del plan (en el camino, o por delante o por detrás en palabras, porcentaje y días de escritura medidos a lo largo del calendario propio del plan) compara las metas hasta ayer con todo lo escrito, hoy incluido. Aparece en el resumen del calendario y después de cada sincronización. ~c~ (Check progress) ofrece los ajustes adecuados; ~a~ (~org-scribe-planner-adjust-remaining-plan~) conserva la fecha final y reparte de nuevo las palabras que quedan; ~e~ (~org-scribe-planner-adjust-end-date~) conserva el objetivo diario y mueve la fecha final. Cada uno muestra primero su resultado y cambia solo los días desde hoy en adelante (desde mañana si hoy ya tiene palabras).
+El estado del plan (al día, o por delante o por detrás en palabras, porcentaje y días de escritura medidos a lo largo del calendario propio del plan) compara las metas hasta ayer con todo lo escrito, hoy incluido. Aparece en el resumen del calendario y después de cada sincronización. ~c~ (Check progress) ofrece los ajustes adecuados; ~a~ (~org-scribe-planner-adjust-remaining-plan~) conserva la fecha final y reparte de nuevo las palabras que quedan; ~e~ (~org-scribe-planner-adjust-end-date~) conserva el objetivo diario y mueve la fecha final. Cada uno muestra primero su resultado y cambia solo los días desde hoy en adelante (desde mañana si hoy ya tiene palabras).
 
-*Estado*: totalmente implementado | *Hydra*: ~W c~, ~W a~, ~W e~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W c~, ~F8 W a~, ~F8 W e~ | *Módulo*: ~planning/org-scribe-planner.el~
 
 ** Resumen semanal, cuadrícula del mes e hitos
 
 Tres vistas además del calendario y de los paneles. El resumen semanal (~org-scribe-planner-show-weekly-summary~) tiene una fila por semana natural: días escritos, días de descanso, la meta de la semana, las palabras escritas, los totales planificado y real, y la diferencia. La cuadrícula del mes (~org-scribe-planner-show-month-calendar~) es un calendario por mes con la meta de cada día, su resultado (✓ ~ ✗) y la parte de la meta escrita hasta entonces. Los hitos (~org-scribe-planner-show-milestones~) muestran cuándo se alcanzaron el 25 %, el 50 %, el 75 % y el 100 % del objetivo, cuándo se espera alcanzarlos, o que no se pueden alcanzar antes de la fecha final. Las semanas empiezan en ~org-scribe-planner-week-start-day~ (el lunes, por defecto).
 
-*Estado*: totalmente implementado | *Hydra*: ~W w~, ~W M~, ~W m~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W w~, ~F8 W M~, ~F8 W m~ | *Módulo*: ~planning/org-scribe-planner.el~
 
-** Presets, valores por defecto e incorporación
+** Preajustes, valores por defecto e incorporación
 
 Los planes nuevos parten de un preajuste (~org-scribe-planner-presets~: Novel draft, NaNoWriMo, Novella, Short story, 1.000 y 500 palabras al día), se ofrece primero el que corresponde al tipo de proyecto, y sus valores y el patrón y los fines de semana que sugiere son valores por defecto que puedes cambiar, o desde cero, donde se ofrecen ~org-scribe-planner-default-pattern~, ~-default-pattern-intensity~, ~-default-weekend-mode~, ~-default-weekend-days~ y ~-default-weekend-daily~. ~org-scribe-planner-onboard-existing-project~ (~W o~) crea un plan para un manuscrito ya empezado, lee su recuento de palabras como palabras iniciales y pregunta una fecha final o un ritmo diario.
 
-*Estado*: totalmente implementado | *Hydra*: ~W n~, ~W o~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W n~, ~F8 W o~ | *Módulo*: ~planning/org-scribe-planner.el~
 
 ** Palabras escritas fuera del manuscrito
 
 Las palabras escritas fuera del manuscrito (otro archivo, un cuaderno) se anotan con /What changed?/ → /Words outside the manuscript/: un número escrito (~OUTSIDE_WORDS~) y/o archivos (~OUTSIDE_FILES~). Se guardan y se muestran («not counted» en la vista del plan y en el informe de salud), pero nunca se suman: todo recuento que anota el plan es la prosa del manuscrito. Los planes guardados antes de esto (sin ~WORDS_BASIS: manuscript~) se convierten al cargarse: las palabras de fuera se restan de cada día anotado, con un mensaje. Un manuscrito vacío (0 palabras) no se anota nunca.
 
-*Estado*: totalmente implementado | *Hydra*: ~W r~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W r~ | *Módulo*: ~planning/org-scribe-planner.el~
 
 ** Migración desde el antiguo org-scribe-planner-integration
 
@@ -856,11 +856,11 @@ Si tu archivo de inicio todavía contiene el siguiente fragmento de antes de que
 
 ** Companion visual (~org-scribe-companion-open~)
 
-Una página opcional del navegador, que hay que activar expresamente, para ver y reorganizar el proyecto: un corcho (escenas como fichas que arrastras, renombras y cambias de estado), una tabla de esquema (todas las propiedades de escena editables, con los campos de enlace mediante un selector), un gráfico de líneas de la historia (personajes, hilos de la trama, escenarios y puntos de trama frente a las escenas, con avisos de huecos y huérfanos), una vista de capítulos (el gráfico de líneas resumido por capítulo), una línea temporal del tiempo de la historia (con la notación elegida con ~F8 S~: relativa, fechas o un calendario inventado), un grafo de relaciones, un diálogo de temas de color y formularios de entidades (el cajón de propiedades y cada sección de la ficha de un personaje, un escenario o un hilo de la trama). Se pueden añadir capítulos vacíos y arrastrar capítulos entre actos. Las escenas enlazan además objetos (~F8 b~, búsqueda con ~7~). Emacs sigue siendo el único programa que lee y escribe los archivos del proyecto: la página envía órdenes direccionadas por ID, cada una un único paso de deshacer en el búfer, y no se guarda nada salvo que pulses Guardar o fijes ~org-scribe-companion-auto-save~. Una edición de sección hecha sobre una copia obsoleta se rechaza y se muestran las dos versiones.
+Una página opcional del navegador, que hay que activar expresamente, para ver y reorganizar el proyecto: un corcho (escenas como tarjetas que arrastras, renombras y cambias de estado), una tabla de esquema (todas las propiedades de escena editables, con los campos de enlace mediante un selector), una línea argumental (personajes, hilos de la trama, escenarios y puntos de trama frente a las escenas, con avisos de huecos y huérfanos), una vista de capítulos (la línea argumental resumida por capítulo), una cronología del tiempo de la historia (con la notación elegida con ~F8 S~: relativa, fechas o un calendario inventado), un grafo de relaciones, un diálogo de temas de color y formularios de entidades (el cajón de propiedades y cada sección de la ficha de un personaje, un escenario o un hilo de la trama). Se pueden añadir capítulos vacíos y arrastrar capítulos entre actos. Las escenas enlazan además objetos (~F8 b~, búsqueda con ~7~). Emacs sigue siendo el único programa que lee y escribe los archivos del proyecto: la página envía órdenes direccionadas por ID, cada una un único paso de deshacer en el búfer, y no se guarda nada salvo que pulses Guardar o fijes ~org-scribe-companion-auto-save~. Una edición de sección hecha sobre una copia obsoleta se rechaza y se muestran las dos versiones.
 
 Dos interruptores lo mantienen fuera del camino: ~org-scribe-companion-enable~ (global, por defecto ~nil~; mientras está desactivado el módulo no se carga nunca) y una línea ~# Companion: yes~ por proyecto en ~.org-scribe-project~, que se pregunta una sola vez. El servidor escucha solo en 127.0.0.1, detrás de un token aleatorio por arranque, con comprobaciones de Host y de Origin. Novelas y cuentos por igual. Se abre con ~F8 B~; se detiene con ~M-x org-scribe-companion-stop~; ~org-scribe-companion-show-scene~ resalta en la página la escena en la que está el cursor.
 
-*Estado*: totalmente implementado | *Hydra*: ~B~ | *Módulo*: ~companion/~ | *Pruebas*: ~tests/test-companion-*.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 B~ | *Módulo*: ~companion/~ | *Pruebas*: ~tests/test-companion-*.el~
 
 Mira la [[file:../manual-es/primeros-pasos-19-companion.org][Lección 19]] para un tutorial paso a paso.
 

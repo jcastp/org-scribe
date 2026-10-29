@@ -21,29 +21,29 @@ Es la única fuente del emparejamiento entre los dos manuales: las pruebas
 (=tests/test-manual-es.el=) lo leen. Estados: =pendiente= (no existe aún),
 =traducido= (existe, sin revisar), =revisado= (aprobado).
 
-| Inglés (=manual/=)                          | Español (=manual-es/=)                         | Estado    |
-|---------------------------------------------+------------------------------------------------+-----------|
-| =00-feature-index.org=                      | =00-indice-funciones.org=                      | traducido |
-| =getting-started-00-index.org=              | =primeros-pasos-00-indice.org=                 | traducido |
-| =getting-started-01-creating-projects.org=  | =primeros-pasos-01-crear-proyectos.org=        | traducido |
-| =getting-started-02-first-scene.org=        | =primeros-pasos-02-primera-escena.org=         | traducido |
-| =getting-started-03-tracking-progress.org=  | =primeros-pasos-03-seguimiento-progreso.org=   | traducido |
-| =getting-started-04-capturing-characters.org= | =primeros-pasos-04-capturar-personajes.org=  | traducido |
-| =getting-started-05-locations-settings.org= | =primeros-pasos-05-lugares-ambientacion.org=   | traducido |
-| =getting-started-06-plot-threads.org=       | =primeros-pasos-06-hilos-trama.org=            | traducido |
-| =getting-started-07-searching.org=          | =primeros-pasos-07-busquedas.org=              | traducido |
-| =getting-started-08-hydra-menu.org=         | =primeros-pasos-08-menu-hydra.org=             | traducido |
-| =getting-started-09-writing-modes.org=      | =primeros-pasos-09-modos-escritura.org=        | traducido |
-| =getting-started-10-timelines.org=          | =primeros-pasos-10-lineas-temporales.org=      | traducido |
-| =getting-started-11-exporting.org=          | =primeros-pasos-11-exportar.org=               | traducido |
-| =getting-started-12-dictionary-tools.org=   | =primeros-pasos-12-herramientas-diccionario.org= | traducido |
-| =getting-started-13-daily-workflow.org=     | =primeros-pasos-13-flujo-diario.org=           | traducido |
-| =getting-started-14-revision-workflow.org=  | =primeros-pasos-14-flujo-revision.org=         | traducido |
-| =getting-started-15-customization.org=      | =primeros-pasos-15-personalizacion.org=        | traducido |
-| =getting-started-16-planner-integration.org= | =primeros-pasos-16-planificador.org=          | traducido |
-| =getting-started-17-scratchpad.org=         | =primeros-pasos-17-borradores.org=             | traducido |
-| =getting-started-18-plotting-methods.org=   | =primeros-pasos-18-metodos-trama.org=          | traducido |
-| =getting-started-19-companion.org=          | =primeros-pasos-19-companion.org=              | traducido |
+| Inglés (=manual/=)                            | Español (=manual-es/=)                           | Estado   |
+|-----------------------------------------------+--------------------------------------------------+----------|
+| =00-feature-index.org=                        | =00-indice-funciones.org=                        | revisado |
+| =getting-started-00-index.org=                | =primeros-pasos-00-indice.org=                   | revisado |
+| =getting-started-01-creating-projects.org=    | =primeros-pasos-01-crear-proyectos.org=          | revisado |
+| =getting-started-02-first-scene.org=          | =primeros-pasos-02-primera-escena.org=           | revisado |
+| =getting-started-03-tracking-progress.org=    | =primeros-pasos-03-seguimiento-progreso.org=     | revisado |
+| =getting-started-04-capturing-characters.org= | =primeros-pasos-04-capturar-personajes.org=      | revisado |
+| =getting-started-05-locations-settings.org=   | =primeros-pasos-05-lugares-ambientacion.org=     | revisado |
+| =getting-started-06-plot-threads.org=         | =primeros-pasos-06-hilos-trama.org=              | revisado |
+| =getting-started-07-searching.org=            | =primeros-pasos-07-busquedas.org=                | revisado |
+| =getting-started-08-hydra-menu.org=           | =primeros-pasos-08-menu-hydra.org=               | revisado |
+| =getting-started-09-writing-modes.org=        | =primeros-pasos-09-modos-escritura.org=          | revisado |
+| =getting-started-10-timelines.org=            | =primeros-pasos-10-lineas-temporales.org=        | revisado |
+| =getting-started-11-exporting.org=            | =primeros-pasos-11-exportar.org=                 | revisado |
+| =getting-started-12-dictionary-tools.org=     | =primeros-pasos-12-herramientas-diccionario.org= | revisado |
+| =getting-started-13-daily-workflow.org=       | =primeros-pasos-13-flujo-diario.org=             | revisado |
+| =getting-started-14-revision-workflow.org=    | =primeros-pasos-14-flujo-revision.org=           | revisado |
+| =getting-started-15-customization.org=        | =primeros-pasos-15-personalizacion.org=          | revisado |
+| =getting-started-16-planner-integration.org=  | =primeros-pasos-16-planificador.org=             | revisado |
+| =getting-started-17-scratchpad.org=           | =primeros-pasos-17-borradores.org=               | revisado |
+| =getting-started-18-plotting-methods.org=     | =primeros-pasos-18-metodos-trama.org=            | revisado |
+| =getting-started-19-companion.org=            | =primeros-pasos-19-companion.org=                | revisado |
 
 Los nombres de archivo llevan solo ASCII (sin =ñ= ni tildes), como
 =diseno.org=, y conservan el número de la lección.
@@ -119,67 +119,84 @@ El vocabulario del método sale de =docs/glossary.org= y no se negocia. Para el
 resto, esta tabla se fija una vez y crece con las lecciones. Registro: tú,
 español de España.
 
-| Inglés                    | Español                       | Nota                                   |
-|---------------------------+-------------------------------+----------------------------------------|
-| Getting Started Guide     | Guía de primeros pasos        |                                        |
-| Lesson                    | Lección                       |                                        |
-| Feature Index             | Índice de funciones           |                                        |
-| design notebook           | cuaderno de diseño            | coincide con =diseno.org=                |
-| manuscript                | manuscrito                    |                                        |
-| scene / chapter / part    | escena / capítulo / parte     | /act/ → acto                             |
-| capture                   | captura / capturar            |                                        |
-| word count                | recuento de palabras          | como en los mensajes del paquete       |
-| word target               | objetivo de palabras          |                                        |
-| edit marker               | marcador de edición           |                                        |
-| scratchpad                | Borradores                    | nombre de la parte en el paquete       |
-| Starting Gate             | Puerta de salida              | título del paquete                     |
-| non-negotiables           | irrenunciables                | título del paquete                     |
-| plot thread               | hilo de la trama              | título del paquete                     |
-| setting (entity)          | escenario                     | como el glosario y la captura          |
-| setting (section)         | Ambientación                  | solo el nombre de la sección           |
-| location (scene property) | localización                  | propiedad =:Localizacion:= y las órdenes =F8 l=, =F8 4= |
-| health report             | informe de salud del proyecto | comprobar el título en el paquete      |
-| writing planner           | planificador                  | como en los mensajes del paquete       |
-| companion                 | companion (visual)            | como en los mensajes del paquete       |
-| writing mode / workspace  | modo / espacio de escritura   |                                        |
-| distraction-free          | sin distracciones             |                                        |
-| heading                   | encabezado                    | como en las plantillas =-es=             |
-| refile (verb)             | refilar                       | =C-c C-w=                                |
-| exit gate (Hélice/Matriz) | puerta de salida              | la sección se llama «Puerta de salida» |
-| quarters                  | cuartiles                     | glosario                               |
-| living force              | fuerza viva                   | glosario                               |
-| hydra menu                | menú Hydra                    | «Hydra» con mayúscula; «hydra» solo el paquete |
-| PoV                       | PoV                           | es el nombre de la propiedad           |
-| link / ID link            | enlace / enlace por ID        |                                        |
-| orphan                    | huérfano                      |                                        |
-| export / compile          | exportar / compilar           |                                        |
+| Inglés                    | Español                                              | Nota                                                             |
+|---------------------------+------------------------------------------------------+------------------------------------------------------------------|
+| Getting Started Guide     | Guía de primeros pasos                               |                                                                  |
+| Lesson                    | Lección                                              |                                                                  |
+| Feature Index             | Índice de funciones                                  |                                                                  |
+| design notebook           | cuaderno de diseño                                   | coincide con =diseno.org=                                        |
+| manuscript                | manuscrito                                           |                                                                  |
+| scene / chapter / part    | escena / capítulo / parte                            | /act/ → acto                                                     |
+| capture                   | captura / capturar                                   |                                                                  |
+| word count                | recuento de palabras                                 | como en los mensajes del paquete                                 |
+| word target               | objetivo de palabras                                 |                                                                  |
+| edit marker               | marcador de edición                                  |                                                                  |
+| scratchpad                | Borradores                                           | nombre de la parte en el paquete                                 |
+| Starting Gate             | Puerta de salida                                     | título del paquete                                               |
+| non-negotiables           | irrenunciables                                       | título del paquete                                               |
+| plot thread               | hilo de la trama                                     | título del paquete                                               |
+| setting (entity)          | escenario                                            | como el glosario y la captura                                    |
+| setting (section)         | Ambientación                                         | solo el nombre de la sección                                     |
+| location (scene property) | localización                                         | propiedad =:Localizacion:= y las órdenes =F8 l=, =F8 4=          |
+| health report             | informe de salud del proyecto                        | título del paquete; el de los hilos es «informe de estado»       |
+| writing planner           | planificador                                         | como en los mensajes del paquete                                 |
+| companion                 | companion (visual)                                   | como en los mensajes del paquete                                 |
+| writing mode / workspace  | modo / espacio de escritura                          |                                                                  |
+| distraction-free          | sin distracciones                                    |                                                                  |
+| heading                   | encabezado                                           | como en las plantillas =-es=                                     |
+| refile (verb / noun)      | refilar / refilado                                   | =C-c C-w=                                                        |
+| exit gate (Hélice/Matriz) | puerta de salida                                     | la sección se llama «Puerta de salida»                           |
+| quarters                  | cuartiles                                            | glosario                                                         |
+| living force              | fuerza viva                                          | glosario                                                         |
+| hydra menu                | menú Hydra                                           | «Hydra» con mayúscula; «hydra» solo el paquete                   |
+| prompt (minibuffer)       | pregunta                                             | «Emacs te pregunta…»; mensaje = área de eco, aviso = advertencia |
+| point                     | cursor                                               | salvo citas de documentación                                     |
+| preset                    | preajuste                                            | las etiquetas del planificador siguen en inglés                  |
+| goal / target             | meta / objetivo                                      | meta = un día; objetivo = el total                               |
+| on track                  | al día                                               | «Por delante, al día o por detrás»                               |
+| starting words            | palabras iniciales                                   | =PREEXISTING_WORDS=                                              |
+| command                   | orden                                                | también «comando» en el nombre de una función                    |
+| relink                    | volver a enlazar                                     | =org-scribe-relink-project=                                      |
+| dynamic block             | bloque dinámico                                      | no «tabla dinámica»                                              |
+| storyline                 | línea argumental                                     | como la interfaz del companion                                   |
+| corkboard / card          | corcho / tarjeta                                     | «ficha» es el perfil de una entidad                              |
+| tooltip                   | globo informativo                                    |                                                                  |
+| Hazard                    | Escollo                                              | glosario                                                         |
+| logbook                   | cajón =LOGBOOK=                                      |                                                                  |
+| backend (export)          | motor de exportación                                 |                                                                  |
+| plotter / pantser         | de mapa / de brújula                                 | «A toda velocidad» y «Con pulido lento» para el ritmo            |
+| writing modes             | modo Sin distracciones, Enfoque, Navegación, Edición | nombres propios, como en la Lección 9                            |
+| PoV                       | PoV                                                  | es el nombre de la propiedad                                     |
+| link / ID link            | enlace / enlace por ID                               |                                                                  |
+| orphan                    | huérfano                                             |                                                                  |
+| export / compile          | exportar / compilar                                  |                                                                  |
 
 ** Títulos de las lecciones
 
 Fijados en la Fase 1 (los usan los enlaces «Anterior/Siguiente» de todas las
 lecciones):
 
-| N.º | Título                                                                 |
-|-----+------------------------------------------------------------------------|
-|   1 | Crear tu primer proyecto                                               |
-|   2 | Escribir tu primera escena                                             |
-|   3 | Seguir tu progreso                                                     |
-|   4 | Capturar personajes                                                    |
-|   5 | Escenarios y ambientación                                              |
-|   6 | Hilos de la trama y cronología                                         |
-|   7 | Encontrar lo que necesitas                                             |
-|   8 | El menú Hydra                                                          |
-|   9 | Los modos de escritura en profundidad                                  |
-|  10 | Cronologías de personajes y de la trama                                |
-|  11 | Exportar tu manuscrito                                                 |
-|  12 | Herramientas de diccionario e idioma                                   |
-|  13 | Flujo de escritura diario                                              |
-|  14 | Flujo de revisión y edición                                            |
-|  15 | Personalización y configuración                                        |
-|  16 | Planificación de objetivos de escritura con el planificador integrado  |
-|  17 | Borradores y ramificación de ideas                                     |
-|  18 | Métodos de trama — La Hélice y La Matriz                               |
-|  19 | El companion visual                                                    |
+| N.º | Título                                                                |
+|-----+-----------------------------------------------------------------------|
+|   1 | Crear tu primer proyecto                                              |
+|   2 | Escribir tu primera escena                                            |
+|   3 | Seguir tu progreso                                                    |
+|   4 | Capturar personajes                                                   |
+|   5 | Escenarios y ambientación                                             |
+|   6 | Hilos de la trama y cronología                                        |
+|   7 | Encontrar lo que necesitas                                            |
+|   8 | El menú Hydra                                                         |
+|   9 | Los modos de escritura en profundidad                                 |
+|  10 | Cronologías de personajes y de la trama                               |
+|  11 | Exportar tu manuscrito                                                |
+|  12 | Herramientas de diccionario e idioma                                  |
+|  13 | Flujo de escritura diario                                             |
+|  14 | Flujo de revisión y edición                                           |
+|  15 | Personalización y configuración                                       |
+|  16 | Planificación de objetivos de escritura con el planificador integrado |
+|  17 | Borradores y ramificación de ideas                                    |
+|  18 | Métodos de trama — La Hélice y La Matriz                              |
+|  19 | El companion visual                                                   |
 
 * Mantener los dos manuales al día
 
