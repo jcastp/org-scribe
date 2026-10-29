@@ -78,7 +78,7 @@ El paquete ofrece cuatro funciones de búsqueda principales, cada una centrada e
 
 ** Tabla resumen
 
-| Tipo de búsqueda | Tecla Hydra | Comando                         | Propiedad que busca |
+| Tipo de búsqueda | Tecla Hydra | Orden                           | Propiedad que busca |
 |------------------+-------------+---------------------------------+---------------------|
 | PoV              | F8 1        | ~org-scribe-org-find-pov~       | ~:PoV:~             |
 | Personaje        | F8 2        | ~org-scribe-org-find-character~ | ~:Personajes:~      |
@@ -92,7 +92,7 @@ Otras dos búsquedas completan la sección Search del menú Hydra (se explican m
 ** Patrón común
 
 Las cuatro búsquedas funcionan igual:
-1. Invoca la búsqueda (pulsa la tecla del menú Hydra o ejecuta el comando)
+1. Invoca la búsqueda (pulsa la tecla del menú Hydra o ejecuta la orden)
 2. Escribe el término de búsqueda (con completado)
 3. Mira los resultados en un búfer dedicado
 4. Navega a las escenas desde los resultados
@@ -127,7 +127,7 @@ O usa: ~M-x org-scribe-org-find-pov~
 
 ** El proceso
 
-1. Verás un aviso: ~Buscar personaje PoV [difuso]: ~ (o ~Personaje (PoV) [subcadena]: ~ si usas la variante de texto libre)
+1. Emacs te pregunta: ~Buscar personaje PoV [difuso]: ~ (o ~Personaje (PoV) [subcadena]: ~ si usas la variante de texto libre)
 2. Empieza a escribir el nombre de un personaje: ~Alex~
 3. Aparecen los nombres que coinciden (con completado)
 4. Elige: ~Alex Rivera~
@@ -196,7 +196,7 @@ Problema: cambio de voz sin explicación.
 Acción: o añadir un punto de inflexión que justifique el cambio, o revisar las escenas posteriores para recuperar el sarcasmo.
 #+END_EXAMPLE
 
-*** Ejemplo 3: evitar el latigazo de PoV
+*** Ejemplo 3: evitar saltos bruscos de PoV
 #+BEGIN_EXAMPLE
 Buscas el PoV de Alex: escenas 1, 2, 3, 4, 5, 15, 16...
 ¡Hueco de la escena 5 a la 15 = 9 escenas!
@@ -225,7 +225,7 @@ O usa: ~M-x org-scribe-org-find-character~
 
 ** El proceso
 
-1. Verás un aviso: ~Buscar personaje [difuso]: ~ (o ~Nombre del personaje [subcadena]: ~)
+1. Emacs te pregunta: ~Buscar personaje [difuso]: ~ (o ~Nombre del personaje [subcadena]: ~)
 2. Empieza a escribir: ~Sam~
 3. Aparecen los nombres que coinciden
 4. Elige: ~Sam Chen~
@@ -304,7 +304,7 @@ Estás escribiendo la escena 30 y quieres referirte a la última vez que Alex vi
 Buscas a Sam: la última aparición fue en la escena 20.
 
 Consultas las notas de la escena 20: discutieron sobre cómo enfocar la investigación.
-Ahora puedes escribir la escena 30 con la continuidad correcta: «Era la primera vez que veía a Sam desde la discusión.»
+Ahora puedes escribir la escena 30 con la continuidad correcta: «Era la primera vez que veía a Sam desde la discusión».
 #+END_EXAMPLE
 
 * Búsqueda 3: por hilo de la trama
@@ -327,7 +327,7 @@ O usa: ~M-x org-scribe-org-find-plot~
 
 ** El proceso
 
-1. Verás un aviso: ~Buscar trama [difuso]: ~ (o ~Término de trama [subcadena]: ~)
+1. Emacs te pregunta: ~Buscar trama [difuso]: ~ (o ~Término de trama [subcadena]: ~)
 2. Empieza a escribir: ~Misterio~
 3. Aparecen los hilos de la trama que coinciden
 4. Elige: ~Misterio principal - Sabotaje del agua~
@@ -346,17 +346,17 @@ La vista se titula «Hilo de trama: Misterio principal - Sabotaje del agua»:
   DONE Escena 15 - Siguiendo la pista                                                 :ignore:
   [... etc ...]
   TODO Escena 42 - Confrontación                                                      :ignore:
-  TODO Escena 45 - Secuelas                                                           :ignore:
+  TODO Escena 45 - Consecuencias                                                           :ignore:
   TODO Escena 46 - Reflexión                                                          :ignore:
 #+END_EXAMPLE
 
-La búsqueda no etiqueta cada escena con su función en la trama («incidente desencadenante», «clímax»...); eso lo anotas tú en las Notas del hilo o con los puntos de trama (Lección 6). Para cobertura y huecos calculados automáticamente, usa el informe de salud de la trama (~F8 L t~).
+La búsqueda no etiqueta cada escena con su función en la trama («Evento incitador», «clímax»...); eso lo anotas tú en las Notas del hilo o con los puntos de trama (Lección 6). Para cobertura y huecos calculados automáticamente, usa el informe de salud de la trama (~F8 L t~).
 
 ** Interpretar los resultados
 
 *** Porcentaje de cobertura
 18 escenas de 40 = 45 %.
-- Para una trama principal: debería ser del 60-80 %. ¡Es BAJO!
+- Para una trama principal: debería ser del 60-80 %. ¡Es bajo!
 - Para una subtrama mayor: el 30-50 % está bien. Sería correcto para una historia B.
 - Para una subtrama menor: sería alto (lo típico es el 10-30 %).
 
@@ -372,7 +372,7 @@ Pero si ves:
 - Escena 7... Escena 18 (hueco de 10 escenas) → ¡problema!
 
 *** Hitos de la trama
-Si has anotado en cada escena su función en la trama (incidente desencadenante, avance, clímax, etc.), puedes comprobar si están los hitos importantes:
+Si has anotado en cada escena su función en la trama (Evento incitador, avance, clímax, etc.), puedes comprobar si están los hitos importantes:
 - ✓ Incidente desencadenante (Escena 1)
 - ✓ Giro del punto medio (Escena 24)
 - ✓ Gran revelación (Escena 38)
@@ -431,7 +431,7 @@ O usa: ~M-x org-scribe-org-find-location~
 
 ** El proceso
 
-1. Verás un aviso: ~Buscar localización [difuso]: ~ (o ~Localización [subcadena]: ~)
+1. Emacs te pregunta: ~Buscar localización [difuso]: ~ (o ~Localización [subcadena]: ~)
 2. Empieza a escribir: ~Cafe~
 3. Aparecen los escenarios que coinciden
 4. Elige: ~Cafetería del Centro~
@@ -486,7 +486,7 @@ Es un «paréntesis» intencionado: muestra el viaje y el regreso.
 Buscas «Piso de Alex» y encuentras 18 escenas (de 40 en total).
 
 Problema: ¡el 45 % de tu historia ocurre en un solo lugar! Es demasiado.
-Acción: mover 6-8 escenas a otras localizaciones O combinar varias escenas del piso en menos escenas.
+Acción: mover 6-8 escenas a otras localizaciones o combinar varias escenas del piso en menos escenas.
 #+END_EXAMPLE
 
 *** Ejemplo 2: control de la variedad
@@ -507,7 +507,7 @@ Escribes la escena 30 en la cafetería. Buscas «Cafetería»:
 - Última aparición: escena 23
 - En la escena 23: Alex discutió con el camarero
 
-Ahora puedes escribir la escena 30 con continuidad: «El camarero apartó la mirada cuando Alex entró, todavía molesto por la semana pasada.»
+Ahora puedes escribir la escena 30 con continuidad: «El camarero apartó la mirada cuando Alex entró, todavía molesto por la semana pasada».
 #+END_EXAMPLE
 
 *** Ejemplo 4: regreso simbólico
@@ -693,7 +693,7 @@ Cada entrada muestra la escena de la que procede y enlaza con la línea exacta. 
 
 Trabaja una categoría, borrando cada bloque de comentario según lo resuelves (así se «cierra» un marcador: no hay un estado de hecho aparte), y luego pulsa ~g~ para confirmar que la categoría está vacía.
 
-También puedes mantener el índice abierto junto a tu manuscrito mientras trabajas: pon ~org-scribe-editing-right-panel~ a ~edits~ y se convierte en el panel derecho del modo Editing, reconstruyéndose cada vez que guardas (Lección 9).
+También puedes mantener el índice abierto junto a tu manuscrito mientras trabajas: pon ~org-scribe-editing-right-panel~ a ~edits~ y se convierte en el panel derecho del modo Edición, reconstruyéndose cada vez que guardas (Lección 9).
 
 ** Personalizar los marcadores
 
@@ -705,7 +705,7 @@ Las categorías salen de ~org-scribe-edit-categories~:
 
 Un marcador cuya categoría falta, está vacía o no se reconoce se agrupa bajo ~otras~ en lugar de descartarse: una errata mueve un marcador, nunca lo esconde.
 
-Si tus marcadores *no* siguen la convención del bloque de comentario (proyectos antiguos, o un estilo de marcador propio), llama a la búsqueda con un argumento de prefijo (~C-u F8 6~) para obtener ~org-scribe-search-edits-rgrep~, una búsqueda de texto plano que los encuentra en cualquier sitio. Esa alternativa es la que usa ~org-scribe-edit-string~:
+Si tus marcadores *no* siguen la convención del bloque de comentario (proyectos antiguos, o un estilo de marcador propio), llama a la búsqueda con un argumento prefijo (~C-u F8 6~) para obtener ~org-scribe-search-edits-rgrep~, una búsqueda de texto plano que los encuentra en cualquier sitio. Esa alternativa es la que usa ~org-scribe-edit-string~:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")
@@ -718,13 +718,13 @@ Para consultas avanzadas, combina varias búsquedas.
 ** Patrón: búsquedas secuenciales
 
 *** Ejemplo 1: un personaje en una trama concreta
-¿Quieres encontrar todas las escenas en las que aparece Sam Y se desarrolla la trama romántica?
+¿Quieres encontrar todas las escenas en las que aparece Sam y se desarrolla la trama romántica?
 
 1. Busca al personaje Sam (F8 2) → obtienes 8 escenas
 2. Escanea a mano los resultados en busca de escenas que mencionen también el romance
 3. Anota los números de escena: escenas 3, 8, 17, 20, 28, 43
 
-Resultado: 6 escenas en las que están Sam Y el romance.
+Resultado: 6 escenas en las que están Sam y el romance.
 
 *** Ejemplo 2: un personaje PoV en un escenario concreto
 ¿Quieres todas las escenas desde el PoV de Alex que ocurren en la cafetería?
@@ -874,12 +874,12 @@ Practiquemos los cinco tipos de búsqueda.
 *** Análisis de cobertura
 1. Para tu trama principal: ____ % de cobertura
    - Debería ser del 60-80 % para la trama principal
-   - ¿Está la tuya en el rango? SÍ / NO
+   - ¿Está la tuya en el rango? sí / no
    - Si NO, ¿cuántas escenas hay que añadir? _______
 
 2. Para el PoV de tu protagonista: ____ % de cobertura
    - Debería ser del 50-80 % para un solo protagonista
-   - ¿Está el tuyo en el rango? SÍ / NO
+   - ¿Está el tuyo en el rango? sí / no
 
 *** Comprobación del equilibrio
 1. Lista todos los personajes con su número de escenas:
@@ -887,7 +887,7 @@ Practiquemos los cinco tipos de búsqueda.
    - Personaje 2: _____ escenas
    - Personaje 3: _____ escenas
 
-2. ¿Es adecuado el equilibrio para sus papeles? SÍ / NO
+2. ¿Es adecuado el equilibrio para sus papeles? sí / no
 
 3. ¿Algún personaje aparece demasiado o muy poco? _______
 
@@ -1045,7 +1045,7 @@ La búsqueda devuelve escenas que no parecen coincidir.
    - El cajón de propiedades principal (esperado)
    - Subencabezados bajo la escena (puede ser inesperado)
 3. Comprueba las coincidencias parciales:
-   - Buscar «Alex» puede encontrar «Alex Rivera» Y «Alexandra»
+   - Buscar «Alex» puede encontrar «Alex Rivera» y «Alexandra»
 
 Normalmente es el comportamiento correcto, pero verifica que tu término de búsqueda es lo bastante específico.
 
@@ -1112,7 +1112,7 @@ Pulsar RET o C-c C-o en los resultados no salta a la escena.
 
 ** Órdenes habituales
 
-| Comando                             | Qué hace                                             |
+| Orden                               | Qué hace                                             |
 |-------------------------------------+------------------------------------------------------|
 | ~org-scribe-org-find-pov~           | Busca por PoV                                        |
 | ~org-scribe-org-find-character~     | Busca por personaje                                  |
@@ -1195,7 +1195,7 @@ Para un análisis profundo:
 
 ** 8. Guarda las búsquedas habituales
 
-Si buscas con frecuencia las mismas cosas, plantéate crear comandos propios:
+Si buscas con frecuencia las mismas cosas, plantéate crear órdenes propias:
 #+BEGIN_SRC emacs-lisp
 (defun my/search-alex ()
   "Busca rápidamente las escenas con PoV de Alex."
@@ -1203,7 +1203,7 @@ Si buscas con frecuencia las mismas cosas, plantéate crear comandos propios:
   (org-scribe-org-find-pov "Alex Rivera"))
 #+END_SRC
 
-Ahora dale una tecla. ~C-c LETRA~ está reservado para ti, pero ~C-c a~ es la agenda de Org, así que usa una secuencia de dos teclas bajo un prefijo propio:
+Ahora asígnale una tecla. ~C-c LETRA~ está reservado para ti, pero ~C-c a~ es la agenda de Org, así que usa una secuencia de dos teclas bajo un prefijo propio:
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c s a") #'my/search-alex)
@@ -1224,7 +1224,7 @@ Si las búsquedas muestran:
 - Un personaje aparece una vez y desaparece 30 escenas → los lectores lo olvidarán
 - Un escenario usado en el 35 % de las escenas → demasiado repetitivo
 
-No racionalices: ajusta la historia para que coincida con patrones sanos.
+No busques excusas: ajusta la historia para que coincida con patrones sanos.
 
 * Lo que has aprendido
 
@@ -1244,14 +1244,14 @@ No racionalices: ajusta la historia para que coincida con patrones sanos.
 
 * Próximos pasos
 
-Ya estás listo para la *Lección 8: El menú Hydra*.
+Ya puedes pasar a la [[file:primeros-pasos-08-menu-hydra.org][Lección 8: El menú Hydra]].
 
 En la próxima lección aprenderás:
 - A acceder rápidamente a todas las funciones con el menú de teclado unificado
 - A entender la organización del menú y sus secciones
 - Los atajos de teclado habituales y sus mnemotecnias
 - A personalizar el menú Hydra para tu flujo de trabajo
-- A crear tus propios comandos de acceso rápido
+- A crear tus propias órdenes de acceso rápido
 
 ** Práctica rápida antes de seguir
 
@@ -1265,7 +1265,7 @@ Antes de la Lección 8, prueba esto:
 6. Añade 3-5 elementos TODO a tu manuscrito para practicar
 7. Busca los TODO y atiende al menos uno
 
-¡Tómate tu tiempo! Buscar es una habilidad que mejora con la práctica. Cuando te sientas cómodo encontrando cualquier cosa de tu manuscrito en segundos, pasa a la Lección 8.
+Tómate tu tiempo. Buscar es una habilidad que mejora con la práctica. Cuando le hayas cogido el tranquillo a encontrar cualquier cosa de tu manuscrito en segundos, pasa a la Lección 8.
 
 * Resumen
 

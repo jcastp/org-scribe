@@ -586,7 +586,7 @@ Lee lo que escribiste y planifica el día siguiente:
 Pulsa ~C-x C-s~ para guardar.
 
 Si has modificado varios archivos (manuscrito y cuaderno de diseño), guárdalos todos:
-~C-x s~ (guardar algunos búfers) y pulsa ~y~ para cada uno
+~C-x s~ (guardar algunos búferes) y pulsa ~y~ para cada uno
 
 *** Commit de Git (recomendado)
 

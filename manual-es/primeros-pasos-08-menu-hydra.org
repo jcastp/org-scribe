@@ -15,7 +15,7 @@ A estas alturas has usado el menú Hydra muchas veces a lo largo de las leccione
 En esta lección haremos un recorrido completo por el menú Hydra, el centro de mando de todas las funciones de ~org-scribe~.
 
 Al terminar esta lección habrás:
-- Dominado la apertura y la navegación del menú Hydra
+- Aprendido a abrir y a moverte por el menú Hydra
 - Entendido las seis categorías funcionales
 - Aprendido los atajos de teclado de tus funciones más usadas
 - Descubierto funciones que no sabías que existían
@@ -38,7 +38,7 @@ Al terminar esta lección habrás:
 1. Pulsa ~F8~
 2. Deberías ver aparecer el menú
 
-Si ves el menú, ¡estás listo! Si no, asegúrate de que ~org-scribe-mode~ está activo.
+Si ves el menú, ya puedes continuar. Si no, asegúrate de que ~org-scribe-mode~ está activo.
 
 * Qué es el menú Hydra
 
@@ -52,7 +52,7 @@ Si ves el menú, ¡estás listo! Si no, asegúrate de que ~org-scribe-mode~ est�
 - Buscar por personaje, trama, localización y PoV
 - Gestionar enlaces basados en IDs
 
-*¿Cómo recordar todos esos comandos?*
+*¿Cómo recordar todos esas órdenes?*
 
 ¡No hace falta! El menú Hydra ofrece una interfaz visual y ordenada a todas las funciones.
 
@@ -63,7 +63,7 @@ El menú se llama «Hydra» porque:
 - Activas las funciones con una sola tecla (sin ~M-x~)
 - Las acciones relacionadas están agrupadas
 - Hay submenús para las funciones complejas
-- El menú permanece abierto hasta que sales o ejecutas un comando
+- El menú permanece abierto hasta que sales o ejecutas una orden
 
 *Piensa en él como una barra de herramientas de acceso rápido*, pero manejada con el teclado.
 
@@ -119,7 +119,7 @@ Exploremos cada categoría en detalle.
 
 *Propósito*: añadir contenido nuevo a tu manuscrito
 
-| Tecla | Comando   | Qué hace                                      |
+| Tecla | Orden     | Qué hace                                      |
 |-------+-----------+-----------------------------------------------|
 | ~s~   | Scene     | Inserta una escena nueva con plantilla        |
 | ~c~   | Chapter   | Inserta un capítulo nuevo con plantilla       |
@@ -136,7 +136,7 @@ Exploremos cada categoría en detalle.
 
 *Propósito*: cambiar tu entorno de escritura según la tarea
 
-| Tecla | Comando  | Qué hace                                      |
+| Tecla | Orden    | Qué hace                                      |
 |-------+----------+-----------------------------------------------|
 | ~m~   | Write    | Modo Sin distracciones                        |
 | ~f~   | Focus    | Reduce la vista a la sección actual           |
@@ -151,19 +151,19 @@ Exploremos cada categoría en detalle.
 - Necesitas una vista de esquema → ~v~ (modo Navegación)
 - Terminas con cualquier modo → ~0~ (vuelta a lo normal)
 
-*La más frecuente*: ~m~ (modo de escritura) para la escritura diaria
+*La más frecuente*: ~m~ (modo Sin distracciones) para la escritura diaria
 
-*Consejo*: volver a pulsar la tecla del modo activo (~m~ estando en el modo de escritura) lo desactiva. ~0~ siempre vuelve a lo normal, sea cual sea el modo activo.
+*Consejo*: volver a pulsar la tecla del modo activo (~m~ estando en el modo Sin distracciones) lo desactiva. ~0~ siempre vuelve a lo normal, sea cual sea el modo activo.
 
 ** Columna 3: Tag Scene
 
 *Propósito*: enlazar la escena actual con personajes, localizaciones e hilos de la trama mediante enlaces estables basados en IDs
 
-| Tecla | Comando      | Qué hace                                                       |
+| Tecla | Orden        | Qué hace                                                       |
 |-------+--------------+----------------------------------------------------------------|
 | ~p~   | PoV          | Fija el personaje PoV de esta escena                           |
 | ~h~   | Characters   | Fija todos los personajes presentes en esta escena             |
-| ~l~   | Locations    | Fija la(s) localización(es) de esta escena                     |
+| ~l~   | Locations    | Fija las localizaciones de esta escena                     |
 | ~b~   | Objects      | Fija los objetos presentes en esta escena                      |
 | ~g~   | Plot threads | Fija los hilos de la trama activos en esta escena              |
 | ~G~   | Plot point   | Fija el punto de trama (de los trece) al que sirve esta escena |
@@ -180,7 +180,7 @@ Exploremos cada categoría en detalle.
 
 *Propósito*: utilidades de escritura y herramientas de consulta
 
-| Tecla | Comando     | Qué hace                                                                                       |
+| Tecla | Orden       | Qué hace                                                                                       |
 |-------+-------------+------------------------------------------------------------------------------------------------|
 | ~w~   | Count words | Cuenta palabras de la región o del búfer; ~C-u w~ = actualización completa                     |
 | ~a~   | Update all  | Refresca todas las propiedades =WORDCOUNT= de los encabezados y sincroniza el plan             |
@@ -211,7 +211,7 @@ Exploremos cada categoría en detalle.
 
 *Propósito*: encontrar escenas por propiedades (personaje, trama, localización, PoV)
 
-| Tecla | Comando   | Qué hace                                                    |
+| Tecla | Orden     | Qué hace                                                    |
 |-------+-----------+-------------------------------------------------------------|
 | ~1~   | by PoV    | Encuentra todas las escenas desde el PoV de un personaje    |
 | ~2~   | Character | Encuentra todas las escenas en las que aparece un personaje |
@@ -242,7 +242,7 @@ Exploremos cada categoría en detalle.
 
 *Propósito*: capturar notas, gestionar enlaces, ejecutar revisiones de salud, abrir el planificador
 
-| Tecla | Comando         | Qué hace                                                         |
+| Tecla | Orden           | Qué hace                                                         |
 |-------+-----------------+------------------------------------------------------------------|
 | ~n~   | Capture note    | Nota rápida en el cuaderno de diseño                             |
 | ~k~   | Capture entity… | Abre el submenú de captura (personaje, escenario…)               |
@@ -289,7 +289,7 @@ _q_: Back to main menu            _Q_: Quit
 - ~g~: captura un hilo de la trama
 - ~n~: captura una nota general del proyecto
 - ~q~: vuelve al menú Hydra principal
-- ~Q~: sale del Hydra por completo
+- ~Q~: sale del menú Hydra por completo
 
 *Cuándo usarlo*: a mitad de escritura, cuando inventas un personaje o un lugar nuevo y quieres anotarlo sin perder el hilo.
 
@@ -316,7 +316,7 @@ _q_: Back to main menu    _Q_: Quit
 - ~v~ / ~V~: ver las relaciones (un personaje / todos los personajes, como lista simple / tabla)
 - ~t~ / ~S~: informe de salud de los hilos de la trama / estadísticas
 - ~C~: activa o desactiva la visualización limpia en la vista de columnas de Org (quita la sintaxis =[[id:...]]=)
-- ~T~: activa o desactiva los avisos emergentes de entidad (muestran la información del personaje a continuación del enlace, o en el área de eco según ~org-scribe-overlays-display~, cuando el cursor está sobre un enlace por ID)
+- ~T~: activa o desactiva los descripciones emergentes de entidad (muestran la información del personaje a continuación del enlace, o en el área de eco según ~org-scribe-overlays-display~, cuando el cursor está sobre un enlace por ID)
 - ~q~ / ~Q~: volver al principal / salir
 
 Nota: ya no existe ninguna función de bloque dinámico ni de grafo para las relaciones en Emacs: las relaciones se ven solo con ~v~/~V~ (el dibujo está en la pestaña Relations del companion visual).
@@ -351,13 +351,13 @@ Consulta la [[file:primeros-pasos-16-planificador.org][Lección 16: Planificaci�
 
 * Patrones de uso habituales
 
-Estos son los flujos de trabajo con la Hydra que más usarás.
+Estos son los flujos de trabajo con el menú Hydra que más usarás.
 
 ** Sesión de escritura diaria
 
-1. ~F8 m~: activa el modo de escritura (sin distracciones)
+1. ~F8 m~: activa el modo Sin distracciones (sin distracciones)
 2. Escribe tu escena...
-3. ~F8 m~: sal del modo de escritura (o ~F8 0~)
+3. ~F8 m~: sal del modo Sin distracciones (o ~F8 0~)
 4. ~F8 w~: comprobación rápida del recuento de palabras
 5. ~F8 a~: actualiza todas las propiedades de recuento (sincroniza también el plan)
 
@@ -378,7 +378,7 @@ Estos son los flujos de trabajo con la Hydra que más usarás.
 
 1. ~F8 a~: actualiza todas las propiedades de recuento de palabras de los encabezados
 2. Ve a la tabla de recuento de palabras
-3. ~C-c C-c~: refresca la tabla (comando normal de Org, no de la Hydra)
+3. ~C-c C-c~: refresca la tabla (orden normal de Org, no del menú Hydra)
 
 *Comprobación rápida*: a → navegar → C-c C-c
 
@@ -397,22 +397,22 @@ Estos son los flujos de trabajo con la Hydra que más usarás.
 1. Coloca el cursor sobre la palabra
 2. ~F8 d~: consulta de definición
 3. Lee la definición
-4. O BIEN ~F8 y~: busca sinónimos
+4. O bien ~F8 y~: busca sinónimos
 5. Elige una palabra mejor
 
 *Herramientas de idioma*: d (definición) o y (sinónimos)
 
 * Ejercicio práctico (10 minutos)
 
-Practiquemos el uso de la Hydra de forma sistemática.
+Practiquemos el uso del menú Hydra de forma sistemática.
 
 ** Ejercicio 1: exploración del menú
 
-1. *Abre la Hydra*: ~F8~
+1. *Abre el menú Hydra*: ~F8~
 2. *Mira cada columna*: todavía sin pulsar nada
 3. *Identifica*:
    - ¿Qué tecla inserta una escena? (~s~)
-   - ¿Qué tecla activa el modo de escritura? (~m~)
+   - ¿Qué tecla activa el modo Sin distracciones? (~m~)
    - ¿Qué tecla captura un personaje? (~k~, y luego ~h~)
    - ¿Qué tecla cuenta palabras? (~w~)
    - ¿Qué tecla busca por trama? (~3~)
@@ -421,13 +421,13 @@ Practiquemos el uso de la Hydra de forma sistemática.
 
 ** Ejercicio 2: práctica de navegación
 
-1. *Abre la Hydra*: ~F8~
+1. *Abre el menú Hydra*: ~F8~
 2. *Entra en el submenú de captura*: ~k~
 3. *Mira las opciones*: ¿qué tecla captura un personaje? (~h~)
 4. *Sal del submenú*: ~Q~
-5. *Abre la Hydra*: ~F8~
+5. *Abre el menú Hydra*: ~F8~
 6. *Entra en el submenú de enlaces*: ~L~
-7. *Fíjate en el comando Relink*: ¿qué hace ~R~? (vuelve a enlazar todo el proyecto)
+7. *Fíjate en la orden Relink*: ¿qué hace ~R~? (vuelve a enlazar todo el proyecto)
 8. *Vuelve al principal*: ~q~
 9. *Abre el planificador*: ~F8 W~
 10. *Sal*: ~q~
@@ -445,15 +445,15 @@ Practiquemos el uso de la Hydra de forma sistemática.
 Repite esta secuencia 3 veces sin mirar las notas:
 
 1. ~F8~ (abrir)
-2. ~m~ (modo de escritura)
+2. ~m~ (modo Sin distracciones)
 3. ~F8~ (abrir otra vez)
-4. ~m~ (salir del modo de escritura)
+4. ~m~ (salir del modo Sin distracciones)
 5. ~F8~ (abrir)
 6. ~w~ (contar palabras)
 
 *Objetivo*: que «F8» + una letra te salga con naturalidad
 
-* Personalizar la tecla de la Hydra
+* Personalizar la tecla del menú Hydra
 
 La tecla por defecto es ~F8~, pero puedes cambiarla.
 
@@ -471,9 +471,9 @@ Opciones populares:
 
 | Tecla     | Ventajas                                    | Inconvenientes                     |
 |-----------+---------------------------------------------+------------------------------------|
-| ~F8~      | Por defecto, difícil que entre en conflicto | Una sola tecla                     |
+| ~F8~      | Por defecto, difícil que entre en conflicto | Tecla de función: lejos de la fila de inicio                     |
 | ~C-c w~   | Rápida, una sola combinación                | Puede chocar con Org               |
-| ~C-c C-w~ | Parecida a otros comandos de Org            | Puede chocar                       |
+| ~C-c C-w~ | Parecida a otras órdenes de Org            | Puede chocar                       |
 | ~s-w~     | Tecla Super, difícil que choque             | No todos los teclados tienen Super |
 | ~M-W~     | Rápida, difícil que choque                  | Puede chocar con paquetes          |
 | ~F5~      | Una pulsación, fácil de alcanzar            | A menudo se usa para otras cosas   |
@@ -498,7 +498,7 @@ Añade a tu configuración de Emacs (~init.el~ o ~.emacs~):
 
 *Después de añadirlo*:
 1. Guarda tu configuración
-2. Reinicia Emacs O BIEN
+2. Reinicia Emacs O bien
 3. Evalúa la línea: ~C-x C-e~ al final de la línea
 4. Prueba la nueva tecla
 
@@ -512,7 +512,7 @@ Si dudas, quédate con ~F8~:
 
 ¡Cámbiala solo si tienes un motivo concreto!
 
-* Consejos para dominar la Hydra
+* Consejos para dominar el menú Hydra
 
 ** Reglas mnemotécnicas
 
@@ -532,8 +532,8 @@ Si dudas, quédate con ~F8~:
 - ~W~ → submenú del planificador
 
 *q siempre significa salir o volver*:
-- En un submenú: vuelve a la Hydra principal
-- En la Hydra principal: cierra la Hydra
+- En un submenú: vuelve al menú Hydra principal
+- En el menú Hydra principal: cierra el menú Hydra
 
 ** Aprendizaje visual
 
@@ -564,7 +564,7 @@ o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
 
 ** Errores habituales
 
-1. *Olvidar abrir antes la Hydra*
+1. *Olvidar abrir antes el menú Hydra*
    - Mal: pulsar solo ~m~
    - Bien: ~F8~ y luego ~m~
 
@@ -577,7 +577,7 @@ o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
    - ~k~ = abrir el submenú de captura de entidades (personaje, escenario, etc.)
 
 4. *Esperar que las acciones se repitan*
-   - La Hydra se cierra tras una acción (a propósito)
+   - El menú se cierra tras una acción (a propósito)
    - Vuelve a abrirla para la siguiente: ~F8~
 
 5. *No usar los submenús*
@@ -598,7 +598,7 @@ o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
 ** Descubrir funciones
 
 *Prueba una función nueva por semana*:
-- Semana 1: domina ~m~ (modo de escritura)
+- Semana 1: domina ~m~ (modo Sin distracciones)
 - Semana 2: aprende las teclas de Tag Scene (p, h, l, b, g, G)
 - Semana 3: prueba ~2~ (búsqueda de personaje)
 - Semana 4: explora ~L~ (submenú de enlaces, ejecuta ~R~ para volver a enlazar el proyecto)
@@ -613,7 +613,7 @@ o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
 
 *Posibles causas*:
 1. ~org-scribe-mode~ no está activo
-   - Mira la línea de modo en busca de «Write»
+   - Mira la línea de modo en busca de ~Write~
    - Actívalo: ~M-x org-scribe-mode~
 
 2. La tecla no está asignada
@@ -636,7 +636,7 @@ o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
    - Ejemplo: ~d~ necesita la API de la RAE o un Wikcionario local; ~x~ necesita =powerthesaurus=
 
 3. ¿Estás en el contexto correcto?
-   - Algunas funciones solo funcionan en archivos del manuscrito
+   - Algunas solo sirven en archivos del manuscrito
    - Algunas necesitan el cursor en ciertos tipos de encabezado
 
 ** «El submenú no vuelve al menú principal»
@@ -644,23 +644,23 @@ o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
 *Solución*:
 - Pulsa ~q~ en el submenú para volver
 - Pulsa ~Q~ (Q mayúscula) para salir por completo
-- Si te quedas atascado, pulsa ~C-g~ para abortar la Hydra
+- Si te quedas atascado, pulsa ~C-g~ para abortar el menú Hydra
 
 ** «¡Pulsé la tecla equivocada!»
 
 *Sin pánico*:
-1. Pulsa ~C-g~ para cancelar el comando
-2. Pulsa ~F8~ para volver a abrir la Hydra
+1. Pulsa ~C-g~ para cancelar la orden
+2. Pulsa ~F8~ para volver a abrir el menú Hydra
 3. Pulsa la tecla correcta
 
-*No pasa nada*: ¡la mayoría de los comandos se pueden cancelar sin riesgo!
+*No pasa nada*: la mayoría de las órdenes se pueden cancelar sin riesgo.
 
 ** «El menú se ve descuadrado o desalineado»
 
 *Causas*:
 1. Terminal demasiado estrecha
    - Ensancha la ventana de Emacs
-   - La Hydra necesita unos ~100 caracteres de ancho
+   - El menú Hydra necesita unos ~100 caracteres de ancho
 
 2. Tamaño de fuente demasiado grande
    - Reduce la fuente: ~C-x C--~
@@ -668,7 +668,7 @@ o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
 
 3. Problema de renderizado del tema
    - Prueba otro tema
-   - O ignóralo: ¡la funcionalidad sigue funcionando!
+   - O ignóralo: todo sigue funcionando.
 
 * Lo que has aprendido
 
@@ -681,13 +681,13 @@ o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
 ✓ Cómo navegar por los submenús (Capture, Links & upkeep, Planner)
 ✓ Patrones de uso y flujos de trabajo habituales
 ✓ Atajos de teclado para las acciones frecuentes
-✓ Cómo personalizar la tecla de la Hydra
+✓ Cómo personalizar la tecla del menú Hydra
 ✓ Consejos para memorizar la estructura del menú
 ✓ Cómo resolver problemas del menú
 
 * Próximos pasos
 
-¡Has completado la Parte 3 (Navegar y buscar)! A continuación: [[file:primeros-pasos-09-modos-escritura.org][Lección 9: Los modos de escritura en profundidad]]
+¡Has completado la Parte 3 (Moverte y buscar)! A continuación: [[file:primeros-pasos-09-modos-escritura.org][Lección 9: Los modos de escritura en profundidad]]
 
 En la próxima lección aprenderás:
 - Todos los modos de escritura en detalle
@@ -698,7 +698,7 @@ En la próxima lección aprenderás:
 
 ** Práctica antes de seguir
 
-Refuerza tus habilidades con la Hydra:
+Refuerza tus habilidades con el menú Hydra:
 
 1. *Memoriza las seis columnas*
    - Insert, Workspace, Tag Scene, Tools, Search, Manage
@@ -706,7 +706,7 @@ Refuerza tus habilidades con la Hydra:
 
 2. *Practica tu flujo de trabajo diario*
    - F8 s (escena)
-   - F8 m (modo de escritura)
+   - F8 m (modo Sin distracciones)
    - Escribe 100 palabras
    - F8 m (salir)
    - F8 w (contar)
@@ -714,7 +714,7 @@ Refuerza tus habilidades con la Hydra:
 
 3. *Explora los submenús*
    - Visita los tres submenús (k, L, W)
-   - Prueba al menos un comando de cada uno
+   - Prueba al menos una orden de cada uno
    - Vuelve al menú principal con q
 
 4. *Prueba las funciones de búsqueda*
@@ -727,13 +727,13 @@ Refuerza tus habilidades con la Hydra:
    - Prueba a capturar un personaje (h) o una nota (n)
    - Rellena la plantilla y complétala
 
-¡Tómate tu tiempo! El menú Hydra es tu interfaz principal con ~org-scribe~: dominarlo hace más fácil todo lo demás.
+Tómate tu tiempo. El menú Hydra es tu interfaz principal con ~org-scribe~: dominarlo hace más fácil todo lo demás.
 
 * Referencia rápida
 
 ** Órdenes esenciales del menú Hydra
 
-| Categoría | Tecla | Comando              | Frecuencia    |
+| Categoría | Tecla | Orden                | Frecuencia    |
 |-----------+-------+----------------------+---------------|
 | Insert    | ~s~   | Insertar escena      | Diaria        |
 | Insert    | ~c~   | Insertar capítulo    | Semanal       |
@@ -752,7 +752,7 @@ Refuerza tus habilidades con la Hydra:
 
 *** Captura de entidades (~F8 k~)
 
-| Tecla | Comando        | Úsalo cuando                                |
+| Tecla | Orden          | Para qué                                    |
 |-------+----------------+---------------------------------------------|
 | ~h~   | Character      | Inventas un personaje nuevo                 |
 | ~l~   | Location       | Añades una localización nueva               |
@@ -763,7 +763,7 @@ Refuerza tus habilidades con la Hydra:
 
 *** Enlaces y mantenimiento (~F8 L~)
 
-| Tecla | Comando             | Úsalo cuando                                             |
+| Tecla | Orden               | Para qué                                                 |
 |-------+---------------------+----------------------------------------------------------|
 | ~R~   | Relink project      | Actualizas por lotes todos los enlaces e IDs             |
 | ~j~   | Jump to plot thread | Navegas a la ficha de un hilo de la trama                |
@@ -776,7 +776,7 @@ Refuerza tus habilidades con la Hydra:
 
 *** Planificador (~F8 W~)
 
-| Tecla | Comando           | Úsalo cuando                                            |
+| Tecla | Orden             | Para qué                                                |
 |-------+-------------------+---------------------------------------------------------|
 | ~p~   | Open project plan | Empiezas o continúas una sesión de planificación diaria |
 | ~u~   | Sync word count   | Envías a mano el total actual al plan                   |
