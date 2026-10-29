@@ -773,7 +773,7 @@ initial commit came before the offer, so the new repository was dirty."
           (test-project--kill-file-buffer (expand-file-name "novel.org" project-dir)))))))
 
 (ert-deftest test-open-project-file-prompt-default-and-match ()
-  "F8 F8 o prompts from the pack, defaults to the manuscript (the notebook
+  "F8 o prompts from the pack, defaults to the manuscript (the notebook
 from the manuscript), requires a match, and opens nothing on an empty
 answer.  It used a literal English prompt with no default and no match,
 so RET opened the project root in Dired."

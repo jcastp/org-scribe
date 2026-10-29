@@ -6,14 +6,14 @@
 
 ;; The shipped templates are the writer's first and most-read
 ;; documentation, and they used to be wrong about the UI: `design.org' told
-;; the writer the edit index was `F8 F8 e' (it is `F8 F8 6'), `plot.org'
-;; told them to add narrative lines with `F8 F8 p' (that sets PoV; capture
-;; is `F8 F8 k g'), and `novel.org' still referenced the removed
+;; the writer the edit index was `F8 e' (it is `F8 6'), `plot.org'
+;; told them to add narrative lines with `F8 p' (that sets PoV; capture
+;; is `F8 k g'), and `novel.org' still referenced the removed
 ;; `org-scribe/plot-thread-report' slash name.  A new writer who follows
 ;; these gets the wrong command or an error and concludes the package is
 ;; broken.
 ;;
-;; This file greps every shipped `.template' for `F8 F8 <key>' sequences
+;; This file greps every shipped `.template' for `F8 <key>' sequences
 ;; and `org-scribe[-/]...' command references, and checks each one against
 ;; the real hydra heads (recursing into submenus such as
 ;; `hydra-org-scribe-capture/body') and `fboundp'.  A stale reference fails
@@ -39,7 +39,7 @@
   "Template directories to scan, relative to `org-scribe-templates/'.
 Includes the plotting-method overlay directories (see
 `org-scribe--methods', core/org-scribe-core.el) alongside the base
-novel/short-story sets, so an `F8 F8 ...' sequence or `org-scribe-...'
+novel/short-story sets, so an `F8 ...' sequence or `org-scribe-...'
 command cited in one of their design files is checked exactly like every
 other template's.")
 
@@ -79,10 +79,10 @@ submenus as needed."
       t)))
 
 (defun org-scribe-refs--find-key-sequences (text)
-  "Return the list of `F8 F8 ...' key sequences (each a list of keys) in TEXT."
+  "Return the list of `F8 ...' key sequences (each a list of keys) in TEXT."
   (let (matches (start 0))
     (while (string-match
-            "F8 F8 \\([A-Za-z0-9]\\)\\_>\\(?:[ \t]+\\([A-Za-z0-9]\\)\\_>\\)?"
+            "F8 \\([A-Za-z0-9]\\)\\_>\\(?:[ \t]+\\([A-Za-z0-9]\\)\\_>\\)?"
             text start)
       (push (delq nil (list (match-string 1 text) (match-string 2 text)))
             matches)
@@ -101,9 +101,9 @@ offender rather than silently skipped."
     (nreverse matches)))
 
 (ert-deftest test-template-references-key-sequences-are-real ()
-  "Every `F8 F8 ...' sequence in a shipped template resolves against the
+  "Every `F8 ...' sequence in a shipped template resolves against the
 live hydra, including two-key sequences through a submenu such as
-`F8 F8 k g'."
+`F8 k g'."
   (let (offenders)
     (dolist (file (org-scribe-refs--templates))
       (with-temp-buffer

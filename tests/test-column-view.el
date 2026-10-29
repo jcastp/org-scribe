@@ -171,7 +171,7 @@ internal \"Cache must be active\"."
     (should-error (org-scribe-column-view) :type 'user-error)))
 
 (ert-deftest test-column-view-hydra-key-opens-column-view ()
-  "F8 F8 L C runs `org-scribe-column-view', not the toggle."
+  "F8 L C runs `org-scribe-column-view', not the toggle."
   (require 'org-scribe-hydra)
   (should (eq 'org-scribe-column-view
               (cadr (assoc "C" hydra-org-scribe-links/heads)))))

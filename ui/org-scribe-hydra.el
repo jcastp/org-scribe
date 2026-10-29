@@ -11,7 +11,7 @@
 ;; The menu is organised in two tiers so the day-to-day writing surface
 ;; stays small:
 ;;
-;;   `hydra-org-scribe/body' (F8 F8) — the main menu.  Holds only frequent
+;;   `hydra-org-scribe/body' (F8) — the main menu.  Holds only frequent
 ;;   actions: insert, writing modes, *tagging the current scene* with
 ;;   characters/locations/plot (the everyday linking verbs), word counting,
 ;;   search, capture-note, and health.

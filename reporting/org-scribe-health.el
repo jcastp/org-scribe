@@ -682,7 +682,7 @@ with clickable ID links back to each scene."
           (when word-target
             (insert (format "- %s\n" (org-scribe-msg 'msg-health-word-target word-target)))
             ;; Reported, not resolved: the parts and the target are the
-            ;; writer's to reconcile (F8 F8 t)
+            ;; writer's to reconcile (F8 t)
             (when (and (> total-obj 0) (/= total-obj word-target))
               (insert (format "- %s\n" (org-scribe-msg 'msg-health-word-target-drift
                                                          total-obj word-target))))))

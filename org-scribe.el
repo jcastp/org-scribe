@@ -161,7 +161,7 @@ where org-scribe-mode is never turned on never pay the cost of running
 project detection on every save (L3)."
   :lighter " Write"
   :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "<f8> <f8>") 'hydra-org-scribe/body)
+            (define-key map (kbd "<f8>") 'hydra-org-scribe/body)
             (define-key map (kbd "C-c W") 'org-scribe-capture-to-file)
             map)
   :group 'org-scribe
@@ -223,7 +223,7 @@ recommended keybindings and hooks."
      (org            . "Org mode (built in)")
      (org-ql         . "Searches: find scenes by PoV / character / plot / location")
      (writeroom-mode . "Distraction-free writing workspaces")
-     (hydra          . "The F8 F8 command menu"))
+     (hydra          . "The F8 command menu"))
     (:recommended
      (org-context-extended . "Accurate word counts that exclude Org metadata"))
     (:optional
@@ -314,7 +314,7 @@ companion module."
                   (if (and (featurep 'org-scribe-companion)
                            (org-scribe-companion-server-running-p))
                       "X" " ")
-                  "running now (F8 F8 B opens it; F8 F8 B again after stopping restarts it)")))
+                  "running now (F8 B opens it; F8 B again after stopping restarts it)")))
 
 (provide 'org-scribe)
 
