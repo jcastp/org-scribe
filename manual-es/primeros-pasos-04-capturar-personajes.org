@@ -37,7 +37,7 @@ Piensa en tu personaje principal:
 - ¿Qué papel juega? (protagonista, antagonista, secundario)
 - ¿Qué quiere?
 
-Todavía no necesitas todos los detalles: ¡los iremos desarrollando juntos!
+Todavía no necesitas todos los detalles: los iremos desarrollando juntos.
 
 * Por qué importan las fichas de personaje
 
@@ -128,7 +128,7 @@ O usa ~C-x C-f~ y navega a mano.
 
 * Capturar tu primer personaje
 
-¡Vamos a crear una ficha de personaje con la plantilla de captura!
+Vamos a crear una ficha de personaje con la plantilla de captura.
 
 ** Paso 1: Activar la captura de personaje
 
@@ -289,7 +289,7 @@ Este identificador único se *crea automáticamente* y es la clave del sistema d
 - Permite buscar y navegar
 - No cambia nunca, aunque renombres al personaje
 
-*Importante*: ¡no lo borres ni lo modifiques! Lo ha generado el sistema por ti.
+*Importante*: no lo borres ni lo modifiques. Lo ha generado el sistema por ti.
 
 *** ~:Role:~: la función del personaje
 
@@ -346,7 +346,7 @@ La plantilla rellenó estas con tus respuestas:
 - ~:Occupation:~: a qué se dedica
 - ~:First-appearance:~: cuándo aparece
 
-~:RelationshipsData:~ la gestionan por ti los comandos de relaciones (se
+~:RelationshipsData:~ la gestionan por ti las órdenes de relaciones (se
 explican más adelante en esta lección): no la edites a mano.
 
 El resto puedes editarlo cuando quieras.
@@ -366,8 +366,8 @@ informe de salud.
 *** Opcional: ~:Weight: -1~ para dejar a un personaje fuera de la cronología
 
 Una novela acumula papeles de relleno: el posadero con dos frases, el sargento
-de la mesa, el perro del vecino. Es muy posible que quieras una entrada de
-archivo para cada uno, para no confundir sus nombres, y sin embargo no quieras
+de la mesa, el perro del vecino. Es muy posible que quieras una ficha
+para cada uno, para no confundir sus nombres, y sin embargo no quieras
 una columna para cada uno en la cronología, donde treinta columnas casi vacías
 entierran las diez que importan.
 
@@ -401,7 +401,7 @@ Para ver la tabla completa una vez sin editar ninguna propiedad, añade
 ,#+END:
 #+END_EXAMPLE
 
-La misma convención sirve para los hilos de la trama; ver la lección 6.
+La misma convención sirve para los hilos de la trama; ver la Lección 6.
 
 *** Una nota sobre ~:Gender:~
 
@@ -602,7 +602,7 @@ añádela a mano a un personaje capturado.)
 2. *¿Qué hace cuando está solo y nadie lo ve?*: ese es el yo verdadero.
 3. *¿En qué se equivoca?*: la Mentira en acción.
 4. *¿Por qué moriría?*: el núcleo moral.
-5. *Escríbele una escena trivial.*: pedir una bebida, lidiar con una molestia
+5. *Escríbele una escena trivial*: pedir una bebida, lidiar con una molestia
    menor. Si te sale genérica, todavía no lo conoces.
 
 La pregunta 5 es la prueba honesta de toda la ficha.
@@ -633,9 +633,9 @@ Diseña la secuencia hacia atrás, desde la transformación final.
 
 ** Relaciones
 
-No hay una sección de «Relaciones» en texto libre en la ficha: las relaciones se
+La ficha no lleva una sección de relaciones en texto libre: las relaciones se
 siguen de forma estructurada en la propiedad ~:RelationshipsData:~, que
-gestionan los comandos de relaciones que se explican más adelante en esta
+gestionan las órdenes de relaciones que se explican más adelante en esta
 lección. Te dan una lista por personaje y una tabla de todo el proyecto, y
 sobreviven al cambio de nombre, cosa que el texto libre no hace.
 
@@ -666,7 +666,7 @@ Tus notas personales:
 
 * Rellenar la ficha de tu personaje
 
-¡No tienes que rellenarlo todo de golpe!
+No tienes que rellenarlo todo de golpe.
 
 ** Ficha mínima (5 minutos)
 
@@ -677,15 +677,15 @@ Lo imprescindible:
 - Fantasma y Mentira (qué le hirió y qué concluyó de ello)
 - Meta (lo que quiere, concreto y externo)
 
-¡Con esto basta para empezar a escribir!
+Con esto basta para empezar a escribir.
 
 ** Ficha completa (20-30 minutos)
 
-Rellena todas las secciones cuando:
-- Estés planificando antes de escribir
-- Desarrolles personajes complejos
-- Durante la revisión (para entender mejor a los personajes)
-- Solo para los personajes principales (el reparto secundario puede tener fichas mínimas)
+Rellena todas las secciones:
+- Al planificar antes de escribir
+- Al desarrollar personajes complejos
+- Durante la revisión, para entender mejor a los personajes
+- Solo con los personajes principales (el reparto secundario puede tener fichas mínimas)
 
 ** Enfoque práctico
 
@@ -693,11 +693,11 @@ Rellena todas las secciones cuando:
 2. *Mientras escribes*: añade detalles según vayan surgiendo
 3. *Durante la revisión*: rellena huecos, asegura la coherencia
 
-¡La ficha crece con tu comprensión del personaje!
+La ficha crece con tu comprensión del personaje.
 
 * El sistema de enlaces basado en IDs
 
-Ahora viene la parte realmente buena: ¡enlazar personajes con escenas!
+Ahora viene la parte realmente buena: enlazar personajes con escenas.
 
 ** Qué es el enlace basado en IDs
 
@@ -743,11 +743,11 @@ Obtienes enlaces por ID en los que se puede hacer clic:
 3. *A prueba de cambios de nombre*: cambia «Alex» por «Alexander» en la ficha y todos los enlaces siguen funcionando
 4. *Búsquedas inteligentes*: encuentra todas las escenas con un personaje, sea cual sea el formato del enlace
 5. *Generación de cronologías*: seguimiento automático de las apariciones de los personajes
-6. *Coherencia*: ¡no puedes escribirlo mal si lo eliges en un menú!
+6. *Coherencia*: no puedes escribirlo mal si lo eliges en un menú.
 
 * Fijar los personajes PoV (la forma fácil)
 
-¡En lugar de escribir nombres de personajes, usa el sistema de menús!
+En lugar de escribir nombres de personajes, usa el sistema de menús.
 
 ** Paso 1: Colócate en tu escena
 
@@ -769,7 +769,7 @@ Seleccionar personaje PoV: [Alex Rivera] [Sam Chen] [Jordan Lee]
 
 Empieza a escribir el nombre (por ejemplo, «Alex») y pulsa Tab o Intro para elegirlo.
 
-*¡Magia!* La propiedad ~:PoV:~ queda ahora así, y el mensaje «PoV establecido en Alex Rivera» te lo confirma:
+*¡Magia!* La propiedad ~:PoV:~ queda ahora así, y el mensaje ~PoV establecido en Alex Rivera~ te lo confirma:
 #+BEGIN_EXAMPLE
 :PoV: [[id:char-alex-rivera-001][Alex Rivera]]
 #+END_EXAMPLE
@@ -800,7 +800,7 @@ La propiedad ~:Personajes:~ tiene ahora enlaces por ID separados por comas:
 :Personajes: [[id:char-alex-rivera-001][Alex Rivera]], [[id:char-sam-chen-002][Sam Chen]]
 #+END_EXAMPLE
 
-*¡Precioso!* Todos los personajes enlazados con un solo comando.
+*¡Precioso!* Todos los personajes enlazados con una sola orden.
 
 * Saltar a las fichas de personaje
 
@@ -822,13 +822,13 @@ La propiedad ~:Personajes:~ tiene ahora enlaces por ID separados por comas:
 
 Después de consultar la información del personaje:
 1. Pulsa ~C-c &~ (org-mark-ring-goto)
-2. ¡Vuelves a tu escena!
+2. Vuelves a tu escena
 
 *Flujo de trabajo*: escribes una escena → necesitas comprobar el color de ojos → ~C-c C-o~ → ves la ficha → ~C-c &~ → de vuelta a escribir. ¡Tres segundos!
 
 * Buscar las apariciones de un personaje
 
-¡Encuentra todas las escenas en las que aparece un personaje concreto!
+Encuentra todas las escenas en las que aparece un personaje concreto.
 
 ** Paso 1: Abrir el menú de búsqueda
 
@@ -892,7 +892,7 @@ Se abre un búfer que muestra todas las escenas en las que aparece Alex (ya sea 
 
 * Visualización de la cronología de personajes
 
-¡Mira de un vistazo qué personajes aparecen en qué escenas!
+Mira de un vistazo qué personajes aparecen en qué escenas.
 
 ** Qué es una cronología de personajes
 
@@ -938,7 +938,7 @@ Verás:
 
 1. Pon el cursor sobre la línea ~#+BEGIN: character-timeline~
 2. Pulsa ~C-c C-c~
-3. ¡La tabla se genera sola!
+3. La tabla se genera sola
 
 ** Usar la cronología
 
@@ -974,7 +974,7 @@ Estos datos estructurados permiten:
 Para proyectos existentes con personajes:
 1. ~F8 L r~ (o ~M-x org-scribe-setup-character-relationships~)
 2. Añade la propiedad ~:RelationshipsData:~ a todos los personajes
-3. ¡Listo para añadir relaciones!
+3. Ya puedes añadir relaciones
 
 Verás un mensaje como «Propiedad RelationshipsData añadida a 3 personajes».
 
@@ -988,13 +988,13 @@ Verás un mensaje como «Propiedad RelationshipsData añadida a 3 personajes».
 2. *Personaje de destino*: «Sam Chen»
 3. *Tipo de relación*: «mentor» (de una lista de tipos habituales, o escribe el tuyo)
 
-*Resultado*: «Relación de tipo mentor añadida: Alex Rivera → Sam Chen»
+*Resultado*: ~Relación de tipo mentor añadida: Alex Rivera → Sam Chen~
 
 La relación se guarda en la propiedad ~:RelationshipsData:~ de Alex (este
 nombre de propiedad es el mismo en todos los proyectos, también en los de
 español):
 #+BEGIN_EXAMPLE
-:RelationshipsData: [[id:char-sam-002][Sam Chen]]|mentor
+:RelationshipsData: [[id:char-sam-chen-002][Sam Chen]]|mentor
 #+END_EXAMPLE
 
 ** Tipos de relación habituales
@@ -1074,7 +1074,7 @@ Usa las relaciones para seguir cómo cambian los vínculos a lo largo de la hist
 
 1. Elige el personaje que vas a modificar
 2. Elige de la lista qué relación quitar
-3. ¡Confirmado! (el mensaje es del estilo «Relación de mentor eliminada: Alex Rivera»)
+3. ¡Confirmado! (el mensaje es del estilo ~Relación de mentor eliminada: Alex Rivera~)
 
 ** Datos de relaciones en las propiedades del personaje
 
@@ -1084,7 +1084,7 @@ Las relaciones se guardan en la propiedad ~:RelationshipsData:~ con este formato
 ,* Alex Rivera
 :PROPERTIES:
 :ID: char-alicia-001
-:RelationshipsData: [[id:char-sam-002][Sam]]|mentor; [[id:char-jordan-003][Jordan]]|rival
+:RelationshipsData: [[id:char-sam-chen-002][Sam]]|mentor; [[id:char-jordan-lee-003][Jordan]]|rival
 :END:
 #+END_EXAMPLE
 
@@ -1097,7 +1097,7 @@ Las relaciones se guardan en la propiedad ~:RelationshipsData:~ con este formato
 
 ** Ejercicio: construir una red de relaciones
 
-¡Practiquemos con los tres personajes del ejercicio anterior!
+Practiquemos con los tres personajes del ejercicio anterior.
 
 *** Parte 1: añadir relaciones (5 minutos)
 
@@ -1109,7 +1109,7 @@ Las relaciones se guardan en la propiedad ~:RelationshipsData:~ con este formato
 2. Añade la relación inversa (cómo ve el personaje secundario al protagonista)
    - Origen: el personaje secundario
    - Destino: el protagonista
-   - ¡Un tipo distinto está bien! (por ejemplo, protagonista → «mentor», personaje secundario → «aprendiz»)
+   - Un tipo distinto está bien (por ejemplo, protagonista → «mentor», personaje secundario → «aprendiz»).
 
 3. Añade una relación entre el personaje secundario y el menor
    - A tu elección: ¿cómo se relacionan?
@@ -1118,7 +1118,7 @@ Las relaciones se guardan en la propiedad ~:RelationshipsData:~ con este formato
 
 1. ~F8 L v~ (ver un solo personaje)
    - Elige a tu protagonista
-   - ¡Mira su lista de relaciones!
+   - Mira su lista de relaciones
 
 2. ~F8 L V~ (ver todas las relaciones)
    - Mira la tabla completa
@@ -1126,7 +1126,7 @@ Las relaciones se guardan en la propiedad ~:RelationshipsData:~ con este formato
 
 * Ejercicio práctico (20 minutos)
 
-¡Practiquemos el flujo de trabajo completo con personajes!
+Practiquemos el flujo de trabajo completo con personajes.
 
 ** Ejercicio: crear tres personajes y enlazarlos
 
@@ -1170,12 +1170,12 @@ Las relaciones se guardan en la propiedad ~:RelationshipsData:~ con este formato
 2. *Buscar un personaje*:
    - ~F8 2~ (buscar por personaje)
    - Escribe el nombre del protagonista
-   - ¡Mira todas sus escenas!
+   - Mira todas sus escenas
 
 3. *Generar la cronología*:
    - Busca la sección de la cronología de personajes
    - ~C-c C-c~ sobre el bloque
-   - ¡Mira tus apariciones de personajes visualizadas!
+   - Mira tus apariciones de personajes visualizadas
 
 * Integrar los personajes en tu flujo de trabajo diario
 
@@ -1192,8 +1192,8 @@ Cómo usar las funciones de personajes mientras escribes:
 ** Mientras escribes el borrador
 
 1. Inserta una escena (~F8 s~)
-2. Fija el PoV (~F8 p~): ¡selección rápida en el menú!
-3. Fija los personajes (~F8 h~): ¡selección múltiple!
+2. Fija el PoV (~F8 p~): selección rápida en el menú
+3. Fija los personajes (~F8 h~): selección múltiple
 4. Escribe la escena
 5. Salta a la ficha si hace falta (~C-c C-o~)
 6. Vuelve y sigue escribiendo (~C-c &~)
@@ -1228,7 +1228,7 @@ Cómo usar las funciones de personajes mientras escribes:
 - ~F8 R~ (volver a enlazar el proyecto) enlaza todas las escenas automáticamente
 - Recorre tu manuscrito en busca de nombres de personajes
 - Convierte el texto plano en enlaces por ID
-- Un solo comando, todo el manuscrito actualizado
+- Una sola orden, todo el manuscrito actualizado
 
 ** «¿Y si cambio el nombre de un personaje?»
 
@@ -1257,17 +1257,17 @@ Basta con fijar ~:PoV:~ en quien tenga la perspectiva en cada escena.
 
 *Estrategias*:
 
-1. Usa un marcador: «Desconocido misterioso», «El detective»
+1. Usa una descripción: «Desconocido misterioso», «El detective»
 2. Usa el papel: «Oponente», «Falso aliado»
-3. Usa un nombre provisional: «Bob» (cámbialo luego)
+3. Usa un nombre provisional: «Pepe» (cámbialo luego)
 4. Crea la ficha cuando sepas el nombre
 
-¡El sistema de enlaces funciona igual!
+El sistema de enlaces funciona igual.
 
 ** «¡La lista de personajes del menú está vacía!»
 
 *Causas*:
-1. Todavía no has capturado ningún personaje (¡crea uno!)
+1. Todavía no has capturado ningún personaje (crea uno)
 2. Los personajes no tienen IDs (ejecuta ~F8 R~ para añadirlos)
 3. Tienes abierto el archivo equivocado (debes estar en un proyecto de escritura)
 
@@ -1348,7 +1348,7 @@ Basta con fijar ~:PoV:~ en quien tenga la perspectiva en cada escena.
 
 * Próximos pasos
 
-¿Listo para construir el mundo de tu historia? ¡Pasa a la [[file:primeros-pasos-05-lugares-ambientacion.org][Lección 5: Escenarios y ambientación]]!
+¿Quieres construir el mundo de tu historia? Pasa a la [[file:primeros-pasos-05-lugares-ambientacion.org][Lección 5: Escenarios y ambientación]].
 
 En la próxima lección aprenderás:
 - A crear fichas detalladas de escenarios

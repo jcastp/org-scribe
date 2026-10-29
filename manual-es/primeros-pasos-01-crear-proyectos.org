@@ -375,7 +375,7 @@ primer nivel:
 | Reparto       | Las fichas de personaje                                                                               |
 | Mundo         | Ambientaciones (cada una con su Eco y su Escollo), la construcción del mundo, objetos, línea temporal |
 | Investigación | Temas de investigación, material de referencia, verificación de hechos                                |
-| Revisión      | Los pases de revisión                                                                                 |
+| Revisión      | Las pasadas de revisión                                                                                 |
 | Diario        | Un diario para reflexionar sobre tu proceso de escritura                                              |
 | Borradores    | Un lugar libre para borradores e ideas                                                                |
 

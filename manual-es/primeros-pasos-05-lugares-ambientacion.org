@@ -184,7 +184,7 @@ generado por Org)
 
 *Propósito*: permite enlaces en los que se puede hacer clic desde las escenas hasta las fichas de escenario.
 
-*No lo fijas tú*: ¡es automático!
+*No lo fijas tú*: es automático.
 
 ** ~:Type:~
 
@@ -275,12 +275,13 @@ escena ambientada aquí podría ocurrir en cualquier otro sitio sin perder nada.
 *Cómo este lugar empeora el Problema del Mundo.*
 
 El Problema del Mundo es la presión que el mundo ejerce sobre todos los que
-viven en él, y también está anotado en ~diseno.org~. El Escollo (Hazard, en la
-propiedad y en el método) es la aportación de este lugar: lo que hace más
+viven en él, y también está anotado en ~diseno.org~. El Escollo
+(/Hazard/ en los proyectos en inglés)
+es la aportación de este lugar: lo que hace más
 difícil, más arriesgado o más caro.
 
 El Escollo es lo que genera escenas. Un lugar con un Escollo de verdad produce
-conflicto por sí solo, sin que tengas que organizar que alguien entre con una
+conflicto por sí solo, sin que tengas que hacer entrar a alguien con una
 pistola.
 
 *Ejemplos*:
@@ -307,7 +308,7 @@ suele ser donde está la escena.
 
 ** Símbolo
 
-*El objeto o detalle que carga la escena.*
+*El objeto o detalle que sostiene la escena.*
 
 Una cosa concreta que el lector pueda ver. No un ánimo: un sustantivo. Te da
 algo a lo que volver, y lleva el Eco sin que nadie tenga que enunciarlo.
@@ -334,7 +335,7 @@ algo a lo que volver, y lleva el Eco sin que nadie tenga que enunciarlo.
 - Símbolo :: La pizarra con los nombres de los habituales.
 #+END_EXAMPLE
 
-Fíjate en cuánto más estrecho es esto que «una cafetería bohemia y acogedora».
+Fíjate en cuánto más preciso es esto que «una cafetería bohemia y acogedora».
 El Eco compromete el lugar con el argumento del libro, el Escollo garantiza que
 el lugar genere problemas, y el Símbolo da a cada escena ambientada aquí algo a
 lo que señalar.
@@ -371,7 +372,7 @@ estanterías del suelo al techo: los clientes dejan libros, se llevan libros.
 Grandes ventanales a la calle: inundados de luz por la mañana, en penumbra a
 media tarde.
 
-La máquina de espresso domina la barra, cromo y cobre, siempre sisando. Café
+La máquina de espresso domina la barra, cromo y cobre, siempre siseando. Café
 recién molido, canela de la vitrina de bollería, abrigos mojados cuando llueve.
 Música indie baja, tintineo de cerámica, la campanilla de la puerta.
 
@@ -466,7 +467,7 @@ deja vacío para que lo rellenes después de escribir el Aspecto Eco en el cuerp
 ** Paso 4: Rellenar los Aspectos
 
 El cursor queda en la sección *Descripción*, pero haz primero los cuatro
-Aspectos: de ellos cuelga todo lo demás:
+Aspectos, porque de ellos cuelga todo lo demás:
 
 #+BEGIN_EXAMPLE
 - Eco :: Aquí todos pertenecen, mientras sigan consumiendo algo.
@@ -519,7 +520,7 @@ Si prefieres escribir:
 2. Busca o añade: ~:Localizacion:~
 3. Escribe: ~[[id:id-de-la-localizacion][Nombre del escenario]]~
 
-Esto exige conocer el ID del escenario. ¡El método del menú es más fácil!
+Esto exige conocer el ID del escenario. El método del menú es más fácil.
 
 ** Ejemplo
 
@@ -554,7 +555,7 @@ Cuando estés en una escena con un escenario enlazado:
 1. Mueve el cursor a la línea de la propiedad ~:Localizacion:~
 2. Pulsa: ~C-c C-o~ (org-open-at-point)
 
-¡Saltas a la ficha completa del escenario! (A diferencia de los personajes PoV y los hilos de la trama, no hay una tecla del menú Hydra dedicada para saltar a un escenario: el modo de hacerlo es seguir el enlace con Org.)
+Saltas a la ficha completa del escenario. (A diferencia de los personajes PoV y los hilos de la trama, no hay una tecla del menú Hydra dedicada para saltar a un escenario: el modo de hacerlo es seguir el enlace con Org.)
 
 ** Volver a la escena
 
@@ -664,7 +665,7 @@ Menores:
 - Galería de arte: 1 escena ✓
 - Bar de la azotea: 1 escena ✓
 
-Acción: ¡escribir las próximas 3 escenas fuera del piso de Alex!
+Acción: escribir las próximas 3 escenas fuera del piso de Alex.
 #+END_EXAMPLE
 
 * Convertir escenas existentes
@@ -674,7 +675,7 @@ Acción: ¡escribir las próximas 3 escenas fuera del piso de Alex!
 ** Convertir una escena
 
 1. Ve a la escena con el escenario en texto plano
-2. Ejecuta: ~M-x org-scribe-link-scene-locations~ (no está enlazado directamente en el menú Hydra)
+2. Ejecuta: ~M-x org-scribe-link-scene-locations~ (no tiene tecla en el menú Hydra)
 
 Esto busca el nombre del escenario en tus fichas y lo sustituye por un enlace por ID.
 
@@ -686,7 +687,7 @@ Si quieres convertir específicamente solo las localizaciones, ejecuta directame
 
 Esto procesa todo tu manuscrito, convirtiendo en enlaces por ID todos los nombres de escenario que coinciden.
 
-*Advertencia*: ¡revisa los resultados! Los nombres ambiguos pueden coincidir de forma incorrecta.
+*Advertencia*: revisa los resultados. Los nombres ambiguos pueden coincidir de forma incorrecta.
 
 * Ejercicio práctico (15 minutos)
 
@@ -737,8 +738,8 @@ Practiquemos la gestión de escenarios de principio a fin.
 *** Probar la navegación:
 1. En una escena con un escenario enlazado
 2. Pulsa ~C-c C-o~ sobre la propiedad de escenario
-3. Saltas a la ficha del escenario → ¡éxito!
-4. Pulsa ~C-c &~ para volver → ¡éxito!
+3. Saltas a la ficha del escenario → éxito
+4. Pulsa ~C-c &~ para volver → éxito
 
 *** Probar la búsqueda:
 1. Pulsa ~F8 4~
@@ -938,7 +939,7 @@ No hay una tecla dedicada para «saltar al escenario»: seguir el enlace de esce
 | ~Eco ::~                 | Cómo el lugar refleja el Tema                                     |
 | ~Escollo ::~             | Cómo empeora el Problema del Mundo                                |
 | ~Personaje ::~           | Un Aspecto de personaje que activa                                |
-| ~Símbolo ::~             | El detalle concreto que carga la escena                           |
+| ~Símbolo ::~             | El detalle concreto que sostiene la escena                           |
 | Descripción              | Lo que un focalizador vería, oiría y olería                       |
 | Escenas que ocurren aquí | Notas que la búsqueda por escenario no puede derivar              |
 | Notas                    | Continuidad y recordatorios del escritor                          |
@@ -968,9 +969,9 @@ Un escenario usado una vez, con un Eco y nada más, está perfectamente terminad
 
 ** Órdenes habituales
 
-| Comando                               | Qué hace                                                                                                                                                                                             |
+| Orden                                 | Qué hace                                                                                                                                                                                             |
 |---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ~org-scribe-capture-location~         | Captura una ficha de localización nueva                                                                                                                                                              |
+| ~org-scribe-capture-location~         | Captura una ficha de escenario nueva                                                                                                                                                              |
 | ~org-scribe-set-scene-locations~      | Fija la localización con el menú                                                                                                                                                                     |
 | ~org-scribe-link-scene-locations~     | Enlaza la localización de la escena actual                                                                                                                                                           |
 | ~org-scribe-link-all-scene-locations~ | Enlaza por lotes todas las escenas                                                                                                                                                                   |
@@ -1095,7 +1096,7 @@ Cuando ocurra, sube de nivel el escenario:
 
 * Próximos pasos
 
-Ya estás listo para la [[file:primeros-pasos-06-hilos-trama.org][Lección 6: Hilos de la trama y cronología]].
+Ya puedes pasar a la [[file:primeros-pasos-06-hilos-trama.org][Lección 6: Hilos de la trama y cronología]].
 
 En la próxima lección aprenderás:
 - A crear fichas de hilos de la trama
@@ -1120,7 +1121,7 @@ Antes de la Lección 6, prueba esto:
    - Identifica tu escenario más usado
    - Identifica los escenarios poco usados
 
-¡Tómate tu tiempo! El trabajo con los escenarios es la base de una escritura inmersiva. Cuando te sientas cómodo capturando, enlazando y buscando escenarios, pasa a la Lección 6.
+Tómate tu tiempo. El trabajo con los escenarios es la base de una escritura inmersiva. Cuando le hayas cogido el tranquillo a capturar, enlazando y buscando escenarios, pasa a la Lección 6.
 
 * Resumen
 

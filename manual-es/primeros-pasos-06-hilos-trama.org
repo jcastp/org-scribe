@@ -152,7 +152,7 @@ Para que funcione, el etiquetado tiene que ser real: el informe solo puede conta
 
 Los hilos son la otra mitad del archivo, y *esos sí* los creas tú.
 
-Antes de capturar tramas, entiende los distintos tipos. *Son categorías de oficio, no valores de propiedad*: ~:THREAD-TYPE:~ solo ofrece ~Principal~ y ~Subtrama~ (en un proyecto en inglés, ~Main~ y ~Subplot~), y todo lo que no sea la línea principal es una subtrama para org-scribe. Lo que distingue una subtrama de otra es su ~:Stance:~ (la respuesta al Tema que encarna), no una nota con letra.
+Antes de capturar tramas, entiende los distintos tipos. *Son categorías de oficio, no valores de propiedad*: ~:THREAD-TYPE:~ solo ofrece ~Principal~ y ~Subtrama~ (en un proyecto en inglés, ~Main~ y ~Subplot~), y todo lo que no sea la línea principal es una subtrama para org-scribe. Lo que distingue una subtrama de otra es su ~:Stance:~ (la respuesta al Tema que encarna), y no una etiqueta A/B/C.
 
 ** Trama principal (historia A)
 
@@ -233,7 +233,7 @@ En un cuento (1-10 escenas) normalmente tienes:
 - *Opcional: una subtrama* (añade profundidad, a menudo centrada en un personaje)
 - *Ninguna subtrama menor* (no hay espacio suficiente)
 
-¡Que sea sencillo! Los cuentos prosperan con una narración enfocada.
+Que sea sencillo: un cuento funciona mejor cuando se concentra en una sola línea.
 
 ** Estructura de la trama en una novela
 
@@ -241,7 +241,7 @@ En una novela (50-70 escenas), una estructura sana podría ser:
 - *1 línea principal* (~:THREAD-TYPE: Principal~)
 - *3-6 subtramas* (~:THREAD-TYPE: Subtrama~), de peso variado
 
-Más que esto arriesga una complejidad excesiva y confunde al lector.
+Más subtramas que estas complican la historia en exceso y confunden al lector.
 
 Una forma más útil de decidir el número: *una subtrama por cada Postura que quieras ver representada y que la línea principal no lleve ya.* Enumeraste esas Posturas en ~diseno.org~ cuando trabajaste el Tema (al menos cinco, de peor a mejor), y los personajes que las encarnan son, en la expresión del método, la mitad de tu reparto. Las Posturas que sobran son tus subtramas. Contado así, el número sale del libro y no de una regla práctica.
 
@@ -306,7 +306,7 @@ y este cuerpo (cada campo lleva debajo una línea de pista que empieza por ~#~; 
 
 La misma forma ya está en ~diseno.org~ cuando se crea el proyecto, bajo *Línea principal* y *Subtrama*, de modo que un hilo capturado y uno rellenado a mano coinciden.
 
-*Los hilos de la trama no son lo mismo que los puntos de trama.* Los trece puntos de trama irrenunciables también viven en la parte Trama de ~diseno.org~, arriba del todo, y son una lista fija que se entrega con todo proyecto: los usas para etiquetar escenas pero nunca creas otros nuevos. Los hilos los añades tú. Ambos se tratan en esta lección; los puntos de trama, antes, bajo «Los trece irrenunciables».
+*Los hilos de la trama no son lo mismo que los puntos de trama.* Los trece puntos de trama irrenunciables también viven en la parte Trama de ~diseno.org~, arriba del todo, y son una lista fija que viene en todo proyecto de novela: los usas para etiquetar escenas pero nunca creas otros nuevos. Los hilos los añades tú. Ambos se tratan en esta lección; los puntos de trama, antes, bajo «Los trece irrenunciables».
 
 ** ~:ID:~ (automático)
 
@@ -388,13 +388,13 @@ La respuesta al Tema que defiende este hilo. Es el mismo valor que la propiedad 
 
 El personaje que encarna esa Postura. Normalmente una persona; el hilo es la forma de lo que le ocurre por lo que cree.
 
-Si dos hilos nombran al mismo portador *y* una Postura parecida, son un solo hilo con dos sombreros.
+Si dos hilos nombran al mismo portador *y* una Postura parecida, son un solo hilo disfrazado de dos.
 
 ** ~Deseo propio~
 
 *Lo que este hilo quiere, en sus propios términos.*
 
-Esta es la entrada que hace el trabajo de verdad, y la plantilla es tajante con la prueba que debe superar: *no puede ser «ayudar al protagonista».* Un hilo cuyo deseo es asistir a la línea principal no es una subtrama, es un mecanismo de reparto, y los lectores lo notan, porque nada en él corre peligro por sí mismo.
+Esta es la entrada que hace el trabajo de verdad, y la plantilla es tajante con la prueba que debe superar: *no puede ser «ayudar al protagonista».* Un hilo cuyo deseo es asistir a la línea principal no es una subtrama, es un simple mecanismo para mover la trama principal, y los lectores lo notan, porque nada en él corre peligro por sí mismo.
 
 Pregúntate qué seguiría intentando hacer el portador si la trama principal se esfumara de la noche a la mañana. Ese es el deseo propio.
 
@@ -516,7 +516,7 @@ Las tres están actualizadas por construcción, porque leen el manuscrito y no u
 *** Tipo de resolución
 - Definitiva (claramente resuelta)
 - Abierta (ambigua a propósito)
-- Sin resolver (continuará en una secuela)
+- Sin resolver (continuará en una segunda parte)
 - Transformada (la pregunta cambia o deja de ser relevante)
 
 *** Desenlace
@@ -547,7 +547,7 @@ Se revela que el saboteador es Marcus Chen, cuya familia lo perdió todo cuando
 la agencia de Alex aprobó el proyecto urbanístico hace 10 años. La contaminación
 fue venganza, pero también un intento de sacar a la luz la corrupción actual.
 
-Alex detiene el sabotaje y lleva a Marcus ante la justicia, PERO además reabre
+Alex detiene el sabotaje y lleva a Marcus ante la justicia, pero además reabre
 la investigación del proyecto urbanístico original y encuentra pruebas de
 irregularidades reales. Se hace justicia, pero Alex comprende que el sistema
 falló primero a Marcus.
@@ -662,8 +662,6 @@ O usa: ~M-x org-scribe-capture-plot-thread~
 La plantilla de captura se abre con preguntas.
 
 ** Paso 2: Responder a las preguntas de la plantilla
-
-La plantilla te pedirá:
 
 Te hace tres preguntas:
 
@@ -899,7 +897,7 @@ Cuando estés en una escena con un hilo de la trama enlazado:
 1. Mueve el cursor a la línea de la propiedad ~:Trama:~
 2. Pulsa: ~C-c C-o~ (org-open-at-point)
 
-O BIEN
+O bien:
 
 Pulsa: ~F8 L j~ (submenú Links & upkeep, jump)
 
@@ -1063,7 +1061,7 @@ Pon el cursor en la línea ~#+BEGIN:~ y pulsa: ~C-c C-c~
 
 El bloque dinámico usa ~org-dblock-write:plot-thread-timeline~ para generar la tabla.
 
-*Orden de las columnas*: los hilos se ordenan por una propiedad ~:Weight:~, de menor a mayor. La captura te la pide y la plantilla la deja en blanco; un hilo en blanco se trata como de peso 999.0, así que por defecto las columnas salen en orden alfabético. Si quieres tu línea principal a la izquierda, dale un número:
+*Orden de las columnas*: los hilos se ordenan por una propiedad ~:Weight:~, de menor a mayor. La captura te la pide y la plantilla la deja en blanco; un hilo con el peso en blanco se trata como si pesara 999.0, así que por defecto las columnas salen en orden alfabético. Si quieres tu línea principal a la izquierda, dale un número:
 
 #+BEGIN_EXAMPLE
 :Weight: 1.0
@@ -1234,7 +1232,7 @@ Todas las escenas tienen la propiedad Plot.
 4. *Comprobación final*: antes de la revisión, asegura que todas las tramas están sanas
 
 El informe se genera como un búfer de Org-mode, así que puedes:
-- Navegar entre hilos con los comandos de Org
+- Navegar entre hilos con los órdenes de Org
 - Hacer clic en los IDs para saltar a las definiciones de los hilos
 - Tomar notas directamente en el informe
 - Seguir el progreso en el tiempo guardando informes
@@ -1492,7 +1490,7 @@ Al usar ~org-scribe-set-scene-plot-threads~ sale una lista vacía.
 4. Si faltan IDs, ejecuta: ~M-x org-scribe-add-plot-thread-ids~
 5. O ejecuta el asistente de configuración: ~M-x org-scribe-setup-plot-thread-links~
 
-** «El informe de salud de la trama dice "No se encontraron escenas"»
+** «El informe de salud de la trama dice «No se encontraron escenas»»
 
 *** Problema
 ~org-scribe-plot-thread-report~ no devuelve datos o muestra «No se encontraron escenas con propiedad Plot».
@@ -1591,7 +1589,7 @@ Categorías de oficio, no valores de ~:THREAD-TYPE:~: todo lo que no es la líne
 
 ** Órdenes habituales
 
-| Comando                                        | Qué hace                                              |
+| Orden                                          | Qué hace                                              |
 |------------------------------------------------+-------------------------------------------------------|
 | ~org-scribe-capture-plot-thread~               | Captura un hilo de la trama nuevo con plantilla       |
 | ~org-scribe-set-scene-plot-threads~            | Fija la trama con el menú (selección múltiple)        |
@@ -1683,7 +1681,7 @@ Cada hilo de la trama debería escalar antes de resolverse:
 - La tensión crece
 - El personaje lucha más
 
-Si una trama simplemente... termina sin clímax, se siente plana. ¡Construye hasta un pico!
+Si una trama simplemente... termina sin clímax, se siente plana. Haz que suba hasta un clímax.
 
 ** 8. Resuelve por orden de importancia
 
@@ -1691,7 +1689,7 @@ Secuencia de resolución habitual:
 1. Las subtramas menores se resuelven primero (hacia el 70-80 %)
 2. Las subtramas mayores, después (hacia el 80-90 %)
 3. La trama principal se resuelve en el clímax (hacia el 90-95 %)
-4. Las secuelas emocionales y el tema, en el desenlace (último 5 %)
+4. Las consecuencias emocionales y el tema, en el desenlace (último 5 %)
 
 Esto crea un efecto en cascada que resulta satisfactorio.
 
@@ -1737,7 +1735,7 @@ Si lo que está en juego no está claro o es poco, la trama parece poco importan
 
 * Próximos pasos
 
-Ya estás listo para la [[file:primeros-pasos-07-busquedas.org][Lección 7: Encontrar lo que necesitas]].
+Ya puedes pasar a la [[file:primeros-pasos-07-busquedas.org][Lección 7: Encontrar lo que necesitas]].
 
 En la próxima lección aprenderás:
 - A dominar todas las funciones de búsqueda (personaje, trama, localización, PoV)
@@ -1762,7 +1760,7 @@ Antes de la Lección 7, prueba esto:
 6. Ejecuta un informe de salud de la trama y repasa los avisos
 7. Planifica: ¿dónde debería aparecer cada trama a continuación?
 
-¡Tómate tu tiempo! El seguimiento de la trama es crucial en historias complejas. Cuando te sientas cómodo capturando, enlazando, buscando y analizando hilos de la trama, pasa a la Lección 7.
+Tómate tu tiempo. El seguimiento de la trama es crucial en historias complejas. Cuando le hayas cogido el tranquillo a capturar, enlazando, buscando y analizando hilos de la trama, pasa a la Lección 7.
 
 * Resumen
 
