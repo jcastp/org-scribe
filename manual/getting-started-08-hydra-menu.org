@@ -165,6 +165,8 @@ Let's explore each category in detail.
 | ~G~   | Plot point   | Set the plot point (of the thirteen) this scene serves |
 | ~j~   | Jump to PoV  | Jump to the PoV character's profile      |
 
+(~b~ runs ~org-scribe-set-scene-objects~; the others run ~org-scribe-set-pov-character~, ~org-scribe-set-scene-characters~, ~org-scribe-set-scene-locations~, ~org-scribe-set-scene-plot-threads~, ~org-scribe-set-scene-plot-points~ and ~org-scribe-jump-to-pov-character~.)
+
 *When to use*:
 - After writing a scene → tag it so search functions can find it
 - Use ~p~ first (PoV), then ~h~ (characters), ~l~ (location), ~g~ (plot)
@@ -303,7 +305,7 @@ _q_: Back to main menu    _Q_: Quit
 - ~R~ - Relink project: the headline command. Runs one pass across the entire project — adds any missing IDs, converts plain character/location/plot names to ID links, and refreshes all display names. This replaces the old per-entity "add IDs / link / update" commands.
 - ~j~ / ~J~ - Jump to a plot thread's profile / to one of the thirteen plot points
 - ~D~ - Spelling dictionary: create or refresh the project's ~.dir-locals.el~ so every file spell checks against the project's language. Use it on projects created before org-scribe generated that file, or after changing ~org-scribe-ispell-dictionaries~. It asks before replacing an existing file. See Lesson 1.
-- ~c~ / ~o~ / ~p~ / ~P~ - One-time setup wizard for character / location / plot thread / plot point linking
+- ~c~ / ~o~ / ~p~ / ~P~ / ~b~ - One-time setup wizard for character / location / plot thread / plot point / object linking (~org-scribe-setup-character-links~, ~org-scribe-setup-location-links~, ~org-scribe-setup-plot-thread-links~, ~org-scribe-setup-plot-point-links~, ~org-scribe-setup-object-links~)
 - ~r~ - Setup character relationship tracking
 - ~a~ / ~x~ - Add or remove a relationship between two characters
 - ~v~ / ~V~ - View relationships (one character / all characters, as a plain list / table)

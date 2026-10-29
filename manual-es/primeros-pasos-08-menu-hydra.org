@@ -169,6 +169,8 @@ Exploremos cada categoría en detalle.
 | ~G~   | Plot point   | Fija el punto de trama (de los trece) al que sirve esta escena |
 | ~j~   | Jump to PoV  | Salta a la ficha del personaje PoV                             |
 
+(~b~ ejecuta ~org-scribe-set-scene-objects~; las demás ejecutan ~org-scribe-set-pov-character~, ~org-scribe-set-scene-characters~, ~org-scribe-set-scene-locations~, ~org-scribe-set-scene-plot-threads~, ~org-scribe-set-scene-plot-points~ y ~org-scribe-jump-to-pov-character~.)
+
 *Cuándo usarla*:
 - Después de escribir una escena → etiquétala para que las búsquedas puedan encontrarla
 - Usa ~p~ primero (PoV), luego ~h~ (personajes), ~l~ (localización), ~g~ (trama)
@@ -310,7 +312,7 @@ _q_: Back to main menu    _Q_: Quit
 - ~R~: volver a enlazar el proyecto. La orden estrella. Hace una pasada por todo el proyecto: añade los IDs que falten, convierte los nombres en texto plano de personajes, escenarios y tramas en enlaces por ID y refresca todos los nombres mostrados. Sustituye a las antiguas órdenes de «añadir IDs / enlazar / actualizar» por entidad.
 - ~j~ / ~J~: saltar a la ficha de un hilo de la trama / a uno de los trece puntos de trama
 - ~D~: diccionario de ortografía. Crea o refresca el ~.dir-locals.el~ del proyecto para que todos los archivos se corrijan con el idioma del proyecto. Úsalo en proyectos creados antes de que org-scribe generase ese archivo, o tras cambiar ~org-scribe-ispell-dictionaries~. Pregunta antes de sustituir un archivo existente. Ver la Lección 1.
-- ~c~ / ~o~ / ~p~ / ~P~ / ~b~: asistente de configuración única del enlace de personajes / escenarios / hilos de la trama / puntos de trama / objetos
+- ~c~ / ~o~ / ~p~ / ~P~ / ~b~: asistente de configuración única del enlace de personajes / escenarios / hilos de la trama / puntos de trama / objetos (~org-scribe-setup-character-links~, ~org-scribe-setup-location-links~, ~org-scribe-setup-plot-thread-links~, ~org-scribe-setup-plot-point-links~, ~org-scribe-setup-object-links~)
 - ~r~: configurar el seguimiento de relaciones entre personajes
 - ~a~ / ~x~: añadir o quitar una relación entre dos personajes
 - ~v~ / ~V~: ver las relaciones (un personaje / todos los personajes, como lista simple / tabla)

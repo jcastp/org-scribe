@@ -232,7 +232,7 @@ the plot point it serves — use:
 
 : F8 L J   (org-scribe-jump-to-plot-point)
 
-If your project predates the linking setup, ~F8 L P~ mints the IDs once.
+If your project predates the linking setup, ~F8 L P~ (~org-scribe-setup-plot-point-links~) mints the IDs once.
 
 ** Why This Matters More Than It Looks
 

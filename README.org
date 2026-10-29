@@ -221,6 +221,14 @@ After loading, run =M-x org-scribe-setup-check= to confirm what is active.
 
 * Quick Start
 
+** Documentation
+
+The step-by-step tutorial is in [[file:manual/getting-started-00-index.org][manual/]] (English), and the complete
+feature list in [[file:manual/00-feature-index.org][manual/00-feature-index.org]].
+
+*Documentación en español*: el mismo tutorial, traducido y revisado, está en
+[[file:manual-es/primeros-pasos-00-indice.org][manual-es/]], con su [[file:manual-es/00-indice-funciones.org][índice de funciones]].
+
 ** Read the Demo Project First
 
 Before creating anything, it is worth ten minutes to read a project that is

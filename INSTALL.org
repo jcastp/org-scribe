@@ -382,6 +382,7 @@ Install hydra package:
 After installation:
 
 1. Read the [[file:README.org][README.org]] for features overview
+   (Spanish tutorial: [[file:manual-es/primeros-pasos-00-indice.org][Documentación en español]]; English tutorial: [[file:manual/getting-started-00-index.org][manual/]])
 2. Try the quick start guide in README.org
 3. Customize settings: =M-x customize-group RET org-scribe RET=
 4. Set up your first writing project

@@ -303,7 +303,7 @@ Provides functions to convert existing plain-text character/location/plot refere
 
 ** Setup Wizards
 
-Each linking system (characters, locations, plot threads) includes a one-time setup wizard (~org-scribe-setup-character-links~, ~org-scribe-setup-location-links~, ~org-scribe-setup-plot-thread-links~). The wizard: (1) adds IDs to all existing profiles that lack them, (2) asks if you want to convert existing scene properties to links, and (3) confirms the setup is complete. Running the wizard on an existing project enables all linking features retroactively. Wizards are idempotent - running them multiple times is safe.
+Each linking system (characters, locations, plot threads) includes a one-time setup wizard (~org-scribe-setup-character-links~, ~org-scribe-setup-location-links~, ~org-scribe-setup-plot-thread-links~; the ones for objects, plot points and relationships are ~org-scribe-setup-object-links~ (~F8 L b~), ~org-scribe-setup-plot-point-links~ (~F8 L P~) and ~org-scribe-setup-character-relationships~ (~F8 L r~)). Scenes link their objects with ~org-scribe-set-scene-objects~ (~F8 b~). The wizard: (1) adds IDs to all existing profiles that lack them, (2) asks if you want to convert existing scene properties to links, and (3) confirms the setup is complete. Running the wizard on an existing project enables all linking features retroactively. Wizards are idempotent - running them multiple times is safe.
 
 *Status*: Fully implemented | *Hydra*: ~F8 L c~, ~F8 L o~, ~F8 L p~ (Links & upkeep submenu) | *Module*: All three linking modules
 

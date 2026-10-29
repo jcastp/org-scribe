@@ -140,7 +140,7 @@ Elige de la lista; la propiedad ~:Punto-de-trama:~ de la escena recibe un enlace
 
 : F8 L J   (org-scribe-jump-to-plot-point)
 
-Si tu proyecto es anterior a la configuración de enlaces, ~F8 L P~ crea los IDs una vez.
+Si tu proyecto es anterior a la configuración de enlaces, ~F8 L P~ (~org-scribe-setup-plot-point-links~) crea los IDs una vez.
 
 ** Por qué esto importa más de lo que parece
 
