@@ -656,6 +656,10 @@ the buffers' undo steps: the page offers a reset instead."
 Returns the answer plist described in the Commentary."
   (let* ((function (cdr (assoc op org-scribe-companion-commands--operations)))
          (root (file-name-as-directory (expand-file-name root)))
+         ;; The server runs from Emacs's startup directory.  Project type,
+         ;; and with it the scene and chapter levels, come from here, so
+         ;; every operation sees ROOT as its project.
+         (default-directory root)
          ;; error notices are in the project's language, as the page is
          (org-scribe-message-language (let ((default-directory root))
                                         (org-scribe-project-language))))

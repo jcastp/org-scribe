@@ -1034,6 +1034,30 @@
                    :title "Chapter")))
       (should (equal "invalid" (test-companion-commands--code answer))))))
 
+(ert-deftest test-companion-commands-short-story-commands-work-from-outside-the-project ()
+  "The server runs from Emacs's startup directory, not the project's.
+The project type must come from ROOT, or a short story is read as a novel."
+  (test-companion-commands--with-short-story root
+    (let ((default-directory temporary-file-directory))
+      (org-scribe-project-type-cache-clear)
+      (let ((answer (test-companion-commands--run
+                     root "create-scene"
+                     :parent (test-companion-commands--id root "Story Content")
+                     :title "Interlude")))
+        (should (test-companion-commands--ok-p answer)))
+      (should (equal "invalid"
+                     (test-companion-commands--code
+                      (test-companion-commands--run
+                       root "create-chapter"
+                       :parent (test-companion-commands--id root "Story Content")
+                       :title "Chapter"))))
+      (should (test-companion-commands--ok-p
+               (test-companion-commands--run
+                root "move-node"
+                :id (test-companion-commands--id root "Interlude")
+                :parent (test-companion-commands--id root "Story Content")
+                :after nil))))))
+
 (ert-deftest test-companion-commands-create-scene-still-needs-a-chapter-in-a-novel ()
   "In a novel an act cannot take a scene directly."
   (test-companion-commands--with-project root
