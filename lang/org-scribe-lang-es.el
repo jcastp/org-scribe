@@ -49,7 +49,13 @@
      "report" "role" "scene" "scribe" "snippet" "snowflake" "stance"
      "stats" "status" "supporting" "target" "tension" "thematic"
      "thread" "timeline" "TODOs" "type" "weight" "wordcount" "words"
-     "worldbuilding")
+     "worldbuilding"
+     "begin" "end" "comment" "break" "noexport" "startup" "hideblocks" "options"
+     "columns" "language" "property" "properties" "logbook" "custom" "category"
+     "deadline" "duration" "priority" "relevance" "genre" "chapter" "characters"
+     "location" "item" "tab" "open" "chosen" "rejected" "exploring" "finished"
+     "first" "about" "word" "nil" "out" "generate" "toreview" "towrite" "purge"
+     "restructure")
    :files
    '((manuscript-novel . "novela.org")
      (manuscript-short . "cuento.org")

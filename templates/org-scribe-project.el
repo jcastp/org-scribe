@@ -178,16 +178,18 @@ installed hunspell data."
            (plist-get (org-scribe-lang-pack language) :ispell)))))
 
 (defun org-scribe--dir-locals-words (language)
-  "Return the spelling words LANGUAGE's pack lists, with capitalized variants.
+  "Return the spelling words LANGUAGE's pack lists, with capitalized and upper-case variants.
 These are the foreign words the scaffolding writes into every new project
 \(see `:spelling-words' in the language packs).  Each is also returned
-capitalized, because jinx compares session words case-sensitively while
-headings and table headers capitalize them."
+capitalized and upper-cased, because jinx compares session words
+case-sensitively while headings, table headers and org keywords use both."
   (when (memq language (org-scribe-languages))
     (let (all)
       (dolist (w (plist-get (org-scribe-lang-pack language) :spelling-words))
         (push w all)
-        (push (if (string= w (downcase w)) (capitalize w) w) all))
+        (when (string= w (downcase w))
+          (push (capitalize w) all)
+          (push (upcase w) all)))
       (delete-dups (nreverse all)))))
 
 (defun org-scribe--dir-locals-content (language dictionary)
