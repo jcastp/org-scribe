@@ -1203,6 +1203,7 @@ recognized."
     (objects . world)
     (timeline . world)
     (calendar . world)
+    (versions . revision-part)
     (plot-threads . plot-part)
     (plot-points . plot-part)
     (starting-gate . foundations))

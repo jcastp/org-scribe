@@ -390,6 +390,12 @@ Searches the entire project recursively for inline edit markers and revision not
 
 *Status*: Fully implemented | *Hydra*: ~6~ (Search section) | *Module*: ~search/org-scribe-search.el~
 
+** Scene Snapshots (~org-scribe-snapshot-scene~, ~org-scribe-compare-snapshot~)
+
+~org-scribe-snapshot-scene~ copies the prose of the scene at point (or of the scene a sub-heading belongs to), dated, into a *Versions* section of the design notebook, so the old text survives a rewrite. The section lives in the notebook's Revision part (a level-1 heading in a short story's notebook) and is created by the first snapshot; the Scratchpad is untouched. Each snapshot is a level-below heading ~Snapshot YYYY-MM-DD HH:MM - <scene title>~ holding an ID link to the scene (~:SCENE:~), its word count (~:WORDS:~) and its state at the time (~:STATE:~). The scene's own property drawer is never copied, nor are the drawers of its sub-headings, so no ~:ID:~ exists twice; sub-headings are re-levelled below the snapshot heading and edit markers are copied as they are. A scene with no prose is refused. Snapshots are kept forever and read by nothing but the compare command: the word count, compilation and the entity resolvers never look at them. ~org-scribe-compare-snapshot~ runs ediff (word by word) between a snapshot and the live scene found through the ~:SCENE:~ ID; from inside a scene it offers only that scene's snapshots, from inside a snapshot it uses that one, elsewhere it offers all. Both sides are the real text, so passages can be copied across. A deleted scene is reported, not an error. A notebook with unsaved edits of its own is left unsaved.
+
+*Status*: Fully implemented | *Hydra*: ~V~ snapshot, ~C~ compare (Tools section) | *Module*: ~revision/org-scribe-snapshot.el~
+
 ** ID Link Text Extraction (~org-scribe--extract-link-text~)
 
 Internal helper function that extracts display text from ID links, handling single links, multiple comma-separated links, and mixed plain-text-and-links. For ~[[id:abc123][Alex Rivera]]~ it returns "Alex Rivera". For ~[[id:abc][Alex]], [[id:def][Sam]]~ it returns "Alex, Sam". This function is used by search functions, column view, and timeline generation to present clean text to users while maintaining the link infrastructure under the hood. The function is bulletproof with whitespace handling and edge-case coverage.

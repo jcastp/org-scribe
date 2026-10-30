@@ -625,6 +625,31 @@ Tu flujo:
 5. *Panel derecho*: marca las tareas completadas
 6. *Repite* con la escena siguiente
 
+** Guardar la versión anterior de una escena
+
+Antes de reescribir una escena a ojo, guarda lo que tienes. Con el cursor en la
+escena (o en uno de sus subencabezados) pulsa ~F8 V~
+(~org-scribe-snapshot-scene~). La prosa se copia, con fecha, en una sección
+*Versiones* de tu cuaderno de diseño (dentro de la parte Revisión; el cuaderno
+de un cuento recibe un encabezado *Versiones* de nivel 1). La primera
+instantánea crea la sección.
+
+Cada instantánea es un encabezado como ~Instantánea 2026-10-30 12:30 - El
+golpe~, con un enlace por ID a la escena, el recuento de palabras y el estado
+de la escena en ese momento. Haz todas las que quieras: se conservan hasta que
+las borres.
+
+Más tarde, con el cursor en la escena reescrita, pulsa ~F8 C~
+(~org-scribe-compare-snapshot~) y elige una instantánea. Emacs abre ediff con el
+texto antiguo a la izquierda y la escena actual a la derecha, y puedes copiar
+de vuelta una frase que merezca la pena.
+
+Lo que una instantánea *no* hace: nunca copia el cajón de propiedades de la
+escena (así no se duplica ningún ID ni PdV), y el recuento de palabras, el
+manuscrito compilado y las búsquedas de entidades ignoran la sección Versiones,
+como el resto del cuaderno. El historial de git es automático; las
+instantáneas son las versiones que *tú* decidiste conservar.
+
 ** Plantilla de lista de comprobación de revisión de escenas
 
 Añade esto a tu cuaderno de diseño para cada escena:

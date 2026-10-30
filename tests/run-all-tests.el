@@ -49,7 +49,7 @@
   (let ((default-directory (file-name-directory (directory-file-name tests-dir))))
     ;; Add all module directories to load path
     (dolist (dir '("." "lang" "core" "counting" "templates" "modes" "search"
-                   "language" "capture" "linking" "export" "reporting" "ui"
+                   "language" "capture" "linking" "export" "reporting" "revision" "ui"
                    "planning" "snippets"))
       (add-to-list 'load-path (expand-file-name dir default-directory)))))
 
@@ -88,6 +88,7 @@
     "test-health"                  ; Project health report
     "test-story-time"              ; Story-time parser
     "test-chronology"              ; Story-chronology block, health lines, calendar
+    "test-scene-snapshot"          ; Scene snapshots (Versions section) and compare
     "test-overlays"                ; Entity tooltip system
     "test-tempel-snippets"         ; Bundled Tempel snippets
     "test-sistema-templates"       ; Sistema template set + entity recognition
@@ -418,6 +419,14 @@ is set too, for the tests that start a fresh Emacs."
   (load-file (expand-file-name "test-health.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (ert "^test-health-"))
+
+;;;###autoload
+(defun org-scribe-run-snapshot-tests ()
+  "Run scene snapshot tests only."
+  (interactive)
+  (load-file (expand-file-name "test-scene-snapshot.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-snapshot-"))
 
 ;;;###autoload
 (defun org-scribe-run-story-time-tests ()

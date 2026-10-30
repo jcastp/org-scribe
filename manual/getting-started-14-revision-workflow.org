@@ -623,6 +623,28 @@ Your workflow:
 5. *Right panel*: Check off completed tasks
 6. *Repeat* for next scene
 
+** Keeping the Old Version of a Scene
+
+Before you rewrite a scene by feel, keep what you have. With point in the
+scene (or in one of its sub-headings) press ~F8 V~ (~org-scribe-snapshot-scene~).
+The prose is copied, dated, into a *Versions* section of your design notebook
+(in the Revision part; a short story's notebook gets a level-1 *Versions*
+heading). The first snapshot creates the section.
+
+Each snapshot is a heading like ~Snapshot 2026-10-30 12:30 - The Heist~ with
+an ID link back to the scene, the word count and the scene's state at the
+time. Take as many as you like: they are kept until you delete them.
+
+Later, with point in the rewritten scene, press ~F8 C~
+(~org-scribe-compare-snapshot~) and choose a snapshot. Emacs opens ediff with
+the old text on the left and the live scene on the right, so you can copy a
+sentence worth saving back across.
+
+What a snapshot does *not* do: it never copies the scene's property drawer (so
+no ID or PoV is duplicated), and the word count, the compiled manuscript and
+the entity searches ignore the Versions section, like the rest of the notebook.
+Git history is automatic; snapshots are the versions *you* chose to keep.
+
 ** Scene Revision Checklist Template
 
 Add this to your design notebook for each scene:

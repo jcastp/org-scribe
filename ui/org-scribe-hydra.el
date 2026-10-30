@@ -48,6 +48,8 @@
 (declare-function org-scribe-capture-timeline "capture/org-scribe-capture")
 (declare-function org-scribe-capture-plot-thread "capture/org-scribe-capture")
 (declare-function org-scribe-compile "export/org-scribe-compile")
+(declare-function org-scribe-snapshot-scene "revision/org-scribe-snapshot")
+(declare-function org-scribe-compare-snapshot "revision/org-scribe-snapshot")
 (declare-function org-scribe-wordcount "counting/org-scribe-wordcount")
 (declare-function org-scribe-ews-org-count-words "counting/org-scribe-wordcount")
 (declare-function org-scribe-org-find-pov "search/org-scribe-search")
@@ -164,7 +166,8 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 ^^               ^^               _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
 ^^               ^^               _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
 ^^               ^^               ^^                   _S_: Story time      ^^                _B_: Board…
-^^               ^^               ^^                   ^^                   ^^                _q_: Quit
+^^               ^^               ^^                   _V_: Snapshot scene  ^^                _q_: Quit
+^^               ^^               ^^                   _C_: Compare snapshot
 "
   ;; Insert (most frequent)
   ("s" org-scribe-insert-scene "insert scene")
@@ -201,6 +204,8 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("t" org-scribe-set-word-target "word target")
   ("T" org-scribe-set-title "title")
   ("S" org-scribe-set-story-time "story time")
+  ("V" org-scribe-snapshot-scene "snapshot scene")
+  ("C" org-scribe-compare-snapshot "compare snapshot")
 
   ;; Search
   ("1" org-scribe-org-find-pov "find by PoV")
