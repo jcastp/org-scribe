@@ -112,9 +112,28 @@ block, so this is the set that gains coverage it never had."
   "The generated file parses to the directory-local alist Emacs expects."
   (test-dir-locals--with-temp-base-dir root
     (org-scribe--write-dir-locals root 'es)
-    (should (equal (test-dir-locals--read root)
-                   '((nil . ((ispell-local-dictionary . "es_ES")
-                             (jinx-languages . "es_ES"))))))))
+    (let ((entries (alist-get nil (test-dir-locals--read root))))
+      (should (equal (alist-get 'ispell-local-dictionary entries) "es_ES"))
+      (should (equal (alist-get 'jinx-languages entries) "es_ES"))
+      (should (stringp (alist-get 'jinx-dir-local-words entries)))
+      (should (listp (alist-get 'ispell-buffer-session-localwords entries))))))
+
+(ert-deftest test-dir-locals-spanish-project-whitelists-scaffolding-english ()
+  "The English words the Spanish scaffolding writes reach both checkers.
+English projects have no such list, so they get the dictionary only."
+  (test-dir-locals--with-temp-base-dir root
+    (org-scribe--write-dir-locals root 'es)
+    (let ((entries (alist-get nil (test-dir-locals--read root))))
+      (dolist (w '("Goal" "Stance" "Wordcount" "PoV" "feedback"))
+        (should (member w (split-string
+                           (alist-get 'jinx-dir-local-words entries))))
+        (should (member w (alist-get 'ispell-buffer-session-localwords
+                                     entries))))))
+  (test-dir-locals--with-temp-base-dir root
+    (org-scribe--write-dir-locals root 'en)
+    (let ((entries (alist-get nil (test-dir-locals--read root))))
+      (should-not (assq 'jinx-dir-local-words entries))
+      (should-not (assq 'ispell-buffer-session-localwords entries)))))
 
 (ert-deftest test-dir-locals-variable-written-is-safe ()
   "The dictionary applies without prompting.

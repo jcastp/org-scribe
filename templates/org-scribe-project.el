@@ -156,6 +156,7 @@ must never make project creation fail."
 ;; is the exact failure this whole arrangement exists to prevent.  The
 ;; predicate is jinx's own.
 (put 'jinx-languages 'safe-local-variable #'stringp)
+(put 'jinx-dir-local-words 'safe-local-variable #'stringp)
 
 (defun org-scribe--dir-locals-dictionary (language)
   "Return the dictionary/language name configured for LANGUAGE, or nil.
@@ -176,6 +177,19 @@ installed hunspell data."
       (and (memq language (org-scribe-languages))
            (plist-get (org-scribe-lang-pack language) :ispell)))))
 
+(defun org-scribe--dir-locals-words (language)
+  "Return the spelling words LANGUAGE's pack lists, with capitalized variants.
+These are the foreign words the scaffolding writes into every new project
+\(see `:spelling-words' in the language packs).  Each is also returned
+capitalized, because jinx compares session words case-sensitively while
+headings and table headers capitalize them."
+  (when (memq language (org-scribe-languages))
+    (let (all)
+      (dolist (w (plist-get (org-scribe-lang-pack language) :spelling-words))
+        (push w all)
+        (push (if (string= w (downcase w)) (capitalize w) w) all))
+      (delete-dups (nreverse all)))))
+
 (defun org-scribe--dir-locals-content (language dictionary)
   "Return the text of a `.dir-locals.el' pinning DICTIONARY for LANGUAGE.
 
@@ -193,14 +207,26 @@ prompting — unlike the `eval:' form the manuscript templates used to
 ship.  Jinx declares its own via an autoload; org-scribe declares it too,
 so the generated file is silent even when jinx is not installed.  The key is nil rather than `org-mode' because a project's
 notes may hold other modes and the language is right for all of them."
-  (format ";;; Directory Local Variables            -*- no-byte-compile: t -*-
+  (let ((words (org-scribe--dir-locals-words language)))
+    (format ";;; Directory Local Variables            -*- no-byte-compile: t -*-
 ;;; Written by org-scribe.  Language: %s (see .org-scribe-project).
 ;;; Regenerate with M-x org-scribe-update-dir-locals.
 
-((nil . ((ispell-local-dictionary . %S)
-         (jinx-languages . %S))))
+((nil . (%s)))
 "
-          language dictionary dictionary))
+            language
+            (mapconcat
+             #'identity
+             (delq nil
+                   (list (format "(ispell-local-dictionary . %S)" dictionary)
+                         (format "(jinx-languages . %S)" dictionary)
+                         (and words
+                              (format "(jinx-dir-local-words . %S)"
+                                      (mapconcat #'identity words " ")))
+                         (and words
+                              (format "(ispell-buffer-session-localwords . %S)"
+                                      words))))
+             "\n         "))))
 
 (defun org-scribe--write-dir-locals (project-dir language)
   "Write PROJECT-DIR/.dir-locals.el pinning the dictionary for LANGUAGE.

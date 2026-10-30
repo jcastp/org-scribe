@@ -36,6 +36,7 @@
    :code "en"
    :name "English"
    :ispell "en_US"
+   :spelling-words nil
    :files
    '((manuscript-novel . "novel.org")
      (manuscript-short . "story.org")

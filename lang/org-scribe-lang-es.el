@@ -36,6 +36,20 @@
    :code "es"
    :name "Español"
    :ispell "es_ES"
+   ;; English words the scaffolding itself writes (property names, table
+   ;; headers, dblock and command names, loanwords in the method prose).
+   ;; `org-scribe--write-dir-locals' hands them to the spell checkers so a
+   ;; fresh project starts clean.  Spanish words the dictionary lacks do
+   ;; not belong here.
+   :spelling-words
+   '("age" "ally" "antagonist" "appearance" "branch" "character" "clock"
+     "count" "decision" "fake" "feedback" "gender" "goal" "heading"
+     "objective" "occupation" "opponent" "org" "overview" "owner"
+     "period" "playlist" "plot" "PoV" "progress" "protagonist"
+     "report" "role" "scene" "scribe" "snippet" "snowflake" "stance"
+     "stats" "status" "supporting" "target" "tension" "thematic"
+     "thread" "timeline" "TODOs" "type" "weight" "wordcount" "words"
+     "worldbuilding")
    :files
    '((manuscript-novel . "novela.org")
      (manuscript-short . "cuento.org")
