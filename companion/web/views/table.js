@@ -1,12 +1,13 @@
 // Outline table: one row per scene, grouped by act and chapter (collapsible).
 // Columns: title, state, the scene fields you choose, words, objective.
 // Cells edit in place; link fields open a picker over the entities of that
-// kind; rows drag between chapters.  Sorting happens here, on the client, and
+// kind; rows drag between chapters.  The act and chapter rows add a chapter
+// or a scene at the end; a scene row's own button adds one right after it.  Sorting happens here, on the client, and
 // is applied inside each chapter.  All text is put in with textContent.
 
 import { todoColor, colorOf, legendSwatch } from '../colors.js';
 import { matches, isActive } from '../filters.js';
-import { el, startEdit, moveTo, sceneParent } from '../edit.js';
+import { el, startEdit, moveTo, sceneParent, addSceneButton, addChapterButton } from '../edit.js';
 import { hasPlotPoints } from './matrix.js';
 
 let STORE = 'org-scribe.table';
@@ -216,7 +217,21 @@ function stateCell(scene, ctx) {
   return cell;
 }
 
-function titleCell(scene, ctx) {
+/** A button adding a scene right after SCENE, under the container PARENT_ID. */
+function insertAfterButton(scene, parentId, ctx) {
+  const add = el('button', 'insert-after', '+');
+  add.type = 'button';
+  const label = ctx.t('companion-ui-new-scene-after');
+  add.title = label;
+  add.setAttribute('aria-label', label);
+  add.addEventListener('click', (event) => {
+    event.stopPropagation();
+    ctx.edit('create-scene', { parent: parentId, after: scene.id }, null, true);
+  });
+  return add;
+}
+
+function titleCell(scene, parentId, ctx) {
   const cell = el('td', 'cell title');
   const handle = el('span', 'drag-handle', '⠿');
   handle.setAttribute('aria-hidden', 'true');
@@ -225,11 +240,14 @@ function titleCell(scene, ctx) {
   if (scene.id && !scene.readOnly) {
     text.classList.add('editable');
     text.title = ctx.t('companion-ui-edit-title');
-    text.addEventListener('click', (event) => {
-      event.stopPropagation();
-      startEdit(text, scene.title || '', false, (value) => {
-        if (value.trim()) ctx.edit('set-title', { id: scene.id, title: value }, scene.id);
-      }, ctx);
+    // focusable, so a new scene can take the focus and be renamed from the keyboard
+    text.tabIndex = 0;
+    const editTitle = () => startEdit(text, scene.title || '', false, (value) => {
+      if (value.trim()) ctx.edit('set-title', { id: scene.id, title: value }, scene.id);
+    }, ctx);
+    text.addEventListener('click', (event) => { event.stopPropagation(); editTitle(); });
+    text.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === 'F2') { event.preventDefault(); editTitle(); }
     });
   }
   if (scene.id) {
@@ -240,6 +258,8 @@ function titleCell(scene, ctx) {
     open.setAttribute('aria-label', label);
     open.addEventListener('click', (event) => { event.stopPropagation(); ctx.goto(scene.id); });
     cell.append(open);
+    // "after" is the manuscript's order: under a sort the row below is not the next scene
+    if (parentId && !scene.readOnly && !prefs.sort) cell.append(insertAfterButton(scene, parentId, ctx));
   } else {
     const warning = el('span', 'noid', '⚠');
     warning.title = ctx.t('companion-ui-no-id');
@@ -254,7 +274,8 @@ function numberCell(value, className, language) {
   return cell;
 }
 
-function sceneRow(scene, columns, ctx) {
+/** PARENT_ID: the container new scenes go into, or null when there is none. */
+function sceneRow(scene, columns, parentId, ctx) {
   const row = el('tr', 'scene-row');
   if (scene.id) row.dataset.id = scene.id;
   if (scene.id && !scene.readOnly) row.classList.add('movable');
@@ -264,7 +285,7 @@ function sceneRow(scene, columns, ctx) {
   const pov = povOf(scene);
   const color = prefs.colour === 'pov' ? pov && colorOf('pov', pov.id) : todoColor(ctx.snapshot, scene.todo);
   if (color) row.style.setProperty('--row', color);
-  row.append(titleCell(scene, ctx), stateCell(scene, ctx));
+  row.append(titleCell(scene, parentId, ctx), stateCell(scene, ctx));
   for (const field of columns) row.append(fieldCell(scene, field, ctx));
   row.append(numberCell(scene.words, 'words', ctx.snapshot.language), numberCell(scene.objective, 'objective', ctx.snapshot.language));
   return row;
@@ -277,7 +298,8 @@ function toggle(id, rerender) {
   rerender();
 }
 
-function groupRow(node, key, className, span, ctx) {
+/** EXTRA, when given, is a button placed at the row's end. */
+function groupRow(node, key, className, span, ctx, extra) {
   const row = el('tr', className);
   if (node.id) row.dataset.id = node.id;
   const cell = el('td');
@@ -288,7 +310,10 @@ function groupRow(node, key, className, span, ctx) {
   button.setAttribute('aria-expanded', String(open));
   button.setAttribute('aria-label', ctx.t('companion-ui-collapse'));
   button.addEventListener('click', () => toggle(key, ctx.rerender));
-  cell.append(button, el('span', 'group-title', node.title || ''));
+  const head = el('div', 'group-head');
+  head.append(button, el('span', 'group-title', node.title || ''));
+  if (extra) head.append(extra);
+  cell.append(head);
   row.append(cell);
   return row;
 }
@@ -426,7 +451,22 @@ export function render(container, ctx) {
     // an implicit act or chapter has no ID: its place stands in for one
     const actKey = act.id || `act#${actIndex}`;
     const actBody = el('tbody', 'act-body');
-    actBody.append(groupRow(act, actKey, 'act-row', span, ctx));
+    // a new row must not land in a collapsed group, out of sight
+    const expand = (...keys) => () => { for (const key of keys) collapsed.delete(key); };
+    const passthroughIndex = act.chapters.findIndex((chapter) => chapter.passthrough);
+    let actButton = null;
+    if (passthroughIndex >= 0) {
+      // no chapters here: the act's own button adds a scene
+      const passthrough = act.chapters[passthroughIndex];
+      const parent = sceneParent(passthrough);
+      if (parent) {
+        actButton = addSceneButton(parent, passthrough.scenes, ctx,
+                                   expand(actKey, `${actKey}/chapter#${passthroughIndex}`));
+      }
+    } else if (act.id && !act.readOnly) {
+      actButton = addChapterButton(act, ctx, expand(actKey));
+    }
+    actBody.append(groupRow(act, actKey, 'act-row', span, ctx, actButton));
     table.append(actBody);
     if (collapsed.has(actKey)) return;
     act.chapters.forEach((chapter, chapterIndex) => {
@@ -436,13 +476,20 @@ export function render(container, ctx) {
       if (parent) body.dataset.id = parent;
       // a pass-through chapter keeps its (hidden) row, so the drag rules
       // that look for the row above the first scene still hold
+      const canAdd = parent && (chapter.passthrough || !chapter.readOnly);
+      const chapterButton = canAdd && !chapter.passthrough
+        ? addSceneButton(parent, chapter.scenes, ctx, expand(chapterKey))
+        : null;
       body.append(groupRow(chapter, chapterKey,
-                           chapter.passthrough ? 'chapter-row passthrough' : 'chapter-row', span, ctx));
+                           chapter.passthrough ? 'chapter-row passthrough' : 'chapter-row', span, ctx,
+                           chapterButton));
       if (!collapsed.has(chapterKey)) {
-        for (const scene of sorted(chapter.scenes)) body.append(sceneRow(scene, columns, ctx));
+        for (const scene of sorted(chapter.scenes)) {
+          body.append(sceneRow(scene, columns, canAdd ? parent : null, ctx));
+        }
       }
       table.append(body);
-      if (parent && (chapter.passthrough || !chapter.readOnly) && !prefs.sort && window.Sortable) makeSortable(body, ctx);
+      if (canAdd && !prefs.sort && window.Sortable) makeSortable(body, ctx);
     });
   });
   container.append(table);

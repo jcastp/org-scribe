@@ -743,6 +743,7 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (companion-ui-untitled . "(sin título)")
      (companion-ui-plot-point . "Punto de trama")
      (companion-ui-new-scene . "Nueva escena")
+     (companion-ui-new-scene-after . "Nueva escena tras esta")
      (companion-ui-new-chapter . "Nuevo capítulo")
      (companion-ui-move-chapter . "Arrastrar para mover el capítulo")
      (companion-ui-edit-title . "Clic para editar el título")

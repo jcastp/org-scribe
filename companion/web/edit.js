@@ -42,6 +42,45 @@ export function sceneParent(chapter) {
   return chapter.passthrough ? chapter.containerId : chapter.id;
 }
 
+function addButton(label) {
+  const add = el('button', 'add-scene', '+');
+  add.type = 'button';
+  add.title = label;
+  add.setAttribute('aria-label', label);
+  return add;
+}
+
+/** A "new scene" button for the container PARENT_ID, adding after the last of
+ * SCENES (in the manuscript's order).  BEFORE runs first, when given. */
+export function addSceneButton(parentId, scenes, ctx, before) {
+  const add = addButton(ctx.t('companion-ui-new-scene'));
+  add.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (before) before();
+    const last = [...scenes].reverse().find((scene) => scene.id);
+    ctx.edit('create-scene', { parent: parentId, after: last ? last.id : null }, null, true);
+  });
+  return add;
+}
+
+/** A "new chapter" button for ACT, adding after its last chapter.  The title
+ * is asked before the chapter exists: Escape (or nothing typed) leaves no
+ * stray heading behind.  BEFORE runs once a title is given. */
+export function addChapterButton(act, ctx, before) {
+  const label = ctx.t('companion-ui-new-chapter');
+  const add = addButton(label);
+  add.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const last = [...act.chapters].reverse().find((chapter) => chapter.id);
+    startEdit(add, '', false, (title) => {
+      if (!title.trim()) return;
+      if (before) before();
+      ctx.edit('create-chapter', { parent: act.id, after: last ? last.id : null, title }, null, true);
+    }, ctx, label);
+  });
+  return add;
+}
+
 export function moveTo(ctx, id, parentId, after) {
   if (after === null) {
     ctx.notice(ctx.t('companion-ui-cannot-place'));

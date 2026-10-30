@@ -1434,6 +1434,28 @@ The project type must come from ROOT, or a short story is read as a novel."
                   (insert-file-contents (expand-file-name "views/chapters.js" test-companion-commands--web))
                   (re-search-forward "ctx\\.edit\\|set-field" nil t)))))
 
+(ert-deftest test-companion-commands-table-creates-scenes-and-chapters ()
+  "The table adds scenes and chapters with the corkboard's shared buttons."
+  (let ((read (lambda (file)
+                (with-temp-buffer
+                  (insert-file-contents (expand-file-name file test-companion-commands--web))
+                  (buffer-string)))))
+    (let ((edit (funcall read "edit.js"))
+          (table (funcall read "views/table.js"))
+          (corkboard (funcall read "views/corkboard.js")))
+      (should (string-match-p "export function addSceneButton" edit))
+      (should (string-match-p "export function addChapterButton" edit))
+      (should (string-match-p "'create-scene'" edit))
+      (should (string-match-p "'create-chapter'" edit))
+      (dolist (view (list table corkboard))
+        (should (string-match-p "addSceneButton(" view))
+        (should (string-match-p "addChapterButton(" view)))
+      ;; the corkboard no longer carries its own copies
+      (should-not (string-match-p "'create-scene'\\|'create-chapter'" corkboard))
+      ;; insert after a row: the row's own scene is the `after'
+      (should (string-match-p "'create-scene', { parent: parentId, after: scene\\.id }" table))
+      (should (string-match-p "companion-ui-new-scene-after" table)))))
+
 (ert-deftest test-companion-commands-relations-tab-is-wired ()
   (let ((app (with-temp-buffer
                (insert-file-contents (expand-file-name "app.js" test-companion-commands--web))

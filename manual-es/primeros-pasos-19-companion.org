@@ -104,6 +104,15 @@ recuerda). Haz clic en una cabecera para ordenar dentro de cada capítulo
 - *Colorear por* estado o por PoV.
 - El campo *Objetos* funciona como los demás campos de enlace. En Emacs, el mismo
   enlace se fija con ~F8 b~ (Etiquetar escena) y se busca con ~F8 7~.
+- El =+= de una fila de capítulo añade una escena al final de ese capítulo; el
+  =+= de una fila de acto pide un título y añade un capítulo al final del acto
+  (en un cuento añade una escena, como en el corcho).
+- Al pasar el ratón sobre una fila de escena aparece un segundo =+= tras su
+  título: añade una escena justo después de esa. Se oculta mientras la tabla
+  está ordenada, porque entonces la fila de abajo no es la siguiente escena del
+  manuscrito.
+- Una escena nueva recibe el nombre por defecto y el foco: pulsa ~Enter~ (o
+  ~F2~) para renombrarla.
 
 * Parte 4: La línea argumental
 

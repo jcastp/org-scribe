@@ -94,6 +94,14 @@ while sorted).
 - *Colour by* state or by PoV.
 - The *Objects* field works like the other link fields. In Emacs the same
   link is set with ~F8 b~ (Tag Scene) and searched with ~F8 7~.
+- The =+= in a chapter row adds a scene at the end of that chapter; the =+= in
+  an act row asks for a title and adds a chapter at the end of the act (in a
+  short story it adds a scene, as on the corkboard).
+- Hover over a scene row and a second =+= appears after its title: it adds a
+  scene right after that one. It is hidden while the table is sorted, because
+  the row below is then not the next scene in the manuscript.
+- A new scene takes the default name and the focus: press ~Enter~ (or ~F2~)
+  to rename it.
 
 * Part 4: The Storyline
 

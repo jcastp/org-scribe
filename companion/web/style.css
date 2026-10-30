@@ -128,6 +128,11 @@ body.dragging-chapter .cards { display: none; }
 .outline .act-row td { font-weight: 700; font-size: 1.05rem; padding-top: 0.9rem; border-bottom: 2px solid var(--line); }
 .outline .chapter-row.passthrough { display: none; }
 .outline .chapter-row td { font-weight: 600; background: var(--surface); }
+.outline .group-head { display: flex; align-items: center; gap: 0.3rem; }
+.outline .group-head .add-scene { width: 1.5rem; height: 1.5rem; font-weight: 400; }
+.insert-after { margin-left: 0.3rem; padding: 0 0.4rem; line-height: 1.4; border: 1px dashed var(--line); background: transparent; color: inherit; border-radius: 4px; cursor: pointer; opacity: 0; }
+.scene-row:hover .insert-after, .scene-row:focus-within .insert-after { opacity: 1; }
+.insert-after:hover { border-color: var(--accent); }
 .twisty { border: 0; background: transparent; color: inherit; cursor: pointer; margin-right: 0.3rem; }
 .scene-row { border-left: 6px solid var(--row, transparent); }
 .scene-row td:first-child { border-left: 6px solid var(--row, transparent); }

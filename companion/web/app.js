@@ -227,12 +227,18 @@ function renderView() {
   if (state.pendingFocus) {
     const id = state.pendingFocus;
     state.pendingFocus = null;
-    const target = [...document.querySelectorAll('.card, .chapter')].find((node) => node.dataset.id === id);
+    const target = [...document.querySelectorAll('.card, .chapter, .scene-row, .chapter-row')]
+      .find((node) => node.dataset.id === id);
     if (target && target.classList.contains('chapter')) {
       // a new chapter: bring it into view and put the focus on its header
       target.scrollIntoView({ block: 'nearest' });
       const head = target.querySelector('.chapter-head');
       if (head) head.focus();
+    } else if (target && target.matches('.scene-row, .chapter-row')) {
+      // the table: a scene's title (Enter renames it), a chapter's twisty
+      target.scrollIntoView({ block: 'nearest' });
+      const spot = target.querySelector('.title-text.editable, .twisty');
+      if (spot) spot.focus();
     } else if (target) {
       target.focus();
     }

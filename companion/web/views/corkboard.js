@@ -8,7 +8,7 @@
 
 import { todoColor, textOn } from '../colors.js';
 import { matches, isActive } from '../filters.js';
-import { startEdit, moveTo, sceneParent } from '../edit.js';
+import { startEdit, moveTo, sceneParent, addSceneButton, addChapterButton } from '../edit.js';
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -246,20 +246,6 @@ function makeChapterSortable(chapters, ctx) {
   });
 }
 
-/** A "new scene" button for the container PARENT_ID, adding after the last of SCENES. */
-function addSceneButton(parentId, scenes, ctx) {
-  const add = el('button', 'add-scene', '+');
-  add.type = 'button';
-  const label = ctx.t('companion-ui-new-scene');
-  add.title = label;
-  add.setAttribute('aria-label', label);
-  add.addEventListener('click', () => {
-    const last = [...scenes].reverse().find((scene) => scene.id);
-    ctx.edit('create-scene', { parent: parentId, after: last ? last.id : null }, null, true);
-  });
-  return add;
-}
-
 /** Scenes straight under the act (a project with no chapters): cards only. */
 function passthroughRow(chapter, ctx) {
   const row = el('div', 'chapter passthrough');
@@ -336,21 +322,7 @@ export function render(container, ctx) {
       const parent = sceneParent(passthrough);
       if (parent) head.append(addSceneButton(parent, passthrough.scenes, ctx));
     } else if (act.id && !act.readOnly) {
-      const add = el('button', 'add-scene', '+');
-      add.type = 'button';
-      const label = ctx.t('companion-ui-new-chapter');
-      add.title = label;
-      add.setAttribute('aria-label', label);
-      // the title is asked before the chapter exists: Escape (or nothing
-      // typed) leaves no stray heading behind
-      add.addEventListener('click', () => {
-        const last = [...act.chapters].reverse().find((chapter) => chapter.id);
-        startEdit(add, '', false, (title) => {
-          if (!title.trim()) return;
-          ctx.edit('create-chapter', { parent: act.id, after: last ? last.id : null, title }, null, true);
-        }, ctx, label);
-      });
-      head.append(add);
+      head.append(addChapterButton(act, ctx));
     }
     section.append(head);
     const chapters = el('div', 'chapters');
