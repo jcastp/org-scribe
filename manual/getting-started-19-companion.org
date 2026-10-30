@@ -108,11 +108,12 @@ while sorted).
 Scenes run across (numbered, grouped by chapter); characters, plot threads,
 locations and plot points run down.
 
-| Mark  | Meaning                          |
-|-------+----------------------------------|
-| ●     | The character is the PoV         |
-| •     | Present in the scene             |
-| empty | Absent                           |
+| Mark          | Meaning                                                     |
+|---------------+-------------------------------------------------------------|
+| ━ (a line)    | Present in the scene; consecutive scenes join into one line |
+| ◉ on the line | The character is the PoV                                    |
+| ○             | The PoV, but not listed among the scene's characters        |
+| empty         | Absent                                                      |
 
 Click a cell to add or remove the link. ~Shift+click~ on a character sets (or
 clears) the PoV. Click a row name or a scene number to open it in Emacs.

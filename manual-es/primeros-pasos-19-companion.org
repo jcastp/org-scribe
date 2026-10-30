@@ -119,11 +119,12 @@ recuerda). Haz clic en una cabecera para ordenar dentro de cada capítulo
 Las escenas van a lo ancho (numeradas, agrupadas por capítulo); los personajes,
 los hilos de la trama, los escenarios y los puntos de trama van hacia abajo.
 
-| Marca | Significado            |
-|-------+------------------------|
-| ●     | El personaje es el PoV |
-| •     | Presente en la escena  |
-| vacío | Ausente                |
+| Marca            | Significado                                                       |
+|------------------+-------------------------------------------------------------------|
+| ━ (una línea)    | Presente en la escena; las escenas seguidas forman una sola línea |
+| ◉ sobre la línea | El personaje es el PoV                                            |
+| ○                | El PoV, pero no figura entre los personajes de la escena          |
+| vacío            | Ausente                                                           |
 
 Haz clic en una celda para añadir o quitar el enlace. ~Mayús+clic~ sobre un
 personaje fija (o quita) el PoV. Haz clic en el nombre de una fila o en el número

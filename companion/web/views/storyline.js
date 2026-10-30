@@ -1,6 +1,7 @@
 // Storyline: scenes across (chapter separators on top), entities down,
-// grouped as characters, plot threads, locations and plot points.  A filled
-// cell is the PoV, a dot is "present", an empty cell is "absent".  Clicking a
+// grouped as characters, plot threads, locations and plot points.  A line
+// is "present" (consecutive scenes join into one), a bullseye on it is the
+// PoV, an empty cell is "absent".  Clicking a
 // cell toggles the link in the scene; Shift+click on a character sets or
 // clears the PoV; clicking a row header opens the entity in Emacs.
 // Entities with a negative Weight are left out, with a "not shown" line under
@@ -61,8 +62,12 @@ function cell(scene, group, entity, flags, ctx) {
   button.setAttribute('aria-pressed', String(present));
   button.setAttribute('aria-label', `${entity.name} / ${scene.title}`);
   button.title = `${entity.name} / ${scene.title}`;
-  if (pov) { button.classList.add('pov'); button.textContent = present ? '●' : '○'; button.title += ` (${ctx.t('companion-ui-pov')})`; }
-  else if (present) { button.classList.add('present'); button.textContent = '•'; }
+  // the marks are drawn by the CSS: a line for present (it joins the
+  // neighbouring scenes), a bullseye on it for the PoV, a ring for a PoV
+  // that is not among the scene's characters
+  if (present) button.classList.add('present');
+  if (pov) { button.classList.add('pov'); button.title += ` (${ctx.t('companion-ui-pov')})`; }
+  button.append(el('span', 'sl-mark'));
   if (!editable(scene)) button.disabled = true;
   button.addEventListener('click', (event) => {
     if (event.shiftKey && group.kind === 'character') togglePov(scene, entity.id, ctx);
