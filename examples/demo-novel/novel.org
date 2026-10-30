@@ -235,6 +235,7 @@ Update with =C-c C-c= on the #+BEGIN line.
 :Plot-point: [[id:pp-02-weakness-lie-need][2. Weakness, Lie and Need]]
 :Timeline: Day 1, 06:30
 :Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Objects: [[id:obj-unmade-bed-001][The unmade bed]]
 :Description: Alex wakes up three times and gets up once
 :Summary: The alarm goes off at 6:30, 6:45 and 7:00. Alex is awake for the third one and has a meeting at nine.
 :Scene-motivation: Alex wants thirty more minutes
@@ -292,6 +293,7 @@ Vary the entry points.
 :Plot-point: [[id:pp-01-theme-stated][1. Theme Stated]]
 :Timeline: Day 1, 07:45
 :Location: [[id:loc-coffee-shop-001][The Corner Coffee Shop]]
+:Objects: [[id:obj-notebook-001][Sam's notebook]], [[id:obj-notification-badge-001][The notification badge]]
 :Description: Sam states the theme and Alex hears a hobby
 :Summary: Queueing for coffee, Alex meets Sam from 4B, who mentions tracking a morning routine every day and calls it freeing.
 :Scene-motivation: Alex wants coffee in under five minutes
@@ -369,6 +371,7 @@ some pride in it, and none of that shows. One slightly superior line.
 :Plot-point: [[id:pp-06-crossing-threshold][6. Crossing the Threshold]]
 :Timeline: Day 1, 20:30
 :Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Objects: [[id:obj-wristwatch-001][Marisol's wristwatch]]
 :Description: Alex finds the watch and writes Day 1
 :Summary: After a day of near-misses, Alex uncovers Marisol's watch under the mail, puts it on, and sets an alarm for a stated hour.
 :Scene-motivation: Alex wants the day to have been someone else's fault
@@ -477,6 +480,7 @@ book.
 :Plot-point: [[id:pp-03-desire][3. Desire]], [[id:pp-05-opponent][5. Opponent]]
 :Timeline: Day 2, 18:20
 :Location: [[id:loc-agency-001][Okonkwo & Field]]
+:Objects: [[id:obj-lobby-clock-001][The lobby clock at Okonkwo & Field]]
 :Description: Dana states her Stance and offers exactly the wrong help
 :Summary: Dana hears about Halloran, is kind about it, names the Kestrel retainer, and explains why Alex is not the kind of person who takes retainers.
 :Scene-motivation: Alex wants work to replace what they lost today
@@ -536,6 +540,7 @@ immediately withdraws.
 :Plot-point: [[id:pp-07-plan][7. Plan]]
 :Timeline: Day 3, 06:00
 :Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Objects: [[id:obj-wristwatch-001][Marisol's wristwatch]], [[id:obj-unmade-bed-001][The unmade bed]]
 :Description: Alex copies Sam's routine to the minute and it does not fit
 :Summary: Alex wakes at six without snoozing, makes the bed, attempts meditation, and is exhausted and late by half past seven.
 :Scene-motivation: Alex wants to prove the change is already done
@@ -785,6 +790,7 @@ Dana should give the call to Priya on the spot, warmly, in front of Alex.
 :Plot-point: [[id:pp-10-apparent-defeat][10. Apparent Defeat]]
 :Timeline: Day 23, 08:00
 :Location: [[id:loc-bell-lane-001][Bell Lane Day Centre]]
+:Objects: [[id:obj-notebook-001][Sam's notebook]]
 :Description: The call that is not answered, and what the notebook is
 :Summary: Alex asks Sam for the handover one last time. Sam takes it, misses the 8:00 call, and the Bell Lane place goes to the next name.
 :Scene-motivation: Alex wants forty minutes to prepare the pitch
@@ -830,6 +836,7 @@ one — see the Worldbuilding section.
 :Plot-point: [[id:pp-10-apparent-defeat][10. Apparent Defeat]]
 :Timeline: Day 23, 22:40
 :Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Objects: [[id:obj-wristwatch-001][Marisol's wristwatch]]
 :Description: A forwarded message chain with the timestamps left on
 :Summary: A misdirected forward shows Alex a year of Priya passing their free mornings to Dana. Alex looks at the watch and it has stopped.
 :Scene-motivation: Alex wants to not be in this day any more
@@ -888,6 +895,7 @@ No "and Alex understood that". Pass 8 will hunt for exactly that sentence.
 :Plot-point: [[id:pp-11-self-revelation][11. Self-Revelation]]
 :Timeline: Day 24, 06:00
 :Location: [[id:loc-alex-flat-001][Alex's Flat, 4A]]
+:Objects: [[id:obj-wristwatch-001][Marisol's wristwatch]], [[id:obj-unmade-bed-001][The unmade bed]]
 :Description: Alex winds the watch and offers an hour with a number on it
 :Summary: Alex winds the watch for the first time, sees what actually happened the morning Marisol died, and offers Sam the nine o'clock drive.
 :Scene-motivation: Alex wants to give back an hour, which is a thing they have never done
@@ -941,6 +949,7 @@ flattest on this page.
 :Plot-point: [[id:pp-12-battle][12. Battle]], [[id:pp-13-moral-decision][13. Moral Decision]]
 :Timeline: Day 25, 08:40
 :Location: [[id:loc-agency-001][Okonkwo & Field]]
+:Objects: [[id:obj-lobby-clock-001][The lobby clock at Okonkwo & Field]]
 :Description: The lobby, the lift, the car, and eleven minutes
 :Summary: Dana argues for the pitch and argues well. Alex chooses the drive, loses the retainer, and says the hour out loud.
 :Scene-motivation: Alex wants both, and cannot have both
@@ -989,6 +998,7 @@ already waiting, already early. One line, no comment on it.
 :Plot-point: [[id:pp-13-moral-decision][13. Moral Decision]]
 :Timeline: Day 67, 07:00
 :Location: [[id:loc-coffee-shop-001][The Corner Coffee Shop]]
+:Objects: [[id:obj-wristwatch-001][Marisol's wristwatch]]
 :Description: The new equilibrium, and the wheel still turning
 :Summary: Six weeks on, Alex offers a stranger the sentence Sam once offered them, without preaching, and has time.
 :Scene-motivation: Alex wants nothing. That is the point of the scene

@@ -1304,46 +1304,47 @@ viven en la sección Construcción del mundo. Las tres que condicionan la trama:
 ** Objetos
 
 #+begin_comment
-Los objetos no son un tipo de entidad enlazado: no hay enlaces por ID desde
-las escenas a este archivo, y nada de lo que hay aquí aparece en el informe de
-salud. Es un archivo de referencia, que se rellena con F8 k b.
+Los objetos son un tipo de entidad enlazado: cada uno de los de abajo es hijo
+directo de esta sección y lleva un Type, de modo que las escenas pueden
+enlazarlos por ID (F8 F8 b) y la búsqueda de objetos los encuentra (F8 F8 7).
+Se rellena con F8 k b.
 
-Por eso la disciplina útil es conservar solo los objetos que hacen algo. Cada
-uno de estos es uno de los cinco símbolos nombrados en diseno.org, y cada uno
-cambia a lo largo del libro. Un símbolo que no cambia es decoración, y la
-decoración pertenece al borrador, no a un archivo.
+La disciplina útil es conservar solo los objetos que hacen algo. Cada uno de
+estos es uno de los cinco símbolos nombrados en diseno.org, y cada uno cambia
+a lo largo del libro. Un símbolo que no cambia es decoración, y la decoración
+pertenece al borrador, no a un archivo.
 #+end_comment
 
-*** Objetos Simbólicos
 
-**** El reloj de pulsera de Marisol
+*** El reloj de pulsera de Marisol
 :PROPERTIES:
+:ID: es-obj-wristwatch-001
 :Type: Símbolo de la historia / Símbolo de cambio
 :Owner: Alex Rivera (heredado)
 :First-appearance: Capítulo 2, Escena 1
 :Status: Parado durante los dos primeros tercios del libro
 :END:
 
-***** Descripción Física
+**** Descripción Física
 
 Un reloj de pulsera mecánico de los años sesenta con una correa de cuero
 gastada, pequeño para los estándares actuales, con una esfera que se ha
 amarilleado por igual. Sin pila, sin alarma, sin fecha. Funciona unas treinta y
 seis horas con la cuerda completa y no avisa antes de pararse.
 
-***** Origen
+**** Origen
 
 Marisol Rivera lo llevó cada día durante cincuenta años. Lleva dos años bajo
 el montón de correo de la mesita de Alex.
 
-***** Importancia en la Trama
+**** Importancia en la Trama
 
 Es la rutina, no una metáfora de ella. A un reloj mecánico hay que darle cuerda
 a mano, más o menos a la misma hora, todos los días, o deja de dar la hora
 bien sin que nadie se entere. Todo lo que el libro sostiene sobre los días ya es
 cierto de este objeto.
 
-***** Historia del Objeto
+**** Historia del Objeto
 
 - Capítulo 2, Escena 1 :: Lo encuentra bajo el correo. Alex se lo pone y no le
   da cuerda.
@@ -1355,64 +1356,65 @@ cierto de este objeto.
   autorrevelación.
 - Capítulo 8, Escena 2 :: Le da cuerda cada mañana, sin comentarlo.
 
-***** Simbolismo
+**** Simbolismo
 
 De la historia, y del cambio. Las dos cosas son el mismo objeto a propósito:
 lo que representa el tema es también lo que visiblemente se transforma.
 
-***** Reglas y límites
+**** Reglas y límites
 
 Treinta y seis horas. No anuncia que se ha parado. Mira la sección
 Construcción del mundo, «Reglas y límites»: una regla sin coste no es una
 regla, y esta le cuesta a Alex el momento en que por fin lee la esfera.
 
-***** Notas
+**** Notas
 
 Ahora mismo hay dos errores de continuidad en el borrador: el Capítulo 2
 Escena 1 dice que el reloj «sigue dando tictacs», y el Capítulo 3 Escena 1 le
 pone una alarma. Ambos están marcados con marcadores *EDIT*: trama en
 novela.org y saldrán en el índice de ediciones (=F8 6=).
 
-**** El cuaderno de Sam
+*** El cuaderno de Sam
 :PROPERTIES:
+:ID: es-obj-notebook-001
 :Type: Símbolo de personaje
 :Owner: Sam Chen
 :First-appearance: Capítulo 1, Escena 2
 :Status: No se abre en la página hasta el Capítulo 6
 :END:
 
-***** Descripción Física
+**** Descripción Física
 
 Pequeño, de papel, de tapa blanda y lleno. Una goma elástica alrededor. Sam lo
 saca en compañía y no lo abre.
 
-***** Importancia en la Trama
+**** Importancia en la Trama
 
 Es el único malentendido deliberado del libro. Durante cinco capítulos el
 lector ve, a través de Alex, el emblema de una vida bien organizada. En el
 Capítulo 6 se abre y es un registro de medicación que se remonta catorce meses.
 
-***** Simbolismo
+**** Simbolismo
 
 De personaje: para Sam, y por error para Alex, que ha estado aspirando a un
 objeto cuyo contenido nunca preguntó. La lectura de mentor es un error de
 Alex y el cuaderno es donde se guarda.
 
-***** Reglas y límites
+**** Reglas y límites
 
 Tiene que verse pronto, a menudo y sin abrirse nunca. Si una sola línea del
 Acto I insinúa su contenido, la revelación del Capítulo 6 pasa a ser una
 confirmación en lugar de una corrección.
 
-***** Notas
+**** Notas
 
 Emparejado con el reloj a propósito: un objeto que hay que mantener a diario,
 otro que registra ese mantenimiento. Alex adquiere los dos, en ese orden.
 
-*** Objetos Cotidianos Relevantes
 
-**** La cama sin hacer
+*** La cama sin hacer
 :PROPERTIES:
+:ID: es-obj-unmade-bed-001
 :Type: Símbolo de acción
 :Owner: Alex Rivera
 :First-appearance: Capítulo 1, Escena 1
@@ -1424,8 +1426,9 @@ Acto I, hecho de cara a un público de una sola persona en el Acto II, sincero
 en el Acto III. Es el símbolo más barato del libro y el que más trabajo hace
 por palabra.
 
-**** La insignia de notificaciones
+*** La insignia de notificaciones
 :PROPERTIES:
+:ID: es-obj-notification-badge-001
 :Type: Símbolo de mundo
 :Owner: Todo el mundo
 :First-appearance: Capítulo 1, Escena 2
@@ -1436,8 +1439,9 @@ Un número que solo sube. Es el Problema del Mundo convertido en objeto, y se
 puede poner en cualquier escena que necesite complicarse: mira la Caja de
 complicaciones en diseno.org.
 
-**** El reloj del vestíbulo de Okonkwo & Field
+*** El reloj del vestíbulo de Okonkwo & Field
 :PROPERTIES:
+:ID: es-obj-lobby-clock-001
 :Type: Detalle de escenario
 :Owner: Dana Okonkwo
 :First-appearance: Capítulo 2, Escena 3

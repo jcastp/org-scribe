@@ -1273,45 +1273,45 @@ live in the Worldbuilding section. The three that constrain the plot:
 ** Objects
 
 #+begin_comment
-Objects are not a linked entity type — there are no ID links from scenes to
-this file, and nothing here appears in the health report. It is a reference
-file, captured with F8 k b.
+Objects are a linked entity type: each one below is an immediate child of this
+section and carries a Type, so scenes can link to it by ID (F8 F8 b) and
+the Objects search finds them (F8 F8 7). Captured with F8 k b.
 
-Which is why the useful discipline is to keep only objects that do
-something. Each of these is one of the five symbols named in design.org,
-and each one changes over the course of the book. A symbol that does not
-change is decoration, and decoration belongs in the draft, not in a file.
+The useful discipline is to keep only objects that do something. Each of these
+is one of the five symbols named in design.org, and each one changes over the
+course of the book. A symbol that does not change is decoration, and
+decoration belongs in the draft, not in a file.
 #+end_comment
 
-*** Symbolic Objects
 
-**** Marisol's wristwatch
+*** Marisol's wristwatch
 :PROPERTIES:
+:ID: obj-wristwatch-001
 :Type: Symbol of the story / Symbol of change
 :Owner: Alex Rivera (inherited)
 :First-appearance: Chapter 2, Scene 1
 :Status: Stopped for the first two-thirds of the book
 :END:
 
-***** Physical Description
+**** Physical Description
 
 A 1960s mechanical wristwatch on a worn leather strap, small by modern
 standards, with a face that has yellowed evenly. No battery, no alarm, no
 date. It runs for about thirty-six hours on a full wind and gives no warning
 before it stops.
 
-***** Origin
+**** Origin
 
 Marisol Rivera wore it every day for fifty years. It has been under the mail
 pile on Alex's coffee table for two of them.
 
-***** Importance in the Plot
+**** Importance in the Plot
 
 It is the routine, not a metaphor for it. A mechanical watch has to be wound
 by hand, at roughly the same time, every day, or it silently stops being
 right. Everything the book argues about days is already true of this object.
 
-***** Object History
+**** Object History
 
 - Chapter 2, Scene 1 :: Found under the mail. Alex puts it on and does not
   wind it.
@@ -1323,64 +1323,65 @@ right. Everything the book argues about days is already true of this object.
   self-revelation.
 - Chapter 8, Scene 2 :: Wound every morning, unremarked.
 
-***** Symbolism
+**** Symbolism
 
 Of the story, and of change. The two are the same object on purpose: the
 thing that stands for the theme is also the thing that visibly alters.
 
-***** Rules and limitations
+**** Rules and limitations
 
 Thirty-six hours. It does not announce that it has stopped. See
 the Worldbuilding section, "Rules and limits" — a rule with no cost is not a
 rule, and this one costs Alex the moment they finally read the face.
 
-***** Notes
+**** Notes
 
 Two continuity errors are currently in the draft: Chapter 2 Scene 1 says the
 watch is "still ticking", and Chapter 3 Scene 1 gives it an alarm. Both are
 flagged with *EDIT*: plot markers in novel.org and will show up in the edit
 index (=F8 6=).
 
-**** Sam's notebook
+*** Sam's notebook
 :PROPERTIES:
+:ID: obj-notebook-001
 :Type: Symbol of character
 :Owner: Sam Chen
 :First-appearance: Chapter 1, Scene 2
 :Status: Never opened on the page until Chapter 6
 :END:
 
-***** Physical Description
+**** Physical Description
 
 Small, paper, softcover, and full. Rubber band around it. Sam takes it out
 in company and does not open it.
 
-***** Importance in the Plot
+**** Importance in the Plot
 
 It is the book's one deliberate misreading. For five chapters the reader
 sees, through Alex, an emblem of a well-organized life. In Chapter 6 it is
 opened and it is a medication log going back fourteen months.
 
-***** Symbolism
+**** Symbolism
 
 Of character — for Sam, and by mistake for Alex, who has been aspiring to an
 object whose contents they never asked about. The mentor reading is Alex's
 error and the notebook is where it is stored.
 
-***** Rules and limitations
+**** Rules and limitations
 
 It must be visible early, often, and never opened. If a single line in Act I
 implies its contents, the Chapter 6 reveal becomes a confirmation instead of
 a correction.
 
-***** Notes
+**** Notes
 
 Paired with the watch on purpose: one object that must be maintained daily,
 one object that records that maintenance. Alex acquires both, in that order.
 
-*** Relevant Everyday Objects
 
-**** The unmade bed
+*** The unmade bed
 :PROPERTIES:
+:ID: obj-unmade-bed-001
 :Type: Symbol of action
 :Owner: Alex Rivera
 :First-appearance: Chapter 1, Scene 1
@@ -1391,8 +1392,9 @@ The same act three times, meaning something different each time: absurd in
 Act I, performed for an audience of one in Act II, sincere in Act III. It is
 the cheapest symbol in the book and does the most work per word.
 
-**** The notification badge
+*** The notification badge
 :PROPERTIES:
+:ID: obj-notification-badge-001
 :Type: Symbol of world
 :Owner: Everybody
 :First-appearance: Chapter 1, Scene 2
@@ -1403,8 +1405,9 @@ A number that only ever goes up. It is the World Problem rendered as an
 object, and it can be put in any scene that needs complicating — see the Box
 of complications in design.org.
 
-**** The lobby clock at Okonkwo & Field
+*** The lobby clock at Okonkwo & Field
 :PROPERTIES:
+:ID: obj-lobby-clock-001
 :Type: Setting detail
 :Owner: Dana Okonkwo
 :First-appearance: Chapter 2, Scene 3

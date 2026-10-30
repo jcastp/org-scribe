@@ -124,7 +124,21 @@ Futuro cercano: 2047. La computación cuántica es corriente, pero la comunicaci
 
 * Objetos
 
-# Las capturas de objetos van aquí si es necesario: la cámara de entrelazamiento cuántico, las claves de cifrado, etc.
+** Cámara de entrelazamiento cuántico
+:PROPERTIES:
+:ID:       es-obj-entanglement-chamber-20250114-001
+:Type:     Tecnología
+:END:
+
+La cámara de brillo azul en el centro del laboratorio, que zumba a su frecuencia de medianoche. A Elena el zumbido le resulta reconfortante; también es el aparato por el que llega el mensaje.
+
+** La clave privada de Elena
+:PROPERTIES:
+:ID:       es-obj-private-key-20250114-001
+:Type:     Artefacto
+:END:
+
+La clave de cifrado privada que solo Elena conoce. Es lo que hace imposible falsificar el mensaje, y por tanto imposible descartarlo.
 
 * Línea Temporal
 

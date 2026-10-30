@@ -22,7 +22,7 @@ Es la única fuente del emparejamiento entre los dos manuales: las pruebas
 =traducido= (existe, sin revisar), =revisado= (aprobado).
 
 | Inglés (=manual/=)                            | Español (=manual-es/=)                           | Estado   |
-|-----------------------------------------------+--------------------------------------------------+----------|
+|---------------------------------------------+------------------------------------------------+----------|
 | =00-feature-index.org=                        | =00-indice-funciones.org=                        | revisado |
 | =getting-started-00-index.org=                | =primeros-pasos-00-indice.org=                   | revisado |
 | =getting-started-01-creating-projects.org=    | =primeros-pasos-01-crear-proyectos.org=          | revisado |

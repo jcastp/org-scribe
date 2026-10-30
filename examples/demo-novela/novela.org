@@ -236,6 +236,7 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :Punto-de-trama: [[id:es-pp-02-weakness-lie-need][2. Debilidad, Mentira y Necesidad]]
 :Linea-temporal: Día 1, 06:30
 :Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Objetos: [[id:es-obj-unmade-bed-001][La cama sin hacer]]
 :Descripcion: Alex se despierta tres veces y se levanta una
 :Resumen: La alarma suena a las 6:30, a las 6:45 y a las 7:00. Alex está despierta para la tercera y tiene una reunión a las nueve.
 :Motivacion-escena: Alex quiere treinta minutos más
@@ -294,6 +295,7 @@ Varía los puntos de entrada.
 :Punto-de-trama: [[id:es-pp-01-theme-stated][1. Susurro del tema]]
 :Linea-temporal: Día 1, 07:45
 :Localizacion: [[id:es-loc-coffee-shop-001][La cafetería de la esquina]]
+:Objetos: [[id:es-obj-notebook-001][El cuaderno de Sam]], [[id:es-obj-notification-badge-001][La insignia de notificaciones]]
 :Descripcion: Sam enuncia el tema y Alex oye una afición
 :Resumen: En la cola del café, Alex se encuentra con Sam, de 4B, que cuenta que apunta cada día su rutina matinal y que lo llama liberador.
 :Motivacion-escena: Alex quiere un café en menos de cinco minutos
@@ -380,6 +382,7 @@ ligeramente superior.
 :Punto-de-trama: [[id:es-pp-06-crossing-threshold][6. Cruzar el umbral]]
 :Linea-temporal: Día 1, 20:30
 :Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Objetos: [[id:es-obj-wristwatch-001][El reloj de pulsera de Marisol]]
 :Descripcion: Alex encuentra el reloj y escribe Día 1
 :Resumen: Tras un día de casi-desastres, Alex descubre el reloj de Marisol bajo el correo, se lo pone y fija una alarma a una hora declarada.
 :Motivacion-escena: Alex quiere que el día haya sido culpa de otra persona
@@ -492,6 +495,7 @@ pequeño.
 :Punto-de-trama: [[id:es-pp-03-desire][3. Deseo]], [[id:es-pp-05-opponent][5. Oponente]]
 :Linea-temporal: Día 2, 18:20
 :Localizacion: [[id:es-loc-agency-001][Okonkwo & Field]]
+:Objetos: [[id:es-obj-lobby-clock-001][El reloj del vestíbulo de Okonkwo & Field]]
 :Descripcion: Dana enuncia su Postura y ofrece exactamente la ayuda equivocada
 :Resumen: Dana se entera de lo de Halloran, es amable al respecto, nombra el contrato de Kestrel y explica por qué Alex no es de las que aceptan contratos.
 :Motivacion-escena: Alex quiere trabajo que reemplace lo que ha perdido hoy
@@ -550,6 +554,7 @@ retire de inmediato.
 :Punto-de-trama: [[id:es-pp-07-plan][7. Plan]]
 :Linea-temporal: Día 3, 06:00
 :Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Objetos: [[id:es-obj-wristwatch-001][El reloj de pulsera de Marisol]], [[id:es-obj-unmade-bed-001][La cama sin hacer]]
 :Descripcion: Alex copia la rutina de Sam al minuto y no encaja
 :Resumen: Alex se despierta a las seis sin posponer, hace la cama, intenta meditar y a las siete y media está agotada y llega tarde.
 :Motivacion-escena: Alex quiere demostrar que el cambio ya está hecho
@@ -800,6 +805,7 @@ de Alex.
 :Punto-de-trama: [[id:es-pp-10-apparent-defeat][10. Aparente derrota]]
 :Linea-temporal: Día 23, 08:00
 :Localizacion: [[id:es-loc-bell-lane-001][Centro de Día de Bell Lane]]
+:Objetos: [[id:es-obj-notebook-001][El cuaderno de Sam]]
 :Descripcion: La llamada que no se atiende, y lo que es la libreta
 :Resumen: Alex le pide a Sam la entrega una última vez. Sam la recibe, pierde la llamada de las 8:00 y la plaza de Bell Lane pasa al siguiente nombre.
 :Motivacion-escena: Alex quiere cuarenta minutos para preparar la presentación
@@ -845,6 +851,7 @@ no de prosa: mira la sección Construcción del mundo.
 :Punto-de-trama: [[id:es-pp-10-apparent-defeat][10. Aparente derrota]]
 :Linea-temporal: Día 23, 22:40
 :Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Objetos: [[id:es-obj-wristwatch-001][El reloj de pulsera de Marisol]]
 :Descripcion: Una cadena de mensajes reenviados con las marcas de hora puestas
 :Resumen: Un reenvío equivocado le muestra a Alex un año de Priya pasándole a Dana sus mañanas libres. Alex mira el reloj y se ha parado.
 :Motivacion-escena: Alex quiere dejar de estar en este día
@@ -902,6 +909,7 @@ Nada de «y Alex comprendió que». El Pase 8 buscará exactamente esa frase.
 :Punto-de-trama: [[id:es-pp-11-self-revelation][11. Autorrevelación]]
 :Linea-temporal: Día 24, 06:00
 :Localizacion: [[id:es-loc-alex-flat-001][El piso de Alex (4A)]]
+:Objetos: [[id:es-obj-wristwatch-001][El reloj de pulsera de Marisol]], [[id:es-obj-unmade-bed-001][La cama sin hacer]]
 :Descripcion: Alex da cuerda al reloj y ofrece una hora con un número pegado
 :Resumen: Alex da cuerda al reloj por primera vez, ve lo que ocurrió de verdad la mañana en que murió Marisol y le ofrece a Sam llevarle en coche a las nueve.
 :Motivacion-escena: Alex quiere devolver una hora, algo que nunca ha hecho
@@ -955,6 +963,7 @@ en esta página.
 :Punto-de-trama: [[id:es-pp-12-battle][12. Batalla]], [[id:es-pp-13-moral-decision][13. Decisión moral]]
 :Linea-temporal: Día 25, 08:40
 :Localizacion: [[id:es-loc-agency-001][Okonkwo & Field]]
+:Objetos: [[id:es-obj-lobby-clock-001][El reloj del vestíbulo de Okonkwo & Field]]
 :Descripcion: El vestíbulo, el ascensor, el coche y once minutos
 :Resumen: Dana defiende la presentación y la defiende bien. Alex elige el trayecto, pierde el contrato y dice la hora en voz alta.
 :Motivacion-escena: Alex quiere las dos cosas, y no puede tener las dos
@@ -1003,6 +1012,7 @@ ya esperando, con antelación. Una línea, sin comentarla.
 :Punto-de-trama: [[id:es-pp-13-moral-decision][13. Decisión moral]]
 :Linea-temporal: Día 67, 07:00
 :Localizacion: [[id:es-loc-coffee-shop-001][La cafetería de la esquina]]
+:Objetos: [[id:es-obj-wristwatch-001][El reloj de pulsera de Marisol]]
 :Descripcion: El nuevo equilibrio, y la rueda que sigue girando
 :Resumen: Seis semanas después, Alex le ofrece a alguien desconocido la frase que Sam una vez le ofreció a ella, sin sermonear, y tiene tiempo.
 :Motivacion-escena: Alex no quiere nada. Ese es el sentido de la escena

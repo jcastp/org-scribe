@@ -124,7 +124,21 @@ Near future—2047. Quantum computing is common, but quantum communication throu
 
 * Objects
 
-# Important objects in the story - quantum entanglement chamber, encryption keys, etc.
+** Quantum entanglement chamber
+:PROPERTIES:
+:ID:       obj-entanglement-chamber-20250114-001
+:Type:     Technology
+:END:
+
+The blue-glowing chamber at the centre of the lab, humming at its midnight frequency. Elena finds the hum comforting; it is also the device through which the message arrives.
+
+** Elena's private key
+:PROPERTIES:
+:ID:       obj-private-key-20250114-001
+:Type:     Artifact
+:END:
+
+The private encryption key only Elena knows. It is what makes the message impossible to fake, and so impossible to dismiss.
 
 * Timeline
 

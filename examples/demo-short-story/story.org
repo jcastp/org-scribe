@@ -76,7 +76,7 @@ maintain here.
 :Plot-point:
 :Timeline: Day 1, 03:47
 :Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
-:Objects:
+:Objects: [[id:obj-entanglement-chamber-20250114-001][Quantum entanglement chamber]], [[id:obj-private-key-20250114-001][Elena's private key]]
 :Description:
 :Summary: Elena discovers an encrypted quantum message on her lab computer that could only have been sent by someone with intimate knowledge of her work—herself.
 :Scene-motivation:
@@ -122,7 +122,7 @@ Except she was about to test exactly that tomorrow morning.
 :Plot-point:
 :Timeline: Day 1, 04:15
 :Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
-:Objects:
+:Objects: [[id:obj-entanglement-chamber-20250114-001][Quantum entanglement chamber]]
 :Description:
 :Summary: Elena debates whether to trust the message. She consults her notes, discovers the theoretical possibility of a causality loop, and makes her decision.
 :Scene-motivation:
@@ -164,7 +164,7 @@ Either way, she was trapped.
 :Plot-point:
 :Timeline: Day 2, 09:00
 :Location: [[id:loc-cern-lab-20250114-001][CERN Quantum Research Lab]]
-:Objects:
+:Objects: [[id:obj-private-key-20250114-001][Elena's private key]]
 :Description:
 :Summary: Elena runs the test despite the warning, discovers the cascade effect, and realizes she must send the message that started it all, completing the loop.
 :Scene-motivation:

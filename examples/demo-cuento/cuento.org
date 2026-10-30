@@ -76,7 +76,7 @@ cargar un plan.
 :Punto-de-trama:
 :Linea-temporal: Día 1, 03:47
 :Localizacion: [[id:es-loc-cern-lab-20250114-001][Laboratorio de Investigación Cuántica del CERN]]
-:Objetos:
+:Objetos: [[id:es-obj-entanglement-chamber-20250114-001][Cámara de entrelazamiento cuántico]], [[id:es-obj-private-key-20250114-001][La clave privada de Elena]]
 :Descripcion:
 :Resumen: Elena descubre en el ordenador del laboratorio un mensaje cuántico cifrado que solo pudo enviar alguien con un conocimiento íntimo de su trabajo: ella misma.
 :Motivacion-escena:
@@ -122,7 +122,7 @@ Salvo que ella estaba a punto de poner a prueba justamente eso a la mañana sigu
 :Punto-de-trama:
 :Linea-temporal: Día 1, 04:15
 :Localizacion: [[id:es-loc-cern-lab-20250114-001][Laboratorio de Investigación Cuántica del CERN]]
-:Objetos:
+:Objetos: [[id:es-obj-entanglement-chamber-20250114-001][Cámara de entrelazamiento cuántico]]
 :Descripcion:
 :Resumen: Elena duda si fiarse del mensaje. Consulta sus notas, descubre la posibilidad teórica de un bucle causal y toma una decisión.
 :Motivacion-escena:
@@ -164,7 +164,7 @@ Fuera como fuese, estaba atrapada.
 :Punto-de-trama:
 :Linea-temporal: Día 2, 09:00
 :Localizacion: [[id:es-loc-cern-lab-20250114-001][Laboratorio de Investigación Cuántica del CERN]]
-:Objetos:
+:Objetos: [[id:es-obj-private-key-20250114-001][La clave privada de Elena]]
 :Descripcion:
 :Resumen: Elena realiza la prueba a pesar de la advertencia, descubre el efecto cascada y comprende que debe enviar el mensaje que lo empezó todo, cerrando el bucle.
 :Motivacion-escena:
