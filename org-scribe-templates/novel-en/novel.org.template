@@ -87,9 +87,6 @@ Update with =C-c C-c= on the #+BEGIN line.
 #+BEGIN: character-timeline
 #+END:
 
-* Quick Navigation :ignore:noexport:
-- [[file:design.org][Design notebook]]
-
 * Act I :ignore:
 :PROPERTIES:
 :CUSTOM_ID: act-1

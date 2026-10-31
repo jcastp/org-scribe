@@ -87,9 +87,6 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 #+BEGIN: character-timeline
 #+END:
 
-* Navegación Rápida :ignore:noexport:
-- [[file:diseno.org][Cuaderno de diseño]]
-
 * Acto I :ignore:
 :PROPERTIES:
 :CUSTOM_ID: acto-1

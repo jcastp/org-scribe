@@ -179,15 +179,14 @@ This is where you'll write your actual story.
 - One starting scene under "Story Content", which holds the whole word target (add more with F8 s)
 - Scene templates with properties (PoV, Characters, Location, etc.)
 - Integrated word count tracking table
-- A quick navigation link to the design notebook
 
 No export configuration ships in the templates — it carried absolute paths and
 LaTeX classes that were personal to one machine. Add your own ~#+LATEX_CLASS~
 and friends if you export; Lesson 11 covers it.
 
 *What to do now*:
-1. Find the Quick Navigation link that says: ~[[file:design.org][Design notebook]]~
-2. Click it (or press ~C-c C-o~ while cursor is on the link)
+1. Press ~F8~ (Hydra menu), then ~o~ (Open file)
+2. Choose ~design.org~
 3. You'll jump to design.org!
 
 *** design.org (Planning & Research)

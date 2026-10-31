@@ -60,9 +60,6 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 #+BEGIN: character-timeline
 #+END:
 
-* Enlaces Rápidos :noexport:
-- [[file:diseno.org][Cuaderno de diseño]]
-
 * Contenido del Cuento
 :PROPERTIES:
 :WORDCOUNT: 0

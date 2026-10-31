@@ -185,15 +185,14 @@ Aquí es donde escribirás tu cuento.
 - Una escena inicial bajo «Contenido del Cuento», que carga con todo el objetivo de palabras (añade más con ~F8 s~)
 - Plantillas de escena con propiedades (PoV, Personajes, Localizacion, etc.)
 - Una tabla integrada de seguimiento del recuento de palabras
-- Un enlace de navegación rápida al cuaderno de diseño
 
 Las plantillas no traen configuración de exportación: la que traían antes llevaba rutas
 absolutas y clases de LaTeX propias de una sola máquina. Añade tus propios
 ~#+LATEX_CLASS~ y compañía si exportas; la Lección 11 lo explica.
 
 *Qué hacer ahora*:
-1. Busca el enlace de Navegación rápida que dice: ~[[file:diseno.org][Cuaderno de diseño]]~
-2. Haz clic en él (o pulsa ~C-c C-o~ con el cursor sobre el enlace)
+1. Pulsa ~F8~ (menú Hydra) y luego ~o~ (abrir archivo)
+2. Elige ~diseno.org~
 3. ¡Saltarás a diseno.org!
 
 *** diseno.org (planificación e investigación)

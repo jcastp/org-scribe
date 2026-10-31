@@ -203,14 +203,6 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 
 #+END:
 
-* Navegación Rápida :ignore:noexport:
-:PROPERTIES:
-:WORDCOUNT: 0
-:ID:       7d0a7019-b560-4939-bc4a-fca592b8ad0e
-:END:
-- [[file:diseno.org][Cuaderno de diseño]]
-- [[file:plan.org][Plan de escritura]]
-
 * Acto I :ignore:
 :PROPERTIES:
 :CUSTOM_ID: acto-1

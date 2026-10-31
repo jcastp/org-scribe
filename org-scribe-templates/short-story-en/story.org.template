@@ -59,9 +59,6 @@ Update with =C-c C-c= on the #+BEGIN line.
 #+BEGIN: character-timeline
 #+END:
 
-* Quick Links :noexport:
-- [[file:design.org][Design notebook]]
-
 * Story Content
 :PROPERTIES:
 :WORDCOUNT: 0

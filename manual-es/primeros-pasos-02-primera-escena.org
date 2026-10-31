@@ -47,7 +47,7 @@ Antes de insertar escenas, vamos a entender la estructura.
 
 ** Estructura de un cuento
 
-Tu archivo ~cuento.org~ tiene una estructura sencilla: una sección de información que no se exporta, un enlace al cuaderno de diseño y el contenido del cuento, con sus escenas:
+Tu archivo ~cuento.org~ tiene una estructura sencilla: una sección de información que no se exporta y el contenido del cuento, con sus escenas:
 
 #+BEGIN_EXAMPLE
 #+TITLE: La rutina matinal
@@ -56,9 +56,6 @@ Tu archivo ~cuento.org~ tiene una estructura sencilla: una sección de informaci
 ,* Información del Cuento :noexport:
 ,** Sinopsis
 ,** Seguimiento de Palabras
-
-,* Enlaces Rápidos :noexport:
-- [[file:diseno.org][Cuaderno de diseño]]
 
 ,* Contenido del Cuento
 ,** TODO Escena 1 :ignore:
@@ -94,7 +91,7 @@ Tu archivo ~novela.org~ tiene una estructura más compleja, en tres actos:
 - ~***~ (tres asteriscos) = Encabezado de escena
 - El texto normal = El contenido de tu historia
 
-(Delante de esos tres actos, ~novela.org~ lleva además varias secciones que no se exportan (Objetivos del Proyecto, Seguimiento del Progreso, Navegación Rápida), donde viven las tablas de recuento de palabras de la Lección 3.)
+(Delante de esos tres actos, ~novela.org~ lleva además varias secciones que no se exportan (Objetivos del Proyecto, Seguimiento del Progreso), donde viven las tablas de recuento de palabras de la Lección 3.)
 
 ** Por qué esta estructura
 
