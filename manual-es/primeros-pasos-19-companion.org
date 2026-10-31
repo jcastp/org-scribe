@@ -416,6 +416,16 @@ tiempo.
   sobre una pestaña para ver su tecla.
 - A medida que mueves el cursor por el manuscrito, la tarjeta o fila
   correspondiente se resalta (~org-scribe-companion-follow~).
+- *Seguir en Emacs* (el interruptor de la cabecera) funciona al revés:
+  seleccionar una escena en la página (hacer clic en una tarjeta, llegar a
+  ella con el tabulador, hacer clic en una fila de la tabla o abrirla en el
+  panel de detalles) lleva el cursor de Emacs a esa escena. No trae al frente
+  la ventana de Emacs ni le quita el teclado al navegador, así que con dos
+  monitores puedes elegir escenas en uno y verlas en el otro. Se mueve la
+  ventana que ya muestra el manuscrito; si ninguna lo hace, el manuscrito
+  sustituye al búfer de la ventana actual de Emacs. Un búfer estrechado se
+  ensancha, como con ~↗~. El interruptor está apagado por defecto y ese
+  navegador lo recuerda para cada proyecto.
 - Cambiar el estado a una palabra clave que registra una nota (como
   ~TOREVIEW(j@/!)~) anota en su lugar una marca de tiempo, para que no se abra
   ninguna ventana de notas mientras trabajas en el navegador.

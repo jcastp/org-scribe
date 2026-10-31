@@ -372,6 +372,15 @@ listing scenes with no time, unreadable values and jumps back in time.
   its key.
 - As you move point through the manuscript, the matching card or row is
   highlighted (~org-scribe-companion-follow~).
+- *Follow in Emacs* (the switch in the header) works the other way: selecting
+  a scene on the page (clicking a card, tabbing to it, clicking a table row,
+  or opening it in the details panel) moves point in Emacs to that scene. It
+  does not raise the Emacs window or take the keyboard from the browser, so
+  with two monitors you can pick scenes on one and see them on the other.
+  The window already showing the manuscript moves; if none does, the
+  manuscript replaces the buffer in Emacs' current window. A narrowed
+  buffer is widened, as with ~↗~. The switch is off by default and is
+  remembered per project in that browser.
 - Changing the state to a keyword that logs a note (such as ~TOREVIEW(j@/!)~)
   records a time stamp instead, so no note window opens while you work in the
   browser.

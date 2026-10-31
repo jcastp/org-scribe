@@ -46,6 +46,7 @@ const state = {
   applied: null,       // { name, filters }: the collection last applied, in this tab
   hide: false,         // "Hide the rest": filtered-out scenes are hidden, not dimmed
   detailId: null,      // the scene shown in the detail panel, or null when closed
+  followPage: false,   // "Follow in Emacs": selecting a scene moves Emacs' point there
 };
 
 // ---- strings -------------------------------------------------------------
@@ -347,6 +348,7 @@ function viewContext() {
 function openDetail(id) {
   if (!id) return;
   state.detailId = id;
+  followInEmacs(id);
   renderView();            // marks the scene in the view, and draws the panel
   const title = document.getElementById('detail-title');
   if (title) title.focus();
@@ -405,6 +407,8 @@ function renderHeader() {
   const undoButton = $('undo-button');
   undoButton.disabled = !snapshot.canUndo;
   undoButton.title = t('companion-ui-undo-hint');
+  $('follow-page').checked = state.followPage;
+  $('follow-switch').title = t('companion-ui-follow-page-hint');
   $('help-button').title = t('companion-ui-help-hint');
 }
 
@@ -488,6 +492,8 @@ async function refresh() {
     table.useProject(root);
     corkboard.useProject(root);
     scheme.useProject(root);
+    state.followPage = loadFollowPage(root);
+    followSent = null;
   }
   if (pruneFilters(state.filters, state.snapshot)) saveFilters(state.filters);
   renderAll();
@@ -514,6 +520,7 @@ function connect() {
   });
   events.addEventListener('focus', (event) => {
     const { id } = JSON.parse(event.data);
+    followSent = id;   // Emacs is there already: selecting it again sends nothing
     focusCard(id);
     // an open panel follows the scene where point is, unless a field is being edited
     if (state.detailId && !editing && id !== state.detailId
@@ -525,6 +532,46 @@ function connect() {
   events.addEventListener('bye', () => { events.close(); $('banner').hidden = false; });
   events.addEventListener('error', () => { $('banner').hidden = false; });
 }
+
+// ---- follow the page ----------------------------------------------------
+// With the switch on, the scene the writer selects on the page (a click or
+// the keyboard focus on a card, a table row, a timeline item, or the scene
+// the detail panel opens) moves Emacs' point there, without raising Emacs
+// (the follow op).  Tabbing through cards sends only where the focus stops.
+
+const followKey = (root) => `org-scribe.follow-page:${root}`;
+
+function loadFollowPage(root) {
+  try { return localStorage.getItem(followKey(root)) === '1'; } catch (error) { return false; }
+}
+
+function saveFollowPage(root, on) {
+  try { localStorage.setItem(followKey(root), on ? '1' : '0'); } catch (error) { /* in memory only */ }
+}
+
+let followSent = null;    // the scene Emacs was last sent to, or told the page it is at
+let followTimer = null;
+
+function followInEmacs(id) {
+  if (!state.followPage || !id || !state.snapshot || !detail.findScene(state.snapshot, id)) return;
+  clearTimeout(followTimer);
+  followTimer = setTimeout(() => {
+    if (!state.followPage || id === followSent) return;
+    followSent = id;
+    command('follow', { id }, ['not-found']).catch(() => {});
+  }, 250);
+}
+
+$('view').addEventListener('focusin', (event) => {
+  const holder = event.target.closest && event.target.closest('[data-id]');
+  if (holder) followInEmacs(holder.dataset.id);
+});
+
+$('follow-page').addEventListener('change', () => {
+  state.followPage = $('follow-page').checked;
+  if (state.project) saveFollowPage(state.project, state.followPage);
+  followSent = null;
+});
 
 $('colors-button').addEventListener('click', () => toggleColours($('colors-panel').hidden));
 // light <-> dark: the palette slots and the warning colours change with it

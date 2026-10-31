@@ -932,6 +932,8 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (companion-ui-create-in-emacs . "En Emacs…")
      (companion-ui-create-in-emacs-hint . "Hacer la captura completa en Emacs, con todas sus preguntas")
      (companion-ui-created . "Creado: %s.")
+     (companion-ui-follow-page . "Seguir en Emacs")
+     (companion-ui-follow-page-hint . "Activado, seleccionar una escena aquí mueve el cursor de Emacs a ella, sin traer Emacs al frente")
      (companion-ui-help-button . "?")
      (companion-ui-help-hint . "Atajos de teclado (?)")
      (companion-ui-help-title . "Atajos de teclado")

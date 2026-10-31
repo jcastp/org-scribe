@@ -119,6 +119,69 @@
       (should (equal "not-found" (plist-get (plist-get answer :error) :code)))
       (should (string-match-p "no-such-id" (plist-get (plist-get answer :error) :message))))))
 
+;;; follow (I9: the page's "Follow in Emacs" switch)
+
+(defun test-companion-commands--heading-at (window)
+  "The heading at WINDOW's point."
+  (with-current-buffer (window-buffer window)
+    (save-excursion
+      (goto-char (window-point window))
+      (org-get-heading t t t t))))
+
+(ert-deftest test-companion-commands-follow-moves-point-in-the-window-showing-it ()
+  "The window showing the manuscript moves; the selected window stays put."
+  (test-companion-commands--with-project root
+    (delete-other-windows)
+    (switch-to-buffer (get-buffer-create "*test-follow*"))
+    (let* ((novel (find-file-noselect (expand-file-name "novel.org" root)))
+           (other (split-window))
+           (org-scribe-companion--last-focus nil))
+      (set-window-buffer other novel)
+      (cl-letf (((symbol-function 'select-frame-set-input-focus)
+                 (lambda (&rest _) (error "Follow must not raise the frame"))))
+        (let ((answer (test-companion-commands--run
+                       root "follow" :id test-companion-commands--scene-2)))
+          (should (eq t (plist-get answer :ok)))))
+      (should (equal "*test-follow*" (buffer-name (window-buffer (selected-window)))))
+      (should (equal "Scene 2 - Coffee Shop Encounter"
+                     (test-companion-commands--heading-at other)))
+      (should (equal test-companion-commands--scene-2 org-scribe-companion--last-focus)))))
+
+(ert-deftest test-companion-commands-follow-shows-a-hidden-buffer-in-the-selected-window ()
+  (test-companion-commands--with-project root
+    (delete-other-windows)
+    (switch-to-buffer (get-buffer-create "*test-follow*"))
+    (let ((answer (test-companion-commands--run
+                   root "follow" :id test-companion-commands--scene-1)))
+      (should (eq t (plist-get answer :ok)))
+      (should (equal "novel.org" (buffer-name (window-buffer (selected-window)))))
+      (should (equal "Scene 1 - The Alarm"
+                     (test-companion-commands--heading-at (selected-window)))))))
+
+(ert-deftest test-companion-commands-follow-widens-and-reveals ()
+  (test-companion-commands--with-project root
+    (delete-other-windows)
+    (let ((novel (find-file-noselect (expand-file-name "novel.org" root))))
+      (switch-to-buffer novel)
+      (org-overview)
+      (goto-char (point-min))
+      (re-search-forward "^\\*\\*\\* FINISHED Scene 1 - The Alarm")
+      (org-narrow-to-subtree)
+      (test-companion-commands--run root "follow" :id test-companion-commands--scene-2)
+      (should-not (buffer-narrowed-p))
+      (should (equal "Scene 2 - Coffee Shop Encounter" (org-get-heading t t t t)))
+      (should-not (invisible-p (point))))))
+
+(ert-deftest test-companion-commands-follow-refuses-unknown-and-missing-ids ()
+  (test-companion-commands--with-project root
+    (should (equal "not-found"
+                   (plist-get (plist-get (test-companion-commands--run root "follow" :id "no-such-id")
+                                         :error)
+                              :code)))
+    (should (equal "invalid"
+                   (plist-get (plist-get (test-companion-commands--run root "follow") :error)
+                              :code)))))
+
 (ert-deftest test-companion-commands-goto-ignores-ids-outside-the-project ()
   "An ID that exists in another file is not found."
   (test-companion-commands--with-project root
@@ -1682,6 +1745,9 @@ the typing cannot, since undoing them would land at stale positions."
       (should (string-match-p "event.key === '\\?'" app))
       (should (string-match-p "\\^\\[1-9\\]\\$" app))
       (should (string-match-p "closest('input, textarea, select, \\[contenteditable\\]')" app))
+      ;; I9: Follow in Emacs sends the quiet `follow' op, never `goto'
+      (should (string-match-p "id=\"follow-page\"" html))
+      (should (string-match-p "command('follow', { id }" app))
       ;; the list draws with textContent only
       (should-not (string-match-p "innerHTML" help)))))
 

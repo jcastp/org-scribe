@@ -6,6 +6,8 @@
 
 ;; The operations the browser can ask for through POST /api/command:
 ;;   goto, save                         show a heading / save the buffers
+;;   follow                             move point to a heading quietly (the
+;;                                      page's "Follow in Emacs" switch)
 ;;   move-node, set-title, set-todo,
 ;;   set-field, create-scene,
 ;;   create-chapter                     edit the manuscript
@@ -48,6 +50,7 @@
 
 (defvar org-scribe-companion-raise-frame)
 (defvar org-scribe-companion-auto-save)
+(defvar org-scribe-companion--last-focus)
 (defvar org-todo-log-states)
 (declare-function org-scribe--scene-template "org-scribe-project")
 (declare-function org-scribe--chapter-template "org-scribe-project")
@@ -56,6 +59,7 @@
 
 (defconst org-scribe-companion-commands--operations
   '(("goto" . org-scribe-companion-commands--goto)
+    ("follow" . org-scribe-companion-commands--follow)
     ("save" . org-scribe-companion-commands--save)
     ("move-node" . org-scribe-companion-commands--move-node)
     ("set-title" . org-scribe-companion-commands--set-title)
@@ -141,6 +145,36 @@ reveals it, and raises the frame when `org-scribe-companion-raise-frame'."
             (recenter)
             (when org-scribe-companion-raise-frame
               (select-frame-set-input-focus (selected-frame)))
+            (org-scribe-companion-commands--ok root))
+        (org-scribe-companion-commands-error
+         "not-found" (org-scribe-msg 'companion-error-not-found id)))
+    (org-scribe-companion-commands-error
+     "invalid" (org-scribe-msg 'companion-error-missing-arg "id"))))
+
+(defun org-scribe-companion-commands--follow (root args)
+  "Move point to the heading ARGS names, in the project at ROOT, quietly.
+ARGS has `:id'.  Unlike goto, it never raises or selects a frame and never
+changes the selected window: it moves point in a window that already shows
+the buffer (any visible frame), or, when none does, shows the buffer in the
+selected window.  It widens when the heading is outside a narrowing,
+reveals it, and recenters only when the heading is off screen.  The ID is
+recorded as the last one Emacs sent, so follow mode does not echo it back."
+  (if-let* ((id (org-scribe-companion-commands--arg-string args :id)))
+      (if-let* ((marker (org-scribe-companion-commands--find root id)))
+          (let* ((buffer (marker-buffer marker))
+                 (window (or (get-buffer-window buffer 'visible)
+                             (display-buffer
+                              buffer '((display-buffer-same-window)
+                                       (inhibit-switch-frame . t))))))
+            (when window
+              (with-selected-window window
+                (when (or (< marker (point-min)) (> marker (point-max))) (widen))
+                (goto-char marker)
+                (org-fold-show-context 'link-search)
+                (org-fold-show-entry)
+                (unless (pos-visible-in-window-p) (recenter))))
+            (set-marker marker nil)
+            (setq org-scribe-companion--last-focus id)
             (org-scribe-companion-commands--ok root))
         (org-scribe-companion-commands-error
          "not-found" (org-scribe-msg 'companion-error-not-found id)))
