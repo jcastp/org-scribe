@@ -452,6 +452,27 @@ Las marcas también se ven donde trabajas con las escenas:
 - *Colorear por → Marcas de edición* señala las escenas que aún tienen un
   ~*EDIT*~, para que una pasada de revisión vea dónde se acumula el trabajo.
 
+** La pestaña Progreso
+
+La pestaña *Progreso* muestra cuánto ha avanzado el libro:
+
+- *Manuscrito*: las palabras escritas frente al objetivo (los objetivos de los
+  actos sumados, como hace el informe de salud), y un aviso cuando el objetivo
+  de palabras del proyecto (~F8 t~) dice otra cosa.
+- *Actos y capítulos*: una barra por acto y por capítulo (por escena en un
+  cuento) frente a su propio objetivo.
+- *Plan*, cuando el proyecto tiene un plan de escritura (Lección 16): el
+  objetivo de hoy, cuánto vas adelantado o retrasado, tu racha, tu ritmo y la
+  fecha en que terminarás a ese ritmo, y un gráfico *Palabras pendientes* con
+  la línea prevista (discontinua) frente a lo que has escrito.
+
+Con un plan en marcha, la cabecera muestra además en todas las pestañas una
+insignia como *Hoy 350 / 1.194*; haz clic en ella para ir a esta pestaña. Las
+dos cifras son las del último recuento de palabras (~F8 F8~, o cada vez que
+guardas con ~org-scribe-auto-wordcount~), porque es entonces cuando el
+planificador anota tus palabras. La página nunca carga el planificador en un
+proyecto sin plan, ni en uno que lo haya desactivado.
+
 * Parte 6: Guardar, deshacer y seguir
 
 - La página nunca guarda tus archivos a menos que pulses *Guardar* (o fijes
@@ -465,8 +486,8 @@ Las marcas también se ven donde trabajas con las escenas:
   aplicaría en el sitio equivocado. El deshacer de la página es a su vez un
   paso de deshacer en Emacs: ~C-/~ allí recupera el cambio.
 - *Teclado.* Pulsa ~?~ (fuera de un campo de texto), o el botón =?= al final
-  de la cabecera, para ver la lista de atajos de la página. ~1~ a ~9~ cambian de
-  pestaña en el orden en que aparecen (un cuento tiene ocho). Pasa el ratón
+  de la cabecera, para ver la lista de atajos de la página. ~1~ a ~9~, y luego ~0~,
+  cambian de pestaña en el orden en que aparecen (un cuento tiene nueve). Pasa el ratón
   sobre una pestaña para ver su tecla.
 - A medida que mueves el cursor por el manuscrito, la tarjeta o fila
   correspondiente se resalta (~org-scribe-companion-follow~).

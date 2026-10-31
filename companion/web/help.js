@@ -8,7 +8,7 @@ function groups(tabCount) {
   return [
     { title: 'companion-ui-help-anywhere', rows: [
       [['?'], 'companion-ui-help-toggle'],
-      [[tabCount > 1 ? `1–${tabCount}` : '1'], 'companion-ui-help-tabs'],
+      [[tabCount > 9 ? '1–9, 0' : tabCount > 1 ? `1–${tabCount}` : '1'], 'companion-ui-help-tabs'],
       [['Ctrl+Z'], 'companion-ui-help-undo'],
     ] },
     { title: 'companion-ui-help-scenes', rows: [

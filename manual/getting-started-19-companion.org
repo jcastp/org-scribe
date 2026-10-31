@@ -405,6 +405,26 @@ The markers also show where you work on scenes:
 - *Colour by → Edit markers* marks the scenes that still have an ~*EDIT*~,
   so a revision pass can see where the work clusters.
 
+** The Progress Tab
+
+The *Progress* tab shows how far the book has come:
+
+- *Manuscript*: the words written against the objective (the acts'
+  objectives added up, as the health report does), and a warning when the
+  project's word target (~F8 t~) says something else.
+- *Acts and chapters*: one bar per act and per chapter (per scene in a short
+  story) against its own objective.
+- *Plan*, when the project has a writing plan (Lesson 16): today's goal, how
+  far ahead or behind you are, your streak, your pace and the date you will
+  finish at it, and a *Words left* chart with the planned line (dashed)
+  against what you have written.
+
+With a plan running, the header also shows a chip such as *Today 350 /
+1,194* on every tab; click it for this tab. Both are as of the last word
+count (~F8 F8~, or every save with ~org-scribe-auto-wordcount~), because that
+is when the planner records your words. The page never loads the planner for
+a project without a plan, or one that turned it off.
+
 * Part 6: Saving, Undo, and Following
 
 - The page never saves your files unless you press *Save* (or set
@@ -418,8 +438,8 @@ The markers also show where you work on scenes:
   The page's undo is itself one undo step in Emacs: ~C-/~ there brings the
   change back.
 - *Keyboard.* Press ~?~ (outside a text field), or the =?= button at the end
-  of the header, for the list of the page's shortcuts. ~1~ to ~9~ switch tabs
-  in the order they appear (a short story has eight). Hover over a tab to see
+  of the header, for the list of the page's shortcuts. ~1~ to ~9~, then ~0~,
+  switch tabs in the order they appear (a short story has nine). Hover over a tab to see
   its key.
 - As you move point through the manuscript, the matching card or row is
   highlighted (~org-scribe-companion-follow~).

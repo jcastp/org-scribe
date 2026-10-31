@@ -1730,7 +1730,7 @@ the typing cannot, since undoing them would land at stale positions."
           (should (alist-get key org-scribe-messages-es))))
       (should (> found 1)))))
 
-;; I8: ? opens the list of shortcuts, 1-9 switch tabs; neither fires in a text field
+;; I8: ? opens the list of shortcuts, 1-9 and 0 switch tabs; neither fires in a text field
 (ert-deftest test-companion-commands-keyboard-help-is-wired ()
   (let ((read (lambda (file)
                 (with-temp-buffer
@@ -1743,7 +1743,7 @@ the typing cannot, since undoing them would land at stale positions."
       (should (string-match-p "id=\"help-button\"" html))
       (should (string-match-p "import \\* as help from './help.js'" app))
       (should (string-match-p "event.key === '\\?'" app))
-      (should (string-match-p "\\^\\[1-9\\]\\$" app))
+      (should (string-match-p "\\^\\[0-9\\]\\$" app))
       (should (string-match-p "closest('input, textarea, select, \\[contenteditable\\]')" app))
       ;; I9: Follow in Emacs sends the quiet `follow' op, never `goto'
       (should (string-match-p "id=\"follow-page\"" html))

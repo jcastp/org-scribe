@@ -18,6 +18,7 @@ import * as relations from './views/relations.js';
 import * as forms from './views/forms.js';
 import * as edits from './views/edits.js';
 import * as health from './views/health.js';
+import * as progress from './views/progress.js';
 import * as colours from './colors.js';
 import * as scheme from './scheme.js';
 import * as help from './help.js';
@@ -36,7 +37,11 @@ const VIEWS = [
   { id: 'forms', label: 'companion-ui-view-forms', module: forms },
   { id: 'edits', label: 'companion-ui-view-edits', module: edits, noFilters: true },
   { id: 'health', label: 'companion-ui-view-health', module: health, noFilters: true },
+  { id: 'progress', label: 'companion-ui-view-progress', module: progress, noFilters: true },
 ];
+
+/** The key that switches to the tab at INDEX: 1-9, then 0 for the tenth. */
+const tabKey = (index) => (index < 9 ? String(index + 1) : index === 9 ? '0' : null);
 
 const state = {
   strings: {},
@@ -51,6 +56,8 @@ const state = {
   hide: false,         // "Hide the rest": filtered-out scenes are hidden, not dimmed
   detailId: null,      // the scene shown in the detail panel, or null when closed
   followPage: false,   // "Follow in Emacs": selecting a scene moves Emacs' point there
+  progress: null,      // GET /api/progress: words against objectives, the plan
+  progressRevision: null,
 };
 
 // ---- strings -------------------------------------------------------------
@@ -106,6 +113,41 @@ const goto = (id) => command('goto', { id });
 const gotoMarker = (file, line) => command('goto-marker', file ? { file, line } : { line });
 
 const fetchEdits = () => request('/api/edits');
+
+// ---- progress: the header chip and the Progress tab -----------------------
+// One fetch per revision, for both: the chip is on every tab.  Emacs loads
+// the planner only for a project that opted in and has a plan file.
+
+async function loadProgress() {
+  const { revision } = state.snapshot;
+  if (state.progressRevision === revision) return;
+  state.progressRevision = revision;
+  try {
+    const answer = await request('/api/progress');
+    if (state.progressRevision !== revision) return;   // a newer one is on its way
+    state.progress = answer;
+  } catch (error) {
+    state.progress = null;
+  }
+  renderChip();
+  if (state.view === 'progress') renderView();
+}
+
+/** "Today 350 / 800": shown while a plan is running. */
+function renderChip() {
+  const chip = $('progress-chip');
+  const plan = state.progress && state.progress.plan;
+  const running = plan && plan.state === 'active' && plan.phase === 'during' && plan.todayTarget !== null;
+  chip.hidden = !running;
+  if (!running) return;
+  const language = state.snapshot.language;
+  const actual = plan.todayActual.toLocaleString(language);
+  chip.textContent = plan.todayTarget > 0
+    ? t('companion-ui-progress-chip', actual, plan.todayTarget.toLocaleString(language))
+    : t('companion-ui-progress-chip-rest', actual);
+  chip.classList.toggle('met', plan.todayTarget > 0 && plan.todayActual >= plan.todayTarget);
+  chip.title = t('companion-ui-progress-chip-hint');
+}
 
 /**
  * Run an editing command.  Success: the new snapshot arrives with the
@@ -179,9 +221,10 @@ function renderTabs() {
     tab.setAttribute('role', 'tab');
     tab.setAttribute('aria-selected', String(view.id === state.view));
     tab.textContent = t(view.label);
-    if (index < 9) {
-      tab.setAttribute('aria-keyshortcuts', String(index + 1));
-      tab.title = t('companion-ui-tab-hint', index + 1);
+    const key = tabKey(index);
+    if (key) {
+      tab.setAttribute('aria-keyshortcuts', key);
+      tab.title = t('companion-ui-tab-hint', key);
     }
     tab.addEventListener('click', () => switchView(view.id));
     tabs.append(tab);
@@ -355,6 +398,7 @@ function viewContext() {
     fetchEdits,
     gotoMarker,
     isShown: (id) => state.view === id,
+    progress: () => state.progress,
   };
 }
 
@@ -529,9 +573,12 @@ async function refresh() {
     edits.useProject(root);
     state.followPage = loadFollowPage(root);
     followSent = null;
+    state.progress = null;
+    state.progressRevision = null;
   }
   if (pruneFilters(state.filters, state.snapshot)) saveFilters(state.filters);
   renderAll();
+  loadProgress();
 }
 
 function focusCard(id) {
@@ -642,13 +689,14 @@ document.addEventListener('keydown', (event) => {
 // handled the key itself (preventDefault) keeps it.
 const toggleHelp = () => help.toggle($('help'), { t, tabCount: availableViews().length });
 $('help-button').addEventListener('click', toggleHelp);
+$('progress-chip').addEventListener('click', () => switchView('progress'));
 document.addEventListener('keydown', (event) => {
   if (event.ctrlKey || event.metaKey || event.altKey || event.defaultPrevented) return;
   const target = event.target;
   if (target.closest && target.closest('input, textarea, select, [contenteditable]')) return;
   if (event.key === '?') { event.preventDefault(); toggleHelp(); return; }
-  if ($('help').open || !state.snapshot || !/^[1-9]$/.test(event.key)) return;
-  const view = availableViews()[Number(event.key) - 1];
+  if ($('help').open || !state.snapshot || !/^[0-9]$/.test(event.key)) return;
+  const view = availableViews().find((_, index) => tabKey(index) === event.key);
   if (!view) return;
   event.preventDefault();
   switchView(view.id, true);

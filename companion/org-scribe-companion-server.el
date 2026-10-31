@@ -15,6 +15,8 @@
 ;;   GET  /api/strings   the UI strings
 ;;   GET  /api/health    the health report, for the Health tab (on demand)
 ;;   GET  /api/edits     the edit-marker index, for the Edits tab (on demand)
+;;   GET  /api/progress  words against objectives and the writing plan
+;;                       (the Progress tab and the header chip)
 ;;   GET  /api/events    Server-Sent Events
 ;;   POST /api/command   one write operation
 ;;
@@ -32,6 +34,7 @@
 (require 'org-scribe-messages)
 (require 'org-scribe-companion-model)
 (require 'org-scribe-companion-commands)
+(require 'org-scribe-companion-progress)
 
 (defvar org-scribe-companion-port)
 
@@ -352,6 +355,10 @@ away: writing to a socket whose peer has closed can block Emacs."
            proc (if (eq (plist-get answer :ok) t) 200 404) answer)))
        ((and (equal method "GET") (equal path "/api/edits"))
         (let ((answer (org-scribe-companion-edits-get org-scribe-companion-server--root)))
+          (org-scribe-companion-server--respond-json
+           proc (if (eq (plist-get answer :ok) t) 200 404) answer)))
+       ((and (equal method "GET") (equal path "/api/progress"))
+        (let ((answer (org-scribe-companion-progress-get org-scribe-companion-server--root)))
           (org-scribe-companion-server--respond-json
            proc (if (eq (plist-get answer :ok) t) 200 404) answer)))
        ((and (equal method "GET") (equal path "/api/events"))
