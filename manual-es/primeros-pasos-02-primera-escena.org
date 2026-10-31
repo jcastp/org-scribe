@@ -155,6 +155,7 @@ Aparece una plantilla de escena completa. Tiene este aspecto:
 #+BEGIN_EXAMPLE
 ,*** TODO Suena la alarma :ignore:
 :PROPERTIES:
+:ID: 3f6c1d52-8a47-4b0e-9d1a-5e2c7b94a610
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 500
 :PoV:
@@ -181,7 +182,7 @@ Aparece una plantilla de escena completa. Tiene este aspecto:
 
 Observa que los nombres de las propiedades de escena van en español (sin tildes ni espacios), salvo ~:PoV:~, ~:WORDCOUNT:~ y ~:WORD-OBJECTIVE:~, que son iguales en los dos idiomas. Un proyecto en inglés lleva ~:Characters:~, ~:Plot:~, ~:Location:~, etc.; el paquete entiende los nombres de los dos idiomas.
 
-Nota: ~:WORDCOUNT:~ empieza en ~0~ y se actualiza con las órdenes de recuento de palabras (~F8 w~/~F8 a~). ~:WORD-OBJECTIVE:~ empieza ya relleno con un valor por defecto de ~500~, que puedes cambiar para ajustarlo a la escena.
+Nota: ~:ID:~ es un identificador único que org-scribe genera para cada escena nueva, de modo que no hace falta nada más para enlazarla, mostrarla en el tablero o apuntarle una instantánea. Déjalo en paz: no debe cambiar ni repetirse, y no se renombra con la escena. ~:WORDCOUNT:~ empieza en ~0~ y se actualiza con las órdenes de recuento de palabras (~F8 w~/~F8 a~). ~:WORD-OBJECTIVE:~ empieza ya relleno con un valor por defecto de ~500~, que puedes cambiar para ajustarlo a la escena.
 
 *¡Enhorabuena!* ¡Has insertado tu primera plantilla de escena!
 
@@ -564,6 +565,7 @@ Ejemplo de resultado: la inserción de un capítulo también inserta debajo una 
 
 ,*** TODO Escena nueva :ignore:
 :PROPERTIES:
+:ID: 9b2e47a1-6d03-4c58-b7f4-1a8d03e5c2f7
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 500
 :PoV:

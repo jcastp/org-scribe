@@ -855,7 +855,7 @@
                       root "Chapter 2 - What It Costs")))
       (let ((text (test-companion-commands--subtree root "A brand new scene")))
         (should (string-prefix-p "*** TODO A brand new scene :ignore:\n" text))
-        (should (string-match-p (format ":ID:       %s" (regexp-quote id)) text))
+        (should (string-match-p (format "^:ID: +%s$" (regexp-quote id)) text))
         (should (string-match-p ":WORD-OBJECTIVE: 500" text))
         (should (string-match-p "^:Summary:$" text))
         (should (string-match-p "{{{scene-break}}}" text)))
@@ -1083,7 +1083,7 @@ The project type must come from ROOT, or a short story is read as a novel."
       (should (null (test-companion-commands--chapter-scenes root "Interlude")))
       (let ((text (test-companion-commands--subtree root "Interlude")))
         (should (string-prefix-p "** TODO Interlude :ignore:\n" text))
-        (should (string-match-p (format ":ID:       %s" (regexp-quote id)) text))
+        (should (string-match-p (format "^:ID: +%s$" (regexp-quote id)) text))
         (should (string-match-p ":WORD-OBJECTIVE: 3000" text))
         (should-not (string-match-p "scene-break" text))))))
 

@@ -472,6 +472,28 @@ not parse as a property, so the PoV was silently empty."
       (should (string-match-p ":WORD-OBJECTIVE: 500" content))
       (should (string-match-p "{{{scene-break}}}" content)))))
 
+(ert-deftest test-insert-scene-gives-the-scene-a-fresh-id ()
+  "A scene is born with an :ID:, distinct each time, as the first property."
+  (test-project--in-outline "Scene A"
+    (org-scribe-insert-scene "First")
+    (let ((first (org-entry-get nil "ID")))
+      (should (and first (string-match-p "\\`[0-9a-f-]\\{36\\}\\'" first)))
+      (should (string-match-p "^:PROPERTIES:\n:ID: " (org-scribe--scene-template "X")))
+      (org-scribe-insert-scene "Second")
+      (let ((second (org-entry-get nil "ID")))
+        (should second)
+        (should-not (equal first second))))))
+
+(ert-deftest test-insert-chapter-gives-its-first-scene-an-id ()
+  "The chapter's first scene is a scene: it gets an :ID:, the chapter does not."
+  (with-temp-buffer
+    (org-mode)
+    (org-scribe-insert-chapter "Chapter 1")
+    (goto-char (point-min))
+    (should-not (org-entry-get nil "ID"))
+    (re-search-forward "^\\*\\*\\* TODO ")
+    (should (org-entry-get nil "ID"))))
+
 (ert-deftest test-insert-chapter-empty-name ()
   "Test chapter template with empty name uses default."
   (with-temp-buffer

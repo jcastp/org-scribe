@@ -26,6 +26,7 @@
 ;;; Code:
 
 (require 'project)
+(require 'org-id)
 (require 'org-scribe-messages)
 (require 'org-scribe-core)
 
@@ -854,8 +855,9 @@ The heading is a TODO at the project's scene level, tagged as the project
 type does, and the drawer holds the empty scene properties in the
 project's language.  Shared by `org-scribe-insert-scene' and the visual
 companion's `create-scene', which inserts it at an exact place.
-The scene break closes the body, after a gap for the prose, as in the
-shipped scenes."
+The drawer starts with a fresh `:ID:', so a scene is linkable from the
+moment it exists.  The scene break closes the body, after a gap for the
+prose, as in the shipped scenes."
   (let* ((levels (org-scribe-project-levels))
          (stars (make-string (plist-get levels :scene) ?*))
          (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag)))
@@ -867,13 +869,15 @@ shipped scenes."
                       "")))
     (format "%s TODO %s%s
 :PROPERTIES:
+:ID: %s
 :WORDCOUNT: 0
 %s%s
 :END:
 
 
 {{{scene-break}}}
-" stars scene-name tag objective (org-scribe--scene-property-drawer-lines))))
+" stars scene-name tag (org-id-new) objective
+(org-scribe--scene-property-drawer-lines))))
 
 (defun org-scribe--insert-scene-template (scene-name)
   "Insert the scene template named SCENE-NAME; see `org-scribe-insert-scene'."
@@ -1283,13 +1287,14 @@ the project's levels, tagged as the project type does."
        (format "
 %s TODO %s%s
 :PROPERTIES:
+:ID: %s
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 500
 %s
 :END:
 
 {{{scene-break}}}
-" (make-string (plist-get levels :scene) ?*) first-scene tag
+" (make-string (plist-get levels :scene) ?*) first-scene tag (org-id-new)
   (org-scribe--scene-property-drawer-lines))))))
 
 ;;;###autoload
@@ -1334,12 +1339,10 @@ collide with the project's own scene level."
     ;; turned `org-refile-use-cache' on.
     (org-scribe--refile-invalidate-cache)
 
-    ;; Position cursor at first scene's :PoV: property (line 10 from
-    ;; start).  Like the scene heading above, a heading's star count and
-    ;; tag do not change how many lines it occupies, so this offset holds
-    ;; regardless of project type.
+    ;; Position cursor at the first scene's :PoV: property.  Searched
+    ;; for, not counted: the drawer's line count is not part of the contract.
     (goto-char start-pos)
-    (forward-line 10)
+    (re-search-forward "^:PoV:" nil t)
     (end-of-line)
     (insert " ")  ; see `org-scribe--insert-scene-template'
     (org-fold-show-context)))

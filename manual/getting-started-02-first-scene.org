@@ -157,6 +157,7 @@ A complete scene template appears! It looks like this:
 #+BEGIN_EXAMPLE
 ,*** TODO Scene 1 - The Alarm Goes Off
 :PROPERTIES:
+:ID: 3f6c1d52-8a47-4b0e-9d1a-5e2c7b94a610
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 500
 :PoV:
@@ -180,7 +181,7 @@ A complete scene template appears! It looks like this:
 :END:
 #+END_EXAMPLE
 
-Note: ~:WORDCOUNT:~ starts at ~0~ and is refreshed by the word-count commands (~F8 w~/~F8 a~). ~:WORD-OBJECTIVE:~ starts pre-filled with a default of ~500~, which you can change to fit the scene.
+Note: ~:ID:~ is a unique identifier org-scribe generates for every new scene, so nothing else is needed to link to it, to show it on the board, or to point a snapshot at it. Leave it alone: it must not change or repeat, and it is not renamed with the scene. ~:WORDCOUNT:~ starts at ~0~ and is refreshed by the word-count commands (~F8 w~/~F8 a~). ~:WORD-OBJECTIVE:~ starts pre-filled with a default of ~500~, which you can change to fit the scene.
 
 *Congratulations!* You've inserted your first scene template!
 
@@ -563,6 +564,7 @@ Example result — chapter insertion also auto-inserts a ready-to-fill first sce
 
 ,*** TODO New scene :ignore:
 :PROPERTIES:
+:ID: 9b2e47a1-6d03-4c58-b7f4-1a8d03e5c2f7
 :PoV:
 :Characters:
 :Plot:
