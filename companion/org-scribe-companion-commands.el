@@ -12,6 +12,9 @@
 ;;   undo                               undo the page's last change
 ;;   set-color                          the page's theme and pinned colours
 ;;                                      (written to .org-scribe-project)
+;;   set-collection                     save, rename or delete a named set of
+;;                                      filters (org-scribe-companion-collections.el,
+;;                                      written to .org-scribe-project)
 ;;   set-entity-property,
 ;;   set-entity-section,
 ;;   set-relationship,
@@ -39,6 +42,7 @@
 (require 'org-scribe-companion-model)
 (require 'org-scribe-companion-colors)
 (require 'org-scribe-companion-undo)
+(require 'org-scribe-companion-collections)
 
 (defvar org-scribe-companion-raise-frame)
 (defvar org-scribe-companion-auto-save)
@@ -59,6 +63,7 @@
     ("create-chapter" . org-scribe-companion-commands--create-chapter)
     ("undo" . org-scribe-companion-commands--undo)
     ("set-color" . org-scribe-companion-commands--set-color)
+    ("set-collection" . org-scribe-companion-collections-set)
     ("set-entity-property" . org-scribe-companion-entity--set-property)
     ("set-entity-section" . org-scribe-companion-entity--set-section)
     ("set-relationship" . org-scribe-companion-entity--set-relationship)

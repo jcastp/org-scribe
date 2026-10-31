@@ -128,7 +128,8 @@
     "test-companion-server"        ; HTTP server, security checks, event stream
     "test-companion-commands"      ; goto, save, follow mode, web string keys
     "test-companion-entity"        ; Entity forms: properties, section bodies, capture
-    "test-companion-colors")       ; Colour themes, pins, set-color
+    "test-companion-colors"        ; Colour themes, pins, set-color
+    "test-companion-collections")  ; Saved filters (set-collection)
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
@@ -255,7 +256,7 @@ is set too, for the tests that start a fresh Emacs."
   (let ((dir (file-name-directory (or load-file-name buffer-file-name))))
     (dolist (file '("test-companion-gate" "test-companion-model" "test-companion-server"
                     "test-companion-commands" "test-companion-entity"
-                    "test-companion-colors"))
+                    "test-companion-colors" "test-companion-collections"))
       (load-file (expand-file-name (concat file ".el") dir))))
   (ert "^test-companion-"))
 

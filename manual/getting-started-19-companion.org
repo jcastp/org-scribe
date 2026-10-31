@@ -75,7 +75,36 @@ the state, the summary, the PoV and plot-point badges, and a word-count bar.
 - The ~↗~ button (or a double click) shows the scene in Emacs.
 
 Filters at the top (PoV, character, plot thread, location, object, state) dim
-the cards that do not match.
+the cards that do not match. Each one also offers:
+
+- *(none)*: the scenes where that field is empty, e.g. every scene with no PoV
+  or no plot thread yet. This is your tagging backlog.
+- In the state list, *not ...*: every scene whose state is anything else
+  (~not FINISHED~), scenes with no state included.
+
+Tick *Hide the rest* to hide what the filters leave out instead of dimming it.
+Chapters and acts with nothing left go too. The scene numbers on the Storyline
+keep their place in the book. This choice, like the filters themselves, is
+remembered per project in your browser.
+
+*Collections.* Once a filter is on, *Save as collection…* asks for a name and
+keeps that set of filters in the project, as a line in ~.org-scribe-project~:
+
+#+BEGIN_EXAMPLE
+# Companion-collection: Alex, not done | pov=char-alex-rivera-001 | todo=!FINISHED
+#+END_EXAMPLE
+
+The *Collection* list then applies it in one click. A collection is a rule,
+not a list of scenes: a scene you tag later shows up in it by itself. While a
+collection is chosen you can *Rename* or *Delete* it. If you change a filter
+after applying one, *Update ...* stores the new filters in it. Collections
+travel with the project (they are in its files), but choosing one only changes
+your own view. If a collection names a character or thread you have since
+deleted, it is marked "(missing items)", and applying it leaves that part out.
+The saved line keeps it, so you can fix it by hand. You can edit the lines
+by hand: each one is the name, then ~key=value~ parts separated by ~|~,
+with the keys ~pov~, ~character~, ~plot~, ~location~, ~object~ and ~todo~.
+Each value is an ID, ~-~ for "(none)", or for ~todo~ a keyword or ~!KEYWORD~.
 
 Try it: drag Scene 2 above Scene 1 in Chapter 1, then switch to Emacs and look at
 ~novel.org~. The whole subtree moved, with its properties and logbook, and the

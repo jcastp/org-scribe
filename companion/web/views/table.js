@@ -7,7 +7,7 @@
 
 import { todoColor } from '../colors.js';
 import { paint } from '../scheme.js';
-import { matches, isActive } from '../filters.js';
+import { matches, isActive, hiddenGroup } from '../filters.js';
 import { el, startEdit, moveTo, sceneParent, addSceneButton, addChapterButton } from '../edit.js';
 import { hasPlotPoints } from './matrix.js';
 
@@ -413,6 +413,9 @@ export function render(container, ctx) {
     // an implicit act or chapter has no ID: its place stands in for one
     const actKey = act.id || `act#${actIndex}`;
     const actBody = el('tbody', 'act-body');
+    if (hiddenGroup(act.chapters.flatMap((chapter) => chapter.scenes), ctx)) {
+      actBody.classList.add('filtered-out');
+    }
     // a new row must not land in a collapsed group, out of sight
     const expand = (...keys) => () => { for (const key of keys) collapsed.delete(key); };
     const passthroughIndex = act.chapters.findIndex((chapter) => chapter.passthrough);
@@ -434,6 +437,7 @@ export function render(container, ctx) {
     act.chapters.forEach((chapter, chapterIndex) => {
       const chapterKey = chapter.id || `${actKey}/chapter#${chapterIndex}`;
       const body = el('tbody', 'chapter-body');
+      if (hiddenGroup(chapter.scenes, ctx)) body.classList.add('filtered-out');
       const parent = sceneParent(chapter);
       if (parent) body.dataset.id = parent;
       // a pass-through chapter keeps its (hidden) row, so the drag rules

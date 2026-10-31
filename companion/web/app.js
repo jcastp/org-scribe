@@ -3,7 +3,11 @@
 // parses org: Emacs sends display-ready data.  All visible text comes from
 // /api/strings (data-i18n attributes and t()).
 
-import { FILTERS, emptyFilters, loadFilters, saveFilters, isActive, setFilterScope, pruneFilters } from './filters.js';
+import {
+  FILTERS, emptyFilters, loadFilters, saveFilters, isActive, setFilterScope, pruneFilters,
+  filtersFrom, loadHide, saveHide,
+} from './filters.js';
+import * as collections from './collections.js';
 import * as corkboard from './views/corkboard.js';
 import * as table from './views/table.js';
 import * as storyline from './views/storyline.js';
@@ -37,6 +41,8 @@ const state = {
   view: VIEWS[0].id,
   focusId: null,
   pendingFocus: null,
+  applied: null,       // { name, filters }: the collection last applied, in this tab
+  hide: false,         // "Hide the rest": filtered-out scenes are hidden, not dimmed
 };
 
 // ---- strings -------------------------------------------------------------
@@ -153,6 +159,38 @@ function renderTabs() {
   }
 }
 
+/** Fill the filters from COLLECTION, leaving out what no longer exists. */
+function applyCollection(collection) {
+  state.filters = filtersFrom(collection.filters);
+  if (pruneFilters(state.filters, state.snapshot)) {
+    showNotice(t('companion-ui-collection-stale-applied', collection.name));
+  }
+  state.applied = { name: collection.name, filters: { ...state.filters } };
+  saveFilters(state.filters);
+  renderFilters();
+  renderView();
+}
+
+/** Save, rename or delete a collection through Emacs (set-collection). */
+async function saveCollection(args) {
+  const answer = await edit('set-collection', args);
+  if (!answer.ok) return;
+  state.applied = args.delete ? null : { name: answer.name, filters: { ...state.filters } };
+  renderFilters();
+}
+
+const collectionsContext = () => ({
+  t,
+  snapshot: state.snapshot,
+  filters: state.filters,
+  applied: () => state.applied,
+  apply: applyCollection,
+  forget: () => { state.applied = null; renderFilters(); },
+  save: saveCollection,
+  editStarted,
+  editEnded,
+});
+
 function select(labelKey, options, value, onChange) {
   const wrap = document.createElement('label');
   wrap.className = 'filter';
@@ -182,36 +220,66 @@ function renderFilters() {
   const current = availableViews().find((candidate) => candidate.id === state.view);
   container.hidden = Boolean(current && current.noFilters);
   const { entities, todo } = state.snapshot;
-  const change = (key) => (value) => { state.filters[key] = value; saveFilters(state.filters); renderView(); };
+  let collectionsNode = collections.render(collectionsContext());
+  const clear = document.createElement('button');
+  // the parts of the bar that follow the filters; the dropdowns keep the focus
+  const follow = () => {
+    const fresh = collections.render(collectionsContext());
+    collectionsNode.replaceWith(fresh);
+    collectionsNode = fresh;
+    clear.hidden = !isActive(state.filters);
+  };
+  const change = (key) => (value) => {
+    state.filters[key] = value;
+    saveFilters(state.filters);
+    follow();
+    renderView();
+  };
+  container.append(collectionsNode);
   for (const filter of FILTERS) {
-    const options = (entities[filter.entity] || [])
-      .filter((entity) => entity.id)
-      .map((entity) => [entity.id, entity.name]);
+    const options = [['-', t('companion-ui-filter-none')]].concat(
+      (entities[filter.entity] || [])
+        .filter((entity) => entity.id)
+        .map((entity) => [entity.id, entity.name]),
+    );
     container.append(select(filter.label, options, state.filters[filter.key], change(filter.key)));
   }
   const states = todo.keywords.map((keyword) => [keyword, keyword])
-    .concat([['-', t('companion-ui-no-todo')]]);
+    .concat([['-', t('companion-ui-no-todo')]])
+    .concat(todo.keywords.map((keyword) => [`!${keyword}`, t('companion-ui-filter-not', keyword)]));
   container.append(select('companion-ui-filter-todo', states, state.filters.todo, change('todo')));
-  if (isActive(state.filters)) {
-    const clear = document.createElement('button');
-    clear.type = 'button';
-    clear.textContent = t('companion-ui-filter-clear');
-    clear.addEventListener('click', () => {
-      state.filters = emptyFilters();
-      saveFilters(state.filters);
-      renderFilters();
-      renderView();
-    });
-    container.append(clear);
-  }
+  const hide = document.createElement('label');
+  hide.className = 'switch';
+  const box = document.createElement('input');
+  box.type = 'checkbox';
+  box.checked = state.hide;
+  box.addEventListener('change', () => { state.hide = box.checked; saveHide(state.hide); renderView(); });
+  const hideText = document.createElement('span');
+  hideText.textContent = t('companion-ui-filter-hide');
+  hide.append(box, hideText);
+  container.append(hide);
+  clear.type = 'button';
+  clear.textContent = t('companion-ui-filter-clear');
+  clear.hidden = !isActive(state.filters);
+  clear.addEventListener('click', () => {
+    state.filters = emptyFilters();
+    saveFilters(state.filters);
+    renderFilters();
+    renderView();
+  });
+  container.append(clear);
 }
 
 function renderView() {
   const view = availableViews().find((candidate) => candidate.id === state.view) || VIEWS[0];
   const scroll = window.scrollY;
+  // hiding only means something while a filter is on
+  const hide = state.hide && isActive(state.filters);
+  $('view').classList.toggle('hide-unmatched', hide);
   view.module.render($('view'), {
     snapshot: state.snapshot,
     filters: state.filters,
+    hide,
     focusId: state.focusId,
     t,
     goto,
@@ -335,6 +403,8 @@ async function refresh() {
     state.project = root;
     setFilterScope(root);
     state.filters = loadFilters();
+    state.hide = loadHide();
+    state.applied = null;
     table.useProject(root);
     scheme.useProject(root);
   }

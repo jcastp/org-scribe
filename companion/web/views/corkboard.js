@@ -8,7 +8,7 @@
 
 import { todoColor, textOn } from '../colors.js';
 import { paint } from '../scheme.js';
-import { matches, isActive } from '../filters.js';
+import { matches, isActive, hiddenGroup } from '../filters.js';
 import { startEdit, moveTo, sceneParent, addSceneButton, addChapterButton } from '../edit.js';
 
 function el(tag, className, text) {
@@ -251,6 +251,7 @@ function makeChapterSortable(chapters, ctx) {
 /** Scenes straight under the act (a project with no chapters): cards only. */
 function passthroughRow(chapter, ctx) {
   const row = el('div', 'chapter passthrough');
+  if (hiddenGroup(chapter.scenes, ctx)) row.classList.add('filtered-out');
   const parent = sceneParent(chapter);
   if (parent) row.dataset.id = parent;
   const cards = el('div', 'cards');
@@ -263,6 +264,7 @@ function passthroughRow(chapter, ctx) {
 function chapterRow(chapter, ctx) {
   if (chapter.passthrough) return passthroughRow(chapter, ctx);
   const row = el('div', 'chapter');
+  if (hiddenGroup(chapter.scenes, ctx)) row.classList.add('filtered-out');
   if (chapter.id) row.dataset.id = chapter.id;
   const changeable = editable(chapter);
   if (changeable) row.classList.add('movable');
@@ -311,6 +313,9 @@ export function render(container, ctx) {
   }
   for (const act of acts) {
     const section = el('section', 'act');
+    if (hiddenGroup(act.chapters.flatMap((chapter) => chapter.scenes), ctx)) {
+      section.classList.add('filtered-out');
+    }
     if (act.id) section.dataset.id = act.id;
     const head = el('div', 'act-head');
     head.append(el('h2', 'act-title', act.title || ''));

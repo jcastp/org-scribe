@@ -14,11 +14,18 @@ import { paint, markColor } from '../scheme.js';
 
 let showHidden = false;
 
+/** "Hide the rest" drops the scenes the filters leave out (ctx.hide is only
+ * on while a filter is). */
+function visibleScene(scene, ctx) {
+  return !ctx.hide || matches(scene, ctx.filters);
+}
+
 function editable(scene) {
   return Boolean(scene.id) && !scene.readOnly;
 }
 
-/** Cells of a plot thread's row that lie in a gap longer than the threshold. */
+/** The scenes of a plot thread's row that lie in a gap longer than the
+ * threshold.  Counted over every scene, so hiding some does not move a gap. */
 function gapCells(scenes, entityId, threshold) {
   const flagged = new Set();
   const universe = scenes.filter((scene) => scene.fields.plot);
@@ -33,7 +40,7 @@ function gapCells(scenes, entityId, threshold) {
       run.push(scene);
     }
   }
-  return new Set([...flagged].map((scene) => scenes.indexOf(scene)));
+  return flagged;
 }
 
 function toggleLink(scene, group, entityId, ctx) {
@@ -101,7 +108,10 @@ function rowHeader(entity, group, ctx, info) {
   return th;
 }
 
-function groupRows(group, scenes, ctx, columns) {
+/** The rows of GROUP.  SCENES are all the scenes (for the gaps), VISIBLE the
+ * ones drawn as columns. */
+function groupRows(group, scenes, visible, ctx) {
+  const columns = visible.length;
   const { storyline } = ctx.snapshot;
   const all = (ctx.snapshot.entities[group.kind] || []).filter((entity) => entity.id);
   // the plot points keep the method's order; weights and names would give 1, 10, 11…
@@ -125,7 +135,7 @@ function groupRows(group, scenes, ctx, columns) {
       gap: group.kind === 'plot' ? storyline.plotGaps[entity.id] || 0 : 0,
       orphan: orphans.has(entity.id),
     }));
-    scenes.forEach((scene, index) => row.append(cell(scene, group, entity, { gap: gaps.has(index) }, ctx)));
+    for (const scene of visible) row.append(cell(scene, group, entity, { gap: gaps.has(scene) }, ctx));
     rows.push(row);
   }
   if (left.length) {
@@ -138,7 +148,7 @@ function groupRows(group, scenes, ctx, columns) {
   return rows;
 }
 
-function header(acts, scenes, ctx) {
+function header(acts, ctx) {
   const chapters = el('tr', 'sl-chapters');
   chapters.append(el('th', 'sl-corner'));
   const numbers = el('tr', 'sl-scenes');
@@ -146,19 +156,21 @@ function header(acts, scenes, ctx) {
   let number = 0;
   for (const act of acts) {
     for (const chapter of act.chapters) {
-      if (!chapter.scenes.length) continue;
+      // the number is the scene's place in the book, hidden scenes included
+      const numbered = chapter.scenes.map((scene) => { number += 1; return [scene, number]; })
+        .filter(([scene]) => visibleScene(scene, ctx));
+      if (!numbered.length) continue;
       const th = el('th', 'sl-chapter', chapter.title);
-      th.colSpan = chapter.scenes.length;
+      th.colSpan = numbered.length;
       th.title = chapter.title;
       chapters.append(th);
-      chapter.scenes.forEach((scene, index) => {
-        number += 1;
+      numbered.forEach(([scene, sceneNumber], index) => {
         const cellNode = el('th', 'sl-scene');
         if (index === 0) cellNode.classList.add('chapter-start');
         if (scene.id) cellNode.dataset.id = scene.id;
         if (scene.id === ctx.focusId) cellNode.classList.add('focus');
         paint(cellNode, scene, ctx, 'to right');
-        const link = el('button', 'sl-open', String(number));
+        const link = el('button', 'sl-open', String(sceneNumber));
         link.type = 'button';
         link.title = `${scene.title} — ${ctx.t('companion-ui-open')}`;
         link.addEventListener('click', () => { if (scene.id) ctx.goto(scene.id); });
@@ -191,10 +203,11 @@ export function render(container, ctx) {
   container.append(tools);
 
   const table = el('table', 'storyline');
-  table.append(header(acts, scenes, ctx));
+  table.append(header(acts, ctx));
   const body = el('tbody');
+  const visible = scenes.filter((scene) => visibleScene(scene, ctx));
   for (const group of visibleGroups(ctx)) {
-    for (const row of groupRows(group, scenes, ctx, scenes.length)) body.append(row);
+    for (const row of groupRows(group, scenes, visible, ctx)) body.append(row);
   }
   table.append(body);
   const scroller = el('div', 'sl-scroll');

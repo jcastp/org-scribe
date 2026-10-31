@@ -28,6 +28,7 @@
 (require 'org-scribe-character-relationships)
 (require 'org-scribe-companion-colors)
 (require 'org-scribe-companion-undo)
+(require 'org-scribe-companion-collections)
 
 (defvar org-scribe-companion-todo-colors)
 (defvar org-scribe-entity-registry)
@@ -385,14 +386,16 @@ Reads the project at `default-directory'."
   "Return the revision string for REVISIONS, a (MANUSCRIPT . DESIGN) pair.
 Ends with the colour settings' revision: they live in the marker file, so
 no buffer tick changes when the writer picks a colour; the story-time
-notation and Day 1 date are marker lines too.  The last part is
+notation and Day 1 date are marker lines too, and so are the saved
+filter collections (`-k').  The `-s' part is
 `org-scribe-companion--settings-revision'.  Reads the project at
 `default-directory'."
   (let ((root (org-scribe-project-root)))
-    (format "m%s-d%s-t%s-c%s-s%s" (car revisions) (cdr revisions)
+    (format "m%s-d%s-t%s-c%s-s%s-k%s" (car revisions) (cdr revisions)
             (org-scribe-story-time-revision root)
             (org-scribe-companion-colors-revision root)
-            (org-scribe-companion--settings-revision))))
+            (org-scribe-companion--settings-revision)
+            (org-scribe-companion-collections-revision root))))
 
 (defun org-scribe-companion--revision-string (root)
   "Return the current revision string of the project at ROOT, without a snapshot.
@@ -559,6 +562,7 @@ so asking again without an edit costs a revision check only."
             :buffers (list :manuscript (org-scribe-companion--buffer-info manuscript)
                            :design (org-scribe-companion--buffer-info design))
             :canUndo (org-scribe-companion--bool (org-scribe-companion-undo-available-p root))
+            :collections (org-scribe-companion-collections-json root)
             :todo (org-scribe-companion--todo-with-colors (plist-get cache :todo) root)
             :colors (org-scribe-companion-colors-resolve root (plist-get cache :entities)
                                                 (plist-get cache :acts))

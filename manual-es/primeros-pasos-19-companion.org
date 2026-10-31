@@ -83,7 +83,39 @@ puntos de trama, y una barra de recuento de palabras.
 - El botón ~↗~ (o un doble clic) muestra la escena en Emacs.
 
 Los filtros de arriba (PoV, personaje, hilo de trama, escenario, objeto,
-estado) atenúan las tarjetas que no coinciden.
+estado) atenúan las tarjetas que no coinciden. Cada uno ofrece además:
+
+- *(ninguno)*: las escenas en las que ese campo está vacío, por ejemplo todas
+  las que aún no tienen PoV o hilo de trama. Es tu lista de escenas por
+  etiquetar.
+- En la lista de estados, *no ...*: todas las escenas cuyo estado es cualquier
+  otro (~no FINISHED~), incluidas las que no tienen estado.
+
+Marca *Ocultar el resto* para ocultar lo que los filtros dejan fuera en vez de
+atenuarlo. También desaparecen los capítulos y actos que se quedan sin nada.
+Los números de escena del Storyline conservan su lugar en el libro. Esta
+elección, como los propios filtros, se recuerda por proyecto en tu navegador.
+
+*Colecciones.* Con algún filtro puesto, *Guardar como colección…* pide un
+nombre y guarda ese conjunto de filtros en el proyecto, como una línea de
+~.org-scribe-project~:
+
+#+BEGIN_EXAMPLE
+# Companion-collection: Alex, sin terminar | pov=char-alex-rivera-001 | todo=!FINISHED
+#+END_EXAMPLE
+
+La lista *Colección* la aplica después con un clic. Una colección es una regla,
+no una lista de escenas: una escena que etiquetes más tarde aparece en ella
+sola. Con una colección elegida puedes *Renombrarla* o *Borrarla*. Si cambias
+un filtro después de aplicar una, *Actualizar ...* guarda en ella los filtros
+nuevos. Las colecciones viajan con el proyecto (están en sus archivos), pero
+elegir una solo cambia tu propia vista. Si una colección nombra un personaje o
+un hilo que has borrado después, se marca «(con elementos que faltan)», y al
+aplicarla esa parte se deja fuera. La línea guardada la conserva, así que
+puedes arreglarla a mano. Puedes editar las líneas a mano: cada una es el
+nombre y luego partes ~clave=valor~ separadas por ~|~, con las claves ~pov~,
+~character~, ~plot~, ~location~, ~object~ y ~todo~. Cada valor es un ID, ~-~
+para «(ninguno)», o para ~todo~ una palabra clave o ~!PALABRA~.
 
 Pruébalo: arrastra la Escena 2 por encima de la Escena 1 en el Capítulo 1, pasa a
 Emacs y mira ~novela.org~. Todo el subárbol se ha movido, con sus propiedades y

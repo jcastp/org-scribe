@@ -66,6 +66,11 @@ button:focus-visible, .card:focus-visible, select:focus-visible { outline: 2px s
 .filters[hidden] { display: none; }
 .filter { display: flex; flex-direction: column; font-size: 0.8rem; color: var(--muted); gap: 0.15rem; }
 .filter select { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 0.25rem 0.4rem; min-width: 9rem; color: var(--text); }
+/* the collection controls open the bar, set apart from the filters */
+.collections { display: flex; align-items: end; gap: 0.4rem; padding-right: 0.8rem; border-right: 1px solid var(--line); }
+.collections .card-edit { width: 14rem; }
+.collections[hidden] { display: none; }
+.filters > .switch { display: flex; align-items: center; gap: 0.3rem; font-size: 0.85rem; padding-bottom: 0.3rem; }
 
 main { padding: 0 1.2rem 3rem; }
 .empty { color: var(--muted); }
@@ -91,6 +96,11 @@ body.dragging-chapter .cards { display: none; }
 .card { --todo: var(--todo-default); background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--todo); border-radius: 8px; padding: 0.6rem 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
 .card.done { opacity: 0.78; }
 .card.dimmed { opacity: 0.22; }
+/* "Hide the rest": what the filters leave out is gone, not dimmed */
+.hide-unmatched .card.dimmed,
+.hide-unmatched .scene-row.dimmed,
+.hide-unmatched .tl-card.dimmed,
+.hide-unmatched .filtered-out { display: none; }
 .tl-card.dimmed { opacity: 0.25; }
 .card.focus { outline: 3px solid var(--focus); outline-offset: 1px; }
 .card.readonly { border-style: dashed; border-left-style: solid; }
