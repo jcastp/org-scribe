@@ -302,6 +302,12 @@ field specs."
                           (vconcat
                            (mapcar (lambda (rel) (list :target (nth 0 rel) :name (nth 1 rel) :type (nth 2 rel)))
                                    (org-scribe--get-character-relationships)))))))
+    (when (eq symbol 'plot)
+      (let ((status (org-string-nw-p (org-entry-get nil "STATUS"))))
+        (setq entity (append entity
+                             (list :status (org-scribe-companion--or-null status)
+                                   :closed (org-scribe-companion--bool
+                                            (org-scribe-companion--thread-closed-p status)))))))
     (when (eq symbol 'plot-point)
       (setq entity (append entity
                            (list :hasContent (org-scribe-companion--bool
@@ -311,7 +317,8 @@ field specs."
 (defun org-scribe-companion--entities ()
   "Return the `entities' plist: one vector per registered entity kind.
 One pass over each entity file.  Each entity is (:id :name :weight
-:hidden), plus `:role' for characters and `:hasContent' for plot points.
+:hidden), plus `:role' for characters, `:status' and `:closed' for plot
+threads, and `:hasContent' for plot points.
 A negative weight sets `:hidden'; the entity stays in the list so the
 browser can show that it is hidden.  A blank or non-numeric Weight is the
 unweighted default 999.0 and is not hidden."
@@ -375,11 +382,13 @@ unweighted default 999.0 and is not hidden."
 
 (defun org-scribe-companion--settings-revision ()
   "Return a short string that changes with the settings the snapshot reads.
-They are the project language and `org-scribe-companion-todo-colors':
-neither lives in a buffer, so no tick changes when the writer sets them.
+They are the project language, `org-scribe-companion-todo-colors' and
+`org-scribe-companion-character-gap-weight': none lives in a buffer, so
+no tick changes when the writer sets them.
 Reads the project at `default-directory'."
   (substring (secure-hash 'md5 (format "%S" (list (org-scribe-project-language)
-                                                  (bound-and-true-p org-scribe-companion-todo-colors))))
+                                                  (bound-and-true-p org-scribe-companion-todo-colors)
+                                                  (bound-and-true-p org-scribe-companion-character-gap-weight))))
              0 8))
 
 (defun org-scribe-companion--format-revision (revisions)
@@ -469,19 +478,24 @@ and not in the cache, which only follows buffer ticks."
   (mapcar (lambda (link) (plist-get link :id))
           (append (plist-get (plist-get (plist-get scene :fields) key) :links) nil)))
 
-(defun org-scribe-companion--plot-gaps (scenes)
-  "Return a plist of plot thread ID to its largest gap over SCENES.
-Same rule as `org-scribe--calculate-thread-gap': the scenes counted are
-those carrying a Plot property, and the gap is the longest run of them
-between two appearances of the thread.  Threads in fewer than two scenes
-get 0."
-  (let* ((with-plot (cl-remove-if-not
-                     (lambda (scene) (plist-get (plist-get (plist-get scene :fields) :plot) :raw))
-                     scenes))
+(defun org-scribe-companion--gaps (scenes keys)
+  "Return a plist of entity ID to its largest gap over SCENES.
+KEYS are the scene fields (keywords) that place an entity in a scene.
+The scenes counted are those with one of KEYS filled in, and the gap is
+the longest run of them between two appearances of the entity.
+Entities in fewer than two scenes get 0."
+  (let* ((counted (cl-remove-if-not
+                   (lambda (scene)
+                     (cl-some (lambda (key)
+                                (plist-get (plist-get (plist-get scene :fields) key) :raw))
+                              keys))
+                   scenes))
          (positions (make-hash-table :test 'equal))
          result)
-    (cl-loop for scene in with-plot for index from 0
-             do (dolist (id (org-scribe-companion--field-ids scene :plot))
+    (cl-loop for scene in counted for index from 0
+             do (dolist (id (delete-dups
+                             (cl-loop for key in keys
+                                      append (org-scribe-companion--field-ids scene key))))
                   (push index (gethash id positions))))
     (maphash (lambda (id found)
                (let ((found (nreverse found)) (gap 0))
@@ -490,6 +504,89 @@ get 0."
                  (setq result (plist-put result (org-scribe-companion--keyword id) gap))))
              positions)
     result))
+
+(defun org-scribe-companion--plot-gaps (scenes)
+  "Return a plist of plot thread ID to its largest gap over SCENES.
+Same rule as `org-scribe--calculate-thread-gap': the scenes counted are
+those carrying a Plot property."
+  (org-scribe-companion--gaps scenes '(:plot)))
+
+(defvar org-scribe-companion-character-gap-weight)
+
+(defun org-scribe-companion--checked-characters (entities)
+  "Return the IDs of ENTITIES' characters the Storyline checks for gaps.
+Those whose Weight is at most `org-scribe-companion-character-gap-weight'
+and not hidden; none when the option is nil."
+  (let ((limit (bound-and-true-p org-scribe-companion-character-gap-weight)))
+    (when (numberp limit)
+      (cl-loop for entity across (or (plist-get entities :character) [])
+               for id = (plist-get entity :id)
+               when (and (stringp id)
+                         (not (eq t (plist-get entity :hidden)))
+                         (<= (plist-get entity :weight) limit))
+               collect id))))
+
+(defun org-scribe-companion--character-gaps (scenes entities)
+  "Return a plist of character ID to its largest gap over SCENES.
+Only the characters `org-scribe-companion--checked-characters' picks
+from ENTITIES.  A character is in a scene as one of its Characters or as
+its PoV; the scenes counted are those with either filled in."
+  (let ((checked (org-scribe-companion--checked-characters entities))
+        (gaps (org-scribe-companion--gaps scenes '(:characters :pov)))
+        result)
+    (dolist (id checked)
+      (setq result (plist-put result (org-scribe-companion--keyword id)
+                              (or (plist-get gaps (org-scribe-companion--keyword id)) 0))))
+    result))
+
+(defun org-scribe-companion--thread-closed-p (status)
+  "Non-nil when STATUS, a plot thread's STATUS text, says it is closed.
+Closed is resolved or abandoned, in any registered language (see the
+`companion-thread-closed-statuses' message); the status may go on after
+the word (\"Resolved in chapter 8\")."
+  (when-let* ((status (org-string-nw-p status)))
+    (let ((case-fold-search t)
+          (status (string-trim status)))
+      (cl-some (lambda (choices)
+                 (cl-some (lambda (word)
+                            (let ((word (string-trim word)))
+                              (and (not (string-empty-p word))
+                                   (string-match-p (concat "\\`" (regexp-quote word)
+                                                           "\\([^[:alnum:]]\\|\\'\\)")
+                                                   status))))
+                          (split-string choices "|")))
+               (org-scribe-lang-all :messages 'companion-thread-closed-statuses)))))
+
+(defun org-scribe-companion--real-acts (acts)
+  "Return the acts of ACTS that are headings, not the implicit holder."
+  (cl-remove-if (lambda (act) (eq t (plist-get act :implicit))) (append acts nil)))
+
+(defun org-scribe-companion--unfinished-threads (acts entities)
+  "Return the IDs of open plot threads absent from the last act of ACTS.
+Open: in at least one scene, and a STATUS that is not closed (see
+`org-scribe-companion--thread-closed-p').  Only for a book of two acts
+or more; the last act is the last one holding a scene."
+  (let* ((real (cl-remove-if-not
+                (lambda (act)
+                  (cl-some (lambda (chapter) (> (length (plist-get chapter :scenes)) 0))
+                           (append (plist-get act :chapters) nil)))
+                (org-scribe-companion--real-acts acts)))
+         (last-act (car (last real))))
+    (when (cdr real)
+      (let ((everywhere (make-hash-table :test 'equal))
+            (in-last (make-hash-table :test 'equal)))
+        (dolist (act real)
+          (dolist (scene (org-scribe-companion--scene-list (list act)))
+            (dolist (id (org-scribe-companion--field-ids scene :plot))
+              (puthash id t everywhere)
+              (when (eq act last-act) (puthash id t in-last)))))
+        (cl-loop for entity across (or (plist-get entities :plot) [])
+                 for id = (plist-get entity :id)
+                 when (and (stringp id)
+                           (gethash id everywhere)
+                           (not (gethash id in-last))
+                           (not (eq t (plist-get entity :closed))))
+                 collect id)))))
 
 (defun org-scribe-companion--orphans (scenes entities)
   "Return ENTITIES' IDs, per kind, that no scene in SCENES refers to.
@@ -513,6 +610,8 @@ Kinds: character, location, object, plot, plot-point (the ones `org-scribe-healt
   (let ((scenes (org-scribe-companion--scene-list acts)))
     (list :gapThreshold org-scribe-plot-thread-gap-threshold
           :plotGaps (org-scribe-companion--plot-gaps scenes)
+          :characterGaps (org-scribe-companion--character-gaps scenes entities)
+          :unfinished (vconcat (org-scribe-companion--unfinished-threads acts entities))
           :orphans (org-scribe-companion--orphans scenes entities))))
 
 (defun org-scribe-companion--snapshot (&optional root)

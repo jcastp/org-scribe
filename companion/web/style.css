@@ -190,7 +190,14 @@ body.dragging-chapter .cards { display: none; }
 .hidden-entity { opacity: 0.5; font-style: italic; }
 
 /* storyline */
+/* the board scrolls in its own box, so the scene numbers (thead) and the row
+   headers (first column) can stick to its edges; the height is set by
+   storyline.js to what is left under the top bar */
 .sl-scroll { overflow-x: auto; }
+.sl-board { overflow: auto; max-height: var(--sl-max-height, 80vh); }
+.storyline thead th { position: sticky; top: 0; z-index: 2; background: var(--bg); }
+.storyline thead .sl-scenes th { top: var(--sl-chapters-height, 1.6rem); }
+.storyline thead .sl-corner { left: 0; z-index: 3; }
 .storyline { border-collapse: separate; border-spacing: 0; font-size: 0.85rem; }
 .storyline th, .storyline td { padding: 0; }
 .sl-corner, .sl-name { position: sticky; left: 0; background: var(--bg); z-index: 1; min-width: 12rem; text-align: left; padding: 0.2rem 0.5rem; }
@@ -201,6 +208,7 @@ body.dragging-chapter .cards { display: none; }
 .sl-open { all: unset; cursor: pointer; padding: 0.15rem 0.3rem; }
 .sl-open:hover { text-decoration: underline; }
 .sl-group th { text-align: left; padding: 0.7rem 0.5rem 0.2rem; font-size: 1rem; border-bottom: 2px solid var(--line); }
+.sl-group-title { position: sticky; left: 0.5rem; }
 .sl-row:hover .sl-cell, .sl-row:hover .sl-name { --cell-bg: color-mix(in srgb, var(--accent) 7%, var(--bg)); background: var(--cell-bg); }
 .sl-cell { --cell-bg: var(--bg); text-align: center; border-bottom: 1px solid var(--line); border-left: 1px solid color-mix(in srgb, var(--line) 50%, transparent); height: 1.6rem; }
 .sl-cell.dimmed { opacity: 0.25; }
@@ -216,6 +224,8 @@ body.dragging-chapter .cards { display: none; }
 .sl-toggle:disabled { cursor: default; opacity: 0.5; }
 .sl-toggle:focus-visible { outline: 2px solid var(--accent); }
 .sl-warning { margin-left: 0.4rem; color: var(--warn, #d9822b); }
+.sl-status { margin-left: 0.4rem; font-size: 0.7rem; border: 1px solid var(--line); border-radius: 999px; padding: 0 0.4rem; color: var(--muted); white-space: nowrap; }
+.sl-status.closed { font-style: italic; }
 .sl-orphan { margin-left: 0.4rem; font-size: 0.7rem; border: 1px dashed var(--warn, #d9822b); border-radius: 999px; padding: 0 0.4rem; color: var(--muted); }
 .chapters .ch-cell { text-align: center; min-width: 3.2rem; border-bottom: 1px solid var(--line); border-left: 1px solid color-mix(in srgb, var(--line) 50%, transparent); height: 1.6rem; font-size: 0.85rem; }
 .chapters .ch-cell.filled { background: color-mix(in srgb, var(--accent) var(--share), var(--bg)); cursor: pointer; }
@@ -361,7 +371,7 @@ body.dragging-chapter .cards { display: none; }
   padding-left: 0.9rem;
 }
 /* a storyline scene number: the band runs along the bottom */
-.sl-scene.crit { background: var(--crit-edge) left bottom / 100% 5px no-repeat; }
+.sl-scene.crit { background: var(--crit-edge) left bottom / 100% 5px no-repeat var(--bg); }
 
 /* Scene detail panel: a column at the right; the page makes room for it on a
    wide screen and lets it cover the view on a narrow one */

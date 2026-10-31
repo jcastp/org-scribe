@@ -5,7 +5,12 @@
 // cell toggles the link in the scene; Shift+click on a character sets or
 // clears the PoV; clicking a row header opens the entity in Emacs.
 // Entities with a negative Weight are left out, with a "not shown" line under
-// the group and a switch to show them.  All text is put in with textContent.
+// the group and a switch to show them.  Plot threads and the main characters
+// (Weight up to org-scribe-companion-character-gap-weight) are checked for
+// gaps; a plot thread's row header shows its STATUS, and an open thread no
+// scene of the last act has gets a badge.  The scene numbers and the row
+// headers stay in view while the board scrolls.  All text is put in with
+// textContent.
 
 import { matches, isActive } from '../filters.js';
 import { el } from '../edit.js';
@@ -24,15 +29,30 @@ function editable(scene) {
   return Boolean(scene.id) && !scene.readOnly;
 }
 
-/** The scenes of a plot thread's row that lie in a gap longer than the
- * threshold.  Counted over every scene, so hiding some does not move a gap. */
-function gapCells(scenes, entityId, threshold) {
+/** The scene fields that place an entity of KIND in a scene, for the gaps:
+ * the same as the storyline data from Emacs (plotGaps, characterGaps). */
+const GAP_FIELDS = { plot: ['plot'], character: ['characters', 'pov'] };
+
+/** The largest gap of ENTITY in GROUP, or null when the row is not checked. */
+function gapOf(group, entity, storyline) {
+  const table = group.kind === 'plot' ? storyline.plotGaps
+    : group.kind === 'character' ? storyline.characterGaps || {} : null;
+  if (!table) return null;
+  if (group.kind === 'plot') return table[entity.id] || 0;
+  return entity.id in table ? table[entity.id] : null;
+}
+
+/** The scenes of a row that lie in a gap longer than the threshold.  FIELDS
+ * place the entity in a scene; the scenes counted are those with one of them
+ * filled in.  Counted over every scene, so hiding some does not move a gap. */
+function gapCells(scenes, entityId, fields, threshold) {
   const flagged = new Set();
-  const universe = scenes.filter((scene) => scene.fields.plot);
+  const filled = (scene) => fields.some((field) => (scene.fields[field] || {}).raw);
+  const universe = scenes.filter(filled);
   let run = [];
   let seen = false;
   for (const scene of universe) {
-    if (ids(scene, 'plot').includes(entityId)) {
+    if (fields.some((field) => ids(scene, field).includes(entityId))) {
       if (seen && run.length > threshold) for (const id of run) flagged.add(id);
       run = [];
       seen = true;
@@ -96,13 +116,24 @@ function rowHeader(entity, group, ctx, info) {
   open.addEventListener('click', () => ctx.goto(entity.id));
   th.append(open);
   if (entity.hidden) th.classList.add('hidden-entity');
+  if (entity.status) {
+    const status = el('span', entity.closed ? 'sl-status closed' : 'sl-status', entity.status);
+    status.title = ctx.t('companion-ui-thread-status', entity.status);
+    th.append(status);
+  }
   if (info.gap > ctx.snapshot.storyline.gapThreshold) {
     const warning = el('span', 'sl-warning', '⚠');
     warning.title = ctx.t('companion-ui-gap-warning', info.gap);
+    warning.setAttribute('aria-label', warning.title);
     th.append(warning);
   }
   if (info.orphan) {
     const badge = el('span', 'sl-orphan', ctx.t('companion-ui-no-scene'));
+    th.append(badge);
+  }
+  if (info.unfinished) {
+    const badge = el('span', 'sl-orphan sl-unfinished', ctx.t('companion-ui-unfinished'));
+    badge.title = ctx.t('companion-ui-unfinished-hint');
     th.append(badge);
   }
   return th;
@@ -118,10 +149,13 @@ function groupRows(group, scenes, visible, ctx) {
   const shown = orderEntities(group, all.filter((entity) => showHidden || !entity.hidden));
   const left = orderEntities(group, all.filter((entity) => !showHidden && entity.hidden));
   const orphans = new Set(storyline.orphans[group.kind] || []);
+  const unfinished = new Set(group.kind === 'plot' ? storyline.unfinished || [] : []);
   const rows = [];
 
   const head = el('tr', 'sl-group');
-  const title = el('th', '', ctx.t(group.title));
+  const title = el('th');
+  // the title stays at the left while the board scrolls sideways
+  title.append(el('span', 'sl-group-title', ctx.t(group.title)));
   title.colSpan = columns + 1;
   head.append(title);
   rows.push(head);
@@ -129,11 +163,13 @@ function groupRows(group, scenes, visible, ctx) {
   for (const entity of shown) {
     const row = el('tr', 'sl-row');
     row.dataset.id = entity.id;
-    const gaps = group.kind === 'plot'
-      ? gapCells(scenes, entity.id, storyline.gapThreshold) : new Set();
+    const gap = gapOf(group, entity, storyline);
+    const gaps = gap !== null && gap > storyline.gapThreshold
+      ? gapCells(scenes, entity.id, GAP_FIELDS[group.kind], storyline.gapThreshold) : new Set();
     row.append(rowHeader(entity, group, ctx, {
-      gap: group.kind === 'plot' ? storyline.plotGaps[entity.id] || 0 : 0,
+      gap: gap || 0,
       orphan: orphans.has(entity.id),
+      unfinished: unfinished.has(entity.id),
     }));
     for (const scene of visible) row.append(cell(scene, group, entity, { gap: gaps.has(scene) }, ctx));
     rows.push(row);
@@ -185,6 +221,9 @@ function header(acts, ctx) {
 }
 
 export function render(container, ctx) {
+  // the board scrolls in its own box: keep its place across a re-render
+  const old = container.querySelector('.sl-board');
+  const keep = old ? { left: old.scrollLeft, top: old.scrollTop } : null;
   container.replaceChildren();
   const acts = ctx.snapshot.acts;
   const scenes = acts.flatMap((act) => act.chapters.flatMap((chapter) => chapter.scenes));
@@ -210,7 +249,21 @@ export function render(container, ctx) {
     for (const row of groupRows(group, scenes, visible, ctx)) body.append(row);
   }
   table.append(body);
-  const scroller = el('div', 'sl-scroll');
+  const scroller = el('div', 'sl-scroll sl-board');
   scroller.append(table);
   container.append(scroller);
+  stickHeader(table);
+  if (keep) { scroller.scrollLeft = keep.left; scroller.scrollTop = keep.top; }
+}
+
+/** The scene numbers stick under the chapter row, whose height depends on
+ * how its titles wrap: measure it once drawn.  The board's box is as tall as
+ * the window under the sticky top bar, so scrolling the page down to it
+ * leaves the whole board in view. */
+function stickHeader(table) {
+  const chapters = table.querySelector('.sl-chapters');
+  if (chapters) table.style.setProperty('--sl-chapters-height', `${chapters.getBoundingClientRect().height}px`);
+  const topbar = document.querySelector('.topbar');
+  const top = topbar ? topbar.getBoundingClientRect().height : 0;
+  table.parentElement.style.setProperty('--sl-max-height', `calc(100vh - ${Math.ceil(top) + 16}px)`);
 }

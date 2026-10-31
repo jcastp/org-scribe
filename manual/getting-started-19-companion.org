@@ -208,9 +208,23 @@ locations and plot points run down.
 Click a cell to add or remove the link. ~Shift+click~ on a character sets (or
 clears) the PoV. Click a row name or a scene number to open it in Emacs.
 
-Two warnings come for free: a plot thread absent for more than five scenes in a
-row is shaded (the same rule as the plot-thread health report), and a plot point
-that no scene serves gets a "No scene uses it" badge.
+The view checks a few things for you:
+
+- A plot thread absent for more than five scenes in a row gets a ⚠ and its gap
+  is shaded (the same rule as the plot-thread health report). The scenes
+  counted are those with a ~:Plot:~.
+- The same goes for the main characters: those with a ~:Weight:~ of 3 or less
+  (set ~org-scribe-companion-character-gap-weight~ to change the limit, or to
+  ~nil~ to turn it off). A character counts as present as one of the scene's
+  characters or as its PoV, and the scenes counted are those with either filled
+  in.
+- A plot thread shows its ~:STATUS:~ next to its name. One that is still open
+  (not /Resolved/ or /Abandoned/) but has no scene in the last act gets a "Not
+  in the last act" badge: a thread you may have left hanging.
+- An entity no scene uses gets a "Not in any scene" badge.
+
+The board scrolls in its own box, so the chapter titles and scene numbers stay
+at the top and the names stay at the left however far you scroll.
 
 Entities with a negative ~:Weight:~ are not drawn, but they are never silently
 dropped: a line under the group says "Not shown (hidden): ...", and a checkbox

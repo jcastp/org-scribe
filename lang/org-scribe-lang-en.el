@@ -882,6 +882,12 @@ Apply? ")
      (companion-ui-relations-line . "%s: %s")
      (companion-ui-gap-warning . "Absent for %s scenes in a row")
      (companion-ui-no-scene . "Not in any scene")
+     ;; the words a plot thread's STATUS starts with when it is closed
+     ;; (resolved or abandoned), as `capture-pt-status-prompt' offers them
+     (companion-thread-closed-statuses . "Resolved|Abandoned")
+     (companion-ui-thread-status . "Status: %s")
+     (companion-ui-unfinished . "Not in the last act")
+     (companion-ui-unfinished-hint . "Still open, but no scene of the last act has it")
      (companion-ui-pov . "PoV")
      (companion-ui-view-forms . "Entities")
      (companion-ui-new-character . "New character")

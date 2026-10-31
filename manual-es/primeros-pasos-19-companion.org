@@ -231,10 +231,26 @@ Haz clic en una celda para añadir o quitar el enlace. ~Mayús+clic~ sobre un
 personaje fija (o quita) el PoV. Haz clic en el nombre de una fila o en el número
 de una escena para abrirla en Emacs.
 
-Además, la vista te da dos avisos: un hilo de la trama ausente durante más de cinco
-escenas seguidas aparece sombreado (la misma regla que el informe de estado de los hilos de
-la trama), y un punto de trama que ninguna escena sirve recibe una insignia
-«No aparece en ninguna escena».
+La vista comprueba algunas cosas por ti:
+
+- Un hilo de la trama ausente durante más de cinco escenas seguidas recibe un ⚠
+  y su hueco aparece sombreado (la misma regla que el informe de estado de los
+  hilos de la trama). Cuentan las escenas que tienen ~:Trama:~.
+- Lo mismo vale para los personajes principales: los que tienen un ~:Weight:~
+  de 3 o menos (cambia el límite con ~org-scribe-companion-character-gap-weight~,
+  o ponlo a ~nil~ para desactivarlo). Un personaje cuenta como presente si figura
+  entre los personajes de la escena o es su PoV, y cuentan las escenas que tienen
+  uno de los dos.
+- Un hilo de la trama muestra su ~:STATUS:~ junto al nombre. Uno que sigue
+  abierto (ni /Resuelto/ ni /Abandonado/) pero no aparece en ninguna escena del
+  último acto recibe la insignia «No está en el último acto»: un hilo que quizá
+  has dejado colgando.
+- Una entidad que ninguna escena usa recibe la insignia «No aparece en ninguna
+  escena».
+
+El tablero se desplaza dentro de su propia caja, así que los títulos de los
+capítulos y los números de escena se quedan arriba y los nombres a la izquierda
+por mucho que te desplaces.
 
 Las entidades con un ~:Weight:~ negativo no se dibujan, pero nunca se descartan
 en silencio: una línea bajo el grupo dice «No se muestran (ocultas): …», y una

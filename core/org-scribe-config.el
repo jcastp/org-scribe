@@ -711,6 +711,17 @@ By default the companion edits buffers and leaves saving to you."
   :type 'boolean
   :group 'org-scribe)
 
+(defcustom org-scribe-companion-character-gap-weight 3
+  "Characters up to this Weight get a gap warning in the companion's Storyline.
+A character is flagged when more scenes than the plot threads' gap
+threshold pass without them, the same rule as for plot threads; the
+scenes counted are those with Characters or a PoV filled in.  Weight is
+ascending (1 is the most important), so the default checks the three
+main characters.  A character with no Weight (999) or a negative one is
+never checked.  nil turns the check off."
+  :type '(choice (const :tag "Off" nil) number)
+  :group 'org-scribe)
+
 (defcustom org-scribe-companion-todo-colors
   '(("TODO" . "#b45309")
     ("TOWRITE" . "#2563eb")

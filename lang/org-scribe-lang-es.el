@@ -896,6 +896,12 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (companion-ui-relations-line . "%s: %s")
      (companion-ui-gap-warning . "Ausente durante %s escenas seguidas")
      (companion-ui-no-scene . "No aparece en ninguna escena")
+     ;; the words a plot thread's STATUS starts with when it is closed
+     ;; (resolved or abandoned), as `capture-pt-status-prompt' offers them
+     (companion-thread-closed-statuses . "Resuelto|Resuelta|Abandonado|Abandonada")
+     (companion-ui-thread-status . "Estado: %s")
+     (companion-ui-unfinished . "No está en el último acto")
+     (companion-ui-unfinished-hint . "Sigue abierta, pero ninguna escena del último acto la tiene")
      (companion-ui-pov . "Punto de vista")
      (companion-ui-view-forms . "Entidades")
      (companion-ui-new-character . "Nuevo personaje")

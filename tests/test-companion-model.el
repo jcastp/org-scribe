@@ -471,6 +471,126 @@ SETUP is a function called with the directory.  The directory is the
         (should-not (equal before after))
         (should-not (plist-get after :plotGaps))))))
 
+;;; Storyline checks (I5): character gaps, thread status, the last act
+
+(defun test-companion-model--two-acts (root)
+  "Write into ROOT an English novel of two acts, seven scenes and two threads.
+Ana is in scenes 1 and 7 only (a gap of 4, in the six scenes with
+characters; scene 4 has none), Bo in every one of those, Cy (Weight 5)
+in scene 1 only.  Thread \"open\" is in act 1 only, \"done\" (Resolved)
+too, \"late\" in act 2."
+  (test-companion-model--write
+   root ".org-scribe-project" "# Writing project: T\n# Type: novel\n# Language: en\n")
+  (let ((scene (lambda (n chars plot)
+                 (format "*** Scene %d\n:PROPERTIES:\n:ID: s%d\n:Characters: %s\n:Plot: %s\n:END:\n"
+                         n n chars plot)))
+        (ana "[[id:c-ana][Ana]]") (bo "[[id:c-bo][Bo]]") (cy "[[id:c-cy][Cy]]")
+        (open "[[id:t-open][Open]]") (done "[[id:t-done][Done]]") (late "[[id:t-late][Late]]"))
+    (test-companion-model--write
+     root "novel.org"
+     (concat "#+TITLE: T\n* Act 1\n:PROPERTIES:\n:ID: a1\n:END:\n"
+             "** Chapter 1\n:PROPERTIES:\n:ID: ch1\n:END:\n"
+             (funcall scene 1 (concat ana ", " bo ", " cy) (concat open ", " done))
+             (funcall scene 2 bo open)
+             (funcall scene 3 bo done)
+             (funcall scene 4 "" "")
+             "* Act 2\n:PROPERTIES:\n:ID: a2\n:END:\n"
+             "** Chapter 2\n:PROPERTIES:\n:ID: ch2\n:END:\n"
+             (funcall scene 5 bo late)
+             (funcall scene 6 bo late)
+             (funcall scene 7 (concat ana ", " bo) late))))
+  (test-companion-model--write
+   root "design.org"
+   (concat "#+TITLE: D\n* Cast\n** Characters\n"
+           "*** Ana\n:PROPERTIES:\n:ID: c-ana\n:Role: Protagonist\n:Weight: 1\n:END:\n"
+           "*** Bo\n:PROPERTIES:\n:ID: c-bo\n:Role: Ally\n:Weight: 2\n:END:\n"
+           "*** Cy\n:PROPERTIES:\n:ID: c-cy\n:Role: Ally\n:Weight: 5\n:END:\n"
+           "* Plot\n** Plot Threads\n"
+           "*** Open\n:PROPERTIES:\n:ID: t-open\n:THREAD-TYPE: Main\n:STATUS: In progress\n:END:\n"
+           "*** Done\n:PROPERTIES:\n:ID: t-done\n:THREAD-TYPE: Subplot\n:STATUS: Resolved in chapter 1\n:END:\n"
+           "*** Late\n:PROPERTIES:\n:ID: t-late\n:THREAD-TYPE: Subplot\n:END:\n")))
+
+(ert-deftest test-companion-model-storyline-character-gaps-follow-the-weight ()
+  (test-companion-model--with-project root #'test-companion-model--two-acts
+    (let* ((org-scribe-companion-character-gap-weight 3)
+           (gaps (plist-get (plist-get (org-scribe-companion--snapshot root) :storyline)
+                            :characterGaps)))
+      ;; scene 4 has no characters, so it does not count
+      (should (equal 4 (plist-get gaps :c-ana)))
+      (should (equal 0 (plist-get gaps :c-bo)))
+      ;; Cy's Weight is above the limit: not checked at all
+      (should-not (plist-member gaps :c-cy)))))
+
+(ert-deftest test-companion-model-storyline-character-gaps-count-the-pov ()
+  (test-companion-model--with-project root #'test-companion-model--two-acts
+    (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+      (goto-char (org-find-property "ID" "s3"))
+      (org-entry-put nil "PoV" "[[id:c-ana][Ana]]"))
+    (let ((gaps (plist-get (plist-get (org-scribe-companion--snapshot root) :storyline)
+                           :characterGaps)))
+      (should (equal 2 (plist-get gaps :c-ana))))))
+
+(ert-deftest test-companion-model-storyline-character-gap-weight-is-a-setting ()
+  (test-companion-model--with-project root #'test-companion-model--two-acts
+    (let* ((org-scribe-companion-character-gap-weight 3)
+           (before (org-scribe-companion--snapshot root)))
+      (should (plist-get (plist-get before :storyline) :characterGaps))
+      (let* ((org-scribe-companion-character-gap-weight nil)
+             (after (org-scribe-companion--snapshot root)))
+        ;; no buffer changed, yet the page must hear of it
+        (should-not (equal (plist-get before :revision) (plist-get after :revision)))
+        (should-not (plist-get (plist-get after :storyline) :characterGaps))))))
+
+(ert-deftest test-companion-model-plot-threads-carry-their-status ()
+  (test-companion-model--with-project root #'test-companion-model--two-acts
+    (let ((snapshot (org-scribe-companion--snapshot root)))
+      (let ((open (test-companion-model--entity snapshot :plot "Open"))
+            (done (test-companion-model--entity snapshot :plot "Done"))
+            (late (test-companion-model--entity snapshot :plot "Late")))
+        (should (equal "In progress" (plist-get open :status)))
+        (should (eq :false (plist-get open :closed)))
+        (should (equal "Resolved in chapter 1" (plist-get done :status)))
+        (should (eq t (plist-get done :closed)))
+        (should (eq :null (plist-get late :status)))
+        (should (eq :false (plist-get late :closed))))
+      ;; only plot threads carry it
+      (should-not (plist-member (test-companion-model--entity snapshot :character "Ana") :status)))))
+
+(ert-deftest test-companion-model-thread-closed-statuses-in-every-language ()
+  (dolist (status '("Resolved" "resolved, chapter 8" "Abandoned." "Resuelto" "Abandonada"))
+    (should (org-scribe-companion--thread-closed-p status)))
+  (dolist (status '(nil "" "In progress" "Planned" "Resolvedly" "En curso" "Not resolved"))
+    (should-not (org-scribe-companion--thread-closed-p status))))
+
+(ert-deftest test-companion-model-storyline-open-threads-missing-from-the-last-act ()
+  (test-companion-model--with-project root #'test-companion-model--two-acts
+    ;; Open: in act 1 only.  Done: resolved.  Late: in act 2.
+    (should (equal ["t-open"]
+                   (plist-get (plist-get (org-scribe-companion--snapshot root) :storyline)
+                              :unfinished)))
+    ;; once resolved, it is not flagged any more
+    (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+      (goto-char (org-find-property "ID" "t-open"))
+      (org-entry-put nil "STATUS" "Abandoned"))
+    (should (equal [] (plist-get (plist-get (org-scribe-companion--snapshot root) :storyline)
+                                 :unfinished)))))
+
+(ert-deftest test-companion-model-storyline-no-last-act-check-with-one-act ()
+  (test-companion-model--with-project root #'test-companion-model--two-acts
+    (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+      (goto-char (point-min))
+      (re-search-forward "^\\* Act 2")
+      (replace-match "** Act 2 as a chapter"))
+    (should (equal [] (plist-get (plist-get (org-scribe-companion--snapshot root) :storyline)
+                                 :unfinished)))))
+
+(ert-deftest test-companion-model-storyline-unfinished-on-the-demo ()
+  (test-companion-model--with-project root #'test-companion-model--copy-demo
+    (let ((storyline (plist-get (org-scribe-companion--snapshot root) :storyline)))
+      ;; every thread of the demo reaches Act III
+      (should (equal [] (plist-get storyline :unfinished)))
+      (should (plist-get storyline :characterGaps)))))
+
 ;;; Relationships
 
 (ert-deftest test-companion-model-characters-carry-their-relationships ()
