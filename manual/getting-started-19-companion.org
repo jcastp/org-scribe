@@ -383,6 +383,28 @@ measured items, the writing plan when the planner is loaded, and the numbers:
 scenes by state, words by PoV and chapter lengths. *Full report in Emacs*
 opens the report there.
 
+** The Edits Tab
+
+The *Edits* tab lists every ~*EDIT*~ and ~*NOTE*~ marker of the project, the
+same ones ~F8 6~ finds (markers live in comment blocks; see Lesson 13). Group
+them by *Category* (plot, scene, character, prose, design, other, then the
+notes) or by *Chapter*, and show all of them, only the edits or only the
+notes. The page remembers both choices.
+
+- Click a marker's text, or its ~↗~, to see that line in Emacs.
+- Click its scene's name to open the scene's details.
+- Markers are written and cleared in Emacs, in the prose: the page only
+  reads them. The list follows the manuscript and the design notebook as you
+  edit; for a marker in another ~.org~ file of the project, press *Refresh*.
+
+The markers also show where you work on scenes:
+
+- A ~✎ 2~ badge on a card or a table row counts the scene's markers (grey
+  when they are only notes). Click it to open the details panel at the
+  scene's *Edit markers* list, where each one has its own ~↗~.
+- *Colour by → Edit markers* marks the scenes that still have an ~*EDIT*~,
+  so a revision pass can see where the work clusters.
+
 * Part 6: Saving, Undo, and Following
 
 - The page never saves your files unless you press *Save* (or set
@@ -396,8 +418,8 @@ opens the report there.
   The page's undo is itself one undo step in Emacs: ~C-/~ there brings the
   change back.
 - *Keyboard.* Press ~?~ (outside a text field), or the =?= button at the end
-  of the header, for the list of the page's shortcuts. ~1~ to ~8~ switch tabs
-  in the order they appear (a short story has seven). Hover over a tab to see
+  of the header, for the list of the page's shortcuts. ~1~ to ~9~ switch tabs
+  in the order they appear (a short story has eight). Hover over a tab to see
   its key.
 - As you move point through the manuscript, the matching card or row is
   highlighted (~org-scribe-companion-follow~).

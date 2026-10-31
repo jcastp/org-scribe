@@ -16,6 +16,7 @@ import {
   el, startEdit, moveTo, sceneParent, addSceneButton, addChapterButton, detailButton, isDetailKey,
 } from '../edit.js';
 import { hasPlotPoints } from './matrix.js';
+import { badge as editsBadge } from '../markers.js';
 import { openPicker } from '../picker.js';
 
 let STORE = 'org-scribe.table';
@@ -220,6 +221,8 @@ function titleCell(scene, parentId, ctx) {
     open.title = label;
     open.setAttribute('aria-label', label);
     open.addEventListener('click', (event) => { event.stopPropagation(); ctx.goto(scene.id); });
+    const marks = editsBadge(scene, ctx);
+    if (marks) cell.append(marks);
     cell.append(detailButton(scene, ctx), open);
     // "after" is the manuscript's order: under a sort the row below is not the next scene
     if (parentId && !scene.readOnly && !prefs.sort) cell.append(insertAfterButton(scene, parentId, ctx));

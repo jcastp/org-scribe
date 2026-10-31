@@ -16,6 +16,7 @@ import * as chapters from './views/chapters.js';
 import * as timeline from './views/timeline.js';
 import * as relations from './views/relations.js';
 import * as forms from './views/forms.js';
+import * as edits from './views/edits.js';
 import * as health from './views/health.js';
 import * as colours from './colors.js';
 import * as scheme from './scheme.js';
@@ -33,6 +34,7 @@ const VIEWS = [
   { id: 'timeline', label: 'companion-ui-view-timeline', module: timeline, colourBy: true },
   { id: 'relations', label: 'companion-ui-view-relations', module: relations, noFilters: true },
   { id: 'forms', label: 'companion-ui-view-forms', module: forms },
+  { id: 'edits', label: 'companion-ui-view-edits', module: edits, noFilters: true },
   { id: 'health', label: 'companion-ui-view-health', module: health, noFilters: true },
 ];
 
@@ -99,6 +101,11 @@ const fetchEntity = (id) => request(`/api/entity?id=${encodeURIComponent(id)}`);
 const fetchHealth = () => request('/api/health');
 
 const goto = (id) => command('goto', { id });
+
+/** Show an edit marker's line in Emacs; FILE null is the manuscript. */
+const gotoMarker = (file, line) => command('goto-marker', file ? { file, line } : { line });
+
+const fetchEdits = () => request('/api/edits');
 
 /**
  * Run an editing command.  Success: the new snapshot arrives with the
@@ -345,6 +352,8 @@ function viewContext() {
     openDetail,
     openEntity,
     fetchHealth,
+    fetchEdits,
+    gotoMarker,
     isShown: (id) => state.view === id,
   };
 }
@@ -517,6 +526,7 @@ async function refresh() {
     corkboard.useProject(root);
     scheme.useProject(root);
     health.useProject(root);
+    edits.useProject(root);
     state.followPage = loadFollowPage(root);
     followSent = null;
   }

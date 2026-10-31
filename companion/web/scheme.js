@@ -12,6 +12,7 @@
 import { colorOf, legendSwatch } from './colors.js';
 import { ids, hasPlotPoints } from './views/matrix.js';
 import { el } from './edit.js';
+import { counts } from './markers.js';
 
 const KEY = 'org-scribe.colourBy';
 const MAX_BANDS = 3;
@@ -26,7 +27,12 @@ const CRITERIA = [
   { id: 'location', label: 'companion-ui-filter-location', kind: 'location', field: 'location', entity: 'location' },
   { id: 'plotpoint', label: 'companion-ui-plot-point', kind: 'plotpoint', field: 'plot-point', entity: 'plot-point' },
   { id: 'act', label: 'companion-ui-colour-act', kind: 'act' },
+  // not a property: scenes with *EDIT* markers still open, in the warning colour
+  { id: 'edits', label: 'companion-ui-colour-edits', own: true },
 ];
+
+/** The edits criterion's one colour: the page's warning colour, not a palette slot. */
+const EDITS_COLOR = 'var(--warn)';
 
 /** The colour kind of an entity group of the storyline, or null. */
 const GROUP_KIND = { character: 'pov', plot: 'plot', location: 'location', 'plot-point': 'plotpoint' };
@@ -86,6 +92,7 @@ function valuesOf(scene, entry, snapshot) {
 /** The CSS colours of a scene for the current criterion; empty when it has none. */
 export function sceneColors(scene, snapshot) {
   const entry = spec();
+  if (entry && entry.id === 'edits') return counts(scene).edits ? [EDITS_COLOR] : [];
   if (!entry || !entry.kind) return [];
   return valuesOf(scene, entry, snapshot).map((id) => colorOf(entry.kind, id)).filter(Boolean);
 }
@@ -127,8 +134,8 @@ export function paint(node, scene, ctx, direction = 'to bottom') {
  */
 export function markColor(scene, group, entity, ctx) {
   const entry = spec();
-  if (!entry || !entry.kind) return null;
-  if (GROUP_KIND[group.kind] === entry.kind) return colorOf(entry.kind, entity.id);
+  if (!entry || !(entry.kind || entry.own)) return null;
+  if (entry.kind && GROUP_KIND[group.kind] === entry.kind) return colorOf(entry.kind, entity.id);
   const colors = sceneColors(scene, ctx.snapshot);
   return colors.length === 1 ? colors[0] : 'var(--muted)';
 }
@@ -156,6 +163,15 @@ export function chooser(ctx, onChange) {
 /** The values of the criterion in use by the scenes, each with a swatch that opens its picker; null for TODO. */
 export function legend(ctx) {
   const entry = spec();
+  if (entry && entry.id === 'edits') {
+    const box = el('div', 'colour-legend');
+    const key = el('span', 'rel-key');
+    const dot = el('span', 'legend-dot');
+    dot.style.background = EDITS_COLOR;
+    key.append(dot, document.createTextNode(ctx.t('companion-ui-colour-edits-legend')));
+    box.append(key);
+    return box;
+  }
   if (!entry || !entry.kind) return null;
   const { snapshot } = ctx;
   const used = new Set();

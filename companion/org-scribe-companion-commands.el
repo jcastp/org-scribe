@@ -26,6 +26,8 @@
 ;;                                      (in org-scribe-companion-entity.el)
 ;;   remove-link, show-health           the Health tab's findings
 ;;                                      (in org-scribe-companion-health.el)
+;;   goto-marker                        show an edit marker's line
+;;                                      (in org-scribe-companion-edits.el)
 ;; Any other name is `unsupported'.
 ;;
 ;; Headings are found by ID, only in the project's manuscript and design
@@ -79,7 +81,8 @@
     ("capture-entity" . org-scribe-companion-entity--capture)
     ("create-entity" . org-scribe-companion-entity--create)
     ("remove-link" . org-scribe-companion-health--remove-link)
-    ("show-health" . org-scribe-companion-health--show))
+    ("show-health" . org-scribe-companion-health--show)
+    ("goto-marker" . org-scribe-companion-edits--goto))
   "Alist of (OP-NAME . FUNCTION).  FUNCTION takes ROOT and the args plist.")
 
 (define-error 'org-scribe-companion-command-error
@@ -837,9 +840,10 @@ Returns the answer plist described in the Commentary."
 
 (provide 'org-scribe-companion-commands)
 
-;; The entity and health commands need this file's machinery, so load them
+;; The entity, health and edits commands need this file's machinery, so load them
 ;; after it.
 (require 'org-scribe-companion-entity)
 (require 'org-scribe-companion-health)
+(require 'org-scribe-companion-edits)
 
 ;;; org-scribe-companion-commands.el ends here

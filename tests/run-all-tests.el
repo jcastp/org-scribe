@@ -130,7 +130,8 @@
     "test-companion-entity"        ; Entity forms: properties, section bodies, capture
     "test-companion-colors"        ; Colour themes, pins, set-color
     "test-companion-collections"   ; Saved filters (set-collection)
-    "test-companion-health")       ; Health tab: report as JSON, remove-link
+    "test-companion-health"        ; Health tab: report as JSON, remove-link
+    "test-companion-edits")        ; Edit markers: per scene, the index, goto-marker
   "List of test files (without .el extension).")
 
 (defun org-scribe-load-tests ()
@@ -258,7 +259,7 @@ is set too, for the tests that start a fresh Emacs."
     (dolist (file '("test-companion-gate" "test-companion-model" "test-companion-server"
                     "test-companion-commands" "test-companion-entity"
                     "test-companion-colors" "test-companion-collections"
-                    "test-companion-health"))
+                    "test-companion-health" "test-companion-edits"))
       (load-file (expand-file-name (concat file ".el") dir))))
   (ert "^test-companion-"))
 

@@ -166,6 +166,16 @@ HOST and ORIGIN override the defaults; BODY and CONTENT-TYPE make a request body
       (should (= 15 (alist-get 'scenes (alist-get 'overview (alist-get 'health parsed))))))
     (should (= 403 (car (test-companion-server--get "/api/health" :token nil))))))
 
+(ert-deftest test-companion-server-edits-on-demand ()
+  "GET /api/edits answers the marker index, behind the token."
+  (test-companion-server--with-server root
+    (let* ((result (test-companion-server--get "/api/edits"))
+           (parsed (json-parse-string (test-companion-server--body result) :object-type 'alist)))
+      (should (= 200 (car result)))
+      (should (eq t (alist-get 'ok parsed)))
+      (should (< 10 (length (alist-get 'markers parsed)))))
+    (should (= 403 (car (test-companion-server--get "/api/edits" :token nil))))))
+
 (ert-deftest test-companion-server-token-in-the-query-also-works ()
   (test-companion-server--with-server root
     (let ((result (test-companion-server--get

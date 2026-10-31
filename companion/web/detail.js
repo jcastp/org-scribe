@@ -12,6 +12,7 @@ import { el, startEdit } from './edit.js';
 import { openPicker } from './picker.js';
 import { matches, isActive } from './filters.js';
 import { hasPlotPoints } from './views/matrix.js';
+import { item as markerItem } from './markers.js';
 
 /** Every scene in book order, with its act and chapter. */
 function allScenes(snapshot) {
@@ -141,6 +142,22 @@ function fieldList(scene, fields, titleKey, ctx) {
   return section;
 }
 
+/** The scene's edit markers, each with a ↗ to its line; null when it has none. */
+function markerList(scene, ctx) {
+  const markers = scene.edits || [];
+  if (!markers.length) return null;
+  const section = el('section', 'detail-section detail-markers');
+  const heading = el('h3', '', ctx.t('companion-ui-edits-in-scene', markers.length));
+  // the badges open the panel here (openDetail's field 'edits')
+  heading.dataset.key = 'field-edits';
+  heading.tabIndex = -1;
+  section.append(heading);
+  const list = el('ul', 'marker-list');
+  for (const marker of markers) list.append(markerItem(marker, null, ctx));
+  section.append(list);
+  return section;
+}
+
 /** Draw the panel for ENTRY ({ scene, act, chapter }) into PANEL. */
 export function render(panel, entry, ctx) {
   panel.replaceChildren();
@@ -184,6 +201,8 @@ export function render(panel, entry, ctx) {
   status.append(stateSelect(scene, ctx), el('span', 'detail-words', words(scene, ctx)));
   panel.append(status);
   if (!editable(scene)) panel.append(el('p', 'detail-note', ctx.t('companion-ui-no-id')));
+  const markers = markerList(scene, ctx);
+  if (markers) panel.append(markers);
 
   const fields = ctx.snapshot.sceneFields
     .filter((field) => field.key !== 'plot-point' || hasPlotPoints(ctx));

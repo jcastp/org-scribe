@@ -195,6 +195,49 @@ PROPS is the table of the scene's properties."
     (append (org-scribe-companion--heading-plist props)
             (list :fields fields))))   ; nil is {} in JSON, as wanted here
 
+(declare-function org-scribe--edits-parse-block "org-scribe-search")
+(defvar org-scribe-edit-categories)
+
+(defun org-scribe-companion--edit-markers ()
+  "Return the edit markers of the current buffer as ((POSITION . MARKER) ...).
+MARKER is a JSON-ready plist: `:type' (\"EDIT\" or \"NOTE\"), `:category'
+\(canonical, or :null), `:text' and `:line' (1-based, in the buffer as it
+is now, unsaved edits included).  POSITION is where its line starts.
+Markers live in comment blocks, read with the edit index's own parser
+\(`org-scribe--edits-parse-block'), so the page and F8 6 agree.  Reads
+the whole buffer, ignoring any narrowing."
+  (require 'org-scribe-search)
+  (let ((case-fold-search t)
+        markers)
+    (org-with-wide-buffer
+     (goto-char (point-min))
+     (while (re-search-forward "^[ \t]*#\\+begin_comment\\b.*\n" nil t)
+       (let ((start (point)))
+         (when (re-search-forward "^[ \t]*#\\+end_comment\\b" nil t)
+           (let ((base (line-number-at-pos start))
+                 (value (buffer-substring-no-properties start (line-beginning-position))))
+             (dolist (marker (org-scribe--edits-parse-block value))
+               (let ((line (+ base (plist-get marker :line))))
+                 (push (cons (save-excursion
+                               (goto-char (point-min))
+                               (forward-line (1- line))
+                               (point))
+                             (list :type (plist-get marker :type)
+                                   :category (org-scribe-companion--or-null
+                                              (plist-get marker :category))
+                                   :text (plist-get marker :text)
+                                   :line line))
+                       markers))))))))
+    (nreverse markers)))
+
+(defun org-scribe-companion--edit-categories (language)
+  "Return the *EDIT* categories as a vector of {key, name} for the browser.
+In `org-scribe-edit-categories' order, named in LANGUAGE."
+  (vconcat (mapcar (lambda (category)
+                     (list :key category
+                           :name (org-scribe-edit-category-display category language)))
+                   (bound-and-true-p org-scribe-edit-categories))))
+
 (defun org-scribe-companion--walk-manuscript (specs)
   "Return the acts of the current buffer as a list of plists, in order.
 Acts are level-1 headings, chapters and scenes the levels of
@@ -203,9 +246,11 @@ has or inherits `noexport' (the novel's apparatus) is skipped with
 everything under it.  A chapter outside any act, or a scene outside any
 chapter, gets an implicit parent with a null ID, so nothing is dropped.
 Reads the whole buffer, ignoring any narrowing.  SPECS are the scene
-field specs."
+field specs.  Each scene carries `:edits', the edit markers in its
+subtree (see `org-scribe-companion--edit-markers')."
   (let ((chapter-level (org-scribe-chapter-level))
         (scene-level (org-scribe-scene-level))
+        (markers (org-scribe-companion--edit-markers))
         acts act chapter)
     (cl-labels
         ((ensure-act ()
@@ -251,9 +296,15 @@ field specs."
               (plist-put act :chapters (cons chapter (plist-get act :chapters))))
              ((= level scene-level)
               (ensure-chapter)
-              (plist-put chapter :scenes
-                         (cons (org-scribe-companion--scene-plist props specs)
-                               (plist-get chapter :scenes)))))))
+              (let* ((start (point))
+                     (end (save-excursion (org-end-of-subtree t t) (point)))
+                     (edits (cl-loop for (position . marker) in markers
+                                     when (and (>= position start) (< position end))
+                                     collect marker)))
+                (plist-put chapter :scenes
+                           (cons (append (org-scribe-companion--scene-plist props specs)
+                                         (list :edits (vconcat edits)))
+                                 (plist-get chapter :scenes))))))))
         nil 'file)))
     ;; Lists were built back to front; fix the order and make vectors.
     (mapcar
@@ -382,13 +433,15 @@ unweighted default 999.0 and is not hidden."
 
 (defun org-scribe-companion--settings-revision ()
   "Return a short string that changes with the settings the snapshot reads.
-They are the project language, `org-scribe-companion-todo-colors' and
-`org-scribe-companion-character-gap-weight': none lives in a buffer, so
-no tick changes when the writer sets them.
+They are the project language, `org-scribe-companion-todo-colors',
+`org-scribe-companion-character-gap-weight' and `org-scribe-edit-categories'
+\(the markers' grouping): none lives in a buffer, so no tick changes when
+the writer sets them.
 Reads the project at `default-directory'."
   (substring (secure-hash 'md5 (format "%S" (list (org-scribe-project-language)
                                                   (bound-and-true-p org-scribe-companion-todo-colors)
-                                                  (bound-and-true-p org-scribe-companion-character-gap-weight))))
+                                                  (bound-and-true-p org-scribe-companion-character-gap-weight)
+                                                  (bound-and-true-p org-scribe-edit-categories))))
              0 8))
 
 (defun org-scribe-companion--format-revision (revisions)
@@ -686,6 +739,7 @@ so asking again without an edit costs a revision check only."
             :relationshipTypes (vconcat (org-scribe-relationship-type-choices))
             :entityChoices (org-scribe-companion--entity-choices)
             :sceneFields (org-scribe-companion--scene-fields-json specs)
+            :editCategories (org-scribe-companion--edit-categories language)
             :acts (vconcat (plist-get cache :acts))
             :entities (plist-get cache :entities)
             :storyline (plist-get cache :storyline)

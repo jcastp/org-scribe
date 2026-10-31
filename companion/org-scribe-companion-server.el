@@ -14,6 +14,7 @@
 ;;   GET  /api/project   the snapshot
 ;;   GET  /api/strings   the UI strings
 ;;   GET  /api/health    the health report, for the Health tab (on demand)
+;;   GET  /api/edits     the edit-marker index, for the Edits tab (on demand)
 ;;   GET  /api/events    Server-Sent Events
 ;;   POST /api/command   one write operation
 ;;
@@ -347,6 +348,10 @@ away: writing to a socket whose peer has closed can block Emacs."
            proc (if (eq (plist-get answer :ok) t) 200 404) answer)))
        ((and (equal method "GET") (equal path "/api/health"))
         (let ((answer (org-scribe-companion-health-get org-scribe-companion-server--root)))
+          (org-scribe-companion-server--respond-json
+           proc (if (eq (plist-get answer :ok) t) 200 404) answer)))
+       ((and (equal method "GET") (equal path "/api/edits"))
+        (let ((answer (org-scribe-companion-edits-get org-scribe-companion-server--root)))
           (org-scribe-companion-server--respond-json
            proc (if (eq (plist-get answer :ok) t) 200 404) answer)))
        ((and (equal method "GET") (equal path "/api/events"))

@@ -17,6 +17,7 @@ import {
   startEdit, moveTo, sceneParent, addSceneButton, addChapterButton, detailButton, isDetailKey,
 } from '../edit.js';
 import { hasPlotPoints } from './matrix.js';
+import { badge as editsBadge } from '../markers.js';
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -292,6 +293,8 @@ function card(scene, ctx) {
     open.title = label;
     open.setAttribute('aria-label', label);
     open.addEventListener('click', (event) => { event.stopPropagation(); ctx.goto(scene.id); });
+    const marks = editsBadge(scene, ctx);
+    if (marks) head.append(marks);
     head.append(detailButton(scene, ctx), open);
   } else {
     head.append(el('span', 'noid', '⚠'));

@@ -429,6 +429,29 @@ salida con sus dos elementos medidos, el plan de escritura cuando el
 planificador está cargado, y las cifras: escenas por estado, palabras por PoV
 y longitud de los capítulos. *Informe completo en Emacs* abre allí el informe.
 
+** La pestaña Marcas
+
+La pestaña *Marcas* lista todas las marcas ~*EDIT*~ y ~*NOTE*~ del proyecto,
+las mismas que encuentra ~F8 6~ (las marcas viven en bloques de comentario;
+mira la Lección 13). Agrúpalas por *Categoría* (trama, escena, personaje,
+prosa, diseño, otras y después las notas) o por *Capítulo*, y muéstralas todas,
+solo las ediciones o solo las notas. La página recuerda las dos elecciones.
+
+- Haz clic en el texto de una marca, o en su ~↗~, para ver esa línea en Emacs.
+- Haz clic en el nombre de su escena para abrir los detalles de la escena.
+- Las marcas se escriben y se quitan en Emacs, en la prosa: la página solo las
+  lee. La lista sigue al manuscrito y al cuaderno de diseño mientras editas;
+  para una marca en otro archivo ~.org~ del proyecto, pulsa *Actualizar*.
+
+Las marcas también se ven donde trabajas con las escenas:
+
+- Una insignia ~✎ 2~ en una tarjeta o en una fila de la tabla cuenta las marcas
+  de la escena (en gris cuando son solo notas). Haz clic en ella para abrir el
+  panel de detalles en la lista *Marcas de edición* de la escena, donde cada
+  una tiene su propio ~↗~.
+- *Colorear por → Marcas de edición* señala las escenas que aún tienen un
+  ~*EDIT*~, para que una pasada de revisión vea dónde se acumula el trabajo.
+
 * Parte 6: Guardar, deshacer y seguir
 
 - La página nunca guarda tus archivos a menos que pulses *Guardar* (o fijes
@@ -442,8 +465,8 @@ y longitud de los capítulos. *Informe completo en Emacs* abre allí el informe.
   aplicaría en el sitio equivocado. El deshacer de la página es a su vez un
   paso de deshacer en Emacs: ~C-/~ allí recupera el cambio.
 - *Teclado.* Pulsa ~?~ (fuera de un campo de texto), o el botón =?= al final
-  de la cabecera, para ver la lista de atajos de la página. ~1~ a ~8~ cambian de
-  pestaña en el orden en que aparecen (un cuento tiene siete). Pasa el ratón
+  de la cabecera, para ver la lista de atajos de la página. ~1~ a ~9~ cambian de
+  pestaña en el orden en que aparecen (un cuento tiene ocho). Pasa el ratón
   sobre una pestaña para ver su tecla.
 - A medida que mueves el cursor por el manuscrito, la tarjeta o fila
   correspondiente se resalta (~org-scribe-companion-follow~).
