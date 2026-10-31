@@ -463,6 +463,24 @@ and not in the cache, which only follows buffer ticks."
           :colors (funcall plist (car colors))
           :colorsDark (funcall plist (cdr colors)))))
 
+;;; What the entity templates offer
+
+(defun org-scribe-companion--entity-choices ()
+  "Return, per entity kind, a plist of property name to the values offered.
+Read from the capture prompts (\"Label|first|second\"), in the project's
+language, so the forms and the page's short \"new\" form offer what the
+templates do.  Kinds with no choices are left out."
+  (let ((org-scribe-message-language (org-scribe-project-language)))
+    (cl-flet ((options (key)
+                (vconcat (cdr (split-string (org-scribe-msg key) "|")))))
+      (list :character (list :Role (options (if (eq (org-scribe-project-type) 'short-story)
+                                                'capture-ss-char-role-prompt
+                                              'capture-char-role-prompt)))
+            :plot (list :THREAD-TYPE (options 'capture-pt-type-prompt)
+                        :STATUS (options 'capture-pt-status-prompt))
+            :object (list :Type (options 'capture-obj-type-prompt)
+                          :Status (options 'capture-obj-status-prompt))))))
+
 ;;; Storyline data
 
 (defvar org-scribe-plot-thread-gap-threshold)
@@ -666,6 +684,7 @@ so asking again without an edit costs a revision check only."
             :colors (org-scribe-companion-colors-resolve root (plist-get cache :entities)
                                                 (plist-get cache :acts))
             :relationshipTypes (vconcat (org-scribe-relationship-type-choices))
+            :entityChoices (org-scribe-companion--entity-choices)
             :sceneFields (org-scribe-companion--scene-fields-json specs)
             :acts (vconcat (plist-get cache :acts))
             :entities (plist-get cache :entities)

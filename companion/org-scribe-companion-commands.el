@@ -20,7 +20,7 @@
 ;;   set-entity-property,
 ;;   set-entity-section,
 ;;   set-relationship,
-;;   capture-entity                     edit the design notebook's entities
+;;   capture-entity, create-entity      edit the design notebook's entities
 ;;                                      (in org-scribe-companion-entity.el)
 ;; Any other name is `unsupported'.
 ;;
@@ -70,7 +70,8 @@
     ("set-entity-property" . org-scribe-companion-entity--set-property)
     ("set-entity-section" . org-scribe-companion-entity--set-section)
     ("set-relationship" . org-scribe-companion-entity--set-relationship)
-    ("capture-entity" . org-scribe-companion-entity--capture))
+    ("capture-entity" . org-scribe-companion-entity--capture)
+    ("create-entity" . org-scribe-companion-entity--create))
   "Alist of (OP-NAME . FUNCTION).  FUNCTION takes ROOT and the args plist.")
 
 (define-error 'org-scribe-companion-command-error

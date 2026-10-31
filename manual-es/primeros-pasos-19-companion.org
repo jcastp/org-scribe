@@ -342,11 +342,22 @@ hilos de la trama y los trece puntos de trama. Elige uno:
 - Las *Secciones* son el texto bajo la entidad: su descripción y cada
   subencabezado (Deseo, Necesidad, Plan, Trasfondo…). Es texto Org en bruto; las
   líneas de encabezado nunca se modifican.
+- Bajo el nombre, una tira muestra el libro: una marca por escena, agrupadas
+  por capítulo, rellena donde aparece la entidad (un anillo señala las escenas
+  con el personaje como PoV). Haz clic en una marca rellena para abrir esa
+  escena en Emacs.
 - *Relaciones* y *Aparece en* listan los enlaces y las escenas; haz clic para
   abrirlos.
+- Un punto (●) junto a una propiedad o una sección indica que Emacs la tiene
+  cambiada pero sin guardar. Al guardar desaparecen los puntos.
 - Los puntos de trama son prosa del método: puedes leerlos aquí y editarlos en
   Emacs.
-- El ~+~ junto a un grupo ejecuta en Emacs la orden de captura de siempre.
+- El ~+~ junto a un grupo abre un formulario breve: un nombre y el papel (o el
+  tipo). *Crear* registra la nueva entidad con la misma plantilla de captura que
+  usa Emacs, con los demás campos en blanco, y abre su formulario. Un nombre que
+  ya existe en ese grupo se rechaza. *En Emacs…* ejecuta allí la orden de
+  captura de siempre, con todas sus preguntas. El *Deshacer* de la página retira
+  una entidad nueva.
 
 ** Cuando Emacs y la página no coinciden
 

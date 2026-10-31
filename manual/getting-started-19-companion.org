@@ -305,9 +305,18 @@ thirteen plot points. Pick one:
 - *Sections* are the text under the entity: its description, and each
   sub-heading (Desire, Need, Plan, Backstory, ...). They are raw org text; the
   heading lines themselves are never changed.
+- Under the name, a strip shows the book: one tick per scene, grouped by
+  chapter, filled where the entity appears (a ring marks a character's PoV
+  scenes). Click a filled tick to open that scene in Emacs.
 - *Relationships* and *Appears in* list the links and the scenes; click to open.
+- A dot (●) next to a property or a section means Emacs has it changed but not
+  saved yet. Saving clears the dots.
 - Plot points are method prose: you can read them here, and edit them in Emacs.
-- The ~+~ next to a group runs the usual capture command in Emacs.
+- The ~+~ next to a group opens a short form: a name and the role (or type).
+  *Create* files the new entity from the same capture template Emacs uses, with
+  the other fields left blank, and opens its form. A name already taken in that
+  group is refused. *In Emacs…* runs the usual capture command there instead,
+  with all its prompts. The page's *Undo* takes a new entity back.
 
 ** When Emacs and the Page Disagree
 

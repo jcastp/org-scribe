@@ -299,7 +299,8 @@
 
 (ert-deftest test-companion-entity-messages-in-both-languages ()
   (dolist (key '(companion-error-invalid-weight companion-error-body-heading
-                 companion-error-section-gone companion-error-section-conflict))
+                 companion-error-section-gone companion-error-section-conflict
+                 companion-error-entity-exists))
     (should (alist-get key org-scribe-messages-en))
     (should (alist-get key org-scribe-messages-es))))
 
@@ -478,6 +479,144 @@
     (should (equal (list (cons test-companion-entity--alex "neighbour")
                          (cons test-companion-entity--dana "client"))
                    (test-companion-entity--rels root test-companion-entity--sam)))))
+
+;;; create-entity (I7)
+
+(defun test-companion-entity--find (root id)
+  "Return the entity ID of ROOT's snapshot as (KIND . ENTITY), fresh."
+  (org-scribe-companion--clear-cache)
+  (org-scribe-companion-entity--find root id))
+
+(ert-deftest test-companion-entity-create-files-each-kind-from-its-template ()
+  (test-companion-entity--with-project root
+    (cl-loop for (kind name value property getter) in
+             '(("character" "Zoe Park" "Ally" "Role" org-scribe--get-all-characters)
+               ("location" "The Pier" "Exterior" "Type" org-scribe--get-all-locations)
+               ("object" "A Key" "Key" "Type" nil)
+               ("plot" "New Line" "Subplot" "THREAD-TYPE" org-scribe--get-all-plot-threads))
+             do (let* ((answer (test-companion-entity--run root "create-entity"
+                                                          :kind kind :name name :value value))
+                       (id (plist-get answer :id)))
+                  (should (eq t (plist-get answer :ok)))
+                  (should (stringp id))
+                  ;; the snapshot sees it, under its kind
+                  (let ((found (test-companion-entity--find root id)))
+                    (should (equal kind (car found)))
+                    (should (equal name (plist-get (cdr found) :name))))
+                  ;; the linking getters too: it sits where they look
+                  (when getter
+                    (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+                      (should (member name (mapcar #'car (funcall getter))))))
+                  ;; the template's fields, the short form's value, no prompt left
+                  (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+                    (org-with-wide-buffer
+                     (goto-char (org-find-property "ID" id))
+                     (should (equal value (org-entry-get nil property)))
+                     (let ((text (buffer-substring (point) (save-excursion (org-end-of-subtree t t) (point)))))
+                       (should-not (string-match-p "%" text))
+                       (should (string-match-p "^:Weight:$\\|^:Status:$\\|^:First-appearance:$" text)))))))))
+
+(ert-deftest test-companion-entity-create-character-keeps-the-template-shape ()
+  (test-companion-entity--with-project root
+    (let* ((id (plist-get (test-companion-entity--run root "create-entity"
+                                                      :kind "character" :name "Zoe Park")
+                          :id))
+           (data (org-scribe-companion-entity-get root id))
+           (alex (org-scribe-companion-entity-get root test-companion-entity--alex))
+           (titles (lambda (d) (mapcar (lambda (s) (plist-get s :title))
+                                       (cdr (append (plist-get d :sections) nil))))))
+      ;; the template's sub-headings, one level below it
+      (should (equal (let ((default-directory root))
+                       (require 'org-scribe-capture)
+                       (mapcar (lambda (line) (substring line 3))
+                               (seq-filter (lambda (line) (string-prefix-p "** " line))
+                                           (split-string (nth 4 (car (org-scribe-character-capture-templates)))
+                                                         "\n"))))
+                     (funcall titles data)))
+      (should (member "Plan" (funcall titles alex)))
+      (should (cl-every (lambda (s) (= (plist-get s :level) (1+ (plist-get (aref (plist-get data :sections) 0) :level))))
+                        (cdr (append (plist-get data :sections) nil))))
+      ;; no Role given: the property is there, empty
+      (should (equal "" (plist-get (cl-find "Role" (append (plist-get data :properties) nil)
+                                            :key (lambda (p) (plist-get p :name)) :test #'equal)
+                                   :value))))))
+
+(ert-deftest test-companion-entity-create-is-one-undo-step-and-refuses ()
+  (test-companion-entity--with-project root
+    (let ((before (test-companion-entity--design root)))
+      (should (plist-get (test-companion-entity--run root "create-entity"
+                                                     :kind "location" :name "The Pier")
+                         :id))
+      (should (equal "conflict" (test-companion-entity--code
+                                 (test-companion-entity--run root "create-entity"
+                                                             :kind "location" :name "the pier"))))
+      (dolist (args '((:kind "plot-point" :name "X") (:kind "scene" :name "X")
+                      (:kind "character" :name "  ") (:kind "character")
+                      (:kind "character" :name "* Not a heading")))
+        (should (equal "invalid" (test-companion-entity--code
+                                  (apply #'test-companion-entity--run root "create-entity" args)))))
+      (should (eq t (plist-get (test-companion-entity--run root "undo") :ok)))
+      (should (equal before (test-companion-entity--design root))))))
+
+(ert-deftest test-companion-entity-create-name-is-literal ()
+  (test-companion-entity--with-project root
+    (let ((id (plist-get (test-companion-entity--run root "create-entity"
+                                                     :kind "object" :name "100% \\1 cotton"
+                                                     :value "%^{x}")
+                         :id)))
+      (should (equal "100% \\1 cotton" (plist-get (cdr (test-companion-entity--find root id)) :name)))
+      (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+        (goto-char (org-find-property "ID" id))
+        (should (equal "%^{x}" (org-entry-get nil "Type")))))))
+
+(ert-deftest test-companion-entity-every-template-expands ()
+  ;; every %-escape of the shipped templates is one create-entity fills
+  (require 'org-scribe-capture)
+  (dolist (type '(novel short-story))
+    (dolist (language '(en es))
+      (cl-letf (((symbol-function 'org-scribe-project-type) (lambda (&rest _) type)))
+        (dolist (spec org-scribe-companion-entity--create-kinds)
+          (let ((text (org-scribe-companion-entity--expand
+                       (nth 4 (car (funcall (nth 1 spec) language))) "N" (nth 2 spec) "V" "the-id")))
+            (should (string-match-p "\\`\\* N\n" text))
+            (should (string-match-p ":ID: the-id\n" text))
+            (should-not (string-match-p "%" text))))))))
+
+;;; unsaved changes per field (I7)
+
+(ert-deftest test-companion-entity-fields-say-what-is-not-saved ()
+  (test-companion-entity--with-project root
+    (let ((data (org-scribe-companion-entity-get root test-companion-entity--alex)))
+      (should (eq :false (plist-get data :modified)))
+      (should (cl-every (lambda (s) (eq :false (plist-get s :unsaved))) (plist-get data :sections))))
+    (let* ((data (org-scribe-companion-entity-get root test-companion-entity--alex))
+           (plan (test-companion-entity--section data "Plan")))
+      (test-companion-entity--run root "set-entity-section" :id test-companion-entity--alex
+                                  :index (plist-get plan :index) :title "Plan"
+                                  :hash (plist-get plan :hash) :body "New plan.\n")
+      (test-companion-entity--run root "set-entity-property" :id test-companion-entity--alex
+                                  :key "Age" :value "41"))
+    (let* ((data (org-scribe-companion-entity-get root test-companion-entity--alex))
+           (unsaved (lambda (list) (mapcar (lambda (x) (or (plist-get x :title) (plist-get x :name)))
+                                           (cl-remove-if-not (lambda (x) (eq t (plist-get x :unsaved)))
+                                                             (append list nil))))))
+      (should (eq t (plist-get data :modified)))
+      (should (equal '("Plan") (funcall unsaved (plist-get data :sections))))
+      (should (equal '("Age") (funcall unsaved (plist-get data :properties)))))
+    ;; once saved, nothing is
+    (test-companion-entity--run root "save")
+    (let ((data (org-scribe-companion-entity-get root test-companion-entity--alex)))
+      (should (eq :false (plist-get data :modified)))
+      (should-not (cl-some (lambda (s) (eq t (plist-get s :unsaved))) (plist-get data :sections))))))
+
+(ert-deftest test-companion-entity-a-new-entity-is-unsaved-whole ()
+  (test-companion-entity--with-project root
+    (let* ((id (plist-get (test-companion-entity--run root "create-entity"
+                                                      :kind "plot" :name "New Line")
+                          :id))
+           (data (org-scribe-companion-entity-get root id)))
+      (should (cl-every (lambda (s) (eq t (plist-get s :unsaved))) (plist-get data :sections)))
+      (should (cl-every (lambda (p) (eq t (plist-get p :unsaved))) (plist-get data :properties))))))
 
 (provide 'test-companion-entity)
 ;;; test-companion-entity.el ends here

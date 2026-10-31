@@ -23,6 +23,12 @@
 ;;   set-relationship      source, target, type, old: adds, changes or removes
 ;;                         one entry of a character's RelationshipsData
 ;;   capture-entity        kind: starts the existing capture in Emacs
+;;   create-entity         kind, name, value: files a new entity from the
+;;                         same capture template, without prompts, and
+;;                         answers its `id'
+;;
+;; The form also says which of its fields differ from the file on disk
+;; (`:unsaved'), while Emacs has the design notebook modified.
 ;;
 ;; Heading lines, deeper sub-headings and the ID are never touched.  Plot
 ;; points are the method's prose, not form data: they are read-only here.
@@ -47,6 +53,11 @@
 (declare-function org-scribe-capture-location "org-scribe-capture")
 (declare-function org-scribe-capture-object "org-scribe-capture")
 (declare-function org-scribe-capture-plot-thread "org-scribe-capture")
+(declare-function org-scribe-character-capture-templates "org-scribe-capture")
+(declare-function org-scribe-location-capture-templates "org-scribe-capture")
+(declare-function org-scribe-object-capture-templates "org-scribe-capture")
+(declare-function org-scribe-plot-thread-capture-templates "org-scribe-capture")
+(declare-function org-scribe-capture-target-file "org-scribe-capture")
 
 (defconst org-scribe-companion-entity--capture-commands
   '(("character" . org-scribe-capture-character)
@@ -54,6 +65,14 @@
     ("object" . org-scribe-capture-object)
     ("plot" . org-scribe-capture-plot-thread))
   "Entity kind -> the capture command that creates one.")
+
+(defconst org-scribe-companion-entity--create-kinds
+  '(("character" org-scribe-character-capture-templates "Role")
+    ("location" org-scribe-location-capture-templates "Type")
+    ("object" org-scribe-object-capture-templates "Type")
+    ("plot" org-scribe-plot-thread-capture-templates "THREAD-TYPE"))
+  "Entity kind -> (TEMPLATES-FUNCTION PROPERTY).
+PROPERTY is the one the page's short form fills besides the name.")
 
 (defconst org-scribe-companion-entity--protected-properties
   '("ID" "RELATIONSHIPSDATA"
@@ -174,22 +193,9 @@ Each is (:id :name :detail): DETAIL is whatever follows the link, as written."
 
 (defun org-scribe-companion-entity--choices (kind)
   "Return a plist of property name to the vector of values its template offers.
-Read from the capture prompts (\"Label|first|second\"), in the project's
-language, so the form offers what the templates do."
-  (let ((org-scribe-message-language (org-scribe-project-language)))
-  (cl-flet ((options (key)
-              (let ((parts (split-string (org-scribe-msg key) "|")))
-                (vconcat (cdr parts)))))
-    (pcase kind
-      ("character" (list :Role (options (if (eq (org-scribe-project-type) 'short-story)
-                                            'capture-ss-char-role-prompt
-                                          'capture-char-role-prompt))))
-      ("plot" (append (list :THREAD-TYPE (options 'capture-pt-type-prompt))
-                      (when (org-scribe-msg 'capture-pt-status-prompt)
-                        (list :STATUS (options 'capture-pt-status-prompt)))))
-      ("object" (list :Type (options 'capture-obj-type-prompt)
-                      :Status (options 'capture-obj-status-prompt)))
-      (_ nil)))))
+KIND is a string such as \"character\".
+See `org-scribe-companion--entity-choices'."
+  (plist-get (org-scribe-companion--entity-choices) (intern (concat ":" kind))))
 
 (defun org-scribe-companion-entity--appears-in (root id)
   "Return the scenes of ROOT that link to the entity ID, as a vector."
@@ -200,6 +206,48 @@ language, so the form offers what the templates do."
                      '(:pov :characters :location :objects :plot :plot-point))
         (push (list :id (plist-get scene :id) :title (plist-get scene :title)) found)))
     (vconcat (nreverse found))))
+
+(defun org-scribe-companion-entity--on-disk (id)
+  "Return (PROPERTIES . SECTIONS) of entity ID in the current buffer's file.
+Read from the file on disk, not the buffer; nil when the file or the
+entity is not there (a new entity is unsaved whole)."
+  (let ((file (buffer-file-name)))
+    (when (and file (file-exists-p file))
+      (with-temp-buffer
+        (insert-file-contents file)
+        (let ((org-inhibit-startup t))
+          (delay-mode-hooks (org-mode)))
+        (when-let* ((pos (org-find-property "ID" id)))
+          (goto-char pos)
+          (cons (org-scribe-companion-entity--properties)
+                (org-scribe-companion-entity--sections)))))))
+
+(defun org-scribe-companion-entity--mark-unsaved (id properties sections)
+  "Add `:unsaved' to PROPERTIES and SECTIONS of entity ID, the buffer's view.
+A field is unsaved when the buffer is modified and the field differs from
+the file on disk: a property by name and value, a section by its index,
+title and hash.  Changes the plists in place; returns nil."
+  (let ((disk (and (buffer-modified-p) (org-scribe-companion-entity--on-disk id))))
+    (seq-doseq (property properties)
+      (nconc property
+             (list :unsaved
+                   (org-scribe-companion--bool
+                    (and (buffer-modified-p)
+                         (not (seq-some (lambda (old)
+                                          (and (equal (plist-get old :name) (plist-get property :name))
+                                               (equal (plist-get old :value) (plist-get property :value))))
+                                        (car disk))))))))
+    (seq-doseq (section sections)
+      (let ((old (and (cdr disk) (< (plist-get section :index) (length (cdr disk)))
+                      (aref (cdr disk) (plist-get section :index)))))
+        (nconc section
+               (list :unsaved
+                     (org-scribe-companion--bool
+                      (and (buffer-modified-p)
+                           (not (and old
+                                     (equal (plist-get old :title) (plist-get section :title))
+                                     (equal (plist-get old :hash) (plist-get section :hash))))))))))
+    nil))
 
 (defun org-scribe-companion-entity-get (root id)
   "Return the form data of entity ID in ROOT, or a failure answer."
@@ -216,7 +264,9 @@ language, so the form offers what the templates do."
           (with-current-buffer (marker-buffer marker)
             (org-with-wide-buffer
              (goto-char marker)
-             (let ((properties (org-scribe-companion-entity--properties)))
+             (let ((properties (org-scribe-companion-entity--properties))
+                   (sections (org-scribe-companion-entity--sections)))
+               (org-scribe-companion-entity--mark-unsaved id properties sections)
                (list :ok t
                      :revision (org-scribe-companion--revision-string root)
                      :id id
@@ -225,7 +275,8 @@ language, so the form offers what the templates do."
                      :readOnly (org-scribe-companion--bool (equal (car found) "plot-point"))
                      :properties properties
                      :choices (org-scribe-companion-entity--choices (car found))
-                     :sections (org-scribe-companion-entity--sections)
+                     :sections sections
+                     :modified (org-scribe-companion--bool (buffer-modified-p))
                      :relationships
                      (org-scribe-companion-entity--relationships
                       (or (cl-some (lambda (p)
@@ -409,6 +460,88 @@ once and any prompt appears in Emacs, in the selected frame."
                                (select-frame-set-input-focus (selected-frame)))
                              (call-interactively command)))))
     (org-scribe-companion-commands--ok root)))
+
+;;; create-entity
+
+(defun org-scribe-companion-entity--expand (template name property value id)
+  "Return TEMPLATE, a capture template string, filled in without prompts.
+The heading's prompt becomes NAME, the prompt on the PROPERTY line VALUE,
+every other prompt empty; `%(org-id-new)' becomes ID and `%?' goes.
+Signals an error on any other %-escape: the template changed shape and
+this function has to learn it."
+  (let* ((case-fold-search t)
+         (text (mapconcat
+                (lambda (line)
+                  (replace-regexp-in-string
+                   "%\\^{[^}]*}"
+                   (lambda (_)
+                     (cond ((string-match-p "\\`\\*+ " line) name)
+                           ((string-match-p (concat "\\`:" (regexp-quote property) ":")
+                                            line)
+                            value)
+                           (t "")))
+                   line t t))
+                (split-string template "\n")
+                "\n")))
+    (setq text (replace-regexp-in-string "%(org-id-new)" id text t t))
+    (setq text (replace-regexp-in-string "%\\?" "" text t t))
+    ;; NAME and VALUE went in literally; only the template's own text is checked
+    (let ((check (replace-regexp-in-string
+                  "%\\^{[^}]*}\\|%(org-id-new)\\|%\\?" "" template)))
+      (when (string-match "%[^ \n]" check)
+        (error "Capture template has an escape `create-entity' does not fill: %s"
+               (match-string 0 check))))
+    ;; a property whose prompt was left empty keeps no trailing space
+    (replace-regexp-in-string "^\\(:[^:\n]+:\\) +$" "\\1" text t)))
+
+(defun org-scribe-companion-entity--create (root args)
+  "Add a new entity to the design notebook, from its capture template.
+ARGS: `:kind' (character, location, object, plot), `:name' and `:value'
+\(the Role, Type or THREAD-TYPE; optional).  Filed where the capture
+files it (the template's own target function), as the last child of its
+section, as one undo step.  The answer carries the new `id'."
+  (let* ((kind (org-scribe-companion-commands--arg-string args :kind))
+         (spec (cdr (assoc kind org-scribe-companion-entity--create-kinds)))
+         (name (org-scribe-companion-commands--clean-line (plist-get args :name)))
+         (value (or (org-scribe-companion-commands--clean-line (plist-get args :value)) "")))
+    (unless spec
+      (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-key (or kind "")))
+    (when (or (null name) (string-empty-p name))
+      (org-scribe-companion-commands--fail "invalid" 'companion-error-missing-arg "name"))
+    (when (string-match-p "\\`\\*" name)
+      (org-scribe-companion-commands--fail "invalid" 'companion-error-body-heading))
+    (let ((existing (plist-get (plist-get (org-scribe-companion--snapshot root) :entities)
+                               (intern (concat ":" kind)))))
+      (when (seq-some (lambda (entity) (string-equal-ignore-case (plist-get entity :name) name))
+                      existing)
+        (org-scribe-companion-commands--fail "conflict" 'companion-error-entity-exists name)))
+    (require 'org-scribe-capture)
+    (let* ((default-directory root)
+           (template (car (funcall (nth 0 spec))))
+           (target (nth 3 template))
+           (goto (nth 2 target))
+           (file (funcall (nth 1 target) t))
+           (id (org-id-new))
+           (text (org-scribe-companion-entity--expand
+                  (nth 4 template) name (nth 1 spec) value id))
+           (buffer (find-file-noselect file)))
+      (org-scribe-companion-commands--with-edit buffer
+        (funcall goto)
+        (let ((level (1+ (org-current-level))))
+          (org-end-of-subtree t t)
+          (unless (bolp) (insert "\n"))
+          ;; `:empty-lines 1', as the capture does
+          (unless (save-excursion (forward-line -1) (looking-at-p "[ \t]*$"))
+            (insert "\n"))
+          (insert (replace-regexp-in-string
+                   "^\\(\\*+\\) "
+                   (lambda (stars)
+                     (concat (make-string (+ level (length (string-trim stars)) -1) ?*) " "))
+                   (string-trim-right text) t t)
+                  "\n")
+          (unless (looking-at-p "[ \t]*$\\|\\'") (insert "\n"))))
+      (org-id-add-location id file)
+      (append (org-scribe-companion-commands--finish root) (list :id id)))))
 
 (provide 'org-scribe-companion-entity)
 

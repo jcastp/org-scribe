@@ -261,6 +261,17 @@ body.dragging-chapter .cards { display: none; }
 
 /* entity forms */
 .ent-layout { display: grid; grid-template-columns: 16rem 1fr; gap: 1.5rem; align-items: start; }
+.ent-create { display: grid; gap: 0.3rem; margin: 0.3rem 0 0.5rem; padding: 0.5rem; border: 1px solid var(--accent); border-radius: 6px; }
+.ent-create input { min-width: 0; padding: 0.25rem 0.4rem; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: inherit; font: inherit; }
+.unsaved-dot { color: var(--warn, #d9822b); margin-left: 0.3rem; font-size: 0.7rem; vertical-align: middle; }
+.ent-strip-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.8rem; margin: 0.3rem 0 0.6rem; }
+.ent-strip { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.ent-strip-chapter { display: inline-flex; gap: 2px; }
+.ent-tick { all: unset; box-sizing: border-box; display: inline-block; width: 11px; height: 20px; border-radius: 2px; background: color-mix(in srgb, var(--line) 70%, transparent); }
+.ent-tick.on { background: var(--accent); cursor: pointer; }
+span.ent-tick.on { cursor: default; }
+.ent-tick.pov { box-shadow: inset 0 0 0 2px var(--surface), 0 0 0 1px var(--accent); }  /* a ring: not colour alone */
+.ent-tick:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 .ent-list { position: sticky; top: 4rem; max-height: calc(100vh - 5rem); overflow-y: auto; }
 .ent-group-head { display: flex; justify-content: space-between; align-items: center; margin-top: 0.8rem; }
 .ent-group-head h3 { margin: 0; font-size: 0.95rem; }
