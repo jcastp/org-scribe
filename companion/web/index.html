@@ -16,6 +16,7 @@
       <button id="undo-button" type="button" data-i18n="companion-ui-undo"></button>
       <span id="save-state" class="chip" role="status"></span>
       <button id="save-button" type="button" data-i18n="companion-ui-save"></button>
+      <button id="help-button" type="button" aria-haspopup="dialog" aria-controls="help" aria-keyshortcuts="?" data-i18n="companion-ui-help-button"></button>
     </div>
   </header>
   <div id="banner" class="banner" role="alert" hidden data-i18n="companion-ui-connection-lost"></div>
@@ -24,6 +25,7 @@
   <section id="colour-legend" class="colour-legend-bar" hidden></section>
   <section id="filters" class="filters" aria-label="filters"></section>
   <main id="view"></main>
+  <dialog id="help" class="help" aria-labelledby="help-title"></dialog>
   <aside id="detail" class="detail" hidden aria-labelledby="detail-title"></aside>
   <script src="/static/vendor/Sortable.min.js"></script>
   <script type="module" src="/static/app.js"></script>

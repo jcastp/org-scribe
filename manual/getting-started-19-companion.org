@@ -366,6 +366,10 @@ listing scenes with no time, unreadable values and jumps back in time.
   undoing an older change under newer text would put it in the wrong place.
   The page's undo is itself one undo step in Emacs: ~C-/~ there brings the
   change back.
+- *Keyboard.* Press ~?~ (outside a text field), or the =?= button at the end
+  of the header, for the list of the page's shortcuts. ~1~ to ~7~ switch tabs
+  in the order they appear (a short story has six). Hover over a tab to see
+  its key.
 - As you move point through the manuscript, the matching card or row is
   highlighted (~org-scribe-companion-follow~).
 - Changing the state to a keyword that logs a note (such as ~TOREVIEW(j@/!)~)

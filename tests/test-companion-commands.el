@@ -1667,6 +1667,24 @@ the typing cannot, since undoing them would land at stale positions."
           (should (alist-get key org-scribe-messages-es))))
       (should (> found 1)))))
 
+;; I8: ? opens the list of shortcuts, 1-9 switch tabs; neither fires in a text field
+(ert-deftest test-companion-commands-keyboard-help-is-wired ()
+  (let ((read (lambda (file)
+                (with-temp-buffer
+                  (insert-file-contents (expand-file-name file test-companion-commands--web))
+                  (buffer-string)))))
+    (let ((app (funcall read "app.js"))
+          (html (funcall read "index.html"))
+          (help (funcall read "help.js")))
+      (should (string-match-p "<dialog id=\"help\"" html))
+      (should (string-match-p "id=\"help-button\"" html))
+      (should (string-match-p "import \\* as help from './help.js'" app))
+      (should (string-match-p "event.key === '\\?'" app))
+      (should (string-match-p "\\^\\[1-9\\]\\$" app))
+      (should (string-match-p "closest('input, textarea, select, \\[contenteditable\\]')" app))
+      ;; the list draws with textContent only
+      (should-not (string-match-p "innerHTML" help)))))
+
 (ert-deftest test-companion-commands-chapters-tab-is-wired-and-novel-only ()
   (let ((app (with-temp-buffer
                (insert-file-contents (expand-file-name "app.js" test-companion-commands--web))

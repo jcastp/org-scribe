@@ -422,3 +422,16 @@ body.detail-open { padding-right: 26rem; }
 .detail-hint { margin-top: 1.2rem; font-size: 0.75rem; color: var(--muted); }
 .detail-button { padding: 0 0.35rem; line-height: 1.4; }
 .card.in-detail, .scene-row.in-detail { box-shadow: inset 0 0 0 2px var(--accent); }
+
+/* The keyboard help (?): a modal dialog over the page */
+.help { width: min(40rem, calc(100vw - 2rem)); max-height: calc(100vh - 3rem); padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--text); box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+.help::backdrop { background: rgba(0,0,0,0.35); }
+.help-head { display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); }
+.help-head h2 { flex: 1; margin: 0; font-size: 1.1rem; }
+.help-close { padding: 0.1rem 0.6rem; font-size: 1.1rem; }
+.help-body { padding: 0.4rem 1.1rem 1rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 0 1.5rem; }
+.help-group h3 { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin: 0.8rem 0 0.3rem; }
+.help-group table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+.help-group td { padding: 0.2rem 0; vertical-align: top; }
+.help-keys { white-space: nowrap; padding-right: 0.8rem !important; width: 1%; }
+kbd { font: 0.8rem ui-monospace, SFMono-Regular, Menlo, monospace; padding: 0.05rem 0.35rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; background: var(--bg); }

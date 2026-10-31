@@ -410,6 +410,10 @@ tiempo.
   deshacer a Emacs, porque deshacer un cambio antiguo bajo texto más reciente lo
   aplicaría en el sitio equivocado. El deshacer de la página es a su vez un
   paso de deshacer en Emacs: ~C-/~ allí recupera el cambio.
+- *Teclado.* Pulsa ~?~ (fuera de un campo de texto), o el botón =?= al final
+  de la cabecera, para ver la lista de atajos de la página. ~1~ a ~7~ cambian de
+  pestaña en el orden en que aparecen (un cuento tiene seis). Pasa el ratón
+  sobre una pestaña para ver su tecla.
 - A medida que mueves el cursor por el manuscrito, la tarjeta o fila
   correspondiente se resalta (~org-scribe-companion-follow~).
 - Cambiar el estado a una palabra clave que registra una nota (como

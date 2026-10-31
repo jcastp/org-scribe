@@ -18,6 +18,7 @@ import * as relations from './views/relations.js';
 import * as forms from './views/forms.js';
 import * as colours from './colors.js';
 import * as scheme from './scheme.js';
+import * as help from './help.js';
 
 const token = new URLSearchParams(location.search).get('t') || '';
 const $ = (id) => document.getElementById(id);
@@ -147,18 +148,32 @@ function showInStoryline(id) {
   if (id) focusCard(id);
 }
 
+/** Show the view ID; from the keyboard (FOCUS_TAB) the focus goes to its tab. */
+function switchView(id, focusTab = false) {
+  state.view = id;
+  renderAll();
+  if (focusTab) {
+    const tab = $('tabs').querySelector('[aria-selected="true"]');
+    if (tab) tab.focus();
+  }
+}
+
 function renderTabs() {
   const tabs = $('tabs');
   tabs.replaceChildren();
-  for (const view of availableViews()) {
+  availableViews().forEach((view, index) => {
     const tab = document.createElement('button');
     tab.type = 'button';
     tab.setAttribute('role', 'tab');
     tab.setAttribute('aria-selected', String(view.id === state.view));
     tab.textContent = t(view.label);
-    tab.addEventListener('click', () => { state.view = view.id; renderAll(); });
+    if (index < 9) {
+      tab.setAttribute('aria-keyshortcuts', String(index + 1));
+      tab.title = t('companion-ui-tab-hint', index + 1);
+    }
+    tab.addEventListener('click', () => switchView(view.id));
     tabs.append(tab);
-  }
+  });
 }
 
 /** Fill the filters from COLLECTION, leaving out what no longer exists. */
@@ -390,6 +405,7 @@ function renderHeader() {
   const undoButton = $('undo-button');
   undoButton.disabled = !snapshot.canUndo;
   undoButton.title = t('companion-ui-undo-hint');
+  $('help-button').title = t('companion-ui-help-hint');
 }
 
 /** Which entity list names the IDs a colour pin of each kind holds. */
@@ -537,6 +553,23 @@ document.addEventListener('keydown', (event) => {
   if (target.closest && target.closest('input, textarea, select, [contenteditable]')) return;
   event.preventDefault();
   undo();
+});
+
+// The page's own keys, outside a text field and without Ctrl, Alt or Cmd:
+// ? opens (and closes) the list of shortcuts, 1-9 switch tabs.  A view that
+// handled the key itself (preventDefault) keeps it.
+const toggleHelp = () => help.toggle($('help'), { t, tabCount: availableViews().length });
+$('help-button').addEventListener('click', toggleHelp);
+document.addEventListener('keydown', (event) => {
+  if (event.ctrlKey || event.metaKey || event.altKey || event.defaultPrevented) return;
+  const target = event.target;
+  if (target.closest && target.closest('input, textarea, select, [contenteditable]')) return;
+  if (event.key === '?') { event.preventDefault(); toggleHelp(); return; }
+  if ($('help').open || !state.snapshot || !/^[1-9]$/.test(event.key)) return;
+  const view = availableViews()[Number(event.key) - 1];
+  if (!view) return;
+  event.preventDefault();
+  switchView(view.id, true);
 });
 
 $('save-button').addEventListener('click', async () => {
