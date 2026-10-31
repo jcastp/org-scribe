@@ -74,6 +74,22 @@ the state, the summary, the PoV and plot-point badges, and a word-count bar.
   an edge. Cards fold away while you drag.
 - The ~↗~ button (or a double click) shows the scene in Emacs.
 
+The bar above the board shapes it to the job at hand. Your choices are
+remembered per project in your browser.
+
+- *Card fields* picks what a card shows. By default that's the summary, the
+  PoV and the plot points. Tick a link field (location, plot threads,
+  objects, ...) to add it as labelled chips, or a text field (Emotion,
+  Tension-level, Gap, ...) to add it as a short labelled line. Edit those in
+  the scene detail panel (Part 3).
+- *Compact* shows only each card's title and state, so the whole book fits
+  on a screen or two: good for checking the shape of the outline.
+- The ~▾~ before an act or chapter folds it to its header, which then shows
+  how many scenes it holds. *Fold all chapters* reduces the board to an
+  outline of chapter headers, and *Unfold all* opens everything again.
+  Adding a scene to a folded chapter, or moving one into it with
+  ~Alt+Down~, unfolds it, so the scene stays in sight.
+
 Filters at the top (PoV, character, plot thread, location, object, state) dim
 the cards that do not match. Each one also offers:
 

@@ -104,6 +104,22 @@ body.dragging-chapter .cards { display: none; }
 .tl-card.dimmed { opacity: 0.25; }
 .card.focus { outline: 3px solid var(--focus); outline-offset: 1px; }
 .card.readonly { border-style: dashed; border-left-style: solid; }
+/* corkboard: folded groups keep their cards in the page, hidden */
+.chapter.folded > .cards, .act.folded > .chapters { display: none; }
+.chapter.folded { margin-bottom: 0.6rem; }
+.folded-count { font-size: 0.8rem; color: var(--muted); }
+.act-head .twisty, .chapter-head .twisty { margin-right: 0; padding: 0 0.2rem; }
+/* card fields beyond the summary: a labelled line, or labelled chips */
+.card-field { margin: 0; font-size: 0.8rem; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.card-field-name { color: var(--muted); font-size: 0.72rem; margin-right: 0.35rem; }
+.meta-field { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.2rem; }
+.meta-field .chip-link { margin: 0; }
+/* compact: title and state only, more cards to a row */
+.board.compact .cards { grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 0.5rem; margin-top: 0.4rem; }
+.board.compact .card { padding: 0.4rem 0.55rem; gap: 0.3rem; }
+.board.compact .card-title { font-size: 0.88rem; }
+.board.compact .chapter { margin: 0.6rem 0 0.9rem 0.4rem; }
+.table-tools > .switch { display: flex; align-items: center; gap: 0.3rem; font-size: 0.85rem; padding-bottom: 0.3rem; }
 .card-head { display: flex; justify-content: space-between; align-items: start; gap: 0.5rem; }
 .card-title { font-size: 0.95rem; margin: 0; font-weight: 600; overflow-wrap: anywhere; }
 .open { padding: 0 0.4rem; line-height: 1.4; }

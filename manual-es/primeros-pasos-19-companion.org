@@ -82,6 +82,25 @@ puntos de trama, y una barra de recuento de palabras.
   tarjetas se pliegan mientras arrastras.
 - El botón ~↗~ (o un doble clic) muestra la escena en Emacs.
 
+La barra sobre el corcho lo adapta a la tarea del momento. Tus elecciones se
+recuerdan por proyecto en tu navegador.
+
+- *Campos de la tarjeta* elige qué muestra una tarjeta. Por defecto es el
+  resumen, el PoV y los puntos de trama. Marca un campo de enlace (escenario,
+  hilos de trama, objetos, ...) para añadirlo como etiquetas con su nombre, o
+  un campo de texto (Emotion, Tension-level, Gap, ...) para añadirlo como una
+  línea corta con su nombre. Esos se editan en el panel de detalles de la
+  escena (Parte 3).
+- *Compacto* muestra solo el título y el estado de cada tarjeta, para que el
+  libro entero quepa en una o dos pantallas: útil para revisar la forma del
+  esquema.
+- El ~▾~ delante de un acto o capítulo lo pliega hasta su encabezado, que
+  entonces muestra cuántas escenas contiene. *Plegar todos los capítulos*
+  reduce el corcho a un esquema de encabezados de capítulo, y *Desplegar
+  todo* vuelve a abrirlo todo. Añadir una escena a un capítulo plegado, o
+  moverla a él con ~Alt+Abajo~, lo despliega, para que la escena siga a la
+  vista.
+
 Los filtros de arriba (PoV, personaje, hilo de trama, escenario, objeto,
 estado) atenúan las tarjetas que no coinciden. Cada uno ofrece además:
 

@@ -469,6 +469,7 @@ async function refresh() {
     state.applied = null;
     state.detailId = null;
     table.useProject(root);
+    corkboard.useProject(root);
     scheme.useProject(root);
   }
   if (pruneFilters(state.filters, state.snapshot)) saveFilters(state.filters);
