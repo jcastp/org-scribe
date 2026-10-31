@@ -90,3 +90,18 @@ export function moveTo(ctx, id, parentId, after) {
   ctx.edit('move-node', { id, parent: parentId, after: after || null }, id);
 }
 
+/** The ⓘ button that shows SCENE in the detail panel. */
+export function detailButton(scene, ctx) {
+  const node = el('button', 'detail-button', 'ⓘ');
+  node.type = 'button';
+  const label = ctx.t('companion-ui-detail');
+  node.title = `${label} (I)`;
+  node.setAttribute('aria-label', label);
+  node.addEventListener('click', (event) => { event.stopPropagation(); ctx.openDetail(scene.id); });
+  return node;
+}
+
+/** True for the key that opens the detail panel (I, without modifiers). */
+export function isDetailKey(event) {
+  return (event.key === 'i' || event.key === 'I') && !event.ctrlKey && !event.metaKey && !event.altKey;
+}

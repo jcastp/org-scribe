@@ -51,11 +51,11 @@ button { background: var(--surface); border: 1px solid var(--line); border-radiu
 button:disabled { opacity: 0.45; cursor: default; }
 button:focus-visible, .card:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.topbar { display: flex; align-items: center; gap: 1.5rem; padding: 0.6rem 1.2rem; background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 2; }
+.topbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1.5rem; padding: 0.6rem 1.2rem; background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 2; }
 .topbar h1 { font-size: 1.1rem; margin: 0; font-weight: 600; }
-#tabs { display: flex; gap: 0.3rem; flex: 1; }
+#tabs { display: flex; gap: 0.3rem; flex: 1 0 auto; }
 #tabs button[aria-selected="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
-.save-area { display: flex; align-items: center; gap: 0.6rem; }
+.save-area { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-left: auto; }
 .chip { font-size: 0.8rem; color: var(--muted); }
 .chip.unsaved { color: var(--warn-text); background: var(--warn-bg); padding: 0.1rem 0.5rem; border-radius: 999px; }
 
@@ -335,3 +335,34 @@ body.dragging-chapter .cards { display: none; }
 }
 /* a storyline scene number: the band runs along the bottom */
 .sl-scene.crit { background: var(--crit-edge) left bottom / 100% 5px no-repeat; }
+
+/* Scene detail panel: a column at the right; the page makes room for it on a
+   wide screen and lets it cover the view on a narrow one */
+.detail { position: fixed; top: 0; right: 0; bottom: 0; width: 26rem; max-width: 100vw; box-sizing: border-box; overflow-y: auto; z-index: 15; background: var(--surface); border-left: 1px solid var(--line); box-shadow: -4px 0 18px rgba(0,0,0,0.12); padding: 0.8rem 1.1rem 1.5rem; }
+.detail[hidden] { display: none; }
+body.detail-open { padding-right: 26rem; }
+@media (max-width: 900px) { body.detail-open { padding-right: 0; } }
+.detail-head { display: flex; align-items: flex-start; gap: 0.4rem; }
+.detail-title { flex: 1; margin: 0; font-size: 1.15rem; }
+.detail-title.editable, .detail-text.editable { cursor: text; border-radius: 4px; }
+.detail-title.editable:hover, .detail-text.editable:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.detail-close { font-size: 1.1rem; line-height: 1; padding: 0.2rem 0.5rem; }
+.detail-where { margin: 0.3rem 0 0.6rem; font-size: 0.85rem; color: var(--muted); }
+.detail-nav { display: flex; gap: 0.4rem; margin-bottom: 0.6rem; }
+.detail-nav-button { flex: 1; font-size: 1.1rem; line-height: 1; }
+.detail-status { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+.detail-words { font-size: 0.85rem; color: var(--muted); }
+.detail-note { font-size: 0.85rem; color: var(--muted); font-style: italic; }
+.detail-section h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 1.1rem 0 0.4rem; border-bottom: 1px solid var(--line); padding-bottom: 0.2rem; }
+.detail-fields { margin: 0; display: grid; grid-template-columns: minmax(6rem, max-content) 1fr; gap: 0.45rem 0.8rem; align-items: start; }
+.detail-fields dt { font-size: 0.85rem; color: var(--muted); padding-top: 0.15rem; overflow-wrap: anywhere; }
+.detail-fields dd { margin: 0; min-width: 0; }
+.detail-value { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; }
+.detail-chips { flex: 1; min-width: 0; }
+.detail-change { font-size: 0.8rem; padding: 0.1rem 0.5rem; }
+.detail-text { flex: 1; min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; padding: 0.1rem 0.2rem; }
+.detail-empty { color: var(--muted); font-style: italic; }
+.detail-value .card-edit { flex: 1; }
+.detail-hint { margin-top: 1.2rem; font-size: 0.75rem; color: var(--muted); }
+.detail-button { padding: 0 0.35rem; line-height: 1.4; }
+.card.in-detail, .scene-row.in-detail { box-shadow: inset 0 0 0 2px var(--accent); }

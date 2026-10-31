@@ -145,6 +145,31 @@ recuerda). Haz clic en una cabecera para ordenar dentro de cada capítulo
 - Una escena nueva recibe el nombre por defecto y el foco: pulsa ~Enter~ (o
   ~F2~) para renombrarla.
 
+** El panel de detalles de la escena
+
+Todos los campos de una escena a la vez, a la derecha de cualquier pestaña.
+Ábrelo con un clic en el fondo de una tarjeta (o pulsando ~I~ sobre una
+tarjeta con el foco) en el corcho, o con el botón ⓘ junto al título de una
+escena (o ~I~ sobre el título) en la tabla.
+
+- *Enlaces* (PoV, personajes, hilos de trama, puntos de trama, escenarios,
+  objetos): *Cambiar…* abre el mismo selector que la tabla.
+- *Campos*: todas las demás propiedades de la escena, incluidas las largas del
+  método (Gap, What-is-at-stake, Outcome, Sequel-decision, Tension-level, ...).
+  Haz clic en una, o pulsa ~Enter~ sobre ella, para editarla. ~Enter~ guarda,
+  ~Escape~ cancela.
+- El título, el estado y las palabras están arriba, con ~↗~ para mostrar la
+  escena en Emacs.
+- ~‹~ / ~›~ (o ~Alt+Arriba~ / ~Alt+Abajo~) van a la escena anterior o
+  siguiente en el orden del libro. Mientras hay un filtro, solo visitan las
+  escenas que coinciden. Con el filtro Estado en *no FINISHED*, por ejemplo,
+  recorren una tras otra las escenas sin terminar.
+- Mientras está abierto, el panel sigue a la escena donde está el cursor en
+  Emacs.
+- ~Escape~ o ~×~ lo cierra, y el foco vuelve a la escena.
+
+Cada cambio es un paso de deshacer, como en el resto de la página.
+
 * Parte 4: La línea argumental
 
 Las escenas van a lo ancho (numeradas, agrupadas por capítulo); los personajes,

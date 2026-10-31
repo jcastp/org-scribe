@@ -8,6 +8,7 @@ import {
   filtersFrom, loadHide, saveHide,
 } from './filters.js';
 import * as collections from './collections.js';
+import * as detail from './detail.js';
 import * as corkboard from './views/corkboard.js';
 import * as table from './views/table.js';
 import * as storyline from './views/storyline.js';
@@ -43,6 +44,7 @@ const state = {
   pendingFocus: null,
   applied: null,       // { name, filters }: the collection last applied, in this tab
   hide: false,         // "Hide the rest": filtered-out scenes are hidden, not dimmed
+  detailId: null,      // the scene shown in the detail panel, or null when closed
 };
 
 // ---- strings -------------------------------------------------------------
@@ -274,25 +276,11 @@ function renderView() {
   const view = availableViews().find((candidate) => candidate.id === state.view) || VIEWS[0];
   const scroll = window.scrollY;
   // hiding only means something while a filter is on
-  const hide = state.hide && isActive(state.filters);
-  $('view').classList.toggle('hide-unmatched', hide);
-  view.module.render($('view'), {
-    snapshot: state.snapshot,
-    filters: state.filters,
-    hide,
-    focusId: state.focusId,
-    t,
-    goto,
-    edit,
-    fetchEntity,
-    notice: showNotice,
-    rerender: renderView,
-    nameFor,
-    showInStoryline,
-    editStarted,
-    editEnded,
-  });
+  $('view').classList.toggle('hide-unmatched', state.hide && isActive(state.filters));
+  view.module.render($('view'), viewContext());
   window.scrollTo(0, scroll);
+  // the panel's previous / next follow the filters, and its data the snapshot
+  renderDetail();
   if (state.pendingFocus) {
     const id = state.pendingFocus;
     state.pendingFocus = null;
@@ -311,6 +299,80 @@ function renderView() {
     } else if (target) {
       target.focus();
     }
+  }
+}
+
+/** What the views (and the detail panel) are drawn with. */
+function viewContext() {
+  return {
+    snapshot: state.snapshot,
+    filters: state.filters,
+    // hiding only means something while a filter is on
+    hide: state.hide && isActive(state.filters),
+    focusId: state.focusId,
+    detailId: state.detailId,
+    t,
+    goto,
+    edit,
+    fetchEntity,
+    notice: showNotice,
+    rerender: renderView,
+    nameFor,
+    showInStoryline,
+    editStarted,
+    editEnded,
+    openDetail,
+  };
+}
+
+// ---- scene detail panel --------------------------------------------------
+
+/** Show the scene ID in the detail panel and put the focus in it. */
+function openDetail(id) {
+  if (!id) return;
+  state.detailId = id;
+  renderView();            // marks the scene in the view, and draws the panel
+  const title = document.getElementById('detail-title');
+  if (title) title.focus();
+}
+
+/** Close the panel; the focus goes back to the scene in the view. */
+function closeDetail() {
+  const id = state.detailId;
+  state.detailId = null;
+  renderView();
+  const target = [...document.querySelectorAll('#view [data-id]')].find((node) => node.dataset.id === id);
+  if (target) {
+    const spot = target.matches('.scene-row') ? target.querySelector('.title-text') || target : target;
+    spot.focus();
+  }
+}
+
+function renderDetail() {
+  const panel = $('detail');
+  const entry = state.detailId && state.snapshot && detail.findScene(state.snapshot, state.detailId);
+  if (!entry) {
+    // closed, or the scene is gone (deleted or moved out of the manuscript in Emacs)
+    state.detailId = null;
+    panel.hidden = true;
+    panel.replaceChildren();
+    document.body.classList.remove('detail-open');
+    return;
+  }
+  // a re-render (after every change) keeps the focus on the same control
+  const active = document.activeElement;
+  const key = active && panel.contains(active) ? active.dataset.key : null;
+  detail.render(panel, entry, {
+    ...viewContext(),
+    // the panel keeps the focus: no card in the view is to take it after a change
+    edit: (op, args) => edit(op, args),
+    closeDetail,
+  });
+  panel.hidden = false;
+  document.body.classList.add('detail-open');
+  if (key) {
+    const again = [...panel.querySelectorAll('[data-key]')].find((node) => node.dataset.key === key);
+    if (again) again.focus();
   }
 }
 
@@ -405,6 +467,7 @@ async function refresh() {
     state.filters = loadFilters();
     state.hide = loadHide();
     state.applied = null;
+    state.detailId = null;
     table.useProject(root);
     scheme.useProject(root);
   }
@@ -431,7 +494,16 @@ function connect() {
     const { revision } = JSON.parse(event.data);
     if (!state.snapshot || revision !== state.snapshot.revision) refresh().catch(() => {});
   });
-  events.addEventListener('focus', (event) => focusCard(JSON.parse(event.data).id));
+  events.addEventListener('focus', (event) => {
+    const { id } = JSON.parse(event.data);
+    focusCard(id);
+    // an open panel follows the scene where point is, unless a field is being edited
+    if (state.detailId && !editing && id !== state.detailId
+        && detail.findScene(state.snapshot, id)) {
+      state.detailId = id;
+      renderView();
+    }
+  });
   events.addEventListener('bye', () => { events.close(); $('banner').hidden = false; });
   events.addEventListener('error', () => { $('banner').hidden = false; });
 }

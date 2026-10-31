@@ -9,7 +9,9 @@
 import { todoColor, textOn } from '../colors.js';
 import { paint } from '../scheme.js';
 import { matches, isActive, hiddenGroup } from '../filters.js';
-import { startEdit, moveTo, sceneParent, addSceneButton, addChapterButton } from '../edit.js';
+import {
+  startEdit, moveTo, sceneParent, addSceneButton, addChapterButton, detailButton, isDetailKey,
+} from '../edit.js';
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -124,6 +126,7 @@ function card(scene, ctx) {
   if (scene.readOnly) node.classList.add('readonly');
   if (editable(scene)) node.classList.add('movable');
   if (scene.id === ctx.focusId) node.classList.add('focus');
+  if (scene.id && scene.id === ctx.detailId) node.classList.add('in-detail');
 
   const head = el('header', 'card-head');
   const title = el('h4', 'card-title', scene.title || ctx.t('companion-ui-untitled'));
@@ -142,7 +145,7 @@ function card(scene, ctx) {
     open.title = label;
     open.setAttribute('aria-label', label);
     open.addEventListener('click', (event) => { event.stopPropagation(); ctx.goto(scene.id); });
-    head.append(open);
+    head.append(detailButton(scene, ctx), open);
   } else {
     head.append(el('span', 'noid', '⚠'));
     head.title = ctx.t('companion-ui-no-id');
@@ -180,8 +183,15 @@ function card(scene, ctx) {
   node.append(progress(scene.words, scene.objective, ctx));
 
   node.addEventListener('dblclick', () => { if (scene.id) ctx.goto(scene.id); });
+  // a click on the card's background shows it in the detail panel; its own
+  // controls (title, summary, state, buttons) keep their clicks
+  node.addEventListener('click', (event) => {
+    if (!scene.id || event.target.closest('button, select, input, textarea, .editable')) return;
+    ctx.openDetail(scene.id);
+  });
   node.addEventListener('keydown', (event) => {
     if (event.target !== node) return;
+    if (isDetailKey(event) && scene.id) { event.preventDefault(); ctx.openDetail(scene.id); }
     if (event.key === 'Enter' && scene.id) ctx.goto(scene.id);
     if (event.key === 'F2' && editable(scene)) editTitle();
     if (event.altKey && editable(scene) && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {

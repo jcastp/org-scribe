@@ -131,6 +131,28 @@ while sorted).
 - A new scene takes the default name and the focus: press ~Enter~ (or ~F2~)
   to rename it.
 
+** The Scene Detail Panel
+
+Every scene field at once, at the right of any tab. Open it by clicking a
+card's background (or pressing ~I~ on a focused card) on the corkboard, or
+with the ⓘ button by a scene's title (or ~I~ on the title) in the table.
+
+- *Links* (PoV, characters, plot threads, plot points, locations, objects):
+  *Change…* opens the same picker as the table.
+- *Fields*: every other scene property, including the method's long ones
+  (Gap, What-is-at-stake, Outcome, Sequel-decision, Tension-level, ...).
+  Click one, or press ~Enter~ on it, to edit. ~Enter~ saves, ~Escape~ cancels.
+- The title, the state and the words are at the top, with ~↗~ to show the
+  scene in Emacs.
+- ~‹~ / ~›~ (or ~Alt+Up~ / ~Alt+Down~) go to the previous or next scene in
+  book order. While a filter is on, they visit only the matching scenes. With
+  the State filter on *not FINISHED*, for example, they walk your unfinished
+  scenes one after another.
+- While it is open, the panel follows the scene where point is in Emacs.
+- ~Escape~ or ~×~ closes it, and the focus goes back to the scene.
+
+Each change is one undo step, as anywhere on the page.
+
 * Part 4: The Storyline
 
 Scenes run across (numbered, grouped by chapter); characters, plot threads,
