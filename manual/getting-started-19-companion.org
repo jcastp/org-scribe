@@ -74,8 +74,8 @@ the state, the summary, the PoV and plot-point badges, and a word-count bar.
   an edge. Cards fold away while you drag.
 - The ~↗~ button (or a double click) shows the scene in Emacs.
 
-Filters at the top (PoV, character, plot thread, location, state) dim the cards
-that do not match.
+Filters at the top (PoV, character, plot thread, location, object, state) dim
+the cards that do not match.
 
 Try it: drag Scene 2 above Scene 1 in Chapter 1, then switch to Emacs and look at
 ~novel.org~. The whole subtree moved, with its properties and logbook, and the
@@ -182,8 +182,8 @@ in use; click a swatch there to change that value's colour.
 
 * Part 5: Entity Forms
 
-The *Entities* tab lists characters, locations, plot threads and the thirteen
-plot points. Pick one:
+The *Entities* tab lists characters, locations, objects, plot threads and the
+thirteen plot points. Pick one:
 
 - *Properties* are the heading's property drawer. Role, thread type and status
   are dropdowns offering the values the capture templates use.
@@ -236,6 +236,12 @@ listing scenes with no time, unreadable values and jumps back in time.
   ~org-scribe-companion-auto-save~). The header tells you when there are unsaved
   changes in Emacs.
 - Each change is one undo step in the buffer.
+- *Undo* in the header (or ~Ctrl+Z~ outside a text field) undoes the page's
+  last change, then the one before, and so on. If you have typed in that file
+  in Emacs since, the page says so and leaves the undo to Emacs, because
+  undoing an older change under newer text would put it in the wrong place.
+  The page's undo is itself one undo step in Emacs: ~C-/~ there brings the
+  change back.
 - As you move point through the manuscript, the matching card or row is
   highlighted (~org-scribe-companion-follow~).
 - Changing the state to a keyword that logs a note (such as ~TOREVIEW(j@/!)~)

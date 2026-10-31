@@ -363,7 +363,7 @@
 (ert-deftest test-companion-colors-colour-change-changes-the-revision ()
   (test-companion-colors--with-project root
     (let ((before (org-scribe-companion--revision-string root)))
-      (should (string-match-p "-c[0-9a-f]\\{8\\}\\'" before))
+      (should (string-match-p "-c[0-9a-f]\\{8\\}-s[0-9a-f]\\{8\\}\\'" before))
       (org-scribe-companion-colors-set-theme root 'muted)
       (should-not (equal before (org-scribe-companion--revision-string root)))
       (should (equal (plist-get (org-scribe-companion--snapshot root) :revision)

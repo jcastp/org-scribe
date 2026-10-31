@@ -253,6 +253,8 @@ switches to it and tells the browser."
   (let ((was-running (org-scribe-companion-server-running-p)))
     (org-scribe-companion--remove-hooks)
     (org-scribe-companion-server-stop)
+    ;; a new page starts with nothing to undo
+    (org-scribe-companion-undo-clear)
     (remove-hook 'kill-emacs-hook #'org-scribe-companion--stop)
     was-running))
 

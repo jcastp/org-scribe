@@ -321,7 +321,7 @@
     (let ((before (org-scribe-story-time-revision root)))
       (org-scribe--project-marker-set root "Story-day-one" "2026-03-10")
       (should-not (equal before (org-scribe-story-time-revision root)))
-      (should (string-match-p "-t[0-9a-f]\\{8\\}-c[0-9a-f]\\{8\\}\\'"
+      (should (string-match-p "-t[0-9a-f]\\{8\\}-c[0-9a-f]\\{8\\}-s[0-9a-f]\\{8\\}\\'"
                               (org-scribe-companion--revision-string root))))))
 
 (provide 'test-chronology)

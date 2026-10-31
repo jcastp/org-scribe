@@ -27,6 +27,7 @@
 (require 'org-scribe-chronology)
 (require 'org-scribe-character-relationships)
 (require 'org-scribe-companion-colors)
+(require 'org-scribe-companion-undo)
 
 (defvar org-scribe-companion-todo-colors)
 (defvar org-scribe-entity-registry)
@@ -371,16 +372,27 @@ unweighted default 999.0 and is not hidden."
   (cons (org-scribe-companion--buffer-revision (plist-get structure :manuscript-file))
         (org-scribe-companion--buffer-revision (plist-get structure :design-file))))
 
+(defun org-scribe-companion--settings-revision ()
+  "Return a short string that changes with the settings the snapshot reads.
+They are the project language and `org-scribe-companion-todo-colors':
+neither lives in a buffer, so no tick changes when the writer sets them.
+Reads the project at `default-directory'."
+  (substring (secure-hash 'md5 (format "%S" (list (org-scribe-project-language)
+                                                  (bound-and-true-p org-scribe-companion-todo-colors))))
+             0 8))
+
 (defun org-scribe-companion--format-revision (revisions)
   "Return the revision string for REVISIONS, a (MANUSCRIPT . DESIGN) pair.
 Ends with the colour settings' revision: they live in the marker file, so
 no buffer tick changes when the writer picks a colour; the story-time
-notation and Day 1 date are marker lines too.  Reads the project
-at `default-directory'."
+notation and Day 1 date are marker lines too.  The last part is
+`org-scribe-companion--settings-revision'.  Reads the project at
+`default-directory'."
   (let ((root (org-scribe-project-root)))
-    (format "m%s-d%s-t%s-c%s" (car revisions) (cdr revisions)
+    (format "m%s-d%s-t%s-c%s-s%s" (car revisions) (cdr revisions)
             (org-scribe-story-time-revision root)
-            (org-scribe-companion-colors-revision root))))
+            (org-scribe-companion-colors-revision root)
+            (org-scribe-companion--settings-revision))))
 
 (defun org-scribe-companion--revision-string (root)
   "Return the current revision string of the project at ROOT, without a snapshot.
@@ -396,10 +408,11 @@ PLIST holds `:m' (manuscript revision), `:acts' and `:todo' for the
 manuscript half, `:d' (design revision) and `:entities' for the design
 half.  The halves are cached apart because the manuscript changes much
 more often (every drag), and walking the design notebook is the costlier
-half.  The language is not part of the revision; clear the cache with
-`org-scribe-companion--clear-cache' after changing it.  Colours are: the
-TODO colours and the `colors' entry are computed on every snapshot, and
-the colour settings are part of the revision string.")
+half.  `:s' holds the settings revision the halves were computed with
+\(`org-scribe-companion--settings-revision'); when the language or the
+TODO colours change, both halves are dropped.  Colours: the TODO colours
+and the `colors' entry are computed on every snapshot, and the colour
+settings are part of the revision string.")
 
 (defvar org-scribe-companion--json-cache nil
   "Alist of (ROOT REVISION . JSON): the last snapshot serialized per project.")
@@ -517,7 +530,11 @@ so asking again without an edit costs a revision check only."
       (when (and file (file-exists-p file)) (find-file-noselect file)))
     (let* ((revisions (org-scribe-companion--revisions structure))
            (specs (org-scribe-companion--field-specs language))
+           (settings (org-scribe-companion--settings-revision))
            (cache (alist-get root org-scribe-companion--snapshot-cache nil nil #'equal)))
+      ;; the language or the TODO colours changed: nothing cached still holds
+      (unless (equal (plist-get cache :s) settings)
+        (setq cache (list :s settings)))
       (unless (equal (plist-get cache :m) (car revisions))
         (with-current-buffer (find-file-noselect manuscript)
           (setq cache (plist-put cache :acts (org-scribe-companion--walk-manuscript specs)))
@@ -541,6 +558,7 @@ so asking again without an edit costs a revision check only."
                            :type (symbol-name (org-scribe-project-type)))
             :buffers (list :manuscript (org-scribe-companion--buffer-info manuscript)
                            :design (org-scribe-companion--buffer-info design))
+            :canUndo (org-scribe-companion--bool (org-scribe-companion-undo-available-p root))
             :todo (org-scribe-companion--todo-with-colors (plist-get cache :todo) root)
             :colors (org-scribe-companion-colors-resolve root (plist-get cache :entities)
                                                 (plist-get cache :acts))

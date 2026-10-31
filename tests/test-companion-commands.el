@@ -1386,6 +1386,163 @@ The project type must come from ROOT, or a short story is read as a novel."
       (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
         (should-not (memq #'org-scribe-companion--follow post-command-hook))))))
 
+;;; undo
+
+(defmacro test-companion-commands--with-undo-project (root-var &rest body)
+  "Like `test-companion-commands--with-project', with an empty undo stack."
+  (declare (indent 1))
+  `(test-companion-commands--with-project ,root-var
+     (org-scribe-companion-undo-clear)
+     (unwind-protect (progn ,@body)
+       (org-scribe-companion-undo-clear))))
+
+(defun test-companion-commands--can-undo (root)
+  (eq t (plist-get (org-scribe-companion--snapshot root) :canUndo)))
+
+(defun test-companion-commands--type-in-emacs (root)
+  "Change novel.org as the writer would, with an undo boundary after it."
+  (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+    (undo-boundary)
+    (save-excursion (goto-char (point-max)) (insert "\nTyped in Emacs.\n"))
+    (undo-boundary)))
+
+(ert-deftest test-companion-commands-undo-with-nothing-to-undo-is-not-found ()
+  (test-companion-commands--with-undo-project root
+    (should-not (test-companion-commands--can-undo root))
+    (should (equal "not-found"
+                   (test-companion-commands--code
+                    (test-companion-commands--run root "undo"))))))
+
+(ert-deftest test-companion-commands-undo-restores-a-move-exactly ()
+  (test-companion-commands--with-undo-project root
+    (let ((original (test-companion-commands--text root "novel.org")))
+      (should (test-companion-commands--ok-p
+               (test-companion-commands--run
+                root "move-node" :id test-companion-commands--scene-1
+                :parent (test-companion-commands--id root "Chapter 8 - The New Normal")
+                :after nil)))
+      (should (test-companion-commands--can-undo root))
+      (let ((answer (test-companion-commands--run root "undo")))
+        (should (test-companion-commands--ok-p answer))
+        (should (equal "novel.org" (plist-get answer :file))))
+      (should (equal original (test-companion-commands--text root "novel.org")))
+      (should-not (test-companion-commands--can-undo root)))))
+
+(ert-deftest test-companion-commands-undo-goes-back-newest-first ()
+  (test-companion-commands--with-undo-project root
+    (let ((original (test-companion-commands--text root "novel.org")))
+      (test-companion-commands--run root "set-title" :id test-companion-commands--scene-1
+                                    :title "The Third Alarm")
+      (let ((renamed (test-companion-commands--text root "novel.org")))
+        (test-companion-commands--run root "set-todo" :id test-companion-commands--scene-1
+                                      :state "TODO")
+        (should (test-companion-commands--ok-p (test-companion-commands--run root "undo")))
+        (should (equal renamed (test-companion-commands--text root "novel.org")))
+        (should (test-companion-commands--can-undo root))
+        (should (test-companion-commands--ok-p (test-companion-commands--run root "undo")))
+        (should (equal original (test-companion-commands--text root "novel.org")))
+        (should-not (test-companion-commands--can-undo root))))))
+
+(ert-deftest test-companion-commands-undo-brings-back-the-unmodified-state ()
+  (test-companion-commands--with-undo-project root
+    (test-companion-commands--run root "set-title" :id test-companion-commands--scene-1
+                                  :title "The Third Alarm")
+    (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+      (should (buffer-modified-p)))
+    (test-companion-commands--run root "undo")
+    (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+      (should-not (buffer-modified-p)))))
+
+(ert-deftest test-companion-commands-undo-refuses-after-a-change-in-emacs ()
+  (test-companion-commands--with-undo-project root
+    (test-companion-commands--run root "set-title" :id test-companion-commands--scene-1
+                                  :title "The Third Alarm")
+    (test-companion-commands--type-in-emacs root)
+    (should-not (test-companion-commands--can-undo root))
+    (let ((typed (test-companion-commands--text root "novel.org"))
+          (answer (test-companion-commands--run root "undo")))
+      (should (equal "conflict" (test-companion-commands--code answer)))
+      ;; nothing was touched, and the page's older steps are forgotten
+      (should (equal typed (test-companion-commands--text root "novel.org")))
+      (should-not (org-scribe-companion-undo-top root))
+      (should (equal "not-found"
+                     (test-companion-commands--code
+                      (test-companion-commands--run root "undo")))))))
+
+(ert-deftest test-companion-commands-undo-boundaries-alone-do-not-block-it ()
+  "Emacs adds undo boundaries by itself (after commands, on a timer)."
+  (test-companion-commands--with-undo-project root
+    (let ((original (test-companion-commands--text root "novel.org")))
+      (test-companion-commands--run root "set-title" :id test-companion-commands--scene-1
+                                    :title "The Third Alarm")
+      (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+        (undo-boundary) (undo-boundary))
+      (should (test-companion-commands--ok-p (test-companion-commands--run root "undo")))
+      (should (equal original (test-companion-commands--text root "novel.org"))))))
+
+(ert-deftest test-companion-commands-undo-after-emacs-typing-drops-only-older-steps ()
+  "A page step made after typing in Emacs can be undone; the steps before
+the typing cannot, since undoing them would land at stale positions."
+  (test-companion-commands--with-undo-project root
+    (test-companion-commands--run root "set-title" :id test-companion-commands--scene-1
+                                  :title "The Third Alarm")
+    (test-companion-commands--type-in-emacs root)
+    (let ((typed (test-companion-commands--text root "novel.org")))
+      (test-companion-commands--run root "set-todo" :id test-companion-commands--scene-1
+                                    :state "TODO")
+      (should (test-companion-commands--ok-p (test-companion-commands--run root "undo")))
+      (should (equal typed (test-companion-commands--text root "novel.org")))
+      (should-not (test-companion-commands--can-undo root))
+      (should (equal "not-found"
+                     (test-companion-commands--code
+                      (test-companion-commands--run root "undo")))))))
+
+(ert-deftest test-companion-commands-undo-crosses-the-design-notebook ()
+  (test-companion-commands--with-undo-project root
+    (let ((novel (test-companion-commands--text root "novel.org"))
+          (design (test-companion-commands--text root "design.org")))
+      (should (test-companion-commands--ok-p
+               (test-companion-commands--run root "set-entity-property"
+                                             :id test-companion-commands--alex
+                                             :key "Role" :value "Ally")))
+      (test-companion-commands--run root "set-title" :id test-companion-commands--scene-1
+                                    :title "The Third Alarm")
+      (should (test-companion-commands--ok-p (test-companion-commands--run root "undo")))
+      (should (equal novel (test-companion-commands--text root "novel.org")))
+      (let ((answer (test-companion-commands--run root "undo")))
+        (should (test-companion-commands--ok-p answer))
+        (should (equal "design.org" (plist-get answer :file))))
+      (should (equal design (test-companion-commands--text root "design.org"))))))
+
+(ert-deftest test-companion-commands-page-undo-is-one-emacs-undo-step ()
+  "C-/ in Emacs after the page's undo brings the change back whole."
+  (test-companion-commands--with-undo-project root
+    (test-companion-commands--run root "move-node" :id test-companion-commands--scene-1
+                                  :parent (test-companion-commands--id root "Chapter 8 - The New Normal")
+                                  :after nil)
+    (let ((moved (test-companion-commands--text root "novel.org")))
+      (test-companion-commands--run root "undo")
+      (test-companion-commands--undo-once root)
+      (should (equal moved (test-companion-commands--text root "novel.org"))))))
+
+(ert-deftest test-companion-commands-a-no-op-is-not-an-undo-step ()
+  (test-companion-commands--with-undo-project root
+    ;; moving scene 2 to where it already is changes nothing
+    (should (test-companion-commands--ok-p
+             (test-companion-commands--run
+              root "move-node" :id test-companion-commands--scene-2
+              :parent (test-companion-commands--id root "Chapter 1 - Three Alarms")
+              :after test-companion-commands--scene-1)))
+    (should-not (org-scribe-companion-undo-top root))))
+
+(ert-deftest test-companion-commands-stop-forgets-the-undo-steps ()
+  (test-companion-commands--with-undo-project root
+    (test-companion-commands--run root "set-title" :id test-companion-commands--scene-1
+                                  :title "The Third Alarm")
+    (should (org-scribe-companion-undo-top root))
+    (org-scribe-companion--stop)
+    (should-not (org-scribe-companion-undo-top root))))
+
 ;;; The web files only use strings that exist
 
 (defconst test-companion-commands--web

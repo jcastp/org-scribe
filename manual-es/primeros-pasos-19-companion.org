@@ -82,8 +82,8 @@ puntos de trama, y una barra de recuento de palabras.
   tarjetas se pliegan mientras arrastras.
 - El botón ~↗~ (o un doble clic) muestra la escena en Emacs.
 
-Los filtros de arriba (PoV, personaje, hilo de trama, escenario, estado)
-atenúan las tarjetas que no coinciden.
+Los filtros de arriba (PoV, personaje, hilo de trama, escenario, objeto,
+estado) atenúan las tarjetas que no coinciden.
 
 Pruébalo: arrastra la Escena 2 por encima de la Escena 1 en el Capítulo 1, pasa a
 Emacs y mira ~novela.org~. Todo el subárbol se ha movido, con sus propiedades y
@@ -203,8 +203,8 @@ lista los valores en uso, y un clic en una muestra cambia el color de ese valor.
 
 * Parte 5: Formularios de entidades
 
-La pestaña *Entidades* lista los personajes, los escenarios, los hilos de la
-trama y los trece puntos de trama. Elige uno:
+La pestaña *Entidades* lista los personajes, los escenarios, los objetos, los
+hilos de la trama y los trece puntos de trama. Elige uno:
 
 - Las *Propiedades* son el cajón de propiedades del encabezado. El papel, el tipo
   de hilo y el estado son desplegables que ofrecen los valores que usan las
@@ -263,6 +263,12 @@ tiempo.
   ~org-scribe-companion-auto-save~). La cabecera te avisa cuando hay cambios sin
   guardar en Emacs.
 - Cada cambio es un paso de deshacer en el búfer.
+- *Deshacer* en la cabecera (o ~Ctrl+Z~ fuera de un campo de texto) deshace el
+  último cambio de la página, luego el anterior, y así sucesivamente. Si desde
+  entonces has escrito en ese archivo en Emacs, la página te lo dice y deja el
+  deshacer a Emacs, porque deshacer un cambio antiguo bajo texto más reciente lo
+  aplicaría en el sitio equivocado. El deshacer de la página es a su vez un
+  paso de deshacer en Emacs: ~C-/~ allí recupera el cambio.
 - A medida que mueves el cursor por el manuscrito, la tarjeta o fila
   correspondiente se resalta (~org-scribe-companion-follow~).
 - Cambiar el estado a una palabra clave que registra una nota (como

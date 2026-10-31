@@ -553,6 +553,27 @@ SETUP is a function called with the directory.  The directory is the
 (provide 'test-companion-model)
 ;;; test-companion-model.el ends here
 
+(ert-deftest test-companion-model-settings-change-the-revision ()
+  "TODO colours and the language live in no buffer: they must still reach the page."
+  (test-companion-model--with-project root #'test-companion-model--copy-demo
+    (let* ((before (org-scribe-companion--snapshot))
+           (json (org-scribe-companion--snapshot-json root)))
+      (let ((org-scribe-companion-todo-colors '(("TODO" . "#123456"))))
+        (let ((after (org-scribe-companion--snapshot)))
+          (should-not (equal (plist-get before :revision) (plist-get after :revision)))
+          ;; both cached halves were dropped and computed again
+          (should-not (eq (plist-get before :entities) (plist-get after :entities)))
+          (should (equal "#123456" (plist-get (plist-get (plist-get after :todo) :colors)
+                                              :TODO))))
+        (should-not (equal json (org-scribe-companion--snapshot-json root))))
+      (let ((settings (org-scribe-companion--settings-revision))
+            (other (if (eq (org-scribe-project-language) 'es) 'en 'es)))
+        (cl-letf (((symbol-function 'org-scribe-project-language) (lambda () other)))
+          (should-not (equal settings (org-scribe-companion--settings-revision)))))
+      ;; back to the settings it started with: the same revision as before
+      (should (equal (plist-get before :revision)
+                     (plist-get (org-scribe-companion--snapshot) :revision))))))
+
 (ert-deftest test-companion-model-json-is-kept-per-revision ()
   (test-companion-model--with-project root #'test-companion-model--copy-demo
     (let ((first (org-scribe-companion--snapshot-json root))

@@ -9,9 +9,15 @@
 ;;   move-node, set-title, set-todo,
 ;;   set-field, create-scene,
 ;;   create-chapter                     edit the manuscript
+;;   undo                               undo the page's last change
 ;;   set-color                          the page's theme and pinned colours
 ;;                                      (written to .org-scribe-project)
-;; Any other name is `unsupported'.  (Entity edits arrive in a later phase.)
+;;   set-entity-property,
+;;   set-entity-section,
+;;   set-relationship,
+;;   capture-entity                     edit the design notebook's entities
+;;                                      (in org-scribe-companion-entity.el)
+;; Any other name is `unsupported'.
 ;;
 ;; Headings are found by ID, only in the project's manuscript and design
 ;; files, never by position.  Every editing command
@@ -32,6 +38,7 @@
 (require 'org-scribe-core)
 (require 'org-scribe-companion-model)
 (require 'org-scribe-companion-colors)
+(require 'org-scribe-companion-undo)
 
 (defvar org-scribe-companion-raise-frame)
 (defvar org-scribe-companion-auto-save)
@@ -50,6 +57,7 @@
     ("set-field" . org-scribe-companion-commands--set-field)
     ("create-scene" . org-scribe-companion-commands--create-scene)
     ("create-chapter" . org-scribe-companion-commands--create-chapter)
+    ("undo" . org-scribe-companion-commands--undo)
     ("set-color" . org-scribe-companion-commands--set-color)
     ("set-entity-property" . org-scribe-companion-entity--set-property)
     ("set-entity-section" . org-scribe-companion-entity--set-section)
@@ -160,21 +168,26 @@ reveals it, and raises the frame when `org-scribe-companion-raise-frame'."
       (org-scribe-companion-commands--fail "not-found" 'companion-error-no-manuscript))))
 
 (defmacro org-scribe-companion-commands--with-edit (buffer &rest body)
-  "Run BODY in BUFFER, widened, as one undo step that is undone if BODY fails."
+  "Run BODY in BUFFER, widened, as one undo step that is undone if BODY fails.
+A step made for the page is remembered, so the page can undo it
+\(`org-scribe-companion-undo-record')."
   (declare (indent 1))
-  `(let ((handle (prepare-change-group ,buffer))
-         (undo-outer-limit nil)
-         (undo-limit most-positive-fixnum)
-         (undo-strong-limit most-positive-fixnum)
-         (success nil))
+  `(let* ((org-scribe--edit-buffer ,buffer)
+          (org-scribe--undo-start (buffer-local-value 'buffer-undo-list org-scribe--edit-buffer))
+          (handle (prepare-change-group org-scribe--edit-buffer))
+          (undo-outer-limit nil)
+          (undo-limit most-positive-fixnum)
+          (undo-strong-limit most-positive-fixnum)
+          (success nil))
      (unwind-protect
-         (with-current-buffer ,buffer
+         (with-current-buffer org-scribe--edit-buffer
            (activate-change-group handle)
            (prog1 (org-with-wide-buffer ,@body)
              (setq success t)))
        (if success
            (progn (accept-change-group handle)
-                  (undo-amalgamate-change-group handle))
+                  (undo-amalgamate-change-group handle)
+                  (org-scribe-companion-undo-record org-scribe--edit-buffer org-scribe--undo-start))
          (cancel-change-group handle)))))
 
 (defun org-scribe-companion-commands--arg (args key)
@@ -601,6 +614,38 @@ answer carries the new chapter's `:id'."
           (append (org-scribe-companion-commands--finish root) (list :id new-id)))
       (dolist (marker (list parent after)) (when marker (set-marker marker nil))))))
 
+;;; undo
+
+(defun org-scribe-companion-commands--undo (root _args)
+  "Undo the newest change the page of ROOT made, if it is still the newest.
+Refuses with `not-found' when the page has nothing to undo, and with
+`conflict' when the buffer changed in Emacs since (see
+`org-scribe-companion-undo.el'); the page's older steps are then
+forgotten too.  The undo is itself one undo step in Emacs, so `C-/' there
+brings the change back.  The answer carries `:file', the file undone in."
+  (let ((entry (org-scribe-companion-undo-top root)))
+    (unless entry
+      (org-scribe-companion-commands--fail "not-found" 'companion-error-nothing-to-undo))
+    (let* ((buffer (plist-get entry :buffer))
+           (name (if (buffer-live-p buffer) (buffer-name buffer) ""))
+           (changes (and (org-scribe-companion-undo--valid-p entry)
+                         (org-scribe-companion-undo--changes entry))))
+      (unless changes
+        (org-scribe-companion-undo-clear root)
+        (org-scribe-companion-commands--fail "conflict" 'companion-error-undo-changed name))
+      ;; the undo is not a step the page can undo
+      (let ((org-scribe-companion-undo--root nil))
+        (org-scribe-companion-commands--with-edit buffer
+          (primitive-undo 1 changes)))
+      (org-scribe-companion-undo-pop root)
+      (org-scribe-companion-undo-left-at buffer)
+      ;; the step may have added or removed a heading (create-scene, create-chapter)
+      (org-scribe--refile-invalidate-cache)
+      (append (org-scribe-companion-commands--finish root)
+              (list :file (if-let* ((file (buffer-file-name buffer)))
+                              (file-name-nondirectory file)
+                            name))))))
+
 (defun org-scribe-companion-commands--known-color-id (root kind id)
   "Non-nil when ID is the ID of a KIND item of the project at ROOT.
 KIND is a pin kind that holds an ID (`pov', `plot', `location', `plotpoint'
@@ -682,7 +727,9 @@ Returns the answer plist described in the Commentary."
          (default-directory root)
          ;; error notices are in the project's language, as the page is
          (org-scribe-message-language (let ((default-directory root))
-                                        (org-scribe-project-language))))
+                                        (org-scribe-project-language)))
+         ;; the steps this command makes go on the page's undo stack
+         (org-scribe-companion-undo--root root))
     (if (null function)
         (org-scribe-companion-commands-error
          "unsupported" (org-scribe-msg 'companion-error-unsupported-op (format "%s" op)))

@@ -256,6 +256,9 @@ function renderHeader() {
   status.textContent = t(unsaved ? 'companion-ui-unsaved' : 'companion-ui-saved');
   status.classList.toggle('unsaved', unsaved);
   $('save-button').disabled = !unsaved;
+  const undoButton = $('undo-button');
+  undoButton.disabled = !snapshot.canUndo;
+  undoButton.title = t('companion-ui-undo-hint');
 }
 
 /** Which entity list names the IDs a colour pin of each kind holds. */
@@ -366,6 +369,31 @@ function connect() {
 $('colors-button').addEventListener('click', () => toggleColours($('colors-panel').hidden));
 // light <-> dark: the palette slots and the warning colours change with it
 colours.onModeChange(() => { if (state.snapshot) renderAll(); });
+
+// Undo the page's last change.  Emacs refuses (and says why) when the buffer
+// changed there since; the notice names the file and how to get it back.
+let undoing = false;
+async function undo() {
+  if (undoing || editing || !state.snapshot || !state.snapshot.canUndo) return;
+  undoing = true;
+  try {
+    const answer = await edit('undo', {});
+    if (answer.ok) showNotice(t('companion-ui-undone', answer.file));
+  } finally {
+    undoing = false;
+  }
+}
+
+$('undo-button').addEventListener('click', undo);
+// Ctrl+Z (Cmd+Z) outside a text field: a field keeps the browser's own undo
+document.addEventListener('keydown', (event) => {
+  if (!(event.ctrlKey || event.metaKey) || event.shiftKey || event.altKey) return;
+  if (event.key !== 'z' && event.key !== 'Z') return;
+  const target = event.target;
+  if (target.closest && target.closest('input, textarea, select, [contenteditable]')) return;
+  event.preventDefault();
+  undo();
+});
 
 $('save-button').addEventListener('click', async () => {
   const answer = await command('save');
