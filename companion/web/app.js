@@ -12,17 +12,18 @@ import * as timeline from './views/timeline.js';
 import * as relations from './views/relations.js';
 import * as forms from './views/forms.js';
 import * as colours from './colors.js';
+import * as scheme from './scheme.js';
 
 const token = new URLSearchParams(location.search).get('t') || '';
 const $ = (id) => document.getElementById(id);
 
 // The views, in tab order.  
 const VIEWS = [
-  { id: 'corkboard', label: 'companion-ui-view-corkboard', module: corkboard },
-  { id: 'table', label: 'companion-ui-view-table', module: table },
-  { id: 'storyline', label: 'companion-ui-view-storyline', module: storyline },
+  { id: 'corkboard', label: 'companion-ui-view-corkboard', module: corkboard, colourBy: true },
+  { id: 'table', label: 'companion-ui-view-table', module: table, colourBy: true },
+  { id: 'storyline', label: 'companion-ui-view-storyline', module: storyline, colourBy: true },
   { id: 'chapters', label: 'companion-ui-view-chapters', module: chapters, novelOnly: true },
-  { id: 'timeline', label: 'companion-ui-view-timeline', module: timeline },
+  { id: 'timeline', label: 'companion-ui-view-timeline', module: timeline, colourBy: true },
   { id: 'relations', label: 'companion-ui-view-relations', module: relations, noFilters: true },
   { id: 'forms', label: 'companion-ui-view-forms', module: forms },
 ];
@@ -257,11 +258,18 @@ function renderHeader() {
   $('save-button').disabled = !unsaved;
 }
 
-/** The name to show for a colour pin: a PoV pin holds the character's ID. */
+/** Which entity list names the IDs a colour pin of each kind holds. */
+const PIN_ENTITY = { pov: 'character', plot: 'plot', location: 'location', plotpoint: 'plot-point' };
+
+/** The name to show for a colour pin: most pins hold an entity's or an act's ID. */
 function nameFor(kind, value) {
-  if (kind !== 'pov') return value;
-  const character = (state.snapshot.entities.character || []).find((entity) => entity.id === value);
-  return character ? character.name : value;
+  if (kind === 'act') {
+    const act = state.snapshot.acts.find((candidate) => candidate.id === value);
+    return act ? act.title : value;
+  }
+  if (!PIN_ENTITY[kind]) return value;
+  const entity = (state.snapshot.entities[PIN_ENTITY[kind]] || []).find((candidate) => candidate.id === value);
+  return entity ? entity.name : value;
 }
 
 const panelContext = () => ({
@@ -281,11 +289,29 @@ function toggleColours(show) {
   renderColours();
 }
 
+/** The "Colour by" choice in the header and its legend, on the tabs that use them. */
+function renderColourBy() {
+  const current = availableViews().find((candidate) => candidate.id === state.view);
+  const uses = Boolean(current && current.colourBy);
+  const slot = $('colour-by');
+  const legend = $('colour-legend');
+  slot.replaceChildren();
+  legend.replaceChildren();
+  slot.hidden = !uses;
+  legend.hidden = true;
+  if (!uses) return;
+  const ctx = { ...panelContext(), snapshot: state.snapshot };
+  slot.append(scheme.chooser(ctx, () => { renderColourBy(); renderView(); }));
+  const key = scheme.legend(ctx);
+  if (key) { legend.append(key); legend.hidden = false; }
+}
+
 function renderAll() {
   colours.setColors(state.snapshot.colors);
   renderHeader();
   renderColours();
   renderTabs();
+  renderColourBy();
   renderFilters();
   renderView();
 }
@@ -307,6 +333,7 @@ async function refresh() {
     setFilterScope(root);
     state.filters = loadFilters();
     table.useProject(root);
+    scheme.useProject(root);
   }
   if (pruneFilters(state.filters, state.snapshot)) saveFilters(state.filters);
   renderAll();

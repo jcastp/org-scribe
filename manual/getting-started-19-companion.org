@@ -91,7 +91,6 @@ while sorted).
 - Link fields (PoV, characters, plot threads, plot points, locations) open a
   picker listing the entities of that kind, with a search box. Pick, press
   *Done*: Emacs writes proper ~[[id:...][Name]]~ links.
-- *Colour by* state or by PoV.
 - The *Objects* field works like the other link fields. In Emacs the same
   link is set with ~F8 b~ (Tag Scene) and searched with ~F8 7~.
 - The =+= in a chapter row adds a scene at the end of that chapter; the =+= in
@@ -165,6 +164,21 @@ PoV character. A swatch picks the theme's Nth colour; the free colour dialog
 pins an exact colour and warns when its contrast is poor. Choices are written
 to ~.org-scribe-project~ so they travel with the project; *Reset* removes
 them. Warnings and the "scene in Emacs" highlight have their own colours.
+
+*Colour scenes by a property.* The *Colour by* list in the header (on the Corkboard, Table, Storyline and
+Timeline tabs) colours every scene by one property: its state (the default),
+PoV, plot thread, location, plot point or act. The choice is shared by the four
+tabs and remembered per project, and a legend under the header lists the values
+in use; click a swatch there to change that value's colour.
+
+- A card or timeline entry shows the colour as its left band; a scene with
+  several values (two plot threads, say) gets one band per value, up to three,
+  and a neutral tint, so the tint never favours one of them.
+- The Table keeps the state colour on the left edge and adds the chosen colour
+  as a second stripe and a light tint on the row.
+- The Storyline colours the marks: a plot-thread row takes that thread's
+  colour, and the band under each scene number shows the scene's.
+- Hidden entities (negative =Weight=) get no colour.
 
 * Part 5: Entity Forms
 

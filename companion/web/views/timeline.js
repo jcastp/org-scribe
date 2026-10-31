@@ -12,6 +12,7 @@
 
 import { el, startEdit } from '../edit.js';
 import { matches, isActive } from '../filters.js';
+import { paint } from '../scheme.js';
 
 const DAY = 1440;
 const YEAR = 365;
@@ -82,6 +83,7 @@ function card(item, ctx) {
     node.classList.add('dimmed');
   }
   if (item.id) node.dataset.id = item.id;
+  if (item.kind === 'scene') paint(node, item.source, ctx);
   const top = el('div', 'tl-top');
   if (item.kind === 'scene') {
     const number = el('span', 'tl-position', String(item.position));

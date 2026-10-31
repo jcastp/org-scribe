@@ -464,6 +464,62 @@
            (entry (plist-get (plist-get colors :pov) :char-alex-rivera-001)))
       (should (equal (plist-get entry :color) "#334455")))))
 
+(ert-deftest test-companion-colors-snapshot-colours-plots-locations-plot-points-and-acts ()
+  "Every visible entity of the scene-colouring kinds, and every act with an ID, has a colour."
+  (test-companion-colors--with-project root
+    (let* ((snapshot (org-scribe-companion--snapshot root))
+           (entities (plist-get snapshot :entities))
+           (colors (plist-get snapshot :colors)))
+      (cl-loop for (kind key) in '((:plot :plot) (:location :location) (:plot-point :plotpoint))
+               do (let ((ids (cl-loop for e across (plist-get entities kind)
+                                      when (and (stringp (plist-get e :id))
+                                                (not (eq (plist-get e :hidden) t)))
+                                      collect (plist-get e :id))))
+                    (should ids)
+                    (should (= (length ids) (/ (length (plist-get colors key)) 2)))))
+      (let ((act-ids (cl-loop for a across (plist-get snapshot :acts)
+                              when (stringp (plist-get a :id)) collect (plist-get a :id))))
+        (should act-ids)
+        (should (= (length act-ids) (/ (length (plist-get colors :act)) 2)))))))
+
+(ert-deftest test-companion-colors-hidden-entities-take-no-colour ()
+  (let* ((entities (list :plot (vector (list :id "a" :name "A" :hidden t)
+                                       (list :id "b" :name "B" :hidden :false))))
+         (values (org-scribe-companion-colors--values entities)))
+    (should (equal (nth 3 values) '("b")))))
+
+(ert-deftest test-companion-colors-id-kinds-compare-ids-as-written ()
+  (should (equal (org-scribe-companion-colors--normalize 'plot " Plot-AB-001 ") "Plot-AB-001"))
+  (should (equal (org-scribe-companion-colors--normalize 'role " Mentor ") "mentor"))
+  (should (equal (org-scribe-companion-colors--parse-pin "act #112233 act-1")
+                 '(act "act-1" "#112233" "act-1"))))
+
+(ert-deftest test-companion-colors-set-color-pins-a-plot-location-plot-point-and-act-by-id ()
+  (test-companion-colors--with-project root
+    (let* ((snapshot (org-scribe-companion--snapshot root))
+           (entities (plist-get snapshot :entities))
+           (first-id (lambda (kind) (plist-get (aref (plist-get entities kind) 0) :id)))
+           (cases (list (list "plot" (funcall first-id :plot) :plot)
+                        (list "location" (funcall first-id :location) :location)
+                        (list "plotpoint" (funcall first-id :plot-point) :plotpoint)
+                        (list "act" (plist-get (aref (plist-get snapshot :acts) 0) :id) :act))))
+      (dolist (case cases)
+        (pcase-let ((`(,kind ,id ,key) case))
+          (should (stringp id))
+          (should (eq (plist-get (test-companion-colors--run root "set-color" :kind kind
+                                                             :value id :color "#334455")
+                                 :ok)
+                      t))
+          (let* ((colors (plist-get (org-scribe-companion--snapshot root) :colors))
+                 (entry (plist-get (plist-get colors key) (intern (concat ":" id)))))
+            (should (equal (plist-get entry :color) "#334455")))))
+      ;; an unknown ID is refused, whatever the kind
+      (dolist (kind '("plot" "location" "plotpoint" "act"))
+        (let ((answer (test-companion-colors--run root "set-color" :kind kind
+                                                  :value "no-such-id" :color "#112233")))
+          (should (eq (plist-get answer :ok) :false))
+          (should (equal (plist-get (plist-get answer :error) :code) "not-found")))))))
+
 (ert-deftest test-companion-colors-set-color-refusals ()
   (test-companion-colors--with-project root
     (cl-flet ((refused (code &rest args)

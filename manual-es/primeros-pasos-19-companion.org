@@ -101,7 +101,6 @@ recuerda). Haz clic en una cabecera para ordenar dentro de cada capítulo
   escenarios) abren un selector con las entidades de ese tipo y un cuadro de
   búsqueda. Elige, pulsa *Hecho*: Emacs escribe enlaces ~[[id:...][Nombre]]~
   como es debido.
-- *Colorear por* estado o por PoV.
 - El campo *Objetos* funciona como los demás campos de enlace. En Emacs, el mismo
   enlace se fija con ~F8 b~ (Etiquetar escena) y se busca con ~F8 7~.
 - El =+= de una fila de capítulo añade una escena al final de ese capítulo; el
@@ -182,6 +181,24 @@ diálogo de color libre fija un color exacto y avisa cuando su contraste es
 pobre. Las elecciones se escriben en ~.org-scribe-project~ para que viajen con el
 proyecto; *Restablecer* las quita. Los avisos y el resaltado de «Escena en
 Emacs» tienen sus propios colores.
+
+*Colorear las escenas por una propiedad.* La lista *Colorear por* de la
+cabecera (en las pestañas Corcho, Tabla, Línea argumental y Cronología) colorea
+cada escena por una propiedad: su estado (lo predeterminado), el PoV, el hilo de
+trama, la localización, el punto de trama o el acto. La elección es la misma en
+las cuatro pestañas y se recuerda por proyecto; una leyenda bajo la cabecera
+lista los valores en uso, y un clic en una muestra cambia el color de ese valor.
+
+- Una tarjeta o una entrada de la cronología muestra el color como banda
+  izquierda; una escena con varios valores (dos hilos de trama, por ejemplo)
+  lleva una banda por valor, hasta tres, y un tinte neutro, para que el tinte
+  nunca favorezca a uno de ellos.
+- La Tabla conserva el color del estado en el borde izquierdo y añade el color
+  elegido como segunda franja y un tinte suave en la fila.
+- La Línea argumental colorea las marcas: la fila de un hilo de trama toma el
+  color de ese hilo, y la banda bajo cada número de escena muestra el de la
+  escena.
+- Las entidades ocultas (=Weight= negativo) no tienen color.
 
 * Parte 5: Formularios de entidades
 

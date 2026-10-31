@@ -10,6 +10,7 @@
 import { matches, isActive } from '../filters.js';
 import { el } from '../edit.js';
 import { visibleGroups, ids, orderEntities } from './matrix.js';
+import { paint, markColor } from '../scheme.js';
 
 let showHidden = false;
 
@@ -67,6 +68,8 @@ function cell(scene, group, entity, flags, ctx) {
   // that is not among the scene's characters
   if (present) button.classList.add('present');
   if (pov) { button.classList.add('pov'); button.title += ` (${ctx.t('companion-ui-pov')})`; }
+  const mark = markColor(scene, group, entity, ctx);
+  if (mark) button.style.setProperty('--mark', mark);
   button.append(el('span', 'sl-mark'));
   if (!editable(scene)) button.disabled = true;
   button.addEventListener('click', (event) => {
@@ -154,6 +157,7 @@ function header(acts, scenes, ctx) {
         if (index === 0) cellNode.classList.add('chapter-start');
         if (scene.id) cellNode.dataset.id = scene.id;
         if (scene.id === ctx.focusId) cellNode.classList.add('focus');
+        paint(cellNode, scene, ctx, 'to right');
         const link = el('button', 'sl-open', String(number));
         link.type = 'button';
         link.title = `${scene.title} — ${ctx.t('companion-ui-open')}`;

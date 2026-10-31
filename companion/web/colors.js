@@ -58,13 +58,14 @@ export function setColors(snapshotColors) {
 
 export const current = () => colors;
 
-/** The key a value has among the colours: a PoV is an ID, the rest ignore case. */
-const keyOf = (kind, value) => (kind === 'pov' ? String(value).trim() : String(value).trim().toLowerCase());
+/** The kinds whose value is an ID, compared as written; the rest ignore case. */
+const ID_KINDS = ['pov', 'plot', 'location', 'plotpoint', 'act'];
+const keyOf = (kind, value) => (ID_KINDS.includes(kind) ? String(value).trim() : String(value).trim().toLowerCase());
 
 /** The entry (`{ index }` or `{ color }`, maybe `reused`) of a value, or null. */
 export function entryOf(kind, value) {
   if (!colors || value === null || value === undefined || String(value).trim() === '') return null;
-  return colors[kind][keyOf(kind, value)] || null;
+  return (colors[kind] || {})[keyOf(kind, value)] || null;
 }
 
 /** The CSS colour of a value of KIND for the current mode, or null. */
@@ -79,7 +80,7 @@ export function colorOf(kind, value) {
  *  value never changes it. */
 export function rankOf(kind, value) {
   if (!colors) return 0;
-  const entry = colors[kind][keyOf(kind, value)];
+  const entry = (colors[kind] || {})[keyOf(kind, value)];
   return entry && Number.isInteger(entry.rank) ? entry.rank : 0;
 }
 
@@ -124,7 +125,7 @@ export function closePicker() {
 
 /**
  * Open a picker under ANCHOR for one item.  SPEC: `kind` (`role`, `reltype`,
- * `pov`, `warn`, `focus`), `value` (the item; omitted for warn and focus) and
+ * `pov`, `plot`, `location`, `plotpoint`, `act`, `warn`, `focus`), `value` (the item; omitted for warn and focus) and
  * `label` (its name).  Choosing a swatch, or the system colour dialog, pins
  * that colour; Reset takes the pin away.
  */

@@ -5,7 +5,8 @@
 // or a scene at the end; a scene row's own button adds one right after it.  Sorting happens here, on the client, and
 // is applied inside each chapter.  All text is put in with textContent.
 
-import { todoColor, colorOf, legendSwatch } from '../colors.js';
+import { todoColor } from '../colors.js';
+import { paint } from '../scheme.js';
 import { matches, isActive } from '../filters.js';
 import { el, startEdit, moveTo, sceneParent, addSceneButton, addChapterButton } from '../edit.js';
 import { hasPlotPoints } from './matrix.js';
@@ -28,7 +29,6 @@ function save(key, value) {
 
 const prefs = {
   columns: load('columns', DEFAULT_COLUMNS),
-  colour: load('colour', 'todo'),
   sort: load('sort', null),          // { key, dir } | null
 };
 
@@ -36,7 +36,6 @@ const prefs = {
 export function useProject(root) {
   STORE = `org-scribe.table:${root}`;
   prefs.columns = load('columns', DEFAULT_COLUMNS);
-  prefs.colour = load('colour', 'todo');
   prefs.sort = load('sort', null);
 }
 
@@ -72,12 +71,6 @@ function sorted(scenes) {
     if (x === y) return 0;
     return (x < y ? -1 : 1) * factor;
   });
-}
-
-/** The ID and name of a scene's PoV character, or null. */
-function povOf(scene) {
-  const pov = scene.fields.pov;
-  return pov && pov.links && pov.links.length ? pov.links[0] : null;
 }
 
 // ---- link picker -----------------------------------------------------------
@@ -282,9 +275,11 @@ function sceneRow(scene, columns, parentId, ctx) {
   if (scene.readOnly) row.classList.add('readonly');
   if (scene.id === ctx.focusId) row.classList.add('focus');
   if (isActive(ctx.filters) && !matches(scene, ctx.filters)) row.classList.add('dimmed');
-  const pov = povOf(scene);
-  const color = prefs.colour === 'pov' ? pov && colorOf('pov', pov.id) : todoColor(ctx.snapshot, scene.todo);
+  // the left edge is always the TODO state; the colour-by choice is the
+  // stripe beside it and the tint of the row (scheme.js)
+  const color = todoColor(ctx.snapshot, scene.todo);
   if (color) row.style.setProperty('--row', color);
+  paint(row, scene, ctx);
   row.append(titleCell(scene, parentId, ctx), stateCell(scene, ctx));
   for (const field of columns) row.append(fieldCell(scene, field, ctx));
   row.append(numberCell(scene.words, 'words', ctx.snapshot.language), numberCell(scene.objective, 'objective', ctx.snapshot.language));
@@ -395,41 +390,8 @@ function toolbar(fields, ctx) {
   chooser.open = toolbar.open === true;
   chooser.addEventListener('toggle', () => { toolbar.open = chooser.open; });
 
-  const colour = el('label', 'filter');
-  colour.append(el('span', '', ctx.t('companion-ui-colour-by')));
-  const select = el('select');
-  for (const [value, key] of [['todo', 'companion-ui-filter-todo'], ['pov', 'companion-ui-filter-pov']]) {
-    const option = el('option', '', ctx.t(key));
-    option.value = value;
-    select.append(option);
-  }
-  select.value = prefs.colour;
-  select.addEventListener('change', () => { prefs.colour = select.value; save('colour', prefs.colour); ctx.rerender(); });
-  colour.append(select);
-  bar.append(chooser, colour);
-  if (prefs.colour === 'pov') bar.append(povLegend(ctx));
+  bar.append(chooser);
   return bar;
-}
-
-/** The PoV characters of the scenes, each with a swatch that changes its colour. */
-function povLegend(ctx) {
-  const box = el('div', 'colour-legend');
-  box.append(el('strong', '', ctx.t('companion-ui-pov-legend')));
-  const seen = new Map();
-  for (const act of ctx.snapshot.acts) {
-    for (const chapter of act.chapters) {
-      for (const scene of chapter.scenes) {
-        const pov = povOf(scene);
-        if (pov && !seen.has(pov.id)) seen.set(pov.id, pov.name);
-      }
-    }
-  }
-  for (const [id, name] of seen) {
-    const item = el('span', 'rel-key');
-    item.append(legendSwatch({ kind: 'pov', value: id, label: name }, 'dot', ctx), document.createTextNode(name));
-    box.append(item);
-  }
-  return box;
 }
 
 export function render(container, ctx) {

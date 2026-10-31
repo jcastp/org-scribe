@@ -7,6 +7,7 @@
 // All text is put in with textContent.
 
 import { todoColor, textOn } from '../colors.js';
+import { paint } from '../scheme.js';
 import { matches, isActive } from '../filters.js';
 import { startEdit, moveTo, sceneParent, addSceneButton, addChapterButton } from '../edit.js';
 
@@ -117,6 +118,7 @@ function card(scene, ctx) {
   if (scene.id) node.dataset.id = scene.id;
   const color = todoColor(ctx.snapshot, scene.todo);
   if (color) node.style.setProperty('--todo', color);
+  paint(node, scene, ctx);
   if (scene.todo !== null && ctx.snapshot.todo.done.includes(scene.todo)) node.classList.add('done');
   if (isActive(ctx.filters) && !matches(scene, ctx.filters)) node.classList.add('dimmed');
   if (scene.readOnly) node.classList.add('readonly');

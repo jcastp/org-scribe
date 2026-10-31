@@ -601,11 +601,30 @@ answer carries the new chapter's `:id'."
           (append (org-scribe-companion-commands--finish root) (list :id new-id)))
       (dolist (marker (list parent after)) (when marker (set-marker marker nil))))))
 
+(defun org-scribe-companion-commands--known-color-id (root kind id)
+  "Non-nil when ID is the ID of a KIND item of the project at ROOT.
+KIND is a pin kind that holds an ID (`pov', `plot', `location', `plotpoint'
+or `act').  Hidden entities count: a colour may be pinned before the entity
+is shown again."
+  (let ((snapshot (org-scribe-companion--snapshot root)))
+    (if (eq kind 'act)
+        (cl-some (lambda (act) (equal (plist-get act :id) id))
+                 (append (plist-get snapshot :acts) nil))
+      (let ((entities (plist-get (plist-get snapshot :entities)
+                                 (pcase kind
+                                   ('pov :character)
+                                   ('plot :plot)
+                                   ('location :location)
+                                   ('plotpoint :plot-point)))))
+        (cl-some (lambda (entity) (equal (plist-get entity :id) id))
+                 (append entities nil))))))
+
 (defun org-scribe-companion-commands--set-color (root args)
   "Change the page's colours for the project at ROOT.  ARGS: `:kind', `:value', `:color'.
 KIND is `theme' (COLOR names the theme), `warn' or `focus', `role',
-`reltype' or `pov' (VALUE names the item; a PoV by character ID), or `all'
-\(remove every pinned colour).  COLOR is #rrggbb, or empty to remove the pin.
+`reltype' (VALUE names the item), `pov', `plot', `location', `plotpoint' or
+`act' (VALUE is the ID of a character, plot thread, location, plot point or
+act), or `all' (remove every pinned colour).  COLOR is #rrggbb, or empty to remove the pin.
 The choice is written to the project's marker file, so it is not one of
 the buffers' undo steps: the page offers a reset instead."
   (let* ((kind (org-scribe-companion-commands--arg-string args :kind))
@@ -624,17 +643,18 @@ the buffers' undo steps: the page offers a reset instead."
         (org-scribe-companion-colors-set-theme root theme)))
      ((equal kind "all")
       (org-scribe-companion-colors-clear-pins root))
-     ((memq symbol '(warn focus role reltype pov))
+     ((memq symbol (append '(warn focus role reltype) org-scribe-companion-colors--id-kinds))
       (when (and color (not (org-scribe-companion-colors-color-p color)))
         (org-scribe-companion-commands--fail "invalid" 'companion-error-invalid-color color))
       (unless (memq symbol '(warn focus))
         (when (or (null value) (string-empty-p value))
           (org-scribe-companion-commands--fail "invalid" 'companion-error-missing-arg "value"))
-        (when (and (eq symbol 'pov)
-                   (not (cl-some (lambda (character) (equal (plist-get character :id) value))
-                                 (plist-get (plist-get (org-scribe-companion--snapshot root) :entities)
-                                            :character))))
-          (org-scribe-companion-commands--fail "not-found" 'companion-error-not-a-character)))
+        (when (memq symbol org-scribe-companion-colors--id-kinds)
+          (unless (org-scribe-companion-commands--known-color-id root symbol value)
+            (org-scribe-companion-commands--fail
+             "not-found" (if (eq symbol 'pov)
+                             'companion-error-not-a-character
+                           'companion-error-unknown-item)))))
       (org-scribe-companion-colors-set-pin root symbol value color))
      (t (org-scribe-companion-commands--fail
          "invalid" 'companion-error-invalid-color-kind (or kind ""))))

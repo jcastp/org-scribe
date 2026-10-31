@@ -170,12 +170,12 @@ body.dragging-chapter .cards { display: none; }
 .sl-cell.gap { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--warn) 45%, transparent) 0 3px, transparent 3px 7px); }  /* hatched: not colour alone */
 .sl-toggle { all: unset; display: flex; align-items: center; justify-content: center; width: 100%; height: 1.6rem; cursor: pointer; }
 /* present: a line across the cell, so consecutive scenes join into one */
-.sl-toggle.present { background: linear-gradient(var(--accent), var(--accent)) center / 100% 0.35rem no-repeat; }
+.sl-toggle.present { background: linear-gradient(var(--mark, var(--accent)), var(--mark, var(--accent))) center / 100% 0.35rem no-repeat; }
 /* the PoV: a bullseye on the line; its inner ring takes the cell's colour, so
    the line does not show through.  A PoV not among the characters: a ring */
 .sl-toggle.pov .sl-mark { width: 1rem; height: 1rem; border-radius: 50%; box-sizing: border-box; }
-.sl-toggle.pov.present .sl-mark { background: radial-gradient(circle, var(--accent) 0 28%, var(--cell-bg) 30% 48%, var(--accent) 50%); }
-.sl-toggle.pov:not(.present) .sl-mark { background: var(--cell-bg); border: 2px solid var(--accent); }
+.sl-toggle.pov.present .sl-mark { background: radial-gradient(circle, var(--mark, var(--accent)) 0 28%, var(--cell-bg) 30% 48%, var(--mark, var(--accent)) 50%); }
+.sl-toggle.pov:not(.present) .sl-mark { background: var(--cell-bg); border: 2px solid var(--mark, var(--accent)); }
 .sl-toggle:disabled { cursor: default; opacity: 0.5; }
 .sl-toggle:focus-visible { outline: 2px solid var(--accent); }
 .sl-warning { margin-left: 0.4rem; color: var(--warn, #d9822b); }
@@ -295,3 +295,33 @@ body.dragging-chapter .cards { display: none; }
 .colours-cell { width: 1.1rem; height: 1.1rem; border-radius: 3px; display: inline-block; }
 .colours-ui, .colours-pinned { display: grid; gap: 0.4rem; justify-items: start; }
 .colours-row { display: flex; align-items: center; gap: 0.6rem; }
+
+/* colour by (scheme.js): --crit-edge is a gradient of one band per value, --crit-tint a light wash */
+.colour-by { white-space: nowrap; flex-direction: row; align-items: center; gap: 0.4rem; }
+#colour-by { display: contents; }
+#colour-by[hidden] { display: none; }
+.colour-legend-bar { padding: 0.4rem 1.2rem 0; }
+.colour-legend-bar[hidden] { display: none; }
+/* a card: the left border is made transparent and the band drawn under it */
+.card.crit, .tl-card.crit {
+  border-left-color: transparent;
+  background:
+    var(--crit-edge) left top / 6px 100% no-repeat border-box,
+    linear-gradient(var(--crit-tint), var(--crit-tint)) border-box,
+    var(--surface);
+}
+.tl-card.crit { border-left: 6px solid transparent; background:
+    var(--crit-edge) left top / 6px 100% no-repeat border-box,
+    linear-gradient(var(--crit-tint), var(--crit-tint)) border-box,
+    color-mix(in srgb, var(--accent) 6%, var(--bg)); }
+/* a table row keeps its TODO edge: the choice is a second stripe and the tint */
+.scene-row.crit td { background-image: linear-gradient(var(--crit-tint), var(--crit-tint)); }
+.scene-row.crit td:first-child {
+  background-image: var(--crit-edge), linear-gradient(var(--crit-tint), var(--crit-tint));
+  background-size: 6px 100%, auto;
+  background-repeat: no-repeat;
+  background-position: left top, 0 0;
+  padding-left: 0.9rem;
+}
+/* a storyline scene number: the band runs along the bottom */
+.sl-scene.crit { background: var(--crit-edge) left bottom / 100% 5px no-repeat; }

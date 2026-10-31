@@ -11,6 +11,7 @@
     <h1 id="project-title"></h1>
     <nav id="tabs" role="tablist"></nav>
     <div class="save-area">
+      <span id="colour-by" hidden></span>
       <button id="colors-button" type="button" aria-expanded="false" aria-controls="colors-panel" data-i18n="companion-ui-colors"></button>
       <span id="save-state" class="chip" role="status"></span>
       <button id="save-button" type="button" data-i18n="companion-ui-save"></button>
@@ -19,6 +20,7 @@
   <div id="banner" class="banner" role="alert" hidden data-i18n="companion-ui-connection-lost"></div>
   <div id="notice" class="banner notice" role="status" hidden></div>
   <section id="colors-panel" class="colours-panel" hidden></section>
+  <section id="colour-legend" class="colour-legend-bar" hidden></section>
   <section id="filters" class="filters" aria-label="filters"></section>
   <main id="view"></main>
   <script src="/static/vendor/Sortable.min.js"></script>

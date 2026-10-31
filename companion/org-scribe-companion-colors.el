@@ -20,7 +20,8 @@
 ;;   pin     `# Companion-color: KIND #rrggbb VALUE' lines fix one item's
 ;;           colour.  KIND is `role', `reltype' or `pov' (VALUE last, so a
 ;;           role with spaces needs no quoting; a PoV is keyed by the
-;;           character's ID so a rename keeps it), or `warn'/`focus' (no
+;;           character's ID so a rename keeps it; `plot', `location',
+;;           `plotpoint' and `act' likewise by ID), or `warn'/`focus' (no
 ;;           VALUE: the colour of the page's warnings and focus ring).
 ;;
 ;; A pin is a free colour (#rrggbb, one colour for light and dark) or a
@@ -81,7 +82,13 @@ both modes.")
 
 ;;; Reading the marker
 
-(defconst org-scribe-companion-colors--kinds '(warn focus role reltype pov)
+(defconst org-scribe-companion-colors--id-kinds '(pov plot location plotpoint act)
+  "The kinds whose VALUE is an entity or act ID, compared as written.
+They colour scenes: by PoV character, plot thread, location, plot point or
+act.  A rename keeps the colour because the pin holds the ID.")
+
+(defconst org-scribe-companion-colors--kinds
+  (append '(warn focus role reltype) org-scribe-companion-colors--id-kinds)
   "The kinds a `Companion-color' line can have.")
 
 (defun org-scribe-companion-colors-hex-p (string)
@@ -103,10 +110,11 @@ both modes.")
 
 (defun org-scribe-companion-colors--normalize (kind value)
   "Return the key VALUE has among the pins of KIND.
-A role or relationship type compares without case or edge spaces; a PoV is
-a character ID and is compared as written."
+A role or relationship type compares without case or edge spaces; the
+kinds of `org-scribe-companion-colors--id-kinds' hold an ID, compared as
+written."
   (let ((text (string-trim value)))
-    (if (eq kind 'pov) text (downcase text))))
+    (if (memq kind org-scribe-companion-colors--id-kinds) text (downcase text))))
 
 (defun org-scribe-companion-colors--parse-pin (line)
   "Return (KIND KEY COLOR TEXT) for the Companion-color LINE, or nil if unreadable.
@@ -287,10 +295,20 @@ pattern, node shape).  The result follows the order of KEYS."
 
 ;;; The snapshot's `colors'
 
-(defun org-scribe-companion-colors--values (entities)
-  "Return (ROLES RELTYPES POVS) for ENTITIES, the snapshot's entities plist.
-Each is the list of normalized values to colour, in the order slots are
-handed out: roles and types alphabetical, PoV in notebook order."
+(defun org-scribe-companion-colors--ids (entities kind)
+  "Return the IDs of the visible ENTITIES of KIND, in notebook order.
+KIND is a keyword of the snapshot's entities plist.  An entity hidden by a
+negative weight gets no colour, so it never takes a palette slot."
+  (cl-loop for entity across (or (plist-get entities kind) [])
+           for id = (plist-get entity :id)
+           when (and (stringp id) (not (eq (plist-get entity :hidden) t)))
+           collect id))
+
+(defun org-scribe-companion-colors--values (entities &optional acts)
+  "Return (ROLES RELTYPES POVS PLOTS LOCATIONS PLOTPOINTS ACTS) for ENTITIES.
+ENTITIES is the snapshot's entities plist, ACTS its list of acts.  Each is
+the list of normalized values to colour, in the order slots are handed out:
+roles and types alphabetical, the rest in notebook or manuscript order."
   (let* ((characters (append (plist-get entities :character) nil))
          (roles (cl-loop for character in characters
                          for role = (plist-get character :role)
@@ -308,21 +326,28 @@ handed out: roles and types alphabetical, PoV in notebook order."
                         when (stringp id) collect id)))
     (list (sort (delete-dups roles) #'string<)
           (sort (delete-dups types) #'string<)
-          (delete-dups povs))))
+          (delete-dups povs)
+          (org-scribe-companion-colors--ids entities :plot)
+          (org-scribe-companion-colors--ids entities :location)
+          (org-scribe-companion-colors--ids entities :plot-point)
+          (cl-loop for act in (append acts nil)
+                   for id = (plist-get act :id)
+                   when (stringp id) collect id))))
 
 (defun org-scribe-companion-colors--entries-plist (entries)
   "Return ENTRIES, an alist (KEY . PLIST), as a plist keyed by keywords."
   (cl-loop for (key . entry) in entries
            append (list (intern (concat ":" key)) entry)))
 
-(defun org-scribe-companion-colors-resolve (root entities)
+(defun org-scribe-companion-colors-resolve (root entities &optional acts)
   "Return the snapshot's `colors' plist for ROOT, whose entities are ENTITIES.
-Covers every role, relationship type and PoV character of the project, not
+ACTS is the snapshot's list of acts.  Covers every role, relationship type,
+PoV character, plot thread, location, plot point and act of the project, not
 only those on screen, so a filter never moves a colour."
   (let* ((theme (org-scribe-companion-colors-theme root))
          (pins (org-scribe-companion-colors-pins root))
          (light (org-scribe-companion-colors--theme-palette theme :light))
-         (values (org-scribe-companion-colors--values entities))
+         (values (org-scribe-companion-colors--values entities acts))
          (pinned-of (lambda (kind)
                       (cl-loop for pin in pins
                                when (eq (nth 0 pin) kind) collect (cons (nth 1 pin) (nth 2 pin)))))
@@ -358,6 +383,14 @@ only those on screen, so a filter never moves a colour."
                     (org-scribe-companion-colors-assign (nth 1 values) (funcall pinned-of 'reltype) light))
           :pov (org-scribe-companion-colors--entries-plist
                 (org-scribe-companion-colors-assign (nth 2 values) (funcall pinned-of 'pov) light))
+          :plot (org-scribe-companion-colors--entries-plist
+                 (org-scribe-companion-colors-assign (nth 3 values) (funcall pinned-of 'plot) light))
+          :location (org-scribe-companion-colors--entries-plist
+                     (org-scribe-companion-colors-assign (nth 4 values) (funcall pinned-of 'location) light))
+          :plotpoint (org-scribe-companion-colors--entries-plist
+                      (org-scribe-companion-colors-assign (nth 5 values) (funcall pinned-of 'plotpoint) light))
+          :act (org-scribe-companion-colors--entries-plist
+                (org-scribe-companion-colors-assign (nth 6 values) (funcall pinned-of 'act) light))
           :pins (vconcat (cl-loop for pin in pins
                                   collect (list :kind (symbol-name (nth 0 pin))
                                                 :value (or (nth 3 pin) :null)
