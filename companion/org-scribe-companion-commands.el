@@ -9,6 +9,8 @@
 ;;   move-node, set-title, set-todo,
 ;;   set-field, create-scene,
 ;;   create-chapter                     edit the manuscript
+;;   batch                              several set-todo / set-field as one
+;;                                      step, all or none (the table's bulk edits)
 ;;   undo                               undo the page's last change
 ;;   set-color                          the page's theme and pinned colours
 ;;                                      (written to .org-scribe-project)
@@ -62,6 +64,7 @@
     ("create-scene" . org-scribe-companion-commands--create-scene)
     ("create-chapter" . org-scribe-companion-commands--create-chapter)
     ("undo" . org-scribe-companion-commands--undo)
+    ("batch" . org-scribe-companion-commands--batch)
     ("set-color" . org-scribe-companion-commands--set-color)
     ("set-collection" . org-scribe-companion-collections-set)
     ("set-entity-property" . org-scribe-companion-entity--set-property)
@@ -618,6 +621,54 @@ answer carries the new chapter's `:id'."
           (org-scribe--refile-invalidate-cache)
           (append (org-scribe-companion-commands--finish root) (list :id new-id)))
       (dolist (marker (list parent after)) (when marker (set-marker marker nil))))))
+
+;;; batch
+
+(defconst org-scribe-companion-commands--batch-operations '("set-todo" "set-field")
+  "The operations a `batch' may hold: the table's bulk edits of scenes.")
+
+(defconst org-scribe-companion-commands--batch-limit 500
+  "The most operations one `batch' may hold.")
+
+(defun org-scribe-companion-commands--batch (root args)
+  "Run the operations in ARGS' `:ops' on ROOT's manuscript, all or none.
+`:ops' is a vector of (:op NAME :args PLIST), NAME one of
+`org-scribe-companion-commands--batch-operations'.  They run in order
+inside one change group: one undo step in Emacs and one on the page's
+undo stack, and the first refusal undoes the ones before it and is the
+batch's answer (its message names the operation's place).  Saving, when
+`org-scribe-companion-auto-save' is on, happens once, at the end.  The
+answer carries `:count'."
+  (let ((ops (append (org-scribe-companion-commands--arg args :ops) nil))
+        (buffer (org-scribe-companion-commands--manuscript-buffer root))
+        (index 0))
+    (unless ops
+      (org-scribe-companion-commands--fail "invalid" 'companion-error-missing-arg "ops"))
+    (when (> (length ops) org-scribe-companion-commands--batch-limit)
+      (org-scribe-companion-commands--fail
+       "invalid" 'companion-error-batch-too-long org-scribe-companion-commands--batch-limit))
+    ;; check the whole list before touching the buffer
+    (dolist (op ops)
+      (unless (and (listp op)
+                   (member (plist-get op :op) org-scribe-companion-commands--batch-operations))
+        (org-scribe-companion-commands--fail
+         "invalid" 'companion-error-batch-op (format "%s" (and (listp op) (plist-get op :op))))))
+    (org-scribe-companion-commands--with-edit buffer
+      ;; the operations' own steps are not recorded: the batch is one step
+      (let ((org-scribe-companion-undo--root nil)
+            (org-scribe-companion-auto-save nil))
+        (dolist (op ops)
+          (setq index (1+ index))
+          (condition-case err
+              (funcall (cdr (assoc (plist-get op :op) org-scribe-companion-commands--operations))
+                       root (plist-get op :args))
+            (org-scribe-companion-command-error
+             (signal 'org-scribe-companion-command-error
+                     (list (nth 1 err)
+                           (org-scribe-msg 'companion-error-batch-failed index (nth 2 err))
+                           (nth 3 err))))))))
+    (append (org-scribe-companion-commands--finish root)
+            (list :count (length ops)))))
 
 ;;; undo
 

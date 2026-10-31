@@ -147,6 +147,30 @@ while sorted).
 - A new scene takes the default name and the focus: press ~Enter~ (or ~F2~)
   to rename it.
 
+*Totals.* Each act and chapter row shows its scenes' word total and its own
+objective, with how far the total is from it (~-2,553~: still to write).
+A folded group keeps its totals, so folding everything gives a progress
+overview of the book.
+
+*Find.* The box next to *Columns* narrows the rows to scenes whose title or
+any text field (summary, Gap, Emotion, ...) contains what you type. It works
+together with the filters, and with *Hide the rest*.
+
+*Changing several scenes at once.* Tick the box at the start of a row. Shift+click
+another box to tick every row in between, and the box in the header ticks
+every scene shown. A bar then appears:
+
+- *Set state…* gives every selected scene that state.
+- Pick a link field and an item, then *Add* or *Remove*. Add puts the item
+  in that field of every selected scene (for the PoV, it replaces the PoV).
+  Remove takes it out of each scene that has it. Scenes that already have it
+  (or don't) are left alone.
+
+All the changes go to Emacs together and are one undo step: the page's
+*Undo* (or ~C-/~ in Emacs) takes the whole change back. If one scene cannot
+be changed, none are. The selection stays while you work, so you can set a
+state and add a thread in a row. *Clear selection* ends it.
+
 ** The Scene Detail Panel
 
 Every scene field at once, at the right of any tab. Open it by clicking a

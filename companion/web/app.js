@@ -309,6 +309,7 @@ function viewContext() {
     filters: state.filters,
     // hiding only means something while a filter is on
     hide: state.hide && isActive(state.filters),
+    hideSwitch: state.hide,  // the switch itself: the table's find box narrows too
     focusId: state.focusId,
     detailId: state.detailId,
     t,

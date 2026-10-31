@@ -1543,6 +1543,95 @@ the typing cannot, since undoing them would land at stale positions."
     (org-scribe-companion--stop)
     (should-not (org-scribe-companion-undo-top root))))
 
+;;; batch
+
+(defun test-companion-commands--todo-of (root title)
+  (plist-get (test-companion-commands--scene-data root title) :todo))
+
+(defun test-companion-commands--batch (root &rest ops)
+  "Run a batch of OPS, each (OP . ARGS-PLIST), as the page sends it."
+  (test-companion-commands--run
+   root "batch" :ops (vconcat (mapcar (lambda (op) (list :op (car op) :args (cdr op))) ops))))
+
+(ert-deftest test-companion-commands-batch-is-one-step-in-emacs-and-on-the-page ()
+  (test-companion-commands--with-undo-project root
+    (let ((original (test-companion-commands--text root "novel.org"))
+          (answer (test-companion-commands--batch
+                   root
+                   (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
+                   (list "set-todo" :id test-companion-commands--scene-2 :state "TODO")
+                   (list "set-field" :id test-companion-commands--scene-1 :key "characters"
+                         :links (vector test-companion-commands--sam)))))
+      (should (test-companion-commands--ok-p answer))
+      (should (= 3 (plist-get answer :count)))
+      (should (equal "TODO" (test-companion-commands--todo-of root "Scene 1 - The Alarm")))
+      (should (equal "TODO" (test-companion-commands--todo-of root "Scene 2 - Coffee Shop Encounter")))
+      ;; one page undo takes all three back
+      (should (test-companion-commands--ok-p (test-companion-commands--run root "undo")))
+      (should (equal original (test-companion-commands--text root "novel.org")))
+      (should-not (test-companion-commands--can-undo root)))))
+
+(ert-deftest test-companion-commands-batch-is-one-emacs-undo-step ()
+  (test-companion-commands--with-undo-project root
+    (let ((original (test-companion-commands--text root "novel.org")))
+      (test-companion-commands--batch
+       root
+       (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
+       (list "set-todo" :id test-companion-commands--scene-2 :state "TODO"))
+      (test-companion-commands--undo-once root)
+      (should (equal original (test-companion-commands--text root "novel.org"))))))
+
+(ert-deftest test-companion-commands-batch-is-all-or-nothing ()
+  (test-companion-commands--with-undo-project root
+    (let* ((original (test-companion-commands--text root "novel.org"))
+           (answer (test-companion-commands--batch
+                    root
+                    (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
+                    (list "set-todo" :id "no-such-id" :state "TODO"))))
+      (should (equal "not-found" (test-companion-commands--code answer)))
+      (should (string-match-p "\\`Change 2: .*Nothing was changed\\.\\'"
+                              (plist-get (plist-get answer :error) :message)))
+      (should (equal original (test-companion-commands--text root "novel.org")))
+      (should-not (org-scribe-companion-undo-top root)))))
+
+(ert-deftest test-companion-commands-batch-refusals ()
+  (test-companion-commands--with-undo-project root
+    (let ((original (test-companion-commands--text root "novel.org")))
+      (should (equal "invalid" (test-companion-commands--code
+                                (test-companion-commands--run root "batch" :ops []))))
+      (should (equal "invalid" (test-companion-commands--code
+                                (test-companion-commands--run root "batch"))))
+      ;; only scene edits: a move is refused before anything runs
+      (should (equal "invalid" (test-companion-commands--code
+                                (test-companion-commands--batch
+                                 root
+                                 (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
+                                 (list "move-node" :id test-companion-commands--scene-1)))))
+      (should (equal "invalid" (test-companion-commands--code
+                                (test-companion-commands--run
+                                 root "batch"
+                                 :ops (make-vector 501 '(:op "set-todo" :args (:id "x" :state "TODO")))))))
+      (should (equal original (test-companion-commands--text root "novel.org"))))))
+
+(ert-deftest test-companion-commands-batch-auto-saves-once-and-not-on-failure ()
+  (test-companion-commands--with-undo-project root
+    (let ((org-scribe-companion-auto-save t)
+          (on-disk (test-companion-commands--disk root "novel.org"))
+          (saves 0))
+      (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+        (add-hook 'after-save-hook (lambda () (cl-incf saves)) nil t))
+      (test-companion-commands--batch
+       root
+       (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
+       (list "set-todo" :id "no-such-id" :state "TODO"))
+      (should (= 0 saves))
+      (should (equal on-disk (test-companion-commands--disk root "novel.org")))
+      (test-companion-commands--batch
+       root
+       (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
+       (list "set-todo" :id test-companion-commands--scene-2 :state "TODO"))
+      (should (= 1 saves)))))
+
 ;;; The web files only use strings that exist
 
 (defconst test-companion-commands--web

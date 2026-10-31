@@ -164,6 +164,32 @@ recuerda). Haz clic en una cabecera para ordenar dentro de cada capítulo
 - Una escena nueva recibe el nombre por defecto y el foco: pulsa ~Enter~ (o
   ~F2~) para renombrarla.
 
+*Totales.* Cada fila de acto y de capítulo muestra el total de palabras de
+sus escenas y su propio objetivo, con la distancia entre ambos (~-2.553~: lo
+que falta por escribir). Un grupo plegado conserva sus totales, así que
+plegarlo todo da una vista del avance del libro.
+
+*Buscar.* El cuadro junto a *Columnas* reduce las filas a las escenas cuyo
+título o algún campo de texto (resumen, Gap, Emotion, ...) contiene lo que
+escribes. Funciona junto con los filtros y con *Ocultar el resto*.
+
+*Cambiar varias escenas a la vez.* Marca la casilla al principio de una fila.
+Mayúsculas+clic en otra casilla marca todas las filas intermedias, y la
+casilla de la cabecera marca todas las escenas mostradas. Aparece entonces una
+barra:
+
+- *Poner estado…* da ese estado a todas las escenas seleccionadas.
+- Elige un campo de enlace y un elemento, y luego *Añadir* o *Quitar*. Añadir
+  pone el elemento en ese campo de cada escena seleccionada (en el PoV,
+  sustituye el PoV). Quitar lo saca de cada escena que lo tenga. Las escenas
+  que ya lo tienen (o no lo tienen) no se tocan.
+
+Todos los cambios van juntos a Emacs y son un solo paso de deshacer: el
+*Deshacer* de la página (o ~C-/~ en Emacs) devuelve el cambio entero. Si una
+escena no se puede cambiar, no se cambia ninguna. La selección se mantiene
+mientras trabajas, así que puedes poner un estado y añadir un hilo seguidos.
+*Quitar la selección* la termina.
+
 ** El panel de detalles de la escena
 
 Todos los campos de una escena a la vez, a la derecha de cualquier pestaña.
