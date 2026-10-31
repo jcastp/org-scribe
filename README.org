@@ -1839,7 +1839,9 @@ A remark may follow after a comma (=Day 3, 14:00, in the cellar=); it must start
 
 ** Colours
 
-The *Colours* button opens a dialog with four themes (Default, Okabe-Ito colour-blind safe, High contrast, Muted), each with a light and a dark variant, plus per-item colours for roles, relationship types and PoV characters. Choices are stored in =.org-scribe-project= (=# Companion-theme:=, =# Companion-color:=), so they travel with the project; /Reset/ removes them. TODO-state colours remain configurable through =org-scribe-companion-todo-colors=.
+The *Colours* button opens a dialog with four themes (Default, Okabe-Ito colour-blind safe, High contrast, Muted), each with a light and a dark variant, plus per-item colours for roles, relationship types, PoV characters, plot threads, locations, plot points and acts. Choices are stored in =.org-scribe-project= (=# Companion-theme:=, =# Companion-color:=), so they travel with the project; /Reset/ removes them. TODO-state colours remain configurable through =org-scribe-companion-todo-colors=.
+
+The *Colour by* list in the header colours every scene on the Corkboard, Table, Storyline and Timeline by one property: state (the default), PoV, plot thread, location, plot point or act. The choice is shared by those four tabs and remembered per project; a legend lists the values in use, and a click on its swatch changes that value's colour. A scene with several values (two plot threads) gets one band per value, up to three, and a neutral tint. The Table keeps the state colour on its left edge and adds the chosen colour as a second stripe; the Storyline colours its marks (a plot-thread row takes that thread's colour). Hidden entities (negative =Weight=) get no colour.
 
 ** Browser Options
 

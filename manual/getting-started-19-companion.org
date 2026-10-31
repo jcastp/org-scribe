@@ -159,14 +159,14 @@ Each change is one undo step in Emacs and is not saved until you save.
 
 The *Colours* button opens a dialog: pick one of four themes (Default,
 Okabe-Ito for colour blindness, High contrast, Muted; each has a light and a
-dark variant) and, if you wish, a colour for a role, a relationship type or a
-PoV character. A swatch picks the theme's Nth colour; the free colour dialog
+dark variant) and, if you wish, a colour for a role, a relationship type, a PoV
+character, a plot thread, a location, a plot point or an act. A swatch picks the theme's Nth colour; the free colour dialog
 pins an exact colour and warns when its contrast is poor. Choices are written
 to ~.org-scribe-project~ so they travel with the project; *Reset* removes
 them. Warnings and the "scene in Emacs" highlight have their own colours.
 
-*Colour scenes by a property.* The *Colour by* list in the header (on the Corkboard, Table, Storyline and
-Timeline tabs) colours every scene by one property: its state (the default),
+*Colour scenes by a property.* The *Colour by* list in the header (on the
+Corkboard, Table, Storyline and Timeline tabs) colours every scene by one property: its state (the default),
 PoV, plot thread, location, plot point or act. The choice is shared by the four
 tabs and remembered per project, and a legend under the header lists the values
 in use; click a swatch there to change that value's colour.

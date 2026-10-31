@@ -176,7 +176,8 @@ Cada cambio es un paso de deshacer en Emacs y no se guarda hasta que guardes.
 El botón *Colores* abre un diálogo: elige uno de cuatro temas (Por defecto,
 Okabe-Ito apto para daltonismo, Alto contraste, Suave; cada uno tiene una
 variante clara y otra oscura) y, si quieres, un color para un papel, un tipo de
-relación o un personaje de PoV. Una muestra elige el N-ésimo color del tema; el
+relación, un personaje de PoV, un hilo de trama, una localización, un punto de
+trama o un acto. Una muestra elige el N-ésimo color del tema; el
 diálogo de color libre fija un color exacto y avisa cuando su contraste es
 pobre. Las elecciones se escriben en ~.org-scribe-project~ para que viajen con el
 proyecto; *Restablecer* las quita. Los avisos y el resaltado de «Escena en
