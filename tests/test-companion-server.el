@@ -156,6 +156,16 @@ HOST and ORIGIN override the defaults; BODY and CONTENT-TYPE make a request body
       (should (equal "The Morning Routine" (alist-get 'title (alist-get 'project parsed))))
       (should (= 3 (length (alist-get 'acts parsed)))))))
 
+(ert-deftest test-companion-server-health-on-demand ()
+  "GET /api/health answers the report, behind the token like every API path."
+  (test-companion-server--with-server root
+    (let* ((result (test-companion-server--get "/api/health"))
+           (parsed (json-parse-string (test-companion-server--body result) :object-type 'alist)))
+      (should (= 200 (car result)))
+      (should (eq t (alist-get 'ok parsed)))
+      (should (= 15 (alist-get 'scenes (alist-get 'overview (alist-get 'health parsed))))))
+    (should (= 403 (car (test-companion-server--get "/api/health" :token nil))))))
+
 (ert-deftest test-companion-server-token-in-the-query-also-works ()
   (test-companion-server--with-server root
     (let ((result (test-companion-server--get

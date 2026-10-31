@@ -144,10 +144,11 @@ A link is broken when its ID belongs to no entity of any registered type
 notices: the link still looks fine, relink has no name to refresh it to,
 and the health report credited the deleted character with its scenes.
 
-Each item is a plist (:heading H :scene-id ID :property P :name N
+Each item is a plist (:heading H :scene-id ID :property P :key K :name N
 :target TARGET-ID), where P is the property name as written in the
-scene.  Entity types whose getter failed are skipped rather than having
-every link reported as broken."
+scene and K its canonical key (such as `characters').  Entity types
+whose getter failed are skipped rather than having every link reported
+as broken."
   (let* ((prop-maps (org-scribe--entity-property-id-maps))
          (known (make-hash-table :test 'equal))
          (result nil))
@@ -171,6 +172,7 @@ every link reported as broken."
                     (push (list :heading (org-scribe--heading-text)
                                 :scene-id (org-entry-get nil "ID")
                                 :property (org-scribe-scene-property-name (car pm))
+                                :key (car pm)
                                 :name name
                                 :target target)
                           result))))))))))

@@ -433,3 +433,10 @@ export function render(container, ctx) {
   container.append(layout);
   show(pane, ctx);
 }
+
+/** Select the entity ID (another tab sends the writer to its form). */
+export function select(id) {
+  selected = id;
+  conflict = null;
+  creating = null;
+}

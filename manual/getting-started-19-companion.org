@@ -354,6 +354,35 @@ Press ~F8 S~ to see the same data from Emacs: the notation is a project
 setting, and the health report (~F8 H~) gains a *Story Time* section
 listing scenes with no time, unreadable values and jumps back in time.
 
+** The Health Tab
+
+The *Health* tab is the health report (~F8 H~) as a page. It is computed from
+the same data as the report in Emacs, so the two always agree, and it is
+read again whenever the project changes while the tab is open.
+
+The findings come first, each with a count, and each one takes you where it
+can be fixed:
+
+- *Scenes missing a field* (PoV, plot thread or location, in scenes not yet
+  finished): click a scene and its details panel opens with that field's
+  picker ready.
+- *Links to deleted entities*: *Show in Emacs* opens the scene; *Remove the
+  link* takes the dead link out of that field and leaves the rest as you
+  wrote it. Like every change on the page, Undo brings it back.
+- *Entities no scene links to*: click one to open its form in the Entities
+  tab.
+- *Plot points no scene serves*: click one to see its row in the storyline.
+- *Story time*: scenes with no time, or one that cannot be read; click a
+  scene to edit its Timeline in the details panel. Jumps back in time are
+  listed too, as information.
+- *Duplicate names*, when there are any.
+
+Below them, read only: the overview (scenes, words, objective, progress and
+any mismatch with the project's word target), the Starting Gate with its two
+measured items, the writing plan when the planner is loaded, and the numbers:
+scenes by state, words by PoV and chapter lengths. *Full report in Emacs*
+opens the report there.
+
 * Part 6: Saving, Undo, and Following
 
 - The page never saves your files unless you press *Save* (or set
@@ -367,8 +396,8 @@ listing scenes with no time, unreadable values and jumps back in time.
   The page's undo is itself one undo step in Emacs: ~C-/~ there brings the
   change back.
 - *Keyboard.* Press ~?~ (outside a text field), or the =?= button at the end
-  of the header, for the list of the page's shortcuts. ~1~ to ~7~ switch tabs
-  in the order they appear (a short story has six). Hover over a tab to see
+  of the header, for the list of the page's shortcuts. ~1~ to ~8~ switch tabs
+  in the order they appear (a short story has seven). Hover over a tab to see
   its key.
 - As you move point through the manuscript, the matching card or row is
   highlighted (~org-scribe-companion-follow~).

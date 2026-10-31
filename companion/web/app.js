@@ -16,6 +16,7 @@ import * as chapters from './views/chapters.js';
 import * as timeline from './views/timeline.js';
 import * as relations from './views/relations.js';
 import * as forms from './views/forms.js';
+import * as health from './views/health.js';
 import * as colours from './colors.js';
 import * as scheme from './scheme.js';
 import * as help from './help.js';
@@ -32,6 +33,7 @@ const VIEWS = [
   { id: 'timeline', label: 'companion-ui-view-timeline', module: timeline, colourBy: true },
   { id: 'relations', label: 'companion-ui-view-relations', module: relations, noFilters: true },
   { id: 'forms', label: 'companion-ui-view-forms', module: forms },
+  { id: 'health', label: 'companion-ui-view-health', module: health, noFilters: true },
 ];
 
 const state = {
@@ -93,6 +95,8 @@ async function command(op, args = {}, silent = []) {
 }
 
 const fetchEntity = (id) => request(`/api/entity?id=${encodeURIComponent(id)}`);
+
+const fetchHealth = () => request('/api/health');
 
 const goto = (id) => command('goto', { id });
 
@@ -339,17 +343,37 @@ function viewContext() {
     editStarted,
     editEnded,
     openDetail,
+    openEntity,
+    fetchHealth,
+    isShown: (id) => state.view === id,
   };
+}
+
+/** Show the entity ID's form in the Entities tab. */
+function openEntity(id) {
+  forms.select(id);
+  switchView('forms');
 }
 
 // ---- scene detail panel --------------------------------------------------
 
-/** Show the scene ID in the detail panel and put the focus in it. */
-function openDetail(id) {
+/**
+ * Show the scene ID in the detail panel and put the focus in it.  With
+ * FIELD (a scene field's key), the focus goes to that field instead, and a
+ * link field's picker opens (the Health tab's "missing PoV").
+ */
+function openDetail(id, field = null) {
   if (!id) return;
   state.detailId = id;
   followInEmacs(id);
   renderView();            // marks the scene in the view, and draws the panel
+  const spot = field && $('detail').querySelector(`[data-key="field-${CSS.escape(field)}"]`);
+  if (spot) {
+    spot.scrollIntoView({ block: 'nearest' });
+    spot.focus();
+    spot.click();             // a link field opens its picker, a text field its editor
+    return;
+  }
   const title = document.getElementById('detail-title');
   if (title) title.focus();
 }
@@ -492,6 +516,7 @@ async function refresh() {
     table.useProject(root);
     corkboard.useProject(root);
     scheme.useProject(root);
+    health.useProject(root);
     state.followPage = loadFollowPage(root);
     followSent = null;
   }

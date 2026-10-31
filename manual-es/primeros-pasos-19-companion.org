@@ -398,6 +398,37 @@ proyecto, y el informe de salud (~F8 H~) incorpora una sección *Tiempo de la hi
 que lista las escenas sin tiempo, los valores ilegibles y los saltos atrás en el
 tiempo.
 
+** La pestaña Salud
+
+La pestaña *Salud* es el informe de salud (~F8 H~) en forma de página. Se
+calcula con los mismos datos que el informe de Emacs, así que los dos siempre
+coinciden, y se vuelve a leer cada vez que el proyecto cambia con la pestaña
+abierta.
+
+Primero vienen los hallazgos, cada uno con su número, y cada uno te lleva
+adonde se puede arreglar:
+
+- *Escenas a las que les falta un campo* (PoV, hilo de trama o lugar, en
+  escenas aún sin terminar): haz clic en una escena y se abre su panel de
+  detalles con el selector de ese campo listo.
+- *Enlaces a entidades borradas*: *Mostrar en Emacs* abre la escena; *Quitar
+  el enlace* saca el enlace muerto de ese campo y deja el resto como lo
+  escribiste. Como cualquier cambio en la página, Deshacer lo recupera.
+- *Entidades que ninguna escena enlaza*: haz clic en una para abrir su ficha
+  en la pestaña Entidades.
+- *Puntos de trama que ninguna escena cubre*: haz clic en uno para ver su fila
+  en la línea argumental.
+- *Tiempo de la historia*: escenas sin tiempo, o con uno que no se puede leer;
+  haz clic en una escena para editar su Timeline en el panel de detalles. Los
+  saltos atrás en el tiempo también se listan, como información.
+- *Nombres repetidos*, cuando los hay.
+
+Debajo, de solo lectura: el resumen (escenas, palabras, objetivo, progreso y
+cualquier desajuste con el objetivo de palabras del proyecto), la Puerta de
+salida con sus dos elementos medidos, el plan de escritura cuando el
+planificador está cargado, y las cifras: escenas por estado, palabras por PoV
+y longitud de los capítulos. *Informe completo en Emacs* abre allí el informe.
+
 * Parte 6: Guardar, deshacer y seguir
 
 - La página nunca guarda tus archivos a menos que pulses *Guardar* (o fijes
@@ -411,8 +442,8 @@ tiempo.
   aplicaría en el sitio equivocado. El deshacer de la página es a su vez un
   paso de deshacer en Emacs: ~C-/~ allí recupera el cambio.
 - *Teclado.* Pulsa ~?~ (fuera de un campo de texto), o el botón =?= al final
-  de la cabecera, para ver la lista de atajos de la página. ~1~ a ~7~ cambian de
-  pestaña en el orden en que aparecen (un cuento tiene seis). Pasa el ratón
+  de la cabecera, para ver la lista de atajos de la página. ~1~ a ~8~ cambian de
+  pestaña en el orden en que aparecen (un cuento tiene siete). Pasa el ratón
   sobre una pestaña para ver su tecla.
 - A medida que mueves el cursor por el manuscrito, la tarjeta o fila
   correspondiente se resalta (~org-scribe-companion-follow~).
