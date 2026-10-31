@@ -284,8 +284,20 @@ desviarse del cuaderno.
 - Dos personajes relacionados en ambos sentidos con el mismo tipo comparten una
   sola línea simple; los tipos distintos se dibujan como dos flechas. Un destino
   que ya no es un personaje se dibuja como un nodo fantasma de trazo discontinuo.
-- La disposición no se guarda, y esta pestaña no tiene filtros de escena. Una
-  tabla bajo el grafo lista los mismos datos.
+- La disposición es automática. Arrastra un personaje a un sitio y se queda
+  ahí (un contorno discontinuo indica que está fijado), incluso al recargar.
+  Selecciona un personaje fijado para *Soltarlo*, o usa *Restablecer la
+  disposición* para olvidar todos los sitios que elegiste. Las posiciones
+  fijadas se guardan solo en este navegador; no se escribe nada en el
+  proyecto.
+- *Tipos* oculta las líneas de los tipos de relación que desmarques, lo que
+  ayuda cuando el reparto crece. *Mostrar* elige un personaje: el grafo dibuja
+  entonces ese personaje y sus relaciones directas, ampliado, con cada uno en
+  su sitio del grafo completo. Seleccionar un personaje ofrece también
+  *Mostrar solo a …*. Ambas elecciones se guardan en este navegador, como las
+  posiciones fijadas.
+- Esta pestaña no tiene filtros de escena. Una tabla bajo el grafo lista todas
+  las relaciones, sean cuales sean las elecciones de Tipos y Mostrar.
 
 Cada cambio es un paso de deshacer en Emacs y no se guarda hasta que guardes.
 

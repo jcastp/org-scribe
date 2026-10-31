@@ -296,6 +296,14 @@ body.dragging-chapter .cards { display: none; }
 .rel-node { cursor: pointer; }
 .rel-node .rel-shape { stroke: var(--surface); stroke-width: 2; }
 .rel-node.selected .rel-shape { stroke: var(--accent); stroke-width: 4; }
+.rel-node.pinned .rel-shape { stroke: var(--text); stroke-width: 1.5; stroke-dasharray: 3 2; }
+.rel-node.selected.pinned .rel-shape { stroke: var(--accent); stroke-width: 4; stroke-dasharray: none; }
+.rel-node.ego .rel-name { font-weight: 700; font-size: 13px; }
+.rel-show { flex-direction: row; align-items: center; gap: 0.4rem; }
+.rel-show select { max-width: 16rem; }
+.rel-types { position: relative; }
+.rel-types summary { cursor: pointer; padding: 0.3rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.rel-selected { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 .rel-node.ghost .rel-shape { fill: none; stroke: var(--muted); stroke-dasharray: 4 3; }
 .rel-node:focus-visible .rel-shape { stroke: var(--focus); stroke-width: 4; }
 .rel-name, .rel-label { text-anchor: middle; font-size: 12px; fill: var(--text); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }

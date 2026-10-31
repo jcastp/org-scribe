@@ -3,8 +3,12 @@
 // A relationship is directed (A to B is stored on A).  If A to B and B to A
 // have the same type they are drawn as one plain line; otherwise each is an
 // arrow.  The layout is automatic (a small force simulation, deterministic:
-// the same data gives the same picture) and positions are kept in memory only,
-// so an edit does not reshuffle the graph.  Click a character, then another,
+// the same data gives the same picture) and positions are kept in memory, so
+// an edit does not reshuffle the graph; a node dragged somewhere is pinned
+// there, kept per project in localStorage (view state: nothing is written to
+// the project).  The lines can be filtered by type, and the "Show" select
+// draws one character and their direct relations only (the ego view); both
+// are kept with the pins.  Click a character, then another,
 // to add a relationship; click a line to change or remove its entries; double-
 // click a character to open it in Emacs.  Node colour is the character's role,
 // size the number of scenes it is in.  A table under the graph holds the same
@@ -25,6 +29,46 @@ let panel = null;             // { kind: 'add', source, target } | { kind: 'pair
 let panelHeld = false;        // whether the app is holding re-renders for an open form
 const positions = new Map();  // ID -> { x, y }, kept across renders of one project
 let positionsRoot = null;
+let typesOpen = false;        // whether the Types chooser is open
+
+// What this browser keeps per project: pinned positions (in the graph's own
+// coordinates, so they do not depend on the window), the hidden types
+// (lower case: types ignore case) and the character of the ego view.
+let prefs = { pins: {}, hiddenTypes: [], ego: null };
+
+const storeKey = (root) => `org-scribe.relations:${root}`;
+
+function loadPrefs(root) {
+  prefs = { pins: {}, hiddenTypes: [], ego: null };
+  try {
+    const raw = JSON.parse(localStorage.getItem(storeKey(root)) || '{}') || {};
+    if (raw.pins && typeof raw.pins === 'object') {
+      for (const [id, point] of Object.entries(raw.pins)) {
+        if (point && Number.isFinite(point.x) && Number.isFinite(point.y)) {
+          prefs.pins[id] = { x: clampX(point.x), y: clampY(point.y) };
+        }
+      }
+    }
+    if (Array.isArray(raw.hiddenTypes)) {
+      prefs.hiddenTypes = raw.hiddenTypes.filter((type) => typeof type === 'string');
+    }
+    if (typeof raw.ego === 'string') prefs.ego = raw.ego;
+  } catch (error) { /* private mode or a damaged entry: start afresh */ }
+}
+
+function savePrefs() {
+  try { localStorage.setItem(storeKey(positionsRoot), JSON.stringify(prefs)); } catch (error) { /* private mode */ }
+}
+
+const clampX = (x) => Math.min(WIDTH - 20, Math.max(20, x));
+const clampY = (y) => Math.min(HEIGHT - 20, Math.max(20, y));
+const isPinned = (id) => Object.prototype.hasOwnProperty.call(prefs.pins, id);
+
+function setPrefs(change, ctx) {
+  Object.assign(prefs, change);
+  savePrefs();
+  ctx.rerender();
+}
 
 function svg(tag, attributes = {}, text) {
   const node = document.createElementNS(SVG, tag);
@@ -78,18 +122,36 @@ function buildModel(ctx) {
     }
   }
 
-  const entries = [];
-  const ghosts = new Map();
+  const allEntries = [];
+  const ghostNames = new Map();
   for (const entity of shown) {
     for (const rel of entity.relationships || []) {
-      if (!byId.has(rel.target)) ghosts.set(rel.target, rel.name || rel.target);
+      if (!byId.has(rel.target)) ghostNames.set(rel.target, rel.name || rel.target);
       else if (!shownIds.has(rel.target)) continue;
-      entries.push({ source: entity.id, target: rel.target, type: rel.type });
+      allEntries.push({ source: entity.id, target: rel.target, type: rel.type });
     }
+  }
+
+  // the types in use, one spelling each ("Rival" and "rival" are one type)
+  const types = [];
+  for (const entry of allEntries) {
+    if (!types.some((type) => type.toLowerCase() === entry.type.toLowerCase())) types.push(entry.type);
+  }
+  const hidden = new Set(prefs.hiddenTypes);
+  // the ego view, while its character is drawn at all
+  const ego = prefs.ego !== null && shownIds.has(prefs.ego) ? prefs.ego : null;
+  const entries = allEntries.filter((entry) => !hidden.has(entry.type.toLowerCase())
+    && (ego === null || entry.source === ego || entry.target === ego));
+  const ghosts = new Map();
+  for (const entry of entries) {
+    if (ghostNames.has(entry.target)) ghosts.set(entry.target, ghostNames.get(entry.target));
   }
 
   const linked = new Set();
   for (const entry of entries) { linked.add(entry.source); linked.add(entry.target); }
+  if (ego !== null) linked.add(ego);
+  const everLinked = new Set();
+  for (const entry of allEntries) { everLinked.add(entry.source); everLinked.add(entry.target); }
   const nodes = [
     ...shown.filter((entity) => linked.has(entity.id)).map((entity) => ({
       id: entity.id, name: entity.name, role: entity.role || '', ghost: false,
@@ -97,8 +159,10 @@ function buildModel(ctx) {
     })),
     ...[...ghosts].map(([id, name]) => ({ id, name, role: '', ghost: true, r: 12 })),
   ];
-  const alone = shown.filter((entity) => !linked.has(entity.id));
-  return { all, byId, shown, nodes, alone, entries, ghosts, hiddenNames, counts };
+  // the strip holds the characters with no relationship at all, not the ones
+  // a filter leaves out
+  const alone = shown.filter((entity) => !everLinked.has(entity.id));
+  return { all, byId, shown, nodes, alone, entries, allEntries, ghosts: ghostNames, hiddenNames, counts, types, ego };
 }
 
 /** Group the entries by pair into lines: a type both ways is one plain line. */
@@ -288,7 +352,7 @@ function pick(id, ctx) {
 }
 
 function typeChoices(ctx, model) {
-  const used = model.entries.map((entry) => entry.type);
+  const used = model.allEntries.map((entry) => entry.type);
   return [...new Set([...(ctx.snapshot.relationshipTypes || []), ...used])].filter(Boolean);
 }
 
@@ -342,7 +406,8 @@ function closeButton(ctx) {
 
 function pairPanel(model, ctx) {
   const box = el('section', 'rel-panel');
-  const mine = model.entries.filter((entry) =>
+  // every entry of the pair, also of a type the filter hides: this is where they are edited
+  const mine = model.allEntries.filter((entry) =>
     (entry.source === panel.a && entry.target === panel.b) || (entry.source === panel.b && entry.target === panel.a));
   box.append(el('h3', '', ctx.t('companion-ui-relations-from-to', nameOf(model, panel.a), nameOf(model, panel.b))));
   for (const entry of mine) {
@@ -379,6 +444,107 @@ function pairPanel(model, ctx) {
   });
   box.append(add, closeButton(ctx));
   return box;
+}
+
+// ---- the toolbar: ego view, types, layout ------------------------------------
+
+function egoSelect(model, ctx) {
+  const label = el('label', 'filter rel-show');
+  label.append(el('span', '', ctx.t('companion-ui-relations-show')));
+  const select = el('select');
+  const everyone = el('option', '', ctx.t('companion-ui-relations-everyone'));
+  everyone.value = '';
+  select.append(everyone);
+  for (const entity of model.shown) {
+    const option = el('option', '', ctx.t('companion-ui-relations-ego', entity.name));
+    option.value = entity.id;
+    select.append(option);
+  }
+  select.value = model.ego || '';
+  select.addEventListener('change', () => setPrefs({ ego: select.value || null }, ctx));
+  label.append(select);
+  return label;
+}
+
+// the Types chooser closes on a click anywhere else, or on Escape
+document.addEventListener('click', (event) => {
+  const box = document.querySelector('.rel-types[open]');
+  if (box && !box.contains(event.target)) box.open = false;
+});
+document.addEventListener('keydown', (event) => {
+  const box = document.querySelector('.rel-types[open]');
+  if (box && event.key === 'Escape') { box.open = false; box.querySelector('summary').focus(); }
+});
+
+function typesChooser(model, ctx) {
+  const box = el('details', 'rel-types');
+  box.open = typesOpen;
+  box.addEventListener('toggle', () => { typesOpen = box.open; });
+  const hidden = new Set(prefs.hiddenTypes);
+  const shownCount = model.types.filter((type) => !hidden.has(type.toLowerCase())).length;
+  box.append(el('summary', '', shownCount === model.types.length
+    ? ctx.t('companion-ui-relations-types-all')
+    : ctx.t('companion-ui-relations-types', shownCount, model.types.length)));
+  const list = el('div', 'columns-list rel-types-list');
+  for (const type of model.types) {
+    const item = el('label', 'switch');
+    const check = el('input');
+    check.type = 'checkbox';
+    check.checked = !hidden.has(type.toLowerCase());
+    check.addEventListener('change', () => {
+      const next = new Set(prefs.hiddenTypes);
+      if (check.checked) next.delete(type.toLowerCase()); else next.add(type.toLowerCase());
+      setPrefs({ hiddenTypes: [...next] }, ctx);
+    });
+    item.append(check, el('span', '', type));
+    list.append(item);
+  }
+  const all = el('button', '', ctx.t('companion-ui-relations-all-types'));
+  all.type = 'button';
+  all.disabled = !prefs.hiddenTypes.length;
+  all.addEventListener('click', () => setPrefs({ hiddenTypes: [] }, ctx));
+  list.append(all);
+  box.append(list);
+  if (!model.types.length) box.hidden = true;
+  return box;
+}
+
+function resetButton(ctx) {
+  const reset = el('button', '', ctx.t('companion-ui-relations-reset'));
+  reset.type = 'button';
+  reset.title = ctx.t('companion-ui-relations-reset-hint');
+  reset.addEventListener('click', () => {
+    positions.clear();
+    setPrefs({ pins: {} }, ctx);
+  });
+  return reset;
+}
+
+/** The line under the toolbar while a character is selected. */
+function selectedLine(model, ctx) {
+  const line = el('p', 'legend rel-selected');
+  const name = nameOf(model, selected);
+  line.append(document.createTextNode(ctx.t('companion-ui-relations-selected', name)));
+  if (model.ego !== selected) {
+    const only = el('button', '', ctx.t('companion-ui-relations-only', name));
+    only.type = 'button';
+    const id = selected;
+    only.addEventListener('click', () => { selected = null; setPrefs({ ego: id }, ctx); });
+    line.append(only);
+  }
+  if (isPinned(selected)) {
+    const unpin = el('button', '', ctx.t('companion-ui-relations-unpin', name));
+    unpin.type = 'button';
+    const id = selected;
+    unpin.addEventListener('click', () => {
+      const pins = { ...prefs.pins };
+      delete pins[id];
+      positions.delete(id);
+      setPrefs({ pins }, ctx);
+    });
+    line.append(unpin);
+  }
+  return line;
 }
 
 // ---- drawing -----------------------------------------------------------------
@@ -489,9 +655,13 @@ function drawGraph(model, links, ctx) {
     const group = svg('g', { class: 'rel-node', tabindex: 0, role: 'button', 'aria-label': node.name });
     if (node.ghost) group.classList.add('ghost');
     if (node.id === selected) group.classList.add('selected');
+    if (isPinned(node.id)) group.classList.add('pinned');
+    if (node.id === model.ego) group.classList.add('ego');
     const circle = svg('path', { class: 'rel-shape', d: shapePath(node.ghost ? 'circle' : shapeOf(node.role), node.r) });
     if (!node.ghost) circle.setAttribute('fill', roleColour(node.role));
-    const title = svg('title', {}, node.ghost ? ctx.t('companion-ui-relations-dangling') : (node.role ? `${node.name} (${node.role})` : node.name));
+    const named = node.role ? `${node.name} (${node.role})` : node.name;
+    const title = svg('title', {}, node.ghost ? ctx.t('companion-ui-relations-dangling')
+      : isPinned(node.id) ? ctx.t('companion-ui-relations-pinned', named) : named);
     const text = svg('text', { class: 'rel-name', y: node.r + 14 }, node.name);
     group.append(title, circle, text);
     nodeLayer.append(group);
@@ -511,16 +681,26 @@ function drawGraph(model, links, ctx) {
       point.x = event.clientX;
       point.y = event.clientY;
       const local = point.matrixTransform(root.getScreenCTM().inverse());
-      positions.set(node.id, {
-        x: Math.min(WIDTH - 20, Math.max(20, local.x)), y: Math.min(HEIGHT - 20, Math.max(20, local.y)),
-      });
+      positions.set(node.id, { x: clampX(local.x), y: clampY(local.y) });
       group.setAttribute('transform', `translate(${positions.get(node.id).x} ${positions.get(node.id).y})`);
       place();
     });
     group.addEventListener('pointerup', () => {
       const moved = drag && drag.moved;
       drag = null;
-      if (!moved && !node.ghost) pick(node.id, ctx);
+      if (moved) {
+        // dropped: pinned there, for this browser and project
+        const { x, y } = positions.get(node.id);
+        prefs.pins[node.id] = { x: Math.round(x), y: Math.round(y) };
+        positions.set(node.id, { ...prefs.pins[node.id] });
+        group.setAttribute('transform', `translate(${prefs.pins[node.id].x} ${prefs.pins[node.id].y})`);
+        place();
+        savePrefs();
+        group.classList.add('pinned');
+        title.textContent = ctx.t('companion-ui-relations-pinned', named);
+      } else if (!node.ghost) {
+        pick(node.id, ctx);
+      }
     });
     group.addEventListener('dblclick', () => { if (!node.ghost) ctx.goto(node.id); });
     group.addEventListener('keydown', (event) => {
@@ -531,7 +711,31 @@ function drawGraph(model, links, ctx) {
     group.setAttribute('transform', `translate(${positions.get(node.id).x} ${positions.get(node.id).y})`);
   }
   place();
+  if (model.ego !== null) root.setAttribute('viewBox', egoViewBox(model));
   return root;
+}
+
+/** The ego view keeps every node where it is in the whole graph (the picture
+ * stays recognisable), and zooms to the few nodes it shows: their box with a
+ * margin, widened to the graph's proportions, never larger than the graph. */
+function egoViewBox(model) {
+  const points = model.nodes.map((node) => positions.get(node.id)).filter(Boolean);
+  if (!points.length) return `0 0 ${WIDTH} ${HEIGHT}`;
+  const margin = 70;
+  let left = Math.min(...points.map((p) => p.x)) - margin;
+  let right = Math.max(...points.map((p) => p.x)) + margin;
+  let top = Math.min(...points.map((p) => p.y)) - margin;
+  let bottom = Math.max(...points.map((p) => p.y)) + margin;
+  let width = Math.max(right - left, WIDTH / 2);
+  let height = Math.max(bottom - top, HEIGHT / 2);
+  if (width / height > WIDTH / HEIGHT) height = width * (HEIGHT / WIDTH); else width = height * (WIDTH / HEIGHT);
+  width = Math.min(width, WIDTH);
+  height = Math.min(height, HEIGHT);
+  const cx = (left + right) / 2;
+  const cy = (top + bottom) / 2;
+  left = Math.min(Math.max(cx - width / 2, 0), WIDTH - width);
+  top = Math.min(Math.max(cy - height / 2, 0), HEIGHT - height);
+  return `${left.toFixed(1)} ${top.toFixed(1)} ${width.toFixed(1)} ${height.toFixed(1)}`;
 }
 
 function strip(model, ctx) {
@@ -569,7 +773,13 @@ function table(model, ctx) {
 export function render(container, ctx) {
   container.replaceChildren();
   const root = ctx.snapshot.project.root;
-  if (positionsRoot !== root) { positions.clear(); positionsRoot = root; selected = null; panel = null; }
+  if (positionsRoot !== root) {
+    positions.clear();
+    positionsRoot = root;
+    selected = null;
+    panel = null;
+    loadPrefs(root);
+  }
 
   const model = buildModel(ctx);
   if (!model.all.length) {
@@ -577,8 +787,12 @@ export function render(container, ctx) {
     return;
   }
   const links = buildLinks(model.entries);
-  const present = new Set(model.nodes.map((node) => node.id));
-  for (const id of [...positions.keys()]) if (!present.has(id)) positions.delete(id);
+  // a node a filter leaves out keeps its place for when it comes back; only
+  // characters that are gone lose theirs
+  for (const id of [...positions.keys()]) {
+    if (!model.byId.has(id) && !model.ghosts.has(id)) positions.delete(id);
+  }
+  for (const [id, point] of Object.entries(prefs.pins)) positions.set(id, { ...point });
   if (selected !== null && !model.byId.has(selected)) selected = null;
   const fixed = new Set(model.nodes.filter((node) => positions.has(node.id)).map((node) => node.id));
   if (fixed.size < model.nodes.length) layout(model.nodes, links, fixed);
@@ -590,10 +804,12 @@ export function render(container, ctx) {
   box.checked = showHidden;
   box.addEventListener('change', () => { showHidden = box.checked; ctx.rerender(); });
   label.append(box, el('span', '', ctx.t('companion-ui-show-hidden')));
-  tools.append(label, el('span', 'legend', ctx.t('companion-ui-relations-legend')));
+  tools.append(label, egoSelect(model, ctx), typesChooser(model, ctx), resetButton(ctx),
+               el('span', 'legend', ctx.t('companion-ui-relations-legend')));
   container.append(tools);
-  if (selected !== null) {
-    container.append(el('p', 'legend', ctx.t('companion-ui-relations-selected', nameOf(model, selected))));
+  if (selected !== null) container.append(selectedLine(model, ctx));
+  if (model.ego !== null && !model.entries.length) {
+    container.append(el('p', 'legend', ctx.t('companion-ui-relations-ego-none', nameOf(model, model.ego))));
   }
   if (model.hiddenNames.length) {
     container.append(el('p', 'legend', ctx.t('companion-ui-not-shown', model.hiddenNames.join(', '))));

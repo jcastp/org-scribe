@@ -255,8 +255,18 @@ from the data each time, so the graph cannot drift from the notebook.
 - Two characters related both ways with the same type share one plain line;
   different types are drawn as two arrows. A target that is no longer a
   character is drawn as a dashed ghost node.
-- Layout is not stored, and this tab has no scene filters. A table under the
-  graph lists the same data.
+- The layout is automatic. Drag a character somewhere and it stays there (a
+  dashed outline marks it as pinned), even after a reload. Select a pinned
+  character to *Unpin* it, or use *Reset layout* to forget every place you
+  chose. Pins are kept in this browser only; nothing is written to the
+  project.
+- *Types* hides the lines of the relationship types you untick, which helps
+  once the cast grows. *Show* picks one character: the graph then draws that
+  character and their direct relations only, zoomed in, with each one where
+  it is in the whole graph. Selecting a character also offers *Show only …*.
+  Both choices are kept in this browser, like the pins.
+- This tab has no scene filters. A table under the graph lists every
+  relationship, whatever the Types and Show choices.
 
 Each change is one undo step in Emacs and is not saved until you save.
 
