@@ -184,7 +184,8 @@ function previousId(node) {
 /** At a chapter's edge, Alt+Up/Down moves the scene to the neighbouring chapter:
  * the end of the one before, the start of the one after. */
 function moveToNeighbourChapter(node, down, ctx) {
-  const chapters = [...document.querySelectorAll('.chapter')];
+  const chapters = [...document.querySelectorAll('.chapter')]
+    .filter((chapter) => !(ctx.hide && chapter.classList.contains('filtered-out')));
   const next = chapters[chapters.indexOf(node.closest('.chapter')) + (down ? 1 : -1)];
   if (!next || !next.dataset.id) return;
   unfold(next);
@@ -197,9 +198,21 @@ function moveToNeighbourChapter(node, down, ctx) {
   moveTo(ctx, node.dataset.id, next.dataset.id, after);
 }
 
+/** The next (DOWN) or previous element beside NODE that is on screen: with
+ * "Hide the rest" on, cards and chapters the filters removed are skipped, or a
+ * move would swap with something the writer cannot see and seem to do nothing. */
+function visibleSibling(node, down, ctx) {
+  let sibling = down ? node.nextElementSibling : node.previousElementSibling;
+  while (sibling && ctx.hide
+         && (sibling.classList.contains('dimmed') || sibling.classList.contains('filtered-out'))) {
+    sibling = down ? sibling.nextElementSibling : sibling.previousElementSibling;
+  }
+  return sibling;
+}
+
 function keyboardMove(event, node, ctx) {
   const down = event.key === 'ArrowDown';
-  const sibling = down ? node.nextElementSibling : node.previousElementSibling;
+  const sibling = visibleSibling(node, down, ctx);
   if (!sibling) { moveToNeighbourChapter(node, down, ctx); return; }
   const anchor = down ? sibling : sibling.previousElementSibling;
   const chapter = node.closest('.chapter');
@@ -357,14 +370,15 @@ function makeSortable(cards, ctx) {
  * previous act or the start of the next one. */
 function keyboardMoveChapter(event, row, ctx) {
   const down = event.key === 'ArrowDown';
-  const sibling = down ? row.nextElementSibling : row.previousElementSibling;
+  const sibling = visibleSibling(row, down, ctx);
   if (sibling && sibling.classList.contains('chapter')) {
     const anchor = down ? sibling : sibling.previousElementSibling;
     const after = anchor && anchor.classList.contains('chapter') ? anchor.dataset.id || null : '';
     moveTo(ctx, row.dataset.id, row.closest('.act').dataset.id, after);
     return;
   }
-  const acts = [...document.querySelectorAll('.act')].filter((act) => act.dataset.id);
+  const acts = [...document.querySelectorAll('.act')]
+    .filter((act) => act.dataset.id && !(ctx.hide && act.classList.contains('filtered-out')));
   const next = acts[acts.indexOf(row.closest('.act')) + (down ? 1 : -1)];
   if (!next) return;
   unfold(next);
