@@ -323,15 +323,17 @@ The end of the buffer when there is none.  Point moves."
         (throw 'found (line-beginning-position))))
     (point-max)))
 
-(defun org-scribe-companion-commands--insertion-point (parent after)
+(defun org-scribe-companion-commands--insertion-point (parent after &optional last)
   "Return the position (a line start) where a new child of PARENT goes.
 PARENT and AFTER are markers or nil.  After AFTER's subtree when given;
-else first among PARENT's children (before the first child, or at the
-end of PARENT's subtree when it has none); with no PARENT either, before
-the first act."
+else, with LAST, at the end of PARENT's subtree (the page cannot name the
+final child when it has no ID); else first among PARENT's children (before
+the first child, or at the end of PARENT's subtree when it has none); with
+no PARENT either, before the first act."
   (save-excursion
     (cond
      (after (goto-char after) (org-scribe--end-of-subtree-position))
+     ((and last parent) (goto-char parent) (org-scribe--end-of-subtree-position))
      (parent (goto-char parent)
             (let ((start (point)))
               (outline-next-heading)
@@ -627,7 +629,8 @@ project language's."
 ;;; create-scene
 
 (defun org-scribe-companion-commands--create-scene (root args)
-  "Add a scene to a chapter.  ARGS: `:parent' (chapter ID), `:after', `:title'.
+  "Add a scene to a chapter.  ARGS: `:parent' (chapter ID), `:after', `:last'
+\(true: at the chapter's end, when `:after' is absent), `:title'.
 The text is the one `org-scribe-insert-scene' inserts.  The answer carries
 the new scene's `:id'."
   (require 'org-scribe-project)
@@ -657,7 +660,8 @@ the new scene's `:id'."
                                            (org-scribe--content-msg 'default-scene-name))))
           (org-scribe-companion-commands--with-edit buffer
             (let* ((default-directory root)
-                   (position (org-scribe-companion-commands--insertion-point parent after))
+                   (position (org-scribe-companion-commands--insertion-point
+                              parent after (org-scribe-companion-commands--arg args :last)))
                    (spot (copy-marker position)))
               (org-scribe-companion-commands--insert-at
                spot (org-scribe--scene-template title))
@@ -671,7 +675,8 @@ the new scene's `:id'."
 ;;; create-chapter
 
 (defun org-scribe-companion-commands--create-chapter (root args)
-  "Add an empty chapter to an act.  ARGS: `:parent' (act ID), `:after', `:title'.
+  "Add an empty chapter to an act.  ARGS: `:parent' (act ID), `:after', `:last'
+\(true: at the act's end, when `:after' is absent), `:title'.
 The text is `org-scribe--chapter-template' without a first scene.  The
 answer carries the new chapter's `:id'."
   (require 'org-scribe-project)
@@ -700,7 +705,8 @@ answer carries the new chapter's `:id'."
                                            (org-scribe--content-msg 'default-chapter-name))))
           (org-scribe-companion-commands--with-edit buffer
             (let* ((default-directory root)
-                   (position (org-scribe-companion-commands--insertion-point parent after))
+                   (position (org-scribe-companion-commands--insertion-point
+                              parent after (org-scribe-companion-commands--arg args :last)))
                    (spot (copy-marker position)))
               (org-scribe-companion-commands--insert-at
                spot (org-scribe--chapter-template title))

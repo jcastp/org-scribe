@@ -35,16 +35,21 @@ function save(key, value) {
   try { localStorage.setItem(`${STORE}.${key}`, JSON.stringify(value)); } catch (error) { /* private mode */ }
 }
 
+// storage is the user's to edit: a value of the wrong shape must not break the tab
+const validColumns = (value) => (Array.isArray(value) ? value : DEFAULT_COLUMNS);
+const validSort = (value) => (value && typeof value.key === 'string'
+  && (value.dir === 'asc' || value.dir === 'desc') ? value : null);
+
 const prefs = {
-  columns: load('columns', DEFAULT_COLUMNS),
-  sort: load('sort', null),          // { key, dir } | null
+  columns: validColumns(load('columns', DEFAULT_COLUMNS)),
+  sort: validSort(load('sort', null)),          // { key, dir } | null
 };
 
 /** Keep the preferences per project: the origin is shared by all of them. */
 export function useProject(root) {
   STORE = `org-scribe.table:${root}`;
-  prefs.columns = load('columns', DEFAULT_COLUMNS);
-  prefs.sort = load('sort', null);
+  prefs.columns = validColumns(load('columns', DEFAULT_COLUMNS));
+  prefs.sort = validSort(load('sort', null));
   selected.clear();
   lastTicked = null;
   find = '';

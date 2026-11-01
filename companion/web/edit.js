@@ -76,7 +76,11 @@ export function addSceneButton(parentId, scenes, ctx, before) {
     event.stopPropagation();
     if (before) before();
     const last = [...scenes].reverse().find((scene) => scene.id);
-    ctx.edit('create-scene', { parent: parentId, after: last ? last.id : null }, null, true);
+    // scenes after the last one with an ID (rare) are passed by "after": ask for the end
+    const trailing = scenes.length > 0 && scenes[scenes.length - 1] !== last;
+    ctx.edit('create-scene', trailing
+      ? { parent: parentId, last: true }
+      : { parent: parentId, after: last ? last.id : null }, null, true);
   });
   return add;
 }
@@ -90,10 +94,13 @@ export function addChapterButton(act, ctx, before) {
   add.addEventListener('click', (event) => {
     event.stopPropagation();
     const last = [...act.chapters].reverse().find((chapter) => chapter.id);
+    const trailing = act.chapters.length > 0 && act.chapters[act.chapters.length - 1] !== last;
     startEdit(add, '', false, (title) => {
       if (!title.trim()) return;
       if (before) before();
-      ctx.edit('create-chapter', { parent: act.id, after: last ? last.id : null, title }, null, true);
+      ctx.edit('create-chapter', trailing
+        ? { parent: act.id, last: true, title }
+        : { parent: act.id, after: last ? last.id : null, title }, null, true);
     }, ctx, label);
   });
   return add;

@@ -133,6 +133,17 @@ async function loadProgress() {
   if (state.view === 'progress') renderView();
 }
 
+// The figures are for one day, and the page only refetches when the project
+// changes: after midnight the chip would show yesterday's goal until then.
+setInterval(() => {
+  const plan = state.progress && state.progress.plan;
+  if (document.hidden || !plan || !plan.today) return;
+  if (plan.today !== new Date().toLocaleDateString('sv-SE')) {   // YYYY-MM-DD, local
+    state.progressRevision = null;
+    if (state.snapshot) loadProgress();
+  }
+}, 60000);
+
 /** "Today 350 / 800": shown while a plan is running. */
 function renderChip() {
   const chip = $('progress-chip');

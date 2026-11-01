@@ -63,9 +63,12 @@ const prefs = {
 };
 
 function loadPrefs() {
-  prefs.fields = load('fields', DEFAULT_FIELDS);
+  // storage is the user's to edit: a value of the wrong shape must not break the tab
+  const fields = load('fields', DEFAULT_FIELDS);
+  const folded = load('folded', []);
+  prefs.fields = Array.isArray(fields) ? fields : DEFAULT_FIELDS;
   prefs.compact = load('compact', false) === true;
-  prefs.folded = new Set(load('folded', []));
+  prefs.folded = new Set(Array.isArray(folded) ? folded : []);
 }
 loadPrefs();
 
@@ -75,9 +78,11 @@ export function useProject(root) {
   loadPrefs();
 }
 
-/** The key a fold is kept under: the heading's ID, or its place when it has none. */
+/** The key a fold is kept under: the heading's ID, or its place and title when
+ * it has none (the place alone moved the fold to another chapter when one
+ * before it moved). */
 function groupKey(node, place) {
-  return node.id || place;
+  return node.id || `${place}:${node.title || ''}`;
 }
 
 let refocus = null;           // the fold button to focus again after a redraw

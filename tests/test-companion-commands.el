@@ -959,6 +959,20 @@
     (should (equal '("Scene 1 - Eleven Minutes" "Scene 2 - Full Circle" "Epilogue")
                    (test-companion-commands--chapter-scenes root "Chapter 8 - The New Normal")))))
 
+(ert-deftest test-companion-commands-create-scene-last-goes-to-the-chapters-end ()
+  "`:last' is for a chapter whose final scene the page cannot name (no ID)."
+  (test-companion-commands--with-project root
+    (test-companion-commands--run
+     root "create-scene" :parent (test-companion-commands--id root "Chapter 1 - Three Alarms")
+     :last t :title "At the end")
+    (should (equal '("Scene 1 - The Alarm" "Scene 2 - Coffee Shop Encounter" "At the end")
+                   (test-companion-commands--chapter-scenes root "Chapter 1 - Three Alarms")))
+    (test-companion-commands--run
+     root "create-chapter" :parent (test-companion-commands--id root "Act I")
+     :last t :title "Closing chapter")
+    (should (equal "Closing chapter"
+                   (car (car (last (cdr (assoc "Act I" (test-companion-commands--order root))))))))))
+
 (ert-deftest test-companion-commands-create-scene-default-title-and-one-undo ()
   (test-companion-commands--with-project root
     (let ((original (test-companion-commands--text root "novel.org")))
