@@ -23,7 +23,6 @@ function groups(tabCount) {
     ] },
     { title: 'companion-ui-help-editing', rows: [
       [['companion-ui-key-enter'], 'companion-ui-help-save'],
-      [['companion-ui-key-shift-enter'], 'companion-ui-help-newline'],
       [['companion-ui-key-escape'], 'companion-ui-help-cancel'],
     ] },
     { title: 'companion-ui-help-mouse', rows: [

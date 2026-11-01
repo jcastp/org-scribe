@@ -31,9 +31,20 @@ export function startEdit(node, initial, multiline, commit, ctx, placeholder) {
     ctx.editEnded();
     if (save && editor.value !== initial) commit(editor.value);
   };
+  // A scene's fields are one line each (Emacs flattens a newline to a space).
+  // The box wraps long text, but it takes no new line: Enter saves, and a
+  // pasted line break becomes a space here, where the writer sees it.
+  if (multiline) {
+    editor.addEventListener('input', () => {
+      if (!/[\r\n]/.test(editor.value)) return;
+      const at = editor.selectionStart;
+      editor.value = editor.value.replace(/\s*[\r\n]+\s*/g, ' ');
+      editor.setSelectionRange(at, at);
+    });
+  }
   editor.addEventListener('keydown', (event) => {
     event.stopPropagation();
-    if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); finish(true); }
+    if (event.key === 'Enter') { event.preventDefault(); finish(true); }
     if (event.key === 'Escape') { event.preventDefault(); finish(false); }
   });
   editor.addEventListener('blur', () => finish(true));
