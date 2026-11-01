@@ -17,7 +17,14 @@ let store = KEY;
 let prefs = { group: 'category', show: 'all' };
 let loaded = null;     // { revision, markers } or { revision, error }
 let fetching = null;
+let fetchedAt = 0;     // when the last fetch began
+let pause = null;      // the timer that fetches after the pause below
 let forced = false;    // Refresh: fetch even for the same revision
+
+// Every keystroke in Emacs moves the revision, and the index reads every .org
+// file: while the writer types, the old list stays and the new one is fetched
+// at most this often.  Refresh and the page's own changes fetch at once.
+const MIN_GAP_MS = 8000;
 
 function readPrefs() {
   try {
@@ -41,6 +48,8 @@ export function useProject(root) {
   prefs = readPrefs();
   loaded = null;
   fetching = null;
+  fetchedAt = 0;
+  clearTimeout(pause);
 }
 
 function button(text, className, onClick, title) {
@@ -173,7 +182,15 @@ export function render(container, ctx) {
   else if (fresh && loaded.error) container.replaceChildren(el('p', 'empty', ctx.t('companion-ui-edits-failed')));
   else container.replaceChildren(el('p', 'empty', ctx.t('companion-ui-health-loading')));
   if (fresh || fetching === revision) return;
+  const wait = fetchedAt + MIN_GAP_MS - Date.now();
+  if (!forced && loaded && loaded.markers && wait > 0 && !ctx.recentEdit()) {
+    clearTimeout(pause);
+    pause = setTimeout(() => { if (container.isConnected && ctx.isShown('edits')) ctx.rerender(); }, wait);
+    return;
+  }
+  clearTimeout(pause);
   forced = false;
+  fetchedAt = Date.now();
   fetching = revision;
   ctx.fetchEdits()
     .then((answer) => { loaded = { revision, markers: answer.markers }; })

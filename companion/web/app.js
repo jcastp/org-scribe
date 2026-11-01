@@ -156,6 +156,8 @@ function renderChip() {
  * shown (unless its code is in SILENT) and the board is drawn again from the
  * last snapshot (the rollback).  Returns the answer.
  */
+let lastEditAt = 0;      // when the page last changed something (see recentEdit)
+
 async function edit(op, args, focus = null, focusNew = false, silent = []) {
   let answer;
   try {
@@ -164,7 +166,7 @@ async function edit(op, args, focus = null, focusNew = false, silent = []) {
     answer = { ok: false };
     showNotice(t('companion-ui-connection-lost'));
   }
-  if (answer.ok) state.pendingFocus = focusNew ? answer.id : focus;
+  if (answer.ok) { state.pendingFocus = focusNew ? answer.id : focus; lastEditAt = Date.now(); }
   await refresh().catch(() => {});
   if (!answer.ok) renderView();
   return answer;
@@ -398,6 +400,9 @@ function viewContext() {
     fetchEdits,
     gotoMarker,
     isShown: (id) => state.view === id,
+    // true just after the page's own change: the tabs that read a costly
+    // report from Emacs (Health, Edits) then refetch at once, not on their pause
+    recentEdit: () => Date.now() - lastEditAt < 4000,
     progress: () => state.progress,
   };
 }
@@ -590,6 +595,11 @@ function focusCard(id) {
   target.scrollIntoView({ block: 'center', behavior: 'smooth' });
 }
 
+let staleWhileHidden = false;
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && staleWhileHidden) { staleWhileHidden = false; refresh().catch(() => {}); }
+});
+
 function connect() {
   const events = new EventSource(`/api/events?t=${encodeURIComponent(token)}`);
   events.addEventListener('open', () => {
@@ -598,7 +608,11 @@ function connect() {
   });
   events.addEventListener('changed', (event) => {
     const { revision } = JSON.parse(event.data);
-    if (!state.snapshot || revision !== state.snapshot.revision) refresh().catch(() => {});
+    if (state.snapshot && revision === state.snapshot.revision) return;
+    // a hidden page (another tab, a minimised window) has nobody to draw for:
+    // Emacs builds the project while the writer waits, so do it on return
+    if (document.hidden) { staleWhileHidden = true; return; }
+    refresh().catch(() => {});
   });
   events.addEventListener('focus', (event) => {
     const { id } = JSON.parse(event.data);

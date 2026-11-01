@@ -14,6 +14,14 @@
 
 let loaded = null;     // { revision, data } or { revision, error }
 let fetching = null;   // the revision being fetched
+let fetchedAt = 0;     // when the last fetch began
+let pause = null;      // the timer that fetches after the pause below
+
+// The report costs Emacs a scan of both files (about 2 s in a long book) and
+// every keystroke in Emacs moves the revision: while the writer types, the
+// old report stays and the new one is fetched at most this often.  The page's
+// own changes (removing a link) refetch at once.
+const MIN_GAP_MS = 8000;
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -333,6 +341,14 @@ export function render(container, ctx) {
   if (loaded && loaded.data) draw(container, loaded.data, ctx);
   else container.replaceChildren(el('p', 'empty', ctx.t('companion-ui-health-loading')));
   if (fetching === revision) return;
+  const wait = fetchedAt + MIN_GAP_MS - Date.now();
+  if (loaded && loaded.data && wait > 0 && !ctx.recentEdit()) {
+    clearTimeout(pause);
+    pause = setTimeout(() => { if (container.isConnected && ctx.isShown('health')) ctx.rerender(); }, wait);
+    return;
+  }
+  clearTimeout(pause);
+  fetchedAt = Date.now();
   fetching = revision;
   ctx.fetchHealth()
     .then((answer) => { loaded = { revision, data: answer.health }; })
@@ -345,4 +361,4 @@ export function render(container, ctx) {
 }
 
 /** Forget the report (another project). */
-export function useProject() { loaded = null; fetching = null; }
+export function useProject() { loaded = null; fetching = null; fetchedAt = 0; clearTimeout(pause); }
