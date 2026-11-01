@@ -20,7 +20,14 @@ export function startEdit(node, initial, multiline, commit, ctx, placeholder) {
   const finish = (save) => {
     if (finished) return;
     finished = true;
+    // Enter or Escape: the focus goes back to what was edited, or a keyboard
+    // user is back at the top of the page.  A blur means it went elsewhere.
+    const hadFocus = document.activeElement === editor;
     editor.replaceWith(node);
+    if (hadFocus) {
+      if (node.tabIndex < 0 && !node.matches('button, a, input, select, textarea')) node.tabIndex = -1;
+      node.focus({ preventScroll: true });
+    }
     ctx.editEnded();
     if (save && editor.value !== initial) commit(editor.value);
   };
