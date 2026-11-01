@@ -239,7 +239,7 @@ The calendar has its own keys:
 
 The status reads /On track/, or /Ahead: +2000 words (+20.0%, +2.0 writing days)/, or /Behind: -500 words (-5.0%, -0.5 writing days)/. Two rules make it fair:
 
-- *Today isn't due until it's over.* The planner compares the goals through /yesterday/ with everything you've written, /today included/: your morning never starts behind, and today's words can only help.
+- *Today's goal counts.* The planner compares where you should be by the end of /today/ with everything you've written, /today included/: before you write, you are behind by today's goal, and each word you add closes the gap. ~c~ (Check progress) alone looks only at the days that are over, so it doesn't offer to adjust the plan every morning.
 - *Writing days are measured along your own schedule*, day by day — a valley pattern's heavy days count as such.
 
 It appears in the calendar summary and after every sync. ~F8 W c~ (Check progress) tells you the same, and when you're ahead or behind offers to adjust (see [[*Step 5: Adjust from Your Progress][Step 5]]).
@@ -254,7 +254,7 @@ It appears in the calendar summary and after every sync. ~F8 W c~ (Check progres
 |    2 | 11-02 – 11-08 | 4/5          |    2 |       1400 |      7000 | 5200 ~ 74% |          7000 |         5200 | -1800 |
 #+END_EXAMPLE
 
-The current week is measured through yesterday, like the status.
+The current week is measured through yesterday; the status counts today's goal too.
 
 ~F8 W M~ (or ~M~) opens the /month grid/: a calendar per month where each day shows its goal, its result (✓, ✓1500 when over, ~800 partial, ✗ missed) and the share of the whole goal written by then. Today is in brackets, with its words so far:
 
@@ -445,7 +445,7 @@ The main properties:
 | ~DAILY_WORD_COUNTS~     | The record: the total written by the end of each day                 |
 | ~SPARE_DAYS~            | Days off                                                             |
 
-Others appear when you use the features they belong to: ~LOCKED_GOALS~ (past days' goals), ~SCHEDULE_ADJUSTMENT~ (set by an adjustment from progress), ~PATTERN~ and ~PATTERN_CONFIG~, ~WEEKEND_MODE~, ~WEEKEND_DAYS~ and ~WEEKEND_DAILY~, ~CUSTOM_GOALS~ (day goals), ~OUTSIDE_WORDS~ and ~OUTSIDE_FILES~ (words written elsewhere).
+Others appear when you use the features they belong to: ~LOCKED_GOALS~ (past days' goals), ~SCHEDULE_ADJUSTMENT~ and ~REBASED_FROM~ (set by an adjustment from progress: how far the plan moved, and from which day), ~PATTERN~ and ~PATTERN_CONFIG~, ~WEEKEND_MODE~, ~WEEKEND_DAYS~ and ~WEEKEND_DAILY~, ~CUSTOM_GOALS~ (day goals), ~OUTSIDE_WORDS~ and ~OUTSIDE_FILES~ (words written elsewhere).
 
 Prefer the planner's commands to editing the properties by hand: the commands keep them consistent. The Notes column is the exception — type there freely.
 
@@ -521,7 +521,7 @@ Let's do a complete plan-write-review cycle.
 6. *Check* — ~F8 W c~. Ahead? Try the /finish early/ preview, and press ~C-g~ to leave the plan as it is.
 7. *Look around* — ~F8 W M~ for the month grid, ~F8 W D~ for the dashboards.
 
-Come back tomorrow: yesterday's goal is now locked, and today's status measures you through yesterday.
+Come back tomorrow: yesterday's goal is now locked, and today's status measures you against where you should be by the end of today.
 
 * Common Questions
 

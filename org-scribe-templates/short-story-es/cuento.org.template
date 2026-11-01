@@ -3,7 +3,7 @@
 #+DATE: ${DATE}
 #+LANGUAGE: es
 #+STARTUP: overview
-#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
+#+TODO: TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
 #+COLUMNS: %40ITEM(Sección) %12WORDCOUNT %12PoV %30Personajes %20Trama %40Resumen %40Comentario
 #+MACRO: scene-break SCENE-BREAK
 #+OPTIONS: todo:nil tags:nil
@@ -66,7 +66,7 @@ Actualiza con =C-c C-c= en la línea #+BEGIN.
 :WORD-OBJECTIVE: ${TOTAL_WORDS}
 :END:
 
-** TODO Escena 1 :ignore:
+** TOWRITE Escena 1 :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
 :PoV:

@@ -232,6 +232,11 @@ or nil if no project is active.")
   ;; Words added to the open days by a recalculation from progress, so they
   ;; cover what is actually left (negative when ahead) (SCHEDULE_ADJUSTMENT)
   (schedule-adjustment 0 :type number)
+  ;; The first day of the last recalculation from progress (REBASED_FROM):
+  ;; the plan before it is measured as it stood, without the adjustment,
+  ;; and from the end of the day before it on the recalculated plan.  Nil
+  ;; when the plan was never rebased (see `org-scribe-planner--rebase-date')
+  (rebased-from nil :type (or null string))
   ;; Writing pattern (PATTERN, PATTERN_CONFIG): a symbol from
   ;; `org-scribe-planner--patterns', and a plist of its settings
   (pattern 'flat)
@@ -1056,23 +1061,80 @@ The result is memoised on the engine's own result."
           (setq org-scribe-planner--schedule-cache (cons engine result))
           result)))))
 
+;;; Before and after a recalculation from progress
+;;
+;; A recalculation from progress (`org-scribe-planner--rebase-on-progress')
+;; points the open days at the words really left by shifting the whole
+;; schedule by the schedule adjustment.  That shift is right from the
+;; recalculation on, and wrong before it: the days before were planned
+;; without it.  The plan therefore has two halves:
+;;   - days before the rebase date: as they stood, :cumulative plus the
+;;     adjustment (pre-existing words plus the goals so far);
+;;   - from the rebase date on: :cumulative.
+;; At the end of the day before the rebase date the plan steps from one to
+;; the other: the words written above (or below) the plan when it was
+;; recalculated.  Only the last recalculation shows a step; earlier ones
+;; are folded into the locked goals.
+
+(defun org-scribe-planner--inferred-rebase-date (plan)
+  "Guess the rebase date of a PLAN saved before REBASED_FROM existed.
+The day after its last locked day, or its start date when nothing is
+locked.  Nil when PLAN has no schedule adjustment."
+  (unless (zerop (or (org-scribe-plan-schedule-adjustment plan) 0))
+    (let ((last-locked (car (last (sort (mapcar #'car (org-scribe-plan-locked-goals plan))
+                                        #'string<)))))
+      (if last-locked
+          (org-scribe-planner--add-days last-locked 1)
+        (org-scribe-plan-start-date plan)))))
+
+(defun org-scribe-planner--rebase-date (plan)
+  "Return the first day of PLAN's last recalculation from progress, or nil.
+Nil when PLAN has no schedule adjustment: nothing to measure apart.  A
+plan without a recorded date (REBASED_FROM) gets
+`org-scribe-planner--inferred-rebase-date'."
+  (unless (zerop (or (org-scribe-plan-schedule-adjustment plan) 0))
+    (or (org-scribe-plan-rebased-from plan)
+        (org-scribe-planner--inferred-rebase-date plan))))
+
+(defun org-scribe-planner--before-rebase-p (plan date)
+  "Return non-nil when DATE comes before PLAN's last rebase date."
+  (when-let* ((rebased (org-scribe-planner--rebase-date plan)))
+    (string< date rebased)))
+
 (defun org-scribe-planner--planned-total (plan day)
   "Return where PLAN's manuscript should stand at the end of DAY, as planned.
-DAY is a plist from `org-scribe-planner--generate-day-schedule'.  From
-today on that is its :cumulative.  A past day is measured against the plan
-as it stood, without the schedule adjustment of a later recalculation from
-progress, as a finished week is in `org-scribe-planner--weekly-summary':
-with it, the first days of a rebased plan read a negative total."
-  (if (string< (plist-get day :date) (org-scribe-planner--get-today-date))
+DAY is a plist from `org-scribe-planner--generate-day-schedule'.  A day
+before the last recalculation from progress is the plan as it stood,
+without the schedule adjustment; from the recalculation on it is the
+rebased :cumulative.  With the adjustment on every day, the first days of
+a rebased plan read a negative total (behind), or one already above the
+words due (ahead).  This is the per-day figure of the plan table, the
+calendar and the charts; where the plan stands is
+`org-scribe-planner--expected-through'."
+  (if (org-scribe-planner--before-rebase-p plan (plist-get day :date))
       (+ (plist-get day :cumulative)
          (or (org-scribe-plan-schedule-adjustment plan) 0))
     (plist-get day :cumulative)))
 
-(defun org-scribe-planner--expected-through (plan date)
-  "Return where PLAN's manuscript should stand at the end of DATE.
-That is the :cumulative of the last plan day on or before DATE, or the
-plan's starting point (pre-existing words, minus the schedule adjustment)
-when DATE is before the plan."
+(defun org-scribe-planner--rebase-step (plan)
+  "Return PLAN's step at its last recalculation, or nil when there is none.
+A plist: :date, the rebase date; :from, where the plan stood at the end
+of the day before (as it stood); :to, where the recalculated plan starts
+from.  Nil without an adjustment or when the date falls after the plan."
+  (when-let* ((rebased (org-scribe-planner--rebase-date plan)))
+    (let ((end (org-scribe-plan-end-date plan))
+          (before (org-scribe-planner--add-days rebased -1)))
+      (unless (and end (string< end rebased))
+        (let ((to (org-scribe-planner--rebased-through plan before)))
+          (list :date rebased
+                :from (+ to (or (org-scribe-plan-schedule-adjustment plan) 0))
+                :to to))))))
+
+(defun org-scribe-planner--rebased-through (plan date)
+  "Return where PLAN's manuscript should stand at the end of DATE, rebased.
+The :cumulative of the last plan day on or before DATE, or the rebased
+starting point (pre-existing words minus the schedule adjustment) before
+the plan."
   (let ((expected (- (or (org-scribe-plan-preexisting-words plan) 0)
                      (or (org-scribe-plan-schedule-adjustment plan) 0))))
     (dolist (day (org-scribe-planner--generate-day-schedule plan))
@@ -1080,17 +1142,49 @@ when DATE is before the plan."
         (setq expected (plist-get day :cumulative))))
     expected))
 
+(defun org-scribe-planner--measure-offset (plan date)
+  "Return what to add to the rebased plan to measure the end of DATE.
+The schedule adjustment while the end of DATE comes before PLAN's last
+recalculation (the plan as it stood then), 0 from the end of the day
+before it on: from then the plan follows the words actually written."
+  (if (org-scribe-planner--before-rebase-p plan (org-scribe-planner--add-days date 1))
+      (or (org-scribe-plan-schedule-adjustment plan) 0)
+    0))
+
+(defun org-scribe-planner--expected-through (plan date)
+  "Return where PLAN's manuscript should stand at the end of DATE.
+That is the :cumulative of the last plan day on or before DATE, or the
+plan's starting point when DATE is before the plan, measured on the plan
+in force at the end of DATE (see `org-scribe-planner--measure-offset'):
+before the last recalculation from progress, the plan as it stood (the
+pre-existing words before the plan starts); from the end of the day
+before it on, the recalculated plan, so recalculating puts the plan on
+track again."
+  (+ (org-scribe-planner--rebased-through plan date)
+     (org-scribe-planner--measure-offset plan date)))
+
+(defun org-scribe-planner--planned-through (plan date)
+  "Return where PLAN's manuscript should stand at the end of DATE, as planned.
+Like `org-scribe-planner--planned-total' for the last plan day on or
+before DATE; before the plan, the pre-existing words."
+  (let ((planned (or (org-scribe-plan-preexisting-words plan) 0)))
+    (dolist (day (org-scribe-planner--generate-day-schedule plan))
+      (unless (string< date (plist-get day :date))
+        (setq planned (org-scribe-planner--planned-total plan day))))
+    planned))
+
 ;;; Where the plan stands
 
-(defun org-scribe-planner--writing-day-position (plan words)
+(defun org-scribe-planner--writing-day-position (plan words &optional start)
   "Return how many writing days of PLAN's schedule WORDS cover, as a fraction.
-WORDS is a manuscript total.  Follows each day's own goal, from the
-plan's starting point (pre-existing words, on the baseline of the last
-recalculation), so a recalculation or a pattern doesn't distort it.
-Days without a goal take no position.  Words beyond the end count at the
-plan's daily target."
-  (let ((cumulative (- (or (org-scribe-plan-preexisting-words plan) 0)
-                       (or (org-scribe-plan-schedule-adjustment plan) 0)))
+WORDS is a manuscript total.  Follows each day's own goal from START,
+the plan's starting point (default: pre-existing words, on the baseline
+of the last recalculation), so a recalculation or a pattern doesn't
+distort it.  Days without a goal take no position.  Words beyond the end
+count at the plan's daily target."
+  (let ((cumulative (or start
+                        (- (or (org-scribe-plan-preexisting-words plan) 0)
+                           (or (org-scribe-plan-schedule-adjustment plan) 0))))
         (position 0.0)
         (result nil))
     (when (> words cumulative)
@@ -1107,27 +1201,43 @@ plan's daily target."
      (t (+ position (/ (float (- words cumulative))
                        (max 1 (or (org-scribe-plan-daily-words plan) 1))))))))
 
-(defun org-scribe-planner--status (plan)
+(defun org-scribe-planner--status (plan &optional through)
   "Return where PLAN stands, or nil when it has no schedule yet.
+THROUGH is when the plan's words are due: `today' (the default), where
+the manuscript should stand at the end of today, so today's goal counts
+already; or `yesterday', the goals of the days that are over (what
+`org-scribe-planner-check-progress' offers adjustments on: an unwritten
+morning is not behind).  Today, or yesterday, is measured on the plan in
+force then: before the last recalculation from progress the plan as it
+stood, so a day recalculated after writing keeps its old goal.
 A plist:
   :status     `ahead', `on-track' or `behind'
-  :expected   where the manuscript should stand at the end of yesterday
-              (today's goal isn't due until the day is over)
+  :expected   where the manuscript should stand by THROUGH
   :actual     the manuscript's count, today's words included
   :difference :actual minus :expected
   :percent    :difference as a percentage of the words the plan expected
               to be written by then (0 before the plan has expected any)
   :days       writing days ahead (positive) or behind (negative),
-              measured along the schedule (see
-              `org-scribe-planner--writing-day-position')"
+              measured along the schedule from the same starting point
+              as :expected (see `org-scribe-planner--writing-day-position')"
   (when (and (org-scribe-plan-start-date plan)
              (plist-get (org-scribe-planner--build-schedule plan) :rows))
-    (let* ((yesterday (org-scribe-planner--add-days (org-scribe-planner--get-today-date) -1))
-           (expected (org-scribe-planner--expected-through plan yesterday))
+    (let* ((today (org-scribe-planner--get-today-date))
+           (date (if (eq through 'yesterday)
+                     (org-scribe-planner--add-days today -1)
+                   today))
+           ;; The plan in force today: as it stood before the last
+           ;; recalculation, the recalculated one from its first day on
+           (offset (if (org-scribe-planner--before-rebase-p plan today)
+                       (or (org-scribe-plan-schedule-adjustment plan) 0)
+                     0))
+           (expected (+ (org-scribe-planner--rebased-through plan date) offset))
            (actual (org-scribe-plan-current-words plan))
            (difference (- actual expected))
-           (baseline (- (or (org-scribe-plan-preexisting-words plan) 0)
-                        (or (org-scribe-plan-schedule-adjustment plan) 0)))
+           ;; The plan's starting point, on the same plan as EXPECTED
+           (baseline (+ (- (or (org-scribe-plan-preexisting-words plan) 0)
+                           (or (org-scribe-plan-schedule-adjustment plan) 0))
+                        offset))
            (expected-written (- expected baseline)))
       (list :status (cond ((> difference 0) 'ahead)
                           ((= difference 0) 'on-track)
@@ -1138,8 +1248,8 @@ A plist:
             :percent (if (> expected-written 0)
                          (* 100.0 (/ (float difference) expected-written))
                        0.0)
-            :days (- (org-scribe-planner--writing-day-position plan actual)
-                     (org-scribe-planner--writing-day-position plan expected))))))
+            :days (- (org-scribe-planner--writing-day-position plan actual baseline)
+                     (org-scribe-planner--writing-day-position plan expected baseline))))))
 
 (defun org-scribe-planner--describe-status (status)
   "Describe STATUS (from `org-scribe-planner--status') in a few words."
@@ -1500,10 +1610,12 @@ and, for started weeks:
   :written-total         the manuscript total at the end of the week
   :planned-total         where it should stand (see below)
   :difference            :written-total minus :planned-total
-For the current week :planned-total runs through yesterday, like the
-plan's status: today isn't expected until it's over.  A finished week's
+For the current week :planned-total runs through yesterday, as
+`org-scribe-planner-check-progress' measures (the plan's status counts
+today's goal too).  A finished week's
 leaves out the schedule adjustment of a later recalculation from
-progress, so it stays what it was.  As in wordplanner's
+progress, so it stays what it was (see
+`org-scribe-planner--planned-total').  As in wordplanner's
 `weekly_summary'."
   (let* ((today (org-scribe-planner--get-today-date))
          (yesterday (org-scribe-planner--add-days today -1))
@@ -1543,8 +1655,7 @@ progress, so it stays what it was.  As in wordplanner's
                     ;; that fell behind read as thousands of words ahead
                     ;; once "adjust remaining" had rebased the plan.
                     (planned (if ended
-                                 (+ (org-scribe-planner--expected-through plan end)
-                                    (or (org-scribe-plan-schedule-adjustment plan) 0))
+                                 (org-scribe-planner--planned-through plan end)
                                (org-scribe-planner--expected-through plan yesterday))))
                (setq result
                      (append result
@@ -1792,6 +1903,7 @@ elsewhere.  Returns the number of days newly locked."
                                        (max goal written)))))))
     (setf (org-scribe-plan-schedule-adjustment plan)
           (- locked-words credited (- written-total written-on-locked)))
+    (setf (org-scribe-plan-rebased-from plan) as-of)
     newly))
 
 ;;; New plans: presets and defaults
@@ -2597,7 +2709,9 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                                        (org-scribe-plan-locked-goals plan) ",")))
         (unless (zerop (or (org-scribe-plan-schedule-adjustment plan) 0))
           (org-set-property "SCHEDULE_ADJUSTMENT"
-                            (number-to-string (org-scribe-plan-schedule-adjustment plan))))
+                            (number-to-string (org-scribe-plan-schedule-adjustment plan)))
+          (when-let* ((rebased (org-scribe-planner--rebase-date plan)))
+            (org-set-property "REBASED_FROM" rebased)))
         (unless (memq (org-scribe-plan-pattern plan) '(nil flat))
           (org-set-property "PATTERN" (symbol-name (org-scribe-plan-pattern plan)))
           (when (org-scribe-plan-pattern-config plan)
@@ -2796,6 +2910,7 @@ recalculation, and is left alone.  Returns non-nil when PLAN was changed."
                         (split-string locked "," t " ")))))
       (setf (org-scribe-plan-schedule-adjustment plan)
             (string-to-number (or (org-entry-get nil "SCHEDULE_ADJUSTMENT") "0")))
+      (setf (org-scribe-plan-rebased-from plan) (org-entry-get nil "REBASED_FROM"))
       (let ((pattern (org-entry-get nil "PATTERN")))
         (when pattern
           (setf (org-scribe-plan-pattern plan) (intern pattern))
@@ -2875,6 +2990,11 @@ recalculation, and is left alone.  Returns non-nil when PLAN was changed."
       ;; `org-scribe-planner--migrate-recalculated-daily')
       (unless (org-entry-get nil "WRITING_DAYS")
         (org-scribe-planner--migrate-recalculated-daily plan))
+      ;; Plans rebased before REBASED_FROM existed: fix the date now, from
+      ;; the locked days as they were saved, before more days are locked
+      (unless (org-scribe-plan-rebased-from plan)
+        (setf (org-scribe-plan-rebased-from plan)
+              (org-scribe-planner--rebase-date plan)))
       (when (and (org-scribe-plan-start-date plan)
                  (org-scribe-planner--writing-days plan))
         (org-scribe-planner--sync-window plan)
@@ -3242,7 +3362,7 @@ duplicating hundreds of TODOs."
           (unless (or (plist-get day :is-spare-day) (zerop (plist-get day :words)))
             (let ((date (plist-get day :date))
                   (words (plist-get day :words))
-                  (cumulative (plist-get day :cumulative)))
+                  (cumulative (org-scribe-planner--planned-total plan day)))
               (insert (format "*** TODO Write %d words\n" words))
               (insert (format "SCHEDULED: <%s>\n" date))
               (insert (format ":PROPERTIES:\n"))
@@ -3613,9 +3733,8 @@ every later date that still has its own absolute cumulative total."
 
 (defun org-scribe-planner--show-progress-report (plan)
   "Display a progress report for PLAN: words written, and where it stands.
-Expected words run through yesterday: today's goal isn't due until the
-day is over, while today's words already count (see
-`org-scribe-planner--status')."
+Expected words run through the end of today: today's goal counts already
+\(see `org-scribe-planner--status')."
   (let* ((total (org-scribe-plan-total-words plan))
          (current (org-scribe-plan-current-words plan))
          (percent (* 100.0 (/ (float current) total))))
@@ -4155,7 +4274,7 @@ the plan as it is is the default.  Expected words run through yesterday:
 today's goal isn't due until the day is over."
   (interactive)
   (org-scribe-planner--with-current-plan (plan file)
-    (let ((status (org-scribe-planner--status plan)))
+    (let ((status (org-scribe-planner--status plan 'yesterday)))
       (cond
        ((null status)
         (message "The plan has no schedule yet."))

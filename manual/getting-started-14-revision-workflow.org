@@ -205,7 +205,7 @@ Wrapping markers in ~#+begin_comment~ is not decoration. It buys two guarantees 
 Some writers use a third marker for a scene they have decided to write later:
 
 #+BEGIN_EXAMPLE
-,** TODO Scene 12 - The confrontation
+,** TOWRITE Scene 12 - The confrontation
 
 ,#+begin_comment
 *SUMMARY*: Alex finally opens the box. Sam admits the letter was never sent.
@@ -218,7 +218,7 @@ This is deliberately *not* matched by the edit search. The distinction is what o
 |-------------+-----------------------------+------------------+----------------|
 | ~*EDIT*~    | prose that exists           | any scene        | ~F8~ then ~6~ |
 | ~*NOTE*~    | prose that exists           | any scene        | ~F8~ then ~6~ |
-| ~*SUMMARY*~ | prose that does *not* exist | a ~TODO~ heading | ~F8~ then ~5~ |
+| ~*SUMMARY*~ | prose that does *not* exist | a ~TOWRITE~ heading | ~F8~ then ~5~ |
 
 A revision pass and a drafting session are different work. Mixing "fix this sentence" into the same list as "write this scene" would make both lists less useful, so the edit index covers the first two rows only and the TODO search covers the third - where an unwritten scene sits alongside every other unwritten scene.
 

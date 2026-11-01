@@ -155,7 +155,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 A complete scene template appears! It looks like this:
 
 #+BEGIN_EXAMPLE
-,*** TODO Scene 1 - The Alarm Goes Off
+,*** TOWRITE Scene 1 - The Alarm Goes Off
 :PROPERTIES:
 :ID: 3f6c1d52-8a47-4b0e-9d1a-5e2c7b94a610
 :WORDCOUNT: 0
@@ -191,11 +191,11 @@ Let's break down what you're seeing:
 
 *** The Heading Line
 #+BEGIN_EXAMPLE
-,*** TODO Scene 1 - The Alarm Goes Off
+,*** TOWRITE Scene 1 - The Alarm Goes Off
 #+END_EXAMPLE
 
 - ~***~ = Scene level (three asterisks for novels, two for short stories)
-- ~TODO~ = Scene status (you can change this to DONE when finished)
+- ~TOWRITE~ = Scene status (change it to FINISHED when done; =C-c C-t= cycles the states)
 - ~Scene 1~ = Scene number
 - ~The Alarm Goes Off~ = Your title
 
@@ -420,7 +420,7 @@ Now comes the fun part - actually writing your story!
 Example:
 
 #+BEGIN_EXAMPLE
-,*** TODO Scene 1 - The Alarm Goes Off
+,*** TOWRITE Scene 1 - The Alarm Goes Off
 :PROPERTIES:
 :PoV: Alex
 :Characters: Alex
@@ -556,13 +556,13 @@ If you're working on a novel, you might want to add chapters.
 Example result — chapter insertion also auto-inserts a ready-to-fill first scene below it, so you get both in one step:
 
 #+BEGIN_EXAMPLE
-,** TODO Chapter 2 - The Discovery :ignore:
+,** TOWRITE Chapter 2 - The Discovery :ignore:
 :PROPERTIES:
 :WORD-OBJECTIVE: 5000
 :WORDCOUNT: 0
 :END:
 
-,*** TODO New scene :ignore:
+,*** TOWRITE New scene :ignore:
 :PROPERTIES:
 :ID: 9b2e47a1-6d03-4c58-b7f4-1a8d03e5c2f7
 :PoV:
@@ -687,9 +687,9 @@ Yes! Just delete the heading and everything under it (up to the next heading of 
 
 The template doesn't auto-number. Feel free to change the numbers manually, or ignore them - they're just labels!
 
-** "Can I use other TODO states besides TODO and DONE?"
+** "Can I use other states than TOWRITE and FINISHED?"
 
-Advanced users can configure custom TODO states, but TODO/DONE works perfectly for beginners.
+Advanced users can edit the ~#+TODO:~ line at the top of the manuscript, but the shipped states work well for beginners.
 
 * Troubleshooting
 

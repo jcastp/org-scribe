@@ -69,7 +69,7 @@ The manuscript you've been writing in is a *workspace*, not a manuscript.
 It has apparatus sections, an eighteen-field property drawer on every
 scene, and ~:ignore:~ tags on acts, chapters, *and* scenes. Export that
 file directly (~C-c C-e~) without ~org-scribe-compile~ and, unless you've
-separately installed ~ox-extra~ (see below), you'll get raw ~TODO Scene 3~
+separately installed ~ox-extra~ (see below), you'll get raw ~TOWRITE Scene 3~
 headings in your output — or, even with ~ox-extra~ installed, you'll get
 one undifferentiated wall of prose with *no chapter divisions at all*,
 because ~:ignore:~ sits on chapter headings exactly as it does on scenes.
@@ -114,7 +114,7 @@ Cannot compile to docx: `pandoc' is not available
 ** What You Get
 
 - Acts: omitted (a planning structure, not a reading one)
-- Chapters: kept as real headings — "Chapter 1", not "TODO Chapter 1 :ignore:"
+- Chapters: kept as real headings — "Chapter 1", not "TOWRITE Chapter 1 :ignore:"
 - Scenes: silent, with a break inserted between consecutive scenes of the
   same chapter automatically — nothing to type, nowhere to forget it
 - Property drawers, dynamic blocks (word-count tables), and ~*EDIT*~/~*NOTE*~
@@ -157,7 +157,7 @@ with its plain styling.
 1. Open your manuscript
 2. ~F8 X~, ~clean~, then choose ~txt~
 3. Open the resulting file in ~export/~ — notice the chapter headings,
-   the scene breaks, and the complete absence of ~TODO~ or property
+   the scene breaks, and the complete absence of ~TOWRITE~ or property
    drawers
 4. Try again with ~odt~ and open it in LibreOffice or Word
 5. If you have a LaTeX distribution installed, try ~pdf~ too
@@ -370,7 +370,7 @@ You can export:
 - ~#+OPTIONS: toc:nil~ → No table of contents
 - ~#+OPTIONS: todo:nil tags:nil~ → TODO keywords and tags stripped from
   exported headings (shipped in your manuscript template, so a scene
-  heading that still says "TODO" in the buffer exports as plain prose)
+  heading that still says "TOWRITE" in the buffer exports as plain prose)
 - ~#+EXCLUDE_TAGS: noexport~ → Tags to exclude
 
 *Your template already has the ~:ignore:~/~:noexport:~ tags and the
@@ -975,7 +975,7 @@ Change:
 #+OPTIONS: todo:nil
 #+END_EXAMPLE
 
-Now scenes marked ~*** TODO Scene 3~ export as ~*** Scene 3~
+Now scenes marked ~*** TOWRITE Scene 3~ export as ~*** Scene 3~
 
 *** Disable Section Numbers
 
@@ -1245,7 +1245,7 @@ Here are complete workflows for common scenarios.
 
 ** Problem: Export Shows TODO Keywords or Raw Scene Headings
 
-*Symptom*: PDF/ODT shows "TODO Scene 3" instead of "Scene 3", or the
+*Symptom*: PDF/ODT shows "TOWRITE Scene 3" instead of "Scene 3", or the
 scene/chapter title itself appears in the output where you expected
 only its body text.
 

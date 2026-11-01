@@ -205,7 +205,7 @@ SETUP is a function called with the directory.  The directory is the
 (ert-deftest test-companion-model-demo-todo-keywords-come-from-the-file ()
   (test-companion-model--with-project root #'test-companion-model--copy-demo
     (let ((todo (plist-get (org-scribe-companion--snapshot) :todo)))
-      (should (equal ["TODO" "TOWRITE" "TOREVIEW" "REDO" "RESTRUCTURE" "FINISHED" "PURGE"]
+      (should (equal ["TOWRITE" "TOREVIEW" "REDO" "RESTRUCTURE" "FINISHED" "PURGE"]
                      (plist-get todo :keywords)))
       (should (equal ["FINISHED" "PURGE"] (plist-get todo :done)))
       (should (plist-get todo :colors)))))
@@ -361,10 +361,10 @@ SETUP is a function called with the directory.  The directory is the
       (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
         (goto-char (point-min))
         (re-search-forward "^\\*\\*\\* FINISHED Scene 1 - The Alarm")
-        (replace-match "*** TODO Scene 1 - The Alarm"))
+        (replace-match "*** TOWRITE Scene 1 - The Alarm"))
       (let ((after (org-scribe-companion--snapshot)))
         (should-not (equal (plist-get before :revision) (plist-get after :revision)))
-        (should (equal "TODO" (plist-get (test-companion-model--scene
+        (should (equal "TOWRITE" (plist-get (test-companion-model--scene
                                           after "Scene 1 - The Alarm")
                                          :todo)))
         (should (eq :true-modified

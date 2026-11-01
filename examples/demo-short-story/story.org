@@ -3,7 +3,7 @@
 #+DATE: 2025-01-14
 #+LANGUAGE: en
 #+STARTUP: overview
-#+TODO: TODO(t) TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(p@/!)
+#+TODO: TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(p@/!)
 #+COLUMNS: %40ITEM(Section) %12WORDCOUNT %12PoV %40Summary
 #+MACRO: scene-break SCENE-BREAK
 
@@ -154,7 +154,7 @@ Either way, she was trapped.
 
 {{{scene-break}}}
 
-** TODO Ending :ignore:
+** TOWRITE Ending :ignore:
 :PROPERTIES:
 :WORDCOUNT: 88
 :WORD-OBJECTIVE: 1250

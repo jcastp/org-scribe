@@ -59,7 +59,7 @@ Antes de recurrir al despachador de exportación de Org, prueba primero ~org-scr
 
 ** Por qué no exportar sin más el archivo de trabajo
 
-El manuscrito en el que has estado escribiendo es un *espacio de trabajo*, no un manuscrito. Tiene secciones de apoyo, un cajón de propiedades de dieciocho campos en cada escena y etiquetas ~:ignore:~ en los actos, los capítulos *y* las escenas. Si exportas ese archivo directamente (~C-c C-e~) sin ~org-scribe-compile~ y no has instalado por separado ~ox-extra~ (ver más abajo), obtendrás encabezados ~TODO Escena 3~ en bruto en la salida; y aun con ~ox-extra~ instalado obtendrás un muro de prosa indiferenciado *sin ninguna división en capítulos*, porque ~:ignore:~ está en los encabezados de capítulo igual que en los de escena.
+El manuscrito en el que has estado escribiendo es un *espacio de trabajo*, no un manuscrito. Tiene secciones de apoyo, un cajón de propiedades de dieciocho campos en cada escena y etiquetas ~:ignore:~ en los actos, los capítulos *y* las escenas. Si exportas ese archivo directamente (~C-c C-e~) sin ~org-scribe-compile~ y no has instalado por separado ~ox-extra~ (ver más abajo), obtendrás encabezados ~TOWRITE Escena 3~ en bruto en la salida; y aun con ~ox-extra~ instalado obtendrás un muro de prosa indiferenciado *sin ninguna división en capítulos*, porque ~:ignore:~ está en los encabezados de capítulo igual que en los de escena.
 
 ~org-scribe-compile~ lo resuelve de otra manera: primero *transforma* el manuscrito en un documento intermedio limpio (se descartan los actos, los capítulos se conservan como encabezados visibles reales, las escenas se silencian y se insertan saltos entre ellas automáticamente) y solo después entrega ese documento limpio a los exportadores de Org.
 
@@ -88,7 +88,7 @@ No se puede compilar a docx: `pandoc' no está disponible
 ** Qué obtienes
 
 - Actos: omitidos (son una estructura de planificación, no de lectura)
-- Capítulos: se conservan como encabezados reales: «Capítulo 1», no «TODO Capítulo 1 :ignore:»
+- Capítulos: se conservan como encabezados reales: «Capítulo 1», no «TOWRITE Capítulo 1 :ignore:»
 - Escenas: silenciosas, con un salto insertado automáticamente entre escenas consecutivas del mismo capítulo: nada que escribir, ningún sitio donde olvidarlo
 - Cajones de propiedades, bloques dinámicos (tablas de recuento de palabras) y marcadores ~*EDIT*~/~*NOTE*~: todo eliminado, no solo oculto a la exportación
 
@@ -110,7 +110,7 @@ o con ~M-x customize-group RET org-scribe RET~, que ofrece algunos preajustes co
 
 1. Abre tu manuscrito
 2. ~F8 X~, ~clean~ y elige ~txt~
-3. Abre el archivo resultante en ~export/~: fíjate en los encabezados de capítulo, los saltos de escena y la ausencia total de ~TODO~ o de cajones de propiedades
+3. Abre el archivo resultante en ~export/~: fíjate en los encabezados de capítulo, los saltos de escena y la ausencia total de ~TOWRITE~ o de cajones de propiedades
 4. Repite con ~odt~ y ábrelo en LibreOffice o Word
 5. Si tienes una distribución de LaTeX instalada, prueba también ~pdf~
 6. Si tienes ~ox-epub~ instalado, prueba ~epub~ y ábrelo en una aplicación de lectura o en Calibre; comprueba que el salto de escena se distingue visualmente del texto normal
@@ -259,7 +259,7 @@ Puedes exportar:
 - Etiqueta ~:ignore:~ en los encabezados → se excluye el título del encabezado, se incluye el contenido. Esto *no* es comportamiento básico de Org: requiere el paquete opcional ~ox-extra~ (parte de ~org-contrib~; ~M-x package-install RET org-contrib~). org-scribe lo activa automáticamente para tu manuscrito siempre que esté instalado (=export/org-scribe-export.el=); sin él, ~:ignore:~ no hace nada y el encabezado en bruto, con su palabra clave TODO, se exporta tal cual. ~M-x org-scribe-setup-check~ te dice si está presente.
 - Etiqueta ~:noexport:~ en los encabezados → se excluyen el encabezado y su contenido. Esta *sí* es de Org básico (~org-export-exclude-tags~ vale por defecto ~("noexport")~).
 - ~#+OPTIONS: toc:nil~ → sin tabla de contenidos
-- ~#+OPTIONS: todo:nil tags:nil~ → se eliminan las palabras clave TODO y las etiquetas de los encabezados exportados (viene en la plantilla de tu manuscrito, de modo que un encabezado de escena que en el búfer todavía dice «TODO» se exporta como prosa normal)
+- ~#+OPTIONS: todo:nil tags:nil~ → se eliminan las palabras clave TODO y las etiquetas de los encabezados exportados (viene en la plantilla de tu manuscrito, de modo que un encabezado de escena que en el búfer todavía dice «TOWRITE» se exporta como prosa normal)
 - ~#+EXCLUDE_TAGS: noexport~ → etiquetas que se excluyen
 
 *Tu plantilla ya trae configuradas las etiquetas ~:ignore:~/~:noexport:~ y la línea ~#+OPTIONS~: instala ~org-contrib~ una vez y la exportación simplemente funciona.*
@@ -858,7 +858,7 @@ Cambia a:
 #+OPTIONS: todo:nil
 #+END_EXAMPLE
 
-Ahora las escenas marcadas como ~*** TODO Escena 3~ se exportan como ~*** Escena 3~
+Ahora las escenas marcadas como ~*** TOWRITE Escena 3~ se exportan como ~*** Escena 3~
 
 *** Desactivar la numeración de secciones
 
@@ -1128,7 +1128,7 @@ Estos son flujos completos para situaciones habituales.
 
 ** Problema: la exportación muestra palabras clave TODO o encabezados de escena en bruto
 
-*Síntoma*: el PDF/ODT muestra «TODO Escena 3» en lugar de «Escena 3», o el propio título de la escena o del capítulo aparece en la salida donde esperabas solo el texto del cuerpo.
+*Síntoma*: el PDF/ODT muestra «TOWRITE Escena 3» en lugar de «Escena 3», o el propio título de la escena o del capítulo aparece en la salida donde esperabas solo el texto del cuerpo.
 
 *Causa*: o falta ~#+OPTIONS: todo:nil~ (ya viene en la plantilla del manuscrito: comprueba que no se haya borrado), o ~ox-extra~ no está instalado, de modo que la etiqueta ~:ignore:~ que debería descartar el título del encabezado no tiene efecto. Ejecuta ~M-x org-scribe-setup-check~ para ver cuál es.
 

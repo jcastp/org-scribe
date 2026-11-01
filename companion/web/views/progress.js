@@ -215,10 +215,14 @@ function planCard(plan, ctx) {
   const status = el('dd', `pg-status ${plan.status || ''}`, standing(plan, ctx));
   facts.append(el('dt', null, ctx.t('companion-ui-progress-standing')), status);
   if (plan.daysAhead && Math.abs(plan.daysAhead) >= 0.5) {
-    fact('', ctx.t(plan.daysAhead > 0 ? 'companion-ui-progress-days-ahead' : 'companion-ui-progress-days-behind',
-      number(Math.abs(plan.daysAhead), ctx)));
+    // one decimal: 1.5 days ahead must not read "2"; exactly one is singular
+    const days = Math.round(Math.abs(plan.daysAhead) * 10) / 10;
+    const key = plan.daysAhead > 0 ? 'companion-ui-progress-days-ahead' : 'companion-ui-progress-days-behind';
+    fact('', ctx.t(days === 1 ? `${key}-one` : key, days.toLocaleString(ctx.snapshot.language)));
   }
-  fact(ctx.t('companion-ui-progress-streak'), ctx.t('companion-ui-progress-streak-value', plan.streak.current, plan.streak.longest));
+  const dayCount = (n) => ctx.t(n === 1 ? 'companion-ui-progress-day-count-one' : 'companion-ui-progress-day-count', n);
+  fact(ctx.t('companion-ui-progress-streak'), ctx.t('companion-ui-progress-streak-value',
+    dayCount(plan.streak.current), dayCount(plan.streak.longest)));
   fact(ctx.t('companion-ui-progress-pace'), ctx.t('companion-ui-progress-pace-value',
     number(plan.velocity.average, ctx), number(plan.velocity.recent, ctx)));
   if (TRENDS[plan.velocity.trend]) fact(ctx.t('companion-ui-progress-trend'), ctx.t(TRENDS[plan.velocity.trend]));
@@ -232,7 +236,15 @@ function planCard(plan, ctx) {
   return node;
 }
 
-/** The burndown: words left, planned (dashed) against written (solid). */
+/** A signed word count: "+230", "−667". */
+const signed = (value, ctx) => `${value < 0 ? '\u2212' : '+'}${number(Math.abs(value), ctx)}`;
+
+/**
+ * The burndown: words left, planned (dashed) against written (solid).
+ * A recalculation from progress (plan.rebase) shows as a vertical step in
+ * the planned line at the end of the day before it, with a mark: the days
+ * before are the plan as it stood, the days after the recalculated plan.
+ */
 function burndown(plan, ctx) {
   const days = plan.days || [];
   if (days.length < 2) return null;
@@ -240,9 +252,13 @@ function burndown(plan, ctx) {
   const W = 800;
   const H = 260;
   const pad = { left: 64, right: 16, top: 14, bottom: 30 };
-  const start = days[0].planned - days[0].goal;      // where the plan starts from
+  const start = plan.preexisting || 0;               // where the plan starts from
   const remaining = (value) => Math.max(0, plan.total - value);
-  const top = Math.max(remaining(start), ...days.map((day) => (day.actual === null ? 0 : remaining(day.actual))), 1);
+  const rebase = plan.rebase || null;
+  // the step sits after the last day before the recalculation
+  const stepIndex = rebase ? days.filter((day) => day.date < rebase.date).length : -1;
+  const top = Math.max(remaining(start), rebase ? remaining(rebase.to) : 0,
+    ...days.map((day) => (day.actual === null ? 0 : remaining(day.actual))), 1);
   const x = (index) => pad.left + ((W - pad.left - pad.right) * index) / days.length;
   const y = (value) => pad.top + (H - pad.top - pad.bottom) * (1 - value / top);
   const chart = svg('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pg-burndown', role: 'img' });
@@ -255,10 +271,24 @@ function burndown(plan, ctx) {
   chart.append(svg('text', { x: pad.left - 6, y: y(0) + 4, class: 'pg-tick end' }, '0'));
   chart.append(svg('text', { x: pad.left, y: H - 8, class: 'pg-tick' }, date(days[0].date, ctx)));
   chart.append(svg('text', { x: W - pad.right, y: H - 8, class: 'pg-tick end' }, date(days[days.length - 1].date, ctx)));
-  // planned: from the start point through each day's end
-  const planned = [`${x(0)},${y(remaining(start))}`]
-    .concat(days.map((day, index) => `${x(index + 1)},${y(remaining(day.planned))}`));
+  // planned: from the start point through each day's end, stepping at
+  // the recalculation
+  const planned = [`${x(0)},${y(remaining(start))}`];
+  if (stepIndex === 0) planned.push(`${x(0)},${y(remaining(rebase.to))}`);
+  days.forEach((day, index) => {
+    planned.push(`${x(index + 1)},${y(remaining(day.planned))}`);
+    if (index + 1 === stepIndex) planned.push(`${x(index + 1)},${y(remaining(rebase.to))}`);
+  });
   chart.append(svg('polyline', { points: planned.join(' '), class: 'pg-planned' }));
+  if (stepIndex >= 0) {
+    const sx = x(stepIndex);
+    const mark = svg('g', { class: 'pg-rebase' });
+    mark.append(svg('title', {}, ctx.t('companion-ui-progress-recalculated-hint', date(rebase.date, ctx, true))));
+    mark.append(svg('circle', { cx: sx, cy: y(remaining(rebase.to)), r: 3, class: 'pg-rebase-dot' }));
+    mark.append(svg('text', { x: sx + 6, y: (y(remaining(rebase.from)) + y(remaining(rebase.to))) / 2 + 4, class: 'pg-tick' },
+      ctx.t('companion-ui-progress-recalculated', signed(rebase.from - rebase.to, ctx))));
+    chart.append(mark);
+  }
   // written: up to today
   const written = [`${x(0)},${y(remaining(start))}`];
   days.forEach((day, index) => { if (day.actual !== null) written.push(`${x(index + 1)},${y(remaining(day.actual))}`); });

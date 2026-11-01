@@ -110,6 +110,33 @@
         (should (member (plist-get plan :status) '("ahead" "behind" "on-track")))
         (should (stringp (json-serialize answer)))))))
 
+;; Reported 2026-11-01: after a recalculation on day one the burndown
+;; started at 49,333 words left instead of 50,000.
+(ert-deftest test-companion-progress-recalculated-plan ()
+  "Planned totals before the recalculation are the plan as it stood, and
+the step is sent for the page to draw."
+  (require 'org-scribe-planner)
+  (require 'org-scribe-planner-dashboards)
+  (test-companion-progress--on "2026-11-01"
+    ;; The planner loads at run time: no `setf' on its struct here
+    (let ((plan (make-org-scribe-plan
+                 :title "P" :total-words 50000 :days 30 :start-date "2026-11-01"
+                 :current-words 2334
+                 :daily-word-counts (list (cons "2026-11-01" (list :words 2334 :note ""))))))
+      (org-scribe-planner--calculate-missing-variable plan)
+      (cl-letf (((symbol-function 'org-scribe-planner--save-plan) #'ignore)
+                ((symbol-function 'org-scribe-planner--refresh-agenda-if-synced) #'ignore)
+                ((symbol-function 'org-scribe-planner-show-calendar) #'ignore))
+        (org-scribe-planner-recalculate-remaining-days plan "/tmp/unused-plan.org"))
+      (let* ((json (org-scribe-companion-progress--plan-json plan))
+             (days (plist-get json :days)))
+        (should (= 0 (plist-get json :preexisting)))
+        (should (= 1667 (plist-get (aref days 0) :planned)))
+        (should (= 3978 (plist-get (aref days 1) :planned)))
+        (should (equal (plist-get json :rebase)
+                       '(:date "2026-11-02" :from 1667 :to 2334)))
+        (should (stringp (json-serialize json)))))))
+
 (ert-deftest test-companion-progress-plan-phases ()
   (test-companion-progress--with-project root "demo-novel"
     (test-companion-progress--on "2026-09-01"

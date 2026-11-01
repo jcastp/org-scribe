@@ -545,6 +545,7 @@ kbd { font: 0.8rem ui-monospace, SFMono-Regular, Menlo, monospace; padding: 0.05
 .pg-planned { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
 .pg-written { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
 .pg-today-line { stroke: var(--focus); stroke-width: 1; stroke-dasharray: 2 3; }
+.pg-rebase-dot { fill: var(--muted); }
 .pg-legend { display: flex; gap: 1.2rem; font-size: 0.85rem; color: var(--muted); margin-top: 0.3rem; }
 .pg-key::before { content: ""; display: inline-block; width: 1.4rem; margin-right: 0.4rem; vertical-align: middle; border-top: 2px dashed var(--muted); }
 .pg-key.written::before { border-top: 3px solid var(--accent); }

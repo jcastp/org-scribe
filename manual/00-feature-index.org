@@ -877,7 +877,7 @@ A pattern spreads the words unevenly over the writing days — steady, valley, m
 
 ** Status and Adjusting from Progress (~org-scribe-planner-check-progress~)
 
-The plan's status — on track, or ahead/behind in words, percent and writing days measured along the plan's own schedule — compares the goals through yesterday with everything written, today included. It appears in the calendar summary and after every sync. ~c~ (Check progress) offers the fitting adjustments; ~a~ (~org-scribe-planner-adjust-remaining-plan~) keeps the end date and re-spreads the words left; ~e~ (~org-scribe-planner-adjust-end-date~) keeps the daily target and moves the end date. Each shows its outcome first and changes only the days from today on (from tomorrow if today already has words).
+The plan's status — on track, or ahead/behind in words, percent and writing days measured along the plan's own schedule — compares where you should be by the end of today (today's goal included) with everything written. ~c~ alone measures the days that are over, so an unwritten morning doesn't prompt an adjustment. It appears in the calendar summary and after every sync. ~c~ (Check progress) offers the fitting adjustments; ~a~ (~org-scribe-planner-adjust-remaining-plan~) keeps the end date and re-spreads the words left; ~e~ (~org-scribe-planner-adjust-end-date~) keeps the daily target and moves the end date. Each shows its outcome first and changes only the days from today on (from tomorrow if today already has words).
 
 *Status*: Fully implemented | *Hydra*: ~W c~, ~W a~, ~W e~ | *Module*: ~planning/org-scribe-planner.el~
 

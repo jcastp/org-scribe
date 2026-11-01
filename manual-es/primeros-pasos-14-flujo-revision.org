@@ -205,7 +205,7 @@ Envolver los marcadores en ~#+begin_comment~ no es decoración. Da dos garantía
 Hay quien usa un tercer marcador para una escena que han decidido escribir más adelante:
 
 #+BEGIN_EXAMPLE
-,** TODO Escena 12 - La confrontación
+,** TOWRITE Escena 12 - La confrontación
 
 ,#+begin_comment
 *SUMMARY*: Alex por fin abre la caja. Sam admite que la carta nunca se envió.
@@ -218,7 +218,7 @@ La búsqueda de ediciones deliberadamente *no* lo reconoce. Esa distinción es l
 |-------------+-----------------------+----------------------+------------------|
 | ~*EDIT*~    | prosa que existe      | cualquier escena     | ~F8~ y luego ~6~ |
 | ~*NOTE*~    | prosa que existe      | cualquier escena     | ~F8~ y luego ~6~ |
-| ~*SUMMARY*~ | prosa que *no* existe | un encabezado ~TODO~ | ~F8~ y luego ~5~ |
+| ~*SUMMARY*~ | prosa que *no* existe | un encabezado ~TOWRITE~ | ~F8~ y luego ~5~ |
 
 Una pasada de revisión y una sesión de redacción son trabajos distintos. Mezclar «arregla esta frase» en la misma lista que «escribe esta escena» haría peores las dos listas, así que el índice de ediciones cubre solo las dos primeras filas y la búsqueda de TODO cubre la tercera, donde una escena sin escribir está junto a todas las demás escenas sin escribir.
 

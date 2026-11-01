@@ -419,7 +419,10 @@ The *Progress* tab shows how far the book has come:
 - *Plan*, when the project has a writing plan (Lesson 16): today's goal, how
   far ahead or behind you are, your streak, your pace and the date you will
   finish at it, and a *Words left* chart with the planned line (dashed)
-  against what you have written.
+  against what you have written. If you adjusted the plan from your progress
+  (F8 W a or e), the planned line drops straight down on that day, marked
+  /recalculated/: before it, the plan as it was; after it, the words you
+  really had left.
 
 With a plan running, the header also shows a chip such as *Today 350 /
 1,194* on every tab; click it for this tab. Both are as of the last word

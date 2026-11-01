@@ -31,6 +31,8 @@
 (declare-function org-scribe-planner--daily-deltas "org-scribe-planner")
 (declare-function org-scribe-planner--entry-delta "org-scribe-planner")
 (declare-function org-scribe-planner--expected-through "org-scribe-planner")
+(declare-function org-scribe-planner--planned-total "org-scribe-planner")
+(declare-function org-scribe-planner--rebase-step "org-scribe-planner")
 (declare-function org-scribe-planner--status "org-scribe-planner")
 (declare-function org-scribe-planner--day-goal "org-scribe-planner")
 (declare-function org-scribe-planner--weekday "org-scribe-planner")
@@ -117,7 +119,9 @@ Returns nil if no data has been logged for today."
 
 (defun org-scribe-planner--calculate-current-streak (plan)
   "Calculate current and longest writing streaks for PLAN.
-Returns plist with :current :longest and :last-streak-date."
+Returns plist with :current :longest and :last-streak-date.  Only the
+plan's writing days up to today count; rest days neither extend nor
+break a streak."
   (let* ((daily-counts (org-scribe-plan-daily-word-counts plan))
          (schedule (org-scribe-planner--generate-day-schedule plan))
          (today (org-scribe-planner--get-today-date))
@@ -137,8 +141,12 @@ Returns plist with :current :longest and :last-streak-date."
              (delta (org-scribe-planner--entry-delta daily-counts date (org-scribe-plan-preexisting-words plan)))
              (has-words (and delta (> delta 0))))
 
-        ;; Only count working days (not spare days)
-        (unless is-spare
+        ;; Only count working days (not spare days), up to today: a day
+        ;; to come has no words yet and must not break the streak.  Nor
+        ;; does today before anything is written: the day isn't over.
+        (unless (or is-spare
+                    (string< today date)
+                    (and (string= date today) (not has-words)))
           (if has-words
               (progn
                 (setq temp-streak (1+ temp-streak))
@@ -224,18 +232,18 @@ With MARKS, append a check mark or a warning sign."
 (defun org-scribe-planner--calculate-schedule-position (plan)
   "Calculate if PLAN is ahead or behind schedule.
 Returns plist with :status :days-ahead :words-ahead :current-words :percentage :days-elapsed :days-remaining.
-:expected-by-today holds the goals through yesterday: today's goal isn't
-due until the day is over, while the words already written today count.
-Accordingly, :days-elapsed counts the days before today and
-:days-remaining the working days from today on."
+:expected-by-today is where the manuscript should stand at the end of
+today, as `org-scribe-planner--status' measures it: today's goal counts
+already.  :days-elapsed counts the days before today and :days-remaining
+the working days from today on."
   (let* ((schedule (org-scribe-planner--generate-day-schedule plan))
          (today (org-scribe-planner--get-today-date))
          ;; current-words is kept in sync with the latest cumulative ledger
          ;; entry by every write path, so it IS the total written so far.
          (cumulative-actual (org-scribe-plan-current-words plan))
-         ;; Where the manuscript should stand at the end of yesterday
-         (expected-by-today (org-scribe-planner--expected-through
-                             plan (org-scribe-planner--add-days today -1)))
+         (status (org-scribe-planner--status plan))
+         ;; Where the manuscript should stand at the end of today
+         (expected-by-today (or (plist-get status :expected) 0))
          (expected-days 0)
          (days-elapsed 0)
          (days-remaining 0))
@@ -267,7 +275,7 @@ Accordingly, :days-elapsed counts the days before today and
            (words-ahead (- cumulative-actual expected-by-today))
            ;; Writing days ahead along the schedule, not words ÷ the
            ;; current daily target (which changes with every recalculation)
-           (days-ahead (or (plist-get (org-scribe-planner--status plan) :days) 0))
+           (days-ahead (or (plist-get status :days) 0))
            (status (cond
                    ((>= words-ahead 0) 'ahead)
                    (t 'behind))))
@@ -428,7 +436,7 @@ beginning, and displayed after BODY executes."
                             (org-scribe-planner--format-number words-ahead)
                             sign
                             days-ahead))
-              (insert (format "  Expected so far (through yesterday): %s words\n"
+              (insert (format "  Expected by the end of today: %s words\n"
                             (org-scribe-planner--format-number
                              (plist-get position :expected-by-today))))
               (insert (format "  Actual by today: %s words\n\n"
@@ -562,7 +570,8 @@ WIDTH and HEIGHT are chart dimensions, MAX-WORDS is the scale maximum."
         (let ((cumulative-actual (or (org-scribe-plan-preexisting-words plan) 0)))
           (dolist (day schedule)
             (let* ((date (plist-get day :date))
-                   (cumulative-planned (plist-get day :cumulative))
+                   ;; As planned: a day before a recalculation as it stood
+                   (cumulative-planned (org-scribe-planner--planned-total plan day))
                    (ideal-remaining (- total cumulative-planned))
                    (entry (assoc date daily-counts))
                    (actual-words (when entry
@@ -641,6 +650,9 @@ Returns t if successful, nil otherwise."
   (let* ((schedule (org-scribe-planner--generate-day-schedule plan))
          (total (org-scribe-plan-total-words plan))
          (daily-counts (org-scribe-plan-daily-word-counts plan))
+         (step (org-scribe-planner--rebase-step plan))
+         (step-day (when step
+                     (org-scribe-planner--add-days (plist-get step :date) -1)))
          (data-file (make-temp-file "org-scribe-burndown" nil ".dat"))
          (script-file (make-temp-file "org-scribe-burndown" nil ".gp")))
 
@@ -653,7 +665,8 @@ Returns t if successful, nil otherwise."
             (let ((cumulative-actual (or (org-scribe-plan-preexisting-words plan) 0)))
               (dolist (day schedule)
                 (let* ((date (plist-get day :date))
-                       (cumulative-planned (plist-get day :cumulative))
+                       ;; As planned: a day before a recalculation as it stood
+                       (cumulative-planned (org-scribe-planner--planned-total plan day))
                        (ideal-remaining (- total cumulative-planned))
                        (entry (assoc date daily-counts))
                        (actual-words (when entry
@@ -667,7 +680,14 @@ Returns t if successful, nil otherwise."
                   (insert (format "%s %d %d\n"
                                 date
                                 ideal-remaining
-                                (- total cumulative-actual)))))))
+                                (- total cumulative-actual)))
+                  ;; The recalculation's step: a second point on the same
+                  ;; date, where the recalculated plan starts from
+                  (when (equal date step-day)
+                    (insert (format "%s %d %d\n"
+                                    date
+                                    (- total (plist-get step :to))
+                                    (- total cumulative-actual))))))))
 
           ;; Write gnuplot script
           (with-temp-file script-file
@@ -810,6 +830,9 @@ otherwise a refresh would show the old chart."
 Returns t if successful, nil otherwise."
   (let* ((schedule (org-scribe-planner--generate-day-schedule plan))
          (daily-counts (org-scribe-plan-daily-word-counts plan))
+         (step (org-scribe-planner--rebase-step plan))
+         (step-day (when step
+                     (org-scribe-planner--add-days (plist-get step :date) -1)))
          (data-file (make-temp-file "org-scribe-cumulative" nil ".dat"))
          (script-file (make-temp-file "org-scribe-cumulative" nil ".gp"))
          (today (org-scribe-planner--get-today-date)))
@@ -823,7 +846,8 @@ Returns t if successful, nil otherwise."
             (let ((cumulative-actual (or (org-scribe-plan-preexisting-words plan) 0)))
               (dolist (day schedule)
                 (let* ((date (plist-get day :date))
-                       (cumulative-planned (plist-get day :cumulative))
+                       ;; As planned: a day before a recalculation as it stood
+                       (cumulative-planned (org-scribe-planner--planned-total plan day))
                        (entry (assoc date daily-counts))
                        (actual-words (when entry
                                       (org-scribe-planner--get-entry-words entry))))
@@ -834,12 +858,14 @@ Returns t if successful, nil otherwise."
                     (setq cumulative-actual actual-words))
 
                   ;; Write data point (use NA for actual if no data yet)
-                  (insert (format "%s %d %s\n"
-                                date
-                                cumulative-planned
-                                (if (> cumulative-actual 0)
+                  (let ((actual (if (> cumulative-actual 0)
                                     (number-to-string cumulative-actual)
-                                  "?")))))))
+                                  "?")))
+                    (insert (format "%s %d %s\n" date cumulative-planned actual))
+                    ;; The recalculation's step: a second point on the same
+                    ;; date, where the recalculated plan starts from
+                    (when (equal date step-day)
+                      (insert (format "%s %d %s\n" date (plist-get step :to) actual))))))))
 
           ;; Write gnuplot script
           (with-temp-file script-file
@@ -913,7 +939,7 @@ plot '%s' using 1:2 with lines ls 1 title 'Planned Progress', \\
                         (insert (propertize "Current Status\n" 'face 'org-level-2))
                         (insert (format "  Actual words written:   %s\n"
                                       (org-scribe-planner--format-number cumulative-actual)))
-                        (insert (format "  Expected by yesterday:  %s\n"
+                        (insert (format "  Expected by end of today: %s\n"
                                       (org-scribe-planner--format-number expected-by-today)))
                         (let ((status-text (org-scribe-planner--status-text position t))
                               (sign (if (>= words-ahead 0) "+" "")))

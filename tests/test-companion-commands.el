@@ -931,7 +931,7 @@
                      (test-companion-commands--chapter-scenes
                       root "Chapter 2 - What It Costs")))
       (let ((text (test-companion-commands--subtree root "A brand new scene")))
-        (should (string-prefix-p "*** TODO A brand new scene :ignore:\n" text))
+        (should (string-prefix-p "*** TOWRITE A brand new scene :ignore:\n" text))
         (should (string-match-p (format "^:ID: +%s$" (regexp-quote id)) text))
         (should (string-match-p ":WORD-OBJECTIVE: 500" text))
         (should (string-match-p "^:Summary:$" text))
@@ -949,7 +949,7 @@
                    (test-companion-commands--chapter-scenes root "Chapter 1 - Three Alarms")))
     ;; the chapter heading's own text stays above the new scene
     (should (< (string-search "** FINISHED Chapter 1" (test-companion-commands--text root "novel.org"))
-               (string-search "*** TODO Very first" (test-companion-commands--text root "novel.org"))))))
+               (string-search "*** TOWRITE Very first" (test-companion-commands--text root "novel.org"))))))
 
 (ert-deftest test-companion-commands-create-scene-at-the-end-of-the-last-chapter ()
   (test-companion-commands--with-project root
@@ -1103,7 +1103,7 @@
       (should (test-companion-commands--ok-p answer))
       (should (equal '("Opening" "Interlude" "Middle" "Ending")
                      (test-companion-commands--act-scenes root)))
-      (should (string-match-p "^\\*\\* TODO Interlude :ignore:$"
+      (should (string-match-p "^\\*\\* TOWRITE Interlude :ignore:$"
                               (test-companion-commands--text root "story.org"))))))
 
 (ert-deftest test-companion-commands-short-story-move-scene-within-the-act ()
@@ -1173,7 +1173,7 @@ The project type must come from ROOT, or a short story is read as a novel."
                      (mapcar #'car (cdr (assoc "Act I" (test-companion-commands--order root))))))
       (should (null (test-companion-commands--chapter-scenes root "Interlude")))
       (let ((text (test-companion-commands--subtree root "Interlude")))
-        (should (string-prefix-p "** TODO Interlude :ignore:\n" text))
+        (should (string-prefix-p "** TOWRITE Interlude :ignore:\n" text))
         (should (string-match-p (format "^:ID: +%s$" (regexp-quote id)) text))
         (should (string-match-p ":WORD-OBJECTIVE: 3000" text))
         (should-not (string-match-p "scene-break" text))))))
@@ -1228,9 +1228,9 @@ The project type must come from ROOT, or a short story is read as a novel."
   (let ((org-scribe-project-type-cache nil))
     (cl-letf (((symbol-function 'org-scribe-project-levels)
                (lambda () '(:chapter 2 :scene 3 :scene-tag "ignore"))))
-      (should (equal "** TODO C :ignore:\n:PROPERTIES:\n:WORDCOUNT: 0\n:WORD-OBJECTIVE: 3000\n:END:\n"
+      (should (equal "** TOWRITE C :ignore:\n:PROPERTIES:\n:WORDCOUNT: 0\n:WORD-OBJECTIVE: 3000\n:END:\n"
                      (org-scribe--chapter-template "C")))
-      (should (string-prefix-p "** TODO C :ignore:\n:PROPERTIES:\n:WORDCOUNT: 0\n:WORD-OBJECTIVE: 3000\n:END:\n\n*** TODO S :ignore:\n"
+      (should (string-prefix-p "** TOWRITE C :ignore:\n:PROPERTIES:\n:WORDCOUNT: 0\n:WORD-OBJECTIVE: 3000\n:END:\n\n*** TOWRITE S :ignore:\n"
                                (org-scribe--chapter-template "C" "S"))))))
 
 (ert-deftest test-companion-commands-create-scene-in-a-spanish-project-uses-its-language ()
@@ -1240,7 +1240,7 @@ The project type must come from ROOT, or a short story is read as a novel."
       (should (test-companion-commands--ok-p answer))
       (let ((text (with-current-buffer (find-file-noselect (expand-file-name "novela.org" root))
                     (buffer-string))))
-        (should (string-match-p "^\\*\\*\\* TODO Escena nueva :ignore:$" text))
+        (should (string-match-p "^\\*\\*\\* TOWRITE Escena nueva :ignore:$" text))
         (should (string-match-p "^:Personajes:$" text))
         (should (string-match-p "^:Punto-de-trama:$" text))
         (should-not (string-match-p "^:Characters:$" text))))))
@@ -1576,7 +1576,7 @@ The project type must come from ROOT, or a short story is read as a novel."
                                     :title "The Third Alarm")
       (let ((renamed (test-companion-commands--text root "novel.org")))
         (test-companion-commands--run root "set-todo" :id test-companion-commands--scene-1
-                                      :state "TODO")
+                                      :state "TOWRITE")
         (should (test-companion-commands--ok-p (test-companion-commands--run root "undo")))
         (should (equal renamed (test-companion-commands--text root "novel.org")))
         (should (test-companion-commands--can-undo root))
@@ -1630,7 +1630,7 @@ the typing cannot, since undoing them would land at stale positions."
     (test-companion-commands--type-in-emacs root)
     (let ((typed (test-companion-commands--text root "novel.org")))
       (test-companion-commands--run root "set-todo" :id test-companion-commands--scene-1
-                                    :state "TODO")
+                                    :state "TOWRITE")
       (should (test-companion-commands--ok-p (test-companion-commands--run root "undo")))
       (should (equal typed (test-companion-commands--text root "novel.org")))
       (should-not (test-companion-commands--can-undo root))
@@ -1699,14 +1699,14 @@ the typing cannot, since undoing them would land at stale positions."
     (let ((original (test-companion-commands--text root "novel.org"))
           (answer (test-companion-commands--batch
                    root
-                   (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
-                   (list "set-todo" :id test-companion-commands--scene-2 :state "TODO")
+                   (list "set-todo" :id test-companion-commands--scene-1 :state "TOWRITE")
+                   (list "set-todo" :id test-companion-commands--scene-2 :state "TOWRITE")
                    (list "set-field" :id test-companion-commands--scene-1 :key "characters"
                          :links (vector test-companion-commands--sam)))))
       (should (test-companion-commands--ok-p answer))
       (should (= 3 (plist-get answer :count)))
-      (should (equal "TODO" (test-companion-commands--todo-of root "Scene 1 - The Alarm")))
-      (should (equal "TODO" (test-companion-commands--todo-of root "Scene 2 - Coffee Shop Encounter")))
+      (should (equal "TOWRITE" (test-companion-commands--todo-of root "Scene 1 - The Alarm")))
+      (should (equal "TOWRITE" (test-companion-commands--todo-of root "Scene 2 - Coffee Shop Encounter")))
       ;; one page undo takes all three back
       (should (test-companion-commands--ok-p (test-companion-commands--run root "undo")))
       (should (equal original (test-companion-commands--text root "novel.org")))
@@ -1717,8 +1717,8 @@ the typing cannot, since undoing them would land at stale positions."
     (let ((original (test-companion-commands--text root "novel.org")))
       (test-companion-commands--batch
        root
-       (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
-       (list "set-todo" :id test-companion-commands--scene-2 :state "TODO"))
+       (list "set-todo" :id test-companion-commands--scene-1 :state "TOWRITE")
+       (list "set-todo" :id test-companion-commands--scene-2 :state "TOWRITE"))
       (test-companion-commands--undo-once root)
       (should (equal original (test-companion-commands--text root "novel.org"))))))
 
@@ -1727,8 +1727,8 @@ the typing cannot, since undoing them would land at stale positions."
     (let* ((original (test-companion-commands--text root "novel.org"))
            (answer (test-companion-commands--batch
                     root
-                    (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
-                    (list "set-todo" :id "no-such-id" :state "TODO"))))
+                    (list "set-todo" :id test-companion-commands--scene-1 :state "TOWRITE")
+                    (list "set-todo" :id "no-such-id" :state "TOWRITE"))))
       (should (equal "not-found" (test-companion-commands--code answer)))
       (should (string-match-p "\\`Change 2: .*Nothing was changed\\.\\'"
                               (plist-get (plist-get answer :error) :message)))
@@ -1746,12 +1746,12 @@ the typing cannot, since undoing them would land at stale positions."
       (should (equal "invalid" (test-companion-commands--code
                                 (test-companion-commands--batch
                                  root
-                                 (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
+                                 (list "set-todo" :id test-companion-commands--scene-1 :state "TOWRITE")
                                  (list "move-node" :id test-companion-commands--scene-1)))))
       (should (equal "invalid" (test-companion-commands--code
                                 (test-companion-commands--run
                                  root "batch"
-                                 :ops (make-vector 501 '(:op "set-todo" :args (:id "x" :state "TODO")))))))
+                                 :ops (make-vector 501 '(:op "set-todo" :args (:id "x" :state "TOWRITE")))))))
       (should (equal original (test-companion-commands--text root "novel.org"))))))
 
 (ert-deftest test-companion-commands-batch-auto-saves-once-and-not-on-failure ()
@@ -1763,14 +1763,14 @@ the typing cannot, since undoing them would land at stale positions."
         (add-hook 'after-save-hook (lambda () (cl-incf saves)) nil t))
       (test-companion-commands--batch
        root
-       (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
-       (list "set-todo" :id "no-such-id" :state "TODO"))
+       (list "set-todo" :id test-companion-commands--scene-1 :state "TOWRITE")
+       (list "set-todo" :id "no-such-id" :state "TOWRITE"))
       (should (= 0 saves))
       (should (equal on-disk (test-companion-commands--disk root "novel.org")))
       (test-companion-commands--batch
        root
-       (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
-       (list "set-todo" :id test-companion-commands--scene-2 :state "TODO"))
+       (list "set-todo" :id test-companion-commands--scene-1 :state "TOWRITE")
+       (list "set-todo" :id test-companion-commands--scene-2 :state "TOWRITE"))
       (should (= 1 saves)))))
 
 ;;; The web files only use strings that exist
@@ -1944,10 +1944,10 @@ ask \"Really edit the buffer?\" while the browser's request waits."
                 ((symbol-function 'yes-or-no-p) (lambda (&rest _) (setq asked t) nil))
                 ((symbol-function 'read-char-choice) (lambda (&rest _) (setq asked t) ?n)))
         (dolist (call (list (list "set-title" :id test-companion-commands--scene-1 :title "Second")
-                            (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
+                            (list "set-todo" :id test-companion-commands--scene-1 :state "TOWRITE")
                             (list "batch" :ops (vector (list :op "set-todo"
                                                              :args (list :id test-companion-commands--scene-1
-                                                                         :state "TODO"))))))
+                                                                         :state "TOWRITE"))))))
           (let ((answer (apply #'test-companion-commands--run root call)))
             (should (equal "conflict" (test-companion-commands--code answer)))
             (should (string-match-p "novel.org" (plist-get (plist-get answer :error) :message)))))

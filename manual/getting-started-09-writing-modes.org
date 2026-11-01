@@ -455,9 +455,9 @@ its outline from Org's *imenu index*, and that index stops at the depth set by
 
 #+BEGIN_EXAMPLE
 * Act I                      ← level 1  (shown)
-** TODO Chapter 1            ← level 2  (shown)
-*** TODO Scene 1             ← level 3  (NOT shown by default)
-*** TODO Scene 2             ← level 3  (NOT shown by default)
+** TOWRITE Chapter 1            ← level 2  (shown)
+*** TOWRITE Scene 1             ← level 3  (NOT shown by default)
+*** TOWRITE Scene 2             ← level 3  (NOT shown by default)
 #+END_EXAMPLE
 
 org-scribe's novel templates put *scenes at level 3*, which is exactly one

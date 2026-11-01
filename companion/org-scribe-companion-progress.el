@@ -40,6 +40,8 @@
 (declare-function org-scribe-planner--status "org-scribe-planner")
 (declare-function org-scribe-planner--entry-delta "org-scribe-planner")
 (declare-function org-scribe-planner--get-entry-words "org-scribe-planner")
+(declare-function org-scribe-planner--planned-total "org-scribe-planner")
+(declare-function org-scribe-planner--rebase-step "org-scribe-planner")
 (declare-function org-scribe-planner--get-today-target "org-scribe-planner-dashboards")
 (declare-function org-scribe-planner--get-today-actual "org-scribe-planner-dashboards")
 (declare-function org-scribe-planner--calculate-current-streak "org-scribe-planner-dashboards")
@@ -99,9 +101,10 @@ only when the project opted in and a plan file exists."
 (defun org-scribe-companion-progress--days (plan)
   "Return PLAN's days as a vector for the burndown.
 Each day: `date', `goal' (that day's words, 0 on a rest day), `rest',
-`planned' (where the manuscript should stand at its end) and `actual'
-\(where it stood, the last recorded total carried forward; null after
-today)."
+`planned' (where the manuscript should stand at its end, as planned: a
+day before a recalculation from progress as it stood, see
+`org-scribe-planner--planned-total') and `actual' (where it stood, the
+last recorded total carried forward; null after today)."
   (let* ((today (org-scribe-planner--get-today-date))
          (counts (org-scribe-plan-daily-word-counts plan))
          (actual (or (org-scribe-plan-preexisting-words plan) 0))
@@ -114,7 +117,7 @@ today)."
         (push (list :date date
                     :goal (or (plist-get day :words) 0)
                     :rest (if (plist-get day :is-spare-day) t :false)
-                    :planned (or (plist-get day :cumulative) 0)
+                    :planned (org-scribe-planner--planned-total plan day)
                     :actual (if (string< today date) :null actual))
               days)))
     (vconcat (nreverse days))))
@@ -156,7 +159,14 @@ today)."
                                 (plist-get velocity :eta))
                           :projected (org-scribe-companion-progress--or-null
                                       (plist-get velocity :projected-date)))
-          :days (org-scribe-companion-progress--days plan))))
+          :days (org-scribe-companion-progress--days plan)
+          ;; the last recalculation from progress: the burndown draws its
+          ;; step (null when there is none)
+          :rebase (if-let* ((step (org-scribe-planner--rebase-step plan)))
+                      (list :date (plist-get step :date)
+                            :from (plist-get step :from)
+                            :to (plist-get step :to))
+                    :null))))
 
 ;;; The answer
 

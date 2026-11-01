@@ -127,7 +127,7 @@ A sync of 500 manuscript words is a day of 500 whatever is written elsewhere."
       (should (= (org-scribe-planner--entry-delta
                   (org-scribe-plan-daily-word-counts plan) "2026-10-12" 3672)
                  500))
-      (should-not (eq (plist-get (org-scribe-planner--status plan) :status) 'behind)))))
+      (should-not (eq (plist-get (org-scribe-planner--status plan 'yesterday) :status) 'behind)))))
 
 (ert-deftest test-planner-outside-update-progress-ignores-empty-manuscript ()
   "`u' with a counted manuscript of 0 changes nothing, like the automatic sync.

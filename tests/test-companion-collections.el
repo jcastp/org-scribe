@@ -108,7 +108,7 @@
     (let ((before (org-scribe-companion--revision-string root)))
       (should (string-match-p "-k[0-9a-f]\\{8\\}\\'" before))
       (should (test-companion-collections--ok-p
-               (test-companion-collections--run root :name "Mine" :filters '(:todo "TODO"))))
+               (test-companion-collections--run root :name "Mine" :filters '(:todo "TOWRITE"))))
       (should-not (equal before (org-scribe-companion--revision-string root))))))
 
 ;;; set-collection
@@ -127,17 +127,17 @@
 
 (ert-deftest test-companion-collections-new-ones-go-at-the-end ()
   (test-companion-collections--with-project root
-    (test-companion-collections--run root :name "B" :filters '(:todo "TODO"))
+    (test-companion-collections--run root :name "B" :filters '(:todo "TOWRITE"))
     (test-companion-collections--run root :name "A" :filters '(:todo "-"))
     (should (equal '("B" "A")
                    (mapcar #'car (org-scribe-companion-collections-read root))))))
 
 (ert-deftest test-companion-collections-refusals ()
   (test-companion-collections--with-project root
-    (test-companion-collections--run root :name "Taken" :filters '(:todo "TODO"))
-    (dolist (case `(((:name "" :filters (:todo "TODO")) "invalid")
-                    ((:name "a | b" :filters (:todo "TODO")) "invalid")
-                    ((:name ,(make-string 81 ?x) :filters (:todo "TODO")) "invalid")
+    (test-companion-collections--run root :name "Taken" :filters '(:todo "TOWRITE"))
+    (dolist (case `(((:name "" :filters (:todo "TOWRITE")) "invalid")
+                    ((:name "a | b" :filters (:todo "TOWRITE")) "invalid")
+                    ((:name ,(make-string 81 ?x) :filters (:todo "TOWRITE")) "invalid")
                     ((:name "taken" :filters (:todo "-")) "invalid") ; case is ignored
                     ((:name "New" :filters (:colour "red")) "invalid")
                     ((:name "New" :filters (:pov "no-such-id")) "invalid")
@@ -147,18 +147,18 @@
                     ((:name "New" :filters (:todo "!DONE")) "invalid")
                     ((:name "New" :filters (:pov "" :todo "")) "invalid")
                     ((:name "New") "invalid")
-                    ((:old "Gone" :name "New" :filters (:todo "TODO")) "conflict")
+                    ((:old "Gone" :name "New" :filters (:todo "TOWRITE")) "conflict")
                     ((:old "Gone" :delete t) "conflict")
                     ((:delete t) "invalid")))
       (should (equal (cadr case)
                      (test-companion-collections--code
                       (apply #'test-companion-collections--run root (car case))))))
     ;; nothing was written by the refusals
-    (should (equal '("Taken | todo=TODO") (test-companion-collections--lines root)))))
+    (should (equal '("Taken | todo=TOWRITE") (test-companion-collections--lines root)))))
 
 (ert-deftest test-companion-collections-update-rename-and-delete ()
   (test-companion-collections--with-project root
-    (test-companion-collections--run root :name "One" :filters '(:todo "TODO"))
+    (test-companion-collections--run root :name "One" :filters '(:todo "TOWRITE"))
     (test-companion-collections--run root :name "Two" :filters '(:todo "-"))
     ;; new filters, same place
     (should (test-companion-collections--ok-p
@@ -191,7 +191,7 @@
 (ert-deftest test-companion-collections-other-marker-lines-are-kept ()
   (test-companion-collections--with-project root
     (let ((before (org-scribe--project-marker-get root "Language")))
-      (test-companion-collections--run root :name "A" :filters '(:todo "TODO"))
+      (test-companion-collections--run root :name "A" :filters '(:todo "TOWRITE"))
       (test-companion-collections--run root :old "A" :delete t)
       (should (equal before (org-scribe--project-marker-get root "Language")))
       (should-not (test-companion-collections--lines root)))))
@@ -202,7 +202,7 @@
     (org-scribe-project-type-cache-clear)
     (should (equal "invalid" (test-companion-collections--code
                               (test-companion-collections--run
-                               root :name "A" :filters '(:todo "TODO")))))))
+                               root :name "A" :filters '(:todo "TOWRITE")))))))
 
 (ert-deftest test-companion-collections-hidden-entities-count ()
   "A character with a negative Weight can still be a collection's filter."

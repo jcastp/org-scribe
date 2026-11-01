@@ -59,7 +59,7 @@ Esto te da una cifra inflada e inexacta.
 Mira esta escena:
 
 #+BEGIN_EXAMPLE
-,*** TODO La alarma :ignore:
+,*** TOWRITE La alarma :ignore:
 :PROPERTIES:
 :PoV: Alex
 :Personajes: Alex, Sam

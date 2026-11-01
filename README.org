@@ -342,8 +342,8 @@ same sections as a novel's but keeps them at the top level, with no parts.
 
 The manuscript starts with one scene (=** Scene 1=; add more with =F8 s=)
 under =* Story Content=, which holds the whole word target. Scenes carry the same eighteen-property scene metadata
-drawer, the same =:ignore:= tag, and the same TODO vocabulary
-(=TODO=/=TOWRITE=/=TOREVIEW=/=REDO=/=RESTRUCTURE=/=FINISHED=/=PURGE=) a novel's
+drawer, the same =:ignore:= tag, and the same state vocabulary
+(=TOWRITE=/=TOREVIEW=/=REDO=/=RESTRUCTURE=/=FINISHED=/=PURGE=) a novel's
 scenes do — word counting, search, linking, and the health report all work
 the same way regardless of project type. The one thing =F8 c= (insert
 chapter) cannot do here is insert a chapter: a short story has no chapter

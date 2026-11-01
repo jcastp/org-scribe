@@ -45,8 +45,7 @@
 (declare-function org-scribe-planner--ensure-plan-for-current-project "planning/org-scribe-planner")
 (declare-function org-scribe-planner--generate-day-schedule "planning/org-scribe-planner")
 (declare-function org-scribe-planner--get-today-date         "planning/org-scribe-planner")
-(declare-function org-scribe-planner--expected-through       "planning/org-scribe-planner")
-(declare-function org-scribe-planner--add-days               "planning/org-scribe-planner")
+(declare-function org-scribe-planner--status                 "planning/org-scribe-planner")
 (declare-function org-scribe-planner--outside-total          "planning/org-scribe-planner")
 (defvar org-scribe-planner--current-plan)
 
@@ -70,19 +69,12 @@
 
 (defun org-scribe--health-plan-status (plan)
   "Return \"On track\", \"Ahead by N words\" or \"Behind by N words\" for PLAN.
-Expected words are computed by walking PLAN's day schedule up to and
-including yesterday, skipping spare days — matching
-`org-scribe-planner--show-progress-report' — instead of the naive
-elapsed-days × daily-words, which overcounts every spare day (e.g.
-weekends off) as an expected writing day.  Today's goal isn't due until
-the day is over, so it never makes the plan look behind."
-  (let* ((today (org-scribe-planner--get-today-date))
-         ;; Where the manuscript should stand at the end of yesterday:
-         ;; pre-existing words plus the goals through it, on the baseline of
-         ;; the last recalculation from progress
-         (expected (org-scribe-planner--expected-through
-                    plan (org-scribe-planner--add-days today -1))))
-    (let ((delta (- expected (org-scribe-plan-current-words plan))))
+Measured as the planner's own status (`org-scribe-planner--status'):
+against where the manuscript should stand at the end of today, along the
+day schedule (spare days skipped), so the report, the companion and F8 W
+agree."
+  (let ((status (org-scribe-planner--status plan)))
+    (let ((delta (if status (- (plist-get status :difference)) 0)))
       (cond ((> delta 0) (org-scribe-msg 'msg-health-plan-behind delta))
             ((< delta 0) (org-scribe-msg 'msg-health-plan-ahead (- delta)))
             (t (org-scribe-msg 'msg-health-plan-on-track))))))
@@ -862,8 +854,7 @@ The current buffer is expected to be in `org-mode'."
            (insert "- " (org-scribe-msg 'msg-health-plan-days-remaining
                                         (plist-get plan :days-remaining))
                    "\n")
-           ;; Expected words run through yesterday (today isn't due
-           ;; yet), unlike the mode line's today figure: say so.
+           ;; Expected words run through the end of today: say so.
            (insert "- " (org-scribe-msg 'msg-health-plan-status (plist-get plan :status)) "\n")
            (when (and plan-word-target (/= target plan-word-target))
              (insert (format "- %s\n" (org-scribe-msg 'msg-health-plan-target-mismatch

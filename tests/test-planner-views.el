@@ -125,10 +125,12 @@ Written: 1,400 on Nov 2, 1,500 on Nov 3, nothing on Nov 4, 900 on Nov 5,
                    "560 ✗ 56%")))
 
 (ert-deftest test-planner-views-planned-total-after-a-rebase ()
-  "A recalculation from progress shifts the planned total from today on;
-a past day is measured against the plan as it stood.  With the adjustment
-applied from the start, the first day of a plan read a negative total."
-  (let ((plan (make-org-scribe-plan :title "T" :schedule-adjustment 5000)))
+  "A recalculation from progress shifts the planned total from its date on;
+a day before it is measured against the plan as it stood.  With the
+adjustment applied from the start, the first day of a plan read a
+negative total."
+  (let ((plan (make-org-scribe-plan :title "T" :schedule-adjustment 5000
+                                    :rebased-from "2026-11-10")))
     (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
                (lambda () "2026-11-10")))
       (should (= 1120 (org-scribe-planner--planned-total

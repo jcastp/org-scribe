@@ -258,33 +258,33 @@ not \"Past days locked\" for a day that is today."
 
 ;;; On-track status: today isn't expected until it's over
 
-(ert-deftest test-planner-schedule-position-expects-goals-through-yesterday ()
-  "Expected words stop at yesterday; today counts as a remaining day.
-Regression: today's goal was already expected, so every morning showed
-the plan a full day behind."
+(ert-deftest test-planner-schedule-position-expects-goals-through-today ()
+  "Expected words run through the end of today; today still counts as a
+remaining day.  Decided 2026-11-01: the status is measured against what
+is due today (it used to stop at yesterday)."
   (let* ((plan (make-org-scribe-plan :title "P" :total-words 10000 :daily-words 1000
                                      :start-date (test-recalc--day -2)
                                      :end-date (test-recalc--day 7) :days 10
-                                     :current-words 2000))
+                                     :current-words 3000))
          (position (org-scribe-planner--calculate-schedule-position plan)))
-    (should (= (plist-get position :expected-by-today) 2000))
+    (should (= (plist-get position :expected-by-today) 3000))
     (should (= (plist-get position :words-ahead) 0))
     (should (eq (plist-get position :status) 'ahead))
     (should (= (plist-get position :days-elapsed) 2))
     ;; Today and the 7 days after it
     (should (= (plist-get position :days-remaining) 8))))
 
-(ert-deftest test-planner-progress-report-expects-goals-through-yesterday ()
-  "The progress message isn't behind just because today has started."
+(ert-deftest test-planner-progress-report-expects-goals-through-today ()
+  "The progress message counts today's goal as due."
   (let ((plan (make-org-scribe-plan :title "P" :total-words 10000 :daily-words 1000
                                     :start-date (test-recalc--day -2)
                                     :end-date (test-recalc--day 7) :days 10
-                                    :current-words 2000))
+                                    :current-words 3000))
         (shown nil))
     (cl-letf (((symbol-function 'message)
                (lambda (fmt &rest args) (setq shown (apply #'format fmt args)))))
       (org-scribe-planner--show-progress-report plan))
-    ;; Exactly the words expected through yesterday: on track
+    ;; Exactly the words expected by the end of today: on track
     (should (string-match-p "| On track" shown))))
 
 ;;; Mode line

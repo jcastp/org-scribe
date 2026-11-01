@@ -109,16 +109,16 @@
                1500))))
 
 (ert-deftest test-planner-pre-schedule-position-on-track ()
-  "Two days met on top of a 20,000-word manuscript is exactly on track.
+  "Three days met (today's included) on a 20,000-word manuscript: on track.
 Before, expected counted from 0 while CURRENT_WORDS included the
 manuscript, so the plan looked 20,000 words ahead."
   (let* ((plan (make-org-scribe-plan :total-words 30000 :daily-words 1000
                                      :start-date (test-pre--day -2)
                                      :end-date (test-pre--day 7) :days 10
                                      :preexisting-words 20000
-                                     :current-words 22000))
+                                     :current-words 23000))
          (position (org-scribe-planner--calculate-schedule-position plan)))
-    (should (= (plist-get position :expected-by-today) 22000))
+    (should (= (plist-get position :expected-by-today) 23000))
     (should (= (plist-get position :words-ahead) 0))))
 
 (ert-deftest test-planner-pre-progress-report-on-track ()
@@ -132,7 +132,8 @@ manuscript, so the plan looked 20,000 words ahead."
     (cl-letf (((symbol-function 'message)
                (lambda (fmt &rest args) (setq shown (apply #'format fmt args)))))
       (org-scribe-planner--show-progress-report plan))
-    (should (string-match-p "Behind: -500 words" shown))))
+    ;; Expected by the end of today: 20,000 + 3 × 1,000
+    (should (string-match-p "Behind: -1500 words" shown))))
 
 ;;; Pace and best day
 

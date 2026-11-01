@@ -158,7 +158,7 @@
 
     (let ((content (buffer-string)))
       ;; Check heading
-      (should (string-match-p "\\*\\*\\* TODO Opening Scene :ignore:" content))
+      (should (string-match-p "\\*\\*\\* TOWRITE Opening Scene :ignore:" content))
 
       ;; Check properties
       (should (string-match-p ":PoV:" content))
@@ -236,7 +236,7 @@ ambiguity the glossary removes, and nothing else would fail."
     (org-scribe-insert-scene "")
 
     (let ((content (buffer-string)))
-      (should (string-match-p "\\*\\*\\* TODO New scene :ignore:" content)))))
+      (should (string-match-p "\\*\\*\\* TOWRITE New scene :ignore:" content)))))
 
 (ert-deftest test-insert-scene-whitespace-name ()
   "Test scene template with whitespace-only name uses default."
@@ -245,7 +245,7 @@ ambiguity the glossary removes, and nothing else would fail."
     (org-scribe-insert-scene "   ")
 
     (let ((content (buffer-string)))
-      (should (string-match-p "\\*\\*\\* TODO New scene :ignore:" content)))))
+      (should (string-match-p "\\*\\*\\* TOWRITE New scene :ignore:" content)))))
 
 (ert-deftest test-insert-scene-novel-is-level-3-tagged-ignore ()
   "Explicit regression pin for a novel project, stubbed rather than
@@ -256,7 +256,7 @@ before this command was made project-type aware."
     (with-temp-buffer
       (org-mode)
       (org-scribe-insert-scene "Opening Scene")
-      (should (string-match-p "\\*\\*\\* TODO Opening Scene :ignore:"
+      (should (string-match-p "\\*\\*\\* TOWRITE Opening Scene :ignore:"
                               (buffer-string))))))
 
 (ert-deftest test-insert-scene-short-story-is-level-2 ()
@@ -272,7 +272,7 @@ linking and the health report."
       (org-mode)
       (org-scribe-insert-scene "Opening")
       (let ((content (buffer-string)))
-        (should (string-match-p "^\\*\\* TODO Opening" content))
+        (should (string-match-p "^\\*\\* TOWRITE Opening" content))
         (should-not (string-match-p "^\\*\\*\\* " content))
         ;; Tag presence follows whatever `org-scribe-project-levels' says
         ;; for short-story's `:scene-tag' at the time this test runs --
@@ -304,7 +304,7 @@ not a hardcoded assumption either way."
             (content (buffer-string)))
         (if tag
             (should (string-match-p (format ":%s:" (regexp-quote tag)) content))
-          (should-not (string-match-p "^\\*\\* TODO Opening :" content)))))))
+          (should-not (string-match-p "^\\*\\* TOWRITE Opening :" content)))))))
 
 ;;; Chapter Template Insertion Tests
 
@@ -322,9 +322,13 @@ not a hardcoded assumption either way."
   "A small novel outline for the insertion-point tests.")
 
 (defun test-project--headings ()
-  "Return the buffer's headings as (LEVEL . TITLE) pairs, in order."
-  (org-map-entries (lambda () (cons (org-current-level)
-                                    (org-get-heading t t t t)))))
+  "Return the buffer's headings as (LEVEL . TITLE) pairs, in order.
+The buffers here carry no `#+TODO:' line, so a generated TOWRITE is not a
+keyword to Org and would stay in the title; strip it."
+  (org-map-entries
+   (lambda () (cons (org-current-level)
+                    (replace-regexp-in-string
+                     "\\`TOWRITE " "" (org-get-heading t t t t))))))
 
 (defmacro test-project--in-outline (search &rest body)
   "Run BODY in the outline with point just after the first match of SEARCH."
@@ -405,7 +409,7 @@ report counted the act as a chapter."
     (org-scribe-insert-scene "Interrupted")
     (should (string-match-p "^:PoV: $" (buffer-substring (line-beginning-position)
                                                           (line-end-position))))
-    (should (equal "Interrupted" (org-get-heading t t t t)))))
+    (should (equal "TOWRITE Interrupted" (org-get-heading t t t t)))))
 
 (ert-deftest test-insert-scene-and-chapter-a-typed-pov-is-read ()
   "A name typed where the cursor is left becomes the PoV.
@@ -459,14 +463,14 @@ not parse as a property, so the PoV was silently empty."
 
     (let ((content (buffer-string)))
       ;; Check chapter heading
-      (should (string-match-p "\\*\\* TODO Chapter 1 :ignore:" content))
+      (should (string-match-p "\\*\\* TOWRITE Chapter 1 :ignore:" content))
 
       ;; Check chapter properties
       (should (string-match-p ":WORD-OBJECTIVE: 3000" content))
       (should (string-match-p ":WORDCOUNT: 0" content))
 
       ;; Check first scene is present
-      (should (string-match-p "\\*\\*\\* TODO .+ :ignore:" content))
+      (should (string-match-p "\\*\\*\\* TOWRITE .+ :ignore:" content))
       (should (string-match-p ":PoV:" content))
       (should (string-match-p ":Characters:" content))
       (should (string-match-p ":WORD-OBJECTIVE: 500" content))
@@ -491,7 +495,7 @@ not parse as a property, so the PoV was silently empty."
     (org-scribe-insert-chapter "Chapter 1")
     (goto-char (point-min))
     (should-not (org-entry-get nil "ID"))
-    (re-search-forward "^\\*\\*\\* TODO ")
+    (re-search-forward "^\\*\\*\\* TOWRITE ")
     (should (org-entry-get nil "ID"))))
 
 (ert-deftest test-insert-chapter-empty-name ()
@@ -501,7 +505,7 @@ not parse as a property, so the PoV was silently empty."
     (org-scribe-insert-chapter "")
 
     (let ((content (buffer-string)))
-      (should (string-match-p "\\*\\* TODO New chapter :ignore:" content)))))
+      (should (string-match-p "\\*\\* TOWRITE New chapter :ignore:" content)))))
 
 (ert-deftest test-insert-chapter-refuses-in-short-story-project ()
   "A short story has no chapter level at all (`org-scribe-chapter-level'
@@ -548,10 +552,10 @@ More.
     (goto-char (point-min))
     (org-scribe-insert-scene "Fresh")
     (let ((text (buffer-string)))
-      (should (string-match-p "More\\.\n\\*\\*\\* TODO Fresh" text))
-      (should-not (string-match-p "\\`\\*\\*\\* TODO Fresh" text)))
+      (should (string-match-p "More\\.\n\\*\\*\\* TOWRITE Fresh" text))
+      (should-not (string-match-p "\\`\\*\\*\\* TOWRITE Fresh" text)))
     (org-back-to-heading t)
-    (should (equal "Fresh" (org-get-heading t t t t)))
+    (should (equal "TOWRITE Fresh" (org-get-heading t t t t)))
     (should-not (member "noexport" (org-get-tags)))))
 
 (ert-deftest test-insert-scene-from-noexport-apparatus-leaves-it-alone ()
@@ -560,7 +564,7 @@ More.
     (search-forward "Notes.")
     (org-scribe-insert-scene "Fresh")
     (goto-char (point-min))
-    (re-search-forward "^\\*\\*\\* TODO Fresh")
+    (re-search-forward "^\\*\\*\\* TOWRITE Fresh")
     (should-not (member "noexport" (org-get-tags)))
     (should (equal "Act II" (save-excursion
                               (org-up-heading-safe) (org-up-heading-safe)
@@ -571,7 +575,7 @@ More.
     (goto-char (point-min))
     (org-scribe-insert-chapter "Late")
     (goto-char (point-min))
-    (re-search-forward "^\\*\\* TODO Late")
+    (re-search-forward "^\\*\\* TOWRITE Late")
     (should (equal "Act II" (save-excursion
                               (org-up-heading-safe)
                               (org-get-heading t t t t))))))
@@ -591,7 +595,7 @@ More.
         (search-forward "Log.")
         (org-scribe-insert-scene "Fresh")
         (org-back-to-heading t)
-        (should (equal "Fresh" (org-get-heading t t t t)))
+        (should (equal "TOWRITE Fresh" (org-get-heading t t t t)))
         (org-up-heading-safe)
         (should (equal "Chapter 1" (org-get-heading t t t t)))))))
 
@@ -605,7 +609,7 @@ More.
       (goto-char (point-min))
       (search-forward "Some te")
       (org-scribe-insert-scene "C")
-      (should (string-match-p "^Some text here\n\\*\\*\\* TODO C" (buffer-string))))))
+      (should (string-match-p "^Some text here\n\\*\\*\\* TOWRITE C" (buffer-string))))))
 
 (ert-deftest test-validate-title-rejects-newline-and-padding ()
   (should (org-scribe--validate-project-title "Multi\nline"))

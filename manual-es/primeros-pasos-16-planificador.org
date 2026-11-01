@@ -251,7 +251,7 @@ El calendario tiene sus propias teclas:
 
 El estado dice /On track/ (al día), o /Ahead: +2000 words (+20.0%, +2.0 writing days)/ (por delante), o /Behind: -500 words (-5.0%, -0.5 writing days)/ (por detrás). Dos reglas lo hacen justo:
 
-- *Hoy no vence hasta que termina.* El planificador compara las metas hasta /ayer/ con todo lo que has escrito, /hoy incluido/: tu mañana nunca empieza por detrás, y las palabras de hoy solo pueden ayudar.
+- *La meta de hoy cuenta.* El planificador compara donde deberías estar al final de /hoy/ con todo lo que has escrito, /hoy incluido/: antes de escribir vas por detrás en la meta de hoy, y cada palabra que añades reduce la distancia. Solo ~c~ (Check progress) mira únicamente los días ya terminados, para no proponerte un ajuste cada mañana.
 - *Los días de escritura se miden a lo largo de tu propio calendario*, día a día: los días fuertes de un patrón de valle cuentan como tales.
 
 Aparece en el resumen del calendario y después de cada sincronización. ~F8 W c~ (Check progress) te dice lo mismo y, cuando estás por delante o por detrás, ofrece ajustar (mira el [[*Paso 5: ajusta según tu progreso][Paso 5]]).
@@ -268,7 +268,7 @@ Aparece en el resumen del calendario y después de cada sincronización. ~F8 W c
 
 (Semana, fechas, días escritos, descansos, meta diaria, meta de la semana, escrito, total planificado, total real y diferencia.)
 
-La semana en curso se mide hasta ayer, como el estado.
+La semana en curso se mide hasta ayer; el estado cuenta también la meta de hoy.
 
 ~F8 W M~ (o ~M~) abre la /cuadrícula del mes/: un calendario por mes en el que cada día muestra su meta, su resultado (✓, ✓1500 cuando se supera, ~800 parcial, ✗ no cumplida) y la parte del objetivo total escrita hasta entonces. Hoy aparece entre corchetes, con sus palabras hasta ahora:
 
@@ -467,7 +467,7 @@ Las propiedades principales:
 | ~DAILY_WORD_COUNTS~      | El registro: el total escrito al final de cada día                      |
 | ~SPARE_DAYS~             | Días libres                                                             |
 
-Otras aparecen cuando usas las funciones a las que pertenecen: ~LOCKED_GOALS~ (metas de los días pasados), ~SCHEDULE_ADJUSTMENT~ (la fija un ajuste según el progreso), ~PATTERN~ y ~PATTERN_CONFIG~, ~WEEKEND_MODE~, ~WEEKEND_DAYS~ y ~WEEKEND_DAILY~, ~CUSTOM_GOALS~ (metas de día), ~OUTSIDE_WORDS~ y ~OUTSIDE_FILES~ (palabras escritas en otro sitio).
+Otras aparecen cuando usas las funciones a las que pertenecen: ~LOCKED_GOALS~ (metas de los días pasados), ~SCHEDULE_ADJUSTMENT~ y ~REBASED_FROM~ (las fija un ajuste según el progreso: cuánto se movió el plan y desde qué día), ~PATTERN~ y ~PATTERN_CONFIG~, ~WEEKEND_MODE~, ~WEEKEND_DAYS~ y ~WEEKEND_DAILY~, ~CUSTOM_GOALS~ (metas de día), ~OUTSIDE_WORDS~ y ~OUTSIDE_FILES~ (palabras escritas en otro sitio).
 
 Prefiere las órdenes del planificador a editar las propiedades a mano: las órdenes las mantienen coherentes. La columna Notes es la excepción: escribe en ella con libertad.
 
@@ -544,7 +544,7 @@ Hagamos un ciclo completo de planificar, escribir y revisar.
 6. *Comprueba*: ~F8 W c~. ¿Por delante? Prueba la vista previa de /finish early/ (terminar antes) y pulsa ~C-g~ para dejar el plan como está.
 7. *Echa un vistazo*: ~F8 W M~ para la cuadrícula del mes, ~F8 W D~ para los paneles.
 
-Vuelve mañana: la meta de ayer ya está bloqueada, y el estado de hoy te mide hasta ayer.
+Vuelve mañana: la meta de ayer ya está bloqueada, y el estado de hoy te mide frente a donde deberías estar al final de hoy.
 
 * Preguntas frecuentes
 

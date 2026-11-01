@@ -461,9 +461,9 @@ La causa es una variable de Org, no un ajuste de org-scribe. ~imenu-list~ constr
 
 #+BEGIN_EXAMPLE
 * Acto I                      ← nivel 1  (se muestra)
-** TODO Capítulo 1            ← nivel 2  (se muestra)
-*** TODO Escena 1             ← nivel 3  (no se muestra por defecto)
-*** TODO Escena 2             ← nivel 3  (no se muestra por defecto)
+** TOWRITE Capítulo 1            ← nivel 2  (se muestra)
+*** TOWRITE Escena 1             ← nivel 3  (no se muestra por defecto)
+*** TOWRITE Escena 2             ← nivel 3  (no se muestra por defecto)
 #+END_EXAMPLE
 
 Las plantillas de novela de org-scribe colocan las *escenas en el nivel 3*, justo un nivel más allá del límite. Como las escenas son la unidad por la que realmente navegas, el panel resulta mucho menos útil hasta que subes el límite.

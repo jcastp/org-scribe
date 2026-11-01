@@ -51,8 +51,8 @@ DATE defaults to Nov 10."
 ;;; Status
 
 (ert-deftest test-planner-status-on-track-is-exact ()
-  "Exactly the words expected through yesterday: on track, not ahead."
-  (test-status--on "2026-11-11"
+  "Exactly the words expected by the end of today: on track, not ahead."
+  (test-status--on "2026-11-10"
     (let ((status (org-scribe-planner--status (test-status--plan 10000))))
       (should (eq (plist-get status :status) 'on-track))
       (should (= (plist-get status :difference) 0))
@@ -61,7 +61,7 @@ DATE defaults to Nov 10."
 
 (ert-deftest test-planner-status-ahead-in-words-percent-and-days ()
   "2,000 words ahead of 10,000 expected: +20%, two writing days."
-  (test-status--on "2026-11-11"
+  (test-status--on "2026-11-10"
     (let ((status (org-scribe-planner--status (test-status--plan 12000))))
       (should (eq (plist-get status :status) 'ahead))
       (should (= (plist-get status :difference) 2000))
@@ -72,7 +72,7 @@ DATE defaults to Nov 10."
 
 (ert-deftest test-planner-status-behind ()
   "500 words short: behind by 5% and half a writing day."
-  (test-status--on "2026-11-11"
+  (test-status--on "2026-11-10"
     (let ((status (org-scribe-planner--status (test-status--plan 9500))))
       (should (eq (plist-get status :status) 'behind))
       (should (= (plist-get status :percent) -5.0))
@@ -83,7 +83,7 @@ DATE defaults to Nov 10."
 (ert-deftest test-planner-status-days-follow-each-days-goal ()
   "Days behind are measured along the schedule, day by day.
 After a recalculation the past days keep 1,000 and the open days get
-1,250; dividing the shortfall by the daily target would say 1.2 days."
+1,250; dividing the shortfall by the daily target would say 2.2 days."
   (test-status--on "2026-11-11"
     (let ((plan (test-status--plan 5000)))
       (org-scribe-planner-recalculate-remaining-days plan "/tmp/unused-plan.org")
@@ -94,8 +94,9 @@ After a recalculation the past days keep 1,000 and the open days get
             (list (cons "2026-11-11" (list :words 4750 :note ""))))
       (setf (org-scribe-plan-current-words plan) 4750)
       (let ((status (org-scribe-planner--status plan)))
-        (should (= (plist-get status :difference) -1500))
-        (should (= (plist-get status :days) -1.25))))))
+        ;; Due by the end of Nov 12: 5,000 + 2 × 1,250
+        (should (= (plist-get status :difference) -2750))
+        (should (= (plist-get status :days) -2.25))))))
 
 (ert-deftest test-planner-status-before-plan-starts ()
   "Before the plan starts nothing is expected: on track, 0%."
@@ -110,7 +111,7 @@ After a recalculation the past days keep 1,000 and the open days get
 
 (ert-deftest test-planner-status-schedule-position-uses-schedule-days ()
   "The dashboards' position reports schedule days and the exact state."
-  (test-status--on "2026-11-11"
+  (test-status--on "2026-11-10"
     (let ((on-track (org-scribe-planner--calculate-schedule-position (test-status--plan 10000)))
           (ahead (org-scribe-planner--calculate-schedule-position (test-status--plan 12000))))
       (should (plist-get on-track :on-track))
@@ -214,6 +215,125 @@ After a recalculation the past days keep 1,000 and the open days get
       ;; The default, keeping the plan, changed nothing
       (should (= (org-scribe-plan-daily-words plan) 1000))
       (should (string= (org-scribe-plan-end-date plan) "2026-11-30")))))
+
+;;; A recalculation on a day already written (reported 2026-11-01)
+
+(defun test-status--recalculated-on-day-one ()
+  "50,000 words over 30 days from Nov 1, recalculated on Nov 1 at 2,334
+words, then written on to 2,564 the same day.  Today is Nov 1."
+  (let ((plan (make-org-scribe-plan :title "P" :total-words 50000 :days 30
+                                    :start-date "2026-11-01")))
+    (org-scribe-planner--calculate-missing-variable plan)
+    (setf (org-scribe-plan-daily-word-counts plan)
+          (list (cons "2026-11-01" (list :words 2334 :note ""))))
+    (setf (org-scribe-plan-current-words plan) 2334)
+    (org-scribe-planner-recalculate-remaining-days plan "/tmp/unused-plan.org")
+    (setf (org-scribe-plan-daily-word-counts plan)
+          (list (cons "2026-11-01" (list :words 2564 :note ""))))
+    (setf (org-scribe-plan-current-words plan) 2564)
+    plan))
+
+(defun test-status--day (plan date)
+  "PLAN's schedule entry for DATE."
+  (cl-find date (org-scribe-planner--generate-day-schedule plan)
+           :key (lambda (day) (plist-get day :date)) :test #'string=))
+
+(ert-deftest test-planner-status-recalculated-on-day-one-keeps-todays-goal ()
+  "Recalculated after writing, today keeps the goal it had: 1,667 due, so
+897 ahead, about half a writing day (897 of Nov 2's 1,644).  Regression:
+the rebased starting point (667) was taken as due, so +1,897."
+  (test-status--on "2026-11-01"
+    (let ((plan (test-status--recalculated-on-day-one)))
+      (should (= (org-scribe-plan-schedule-adjustment plan) -667))
+      (should (string= (org-scribe-plan-rebased-from plan) "2026-11-02"))
+      (should (= (org-scribe-plan-daily-words plan) 1644))
+      (let ((status (org-scribe-planner--status plan)))
+        (should (= (plist-get status :expected) 1667))
+        (should (= (plist-get status :difference) 897))
+        (should (< (abs (- (plist-get status :days) (/ 897.0 1644))) 1e-9)))
+      ;; Against the days that are over (check-progress): nothing was due
+      (should (= (plist-get (org-scribe-planner--status plan 'yesterday) :difference)
+                 2564)))))
+
+(ert-deftest test-planner-status-recalculated-plan-takes-over-the-next-day ()
+  "From the recalculation's first day the recalculated plan counts: on
+Nov 2 it expects 2,334 (where it was recalculated from) plus Nov 2's
+1,644.  Against yesterday, the 230 written after recalculating."
+  (test-status--on "2026-11-01"
+    (let ((plan (test-status--recalculated-on-day-one)))
+      (setq test-status--today "2026-11-02")
+      (let ((status (org-scribe-planner--status plan)))
+        (should (= (plist-get status :expected) 3978))
+        (should (= (plist-get status :difference) -1414)))
+      (should (= (plist-get (org-scribe-planner--status plan 'yesterday) :difference)
+                 230)))))
+
+(ert-deftest test-planner-status-planned-totals-step-at-the-recalculation ()
+  "The day before the recalculation is planned as it stood (1,667); the
+recalculated plan follows (3,978 on Nov 2).  The step between them is
+the 667 words written above the plan when it was recalculated."
+  (test-status--on "2026-11-01"
+    (let ((plan (test-status--recalculated-on-day-one)))
+      (should (= 1667 (org-scribe-planner--planned-total
+                       plan (test-status--day plan "2026-11-01"))))
+      (should (= 3978 (org-scribe-planner--planned-total
+                       plan (test-status--day plan "2026-11-02"))))
+      (should (= 50000 (org-scribe-planner--planned-total
+                        plan (test-status--day plan "2026-11-30"))))
+      (should (equal (org-scribe-planner--rebase-step plan)
+                     '(:date "2026-11-02" :from 1667 :to 2334)))
+      ;; Days after the recalculation stay on the recalculated plan once
+      ;; they are past and locked too
+      (setq test-status--today "2026-11-05")
+      (org-scribe-planner--lock-past-goals plan)
+      (should (= 3978 (org-scribe-planner--planned-total
+                       plan (test-status--day plan "2026-11-02"))))
+      (should (= 1667 (org-scribe-planner--planned-total
+                       plan (test-status--day plan "2026-11-01")))))))
+
+(ert-deftest test-planner-status-rebase-date-survives-a-save ()
+  "REBASED_FROM is written and read back; a plan saved without it gets the
+day after its last locked day."
+  (let ((file (make-temp-file "test-status-plan-" nil ".org"))
+        (plan (test-status--on "2026-11-01" (test-status--recalculated-on-day-one))))
+    (unwind-protect
+        (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
+                   (lambda () "2026-11-05")))
+          (org-scribe-planner--save-plan plan file)
+          (should (string= "2026-11-02"
+                           (org-scribe-plan-rebased-from
+                            (org-scribe-planner--load-plan file))))
+          ;; An older file: no REBASED_FROM
+          (with-current-buffer (find-file-noselect file)
+            (goto-char (point-min))
+            (re-search-forward "^\\*")
+            (org-entry-delete nil "REBASED_FROM")
+            (save-buffer))
+          (should (string= "2026-11-02"
+                           (org-scribe-plan-rebased-from
+                            (org-scribe-planner--load-plan file)))))
+      (when-let* ((buffer (get-file-buffer file))) (kill-buffer buffer))
+      (delete-file file))))
+
+;;; Streak
+
+(ert-deftest test-planner-status-streak-ignores-days-to-come ()
+  "Three days written, today not yet: the streak is 3.  Regression: the
+plan's future days, with no words, broke it to 0."
+  (test-status--on "2026-11-04"
+    (let ((plan (test-status--plan 0)))
+      (setf (org-scribe-plan-daily-word-counts plan)
+            (list (cons "2026-11-01" (list :words 1000 :note ""))
+                  (cons "2026-11-02" (list :words 2000 :note ""))
+                  (cons "2026-11-03" (list :words 3000 :note ""))))
+      (setf (org-scribe-plan-current-words plan) 3000)
+      (let ((streak (org-scribe-planner--calculate-current-streak plan)))
+        (should (= (plist-get streak :current) 3))
+        (should (= (plist-get streak :longest) 3)))
+      ;; Written today too
+      (push (cons "2026-11-04" (list :words 3500 :note ""))
+            (org-scribe-plan-daily-word-counts plan))
+      (should (= (plist-get (org-scribe-planner--calculate-current-streak plan) :current) 4)))))
 
 (provide 'test-planner-status)
 ;;; test-planner-status.el ends here

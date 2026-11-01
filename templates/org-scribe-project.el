@@ -820,7 +820,7 @@ point is in, or at the end of the chapter point is on (see
 the end of the act's last chapter; an act with no chapter yet gets one
 first (its name is asked for), since a scene directly under an act
 compiled as part of the previous act's last chapter.
-The template includes a TODO heading at the current project's scene
+The template includes a TOWRITE heading at the current project's scene
 level (see `org-scribe-scene-level'), tagged per
 `org-scribe-project-levels' `:scene-tag' when that project type tags its
 scenes, and a property drawer for scene metadata (PoV, Characters, Plot,
@@ -851,7 +851,7 @@ If SCENE-NAME is empty, defaults to \"New scene\"."
 
 (defun org-scribe--scene-template (scene-name)
   "Return the text of a new scene named SCENE-NAME: heading and property drawer.
-The heading is a TODO at the project's scene level, tagged as the project
+The heading is a TOWRITE at the project's scene level, tagged as the project
 type does, and the drawer holds the empty scene properties in the
 project's language.  Shared by `org-scribe-insert-scene' and the visual
 companion's `create-scene', which inserts it at an exact place.
@@ -867,7 +867,7 @@ prose, as in the shipped scenes."
          (objective (if (plist-get levels :chapter)
                         ":WORD-OBJECTIVE: 500\n"
                       "")))
-    (format "%s TODO %s%s
+    (format "%s TOWRITE %s%s
 :PROPERTIES:
 :ID: %s
 :WORDCOUNT: 0
@@ -1271,13 +1271,13 @@ saved."
   "Return the text of a new chapter named CHAPTER-NAME: heading and drawer.
 With FIRST-SCENE (a name), the chapter holds that scene, as
 `org-scribe-insert-chapter' inserts it; without, the chapter is empty, as
-the visual companion's `create-chapter' adds it.  Headings are TODO at
+the visual companion's `create-chapter' adds it.  Headings are TOWRITE at
 the project's levels, tagged as the project type does."
   (let* ((levels (org-scribe-project-levels))
          (tag (org-scribe--heading-tag-suffix (plist-get levels :scene-tag)))
          (chapter-stars (make-string (plist-get levels :chapter) ?*)))
     (concat
-     (format "%s TODO %s%s
+     (format "%s TOWRITE %s%s
 :PROPERTIES:
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 3000
@@ -1285,7 +1285,7 @@ the project's levels, tagged as the project type does."
 " chapter-stars chapter-name tag)
      (when first-scene
        (format "
-%s TODO %s%s
+%s TOWRITE %s%s
 :PROPERTIES:
 :ID: %s
 :WORDCOUNT: 0
@@ -1302,7 +1302,7 @@ the project's levels, tagged as the project type does."
   "Insert a chapter template with CHAPTER-NAME after the chapter point is in.
 The chapter goes at the end of the chapter point is in, scene or not
 \(see `org-scribe--goto-insertion-point'), never in the middle of prose.
-The template includes a TODO heading at the current project's chapter
+The template includes a TOWRITE heading at the current project's chapter
 level, tagged per `org-scribe-project-levels' when that project type
 tags its chapters, a property drawer with WORDCOUNT field initialized to
 0, and an empty first scene.

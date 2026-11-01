@@ -58,7 +58,7 @@ Tu archivo ~cuento.org~ tiene una estructura sencilla: una sección de informaci
 ,** Seguimiento de Palabras
 
 ,* Contenido del Cuento
-,** TODO Escena 1 :ignore:
+,** TOWRITE Escena 1 :ignore:
    [Aquí va lo que escribas]
 #+END_EXAMPLE
 
@@ -76,8 +76,8 @@ Tu archivo ~novela.org~ tiene una estructura más compleja, en tres actos:
 #+AUTHOR: Tu nombre
 
 ,* Acto I :ignore:
-,** TODO Capítulo 1 :ignore:
-,*** TODO Escena 1 :ignore:
+,** TOWRITE Capítulo 1 :ignore:
+,*** TOWRITE Escena 1 :ignore:
     [Aquí va lo que escribas]
 
 ,* Acto II :ignore:
@@ -114,7 +114,7 @@ Vamos a añadir una escena nueva a tu manuscrito con la plantilla de escena.
 3. Pulsa ~Intro~ para crear una línea nueva
 
 *En una novela*:
-1. Ve a ~** TODO Capítulo 1~ (o al capítulo que quieras)
+1. Ve a ~** TOWRITE Capítulo 1~ (o al capítulo que quieras)
 2. Muévete al final de esa línea
 3. Pulsa ~Intro~ para crear una línea nueva
 
@@ -153,7 +153,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 Aparece una plantilla de escena completa. Tiene este aspecto:
 
 #+BEGIN_EXAMPLE
-,*** TODO Suena la alarma :ignore:
+,*** TOWRITE Suena la alarma :ignore:
 :PROPERTIES:
 :ID: 3f6c1d52-8a47-4b0e-9d1a-5e2c7b94a610
 :WORDCOUNT: 0
@@ -192,11 +192,11 @@ Veamos qué es lo que estás viendo:
 
 *** La línea del encabezado
 #+BEGIN_EXAMPLE
-,*** TODO Suena la alarma :ignore:
+,*** TOWRITE Suena la alarma :ignore:
 #+END_EXAMPLE
 
 - ~***~ = Nivel de escena (tres asteriscos en las novelas, dos en los cuentos)
-- ~TODO~ = Estado de la escena (puedes cambiarlo a DONE cuando termines)
+- ~TOWRITE~ = Estado de la escena (cámbialo a FINISHED cuando termines; =C-c C-t= recorre los estados)
 - ~Suena la alarma~ = Tu título, tal como lo escribiste: la plantilla no añade ningún «Escena N»
 - ~:ignore:~ = Una etiqueta que hace que al exportar desaparezca el encabezado y se conserve el texto (la Lección 11 lo explica)
 
@@ -421,7 +421,7 @@ Ahora llega lo divertido: escribir tu historia de verdad.
 Ejemplo:
 
 #+BEGIN_EXAMPLE
-,*** TODO Suena la alarma :ignore:
+,*** TOWRITE Suena la alarma :ignore:
 :PROPERTIES:
 :PoV: Alex
 :Personajes: Alex
@@ -557,13 +557,13 @@ Si trabajas en una novela, querrás añadir capítulos.
 Ejemplo de resultado: la inserción de un capítulo también inserta debajo una primera escena lista para rellenar, así que obtienes las dos cosas en un solo paso:
 
 #+BEGIN_EXAMPLE
-,** TODO El descubrimiento :ignore:
+,** TOWRITE El descubrimiento :ignore:
 :PROPERTIES:
 :WORDCOUNT: 0
 :WORD-OBJECTIVE: 3000
 :END:
 
-,*** TODO Escena nueva :ignore:
+,*** TOWRITE Escena nueva :ignore:
 :PROPERTIES:
 :ID: 9b2e47a1-6d03-4c58-b7f4-1a8d03e5c2f7
 :WORDCOUNT: 0
@@ -696,9 +696,9 @@ Las propiedades son fáciles de editar. Solo tienes que hacer clic en la línea 
 
 La plantilla no numera. La única escena que se llama «Escena 1» es la primera, que ya viene con el proyecto nuevo; las que insertas con ~F8 s~ llevan exactamente el título que escribes. Puedes cambiar los nombres a mano o ignorarlos: son solo etiquetas.
 
-** «¿Puedo usar otros estados TODO además de TODO y DONE?»
+** «¿Puedo usar otros estados además de TOWRITE y FINISHED?»
 
-Los usuarios avanzados pueden configurar estados TODO propios, pero TODO/DONE funciona perfectamente para principiantes.
+Los usuarios avanzados pueden editar la línea ~#+TODO:~ al principio del manuscrito, pero los estados que incluye la plantilla funcionan bien para principiantes.
 
 * Solución de problemas
 
