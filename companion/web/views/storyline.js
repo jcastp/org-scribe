@@ -64,19 +64,16 @@ function gapCells(scenes, entityId, fields, threshold) {
 }
 
 function toggleLink(scene, group, entityId, ctx) {
-  const value = scene.fields[group.field] || {};
-  const current = ids(scene, group.field);
-  const next = current.includes(entityId)
-    ? current.filter((id) => id !== entityId)
-    : [...current, entityId];
+  // a change, not the whole list: two quick clicks must not undo each other
+  const present = ids(scene, group.field).includes(entityId);
   ctx.edit('set-field', {
-    id: scene.id, key: group.field, links: next, unlinked: value.unlinked || [],
+    id: scene.id, key: group.field, [present ? 'remove' : 'add']: [entityId],
   });
 }
 
 function togglePov(scene, entityId, ctx) {
   const isPov = ids(scene, 'pov').includes(entityId);
-  ctx.edit('set-field', { id: scene.id, key: 'pov', links: isPov ? [] : [entityId] });
+  ctx.edit('set-field', { id: scene.id, key: 'pov', [isPov ? 'remove' : 'add']: [entityId] });
 }
 
 function cell(scene, group, entity, flags, ctx) {

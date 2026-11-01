@@ -495,6 +495,19 @@ apply, except that a state asking for a note logs a timestamp instead."
           (setq found (match-string 0 current))))
       found)))
 
+(defun org-scribe-companion-commands--delta-args (spec args current)
+  "Return the `:links'/`:unlinked' ARGS for the `:add'/`:remove' in ARGS.
+SPEC is the field's spec, CURRENT the property's present text."
+  (let* ((parsed (org-scribe-companion--parse-links (or current "")))
+         (remove (append (plist-get args :remove) nil))
+         (add (delete-dups (cl-remove-if-not #'stringp (append (plist-get args :add) nil))))
+         (ids (cl-remove-if (lambda (id) (member id remove))
+                            (mapcar (lambda (link) (plist-get link :id)) (car parsed)))))
+    (if (eq (nth 1 spec) 'link-one)
+        (when add (setq ids (last add)))
+      (dolist (id add) (unless (member id ids) (setq ids (append ids (list id))))))
+    (list :links (vconcat ids) :unlinked (vconcat (cdr parsed)))))
+
 (defun org-scribe-companion-commands--link-value (root spec args &optional current)
   "Return the property text for the link field SPEC from ARGS, or refuse.
 CURRENT is the property's present text: a link in it keeps its text as
@@ -503,7 +516,13 @@ ID that names no entity (deleted since) is kept too, so it cannot block every
 edit of the field.
 ARGS has `:links', a vector of entity IDs, and optionally `:unlinked', a
 vector of plain names kept after them.  Each ID must name an entity of the
-field's kind; the link text is that entity's current name."
+field's kind; the link text is that entity's current name.
+Instead of `:links', ARGS may have `:add' and/or `:remove' (vectors of
+IDs): they change the field as it is now, so two edits made from the same
+view of the page cannot undo each other.  The plain names stay as they are.
+An `:add' to a one-link field replaces its link."
+  (when (or (plist-member args :add) (plist-member args :remove))
+    (setq args (org-scribe-companion-commands--delta-args spec args current)))
   (let* ((links (plist-get args :links))
          (unlinked (plist-get args :unlinked))
          (entities (org-scribe-companion--entities-of root))
@@ -541,7 +560,8 @@ field's kind; the link text is that entity's current name."
 
 (defun org-scribe-companion-commands--set-field (root args)
   "Set a scene property.  ARGS: `:id' (a scene), `:key' (canonical), and
-`:value' (text fields, flattened to one line) or `:links' (link fields, IDs).
+`:value' (text fields, flattened to one line) or, for link fields, `:links'
+\(all the IDs) or `:add' / `:remove' (IDs to add to or take from the field).
 The property name written is the one already on the heading, else the
 project language's."
   (let* ((buffer (org-scribe-companion-commands--manuscript-buffer root))

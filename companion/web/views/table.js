@@ -487,11 +487,10 @@ function linkOps(scenes, field, entity, add) {
   for (const scene of scenes) {
     const value = scene.fields[field.key] || {};
     const ids = (value.links || []).map((link) => link.id);
-    let next;
-    if (add) next = field.kind === 'link-one' ? [entity] : (ids.includes(entity) ? ids : [...ids, entity]);
-    else next = ids.filter((id) => id !== entity);
-    if (next.join() === ids.join()) continue;
-    ops.push({ op: 'set-field', args: { id: scene.id, key: field.key, links: next, unlinked: value.unlinked || [] } });
+    // already as wanted: nothing to send (a one-link field is replaced, so it
+    // counts as done only when the entity is its sole link)
+    if (add ? (ids.length === 1 || field.kind !== 'link-one') && ids.includes(entity) : !ids.includes(entity)) continue;
+    ops.push({ op: 'set-field', args: { id: scene.id, key: field.key, [add ? 'add' : 'remove']: [entity] } });
   }
   return ops;
 }

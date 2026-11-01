@@ -62,14 +62,12 @@ export function openPicker(anchor, scene, field, ctx) {
     ctx.editEnded();
     if (!apply) return;
     // the writer's own order stays; ids added now follow, in entity order
-    // (ids not in the list, hidden by a filter or dangling, stay where they were)
+    // sent as a change to the field as Emacs has it now, not as a new list
     const before = (current.links || []).map((link) => link.id);
-    const ids = before.filter((id) => chosen.has(id));
-    for (const entity of entities) if (chosen.has(entity.id) && !ids.includes(entity.id)) ids.push(entity.id);
-    if (ids.join() === before.join()) return;
-    ctx.edit('set-field', {
-      id: scene.id, key: field.key, links: ids, unlinked: current.unlinked || [],
-    }, scene.id);
+    const remove = before.filter((id) => !chosen.has(id));
+    const add = entities.map((entity) => entity.id).filter((id) => chosen.has(id) && !before.includes(id));
+    if (!add.length && !remove.length) return;
+    ctx.edit('set-field', { id: scene.id, key: field.key, add, remove }, scene.id);
   };
   const outside = (event) => { if (!panel.contains(event.target)) close(true); };
   done.addEventListener('click', () => close(true));

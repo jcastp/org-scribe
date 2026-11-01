@@ -1279,6 +1279,56 @@ The project type must come from ROOT, or a short story is read as a novel."
      root "set-field" :id test-companion-commands--scene-1 :key "pov" :links [])
     (should-not (test-companion-commands--field root "Scene 1 - The Alarm" "pov"))))
 
+(defun test-companion-commands--field-ids (root title key)
+  (mapcar (lambda (l) (plist-get l :id))
+          (plist-get (test-companion-commands--field root title key) :links)))
+
+(ert-deftest test-companion-commands-set-field-add-and-remove-change-the-current-value ()
+  "Two edits made from the same view of the page must not undo each other (C-2)."
+  (test-companion-commands--with-project root
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "characters"
+     :links (vector test-companion-commands--alex))
+    ;; both clicks were computed when the field held only Alex
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "characters"
+     :add (vector test-companion-commands--sam))
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "characters"
+     :add (vector "char-dana-okonkwo-001"))
+    (should (equal (list test-companion-commands--alex test-companion-commands--sam
+                         "char-dana-okonkwo-001")
+                   (test-companion-commands--field-ids
+                    root "Scene 1 - The Alarm" "characters")))
+    ;; adding what is there changes nothing; removing takes it out
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "characters"
+     :add (vector test-companion-commands--sam) :remove (vector test-companion-commands--alex))
+    (should (equal (list test-companion-commands--sam "char-dana-okonkwo-001")
+                   (test-companion-commands--field-ids
+                    root "Scene 1 - The Alarm" "characters")))))
+
+(ert-deftest test-companion-commands-set-field-add-replaces-a-one-link-field ()
+  (test-companion-commands--with-project root
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "pov"
+     :add (vector test-companion-commands--alex))
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "pov"
+     :add (vector test-companion-commands--sam))
+    (should (equal (list test-companion-commands--sam)
+                   (test-companion-commands--field-ids root "Scene 1 - The Alarm" "pov")))
+    (test-companion-commands--run
+     root "set-field" :id test-companion-commands--scene-1 :key "pov"
+     :remove (vector test-companion-commands--sam))
+    (should-not (test-companion-commands--field root "Scene 1 - The Alarm" "pov"))
+    ;; an unknown ID is still refused
+    (should (equal "invalid"
+                   (test-companion-commands--code
+                    (test-companion-commands--run
+                     root "set-field" :id test-companion-commands--scene-1 :key "pov"
+                     :add (vector "no-such-entity")))))))
+
 (ert-deftest test-companion-commands-set-field-links-reject-unknown-or-wrong-kind ()
   (test-companion-commands--with-project root
     (let ((original (test-companion-commands--text root "novel.org")))
