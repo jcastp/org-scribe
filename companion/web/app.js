@@ -173,12 +173,22 @@ async function edit(op, args, focus = null, focusNew = false, silent = []) {
 }
 
 // A re-render would throw away a half-typed edit: hold it until the edit ends.
-let editing = false;
+// Editors can overlap (one blurs as the next takes the focus), so this counts
+// them; and an editor that left the page without a blur must not hold the
+// page for good, so the count only stands while something editable has the focus.
+let editors = 0;
 let refreshWaiting = false;
-function editStarted() { editing = true; }
+function editStarted() { editors += 1; }
+function isEditing() {
+  if (editors <= 0) return false;
+  const active = document.activeElement;
+  if (active && active.closest && active.closest('input, textarea, select, .picker, .ent-create')) return true;
+  editors = 0;
+  return false;
+}
 function editEnded() {
-  editing = false;
-  if (refreshWaiting) { refreshWaiting = false; refresh().catch(() => {}); }
+  editors = Math.max(0, editors - 1);
+  if (refreshWaiting && !isEditing()) { refreshWaiting = false; refresh().catch(() => {}); }
 }
 
 // ---- rendering -----------------------------------------------------------
@@ -555,8 +565,11 @@ function renderAll() {
 // ---- loading and events --------------------------------------------------
 
 async function refresh() {
-  if (editing) { refreshWaiting = true; return; }
-  state.snapshot = await request('/api/project');
+  if (isEditing()) { refreshWaiting = true; return; }
+  const fresh = await request('/api/project');
+  // an editor opened while the answer was on its way: draw it afterwards
+  if (isEditing()) { refreshWaiting = true; return; }
+  state.snapshot = fresh;
   const { language } = state.snapshot;
   if (state.stringsLanguage && state.stringsLanguage !== language) {   // another project
     state.strings = await request('/api/strings');
@@ -619,7 +632,7 @@ function connect() {
     followSent = id;   // Emacs is there already: selecting it again sends nothing
     focusCard(id);
     // an open panel follows the scene where point is, unless a field is being edited
-    if (state.detailId && !editing && id !== state.detailId
+    if (state.detailId && !isEditing() && id !== state.detailId
         && detail.findScene(state.snapshot, id)) {
       state.detailId = id;
       renderView();
@@ -677,7 +690,7 @@ colours.onModeChange(() => { if (state.snapshot) renderAll(); });
 // changed there since; the notice names the file and how to get it back.
 let undoing = false;
 async function undo() {
-  if (undoing || editing || !state.snapshot || !state.snapshot.canUndo) return;
+  if (undoing || isEditing() || !state.snapshot || !state.snapshot.canUndo) return;
   undoing = true;
   try {
     const answer = await edit('undo', {});
