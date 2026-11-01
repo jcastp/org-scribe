@@ -63,17 +63,29 @@ function gapCells(scenes, entityId, fields, threshold) {
   return flagged;
 }
 
-function toggleLink(scene, group, entityId, ctx) {
-  // a change, not the whole list: two quick clicks must not undo each other
-  const present = ids(scene, group.field).includes(entityId);
-  ctx.edit('set-field', {
-    id: scene.id, key: group.field, [present ? 'remove' : 'add']: [entityId],
-  });
+/** Say what a click changed: a single click writes to the manuscript, and in
+ * a grid you are only looking at it is easy not to notice. */
+function announce(ctx, fieldKey, entity, scene, added) {
+  const field = ctx.snapshot.sceneFields.find((candidate) => candidate.key === fieldKey);
+  ctx.notice(ctx.t(added ? 'companion-ui-storyline-added' : 'companion-ui-storyline-removed',
+                   field ? field.name : fieldKey, entity.name, scene.title));
 }
 
-function togglePov(scene, entityId, ctx) {
-  const isPov = ids(scene, 'pov').includes(entityId);
-  ctx.edit('set-field', { id: scene.id, key: 'pov', [isPov ? 'remove' : 'add']: [entityId] });
+async function toggleLink(scene, group, entity, ctx) {
+  // a change, not the whole list: two quick clicks must not undo each other
+  const present = ids(scene, group.field).includes(entity.id);
+  const answer = await ctx.edit('set-field', {
+    id: scene.id, key: group.field, [present ? 'remove' : 'add']: [entity.id],
+  });
+  if (answer.ok) announce(ctx, group.field, entity, scene, !present);
+}
+
+async function togglePov(scene, entity, ctx) {
+  const isPov = ids(scene, 'pov').includes(entity.id);
+  const answer = await ctx.edit('set-field', {
+    id: scene.id, key: 'pov', [isPov ? 'remove' : 'add']: [entity.id],
+  });
+  if (answer.ok) announce(ctx, 'pov', entity, scene, !isPov);
 }
 
 function cell(scene, group, entity, flags, ctx) {
@@ -97,8 +109,8 @@ function cell(scene, group, entity, flags, ctx) {
   button.append(el('span', 'sl-mark'));
   if (!editable(scene)) button.disabled = true;
   button.addEventListener('click', (event) => {
-    if (event.shiftKey && group.kind === 'character') togglePov(scene, entity.id, ctx);
-    else toggleLink(scene, group, entity.id, ctx);
+    if (event.shiftKey && group.kind === 'character') togglePov(scene, entity, ctx);
+    else toggleLink(scene, group, entity, ctx);
   });
   td.append(button);
   return td;
