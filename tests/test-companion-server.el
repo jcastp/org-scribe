@@ -176,6 +176,29 @@ HOST and ORIGIN override the defaults; BODY and CONTENT-TYPE make a request body
       (should (< 10 (length (alist-get 'markers parsed)))))
     (should (= 403 (car (test-companion-server--get "/api/edits" :token nil))))))
 
+(ert-deftest test-companion-server-a-failing-report-is-still-an-answer ()
+  "Any error in a report (not only a user-error) must reach the page as an
+answer with its message, not as a closed socket (C-15)."
+  (test-companion-server--with-server root
+    (dolist (spec '(("/api/health" . org-scribe--health-data)
+                    ("/api/edits" . org-scribe--edits-collect)
+                    ("/api/progress" . org-scribe--health-word-totals)))
+      (cl-letf (((symbol-function (cdr spec))
+                 (lambda (&rest _) (error "Something odd happened"))))
+        (let* ((result (test-companion-server--get (car spec)))
+               (parsed (json-parse-string (test-companion-server--body result) :object-type 'alist)))
+          (should (= 500 (car result)))
+          (should (equal "internal" (alist-get 'code (alist-get 'error parsed))))
+          (should (string-match-p "Something odd"
+                                  (alist-get 'message (alist-get 'error parsed)))))))))
+
+(ert-deftest test-companion-server-status-of-an-answer ()
+  (should (= 200 (org-scribe-companion-server--status '(:ok t))))
+  (should (= 404 (org-scribe-companion-server--status
+                  (org-scribe-companion-commands-error "not-found" "x"))))
+  (should (= 500 (org-scribe-companion-server--status
+                  (org-scribe-companion-commands-error "internal" "x")))))
+
 (ert-deftest test-companion-server-progress-on-demand ()
   "GET /api/progress answers the manuscript's figures, behind the token."
   (test-companion-server--with-server root

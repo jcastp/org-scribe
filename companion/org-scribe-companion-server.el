@@ -289,6 +289,12 @@ away: writing to a socket whose peer has closed can block Emacs."
 
 ;;; Routing
 
+(defun org-scribe-companion-server--status (answer)
+  "Return the HTTP status for the command-style ANSWER of a GET route."
+  (cond ((eq (plist-get answer :ok) t) 200)
+        ((equal (plist-get (plist-get answer :error) :code) "not-found") 404)
+        (t 500)))
+
 (defun org-scribe-companion-server--api-project (proc)
   "Answer on PROC with the snapshot."
   (condition-case err
@@ -348,19 +354,19 @@ away: writing to a socket whose peer has closed can block Emacs."
                        org-scribe-companion-server--root
                        (cadr (assoc "id" query)))))
           (org-scribe-companion-server--respond-json
-           proc (if (eq (plist-get answer :ok) t) 200 404) answer)))
+           proc (org-scribe-companion-server--status answer) answer)))
        ((and (equal method "GET") (equal path "/api/health"))
         (let ((answer (org-scribe-companion-health-get org-scribe-companion-server--root)))
           (org-scribe-companion-server--respond-json
-           proc (if (eq (plist-get answer :ok) t) 200 404) answer)))
+           proc (org-scribe-companion-server--status answer) answer)))
        ((and (equal method "GET") (equal path "/api/edits"))
         (let ((answer (org-scribe-companion-edits-get org-scribe-companion-server--root)))
           (org-scribe-companion-server--respond-json
-           proc (if (eq (plist-get answer :ok) t) 200 404) answer)))
+           proc (org-scribe-companion-server--status answer) answer)))
        ((and (equal method "GET") (equal path "/api/progress"))
         (let ((answer (org-scribe-companion-progress-get org-scribe-companion-server--root)))
           (org-scribe-companion-server--respond-json
-           proc (if (eq (plist-get answer :ok) t) 200 404) answer)))
+           proc (org-scribe-companion-server--status answer) answer)))
        ((and (equal method "GET") (equal path "/api/events"))
         (org-scribe-companion-server--subscribe proc))
        ((and (equal method "POST") (equal path "/api/command"))

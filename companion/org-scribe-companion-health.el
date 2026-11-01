@@ -226,7 +226,11 @@ project has no manuscript."
                 :revision (org-scribe-companion--revision-string default-directory)
                 :health health))
       (user-error (org-scribe-companion-commands-error
-                   "not-found" (error-message-string err))))))
+                   "not-found" (error-message-string err)))
+      ;; any other failure is still an answer: closing the socket left the
+      ;; page with a bare "failed" and the cause only in *Messages*
+      (error (org-scribe-companion-commands-error
+              "internal" (error-message-string err))))))
 
 ;;; remove-link
 
