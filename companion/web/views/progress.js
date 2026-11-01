@@ -35,10 +35,34 @@ function card(title, className = '') {
   return node;
 }
 
-/** A labelled bar: WORDS of OBJECTIVE (no objective: the words alone). */
-function bar(label, words, objective, ctx, className = '') {
+/**
+ * A labelled bar: WORDS of OBJECTIVE (no objective: the words alone).
+ * FOLD, when given, is {open, toggle}: a twisty before the label.  OPEN, when
+ * given, is a function the label becomes a button for (a scene's details).
+ */
+function bar(label, words, objective, ctx, className = '', fold = null, open = null) {
   const row = el('div', `pg-bar ${className}`.trim());
-  row.append(el('span', 'pg-bar-label', label));
+  const name = el('span', 'pg-bar-label');
+  if (fold) {
+    const twisty = el('button', 'twisty', fold.open ? '▾' : '▸');
+    twisty.type = 'button';
+    twisty.setAttribute('aria-expanded', String(fold.open));
+    twisty.setAttribute('aria-label', ctx.t('companion-ui-collapse'));
+    twisty.addEventListener('click', fold.toggle);
+    name.append(twisty);
+  } else if (className.includes('child') || className.includes('grandchild')) {
+    name.append(el('span', 'twisty-gap'));
+  }
+  if (open) {
+    const link = el('button', 'pg-bar-link', label);
+    link.type = 'button';
+    link.addEventListener('click', open);
+    name.append(link);
+  } else {
+    name.append(el('span', 'pg-bar-text', label));
+  }
+  name.title = label;
+  row.append(name);
   const meter = el('span', 'hl-meter pg-meter');
   const fill = el('span', 'hl-meter-fill');
   const percent = objective ? Math.min(100, (100 * words) / objective) : 0;
@@ -72,24 +96,91 @@ function manuscript(data, ctx) {
   return node;
 }
 
+// Which groups the user has opened or closed, per project.  Only the toggled
+// ones are kept, so a group added later takes its level's default (acts open,
+// chapters closed).  View state: nothing is written to the manuscript.
+const folds = new Map();
+let foldsRoot = null;
+const foldKey = (root) => `org-scribe.progress:${root}`;
+
+function loadFolds(root) {
+  folds.clear();
+  foldsRoot = root;
+  try {
+    const raw = JSON.parse(localStorage.getItem(foldKey(root)) || '{}') || {};
+    for (const [key, value] of Object.entries(raw)) if (typeof value === 'boolean') folds.set(key, value);
+  } catch (error) { /* private mode or a damaged entry: start afresh */ }
+}
+
+function saveFolds() {
+  try { localStorage.setItem(foldKey(foldsRoot), JSON.stringify(Object.fromEntries(folds))); } catch (error) { /* in memory only */ }
+}
+
+const isOpen = (key, fallback) => (folds.has(key) ? folds.get(key) : fallback);
+
+/** Open or close every group in KEYS. */
+function setAll(keys, open, ctx) {
+  for (const key of keys) folds.set(key, open);
+  saveFolds();
+  ctx.rerender();
+}
+
 function parts(ctx) {
   const node = card(ctx.t('companion-ui-progress-parts'), 'wide');
   const shortStory = ctx.snapshot.project.type === 'short-story';
-  for (const act of ctx.snapshot.acts) {
-    if (act.implicit && !act.chapters.some((chapter) => chapter.scenes.length)) continue;
+  const untitled = ctx.t('companion-ui-untitled');
+  const groups = [];                               // every key that can fold
+  const fold = (key, defaultOpen) => {
+    groups.push(key);
+    const open = isOpen(key, defaultOpen);
+    return { open, toggle: () => { folds.set(key, !open); saveFolds(); ctx.rerender(); } };
+  };
+  const sceneBar = (scene, className) => bar(scene.title || untitled, scene.words, scene.objective, ctx, className, null,
+    scene.id ? () => ctx.openDetail(scene.id) : null);
+  const body = el('div', 'pg-parts');
+  ctx.snapshot.acts.forEach((act, actIndex) => {
+    if (act.implicit && !act.chapters.some((chapter) => chapter.scenes.length)) return;
     const group = el('div', 'pg-group');
-    group.append(bar(act.title || ctx.t('companion-ui-untitled'), act.words, act.objective, ctx, 'act'));
-    for (const chapter of act.chapters) {
-      if (shortStory || chapter.passthrough) {
-        for (const scene of chapter.scenes) {
-          group.append(bar(scene.title || ctx.t('companion-ui-untitled'), scene.words, scene.objective, ctx, 'child'));
+    const actKey = act.id || `act#${actIndex}`;
+    const actFold = act.chapters.length ? fold(actKey, true) : null;
+    group.append(bar(act.title || untitled, act.words, act.objective, ctx, 'act', actFold));
+    if (!actFold || actFold.open) {
+      act.chapters.forEach((chapter, chapterIndex) => {
+        if (shortStory || chapter.passthrough) {
+          for (const scene of chapter.scenes) group.append(sceneBar(scene, 'child'));
+          return;
         }
-      } else {
-        group.append(bar(chapter.title || ctx.t('companion-ui-untitled'), chapter.words, chapter.objective, ctx, 'child'));
-      }
+        const chapterKey = chapter.id || `${actKey}/chapter#${chapterIndex}`;
+        const chapterFold = chapter.scenes.length ? fold(chapterKey, false) : null;
+        group.append(bar(chapter.title || untitled, chapter.words, chapter.objective, ctx, 'child', chapterFold));
+        if (chapterFold && chapterFold.open) {
+          for (const scene of chapter.scenes) group.append(sceneBar(scene, 'grandchild'));
+        }
+      });
     }
-    node.append(group);
+    body.append(group);
+  });
+  // "all" must reach groups inside a closed act too, which were not drawn
+  const everything = [];
+  ctx.snapshot.acts.forEach((act, actIndex) => {
+    const actKey = act.id || `act#${actIndex}`;
+    if (act.chapters.length) everything.push(actKey);
+    if (shortStory) return;
+    act.chapters.forEach((chapter, chapterIndex) => {
+      if (!chapter.passthrough && chapter.scenes.length) everything.push(chapter.id || `${actKey}/chapter#${chapterIndex}`);
+    });
+  });
+  if (everything.length) {
+    const tools = el('div', 'pg-tools');
+    const open = el('button', 'pg-tool', ctx.t('companion-ui-progress-expand-all'));
+    const close = el('button', 'pg-tool', ctx.t('companion-ui-progress-collapse-all'));
+    for (const button of [open, close]) button.type = 'button';
+    open.addEventListener('click', () => setAll(everything, true, ctx));
+    close.addEventListener('click', () => setAll(everything, false, ctx));
+    tools.append(open, close);
+    node.append(tools);
   }
+  node.append(body);
   return node;
 }
 
@@ -199,6 +290,7 @@ export function render(container, ctx) {
     container.replaceChildren(el('p', 'empty', ctx.t(data ? 'companion-ui-progress-failed' : 'companion-ui-health-loading')));
     return;
   }
+  if (foldsRoot !== ctx.snapshot.project.root) loadFolds(ctx.snapshot.project.root);
   const page = el('div', 'progress-tab');
   const top = el('div', 'hl-grid');
   top.append(manuscript(data, ctx));

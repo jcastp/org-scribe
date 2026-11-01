@@ -459,8 +459,11 @@ La pestaña *Progreso* muestra cuánto ha avanzado el libro:
 - *Manuscrito*: las palabras escritas frente al objetivo (los objetivos de los
   actos sumados, como hace el informe de salud), y un aviso cuando el objetivo
   de palabras del proyecto (~F8 t~) dice otra cosa.
-- *Actos y capítulos*: una barra por acto y por capítulo (por escena en un
-  cuento) frente a su propio objetivo.
+- *Actos, capítulos y escenas*: una barra por acto, capítulo y escena (por
+  escena en un cuento) frente a su propio objetivo. Los actos empiezan
+  abiertos y los capítulos cerrados; pulsa la flecha para plegar o desplegar
+  un grupo, o usa /Desplegar todo/ y /Plegar todo/. La elección se recuerda
+  por proyecto. Pulsa el título de una escena para abrir sus detalles.
 - *Plan*, cuando el proyecto tiene un plan de escritura (Lección 16): el
   objetivo de hoy, cuánto vas adelantado o retrasado, tu racha, tu ritmo y la
   fecha en que terminarás a ese ritmo, y un gráfico *Palabras pendientes* con

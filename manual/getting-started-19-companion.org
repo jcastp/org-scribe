@@ -412,8 +412,11 @@ The *Progress* tab shows how far the book has come:
 - *Manuscript*: the words written against the objective (the acts'
   objectives added up, as the health report does), and a warning when the
   project's word target (~F8 t~) says something else.
-- *Acts and chapters*: one bar per act and per chapter (per scene in a short
-  story) against its own objective.
+- *Acts, chapters and scenes*: one bar per act, chapter and scene (per scene
+  in a short story) against its own objective. Acts start open and chapters
+  closed; click the arrow to fold or unfold a group, or use /Open all/ and
+  /Close all/. The choice is remembered per project. Click a scene's title to
+  open its details.
 - *Plan*, when the project has a writing plan (Lesson 16): today's goal, how
   far ahead or behind you are, your streak, your pace and the date you will
   finish at it, and a *Words left* chart with the planned line (dashed)
