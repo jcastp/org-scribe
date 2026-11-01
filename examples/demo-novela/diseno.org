@@ -1306,7 +1306,7 @@ viven en la sección Construcción del mundo. Las tres que condicionan la trama:
 #+begin_comment
 Los objetos son un tipo de entidad enlazado: cada uno de los de abajo es hijo
 directo de esta sección y lleva un Type, de modo que las escenas pueden
-enlazarlos por ID (F8 F8 b) y la búsqueda de objetos los encuentra (F8 F8 7).
+enlazarlos por ID (F8 b) y la búsqueda de objetos los encuentra (F8 7).
 Se rellena con F8 k b.
 
 La disciplina útil es conservar solo los objetos que hacen algo. Cada uno de

@@ -14,7 +14,7 @@ Este documento es un índice completo de las funciones del paquete ~org-scribe~.
 
 Es un documento de referencia, no una lección: los nombres de las órdenes, las funciones, las variables y las teclas son los reales del paquete y no se traducen. Las descripciones se han escrito para quien trabaja con un /proyecto en español/ (~novela.org~, ~diseno.org~, propiedades de escena en español); donde un proyecto en inglés se comporta distinto, se indica.
 
-*Versión*: 0.9.0 (incluye la funcionalidad de la antigua plantilla emacs-org-scribe-template)
+*Versión*: 0.9.1 (incluye la funcionalidad de la antigua plantilla emacs-org-scribe-template)
 
 *Resumen del paquete*: ~org-scribe~ es un conjunto completo de herramientas para quien escribe ficción y trabaja en Org, y ofrece de todo, desde las plantillas de proyecto hasta los filtros de exportación, tanto para novelas como para cuentos.
 
@@ -897,7 +897,7 @@ Mira la [[file:../manual-es/primeros-pasos-19-companion.org][Lección 19]] para 
 
 ** Estado de la implementación
 
-Las 108 funciones están totalmente implementadas y probadas. El paquete está en uso activo y es estable (versión 0.9.0).
+Las 108 funciones están totalmente implementadas y probadas. El paquete está en uso activo y es estable (versión 0.9.1).
 
 * Próximos pasos
 
@@ -909,6 +909,6 @@ Este índice sigue siendo el lugar al que acudir para buscar una función por su
 
 - *Creado*: 2025-11-16
 - *Última actualización*: 2026-10-29
-- *Versión del paquete*: 0.9.0
+- *Versión del paquete*: 0.9.1
 - *Total de funciones documentadas*: 108 (97 básicas + 11 del planificador integrado)
 - *Estado*: extracción completa de las funciones; la documentación detallada vive en las lecciones de la guía de primeros pasos

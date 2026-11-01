@@ -424,7 +424,7 @@ The *Progress* tab shows how far the book has come:
 
 With a plan running, the header also shows a chip such as *Today 350 /
 1,194* on every tab; click it for this tab. Both are as of the last word
-count (~F8 F8~, or every save with ~org-scribe-auto-wordcount~), because that
+count (~F8~, or every save with ~org-scribe-auto-wordcount~), because that
 is when the planner records your words. The page never loads the planner for
 a project without a plan, or one that turned it off.
 

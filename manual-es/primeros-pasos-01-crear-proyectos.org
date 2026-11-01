@@ -37,7 +37,7 @@ Vamos a verificar que el paquete se ha cargado bien:
 2. Empieza a escribir: ~org-scribe-version~
 3. Pulsa Intro
 
-Deberías ver un mensaje como: *«org-scribe version 0.9.0»*
+Deberías ver un mensaje como: *«org-scribe version 0.9.1»*
 
 Si ves este mensaje, todo está listo. Si no, asegúrate de haber instalado bien el paquete.
 

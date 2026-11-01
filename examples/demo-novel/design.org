@@ -1274,8 +1274,8 @@ live in the Worldbuilding section. The three that constrain the plot:
 
 #+begin_comment
 Objects are a linked entity type: each one below is an immediate child of this
-section and carries a Type, so scenes can link to it by ID (F8 F8 b) and
-the Objects search finds them (F8 F8 7). Captured with F8 k b.
+section and carries a Type, so scenes can link to it by ID (F8 b) and
+the Objects search finds them (F8 7). Captured with F8 k b.
 
 The useful discipline is to keep only objects that do something. Each of these
 is one of the five symbols named in design.org, and each one changes over the

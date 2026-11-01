@@ -471,7 +471,7 @@ La pestaña *Progreso* muestra cuánto ha avanzado el libro:
 
 Con un plan en marcha, la cabecera muestra además en todas las pestañas una
 insignia como *Hoy 350 / 1.194*; haz clic en ella para ir a esta pestaña. Las
-dos cifras son las del último recuento de palabras (~F8 F8~, o cada vez que
+dos cifras son las del último recuento de palabras (~F8~, o cada vez que
 guardas con ~org-scribe-auto-wordcount~), porque es entonces cuando el
 planificador anota tus palabras. La página nunca carga el planificador en un
 proyecto sin plan, ni en uno que lo haya desactivado.

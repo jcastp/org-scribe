@@ -420,7 +420,7 @@ tiempo, experimenta y, sobre todo, ¡escribe!
 
 - *Creado*: 2025-11-16
 - *Última actualización*: 2026-09-05
-- *Versión del paquete*: 0.9.0
+- *Versión del paquete*: 0.9.1
 - *Tiempo total estimado*: ~4,75 horas (a tu ritmo)
 - *Dificultad*: De principiante a intermedio
 
