@@ -151,7 +151,7 @@ body.dragging-chapter .cards { display: none; }
 .outline { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
 .outline th, .outline td { text-align: left; vertical-align: top; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--line); }
 .outline thead th { position: sticky; top: 0; background: var(--bg); z-index: 2; }
-.outline button.sort { all: unset; cursor: pointer; font-weight: 600; }
+.outline thead th { font-weight: 600; }
 .outline .act-row td { font-weight: 700; font-size: 1.05rem; padding-top: 0.9rem; border-bottom: 2px solid var(--line); }
 .outline .chapter-row.passthrough { display: none; }
 .outline .chapter-row td { font-weight: 600; background: var(--surface); }

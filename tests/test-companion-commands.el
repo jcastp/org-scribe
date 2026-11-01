@@ -1864,6 +1864,20 @@ the typing cannot, since undoing them would land at stale positions."
       (should (string-match-p "'create-scene', { parent: parentId, after: scene\\.id }" table))
       (should (string-match-p "companion-ui-new-scene-after" table)))))
 
+(ert-deftest test-companion-commands-table-keeps-manuscript-order ()
+  "The table never sorts its rows: they always follow the manuscript.
+A sorted table read as if the scenes had moved, and it turned off
+dragging and the add-after button."
+  (let ((table (with-temp-buffer
+                 (insert-file-contents (expand-file-name "views/table.js" test-companion-commands--web))
+                 (buffer-string))))
+    (should-not (string-match-p "prefs\\.sort\\|aria-sort\\|el('button', 'sort'" table))
+    ;; an order stored by an older version is dropped
+    (should (string-match-p "localStorage\\.removeItem(`\\${STORE}\\.sort`)" table))
+    ;; dragging and add-after no longer depend on a sort
+    (should (string-match-p "if (canAdd && window\\.Sortable) makeSortable" table))
+    (should (string-match-p "if (parentId && !scene\\.readOnly) cell\\.append(insertAfterButton" table))))
+
 (ert-deftest test-companion-commands-relations-tab-is-wired ()
   (let ((app (with-temp-buffer
                (insert-file-contents (expand-file-name "app.js" test-companion-commands--web))

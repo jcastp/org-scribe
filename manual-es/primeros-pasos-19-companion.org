@@ -144,8 +144,8 @@ todo vuelve a su sitio.
 * Parte 3: La tabla
 
 Una fila por escena. Elige las columnas con el botón *Columnas* (tu elección se
-recuerda). Haz clic en una cabecera para ordenar dentro de cada capítulo
-(arrastrar filas se desactiva mientras la tabla está ordenada).
+recuerda). Las filas siguen siempre el orden de las escenas en el manuscrito;
+para cambiar ese orden, arrastra una fila.
 
 - Los campos de texto (resumen, línea temporal, emoción…) se editan en el sitio.
 - Los campos de enlace (PoV, personajes, hilos de trama, puntos de trama,
@@ -158,9 +158,7 @@ recuerda). Haz clic en una cabecera para ordenar dentro de cada capítulo
   =+= de una fila de acto pide un título y añade un capítulo al final del acto
   (en un cuento añade una escena, como en el corcho).
 - Al pasar el ratón sobre una fila de escena aparece un segundo =+= tras su
-  título: añade una escena justo después de esa. Se oculta mientras la tabla
-  está ordenada, porque entonces la fila de abajo no es la siguiente escena del
-  manuscrito.
+  título: añade una escena justo después de esa.
 - Una escena nueva recibe el nombre por defecto y el foco: pulsa ~Enter~ (o
   ~F2~) para renombrarla.
 

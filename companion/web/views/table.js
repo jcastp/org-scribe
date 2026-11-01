@@ -4,7 +4,8 @@
 // of that kind; rows drag between chapters.  The act and chapter rows add a
 // chapter or a scene at the end, and carry their word total and how far it is
 // from their objective; a scene row's own button adds one right after it.
-// Sorting happens here, on the client, and is applied inside each chapter.
+// Rows always follow the manuscript's order: the table never sorts them, so
+// that a different order on screen cannot pass for a change in the book.
 // Selected rows change together (one `batch' command, one undo step); the
 // find box narrows the rows like a filter, over titles and text fields.
 // All text is put in with textContent.
@@ -37,19 +38,17 @@ function save(key, value) {
 
 // storage is the user's to edit: a value of the wrong shape must not break the tab
 const validColumns = (value) => (Array.isArray(value) ? value : DEFAULT_COLUMNS);
-const validSort = (value) => (value && typeof value.key === 'string'
-  && (value.dir === 'asc' || value.dir === 'desc') ? value : null);
 
 const prefs = {
   columns: validColumns(load('columns', DEFAULT_COLUMNS)),
-  sort: validSort(load('sort', null)),          // { key, dir } | null
 };
 
 /** Keep the preferences per project: the origin is shared by all of them. */
 export function useProject(root) {
   STORE = `org-scribe.table:${root}`;
   prefs.columns = validColumns(load('columns', DEFAULT_COLUMNS));
-  prefs.sort = validSort(load('sort', null));
+  // the table used to sort; drop the order an older version remembered
+  try { localStorage.removeItem(`${STORE}.sort`); } catch (error) { /* private mode */ }
   selected.clear();
   lastTicked = null;
   find = '';
@@ -117,29 +116,6 @@ function fieldNames(scene, key) {
   if (!value) return [];
   const names = value.links ? value.links.map((link) => link.name) : [];
   return names.concat(value.unlinked || []);
-}
-
-function sortValue(scene, key) {
-  if (key === 'title') return scene.title.toLowerCase();
-  if (key === 'todo') return scene.todo || '';
-  if (key === 'words') return scene.words;
-  if (key === 'objective') return scene.objective || 0;
-  // link fields sort by the names shown, never by the IDs inside the raw text
-  const value = scene.fields[key];
-  if (!value) return '';
-  return (value.links ? fieldNames(scene, key).join(', ') : value.raw || '').toLowerCase();
-}
-
-function sorted(scenes) {
-  if (!prefs.sort) return scenes;
-  const { key, dir } = prefs.sort;
-  const factor = dir === 'desc' ? -1 : 1;
-  return [...scenes].sort((a, b) => {
-    const x = sortValue(a, key);
-    const y = sortValue(b, key);
-    if (x === y) return 0;
-    return (x < y ? -1 : 1) * factor;
-  });
 }
 
 // ---- cells -----------------------------------------------------------------
@@ -245,8 +221,7 @@ function titleCell(scene, parentId, ctx) {
     const marks = editsBadge(scene, ctx);
     if (marks) cell.append(marks);
     cell.append(detailButton(scene, ctx), open);
-    // "after" is the manuscript's order: under a sort the row below is not the next scene
-    if (parentId && !scene.readOnly && !prefs.sort) cell.append(insertAfterButton(scene, parentId, ctx));
+    if (parentId && !scene.readOnly) cell.append(insertAfterButton(scene, parentId, ctx));
   } else {
     const warning = el('span', 'noid', '⚠');
     warning.title = ctx.t('companion-ui-no-id');
@@ -419,31 +394,16 @@ function header(columns, ctx) {
   const head = el('thead');
   const row = el('tr');
   row.append(selectAllCell(ctx));
-  const cells = [
-    { key: 'title', label: ctx.t('companion-ui-column-title') },
-    { key: 'todo', label: ctx.t('companion-ui-filter-todo') },
-    ...columns.map((field) => ({ key: field.key, label: field.name })),
-    { key: 'words', label: ctx.t('companion-ui-column-words') },
-    { key: 'objective', label: ctx.t('companion-ui-column-objective') },
+  const labels = [
+    ctx.t('companion-ui-column-title'),
+    ctx.t('companion-ui-filter-todo'),
+    ...columns.map((field) => field.name),
+    ctx.t('companion-ui-column-words'),
+    ctx.t('companion-ui-column-objective'),
   ];
-  for (const { key, label } of cells) {
-    const th = el('th');
+  for (const label of labels) {
+    const th = el('th', '', label);
     th.scope = 'col';
-    const button = el('button', 'sort', label);
-    button.type = 'button';
-    const active = prefs.sort && prefs.sort.key === key;
-    if (active) {
-      button.append(el('span', 'arrow', prefs.sort.dir === 'asc' ? ' ▲' : ' ▼'));
-      th.setAttribute('aria-sort', prefs.sort.dir === 'asc' ? 'ascending' : 'descending');
-    }
-    button.addEventListener('click', () => {
-      if (!active) prefs.sort = { key, dir: 'asc' };
-      else if (prefs.sort.dir === 'asc') prefs.sort = { key, dir: 'desc' };
-      else prefs.sort = null;
-      save('sort', prefs.sort);
-      ctx.rerender();
-    });
-    th.append(button);
     row.append(th);
   }
   head.append(row);
@@ -652,12 +612,12 @@ export function render(container, ctx) {
                            chapter.passthrough ? 'chapter-row passthrough' : 'chapter-row', span, ctx,
                            chapterButton, chapter.scenes));
       if (!collapsed.has(chapterKey)) {
-        for (const scene of sorted(chapter.scenes)) {
+        for (const scene of chapter.scenes) {
           body.append(sceneRow(scene, columns, canAdd ? parent : null, ctx));
         }
       }
       table.append(body);
-      if (canAdd && !prefs.sort && window.Sortable) makeSortable(body, ctx);
+      if (canAdd && window.Sortable) makeSortable(body, ctx);
     });
   });
   container.append(table);
