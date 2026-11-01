@@ -73,6 +73,22 @@ function shown(scene, ctx) {
   return (!isActive(ctx.filters) || matches(scene, ctx.filters)) && found(scene, ctx);
 }
 
+/** True while "Hide the rest" is removing the rows the filters or the find box leave out. */
+function hiding(ctx) {
+  return Boolean(ctx.hideSwitch) && narrowing(ctx);
+}
+
+/** The IDs of the scenes that are shown. */
+function visibleIds(ctx) {
+  const ids = new Set();
+  for (const act of ctx.snapshot.acts) {
+    for (const chapter of act.chapters) {
+      for (const scene of chapter.scenes) if (shown(scene, ctx)) ids.add(scene.id);
+    }
+  }
+  return ids;
+}
+
 /** True when "Hide the rest" removes the whole group of SCENES. */
 function groupHidden(scenes, ctx) {
   return Boolean(ctx.hideSwitch) && narrowing(ctx) && !scenes.some((scene) => shown(scene, ctx));
@@ -250,7 +266,10 @@ function selectCell(scene, ctx) {
   box.checked = selected.has(scene.id);
   box.disabled = !editable(scene);
   box.addEventListener('click', (event) => {
-    const rows = [...document.querySelectorAll('.outline .scene-row')];
+    // rows "Hide the rest" removed are in the page but out of sight: a range
+    // must not tick what the writer cannot see
+    const rows = [...document.querySelectorAll('.outline .scene-row')]
+      .filter((row) => !hiding(ctx) || visibleIds(ctx).has(row.dataset.id));
     const here = rows.findIndex((row) => row.dataset.id === scene.id);
     const there = rows.findIndex((row) => row.dataset.id === lastTicked);
     const ids = event.shiftKey && there >= 0
@@ -576,9 +595,11 @@ export function render(container, ctx) {
     container.append(el('p', 'empty', ctx.t('companion-ui-empty')));
     return;
   }
-  // a scene deleted or made read-only since cannot stay ticked
+  // a scene deleted or made read-only since cannot stay ticked; nor can one
+  // that "Hide the rest" took out of sight (a bulk edit would change it unseen)
+  const visible = hiding(ctx) ? visibleIds(ctx) : null;
   const live = new Set(acts.flatMap((act) => act.chapters.flatMap((chapter) => chapter.scenes))
-    .filter(editable).map((scene) => scene.id));
+    .filter((scene) => editable(scene) && (!visible || visible.has(scene.id))).map((scene) => scene.id));
   for (const id of [...selected]) if (!live.has(id)) selected.delete(id);
   container.append(toolbar(fields, ctx));
   const span = 5 + columns.length;
