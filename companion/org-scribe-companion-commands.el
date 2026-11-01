@@ -162,24 +162,36 @@ reveals it, and raises the frame when `org-scribe-companion-raise-frame'."
   "Move point to the heading ARGS names, in the project at ROOT, quietly.
 ARGS has `:id'.  Unlike goto, it never raises or selects a frame and never
 changes the selected window: it moves point in a window that already shows
-the buffer (any visible frame), or, when none does, shows the buffer in the
-selected window.  It widens when the heading is outside a narrowing,
+the buffer (any visible frame), or, when none does, shows the buffer in
+another window of the frame; with no other window it only moves the
+buffer's point, so the writer's own window is never replaced.  It widens when the heading is outside a narrowing,
 reveals it, and recenters only when the heading is off screen.  The ID is
 recorded as the last one Emacs sent, so follow mode does not echo it back."
   (if-let* ((id (org-scribe-companion-commands--arg-string args :id)))
       (if-let* ((marker (org-scribe-companion-commands--find root id)))
           (let* ((buffer (marker-buffer marker))
                  (window (or (get-buffer-window buffer 'visible)
-                             (display-buffer
-                              buffer '((display-buffer-same-window)
-                                       (inhibit-switch-frame . t))))))
-            (when window
-              (with-selected-window window
+                             ;; never the window the writer is in: replacing
+                             ;; what they are typing in is a surprise
+                             (cl-find-if (lambda (candidate) (not (window-dedicated-p candidate)))
+                                         (remq (selected-window) (window-list nil 'no-minibuf))))))
+            (if window
+                (with-selected-window window
+                  (unless (eq (window-buffer window) buffer)
+                    (set-window-buffer window buffer))
+                  (set-buffer buffer)
+                  (when (or (< marker (point-min)) (> marker (point-max))) (widen))
+                  (goto-char marker)
+                  (org-fold-show-context 'link-search)
+                  (org-fold-show-entry)
+                  (unless (pos-visible-in-window-p) (recenter)))
+              ;; no other window: only the buffer's point moves, so the
+              ;; manuscript opens at this scene when the writer shows it
+              (with-current-buffer buffer
                 (when (or (< marker (point-min)) (> marker (point-max))) (widen))
                 (goto-char marker)
                 (org-fold-show-context 'link-search)
-                (org-fold-show-entry)
-                (unless (pos-visible-in-window-p) (recenter))))
+                (org-fold-show-entry)))
             (set-marker marker nil)
             (setq org-scribe-companion--last-focus id)
             (org-scribe-companion-commands--ok root))

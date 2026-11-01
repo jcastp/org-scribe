@@ -147,16 +147,30 @@
                      (test-companion-commands--heading-at other)))
       (should (equal test-companion-commands--scene-2 org-scribe-companion--last-focus)))))
 
-(ert-deftest test-companion-commands-follow-shows-a-hidden-buffer-in-the-selected-window ()
+(ert-deftest test-companion-commands-follow-never-replaces-the-writers-window ()
+  "With one window, follow only moves the manuscript's point (C-13)."
   (test-companion-commands--with-project root
     (delete-other-windows)
     (switch-to-buffer (get-buffer-create "*test-follow*"))
     (let ((answer (test-companion-commands--run
                    root "follow" :id test-companion-commands--scene-1)))
       (should (eq t (plist-get answer :ok)))
-      (should (equal "novel.org" (buffer-name (window-buffer (selected-window)))))
-      (should (equal "Scene 1 - The Alarm"
-                     (test-companion-commands--heading-at (selected-window)))))))
+      (should (equal "*test-follow*" (buffer-name (window-buffer (selected-window)))))
+      (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+        (should (equal "Scene 1 - The Alarm" (org-get-heading t t t t)))))))
+
+(ert-deftest test-companion-commands-follow-uses-another-window-when-none-shows-it ()
+  (test-companion-commands--with-project root
+    (delete-other-windows)
+    (switch-to-buffer (get-buffer-create "*test-follow*"))
+    (let ((other (split-window)))
+      (set-window-buffer other (get-buffer-create "*test-other*"))
+      (should (eq t (plist-get (test-companion-commands--run
+                                root "follow" :id test-companion-commands--scene-1)
+                               :ok)))
+      (should (equal "*test-follow*" (buffer-name (window-buffer (selected-window)))))
+      (should (equal "novel.org" (buffer-name (window-buffer other))))
+      (should (equal "Scene 1 - The Alarm" (test-companion-commands--heading-at other))))))
 
 (ert-deftest test-companion-commands-follow-widens-and-reveals ()
   (test-companion-commands--with-project root
