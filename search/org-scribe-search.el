@@ -373,10 +373,22 @@ manuscript."
                     collected)))))
       (nreverse collected))))
 
+(defun org-scribe--edits-org-files (root)
+  "Return the .org files below ROOT that can hold edit markers.
+Leaves out Emacs' lock files (`.#novel.org', a dangling symlink that exists
+while the buffer has unsaved changes) and anything that is not a readable
+regular file: reading one signalled `file-missing', so the index failed
+exactly when the writer had something unsaved."
+  (seq-filter (lambda (file)
+                (and (not (string-prefix-p ".#" (file-name-nondirectory file)))
+                     (file-regular-p file)
+                     (file-readable-p file)))
+              (directory-files-recursively root "\\.org\\'")))
+
 (defun org-scribe--edits-collect (root)
   "Return every edit marker below ROOT, across all .org files."
   (let ((markers nil))
-    (dolist (file (directory-files-recursively root "\\.org\\'"))
+    (dolist (file (org-scribe--edits-org-files root))
       (setq markers (append markers (org-scribe--edits-collect-file file))))
     markers))
 

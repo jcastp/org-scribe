@@ -139,6 +139,19 @@
 
 ;;; The index
 
+(ert-deftest test-companion-edits-index-ignores-emacs-lock-files ()
+  "An unsaved buffer leaves `.#novel.org', a dangling symlink; the index
+failed on it (C-3), so the Edits tab broke exactly while the writer typed."
+  (test-companion-edits--with-project root "demo-novel"
+    (make-symbolic-link "nobody@host.1234" (expand-file-name ".#novel.org" root))
+    (make-symbolic-link "nobody@host.1234" (expand-file-name ".#design.org" root))
+    (let ((answer (org-scribe-companion-edits-get root)))
+      (should (eq t (plist-get answer :ok)))
+      (should (> (length (plist-get answer :markers)) 0))
+      (should-not (seq-some (lambda (m) (string-prefix-p ".#" (plist-get m :file)))
+                            (plist-get answer :markers))))
+    (should (> (length (org-scribe--edits-collect root)) 0))))
+
 (ert-deftest test-companion-edits-index-places-manuscript-markers ()
   (test-companion-edits--with-project root "demo-novel"
     ;; a marker in the design notebook too
