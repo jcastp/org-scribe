@@ -87,7 +87,7 @@ PROPERTY is the one the page's short form fills besides the name.")
 (defun org-scribe-companion-entity--find (root id)
   "Return (KIND . ENTITY) for the entity ID in ROOT's snapshot, or nil.
 KIND is a string such as \"character\"."
-  (let ((entities (plist-get (org-scribe-companion--snapshot root) :entities)))
+  (let ((entities (org-scribe-companion--entities-of root)))
     (cl-loop for (kind list) on entities by #'cddr
              for entity = (cl-find id (append list nil)
                                    :key (lambda (e) (plist-get e :id)) :test #'equal)
@@ -510,7 +510,7 @@ section, as one undo step.  The answer carries the new `id'."
       (org-scribe-companion-commands--fail "invalid" 'companion-error-missing-arg "name"))
     (when (string-match-p "\\`\\*" name)
       (org-scribe-companion-commands--fail "invalid" 'companion-error-body-heading))
-    (let ((existing (plist-get (plist-get (org-scribe-companion--snapshot root) :entities)
+    (let ((existing (plist-get (org-scribe-companion--entities-of root)
                                (intern (concat ":" kind)))))
       (when (seq-some (lambda (entity) (string-equal-ignore-case (plist-get entity :name) name))
                       existing)

@@ -707,3 +707,24 @@ too, \"late\" in act 2."
           (insert "\n"))
         (org-scribe-companion--snapshot-json root)
         (should (= 1 count))))))
+
+(ert-deftest test-companion-model-entities-of-never-walks-the-manuscript ()
+  "A command that checks an ID must not rebuild the manuscript half (C-1):
+a bulk edit changes the manuscript after every operation."
+  (test-companion-model--with-project root #'test-companion-model--copy-demo
+    (let ((walks 0)
+          (real (symbol-function 'org-scribe-companion--walk-manuscript)))
+      (org-scribe-companion--snapshot root)
+      (cl-letf (((symbol-function 'org-scribe-companion--walk-manuscript)
+                 (lambda (&rest args) (cl-incf walks) (apply real args))))
+        (with-current-buffer (find-file-noselect (expand-file-name "novel.org" root))
+          (goto-char (point-max))
+          (insert "\n"))
+        (should (> (length (plist-get (org-scribe-companion--entities-of root) :character)) 0))
+        (should (= 0 walks))
+        ;; a design change is seen, and the next snapshot recomputes the storyline
+        (with-current-buffer (find-file-noselect (expand-file-name "design.org" root))
+          (goto-char (point-max))
+          (insert "\n* Extra\n"))
+        (org-scribe-companion--entities-of root)
+        (should (plist-get (org-scribe-companion--snapshot root) :storyline))))))

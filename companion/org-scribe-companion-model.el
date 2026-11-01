@@ -685,6 +685,30 @@ Kinds: character, location, object, plot, plot-point (the ones `org-scribe-healt
           :unfinished (vconcat (org-scribe-companion--unfinished-threads acts entities))
           :orphans (org-scribe-companion--orphans scenes entities))))
 
+(defun org-scribe-companion--entities-of (&optional root)
+  "Return the `entities' plist of the project at ROOT, without the manuscript.
+Refreshes only the design half of the snapshot cache.  The commands
+that check an ID (`set-field' in a bulk edit, collections, colours) need
+the entities and nothing else; building the whole snapshot for each of
+them walked the manuscript again after every operation of a batch."
+  (let* ((root (file-name-as-directory
+                (expand-file-name (or root (org-scribe-project-root)))))
+         (default-directory root)
+         (design (plist-get (org-scribe-project-structure) :design-file))
+         (settings (org-scribe-companion--settings-revision))
+         (cache (alist-get root org-scribe-companion--snapshot-cache nil nil #'equal)))
+    (when (and design (file-exists-p design)) (find-file-noselect design))
+    (let ((revision (org-scribe-companion--buffer-revision design)))
+      (unless (equal (plist-get cache :s) settings)
+        (setq cache (list :s settings)))
+      (unless (and (plist-member cache :entities) (equal (plist-get cache :d) revision))
+        (setq cache (plist-put cache :entities (org-scribe-companion--entities)))
+        (setq cache (plist-put cache :d revision))
+        ;; the storyline was computed from the old entities
+        (setq cache (plist-put cache :sm nil)))
+      (setf (alist-get root org-scribe-companion--snapshot-cache nil nil #'equal) cache)
+      (plist-get cache :entities))))
+
 (defun org-scribe-companion--snapshot (&optional root)
   "Return the snapshot plist of the project at ROOT (default: the current).
 Cached per project and per half (see `org-scribe-companion--snapshot-cache'),

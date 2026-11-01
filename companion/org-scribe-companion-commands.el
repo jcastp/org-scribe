@@ -506,7 +506,7 @@ vector of plain names kept after them.  Each ID must name an entity of the
 field's kind; the link text is that entity's current name."
   (let* ((links (plist-get args :links))
          (unlinked (plist-get args :unlinked))
-         (entities (plist-get (org-scribe-companion--snapshot root) :entities))
+         (entities (org-scribe-companion--entities-of root))
          (kind (org-scribe-companion--keyword (symbol-name (nth 2 spec))))
          (known (append (plist-get entities kind) nil))
          (seen nil)

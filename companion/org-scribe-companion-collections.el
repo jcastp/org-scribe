@@ -35,6 +35,7 @@
 (require 'org-scribe-messages)
 
 (declare-function org-scribe-companion--snapshot "org-scribe-companion-model")
+(declare-function org-scribe-companion--entities-of "org-scribe-companion-model")
 (declare-function org-scribe-companion-commands--fail "org-scribe-companion-commands")
 (declare-function org-scribe-companion-commands--arg "org-scribe-companion-commands")
 (declare-function org-scribe-companion-commands--arg-string "org-scribe-companion-commands")
@@ -134,7 +135,7 @@ by it."
   "Non-nil when ID belongs to an entity of KIND (a snapshot key) at ROOT.
 Hidden entities count."
   (cl-some (lambda (entity) (equal (plist-get entity :id) id))
-           (append (plist-get (plist-get (org-scribe-companion--snapshot root) :entities)
+           (append (plist-get (org-scribe-companion--entities-of root)
                               kind)
                    nil)))
 
