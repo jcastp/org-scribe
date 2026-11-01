@@ -35,11 +35,26 @@ export function openPicker(anchor, scene, field, ctx) {
     });
     label.append(box, el('span', entity.hidden ? 'hidden-entity' : '', entity.name));
     list.append(label);
-    return { label, name: entity.name.toLowerCase() };
+    return { label, box, name: entity.name.toLowerCase() };
   });
   search.addEventListener('input', () => {
     const needle = search.value.toLowerCase();
     for (const row of rows) row.label.hidden = !row.name.includes(needle);
+  });
+  // Enter in the search box ticks the first match and clears the search; on
+  // an empty box it is Done.  Without it only the mouse, or tabbing through
+  // every box, could pick anything.
+  search.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    const needle = search.value.trim();
+    if (!needle) { close(true); return; }
+    const first = rows.find((row) => !row.label.hidden);
+    if (!first) return;
+    first.box.checked = !first.box.checked;
+    first.box.dispatchEvent(new Event('change'));
+    search.value = '';
+    for (const row of rows) row.label.hidden = false;
   });
   const actions = el('div', 'picker-actions');
   const clear = el('button', '', ctx.t('companion-ui-picker-clear'));
@@ -70,6 +85,10 @@ export function openPicker(anchor, scene, field, ctx) {
     ctx.edit('set-field', { id: scene.id, key: field.key, add, remove }, scene.id);
   };
   const outside = (event) => { if (!panel.contains(event.target)) close(true); };
+  // tabbing out of the picker leaves it too; it used to stay open, holding the page
+  panel.addEventListener('focusout', (event) => {
+    if (event.relatedTarget && !panel.contains(event.relatedTarget)) close(true);
+  });
   done.addEventListener('click', () => close(true));
   panel.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') { event.preventDefault(); close(false); anchor.focus(); }
