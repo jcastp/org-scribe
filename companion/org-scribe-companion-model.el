@@ -60,6 +60,15 @@ a row.")
 
 ;;; Small helpers
 
+(defun org-scribe-companion--visit (file)
+  "Return the buffer visiting FILE, reading it if needed, without asking.
+`find-file-noselect' asks \"File changed on disk. Reread?\" when the file
+changed under an open buffer, and the request that needed the buffer would
+hang on that question in Emacs, perhaps while the writer looks at the
+browser.  The companion works on the buffer as it is; a command that would
+change it refuses instead (`org-scribe-companion-commands--check-fresh')."
+  (find-file-noselect file t))
+
 (defun org-scribe-companion--or-null (value)
   "Return VALUE, or `:null' when it is nil."
   (if (null value) :null value))
@@ -386,7 +395,7 @@ unweighted default 999.0 and is not hidden."
                                 org-scribe-companion--entity-sections)))
     (dolist (file files)
       (when (file-exists-p file)
-        (with-current-buffer (find-file-noselect file)
+        (with-current-buffer (org-scribe-companion--visit file)
           (org-with-wide-buffer
            (goto-char (point-min))
            (let (parents)               ; stack of (LEVEL . TITLE)
@@ -697,7 +706,7 @@ them walked the manuscript again after every operation of a batch."
          (design (plist-get (org-scribe-project-structure) :design-file))
          (settings (org-scribe-companion--settings-revision))
          (cache (alist-get root org-scribe-companion--snapshot-cache nil nil #'equal)))
-    (when (and design (file-exists-p design)) (find-file-noselect design))
+    (when (and design (file-exists-p design)) (org-scribe-companion--visit design))
     (let ((revision (org-scribe-companion--buffer-revision design)))
       (unless (equal (plist-get cache :s) settings)
         (setq cache (list :s settings)))
@@ -724,7 +733,7 @@ so asking again without an edit costs a revision check only."
       (user-error "%s" (org-scribe-msg 'companion-error-no-manuscript)))
     ;; Visit the files first, so the revisions see their buffers.
     (dolist (file (list manuscript design))
-      (when (and file (file-exists-p file)) (find-file-noselect file)))
+      (when (and file (file-exists-p file)) (org-scribe-companion--visit file)))
     (let* ((revisions (org-scribe-companion--revisions structure))
            (specs (org-scribe-companion--field-specs language))
            (settings (org-scribe-companion--settings-revision))
@@ -733,7 +742,7 @@ so asking again without an edit costs a revision check only."
       (unless (equal (plist-get cache :s) settings)
         (setq cache (list :s settings)))
       (unless (equal (plist-get cache :m) (car revisions))
-        (with-current-buffer (find-file-noselect manuscript)
+        (with-current-buffer (org-scribe-companion--visit manuscript)
           (setq cache (plist-put cache :acts (org-scribe-companion--walk-manuscript specs)))
           (setq cache (plist-put cache :todo (org-scribe-companion--todo-info))))
         (setq cache (plist-put cache :m (car revisions))))

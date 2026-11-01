@@ -110,7 +110,7 @@ raises the frame when `org-scribe-companion-raise-frame'."
       (org-scribe-companion-commands--fail "not-found" 'companion-error-no-such-file (or name "")))
     (unless (and (integerp line) (> line 0))
       (org-scribe-companion-commands--fail "invalid" 'companion-error-missing-arg "line"))
-    (pop-to-buffer (find-file-noselect file))
+    (pop-to-buffer (org-scribe-companion--visit file))
     (let ((position (save-restriction
                       (widen)
                       (save-excursion

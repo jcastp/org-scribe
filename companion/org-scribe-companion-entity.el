@@ -98,7 +98,7 @@ KIND is a string such as \"character\"."
   (let* ((default-directory root)
          (file (plist-get (org-scribe-project-structure) :design-file)))
     (when (and file (file-exists-p file))
-      (with-current-buffer (find-file-noselect file)
+      (with-current-buffer (org-scribe-companion--visit file)
         (org-with-wide-buffer
          (when-let* ((pos (org-find-property "ID" id)))
            (copy-marker pos)))))))
@@ -524,7 +524,7 @@ section, as one undo step.  The answer carries the new `id'."
            (id (org-id-new))
            (text (org-scribe-companion-entity--expand
                   (nth 4 template) name (nth 1 spec) value id))
-           (buffer (find-file-noselect file)))
+           (buffer (org-scribe-companion--visit file)))
       (org-scribe-companion-commands--with-edit buffer
         (funcall goto)
         (let ((level (1+ (org-current-level))))

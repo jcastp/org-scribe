@@ -120,7 +120,7 @@ needed), ignoring any narrowing."
     (cl-some
      (lambda (file)
        (when (and file (file-exists-p file))
-         (with-current-buffer (find-file-noselect file)
+         (with-current-buffer (org-scribe-companion--visit file)
            (org-with-wide-buffer
             (when-let* ((pos (org-find-property "ID" id)))
               (copy-marker pos))))))
@@ -192,7 +192,9 @@ recorded as the last one Emacs sent, so follow mode does not echo it back."
   "Save the manuscript and design buffers of the project at ROOT, if modified."
   (dolist (buffer (org-scribe-companion-commands--project-buffers root))
     (with-current-buffer buffer
-      (when (buffer-modified-p) (save-buffer))))
+      (when (buffer-modified-p)
+        (org-scribe-companion-commands--check-fresh buffer)
+        (save-buffer))))
   (org-scribe-companion-commands--ok root))
 
 ;;; Editing machinery
@@ -214,15 +216,28 @@ recorded as the last one Emacs sent, so follow mode does not echo it back."
   (let* ((default-directory root)
          (file (plist-get (org-scribe-project-structure) :manuscript-file)))
     (if (and file (file-exists-p file))
-        (find-file-noselect file)
+        (org-scribe-companion--visit file)
       (org-scribe-companion-commands--fail "not-found" 'companion-error-no-manuscript))))
+
+(defun org-scribe-companion-commands--check-fresh (buffer)
+  "Refuse with `conflict' when BUFFER's file changed on disk since it was read.
+Changing or saving such a buffer makes Emacs ask a question (\"Really edit
+the buffer?\", \"Save anyway?\") in the writer's Emacs, with the browser's
+request waiting on the answer."
+  (when-let* ((file (buffer-file-name buffer)))
+    (unless (or (verify-visited-file-modtime buffer)
+                (not (file-exists-p file)))
+      (org-scribe-companion-commands--fail
+       "conflict" 'companion-error-file-changed (file-name-nondirectory file)))))
 
 (defmacro org-scribe-companion-commands--with-edit (buffer &rest body)
   "Run BODY in BUFFER, widened, as one undo step that is undone if BODY fails.
 A step made for the page is remembered, so the page can undo it
 \(`org-scribe-companion-undo-record')."
   (declare (indent 1))
-  `(let* ((org-scribe--edit-buffer ,buffer)
+  `(let* ((org-scribe--edit-buffer (let ((buffer ,buffer))
+                                     (org-scribe-companion-commands--check-fresh buffer)
+                                     buffer))
           (org-scribe--undo-start (buffer-local-value 'buffer-undo-list org-scribe--edit-buffer))
           (handle (prepare-change-group org-scribe--edit-buffer))
           (undo-outer-limit nil)

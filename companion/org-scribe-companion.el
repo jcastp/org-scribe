@@ -57,7 +57,7 @@ IDs were added."
          (chapter-level (org-scribe-chapter-level))
          (scene-level (org-scribe-scene-level))
          (count 0))
-    (with-current-buffer (find-file-noselect manuscript)
+    (with-current-buffer (org-scribe-companion--visit manuscript)
       (org-with-wide-buffer
        (goto-char (point-min))
        (org-map-entries
@@ -172,7 +172,7 @@ On `find-file-hook': killing and reopening a file loses its buffer-local hooks."
   (pcase-let ((`(,manuscript ,design) (org-scribe-companion--project-files root)))
     (dolist (file (list manuscript design))
       (when (and file (file-exists-p file))
-        (with-current-buffer (find-file-noselect file)
+        (with-current-buffer (org-scribe-companion--visit file)
           (org-scribe-companion--hook-buffer (equal file manuscript))))))
   (add-hook 'find-file-hook #'org-scribe-companion--hook-visited-file))
 

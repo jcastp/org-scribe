@@ -1881,3 +1881,56 @@ the typing cannot, since undoing them would land at stale positions."
 
 (provide 'test-companion-commands)
 ;;; test-companion-commands.el ends here
+
+;;; A file changed on disk under an open buffer (C-5)
+
+(defun test-companion-commands--touch-ahead (root name)
+  "Make NAME in ROOT look changed on disk since Emacs read it."
+  (let ((file (expand-file-name name root)))
+    (set-file-times file (time-add (current-time) 3600))))
+
+(ert-deftest test-companion-commands-a-changed-file-is-refused-not-asked-about ()
+  "A sync can change a file under its buffer.  Editing it would make Emacs
+ask \"Really edit the buffer?\" while the browser's request waits."
+  (test-companion-commands--with-project root
+    (test-companion-commands--run root "set-title" :id test-companion-commands--scene-1 :title "First")
+    (let ((buffer (find-file-noselect (expand-file-name "novel.org" root)))
+          (asked nil))
+      (with-current-buffer buffer (set-buffer-modified-p nil))
+      (test-companion-commands--touch-ahead root "novel.org")
+      (cl-letf (((symbol-function 'y-or-n-p) (lambda (&rest _) (setq asked t) nil))
+                ((symbol-function 'yes-or-no-p) (lambda (&rest _) (setq asked t) nil))
+                ((symbol-function 'read-char-choice) (lambda (&rest _) (setq asked t) ?n)))
+        (dolist (call (list (list "set-title" :id test-companion-commands--scene-1 :title "Second")
+                            (list "set-todo" :id test-companion-commands--scene-1 :state "TODO")
+                            (list "batch" :ops (vector (list :op "set-todo"
+                                                             :args (list :id test-companion-commands--scene-1
+                                                                         :state "TODO"))))))
+          (let ((answer (apply #'test-companion-commands--run root call)))
+            (should (equal "conflict" (test-companion-commands--code answer)))
+            (should (string-match-p "novel.org" (plist-get (plist-get answer :error) :message)))))
+        ;; reading is fine and silent
+        (should (plist-get (org-scribe-companion--snapshot root) :acts))
+        (should (test-companion-commands--ok-p
+                 (test-companion-commands--run root "goto" :id test-companion-commands--scene-1)))
+        (should-not asked))
+      (should-not (buffer-modified-p buffer))
+      (should (equal "First" (plist-get (test-companion-commands--scene-data root "First") :title))))))
+
+(ert-deftest test-companion-commands-save-refuses-a-changed-file ()
+  (test-companion-commands--with-project root
+    (test-companion-commands--run root "set-title" :id test-companion-commands--scene-1 :title "First")
+    (let ((buffer (find-file-noselect (expand-file-name "novel.org" root)))
+          (disk (test-companion-commands--disk root "novel.org")))
+      (should (buffer-modified-p buffer))
+      (test-companion-commands--touch-ahead root "novel.org")
+      (cl-letf (((symbol-function 'y-or-n-p) (lambda (&rest _) (ert-fail "asked")))
+                ((symbol-function 'yes-or-no-p) (lambda (&rest _) (ert-fail "asked"))))
+        (should (equal "conflict"
+                       (test-companion-commands--code (test-companion-commands--run root "save")))))
+      (should (buffer-modified-p buffer))
+      (should (equal disk (test-companion-commands--disk root "novel.org"))))))
+
+(ert-deftest test-companion-commands-file-changed-message-in-both-languages ()
+  (should (alist-get 'companion-error-file-changed org-scribe-messages-en))
+  (should (alist-get 'companion-error-file-changed org-scribe-messages-es)))

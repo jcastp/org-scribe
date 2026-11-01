@@ -780,6 +780,7 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (companion-ui-collection-delete . "Borrar")
      (companion-ui-collection-delete-confirm . "¿Borrar la colección %s?  No se cambia ninguna escena.")
      (companion-ui-collection-name . "Nombre de la colección")
+     (companion-error-file-changed . "%s ha cambiado en disco desde que Emacs lo leyó (¿una sincronización, otro editor?): revierte ese búfer en Emacs e inténtalo de nuevo.")
      (companion-error-undo-changed . "%s ha cambiado en Emacs desde el último cambio de la página: deshazlo en Emacs.")
      (companion-ui-open . "Abrir en Emacs")
      (companion-ui-filter-pov . "PoV")
