@@ -47,7 +47,7 @@ listing it again here would only duplicate that, and go stale."
 ;;
 ;; Tested here rather than per entity: every entity type resolves its name
 ;; through this one function in linking/org-scribe-linking-core.el, and the
-;; per-entity `org-scribe--get-*-name-at-point' names are defaliases for it.
+;; it is the only name accessor.
 
 (ert-deftest test-entity-name-at-point-uses-heading ()
   "With no NAME property, the heading text is the entity name.
@@ -165,7 +165,7 @@ still linked to the first Alex's ID."
   "Test that the character timeline dblock and its helpers are defined."
   (should (fboundp 'org-dblock-write:character-timeline))
   (should (fboundp 'org-scribe--get-all-scenes-with-characters))
-  (should (fboundp 'org-scribe--collect-unique-characters))
+  (should (fboundp 'org-scribe--collect-unique-characters-with-hidden))
   (should (fboundp 'org-scribe--character-symbol)))
 
 (ert-deftest test-character-symbol-pov ()
@@ -212,7 +212,7 @@ still linked to the first Alex's ID."
                   ("Scene 3" "Ch 2" "Alice" ("Alice" "Bob" "Charlie")))))
     ;; Should return unique characters, sorted alphabetically
     (should (equal '("Alice" "Bob" "Charlie")
-                   (org-scribe--collect-unique-characters scenes)))))
+                   (car (org-scribe--collect-unique-characters-with-hidden scenes))))))
 
 (ert-deftest test-collect-unique-characters-with-nil ()
   "Test collecting characters when some scenes have nil PoV or Characters."
@@ -220,7 +220,7 @@ still linked to the first Alex's ID."
                   ("Scene 2" "Ch 1" nil ("Bob" "Charlie"))  ; Characters only
                   ("Scene 3" "Ch 2" "Alice" ("Alice" "Bob")))))
     (should (equal '("Alice" "Bob" "Charlie")
-                   (org-scribe--collect-unique-characters scenes)))))
+                   (car (org-scribe--collect-unique-characters-with-hidden scenes))))))
 
 (ert-deftest test-collect-unique-characters-empty-strings ()
   "Test that empty strings are filtered out."
@@ -229,7 +229,7 @@ still linked to the first Alex's ID."
                   ("Scene 3" "Ch 2" "Charlie" ("Charlie")))))
     ;; Empty strings should be filtered
     (should (equal '("Alice" "Bob" "Charlie")
-                   (org-scribe--collect-unique-characters scenes)))))
+                   (car (org-scribe--collect-unique-characters-with-hidden scenes))))))
 
 (ert-deftest test-collect-unique-characters-duplicates ()
   "Test that duplicate characters are deduplicated."
@@ -238,7 +238,7 @@ still linked to the first Alex's ID."
                   ("Scene 3" "Ch 2" "Alice" ("Alice" "Bob")))))
     ;; Should have each character only once
     (should (equal '("Alice" "Bob")
-                   (org-scribe--collect-unique-characters scenes)))))
+                   (car (org-scribe--collect-unique-characters-with-hidden scenes))))))
 
 (ert-deftest test-collect-unique-characters-sorting ()
   "Test that characters are sorted alphabetically."
@@ -246,11 +246,11 @@ still linked to the first Alex's ID."
                   ("Scene 2" "Ch 1" "Alice" ("Alice" "Charlie")))))
     ;; Should be alphabetically sorted
     (should (equal '("Alice" "Bob" "Charlie" "Zoe")
-                   (org-scribe--collect-unique-characters scenes)))))
+                   (car (org-scribe--collect-unique-characters-with-hidden scenes))))))
 
 (ert-deftest test-collect-unique-characters-empty ()
   "Test collecting characters from empty scenes list."
-  (should (equal '() (org-scribe--collect-unique-characters '()))))
+  (should (equal '() (car (org-scribe--collect-unique-characters-with-hidden '())))))
 
 ;;; Hidden Weight Tests (linking-core helpers + character timeline)
 
@@ -306,13 +306,6 @@ because it is Org's empty-string answer that makes this a live hazard."
     ;; Equal weights fall back to alphabetical, same as the visible half.
     (should (equal '("Bob" "Carla") (cdr split)))))
 
-(ert-deftest test-sort-entities-by-weight-drops-hidden ()
-  "`org-scribe--sort-entities-by-weight' returns the visible half only."
-  (let* ((weights '(("Alice" . 1.0) ("Bob" . -1.0)))
-         (weight-fn (lambda (name) (alist-get name weights nil nil #'string=))))
-    (should (equal '("Alice")
-                   (org-scribe--sort-entities-by-weight '("Alice" "Bob") weight-fn)))))
-
 (defmacro org-scribe-test--with-character-weights (weights &rest body)
   "Run BODY with `org-scribe--get-character-weight' stubbed from WEIGHTS.
 WEIGHTS is an alist of (NAME . WEIGHT); names absent from it get the
@@ -328,7 +321,7 @@ WEIGHTS is an alist of (NAME . WEIGHT); names absent from it get the
                   ("Scene 2" "Ch 1" "Bob" ("Bob" "Extra")))))
     (org-scribe-test--with-character-weights '(("Extra" . -1.0))
       (should (equal '("Alice" "Bob")
-                     (org-scribe--collect-unique-characters scenes))))))
+                     (car (org-scribe--collect-unique-characters-with-hidden scenes)))))))
 
 (ert-deftest test-collect-unique-characters-with-hidden-reports-both ()
   "The partitioned collector reports the hidden characters separately."

@@ -500,13 +500,6 @@ table with no trace is indistinguishable from a linking bug."
     (cons (org-scribe--sort-weighted-names (nreverse visible))
           (org-scribe--sort-weighted-names (nreverse hidden)))))
 
-(defun org-scribe--sort-entities-by-weight (items weight-fn)
-  "Return ITEMS sorted by weight, then alphabetically.
-WEIGHT-FN takes a name string and returns its weight (float; lower = earlier).
-Entities with a negative weight are omitted; use
-`org-scribe--partition-entities-by-weight' to get at them."
-  (car (org-scribe--partition-entities-by-weight items weight-fn)))
-
 (defun org-scribe--chapter-suffix (chapter)
   "Return \" (Chapter: CHAPTER)\", or \"\" when the project has no chapter level."
   (if (org-scribe-chapter-level)

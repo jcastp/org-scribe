@@ -59,14 +59,6 @@
          (today (encode-time 0 0 0 (nth 3 now) (nth 4 now) (nth 5 now))))
     (max 0 (round (/ (float-time (time-subtract target today)) 86400)))))
 
-(defun org-scribe--health-days-since (date-string)
-  "Return days from DATE-STRING (YYYY-MM-DD) to today, minimum 0."
-  (let* ((d (parse-time-string date-string))
-         (start (encode-time 0 0 0 (nth 3 d) (nth 4 d) (nth 5 d)))
-         (now (decode-time))
-         (today (encode-time 0 0 0 (nth 3 now) (nth 4 now) (nth 5 now))))
-    (max 0 (round (/ (float-time (time-subtract today start)) 86400)))))
-
 (defun org-scribe--health-plan-status (plan)
   "Return \"On track\", \"Ahead by N words\" or \"Behind by N words\" for PLAN.
 Measured as the planner's own status (`org-scribe-planner--status'):

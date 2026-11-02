@@ -125,16 +125,6 @@
   (let ((entry '("2024-11-01" . (:words 750 :target 1000))))
     (should (string= (org-scribe-planner--get-entry-note entry) ""))))
 
-(ert-deftest test-planner-get-entry-target-returns-value ()
-  "Extracts the :target value from an entry."
-  (let ((entry '("2024-11-01" . (:words 750 :note "" :target 1000))))
-    (should (= (org-scribe-planner--get-entry-target entry) 1000))))
-
-(ert-deftest test-planner-get-entry-target-returns-nil-when-absent ()
-  "Returns nil when :target is not stored."
-  (let ((entry '("2024-11-01" . (:words 750 :note ""))))
-    (should (null (org-scribe-planner--get-entry-target entry)))))
-
 ;;; --add-spare-day-note / --remove-spare-day-note
 
 (ert-deftest test-planner-add-spare-day-note-creates-new-entry ()

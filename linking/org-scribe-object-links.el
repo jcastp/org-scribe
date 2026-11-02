@@ -85,14 +85,6 @@ nested below them, out of the entity set."
   :update-names-name        org-scribe-update-object-link-names
   :update-all-name          org-scribe-update-all-object-link-names)
 
-;;; Legacy Aliases
-
-(defun org-scribe--ensure-object-has-id ()
-  "Ensure the current object heading has a unique ID."
-  (org-id-get-create))
-
-(defalias 'org-scribe--get-object-name-at-point 'org-scribe--entity-name-at-point)
-
 (provide 'org-scribe-object-links)
 
 ;;; org-scribe-object-links.el ends here

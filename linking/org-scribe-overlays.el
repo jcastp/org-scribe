@@ -91,11 +91,6 @@ is needed because org-mode does not parse property values for link objects:
        (setq pos (match-end 0)))
      found)))
 
-(defun org-scribe--overlays-id-at-point ()
-  "Return the ID of an [[id:...]] link at point, or nil.
-Convenience wrapper around `org-scribe--overlays-link-at-point'."
-  (car (org-scribe--overlays-link-at-point)))
-
 ;;; Tooltip formatting
 
 (defconst org-scribe--overlays-plot-type-re

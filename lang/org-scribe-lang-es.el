@@ -516,7 +516,6 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (error-org-ql-required . "El paquete org-ql es necesario para las funciones de búsqueda")
      (error-org-context-required . "El paquete org-context-extended es necesario para un recuento de palabras preciso")
      (error-writeroom-required . "writeroom-mode es necesario para los modos de entorno de escritura")
-     (error-feature-not-available . "La función %s no está disponible. Instala el paquete necesario")
      (error-no-org-file . "El búfer actual no está visitando ningún archivo; no se puede activar `org-scribe-editing-mode'")
      (prompt-select-workspace . "Disposición del espacio de trabajo: ")
      (msg-workspace-set . "Espacio de trabajo: %s")

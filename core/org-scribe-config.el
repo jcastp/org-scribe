@@ -250,27 +250,6 @@ Lemmatization lets a lookup for a word as written in the manuscript
                  (string :tag "Dictionary name (e.g. es_ES)"))
   :group 'org-scribe)
 
-(defcustom org-scribe-writing-companion-script nil
-  "Path to writing companion Python script for exercise generation.
-Set this to the absolute path of writing_companion.py on your system.
-When nil, writing companion features that call this script are disabled.
-
-Example:
-  (setq org-scribe-writing-companion-script
-        \"/home/user/scripts/writing_companion.py\")"
-  :type '(choice (const :tag "Disabled" nil) file)
-  :group 'org-scribe)
-
-(defcustom org-scribe-exercise-templates
-  '(("all" . "all prompt")
-    ("character" . "character prompt")
-    ("setting" . "setting prompt"))
-  "Available writing exercise templates.
-Each element is (NAME . SCRIPT-ARGS) where SCRIPT-ARGS are passed
-to the Python script."
-  :type '(alist :key-type string :value-type string)
-  :group 'org-scribe)
-
 ;;; Export Configuration
 
 (defcustom org-scribe-scene-break-replacements

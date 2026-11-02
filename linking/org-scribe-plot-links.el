@@ -355,14 +355,6 @@ Opens a new buffer with the report."
     (message "%s" (org-scribe-msg 'msg-plot-stats
                               thread-count scene-count warning-count))))
 
-;;; Legacy Aliases
-
-(defun org-scribe--ensure-plot-thread-has-id ()
-  "Ensure the current plot thread heading has a unique ID."
-  (org-id-get-create))
-
-(defalias 'org-scribe--get-plot-thread-name-at-point 'org-scribe--entity-name-at-point)
-
 ;; Forward declaration for search module dependency
 (declare-function org-scribe--property-to-list "search/org-scribe-search")
 

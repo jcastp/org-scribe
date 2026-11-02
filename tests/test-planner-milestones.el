@@ -1,100 +1,12 @@
-;;; test-milestones.el --- Tests for milestone tracking and recalculation data -*- lexical-binding: t; -*-
+;;; test-milestones.el --- Tests for milestone tracking -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; Tests for org-scribe-planner--get-enhanced-milestones and
-;; org-scribe-planner--compute-recalculation-data.
+;; Tests for org-scribe-planner--get-enhanced-milestones.
 
 ;;; Code:
 
 (require 'ert)
 (require 'org-scribe-planner)
-
-;;; --compute-recalculation-data
-
-(ert-deftest test-planner-recalc-data-no-entries ()
-  "With no daily entries, cumulative-actual is 0 and all days are remaining.
-Stubs today to a date before the plan so all plan days count as future."
-  (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
-             (lambda () "2024-10-31")))
-    (let* ((plan (make-org-scribe-plan
-                  :total-words 4000 :daily-words 1000 :days 4
-                  :start-date "2024-11-01" :end-date "2024-11-04"
-                  :spare-days nil :daily-word-counts nil))
-           (data (org-scribe-planner--compute-recalculation-data plan)))
-      (should (= (plist-get data :cumulative-actual) 0))
-      (should (= (plist-get data :remaining-words) 4000))
-      (should (= (plist-get data :remaining-days) 4)))))
-
-(ert-deftest test-planner-recalc-data-with-entries ()
-  "Entries for 2 of 4 days yield correct cumulative, remaining, and remaining-days.
-Stubs today to a date before the plan so Nov 3 and 4 count as future.
-:cumulative-actual is sourced directly from current-words (Phase 6b —
-kept in sync with the latest cumulative ledger entry by every write
-path), so the fixture sets it explicitly rather than relying on a sum
-of the (now cumulative, not delta) daily entries."
-  (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
-             (lambda () "2024-10-31")))
-    (let* ((plan (make-org-scribe-plan
-                  :total-words 4000 :daily-words 1000 :days 4
-                  :start-date "2024-11-01" :end-date "2024-11-04"
-                  :spare-days nil
-                  :current-words 2000
-                  :daily-word-counts
-                  '(("2024-11-01" . (:words 800 :note "" :target 1000))
-                    ("2024-11-02" . (:words 2000 :note "" :target 1000)))))
-           (data (org-scribe-planner--compute-recalculation-data plan)))
-      (should (= (plist-get data :cumulative-actual) 2000))
-      (should (= (plist-get data :remaining-words) 2000))
-      ;; Nov 3 and Nov 4 have no entries and are not spare days
-      (should (= (plist-get data :remaining-days) 2)))))
-
-(ert-deftest test-planner-recalc-data-spare-days-not-counted-as-remaining ()
-  "Spare days without entries are excluded from remaining-days.
-Stubs today to a date before the plan so all working days count as future."
-  (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
-             (lambda () "2024-10-31")))
-    (let* ((plan (make-org-scribe-plan
-                  :total-words 3000 :daily-words 1000 :days 4
-                  :start-date "2024-11-01" :end-date "2024-11-04"
-                  :spare-days '("2024-11-02")  ; Nov 2 is spare
-                  :daily-word-counts nil))
-           (data (org-scribe-planner--compute-recalculation-data plan)))
-      ;; Nov 1, 3, 4 are working days with no entries → 3 remaining
-      (should (= (plist-get data :remaining-days) 3)))))
-
-(ert-deftest test-planner-recalc-data-note-only-entries-not-counted ()
-  "Note-only spare day entries (no :words) do not contribute to cumulative-actual."
-  (let* ((plan (make-org-scribe-plan
-                :total-words 2000 :daily-words 1000 :days 2
-                :start-date "2024-11-01" :end-date "2024-11-02"
-                :spare-days '("2024-11-02")
-                :daily-word-counts
-                ;; Note-only entry for spare day
-                '(("2024-11-02" . (:note "Rest day")))))
-         (data (org-scribe-planner--compute-recalculation-data plan)))
-    (should (= (plist-get data :cumulative-actual) 0))))
-
-(ert-deftest test-planner-recalc-data-note-only-future-day-still-remaining ()
-  "A note-only entry on a future working day still counts as remaining (H8).
-Regression test: annotating a future day (e.g. \"planning outline\") via
-`org-scribe-planner--add-spare-day-note' must not shrink the pool of
-remaining working days used to recalculate the daily target — only a day
-with an actual :words value is \"already accounted for\".
-Stubs today to a date before the plan so all four days count as future."
-  (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
-             (lambda () "2024-10-31")))
-    (let* ((plan (make-org-scribe-plan
-                  :total-words 4000 :daily-words 1000 :days 4
-                  :start-date "2024-11-01" :end-date "2024-11-04"
-                  :spare-days nil
-                  :daily-word-counts
-                  ;; Note-only entry on a normal (non-spare) future day
-                  '(("2024-11-03" . (:note "Planning outline, no writing yet")))))
-           (data (org-scribe-planner--compute-recalculation-data plan)))
-      (should (= (plist-get data :cumulative-actual) 0))
-      ;; All 4 days remain remaining working days: the note carries no
-      ;; :words, so it must not remove Nov 3 from the remaining count.
-      (should (= (plist-get data :remaining-days) 4)))))
 
 ;;; --get-enhanced-milestones
 

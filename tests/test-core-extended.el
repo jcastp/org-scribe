@@ -63,12 +63,8 @@ Clears the project type cache before and after."
   (should (fboundp 'org-scribe-project-root))
   (should (fboundp 'org-scribe-project-type))
   (should (fboundp 'org-scribe-project-structure))
-  (should (fboundp 'org-scribe-check-feature))
   (should (fboundp 'org-scribe-window-perc))
-  (should (fboundp 'org-scribe-sanitize-filename))
-  (should (fboundp 'org-scribe-validate-directory))
-  (should (fboundp 'org-scribe--find-existing-file))
-  (should (fboundp 'org-scribe--find-existing-dir)))
+  (should (fboundp 'org-scribe--find-existing-file)))
 
 ;;; org-scribe-project-type Tests
 
@@ -289,47 +285,6 @@ design notebook and the plan -- no per-entity files."
     (should (null (org-scribe--find-existing-file
                    temp-dir "novel.org" "novela.org")))))
 
-;;; org-scribe--find-existing-dir Tests
-
-(ert-deftest test-core-find-existing-dir-first ()
-  "Test finding first existing directory from alternatives."
-  (test-core--with-temp-project
-      '("notes/")
-    (should (string-suffix-p
-             "notes"
-             (string-trim-right
-              (org-scribe--find-existing-dir temp-dir "notes" "notas")
-              "/")))))
-
-(ert-deftest test-core-find-existing-dir-second ()
-  "Test finding second directory when first doesn't exist."
-  (test-core--with-temp-project
-      '("notas/")
-    (should (org-scribe--find-existing-dir temp-dir "notes" "notas"))))
-
-(ert-deftest test-core-find-existing-dir-none ()
-  "Test returns nil when no directories exist."
-  (test-core--with-temp-project
-      '()
-    (should (null (org-scribe--find-existing-dir
-                   temp-dir "notes" "notas")))))
-
-;;; org-scribe-validate-directory Tests
-
-(ert-deftest test-core-validate-directory-existing ()
-  "Test validate-directory returns t for existing directory."
-  (test-core--with-temp-project
-      '("notes/")
-    (should (eq t (org-scribe-validate-directory
-                   (expand-file-name "notes" temp-dir))))))
-
-(ert-deftest test-core-validate-directory-nonexistent ()
-  "Test validate-directory returns nil for non-existent directory."
-  (test-core--with-temp-project
-      '()
-    (should (null (org-scribe-validate-directory
-                   (expand-file-name "nonexistent" temp-dir))))))
-
 ;;; org-scribe-with-error-handling Tests
 
 (ert-deftest test-core-error-handling-success ()
@@ -343,17 +298,6 @@ design notebook and the plan -- no per-entity files."
   (let ((result (org-scribe-with-error-handling "test"
                   (error "Intentional test error"))))
     (should (null result))))
-
-;;; org-scribe-check-feature Tests
-
-(ert-deftest test-core-check-feature-available ()
-  "Test feature detection for available features."
-  (should (eq t (org-scribe-check-feature 'org)))
-  (should (eq t (org-scribe-check-feature 'cl-lib))))
-
-(ert-deftest test-core-check-feature-unavailable ()
-  "Test feature detection for unavailable features."
-  (should (eq nil (org-scribe-check-feature 'this-package-does-not-exist))))
 
 ;;; org-scribe--split-property-list Tests (L4)
 

@@ -4,41 +4,12 @@ Comprehensive test suite for the org-scribe package using Emacs Lisp Regression 
 
 ## Test Coverage
 
-The suite covers every module. The authoritative list is
-`org-scribe-test-files` in `run-all-tests.el` — a file missing from it does
-not run, so add new files there.
+The suite covers every module. Two lists are authoritative:
 
-**Core and configuration**
-- `org-scribe-test.el` — project detection, utilities
-- `test-core-extended.el` — project type detection, project structure
-- `test-messages.el` — message system (en/es parity)
-- `test-scene-property-localization.el` — localized scene property aliases
-
-**Project creation and capture**
-- `test-project.el` — template processing, validation, file navigation
-- `test-capture.el` — capture templates, file creation, project-aware routing
-- `test-sistema-templates.el` — method template set, entity recognition, entity registry
-- `test-template-parity.el` — `novel-en` / `novel-es` structural parity
-
-**Linking**
-- `test-character-links.el` — character links, `entity-name-at-point`, timeline
-- `test-location-links.el` — location links
-- `test-plot-links.el` — plot threads, file dispatch, statistics, timeline
-- `test-character-relationships.el` — relationship tracking
-- `test-link-update.el` — link display name updates
-- `test-column-view.el` — link stripping at the column-view boundary
-- `test-overlays.el` — entity tooltips
-
-**Everything else**
-- `test-search.el`, `test-search-links.el` — org-ql searches, link extraction
-- `test-tempel-snippets.el` — bundled snippets and the marker grammar seam
-- `test-wordcount.el` — word counting (requires org-context-extended)
-- `test-export.el` — scene break replacement per backend
-- `test-dictionary.el` — dictionary and language tools
-- `test-modes.el` — writing environment modes
-- `test-health.el` — project health report
-- `test-planner-*.el` (11 files) — calculation, I/O, schedule, milestones, data
-  helpers, dates, buffer safety, hooks, daily sync, agenda, per-project gate
+- `org-scribe-test-files` in `run-all-tests.el`: what actually runs (a file
+  missing from it does not run, so add new files there);
+- the "Test File Index" in `docs/architecture/testing.md`: which module each
+  file covers.
 
 ## Running Tests
 
@@ -49,24 +20,14 @@ Run all tests:
 M-x org-scribe-run-all-tests
 ```
 
-Run specific test suites:
+Run one suite, for example:
 ```elisp
 M-x org-scribe-run-core-tests
-M-x org-scribe-run-project-tests
-M-x org-scribe-run-capture-tests
-M-x org-scribe-run-modes-tests
-M-x org-scribe-run-search-tests
-M-x org-scribe-run-tempel-tests
 M-x org-scribe-run-linking-tests
-M-x org-scribe-run-messages-tests
-M-x org-scribe-run-dictionary-tests
-M-x org-scribe-run-health-tests
-M-x org-scribe-run-export-tests
-M-x org-scribe-run-wordcount-tests
-M-x org-scribe-run-sistema-tests
-M-x org-scribe-run-parity-tests
 M-x org-scribe-run-planner-tests
 ```
+The full list of `org-scribe-run-<area>-tests` suites is in
+`docs/architecture/testing.md`.
 
 Each loads one test file and selects by name regexp. Because ERT matches
 against every test it knows about, running one of these in a session where
@@ -106,7 +67,7 @@ emacs -batch -l test-load.el -l tests/test-character-links.el \
 
 ### Test Files
 
-See the coverage list above; `run-all-tests.el` is the master runner.
+See "Test Coverage" above; `run-all-tests.el` is the master runner.
 
 ### Test Naming Convention
 
@@ -221,35 +182,11 @@ jobs:
         run: emacs -batch -l tests/run-all-tests.el
 ```
 
-### Makefile Example
-
-```makefile
-.PHONY: test test-core test-project test-all
-
-test-all:
-	emacs -batch -l tests/run-all-tests.el
-
-test-core:
-	emacs -batch -l tests/org-scribe-test.el -f org-scribe-run-tests
-
-test-project:
-	emacs -batch -l tests/test-project.el -f org-scribe-project-run-tests
-
-test-interactive:
-	emacs -Q -l tests/run-all-tests.el --eval "(org-scribe-run-all-tests)"
-```
-
 ## Test Statistics
 
-As of the latest version:
-- **Test Files:** 34 (plus `run-all-tests.el`)
-- **Total Tests:** 669
-- **Coverage:** All modules
-
-Note `org-scribe-test-statistics` predates several test categories and does
-not count them; the numbers above come from a full batch run.
-
-Run `M-x org-scribe-test-statistics` for current statistics.
+Run `M-x org-scribe-test-statistics` for current numbers. It predates
+several test categories and does not count them; a full batch run is the
+reliable count.
 
 ## Troubleshooting
 

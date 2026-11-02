@@ -578,15 +578,6 @@ and the outlier legend line is shown."
   "days-until returns 0 for a past date."
   (should (= (org-scribe--health-days-until "2000-01-01") 0)))
 
-(ert-deftest test-health-days-since-past ()
-  "days-since returns positive count for a past date."
-  (should (> (org-scribe--health-days-since "2000-01-01") 0)))
-
-(ert-deftest test-health-days-since-future ()
-  "days-since returns 0 for a future date."
-  (let* ((future (format-time-string "%Y-%m-%d" (time-add (current-time) (* 10 86400)))))
-    (should (= (org-scribe--health-days-since future) 0))))
-
 ;;; Plan status ignores spare days (M7)
 
 (ert-deftest test-health-plan-status-ignores-spare-days ()
@@ -620,10 +611,7 @@ even though nothing was actually due."
     ;; ten spare days too
     (let ((goal (org-scribe-planner--day-goal plan today-date)))
       (should (string= (org-scribe--health-plan-status plan)
-                       (format "Behind by %d words" (- goal 1000)))))
-    ;; Sanity check the naive elapsed*daily-words math (what the old code
-    ;; did) would have flagged this same plan as far behind.
-    (should (> (* (1+ (org-scribe--health-days-since start-date)) 1000) 1000))))
+                       (format "Behind by %d words" (- goal 1000)))))))
 
 (ert-deftest test-health-plan-status-today-is-expected ()
   "Today's goal is due: the status is measured by the end of today.

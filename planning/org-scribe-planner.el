@@ -3412,12 +3412,6 @@ day's own delta — for the actual net words written on a given date, use
 ENTRY must be in new format: (date . (:words N :note \"...\" :target M))."
   (or (plist-get (cdr entry) :note) ""))
 
-(defun org-scribe-planner--get-entry-target (entry)
-  "Extract target from daily-word-count ENTRY.
-ENTRY must be in new format: (date . (:words N :note \"...\" :target M)).
-Returns nil if no target is stored."
-  (plist-get (cdr entry) :target))
-
 (defun org-scribe-planner--counts-with-words (daily-counts)
   "Return only entries from DAILY-COUNTS that have a numeric word count.
 Filters out note-only entries, which carry a note string but no :words field."
@@ -3741,39 +3735,6 @@ Expected words run through the end of today: today's goal counts already
     (message "Progress: %d/%d words (%.1f%%) | %s"
              current total percent
              (org-scribe-planner--describe-status (org-scribe-planner--status plan)))))
-
-(defun org-scribe-planner--compute-recalculation-data (plan)
-  "Compute the common recalculation values for PLAN.
-Returns a plist with:
-  :cumulative-actual — total words written so far
-  :remaining-words   — total-words minus cumulative-actual
-  :remaining-days    — working days in the schedule that have no actual entry"
-  (let* ((daily-counts (org-scribe-plan-daily-word-counts plan))
-         ;; current-words is kept in sync with the latest cumulative ledger
-         ;; entry by every write path, so it IS the total written so far —
-         ;; no need to re-derive it by summing daily-counts.
-         (cumulative-actual (org-scribe-plan-current-words plan))
-         (remaining-words (- (org-scribe-plan-total-words plan) cumulative-actual))
-         (schedule (org-scribe-planner--generate-day-schedule plan))
-         (remaining-days 0))
-    (let ((today (org-scribe-planner--get-today-date)))
-      (dolist (day schedule)
-        (let ((date (plist-get day :date))
-              (is-spare (plist-get day :is-spare-day)))
-          ;; Only count today and future days; past empty days are unlogged history,
-          ;; not future obligations.  Check for actual :words data, not mere
-          ;; presence of a daily-counts entry — a note-only entry (e.g. from
-          ;; `org-scribe-planner--add-spare-day-note' on a future day) carries
-          ;; no word count and must still count as a remaining working day,
-          ;; otherwise annotating a future day silently shrinks the pool of
-          ;; remaining days and inflates the recalculated daily target (H8).
-          (when (and (not (org-scribe-planner--get-entry-words (assoc date daily-counts)))
-                     (not is-spare)
-                     (not (string< date today)))
-            (setq remaining-days (1+ remaining-days))))))
-    (list :cumulative-actual cumulative-actual
-          :remaining-words   remaining-words
-          :remaining-days    remaining-days)))
 
 (defun org-scribe-planner--rebase-keeping-end-date (plan as-of)
   "Rebase PLAN on progress from AS-OF and spread the words left, end date kept.

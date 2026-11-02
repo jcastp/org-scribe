@@ -159,7 +159,7 @@ Returns the marker position of the character heading, or nil if not found."
          (org-map-entries
           (lambda ()
             (when (and (not found-marker)
-                      (string= (org-scribe--get-character-name-at-point) char-name))
+                      (string= (org-scribe--entity-name-at-point) char-name))
               (setq found-marker (point-marker))))
           nil 'file))))
     found-marker))
@@ -204,7 +204,7 @@ list of (ID NAME TYPE) tuples."
          (org-map-entries
           (lambda ()
             (let* ((id (org-id-get))
-                   (name (org-scribe--get-character-name-at-point))
+                   (name (org-scribe--entity-name-at-point))
                    (relationships (org-scribe--get-character-relationships)))
               (when (and id name relationships)
                 (push (cons name relationships) result))))

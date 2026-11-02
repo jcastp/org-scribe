@@ -55,10 +55,6 @@ The generated API is covered for every entity at once by
     ;; Should return plain text for unknown thread (fallback)
     (should (string= link3 "Unknown"))))
 
-;; `org-scribe--get-plot-thread-name-at-point' is a defalias for
-;; `org-scribe--entity-name-at-point'; the behavior is tested once, at the
-;; real function, in test-character-links.el.
-
 (ert-deftest test-plot-thread-file-detection ()
   "Plot threads live in the design notebook, for every project type."
   (cl-letf (((symbol-function 'org-scribe-project-structure)

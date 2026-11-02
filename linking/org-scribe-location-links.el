@@ -100,14 +100,6 @@ real entry."
   :update-names-name        org-scribe-update-location-link-names
   :update-all-name          org-scribe-update-all-location-link-names)
 
-;;; Legacy Aliases
-
-(defun org-scribe--ensure-location-has-id ()
-  "Ensure the current location heading has a unique ID."
-  (org-id-get-create))
-
-(defalias 'org-scribe--get-location-name-at-point 'org-scribe--entity-name-at-point)
-
 (provide 'org-scribe-location-links)
 
 ;;; org-scribe-location-links.el ends here

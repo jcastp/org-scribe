@@ -30,7 +30,6 @@
   "All public and internal functions are defined."
   (should (fboundp 'org-scribe-overlays-mode))
   (should (fboundp 'org-scribe--overlays-link-at-point))
-  (should (fboundp 'org-scribe--overlays-id-at-point))
   (should (fboundp 'org-scribe--overlays-format-tooltip))
   (should (fboundp 'org-scribe--overlays-show-inline))
   (should (fboundp 'org-scribe--overlays-hide-inline))
@@ -99,18 +98,18 @@ so the regex fallback path must handle this case."
     (goto-char (point-min))
     (should (null (org-scribe--overlays-link-at-point)))))
 
-;;; id-at-point (thin wrapper)
+;;; ID of the link at point
 
-(ert-deftest test-overlays-id-at-point-in-body-text ()
+(ert-deftest test-overlays-link-id-at-point-in-body-text ()
   "id-at-point returns the ID string for a link in body text."
   (with-temp-buffer
     (org-mode)
     (insert "See [[id:entity-body-001][Alice]] for details.\n")
     (goto-char (point-min))
     (forward-char 7)
-    (should (equal (org-scribe--overlays-id-at-point) "entity-body-001"))))
+    (should (equal (car (org-scribe--overlays-link-at-point)) "entity-body-001"))))
 
-(ert-deftest test-overlays-id-at-point-in-property-value ()
+(ert-deftest test-overlays-link-id-at-point-in-property-value ()
   "id-at-point returns the ID for a link inside a property value."
   (with-temp-buffer
     (org-mode)
@@ -121,9 +120,9 @@ so the regex fallback path must handle this case."
     (goto-char (point-min))
     (re-search-forward ":PoV:")
     (forward-char 5)
-    (should (equal (org-scribe--overlays-id-at-point) "char-pov-001"))))
+    (should (equal (car (org-scribe--overlays-link-at-point)) "char-pov-001"))))
 
-(ert-deftest test-overlays-id-at-point-multiple-links-in-property ()
+(ert-deftest test-overlays-link-id-at-point-multiple-links-in-property ()
   "id-at-point correctly identifies which ID the cursor is on among several."
   (with-temp-buffer
     (org-mode)
@@ -134,15 +133,15 @@ so the regex fallback path must handle this case."
     (goto-char (point-min))
     (re-search-forward "\\[\\[id:char-bbb\\]")
     (forward-char 2)
-    (should (equal (org-scribe--overlays-id-at-point) "char-bbb"))))
+    (should (equal (car (org-scribe--overlays-link-at-point)) "char-bbb"))))
 
-(ert-deftest test-overlays-id-at-point-returns-nil-outside-link ()
+(ert-deftest test-overlays-link-id-at-point-returns-nil-outside-link ()
   "id-at-point returns nil when point is on plain text."
   (with-temp-buffer
     (org-mode)
     (insert "Just some plain text here.\n")
     (goto-char (point-min))
-    (should (null (org-scribe--overlays-id-at-point)))))
+    (should (null (car (org-scribe--overlays-link-at-point))))))
 
 (ert-deftest test-overlays-format-tooltip-omits-blank-properties ()
   "Blank properties are left out of the tooltip, not printed as bare labels."

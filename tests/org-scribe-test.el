@@ -27,14 +27,6 @@
 
 ;;; Core Tests
 
-(ert-deftest org-scribe-test-sanitize-filename ()
-  "Test that filename sanitization works correctly."
-  (should (string= "test_file" (org-scribe-sanitize-filename "test/file")))
-  (should (string= "test_file" (org-scribe-sanitize-filename "test\\file")))
-  (should (string= "test_file" (org-scribe-sanitize-filename "test:file")))
-  (should (string= "file" (org-scribe-sanitize-filename ".file")))
-  (should (string= "file" (org-scribe-sanitize-filename "...file"))))
-
 (ert-deftest org-scribe-test-window-perc ()
   "Test window percentage calculation."
   (let ((frame-width 200))
@@ -64,9 +56,7 @@
   (should (boundp 'org-scribe-scene-break-replacements)))
 
 ;; The contents of `org-scribe-scene-break-replacements' are asserted in
-;; test-export.el, next to the filter that consumes them, and
-;; `org-scribe-check-feature' in test-core-extended.el, which covers both
-;; the available and unavailable branches.  Both were duplicated here.
+;; test-export.el, next to the filter that consumes them.
 
 ;;; Running Tests
 

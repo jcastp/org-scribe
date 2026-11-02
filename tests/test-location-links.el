@@ -34,7 +34,6 @@ command set plus the `org-scribe--get-*' helpers — is covered for all
 entities at once by `test-entity-registry-api-is-generated' in
 test-sistema-templates.el.  What remains here is the hand-written pair
 in linking/org-scribe-location-links.el."
-  (should (fboundp 'org-scribe--ensure-location-has-id))
   (should (fboundp 'org-scribe--location-heading-p)))
 
 ;;; Location Link Creation Tests
@@ -73,15 +72,6 @@ in linking/org-scribe-location-links.el."
         (should (consp (cdr item)))     ; (ID . HEADING) is a cons
         (should (stringp (cadr item)))  ; ID is a string
         ))))
-
-;; Three `fboundp'-only tests stood here: one for
-;; `org-scribe--get-location-name-at-point' (a defalias for
-;; `org-scribe--entity-name-at-point', whose behavior is tested in
-;; test-character-links.el), one for `org-scribe--ensure-location-has-id'
-;; (a one-line wrapper over `org-id-get-create' — a test would exercise
-;; org-id, not org-scribe), and one for
-;; `org-scribe--link-locations-in-property', which duplicated the
-;; roll-up above.
 
 ;;; Hook Integration Tests
 

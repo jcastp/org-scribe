@@ -592,12 +592,6 @@ LANGUAGE defaults to the project's language; the separator is the
            for full = (expand-file-name path root)
            when (file-exists-p full) return full))
 
-(defun org-scribe--find-existing-dir (root &rest relative-paths)
-  "Return the first existing directory from RELATIVE-PATHS under ROOT, or nil."
-  (cl-loop for path in relative-paths
-           for full = (expand-file-name path root)
-           when (file-directory-p full) return full))
-
 (defun org-scribe--resolve (root concept)
   "Return ROOT's file for CONCEPT, trying the project language first.
 CONCEPT is a key of the `:files' section of `lang/org-scribe-lang.el',
@@ -1054,34 +1048,6 @@ since a table cell cannot contain one."
    "\n" " "
    (replace-regexp-in-string "|" "\\vert" text t t)))
 
-;;; Feature Detection
-
-(defvar org-scribe--available-features nil
-  "Alist of (FEATURE . AVAILABLE-P) for optional dependencies.")
-
-(defun org-scribe-check-feature (feature)
-  "Check if FEATURE is available and cache result.
-Uses `require' rather than a bare `featurep' check so that an installed
-but not-yet-loaded FEATURE is detected instead of reporting unavailable
-just because nothing has loaded it yet.  Only positive results are
-cached; a negative result is rechecked on the next call so that a
-package installed later in the session (or made loadable via a
-load-path change) is picked up without restarting Emacs."
-  (let ((cached (assq feature org-scribe--available-features)))
-    (if cached
-        (cdr cached)
-      (let ((available (and (require feature nil t) t)))
-        (when available
-          (push (cons feature available) org-scribe--available-features))
-        available))))
-
-(defmacro org-scribe-when-feature (feature &rest body)
-  "Execute BODY if FEATURE is available, otherwise show message."
-  (declare (indent 1))
-  `(if (org-scribe-check-feature ',feature)
-       (progn ,@body)
-     (user-error "%s" (org-scribe-msg 'error-feature-not-available ',feature))))
-
 ;;; Entity Section Helpers
 
 (defun org-scribe--heading-matches-section-p (heading section-key)
@@ -1239,24 +1205,6 @@ as an integer suitable for window sizing functions.
 
 Example: (org-scribe-window-perc 0.25) with a 200-char frame returns 50."
   (floor (* (frame-width) pct)))
-
-(defun org-scribe-sanitize-filename (title)
-  "Sanitize TITLE for safe use as filename component.
-Removes path separators and other problematic characters."
-  (let ((safe-title (replace-regexp-in-string "[/\\:]" "_" title)))
-    (replace-regexp-in-string "^\\.+" "" safe-title)))
-
-(defun org-scribe-validate-directory (directory &optional create)
-  "Validate that DIRECTORY exists.
-If CREATE is non-nil and directory doesn't exist, ask user to create it.
-Returns t if directory exists or was created, nil otherwise."
-  (cond
-   ((file-directory-p directory) t)
-   (create
-    (when (yes-or-no-p (org-scribe-msg 'question-create-directory directory))
-      (make-directory directory t)
-      t))
-   (t nil)))
 
 ;;; Error Handling Wrapper
 

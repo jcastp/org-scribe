@@ -270,13 +270,6 @@ Returns a cons (VISIBLE . HIDDEN), each sorted by Weight property
     (org-scribe--partition-entities-by-weight (hash-table-keys chars)
                                              #'org-scribe--get-character-weight)))
 
-(defun org-scribe--collect-unique-characters (scenes)
-  "Extract unique character names from SCENES list.
-Returns list of unique character names, sorted by Weight property
-\(ascending).  Characters with a negative Weight are omitted; use
-`org-scribe--collect-unique-characters-with-hidden' to get at them."
-  (car (org-scribe--collect-unique-characters-with-hidden scenes)))
-
 (defun org-scribe--character-symbol (char-name pov-name chars-list)
   "Return symbol for CHAR-NAME in a scene.
 POV-NAME is the scene's PoV character (or nil).
@@ -308,14 +301,6 @@ named in a comment line beneath it."
        (lambda (char scene)
          (org-scribe--character-symbol char (nth 2 scene) (nth 3 scene)))
        hidden))))
-
-;;; Legacy Aliases
-
-(defun org-scribe--ensure-character-has-id ()
-  "Ensure the current character heading has a unique ID."
-  (org-id-get-create))
-
-(defalias 'org-scribe--get-character-name-at-point 'org-scribe--entity-name-at-point)
 
 (provide 'org-scribe-character-links)
 
