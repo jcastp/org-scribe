@@ -236,6 +236,25 @@ progress; only the current and future weeks follow the rebased plan."
                                              (split-string text "\n"))))))
             (should (= 1 (length widths)))))))))
 
+(ert-deftest test-planner-views-weekly-summary-q-does-not-leak ()
+  "`q' quits the summary only; it must not change other Org buffers.
+`local-set-key' in an `org-mode' buffer edits the shared `org-mode-map',
+which once made `q' quit the window while typing in the manuscript."
+  (test-views--on "2026-11-09"
+    (test-views--with-current (test-views--plan)
+      (let ((before (lookup-key org-mode-map (kbd "q"))))
+        (unwind-protect
+            (progn
+              (org-scribe-planner-show-weekly-summary)
+              (with-current-buffer "*Writing Plan Weekly*"
+                (should (eq (key-binding (kbd "q")) #'quit-window)))
+              (should (equal (lookup-key org-mode-map (kbd "q")) before))
+              (with-temp-buffer
+                (org-mode)
+                (should-not (eq (key-binding (kbd "q")) #'quit-window))))
+          (when (get-buffer "*Writing Plan Weekly*")
+            (kill-buffer "*Writing Plan Weekly*")))))))
+
 ;;; Month grid
 
 (ert-deftest test-planner-views-month-grid ()

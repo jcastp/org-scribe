@@ -1824,6 +1824,10 @@ yesterday.  Weeks start on `org-scribe-planner-week-start-day'."
           (org-table-align)
           (goto-char (point-min))
           (setq buffer-read-only t)
+          ;; Copy the keymap first: the buffer is in `org-mode', whose map
+          ;; `local-set-key' would otherwise modify for every Org buffer,
+          ;; turning `q' into `quit-window' in the manuscript.
+          (use-local-map (copy-keymap (or (current-local-map) (make-sparse-keymap))))
           (local-set-key (kbd "q") #'quit-window)
           (pop-to-buffer (current-buffer)))))))
 
