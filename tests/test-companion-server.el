@@ -221,8 +221,8 @@ answer with its message, not as a closed socket (C-15)."
     (let ((parsed (json-parse-string
                    (test-companion-server--body (test-companion-server--get "/api/strings"))
                    :object-type 'alist)))
-      (should (equal "Project" (alist-get 'companion-ui-project parsed)))
-      (should (alist-get 'companion-ui-loading parsed))
+      (should (equal "Save" (alist-get 'companion-ui-help-save parsed)))
+      (should (alist-get 'companion-ui-help-cancel parsed))
       (should-not (alist-get 'default-scene-name parsed)))
     ;; a Spanish project gets Spanish strings
     (with-temp-file (expand-file-name ".org-scribe-project" root)
@@ -231,7 +231,7 @@ answer with its message, not as a closed socket (C-15)."
     (let ((parsed (json-parse-string
                    (test-companion-server--body (test-companion-server--get "/api/strings"))
                    :object-type 'alist)))
-      (should (equal "Proyecto" (alist-get 'companion-ui-project parsed))))))
+      (should (equal "Guarda" (alist-get 'companion-ui-help-save parsed))))))
 
 (ert-deftest test-companion-server-non-ascii-title-survives ()
   (test-companion-server--with-server root
@@ -632,7 +632,7 @@ answer with its message, not as a closed socket (C-15)."
                  companion-http-forbidden companion-http-not-found
                  companion-http-method companion-http-bad-request
                  companion-http-too-large companion-http-not-json
-                 companion-ui-project companion-ui-loading companion-ui-error))
+                 companion-ui-help-save companion-ui-help-cancel))
     (should (alist-get key org-scribe-messages-en))
     (should (alist-get key org-scribe-messages-es))))
 
