@@ -313,6 +313,145 @@ the 667 words written above the plan when it was recalculated."
       (when-let* ((buffer (get-file-buffer file))) (kill-buffer buffer))
       (delete-file file))))
 
+;;; A recalculation that went out of date (2026-11-02)
+
+(ert-deftest test-planner-status-recalculation-goes-stale-when-the-day-is-written-on ()
+  "Recalculated at 2,334, written on to 2,564 the same day: the plan was
+anchored at 2,334 words and now sees 2,564."
+  (test-status--on "2026-11-01"
+    (let ((plan (test-status--recalculated-on-day-one)))
+      (should (= (org-scribe-plan-rebased-words plan) 2334))
+      (should (string= (org-scribe-plan-rebased-on plan) "2026-11-01"))
+      (should (equal (org-scribe-planner--rebase-stale plan)
+                     '(:date "2026-11-01" :anchored 2334 :written 2564)))
+      (should (string-match-p "2334 words through 2026-11-01; 2564"
+                              (org-scribe-planner--describe-stale
+                               (org-scribe-planner--rebase-stale plan)))))))
+
+(ert-deftest test-planner-status-recalculation-not-stale-when-nothing-changed ()
+  "No words after the recalculation, and none before one: not stale."
+  (test-status--on "2026-11-01"
+    (let ((plan (test-status--plan 2334 "2026-11-01")))
+      ;; Never recalculated
+      (should-not (org-scribe-planner--rebase-stale plan))
+      (org-scribe-planner-recalculate-remaining-days plan "/tmp/unused-plan.org")
+      (should (string= (org-scribe-plan-rebased-from plan) "2026-11-02"))
+      (should-not (org-scribe-planner--rebase-stale plan))))
+  ;; A recalculation made when the day before was already over stays good
+  (test-status--on "2026-11-03"
+    (let ((plan (test-status--plan 3000 "2026-11-02")))
+      (org-scribe-planner-recalculate-remaining-days plan "/tmp/unused-plan.org")
+      (should (string= (org-scribe-plan-rebased-from plan) "2026-11-03"))
+      (should-not (org-scribe-planner--rebase-stale plan)))))
+
+(ert-deftest test-planner-status-recalculation-stale-when-the-day-ends-under-its-goal ()
+  "Recalculated at 500 words (the day was credited with its 1,667 goal),
+the day ends at 500: once it is over, the recalculation is stale."
+  (test-status--on "2026-11-01"
+    (let ((plan (test-status--plan 500 "2026-11-01")))
+      (org-scribe-planner-recalculate-remaining-days plan "/tmp/unused-plan.org")
+      ;; Still being written: the goal it was credited with is not missed yet
+      (should-not (org-scribe-planner--rebase-stale plan))
+      (setq test-status--today "2026-11-02")
+      (should (org-scribe-planner--rebase-stale plan)))))
+
+(ert-deftest test-planner-status-recalculation-stale-for-a-plan-saved-before-the-counts ()
+  "A plan without REBASED_ON / REBASED_WORDS is checked against its rebased total."
+  (test-status--on "2026-11-01"
+    (let ((plan (test-status--recalculated-on-day-one)))
+      (setf (org-scribe-plan-rebased-on plan) nil
+            (org-scribe-plan-rebased-words plan) nil)
+      (should (equal (org-scribe-planner--rebase-stale plan)
+                     '(:date "2026-11-01" :anchored 2334 :written 2564))))))
+
+(ert-deftest test-planner-status-rebase-counts-survive-a-save ()
+  "REBASED_ON and REBASED_WORDS are written and read back."
+  (let ((file (make-temp-file "test-status-plan-" nil ".org"))
+        (plan (test-status--on "2026-11-01" (test-status--recalculated-on-day-one))))
+    (unwind-protect
+        (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
+                   (lambda () "2026-11-01")))
+          (org-scribe-planner--save-plan plan file)
+          (let ((loaded (org-scribe-planner--load-plan file)))
+            (should (string= (org-scribe-plan-rebased-on loaded) "2026-11-01"))
+            (should (= (org-scribe-plan-rebased-words loaded) 2334))))
+      (when-let* ((buffer (get-file-buffer file))) (kill-buffer buffer))
+      (delete-file file))))
+
+(ert-deftest test-planner-status-check-progress-names-the-stale-recalculation ()
+  "The check-progress question says the recalculation is out of date."
+  (test-status--on "2026-11-01"
+    (let ((plan (test-status--recalculated-on-day-one))
+          (asked nil))
+      (let ((org-scribe-planner--current-plan plan)
+            (org-scribe-planner--current-plan-file "/tmp/unused-plan.org"))
+        (cl-letf (((symbol-function 'completing-read)
+                   (lambda (prompt collection &rest _)
+                     (setq asked prompt)
+                     (car (all-completions "" collection)))))
+          (org-scribe-planner-check-progress))
+        (should (string-match-p "Out of date: Recalculated at 2334 words" asked))))))
+
+;;; The offer on the first save of a new day
+
+(defmacro test-status--offering (answers &rest body)
+  "Run BODY interactively, `y-or-n-p' answering from ANSWERS; collects prompts
+in `test-status--prompts'."
+  (declare (indent 1))
+  `(let ((noninteractive nil)
+         (org-scribe-planner--refresh-offered nil)
+         (answers ,answers)
+         (test-status--prompts nil))
+     (cl-letf (((symbol-function 'y-or-n-p)
+                (lambda (prompt) (push prompt test-status--prompts) (pop answers))))
+       ,@body)))
+
+(defvar test-status--prompts nil)
+
+(ert-deftest test-planner-status-offer-recalculates-a-stale-plan-when-accepted ()
+  "Nov 2, first count of the day: the stale plan is offered a recalculation
+from the real 2,564 words; accepting re-anchors it, and it is asked once."
+  (test-status--on "2026-11-02"
+    (test-status--offering '(t t)
+      (let ((plan (let ((test-status--today "2026-11-01"))
+                    (test-status--recalculated-on-day-one))))
+        (should (org-scribe-planner--offer-refresh plan "/tmp/unused-plan.org"))
+        (should (= (length test-status--prompts) 1))
+        (should (string-match-p "Recalculated at 2334 words" (car test-status--prompts)))
+        (should (= (org-scribe-plan-schedule-adjustment plan) -897))
+        (should (string= (org-scribe-plan-rebased-from plan) "2026-11-02"))
+        (should-not (org-scribe-planner--rebase-stale plan))
+        ;; Once a day
+        (setf (org-scribe-plan-rebased-words plan) 0)
+        (should-not (org-scribe-planner--offer-refresh plan "/tmp/unused-plan.org"))
+        (should (= (length test-status--prompts) 1))))))
+
+(ert-deftest test-planner-status-offer-declined-changes-nothing ()
+  "Saying no leaves the plan as it was."
+  (test-status--on "2026-11-02"
+    (test-status--offering '(nil)
+      (let ((plan (let ((test-status--today "2026-11-01"))
+                    (test-status--recalculated-on-day-one))))
+        (should-not (org-scribe-planner--offer-refresh plan "/tmp/unused-plan.org"))
+        (should (= (length test-status--prompts) 1))
+        (should (= (org-scribe-plan-schedule-adjustment plan) -667))
+        (should (org-scribe-planner--rebase-stale plan))))))
+
+(ert-deftest test-planner-status-offer-silent-without-need ()
+  "No offer for a plan never recalculated, an up-to-date one, batch mode, or
+with the option off."
+  (test-status--on "2026-11-02"
+    (test-status--offering '(t t t t)
+      (should-not (org-scribe-planner--offer-refresh
+                   (test-status--plan 3000 "2026-11-01") "/tmp/unused-plan.org"))
+      (let ((plan (let ((test-status--today "2026-11-01"))
+                    (test-status--recalculated-on-day-one))))
+        (let ((noninteractive t))
+          (should-not (org-scribe-planner--offer-refresh plan "/tmp/unused-plan.org")))
+        (let ((org-scribe-planner-offer-refresh-on-new-day nil))
+          (should-not (org-scribe-planner--offer-refresh plan "/tmp/unused-plan.org"))))
+      (should-not test-status--prompts))))
+
 ;;; Streak
 
 (ert-deftest test-planner-status-streak-ignores-days-to-come ()

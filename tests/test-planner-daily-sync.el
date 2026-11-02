@@ -68,6 +68,22 @@ ledger alone; disabling used to stop the mode line but not the ledger."
     (should (assoc "2026-06-28" (org-scribe-plan-daily-word-counts
                                  org-scribe-planner--current-plan)))))
 
+;;; The stale-recalculation offer rides on the first count of a day
+
+(ert-deftest test-planner-daily-sync-offers-a-refresh-only-on-the-first-count-of-a-day ()
+  "The offer is made before a day's first entry is recorded, not on later saves."
+  (test-daily-sync--with-plan plan file today-cell
+    (let ((offers nil))
+      (cl-letf (((symbol-function 'org-scribe-planner--offer-refresh)
+                 (lambda (p _f) (push (length (org-scribe-plan-daily-word-counts p)) offers))))
+        (setcar today-cell "2026-06-28")
+        (org-scribe-planner-record-total 1000)
+        (org-scribe-planner-record-total 1200)
+        (setcar today-cell "2026-06-29")
+        (org-scribe-planner-record-total 1500))
+      ;; Asked with no entry for the day yet: 0 entries, then 1
+      (should (equal (nreverse offers) '(0 1))))))
+
 ;;; First call records the cumulative total as-is
 
 (ert-deftest test-planner-daily-sync-first-call-records-cumulative-total ()

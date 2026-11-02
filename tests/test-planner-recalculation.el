@@ -47,12 +47,13 @@ needn't spell out the previewed outcome that follows an option's label."
 
 (ert-deftest test-planner-recalculate-daily-words-moves-end-date ()
   "A new daily target recomputes DAYS and the end date together.
-Regression: DAYS went from 10 to 20 but END_DATE stayed on Nov 10, so the
-schedule still had 10 days."
+Regression: DAYS went from 10 to 20 but END_DATE stayed on day 10, so the
+schedule still had 10 days.  The plan starts today: a start in the past would
+lock its days and the test would depend on the date it runs."
   (test-recalc--without-io
     (let ((plan (make-org-scribe-plan :title "P" :total-words 10000 :daily-words 1000
-                                      :days 10 :start-date "2026-11-01"
-                                      :end-date "2026-11-10")))
+                                      :days 10 :start-date (test-recalc--day 0)
+                                      :end-date (test-recalc--day 9))))
       (setq org-scribe-planner--current-plan plan
             org-scribe-planner--current-plan-file "/tmp/unused-plan.org")
       (cl-letf (((symbol-function 'completing-read)
@@ -61,15 +62,15 @@ schedule still had 10 days."
                  (lambda (&rest _) 500)))
         (org-scribe-planner-recalculate))
       (should (= (org-scribe-plan-days plan) 20))
-      (should (string= (org-scribe-plan-end-date plan) "2026-11-20"))
+      (should (string= (org-scribe-plan-end-date plan) (test-recalc--day 19)))
       (should (= (length (org-scribe-planner--generate-day-schedule plan)) 20)))))
 
 (ert-deftest test-planner-recalculate-days-number-moves-end-date ()
   "A new number of days (typed as a number) moves the end date too."
   (test-recalc--without-io
     (let ((plan (make-org-scribe-plan :title "P" :total-words 10000 :daily-words 1000
-                                      :days 10 :start-date "2026-11-01"
-                                      :end-date "2026-11-10")))
+                                      :days 10 :start-date (test-recalc--day 0)
+                                      :end-date (test-recalc--day 9))))
       (setq org-scribe-planner--current-plan plan
             org-scribe-planner--current-plan-file "/tmp/unused-plan.org")
       (cl-letf (((symbol-function 'completing-read)
@@ -77,7 +78,7 @@ schedule still had 10 days."
                 ((symbol-function 'org-scribe-planner--read-days)
                  (lambda (&rest _) 20)))
         (org-scribe-planner-recalculate))
-      (should (string= (org-scribe-plan-end-date plan) "2026-11-20"))
+      (should (string= (org-scribe-plan-end-date plan) (test-recalc--day 19)))
       (should (= (org-scribe-plan-daily-words plan) 500)))))
 
 ;;; New-plan wizard

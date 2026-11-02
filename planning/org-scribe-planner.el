@@ -237,6 +237,13 @@ or nil if no project is active.")
   ;; and from the end of the day before it on the recalculated plan.  Nil
   ;; when the plan was never rebased (see `org-scribe-planner--rebase-date')
   (rebased-from nil :type (or null string))
+  ;; What the last recalculation saw (REBASED_ON, REBASED_WORDS): the day it
+  ;; ran, and the manuscript's total as of the day before REBASED_FROM.  The
+  ;; day it ran may still be written on; the two let the plan tell when the
+  ;; recalculation went out of date (see `org-scribe-planner--rebase-stale').
+  ;; Nil for a plan recalculated before they were kept.
+  (rebased-on nil :type (or null string))
+  (rebased-words nil :type (or null number))
   ;; Writing pattern (PATTERN, PATTERN_CONFIG): a symbol from
   ;; `org-scribe-planner--patterns', and a plist of its settings
   (pattern 'flat)
@@ -1160,6 +1167,99 @@ before DATE; before the plan, the pre-existing words."
         (setq planned (org-scribe-planner--planned-total plan day))))
     planned))
 
+;;; A recalculation that went out of date
+;;
+;; A recalculation from progress on a day that is still being written
+;; credits that day with the words it has at that moment.  Words written
+;; afterwards are not in the plan line; they only show up as being ahead.
+;; The recalculation is then stale until it is run again.  Nothing is done
+;; behind the writer's back: the report says so, `check-progress' says so,
+;; and the first save of a new day offers to run it again.
+
+(defun org-scribe-planner--written-through (plan date)
+  "Return the manuscript total PLAN's ledger records as of the end of DATE.
+The pre-existing words when no entry falls on or before DATE."
+  (let ((total (or (org-scribe-plan-preexisting-words plan) 0)))
+    (dolist (entry (org-scribe-planner--sorted-daily-counts
+                    (org-scribe-plan-daily-word-counts plan)))
+      (when (and (not (string< date (car entry)))
+                 (numberp (plist-get (cdr entry) :words)))
+        (setq total (plist-get (cdr entry) :words))))
+    total))
+
+(defun org-scribe-planner--rebase-stale (plan)
+  "Return how PLAN's last recalculation went out of date, or nil.
+A plist: :date, the last day the recalculation counted; :anchored, the
+words it counted through that day; :written, the words recorded through
+it now.  Nil when PLAN was never recalculated, when the recalculation ran
+after that day was over, and when nothing changed since.
+
+The day was still open when the recalculation ran (it was credited with at
+least its goal), so it is out of date when words were written on it
+afterwards, and, once the day is over, when it ended below the goal it was
+credited with.  A plan recalculated before the counts were kept assumes
+the day was open and was anchored at its rebased total."
+  (when-let* ((rebased (org-scribe-plan-rebased-from plan)))
+    (let* ((day (org-scribe-planner--add-days rebased -1))
+           (ran-on (or (org-scribe-plan-rebased-on plan) day))
+           (anchored (or (org-scribe-plan-rebased-words plan)
+                         (org-scribe-planner--rebased-through plan day)))
+           (written (org-scribe-planner--written-through plan day))
+           (goal (cdr (assoc day (org-scribe-plan-locked-goals plan))))
+           (delta (or (org-scribe-planner--entry-delta
+                       (org-scribe-plan-daily-word-counts plan) day
+                       (or (org-scribe-plan-preexisting-words plan) 0))
+                      0)))
+      (when (and (not (string< day ran-on))
+                 (or (/= written anchored)
+                     (and (org-scribe-plan-rebased-words plan)
+                          goal (> goal delta)
+                          (string< day (org-scribe-planner--get-today-date)))))
+        (list :date day :anchored anchored :written written)))))
+
+(defun org-scribe-planner--describe-stale (stale)
+  "Describe STALE (from `org-scribe-planner--rebase-stale') in one sentence."
+  (let ((gap (- (plist-get stale :written) (plist-get stale :anchored))))
+    (format "Recalculated at %d words through %s; %d written there now (%s%d)"
+            (plist-get stale :anchored) (plist-get stale :date)
+            (plist-get stale :written) (if (>= gap 0) "+" "") gap)))
+
+(defcustom org-scribe-planner-offer-refresh-on-new-day t
+  "When non-nil, offer to recalculate a stale plan on the first save of a day.
+A recalculation from progress is stale when words were written, or a goal
+was missed, on the day it ran after it ran (see
+`org-scribe-planner--rebase-stale').  The offer shows the outcome first
+and applies nothing unless you say yes; it comes once a day, and never in
+batch mode."
+  :type 'boolean
+  :group 'org-scribe-planner)
+
+(defvar org-scribe-planner--refresh-offered nil
+  "The date the stale-recalculation offer was last made, or nil.")
+
+(defun org-scribe-planner--offer-refresh (plan file)
+  "Offer to recalculate PLAN, saved in FILE, when its recalculation is stale.
+Once a day.  Changes nothing unless the answer is yes.  Return non-nil
+when the plan was recalculated."
+  (let ((today (org-scribe-planner--get-today-date)))
+    (when-let* (((and org-scribe-planner-offer-refresh-on-new-day
+                      (not noninteractive)
+                      (not (equal org-scribe-planner--refresh-offered today))))
+                (stale (org-scribe-planner--rebase-stale plan))
+                (as-of (org-scribe-planner--default-recalculation-date plan))
+                ((not (org-scribe-planner--recalculation-problem plan as-of))))
+      (setq org-scribe-planner--refresh-offered today)
+      (let ((preview (org-scribe-planner--copy-plan plan)))
+        (org-scribe-planner--rebase-keeping-end-date preview as-of)
+        (when (y-or-n-p (format "%s.\n%s\nRecalculate now? "
+                                (org-scribe-planner--describe-stale stale)
+                                (org-scribe-planner--describe-remaining-days-change
+                                 plan preview as-of)))
+          (org-scribe-planner--rebase-keeping-end-date plan as-of)
+          (org-scribe-planner--save-plan plan file)
+          (org-scribe-planner--refresh-agenda-if-synced plan file)
+          t)))))
+
 ;;; Where the plan stands
 
 (defun org-scribe-planner--writing-day-position (plan words &optional start)
@@ -1890,7 +1990,10 @@ elsewhere.  Returns the number of days newly locked."
                                        (max goal written)))))))
     (setf (org-scribe-plan-schedule-adjustment plan)
           (- locked-words credited (- written-total written-on-locked)))
-    (setf (org-scribe-plan-rebased-from plan) as-of)
+    (setf (org-scribe-plan-rebased-from plan) as-of
+          (org-scribe-plan-rebased-on plan) today
+          (org-scribe-plan-rebased-words plan)
+          (org-scribe-planner--written-through plan (org-scribe-planner--add-days as-of -1)))
     newly))
 
 ;;; New plans: presets and defaults
@@ -2699,6 +2802,15 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                             (number-to-string (org-scribe-plan-schedule-adjustment plan)))
           (when-let* ((rebased (org-scribe-planner--rebase-date plan)))
             (org-set-property "REBASED_FROM" rebased)))
+        ;; Kept even with no adjustment: a recalculation that credited the
+        ;; day with its goal is out of date if the day ends below it
+        (when (org-scribe-plan-rebased-from plan)
+          (org-set-property "REBASED_FROM" (org-scribe-plan-rebased-from plan))
+          (when (org-scribe-plan-rebased-on plan)
+            (org-set-property "REBASED_ON" (org-scribe-plan-rebased-on plan)))
+          (when (org-scribe-plan-rebased-words plan)
+            (org-set-property "REBASED_WORDS"
+                              (number-to-string (org-scribe-plan-rebased-words plan)))))
         (unless (memq (org-scribe-plan-pattern plan) '(nil flat))
           (org-set-property "PATTERN" (symbol-name (org-scribe-plan-pattern plan)))
           (when (org-scribe-plan-pattern-config plan)
@@ -2862,6 +2974,10 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
       (setf (org-scribe-plan-schedule-adjustment plan)
             (string-to-number (or (org-entry-get nil "SCHEDULE_ADJUSTMENT") "0")))
       (setf (org-scribe-plan-rebased-from plan) (org-entry-get nil "REBASED_FROM"))
+      (setf (org-scribe-plan-rebased-on plan) (org-entry-get nil "REBASED_ON"))
+      (setf (org-scribe-plan-rebased-words plan)
+            (when-let* ((words (org-entry-get nil "REBASED_WORDS")))
+              (string-to-number words)))
       (let ((pattern (org-entry-get nil "PATTERN")))
         (when pattern
           (setf (org-scribe-plan-pattern plan) (intern pattern))
@@ -3075,6 +3191,9 @@ Optional FILEPATH shows the location of the plan file."
         (when-let* ((status (ignore-errors (org-scribe-planner--status plan))))
           (insert (format "  Status:        %s\n"
                           (org-scribe-planner--describe-status status))))
+        (when-let* ((stale (ignore-errors (org-scribe-planner--rebase-stale plan))))
+          (insert (format "  Out of date:   %s\n                 [a] adjust remaining days to count them\n"
+                          (org-scribe-planner--describe-stale stale))))
         (insert (format "  Current Words: %d (%.1f%%)\n\n"
                        (org-scribe-plan-current-words plan)
                        (* 100 (/ (float (org-scribe-plan-current-words plan))
@@ -4169,22 +4288,31 @@ the plan as it is is the default.  Expected words run through yesterday:
 today's goal isn't due until the day is over."
   (interactive)
   (org-scribe-planner--with-current-plan (plan file)
-    (let ((status (org-scribe-planner--status plan 'yesterday)))
+    (let ((status (org-scribe-planner--status plan 'yesterday))
+          (stale (ignore-errors (org-scribe-planner--rebase-stale plan))))
       (cond
        ((null status)
         (message "The plan has no schedule yet."))
        ((eq (plist-get status :status) 'on-track)
-        (message "On track: %d words written, as expected by the end of yesterday."
-                 (plist-get status :actual)))
+        (message "On track: %d words written, as expected by the end of yesterday.%s"
+                 (plist-get status :actual)
+                 (if stale
+                     (format " Out of date: %s; adjust the remaining days to count them."
+                             (org-scribe-planner--describe-stale stale))
+                   "")))
        (t
         (let* ((ahead (eq (plist-get status :status) 'ahead))
                (as-of (org-scribe-planner--default-recalculation-date plan))
                (chosen
                 (org-scribe-planner--choose-change
                  plan
-                 (format "%s (expected %d, written %d). Adjust the plan?"
+                 (format "%s (expected %d, written %d)%s. Adjust the plan?"
                          (org-scribe-planner--describe-status status)
-                         (plist-get status :expected) (plist-get status :actual))
+                         (plist-get status :expected) (plist-get status :actual)
+                         (if stale
+                             (format ". Out of date: %s"
+                                     (org-scribe-planner--describe-stale stale))
+                           ""))
                  `(("Keep the plan as it is" . ignore)
                    (,(if ahead "Reduce the daily target (keep the end date)"
                        "Increase the daily target (keep the end date)")
@@ -5057,6 +5185,10 @@ plan.org on every count."
                        plan total (org-scribe-planner--outside-base file)))
              (entry-data (list :words written :note (or existing-note ""))))
         (org-scribe-planner--lock-past-goals plan)
+        ;; The first count of a new day: yesterday is closed, so a stale
+        ;; recalculation can be offered before today's words are recorded
+        (unless existing
+          (org-scribe-planner--offer-refresh plan file))
         ;; Upsert today's entry, preserving any hand-written note
         (if existing
             (setcdr existing entry-data)
