@@ -910,9 +910,6 @@ Both modes use the same variables:
 ;; 60-70: very narrow, intense focus
 ;; 80: classic, comfortable
 ;; 90-100: wider, more context
-
-;; Normal mode width (not used much)
-(setq org-scribe-env-normal-width 90)
 #+END_SRC
 
 ** Customizing Editing Mode

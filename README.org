@@ -185,9 +185,6 @@ Add to your Emacs configuration:
 
 ;; Optional: Enable automatically in org-mode
 (add-hook 'org-mode-hook #'org-scribe-mode)
-
-;; Optional: Set up recommended keybindings
-(org-scribe-setup)
 #+end_src
 
 ** Using use-package (Recommended)

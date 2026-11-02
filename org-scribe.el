@@ -209,15 +209,6 @@ the ledger) from working."
 
 (add-hook 'org-scribe-mode-hook #'org-scribe--planner-maybe-autoload)
 
-;;;###autoload
-(defun org-scribe-setup ()
-  "Set up org-scribe for use.
-This function can be called from your init file to set up
-recommended keybindings and hooks."
-  (interactive)
-  ;; Add hook to enable in org-mode
-  (add-hook 'org-mode-hook #'org-scribe-mode))
-
 ;;; Setup self-check (onboarding)
 
 (defconst org-scribe--dependencies

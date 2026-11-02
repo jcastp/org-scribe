@@ -240,9 +240,8 @@ Controla el ancho del texto, algo decisivo para leer cómodamente.
 *** Ancho en el modo de escritura
 
 #+BEGIN_SRC emacs-lisp
-;; Anchos por defecto
+;; Ancho por defecto
 (setq org-scribe-env-work-width 80)     ; Sin distracciones: 80 columnas
-(setq org-scribe-env-normal-width 90)   ; Normal: 90 columnas
 #+END_SRC
 
 *Ajustes*:
@@ -346,7 +345,6 @@ Ponlo en tu archivo de inicio:
 
 ;; === ANCHOS DE TEXTO ===
 (setq org-scribe-env-work-width 75)                 ; Ancho de lectura cómodo
-(setq org-scribe-env-normal-width 90)               ; Ancho de edición normal
 (setq org-scribe-editing-fill-column-width 90)      ; Ancho del modo Edición
 
 ;; === PANELES DEL MODO EDICIÓN ===
@@ -985,7 +983,6 @@ Esta es una configuración completa y comentada que puedes adaptar:
 
 ;; Anchos de texto
 (setq org-scribe-env-work-width 75)                    ; Lectura cómoda
-(setq org-scribe-env-normal-width 90)
 (setq org-scribe-editing-fill-column-width 90)
 
 ;; Tamaños de los paneles del modo Edición

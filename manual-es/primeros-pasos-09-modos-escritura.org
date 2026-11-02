@@ -902,9 +902,6 @@ Los dos modos usan las mismas variables:
 ;; 60-70: muy estrecho, concentración intensa
 ;; 80: clásico, cómodo
 ;; 90-100: más ancho, más contexto
-
-;; Ancho del modo normal (se usa poco)
-(setq org-scribe-env-normal-width 90)
 #+END_SRC
 
 ** Personalizar el modo Edición

@@ -682,13 +682,13 @@ Accessed via ~F8 L~, this submenu covers everything that isn't an everyday scene
 
 ** Global Keybindings
 
-The package provides minimal global keybindings to avoid conflicts: ~F8~ for the hydra menu and ~C-c W~ for quick note capture. These are set up via the ~org-scribe-mode~ minor mode keybindings. Additional keybindings can be configured by users but the package defaults to hydra access to minimize namespace pollution. The function ~org-scribe-setup~ adds an org-mode hook to enable the minor mode automatically in all org buffers.
+The package provides minimal global keybindings to avoid conflicts: ~F8~ for the hydra menu and ~C-c W~ for quick note capture. These are set up via the ~org-scribe-mode~ minor mode keybindings. Additional keybindings can be configured by users but the package defaults to hydra access to minimize namespace pollution. Add ~org-scribe-mode~ to ~org-mode-hook~ to enable the minor mode automatically in all org buffers.
 
 *Status*: Fully implemented | *Hydra*: N/A (core keybindings) | *Module*: ~org-scribe.el~
 
 ** Emacs Writing Mode (~org-scribe-mode~)
 
-A minor mode that provides the package's keybindings. When enabled in an org-mode buffer, it activates the hydra menu keybinding and capture keybinding. The mode can be enabled manually or automatically via ~org-scribe-setup~ which adds it to ~org-mode-hook~. The mode is buffer-local and integrates cleanly with other org-mode configurations.
+A minor mode that provides the package's keybindings. When enabled in an org-mode buffer, it activates the hydra menu keybinding and capture keybinding. The mode can be enabled manually or automatically by adding it to ~org-mode-hook~. The mode is buffer-local and integrates cleanly with other org-mode configurations.
 
 *Status*: Fully implemented | *Hydra*: N/A (core mode) | *Module*: ~org-scribe.el~
 
@@ -723,7 +723,7 @@ Font preset customization via fontaine: ~org-scribe-env-normal-font~ (default: r
 
 ** Writeroom Width Settings
 
-Control the centered text width in writeroom-mode: ~org-scribe-env-work-width~ (default: 80) for distraction-free mode and ~org-scribe-env-normal-width~ (default: 90) for regular mode. Narrower widths (60-80) are often preferred for drafting to reduce eye movement and create a paper-like feel. Wider settings (85-100) suit editing mode where seeing more context helps. Values are in characters.
+Control the centered text width in writeroom-mode: ~org-scribe-env-work-width~ (default: 80) for distraction-free mode; leaving it restores the width you had before. Narrower widths (60-80) are often preferred for drafting to reduce eye movement and create a paper-like feel. Wider settings (85-100) suit editing mode where seeing more context helps. Values are in characters.
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 

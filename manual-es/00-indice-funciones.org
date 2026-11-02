@@ -628,13 +628,13 @@ Se llega a él con ~F8 L~ y cubre todo lo que no es una acción cotidiana de eti
 
 ** Atajos de teclado globales
 
-El paquete ofrece pocos atajos globales para evitar conflictos: ~F8~ para el menú Hydra y ~C-c W~ para la captura rápida de notas. Se configuran mediante los atajos del modo menor ~org-scribe-mode~, de modo que solo están activos en los búferes en los que ese modo lo está. Puedes configurar atajos adicionales, pero el paquete se apoya por defecto en el menú Hydra para minimizar la contaminación del espacio de nombres. La función ~org-scribe-setup~ añade un gancho de Org que activa el modo menor automáticamente en los búferes de Org. Mira la [[file:../manual-es/primeros-pasos-15-personalizacion.org][Lección 15]] para crear atajos propios.
+El paquete ofrece pocos atajos globales para evitar conflictos: ~F8~ para el menú Hydra y ~C-c W~ para la captura rápida de notas. Se configuran mediante los atajos del modo menor ~org-scribe-mode~, de modo que solo están activos en los búferes en los que ese modo lo está. Puedes configurar atajos adicionales, pero el paquete se apoya por defecto en el menú Hydra para minimizar la contaminación del espacio de nombres. Añade ~org-scribe-mode~ a ~org-mode-hook~ para activar el modo menor automáticamente en los búferes de Org. Mira la [[file:../manual-es/primeros-pasos-15-personalizacion.org][Lección 15]] para crear atajos propios.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (atajos básicos) | *Módulo*: ~org-scribe.el~
 
 ** Modo menor de org-scribe (~org-scribe-mode~)
 
-Un modo menor que aporta los atajos del paquete. Cuando se activa en un búfer de Org, activa la tecla del menú Hydra y la de captura. El modo se puede activar a mano o automáticamente con ~org-scribe-setup~, que lo añade a ~org-mode-hook~. El modo es local al búfer y se integra limpiamente con otras configuraciones de Org. Su activación es además lo que dispara la carga automática del plan del planificador y los destinos de refilado de todo el proyecto.
+Un modo menor que aporta los atajos del paquete. Cuando se activa en un búfer de Org, activa la tecla del menú Hydra y la de captura. El modo se puede activar a mano o automáticamente añadiéndolo a ~org-mode-hook~. El modo es local al búfer y se integra limpiamente con otras configuraciones de Org. Su activación es además lo que dispara la carga automática del plan del planificador y los destinos de refilado de todo el proyecto.
 
 *Estado*: totalmente implementado | *Hydra*: no aplica (modo básico) | *Módulo*: ~org-scribe.el~
 
@@ -669,7 +669,7 @@ Personalización de los preajustes de fuente mediante fontaine: ~org-scribe-env-
 
 ** Ajustes del ancho de writeroom
 
-Controlan el ancho del texto centrado en writeroom-mode: ~org-scribe-env-work-width~ (por defecto: 80) para el modo Sin distracciones y ~org-scribe-env-normal-width~ (por defecto: 90) para el modo normal. Los anchos más estrechos (60-80) se prefieren a menudo para redactar, porque reducen el movimiento de los ojos y crean una sensación de papel. Los ajustes más anchos (85-100) convienen al modo Edición, donde ver más contexto ayuda. Los valores son en caracteres.
+Controlan el ancho del texto centrado en writeroom-mode: ~org-scribe-env-work-width~ (por defecto: 80) para el modo Sin distracciones; al salir se restaura el ancho que tenías antes. Los anchos más estrechos (60-80) se prefieren a menudo para redactar, porque reducen el movimiento de los ojos y crean una sensación de papel. Los ajustes más anchos (85-100) convienen al modo Edición, donde ver más contexto ayuda. Los valores son en caracteres.
 
 *Estado*: totalmente implementado | *Tipo*: defcustom | *Módulo*: ~core/org-scribe-config.el~
 

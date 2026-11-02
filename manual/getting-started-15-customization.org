@@ -242,9 +242,8 @@ Control how wide your text appears - crucial for comfortable reading.
 *** Writing Mode Width
 
 #+BEGIN_SRC emacs-lisp
-;; Default widths
+;; Default width
 (setq org-scribe-env-work-width 80)     ; Distraction-free: 80 columns
-(setq org-scribe-env-normal-width 90)   ; Normal: 90 columns
 #+END_SRC
 
 *Adjusting*:
@@ -356,7 +355,6 @@ Put this in your init file:
 
 ;; === TEXT WIDTHS ===
 (setq org-scribe-env-work-width 75)                  ; Comfortable reading width
-(setq org-scribe-env-normal-width 90)                ; Normal editing width
 (setq org-scribe-editing-fill-column-width 90)          ; Editing mode width
 
 ;; === EDITING MODE PANELS ===
@@ -996,7 +994,6 @@ Here's a full, commented configuration you can adapt:
 
 ;; Text widths
 (setq org-scribe-env-work-width 75)                    ; Comfortable reading
-(setq org-scribe-env-normal-width 90)
 (setq org-scribe-editing-fill-column-width 90)
 
 ;; Editing mode panel sizes

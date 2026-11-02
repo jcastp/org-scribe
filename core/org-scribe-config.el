@@ -159,11 +159,6 @@ The default is nil, which leaves the current theme untouched.  See
   :type 'integer
   :group 'org-scribe-env)
 
-(defcustom org-scribe-env-normal-width 90
-  "Writeroom width for normal mode."
-  :type 'integer
-  :group 'org-scribe-env)
-
 ;;; Dictionary and Language Tools
 
 (defcustom org-scribe-sinonimo-window-width 80

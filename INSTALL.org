@@ -50,9 +50,6 @@ git clone https://codeberg.org/jcastp/org-scribe
 
 ;; Enable in org-mode
 (add-hook 'org-mode-hook #'org-scribe-mode)
-
-;; Optional: set up keybindings
-(org-scribe-setup)
 #+end_src
 
 3. Restart Emacs or evaluate the configuration.
