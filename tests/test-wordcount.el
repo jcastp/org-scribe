@@ -428,6 +428,55 @@ internal \"Cache must be active\"."
     (fundamental-mode)
     (should-error (org-scribe-ews-org-count-words) :type 'user-error)))
 
+(defun test-wordcount--progress-block (params body)
+  "Return the table `progress-by-act' writes for PARAMS over manuscript BODY."
+  (let* ((dir (make-temp-file "org-scribe-pba-" t))
+         (file (expand-file-name "m.org" dir)))
+    (unwind-protect
+        (progn
+          (with-temp-file file
+            (insert body "\n#+BEGIN: progress-by-act" params "\n#+END:\n"))
+          (with-current-buffer (find-file-noselect file)
+            (org-mode)
+            (goto-char (point-min))
+            (re-search-forward "^#\\+BEGIN: progress-by-act")
+            (beginning-of-line)
+            (org-update-dblock)
+            (prog1 (buffer-substring-no-properties (point) (point-max))
+              (set-buffer-modified-p nil)
+              (kill-buffer))))
+      (delete-directory dir t))))
+
+(ert-deftest test-wordcount-progress-by-act-lists-targets-with-total ()
+  "The block lists each matching heading that has a target, then sums them."
+  (let ((table (test-wordcount--progress-block
+                ""
+                (concat "* Act I :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 1000\n:END:\n"
+                        "* Act II :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 3000\n:END:\n"
+                        "* Notes :ignore:\n"))))
+    (should (string-match-p "| Act I +| +1000 |" table))
+    (should (string-match-p "| Act II +| +3000 |" table))
+    (should-not (string-match-p "Notes" table))
+    (should (string-match-p "| TOTAL +| +4000 |" table))))
+
+(ert-deftest test-wordcount-progress-by-act-match-and-title ()
+  ":match picks the level and :title names the first column."
+  (let ((table (test-wordcount--progress-block
+                " :match \"LEVEL=2+ignore\" :title \"Chapter\""
+                (concat "* Act I :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 1000\n:END:\n"
+                        "** Chapter 1 :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 400\n:END:\n"))))
+    (should (string-match-p "| Chapter " table))
+    (should (string-match-p "| Chapter 1 +| +400 |" table))
+    (should-not (string-match-p "| Act I" table))
+    (should (string-match-p "| TOTAL +| +400 |" table))))
+
+(ert-deftest test-wordcount-progress-by-act-zero-target-is-na ()
+  "A target of 0 shows N/A instead of dividing by zero."
+  (let ((table (test-wordcount--progress-block
+                ""
+                "* Act I :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 0\n:END:\n")))
+    (should (string-match-p "N/A" table))))
+
 (provide 'test-wordcount)
 
 ;;; test-wordcount.el ends here

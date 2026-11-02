@@ -268,7 +268,37 @@ Cómo leer la tabla:
 - *Objective*: el recuento objetivo (de las propiedades ~:WORD-OBJECTIVE:~)
 - *Progress*: el porcentaje completado (calculado automáticamente)
 
-Nota: este bloque dinámico *no* calcula una fila de TOTAL ni suma por su cuenta los recuentos de las escenas en su capítulo: cada fila refleja simplemente las propiedades ~:WORDCOUNT:~/~:WORD-OBJECTIVE:~ de ese mismo encabezado. Si quieres un total y un porcentaje de todo el manuscrito, usa la sección *Resumen* del informe de salud del proyecto (mira más abajo).
+Nota: este bloque dinámico *no* calcula una fila de TOTAL ni suma por su cuenta los recuentos de las escenas en su capítulo: cada fila refleja simplemente las propiedades ~:WORDCOUNT:~/~:WORD-OBJECTIVE:~ de ese mismo encabezado. Si quieres un total y un porcentaje, usa el bloque resumen que se describe a continuación, o la sección *Resumen* del informe de salud del proyecto (mira más abajo).
+
+** Un resumen con totales
+
+Un segundo bloque dinámico, ~progress-by-act~, lista solo los encabezados que tienen ~:WORD-OBJECTIVE:~ y termina con una fila de TOTAL. Añádelo donde quieras de tu manuscrito:
+
+#+BEGIN_EXAMPLE
+#+BEGIN: progress-by-act
+#+END:
+#+END_EXAMPLE
+
+Pulsa ~C-c C-c~ sobre la línea ~#+BEGIN~. Por defecto lista los actos (encabezados de nivel 1 con la etiqueta ~:ignore:~). Para una fila por capítulo, escribe los parámetros en la línea:
+
+#+BEGIN_EXAMPLE
+#+BEGIN: progress-by-act :match "LEVEL=2+ignore" :title "Capítulo"
+| Capítulo   | Target | Actual | Progress |
+|------------+--------+--------+----------|
+| Capítulo 1 |   3000 |   2100 |      70% |
+| Capítulo 2 |   3000 |    900 |      30% |
+|------------+--------+--------+----------|
+| TOTAL      |   6000 |   3000 |      50% |
+#+END:
+#+END_EXAMPLE
+
+- ~:match~: qué encabezados listar (una expresión de búsqueda de Org; ~"LEVEL=1+ignore"~ es el valor por defecto).
+- ~:title~: el nombre de la primera columna (por defecto ~Section~).
+
+Algunas cosas que conviene saber:
+- Al actualizar el bloque se refresca primero el ~:WORDCOUNT:~ de todo el archivo.
+- Un encabezado sin ~:WORD-OBJECTIVE:~ se omite, y un objetivo de 0 muestra ~N/A~.
+- Usa un solo nivel por bloque. El total suma todas las filas, así que mezclar actos y capítulos contaría dos veces las mismas palabras.
 
 ** El informe de salud del proyecto
 

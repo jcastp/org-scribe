@@ -157,6 +157,12 @@ Genera bloques dinámicos de seguimiento del progreso que combinan los recuentos
 
 *Estado*: totalmente implementado | *Hydra*: no está en el menú (bloque dinámico, se actualiza con ~C-c C-c~) | *Módulo*: ~counting/org-scribe-wordcount.el~
 
+** Tabla resumen del progreso (~progress-by-act~)
+
+Un segundo bloque dinámico, ~#+BEGIN: progress-by-act~, construye un resumen breve con una fila de TOTAL. Lista cada encabezado que cumple ~:match~ (por defecto ~"LEVEL=1+ignore"~, los actos) y tiene ~:WORD-OBJECTIVE:~, con su objetivo, su recuento real (~:WORDCOUNT:~) y el porcentaje, y añade las sumas y el porcentaje global. ~:title~ cambia el nombre de la primera columna; ~:match "LEVEL=2+ignore" :title "Capítulo"~ da una fila por capítulo. Un objetivo de cero muestra ~N/A~ y los encabezados sin ~:WORD-OBJECTIVE:~ se omiten. Al actualizar el bloque se refresca primero el ~:WORDCOUNT:~ de todo el búfer. Elige un solo nivel por bloque: el total suma todas las filas, así que mezclar actos y capítulos contaría dos veces las mismas palabras. A diferencia de ~org-generate-wordcount-table~, que tiene una fila por encabezado y ningún total, este sirve para una cifra de todo el manuscrito.
+
+*Estado*: totalmente implementado | *Hydra*: no está en el menú (bloque dinámico, se actualiza con ~C-c C-c~) | *Módulo*: ~counting/org-scribe-wordcount.el~
+
 ** Propiedades del recuento de palabras
 
 El paquete usa dos propiedades estándar para gestionar el recuento de palabras: ~:WORDCOUNT:~ (recuento real, calculado automáticamente) y ~:WORD-OBJECTIVE:~ (objetivo, fijado a mano). Esas propiedades habilitan las potentes funciones de Org basadas en propiedades, como los resúmenes de la vista de columnas, las búsquedas y los bloques dinámicos. Se pueden añadir a un encabezado de cualquier nivel (escena, capítulo, acto o la novela entera), lo que da flexibilidad en el nivel de detalle del seguimiento. Las propiedades se integran con el sistema de enlaces: aparecen en los resultados de búsqueda y en la vista de columnas. Son iguales en los dos idiomas.

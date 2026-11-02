@@ -349,7 +349,7 @@ Usage:
   #+BEGIN: progress-by-act
   #+END:
 
-  #+BEGIN: progress-by-act :match \"LEVEL=2/ignore\" :title \"Chapter\"
+  #+BEGIN: progress-by-act :match \"LEVEL=2+ignore\" :title \"Chapter\"
   #+END:
 
 The table shows:

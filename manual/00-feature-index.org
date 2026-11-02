@@ -151,6 +151,12 @@ Generates dynamic progress tracking tables that combine word counts from ~:WORDC
 
 *Status*: Fully implemented | *Hydra*: Not in menu (dynamic block, updated via ~C-c C-c~) | *Module*: ~counting/org-scribe-wordcount.el~
 
+** Progress Summary Table (~progress-by-act~)
+
+A second dynamic block, ~#+BEGIN: progress-by-act~, builds a short summary with a TOTAL row. It lists every heading that matches ~:match~ (default ~"LEVEL=1+ignore"~, the acts) and has a ~:WORD-OBJECTIVE:~, with its target, its actual count (~:WORDCOUNT:~) and the percentage, then adds the sums and the overall percentage. ~:title~ renames the first column; ~:match "LEVEL=2+ignore" :title "Chapter"~ gives one row per chapter. A zero target shows ~N/A~, and headings without ~:WORD-OBJECTIVE:~ are skipped. Updating the block first refreshes the ~:WORDCOUNT:~ of the whole buffer. Pick one level per block: the total adds every row, so mixing acts and chapters would count the same words twice. Unlike ~org-generate-wordcount-table~, which has one row per heading and no totals, this one is meant for a manuscript-wide figure.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (dynamic block, updated via ~C-c C-c~) | *Module*: ~counting/org-scribe-wordcount.el~
+
 ** Word Count Properties
 
 The package uses two standard properties for word count management: ~:WORDCOUNT:~ (auto-calculated actual count) and ~:WORD-OBJECTIVE:~ (manually set target). These properties enable org-mode's powerful property-based features including columnview summaries, searches, and dynamic blocks. Properties can be added to any heading level (scene, chapter, act, or entire novel), creating flexible tracking granularity. The properties integrate with the linking system, appearing in search results and column view displays.

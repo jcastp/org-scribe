@@ -605,6 +605,36 @@ Add the =WORD-OBJECTIVE= property to your Acts, Chapters, or Scenes to enable au
 
 When you update the word count table (with =C-c C-c= on the #+BEGIN line), progress percentages will be automatically calculated for any section that has a =WORD-OBJECTIVE= property.
 
+*** Progress Summary with Totals
+
+The table above has one row per heading and no totals. For a short summary
+with a TOTAL row, use the =progress-by-act= block:
+
+#+begin_example
+#+BEGIN: progress-by-act
+#+END:
+
+#+BEGIN: progress-by-act :match "LEVEL=2+ignore" :title "Chapter"
+#+END:
+#+end_example
+
+It lists the headings that match =:match= (default ="LEVEL=1+ignore"=, the
+acts) and have a =WORD-OBJECTIVE=, with target, actual (=WORDCOUNT=) and
+percentage, then the sums and the overall percentage:
+
+#+begin_example
+| Chapter   | Target | Actual | Progress |
+|-----------+--------+--------+----------|
+| Chapter 1 |   3000 |   2100 |      70% |
+| Chapter 2 |   3000 |    900 |      30% |
+|-----------+--------+--------+----------|
+| TOTAL     |   6000 |   3000 |      50% |
+#+end_example
+
+Updating it first refreshes =WORDCOUNT= on the whole buffer. A zero target
+shows =N/A=; headings without =WORD-OBJECTIVE= are skipped. Use one level per
+block: mixing acts and chapters would count the same words twice.
+
 ** Character Linking
 
 *** Overview

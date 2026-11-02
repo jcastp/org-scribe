@@ -261,7 +261,37 @@ Reading the table:
 - *Objective*: Target word count (from ~:WORD-OBJECTIVE:~ properties)
 - *Progress*: Percentage complete (calculated automatically)
 
-Note: this dynamic block does *not* compute a TOTAL row or roll scene counts up into their parent chapter automatically — each row simply reflects that heading's own ~:WORDCOUNT:~/~:WORD-OBJECTIVE:~ properties. If you want a manuscript-wide total and percentage, use the *Overview* section of the project health report instead (see below).
+Note: this dynamic block does *not* compute a TOTAL row or roll scene counts up into their parent chapter automatically — each row simply reflects that heading's own ~:WORDCOUNT:~/~:WORD-OBJECTIVE:~ properties. If you want a total and a percentage, use the summary block described next, or the *Overview* section of the project health report (see below).
+
+** A Summary with Totals
+
+A second dynamic block, ~progress-by-act~, lists only the headings that have a ~:WORD-OBJECTIVE:~ and ends with a TOTAL row. Add it anywhere in your manuscript:
+
+#+BEGIN_EXAMPLE
+#+BEGIN: progress-by-act
+#+END:
+#+END_EXAMPLE
+
+Press ~C-c C-c~ on the ~#+BEGIN~ line. By default it lists the acts (level-1 headings tagged ~:ignore:~). For one row per chapter, write the parameters on the line:
+
+#+BEGIN_EXAMPLE
+#+BEGIN: progress-by-act :match "LEVEL=2+ignore" :title "Chapter"
+| Chapter   | Target | Actual | Progress |
+|-----------+--------+--------+----------|
+| Chapter 1 |   3000 |   2100 |      70% |
+| Chapter 2 |   3000 |    900 |      30% |
+|-----------+--------+--------+----------|
+| TOTAL     |   6000 |   3000 |      50% |
+#+END:
+#+END_EXAMPLE
+
+- ~:match~: which headings to list (an Org match expression; ~"LEVEL=1+ignore"~ is the default).
+- ~:title~: the name of the first column (default ~Section~).
+
+A few things to know:
+- Updating the block first refreshes the ~:WORDCOUNT:~ of the whole file.
+- A heading with no ~:WORD-OBJECTIVE:~ is skipped, and a target of 0 shows ~N/A~.
+- Use one level per block. The total adds every row, so mixing acts and chapters would count the same words twice.
 
 ** The Project Health Report
 
