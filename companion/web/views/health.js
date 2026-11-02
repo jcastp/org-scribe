@@ -253,9 +253,6 @@ function orphans(data, ctx) {
     group.append(chips);
     node.append(group);
   }
-  if (data.oldObjects.length) {
-    node.append(el('p', 'hl-warn', ctx.t('companion-ui-health-old-objects', data.oldObjects.join(', '))));
-  }
   return node;
 }
 

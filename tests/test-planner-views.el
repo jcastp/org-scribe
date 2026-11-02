@@ -201,7 +201,8 @@ progress; only the current and future weeks follow the rebased plan."
                      ;; As before any real rebase: past days keep their goals.
                      (org-scribe-planner--lock-past-goals plan)
                      (org-scribe-planner--weekly-summary plan))))
-      (setf (org-scribe-plan-schedule-adjustment plan) 3000)
+      (setf (org-scribe-plan-schedule-adjustment plan) 3000
+            (org-scribe-plan-rebased-from plan) "2026-11-09")
       (let ((after (org-scribe-planner--weekly-summary plan)))
         ;; Week 2 (Nov 2-8) is over: unchanged by the adjustment.
         (should (= (plist-get (nth 1 before) :planned-total)

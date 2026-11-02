@@ -31,9 +31,9 @@
   "Return non-nil if the heading at point is an object heading.
 Objects are the headings directly under the Objects section of the
 design notebook, and each carries a `Type' property.  There is no
-heading-text fallback: the old layout's subsection headings (\"Symbolic
-Objects\") contain the section's own name and would become phantom
-objects.  Requiring `Type' also keeps those subsections, and anything
+heading-text fallback: a subsection heading such as \"Symbolic
+Objects\" contains the section's own name and would become a phantom
+object.  Requiring `Type' also keeps such subsections, and anything
 nested below them, out of the entity set."
   (and (org-scribe--heading-parent-section-p 'objects)
        (or (org-entry-get nil "Type")

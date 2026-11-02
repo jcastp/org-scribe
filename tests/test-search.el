@@ -229,7 +229,7 @@ incorrectly matched."
   (should-not (string-match-p org-scribe-edit-string "see *EDI here, no closing star"))
   (should-not (string-match-p org-scribe-edit-string "do *NOT do this, no closing star")))
 
-;;; org-scribe-search-edits-recursive: search root resolution
+;;; org-scribe-search-edits-rgrep: search root resolution
 ;;
 ;; `rgrep' is stubbed so these exercise root resolution only, without
 ;; spawning a find/grep subprocess.
@@ -508,12 +508,6 @@ adding *SUMMARY* to `org-scribe--edits-marker-regexp'."
                                  (point-min) (point-max)))))
                 (should (equal (cdr case) (and has-empty t)))))
           (kill-buffer buffer))))))
-
-(ert-deftest test-search-edits-compat-alias ()
-  "The old command name still works, now pointing at the index."
-  (should (fboundp 'org-scribe-search-edits-recursive))
-  (should (eq (indirect-function 'org-scribe-search-edits-recursive)
-              (indirect-function 'org-scribe-search-edits))))
 
 (ert-deftest test-search-edits-refresh-on-save-is-inert-when-hidden ()
   "The save hook does no work while the index buffer is not displayed.

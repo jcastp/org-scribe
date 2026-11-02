@@ -209,7 +209,6 @@ description-list separator \" :: \" becomes \": \"."
                                    (org-scribe-companion-health--entities
                                     (plist-get orphans :plot-point))
                                  :null))
-     :oldObjects (vconcat (plist-get data :old-objects))
      :open (length (plist-get data :open)))))
 
 (defun org-scribe-companion-health-get (root)

@@ -380,7 +380,6 @@ when the project's gate is 'no."
           (cl-letf (((symbol-function 'org-scribe-project-structure)
                      (lambda ()
                        (list :manuscript-file temp-novel
-                             :novel-file temp-novel
                              :plan-file nil)))
                     ((symbol-function 'org-scribe-planner-gate) (lambda (&rest _) 'no)))
             (org-scribe-project-health)
@@ -398,7 +397,6 @@ when the project's gate is 'no."
           (cl-letf (((symbol-function 'org-scribe-project-structure)
                      (lambda ()
                        (list :manuscript-file temp-novel
-                             :novel-file temp-novel
                              :plan-file nil)))
                     ((symbol-function 'org-scribe-planner-gate) (lambda (&rest _) nil)))
             (org-scribe-project-health)

@@ -231,7 +231,7 @@ Note this is no longer specific to a novel: the same refusal, and the
 same type-neutral message, applies to a short-story project with no
 manuscript at all."
   (cl-letf (((symbol-function 'org-scribe-project-structure)
-             (lambda () (list :manuscript-file nil :novel-file nil))))
+             (lambda () (list :manuscript-file nil))))
     (should-error (org-scribe-project-health) :type 'user-error)))
 
 ;;; Integration: project-health on a short-story project
@@ -243,7 +243,7 @@ Length Spread section (a short story has no chapters at all), and no
 meaningless \"(chapter: /Story Content/)\" suffix on every Open TODO or
 Missing Property line -- \"Story Content\" is the manuscript's own
 level-1 wrapper, not a chapter.
-Regression test: before `:manuscript-file' existed, `:novel-file' was
+Regression test: before `:manuscript-file' existed, the novel file was
 always nil for a short story and this call always signalled a
 \"novel project?\" user-error, which was wrong for a project that
 plainly is a short story."
@@ -254,7 +254,6 @@ plainly is a short story."
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
                  (list :manuscript-file temp-novel
-                       :novel-file temp-novel
                        :plan-file nil
                        :design-file nil))))
       (should-not (condition-case nil (progn (org-scribe-project-health) nil)
@@ -299,8 +298,7 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
               ":PROPERTIES:\n:PoV: Carol\n:WORDCOUNT: 50\n:END:\n\n")
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
-                 (list :manuscript-file temp-novel
-                       :novel-file temp-novel))))
+                 (list :manuscript-file temp-novel))))
       (org-scribe-project-health)
       (with-current-buffer (get-buffer "*org-scribe-health*")
         (let ((content (buffer-string)))
@@ -318,7 +316,7 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
   (test-health--with-novel-file
       "** TODO Chapter :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 5000\n:END:\n\n*** TODO Scene :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 300\n:END:\n\nSome words.\n"
     (cl-letf (((symbol-function 'org-scribe-project-structure)
-               (lambda () (list :manuscript-file temp-novel :novel-file temp-novel)))
+               (lambda () (list :manuscript-file temp-novel)))
               ((symbol-function 'org-scribe-project-language) (lambda () 'es)))
       (let ((org-scribe-message-language 'en))
         (org-scribe-project-health))
@@ -337,8 +335,7 @@ so custom done-state keywords like FINISHED were incorrectly listed as pending."
       "** TODO Chapter :ignore:\n:PROPERTIES:\n:WORD-OBJECTIVE: 5000\n:END:\n\n*** TODO Scene :ignore:\n:PROPERTIES:\n:PoV: Alice\n:WORDCOUNT: 300\n:END:\n\nSome words.\n"
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
-                 (list :manuscript-file temp-novel
-                       :novel-file temp-novel))))
+                 (list :manuscript-file temp-novel))))
       (org-scribe-project-health)
       (let ((buf (get-buffer "*org-scribe-health*")))
         (should buf)
@@ -356,7 +353,7 @@ scene, the property and the entity -- before this nothing reported it."
               ":PROPERTIES:\n:ID: scene-1\n:PoV: [[id:dead-id][Nell Varga]]\n:END:\n\nWords.\n")
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
-                 (list :manuscript-file temp-novel :novel-file temp-novel)))
+                 (list :manuscript-file temp-novel)))
               ((symbol-function 'org-scribe--entity-property-id-maps)
                (lambda () (list (cons 'pov (make-hash-table :test 'equal))))))
       (let ((org-scribe-message-language 'en))
@@ -385,7 +382,7 @@ duplicates the section is left out."
     (let ((chars '(("Ash" "id1" . "Ash") ("Nell" "id2" . "Nell") ("Ash" "id3" . "Ash")))
           (org-scribe-message-language 'en))
       (cl-letf (((symbol-function 'org-scribe-project-structure)
-                 (lambda () (list :manuscript-file temp-novel :novel-file temp-novel)))
+                 (lambda () (list :manuscript-file temp-novel)))
                 ((symbol-function 'org-scribe--get-all-characters) (lambda () chars)))
         (org-scribe-project-health)
         (with-current-buffer (get-buffer "*org-scribe-health*")
@@ -404,7 +401,7 @@ duplicates the section is left out."
     (let ((threads '(("Main" "t1" . "Main") ("Loose" "t2" . "Loose")))
           (org-scribe-message-language 'en))
       (cl-letf (((symbol-function 'org-scribe-project-structure)
-                 (lambda () (list :manuscript-file temp-novel :novel-file temp-novel)))
+                 (lambda () (list :manuscript-file temp-novel)))
                 ((symbol-function 'org-scribe--get-all-plot-threads) (lambda () threads)))
         (org-scribe-project-health)
         (with-current-buffer (get-buffer "*org-scribe-health*")
@@ -435,7 +432,6 @@ Chapter Three (100) is the only outlier (< 0.5 * mean = 600)."
      (cl-letf (((symbol-function 'org-scribe-project-structure)
                 (lambda ()
                   (list :manuscript-file temp-novel
-                        :novel-file temp-novel
                         :plan-file nil))))
        (org-scribe-project-health)
        (with-current-buffer (get-buffer "*org-scribe-health*")
@@ -476,7 +472,6 @@ Chapter Three (100) is the only outlier (< 0.5 * mean = 600)."
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
                  (list :manuscript-file temp-novel
-                       :novel-file temp-novel
                        :plan-file nil))))
       (org-scribe-project-health)
       (with-current-buffer (get-buffer "*org-scribe-health*")
@@ -520,7 +515,6 @@ and the outlier legend line is shown."
     (cl-letf (((symbol-function 'org-scribe-project-structure)
                (lambda ()
                  (list :manuscript-file temp-novel
-                       :novel-file temp-novel
                        :plan-file nil))))
       (org-scribe-project-health)
       (with-current-buffer (get-buffer "*org-scribe-health*")
@@ -664,7 +658,6 @@ Decided 2026-11-01 (it used to stop at yesterday, to avoid reading
       (cl-letf (((symbol-function 'org-scribe-project-structure)
                  (lambda ()
                    (list :manuscript-file temp-novel
-                         :novel-file temp-novel
                          :plan-file nil))))
         (org-scribe-project-health)
         (with-current-buffer (get-buffer "*org-scribe-health*")
@@ -683,7 +676,6 @@ Decided 2026-11-01 (it used to stop at yesterday, to avoid reading
           (cl-letf (((symbol-function 'org-scribe-project-structure)
                      (lambda ()
                        (list :manuscript-file temp-novel
-                             :novel-file temp-novel
                              :plan-file plan-file))))
             (org-scribe-project-health)
             (with-current-buffer (get-buffer "*org-scribe-health*")
@@ -710,7 +702,6 @@ Decided 2026-11-01 (it used to stop at yesterday, to avoid reading
       (cl-letf (((symbol-function 'org-scribe-project-structure)
                  (lambda ()
                    (list :manuscript-file temp-novel
-                         :novel-file temp-novel
                          :plan-file nil))))
         (org-scribe-project-health)
         (with-current-buffer (get-buffer "*org-scribe-health*")
@@ -737,7 +728,7 @@ Decided 2026-11-01 (it used to stop at yesterday, to avoid reading
            (org-scribe-planner--current-plan plan))
       (cl-letf (((symbol-function 'org-scribe-project-structure)
                  (lambda ()
-                   (list :manuscript-file temp-novel :novel-file temp-novel :plan-file nil
+                   (list :manuscript-file temp-novel :plan-file nil
 ))))
         (org-scribe-project-health)
         (with-current-buffer (get-buffer "*org-scribe-health*")
@@ -769,7 +760,7 @@ WORD-TARGET stubs `org-scribe-project-word-target'; PLAN is the active plan."
                  (lambda (&optional _root) word-target))
                 ((symbol-function 'org-scribe-project-structure)
                  (lambda ()
-                   (list :manuscript-file temp-novel :novel-file temp-novel
+                   (list :manuscript-file temp-novel
                          :plan-file nil))))
         (org-scribe-project-health)
         (with-current-buffer (get-buffer "*org-scribe-health*")

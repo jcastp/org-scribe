@@ -376,7 +376,7 @@ Searches the entire project recursively for all TODO items, collecting them from
 
 ** Edit Marker Index (~org-scribe-search-edits~)
 
-Collects every ~*EDIT*~ and ~*NOTE*~ marker written inside an ~#+begin_comment~ block across all .org files below the project root, and presents them in a navigable Org buffer: ~*EDIT*~ markers grouped by category (~org-scribe-edit-categories~, default plot/scene/character/prose/design, with an ~other~ catch-all for missing or unrecognized ones), ~*NOTE*~ markers in a section of their own. Each entry links back to the exact source line. Built by traversing Org's parse tree for ~comment-block~ elements rather than by text search, which means complete multi-line marker bodies, the enclosing scene heading for each marker, and immunity to false positives from prose that merely mentions ~*NOTE*~. ~*SUMMARY*~ markers are deliberately excluded - they describe unwritten scenes and belong to the TODO search. In the index buffer ~g~ refreshes and ~q~ buries; with a prefix argument the command runs the ~rgrep~ fallback instead. Also available as the ~edits~ value of ~org-scribe-editing-right-panel~, where it refreshes on every save. ~org-scribe-search-edits-recursive~ remains as an alias.
+Collects every ~*EDIT*~ and ~*NOTE*~ marker written inside an ~#+begin_comment~ block across all .org files below the project root, and presents them in a navigable Org buffer: ~*EDIT*~ markers grouped by category (~org-scribe-edit-categories~, default plot/scene/character/prose/design, with an ~other~ catch-all for missing or unrecognized ones), ~*NOTE*~ markers in a section of their own. Each entry links back to the exact source line. Built by traversing Org's parse tree for ~comment-block~ elements rather than by text search, which means complete multi-line marker bodies, the enclosing scene heading for each marker, and immunity to false positives from prose that merely mentions ~*NOTE*~. ~*SUMMARY*~ markers are deliberately excluded - they describe unwritten scenes and belong to the TODO search. In the index buffer ~g~ refreshes and ~q~ buries; with a prefix argument the command runs the ~rgrep~ fallback instead. Also available as the ~edits~ value of ~org-scribe-editing-right-panel~, where it refreshes on every save.
 
 ** Bundled Tempel Snippets (~org-scribe-tempel-setup~)
 
@@ -898,16 +898,6 @@ New plans start from a preset (~org-scribe-planner-presets~: Novel draft, NaNoWr
 Words written outside the manuscript — another file, a notebook — are recorded via /What changed?/ → /Words outside the manuscript/: a typed number (~OUTSIDE_WORDS~) and/or files (~OUTSIDE_FILES~). They are kept and shown ("not counted" in the plan view and the health report), never added: every count the plan records is the manuscript's prose. Plans saved before this (without ~WORDS_BASIS: manuscript~) are converted when loaded: the outside words come off every recorded day, with a message. An empty manuscript (0 words) is never recorded.
 
 *Status*: Fully implemented | *Hydra*: ~W r~ | *Module*: ~planning/org-scribe-planner.el~
-
-** Migrating from the standalone org-scribe-planner-integration
-
-If your init file still contains the following snippet from before the planner was bundled directly into org-scribe, remove it — the compatibility shim (~integration/org-scribe-planner-integration.el~) has been deleted from the package entirely, so this ~require~ will now error instead of loading a no-op:
-
-#+BEGIN_SRC emacs-lisp
-;; Remove this — the integration is now built into the planner module
-(with-eval-after-load 'org-scribe-planner
-  (require 'org-scribe-planner-integration))
-#+END_SRC
 
 * Visual Companion
 :PROPERTIES:

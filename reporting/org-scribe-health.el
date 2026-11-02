@@ -400,28 +400,6 @@ be picked, and every link goes to the first one."
           (push (cons (car entry) 1) counts))))
     (seq-filter (lambda (cell) (> (cdr cell) 1)) (nreverse counts))))
 
-(defun org-scribe--health-nested-objects (design-file)
-  "Return the names of objects in DESIGN-FILE left in the old nested layout.
-The old notebook put objects one level below a subsection of Objects
-\(\"Symbolic Objects\"), which the object linker does not read.  A heading
-counts when it carries `Type', its parent has none, and that parent sits
-directly under the Objects section.  Nil when there are none."
-  (when (and design-file (file-exists-p design-file))
-    (with-current-buffer (find-file-noselect design-file)
-      (org-with-wide-buffer
-       (let (names)
-         (org-map-entries
-          (lambda ()
-            (when (and (org-entry-get nil "Type")
-                       (not (org-scribe--heading-parent-section-p 'objects))
-                       (save-excursion
-                         (and (org-up-heading-safe)
-                              (not (org-entry-get nil "Type"))
-                              (org-scribe--heading-parent-section-p 'objects))))
-              (push (org-scribe--heading-text) names)))
-          nil 'file)
-         (nreverse names))))))
-
 (defun org-scribe--health-find-orphans (entities referenced-ids)
   "Return list of entity names not present in REFERENCED-IDS.
 ENTITIES is an alist (NAME . (ID . HEADING)) as returned by
@@ -663,8 +641,7 @@ location, pending scenes only), `:story-time', `:broken-links' (see
 `org-scribe--find-broken-links'), `:duplicates' ((KIND-MESSAGE (NAME .
 COUNT) ...) ...), `:orphans' (a plist by kind, `:character' `:location'
 `:object' `:plot' `:plot-point', of (NAME . ID) lists), `:plot-points-p'
-\(the project defines plot points), `:old-objects' and `:open' (the
-pending scenes)."
+\(the project defines plot points) and `:open' (the pending scenes)."
   (let* (;; The report is written in the project's language, whatever
          ;; `org-scribe-message-language' says.
          (org-scribe-message-language (org-scribe-project-language))
@@ -757,7 +734,6 @@ pending scenes)."
        :plot-points-p (and (fboundp 'org-scribe--get-all-plot-points)
                            (org-scribe--get-all-plot-points)
                            t)
-       :old-objects (org-scribe--health-nested-objects design-file)
        ;; Open (not done) scenes — uses done keywords read from the file
        :open pending))))
 
@@ -785,7 +761,6 @@ The current buffer is expected to be in `org-mode'."
          (broken-links (plist-get data :broken-links))
          (duplicates (plist-get data :duplicates))
          (orphans (plist-get data :orphans))
-         (old-objects (plist-get data :old-objects))
          (open-todos (plist-get data :open))
          (orphan-list (lambda (entries heading none)
                         (insert (format "** %s\n\n" (org-scribe-msg heading (length entries))))
@@ -972,10 +947,6 @@ The current buffer is expected to be in `org-mode'."
     (insert "\n")
     (funcall orphan-list (plist-get orphans :object)
              'msg-health-orphan-objects 'msg-health-orphan-objects-none)
-    (when old-objects
-      (insert (format "\n%s\n"
-                      (org-scribe-msg 'msg-health-old-objects-layout
-                                      (mapconcat #'identity old-objects ", ")))))
     (insert "\n")
     (funcall orphan-list (plist-get orphans :plot)
              'msg-health-orphan-threads 'msg-health-orphan-threads-none)

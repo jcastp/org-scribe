@@ -891,7 +891,7 @@ CURRENT_WORDS and daily deltas."
 \(story.org), not just a novel's.
 Regression test: before `org-scribe-project-structure' resolved
 `:manuscript-file' for a short story, this always returned nil for one
-\(there was no `:novel-file' to find), so the planner could never learn a
+\(there was no manuscript key to find), so the planner could never learn a
 short-story project's word count without prompting for it by hand."
   (test-hooks--with-fake-project root marker
     (write-region "# Writing project: Test\n# Type: short-story\n" nil marker)

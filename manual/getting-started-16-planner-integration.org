@@ -32,17 +32,6 @@ By the end of this lesson, you'll have:
 
 That's it. ~org-scribe-planner~ is bundled inside ~org-scribe~ and loads on demand the first time you run any planner command — no separate installation, no ~require~ call in your init file.
 
-** If You Previously Used org-scribe-planner-integration
-
-If your init file contains:
-
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'org-scribe-planner
-  (require 'org-scribe-planner-integration))
-#+END_SRC
-
-remove that block. The integration features are built directly into the planner module, and that compatibility file no longer exists — the ~require~ would signal a file-missing error.
-
 * What the Planner Does
 
 | Feature                       | What happens                                                    |
@@ -572,10 +561,6 @@ Each project has its own ~plan.org~. Open a file of another project and the plan
 - Confirm ~org-scribe-planner-auto-push-wordcount~ and ~org-scribe-planner-auto-track-daily~ are ~t~.
 - An empty manuscript (0 words) is ignored on purpose.
 - Run ~F8 W u~ to sync by hand and see the result.
-
-** "I get an error loading org-scribe-planner-integration."
-
-Your init file still contains ~(require 'org-scribe-planner-integration)~. Remove it — the integration is built into the planner.
 
 * What You've Learned
 

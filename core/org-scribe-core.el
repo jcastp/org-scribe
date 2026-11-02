@@ -629,11 +629,6 @@ Returns plist with:
   :root          - project root directory
   :manuscript-file - the project's manuscript file (see
                    `org-scribe--resolve-manuscript')
-  :novel-file    - deprecated synonym of `:manuscript-file', kept only so
-                   existing call sites keep working.  Despite the name it
-                   no longer means \"novel\" specifically -- it holds the
-                   same value as `:manuscript-file' for both project
-                   types.  New code should read `:manuscript-file'.
   :design-file     - the design notebook, or nil
   :plan-file       - writing plan file (in the project root), or nil
 
@@ -645,7 +640,6 @@ does not exist."
          (manuscript (org-scribe--resolve-manuscript root type)))
     (list :root root
           :manuscript-file manuscript
-          :novel-file manuscript
           :design-file (org-scribe--resolve root 'design)
           :plan-file (org-scribe--resolve root 'plan))))
 

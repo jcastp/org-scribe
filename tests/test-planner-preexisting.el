@@ -231,35 +231,6 @@ average of 7,267 words a day."
       (should (= (org-scribe-plan-preexisting-words plan) 0))
       (should (= (length (org-scribe-plan-daily-word-counts plan)) 1)))))
 
-(ert-deftest test-planner-pre-migrates-existing-manuscript-entry ()
-  "An onboarded plan's \"Existing manuscript\" entry becomes pre-existing words."
-  (test-pre--with-temp-file file
-    (with-temp-file file
-      (insert "* Onboarded\n:PROPERTIES:\n:TOTAL_WORDS: 80000\n:DAILY_WORDS: 1000\n"
-              ":DAYS: 60\n:START_DATE: 2026-11-01\n:END_DATE: 2026-12-30\n"
-              ":CURRENT_WORDS: 21800\n"
-              ":DAILY_WORD_COUNTS: 2026-11-01:20000:Existing manuscript,"
-              "2026-11-02:21000,2026-11-03:21800\n:END:\n"))
-    (let ((plan (org-scribe-planner--load-plan file)))
-      (should (= (org-scribe-plan-preexisting-words plan) 20000))
-      (should-not (assoc "2026-11-01" (org-scribe-plan-daily-word-counts plan)))
-      (should (= (org-scribe-planner--entry-delta
-                  (org-scribe-plan-daily-word-counts plan) "2026-11-02"
-                  (org-scribe-plan-preexisting-words plan))
-                 1000)))))
-
-(ert-deftest test-planner-pre-no-migration-when-property-present ()
-  "With PREEXISTING_WORDS set, a ledger entry with that note is left alone."
-  (test-pre--with-temp-file file
-    (with-temp-file file
-      (insert "* P\n:PROPERTIES:\n:TOTAL_WORDS: 80000\n:DAILY_WORDS: 1000\n"
-              ":DAYS: 60\n:START_DATE: 2026-11-01\n:END_DATE: 2026-12-30\n"
-              ":CURRENT_WORDS: 20500\n:PREEXISTING_WORDS: 0\n"
-              ":DAILY_WORD_COUNTS: 2026-11-01:20500:Existing manuscript\n:END:\n"))
-    (let ((plan (org-scribe-planner--load-plan file)))
-      (should (= (org-scribe-plan-preexisting-words plan) 0))
-      (should (assoc "2026-11-01" (org-scribe-plan-daily-word-counts plan))))))
-
 ;;; Creating plans
 
 (ert-deftest test-planner-pre-onboard-starts-today-without-ledger-entry ()

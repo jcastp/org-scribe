@@ -254,42 +254,6 @@ schedule stopped adding up to the total."
               (should (equal (test-engine--goals loaded) (test-engine--goals plan))))))
       (delete-directory dir t))))
 
-(ert-deftest test-planner-engine-migrates-old-recalculated-daily ()
-  "An old file whose recalculation changed DAILY_WORDS keeps that target.
-Without the migration the engine would spread the total again and undo
-the recalculation."
-  (let* ((dir (make-temp-file "org-scribe-engine-" t))
-         (file (expand-file-name "plan.org" dir)))
-    (unwind-protect
-        (progn
-          (with-temp-file file
-            (insert "* Old\n:PROPERTIES:\n:TOTAL_WORDS: 30000\n:DAILY_WORDS: 1250\n"
-                    ":DAYS: 30\n:START_DATE: 2026-11-01\n:END_DATE: 2026-11-30\n"
-                    ":CURRENT_WORDS: 5000\n:END:\n"))
-          (let ((plan (org-scribe-planner--load-plan file)))
-            (should (= (org-scribe-plan-schedule-adjustment plan) 7500))
-            (should (= (org-scribe-plan-daily-words plan) 1250))
-            (should (= (plist-get (car (last (org-scribe-planner--generate-day-schedule plan)))
-                                  :cumulative)
-                       30000))))
-      (delete-directory dir t))))
-
-(ert-deftest test-planner-engine-old-rounding-not-migrated ()
-  "An old file whose daily target was only rounded up gets no adjustment."
-  (let* ((dir (make-temp-file "org-scribe-engine-" t))
-         (file (expand-file-name "plan.org" dir)))
-    (unwind-protect
-        (progn
-          (with-temp-file file
-            (insert "* Old\n:PROPERTIES:\n:TOTAL_WORDS: 80000\n:DAILY_WORDS: 728\n"
-                    ":DAYS: 110\n:START_DATE: 2026-02-21\n:END_DATE: 2026-06-10\n"
-                    ":CURRENT_WORDS: 36\n:END:\n"))
-          (let ((plan (org-scribe-planner--load-plan file)))
-            (should (= (org-scribe-plan-schedule-adjustment plan) 0))
-            (should (= (org-scribe-plan-writing-days plan) 110))
-            (should (= (apply #'+ (test-engine--goals plan)) 80000))))
-      (delete-directory dir t))))
-
 ;;; Onboarding with a past start
 
 (ert-deftest test-planner-engine-onboard-past-start-locks-past-at-zero ()

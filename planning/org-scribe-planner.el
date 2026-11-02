@@ -1076,25 +1076,12 @@ The result is memoised on the engine's own result."
 ;; recalculated.  Only the last recalculation shows a step; earlier ones
 ;; are folded into the locked goals.
 
-(defun org-scribe-planner--inferred-rebase-date (plan)
-  "Guess the rebase date of a PLAN saved before REBASED_FROM existed.
-The day after its last locked day, or its start date when nothing is
-locked.  Nil when PLAN has no schedule adjustment."
-  (unless (zerop (or (org-scribe-plan-schedule-adjustment plan) 0))
-    (let ((last-locked (car (last (sort (mapcar #'car (org-scribe-plan-locked-goals plan))
-                                        #'string<)))))
-      (if last-locked
-          (org-scribe-planner--add-days last-locked 1)
-        (org-scribe-plan-start-date plan)))))
-
 (defun org-scribe-planner--rebase-date (plan)
   "Return the first day of PLAN's last recalculation from progress, or nil.
-Nil when PLAN has no schedule adjustment: nothing to measure apart.  A
-plan without a recorded date (REBASED_FROM) gets
-`org-scribe-planner--inferred-rebase-date'."
+Nil when PLAN has no schedule adjustment (nothing to measure apart) or
+no recorded date (REBASED_FROM)."
   (unless (zerop (or (org-scribe-plan-schedule-adjustment plan) 0))
-    (or (org-scribe-plan-rebased-from plan)
-        (org-scribe-planner--inferred-rebase-date plan))))
+    (org-scribe-plan-rebased-from plan)))
 
 (defun org-scribe-planner--before-rebase-p (plan date)
   "Return non-nil when DATE comes before PLAN's last rebase date."
@@ -2813,23 +2800,6 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
         (save-buffer)
         (message "Plan saved to %s" filepath))))))
 
-(defun org-scribe-planner--migrate-existing-manuscript-entry (plan)
-  "Turn PLAN's \"Existing manuscript\" ledger entry into pre-existing words.
-Onboarding used to record the manuscript's count as the first entry of
-DAILY_WORD_COUNTS, with that note, so it counted as one day's writing.
-When the earliest entry with a word count carries that note, its count
-becomes `org-scribe-plan-preexisting-words' and the entry is removed.
-Returns non-nil when PLAN was changed."
-  (let* ((daily-counts (org-scribe-plan-daily-word-counts plan))
-         (first (car (org-scribe-planner--sorted-daily-counts daily-counts))))
-    (when (and first
-               (equal (org-scribe-planner--get-entry-note first) "Existing manuscript"))
-      (setf (org-scribe-plan-preexisting-words plan)
-            (org-scribe-planner--get-entry-words first))
-      (setf (org-scribe-plan-daily-word-counts plan)
-            (assoc-delete-all (car first) daily-counts))
-      t)))
-
 (defun org-scribe-planner--format-pattern-config (config)
   "Write pattern CONFIG, a plist, as \"peak=1.5 valley=0.7\" for PATTERN_CONFIG."
   (let ((parts nil))
@@ -2847,25 +2817,6 @@ Returns non-nil when PLAN was changed."
                        (list (intern (concat ":" (car parts)))
                              (string-to-number (cadr parts)))))
                    (split-string text " " t)))))
-
-(defun org-scribe-planner--migrate-recalculated-daily (plan)
-  "Keep the daily target of a PLAN saved before the schedule engine.
-Old recalculations changed DAILY_WORDS and left TOTAL_WORDS alone, so the
-two may not match any more.  The engine derives the daily target from
-the total, which would undo the recalculation; instead, set the schedule
-adjustment so the open days keep the stored daily target.  A difference
-smaller than one word per writing day is the old rounding up, not a
-recalculation, and is left alone.  Returns non-nil when PLAN was changed."
-  (let ((total (org-scribe-plan-total-words plan))
-        (daily (org-scribe-plan-daily-words plan))
-        (writing-days (org-scribe-planner--writing-days plan)))
-    (when (and (numberp total) (numberp daily) writing-days (> writing-days 0))
-      (let ((difference (- (+ (* daily writing-days)
-                              (or (org-scribe-plan-preexisting-words plan) 0))
-                           total)))
-        (when (or (< difference 0) (>= difference writing-days))
-          (setf (org-scribe-plan-schedule-adjustment plan) difference)
-          t)))))
 
 (defun org-scribe-planner--load-plan (filepath)
   "Load a writing plan from FILEPATH."
@@ -2961,9 +2912,9 @@ recalculation, and is left alone.  Returns non-nil when PLAN was changed."
                                  (word-count (string-to-number (nth 1 parts)))
                                  (note-or-empty (nth 2 parts))
                                  (target-str (nth 3 parts))
-                                 ;; If we have 4 parts, it's new format: date:words:note:target or date:words::target
-                                 ;; If we have 3 parts, it's old format: date:words:note
-                                 ;; If we have 2 parts, it's old format: date:words
+                                 ;; Entries are date:words, date:words:note,
+                                 ;; date:words::target or date:words:note:target
+                                 ;; (see `org-scribe-planner--format-daily-count-entry')
                                  (has-target (and target-str (not (string-empty-p target-str))))
                                  (note (org-scribe-planner--unescape-note-from-property
                                         (if (and note-or-empty (not (string-empty-p note-or-empty)))
@@ -2971,30 +2922,13 @@ recalculation, and is left alone.  Returns non-nil when PLAN was changed."
                                           "")))
                                  (target (when has-target (string-to-number target-str))))
                             (if has-target
-                                ;; New format with target
+                                ;; With a stored target
                                 (cons date (list :words word-count :note note :target target))
-                              ;; Old format - convert to new format (no target stored)
+                              ;; No target stored
                               (cons date (list :words word-count :note note)))))
                         (org-scribe-planner--split-daily-counts-str daily-counts-str))))
             (setf (org-scribe-plan-daily-word-counts plan) parsed-counts))))
 
-      ;; Plans onboarded before PREEXISTING_WORDS existed stored the
-      ;; manuscript as a first ledger entry noted "Existing manuscript".
-      ;; Move it to the pre-existing words, so it no longer counts as a
-      ;; day's writing.  The next save writes the new property.
-      (unless (org-entry-get nil "PREEXISTING_WORDS")
-        (org-scribe-planner--migrate-existing-manuscript-entry plan))
-
-      ;; Plans saved before the schedule engine: keep a daily target that
-      ;; an old recalculation set apart from the total (see
-      ;; `org-scribe-planner--migrate-recalculated-daily')
-      (unless (org-entry-get nil "WRITING_DAYS")
-        (org-scribe-planner--migrate-recalculated-daily plan))
-      ;; Plans rebased before REBASED_FROM existed: fix the date now, from
-      ;; the locked days as they were saved, before more days are locked
-      (unless (org-scribe-plan-rebased-from plan)
-        (setf (org-scribe-plan-rebased-from plan)
-              (org-scribe-planner--rebase-date plan)))
       (when (and (org-scribe-plan-start-date plan)
                  (org-scribe-planner--writing-days plan))
         (org-scribe-planner--sync-window plan)

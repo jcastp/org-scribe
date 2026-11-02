@@ -246,9 +246,9 @@ every save, regardless of `org-scribe-auto-wordcount'."
              (org-scribe-accurate-wordcount-p))
     (ignore-errors
       (when-let* ((struct (org-scribe-project-structure))
-                  (novel-file (plist-get struct :novel-file))
-                  ((file-exists-p novel-file))
-                  ((file-equal-p buffer-file-name novel-file)))
+                  (manuscript (plist-get struct :manuscript-file))
+                  ((file-exists-p manuscript))
+                  ((file-equal-p buffer-file-name manuscript)))
         (let ((inhibit-message t))
           (org-scribe-ews-org-count-words (not org-scribe-auto-wordcount-mint-ids))
           (org-scribe--update-wordcount-dblocks))))))

@@ -1876,8 +1876,6 @@ The *Colour by* list in the header colours every scene on the Corkboard, Table, 
 
 org-scribe includes a full writing planner in =planning/org-scribe-planner.el=. It is *bundled and available automatically* — no separate install, no init.el glue required. All planner commands carry autoload cookies, so they load on first use with zero startup cost when unused.
 
-If you previously installed [[https://codeberg.org/jcastp/org-scribe-planner][org-scribe-planner]] as a standalone package and loaded =(require 'org-scribe-planner-integration)= in your init file, remove that snippet — the compatibility shim has been deleted and the integration is built directly into the planner module.
-
 ** Opt-in Gate
 
 A project only sees the planner after explicitly opting in — no prompts, no mode-line indicator, no health-report section, and no =plan.org= template artifact until then. The decision is recorded as a =# Planner: yes= / =# Planner: no= line in =.org-scribe-project=:

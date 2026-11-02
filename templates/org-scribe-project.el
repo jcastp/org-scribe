@@ -1450,45 +1450,6 @@ This is useful for adding novels created before project.el integration."
   (let ((count (project-remember-projects-under directory t)))
     (message "%s" (org-scribe-msg 'msg-projects-registered count directory))))
 
-;;; Backwards Compatibility Aliases
-
-;; Provide old function names for backwards compatibility
-;;;###autoload
-(defalias 'org-scribe-project-create-novel-project #'org-scribe-create-novel-project
-  "Deprecated: Use `org-scribe-create-novel-project' instead.")
-(make-obsolete 'org-scribe-project-create-novel-project 'org-scribe-create-novel-project "0.2.0")
-
-;;;###autoload
-(defalias 'org-scribe-create-project #'org-scribe-create-novel-project
-  "Deprecated: Use `org-scribe-create-novel-project' instead.")
-(make-obsolete 'org-scribe-create-project 'org-scribe-create-novel-project "0.2.1")
-
-;;;###autoload
-(defalias 'org-scribe-project-insert-scene #'org-scribe-insert-scene
-  "Deprecated: Use `org-scribe-insert-scene' instead.")
-(make-obsolete 'org-scribe-project-insert-scene 'org-scribe-insert-scene "0.2.0")
-
-;;;###autoload
-(defalias 'org-scribe-project-insert-chapter #'org-scribe-insert-chapter
-  "Deprecated: Use `org-scribe-insert-chapter' instead.")
-(make-obsolete 'org-scribe-project-insert-chapter 'org-scribe-insert-chapter "0.2.0")
-
-;;;###autoload
-(defalias 'org-scribe-project-open-novel-file #'org-scribe-open-project-file
-  "Deprecated: Use `org-scribe-open-project-file' instead.")
-(make-obsolete 'org-scribe-project-open-novel-file 'org-scribe-open-project-file "0.2.0")
-
-;;;###autoload
-(defalias 'org-scribe-project-edit-novel-templates #'org-scribe-edit-templates
-  "Deprecated: Use `org-scribe-edit-templates' instead.")
-(make-obsolete 'org-scribe-project-edit-novel-templates 'org-scribe-edit-templates "0.2.0")
-
-;;;###autoload
-(defalias 'org-scribe-project-register-existing-projects #'org-scribe-register-projects
-  "Deprecated: Use `org-scribe-register-projects' instead.")
-(make-obsolete 'org-scribe-project-register-existing-projects 'org-scribe-register-projects "0.2.0")
-
-;; Provide old feature name for old configs
 (provide 'org-scribe-project)
 
 ;;; org-scribe-project.el ends here

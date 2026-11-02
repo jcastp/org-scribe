@@ -110,26 +110,6 @@
             (should (gethash "obj-001" ids))))
       (delete-file file))))
 
-(ert-deftest test-object-links-health-detects-the-old-nested-layout ()
-  (let ((file (make-temp-file "design" nil ".org")))
-    (unwind-protect
-        (progn
-          (with-temp-file file
-            (insert "* World\n** Objects\n*** Symbolic Objects\n**** The Ring\n:PROPERTIES:\n:Type: Symbolic\n:END:\n*** The Key\n:PROPERTIES:\n:Type: Magical\n:END:\n"))
-          (should (equal '("The Ring") (org-scribe--health-nested-objects file))))
-      (when-let* ((buf (find-buffer-visiting file))) (kill-buffer buf))
-      (delete-file file))))
-
-(ert-deftest test-object-links-health-no-hint-for-the-flat-layout ()
-  (let ((file (make-temp-file "design" nil ".org")))
-    (unwind-protect
-        (progn
-          (with-temp-file file
-            (insert "* World\n** Objects\n*** The Key\n:PROPERTIES:\n:Type: Magical\n:END:\n**** Origin\n"))
-          (should-not (org-scribe--health-nested-objects file)))
-      (when-let* ((buf (find-buffer-visiting file))) (kill-buffer buf))
-      (delete-file file))))
-
 (provide 'test-object-links)
 
 ;;; test-object-links.el ends here

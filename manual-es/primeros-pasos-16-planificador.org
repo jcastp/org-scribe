@@ -36,17 +36,6 @@ Al terminar la lección habrás:
 
 Eso es todo. ~org-scribe-planner~ viene dentro de ~org-scribe~ y se carga a demanda la primera vez que ejecutas cualquier orden del planificador: no hay que instalar nada aparte ni escribir ningún ~require~ en tu archivo de inicio.
 
-** Si antes usabas org-scribe-planner-integration
-
-Si tu archivo de inicio contiene:
-
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'org-scribe-planner
-  (require 'org-scribe-planner-integration))
-#+END_SRC
-
-borra ese bloque. Las funciones de integración están construidas directamente dentro del módulo del planificador, y ese archivo de compatibilidad ya no existe: el ~require~ daría un error de archivo inexistente.
-
 * Qué hace el planificador
 
 | Función                                 | Qué ocurre                                                                                      |
@@ -595,10 +584,6 @@ Cada proyecto tiene su propio ~plan.org~. Abre un archivo de otro proyecto y el 
 - Confirma que ~org-scribe-planner-auto-push-wordcount~ y ~org-scribe-planner-auto-track-daily~ valen ~t~.
 - Un manuscrito vacío (0 palabras) se ignora a propósito.
 - Ejecuta ~F8 W u~ para sincronizar a mano y ver el resultado.
-
-** «Me sale un error al cargar org-scribe-planner-integration»
-
-Tu archivo de inicio todavía contiene ~(require 'org-scribe-planner-integration)~. Bórralo: la integración está construida dentro del planificador.
 
 * Lo que has aprendido
 

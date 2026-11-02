@@ -38,10 +38,7 @@
   ;; Utilities
   (should (fboundp 'org-scribe-edit-templates))
   (should (fboundp 'org-scribe-register-projects))
-
-  ;; Backward compatibility
-  (should (fboundp 'org-scribe-project-create-novel-project))
-  (should (fboundp 'org-scribe-create-project)))
+)
 
 ;;; Title Validation Tests
 
@@ -652,29 +649,6 @@ More.
   "Test that template language is configured."
   (should (boundp 'org-scribe-template-language))
   (should (memq org-scribe-template-language '(en es))))
-
-;;; Backward Compatibility Tests
-
-(ert-deftest test-backward-compatibility-aliases ()
-  "Test that old function names are still available."
-  ;; Old function names should be callable
-  (should (fboundp 'org-scribe-project-create-novel-project))
-  (should (fboundp 'org-scribe-create-project))
-  (should (fboundp 'org-scribe-project-insert-scene))
-  (should (fboundp 'org-scribe-project-insert-chapter))
-  (should (fboundp 'org-scribe-project-open-novel-file))
-
-  ;; And should be marked as aliases (indirect functions)
-  (should (symbolp (symbol-function 'org-scribe-project-create-novel-project)))
-  (should (symbolp (symbol-function 'org-scribe-create-project))))
-
-(ert-deftest test-obsolete-functions-marked ()
-  "Test that old functions are marked as obsolete."
-  (should (get 'org-scribe-project-create-novel-project 'byte-obsolete-info))
-  (should (get 'org-scribe-create-project 'byte-obsolete-info))
-  (should (get 'org-scribe-project-insert-scene 'byte-obsolete-info))
-  (should (get 'org-scribe-project-insert-chapter 'byte-obsolete-info))
-  (should (get 'org-scribe-project-open-novel-file 'byte-obsolete-info)))
 
 ;;; Integration Tests (require actual template files)
 

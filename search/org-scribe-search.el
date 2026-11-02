@@ -602,13 +602,6 @@ refused \[org-scribe-tempel-setup] in exactly that case."
       (setq tempel-path (cons file paths)))
     tempel-path))
 
-;;;###autoload
-(defalias 'org-scribe-search-edits-recursive #'org-scribe-search-edits
-  "Compatibility alias for `org-scribe-search-edits'.
-The command used to be an `rgrep' wrapper; that behavior now lives in
-`org-scribe-search-edits-rgrep' and is still reachable with a prefix
-argument.")
-
 (provide 'org-scribe-search)
 
 ;;; org-scribe-search.el ends here

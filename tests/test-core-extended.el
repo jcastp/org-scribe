@@ -178,7 +178,7 @@ Clears the project type cache before and after."
         ("design.org" . "#+TITLE: Design\n"))
     (let ((structure (org-scribe-project-structure)))
       (should (string-suffix-p "novel.org"
-                               (plist-get structure :novel-file)))
+                               (plist-get structure :manuscript-file)))
       (should (string-suffix-p "design.org"
                                (plist-get structure :design-file))))))
 
@@ -187,42 +187,25 @@ Clears the project type cache before and after."
   (test-core--with-temp-project
       '()
     (let ((structure (org-scribe-project-structure)))
-      (should (null (plist-get structure :novel-file)))
       (should (null (plist-get structure :manuscript-file)))
       (should (null (plist-get structure :design-file))))))
 
 (ert-deftest test-core-project-structure-short-story-manuscript ()
-  "Test that :manuscript-file and :novel-file both resolve story.org.
-`:novel-file' is a deprecated synonym of `:manuscript-file' kept for
-existing callers -- both must hold the same value for a short story's
-manuscript, not just for a novel's."
+  "Test that :manuscript-file resolves story.org for a short story."
   (test-core--with-temp-project
       '(("story.org" . "#+TITLE: Test Story\n"))
     (let ((structure (org-scribe-project-structure)))
       (should (string-suffix-p "story.org"
-                               (plist-get structure :manuscript-file)))
-      (should (string-suffix-p "story.org"
-                               (plist-get structure :novel-file))))))
+                               (plist-get structure :manuscript-file))))))
 
 (ert-deftest test-core-project-structure-spanish-short-story-manuscript ()
-  "Test that :manuscript-file and :novel-file both resolve cuento.org."
+  "Test that :manuscript-file resolves cuento.org."
   (let ((manuscript (org-scribe-lang-file 'manuscript-short 'es)))
     (test-core--with-temp-project
         (list (cons manuscript "#+TITLE: Cuento de Prueba\n"))
       (let ((structure (org-scribe-project-structure)))
         (should (string-suffix-p manuscript
-                                 (plist-get structure :manuscript-file)))
-        (should (string-suffix-p manuscript
-                                 (plist-get structure :novel-file)))))))
-
-(ert-deftest test-core-project-structure-manuscript-keys-agree ()
-  "Test that :manuscript-file and :novel-file hold the identical value
-for a novel project too, not only for a short story."
-  (test-core--with-temp-project
-      '(("novel.org" . "#+TITLE: Test\n"))
-    (let ((structure (org-scribe-project-structure)))
-      (should (equal (plist-get structure :manuscript-file)
-                     (plist-get structure :novel-file))))))
+                                 (plist-get structure :manuscript-file)))))))
 
 (ert-deftest test-core-project-structure-spanish-files ()
   "Test project structure detects Spanish file names, read from the pack."
@@ -233,15 +216,15 @@ for a novel project too, not only for a short story."
               (cons design "#+TITLE: Diseño\n"))
       (let ((structure (org-scribe-project-structure)))
         (should (string-suffix-p manuscript
-                                 (plist-get structure :novel-file)))
+                                 (plist-get structure :manuscript-file)))
         (should (string-suffix-p design
                                  (plist-get structure :design-file)))))))
 
 (ert-deftest test-core-project-structure-has-only-the-two-file-keys ()
-  "The structure names the root, the manuscript (and its synonym), the
+  "The structure names the root, the manuscript, the
 design notebook and the plan -- no per-entity files."
   (test-core--with-temp-project '()
-    (should (equal '(:root :manuscript-file :novel-file :design-file :plan-file)
+    (should (equal '(:root :manuscript-file :design-file :plan-file)
                    (cl-loop for (k _v) on (org-scribe-project-structure) by #'cddr
                             collect k)))))
 

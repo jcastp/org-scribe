@@ -382,7 +382,7 @@ Busca de forma recursiva en todo el proyecto todos los elementos TODO, reuniénd
 
 ** Índice de marcadores de edición (~org-scribe-search-edits~)
 
-Reúne todos los marcadores ~*EDIT*~ y ~*NOTE*~ escritos dentro de un bloque ~#+begin_comment~ en todos los archivos .org bajo la raíz del proyecto y los presenta en un búfer de Org navegable: los marcadores ~*EDIT*~ agrupados por categoría (~org-scribe-edit-categories~, por defecto plot/scene/character/prose/design, con un cajón de sastre ~other~ para las categorías ausentes o no reconocidas; en un proyecto en español se muestran como trama/escena/personaje/prosa/diseño, y el cajón de sastre como ~otras~) y los ~*NOTE*~ en una sección propia. Cada entrada enlaza con la línea exacta del origen. Se construye recorriendo el árbol de análisis de Org en busca de elementos ~comment-block~ en lugar de buscar texto, lo que da cuerpos de marcador completos aunque ocupen varias líneas, el encabezado de escena que contiene cada marcador y la inmunidad a los falsos positivos de una prosa que simplemente menciona ~*NOTE*~. Los marcadores ~*SUMMARY*~ se excluyen a propósito: describen escenas sin escribir y pertenecen a la búsqueda de TODO. En el búfer del índice ~g~ lo refresca y ~q~ lo oculta; con un argumento de prefijo la orden ejecuta en su lugar la alternativa ~rgrep~. También está disponible como el valor ~edits~ de ~org-scribe-editing-right-panel~, donde se refresca en cada guardado. ~org-scribe-search-edits-recursive~ sigue existiendo como alias. Mira la [[file:../manual-es/primeros-pasos-14-flujo-revision.org][Lección 14]].
+Reúne todos los marcadores ~*EDIT*~ y ~*NOTE*~ escritos dentro de un bloque ~#+begin_comment~ en todos los archivos .org bajo la raíz del proyecto y los presenta en un búfer de Org navegable: los marcadores ~*EDIT*~ agrupados por categoría (~org-scribe-edit-categories~, por defecto plot/scene/character/prose/design, con un cajón de sastre ~other~ para las categorías ausentes o no reconocidas; en un proyecto en español se muestran como trama/escena/personaje/prosa/diseño, y el cajón de sastre como ~otras~) y los ~*NOTE*~ en una sección propia. Cada entrada enlaza con la línea exacta del origen. Se construye recorriendo el árbol de análisis de Org en busca de elementos ~comment-block~ en lugar de buscar texto, lo que da cuerpos de marcador completos aunque ocupen varias líneas, el encabezado de escena que contiene cada marcador y la inmunidad a los falsos positivos de una prosa que simplemente menciona ~*NOTE*~. Los marcadores ~*SUMMARY*~ se excluyen a propósito: describen escenas sin escribir y pertenecen a la búsqueda de TODO. En el búfer del índice ~g~ lo refresca y ~q~ lo oculta; con un argumento de prefijo la orden ejecuta en su lugar la alternativa ~rgrep~. También está disponible como el valor ~edits~ de ~org-scribe-editing-right-panel~, donde se refresca en cada guardado. Mira la [[file:../manual-es/primeros-pasos-14-flujo-revision.org][Lección 14]].
 
 *Estado*: totalmente implementado | *Hydra*: ~F8 6~ (sección Search, «find edits and notes») | *Módulo*: ~search/org-scribe-search.el~
 
@@ -844,16 +844,6 @@ Los planes nuevos parten de un preajuste (~org-scribe-planner-presets~: Novel dr
 Las palabras escritas fuera del manuscrito (otro archivo, un cuaderno) se anotan con /What changed?/ → /Words outside the manuscript/: un número escrito (~OUTSIDE_WORDS~) y/o archivos (~OUTSIDE_FILES~). Se guardan y se muestran («not counted» en la vista del plan y en el informe de salud), pero nunca se suman: todo recuento que anota el plan es la prosa del manuscrito. Los planes guardados antes de esto (sin ~WORDS_BASIS: manuscript~) se convierten al cargarse: las palabras de fuera se restan de cada día anotado, con un mensaje. Un manuscrito vacío (0 palabras) no se anota nunca.
 
 *Estado*: totalmente implementado | *Hydra*: ~F8 W r~ | *Módulo*: ~planning/org-scribe-planner.el~
-
-** Migración desde el antiguo org-scribe-planner-integration
-
-Si tu archivo de inicio todavía contiene el siguiente fragmento de antes de que el planificador se incorporara directamente a org-scribe, bórralo: el archivo de compatibilidad (~integration/org-scribe-planner-integration.el~) se ha eliminado por completo del paquete, así que este ~require~ dará ahora un error en lugar de cargar algo sin efecto:
-
-#+BEGIN_SRC emacs-lisp
-;; Borra esto: la integración ya está construida dentro del módulo del planificador
-(with-eval-after-load 'org-scribe-planner
-  (require 'org-scribe-planner-integration))
-#+END_SRC
 
 * Companion visual
 :PROPERTIES:

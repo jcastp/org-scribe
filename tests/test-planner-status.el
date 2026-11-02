@@ -292,8 +292,7 @@ the 667 words written above the plan when it was recalculated."
                        plan (test-status--day plan "2026-11-01")))))))
 
 (ert-deftest test-planner-status-rebase-date-survives-a-save ()
-  "REBASED_FROM is written and read back; a plan saved without it gets the
-day after its last locked day."
+  "REBASED_FROM is written and read back; a plan saved without it has none."
   (let ((file (make-temp-file "test-status-plan-" nil ".org"))
         (plan (test-status--on "2026-11-01" (test-status--recalculated-on-day-one))))
     (unwind-protect
@@ -309,9 +308,8 @@ day after its last locked day."
             (re-search-forward "^\\*")
             (org-entry-delete nil "REBASED_FROM")
             (save-buffer))
-          (should (string= "2026-11-02"
-                           (org-scribe-plan-rebased-from
-                            (org-scribe-planner--load-plan file)))))
+          (should-not (org-scribe-plan-rebased-from
+                       (org-scribe-planner--load-plan file))))
       (when-let* ((buffer (get-file-buffer file))) (kill-buffer buffer))
       (delete-file file))))
 
