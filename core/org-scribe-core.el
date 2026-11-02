@@ -1096,8 +1096,8 @@ read live via `org-scribe-lang-all'."
 (defun org-scribe--heading-text ()
   "Return the heading at point without tags, priority or a TODO keyword.
 `org-get-heading' only strips the keywords the buffer itself declares,
-and the design notebook declares its own `#+TODO:' set (OPEN, EXPLORING,
-...), so a writer's `** TODO Mr Smith' kept its \"TODO\" and every link
+and the manuscript declares its own `#+TODO:' set (TOWRITE, ...) while the
+design notebook uses the writer's ordinary keywords, so a writer's `** TODO Mr Smith' kept its \"TODO\" and every link
 to the entity read \"TODO Mr Smith\".  Also strip any word of
 `org-scribe-todo-keywords' or `org-todo-keywords-1', so an entity marked
 as pending is still named for itself."
