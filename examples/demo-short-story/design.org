@@ -261,24 +261,24 @@ runs out of reasons not to.
 # The verification scene is the most obvious beat available and probably
 # the most boring one.  What does the story lose without it?
 
-*** REJECTED A. She verifies it, and it checks out
+*** CANCELED A. She verifies it, and it checks out
 
 Turns the story into a procedural. The reader stops asking the question
 the whole thing runs on.
 
-*** EXPLORING B. She never tries
+*** ONGOING B. She never tries
 
 Then the story is about what she was already willing to believe, which
 is the secret story underneath. Costs the reader a certainty they may
 not forgive losing.
 
-**** OPEN B1. One line acknowledging she could check, and doesn't
+**** TODO B1. One line acknowledging she could check, and doesn't
 
-**** OPEN B2. It never occurs to her at all
+**** TODO B2. It never occurs to her at all
 
 Harder, better, and it makes her someone specific rather than someone
 sensible.
 
-*** OPEN C. She tries and the result is ambiguous
+*** TODO C. She tries and the result is ambiguous
 
 Wants to be both. Probably is neither.

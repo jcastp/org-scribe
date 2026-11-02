@@ -2322,28 +2322,28 @@ Stance 1 in a new mouth.
 # harder if Alex takes it and is still late — the failure is then Alex's
 # alone, with nobody to have asked.
 
-*** REJECTED A. Alex takes it and is on time
+*** CANCELED A. Alex takes it and is on time
 
 Kills the Moral Weakness in chapter 2, which is the only thing making
 Dana's suspicion reasonable. Also makes the pitch scene unearned: Alex
 would already have changed before the Need is stated.
 
-*** CHOSEN B. Alex takes it and is forty minutes late
+*** DONE B. Alex takes it and is forty minutes late
 
 Sam misses the care centre's call anyway, but now there is nobody to
 blame, and Alex has to sit with that. Same beat, one fewer excuse.
 
-**** CHOSEN B1. Sam does not mention it
+**** DONE B1. Sam does not mention it
 
 The silence is worse. It also sets up chapter 7, where Sam finally does
 mention it and Alex has forgotten which morning is being referred to.
 
-**** REJECTED B2. Sam mentions it that evening
+**** CANCELED B2. Sam mentions it that evening
 
 Spends the material too early. By chapter 7 there is nothing left to
 detonate.
 
-*** REJECTED C. Alex forgets to ask, and Sam covers anyway
+*** CANCELED C. Alex forgets to ask, and Sam covers anyway
 
 Makes Sam a saint and Alex merely careless. The book is not about
 carelessness.
@@ -2356,20 +2356,20 @@ carelessness.
 # Dana needs Alex available rather than booked.  There is a version where
 # the retainer is a leash Dana never intends to hand over.
 
-*** OPEN A. Dana always meant to give it to someone else
+*** TODO A. Dana always meant to give it to someone else
 
 Cleanest, and makes Dana an Opponent rather than an obstacle. But it
 risks reading as a twist, and this book has no room for a twist.
 
-*** OPEN B. The retainer exists but has already been cut to six months
+*** TODO B. The retainer exists but has already been cut to six months
 
 Nobody lied. Everybody is diminished. Probably the honest version.
 
-*** EXPLORING C. Dana genuinely can't decide, and says so in chapter 9
+*** ONGOING C. Dana genuinely can't decide, and says so in chapter 9
 
 Then the pitch is not a test Alex passes or fails, it's a mirror. Worth
 half an hour to see whether it survives contact with the scene.
 
-**** OPEN C1. Alex hears this as permission to stop trying
+**** TODO C1. Alex hears this as permission to stop trying
 
-**** OPEN C2. Alex hears it correctly, for once, and it is the first sign the Need has landed
+**** TODO C2. Alex hears it correctly, for once, and it is the first sign the Need has landed

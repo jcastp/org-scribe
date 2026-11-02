@@ -164,12 +164,12 @@ heading carrying a state. The outcomes of an answer are that answer's children.
 Her Lie is "if I keep the peace nobody leaves". Forgiveness is the
 obvious Need and it's boring.
 
-** CHOSEN A. She needs to stop protecting him
-*** OPEN A1. The protection was never asked for
-*** OPEN A2. He knows, and has been letting her
-** OPEN B. She needs to be believed
+** DONE A. She needs to stop protecting him
+*** TODO A1. The protection was never asked for
+*** TODO A2. He knows, and has been letting her
+** TODO B. She needs to be believed
    Cheap — collapses into the same beat as chapter 3.
-** REJECTED C. She needs to forgive him
+** CANCELED C. She needs to forgive him
    Makes the Ghost redundant. Keeping this here so I don't re-derive
    it in two months.
 #+END_EXAMPLE
@@ -177,45 +177,42 @@ obvious Need and it's boring.
 Nest as deep as the question actually goes. A branch of a branch of a branch is
 fine — that's just a question whose answer raised another question.
 
-** The Four States
+** The States
 
-The design notebook declares these in its header, so they work there and
-nowhere else. Cycle them with ~C-c C-t~ on the heading:
+A branch uses the ordinary Org states you already use everywhere outside the
+manuscript (~TODO~, ~ONGOING~, ~WAITING~, ~DONE~, ~CANCELED~, ...). The
+design notebook declares no states of its own. Cycle them with ~C-c C-t~ on
+the heading:
 
-| State       | Meaning                         | When to use it                       |
-|-------------+---------------------------------+--------------------------------------|
-| ~OPEN~      | Still live, not yet explored    | You've named the option, that's all  |
-| ~EXPLORING~ | Being written out right now     | You're following this one today      |
-| ~CHOSEN~    | This is the one                 | You've decided                       |
-| ~REJECTED~  | Ruled out, with the reason kept | You've decided /against/ — say why   |
+| State      | Meaning                         | When to use it                       |
+|------------+---------------------------------+--------------------------------------|
+| ~TODO~     | Still live, not yet explored    | You've named the option, that's all  |
+| ~ONGOING~  | Being written out right now     | You're following this one today      |
+| ~DONE~     | This is the one                 | You've decided                       |
+| ~CANCELED~ | Ruled out, with the reason kept | You've decided /against/ — say why   |
 
-~CHOSEN~ and ~REJECTED~ are *done* states, so a settled question folds up out of
+~DONE~ and ~CANCELED~ are *done* states, so a settled question folds up out of
 your way when you collapse the file, while keeping everything underneath it.
 
-** Keep Your Rejected Branches
+** Keep Your Canceled Branches
 
 The strong temptation is to delete option C once you've ruled it out. Don't.
 
-Why-not is worth as much as why. A rejected branch with its reason attached is
+Why-not is worth as much as why. A canceled branch with its reason attached is
 the thing that stops you from spending an afternoon rediscovering it, and it's
 often the thing that explains a decision you can no longer remember making. It
 costs you three folded lines.
 
-** Your TODO List Stays Clean
-
-Here's the detail that makes this usable day to day.
+** Live Branches Show in Your TODO List
 
 ~F8 5~ (Search TODOs, Lesson 7) scans every ~.org~ file in your project,
-scratchpad included. But it only matches the keywords in
-~org-scribe-todo-keywords~ — ~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~,
-~TOREVIEW~, ~REDO~, ~RESTRUCTURE~.
+scratchpad included, and matches the keywords in ~org-scribe-todo-keywords~ —
+~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~, ~TOREVIEW~, ~REDO~, ~RESTRUCTURE~.
 
-~OPEN~, ~EXPLORING~, ~CHOSEN~ and ~REJECTED~ are deliberately *not* in that list.
-So no matter how many open questions pile up in your scratchpad, your TODO
-search keeps showing actual work.
-
-Speculation is not work in progress. If you ever add these keywords to
-~org-scribe-todo-keywords~, you'll lose that separation.
+So a branch still marked ~TODO~ or ~ONGOING~ appears in that search, as an
+open question you haven't settled. Once you mark it ~DONE~ or ~CANCELED~ it
+drops out. That is usually what you want: the list reminds you of the
+questions still waiting for an answer.
 
 ** Linking a Question to What It's About
 
@@ -239,7 +236,7 @@ already tagged, or run ~M-x org-store-link~ on the character heading and then
 ** A Note on Language
 
 In a Spanish project, the file name, the headings and all the prose are Spanish
-— but the four state keywords, the ~:branch:~ tag and the ~:ABOUT:~ property
+— but the ~:branch:~ tag and the ~:ABOUT:~ property
 stay English.
 
 That's consistent with the rest of the package: names that software reads are
@@ -251,10 +248,10 @@ the convention reads the same in a bilingual writer's two projects.
 1. Open your project's scratchpad with ~F8 o~.
 2. Delete the example branch at the bottom.
 3. Write down a question about your story you genuinely haven't answered.
-4. Give it three answers as child headings, all ~OPEN~.
+4. Give it three answers as child headings, all ~TODO~.
 5. Pick the one you like least and write one line about why. Mark it
-   ~REJECTED~.
-6. Pick the one you like most, mark it ~EXPLORING~, and write for ten minutes
+   ~CANCELED~.
+6. Pick the one you like most, mark it ~ONGOING~, and write for ten minutes
    underneath it.
 
 Nothing you write will be counted, exported, or noticed by any other part of the

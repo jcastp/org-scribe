@@ -212,22 +212,22 @@ When a question turns out to have more than one answer, give it a
 heading and tag it :branch:.  Each answer is a child heading carrying a
 state, cycled with C-c C-t:
 
-  OPEN       still live, not yet explored
-  EXPLORING  being written out right now
-  CHOSEN     this is the one
-  REJECTED   ruled out, with the reason kept
+  TODO       still live, not yet explored
+  ONGOING    being written out right now
+  DONE       this is the one
+  CANCELED   ruled out, with the reason kept
 
 Keep rejected branches.  Why-not is worth as much as why, and deleting
-one only means re-deriving it in three months.  REJECTED and CHOSEN are
+one only means re-deriving it in three months.  CANCELED and DONE are
 done states, so a settled question folds away without losing its
 reasoning.
 
 The outcomes of an answer are that answer's children.  Nest as deep as
 the question actually goes.
 
-These four keywords are deliberately outside the project's TODO
-vocabulary, so an open question never turns up in the TODO search
-(F8 5).  Speculation is not work in progress.
+These are the ordinary Org states, so a branch still marked TODO or
+ONGOING turns up in the TODO search (F8 5) as a question waiting for an
+answer; once it is DONE or CANCELED it drops out.
 
 :ABOUT: holds an ID link to whatever the question concerns — a
 character, a thread, a scene — so the question is reachable from that
@@ -248,10 +248,10 @@ your own.
 
 # What makes this a real question, and what is at stake in the answer.
 
-*** OPEN A. <first answer>
+*** TODO A. <first answer>
 
-**** OPEN <an outcome of A, if it has one>
+**** TODO <an outcome of A, if it has one>
 
-*** OPEN B. <second answer>
+*** TODO B. <second answer>
 
-*** OPEN C. <third answer>
+*** TODO C. <third answer>

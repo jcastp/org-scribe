@@ -1467,33 +1467,32 @@ nest as deep as the question actually goes.
 Her Lie is "if I keep the peace nobody leaves". Forgiveness is the
 obvious Need and it is boring.
 
-** CHOSEN A. She needs to stop protecting him
-*** OPEN A1. The protection was never asked for
-*** OPEN A2. He knows, and has been letting her
-** OPEN B. She needs to be believed
+** DONE A. She needs to stop protecting him
+*** TODO A1. The protection was never asked for
+*** TODO A2. He knows, and has been letting her
+** TODO B. She needs to be believed
    Cheap — collapses into the same beat as chapter 3.
-** REJECTED C. She needs to forgive him
+** CANCELED C. She needs to forgive him
    Makes the Ghost redundant. Keeping this here so I don't re-derive
    it in two months.
 #+END_EXAMPLE
 
-The notebook declares four states, cycled with =C-c C-t=:
+A branch's answers use the ordinary Org states (the notebook declares none of its own), cycled with =C-c C-t=:
 
-| State       | Meaning                             |
-|-------------+-------------------------------------|
-| =OPEN=      | Still live, not yet explored        |
-| =EXPLORING= | Being written out right now         |
-| =CHOSEN=    | This is the one                     |
-| =REJECTED=  | Ruled out, with the reason kept     |
+| State        | Meaning                             |
+|--------------+-------------------------------------|
+| =TODO=       | Still live, not yet explored        |
+| =ONGOING=    | Being written out right now         |
+| =DONE=       | This is the one                     |
+| =CANCELED=   | Ruled out, with the reason kept     |
 
 Three things about this are deliberate:
 
-- *These four keywords never appear in your TODO search.* They are declared
-  in the notebook's header and are outside =org-scribe-todo-keywords=, so =F8 5= keeps
-  showing real work rather than filling up with your musings. Speculation is not
-  work in progress.
-- *=CHOSEN= and =REJECTED= are done states*, so a settled question folds away
-  without losing its reasoning. Keep rejected branches instead of deleting them:
+- *Live branches show in your TODO search.* =TODO=, =ONGOING= and =WAITING= are in
+  =org-scribe-todo-keywords=, so =F8 5= lists the questions still waiting for an
+  answer. Mark a branch =DONE= or =CANCELED= and it drops out.
+- *=DONE= and =CANCELED= are done states*, so a settled question folds away
+  without losing its reasoning. Keep canceled branches instead of deleting them:
   why-not is worth as much as why, and a deleted branch only gets re-derived
   three months later.
 - *=:ABOUT:= holds an ID link* to whatever the question concerns — a character, a
@@ -1501,7 +1500,7 @@ Three things about this are deliberate:
   survives a rename. Leave it empty while the question is not about anything in
   particular yet.
 
-The keywords, the =:branch:= tag and the =:ABOUT:= property are English in both
+The =:branch:= tag and the =:ABOUT:= property are English in both
 languages, like every other machine-facing name in the package; the prose,
 headings and file name are localized.
 

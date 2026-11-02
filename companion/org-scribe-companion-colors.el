@@ -40,9 +40,8 @@
 ;;; Themes
 
 (defconst org-scribe-companion-colors--todo-slots
-  '(("TODO" . 1) ("TOWRITE" . 0) ("TOREVIEW" . 5) ("REDO" . 3)
-    ("RESTRUCTURE" . 6) ("FINISHED" . 4) ("PURGE" . 4)
-    ("OPEN" . 0) ("EXPLORING" . 3) ("CHOSEN" . 4) ("REJECTED" . 4))
+  '(("TOWRITE" . 0) ("TOREVIEW" . 5) ("REDO" . 3)
+    ("RESTRUCTURE" . 6) ("FINISHED" . 4) ("PURGE" . 4))
   "Which palette slot each shipped TODO keyword takes in a non-default theme.
 Slot 4 is the neutral one in every palette, so a done state reads as
 finished; the others are kept apart in every theme that has them.")

@@ -190,7 +190,7 @@
 
 (ert-deftest test-companion-colors-okabe-ito-work-states-survive-deuteranopia ()
   "The states a writer tells apart at a glance stay apart; done states may match."
-  (let ((work '("TODO" "TOWRITE" "TOREVIEW" "REDO" "RESTRUCTURE" "FINISHED")))
+  (let ((work '("TOWRITE" "TOREVIEW" "REDO" "RESTRUCTURE" "FINISHED")))
     (dolist (mode '(:light :dark))
       (let ((palette (org-scribe-companion-colors--theme-palette 'okabe-ito mode)))
         (should (>= (test-companion-colors--min-distance

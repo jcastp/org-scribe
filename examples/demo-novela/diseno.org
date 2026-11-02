@@ -2326,29 +2326,29 @@ Postura 1 de Alex en otra boca.
 # cae con más fuerza si Alex la acepta y aun así llega tarde: el fracaso es
 # entonces solo de Alex, sin nadie a quien haber pedido.
 
-*** REJECTED A. Alex la acepta y llega a tiempo
+*** CANCELED A. Alex la acepta y llega a tiempo
 
 Mata la Debilidad moral en el capítulo 2, que es lo único que hace razonable la
 sospecha de Dana. También deja sin ganarse la escena de la presentación: Alex
 ya habría cambiado antes de que se enuncie la Necesidad.
 
-*** CHOSEN B. Alex la acepta y llega cuarenta minutos tarde
+*** DONE B. Alex la acepta y llega cuarenta minutos tarde
 
 Sam pierde igualmente la llamada del centro de cuidados, pero ahora no hay nadie
 a quien culpar, y Alex tiene que quedarse con eso. El mismo momento, una excusa
 menos.
 
-**** CHOSEN B1. Sam no lo menciona
+**** DONE B1. Sam no lo menciona
 
 El silencio es peor. Además prepara el capítulo 7, donde Sam por fin lo
 menciona y Alex ha olvidado a qué mañana se refiere.
 
-**** REJECTED B2. Sam lo menciona esa tarde
+**** CANCELED B2. Sam lo menciona esa tarde
 
 Gasta el material demasiado pronto. Para el capítulo 7 ya no queda nada que
 detonar.
 
-*** REJECTED C. Alex se olvida de pedirlo, y Sam la cubre igualmente
+*** CANCELED C. Alex se olvida de pedirlo, y Sam la cubre igualmente
 
 Convierte a Sam en una santa y a Alex en una simple despistada. El libro no
 trata de despistes.
@@ -2361,20 +2361,20 @@ trata de despistes.
 # Dana necesita a Alex disponible, no reservada. Hay una versión en la que el
 # contrato es una correa que Dana nunca piensa soltar.
 
-*** OPEN A. Dana siempre pensó dársela a otra persona
+*** TODO A. Dana siempre pensó dársela a otra persona
 
 La más limpia, y convierte a Dana en Oponente y no en obstáculo. Pero corre el
 riesgo de leerse como un giro, y este libro no tiene sitio para giros.
 
-*** OPEN B. El contrato existe pero ya se ha recortado a seis meses
+*** TODO B. El contrato existe pero ya se ha recortado a seis meses
 
 Nadie mintió. Todos salen disminuidos. Probablemente la versión honesta.
 
-*** EXPLORING C. Dana de verdad no se decide, y lo dice en el capítulo 9
+*** ONGOING C. Dana de verdad no se decide, y lo dice en el capítulo 9
 
 Entonces la presentación no es una prueba que Alex pasa o suspende, es un espejo.
 Merece media hora para ver si sobrevive al contacto con la escena.
 
-**** OPEN C1. Alex lo oye como permiso para dejar de intentarlo
+**** TODO C1. Alex lo oye como permiso para dejar de intentarlo
 
-**** OPEN C2. Alex lo oye bien, por una vez, y es la primera señal de que la Necesidad ha calado
+**** TODO C2. Alex lo oye bien, por una vez, y es la primera señal de que la Necesidad ha calado

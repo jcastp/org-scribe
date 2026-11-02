@@ -213,22 +213,22 @@ Cuando una pregunta resulta tener más de una respuesta, dale un
 encabezado y etiquétalo :branch:.  Cada respuesta es un encabezado hijo
 con un estado, que se cambia con C-c C-t:
 
-  OPEN       sigue viva, aún sin explorar
-  EXPLORING  la estás desarrollando ahora mismo
-  CHOSEN     es esta
-  REJECTED   descartada, conservando el motivo
+  TODO       sigue viva, aún sin explorar
+  ONGOING    la estás desarrollando ahora mismo
+  DONE       es esta
+  CANCELED   descartada, conservando el motivo
 
 Conserva las ramas descartadas.  Saber por qué no vale tanto como saber por
 qué, y borrar una solo significa volver a deducirla dentro de tres
-meses.  REJECTED y CHOSEN son estados finales, así que una pregunta ya
+meses.  CANCELED y DONE son estados finales, así que una pregunta ya
 resuelta se pliega sin perder su razonamiento.
 
 Las consecuencias de una respuesta son los hijos de esa respuesta.
 Anida tan hondo como llegue de verdad la pregunta.
 
-Estas cuatro palabras clave quedan deliberadamente fuera del vocabulario
-TODO del proyecto, de modo que una pregunta abierta nunca aparece en la
-búsqueda de TODOs (F8 5).  Especular no es trabajo en curso.
+Son los estados corrientes de Org, así que una rama que sigue en TODO u
+ONGOING aparece en la búsqueda de TODOs (F8 5) como una pregunta que espera
+respuesta; al pasar a DONE o CANCELED deja de aparecer.
 
 :ABOUT: guarda un enlace ID a aquello de lo que trata la pregunta — un
 personaje, un hilo, una escena — para que la pregunta sea accesible
@@ -250,10 +250,10 @@ la tuya.
 # Qué hace que esto sea una pregunta de verdad, y qué está en juego en la
 # respuesta.
 
-*** OPEN A. <primera respuesta>
+*** TODO A. <primera respuesta>
 
-**** OPEN <una consecuencia de A, si la tiene>
+**** TODO <una consecuencia de A, si la tiene>
 
-*** OPEN B. <segunda respuesta>
+*** TODO B. <segunda respuesta>
 
-*** OPEN C. <tercera respuesta>
+*** TODO C. <tercera respuesta>

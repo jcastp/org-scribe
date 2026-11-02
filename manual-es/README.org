@@ -104,7 +104,7 @@ historia (=Día 3=), categorías de marcadores de edición.
 
 No se traduce: propiedades de /entidad/ y sus valores (=:Role:=, =:Type:=,
 =:THREAD-TYPE:=, =:Weight:=), palabras clave TODO y el vocabulario de ramas de
-Borradores (=OPEN=, =EXPLORING=, =CHOSEN=, =REJECTED=, =:branch:=,
+Borradores (=TODO=, =ONGOING=, =DONE=, =CANCELED=, =:branch:=,
 =:ABOUT:=), nombres de órdenes, funciones y variables, teclas, código Elisp
 (solo sus comentarios) y los menús Hydra y del planificador.
 

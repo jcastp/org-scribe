@@ -723,17 +723,12 @@ never checked.  nil turns the check off."
   :group 'org-scribe)
 
 (defcustom org-scribe-companion-todo-colors
-  '(("TODO" . "#b45309")
-    ("TOWRITE" . "#2563eb")
+  '(("TOWRITE" . "#2563eb")
     ("TOREVIEW" . "#7c3aed")
     ("REDO" . "#dc2626")
     ("RESTRUCTURE" . "#db2777")
     ("FINISHED" . "#6b7280")
-    ("PURGE" . "#9ca3af")
-    ("OPEN" . "#2563eb")
-    ("EXPLORING" . "#7c3aed")
-    ("CHOSEN" . "#6b7280")
-    ("REJECTED" . "#9ca3af"))
+    ("PURGE" . "#9ca3af"))
   "Alist of TODO keyword to CSS colour, used by the companion's cards.
 Done states are muted so they read as finished; REDO and RESTRUCTURE
 stand out.  Keywords not listed get a neutral colour."

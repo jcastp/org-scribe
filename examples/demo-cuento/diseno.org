@@ -261,23 +261,23 @@ se queda sin razones para no hacerlo.
 # La escena de verificación es el momento más obvio y probablemente el más
 # aburrido.  ¿Qué pierde el cuento sin ella?
 
-*** REJECTED A. Lo verifica y todo cuadra
+*** CANCELED A. Lo verifica y todo cuadra
 
 Convierte el cuento en un procedimiento policial. El lector deja de hacerse la
 pregunta sobre la que gira todo.
 
-*** EXPLORING B. Ni lo intenta
+*** ONGOING B. Ni lo intenta
 
 Entonces el cuento trata de lo que ella ya estaba dispuesta a creer, que es la
 historia secreta que hay debajo. Le cuesta al lector una certeza cuya pérdida
 quizá no perdone.
 
-**** OPEN B1. Una línea que reconoce que podría comprobarlo, y no lo hace
+**** TODO B1. Una línea que reconoce que podría comprobarlo, y no lo hace
 
-**** OPEN B2. Ni se le pasa por la cabeza
+**** TODO B2. Ni se le pasa por la cabeza
 
 Más difícil, mejor, y hace de ella alguien concreto en vez de alguien sensato.
 
-*** OPEN C. Lo intenta y el resultado es ambiguo
+*** TODO C. Lo intenta y el resultado es ambiguo
 
 Quiere ser las dos cosas. Probablemente no es ninguna.

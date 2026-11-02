@@ -168,12 +168,12 @@ hijos de esa respuesta.
 Su Mentira es «si mantengo la paz, nadie se va». El perdón es la
 Necesidad obvia y es aburrida.
 
-** CHOSEN A. Necesita dejar de protegerlo
-*** OPEN A1. La protección nunca se la pidió nadie
-*** OPEN A2. Él lo sabe, y se lo ha estado permitiendo
-** OPEN B. Necesita que la crean
+** DONE A. Necesita dejar de protegerlo
+*** TODO A1. La protección nunca se la pidió nadie
+*** TODO A2. Él lo sabe, y se lo ha estado permitiendo
+** TODO B. Necesita que la crean
    Barata: se queda en el mismo momento que el capítulo 3.
-** REJECTED C. Necesita perdonarlo
+** CANCELED C. Necesita perdonarlo
    Deja redundante al Fantasma. Dejo esto aquí para no volver a
    deducirlo dentro de dos meses.
 #+END_EXAMPLE
@@ -182,19 +182,21 @@ Anida tan hondo como llegue de verdad la pregunta. Una rama de una rama de una
 rama no tiene nada de raro: es solo una pregunta cuya respuesta ha planteado
 otra pregunta.
 
-** Los cuatro estados
+** Los estados
 
-El cuaderno de diseño los declara en su cabecera, así que funcionan ahí y en
-ningún otro sitio. Cámbialos cíclicamente con ~C-c C-t~ sobre el encabezado:
+Una rama usa los estados corrientes de Org que ya usas en cualquier archivo
+fuera del manuscrito (~TODO~, ~ONGOING~, ~WAITING~, ~DONE~, ~CANCELED~, ...). El
+cuaderno de diseño no declara estados propios. Cámbialos cíclicamente con
+~C-c C-t~ sobre el encabezado:
 
-| Estado      | Significado                       | Cuándo usarlo                        |
-|-------------+-----------------------------------+--------------------------------------|
-| ~OPEN~      | Sigue viva, aún sin explorar      | Has nombrado la opción, nada más     |
-| ~EXPLORING~ | La estás desarrollando ahora      | Hoy estás siguiendo esta             |
-| ~CHOSEN~    | Es esta                           | Has decidido                         |
-| ~REJECTED~  | Descartada, conservando el motivo | Has decidido /en contra/: di por qué |
+| Estado     | Significado                       | Cuándo usarlo                        |
+|------------+-----------------------------------+--------------------------------------|
+| ~TODO~     | Sigue viva, aún sin explorar      | Has nombrado la opción, nada más     |
+| ~ONGOING~  | La estás desarrollando ahora      | Hoy estás siguiendo esta             |
+| ~DONE~     | Es esta                           | Has decidido                         |
+| ~CANCELED~ | Descartada, conservando el motivo | Has decidido /en contra/: di por qué |
 
-~CHOSEN~ y ~REJECTED~ son estados *finales*, así que una pregunta resuelta se
+~DONE~ y ~CANCELED~ son estados *finales*, así que una pregunta resuelta se
 pliega y deja de estorbar cuando contraes el archivo, pero conserva todo lo que
 cuelga de ella.
 
@@ -207,21 +209,17 @@ adjunto es lo que te evita pasar una tarde redescubriéndola, y a menudo es lo
 que explica una decisión que ya no recuerdas haber tomado. Te cuesta tres líneas
 plegadas.
 
-** Tu lista de TODO sigue limpia
-
-Este es el detalle que hace que esto sirva en el día a día.
+** Las ramas vivas aparecen en tu lista de TODO
 
 ~F8 5~ (Buscar TODO, Lección 7) recorre todos los archivos ~.org~ de tu
-proyecto, borradores incluidos. Pero solo encuentra las palabras clave de
+proyecto, borradores incluidos, y encuentra las palabras clave de
 ~org-scribe-todo-keywords~: ~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~,
 ~TOREVIEW~, ~REDO~, ~RESTRUCTURE~.
 
-~OPEN~, ~EXPLORING~, ~CHOSEN~ y ~REJECTED~ *no* están en esa lista a propósito.
-Así que por muchas preguntas abiertas que se acumulen en tus borradores, la
-búsqueda de TODO sigue mostrando trabajo de verdad.
-
-Especular no es trabajo en curso. Si algún día añades estas palabras clave a
-~org-scribe-todo-keywords~, perderás esa separación.
+Así que una rama que sigue en ~TODO~ o ~ONGOING~ aparece en esa búsqueda, como
+una pregunta abierta que aún no has resuelto. Cuando la marcas ~DONE~ o
+~CANCELED~ deja de aparecer. Suele ser lo que quieres: la lista te recuerda las
+preguntas que siguen esperando respuesta.
 
 ** Enlazar una pregunta con aquello de lo que trata
 
@@ -245,7 +243,7 @@ del personaje y luego ~C-c C-l~ aquí para insertarlo.
 ** Una nota sobre el idioma
 
 En un proyecto en español, el nombre del archivo, los encabezados y toda la
-prosa están en español, pero las cuatro palabras clave de estado, la etiqueta
+prosa están en español, pero la etiqueta
 ~:branch:~ y la propiedad ~:ABOUT:~ se quedan en inglés.
 
 Es coherente con el resto del paquete: los nombres que lee el software son
@@ -257,10 +255,10 @@ que la convención se lee igual en los dos proyectos de quien escribe en dos idi
 1. Abre los borradores de tu proyecto con ~F8 o~.
 2. Borra la rama de ejemplo del final.
 3. Escribe una pregunta sobre tu historia que de verdad no hayas respondido.
-4. Dale tres respuestas como encabezados hijos, todas ~OPEN~.
+4. Dale tres respuestas como encabezados hijos, todas ~TODO~.
 5. Elige la que menos te guste y escribe una línea sobre por qué. Márcala
-   ~REJECTED~.
-6. Elige la que más te guste, márcala ~EXPLORING~ y escribe diez minutos
+   ~CANCELED~.
+6. Elige la que más te guste, márcala ~ONGOING~ y escribe diez minutos
    debajo de ella.
 
 Nada de lo que escribas se contará, se exportará ni lo notará ninguna
