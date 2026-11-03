@@ -42,10 +42,10 @@
 (declare-function org-scribe-planner--get-entry-words "org-scribe-planner")
 (declare-function org-scribe-planner--planned-total "org-scribe-planner")
 (declare-function org-scribe-planner--rebase-step "org-scribe-planner")
-(declare-function org-scribe-planner--get-today-target "org-scribe-planner-dashboards")
-(declare-function org-scribe-planner--get-today-actual "org-scribe-planner-dashboards")
-(declare-function org-scribe-planner--calculate-current-streak "org-scribe-planner-dashboards")
-(declare-function org-scribe-planner--calculate-velocity "org-scribe-planner-dashboards")
+(declare-function org-scribe-planner--get-today-target "org-scribe-planner")
+(declare-function org-scribe-planner--get-today-actual "org-scribe-planner")
+(declare-function org-scribe-planner--calculate-current-streak "org-scribe-planner")
+(declare-function org-scribe-planner--calculate-velocity "org-scribe-planner")
 (declare-function org-scribe-plan-title "org-scribe-planner")
 (declare-function org-scribe-plan-total-words "org-scribe-planner")
 (declare-function org-scribe-plan-current-words "org-scribe-planner")
@@ -87,7 +87,6 @@ only when the project opted in and a plan file exists."
      ((not (org-scribe-companion-progress--plan-file root)) (list 'none))
      (t
       (require 'org-scribe-planner)
-      (require 'org-scribe-planner-dashboards)
       ;; the active plan is a session global: one of another project goes
       (org-scribe-planner--ensure-plan-for-current-project)
       (unless org-scribe-planner--current-plan

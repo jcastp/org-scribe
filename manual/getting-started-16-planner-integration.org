@@ -310,7 +310,7 @@ End date 2026-11-30 → 2026-12-05: extended by 5 days. Apply?
 
 ** When a Recalculation Goes Out of Date
 
-A recalculation made while you are still writing that day credits the day with the words it has at that moment. Words you add afterwards aren't in the new plan line, and a day that ends below the goal it was credited with doesn't match it either: the plan is then /out of date/. Nothing changes behind your back; the planner tells you instead.
+A recalculation made while you are still writing that day credits the day with the words it has at that moment. The words left are spread over the days from tomorrow, so the new daily target is exactly what is left divided by those days. Words you add afterwards aren't in the new plan line: the plan is then /out of date/. Nothing changes behind your back; the planner tells you instead.
 
 The calendar's summary shows it, just under /Status/:
 

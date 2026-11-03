@@ -818,7 +818,7 @@ Las marcas que usa el bloque dinámico ~character-timeline~: ~org-scribe-timelin
 
 ** Planificador de escritura integrado (~org-scribe-planner~)
 
-Un planificador de escritura completo, orientado a objetivos, incluido directamente dentro de ~org-scribe~ en ~planning/org-scribe-planner.el~. No requiere ninguna instalación aparte. Todas las órdenes públicas llevan cookies ~;;;###autoload~, así que están disponibles en cuanto se instala el paquete sin ningún ~require~ adicional en el tu archivo de inicio. Cuando se invoca por primera vez, el planificador se carga a demanda y se conecta solo con org-scribe.
+Un planificador de escritura completo, orientado a objetivos, incluido directamente dentro de ~org-scribe~ en ~planning/org-scribe-planner.el~, el punto de entrada que carga sus partes (~-engine~, ~-io~, ~-views~, ~-create~, ~-edit~, todas en ~planning/~). No requiere ninguna instalación aparte. Todas las órdenes públicas llevan cookies ~;;;###autoload~, así que están disponibles en cuanto se instala el paquete sin ningún ~require~ adicional en el tu archivo de inicio. Cuando se invoca por primera vez, el planificador se carga a demanda y se conecta solo con org-scribe.
 
 Funciones que ofrece: (1) cargar automáticamente el archivo del plan del proyecto cuando se abre cualquier archivo del proyecto; (2) enviar los recuentos de palabras en vivo al plan después de ejecutar ~org-scribe-ews-org-count-words~; (3) conectar la función de recuento de palabras del planificador para que lea las propiedades ~WORDCOUNT~ del manuscrito; (4) fijar la función de raíz de proyecto del planificador para que los selectores de archivo empiecen en la raíz del proyecto actual; (5) ofrecer crear un plan después de ~org-scribe-create-novel-project~ / ~org-scribe-create-short-story-project~; (6) añadir una submenú Hydra del planificador accesible con ~W~ en el menú Hydra principal; (7) mostrar el objetivo y lo real de hoy en la línea de modo como ~[W:real/objetivo]~.
 
@@ -849,7 +849,7 @@ Una única orden con autocarga que elige según el estado del proyecto: muestra 
 
 Cuando se abre cualquier archivo del proyecto, el planificador localiza el archivo del plan con una búsqueda de cuatro pasos: (0) la ruta guardada en ~.org-scribe-project~ en una línea ~# Plan:~, escrita automáticamente tras la primera carga, lo que hace instantáneas las búsquedas posteriores; (1) ~<raíz>/plan.org~; (2) ~<raíz>/<título-del-proyecto>-plan.org~; (3) cualquier archivo ~.org~ de la raíz que contenga una propiedad ~TOTAL_WORDS~. Una vez encontrada por los pasos 1-3, la ruta se vuelve a guardar en ~.org-scribe-project~ para que las búsquedas futuras usen el paso 0.
 
-*Estado*: totalmente implementado | *Hydra*: no aplica (automático) | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: no aplica (automático) | *Módulo*: ~planning/org-scribe-planner-io.el~
 
 ** Paneles del plan (~org-scribe-planner-dashboards~)
 
@@ -861,55 +861,55 @@ Visualizaciones del progreso que se cargan a demanda desde ~planning/org-scribe-
 
 Cada día de un plan recibe su propia meta en palabras enteras, y las metas suman exactamente el total (10.000 palabras en 7 días son 1.429 cuatro veces y 1.428 tres veces). La duración del plan se guarda como ~WRITING_DAYS~; la fecha final se deduce de ella y de los días libres. Cuando un día termina, su meta queda bloqueada (~LOCKED_GOALS~) y no vuelve a cambiar: los totales nuevos, los patrones, los días libres y los recálculos solo reorganizan los días por venir. Los días de descanso (meta 0: días libres, fines de semana libres, una meta de día de 0) nunca cuentan como incumplidos, no rompen las rachas y quedan fuera del ritmo. Las palabras escritas antes del plan son sus /palabras iniciales/ (~PREEXISTING_WORDS~): cuentan para el objetivo pero nunca como la escritura de un día. Los planes guardados por versiones anteriores se cargan sin cambios.
 
-*Estado*: totalmente implementado | *Hydra*: no aplica (motor) | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: no aplica (motor) | *Módulo*: ~planning/org-scribe-planner-engine.el~
 
 ** Patrones de escritura, fines de semana y metas de día
 
 Un patrón reparte las palabras de forma desigual entre los días de escritura (constante, valle, montaña, creciente, decreciente o aleatorio, este último con semilla, de modo que sus metas son estables), cada uno suave, moderado o extremo. Los fines de semana pueden ser días corrientes, tener una meta propia (~WEEKEND_DAILY~, 1,5 × el objetivo diario por defecto) o ser días libres, con días de fin de semana configurables (~WEEKEND_DAYS~). Una meta de día (~CUSTOM_GOALS~) da a una fecha su propio objetivo, y 0 la convierte en día de descanso. Los días libres (~SPARE_DAYS~) se añaden por fecha, rango, todos los fines de semana, todos los sábados o todos los domingos, cada uno con una nota opcional.
 
-*Estado*: totalmente implementado | *Hydra*: ~F8 W r~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W r~ | *Módulo*: ~planning/org-scribe-planner-engine.el~
 
 ** Cambiar un plan con vistas previas (~org-scribe-planner-recalculate~)
 
 /What changed?/ («¿Qué ha cambiado?»): palabras totales, palabras diarias, días disponibles, dos valores a la vez, la fecha de inicio, las palabras fuera del manuscrito, el patrón de escritura, los fines de semana, una meta de día (fijar, quitar, borrar desde hoy en adelante) o los días libres (añadir, quitar, borrar). Cada opción se prueba en una copia y se muestra con su resultado antes de que elijas; los cambios que alteran cuántas palabras toca escribir algunos días preguntan si conservar la fecha final, moverla o conservar la fecha final y el objetivo diario. Mover la fecha de inicio conserva los días de escritura, deja que los días libres y las metas de día futuros se queden en sus fechas o se muevan con ella, y avisa de las palabras escritas o los días pasados que queden fuera. ~C-g~ en cualquier pregunta deja el plan intacto.
 
-*Estado*: totalmente implementado | *Hydra*: ~F8 W r~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W r~ | *Módulo*: ~planning/org-scribe-planner-edit.el~
 
 ** Estado y ajuste según el progreso (~org-scribe-planner-check-progress~)
 
 El estado del plan (al día, o por delante o por detrás en palabras, porcentaje y días de escritura medidos a lo largo del calendario propio del plan) compara donde deberías estar al final de hoy (meta de hoy incluida) con todo lo escrito. Solo ~c~ mide los días ya terminados (hasta ayer), para que una mañana sin escribir no te proponga un ajuste; el estado de la sección Plan de escritura del informe de salud del proyecto usa la misma medida hasta ayer. El estado al final de hoy aparece en el resumen del calendario, después de cada sincronización y en la vista de progreso del companion. ~c~ (Check progress) ofrece los ajustes adecuados, y añade una nota cuando el último recálculo está desfasado (mira la entrada siguiente); ~a~ (~org-scribe-planner-adjust-remaining-plan~) conserva la fecha final y reparte de nuevo las palabras que quedan; ~e~ (~org-scribe-planner-adjust-end-date~) conserva el objetivo diario y mueve la fecha final. Cada uno muestra primero su resultado y cambia solo los días desde hoy en adelante (desde mañana si hoy ya tiene palabras).
 
-*Estado*: totalmente implementado | *Hydra*: ~F8 W c~, ~F8 W a~, ~F8 W e~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W c~, ~F8 W a~, ~F8 W e~ | *Módulo*: ~planning/org-scribe-planner-edit.el~
 
 ** Recálculos desfasados (~org-scribe-planner-offer-refresh-on-new-day~)
 
-Un recálculo según el progreso hecho mientras aún escribes en un día atribuye a ese día las palabras que tenía en ese momento. Las palabras escritas después, o un día que termina por debajo de la meta que se le atribuyó, dejan el recálculo /desfasado/: la línea del plan ya no las cuenta, y solo se ven como ir por delante. El planificador nunca lo arregla a tus espaldas. El resumen del calendario muestra una línea ~Out of date:~ (las palabras que el recálculo contó hasta ese día, las que hay anotadas ahí ahora y la diferencia, con la indicación de pulsar ~a~), y ~c~ (Check progress) añade la misma nota. En el primer recuento de palabras de un día nuevo, cuando ayer ya está cerrado, el planificador muestra una vista previa de un recálculo que conserva la fecha final y pregunta si aplicarlo; pregunta como mucho una vez al día por archivo de plan, nunca en modo por lotes, y no cambia nada salvo que digas que sí. Rechazarlo con ~C-g~, o un error en el recálculo, nunca le cuesta al día su entrada de recuento de palabras. Pon ~org-scribe-planner-offer-refresh-on-new-day~ (por defecto ~t~) a nil para conservar las notas y quitar la pregunta.
+Un recálculo según el progreso hecho mientras aún escribes en un día atribuye a ese día las palabras que tenía en ese momento. Las palabras escritas después dejan el recálculo /desfasado/: la línea del plan ya no las cuenta, y solo se ven como ir por delante. El planificador nunca lo arregla a tus espaldas. El resumen del calendario muestra una línea ~Out of date:~ (las palabras que el recálculo contó hasta ese día, las que hay anotadas ahí ahora y la diferencia, con la indicación de pulsar ~a~), y ~c~ (Check progress) añade la misma nota. En el primer recuento de palabras de un día nuevo, cuando ayer ya está cerrado, el planificador muestra una vista previa de un recálculo que conserva la fecha final y pregunta si aplicarlo; pregunta como mucho una vez al día por archivo de plan, nunca en modo por lotes, y no cambia nada salvo que digas que sí. Rechazarlo con ~C-g~, o un error en el recálculo, nunca le cuesta al día su entrada de recuento de palabras. Pon ~org-scribe-planner-offer-refresh-on-new-day~ (por defecto ~t~) a nil para conservar las notas y quitar la pregunta.
 
-*Estado*: totalmente implementado | *Tipo*: defcustom (grupo ~org-scribe-planner~) | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Tipo*: defcustom (grupo ~org-scribe-planner~) | *Módulo*: ~planning/org-scribe-planner-edit.el~
 
 ** Resumen semanal, cuadrícula del mes e hitos
 
 Tres vistas además del calendario y de los paneles. El resumen semanal (~org-scribe-planner-show-weekly-summary~) tiene una fila por semana natural: días escritos, días de descanso, la meta de la semana, las palabras escritas, los totales planificado y real, y la diferencia. La cuadrícula del mes (~org-scribe-planner-show-month-calendar~) es un calendario por mes con la meta de cada día, su resultado (✓ ~ ✗) y la parte de la meta escrita hasta entonces. Los hitos (~org-scribe-planner-show-milestones~) muestran cuándo se alcanzaron el 25 %, el 50 %, el 75 % y el 100 % del objetivo, cuándo se espera alcanzarlos, o que no se pueden alcanzar antes de la fecha final. Las semanas empiezan en ~org-scribe-planner-week-start-day~ (el lunes, por defecto).
 
-*Estado*: totalmente implementado | *Hydra*: ~F8 W w~, ~F8 W M~, ~F8 W m~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W w~, ~F8 W M~, ~F8 W m~ | *Módulo*: ~planning/org-scribe-planner-views.el~
 
 ** Preajustes, valores por defecto e incorporación
 
 Los planes nuevos parten de un preajuste (~org-scribe-planner-presets~: Novel draft, NaNoWriMo, Novella, Short story, 1.000 y 500 palabras al día), se ofrece primero el que corresponde al tipo de proyecto, y sus valores y el patrón y los fines de semana que sugiere son valores por defecto que puedes cambiar, o desde cero, donde se ofrecen ~org-scribe-planner-default-pattern~, ~-default-pattern-intensity~, ~-default-weekend-mode~, ~-default-weekend-days~ y ~-default-weekend-daily~. ~org-scribe-planner-onboard-existing-project~ (~W o~) crea un plan para un manuscrito ya empezado, lee su recuento de palabras como palabras iniciales y pregunta una fecha final o un ritmo diario.
 
-*Estado*: totalmente implementado | *Hydra*: ~F8 W n~, ~F8 W o~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W n~, ~F8 W o~ | *Módulo*: ~planning/org-scribe-planner-create.el~
 
 ** Palabras escritas fuera del manuscrito
 
 Las palabras escritas fuera del manuscrito (otro archivo, un cuaderno) se anotan con /What changed?/ → /Words outside the manuscript/: un número escrito (~OUTSIDE_WORDS~) y/o archivos (~OUTSIDE_FILES~). Se guardan y se muestran («not counted» en la vista del plan y en el informe de salud), pero nunca se suman: todo recuento que anota el plan es la prosa del manuscrito. Los planes guardados antes de esto (sin ~WORDS_BASIS: manuscript~) se convierten al cargarse: las palabras de fuera se restan de cada día anotado, con un mensaje. Un manuscrito vacío (0 palabras) no se anota nunca.
 
-*Estado*: totalmente implementado | *Hydra*: ~F8 W r~ | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 W r~ | *Módulo*: ~planning/org-scribe-planner-engine.el~
 
 ** Directorio del planificador y búfer del calendario (~org-scribe-planner-directory~ / ~org-scribe-planner-calendar-buffer~)
 
 ~org-scribe-planner-directory~ (por defecto ~writing-projects/~ bajo ~org-directory~) es la reserva para los planes de fuera de un proyecto: el selector de archivos de plan empieza ahí cuando no hay raíz de proyecto, y un plan nuevo se ofrece guardarlo ahí cuando no se crea desde dentro de un proyecto (dentro de uno, se ofrece la raíz del proyecto). ~org-scribe-planner-calendar-buffer~ (por defecto ~*Writing Plan Calendar*~) nombra el búfer en el que se muestra el calendario del plan.
 
-*Estado*: totalmente implementado | *Tipo*: defcustom (grupo ~org-scribe-planner~) | *Módulo*: ~planning/org-scribe-planner.el~
+*Estado*: totalmente implementado | *Tipo*: defcustom (grupo ~org-scribe-planner~) | *Módulo*: ~planning/org-scribe-planner-engine.el~
 
 * Companion visual
 :PROPERTIES:

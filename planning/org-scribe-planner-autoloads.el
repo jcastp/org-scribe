@@ -9,39 +9,6 @@
 
 ;;; Generated autoloads from org-scribe-planner.el
 
-(autoload 'org-scribe-planner-show-weekly-summary "org-scribe-planner"
-"Show the active plan week by week, with what was written.
-For each calendar week: days written of the writing days, rest days, the
-daily goal (a range when the goals vary), the week's goal, the words
-written (✓ goal met, ~ part of it, ✗ none) and their share of the goal,
-where the manuscript should stand and where it stands, and the
-difference.  The current week's difference counts goals through
-yesterday.  Weeks start on `org-scribe-planner-week-start-day'." t)
-(autoload 'org-scribe-planner-show-month-calendar "org-scribe-planner"
-"Show the active plan as a month grid.
-One grid per month, weeks starting on `org-scribe-planner-week-start-day'.
-Each day shows its goal, its result (✓ met, ~ partial, ✗ missed) and the
-manuscript's share of the goal by the end of the day; today is in
-brackets." t)
-(autoload 'org-scribe-planner-new-plan "org-scribe-planner"
-"Create a new writing plan interactively.
-TITLE and SAVE-PATH, when supplied, are used directly instead of
-prompting for them — the interactive spec supplies both automatically
-when invoked (via `M-x' or a keybinding) inside an org-scribe project
-that has not yet been asked, so no prompt appears in that case either.
-
-(fn &optional TITLE SAVE-PATH)" t)
-(autoload 'org-scribe-planner-onboard-existing-project "org-scribe-planner"
-"Create a writing plan for a novel already in progress.
-Reads the current manuscript word count, asks for your target and
-timeline, then builds a plan that starts today (or the date you give)
-with the existing words recorded as its pre-existing words
-(PREEXISTING_WORDS): they count toward the goal and completion, but
-not as any one day's writing, so auto-tracking records only net-new
-writing going forward.
-
-Skips the normal new-plan wizard; the daily target is calculated from
-the *remaining* words over the *remaining* working days, not the total." t)
 (autoload 'org-scribe-planner-load-plan "org-scribe-planner"
 "Load an existing writing plan and set it as the active plan.
 FILE, when supplied, is loaded directly with no file-picker prompt —
@@ -50,75 +17,6 @@ or a keybinding) inside an org-scribe project that already has a valid
 saved plan file.
 
 (fn &optional FILE)" t)
-(autoload 'org-scribe-planner-sync-agenda "org-scribe-planner"
-"Sync active writing plan to org-agenda." t)
-(autoload 'org-scribe-planner-update-progress "org-scribe-planner"
-"Sync the word count from the manuscript into the active writing plan.
-First refreshes WORDCOUNT properties on every heading in the manuscript
-buffer (when it is live and `org-context-extended' is available), so the
-numbers are always current rather than reflecting the last explicit count.
-Reads the total via `org-scribe-planner-wordcount-function' when set
-(i.e. when the planner integration is active); otherwise prompts for a
-number.  Saves the new count to the plan file, updates the in-memory
-plan, fires progress hooks, and re-renders the calendar view." t)
-(autoload 'org-scribe-planner-today "org-scribe-planner"
-"Log today's word count to the active plan without extra prompts.
-Pre-fills today's date, asks for a word count (using
-`org-scribe-planner-wordcount-function' when set) and an optional note,
-then saves immediately.  No recalculation prompt is shown.
-
-DAILY_WORD_COUNTS stores the manuscript's *cumulative* total as of each
-date (see the `org-scribe-plan-daily-word-counts' slot docstring), so
-when `org-scribe-planner-wordcount-function' is set, its return value is
-recorded as-is.  When it is not set, the number the user enters is a
-delta (\"words written today\"), converted to a cumulative total by
-adding it to the previous entry's cumulative total (0 if none)." t)
-(autoload 'org-scribe-planner-add-session-note "org-scribe-planner"
-"Add or update a note for a writing session in the active plan.
-The word count for the selected day is pre-filled from whatever the
-auto-tracker already recorded; the primary prompt is for the session
-annotation (what you wrote, scene finished, etc.).  You can also adjust
-the word count when auto-tracking was unavailable — for example when
-writing on paper or in an external file.
-
-The prompt shows and edits this day's net delta (words written that
-day) for a natural entry experience, even though DAILY_WORD_COUNTS
-stores cumulative totals internally (see the
-`org-scribe-plan-daily-word-counts' slot docstring): the edited delta is
-converted back to a cumulative total — this date's previous cumulative
-total plus the (possibly edited) delta — before being saved.  Editing an
-earlier day's delta this way naturally shifts the derived deltas of
-every later date that still has its own absolute cumulative total." t)
-(autoload 'org-scribe-planner-adjust-remaining-plan "org-scribe-planner"
-"Spread the words you actually have left over the remaining writing days.
-Keeps your end date and total word goal; changes the daily target.  Past
-days keep their goals; the change starts today, or tomorrow if you have
-already written today.  Shows what changes and asks before applying it.
-The counterpart of `org-scribe-planner-adjust-end-date'." t)
-(autoload 'org-scribe-planner-adjust-end-date "org-scribe-planner"
-"Move the end date so the words left fit at the current daily target.
-Finishes early when you are ahead and extends the deadline when you are
-behind, keeping your daily target and total word goal.  Past days keep
-their goals.  Shows the new end date and asks before applying it.  The
-counterpart of `org-scribe-planner-adjust-remaining-plan', which keeps
-the end date and changes the daily target instead." t)
-(autoload 'org-scribe-planner-check-progress "org-scribe-planner"
-"Show where the active plan stands; when ahead or behind, offer to adjust it.
-Ahead, you can reduce the daily target (keeping the end date) or finish
-early (keeping the daily target); behind, increase the daily target or
-extend the deadline.  Every option shows its outcome first, and keeping
-the plan as it is is the default.  Expected words run through yesterday:
-today's goal isn't due until the day is over." t)
-(autoload 'org-scribe-planner-recalculate "org-scribe-planner"
-"Change the active writing plan, previewing the result before applying it.
-A new total, daily target or length asks which of the other two to keep;
-\"Two values\" sets two and calculates the third.  Adding or removing
-spare days asks how the plan absorbs them: keep the end date (the daily
-target changes), move the end date (keep the daily target), or keep both
-(the total changes).  Every option shows its outcome first.  Past days
-keep their goals throughout." t)
-(autoload 'org-scribe-planner-show-milestones "org-scribe-planner"
-"Show milestone dates for the active writing plan with actual and expected dates." t)
 (autoload 'org-scribe-planner-show-current-plan "org-scribe-planner"
 "Display the calendar for the currently active plan.
 If no plan is active, prompt to load one." t)
@@ -138,8 +36,11 @@ No-op when `org-scribe-planner-auto-push-wordcount' or
 plan for the current project, when the active plan belongs to a
 different project than the current manuscript and no matching plan can
 be found for this project (M9 — prevents cross-project data corruption
-instead of silently recording into the wrong plan), or when TOTAL is
-not positive.
+instead of silently recording into the wrong plan), when TOTAL is not
+positive, or when the planner is disabled for the current project (gate
+`no', see `org-scribe-planner-gate'): disabling it used to stop the mode
+line and the health section but not the ledger, which kept rewriting
+plan.org on every count.
 
 (fn TOTAL)")
 (autoload 'org-scribe-plan "org-scribe-planner"
@@ -207,6 +108,43 @@ Shows progress, velocity, and performance dashboards side by side." t)
 "Display all dashboards in split windows." t)
 (register-definition-prefixes "org-scribe-planner-dashboards" '("org-scribe-planner-"))
 
+
+;;; Generated autoloads from org-scribe-planner-create.el
+
+ (autoload 'org-scribe-planner-new-plan "org-scribe-planner" nil t)
+ (autoload 'org-scribe-planner-onboard-existing-project "org-scribe-planner" nil t)
+(register-definition-prefixes "org-scribe-planner-create" '("org-scribe-planner--"))
+
+
+;;; Generated autoloads from org-scribe-planner-edit.el
+
+ (autoload 'org-scribe-planner-update-progress "org-scribe-planner" nil t)
+ (autoload 'org-scribe-planner-today "org-scribe-planner" nil t)
+ (autoload 'org-scribe-planner-add-session-note "org-scribe-planner" nil t)
+ (autoload 'org-scribe-planner-adjust-remaining-plan "org-scribe-planner" nil t)
+ (autoload 'org-scribe-planner-adjust-end-date "org-scribe-planner" nil t)
+ (autoload 'org-scribe-planner-check-progress "org-scribe-planner" nil t)
+ (autoload 'org-scribe-planner-recalculate "org-scribe-planner" nil t)
+(register-definition-prefixes "org-scribe-planner-edit" '("org-scribe-planner-"))
+
+
+;;; Generated autoloads from org-scribe-planner-engine.el
+
+(register-definition-prefixes "org-scribe-planner-engine" '("org-scribe-planner-"))
+
+
+;;; Generated autoloads from org-scribe-planner-io.el
+
+(register-definition-prefixes "org-scribe-planner-io" '("org-scribe-planner--"))
+
+
+;;; Generated autoloads from org-scribe-planner-views.el
+
+ (autoload 'org-scribe-planner-show-weekly-summary "org-scribe-planner" nil t)
+ (autoload 'org-scribe-planner-show-month-calendar "org-scribe-planner" nil t)
+ (autoload 'org-scribe-planner-sync-agenda "org-scribe-planner" nil t)
+ (autoload 'org-scribe-planner-show-milestones "org-scribe-planner" nil t)
+(register-definition-prefixes "org-scribe-planner-views" '("org-scribe-planner-"))
 
 ;;; End of scraped data
 

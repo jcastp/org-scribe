@@ -328,7 +328,7 @@ End date 2026-11-30 → 2026-12-05: extended by 5 days. Apply?
 
 ** Cuando un recálculo se queda desfasado
 
-Un recálculo hecho mientras aún escribes ese día le acredita al día las palabras que tiene en ese momento. Las que añadas después no están en la nueva línea del plan, y un día que termina por debajo de la meta que se le acreditó tampoco cuadra con ella: el plan queda entonces /desfasado/. Nada cambia a tus espaldas; el planificador te lo dice.
+Un recálculo hecho mientras aún escribes ese día le acredita al día las palabras que tiene en ese momento. Las palabras que faltan se reparten entre los días a partir de mañana, así que la nueva meta diaria es exactamente lo que falta dividido entre esos días. Las que añadas después no están en la nueva línea del plan: el plan queda entonces /desfasado/. Nada cambia a tus espaldas; el planificador te lo dice.
 
 El resumen del calendario lo muestra justo debajo de /Status/:
 

@@ -205,7 +205,7 @@ schedule stopped adding up to the total."
         (test-engine--log plan "2026-11-11" 5000)
         (org-scribe-planner-recalculate-remaining-days plan "/tmp/unused-plan.org")
         (should (assoc "2026-11-11" (org-scribe-plan-locked-goals plan)))
-        ;; Today is credited with at least its goal (1,000 of the 5,000);
+        ;; Today is credited with the 5,000 written on it;
         ;; 25,000 left over the 19 days from tomorrow
         (should (= (apply #'+ (cl-subseq (test-engine--goals plan) 11)) 25000))))))
 

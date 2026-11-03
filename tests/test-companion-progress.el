@@ -34,7 +34,7 @@
 
 (defvar org-scribe-planner--current-plan)
 (defvar org-scribe-planner--current-plan-file)
-(declare-function org-scribe-planner--get-today-target "org-scribe-planner-dashboards")
+(declare-function org-scribe-planner--get-today-target "org-scribe-planner")
 (declare-function org-scribe-planner--generate-day-schedule "org-scribe-planner")
 
 (defconst test-companion-progress--repo

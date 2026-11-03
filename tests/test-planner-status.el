@@ -344,16 +344,44 @@ anchored at 2,334 words and now sees 2,564."
       (should (string= (org-scribe-plan-rebased-from plan) "2026-11-03"))
       (should-not (org-scribe-planner--rebase-stale plan)))))
 
-(ert-deftest test-planner-status-recalculation-stale-when-the-day-ends-under-its-goal ()
-  "Recalculated at 500 words (the day was credited with its 1,667 goal),
-the day ends at 500: once it is over, the recalculation is stale."
+(ert-deftest test-planner-status-recalculation-under-its-goal-counts-what-was-written ()
+  "Recalculated at 500 words of a 1,000 goal: the day is credited with the
+500 written, so the 29,500 left are spread from tomorrow, and the day
+ending at 500 leaves the recalculation up to date (reported 2026-11-03)."
   (test-status--on "2026-11-01"
     (let ((plan (test-status--plan 500 "2026-11-01")))
       (org-scribe-planner-recalculate-remaining-days plan "/tmp/unused-plan.org")
+      (should (= (org-scribe-plan-schedule-adjustment plan) 500))
+      ;; 29,500 over the 29 days from Nov 2
+      (should (= (org-scribe-plan-daily-words plan) 1017))
+      (should-not (org-scribe-planner--rebase-stale plan))
+      (setq test-status--today "2026-11-02")
+      (should-not (org-scribe-planner--rebase-stale plan)))))
+
+(ert-deftest test-planner-status-recalculation-old-rule-stale-when-the-day-ends-under-its-goal ()
+  "A recalculation made under the old rule credited the day still being
+written with its 1,000 goal, not the 500 written: once the day is over
+below it, the recalculation is stale."
+  (test-status--on "2026-11-01"
+    (let ((plan (test-status--plan 500 "2026-11-01")))
+      (org-scribe-planner-recalculate-remaining-days plan "/tmp/unused-plan.org")
+      ;; What the old rule stored: the goal credited, so no adjustment
+      (setf (org-scribe-plan-schedule-adjustment plan) 0)
       ;; Still being written: the goal it was credited with is not missed yet
       (should-not (org-scribe-planner--rebase-stale plan))
       (setq test-status--today "2026-11-02")
       (should (org-scribe-planner--rebase-stale plan)))))
+
+(ert-deftest test-planner-status-recalculation-preview-words-left-match-the-target ()
+  "The preview's words left are the ones the new target is worked out from."
+  (test-status--on "2026-11-01"
+    (let* ((plan (test-status--plan 500 "2026-11-01"))
+           (preview (org-scribe-planner--copy-plan plan)))
+      (org-scribe-planner--rebase-keeping-end-date preview "2026-11-02")
+      (should (string-match-p
+               "From 2026-11-02: 29500 words left over 29 writing days.\nDaily target 1000 → 1017"
+               (org-scribe-planner--describe-remaining-days-change
+                plan preview "2026-11-02"))))))
 
 (ert-deftest test-planner-status-recalculation-stale-for-a-plan-saved-before-the-counts ()
   "A plan without REBASED_ON / REBASED_WORDS is checked against its rebased total."

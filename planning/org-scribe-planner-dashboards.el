@@ -23,38 +23,6 @@
 
 (require 'org-scribe-planner)
 
-;; Declare functions from org-scribe-planner (avoid circular dependency)
-(declare-function org-scribe-planner--get-current-plan "org-scribe-planner")
-(declare-function org-scribe-planner--generate-day-schedule "org-scribe-planner")
-(declare-function org-scribe-planner--parse-date-parts "org-scribe-planner")
-(declare-function org-scribe-planner--get-entry-words "org-scribe-planner")
-(declare-function org-scribe-planner--daily-deltas "org-scribe-planner")
-(declare-function org-scribe-planner--entry-delta "org-scribe-planner")
-(declare-function org-scribe-planner--expected-through "org-scribe-planner")
-(declare-function org-scribe-planner--planned-total "org-scribe-planner")
-(declare-function org-scribe-planner--rebase-step "org-scribe-planner")
-(declare-function org-scribe-planner--status "org-scribe-planner")
-(declare-function org-scribe-planner--day-goal "org-scribe-planner")
-(declare-function org-scribe-planner--weekday "org-scribe-planner")
-(declare-function org-scribe-planner--week-day-names "org-scribe-planner")
-(defvar org-scribe-planner-week-start-day)
-(declare-function org-scribe-planner--words-by-date "org-scribe-planner")
-(declare-function org-scribe-planner--day-status "org-scribe-planner")
-(declare-function org-scribe-planner--completion-date "org-scribe-planner")
-(declare-function org-scribe-planner--average-pace "org-scribe-planner")
-(declare-function org-scribe-planner--elapsed-daily-words "org-scribe-planner")
-(declare-function org-scribe-planner--add-days "org-scribe-planner")
-(declare-function org-scribe-planner--days-between "org-scribe-planner")
-(declare-function org-scribe-planner-show-current-plan "org-scribe-planner")
-
-;; Access to struct accessors
-(declare-function org-scribe-plan-total-words "org-scribe-planner")
-(declare-function org-scribe-plan-current-words "org-scribe-planner")
-(declare-function org-scribe-plan-daily-word-counts "org-scribe-planner")
-(declare-function org-scribe-plan-daily-words "org-scribe-planner")
-(declare-function org-scribe-plan-end-date "org-scribe-planner")
-(declare-function org-scribe-plan-title "org-scribe-planner")
-
 ;;; Helper Functions - Number Formatting
 
 (defun org-scribe-planner--format-number (num)
@@ -93,123 +61,11 @@ HEIGHT is the :height face attribute applied to TITLE (default 1.2)."
                         'face 'org-level-1))
     (insert (make-string sep-width ?═) "\n\n")))
 
-;;; Helper Functions - Date Utilities
-
-(defun org-scribe-planner--get-today-target (plan)
-  "Get the target word count for today from PLAN.
-Returns nil if today is not in the plan or is a spare day."
-  (let* ((today (org-scribe-planner--get-today-date))
-         (schedule (org-scribe-planner--generate-day-schedule plan))
-         (today-entry (cl-find today schedule
-                              :key (lambda (day) (plist-get day :date))
-                              :test 'string=)))
-    (when today-entry
-      (if (plist-get today-entry :is-spare-day)
-          0
-        (plist-get today-entry :words)))))
-
-(defun org-scribe-planner--get-today-actual (plan)
-  "Get the actual word count written today from PLAN.
-Returns nil if no data has been logged for today."
-  (let ((today (org-scribe-planner--get-today-date))
-        (daily-counts (org-scribe-plan-daily-word-counts plan)))
-    (org-scribe-planner--entry-delta daily-counts today (org-scribe-plan-preexisting-words plan))))
-
-;;; Helper Functions - Streak Calculation
-
-(defun org-scribe-planner--calculate-current-streak (plan)
-  "Calculate current and longest writing streaks for PLAN.
-Returns plist with :current :longest and :last-streak-date.  Only the
-plan's writing days up to today count; rest days neither extend nor
-break a streak."
-  (let* ((daily-counts (org-scribe-plan-daily-word-counts plan))
-         (schedule (org-scribe-planner--generate-day-schedule plan))
-         (today (org-scribe-planner--get-today-date))
-         (current-streak 0)
-         (longest-streak 0)
-         (temp-streak 0)
-         (streak-at-last 0)
-         (last-streak-date nil))
-
-    ;; Sort daily counts by date
-    (setq daily-counts (sort (copy-sequence daily-counts)
-                            (lambda (a b) (string< (car a) (car b)))))
-
-    ;; Calculate streaks
-    (dolist (day schedule)
-      (let* ((date (plist-get day :date))
-             (is-spare (plist-get day :is-spare-day))
-             (delta (org-scribe-planner--entry-delta daily-counts date (org-scribe-plan-preexisting-words plan)))
-             (has-words (and delta (> delta 0))))
-
-        ;; Only count working days (not spare days), up to today: a day
-        ;; to come has no words yet and must not break the streak.  Nor
-        ;; does today before anything is written: the day isn't over.
-        (unless (or is-spare
-                    (string< today date)
-                    (and (string= date today) (not has-words)))
-          (if has-words
-              (progn
-                (setq temp-streak (1+ temp-streak))
-                (setq last-streak-date date)
-                (setq streak-at-last temp-streak)
-                (when (> temp-streak longest-streak)
-                  (setq longest-streak temp-streak)))
-            ;; Break in streak
-            (setq temp-streak 0)))))
-
-    ;; Current streak is the run ending on the last written day, kept
-    ;; while that day is within the grace window: the missed days after
-    ;; it have zeroed TEMP-STREAK already, so it can't be read here.
-    (setq current-streak
-          (if (and last-streak-date
-                  (or (string= last-streak-date today)
-                      (< (org-scribe-planner--days-between last-streak-date today)
-                         (1+ org-scribe-planner-streak-grace-days))))
-              streak-at-last
-            0))
-
-    (list :current current-streak
-          :longest longest-streak
-          :last-date last-streak-date)))
-
 (defun org-scribe-planner--count-text (n singular plural)
   "Return N with SINGULAR when it is 1, PLURAL otherwise: \"1 day\", \"3 days\"."
   (format "%d %s" n (if (= n 1) singular plural)))
 
-;;; Helper Functions - Velocity Calculation
-
-(defun org-scribe-planner--calculate-velocity (plan)
-  "Calculate velocity metrics for PLAN.
-Returns a plist:
-  :average        words written in the plan per elapsed writing day
-                  (missed days count, rest days don't; see
-                  `org-scribe-planner--average-pace')
-  :recent         the same over the last 7 elapsed writing days
-  :trend          \"accelerating\", \"slowing\", \"steady\" or \"no data\"
-  :eta            when the goal is reached at the :average pace
-  :projected-date when it is reached at the :recent pace
-  :days-logged    days with words written
-  :elapsed-days   elapsed writing days
-The two dates skip rest days (see `org-scribe-planner--completion-date')."
-  (let* ((elapsed (org-scribe-planner--elapsed-daily-words plan))
-         (average-velocity (org-scribe-planner--average-pace plan))
-         (recent-words (mapcar #'cdr (last elapsed (min 7 (length elapsed)))))
-         (recent-velocity (if recent-words
-                              (/ (float (apply #'+ recent-words)) (length recent-words))
-                            0))
-         (trend (cond
-                 ((= average-velocity 0) "no data")
-                 ((> recent-velocity (* 1.1 average-velocity)) "accelerating")
-                 ((< recent-velocity (* 0.9 average-velocity)) "slowing")
-                 (t "steady"))))
-    (list :average average-velocity
-          :recent recent-velocity
-          :trend trend
-          :eta (org-scribe-planner--completion-date plan average-velocity)
-          :projected-date (org-scribe-planner--completion-date plan recent-velocity)
-          :days-logged (cl-count-if (lambda (day) (> (cdr day) 0)) elapsed)
-          :elapsed-days (length elapsed))))
+;;; Helper Functions - Trend and Status Labels
 
 (defun org-scribe-planner--format-trend (trend)
   "Format TREND string with appropriate face."
@@ -218,8 +74,6 @@ The two dates skip rest days (see `org-scribe-planner--completion-date')."
     ("slowing" (propertize "↘ Slowing" 'face 'org-warning))
     ("steady" (propertize "→ Steady" 'face 'org-scheduled))
     (_ (propertize "? No data" 'face 'shadow))))
-
-;;; Helper Functions - Schedule Position
 
 (defun org-scribe-planner--status-text (position &optional marks)
   "Return POSITION's status as a propertized label: ahead, on track or behind.
@@ -232,69 +86,6 @@ With MARKS, append a check mark or a warning sign."
     (propertize (if marks "AHEAD OF SCHEDULE ✓" "AHEAD OF SCHEDULE") 'face 'org-done))
    (t
     (propertize (if marks "BEHIND SCHEDULE ⚠" "BEHIND SCHEDULE") 'face 'org-warning))))
-
-(defun org-scribe-planner--calculate-schedule-position (plan)
-  "Calculate if PLAN is ahead or behind schedule.
-Returns plist with :status :days-ahead :words-ahead :current-words :percentage :days-elapsed :days-remaining.
-:expected-by-today is where the manuscript should stand at the end of
-today, as `org-scribe-planner--status' measures it: today's goal counts
-already.  :days-elapsed counts the days before today and :days-remaining
-the working days from today on."
-  (let* ((schedule (org-scribe-planner--generate-day-schedule plan))
-         (today (org-scribe-planner--get-today-date))
-         ;; current-words is kept in sync with the latest cumulative ledger
-         ;; entry by every write path, so it IS the total written so far.
-         (cumulative-actual (org-scribe-plan-current-words plan))
-         (status (org-scribe-planner--status plan))
-         ;; Where the manuscript should stand at the end of today
-         (expected-by-today (or (plist-get status :expected) 0))
-         (expected-days 0)
-         (days-elapsed 0)
-         (days-remaining 0))
-
-    ;; Calculate expected words and days elapsed, up to yesterday
-    (dolist (day schedule)
-      (let* ((date (plist-get day :date))
-             (is-spare (plist-get day :is-spare-day)))
-
-        (when (string< date today)
-          ;; Count all days elapsed (including spare days)
-          (setq days-elapsed (1+ days-elapsed))
-
-          (unless is-spare
-            (setq expected-days (1+ expected-days))))))
-
-    ;; Calculate remaining days (from today onwards, excluding spare days)
-    (dolist (day schedule)
-      (let* ((date (plist-get day :date))
-             (is-spare (plist-get day :is-spare-day)))
-        (when (and (not (string< date today))
-                  (not is-spare))
-          (setq days-remaining (1+ days-remaining)))))
-
-    (let* ((total-words (org-scribe-plan-total-words plan))
-           (percentage (if (> total-words 0)
-                          (/ (* 100.0 cumulative-actual) total-words)
-                        0))
-           (words-ahead (- cumulative-actual expected-by-today))
-           ;; Writing days ahead along the schedule, not words ÷ the
-           ;; current daily target (which changes with every recalculation)
-           (days-ahead (or (plist-get status :days) 0))
-           (status (cond
-                   ((>= words-ahead 0) 'ahead)
-                   (t 'behind))))
-
-      ;; :status stays two-valued for the dashboards; :on-track is exact
-      (list :status status
-            :on-track (= words-ahead 0)
-            :days-ahead days-ahead
-            :words-ahead words-ahead
-            :cumulative-actual cumulative-actual
-            :current-words cumulative-actual
-            :expected-by-today expected-by-today
-            :percentage percentage
-            :days-elapsed days-elapsed
-            :days-remaining days-remaining))))
 
 ;;; Helper Macros
 
@@ -1236,18 +1027,7 @@ WIDTH and HEIGHT are dimensions in pixels."
             (insert (propertize "Press 'q' to close | 'r' to refresh | 'c' to calendar\n"
                               'face 'shadow)))))))
 
-;;; Helper Functions - Moving Average and Date Formatting
-
-(defun org-scribe-planner--moving-average (values window)
-  "Calculate WINDOW-day moving average of VALUES.
-VALUES is a list of numbers, WINDOW is the number of days to average over."
-  (let ((result nil))
-    (dotimes (i (length values))
-      (let* ((start (max 0 (- i (1- window))))
-             (window-values (cl-subseq values start (1+ i)))
-             (avg (/ (float (apply #'+ window-values)) (length window-values))))
-        (push avg result)))
-    (nreverse result)))
+;;; Helper Functions - Bar Charts and Date Labels
 
 (defun org-scribe-planner--insert-bar-chart (title labels words)
   "Insert a vertical bar chart of WORDS per LABELS, titled TITLE, at point.
@@ -1387,96 +1167,6 @@ Shows every Nth date to avoid overcrowding. MAX-LABELS defaults to 10."
           (insert "\n" (make-string 70 ?═) "\n")
           (insert (propertize "Press 'q' to close | 'r' to refresh | 'c' to view calendar\n"
                             'face 'shadow))))))
-
-;;; Performance Analytics Helper Functions
-
-(defun org-scribe-planner--calculate-day-of-week-stats (plan)
-  "Calculate day-of-week performance statistics for PLAN.
-Returns an alist with keys 0-6 (Sunday-Saturday) and values as plists
-containing :day-name :total-words :count :average.  Counts every elapsed
-writing day (see `org-scribe-planner--elapsed-daily-words'), so a missed
-day lowers its weekday's average; rest days aren't counted."
-  (let ((dow-data (make-vector 7 nil)))
-    (dotimes (i 7)
-      (aset dow-data i (list :day-name (calendar-day-name i nil t)
-                             :total-words 0
-                             :count 0
-                             :average 0.0)))
-    (dolist (day (org-scribe-planner--elapsed-daily-words plan))
-      (let ((dow-entry (aref dow-data (org-scribe-planner--weekday (car day)))))
-        (plist-put dow-entry :total-words (+ (plist-get dow-entry :total-words) (cdr day)))
-        (plist-put dow-entry :count (1+ (plist-get dow-entry :count)))))
-    (dotimes (i 7)
-      (let ((dow-entry (aref dow-data i)))
-        (when (> (plist-get dow-entry :count) 0)
-          (plist-put dow-entry :average
-                     (/ (float (plist-get dow-entry :total-words))
-                        (plist-get dow-entry :count))))))
-    (let ((result nil))
-      (dotimes (i 7)
-        (push (cons i (aref dow-data i)) result))
-      (nreverse result))))
-
-(defun org-scribe-planner--plan-day-statuses (plan)
-  "Return the statuses of PLAN's days that are due, as (DATE . STATUS).
-Days that are due have a goal and are over, or are today with words
-written: their status is `exceeded', `met', `partial' or `missed' (see
-`org-scribe-planner--day-status')."
-  (let ((written (org-scribe-planner--words-by-date plan))
-        (result nil))
-    (dolist (day (org-scribe-planner--generate-day-schedule plan))
-      (let ((status (org-scribe-planner--day-status plan (plist-get day :date) written)))
-        (when (memq status '(exceeded met partial missed))
-          (push (cons (plist-get day :date) status) result))))
-    (nreverse result)))
-
-(defun org-scribe-planner--calculate-consistency-score (plan)
-  "Calculate consistency score for PLAN.
-Returns a plist with :score (0-100), :days-logged, :working-days, :rate:
-the share of the plan's writing days so far on which some words were
-written.  The days are those of `org-scribe-planner--elapsed-daily-words',
-as for the velocity: today counts once it has words.  Counting only the
-days that are due left today out until its goal was met, so this read
-\"4 / 7\" beside the velocity's \"5 of 8\" on the same day."
-  (let* ((elapsed (org-scribe-planner--elapsed-daily-words plan))
-         (working-days (length elapsed))
-         (days-logged (cl-count-if (lambda (day) (> (cdr day) 0)) elapsed))
-         (rate (if (> working-days 0)
-                   (/ (* 100.0 days-logged) working-days)
-                 0)))
-    (list :score (round rate)
-          :days-logged days-logged
-          :working-days working-days
-          :rate rate)))
-
-(defun org-scribe-planner--calculate-target-achievement-rate (plan)
-  "Calculate target achievement rate for PLAN.
-Returns a plist with :rate, :days-met, :days-partial, :days-missed,
-:total-days, over the plan's writing days so far (see
-`org-scribe-planner--plan-day-statuses'): met counts the days at or over
-their goal, partial those at 75% or more, missed the rest — days with no
-words and net cuts included."
-  (let* ((statuses (mapcar #'cdr (org-scribe-planner--plan-day-statuses plan)))
-         (days-met (cl-count-if (lambda (s) (memq s '(exceeded met))) statuses))
-         (days-partial (cl-count 'partial statuses))
-         (days-missed (cl-count 'missed statuses))
-         (total-days (length statuses)))
-    (list :rate (if (> total-days 0) (/ (* 100.0 days-met) total-days) 0)
-          :days-met days-met
-          :days-partial days-partial
-          :days-missed days-missed
-          :total-days total-days)))
-
-(defun org-scribe-planner--calculate-efficiency-ratio (plan)
-  "Calculate efficiency ratio for PLAN.
-Returns actual velocity / planned velocity as a percentage."
-  (let* ((velocity (org-scribe-planner--calculate-velocity plan))
-         (avg-velocity (plist-get velocity :average))
-         (planned-velocity (org-scribe-plan-daily-words plan)))
-
-    (if (> planned-velocity 0)
-        (* 100.0 (/ avg-velocity planned-velocity))
-      0)))
 
 ;;; Performance Analytics Dashboard
 
@@ -1645,121 +1335,6 @@ Shows day-of-week patterns, consistency scores, and target achievement rates."
           (insert "\n" (make-string 80 ?═) "\n")
           (insert (propertize "Press 'q' to close | 'r' to refresh | 'c' to view calendar\n"
                             'face 'shadow))))))
-
-;;; Velocity Trend Analysis Helper Functions
-
-(defun org-scribe-planner--calculate-multi-window-velocity (plan)
-  "Calculate velocity across multiple time windows for PLAN.
-Returns plist with :7-day :14-day :30-day :overall velocities and trend info."
-  (let* ((word-counts (mapcar #'cdr (org-scribe-planner--elapsed-daily-words plan)))
-         (total-days (length word-counts)))
-
-    (when (> total-days 0)
-      (let* ((overall-avg (/ (float (apply #'+ word-counts)) total-days))
-             ;; Calculate 7-day average
-             (last-7 (last word-counts (min 7 total-days)))
-             (avg-7 (if last-7
-                       (/ (float (apply #'+ last-7)) (length last-7))
-                     0))
-             ;; Calculate 14-day average
-             (last-14 (last word-counts (min 14 total-days)))
-             (avg-14 (if last-14
-                        (/ (float (apply #'+ last-14)) (length last-14))
-                      0))
-             ;; Calculate 30-day average
-             (last-30 (last word-counts (min 30 total-days)))
-             (avg-30 (if last-30
-                        (/ (float (apply #'+ last-30)) (length last-30))
-                      0))
-             ;; Determine trend (compare recent to overall)
-             (trend-7 (cond
-                      ((= overall-avg 0) 'unknown)
-                      ((> avg-7 (* 1.1 overall-avg)) 'accelerating)
-                      ((< avg-7 (* 0.9 overall-avg)) 'decelerating)
-                      (t 'steady)))
-             ;; Calculate velocity change rate (7-day vs 14-day)
-             (velocity-change (if (and (> avg-14 0) (> total-days 7))
-                                (/ (- avg-7 avg-14) avg-14)
-                              0)))
-
-        (list :7-day avg-7
-              :14-day avg-14
-              :30-day avg-30
-              :overall overall-avg
-              :total-days total-days
-              :trend-7 trend-7
-              :velocity-change velocity-change
-              :acceleration (> velocity-change 0.05)
-              :deceleration (< velocity-change -0.05))))))
-
-(defun org-scribe-planner--calculate-required-velocity (plan)
-  "Calculate required velocity to complete PLAN on time.
-Returns plist with :required-velocity :current-velocity :feasible :adjustment-needed."
-  (let* ((total-words (org-scribe-plan-total-words plan))
-         (current-words (org-scribe-plan-current-words plan))
-         (remaining-words (- total-words current-words))
-         (schedule (org-scribe-planner--generate-day-schedule plan))
-         (today (org-scribe-planner--get-today-date))
-         (remaining-days 0))
-
-    ;; Count remaining working days from today onwards
-    (dolist (day schedule)
-      (let ((date (plist-get day :date))
-            (is-spare (plist-get day :is-spare-day)))
-        (when (and (not (string< date today))
-                  (not is-spare))
-          (setq remaining-days (1+ remaining-days)))))
-
-    (let* ((required-velocity (if (> remaining-days 0)
-                                 (/ (float remaining-words) remaining-days)
-                               0))
-           (velocity (org-scribe-planner--calculate-velocity plan))
-           (current-velocity (plist-get velocity :recent))
-           (planned-velocity (org-scribe-plan-daily-words plan))
-           (feasible (or (<= required-velocity (* 1.5 planned-velocity))
-                        (<= required-velocity current-velocity)))
-           (adjustment-needed (- required-velocity current-velocity)))
-
-      (list :required-velocity required-velocity
-            :current-velocity current-velocity
-            :planned-velocity planned-velocity
-            :remaining-words remaining-words
-            :remaining-days remaining-days
-            :feasible feasible
-            :adjustment-needed adjustment-needed
-            :adjustment-percent (if (> current-velocity 0)
-                                   (* 100 (/ adjustment-needed current-velocity))
-                                 0)))))
-
-(defun org-scribe-planner--calculate-momentum-score (plan)
-  "Calculate momentum score for PLAN based on recent velocity trends.
-Returns a score from 0-100 indicating writing momentum."
-  (let* ((multi-vel (org-scribe-planner--calculate-multi-window-velocity plan))
-         (avg-7 (plist-get multi-vel :7-day))
-         (avg-14 (plist-get multi-vel :14-day))
-         (overall (plist-get multi-vel :overall))
-         (planned (org-scribe-plan-daily-words plan)))
-
-    (when (and avg-7 avg-14 overall)
-      (let* (;; Base score: how well are we doing vs plan?
-             (performance-score (if (> planned 0)
-                                   (min 100 (* 100 (/ avg-7 planned)))
-                                 50))
-             ;; Trend bonus: are we accelerating?
-             (trend-bonus (cond
-                          ((> avg-7 (* 1.2 overall)) 20)
-                          ((> avg-7 (* 1.1 overall)) 10)
-                          ((< avg-7 (* 0.8 overall)) -20)
-                          ((< avg-7 (* 0.9 overall)) -10)
-                          (t 0)))
-             ;; Consistency bonus: 7-day close to 14-day?
-             (consistency-bonus (if (and (> avg-14 0)
-                                        (< (abs (- avg-7 avg-14)) (* 0.2 avg-14)))
-                                   10
-                                 0))
-             (total-score (+ performance-score trend-bonus consistency-bonus)))
-
-        (max 0 (min 100 (round total-score)))))))
 
 ;;; Velocity Trend Analysis Dashboard
 

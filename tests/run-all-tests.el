@@ -97,7 +97,7 @@
     "test-template-references"     ; Template F8-key/command references are real
     "test-manual-es"               ; manual-es/ stays paired with manual/
     "test-demo-es"                 ; Spanish demos mirror the English ones
-    ;; Writing planner (planning/org-scribe-planner.el)
+    ;; Writing planner (planning/org-scribe-planner*.el)
     "test-planner-calculation"     ; Calculation engine
     "test-planner-io"              ; Plan save/load round-trips
     "test-planner-schedule"        ; Schedule generation and date helpers

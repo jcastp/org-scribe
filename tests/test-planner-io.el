@@ -218,4 +218,84 @@ the spare day as \"0 actual words written\" instead of \"no data\"."
             (should (null (org-scribe-plan-spare-days loaded)))))
       (delete-directory temp-dir t))))
 
+;;; The property table
+
+(ert-deftest test-planner-property-table-covers-every-slot ()
+  "Every plan slot is saved, except the title (the heading) and the marker.
+A slot missing from `org-scribe-planner--plan-properties' would be lost
+on every save."
+  (let ((stored (mapcar #'cadr org-scribe-planner--plan-properties)))
+    (dolist (slot (mapcar #'car (cdr (cl-struct-slot-info 'org-scribe-plan))))
+      (unless (memq slot '(title org-heading-marker))
+        (should (memq slot stored))))
+    ;; And each slot is stored once
+    (should (= (length stored) (length (delete-dups (copy-sequence stored)))))))
+
+(ert-deftest test-planner-roundtrip-optional-fields ()
+  "The optional properties survive a save→load round-trip."
+  (let* ((temp-dir (make-temp-file "org-scribe-test-" t))
+         (temp-file (expand-file-name "optional.org" temp-dir))
+         (plan (make-org-scribe-plan
+                :title "Optional Fields"
+                :total-words 20000 :daily-words 1000 :days 20
+                :start-date "2024-11-01" :end-date "2024-11-20"
+                :spare-days '("2024-11-05" "2024-11-06")
+                :locked-goals '(("2024-11-01" . 900) ("2024-11-02" . 950))
+                :schedule-adjustment 120
+                :rebased-from "2024-11-03" :rebased-on "2024-11-03"
+                :rebased-words 1850
+                :pattern 'valley :pattern-config '(:peak 1.5 :valley 0.7)
+                :weekend-mode 'different :weekend-days '(6 0) :weekend-daily 1500
+                :custom-goals '(("2024-11-12" . 0) ("2024-11-10" . 2000))
+                :outside-words 300
+                :outside-files '((:path "notes.org" :count 40))
+                :words-basis 'manuscript)))
+    (unwind-protect
+        (progn
+          (org-scribe-planner--save-plan plan temp-file)
+          (let ((loaded (org-scribe-planner--load-plan temp-file)))
+            (should (equal (org-scribe-plan-spare-days loaded) '("2024-11-05" "2024-11-06")))
+            (should (equal (org-scribe-plan-locked-goals loaded)
+                           '(("2024-11-01" . 900) ("2024-11-02" . 950))))
+            (should (= (org-scribe-plan-schedule-adjustment loaded) 120))
+            (should (equal (org-scribe-plan-rebased-from loaded) "2024-11-03"))
+            (should (equal (org-scribe-plan-rebased-on loaded) "2024-11-03"))
+            (should (= (org-scribe-plan-rebased-words loaded) 1850))
+            (should (eq (org-scribe-plan-pattern loaded) 'valley))
+            (should (equal (org-scribe-plan-pattern-config loaded) '(:peak 1.5 :valley 0.7)))
+            (should (eq (org-scribe-plan-weekend-mode loaded) 'different))
+            (should (equal (org-scribe-plan-weekend-days loaded) '(6 0)))
+            (should (= (org-scribe-plan-weekend-daily loaded) 1500))
+            ;; Saved in date order
+            (should (equal (org-scribe-plan-custom-goals loaded)
+                           '(("2024-11-10" . 2000) ("2024-11-12" . 0))))
+            (should (= (org-scribe-plan-outside-words loaded) 300))
+            (should (equal (org-scribe-plan-outside-files loaded)
+                           '((:path "notes.org" :count 40))))
+            (should (eq (org-scribe-plan-words-basis loaded) 'manuscript))))
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-planner-default-properties-not-written ()
+  "Properties at their default are left out of the plan file."
+  (let* ((temp-dir (make-temp-file "org-scribe-test-" t))
+         (temp-file (expand-file-name "defaults.org" temp-dir))
+         (plan (make-org-scribe-plan
+                :title "Defaults" :total-words 10000 :daily-words 1000 :days 10
+                :start-date "2024-11-01" :end-date "2024-11-10"
+                :schedule-adjustment 0.0 :weekend-mode 'rest)))
+    (unwind-protect
+        (progn
+          (org-scribe-planner--save-plan plan temp-file)
+          (with-temp-buffer
+            (insert-file-contents temp-file)
+            (let ((text (buffer-string)))
+              (dolist (absent '(":SCHEDULE_ADJUSTMENT:" ":PATTERN:" ":REBASED_ON:"
+                                ":WEEKEND_DAILY:" ":OUTSIDE_WORDS:" ":WORDS_BASIS:"
+                                ":DAILY_WORD_COUNTS:"))
+                (should-not (string-search absent text)))
+              ;; Rest weekends keep their days, not a goal
+              (should (string-search ":WEEKEND_MODE: rest" text))
+              (should (string-search ":WEEKEND_DAYS: 6,0" text)))))
+      (delete-directory temp-dir t))))
+
 ;;; test-plan-io.el ends here
