@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-01-creating-projects.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 21683ea
 
 /[[file:../manual/getting-started-01-creating-projects.org][English version]]/
 
@@ -246,6 +246,10 @@ Este archivo oculto le dice a Emacs: «¡este directorio es un proyecto de escri
 
 (Un proyecto de novela no lleva la línea ~# Type:~, y añade ~# Method:~ con el método de trama elegido.)
 
+- ~# Writing project:~ y ~# Title:~ - el título que escribiste en el Paso 3. ~# Writing project:~ conserva el nombre con el que se creó el proyecto; ~# Title:~ es su título actual, el que el paquete lee primero. Cámbialo con ~F8 T~, que actualiza a la vez ~# Title:~ y el ~#+TITLE:~ del manuscrito.
+- ~# Type:~ - ~short-story~ en un cuento. La detección del proyecto lee primero esta línea y, si no está, recurre al nombre del archivo del manuscrito, que es como se reconoce una novela, que no la lleva.
+- ~# Target-words:~ - el total de palabras del proyecto (mira [[*El total de palabras][El total de palabras]] más abajo); cámbialo con ~F8 t~.
+
 - ~# Language:~ - el idioma que elegiste en la pregunta del Paso 4 (~en~ o ~es~). Es lo que lee ~org-scribe-project-language~, de modo que las plantillas de captura, los nombres de las propiedades de escena y las demás funciones que dependen del idioma del proyecto se mantienen coherentes en este proyecto aunque más adelante cambies el valor global ~org-scribe-template-language~.
 - ~# Planner:~ - se añade automáticamente cuando activas el planificador de escritura integrado (aceptando la oferta de «¿crear un plan?», ejecutando ~M-x org-scribe-plan~, o con ~org-scribe-planner-enable-for-project~/~org-scribe-planner-disable-for-project~). Su valor es ~yes~ o ~no~; la línea no existe («sin decidir») hasta que eliges. Mira la [[file:primeros-pasos-16-planificador.org][Lección 16: Planificación de objetivos de escritura]] para los detalles.
 - ~# Plan:~ - se añade automáticamente la primera vez que se localiza un archivo de plan para este proyecto, y guarda su ruta (normalmente ~plan.org~) para que las búsquedas futuras no tengan que recorrer el directorio del proyecto. También solo existe cuando ya hay un plan.
@@ -311,6 +315,12 @@ Tu proyecto es automáticamente un repositorio git.
 
 *No te preocupes si no sabes git*: funciona solo. Puedes aprenderlo más adelante.
 
+*También es un proyecto de project.el*: el proyecto nuevo se registra en el
+~project.el~ integrado de Emacs, así que ~C-x p p~ lo ofrece a partir de ahora.
+Para los proyectos creados antes, copiados de otra máquina o clonados, ejecuta
+~M-x org-scribe-register-projects~ y dale la carpeta que los contiene: registra
+todos los proyectos que encuentra por debajo.
+
 * Crear un proyecto de novela
 
 Si prefieres crear un proyecto de novela completo, el proceso es casi idéntico:
@@ -336,8 +346,9 @@ Si prefieres crear un proyecto de novela completo, el proceso es casi idéntico:
 Los dos tipos de proyecto preguntan al crearse por el *total de palabras* del
 proyecto. Se guarda en el archivo ~.org-scribe-project~ (la línea ~# Target-words:~)
 y sirve para dimensionar las partes más externas del manuscrito: los tres actos
-de una novela, o las tres escenas de un cuento, reciben el 25 % / 50 % / 25 % del
-total. Para 50.000 palabras, los actos de una novela son 12.500 / 25.000 / 12.500.
+de una novela reciben el 25 % / 50 % / 25 % del total, mientras que un cuento, que
+no tiene partes entre las que repartirlo, guarda el total entero en su
+encabezado «Contenido del Cuento». Para 50.000 palabras, los actos de una novela son 12.500 / 25.000 / 12.500.
 La lista de Objetivos del Proyecto de una novela muestra también el total. Los
 objetivos de capítulo y de escena (3.000 y 500) no cambian.
 
@@ -637,7 +648,7 @@ Ahora que tienes un proyecto, ¡vamos a escribir algo!
    - Si creaste una novela: abre ~novela.org~
 
 2. *Busca la primera escena*:
-   - Busca un encabezado como: ~*** TODO Escena 1~
+   - Busca un encabezado como: ~** TOWRITE Escena 1~ (~*** TOWRITE Escena 1~ en una novela, bajo el Capítulo 1)
    - O crea uno (lo aprenderemos en la Lección 2)
 
 3. *Escribe una frase*:

@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-19-companion.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: c00fb61
 
 /[[file:../manual/getting-started-19-companion.org][English version]]/
 
@@ -56,7 +56,10 @@ F8 B    →  Abrir el companion visual
 La primera vez en un proyecto, Emacs pregunta si este proyecto puede usar el
 companion y recuerda la respuesta como una línea ~# Companion: yes~ en
 ~.org-scribe-project~. Si algunos encabezados no tienen ~:ID:~, ofrece añadirlos:
-la página solo puede mover o editar lo que puede direccionar.
+la página solo puede mover o editar lo que puede direccionar. Para cambiar esa
+respuesta más adelante, ~M-x org-scribe-companion-enable-for-project~ o
+~M-x org-scribe-companion-disable-for-project~ reescribe la línea (desactivarlo
+detiene además un servidor que esté sirviendo este proyecto).
 
 Tu navegador abre una página. Deja Emacs abierto: es quien hace el trabajo.
 
@@ -112,7 +115,7 @@ estado) atenúan las tarjetas que no coinciden. Cada uno ofrece además:
 
 Marca *Ocultar el resto* para ocultar lo que los filtros dejan fuera en vez de
 atenuarlo. También desaparecen los capítulos y actos que se quedan sin nada.
-Los números de escena del Storyline conservan su lugar en el libro. Esta
+Los números de escena de la Línea argumental conservan su lugar en el libro. Esta
 elección, como los propios filtros, se recuerda por proyecto en tu navegador.
 
 *Colecciones.* Con algún filtro puesto, *Guardar como colección…* pide un
@@ -424,7 +427,8 @@ adonde se puede arreglar:
 Debajo, de solo lectura: el resumen (escenas, palabras, objetivo, progreso y
 cualquier desajuste con el objetivo de palabras del proyecto), la Puerta de
 salida con sus dos elementos medidos, el plan de escritura cuando el
-planificador está cargado, y las cifras: escenas por estado, palabras por PoV
+planificador está cargado (su estado se mide hasta ayer, como en el informe,
+así que una mañana sin escribir no te pone por detrás), y las cifras: escenas por estado, palabras por PoV
 y longitud de los capítulos. *Informe completo en Emacs* abre allí el informe.
 
 ** La pestaña Marcas
@@ -463,7 +467,8 @@ La pestaña *Progreso* muestra cuánto ha avanzado el libro:
   un grupo, o usa /Desplegar todo/ y /Plegar todo/. La elección se recuerda
   por proyecto. Pulsa el título de una escena para abrir sus detalles.
 - *Plan*, cuando el proyecto tiene un plan de escritura (Lección 16): el
-  objetivo de hoy, cuánto vas adelantado o retrasado, tu racha, tu ritmo y la
+  objetivo de hoy, cuánto vas adelantado o retrasado (al final de hoy, como
+  lo mide ~F8 W~), tu racha, tu ritmo y la
   fecha en que terminarás a ese ritmo, y un gráfico *Palabras pendientes* con
   la línea prevista (discontinua) frente a lo que has escrito. Si ajustaste
   el plan según tu progreso (F8 W a o e), la línea prevista baja en vertical
@@ -472,7 +477,7 @@ La pestaña *Progreso* muestra cuánto ha avanzado el libro:
 
 Con un plan en marcha, la cabecera muestra además en todas las pestañas una
 insignia como *Hoy 350 / 1.194*; haz clic en ella para ir a esta pestaña. Las
-dos cifras son las del último recuento de palabras (~F8~, o cada vez que
+dos cifras son las del último recuento de palabras (~F8 a~, o cada vez que
 guardas con ~org-scribe-auto-wordcount~), porque es entonces cuando el
 planificador anota tus palabras. La página nunca carga el planificador en un
 proyecto sin plan, ni en uno que lo haya desactivado.
@@ -516,6 +521,21 @@ Una ventana al estilo de aplicación, sin los elementos del navegador:
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-companion-browser-function #'org-scribe-companion-browse-app-mode)
 #+END_SRC
+
+Arranca el primer navegador que encuentre de
+~org-scribe-companion-app-mode-browsers~ (Chromium, Chrome, Brave, Edge) con
+~--app~, y si no hay ninguno abre una pestaña normal. Los demás ajustes:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-companion-port 35920        ; puerto preferido; si está ocupado, se prueba el siguiente libre
+      org-scribe-companion-raise-frame t     ; trae Emacs al frente cuando la página te lleva a un encabezado
+      org-scribe-companion-todo-colors       ; color de la tarjeta por estado; los no listados van en neutro
+      '(("TOWRITE" . "#2563eb") ("TOREVIEW" . "#7c3aed")
+        ("REDO" . "#dc2626") ("RESTRUCTURE" . "#db2777")
+        ("FINISHED" . "#6b7280") ("PURGE" . "#9ca3af")))
+#+END_SRC
+
+Los valores que se muestran son los de por defecto.
 
 El servidor escucha solo en tu propia máquina, tras un token aleatorio que cambia
 en cada arranque, y entiende una lista corta y fija de órdenes. No se carga nada

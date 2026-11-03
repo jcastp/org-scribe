@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-15-customization.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 76b123a
 
 /[[file:../manual/getting-started-15-customization.org][English version]]/
 
@@ -635,6 +635,8 @@ Los mensajes de org-scribe (avisos, preguntas, errores) tienen su propio ajuste,
 
 Los informes y las capturas, en cambio, siguen el idioma del proyecto, no este ajuste (ver Lecciones 3 y 4).
 
+Si a un mensaje le falta la traducción en el idioma elegido, org-scribe lo muestra en ~org-scribe-fallback-language~ (por defecto ~en~). Solo te hace falta con un paquete de idioma propio que aún no esté completo.
+
 ** Diccionario ortográfico por proyecto
 
 Un proyecto está escrito en un solo idioma, así que el diccionario ortográfico pertenece al proyecto y no a cada archivo. Cuando org-scribe crea un proyecto, escribe en la raíz un ~.dir-locals.el~ que fija ~ispell-local-dictionary~, y todos los archivos del proyecto (manuscrito, notas, archivos de planificación y todo lo que añadas después) lo recogen automáticamente, sin preguntar.
@@ -932,6 +934,22 @@ Fija dónde se crean los proyectos nuevos:
 
 Los nombres de los archivos del proyecto no se pueden configurar. org-scribe los resuelve a partir de los paquetes de idioma registrados (uno por idioma, en ~lang/~ dentro del código del propio paquete): ~novel.org~ / ~novela.org~ para el manuscrito, ~design.org~ / ~diseno.org~ para el cuaderno de diseño, y así sucesivamente. Además, el concepto de manuscrito es lo que permite detectar el tipo de proyecto, así que renombrarlo dejaría el proyecto sin reconocer. Conserva los nombres que te dio la plantilla.
 
+** Refilado en todo el proyecto
+
+Dentro de un proyecto, ~C-c C-w~ (~org-refile~) ofrece todos los encabezados del manuscrito, del cuaderno de diseño y de ~plan.org~, así que puedes mover una escena de un capítulo a otro o refilar una nota suelta bajo el personaje adecuado sin cambiar de búfer. Es ~org-scribe-refile-project-wide~, activado por defecto; solo cambia lo que ofrece ~org-refile~, nunca tus archivos. Desactívalo para conservar tu propio ~org-refile-targets~ en todas partes:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-refile-project-wide nil)
+#+END_SRC
+
+** Reenlazado automático al guardar
+
+Cuando cambias el nombre de un personaje, un escenario o un hilo de la trama, las escenas que lo enlazan conservan el nombre antiguo hasta que vuelves a enlazar (~F8 R~). Con ~org-scribe-auto-relink~ activado, guardar el cuaderno de diseño refresca esos nombres en el manuscrito abierto. El manuscrito queda modificado pero sin guardar; un mensaje te recuerda que lo guardes. Desactivado por defecto, para que guardar un archivo nunca edite otro sin avisar:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-auto-relink t)
+#+END_SRC
+
 * Configuración del recuento de palabras
 
 Personaliza el comportamiento del recuento de palabras.
@@ -957,6 +975,15 @@ Esto no se contará.
 ,*** Versión alternativa   :draft:
 Tampoco se cuenta.
 #+END_EXAMPLE
+
+** Recuento al guardar
+
+Con ~org-scribe-auto-wordcount~ activado, guardar el manuscrito refresca todas las propiedades =:WORDCOUNT:= (lo que hace ~F8 a~) y, si el planificador está activo, sincroniza el plan. Necesita ~org-context-extended~. En este camino silencioso no añade un =:ID:= a los encabezados que no lo tienen, así que guardar nunca inserta cajones de propiedades que no pediste; pon ~org-scribe-auto-wordcount-mint-ids~ a ~t~ para permitirlo. Ejecutar ~F8 a~ a mano siempre los añade. Los dos están desactivados por defecto:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-auto-wordcount t)
+;; (setq org-scribe-auto-wordcount-mint-ids t)  ; añade también los IDs que falten al guardar
+#+END_SRC
 
 * Ejemplo completo de configuración
 

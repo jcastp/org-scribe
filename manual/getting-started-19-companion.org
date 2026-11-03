@@ -50,7 +50,10 @@ F8 B    →  Open the visual companion
 The first time in a project, Emacs asks whether this project may use the
 companion and remembers the answer as a ~# Companion: yes~ line in
 ~.org-scribe-project~. If some headings have no ~:ID:~, it offers to add them:
-the page can only move or edit what it can address.
+the page can only move or edit what it can address. To change that answer
+later, ~M-x org-scribe-companion-enable-for-project~ or
+~M-x org-scribe-companion-disable-for-project~ rewrites the line (disabling
+also stops a server that is serving this project).
 
 Your browser opens a page. Keep Emacs open: it is the one doing the work.
 
@@ -378,7 +381,9 @@ can be fixed:
 
 Below them, read only: the overview (scenes, words, objective, progress and
 any mismatch with the project's word target), the Starting Gate with its two
-measured items, the writing plan when the planner is loaded, and the numbers:
+measured items, the writing plan when the planner is loaded (its status
+measured through yesterday, as in the report, so an unwritten morning is not
+behind), and the numbers:
 scenes by state, words by PoV and chapter lengths. *Full report in Emacs*
 opens the report there.
 
@@ -417,7 +422,7 @@ The *Progress* tab shows how far the book has come:
   /Close all/. The choice is remembered per project. Click a scene's title to
   open its details.
 - *Plan*, when the project has a writing plan (Lesson 16): today's goal, how
-  far ahead or behind you are, your streak, your pace and the date you will
+  far ahead or behind you are (by the end of today, as ~F8 W~ measures it), your streak, your pace and the date you will
   finish at it, and a *Words left* chart with the planned line (dashed)
   against what you have written. If you adjusted the plan from your progress
   (F8 W a or e), the planned line drops straight down on that day, marked
@@ -426,7 +431,7 @@ The *Progress* tab shows how far the book has come:
 
 With a plan running, the header also shows a chip such as *Today 350 /
 1,194* on every tab; click it for this tab. Both are as of the last word
-count (~F8~, or every save with ~org-scribe-auto-wordcount~), because that
+count (~F8 a~, or every save with ~org-scribe-auto-wordcount~), because that
 is when the planner records your words. The page never loads the planner for
 a project without a plan, or one that turned it off.
 
@@ -468,6 +473,22 @@ An app-style window without browser chrome:
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-companion-browser-function #'org-scribe-companion-browse-app-mode)
 #+END_SRC
+
+It starts the first browser it finds from
+~org-scribe-companion-app-mode-browsers~ (Chromium, Chrome, Brave, Edge) with
+~--app~, and falls back to a normal tab when there is none. The other
+settings:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-companion-port 35920        ; preferred port; the next free one is tried if taken
+      org-scribe-companion-raise-frame t     ; raise Emacs when the page sends you to a heading
+      org-scribe-companion-todo-colors       ; card colour per state; unlisted states are neutral
+      '(("TOWRITE" . "#2563eb") ("TOREVIEW" . "#7c3aed")
+        ("REDO" . "#dc2626") ("RESTRUCTURE" . "#db2777")
+        ("FINISHED" . "#6b7280") ("PURGE" . "#9ca3af")))
+#+END_SRC
+
+The values shown are the defaults.
 
 The server listens only on your own machine, behind a random token that changes
 on every start, and understands a short fixed list of commands. Nothing is

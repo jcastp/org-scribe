@@ -96,14 +96,13 @@ sources behind it:
 - With ~hunspell~ also installed, finds inflected words too (~corriendo~ →
   ~correr~)
 
-*Online — WordReference* (the fallback, needs nothing):
-- Web-based thesaurus rendered in a side window
+*Online — the RAE API's synonyms* (the fallback, needs nothing):
 - Used automatically when you have no local data, or when a word has no
   local entry
-- Clickable: press ~Enter~ on a word to look /it/ up
+- Shown in the same side window, in the same format as the offline results
 
 You don't choose between them per lookup. org-scribe tries the local
-thesaurus first and falls back to the web, so you always get an answer.
+thesaurus first and falls back to the network, so you always get an answer.
 Installing the offline data is covered in the next section.
 
 *Best for*:
@@ -147,12 +146,19 @@ Just have your cursor anywhere - you'll type the word when prompted.
 
 Press ~F8~ to open the Hydra menu, then press ~d~ (for "Dictionary")
 
-You'll see a prompt:
+You'll see a prompt (it follows the language of your messages, see ~org-scribe-message-language~):
 #+BEGIN_EXAMPLE
-Palabra a buscar:
+Word to look up (default oscuro):
 #+END_EXAMPLE
 
-Type the Spanish word you want to look up and press ~Enter~.
+or, with messages in Spanish:
+#+BEGIN_EXAMPLE
+Palabra a buscar (default oscuro):
+#+END_EXAMPLE
+
+The word at point (or the selected region) is offered as the default, so
+~Enter~ alone looks it up. Otherwise type the Spanish word you want to look up
+and press ~Enter~.
 
 *Which source answers?* With a local Wikcionario running you get that,
 instantly; otherwise the RAE is queried online. To force one or the other for
@@ -462,6 +468,12 @@ If they live somewhere else, or are named for a different language:
 On Debian and Ubuntu, every regional Spanish (~es_MX~, ~es_AR~, ~es_CO~ …) is
 a link to the same data, so setting your own region costs no extra download.
 
+The thesaurus index is read once and kept in memory; it reloads by itself when
+the file changes. To force a reload anyway, run
+~M-x org-scribe-mythes-clear-cache~. Likewise, if you install or change the
+hunspell dictionary after a first lookup, ~M-x org-scribe-lemma-clear-cache~
+makes org-scribe look for it again.
+
 * Finding Synonyms
 
 Sometimes you need alternatives quickly. One command covers both sources.
@@ -534,33 +546,32 @@ is *not* announced, because nothing meaningful was substituted.
 
 ** Step 2c: Reading Online Results
 
-Without local data, or for a word with no local entry, the side window shows
-the WordReference page instead.
+Without local data, or for a word with no local entry, org-scribe asks the
+RAE API for synonyms and shows them in the *same side window, in the same
+format* as the offline results. The sense labels are the RAE's own
+abbreviations.
 
 #+BEGIN_EXAMPLE
-┌────────────────────────────┬────────────────────┐
-│ Your manuscript            │ WordReference      │
-│                            │                    │
-│ Alex buscó la llave.       │ buscar:            │
-│ Sam buscó detrás.          │                    │
-│                            │ Synonyms:          │
-│ "Buscó" - need synonym!    │ - indagar          │
-│                            │ - investigar       │
-│                            │ - explorar         │
-│                            │ - rastrear         │
-│                            │                    │
-└────────────────────────────┴────────────────────┘
+┌────────────────────────────┬──────────────────────────────────┐
+│ Your manuscript            │ *Synonyms: buscar*               │
+│                            │                                  │
+│ Alex buscó la llave.       │ #+TITLE: Synonyms: buscar        │
+│ Sam buscó detrás.          │                                  │
+│                            │ * Sense 1 /tr./                  │
+│ "Buscó" - need synonym!    │ indagar, investigar, explorar,   │
+│                            │ rastrear                         │
+└────────────────────────────┴──────────────────────────────────┘
 #+END_EXAMPLE
+
+The answer arrives asynchronously. A word with no entry, or with no synonyms,
+is reported in the echo area ("No synonyms found for: …"); you never get a
+blank buffer.
 
 ** Navigation in Side Window
 
-*Offline results* are a normal Org buffer:
+Results, offline or online, are a normal Org buffer:
 - *Scroll*: arrow keys or ~C-n~ / ~C-p~
 - *Next / previous sense*: ~C-c C-n~ / ~C-c C-p~
-- *Close window*: ~q~
-
-*Online results* are an Emacs web browser (eww):
-- *Click links*: press ~Enter~ on a word to see /its/ synonyms
 - *Close window*: ~q~
 
 Either way, ~C-x }~ and ~C-x {~ adjust the width for the current session.
@@ -588,8 +599,9 @@ If you want to be strict about it:
 ;; data actually covers.
 (setq org-scribe-thesaurus-backend 'mythes)
 
-;; Always use WordReference, even with local data installed.
-(setq org-scribe-thesaurus-backend 'wordreference)
+;; Always the RAE API, even with local data installed.
+;; ('wordreference, the former value, is read as 'rae-api.)
+(setq org-scribe-thesaurus-backend 'rae-api)
 
 ;; The default.
 (setq org-scribe-thesaurus-backend 'auto)
@@ -603,8 +615,9 @@ If you want to be strict about it:
 (setq org-scribe-mythes-language "en_US")   ; needs mythes-en-us installed
 #+END_SRC
 
-*Online*: WordReference's Spanish synonym site is used. For English you can
-visit the English site manually — ~M-x eww~, then
+*Online*: the RAE API only covers Spanish. For English synonyms, install the
+English MyThes data or use ~F8 x~ (see "Language Switching" below); you can
+also visit a website by hand with ~M-x eww~, for example
 ~https://www.wordreference.com/synonyms/~ followed by your word.
 
 ** Example: Try It Now!

@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-03-tracking-progress.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 307d264
 
 /[[file:../manual/getting-started-03-tracking-progress.org][English version]]/
 
@@ -167,7 +167,7 @@ Ahora vamos a añadir el recuento de palabras real.
 1. Pulsa ~F8~ para abrir el menú Hydra
 2. Pulsa ~a~ («Update all counts», actualizar todos los recuentos)
 
-*Importante*: ~a~ está asociada a ~org-scribe-ews-org-count-words~, que recalcula ~:WORDCOUNT:~ en *cada* encabezado de todo el búfer, no solo en la escena bajo el cursor; la posición del cursor no cambia el alcance. También crea una propiedad ~:ID:~ nueva en cualquier encabezado que no la tenga. Si quieres refrescar solo las escenas del capítulo/acto actual (o todo el búfer limitado a escenas, sin tocar los agregados de capítulo/acto), coloca el cursor ahí y pulsa ~F8 w~ (el despachador ~org-scribe-wordcount~) con un doble argumento prefijo, ~C-u C-u~, en su lugar.
+*Importante*: ~a~ está asociada a ~org-scribe-ews-org-count-words~, que recalcula ~:WORDCOUNT:~ en *cada* encabezado de todo el búfer, no solo en la escena bajo el cursor; la posición del cursor no cambia el alcance. También crea una propiedad ~:ID:~ nueva en cualquier encabezado que no la tenga. (El recuento automático que se ejecuta al guardar cuando ~org-scribe-auto-wordcount~ está activado no lo hace: solo refresca ~:WORDCOUNT:~, salvo que fijes además ~org-scribe-auto-wordcount-mint-ids~.) Si quieres refrescar solo las escenas del capítulo/acto actual (o todo el búfer limitado a escenas, sin tocar los agregados de capítulo/acto), coloca el cursor ahí y pulsa ~F8 w~ (el despachador ~org-scribe-wordcount~) con un doble argumento prefijo, ~C-u C-u~, en su lugar.
 
 Después de ejecutar ~a~, la propiedad de tu escena queda así:
 
@@ -302,7 +302,7 @@ Algunas cosas que conviene saber:
 
 ** El informe de salud del proyecto
 
-Para una vista de todo el manuscrito más allá de cualquier tabla, ejecuta ~M-x org-scribe-project-health~ (o ~F8 H~). Reúne un *Resumen* (total de palabras escritas frente al total de objetivos de capítulo, con un porcentaje global que evita la doble cuenta que daría una suma ingenua de escenas y capítulos), *Escenas por estado*, *Reparto de palabras por PoV*, *Dispersión de la longitud de los capítulos* (mín/máx/media/mediana), *Propiedades de escena que faltan*, *Entidades huérfanas* y *Escenas TODO abiertas*, además de una sección *Plan de escritura* cuando el planificador integrado (Lección 16) está activo en el proyecto. Es la forma más rápida de responder a «¿cuánto he escrito de verdad y qué sigue necesitando atención?» sin rebuscar entre tablas por escena.
+Para una vista de todo el manuscrito más allá de cualquier tabla, ejecuta ~M-x org-scribe-project-health~ (o ~F8 H~). Reúne un *Resumen* (total de palabras escritas frente al total de objetivos de capítulo, con un porcentaje global que evita la doble cuenta que daría una suma ingenua de escenas y capítulos), *Escenas por estado*, *Reparto de palabras por PoV*, *Dispersión de la longitud de los capítulos* (mín/máx/media/mediana, solo en novelas), *Propiedades de escena que faltan*, *Tiempo de la historia* (escenas sin tiempo de la historia o con uno que no se puede leer, y saltos atrás), *Enlaces sin destino* (propiedades de escena que apuntan a una entidad borrada), *Nombres repetidos* (solo cuando dos entidades comparten nombre), *Entidades huérfanas* y *Escenas TODO abiertas*, además de una sección *Plan de escritura* cuando el planificador integrado (Lección 16) está activo en el proyecto y una sección *Puerta de salida* cuando tu cuaderno de diseño la tiene. Es la forma más rápida de responder a «¿cuánto he escrito de verdad y qué sigue necesitando atención?» sin rebuscar entre tablas por escena.
 
 * Fijar objetivos (planificar tu historia)
 

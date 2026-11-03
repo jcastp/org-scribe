@@ -116,10 +116,6 @@ These enhance functionality but are not required:
   ;; Your own templates file is never touched.
   (org-scribe-tempel-setup))
 
-;; For text annotations
-(use-package org-remark
-  :ensure t)
-
 #+end_src
 
 ** Optional System Packages

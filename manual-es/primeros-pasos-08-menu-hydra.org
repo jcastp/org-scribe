@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-08-hydra-menu.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 64a36df
 
 /[[file:../manual/getting-started-08-hydra-menu.org][English version]]/
 
@@ -91,7 +91,8 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
                                   _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
                                   _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
                                                        _S_: Story time                        _B_: Board…
-                                                                                              _q_: Quit
+                                                       _V_: Snapshot scene                    _q_: Quit
+                                                       _C_: Compare snapshot
 #+END_EXAMPLE
 
 Los menús Hydra están en inglés en todos los proyectos, también en los de español: es el idioma de los nombres de órdenes y de este menú. En las tablas de esta lección, el nombre en inglés del menú va acompañado de su significado en español.
@@ -192,6 +193,8 @@ Exploremos cada categoría en detalle.
 | ~t~   | Word target | Cambia el total de palabras del proyecto y reescala sus partes                                 |
 | ~T~   | Title       | Renombra el proyecto (marcador, título del manuscrito, plan)                                   |
 | ~S~   | Story time  | Elige cómo escriben las escenas su =:Linea-temporal:= (relativa, fechas, calendario inventado) |
+| ~V~   | Snapshot scene | Copia la prosa de la escena, con fecha, en la sección Versiones del cuaderno antes de reescribirla |
+| ~C~   | Compare snapshot | Compara una instantánea con la escena tal como está ahora, en ediff |
 
 *Cuándo usarla*:
 - Después de escribir → ~w~ (comprueba rápido el recuento de palabras)
@@ -347,7 +350,7 @@ Nota: ya no existe ninguna función de bloque dinámico ni de grafo para las rel
   q: Back to main menu
 #+END_EXAMPLE
 
-A este submenú solo se llega cuando el planificador está habilitado para el proyecto actual (una línea ~# Planner: yes~ en ~.org-scribe-project~; por defecto está sin decidir). Si el proyecto ha rechazado expresamente el planificador (~# Planner: no~), pulsar ~W~ en el menú principal ofrece volver a habilitarlo en lugar de abrir este submenú; ver la puerta por proyecto descrita en la [[file:primeros-pasos-16-planificador.org][Lección 16]].
+~W~ abre este submenú salvo que el proyecto haya rechazado expresamente el planificador (una línea ~# Planner: no~ en ~.org-scribe-project~); un proyecto que aún no ha decidido (lo habitual) también llega a él. Si el proyecto lo ha rechazado, pulsar ~W~ en el menú principal ofrece volver a habilitarlo en lugar de abrir este submenú; ver la puerta por proyecto descrita en la [[file:primeros-pasos-16-planificador.org][Lección 16]].
 
 Consulta la [[file:primeros-pasos-16-planificador.org][Lección 16: Planificación de objetivos de escritura con el planificador integrado]] para un recorrido completo del planificador.
 
@@ -475,7 +478,6 @@ Opciones populares:
 |-----------+---------------------------------------------+------------------------------------|
 | ~F8~      | Por defecto, difícil que entre en conflicto | Tecla de función: lejos de la fila de inicio                     |
 | ~C-c w~   | Rápida, una sola combinación                | Puede chocar con Org               |
-| ~C-c C-w~ | Parecida a otras órdenes de Org            | Puede chocar                       |
 | ~s-w~     | Tecla Super, difícil que choque             | No todos los teclados tienen Super |
 | ~M-W~     | Rápida, difícil que choque                  | Puede chocar con paquetes          |
 | ~F5~      | Una pulsación, fácil de alcanzar            | A menudo se usa para otras cosas   |
@@ -493,9 +495,6 @@ Añade a tu configuración de Emacs (~init.el~ o ~.emacs~):
 
 ;; Ejemplo 3: usar Super-w (tecla Windows + w)
 (global-set-key (kbd "s-w") 'hydra-org-scribe/body)
-
-;; Ejemplo 4: usar C-c C-w
-(global-set-key (kbd "C-c C-w") 'hydra-org-scribe/body)
 #+END_SRC
 
 *Después de añadirlo*:

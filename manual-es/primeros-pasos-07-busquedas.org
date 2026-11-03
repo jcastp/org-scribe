@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-07-searching.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 826b74e
 
 /[[file:../manual/getting-started-07-searching.org][English version]]/
 
@@ -140,11 +140,11 @@ El resultado es una vista de org-ql titulada «PoV: Alex Rivera», con una líne
 #+BEGIN_EXAMPLE
   FINISHED Escena 1 - El despertador                                                  :ignore:
   FINISHED Escena 2 - Encuentro en la cafetería                                       :ignore:
-  TODO Escena 1 - La decisión                                                         :ignore:
+  TOREVIEW Escena 1 - La decisión                                                     :ignore:
   TOWRITE Escena 1 - Primer intento                                                   :ignore:
   TOWRITE Escena 1 - Charla de café                                                   :ignore:
   TOWRITE Escena 2 - Encontrar el equilibrio                                          :ignore:
-  TODO Escena 1 - Vuelta al principio                                                 :ignore:
+  TOWRITE Escena 1 - Vuelta al principio                                              :ignore:
 #+END_EXAMPLE
 
 ** Interpretar los resultados
@@ -236,14 +236,14 @@ O usa: ~M-x org-scribe-org-find-character~
 La vista se titula «Personaje: Sam Chen» y lista, con el mismo formato de una línea por escena, todas las escenas que coinciden:
 
 #+BEGIN_EXAMPLE
-  DONE Escena 2 - Lecturas extrañas                                                   :ignore:
-  DONE Escena 3 - Encuentro en la cafetería                                           :ignore:
-  DONE Escena 12 - Descubrimiento en el segundo emplazamiento                         :ignore:
-  DONE Escena 17 - Ayuda inesperada                                                   :ignore:
-  DONE Escena 20 - La tensión crece                                                   :ignore:
-  TODO Escena 28 - Traición                                                           :ignore:
-  TODO Escena 43 - Reconciliación                                                     :ignore:
-  TODO Escena 46 - Un nuevo comienzo                                                  :ignore:
+  FINISHED Escena 2 - Lecturas extrañas                                               :ignore:
+  FINISHED Escena 3 - Encuentro en la cafetería                                       :ignore:
+  FINISHED Escena 12 - Descubrimiento en el segundo emplazamiento                     :ignore:
+  FINISHED Escena 17 - Ayuda inesperada                                               :ignore:
+  FINISHED Escena 20 - La tensión crece                                               :ignore:
+  TOWRITE Escena 28 - Traición                                                        :ignore:
+  TOWRITE Escena 43 - Reconciliación                                                  :ignore:
+  TOWRITE Escena 46 - Un nuevo comienzo                                               :ignore:
 #+END_EXAMPLE
 
 El paquete no escribe totales ni porcentajes: los sacas tú contando las líneas (8 escenas aquí) y comparando con el total de escenas de tu manuscrito.
@@ -338,16 +338,16 @@ O usa: ~M-x org-scribe-org-find-plot~
 La vista se titula «Hilo de trama: Misterio principal - Sabotaje del agua»:
 
 #+BEGIN_EXAMPLE
-  DONE Escena 1 - Rutina matinal                                                      :ignore:
-  DONE Escena 4 - Primera víctima                                                     :ignore:
-  DONE Escena 7 - Pruebas de manipulación                                             :ignore:
-  DONE Escena 9 - Resultados del laboratorio                                          :ignore:
-  DONE Escena 12 - Descubrimiento en el segundo emplazamiento                         :ignore:
-  DONE Escena 15 - Siguiendo la pista                                                 :ignore:
+  FINISHED Escena 1 - Rutina matinal                                                  :ignore:
+  FINISHED Escena 4 - Primera víctima                                                 :ignore:
+  FINISHED Escena 7 - Pruebas de manipulación                                         :ignore:
+  FINISHED Escena 9 - Resultados del laboratorio                                      :ignore:
+  FINISHED Escena 12 - Descubrimiento en el segundo emplazamiento                     :ignore:
+  FINISHED Escena 15 - Siguiendo la pista                                             :ignore:
   [... etc ...]
-  TODO Escena 42 - Confrontación                                                      :ignore:
-  TODO Escena 45 - Consecuencias                                                           :ignore:
-  TODO Escena 46 - Reflexión                                                          :ignore:
+  TOWRITE Escena 42 - Confrontación                                                   :ignore:
+  TOWRITE Escena 45 - Consecuencias                                                   :ignore:
+  TOWRITE Escena 46 - Reflexión                                                       :ignore:
 #+END_EXAMPLE
 
 La búsqueda no etiqueta cada escena con su función en la trama («Evento incitador», «clímax»...); eso lo anotas tú en las Notas del hilo o con los puntos de trama (Lección 6). Para cobertura y huecos calculados automáticamente, usa el informe de salud de la trama (~F8 L t~).
@@ -442,12 +442,12 @@ O usa: ~M-x org-scribe-org-find-location~
 La vista se titula «Localización: Cafetería del Centro»:
 
 #+BEGIN_EXAMPLE
-  DONE Escena 1 - Rutina matinal                                                      :ignore:
-  DONE Escena 3 - Encuentro en la cafetería                                           :ignore:
-  DONE Escena 11 - Reagruparse                                                        :ignore:
-  DONE Escena 23 - Refugio seguro                                                     :ignore:
-  TODO Escena 41 - Vuelta a la normalidad                                             :ignore:
-  TODO Escena 46 - Un nuevo comienzo                                                  :ignore:
+  FINISHED Escena 1 - Rutina matinal                                                  :ignore:
+  FINISHED Escena 3 - Encuentro en la cafetería                                       :ignore:
+  FINISHED Escena 11 - Reagruparse                                                    :ignore:
+  FINISHED Escena 23 - Refugio seguro                                                 :ignore:
+  TOWRITE Escena 41 - Vuelta a la normalidad                                          :ignore:
+  TOWRITE Escena 46 - Un nuevo comienzo                                               :ignore:
 #+END_EXAMPLE
 
 Contando: 6 escenas de 40 = 15 %; primera aparición en la escena 1, última en la 46. El escenario aparece en la apertura y en el cierre (estructura de «paréntesis»).
@@ -542,7 +542,7 @@ En Org-mode, los TODO son palabras clave especiales al principio de los encabeza
 ,** REDO Ampliar esta escena: necesita más emoción
 #+END_EXAMPLE
 
-Las palabras clave que busca org-scribe son las de ~org-scribe-todo-keywords~: ~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~, ~TOREVIEW~, ~REDO~ y ~RESTRUCTURE~ (se pueden personalizar). Las palabras clave de estado «terminado» (~DONE~, ~FINISHED~) no se buscan: la búsqueda lista lo que está pendiente. Las palabras clave TODO se quedan en inglés en todos los proyectos.
+Las palabras clave que busca org-scribe son las de ~org-scribe-todo-keywords~: ~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~, ~TOREVIEW~, ~REDO~ y ~RESTRUCTURE~ (se pueden personalizar). Las palabras clave de estado «terminado» (~DONE~, ~FINISHED~) no se buscan: la búsqueda lista lo que está pendiente. El manuscrito usa sus propios estados (~TOWRITE~, ~TOREVIEW~, ~REDO~, ~RESTRUCTURE~ y, al terminar, ~FINISHED~ o ~PURGE~); ~TODO~, ~ONGOING~ y ~WAITING~ son las palabras clave habituales de tu cuaderno de diseño y del resto de archivos. Las palabras clave TODO se quedan en inglés en todos los proyectos.
 
 ** Cómo buscar
 
@@ -558,15 +558,15 @@ La vista se titula «Tareas pendientes del proyecto» y recorre todos los archiv
 
 #+BEGIN_EXAMPLE
  Archivo: novela.org
-  TODO Capítulo 2                                                                      :ignore:
-  TODO Escena 1 - La decisión                                                          :ignore:
+  TOREVIEW Capítulo 2                                                                  :ignore:
+  TOREVIEW Escena 1 - La decisión                                                      :ignore:
   TOWRITE Capítulo 3                                                                   :ignore:
   TOWRITE Escena 1 - Primer intento                                                    :ignore:
   TOWRITE Capítulo 4 - Aprender y ajustar                                              :ignore:
   TOWRITE Escena 1 - Charla de café                                                    :ignore:
   TOWRITE Escena 2 - Encontrar el equilibrio                                           :ignore:
-  TODO Capítulo 5 - La nueva normalidad                                                :ignore:
-  TODO Escena 1 - Vuelta al principio                                                  :ignore:
+  REDO Capítulo 5 - La nueva normalidad                                                :ignore:
+  REDO Escena 1 - Vuelta al principio                                                  :ignore:
 #+END_EXAMPLE
 
 ** Usar los resultados de TODO
@@ -586,29 +586,28 @@ Al empezar cada sesión: mira los TODO y elige 1-2 para arreglar antes de escrib
 
 ** Añadir marcas TODO mientras escribes
 
-Mientras estás en pleno flujo, no pares a arreglar cosas: deja marcas TODO:
+Mientras estás en pleno flujo, no pares a arreglar cosas: marca la escena:
 
 #+BEGIN_EXAMPLE
 Estás escribiendo la Escena 15 y te das cuenta de que la Escena 7 tiene un problema de cronología.
-¡No pares! Añade un TODO:
+¡No pares! Marca la Escena 7:
 
 Ve al encabezado de la Escena 7:
-,*** Escena 7 - Pruebas de manipulación
+,*** FINISHED Escena 7 - Pruebas de manipulación :ignore:
     :PROPERTIES:
     ...
     :END:
 
-Añade debajo del encabezado:
-,*** Escena 7 - Pruebas de manipulación
+Pulsa C-c C-t y elige REDO:
+,*** REDO Escena 7 - Pruebas de manipulación :ignore:
     :PROPERTIES:
     ...
     :END:
-,**** TODO Problema de cronología: Alex llega a las 9 pero el laboratorio no abre hasta las 10
 
 ¡Sigue escribiendo la Escena 15!
 #+END_EXAMPLE
 
-Más tarde, cuando busques los TODO, lo encontrarás y lo arreglarás.
+Más tarde, cuando busques los TODO, la encontrarás y la arreglarás. No añadas un subencabezado ~TODO~ dentro de una escena: el manuscrito no tiene la palabra clave ~TODO~, así que la búsqueda no lo vería, y un subencabezado forma parte del texto de la escena. Para decir /qué/ falla, deja un marcador de edición junto al pasaje (Búsqueda 6).
 
 * Búsqueda 6: encontrar marcadores de edición y de nota
 
@@ -700,7 +699,7 @@ También puedes mantener el índice abierto junto a tu manuscrito mientras traba
 Las categorías salen de ~org-scribe-edit-categories~:
 
 #+BEGIN_SRC emacs-lisp
-(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "pacing"))
+(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "design" "pacing"))
 #+END_SRC
 
 Un marcador cuya categoría falta, está vacía o no se reconoce se agrupa bajo ~otras~ en lugar de descartarse: una errata mueve un marcador, nunca lo esconde.
@@ -941,7 +940,7 @@ Sentirte cómodo con el ciclo de navegación de los resultados:
 
 ** Después de una sesión de escritura
 
-- *Actualiza los TODO*: marca como DONE los elementos completados
+- *Actualiza los TODO*: marca como terminados los elementos completados (~FINISHED~ en el manuscrito, ~DONE~ en el resto)
 - *Auditoría rápida*: busca la trama o el personaje que acabas de escribir para verificar la cobertura
 - *Planifica la próxima sesión*: identifica huecos, decide qué necesita atención a continuación
 
@@ -1262,7 +1261,7 @@ Antes de la Lección 8, prueba esto:
 3. Identifica un hueco o un desequilibrio
 4. Planifica cómo arreglarlo (añadir escenas, mover escenas o recortar escenas)
 5. Practica el flujo buscar → navegar → revisar → siguiente
-6. Añade 3-5 elementos TODO a tu manuscrito para practicar
+6. Marca 3-5 escenas de tu manuscrito como TOREVIEW o REDO para practicar
 7. Busca los TODO y atiende al menos uno
 
 Tómate tu tiempo. Buscar es una habilidad que mejora con la práctica. Cuando le hayas cogido el tranquillo a encontrar cualquier cosa de tu manuscrito en segundos, pasa a la Lección 8.

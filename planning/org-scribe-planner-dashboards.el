@@ -128,6 +128,7 @@ break a streak."
          (current-streak 0)
          (longest-streak 0)
          (temp-streak 0)
+         (streak-at-last 0)
          (last-streak-date nil))
 
     ;; Sort daily counts by date
@@ -151,18 +152,21 @@ break a streak."
               (progn
                 (setq temp-streak (1+ temp-streak))
                 (setq last-streak-date date)
+                (setq streak-at-last temp-streak)
                 (when (> temp-streak longest-streak)
                   (setq longest-streak temp-streak)))
             ;; Break in streak
             (setq temp-streak 0)))))
 
-    ;; Current streak is the temp streak only if it extends to today or within the grace window
+    ;; Current streak is the run ending on the last written day, kept
+    ;; while that day is within the grace window: the missed days after
+    ;; it have zeroed TEMP-STREAK already, so it can't be read here.
     (setq current-streak
           (if (and last-streak-date
                   (or (string= last-streak-date today)
                       (< (org-scribe-planner--days-between last-streak-date today)
                          (1+ org-scribe-planner-streak-grace-days))))
-              temp-streak
+              streak-at-last
             0))
 
     (list :current current-streak

@@ -209,6 +209,23 @@ that case."
                                   (equal p (org-scribe-tempel-snippets-file)))
                                 tempel-path)))))
 
+(ert-deftest test-tempel-snippet-message-keys-exist ()
+  "Every `org-scribe-msg' key the snippet file uses is in every language
+pack.  Regression: an unused-key sweep that didn't read the `.eld' file
+removed `prompt-edit-category', and the `edit' snippet prompted with the
+key's own name."
+  (let ((keys nil))
+    (with-temp-buffer
+      (insert-file-contents (org-scribe-test--tempel-file))
+      (goto-char (point-min))
+      (while (re-search-forward "(org-scribe-msg '\\([a-z0-9-]+\\)" nil t)
+        (push (intern (match-string 1)) keys)))
+    (should keys)
+    (dolist (lang '(en es))
+      (let ((messages (plist-get (org-scribe-lang-pack lang) :messages)))
+        (dolist (key keys)
+          (should (assq key messages)))))))
+
 (provide 'test-tempel-snippets)
 
 ;;; test-tempel-snippets.el ends here

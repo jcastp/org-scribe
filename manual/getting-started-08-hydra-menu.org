@@ -89,7 +89,8 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
                                   _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
                                   _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
                                                        _S_: Story time                        _B_: Board…
-                                                                                              _q_: Quit
+                                                       _V_: Snapshot scene                    _q_: Quit
+                                                       _C_: Compare snapshot
 #+END_EXAMPLE
 
 This is your command center!
@@ -188,6 +189,8 @@ Let's explore each category in detail.
 | ~t~   | Word target | Change the project's total word count and rescale its parts |
 | ~T~   | Title       | Rename the project (marker, manuscript title, plan)  |
 | ~S~   | Story time  | Choose how scenes write their =:Timeline:= (relative, dates, invented calendar) |
+| ~V~   | Snapshot scene | Copy the scene's prose, dated, into the notebook's Versions section before rewriting it |
+| ~C~   | Compare snapshot | Compare a snapshot with the scene as it is now, in ediff |
 
 *When to use*:
 - After writing → ~w~ (check word count quickly)
@@ -248,6 +251,8 @@ Let's explore each category in detail.
 | ~R~   | Relink project  | Add IDs, link names, refresh display names     |
 | ~H~   | Health report   | Project health: counts, missing props, orphans |
 | ~W~   | Planner…        | Open writing plan submenu                      |
+| ~X~   | Compile draft   | Compile the working manuscript into a clean document (~org-scribe-compile~) |
+| ~B~   | Board…          | Open the visual companion (Lesson 19)          |
 | ~q~   | Quit            | Close the Hydra menu                           |
 
 *When to use*:
@@ -297,6 +302,7 @@ _R_: Relink everything    _c_: Characters        _a_: Add relationship       _t_
 _j_: Jump to plot thread  _o_: Locations         _x_: Remove relationship    _S_: Plot statistics
 _J_: Jump to plot point   _p_: Plot threads      _v_: View relationships     _C_: Column view toggle
 _D_: Spelling dictionary  _P_: Plot points       _V_: View all relationships _T_: Tooltips toggle
+                          _b_: Objects
                           _r_: Relationships
 _q_: Back to main menu    _Q_: Quit
 #+END_EXAMPLE
@@ -340,7 +346,7 @@ Note: there is no relationship dynamic-block/graph-visualization feature anymore
   q: Back to main menu
 #+END_EXAMPLE
 
-This submenu is only reachable once the planner is enabled for the current project (a ~# Planner: yes~ line in ~.org-scribe-project~, undecided by default). If the project has explicitly opted out (~# Planner: no~), pressing ~W~ from the main menu offers to re-enable it instead of opening this submenu — see the per-project gate described in [[file:getting-started-16-planner-integration.org][Lesson 16]].
+~W~ opens this submenu unless the project has explicitly opted out of the planner (a ~# Planner: no~ line in ~.org-scribe-project~); a project that has not decided yet (the default) gets the submenu too. If the project has opted out, pressing ~W~ from the main menu offers to re-enable it instead of opening this submenu — see the per-project gate described in [[file:getting-started-16-planner-integration.org][Lesson 16]].
 
 See [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning]] for a full walkthrough of the planner.
 
@@ -468,7 +474,6 @@ Popular choices:
 |------------+---------------------------------+------------------------------|
 | ~F8~      | Default, unlikely to conflict   | Single key                   |
 | ~C-c w~      | Fast, single combo              | Might conflict with org      |
-| ~C-c C-w~    | Similar to other org commands   | Might conflict               |
 | ~s-w~        | Super key, unlikely to conflict | Not all keyboards have Super |
 | ~M-W~        | Fast, unlikely to conflict      | Might conflict with packages |
 | ~F5~         | Single press, easy to reach     | Often used for other things  |
@@ -486,9 +491,6 @@ Add to your Emacs configuration (~init.el~ or ~.emacs~):
 
 ;; Example 3: Use Super-w (Windows key + w)
 (global-set-key (kbd "s-w") 'hydra-org-scribe/body)
-
-;; Example 4: Use C-c C-w
-(global-set-key (kbd "C-c C-w") 'hydra-org-scribe/body)
 #+END_SRC
 
 *After adding*:

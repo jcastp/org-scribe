@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-12-dictionary-tools.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 7191473
 
 /[[file:../manual/getting-started-12-dictionary-tools.org][English version]]/
 
@@ -135,12 +135,19 @@ Deja el cursor donde sea: escribirás la palabra cuando se te pida.
 
 Pulsa ~F8~ para abrir el menú Hydra y luego ~d~ (de «Dictionary»).
 
-Verás una pregunta:
+Verás una pregunta (sigue el idioma de tus mensajes, ver ~org-scribe-message-language~):
 #+BEGIN_EXAMPLE
-Palabra a buscar:
+Palabra a buscar (default oscuro):
 #+END_EXAMPLE
 
-Escribe la palabra en español que quieres consultar y pulsa ~Intro~. (Si tus mensajes están en inglés, la pregunta saldrá en inglés; ver «¿No se encuentra la palabra?» más abajo.)
+o, con los mensajes en inglés:
+#+BEGIN_EXAMPLE
+Word to look up (default oscuro):
+#+END_EXAMPLE
+
+La palabra bajo el cursor (o la región seleccionada) se ofrece como valor por
+defecto, así que basta ~Intro~ para consultarla. Si no, escribe la palabra en
+español que quieres consultar y pulsa ~Intro~.
 
 *¿Qué fuente responde?* Con un Wikcionario local en marcha, responde ese, al instante; si no, se consulta la RAE en línea. Para forzar una u otra en una consulta concreta, mira «Elegir una fuente» al final de esta sección.
 
@@ -416,6 +423,8 @@ Si están en otro sitio, o se llaman según otro idioma:
 #+END_SRC
 
 En Debian y Ubuntu, todas las variantes regionales del español (~es_MX~, ~es_AR~, ~es_CO~ …) son enlaces a los mismos datos, así que poner tu región no cuesta ninguna descarga extra.
+
+El índice del tesauro se lee una vez y se guarda en memoria; se vuelve a cargar solo cuando el archivo cambia. Para forzar la recarga de todos modos, ejecuta ~M-x org-scribe-mythes-clear-cache~. Del mismo modo, si instalas o cambias el diccionario de hunspell después de una primera consulta, ~M-x org-scribe-lemma-clear-cache~ hace que org-scribe vuelva a buscarlo.
 
 * Buscar sinónimos
 

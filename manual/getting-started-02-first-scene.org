@@ -45,27 +45,23 @@ Before we insert scenes, let's understand the structure.
 
 ** Short Story Structure
 
-Your ~story.org~ file has a simple three-part structure:
+Your ~story.org~ file has a simple structure: an information section that is not exported, and the story content with its scenes:
 
 #+BEGIN_EXAMPLE
 #+TITLE: The Morning Routine
 #+AUTHOR: Your Name
 
-,* Opening
-,** Scene 1 - [Title]
-   [Your writing goes here]
+,* Story Info :noexport:
+,** Synopsis
+,** Word Count Tracking
 
-,* Middle
-,** Scene 2 - [Title]
-   [Your writing goes here]
-
-,* Ending
-,** Scene 3 - [Title]
+,* Story Content
+,** TOWRITE Scene 1 :ignore:
    [Your writing goes here]
 #+END_EXAMPLE
 
 *The hierarchy*:
-- ~*~ (one asterisk) = Major section (Opening, Middle, Ending)
+- ~*~ (one asterisk) = Major section (Story Content)
 - ~**~ (two asterisks) = Scene heading
 - Regular text = Your actual story content
 
@@ -77,16 +73,14 @@ Your ~novel.org~ file has a more complex three-act structure:
 #+TITLE: My Fantasy Novel
 #+AUTHOR: Your Name
 
-,* Act I - Setup
-,** Chapter 1 - [Title]
-,*** Scene 1 - [Title]
-    [Your writing goes here]
-,*** Scene 2 - [Title]
+,* Act I :ignore:
+,** TOWRITE Chapter 1 :ignore:
+,*** TOWRITE Scene 1 :ignore:
     [Your writing goes here]
 
-,** Chapter 2 - [Title]
-,*** Scene 3 - [Title]
-    [Your writing goes here]
+,* Act II :ignore:
+
+,* Act III :ignore:
 #+END_EXAMPLE
 
 *The hierarchy*:
@@ -94,6 +88,8 @@ Your ~novel.org~ file has a more complex three-act structure:
 - ~**~ (two asterisks) = Chapter heading
 - ~***~ (three asterisks) = Scene heading
 - Regular text = Your actual story content
+
+(Before those three acts, ~novel.org~ also holds a few sections that are not exported (Project Goals, Progress Tracking), where the word-count tables of Lesson 3 live.)
 
 ** Why This Structure?
 
@@ -111,18 +107,18 @@ Let's add a new scene to your manuscript using the scene template!
 ** Step 1: Position Your Cursor
 
 *For short story*:
-1. Go to the ~* Opening~ section
+1. Go to the ~* Story Content~ heading
 2. Move to the end of that line
 3. Press ~Enter~ to create a new line
 
 *For novel*:
-1. Go to ~** Chapter 1~ (or whichever chapter you want)
+1. Go to ~** TOWRITE Chapter 1~ (or whichever chapter you want)
 2. Move to the end of that line
 3. Press ~Enter~ to create a new line
 
 ** Step 2: Open the Hydra Menu
 
-Press ~F8~ (press F8 twice quickly)
+Press ~F8~
 
 You'll see the Hydra menu appear at the bottom of your screen:
 
@@ -137,7 +133,8 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 ^^               ^^               _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
 ^^               ^^               _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
 ^^               ^^               ^^                   _S_: Story time      ^^                _B_: Board…
-^^               ^^               ^^                   ^^                   ^^                _q_: Quit
+^^               ^^               ^^                   _V_: Snapshot scene  ^^                _q_: Quit
+^^               ^^               ^^                   _C_: Compare snapshot
 #+END_EXAMPLE
 
 *Don't panic!* This menu gives you quick access to all features. For now, we just need the "Insert" section.
@@ -146,7 +143,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 
 1. Press ~s~ (for Scene)
 2. The menu will close
-3. You'll be prompted: ~Scene title:~
+3. You'll be prompted: ~Scene name:~
 4. Type a title for your scene (example: ~The Alarm Goes Off~)
 5. Press ~Enter~
 
@@ -155,7 +152,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 A complete scene template appears! It looks like this:
 
 #+BEGIN_EXAMPLE
-,*** TOWRITE Scene 1 - The Alarm Goes Off
+,*** TOWRITE The Alarm Goes Off :ignore:
 :PROPERTIES:
 :ID: 3f6c1d52-8a47-4b0e-9d1a-5e2c7b94a610
 :WORDCOUNT: 0
@@ -166,6 +163,7 @@ A complete scene template appears! It looks like this:
 :Plot-point:
 :Timeline:
 :Location:
+:Objects:
 :Description:
 :Summary:
 :Scene-motivation:
@@ -181,7 +179,7 @@ A complete scene template appears! It looks like this:
 :END:
 #+END_EXAMPLE
 
-Note: ~:ID:~ is a unique identifier org-scribe generates for every new scene, so nothing else is needed to link to it, to show it on the board, or to point a snapshot at it. Leave it alone: it must not change or repeat, and it is not renamed with the scene. ~:WORDCOUNT:~ starts at ~0~ and is refreshed by the word-count commands (~F8 w~/~F8 a~). ~:WORD-OBJECTIVE:~ starts pre-filled with a default of ~500~, which you can change to fit the scene.
+Note: ~:ID:~ is a unique identifier org-scribe generates for every new scene, so nothing else is needed to link to it, to show it on the board, or to point a snapshot at it. Leave it alone: it must not change or repeat, and it is not renamed with the scene. ~:WORDCOUNT:~ starts at ~0~ and is refreshed by the word-count commands (~F8 w~/~F8 a~). ~:WORD-OBJECTIVE:~ starts pre-filled with a default of ~500~, which you can change to fit the scene. (That is a novel's scene; a short story's scene has no ~:WORD-OBJECTIVE:~ line, because the whole target sits on ~Story Content~.)
 
 *Congratulations!* You've inserted your first scene template!
 
@@ -191,13 +189,13 @@ Let's break down what you're seeing:
 
 *** The Heading Line
 #+BEGIN_EXAMPLE
-,*** TOWRITE Scene 1 - The Alarm Goes Off
+,*** TOWRITE The Alarm Goes Off :ignore:
 #+END_EXAMPLE
 
 - ~***~ = Scene level (three asterisks for novels, two for short stories)
 - ~TOWRITE~ = Scene status (change it to FINISHED when done; =C-c C-t= cycles the states)
-- ~Scene 1~ = Scene number
-- ~The Alarm Goes Off~ = Your title
+- ~The Alarm Goes Off~ = Your title, exactly as you typed it: the template adds no "Scene N"
+- ~:ignore:~ = A tag that makes export drop the heading and keep the text (Lesson 11 explains it)
 
 *** The Properties Block
 Everything between ~:PROPERTIES:~ and ~:END:~ stores metadata about your scene.
@@ -420,7 +418,7 @@ Now comes the fun part - actually writing your story!
 Example:
 
 #+BEGIN_EXAMPLE
-,*** TOWRITE Scene 1 - The Alarm Goes Off
+,*** TOWRITE The Alarm Goes Off :ignore:
 :PROPERTIES:
 :PoV: Alex
 :Characters: Alex
@@ -546,7 +544,7 @@ If you're working on a novel, you might want to add chapters.
 
 ** Quick Chapter Insertion
 
-1. Go to your Act heading (e.g., ~* Act I - Setup~)
+1. Go to your Act heading (e.g., ~* Act I~)
 2. Move to the end of the last chapter
 3. Press ~F8~ (Hydra menu)
 4. Press ~c~ (for Chapter)
@@ -556,28 +554,36 @@ If you're working on a novel, you might want to add chapters.
 Example result — chapter insertion also auto-inserts a ready-to-fill first scene below it, so you get both in one step:
 
 #+BEGIN_EXAMPLE
-,** TOWRITE Chapter 2 - The Discovery :ignore:
+,** TOWRITE The Discovery :ignore:
 :PROPERTIES:
-:WORD-OBJECTIVE: 5000
 :WORDCOUNT: 0
+:WORD-OBJECTIVE: 3000
 :END:
 
 ,*** TOWRITE New scene :ignore:
 :PROPERTIES:
 :ID: 9b2e47a1-6d03-4c58-b7f4-1a8d03e5c2f7
+:WORDCOUNT: 0
+:WORD-OBJECTIVE: 500
 :PoV:
 :Characters:
 :Plot:
+:Plot-point:
 :Timeline:
 :Location:
+:Objects:
 :Description:
 :Summary:
 :Scene-motivation:
 :Conflict-source:
+:Gap:
 :What-is-at-stake:
+:World-problem:
 :Emotion:
+:Tension-level:
+:Outcome:
+:Sequel-decision:
 :Comment:
-:WORD-OBJECTIVE: 500
 :END:
 
 {{{scene-break}}}
@@ -685,7 +691,7 @@ Yes! Just delete the heading and everything under it (up to the next heading of 
 
 ** "Why are my scenes numbered 'Scene 1' even though it's my third scene?"
 
-The template doesn't auto-number. Feel free to change the numbers manually, or ignore them - they're just labels!
+The template doesn't number. The only scene called "Scene 1" is the first one, which comes with the new project; the ones you insert with ~F8 s~ carry exactly the title you type. Feel free to rename them by hand, or ignore the names - they're just labels!
 
 ** "Can I use other states than TOWRITE and FINISHED?"
 

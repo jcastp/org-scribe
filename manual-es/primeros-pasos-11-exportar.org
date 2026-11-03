@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-11-exporting.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: c00fb61
 
 /[[file:../manual/getting-started-11-exporting.org][English version]]/
 

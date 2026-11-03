@@ -230,9 +230,18 @@ This hidden file tells Emacs: "This directory is a writing project!"
 *What it looks like right after creation*:
 #+BEGIN_EXAMPLE
 # Writing project: The Morning Routine
+# Title: The Morning Routine
+# Type: short-story
 # Created: 2026-07-31
 # Language: en
+# Target-words: 5000
 #+END_EXAMPLE
+
+(A novel project has no ~# Type:~ line, and adds ~# Method:~ with the plotting method you chose.)
+
+- ~# Writing project:~ and ~# Title:~ - the title you typed at Step 3. ~# Writing project:~ keeps the name the project was created with; ~# Title:~ is its current title, the one the package reads first. Change it with ~F8 T~, which updates ~# Title:~ and the manuscript's ~#+TITLE:~ together.
+- ~# Type:~ - ~short-story~ for a short story. Project detection reads this line first and otherwise falls back to the manuscript's file name, which is how a novel, which has no such line, is recognized.
+- ~# Target-words:~ - the project's total word count (see [[*The Total Word Count][The Total Word Count]] below); change it with ~F8 t~.
 
 - ~# Language:~ - the language you picked at the Step 4 prompt (~en~ or ~es~). This is what ~org-scribe-project-language~ reads, so capture templates, scene property names, and other project-language-aware features stay consistent for this project even if you later change the global ~org-scribe-template-language~ default.
 - ~# Planner:~ - added automatically once you opt into the bundled writing planner (accepting the "create a plan?" offer, running ~M-x org-scribe-plan~, or ~org-scribe-planner-enable-for-project~/~org-scribe-planner-disable-for-project~). Value is ~yes~ or ~no~; the line is absent ("undecided") until you make a choice. See [[file:getting-started-16-planner-integration.org][Lesson 16: Writing Goal Planning]] for details.
@@ -296,6 +305,12 @@ Your project is automatically a git repository!
 
 *Don't worry if you don't know git*: It works automatically. You can learn git later!
 
+*It is a project.el project too*: the new project is registered with Emacs's
+built-in ~project.el~, so ~C-x p p~ offers it from now on. For projects
+created before this, copied from another machine or cloned, run
+~M-x org-scribe-register-projects~ and give it the folder that holds them: it
+registers every project found below it.
+
 * Creating a Novel Project
 
 If you want to create a full novel project instead, the process is almost identical:
@@ -320,8 +335,9 @@ If you want to create a full novel project instead, the process is almost identi
 
 Both project types ask for the project's *total word count* at creation. It
 is stored in the ~.org-scribe-project~ file (the ~# Target-words:~ line) and
-used to size the outermost parts of the manuscript: the three acts of a novel,
-or the three scenes of a short story, get 25 % / 50 % / 25 % of it. For 50,000
+used to size the outermost parts of the manuscript: the three acts of a novel
+get 25 % / 50 % / 25 % of it, while a short story, which has no parts to split
+into, keeps the whole total on its "Story Content" heading. For 50,000
 words a novel's acts are 12,500 / 25,000 / 12,500. The Project Goals list of a
 novel shows the total too. Chapter and scene objectives (3,000 and 500) are
 not changed.
@@ -607,7 +623,7 @@ Now that you have a project, let's write something!
    - If you created a novel: Open ~novel.org~
 
 2. *Find the first scene*:
-   - Look for a heading like: ~*** Scene 1 - [Title]~
+   - Look for a heading like: ~** TOWRITE Scene 1~ (~*** TOWRITE Scene 1~ in a novel, under Chapter 1)
    - Or create one (we'll learn this in Lesson 2)
 
 3. *Write one sentence*:

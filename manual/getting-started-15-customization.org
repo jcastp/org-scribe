@@ -396,10 +396,10 @@ An ~*EDIT*~ carries a category before a ~" - "~ separator, and the edit index gr
 
 #+BEGIN_SRC emacs-lisp
 ;; Default
-(setq org-scribe-edit-categories '("plot" "scene" "character" "prose"))
+(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "design"))
 
 ;; Add your own
-(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "pacing" "research"))
+(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "design" "pacing" "research"))
 #+END_SRC
 
 This one variable drives both ends: the index groups by it, and the bundled Tempel ~edit~ snippet prompts from it, so they cannot disagree. A marker whose category is missing, empty or unrecognized lands under ~other~ - never dropped.
@@ -643,6 +643,19 @@ Controls which templates are used when creating projects:
 - File names (~novel.org~ vs ~novela.org~, ~design.org~ vs ~diseno.org~)
 - Template content language
 - Default scene/chapter templates
+
+It is only the language a *new* project is created in. Once created, the project's language is recorded in its ~.org-scribe-project~ file, and from then on that one rules, not this setting.
+
+org-scribe's messages (notices, prompts, errors) have their own, independent setting, English by default:
+
+#+BEGIN_SRC emacs-lisp
+;; Command messages in Spanish
+(setq org-scribe-message-language 'es)
+#+END_SRC
+
+Reports and captures, on the other hand, follow the project's language, not this setting (see Lessons 3 and 4).
+
+If a message is missing from the chosen language, org-scribe shows it in ~org-scribe-fallback-language~ (default ~en~) instead. You only need it with a language pack of your own that is not complete yet.
 
 ** Spelling Dictionary Per Project
 
@@ -943,6 +956,22 @@ on — and the manuscript concept also drives project type detection, so
 renaming it would leave the project unrecognized. Keep the names the
 template gave you.
 
+** Project-Wide Refile
+
+Inside a project, ~C-c C-w~ (~org-refile~) offers every heading of the manuscript, the design notebook and ~plan.org~, so you can move a scene between chapters or file a loose note under the right character without switching buffers. That is ~org-scribe-refile-project-wide~, on by default; it only changes what ~org-refile~ offers, never your files. Turn it off to keep your own ~org-refile-targets~ everywhere:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-refile-project-wide nil)
+#+END_SRC
+
+** Automatic Relinking on Save
+
+When you rename a character, location or plot thread, the scenes that link to it keep the old display name until you relink (~F8 R~). With ~org-scribe-auto-relink~ on, saving the design notebook refreshes those names in the open manuscript for you. The manuscript is modified but not saved; a message reminds you to save it. Off by default, so saving one file never edits another unexpectedly:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-auto-relink t)
+#+END_SRC
+
 * Word Counting Configuration
 
 Customize word counting behavior.
@@ -968,6 +997,15 @@ This won't be counted!
 ,*** Alternate Version   :draft:
 Also not counted.
 #+END_EXAMPLE
+
+** Counting on Save
+
+With ~org-scribe-auto-wordcount~ on, saving the manuscript refreshes every =:WORDCOUNT:= property (what ~F8 a~ does) and, when the writing planner is active, syncs the plan. It needs ~org-context-extended~. On this silent path it does not add an =:ID:= to headings that lack one, so a save never inserts property drawers you did not ask for; set ~org-scribe-auto-wordcount-mint-ids~ to allow it. Running ~F8 a~ by hand always adds them. Both are off by default:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-scribe-auto-wordcount t)
+;; (setq org-scribe-auto-wordcount-mint-ids t)  ; also add missing IDs on save
+#+END_SRC
 
 * Complete Configuration Example
 

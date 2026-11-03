@@ -308,6 +308,28 @@ Daily target 1000 words kept. Writing days 30 → 35.
 End date 2026-11-30 → 2026-12-05: extended by 5 days. Apply?
 #+END_EXAMPLE
 
+** When a Recalculation Goes Out of Date
+
+A recalculation made while you are still writing that day credits the day with the words it has at that moment. Words you add afterwards aren't in the new plan line, and a day that ends below the goal it was credited with doesn't match it either: the plan is then /out of date/. Nothing changes behind your back; the planner tells you instead.
+
+The calendar's summary shows it, just under /Status/:
+
+#+BEGIN_EXAMPLE
+  Out of date:   Recalculated at 12400 words through 2026-11-10; 12950 written there now (+550)
+                 [a] adjust remaining days to count them
+#+END_EXAMPLE
+
+~c~ (Check Progress) adds the same sentence to its answer. And on the first word count of a new day, the planner previews a recalculation that keeps the end date and asks:
+
+#+BEGIN_EXAMPLE
+Recalculated at 12400 words through 2026-11-10; 12950 written there now (+550).
+From 2026-11-11: 24500 words left over 20 writing days.
+Daily target 1250 → 1225 words (-25, -2.0%). End date 2026-11-30 unchanged.
+Recalculate now?
+#+END_EXAMPLE
+
+It asks once a day per plan file, and nothing changes unless you answer yes. ~C-g~ declines it without losing the day's count, and batch runs never ask. To turn the question off, set ~org-scribe-planner-offer-refresh-on-new-day~ to ~nil~; ~a~ still brings the plan up to date whenever you like.
+
 * Step 6: Change the Plan
 
 When the plan itself changes — a new deadline, a holiday, a different goal — press ~F8 W r~ (or ~r~ in the calendar). It asks /What changed?/:
@@ -434,11 +456,11 @@ The main properties:
 | ~DAILY_WORD_COUNTS~     | The record: the total written by the end of each day                 |
 | ~SPARE_DAYS~            | Days off                                                             |
 
-Others appear when you use the features they belong to: ~LOCKED_GOALS~ (past days' goals), ~SCHEDULE_ADJUSTMENT~ and ~REBASED_FROM~ (set by an adjustment from progress: how far the plan moved, and from which day), ~PATTERN~ and ~PATTERN_CONFIG~, ~WEEKEND_MODE~, ~WEEKEND_DAYS~ and ~WEEKEND_DAILY~, ~CUSTOM_GOALS~ (day goals), ~OUTSIDE_WORDS~ and ~OUTSIDE_FILES~ (words written elsewhere).
+Others appear when you use the features they belong to: ~LOCKED_GOALS~ (past days' goals), ~SCHEDULE_ADJUSTMENT~ and ~REBASED_FROM~ (set by an adjustment from progress: how far the plan moved, and from which day), ~REBASED_ON~ and ~REBASED_WORDS~ (the day that adjustment ran and the words it counted, so the planner can tell when it went out of date), ~PATTERN~ and ~PATTERN_CONFIG~, ~WEEKEND_MODE~, ~WEEKEND_DAYS~ and ~WEEKEND_DAILY~, ~CUSTOM_GOALS~ (day goals), ~OUTSIDE_WORDS~ and ~OUTSIDE_FILES~ (words written elsewhere), ~WORDS_BASIS~ (always ~manuscript~: the record counts the manuscript only).
 
 Prefer the planner's commands to editing the properties by hand: the commands keep them consistent. The Notes column is the exception — type there freely.
 
-Plans saved by earlier versions load as they are: their writing days are worked out from their dates, and a daily target set by an old recalculation is kept.
+A plan without ~WRITING_DAYS~ (one written by hand, say) has its writing days worked out from its dates and rest days.
 
 * Settings
 
@@ -461,6 +483,8 @@ The presets are a customizable list: ~M-x customize-variable RET org-scribe-plan
 (setq org-scribe-planner-week-start-day 0)      ; weeks from Sunday (default 1, Monday)
 (setq org-scribe-planner-streak-grace-days 2)   ; a streak survives logging the morning after
 #+END_SRC
+
+Two more you rarely need: ~org-scribe-planner-directory~ is where a plan made outside a project is saved, and where the plan-file prompts start there (default ~writing-projects/~ under your ~org-directory~); ~org-scribe-planner-calendar-buffer~ names the calendar's buffer (default ~*Writing Plan Calendar*~).
 
 ** The Agenda
 
@@ -492,6 +516,7 @@ Each automatic feature can be turned off. Set these *before* the planner first l
       org-scribe-planner-auto-push-wordcount nil    ; don't record word counts in the plan
       org-scribe-planner-auto-track-daily nil       ; don't keep the daily record automatically
       org-scribe-planner-offer-plan-on-create nil   ; don't offer a plan for new projects
+      org-scribe-planner-offer-refresh-on-new-day nil ; don't offer to refresh an out-of-date recalculation
       org-scribe-planner-show-mode-line nil)        ; no [W:actual/target] in the mode line
 (setq org-scribe-auto-wordcount nil)                ; no word count on save (the default)
 #+END_SRC

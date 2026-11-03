@@ -111,7 +111,7 @@ SETUP is a function called with the directory.  The directory is the
   (test-companion-model--write
    root "diseno.org"
    "#+TITLE: Diseño
-#+TODO: OPEN | CHOSEN
+#+TODO: DRAFT | SETTLED
 * Reparto
 ** Personajes
 *** Ana

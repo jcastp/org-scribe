@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-09-writing-modes.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 76b123a
 
 /[[file:../manual/getting-started-09-writing-modes.org][English version]]/
 
@@ -460,10 +460,10 @@ Por defecto, *el panel de esquema no muestra tus escenas*. Verás los actos y lo
 La causa es una variable de Org, no un ajuste de org-scribe. ~imenu-list~ construye su esquema a partir del *índice imenu* de Org, y ese índice se detiene en la profundidad que marca ~org-imenu-depth~, cuyo valor por defecto es *2*:
 
 #+BEGIN_EXAMPLE
-* Acto I                      ← nivel 1  (se muestra)
-** TOWRITE Capítulo 1            ← nivel 2  (se muestra)
-*** TOWRITE Escena 1             ← nivel 3  (no se muestra por defecto)
-*** TOWRITE Escena 2             ← nivel 3  (no se muestra por defecto)
+,* Acto I                      ← nivel 1  (se muestra)
+,** TOWRITE Capítulo 1            ← nivel 2  (se muestra)
+,*** TOWRITE Escena 1             ← nivel 3  (no se muestra por defecto)
+,*** TOWRITE Escena 2             ← nivel 3  (no se muestra por defecto)
 #+END_EXAMPLE
 
 Las plantillas de novela de org-scribe colocan las *escenas en el nivel 3*, justo un nivel más allá del límite. Como las escenas son la unidad por la que realmente navegas, el panel resulta mucho menos útil hasta que subes el límite.

@@ -346,7 +346,7 @@ From the Hydra menu (F8):
 | R   | Relink project               |   H | Project health report |
 | W   | Writing planner submenu (*)  |   q | Quit menu             |
 
-(*) Bundled with org-scribe — only reachable once the planner is enabled for the current project (see [[file:getting-started-16-planner-integration.org][Lesson 16]]).
+(*) Bundled with org-scribe — reachable unless the current project has opted out of the planner, in which case ~W~ offers to re-enable it (see [[file:getting-started-16-planner-integration.org][Lesson 16]]).
 
 Capturing a new character/location/object/timeline event/plot thread is one level deeper, via ~k~ then the same letter (e.g. ~F8 k h~ for a new character) — the top-level letters above tag the *current* scene with an existing entity instead.
 

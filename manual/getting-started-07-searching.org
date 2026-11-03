@@ -134,11 +134,11 @@ Or use: ~M-x org-scribe-org-find-pov~
 #+BEGIN_EXAMPLE
   FINISHED Scene 1 - The Alarm                                                        :ignore:
   FINISHED Scene 2 - Coffee Shop Encounter                                            :ignore:
-  TODO Scene 1 - The Decision                                                         :ignore:
+  TOREVIEW Scene 1 - The Decision                                                     :ignore:
   TOWRITE Scene 1 - First Attempt                                                     :ignore:
   TOWRITE Scene 1 - Coffee Talk                                                       :ignore:
   TOWRITE Scene 2 - Finding Balance                                                   :ignore:
-  TODO Scene 1 - Full Circle                                                          :ignore:
+  TOWRITE Scene 1 - Full Circle                                                       :ignore:
 #+END_EXAMPLE
 
 ** Interpreting Results
@@ -586,12 +586,12 @@ In Org-mode, TODOs are special keywords at the start of headings:
 
 #+BEGIN_EXAMPLE
 ,** TODO Fix the timeline here - Alex arrives too quickly
-,** FIXME This dialogue feels stilted
-,** RESEARCH How long does DNA testing actually take?
-,** REVISE Expand this scene - needs more emotion
+,** TOREVIEW This dialogue feels stilted
+,** TOWRITE Write the lab scene
+,** REDO Expand this scene - needs more emotion
 #+END_EXAMPLE
 
-Keywords include: TODO, DONE, FIXME, RESEARCH, REVISE, NOTE (customizable).
+The keywords org-scribe searches for are those in ~org-scribe-todo-keywords~: ~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~, ~TOREVIEW~, ~REDO~ and ~RESTRUCTURE~ (customizable). The "done" states (~DONE~, ~FINISHED~) are not searched: the search lists what is still pending. The manuscript uses its own states (~TOWRITE~, ~TOREVIEW~, ~REDO~, ~RESTRUCTURE~ and, when done, ~FINISHED~ or ~PURGE~); ~TODO~, ~ONGOING~ and ~WAITING~ are the ordinary keywords of your design notebook and other files.
 
 ** How to Search
 
@@ -603,25 +603,27 @@ Org's own agenda todo list (~M-x org-todo-list~) shows the same headings, but on
 
 ** Example Results
 
+The view is titled "TODO items in writing project" and covers every ~.org~ file in the project:
+
 #+BEGIN_EXAMPLE
  File: novel.org
-  TODO Chapter 2                                                                       :ignore:
-  TODO Scene 1 - The Decision                                                          :ignore:
+  TOREVIEW Chapter 2                                                                   :ignore:
+  TOREVIEW Scene 1 - The Decision                                                      :ignore:
   TOWRITE Chapter 3                                                                    :ignore:
   TOWRITE Scene 1 - First Attempt                                                      :ignore:
   TOWRITE Chapter 4 - Learning and Adjusting                                           :ignore:
   TOWRITE Scene 1 - Coffee Talk                                                        :ignore:
   TOWRITE Scene 2 - Finding Balance                                                    :ignore:
-  TODO Chapter 5 - The New Normal                                                      :ignore:
-  TODO Scene 1 - Full Circle                                                           :ignore:
+  REDO Chapter 5 - The New Normal                                                      :ignore:
+  REDO Scene 1 - Full Circle                                                           :ignore:
 #+END_EXAMPLE
 
 ** Using TODO Results
 
 *** Prioritize by Type
-- *FIXME*: Structural problems - address before continuing
-- *RESEARCH*: Look these up in batch (dedicated research session)
-- *REVISE*: Save for revision pass
+- *TOREVIEW*: Problems in content already written - address before continuing
+- *TOWRITE*: Scenes still to write
+- *REDO* / *RESTRUCTURE*: Save for the revision pass
 - *TODO*: Address as you encounter them
 
 *** Clear Before Major Milestones
@@ -633,29 +635,28 @@ Start each session: Check TODOs, pick 1-2 to fix before writing new content.
 
 ** Adding TODOs While Writing
 
-While in flow, don't stop to fix things - leave TODOs:
+While in flow, don't stop to fix things - mark the scene instead:
 
 #+BEGIN_EXAMPLE
 You're writing Scene 15 and realize Scene 7 has a timeline problem.
-Don't stop! Add a TODO:
+Don't stop! Mark Scene 7:
 
 Navigate to Scene 7 heading:
-,*** Scene 7 - Evidence of Tampering
+,*** FINISHED Scene 7 - Evidence of Tampering :ignore:
     :PROPERTIES:
     ...
     :END:
 
-Add below the heading:
-,*** Scene 7 - Evidence of Tampering
+Press C-c C-t and choose REDO:
+,*** REDO Scene 7 - Evidence of Tampering :ignore:
     :PROPERTIES:
     ...
     :END:
-,**** TODO Timeline issue - Alex arrives at 9 AM but lab doesn't open until 10
 
 Continue writing Scene 15!
 #+END_EXAMPLE
 
-Later, when you search TODOs, you'll find this and fix it.
+Later, when you search TODOs, you'll find this and fix it. Don't add a ~TODO~ sub-heading inside a scene: the manuscript has no ~TODO~ keyword, so the search would not see it, and a sub-heading is part of the scene's text. To say /what/ is wrong, leave an edit marker next to the passage (Search 6).
 
 * Search 6: Finding Edit/Note Markers
 
@@ -717,7 +718,7 @@ This collects every marker in every ~.org~ file below your project root and buil
     needs another beat here before the reveal
 ,** character
 ,** prose
-,** other
+,** design
 
 ,* Notes
 ,** [[file:novel.org::145][Scene 3]] — novel.org
@@ -742,7 +743,7 @@ You can also keep the index open beside your manuscript while you work: set ~org
 The categories come from ~org-scribe-edit-categories~:
 
 #+BEGIN_SRC emacs-lisp
-(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "pacing"))
+(setq org-scribe-edit-categories '("plot" "scene" "character" "prose" "design" "pacing"))
 #+END_SRC
 
 A marker whose category is missing, empty or unrecognized is grouped under ~other~ rather than dropped - a typo moves a marker, it never hides one.
@@ -983,7 +984,7 @@ Get comfortable with the results navigation cycle:
 
 ** After Writing Session
 
-- *Update TODOs*: Mark completed items as DONE
+- *Update TODOs*: Mark completed items as done (~FINISHED~ in the manuscript, ~DONE~ elsewhere)
 - *Quick audit*: Search the plot/character you just wrote to verify coverage
 - *Plan next session*: Identify gaps, decide what needs attention next
 
@@ -992,7 +993,7 @@ Get comfortable with the results navigation cycle:
 - *Systematic review*: Search each character and read all their scenes sequentially
 - *Plot coherence*: Search each plot thread and verify logical progression
 - *Consistency check*: Search location and ensure descriptions match
-- *Clean TODOs*: Work through all FIXME and REVISE items
+- *Clean TODOs*: Work through all TOREVIEW and REDO items
 
 ** Weekly Planning
 
@@ -1211,12 +1212,12 @@ As you write, periodically search and check if you're on track.
 
 Develop a system:
 - ~TODO~: General tasks
-- ~FIXME~: Broken/wrong content
-- ~REVISE~: Working but needs improvement
-- ~RESEARCH~: Need to look something up
-- ~CONTINUITY~: Check against earlier scenes
+- ~TOREVIEW~: Content to review
+- ~REDO~: Broken or wrong content, to redo
+- ~RESTRUCTURE~: Structural changes
+- ~WAITING~: Depends on something outside (some research, for instance)
 
-Then search by type: Find all RESEARCH items for a focused research session.
+Then search by type, narrowing the list with org-ql if needed: find all WAITING items for a focused research session.
 
 ** 6. Search for Pattern Recognition
 
@@ -1304,7 +1305,7 @@ Before Lesson 8, try this:
 3. Identify one gap or imbalance
 4. Plan how to fix it (add scenes, move scenes, or cut scenes)
 5. Practice the search → navigate → review → next workflow
-6. Add 3-5 TODO items to your manuscript for practice
+6. Mark 3-5 scenes of your manuscript TOREVIEW or REDO for practice
 7. Search for TODOs and address at least one
 
 Take your time! Searching is a skill that improves with practice. When you feel comfortable finding anything in your manuscript within seconds, move on to Lesson 8.

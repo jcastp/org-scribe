@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-04-capturing-characters.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 7191473
 
 /[[file:../manual/getting-started-04-capturing-characters.org][English version]]/
 

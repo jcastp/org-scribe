@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-06-plot-threads.org
-#+SOURCE_COMMIT: c542dfa
+#+SOURCE_COMMIT: 76b123a
 
 /[[file:../manual/getting-started-06-plot-threads.org][English version]]/
 
@@ -742,10 +742,10 @@ La posición importa: org-scribe solo reconoce un hilo de la trama si su encabez
 
 ** Paso 9: Comprobar que se guardó
 
-Abre ~diseno.org~ y busca la entrada de tu nuevo hilo de la trama. Debe ser un encabezado directamente bajo «Hilos de la Trama», con una propiedad de ID (aquí se muestra como quedaría en un cuento; en una novela está dos niveles más abajo):
+Abre ~diseno.org~ y busca la entrada de tu nuevo hilo de la trama. Debe ser un encabezado directamente bajo «Hilos de la Trama», con una propiedad de ID (aquí se muestra como quedaría en un cuento; en una novela está un nivel más abajo):
 
 #+BEGIN_EXAMPLE
-,* Sam y la cuestión de la confianza
+,** Sam y la cuestión de la confianza
 :PROPERTIES:
 :ID: 3f100618-1c6b-4286-883d-b1deddf0dddd
 :THREAD-TYPE: Subtrama

@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-10-timelines.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 826b74e
 
 /[[file:../manual/getting-started-10-timelines.org][English version]]/
 
@@ -614,6 +614,19 @@ Puedes tener varios bloques de cronología:
 - Uno por acto (en secciones separadas)
 
 Todos muestran los mismos datos: elige lo que encaje con tu flujo de trabajo.
+
+** El bloque de cronología de la historia
+
+Las cronologías de arriba siguen el orden de lectura. Para ver las escenas en el orden de la /historia/ (el orden en que pasan las cosas, leído de la propiedad ~:Linea-temporal:~ de cada escena), usa el bloque dinámico ~story-chronology~:
+
+#+BEGIN_SRC org
+,#+BEGIN: story-chronology
+,#+END:
+#+END_SRC
+
+~M-x org-scribe-chronology-insert-block~ inserta un bloque vacío en el cursor y lo rellena; ~C-c C-c~ en la línea ~#+BEGIN~ lo actualiza. Además de las escenas, lista los eventos de la sección Línea Temporal de tu cuaderno de diseño (añade ~:events nil~ para dejarlos fuera). Una escena que ocurre antes que la leída justo delante aparece como un salto atrás, no como un error; las escenas sin un tiempo de la historia legible se listan aparte, con el motivo.
+
+Cómo escriben las escenas su ~:Linea-temporal:~ (días relativos, fechas reales o un calendario inventado) se elige con ~F8 S~ (~org-scribe-set-story-time~). Para un mundo con calendario propio, ~M-x org-scribe-calendar-create~ pide el nombre de la era y el Día 1 escrito como fecha de ese calendario, añade un encabezado Calendario a la parte Mundo del cuaderno de diseño con una tabla de meses vacía para que la rellenes, y pasa el proyecto a esa notación. Elegir el calendario con ~F8 S~ también crea el encabezado si falta.
 
 * Análisis avanzado de cronologías
 

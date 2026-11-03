@@ -1,6 +1,6 @@
 #+TITLE: Manual de org-scribe en español
 #+AUTHOR: Javier Castilla
-#+DATE: 2026-10-29
+#+DATE: 2026-11-03
 #+LANGUAGE: es
 #+STARTUP: overview
 
@@ -134,7 +134,7 @@ español de España.
 | scratchpad                | Borradores                                           | nombre de la parte en el paquete                                 |
 | Starting Gate             | Puerta de salida                                     | título del paquete                                               |
 | non-negotiables           | irrenunciables                                       | título del paquete                                               |
-| plot thread               | hilo de la trama                                     | título del paquete                                               |
+| plot thread               | hilo de la trama                                     | título de sección; «hilo de trama» en mensajes y en el companion |
 | setting (entity)          | escenario                                            | como el glosario y la captura                                    |
 | setting (section)         | Ambientación                                         | solo el nombre de la sección                                     |
 | location (scene property) | localización                                         | propiedad =:Localizacion:= y las órdenes =F8 l=, =F8 4=          |

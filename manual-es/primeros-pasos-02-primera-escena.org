@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-02-first-scene.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: c00fb61
 
 /[[file:../manual/getting-started-02-first-scene.org][English version]]/
 
@@ -135,7 +135,8 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 ^^               ^^               _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
 ^^               ^^               _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
 ^^               ^^               ^^                   _S_: Story time      ^^                _B_: Board…
-^^               ^^               ^^                   ^^                   ^^                _q_: Quit
+^^               ^^               ^^                   _V_: Snapshot scene  ^^                _q_: Quit
+^^               ^^               ^^                   _C_: Compare snapshot
 #+END_EXAMPLE
 
 *¡Sin pánico!* Este menú te da acceso rápido a todas las funciones. Por ahora solo necesitamos la sección «Insert» (insertar).
@@ -182,7 +183,7 @@ Aparece una plantilla de escena completa. Tiene este aspecto:
 
 Observa que los nombres de las propiedades de escena van en español (sin tildes ni espacios), salvo ~:PoV:~, ~:WORDCOUNT:~ y ~:WORD-OBJECTIVE:~, que son iguales en los dos idiomas. Un proyecto en inglés lleva ~:Characters:~, ~:Plot:~, ~:Location:~, etc.; el paquete entiende los nombres de los dos idiomas.
 
-Nota: ~:ID:~ es un identificador único que org-scribe genera para cada escena nueva, de modo que no hace falta nada más para enlazarla, mostrarla en el tablero o apuntarle una instantánea. Déjalo en paz: no debe cambiar ni repetirse, y no se renombra con la escena. ~:WORDCOUNT:~ empieza en ~0~ y se actualiza con las órdenes de recuento de palabras (~F8 w~/~F8 a~). ~:WORD-OBJECTIVE:~ empieza ya relleno con un valor por defecto de ~500~, que puedes cambiar para ajustarlo a la escena.
+Nota: ~:ID:~ es un identificador único que org-scribe genera para cada escena nueva, de modo que no hace falta nada más para enlazarla, mostrarla en el tablero o apuntarle una instantánea. Déjalo en paz: no debe cambiar ni repetirse, y no se renombra con la escena. ~:WORDCOUNT:~ empieza en ~0~ y se actualiza con las órdenes de recuento de palabras (~F8 w~/~F8 a~). ~:WORD-OBJECTIVE:~ empieza ya relleno con un valor por defecto de ~500~, que puedes cambiar para ajustarlo a la escena. (Eso en la escena de una novela; la de un cuento no lleva la línea ~:WORD-OBJECTIVE:~, porque el objetivo entero va en ~Contenido del Cuento~.)
 
 *¡Enhorabuena!* ¡Has insertado tu primera plantilla de escena!
 

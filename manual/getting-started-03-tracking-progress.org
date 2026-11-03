@@ -163,7 +163,7 @@ Now let's add the actual word count.
 1. Press ~F8~ for Hydra
 2. Press ~a~ ("update all counts")
 
-*Important*: ~a~ is bound to ~org-scribe-ews-org-count-words~, which recomputes ~:WORDCOUNT:~ on *every* heading in the whole buffer — not just the scene under point, and cursor position doesn't matter for scope. It also mints a fresh ~:ID:~ property on any heading that's missing one. If you want to refresh only the scenes in the current chapter/act (or the whole buffer scoped to scenes only, leaving chapter/act aggregates untouched), place point there and press ~F8 w~ (the ~org-scribe-wordcount~ dispatcher) with a double prefix argument, ~C-u C-u~, instead.
+*Important*: ~a~ is bound to ~org-scribe-ews-org-count-words~, which recomputes ~:WORDCOUNT:~ on *every* heading in the whole buffer — not just the scene under point, and cursor position doesn't matter for scope. It also mints a fresh ~:ID:~ property on any heading that's missing one. (The automatic count that runs on save when ~org-scribe-auto-wordcount~ is on does not: it only refreshes ~:WORDCOUNT:~, unless you also set ~org-scribe-auto-wordcount-mint-ids~.) If you want to refresh only the scenes in the current chapter/act (or the whole buffer scoped to scenes only, leaving chapter/act aggregates untouched), place point there and press ~F8 w~ (the ~org-scribe-wordcount~ dispatcher) with a double prefix argument, ~C-u C-u~, instead.
 
 After running ~a~, your scene property looks like:
 
@@ -295,7 +295,7 @@ A few things to know:
 
 ** The Project Health Report
 
-For a manuscript-wide view beyond any single table, run ~M-x org-scribe-project-health~ (or ~F8 H~). It aggregates an *Overview* (total words written vs. total chapter objectives, with an overall percentage that avoids the double-counting a naive scene+chapter sum would produce), *Scenes by Status*, *Per-PoV Word Share*, *Chapter Length Spread* (min/max/mean/median), *Missing Scene Properties*, *Orphaned Entities*, and *Open TODO Scenes* — plus a *Writing Plan* section when the bundled planner (Lesson 16) is active for the project. It's the fastest way to answer "how much have I actually written, and what still needs attention?" without hunting through per-scene tables.
+For a manuscript-wide view beyond any single table, run ~M-x org-scribe-project-health~ (or ~F8 H~). It aggregates an *Overview* (total words written vs. total chapter objectives, with an overall percentage that avoids the double-counting a naive scene+chapter sum would produce), *Scenes by Status*, *Per-PoV Word Share*, *Chapter Length Spread* (min/max/mean/median, novels only), *Missing Scene Properties*, *Story Time* (scenes with no or unreadable story time, and jumps back), *Broken Links* (scene properties pointing at a deleted entity), *Duplicate Names* (only when two entities share one), *Orphaned Entities*, and *Open TODO Scenes* — plus a *Writing Plan* section when the bundled planner (Lesson 16) is active for the project, and a *Starting Gate* section when your design notebook has one. It's the fastest way to answer "how much have I actually written, and what still needs attention?" without hunting through per-scene tables.
 
 * Setting Up Objectives (Planning Your Story)
 

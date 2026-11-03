@@ -110,7 +110,7 @@ the headings directly under their sections. The scratchpad isn't one of them.
 So you can write:
 
 #+BEGIN_EXAMPLE
-* Maybe there's a sister?
+,* Maybe there's a sister?
 
 Younger. Estranged. Or maybe she's the one who left, and Alice is the
 one who stayed. Try both.
@@ -156,7 +156,7 @@ Give the question a heading and tag it ~:branch:~. Make each answer a child
 heading carrying a state. The outcomes of an answer are that answer's children.
 
 #+BEGIN_EXAMPLE
-* What if Alice's Need isn't forgiveness?                          :branch:
+,* What if Alice's Need isn't forgiveness?                          :branch:
 :PROPERTIES:
 :ABOUT:    [[id:char-alice-001][Alice]]
 :END:
@@ -164,12 +164,12 @@ heading carrying a state. The outcomes of an answer are that answer's children.
 Her Lie is "if I keep the peace nobody leaves". Forgiveness is the
 obvious Need and it's boring.
 
-** DONE A. She needs to stop protecting him
-*** TODO A1. The protection was never asked for
-*** TODO A2. He knows, and has been letting her
-** TODO B. She needs to be believed
+,** DONE A. She needs to stop protecting him
+,*** TODO A1. The protection was never asked for
+,*** TODO A2. He knows, and has been letting her
+,** TODO B. She needs to be believed
    Cheap — collapses into the same beat as chapter 3.
-** CANCELED C. She needs to forgive him
+,** CANCELED C. She needs to forgive him
    Makes the Ghost redundant. Keeping this here so I don't re-derive
    it in two months.
 #+END_EXAMPLE
@@ -193,6 +193,15 @@ the heading:
 
 ~DONE~ and ~CANCELED~ are *done* states, so a settled question folds up out of
 your way when you collapse the file, while keeping everything underneath it.
+
+Stock Org knows only ~TODO~ and ~DONE~. Since the notebook declares no states,
+~ONGOING~ and the rest come from your own ~org-todo-keywords~: add the ones you
+use, or ~C-c C-t~ won't cycle to them. For example, in your init file:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keywords
+      '((sequence "TODO" "ONGOING" "WAITING" "|" "DONE" "CANCELED")))
+#+END_SRC
 
 ** Keep Your Canceled Branches
 

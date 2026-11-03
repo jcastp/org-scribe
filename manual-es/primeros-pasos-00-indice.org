@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-00-index.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 21683ea
 
 /[[file:../manual/getting-started-00-index.org][English version]]/
 
@@ -390,8 +390,8 @@ Lección 8); aquí van explicadas:
 | R     | Volver a enlazar el proyecto                  |     H | Informe de salud del proyecto |
 | W     | Submenú del planificador de escritura (*)     |     q | Salir del menú                |
 
-(*) Se distribuye con org-scribe; solo es accesible cuando el planificador está
-activado en el proyecto actual (ver la [[file:primeros-pasos-16-planificador.org][Lección 16]]).
+(*) Se distribuye con org-scribe; es accesible salvo que el proyecto actual haya
+rechazado el planificador, y en ese caso ~W~ ofrece volver a habilitarlo (ver la [[file:primeros-pasos-16-planificador.org][Lección 16]]).
 
 Capturar un personaje, un escenario, un objeto, un evento de la cronología o
 un hilo de la trama nuevos está un nivel más abajo, con ~k~ y la misma letra (por

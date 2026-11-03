@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-14-revision-workflow.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: c00fb61
 
 /[[file:../manual/getting-started-14-revision-workflow.org][English version]]/
 
@@ -1093,14 +1093,44 @@ El sistema de TODO de org-mode es perfecto para seguir el trabajo de revisión.
 
 ** Configurar las palabras clave TODO
 
-Añade al principio del archivo de tu manuscrito:
+Tu manuscrito ya trae un conjunto listo para la revisión. Sus primeras líneas
+declaran:
 
 #+BEGIN_EXAMPLE
-#+TODO: DRAFT | REVISED POLISHED
-#+TODO: FIX EXPAND CUT | DONE
+#+TODO: TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
 #+END_EXAMPLE
 
-Son palabras clave tuyas, que se quedan en inglés como todas las palabras clave TODO. Ten en cuenta que no figuran en ~org-scribe-todo-keywords~ (la lista que lee ~F8 5~), así que esa búsqueda no las listará; para verlas, usa la agenda de TODO que se describe más abajo.
+- ~TOWRITE~: todavía sin escribir
+- ~TOREVIEW~: escrita, a la espera de su revisión
+- ~REDO~: rota o equivocada: hay que rehacerla
+- ~RESTRUCTURE~: necesita un cambio de estructura (moverla, dividirla, fundirla)
+- ~FINISHED~: terminada
+- ~PURGE~: eliminada del libro
+
+Cambia el estado de una escena con ~C-c C-t~ y la letra entre paréntesis.
+~TOREVIEW~, ~REDO~, ~RESTRUCTURE~ y ~PURGE~ llevan ~@~, así que Org te pide
+una nota al entrar en ellos y el motivo queda en el registro de la escena; el
+~!~ anota una marca de tiempo. ~FINISHED~ y ~PURGE~ son los estados finales.
+Las palabras clave TODO se quedan en inglés en todos los proyectos.
+
+¿Quieres una etapa propia? Esta lección usa ~REVISED~ para una escena que ya
+ha pasado la revisión a nivel de escena pero no la corrección de estilo.
+Añádela a esa línea:
+
+#+BEGIN_EXAMPLE
+#+TODO: TOWRITE(h) TOREVIEW(j@/!) REVISED(r) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(ñ@/!)
+#+END_EXAMPLE
+
+y pulsa ~C-c C-c~ sobre ella para que Org la vuelva a leer. Cualquier palabra
+que añadas tiene que ir también en ~org-scribe-todo-keywords~, o ~F8 5~
+(búsqueda de TODOs) no la encontrará:
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-scribe-todo-keywords "REVISED" t)
+#+END_SRC
+
+La tabla «Escenas por estado» del informe de salud del proyecto (~F8 H~)
+cuenta todos los estados que encuentra, también los tuyos.
 
 ** Marcar las escenas con estados TODO
 
@@ -1108,7 +1138,7 @@ A medida que avanzas en la revisión:
 
 *Escena todavía sin revisar*:
 #+BEGIN_EXAMPLE
-,*** DRAFT Escena 1 - Apertura
+,*** TOREVIEW Escena 1 - Apertura
 #+END_EXAMPLE
 
 *Escena revisada pero que necesita pulido*:
@@ -1118,7 +1148,7 @@ A medida que avanzas en la revisión:
 
 *Escena completamente terminada*:
 #+BEGIN_EXAMPLE
-,*** POLISHED Escena 3 - Descubrimiento
+,*** FINISHED Escena 3 - Descubrimiento
 #+END_EXAMPLE
 
 ** Marcadores de problemas
@@ -1126,15 +1156,15 @@ A medida que avanzas en la revisión:
 Marca problemas concretos:
 
 #+BEGIN_EXAMPLE
-,*** FIX Escena 4 - Pasado
+,*** REDO Escena 4 - Pasado
 - Problema: ritmo demasiado lento
-- Acción: cortar los 3 primeros párrafos
+- Acción: cortar los 3 primeros párrafos y reescribir el resto
 
-,*** EXPAND Escena 5 - Confrontación
-- Problema: diálogo demasiado breve
-- Acción: añadir 200 palabras de discusión
+,*** RESTRUCTURE Escena 5 - Confrontación
+- Problema: llega antes de que el lector sepa qué está en juego
+- Acción: moverla detrás de la escena 7
 
-,*** CUT Escena 6 - Relleno
+,*** PURGE Escena 6 - Relleno
 - Problema: no hace avanzar la trama
 - Acción: archivar esta escena
 #+END_EXAMPLE
@@ -1145,10 +1175,10 @@ Mira todo el trabajo de revisión de una vez:
 
 1. ~C-c a t~ (lista de TODO de org-agenda)
 2. Ve todas las escenas por estado:
-   - Todas las escenas DRAFT (todavía sin revisar)
-   - Todas las escenas FIX (problemas identificados)
-   - Todas las escenas EXPAND (necesitan más contenido)
-   - Todas las escenas CUT (por borrar)
+   - Todas las escenas TOREVIEW (todavía sin revisar)
+   - Todas las escenas REDO (por reescribir)
+   - Todas las escenas RESTRUCTURE (por mover, dividir o fundir)
+   - Las escenas ~FINISHED~ y ~PURGE~ están en un estado final, así que no salen
 
 3. Pulsa ~RET~ en cualquier elemento para saltar a él
 4. Recorre la lista de forma sistemática
@@ -1233,7 +1263,7 @@ Este es un enfoque sistemático que integra todas las herramientas:
 
 Sesión de mañana (1-2 horas):
 1. ~F8 e~
-2. Selecciona la siguiente escena DRAFT (panel de esquema)
+2. Selecciona la siguiente escena TOREVIEW (panel de esquema)
 3. Lee la escena frente a la lista (panel de notas)
 4. Identifica los problemas
 5. Todavía no arregles: solo marca los problemas
@@ -1261,7 +1291,7 @@ Sesión de día completo (4-6 horas):
 6. Mejora el ritmo
 7. Usa ~F8 y~ para buscar sinónimos
 8. Usa ~F8 d~ para verificar palabras
-9. Marca la escena como POLISHED
+9. Marca la escena como FINISHED
 
 Objetivo: 3-5 escenas por día
 
@@ -1425,7 +1455,7 @@ En las notas:
 - Estado: REVISED (lista para la corrección de estilo más adelante)
 #+END_EXAMPLE
 
-En el manuscrito, cambia el estado TODO:
+En el manuscrito, cambia el estado TODO (~C-c C-t~):
 #+BEGIN_EXAMPLE
 ,*** REVISED Escena [X] - [Título]
 #+END_EXAMPLE
@@ -1464,7 +1494,7 @@ La revisión transforma tu primer borrador en un manuscrito pulido con herramien
 
 ✓ *Gestión de TODO*
   - Marcar las escenas por estado de revisión
-  - Seguir los problemas (FIX, EXPAND, CUT)
+  - Seguir los problemas (REDO, RESTRUCTURE, PURGE)
   - Usar org-agenda para tener una visión de conjunto
   - Seguimiento sistemático del progreso
 
@@ -1535,7 +1565,7 @@ PASADA 3: EDICIÓN DE LÍNEA
 □ Comprobar la repetición de palabras
 □ Usar diccionario/sinónimos (F8 d/y)
 □ Mejorar el ritmo y la variedad
-□ Marcar las escenas POLISHED
+□ Marcar las escenas FINISHED
 
 COMPROBACIÓN FINAL
 □ Lectura completa del manuscrito

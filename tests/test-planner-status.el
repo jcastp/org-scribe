@@ -472,5 +472,38 @@ plan's future days, with no words, broke it to 0."
             (org-scribe-plan-daily-word-counts plan))
       (should (= (plist-get (org-scribe-planner--calculate-current-streak plan) :current) 4)))))
 
+(ert-deftest test-planner-status-streak-survives-within-grace ()
+  "Nov 1-3 written, Nov 4 missed, today Nov 5 not yet written: with a grace
+of 3 days the streak is still 3; with the default 2 it is broken.
+Regression: a missed day zeroed the streak whatever the grace."
+  (test-status--on "2026-11-05"
+    (let ((plan (test-status--plan 0)))
+      (setf (org-scribe-plan-daily-word-counts plan)
+            (list (cons "2026-11-01" (list :words 1000 :note ""))
+                  (cons "2026-11-02" (list :words 2000 :note ""))
+                  (cons "2026-11-03" (list :words 3000 :note ""))))
+      (setf (org-scribe-plan-current-words plan) 3000)
+      (let ((org-scribe-planner-streak-grace-days 3))
+        (let ((streak (org-scribe-planner--calculate-current-streak plan)))
+          (should (= (plist-get streak :current) 3))
+          (should (= (plist-get streak :longest) 3))))
+      (let ((org-scribe-planner-streak-grace-days 2))
+        (should (= (plist-get (org-scribe-planner--calculate-current-streak plan)
+                              :current)
+                   0))))))
+
+(ert-deftest test-planner-status-offer-is-once-a-day-per-plan-file ()
+  "Declining the offer for one plan file doesn't silence it for another
+project's plan the same day."
+  (test-status--on "2026-11-02"
+    (test-status--offering '(nil nil)
+      (let ((plan (let ((test-status--today "2026-11-01"))
+                    (test-status--recalculated-on-day-one))))
+        (should-not (org-scribe-planner--offer-refresh plan "/tmp/plan-a.org"))
+        (should-not (org-scribe-planner--offer-refresh plan "/tmp/plan-a.org"))
+        (should (= (length test-status--prompts) 1))
+        (should-not (org-scribe-planner--offer-refresh plan "/tmp/plan-b.org"))
+        (should (= (length test-status--prompts) 2))))))
+
 (provide 'test-planner-status)
 ;;; test-planner-status.el ends here

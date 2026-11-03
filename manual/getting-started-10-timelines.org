@@ -83,6 +83,8 @@ Timeline shows:
 
 *Why?* PoV implies presence, so we don't need both symbols. The star (★) is stronger/more important.
 
+The symbols can be changed with the variables ~org-scribe-timeline-pov-symbol~ and ~org-scribe-timeline-present-symbol~.
+
 ** Plot Thread Timeline Symbols
 
 Plot threads use simpler symbols:
@@ -233,12 +235,12 @@ Plot thread timelines work the same way but show story threads instead of charac
 
 ** Step 1: Find the Plot Timeline Location
 
-In your manuscript, search for "Plot Thread Timeline" or add:
+In your manuscript, search for "Plot Thread Analysis" (the template's heading) or add:
 
 #+BEGIN_EXAMPLE
-,** Plot Thread Timeline
+,** Plot Thread Analysis
 
-This table shows which plot threads are active in which scenes.
+This table shows which plot threads appear in which scenes.
 
 Symbol:
 - ● = Thread active in this scene
@@ -574,9 +576,9 @@ Update with =C-c C-c= on the #+BEGIN line.
 Similarly:
 
 #+BEGIN_SRC org
-,** Plot Thread Timeline
+,** Plot Thread Analysis
 
-This table shows which plot threads are active in which scenes.
+This table shows which plot threads appear in which scenes.
 
 Symbol:
 - ● = Thread is active in this scene
@@ -604,6 +606,19 @@ You can have multiple timeline blocks:
 - One per act (in separate sections)
 
 All show same data - choose what fits your workflow!
+
+** Story Chronology Block
+
+The timelines above follow reading order. To see the scenes in /story/ order — the order in which things happen, read from each scene's ~:Timeline:~ property — use the ~story-chronology~ dynamic block:
+
+#+BEGIN_SRC org
+,#+BEGIN: story-chronology
+,#+END:
+#+END_SRC
+
+~M-x org-scribe-chronology-insert-block~ inserts an empty block at point and fills it; ~C-c C-c~ on the ~#+BEGIN~ line updates it. Besides the scenes, it lists the events of the Timeline section of your design notebook (add ~:events nil~ to leave them out). A scene that happens earlier than the one read just before it is shown as a jump back, not as an error; scenes with no readable story time are listed apart, with the reason.
+
+How scenes write their ~:Timeline:~ (relative days, real dates or an invented calendar) is chosen with ~F8 S~ (~org-scribe-set-story-time~). For a world with its own calendar, ~M-x org-scribe-calendar-create~ asks for the era's name and for Day 1 written as a date of that calendar, adds a Calendar heading to the World part of the design notebook with an empty month table for you to fill, and switches the project to that notation. Choosing the calendar with ~F8 S~ creates the heading too when it is missing.
 
 * Advanced Timeline Analysis
 
@@ -676,6 +691,8 @@ For each thread, verify:
 *Cause*: Timeline only shows characters who appear in at least one scene.
 
 *This is correct!* If a character profile exists but they never appear in scenes, they won't be in the timeline.
+
+*Another possible cause*: the character has a negative ~:Weight:~, which hides them from the table. Look below it for the comment line "Not shown (Weight -1): …", or add ~:show-hidden t~ to the block.
 
 *Solution*: Add that character to scene properties where they should appear.
 

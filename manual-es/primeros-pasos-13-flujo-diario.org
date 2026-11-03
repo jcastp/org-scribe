@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-13-daily-workflow.org
-#+SOURCE_COMMIT: f0ff9f8
+#+SOURCE_COMMIT: 826b74e
 
 /[[file:../manual/getting-started-13-daily-workflow.org][English version]]/
 
@@ -373,6 +373,8 @@ Ocurre 2 días después de la escena inicial. Alex lleva evitando la oficina.
 ,** Notas
 -
 #+END_EXAMPLE
+
+El evento se guarda bajo la sección Línea Temporal de tu cuaderno de diseño, y Org ajusta su nivel para que encaje allí. El evento de un cuento no lleva la línea ~:Chapter:~.
 
 Anotado. Sigue escribiendo.
 

@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-16-planner-integration.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: aee4332
 
 /[[file:../manual/getting-started-16-planner-integration.org][English version]]/
 
@@ -326,6 +326,32 @@ End date 2026-11-30 → 2026-12-05: extended by 5 days. Apply?
 
 (Se conserva el objetivo diario de 1000 palabras. Días de escritura 30 → 35. Fecha final 2026-11-30 → 2026-12-05: ampliada 5 días. ¿Aplicar?)
 
+** Cuando un recálculo se queda desfasado
+
+Un recálculo hecho mientras aún escribes ese día le acredita al día las palabras que tiene en ese momento. Las que añadas después no están en la nueva línea del plan, y un día que termina por debajo de la meta que se le acreditó tampoco cuadra con ella: el plan queda entonces /desfasado/. Nada cambia a tus espaldas; el planificador te lo dice.
+
+El resumen del calendario lo muestra justo debajo de /Status/:
+
+#+BEGIN_EXAMPLE
+  Out of date:   Recalculated at 12400 words through 2026-11-10; 12950 written there now (+550)
+                 [a] adjust remaining days to count them
+#+END_EXAMPLE
+
+(Desfasado: recalculado con 12.400 palabras hasta el 2026-11-10; ahora hay 12.950 escritas ahí (+550). [a] ajusta los días restantes para contarlas.)
+
+~c~ (Comprobar el progreso) añade la misma frase a su respuesta. Y con el primer recuento de palabras de un día nuevo, el planificador te muestra un recálculo que conserva la fecha final y pregunta:
+
+#+BEGIN_EXAMPLE
+Recalculated at 12400 words through 2026-11-10; 12950 written there now (+550).
+From 2026-11-11: 24500 words left over 20 writing days.
+Daily target 1250 → 1225 words (-25, -2.0%). End date 2026-11-30 unchanged.
+Recalculate now?
+#+END_EXAMPLE
+
+(… Desde el 2026-11-11: quedan 24.500 palabras en 20 días de escritura. Objetivo diario 1250 → 1225 palabras (-25, -2,0 %). La fecha final, 2026-11-30, no cambia. ¿Recalcular ahora?)
+
+Pregunta una vez al día por archivo de plan, y nada cambia salvo que respondas que sí. ~C-g~ la rechaza sin perder el recuento del día, y las ejecuciones en lote nunca preguntan. Para quitar la pregunta, pon ~org-scribe-planner-offer-refresh-on-new-day~ a ~nil~; ~a~ sigue poniendo el plan al día cuando quieras.
+
 * Paso 6: cambia el plan
 
 Cuando cambia el propio plan (una fecha límite nueva, unas vacaciones, un objetivo distinto), pulsa ~F8 W r~ (o ~r~ en el calendario). Pregunta /What changed?/ («¿Qué ha cambiado?»):
@@ -456,11 +482,11 @@ Las propiedades principales:
 | ~DAILY_WORD_COUNTS~      | El registro: el total escrito al final de cada día                      |
 | ~SPARE_DAYS~             | Días libres                                                             |
 
-Otras aparecen cuando usas las funciones a las que pertenecen: ~LOCKED_GOALS~ (metas de los días pasados), ~SCHEDULE_ADJUSTMENT~ y ~REBASED_FROM~ (las fija un ajuste según el progreso: cuánto se movió el plan y desde qué día), ~PATTERN~ y ~PATTERN_CONFIG~, ~WEEKEND_MODE~, ~WEEKEND_DAYS~ y ~WEEKEND_DAILY~, ~CUSTOM_GOALS~ (metas de día), ~OUTSIDE_WORDS~ y ~OUTSIDE_FILES~ (palabras escritas en otro sitio).
+Otras aparecen cuando usas las funciones a las que pertenecen: ~LOCKED_GOALS~ (metas de los días pasados), ~SCHEDULE_ADJUSTMENT~ y ~REBASED_FROM~ (las fija un ajuste según el progreso: cuánto se movió el plan y desde qué día), ~REBASED_ON~ y ~REBASED_WORDS~ (el día en que se hizo ese ajuste y las palabras que contó, para que el planificador sepa cuándo se ha quedado desfasado), ~PATTERN~ y ~PATTERN_CONFIG~, ~WEEKEND_MODE~, ~WEEKEND_DAYS~ y ~WEEKEND_DAILY~, ~CUSTOM_GOALS~ (metas de día), ~OUTSIDE_WORDS~ y ~OUTSIDE_FILES~ (palabras escritas en otro sitio), ~WORDS_BASIS~ (siempre ~manuscript~: el registro cuenta solo el manuscrito).
 
 Prefiere las órdenes del planificador a editar las propiedades a mano: las órdenes las mantienen coherentes. La columna Notes es la excepción: escribe en ella con libertad.
 
-Los planes guardados por versiones anteriores se cargan tal como están: sus días de escritura se calculan a partir de sus fechas, y se conserva un objetivo diario fijado por un recálculo antiguo.
+Un plan sin ~WRITING_DAYS~ (uno escrito a mano, por ejemplo) calcula sus días de escritura a partir de sus fechas y sus días de descanso.
 
 * Ajustes
 
@@ -484,6 +510,8 @@ Los preajustes son una lista personalizable: ~M-x customize-variable RET org-scr
 (setq org-scribe-planner-week-start-day 0)      ; semanas desde el domingo (por defecto 1, lunes)
 (setq org-scribe-planner-streak-grace-days 2)   ; una racha sobrevive si anotas a la mañana siguiente
 #+END_SRC
+
+Dos más que rara vez hacen falta: ~org-scribe-planner-directory~ es donde se guarda un plan creado fuera de un proyecto, y donde empiezan allí las preguntas por el archivo del plan (por defecto, ~writing-projects/~ dentro de tu ~org-directory~); ~org-scribe-planner-calendar-buffer~ da nombre al búfer del calendario (por defecto, ~*Writing Plan Calendar*~).
 
 ** La agenda
 
@@ -515,6 +543,7 @@ Cada función automática se puede apagar. Fija estas variables *antes* de que e
       org-scribe-planner-auto-push-wordcount nil    ; no anotar los recuentos de palabras en el plan
       org-scribe-planner-auto-track-daily nil       ; no llevar el registro diario automáticamente
       org-scribe-planner-offer-plan-on-create nil   ; no ofrecer un plan al crear un proyecto
+      org-scribe-planner-offer-refresh-on-new-day nil ; no ofrecer poner al día un recálculo desfasado
       org-scribe-planner-show-mode-line nil)        ; sin [W:real/meta] en la línea de modo
 (setq org-scribe-auto-wordcount nil)                ; sin recuento al guardar (el valor por defecto)
 #+END_SRC

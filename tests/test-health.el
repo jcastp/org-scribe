@@ -601,16 +601,15 @@ even though nothing was actually due."
                 :end-date end-date
                 :spare-days spare-days
                 :current-words 1000)))
-    ;; Only today's goal is due: behind by what is left of it, not by the
-    ;; ten spare days too
-    (let ((goal (org-scribe-planner--day-goal plan today-date)))
-      (should (string= (org-scribe--health-plan-status plan)
-                       (format "Behind by %d words" (- goal 1000)))))))
+    ;; 1000 words written, nothing yet due (today's goal isn't, and the
+    ;; ten days before were spare): ahead, certainly not behind
+    (ignore today-date)
+    (should (string= (org-scribe--health-plan-status plan) "Ahead by 1000 words"))))
 
-(ert-deftest test-health-plan-status-today-is-expected ()
-  "Today's goal is due: the status is measured by the end of today.
-Decided 2026-11-01 (it used to stop at yesterday, to avoid reading
-\"Behind\" every morning); the report agrees with the companion and F8 W."
+(ert-deftest test-health-plan-status-today-not-yet-expected ()
+  "Today's goal isn't due until the day is over.
+Regression: the status counted today's goal as expected, so a writer who
+had met every goal through yesterday was \"Behind\" every morning."
   (require 'org-scribe-planner)
   ;; No `setf' on plan slots here: this file loads before the planner, so
   ;; the slot setters wouldn't expand.  Build one plan per word count.
@@ -625,11 +624,11 @@ Decided 2026-11-01 (it used to stop at yesterday, to avoid reading
                        :start-date (funcall day -2)
                        :end-date (funcall day 7)
                        :current-words words))))
-    (should (string= (org-scribe--health-plan-status (funcall plan-with 3000))
-                     "On track"))
-    ;; Yesterday's total only: today's goal is still to write
     (should (string= (org-scribe--health-plan-status (funcall plan-with 2000))
-                     "Behind by 1000 words"))))
+                     "On track"))
+    ;; One word short of yesterday's total is behind
+    (should (string= (org-scribe--health-plan-status (funcall plan-with 1999))
+                     "Behind by 1 words"))))
 
 ;;; Writing Plan section in the report
 
@@ -641,7 +640,7 @@ Decided 2026-11-01 (it used to stop at yesterday, to avoid reading
          (plan (make-org-scribe-plan
                 :title "P" :total-words 10000 :daily-words 1000 :days 10
                 :start-date (funcall day -2) :end-date (funcall day 7)
-                :current-words 3047)))
+                :current-words 2047)))
     (should (string= (org-scribe--health-plan-status plan) "Ahead by 47 words"))))
 
 ;; The `(featurep 'org-scribe-planner)' guard on this section is covered
@@ -713,8 +712,8 @@ Decided 2026-11-01 (it used to stop at yesterday, to avoid reading
             (should (string-match-p "500" content))
             (should (string-match-p "2026-06-30" content))
             (should (string-match-p "\\(On track\\|Ahead by\\|Behind by\\)" content))
-            ;; The status counts through the end of today, and says so.
-            (should (string-match-p "Status (by the end of today) ::" content))))))))
+            ;; The status counts through yesterday, and says so.
+            (should (string-match-p "Status (through yesterday) ::" content))))))))
 
 (ert-deftest test-health-report-writing-plan-shows-outside-words ()
   "Words outside the manuscript are listed in the Writing Plan, as not counted."

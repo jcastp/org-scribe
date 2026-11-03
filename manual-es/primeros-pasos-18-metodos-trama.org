@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-18-plotting-methods.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 7191473
 
 /[[file:../manual/getting-started-18-plotting-methods.org][English version]]/
 
@@ -271,7 +271,7 @@ puede ayudarte directamente: te has atascado, una comprobación no pasa y no sab
 a qué nivel volver. Lee un síntoma y nombra el nivel:
 
 #+BEGIN_EXAMPLE
-** Dónde mirar cuando algo falla
+,** Dónde mirar cuando algo falla
 
 ,#+begin_comment
 "Pasan cosas pero no significan nada" → nivel 2, regla del dueño.

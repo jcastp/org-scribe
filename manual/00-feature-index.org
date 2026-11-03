@@ -85,13 +85,19 @@ Controls which language templates are used when creating new projects. Set to ~'
 
 Writes a ~.dir-locals.el~ at the project root pinning ~ispell-local-dictionary~ (and ~jinx-languages~, for jinx users) to the project's language, so every file in the project — manuscript, planning files, notes, journal, and anything created later by capture or the planner — spell checks against the right dictionary with no per-file setup. Created automatically alongside the ~.org-scribe-project~ marker file, before the initial git commit; the marker file remains the single source of truth for the language and the dictionary is derived from it. The variable written carries a ~safe-local-variable~ property, so Emacs applies it silently rather than asking the writer to approve a local variables list on every open. The interactive command creates or refreshes the file for an existing project (asking before replacing one), which is how projects created before this feature — or projects whose configured dictionary changed — catch up; the project health report flags a missing or mismatched file. A per-file ~Local Variables~ block still overrides the project-wide setting, and ~guess-language~ overrides both.
 
-*Status*: Fully implemented | *Hydra*: ~D~ (Links & Upkeep submenu) | *Module*: ~templates/org-scribe-project.el~
+*Status*: Fully implemented | *Hydra*: ~F8 L D~ (Links & upkeep submenu) | *Module*: ~templates/org-scribe-project.el~
 
 ** Git Integration
 
 Automatically initializes a git repository for new projects and creates an initial commit after template processing. This provides version control from the start of a project, enabling writers to track changes to their manuscript and planning documents. The .org-scribe-project marker file is included in the initial commit. Projects can be easily pushed to remote repositories for backup and collaboration.
 
 *Status*: Fully implemented | *Hydra*: N/A (automatic) | *Module*: ~templates/org-scribe-project.el~
+
+** Register Existing Projects (~org-scribe-register-projects~)
+
+Every project created by org-scribe is registered with Emacs's built-in ~project.el~ at creation, so ~C-x p p~ offers it straight away. ~org-scribe-register-projects~ asks for a base directory and registers every project found below it (recursively, through ~project-remember-projects-under~), reporting how many it found — the way to make projects created before this integration, copied from another machine or cloned from a remote, show up in ~C-x p p~ too.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~templates/org-scribe-project.el~
 
 * Writing Modes
 :PROPERTIES:
@@ -172,7 +178,7 @@ The package uses two standard properties for word count management: ~:WORDCOUNT:
 
 Captures quick notes into the design notebook. Notes go under the Scratchpad part as plain headings (no TODO keyword, no ID). The capture template includes a timestamp and supports initial content from the region. Files are auto-created if missing with proper structure. This provides a quick way to capture ideas without leaving the writing flow.
 
-*Status*: Fully implemented | *Hydra*: ~n~ (Capture section) | *Module*: ~capture/org-scribe-capture.el~
+*Status*: Fully implemented | *Hydra*: ~n~ (Manage section) | *Module*: ~capture/org-scribe-capture.el~
 
 ** Character Profile Capture (~org-scribe-capture-character~)
 
@@ -289,6 +295,18 @@ Generates a dynamic table showing which plot threads appear in which scenes usin
 
 *Status*: Fully implemented | *Hydra*: Not in menu (dynamic block — insert ~#+BEGIN: plot-thread-timeline~ manually and press ~C-c C-c~) | *Module*: ~linking/org-scribe-plot-links.el~
 
+** Story Chronology Block (~org-scribe-chronology-insert-block~)
+
+A dynamic block, ~#+BEGIN: story-chronology~, that lists the scenes — and the design notebook's Timeline events, unless ~:events nil~ is given — in story order, read from each scene's ~:Timeline:~ property, beside their position in reading order. A scene that happens earlier than the one read just before it is shown as a jump back, never as an error; scenes and events with no readable story time are listed apart, with the reason. ~M-x org-scribe-chronology-insert-block~ inserts an empty block at point and fills it; ~C-c C-x x~ (~org-insert-dblock~) offers it too, and ~C-c C-c~ on the block updates it. The health report's Story Time section and the companion's timeline read the same data, so they cannot disagree.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (dynamic block) | *Module*: ~reporting/org-scribe-chronology.el~
+
+** Invented Calendar (~org-scribe-calendar-create~)
+
+For a story set in a world with its own calendar. ~org-scribe-calendar-create~ asks for the era's name (~AE~) and for Day 1 written as a date of that calendar (~3 Thawmoon 312~), adds a Calendar heading to the World part of the design notebook with ~:ERA:~ and ~:DAY-ONE:~ properties and an empty month table for you to fill, and sets the project's ~# Story-time:~ marker to ~calendar~. It refuses when the project has no design notebook or the heading already exists. The templates do not ship it, since an empty month table would be noise in every contemporary novel. Choosing the calendar notation with ~F8 S~ (~org-scribe-set-story-time~) creates the heading first when it is missing.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (interactive only; reached through ~F8 S~) | *Module*: ~core/org-scribe-story-time.el~
+
 ** Plot Thread Health Report (~org-scribe-plot-thread-report~)
 
 Analyzes all plot threads in the manuscript and generates a health report identifying potential problems: threads with low coverage (<30% of scenes), threads with large gaps (>5 scenes without appearance), and threads that only appear once. The report displays in a temporary buffer. This helps writers identify neglected plot threads and pacing issues before they become structural problems.
@@ -382,7 +400,9 @@ Searches the entire project recursively for all TODO items, collecting them from
 
 ** Edit Marker Index (~org-scribe-search-edits~)
 
-Collects every ~*EDIT*~ and ~*NOTE*~ marker written inside an ~#+begin_comment~ block across all .org files below the project root, and presents them in a navigable Org buffer: ~*EDIT*~ markers grouped by category (~org-scribe-edit-categories~, default plot/scene/character/prose/design, with an ~other~ catch-all for missing or unrecognized ones), ~*NOTE*~ markers in a section of their own. Each entry links back to the exact source line. Built by traversing Org's parse tree for ~comment-block~ elements rather than by text search, which means complete multi-line marker bodies, the enclosing scene heading for each marker, and immunity to false positives from prose that merely mentions ~*NOTE*~. ~*SUMMARY*~ markers are deliberately excluded - they describe unwritten scenes and belong to the TODO search. In the index buffer ~g~ refreshes and ~q~ buries; with a prefix argument the command runs the ~rgrep~ fallback instead. Also available as the ~edits~ value of ~org-scribe-editing-right-panel~, where it refreshes on every save.
+Collects every ~*EDIT*~ and ~*NOTE*~ marker written inside an ~#+begin_comment~ block across all .org files below the project root, and presents them in a navigable Org buffer: ~*EDIT*~ markers grouped by category (~org-scribe-edit-categories~, default plot/scene/character/prose/design, with an ~other~ catch-all for missing or unrecognized ones), ~*NOTE*~ markers in a section of their own. Each entry links back to the exact source line. Built by traversing Org's parse tree for ~comment-block~ elements rather than by text search, which means complete multi-line marker bodies, the enclosing scene heading for each marker, and immunity to false positives from prose that merely mentions ~*NOTE*~. ~*SUMMARY*~ markers are deliberately excluded - they describe unwritten scenes and belong to the TODO search. In the index buffer ~g~ (~org-scribe-edits-refresh~) rebuilds it from disk, ~RET~ follows a marker and ~q~ buries; with a prefix argument the command runs the ~rgrep~ fallback instead. Also available as the ~edits~ value of ~org-scribe-editing-right-panel~, where it refreshes on every save.
+
+*Status*: Fully implemented | *Hydra*: ~6~ (Search section) | *Module*: ~search/org-scribe-search.el~
 
 ** Bundled Tempel Snippets (~org-scribe-tempel-setup~)
 
@@ -394,7 +414,7 @@ Ships ~edit~ and ~note~ snippets in ~snippets/org-scribe-tempel.eld~ that insert
 
 Searches the entire project recursively for inline edit markers and revision notes using ~rgrep~. The search pattern is configured via ~org-scribe-edit-string~ (default regexp matches ~*EDIT*~ or ~*NOTE*~ strings anywhere in .org files). Results appear in a grep buffer with clickable file:line references. Writers use ~*EDIT*~ or ~*NOTE*~ inline while drafting to mark passages needing revision without interrupting flow; this function then collects all such markers across the entire project for a focused revision session. Markers are conventionally written inside an ~#+begin_comment~ block, which keeps them out of every export backend and out of word counts (see lesson 14, "Marker Convention"). The search is deliberately project-wide; outside a writing project it falls back to the current buffer's directory rather than failing.
 
-*Status*: Fully implemented | *Hydra*: ~6~ (Search section) | *Module*: ~search/org-scribe-search.el~
+*Status*: Fully implemented | *Hydra*: ~C-u F8 6~ (the prefixed variant of ~6~, Search section) | *Module*: ~search/org-scribe-search.el~
 
 ** Scene Snapshots (~org-scribe-snapshot-scene~, ~org-scribe-compare-snapshot~)
 
@@ -415,13 +435,13 @@ Internal helper function that extracts display text from ID links, handling sing
 
 ** Scene Template Insertion (~org-scribe-insert-scene~)
 
-Inserts a complete scene template with TODO state, placeholder title, and comprehensive scene properties. Point can be anywhere: the scene goes at the end of the scene you are in, or at the end of the chapter when point is on the chapter heading, never in the middle of a paragraph. The template includes: ~:PoV:~, ~:Characters:~, ~:Plot:~, ~:Plot-point:~, ~:Timeline:~, ~:Location:~, ~:Description:~, ~:Summary:~, ~:Scene-motivation:~, ~:Conflict-source:~, ~:Gap:~, ~:What-is-at-stake:~, ~:World-problem:~, ~:Emotion:~, ~:Tension-level:~, ~:Outcome:~, ~:Sequel-decision:~, ~:Comment:~, ~:WORDCOUNT:~, and ~:WORD-OBJECTIVE:~. These properties integrate with search functions, linking system, word counting, and progress tracking. The function reads the current project's own outline shape (~org-scribe-project-levels~) rather than assuming a novel's, so the heading it creates lands at the project's own scene level — level 3, following the Act → Chapter → Scene hierarchy, for a novel; level 2 for a short story — tagged ~:ignore:~ either way.
+Inserts a complete scene template with the ~TOWRITE~ state, placeholder title, and comprehensive scene properties. Point can be anywhere: the scene goes at the end of the scene you are in, or at the end of the chapter when point is on the chapter heading, never in the middle of a paragraph. The template includes: ~:PoV:~, ~:Characters:~, ~:Plot:~, ~:Plot-point:~, ~:Timeline:~, ~:Location:~, ~:Description:~, ~:Summary:~, ~:Scene-motivation:~, ~:Conflict-source:~, ~:Gap:~, ~:What-is-at-stake:~, ~:World-problem:~, ~:Emotion:~, ~:Tension-level:~, ~:Outcome:~, ~:Sequel-decision:~, ~:Comment:~, ~:WORDCOUNT:~, and ~:WORD-OBJECTIVE:~. These properties integrate with search functions, linking system, word counting, and progress tracking. The function reads the current project's own outline shape (~org-scribe-project-levels~) rather than assuming a novel's, so the heading it creates lands at the project's own scene level — level 3, following the Act → Chapter → Scene hierarchy, for a novel; level 2 for a short story — tagged ~:ignore:~ either way.
 
 *Status*: Fully implemented | *Hydra*: ~s~ (Insert section) | *Module*: ~templates/org-scribe-project.el~
 
 ** Chapter Template Insertion (~org-scribe-insert-chapter~)
 
-Inserts a chapter template, after the chapter point is in (from inside a scene too), with TODO state, title prompt, and chapter-level properties (~:WORDCOUNT:~, ~:WORD-OBJECTIVE:~) followed immediately by a complete empty first scene (at the project's own scene level, with all scene metadata properties and ~{{{scene-break}}}~). After insertion, point lands at the new scene's ~:PoV:~ property ready for input — the same landing position produced by ~org-scribe-insert-scene~. This means a single command both creates the chapter structure and opens a scene for writing without a second step. In a short-story project, which has no chapter level at all, the function refuses with a clear ~user-error~ instead of inserting a heading that would collide with the scene level — use ~org-scribe-insert-scene~ there instead.
+Inserts a chapter template, after the chapter point is in (from inside a scene too), with the ~TOWRITE~ state, title prompt, and chapter-level properties (~:WORDCOUNT:~, ~:WORD-OBJECTIVE:~) followed immediately by a complete empty first scene (at the project's own scene level, with all scene metadata properties and ~{{{scene-break}}}~). After insertion, point lands at the new scene's ~:PoV:~ property ready for input — the same landing position produced by ~org-scribe-insert-scene~. This means a single command both creates the chapter structure and opens a scene for writing without a second step. In a short-story project, which has no chapter level at all, the function refuses with a clear ~user-error~ instead of inserting a heading that would collide with the scene level — use ~org-scribe-insert-scene~ there instead.
 
 *Status*: Fully implemented | *Hydra*: ~c~ (Insert section) | *Module*: ~templates/org-scribe-project.el~
 
@@ -480,7 +500,7 @@ Displays synonyms in a customizable-width side window (default 80 columns, confi
 
 ** Offline Thesaurus Reader (~org-scribe-mythes-lookup~)
 
-Reads the MyThes thesaurus files shipped by LibreOffice language packs, returning meaning groups as data. Locates the files itself under ~org-scribe-mythes-directory~, honours the encoding each file declares, and caches its index so only the first lookup of a session pays for loading it. Regional variants resolve to whatever data is present, so ~es_MX~ works when only ~es_ES~ is installed. ~org-scribe-mythes-lookup-entry~ additionally reports *which* headword answered, so a substituted lemma can be disclosed rather than passed off as the word you asked about.
+Reads the MyThes thesaurus files shipped by LibreOffice language packs, returning meaning groups as data. Locates the files itself under ~org-scribe-mythes-directory~, honours the encoding each file declares, and caches its index so only the first lookup of a session pays for loading it. Regional variants resolve to whatever data is present, so ~es_MX~ works when only ~es_ES~ is installed. ~org-scribe-mythes-lookup-entry~ additionally reports *which* headword answered, so a substituted lemma can be disclosed rather than passed off as the word you asked about. The cache is checked against the index file's modification time; ~M-x org-scribe-mythes-clear-cache~ discards it outright, forcing a reload on the next lookup.
 
 *Status*: Fully implemented | *Hydra*: Not in menu (used by ~y~) | *Module*: ~language/org-scribe-mythes.el~
 
@@ -639,27 +659,35 @@ To use column view with writing projects, add a ~#+COLUMNS~ line to your manuscr
 
 ** Project Health Report (~org-scribe-project-health~)
 
-Aggregates project-wide statistics into a single ~*org-scribe-health*~ buffer displayed as an org-mode file with clickable ~[[id:...]]~ links back to individual scenes.  Works for both project types — novel and short story — reading each one's own scene and chapter levels via ~org-scribe-project-levels~ rather than assuming a novel's.  The report is organised into seven sections, plus an optional eighth when the bundled writing planner is active for the project; one of the seven, /Chapter Length Spread/, is shown only for a project type that has chapters:
+Aggregates project-wide statistics into a single ~*org-scribe-health*~ buffer displayed as an org-mode file with clickable ~[[id:...]]~ links back to individual scenes.  Works for both project types — novel and short story — reading each one's own scene and chapter levels via ~org-scribe-project-levels~ rather than assuming a novel's.  Section headings are written in the project's language.  These are the sections, in order (some appear only when they apply):
 
 1. *Overview* — manuscript filename (linked), total scene count, words written (summed from the project's own scene level), word objective (summed from the chapter level when the project type has one, or from the scene level when it does not — a short story, having no chapters, carries ~:WORD-OBJECTIVE:~ on its scenes directly), and progress percentage.  This either/or is what avoids the double-counting that would occur if a novel's chapter and scene objectives were totalled together.  A ~Spelling dictionary~ line appears here only when the project's ~.dir-locals.el~ is missing or names a dictionary that disagrees with the project language — drift that is otherwise invisible until a spell check argues with the prose; ~M-x org-scribe-update-dir-locals~ fixes it.
 
    When the project records a total word target (~# Target-words:~ in ~.org-scribe-project~, set at creation or with ~F8 t~), the Overview also shows it, and a /Word target mismatch/ line when the parts' objectives do not add up to it (reported, never resolved: rescale with ~F8 t~). A project with no recorded target shows neither line.
 
-2. *Writing Plan* (optional) — plan title, target word count, current word count and percentage, daily target, end date, and on-track/behind status, plus the words outside the manuscript (not counted) and a /Target mismatch/ line when the plan's total differs from the project's recorded target.  Shown only when a plan is loaded for the project and the project has not opted out of the planner; otherwise a creation/load hint is shown instead, and the section is omitted entirely for a project that declined the planner.
+2. *Writing Plan* (optional) — plan title, target word count, current word count and percentage, daily target, end date, days remaining, and the status (on track, ahead or behind), plus the words outside the manuscript (not counted) and a /Target mismatch/ line when the plan's total differs from the project's recorded target.  The status is measured /through yesterday/ (~Status (through yesterday)~), the same measure as the planner's ~c~ (Check progress): today's goal isn't due until the day is over, so a morning before you have written never reads as behind.  The planner's own status (in the plan calendar and after each sync) and the companion's progress view measure by the end of today instead, today's goal included.  Shown only when a plan is loaded for the project and the project has not opted out of the planner; otherwise a creation/load hint is shown instead, and the section is omitted entirely for a project that declined the planner.
 
-3. *Scenes by Status* — a count of scenes grouped by their org TODO keyword (TODO, DONE, or any custom keyword).  Shows at a glance how much of the draft is complete.
+3. *Starting Gate* (only in a project whose design notebook has that section) — reads back the ticks of the Starting Gate checklist and measures two of its eight items on its own: how many of the thirteen non-negotiables have real content, and how many of the first three scenes already have words.  When a measurement disagrees with your tick, in either direction, the report says so and does not resolve it.  Projects created from templates older than the Sistema have no such section.
 
-4. *Per-PoV Word Share* — scenes and words grouped by resolved PoV character name, with each PoV's percentage of the manuscript's total words.  Scenes with no PoV set are grouped under a "(no PoV)" row, doubling as a missing-property signal.
+4. *Scenes by Status* — a count of scenes grouped by their state, one of the manuscript's own keywords (~TOWRITE~, ~TOREVIEW~, ~REDO~, ~RESTRUCTURE~, ~FINISHED~, ~PURGE~; scenes with none are counted as ~(none)~).  Shows at a glance how much of the draft is complete.
 
-5. *Chapter Length Spread* (novels only) — per-chapter word totals plus a summary line of minimum, maximum, mean, and median chapter length, with outlier chapters (roughly 2x the mean or under half of it) flagged for attention.  Omitted entirely for a short story, which has no chapters to spread.
+5. *Per-PoV Word Share* — scenes and words grouped by resolved PoV character name, with each PoV's percentage of the manuscript's total words.  Scenes with no PoV set are grouped under a "(no PoV)" row, doubling as a missing-property signal.
 
-6. *Missing Scene Properties* — three subsections listing scenes that lack a ~:PoV:~, ~:Plot:~, or ~:Location:~ value respectively.  Each entry is an ~[[id:...][Scene Heading]]~ link, followed by the parent chapter name for a novel; a short story's entries carry no such suffix, since there is no chapter to name.
+6. *Chapter Length Spread* (novels only) — per-chapter word totals plus a summary line of minimum, maximum, mean, and median chapter length, with outlier chapters (roughly 2x the mean or under half of it) flagged for attention.  Omitted entirely for a short story, which has no chapters to spread.
 
-7. *Orphaned Entities* — characters and locations defined in their database files whose IDs do not appear in any scene property.  An entity is considered orphaned if its org ID is absent from every ~:PoV:~, ~:Characters:~, ~:Location:~, and ~:Plot:~ property across all scenes.  Orphaned entities represent planning work not yet woven into the manuscript.
+7. *Missing Scene Properties* — three subsections listing the scenes not yet in a done state that lack a ~:PoV:~, ~:Plot:~, or ~:Location:~ value respectively.  Each entry is an ~[[id:...][Scene Heading]]~ link, followed by the parent chapter name for a novel; a short story's entries carry no such suffix, since there is no chapter to name.
 
-8. *Open TODO Scenes* — a full list of scenes whose TODO state is not DONE, with the state keyword in square brackets and a clickable scene link (again with the chapter-name suffix only for a novel).
+8. *Story Time* (whenever the manuscript has scenes) — how many scenes have a story time that can be read, which have none or one that cannot be read, the dates that cannot be placed (no Day 1, or an incomplete calendar), and the jumps back in time, which are listed and never flagged as errors.  A project that has not started on story time gets a single line instead of a list of every scene.
 
-The function requires a project with a detectable manuscript file (~novel.org~/~novela.org~ for a novel, ~story.org~/~cuento.org~ for a short story) and gracefully handles missing character or location database files.  Orphan detection is skipped for entity types whose linking module is not loaded.
+9. *Broken Links* (always shown, with a count) — scene properties that link to an entity that no longer exists (deleted, or renamed in a way that lost its ID).
+
+10. *Duplicate Names* (only when there are any) — distinct entities sharing one name, which completion would merge into a single item.
+
+11. *Orphaned Entities* — characters, locations, objects, plot threads and, when the project defines them, plot points whose IDs do not appear in any scene property.  An entity is considered orphaned if its org ID is absent from every ~:PoV:~, ~:Characters:~, ~:Location:~, ~:Objects:~, ~:Plot:~ and ~:Plot-point:~ property across all scenes.  For plot points, an orphan is one of the thirteen non-negotiables no scene serves — the method's own check, made automatic.  Orphaned entities represent planning work not yet woven into the manuscript.
+
+12. *Open TODO Scenes* — a full list of scenes whose state is not a done state (~FINISHED~, ~PURGE~ — the manuscript's ~org-done-keywords~), with the state keyword in square brackets and a clickable scene link (again with the chapter-name suffix only for a novel).
+
+The function requires a project with a detectable manuscript file (~novel.org~/~novela.org~ for a novel, ~story.org~/~cuento.org~ for a short story) and gracefully handles a missing design notebook.  Orphan detection is skipped for entity types whose linking module is not loaded.
 
 *Status*: Fully implemented | *Hydra*: ~H~ (Manage section, visible in hint) | *Module*: ~reporting/org-scribe-health.el~
 
@@ -670,7 +698,7 @@ The function requires a project with a detectable manuscript file (~novel.org~/~
 
 ** Unified Hydra Menu (~hydra-org-scribe/body~)
 
-Provides a single-keystroke menu for accessing all org-scribe features. Activated via ~F8~ (default keybinding), the main hydra displays a formatted menu organized into sections: Insert (scene/chapter/open file), Workspace (write/focus/edit/navigate/normal), Tag Scene (set PoV/characters/locations/objects/plot threads/plot point on the current scene; jump to PoV), Tools (word count, dictionary, synonyms, thesaurus, word target, title, story time), Search (by PoV/character/plot/location/TODOs/edits/object), and Manage (capture note, capture-entity submenu, links & upkeep submenu, relink project, project health report, planner submenu). Two further tiers keep the everyday surface small: ~F8 k~ opens the capture-entity submenu (new character/location/object/timeline/plot thread/note), and ~F8 L~ opens the links & upkeep submenu (one-time setup per entity type, relationships, plot analysis, display toggles). Each function is accessible via a single key. The hydra uses color-coded hints and grouped layout for quick visual scanning.
+Provides a single-keystroke menu for accessing all org-scribe features. Activated via ~F8~ (default keybinding), the main hydra displays a formatted menu organized into sections: Insert (scene/chapter/open file), Workspace (write/focus/edit/navigate/normal), Tag Scene (set PoV/characters/locations/objects/plot threads/plot point on the current scene; jump to PoV), Tools (word count, dictionary, synonyms, thesaurus, word target, title, story time, snapshot scene, compare snapshot), Search (by PoV/character/plot/location/TODOs/edits/object), and Manage (capture note, capture-entity submenu, links & upkeep submenu, relink project, project health report, planner submenu, compile manuscript, visual companion board). Two further tiers keep the everyday surface small: ~F8 k~ opens the capture-entity submenu (new character/location/object/timeline/plot thread/note), and ~F8 L~ opens the links & upkeep submenu (one-time setup per entity type, relationships, plot analysis, display toggles). Each function is accessible via a single key. The hydra uses color-coded hints and grouped layout for quick visual scanning.
 
 *Status*: Fully implemented | *Hydra*: ~F8~ (global keybinding) | *Module*: ~ui/org-scribe-hydra.el~
 
@@ -682,7 +710,7 @@ A submenu accessed via ~F8 k~ providing access to all six capture-new-entity com
 
 ** Links & Upkeep Submenu (~hydra-org-scribe-links/body~)
 
-Accessed via ~F8 L~, this submenu covers everything that isn't an everyday scene-tagging or capture action: whole-project upkeep (~R~: relink everything — adds missing IDs, links plain names, and refreshes display names across every entity type in one pass; ~j~: jump to plot thread), one-time set-up per entity type (~c~: characters, ~o~: locations, ~p~: plot threads, ~r~: relationships), relationship management (~a~: add, ~x~: remove, ~v~: view one character's relationships, ~V~: view all relationships as a table), and analysis/display toggles (~t~: plot health report, ~S~: plot statistics, ~C~: column view toggle, ~T~: entity tooltips toggle). This single ~R~ command (also bound at the top level) replaced the older separate per-entity add-ids/link/update-names commands that a previous version of this menu exposed here individually.
+Accessed via ~F8 L~, this submenu covers everything that isn't an everyday scene-tagging or capture action: whole-project upkeep (~R~: relink everything — adds missing IDs, links plain names, and refreshes display names across every entity type in one pass; ~D~: spelling dictionary; ~j~ and ~J~: jump to a plot thread or to a plot point), one-time set-up per entity type (~c~: characters, ~o~: locations, ~b~: objects, ~p~: plot threads, ~P~: plot points, ~r~: relationships), relationship management (~a~: add, ~x~: remove, ~v~: view one character's relationships, ~V~: view all relationships as a table), and analysis/display toggles (~t~: plot health report, ~S~: plot statistics, ~C~: column view toggle, ~T~: entity tooltips toggle). This single ~R~ command (also bound at the top level) replaced the older separate per-entity add-ids/link/update-names commands that a previous version of this menu exposed here individually.
 
 *Status*: Fully implemented | *Hydra*: ~F8 L~ | *Module*: ~ui/org-scribe-hydra.el~
 
@@ -817,6 +845,36 @@ Selects what ~org-scribe-editing-mode~ displays in its right pane. ~notes~ (the 
 
 *Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
 
+** Fallback Language (~org-scribe-fallback-language~)
+
+The language a message falls back to when its key is missing from the requested language's pack (default ~'en~). It is distinct from ~org-scribe-message-language~ (which language the interface uses) and from the project language recorded in ~.org-scribe-project~ (which language a project's own files are in), and only matters when a translation is genuinely absent; a key missing from the fallback pack too shows its own name rather than an error.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~, ~lang/org-scribe-lang.el~
+
+** Project-Wide Refile Targets (~org-scribe-refile-project-wide~)
+
+When non-nil (the default), ~org-refile-targets~ points at every file of the current project — the manuscript, the design notebook and the plan — with every heading level offered, and ~org-refile-use-outline-path~ is set to ~file~ so each candidate names its file. ~C-c C-w~ can then move a loose note under the right character, or a scene between chapters, without switching buffers. It applies only in buffers where ~org-scribe-mode~ is on, inside a recognized project; elsewhere, or with this set to nil, your own ~org-refile-targets~ is left untouched. It defaults to on because it never edits a buffer or runs on save: it only changes what ~org-refile~ offers.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
+
+** Automatic Relink on Save (~org-scribe-auto-relink~)
+
+When non-nil, saving the design notebook while the manuscript is open refreshes the stale display names of ID links in the manuscript's scene properties, so a renamed entity shows its new name. The manuscript buffer is modified but not saved, and a message reminds you to save it; a manuscript that is not open is never opened as a side effect. Default ~nil~, so saving never edits another buffer unexpectedly; ~F8 R~ (~org-scribe-relink-project~) does the same and more by hand.
+
+*Status*: Fully implemented (opt-in) | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~, ~linking/org-scribe-link-update.el~
+
+** IDs from the Automatic Word Count (~org-scribe-auto-wordcount-mint-ids~)
+
+~org-scribe-ews-org-count-words~ (~F8 a~) adds an ~:ID:~ to every heading it visits that lacks one, so scenes can be linked. When ~org-scribe-auto-wordcount~ re-runs it silently on every save, that would mean merely saving inserts property drawers you never asked for. So the save-triggered count only refreshes ~:WORDCOUNT:~ unless this variable is non-nil (default ~nil~). Running ~F8 a~, or ~F8 w~ with one ~C-u~, always mints IDs regardless.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~, ~counting/org-scribe-wordcount.el~
+
+** Timeline Symbols (~org-scribe-timeline-pov-symbol~ / ~org-scribe-timeline-present-symbol~)
+
+The marks used by the ~character-timeline~ dynamic block: ~org-scribe-timeline-pov-symbol~ (default ~★~) in the cell of the scene's PoV character, and ~org-scribe-timeline-present-symbol~ (default ~●~) for a character present but not PoV. The PoV mark implies presence, so the two never share a cell. Pick symbols that stand apart in your font.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
+
 * Writing Planner
 :PROPERTIES:
 :CUSTOM_ID: integrations
@@ -883,9 +941,15 @@ A pattern spreads the words unevenly over the writing days — steady, valley, m
 
 ** Status and Adjusting from Progress (~org-scribe-planner-check-progress~)
 
-The plan's status — on track, or ahead/behind in words, percent and writing days measured along the plan's own schedule — compares where you should be by the end of today (today's goal included) with everything written. ~c~ alone measures the days that are over, so an unwritten morning doesn't prompt an adjustment. It appears in the calendar summary and after every sync. ~c~ (Check progress) offers the fitting adjustments; ~a~ (~org-scribe-planner-adjust-remaining-plan~) keeps the end date and re-spreads the words left; ~e~ (~org-scribe-planner-adjust-end-date~) keeps the daily target and moves the end date. Each shows its outcome first and changes only the days from today on (from tomorrow if today already has words).
+The plan's status — on track, or ahead/behind in words, percent and writing days measured along the plan's own schedule — compares where you should be by the end of today (today's goal included) with everything written. ~c~ alone measures the days that are over (through yesterday), so an unwritten morning doesn't prompt an adjustment; the project health report's Writing Plan status uses the same through-yesterday measure. The end-of-today status appears in the calendar summary, after every sync and in the companion's progress view. ~c~ (Check progress) offers the fitting adjustments, and adds a note when the last recalculation is out of date (see the next entry); ~a~ (~org-scribe-planner-adjust-remaining-plan~) keeps the end date and re-spreads the words left; ~e~ (~org-scribe-planner-adjust-end-date~) keeps the daily target and moves the end date. Each shows its outcome first and changes only the days from today on (from tomorrow if today already has words).
 
 *Status*: Fully implemented | *Hydra*: ~W c~, ~W a~, ~W e~ | *Module*: ~planning/org-scribe-planner.el~
+
+** Out-of-Date Recalculations (~org-scribe-planner-offer-refresh-on-new-day~)
+
+A recalculation from progress made while you are still writing on a day credits that day with the words it had at that moment. Words written afterwards, or a day that ends below the goal it was credited with, leave the recalculation /out of date/: the plan line no longer counts them, and they only show as being ahead. The planner never fixes this behind your back. The calendar summary shows an ~Out of date:~ line (the words the recalculation counted through that day, the words recorded there now, and the gap, with a hint to press ~a~), and ~c~ (Check progress) adds the same note. On the first word count of a new day, when yesterday is closed, the planner previews a recalculation that keeps the end date and asks whether to apply it; it asks at most once a day per plan file, never in batch mode, and changes nothing unless you say yes. Declining with ~C-g~, or an error in the recalculation, never costs the day its word-count entry. Set ~org-scribe-planner-offer-refresh-on-new-day~ (default ~t~) to nil to keep the notes but drop the question.
+
+*Status*: Fully implemented | *Type*: defcustom (~org-scribe-planner~ group) | *Module*: ~planning/org-scribe-planner.el~
 
 ** Weekly Summary, Month Grid and Milestones
 
@@ -905,6 +969,12 @@ Words written outside the manuscript — another file, a notebook — are record
 
 *Status*: Fully implemented | *Hydra*: ~W r~ | *Module*: ~planning/org-scribe-planner.el~
 
+** Planner Directory and Calendar Buffer (~org-scribe-planner-directory~ / ~org-scribe-planner-calendar-buffer~)
+
+~org-scribe-planner-directory~ (default ~writing-projects/~ under ~org-directory~) is the fallback for plans outside a project: the plan-file picker starts there when there is no project root, and a new plan is offered there when it is not created from inside a project (inside one, the project root is offered instead). ~org-scribe-planner-calendar-buffer~ (default ~*Writing Plan Calendar*~) names the buffer the plan calendar is shown in.
+
+*Status*: Fully implemented | *Type*: defcustom (~org-scribe-planner~ group) | *Module*: ~planning/org-scribe-planner.el~
+
 * Visual Companion
 :PROPERTIES:
 :CUSTOM_ID: visual-companion
@@ -920,32 +990,45 @@ Two switches keep it out of the way: ~org-scribe-companion-enable~ (global, defa
 
 See [[file:getting-started-19-companion.org][Lesson 19]] for a step-by-step tutorial.
 
+** Per-Project Companion Switch (~org-scribe-companion-enable-for-project~ / ~-disable-for-project~)
+
+Write ~# Companion: yes~ or ~# Companion: no~ in the current project's ~.org-scribe-project~ without waiting for the first-open question. Disabling also stops the companion's server when it is serving this project, so the page cannot go on sending edits. The global ~org-scribe-companion-enable~ switch still has to be on for the companion to run at all.
+
+*Status*: Fully implemented | *Hydra*: Not in menu (interactive only) | *Module*: ~core/org-scribe-core.el~
+
+** Companion Settings (~org-scribe-companion-port~, ~-raise-frame~, ~-todo-colors~, ~-app-mode-browsers~)
+
+~org-scribe-companion-port~ (default ~35920~) is the preferred port of the local server, which listens on 127.0.0.1 only; when it is taken, the next free ports are tried. ~org-scribe-companion-raise-frame~ (default ~t~) raises the Emacs frame when the page asks to go to a heading. ~org-scribe-companion-todo-colors~ maps each state keyword to the CSS colour of its cards (~TOWRITE~ blue, ~TOREVIEW~ violet, ~REDO~ red, ~RESTRUCTURE~ pink, the done states ~FINISHED~ and ~PURGE~ muted grey; unlisted keywords get a neutral colour). ~org-scribe-companion-app-mode-browsers~ lists the executables ~org-scribe-companion-browse-app-mode~ tries, in order, to open the page as a window without browser chrome (~chromium~, ~google-chrome~, ~brave-browser~, ~microsoft-edge~), falling back to ~browse-url~ when none is found; set ~org-scribe-companion-browser-function~ to that function to use it.
+
+*Status*: Fully implemented | *Type*: defcustom | *Module*: ~core/org-scribe-config.el~
+
 * Feature Statistics
 
 ** Summary by Category
 
 | Category                 | Feature Count |
 |--------------------------+---------------|
-| Project Management       |             6 |
+| Project Management       |            10 |
 | Writing Modes            |             5 |
 | Word Counting & Tracking |             5 |
 | Capture System           |             8 |
-| Linking System           |            19 |
-| Search Tools             |             7 |
+| Linking System           |            22 |
+| Search Tools             |            10 |
 | Templates                |             5 |
 | Dictionary & Language    |             9 |
-| Export Tools             |             3 |
+| Export Tools             |             5 |
 | Column View              |             3 |
 | Analysis Tools           |             1 |
-| UI & Navigation          |             6 |
-| Configuration            |            20 |
-| Writing Planner          |            11 |
+| UI & Navigation          |             5 |
+| Configuration            |            24 |
+| Writing Planner          |            13 |
+| Visual Companion         |             3 |
 |--------------------------+---------------|
-| *Total Features*           |           108 |
+| *Total Features*         |           128 |
 
 ** Implementation Status
 
-All 108 features are fully implemented and tested. The package is in active use and stable (version 0.9.1).
+All 128 features are fully implemented and tested. The package is in active use and stable (version 0.9.1).
 
 * Next Steps
 
@@ -956,7 +1039,7 @@ This index remains the place to look a feature up by name.
 * Document Metadata
 
 - *Created*: 2025-11-16
-- *Last Updated*: 2026-10-29
+- *Last Updated*: 2026-11-03
 - *Package Version*: 0.9.1
-- *Total Features Documented*: 108 (97 core + 11 bundled planner)
+- *Total Features Documented*: 128 (115 core + 13 bundled planner)
 - *Status*: Complete feature extraction; detailed documentation lives in the getting-started lessons

@@ -903,10 +903,10 @@ searches and reports.
 
 Open ~design.org~ and find your new plot thread entry. It should be a heading
 directly under "Plot Threads", with an ID property (shown here as it would
-look in a short story; in a novel it is two levels deeper):
+look in a short story; in a novel it is one level deeper):
 
 #+BEGIN_EXAMPLE
-* Sam and the Question of Trust
+,** Sam and the Question of Trust
 :PROPERTIES:
 :ID: 20251124-abcd1234
 :THREAD-TYPE: Subplot

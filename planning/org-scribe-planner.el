@@ -161,11 +161,11 @@ calendar's weeks, the weekly summary, the month grid and the heatmap."
   :group 'org-scribe-planner)
 
 (defcustom org-scribe-planner-streak-grace-days 2
-  "Number of days without a new entry before a writing streak is broken.
-A value of 2 means the streak survives if the last logged entry was
-yesterday or the day before today, which accommodates logging words
-the morning after you wrote them.  Set to 1 to require an entry
-every day without any tolerance."
+  "How many days, today included, the last written day may lie behind.
+A value of 2 means the streak survives while the last written day is
+yesterday, which accommodates logging words the morning after you wrote
+them; each day more tolerates one more missed writing day.  Set to 1 to
+count the streak only once today's words are in."
   :type 'integer
   :group 'org-scribe-planner)
 
@@ -1235,20 +1235,23 @@ batch mode."
   :group 'org-scribe-planner)
 
 (defvar org-scribe-planner--refresh-offered nil
-  "The date the stale-recalculation offer was last made, or nil.")
+  "Where and when the stale-recalculation offer was last made, or nil.
+A cons (PLAN-FILE . DATE), so an offer for one project doesn't silence
+another's the same day.")
 
 (defun org-scribe-planner--offer-refresh (plan file)
   "Offer to recalculate PLAN, saved in FILE, when its recalculation is stale.
 Once a day.  Changes nothing unless the answer is yes.  Return non-nil
 when the plan was recalculated."
-  (let ((today (org-scribe-planner--get-today-date)))
+  (let* ((today (org-scribe-planner--get-today-date))
+         (offered (cons (and file (expand-file-name file)) today)))
     (when-let* (((and org-scribe-planner-offer-refresh-on-new-day
                       (not noninteractive)
-                      (not (equal org-scribe-planner--refresh-offered today))))
+                      (not (equal org-scribe-planner--refresh-offered offered))))
                 (stale (org-scribe-planner--rebase-stale plan))
                 (as-of (org-scribe-planner--default-recalculation-date plan))
                 ((not (org-scribe-planner--recalculation-problem plan as-of))))
-      (setq org-scribe-planner--refresh-offered today)
+      (setq org-scribe-planner--refresh-offered offered)
       (let ((preview (org-scribe-planner--copy-plan plan)))
         (org-scribe-planner--rebase-keeping-end-date preview as-of)
         (when (y-or-n-p (format "%s.\n%s\nRecalculate now? "
@@ -2803,9 +2806,7 @@ If FILEPATH is not provided, generate a default filename in org-scribe-planner-d
                                        (org-scribe-plan-locked-goals plan) ",")))
         (unless (zerop (or (org-scribe-plan-schedule-adjustment plan) 0))
           (org-set-property "SCHEDULE_ADJUSTMENT"
-                            (number-to-string (org-scribe-plan-schedule-adjustment plan)))
-          (when-let* ((rebased (org-scribe-planner--rebase-date plan)))
-            (org-set-property "REBASED_FROM" rebased)))
+                            (number-to-string (org-scribe-plan-schedule-adjustment plan))))
         ;; Kept even with no adjustment: a recalculation that credited the
         ;; day with its goal is out of date if the day ends below it
         (when (org-scribe-plan-rebased-from plan)
@@ -5191,8 +5192,14 @@ plan.org on every count."
         (org-scribe-planner--lock-past-goals plan)
         ;; The first count of a new day: yesterday is closed, so a stale
         ;; recalculation can be offered before today's words are recorded
+        ;; An offer that is declined with C-g, or fails, must not cost
+        ;; the day its first entry
         (unless existing
-          (org-scribe-planner--offer-refresh plan file))
+          (condition-case err
+              (org-scribe-planner--offer-refresh plan file)
+            (quit nil)
+            (error (message "Plan recalculation skipped: %s"
+                            (error-message-string err)))))
         ;; Upsert today's entry, preserving any hand-written note
         (if existing
             (setcdr existing entry-data)

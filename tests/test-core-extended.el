@@ -460,16 +460,16 @@ misread as scenes."
 (ert-deftest test-core-heading-text-strips-keywords-only-in-capitals ()
   "A keyword is stripped; an ordinary word spelled like one is a name."
   (with-temp-buffer
-    (insert "#+TODO: OPEN(o) EXPLORING(e) | CHOSEN(c) REJECTED(x)\n"
-            "* TODO Mr Smith\n* Todo o nada\n* Open Range\n"
-            "* Chosen One\n* Waiting Room\n* Redo Street\n* OPEN Question\n")
+    (insert "#+TODO: DRAFT(d) WAITING(w) | SETTLED(s) DROPPED(x)\n"
+            "* TODO Mr Smith\n* Todo o nada\n* Draft Range\n"
+            "* Settled One\n* Waiting Room\n* Redo Street\n* DRAFT Question\n")
     (org-mode)
     (goto-char (point-min))
     (let (names)
       (while (outline-next-heading)
         (push (org-scribe--heading-text) names))
       (should (equal (nreverse names)
-                     '("Mr Smith" "Todo o nada" "Open Range" "Chosen One"
+                     '("Mr Smith" "Todo o nada" "Draft Range" "Settled One"
                        "Waiting Room" "Redo Street" "Question"))))))
 
 (ert-deftest test-core-end-of-subtree-stops-before-local-variables ()

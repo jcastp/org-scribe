@@ -4,7 +4,7 @@
 #+LANGUAGE: es
 #+STARTUP: overview
 #+SOURCE: ../manual/getting-started-05-locations-settings.org
-#+SOURCE_COMMIT: 6a76f0a
+#+SOURCE_COMMIT: 826b74e
 
 /[[file:../manual/getting-started-05-locations-settings.org][English version]]/
 

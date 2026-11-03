@@ -350,8 +350,8 @@ Press ~F8~ then ~k~ (capture-entity submenu) then ~t~ (timeline event):
 #+BEGIN_EXAMPLE
 ,* Tuesday Morning - Coffee Shop Meeting
 :PROPERTIES:
-:ID: 20251116123456
-:Type:
+:ID: 2d7c5e90-1a4b-4f36-b8d2-93e0a6c1f457
+:Type: Action
 :Relevance:
 :Date: Day 3 of the story
 :Time:
@@ -361,9 +361,20 @@ Press ~F8~ then ~k~ (capture-entity submenu) then ~t~ (timeline event):
 :Chapter:
 :END:
 
-,*** Notes
+,** Description
 This is 2 days after the opening scene. Alex has been avoiding the office.
+
+,** Consequences
+-
+
+,** Connections
+- Links to:
+
+,** Notes
+-
 #+END_EXAMPLE
+
+The event is filed under the Timeline section of your design notebook, and Org adjusts its level to fit there. A short story's event has no ~:Chapter:~ line.
 
 Noted. Continue writing.
 

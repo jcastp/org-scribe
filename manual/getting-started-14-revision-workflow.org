@@ -1085,12 +1085,41 @@ Org-mode's TODO system is perfect for tracking revision work.
 
 ** Setting Up TODO Keywords
 
-Add to top of your manuscript file:
+Your manuscript comes with a revision-ready set already. Its first lines
+declare:
 
 #+BEGIN_EXAMPLE
-#+TODO: DRAFT | REVISED POLISHED
-#+TODO: FIX EXPAND CUT | DONE
+#+TODO: TOWRITE(h) TOREVIEW(j@/!) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(p@/!)
 #+END_EXAMPLE
+
+- ~TOWRITE~ - not written yet
+- ~TOREVIEW~ - written, waiting for its revision
+- ~REDO~ - broken or wrong: rewrite it
+- ~RESTRUCTURE~ - needs a structural change (move, split, merge)
+- ~FINISHED~ - done
+- ~PURGE~ - cut from the book
+
+Change a scene's state with ~C-c C-t~ and the letter in brackets.
+~TOREVIEW~, ~REDO~, ~RESTRUCTURE~ and ~PURGE~ carry an ~@~, so Org asks for
+a note as you enter them and the reason stays in the scene's log; the ~!~
+records a timestamp. ~FINISHED~ and ~PURGE~ are the done states.
+
+Want a stage of your own? This lesson uses ~REVISED~ for a scene that has
+had its scene-level pass but not its line edit. Add it to that line:
+
+#+BEGIN_EXAMPLE
+#+TODO: TOWRITE(h) TOREVIEW(j@/!) REVISED(r) REDO(k@/!) RESTRUCTURE(n@/!) | FINISHED(l!) PURGE(p@/!)
+#+END_EXAMPLE
+
+and press ~C-c C-c~ on it so Org rereads it. Any word you add must also go
+in ~org-scribe-todo-keywords~, or ~F8 5~ (Search TODOs) won't find it:
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-scribe-todo-keywords "REVISED" t)
+#+END_SRC
+
+The health report's Scenes by Status table (~F8 H~) counts every state it
+finds, yours included.
 
 ** Marking Scenes with TODO States
 
@@ -1098,7 +1127,7 @@ As you work through revision:
 
 *Scene not yet revised*:
 #+BEGIN_EXAMPLE
-,*** DRAFT Scene 1 - Opening
+,*** TOREVIEW Scene 1 - Opening
 #+END_EXAMPLE
 
 *Scene revised but needs polish*:
@@ -1108,7 +1137,7 @@ As you work through revision:
 
 *Scene completely finished*:
 #+BEGIN_EXAMPLE
-,*** POLISHED Scene 3 - Discovery
+,*** FINISHED Scene 3 - Discovery
 #+END_EXAMPLE
 
 ** Problem Markers
@@ -1116,15 +1145,15 @@ As you work through revision:
 Mark specific issues:
 
 #+BEGIN_EXAMPLE
-,*** FIX Scene 4 - Backstory
+,*** REDO Scene 4 - Backstory
 - Problem: Pacing too slow
-- Action: Cut first 3 paragraphs
+- Action: Cut first 3 paragraphs, rewrite the rest
 
-,*** EXPAND Scene 5 - Confrontation
-- Problem: Dialogue too brief
-- Action: Add 200 words of argument
+,*** RESTRUCTURE Scene 5 - Confrontation
+- Problem: Comes before the reader knows what is at stake
+- Action: Move it after Scene 7
 
-,*** CUT Scene 6 - Filler
+,*** PURGE Scene 6 - Filler
 - Problem: Doesn't advance plot
 - Action: Archive this scene
 #+END_EXAMPLE
@@ -1135,10 +1164,10 @@ View all revision work at once:
 
 1. ~C-c a t~ (org-agenda todo list)
 2. See all scenes by status:
-   - All DRAFT scenes (not revised yet)
-   - All FIX scenes (problems identified)
-   - All EXPAND scenes (need more content)
-   - All CUT scenes (to be deleted)
+   - All TOREVIEW scenes (not revised yet)
+   - All REDO scenes (to rewrite)
+   - All RESTRUCTURE scenes (to move, split or merge)
+   - ~FINISHED~ and ~PURGE~ scenes are done, so they drop out
 
 3. Press ~RET~ on any item to jump to it
 4. Work through list systematically
@@ -1223,7 +1252,7 @@ Here's a systematic approach integrating all tools:
 
 Morning session (1-2 hours):
 1. ~F8 e~
-2. Select next DRAFT scene (outline panel)
+2. Select next TOREVIEW scene (outline panel)
 3. Read scene against checklist (notes panel)
 4. Identify problems
 5. Don't fix yet - just mark issues
@@ -1251,7 +1280,7 @@ Full day session (4-6 hours):
 6. Improve rhythm
 7. Use ~F8 y~ for synonym lookup
 8. Use ~F8 d~ for word verification
-9. Mark scene as POLISHED
+9. Mark scene as FINISHED
 
 Target: 3-5 scenes per day
 
@@ -1415,7 +1444,7 @@ In notes:
 - Status: REVISED (ready for line editing later)
 #+END_EXAMPLE
 
-In manuscript, change TODO state:
+In manuscript, change TODO state (~C-c C-t~):
 #+BEGIN_EXAMPLE
 ,*** REVISED Scene [X] - [Title]
 #+END_EXAMPLE
@@ -1454,7 +1483,7 @@ Revision transforms your first draft into a polished manuscript using systematic
 
 ✓ *TODO Management*
   - Mark scenes by revision status
-  - Track problems (FIX, EXPAND, CUT)
+  - Track problems (REDO, RESTRUCTURE, PURGE)
   - Use org-agenda for overview
   - Systematic progress tracking
 
@@ -1525,7 +1554,7 @@ PASS 3: LINE EDITING
 □ Check word repetition
 □ Use dictionary/synonyms (F8 d/y)
 □ Improve rhythm & variety
-□ Mark scenes POLISHED
+□ Mark scenes FINISHED
 
 FINAL CHECK
 □ Full manuscript read-through

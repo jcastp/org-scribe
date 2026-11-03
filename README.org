@@ -64,7 +64,7 @@
 - *Edit Marker Index*: Collects the =*EDIT*= / =*NOTE*= markers you leave inline while drafting into one navigable buffer, grouped by category, each linking back to its exact line. Markers live in Org comment blocks, so they never reach your exported manuscript and never inflate your word counts
 - *Dictionary Tools*: definitions and synonyms that both work *offline* when the local data is installed — a Wikcionario served by kiwix-serve for definitions, the system thesaurus for synonyms — falling back to the online RAE otherwise. Inflected words resolve either way, so looking up =corriendo= finds =correr=
 - *Capture System*: Project-aware note capture that finds the right notes file; character/location/object/timeline/plot-thread templates are fully localized to the project's own language (English/Spanish), independent of your global UI language setting
-- *Project Health Report*: =org-scribe-project-health= aggregates the Starting Gate (how many of its eight items are done, two of them measured rather than self-reported), word-count progress, scene completion by TODO state, scenes missing critical properties, orphaned characters/locations, plot points no scene serves yet, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 H=)
+- *Project Health Report*: =org-scribe-project-health= aggregates the Starting Gate (how many of its eight items are done, two of them measured rather than self-reported), word-count progress, scene completion by TODO state, scenes missing critical properties, links to deleted entities, orphaned entities, plot points no scene serves yet, and open TODOs in a single =*org-scribe-health*= buffer with clickable links (=F8 H=)
 - *Export Filters*: Scene break replacement for different export backends
 - *Manuscript Compilation*: =org-scribe-compile= (=F8 X=) turns the working file — apparatus sections, act/chapter/scene structure, property drawers, edit markers and all — into a clean, readable document. Chapters become visible headings, scenes stay silent, breaks between them are derived from structure rather than typed. Formats: Org, plain text, Markdown, ODT need nothing beyond Emacs; PDF (via a LaTeX distribution) and DOCX (via pandoc) are available when those optional tools are installed, reported by =org-scribe-setup-check= like any other optional dependency. The intermediate =.org= file is always kept beside the output, so a compile that looks wrong is inspectable
 - *Hydra Menu*: Unified keyboard-driven menu for quick access to all functions
@@ -136,7 +136,6 @@ active and which are missing, with install hints.
 - [[https://github.com/lorniu/gt.el][gt]] - For translation support
 - [[https://github.com/SavchenkoValeriy/emacs-powerthesaurus][powerthesaurus]] - For English thesaurus
 - [[https://github.com/minad/tempel][tempel]] - For the bundled inline edit marker snippets (see [[*Inline Edit Markers][Inline Edit Markers]])
-- [[https://github.com/nobiot/org-remark][org-remark]] - For text annotations
 - [[https://elpa.gnu.org/packages/org-contrib.html][org-contrib]] (for =ox-extra=) - Makes the =:ignore:= tag on scene/chapter
   headings actually drop the title from export while keeping its body.
   Without it the tag is inert and exported manuscripts show raw TODO
@@ -1170,21 +1169,26 @@ Generates an aggregated health snapshot of the current project — novel or
 short story — and opens it in the =*org-scribe-health*= buffer as a
 browsable org file with clickable =[[id:...]]= links back to each scene.
 
-The report contains the sections below, plus a Writing Plan section when the bundled
-writing planner is active and a Story Time section when scenes have a =:Timeline:=; one of the seven, *Chapter Length
-Spread*, only appears for a project type that has chapters:
+The report contains the sections below, in this order. Some appear only when
+they have something to say: the Writing Plan when the bundled writing planner
+is active, the Starting Gate when the design notebook has one, Chapter Length
+Spread for a project type that has chapters, Story Time when scenes have a
+=:Timeline:=, and Duplicate Names when there are any:
 
 | Section                            | What it shows                                                                                                       |
 |-------------------------------------+---------------------------------------------------------------------------------------------------------------------|
 | *Overview*                           | Manuscript file, scene count, words written, word objective, %; plus a spelling-dictionary line when it drifts      |
-| *Writing Plan* (optional)            | Plan title, target, current %, daily target, end date — only when a plan is loaded and the project hasn't opted out |
-| *Scenes by Status*                   | Count of scenes per TODO state (TODO, DONE, custom keywords)                                                        |
+| *Writing Plan* (optional)            | Plan title, target, current %, daily target, end date, and its status measured through yesterday (=Status (through yesterday) ::=, so an unwritten morning is not "behind") — only when a plan is loaded and the project hasn't opted out |
+| *Starting Gate* (optional)           | The gate's eight items as ticked in the design notebook, the two measured ones (plot points with content, first three scenes written), and where a tick and its measurement disagree |
+| *Scenes by Status*                   | Count of scenes per manuscript state (=TOWRITE=, =TOREVIEW=, =REDO=, =RESTRUCTURE=, =FINISHED=, =PURGE=, any custom keyword; =(none)= for a scene without one) |
 | *Per-PoV Word Share*                 | Scene count and word count per PoV character, with % of total                                                       |
 | *Chapter Length Spread* (novels only) | Per-chapter word totals plus min/max/mean/median across the manuscript                                             |
-| *Missing Properties*                 | Scenes lacking =:PoV:=, =:Plot:=, or =:Location:= — linked                                                          |
-| *Orphaned Entities*                  | Characters/locations in their database but not linked in any scene                                                  |
-| *Open TODO Scenes*                   | Full list with state labels and clickable scene links                                                               |
+| *Missing Scene Properties*           | Pending scenes lacking =:PoV:=, =:Plot:=, or =:Location:= — linked                                                  |
 | *Story Time* (when used)             | Scenes with a story time, scenes without, unreadable values (with the reason), dates lacking a Day 1, and jumps back in time (listed, never flagged) |
+| *Broken Links*                       | Scene links whose entity no longer exists (deleted or merged), with the property and the name                       |
+| *Duplicate Names* (when any)         | Characters, locations, objects or plot threads that share a name with another of their kind                         |
+| *Orphaned Entities*                  | Characters, locations, objects and plot threads not linked in any scene, and plot points no scene serves            |
+| *Open TODO Scenes*                   | Full list with state labels and clickable scene links                                                               |
 
 In a short-story project — which has no chapters — the Chapter Length Spread
 section is omitted entirely, and the =(chapter: ...)= annotation that would
@@ -1209,8 +1213,9 @@ language recorded in =.org-scribe-project=. The marker file is authoritative;
 
 *** Orphan detection
 
-A character or location is considered /orphaned/ if its ID does not appear in
-any scene's =:PoV:=, =:Characters:=, =:Location:=, or =:Plot:= property.
+An entity is considered /orphaned/ if its ID does not appear in any scene's
+=:PoV:=, =:Characters:=, =:Location:=, =:Objects:=, =:Plot:=, or =:Plot-point:=
+property.
 This catches entities added to the planning files but not yet woven into the
 story.
 
@@ -1486,7 +1491,7 @@ heading carrying a state. The outcomes of an answer are that answer's children �
 nest as deep as the question actually goes.
 
 #+BEGIN_EXAMPLE
-* What if Alice's Need isn't forgiveness?                          :branch:
+,* What if Alice's Need isn't forgiveness?                          :branch:
 :PROPERTIES:
 :ABOUT:    [[id:char-alice-001][Alice]]
 :END:
@@ -1494,12 +1499,12 @@ nest as deep as the question actually goes.
 Her Lie is "if I keep the peace nobody leaves". Forgiveness is the
 obvious Need and it is boring.
 
-** DONE A. She needs to stop protecting him
-*** TODO A1. The protection was never asked for
-*** TODO A2. He knows, and has been letting her
-** TODO B. She needs to be believed
+,** DONE A. She needs to stop protecting him
+,*** TODO A1. The protection was never asked for
+,*** TODO A2. He knows, and has been letting her
+,** TODO B. She needs to be believed
    Cheap — collapses into the same beat as chapter 3.
-** CANCELED C. She needs to forgive him
+,** CANCELED C. She needs to forgive him
    Makes the Ghost redundant. Keeping this here so I don't re-derive
    it in two months.
 #+END_EXAMPLE
@@ -1722,7 +1727,8 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
                                   _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
                                   _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
                                                        _S_: Story time                        _B_: Board…
-                                                                                              _q_: Quit
+                                                       _V_: Snapshot scene                    _q_: Quit
+                                                       _C_: Compare snapshot
 #+end_example
 
 *** Insert
@@ -1755,6 +1761,8 @@ Tag the current scene's properties with ID-based links:
 - =x= - English thesaurus (requires =powerthesaurus=)
 - =t= - Set the project word target; =T= - set the title
 - =S= - Set the story-time notation (relative, dates, invented calendar)
+- =V= - Snapshot the current scene into the design notebook's Versions section
+- =C= - Compare the scene with one of its snapshots (ediff)
 
 *** Search
 - =1= - Find scenes by PoV character
@@ -1773,6 +1781,7 @@ Tag the current scene's properties with ID-based links:
 - =H= - Project health report
 - =W= - Writing planner submenu
 - =X= - Compile manuscript (=org-scribe-compile=; prompts for output format)
+- =B= - Open the visual companion (corkboard, table, storyline; needs =org-scribe-companion-enable=)
 
 **** Capture Entity Submenu (F8 k)
 
@@ -1986,10 +1995,20 @@ all through =F8 W r= (What changed?). New plans can start from a preset
 the project's type offered first, and defaults for pattern and weekends can be
 set once (=org-scribe-planner-default-pattern= and friends). Words written outside
 the manuscript — typed, or counted from other files once or on every sync —
-are added to its count, so a plan started with words written elsewhere
-doesn't look behind. The plan stores its number
+are kept and shown ("not counted"), never added: every count the plan records
+is the manuscript's prose. The plan stores its number
 of writing days (=WRITING_DAYS=); its end date follows from them and the spare
 days.
+
+*Out-of-date recalculations.* A recalculation from progress made while you are
+still writing that day credits the day with its words at that moment; words
+added afterwards, or a day that ends below the goal it was credited with,
+leave the plan out of date. The calendar summary then shows an =Out of date:=
+line, =c= (check progress) says so, and on the first word count of a new day
+the planner previews a recalculation that keeps the end date and asks — once
+a day per plan file, never in batch, and nothing changes unless you say yes
+(=C-g= never costs the day its count). =org-scribe-planner-offer-refresh-on-new-day=
+(default =t=) turns the question off.
 
 *** 6. Planner Hydra Sub-menu (=W=)
 
@@ -2018,7 +2037,7 @@ When a plan is active and the project's gate is =yes=, the mode line shows today
 
 *** 8. Project Health Integration
 
-=M-x org-scribe-project-health= includes a =* Writing Plan= section when the planner is loaded and the gate is not =no=, showing title, target, current word count and percentage, daily target, end date, days remaining, and whether you are on track or behind. When no plan is active a hint to run =M-x org-scribe-plan= is shown instead. The section is omitted entirely for a project that has declined the planner.
+=M-x org-scribe-project-health= includes a =* Writing Plan= section when the planner is loaded and the gate is not =no=, showing title, target, current word count and percentage, daily target, end date, days remaining, and whether you are on track or behind, measured through yesterday (=Status (through yesterday) ::=) so that a morning with nothing written yet is not reported as behind; the planner's own status (=F8 W=) measures by the end of today. When no plan is active a hint to run =M-x org-scribe-plan= is shown instead. The section is omitted entirely for a project that has declined the planner.
 
 ** Opting Out of Individual Features
 

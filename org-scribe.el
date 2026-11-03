@@ -228,7 +228,6 @@ the ledger) from working."
      (gt             . "Translation support")
      (powerthesaurus . "English thesaurus")
      (tempel         . "Snippets for inline edit markers (org-scribe-tempel-setup)")
-     (org-remark     . "Text annotations")
      (ox-extra       . "Makes the :ignore: tag on scene/chapter headings actually drop the title from export while keeping its body; part of the org-contrib package. Without it, exported manuscripts show raw TODO keywords and heading titles.")
      ("pdflatex"     . "PDF output from `org-scribe-compile'; needs a LaTeX distribution (TeX Live, MacTeX, or MiKTeX). Without it, `org-scribe-compile' reports the missing tool by name rather than failing partway through.")
      ("pandoc"       . "DOCX output from `org-scribe-compile'; needs the pandoc command-line tool (https://pandoc.org). Without it, `org-scribe-compile' reports the missing tool by name rather than failing partway through.")
