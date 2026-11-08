@@ -1117,10 +1117,17 @@ Shows every Nth date to avoid overcrowding. MAX-LABELS defaults to 10."
                 (insert "\n")
 
                 ;; Use chart.el to create vertical bar chart
-                (let* ((chart-entries (last sorted-entries (min 20 (length sorted-entries))))
+                (let* (;; chart.el divides the window width among the bars,
+                       ;; so more days means narrower columns: fit about
+                       ;; one bar per 3 columns (the chart's axis margin
+                       ;; takes ~15), never fewer than 20 days.
+                       (max-days (max 20 (/ (- (window-width) 15) 3)))
+                       (chart-entries (last sorted-entries (min max-days (length sorted-entries))))
                        (chart-dates (mapcar #'car chart-entries))
                        (chart-words (mapcar #'cdr chart-entries))
-                       (chart-labels (org-scribe-planner--format-date-labels chart-dates 10)))
+                       ;; a "MM-DD" label is 5 columns: one every 3 bars
+                       (chart-labels (org-scribe-planner--format-date-labels
+                                      chart-dates (max 10 (/ (length chart-dates) 3)))))
 
                   (org-scribe-planner--insert-bar-chart
                    (format "Daily Word Counts - %s" (org-scribe-plan-title plan))
