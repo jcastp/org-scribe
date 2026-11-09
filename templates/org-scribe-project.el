@@ -308,7 +308,7 @@ before.  LANGUAGE selects the pack whose labels are shown; defaults to
            (standard (org-scribe-msg 'project-creation-short-story-method-standard))
            (choices (list (cons standard nil)
                           (cons (alist-get 'simple labels) 'simple))))
-      (cdr (assoc (completing-read (org-scribe-msg 'project-creation-method-prompt)
+      (cdr (assoc (completing-read (org-scribe-msg 'project-creation-short-story-method-prompt)
                                    (mapcar #'car choices) nil t nil nil standard)
                   choices)))))
 

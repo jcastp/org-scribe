@@ -495,6 +495,7 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (error-template-not-found . "No se encontró el directorio de plantillas: %s")
      (error-method-not-available . "El método '%s' aún no está disponible")
      (project-creation-short-story-method-standard . "Estándar (por defecto)")
+     (project-creation-short-story-method-prompt . "Estructura del cuento: ")
      (error-org-ql-required . "El paquete org-ql es necesario para las funciones de búsqueda")
      (error-writeroom-required . "writeroom-mode es necesario para los modos de entorno de escritura")
      (error-no-org-file . "El búfer actual no está visitando ningún archivo; no se puede activar `org-scribe-editing-mode'")
