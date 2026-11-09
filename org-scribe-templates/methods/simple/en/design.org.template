@@ -1,0 +1,32 @@
+#+TITLE: ${TITLE} - Design
+#+AUTHOR: ${AUTHOR}
+#+DATE: ${DATE}
+#+LANGUAGE: en
+#+STARTUP: overview hideblocks
+
+#+begin_comment
+The simple method: this notebook holds only the headings org-scribe finds
+things by. There is no template to fill in; what goes under each heading is
+yours.
+
+Add a character, a place, a plot thread, an object or a timeline event as a
+heading directly under its section, and write whatever you like beneath it.
+The capture commands do this for you and ask only for a name. A heading you
+type by hand is recognised as well, once it carries a Role (characters), Type
+(places, objects) or THREAD-TYPE (plot threads) property, which may be blank.
+
+Keep the section headings as they are: org-scribe finds the entities by them.
+Scratchpad is for anything that is not any of these yet. Nothing reads it.
+#+end_comment
+
+* Characters
+
+* Setting
+
+* Plot Threads
+
+* Objects
+
+* Timeline
+
+* Scratchpad

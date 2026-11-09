@@ -124,10 +124,18 @@ language, with no base-set counterpart the way `novel-*'s files have.
 list accounts for every shipped fragment on both sides, the same
 guarantee `test-template-parity-pairing-is-complete' gives the base sets.")
 
+(defconst org-scribe-parity--simple-pairs
+  '(("methods/simple/es/diseno.org.template" . "methods/simple/en/design.org.template"))
+  "Spanish -> English notebook of the simple method, relative to
+`org-scribe-templates/'.  The simple method replaces the whole notebook
+instead of filling a Foundations part, and one flat notebook serves both
+project types, so it is a family of its own with a single pair.")
+
 (defconst org-scribe-parity--all-sets
   '("novel-es" "novel-en" "short-story-es" "short-story-en"
     "methods/helice/es" "methods/helice/en"
-    "methods/matriz/es" "methods/matriz/en")
+    "methods/matriz/es" "methods/matriz/en"
+    "methods/simple/es" "methods/simple/en")
   "Every shipped template set, including the plotting-method overlays.
 Used by the three cross-set checks (no stray `Local Variables' block,
 every template declares its language, and in the shape jinx parses) so
@@ -423,6 +431,92 @@ tolerate."
           (en (org-scribe-parity--shape
                (expand-file-name (concat "org-scribe-templates/" (cdr pair)) org-scribe-parity--root))))
       (should (equal (cons (car pair) (car es)) (cons (car pair) (car en)))))))
+
+(ert-deftest test-template-parity-simple-notebook-pairing-is-complete ()
+  "The simple method ships exactly its declared notebooks, no more."
+  (let ((shipped (sort (mapcar (lambda (f) (file-relative-name
+                                            f (expand-file-name "org-scribe-templates"
+                                                                org-scribe-parity--root)))
+                               (directory-files-recursively
+                                (expand-file-name "org-scribe-templates/methods/simple"
+                                                  org-scribe-parity--root)
+                                ".*"))
+                       #'string<)))
+    (should (equal shipped
+                   (sort (append (mapcar #'car org-scribe-parity--simple-pairs)
+                                 (mapcar #'cdr org-scribe-parity--simple-pairs))
+                         #'string<)))))
+
+(ert-deftest test-template-parity-simple-notebook-is-headings-only ()
+  "Each simple notebook has the six sections, flat, with no property drawers
+and no prose outside the opening hint block, in both languages."
+  (dolist (pair org-scribe-parity--simple-pairs)
+    (dolist (rel (list (car pair) (cdr pair)))
+      (let ((file (expand-file-name (concat "org-scribe-templates/" rel)
+                                    org-scribe-parity--root)))
+        (should (equal '(1 1 1 1 1 1) (car (org-scribe-parity--shape file))))
+        ;; `category' is Org's own file-derived property, not a drawer.
+        (should (null (delete 'category (copy-sequence (cdr (org-scribe-parity--shape file))))))
+        (with-temp-buffer
+          (insert-file-contents file)
+          (goto-char (point-min))
+          (re-search-forward "^\\* ")
+          (let (stray)
+            (while (not (eobp))
+              (let ((line (buffer-substring (line-beginning-position)
+                                            (line-end-position))))
+                (unless (or (string-empty-p line) (string-prefix-p "* " line))
+                  (push line stray)))
+              (forward-line 1))
+            (should-not stray)))))))
+
+(ert-deftest test-template-parity-simple-notebook-headings-are-the-pack-aliases ()
+  "The simple notebook's section headings are exactly the pack's own headings,
+in the template's language, so linking and capture find them."
+  (dolist (spec '(("methods/simple/en/design.org.template" . en)
+                  ("methods/simple/es/diseno.org.template" . es)))
+    (let ((expected (mapcar (lambda (k) (org-scribe-lang-heading k (cdr spec)))
+                            '(characters setting plot-threads objects timeline
+                              scratchpad-part))))
+      (with-temp-buffer
+        (insert-file-contents (expand-file-name
+                               (concat "org-scribe-templates/" (car spec))
+                               org-scribe-parity--root))
+        (org-mode)
+        (should (equal expected
+                       (org-map-entries (lambda () (org-get-heading t t t t)))))))))
+
+(ert-deftest test-template-parity-simple-notebook-reaches-the-project ()
+  "A novel and a short story created with the simple method get the simple
+notebook (no shared notebook content) and the marker, in both languages;
+the manuscript is the unchanged shared one."
+  (require 'org-scribe-project)
+  (dolist (lang '(en es))
+    (dolist (kind '(novel short-story))
+      (let ((base (make-temp-file "org-scribe-simple-" t)))
+        (unwind-protect
+            (let ((project (expand-file-name "Simple" base)))
+              (cl-letf (((symbol-function 'find-file) #'ignore)
+                        ((symbol-function 'project-remember-project) #'ignore))
+                (if (eq kind 'novel)
+                    (org-scribe-create-novel-project base "Simple" lang 'simple)
+                  (org-scribe-create-short-story-project base "Simple" lang nil 'simple)))
+              (should (eq 'simple (org-scribe-project-method project)))
+              (let ((notebook (expand-file-name (org-scribe-lang-file 'design lang)
+                                                project)))
+                (with-temp-buffer
+                  (insert-file-contents notebook)
+                  (should (re-search-forward (format "^#\\+LANGUAGE: %s$" lang) nil t))
+                  (should-not (string-match-p "\\${" (buffer-string)))
+                  (should (equal 6 (length (progn (org-mode)
+                                                  (org-map-entries #'point)))))))
+              (should (file-exists-p
+                       (expand-file-name
+                        (org-scribe-lang-file (if (eq kind 'novel)
+                                                  'manuscript-novel 'manuscript-short)
+                                              lang)
+                        project))))
+          (delete-directory base t))))))
 
 (ert-deftest test-template-parity-method-overlays-property-sets-match ()
   "Each plotting method's ES/EN design file uses the same property keys.

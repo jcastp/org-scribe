@@ -35,7 +35,8 @@
 (defconst org-scribe-refs--template-sets
   '("novel-en" "novel-es" "short-story-en" "short-story-es"
     "methods/helice/en" "methods/helice/es"
-    "methods/matriz/en" "methods/matriz/es")
+    "methods/matriz/en" "methods/matriz/es"
+    "methods/simple/en" "methods/simple/es")
   "Template directories to scan, relative to `org-scribe-templates/'.
 Includes the plotting-method overlay directories (see
 `org-scribe--methods', core/org-scribe-core.el) alongside the base

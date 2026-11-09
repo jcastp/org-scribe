@@ -424,8 +424,12 @@ This function:
                        ,@(org-scribe--word-target-variables target-words language)))
            ;; Resolved before anything is written, so a missing fragment
            ;; cannot leave a half-built directory behind.
-           (foundations (org-scribe--foundations-fragment
-                         method language template-dir variables)))
+           ;; The simple method replaces the whole notebook, so it has no
+           ;; Foundations part to fill.
+           (foundations (if (org-scribe--method-notebook method)
+                            ""
+                          (org-scribe--foundations-fragment
+                           method language template-dir variables))))
 
       ;; Check if project already exists
       (when (file-exists-p project-dir)
@@ -456,7 +460,9 @@ This function:
       ;; method's own fragment (see `org-scribe--foundations-fragment').
       (org-scribe--copy-templates
        template-dir project-dir
-       (cons (cons "FOUNDATIONS" foundations) variables))
+       (cons (cons "FOUNDATIONS" foundations) variables)
+       (org-scribe--method-notebook-skip method language))
+      (org-scribe--deploy-method-notebook method project-dir language variables)
 
       ;; Linking on by default: mint IDs for the template's entities so the
       ;; user never has to run a separate "setup" step (A7).
@@ -562,7 +568,9 @@ This function:
           (warn "%s" (org-scribe-msg 'warn-git-init-failed))))
 
       ;; Process all templates
-      (org-scribe--copy-templates template-dir project-dir variables)
+      (org-scribe--copy-templates template-dir project-dir variables
+                                  (org-scribe--method-notebook-skip method language))
+      (org-scribe--deploy-method-notebook method project-dir language variables)
 
       ;; Mint IDs for the template's characters and settings, as for a
       ;; novel.  Without this they carried `:Role:'/`:Type:' but no `:ID:',
@@ -623,13 +631,48 @@ repository, git is missing, or nothing changed."
                            (format "Add writing plan: %s" title)
                          (format "Record planner choice: %s" title))))))
 
-(defun org-scribe--copy-templates (template-dir project-dir variables)
+(defun org-scribe--method-notebook (method)
+  "Return the `:notebook' directory name of METHOD, or nil.
+Non-nil only for a method whose notebook replaces the shared one (see
+`org-scribe--methods')."
+  (plist-get (alist-get method org-scribe--methods) :notebook))
+
+(defun org-scribe--method-notebook-skip (method language)
+  "Return the template paths the base set must not copy for METHOD.
+That is the shared notebook, when METHOD brings its own (see
+`org-scribe--deploy-method-notebook'); nil otherwise.  Paths are relative
+to the base template directory, as `org-scribe--copy-templates' takes them."
+  (when (org-scribe--method-notebook method)
+    (list (concat (org-scribe-lang-file 'design language) ".template"))))
+
+(defun org-scribe--deploy-method-notebook (method project-dir language variables)
+  "Write METHOD's own design notebook into PROJECT-DIR, if it has one.
+The template is `design.org.template' (or its localized name) under
+`org-scribe-templates/methods/<notebook>/<language code>/'; the output
+takes the project language's design file name.  VARIABLES is as for
+`org-scribe--copy-templates'.  Does nothing for a method with no
+`:notebook'.  Signals a `user-error' when the template is missing."
+  (when-let* ((notebook (org-scribe--method-notebook method)))
+    (let* ((code (plist-get (org-scribe-lang-pack language) :code))
+           (design (org-scribe-lang-file 'design language))
+           (source (expand-file-name
+                    (format "../org-scribe-templates/methods/%s/%s/%s.template"
+                            notebook code design)
+                    org-scribe-project-package-directory)))
+      (unless (file-exists-p source)
+        (user-error "%s" (org-scribe-msg 'error-template-not-found source)))
+      (org-scribe--process-template source (expand-file-name design project-dir)
+                                    variables))))
+
+(defun org-scribe--copy-templates (template-dir project-dir variables &optional skip)
   "Copy and process templates from TEMPLATE-DIR to PROJECT-DIR.
 VARIABLES is an alist of (NAME . VALUE) pairs for substitution.
 Files ending in `.fragment' are inputs to other templates, not project
-files, and are never copied."
+files, and are never copied.  SKIP is a list of paths, relative to
+TEMPLATE-DIR, that are not copied either."
   (dolist (file (directory-files-recursively template-dir ".*"))
-    (unless (string-suffix-p ".fragment" file)
+    (unless (or (string-suffix-p ".fragment" file)
+                (member (file-relative-name file template-dir) skip))
       (let* ((relative-path (file-relative-name file template-dir))
              ;; Remove .template extension if present
              (output-path (expand-file-name

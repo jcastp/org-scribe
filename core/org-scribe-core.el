@@ -355,7 +355,7 @@ Writes \"# Companion: no\" in .org-scribe-project."
   '((sistema . (:overlay nil))
     (helice  . (:overlay "helice"))
     (matriz  . (:overlay "matriz"))
-    (simple  . (:overlay nil :notebook "simple" :hidden t)))
+    (simple  . (:overlay nil :notebook "simple")))
   "Methods known to org-scribe, keyed by their canonical symbol (also the
 literal value written to the \"# Method:\" marker line).  `sistema',
 `helice' and `matriz' are novel plotting methods; `simple' is the absence
@@ -373,10 +373,11 @@ Each value is a plist:
                 holding a whole design notebook that replaces the shared
                 one (as opposed to a Foundations fragment spliced into
                 it).  Only `simple' has one.
-  :hidden     - non-nil while the method is registered but not yet
+  :hidden     - non-nil while a method is registered but not yet
                 deployable: creation neither offers it nor accepts it
-                (`org-scribe--method-offered-p').  Removed from `simple'
-                once its notebook template ships.
+                (`org-scribe--method-offered-p').  No shipped method
+                sets it; it is how a method is registered ahead of its
+                templates.
 
 Creation-prompt labels used to live here too, as `:label-en'/`:label-es'
 plist keys; they moved to each registered language pack's own
