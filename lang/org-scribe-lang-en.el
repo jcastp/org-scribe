@@ -228,7 +228,7 @@
      (capture-tl-name . "Timeline Event")
      (capture-tl-name-prompt . "Event Name")
      (capture-tl-type-prompt . "Type|Action|Revelation|Character|World|Backstory")
-     (capture-tl-date-prompt . "Date/Time in Story")
+     (capture-tl-date-prompt . "Date/Time in Story (e.g. Day 3, 14:00)")
      (capture-tl-characters-prompt . "Characters Involved")
      (capture-tl-location-prompt . "Location")
      (capture-tl-chapter-prompt . "Chapter(s)")

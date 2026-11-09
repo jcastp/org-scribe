@@ -16,6 +16,10 @@ other method but filing no prose. A heading you
 type by hand is recognised as well, once it carries a Role (characters), Type
 (places, objects) or THREAD-TYPE (plot threads) property, which may be blank.
 
+A timeline event's Date is read as story time: Day 3, 14:00 works anywhere.
+A calendar date such as 2020-01-01 needs a Day 1 date (F8 S) to be placed;
+until then it is listed as undated.
+
 Keep the section headings as they are: org-scribe finds the entities by them.
 Scratchpad is for anything that is not any of these yet. Nothing reads it.
 #+end_comment

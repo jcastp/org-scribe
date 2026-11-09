@@ -242,7 +242,7 @@
      (capture-tl-name . "Evento de la Cronología")
      (capture-tl-name-prompt . "Nombre del Evento")
      (capture-tl-type-prompt . "Tipo|Acción|Revelación|Personaje|Mundo|Trasfondo")
-     (capture-tl-date-prompt . "Fecha/Momento en la Historia")
+     (capture-tl-date-prompt . "Fecha/Momento en la Historia (p. ej. Día 3, 14:00)")
      (capture-tl-characters-prompt . "Personajes Involucrados")
      (capture-tl-location-prompt . "Localización")
      (capture-tl-chapter-prompt . "Capítulo(s)")

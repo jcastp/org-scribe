@@ -17,6 +17,11 @@ Un encabezado escrito a mano también se reconoce, siempre que lleve una
 propiedad Role (personajes), Type (lugares, objetos) o THREAD-TYPE (hilos de la
 trama), que puede estar vacía.
 
+La Date de un suceso de la línea temporal se lee como tiempo de la historia:
+Día 3, 14:00 vale en cualquier proyecto. Una fecha de calendario como
+2020-01-01 necesita un Día 1 (F8 S) para colocarse; hasta entonces queda entre
+los sin fecha.
+
 Deja los encabezados de sección como están: org-scribe encuentra las entidades
 por ellos. Borradores es para lo que todavía no es nada de esto. Nada lo lee.
 #+end_comment
