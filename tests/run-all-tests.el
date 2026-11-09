@@ -79,6 +79,7 @@
     "test-character-relationships" ; Character relationship system
     "test-link-update"             ; Link display name updates
     "test-entity-ids"              ; Automatic entity IDs (typed headings)
+    "test-simple-capture"          ; Simple method: name-only capture
     "test-column-view"             ; Column view enhancement
     "test-export"                  ; Export filters
     "test-compile"                 ; Manuscript compilation
@@ -280,11 +281,13 @@ is set too, for the tests that start a fresh Emacs."
   (interactive)
   (load-file (expand-file-name "test-capture.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
+  (load-file (expand-file-name "test-simple-capture.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
   ;; The bare `^test-character-' / `^test-location-' alternatives used to
   ;; pull in the character and location *linking* tests, from files this
   ;; function does not load.  Both are narrowed to the capture-side names
   ;; test-capture.el defines.
-  (ert (concat "^test-capture-"
+  (ert (concat "^test-capture-\\|^test-simple-capture-"
                "\\|^test-character-\\(?:capture\\|template\\)"
                "\\|^test-location-\\(?:capture\\|template\\)"
                "\\|^test-object-\\(?:capture\\|template\\|and\\)\\|^test-timeline-\\|^test-plot-thread-template")))

@@ -466,7 +466,8 @@ once and any prompt appears in Emacs, in the selected frame."
 (defun org-scribe-companion-entity--expand (template name property value id)
   "Return TEMPLATE, a capture template string, filled in without prompts.
 The heading's prompt becomes NAME, the prompt on the PROPERTY line VALUE,
-every other prompt empty; `%(org-id-new)' becomes ID and `%?' goes.
+every other prompt empty; `%(org-id-new)' becomes ID and `%?' goes.  A
+PROPERTY line with no prompt at all takes VALUE too.
 Signals an error on any other %-escape: the template changed shape and
 this function has to learn it."
   (let* ((case-fold-search t)
@@ -483,6 +484,13 @@ this function has to learn it."
                    line t t))
                 (split-string template "\n")
                 "\n")))
+    ;; A template with no prompt on the PROPERTY line (the simple method's
+    ;; bare one) still takes the value the form gave.
+    (unless (string-empty-p value)
+      (setq text (replace-regexp-in-string
+                  (concat "^\\(:" (regexp-quote property) ":\\)[ \t]*$")
+                  (lambda (m) (concat (match-string 1 m) " " value))
+                  text t)))
     (setq text (replace-regexp-in-string "%(org-id-new)" id text t t))
     (setq text (replace-regexp-in-string "%\\?" "" text t t))
     ;; NAME and VALUE went in literally; only the template's own text is checked

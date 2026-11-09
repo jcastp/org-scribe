@@ -182,6 +182,53 @@ captured table reads like the template's without a TAB to realign it."
 ;; function taking an optional LANGUAGE override; callers rebuild the
 ;; list on every capture invocation via `org-scribe--run-capture'.
 
+(defconst org-scribe--simple-capture-specs
+  '((character "c" capture-char-name capture-char-name-prompt
+               org-scribe--capture-goto-characters-section ("Role" "Weight"))
+    (location "l" capture-loc-name capture-loc-name-prompt
+              org-scribe--capture-goto-setting-section ("Type"))
+    (object "o" capture-obj-name capture-obj-name-prompt
+            org-scribe--capture-goto-objects-section ("Type"))
+    (timeline "t" capture-tl-name capture-tl-name-prompt
+              org-scribe--capture-goto-timeline-section ("Date" "Time"))
+    (plot-thread "p" capture-pt-name capture-pt-name-prompt
+                 org-scribe--capture-goto-plot-threads-section
+                 ("THREAD-TYPE" "Weight")))
+  "Per entity kind, what the simple method's capture files.
+Each entry is (KIND KEY MENU-MESSAGE PROMPT-MESSAGE GOTO-FUNCTION
+PROPERTIES): the same key, menu label, name prompt and target section as
+the full capture of that kind, and the blank properties the entity needs.
+Those are the marker its predicate looks for (`Role', `Type',
+`THREAD-TYPE'), `Weight' where it orders a timeline table (characters and
+plot threads), and `Date' and `Time' on a timeline event, which is how the
+chronology finds it.")
+
+(defun org-scribe--simple-method-p ()
+  "Return non-nil when the current project uses the simple method."
+  (eq (org-scribe-project-method) 'simple))
+
+(defun org-scribe--simple-capture-templates (kind)
+  "Return the capture templates of KIND for the simple method, or nil.
+Nil means the current project does not use it, and the caller builds its
+usual template.  The entry asks for a name only and files a heading, a
+fresh `:ID:' and the blank properties of `org-scribe--simple-capture-specs'
+\(never a Weight prompt: it is set later, `-1' hides), with the cursor
+under the drawer for free-form prose.  Built with `concat', like the full
+templates, so `org-capture-fill-template' and the companion's own filler
+(`org-scribe-companion-entity--expand') both read it."
+  (when (org-scribe--simple-method-p)
+    (pcase-let ((`(,key ,menu ,prompt ,goto ,properties)
+                 (cdr (assq kind org-scribe--simple-capture-specs))))
+      `((,key ,(org-scribe-msg menu) entry
+              (file+function org-scribe-capture-target-file ,goto)
+              ,(concat "* %^{" (org-scribe-msg prompt) "}\n"
+                       ":PROPERTIES:\n"
+                       ":ID: %(org-id-new)\n"
+                       (mapconcat (lambda (name) (format ":%s:\n" name))
+                                  properties "")
+                       ":END:\n%?")
+              :empty-lines 1)))))
+
 (defun org-scribe-capture-templates (&optional language)
   "Return capture templates specific to the writing environment.
 LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
@@ -192,7 +239,7 @@ LANGUAGE, if non-nil, overrides `org-scribe-project-language'."
        "* %?\n  %U\n  %i"
        :empty-lines 1))))
 
-(defun org-scribe-character-capture-templates (&optional language)
+(defun org-scribe--full-character-capture-templates (&optional language)
   "Return capture templates for character profiles.
 LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
 
@@ -288,7 +335,7 @@ incompatible profile shapes."
            "** " (m 'capture-char-notes) "\n"))
          :empty-lines 1)))))
 
-(defun org-scribe-location-capture-templates (&optional language)
+(defun org-scribe--full-location-capture-templates (&optional language)
   "Return capture templates for setting profiles.
 LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
 
@@ -340,7 +387,7 @@ In a short-story project the profile is the short-story template's own
            "** " (m 'capture-loc-notes) "\n"))
          :empty-lines 1)))))
 
-(defun org-scribe-object-capture-templates (&optional language)
+(defun org-scribe--full-object-capture-templates (&optional language)
   "Return capture templates for important objects.
 LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
 The sub-headings are one level below the object, so wherever org-capture
@@ -370,7 +417,7 @@ files the entry they sit directly under it."
            "** " (m 'capture-obj-notes) "\n- ")
          :empty-lines 1)))))
 
-(defun org-scribe-timeline-capture-templates (&optional language)
+(defun org-scribe--full-timeline-capture-templates (&optional language)
   "Return capture templates for timeline events.
 LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
 The sub-headings are one level below the event; see
@@ -401,7 +448,7 @@ The sub-headings are one level below the event; see
            "** " (m 'capture-tl-notes) "\n- ")
          :empty-lines 1)))))
 
-(defun org-scribe-plot-thread-capture-templates (&optional language)
+(defun org-scribe--full-plot-thread-capture-templates (&optional language)
   "Return capture templates for plot threads (narrative lines).
 LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
 
@@ -460,6 +507,61 @@ shape in the same notebook."
            "** " (m 'capture-pt-resolution) "\n\n"
            "** " (m 'capture-pt-notes) "\n"))
          :empty-lines 1)))))
+
+(defun org-scribe-character-capture-templates (&optional language)
+  "Return capture templates for characters.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
+The simple method's bare template when the project uses it
+\(`org-scribe--simple-capture-templates'), else the full one,
+`org-scribe--full-character-capture-templates'."
+  (or (let ((org-scribe-message-language
+             (or language (org-scribe-project-language))))
+        (org-scribe--simple-capture-templates 'character))
+      (org-scribe--full-character-capture-templates language)))
+
+(defun org-scribe-location-capture-templates (&optional language)
+  "Return capture templates for setting.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
+The simple method's bare template when the project uses it
+\(`org-scribe--simple-capture-templates'), else the full one,
+`org-scribe--full-location-capture-templates'."
+  (or (let ((org-scribe-message-language
+             (or language (org-scribe-project-language))))
+        (org-scribe--simple-capture-templates 'location))
+      (org-scribe--full-location-capture-templates language)))
+
+(defun org-scribe-object-capture-templates (&optional language)
+  "Return capture templates for objects.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
+The simple method's bare template when the project uses it
+\(`org-scribe--simple-capture-templates'), else the full one,
+`org-scribe--full-object-capture-templates'."
+  (or (let ((org-scribe-message-language
+             (or language (org-scribe-project-language))))
+        (org-scribe--simple-capture-templates 'object))
+      (org-scribe--full-object-capture-templates language)))
+
+(defun org-scribe-timeline-capture-templates (&optional language)
+  "Return capture templates for timeline events.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
+The simple method's bare template when the project uses it
+\(`org-scribe--simple-capture-templates'), else the full one,
+`org-scribe--full-timeline-capture-templates'."
+  (or (let ((org-scribe-message-language
+             (or language (org-scribe-project-language))))
+        (org-scribe--simple-capture-templates 'timeline))
+      (org-scribe--full-timeline-capture-templates language)))
+
+(defun org-scribe-plot-thread-capture-templates (&optional language)
+  "Return capture templates for plot threads.
+LANGUAGE, if non-nil, overrides `org-scribe-project-language'.
+The simple method's bare template when the project uses it
+\(`org-scribe--simple-capture-templates'), else the full one,
+`org-scribe--full-plot-thread-capture-templates'."
+  (or (let ((org-scribe-message-language
+             (or language (org-scribe-project-language))))
+        (org-scribe--simple-capture-templates 'plot-thread))
+      (org-scribe--full-plot-thread-capture-templates language)))
 
 ;;; Capture Function
 
