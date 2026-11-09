@@ -285,11 +285,39 @@ matching what an omitted `# Method:' marker resolves to via
          (labels (plist-get (org-scribe-lang-pack language) :method-labels))
          (choices (mapcar (lambda (entry)
                             (cons (alist-get (car entry) labels) (car entry)))
-                          org-scribe--methods))
+                          (cl-remove-if-not
+                           (lambda (entry) (org-scribe--method-offered-p (car entry)))
+                           org-scribe--methods)))
          (default-label (car (rassq 'sistema choices))))
     (alist-get (completing-read (org-scribe-msg 'project-creation-method-prompt)
                                  (mapcar #'car choices) nil t nil nil default-label)
                choices nil nil #'string=)))
+
+(defun org-scribe--read-short-story-method (&optional language)
+  "Prompt for a short story's method, returning nil or \\='simple.
+A short story has no plotting method of its own yet, so the choice is the
+standard template (nil, no `# Method:' line is written) or \\='simple.
+When `simple' is not offered (see `org-scribe--method-offered-p') nothing
+is asked and nil is returned, so a short story is created exactly as
+before.  LANGUAGE selects the pack whose labels are shown; defaults to
+`org-scribe-template-language'."
+  (when (org-scribe--method-offered-p 'simple)
+    (let* ((language (or language org-scribe-template-language))
+           (org-scribe-message-language language)
+           (labels (plist-get (org-scribe-lang-pack language) :method-labels))
+           (standard (org-scribe-msg 'project-creation-short-story-method-standard))
+           (choices (list (cons standard nil)
+                          (cons (alist-get 'simple labels) 'simple))))
+      (cdr (assoc (completing-read (org-scribe-msg 'project-creation-method-prompt)
+                                   (mapcar #'car choices) nil t nil nil standard)
+                  choices)))))
+
+(defun org-scribe--require-method-available (method)
+  "Signal a `user-error' when METHOD is not nil and cannot be deployed.
+Guards project creation against a method registered but still `:hidden',
+which would otherwise silently deploy the Sistema."
+  (when (and method (not (org-scribe--method-offered-p method)))
+    (user-error "%s" (org-scribe-msg 'error-method-not-available method))))
 
 ;; Number of outermost parts the shipped templates have: the three acts of
 ;; a novel, the three scenes of a short story.
@@ -346,7 +374,7 @@ LANGUAGE selects which template set to use, either \\='en or \\='es.
 When omitted (e.g. non-interactive callers), defaults to
 `org-scribe-template-language'.
 METHOD selects which plotting method's design file is deployed — one
-of \\='sistema, \\='helice, or \\='matriz (see `org-scribe--methods').
+of \\='sistema, \\='helice, \\='matriz, or \\='simple (see `org-scribe--methods').
 When omitted, defaults to \\='sistema, exactly matching the legacy
 behavior a project got before this argument existed.
 TARGET-WORDS is the project's total word count, recorded in the marker
@@ -373,6 +401,7 @@ This function:
      (list base-dir title language (org-scribe--read-method language)
            (org-scribe--read-word-target 'novel))))
 
+  (org-scribe--require-method-available method)
   (let* ((language (or language org-scribe-template-language))
          (method (or method 'sistema))
          (target-words (or target-words (org-scribe-default-word-target-for 'novel)))
@@ -449,7 +478,7 @@ This function:
         (org-scribe--offer-plan-after-create project-dir title)))))
 
 ;;;###autoload
-(defun org-scribe-create-short-story-project (base-dir title &optional language target-words)
+(defun org-scribe-create-short-story-project (base-dir title &optional language target-words method)
   "Create a new short story project structure from templates.
 BASE-DIR is the parent directory where the project will be created.
 TITLE is the name of the short story/project.
@@ -459,6 +488,8 @@ When omitted (e.g. non-interactive callers), defaults to
 TARGET-WORDS is the story's total word count, recorded in the marker
 file and used to size its three scenes; when omitted, the default for a
 short story in `org-scribe-default-word-target'.
+METHOD is nil (the standard short-story template, no `# Method:' line is
+written) or \\='simple.
 
 This function:
 1. Validates the title
@@ -470,15 +501,18 @@ This function:
 7. Registers the project with project.el
 8. Opens the story file, named for LANGUAGE"
   (interactive
-   (list
-    (read-directory-name (org-scribe-msg 'project-creation-base-dir) org-scribe-projects-directory)
-    (read-string (org-scribe-msg 'project-creation-short-story-title))
-    (intern (completing-read (org-scribe-msg 'project-creation-language-prompt)
-                              (mapcar #'symbol-name (org-scribe-languages))
-                              nil t nil nil
-                              (symbol-name org-scribe-template-language)))
-    (org-scribe--read-word-target 'short-story)))
+   (let* ((base-dir (read-directory-name (org-scribe-msg 'project-creation-base-dir)
+                                         org-scribe-projects-directory))
+          (title (read-string (org-scribe-msg 'project-creation-short-story-title)))
+          (language (intern (completing-read (org-scribe-msg 'project-creation-language-prompt)
+                                              (mapcar #'symbol-name (org-scribe-languages))
+                                              nil t nil nil
+                                              (symbol-name org-scribe-template-language)))))
+     (list base-dir title language
+           (org-scribe--read-word-target 'short-story)
+           (org-scribe--read-short-story-method language))))
 
+  (org-scribe--require-method-available method)
   ;; Determine template directory based on language
   (let* ((language (or language org-scribe-template-language))
          (target-words (or target-words (org-scribe-default-word-target-for 'short-story)))
@@ -515,6 +549,7 @@ This function:
                 (format "# Type: short-story\n")
                 (format "# Created: %s\n" (format-time-string "%Y-%m-%d"))
                 (format "# Language: %s\n" language)
+                (if method (format "# Method: %s\n" method) "")
                 (format "# Target-words: %d\n" target-words)))
 
       ;; Pin the spelling dictionary for the whole project, before the

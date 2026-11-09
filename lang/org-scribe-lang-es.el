@@ -126,7 +126,8 @@
    :method-labels
    '((sistema . "Sistema unificado (por defecto)")
      (helice . "La Hélice — se parte de una premisa")
-     (matriz . "La Matriz — se parte de personajes"))
+     (matriz . "La Matriz — se parte de personajes")
+     (simple . "Simple — solo los encabezados, lo demás lo escribes tú"))
    :messages
    '((default-scene-name . "Escena nueva")
      (default-chapter-name . "Capítulo nuevo")
@@ -492,6 +493,8 @@ Se actualizarán %d archivo(s); %d con un título propio se dejarán como están
      (error-no-plot-points-in-project . "Este proyecto no tiene puntos de trama (un cuento no los tiene).")
      (error-no-id-for-plot-point . "No se encontró ID para %s")
      (error-template-not-found . "No se encontró el directorio de plantillas: %s")
+     (error-method-not-available . "El método '%s' aún no está disponible")
+     (project-creation-short-story-method-standard . "Estándar (por defecto)")
      (error-org-ql-required . "El paquete org-ql es necesario para las funciones de búsqueda")
      (error-writeroom-required . "writeroom-mode es necesario para los modos de entorno de escritura")
      (error-no-org-file . "El búfer actual no está visitando ningún archivo; no se puede activar `org-scribe-editing-mode'")

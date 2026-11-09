@@ -354,9 +354,13 @@ Writes \"# Companion: no\" in .org-scribe-project."
 (defconst org-scribe--methods
   '((sistema . (:overlay nil))
     (helice  . (:overlay "helice"))
-    (matriz  . (:overlay "matriz")))
-  "Novel plotting methods known to org-scribe, keyed by their canonical
-symbol (also the literal value written to the \"# Method:\" marker line).
+    (matriz  . (:overlay "matriz"))
+    (simple  . (:overlay nil :notebook "simple" :hidden t)))
+  "Methods known to org-scribe, keyed by their canonical symbol (also the
+literal value written to the \"# Method:\" marker line).  `sistema',
+`helice' and `matriz' are novel plotting methods; `simple' is the absence
+of method content, for a novel or a short story (see
+notes/20261109-template-simplification.org).
 Each value is a plist:
 
   :overlay    - subdirectory name under `org-scribe-templates/methods/'
@@ -365,6 +369,14 @@ Each value is a plist:
                 `sistema', which ships no overlay (its fragment lives
                 in the base `novel-en'/`novel-es' template sets and is
                 never modified by another method's presence).
+  :notebook   - subdirectory name under `org-scribe-templates/methods/'
+                holding a whole design notebook that replaces the shared
+                one (as opposed to a Foundations fragment spliced into
+                it).  Only `simple' has one.
+  :hidden     - non-nil while the method is registered but not yet
+                deployable: creation neither offers it nor accepts it
+                (`org-scribe--method-offered-p').  Removed from `simple'
+                once its notebook template ships.
 
 Creation-prompt labels used to live here too, as `:label-en'/`:label-es'
 plist keys; they moved to each registered language pack's own
@@ -376,9 +388,15 @@ always have been.  Adding a method still means adding one entry here
 plus its Foundations fragments, plus a `:method-labels' entry in every
 registered pack.")
 
+(defun org-scribe--method-offered-p (method)
+  "Return non-nil when METHOD is known and not marked `:hidden'.
+Creation offers, and accepts, only such methods."
+  (when-let* ((entry (assq method org-scribe--methods)))
+    (not (plist-get (cdr entry) :hidden))))
+
 (defun org-scribe-project-method (&optional root)
-  "Return the plotting method recorded for ROOT's project.
-Returns \\='sistema, \\='helice, or \\='matriz, read from the \"# Method:\"
+  "Return the method recorded for ROOT's project.
+Returns \\='sistema, \\='helice, \\='matriz, or \\='simple, read from the \"# Method:\"
 line of ROOT's (default: the current project's) .org-scribe-project
 marker file.  Returns \\='sistema, not nil, when ROOT is nil and no
 project can be found either — \"not in a project\" is no more ambiguous
@@ -400,8 +418,8 @@ The value is matched case- and whitespace-insensitively, the same
 tolerance `org-scribe-planner-gate' applies to its own marker values, so
 a hand-edited \"# Method: Helice\" or \"# Method:  helice \" line still
 resolves.  Matching uses `intern-soft', not `intern': every symbol
-`org-scribe--methods' actually names (\\='sistema, \\='helice, \\='matriz)
-is already interned from the literal quoted symbols in that table's own
+`org-scribe--methods' actually names (\\='sistema, \\='helice, \\='matriz,
+\\='simple) is already interned from the literal quoted symbols in that table's own
 definition, so `intern-soft' finds any of them exactly as `intern' would
 -- but for a typo or a value that names no known method,
 `intern-soft' returns nil (falling through to the \\='sistema default

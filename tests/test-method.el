@@ -36,10 +36,27 @@
 
 ;;; org-scribe--methods table
 
-(ert-deftest test-method-table-has-three-entries ()
-  "The method table carries exactly the three known methods."
+(ert-deftest test-method-table-has-four-entries ()
+  "The method table carries exactly the four known methods."
   (should (equal (sort (mapcar #'car org-scribe--methods) #'string-lessp)
-                 '(helice matriz sistema))))
+                 '(helice matriz simple sistema))))
+
+(ert-deftest test-method-simple-replaces-the-whole-notebook ()
+  "`simple' names a notebook directory, not a Foundations overlay."
+  (let ((entry (alist-get 'simple org-scribe--methods)))
+    (should (null (plist-get entry :overlay)))
+    (should (equal "simple" (plist-get entry :notebook)))))
+
+(ert-deftest test-method-offered-excludes-hidden-and-unknown ()
+  "Only registered, non-hidden methods are offered."
+  (should (org-scribe--method-offered-p 'sistema))
+  (should (org-scribe--method-offered-p 'helice))
+  (should-not (org-scribe--method-offered-p 'nonsense))
+  (let ((org-scribe--methods
+         '((sistema . (:overlay nil)) (simple . (:overlay nil :hidden t)))))
+    (should-not (org-scribe--method-offered-p 'simple)))
+  (let ((org-scribe--methods '((simple . (:overlay nil :notebook "simple")))))
+    (should (org-scribe--method-offered-p 'simple))))
 
 (ert-deftest test-method-sistema-has-no-overlay ()
   "Sistema ships no overlay directory: its design file never moves."
@@ -97,6 +114,13 @@ feature existed is a Sistema project, so there is no undecided state."
   (test-method--with-project root
     (org-scribe--project-marker-set root "Method" "sistema")
     (should (eq 'sistema (org-scribe-project-method root)))))
+
+(ert-deftest test-method-reads-recorded-simple ()
+  "An explicit `# Method: simple' line resolves to `simple, not `sistema.
+Registering it in the table is what stops it falling back."
+  (test-method--with-project root
+    (org-scribe--project-marker-set root "Method" "simple")
+    (should (eq 'simple (org-scribe-project-method root)))))
 
 (ert-deftest test-method-value-is-case-and-space-insensitive ()
   "The marker value is matched case- and whitespace-insensitively."
@@ -172,6 +196,63 @@ of them."
       (org-scribe--project-marker-set root "Method" garbage-name)
       (should (eq 'sistema (org-scribe-project-method root)))
       (should-not (intern-soft garbage-name)))))
+
+(ert-deftest test-method-creation-refuses-a-hidden-method ()
+  "While `simple' is hidden, creating a project with it signals an error.
+Otherwise it would silently deploy the Sistema notebook."
+  (require 'org-scribe-project)
+  (should-error (org-scribe--require-method-available 'simple) :type 'user-error)
+  (should-not (org-scribe--require-method-available nil))
+  (should-not (org-scribe--require-method-available 'helice)))
+
+(ert-deftest test-method-short-story-prompt-is-skipped-while-simple-is-hidden ()
+  "With `simple' hidden, nothing is asked and a short story is unchanged."
+  (require 'org-scribe-project)
+  (cl-letf (((symbol-function 'completing-read)
+             (lambda (&rest _) (error "Must not prompt"))))
+    (should (null (org-scribe--read-short-story-method 'en)))))
+
+(ert-deftest test-method-short-story-prompt-offers-standard-and-simple ()
+  "Once `simple' is offered, the prompt maps Standard to nil and Simple to it."
+  (require 'org-scribe-project)
+  (let ((org-scribe--methods '((sistema . (:overlay nil))
+                               (simple . (:overlay nil :notebook "simple")))))
+    (dolist (lang '(en es))
+      (let* ((labels (plist-get (org-scribe-lang-pack lang) :method-labels))
+             (simple (alist-get 'simple labels))
+             asked)
+        (cl-letf (((symbol-function 'completing-read)
+                   (lambda (_p coll &rest _) (setq asked coll) simple)))
+          (should (eq 'simple (org-scribe--read-short-story-method lang)))
+          (should (= 2 (length asked))))
+        (cl-letf (((symbol-function 'completing-read)
+                   (lambda (_p _c _a _r _i _h def) def)))
+          (should (null (org-scribe--read-short-story-method lang))))))))
+
+(ert-deftest test-method-novel-prompt-omits-hidden-methods ()
+  "The novel prompt lists the shipped methods and not a hidden one."
+  (require 'org-scribe-project)
+  (let (asked)
+    (cl-letf (((symbol-function 'completing-read)
+               (lambda (_p coll &rest _) (setq asked coll) (car coll))))
+      (org-scribe--read-method 'en))
+    (should (= 3 (length asked)))
+    (should-not (cl-find-if (lambda (l) (string-prefix-p "Simple" l)) asked))))
+
+(ert-deftest test-method-short-story-marker-written-only-for-a-method ()
+  "A short story created without METHOD has no `# Method:' line."
+  (require 'org-scribe-project)
+  (let* ((base (make-temp-file "test-method-ss-" t))
+         (dir (expand-file-name "Tale" base)))
+    (unwind-protect
+        (progn
+          (cl-letf (((symbol-function 'find-file) #'ignore)
+                    ((symbol-function 'project-remember-project) #'ignore)
+                    ((symbol-function 'org-scribe--git) (lambda (&rest _) t)))
+            (org-scribe-create-short-story-project base "Tale" 'en 1000))
+          (should (null (org-scribe--project-marker-get dir "Method")))
+          (should (eq 'sistema (org-scribe-project-method dir))))
+      (delete-directory base t))))
 
 (provide 'test-method)
 

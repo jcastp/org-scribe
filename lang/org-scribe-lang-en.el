@@ -112,7 +112,8 @@
    :method-labels
    '((sistema . "Sistema unificado (default)")
      (helice . "La Hélice — start from a premise")
-     (matriz . "La Matriz — start from characters"))
+     (matriz . "La Matriz — start from characters")
+     (simple . "Simple — bare headings, you write the rest"))
    :messages
    '((default-scene-name . "New scene")
      (default-chapter-name . "New chapter")
@@ -478,6 +479,8 @@ Apply? ")
      (error-no-plot-points-in-project . "This project has no plot points (a short story has none).")
      (error-no-id-for-plot-point . "No ID found for %s")
      (error-template-not-found . "Template directory not found: %s")
+     (error-method-not-available . "The method '%s' is not available yet")
+     (project-creation-short-story-method-standard . "Standard (default)")
      (error-org-ql-required . "org-ql package is required for search functions")
      (error-writeroom-required . "writeroom-mode is required for writing environment modes")
      (error-no-org-file . "Current buffer is not visiting a file; cannot enable `org-scribe-editing-mode'")
