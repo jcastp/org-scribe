@@ -26,6 +26,8 @@ Al terminar esta lección sabrás:
   misma manera, hayas elegido el método que hayas elegido
 - Encontrar la nota de resolución de problemas que trae la parte Fundamentos de cada método
   para cuando la comprobación de un nivel no deja de fallar
+- Elegir en su lugar el método simple, un cuaderno de encabezados vacíos que
+  rellenas a tu manera (Parte 8)
 
 *Requisitos previos*: Lección 1 (haber creado un proyecto, o estar a punto de
 hacerlo). Nada más de esta guía depende del método que elijas: todas las demás
@@ -81,13 +83,14 @@ novela (ver Lección 1):
 Método de trama: Sistema unificado (por defecto)
 #+END_EXAMPLE
 
-Pulsa ~Tab~ para ver los tres, o ~Intro~ para aceptar el Sistema por defecto. Tu
+Pulsa ~Tab~ para ver los cuatro (los tres métodos anteriores, más el método
+simple de la Parte 8), o ~Intro~ para aceptar el Sistema por defecto. Tu
 elección se escribe en ~.org-scribe-project~ como una línea ~# Method:~ (el mismo
 mecanismo que registra el idioma de tu proyecto), así que es una decisión que se
 toma una vez y se recuerda para ese proyecto desde entonces.
 
-*Esta pregunta solo aparece en proyectos de novela.* Los proyectos de cuento no
-ofrecen elegir método; conservan su estructura mínima actual.
+*Los proyectos de cuento reciben una pregunta más corta*: Estándar (su estructura
+mínima actual) o Simple (Parte 8). Los tres métodos anteriores son para novelas.
 
 Si no sabes cuál elegir, lee el apartado «Cuándo usarla» de cada método más
 abajo, o empieza sin más con el Sistema unificado: no pierdes nada por probar los
@@ -315,6 +318,77 @@ La única diferencia es *dónde* está la puerta y qué pide:
 No tienes que hacer nada distinto para conseguirlo: el informe de salud encuentra
 tu sección Puerta de salida y sus dos elementos medidos por lo que dicen, no
 contando casillas en un orden fijo, así que funciona igual con los tres métodos.
+
+* Parte 8: El método simple
+
+Los tres métodos anteriores te dan un cuaderno de diseño lleno de indicaciones.
+El *método simple* es lo contrario: el cuaderno solo tiene encabezados, y lo que
+va debajo es cosa tuya. Elígelo si tienes tu propia manera de preparar una
+historia, o no tienes ninguna, y no quieres una plantilla que rellenar.
+
+** Qué obtienes
+
+El manuscrito es exactamente el que dan los otros métodos: actos, capítulos y
+escenas con el mismo cajón de propiedades, el mismo recuento de palabras, el
+planificador, el informe de salud y el companion. Solo cambia el cuaderno de
+diseño. Tiene seis secciones, planas (sin partes), y nada debajo:
+
+#+BEGIN_EXAMPLE
+* Personajes
+* Ambientación
+* Hilos de la Trama
+* Objetos
+* Línea Temporal
+* Borradores
+#+END_EXAMPLE
+
+Un cuento recibe el mismo cuaderno que una novela. No hay parte Fundamentos, ni
+Puerta de salida, ni trece irrenunciables, ni cadena causal: el método simple
+no trae nada del vocabulario del método, y nada te lo reclama. Deja los
+encabezados de sección como están: org-scribe encuentra tus personajes, lugares
+e hilos por ellos.
+
+** Añadir un personaje, un lugar o un hilo
+
+Usa los mismos comandos de captura que en cualquier otro proyecto (~F8 k h~ para
+un personaje, ~F8 k l~ para un lugar, ~F8 k g~ para un hilo de la trama; los
+objetos y los sucesos de la línea temporal están en el mismo submenú ~k~). En un
+proyecto simple piden *un nombre y nada más*. Para «Fiodor, el gato negro»
+obtienes:
+
+#+BEGIN_EXAMPLE
+** Fiodor, el gato negro
+:PROPERTIES:
+:ID: 3f1c...
+:Role:
+:Weight:
+:END:
+#+END_EXAMPLE
+
+...con el cursor bajo el cajón, listo para lo que quieras escribir: un párrafo,
+una lista, nada. El ~:ID:~ es lo que permite que una escena enlace a Fiodor.
+~:Role:~ (~:Type:~ en lugares y objetos, ~:THREAD-TYPE:~ en hilos) queda vacío
+para que lo uses o lo ignores. ~:Weight:~, en personajes e hilos, ordena las
+columnas de las tablas de línea temporal; vacío va al final, y ~-1~ los oculta de
+ellas.
+
+** Escribir un encabezado a mano
+
+No tienes que usar la captura. Un encabezado que escribas directamente bajo una
+sección se reconoce en cuanto lleva la propiedad marcadora (~:Role:~, ~:Type:~ o
+~:THREAD-TYPE:~, vacía vale), y org-scribe añade el ~:ID:~ la primera vez que algo
+pide tus personajes (un selector de enlaces, el informe de salud, el companion).
+No hay ningún comando de preparación que ejecutar.
+
+** Lo que falta a propósito
+
+- *Los puntos de trama.* Los comandos de puntos de trama de ~F8~ te dicen que el
+  proyecto no tiene.
+- *Listas de roles, tipos y estados.* Los formularios del companion aceptan texto
+  libre.
+- *Un método al que cambiar después.* Como con los demás, la elección se hace al
+  crear el proyecto y queda anotada como ~# Method: simple~ en
+  ~.org-scribe-project~.
 
 * Pruébalo ahora
 

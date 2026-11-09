@@ -24,6 +24,8 @@ By the end of this lesson, you'll know how to:
   same way no matter which method you picked
 - Find the troubleshooting note built into each Foundations part for when a
   level's check keeps failing
+- Choose the simple method instead, a notebook of bare headings that you fill
+  in your own way (Part 8)
 
 *Prerequisites*: Lesson 1 (you need to have created a project, or be about
 to). Nothing else in this guide depends on which method you choose — every
@@ -78,13 +80,14 @@ The method prompt appears as Step 7 of novel project creation (see Lesson 1):
 Plotting method: Sistema unificado (default)
 #+END_EXAMPLE
 
-Press ~Tab~ to see all three, or ~Enter~ to accept the Sistema default. Your
+Press ~Tab~ to see the four (the three methods above, plus the simple method
+of Part 8), or ~Enter~ to accept the Sistema default. Your
 choice is written to ~.org-scribe-project~ as a ~# Method:~ line — the same
 mechanism that records your project's language — so it's a one-time decision
 remembered for that project from then on.
 
-*This prompt only appears for novel projects.* Short story projects don't
-offer a method choice; they keep their existing minimal structure.
+*Short story projects get a shorter prompt*: Standard (their existing minimal
+structure) or Simple (Part 8). The three methods above are for novels.
 
 If you're not sure which to pick, read the "When to use it" subsection under
 each method below, or just start with Sistema unificado — you lose nothing
@@ -317,6 +320,73 @@ You don't need to do anything differently to get this — the health report
 finds your Starting Gate section and its two measured items by what they
 say, not by counting checkboxes in a fixed order, so it works the same way
 under all three methods.
+
+* Part 8: The Simple Method
+
+The three methods above give you a design notebook full of prompts. The
+*simple method* is the opposite: the notebook holds only headings, and
+what goes under them is yours. Pick it when you have your own way of preparing
+a story, or none, and you do not want a template to fill in.
+
+** What You Get
+
+The manuscript is exactly the one the other methods give you: acts, chapters
+and scenes with the same property drawer, the same word counts, the planner,
+the health report and the companion. Only the design notebook is different. It
+has six sections, flat (no parts), and nothing under them:
+
+#+BEGIN_EXAMPLE
+* Characters
+* Setting
+* Plot Threads
+* Objects
+* Timeline
+* Scratchpad
+#+END_EXAMPLE
+
+A short story gets the same notebook as a novel. There is no Foundations part,
+no Starting Gate, no thirteen non-negotiables and no causal chain: the
+simple method has none of the method's vocabulary, and nothing nags you about
+it. Keep the section headings as they are; org-scribe finds your characters,
+places and threads by them.
+
+** Adding a Character, a Place or a Thread
+
+Use the same capture commands as in every other project (~F8 k h~ for a
+character, ~F8 k l~ for a location, ~F8 k g~ for a plot thread; objects and
+timeline events are in the same ~k~ submenu). In a simple project they ask
+for *a name and nothing else*. For "Fiodor, the black cat" you get:
+
+#+BEGIN_EXAMPLE
+** Fiodor, the black cat
+:PROPERTIES:
+:ID: 3f1c...
+:Role:
+:Weight:
+:END:
+#+END_EXAMPLE
+
+...with the cursor under the drawer, ready for whatever you want to write: a
+paragraph, a list, nothing. The ~:ID:~ is what lets a scene link to Fiodor.
+~:Role:~ (~:Type:~ for places and objects, ~:THREAD-TYPE:~ for threads) is
+left blank for you to use or ignore. ~:Weight:~, on characters and plot threads,
+orders the columns of the timeline tables; blank sorts last, and ~-1~ hides the
+entity from them.
+
+** Typing a Heading by Hand
+
+You do not have to use capture. A heading you type directly under a section is
+recognised as soon as it has the marker property (~:Role:~, ~:Type:~ or
+~:THREAD-TYPE:~, blank is fine), and org-scribe adds the ~:ID:~ the first time
+anything asks for your characters (a link picker, the health report, the
+companion). There is no setup command to run.
+
+** What Is Missing on Purpose
+
+- *Plot points.* ~F8~'s plot-point commands tell you the project has none.
+- *Lists of roles, types and statuses.* The companion's forms take free text.
+- *A method to switch to later.* As with the others, the choice is made at
+  creation and recorded as ~# Method: simple~ in ~.org-scribe-project~.
 
 * Try It Now
 

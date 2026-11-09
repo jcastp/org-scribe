@@ -212,6 +212,23 @@ template, no health check reads =Desastre=/=Disaster= or =Colisión=/=Collision=
 so unlike every other row in this file they are not resolved through any
 module's alias table — only through the design file's own prose.
 
+** The simple method
+
+The fourth value of =# Method:=, and the only one that is not a plotting
+method: it adds no vocabulary. It is the *absence* of the method terms above
+(causal chain, non-negotiables, Starting Gate, Stance, Echo/Hazard), so it has
+no row in a table. Two words are used for it and nothing else:
+
+| Spanish            | English          | Source | Call    |
+|--------------------+------------------+--------+---------|
+| Método simple      | *Simple method*  | —      | settled |
+| Estándar (cuento)  | *Standard*       | —      | settled |
+
+/Estándar/ is only the short-story prompt's name for "no method marker": a
+short story has no method of its own yet, and it must not be called Sistema
+(the Sistema is the novel's method). Do not describe the simple method as "a
+minimal Sistema" or "Sistema-lite": nothing of the Sistema is in it.
+
 * The six judgement calls
 
 The only terms not dictated by a source. Kept with their reasoning because a

@@ -333,9 +333,9 @@ Si prefieres crear un proyecto de novela completo, el proceso es casi idéntico:
 4. Elige el directorio base (p. ej., ~~/escritura/~)
 5. Escribe el título de la novela (p. ej., ~Mi novela de fantasía~)
 6. Elige el idioma de la plantilla (~en~ o ~es~)
-7. Elige un método de trama: el predeterminado, /Sistema unificado/, o uno de los
-   otros dos, /La Hélice/ («se parte de una premisa») y /La Matriz/ («se parte
-   de personajes»); mira [[*Elegir un método de trama][Elegir un método de trama]] más abajo
+7. Elige un método de trama: el predeterminado, /Sistema unificado/, /La Hélice/
+   («se parte de una premisa»), /La Matriz/ («se parte de personajes») o /Simple/
+   (ningún método, encabezados vacíos); mira [[*Elegir un método de trama][Elegir un método de trama]] más abajo
 8. Escribe el total de palabras del proyecto (80.000 por defecto; pulsa
    ~Intro~ para aceptarlo); mira [[*El total de palabras][El total de palabras]] más abajo
 9. Espera a que termine
@@ -430,16 +430,16 @@ hagas en ella.
 
 ** Elegir un método de trama
 
-El Paso 7 de arriba hace una pregunta más que los proyectos de novela reciben y
-los de cuento no: qué *método de trama* desplegar.
+El Paso 7 de arriba hace una pregunta más: qué *método de trama* desplegar. Las
+novelas eligen entre cuatro; a un cuento solo se le pregunta «Estándar» o «Simple».
 
 #+BEGIN_EXAMPLE
 Método de trama: Sistema unificado (por defecto)
 #+END_EXAMPLE
 
-Se ofrecen tres opciones, todas construidas sobre el mismo vocabulario de fondo
-(Fantasma → Mentira → Debilidad → Deseo/Necesidad, los trece irrenunciables, los
-cuatro cuartiles):
+Se ofrecen cuatro opciones. Las tres primeras están construidas sobre el mismo
+vocabulario de fondo (Fantasma → Mentira → Debilidad → Deseo/Necesidad, los trece
+irrenunciables, los cuatro cuartiles):
 
 - *Sistema unificado* (el predeterminado): el método que usan el resto de las
   lecciones de esta guía y la novela de demostración.
@@ -447,8 +447,11 @@ cuatro cuartiles):
   construir los personajes que la sostengan.
 - *La Matriz* (/the Matrix/ en los proyectos en inglés): para cuando ya tienes personajes y necesitas que la
   trama salga de cómo chocan.
+- *Simple*: ningún método: un cuaderno de diseño de encabezados vacíos que
+  rellenas a tu manera. También se ofrece a los cuentos («Estándar» o «Simple»);
+  mira la [[file:primeros-pasos-18-metodos-trama.org][Lección 18]], Parte 8.
 
-Pulsa ~Tab~ para ver los tres, o ~Intro~ para aceptar el Sistema por defecto.
+Pulsa ~Tab~ para ver los cuatro, o ~Intro~ para aceptar el Sistema por defecto.
 
 *Qué cambia y qué no*: el método que elijas solo cambia la parte Fundamentos de
 ~diseno.org~ (~design.org~ en inglés), la parte que esta lección te dice que abras
