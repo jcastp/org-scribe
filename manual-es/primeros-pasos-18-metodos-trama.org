@@ -353,24 +353,30 @@ e hilos por ellos.
 Usa los mismos comandos de captura que en cualquier otro proyecto (~F8 k h~ para
 un personaje, ~F8 k l~ para un lugar, ~F8 k g~ para un hilo de la trama; los
 objetos y los sucesos de la línea temporal están en el mismo submenú ~k~). En un
-proyecto simple piden *un nombre y nada más*. Para «Fiodor, el gato negro»
-obtienes:
+proyecto simple hacen las mismas preguntas que en cualquier otro método (nombre,
+rol o tipo, peso, ...): simple significa sin andamiaje de prosa, no menos
+mecánica. Lo que se omite es el cuerpo. Para «Fiodor, el gato negro» obtienes:
 
 #+BEGIN_EXAMPLE
 ** Fiodor, el gato negro
 :PROPERTIES:
 :ID: 3f1c...
-:Role:
-:Weight:
+:Role: Ally
+:Stance:
+:Goal:
+:Age:
+:Occupation:
+:First-appearance:
+:Weight: 2
+:RelationshipsData:
 :END:
 #+END_EXAMPLE
 
 ...con el cursor bajo el cajón, listo para lo que quieras escribir: un párrafo,
 una lista, nada. El ~:ID:~ es lo que permite que una escena enlace a Fiodor.
-~:Role:~ (~:Type:~ en lugares y objetos, ~:THREAD-TYPE:~ en hilos) queda vacío
-para que lo uses o lo ignores. ~:Weight:~, en personajes e hilos, ordena las
-columnas de las tablas de línea temporal; vacío va al final, y ~-1~ los oculta de
-ellas.
+Responde a las preguntas, o déjalas vacías y rellénalas después. ~:Weight:~, en
+personajes e hilos, ordena las columnas de las tablas de línea temporal; vacío va
+al final, y ~-1~ los oculta de ellas.
 
 ** Escribir un encabezado a mano
 
@@ -384,8 +390,6 @@ No hay ningún comando de preparación que ejecutar.
 
 - *Los puntos de trama.* Los comandos de puntos de trama de ~F8~ te dicen que el
   proyecto no tiene.
-- *Listas de roles, tipos y estados.* Los formularios del companion aceptan texto
-  libre.
 - *Un método al que cambiar después.* Como con los demás, la elección se hace al
   crear el proyecto y queda anotada como ~# Method: simple~ en
   ~.org-scribe-project~.

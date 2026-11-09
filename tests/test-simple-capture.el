@@ -4,8 +4,8 @@
 
 ;;; Commentary:
 
-;; Under `# Method: simple' the capture commands ask for a name only and file
-;; a bare heading: an ID and the blank properties the entity needs.  Every
+;; Under `# Method: simple' the capture commands ask what the full templates ask
+;; and file the same property drawer (ID, Role, Weight, ...) with no body.  Every
 ;; other project keeps its full templates.
 
 ;;; Code:
@@ -85,26 +85,56 @@ Binds `notebook'."
                    (string-trim (buffer-substring (point) end)))))
       (list (mapcar #'car props) body props))))
 
-(ert-deftest test-simple-capture-asks-only-for-the-name ()
-  "Each simple capture prompts exactly once, for the name."
-  (dolist (kind test-simple-capture--kinds)
-    (test-simple-capture--with-project "simple" "novel"
-      (should (= 1 (test-simple-capture--capture
-                    (nth 1 kind) (nth 2 kind) "Fiodor, the black cat"))))))
+(defun test-simple-capture--full-template (builder type)
+  "Return the template string BUILDER gives for a plain project of TYPE."
+  (let (template)
+    (test-simple-capture--with-project nil type
+      (setq template (nth 4 (car (funcall builder)))))
+    template))
 
-(ert-deftest test-simple-capture-files-a-bare-heading ()
-  "The heading carries the ID and the blank properties, and no body."
+(defun test-simple-capture--drawer-names (template)
+  "Return the property names of TEMPLATE's drawer, in order."
+  (let ((drawer (substring template (string-search ":PROPERTIES:\n" template)
+                           (string-search "\n:END:" template)))
+        names)
+    (dolist (line (cdr (split-string drawer "\n" t)))
+      (when (string-match "\\`:\\([^: ]+\\):" line)
+        (push (match-string 1 line) names)))
+    (nreverse names)))
+
+(ert-deftest test-simple-capture-asks-what-the-full-template-asks ()
+  "\"Simple\" drops the body, not the properties: the prompts are the full ones."
   (dolist (type '("novel" "short-story"))
     (dolist (kind test-simple-capture--kinds)
-      (test-simple-capture--with-project "simple" type
-        (test-simple-capture--capture (nth 1 kind) (nth 2 kind) "Fiodor")
-        (pcase-let ((`(,names ,body ,props) (test-simple-capture--entry notebook "Fiodor")))
-          (should (equal (sort (mapcar #'upcase (nth 4 kind)) #'string<)
-                         (sort (remove "CATEGORY" (copy-sequence names)) #'string<)))
-          (should (string-empty-p body))
-          (should (cdr (assoc "ID" props)))
-          (dolist (name (remove "ID" (nth 4 kind)))
-            (should (equal "" (cdr (assoc (upcase name) props))))))))))
+      (let* ((full (test-simple-capture--full-template (nth 1 kind) type))
+             (expected (with-temp-buffer
+                         (insert (substring full 0 (+ 6 (string-search "\n:END:\n" full))))
+                         (how-many "%\\^{" (point-min) (point-max)))))
+        (should (> expected 1))
+        (test-simple-capture--with-project "simple" type
+          (should (= expected (test-simple-capture--capture
+                               (nth 1 kind) (nth 2 kind) "Fiodor"))))))))
+
+(ert-deftest test-simple-capture-files-the-full-drawer-and-no-body ()
+  "The heading carries the ID and every property of the full template, no body."
+  (dolist (type '("novel" "short-story"))
+    (dolist (kind test-simple-capture--kinds)
+      (let ((names (test-simple-capture--drawer-names
+                    (test-simple-capture--full-template (nth 1 kind) type))))
+        (test-simple-capture--with-project "simple" type
+          (test-simple-capture--capture (nth 1 kind) (nth 2 kind) "Fiodor")
+          (pcase-let ((`(,got ,body ,props) (test-simple-capture--entry notebook "Fiodor")))
+            (should (equal (sort (mapcar #'upcase names) #'string<)
+                           (sort (remove "CATEGORY" (copy-sequence got)) #'string<)))
+            (should (string-empty-p body))
+            (should (cdr (assoc "ID" props)))))))))
+
+(ert-deftest test-simple-capture-marker-property-is-filled ()
+  "The prompted marker (Role, Type, THREAD-TYPE) takes the answer."
+  (test-simple-capture--with-project "simple" "novel"
+    (test-simple-capture--capture #'org-scribe-character-capture-templates "c" "Fiodor")
+    (pcase-let ((`(,_ ,_ ,props) (test-simple-capture--entry notebook "Fiodor")))
+      (should (equal "Fiodor" (cdr (assoc "ROLE" props)))))))
 
 (ert-deftest test-simple-capture-files-under-its-section-at-level-two ()
   "A flat notebook: the entity is a level-2 child of its section."

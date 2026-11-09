@@ -355,23 +355,30 @@ places and threads by them.
 Use the same capture commands as in every other project (~F8 k h~ for a
 character, ~F8 k l~ for a location, ~F8 k g~ for a plot thread; objects and
 timeline events are in the same ~k~ submenu). In a simple project they ask
-for *a name and nothing else*. For "Fiodor, the black cat" you get:
+the same questions as in every other method (name, role or type, weight, ...):
+simple means no prose scaffolding, not fewer mechanics. What is left out is the
+body. For "Fiodor, the black cat" you get:
 
 #+BEGIN_EXAMPLE
 ** Fiodor, the black cat
 :PROPERTIES:
 :ID: 3f1c...
-:Role:
-:Weight:
+:Role: Ally
+:Stance:
+:Goal:
+:Age:
+:Occupation:
+:First-appearance:
+:Weight: 2
+:RelationshipsData:
 :END:
 #+END_EXAMPLE
 
 ...with the cursor under the drawer, ready for whatever you want to write: a
 paragraph, a list, nothing. The ~:ID:~ is what lets a scene link to Fiodor.
-~:Role:~ (~:Type:~ for places and objects, ~:THREAD-TYPE:~ for threads) is
-left blank for you to use or ignore. ~:Weight:~, on characters and plot threads,
-orders the columns of the timeline tables; blank sorts last, and ~-1~ hides the
-entity from them.
+Answer the prompts, or leave them blank and fill them in later. ~:Weight:~, on
+characters and plot threads, orders the columns of the timeline tables; blank
+sorts last, and ~-1~ hides the entity from them.
 
 ** Typing a Heading by Hand
 
@@ -384,7 +391,6 @@ companion). There is no setup command to run.
 ** What Is Missing on Purpose
 
 - *Plot points.* ~F8~'s plot-point commands tell you the project has none.
-- *Lists of roles, types and statuses.* The companion's forms take free text.
 - *A method to switch to later.* As with the others, the choice is made at
   creation and recorded as ~# Method: simple~ in ~.org-scribe-project~.
 

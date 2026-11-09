@@ -71,36 +71,37 @@ about them."
         (should-not (string-match-p "non-negotiable\\|irrenunciable" text))))))
 
 (ert-deftest test-simple-tolerance-plot-point-commands-refuse-politely ()
-  "With no plot points the three commands signal a `user-error', worded for
+  "With no plot points the commands signal a `user-error', worded for
 the simple method as well as a short story."
   (test-simple-tolerance--each-project
     (should (null (org-scribe--get-all-plot-points)))
     (dolist (command '(org-scribe-setup-plot-point-links
                        org-scribe-set-scene-plot-points
-                       org-scribe-jump-to-plot-point))
+                       org-scribe-jump-to-plot-point
+                       org-scribe-add-plot-point-ids
+                       org-scribe-insert-plot-point-link
+                       org-scribe-insert-multiple-plot-point-links
+                       org-scribe-link-scene-plot-points
+                       org-scribe-link-all-scene-plot-points
+                       org-scribe-update-plot-point-link-names
+                       org-scribe-update-all-plot-point-link-names))
       (let ((err (should-error (funcall command) :type 'user-error)))
         (should (string-match-p
                  "simple\\|cuento"
                  (let ((org-scribe-message-language lang))
                    (cadr err))))))))
 
-(ert-deftest test-simple-tolerance-companion-forms-take-free-text ()
-  "The simple method offers no Role, Type or Status lists; other methods do."
+(ert-deftest test-simple-tolerance-companion-forms-offer-the-usual-choices ()
+  "The simple method offers the same Role, Type and Status lists as the others."
   (test-simple-tolerance--each-project
-    (should (null (org-scribe-companion--entity-choices)))
+    (let ((choices (org-scribe-companion--entity-choices)))
+      (should (plist-get choices :character))
+      (should (plist-get choices :plot))
+      (should (plist-get choices :object)))
     (let ((json (json-parse-string (org-scribe-companion--snapshot-json)
                                    :object-type 'alist)))
       (should (assq 'entities json))
-      (should (null (alist-get 'entityChoices json)))))
-  (let ((base (make-temp-file "test-simple-tolerance-" t)))
-    (unwind-protect
-        (let ((default-directory (file-name-as-directory (expand-file-name "P" base))))
-          (cl-letf (((symbol-function 'find-file) #'ignore)
-                    ((symbol-function 'project-remember-project) #'ignore))
-            (org-scribe-create-short-story-project base "P" 'en))
-          (org-scribe-project-type-cache-clear)
-          (should (plist-get (org-scribe-companion--entity-choices) :character)))
-      (delete-directory base t))))
+      (should (alist-get 'entityChoices json)))))
 
 (ert-deftest test-simple-tolerance-notebook-sections-are-added-flat ()
   "A snapshot and a calendar make their sections at level 1, as in a short story."

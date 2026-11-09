@@ -11,7 +11,8 @@ cada encabezado es cosa tuya.
 
 Añade un personaje, un lugar, un hilo de la trama, un objeto o un suceso de la
 línea temporal como encabezado directamente bajo su sección, y escribe debajo lo
-que quieras. Los comandos de captura lo hacen por ti y solo piden un nombre.
+que quieras. Los comandos de captura lo hacen por ti, con las mismas preguntas que en
+cualquier otro método pero sin prosa.
 Un encabezado escrito a mano también se reconoce, siempre que lleve una
 propiedad Role (personajes), Type (lugares, objetos) o THREAD-TYPE (hilos de la
 trama), que puede estar vacía.

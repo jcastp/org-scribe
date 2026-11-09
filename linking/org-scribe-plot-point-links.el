@@ -112,6 +112,10 @@ commands below ran, reported success and linked nothing."
   (unless (org-scribe--get-all-plot-points)
     (user-error "%s" (org-scribe-msg 'error-no-plot-points-in-project))))
 
+(defun org-scribe--require-plot-points-advice (&rest _)
+  "Before-advice running `org-scribe--require-plot-points'."
+  (org-scribe--require-plot-points))
+
 ;;;###autoload
 (defun org-scribe-setup-plot-point-links ()
   "Set up plot point linking, unless the project has no plot points."
@@ -148,6 +152,19 @@ commands below ran, reported success and linked nothing."
         (if (and entry (car entry))
             (org-scribe--goto-entity-id (car entry) name)
           (user-error "%s" (org-scribe-msg 'error-no-id-for-plot-point name))))))))
+
+;; The commands the entity macro generates for the other entity types: a
+;; project with no plot points (a short story, the simple method) gets the
+;; same polite refusal from every one of them, not a "no plot points found,
+;; add IDs" hint, or a report of success over zero headings.
+(dolist (command '(org-scribe-add-plot-point-ids
+                   org-scribe-insert-plot-point-link
+                   org-scribe-insert-multiple-plot-point-links
+                   org-scribe-link-scene-plot-points
+                   org-scribe-link-all-scene-plot-points
+                   org-scribe-update-plot-point-link-names
+                   org-scribe-update-all-plot-point-link-names))
+  (advice-add command :before #'org-scribe--require-plot-points-advice))
 
 (provide 'org-scribe-plot-point-links)
 ;;; org-scribe-plot-point-links.el ends here

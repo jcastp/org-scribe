@@ -11,7 +11,8 @@ yours.
 
 Add a character, a place, a plot thread, an object or a timeline event as a
 heading directly under its section, and write whatever you like beneath it.
-The capture commands do this for you and ask only for a name. A heading you
+The capture commands do this for you, asking the same questions as in any
+other method but filing no prose. A heading you
 type by hand is recognised as well, once it carries a Role (characters), Type
 (places, objects) or THREAD-TYPE (plot threads) property, which may be blank.
 
