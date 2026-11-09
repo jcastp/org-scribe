@@ -21,6 +21,7 @@
 (require 'json)
 (require 'org-scribe-messages)
 (require 'org-scribe-core)
+(require 'org-scribe-linking-core)
 (require 'org-scribe-companion-model)
 (require 'org-scribe-companion-commands)
 (require 'org-scribe-companion-server)
@@ -73,6 +74,11 @@ IDs were added."
 (defun org-scribe-companion--ensure-ids (root)
   "Offer once to add the IDs the project at ROOT lacks.
 Returns the number of headings that will stay without an ID."
+  ;; Entities (characters, places, ...) get their IDs without asking: the
+  ;; writer never sees them, and an ID-less entity cannot be linked.
+  (let ((default-directory (file-name-as-directory root)))
+    (dolist (entry org-scribe-entity-registry)
+      (org-scribe--ensure-entity-ids (cdr entry))))
   (let ((missing (org-scribe-companion--headings-without-id
                   (org-scribe-companion--snapshot root))))
     (when (> missing 0)

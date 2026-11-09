@@ -78,6 +78,7 @@
     "test-plot-links"              ; Plot thread linking
     "test-character-relationships" ; Character relationship system
     "test-link-update"             ; Link display name updates
+    "test-entity-ids"              ; Automatic entity IDs (typed headings)
     "test-column-view"             ; Column view enhancement
     "test-export"                  ; Export filters
     "test-compile"                 ; Manuscript compilation
@@ -375,8 +376,9 @@ is set too, for the tests that start a fresh Emacs."
     (load-file (expand-file-name "test-plot-links.el" tests-dir))
     (load-file (expand-file-name "test-character-relationships.el" tests-dir))
     (load-file (expand-file-name "test-link-update.el" tests-dir))
+    (load-file (expand-file-name "test-entity-ids.el" tests-dir))
     (load-file (expand-file-name "test-column-view.el" tests-dir)))
-  (ert "^test-character-\\|^test-location-\\|^test-object-links-\\|^test-plot-\\|^test-relationships-\\|^test-link-update-\\|^test-column-"))
+  (ert "^test-entity-ids-\\|^test-character-\\|^test-location-\\|^test-object-links-\\|^test-plot-\\|^test-relationships-\\|^test-link-update-\\|^test-column-"))
 
 ;;;###autoload
 (defun org-scribe-run-messages-tests ()

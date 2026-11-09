@@ -99,13 +99,74 @@ Returns the link string or plain text if no ID found."
 
 ;;; Generic Entity Functions
 
+(defvar org-scribe-entity-registry)
+
+(defun org-scribe--mint-entity-ids ()
+  "Give every entity heading of the current buffer an ID; return the count.
+The entity types come from `org-scribe-entity-registry'; a heading that
+already has an ID is left alone, so running this twice adds nothing.
+Silent: the user-facing counterpart, `org-scribe--add-ids-to-all-entities',
+reports the count.  Point, narrowing and the match data are preserved."
+  (let ((count 0))
+    (org-with-wide-buffer
+     (save-excursion
+       (save-match-data
+         (dolist (entry org-scribe-entity-registry)
+           (let ((pred (plist-get (cdr entry) :heading-predicate)))
+             (goto-char (point-min))
+             (org-map-entries
+              (lambda ()
+                (when (and (funcall pred) (not (org-id-get)))
+                  (org-id-get-create)
+                  (setq count (1+ count))))
+              nil 'file))))))
+    count))
+
+(defvar-local org-scribe--entity-ids-tick nil
+  "Value of `buffer-chars-modified-tick' when entity IDs were last ensured.
+Lets `org-scribe--ensure-entity-ids' skip a buffer nothing has changed in.")
+
+(defun org-scribe--ensure-entity-ids (entity)
+  "Make sure every heading of ENTITY's file that is an entity has an ID.
+ENTITY is an entity descriptor plist.  Entities are found by ID, so a
+heading the writer typed by hand (a character with a blank `Role', say) is
+invisible until it has one; this mints it the first time anything asks
+for the entities, with no setup step.  Returns the number of IDs added.
+
+All entity types of the file are done in one pass, because they share the
+notebook, and the buffer is then marked as checked at its current
+`buffer-chars-modified-tick', so later calls cost nothing until the text
+changes.  Safe to call from every getter:
+- a read-only buffer, or no file, is left alone;
+- the buffer is saved afterwards only when it was unmodified before, so a
+  writer's unsaved edits are never written behind their back (the IDs then
+  stay in the modified buffer and go to disk with their next save);
+- no message is shown."
+  (let ((file (funcall (plist-get entity :file-fn))))
+    (if (not (and file (file-exists-p file)))
+        0
+      (with-current-buffer (find-file-noselect file)
+        (if (or buffer-read-only
+                (eql org-scribe--entity-ids-tick (buffer-chars-modified-tick)))
+            0
+          (let* ((was-modified (buffer-modified-p))
+                 (count (org-scribe--mint-entity-ids)))
+            (when (and (> count 0) (not was-modified))
+              (let ((inhibit-message t) (message-log-max nil))
+                (save-buffer)))
+            (setq org-scribe--entity-ids-tick (buffer-chars-modified-tick))
+            count))))))
+
 (defun org-scribe--get-all-entities (entity)
   "Return alist of (NAME . (ID . HEADING)) from ENTITY database file.
-ENTITY is an entity descriptor plist."
+ENTITY is an entity descriptor plist.  Entity headings without an ID get
+one first (`org-scribe--ensure-entity-ids'), so a heading typed by hand
+is found like a captured one."
   (let ((file (funcall (plist-get entity :file-fn)))
         (pred (plist-get entity :heading-predicate))
         result)
     (when (and file (file-exists-p file))
+      (org-scribe--ensure-entity-ids entity)
       (with-current-buffer (find-file-noselect file)
         (org-with-wide-buffer
          (goto-char (point-min))
