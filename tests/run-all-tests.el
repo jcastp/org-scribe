@@ -80,6 +80,7 @@
     "test-link-update"             ; Link display name updates
     "test-entity-ids"              ; Automatic entity IDs (typed headings)
     "test-simple-capture"          ; Simple method: name-only capture
+    "test-simple-tolerance"        ; Simple method: health, companion, snapshots, target
     "test-column-view"             ; Column view enhancement
     "test-export"                  ; Export filters
     "test-compile"                 ; Manuscript compilation

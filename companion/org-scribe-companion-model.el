@@ -531,17 +531,21 @@ and not in the cache, which only follows buffer ticks."
   "Return, per entity kind, a plist of property name to the values offered.
 Read from the capture prompts (\"Label|first|second\"), in the project's
 language, so the forms and the page's short \"new\" form offer what the
-templates do.  Kinds with no choices are left out."
-  (let ((org-scribe-message-language (org-scribe-project-language)))
-    (cl-flet ((options (key)
-                (vconcat (cdr (split-string (org-scribe-msg key) "|")))))
-      (list :character (list :Role (options (if (eq (org-scribe-project-type) 'short-story)
-                                                'capture-ss-char-role-prompt
-                                              'capture-char-role-prompt)))
-            :plot (list :THREAD-TYPE (options 'capture-pt-type-prompt)
-                        :STATUS (options 'capture-pt-status-prompt))
-            :object (list :Type (options 'capture-obj-type-prompt)
-                          :Status (options 'capture-obj-status-prompt))))))
+templates do.  Kinds with no choices are left out.
+The simple method has none at all: its templates ask for a name only, and
+the lists of roles and types belong to the methods that define them, so
+the forms take free text."
+  (unless (eq (org-scribe-project-method) 'simple)
+    (let ((org-scribe-message-language (org-scribe-project-language)))
+      (cl-flet ((options (key)
+                  (vconcat (cdr (split-string (org-scribe-msg key) "|")))))
+	(list :character (list :Role (options (if (eq (org-scribe-project-type) 'short-story)
+                                                  'capture-ss-char-role-prompt
+						'capture-char-role-prompt)))
+              :plot (list :THREAD-TYPE (options 'capture-pt-type-prompt)
+                          :STATUS (options 'capture-pt-status-prompt))
+              :object (list :Type (options 'capture-obj-type-prompt)
+                            :Status (options 'capture-obj-status-prompt)))))))
 
 ;;; Storyline data
 
