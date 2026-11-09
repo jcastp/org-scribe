@@ -388,6 +388,18 @@ recognised as soon as it has the marker property (~:Role:~, ~:Type:~ or
 anything asks for your characters (a link picker, the health report, the
 companion). There is no setup command to run.
 
+Two things to know:
+
+- *A heading with no marker property is ignored.* If you type ~** Bob~ under
+  Characters and give it no ~:Role:~ line, Bob is just a heading: he will not
+  show up in the link picker, the health report or the companion, and no message
+  tells you so. Add the property (empty is fine) and he appears.
+- *org-scribe writes the ~:ID:~ lines for you, without asking.* The first time
+  something reads your entities, it adds an ~:ID:~ to each recognised heading
+  that lacks one and saves the notebook, unless you have unsaved changes in it
+  (then the IDs stay in the buffer and are saved with your next save). If your
+  notebook is under version control, expect those lines to show up in the diff.
+
 ** What Is Missing on Purpose
 
 - *Plot points.* ~F8~'s plot-point commands tell you the project has none.

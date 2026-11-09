@@ -386,6 +386,18 @@ sección se reconoce en cuanto lleva la propiedad marcadora (~:Role:~, ~:Type:~ 
 pide tus personajes (un selector de enlaces, el informe de salud, el companion).
 No hay ningún comando de preparación que ejecutar.
 
+Dos cosas que conviene saber:
+
+- *Un encabezado sin propiedad marcadora se ignora.* Si escribes ~** Bob~ bajo
+  Personajes y no le pones una línea ~:Role:~, Bob es solo un encabezado: no
+  aparecerá en el selector de enlaces, en el informe de salud ni en el companion,
+  y ningún mensaje te lo avisa. Añade la propiedad (vacía vale) y aparece.
+- *org-scribe escribe las líneas ~:ID:~ por ti, sin preguntar.* La primera vez que
+  algo lee tus entidades, añade un ~:ID:~ a cada encabezado reconocido que no lo
+  tenga y guarda el cuaderno, salvo que tengas cambios sin guardar en él (entonces
+  los ID quedan en el búfer y se guardan con tu próximo guardado). Si tu cuaderno
+  está bajo control de versiones, esas líneas aparecerán en el diff.
+
 ** Lo que falta a propósito
 
 - *Los puntos de trama.* Los comandos de puntos de trama de ~F8~ te dicen que el
