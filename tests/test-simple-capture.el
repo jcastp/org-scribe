@@ -136,6 +136,17 @@ Binds `notebook'."
     (pcase-let ((`(,_ ,_ ,props) (test-simple-capture--entry notebook "Fiodor")))
       (should (equal "Fiodor" (cdr (assoc "ROLE" props)))))))
 
+(ert-deftest test-simple-capture-leaves-one-blank-line-between-entries ()
+  "Entries and the next section are one blank line apart, never two."
+  (dolist (kind test-simple-capture--kinds)
+    (test-simple-capture--with-project "simple" "novel"
+      (test-simple-capture--capture (nth 1 kind) (nth 2 kind) "First")
+      (test-simple-capture--capture (nth 1 kind) (nth 2 kind) "Second")
+      (with-current-buffer (find-file-noselect notebook)
+        (save-buffer)
+        (should-not (string-match-p "\n\n\n" (buffer-string)))
+        (should (string-match-p ":END:\n\n\\*\\* Second" (buffer-string)))))))
+
 (ert-deftest test-simple-capture-files-under-its-section-at-level-two ()
   "A flat notebook: the entity is a level-2 child of its section."
   (dolist (kind test-simple-capture--kinds)

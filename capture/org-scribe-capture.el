@@ -210,7 +210,11 @@ strings, so `org-capture-fill-template' and the companion's own filler
                 (append (take 4 entry)
                         (list (concat (substring template 0 (+ end (length "\n:END:\n")))
                                       "%?"))
-                        (nthcdr 5 entry))))
+                        ;; The empty `%?' line is itself the blank line under
+                        ;; the drawer, so none is added after the entry: with
+                        ;; `:empty-lines 1' the section ended in two.
+                        (list :empty-lines-before 1 :empty-lines-after 0)
+                        (org-plist-delete (nthcdr 5 entry) :empty-lines))))
             (funcall full-builder language))))
 
 (defun org-scribe-capture-templates (&optional language)
