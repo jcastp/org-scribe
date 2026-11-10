@@ -90,9 +90,9 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
                  _0_: Normal      _g_: Plot threads    _x_: Thesaurus       _5_: TODOs        _H_: Health report
                                   _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
                                   _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
-                                                       _S_: Story time                        _B_: Board…
-                                                       _V_: Snapshot scene                    _q_: Quit
-                                                       _C_: Compare snapshot
+                                                       _S_: Story time      _z_: Cut scene    _B_: Board…
+                                                       _V_: Snapshot scene  _Z_: Restore      _q_: Quit
+                                                       _C_: Compare snapshot _u_: Cut scenes
 #+END_EXAMPLE
 
 Los menús Hydra están en inglés en todos los proyectos, también en los de español: es el idioma de los nombres de órdenes y de este menú. En las tablas de esta lección, el nombre en inglés del menú va acompañado de su significado en español.
@@ -195,6 +195,9 @@ Exploremos cada categoría en detalle.
 | ~S~   | Story time  | Elige cómo escriben las escenas su =:Linea-temporal:= (relativa, fechas, calendario inventado) |
 | ~V~   | Snapshot scene | Copia la prosa de la escena, con fecha, en la sección Versiones del cuaderno antes de reescribirla |
 | ~C~   | Compare snapshot | Compara una instantánea con la escena tal como está ahora, en ediff |
+| ~z~   | Cut scene | Mueve la escena a la sección Escenas descartadas del cuaderno (pregunta el motivo) |
+| ~Z~   | Restore scene | Devuelve una escena descartada a un capítulo |
+| ~u~   | Cut scenes | Informe de las escenas descartadas: recuperar, borrar para siempre, ir a ella |
 
 *Cuándo usarla*:
 - Después de escribir → ~w~ (comprueba rápido el recuento de palabras)

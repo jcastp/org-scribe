@@ -650,6 +650,39 @@ manuscrito compilado y las búsquedas de entidades ignoran la sección Versiones
 como el resto del cuaderno. El historial de git es automático; las
 instantáneas son las versiones que *tú* decidiste conservar.
 
+** Descartar una escena sin perderla
+
+Una instantánea protege una escena que reescribes. Descartar una escena es la
+otra jugada, y es igual de normal. Con el cursor en la escena pulsa ~F8 z~
+(~org-scribe-cut-scene~), escribe un motivo (o solo RET) y la escena entera
+-- su ID, sus propiedades, su prosa y sus subencabezados -- sale del manuscrito
+a una sección *Escenas descartadas* de tu cuaderno de diseño (en la parte
+Revisión, junto a Versiones; el cuaderno de un cuento recibe un encabezado de
+nivel 1). El primer descarte crea la sección.
+
+La escena conserva su ID, así que todos los enlaces a ella siguen funcionando.
+También recibe ~:Cut-date:~, ~:Cut-chapter:~, ~:Cut-reason:~ y ~:Cut-state:~: el
+cuaderno no tiene la palabra clave TOWRITE, así que el estado de la escena se
+guarda como propiedad y se devuelve al recuperarla.
+
+~F8 Z~ (~org-scribe-restore-scene~) devuelve una escena descartada. Elige la
+escena (o llámalo desde dentro de ella), elige un capítulo (se ofrece primero
+aquel del que salió) o el final del manuscrito, y la escena vuelve a nivel de
+escena con su estado y un recuento de palabras nuevo. ~F8 u~
+(~org-scribe-list-cut-scenes~) las muestra todas con su tamaño y su motivo. Una
+escena a la que nada enlaza se marca ~¿podar?~. Desde esa lista ~r~ recupera, ~d~
+borra para siempre (tras preguntar) y ~RET~ va a ella.
+
+Conviene saber:
+- Una escena descartada ya no está en el manuscrito: el recuento de palabras,
+  el informe de salud, el manuscrito compilado y las búsquedas no la ven, y el
+  plan de escritura registra el mismo cambio negativo que con un borrado («hoy
+  has recortado 900 palabras»). Sus enlaces a personajes y escenarios dejan de
+  contar como usos.
+- No hay un deshacer único entre los dos archivos. Si descartas por error,
+  recupera la escena. Ambos archivos se guardan salvo que tuvieran ediciones
+  tuyas sin guardar.
+
 ** Plantilla de lista de comprobación de revisión de escenas
 
 Añade esto a tu cuaderno de diseño para cada escena:

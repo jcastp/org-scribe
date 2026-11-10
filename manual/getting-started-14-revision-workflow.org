@@ -645,6 +645,37 @@ no ID or PoV is duplicated), and the word count, the compiled manuscript and
 the entity searches ignore the Versions section, like the rest of the notebook.
 Git history is automatic; snapshots are the versions *you* chose to keep.
 
+** Cutting a Scene Without Losing It
+
+A snapshot protects a scene you rewrite. Cutting a scene is the other move, and
+it is just as normal. With point in the scene press ~F8 z~
+(~org-scribe-cut-scene~), type a reason (or just RET), and the whole scene --
+its ID, its properties, its prose and its sub-headings -- moves out of the
+manuscript into a *Cut scenes* section of your design notebook (in the Revision
+part, beside Versions; a short story's notebook gets a level-1 heading). The
+first cut creates the section.
+
+The scene keeps its ID, so every link to it still works. It also gets
+~:Cut-date:~, ~:Cut-chapter:~, ~:Cut-reason:~ and ~:Cut-state:~: the notebook has
+no TOWRITE keyword of its own, so the scene's state is kept as a property and
+put back when you restore it.
+
+~F8 Z~ (~org-scribe-restore-scene~) puts a cut scene back. Pick it (or call it
+from inside the cut scene), pick a chapter (the one it came from is offered
+first) or the end of the manuscript, and the scene returns at scene level with
+its state and a fresh word count. ~F8 u~ (~org-scribe-list-cut-scenes~) shows all
+of them with their size and reason. A scene that nothing links to is marked
+~prune?~. From that list ~r~ restores, ~d~ deletes for good (after asking) and
+~RET~ visits it.
+
+Things to know:
+- A cut scene is out of the manuscript: the word count, the health report, the
+  compiled manuscript and the searches no longer see it, and the writing plan
+  records the same negative change as for a deletion ("you cut 900 words
+  today"). Its character and location links no longer count as uses.
+- There is no single undo across the two files. If you cut by mistake, restore
+  the scene. Both files are saved unless they had unsaved edits of yours.
+
 ** Scene Revision Checklist Template
 
 Add this to your design notebook for each scene:
