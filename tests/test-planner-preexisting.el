@@ -146,8 +146,13 @@ average of 7,267 words a day."
                                     :days 60 :preexisting-words 20000
                                     :current-words 21800
                                     :daily-word-counts (test-pre--ledger))))
-    (should (= (plist-get (org-scribe-planner--calculate-velocity plan) :average)
-               900.0))))
+    ;; The ledger is dated, so today is pinned: the pace is measured over
+    ;; the writing days elapsed up to today (Nov 2 and 3 here).  Left to the
+    ;; real clock, the average shrinks every day the test is run later.
+    (cl-letf (((symbol-function 'org-scribe-planner--get-today-date)
+               (lambda () "2026-11-04")))
+      (should (= (plist-get (org-scribe-planner--calculate-velocity plan) :average)
+                 900.0)))))
 
 (ert-deftest test-planner-pre-best-day-is-a-real-day ()
   "The best day is the best day's writing, not the manuscript."
