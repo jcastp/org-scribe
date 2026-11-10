@@ -20,6 +20,7 @@
 - *Project-Wide Spelling Dictionary*: a generated =.dir-locals.el= points every file in the project at the dictionary for its language, with no per-file setup and no local-variables prompt ([[*Spelling dictionary for the whole project][details]])
 - *Scratchpad*: one unstructured part of the design notebook for drafts, "what if" questions and ideas with nowhere to live yet — plus a convention for branching a question into alternatives and exploring each ([[*The Scratchpad][details]])
 - *Git Integration*: Projects automatically initialized with git
+- *Scene Context Pane (opt-in)*: a read-only side window that follows point and shows the scene's PoV Goal/Motivation/Need/Lie, the cast, the location, the plot threads and the plot point, with the outline path and word count in its header ([[*Scene Context Pane (opt-in)][details]])
 - *Visual Companion (opt-in)*: a browser corkboard, outline table, storyline, chapter overview, story-time timeline, relationship graph and entity forms next to Emacs, which stays the only program that touches your files ([[*Visual Companion (opt-in)][details]])
 
 *** Writing Tools
@@ -1725,7 +1726,7 @@ _c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all    _2_: C
 _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: Plot         _z_: Cut scene        _L_: Links & upkeep…
                  _v_: Navigate    _b_: Objects         _y_: Synonyms      _4_: Location     _Z_: Restore scene    _R_: Relink project
                  _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: TODOs        _u_: Cut scenes       _H_: Health report
-                                  _G_: Plot point      _t_: Word target   _6_: Edits                              _W_: Planner…
+                 _i_: Context     _G_: Plot point      _t_: Word target   _6_: Edits                              _W_: Planner…
                                   _j_: Jump to PoV     _T_: Title         _7_: Object                             _X_: Compile draft
                                                        _S_: Story time                                            _B_: Board…
                                                                                                                   _q_: Quit
@@ -1742,6 +1743,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: P
 - =e= - Editing mode (three-panel layout)
 - =v= - Project navigation mode (treemacs / imenu)
 - =0= - Return to normal layout
+- =i= - Scene context pane (optional, see [[*Scene Context Pane (opt-in)][Scene Context Pane]]); explains how to enable it while the switch is off
 
 *** Tag Scene
 Tag the current scene's properties with ID-based links:
@@ -1826,6 +1828,19 @@ Tag the current scene's properties with ID-based links:
 - =T= - Toggle entity tooltips (=org-scribe-overlays-mode=)
 
 - =q= / =Q= - Back to main menu / Quit
+
+* Scene Context Pane (opt-in)
+
+An optional, read-only side window that follows point in the manuscript and shows the facts the current scene is built from, so you do not have to open the design notebook to remember them. From the top: a header line with the outline path and the scene's word count; the PoV character's Goal, Motivation, Need and Lie (one line each); the scene's Description and Summary; the whole cast, one line each (name, role, goal), the characters in this scene first with a filled dot and the rest with a hollow one; the location's Echo and Hazard; each plot thread's premise; the plot point's definition; and the scene's own Motivation, Conflict, Gap, At stake and Outcome. Blank values are skipped; a scene with nothing set says so instead of showing an empty pane. Entities hidden with a negative =Weight= are left out with one dim line counting them, and a long off-scene cast collapses to one line (=RET= expands it).
+
+Nothing new is stored: it all comes from the notebook you already have. It is a fifth workspace layout (manuscript on the left, pane on the right), so it excludes write, focus, edit and navigate.
+
+Two switches, both off by default:
+
+1. Globally: =(setq org-scribe-context-pane-enable t)=. While it is nil the module is never loaded.
+2. Per project: the first time you press =F8 i= it asks once and records =# Context-pane: yes= (or =no=) in =.org-scribe-project=; =M-x org-scribe-context-pane-enable-for-project= and =org-scribe-context-pane-disable-for-project= flip it later.
+
+Then =F8 i= opens it (again to close it); it must be started from the project's manuscript file. Settings: =org-scribe-context-pane-width-percent= (0.30), =org-scribe-context-pane-idle-delay= (0.5 s), =org-scribe-context-pane-cast-collapse-threshold= (6) and =org-scribe-context-pane-scene-properties= (the list shown at the end).
 
 * Visual Companion (opt-in)
 

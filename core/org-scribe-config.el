@@ -631,6 +631,47 @@ outstanding in each.  When nil, only categories with markers appear."
   :type 'boolean
   :group 'org-scribe)
 
+;;; Scene context pane
+
+(defcustom org-scribe-context-pane-enable nil
+  "Master switch for the scene context pane.
+While nil, the pane's module is never loaded and nothing runs:
+`org-scribe-context-pane-open' and the hydra key i only explain how to turn
+it on.  Set it to t to use the pane, a read-only side window that follows
+point in the manuscript and shows the PoV's Goal, Motivation, Need and Lie,
+the cast, the location, the plot threads and the plot point of the current
+scene.  A project must also opt in, once, with a \"# Context-pane: yes\"
+line in .org-scribe-project (asked the first time the pane is opened
+there)."
+  :type 'boolean
+  :group 'org-scribe)
+
+(defcustom org-scribe-context-pane-width-percent 0.30
+  "Width of the scene context pane, as a fraction of the frame."
+  :type 'float
+  :group 'org-scribe)
+
+(defcustom org-scribe-context-pane-idle-delay 0.5
+  "Seconds of idle time before the scene context pane follows point."
+  :type 'number
+  :group 'org-scribe)
+
+(defcustom org-scribe-context-pane-cast-collapse-threshold 6
+  "How many off-scene characters the pane lists before collapsing them.
+Past this number the characters that are not in the scene shrink to one
+line (\"+ N more: ...\"), expanded with RET.  The characters in the scene
+are never collapsed."
+  :type 'integer
+  :group 'org-scribe)
+
+(defcustom org-scribe-context-pane-scene-properties
+  '(scene-motivation conflict-source gap what-is-at-stake outcome)
+  "Scene properties shown at the end of the scene context pane, in order.
+Each is a canonical key of the language packs' `:properties' section; the
+spelling read is the project's own.  A blank property is skipped."
+  :type '(repeat symbol)
+  :group 'org-scribe)
+
 ;;; Visual companion
 
 (defcustom org-scribe-companion-enable nil

@@ -108,7 +108,12 @@ so a test that needs a repo path cannot compute one for itself.")
   "Test that the exclusive modes list is defined."
   (should (boundp 'org-scribe-exclusive-modes))
   (should (listp org-scribe-exclusive-modes))
-  (should (= 4 (length org-scribe-exclusive-modes))))
+  ;; Four layouts always; the optional context pane adds a fifth once its
+  ;; module has been loaded (it is never loaded while its switch is off).
+  (should (= (length org-scribe-workspace-layouts)
+             (length org-scribe-exclusive-modes)))
+  (should (>= (length org-scribe-exclusive-modes) 4))
+  (should (<= (length org-scribe-exclusive-modes) 5)))
 
 (ert-deftest test-modes-exclusive-list-contains-all-four-modes ()
   "Test that all four writing modes appear in the exclusive list."

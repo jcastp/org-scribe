@@ -86,7 +86,7 @@ _c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all    _2_: C
 _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: Plot         _z_: Cut scene        _L_: Links & upkeep…
                  _v_: Navigate    _b_: Objects         _y_: Synonyms      _4_: Location     _Z_: Restore scene    _R_: Relink project
                  _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: TODOs        _u_: Cut scenes       _H_: Health report
-                                  _G_: Plot point      _t_: Word target   _6_: Edits                              _W_: Planner…
+                 _i_: Context     _G_: Plot point      _t_: Word target   _6_: Edits                              _W_: Planner…
                                   _j_: Jump to PoV     _T_: Title         _7_: Object                             _X_: Compile draft
                                                        _S_: Story time                                            _B_: Board…
                                                                                                                   _q_: Quit
@@ -140,6 +140,7 @@ Let's explore each category in detail.
 | ~e~   | Edit     | Three-panel editing layout           |
 | ~v~   | Navigate | Project navigation panels (treemacs) |
 | ~0~   | Normal   | Return to normal layout              |
+| ~i~   | Context  | Scene context pane (optional, off until you enable it; see Lesson 9) |
 
 *When to use*:
 - Starting writing session → ~m~ (distraction-free)
@@ -147,6 +148,7 @@ Let's explore each category in detail.
 - Editing with notes → ~e~ (editing mode)
 - Need outline view → ~v~ (navigation mode)
 - Done with any mode → ~0~ (back to normal)
+- Want the scene's PoV, cast, place and plot beside the page → ~i~ (context pane, if enabled)
 
 *Most frequent*: ~m~ (write mode) for daily writing
 

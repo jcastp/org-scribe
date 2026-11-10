@@ -165,7 +165,7 @@ _c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all    _2_: C
 _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: Plot         _z_: Cut scene        _L_: Links & upkeep…
 ^^               _v_: Navigate    _b_: Objects         _y_: Synonyms      _4_: Location     _Z_: Restore scene    _R_: Relink project
 ^^               _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: TODOs        _u_: Cut scenes       _H_: Health report
-^^               ^^               _G_: Plot point      _t_: Word target   _6_: Edits        ^^                    _W_: Planner…
+^^               _i_: Context     _G_: Plot point      _t_: Word target   _6_: Edits        ^^                    _W_: Planner…
 ^^               ^^               _j_: Jump to PoV     _T_: Title         _7_: Object       ^^                    _X_: Compile draft
 ^^               ^^               ^^                   _S_: Story time    ^^                ^^                    _B_: Board…
 ^^               ^^               ^^                   ^^                 ^^                ^^                    _q_: Quit
@@ -182,6 +182,9 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: P
   ("e" (org-scribe-workspace 'edit) "edit")
   ("v" (org-scribe-workspace 'navigate) "navigate")
   ("0" (org-scribe-workspace 'normal) "normal")
+  ;; The scene context pane is optional (org-scribe-context-pane-enable);
+  ;; with the switch off this key only explains how to turn it on.
+  ("i" org-scribe-context-pane-open "context pane")
 
   ;; Tag the current scene (everyday linking verbs — these write proper
   ;; ID links directly, so plain-name maintenance is rarely needed)

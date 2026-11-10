@@ -708,6 +708,40 @@ org-scribe no se integra con ~org-remark~ ni con ningún otro paquete de anotaci
 7. Mira cómo salta el cursor en el centro
 8. Pulsa ~F8 e~ para salir
 
+* Opcional: el panel de contexto de la escena
+
+Una quinta disposición, desactivada hasta que la pidas. Pone junto al manuscrito un panel de solo lectura que sigue al cursor y muestra de qué está hecha la escena actual, para que no tengas que ir al cuaderno de diseño a recordar la Mentira de un personaje o cómo es el lugar.
+
+** Qué muestra
+
+De arriba abajo:
+- Una línea de cabecera: la ruta de esquema hasta la escena y su recuento de palabras.
+- *PoV*: la Meta, la Motivación, la Necesidad y la Mentira del personaje de punto de vista, una línea cada una.
+- La *Descripción* y el *Resumen* de la escena.
+- *Reparto*: todo el reparto, una línea por personaje (nombre · papel · meta). Un punto lleno ● marca a los personajes de esta escena y van primero; uno vacío ○ marca a los demás. Las entidades ocultas (=Weight= negativo) se dejan fuera con una línea tenue «(n ocultos)»; un reparto largo fuera de escena se pliega en una línea y ~RET~ sobre ella lo despliega.
+- *Escenario*: su Eco y su Escollo.
+- *Hilos de la trama*: la premisa de cada hilo. *Punto de trama*: su definición.
+- *Escena*: la Motivación, el Conflicto, la Brecha, lo que está en juego y el Desenlace de la propia escena. Una propiedad en blanco se omite, no se muestra como una etiqueta vacía.
+
+Una escena que aún no has etiquetado lo dice («aún sin PoV», «sin asignar») en lugar de mostrar un panel en blanco. Los nombres son botones: ~RET~ sobre uno visita ese encabezado. No se guarda nada; todo se lee de tu cuaderno.
+
+** Activarlo
+
+Dos interruptores, ambos desactivados por defecto:
+1. En tu init: ~(setq org-scribe-context-pane-enable t)~.
+2. Por proyecto: la primera vez que pulsas ~F8 i~ pregunta una vez y anota =# Context-pane: yes= (o =no=) en =.org-scribe-project=.
+
+Después ~F8 i~ lo abre y ~F8 i~ otra vez lo cierra. Lánzalo desde el archivo del manuscrito. Como las demás disposiciones, las excluye: ~F8 m~ lo cierra.
+
+** Ajustes
+
+| Variable                                          | Por defecto | Qué hace                                          |
+|---------------------------------------------------+-------------+---------------------------------------------------|
+| ~org-scribe-context-pane-width-percent~           | 0.30        | Ancho del panel                                   |
+| ~org-scribe-context-pane-idle-delay~              | 0.5         | Segundos de inactividad antes de seguir al cursor |
+| ~org-scribe-context-pane-cast-collapse-threshold~ | 6           | Personajes fuera de escena listados antes de plegar |
+| ~org-scribe-context-pane-scene-properties~        | cinco       | Propiedades de escena mostradas al final          |
+
 * Elegir el modo adecuado
 
 Esta es una guía para decidir qué modo usar en cada momento.

@@ -88,7 +88,7 @@ _c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all    _2_: C
 _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: Plot         _z_: Cut scene        _L_: Links & upkeep…
                  _v_: Navigate    _b_: Objects         _y_: Synonyms      _4_: Location     _Z_: Restore scene    _R_: Relink project
                  _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: TODOs        _u_: Cut scenes       _H_: Health report
-                                  _G_: Plot point      _t_: Word target   _6_: Edits                              _W_: Planner…
+                 _i_: Context     _G_: Plot point      _t_: Word target   _6_: Edits                              _W_: Planner…
                                   _j_: Jump to PoV     _T_: Title         _7_: Object                             _X_: Compile draft
                                                        _S_: Story time                                            _B_: Board…
                                                                                                                   _q_: Quit
@@ -144,6 +144,7 @@ Exploremos cada categoría en detalle.
 | ~e~   | Edit     | Disposición de edición en tres paneles        |
 | ~v~   | Navigate | Paneles de navegación del proyecto (treemacs) |
 | ~0~   | Normal   | Vuelve a la disposición normal                |
+| ~i~   | Context  | Panel de contexto de la escena (opcional, desactivado hasta que lo actives; ver la Lección 9) |
 
 *Cuándo usarla*:
 - Empezar una sesión de escritura → ~m~ (sin distracciones)
@@ -151,6 +152,7 @@ Exploremos cada categoría en detalle.
 - Editar con notas → ~e~ (modo Edición)
 - Necesitas una vista de esquema → ~v~ (modo Navegación)
 - Terminas con cualquier modo → ~0~ (vuelta a lo normal)
+- Quieres el PoV, el reparto, el lugar y la trama de la escena junto a la página → ~i~ (panel de contexto, si está activado)
 
 *La más frecuente*: ~m~ (modo Sin distracciones) para la escritura diaria
 

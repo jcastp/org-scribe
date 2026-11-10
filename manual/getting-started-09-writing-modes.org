@@ -716,6 +716,40 @@ manuscript.
 7. See cursor jump in center
 8. Press ~F8 e~ to exit
 
+* Optional: The Scene Context Pane
+
+A fifth layout, off until you ask for it. It puts a read-only pane beside the manuscript that follows your cursor and shows what the current scene is built from, so you stop alt-tabbing to the design notebook to remember a character's Lie or what the place is like.
+
+** What it shows
+
+From the top:
+- A header line: the outline path to the scene and the scene's word count.
+- *PoV*: the point-of-view character's Goal, Motivation, Need and Lie, one line each.
+- The scene's *Description* and *Summary*.
+- *Cast*: the whole cast, one line each (name · role · goal). A filled dot ● marks the characters in this scene and sits first; a hollow dot ○ marks the rest. Hidden entities (negative =Weight=) are left out with a dim "(n hidden)" line; a long off-scene cast collapses to one line, and ~RET~ on it expands it.
+- *Location*: its Echo and Hazard.
+- *Plot threads*: each thread's premise. *Plot point*: its definition.
+- *Scene*: the scene's own Motivation, Conflict, Gap, At stake and Outcome. A blank property is skipped, not shown as an empty label.
+
+A scene you have not tagged yet says so ("no PoV set yet", "none set") instead of showing a blank pane. Names are buttons: ~RET~ on one visits that heading. Nothing is stored; everything is read from your notebook.
+
+** Turning it on
+
+Two switches, both off by default:
+1. In your init file: ~(setq org-scribe-context-pane-enable t)~.
+2. Per project: the first time you press ~F8 i~ it asks once and records =# Context-pane: yes= (or =no=) in =.org-scribe-project=.
+
+Then ~F8 i~ opens it, and ~F8 i~ again closes it. Start it from the manuscript file. Like the other layouts it excludes them: ~F8 m~ closes it.
+
+** Settings
+
+| Variable                                          | Default | What it does                                   |
+|---------------------------------------------------+---------+------------------------------------------------|
+| ~org-scribe-context-pane-width-percent~           | 0.30    | Width of the pane                              |
+| ~org-scribe-context-pane-idle-delay~              | 0.5     | Seconds of idle time before it follows point   |
+| ~org-scribe-context-pane-cast-collapse-threshold~ | 6       | Off-scene characters listed before collapsing  |
+| ~org-scribe-context-pane-scene-properties~        | five    | Scene properties shown at the end              |
+
 * Choosing the Right Mode
 
 Here's a decision guide for which mode to use when.

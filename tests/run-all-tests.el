@@ -93,6 +93,7 @@
     "test-chronology"              ; Story-chronology block, health lines, calendar
     "test-scene-snapshot"          ; Scene snapshots (Versions section) and compare
     "test-cut-scene"               ; Cut bin: cut, restore, list, delete
+    "test-context-pane"            ; Scene context pane: switches, collect, draw, layout
     "test-overlays"                ; Entity tooltip system
     "test-tempel-snippets"         ; Bundled Tempel snippets
     "test-sistema-templates"       ; Sistema template set + entity recognition
@@ -448,6 +449,14 @@ is set too, for the tests that start a fresh Emacs."
   (load-file (expand-file-name "test-cut-scene.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (ert "^test-cut-"))
+
+;;;###autoload
+(defun org-scribe-run-context-pane-tests ()
+  "Run scene context pane tests only."
+  (interactive)
+  (load-file (expand-file-name "test-context-pane.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-context-pane-"))
 
 ;;;###autoload
 (defun org-scribe-run-story-time-tests ()

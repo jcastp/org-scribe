@@ -127,6 +127,11 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
   (add-to-list 'load-path planning-dir)
   (load (expand-file-name "org-scribe-planner-autoloads" planning-dir) nil :nomessage))
 
+;; Scene context pane (modes/org-scribe-context-pane.el) — off until
+;; `org-scribe-context-pane-enable'.  Only the load path is set up here; the
+;; module is required by `org-scribe-context-pane-open' after its checks.
+(add-to-list 'load-path (expand-file-name "modes" org-scribe--source-directory))
+
 ;; Visual companion (companion/) — off until `org-scribe-companion-enable'.
 ;; Only the load path and the (cheap) autoloads file are set up here; the
 ;; module itself is required by `org-scribe-companion-open' after its checks.

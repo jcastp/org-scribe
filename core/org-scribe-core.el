@@ -271,6 +271,82 @@ must not load the companion module can check it first."
           ((equal value "no") 'no)
           (t nil))))
 
+;; Scene context pane (modes/org-scribe-context-pane.el): off until
+;; `org-scribe-context-pane-enable'.  The entry points live here, so with the
+;; switch off the module is never loaded.
+
+(defvar org-scribe-context-pane-enable)
+(declare-function org-scribe-workspace "org-scribe-modes")
+(declare-function org-scribe-context-pane-mode "org-scribe-context-pane")
+
+(defun org-scribe-context-pane-gate (&optional root)
+  "Return the per-project scene-context-pane opt-in state.
+Returns \='yes, \='no, or nil (undecided) read from the \"# Context-pane:\"
+line of ROOT's (default: the current project's) .org-scribe-project file.
+Lives here, like `org-scribe-companion-gate', so that callers that must not
+load the module can check it first."
+  (let* ((root (or root (org-scribe-project-root)))
+         (value (org-scribe--project-marker-get root "Context-pane")))
+    (cond ((equal value "yes") 'yes)
+          ((equal value "no") 'no)
+          (t nil))))
+
+(defun org-scribe--context-pane-gate-open-p (root)
+  "Return non-nil when ROOT has the context pane enabled, asking if needed.
+An undecided project is asked once and the answer is recorded; a project
+that said no is offered to change its mind."
+  (pcase (org-scribe-context-pane-gate root)
+    ('yes t)
+    ('no
+     (when (yes-or-no-p (org-scribe-msg 'context-pane-ask-reenable))
+       (org-scribe--project-marker-set root "Context-pane" "yes")
+       t))
+    (_
+     (if (yes-or-no-p (org-scribe-msg 'context-pane-ask-enable))
+         (progn (org-scribe--project-marker-set root "Context-pane" "yes") t)
+       (org-scribe--project-marker-set root "Context-pane" "no")
+       (message "%s" (org-scribe-msg 'context-pane-staying-disabled))
+       nil))))
+
+(defun org-scribe-context-pane-open ()
+  "Toggle the scene context pane beside the manuscript.
+Checks, in this order, that `org-scribe-context-pane-enable' is on, that
+there is a project, and that the project has opted in (asking once when it
+has not decided).  Only then is the module loaded.  Run again, it closes
+the pane."
+  (interactive)
+  (unless org-scribe-context-pane-enable
+    (user-error "%s" (org-scribe-msg 'context-pane-error-disabled)))
+  (let ((root (org-scribe--require-project)))
+    (when (org-scribe--context-pane-gate-open-p root)
+      (require 'org-scribe-context-pane)
+      (org-scribe-workspace 'context))))
+
+(defun org-scribe-context-pane-close ()
+  "Close the scene context pane, if it is open.
+Never loads the module: if it is not loaded there is nothing to close."
+  (interactive)
+  (when (and (featurep 'org-scribe-context-pane)
+             (bound-and-true-p org-scribe-context-pane-mode))
+    (org-scribe-context-pane-mode -1)))
+
+(defun org-scribe-context-pane-enable-for-project ()
+  "Enable the scene context pane for the current project.
+Writes \"# Context-pane: yes\" in .org-scribe-project."
+  (interactive)
+  (let ((root (org-scribe--require-project)))
+    (org-scribe--project-marker-set root "Context-pane" "yes")
+    (message "%s" (org-scribe-msg 'context-pane-enabled-for-project))))
+
+(defun org-scribe-context-pane-disable-for-project ()
+  "Disable the scene context pane for the current project.
+Writes \"# Context-pane: no\" in .org-scribe-project."
+  (interactive)
+  (let ((root (org-scribe--require-project)))
+    (org-scribe--project-marker-set root "Context-pane" "no")
+    (org-scribe-context-pane-close)
+    (message "%s" (org-scribe-msg 'context-pane-disabled-for-project))))
+
 (defvar org-scribe-companion-enable)
 (declare-function org-scribe-companion--open "org-scribe-companion")
 
