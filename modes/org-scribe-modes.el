@@ -86,6 +86,12 @@ writing modes to ensure only one is active at a time."
 
 ;;; Unified Workspace Command
 
+(defvar-local org-scribe-workspace-redirect-buffer nil
+  "Buffer the workspace commands act on when run from this one.
+Set in an auxiliary buffer (the scene context pane) so that a layout key
+pressed there, where the layout modes do not live, still acts on the
+manuscript the pane belongs to.")
+
 (defun org-scribe--workspace-mode (layout)
   "Return the minor-mode symbol implementing workspace LAYOUT, or nil."
   (cdr (assq layout org-scribe-workspace-layouts)))
@@ -122,6 +128,17 @@ this command drives."
                     (org-scribe-msg 'prompt-select-workspace)
                     names nil t nil nil
                     (when current (symbol-name current)))))))
+  (if-let* ((source org-scribe-workspace-redirect-buffer)
+            (_ (and (buffer-live-p source) (not (eq source (current-buffer))))))
+      ;; Run from an auxiliary pane: act on the buffer it belongs to.
+      (progn
+        (when-let* ((window (get-buffer-window source)))
+          (select-window window))
+        (with-current-buffer source (org-scribe-workspace layout)))
+    (org-scribe--workspace-apply layout)))
+
+(defun org-scribe--workspace-apply (layout)
+  "Switch the workspace of the current buffer to LAYOUT; see `org-scribe-workspace'."
   (let ((current (org-scribe-workspace-current))
         (target  (unless (memq layout '(normal nil)) layout)))
     (cond

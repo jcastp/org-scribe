@@ -291,6 +291,7 @@ onboarding a single, self-explanatory step."
               (insert (format "  install: %s\n" url)))))
         (insert "\n"))
       (org-scribe--setup-check-companion)
+      (org-scribe--setup-check-context-pane)
       (goto-char (point-min)))
     (display-buffer (current-buffer))))
 
@@ -314,6 +315,21 @@ companion module."
                            (org-scribe-companion-server-running-p))
                       "X" " ")
                   "running now (F8 B opens it; F8 B again after stopping restarts it)")))
+
+(defun org-scribe--setup-check-context-pane ()
+  "Insert the scene context pane's state: the global switch and this project's
+gate.  Reads the switch and the gate only; never loads the pane module."
+  (insert "* Scene context pane\n"
+          (format "- [%s] =org-scribe-context-pane-enable= — global switch (off: the module is never loaded)\n"
+                  (if org-scribe-context-pane-enable "X" " ")))
+  (let ((gate (and (not (eq (org-scribe-project-type) 'unknown))
+                   (org-scribe-context-pane-gate))))
+    (insert (format "- [%s] this project — %s\n\n"
+                    (if (eq gate 'yes) "X" " ")
+                    (cond ((eq (org-scribe-project-type) 'unknown) "not inside an org-scribe project")
+                          ((eq gate 'yes) "opted in (# Context-pane: yes)")
+                          ((eq gate 'no) "opted out (# Context-pane: no)")
+                          (t "undecided: asked the first time it is opened"))))))
 
 (provide 'org-scribe)
 

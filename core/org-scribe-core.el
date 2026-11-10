@@ -308,27 +308,49 @@ that said no is offered to change its mind."
        (message "%s" (org-scribe-msg 'context-pane-staying-disabled))
        nil))))
 
+(defvar org-scribe-context-pane--source)
+(defvar org-scribe-context-pane-mode)
+
+(defun org-scribe--context-pane-source ()
+  "Return the manuscript buffer the pane belongs to when in the pane, else nil."
+  (and (featurep 'org-scribe-context-pane)
+       (derived-mode-p 'org-scribe-context-pane-view-mode)
+       (buffer-live-p org-scribe-context-pane--source)
+       org-scribe-context-pane--source))
+
 (defun org-scribe-context-pane-open ()
   "Toggle the scene context pane beside the manuscript.
 Checks, in this order, that `org-scribe-context-pane-enable' is on, that
-there is a project, and that the project has opted in (asking once when it
-has not decided).  Only then is the module loaded.  Run again, it closes
-the pane."
+there is a project, that this is its manuscript, and that the project has
+opted in (asking once when it has not decided).  Only then is the module
+loaded.  Run again, it closes the pane; run from the pane itself, it acts
+on the manuscript the pane belongs to."
   (interactive)
   (unless org-scribe-context-pane-enable
     (user-error "%s" (org-scribe-msg 'context-pane-error-disabled)))
-  (let ((root (org-scribe--require-project)))
-    (when (org-scribe--context-pane-gate-open-p root)
-      (require 'org-scribe-context-pane)
-      (org-scribe-workspace 'context))))
+  (if-let* ((source (org-scribe--context-pane-source)))
+      (progn (when-let* ((window (get-buffer-window source)))
+               (select-window window))
+             (with-current-buffer source (org-scribe-context-pane-open)))
+    (let* ((root (org-scribe--require-project))
+           (manuscript (plist-get (org-scribe-project-structure) :manuscript-file)))
+      ;; Before asking anything: a refusal must not leave a recorded answer.
+      (unless (and manuscript (buffer-file-name)
+                   (file-equal-p (buffer-file-name) manuscript))
+        (user-error "%s" (org-scribe-msg 'context-pane-error-not-manuscript)))
+      (when (org-scribe--context-pane-gate-open-p root)
+        (require 'org-scribe-context-pane)
+        (org-scribe-workspace 'context)))))
 
 (defun org-scribe-context-pane-close ()
   "Close the scene context pane, if it is open.
-Never loads the module: if it is not loaded there is nothing to close."
+Never loads the module: if it is not loaded there is nothing to close.
+From the pane itself it closes the layout of the manuscript it belongs to."
   (interactive)
-  (when (and (featurep 'org-scribe-context-pane)
-             (bound-and-true-p org-scribe-context-pane-mode))
-    (org-scribe-context-pane-mode -1)))
+  (with-current-buffer (or (org-scribe--context-pane-source) (current-buffer))
+    (when (and (featurep 'org-scribe-context-pane)
+               (bound-and-true-p org-scribe-context-pane-mode))
+      (org-scribe-context-pane-mode -1))))
 
 (defun org-scribe-context-pane-enable-for-project ()
   "Enable the scene context pane for the current project.

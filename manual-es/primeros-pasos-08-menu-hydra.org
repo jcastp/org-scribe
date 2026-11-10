@@ -96,7 +96,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: P
 
 Los menús Hydra están en inglés en todos los proyectos, también en los de español: es el idioma de los nombres de órdenes y de este menú. En las tablas de esta lección, el nombre en inglés del menú va acompañado de su significado en español.
 
-¡Este es tu centro de mando! La cabecera mide unas 130 columnas, así que usa un marco más ancho.
+¡Este es tu centro de mando! La cabecera mide 120 columnas, así que usa un marco más ancho.
 
 ** Entender la disposición
 

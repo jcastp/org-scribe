@@ -159,7 +159,7 @@ _q_: Back to main menu    _Q_: Quit
 (defhydra hydra-org-scribe (:color blue :hint nil)
   "
 ^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^            ^Search^          ^Revise^              ^Manage^
-^^^^^^---------------------------------------------------------------------------------------------------------------------------------
+^^^^^^------------------------------------------------------------------------------------------------------------------------
 _s_: Scene       _m_: Write       _p_: PoV             _w_: Count words   _1_: by PoV       _V_: Snapshot scene   _n_: Capture note
 _c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all    _2_: Character    _C_: Compare snapshot _k_: Capture entity…
 _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: Plot         _z_: Cut scene        _L_: Links & upkeep…

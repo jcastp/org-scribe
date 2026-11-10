@@ -92,7 +92,7 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: P
                                                                                                                   _q_: Quit
 #+END_EXAMPLE
 
-This is your command center! The header is about 130 columns wide, so use a frame wider than that.
+This is your command center! The header is 120 columns wide, so use a frame wider than that.
 
 ** Understanding the Layout
 

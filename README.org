@@ -1716,7 +1716,7 @@ Default keybindings when =org-scribe-mode= is active:
 ** Hydra Menu (F8)
 
 The hydra menu provides quick access to all functions organized into 7 columns.
-Open it with =F8= while =org-scribe-mode= is active. The header is about 130
+Open it with =F8= while =org-scribe-mode= is active. The header is 120
 columns wide: use a frame wider than that.
 
 #+begin_example
@@ -1840,7 +1840,7 @@ Two switches, both off by default:
 1. Globally: =(setq org-scribe-context-pane-enable t)=. While it is nil the module is never loaded.
 2. Per project: the first time you press =F8 i= it asks once and records =# Context-pane: yes= (or =no=) in =.org-scribe-project=; =M-x org-scribe-context-pane-enable-for-project= and =org-scribe-context-pane-disable-for-project= flip it later.
 
-Then =F8 i= opens it (again to close it); it must be started from the project's manuscript file. Settings: =org-scribe-context-pane-width-percent= (0.30), =org-scribe-context-pane-idle-delay= (0.5 s), =org-scribe-context-pane-cast-collapse-threshold= (6) and =org-scribe-context-pane-scene-properties= (the list shown at the end).
+Then =F8 i= opens it (again to close it, or =q= in the pane); it must be started from the project's manuscript file, and its layout keys work from the pane too. Settings: =org-scribe-context-pane-width-percent= (0.30), =org-scribe-context-pane-idle-delay= (0.5 s), =org-scribe-context-pane-cast-collapse-threshold= (6) and =org-scribe-context-pane-scene-properties= (the list shown at the end).
 
 * Visual Companion (opt-in)
 

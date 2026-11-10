@@ -731,7 +731,7 @@ Dos interruptores, ambos desactivados por defecto:
 1. En tu init: ~(setq org-scribe-context-pane-enable t)~.
 2. Por proyecto: la primera vez que pulsas ~F8 i~ pregunta una vez y anota =# Context-pane: yes= (o =no=) en =.org-scribe-project=.
 
-Después ~F8 i~ lo abre y ~F8 i~ otra vez lo cierra. Lánzalo desde el archivo del manuscrito. Como las demás disposiciones, las excluye: ~F8 m~ lo cierra.
+Después ~F8 i~ lo abre y ~F8 i~ otra vez lo cierra. Lánzalo desde el archivo del manuscrito. Como las demás disposiciones, las excluye: ~F8 m~ lo cierra. Las teclas de disposición (~F8 i~, ~F8 0~, ~F8 m~...) y ~q~ también funcionan con el cursor en el propio panel. Una escena que enlaza dos lugares o dos puntos de trama muestra ambos; un personaje nombrado en texto plano (aún sin enlazar) cuenta igualmente como presente en la escena, y un nombre que no corresponde a nadie aparece como «no está en el reparto».
 
 ** Ajustes
 

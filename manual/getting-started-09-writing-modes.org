@@ -739,7 +739,7 @@ Two switches, both off by default:
 1. In your init file: ~(setq org-scribe-context-pane-enable t)~.
 2. Per project: the first time you press ~F8 i~ it asks once and records =# Context-pane: yes= (or =no=) in =.org-scribe-project=.
 
-Then ~F8 i~ opens it, and ~F8 i~ again closes it. Start it from the manuscript file. Like the other layouts it excludes them: ~F8 m~ closes it.
+Then ~F8 i~ opens it, and ~F8 i~ again closes it. Start it from the manuscript file. Like the other layouts it excludes them: ~F8 m~ closes it. The layout keys (~F8 i~, ~F8 0~, ~F8 m~...) and ~q~ also work while the cursor is in the pane itself. A scene that links two places or two plot points shows both; a character you named in plain text (not yet linked) still counts as being in the scene, and a name that matches nobody is listed as "not in the cast".
 
 ** Settings
 

@@ -668,8 +668,13 @@ are never collapsed."
   '(scene-motivation conflict-source gap what-is-at-stake outcome)
   "Scene properties shown at the end of the scene context pane, in order.
 Each is a canonical key of the language packs' `:properties' section; the
-spelling read is the project's own.  A blank property is skipped."
-  :type '(repeat symbol)
+spelling read is the project's own.  A blank property is skipped, and a key
+the packs do not know is ignored."
+  :type '(repeat (choice (const scene-motivation) (const conflict-source)
+                         (const gap) (const what-is-at-stake)
+                         (const world-problem) (const emotion)
+                         (const tension-level) (const outcome)
+                         (const sequel-decision) (const comment)))
   :group 'org-scribe)
 
 ;;; Visual companion
