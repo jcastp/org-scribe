@@ -92,6 +92,7 @@
     "test-story-time"              ; Story-time parser
     "test-chronology"              ; Story-chronology block, health lines, calendar
     "test-scene-snapshot"          ; Scene snapshots (Versions section) and compare
+    "test-cut-scene"               ; Cut bin: cut, restore, list, delete
     "test-overlays"                ; Entity tooltip system
     "test-tempel-snippets"         ; Bundled Tempel snippets
     "test-sistema-templates"       ; Sistema template set + entity recognition
@@ -439,6 +440,14 @@ is set too, for the tests that start a fresh Emacs."
   (load-file (expand-file-name "test-scene-snapshot.el"
                                (file-name-directory (or load-file-name buffer-file-name))))
   (ert "^test-snapshot-"))
+
+;;;###autoload
+(defun org-scribe-run-cut-scene-tests ()
+  "Run cut bin tests only."
+  (interactive)
+  (load-file (expand-file-name "test-cut-scene.el"
+                               (file-name-directory (or load-file-name buffer-file-name))))
+  (ert "^test-cut-"))
 
 ;;;###autoload
 (defun org-scribe-run-story-time-tests ()

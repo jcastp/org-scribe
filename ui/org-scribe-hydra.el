@@ -50,6 +50,9 @@
 (declare-function org-scribe-compile "export/org-scribe-compile")
 (declare-function org-scribe-snapshot-scene "revision/org-scribe-snapshot")
 (declare-function org-scribe-compare-snapshot "revision/org-scribe-snapshot")
+(declare-function org-scribe-cut-scene "revision/org-scribe-cut-scene")
+(declare-function org-scribe-restore-scene "revision/org-scribe-cut-scene")
+(declare-function org-scribe-list-cut-scenes "revision/org-scribe-cut-scene")
 (declare-function org-scribe-wordcount "counting/org-scribe-wordcount")
 (declare-function org-scribe-ews-org-count-words "counting/org-scribe-wordcount")
 (declare-function org-scribe-org-find-pov "search/org-scribe-search")
@@ -165,9 +168,9 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
 ^^               _0_: Normal      _g_: Plot threads    _x_: Thesaurus       _5_: TODOs        _H_: Health report
 ^^               ^^               _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
 ^^               ^^               _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
-^^               ^^               ^^                   _S_: Story time      ^^                _B_: Board…
-^^               ^^               ^^                   _V_: Snapshot scene  ^^                _q_: Quit
-^^               ^^               ^^                   _C_: Compare snapshot
+^^               ^^               ^^                   _S_: Story time      _z_: Cut scene    _B_: Board…
+^^               ^^               ^^                   _V_: Snapshot scene  _Z_: Restore      _q_: Quit
+^^               ^^               ^^                   _C_: Compare snapshot _u_: Cut scenes
 "
   ;; Insert (most frequent)
   ("s" org-scribe-insert-scene "insert scene")
@@ -206,6 +209,9 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("S" org-scribe-set-story-time "story time")
   ("V" org-scribe-snapshot-scene "snapshot scene")
   ("C" org-scribe-compare-snapshot "compare snapshot")
+  ("z" org-scribe-cut-scene "cut scene")
+  ("Z" org-scribe-restore-scene "restore scene")
+  ("u" org-scribe-list-cut-scenes "cut scenes")
 
   ;; Search
   ("1" org-scribe-org-find-pov "find by PoV")

@@ -107,6 +107,8 @@ RELATIVE-PATH is resolved against `org-scribe--source-directory'."
            (org-scribe-health      . "reporting/org-scribe-health")
            ;; Scene snapshots (need capture, linking-core and wordcount above)
            (org-scribe-snapshot    . "revision/org-scribe-snapshot")
+           ;; The cut bin (same needs as snapshots)
+           (org-scribe-cut-scene   . "revision/org-scribe-cut-scene")
            ;; Export and UI
            (org-scribe-export      . "export/org-scribe-export")
            ;; Compile builds on the export filters' scoping helpers and on
