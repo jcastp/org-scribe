@@ -776,5 +776,118 @@ The global switch is on; `root', `manuscript' and `design' are bound."
       (should (string-match-p "context-pane-enable.*global switch" (buffer-string)))
       (should-not (featurep 'org-scribe-context-pane-never-loaded)))))
 
+;;; Gaps from the test review of commit 157ec9c
+
+(defun test-context-pane--pane-text ()
+  "Return the pane buffer's text, without properties."
+  (with-current-buffer org-scribe-context-pane--buffer-name
+    (buffer-substring-no-properties (point-min) (point-max))))
+
+(ert-deftest test-context-pane-live-idle-timer-follows-point ()
+  "The real timer, not a direct call, redraws the pane after point moves."
+  (test-context-pane--with-project 'en
+    (save-window-excursion
+      (switch-to-buffer (current-buffer))
+      (delete-other-windows)
+      (let ((org-scribe-context-pane-idle-delay 0.05)
+            (source (current-buffer)))
+        (org-scribe-context-pane-mode 1)
+        (unwind-protect
+            (progn
+              (should (string-match-p
+                       "The Heist"
+                       (buffer-local-value
+                        'header-line-format
+                        (get-buffer org-scribe-context-pane--buffer-name))))
+              (test-context-pane--goto "Place Only")
+              (set-window-point (get-buffer-window source) (point))
+              ;; The timer itself: an idle, repeating timer on the tick.
+              (should (timerp org-scribe-context-pane--timer))
+              (should (eq 'org-scribe-context-pane--tick
+                          (timer--function org-scribe-context-pane--timer)))
+              (should (timer--repeat-delay org-scribe-context-pane--timer))
+              (if noninteractive
+                  ;; Batch Emacs never goes idle, so fire it the way the
+                  ;; event loop does.
+                  (timer-event-handler org-scribe-context-pane--timer)
+                (let ((deadline (+ (float-time) 3)))
+                  (while (and (< (float-time) deadline)
+                              (not (string-match-p
+                                    "Place Only"
+                                    (buffer-local-value
+                                     'header-line-format
+                                     (get-buffer org-scribe-context-pane--buffer-name)))))
+                    (sit-for 0.1))))
+              (should (string-match-p
+                       "Place Only"
+                       (buffer-local-value
+                        'header-line-format
+                        (get-buffer org-scribe-context-pane--buffer-name)))))
+          (org-scribe-context-pane-mode -1))
+        ;; and once closed, the timer is gone
+        (should (null org-scribe-context-pane--timer))))))
+
+(ert-deftest test-context-pane-toggle-cast-button-expands-and-collapses ()
+  "Pressing the \"more\" button shows every name, and again collapses."
+  (test-context-pane--with-project 'en
+    (save-window-excursion
+      (switch-to-buffer (current-buffer))
+      (delete-other-windows)
+      (let ((org-scribe-context-pane-cast-collapse-threshold 0))
+        (org-scribe-context-pane-mode 1)
+        (unwind-protect
+            (with-current-buffer org-scribe-context-pane--buffer-name
+              (goto-char (point-min))
+              (let ((button (text-property-search-forward
+                             'action #'org-scribe-context-pane--toggle-cast #'eq)))
+                (should button)
+                (goto-char (prop-match-beginning button))
+                (should-not org-scribe-context-pane--cast-expanded)
+                (push-button)
+                (should org-scribe-context-pane--cast-expanded)
+                (should-not (string-match-p "RET to expand"
+                                            (test-context-pane--pane-text)))))
+          (org-scribe-context-pane-mode -1))))))
+
+(ert-deftest test-context-pane-narrowed-source-is-read-widened-and-restored ()
+  "A narrowed manuscript still gets its scene, and stays narrowed."
+  (test-context-pane--with-project 'en
+    (save-window-excursion
+      (switch-to-buffer (current-buffer))
+      (delete-other-windows)
+      (org-scribe-context-pane-mode 1)
+      (unwind-protect
+          (progn
+            (test-context-pane--goto "Place Only")
+            (org-back-to-heading t)
+            (org-narrow-to-subtree)
+            (let ((beg (point-min)) (end (point-max)))
+              (set-window-point (get-buffer-window (current-buffer)) (point))
+              (org-scribe-context-pane--refresh t)
+              (should (string-match-p
+                       "Act One › Chapter One › Place Only"
+                       (buffer-local-value
+                        'header-line-format
+                        (get-buffer org-scribe-context-pane--buffer-name))))
+              (should (= beg (point-min)))
+              (should (= end (point-max)))))
+        (widen)
+        (org-scribe-context-pane-mode -1)))))
+
+(ert-deftest test-context-pane-real-frame-layout ()
+  "On a graphical frame the pane takes its configured share of the width."
+  (skip-unless (display-graphic-p))
+  (test-context-pane--with-project 'en
+    (save-window-excursion
+      (switch-to-buffer (current-buffer))
+      (delete-other-windows)
+      (org-scribe-context-pane-mode 1)
+      (unwind-protect
+          (let* ((pane (get-buffer-window org-scribe-context-pane--buffer-name))
+                 (share (/ (float (window-total-width pane))
+                           (frame-width))))
+            (should (< (abs (- share org-scribe-context-pane-width-percent)) 0.05)))
+        (org-scribe-context-pane-mode -1)))))
+
 (provide 'test-context-pane)
 ;;; test-context-pane.el ends here
