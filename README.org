@@ -1714,21 +1714,21 @@ Default keybindings when =org-scribe-mode= is active:
 
 ** Hydra Menu (F8)
 
-The hydra menu provides quick access to all functions organized into 6 columns.
-Open it with =F8= while =org-scribe-mode= is active.
+The hydra menu provides quick access to all functions organized into 7 columns.
+Open it with =F8= while =org-scribe-mode= is active. The header is about 130
+columns wide: use a frame wider than that.
 
 #+begin_example
-^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^              ^Search^          ^Manage^
-_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words     _1_: by PoV       _n_: Capture note
-_c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all      _2_: Character    _k_: Capture entity…
-_o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_: Plot         _L_: Links & upkeep…
-                 _v_: Navigate    _b_: Objects         _y_: Synonyms        _4_: Location     _R_: Relink project
-                 _0_: Normal      _g_: Plot threads    _x_: Thesaurus       _5_: TODOs        _H_: Health report
-                                  _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
-                                  _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
-                                                       _S_: Story time                        _B_: Board…
-                                                       _V_: Snapshot scene                    _q_: Quit
-                                                       _C_: Compare snapshot
+^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^            ^Search^          ^Revise^              ^Manage^
+_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words   _1_: by PoV       _V_: Snapshot scene   _n_: Capture note
+_c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all    _2_: Character    _C_: Compare snapshot _k_: Capture entity…
+_o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: Plot         _z_: Cut scene        _L_: Links & upkeep…
+                 _v_: Navigate    _b_: Objects         _y_: Synonyms      _4_: Location     _Z_: Restore scene    _R_: Relink project
+                 _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: TODOs        _u_: Cut scenes       _H_: Health report
+                                  _G_: Plot point      _t_: Word target   _6_: Edits                              _W_: Planner…
+                                  _j_: Jump to PoV     _T_: Title         _7_: Object                             _X_: Compile draft
+                                                       _S_: Story time                                            _B_: Board…
+                                                                                                                  _q_: Quit
 #+end_example
 
 *** Insert
@@ -1761,8 +1761,6 @@ Tag the current scene's properties with ID-based links:
 - =x= - English thesaurus (requires =powerthesaurus=)
 - =t= - Set the project word target; =T= - set the title
 - =S= - Set the story-time notation (relative, dates, invented calendar)
-- =V= - Snapshot the current scene into the design notebook's Versions section
-- =C= - Compare the scene with one of its snapshots (ediff)
 
 *** Search
 - =1= - Find scenes by PoV character
@@ -1772,6 +1770,13 @@ Tag the current scene's properties with ID-based links:
 - =5= - Find all TODOs in the project
 - =6= - Index all inline edit/note markers (=C-u= for the plain-text fallback)
 - =7= - Find scenes by object
+
+*** Revise
+- =V= - Snapshot the current scene into the design notebook's Versions section
+- =C= - Compare the scene with one of its snapshots (ediff)
+- =z= - Cut the scene into the notebook's Cut scenes section (asks for a reason)
+- =Z= - Restore a cut scene to the manuscript
+- =u= - Report of the cut scenes: restore, delete for good, visit
 
 *** Manage
 - =n= - Capture a quick note
@@ -1790,7 +1795,6 @@ Tag the current scene's properties with ID-based links:
 - =b= - Capture object
 - =t= - Capture timeline event
 - =g= - Capture plot thread
-- =n= - Capture general note
 - =q= / =Q= - Back to main menu / Quit
 
 **** Links & Upkeep Submenu (F8 L)

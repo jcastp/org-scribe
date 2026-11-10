@@ -16,7 +16,7 @@ En esta lección haremos un recorrido completo por el menú Hydra, el centro de 
 
 Al terminar esta lección habrás:
 - Aprendido a abrir y a moverte por el menú Hydra
-- Entendido las seis categorías funcionales
+- Entendido las siete categorías funcionales
 - Aprendido los atajos de teclado de tus funciones más usadas
 - Descubierto funciones que no sabías que existían
 - Personalizado la tecla del menú a tu gusto
@@ -82,37 +82,37 @@ Pulsa: ~F8~
 Al abrir el menú verás:
 
 #+BEGIN_EXAMPLE
-^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^              ^Search^          ^Manage^
-_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words     _1_: by PoV       _n_: Capture note
-_c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all      _2_: Character    _k_: Capture entity…
-_o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_: Plot         _L_: Links & upkeep…
-                 _v_: Navigate    _b_: Objects         _y_: Synonyms        _4_: Location     _R_: Relink project
-                 _0_: Normal      _g_: Plot threads    _x_: Thesaurus       _5_: TODOs        _H_: Health report
-                                  _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
-                                  _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
-                                                       _S_: Story time      _z_: Cut scene    _B_: Board…
-                                                       _V_: Snapshot scene  _Z_: Restore      _q_: Quit
-                                                       _C_: Compare snapshot _u_: Cut scenes
+^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^            ^Search^          ^Revise^              ^Manage^
+_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words   _1_: by PoV       _V_: Snapshot scene   _n_: Capture note
+_c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all    _2_: Character    _C_: Compare snapshot _k_: Capture entity…
+_o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: Plot         _z_: Cut scene        _L_: Links & upkeep…
+                 _v_: Navigate    _b_: Objects         _y_: Synonyms      _4_: Location     _Z_: Restore scene    _R_: Relink project
+                 _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: TODOs        _u_: Cut scenes       _H_: Health report
+                                  _G_: Plot point      _t_: Word target   _6_: Edits                              _W_: Planner…
+                                  _j_: Jump to PoV     _T_: Title         _7_: Object                             _X_: Compile draft
+                                                       _S_: Story time                                            _B_: Board…
+                                                                                                                  _q_: Quit
 #+END_EXAMPLE
 
 Los menús Hydra están en inglés en todos los proyectos, también en los de español: es el idioma de los nombres de órdenes y de este menú. En las tablas de esta lección, el nombre en inglés del menú va acompañado de su significado en español.
 
-¡Este es tu centro de mando!
+¡Este es tu centro de mando! La cabecera mide unas 130 columnas, así que usa un marco más ancho.
 
 ** Entender la disposición
 
-El menú está organizado en *seis columnas*:
+El menú está organizado en *siete columnas*:
 
 1. *Insert* (insertar): añade contenido (escenas, capítulos)
 2. *Workspace* (espacio de trabajo): cambia el entorno de escritura
 3. *Tag Scene* (etiquetar escena): enlaza la escena actual con personajes, localizaciones y trama
 4. *Tools* (herramientas): recuento de palabras y utilidades
 5. *Search* (buscar): encuentra escenas por propiedades
-6. *Manage* (gestionar): captura, enlaces, salud del proyecto, planificador
+6. *Revise* (revisar): instantáneas y escenas descartadas
+7. *Manage* (gestionar): captura, enlaces, salud del proyecto, planificador
 
 Cada columna agrupa funciones relacionadas.
 
-* Las seis categorías funcionales
+* Las siete categorías funcionales
 
 Exploremos cada categoría en detalle.
 
@@ -193,11 +193,6 @@ Exploremos cada categoría en detalle.
 | ~t~   | Word target | Cambia el total de palabras del proyecto y reescala sus partes                                 |
 | ~T~   | Title       | Renombra el proyecto (marcador, título del manuscrito, plan)                                   |
 | ~S~   | Story time  | Elige cómo escriben las escenas su =:Linea-temporal:= (relativa, fechas, calendario inventado) |
-| ~V~   | Snapshot scene | Copia la prosa de la escena, con fecha, en la sección Versiones del cuaderno antes de reescribirla |
-| ~C~   | Compare snapshot | Compara una instantánea con la escena tal como está ahora, en ediff |
-| ~z~   | Cut scene | Mueve la escena a la sección Escenas descartadas del cuaderno (pregunta el motivo) |
-| ~Z~   | Restore scene | Devuelve una escena descartada a un capítulo |
-| ~u~   | Cut scenes | Informe de las escenas descartadas: recuperar, borrar para siempre, ir a ella |
 
 *Cuándo usarla*:
 - Después de escribir → ~w~ (comprueba rápido el recuento de palabras)
@@ -246,7 +241,23 @@ Exploremos cada categoría en detalle.
 
 *Nota*: la búsqueda funciona mejor cuando las escenas están etiquetadas (Columna 3). ¡Etiqueta primero, busca después!
 
-** Columna 6: Manage
+** Columna 6: Revise
+
+*Propósito*: conservar versiones anteriores de una escena y descartar escenas sin perderlas
+
+| Tecla | Orden            | Qué hace |
+|-------+------------------+----------|
+| ~V~   | Snapshot scene | Copia la prosa de la escena, con fecha, en la sección Versiones del cuaderno antes de reescribirla |
+| ~C~   | Compare snapshot | Compara una instantánea con la escena tal como está ahora, en ediff |
+| ~z~   | Cut scene | Mueve la escena a la sección Escenas descartadas del cuaderno (pregunta el motivo) |
+| ~Z~   | Restore scene | Devuelve una escena descartada a un capítulo |
+| ~u~   | Cut scenes | Informe de las escenas descartadas: recuperar, borrar para siempre, ir a ella |
+
+*Cuándo usarla*:
+- Antes de reescribir una escena → ~V~ (instantánea) y, después, ~C~ para comparar
+- Una escena ya no encaja → ~z~ (descartarla, queda en el cuaderno); ~Z~ o ~u~ la recuperan
+
+** Columna 7: Manage
 
 *Propósito*: capturar notas, gestionar enlaces, ejecutar revisiones de salud, abrir el planificador
 
@@ -295,7 +306,6 @@ _q_: Back to main menu            _Q_: Quit
 - ~b~: captura un objeto importante (MacGuffin, artefacto)
 - ~t~: captura un evento de la cronología
 - ~g~: captura un hilo de la trama
-- ~n~: captura una nota general del proyecto
 - ~q~: vuelve al menú Hydra principal
 - ~Q~: sale del menú Hydra por completo
 
@@ -577,7 +587,7 @@ o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
    - ~a~ es lo que de verdad guarda el recuento y sincroniza el plan
 
 3. *Confundir ~n~ y ~k~*
-   - ~n~ = capturar una nota de texto libre
+   - ~n~ = capturar una nota de texto libre (tecla de nivel superior, no está en el submenú ~k~)
    - ~k~ = abrir el submenú de captura de entidades (personaje, escenario, etc.)
 
 4. *Esperar que las acciones se repitan*
@@ -680,7 +690,7 @@ o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
 
 ✓ Qué es el menú Hydra y por qué es útil
 ✓ Cómo abrirlo (~F8~)
-✓ Las seis categorías funcionales (Insert, Workspace, Tag Scene, Tools, Search, Manage)
+✓ Las siete categorías funcionales (Insert, Workspace, Tag Scene, Tools, Search, Revise, Manage)
 ✓ Qué hace cada opción del menú
 ✓ Cómo navegar por los submenús (Capture, Links & upkeep, Planner)
 ✓ Patrones de uso y flujos de trabajo habituales
@@ -704,7 +714,7 @@ En la próxima lección aprenderás:
 
 Refuerza tus habilidades con el menú Hydra:
 
-1. *Memoriza las seis columnas*
+1. *Memoriza las siete columnas*
    - Insert, Workspace, Tag Scene, Tools, Search, Manage
    - Cierra los ojos y recítalas
 
@@ -763,7 +773,6 @@ Tómate tu tiempo. El menú Hydra es tu interfaz principal con ~org-scribe~: dom
 | ~b~   | Object         | Sigues un objeto importante de la historia  |
 | ~t~   | Timeline event | Registras un evento de la cronología        |
 | ~g~   | Plot thread    | Defines un hilo de la trama nuevo           |
-| ~n~   | Note           | Una nota de texto libre rápida del proyecto |
 
 *** Enlaces y mantenimiento (~F8 L~)
 
@@ -806,10 +815,10 @@ Investigar un personaje:
 
 * Resumen
 
-El menú Hydra es el centro de mando de ~org-scribe~. En lugar de memorizar decenas de nombres de órdenes, puedes pulsar ~F8~ y ver todas las opciones disponibles organizadas en seis categorías claras.
+El menú Hydra es el centro de mando de ~org-scribe~. En lugar de memorizar decenas de nombres de órdenes, puedes pulsar ~F8~ y ver todas las opciones disponibles organizadas en siete categorías claras.
 
 La clave del dominio es:
-1. Entender las seis categorías
+1. Entender las siete categorías
 2. Aprender las teclas de tu flujo de trabajo diario (s, m, p/h/l/g, w, a)
 3. Explorar gradualmente los submenús (k, L, W)
 4. Practicar hasta que ~F8~ sea memoria muscular

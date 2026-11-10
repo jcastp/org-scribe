@@ -14,7 +14,7 @@ In this lesson, we'll take a comprehensive tour of the Hydra menu - your command
 
 By the end of this lesson, you'll have:
 - Mastered opening and navigating the Hydra menu
-- Understood the six functional categories
+- Understood the seven functional categories
 - Learned keyboard shortcuts for your most-used features
 - Discovered features you didn't know existed
 - Customized the menu keybinding to your preference
@@ -80,35 +80,35 @@ Press: ~F8~
 When you open the menu, you'll see:
 
 #+BEGIN_EXAMPLE
-^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^              ^Search^          ^Manage^
-_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words     _1_: by PoV       _n_: Capture note
-_c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all      _2_: Character    _k_: Capture entity…
-_o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_: Plot         _L_: Links & upkeep…
-                 _v_: Navigate    _b_: Objects         _y_: Synonyms        _4_: Location     _R_: Relink project
-                 _0_: Normal      _g_: Plot threads    _x_: Thesaurus       _5_: TODOs        _H_: Health report
-                                  _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
-                                  _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
-                                                       _S_: Story time      _z_: Cut scene    _B_: Board…
-                                                       _V_: Snapshot scene  _Z_: Restore      _q_: Quit
-                                                       _C_: Compare snapshot _u_: Cut scenes
+^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^            ^Search^          ^Revise^              ^Manage^
+_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words   _1_: by PoV       _V_: Snapshot scene   _n_: Capture note
+_c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all    _2_: Character    _C_: Compare snapshot _k_: Capture entity…
+_o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: Plot         _z_: Cut scene        _L_: Links & upkeep…
+                 _v_: Navigate    _b_: Objects         _y_: Synonyms      _4_: Location     _Z_: Restore scene    _R_: Relink project
+                 _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: TODOs        _u_: Cut scenes       _H_: Health report
+                                  _G_: Plot point      _t_: Word target   _6_: Edits                              _W_: Planner…
+                                  _j_: Jump to PoV     _T_: Title         _7_: Object                             _X_: Compile draft
+                                                       _S_: Story time                                            _B_: Board…
+                                                                                                                  _q_: Quit
 #+END_EXAMPLE
 
-This is your command center!
+This is your command center! The header is about 130 columns wide, so use a frame wider than that.
 
 ** Understanding the Layout
 
-The menu is organized into *six columns*:
+The menu is organized into *seven columns*:
 
 1. *Insert* - Add content (scenes, chapters)
 2. *Workspace* - Change writing environment
 3. *Tag Scene* - Link the current scene to characters, locations, plot
 4. *Tools* - Word counting and utilities
 5. *Search* - Find scenes by properties
-6. *Manage* - Capture, links, health, planner
+6. *Revise* - Snapshots and the cut bin
+7. *Manage* - Capture, links, health, planner
 
 Each column groups related functions together.
 
-* The Six Functional Categories
+* The Seven Functional Categories
 
 Let's explore each category in detail.
 
@@ -189,11 +189,6 @@ Let's explore each category in detail.
 | ~t~   | Word target | Change the project's total word count and rescale its parts |
 | ~T~   | Title       | Rename the project (marker, manuscript title, plan)  |
 | ~S~   | Story time  | Choose how scenes write their =:Timeline:= (relative, dates, invented calendar) |
-| ~V~   | Snapshot scene | Copy the scene's prose, dated, into the notebook's Versions section before rewriting it |
-| ~C~   | Compare snapshot | Compare a snapshot with the scene as it is now, in ediff |
-| ~z~   | Cut scene    | Move the scene into the notebook's Cut scenes section (asks for a reason) |
-| ~Z~   | Restore scene | Put a cut scene back under a chapter |
-| ~u~   | Cut scenes   | Report of the cut scenes: restore, delete for good, visit |
 
 *When to use*:
 - After writing → ~w~ (check word count quickly)
@@ -242,7 +237,23 @@ Let's explore each category in detail.
 
 *Note*: Search works best when scenes are tagged (Column 3). Tag first, search later!
 
-** Column 6: Manage
+** Column 6: Revise
+
+*Purpose*: Keep earlier versions of a scene, and cut scenes without losing them
+
+| Key | Command          | What It Does                                         |
+|-----+------------------+------------------------------------------------------|
+| ~V~   | Snapshot scene | Copy the scene's prose, dated, into the notebook's Versions section before rewriting it |
+| ~C~   | Compare snapshot | Compare a snapshot with the scene as it is now, in ediff |
+| ~z~   | Cut scene    | Move the scene into the notebook's Cut scenes section (asks for a reason) |
+| ~Z~   | Restore scene | Put a cut scene back under a chapter |
+| ~u~   | Cut scenes   | Report of the cut scenes: restore, delete for good, visit |
+
+*When to use*:
+- Before rewriting a scene → ~V~ (snapshot), then ~C~ to compare afterwards
+- A scene no longer belongs → ~z~ (cut it, keeping it in the notebook); ~Z~ or ~u~ brings it back
+
+** Column 7: Manage
 
 *Purpose*: Capture notes, manage links, run health checks, open the planner
 
@@ -291,7 +302,6 @@ _q_: Back to main menu            _Q_: Quit
 - ~b~ - Capture an important object (MacGuffin, artifact)
 - ~t~ - Capture a timeline event
 - ~g~ - Capture a plot thread
-- ~n~ - Capture a general project note
 - ~q~ - Return to main Hydra menu
 - ~Q~ - Quit Hydra entirely
 
@@ -573,7 +583,7 @@ Don't try to learn everything at once!
    - ~a~ is what actually stores the count and syncs the plan
 
 3. *Confusing ~n~ and ~k~*
-   - ~n~ = capture a free-text note
+   - ~n~ = capture a free-text note (a top-level key, not in the ~k~ submenu)
    - ~k~ = open the entity capture submenu (character, location, etc.)
 
 4. *Expecting actions to repeat*
@@ -676,7 +686,7 @@ Excellent work! You've completed Lesson 8. You now know:
 
 ✓ What the Hydra menu is and why it's useful
 ✓ How to open it (~F8~)
-✓ The six functional categories (Insert, Workspace, Tag Scene, Tools, Search, Manage)
+✓ The seven functional categories (Insert, Workspace, Tag Scene, Tools, Search, Revise, Manage)
 ✓ What each menu option does
 ✓ How to navigate submenus (Capture, Links & upkeep, Planner)
 ✓ Common usage patterns and workflows
@@ -700,8 +710,8 @@ In the next lesson, you'll learn:
 
 Reinforce your Hydra skills:
 
-1. *Memorize the six columns*
-   - Insert, Workspace, Tag Scene, Tools, Search, Manage
+1. *Memorize the seven columns*
+   - Insert, Workspace, Tag Scene, Tools, Search, Revise, Manage
    - Close your eyes and recite them
 
 2. *Practice your daily workflow*
@@ -759,7 +769,6 @@ Take your time! The Hydra menu is your primary interface to ~org-scribe~ - maste
 | ~b~   | Object         | Tracking an important story object |
 | ~t~   | Timeline event | Recording a plot timeline event    |
 | ~g~   | Plot thread    | Defining a new plot thread         |
-| ~n~   | Note           | Quick free-text project note       |
 
 *** Links & Upkeep (~F8 L~)
 
@@ -802,10 +811,10 @@ Character Research:
 
 * Summary
 
-The Hydra menu is your command center for ~org-scribe~. Instead of memorizing dozens of command names, you can press ~F8~ and see all available options organized into six clear categories.
+The Hydra menu is your command center for ~org-scribe~. Instead of memorizing dozens of command names, you can press ~F8~ and see all available options organized into seven clear categories.
 
 The key to mastery is:
-1. Understand the six categories
+1. Understand the seven categories
 2. Learn your daily workflow keys (s, m, p/h/l/g, w, a)
 3. Gradually explore submenus (k, L, W)
 4. Practice until ~F8~ becomes muscle memory

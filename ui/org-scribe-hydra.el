@@ -105,7 +105,7 @@
 ^Capture into project^
 ^^^^----------------------------------------------------------
 _h_: Character   _b_: Object      _g_: Plot thread
-_l_: Location    _t_: Timeline    _n_: Note
+_l_: Location    _t_: Timeline
 
 _q_: Back to main menu            _Q_: Quit
 "
@@ -114,7 +114,6 @@ _q_: Back to main menu            _Q_: Quit
   ("b" org-scribe-capture-object "object")
   ("t" org-scribe-capture-timeline "timeline")
   ("g" org-scribe-capture-plot-thread "plot thread")
-  ("n" org-scribe-capture-to-file "note")
   ("q" hydra-org-scribe/body "back")
   ("Q" nil "quit"))
 
@@ -159,18 +158,17 @@ _q_: Back to main menu    _Q_: Quit
 ;;;###autoload (autoload 'hydra-org-scribe/body "ui/org-scribe-hydra" nil t)
 (defhydra hydra-org-scribe (:color blue :hint nil)
   "
-^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^              ^Search^          ^Manage^
-^^^^---------------------------------------------------------------------------------------------------------------
-_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words     _1_: by PoV       _n_: Capture note
-_c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all      _2_: Character    _k_: Capture entity…
-_o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_: Plot         _L_: Links & upkeep…
-^^               _v_: Navigate    _b_: Objects         _y_: Synonyms        _4_: Location     _R_: Relink project
-^^               _0_: Normal      _g_: Plot threads    _x_: Thesaurus       _5_: TODOs        _H_: Health report
-^^               ^^               _G_: Plot point      _t_: Word target     _6_: Edits        _W_: Planner…
-^^               ^^               _j_: Jump to PoV     _T_: Title           _7_: Object       _X_: Compile draft
-^^               ^^               ^^                   _S_: Story time      _z_: Cut scene    _B_: Board…
-^^               ^^               ^^                   _V_: Snapshot scene  _Z_: Restore      _q_: Quit
-^^               ^^               ^^                   _C_: Compare snapshot _u_: Cut scenes
+^Insert^         ^Workspace^      ^Tag Scene^          ^Tools^            ^Search^          ^Revise^              ^Manage^
+^^^^^^---------------------------------------------------------------------------------------------------------------------------------
+_s_: Scene       _m_: Write       _p_: PoV             _w_: Count words   _1_: by PoV       _V_: Snapshot scene   _n_: Capture note
+_c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all    _2_: Character    _C_: Compare snapshot _k_: Capture entity…
+_o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: Plot         _z_: Cut scene        _L_: Links & upkeep…
+^^               _v_: Navigate    _b_: Objects         _y_: Synonyms      _4_: Location     _Z_: Restore scene    _R_: Relink project
+^^               _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: TODOs        _u_: Cut scenes       _H_: Health report
+^^               ^^               _G_: Plot point      _t_: Word target   _6_: Edits        ^^                    _W_: Planner…
+^^               ^^               _j_: Jump to PoV     _T_: Title         _7_: Object       ^^                    _X_: Compile draft
+^^               ^^               ^^                   _S_: Story time    ^^                ^^                    _B_: Board…
+^^               ^^               ^^                   ^^                 ^^                ^^                    _q_: Quit
 "
   ;; Insert (most frequent)
   ("s" org-scribe-insert-scene "insert scene")
@@ -207,6 +205,8 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary      _3_:
   ("t" org-scribe-set-word-target "word target")
   ("T" org-scribe-set-title "title")
   ("S" org-scribe-set-story-time "story time")
+
+  ;; Revise (snapshots and the cut bin)
   ("V" org-scribe-snapshot-scene "snapshot scene")
   ("C" org-scribe-compare-snapshot "compare snapshot")
   ("z" org-scribe-cut-scene "cut scene")
