@@ -385,8 +385,9 @@ Lección 8); aquí van explicadas:
 | h     | Fijar personajes (etiquetar la escena)        |     2 | Buscar por personaje          |
 | l     | Fijar localizaciones (etiquetar la escena)    |     3 | Buscar por trama              |
 | g     | Fijar hilos de la trama (etiquetar la escena) |     4 | Buscar por localización       |
-| k     | Submenú de captura de entidades…              |     5 | Buscar TODO                   |
-| L     | Submenú de enlaces y mantenimiento…           |     6 | Buscar ediciones/notas        |
+| k     | Submenú de captura de entidades…              |     5 | Buscar por objeto             |
+| L     | Submenú de enlaces y mantenimiento…           |     6 | Buscar TODO                   |
+|       |                                               |     7 | Buscar ediciones/notas        |
 | R     | Volver a enlazar el proyecto                  |     H | Informe de salud del proyecto |
 | W     | Submenú del planificador de escritura (*)     |     q | Salir del menú                |
 

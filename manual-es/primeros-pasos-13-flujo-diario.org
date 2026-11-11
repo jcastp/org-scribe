@@ -434,7 +434,7 @@ Existen dos marcadores:
 
 Si usas Tempel (la Lección 14 muestra la configuración de una línea), escribe =note= o =edit= y pulsa la tecla de expansión: el fragmento escribe el bloque entero y, para =edit=, te pregunta la categoría. Escribir el bloque a mano funciona igual de bien.
 
-Más tarde, ~F8 6~ lista todos los marcadores del proyecto, agrupados por categoría, para que ninguna de estas migas de pan se pierda. Te lo agradecerás cuando revises.
+Más tarde, ~F8 7~ lista todos los marcadores del proyecto, agrupados por categoría, para que ninguna de estas migas de pan se pierda. Te lo agradecerás cuando revises.
 
 ** La integración con Pomodoro
 
@@ -582,7 +582,7 @@ Lee lo que escribiste y planifica el día siguiente:
    ,#+end_comment
    #+END_EXAMPLE
 
-   Mañana, ~F8 6~ lo lista junto con todos los demás marcadores.
+   Mañana, ~F8 7~ lo lista junto con todos los demás marcadores.
 
 3. *Planifica la sesión de mañana*:
    #+BEGIN_EXAMPLE

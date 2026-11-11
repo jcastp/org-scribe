@@ -416,7 +416,7 @@ This one variable drives both ends: the index groups by it, and the bundled Temp
 
 ** The Plain-Text Fallback
 
-~org-scribe-edit-string~ is the regexp used by ~org-scribe-search-edits-rgrep~ (the ~C-u~ variant of ~F8 6~), not by the structured index. Customize it if you use marker styles of your own:
+~org-scribe-edit-string~ is the regexp used by ~org-scribe-search-edits-rgrep~ (the ~C-u~ variant of ~F8 7~), not by the structured index. Customize it if you use marker styles of your own:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")

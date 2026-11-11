@@ -156,7 +156,7 @@ Un ~*EDIT*~ lleva una categoría antes del separador ~" - "~, para que una pasad
 
 *** El índice de ediciones
 
-~F8~ y luego ~6~ reúne todos los marcadores del proyecto y los agrupa (el búfer se llama ~*org-scribe-edits*~; los enlaces llevan la ruta completa, aquí abreviada):
+~F8~ y luego ~7~ reúne todos los marcadores del proyecto y los agrupa (el búfer se llama ~*org-scribe-edits*~; los enlaces llevan la ruta completa, aquí abreviada):
 
 #+BEGIN_EXAMPLE
 #+TITLE: Marcas de edición
@@ -216,9 +216,9 @@ La búsqueda de ediciones deliberadamente *no* lo reconoce. Esa distinción es l
 
 | Marcador    | Anota                 | Vive bajo            | Se encuentra con |
 |-------------+-----------------------+----------------------+------------------|
-| ~*EDIT*~    | prosa que existe      | cualquier escena     | ~F8~ y luego ~6~ |
-| ~*NOTE*~    | prosa que existe      | cualquier escena     | ~F8~ y luego ~6~ |
-| ~*SUMMARY*~ | prosa que *no* existe | un encabezado ~TOWRITE~ | ~F8~ y luego ~5~ |
+| ~*EDIT*~    | prosa que existe      | cualquier escena     | ~F8~ y luego ~7~ |
+| ~*NOTE*~    | prosa que existe      | cualquier escena     | ~F8~ y luego ~7~ |
+| ~*SUMMARY*~ | prosa que *no* existe | un encabezado ~TOWRITE~ | ~F8~ y luego ~6~ |
 
 Una pasada de revisión y una sesión de redacción son trabajos distintos. Mezclar «arregla esta frase» en la misma lista que «escribe esta escena» haría peores las dos listas, así que el índice de ediciones cubre solo las dos primeras filas y la búsqueda de TODO cubre la tercera, donde una escena sin escribir está junto a todas las demás escenas sin escribir.
 
@@ -547,7 +547,7 @@ Busca los elementos que necesitan resolución:
 
 *Busca pistolas de Chéjov*:
 
-~F8~ y luego ~5~ (búsqueda de TODO) solo encuentra los encabezados de Org con palabra clave TODO (~TODO~, ~TOWRITE~, etc.); no detectará los marcadores escritos en la propia prosa. Para eso, usa ~F8~ y luego ~6~ (el índice de ediciones), que reúne los marcadores de todos los bloques de comentario del proyecto.
+~F8~ y luego ~6~ (búsqueda de TODO) solo encuentra los encabezados de Org con palabra clave TODO (~TODO~, ~TOWRITE~, etc.); no detectará los marcadores escritos en la propia prosa. Para eso, usa ~F8~ y luego ~7~ (el índice de ediciones), que reúne los marcadores de todos los bloques de comentario del proyecto.
 
 Escribe los marcadores de siembra y fruto como cualquier otro marcador: dentro de un bloque de comentario, para que nunca lleguen a tu manuscrito exportado ni cuenten para tus totales de palabras (ver [[*Convención de marcadores][Convención de marcadores]]).
 
@@ -561,7 +561,7 @@ Sam menciona la caja cerrada con llave del desván y no dice nada más.
 
 Como ~*NOTE*~ ya lo reconoce el índice, seguir las siembras no necesita ninguna configuración: escribe ~SIEMBRA~, ~ANTICIPO~ o ~FRUTO~ dentro de la nota y repasa los resultados.
 
-Si prefieres tenerlos como una categoría aparte que puedas buscar de forma independiente, personaliza ~org-scribe-edit-string~ para añadirlos. Ojo: esa variable solo la usa la búsqueda de texto plano ~org-scribe-search-edits-rgrep~ (el índice con ~F8 6~ lee la gramática de los marcadores directamente y no la consulta):
+Si prefieres tenerlos como una categoría aparte que puedas buscar de forma independiente, personaliza ~org-scribe-edit-string~ para añadirlos. Ojo: esa variable solo la usa la búsqueda de texto plano ~org-scribe-search-edits-rgrep~ (el índice con ~F8 7~ lee la gramática de los marcadores directamente y no la consulta):
 
 #+BEGIN_SRC elisp
 (setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*")
@@ -1155,7 +1155,7 @@ Añádela a esa línea:
 #+END_EXAMPLE
 
 y pulsa ~C-c C-c~ sobre ella para que Org la vuelva a leer. Cualquier palabra
-que añadas tiene que ir también en ~org-scribe-todo-keywords~, o ~F8 5~
+que añadas tiene que ir también en ~org-scribe-todo-keywords~, o ~F8 6~
 (búsqueda de TODOs) no la encontrará:
 
 #+BEGIN_SRC emacs-lisp
@@ -1638,7 +1638,7 @@ En la próxima lección aprenderás a:
 
 ** Herramientas de Emacs para la revisión
 
-- *Los marcadores de edición propios de org-scribe*: marcadores ~*EDIT*~ / ~*NOTE*~ en bloques de comentario más ~F8~ y luego ~6~. No hace falta ningún paquete extra, y nunca se exportan ni afectan al recuento de palabras (ver [[*Convención de marcadores][Convención de marcadores]])
+- *Los marcadores de edición propios de org-scribe*: marcadores ~*EDIT*~ / ~*NOTE*~ en bloques de comentario más ~F8~ y luego ~7~. No hace falta ningún paquete extra, y nunca se exportan ni afectan al recuento de palabras (ver [[*Convención de marcadores][Convención de marcadores]])
 - *org-remark*: sistema de anotaciones para notas de revisión, si prefieres anotar con resaltados; org-scribe no se conecta con él
 - *writegood-mode*: resalta la voz pasiva, las palabras débiles y los duplicados (en inglés)
 - *flyspell-mode*: corrector ortográfico sobre la marcha

@@ -70,9 +70,9 @@ This is:
 - *Seamless*: Doesn't interrupt flow
 - *Empowering*: You check things because it's easy
 
-* The Four Core Searches
+* The Five Core Searches
 
-The package provides four main search functions, each focusing on a different scene property.
+The package provides five main search functions, each focusing on a different scene property.
 
 ** Overview Table
 
@@ -82,12 +82,13 @@ The package provides four main search functions, each focusing on a different sc
 | Character   | F8 2   | ~org-scribe-org-find-character~ | ~:Characters:~      |
 | Plot        | F8 3   | ~org-scribe-org-find-plot~      | ~:Plot:~            |
 | Location    | F8 4   | ~org-scribe-org-find-location~  | ~:Location:~        |
+| Object      | F8 5   | ~org-scribe-org-find-object~    | ~:Objects:~         |
 
-Two more searches round out the Search section of the hydra (covered later in this lesson): ~F8 5~ for TODO items and ~F8 6~ for inline =*EDIT*=/=*NOTE*= markers (~org-scribe-search-edits~, which parses Org comment blocks rather than querying properties).
+Two more searches round out the Search section of the hydra (covered later in this lesson): ~F8 6~ for TODO items and ~F8 7~ for inline =*EDIT*=/=*NOTE*= markers (~org-scribe-search-edits~, which parses Org comment blocks rather than querying properties).
 
 ** Common Pattern
 
-All four searches work the same way:
+All five searches work the same way:
 1. Invoke the search (press hydra key or run command)
 2. Enter search term (with completion)
 3. View results in dedicated buffer
@@ -569,7 +570,40 @@ Your coffee shop represents "normal life." You search and find:
 This structural pattern shows character's journey away from and back to normalcy. Intentional and effective!
 #+END_EXAMPLE
 
-* Search 5: Finding TODOs
+* Search 5: By Object
+
+Find all scenes in which a specific object appears.
+
+** When to Use
+
+- *Chekhov's Gun*: An object introduced early should come back; does it?
+- *Continuity*: Where was the letter last seen, and who held it?
+- *Symbolic Objects*: Track a recurring item (a ring, a key, a photograph)
+- *Planning*: When should this object reappear?
+
+** How to Search
+
+Press: ~F8 5~
+
+Or use: ~M-x org-scribe-org-find-object~
+
+** The Process
+
+1. You'll see a prompt: ~Find object [fuzzy]: ~ (or ~Object [substring]: ~)
+2. Start typing: ~Letter~
+3. Matching objects appear
+4. Select: ~The unsent letter~
+5. Press: ~Enter~
+
+The results work like the other property searches: the scenes are listed in manuscript order, and both plain text and ID links in the scene's ~:Objects:~ property are recognised. Tag a scene with ~F8 b~ (Tag Scene: Objects).
+
+** Interpreting Results
+
+- *One scene only*: the object may be set up but never paid off
+- *A long gap between appearances*: remind the reader the object exists
+- *Appears in every act*: probably a symbol; make sure each appearance adds meaning
+
+* Search 6: Finding TODOs
 
 Find all TODO items across your entire project.
 
@@ -595,7 +629,7 @@ The keywords org-scribe searches for are those in ~org-scribe-todo-keywords~: ~T
 
 ** How to Search
 
-Press: ~F8 5~
+Press: ~F8 6~
 
 Or use: ~M-x org-scribe-search-todos-recursive~
 
@@ -656,15 +690,15 @@ Press C-c C-t and choose REDO:
 Continue writing Scene 15!
 #+END_EXAMPLE
 
-Later, when you search TODOs, you'll find this and fix it. Don't add a ~TODO~ sub-heading inside a scene: the manuscript has no ~TODO~ keyword, so the search would not see it, and a sub-heading is part of the scene's text. To say /what/ is wrong, leave an edit marker next to the passage (Search 6).
+Later, when you search TODOs, you'll find this and fix it. Don't add a ~TODO~ sub-heading inside a scene: the manuscript has no ~TODO~ keyword, so the search would not see it, and a sub-heading is part of the scene's text. To say /what/ is wrong, leave an edit marker next to the passage (Search 7).
 
-* Search 6: Finding Edit/Note Markers
+* Search 7: Finding Edit/Note Markers
 
 Find every inline ~*EDIT*~ or ~*NOTE*~ marker across your entire project.
 
 ** How This Differs from TODO Search
 
-Search 5 (TODOs) looks for Org TODO *keywords* at the start of headings - things you have decided to *write*. Search 6 finds markers you left *inside* prose you have already written, attached to the sentence that needs work.
+Search 6 (TODOs) looks for Org TODO *keywords* at the start of headings - things you have decided to *write*. Search 7 finds markers you left *inside* prose you have already written, attached to the sentence that needs work.
 
 Both are searches over the whole project; they simply cover different stages of the work.
 
@@ -700,7 +734,7 @@ An ~*EDIT*~ also carries a category before a ~" - "~ separator (~plot~, ~scene~,
 
 ** How to Search
 
-Press: ~F8 6~
+Press: ~F8 7~
 
 Or use: ~M-x org-scribe-search-edits~
 
@@ -748,7 +782,7 @@ The categories come from ~org-scribe-edit-categories~:
 
 A marker whose category is missing, empty or unrecognized is grouped under ~other~ rather than dropped - a typo moves a marker, it never hides one.
 
-If your markers *don't* follow the comment-block convention - older projects, or a marker style of your own - call the search with a prefix argument (~C-u F8 6~) to get ~org-scribe-search-edits-rgrep~, a plain-text search that finds them anywhere. That fallback is the one that uses ~org-scribe-edit-string~:
+If your markers *don't* follow the comment-block convention - older projects, or a marker style of your own - call the search with a prefix argument (~C-u F8 7~) to get ~org-scribe-search-edits-rgrep~, a plain-text search that finds them anywhere. That fallback is the one that uses ~org-scribe-edit-string~:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")
@@ -904,8 +938,16 @@ Let's practice all five search types.
 5. Is this too many? (>20% might be)
 6. Press ~q~ to close results
 
-*** Search 5: TODO
+*** Search 5: Object
 1. Press: ~F8 5~
+2. Search for an object that matters to your story
+3. Count results
+4. Note: How many scenes feature it? _______
+5. Does it appear at the moments you planned?
+6. Press ~q~ to close results
+
+*** Search 6: TODO
+1. Press: ~F8 6~
 2. View all TODO items
 3. Count them
 4. Note: How many TODOs? _______
@@ -972,7 +1014,7 @@ Get comfortable with the results navigation cycle:
 
 ** Before Writing
 
-- *Review TODOs*: Check what you left yourself to fix (F8 5)
+- *Review TODOs*: Check what you left yourself to fix (F8 6)
 - *Check last appearance*: If writing Character X, search when they last appeared
 - *Verify plot status*: If developing Plot Y, search to see what's happened so far
 
@@ -1124,8 +1166,9 @@ Pressing RET or C-c C-o in results doesn't jump to scene.
 | ~F8 2~ | Character         | ~:Characters:~                 |
 | ~F8 3~ | Plot              | ~:Plot:~                       |
 | ~F8 4~ | Location          | ~:Location:~                   |
-| ~F8 5~ | TODO items        | TODO keywords                |
-| ~F8 6~ | Edit/note markers | =*EDIT*=/=*NOTE*= in comment blocks |
+| ~F8 5~ | Object            | ~:Objects:~                    |
+| ~F8 6~ | TODO items        | TODO keywords                |
+| ~F8 7~ | Edit/note markers | =*EDIT*=/=*NOTE*= in comment blocks |
 
 ** Results Buffer Navigation
 
@@ -1274,7 +1317,7 @@ Don't rationalize - adjust the story to match healthy patterns.
 Congratulations! You've completed Lesson 7. You now know:
 
 ✓ Why searching is essential for managing longer manuscripts
-✓ The four core search types (PoV, character, plot, location)
+✓ The five core search types (PoV, character, plot, location, object)
 ✓ How to search for TODO items across your project
 ✓ How to find inline *EDIT*/*NOTE* markers across your project
 ✓ How to interpret search results (coverage %, gaps, distribution)

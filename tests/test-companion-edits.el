@@ -96,7 +96,7 @@
       (should (equal '("NOTE" "EDIT") (mapcar (lambda (m) (plist-get m :type)) markers)))
       (should (equal '(:null "prose") (mapcar (lambda (m) (plist-get m :category)) markers)))
       (should (string-prefix-p "Three paragraphs" (plist-get (nth 1 markers) :text)))
-      ;; the line is the file's, as F8 6 gives it
+      ;; the line is the file's, as F8 7 gives it
       (should (= (test-companion-edits--line-of file "^\\*EDIT\\*: prose - Three paragraphs")
                  (plist-get (nth 1 markers) :line)))
       ;; the same markers, scene by scene, as the edit index finds in the manuscript

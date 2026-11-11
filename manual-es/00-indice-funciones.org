@@ -394,7 +394,7 @@ Busca todas las escenas etiquetadas con un hilo de la trama concreto en la propi
 
 ** Buscar escenas por localización (~org-scribe-org-find-location~)
 
-Busca todas las escenas ambientadas en una localización concreta mediante la propiedad ~:Localizacion:~ (~:Location:~ en un proyecto en inglés). Admite coincidencias parciales y trata tanto el texto plano como los enlaces por ID. Los resultados muestran todas las escenas de esa localización en el orden del manuscrito. Es útil para comprobar la variedad de escenarios (¿hay demasiadas escenas en el mismo lugar?), asegurarse de que las localizaciones se aprovechan bien y encontrar todas las escenas que revisar cuando cambian los detalles de un lugar. Se puede buscar una localización amplia (como «París») o una concreta (como «La cafetería»). Hay además una búsqueda equivalente por objeto, ~org-scribe-org-find-object~ (~7~ en la sección Search).
+Busca todas las escenas ambientadas en una localización concreta mediante la propiedad ~:Localizacion:~ (~:Location:~ en un proyecto en inglés). Admite coincidencias parciales y trata tanto el texto plano como los enlaces por ID. Los resultados muestran todas las escenas de esa localización en el orden del manuscrito. Es útil para comprobar la variedad de escenarios (¿hay demasiadas escenas en el mismo lugar?), asegurarse de que las localizaciones se aprovechan bien y encontrar todas las escenas que revisar cuando cambian los detalles de un lugar. Se puede buscar una localización amplia (como «París») o una concreta (como «La cafetería»). Hay además una búsqueda equivalente por objeto, ~org-scribe-org-find-object~ (~5~ en la sección Search).
 
 *Estado*: totalmente implementado | *Hydra*: ~F8 4~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
 
@@ -402,13 +402,13 @@ Busca todas las escenas ambientadas en una localización concreta mediante la pr
 
 Busca de forma recursiva en todo el proyecto todos los elementos TODO, reuniéndolos del manuscrito, de los archivos de planificación, de las notas y de cualquier otro archivo Org del proyecto. Usa org-ql para encontrar los encabezados con estados TODO (los de ~org-scribe-todo-keywords~) y los muestra en un único búfer consolidado en el que se puede buscar. Da un seguimiento de los TODO de todo el proyecto sin mantener un archivo de tareas aparte. Es útil para encontrar notas de revisión, agujeros de la trama que arreglar, investigación pendiente o cualquier otra tarea etiquetada repartida por los archivos del proyecto. Las ramas de Borradores que siguen en ~TODO~ u ~ONGOING~ también aparecen.
 
-*Estado*: totalmente implementado | *Hydra*: ~F8 5~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 6~ (sección Search) | *Módulo*: ~search/org-scribe-search.el~
 
 ** Índice de marcadores de edición (~org-scribe-search-edits~)
 
 Reúne todos los marcadores ~*EDIT*~ y ~*NOTE*~ escritos dentro de un bloque ~#+begin_comment~ en todos los archivos .org bajo la raíz del proyecto y los presenta en un búfer de Org navegable: los marcadores ~*EDIT*~ agrupados por categoría (~org-scribe-edit-categories~, por defecto plot/scene/character/prose/design, con un cajón de sastre ~other~ para las categorías ausentes o no reconocidas; en un proyecto en español se muestran como trama/escena/personaje/prosa/diseño, y el cajón de sastre como ~otras~) y los ~*NOTE*~ en una sección propia. Cada entrada enlaza con la línea exacta del origen. Se construye recorriendo el árbol de análisis de Org en busca de elementos ~comment-block~ en lugar de buscar texto, lo que da cuerpos de marcador completos aunque ocupen varias líneas, el encabezado de escena que contiene cada marcador y la inmunidad a los falsos positivos de una prosa que simplemente menciona ~*NOTE*~. Los marcadores ~*SUMMARY*~ se excluyen a propósito: describen escenas sin escribir y pertenecen a la búsqueda de TODO. En el búfer del índice ~g~ (~org-scribe-edits-refresh~) lo reconstruye desde el disco, ~RET~ sigue un marcador y ~q~ lo oculta; con un argumento de prefijo la orden ejecuta en su lugar la alternativa ~rgrep~. También está disponible como el valor ~edits~ de ~org-scribe-editing-right-panel~, donde se refresca en cada guardado. Mira la [[file:../manual-es/primeros-pasos-14-flujo-revision.org][Lección 14]].
 
-*Estado*: totalmente implementado | *Hydra*: ~F8 6~ (sección Search, «find edits and notes») | *Módulo*: ~search/org-scribe-search.el~
+*Estado*: totalmente implementado | *Hydra*: ~F8 7~ (sección Search, «find edits and notes») | *Módulo*: ~search/org-scribe-search.el~
 
 ** Fragmentos de Tempel incluidos (~org-scribe-tempel-setup~)
 
@@ -420,7 +420,7 @@ Incluye los fragmentos ~edit~ y ~note~ en ~snippets/org-scribe-tempel.eld~, que 
 
 Busca de forma recursiva en todo el proyecto marcadores de edición en línea y notas de revisión con ~rgrep~. El patrón de búsqueda se configura con ~org-scribe-edit-string~ (la expresión regular por defecto coincide con las cadenas ~*EDIT*~ o ~*NOTE*~ en cualquier punto de los archivos .org). Los resultados aparecen en un búfer de grep con referencias archivo:línea pulsables. Se usan ~*EDIT*~ o ~*NOTE*~ en línea mientras redactan para marcar pasajes que necesitan revisión sin interrumpir el flujo; esta función reúne después todos esos marcadores de todo el proyecto para una sesión de revisión concentrada. Los marcadores se escriben por convención dentro de un bloque ~#+begin_comment~, lo que los mantiene fuera de todos los motores de exportación y de los recuentos de palabras (mira la Lección 14, «Convención de marcadores»). La búsqueda abarca deliberadamente todo el proyecto; fuera de un proyecto de escritura recurre al directorio del búfer actual en lugar de fallar.
 
-*Estado*: totalmente implementado | *Hydra*: ~C-u F8 6~ (la variante con prefijo de ~6~, sección Search) | *Módulo*: ~search/org-scribe-search.el~
+*Estado*: totalmente implementado | *Hydra*: ~C-u F8 7~ (la variante con prefijo de ~7~, sección Search) | *Módulo*: ~search/org-scribe-search.el~
 
 ** Instantáneas de escena (~org-scribe-snapshot-scene~, ~org-scribe-compare-snapshot~)
 

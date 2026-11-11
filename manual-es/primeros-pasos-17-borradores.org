@@ -221,7 +221,7 @@ plegadas.
 
 ** Las ramas vivas aparecen en tu lista de TODO
 
-~F8 5~ (Buscar TODO, Lección 7) recorre todos los archivos ~.org~ de tu
+~F8 6~ (Buscar TODO, Lección 7) recorre todos los archivos ~.org~ de tu
 proyecto, borradores incluidos, y encuentra las palabras clave de
 ~org-scribe-todo-keywords~: ~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~,
 ~TOREVIEW~, ~REDO~, ~RESTRUCTURE~.

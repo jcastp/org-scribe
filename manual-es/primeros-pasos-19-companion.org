@@ -156,7 +156,7 @@ para cambiar ese orden, arrastra una fila.
   búsqueda. Elige, pulsa *Hecho*: Emacs escribe enlaces ~[[id:...][Nombre]]~
   como es debido.
 - El campo *Objetos* funciona como los demás campos de enlace. En Emacs, el mismo
-  enlace se fija con ~F8 b~ (Etiquetar escena) y se busca con ~F8 7~.
+  enlace se fija con ~F8 b~ (Etiquetar escena) y se busca con ~F8 5~.
 - El =+= de una fila de capítulo añade una escena al final de ese capítulo; el
   =+= de una fila de acto pide un título y añade un capítulo al final del acto
   (en un cuento añade una escena, como en el corcho).
@@ -434,7 +434,7 @@ y longitud de los capítulos. *Informe completo en Emacs* abre allí el informe.
 ** La pestaña Marcas
 
 La pestaña *Marcas* lista todas las marcas ~*EDIT*~ y ~*NOTE*~ del proyecto,
-las mismas que encuentra ~F8 6~ (las marcas viven en bloques de comentario;
+las mismas que encuentra ~F8 7~ (las marcas viven en bloques de comentario;
 mira la Lección 13). Agrúpalas por *Categoría* (trama, escena, personaje,
 prosa, diseño, otras y después las notas) o por *Capítulo*, y muéstralas todas,
 solo las ediciones o solo las notas. La página recuerda las dos elecciones.

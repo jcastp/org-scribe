@@ -432,7 +432,7 @@ Two markers exist:
 
 If you use Tempel (Lesson 14 shows the one-line setup), type =note= or =edit= and press the expand key: the snippet writes the whole block and, for =edit=, asks for the category. Typing the block by hand works just as well.
 
-Later, ~F8 6~ lists every marker in the project, grouped by category, so none of these breadcrumbs gets lost. They are gifts to your future editing self!
+Later, ~F8 7~ lists every marker in the project, grouped by category, so none of these breadcrumbs gets lost. They are gifts to your future editing self!
 
 ** The Pomodoro Integration
 
@@ -579,7 +579,7 @@ Read what you wrote and plan tomorrow:
    ,#+end_comment
    #+END_EXAMPLE
 
-   Tomorrow, ~F8 6~ lists it with every other marker.
+   Tomorrow, ~F8 7~ lists it with every other marker.
 
 3. *Plan tomorrow's session*:
    #+BEGIN_EXAMPLE

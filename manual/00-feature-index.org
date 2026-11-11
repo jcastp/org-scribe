@@ -414,7 +414,7 @@ Ships ~edit~ and ~note~ snippets in ~snippets/org-scribe-tempel.eld~ that insert
 
 Searches the entire project recursively for inline edit markers and revision notes using ~rgrep~. The search pattern is configured via ~org-scribe-edit-string~ (default regexp matches ~*EDIT*~ or ~*NOTE*~ strings anywhere in .org files). Results appear in a grep buffer with clickable file:line references. Writers use ~*EDIT*~ or ~*NOTE*~ inline while drafting to mark passages needing revision without interrupting flow; this function then collects all such markers across the entire project for a focused revision session. Markers are conventionally written inside an ~#+begin_comment~ block, which keeps them out of every export backend and out of word counts (see lesson 14, "Marker Convention"). The search is deliberately project-wide; outside a writing project it falls back to the current buffer's directory rather than failing.
 
-*Status*: Fully implemented | *Hydra*: ~C-u F8 6~ (the prefixed variant of ~6~, Search section) | *Module*: ~search/org-scribe-search.el~
+*Status*: Fully implemented | *Hydra*: ~C-u F8 7~ (the prefixed variant of ~7~, Search section) | *Module*: ~search/org-scribe-search.el~
 
 ** Scene Snapshots (~org-scribe-snapshot-scene~, ~org-scribe-compare-snapshot~)
 

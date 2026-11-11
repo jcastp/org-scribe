@@ -87,9 +87,9 @@ _s_: Scene       _m_: Write       _p_: PoV             _w_: Count words   _1_: b
 _c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all    _2_: Character    _C_: Compare snapshot _k_: Capture entity…
 _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: Plot         _z_: Cut scene        _L_: Links & upkeep…
                  _v_: Navigate    _b_: Objects         _y_: Synonyms      _4_: Location     _Z_: Restore scene    _R_: Relink project
-                 _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: TODOs        _u_: Cut scenes       _H_: Health report
-                 _i_: Context     _G_: Plot point      _t_: Word target   _6_: Edits                              _W_: Planner…
-                                  _j_: Jump to PoV     _T_: Title         _7_: Object                             _X_: Compile draft
+                 _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: Object       _u_: Cut scenes       _H_: Health report
+                 _i_: Context     _G_: Plot point      _t_: Word target   _6_: TODOs                              _W_: Planner…
+                                  _j_: Jump to PoV     _T_: Title         _7_: Edits                              _X_: Compile draft
                                                        _S_: Story time                                            _B_: Board…
                                                                                                                   _q_: Quit
 #+END_EXAMPLE
@@ -222,17 +222,17 @@ Exploremos cada categoría en detalle.
 | ~2~   | Character | Encuentra todas las escenas en las que aparece un personaje |
 | ~3~   | Plot      | Encuentra todas las escenas de un hilo de la trama          |
 | ~4~   | Location  | Encuentra todas las escenas de una localización             |
-| ~5~   | TODOs     | Encuentra todos los elementos TODO del proyecto             |
-| ~6~   | Edits     | Indexa los marcadores de edición y de nota del texto        |
-| ~7~   | Object    | Encuentra las escenas en las que aparece un objeto          |
+| ~5~   | Object    | Encuentra las escenas en las que aparece un objeto          |
+| ~6~   | TODOs     | Encuentra todos los elementos TODO del proyecto             |
+| ~7~   | Edits     | Indexa los marcadores de edición y de nota del texto        |
 
 *Cuándo usarla*:
 - «¿Dónde apareció Alex?» → ~2~ (búsqueda de personaje)
 - «¿Qué escenas tienen el PoV de Alex?» → ~1~ (búsqueda de PoV)
 - «¿Dónde está la subtrama romántica?» → ~3~ (búsqueda de trama)
 - «¿Todas las escenas de la cafetería?» → ~4~ (búsqueda de localización)
-- «¿Qué hay que arreglar?» → ~5~ (búsqueda de TODO)
-- «¿Qué ediciones hay marcadas?» → ~6~ (marcadores de edición)
+- «¿Qué hay que arreglar?» → ~6~ (búsqueda de TODO)
+- «¿Qué ediciones hay marcadas?» → ~7~ (marcadores de edición)
 
 *Las más frecuentes*: ~2~ (personaje) y ~3~ (trama)
 
@@ -540,7 +540,7 @@ Si dudas, quédate con ~F8~:
 - ~n~ = Note, ~k~ = (capture) entity (K), ~L~ = Links, ~R~ = Relink, ~H~ = Health, ~W~ = Writing plan
 
 *Los números son búsquedas*:
-- 1=PoV, 2=Personaje, 3=Trama, 4=Localización, 5=TODO, 6=Ediciones
+- 1=PoV, 2=Personaje, 3=Trama, 4=Localización, 5=Objeto, 6=TODO, 7=Ediciones
 
 *Tres teclas abren submenús; el resto son acciones directas*:
 - ~k~ → submenú de captura de entidades
@@ -563,8 +563,9 @@ s: Scene   m: Write    p: PoV      w: Count    1: PoV      n: Note
 c: Chapter f: Focus    h: Chars    a: All WC   2: Char     k: Capture…
 o: Open    e: Edit     l: Locs     d: Dict     3: Plot     L: Links…
            v: Nav      g: Plot     y: Syn      4: Loc      R: Relink
-           0: Normal   j: Jump     x: Thes     5: TODO     H: Health
-                                               6: Edits    W: Planner…
+           0: Normal   j: Jump     x: Thes     5: Object   H: Health
+                                               6: TODO     W: Planner…
+                                               7: Edits
 #+END_EXAMPLE
 
 ¡Pégala cerca del monitor hasta que te la sepas de memoria!

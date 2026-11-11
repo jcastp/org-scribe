@@ -72,9 +72,9 @@ Esto es:
 - *Fluido*: no interrumpe el flujo
 - *Útil*: compruebas las cosas porque es fácil
 
-* Las cuatro búsquedas básicas
+* Las cinco búsquedas básicas
 
-El paquete ofrece cuatro funciones de búsqueda principales, cada una centrada en una propiedad distinta de la escena.
+El paquete ofrece cinco funciones de búsqueda principales, cada una centrada en una propiedad distinta de la escena.
 
 ** Tabla resumen
 
@@ -84,14 +84,15 @@ El paquete ofrece cuatro funciones de búsqueda principales, cada una centrada e
 | Personaje        | F8 2        | ~org-scribe-org-find-character~ | ~:Personajes:~      |
 | Trama            | F8 3        | ~org-scribe-org-find-plot~      | ~:Trama:~           |
 | Localización     | F8 4        | ~org-scribe-org-find-location~  | ~:Localizacion:~    |
+| Objeto           | F8 5        | ~org-scribe-org-find-object~    | ~:Objetos:~         |
 
-(Los nombres de las propiedades son los de un proyecto en español; en uno en inglés son ~:Characters:~, ~:Plot:~ y ~:Location:~. Las búsquedas reconocen los de cualquier idioma.)
+(Los nombres de las propiedades son los de un proyecto en español; en uno en inglés son ~:Characters:~, ~:Plot:~, ~:Location:~ y ~:Objects:~. Las búsquedas reconocen los de cualquier idioma.)
 
-Otras dos búsquedas completan la sección Search del menú Hydra (se explican más adelante en esta lección): ~F8 5~ para los elementos TODO y ~F8 6~ para los marcadores =*EDIT*=/=*NOTE*= dentro del texto (~org-scribe-search-edits~, que analiza los bloques de comentario de Org en lugar de consultar propiedades).
+Otras dos búsquedas completan la sección Search del menú Hydra (se explican más adelante en esta lección): ~F8 6~ para los elementos TODO y ~F8 7~ para los marcadores =*EDIT*=/=*NOTE*= dentro del texto (~org-scribe-search-edits~, que analiza los bloques de comentario de Org en lugar de consultar propiedades).
 
 ** Patrón común
 
-Las cuatro búsquedas funcionan igual:
+Las cinco búsquedas funcionan igual:
 1. Invoca la búsqueda (pulsa la tecla del menú Hydra o ejecuta la orden)
 2. Escribe el término de búsqueda (con completado)
 3. Mira los resultados en un búfer dedicado
@@ -520,7 +521,40 @@ Tu cafetería representa la «vida normal». Buscas y encuentras:
 Este patrón estructural muestra el viaje del personaje lejos de la normalidad y de vuelta a ella. ¡Intencionado y eficaz!
 #+END_EXAMPLE
 
-* Búsqueda 5: encontrar los TODO
+* Búsqueda 5: por objeto
+
+Encuentra todas las escenas en las que aparece un objeto concreto.
+
+** Cuándo usarla
+
+- *El arma de Chéjov*: un objeto presentado al principio debería volver; ¿vuelve?
+- *Continuidad*: ¿dónde se vio la carta por última vez y quién la tenía?
+- *Objetos simbólicos*: sigue un elemento recurrente (un anillo, una llave, una fotografía)
+- *Planificación*: ¿cuándo debería reaparecer este objeto?
+
+** Cómo buscar
+
+Pulsa: ~F8 5~
+
+O usa: ~M-x org-scribe-org-find-object~
+
+** El proceso
+
+1. Emacs te pregunta: ~Buscar objeto [difuso]: ~ (o ~Objeto [subcadena]: ~)
+2. Empieza a escribir: ~Carta~
+3. Aparecen los objetos que coinciden
+4. Elige: ~La carta sin enviar~
+5. Pulsa: ~Enter~
+
+Los resultados funcionan como en las demás búsquedas por propiedad: las escenas se listan en el orden del manuscrito y se reconocen tanto el texto plano como los enlaces por ID de la propiedad ~:Objetos:~ de la escena. Etiqueta una escena con ~F8 b~ (Etiquetar escena: objetos).
+
+** Interpretar los resultados
+
+- *Una sola escena*: puede que el objeto se haya preparado pero nunca se aproveche
+- *Un hueco largo entre apariciones*: recuerda al lector que el objeto existe
+- *Aparece en cada acto*: probablemente es un símbolo; comprueba que cada aparición añada significado
+
+* Búsqueda 6: encontrar los TODO
 
 Encuentra todos los elementos TODO de todo tu proyecto.
 
@@ -546,7 +580,7 @@ Las palabras clave que busca org-scribe son las de ~org-scribe-todo-keywords~: ~
 
 ** Cómo buscar
 
-Pulsa: ~F8 5~
+Pulsa: ~F8 6~
 
 O usa: ~M-x org-scribe-search-todos-recursive~
 
@@ -607,15 +641,15 @@ Pulsa C-c C-t y elige REDO:
 ¡Sigue escribiendo la Escena 15!
 #+END_EXAMPLE
 
-Más tarde, cuando busques los TODO, la encontrarás y la arreglarás. No añadas un subencabezado ~TODO~ dentro de una escena: el manuscrito no tiene la palabra clave ~TODO~, así que la búsqueda no lo vería, y un subencabezado forma parte del texto de la escena. Para decir /qué/ falla, deja un marcador de edición junto al pasaje (Búsqueda 6).
+Más tarde, cuando busques los TODO, la encontrarás y la arreglarás. No añadas un subencabezado ~TODO~ dentro de una escena: el manuscrito no tiene la palabra clave ~TODO~, así que la búsqueda no lo vería, y un subencabezado forma parte del texto de la escena. Para decir /qué/ falla, deja un marcador de edición junto al pasaje (Búsqueda 7).
 
-* Búsqueda 6: encontrar marcadores de edición y de nota
+* Búsqueda 7: encontrar marcadores de edición y de nota
 
 Encuentra todos los marcadores ~*EDIT*~ o ~*NOTE*~ que hay dentro del texto en todo tu proyecto.
 
 ** En qué se diferencia de la búsqueda de TODO
 
-La Búsqueda 5 (TODO) busca *palabras clave* TODO de Org al principio de los encabezados: cosas que has decidido *escribir*. La Búsqueda 6 encuentra marcadores que dejaste *dentro* de prosa que ya has escrito, unidos a la frase que necesita trabajo.
+La Búsqueda 6 (TODO) busca *palabras clave* TODO de Org al principio de los encabezados: cosas que has decidido *escribir*. La Búsqueda 7 encuentra marcadores que dejaste *dentro* de prosa que ya has escrito, unidos a la frase que necesita trabajo.
 
 Ambas son búsquedas sobre todo el proyecto; simplemente cubren etapas distintas del trabajo.
 
@@ -651,7 +685,7 @@ Un ~*EDIT*~ lleva además una categoría antes de un separador ~" - "~ (por defe
 
 ** Cómo buscar
 
-Pulsa: ~F8 6~
+Pulsa: ~F8 7~
 
 O usa: ~M-x org-scribe-search-edits~
 
@@ -704,7 +738,7 @@ Las categorías salen de ~org-scribe-edit-categories~:
 
 Un marcador cuya categoría falta, está vacía o no se reconoce se agrupa bajo ~otras~ en lugar de descartarse: una errata mueve un marcador, nunca lo esconde.
 
-Si tus marcadores *no* siguen la convención del bloque de comentario (proyectos antiguos, o un estilo de marcador propio), llama a la búsqueda con un argumento prefijo (~C-u F8 6~) para obtener ~org-scribe-search-edits-rgrep~, una búsqueda de texto plano que los encuentra en cualquier sitio. Esa alternativa es la que usa ~org-scribe-edit-string~:
+Si tus marcadores *no* siguen la convención del bloque de comentario (proyectos antiguos, o un estilo de marcador propio), llama a la búsqueda con un argumento prefijo (~C-u F8 7~) para obtener ~org-scribe-search-edits-rgrep~, una búsqueda de texto plano que los encuentra en cualquier sitio. Esa alternativa es la que usa ~org-scribe-edit-string~:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")
@@ -860,8 +894,16 @@ Practiquemos los cinco tipos de búsqueda.
 5. ¿Son demasiadas? (más del 20 % podría serlo)
 6. Pulsa ~q~ para cerrar los resultados
 
-*** Búsqueda 5: TODO
+*** Búsqueda 5: objeto
 1. Pulsa: ~F8 5~
+2. Busca un objeto que importe en tu historia
+3. Cuenta los resultados
+4. Anota: ¿en cuántas escenas aparece? _______
+5. ¿Aparece en los momentos que habías planeado?
+6. Pulsa ~q~ para cerrar los resultados
+
+*** Búsqueda 6: TODO
+1. Pulsa: ~F8 6~
 2. Mira todos los elementos TODO
 3. Cuéntalos
 4. Anota: ¿cuántos TODO? _______
@@ -928,7 +970,7 @@ Sentirte cómodo con el ciclo de navegación de los resultados:
 
 ** Antes de escribir
 
-- *Repasa los TODO*: mira qué te dejaste por arreglar (F8 5)
+- *Repasa los TODO*: mira qué te dejaste por arreglar (F8 6)
 - *Comprueba la última aparición*: si vas a escribir sobre el personaje X, busca cuándo apareció por última vez
 - *Verifica el estado de la trama*: si vas a desarrollar la trama Y, busca qué ha pasado hasta ahora
 
@@ -1080,8 +1122,9 @@ Pulsar RET o C-c C-o en los resultados no salta a la escena.
 | ~F8 2~ | Personaje                  | ~:Personajes:~                             |
 | ~F8 3~ | Trama                      | ~:Trama:~                                  |
 | ~F8 4~ | Localización               | ~:Localizacion:~                           |
-| ~F8 5~ | Elementos TODO             | palabras clave TODO                        |
-| ~F8 6~ | Marcadores de edición/nota | =*EDIT*=/=*NOTE*= en bloques de comentario |
+| ~F8 5~ | Objeto                     | ~:Objetos:~                                |
+| ~F8 6~ | Elementos TODO             | palabras clave TODO                        |
+| ~F8 7~ | Marcadores de edición/nota | =*EDIT*=/=*NOTE*= en bloques de comentario |
 
 ** Navegación por el búfer de resultados
 
@@ -1230,7 +1273,7 @@ No busques excusas: ajusta la historia para que coincida con patrones sanos.
 ¡Enhorabuena! Has completado la Lección 7. Ahora sabes:
 
 ✓ Por qué buscar es esencial para gestionar manuscritos largos
-✓ Los cuatro tipos básicos de búsqueda (PoV, personaje, trama, localización)
+✓ Los cinco tipos básicos de búsqueda (PoV, personaje, trama, localización, objeto)
 ✓ Cómo buscar elementos TODO en tu proyecto
 ✓ Cómo encontrar marcadores *EDIT*/*NOTE* en el texto de todo tu proyecto
 ✓ Cómo interpretar los resultados de búsqueda (% de cobertura, huecos, distribución)

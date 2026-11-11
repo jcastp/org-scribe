@@ -628,7 +628,7 @@ The ~edits~ value is worth trying during a revision pass: it is the only option 
 
 If the requested file cannot be found, the panel falls back to the design notebook rather than opening nothing.
 
-*Note*: this panel used to show a per-manuscript companion file (~novel.org~ → ~novel-notes.org~) that existed to hold org-remark annotations. org-remark support has been removed — use inline ~*EDIT*~ / ~*NOTE*~ markers and ~F8~ then ~6~ instead — so the panel now defaults to the design notebook. Any existing ~novel-notes.org~ in your projects is left untouched; open it normally if it holds content you want.
+*Note*: this panel used to show a per-manuscript companion file (~novel.org~ → ~novel-notes.org~) that existed to hold org-remark annotations. org-remark support has been removed — use inline ~*EDIT*~ / ~*NOTE*~ markers and ~F8~ then ~7~ instead — so the panel now defaults to the design notebook. Any existing ~novel-notes.org~ in your projects is left untouched; open it normally if it holds content you want.
 
 ** How It Works
 
@@ -681,7 +681,7 @@ elsewhere all end up in one place.
 
 For notes that belong to a *specific sentence* rather than to the project as
 a whole, don't use this panel - write an inline marker in the manuscript
-itself and find them later with ~F8~ then ~6~. See lesson 14, "Marker
+itself and find them later with ~F8~ then ~7~. See lesson 14, "Marker
 Convention".
 
 org-scribe does not integrate with ~org-remark~ or any other annotation

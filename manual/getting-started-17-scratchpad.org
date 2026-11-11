@@ -214,7 +214,7 @@ costs you three folded lines.
 
 ** Live Branches Show in Your TODO List
 
-~F8 5~ (Search TODOs, Lesson 7) scans every ~.org~ file in your project,
+~F8 6~ (Search TODOs, Lesson 7) scans every ~.org~ file in your project,
 scratchpad included, and matches the keywords in ~org-scribe-todo-keywords~ —
 ~TODO~, ~ONGOING~, ~WAITING~, ~TOWRITE~, ~TOREVIEW~, ~REDO~, ~RESTRUCTURE~.
 

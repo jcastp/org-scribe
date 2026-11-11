@@ -408,7 +408,7 @@ Esta única variable gobierna los dos extremos: el índice agrupa por ella y el 
 
 ** La alternativa de texto plano
 
-~org-scribe-edit-string~ es la expresión regular que usa ~org-scribe-search-edits-rgrep~ (la variante con ~C-u~ de ~F8 6~), no el índice estructurado. Personalízala si usas estilos de marcador propios:
+~org-scribe-edit-string~ es la expresión regular que usa ~org-scribe-search-edits-rgrep~ (la variante con ~C-u~ de ~F8 7~), no el índice estructurado. Personalízala si usas estilos de marcador propios:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-scribe-edit-string "\\*EDIT\\*\\|\\*NOTE\\*\\|TODO-REVISE")

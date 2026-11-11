@@ -140,7 +140,7 @@ to change that order, drag a row.
   picker listing the entities of that kind, with a search box. Pick, press
   *Done*: Emacs writes proper ~[[id:...][Name]]~ links.
 - The *Objects* field works like the other link fields. In Emacs the same
-  link is set with ~F8 b~ (Tag Scene) and searched with ~F8 7~.
+  link is set with ~F8 b~ (Tag Scene) and searched with ~F8 5~.
 - The =+= in a chapter row adds a scene at the end of that chapter; the =+= in
   an act row asks for a title and adds a chapter at the end of the act (in a
   short story it adds a scene, as on the corkboard).
@@ -390,7 +390,7 @@ opens the report there.
 ** The Edits Tab
 
 The *Edits* tab lists every ~*EDIT*~ and ~*NOTE*~ marker of the project, the
-same ones ~F8 6~ finds (markers live in comment blocks; see Lesson 13). Group
+same ones ~F8 7~ finds (markers live in comment blocks; see Lesson 13). Group
 them by *Category* (plot, scene, character, prose, design, other, then the
 notes) or by *Chapter*, and show all of them, only the edits or only the
 notes. The page remembers both choices.

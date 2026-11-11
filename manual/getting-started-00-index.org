@@ -341,8 +341,9 @@ From the Hydra menu (F8):
 | h   | Set characters (tag scene)   |   2 | Search by character   |
 | l   | Set locations (tag scene)    |   3 | Search by plot        |
 | g   | Set plot threads (tag scene) |   4 | Search by location    |
-| k   | Capture entity submenu…      |   5 | Search TODOs          |
-| L   | Links & upkeep submenu…      |   6 | Search edits/notes    |
+| k   | Capture entity submenu…      |   5 | Search objects        |
+| L   | Links & upkeep submenu…      |   6 | Search TODOs          |
+|     |                              |   7 | Search edits/notes    |
 | R   | Relink project               |   H | Project health report |
 | W   | Writing planner submenu (*)  |   q | Quit menu             |
 

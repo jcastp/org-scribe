@@ -813,7 +813,9 @@ _1_: POV
 _2_: Character
 _3_: Plot
 _4_: Location
-_5_: TODOs
+_5_: Object
+_6_: TODOs
+_7_: Edits
 #+END_EXAMPLE
 
 ** Step 2: Search by Character

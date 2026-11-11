@@ -6,7 +6,7 @@
 
 ;; The shipped templates are the writer's first and most-read
 ;; documentation, and they used to be wrong about the UI: `design.org' told
-;; the writer the edit index was `F8 e' (it is `F8 6'), `plot.org'
+;; the writer the edit index was `F8 e' (it is `F8 7'), `plot.org'
 ;; told them to add narrative lines with `F8 p' (that sets PoV; capture
 ;; is `F8 k g'), and `novel.org' still referenced the removed
 ;; `org-scribe/plot-thread-report' slash name.  A new writer who follows

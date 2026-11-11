@@ -164,9 +164,9 @@ _s_: Scene       _m_: Write       _p_: PoV             _w_: Count words   _1_: b
 _c_: Chapter     _f_: Focus       _h_: Characters      _a_: Update all    _2_: Character    _C_: Compare snapshot _k_: Capture entity…
 _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: Plot         _z_: Cut scene        _L_: Links & upkeep…
 ^^               _v_: Navigate    _b_: Objects         _y_: Synonyms      _4_: Location     _Z_: Restore scene    _R_: Relink project
-^^               _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: TODOs        _u_: Cut scenes       _H_: Health report
-^^               _i_: Context     _G_: Plot point      _t_: Word target   _6_: Edits        ^^                    _W_: Planner…
-^^               ^^               _j_: Jump to PoV     _T_: Title         _7_: Object       ^^                    _X_: Compile draft
+^^               _0_: Normal      _g_: Plot threads    _x_: Thesaurus     _5_: Object       _u_: Cut scenes       _H_: Health report
+^^               _i_: Context     _G_: Plot point      _t_: Word target   _6_: TODOs        ^^                    _W_: Planner…
+^^               ^^               _j_: Jump to PoV     _T_: Title         _7_: Edits        ^^                    _X_: Compile draft
 ^^               ^^               ^^                   _S_: Story time    ^^                ^^                    _B_: Board…
 ^^               ^^               ^^                   ^^                 ^^                ^^                    _q_: Quit
 "
@@ -221,9 +221,9 @@ _o_: Open file   _e_: Edit        _l_: Locations       _d_: Dictionary    _3_: P
   ("2" org-scribe-org-find-character "find by character")
   ("3" org-scribe-org-find-plot "find by plot")
   ("4" org-scribe-org-find-location "find by location")
-  ("5" org-scribe-search-todos-recursive "find TODOs")
-  ("6" org-scribe-search-edits "find edits and notes")
-  ("7" org-scribe-org-find-object "find by object")
+  ("5" org-scribe-org-find-object "find by object")
+  ("6" org-scribe-search-todos-recursive "find TODOs")
+  ("7" org-scribe-search-edits "find edits and notes")
 
   ;; Manage
   ("n" org-scribe-capture-to-file "capture note")

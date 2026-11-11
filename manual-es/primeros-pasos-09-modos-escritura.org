@@ -676,7 +676,7 @@ Si no se encuentra el archivo pedido, el panel vuelve al cuaderno de diseño en 
 
 El panel derecho del modo Edición es el cuaderno de diseño de tu proyecto: ~diseno.org~ (~design.org~ en los proyectos en inglés). Se crea automáticamente si todavía no existe. Es el mismo archivo al que captura ~F8 n~, así que las notas escritas en el panel y las capturadas desde cualquier otro sitio acaban en un solo lugar.
 
-Para las notas que pertenecen a *una frase concreta* y no al proyecto en su conjunto, no uses este panel: escribe un marcador en línea en el propio manuscrito y encuéntralo después con ~F8~ y luego ~6~. Consulta la lección 14, «Convención de marcadores».
+Para las notas que pertenecen a *una frase concreta* y no al proyecto en su conjunto, no uses este panel: escribe un marcador en línea en el propio manuscrito y encuéntralo después con ~F8~ y luego ~7~. Consulta la lección 14, «Convención de marcadores».
 
 org-scribe no se integra con ~org-remark~ ni con ningún otro paquete de anotaciones: el panel derecho es un archivo Org normal abierto junto a tu manuscrito.
 
